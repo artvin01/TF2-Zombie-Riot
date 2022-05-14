@@ -2632,6 +2632,26 @@ methodmap CClotBody
 		public get()							{ return i_PoseMoveY[this.index]; }
 		public set(int TempValueForProperty) 	{ i_PoseMoveY[this.index] = TempValueForProperty; }
 	}
+	/*
+	
+		property int m_iActivity
+	{
+		public get()              { return this.ExtractStringValueAsInt("m_iActivity"); }
+		public set(int iActivity) { char buff[8]; IntToString(iActivity, buff, sizeof(buff)); SetCustomKeyValue(this.index, "m_iActivity", buff, true); }
+	}
+	
+	property int m_iPoseMoveX 
+	{
+		public get()              { return this.ExtractStringValueAsInt("m_iPoseMoveX"); }
+		public set(int iActivity) { char buff[8]; IntToString(iActivity, buff, sizeof(buff)); SetCustomKeyValue(this.index, "m_iPoseMoveX", buff, true); }
+	}
+	
+	property int m_iPoseMoveY
+	{
+		public get()              { return this.ExtractStringValueAsInt("m_iPoseMoveY"); }
+		public set(int iActivity) { char buff[8]; IntToString(iActivity, buff, sizeof(buff)); SetCustomKeyValue(this.index, "m_iPoseMoveY", buff, true); }
+	}
+	*/
 
 	//Begin an animation activity, return false if we cant do that right now.
 	public bool StartActivity(int iActivity, int flags = 0)
@@ -2654,7 +2674,7 @@ methodmap CClotBody
 		
 		return true;
 	}
-
+	
 	public void Update()
 	{
 		
@@ -2703,7 +2723,7 @@ methodmap CClotBody
 		this.DispatchAnimEvents();
 		
 		//Run and StuckMonitor
-		SDKCall(g_hRun,		  this.GetLocomotionInterface());	
+		SDKCall(g_hRun,          this.GetLocomotionInterface());	
 		
 		/*
 		
@@ -2767,6 +2787,8 @@ methodmap CClotBody
 		
 		
 	}
+
+	 	
 	
 	//return currently animating activity
 	public int GetActivity()
@@ -5536,6 +5558,9 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_HookDamageTaken[entity] = 0.0;
 	b_IsCamoNPC[entity] = false;
 	b_bThisNpcGotDefaultStats_INVERTED[entity] = false;
+	i_Activity[entity] = -1;
+	i_PoseMoveX[entity] = -1;
+	i_PoseMoveY[entity] = -1;
 }
 
 //NORMAL
