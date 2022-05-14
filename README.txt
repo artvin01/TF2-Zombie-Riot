@@ -2,7 +2,7 @@ THIS CODE IS COMPRISED OF MULTIPLE CODERS JUST ADDING THEIR THINGS!
 SO HOW THIS CODE WORKS CAN HEAVILY VARY FROM FILE TO FILE!!!
 
 If you wish to use this plugin for your own server, please keep all the credits that are here or i WILL cry.
-Do not go above 12 players, as the server doesnt support that interms of performance, the npc's are limited at 32 for a reason.
+Do not go above 12 players(you can have 32 slots, i recommend 16+) but dont allow more inside the plugin itself (Inside queue.sp), as the server doesnt support that interms of performance, the npc's are limited at 32 for a reason.
 The performance heavy things are Lagcompensation and pathfinder, but i tried to optimise those as much as i could.
 Most of the code is made towards client prediction to make the best experience.
 
