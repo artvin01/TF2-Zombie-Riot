@@ -1,16 +1,22 @@
 THIS CODE IS COMPRISED OF MULTIPLE CODERS JUST ADDING THEIR THINGS!
 SO HOW THIS CODE WORKS CAN HEAVILY VARY FROM FILE TO FILE!!!
 
+If you wish to use this plugin for your own server, please keep all the credits that are here or i WILL cry.
+Do not go above 12 players, as the server doesnt support that interms of performance, the npc's are limited at 32 for a reason.
+The performance heavy things are Lagcompensation and pathfinder, but i tried to optimise those as much as i could.
+Most of the code is made towards client prediction to make the best experience.
+
 Also keep in mind that i (artvin) started coding here with only half a year of knowledege so you'll see a fuckton of shitcode.
 
 Current coders that in anyway actively helped, in order of how much:
 
 Batfoxkid
 Artvin
-Mikusch
+Mikusch (Gamedata assistance and more, a savior.)
 Suza
 Alex
 Spookmaster
+Pelipoika (Npc base code that we heavily edited, thank you SO much for publishing it all.)
 
 Alot of code is borrowed/just takes from other plugins i or friends made, often with permission,
 rarely without cus i couldnt contact the person or it was just open sourcecode, credited anyways when i did that.
