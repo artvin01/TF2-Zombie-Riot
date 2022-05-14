@@ -38,7 +38,12 @@
 
 //edit: No, makes you miss more often.
 
+
+//Comment this out, and reload the plugin once ingame if you wish to have infinite cash.
 #define NormalRound
+
+
+
 
 //#define CompensatePlayers
 
