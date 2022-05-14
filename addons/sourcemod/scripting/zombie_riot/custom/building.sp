@@ -1125,8 +1125,7 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 	}
 	return Plugin_Handled;	
 }
-
-
+		
 void Building_ShowInteractionHud(int client, int entity)
 {
 	bool Hide_Hud = true;
@@ -1134,7 +1133,7 @@ void Building_ShowInteractionHud(int client, int entity)
 	{
 		if(entity <= MaxClients)
 		{
-			if(dieingstate[entity] > 0)
+			if(dieingstate[entity] > 0 && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 			{
 				SetGlobalTransTarget(client);
 				PrintCenterText(client, "%t", "Revive Teammate tooltip");
@@ -1771,76 +1770,95 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					}
 					if(owner > 0 && StrEqual(buffer, "zr_perkmachine")/* && Armor_Ready[client] < GetGameTime()*/)
 					{
-						TF2_StunPlayer(client, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
-						Building_Collect_Cooldown[entity][client] = GetGameTime() + 20.0;
-						Do_Perk_Machine_Chance(client);
-						if(owner != client)
+						if(Is_Reload_Button)
 						{
-							if(Perk_Machine_money_limit[owner][client] <= 10)
+							TF2_StunPlayer(client, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
+							Building_Collect_Cooldown[entity][client] = GetGameTime() + 20.0;
+							Do_Perk_Machine_Chance(client);
+							if(owner != client)
 							{
-								CashSpent[owner] -= 40;
-								Perk_Machine_money_limit[owner][client] += 1;
-								Resupplies_Supplied[owner] += 4;
-								SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-								SetGlobalTransTarget(owner);
-								ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Perk Machine Used");
+								if(Perk_Machine_money_limit[owner][client] <= 10)
+								{
+									CashSpent[owner] -= 40;
+									Perk_Machine_money_limit[owner][client] += 1;
+									Resupplies_Supplied[owner] += 4;
+									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetGlobalTransTarget(owner);
+									ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Perk Machine Used");
+								}
 							}
+							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+							SetGlobalTransTarget(client);
+							ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
+							Store_ApplyAttribs(client);
+							Store_GiveAll(client, GetClientHealth(client));
 						}
-						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
-						Store_ApplyAttribs(client);
-						Store_GiveAll(client, GetClientHealth(client));
+						else if(!b_IgnoreWarningForReloadBuidling[client])
+						{
+							ClientCommand(client, "playgamesound items/medshotno1.wav");
+							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+							SetGlobalTransTarget(client);
+							ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");				
+						}
 						return true;
 					}
 					if(owner > 0 && StrEqual(buffer, "zr_packapunch")/* && Armor_Ready[client] < GetGameTime()*/)
 					{
-						
-						int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-						for(int i; i<6; i++)
+						if(Is_Reload_Button)
 						{
-							if(weapon == GetPlayerWeaponSlot(client, i))
+							int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+							for(int i; i<6; i++)
 							{
-								int index = Store_GetEquipped(client, i);
-								int number_return = Store_PackCurrentItem(client, index);
-								if(number_return == 3)
+								if(weapon == GetPlayerWeaponSlot(client, i))
 								{
-									TF2_StunPlayer(client, 2.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
-									Building_Collect_Cooldown[entity][client] = GetGameTime() + 1.0;
-									if(owner != client)
+									int index = Store_GetEquipped(client, i);
+									int number_return = Store_PackCurrentItem(client, index);
+									if(number_return == 3)
 									{
-										CashSpent[owner] -= 400;
-										Resupplies_Supplied[owner] += 40;
+										TF2_StunPlayer(client, 2.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
+										Building_Collect_Cooldown[entity][client] = GetGameTime() + 1.0;
+										if(owner != client)
+										{
+											CashSpent[owner] -= 400;
+											Resupplies_Supplied[owner] += 40;
+											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetGlobalTransTarget(owner);
+											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Pap Machine Used");
+										}
 										SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-										SetGlobalTransTarget(owner);
-										ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Pap Machine Used");
+										SetGlobalTransTarget(client);
+										ShowSyncHudText(client,  SyncHud_Notifaction, "Your weapon was boosted");
+										Store_ApplyAttribs(client);
+										Store_GiveAll(client, GetClientHealth(client));
 									}
-									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-									SetGlobalTransTarget(client);
-									ShowSyncHudText(client,  SyncHud_Notifaction, "Your weapon was boosted");
-									Store_ApplyAttribs(client);
-									Store_GiveAll(client, GetClientHealth(client));
+									else if(number_return == 2)
+									{
+										ClientCommand(client, "playgamesound items/medshotno1.wav");
+										SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+										SetGlobalTransTarget(client);
+										ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Money To Pap");	
+									}
+									else if(number_return == 1)
+									{
+										ClientCommand(client, "playgamesound items/medshotno1.wav");
+										SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+										SetGlobalTransTarget(client);
+										ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Pap this");	
+									}
+									else if(number_return == 0)
+									{
+										ClientCommand(client, "playgamesound items/medshotno1.wav"); //This isnt supposed to ever happen.
+									}
+									break;
 								}
-								else if(number_return == 2)
-								{
-									ClientCommand(client, "playgamesound items/medshotno1.wav");
-									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-									SetGlobalTransTarget(client);
-									ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Money To Pap");	
-								}
-								else if(number_return == 1)
-								{
-									ClientCommand(client, "playgamesound items/medshotno1.wav");
-									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-									SetGlobalTransTarget(client);
-									ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Pap this");	
-								}
-								else if(number_return == 0)
-								{
-									ClientCommand(client, "playgamesound items/medshotno1.wav"); //This isnt supposed to ever happen.
-								}
-								break;
 							}
+						}
+						else if(!b_IgnoreWarningForReloadBuidling[client])
+						{
+							ClientCommand(client, "playgamesound items/medshotno1.wav");
+							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+							SetGlobalTransTarget(client);
+							ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");				
 						}
 						return true;
 					}

@@ -30,6 +30,7 @@
 
 #define HaveLayersForLagCompensation
 
+//Not used cus i need all the performance i can get.
 #define NoSendProxyClass
 
 //#define DisableInterpolation
