@@ -2,7 +2,7 @@
 {
 	"Credits Page"
 	{
-		"en" 		"Artvin: NPC And Gamemode Development\nBatfoxkid: Gamemode Development\nKenzzer: Npc help and bug fix help\nPelipoika: Original NPC base and help\nAlex: Weapon Plugins and overall plugin Assistance\nMikusch: Early Gamedata help\nAlex Turtle & Stranger & Syko: Map Assistance\nCrusty: Model/Animating\njDeivid: Alternative Waves\nGMOD Zombie Survival Devs: Music and base concept from them"
+		"en" 		"Artvin: NPC And Gamemode Development\nBatfoxkid: Gamemode Development\nPelipoika: Original NPC base and help\nAlex: Weapon Plugins and overall plugin Assistance\nSuza: Weapon and some Base stock help\nMikusch: Early Gamedata help\nKenzzer: Npc help and bug fix help\nAlex Turtle & Stranger & Syko: Map Assistance\nCrusty: Model/Animating\njDeivid: Alternative Waves\nGMOD Zombie Survival Devs: Music and base concept from them"
 	}
 	"Open Store"
 	{
