@@ -1420,7 +1420,13 @@ methodmap CClotBody
 		SetEntData(npc, FindSendPropInfo("CTFBaseBoss", "m_lastHealthPercentage") + 28, false, 4, true);
 		
 		SetEntProp(npc, Prop_Data, "m_nSolidType", 2); 
+		
+		
 		b_NpcDeathEffectHappend[npc] = false;
+		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
+		
+		
+		
 		//Don't bleed.
 		SetEntProp(npc, Prop_Data, "m_bloodColor", -1); //Don't bleed
 		
