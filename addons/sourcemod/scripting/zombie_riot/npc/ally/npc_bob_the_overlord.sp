@@ -1,0 +1,1793 @@
+static Handle syncdashhud;
+static int Has_a_bob[MAXPLAYERS+1]={0, ...};
+static int bob_owner_id[MAXPLAYERS+1]={0, ...};
+static int who_owns_this_bob[2048]={0, ...};
+
+static char g_DeathSounds[][] = {
+	"npc/metropolice/die1.wav",
+	"npc/metropolice/die2.wav",
+	"npc/metropolice/die3.wav",
+	"npc/metropolice/die4.wav",
+};
+
+static char g_RangedAttackSoundsSecondary[][] = {
+	"weapons/physcannon/energy_sing_explosion2.wav",
+};
+
+
+static char g_HurtSounds[][] = {
+	"npc/metropolice/pain1.wav",
+	"npc/metropolice/pain2.wav",
+	"npc/metropolice/pain3.wav",
+};
+
+static char g_IdleSounds[][] = {
+	"npc/metropolice/vo/putitinthetrash1.wav",
+	"npc/metropolice/vo/putitinthetrash2.wav",
+	
+};
+
+static char g_IdleAlertedSounds[][] = {
+	"npc/metropolice/vo/takecover.wav",
+	"npc/metropolice/vo/readytojudge.wav",
+	"npc/metropolice/vo/subject.wav",
+	"npc/metropolice/vo/subjectis505.wav",
+};
+
+static char g_Moving_Sound[][] = {
+	"npc/metropolice/vo/readytojudge.wav",
+};
+
+static char g_MeleeHitSounds[][] = {
+	"weapons/halloween_boss/knight_axe_hit.wav",
+};
+
+static char g_MeleeAttackSounds[][] = {
+	"weapons/demo_sword_swing1.wav",
+	"weapons/demo_sword_swing2.wav",
+	"weapons/demo_sword_swing3.wav",
+};
+
+
+static char g_RangedAttackSounds[][] = {
+	"weapons/pistol/pistol_fire2.wav",
+};
+
+static char g_RangedReloadSound[][] = {
+	"weapons/pistol/pistol_reload1.wav",
+};
+
+static char g_MeleeMissSounds[][] = {
+	"weapons/stunstick/spark1.wav",
+	"weapons/stunstick/spark2.wav",
+	"weapons/stunstick/spark3.wav",
+};
+
+public void BobTheGod_OnPluginStart()
+{
+	syncdashhud = CreateHudSynchronizer();
+}
+public void BobTheGod_OnMapStart_NPC()
+{
+	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
+	for (int i = 0; i < (sizeof(g_Moving_Sound)); i++) { PrecacheSound(g_Moving_Sound[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
+	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
+	
+	PrecacheModel("models/props_wasteland/rockgranite03b.mdl");
+	PrecacheModel("models/weapons/w_bullet.mdl");
+	PrecacheModel("models/weapons/w_grenade.mdl");
+	
+	PrecacheSound("items/smallmedkit1.wav",true);
+	PrecacheSound("ambient/explosions/citadel_end_explosion2.wav",true);
+	PrecacheSound("ambient/explosions/citadel_end_explosion1.wav",true);
+	PrecacheSound("ambient/energy/weld1.wav",true);
+	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
+	
+	PrecacheSound("player/flow.wav");
+	
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		Has_a_bob[client] = 0;
+	}
+}
+
+methodmap BobTheGod < CClotBody
+{
+	
+	public void PlayIdleSound() {
+		if(this.m_flNextIdleSound > GetGameTime())
+			return;
+		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(24.0, 48.0);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayIdleSound()");
+		#endif
+	}
+	
+	public void PlayIdleAlertSound() {
+		if(this.m_flNextIdleSound > GetGameTime())
+			return;
+		
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayIdleAlertSound()");
+		#endif
+	}
+	
+	public void PlayHurtSound() {
+		
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		this.m_flNextHurtSound = GetGameTime() + GetRandomFloat(0.6, 1.6);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayHurtSound()");
+		#endif
+	}
+	
+	public void PlayMovingSound() {
+		
+		EmitSoundToAll(g_Moving_Sound[GetRandomInt(0, sizeof(g_Moving_Sound) - 1)], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayHurtSound()");
+		#endif
+	}
+	
+	public void PlayDeathSound() {
+	
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayDeathSound()");
+		#endif
+	}
+	
+	public void PlayMeleeSound() {
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, 80, _, 1.0);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayMeleeHitSound()");
+		#endif
+	}
+	
+	public void PlayRangedSound() {
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, 80, _, 0.7);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayRangedSound()");
+		#endif
+	}
+	public void PlayRangedReloadSound() {
+		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, 80, _, 1.0);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayRangedSound()");
+		#endif
+	}
+	
+	public void PlayRangedAttackSecondarySound() {
+		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, 80, _, 1.0);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayRangedSound()");
+		#endif
+	}
+	
+	public void PlayMeleeHitSound() {
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, 80, _, 1.0);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayMeleeHitSound()");
+		#endif
+	}
+
+	public void PlayMeleeMissSound() {
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, 80, _, 1.0);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CGoreFast::PlayMeleeMissSound()");
+		#endif
+	}
+
+
+	public BobTheGod(int client, float vecPos[3], float vecAng[3])
+	{
+		
+		BobTheGod npc = view_as<BobTheGod>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.7", "9999999", true, true));
+		
+		i_NpcInternalId[npc.index] = BOB_THE_GOD_OF_GODS;
+		
+		int iActivity = npc.LookupActivity("ACT_IDLE");
+		if(iActivity > 0) npc.StartActivity(iActivity);
+		
+		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
+		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;	
+		
+		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TFTeam_Red);
+		
+	//	SetEntPropEnt(npc.index,   Prop_Send, "m_hOwnerEntity", client);
+		
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", 50000001);
+		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", 50000001);
+					
+		
+		npc.m_bThisEntityIgnored = true;
+		
+		SDKHook(npc.index, SDKHook_OnTakeDamage, BobTheGod_ClotDamaged);
+		SDKHook(npc.index, SDKHook_Think, BobTheGod_ClotThink);
+		
+		SDKHook(client, SDKHook_OnTakeDamageAlive, BobTheGod_Owner_Hurt);
+		
+		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", GetClientTeam(client));
+		
+		Has_a_bob[client] = npc.index;
+		
+		npc.m_b_follow = true;
+		
+		npc.m_b_stand_still = false;
+		bob_owner_id[client] = npc.index;
+		who_owns_this_bob[npc.index] = client;
+		
+		npc.m_fbGunout = false;
+		npc.m_bIsFriendly = false;
+		npc.m_bReloaded = true;
+		npc.m_iAttacksTillReload = 24;
+		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_bDissapearOnDeath = true;
+		
+		npc.m_bmovedelay_walk = false;
+		npc.m_bmovedelay = false;
+		npc.m_bmovedelay_run = false;
+		
+		npc.m_iMedkitAnnoyance = 0;
+				
+		npc.m_iState = 0;
+		npc.m_flSpeed = 180.0;
+		npc.m_flNextRangedAttack = 0.0;
+		npc.m_flAttackHappenswillhappen = false;
+
+		npc.m_iWearable2 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_pistol.mdl");
+		SetVariantString("1.15");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
+		SetVariantString("0.7");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 2);
+		
+		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/player/items/demo/crown.mdl");
+		SetVariantString("1.25");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		
+		SetEntityCollisionGroup(npc.m_iWearable1, 27);
+		
+		SetEntityCollisionGroup(npc.m_iWearable2, 27);
+		
+		SetEntityCollisionGroup(npc.m_iWearable3, 27);
+		
+		SetEntityCollisionGroup(npc.index, 27);
+		
+		
+		AcceptEntityInput(npc.m_iWearable2, "Disable");
+		AcceptEntityInput(npc.m_iWearable1, "Enable");
+					
+		return npc;
+		
+	}
+	
+	
+}
+
+
+public void BobTheGod_ClotThink(int iNPC)
+{
+	BobTheGod npc = view_as<BobTheGod>(iNPC);
+	
+	
+	//Don't let clients decide the bodygroups :angry:
+	
+	int client = who_owns_this_bob[npc.index];
+	
+	if(!IsValidClient(client))
+	{
+		SDKHooks_TakeDamage(iNPC, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
+	}
+	
+	if(npc.m_flNextThinkTime < GetGameTime())
+	{
+		if (IsValidClient(client))
+		{
+			if(!npc.m_bIsFriendly && npc.m_b_follow && !npc.m_b_stand_still)
+			{
+				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				ShowSyncHudText(client, syncdashhud, "Bob The Second\nPistol Ammo [%i/24]\nBob The Second is not friendly and follows you!\nUse voice Commands to command him!", npc.m_iAttacksTillReload);
+			}
+			else if (npc.m_bIsFriendly && npc.m_b_follow && !npc.m_b_stand_still)
+			{
+				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				ShowSyncHudText(client, syncdashhud, "Bob The Second\nPistol Ammo [%i/24]\nBob The Second is friendly and follows you!\nUse voice Commands to command him!", npc.m_iAttacksTillReload);
+			}
+			else if(!npc.m_bIsFriendly && !npc.m_b_follow && !npc.m_b_stand_still)
+			{
+				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				ShowSyncHudText(client, syncdashhud, "Bob The Second\nPistol Ammo [%i/24]\nBob The Second is not friendly and doesn't follow you!\nUse voice Commands to command him!", npc.m_iAttacksTillReload);
+			}
+			else if (npc.m_bIsFriendly && !npc.m_b_follow && !npc.m_b_stand_still)
+			{
+				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				ShowSyncHudText(client, syncdashhud, "Bob The Second\nPistol Ammo [%i/24]\nBob The Second is friendly and doesn't follow you!\nUse voice Commands to command him!", npc.m_iAttacksTillReload);
+			}
+			else if(!npc.m_bIsFriendly && npc.m_b_follow && npc.m_b_stand_still)
+			{
+				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				ShowSyncHudText(client, syncdashhud, "Bob The Second\nPistol Ammo [%i/24]\nBob The Second is not friendly and follows you! BUT stands still.\nUse voice Commands to command him!", npc.m_iAttacksTillReload);
+			}
+			else if (npc.m_bIsFriendly && npc.m_b_follow && npc.m_b_stand_still)
+			{
+				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				ShowSyncHudText(client, syncdashhud, "Bob The Second\nPistol Ammo [%i/24]\nBob The Second is friendly and follows you! BUT stands still\nUse voice Commands to command him!", npc.m_iAttacksTillReload);
+			}
+			else if(!npc.m_bIsFriendly && !npc.m_b_follow && npc.m_b_stand_still)
+			{
+				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				ShowSyncHudText(client, syncdashhud, "Bob The Second\nPistol Ammo [%i/24]\nBob The Second is not friendly and doesn't follow you! BUT stands still\nUse voice Commands to command him!", npc.m_iAttacksTillReload);
+			}
+			else if (npc.m_bIsFriendly && !npc.m_b_follow && npc.m_b_stand_still)
+			{
+				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				ShowSyncHudText(client, syncdashhud, "Bob The Second\nPistol Ammo [%i/24]\nBob The Second is friendly and doesn't follow you! BUT stands still\nUse voice Commands to command him!", npc.m_iAttacksTillReload);
+			}
+			npc.m_flNextThinkTime = GetGameTime() + 0.04;
+			npc.Update();
+		}
+		else
+		{
+			npc.m_flNextThinkTime = GetGameTime() + 0.04;
+			npc.Update();
+		}
+	}
+	else
+		return;
+		
+	float flDistanceToOwner;
+	if(IsPlayerAlive(client) && npc.m_b_follow)
+	{
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(client);
+		flDistanceToOwner = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index));
+	}
+	else
+	{
+		flDistanceToOwner = 0.0;
+	}
+	
+	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	{
+		int attacker;
+		if(IsPlayerAlive(client))
+		{
+			attacker = GetClosestTarget(client, _, _, true);
+		}
+		else
+		{
+			attacker = GetClosestTarget(npc.index, _, _, true);
+		}
+		if(IsValidEnemy(npc.index, attacker, true))
+		{
+			
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(attacker);
+						
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index));
+			
+			if(!IsPlayerAlive(client))
+			{
+			//	NPCDeath(npc.index);
+				// Just kill him off, makes it easier on us.
+				flDistanceToTarget = 0.0;
+			}
+			if(flDistanceToTarget < 1000.0)
+			{
+				npc.m_iTarget = attacker;
+			}
+			else
+			{
+				npc.m_iTarget = 0;
+			}
+		}
+	}
+	
+	
+	if(npc.m_iTarget != 0 && npc.m_flComeToMe < GetGameTime() && npc.m_flDoingSpecial < GetGameTime() && !npc.m_bIsFriendly && (flDistanceToOwner < 1000 || !npc.m_b_stand_still))
+	{
+		npc.m_iState = 1;
+		
+		if(!IsValidEnemy(npc.index, npc.m_iTarget, true))
+		{
+			//Stop chasing dead target.
+			npc.m_iTarget = 0;
+			PF_StopPathing(npc.index);
+			npc.m_bPathing = false;
+			npc.PlayIdleSound();
+		}
+		else
+		{
+			int PrimaryThreatIndex = npc.m_iTarget;
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+					
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index));
+			if (npc.m_fbGunout == false && npc.m_flReloadDelay < GetGameTime())
+			{
+				if (!npc.m_bmovedelay)
+				{
+					int iActivity_melee = npc.LookupActivity("ACT_RUN");
+					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+					npc.m_bmovedelay = true;
+					npc.m_flSpeed = 260.0;
+					AcceptEntityInput(npc.m_iWearable2, "Disable");
+					AcceptEntityInput(npc.m_iWearable1, "Enable");
+				}
+
+				npc.FaceTowards(vecTarget);
+				
+			}
+			else if (npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime())
+			{
+				int iActivity_melee = npc.LookupActivity("ACT_IDLE_ANGRY_PISTOL");
+				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+				npc.m_bmovedelay = false;
+				AcceptEntityInput(npc.m_iWearable2, "Enable");
+				AcceptEntityInput(npc.m_iWearable1, "Disable");
+				npc.FaceTowards(vecTarget, 1000.0);
+				PF_StopPathing(npc.index);
+				npc.m_bPathing = false;
+			}
+			
+			
+			if(flDistanceToTarget > 170)
+			{
+				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			}
+			else
+			{
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				PF_SetGoalVector(npc.index, vPredictedPos);
+			}
+			
+			if((!npc.m_b_stand_still && npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 200 && flDistanceToTarget < 1000 && npc.m_flReloadDelay < GetGameTime()) || (npc.m_b_stand_still && npc.m_flNextRangedAttack < GetGameTime() && npc.m_flReloadDelay < GetGameTime() && flDistanceToTarget > 100))
+			{
+	
+				float vecSpread = 0.1;
+				
+				float npc_pos[3];
+				npc_pos = GetAbsOrigin(npc.index);
+					
+				npc_pos[2] += 30.0;
+					
+				float eyePitch[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+				
+				
+				float x, y;
+				x = GetRandomFloat( -0.15, 0.15 ) + GetRandomFloat( -0.15, 0.15 );
+				y = GetRandomFloat( -0.15, 0.15 ) + GetRandomFloat( -0.15, 0.15 );
+				
+				float vecDirShooting[3], vecRight[3], vecUp[3];
+				
+				vecTarget[2] += 15.0;
+				MakeVectorFromPoints(npc_pos, vecTarget, vecDirShooting);
+				GetVectorAngles(vecDirShooting, vecDirShooting);
+				vecDirShooting[1] = eyePitch[1];
+				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+				
+				float m_vecSrc[3];
+				
+				m_vecSrc = npc_pos;
+				
+				float vecEnd[3];
+				vecEnd[0] = m_vecSrc[0] + vecDirShooting[0] * 9000; 
+				vecEnd[1] = m_vecSrc[1] + vecDirShooting[1] * 9000;
+				vecEnd[2] = m_vecSrc[2] + vecDirShooting[2] * 9000;
+				
+				//add the spray
+				float vecbro[3];
+				vecbro[0] = vecDirShooting[0] + 0.0 * vecSpread * vecRight[0] + 0.0 * vecSpread * vecUp[0]; 
+				vecbro[1] = vecDirShooting[1] + 0.0 * vecSpread * vecRight[1] + 0.0 * vecSpread * vecUp[1]; 
+				vecbro[2] = vecDirShooting[2] + 0.0 * vecSpread * vecRight[2] + 0.0 * vecSpread * vecUp[2]; 
+				NormalizeVector(vecbro, vecbro);
+				
+				int target = Trace_Test(npc.index, npc_pos, vecbro, 9000.0);
+				
+				if(!IsValidEnemy(npc.index, target, true))
+				{
+					if (!npc.m_bmovedelay)
+					{
+						int iActivity_melee = npc.LookupActivity("ACT_RUN");
+						if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+						npc.m_bmovedelay = true;
+						npc.m_flSpeed = 260.0;
+					}
+	
+					AcceptEntityInput(npc.m_iWearable2, "Disable");
+					AcceptEntityInput(npc.m_iWearable1, "Enable");
+					npc.FaceTowards(vecTarget);
+					PF_StartPathing(npc.index);
+					npc.m_bPathing = true;
+					npc.m_fbGunout = false;
+				}
+				else
+				{
+					npc.m_fbGunout = true;
+					
+					npc.m_bmovedelay = false;
+					
+					npc.FaceTowards(vecTarget, 1000.0);
+					npc.m_flNextRangedAttack = GetGameTime() + 0.1;
+					npc.m_iAttacksTillReload -= 1;
+					
+					if (npc.m_iAttacksTillReload == 0)
+					{
+						npc.AddGesture("ACT_RELOAD_PISTOL");
+						npc.m_flReloadDelay = GetGameTime() + 1.4;
+						npc.m_iAttacksTillReload = 24;
+						npc.PlayRangedReloadSound();
+						npc.m_bReloaded = true;
+					//	PrintHintText(client, "Bob The Second: Reloading!");
+					}
+					
+					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");
+					//add the spray
+					float vecDir[3];
+					vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0]; 
+					vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
+					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
+					NormalizeVector(vecDir, vecDir);
+					FireBullet(npc.index, npc.m_iWearable2, npc_pos, vecDir, 18.0, 9000.0, DMG_BULLET, "bullet_tracer01_red", client, _ , "muzzle");
+					npc.PlayRangedSound();
+					npc.m_bReloaded = false;
+				}
+			}
+			else if((!npc.m_b_stand_still && (flDistanceToTarget < 200 || flDistanceToTarget > 1000) && npc.m_flReloadDelay < GetGameTime()) || (npc.m_b_stand_still && flDistanceToTarget < 100 && npc.m_flReloadDelay < GetGameTime()))
+			{
+				if(!npc.m_b_stand_still && flDistanceToTarget > 100)
+				{
+					PF_StartPathing(npc.index);
+					npc.m_bPathing = true;
+					npc.m_fbGunout = false;
+					//Look at target so we hit.
+					npc.FaceTowards(vecTarget, 1500.0);
+				}
+				if(npc.m_flNextRangedSpecialAttack < GetGameTime() && flDistanceToTarget < 150 || (!npc.m_flAttackHappenswillhappen && npc.m_fbRangedSpecialOn))
+				{
+					npc.FaceTowards(vecTarget, 2000.0);
+					if(!npc.m_fbRangedSpecialOn)
+					{
+						PF_StopPathing(npc.index);
+						npc.m_bPathing = false;
+						npc.AddGesture("ACT_PUSH_PLAYER");
+						npc.m_flRangedSpecialDelay = GetGameTime() + 0.3;
+						npc.m_fbRangedSpecialOn = true;
+						npc.m_flReloadDelay = GetGameTime() + 0.3;
+						npc.m_flNextMeleeAttack += 0.5;
+					}
+					if(npc.m_flRangedSpecialDelay < GetGameTime())
+					{
+						npc.m_fbRangedSpecialOn = false;
+						npc.m_flNextRangedSpecialAttack = GetGameTime() + 3.0;
+						npc.PlayRangedAttackSecondarySound();
+	
+						float vecSpread = 0.1;
+						float npc_pos[3];
+						npc_pos = GetAbsOrigin(npc.index);
+							
+						npc_pos[2] += 30.0;
+						npc.FaceTowards(vecTarget, 15000.0);
+						
+						float eyePitch[3];
+						GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+								
+						//
+						//
+						
+						
+						float x, y;
+						x = GetRandomFloat( -0.0, 0.0 ) + GetRandomFloat( -0.0, 0.0 );
+						y = GetRandomFloat( -0.0, 0.0 ) + GetRandomFloat( -0.0, 0.0 );
+						
+						float vecDirShooting[3], vecRight[3], vecUp[3];
+						//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
+						
+						vecTarget[2] += 15.0;
+						MakeVectorFromPoints(npc_pos, vecTarget, vecDirShooting);
+						GetVectorAngles(vecDirShooting, vecDirShooting);
+						vecDirShooting[1] = eyePitch[1];
+						GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+						
+						//add the spray
+						float vecDir[3];
+						vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0]; 
+						vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
+						vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
+						NormalizeVector(vecDir, vecDir);
+						
+						npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
+						
+						FireBullet(npc.index, npc.index, npc_pos, vecDir, 200.0, 9999.0, DMG_BULLET, "bullet_tracer02_blue", client);
+					}
+				}
+				if(npc.m_flNextMeleeAttack < GetGameTime() && flDistanceToTarget < 100 && !npc.m_fbRangedSpecialOn || (npc.m_flAttackHappenswillhappen && !npc.m_fbRangedSpecialOn))
+				{
+					PF_StopPathing(npc.index);
+					npc.m_bPathing = false;
+					npc.m_fbGunout = false;
+					//Look at target so we hit.
+					npc.FaceTowards(vecTarget, 1500.0);
+					
+					if (!npc.m_flAttackHappenswillhappen)
+					{
+						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
+						npc.PlayMeleeSound();
+						npc.m_flAttackHappens = GetGameTime()+0.4;
+						npc.m_flAttackHappens_bullshit = GetGameTime()+0.51;
+						npc.m_flAttackHappenswillhappen = true;
+						npc.m_flNextRangedSpecialAttack += 0.5;
+					}
+						
+					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+					{
+						Handle swingTrace;
+						npc.FaceTowards(vecTarget, 15000.0);
+						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex,_,_,_,2))
+							{
+								
+								int target = TR_GetEntityIndex(swingTrace);	
+								
+								float vecHit[3];
+								TR_GetEndPosition(vecHit, swingTrace);
+								
+								if(target > 0) 
+								{
+									
+									SDKHooks_TakeDamage(target, npc.index, client, 100.0, DMG_CLUB);
+									
+									// Hit particle
+									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
+									// Hit sound
+									npc.PlayMeleeHitSound();
+									
+									//Did we kill them?
+									int iHealthPost = GetEntProp(target, Prop_Data, "m_iHealth");
+									if(iHealthPost <= 0) 
+									{
+									//	int client = who_owns_this_bob[npc.index];
+										PrintHintText(client, "Bob The Second: I got them!");
+										StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+									}
+									else
+									{
+									//	int client = who_owns_this_bob[npc.index];
+										PrintHintText(client, "Bob The Second: Take This!");
+										StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+										
+										float vAngles[3], vDirection[3];
+									
+										GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles); 
+									
+										if(vAngles[0] > -45.0)
+										{
+											vAngles[0] = -45.0;
+										}
+										
+										if(target <= MaxClients)
+											Client_Shake(target, 0, 75.0, 75.0, 0.5);
+										
+										GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
+										
+										ScaleVector(vDirection, 350.0);
+															
+										TeleportEntity(target, NULL_VECTOR, NULL_VECTOR, vDirection); 
+									}
+								}
+							}
+						delete swingTrace;
+						npc.m_flNextMeleeAttack = GetGameTime() + 0.65;
+						npc.m_flAttackHappenswillhappen = false;
+					}
+					else if (npc.m_flNextMeleeAttack < GetGameTime() && npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+					{
+						npc.m_flAttackHappenswillhappen = false;
+						npc.m_flNextMeleeAttack = GetGameTime() + 0.65;
+					}
+				}
+			}
+		}
+	}
+	
+	else if (!npc.m_b_stand_still && npc.m_b_follow && IsValidClient(client) && IsPlayerAlive(client))
+	{
+		if (npc.m_flDoingSpecial < GetGameTime() && npc.m_iState == 1)
+		{
+			PF_StopPathing(npc.index);
+			npc.m_bPathing = false;
+			npc.m_iState = 0;
+			int iActivity = npc.LookupActivity("ACT_RUN");
+			if(iActivity > 0) npc.StartActivity(iActivity);
+			npc.m_flFollowing_Master_Now = GetGameTime() + 1.0;
+			AcceptEntityInput(npc.m_iWearable2, "Disable");
+			AcceptEntityInput(npc.m_iWearable1, "Enable");
+		}
+		else if ((npc.m_iState == 0 || npc.m_iState == 2) && npc.m_flFollowing_Master_Now < GetGameTime())
+		{
+			
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(client);
+			
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index));
+			
+			if (flDistanceToTarget > 300 && npc.m_flReloadDelay < GetGameTime())
+			{
+				PF_StartPathing(npc.index);
+				npc.m_bPathing = true;
+				PF_SetGoalEntity(npc.index, client);
+				if (!npc.m_bmovedelay_run)
+				{
+					int iActivity_melee = npc.LookupActivity("ACT_RUN");
+					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+					npc.m_bmovedelay_run = true;
+					AcceptEntityInput(npc.m_iWearable2, "Disable");
+					AcceptEntityInput(npc.m_iWearable1, "Enable");
+					npc.m_fbGunout = false;
+					npc.m_flSpeed = 260.0;
+					npc.m_bmovedelay_walk = false;
+					npc.m_bmovedelay = false;
+				//	PrintHintText(client, "Bob The Second: I'm coming towards you, sir!");
+				}
+				npc.m_iState = 0;
+			}
+			else if (flDistanceToTarget > 140 && flDistanceToTarget < 300 && npc.m_flReloadDelay < GetGameTime())
+			{
+				PF_StartPathing(npc.index);
+				npc.m_bPathing = true;
+				PF_SetGoalEntity(npc.index, client);
+				if (!npc.m_bmovedelay_walk)
+				{
+					int iActivity_melee = npc.LookupActivity("ACT_WALK");
+					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+					npc.m_bmovedelay_walk = true;
+					AcceptEntityInput(npc.m_iWearable2, "Disable");
+					AcceptEntityInput(npc.m_iWearable1, "Enable");
+					npc.m_fbGunout = false;
+					npc.m_flSpeed = 90.0;
+					npc.m_bmovedelay_run = false;
+					npc.m_bmovedelay = false;
+				//	PrintHintText(client, "Bob The Second: Hello, sir!");
+					npc.m_flidle_talk = GetGameTime() + GetRandomFloat(10.0, 20.0);
+				}
+				npc.m_iState = 0;
+			}
+			else if (npc.m_flReloadDelay > GetGameTime())
+			{
+				npc.m_bmovedelay_walk = false;
+				npc.m_bmovedelay = false;
+				npc.m_bmovedelay_run = false;
+				PF_StopPathing(npc.index);
+				npc.m_bPathing = false;
+			}
+			
+			else if (npc.m_iState != 2)
+			{
+				npc.m_bmovedelay_walk = false;
+				npc.m_bmovedelay = false;
+				npc.m_bmovedelay_run = false;
+				PF_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.m_iState = 2;
+				int iActivity_melee = npc.LookupActivity("ACT_IDLE");
+				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+				if(npc.m_bIsFriendly)
+				{
+					PrintHintText(client, "Bob The Second: I'll stand beside you, sir!");
+					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				}
+				else if(!npc.m_bIsFriendly)
+				{
+					PrintHintText(client, "Bob The Second: I'll guard you, sir!");
+					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				}
+				npc.m_flidle_talk = GetGameTime() + GetRandomFloat(10.0, 20.0);
+			}
+			
+			if (flDistanceToTarget < 250 && npc.m_iAttacksTillReload != 24)
+			{
+				npc.AddGesture("ACT_RELOAD_PISTOL");
+				npc.m_flReloadDelay = GetGameTime() + 1.4;
+				npc.m_iAttacksTillReload = 24;
+				npc.PlayRangedReloadSound();
+				AcceptEntityInput(npc.m_iWearable2, "Enable");
+				AcceptEntityInput(npc.m_iWearable1, "Disable");
+				npc.m_bPathing = false;
+				npc.m_fbGunout = true;
+				npc.m_bReloaded = false;
+				PrintHintText(client, "Bob The Second: Reloading near you, sir!");
+				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			}
+			else if(flDistanceToTarget < 250 && npc.m_flReloadDelay < GetGameTime() && npc.m_iAttacksTillReload == 24)
+			{
+				if (!npc.m_bReloaded)
+				{
+					AcceptEntityInput(npc.m_iWearable2, "Disable");
+					AcceptEntityInput(npc.m_iWearable1, "Enable");
+				}
+				npc.m_bReloaded = true;
+				npc.m_bPathing = false;
+				npc.m_fbGunout = false;
+				if (npc.m_flidle_talk < GetGameTime() && GetEntProp(npc.index, Prop_Data, "m_iHealth") >= 500)
+				{
+					npc.m_flidle_talk = GetGameTime() + GetRandomFloat(10.0, 20.0);
+					switch(GetRandomInt(1, 8))
+					{
+						case 1:
+						{
+							PrintHintText(client, "Bob The Second: I'm pretty bored...");
+						}
+						case 2:
+						{
+							PrintHintText(client, "Bob The Second: I hope your day is going well!");
+						}
+						case 3:
+						{
+							PrintHintText(client, "Bob The Second: Sometimes i wonder why this war exists.");
+						}
+						case 4:
+						{
+							PrintHintText(client, "Bob The Second: I'm pretty bored...");
+						}
+						case 5:
+						{
+							PrintHintText(client, "Bob The Second: Just saying, never give up!");
+						}
+						case 6:
+						{
+							PrintHintText(client, "Bob The Second: Could i borrow your gun perhaps?");
+						}
+						case 7:
+						{
+							PrintHintText(client, "Bob The Second: Im pretty confident in my abilities!");
+						}
+						case 8:
+						{
+							PrintHintText(client, "Bob The Second: Pick up that can.");
+						}
+					}
+					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");				
+				}
+				else if (npc.m_flidle_talk < GetGameTime() && GetEntProp(npc.index, Prop_Data, "m_iHealth") < 500)
+				{
+					npc.m_flidle_talk = GetGameTime() + GetRandomFloat(10.0, 20.0);
+					switch(GetRandomInt(1, 7))
+					{
+						case 1:
+						{
+							PrintHintText(client, "Bob The Second: I don't feel good..");
+						}
+						case 2:
+						{
+							PrintHintText(client, "Bob The Second: I'm hurt...");
+						}
+						case 3:
+						{
+							PrintHintText(client, "Bob The Second: I hate this..");
+						}
+						case 4:
+						{
+							PrintHintText(client, "Bob The Second: I'm pretty exhausted...");
+						}
+						case 5:
+						{
+							PrintHintText(client, "Bob The Second: I'm tired...");
+						}
+						case 6:
+						{
+							PrintHintText(client, "Bob The Second: Can we relax, please?");
+						}
+						case 7:
+						{
+							PrintHintText(client, "Bob The Second: I might be a goner soon..");
+						}
+					}	
+					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				}
+			}
+		}
+	}
+	
+	npc.PlayIdleAlertSound();
+}
+
+
+public void roundStart(Event hEvent, const char[] sEvName, bool bDontBroadcast)
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if (IsValidClient(client))
+		{
+			Has_a_bob[client] = 0;
+			SDKUnhook(client, SDKHook_OnTakeDamageAlive, BobTheGod_Owner_Hurt);
+		}
+	}
+}
+
+public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int concept)
+{
+//	PrintToServer(">>>>>>>>>> PluginBot_OnActorEmoted %i who %i concept %i", bot_entidx, who, concept);
+	
+	if (concept == 13)
+	{
+		//"Go go go!"	
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+			
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+		
+		PrintHintText(client, "Bob The Second: On my way, sir!");
+		npc.m_flidle_talk += 2.0;
+		float StartOrigin[3], Angles[3], vecPos[3];
+		GetClientEyeAngles(who, Angles);
+		GetClientEyePosition(who, StartOrigin);
+		
+		Handle TraceRay = TR_TraceRayFilterEx(StartOrigin, Angles, (CONTENTS_SOLID|CONTENTS_WINDOW|CONTENTS_GRATE), RayType_Infinite, TraceRayProp);
+		if (TR_DidHit(TraceRay))
+			TR_GetEndPosition(vecPos, TraceRay);
+			
+		delete TraceRay;
+		
+		
+		PF_StartPathing(npc.index);
+		npc.m_fbGunout = false;
+		
+		PF_SetGoalVector(npc.index, vecPos);
+		
+		npc.m_bPathing = true;
+		
+		npc.FaceTowards(vecPos, 500.0);
+		npc.m_flDoingSpecial = GetGameTime() + 3.5;
+		
+		npc.m_iState = 1;
+		
+		int iActivity_melee = npc.LookupActivity("ACT_RUN");
+		if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+		npc.m_flSpeed = 260.0;
+
+		AcceptEntityInput(npc.m_iWearable2, "Disable");
+		AcceptEntityInput(npc.m_iWearable1, "Enable");
+		
+		npc.PlayMovingSound();
+				
+		CreateParticle("ping_circle", vecPos, NULL_VECTOR);
+	}
+	else if (concept == 19)
+	{
+		//"Incomming!"	
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+			
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+			
+		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
+		
+		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+		
+		if(flDistanceToTarget < 300)
+		{
+			npc.AddGesture("ACT_METROPOLICE_POINT");
+			
+			PrintHintText(client, "Bob The Second: Im watching there, dont worry!");
+			npc.m_flidle_talk += 2.0;
+			float StartOrigin[3], Angles[3], vecPos[3];
+			GetClientEyeAngles(who, Angles);
+			GetClientEyePosition(who, StartOrigin);
+			
+			Handle TraceRay = TR_TraceRayFilterEx(StartOrigin, Angles, (CONTENTS_SOLID|CONTENTS_WINDOW|CONTENTS_GRATE), RayType_Infinite, TraceRayProp);
+			if (TR_DidHit(TraceRay))
+				TR_GetEndPosition(vecPos, TraceRay);
+				
+			delete TraceRay;
+			
+			npc.FaceTowards(vecPos, 10000.0);
+			CreateParticle("ping_circle", vecPos, NULL_VECTOR);
+		}
+	}
+	else if (concept == 20)
+	{
+		//"spy!"	
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+			
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+		
+		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
+		
+		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+		
+		if(flDistanceToTarget < 300)
+		{
+			PrintHintText(client, "Bob The Second: Spy? I'm keeping my eye there.");
+			npc.m_flidle_talk += 2.0;
+			float StartOrigin[3], Angles[3], vecPos[3];
+			GetClientEyeAngles(who, Angles);
+			GetClientEyePosition(who, StartOrigin);
+			
+			Handle TraceRay = TR_TraceRayFilterEx(StartOrigin, Angles, (CONTENTS_SOLID|CONTENTS_WINDOW|CONTENTS_GRATE), RayType_Infinite, TraceRayProp);
+			if (TR_DidHit(TraceRay))
+				TR_GetEndPosition(vecPos, TraceRay);
+				
+			delete TraceRay;
+			
+			int iActivity_melee = npc.LookupActivity("ACT_IDLE_ANGRY_PISTOL");
+			if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+			npc.m_fbGunout = true;
+			AcceptEntityInput(npc.m_iWearable2, "Enable");
+			AcceptEntityInput(npc.m_iWearable1, "Disable");
+					
+			npc.FaceTowards(vecPos, 10000.0);
+			CreateParticle("ping_circle", vecPos, NULL_VECTOR);
+		}
+	}
+	else if (concept == 21)
+	{
+		//"Sentry Ahead"	
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+			
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+		
+		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
+		
+		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+		
+		if(flDistanceToTarget < 300)
+		{
+			PrintHintText(client, "Bob The Second: Sentry here? Its better to wait for teammates to engage so i'll look.");
+			npc.m_flidle_talk += 2.0;
+			float StartOrigin[3], Angles[3], vecPos[3];
+			GetClientEyeAngles(who, Angles);
+			GetClientEyePosition(who, StartOrigin);
+			
+			Handle TraceRay = TR_TraceRayFilterEx(StartOrigin, Angles, (CONTENTS_SOLID|CONTENTS_WINDOW|CONTENTS_GRATE), RayType_Infinite, TraceRayProp);
+			if (TR_DidHit(TraceRay))
+				TR_GetEndPosition(vecPos, TraceRay);
+				
+			delete TraceRay;
+			
+			int iActivity_melee = npc.LookupActivity("ACT_IDLE_ANGRY_PISTOL");
+			if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+			npc.m_fbGunout = true;
+			AcceptEntityInput(npc.m_iWearable2, "Enable");
+			AcceptEntityInput(npc.m_iWearable1, "Disable");
+					
+			npc.FaceTowards(vecPos, 10000.0);
+			CreateParticle("ping_circle", vecPos, NULL_VECTOR);
+		}
+	}
+	else if (concept == 22)
+	{
+		//"Build teleporter!"	
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+			
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+		
+		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
+		
+		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+		
+		if(flDistanceToTarget < 300)
+		{
+			PrintHintText(client, "Bob The Second: I cant build a teleporter, sorry.");
+			npc.m_flidle_talk += 2.0;
+		}
+	}
+	else if (concept == 23)
+	{
+		//"Build dispenser"	
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+			
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+		
+		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
+		
+		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+		
+		if(flDistanceToTarget < 300)
+		{
+			PrintHintText(client, "Bob The Second: I cant build a dispenser, sorry.");
+			npc.m_flidle_talk += 2.0;
+		}
+	}
+	else if (concept == 24)
+	{
+		//"build sentry"	
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+			
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+		
+		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
+		
+		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+		
+		if(flDistanceToTarget < 300)
+		{
+			PrintHintText(client, "Bob The Second: I cant build a sentry, sorry.");
+			npc.m_flidle_talk += 2.0;
+		}
+	}
+	else if (concept == 25)
+	{
+		//"Charge me!"	
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+			
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+		
+		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
+		
+		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+		
+		if(flDistanceToTarget < 300)
+		{
+			PrintHintText(client, "Bob The Second: I can't give you ubercharge...");
+			npc.m_flidle_talk += 2.0;
+		}
+	}
+	
+	else if (concept == 14)
+	{
+		//"Move Up!"	
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+			
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+		
+		if(!npc.m_b_stand_still) //Already moving, geez!
+		{
+			PrintHintText(client, "Bob The Second: Standing right here!");
+			npc.m_flidle_talk += 2.0;
+			npc.m_b_stand_still = true;
+			return;
+		}
+		
+		else if(npc.m_b_stand_still) //Already moving, geez!
+		{
+			PrintHintText(client, "Bob The Second: I'm on my move again!");
+			npc.m_flidle_talk += 2.0;
+			npc.m_b_stand_still = false;
+			return;
+		}
+		
+	}
+	else if (concept == 12)
+	{
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+		
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+		
+		//"Help me!"
+		
+		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
+		
+		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+		
+		if(flDistanceToTarget > 300)
+		{
+			CreateParticle("ping_circle", pos, NULL_VECTOR);
+			
+			int iActivity_melee = npc.LookupActivity("ACT_RUN");
+			if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+			npc.m_bmovedelay_run = false;
+			AcceptEntityInput(npc.m_iWearable1, "Disable");
+			AcceptEntityInput(npc.m_iWearable1, "Enable");
+			npc.m_fbGunout = false;
+			npc.m_flSpeed = 260.0;
+			npc.m_bmovedelay_walk = false;
+			npc.m_bmovedelay = false;
+					
+			PF_SetGoalEntity(npc.index, client);
+			npc.m_bPathing = true;
+			PrintHintText(client, "Bob The Second: I am coming !");
+			npc.m_flidle_talk += 2.0;
+			
+			npc.m_bIsFriendly = false;
+			
+			npc.m_flComeToMe = GetGameTime() + 3.0; 
+			
+		}
+		else
+		{
+			PrintHintText(client, "Bob The Second: I'm already here!");
+			npc.m_flidle_talk += 2.0;
+		}	
+		TeleportEntity(npc.index, pos, NULL_VECTOR, NULL_VECTOR); 
+		return;
+
+	}
+	else if (concept == 58)
+	{
+		//"thanks!"
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+		
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+			
+		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
+		
+		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+		if(flDistanceToTarget < 300)
+		{
+			int iActivity_melee = npc.LookupActivity("ACT_BUSY_THREAT");
+			if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+			PrintHintText(client, "Bob The Second: I'm glad to help!");
+			npc.m_flidle_talk += 2.0;
+		}
+		
+		return;
+
+	}
+	else if (concept == 17)
+	{
+		//"yes"
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+		
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+		
+		PrintHintText(client, "Bob The Second: Follow? Sure!");
+		npc.m_flidle_talk += 2.0;
+		npc.m_b_follow = true;
+		
+		return;
+
+	}
+	else if (concept == 15)
+	{
+		//"left"
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+		
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+			
+		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
+		
+		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+		
+		if(flDistanceToTarget < 300)
+		{
+			PrintHintText(client, "Bob The Second: My left or yours?");
+			npc.m_flidle_talk += 2.0;
+		}
+		
+		return;
+
+	}
+	else if (concept == 16)
+	{
+		//"right"
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+		
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+			
+		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
+		
+		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+		
+		if(flDistanceToTarget < 300)
+		{
+			PrintHintText(client, "Bob The Second: My right or yours?");
+			npc.m_flidle_talk += 2.0;
+		}
+		
+		return;
+
+	}
+	else if (concept == 29)
+	{
+		//"cheers"
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+		
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+			
+		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
+		
+		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+		
+		if(flDistanceToTarget < 300 && GetEntProp(npc.index, Prop_Data, "m_iHealth") > 500)
+		{
+			npc.FaceTowards(pos, 10000.0);
+			npc.AddGesture("ACT_MELEE_ATTACK_THRUST");
+			PrintHintText(client, "Bob The Second: Cheers to you too, like a drink, get it?");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+		}
+		else if (flDistanceToTarget < 300 && GetEntProp(npc.index, Prop_Data, "m_iHealth") < 500)
+		{
+			npc.AddGesture("ACT_PICKUP_GROUND");
+			PrintHintText(client, "Bob The Second: Its more of a jeer, hurt here...");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+		}
+		
+		return;
+
+	}
+	else if (concept == 30)
+	{
+		//"jeers"
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+		
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+			
+		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
+		
+		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+		
+		if(flDistanceToTarget < 300 && GetEntProp(npc.index, Prop_Data, "m_iHealth") > 500)
+		{
+			PrintHintText(client, "Bob The Second: Ah come on, lighten your mood!");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+		}
+		else if (flDistanceToTarget < 300 && GetEntProp(npc.index, Prop_Data, "m_iHealth") < 500)
+		{
+			PrintHintText(client, "Bob The Second: Yeah agreed...");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+		}
+		
+		return;
+
+	}
+	else if (concept == 31)
+	{
+		//"positive"
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+		
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+			
+		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
+		
+		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+		
+		if(flDistanceToTarget < 300 && GetEntProp(npc.index, Prop_Data, "m_iHealth") > 500)
+		{
+			PrintHintText(client, "Bob The Second: Positivity is the way to go!");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+		}
+		else if (flDistanceToTarget < 300 && GetEntProp(npc.index, Prop_Data, "m_iHealth") < 500)
+		{
+			PrintHintText(client, "Bob The Second: Not the time for it...");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+		}
+		
+		return;
+
+	}
+	else if (concept == 32)
+	{
+		//"negative"
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+		
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+			
+		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
+		
+		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+		
+		if(flDistanceToTarget < 300 && GetEntProp(npc.index, Prop_Data, "m_iHealth") > 500)
+		{
+			PrintHintText(client, "Bob The Second: Why negative? Nothing to worry about!");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+		}
+		else if (flDistanceToTarget < 300 && GetEntProp(npc.index, Prop_Data, "m_iHealth") < 500)
+		{
+			PrintHintText(client, "Bob The Second: Yeah its not looking great, but lets try to feel better...");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+		}
+		
+		return;
+
+	}
+	else if (concept == 18)
+	{
+		//"no"
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+		
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+		
+		PrintHintText(client, "Bob The Second: Not Follow? Sure!");
+		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		npc.m_flidle_talk += 2.0;
+		npc.m_b_follow = false;
+		
+		return;
+
+	}
+	else if (concept == 28)
+	{
+		//Battle Cry
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+		
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+			
+		if(!npc.m_bIsFriendly) //Already moving, geez!
+		{
+			//npc.FaceTowards(pos, 10000.0);
+			npc.AddGesture("ACT_DEACTIVATE_BATON");
+			PrintHintText(client, "Bob The Second: I'll hurt no one!");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+			npc.m_bIsFriendly = true;
+			return;
+		}
+		else if(npc.m_bIsFriendly) //Already moving, geez!
+		{
+			npc.AddGesture("ACT_ACTIVATE_BATON");
+			PrintHintText(client, "Bob The Second: I'll attack once more!");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+			npc.m_bIsFriendly = false;
+			return;
+		}
+		return;
+	}
+	else if (concept == 33)
+	{
+		//"Nice shot"
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+		
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+			
+		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
+		
+		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+		
+		if(flDistanceToTarget < 300)
+		{
+			PrintHintText(client, "Bob The Second: I try my best to aim well!");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+		}
+		
+		return;
+
+	}
+	else if (concept == 34)
+	{
+		//"Good job"
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+		
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+			
+		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
+		
+		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+		
+		if(flDistanceToTarget < 300)
+		{
+			PrintHintText(client, "Bob The Second: You are doing a good job aswell!");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+		}
+		
+		return;
+
+	}
+	else if (concept == 5)
+	{
+		//"medic!"
+		BobTheGod npc = view_as<BobTheGod>(bot_entidx);
+		
+		int client = who_owns_this_bob[npc.index];
+			
+		if(client != who) //You are not my dad!
+			return;
+			
+		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
+		
+		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+		
+		if(flDistanceToTarget < 100 && npc.m_flheal_cooldown < GetGameTime())
+		{
+			npc.m_iMedkitAnnoyance = 0;
+			npc.m_flheal_cooldown = GetGameTime() + GetRandomFloat(20.0, 30.0);
+			npc.FaceTowards(pos, 10000.0);
+			npc.AddGesture("ACT_PUSH_PLAYER");
+			PrintHintText(client, "Bob The Second: Here, have this medkit!");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+			CreateTimer(0.3, BobTheGod_showHud, client, TIMER_FLAG_NO_MAPCHANGE);
+		}
+		else if (npc.m_iMedkitAnnoyance == 0 && flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime())
+		{
+			npc.m_iMedkitAnnoyance += 1;
+			PrintHintText(client, "Bob The Second: Sorry, i dont have a medkit on me...");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+		}
+		else if (npc.m_iMedkitAnnoyance == 1 && flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime())
+		{
+			npc.m_iMedkitAnnoyance += 1;
+			PrintHintText(client, "Bob The Second: Sorry, i dont have a medkit on me, please wait.");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+		}
+		else if (npc.m_iMedkitAnnoyance == 2 && flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime())
+		{
+			npc.m_iMedkitAnnoyance += 1;
+			PrintHintText(client, "Bob The Second: I do not have a medkit.");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+		}
+		else if (npc.m_iMedkitAnnoyance == 3 && flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime())
+		{
+			npc.m_iMedkitAnnoyance += 1;
+			PrintHintText(client, "Bob The Second: I dont have a medkit, have patience.");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+		}
+		else if (flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime())
+		{
+			npc.m_iMedkitAnnoyance = 0;
+			PrintHintText(client, "Bob The Second: I told you i do not have a medikit!!!");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+			npc.FaceTowards(pos, 10000.0);
+			npc.AddGesture("ACT_PUSH_PLAYER");
+			npc.PlayMeleeSound();
+			CreateTimer(0.4, BobTheGod_anger_medkit, npc.index, TIMER_FLAG_NO_MAPCHANGE);		
+		}
+		else
+		{
+			PrintHintText(client, "Bob The Second: Youre too far away!");
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			npc.m_flidle_talk += 2.0;
+		}
+		return;
+	}
+}
+
+public Action BobTheGod_showHud(Handle dashHud, int client)
+{
+	if (IsValidClient(client))
+	{
+		EmitSoundToAll("items/smallmedkit1.wav", client, _, 90, _, 1.0);
+		StartHealingTimer(client, 0.1, 1, 25, true);
+	}
+	return Plugin_Handled;
+}
+
+public Action BobTheGod_anger_medkit(Handle dashHud, int entity)
+{
+	if (IsValidEntity(entity))
+	{
+		BobTheGod npc = view_as<BobTheGod>(entity);
+		
+		int client = who_owns_this_bob[npc.index];
+		
+		if (IsValidClient(client) && IsPlayerAlive(client))
+		{
+			float pos[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos);
+			
+			float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
+			if(flDistanceToTarget < 150)
+			{
+				SDKHooks_TakeDamage(client, npc.index, client, 35.0, DMG_CLUB);
+												
+				float vAngles[3], vDirection[3];
+											
+				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles); 
+												
+				if(vAngles[0] > -45.0)
+				{
+					vAngles[0] = -45.0;
+				}
+									
+				npc.PlayMeleeHitSound();	
+			
+				if(client <= MaxClients)
+					Client_Shake(client, 0, 75.0, 75.0, 0.5);
+												
+				GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
+													
+				ScaleVector(vDirection, 500.0);
+																		
+				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vDirection); 
+			}
+		}
+		else
+		{
+			npc.PlayMeleeMissSound();		
+		}
+	}
+	return Plugin_Handled;
+}
+
+public bool TraceRayProp(int entityhit, int mask, any entity)
+{
+	if (entityhit > MaxClients && entityhit != entity)
+	{
+		return true;
+	}
+	
+	return false;
+}
+
+public Action Bob_player_killed(Event hEvent, const char[] sEvName, bool bDontBroadcast) //Controls what happens when a player dies. 
+{
+	int victim = GetClientOfUserId(hEvent.GetInt("userid"));
+	if (IsValidClient(victim))
+	{
+		if(Has_a_bob[victim])
+		{
+			BobTheGod npc = view_as<BobTheGod>(Has_a_bob[victim]);
+			
+			npc.m_b_stand_still = false;
+			npc.m_b_follow = true;
+			npc.m_bIsFriendly = false;
+		//	NPCDeath(npc.index);
+			PrintHintText(victim, "Bob The Second: This can't be...");
+			StopSound(victim, SNDCHAN_STATIC, "UI/hint.wav");
+			
+		}
+	}
+	return Plugin_Handled;
+}
+
+
+public Action BobTheGod_Owner_Hurt(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	//Friendly fire
+	if(view_as<CClotBody>(attacker).GetTeam() == view_as<CClotBody>(victim).GetTeam())
+		return Plugin_Continue;
+		
+	//Valid attackers only.
+	if(attacker <= 0)
+		return Plugin_Continue;
+		
+	if(attacker > MaxClients && !IsValidEnemy(victim, attacker, true))
+		return Plugin_Continue;
+		
+	if (!Has_a_bob[victim])
+	{
+		SDKUnhook(victim, SDKHook_OnTakeDamageAlive, BobTheGod_Owner_Hurt);
+		return Plugin_Continue;
+	}
+	
+	BobTheGod npc = view_as<BobTheGod>(Has_a_bob[victim]);
+	
+	npc.m_iTarget = attacker;
+	
+	if(npc.m_flHurtie < GetGameTime() && !npc.m_bIsFriendly)
+	{
+		npc.m_flHurtie = GetGameTime() + 0.50;
+		PrintHintText(victim, "Bob The Second: I will protect you!");
+		StopSound(victim, SNDCHAN_STATIC, "UI/hint.wav");
+	}
+	else if(npc.m_flHurtie < GetGameTime() && npc.m_bIsFriendly)
+	{
+		npc.m_flHurtie = GetGameTime() + 0.50;
+		PrintHintText(victim, "Bob The Second: You told me to be friendly. So i wont attack them. But i will keep them in mind...");
+		StopSound(victim, SNDCHAN_STATIC, "UI/hint.wav");
+	}
+	return Plugin_Changed;
+}
+
+
+public Action BobTheGod_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	if (damage < 9999999.0)	//So they can be slayed.
+		return Plugin_Handled;
+		
+	else
+		return Plugin_Continue;
+}
+
+public void BobTheGod_NPCDeath(int entity)
+{
+	BobTheGod npc = view_as<BobTheGod>(entity);
+	int client = who_owns_this_bob[npc.index];
+	if(IsValidClient(client))
+	{
+	//	PrintHintText(client, "Bob has died :(");
+	//	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		SDKUnhook(client, SDKHook_OnTakeDamageAlive, BobTheGod_Owner_Hurt);
+	}
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, BobTheGod_ClotDamaged);
+	SDKUnhook(npc.index, SDKHook_Think, BobTheGod_ClotThink);
+	PF_StopPathing(npc.index);
+	npc.m_bPathing = false;
+	Has_a_bob[client] = 0;
+	/*
+	if(!npc.m_bGib)
+	{
+		npc.PlayDeathSound();	
+	}
+	*/
+	//He cant die. He just goes away.
+	SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
+}

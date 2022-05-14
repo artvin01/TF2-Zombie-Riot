@@ -1,0 +1,848 @@
+"Phrases"
+{
+	"Credits Page"
+	{
+		"en" 		"Artvin: NPC And Gamemode Development\nBatfoxkid: Gamemode Development\nKenzzer: Npc help and bug fix help\nPelipoika: Original NPC base and help\nAlex: Weapon Plugins and overall plugin Assistance\nMikusch: Early Gamedata help\nAlex Turtle & Stranger & Syko: Map Assistance\nCrusty: Model/Animating\njDeivid: Alternative Waves\nGMOD Zombie Survival Devs: Music and base concept from them"
+	}
+	"Open Store"
+	{
+		"en"		"Press %%+showscores%% to open the store"
+		"it"		"Premi %%+showscores%% per aprire il negozio"
+		"ru"		"Нажми %%+showscores%% что бы открыть магазин"
+		"pl"		"Wciśnij %%+showscores%% aby otworzyć sklep"
+		"es"		"Pulsa %%+showscores%% para abrir la tienda"
+		"fr"		"Appuyer sur %%+showscores%% pour ouvrir la boutique"
+	}
+	"Last Alive"
+	{
+		"en"		"You are the Last Human Alive.\nWin the next boss round to revive all."
+		"it"		"Sei L'ultimo Umano In Vita.\nVinci il prossimo boss round per resuscitare tutti."
+		"ru"		"Ты последний выживший./nВыйграй следущую битву с боссом что бы воскресить всех"
+		"pl"		"Jesteś ostatnim człowiekiem.\nPrzeżyj następną rundę z bossem aby wskrzeszyć resztę drużyny."  
+		"es"		"Eres el último humano con vida.\nGana la siguiente oleada de jefe para revivirlos a todos"
+		"fr"		"Vous êtes le dernier survivant.\nSurviver au prochain boss pour réanimeer vos coéquipier."
+	}
+	"Level Up"
+	{
+		"#format"	"{1:d}"
+		"en"		"You leveled up to Level {1}\nYou unlocked:"
+		"it"		"Hai raggiunto il Livello {1}\nHai sbloccato:"
+		"ru"		"Ты поднялся до уровня {1}\nТы открыл:"
+		"pl"		"Osiągnąłeś poziom {1}\nOdblokowano:"
+		"es"		"Has subido de nivel {1}\nHas desbloqueado:"
+		"fr"		"Vous avez atteint le niveau {1}\nVous débloquez :"
+	}
+	"None"
+	{
+		"en"		"None"
+		"it"		"Niente"
+		"ru"		"Ничего"
+		"pl"		"Nic"
+		"es"		"Nada"
+		"fr"		"Vide"
+	}
+	"Credits"
+	{
+		"#format"	"{1:d}"
+		"en"		"Credits: {1}"
+		"it"		"Crediti: {1}"
+		"ru"		"Кредиты: {1}"
+		"pl"		"Kredyty: {1}"
+		"es"		"Dinero: {1}"
+		"fr"		"Argent: {1}"
+	}
+	"Credits_Menu"
+	{
+		"#format"	"{1:d},{2:d}"
+		"en"		"Credits: {1} (+{2})"
+		"it"		"Crediti: {1} (+{2})"
+		"ru"		"Кредиты: {1} (+{2})"
+		"pl"		"Kredyty: {1} (+{2})"
+		"es"		"Dinero: {1} (+{2})"
+		"fr"		"Argent: {1} (+{2})"
+	}
+	"Armor Counter"
+	{
+		"#format"	"{1:d}"
+		"en"		"Armor: {1}"
+		"it"		"Armatura: {1}"
+		"ru"		"Броня: {1}"
+		"pl"		"Zbroja: {1}"
+		"es"		"Armadura: {1}"
+		"fr"		"Armure: {1}"
+	}
+	"Wave"
+	{
+		"#format"	"{1:d},{2:d}"
+		"en"		"Wave: {1}-{2}"
+		"it"		"Ondata: {1}-{2}"
+		"ru"		"Волна: {1}-{2}"
+		"pl"		"Runda: {1}-{2}"
+		"es"		"Oleada: {1}-{2}"
+		"fr"		"Vague : {1}-{2}"
+	}
+	"Zombies Left"
+	{
+		"#format"	"{1:d}"
+		"en"		"Zombies Left: {1}"
+		"it"		"Zombie Rimanenti: {1}"
+		"ru"		"Осталось зомби: {1}"
+		"pl"		"Nieumarłych pozostało: {1}"
+		"es"		"Zombies restantes: {1}"
+		"fr"		"Zombies Restants: {1}"
+	}
+	"Medi-Kit Cooldown"
+	{
+		"#format"	"{1:.0f}"
+		"en"		"Medi-Kit Cooldown: {1}s"
+		"it"		"Tempo Di Ricarica del Medi-Kit: {1}s"
+		"ru"		"Перезарядка Аптечки: {1}"
+		"pl"		"Czas do odświerzenia apteczki: {1}"
+		"es"		"Tiempo de recarga del botiquin: {1}"
+		"fr"		"Recharge de la trousse de soin: {1}s"
+	}
+	"Ammo Crate Supplies"
+	{
+		"#format"	"{1:d}"
+		"en"		"Ammo Supplies: {1}"
+		"it"		"Rifornimenti di munizioni: {1}"
+		"ru"		"Запасы боеприпасов: {1}"
+		"pl"		"Amunicja: {1}"
+		"es"		"Suministros de municion: {1}"
+		"fr"		"Boite de Munitions: {1}"
+	}
+	"Damage Dealt"
+	{
+		"#format"	"{1:.0f}"
+		"en"		"Damage Dealt: {1}"
+		"it"		"Danno Compiuto: {1}"
+		"ru"		"Нанесено урона: {1}"
+		"pl"		"Zadane obrażenia: {1}"
+		"es"		"Daño realizado: {1}"
+		"fr"		"Dégats Infligés: {1}"
+	}
+	"Healing Done"
+	{
+		"#format"	"{1:d}"
+		"en"		"Healing Done: {1}"
+		"it"		"Guarigione Compiuta: {1}"
+		"ru"		"Healing Done: {1}"
+		"pl"		"Uleczono: {1}"
+		"es"		"Curación total: {1}"
+		"fr"		"Soin Prodigués: {1}"
+	}
+	"XP and Level"
+	{
+		"#format"	"{1:d},{2:d},{3:d}"
+		"en"		"Lv {1} ({2} / {3})"
+	}
+	"Store Discount"
+	{
+		"en"		"-10% Off Shipping With No Zombies"
+		"it"		"-10% meno dal negozio quando non ci sono Zombie"
+		"ru"		"Скидка 10% на покупки при отсутсвии зомби"
+		"pl"		"-10% przeceny na zakupy podczas przerwy pomiędzy rundami"
+		"es"		"10% de descuento mientras no hay Zombies"
+		"fr"		"Réduction de 10% Sans les Zombies"
+	}
+	"Equip"
+	{
+		"en"		"Equip"
+		"it"		"Equipaggia"
+		"ru"		"Экипировать"
+		"pl"		"Wyposaż"
+		"es"		"Equipar"
+		"fr"		"Equiper"
+	}
+	"Equipped"
+	{
+		"en"		"Equipped"
+		"it"		"Equipaggiato"
+		"ru"		"Экипировано"
+		"pl"		"Wyposażono"
+ 		"es"		"Equipado"
+		"fr"		"Equipé"
+	}
+	"Purchased"
+	{
+		"en"		"Purchased"
+		"it"		"Comprato"
+		"ru"		"Куплено"
+		"pl"		"Zakupiono"
+		"es"		"Comprado"
+		"fr"		"Acheté"
+	}
+	"Buy"
+	{
+		"en"		"Buy"
+		"it"		"Compra"
+		"ru"		"Купить"
+		"pl"		"Kup"
+	 	"es"		"Comprar"
+		"fr"		"Acheter"
+	}
+	"Sell"
+	{
+		"en"		"Sell"
+		"it"		"Vendi"
+		"ru"		"Продать"
+		"pl"		"Sprzedaj"
+		"es"		"Vender"
+		"fr"		"Vendre"
+	}
+	"Unequip"
+	{
+		"en"		"Unequip"
+	}
+	"N/A"
+	{
+		"en"		"N/A"
+		"it"		"N/A"
+		"ru"		"N/A"
+		"pl"		"N/A"
+		"es"		"N/A"
+		"fr"		"N/A"
+	}
+	"Primary"
+	{
+		"en"		"Primary"
+		"it"		"Primario"
+		"ru"		"Основное"
+		"pl"		"Broń Pierwszorzędna"
+		"es"		"Primaria"
+		"fr"		"Primaire"
+	}
+	"Secondary"
+	{
+		"en"		"Secondary"
+		"it"		"Secondario"
+		"ru"		"Вторичное"
+		"pl"		"Broń Drugorzędna"
+		"es"		"Secundaria"
+		"fr"		"Secondaire"
+	}
+	"Scrap Metal"
+	{
+		"en"		"Scrap Metal"
+		"it"		"Ferraglia"
+		"ru"		"Металлолом"
+		"pl"		"Metal"
+		"es"		"Chatarra"
+		"fr"		"Feraille"
+	}
+	"Ball"
+	{
+	  	"en"		"Ball"
+		"it"		"Palla"
+		"ru"		"Мяч"
+		"pl"		"Piłka"
+		"es"		"Pelota"
+		"fr"		"Balle"
+	}
+	"Food"
+	{
+		"en"		"Food"
+		"it"		"Cibo"
+		"ru"		"Еда"
+		"pl"		"Jedzenie"
+		"es"		"Comida"
+		"fr"		"Nourriture"
+	}
+	"Jar"
+	{
+		"en"		"Jar"
+		"it"		"Barattolo"
+		"ru"		"Банка"
+		"pl"		"Słoik"
+		"es"		"Frasco"
+		"fr"		"Pot"
+	}
+	"Pistol Magazines"
+	{
+		"en"		"Pistol Magazines"
+		"it"		"Caricatori Pistola"
+		"ru"		"Пистолетные Магазины"
+		"pl"		"Magazynek do Pistoletu"
+		"es"		"Cartuchos de Pistola"
+		"fr"		"Munitions de Pistolet"
+	}
+	"Rockets"
+	{
+		"en"		"Rockets"
+		"it"		"Razzi"
+		"ru"		"Ракеты"
+		"pl"		"Rakiety"
+		"es"		"Cohetes"
+		"fr"		"Roquettes"
+	}
+	"Flamethrower Tank"
+	{
+		"en"		"Flamethrower Tank"
+		"it"		"Serbatoio Lanciafiamme"
+		"ru"		"Топливо для огнемёта"
+		"pl"		"Paliwo do miotacza ognia"
+		"es"		"Tanque de Propano"
+		"fr"		"Réservoir de Lance Flamme"
+	}
+	"Flares"
+	{
+		"en"		"Flares"
+		"it"		"Bengala"
+		"ru"		"Сигнальные огни"
+		"pl"		"Flary"  			
+		"es"		"Bengalas"
+		"fr"		"Fusées"
+	}
+	"Grenades"
+	{
+		"en"		"Grenades"
+		"it"		"Granate"
+		"ru"		"Гранаты"
+		"pl"		"Granaty"
+		"es"		"Granadas"
+		"fr"		"Grenades"
+	}
+	"Stickybombs"
+	{
+		"en"		"Stickybombs"
+		"it"		"Bombe adesive"
+		"ru"		"Бомбы-липучки"
+		"pl"		"Bomby samoprzylepne"
+		"es"		"Bombas lapa"
+		"fr"		"Bombe Collantes"
+	}
+	"Minigun Barrel"
+	{
+		"en"		"Minigun Barrel"
+		"it"		"Canna Minigun"
+		"ru"		"Миниганный барабан"
+		"pl"		"Magazyn do Miniguna"
+		"es"		"Barril de Metralleta Pesada"
+		"fr"		"Baril de Minigun"
+	}
+	"Custom Bolt"
+	{
+		"en"		"Custom Bolt"
+		"it"		"Bullone personalizzato"
+		"ru"		"Особый болт"
+		"pl"		"Spersionalizowany bolt"
+		"es"		"Tornillo personalizado"
+		"fr"		"boulon personnalisé"
+	}
+	"Medical Syringes"
+	{
+		"en"		"Medical Syringes"
+		"it"		"Siringhe Medicali"
+		"ru"		"Медицинские шприцы"
+		"pl"		"Strzykawki medyczne"
+		"es"		"Jeringuillas medicas"
+		"fr"		"Serigues Médicale"
+	}
+	"Sniper Rifle Rounds"
+	{
+		"en"		"Sniper Rifle Rounds"
+		"it"		"Munizioni per il Cecchino"
+		"ru"		"Патроны для снайперской винтовки"
+		"pl"		"Amunicja do karabinu snajperskiego"
+		"es"		"Balas de Francotirador"
+		"fr"		"Balle de Sniper"
+	}
+	"Arrows"
+	{
+		"en"		"Arrows"
+		"it"		"Frecce"
+		"ru"		"Стрелы"
+		"pl"		"Strzały"
+		"es"		"Flechas"
+		"fr"		"Flèche"
+	}
+	"SMG Magazines"
+	{
+		"en"		"SMG Magazines"
+		"it"		"Caricatori per l'SMG"
+		"ru"		"Патроны для ПП"
+		"pl"		"Magazynek do pistoletu maszynowego"
+		"es"		"Balas de Subfusil"
+		"fr"		"Balles de mitraillette"
+	}
+	"Revolver Rounds"
+	{
+		"en"		"Revolver Rounds"
+		"it"		"Munizioni Per Il Revolver"
+		"ru"		"Барабан для револьвера"
+		"pl"		"Amunicja do revolveru"
+		"es"		"Balas de Revolver"
+		"fr"		"Balle de Revolver"
+	}
+	"Shotgun Shells"
+	{
+		"en"		"Shotgun Shells"
+		"it"		"Proiettili Shotgun"
+		"ru"		"Дроби для дробавика"
+		"pl"		"Amunicja do strzelby"
+		"es"		"Balas de Escopeta"
+		"fr"		"Balles de Fusils à Pompes"
+	}
+	"Healing Medicine"
+	{
+		"en"		"Healing Medicine"
+		"it"		"Medicina Curativa"
+		"ru"		"Лечебная медицина"
+		"pl"		"Medycyna uzdrawiająca"
+		"es"		"Medicamentos"
+		"fr"		"Médicaments"
+	}
+	"Medigun Fluid"
+	{
+		"en"		"Medigun Fluid"
+		"it"		"Fluido Medigun"
+		"ru"		"Топиливо для медипушки"
+		"pl"		"Ciecz do Mediguna"
+		"es"		"Fluido Médico"
+		"fr"		"Flux de Medigun"
+	}
+	"Laser Battery"
+	{
+		"en"		"Laser Battery"
+		"it"		"Batteria Laser"
+		"ru"		"Лазерная батарея"
+		"pl"		"Bateria do lasera"
+		"es"		"Baterias Láser"
+		"fr"		"Batterie de laser"
+	}
+	"Potion Supply"
+	{
+		"en"		"Potion Supply"
+	}
+	"Reload to Interact"
+	{
+		"en"		"Press the RELOAD button to interact with this."
+		"it"		"Premi il bottone per RICARICARE per interagirci."
+		"ru"		"Нажми кнопку ПЕРЕЗАРЯДКИ что бы взаимодействовать с этим."
+		"pl"		"Przeładuj aby skorzystać"
+		"es"		"Pulsa el boton de Recargar para interactuar con esto"
+		"fr"		"Appuyez sur RECHARGER pour intéragir avec ceci"
+	}
+	"Ammo Box Used"
+	{
+		"en"		"Someone used your ammo box, you gain +20 Credits!"
+		"it"		"Qualcuno ha usato la tua cassa di munizioni, hai ricevuto +20 Crediti!"
+		"ru"		"Кто-то использовал твой ящик с патронами, ты получил +20 кредитов!"
+		"pl"		"Ktoś użył twojego pudła z amunicją, otrzymujesz +20 Kredytów!"
+		"es"		"Alguién usó tu caja de munición, ganas 20 dolares"
+		"fr"		"Quelqu'un a utilisé votre boite de munitions, vous gagnez 20 dollars!
+	}
+	"Armor Table Used"
+	{
+		"en"		"Someone used your armor table, you gain +40 Credits!"
+	//	"it"		"Qualcuno ha usato la tua cassa di munizioni, hai ricevuto +40 Crediti!"
+	//	"ru"		"Кто-то использовал твой ящик с патронами, ты получил +40 кредитов!"
+	//	"pl"		"Ktoś użył twojego pudła z amunicją, otrzymujesz +40 Kredytów!"
+	//	  "es"		"Alguién usó tu caja de munición, ganas 40 dolares"
+	//	"fr"		"Quelqu'un a utilisé votre boite de munitions, vous gagnez 40 dollars!
+	}
+	"Perk Machine Used"
+	{
+		"en"		"Someone used your perk machine, you gain +40 Credits!"
+	}
+	"Pap Machine Used"
+	{
+		"en"		"Someone used your PackAPunch Machine, you gain +400 Credits!"
+	}
+	"Equip Melee To Use"
+	{
+		"en"		"Equip a weapon with ammo to use this!"
+		"it"		"Equipaggia un'arma con delle munizioni per usarlo!"
+		"ru"		"Экипируй оружие с патронами что бы использовать!"
+		"pl"		"Wyposaż sią w broń z amunicją aby tego użyć!"
+		"es"		"Equipa un arma con munición para usar esto"
+		"fr"		"Equipez une arme avec des munitions pour utiliser cela!"
+	}
+	"Armor Max Reached"
+	{
+		"en"		"Your Armor is maxed out!"
+		"it"		"La tua Armatura è al massimo!"
+		"ru"		"Ваша броня исчерпана!"
+		"pl"		"Maksymalna ilość zbroi została osiągnięta!"
+		"es"		"Tu armadura está al máximo"
+		"fr"		"Vôtre armure est au maximum!"
+	}
+	"Armor Max Reached Ammo Box"
+	{
+		"en"		"Your armor is maxed out for the ammo box! Please use an armor table to get more."
+	}
+	"Max Mana Reached"
+	{
+		"en"		"You reached your maximum amount of mana!"
+	}
+	"Object Cooldown"
+	{
+		"#format"	"{1:.1f}"
+		"en" 		"This Object still has a cooldown of {1} seconds before another usage."
+		"it"		"Questo Oggetto ha ancora un cooldown di {1} secondi prima di poterlo usare."
+		"ru"		"Этот объект всё ещё на перезарядке {1} секунда до следущего использования."
+		"pl"		"Ten przedmiot jeszcze będzie się odświerzał przez {1} sekund przed następnym użyciem"
+		"es"		"Ten paciencia, aun quedan {1} segundos para volver a usar esto"
+		"fr"		"Temps de recharge de cette objet avant ré-utilisation: {1}"
+	}
+	"Cash Gained This Wave"
+	{
+		"#format"	"{1:d}"
+		"en" 		"Gained {1} This Wave!"
+		"it"		"Ricevuto {1} in questa ondata!
+		"ru"		"Получено {1} этой волной!"
+		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
+		"es"		"Encontraste {1} en esta oleada!"
+		"fr"		"Vous avez gagnez {1} Cette vague!"
+	}
+	"Picking Up Building"
+	{
+		"en" 		"Picking up building..."
+		"it"		"Raccogliendo la costruzione..."
+		"ru"		"Подбираем постройку..."
+		"pl"		"Podnoszenie Konstrukcji..."
+		"es"		"Recogiendo..."
+		"fr"		"Ramassage du bâtiment..."
+	}
+	"Spike Limit Reached"
+	{
+		"en" 		"You reached Your limit of spikes! Pick up Spikes with M2 or wait untill they are used up!"
+		"ru"		"Ты дистиг лимита шипов! Подними Шипы нажав M2 или подожди пока они будут использованы!"
+		"es"		"Ya dejaste sufientes bolas de puas en el suelo, recojelas con el click derecho o espera a que se gasten"
+		"fr"		"Vous avez atteint la limite de piques! Ramassez les piques avec M2 ou attendez jusqu'a ce qu'ils soient utilisés!"
+	}
+	"Threw Grenade"
+	{
+		"en" 		"You just threw your grenade, you will have it back in 15 seconds!"
+		"ru"		"Ты кинул свою гранату, ты получишь её обратно через 15 секунд!"
+		"es"		"Has tirado una granada. Obtendras otra granada en 15 segundos"
+		"fr"		"Vous avez jeté vôtre grenade, vous en aurez une autre dans 15 secondes!"
+	}
+	"Grenade Is Back"
+	{
+		"en" 		"Your grenade regenerated!"
+		"ru"		"Твоя граната перезарядилась"
+		"es"		"Has recuperado la granada"
+		"fr"		"Vous avez récuperez vôtre grenade!"
+	}
+	"Threw Pipebomb"
+	{
+		"en" 		"You just threw your Pipebomb, you will have it back in 15 seconds!"
+		"ru"		"Ты кинул свою гранату, ты получишь её обратно через 15 секунд!"
+		"es"		"Obtendras otra granada en 15 segundos, no mueras"
+		"fr"		"Vous avez jeté vôtre grenade, vous en aurez une autre dans 15 secondes!"
+	}
+	"Pipebomb Is Back"
+	{
+		"en" 		"Your Pipebomb regenerated!"
+		"ru"		"Твоя граната перезарядилась"
+		"es"		"Ya tienes otra granada, que arda troya"
+		"fr"		"Vous avez récuperez vôtre grenade!"
+	}
+	"Hand Grenade"
+	{
+		"en" 		"Hand Grenade"
+//		"it"		"Questo Oggetto ha ancora un cooldown di {1} secondi prima di poterlo usare."
+//		"ru"		"Этот объект всё ещё на перезарядке {1} секунда до следущего использования."
+//		"pl"		"Ten przedmiot jeszcze będzie się odświerzał przez {1} sekund przed następnym użyciem"
+//		"es"		"Ten paciencia, aun quedan {1} segundos para volver a usar esto"
+//		"fr"		"Temps de recharge de cette objet avant ré-utilisation: {1}"
+	}
+	"Current Mana"
+	{
+		"#format"	"{1:d},{2:.0f},{3:.0f}"
+		"en" 		"Mana: [{1}/{2}] (+{3})"
+//		"it"		"Ricevuto {1} in questa ondata!
+//		"ru"		"Получено {1} этой волной!"
+//		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
+//		"es"		"Encontraste {1} en esta oleada!"
+//		"fr"		"Vous avez gagnez {1} Cette vague!"
+	}
+	"Not Enough Mana"
+	{
+		"#format"	"{1:d}"
+		"en" 		"Not Enough Mana! You need {1} Mana!"
+//		"it"		"Ricevuto {1} in questa ondata!
+//		"ru"		"Получено {1} этой волной!"
+//		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
+//		"es"		"Encontraste {1} en esta oleada!"
+//		"fr"		"Vous avez gagnez {1} Cette vague!"
+	}
+	"Ability has cooldown"
+	{
+		"#format"	"{1:.1f}"
+		"en" 		"This ability still has a cooldown of {1} seconds!"
+//		"it"		"Ricevuto {1} in questa ondata!
+//		"ru"		"Получено {1} этой волной!"
+//		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
+//		"es"		"Encontraste {1} en esta oleada!"
+//		"fr"		"Vous avez gagnez {1} Cette vague!"
+	}
+	"Gamemode Credits"
+	{
+		"en" 		"Gamemode Credits"
+	}
+	"Gained a Knife"
+	{
+		"#format"	"{1:d}"
+		"en" 		"You gained a knife, [{1}]"
+	}
+	"Knife Amount"
+	{
+		"#format"	"{1:d}"
+		"en" 		"Knifes: [{1}]"
+	}
+	"No Knifes left"
+	{
+		"#format"	"{1:.1f}"
+		"en" 		"Not Enough Knifes, next one in [{1}] seconds"
+	}
+	"No Knifes left ability"
+	{
+		"#format"	"{1:d},{2:.1f}"
+		"en" 		"Not Enough Knifes[{1}], next one in [{2}] seconds"
+	}
+	"Too Far Away"
+	{
+		"en" 		"You're too far away, get closer."
+	}
+	"No Perk"
+	{
+		"en" 		"No Perk"
+	}
+	"Quick Revive"
+	{
+		"en" 		"Perk: Quick Revive"
+	}
+	"Juggernog"
+	{
+		"en" 		"Perk: Juggernog"
+	}
+	"Double Tap"
+	{
+		"en" 		"Perk: Double Tap"
+	}	
+	"Speed Cola"
+	{
+		"en" 		"Perk: Speed Cola"
+	}
+	"Deadshot Daiquiri"
+	{
+		"en" 		"Perk: Deadshot Daiquiri"
+	}
+
+	"Quick Revive Recieved"
+	{
+		"en" 		"QUICK REVIVE! 2x Revive speed"
+	}
+	"Juggernog Recieved"
+	{
+		"en" 		"JUGGERNOG! 1.15x Damage resistance and +100HP"
+	}
+	"Double Tap Recieved"
+	{
+		"en" 		"DOUBLE TAP! 1.15x Extra attack speed"
+	}	
+	"Speed Cola Recieved"
+	{
+		"en" 		"SPEED COLA! 1.35x Extra reload and switchspeed"
+	}
+	"Deadshot Daiquiri Recieved"
+	{
+		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot damage"
+	}
+	"Nuke Activated"
+	{
+		"en" 		"Nuke!"
+	}
+	"Max Ammo Activated"
+	{
+		"en" 		"Extra Ammo!"
+	}
+	"Help?"
+	{
+		"en" 		"Help?"
+	}
+	"Help Title?"
+	{
+		"en" 		"Select in what you need help for."
+	}
+	"Gamemode Help?"
+	{
+		"en" 		"Gamemode Help?"
+	}
+	"Command Help?"
+	{
+		"en" 		"Command Help?"
+	}
+	"Difficulty Help?"
+	{
+		"en" 		"Difficulty Help?"
+	}
+	"Level Help?"
+	{
+		"en" 		"Level Help?"
+	}
+	"Special Zombies Help?"
+	{
+		"en" 		"Special Zombies Help?"
+	}
+	"Revival Help?"
+	{
+		"en" 		"Revival Help?"
+	}
+	"Building Help?"
+	{
+		"en" 		"Building Help?"
+	}
+	"Escape Help?"
+	{
+		"en" 		"Escape Help?"
+	}
+	"Gamemode Help Explained"
+	{
+		"en" 		"You survive against waves of zombies upto usually 60 waves.\nBuy guns and baricade yourself to survive.\nMake sure to play as a team and dont save up all the time.\nOr else you will be the downfall of your team."
+	}
+	"Command Help Explained"
+	{
+		"en" 		"''/flashlight'' To toggle your flashlight.\n''/tp'' To toggle thirdperson."
+	}
+	"Difficulty Help Explained"
+	{
+		"en" 		"Each Higher Difficulty is harder and gives but no extra cash and different zombie types/mutations.\nThey are there as a challange but reward almost upto 3x the EXP.\nMap difficulties are arbitrary and only state how hard the layout is."
+	}
+	"Level Help Explained"
+	{
+		"en" 		"You gain EXP per survived wave.\nHigh levels unlock items and perks for you that are for free.\nSome have returns for upgrades, Some are just free buffs or items.\nYou keep levels when you leave."
+	}
+	"Special Zombies Explained"
+	{
+		"en" 		"Panzer Soldat: Guranteed spawn at wave 12 and then it has a low chance to come, increases every wave."
+	}
+	"Revival Zombies Explained"
+	{
+		"en" 		"Instead of dying you get downed.\nWhen an ally is half invis, you can revive them by holding RELOAD."
+	}
+	"Building Explained"
+	{
+		"en" 		"You can use machines by pressing R on them.\nPeople can mount buildings and will have an icon above their head.\nThis allows you to press R on them for the same effect.\nRegen icon: Ammo box.\nArmour icon: Armour Table.\nKing icon: Perk Machine.\nPunch icon: Pack-A-Punch.\nVampire icon: Healing Station."
+	}
+	"Escape Explained"
+	{
+		"en" 		"During Escape maps only level perks can be bought.\nYou can pickup items with R or M2.\nSome maps have special items, pick them up with R and drop them with the DROP INTEL button or ''dropitem'' in console if you dont have it bound.\nItem Rarity in order: Normal, Green, Blue, Yellow, Red, Purple.\n Higher colour means better, Black means that its a map specific/special item."
+	}
+	"Drank Mana Regen Potion"
+	{
+		"en" 		"You just drank your Mana regen potion, you gain back all your mana! You will have it back in 60 seconds."
+	}
+	"Mana Regen Potion Back"
+	{
+		"en" 		"Your Mana regen potion is ready to be used again."
+	}
+	"Encyclopedia"
+	{
+		"en"		"Encyclopedia"
+	}
+	"Claim this building"
+	{
+		"en"		"Claim this building with RELOAD while holding a wrench."
+	}
+	"Ammobox Tooltip"
+	{
+		"en" 		"Press RELOAD on the Ammobox to gain Ammo for your current holding weapon."
+	}
+	"Armortable Tooltip"
+	{
+		"en" 		"Press RELOAD on the Armortable to gain Armor."
+	}
+	"Perkmachine Tooltip"
+	{
+		"en" 		"Press RELOAD on the Perkmachine to gain a strong tempomary random perk."
+	}
+	"PackAPunch Tooltip"
+	{
+		"#format"	"{1:d}"
+		"en" 		"Press RELOAD To Pack-a-Punch your current holding weapon. Cost: [{1}]"
+	}
+	"Packed"
+	{
+		"en" 		"Packed"
+	}
+	"Not Enough Money To Pap"
+	{
+		"en" 		"You do not have enough money to Pack-a-Punch your Weapon."
+	}
+	"Cannot Pap this"
+	{
+		"en" 		"Your weapon cannot be Pack-a-Punched."
+	}
+	"Revive Teammate tooltip"
+	{
+		"en" 		"Hold RELOAD to revive this dying teammate."
+	}
+	"Bored or Dead"
+	{
+		"en" 		"Bored or Dead?"
+	}
+	"Bored or Dead Minigame"
+	{
+		"en" 		"Youre dead or bored, try out some of these minigames to kill time."
+	}
+	"Idlemine"
+	{
+		"en" 		"Idlemine"
+	}
+	"Healing Station Tooltip"
+	{
+		"en" 		"Use this to heal yourself a tiny bit."
+	}
+	"Healing Station Used"
+	{
+		"en" 		"Someone used your Healing Station, you gain +40 Credits!"
+	}
+	"Cant Mount This"
+	{
+		"en" 		"You can't mount this."
+	}
+	"Pong"
+	{
+		"en" 		"Pong"
+	}
+	"Tetris"
+	{
+		"en" 		"Tetris"
+	}
+	"Snake"
+	{
+		"en" 		"Snake"
+	}
+	"Solitaire"
+	{
+		"en" 		"Solitaire"
+	}
+	"Connect 4"
+	{
+		"en" 		"Connect 4"
+	}
+	"No Ammo Supplies"
+	{
+		"en" 		"You dont have any Ammo Supplies!"
+	}
+	"Grigori Store Refresh"
+	{
+		"en" 		"Grigori has refreshed his shop! Check it out!"
+	}
+	"Pickup this weapon with RELOAD"
+	{
+		"en" 		"Pickup this weapon with RELOAD!"
+	}
+	"You Died Teuton"
+	{
+		"en" 		"You died!\nHelp your team by attacking the enemies.\nYou cant die in this state and will respawn next wave."
+	}
+	"You Wait Teuton"
+	{
+		"en" 		"You're spectating\nHelp your team by attacking the enemies.\nYou will be put into red team as a survivor when a slot is available."
+	}
+	
+}

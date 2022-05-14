@@ -1,0 +1,159 @@
+enum struct CvarInfo
+{
+	ConVar cvar;
+	char value[16];
+	char defaul[16];
+	bool enforce;
+}
+
+static ArrayList CvarList;
+static bool CvarEnabled;
+
+void ConVar_PluginStart()
+{
+	zr_waveconfig = CreateConVar("zr_waveconfig", "waves", "Waves config zr/ .cfg already included");
+	
+	if(CvarList != INVALID_HANDLE)
+		delete CvarList;
+
+	CvarList = new ArrayList(sizeof(CvarInfo));
+
+	ConVar_Add("mp_forcecamera", "0.0");
+	ConVar_Add("mp_autoteambalance", "0.0");
+	ConVar_Add("mp_disable_respawn_times", "1.0");
+	ConVar_Add("mp_forceautoteam", "1.0");
+	ConVar_Add("tf_bot_reevaluate_class_in_spawnroom", "1.0");
+	ConVar_Add("tf_bot_keep_class_after_death", "1.0");
+	ConVar_Add("mp_humans_must_join_team", "red");
+	ConVar_Add("mp_teams_unbalance_limit", "0.0");
+	ConVar_Add("mp_scrambleteams_auto", "0.0");
+	ConVar_Add("mp_waitingforplayers_time", "90.0");
+	ConVar_Add("tf_dropped_weapon_lifetime", "0.0");
+	ConVar_Add("tf_spawn_glows_duration", "0.0");
+	ConVar_Add("tf_weapon_criticals_distance_falloff", "1.0");
+	ConVar_Add("tf_weapon_minicrits_distance_falloff", "1.0");
+	ConVar_Add("tf_weapon_criticals", "0.0");
+	ConVar_Add("tf_weapon_criticals_melee", "0.0");
+	ConVar_Add("tf_sentrygun_ammocheat", "1.0");				//infinite ammo for sentry guns
+	ConVar_Add("tf_sentrygun_mini_damage", "10.0");
+	ConVar_Add("tf_sentrygun_notarget", "0.0"); 			// have our own find logic..?
+	ConVar_Add("tf_boost_drain_time", "99999.0"); 			// have our own find logic..?
+	
+	ConVar_Add("sv_parallel_packentities", "1.0");
+	ConVar_Add("sv_parallel_sendsnapshot", "0.0");
+	ConVar_Add("sv_maxunlag", "0.3");		
+	ConVar_Add("tf_scout_air_dash_count", "0");
+	ConVar_Add("sv_cheats", "1.0"); //just enable it at all times!
+	
+	ConVar_Add("nb_blind", "1.0"); //for bot
+	ConVar_Add("tf_bot_quota_mode", "normal"); //for bot
+	
+	ConVar_Add("sv_quota_stringcmdspersecond", "1000"); //IF FOR SOME REASON THE SERVER LAGS MASIVELY, PUT IT BACK TO 40/100 AT MOST! some cunt is abusing.
+	
+	ConVar_Add("nb_allow_climbing", "0.0"); // default:1
+	ConVar_Add("nb_allow_gap_jumping", "0.0"); // default:1
+	
+	ConVar_Add("nb_update_framelimit", "30"); // default:15
+	ConVar_Add("nb_update_frequency", "0.1"); // default:0
+	ConVar_Add("nb_last_area_update_tolerance", "2.0"); // default:4
+	
+}
+
+void ConVar_Add(const char[] name, const char[] value, bool enforce=true)
+{
+	CvarInfo info;
+	info.cvar = FindConVar(name);
+	info.cvar.Flags &= ~FCVAR_CHEAT;
+	strcopy(info.value, sizeof(info.value), value);
+	info.enforce = enforce;
+
+	if(CvarEnabled)
+	{
+		info.cvar.GetString(info.defaul, sizeof(info.defaul));
+		info.cvar.SetString(info.value);
+		info.cvar.AddChangeHook(ConVar_OnChanged);
+	}
+
+	CvarList.PushArray(info);
+}
+
+stock void ConVar_Remove(const char[] name)
+{
+	ConVar cvar = FindConVar(name);
+	int index = CvarList.FindValue(cvar, CvarInfo::cvar);
+	if(index != -1)
+	{
+		CvarInfo info;
+		CvarList.GetArray(index, info);
+		CvarList.Erase(index);
+
+		if(CvarEnabled)
+		{
+			info.cvar.RemoveChangeHook(ConVar_OnChanged);
+			info.cvar.SetString(info.defaul);
+		}
+	}
+}
+
+void ConVar_Enable()
+{
+	if(!CvarEnabled)
+	{
+		int length = CvarList.Length;
+		for(int i; i<length; i++)
+		{
+			CvarInfo info;
+			CvarList.GetArray(i, info);
+			info.cvar.GetString(info.defaul, sizeof(info.defaul));
+			CvarList.SetArray(i, info);
+
+			info.cvar.SetString(info.value);
+			info.cvar.AddChangeHook(ConVar_OnChanged);
+		}
+
+		CvarEnabled = true;
+	}
+}
+
+void ConVar_Disable()
+{
+	if(CvarEnabled)
+	{
+		int length = CvarList.Length;
+		for(int i; i<length; i++)
+		{
+			CvarInfo info;
+			CvarList.GetArray(i, info);
+
+			info.cvar.RemoveChangeHook(ConVar_OnChanged);
+			info.cvar.SetString(info.defaul);
+		}
+
+		CvarEnabled = false;
+	}
+}
+
+public void ConVar_OnChanged(ConVar cvar, const char[] oldValue, const char[] newValue)
+{
+	int index = CvarList.FindValue(cvar, CvarInfo::cvar);
+	if(index != -1)
+	{
+		CvarInfo info;
+		CvarList.GetArray(index, info);
+
+		if(!StrEqual(newValue, info.value))
+		{
+			if(info.enforce)
+			{
+				strcopy(info.defaul, sizeof(info.defaul), newValue);
+				CvarList.SetArray(index, info);
+				info.cvar.SetString(info.value);
+			}
+			else
+			{
+				info.cvar.RemoveChangeHook(ConVar_OnChanged);
+				CvarList.Erase(index);
+			}
+		}
+	}
+}

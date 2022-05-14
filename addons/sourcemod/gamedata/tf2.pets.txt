@@ -1,0 +1,669 @@
+"Games"
+{
+	/* Team Fortress 2 */
+	"tf"
+	{
+		"Addresses"
+		{		
+			"GetAnimationEvent"
+			{
+				"windows"
+				{
+					"signature"	"GetAnimationEvent_"
+				}
+			}
+			
+			"MannVsMachineUpgrades"
+			{
+				"windows"
+				{
+					"signature" "CTFGameRules::SetCustomUpgradesFile"
+					"read" "42"
+				}
+			}
+			
+			//Used for getting TheNavAreas AND navarea_count
+			"navarea_count"
+			{
+				"windows"
+				{
+					"signature" "nav_update_lighting" 
+					"read" "78"
+				}
+				"linux"
+				{
+					"signature" "nav_update_lighting" 
+					"read" "49"	//Not sure
+				}
+			}
+		}
+		"Signatures"
+		{
+			"nav_update_lighting"	//nav_update_lighting(CCommand const&) | STR "Computed lighting for %d/%d areas\n"
+			{
+				"windows"	"\x55\x8B\xEC\xE8\x2A\x2A\x2A\x2A\x84\xC0\x74\x2A\x8B\x45\x08\x57"
+				"linux"		"@_ZL19nav_update_lightingRK8CCommand"
+			}
+			
+			"GetAnimationEvent_"
+			{
+				"library"	"server"
+				"windows"	"\x55\x8B\xEC\x53\x56\x8B\x75\x08\x85\xF6\x0F\x84\x2A\x2A\x2A\x2A"
+			}
+			
+			"CBasePlayer::SnapEyeAngles"
+			{
+				"windows"	"\x55\x8B\xEC\x8B\x45\x08\xD9\x00\xD9\x99\x58\x0A\x00\x00"
+				"linux"		"@_ZN11CBasePlayer13SnapEyeAnglesERK6QAngle"
+			}
+			
+			"CBaseAnimating::ResetSequence"		//(int nSequence) "ResetSequence : %s: %s -> %s\n"
+			{
+				"windows"	"\x55\x8B\xEC\xA1\x2A\x2A\x2A\x2A\x53\x56\x57\x83\x78\x30\x00\x8B\xD9\x8B\x7D\x08"
+				"linux"		"@_ZN14CBaseAnimating13ResetSequenceEi"
+			}
+			"CBaseAnimating::ResetSequenceInfo" //( )
+			{
+				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x83\xBE\xAC\x03\x00\x00\xFF"
+				"linux"		"@_ZN14CBaseAnimating17ResetSequenceInfoEv"
+			}
+			"CBaseAnimating::SetPoseParameter" //( CStudioHdr *pStudioHdr, int iParameter, float flValue )
+			{
+				"windows"	"\x55\x8B\xEC\x8B\x45\x08\xD9\x45\x10"
+				"linux"		"@_ZN14CBaseAnimating16SetPoseParameterEP10CStudioHdrif"
+			}
+			"CBaseAnimating::LookupPoseParameter" //( CStudioHdr *pStudioHdr, const char *szName )
+			{
+				"windows"	"\x55\x8B\xEC\x57\x8B\x7D\x08\x85\xFF\x75\x2A\x33\xC0\x5F\x5D\xC2\x08\x00"
+				"linux"		"@_ZN14CBaseAnimating19LookupPoseParameterEP10CStudioHdrPKc"
+			}
+			"CBaseAnimating::GetPoseParameter" //( int iParameter ) "aim_pitch" 2nd in xrefs
+			{
+				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x57\x80\xBE\x41\x03\x00\x00\x00\x75\x2A\x83\xBE\x6C\x04\x00\x00\x00\x75\x2A\xE8\x2A\x2A\x2A\x2A\x85\xC0\x74\x2A\x8B\xCE\xE8\x2A\x2A\x2A\x2A\x8B\xBE\x6C\x04\x00\x00"
+				"linux"		"@_ZN14CBaseAnimating16GetPoseParameterEi"
+			}
+			"CBaseAnimating::GetIntervalMovement" //( float flIntervalUsed, bool &bMoveSeqFinished, Vector &newPosition, QAngle &newAngles )
+			{
+				"windows"	"\x55\x8B\xEC\x83\xEC\x18\x56\x8B\xF1\x57\x80\xBE\x41\x03\x00\x00\x00"
+				"linux"		"@_ZN14CBaseAnimating19GetIntervalMovementEfRbR6VectorR6QAngle"
+			}
+			"CBaseAnimating::GetSequenceActivity"
+			{
+				"windows"	"\x55\x8B\xEC\x83\x7D\x08\xFF\x56\x8B\xF1\x74\x2A"
+				"linux"		"@_ZN14CBaseAnimating19GetSequenceActivityEi"
+			}
+			"LookupSequence" //int ( CStudioHdr *pstudiohdr, const char *label ) "spew_bars_context" NOTE: NOT CBaseAnimating::LookupSequence
+			{
+				"windows"	"\x55\x8B\xEC\x56\x8B\x75\x08\x85\xF6\x75\x2A\x33\xC0\x5E\x5D\xC3\x8B\xCE\xE8\x2A\x2A\x2A\x2A\x84\xC0\x74\x2A\x53"
+				"linux"		"@_Z14LookupSequenceP10CStudioHdrPKc"
+			}
+			"LookupActivity" //int ( CStudioHdr *pstudiohdr, const char *label ) "spew_bars_context" NOTE: NOT CBaseAnimating::LookupActivity
+			{
+				"windows"	"\x55\x8B\xEC\x57\x8B\x7D\x08\x85\xFF\x75\x2A\x33\xC0\x5F\x5D\xC3\x53"
+				"linux"		"@_Z14LookupActivityP10CStudioHdrPKc"
+			}
+			"CTFPlayer::GetMaxAmmo" //int (int AmmoType, int idk)	"mult_maxammo_primary"
+			{
+				"windows"	"\x55\x8B\xEC\x8B\x45\x0C\x56\x57\x8B\xF9\x83\xF8\xFF"
+				"linux"		"@_ZN9CTFPlayer10GetMaxAmmoEii"
+			}
+			"Studio_FindAttachment" //int ( const CStudioHdr *pStudioHdr, const char *pAttachmentName ) <- "alt-origin"
+			{
+				"windows"	"\x55\x8B\xEC\x53\x56\x57\x8B\x7D\x08\x85\xFF"
+				"linux"		"@_Z21Studio_FindAttachmentPK10CStudioHdrPKc"
+			}
+			"CBaseAnimating::GetAttachment" //bool ( int iAttachment, Vector &absOrigin, QAngle &absAngles ) <- "alt-origin"
+			{
+				"windows"	"\x55\x8B\xEC\x8B\x01\x8D\x55\xD0\x83\xEC\x30\x8B\x80\x50\x03\x00\x00\x53\x52\xFF\x75\x08\xFF\xD0\xFF\x75\x10"
+				"linux"		"@_ZN14CBaseAnimating13GetAttachmentEPKcR6VectorR6QAngle"
+			}
+			"CBaseAnimating::FindBodygroupByName" //CBaseAnimating::FindBodygroupByName(this, "mini_sentry_light");
+			{
+				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x80\xBE\x41\x03\x00\x00\x00\x74\x2A\x83\xC8\xFF"
+				"linux"		"@_ZN14CBaseAnimating19FindBodygroupByNameEPKc"
+			}
+			"CBaseAnimating::SetBodygroup" //Right below ^
+			{
+				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x57\x80\xBE\x41\x03\x00\x00\x00\x8B\x86\x74\x03\x00\x00"
+				"linux"		"@_ZN14CBaseAnimating12SetBodygroupEii"
+			}
+			"CBaseAnimatingOverlay::AddGestureSequence" //( int sequence, bool autokill )
+			{
+				"windows"	"\x55\x8B\xEC\x56\x6A\x00\xFF\x75\x08\x8B\xF1\xE8\x2A\x2A\x2A\x2A\x85\xC0\x78\x2A"
+				"linux"		"@_ZN21CBaseAnimatingOverlay18AddGestureSequenceEib"
+			}
+			
+			"CBaseAnimatingOverlay::AddGesture" //int AddGesture( Activity activity, bool autokill = true ); | STR: "CBaseAnimatingOverlay::AddGesture:  model %s missing activ"
+			{
+				"windows"	"\x55\x8B\xEC\x53\x8B\x5D\x08\x57\x53\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x8B\xCF"
+				"linux"		"@_ZN21CBaseAnimatingOverlay10AddGestureE8Activityb"
+			}
+			"CBaseAnimatingOverlay::IsPlayingGesture" //bool IsPlayingGesture( Activity activity ); | Found above "spell_skeleton_goop_green"
+			{
+				"windows"	"\x55\x8B\xEC\xFF\x75\x08\xE8\x2A\x2A\x2A\x2A\x83\xF8\xFF"
+				"linux"		"@_ZN21CBaseAnimatingOverlay16IsPlayingGestureE8Activity"
+			}
+			
+			"CBaseEntity::GetNextThink" //( const char *szContext ) <- "group_respawn_context"
+			{
+				"windows"	"\x55\x8B\xEC\x8B\x45\x08\x56\x8B\xF1\x85\xC0\x75\x2A\x8B\x86\xD0\x00\x00\x00\x89\x45\x08"
+				"linux"		"@_ZN11CBaseEntity12GetNextThinkEPKc"
+			}
+			
+			"SelectWeightedSequence"
+			{
+				"windows"	"\x55\x8B\xEC\x56\x8B\x75\x08\x85\xF6\x75\x2A\x33\xC0\x5E\x5D\xC3\x8B\xCE\xE8\x2A\x2A\x2A\x2A\x84\xC0\x74\x2A\x8B\xCE"
+				"linux"		"@_Z22SelectWeightedSequenceP10CStudioHdrii"
+			}
+			"GetItemSchema" //()
+			{
+				"windows"	"\xE8\x2A\x2A\x2A\x2A\x83\xC0\x04\xC3"
+				"linux"		"@_Z15GEconItemSchemav"
+			}
+			"CEconItemSchema::GetAttributeDefinitionByName"	//const char*, returns CEconItemAttributeDefinition
+			{
+				"windows"   "\x55\x8B\xEC\x83\xEC\x14\x53\x8B\x5D\x08\x56\x57\x8B\xF9\x85\xDB\x75\x2A\x33\xC0"
+				"linux"		"@_ZN15CEconItemSchema28GetAttributeDefinitionByNameEPKc"
+			}
+			
+			//CTFGameRules
+			"CTFGameRules::CanUpgradeWithAttrib" //CTFPlayer *, int, ushort, CMannVsMachineUpgrades *
+			{
+				"windows"	"\x55\x8B\xEC\x83\xEC\x14\x53\x8B\x5D\x08\x85\xDB\x75\x2A"
+				"linux"		"@_ZN12CTFGameRules20CanUpgradeWithAttribEP9CTFPlayeritP22CMannVsMachineUpgrades"
+			}
+			"CTFGameRules::GetCostForUpgrade" //(CMannVsMachineUpgrades *upgrade, int slot, int pclass, CTFPlayer *player) 
+			{
+				"windows"	"\x55\x8B\xEC\x57\x8B\x7D\x08\x85\xFF\x75\x2A\x33\xC0\x5F\x5D\xC2\x10\x00"
+				"linux"		"@_ZN12CTFGameRules17GetCostForUpgradeEP22CMannVsMachineUpgradesiiP9CTFPlayer"
+			}
+			"CTFGameRules::GetUpgradeTier" //int
+			{
+				"windows"	"\x55\x8B\xEC\x80\xB9\x66\x09\x00\x00\x00\x74\x2A\x8B\x45\x08"
+				"linux"		"@_ZN12CTFGameRules14GetUpgradeTierEi"
+			}
+			"CTFGameRules::IsUpgradeTierEnabled" //CTFPlayer *, int, int)
+			{
+				"windows"	"\x55\x8B\xEC\x81\xEC\xB4\x01\x00\x00\x83\x7D\x08\x00"
+				"linux"		"@_ZN12CTFGameRules20IsUpgradeTierEnabledEP9CTFPlayerii"
+			}
+			
+			//Get g_MannVsMachineUpgrades pointer
+			"CTFGameRules::SetCustomUpgradesFile"	//<- "upgrades_file_changed"
+			{
+				"library"	"server"
+				"windows"	"\x55\x8B\xEC\x56\x57\x8B\xF9\x8B\x4D\x08\x83\xC1\x08\x83\x79\x10\x02\x75\x2A\x8B\x01\xBE\x2A\x2A\x2A\x2A\x85\xC0\x0F\x45\xF0\xEB\x2A\xE8\x2A\x2A\x2A\x2A\x8B\xF0\x56"
+			}
+			"g_MannVsMachineUpgrades"	// g_MannVsMachineUpgrades
+			{
+				"library"	"server"
+				"linux"		"@g_MannVsMachineUpgrades"
+			}
+			
+			//Inside "CTFBaseBoss::Event_Killed" found with string "item_currencypack_custom"
+			"NextBotCombatCharacter::Event_Killed" //(NextBotCombatCharacter *this, const CTakeDamageInfo *a2)
+			{
+				"windows"	"\x55\x8B\xEC\x53\x8B\x5D\x08\x56\x8B\xF1\x8B\x4B\x28"
+				"linux"		"@_ZN22NextBotCombatCharacter12Event_KilledERK15CTakeDamageInfo"
+			}
+			
+			// STR: "BaseCombatCharacter.StopWeaponSounds", "KilledNPC", "item_healthvial"
+			"CBaseCombatCharacter::Event_Killed" //(CBaseCombatCharacter *this, const CTakeDamageInfo *a2)
+			{
+				"windows"	"\x55\x8B\xEC\x83\xEC\x20\x53\x56\x8B\xF1\xC6\x45\xFF\x01"
+			}
+
+			"CTFBaseBoss::OnTakeDamage_Alive_SIGNATURE" //NPC hurt and below are alot of empty spaces, about 10
+			{
+				"windows"	"\x55\x8B\xEC\x83\xEC\x70\x53\x8B\x5D\x08\x56\x57"
+			}
+			
+		}
+		"Functions"
+		{
+			"CTFBaseBoss::OnTakeDamage_Alive_SIGNATURE"
+			{
+				"signature"	"CTFBaseBoss::OnTakeDamage_Alive_SIGNATURE"
+				"hooktype"	"entity"
+				"return"	"int"
+				"this"		"entity"
+			}
+		}
+		"Offsets"
+		{
+			"m_bResolveCollisions"	//2492
+			{
+				"windows"	"28"
+				"linux"		"24"
+			}
+			
+			"CTFPlayer::GetAmmoCount" //(int)
+			{		
+				"windows"	"262"		
+				"linux"		"263"
+			}	
+			
+			"CTFWeaponBaseGun::GetWeaponID" //(int)
+			{		
+				"windows"	"376"		
+				"linux"		"382"
+			}
+			"CTFWeaponBaseGun::HasAmmo" //()
+			{
+				"windows"	"236"
+				"linux"		"242"
+			}
+			
+			"CTFWeaponBaseGun::GetProjectileSpeed" //(float)
+			{		
+				"windows"	"477"		
+				"linux"		"484"
+			}
+			"CTFWeaponBaseGun::GetProjectileGravity" //(float)
+			{		
+				"windows"	"478"		
+				"linux"		"485"
+			}
+			
+			"CTFBaseBoss::GetCurrencyValue"
+			{
+				"windows"	"332" //Windows always +1 off
+				"linux"		"338"
+			}
+			
+			"CBaseEntity::WorldSpaceCenter"		
+			{		
+				"windows"	"152"		
+				"linux"		"153"
+			}
+			"CBaseEntity::GetSmoothedVelocity"
+			{
+				"windows"	"142"
+				"linux"		"143"
+			}
+			"CBaseEntity::MyNextBotPointer"
+			{
+				"windows"	"72"
+				"linux"		"73"
+			}
+			"CBaseEntity::GetVectors"
+			{
+				"windows"	"139"
+				"linux"		"140"
+			}
+			
+			"CBaseAnimating::StudioFrameAdvance"
+			{
+				"windows"	"197"
+				"linux"		"198"
+			}
+			"CBaseAnimating::DispatchAnimEvents"
+			{
+				"windows"	"209"
+				"linux"		"210"
+			}
+			"CBaseAnimating::HandleAnimEvent" //(animevent_t*)
+			{
+				"windows"	"210"
+				"linux"		"211"
+			}
+			"INextBotEventResponder::OnContact" //(CBaseEntity*, CGameTrace*)
+			{
+				"windows"	"5"
+				"linux"		"6"
+			}
+			"INextBot::GetLocomotionInterface"
+			{
+				"windows"	"48"
+				"linux"		"49"
+			}
+			"INextBot::GetBodyInterface"
+			{
+				"windows"	"49"
+				"linux"		"50"
+			}
+			"INextBot::GetIntentionInterface"
+			{
+				"windows"	"50"
+				"linux"		"51"
+			}
+			"INextBot::GetVisionInterface"
+			{
+				"windows"	"51"
+				"linux"		"52"
+			}
+			"INextBot::Upkeep"
+			{
+				"windows"	"44"
+				"linux"		"45"
+			}
+			
+			"INextBotComponent::GetBot"
+			{
+				"windows"	"45"
+				"linux"		"46"
+			}
+			"INextBotComponent::GetEntity"
+			{
+				"windows"	"46"
+				"linux"		"47"
+			}
+			
+			"ILocomotion::Approach"
+			{
+				"windows"	"46"
+				"linux"		"47"
+			}
+			"ILocomotion::DriveTo"
+			{
+				"windows"	"47"
+				"linux"		"48"
+			}
+			"ILocomotion::Run"
+			{
+				"windows"	"55"
+				"linux"		"56"
+			}
+			"ILocomotion::IsRunning"
+			{
+				"windows"	"58"
+				"linux"		"59"
+			}
+			"ILocomotion::GetDesiredSpeed"
+			{
+				"windows"	"60"
+				"linux"		"61"
+			}
+			"ILocomotion::FaceTowards"
+			{
+				"windows"	"73"
+				"linux"		"74"
+			}
+			"ILocomotion::IsAttemptingToMove"
+			{
+				"windows"	"98"
+				"linux"		"99"
+			}
+			"ILocomotion::StuckMonitor"
+			{
+				"windows"	"101"
+				"linux"		"102"
+			}
+			"ILocomotion::ShouldCollideWith"
+			{
+				"windows"	"99"
+				"linux"		"100"
+			}
+			"ILocomotion::GetVelocity"
+			{
+				"windows"	"86"
+				"linux"		"87"
+			}
+			"ILocomotion::GetMotionVector"
+			{
+				"windows"	"88"
+				"linux"		"89"
+			}
+			"ILocomotion::GetGravity"
+			{
+				"windows"	"105"
+				"linux"		"106"
+			}
+			"ILocomotion::GetGroundNormal"
+			{
+				"windows"	"65"
+				"linux"		"66"
+			}
+			"ILocomotion::Jump"
+			{
+				"windows"	"50"
+				"linux"		"51"
+			}
+			"ILocomotion::IsClimbingUpToLedge"
+			{
+				"windows"	"52"
+				"linux"		"53"
+			}
+			"ILocomotion::GetMaxYawRate"
+			{
+				"windows"	"108"
+				"linux"		"109"
+			}
+			"ILocomotion::GetFrictionForward"
+			{
+				"windows"	"106"
+				"linux"		"107"
+			}
+			"ILocomotion::GetFrictionSideways"
+			{
+				"windows"	"107"
+				"linux"		"108"
+			}
+			"ILocomotion::IsOnGround"
+			{
+				"windows"	"63"
+				"linux"		"64"
+			}
+			"ILocomotion::IsStuck"
+			{
+				"windows"	"95"
+				"linux"		"96"
+			}
+			"ILocomotion::StuckMonitor"
+			{
+				"windows"	"101"
+				"linux"		"102"
+			}
+			"ILocomotion::ClearStuckStatus"
+			{
+				"windows"	"97"
+				"linux"		"98"
+			}
+			"ILocomotion::SetVelocity"
+			{
+				"windows"	"104"
+				"linux"		"105"
+			}
+			"ILocomotion::GetMaxDeceleration"
+			{
+				"windows"	"85"
+				"linux"		"86"
+			}
+			"ILocomotion::ClimbUpToLedge" //(Vector const&, Vector const&, CBaseEntity const*)
+			{
+				"windows"	"48"
+				"linux"		"49"
+			}
+			"ILocomotion::JumpAcrossGap" //(Vector const&, Vector const&)
+			{
+				"windows"	"49"
+				"linux"		"50"
+			}
+			"ILocomotion::IsGap" //(Vector const&, Vector const&)
+			{
+				"windows"	"93"
+				"linux"		"94"
+			}
+			"ILocomotion::GetRunSpeed"
+			{
+				"windows"	"82"
+				"linux"		"83"
+			}
+			"ILocomotion::GetStepHeight"
+			{
+				"windows"	"79"
+				"linux"		"80"
+			}			
+			"ILocomotion::GetGroundSpeed"
+			{
+				"windows"	"66"
+				"linux"		"67"
+			}
+			"ILocomotion::GetGroundMotionVector"
+			{
+				"windows"	"67"
+				"linux"		"68"
+			}
+			"ILocomotion::GetMaxAcceleration"
+			{
+				"windows"	"84"
+				"linux"		"85"
+			}
+			
+			"INextBotEventResponder::OnAnimationActivityComplete"
+			{
+				"windows"	"11"
+				"linux"		"12"
+			}
+			
+			"IVision::GetPrimaryKnownThreat"
+			{
+				"windows"	"48"
+				"linux"		"49"
+			}
+			"IVision::AddKnownEntity"//(CBaseEntity*)
+			{
+				"windows"	"54"
+				"linux"		"55"
+			}
+			"IVision::GetKnown"//(CBaseEntity const*)
+			{
+				"windows"	"53"
+				"linux"		"54"
+			}
+			
+			"CKnownEntity::GetEntity"
+			{
+				"windows"	"3"
+				"linux"		"4"
+			}
+			"CKnownEntity::UpdatePosition"
+			{
+				"windows"	"2"
+				"linux"		"3"
+			}
+			"CKnownEntity::UpdateVisibilityStatus"
+			{
+				"windows"	"10"
+				"linux"		"11"
+			}
+			
+			"IBody::GetSolidMask"
+			{
+				"windows"	"80"
+				"linux"		"81"
+			}
+			"IBody::StartActivity"
+			{
+				"windows"	"58"
+				"linux"		"59"
+			}
+			"IBody::GetHullWidth"
+			{
+				"windows"	"74"
+				"linux"		"75"
+			}
+			"IBody::GetHullHeight"
+			{
+				"windows"	"75"
+				"linux"		"76"
+			}
+			"IBody::GetStandHullHeight"
+			{
+				"windows"	"76"
+				"linux"		"77"
+			}
+			"IBody::GetCrouchHullHeight"
+			{
+				"windows"	"77"
+				"linux"		"78"
+			}
+			"IBody::GetHullMins"
+			{
+				"windows"	"78"
+				"linux"		"79"
+			}
+			"IBody::GetHullMaxs"
+			{
+				"windows"	"79"
+				"linux"		"80"
+			}
+			"IBody::GetActivity"
+			{
+				"windows"	"60"
+				"linux"		"61"
+			}
+			"IBody::IsActivity"
+			{
+				"windows"	"61"
+				"linux"		"62"
+			}
+			"IBody::HasActivityType"
+			{
+				"windows"	"62"
+				"linux"		"63"
+			}
+			"IBody::SetDesiredPosture"	//(IBody::PostureType)
+			{
+				"windows"	"63"
+				"linux"		"64"
+			}
+			"IBody::GetDesiredPosture"
+			{
+				"windows"	"64"
+				"linux"		"65"
+			}
+			"IBody::IsDesiredPosture"	//(IBody::PostureType)
+			{
+				"windows"	"65"
+				"linux"		"66"
+			}
+			"IBody::IsInDesiredPosture"
+			{
+				"windows"	"66"
+				"linux"		"67"
+			}
+			"IBody::GetActualPosture"
+			{
+				"windows"	"67"
+				"linux"		"68"
+			}
+			"IBody::IsActualPosture"	//(IBody::PostureType)
+			{
+				"windows"	"68"
+				"linux"		"69"
+			}
+			"IBody::IsPostureMobile"
+			{
+				"windows"	"69"
+				"linux"		"70"
+			}
+			
+			"CBaseCombatCharacter::ShouldGib"
+			{
+				"windows"	"293"
+				"linux"		"294"
+			}
+			"CBaseCombatCharacter::GetTimeSinceLastInjury" //(int team)
+			{
+				"windows"	"286"
+				"linux"		"287"
+			}
+			"CTFBaseBoss::Event_Killed" //(CTakeDamageInfo const&)
+			{
+				"windows"	"66"
+				"linux"		"67"
+			}
+			"CBaseCombatCharacter::BecomeRagdoll" //(CTakeDamageInfo const&, Vector const&)
+			{
+				"windows"	"298"
+				"linux"		"299"
+			}
+			"CBaseAnimating::RefreshCollisionBounds"
+			{
+				"windows"	"215"
+				"linux"		"216"
+			}
+		}
+	}
+}

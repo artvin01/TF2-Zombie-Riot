@@ -1,0 +1,79 @@
+"Games"
+{
+	"tf"
+	{
+		"Offsets"
+		{
+			"CLagCompensationManager::FrameUpdatePostEntityThink_OFFSET"
+			{
+				"library"	"server"
+				"linux"		"16"
+				"windows"	"15
+			}
+		}
+		"Signatures"
+		{
+			"CLagCompensationManager::StartLagCompensation"
+			{
+				"library"	"server"
+				"linux"		"@_ZN23CLagCompensationManager20StartLagCompensationEP11CBasePlayerP8CUserCmd"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x24\x57\x8B\xF9\x89\x7D\xE8"
+			}
+			"CLagCompensationManager::FinishLagCompensation"
+			{
+				"library"	"server"
+				"linux"		"" //sorry i hate sigs
+				"windows"	"\x55\x8B\xEC\x83\xEC\x38\xA1\x2A\x2A\x2A\x2A\x53" // 55 8B EC 83 EC 38 A1 ? ? ? ? 53 
+			}
+			"CLagCompensationManager::FrameUpdatePostEntityThink_SIGNATURE"
+			{
+				"library"	"server"
+				"linux"		"" //sorry i hate sigs
+				"windows"	"\x55\x8B\xEC\x83\xEC\x34\xA1\x2A\x2A\x2A\x2A\x53\x8B\xD9"
+			}
+		}
+		"Functions"
+		{
+
+			"CLagCompensationManager::StartLagCompensation"
+			{
+				"signature"	"CLagCompensationManager::StartLagCompensation"
+				"callconv"	"thiscall"
+				"return"	"void"
+				"this"		"address" //"ingore" from batfox
+				"arguments"
+				{
+					"player"
+					{
+						"type"	"cbaseentity"
+					}
+					"cmd"
+					{
+						"type"	"objectptr"
+					}
+				}
+			}
+			"CLagCompensationManager::FrameUpdatePostEntityThink_SIGNATURE"
+			{
+				"signature"	"CLagCompensationManager::FrameUpdatePostEntityThink_SIGNATURE"
+				"callconv"	"thiscall"
+				"return"	"void"
+				"this"		"address" //"ingore" from batfox
+			}	
+			"CLagCompensationManager::FinishLagCompensation"
+			{
+				"signature"	"CLagCompensationManager::FinishLagCompensation" // CLagCompensationManager::FinishLagCompensation
+				"callconv"	"thiscall"
+				"return"	"void"
+				"this"		"address"
+				"arguments"
+				{
+					"player"
+					{
+						"type"	"cbaseentity" // CBasePlayer *
+					}
+				}
+			}
+		}
+	}
+}

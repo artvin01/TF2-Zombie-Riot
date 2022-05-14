@@ -1,0 +1,386 @@
+static Handle SDKEquipWearable;
+static Handle SDKGetMaxHealth;
+static Handle g_hGetAttachment;
+static Handle g_hStudio_FindAttachment;
+
+static Handle g_hSetLocalOrigin;
+//static Handle g_hSetLocalAngle;
+//static Handle g_hSetAbsOrigin;
+//static Handle g_hSetAbsAngle;
+static Handle g_hInvalidateBoneCache;
+
+static Handle g_hCTFCreateArrow;
+//static Handle g_hCTFCreatePipe;
+Handle g_hSDKMakeCarriedObjectDispenser;
+Handle g_hSDKMakeCarriedObjectSentry;
+//Handle g_hSDKMakeCarriedObject;
+static Handle g_hGetVectors;
+//static Handle g_hWeaponSound;
+//static Handle g_hSDKPlaySpecificSequence;
+//static Handle g_hDoAnimationEvent;
+
+Handle g_hSDKStartLagComp;
+Handle g_hSDKEndLagComp;
+Handle g_hSDKUpdateBlocked;
+
+void SDKCall_Setup()
+{
+	GameData gamedata = LoadGameConfigFile("sm-tf2.games");
+	StartPrepSDKCall(SDKCall_Player);
+	PrepSDKCall_SetVirtual(gamedata.GetOffset("RemoveWearable") - 1);
+	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer);
+	SDKEquipWearable = EndPrepSDKCall();
+	if(!SDKEquipWearable)
+		LogError("[Gamedata] Could not find RemoveWearable");
+	
+	delete gamedata;
+	
+	gamedata = LoadGameConfigFile("sdkhooks.games");
+	StartPrepSDKCall(SDKCall_Player);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "GetMaxHealth");
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_ByValue);
+	SDKGetMaxHealth = EndPrepSDKCall();
+	if(!SDKGetMaxHealth)
+		LogError("[Gamedata] Could not find GetMaxHealth");
+		
+	delete gamedata;
+	
+	gamedata = LoadGameConfigFile("zombie_riot");
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseEntity::SetLocalOrigin");
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
+	g_hSetLocalOrigin = EndPrepSDKCall();
+	if(!g_hSetLocalOrigin)
+		LogError("[Gamedata] Could not find CBaseEntity::SetLocalOrigin");
+		
+		/*
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseEntity::SetLocalAngles");
+	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef);
+	g_hSetLocalAngle = EndPrepSDKCall();
+	if(!g_hSetLocalAngle)
+		LogError("[Gamedata] Could not find CBaseEntity::SetLocalAngles");
+		
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseEntity::SetAbsOrigin");
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
+	g_hSetAbsOrigin = EndPrepSDKCall();
+	if(!g_hSetAbsOrigin)
+		LogError("[Gamedata] Could not find CBaseEntity::SetAbsOrigin");
+		
+		
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseEntity::SetAbsAngles");
+	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef);
+	g_hSetAbsAngle = EndPrepSDKCall();
+	if(!g_hSetAbsAngle)
+		LogError("[Gamedata] Could not find CBaseEntity::SetAbsAngles");
+		*/
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseAnimating::InvalidateBoneCache");
+	if((g_hInvalidateBoneCache = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::InvalidateBoneCache");
+	
+	
+	//( const Vector &vecOrigin, const QAngle &vecAngles, const float fSpeed, const float fGravity, ProjectileType_t projectileType, CBaseEntity *pOwner, CBaseEntity *pScorer )
+	StartPrepSDKCall(SDKCall_Static);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFProjectile_Arrow::Create");
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
+	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef);
+	PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer);
+	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer);
+	PrepSDKCall_SetReturnInfo(SDKType_CBaseEntity, SDKPass_Pointer);
+	g_hCTFCreateArrow = EndPrepSDKCall();
+	if(!g_hCTFCreateArrow)
+		LogError("[Gamedata] Could not find CTFProjectile_Arrow::Create");
+		
+	StartPrepSDKCall(SDKCall_Static);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFNavMesh::ComputeBlockedArea");
+	g_hSDKUpdateBlocked = EndPrepSDKCall();
+	
+	/*
+	// void CBaseCombatWeapon::WeaponSound( WeaponSound_t sound_type, float soundtime )
+	StartPrepSDKCall(cbas);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseCombatWeapon::WeaponSound");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain);
+	g_hWeaponSound = EndPrepSDKCall();
+	if(!g_hWeaponSound)
+		LogError("[Gamedata] Could not find CBaseCombatWeapon::WeaponSound");
+	*/
+	
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CObjectDispenser::MakeCarriedObject");
+	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
+	if ((g_hSDKMakeCarriedObjectDispenser = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CObjectDispenser::MakeCarriedObject");
+	
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CObjectSentrygun::MakeCarriedObject");
+	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
+	if ((g_hSDKMakeCarriedObjectSentry = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CObjectSentrygun::MakeCarriedObject");
+
+
+	GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
+//	DHook_CreateDetour(gamedata, "CLagCompensationManager::StartLagCompensation", DHook_StartLagCompensationPre, DHook_StartLagCompensationPost);
+	
+	StartPrepSDKCall(SDKCall_Static);
+	PrepSDKCall_SetFromConf(gamedata_lag_comp, SDKConf_Signature, "CLagCompensationManager::StartLagCompensation");
+	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain); //cmd? I dont know.
+	if ((g_hSDKStartLagComp = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CLagCompensationManager::StartLagCompensation");
+	
+	
+	StartPrepSDKCall(SDKCall_Static);
+	PrepSDKCall_SetFromConf(gamedata_lag_comp, SDKConf_Signature, "CLagCompensationManager::FinishLagCompensation");
+	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
+	if ((g_hSDKEndLagComp = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CLagCompensationManager::FinishLagCompensation");
+	
+	delete gamedata_lag_comp;
+	
+	/*
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBaseObject::MakeCarriedObject");
+	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
+	if ((g_hSDKMakeCarriedObject = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CBaseObject::MakeCarriedObject");
+	*/
+/*		
+( const Vector &position, const QAngle &angles, 
+																	const Vector &velocity, const AngularImpulse &angVelocity, 
+																	CBaseCombatCharacter *pOwner, const CTFWeaponInfo &weaponInfo, 
+																	int iPipeBombType, float flMultDmg )
+*/
+/*
+	StartPrepSDKCall(SDKCall_Static);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFGrenadePipebombProjectile::Create");
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef); //const Vector &positio
+	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef); //const QAngle &angles
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef); //const Vector &velocity
+	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef); //const AngularImpulse &angVelocity
+	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer); //CBaseCombatCharacter *pOwner
+	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer); //const CTFWeaponInfo &weaponInfo
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain); //int iPipeBombType
+	PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain); //float flMultDmg
+	PrepSDKCall_SetReturnInfo(SDKType_CBaseEntity, SDKPass_Pointer); //ENTITY INDEX PIPE
+	g_hCTFCreatePipe = EndPrepSDKCall();
+	if(!g_hCTFCreatePipe)
+		LogError("[Gamedata] Could not find CTFGrenadePipebombProjectile::Create");
+	*/
+//	g_SDKCallRemoveImmediate = PrepSDKCall_RemoveImmediate(gamedata);
+	
+	delete gamedata;
+	
+	Handle hConf = LoadGameConfigFile("tf2.pets");
+
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::GetAttachment");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//iAttachment
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK); //absOrigin
+	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK); //absAngles
+	if((g_hGetAttachment = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::GetAttachment");
+	
+	StartPrepSDKCall(SDKCall_Static);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "Studio_FindAttachment");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);		//pAttachmentName
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return index
+	if((g_hStudio_FindAttachment = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for Studio_FindAttachment");
+	
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseEntity::GetVectors");
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
+	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
+	
+	delete hConf;
+	/*
+	Handle ZConf = LoadGameConfigFile("zombie_riot");
+	
+	StartPrepSDKCall(SDKCall_Player);
+	PrepSDKCall_SetFromConf(ZConf, SDKConf_Signature, "CTFPlayer::PlaySpecificSequence");
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
+	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_Plain);
+	g_hSDKPlaySpecificSequence = EndPrepSDKCall();
+	if (g_hSDKPlaySpecificSequence == null)
+		LogMessage("Failed to create call: CTFPlayer::PlaySpecificSequence!");
+		
+	//void				DoAnimationEvent( PlayerAnimEvent_t event, int mData = 0 );
+	StartPrepSDKCall(SDKCall_Player);
+	PrepSDKCall_SetFromConf(ZConf, SDKConf_Virtual, "CTFPlayerAnimState::DoAnimationEvent");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_ByValue); //event is probably int?
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_ByValue); //int.
+	g_hDoAnimationEvent = EndPrepSDKCall();
+	if(!g_hDoAnimationEvent)
+		LogError("[Gamedata] Could not find CTFPlayerAnimState::DoAnimationEvent");
+		
+	//Gotten PlaySpecificSequence from https://github.com/redsunservers/VSH-Rewrite/blob/f2bff50693115f469c9558a7eb03a60b5f3a8a59/addons/sourcemod/gamedata/vsh.txt
+	
+	delete ZConf;
+	*/
+}
+
+void SDKCall_EquipWearable(int client, int entity)
+{
+	if(SDKEquipWearable)
+		SDKCall(SDKEquipWearable, client, entity);
+}
+//( const Vector &vecOrigin, const QAngle &vecAngles, const float fSpeed, const float fGravity, ProjectileType_t projectileType, CBaseEntity *pOwner, CBaseEntity *pScorer )
+	
+int SDKCall_CTFCreateArrow(float VecOrigin[3], float VecAngles[3], const float fSpeed, const float fGravity, int projectileType, int Owner, int Scorer)
+{
+	if(g_hCTFCreateArrow)
+		return SDKCall(g_hCTFCreateArrow, VecOrigin, VecAngles, fSpeed, fGravity, projectileType, Owner, Scorer);
+	
+	return -1;
+}
+
+/*		
+( const Vector &position, const QAngle &angles, 
+																	const Vector &velocity, const AngularImpulse &angVelocity, 
+																	CBaseCombatCharacter *pOwner, const CTFWeaponInfo &weaponInfo, 
+																	int iPipeBombType, float flMultDmg )
+*/
+/*
+void SDKCall_CallCorrectWeaponSound(int WeaponIndex, int WeaponType, float duration = 1.0)
+{
+	if(g_hWeaponSound)
+	{
+		PrintToChatAll("testSound");
+		SDKCall(g_hWeaponSound, WeaponIndex, WeaponType, duration);
+	}
+}
+*/
+/*
+int SDKCall_CTFCreatePipe(float VecOrigin[3], const float VecAngles[3], const float fSpeed, const float angVelocity, int owner, int weaponinfo, int projectileType, float damage)
+{
+	if(g_hCTFCreatePipe)
+		return SDKCall(g_hCTFCreatePipe, VecOrigin, VecAngles, fSpeed, angVelocity, owner, weaponinfo, projectileType, damage);
+	
+	return -1;
+}
+*/
+void SDKCall_SetLocalOrigin(int index, float localOrigin[3])
+{
+	if(g_hSetLocalOrigin)
+	{
+		SDKCall(g_hSetLocalOrigin, index, localOrigin);
+	}
+}
+/*
+void SDKCall_SetLocalAngle(int index, float localAngle[3])
+{
+	if(g_hSetLocalAngle)
+	{
+		SDKCall(g_hSetLocalAngle, index, localAngle);
+	}
+}
+*/
+void SDKCall_InvalidateBoneCache(int index)
+{
+	SDKCall(g_hInvalidateBoneCache, index);
+}
+/*
+void SDKCall_SetAbsOrigin(int index, float AbsOrigin[3])
+{
+	if(g_hSetAbsOrigin)
+	{
+		SDKCall(g_hSetAbsOrigin, index, AbsOrigin);
+	}
+}
+
+void SDKCall_SetAbsAngle(int index, float AbsAngle[3])
+{
+	if(g_hSetAbsAngle)
+	{
+		SDKCall(g_hSetAbsAngle, index, AbsAngle);
+	}
+}
+*/
+int SDKCall_GetMaxHealth(int client)
+{
+	return SDKGetMaxHealth ? SDKCall(SDKGetMaxHealth, client) : GetEntProp(client, Prop_Data, "m_iMaxHealth");
+}
+
+
+public int FindAttachment(int index, const char[] pAttachmentName)
+{
+	Address pStudioHdr = GetStudioHdr(index);
+	if(pStudioHdr == Address_Null)
+		return -1;
+			
+	return SDKCall(g_hStudio_FindAttachment, pStudioHdr, pAttachmentName) + 1;
+}	
+
+public Address GetStudioHdr(int index)
+{
+	if(IsValidEntity(index))
+	{
+		return view_as<Address>(GetEntData(index, 283 * 4));
+	}
+		
+	return Address_Null;
+}	
+
+void GetAttachment(int index, const char[] szName, float absOrigin[3], float absAngles[3])
+{
+	SDKCall(g_hGetAttachment, index, FindAttachment(index, szName), absOrigin, absAngles);
+}	
+/*
+bool SDKCall_PlaySpecificSequence(int iClient, const char[] sAnimationName)
+{
+	return SDKCall(g_hSDKPlaySpecificSequence, iClient, sAnimationName);
+}
+
+void SDKCall_DoAnimationEvent(int iClient, int event_int, int extra_data = 0)
+{
+	SDKCall(g_hDoAnimationEvent, iClient, event_int, extra_data);
+}*/
+
+
+public void GetVectors(int client, float pForward[3], float pRight[3], float pUp[3])
+{
+	SDKCall(g_hGetVectors, client, pForward, pRight, pUp);
+}
+
+public void SDK_StartPlayerOnlyLagComp(int client, bool Compensate_allies)
+{
+	if(Compensate_allies)
+	{
+	//	b_LagCompAlliedPlayers = true;
+	}
+	SDKCall(g_hSDKStartLagComp, client, (GetEntityAddress(client) + view_as<Address>(3512)));
+}
+
+public void SDK_EndPlayerOnlyLagComp(int client)
+{
+	SDKCall(g_hSDKEndLagComp, client);
+}
+
+public void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
+{
+#if defined CompensatePlayers
+	StartLagCompResetValues();
+	
+	if(Compensate_allies)
+	{
+	//	b_LagCompAlliedPlayers = true;
+	}
+	StartLagCompensation_Base_Boss(client, true);
+#endif
+}
+
+public void EndPlayerOnlyLagComp()
+{
+#if defined CompensatePlayers
+	FinishLagCompensation_Base_boss();
+	
+	FinishLagCompensationResetValues();
+#endif
+}
+
+public void UpdateBlockedNavmesh()
+{
+	SDKCall(g_hSDKUpdateBlocked);
+}	
