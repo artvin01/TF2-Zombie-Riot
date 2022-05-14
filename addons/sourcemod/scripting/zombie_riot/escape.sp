@@ -52,12 +52,7 @@ void Escape_SetupEnd()
 {
 	if(Waiting)
 	{
-		int amount;
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client) && GetClientTeam(client)==2)
-				amount++;
-		}
+		int amount = CountPlayersOnRed();
 		
 		float multi = amount*0.25;
 		

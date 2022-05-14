@@ -226,16 +226,7 @@ methodmap XenoSpyMainBoss < CClotBody
 		
 		if(EscapeModeForNpc)
 		{
-			int amount_of_people;
-			
-			amount_of_people = 0;
-			for(int client_calc=1; client_calc<=MaxClients; client_calc++)
-			{
-				if(IsClientInGame(client_calc) && GetClientTeam(client_calc)==2)
-				{
-					amount_of_people += 1;
-				}
-			}
+			int amount_of_people = CountPlayersOnRed();
 			int health = 25000;
 			
 			health *= amount_of_people;
