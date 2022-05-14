@@ -44,6 +44,7 @@ https://github.com/SlidyBat/CollisionHook
 https://github.com/nosoop/SM-TFEconData
 https://github.com/Pelipoika/PathFollower
 https://github.com/Batfoxkid/lambda
+https://forums.alliedmods.net/showthread.php?t=68805  VERY IMPORTANT, SV CHEATS IS 1 BY DEFAULT
 
 
 Supported:
