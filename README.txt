@@ -16,7 +16,9 @@ Mikusch (Gamedata assistance and more, a savior.)
 Suza
 Alex
 Spookmaster
+Kenzzer (Got gamedata and make an extention edit for us)
 Pelipoika (Npc base code that we heavily edited, thank you SO much for publishing it all.)
+
 
 Alot of code is borrowed/just takes from other plugins i or friends made, often with permission,
 rarely without cus i couldnt contact the person or it was just open sourcecode, credited anyways when i did that.
