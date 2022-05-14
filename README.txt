@@ -29,6 +29,12 @@ but i honestly dont got the patience to look though all these sub files (more th
 
 There is also an escapemode Verison of this gamemode and more to come. If you need help, ask me questions, and i will awnser them and put a FAQ here too so i dont have to repeat myself.
 
+
+IF you wish to see the plugin in action/or just are interrested in playing this gamemode rather then coding/messing with it, the main server for the plugin is this one hosted by disc.ff:
+
+74.91.119.154:27017
+
+
 Required:
 
 https://github.com/peace-maker/DHooks2
