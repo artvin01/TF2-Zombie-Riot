@@ -113,7 +113,7 @@ public void OnPostThink(int client)
 				mana_regen[client] = 10.0;
 				
 				if(LastMann)
-					mana_regen[client] *= 2.0;
+					mana_regen[client] *= 20.0; // 20x the regen to help last man mage cus they really suck otherwise alone.
 					
 				if(i_CurrentEquippedPerk[client] == 4)
 				{

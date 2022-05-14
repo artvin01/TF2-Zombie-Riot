@@ -2300,11 +2300,11 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			{
 				Attack_speed = 1.15; //hardcoding this lol
 			}
-			
+			/*
 			if(TF2_IsPlayerInCondition(client,TFCond_RuneHaste))
 				Attack_speed = 1.0; //If they are last, dont alter attack speed, otherwise breaks melee, again.
 				//would also make them really op
-			
+			*/
 			TF2Attrib_SetByDefIndex(weapon, 396, Attack_speed);
 		}
 		if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee && !StrEqual(classname, "tf_weapon_wrench"))
