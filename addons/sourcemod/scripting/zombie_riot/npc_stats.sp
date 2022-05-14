@@ -117,7 +117,12 @@ bool b_GetClosestTargetTimeAlly[MAXENTITIES];
 float fl_Duration[MAXENTITIES];
 int i_OverlordComboAttack[MAXENTITIES];
 bool b_NpcDeathEffectHappend[MAXENTITIES];
+
+int i_Activity[MAXENTITIES];
+int i_PoseMoveX[MAXENTITIES];
+int i_PoseMoveY[MAXENTITIES];
 //Arrays for npcs!
+bool b_bThisNpcGotDefaultStats_INVERTED[MAXENTITIES];
 
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
@@ -1503,6 +1508,7 @@ methodmap CClotBody
 		}
 	//	PrintToServer("%i PlayStepSound(\"%s\")", this.index, sound);
 	}
+	
 	property int m_iOverlordComboAttack
 	{
 		public get()							{ return i_OverlordComboAttack[this.index]; }
@@ -2000,10 +2006,11 @@ methodmap CClotBody
 		public get()							{ return b_thisNpcIsABoss[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_thisNpcIsABoss[this.index] = TempValueForProperty; }
 	}
+	
 	property bool m_bThisNpcGotDefaultStats_INVERTED //This is the only one, reasoning is that is that i kinda need to check globablly if any base_boss spawned outside of this plugin and apply stuff accordingly.
 	{
-		public get()				{ return !!this.ExtractStringValueAsInt("m_bThisNpcGotDefaultStats_INVERTED"); }
-		public set(bool flNextTime) { char buff[8]; IntToString(flNextTime, buff, sizeof(buff)); SetCustomKeyValue(this.index, "m_bThisNpcGotDefaultStats_INVERTED", buff, true); }
+		public get()							{ return b_bThisNpcGotDefaultStats_INVERTED[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_bThisNpcGotDefaultStats_INVERTED[this.index] = TempValueForProperty; }
 	}
 	
 	public float GetRunSpeed()//For the future incase we want to alter it easier
@@ -2332,7 +2339,7 @@ methodmap CClotBody
 	public void SetDefaultStats()
 	{
 		//npc got his stats by plugins.
-		this.m_bThisNpcGotDefaultStats_INVERTED = false;
+		this.m_bThisNpcGotDefaultStats_INVERTED = true;
 	}
 	/*
 	public bool IsClimbingOrJumping()
@@ -2602,22 +2609,22 @@ methodmap CClotBody
 		}
 	}
 	*/
-		property int m_iActivity
+	property int m_iActivity
 	{
-		public get()			  { return this.ExtractStringValueAsInt("m_iActivity"); }
-		public set(int iActivity) { char buff[8]; IntToString(iActivity, buff, sizeof(buff)); SetCustomKeyValue(this.index, "m_iActivity", buff, true); }
+		public get()							{ return i_Activity[this.index]; }
+		public set(int TempValueForProperty) 	{ i_Activity[this.index] = TempValueForProperty; }
 	}
 	
 	property int m_iPoseMoveX 
 	{
-		public get()			  { return this.ExtractStringValueAsInt("m_iPoseMoveX"); }
-		public set(int iActivity) { char buff[8]; IntToString(iActivity, buff, sizeof(buff)); SetCustomKeyValue(this.index, "m_iPoseMoveX", buff, true); }
+		public get()							{ return i_PoseMoveX[this.index]; }
+		public set(int TempValueForProperty) 	{ i_PoseMoveX[this.index] = TempValueForProperty; }
 	}
 	
 	property int m_iPoseMoveY
 	{
-		public get()			  { return this.ExtractStringValueAsInt("m_iPoseMoveY"); }
-		public set(int iActivity) { char buff[8]; IntToString(iActivity, buff, sizeof(buff)); SetCustomKeyValue(this.index, "m_iPoseMoveY", buff, true); }
+		public get()							{ return i_PoseMoveY[this.index]; }
+		public set(int TempValueForProperty) 	{ i_PoseMoveY[this.index] = TempValueForProperty; }
 	}
 
 	//Begin an animation activity, return false if we cant do that right now.
@@ -2790,7 +2797,7 @@ methodmap CClotBody
 	public void SetDefaultStatsZombieRiot(int Team)
 	{
 		CClotBody npc = view_as<CClotBody>(this.index);
-		npc.m_bThisNpcGotDefaultStats_INVERTED = false;
+		npc.m_bThisNpcGotDefaultStats_INVERTED = true;
 		if(Team == view_as<int>(TFTeam_Red)) //ANY NPC THATS AN ALLY AND THAT HAS NO DEFAULT STATS WILL GET THIS.
 		{
 			npc.m_bThisEntityIgnored = false;
@@ -5522,6 +5529,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_GrappleCooldown[entity] = 0.0;
 	fl_HookDamageTaken[entity] = 0.0;
 	b_IsCamoNPC[entity] = false;
+	b_bThisNpcGotDefaultStats_INVERTED[entity] = false;
 }
 
 //NORMAL

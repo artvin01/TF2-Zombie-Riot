@@ -2558,7 +2558,7 @@ public void Check_For_Team_Npc(int ref)
 			npcstats.bCantCollidieAlly = true;
 			npcstats.bCantCollidie = false;
 			b_IsAlliedNpc[entity] = true;
-			if(npcstats.m_bThisNpcGotDefaultStats_INVERTED) //IF THIS IS TRUE, then that means that a baseboss spawned without getting default stats.
+			if(!npcstats.m_bThisNpcGotDefaultStats_INVERTED) //IF THIS IS TRUE, then that means that a baseboss spawned without getting default stats.
 			{
 				npcstats.SetDefaultStatsZombieRiot(view_as<int>(TFTeam_Red));
 			}
