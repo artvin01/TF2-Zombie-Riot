@@ -23,7 +23,7 @@ public void Weapon_Shoot_Arrow(int client, int weapon, bool crit)
 	
 	Charge_Time -= GetEntPropFloat(weapon, Prop_Send, "m_flChargeBeginTime");
 	
-	Charge_Time += 0.4;
+	Charge_Time += 0.6;
 	
 	if(Charge_Time > 1.0)
 		Charge_Time = 1.0;
