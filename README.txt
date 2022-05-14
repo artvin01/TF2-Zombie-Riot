@@ -27,6 +27,8 @@ You will also see alot of "inconsistent indentation" warnings, if 1.11 compiler 
 but i honestly dont got the patience to look though all these sub files (more then 100)
 
 
+There is also an escapemode Verison of this gamemode and more to come. If you need help, ask me questions, and i will awnser them and put a FAQ here too so i dont have to repeat myself.
+
 Required:
 
 https://github.com/peace-maker/DHooks2
