@@ -339,7 +339,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
-			if(npc.m_flNextChargeSpecialAttack < GetGameTime() && npc.m_flReloadDelay < GetGameTime() && !npc.m_fbRangedSpecialOn && flDistanceToTarget < 422500)
+			if(npc.m_flNextChargeSpecialAttack < GetGameTime() && npc.m_flReloadDelay < GetGameTime() && !npc.m_fbRangedSpecialOn && flDistanceToTarget < 160000)
 			{
 				npc.m_flNextChargeSpecialAttack = GetGameTime() + 20.0;
 				npc.m_flReloadDelay = GetGameTime() + 1.0;
