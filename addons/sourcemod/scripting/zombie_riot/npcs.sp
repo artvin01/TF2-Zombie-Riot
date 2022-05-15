@@ -201,11 +201,11 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		{
 			Active_Spawners_Calculate = 0.7;
 		}
-		case 6:
+		case 7:
 		{
 			Active_Spawners_Calculate = 0.6;
 		}
-		case 6:
+		case 8:
 		{
 			Active_Spawners_Calculate = 0.3;
 		}
