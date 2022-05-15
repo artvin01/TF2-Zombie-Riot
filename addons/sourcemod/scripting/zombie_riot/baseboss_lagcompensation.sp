@@ -515,7 +515,7 @@ public void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if(IsValidEntity(entity))// && !b_NpcHasDied[entity])
+			if(IsValidEntity(entity) && !b_NpcHasDied[entity])
 			{
 				IntToString(EntIndexToEntRef(entity), refchar, sizeof(refchar));
 				if(EntityRestore.GetArray(refchar, restore, sizeof(restore)))

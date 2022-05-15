@@ -2685,7 +2685,6 @@ public void RemoveNpcThingsAgain(int entity)
 	//incase this breaks, add a baseboss check
 	CleanAllAppliedEffects(entity);
 	CleanAllApplied_Aresenal(entity);
-	b_NpcHasDied[entity] = true;
 	b_NpcForcepowerupspawn[entity] = 0;	
 }
 /*

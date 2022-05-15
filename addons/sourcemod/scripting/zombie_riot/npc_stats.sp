@@ -116,7 +116,6 @@ int i_TargetAlly[MAXENTITIES];
 bool b_GetClosestTargetTimeAlly[MAXENTITIES];
 float fl_Duration[MAXENTITIES];
 int i_OverlordComboAttack[MAXENTITIES];
-bool b_NpcDeathEffectHappend[MAXENTITIES];
 
 int i_Activity[MAXENTITIES];
 int i_PoseMoveX[MAXENTITIES];
@@ -1466,8 +1465,6 @@ methodmap CClotBody
 		
 		SetEntProp(npc, Prop_Data, "m_nSolidType", 2); 
 		
-		
-		b_NpcDeathEffectHappend[npc] = false;
 		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
 		
 		
@@ -3275,9 +3272,9 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 	Address CTakeDamageInfo = DHookGetParam(hParams, 1);
 	
 	CTakeDamageInfo -= view_as<Address>(16*4);
-	if(!b_NpcDeathEffectHappend[pThis])
+	if(!b_NpcHasDied[pThis])
 	{
-		b_NpcDeathEffectHappend[pThis] = true;
+		b_NpcHasDied[entity] = true;
 		ZR_ApplyKillEffects(pThis); //Do kill attribute stuff
 		CClotBody npc = view_as<CClotBody>(pThis);
 		SDKUnhook(pThis, SDKHook_OnTakeDamage, NPC_OnTakeDamage_Base);
@@ -5606,6 +5603,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Activity[entity] = -1;
 	i_PoseMoveX[entity] = -1;
 	i_PoseMoveY[entity] = -1;
+	b_NpcHasDied[entity] = false;
 }
 
 //NORMAL
