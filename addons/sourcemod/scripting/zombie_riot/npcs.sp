@@ -183,13 +183,29 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		}
 		case 2:
 		{
-			Active_Spawners_Calculate = 1.1;
+			Active_Spawners_Calculate = 1.65;
 		}
 		case 3:
 		{
-			Active_Spawners_Calculate = 0.8;
+			Active_Spawners_Calculate = 1.55;
 		}
 		case 4:
+		{
+			Active_Spawners_Calculate = 1.4;
+		}
+		case 5:
+		{
+			Active_Spawners_Calculate = 1.2;
+		}
+		case 6:
+		{
+			Active_Spawners_Calculate = 0.7;
+		}
+		case 6:
+		{
+			Active_Spawners_Calculate = 0.6;
+		}
+		case 6:
 		{
 			Active_Spawners_Calculate = 0.3;
 		}
