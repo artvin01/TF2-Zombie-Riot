@@ -1,0 +1,26 @@
+name: Compile
+
+on:
+  pull_request:
+    branches: main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      
+      - name: Environments
+        run: |
+          echo "SM_VERSION=1.11" >> $GITHUB_ENV
+      
+      - name: Install
+        run: |
+          bash scripts/install.sh
+      
+      - name: Compile
+        run: |
+          cd build/addons/sourcemod/scripting
+          ./spcomp zombie_riot.sp -o ../plugins/zombie_riot.smx
