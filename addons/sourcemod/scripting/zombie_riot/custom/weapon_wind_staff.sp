@@ -641,6 +641,7 @@ static void Wand_Create_Tornado(int client, int iCarrier)
 	float flCarrierPos[3];
 	GetEntPropVector(iCarrier, Prop_Send, "m_vecOrigin", flCarrierPos);
 	
+	/*
 	int particle = 0;
 	//raygun_projectile_blue
 	switch(GetClientTeam(client))
@@ -658,6 +659,7 @@ static void Wand_Create_Tornado(int client, int iCarrier)
 	SetParent(iCarrier, particle);	
 	
 	Projectile_To_Particle[iCarrier] = EntIndexToEntRef(particle);
+	*/
 	
 	TORNADO_Radius[client] = 150.0;
 	
@@ -678,14 +680,16 @@ static void Wand_Create_Tornado(int client, int iCarrier)
 public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 {
 	int client = Projectile_To_Client[iCarrier];
-	int particle = Projectile_To_Particle[iCarrier];
+	// int particle = Projectile_To_Particle[iCarrier];
 	
 	if (!IsValidEdict(iCarrier) || iCarrier<=MaxClients || Duration_Tornado[iCarrier]<=GetGameTime())
 	{
+		/*
 		if(IsValidEdict(particle) && particle>MaxClients)
 		{
 			RemoveEntity(particle);
 		}
+		*/
 		if(IsValidEdict(iCarrier) && iCarrier>MaxClients)
 		{
 			RemoveEntity(iCarrier);
@@ -697,10 +701,12 @@ public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 	
 	if (!IsValidClient(client))
 	{
+		/*
 		if(IsValidEdict(particle) && particle>MaxClients)
 		{
 			RemoveEntity(particle);
 		}
+		*/
 		if(IsValidEdict(iCarrier) && iCarrier>MaxClients)
 		{
 			RemoveEntity(iCarrier);

@@ -2421,7 +2421,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "base_boss"))
 		{
-			RequestFrame(Check_For_Team_Npc, EntIndexToEntRef(entity));
+		//	RequestFrame(Check_For_Team_Npc, EntIndexToEntRef(entity));
+			SDKHook(entity, SDKHook_SpawnPost, Check_For_Team_Npc);
+		//	Check_For_Team_Npc(EntIndexToEntRef(entity)); //Dont delay ?
 		}
 		else if(!StrContains(classname, "func_breakable"))
 		{
@@ -2549,9 +2551,9 @@ public bool Projectile_ShouldCollide(int entity, int collisiongroup, int content
 	return false;
 }
 
-public void Check_For_Team_Npc(int ref)
+public void Check_For_Team_Npc(int entity)
 {
-	int entity = EntRefToEntIndex(ref);
+//	int entity = EntRefToEntIndex(ref);
 	if (IsValidEntity(entity))
 	{
 		CClotBody npcstats = view_as<CClotBody>(entity);
