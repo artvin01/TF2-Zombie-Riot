@@ -3274,7 +3274,7 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 	CTakeDamageInfo -= view_as<Address>(16*4);
 	if(!b_NpcHasDied[pThis])
 	{
-		b_NpcHasDied[entity] = true;
+		b_NpcHasDied[pThis] = true;
 		ZR_ApplyKillEffects(pThis); //Do kill attribute stuff
 		CClotBody npc = view_as<CClotBody>(pThis);
 		SDKUnhook(pThis, SDKHook_OnTakeDamage, NPC_OnTakeDamage_Base);
