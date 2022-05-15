@@ -706,6 +706,7 @@ public MRESReturn StartLagCompensationPost(Address manager, DHookParam param)
 		TF2_SetPlayerClass(Compensator, WeaponClass[Compensator], false, false); 
 	//	return MRES_Supercede;
 	}
+	return MRES_Ignored;
 }
 
 public void LagCompMovePlayersExceptYouBack()
