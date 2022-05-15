@@ -73,9 +73,9 @@ public void Weapon_Wind_Laser_Builder_Unused(int client, int weapon, const char[
 	
 	float flMultiplier = (GetGameTime() - GetEntPropFloat(weapon, Prop_Send, "m_flChargeBeginTime")) / 4.0; // 4.0 is the default one
 	
-	flMultiplier += 0.30; // Minimum dmg but also don't negate 100% dmg (3000 dmg min)
+	flMultiplier -= 0.30; // Minimum dmg is lower so they dont just spam the fuck out of it and expect more damage like idiots
 		
-	flMultiplier *= 1.8;
+	flMultiplier *= 2.2;
 	
 	BEAM_Targets_Hit[client] = 0.0;
 	Strength[client] = 400.0 * flMultiplier;
