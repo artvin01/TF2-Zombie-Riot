@@ -20,7 +20,7 @@
 #include <textstore>
 
 
-#tryinclude <menus-controller>
+//#tryinclude <menus-controller>
 
 
 #define NPC_HARD_LIMIT 32
