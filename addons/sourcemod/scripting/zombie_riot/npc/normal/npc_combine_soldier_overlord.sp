@@ -274,7 +274,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 					int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
 					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 					npc.m_flmovedelay = GetGameTime() + 1.0;
-					npc.m_flSpeed = 350.0;
+					npc.m_flSpeed = 380.0;
 				}
 			//	npc.FaceTowards(vecTarget);
 			}
@@ -304,7 +304,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
-			if(npc.m_flNextChargeSpecialAttack < GetGameTime() && npc.m_flReloadDelay < GetGameTime())
+			if(npc.m_flNextChargeSpecialAttack < GetGameTime() && npc.m_flReloadDelay < GetGameTime() && flDistanceToTarget < 422500)
 			{
 				npc.m_flNextChargeSpecialAttack = GetGameTime() + 20.0;
 				npc.m_flReloadDelay = GetGameTime() + 2.0;

@@ -164,24 +164,29 @@ public void DemoMain_ClotThink(int iNPC)
 	{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			
 			if(npc.m_flCharge_Duration < GetGameTime())
 			{
 				npc.m_flSpeed = 300.0;
 				if(npc.m_flCharge_delay < GetGameTime())
 				{
-					npc.PlayChargeSound();
-					npc.m_flCharge_delay = GetGameTime() + 10.0;
-					npc.m_flCharge_Duration = GetGameTime() + 1.5;
-					PluginBot_Jump(npc.index, vecTarget);
+					int Enemy_I_See;
+					Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+					//Target close enough to hit
+					if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
+					{
+						npc.PlayChargeSound();
+						npc.m_flCharge_delay = GetGameTime() + 10.0;
+						npc.m_flCharge_Duration = GetGameTime() + 1.5;
+						PluginBot_Jump(npc.index, vecTarget);
+					}
 				}
 			}
 			else
 			{
 				npc.m_flSpeed = 500.0;
 			}
-			
-		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {

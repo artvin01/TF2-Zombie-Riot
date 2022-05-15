@@ -309,7 +309,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 					int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
 					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 					npc.m_flmovedelay = GetGameTime() + 1.0;
-					npc.m_flSpeed = 350.0;
+					npc.m_flSpeed = 380.0;
 				}
 			//	npc.FaceTowards(vecTarget);
 			}
@@ -339,7 +339,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
-			if(npc.m_flNextChargeSpecialAttack < GetGameTime() && npc.m_flReloadDelay < GetGameTime() && !npc.m_fbRangedSpecialOn)
+			if(npc.m_flNextChargeSpecialAttack < GetGameTime() && npc.m_flReloadDelay < GetGameTime() && !npc.m_fbRangedSpecialOn && flDistanceToTarget < 422500)
 			{
 				npc.m_flNextChargeSpecialAttack = GetGameTime() + 20.0;
 				npc.m_flReloadDelay = GetGameTime() + 1.0;

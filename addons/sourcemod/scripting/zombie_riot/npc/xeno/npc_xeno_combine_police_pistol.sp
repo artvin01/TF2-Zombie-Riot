@@ -49,7 +49,7 @@ static char g_MeleeMissSounds[][] = {
 	"weapons/stunstick/spark3.wav",
 };
 
-public void XenoCombinePolicePistol_OnMapStart_NPC()
+public void XenoCombine_Police_Pistol_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}

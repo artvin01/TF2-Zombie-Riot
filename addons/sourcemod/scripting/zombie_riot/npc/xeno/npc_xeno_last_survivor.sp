@@ -88,9 +88,9 @@ static char g_PullSounds[][] = {
 };
 
 
-static char gGlow1;
-static char gExplosive1;
-static char gLaser1;
+static char gGlow1_Xeno;
+static char gExplosive1_Xeno;
+static char gLaser1_Xeno;
 
 public void XenoFatherGrigori_OnMapStart_NPC()
 {
@@ -106,9 +106,9 @@ public void XenoFatherGrigori_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
-	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
-	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
-	gExplosive1 = PrecacheModel("materials/sprites/sprite_fire01.vmt");
+	gLaser1_Xeno = PrecacheModel("materials/sprites/laser.vmt");
+	gGlow1_Xeno = PrecacheModel("sprites/blueglow2.vmt", true);
+	gExplosive1_Xeno = PrecacheModel("materials/sprites/sprite_fire01.vmt");
 	PrecacheModel("models/props_wasteland/rockgranite03b.mdl");
 	PrecacheModel("models/weapons/w_bullet.mdl");
 	PrecacheModel("models/weapons/w_grenade.mdl");
@@ -438,23 +438,29 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 			*/
 			if(npc.m_flNextTeleport < GetGameTime() && npc.m_flDoingAnimation < GetGameTime() && flDistanceToTarget < 260500)
 			{
-				if (!npc.Anger)
+				int Enemy_I_See;
+				Enemy_I_See = Can_I_See_Enemy(npc.index, closest);
+				//Target close enough to hit
+				if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == closest)
 				{
-					npc.FaceTowards(vecTarget, 500.0);
-					npc.m_flNextTeleport = GetGameTime() + 10.0;
-					npc.m_flDoingAnimation = GetGameTime() + 1.5;
-		//			npc.AddGesture("ACT_SIGNAL1");
-					npc.PlayPullSound();
-					XenoFatherGrigori_IOC_Invoke(npc.index, closest);
-				}
-				else if (npc.Anger)
-				{
-					npc.FaceTowards(vecTarget, 500.0);
-		//			npc.AddGesture("ACT_SIGNAL1");
-					npc.m_flNextTeleport = GetGameTime() + 7.0;
-					npc.m_flDoingAnimation = GetGameTime() + 1.5;
-					npc.PlayPullSound();
-					XenoFatherGrigori_IOC_Invoke(npc.index, closest);
+					if (!npc.Anger)
+					{
+						npc.FaceTowards(vecTarget, 500.0);
+						npc.m_flNextTeleport = GetGameTime() + 10.0;
+						npc.m_flDoingAnimation = GetGameTime() + 1.5;
+			//			npc.AddGesture("ACT_SIGNAL1");
+						npc.PlayPullSound();
+						XenoFatherGrigori_IOC_Invoke(npc.index, closest);
+					}
+					else if (npc.Anger)
+					{
+						npc.FaceTowards(vecTarget, 500.0);
+			//			npc.AddGesture("ACT_SIGNAL1");
+						npc.m_flNextTeleport = GetGameTime() + 7.0;
+						npc.m_flDoingAnimation = GetGameTime() + 1.5;
+						npc.PlayPullSound();
+						XenoFatherGrigori_IOC_Invoke(npc.index, closest);
+					}
 				}
 			}
 
@@ -556,10 +562,10 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 	position[1] = startPosition[1];
 	position[2] = startPosition[2] + 3000.0;	
 	
-	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 0.15, 25.0, 25.0, 0, 1.0, color, 3 );
+	TE_SetupBeamPoints(startPosition, position, gLaser1_Xeno, 0, 0, 0, 0.15, 25.0, 25.0, 0, NORMAL_ZOMBIE_VOLUME, color, 3 );
 	TE_SendToAll();
 	position[2] -= 1490.0;
-	TE_SetupGlowSprite(startPosition, gGlow1, 1.0, 1.0, 255);
+	TE_SetupGlowSprite(startPosition, gGlow1_Xeno, NORMAL_ZOMBIE_VOLUME, NORMAL_ZOMBIE_VOLUME, 255);
 	TE_SendToAll();
 }
 
@@ -590,13 +596,13 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			
 			position[0] += s;
 			position[1] += c;
-			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 150});
+			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
 	
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 150});
+			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
 			
 			// Stage 2
 			s=Sine((nphi+45.0)/360*6.28)*Iondistance;
@@ -606,13 +612,13 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			position[1] = startPosition[1];
 			position[0] += s;
 			position[1] += c;
-			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 150});
+			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
 			
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 150});
+			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
 			
 			// Stage 3
 			s=Sine((nphi+90.0)/360*6.28)*Iondistance;
@@ -622,13 +628,13 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			position[1] = startPosition[1];
 			position[0] += s;
 			position[1] += c;
-			XenoFatherGrigori_DrawIonBeam(position,{150, 255, 150, 150});
+			XenoFatherGrigori_DrawIonBeam(position,{150, 255, 150, 255});
 			
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			XenoFatherGrigori_DrawIonBeam(position,{150, 255, 150, 150});
+			XenoFatherGrigori_DrawIonBeam(position,{150, 255, 150, 255});
 			
 			// Stage 3
 			s=Sine((nphi+135.0)/360*6.28)*Iondistance;
@@ -638,13 +644,13 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			position[1] = startPosition[1];
 			position[0] += s;
 			position[1] += c;
-			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 150});
+			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
 			
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 150});
+			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
 	
 			if (nphi >= 360)
 				nphi = 0.0;
@@ -669,19 +675,19 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 		else
 		{
 			makeexplosion(-1, -1, startPosition, "", 150, 300);
-			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
+			TE_SetupExplosion(startPosition, gExplosive1_Xeno, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[2] += startPosition[2] + 900.0;
 			startPosition[2] += -200;
-			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 30.0, 30.0, 0, 1.0, {150, 255, 150, 255}, 3);
+			TE_SetupBeamPoints(startPosition, position, gLaser1_Xeno, 0, 0, 0, 2.0, 30.0, 30.0, 0, 1.0, {150, 255, 150, 255}, 3);
 			TE_SendToAll();
-			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 50.0, 50.0, 0, 1.0, {150, 255, 150, 255}, 3);
+			TE_SetupBeamPoints(startPosition, position, gLaser1_Xeno, 0, 0, 0, 2.0, 50.0, 50.0, 0, 1.0, {150, 255, 150, 255}, 3);
 			TE_SendToAll();
-			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {150, 255, 150, 255}, 3);
+			TE_SetupBeamPoints(startPosition, position, gLaser1_Xeno, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {150, 255, 150, 255}, 3);
 			TE_SendToAll();
-			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {150, 255, 150, 255}, 3);
+			TE_SetupBeamPoints(startPosition, position, gLaser1_Xeno, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {150, 255, 150, 255}, 3);
 			TE_SendToAll();
 	
 			position[2] = startPosition[2] + 50.0;

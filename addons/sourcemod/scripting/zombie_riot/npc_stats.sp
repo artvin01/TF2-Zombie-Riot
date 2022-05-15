@@ -1102,6 +1102,50 @@ public void OnMapStart_NPC_Base()
 	CombineDeutsch_OnMapStart_NPC();
 	SpyMainBoss_OnMapStart_NPC();
 	
+	XenoHeadcrabZombie_OnMapStart_NPC();
+	XenoFortified_HeadcrabZombie_OnMapStart_NPC();
+	XenoFastZombie_OnMapStart_NPC();
+	XenoFortifiedFastZombie_OnMapStart_NPC();
+	XenoTorsolessHeadcrabZombie_OnMapStart_NPC();
+	XenoFortifiedGiantPoisonZombie_OnMapStart_NPC();
+	XenoPoisonZombie_OnMapStart_NPC();
+	XenoFortifiedPoisonZombie_OnMapStart_NPC();
+	XenoFatherGrigori_OnMapStart_NPC();
+	
+	XenoCombine_Police_Pistol_OnMapStart_NPC();
+	XenoCombinePoliceSmg_OnMapStart_NPC();
+	XenoCombineSoldierAr2_OnMapStart_NPC();
+	XenoCombineSoldierShotgun_OnMapStart_NPC();
+	XenoCombineSwordsman_OnMapStart_NPC();
+	XenoCombineElite_OnMapStart_NPC();
+	XenoCombineGaint_OnMapStart_NPC();
+	XenoCombineDDT_OnMapStart_NPC();
+	XenoCombineCollos_OnMapStart_NPC();
+	XenoCombineOverlord_OnMapStart_NPC();
+	
+	XenoScout_OnMapStart_NPC();
+	XenoEngineer_OnMapStart_NPC();
+	XenoHeavy_OnMapStart_NPC();
+	XenoFlyingArmor_OnMapStart_NPC();
+	XenoFlyingArmorTiny_OnMapStart_NPC();
+	XenoKamikaze_OnMapStart_NPC();
+	MedicHealer_OnMapStart_NPC();
+	XenoHeavyGiant_OnMapStart_NPC();
+	XenoSpy_OnMapStart_NPC();
+	XenoSoldier_OnMapStart_NPC();
+	XenoSoldierMinion_OnMapStart_NPC();
+	XenoSoldierGiant_OnMapStart_NPC();
+	
+	XenoSpyThief_OnMapStart_NPC();
+	XenoSpyTrickstabber_OnMapStart_NPC();
+	XenoSpyCloaked_OnMapStart_NPC();
+	XenoSniperMain_OnMapStart_NPC();
+	XenoDemoMain_OnMapStart_NPC();
+	XenoMedicMain_OnMapStart_NPC();
+	XenoPyroGiant_OnMapStart_NPC();
+	XenoCombineDeutsch_OnMapStart_NPC();
+	XenoSpyMainBoss_OnMapStart_NPC();
+	
 	NaziPanzer_OnMapStart_NPC();
 	BobTheGod_OnMapStart_NPC();
 	NecroCombine_OnMapStart_NPC();
@@ -1115,6 +1159,7 @@ public void OnMapStart_NPC_Base()
 	DDT_MapStart();
 	Bad_MapStart();
 	AltMedicApprenticeMage_OnMapStart_NPC();
+	
 }
 
 

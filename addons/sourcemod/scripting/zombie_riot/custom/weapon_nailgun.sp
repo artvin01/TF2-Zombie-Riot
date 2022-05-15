@@ -38,12 +38,12 @@ public void Weapon_Nailgun(int client, int weapon, bool crit)
 
 	if(mana_cost <= Current_Mana[client])
 	{
-		float damage = 5.0;
+		float damage = 7.5;
 		damage *= Attributes_FindOnPlayer(client, 287);
 		
-		if(damage < 5.0)
+		if(damage < 7.5)
 		{
-			damage = 5.0;
+			damage = 7.5;
 		}
 		
 		float Sniper_Sentry_Bonus_Removal = Attributes_FindOnPlayer(client, 344);

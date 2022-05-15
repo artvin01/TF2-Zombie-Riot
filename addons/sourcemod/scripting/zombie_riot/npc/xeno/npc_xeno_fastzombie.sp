@@ -249,13 +249,21 @@ public void XenoFastZombie_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-					
-		if(npc.m_flJumpCooldown < GetGameTime() && npc.m_flInJump < GetGameTime())
+		
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);		
+		
+		if(npc.m_flJumpCooldown < GetGameTime() && npc.m_flInJump < GetGameTime() && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
 		{
-			npc.m_flInJump = GetGameTime() + 0.65;
-			
-			npc.m_flJumpCooldown = GetGameTime() + 0.5;
-			npc.PlayLeapPrepare();
+			int Enemy_I_See;
+			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+			//Target close enough to hit
+			if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex)
+			{
+				npc.m_flInJump = GetGameTime() + 0.65;
+				
+				npc.m_flJumpCooldown = GetGameTime() + 0.5;
+				npc.PlayLeapPrepare();
+			}
 			
 		}
 		if(npc.m_flJumpCooldown < GetGameTime() && npc.m_flInJump > GetGameTime())
@@ -274,8 +282,6 @@ public void XenoFastZombie_ClotThink(int iNPC)
 			return;
 			
 		}
-		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
