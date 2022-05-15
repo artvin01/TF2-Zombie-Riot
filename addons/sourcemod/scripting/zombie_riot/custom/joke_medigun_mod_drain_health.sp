@@ -766,11 +766,12 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			}
 		}
 	}
-	
+	/*
 	if(!LastMann)
 	{
 		TF2_AddCondition(owner, TFCond_SpeedBuffAlly, 0.0001); // This is the most ugly fix i had to do, but i have no idea how to fix it otherwise.
 	}
+	*/
 	return MRES_Ignored;
 }
 
