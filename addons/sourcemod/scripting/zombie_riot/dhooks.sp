@@ -1456,7 +1456,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			
 		if(f_TimeUntillNormalHeal[target] > GetGameTime())
 		{
-			HealAmmount /= 4; //make sure they dont get the full benifit if hurt recently.
+			HealAmmount /= 8; //make sure they dont get the full benifit if hurt recently.
 		}
 		
 		if(ammo_amount_left > HealAmmount)
