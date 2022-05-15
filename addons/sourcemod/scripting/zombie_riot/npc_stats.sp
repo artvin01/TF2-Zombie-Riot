@@ -1344,12 +1344,19 @@ methodmap CClotBody
 		
 		if(Ally)
 		{
-			SetEntityCollisionGroup(npc, 24);
 			SetEntProp(npc, Prop_Send, "m_iTeamNum", TFTeam_Red);
 		}
 		else
 		{
 			SetEntProp(npc, Prop_Send, "m_iTeamNum", TFTeam_Blue);
+		}
+		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
+		
+		DispatchSpawn(npc); //Do this at the end :)
+		
+		if(Ally)
+		{
+			SetEntityCollisionGroup(npc, 24);
 		}
 		
 		//Enable Harder zombies once in freeplay.
@@ -1464,8 +1471,6 @@ methodmap CClotBody
 		
 		SetEntProp(npc, Prop_Data, "m_nSolidType", 2); 
 		
-		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
-		
 		
 		
 		//Don't bleed.
@@ -1518,8 +1523,6 @@ methodmap CClotBody
 		HeadcrabZombie CreatePathfinderIndex = view_as<HeadcrabZombie>(npc);
 		
 		CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.4, 1.75); //Global.
-		
-		DispatchSpawn(npc); //Do this at the end :)
 		
 		return view_as<CClotBody>(npc);
 	}
