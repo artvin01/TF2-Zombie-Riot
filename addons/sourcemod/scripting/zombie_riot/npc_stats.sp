@@ -1344,6 +1344,10 @@ methodmap CClotBody
 		
 		if(Ally)
 		{
+			if(Ally_Invince)
+			{
+				b_ThisEntityIgnored[npc] = true;
+			}
 			SetEntProp(npc, Prop_Send, "m_iTeamNum", TFTeam_Red);
 		}
 		else
