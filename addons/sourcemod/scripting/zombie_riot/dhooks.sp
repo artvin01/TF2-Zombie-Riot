@@ -116,12 +116,15 @@ void See_Projectile_Team(int ref)
 void See_Projectile_Team_Player(int ref)
 {
 	int entity = EntRefToEntIndex(ref);
-	if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
+	if (IsValidEntity(entity))
 	{
-		b_Is_Player_Rocket_Through_Npc[entity] = true;	 //try this
-		//Update: worked! Will now pass through players/teammates
-		//Nice.
-	}	
+		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
+		{
+			b_Is_Player_Rocket_Through_Npc[entity] = true;	 //try this
+			//Update: worked! Will now pass through players/teammates
+			//Nice.
+		}	
+	}
 }
 
 public void ApplyExplosionDhook_Rocket(int entity)

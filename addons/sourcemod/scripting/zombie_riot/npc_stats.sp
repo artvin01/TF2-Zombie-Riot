@@ -1341,7 +1341,6 @@ methodmap CClotBody
 		DispatchKeyValue(npc,	   "model",	  model);
 		DispatchKeyValue(npc,	   "modelscale", modelscale);
 		DispatchKeyValue(npc,	   "health",	 health);
-		DispatchSpawn(npc);
 		
 		if(Ally)
 		{
@@ -1519,6 +1518,8 @@ methodmap CClotBody
 		HeadcrabZombie CreatePathfinderIndex = view_as<HeadcrabZombie>(npc);
 		
 		CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.4, 1.75); //Global.
+		
+		DispatchSpawn(npc); //Do this at the end :)
 		
 		return view_as<CClotBody>(npc);
 	}
