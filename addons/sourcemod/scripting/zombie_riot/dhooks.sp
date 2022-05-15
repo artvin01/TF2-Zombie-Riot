@@ -75,7 +75,7 @@ void DHook_Setup()
 	GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
 //	DHook_CreateDetour(gamedata, "CLagCompensationManager::StartLagCompensation", DHook_StartLagCompensationPre, DHook_StartLagCompensationPost);
 	
-	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::StartLagCompensation", StartLagCompensation, _);
+	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::StartLagCompensation", StartLagCompensationPre, StartLagCompensationPost);
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FinishLagCompensation", FinishLagCompensation, _);
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FrameUpdatePostEntityThink_SIGNATURE", _, LagCompensationThink);
 	
@@ -524,7 +524,7 @@ public void StartLagCompResetValues()
 	
 }
 //if you find a way thats better to ignore fellow dispensers then tell me..!
-public MRESReturn StartLagCompensation(Address manager, DHookParam param)
+public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 {
 	int Compensator = param.Get(1);
 	StartLagCompResetValues();
@@ -690,13 +690,23 @@ public MRESReturn StartLagCompensation(Address manager, DHookParam param)
 	
 	if(b_LagCompNPC_BlockInteral)
 	{
+		TF2_SetPlayerClass(Compensator, TFClass_Scout, false, false); //Make sure they arent a medic during this! Reason: Mediguns lag comping, need both to be a medic and have a medigun
 		LagCompMovePlayersExceptYou(Compensator);
-		return MRES_Supercede;
+		
+	//	return MRES_Supercede;
 	}
 	
 	return MRES_Ignored;
 }
-
+public MRESReturn StartLagCompensationPost(Address manager, DHookParam param)
+{
+	int Compensator = param.Get(1);
+	if(b_LagCompNPC_BlockInteral)
+	{
+		TF2_SetPlayerClass(Compensator, WeaponClass[Compensator], false, false); 
+	//	return MRES_Supercede;
+	}
+}
 
 public void LagCompMovePlayersExceptYouBack()
 {
@@ -897,7 +907,7 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 	{
 		LagCompMovePlayersExceptYouBack();
 		Move_Players = 0;
-		return MRES_Supercede;
+//		return MRES_Supercede;
 	}
 	return MRES_Ignored;
 //	return MRES_Supercede;
