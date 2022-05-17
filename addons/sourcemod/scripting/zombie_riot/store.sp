@@ -234,6 +234,7 @@ static const int RenderColors[][] =
 
 static Cookie CookieCache;
 static Cookie CookieData;
+Cookie CookieLoadout;
 static ArrayList StoreItems;
 static int Equipped[MAXTF2PLAYERS][6];
 static bool NPCOnly[MAXTF2PLAYERS];
@@ -247,6 +248,7 @@ void Store_PluginStart()
 {
 	CookieCache = new Cookie("zr_lastgame", "The last game saved data is from", CookieAccess_Protected);
 	CookieData = new Cookie("zr_gamedata", "The last game saved data is from", CookieAccess_Protected);
+	CookieLoadout = new Cookie("zr_lastloadout", "The last loadout saved data is from", CookieAccess_Protected);
 }
 
 void Store_ConfigSetup(KeyValues map)
@@ -419,6 +421,20 @@ void Store_Reset()
 	}
 }
 
+bool Store_HasAnyItem(int client)
+{
+	Item item;
+	int length = StoreItems.Length;
+	for(int i; i<length; i++)
+	{
+		StoreItems.GetArray(i, item);
+		if(item.Owned[client])
+			return true;
+	}
+	
+	return false;
+}
+
 bool Store_PutInServer(int client)
 {
 	Item item;
@@ -475,66 +491,95 @@ bool Store_PutInServer(int client)
 
 void Store_ClientCookiesCached(int client)
 {
-	char buffer[512];
+	char buffer[16];
 	CookieCache.Get(client, buffer, sizeof(buffer));
 	if(CurrentGame && StringToInt(buffer) == CurrentGame)
+		Store_LoadLoadout(client, CookieData);
+}
+
+bool Store_LoadLoadout(int client, Cookie cookie)
+{
+	char buffer[512];
+	static int buffers[128];
+	cookie.Get(client, buffer, sizeof(buffer));
+	if(!buffer[0])
+		return false;
+	
+	int length = ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
+	CashSpent[client] = buffers[0];
+	
+	int i = 1;
+	for(; i<=sizeof(Equipped[]); i++)
 	{
-		static int buffers[128];
-		CookieData.Get(client, buffer, sizeof(buffer));
-		int length = ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
-		CashSpent[client] = buffers[0];
-		
-		int i = 1;
-		for(; i<=sizeof(Equipped[]); i++)
+		Equipped[client][i-1] = buffers[i];
+	}
+	
+	Item item;
+	int items = StoreItems.Length;
+	for(i++; i<length; i+=2)
+	{
+		if(buffers[i-1] > 0 && buffers[i-1] < items)
 		{
-			Equipped[client][i-1] = buffers[i];
-		}
-		
-		Item item;
-		int items = StoreItems.Length;
-		for(i++; i<length; i+=2)
-		{
-			if(buffers[i-1] > 0 && buffers[i-1] < items)
+			StoreItems.GetArray(buffers[i-1], item);
+			if(item.Scale)
 			{
-				StoreItems.GetArray(buffers[i-1], item);
-				if(item.Scale)
-				{
-					item.Scaled[client] = buffers[i];
-					item.Owned[client] = 0;
-				}
-				else if(buffers[i] > 0)
-				{
-					item.Scaled[client] = 0;
-					item.Owned[client] = buffers[i];
-				}
-				StoreItems.SetArray(buffers[i-1], item);
+				item.Scaled[client] = buffers[i];
+				item.Owned[client] = 0;
 			}
-		}
-		
-		if(IsClientInGame(client))
-		{
-			PrintToChat(client, "Your loadout was updated from your previous state.");
-			if(IsPlayerAlive(client))
-				TF2_RegeneratePlayer(client);
+			else if(buffers[i] > 0)
+			{
+				item.Scaled[client] = 0;
+				item.Owned[client] = buffers[i];
+			}
+			StoreItems.SetArray(buffers[i-1], item);
 		}
 	}
+	
+	if(IsClientInGame(client))
+	{
+		PrintToChat(client, "Your loadout was updated from your previous state.");
+		if(IsPlayerAlive(client))
+			TF2_RegeneratePlayer(client);
+	}
+	return true;
 }
 
 void Store_ClientDisconnect(int client)
 {
-	char buffer[512];
+	char buffer[16];
 	IntToString(CurrentGame, buffer, sizeof(buffer));
 	CookieCache.Set(client, buffer);
-	
-	Format(buffer, sizeof(buffer), "%d;%d", CashSpent[client], Equipped[client][0]);
 	
 	CashSpent[client] = 0;
 	Equipped[client][0] = -1;
 	
 	for(int i=1; i<sizeof(Equipped[]); i++)
 	{
-		Format(buffer, sizeof(buffer), "%s;%d", buffer, Equipped[client][i]);
 		Equipped[client][i] = -1;
+	}
+	
+	Item item;
+	int length = StoreItems.Length;
+	for(int i; i<length; i++)
+	{
+		StoreItems.GetArray(i, item);
+		if(item.Owned[client] || item.Scaled[client])
+		{
+			item.Owned[client] = 0;
+			item.Scaled[client] = 0;
+			StoreItems.SetArray(i, item);
+		}
+	}
+}
+
+void Store_SaveLoadout(int client, Cookie cookie)
+{
+	char buffer[512];
+	Format(buffer, sizeof(buffer), "%d;%d", CashSpent[client], Equipped[client][0]);
+	
+	for(int i=1; i<sizeof(Equipped[]); i++)
+	{
+		Format(buffer, sizeof(buffer), "%s;%d", buffer, Equipped[client][i]);
 	}
 	
 	Item item;
@@ -545,21 +590,14 @@ void Store_ClientDisconnect(int client)
 		if(item.Scaled[client])
 		{
 			Format(buffer, sizeof(buffer), "%s;%d;%d", buffer, i, item.Scaled[client]);
-			
-			item.Owned[client] = 0;
-			item.Scaled[client] = 0;
-			StoreItems.SetArray(i, item);
 		}
 		else if(item.Owned[client])
 		{
 			Format(buffer, sizeof(buffer), "%s;%d;%d", buffer, i, item.Owned[client]);
-			
-			item.Owned[client] = 0;
-			item.Scaled[client] = 0;
-			StoreItems.SetArray(i, item);
 		}
 	}
-	CookieData.Set(client, buffer);
+	
+	cookie.Set(client, buffer);
 }
 
 public void Store_RandomizeNPCStore()
