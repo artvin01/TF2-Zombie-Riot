@@ -5,12 +5,34 @@
 
 #define SOUND_BEEP			"buttons/button17.wav"
 
-static const char Drops[][] =
+enum
 {
+	Rarity_Common = 0,
+	Rarity_Uncommon = 1,
+	Rarity_Rare = 2
+}
+
+static const char CommonDrops[][] =
+{
+	"",
+	""
+};
+
+static const char UncommonDrops[][] =
+{
+	"",
+	""
+};
+
+static const char RareDrops[][] =
+{
+	"",
 	""
 };
 
 int g_BeamIndex = -1;
+
+int i_RarityType[MAXENTITIES];
 
 public void Map_Precache_Zombie_Drops_Gift()
 {
@@ -25,17 +47,30 @@ public void Gift_DropChance(int entity)
 	{
 		if(GetRandomFloat(0.0, 1.0) < (GIFT_CHANCE / MultiGlobal + 0.00001)) //Never let it divide by 0
 		{
+			int rarity = RollRandom();
+			
 			float VecOrigin[3];
 			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 			for (int client = 1; client <= MaxClients; client++)
 			{
 				if (IsValidClient(client) && IsPlayerAlive(client) && GetClientTeam(client) == view_as<int>(TFTeam_Red))
 				{
-					Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, client);
+					Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, client, rarity);
 				}
 			}
 		}		
 	}
+}
+
+static int RollRandom()
+{
+	if(!(GetURandomInt() % 10))
+		return Rarity_Rare;
+	
+	if(!(GetURandomInt() % 3))
+		return Rarity_Uncommon;
+	
+	return Rarity_Common;
 }
 
 float f_RingDelayGift[MAXENTITIES];
@@ -78,19 +113,61 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 						{
 							static char buffer[64];
 							TextStore_GetItemName(i, buffer, sizeof(buffer));
-							for(int a; a<sizeof(Drops); a++)
+							
+							if(length && i_RarityType[entity] >= Rarity_Rare)
 							{
-								if(StrEqual(buffer, Drops[a], false))
+								for(int a; a<sizeof(RareDrops); a++)
 								{
-									int amount;
-									TextStore_GetInv(client, i, amount);
-									if(!amount)
+									if(StrEqual(buffer, RareDrops[a], false))
 									{
-										TextStore_SetInv(client, i, amount + 1);
-										length = 0;
+										int amount;
+										TextStore_GetInv(client, i, amount);
+										if(!amount)
+										{
+											TextStore_SetInv(client, i, amount + 1);
+											length = 0;
+										}
+										
+										break;
 									}
-									
-									break;
+								}
+							}
+							
+							if(length && i_RarityType[entity] >= Rarity_Uncommon)
+							{
+								for(int a; a<sizeof(UncommonDrops); a++)
+								{
+									if(StrEqual(buffer, UncommonDrops[a], false))
+									{
+										int amount;
+										TextStore_GetInv(client, i, amount);
+										if(!amount)
+										{
+											TextStore_SetInv(client, i, amount + 1);
+											length = 0;
+										}
+										
+										break;
+									}
+								}
+							}
+							
+							if(length)
+							{
+								for(int a; a<sizeof(CommonDrops); a++)
+								{
+									if(StrEqual(buffer, CommonDrops[a], false))
+									{
+										int amount;
+										TextStore_GetInv(client, i, amount);
+										if(!amount)
+										{
+											TextStore_SetInv(client, i, amount + 1);
+											length = 0;
+										}
+										
+										break;
+									}
 								}
 							}
 						}
@@ -116,7 +193,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime, int client)
+stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime, int client, int rarity)
 {
 	int m_iGift = CreateEntityByName("prop_physics_override")
 	if(m_iGift != -1)
@@ -135,6 +212,8 @@ stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime
 		SetEntityCollisionGroup(m_iGift, 1);
 	
 		TeleportEntity(m_iGift, position, NULL_VECTOR, NULL_VECTOR);
+		
+		i_RarityType[m_iGift] = rarity;
 		
 		int glow = TF2_CreateGlow(m_iGift);
 		

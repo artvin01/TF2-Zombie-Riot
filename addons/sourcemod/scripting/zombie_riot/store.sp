@@ -1,5 +1,11 @@
 static int HighestTier;
 
+static const int SlotLimits[] =
+{
+	1,
+	1
+};
+
 enum struct ItemInfo
 {
 	int Cost;
@@ -161,6 +167,7 @@ enum struct Item
 	int Scale;
 	int MaxCost;
 	int Level;
+	int Slot;
 	bool Default;
 	bool NoEscape;
 	bool Hidden;
@@ -302,6 +309,7 @@ static void ConfigSetup(int section, KeyValues kv, bool noescape, bool hidden)
 		item.Default = view_as<bool>(kv.GetNum("default"));
 		item.Scale = kv.GetNum("scale");
 		item.MaxCost = kv.GetNum("maxcost");
+		item.Slot = kv.GetNum("slot", -1);
 		item.ItemInfos = new ArrayList(sizeof(ItemInfo));
 		
 		ItemInfo info;
@@ -321,6 +329,7 @@ static void ConfigSetup(int section, KeyValues kv, bool noescape, bool hidden)
 	}
 	else if(kv.GotoFirstSubKey())
 	{
+		item.Slot = -1;
 		int sec = StoreItems.PushArray(item);
 		do
 		{
@@ -951,6 +960,7 @@ static void MenuPage(int client, int section)
 	bool found;
 	char buffer[96];
 	int length = StoreItems.Length;
+	Item item2;
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
@@ -966,6 +976,29 @@ static void MenuPage(int client, int section)
 		
 		if(item.TextStore[0] && !HasNamedItem(client, item.TextStore))
 			continue;
+		
+		if(!item.Owned[client] && item.Slot >= 0)
+		{
+			int count;
+			for(int a; a<length; a++)
+			{
+				if(a == i)
+					continue;
+				
+				StoreItems.GetArray(a, item2);
+				if(item2.Owned[client] && item2.Slot == item.Slot)
+					count++;
+			}
+			
+			if(count)
+			{
+				if(item.Slot < sizeof(SlotLimits))
+					continue;
+				
+				if(count >= SlotLimits[item.Slot])
+					continue;
+			}
+		}
 		
 		if(!item.ItemInfos)
 		{
