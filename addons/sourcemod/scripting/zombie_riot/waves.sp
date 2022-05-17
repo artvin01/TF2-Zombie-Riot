@@ -257,6 +257,8 @@ void Waves_RoundStart()
 	Enemies = new ArrayStack(sizeof(Enemy));
 	
 	Waves_RoundEnd();
+	CurrentRound = 0;
+	CurrentWave = -1;
 	
 	#if defined NormalRound
 	
@@ -301,8 +303,6 @@ void Waves_RoundEnd()
 	InSetup = true;
 //	InFreeplay = false;
 	WaveIntencity = 0;
-	CurrentRound = 0;
-	CurrentWave = -1;
 }
 
 public Action Waves_RoundStartTimer(Handle timer)
@@ -315,7 +315,15 @@ public Action Waves_RoundStartTimer(Handle timer)
 			if(IsClientInGame(client) && IsPlayerAlive(client) && !IsFakeClient(client))
 			{
 				any_player_on = true;
-				Store_PutInServer(client);
+				
+				if(Store_HasAnyItem(client))
+				{
+					Store_SaveLoadout(client, CookieLoadout);
+				}
+				else if(!Store_LoadLoadout(client, CookieLoadout))
+				{
+					Store_PutInServer(client);
+				}
 			}
 		}
 		if(any_player_on)
@@ -700,7 +708,6 @@ void Waves_Progress()
 			Rounds.GetArray(length, round);
 		//	if( 1 == 1)//	if(!LastMann || round.Setup > 0.0)
 			{
-				int defaul;
 				for(int client=1; client<=MaxClients; client++)
 				{
 					if(IsClientInGame(client))
