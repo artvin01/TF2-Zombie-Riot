@@ -225,18 +225,38 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		int health, isBoss;
 		if(panzer)
 		{
+			int what_boss = 0;
 			entity = list.Get(GetRandomInt(0, entity-1));
 			isBoss = false;
 			int deathforcepowerup = 0;
 			if(panzer_warning)
 			{
 				deathforcepowerup = 2;
-				for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
+				switch(GetRandomInt(0,1))
 				{
-					if(IsClientInGame(panzer_warning_client) && GetClientTeam(panzer_warning_client)==2)
+					case 0:
 					{
-						EmitSoundToClient(panzer_warning_client,"zombie_riot/panzer/siren.mp3", panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
-						EmitSoundToClient(panzer_warning_client,"zombie_riot/panzer/siren.mp3", panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
+						what_boss = 0;
+						for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
+						{
+							if(IsClientInGame(panzer_warning_client) && GetClientTeam(panzer_warning_client)==2)
+							{
+								EmitSoundToClient(panzer_warning_client,"zombie_riot/panzer/siren.mp3", panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
+								EmitSoundToClient(panzer_warning_client,"zombie_riot/panzer/siren.mp3", panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
+							}
+						}
+					}
+					case 1:
+					{
+						what_boss = 1;
+						for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
+						{
+							if(IsClientInGame(panzer_warning_client) && GetClientTeam(panzer_warning_client)==2)
+							{
+								EmitSoundToClient(panzer_warning_client,"zombie_riot/sawrunner/iliveinyourwalls.mp3", panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
+								EmitSoundToClient(panzer_warning_client,"zombie_riot/sawrunner/iliveinyourwalls.mp3", panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
+							}
+						}	
 					}
 				}
 				isBoss = true;
@@ -264,12 +284,24 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			}
 			
 			f_SpawnerCooldown[entity] = gameTime + 2.0;
-			DataPack pack;
-			CreateDataTimer(2.0, Timer_Delayed_PanzerSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
-			pack.WriteCell(EntIndexToEntRef(entity));
-			pack.WriteCell(isBoss);		
-			pack.WriteCell(health);	
-			pack.WriteCell(deathforcepowerup);			
+			if(what_boss == 0)
+			{	
+				DataPack pack;
+				CreateDataTimer(2.0, Timer_Delayed_PanzerSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
+				pack.WriteCell(EntIndexToEntRef(entity));
+				pack.WriteCell(isBoss);		
+				pack.WriteCell(health);	
+				pack.WriteCell(deathforcepowerup);
+			}	
+			else if(what_boss == 1)
+			{			
+				DataPack pack;
+				CreateDataTimer(2.0, Timer_Delayed_SawrunnerSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
+				pack.WriteCell(EntIndexToEntRef(entity));
+				pack.WriteCell(isBoss);		
+				pack.WriteCell(health);	
+				pack.WriteCell(deathforcepowerup);			
+			}
 		}
 		else
 		{
@@ -328,6 +360,48 @@ void NPC_AddToArray(int entity)
 		npc.Ref = EntIndexToEntRef(entity);
 		NPCList.PushArray(npc);
 	}
+}
+public Action Timer_Delayed_SawrunnerSpawn(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int spawner_entity = EntRefToEntIndex(pack.ReadCell());
+	bool isBoss = pack.ReadCell();
+	int health = pack.ReadCell();
+	int forcepowerup = pack.ReadCell();
+	if(IsValidEdict(spawner_entity) && spawner_entity>MaxClients)
+	{
+		float pos[3], ang[3];
+		float gameTime = GetGameTime();
+		f_SpawnerCooldown[spawner_entity] = gameTime + 2.0;
+			
+		GetEntPropVector(spawner_entity, Prop_Data, "m_vecOrigin", pos);
+		GetEntPropVector(spawner_entity, Prop_Data, "m_angRotation", ang);
+		Zombies_Currently_Still_Ongoing += 1;
+		int entity = Npc_Create(SAWRUNNER, -1, pos, ang);
+		if(entity != -1)
+		{
+			if(health)
+			{
+				SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+				SetEntProp(entity, Prop_Data, "m_iHealth", health);
+			}
+			
+			CClotBody npcstats = view_as<CClotBody>(entity);
+			if(isBoss)
+			{
+				SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
+				npcstats.m_bThisNpcIsABoss = true; //Set to true!
+			}
+			else
+			{
+				npcstats.m_bThisNpcIsABoss = false; //Set to true!
+			}
+			
+			b_NpcForcepowerupspawn[entity] = forcepowerup;
+			NPC_AddToArray(entity);
+		}
+	}
+	return Plugin_Handled;
 }
 
 public Action Timer_Delayed_PanzerSpawn(Handle timer, DataPack pack)

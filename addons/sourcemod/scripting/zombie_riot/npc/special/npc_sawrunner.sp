@@ -1,76 +1,71 @@
 static const char g_DeathSounds[][] = {
-	"npc/combine_soldier/die1.wav",
-	"npc/combine_soldier/die2.wav",
-	"npc/combine_soldier/die3.wav",
-};
-
-static const char g_HurtSounds[][] = {
-	"npc/combine_soldier/pain1.wav",
-	"npc/combine_soldier/pain2.wav",
-	"npc/combine_soldier/pain3.wav",
-};
-
-static const char g_IdleSounds[][] = {
-	"npc/combine_soldier/vo/alert1.wav",
-	"npc/combine_soldier/vo/bouncerbouncer.wav",
-	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfirm.wav",
+	"zombie_riot/sawrunner/death.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"npc/combine_soldier/vo/alert1.wav",
-	"npc/combine_soldier/vo/bouncerbouncer.wav",
-	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfim.wav",
+	"zombie_riot/sawrunner/passive.mp3",
 };
+
 static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	"zombie_riot/sawrunner/attack1.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/demo_sword_swing1.wav",
-	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
+	"zombie_riot/sawrunner/attack1.mp3",
+	"zombie_riot/sawrunner/attack2.mp3",
 };
 
-
-static const char g_RangedAttackSounds[][] = {
-	"weapons/ar2/fire1.wav",
-};
-
-static const char g_RangedAttackSoundsSecondary[][] = {
-	"weapons/physcannon/energy_sing_explosion2.wav",
-};
 
 static const char g_RangedReloadSound[][] = {
 	"weapons/ar2/npc_ar2_reload.wav",
 };
 
 static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
+	"zombie_riot/sawrunner/attacksaw2.mp3",
+};
+
+static const char g_IdleChainsaw[][] = {
+	"zombie_riot/sawrunner/chainsaw_loop.mp3",
+};
+
+static const char g_IdleMusic[][] = {
+	"zombie_riot/sawrunner/near_loop.mp3",
 };
 
 void SawRunner_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
+	for (int i = 0; i < (sizeof(g_IdleChainsaw));   i++) { PrecacheSound(g_IdleChainsaw[i]);   }
+	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSound(g_IdleMusic[i]);   }
+	PrecacheModel("models/zombie_riot/cof/sawrunner.mdl");
 }
+
+static float fl_PlayIdleAlertSound[MAXENTITIES];
+static float fl_PlayMusicSound[MAXENTITIES];
 
 methodmap SawRunner < CClotBody
 {
+	
+	property float m_flPlayIdleAlertSound
+	{
+		public get()							{ return fl_PlayIdleAlertSound[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_PlayIdleAlertSound[this.index] = TempValueForProperty; }
+	}
+	property float m_flPlayMusicSound
+	{
+		public get()							{ return fl_PlayMusicSound[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_PlayMusicSound[this.index] = TempValueForProperty; }
+	}
+	
 	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetEngineTime())
 			return;
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(24.0, 48.0);
+		EmitSoundToAll(g_IdleChainsaw[GetRandomInt(0, sizeof(g_IdleChainsaw) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		this.m_flNextIdleSound = GetEngineTime() + 2.5;
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
@@ -78,92 +73,52 @@ methodmap SawRunner < CClotBody
 	}
 	
 	public void PlayIdleAlertSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flPlayIdleAlertSound > GetGameTime())
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		this.m_flPlayIdleAlertSound = GetGameTime() + GetRandomFloat(12.0, 17.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
 	}
 	
-	public void PlayHurtSound() {
-		if(this.m_flNextHurtSound > GetGameTime())
+	public void PlayMusicSound() {
+		if(this.m_flPlayMusicSound > GetEngineTime())
 			return;
-			
-		this.m_flNextHurtSound = GetGameTime() + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		this.m_flPlayMusicSound = GetEngineTime() + 44.0;
 		
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
 	}
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
-	}
-	
-	public void PlayRangedSound() {
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
-	}
-	public void PlayRangedReloadSound() {
-		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
-	}
-	public void PlayRangedAttackSecondarySound() {
-		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
 	}
 	
 	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
 	}
 	
 	
 	public SawRunner(int client, float vecPos[3], float vecAng[3])
 	{
-		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500"));
+		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner.mdl", "1.5", "1500", false, false, true));
 		
-		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_SWORDSMAN;
+		i_NpcInternalId[npc.index] = SAWRUNNER;
 		
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -173,14 +128,11 @@ methodmap SawRunner < CClotBody
 		
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
+		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
+		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, SawRunner_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, SawRunner_ClotThink);
-	
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 200.0;
@@ -190,18 +142,7 @@ methodmap SawRunner < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
-		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("0.7");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/jul13_trojan_helmet/jul13_trojan_helmet.mdl");
-		SetVariantString("1.25");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		npc.m_bDissapearOnDeath = true;
 		
 		PF_StartPathing(npc.index);
 		npc.m_bPathing = true;
@@ -218,9 +159,6 @@ public void SawRunner_ClotThink(int iNPC)
 {
 	SawRunner npc = view_as<SawRunner>(iNPC);
 	
-	SetVariantInt(1);
-	AcceptEntityInput(iNPC, "SetBodyGroup");
-	
 	if(npc.m_flNextDelayTime > GetGameTime())
 	{
 		return;
@@ -230,16 +168,40 @@ public void SawRunner_ClotThink(int iNPC)
 	
 	npc.Update();	
 	
+	if(npc.m_flAttackHappens_bullshit >= GetGameTime())
+	{
+		npc.m_flSpeed = 0.0;
+	}
+	else
+	{
+		npc.m_flSpeed = 450.0;
+	}
+	
 	if(npc.m_flNextThinkTime > GetGameTime())
 	{
 		return;
 	}
 	
+			
 	npc.m_flNextThinkTime = GetGameTime() + 0.1;
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime())
 	{
-	
+		float targPos[3];
+		float chargerPos[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", chargerPos);
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				GetClientAbsOrigin(client, targPos);
+				if (GetVectorDistance(chargerPos, targPos, true) <= 4000000) // 1500 range
+				{
+					Music_Stop_All(client);
+					Music_Timer[client] = GetEngineTime() + 5.0;
+				}
+			}
+		}
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
 	}
@@ -270,73 +232,14 @@ public void SawRunner_ClotThink(int iNPC)
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
 				PF_SetGoalVector(npc.index, vPredictedPos);
-			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-	
-			if(npc.m_flNextRangedSpecialAttack < GetGameTime() && flDistanceToTarget < 22500 || npc.m_fbRangedSpecialOn)
+			else 
 			{
-		//		npc.FaceTowards(vecTarget, 20000.0);
-				if(!npc.m_fbRangedSpecialOn)
-				{
-					npc.AddGesture("ACT_PUSH_PLAYER");
-					npc.m_flRangedSpecialDelay = GetGameTime() + 0.4;
-					npc.m_fbRangedSpecialOn = true;
-					npc.m_flReloadDelay = GetGameTime() + 1.0;
-					PF_StopPathing(npc.index);
-					npc.m_bPathing = false;
-				}
-				if(npc.m_flRangedSpecialDelay < GetGameTime())
-				{
-					npc.m_fbRangedSpecialOn = false;
-					npc.m_flNextRangedSpecialAttack = GetGameTime() + 5.0;
-					npc.PlayRangedAttackSecondarySound();
-		
-					float vecSpread = 0.1;
-					
-					npc.FaceTowards(vecTarget, 20000.0);
-					
-					float eyePitch[3];
-					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
-							
-					//
-					//
-					
-					
-					float x, y;
-					x = GetRandomFloat( -0.0, 0.0 ) + GetRandomFloat( -0.0, 0.0 );
-					y = GetRandomFloat( -0.0, 0.0 ) + GetRandomFloat( -0.0, 0.0 );
-					
-					float vecDirShooting[3], vecRight[3], vecUp[3];
-					//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
-					
-					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
-					GetVectorAngles(vecDirShooting, vecDirShooting);
-					vecDirShooting[1] = eyePitch[1];
-					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-					
-					//add the spray
-					float vecDir[3];
-					vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0]; 
-					vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
-					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
-					NormalizeVector(vecDir, vecDir);
-					
-					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-					if(EscapeModeForNpc)
-					{
-						FireBullet(npc.index, npc.index, WorldSpaceCenter(npc.index), vecDir, 20.0, 100.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.index, WorldSpaceCenter(npc.index), vecDir, 10.0, 100.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
-					}
-				}
+				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
 			//Target close enough to hit
-			if((flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime()) || npc.m_flAttackHappenswillhappen)
+			if((flDistanceToTarget < 12500 && npc.m_flReloadDelay < GetGameTime()) || npc.m_flAttackHappenswillhappen)
 			{
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
@@ -345,7 +248,7 @@ public void SawRunner_ClotThink(int iNPC)
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flNextRangedSpecialAttack = GetGameTime() + 2.0;
-						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
+						npc.AddGesture("ACT_MELEE");
 						npc.PlayMeleeSound();
 						npc.m_flAttackHappens = GetGameTime()+0.4;
 						npc.m_flAttackHappens_bullshit = GetGameTime()+0.54;
@@ -356,7 +259,7 @@ public void SawRunner_ClotThink(int iNPC)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
+						if (npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, _, _, _, 1))
 							{
 								
 								int target = TR_GetEntityIndex(swingTrace);	
@@ -366,17 +269,14 @@ public void SawRunner_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									
-									if(EscapeModeForNpc)
+									if(target <= MaxClients)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 2000.0, DMG_SLASH|DMG_CLUB);
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 30000.0, DMG_SLASH|DMG_CLUB);
 									}
-									
-									Custom_Knockback(npc.index, target, 350.0);
 									
 									// Hit particle
 									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
@@ -410,6 +310,8 @@ public void SawRunner_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
+	npc.PlayIdleSound();
+	npc.PlayMusicSound();
 }
 
 public Action SawRunner_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -420,20 +322,11 @@ public Action SawRunner_ClotDamaged(int victim, int &attacker, int &inflictor, f
 		
 	SawRunner npc = view_as<SawRunner>(victim);
 	
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.75;
-	
-	/*
-	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
-		return Plugin_Continue;
-	*/
-	
 	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{
 		npc.m_flHeadshotCooldown = GetGameTime() + 0.25;
-		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD");
-		npc.PlayHurtSound();
-		
+		npc.AddGesture("ACT_HURT");
+	//	npc.PlayHurtSound();
 	}
 	
 	
@@ -451,8 +344,62 @@ public void SawRunner_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SawRunner_ClotDamaged);
 	SDKUnhook(npc.index, SDKHook_Think, SawRunner_ClotThink);
 		
-	if(IsValidEntity(npc.m_iWearable1))
-		RemoveEntity(npc.m_iWearable1);
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
+	Music_Stop_All_Sawrunner(entity);
+	
+	int entity_death = CreateEntityByName("prop_dynamic_override");
+	if(IsValidEntity(entity_death))
+	{
+		float pos[3];
+		float Angles[3];
+		GetEntPropVector(entity, Prop_Data, "m_angRotation", Angles);
+
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
+		
+//		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
+		DispatchKeyValue(entity_death, "model", "models/zombie_riot/cof/sawrunner.mdl");
+
+		DispatchSpawn(entity_death);
+		
+		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.5); 
+		SetEntityCollisionGroup(entity_death, 2);
+		SetVariantString("death");
+		AcceptEntityInput(entity_death, "SetAnimation");
+		
+		pos[2] += 20.0;
+		
+		CreateTimer(2.0, Timer_RemoveEntitySawrunner, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+
+	}
+}
+
+public Action Timer_RemoveEntitySawrunner(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		float pos[3];
+		float angles[3];
+	//	view_as<CClotBody>(entity).GetAttachment("jetpack_R", pos, angles);
+		
+	//	TE_Particle("rd_robot_explosion", pos, NULL_VECTOR, NULL_VECTOR, entity, _, _, _, _, _, _, _, _, _, 0.0);
+		
+	//	view_as<CClotBody>(entity).GetAttachment("jetpack_L", pos, angles);
+	//	
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+		TE_Particle("rd_robot_explosion", pos, NULL_VECTOR, NULL_VECTOR, entity, _, _, _, _, _, _, _, _, _, 0.0);
+//		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
+		RemoveEntity(entity);
+	}
+	return Plugin_Handled;
+}
+
+void Music_Stop_All_Sawrunner(int entity)
+{
+	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
 }

@@ -57,6 +57,7 @@ bool Waves_InFreeplay()
 void Waves_MapStart()
 {
 	PrecacheSound("zombie_riot/panzer/siren.mp3", true);
+	PrecacheSound("zombie_riot/sawrunner/iliveinyourwalls.mp3", true);
 }
 
 public Action Waves_ForcePanzer(int client, int args)

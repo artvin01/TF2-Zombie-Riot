@@ -640,6 +640,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], c
 		{
 			return AltMedicApprenticeMage(client, vecPos, vecAng);
 		}
+		case SAWRUNNER:
+		{
+			return SawRunner(client, vecPos, vecAng);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1024,6 +1028,10 @@ public void NPCDeath(int entity)
 		{
 			AltMedicApprenticeMage_NPCDeath(entity);
 		}
+		case SAWRUNNER:
+		{
+			SawRunner_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1158,6 +1166,7 @@ public void OnMapStart_NPC_Base()
 	DDT_MapStart();
 	Bad_MapStart();
 	AltMedicApprenticeMage_OnMapStart_NPC();
+	SawRunner_OnMapStart_NPC();
 	
 }
 
@@ -5704,6 +5713,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 #include "zombie_riot/npc/xeno/npc_xeno_spy_boss.sp"
 
 #include "zombie_riot/npc/special/npc_panzer.sp"
+#include "zombie_riot/npc/special/npc_sawrunner.sp"
 
 #include "zombie_riot/npc/btd/npc_bloon.sp"
 #include "zombie_riot/npc/btd/npc_moab.sp"

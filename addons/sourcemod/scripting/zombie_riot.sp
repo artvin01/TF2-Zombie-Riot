@@ -42,7 +42,7 @@
 
 
 //Comment this out, and reload the plugin once ingame if you wish to have infinite cash.
-#define NormalRound
+//#define NormalRound
 
 
 
@@ -503,7 +503,8 @@ enum
 	BTD_DDT								= 91,
 	BTD_BAD								= 92,
 	
-	ALT_MEDIC_APPRENTICE_MAGE			= 93
+	ALT_MEDIC_APPRENTICE_MAGE			= 93,
+	SAWRUNNER							= 94,
 }
 
 char NPC_Names[][] =
@@ -608,7 +609,8 @@ char NPC_Names[][] =
 	"Big Airship of Doom",
 	
 	
-	"Medic Apprentice Mage"
+	"Medic Apprentice Mage",
+	"Sawrunner"
 };
 
 char NPC_Plugin_Names_Converted[][] =
@@ -713,6 +715,7 @@ char NPC_Plugin_Names_Converted[][] =
 	"",
 	"",
 	"npc_alt_medic_apprentice_mage",
+	"npc_sawrunner",
 };
 
 #include "zombie_riot/stocks.sp"
