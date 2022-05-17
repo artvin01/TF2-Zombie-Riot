@@ -172,6 +172,7 @@ enum struct Item
 	int Owned[MAXTF2PLAYERS];
 	int Scaled[MAXTF2PLAYERS];
 	bool NPCSeller;
+	char TextStore[64];
 	
 	bool GetItemInfo(int index, ItemInfo info)
 	{
@@ -291,6 +292,7 @@ static void ConfigSetup(int section, KeyValues kv, bool noescape, bool hidden)
 	item.WhiteOut = view_as<bool>(kv.GetNum("whiteout"));
 	item.ShouldThisCountSupportBuildings = view_as<bool>(kv.GetNum("count_support_buildings"));
 	item.NoEscape = view_as<bool>(kv.GetNum("noescape", noescape ? 1 : 0));
+	kv.GetString("textstore", item.TextStore, sizeof(item.TextStore));
 	kv.GetSectionName(item.Name, sizeof(item.Name));
 	CharToUpper(item.Name[0]);
 	
@@ -562,7 +564,7 @@ public void Store_RandomizeNPCStore()
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(item.ItemInfos)
+		if(item.ItemInfos && !item.TextStore[0])
 		{
 			item.NPCSeller = false;
 			item.GetItemInfo(0, info);
@@ -961,6 +963,9 @@ static void MenuPage(int client, int section)
 		{
 			continue;
 		}
+		
+		if(item.TextStore[0] && !HasNamedItem(client, item.TextStore))
+			continue;
 		
 		if(!item.ItemInfos)
 		{

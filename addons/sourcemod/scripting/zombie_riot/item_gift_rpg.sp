@@ -5,6 +5,11 @@
 
 #define SOUND_BEEP			"buttons/button17.wav"
 
+static const char Drops[][] =
+{
+	""
+};
+
 int g_BeamIndex = -1;
 
 public void Map_Precache_Zombie_Drops_Gift()
@@ -58,13 +63,38 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 			if (IsPlayerAlive(client) && GetClientTeam(client) == view_as<int>(TFTeam_Red))
 			{
 				GetClientAbsOrigin(client, client_pos);
-				if (GetVectorDistance(powerup_pos, client_pos, true) <= Pow(64.0, 2.0))
+				if (GetVectorDistance(powerup_pos, client_pos, true) <= 4096)
 				{
 					if (IsValidEntity(glow))
 					{
 						RemoveEntity(glow);
 					}
 					RemoveEntity(entity);
+					
+					if(GetFeatureStatus(FeatureType_Native, "TextStore_GetItems") == FeatureStatus_Available)
+					{
+						int length = TextStore_GetItems();
+						for(int i; i<length; i++)
+						{
+							static char buffer[64];
+							TextStore_GetItemName(i, buffer, sizeof(buffer));
+							for(int a; a<sizeof(Drops); a++)
+							{
+								if(StrEqual(buffer, Drops[a], false))
+								{
+									int amount;
+									TextStore_GetInv(client, i, amount);
+									if(!amount)
+									{
+										TextStore_SetInv(client, i, amount + 1);
+										length = 0;
+									}
+									
+									break;
+								}
+							}
+						}
+					}
 					return Plugin_Stop;
 				}
 			}
