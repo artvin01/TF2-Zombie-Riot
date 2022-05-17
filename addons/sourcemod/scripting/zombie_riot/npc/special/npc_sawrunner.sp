@@ -15,11 +15,6 @@ static const char g_MeleeAttackSounds[][] = {
 	"zombie_riot/sawrunner/attack2.mp3",
 };
 
-
-static const char g_RangedReloadSound[][] = {
-	"weapons/ar2/npc_ar2_reload.wav",
-};
-
 static const char g_MeleeMissSounds[][] = {
 	"zombie_riot/sawrunner/attacksaw2.mp3",
 };
@@ -88,6 +83,8 @@ methodmap SawRunner < CClotBody
 		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		this.m_flPlayMusicSound = GetEngineTime() + 44.0;
 		
 	}
@@ -123,9 +120,9 @@ methodmap SawRunner < CClotBody
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		
+		npc.m_flPlayMusicSound = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
-		
+		npc.m_bisGiantWalkCycle = 1.5;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
@@ -159,12 +156,12 @@ public void SawRunner_ClotThink(int iNPC)
 {
 	SawRunner npc = view_as<SawRunner>(iNPC);
 	
-	if(npc.m_flNextDelayTime > GetGameTime())
+//	if(npc.m_flNextDelayTime > GetGameTime())
 	{
-		return;
+	//	return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + 0.04;
+//	npc.m_flNextDelayTime = GetGameTime() + 0.04;
 	
 	npc.Update();	
 	
@@ -345,7 +342,7 @@ public void SawRunner_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_Think, SawRunner_ClotThink);
 		
 	Music_Stop_All_Sawrunner(entity);
-	
+					
 	int entity_death = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity_death))
 	{
@@ -369,6 +366,7 @@ public void SawRunner_NPCDeath(int entity)
 		pos[2] += 20.0;
 		
 		CreateTimer(2.0, Timer_RemoveEntitySawrunner, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.7, Timer_RemoveEntitySawrunner_Tantrum, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
 
 	}
 }
@@ -379,13 +377,6 @@ public Action Timer_RemoveEntitySawrunner(Handle timer, any entid)
 	if(IsValidEntity(entity) && entity>MaxClients)
 	{
 		float pos[3];
-		float angles[3];
-	//	view_as<CClotBody>(entity).GetAttachment("jetpack_R", pos, angles);
-		
-	//	TE_Particle("rd_robot_explosion", pos, NULL_VECTOR, NULL_VECTOR, entity, _, _, _, _, _, _, _, _, _, 0.0);
-		
-	//	view_as<CClotBody>(entity).GetAttachment("jetpack_L", pos, angles);
-	//	
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 		TE_Particle("rd_robot_explosion", pos, NULL_VECTOR, NULL_VECTOR, entity, _, _, _, _, _, _, _, _, _, 0.0);
 //		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
@@ -394,8 +385,23 @@ public Action Timer_RemoveEntitySawrunner(Handle timer, any entid)
 	return Plugin_Handled;
 }
 
+public Action Timer_RemoveEntitySawrunner_Tantrum(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		float pos[3];
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+		makeexplosion(-1, -1, pos, "", 300, 300);
+	}
+	return Plugin_Handled;
+}
+
 void Music_Stop_All_Sawrunner(int entity)
 {
+	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
 	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
 	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
 	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");

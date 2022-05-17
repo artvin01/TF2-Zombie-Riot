@@ -122,6 +122,7 @@ int i_PoseMoveX[MAXENTITIES];
 int i_PoseMoveY[MAXENTITIES];
 //Arrays for npcs!
 bool b_bThisNpcGotDefaultStats_INVERTED[MAXENTITIES];
+float b_isGiantWalkCycle[MAXENTITIES];
 
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
@@ -2157,6 +2158,11 @@ methodmap CClotBody
 		public get()							{ return b_isWalking[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_isWalking[this.index] = TempValueForProperty; }
 	}
+	property float m_bisGiantWalkCycle
+	{
+		public get()							{ return b_isGiantWalkCycle[this.index]; }
+		public set(float TempValueForProperty) 	{ b_isGiantWalkCycle[this.index] = TempValueForProperty; }
+	}
 	
 	property int m_iTeamGlow
 	{
@@ -2772,6 +2778,7 @@ methodmap CClotBody
 			float m_flGroundSpeed = GetEntPropFloat(this.index, Prop_Data, "m_flGroundSpeed");
 			if (m_flGroundSpeed != 0.0) {
 				float PlaybackSpeed = clamp((flNextBotGroundSpeed / m_flGroundSpeed), -4.0, 12.0);
+				PlaybackSpeed *= this.m_bisGiantWalkCycle;
 				if(PlaybackSpeed > 2.0)
 					PlaybackSpeed = 2.0;
 				this.SetPlaybackRate(PlaybackSpeed);
@@ -5620,6 +5627,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_HookDamageTaken[entity] = 0.0;
 	b_IsCamoNPC[entity] = false;
 	b_bThisNpcGotDefaultStats_INVERTED[entity] = false;
+	b_isGiantWalkCycle[entity] = 1.0;
 	i_Activity[entity] = -1;
 	i_PoseMoveX[entity] = -1;
 	i_PoseMoveY[entity] = -1;
