@@ -137,9 +137,18 @@ static float BloonSpeedMulti()
 	return 1.0 + (CurrentRound - 70) * 0.02;
 }
 
-static float BloonHealthMulti(bool fortified, int type)
+int Bloon_Health(bool fortified, int type)
 {
-	return fortified ? type == Bloon_Lead ? 4.0 : 2.0 : 1.0;
+	if(!fortified)
+		return BloonHealth[type];
+	
+	if(type == Bloon_Lead)
+		return (BloonHealth[type] * 4) - BloonHealth[Bloon_Black];
+	
+	if(type == Bloon_Ceramic)
+		return (BloonHealth[type] * 2) - BloonHealth[Bloon_Rainbow];
+	
+	return BloonHealth[type] * 2;
 }
 
 void Bloon_MapStart()
@@ -340,7 +349,7 @@ methodmap Bloon < CClotBody
 			char buffer[128];
 			if(this.m_iType == Bloon_Ceramic)
 			{
-				int rainbow = RoundFloat(BloonHealth[Bloon_Rainbow] * BloonHealthMulti(this.m_bFortified, Bloon_Rainbow));
+				int rainbow = Bloon_Health(this.m_bFortified, Bloon_Rainbow);
 				int health = (GetEntProp(this.index, Prop_Data, "m_iHealth") - rainbow) * 5;
 				int maxhealth = GetEntProp(this.index, Prop_Data, "m_iMaxHealth") - rainbow;
 				int type = (health / maxhealth);
@@ -434,7 +443,7 @@ methodmap Bloon < CClotBody
 		for(int i; i<9; i++)
 		{
 			int type = this.RegrowsInto(i);
-			if(health <= RoundFloat(BloonHealth[type] * BloonHealthMulti(this.m_bFortified, type)))
+			if(health <= Bloon_Health(this.m_bFortified, type))
 			{
 				if(this.m_iType != type || type == Bloon_Ceramic)
 				{
@@ -454,7 +463,7 @@ methodmap Bloon < CClotBody
 		int type = GetBloonTypeOfData(data, camo, fortified, regrow);
 		
 		char buffer[7];
-		IntToString(RoundFloat(BloonHealth[type] * BloonHealthMulti(fortified, type)), buffer, sizeof(buffer));
+		IntToString(Bloon_Health(fortified, type), buffer, sizeof(buffer));
 		
 		Bloon npc = view_as<Bloon>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloons_hitbox.mdl", "1.0", buffer));
 		
