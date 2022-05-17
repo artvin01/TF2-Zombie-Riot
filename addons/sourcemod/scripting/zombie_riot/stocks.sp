@@ -1469,6 +1469,10 @@ public bool IngorePlayersAndBuildings(int entity, int contentsMask, any iExclude
 	{
 		return false;
 	}
+	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
+	{
+		return false;
+	}
 	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun") || StrEqual(class, "base_boss"))) //include baseboss so it goesthru
 	{
 		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))

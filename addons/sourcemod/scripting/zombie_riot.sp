@@ -742,6 +742,7 @@ char NPC_Plugin_Names_Converted[][] =
 
 #include "zombie_riot/npc_death_showing.sp"
 #include "zombie_riot/queue.sp"
+#include "zombie_riot/item_gift_rpg.sp"
 
 
 #include "zombie_riot/custom/building.sp"
@@ -1055,6 +1056,7 @@ public void OnMapStart()
 	Nailgun_Map_Precache();
 	OnMapStart_NPC_Base();
 	Gb_Ball_Map_Precache();
+	Map_Precache_Zombie_Drops_Gift();
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;

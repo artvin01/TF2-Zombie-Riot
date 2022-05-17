@@ -1112,6 +1112,7 @@ void NPC_DeadEffects(int entity)
 			SDKUnhook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);
 			*/
 			DropPowerupChance(entity);
+			Gift_DropChance(entity);
 			int WeaponLastHit = EntRefToEntIndex(npc.LastHitWeaponRef);
 			int client = GetClientOfUserId(npc.LastHitId);
 			if(client && IsClientInGame(client))

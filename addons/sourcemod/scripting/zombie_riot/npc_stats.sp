@@ -3360,17 +3360,20 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 					}	
 				}	
 			//	#endif					
-				RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));					
+				Do_Death_Frame_Later(EntIndexToEntRef(pThis));
+				//RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));						
 			}
 		}
 		else
 		{	
-			RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));	
+			Do_Death_Frame_Later(EntIndexToEntRef(pThis));
+			//RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));		
 		}
 	}
 	else
 	{	
-		RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));	
+		Do_Death_Frame_Later(EntIndexToEntRef(pThis));
+		//RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));	
 	}
 	return MRES_Supercede;
 }

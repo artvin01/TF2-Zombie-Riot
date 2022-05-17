@@ -333,6 +333,8 @@ public Action Waves_RoundStartTimer(Handle timer)
 	return Plugin_Continue;
 }
 
+float MultiGlobal = 0.25;
+
 void Waves_Progress()
 {
 	if(InSetup)
@@ -363,6 +365,7 @@ void Waves_Progress()
 			{
 				if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 					multi += 0.25;
+					MultiGlobal = multi;
 			}
 			
 			if(multi < 0.5)
