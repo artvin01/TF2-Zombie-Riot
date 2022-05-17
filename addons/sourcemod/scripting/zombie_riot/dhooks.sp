@@ -380,7 +380,7 @@ public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 */
 public Action CH_PassFilter(int ent1, int ent2, bool &result)
 {
-//	if(IsValidEntity(ent1) && IsValidEntity(ent2))
+	if(IsValidEntity(ent1) && IsValidEntity(ent2))
 	{
 		if(b_Is_Npc_Rocket[ent2])
 		{
