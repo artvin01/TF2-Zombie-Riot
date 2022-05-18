@@ -26,7 +26,8 @@ static int RenderColors_RPG[][] =
 static const char CommonDrops[][] =
 {
 	"Scrap Helmet [Common]",
-	"Face Mask [Common]"
+	"Face Mask [Common]",
+	"Villager Outfit [Common]"
 };
 
 static const char UncommonDrops[][] =
