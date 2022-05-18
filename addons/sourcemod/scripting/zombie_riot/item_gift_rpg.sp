@@ -133,33 +133,40 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 							
 							if(length && i_RarityType[entity] >= Rarity_Rare)
 							{
-								for(int a; a<sizeof(RareDrops); a++)
+								int start = (GetURandomInt() % sizeof(RareDrops));
+								int a = start;
+								do
 								{
-									if(StrEqual(buffer, RareDrops[a], false))
+									if(StrEqual(buffer, RareDrops[start], false))
 									{
 										int amount;
 										TextStore_GetInv(client, i, amount);
-									//	if(!amount)
+										if(!amount)
 										{
-											PrintToChat(client, RareDrops[a]);
+											PrintToChat(client, RareDrops[start]);
 											TextStore_SetInv(client, i, amount + 1);
 											length = 0;
 										}
 										
 										break;
 									}
-								}
+									
+									if(++a >= sizeof(RareDrops))
+										a = 0;
+								} while(a != start);
 							}
 							
 							if(length && i_RarityType[entity] >= Rarity_Uncommon)
 							{
-								for(int a; a<sizeof(UncommonDrops); a++)
+								int start = (GetURandomInt() % sizeof(UncommonDrops));
+								int a = start;
+								do
 								{
 									if(StrEqual(buffer, UncommonDrops[a], false))
 									{
 										int amount;
 										TextStore_GetInv(client, i, amount);
-									//	if(!amount)
+										if(!amount)
 										{
 											PrintToChat(client, UncommonDrops[a]);
 											TextStore_SetInv(client, i, amount + 1);
@@ -168,18 +175,23 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 										
 										break;
 									}
-								}
+									
+									if(++a >= sizeof(UncommonDrops))
+										a = 0;
+								} while(a != start);
 							}
 							
 							if(length)
 							{
-								for(int a; a<sizeof(CommonDrops); a++)
+								int start = (GetURandomInt() % sizeof(CommonDrops));
+								int a = start;
+								do
 								{
 									if(StrEqual(buffer, CommonDrops[a], false))
 									{
 										int amount;
 										TextStore_GetInv(client, i, amount);
-									//	if(!amount)
+										if(!amount)
 										{
 											PrintToChat(client, CommonDrops[a]);
 											TextStore_SetInv(client, i, amount + 1);
@@ -188,7 +200,15 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 										
 										break;
 									}
-								}
+									
+									if(++a >= sizeof(CommonDrops))
+										a = 0;
+								} while(a != start);
+							}
+							
+							if(length)
+							{
+								PrintToChat(client, "You already have everything");
 							}
 						}
 					}
