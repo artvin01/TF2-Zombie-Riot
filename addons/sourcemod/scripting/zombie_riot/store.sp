@@ -1503,31 +1503,31 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 			{
 				if(item.Owned[client]) //item.TextStore[0]
 				{
-					ItemInfo info;
-					item.GetItemInfo(item.Owned[client]-1, info);
-					int slot = TF2_GetClassnameSlot(info.Classname);
-					if(Equipped[client][slot] == index)
+					int active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon")
 					{
-						int active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon")
+						if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime())
 						{
-							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime())
+							ItemInfo info;
+							item.GetItemInfo(item.Owned[client]-1, info);
+							int slot = TF2_GetClassnameSlot(info.Classname);
+							if(Equipped[client][slot] == index)
 							{
 								Equipped[client][slot] = -1;
 								Store_ApplyAttribs(client);
 								Store_GiveAll(client, GetClientHealth(client));	
 								StoreItems.SetArray(index, item);
 							}
-							else
+							else if(!info.Classname[0] && !info.Cost) //make sure it even can be sold.
 							{
-								ClientCommand(client, "playgamesound items/medshotno1.wav");	
+								item.Owned[client] = 0;
+								item.Scaled[client]--;
+								StoreItems.SetArray(index, item);
 							}
 						}
-					}
-					else if(!info.Classname[0] && !info.Cost) //make sure it even can be sold.
-					{
-						item.Owned[client] = 0;
-						item.Scaled[client]--;
-						StoreItems.SetArray(index, item);
+						else
+						{
+							ClientCommand(client, "playgamesound items/medshotno1.wav");	
+						}
 					}
 				}
 			}
