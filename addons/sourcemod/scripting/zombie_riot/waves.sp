@@ -317,14 +317,8 @@ public Action Waves_RoundStartTimer(Handle timer)
 			{
 				any_player_on = true;
 				
-				if(Store_HasAnyItem(client))
-				{
-					Store_SaveLoadout(client, CookieLoadout);
-				}
-				else if(!Store_LoadLoadout(client, CookieLoadout))
-				{
+				if(!Store_HasAnyItem(client))
 					Store_PutInServer(client);
-				}
 			}
 		}
 		if(any_player_on)

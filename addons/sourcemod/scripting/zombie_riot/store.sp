@@ -234,7 +234,7 @@ static const int RenderColors[][] =
 
 static Cookie CookieCache;
 static Cookie CookieData;
-Cookie CookieLoadout;
+static Cookie CookieLoadout;
 static ArrayList StoreItems;
 static int Equipped[MAXTF2PLAYERS][6];
 static bool NPCOnly[MAXTF2PLAYERS];
@@ -424,12 +424,17 @@ void Store_Reset()
 bool Store_HasAnyItem(int client)
 {
 	Item item;
+	ItemInfo info;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
 		if(item.Owned[client])
-			return true;
+		{
+			item.GetItemInfo(item.Owned[client] - 1, info);
+			if(info.Cost)
+				return true;
+		}
 	}
 	
 	return false;
@@ -439,13 +444,6 @@ bool Store_PutInServer(int client)
 {
 	Item item;
 	int length = StoreItems.Length;
-	for(int i; i<length; i++)
-	{
-		StoreItems.GetArray(i, item);
-		if(item.Owned[client])
-			return false;
-	}
-
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
@@ -491,17 +489,51 @@ bool Store_PutInServer(int client)
 
 void Store_ClientCookiesCached(int client)
 {
+	Store_LoadLevelPerks(client);
+	
 	char buffer[16];
 	CookieCache.Get(client, buffer, sizeof(buffer));
 	if(CurrentGame && StringToInt(buffer) == CurrentGame)
-		Store_LoadLoadout(client, CookieData);
+		Store_LoadLoadout(client);
 }
 
-bool Store_LoadLoadout(int client, Cookie cookie)
+void Store_LoadLevelPerks(int client)
 {
 	char buffer[512];
 	static int buffers[128];
-	cookie.Get(client, buffer, sizeof(buffer));
+	CookieLoadout.Get(client, buffer, sizeof(buffer));
+	int length = ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
+	
+	Item item;
+	int items = StoreItems.Length;
+	for(int i; i<length; i++)
+	{
+		if(buffers[i] > 0 && buffers[i] < items)
+		{
+			StoreItems.GetArray(buffers[i], item);
+			if(item.Scale)
+			{
+				item.Scaled[client] = 1;
+				item.Owned[client] = 0;
+			}
+			else if(buffers[i] > 0)
+			{
+				item.Scaled[client] = 0;
+				item.Owned[client] = 1;
+			}
+			StoreItems.SetArray(buffers[i], item);
+		}
+	}
+	
+	if(IsClientInGame(client))
+		PrintToChat(client, "Your last equipped level perks were restored.");
+}
+
+bool Store_LoadLoadout(int client)
+{
+	char buffer[512];
+	static int buffers[128];
+	CookieData.Get(client, buffer, sizeof(buffer));
 	if(!buffer[0])
 		return false;
 	
@@ -550,6 +582,9 @@ void Store_ClientDisconnect(int client)
 	IntToString(CurrentGame, buffer, sizeof(buffer));
 	CookieCache.Set(client, buffer);
 	
+	Store_SaveLevelPerks(client);
+	Store_SaveLoadout(client);
+	
 	CashSpent[client] = 0;
 	Equipped[client][0] = -1;
 	
@@ -572,7 +607,40 @@ void Store_ClientDisconnect(int client)
 	}
 }
 
-void Store_SaveLoadout(int client, Cookie cookie)
+void Store_SaveLevelPerks(int client)
+{
+	char buffer[512];
+	Item item;
+	ItemInfo info;
+	int length = StoreItems.Length;
+	for(int i; i<length; i++)
+	{
+		StoreItems.GetArray(i, item);
+		if(item.Scaled[client] || item.Owned[client])
+		{
+			int owned = item.Owned[client] - 1;
+			if(owned < 0)
+				owned = 0;
+			
+			item.GetItemInfo(owned, info);
+			if(!info.Cost)
+			{
+				if(buffer[0])
+				{
+					Format(buffer, sizeof(buffer), "%s;%d", buffer, i);
+				}
+				else
+				{
+					IntToString(i, buffer, sizeof(buffer));
+				}
+			}
+		}
+	}
+	
+	CookieLoadout.Set(client, buffer);
+}
+
+void Store_SaveLoadout(int client)
 {
 	char buffer[512];
 	Format(buffer, sizeof(buffer), "%d;%d", CashSpent[client], Equipped[client][0]);
@@ -583,21 +651,31 @@ void Store_SaveLoadout(int client, Cookie cookie)
 	}
 	
 	Item item;
+	ItemInfo info;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(item.Scaled[client])
+		
+		int owned = item.Owned[client] - 1;
+		if(owned < 0)
+			owned = 0;
+		
+		item.GetItemInfo(owned, info);
+		if(info.Cost)
 		{
-			Format(buffer, sizeof(buffer), "%s;%d;%d", buffer, i, item.Scaled[client]);
-		}
-		else if(item.Owned[client])
-		{
-			Format(buffer, sizeof(buffer), "%s;%d;%d", buffer, i, item.Owned[client]);
+			if(item.Scaled[client])
+			{
+				Format(buffer, sizeof(buffer), "%s;%d;%d", buffer, i, item.Scaled[client]);
+			}
+			else if(item.Owned[client])
+			{
+				Format(buffer, sizeof(buffer), "%s;%d;%d", buffer, i, item.Owned[client]);
+			}
 		}
 	}
 	
-	cookie.Set(client, buffer);
+	CookieData.Set(client, buffer);
 }
 
 public void Store_RandomizeNPCStore()
@@ -895,7 +973,7 @@ static void MenuPage(int client, int section)
 			{
 				if(item.Owned[client])
 				{
-					if(info.Classname[0]) //make sure they cant sell or unqeuip perks though.
+					if(info.Classname[0] || (!info.Cost && !Waves_Started())) //make sure they cant sell or unqeuip perks though.
 					{
 						canSellInsideMenu = true;
 						canSell = true;
@@ -965,8 +1043,8 @@ static void MenuPage(int client, int section)
 				}
 				else
 				{
-					FormatEx(buffer, sizeof(buffer), "------");//my shitcoding, nooooo!!
-					menu.AddItem(info.Classname, buffer, ITEMDRAW_DISABLED);
+					FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
+					menu.AddItem(info.Classname, buffer);
 				}
 			}
 			
