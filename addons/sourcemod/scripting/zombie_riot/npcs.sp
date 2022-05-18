@@ -239,7 +239,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 						what_boss = 0;
 						for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
 						{
-							if(IsClientInGame(panzer_warning_client) && GetClientTeam(panzer_warning_client)==2)
+							if(IsClientInGame(panzer_warning_client))
 							{
 								EmitSoundToClient(panzer_warning_client,"zombie_riot/panzer/siren.mp3", panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
 								EmitSoundToClient(panzer_warning_client,"zombie_riot/panzer/siren.mp3", panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
@@ -251,7 +251,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 						what_boss = 1;
 						for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
 						{
-							if(IsClientInGame(panzer_warning_client) && GetClientTeam(panzer_warning_client)==2)
+							if(IsClientInGame(panzer_warning_client))
 							{
 								EmitSoundToClient(panzer_warning_client,"zombie_riot/sawrunner/iliveinyourwalls.mp3", panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
 								EmitSoundToClient(panzer_warning_client,"zombie_riot/sawrunner/iliveinyourwalls.mp3", panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
@@ -263,6 +263,9 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			}
 			health = 80;
 			
+			if(what_boss == 1)
+			 health *= 0.5;
+			 
 			health *= amount_of_people; //yep its high! will need tos cale with waves expoentially.
 			
 			float temp_float_hp = float(health);

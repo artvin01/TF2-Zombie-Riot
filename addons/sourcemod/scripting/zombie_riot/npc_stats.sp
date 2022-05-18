@@ -1242,6 +1242,7 @@ Handle g_hGetGroundNormal;
 Handle g_hShouldCollideWithAlly;
 Handle g_hShouldCollideWithAllyInvince;
 Handle g_hShouldCollideWithAllyEnemy;
+Handle g_hShouldCollideWithAllyEnemyIngoreBuilding;
 Handle g_hGetSolidMask;
 Handle g_hStartActivity;
 Handle g_hGetActivity;
@@ -1343,7 +1344,8 @@ methodmap CClotBody
 						const char[] health = "125",
 						bool Ally = false,
 						bool Ally_Invince = false,
-						bool isGiant = false)
+						bool isGiant = false,
+						bool IgnoreBuildings = false)
 	{
 		int npc = CreateEntityByName("base_boss");
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
@@ -1397,7 +1399,14 @@ methodmap CClotBody
 		if(!Ally)
 		{
 			NPC_AddToArray(npc);
-			list.Push(DHookRaw(g_hShouldCollideWithAllyEnemy,   false, pLocomotion));
+			if(IgnoreBuildings)
+			{
+				list.Push(DHookRaw(g_hShouldCollideWithAllyEnemyIngoreBuilding,   false, pLocomotion));
+			}
+			else
+			{
+				list.Push(DHookRaw(g_hShouldCollideWithAllyEnemy,   false, pLocomotion));
+			}
 		}
 		else
 		{
@@ -2519,6 +2528,59 @@ methodmap CClotBody
 		
 		return item;
 	}
+	public bool DoSwingTracePlayerOnly(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0, int Npc_type = 0)
+	{
+		switch(Npc_type)
+		{
+			case 1: //giants
+			{
+				vecSwingMaxs = { 100.0, 100.0, 150.0 };
+				vecSwingMins = { -100.0, -100.0, -150.0 };
+			}
+			case 2: //Ally Invinceable 
+			{
+				vecSwingMaxs = { 250.0, 250.0, 250.0 };
+				vecSwingMins = { -250.0, -250.0, -250.0 };
+			}
+		}
+		
+		float eyePitch[3];
+		GetEntPropVector(this.index, Prop_Data, "m_angRotation", eyePitch);
+		
+		float vecForward[3], vecRight[3], vecTarget[3];
+		
+		vecTarget = WorldSpaceCenter(target);
+		MakeVectorFromPoints(WorldSpaceCenter(this.index), vecTarget, vecForward);
+		GetVectorAngles(vecForward, vecForward);
+		vecForward[1] = eyePitch[1];
+		GetAngleVectors(vecForward, vecForward, vecRight, vecTarget);
+		
+		float vecSwingStart[3]; vecSwingStart = GetAbsOrigin(this.index);
+		
+		vecSwingStart[2] += vecSwingStartOffset;
+		
+		float vecSwingEnd[3];
+		vecSwingEnd[0] = vecSwingStart[0] + vecForward[0] * vecSwingMaxs[0];
+		vecSwingEnd[1] = vecSwingStart[1] + vecForward[1] * vecSwingMaxs[1];
+		vecSwingEnd[2] = vecSwingStart[2] + vecForward[2] * vecSwingMaxs[2];
+		
+	//	TE_SetupBeamPoints(vecSwingStart, vecSwingEnd, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+	//	TE_SendToAll();
+		
+		// See if we hit anything.
+		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, BulletAndMeleeTracePlayerOnly, this.index );
+		if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
+		{
+			delete trace;
+			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID | CONTENTS_SOLID ), BulletAndMeleeTracePlayerOnly, this.index );
+			if ( TR_GetFraction(trace) < 1.0)
+			{
+				// This is the point on the actual surface (the hull could have hit space)
+				TR_GetEndPosition(vecSwingEnd, trace);	
+			}
+		}
+		return ( TR_GetFraction(trace) < 1.0 );
+	}
 	public bool DoSwingTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0, int Npc_type = 0)
 	{
 		switch(Npc_type)
@@ -3233,6 +3295,9 @@ public void NPC_Base_InitGamedata()
 	g_hShouldCollideWithAllyEnemy = DHookCreateEx(hConf, "ILocomotion::ShouldCollideWith",  HookType_Raw, ReturnType_Bool, ThisPointer_Address, ILocomotion_ShouldCollideWithEnemy);
 	DHookAddParam(g_hShouldCollideWithAllyEnemy, HookParamType_CBaseEntity);
 
+	g_hShouldCollideWithAllyEnemyIngoreBuilding = DHookCreateEx(hConf, "ILocomotion::ShouldCollideWith",  HookType_Raw, ReturnType_Bool, ThisPointer_Address, ILocomotion_ShouldCollideWithEnemyIngoreBuilding);
+	DHookAddParam(g_hShouldCollideWithAllyEnemyIngoreBuilding, HookParamType_CBaseEntity);
+	
 	g_hGetSolidMask		= DHookCreateEx(hConf, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
 	g_hGetActivity		 = DHookCreateEx(hConf, "IBody::GetActivity",		HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetActivity);
 	
@@ -3618,7 +3683,42 @@ public MRESReturn ILocomotion_ShouldCollideWithEnemy(Address pThis, Handle hRetu
 	return MRES_Supercede;
 }
 
+public MRESReturn ILocomotion_ShouldCollideWithEnemyIngoreBuilding(Address pThis, Handle hReturn, Handle hParams)   
+{ 
+	int otherindex = DHookGetParam(hParams, 1);
+	CClotBody npc = view_as<CClotBody>(otherindex);
+	
+	if(otherindex > 0 && otherindex <= MaxClients)
+	{
+		if(npc.m_bThisEntityIgnored)
+		{
+			DHookSetReturn(hReturn, false); 
+			return MRES_Supercede;
+		}
+		DHookSetReturn(hReturn, true); 
+		return MRES_Supercede; 
+	}
+	 
+	if(npc.bCantCollidie) //no change in performance..., almost.
+	{
+		DHookSetReturn(hReturn, false); 
+		return MRES_Supercede;
+	}
+	if(npc.bCantCollidieAlly) //no change in performance..., almost.
+	{
+		DHookSetReturn(hReturn, false); 
+		return MRES_Supercede;
+	}
+	if(otherindex == 0)
+	{
+		DHookSetReturn(hReturn, true); 
+		return MRES_Supercede;
+	}
 
+	
+	DHookSetReturn(hReturn, true); 
+	return MRES_Supercede;
+}
 //2 * m_vecMaxs
 public MRESReturn IBody_GetHullWidth_ISGIANT(Address pThis, Handle hReturn, Handle hParams)			  { DHookSetReturn(hReturn, 60.0); return MRES_Supercede; }
 public MRESReturn IBody_GetHullHeight_ISGIANT(Address pThis, Handle hReturn, Handle hParams)			 { DHookSetReturn(hReturn, 120.0); return MRES_Supercede; }
@@ -3752,6 +3852,50 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		{
 			return false;
 		}
+	}
+	
+	else if(StrContains(class, "tf_projectile_", false) != -1)
+	{
+		return false;
+	}
+	
+	//if anything else is team
+	
+	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		return false;
+	
+	if(npc.m_bThisEntityIgnored)
+	{
+		return false;
+	}
+	return !(entity == iExclude);
+}
+
+public bool BulletAndMeleeTracePlayerOnly(int entity, int contentsMask, any iExclude)
+{
+	char class[64];
+	GetEntityClassname(entity, class, sizeof(class));
+	
+	if(entity > 0 && entity <= MaxClients) 
+	{
+		if(TeutonType[entity])
+		{
+			return false;
+		}
+	}
+	
+	CClotBody npc = view_as<CClotBody>(entity);
+	if(StrEqual(class, "func_respawnroomvisualizer"))
+	{
+		return false;
+	}	
+	else if(StrEqual(class, "base_boss"))
+	{
+		return false;
+	}
+	else if(StrContains(class, "obj_", false) != -1)
+	{
+		return false;
 	}
 	
 	else if(StrContains(class, "tf_projectile_", false) != -1)

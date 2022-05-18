@@ -267,7 +267,7 @@ public bool TraceRayHitOnlyEnt(int entity, int contentsMask, int ent2)
 stock bool IsValidGroundBuilding(const float pos[3], float distance, float posEnd[3], int& buildingHit, int self)
 {
 	bool foundbuilding = false;
-	Handle trace = TR_TraceRayFilterEx(pos, view_as<float>({90.0, 0.0, 0.0}), CONTENTS_SOLID, RayType_Infinite, TraceRayFilter);
+	Handle trace = TR_TraceRayFilterEx(pos, view_as<float>({90.0, 0.0, 0.0}), CONTENTS_SOLID, RayType_Infinite, TraceRayFilterBuildOnBuildings);
 
 	if (TR_DidHit(trace))
 	{
@@ -291,13 +291,17 @@ stock bool IsValidGroundBuilding(const float pos[3], float distance, float posEn
 	return foundbuilding;
 }
 
-public bool TraceRayFilter(int entity, int contentsMask)
+public bool TraceRayFilterBuildOnBuildings(int entity, int contentsMask)
 {
 	if(entity==0 || entity==-1) //Never the world or something unknown
 	{
 		return false;
 	}
 	if(entity>0 && entity<=MaxClients) //ingore players?
+	{
+		return false;
+	}
+	if(b_BuildingIsStacked[entity])
 	{
 		return false;
 	}

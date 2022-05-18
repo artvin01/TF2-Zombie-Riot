@@ -113,7 +113,7 @@ methodmap SawRunner < CClotBody
 	
 	public SawRunner(int client, float vecPos[3], float vecAng[3])
 	{
-		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner.mdl", "1.5", "1500", false, false, true));
+		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner.mdl", "1.5", "1500", false, false, true, true));
 		
 		i_NpcInternalId[npc.index] = SAWRUNNER;
 		
@@ -199,7 +199,7 @@ public void SawRunner_ClotThink(int iNPC)
 				}
 			}
 		}
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_iTarget = GetClosestTarget(npc.index, true);
 		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
 	}
 	
@@ -256,7 +256,7 @@ public void SawRunner_ClotThink(int iNPC)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
-						if (npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, _, _, _, 1))
+						if (npc.DoSwingTracePlayerOnly(swingTrace, PrimaryThreatIndex, _, _, _, 1))
 							{
 								
 								int target = TR_GetEntityIndex(swingTrace);	
