@@ -205,12 +205,10 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 										a = 0;
 								} while(a != start);
 							}
-							
-							if(length)
-							{
-								PrintToChat(client, "You already have everything");
-							}
 						}
+						
+						if(length)
+							PrintToChat(client, "You already have everything");
 					}
 					return Plugin_Stop;
 				}
