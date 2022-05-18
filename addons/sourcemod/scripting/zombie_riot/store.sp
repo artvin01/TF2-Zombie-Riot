@@ -1116,7 +1116,7 @@ static void MenuPage(int client, int section)
 					continue;
 				
 				StoreItems.GetArray(a, item2);
-				if((item2.Owned[client] || item2.Scaled[client]) && item2.Slot == item.Slot)
+				if(item2.Owned[client] && item2.Slot == item.Slot)
 					count++;
 			}
 			
@@ -2069,9 +2069,6 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 								{
 									continue;
 								}
-							}
-							case 9:
-							{
 							}
 							default:
 							{

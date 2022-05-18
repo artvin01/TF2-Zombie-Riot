@@ -9,9 +9,7 @@ enum
 {
 	Rarity_Common = 0,
 	Rarity_Uncommon = 1,
-	Rarity_Rare = 2,
-	Rarity_Legend = 3,
-	Rarity_Mythic = 4
+	Rarity_Rare = 2
 }
 
 static int RenderColors_RPG[][] =
@@ -31,54 +29,18 @@ static const char CommonDrops[][] =
 	"Face Mask [Common]",
 	"Villager Outfit [Common]",
 	"Blue Jeans [Common]",
-	"Jordans [Common]",
-	"Faster Takedowns",
-	"Flame Jet",
-	"Vigilant Sentries"
+	"Jordans [Common]"
 };
 
 static const char UncommonDrops[][] =
 {
-	"Smithed Scrap Chestplate [Uncommon]",
-	"Big Cryo Blast",
-	"Long Turbo",
-	"Accelerated Aerodarts",
-	"Extra Burny Stuff",
-	"Charged Chinooks",
-	"Speedy Brewing",
-	"Strike Down The False",
-	"Deadly Tranquility",
-	"Veteran Monkey Training"
+	"Smithed Scrap Chestplate [Uncommon]"
 };
 
 static const char RareDrops[][] =
 {
-	"Fast Tack Attacks",
-	"Mega Mauler",
-	"Bonus Monkey!",
-	"Big Bunch",
-	"Gun Coolant",
-	"Flanking Maneuvers",
-	"SUPER Range",
-	"Strong Tonic",
-	"Arcane Impale",
-	"Tiny Tornadoes"
-};
-
-static const char LegendDrops[][] =
-{
-	"Quad Burst",
-	"Big Bloon Sabotage",
-	"Heavy Knockback",
-	"Mana Shield",
-	"To ARMS!",
-	"Healthy Bananas",
-	"Pre-Game Prep"
-};
-
-static const char MythicDrops[][] =
-{
-	"There Can Be Only One"
+	"Scrap Helmet",
+	"Scrap Helmet"
 };
 
 int g_BeamIndex = -1;
@@ -121,14 +83,8 @@ public void Gift_DropChance(int entity)
 
 static int RollRandom()
 {
-	if(!(GetURandomInt() % 250))
-		return Rarity_Mythic;
-	
-	if(!(GetURandomInt() % 75))
-		return Rarity_Legend;
-	
-	if(!(GetURandomInt() % 20))
-		return Rarity_Rare;
+//	if(!(GetURandomInt() % 20))
+//		return Rarity_Rare;
 	
 	if(!(GetURandomInt() % 5))
 		return Rarity_Uncommon;
@@ -184,56 +140,6 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 							static char buffer[64];
 							TextStore_GetItemName(i, buffer, sizeof(buffer));
 							
-							if(length && i_RarityType[entity] >= Rarity_Mythic)
-							{
-								int start = (GetURandomInt() % sizeof(MythicDrops));
-								int a = start;
-								do
-								{
-									if(StrEqual(buffer, MythicDrops[start], false))
-									{
-										int amount;
-										TextStore_GetInv(client, i, amount);
-										if(!amount)
-										{
-											CPrintToChat(client,"{default}You have found {darkred}%s{default}!", MythicDrops[a]);
-											TextStore_SetInv(client, i, amount + 1);
-											length = 0;
-										}
-										
-										break;
-									}
-									
-									if(++a >= sizeof(MythicDrops))
-										a = 0;
-								} while(a != start);
-							}
-							
-							if(length && i_RarityType[entity] >= Rarity_Legend)
-							{
-								int start = (GetURandomInt() % sizeof(LegendDrops));
-								int a = start;
-								do
-								{
-									if(StrEqual(buffer, LegendDrops[start], false))
-									{
-										int amount;
-										TextStore_GetInv(client, i, amount);
-										if(!amount)
-										{
-											CPrintToChat(client,"{default}You have found {yellow}%s{default}!", LegendDrops[a]);
-											TextStore_SetInv(client, i, amount + 1);
-											length = 0;
-										}
-										
-										break;
-									}
-									
-									if(++a >= sizeof(LegendDrops))
-										a = 0;
-								} while(a != start);
-							}
-							
 							if(length && i_RarityType[entity] >= Rarity_Rare)
 							{
 								int start = (GetURandomInt() % sizeof(RareDrops));
@@ -246,7 +152,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 										TextStore_GetInv(client, i, amount);
 										if(!amount)
 										{
-											CPrintToChat(client,"{default}You have found {blue}%s{default}!", RareDrops[a]);
+											CPrintToChat(client,"{default}You have found {default}{blue}%s {blue}!", RareDrops[a]);
 											TextStore_SetInv(client, i, amount + 1);
 											length = 0;
 										}
@@ -271,7 +177,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 										TextStore_GetInv(client, i, amount);
 										if(!amount)
 										{
-											CPrintToChat(client,"{default}You have found {green}%s{default}!", UncommonDrops[a]);
+											CPrintToChat(client,"{default}You have found {default}{green}%s {green}!", UncommonDrops[a]);
 											TextStore_SetInv(client, i, amount + 1);
 											length = 0;
 										}
@@ -296,7 +202,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 										TextStore_GetInv(client, i, amount);
 										if(!amount)
 										{
-											CPrintToChat(client,"{default}You have found %s!", CommonDrops[a]);
+											CPrintToChat(client,"{default}You have found {default}{default}%s {default}!", CommonDrops[a]);
 											TextStore_SetInv(client, i, amount + 1);
 											length = 0;
 										}
