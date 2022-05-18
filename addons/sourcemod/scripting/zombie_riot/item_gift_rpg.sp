@@ -47,6 +47,8 @@ int g_BeamIndex = -1;
 
 int i_RarityType[MAXENTITIES];
 
+float f_IncreaceChanceManually = 1.0;
+
 public void Map_Precache_Zombie_Drops_Gift()
 {
 	PrecacheModel(GIFT_MODEL, true);
@@ -58,8 +60,9 @@ public void Gift_DropChance(int entity)
 {
 	if(IsValidEntity(entity))
 	{
-		if(GetRandomFloat(0.0, 1.0) < ((GIFT_CHANCE / (MultiGlobal + 0.00001)) * f_ExtraDropChanceRarity)) //Never let it divide by 0
+		if(GetRandomFloat(0.0, 1.0) < ((GIFT_CHANCE / (MultiGlobal + 0.000001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually)) //Never let it divide by 0
 		{
+			f_IncreaceChanceManually = 1.0;
 			float VecOrigin[3];
 			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 			for (int client = 1; client <= MaxClients; client++)
@@ -70,7 +73,11 @@ public void Gift_DropChance(int entity)
 					Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, client, rarity);
 				}
 			}
-		}		
+		}	
+		else
+		{
+			f_IncreaceChanceManually += 0.00025;
+		}
 	}
 }
 
