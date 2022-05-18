@@ -58,7 +58,7 @@ public void Gift_DropChance(int entity)
 {
 	if(IsValidEntity(entity))
 	{
-	//	if(GetRandomFloat(0.0, 1.0) < (GIFT_CHANCE / MultiGlobal + 0.00001)) //Never let it divide by 0
+		if(GetRandomFloat(0.0, 1.0) < ((GIFT_CHANCE / (MultiGlobal + 0.00001)) * f_ExtraDropChanceRarity)) //Never let it divide by 0
 		{
 			float VecOrigin[3];
 			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);

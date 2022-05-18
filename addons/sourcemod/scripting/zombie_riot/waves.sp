@@ -160,6 +160,7 @@ void Waves_ConfigSetup(KeyValues map, bool start=true)
 	StartCash = kv.GetNum("cash");
 	b_BlockPanzerInThisDifficulty = view_as<bool>(kv.GetNum("block_panzer"));
 	b_SpecialGrigoriStore = view_as<bool>(kv.GetNum("grigori_special_shop_logic"));
+	f_ExtraDropChanceRarity = view_as<float>(kv.GetNum("gift_drop_chance_multiplier"));
 	Enemy enemy;
 	Round round;
 	Wave wave;
