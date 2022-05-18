@@ -14,19 +14,19 @@ enum
 
 static const char CommonDrops[][] =
 {
-	"",
+	"Scrap Helmet",
 	""
 };
 
 static const char UncommonDrops[][] =
 {
-	"",
+	"Scrap Helmet",
 	""
 };
 
 static const char RareDrops[][] =
 {
-	"",
+	"Scrap Helmet",
 	""
 };
 
@@ -45,7 +45,7 @@ public void Gift_DropChance(int entity)
 {
 	if(IsValidEntity(entity))
 	{
-		if(GetRandomFloat(0.0, 1.0) < (GIFT_CHANCE / MultiGlobal + 0.00001)) //Never let it divide by 0
+		//if(GetRandomFloat(0.0, 1.0) < (GIFT_CHANCE / MultiGlobal + 0.00001)) //Never let it divide by 0
 		{
 			int rarity = RollRandom();
 			
