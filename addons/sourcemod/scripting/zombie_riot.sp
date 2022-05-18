@@ -13,6 +13,7 @@
 #include <lambda>
 #include <PathFollower>
 #include <PathFollower_Nav>
+#include <morecolors>
 
 //#include <studio_hdr>
 #undef REQUIRE_PLUGIN
