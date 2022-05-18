@@ -1003,7 +1003,7 @@ static void MenuPage(int client, int section)
 			//ima just make it so it sells for now since you fucked it up WITHOUT TESTING BATFOXKID
 			if(/*item.FuncOnBuy != INVALID_FUNCTION && */(canSell && (!EscapeMode || !Waves_Started())) || item.TextStore[0])
 			{
-				if(item.TextStore[0])
+				if(item.TextStore[0] || (!info.Cost && !info.Classname[0]))
 				{
 					int style_unequip = ITEMDRAW_DEFAULT;
 					
@@ -1025,7 +1025,7 @@ static void MenuPage(int client, int section)
 					FormatEx(buffer, sizeof(buffer), "------");//my shitcoding, nooooo!!
 					menu.AddItem(info.Classname, buffer, ITEMDRAW_DISABLED);
 				}
-				if(Equipped[client][slot] == section || (!info.Cost && !info.Classname[0]))
+				if(Equipped[client][slot] == section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
 					menu.AddItem(info.Classname, buffer);
