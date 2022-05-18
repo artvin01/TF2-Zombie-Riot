@@ -1486,19 +1486,20 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					if(info.Cost) //make sure it even can be sold.
 					{
 						CashSpent[client] -= ItemSell(item, item.Owned[client]);
-						item.Owned[client] = 0;
-						item.Scaled[client]--;
-						
-						int slot = TF2_GetClassnameSlot(info.Classname);
-						if(Equipped[client][slot] == index) //No bugging out >:(((((((((((((((((
-						{
-							Equipped[client][slot] = -1;
-							Store_ApplyAttribs(client);
-							Store_GiveAll(client, GetClientHealth(client));	
-						}
 						ClientCommand(client, "playgamesound \"mvm/mvm_money_pickup.wav\"");
-						StoreItems.SetArray(index, item);
 					}
+					
+					item.Owned[client] = 0;
+					item.Scaled[client]--;
+					
+					int slot = TF2_GetClassnameSlot(info.Classname);
+					if(Equipped[client][slot] == index) //No bugging out >:(((((((((((((((((
+					{
+						Equipped[client][slot] = -1;
+						Store_ApplyAttribs(client);
+						Store_GiveAll(client, GetClientHealth(client));	
+					}
+					StoreItems.SetArray(index, item);
 				}
 			}
 			if(choice == 2) //
