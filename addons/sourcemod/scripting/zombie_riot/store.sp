@@ -1513,8 +1513,6 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							if(Equipped[client][slot] == index)
 							{
 								Equipped[client][slot] = -1;
-								Store_ApplyAttribs(client);
-								Store_GiveAll(client, GetClientHealth(client));	
 								StoreItems.SetArray(index, item);
 							}
 							else if(!info.Classname[0] && !info.Cost) //make sure it even can be sold.
@@ -1523,6 +1521,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.Scaled[client]--;
 								StoreItems.SetArray(index, item);
 							}
+							Store_ApplyAttribs(client);
+							Store_GiveAll(client, GetClientHealth(client));	
 						}
 						else
 						{

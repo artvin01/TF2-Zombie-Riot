@@ -74,11 +74,11 @@ public void Gift_DropChance(int entity)
 
 static int RollRandom()
 {
-//	if(!(GetURandomInt() % 20))
-//		return Rarity_Rare;
+	if(!(GetURandomInt() % 20))
+		return Rarity_Rare;
 	
-//	if(!(GetURandomInt() % 5))
-//		return Rarity_Uncommon;
+	if(!(GetURandomInt() % 5))
+		return Rarity_Uncommon;
 	
 	return Rarity_Common;
 }
@@ -143,7 +143,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 										TextStore_GetInv(client, i, amount);
 										if(!amount)
 										{
-											PrintToChat(client, RareDrops[start]);
+											CPrintToChat(client,"{default}You have found{default}{blue}%s {blue}!", RareDrops[a]);
 											TextStore_SetInv(client, i, amount + 1);
 											length = 0;
 										}
@@ -168,7 +168,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 										TextStore_GetInv(client, i, amount);
 										if(!amount)
 										{
-											PrintToChat(client, UncommonDrops[a]);
+											CPrintToChat(client,"{default}You have found{default}{green}%s {green}!", UncommonDrops[a]);
 											TextStore_SetInv(client, i, amount + 1);
 											length = 0;
 										}
@@ -193,7 +193,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 										TextStore_GetInv(client, i, amount);
 										if(!amount)
 										{
-											PrintToChat(client, CommonDrops[a]);
+											CPrintToChat(client,"{default}You have found{default}{default}%s {default}!", CommonDrops[a]);
 											TextStore_SetInv(client, i, amount + 1);
 											length = 0;
 										}
