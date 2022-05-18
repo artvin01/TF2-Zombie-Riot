@@ -27,7 +27,9 @@ static const char CommonDrops[][] =
 {
 	"Scrap Helmet [Common]",
 	"Face Mask [Common]",
-	"Villager Outfit [Common]"
+	"Villager Outfit [Common]",
+	"Blue Jeans [Common]",
+	"Jordans [Common]"
 };
 
 static const char UncommonDrops[][] =
@@ -143,7 +145,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 										TextStore_GetInv(client, i, amount);
 										if(!amount)
 										{
-											CPrintToChat(client,"{default}You have found{default}{blue}%s {blue}!", RareDrops[a]);
+											CPrintToChat(client,"{default}You have found {default}{blue}%s {blue}!", RareDrops[a]);
 											TextStore_SetInv(client, i, amount + 1);
 											length = 0;
 										}
@@ -168,7 +170,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 										TextStore_GetInv(client, i, amount);
 										if(!amount)
 										{
-											CPrintToChat(client,"{default}You have found{default}{green}%s {green}!", UncommonDrops[a]);
+											CPrintToChat(client,"{default}You have found {default}{green}%s {green}!", UncommonDrops[a]);
 											TextStore_SetInv(client, i, amount + 1);
 											length = 0;
 										}
@@ -193,7 +195,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 										TextStore_GetInv(client, i, amount);
 										if(!amount)
 										{
-											CPrintToChat(client,"{default}You have found{default}{default}%s {default}!", CommonDrops[a]);
+											CPrintToChat(client,"{default}You have found {default}{default}%s {default}!", CommonDrops[a]);
 											TextStore_SetInv(client, i, amount + 1);
 											length = 0;
 										}
