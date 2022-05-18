@@ -1523,7 +1523,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							}
 						}
 					}
-					else if(info.Classname[0] && !info.Cost) //make sure it even can be sold.
+					else if(!info.Classname[0] && !info.Cost) //make sure it even can be sold.
 					{
 						item.Owned[client] = 0;
 						item.Scaled[client]--;
