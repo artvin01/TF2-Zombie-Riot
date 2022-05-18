@@ -12,22 +12,33 @@ enum
 	Rarity_Rare = 2
 }
 
+static int RenderColors_RPG[][] =
+{
+	{255, 255, 255, 255}, 	// 0
+	{0, 255, 0, 255, 255},
+	{ 65, 105, 225 , 255},
+	{ 255, 255, 0 , 255},
+	{ 178, 34, 34 , 255},
+	{ 138, 43, 226 , 255},
+	{0, 0, 0, 255}
+};
+
 static const char CommonDrops[][] =
 {
-	"Scrap Helmet",
-	""
+	"Scrap Helmet [Common]",
+	"Face Mask [Common]"
 };
 
 static const char UncommonDrops[][] =
 {
 	"Scrap Helmet",
-	""
+	"Scrap Helmet"
 };
 
 static const char RareDrops[][] =
 {
 	"Scrap Helmet",
-	""
+	"Scrap Helmet"
 };
 
 int g_BeamIndex = -1;
@@ -45,16 +56,15 @@ public void Gift_DropChance(int entity)
 {
 	if(IsValidEntity(entity))
 	{
-		//if(GetRandomFloat(0.0, 1.0) < (GIFT_CHANCE / MultiGlobal + 0.00001)) //Never let it divide by 0
+	//	if(GetRandomFloat(0.0, 1.0) < (GIFT_CHANCE / MultiGlobal + 0.00001)) //Never let it divide by 0
 		{
-			int rarity = RollRandom();
-			
 			float VecOrigin[3];
 			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 			for (int client = 1; client <= MaxClients; client++)
 			{
 				if (IsValidClient(client) && IsPlayerAlive(client) && GetClientTeam(client) == view_as<int>(TFTeam_Red))
 				{
+					int rarity = RollRandom(); //Random for each clie
 					Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, client, rarity);
 				}
 			}
@@ -64,11 +74,11 @@ public void Gift_DropChance(int entity)
 
 static int RollRandom()
 {
-	if(!(GetURandomInt() % 10))
-		return Rarity_Rare;
+//	if(!(GetURandomInt() % 20))
+//		return Rarity_Rare;
 	
-	if(!(GetURandomInt() % 3))
-		return Rarity_Uncommon;
+//	if(!(GetURandomInt() % 5))
+//		return Rarity_Uncommon;
 	
 	return Rarity_Common;
 }
@@ -92,7 +102,14 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 			{
 				f_RingDelayGift[entity] = GetGameTime() + 1.0;
 				EmitSoundToClient(client, SOUND_BEEP, entity, _, 90, _, 1.0);
-				TE_SetupBeamRingPoint(powerup_pos, 10.0, 300.0, g_BeamIndex, -1, 0, 30, 1.0, 10.0, 1.0, {255, 255, 255, 255}, 0, 0);
+				int color[4];
+				
+				color[0] = RenderColors_RPG[i_RarityType[entity]][0];
+				color[1] = RenderColors_RPG[i_RarityType[entity]][1];
+				color[2] = RenderColors_RPG[i_RarityType[entity]][2];
+				color[3] = RenderColors_RPG[i_RarityType[entity]][3];
+		
+				TE_SetupBeamRingPoint(powerup_pos, 10.0, 300.0, g_BeamIndex, -1, 0, 30, 1.0, 10.0, 1.0, color, 0, 0);
 	   			TE_SendToClient(client);
    			}
 			if (IsPlayerAlive(client) && GetClientTeam(client) == view_as<int>(TFTeam_Red))
@@ -122,8 +139,9 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 									{
 										int amount;
 										TextStore_GetInv(client, i, amount);
-										if(!amount)
+									//	if(!amount)
 										{
+											PrintToChat(client, RareDrops[a]);
 											TextStore_SetInv(client, i, amount + 1);
 											length = 0;
 										}
@@ -141,8 +159,9 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 									{
 										int amount;
 										TextStore_GetInv(client, i, amount);
-										if(!amount)
+									//	if(!amount)
 										{
+											PrintToChat(client, UncommonDrops[a]);
 											TextStore_SetInv(client, i, amount + 1);
 											length = 0;
 										}
@@ -160,8 +179,9 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 									{
 										int amount;
 										TextStore_GetInv(client, i, amount);
-										if(!amount)
+									//	if(!amount)
 										{
+											PrintToChat(client, CommonDrops[a]);
 											TextStore_SetInv(client, i, amount + 1);
 											length = 0;
 										}
@@ -217,7 +237,14 @@ stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime
 		
 		int glow = TF2_CreateGlow(m_iGift);
 		
-		SetVariantColor(view_as<int>({255, 255, 255, 255}));
+		int color[4];
+		
+		color[0] = RenderColors_RPG[i_RarityType[m_iGift]][0];
+		color[1] = RenderColors_RPG[i_RarityType[m_iGift]][1];
+		color[2] = RenderColors_RPG[i_RarityType[m_iGift]][2];
+		color[3] = RenderColors_RPG[i_RarityType[m_iGift]][3];
+		
+		SetVariantColor(view_as<int>(color));
 		AcceptEntityInput(glow, "SetGlowColor");
 		
 		SetEntPropEnt(glow, Prop_Send, "m_hOwnerEntity", client);

@@ -392,7 +392,7 @@ public Action Timer_RemoveEntitySawrunner_Tantrum(Handle timer, any entid)
 	{
 		float pos[3];
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-		makeexplosion(-1, -1, pos, "", 300, 300);
+		makeexplosion(-1, -1, pos, "", 150, 300);
 	}
 	return Plugin_Handled;
 }

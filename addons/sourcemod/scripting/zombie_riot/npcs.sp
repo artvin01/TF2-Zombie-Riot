@@ -262,9 +262,6 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 				isBoss = true;
 			}
 			health = 80;
-			
-			if(what_boss == 1)
-			 health *= 0.5;
 			 
 			health *= amount_of_people; //yep its high! will need tos cale with waves expoentially.
 			
@@ -285,6 +282,10 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 				health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 				health /= 2;
 			}
+			
+			
+			if(what_boss == 1)
+				health /= 2;
 			
 			f_SpawnerCooldown[entity] = gameTime + 2.0;
 			if(what_boss == 0)

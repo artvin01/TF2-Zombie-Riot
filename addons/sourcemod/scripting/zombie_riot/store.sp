@@ -922,12 +922,29 @@ static void MenuPage(int client, int section)
 			}
 
 			//ima just make it so it sells for now since you fucked it up WITHOUT TESTING BATFOXKID
-			if(/*item.FuncOnBuy != INVALID_FUNCTION && */canSell && (!EscapeMode || !Waves_Started()))
+			if(/*item.FuncOnBuy != INVALID_FUNCTION && */(canSell && (!EscapeMode || !Waves_Started())) || item.TextStore[0])
 			{
+				if(item.TextStore[0])
+				{
+					int style_unequip = ITEMDRAW_DEFAULT;
+					
+					FormatEx(buffer, sizeof(buffer), "------");//my shitcoding, nooooo!!
+					menu.AddItem(info.Classname, buffer, ITEMDRAW_DISABLED);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
+					if(!item.Owned[client])
+					{
+						style_unequip = ITEMDRAW_DISABLED;
+					}
+					menu.AddItem(info.Classname, buffer, style_unequip);
+					menu.ExitBackButton = true;
+					menu.Display(client, MENU_TIME_FOREVER);
+					return;
+				}
 				if(canSellInsideMenu)
 				{
 					FormatEx(buffer, sizeof(buffer), "------");//my shitcoding, nooooo!!
-					menu.AddItem(info.Classname, buffer);
+					menu.AddItem(info.Classname, buffer, ITEMDRAW_DISABLED);
 				}
 				if(Equipped[client][slot] == section)
 				{
@@ -937,7 +954,7 @@ static void MenuPage(int client, int section)
 				else
 				{
 					FormatEx(buffer, sizeof(buffer), "------");//my shitcoding, nooooo!!
-					menu.AddItem(info.Classname, buffer);
+					menu.AddItem(info.Classname, buffer, ITEMDRAW_DISABLED);
 				}
 				
 				if(info.Cost)
@@ -949,7 +966,7 @@ static void MenuPage(int client, int section)
 				else
 				{
 					FormatEx(buffer, sizeof(buffer), "------");//my shitcoding, nooooo!!
-					menu.AddItem(info.Classname, buffer);
+					menu.AddItem(info.Classname, buffer, ITEMDRAW_DISABLED);
 				}
 			}
 			
@@ -1406,14 +1423,24 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					}
 				}
 			}
-			if(choice == 2)
+			if(choice == 2) //
 			{
-				if(item.Owned[client])
+				if(item.Owned[client]) //item.TextStore[0]
 				{
 					ItemInfo info;
 					item.GetItemInfo(item.Owned[client]-1, info);
 					int slot = TF2_GetClassnameSlot(info.Classname);
-					if(Equipped[client][slot] == index)
+					if(item.TextStore[0])
+					{
+						if(Equipped[client][slot] == index) //No bugging out >:(((((((((((((((((
+						{
+							Equipped[client][slot] = -1;
+							Store_ApplyAttribs(client);
+							Store_GiveAll(client, GetClientHealth(client));	
+						}
+						StoreItems.SetArray(index, item);
+					}
+					else if(Equipped[client][slot] == index)
 					{
 						int active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon")
 						{
