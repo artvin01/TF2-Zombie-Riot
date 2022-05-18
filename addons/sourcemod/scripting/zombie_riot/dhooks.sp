@@ -1173,7 +1173,7 @@ public void DHook_TeleportToObserver(DataPack pack)
 		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
 		TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
 		int target = pack.ReadCell();
-		if(target < 1 || target > MaxClients || !IsClientInGame(client) || !IsPlayerAlive(client) || TeutonType[client] != TEUTON_NONE)
+		if(target < 1 || target > MaxClients || !IsClientInGame(target) || !IsPlayerAlive(target) || TeutonType[target] != TEUTON_NONE)
 		{
 			target = 0;
 			for(int i=1; i<=MaxClients; i++)
