@@ -31,8 +31,7 @@ static const char CommonDrops[][] =
 
 static const char UncommonDrops[][] =
 {
-	"Scrap Helmet",
-	"Scrap Helmet"
+	"Smithed Scrap Chestplate [Uncommon]"
 };
 
 static const char RareDrops[][] =
@@ -74,8 +73,8 @@ public void Gift_DropChance(int entity)
 
 static int RollRandom()
 {
-	if(!(GetURandomInt() % 20))
-		return Rarity_Rare;
+//	if(!(GetURandomInt() % 20))
+//		return Rarity_Rare;
 	
 	if(!(GetURandomInt() % 5))
 		return Rarity_Uncommon;
