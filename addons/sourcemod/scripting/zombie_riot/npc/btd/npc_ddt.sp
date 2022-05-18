@@ -37,10 +37,7 @@ static float MoabSpeed()
 
 static int MoabHealth(bool fortified)
 {
-	float value = 71200.0;	// 712 RGB
-	if(CurrentRound != 89 && CurrentRound != 99)
-		value *= 0.5;
-	
+	float value = 40000.0;	// 400 RGB
 	if(fortified)
 		value *= 2.0;
 	
@@ -56,7 +53,8 @@ static int MoabHealth(bool fortified)
 	{
 		value *= 1.0 + (CurrentRound - 79) * 0.02;
 	}
-	return RoundFloat(value);
+	
+	return RoundFloat(value) + (Bloon_Health(fortified, Bloon_Ceramic) * 3);	// 104x3 RGB
 }
 
 void DDT_MapStart()

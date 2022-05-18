@@ -27,10 +27,10 @@ static float MoabSpeed()
 
 static int MoabHealth(bool fortified)
 {
-	float value = 20000000.0;	// 20000 RGB 
+	float value = 2000000.0;	// 20000 RGB 
 	//Artvin edit: x10 it for fun sake. They are wayyyy too squishy
-	if(CurrentRound != 99)
-		value *= 0.5;
+	if(CurrentRound == 99)
+		value *= 10.0;
 	
 	if(fortified)
 		value *= 2.0;
