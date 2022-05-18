@@ -524,6 +524,8 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 						
 						value *= Attributes_FindOnWeapon(client, weapon, 410, true, 1.0); //For wand
 						
+						value *= Attributes_FindOnWeapon(client, weapon, 71, true, 1.0); //For wand
+						
 						pos = WorldSpaceCenter(entity);
 						
 						SDKHooks_TakeDamage(entity, client, client, value, DMG_SLASH, weapon, ang, pos, false);

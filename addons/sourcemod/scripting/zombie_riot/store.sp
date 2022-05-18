@@ -1773,7 +1773,7 @@ void Store_ApplyAttribs(int client)
 	i_HeadshotAffinity[client] = 0;
 	i_BarbariansMind[client] = 0;
 	i_SoftShoes[client] = 0;
-	
+	i_BadHealthRegen[client] = 0;
 	
 	StringMapSnapshot snapshot = map.Snapshot();
 	int entity = client;
@@ -1810,6 +1810,9 @@ void Store_ApplyAttribs(int client)
 				
 			if(index == 527)
 				i_SoftShoes[client] = RoundToCeil(value);
+				
+			if(index == 805)
+				i_BadHealthRegen[client] = RoundToCeil(value);
 		}
 	}
 	if(dieingstate[client] > 0)

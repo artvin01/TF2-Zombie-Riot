@@ -171,22 +171,45 @@ public void OnPostThink(int client)
 		if(Armor_regen_delay[client] < gameTime)
 		{
 			Armour_Level_Current[client] = 0;
+			int flHealth = GetEntProp(client, Prop_Send, "m_iHealth");
+			int flMaxHealth = SDKCall_GetMaxHealth(client);
+				
 			if (Jesus_Blessing[client] == 1)
 			{
-				int flHealth = GetEntProp(client, Prop_Send, "m_iHealth");
-				int flMaxHealth = SDKCall_GetMaxHealth(client);
 				
-				flMaxHealth /= 2;
+				int flMaxHealthJesus;
 				
-				if(flHealth < flMaxHealth)
+				flMaxHealthJesus = flMaxHealth;
+				
+				flMaxHealthJesus /= 2;
+				
+				if(flHealth < flMaxHealthJesus)
 				{
 					
-					int healing_Amount = flMaxHealth / 50;
+					int healing_Amount = flMaxHealthJesus / 50;
 					
 					if(dieingstate[client] > 0)
 					{
 						healing_Amount = 3;
 					}
+					int newHealth = flHealth + healing_Amount;
+						
+					if(newHealth >= flMaxHealthJesus)
+					{
+						healing_Amount -= newHealth - flMaxHealthJesus;
+						newHealth = flMaxHealthJesus;
+					}
+					
+					SetEntProp(client, Prop_Send, "m_iHealth", newHealth);
+				
+				}
+			}
+			if(i_BadHealthRegen[client] == 1)
+			{
+				if(flHealth < flMaxHealth)
+				{
+					int healing_Amount = 1;
+					
 					int newHealth = flHealth + healing_Amount;
 						
 					if(newHealth >= flMaxHealth)
@@ -196,8 +219,8 @@ public void OnPostThink(int client)
 					}
 					
 					SetEntProp(client, Prop_Send, "m_iHealth", newHealth);
-				
 				}
+				
 			}
 			int Armor_Max = 50;
 			int Extra = 0;

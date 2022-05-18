@@ -1,7 +1,7 @@
 
 #define GIFT_MODEL "models/items/tf_gift.mdl"
 
-#define GIFT_CHANCE 0.0025 //Extra rare cus alot of zobies
+#define GIFT_CHANCE 0.0035 //Extra rare cus alot of zobies
 
 #define SOUND_BEEP			"buttons/button17.wav"
 
@@ -32,53 +32,53 @@ static const char CommonDrops[][] =
 	"Villager Outfit [Common]",
 	"Blue Jeans [Common]",
 	"Jordans [Common]",
-	"Faster Takedowns",
-	"Flame Jet",
-	"Vigilant Sentries"
+	"Faster Takedowns [Common]",
+	"Flame Jet [Common]",
+	"Vigilant Sentries [Common]"
 };
 
 static const char UncommonDrops[][] =
 {
 	"Smithed Scrap Chestplate [Uncommon]",
-	"Big Cryo Blast",
-	"Long Turbo",
-	"Accelerated Aerodarts",
-	"Extra Burny Stuff",
-	"Charged Chinooks",
-	"Speedy Brewing",
-	"Strike Down The False",
-	"Deadly Tranquility",
-	"Veteran Monkey Training"
+	"Big Cryo Blast [Uncommon]",
+	"Long Turbo [Uncommon]",
+	"Accelerated Aerodarts [Uncommon]",
+	"Extra Burny Stuff [Uncommon]",
+	"Charged Chinooks [Uncommon]",
+	"Speedy Brewing [Uncommon]",
+	"Strike Down The False [Uncommon]",
+	"Deadly Tranquility [Uncommon]",
+	"Veteran Monkey Training [Uncommon]"
 };
 
 static const char RareDrops[][] =
 {
-	"Fast Tack Attacks",
-	"Mega Mauler",
-	"Bonus Monkey!",
-	"Big Bunch",
-	"Gun Coolant",
-	"Flanking Maneuvers",
-	"SUPER Range",
-	"Strong Tonic",
-	"Arcane Impale",
-	"Tiny Tornadoes"
+	"Fast Tack Attacks [Rare]",
+	"Mega Mauler [Rare]",
+	"Bonus Monkey! [Rare]",
+	"Big Bunch [Rare]",
+	"Gun Coolant [Rare]",
+	"Flanking Maneuvers [Rare]",
+	"SUPER Range [Rare]",
+	"Strong Tonic [Rare]",
+	"Arcane Impale [Rare]",
+	"Tiny Tornadoes [Rare]"
 };
 
 static const char LegendDrops[][] =
 {
-	"Quad Burst",
-	"Big Bloon Sabotage",
-	"Heavy Knockback",
-	"Mana Shield",
-	"To ARMS!",
-	"Healthy Bananas",
-	"Pre-Game Prep"
+	"Quad Burst [Legendary]",
+	"Big Bloon Sabotage [Legendary]",
+	"Heavy Knockback [Legendary]",
+	"Mana Shield [Legendary]",
+	"To ARMS! [Legendary]",
+	"Healthy Bananas [Legendary]",
+	"Pre-Game Prep [Legendary]"
 };
 
 static const char MythicDrops[][] =
 {
-	"There Can Be Only One"
+	"There Can Be Only One [Mythic]"
 };
 
 int g_BeamIndex = -1;
