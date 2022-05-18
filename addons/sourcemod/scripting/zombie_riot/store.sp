@@ -982,8 +982,9 @@ static void MenuPage(int client, int section)
 				}
 			}
 			
-			IntToString(section, info.Classname, sizeof(info.Classname));
-			menu.AddItem(info.Classname, buffer, style);
+			char buffer2[16];
+			IntToString(section, buffer2, sizeof(buffer2));
+			menu.AddItem(buffer2, buffer, style);
 			
 			if(!EscapeMode && slot < sizeof(Equipped[]) && Equipped[client][slot] == section)
 			{
@@ -996,7 +997,7 @@ static void MenuPage(int client, int section)
 					if(cost > cash)
 						style = ITEMDRAW_DISABLED;
 						
-					menu.AddItem(info.Classname, buffer, style);
+					menu.AddItem(buffer2, buffer, style);
 				}
 			}
 
@@ -1008,14 +1009,14 @@ static void MenuPage(int client, int section)
 					int style_unequip = ITEMDRAW_DEFAULT;
 					
 					FormatEx(buffer, sizeof(buffer), "------");//my shitcoding, nooooo!!
-					menu.AddItem(info.Classname, buffer, ITEMDRAW_DISABLED);
+					menu.AddItem(buffer2, buffer, ITEMDRAW_DISABLED);
 					
 					FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
 					if(!item.Owned[client])
 					{
 						style_unequip = ITEMDRAW_DISABLED;
 					}
-					menu.AddItem(info.Classname, buffer, style_unequip);
+					menu.AddItem(buffer2, buffer, style_unequip);
 					menu.ExitBackButton = true;
 					menu.Display(client, MENU_TIME_FOREVER);
 					return;
@@ -1023,24 +1024,24 @@ static void MenuPage(int client, int section)
 				if(canSellInsideMenu)
 				{
 					FormatEx(buffer, sizeof(buffer), "------");//my shitcoding, nooooo!!
-					menu.AddItem(info.Classname, buffer, ITEMDRAW_DISABLED);
+					menu.AddItem(buffer2, buffer, ITEMDRAW_DISABLED);
 				}
 				if(Equipped[client][slot] == section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
-					menu.AddItem(info.Classname, buffer);
+					menu.AddItem(buffer2, buffer);
 				}
 				else
 				{
 					FormatEx(buffer, sizeof(buffer), "------");//my shitcoding, nooooo!!
-					menu.AddItem(info.Classname, buffer, ITEMDRAW_DISABLED);
+					menu.AddItem(buffer2, buffer, ITEMDRAW_DISABLED);
 				}
 				
 				if(info.Cost)
 				{
 					int sell = ItemSell(item, level);
 					FormatEx(buffer, sizeof(buffer), "%t ($%d) | (Credits After Selling : $%d)", "Sell", sell, sell + (CurrentCash-CashSpent[client]));
-					menu.AddItem(info.Classname, buffer);
+					menu.AddItem(buffer2, buffer);
 				}
 			}
 			
