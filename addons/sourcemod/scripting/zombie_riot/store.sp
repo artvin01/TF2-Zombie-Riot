@@ -440,8 +440,11 @@ bool Store_HasAnyItem(int client)
 	return false;
 }
 
-bool Store_PutInServer(int client)
+void Store_PutInServer(int client)
 {
+	if(EscapeMode)
+		return;
+	
 	Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
@@ -483,8 +486,6 @@ bool Store_PutInServer(int client)
 	
 	if(IsPlayerAlive(client))
 		TF2_RegeneratePlayer(client);
-	
-	return true;
 }
 
 void Store_ClientCookiesCached(int client)
@@ -1024,7 +1025,7 @@ static void MenuPage(int client, int section)
 					FormatEx(buffer, sizeof(buffer), "------");//my shitcoding, nooooo!!
 					menu.AddItem(info.Classname, buffer, ITEMDRAW_DISABLED);
 				}
-				if(Equipped[client][slot] == section)
+				if(Equipped[client][slot] == section || (!info.Cost && !info.Classname[0]))
 				{
 					FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
 					menu.AddItem(info.Classname, buffer);
@@ -1039,11 +1040,6 @@ static void MenuPage(int client, int section)
 				{
 					int sell = ItemSell(item, level);
 					FormatEx(buffer, sizeof(buffer), "%t ($%d) | (Credits After Selling : $%d)", "Sell", sell, sell + (CurrentCash-CashSpent[client]));
-					menu.AddItem(info.Classname, buffer);
-				}
-				else
-				{
-					FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
 					menu.AddItem(info.Classname, buffer);
 				}
 			}
@@ -1491,6 +1487,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					
 					item.Owned[client] = 0;
 					item.Scaled[client]--;
+					StoreItems.SetArray(index, item);
 					
 					int slot = TF2_GetClassnameSlot(info.Classname);
 					if(Equipped[client][slot] == index) //No bugging out >:(((((((((((((((((
@@ -1499,7 +1496,6 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						Store_ApplyAttribs(client);
 						Store_GiveAll(client, GetClientHealth(client));	
 					}
-					StoreItems.SetArray(index, item);
 				}
 			}
 			if(choice == 2) //
@@ -1509,17 +1505,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					ItemInfo info;
 					item.GetItemInfo(item.Owned[client]-1, info);
 					int slot = TF2_GetClassnameSlot(info.Classname);
-					if(item.TextStore[0])
-					{
-						if(Equipped[client][slot] == index) //No bugging out >:(((((((((((((((((
-						{
-							Equipped[client][slot] = -1;
-							Store_ApplyAttribs(client);
-							Store_GiveAll(client, GetClientHealth(client));	
-						}
-						StoreItems.SetArray(index, item);
-					}
-					else if(Equipped[client][slot] == index)
+					if(Equipped[client][slot] == index)
 					{
 						int active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon")
 						{
@@ -1535,6 +1521,12 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								ClientCommand(client, "playgamesound items/medshotno1.wav");	
 							}
 						}
+					}
+					else if(info.Classname[0] && !info.Cost) //make sure it even can be sold.
+					{
+						item.Owned[client] = 0;
+						item.Scaled[client]--;
+						StoreItems.SetArray(index, item);
 					}
 				}
 			}
