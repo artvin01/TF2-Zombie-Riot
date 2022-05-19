@@ -98,7 +98,7 @@ public void Gift_DropChance(int entity)
 {
 	if(IsValidEntity(entity))
 	{
-		if(GetRandomFloat(0.0, 1.0) < ((GIFT_CHANCE / (MultiGlobal + 0.000001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually)) //Never let it divide by 0
+		if(GetRandomFloat(0.0, 2.0) < ((GIFT_CHANCE / (MultiGlobal + 0.000001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually)) //Never let it divide by 0
 		{
 			f_IncreaceChanceManually = 1.0;
 			float VecOrigin[3];
