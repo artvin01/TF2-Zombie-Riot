@@ -174,8 +174,6 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 					{
 						RemoveEntity(glow);
 					}
-					RemoveEntity(entity);
-					
 					if(GetFeatureStatus(FeatureType_Native, "TextStore_GetItems") == FeatureStatus_Available)
 					{
 						int length = TextStore_GetItems();
@@ -184,7 +182,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 							static char buffer[64];
 							TextStore_GetItemName(i, buffer, sizeof(buffer));
 							
-							if(length && i_RarityType[entity] >= Rarity_Mythic)
+							if(length && i_RarityType[entity] == Rarity_Mythic)
 							{
 								int start = (GetURandomInt() % sizeof(MythicDrops));
 								int a = start;
@@ -209,7 +207,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 								} while(a != start);
 							}
 							
-							if(length && i_RarityType[entity] >= Rarity_Legend)
+							if(length && i_RarityType[entity] == Rarity_Legend)
 							{
 								int start = (GetURandomInt() % sizeof(LegendDrops));
 								int a = start;
@@ -234,7 +232,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 								} while(a != start);
 							}
 							
-							if(length && i_RarityType[entity] >= Rarity_Rare)
+							if(length && i_RarityType[entity] == Rarity_Rare)
 							{
 								int start = (GetURandomInt() % sizeof(RareDrops));
 								int a = start;
@@ -259,7 +257,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 								} while(a != start);
 							}
 							
-							if(length && i_RarityType[entity] >= Rarity_Uncommon)
+							if(length && i_RarityType[entity] == Rarity_Uncommon)
 							{
 								int start = (GetURandomInt() % sizeof(UncommonDrops));
 								int a = start;
@@ -284,7 +282,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 								} while(a != start);
 							}
 							
-							if(length)
+							if(length && i_RarityType[entity] == Rarity_Common)
 							{
 								int start = (GetURandomInt() % sizeof(CommonDrops));
 								int a = start;
@@ -313,6 +311,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 						if(length)
 							PrintToChat(client, "You already have everything");
 					}
+					RemoveEntity(entity);
 					return Plugin_Stop;
 				}
 			}
