@@ -369,11 +369,12 @@ void Waves_Progress()
 			{
 				if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 					multi += 0.25;
-					MultiGlobal = multi;
 			}
 			
 			if(multi < 0.5)
 				multi = 0.5;
+			
+			MultiGlobal = multi;
 			
 			int count = RoundToFloor(float(wave.Count)*multi);
 			if(count < 1)
