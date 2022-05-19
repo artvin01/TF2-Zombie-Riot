@@ -229,14 +229,15 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		int health, isBoss;
 		if(panzer)
 		{
-			int what_boss = 0;
+			int what_boss = GetRandomInt(0,1);
+			
 			entity = list.Get(GetRandomInt(0, entity-1));
 			isBoss = false;
 			int deathforcepowerup = 0;
 			if(panzer_warning)
 			{
 				deathforcepowerup = 2;
-				switch(GetRandomInt(0,1))
+				switch(what_boss)
 				{
 					case 0:
 					{
