@@ -852,7 +852,7 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 			}
 		}
 	}
-	for(int entitycount_again; entitycount_again<i_MaxcountNpc; entitycount_again++)
+	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
 	{
 		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
 		if(IsValidEntity(baseboss_index_allied))
