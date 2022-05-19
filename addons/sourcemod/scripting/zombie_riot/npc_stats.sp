@@ -1542,6 +1542,7 @@ methodmap CClotBody
 		
 		SDKHook(npc, SDKHook_OnTakeDamage, NPC_OnTakeDamage_Base);
 		SDKHook(npc, SDKHook_Think, Check_If_Stuck);
+	//	SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
 		
 		HeadcrabZombie CreatePathfinderIndex = view_as<HeadcrabZombie>(npc);
 		
@@ -5372,6 +5373,24 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject)
 
 	
 	return pathTarget;
+}
+
+public Action SDKHook_Settransmit_Baseboss(int entity, int client)
+{
+	if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
+	{
+		if(b_thisNpcIsABoss[entity])
+		{
+			return Plugin_Continue;
+		}
+		return Plugin_Continue;
+	}
+	else
+	{
+		SetEdictFlags(entity, (GetEdictFlags(entity) & ~FL_EDICT_ALWAYS));
+	}
+	
+	return Plugin_Continue;
 }
 
 stock float[] PredictSubjectPositionHook(CClotBody npc, int subject)
