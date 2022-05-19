@@ -24,7 +24,7 @@
 #tryinclude <menus-controller>
 
 
-#define NPC_HARD_LIMIT 32
+#define NPC_HARD_LIMIT 48 //Never allow more then 48.
 
 // THESE ARE TO TOGGLE THINGS!
 
@@ -248,9 +248,8 @@ int i_Healing_station_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int Perk_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 
 bool b_NpcHasDied[MAXENTITIES]={true, ...};
-#define ZR_MAX_NPCS 64
-const int i_MaxcountNpc = ZR_MAX_NPCS;
-int i_ObjectsNpcs[ZR_MAX_NPCS];
+const int i_MaxcountNpc = NPC_HARD_LIMIT * 2;
+int i_ObjectsNpcs[NPC_HARD_LIMIT * 2];
 
 bool b_IsAlliedNpc[MAXENTITIES]={false, ...};
 #define ZR_MAX_NPCS_ALLIED 64
@@ -2628,12 +2627,12 @@ public void Check_For_Team_Npc(int entity)
 			npcstats.bCantCollidie = true;
 			npcstats.bCantCollidieAlly = false;
 			b_Is_Blue_Npc[entity] = true;
-			for (int i = 0; i < ZR_MAX_NPCS; i++)
+			for (int i = 0; i < NPC_HARD_LIMIT * 2; i++)
 			{
 				if (EntRefToEntIndex(i_ObjectsNpcs[i]) <= 0)
 				{
 					i_ObjectsNpcs[i] = EntIndexToEntRef(entity);
-					i = ZR_MAX_NPCS;
+					i = NPC_HARD_LIMIT * 2;
 				}
 			}
 			
@@ -2705,12 +2704,12 @@ public void Check_For_Team_Npc_Delayed(int ref)
 			npcstats.bCantCollidie = true;
 			npcstats.bCantCollidieAlly = false;
 			b_Is_Blue_Npc[entity] = true;
-			for (int i = 0; i < ZR_MAX_NPCS; i++)
+			for (int i = 0; i < NPC_HARD_LIMIT * 2; i++)
 			{
 				if (EntRefToEntIndex(i_ObjectsNpcs[i]) <= 0)
 				{
 					i_ObjectsNpcs[i] = EntIndexToEntRef(entity);
-					i = ZR_MAX_NPCS;
+					i = NPC_HARD_LIMIT * 2;
 				}
 			}
 			

@@ -1,4 +1,4 @@
-#define MAX_PLAYER_COUNT	12
+#define MAX_PLAYER_COUNT	16
 
 static bool AddedPoint[MAXTF2PLAYERS];
 

@@ -117,15 +117,19 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	int amount_of_people;
 	
 	
-	limit = 6 + RoundToCeil(float(Waves_GetRound())/2.65);
+	limit = 4 + RoundToCeil(float(Waves_GetRound())/2.65);
 	
+	if(limit > 8) //Make sure to not allow more then this amount so the default max zombie count is 20 at almost all times if player scaling isnt accounted for.
+	{
+		limit = 8;
+	}
 	amount_of_people = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 		{
 			amount_of_people += 1;
-			limit += 1;
+			limit += 2;
 		}
 	}
 	
