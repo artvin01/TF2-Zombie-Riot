@@ -1,7 +1,7 @@
 
 #define GIFT_MODEL "models/items/tf_gift.mdl"
 
-#define GIFT_CHANCE 0.005 //Extra rare cus alot of zobies
+#define GIFT_CHANCE 0.0025 //Extra rare cus alot of zobies
 
 #define SOUND_BEEP			"buttons/button17.wav"
 
@@ -114,7 +114,7 @@ public void Gift_DropChance(int entity)
 		}	
 		else
 		{
-			f_IncreaceChanceManually += 0.0005;
+			f_IncreaceChanceManually += 0.00015;
 		}
 	}
 }
