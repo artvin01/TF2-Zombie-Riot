@@ -64,3 +64,5 @@ Current coders that in anyway actively helped, in order of how much:
 
 Alot of code is borrowed/just takes from other plugins i or friends made, often with permission,
 rarely without cus i couldnt contact the person or it was just open sourcecode, credited anyways when i did that.
+
+IF YOU HAVE ANY QUESTIONS, CONTACT ME. My things are in my Bio.
