@@ -68,6 +68,7 @@ Current coders that in anyway actively helped, in order of how much:
 
 IF YOU WISH TO USE THE MODELS THAT ARENT IN THE SOURCECODE, CONTACT THIS PERSON FOR PERMISSION, OTHERWISE PLEASE HAVE THIS DEFINE IN
 USING THESE MODELS WITHOUT PERMISSION WILL ANGER US. thanks.
+
 #define SpecialZombiesNotIn
 
 - [Crusty](https://steamcommunity.com/profiles/76561198097667312/) (Modeler)
