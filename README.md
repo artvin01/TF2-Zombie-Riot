@@ -30,6 +30,11 @@ IF you wish to see the plugin in action/or just are interrested in playing this 
 
 ### Dependencies
 
+Sourcemod 1.11
+1.11 Compiler
+
+WINDOWS SERVER!
+
 The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot to run:
 
 - [DHooks2](https://github.com/peace-maker/DHooks2)
