@@ -57,8 +57,8 @@ The SourceMod plugins / extensions listed below are not necessary for TF2 Zombie
 
 Current coders that in anyway actively helped, in order of how much:
 
-- [Batfoxkid](https://github.com/Batfoxkid)
 - [Artvin](https://github.com/artvin01)
+- [Batfoxkid](https://github.com/Batfoxkid)
 - [Mikusch](https://github.com/Mikusch) (Gamedata assistance and more, a savior.)
 - [Suza](https://github.com/Zabaniya001/)
 - [Alex](https://github.com/JustAlex14)
@@ -66,6 +66,11 @@ Current coders that in anyway actively helped, in order of how much:
 - [Kenzzer](https://github.com/Kenzzer) (Got gamedata and make an extention edit for us)
 - [Pelipoika](https://github.com/Pelipoika) (Npc base code that we heavily edited, thank you SO much for publishing it all.)
 
+IF YOU WISH TO USE THE MODELS THAT ARENT IN THE SOURCECODE, CONTACT THIS PERSON FOR PERMISSION, OTHERWISE PLEASE HAVE THIS DEFINE IN
+USING THESE MODELS WITHOUT PERMISSION WILL ANGER US. thanks.
+#define SpecialZombiesNotIn
+
+- [Crusty](https://steamcommunity.com/profiles/76561198097667312/) (Modeler)
 
 Alot of code is borrowed/just takes from other plugins i or friends made, often with permission,
 rarely without cus i couldnt contact the person or it was just open sourcecode, credited anyways when i did that.
