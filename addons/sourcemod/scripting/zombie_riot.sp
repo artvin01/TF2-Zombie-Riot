@@ -47,12 +47,11 @@
 
 
 //Comment this out, and reload the plugin once ingame if you wish to have infinite cash.
-#define NormalRound
-
-#define SpecialZombiesNotIn
 
 
-
+ConVar CvarNoRoundStart;
+ConVar CvarNoSpecialZombieSpawn;
+ConVar CvarInfiniteCash;
 
 //#define CompensatePlayers
 
@@ -1163,6 +1162,8 @@ public void OnClientPutInServer(int client)
 	{
 		Queue_PutInServer(client);
 	}
+	
+	ConVar_Add("mp_waitingforplayers_time", "90.0");
 	
 	DHook_HookClient(client);
 	SDKHook_HookClient(client);

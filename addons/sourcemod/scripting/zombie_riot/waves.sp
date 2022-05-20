@@ -221,11 +221,6 @@ void Waves_ConfigSetup(KeyValues map, bool start=true)
 			}
 		}
 	}
-	
-#if defined NormalRound
-#else
-	CurrentCash = 999999;
-#endif
 }
 
 void Waves_RoundStart()
@@ -267,17 +262,7 @@ void Waves_RoundStart()
 	CurrentRound = 0;
 	CurrentWave = -1;
 	
-	#if defined NormalRound
-	
-		#if defined FastStart
-		CreateTimer(1.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
-		
-		#else
-		CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
-		
-		#endif
-	
-	#endif
+	CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 	/*
 	char buffer[64];
 	for(int i=MAXENTITIES; i>MaxClients; i--)
@@ -327,7 +312,7 @@ public Action Waves_RoundStartTimer(Handle timer)
 					Store_PutInServer(client);
 			}
 		}
-		if(any_player_on)
+		if(any_player_on && !CvarNoRoundStart.BoolValue)
 		{
 			
 			InSetup = false;
@@ -349,6 +334,9 @@ void Waves_Progress()
 	if(InSetup)
 		return;
 	
+	if(CvarNoRoundStart.BoolValue)
+		return;
+		
 	if(WaveTimer)
 	{
 		KillTimer(WaveTimer);

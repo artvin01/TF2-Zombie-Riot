@@ -866,6 +866,11 @@ static void MenuPage(int client, int section)
 	
 	Menu menu;
 	
+	if(CvarInfiniteCash.BoolValue)
+	{
+		CurrentCash = 999999;
+		CashSpent[client] = 0;
+	}
 	Item item;
 	ItemInfo info;
 	if(section != -1)
