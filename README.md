@@ -40,7 +40,8 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [DHooks2](https://github.com/peace-maker/DHooks2)
 - [Nosoop's TF2Attribute fork](https://github.com/nosoop/tf2attributes)
 - [TF2Items](https://github.com/asherkin/TF2Items)
-- [CollisionHook](https://github.com/SlidyBat/CollisionHook)
+- [CollisionHookFIX](https://github.com/SlidyBat/CollisionHook) THIS IS A GAMEDATA FIX FOR...
+- [CollisionHook](https://github.com/Adrianilloo/Collisionhook)
 - [TFEconData](https://github.com/nosoop/SM-TFEconData)
 - [PathFollower](https://github.com/Pelipoika/PathFollower)
 - [lambda](https://github.com/Batfoxkid/lambda)
