@@ -1163,8 +1163,6 @@ public void OnClientPutInServer(int client)
 		Queue_PutInServer(client);
 	}
 	
-	ConVar_Add("mp_waitingforplayers_time", "90.0");
-	
 	DHook_HookClient(client);
 	SDKHook_HookClient(client);
 	dieingstate[client] = 0;
