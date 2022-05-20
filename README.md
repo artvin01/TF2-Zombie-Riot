@@ -40,6 +40,9 @@ IF you wish to see the plugin in action/or just are interrested in playing this 
 "zr_setwave" 
 - Will set the wave to the number given +1
 
+"sm_spawn_npc" 
+- Any id will spawn the specific npc on where you look, check code to see which number equals which npc
+
 ## Installation
 
 ### Dependencies
