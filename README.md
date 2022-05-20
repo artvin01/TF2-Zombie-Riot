@@ -28,13 +28,13 @@ IF you wish to see the plugin in action/or just are interrested in playing this 
  
 ## Commands and cvar's
 
-"zr_infinitecash" = "1" ( def. "0" )
+"zr_infinitecash" = "0" ( def. "0" )
  - Money is infinite and always set to 999999
- - 
-"zr_noroundstart" = "0"
+  
+"zr_noroundstart" = "0" ( def. "0" )
  - Makes it so waves refuse to start
- - 
-"zr_nospecial" = "1"
+ 
+"zr_nospecial" = "1" ( def. "1" )
  - No Panzer will spawn or anything alike
 
 "zr_setwave" 
