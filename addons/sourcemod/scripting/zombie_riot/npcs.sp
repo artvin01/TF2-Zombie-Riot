@@ -116,6 +116,10 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	int npc_current_count = 0;
 	int amount_of_people;
 	
+	#if defined SpecialZombiesNotIn //PLEASE ASK CRUSTY FOR
+	panzer = false;
+	panzer_warning = false;
+	#endif
 	
 	limit = 4 + RoundToCeil(float(Waves_GetRound())/2.65);
 	

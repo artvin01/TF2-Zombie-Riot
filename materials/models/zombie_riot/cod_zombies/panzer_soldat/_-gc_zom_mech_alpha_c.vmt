@@ -1,6 +1,0 @@
-"VertexLitGeneric"
-{
-     "$basetexture" "models\zombie_riot\cod_zombies\panzer_soldat/_-gc_zom_mech_alpha_c"
-	 "$bumpmap" "models\zombie_riot\cod_zombies\panzer_soldat/c_zom_mech_alpha_n"
-	 "$translucent" "1"
-}
