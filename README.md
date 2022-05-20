@@ -33,7 +33,7 @@ IF you wish to see the plugin in action/or just are interrested in playing this 
 Sourcemod 1.11
 1.11 Compiler
 
-WINDOWS SERVER!
+WINDOWS SERVER IS A MUST DUE TO PATHFOLLOWER!!
 
 The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot to run:
 
