@@ -2345,8 +2345,7 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 	float VicLoc[3];
 	if(IsValidEntity(Closest_npc))
 	{
-		GetEntPropVector(Closest_npc, Prop_Data, "m_vecAbsOrigin", VicLoc);
-		VicLoc[2] += 44.0;
+		VicLoc = WorldSpaceCenter(Closest_npc);
 		if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
 		{			
 			float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
@@ -2364,8 +2363,7 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 			{
 				if(!b_NpcHasDied[baseboss_index] && Closest_npc != baseboss_index)
 				{
-					GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", VicLoc);
-					VicLoc[2] += 44.0;							
+					VicLoc = WorldSpaceCenter(baseboss_index);						
 					if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
 					{
 						float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
