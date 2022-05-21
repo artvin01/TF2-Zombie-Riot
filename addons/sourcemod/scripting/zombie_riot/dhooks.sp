@@ -319,10 +319,10 @@ public MRESReturn DHook_RocketExplodePre(int entity)
 	}
 	return MRES_Ignored;
 }
-/*
+
 public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 {
-//	if(IsValidEntity(ent1) && IsValidEntity(ent2))
+	if(IsValidEntity(ent1) && IsValidEntity(ent2))
 	{
 		if(b_Is_Npc_Rocket[ent2])
 		{
@@ -388,7 +388,7 @@ public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 	
 	return Plugin_Continue;
 }
-*/
+
 public Action CH_PassFilter(int ent1, int ent2, bool &result)
 {
 	if(IsValidEntity(ent1) && IsValidEntity(ent2))
