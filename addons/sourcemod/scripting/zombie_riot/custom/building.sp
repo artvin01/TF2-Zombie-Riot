@@ -1376,7 +1376,6 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 		}
 		else if(StrEqual(buffer, "obj_dispenser"))
 		{
-			GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 			if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == -1)
 			{
 				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -1384,6 +1383,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 				{
 					if(Is_Reload_Button)
 					{
+						GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 						if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client) && (StrEqual(buffer, "zr_ammobox") || StrEqual(buffer, "zr_armortable") || StrEqual(buffer, "zr_perkmachine") || StrEqual(buffer, "zr_packapunch")))
 						{
 							DataPack pack;
