@@ -985,37 +985,39 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		}
 		
 	}	//Remove annoying instakill taunts
-	
-	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
-	
-	Health -= RoundToCeil(damage);
-	
-	Damage_dealt_in_total[attacker] += damage; //i dont know, i give up.
-	
-	if(f_CooldownForHurtHud[attacker] < GetGameTime())
+	if(attacker > 0 && attacker <= MaxClients)
 	{
-		f_CooldownForHurtHud[attacker] = GetGameTime() + 0.1;
+		int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
+		int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 		
-		int red = 255;
-		int green = 255;
-		int blue = 0;
-				
-		red = Health * 255  / MaxHealth;
-		//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-		green = Health * 255  / MaxHealth;
-				
-		red = 255 - red;
-			
-		if(Health <= 0)
+		Health -= RoundToCeil(damage);
+		
+		Damage_dealt_in_total[attacker] += damage; //i dont know, i give up.
+		
+		if(f_CooldownForHurtHud[attacker] < GetGameTime())
 		{
-			red = 255;
-			green = 0;
-			blue = 0;
+			f_CooldownForHurtHud[attacker] = GetGameTime() + 0.1;
+			
+			int red = 255;
+			int green = 255;
+			int blue = 0;
+					
+			red = Health * 255  / MaxHealth;
+			//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
+			green = Health * 255  / MaxHealth;
+					
+			red = 255 - red;
+				
+			if(Health <= 0)
+			{
+				red = 255;
+				green = 0;
+				blue = 0;
+			}
+			
+			SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01, 2.0);
+			ShowSyncHudText(attacker, SyncHud, "%s\n%d / %d", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
 		}
-		
-		SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01, 2.0);
-		ShowSyncHudText(attacker, SyncHud, "%s\n%d / %d", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
 	}
 	
 	return Plugin_Changed;

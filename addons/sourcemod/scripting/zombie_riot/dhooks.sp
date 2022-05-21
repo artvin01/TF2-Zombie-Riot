@@ -83,8 +83,6 @@ void DHook_Setup()
 	
 }
 
-#define ExplosionRadius 150.0
-#define ExplosionFalloff 0.4
 
 public void ApplyExplosionDhook_Pipe(int entity)
 {
@@ -156,47 +154,8 @@ public MRESReturn DHook_GrenadeExplodePre(int entity)
 			original_damage = f_CustomGrenadeDamage[entity];
 		}
 		SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
-		float ProjectileLoc[3];
-		float VicLoc[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 		int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
-		int Closest_npc = GetClosestTarget_BaseBoss(entity);
-		float damage_falloff = 1.0;
-		if(IsValidEntity(Closest_npc))
-		{
-			GetEntPropVector(Closest_npc, Prop_Data, "m_vecAbsOrigin", VicLoc);
-			VicLoc[2] += 44.0;
-			if (GetVectorDistance(ProjectileLoc, VicLoc, true) <= Pow(ExplosionRadius, 2.0))
-			{			
-				float distance_1 = GetVectorDistance(VicLoc, ProjectileLoc);
-				float damage_1 = Custom_Explosive_Logic(owner, distance_1, ExplosionFalloff, original_damage, ExplosionRadius + 1.0);
-				
-				SDKHooks_TakeDamage(Closest_npc, owner, owner, damage_1, DMG_BLAST, weapon, CalculateExplosiveDamageForce(ProjectileLoc, VicLoc, ExplosionRadius), VicLoc);
-				
-				damage_falloff *= EXPLOSION_AOE_DAMAGE_FALLOFF;
-			}
-			
-			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
-			{
-				int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-				if (IsValidEntity(baseboss_index))
-				{
-					if(!b_NpcHasDied[baseboss_index] && Closest_npc != baseboss_index)
-					{
-						GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", VicLoc);
-						VicLoc[2] += 44.0;							
-						if (GetVectorDistance(ProjectileLoc, VicLoc, true) <= Pow(ExplosionRadius, 2.0))
-						{
-							float distance_1 = GetVectorDistance(VicLoc, ProjectileLoc);
-							float damage_1 = Custom_Explosive_Logic(owner, distance_1, ExplosionFalloff, original_damage, ExplosionRadius + 1.0);
-															
-							SDKHooks_TakeDamage(baseboss_index, owner, owner, damage_1 / damage_falloff, DMG_BLAST, weapon, CalculateExplosiveDamageForce(ProjectileLoc, VicLoc, ExplosionRadius) ,VicLoc);
-							damage_falloff *= EXPLOSION_AOE_DAMAGE_FALLOFF;
-						}
-					}
-				}
-			}
-		}
+		Explode_Logic_Custom(original_damage, owner, entity, weapon);
 	}
 	f_CustomGrenadeDamage[entity] = 0.0;
 	return MRES_Ignored;
@@ -220,9 +179,6 @@ public MRESReturn DHook_FireballExplodePre(int entity)
 	if (0 < owner <= MaxClients)
 	{
 		float damage = 700.0;
-		float ProjectileLoc[3];
-		float VicLoc[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 		int weapon = GetPlayerWeaponSlot(owner, 2);
 		if(!IsValidEntity(weapon))
 			return MRES_Ignored;
@@ -230,42 +186,8 @@ public MRESReturn DHook_FireballExplodePre(int entity)
 		Address address = TF2Attrib_GetByDefIndex(weapon, 410);
 		if(address != Address_Null)
 			damage *= TF2Attrib_GetValue(address);
-		
-		int Closest_npc = GetClosestTarget_BaseBoss(entity);
-		float damage_falloff = 1.0;
-		if(IsValidEntity(Closest_npc))
-		{
-			GetEntPropVector(Closest_npc, Prop_Data, "m_vecAbsOrigin", VicLoc);
-			VicLoc[2] += 44.0;
-			if (GetVectorDistance(ProjectileLoc, VicLoc, true) <= Pow(ExplosionRadius, 2.0))
-			{
-				float distance_1 = GetVectorDistance(VicLoc, ProjectileLoc);
-				float damage_1 = Custom_Explosive_Logic(owner, distance_1, ExplosionFalloff, damage, ExplosionRadius + 1.0);
-				SDKHooks_TakeDamage(Closest_npc, owner, owner, damage_1, DMG_PLASMA, weapon, CalculateExplosiveDamageForce(ProjectileLoc, VicLoc, ExplosionRadius) ,VicLoc, false);
-				damage_falloff *= EXPLOSION_AOE_DAMAGE_FALLOFF;
-			}
 			
-			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
-			{
-				int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-				if (IsValidEntity(baseboss_index))
-				{
-					if(!b_NpcHasDied[baseboss_index] && Closest_npc != baseboss_index)
-					{
-						GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", VicLoc);
-						VicLoc[2] += 44.0;				
-						if (GetVectorDistance(ProjectileLoc, VicLoc, true) <= Pow(ExplosionRadius, 2.0))
-						{
-							float distance_1 = GetVectorDistance(VicLoc, ProjectileLoc);
-							float damage_1 = Custom_Explosive_Logic(owner, distance_1, ExplosionFalloff, damage, ExplosionRadius + 1.0);
-															
-							SDKHooks_TakeDamage(baseboss_index, owner, owner, damage_1 / damage_falloff, DMG_PLASMA, weapon, CalculateExplosiveDamageForce(ProjectileLoc, VicLoc, ExplosionRadius) ,VicLoc, false);
-							damage_falloff *= EXPLOSION_AOE_DAMAGE_FALLOFF;
-						}
-					}
-				}
-			}
-		}
+		Explode_Logic_Custom(damage, owner, entity, weapon);
 	}
 	return MRES_Ignored;
 }
@@ -277,45 +199,8 @@ public MRESReturn DHook_RocketExplodePre(int entity)
 	{
 		float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
-		float ProjectileLoc[3];
-		float VicLoc[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 		int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
-		int Closest_npc = GetClosestTarget_BaseBoss(entity);
-		float damage_falloff = 1.0;
-		if(IsValidEntity(Closest_npc))
-		{
-			GetEntPropVector(Closest_npc, Prop_Data, "m_vecAbsOrigin", VicLoc);
-			VicLoc[2] += 44.0;
-			if (GetVectorDistance(ProjectileLoc, VicLoc, true) <= Pow(ExplosionRadius, 2.0))
-			{
-				float distance_1 = GetVectorDistance(VicLoc, ProjectileLoc);
-				float damage_1 = Custom_Explosive_Logic(owner, distance_1, ExplosionFalloff, original_damage, ExplosionRadius + 1.0);
-				SDKHooks_TakeDamage(Closest_npc, owner, owner, damage_1, DMG_BLAST, weapon, CalculateExplosiveDamageForce(ProjectileLoc, VicLoc, ExplosionRadius) ,VicLoc, false);
-				damage_falloff *= EXPLOSION_AOE_DAMAGE_FALLOFF;
-			}
-			
-			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
-			{
-				int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-				if (IsValidEntity(baseboss_index))
-				{
-					if(!b_NpcHasDied[baseboss_index] && Closest_npc != baseboss_index)
-					{
-						GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", VicLoc);
-						VicLoc[2] += 44.0;				
-						if (GetVectorDistance(ProjectileLoc, VicLoc, true) <= Pow(ExplosionRadius, 2.0))
-						{
-							float distance_1 = GetVectorDistance(VicLoc, ProjectileLoc);
-							float damage_1 = Custom_Explosive_Logic(owner, distance_1, ExplosionFalloff, original_damage, ExplosionRadius + 1.0);
-															
-							SDKHooks_TakeDamage(baseboss_index, owner, owner, damage_1 / damage_falloff, DMG_BLAST, weapon, CalculateExplosiveDamageForce(ProjectileLoc, VicLoc, ExplosionRadius) ,VicLoc);
-							damage_falloff *= EXPLOSION_AOE_DAMAGE_FALLOFF;
-						}
-					}
-				}
-			}
-		}
+		Explode_Logic_Custom(original_damage, owner, entity, weapon);
 	}
 	return MRES_Ignored;
 }

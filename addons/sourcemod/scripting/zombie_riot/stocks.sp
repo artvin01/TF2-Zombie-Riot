@@ -2327,3 +2327,55 @@ stock int HasNamedItem(int client, const char[] name)
 	
 	return amount;
 }
+
+
+stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon, float spawnLoc[3] = {0.0,0.0,0.0}, float explosionRadius = EXPLOSION_RADIUS, float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF, float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF)
+{
+	float damage_reduction = 1.0;
+	int Closest_npc = 0;
+	if(spawnLoc[0] == 0.0)
+	{
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+		Closest_npc = GetClosestTarget_BaseBoss(entity);
+	}
+	else
+	{
+		Closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity);
+	}
+	float VicLoc[3];
+	if(IsValidEntity(Closest_npc))
+	{
+		GetEntPropVector(Closest_npc, Prop_Data, "m_vecAbsOrigin", VicLoc);
+		VicLoc[2] += 44.0;
+		if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
+		{			
+			float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
+			float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
+			
+			SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+			
+			damage_reduction *= ExplosionDmgMultihitFalloff;
+		}
+		
+		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		{
+			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+			if (IsValidEntity(baseboss_index))
+			{
+				if(!b_NpcHasDied[baseboss_index] && Closest_npc != baseboss_index)
+				{
+					GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", VicLoc);
+					VicLoc[2] += 44.0;							
+					if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
+					{
+						float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
+						float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
+														
+						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1 / damage_reduction, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius) ,VicLoc);
+						damage_reduction *= ExplosionDmgMultihitFalloff;
+					}
+				}
+			}
+		}
+	}
+}

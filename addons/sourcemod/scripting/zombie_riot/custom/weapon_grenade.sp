@@ -53,7 +53,7 @@ public void Weapon_ShotgunGrenadeLauncher(int client, int weapon, const char[] c
 {
 	if(weapon >= MaxClients)
 	{
-			if(!TF2_IsPlayerInCondition(client, TFCond_RuneHaste))
+		if(!TF2_IsPlayerInCondition(client, TFCond_RuneHaste))
 		{
 			static float anglesB[3];
 			GetClientEyeAngles(client, anglesB);
@@ -67,7 +67,7 @@ public void Weapon_ShotgunGrenadeLauncher(int client, int weapon, const char[] c
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 		}
 		
-		EmitSoundToAll("mvm/giant_demoman/giant_demoman_grenade_shoot.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
+		EmitSoundToAll("mvm/giant_demoman/giant_demoman_grenade_shoot.wav", client, SNDCHAN_STATIC, 80, _, 0.8);
 		Client_Shake(client, 0, 35.0, 20.0, 0.8);
 		
 		float speed = 1500.0;

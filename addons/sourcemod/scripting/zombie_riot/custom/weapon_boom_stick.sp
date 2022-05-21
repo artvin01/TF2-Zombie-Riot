@@ -67,29 +67,9 @@ public void Marksman_boom_rifle(int client, int weapon, const char[] classname, 
 	CloseHandle(trace);
 //	if (GetVectorDistance(eyePos, spawnLoc, true) <= Pow(650.0, 2.0))
 	{	
-		float damage_reduction = 1.0;
+
 		SpawnSmallExplosionNotRandom(spawnLoc);
 		EmitSoundToAll(HITSCAN_BOOM, -1, _, _, _, _, _, _,spawnLoc);
-		for(int entitycount_2; entitycount_2<i_MaxcountNpc; entitycount_2++)
-		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount_2]);
-			if (IsValidEntity(baseboss_index))
-			{
-				if(!b_NpcHasDied[baseboss_index])
-				{
-					float VicLoc[3];
-					GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", VicLoc);
-												
-					if (GetVectorDistance(VicLoc, spawnLoc, true) <= Pow(ExplosionRadius, 2.0))
-					{
-						float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
-						float damage_1 = Custom_Explosive_Logic(client, distance_1, 0.35, damage, 351.0);
-													
-						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1 / damage_reduction ,DMG_BLAST);
-						damage_reduction *= EXPLOSION_AOE_DAMAGE_FALLOFF;
-					}
-				}
-			}
-		}
+		Explode_Logic_Custom(damage, client, client, weapon, spawnLoc);
 	}
 }
