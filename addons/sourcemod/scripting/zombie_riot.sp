@@ -2571,7 +2571,7 @@ public void Check_For_Team_Npc(int entity)
 		{
 		//	SDKHook(entity, SDKHook_TraceAttack, NPC_TraceAttack);
 			SDKHook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
-		//	SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);
+			SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);
 			npcstats.bCantCollidieAlly = true;
 			npcstats.bCantCollidie = false;
 			b_IsAlliedNpc[entity] = true;
@@ -2614,12 +2614,12 @@ public void Check_For_Team_Npc(int entity)
 				SDKHook(entity, SDKHook_OnTakeDamagePost, Map_BaseBoss_Damage_Post);
 				npcstats.SetDefaultStatsZombieRiot(view_as<int>(TFTeam_Blue));
 			}
-			/*
+			
 			else
 			{
 				SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
 			}
-			*/
+			
 			
 			npcstats.bCantCollidie = true;
 			npcstats.bCantCollidieAlly = false;
@@ -2650,7 +2650,7 @@ public void Check_For_Team_Npc_Delayed(int ref)
 		{
 		//	SDKHook(entity, SDKHook_TraceAttack, NPC_TraceAttack);
 			SDKHook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
-		//	SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);
+			SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);
 			npcstats.bCantCollidieAlly = true;
 			npcstats.bCantCollidie = false;
 			b_IsAlliedNpc[entity] = true;
@@ -2693,12 +2693,12 @@ public void Check_For_Team_Npc_Delayed(int ref)
 				SDKHook(entity, SDKHook_OnTakeDamagePost, Map_BaseBoss_Damage_Post);
 				npcstats.SetDefaultStatsZombieRiot(view_as<int>(TFTeam_Blue));
 			}
-			/*
+			
 			else
 			{
 				SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
 			}
-			*/
+			
 			npcstats.bCantCollidie = true;
 			npcstats.bCantCollidieAlly = false;
 			b_Is_Blue_Npc[entity] = true;

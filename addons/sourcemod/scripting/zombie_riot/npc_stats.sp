@@ -3364,6 +3364,17 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 	CTakeDamageInfo -= view_as<Address>(16*4);
 	if(!b_NpcHasDied[pThis])
 	{
+		int index = NPCList.FindValue(EntIndexToEntRef(pThis), NPCData::Ref);
+		if(index != -1)
+		{
+			NPCData npc;
+			NPCList.GetArray(index, npc);
+			int client = GetClientOfUserId(npc.LastHitId);
+			if(client && IsClientInGame(client))
+			{
+				Calculate_And_Display_hp(client, pThis, npc.Damage, true);
+			}
+		}
 		b_NpcHasDied[pThis] = true;
 		ZR_ApplyKillEffects(pThis); //Do kill attribute stuff
 		CClotBody npc = view_as<CClotBody>(pThis);
@@ -3372,6 +3383,7 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		if(IsValidEntity(npc.m_iTeamGlow))
 			RemoveEntity(npc.m_iTeamGlow);
 			
+		
 		NPCDeath(pThis);
 		/*
 		#if defined ISSPECIALDEATHANIMATION

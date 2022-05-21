@@ -240,22 +240,22 @@ public void DDT_ClotThink(int iNPC)
 						{
 							if(target <= MaxClients)
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 35.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_SLASH|DMG_CLUB);
 							}
 							else
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_SLASH|DMG_CLUB);
 							}
 						}
 						else
 						{
 							if(target <= MaxClients)
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 25.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_SLASH|DMG_CLUB);
 							}
 							else
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 165.0, DMG_SLASH|DMG_CLUB);
 							}
 						}					
 					}

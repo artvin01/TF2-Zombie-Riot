@@ -600,11 +600,11 @@ public void Bloon_ClotThink(int iNPC)
 								{
 									if(npc.m_bFortified)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 1.5 + float(i) * 1.3 * 1.4, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 2.0 + float(i) * 1.6 * 1.4, DMG_SLASH|DMG_CLUB);
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 1.5 + float(i) * 1.3, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 2.0 + float(i) * 1.6, DMG_SLASH|DMG_CLUB);
 									}
 								}
 								delete swingTrace;

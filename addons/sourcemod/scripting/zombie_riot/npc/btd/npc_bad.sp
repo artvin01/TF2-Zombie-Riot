@@ -234,7 +234,7 @@ public void Bad_ClotThink(int iNPC)
 							}
 							else
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 3000.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 7000.0, DMG_SLASH|DMG_CLUB);
 							}
 						}
 						else
@@ -245,7 +245,7 @@ public void Bad_ClotThink(int iNPC)
 							}
 							else
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 2000.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_SLASH|DMG_CLUB);
 							}
 						}
 					}

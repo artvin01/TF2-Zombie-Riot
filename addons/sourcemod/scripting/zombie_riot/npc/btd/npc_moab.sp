@@ -243,7 +243,7 @@ public void Moab_ClotThink(int iNPC)
 							}
 							else
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_SLASH|DMG_CLUB);
 							}
 						}
 						else
@@ -254,7 +254,7 @@ public void Moab_ClotThink(int iNPC)
 							}
 							else
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 40.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_SLASH|DMG_CLUB);
 							}						
 						}
 					}

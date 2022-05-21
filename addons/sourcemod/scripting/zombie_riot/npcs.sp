@@ -28,6 +28,7 @@ enum struct NPCData
 	int Ref;
 	int LastHitId;
 	int DamageBits;
+	float Damage;
 	int LastHitWeaponRef;
 	
 	Handle IgniteTimer;
@@ -35,7 +36,7 @@ enum struct NPCData
 	int IgniteId;
 	int IgniteRef;
 }
-static ArrayList NPCList;
+ArrayList NPCList;
 static Handle SyncHud;
 static char LastClassname[2049][64];
 static float f_SpawnerCooldown[MAXENTITIES];
@@ -188,7 +189,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	{
 		case 1:
 		{
-			Active_Spawners_Calculate = 1.9;
+			Active_Spawners_Calculate = 1.95;
 		}
 		case 2:
 		{
@@ -782,6 +783,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			NPCList.GetArray(index, npc);
 			npc.LastHitId = GetClientUserId(attacker);
 			npc.DamageBits = damagetype;
+			npc.Damage = damage;
 			
 			if(weapon > MaxClients)
 				npc.LastHitWeaponRef = EntIndexToEntRef(weapon);
@@ -985,45 +987,57 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		}
 		
 	}	//Remove annoying instakill taunts
-	if(attacker > 0 && attacker <= MaxClients)
-	{
-		int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
-		int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
-		
-		Health -= RoundToCeil(damage);
-		
-		Damage_dealt_in_total[attacker] += damage; //i dont know, i give up.
-		
-		if(f_CooldownForHurtHud[attacker] < GetGameTime())
-		{
-			f_CooldownForHurtHud[attacker] = GetGameTime() + 0.1;
-			
-			int red = 255;
-			int green = 255;
-			int blue = 0;
-					
-			red = Health * 255  / MaxHealth;
-			//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-			green = Health * 255  / MaxHealth;
-					
-			red = 255 - red;
-				
-			if(Health <= 0)
-			{
-				red = 255;
-				green = 0;
-				blue = 0;
-			}
-			
-			SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01, 2.0);
-			ShowSyncHudText(attacker, SyncHud, "%s\n%d / %d", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
-		}
-	}
 	
 	return Plugin_Changed;
 }
 
+public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
+{
+	if(attacker < 1 || attacker > MaxClients)
+		return;
+		
+	Calculate_And_Display_hp(attacker, victim, damage, false);
+	/*
+	if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+	{
+		return;
+	}
+	*/
 
+}
+
+public void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore)
+{
+	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+	
+	Damage_dealt_in_total[attacker] += damage; //i dont know, i give up.
+	
+	if(f_CooldownForHurtHud[attacker] < GetGameTime() || ignore)
+	{
+		f_CooldownForHurtHud[attacker] = GetGameTime() + 0.1;
+		
+		int red = 255;
+		int green = 255;
+		int blue = 0;
+				
+		red = Health * 255  / MaxHealth;
+		//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
+		green = Health * 255  / MaxHealth;
+				
+		red = 255 - red;
+			
+		if(Health <= 0)
+		{
+			red = 255;
+			green = 0;
+			blue = 0;
+		}
+		
+		SetHudTextParams(-1.0, 0.2, 1.0, red, green, blue, 255, 0, 0.01, 0.01, 2.0);
+		ShowSyncHudText(attacker, SyncHud, "%d / %d", Health, MaxHealth);
+	}	
+}
 void DoMeleeAnimationFrameLater(int attacker)
 {
 	int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
