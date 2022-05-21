@@ -138,6 +138,12 @@ public void ApplyExplosionDhook_Fireball(int entity)
 	g_DHookFireballExplode.HookEntity(Hook_Pre, entity, DHook_FireballExplodePre);
 // g_DHookFireballExplode
 }
+float f_CustomGrenadeDamage[MAXENTITIES];
+
+public void IsCustomTfGrenadeProjectile(int entity, float damage) //I cant make custom grenades work, so ill just use this logic, works just as good.
+{
+	f_CustomGrenadeDamage[entity] = damage;
+}
 
 public MRESReturn DHook_GrenadeExplodePre(int entity)
 {
@@ -145,6 +151,10 @@ public MRESReturn DHook_GrenadeExplodePre(int entity)
 	if (0 < owner <= MaxClients)
 	{
 		float original_damage = GetEntPropFloat(entity, Prop_Send, "m_flDamage"); 
+		if(f_CustomGrenadeDamage[entity] > 1.0)
+		{
+			original_damage = f_CustomGrenadeDamage[entity];
+		}
 		SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
 		float ProjectileLoc[3];
 		float VicLoc[3];
@@ -188,6 +198,7 @@ public MRESReturn DHook_GrenadeExplodePre(int entity)
 			}
 		}
 	}
+	f_CustomGrenadeDamage[entity] = 0.0;
 	return MRES_Ignored;
 }
 

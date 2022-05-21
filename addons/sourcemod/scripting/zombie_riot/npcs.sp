@@ -625,68 +625,6 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 static float f_CooldownForHurtHud[MAXPLAYERS];	
 //Otherwise we get kicks if there is too much hurting going on.
 
-public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
-{
-	if(attacker < 1 || attacker > MaxClients)
-		return;
-	/*
-	if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
-	{
-		return;
-	}
-	*/
-	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
-	
-	float damage_Caclulation = damage;
-	/*
-	if(TF2_IsPlayerInCondition(attacker, TFCond_Buffed))
-		damage_Caclulation *= 1.35;
-		
-	else if (damagetype & DMG_CRIT)
-		damage_Caclulation *= 3.0;
-		*/
-		//dont bother lol
-/*		
-	//for some reason it doesnt do it by itself, im baffeled.
-
-	if(Health < 0)
-		damage_Caclulation += float(Health);
-	
-	if(damage_Caclulation > 0.0) //idk i guess my math is off or that singular/10 frames of them being still being there somehow impacts this, cannot go around this, delay is a must
-		Damage_dealt_in_total[attacker] += damage_Caclulation;	//otherwise alot of other issues pop up.
-	
-	Damage_dealt_in_total[attacker] += damage_Caclulation;
-	*/
-	
-	Damage_dealt_in_total[attacker] += damage_Caclulation; //i dont know, i give up.
-	
-	if(f_CooldownForHurtHud[attacker] < GetGameTime())
-	{
-		f_CooldownForHurtHud[attacker] = GetGameTime() + 0.1;
-		
-		int red = 255;
-		int green = 255;
-		int blue = 0;
-				
-		red = Health * 255  / MaxHealth;
-		//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-		green = Health * 255  / MaxHealth;
-				
-		red = 255 - red;
-			
-		if(Health <= 0)
-		{
-			red = 255;
-			green = 0;
-			blue = 0;
-		}
-		
-		SetHudTextParams(-1.0, 0.2, 1.0, red, green, blue, 255, 0, 0.01, 0.01, 2.0);
-		ShowSyncHudText(attacker, SyncHud, "%d / %d", Health, MaxHealth);
-	}
-}
-
 public void Func_Breakable_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	if(attacker < 1 || attacker > MaxClients)
@@ -1047,6 +985,38 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		}
 		
 	}	//Remove annoying instakill taunts
+	
+	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+	
+	Health -= RoundToCeil(damage);
+	
+	Damage_dealt_in_total[attacker] += damage; //i dont know, i give up.
+	
+	if(f_CooldownForHurtHud[attacker] < GetGameTime())
+	{
+		f_CooldownForHurtHud[attacker] = GetGameTime() + 0.1;
+		
+		int red = 255;
+		int green = 255;
+		int blue = 0;
+				
+		red = Health * 255  / MaxHealth;
+		//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
+		green = Health * 255  / MaxHealth;
+				
+		red = 255 - red;
+			
+		if(Health <= 0)
+		{
+			red = 255;
+			green = 0;
+			blue = 0;
+		}
+		
+		SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01, 2.0);
+		ShowSyncHudText(attacker, SyncHud, "%s\n%d / %d", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+	}
 	
 	return Plugin_Changed;
 }

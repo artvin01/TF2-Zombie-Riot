@@ -1066,6 +1066,8 @@ public void OnMapStart()
 	OnMapStart_NPC_Base();
 	Gb_Ball_Map_Precache();
 	Map_Precache_Zombie_Drops_Gift();
+	Grenade_Custom_Precache();
+	BoomStick_MapPrecache();
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
@@ -2622,10 +2624,12 @@ public void Check_For_Team_Npc(int entity)
 				SDKHook(entity, SDKHook_OnTakeDamagePost, Map_BaseBoss_Damage_Post);
 				npcstats.SetDefaultStatsZombieRiot(view_as<int>(TFTeam_Blue));
 			}
+			/*
 			else
 			{
 				SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
 			}
+			*/
 			
 			npcstats.bCantCollidie = true;
 			npcstats.bCantCollidieAlly = false;
@@ -2699,11 +2703,12 @@ public void Check_For_Team_Npc_Delayed(int ref)
 				SDKHook(entity, SDKHook_OnTakeDamagePost, Map_BaseBoss_Damage_Post);
 				npcstats.SetDefaultStatsZombieRiot(view_as<int>(TFTeam_Blue));
 			}
+			/*
 			else
 			{
 				SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
 			}
-			
+			*/
 			npcstats.bCantCollidie = true;
 			npcstats.bCantCollidieAlly = false;
 			b_Is_Blue_Npc[entity] = true;

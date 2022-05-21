@@ -2058,6 +2058,28 @@ public void SpawnSmallExplosion(float DetLoc[3])
 		DispatchSpawn(littleBoom);
 		ActivateEntity(littleBoom);
 		AcceptEntityInput(littleBoom, "Start");
+		CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(littleBoom), TIMER_FLAG_NO_MAPCHANGE);
+	}
+}
+
+public void SpawnSmallExplosionNotRandom(float DetLoc[3])
+{
+	int littleBoom = CreateEntityByName("info_particle_system");
+	
+	if (IsValidEntity(littleBoom))
+	{
+		TeleportEntity(littleBoom, DetLoc, NULL_VECTOR, NULL_VECTOR);
+		
+		char particleName[255];
+		
+		particleName = EXPLOSION_PARTICLE_SMALL_1;
+		
+		DispatchKeyValue(littleBoom, "effect_name", particleName);
+		DispatchKeyValue(littleBoom, "targetname", "present");
+		DispatchSpawn(littleBoom);
+		ActivateEntity(littleBoom);
+		AcceptEntityInput(littleBoom, "Start");
+		CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(littleBoom), TIMER_FLAG_NO_MAPCHANGE);
 	}
 }
 
