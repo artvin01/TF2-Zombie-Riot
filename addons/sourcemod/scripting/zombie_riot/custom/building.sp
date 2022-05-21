@@ -1411,6 +1411,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					}
 				}
 			}
+			GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 			if(StrEqual(buffer, "zr_ammobox") || StrEqual(buffer, "zr_armortable") || StrEqual(buffer, "zr_perkmachine") || StrEqual(buffer, "zr_packapunch"))
 			{
 				if(!Is_Reload_Button && !b_IgnoreWarningForReloadBuidling[client])
