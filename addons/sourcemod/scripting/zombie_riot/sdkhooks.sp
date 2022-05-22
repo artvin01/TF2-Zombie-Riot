@@ -479,6 +479,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if(TeutonType[victim])
 		return Plugin_Handled;
 		
+	float gameTime = GetGameTime();
+	
 	f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
 	
 	if(IsInvuln(victim))	
@@ -506,8 +508,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		if(victim == attacker)
 			return Plugin_Handled;
 	}
-	
-	float gameTime = GetGameTime();
 	
 	if(damagetype & DMG_DROWN)
 	{
