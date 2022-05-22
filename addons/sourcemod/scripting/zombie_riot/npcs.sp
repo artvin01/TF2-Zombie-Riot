@@ -129,16 +129,17 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	{
 		limit = 8;
 	}
+	float f_limit = 0.0;
 	amount_of_people = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 		{
 			amount_of_people += 1;
-			limit += 2;
+			f_limit += 2.2;
 		}
 	}
-	
+	limit += RoundToNearest(f_limit);
 	if(!b_GameOnGoing) //no spawn if the round is over
 	{
 		return;

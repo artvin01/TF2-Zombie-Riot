@@ -226,6 +226,8 @@ int Zombies_Currently_Still_Ongoing;
 
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
 int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
+int i_BarricadesBuild[MAXTF2PLAYERS]={0, ...};
+
 int Elevator_Owner[MAXENTITIES]={0, ...};
 bool Is_Elevator[MAXENTITIES]={false, ...};
 int Dont_Crouch[MAXENTITIES]={0, ...};

@@ -165,11 +165,13 @@ enum struct Item
 	char Desc[256];
 	int Section;
 	int Scale;
+	int CostPerWave;
 	int MaxCost;
 	int Level;
 	int Slot;
 	bool Default;
 	bool NoEscape;
+	bool MaxBarricadesBuild;
 	bool Hidden;
 	bool WhiteOut;
 	bool ShouldThisCountSupportBuildings;
@@ -310,6 +312,8 @@ static void ConfigSetup(int section, KeyValues kv, bool noescape, bool hidden)
 		kv.GetString("desc", item.Desc, sizeof(item.Desc));
 		item.Default = view_as<bool>(kv.GetNum("default"));
 		item.Scale = kv.GetNum("scale");
+		item.CostPerWave = kv.GetNum("extracost_per_wave");
+		item.MaxBarricadesBuild = view_as<bool>(kv.GetNum("max_barricade_buy_logic"));
 		item.MaxCost = kv.GetNum("maxcost");
 		item.Slot = kv.GetNum("slot", -1);
 		item.ItemInfos = new ArrayList(sizeof(ItemInfo));
@@ -971,7 +975,24 @@ static void MenuPage(int client, int section)
 			else
 			{
 				ItemCost(client, item, info.Cost);
-				FormatEx(buffer, sizeof(buffer), "%t ($%d)", "Buy", info.Cost);
+				bool Maxed_Building = false;
+				
+				if(item.MaxBarricadesBuild)
+				{
+					if(i_BarricadesBuild[client] >= MaxBarricadesAllowed(client))
+					{
+						Maxed_Building = true;
+						style = ITEMDRAW_DISABLED;
+					}
+				}
+				if(Maxed_Building)
+				{
+					FormatEx(buffer, sizeof(buffer), "%t ($%d) [MAX BARRICADES OUT CURRENTLY] [%i/%i]", "Buy", info.Cost, i_BarricadesBuild[client], MaxBarricadesAllowed(client));
+				}
+				else
+				{
+					FormatEx(buffer, sizeof(buffer), "%t ($%d)", "Buy", info.Cost);
+				}
 				if(info.Cost > cash)
 					style = ITEMDRAW_DISABLED;
 			}
@@ -2383,7 +2404,12 @@ static char[] TranslateItemName(int client, const char name[64])
 static void ItemCost(int client, Item item, int &cost)
 {
 	bool started = Waves_Started();
-	bool GregSale = false
+	bool GregSale = false;
+	
+	cost += item.Scale*item.Scaled[client]; 
+	cost += item.CostPerWave * CurrentRound;
+	//make sure anything thats additive is on the top, so sales actually help!!
+	
 	if(CurrentRound > 14) //Add a safety net so the extra sale doesnt apply before round 15
 	{
 		if(b_SpecialGrigoriStore) //during maps where he alaways sells, always sell!
@@ -2413,7 +2439,6 @@ static void ItemCost(int client, Item item, int &cost)
 
 	}
 	
-	cost += item.Scale*item.Scaled[client];
 	
 	if((CurrentRound != 0 || CurrentWave != -1) && cost)
 	{

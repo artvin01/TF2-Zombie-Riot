@@ -199,8 +199,17 @@ public Action Building_PlaceRailgun(int client, int weapon, const char[] classna
 
 public Action Building_PlaceDispenser(int client, int weapon, const char[] classname, bool &result)
 {
-	PlaceBuilding(client, Building_DispenserWall, TFObject_Dispenser);
-	return Plugin_Continue;
+	if(i_BarricadesBuild[client] < MaxBarricadesAllowed(client))
+	{
+		PlaceBuilding(client, Building_DispenserWall, TFObject_Dispenser);
+		return Plugin_Continue;		
+	}
+	else
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		PrintToChat(client,"You cannot build anymore Barricades, you have reached the max amount.");
+	}
+	return Plugin_Handled;	
 }
 	
 public Action Building_PlaceElevator(int client, int weapon, const char[] classname, bool &result)
@@ -217,7 +226,6 @@ public Action Building_PlaceElevator(int client, int weapon, const char[] classn
 	}
 	return Plugin_Handled;	
 }
-
 public Action Building_PlaceAmmoBox(int client, int weapon, const char[] classname, bool &result)
 {
 	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client))
@@ -462,12 +470,19 @@ public Action Timer_DroppedBuildingWaitSentryLeveLUp(Handle htimer, int entref)
 	}
 	return Plugin_Continue;
 }
+
 public bool Building_DispenserWall(int client, int entity)
 {
 	b_SentryIsCustom[entity] = false;
+	i_BarricadesBuild[client] += 1;
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-	CreateTimer(0.5, Timer_DroppedBuildingWait, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	CreateTimer(0.2, Building_Set_HP_Colour, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	
+	DataPack pack;
+	CreateDataTimer(0.5, Timer_DroppedBuildingWaitWall, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteCell(client); //Need original client index id please.
+	
 	Building_Repair_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 	Building_Max_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 	Building_cannot_be_repaired[entity] = false;
@@ -480,6 +495,7 @@ public bool Building_DispenserWall(int client, int entity)
 	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
 	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
+	SetEntPropString(entity, Prop_Data, "m_iName", "zr_barricade");
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
@@ -1395,6 +1411,17 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							AcceptEntityInput(entity, "SetBuilder", client);
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", client);
 						}
+						else if(StrEqual(buffer, "zr_barricade")) // do not check for if too many barricades, doesnt make sense to do this anyways.
+						{
+							DataPack pack;
+							CreateDataTimer(0.5, Timer_ClaimedBuildingremoveBarricadeCounterOnDeath, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+							pack.WriteCell(EntIndexToEntRef(entity));
+							pack.WriteCell(client); //Need original client index id please.
+							i_BarricadesBuild[client] += 1;
+							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
+							AcceptEntityInput(entity, "SetBuilder", client);
+							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", client);						
+						}
 						else
 						{
 							ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -1960,6 +1987,22 @@ public Action Timer_ClaimedBuildingremoveSupportCounterOnDeath(Handle htimer,  D
 	return Plugin_Continue;
 }
 
+public Action Timer_ClaimedBuildingremoveBarricadeCounterOnDeath(Handle htimer,  DataPack pack)
+{
+	pack.Reset();
+	int entref = pack.ReadCell();
+	int client_original_index = pack.ReadCell(); //Need original!
+	
+	int obj=EntRefToEntIndex(entref);
+	
+	if(!IsValidEntity(obj))
+	{
+		i_BarricadesBuild[client_original_index] -= 1;
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
+}
+
 public Action Timer_DroppedBuildingWaitAmmobox(Handle htimer,  DataPack pack)
 {
 	pack.Reset();
@@ -2304,6 +2347,33 @@ public Action Timer_DroppedBuildingWaitPackAPunch(Handle htimer, DataPack pack)
 	}
 	return Plugin_Continue;
 }
+
+public Action Timer_DroppedBuildingWaitWall(Handle htimer, DataPack pack)
+{
+	pack.Reset();
+	int entref = pack.ReadCell();
+	int client_original_index = pack.ReadCell(); //Need original!
+	
+	int obj=EntRefToEntIndex(entref);
+	
+	if(!IsValidEntity(obj))
+	{
+		i_BarricadesBuild[client_original_index] -= 1;
+		return Plugin_Stop;
+	}
+	//Wait until full complete
+	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
+	{
+		if(Building_Constructed[obj])
+			return Plugin_Continue;
+			
+		CClotBody npc = view_as<CClotBody>(obj);
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[obj] = true;
+	}
+	return Plugin_Continue;
+}
+
 public Action Timer_DroppedBuildingWait(Handle htimer, int entref)
 {
 	int obj=EntRefToEntIndex(entref);
@@ -3313,6 +3383,23 @@ public int MaxSupportBuildingsAllowed(int client)
   	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayer(client, 762)); //762 is how many extra buildings are allowed on you.
 	
 	maxAllowed += Building_health_attribute;
+	
+	if(maxAllowed < 1)
+	{
+		maxAllowed = 1;
+	}
+	
+	return maxAllowed;
+}
+
+
+public int MaxBarricadesAllowed(int client)
+{
+	int maxAllowed = 2;
+	
+ //	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayer(client, 762)); //762 is how many extra buildings are allowed on you.
+	
+//	maxAllowed += Building_health_attribute;
 	
 	if(maxAllowed < 1)
 	{

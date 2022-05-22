@@ -357,7 +357,7 @@ void Waves_Progress()
 			round.Waves.GetArray(CurrentWave, wave);
 			WaveIntencity = wave.Intencity;
 			
-			float multi = 0.0;
+			float multi = 0.05;
 			for(int client=1; client<=MaxClients; client++)
 			{
 				if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
@@ -369,7 +369,7 @@ void Waves_Progress()
 			
 			MultiGlobal = multi;
 			
-			int count = RoundToFloor(float(wave.Count)*multi);
+			int count = RoundToNearest(float(wave.Count)*multi);
 			if(count < 1)
 				count = 1;
 			
@@ -396,13 +396,13 @@ void Waves_Progress()
 				for(int client=1; client<=MaxClients; client++)
 				{
 					if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
-						multi_health += 0.12;
+						multi_health += 0.15;
 				}
 	
 				if(multi_health < 0.5)
 					multi_health = 0.5;	
 					
-				int Tempomary_Health = RoundToCeil(float(wave.EnemyData.Health) * multi_health);
+				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multi_health);
 				wave.EnemyData.Health = Tempomary_Health;
 			}
 		
