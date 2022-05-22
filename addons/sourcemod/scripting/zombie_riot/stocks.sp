@@ -2380,5 +2380,19 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 
 stock void UpdatePlayerPoints(int client)
 {
-	PlayerPoints[client] = 1;	// Do stuff here :)
+	int Points;
+	
+	Points += Healing_done_in_total[client] / 50;
+	
+	Points += RoundToCeil(Damage_dealt_in_total[client]) / 200;
+	
+	Points += Resupplies_Supplied[client] * 2;
+	
+	Points += i_BarricadeHasBeenDamaged[client] / 100;
+	
+	Points += i_ExtraPlayerPoints[client] / 200;
+	
+	Points /= 10;
+	
+	PlayerPoints[client] = Points;	// Do stuff here :)
 }

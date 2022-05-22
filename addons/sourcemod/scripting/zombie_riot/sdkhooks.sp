@@ -321,6 +321,7 @@ public void OnPostThink(int client)
 	}
 	if(delay_hud[client] < gameTime)	
 	{
+		UpdatePlayerPoints(client);
 		delay_hud[client] = gameTime + 0.4;
 		
 		if(LastMann || dieingstate[client] > 0)

@@ -191,6 +191,7 @@ int StartCash;
 float healing_cooldown[MAXTF2PLAYERS];
 float Damage_dealt_in_total[MAXTF2PLAYERS];
 int Healing_done_in_total[MAXTF2PLAYERS];
+int i_BarricadeHasBeenDamaged[MAXTF2PLAYERS];
 int Resupplies_Supplied[MAXTF2PLAYERS];
 
 bool thirdperson[MAXTF2PLAYERS];
@@ -226,6 +227,8 @@ int Zombies_Currently_Still_Ongoing;
 
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
 int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
+int i_BarricadesBuild[MAXTF2PLAYERS]={0, ...};
+
 int Elevator_Owner[MAXENTITIES]={0, ...};
 bool Is_Elevator[MAXENTITIES]={false, ...};
 int Dont_Crouch[MAXENTITIES]={0, ...};
@@ -239,6 +242,7 @@ enum
 
 int TeutonType[MAXTF2PLAYERS];
 int PlayerPoints[MAXTF2PLAYERS];
+int i_ExtraPlayerPoints[MAXTF2PLAYERS];
 	
 int Animation_Setting[MAXTF2PLAYERS];
 int Animation_Index[MAXTF2PLAYERS];
@@ -1176,6 +1180,7 @@ public void OnClientPutInServer(int client)
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
 	Healing_done_in_total[client] = 0;
+	i_BarricadeHasBeenDamaged[client] = 0;
 	Ammo_Count_Ready[client] = 0;
 	Armor_Charge[client] = 0;
 	Doing_Handle_Mount[client] = false;
@@ -1227,6 +1232,7 @@ public void OnClientDisconnect(int client)
 	Ammo_Count_Ready[client] = 0;
 	Armor_Charge[client] = 0;
 	PlayerPoints[client] = 0;
+	i_ExtraPlayerPoints[client] = 0;
 	WeaponClass[client] = TFClass_Unknown;
 	Timer_Knife_Management[client] = INVALID_HANDLE;
 	Escape_DropItem(client, false);
