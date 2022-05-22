@@ -479,6 +479,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if(TeutonType[victim])
 		return Plugin_Handled;
 		
+	f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
+	
 	if(IsInvuln(victim))	
 		return Plugin_Continue;	
 		
@@ -558,7 +560,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			damage *= 0.75;
 		}
 			
-		if(Armor_Charge[victim] > 0 && !IsInvuln(victim))
+		if(Armor_Charge[victim] > 0)
 		{
 			int dmg_through_armour = RoundToNearest(Replicated_Damage * 0.1);
 			
@@ -618,7 +620,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 		}
 	}
-	f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
 		if((Replicated_Damage >= flHealth || damage >= flHealth) && !LastMann && !b_IsAloneOnServer)
 		{
 			i_CurrentEquippedPerk[victim] = 0;
