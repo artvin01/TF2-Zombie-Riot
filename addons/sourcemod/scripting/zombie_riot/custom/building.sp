@@ -905,6 +905,11 @@ public void Building_TakeDamagePost(int entity, int attacker, int inflictor, flo
 			
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 		}
+		int client = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+		if(IsValidClient(client))
+		{
+			i_BarricadeHasBeenDamaged[client] += RoundToCeil(damage);
+		}
 	}
 }
 
