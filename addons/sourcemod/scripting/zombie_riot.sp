@@ -1030,6 +1030,7 @@ public void OnMapStart()
 	Waves_MapStart();
 	Music_MapStart();
 	DHook_MapStart();
+	SDKHook_MapStart();
 	ViewChange_MapStart();
 	Remove_Healthcooldown();
 	Third_PersonOnMapStart();
