@@ -1127,7 +1127,7 @@ static void MenuPage(int client, int section)
 			
 			if(count)
 			{
-				if(item.Slot < sizeof(SlotLimits))
+				if(item.Slot >= sizeof(SlotLimits))
 					continue;
 				
 				if(count >= SlotLimits[item.Slot])
