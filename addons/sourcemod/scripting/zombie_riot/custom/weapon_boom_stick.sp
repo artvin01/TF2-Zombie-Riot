@@ -69,7 +69,7 @@ public void Marksman_boom_rifle(int client, int weapon, const char[] classname, 
 	{	
 
 		SpawnSmallExplosionNotRandom(spawnLoc);
-		EmitSoundToAll(HITSCAN_BOOM, -1, _, _, _, _, _, _,spawnLoc);
+		EmitSoundToAll(HITSCAN_BOOM, -1, _, 90, _, _, _, _,spawnLoc);
 		Explode_Logic_Custom(damage, client, client, weapon, spawnLoc);
 	}
 }
