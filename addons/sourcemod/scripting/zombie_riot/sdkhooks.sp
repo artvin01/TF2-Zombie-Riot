@@ -37,6 +37,22 @@ void SDKHook_PluginStart()
 	AddNormalSoundHook(SDKHook_NormalSHook);
 }
 
+void SDKHook_MapStart()
+{
+	int entity = FindEntityByClassname(MaxClients+1, "tf_player_manager");
+	if(entity != -1)
+		SDKHook(entity, SDKHook_ThinkPost, SDKHook_ScoreThink);
+}
+
+public void SDKHook_ScoreThink(int entity)
+{
+	static int offset = -1;
+	if(offset == -1) 
+		offset = FindSendPropInfo("CTFPlayerResource", "m_iTotalScore");
+	
+	SetEntDataArray(entity, offset, PlayerPoints, MaxClients + 1);
+}
+
 void SDKHook_HookClient(int client)
 {
 	SDKUnhook(client, SDKHook_PostThink, OnPostThink);
