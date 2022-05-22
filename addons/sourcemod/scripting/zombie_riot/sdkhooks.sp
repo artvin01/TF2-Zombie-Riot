@@ -41,11 +41,9 @@ void SDKHook_HookClient(int client)
 {
 	SDKUnhook(client, SDKHook_PostThink, OnPostThink);
 	SDKUnhook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost);
-	SDKUnhook(client, SDKHook_OnTakeDamageAlive, Player_OnTakeDamageAlive);
 	SDKUnhook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
 	SDKHook(client, SDKHook_PostThink, OnPostThink);
 	SDKHook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost);
-	SDKHook(client, SDKHook_OnTakeDamageAlive, Player_OnTakeDamageAlive);
 	SDKHook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
 	
 	#if !defined NoSendProxyClass
@@ -458,14 +456,18 @@ public void OnPreThink(int client)
 }
 */
 
+
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(TeutonType[victim])
 		return Plugin_Handled;
 		
+	float Replicated_Damage;
+	Replicated_Damage = Replicate_Damage_Medications(victim, damage, damagetype);
+	
+	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 	if(dieingstate[victim] > 0 )
 	{
-		int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 		if(flHealth < 1)
 		{
 			if(!(damagetype & DMG_DROWN))
@@ -482,19 +484,17 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		if(victim == attacker)
 			return Plugin_Handled;
 	}
-	return Plugin_Continue;
-}
-public Action Player_OnTakeDamageAlive(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
+	
 	float gameTime = GetGameTime();
 	
 	if(damagetype & DMG_DROWN)
 	{
 		f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
+		Replicated_Damage *= 2.0;
 		damage *= 2.0;
 		return Plugin_Changed;	
 	}
-	
+
 	if(EscapeMode)
 	{
 		int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
@@ -506,13 +506,17 @@ public Action Player_OnTakeDamageAlive(int victim, int &attacker, int &inflictor
 				GetEntityClassname(Victim_weapon, melee_classname, 64);
 				
 				if (TFWeaponSlot_Melee == TF2_GetClassnameSlot(melee_classname))
+				{
+					Replicated_Damage *= 0.45;
 					damage *= 0.45;
+				}
 			}
 		}
 	}
 	
 	if(i_CurrentEquippedPerk[victim] == 2)
 	{
+		Replicated_Damage *= 0.85;
 		damage *= 0.85;
 	}
 	
@@ -520,6 +524,7 @@ public Action Player_OnTakeDamageAlive(int victim, int &attacker, int &inflictor
 	{
 		if(i_SoftShoes[victim] == 1)
 		{
+			Replicated_Damage *= 0.5;
 			damage *= 0.5;
 		}
 	}
@@ -529,26 +534,30 @@ public Action Player_OnTakeDamageAlive(int victim, int &attacker, int &inflictor
 		
 		if(Resistance_Overall_Low[victim] > gameTime)
 		{
+			Replicated_Damage *= 0.75;
 			damage *= 0.75;
 		}
 			
 		if(Armor_Charge[victim] > 0 && !IsInvuln(victim))
 		{
-			int dmg_through_armour = RoundToCeil(damage * 0.1);
+			int dmg_through_armour = RoundToCeil(Replicated_Damage * 0.1);
 			
-			if(RoundToCeil(damage * 0.9) >= Armor_Charge[victim])
+			if(RoundToCeil(Replicated_Damage * 0.9) >= Armor_Charge[victim])
 			{
 				int damage_recieved_after_calc;
-				damage_recieved_after_calc = RoundToCeil(damage) - Armor_Charge[victim];
+				damage_recieved_after_calc = RoundToCeil(Replicated_Damage) - Armor_Charge[victim];
 				Armor_Charge[victim] = 0;
 				damage = float(damage_recieved_after_calc);
+				Replicated_Damage  = float(damage_recieved_after_calc);
 				EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.25);
 			}
 			else
 			{
-				Armor_Charge[victim] -= RoundToCeil(damage * 0.9);
+				Armor_Charge[victim] -= RoundToCeil(Replicated_Damage * 0.9);
 				damage = 0.0;
 				damage += float(dmg_through_armour);
+				Replicated_Damage = 0.0;
+				Replicated_Damage += float(dmg_through_armour);
 				Though_Armor = true;
 			}
 		}
@@ -557,38 +566,42 @@ public Action Player_OnTakeDamageAlive(int victim, int &attacker, int &inflictor
 			case 1:
 			{
 				damage *= 0.9;
+				Replicated_Damage *= 0.9;
 				if(Though_Armor)
 					EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 			}
 			case 2:
 			{
 				damage *= 0.85;
+				Replicated_Damage *= 0.85;
 				if(Though_Armor)
 					EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 			}
 			case 3:
 			{
 				damage *= 0.75;
+				Replicated_Damage *= 0.75;
 				if(Though_Armor)
 					EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 			}
 			case 4:
 			{
 				damage *= 0.65;
+				Replicated_Damage *= 0.65;
 				if(Though_Armor)
 					EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 			}
 			default:
 			{
 				damage *= 1.0;
+				Replicated_Damage *= 1.0;
 			}
 		}
 	}
-	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 	f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
 	if(!IsInvuln(victim))
 	{
-		if(damage >= flHealth && !LastMann && !b_IsAloneOnServer)
+		if(Replicated_Damage >= flHealth && !LastMann && !b_IsAloneOnServer)
 		{
 			i_CurrentEquippedPerk[victim] = 0;
 			SetEntityHealth(victim, 200);
@@ -627,6 +640,33 @@ public Action Player_OnTakeDamageAlive(int victim, int &attacker, int &inflictor
 	return Plugin_Changed;
 }
 
+
+
+public float Replicate_Damage_Medications(int victim, float damage, int damagetype)
+{
+	if(TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
+	{
+		if(damagetype & (DMG_CRIT))
+		{
+			damage /= 3.0; //Remove crit shit from the calcs!, there are no minicrits here, so i dont have to care
+		}
+		damage *= 0.65;
+	}
+	float value;
+	
+	if(damagetype & (DMG_CLUB|DMG_SLASH))
+	{
+		value = Attributes_FindOnPlayer(victim, 206);	// MELEE damage resitance
+		if(value)
+			damage *= value;
+	}
+		
+	value = Attributes_FindOnPlayer(victim, 412);	// Overall damage resistance
+	if(value)
+		damage *= value;	
+		
+	return damage;
+}
 
 public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {

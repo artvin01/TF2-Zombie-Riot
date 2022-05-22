@@ -1034,8 +1034,8 @@ public void Calculate_And_Display_hp(int attacker, int victim, float damage, boo
 			blue = 0;
 		}
 		
-		SetHudTextParams(-1.0, 0.2, 1.0, red, green, blue, 255, 0, 0.01, 0.01, 2.0);
-		ShowSyncHudText(attacker, SyncHud, "%d / %d", Health, MaxHealth);
+		SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01, 2.0);
+		ShowSyncHudText(attacker, SyncHud, "%s\n%d / %d", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
 	}	
 }
 void DoMeleeAnimationFrameLater(int attacker)
