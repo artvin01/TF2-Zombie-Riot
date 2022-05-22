@@ -2377,3 +2377,8 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 		}
 	}
 }
+
+stock void UpdatePlayerPoints(int client)
+{
+	PlayerPoints[client] = 1;	// Do stuff here :)
+}

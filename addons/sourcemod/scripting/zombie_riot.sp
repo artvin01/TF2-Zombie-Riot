@@ -238,6 +238,7 @@ enum
 }
 
 int TeutonType[MAXTF2PLAYERS];
+int PlayerPoints[MAXTF2PLAYERS];
 	
 int Animation_Setting[MAXTF2PLAYERS];
 int Animation_Index[MAXTF2PLAYERS];
@@ -1224,6 +1225,7 @@ public void OnClientDisconnect(int client)
 	Healing_done_in_total[client] = 0;
 	Ammo_Count_Ready[client] = 0;
 	Armor_Charge[client] = 0;
+	PlayerPoints[client] = 0;
 	WeaponClass[client] = TFClass_Unknown;
 	Timer_Knife_Management[client] = INVALID_HANDLE;
 	Escape_DropItem(client, false);
