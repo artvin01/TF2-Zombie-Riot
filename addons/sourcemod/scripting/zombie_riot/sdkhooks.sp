@@ -479,6 +479,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if(TeutonType[victim])
 		return Plugin_Handled;
 		
+	if(IsInvuln(victim))	
+		return Plugin_Continue;	
+		
 	float Replicated_Damage;
 	Replicated_Damage = Replicate_Damage_Medications(victim, damage, damagetype);
 	
@@ -557,12 +560,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			
 		if(Armor_Charge[victim] > 0 && !IsInvuln(victim))
 		{
-			int dmg_through_armour = RoundToCeil(Replicated_Damage * 0.1);
+			int dmg_through_armour = RoundToNearest(Replicated_Damage * 0.1);
 			
-			if(RoundToCeil(Replicated_Damage * 0.9) >= Armor_Charge[victim])
+			if(RoundToNearest(Replicated_Damage * 0.9) >= Armor_Charge[victim])
 			{
 				int damage_recieved_after_calc;
-				damage_recieved_after_calc = RoundToCeil(Replicated_Damage) - Armor_Charge[victim];
+				damage_recieved_after_calc = RoundToNearest(Replicated_Damage) - Armor_Charge[victim];
 				Armor_Charge[victim] = 0;
 				damage = float(damage_recieved_after_calc);
 				Replicated_Damage  = float(damage_recieved_after_calc);
@@ -570,7 +573,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 			else
 			{
-				Armor_Charge[victim] -= RoundToCeil(Replicated_Damage * 0.9);
+				Armor_Charge[victim] -= RoundToNearest(Replicated_Damage * 0.9);
 				damage = 0.0;
 				damage += float(dmg_through_armour);
 				Replicated_Damage = 0.0;
@@ -616,9 +619,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 	f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
-	if(!IsInvuln(victim))
-	{
-		if(Replicated_Damage >= flHealth && !LastMann && !b_IsAloneOnServer)
+		if((Replicated_Damage >= flHealth || damage >= flHealth) && !LastMann && !b_IsAloneOnServer)
 		{
 			i_CurrentEquippedPerk[victim] = 0;
 			SetEntityHealth(victim, 200);
@@ -653,7 +654,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			SetEntityRenderColor(victim, 255, 255, 255, 125);
 			return Plugin_Handled;
 		}
-	}
 	return Plugin_Changed;
 }
 

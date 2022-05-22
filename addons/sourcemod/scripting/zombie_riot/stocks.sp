@@ -2382,7 +2382,7 @@ stock void UpdatePlayerPoints(int client)
 {
 	int Points;
 	
-	Points += Healing_done_in_total[client] / 50;
+	Points += Healing_done_in_total[client] / 10;
 	
 	Points += RoundToCeil(Damage_dealt_in_total[client]) / 200;
 	
