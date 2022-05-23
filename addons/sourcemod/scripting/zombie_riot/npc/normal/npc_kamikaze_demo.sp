@@ -97,7 +97,7 @@ methodmap Kamikaze < CClotBody
 		
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		
-		npc.m_flSpeed = 360.0;
+		npc.m_flSpeed = 400.0;
 		PF_StartPathing(npc.index);
 		npc.m_bPathing = true;
 		return npc;
