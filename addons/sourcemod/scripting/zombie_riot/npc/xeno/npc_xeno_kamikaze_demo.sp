@@ -266,7 +266,10 @@ public void XenoKamikaze_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoKamikaze_ClotDamaged);
 	SDKUnhook(npc.index, SDKHook_Think, XenoKamikaze_ClotThink);
-		
+	float startPosition[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", startPosition); 
+	startPosition[2] += 45;
+	makeexplosion(entity, entity, startPosition, "", 125, 125);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
