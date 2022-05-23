@@ -14,6 +14,16 @@ static float Damage_Projectile[MAXENTITIES]={0.0, ...};
 static int Projectile_To_Client[MAXENTITIES]={0, ...};
 static int Projectile_To_Particle[MAXENTITIES]={0, ...};
 
+
+public void Survival_Knife_ClearAll()
+{
+	Zero(CD_Knife);
+	Zero(CD_KnifeSet);
+	Zero(CD_Throw);
+	Zero(CD_Mode);
+	Zero(CD_Madness);
+}
+
 #define MODEL_KNIFE 	"models/weapons/c_models/c_knife/c_knife.mdl"
 #define MODEL_KUNAI 	"models/weapons/c_models/c_shogun_kunai/c_shogun_kunai.mdl"
 #define MODEL_WANGA 	"models/weapons/c_models/c_voodoo_pin/c_voodoo_pin.mdl"

@@ -4,6 +4,11 @@ static bool Delete_Flame[MAXPLAYERS+1]={false, ...};
 
 #define SOUND_WAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
 
+public void Wand_Necro_Spell_ClearAll()
+{
+	Zero(ability_cooldown);
+}
+
 void Wand_NerosSpell_Map_Precache()
 {
 	PrecacheSound(SOUND_WAND_ATTACKSPEED_ABILITY);

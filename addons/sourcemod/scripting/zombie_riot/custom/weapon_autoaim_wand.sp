@@ -14,6 +14,10 @@ static float RMR_RocketVelocity[MAXENTITIES];
 
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 
+public void Wand_autoaim_ClearAll()
+{
+	Zero(ability_cooldown);
+}
 //#define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
 #define SOUND_WAND_SHOT_AUTOAIM 	"weapons/man_melter_fire.wav"
 #define SOUND_WAND_SHOT_AUTOAIM_ABILITY	"weapons/man_melter_fire_crit.wav"

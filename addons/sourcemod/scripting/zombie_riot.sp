@@ -337,6 +337,7 @@ bool b_Map_BaseBoss_No_Layers[MAXENTITIES];
 int b_NpcForcepowerupspawn[MAXENTITIES]={0, ...}; 
 float f_TempCooldownForVisualManaPotions[MAXPLAYERS+1];
 float f_DelayLookingAtHud[MAXPLAYERS+1];
+
 //int g_iLaserMaterial, g_iHaloMaterial;
 
 
@@ -363,6 +364,11 @@ bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
 bool b_BlockPanzerInThisDifficulty;
 bool b_SpecialGrigoriStore;
 float f_ExtraDropChanceRarity = 1.0;
+
+
+//GLOBAL npc things
+bool b_thisNpcHasAnOutline[MAXENTITIES];
+bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 
 int AmmoData[][] =
 {
@@ -978,7 +984,7 @@ public void OnPluginEnd()
 	
 }
 
-bool Reload_Plugin_Temp_Fix = false;
+//bool Reload_Plugin_Temp_Fix = false;
 
 public Action OnTaunt(int client, const char[] command, int args)
 {
@@ -1011,7 +1017,7 @@ public void OnMapStart()
 	PrecacheSound("zombiesurvival/headshot1.wav");
 	PrecacheSound("zombiesurvival/headshot2.wav");
 	
-	
+	MapStartResetAll();
 	EscapeMode = false;
 	EscapeModeForNpc = false;
 	
@@ -1092,7 +1098,7 @@ public void OnMapEnd()
 public void OnConfigsExecuted()
 {
 	Configs_ConfigsExecuted();
-	
+/*	
 	if(Reload_Plugin_Temp_Fix)
 	{
 		ServerCommand("sm plugins reload zombie_riot");
@@ -1102,7 +1108,7 @@ public void OnConfigsExecuted()
 	{
 		Reload_Plugin_Temp_Fix = true;
 	}
-	
+*/
 	ConVar_Enable();
 	
 	if(EscapeMode)
@@ -3033,4 +3039,46 @@ public Action Hook_BlockUserMessageEx(UserMsg msg_id, BfRead msg, const int[] pl
 	}
 	
 	return Plugin_Continue;
+}
+
+
+public void MapStartResetAll()
+{
+	Zero(f_TempCooldownForVisualManaPotions);
+	Zero(f_DelayLookingAtHud);
+	Zero(f_TimeUntillNormalHeal);
+	Zero(Mana_Regen_Delay);
+	Zero(Mana_Hud_Delay);
+	Zero(delay_hud);
+	Zero(healing_cooldown);
+	Zero(Damage_dealt_in_total);
+	Zero(Increaced_Overall_damage_Low);
+	Zero(Resistance_Overall_Low);
+	Zero(f_DisableDyingTimer);
+	Zero(Increaced_Sentry_damage_Low);
+	Zero(Increaced_Sentry_damage_High);
+	Zero(Resistance_for_building_Low);
+	Zero(f_RingDelayGift);
+	Zero(Music_Timer);
+	Music_ClearAll();
+	Zero(f_BotDelayShow);
+	NPC_Spawn_ClearAll();
+	SDKHooks_ClearAll();
+	Zero(f_OneShotProtectionTimer);
+	Zero(f_BuildingIsNotReady);
+	Building_ClearAll();
+	Zero(f_TerroriserAntiSpamCd);
+	Medigun_ClearAll();
+	WindStaff_ClearAll();
+	Lighting_Wand_Spell_ClearAll();
+	Arrow_Spell_ClearAll();
+	Survival_Knife_ClearAll();
+	Zero(healing_cooldown);
+	MedKit_ClearAll();
+	Wand_autoaim_ClearAll();
+	Wand_Elemental_2_ClearAll();
+	Wand_Calcium_Spell_ClearAll();
+	Wand_Fire_Spell_ClearAll();
+	Wand_Default_Spell_ClearAll();
+	Wand_Necro_Spell_ClearAll();
 }

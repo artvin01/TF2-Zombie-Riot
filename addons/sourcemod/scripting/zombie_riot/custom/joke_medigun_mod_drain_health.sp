@@ -91,7 +91,6 @@ void Medigun_OnEntityCreated(int entity)
 
 static float f_MedigunDelayAttackThink[MAXTF2PLAYERS]={0.0, ...};
 
-
 public MRESReturn DHook_MedigunPrimaryAttack(int entity)
 {
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
@@ -182,6 +181,13 @@ static float medigun_hud_delay[MAXTF2PLAYERS];
 float target_sucked_long[MAXENTITIES]={0.85, ...};
 static Handle Revert_target_sucked_long_timer[MAXENTITIES];
 static bool Handle_on_target_sucked_long[MAXENTITIES]={false, ...};
+
+public void Medigun_ClearAll()
+{
+	Zero(f_MedigunDelayAttackThink);
+	Zero(medigun_heal_delay);
+	Zero(medigun_hud_delay);
+}
 
 public MRESReturn OnMedigunPostFramePost(int medigun) {
 	int owner = TF2_GetEntityOwner(medigun);

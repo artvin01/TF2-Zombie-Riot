@@ -106,6 +106,11 @@ static float Arrows_Damage[MAXPLAYERS+1]={0.0, ...};
 static int Client_To_Weapon[MAXPLAYERS+1]={0, ...};
 static int Max_Arrows[MAXPLAYERS+1]={0, ...};
 
+public void Arrow_Spell_ClearAll()
+{
+	Zero(ability_cooldown);
+}
+
 public void Weapon_Shoot_Arrow_Ability(int client, int weapon, bool crit)
 {
 	if (ability_cooldown[client] < GetGameTime())

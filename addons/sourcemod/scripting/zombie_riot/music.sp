@@ -2,6 +2,11 @@ float Music_Timer[MAXTF2PLAYERS];
 static float Give_Cond_Timer[MAXTF2PLAYERS];
 static bool MusicDisabled;
 
+void Music_ClearAll()
+{
+	Zero(Give_Cond_Timer);
+}
+
 void Music_MapStart()
 {
 	MusicDisabled = FindInfoTarget("zr_nomusic");

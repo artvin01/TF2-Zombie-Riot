@@ -2,6 +2,10 @@ static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float Fireball_Damage[MAXPLAYERS+1]={0.0, ...};
 
 #define SOUND_WAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
+public void Wand_Fire_Spell_ClearAll()
+{
+	Zero(ability_cooldown);
+}
 
 void Wand_FireBall_Map_Precache()
 {

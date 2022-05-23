@@ -9,6 +9,9 @@ enum struct Enemy
 {
 	int Health;
 	int Is_Boss;
+	int Is_Outlined;
+	int Is_Health_Scaled;
+	int Is_Immune_To_Nuke;
 	int Index;
 	char Data[16];
 }
@@ -197,6 +200,10 @@ void Waves_ConfigSetup(KeyValues map, bool start=true)
 						
 						enemy.Health = kv.GetNum("health");
 						enemy.Is_Boss = kv.GetNum("is_boss");
+						enemy.Is_Outlined = kv.GetNum("is_outlined");
+						enemy.Is_Health_Scaled = kv.GetNum("is_health_scaling");
+						enemy.Is_Immune_To_Nuke = kv.GetNum("is_immune_to_nuke");
+						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
 						
 						wave.EnemyData = enemy;
@@ -380,14 +387,17 @@ void Waves_Progress()
 			
 			
 			int Is_a_boss;
+			int Is_Health_Scaling;
 						
 			Is_a_boss = 0;
+			Is_Health_Scaling = 0;
 			
 			BalanceDropMinimum(multi);
 			
 			Is_a_boss = wave.EnemyData.Is_Boss;
+			Is_Health_Scaling = wave.EnemyData.Is_Health_Scaled;
 			
-			if(Is_a_boss >= 1)
+			if(Is_a_boss >= 1 && Is_Health_Scaling >= 1)
 			{			
 				float multi_health;
 							
@@ -861,7 +871,7 @@ public int Waves_FreeplayVote(Menu menu, MenuAction action, int item, int param2
 	return 0;
 }
 				
-int Waves_GetNextEnemy(int &health, int &isBoss, char[] data, int length)
+int Waves_GetNextEnemy(int &health, int &isBoss, char[] data, int length, int &IsOutlined, int &IsImmuneToNuke)
 {
 	if(Enemies.Empty)
 		return 0;
@@ -870,6 +880,9 @@ int Waves_GetNextEnemy(int &health, int &isBoss, char[] data, int length)
 	Enemies.PopArray(enemy);
 	
 	isBoss = enemy.Is_Boss;
+	IsOutlined = enemy.Is_Outlined;
+	IsImmuneToNuke = enemy.Is_Immune_To_Nuke;
+	
 	strcopy(data, length, enemy.Data);
 	health = enemy.Health;
 	return enemy.Index;

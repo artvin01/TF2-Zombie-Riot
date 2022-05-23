@@ -10,6 +10,28 @@ void Stock_TakeDamage(int entity = 0, int inflictor = 0, int attacker = 0, float
 //im sorry.
 #define SDKHooks_TakeDamage Stock_TakeDamage
 
+stock void ResetToZero(any[] array, int length)
+{
+    for(int i; i<length; i++)
+    {
+        array[i] = 0;
+    }
+}
+
+stock void ResetToZero2(any[][] array, int length1, int length2)
+{
+    for(int a; a<length1; a++)
+    {
+        for(int b; b<length2; b++)
+        {
+            array[a][b] = 0;
+        }
+    }
+}
+
+#define Zero(%1)        ResetToZero(%1, sizeof(%1))
+#define Zero2(%1)    ResetToZero2(%1, sizeof(%1), sizeof(%1[]))
+
 stock int abs(int x)
 {
 	return x < 0 ? -x : x;

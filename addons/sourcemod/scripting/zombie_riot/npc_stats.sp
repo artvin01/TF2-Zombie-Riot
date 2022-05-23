@@ -5391,7 +5391,7 @@ public Action SDKHook_Settransmit_Baseboss(int entity, int client)
 {
 	if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
 	{
-		if(b_thisNpcIsABoss[entity])
+		if(b_thisNpcIsABoss[entity] || b_thisNpcHasAnOutline[entity])
 		{
 			return Plugin_Continue;
 		}
@@ -5746,6 +5746,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_AttackHappensMaximum[entity] = 0.0;
 	b_AttackHappenswillhappen[entity] = false;
 	b_thisNpcIsABoss[entity] = false;
+	b_thisNpcHasAnOutline[entity] = false;
+	b_ThisNpcIsImmuneToNuke[entity] = false;
 	b_NPCVelocityCancel[entity] = false;
 	fl_DoSpawnGesture[entity] = 0.0;
 	b_isWalking[entity] = true;

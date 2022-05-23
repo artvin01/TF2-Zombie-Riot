@@ -10,6 +10,11 @@ void Wand_LightningAbility_Map_Precache()
 	PrecacheSound(SOUND_WAND_LIGHTNING_ABILITY);
 }
 
+public void Lighting_Wand_Spell_ClearAll()
+{
+	Zero(ability_cooldown);
+}
+
 public void Weapon_Wand_LightningSpell(int client, int weapon, const char[] classname, bool &result)
 {
 	if(weapon >= MaxClients)

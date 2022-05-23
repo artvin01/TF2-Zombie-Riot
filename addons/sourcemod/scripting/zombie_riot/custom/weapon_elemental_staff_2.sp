@@ -7,6 +7,10 @@ static float client_slammed_forward[MAXTF2PLAYERS][3];
 static float client_slammed_right[MAXTF2PLAYERS][3];
 static float f_OriginalDamage[MAXTF2PLAYERS];
 
+public void Wand_Elemental_2_ClearAll()
+{
+	Zero(ability_cooldown);
+}
 #define spirite "spirites/zerogxplode.spr"
 
 #define EarthStyleShockwaveRange 250.0

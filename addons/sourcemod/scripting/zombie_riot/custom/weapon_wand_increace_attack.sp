@@ -4,6 +4,10 @@ static float Original_Atackspeed[MAXPLAYERS+1]={0.0, ...};
 
 #define SOUND_WAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
 
+public void Wand_Default_Spell_ClearAll()
+{
+	Zero(ability_cooldown);
+}
 void Wand_Attackspeed_Map_Precache()
 {
 	PrecacheSound(SOUND_WAND_ATTACKSPEED_ABILITY);

@@ -41,6 +41,10 @@ static Handle SyncHud;
 static char LastClassname[2049][64];
 static float f_SpawnerCooldown[MAXENTITIES];
 
+public void NPC_Spawn_ClearAll()
+{
+	Zero(f_SpawnerCooldown);
+}
 void NPC_PluginStart()
 {
 	NPCList = new ArrayList(sizeof(NPCData));
@@ -322,7 +326,9 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		else
 		{
 			char data[16];
-			int index = Waves_GetNextEnemy(health, isBoss, data, sizeof(data));
+			int IsOutlined;
+			int IsImmuneToNuke;
+			int index = Waves_GetNextEnemy(health, isBoss, data, sizeof(data), IsOutlined, IsImmuneToNuke);
 			if(index)
 			{
 				entity = list.Get(GetRandomInt(0, entity-1));
@@ -334,6 +340,16 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 				entity = Npc_Create(index, -1, pos, ang, data);
 				if(entity != -1)
 				{
+					if(IsOutlined)
+					{
+						b_thisNpcHasAnOutline[entity] = true;
+					}
+					
+					if(IsImmuneToNuke)
+					{
+						b_ThisNpcIsImmuneToNuke[entity] = true;
+					}
+			
 					if(health)
 					{
 						SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
@@ -341,14 +357,23 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					}
 					
 					CClotBody npcstats = view_as<CClotBody>(entity);
+					
 					if(isBoss)
 					{
-						SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
 						npcstats.m_bThisNpcIsABoss = true; //Set to true!
 					}
 					else
 					{
 						npcstats.m_bThisNpcIsABoss = false; //Set to true!
+					}
+					
+					if(isBoss || IsOutlined)
+					{
+						SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
+					}
+					else
+					{
+						SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
 					}
 					
 					NPC_AddToArray(entity);
@@ -1161,7 +1186,7 @@ public void NPC_CheckDead()
 		else
 		{
 			CClotBody npcstats = view_as<CClotBody>(npc_index);
-			if(!npcstats.m_bThisNpcIsABoss)
+			if(!npcstats.m_bThisNpcIsABoss || !b_thisNpcHasAnOutline[npc_index])
 			{
 				if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
 					SetEntProp(npc_index, Prop_Send, "m_bGlowEnabled", true);

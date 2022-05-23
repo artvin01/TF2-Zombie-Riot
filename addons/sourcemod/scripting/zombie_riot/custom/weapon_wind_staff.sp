@@ -38,6 +38,10 @@ static bool BEAM_UseWeapon[MAXTF2PLAYERS];
 
 static float BEAM_Targets_Hit[MAXTF2PLAYERS];
 
+public void WindStaff_ClearAll()
+{
+	Zero(Damage_Tornado);
+}
 void Wind_Staff_MapStart()
 {
 	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);

@@ -28,6 +28,11 @@ float max_mana[MAXTF2PLAYERS];
 float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
 
+public void SDKHooks_ClearAll()
+{
+	Zero(Armor_regen_delay);
+	
+}
 void SDKHook_PluginStart()
 {
 	/*

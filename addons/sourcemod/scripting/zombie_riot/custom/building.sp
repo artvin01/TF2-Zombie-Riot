@@ -93,6 +93,11 @@ static bool Building_Constructed[MAXENTITIES]={false, ...};
 static float Building_Collect_Cooldown[MAXENTITIES][MAXTF2PLAYERS];
 static float Building_Sentry_Cooldown[MAXTF2PLAYERS];
 
+public void Building_ClearAll()
+{
+	Zero2(Building_Collect_Cooldown);
+	Zero(Building_Sentry_Cooldown);
+}
 public Action Building_PlaceSentry(int client, int weapon, const char[] classname, bool &result)
 {
 	int Sentrygun = EntRefToEntIndex(i_HasSentryGunAlive[client]);
