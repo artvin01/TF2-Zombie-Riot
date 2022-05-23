@@ -2230,7 +2230,7 @@ int Store_GiveSpecificItem(int client, const char[] name)
 
 bool Store_Interact(int client, int entity, const char[] classname)
 {
-	if(!TeutonType[client] && StrEqual(classname, "prop_dynamic"))
+	if(!TeutonType[client] && GameRules_GetRoundState() <= RoundState_RoundRunning && StrEqual(classname, "prop_dynamic"))
 	{
 		char buffer[64];
 		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer))
