@@ -995,16 +995,6 @@ public Action OnSayCommand(int client, const char[] command, int args)
 
 public void OnMapStart()
 {
-	if(Reload_Plugin_Temp_Fix)
-	{
-		ServerCommand("sm plugins reload zombie_riot");
-		return;
-	}
-	else
-	{
-		Reload_Plugin_Temp_Fix = true;
-	}
-	
 	PrecacheSound("weapons/knife_swing_crit.wav");
 	PrecacheSound("weapons/shotgun/shotgun_dbl_fire.wav");
 	PrecacheSound("npc/vort/attack_shoot.wav");
@@ -1099,6 +1089,17 @@ public void OnMapEnd()
 public void OnConfigsExecuted()
 {
 	Configs_ConfigsExecuted();
+	
+	if(Reload_Plugin_Temp_Fix)
+	{
+		ServerCommand("sm plugins reload zombie_riot");
+		return;
+	}
+	else
+	{
+		Reload_Plugin_Temp_Fix = true;
+	}
+	
 	ConVar_Enable();
 	
 	if(EscapeMode)
