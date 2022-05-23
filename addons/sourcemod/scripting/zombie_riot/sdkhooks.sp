@@ -284,11 +284,11 @@ public void OnPostThink(int client)
 					}
 					else if(Extra == 150)
 					{
-						Armor_Charge[client] += 4;
+						Armor_Charge[client] += 3;
 					}
 					else if(Extra == 200)
 					{
-						Armor_Charge[client] += 8;
+						Armor_Charge[client] += 5;
 					}
 				}
 			}
