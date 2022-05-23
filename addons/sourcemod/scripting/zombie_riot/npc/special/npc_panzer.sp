@@ -688,6 +688,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 				float vecTargetHook[3]; vecTargetHook = WorldSpaceCenter(HumanTarget);
 				npc.FaceTowards(vecTargetHook, 20000.0);
 				float vPredictedPosHuman[3]; vPredictedPosHuman = PredictSubjectPositionHook(npc, HumanTarget);
+				vPredictedPosHuman[2] += 45;
 				npc.FireHook(vPredictedPosHuman);
 				npc.m_flGrappleCooldown = GetGameTime() + 30.0;
 				
