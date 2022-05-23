@@ -397,7 +397,7 @@ void Waves_Progress()
 			Is_a_boss = wave.EnemyData.Is_Boss;
 			Is_Health_Scaling = wave.EnemyData.Is_Health_Scaled;
 			
-			if(Is_a_boss >= 1 && Is_Health_Scaling >= 1)
+			if(Is_a_boss >= 1 || Is_Health_Scaling >= 1)
 			{			
 				float multi_health;
 							
