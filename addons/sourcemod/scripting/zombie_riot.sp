@@ -175,6 +175,8 @@ ConVar tf_bot_quota;
 
 int CurrentGame;
 bool b_GameOnGoing = true;
+bool b_StoreGotReset = false;
+bool b_PlayerGotTheirCookies[MAXTF2PLAYERS];
 int CurrentCash;
 bool LastMann;
 bool EscapeMode;
@@ -1211,8 +1213,22 @@ public void OnClientPutInServer(int client)
 	if(CurrentRound && Store_PutInServer(client))
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.40);
 	
-	if(!XP[client] && AreClientCookiesCached(client))
-		OnClientCookiesCached(client);
+//	if(!XP[client] && AreClientCookiesCached(client)) //Ingore this. This only bugs it out, just force it, who cares.
+	{
+		CreateTimer(0.1, LoadCookiesLater, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+	}
+}
+
+public Action LoadCookiesLater(Handle timer, int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(IsValidClient(client) && b_StoreGotReset)
+	{
+		b_PlayerGotTheirCookies[client] = true;
+		OnClientCookiesCached(client);	
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
 }
 //Maybe Delay it by 1 frame?
 /*
@@ -1255,15 +1271,30 @@ public void OnClientDisconnect(int client)
 	
 	if(XP[client] > 0)
 	{
-		char buffer[12];
-		IntToString(XP[client], buffer, sizeof(buffer));
-		CookieXP.Set(client, buffer);
+		if(b_PlayerGotTheirCookies[client])
+		{
+			char buffer[12];
+			IntToString(XP[client], buffer, sizeof(buffer));
+			CookieXP.Set(client, buffer);
+		}
 	}
+	b_PlayerGotTheirCookies[client] = false;
+	XP[client] = 0;
 }
 
 public void OnClientDisconnect_Post(int client)
 {
 //	DHook_ClientDisconnectPost();
+	int Players_left;
+	for(int client_check=1; client_check<=MaxClients; client_check++)
+	{
+		if(IsClientInGame(client_check) && IsFakeClient(client_check))
+			Players_left++;
+	}
+	if(!Players_left)
+	{
+		b_StoreGotReset = false;
+	}
 	CheckAlivePlayers(_);
 }
 
@@ -1332,6 +1363,7 @@ public Action OnPlayerConnect(Event event, const char[] name, bool dontBroadcast
 public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 {
 	b_GameOnGoing = false;
+	b_StoreGotReset = false;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))

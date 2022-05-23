@@ -423,6 +423,8 @@ void Store_Reset()
 		}
 		StoreItems.SetArray(i, item);
 	}
+
+	b_StoreGotReset = true;
 }
 
 bool Store_HasAnyItem(int client)
@@ -583,13 +585,15 @@ bool Store_LoadLoadout(int client)
 
 void Store_ClientDisconnect(int client)
 {
-	char buffer[16];
-	IntToString(CurrentGame, buffer, sizeof(buffer));
-	CookieCache.Set(client, buffer);
-	
-	Store_SaveLevelPerks(client);
-	Store_SaveLoadout(client);
-	
+	if(b_PlayerGotTheirCookies[client])
+	{
+		char buffer[16];
+		IntToString(CurrentGame, buffer, sizeof(buffer));
+		CookieCache.Set(client, buffer);
+		
+		Store_SaveLevelPerks(client);
+		Store_SaveLoadout(client);
+	}
 	CashSpent[client] = 0;
 	Equipped[client][0] = -1;
 	
