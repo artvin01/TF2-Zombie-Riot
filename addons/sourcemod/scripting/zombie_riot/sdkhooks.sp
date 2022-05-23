@@ -59,6 +59,7 @@ void SDKHook_HookClient(int client)
 	SDKUnhook(client, SDKHook_PreThinkPost, OnPreThinkPost);
 	SDKUnhook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost);
 	SDKUnhook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
+	
 	SDKHook(client, SDKHook_PostThink, OnPostThink);
 	SDKHook(client, SDKHook_PreThinkPost, OnPreThinkPost);
 	SDKHook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost);

@@ -1050,6 +1050,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	if(!WaitingInQueue[client] && !GameRules_GetProp("m_bInWaitingForPlayers"))
 		Queue_AddPoint(client);
 	
+	SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	
 	if(started)
@@ -1072,7 +1073,7 @@ public void PhaseThroughOwnBuildings(int client)
 	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-		if(IsValidEntity(entity))
+		if(IsValidEntity(entity) && entity != 0)
 		{
 			if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
 			{
@@ -1130,6 +1131,8 @@ public void DHook_TeleportToObserver(DataPack pack)
 			SetEntProp(client, Prop_Send, "m_bDucked", true);
 			SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
 			TeleportEntity(client, pos, ang, NULL_VECTOR);
+			SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+			SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 		}
 	}
 	delete pack;
