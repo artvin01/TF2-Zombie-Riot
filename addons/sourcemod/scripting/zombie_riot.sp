@@ -1003,6 +1003,7 @@ public void OnMapStart()
 	PrecacheSound("weapons/shotgun/shotgun_fire7.wav");
 	PrecacheSound("#items/tf_music_upgrade_machine.wav");
 	PrecacheSound("physics/metal/metal_box_impact_bullet1.wav");
+	PrecacheSound("misc/halloween/spell_overheal.wav");
 	PrecacheSound("weapons/gauss/fire1.wav");
 	PrecacheSound("items/powerup_pickup_knockout_melee_hit.wav");
 	PrecacheSound("weapons/capper_shoot.wav");
