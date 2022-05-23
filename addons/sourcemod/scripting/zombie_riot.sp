@@ -810,6 +810,7 @@ char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_nailgun.sp"
 #include "zombie_riot/custom/weapon_five_seven.sp"
 #include "zombie_riot/custom/weapon_gb_medigun.sp"
+#include "zombie_riot/custom/weapon_charged_handgun.sp"
 
 #include "zombie_riot/custom/weapon_calcium_wand.sp"
 #include "zombie_riot/custom/weapon_wand_calcium_spell.sp"
@@ -1072,6 +1073,7 @@ public void OnMapStart()
 	Map_Precache_Zombie_Drops_Gift();
 	Grenade_Custom_Precache();
 	BoomStick_MapPrecache();
+	Charged_Handgun_Map_Precache();
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
