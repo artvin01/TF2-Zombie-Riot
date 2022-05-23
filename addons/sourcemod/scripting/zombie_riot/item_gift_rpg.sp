@@ -179,7 +179,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 						int length = TextStore_GetItems();
 						for(int i; i<length; i++)
 						{
-							static char buffer[64];
+							static char buffer[128];
 							TextStore_GetItemName(i, buffer, sizeof(buffer));
 							
 							if(length && i_RarityType[entity] >= Rarity_Mythic)
