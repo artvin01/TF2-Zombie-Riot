@@ -949,7 +949,8 @@ public void OnPluginStart()
 	
 	b_BlockPanzerInThisDifficulty = false;
 	
-	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT);
+	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(2.0, GetClosestSpawners, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 }
 
 public Action Timer_Temp(Handle timer)

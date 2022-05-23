@@ -9,6 +9,8 @@
 #define GORE_UPARMRIGHT   (1 << 8)
 #define GORE_HANDLEFT	 (1 << 9)
 
+#define MAXSPAWNERSACTIVE 5 //ok
+
 enum //hitgroup_t
 {
 	HITGROUP_GENERIC,
@@ -110,6 +112,84 @@ public void NPC_EntitySpawned(int entity)
 	}
 }
 
+static bool b_SpawnIsCloseEnough[MAXENTITIES];
+
+public Action GetClosestSpawners(Handle timer)
+{
+	float f3_PositionOfAll[3];
+	float f3_PositionTemp[3];
+	int i_Diviveby;
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && dieingstate[client] > 0)
+		{
+			i_Diviveby += 1;
+			
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+			
+			f3_PositionOfAll[0] += f3_PositionTemp[0];
+			f3_PositionOfAll[1] += f3_PositionTemp[1];
+			f3_PositionOfAll[2] += f3_PositionTemp[2];
+		}
+	}
+	
+	f3_PositionOfAll[0] /= float(i_Diviveby);
+	f3_PositionOfAll[1] /= float(i_Diviveby);
+	f3_PositionOfAll[2] /= float(i_Diviveby);
+	
+	int i_Spawner_Indexes[MAXSPAWNERSACTIVE];
+	float TargetDistance = 0.0; 
+	float TargetLocation[3];
+	int ClosestTarget = -1; 
+	int entity = MaxClients + 1;
+	
+	for(int Repeats=0; Repeats<MAXSPAWNERSACTIVE; Repeats++)
+	{
+		while ((entity = FindEntityByClassname(entity, "info_player_teamspawn")) != -1)
+		{
+			if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
+			{
+				bool Found = false;
+				for(int Repeats_anti=0; Repeats_anti<Repeats; Repeats_anti++)
+				{
+					if(i_Spawner_Indexes[Repeats_anti] == entity)
+					{
+						Found = true;
+						break;
+					}
+				}
+				if(Found)
+				{
+					continue;
+				}
+				b_SpawnIsCloseEnough[entity] = false;
+				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+						
+						
+				float distance = GetVectorDistance( f3_PositionOfAll, TargetLocation, true); 
+				if (TargetDistance) 
+				{
+					if( distance < TargetDistance ) 
+					{
+						ClosestTarget = entity; 
+						TargetDistance = distance;		  
+					}
+				} 
+				else 
+				{
+					ClosestTarget = entity; 
+					TargetDistance = distance;
+				}				
+			}
+		}
+		TargetDistance = 0.0;
+		b_SpawnIsCloseEnough[ClosestTarget] = true;
+		i_Spawner_Indexes[Repeats] = ClosestTarget;
+	}
+	
+	return Plugin_Continue;
+}
+
 public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 {
 	bool found;
@@ -160,7 +240,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			{
 				npc_current_count += 1;
 				CClotBody npcstats = view_as<CClotBody>(entity);
-				if(!npcstats.m_bThisNpcIsABoss)
+				if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity])
 				{
 					if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
 						SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
@@ -184,9 +264,13 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	int Active_Spawners = 0;
 	while((entity=FindEntityByClassname(entity, "info_player_teamspawn")) != -1)
 	{
-		if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
+		if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2 && b_SpawnIsCloseEnough[entity])
 		{
 			Active_Spawners += 1;
+			if(f_SpawnerCooldown[entity] < gameTime)
+			{
+				list.Push(entity);
+			}
 		}
 	}
 	float Active_Spawners_Calculate = 0.0;
@@ -198,39 +282,23 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		}
 		case 2:
 		{
-			Active_Spawners_Calculate = 1.65;
+			Active_Spawners_Calculate = 1.9;
 		}
 		case 3:
 		{
-			Active_Spawners_Calculate = 1.55;
+			Active_Spawners_Calculate = 1.8;
 		}
 		case 4:
 		{
-			Active_Spawners_Calculate = 1.4;
+			Active_Spawners_Calculate = 1.6;
 		}
 		case 5:
 		{
-			Active_Spawners_Calculate = 1.2;
+			Active_Spawners_Calculate = 1.55;
 		}
 		case 6:
 		{
-			Active_Spawners_Calculate = 0.7;
-		}
-		case 7:
-		{
-			Active_Spawners_Calculate = 0.6;
-		}
-		case 8:
-		{
-			Active_Spawners_Calculate = 0.3;
-		}
-	}
-	
-	while((entity=FindEntityByClassname(entity, "info_player_teamspawn")) != -1)
-	{
-		if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2 && f_SpawnerCooldown[entity] < gameTime)
-		{
-			list.Push(entity);
+			Active_Spawners_Calculate = 1.45;
 		}
 	}
 	
