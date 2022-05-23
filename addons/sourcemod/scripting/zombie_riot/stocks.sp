@@ -2333,6 +2333,11 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 {
 	float damage_reduction = 1.0;
 	int Closest_npc = 0;
+	
+	float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
+	
+	explosionRadius *= value;
+	
 	if(spawnLoc[0] == 0.0)
 	{
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
@@ -2395,4 +2400,27 @@ stock void UpdatePlayerPoints(int client)
 	Points /= 10;
 	
 	PlayerPoints[client] = Points;	// Do stuff here :)
+}
+
+stock int MaxArmorCalculation(int value, int client, float multiplyier)
+{
+	int Armor_Max;
+	
+	if(value == 50)
+		Armor_Max = 300;
+											
+	else if(value == 100)
+		Armor_Max = 450;
+											
+	else if(value == 150)
+		Armor_Max = 1000;
+										
+	else if(value == 200)
+		Armor_Max = 2000;	
+		
+	else
+		Armor_Max = 200;
+		
+	return (RoundToCeil(float(Armor_Max) * multiplyier));
+	
 }

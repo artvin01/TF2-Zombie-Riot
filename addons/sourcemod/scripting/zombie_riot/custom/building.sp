@@ -1415,6 +1415,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
 							AcceptEntityInput(entity, "SetBuilder", client);
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", client);
+							SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 						}
 						else if(StrEqual(buffer, "zr_barricade")) // do not check for if too many barricades, doesnt make sense to do this anyways.
 						{
@@ -1425,7 +1426,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							i_BarricadesBuild[client] += 1;
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
 							AcceptEntityInput(entity, "SetBuilder", client);
-							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", client);						
+							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", client);		
+							SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);							
 						}
 						else
 						{
@@ -1658,18 +1660,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										int Extra = 0;
 									
 										Extra = Armor_Level[client];
-											
-										if(Extra == 50)
-											Armor_Max = 200;
-											
-										else if(Extra == 100)
-											Armor_Max = 350;
-											
-										else if(Extra == 150)
-											Armor_Max = 700;
-										
-										else if(Extra == 200)
-											Armor_Max = 1500;
+										Armor_Max = MaxArmorCalculation(Extra, client, 0.5);
 											
 										if(Armor_Charge[client] < Armor_Max)
 										{
@@ -1735,17 +1726,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					
 						Extra = Armor_Level[client];
 							
-						if(Extra == 50)
-							Armor_Max = 400;
-							
-						else if(Extra == 100)
-							Armor_Max = 700;
-							
-						else if(Extra == 150)
-							Armor_Max = 1400;
-						
-						else if(Extra == 200)
-							Armor_Max = 3000;
+						Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
 							
 							//armoar
 							
@@ -1762,7 +1743,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 								Armor_Charge[client] += 200;
 								
 							else if(Extra == 200)
-								Armor_Charge[client] += 400;
+								Armor_Charge[client] += 350;
 								
 							else
 								Armor_Charge[client] += 25;

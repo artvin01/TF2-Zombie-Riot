@@ -1098,6 +1098,9 @@ static void MenuPage(int client, int section)
 		int extra = XP[client]-xpLevel;
 		int nextAt = xpNext-xpLevel;
 		
+		if(extra < 0)
+			extra *= -1;
+		
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client])
 		{

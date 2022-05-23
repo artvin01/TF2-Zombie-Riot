@@ -373,7 +373,7 @@ public void XenoSoldierGiant_ClotDamagedPost(int victim, int attacker, int infli
 	if(0.9-(npc.g_TimesSummoned*0.1) > ratio)
 	{
 		npc.g_TimesSummoned++;
-		maxhealth /= 50;
+		maxhealth /= 15;
 		for(int i; i<1; i++)
 		{
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);

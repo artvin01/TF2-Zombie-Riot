@@ -1050,6 +1050,8 @@ public MRESReturn DHook_ForceRespawn(int client)
 	if(!WaitingInQueue[client] && !GameRules_GetProp("m_bInWaitingForPlayers"))
 		Queue_AddPoint(client);
 	
+	SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+	
 	if(started)
 	{
 		DataPack pack = new DataPack();
@@ -1059,7 +1061,42 @@ public MRESReturn DHook_ForceRespawn(int client)
 	}
 	return MRES_Ignored;
 }
+		
+//Ty miku for showing me this cvar.
+public void PhaseThroughOwnBuildings(int client)
+{
+	float PlayerLoc[3];
+	float otherLoc[3];
+	bool Collides_with_atleast_one_building = false;
+	GetClientAbsOrigin(client, PlayerLoc);
+	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+		if(IsValidEntity(entity))
+		{
+			if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
+			{
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", otherLoc);
+				if (GetVectorDistance(PlayerLoc, otherLoc, true) <= 8100.0)// 90.0 distance
+				{	 
+					Collides_with_atleast_one_building = true;
+				}
+			}
+		}
+	}
+	
+	if(CvarMpSolidObjects)
+		CvarMpSolidObjects.ReplicateToClient(client, Collides_with_atleast_one_building ? "0" : "1");
+		
+	b_PhasesThroughBuildingsCurrently[client] = Collides_with_atleast_one_building;
+	
+	if(!Collides_with_atleast_one_building)
+	{
+		SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+	}
+}
 
+		
 public void DHook_TeleportToObserver(DataPack pack)
 {
 	pack.Reset();

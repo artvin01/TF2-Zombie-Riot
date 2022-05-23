@@ -182,6 +182,8 @@ bool EscapeModeForNpc;
 int CurrentPlayers;
 int GlobalIntencity;
 ConVar cvarTimeScale;
+ConVar CvarMpSolidObjects; //mp_solidobjects 
+bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie CookieXP;
 Cookie CookiePlayStreak;
 
@@ -891,6 +893,10 @@ public void OnPluginStart()
 	
 	cvarTimeScale = FindConVar("host_timescale");
 	tf_bot_quota = FindConVar("tf_bot_quota");
+	
+	CvarMpSolidObjects = FindConVar("tf_solidobjects");
+	if(CvarMpSolidObjects)
+		CvarMpSolidObjects.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 	
 	ConVar cvar = FindConVar("tf_bot_count");
 	cvar.Flags &= ~FCVAR_NOTIFY;

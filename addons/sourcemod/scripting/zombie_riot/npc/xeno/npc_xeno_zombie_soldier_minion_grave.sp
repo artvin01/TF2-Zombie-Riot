@@ -137,7 +137,7 @@ methodmap XenoSoldierMinion < CClotBody
 	
 	public XenoSoldierMinion(int client, float vecPos[3], float vecAng[3])
 	{
-		XenoSoldierMinion npc = view_as<XenoSoldierMinion>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "0.5", "10"));
+		XenoSoldierMinion npc = view_as<XenoSoldierMinion>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "0.65", "10"));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);

@@ -130,7 +130,7 @@ methodmap SoldierMinion < CClotBody
 	}
 	public SoldierMinion(int client, float vecPos[3], float vecAng[3])
 	{
-		SoldierMinion npc = view_as<SoldierMinion>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "0.5", "10"));
+		SoldierMinion npc = view_as<SoldierMinion>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "0.65", "10"));
 		
 		i_NpcInternalId[npc.index] = SOLDIER_ZOMBIE_MINION;
 		
