@@ -77,7 +77,9 @@ methodmap XenoKamikaze < CClotBody
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
+		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;	
+
+		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
