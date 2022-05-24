@@ -965,6 +965,16 @@ public void OnPluginStart()
 
 public Action Timer_Temp(Handle timer)
 {
+	if(RaidBossActive)
+	{
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				Calculate_And_Display_hp(client, RaidBossActive, 0.0, true);
+			}
+		}
+	}
 	NPC_SpawnNext(false, false, false);
 	return Plugin_Continue;
 }

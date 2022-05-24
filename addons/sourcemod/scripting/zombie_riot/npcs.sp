@@ -40,6 +40,7 @@ enum struct NPCData
 }
 ArrayList NPCList;
 static Handle SyncHud;
+static Handle SyncHudRaid;
 static char LastClassname[2049][64];
 static float f_SpawnerCooldown[MAXENTITIES];
 
@@ -51,6 +52,7 @@ void NPC_PluginStart()
 {
 	NPCList = new ArrayList(sizeof(NPCData));
 	SyncHud = CreateHudSynchronizer();
+	SyncHudRaid = CreateHudSynchronizer();
 	
 	LF_HookSpawn("", NPC_OnCreatePre, false);
 	LF_HookSpawn("", NPC_OnCreatePost, true);
@@ -1111,7 +1113,10 @@ public void Calculate_And_Display_hp(int attacker, int victim, float damage, boo
 	
 	if(f_CooldownForHurtHud[attacker] < GetGameTime() || ignore)
 	{
-		f_CooldownForHurtHud[attacker] = GetGameTime() + 0.1;
+		if(!ignore)
+		{
+			f_CooldownForHurtHud[attacker] = GetGameTime() + 0.1;
+		}
 		
 		int red = 255;
 		int green = 255;
@@ -1137,8 +1142,8 @@ public void Calculate_And_Display_hp(int attacker, int victim, float damage, boo
 		}
 		else
 		{
-			SetHudTextParams(-1.0, 0.12, 1.0, red, green, blue, 255, 0, 0.01, 0.01, 2.0);
-			ShowSyncHudText(attacker, SyncHud, "[Raidboss | Power : %.1f%%]\n%s\n%d / %d", RaidModeScaling * 100, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+			SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01, 2.0);
+			ShowSyncHudText(attacker, SyncHudRaid, "[Raidboss | Power : %.1f%%]\n%s\n%d / %d", RaidModeScaling * 100, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
 		}
 	}	
 }

@@ -3378,7 +3378,10 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		if(IsValidEntity(npc.m_iTeamGlow))
 			RemoveEntity(npc.m_iTeamGlow);
 			
-		
+		if (RaidBossActive == pThis)
+		{
+			//Waves_ClearWaves();
+		}
 		NPCDeath(pThis);
 		/*
 		#if defined ISSPECIALDEATHANIMATION
