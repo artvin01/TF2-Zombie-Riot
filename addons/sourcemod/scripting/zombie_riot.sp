@@ -965,6 +965,16 @@ public void OnPluginStart()
 
 public Action Timer_Temp(Handle timer)
 {
+	if(RaidBossActive)
+	{
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				Calculate_And_Display_hp(client, RaidBossActive, 0.0, true);
+			}
+		}
+	}
 	NPC_SpawnNext(false, false, false);
 	return Plugin_Continue;
 }
@@ -1100,7 +1110,6 @@ public void OnMapStart()
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
 //	CreateEntityByName("info_populator");
 }
-
 public void OnMapEnd()
 {
 	OnRoundEnd(null, NULL_STRING, false);
@@ -1193,6 +1202,7 @@ public void OnClientPutInServer(int client)
 	if(IsFakeClient(client))
 	{
 		TF2_ChangeClientTeam(client, TFTeam_Blue);
+		DHook_UnhookClient(client);
 		DHook_HookClient(client);
 		b_IsPlayerABot[client] = true;
 		return;
@@ -1201,7 +1211,7 @@ public void OnClientPutInServer(int client)
 	{
 		Queue_PutInServer(client);
 	}
-	
+	DHook_UnhookClient(client);
 	DHook_HookClient(client);
 	SDKHook_HookClient(client);
 	dieingstate[client] = 0;
@@ -1225,8 +1235,16 @@ public void OnClientPutInServer(int client)
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.40);
 	
 //	if(!XP[client] && AreClientCookiesCached(client)) //Ingore this. This only bugs it out, just force it, who cares.
+	if(!b_PlayerGotTheirCookies[client])
 	{
-		CreateTimer(0.1, LoadCookiesLater, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+		if(b_StoreGotReset)
+		{
+			OnClientCookiesCached(client);
+		}
+		else
+		{
+			CreateTimer(0.1, LoadCookiesLater, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+		}
 	}
 }
 
@@ -1279,7 +1297,6 @@ public void OnClientDisconnect(int client)
 	WeaponClass[client] = TFClass_Unknown;
 	Timer_Knife_Management[client] = INVALID_HANDLE;
 	Escape_DropItem(client, false);
-	
 	if(XP[client] > 0)
 	{
 		if(b_PlayerGotTheirCookies[client])
@@ -1388,6 +1405,11 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			Music_Timer[client] = GetEngineTime() + 20.0;
 //			Armor_Ready[client] = 0.0;
 		}
+	}
+	for(int client_check=1; client_check<=MaxClients; client_check++)
+	{
+		if(IsClientInGame(client_check) && TeutonType[client_check] != TEUTON_WAITING)
+			TeutonType[client_check] = 0;
 	}
 	NPC_RoundEnd();
 	Store_Reset();

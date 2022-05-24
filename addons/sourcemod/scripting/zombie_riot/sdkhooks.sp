@@ -637,7 +637,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 		}
 	}
-	if((Replicated_Damage >= flHealth || damage >= flHealth) && (LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GetGameTime())
+	if((RoundToCeil(Replicated_Damage) >= flHealth || RoundToCeil(damage) >= flHealth) && (LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GetGameTime())
 	{
 		damage = float(flHealth - 1); //survive with 1 hp!
 		TF2_AddCondition(victim, TFCond_UberchargedCanteen, 1.0);
@@ -646,7 +646,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		f_OneShotProtectionTimer[victim] = gameTime + 120.0; // 120 second cooldown
 		return Plugin_Changed;
 	}
-	else if((Replicated_Damage >= flHealth || damage >= flHealth) && !LastMann && !b_IsAloneOnServer)
+	else if((RoundToCeil(Replicated_Damage) >= flHealth || RoundToCeil(damage) >= flHealth) && !LastMann && !b_IsAloneOnServer)
 	{
 		i_CurrentEquippedPerk[victim] = 0;
 		SetEntityHealth(victim, 200);
@@ -680,10 +680,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(victim, 255, 255, 255, 125);
 		return Plugin_Handled;
-	}
-	if(damage < 1.0)
-	{
-		damage = 1.0; //Make sure they always take atleast one damage.
 	}
 	return Plugin_Changed;
 }

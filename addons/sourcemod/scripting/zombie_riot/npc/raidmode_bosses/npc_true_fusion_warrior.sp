@@ -54,6 +54,10 @@ char g_PullSounds[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav"
 };
 
+static char gGlow1;
+static char gExplosive1;
+static char gLaser1;
+
 static bool FusionWarrior_BEAM_CanUse[MAXENTITIES];
 static bool FusionWarrior_BEAM_IsUsing[MAXENTITIES];
 static int FusionWarrior_BEAM_TicksActive[MAXENTITIES];
@@ -103,6 +107,9 @@ public void TrueFusionWarrior_OnMapStart()
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 	TrueFusionWarrior_TBB_Precahce();
 	
+	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
+	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
+	gExplosive1 = PrecacheModel("materials/sprites/sprite_fire01.vmt");
 	
 	PrecacheSound("player/flow.wav");
 }
@@ -264,6 +271,8 @@ methodmap TrueFusionWarrior < CClotBody
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
 		
 		npc.m_bThisNpcIsABoss = true;
+		
+		Raidboss_Clean_Everyone();
 		
 		SDKHook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamage, TrueFusionWarrior_ClotDamaged);
@@ -581,6 +590,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
 					npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.15;
+					TrueFusionwarrior_IOC_Invoke(npc.index, closest);
 					if (npc.m_iAmountProjectiles >= 8)
 					{
 						npc.m_iAmountProjectiles = 0;
@@ -596,6 +606,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
+					TrueFusionwarrior_IOC_Invoke(npc.index, closest);
 					npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.15;
 					if (npc.m_iAmountProjectiles >= 12)
 					{
@@ -773,6 +784,7 @@ public void TrueFusionWarrior_NPCDeath(int entity)
 {
 	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(entity);
 	npc.PlayDeathSound();
+	StopSound(entity,SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
 	SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, TrueFusionWarrior_ClotDamaged);
 	
@@ -808,8 +820,8 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 	FusionWarrior_BEAM_TicksActive[client] = 0;
 
 	FusionWarrior_BEAM_CanUse[client] = true;
-	FusionWarrior_BEAM_CloseDPT[client] = 100.0;
-	FusionWarrior_BEAM_FarDPT[client] = 75.0;
+	FusionWarrior_BEAM_CloseDPT[client] = 25.0;
+	FusionWarrior_BEAM_FarDPT[client] = 15.0;
 	FusionWarrior_BEAM_MaxDistance[client] = 2000;
 	FusionWarrior_BEAM_BeamRadius[client] = 45;
 	FusionWarrior_BEAM_ColorHex[client] = ParseColor("EEDD44");
@@ -869,8 +881,8 @@ void TrueFusionWarrior_TBB_Ability(int client)
 	FusionWarrior_BEAM_TicksActive[client] = 0;
 
 	FusionWarrior_BEAM_CanUse[client] = true;
-	FusionWarrior_BEAM_CloseDPT[client] = 50.0;
-	FusionWarrior_BEAM_FarDPT[client] = 35.0;
+	FusionWarrior_BEAM_CloseDPT[client] = 17.0;
+	FusionWarrior_BEAM_FarDPT[client] = 10.0;
 	FusionWarrior_BEAM_MaxDistance[client] = 2000;
 	FusionWarrior_BEAM_BeamRadius[client] = 25;
 	FusionWarrior_BEAM_ColorHex[client] = ParseColor("FFFFFF");
@@ -1137,4 +1149,213 @@ public Action Fusion_RepeatSound_Doublevoice(Handle timer, DataPack pack)
 		EmitSoundToAll(sound, entity, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	return Plugin_Handled; 
+}
+
+
+
+public void TrueFusionwarrior_IOC_Invoke(int client, int enemy)
+{
+	static float distance=87.0; // /29 for duartion till boom
+	static float IOCDist=250.0;
+	static float IOCdamage=10.0;
+	
+	float vecTarget[3];
+	GetClientEyePosition(enemy, vecTarget);
+	vecTarget[2] -= 54.0;
+	
+	Handle data = CreateDataPack();
+	WritePackFloat(data, vecTarget[0]);
+	WritePackFloat(data, vecTarget[1]);
+	WritePackFloat(data, vecTarget[2]);
+	WritePackCell(data, distance); // Distance
+	WritePackFloat(data, 0.0); // nphi
+	WritePackCell(data, IOCDist); // Range
+	WritePackCell(data, IOCdamage); // Damge
+	WritePackCell(data, client);
+	ResetPack(data);
+	TrueFusionwarrior_IonAttack(data);
+}
+
+public Action TrueFusionwarrior_DrawIon(Handle Timer, any data)
+{
+	TrueFusionwarrior_IonAttack(data);
+		
+	return (Plugin_Stop);
+}
+	
+public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const color[4])
+{
+	float position[3];
+	position[0] = startPosition[0];
+	position[1] = startPosition[1];
+	position[2] = startPosition[2] + 3000.0;	
+	
+	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 0.15, 25.0, 25.0, 0, 1.0, color, 3 );
+	TE_SendToAll();
+	position[2] -= 1490.0;
+	TE_SetupGlowSprite(startPosition, gGlow1, 1.0, 1.0, 255);
+	TE_SendToAll();
+}
+
+	public void TrueFusionwarrior_IonAttack(Handle &data)
+	{
+		float startPosition[3];
+		float position[3];
+		startPosition[0] = ReadPackFloat(data);
+		startPosition[1] = ReadPackFloat(data);
+		startPosition[2] = ReadPackFloat(data);
+		float Iondistance = ReadPackCell(data);
+		float nphi = ReadPackFloat(data);
+		int Ionrange = ReadPackCell(data);
+		int Iondamage = ReadPackCell(data);
+		int client = ReadPackCell(data);
+		
+		if (Iondistance > 0)
+		{
+			EmitSoundToAll("ambient/energy/weld1.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
+			
+			// Stage 1
+			float s=Sine(nphi/360*6.28)*Iondistance;
+			float c=Cosine(nphi/360*6.28)*Iondistance;
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[2] = startPosition[2];
+			
+			position[0] += s;
+			position[1] += c;
+			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+	
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] -= s;
+			position[1] -= c;
+			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+			
+			// Stage 2
+			s=Sine((nphi+45.0)/360*6.28)*Iondistance;
+			c=Cosine((nphi+45.0)/360*6.28)*Iondistance;
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] += s;
+			position[1] += c;
+			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] -= s;
+			position[1] -= c;
+			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+			
+			// Stage 3
+			s=Sine((nphi+90.0)/360*6.28)*Iondistance;
+			c=Cosine((nphi+90.0)/360*6.28)*Iondistance;
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] += s;
+			position[1] += c;
+			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] -= s;
+			position[1] -= c;
+			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+			
+			// Stage 3
+			s=Sine((nphi+135.0)/360*6.28)*Iondistance;
+			c=Cosine((nphi+135.0)/360*6.28)*Iondistance;
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] += s;
+			position[1] += c;
+			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] -= s;
+			position[1] -= c;
+			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+	
+			if (nphi >= 360)
+				nphi = 0.0;
+			else
+				nphi += 5.0;
+		}
+		Iondistance -= 10;
+		
+		Handle nData = CreateDataPack();
+		WritePackFloat(nData, startPosition[0]);
+		WritePackFloat(nData, startPosition[1]);
+		WritePackFloat(nData, startPosition[2]);
+		WritePackCell(nData, Iondistance);
+		WritePackFloat(nData, nphi);
+		WritePackCell(nData, Ionrange);
+		WritePackCell(nData, Iondamage);
+		WritePackCell(nData, client);
+		ResetPack(nData);
+		
+		if (Iondistance > -30)
+		CreateTimer(0.1, TrueFusionwarrior_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
+		else
+		{
+			if(!b_Anger[client])
+				makeexplosion(client, client, startPosition, "", 90, RoundToCeil(100.0 * RaidModeScaling));
+				
+			else if(b_Anger[client])
+				makeexplosion(client, client, startPosition, "", 100, RoundToCeil(115.0 * RaidModeScaling));
+				
+			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
+			TE_SendToAll();
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[2] += startPosition[2] + 900.0;
+			startPosition[2] += -200;
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 30.0, 30.0, 0, 1.0, {212, 175, 55, 255}, 3);
+			TE_SendToAll();
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 50.0, 50.0, 0, 1.0, {212, 175, 55, 200}, 3);
+			TE_SendToAll();
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {212, 175, 55, 120}, 3);
+			TE_SendToAll();
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {212, 175, 55, 75}, 3);
+			TE_SendToAll();
+	
+			position[2] = startPosition[2] + 50.0;
+			//new Float:fDirection[3] = {-90.0,0.0,0.0};
+			//env_shooter(fDirection, 25.0, 0.1, fDirection, 800.0, 120.0, 120.0, position, "models/props_wasteland/rockgranite03b.mdl");
+	
+			//env_shake(startPosition, 120.0, 10000.0, 15.0, 250.0);
+			
+			// Sound
+			EmitSoundToAll("ambient/explosions/explode_9.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
+	
+			// Blend
+			//sendfademsg(0, 10, 200, FFADE_OUT, 255, 255, 255, 150);
+			
+			// Knockback
+	/*		float vReturn[3];
+			float vClientPosition[3];
+			float dist;
+			for (int i = 1; i <= MaxClients; i++)
+			{
+				if (IsClientConnected(i) && IsClientInGame(i) && IsPlayerAlive(i))
+				{	
+					GetClientEyePosition(i, vClientPosition);
+	
+					dist = GetVectorDistance(vClientPosition, position, false);
+					if (dist < Ionrange)
+					{
+						MakeVectorFromPoints(position, vClientPosition, vReturn);
+						NormalizeVector(vReturn, vReturn);
+						ScaleVector(vReturn, 10000.0 - dist*10);
+	
+						TeleportEntity(i, NULL_VECTOR, NULL_VECTOR, vReturn);
+					}
+				}
+			}
+*/
+		}
 }

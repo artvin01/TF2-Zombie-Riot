@@ -1087,7 +1087,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 			}
 		}
 }
-
+					
 public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 {
 	pack.Reset();
@@ -2394,7 +2394,12 @@ public Action Timer_DroppedBuildingWaitSentry(Handle htimer, int entref)
 	//Wait until full complete
 	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
 	{
-		SetEntProp(obj, Prop_Send, "m_iAmmoShells", 150);
+		char buffer[32];
+		GetEntityClassname(obj, buffer, sizeof(buffer))
+		if(!StrContains(buffer, "obj_sentrygun"))
+		{
+			SetEntProp(obj, Prop_Send, "m_iAmmoShells", 150);
+		}
 		if(Building_Constructed[obj])
 			return Plugin_Continue;
 			
