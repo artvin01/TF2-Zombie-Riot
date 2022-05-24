@@ -1389,13 +1389,6 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 //			Armor_Ready[client] = 0.0;
 		}
 	}
-	
-	for(int client_check=1; client_check<=MaxClients; client_check++)
-	{
-		if(IsClientInGame(client_check) && TeutonType[client_check] != TEUTON_WAITING)
-			TeutonType[client_check] = 0;
-	}
-	
 	NPC_RoundEnd();
 	Store_Reset();
 	Waves_RoundEnd();
