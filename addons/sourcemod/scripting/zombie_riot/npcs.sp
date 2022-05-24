@@ -113,6 +113,7 @@ public void NPC_EntitySpawned(int entity)
 }
 
 static bool b_SpawnIsCloseEnough[MAXENTITIES];
+static float f_ClosestSpawnerLessCooldown[MAXENTITIES];
 
 public Action GetClosestSpawners(Handle timer)
 {
@@ -121,7 +122,7 @@ public Action GetClosestSpawners(Handle timer)
 	int i_Diviveby;
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] > 0 && IsPlayerAlive(client))
+		if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] < 0 && IsPlayerAlive(client))
 		{
 			i_Diviveby += 1;
 			
@@ -133,9 +134,9 @@ public Action GetClosestSpawners(Handle timer)
 		}
 	}
 	
-	f3_PositionOfAll[0] /= float(i_Diviveby);
-	f3_PositionOfAll[1] /= float(i_Diviveby);
-	f3_PositionOfAll[2] /= float(i_Diviveby);
+	f3_PositionOfAll[0] /= float(i_Diviveby) + 0.00001;
+	f3_PositionOfAll[1] /= float(i_Diviveby) + 0.00001;
+	f3_PositionOfAll[2] /= float(i_Diviveby) + 0.00001;
 	
 	int i_Spawner_Indexes[MAXSPAWNERSACTIVE];
 	float TargetDistance = 0.0; 
@@ -183,6 +184,7 @@ public Action GetClosestSpawners(Handle timer)
 			}
 		}
 		TargetDistance = 0.0;
+		f_ClosestSpawnerLessCooldown[ClosestTarget] = 0.25 * float(Repeats * 2);
 		b_SpawnIsCloseEnough[ClosestTarget] = true;
 		i_Spawner_Indexes[Repeats] = ClosestTarget;
 	}
@@ -278,27 +280,27 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	{
 		case 1:
 		{
-			Active_Spawners_Calculate = 1.95;
+			Active_Spawners_Calculate = 1.90;
 		}
 		case 2:
 		{
-			Active_Spawners_Calculate = 1.9;
+			Active_Spawners_Calculate = 1.8;
 		}
 		case 3:
 		{
-			Active_Spawners_Calculate = 1.8;
+			Active_Spawners_Calculate = 1.7;
 		}
 		case 4:
 		{
-			Active_Spawners_Calculate = 1.6;
+			Active_Spawners_Calculate = 1.5;
 		}
 		case 5:
 		{
-			Active_Spawners_Calculate = 1.55;
+			Active_Spawners_Calculate = 1.4;
 		}
 		case 6:
 		{
-			Active_Spawners_Calculate = 1.45;
+			Active_Spawners_Calculate = 1.35;
 		}
 	}
 	
@@ -400,7 +402,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			if(index)
 			{
 				entity = list.Get(GetRandomInt(0, entity-1));
-				f_SpawnerCooldown[entity] = gameTime+(2.0 - Active_Spawners_Calculate);
+				f_SpawnerCooldown[entity] = gameTime+(2.0 - (Active_Spawners_Calculate * f_ClosestSpawnerLessCooldown[entity]);
 				
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
