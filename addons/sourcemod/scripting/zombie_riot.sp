@@ -170,7 +170,7 @@ enum
 Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;
 
-ConVar zr_waveconfig;
+ConVar zr_voteconfig;
 ConVar tf_bot_quota;
 
 int CurrentGame;
@@ -753,6 +753,7 @@ char NPC_Plugin_Names_Converted[][] =
 
 #include "zombie_riot/stocks.sp"
 #include "zombie_riot/music.sp"
+#include "zombie_riot/waves.sp"
 #include "zombie_riot/attributes.sp"
 #include "zombie_riot/configs.sp"
 #include "zombie_riot/convars.sp"
@@ -761,7 +762,6 @@ char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/sdkhooks.sp"
 #include "zombie_riot/npcs.sp"
 #include "zombie_riot/store.sp"
-#include "zombie_riot/waves.sp"
 #include "zombie_riot/viewchanges.sp"
 #include "zombie_riot/npc_stats.sp"
 

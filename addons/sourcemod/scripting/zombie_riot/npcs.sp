@@ -395,11 +395,8 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		}
 		else
 		{
-			char data[16];
-			int IsOutlined;
-			int IsImmuneToNuke;
-			int index = Waves_GetNextEnemy(health, isBoss, data, sizeof(data), IsOutlined, IsImmuneToNuke);
-			if(index)
+			Enemy enemy;
+			if(Waves_GetNextEnemy(enemy))
 			{
 				entity = list.Get(GetRandomInt(0, entity-1));
 				f_SpawnerCooldown[entity] = gameTime+(2.0 - (Active_Spawners_Calculate * f_ClosestSpawnerLessCooldown[entity]));
@@ -407,28 +404,28 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 				
-				entity = Npc_Create(index, -1, pos, ang, data);
+				entity = Npc_Create(enemy.Index, -1, pos, ang, enemy.Data);
 				if(entity != -1)
 				{
-					if(IsOutlined)
+					if(enemy.Is_Outlined)
 					{
 						b_thisNpcHasAnOutline[entity] = true;
 					}
 					
-					if(IsImmuneToNuke)
+					if(enemy.Is_Immune_To_Nuke)
 					{
 						b_ThisNpcIsImmuneToNuke[entity] = true;
 					}
 			
-					if(health)
+					if(enemy.Health)
 					{
-						SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
-						SetEntProp(entity, Prop_Data, "m_iHealth", health);
+						SetEntProp(entity, Prop_Data, "m_iMaxHealth", enemy.Health);
+						SetEntProp(entity, Prop_Data, "m_iHealth", enemy.Health);
 					}
 					
 					CClotBody npcstats = view_as<CClotBody>(entity);
 					
-					if(isBoss)
+					if(enemy.Is_Boss)
 					{
 						npcstats.m_bThisNpcIsABoss = true; //Set to true!
 					}
@@ -437,7 +434,10 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 						npcstats.m_bThisNpcIsABoss = false; //Set to true!
 					}
 					
-					if(isBoss || IsOutlined)
+					if(enemy.Credits && MultiGlobal)
+						npcstats.m_iCreditsOnKill = RoundToCeil(float(enemy.Credits) / MultiGlobal);
+					
+					if(enemy.Is_Boss || enemy.Is_Outlined)
 					{
 						SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
 					}

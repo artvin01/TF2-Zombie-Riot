@@ -129,7 +129,7 @@ bool b_bThisNpcGotDefaultStats_INVERTED[MAXENTITIES];
 float b_isGiantWalkCycle[MAXENTITIES];
 
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
-
+int i_CreditsOnKill[MAXENTITIES];
 
 
 
@@ -1053,6 +1053,9 @@ public void NPCDeath(int entity)
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
 		}
 	}
+	
+	if(view_as<CClotBody>(entity).m_iCreditsOnKill)
+		CurrentCash += view_as<CClotBody>(entity).m_iCreditsOnKill;
 }
 
 public void OnMapStart_NPC_Base()
@@ -2033,6 +2036,11 @@ methodmap CClotBody
 	{
 		public get()							{ return i_NpcStepVariation[this.index]; }
 		public set(int TempValueForProperty) 	{ i_NpcStepVariation[this.index] = TempValueForProperty; }
+	}
+	property int m_iCreditsOnKill
+	{
+		public get()							{ return i_CreditsOnKill[this.index]; }
+		public set(int TempValueForProperty) 	{ i_CreditsOnKill[this.index] = TempValueForProperty; }
 	}
 	
 	property float m_flGetClosestTargetTime
@@ -5850,6 +5858,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_PoseMoveY[entity] = -1;
 	b_NpcHasDied[entity] = false;
 	b_PlayHurtAnimation[entity] = false;
+	i_CreditsOnKill[entity] = 0;
 }
 
 //NORMAL

@@ -51,7 +51,7 @@ void Configs_ConfigsExecuted()
 	}
 
 	Store_ConfigSetup(kv);
-	Waves_ConfigSetup(kv);
+	Waves_SetupVote(kv);
 	if(kv)
 		delete kv;
 	

@@ -11,7 +11,7 @@ static bool CvarEnabled;
 
 void ConVar_PluginStart()
 {
-	zr_waveconfig = CreateConVar("zr_waveconfig", "waves", "Waves config zr/ .cfg already included");
+	zr_voteconfig = CreateConVar("zr_voteconfig", "vote", "Vote config zr/ .cfg already included", FCVAR_DONTRECORD);
 	
 	if(CvarList != INVALID_HANDLE)
 		delete CvarList;
@@ -58,7 +58,7 @@ void ConVar_PluginStart()
 	
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
 	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
-	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "1", "No Panzer will spawn or anything alike", FCVAR_DONTRECORD);
+	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "1", "No Panzer will spawn or anything alike");
 	
 	AutoExecConfig(true, "zombie_riot");
 	

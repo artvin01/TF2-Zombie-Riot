@@ -1,10 +1,3 @@
-static const char WaveTypes[][][] =
-{
-	{ "Normal", "waves" },
-	{ "Alternative Waves (Hard)", "waves_alt" },
-	{ "Xeno Infection (Very Hard)", "waves_xeno" }
-};
-
 enum struct Enemy
 {
 	int Health;
@@ -13,6 +6,7 @@ enum struct Enemy
 	int Is_Health_Scaled;
 	int Is_Immune_To_Nuke;
 	int Index;
+	int Credits;
 	char Data[16];
 }
 
@@ -34,7 +28,14 @@ enum struct Round
 	ArrayList Waves;
 }
 
+enum struct Vote
+{
+	char Name[64];
+	char Config[64];
+}
+
 static ArrayList Rounds;
+static ArrayList Voting;
 static ArrayStack Enemies;
 static Handle WaveTimer;
 static float Cooldown;
@@ -43,7 +44,6 @@ static bool InSetup;
 static int WaveIntencity;
 
 static bool Gave_Ammo_Supply;
-static bool DoneVote;
 static int VotedFor[MAXTF2PLAYERS];
 
 void Waves_PluginStart()
@@ -84,16 +84,20 @@ public Action Waves_SetWaveCmd(int client, int args)
 
 bool Waves_CallVote(int client)
 {
-	if(!DoneVote && !VotedFor[client] && GameRules_GetProp("m_bInWaitingForPlayers", 1))
+	if(Voting && !VotedFor[client] && GameRules_GetProp("m_bInWaitingForPlayers", 1))
 	{
 		Menu menu = new Menu(Waves_CallVoteH);
 		
 		menu.SetTitle("Vote for the difficulty:\n ");
 		
 		menu.AddItem("", "No Vote");
-		for(int i; i<sizeof(WaveTypes); i++)
+		
+		Vote vote;
+		int length = Voting.Length;
+		for(int i; i<length; i++)
 		{
-			menu.AddItem("", WaveTypes[i][0]);
+			Voting.GetArray(i, vote);
+			menu.AddItem(vote.Config, vote.Name);
 		}
 		
 		menu.ExitButton = false;
@@ -123,7 +127,72 @@ public int Waves_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-void Waves_ConfigSetup(KeyValues map, bool start=true)
+void Waves_SetupVote(KeyValues map)
+{
+	if(Voting)
+	{
+		delete Voting;
+		Voting = null;
+	}
+	
+	KeyValues kv = map;
+	if(kv)
+	{
+		kv.Rewind();
+		if(kv.JumpToKey("Waves"))
+		{
+			Waves_SetupWaves(kv, true);
+			return;
+		}
+		else if(!kv.JumpToKey("Setup"))
+		{
+			kv = null;
+		}
+	}
+	
+	char buffer[PLATFORM_MAX_PATH];
+	if(!kv)
+	{
+		zr_voteconfig.GetString(buffer, sizeof(buffer));
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
+		kv = new KeyValues("Setup");
+		kv.ImportFromFile(buffer);
+		RequestFrame(DeleteHandle, kv);
+	}
+	
+	StartCash = kv.GetNum("cash");
+	if(!kv.JumpToKey("Waves"))
+	{
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "waves");
+		kv = new KeyValues("Waves");
+		kv.ImportFromFile(buffer);
+		Waves_SetupWaves(kv, true);
+		delete kv;
+		return;
+	}
+	
+	Voting = new ArrayList(sizeof(Vote));
+	
+	Vote vote;
+	kv.GotoFirstSubKey(false);
+	do
+	{
+		kv.GetSectionName(vote.Name, sizeof(vote.Name));
+		kv.GetString(NULL_STRING, vote.Config, sizeof(vote.Config));
+		Voting.PushArray(vote);
+	} while(kv.GotoNextKey(false));
+	
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && GetClientTeam(client)>1)
+		{
+			Waves_RoundStart();
+			break;
+		}
+	}
+}
+
+void Waves_SetupWaves(KeyValues kv, bool start)
 {
 	if(Rounds)
 		delete Rounds;
@@ -134,31 +203,6 @@ void Waves_ConfigSetup(KeyValues map, bool start=true)
 		delete Enemies;
 	
 	Enemies = new ArrayStack(sizeof(Enemy));
-	
-	DoneVote = false;
-	KeyValues kv = map;
-	if(kv)
-	{
-		kv.Rewind();
-		if(kv.JumpToKey("Waves"))
-		{
-			DoneVote = true;
-		}
-		else
-		{
-			kv = null;
-		}
-	}
-
-	char buffer[PLATFORM_MAX_PATH];
-	if(!kv)
-	{
-		zr_waveconfig.GetString(buffer, sizeof(buffer));
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
-		kv = new KeyValues("Waves");
-		kv.ImportFromFile(buffer);
-		RequestFrame(DeleteHandle, kv);
-	}
 	
 	StartCash = kv.GetNum("cash");
 	b_BlockPanzerInThisDifficulty = view_as<bool>(kv.GetNum("block_panzer"));
@@ -173,7 +217,7 @@ void Waves_ConfigSetup(KeyValues map, bool start=true)
 	Round round;
 	Wave wave;
 	kv.GotoFirstSubKey();
-	char plugin[64];
+	char buffer[64], plugin[64];
 	do
 	{
 		round.Cash = kv.GetNum("cash");
@@ -203,6 +247,7 @@ void Waves_ConfigSetup(KeyValues map, bool start=true)
 						enemy.Is_Outlined = kv.GetNum("is_outlined");
 						enemy.Is_Health_Scaled = kv.GetNum("is_health_scaling");
 						enemy.Is_Immune_To_Nuke = kv.GetNum("is_immune_to_nuke");
+						enemy.Credits = kv.GetNum("cash");
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
 						
@@ -232,15 +277,16 @@ void Waves_ConfigSetup(KeyValues map, bool start=true)
 
 void Waves_RoundStart()
 {
-	if(!DoneVote && !GameRules_GetProp("m_bInWaitingForPlayers"))
+	if(Voting && !GameRules_GetProp("m_bInWaitingForPlayers"))
 	{
-		int votes[sizeof(WaveTypes)];
+		int length = Voting.Length;
+		int[] votes = new int[length];
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client))
 			{
 				DoOverlay(client, "");
-				if(VotedFor[client]>0 && GetClientTeam(client)>1)
+				if(VotedFor[client]>0 && GetClientTeam(client)==2)
 				{
 					votes[VotedFor[client]-1]++;
 				}
@@ -248,17 +294,28 @@ void Waves_RoundStart()
 		}
 		
 		int highest;
-		for(int i=1; i<sizeof(WaveTypes); i++)
+		for(int i=1; i<length; i++)
 		{
 			if(votes[i] > votes[highest])
 				highest = i;
 		}
-		if(votes[highest])
+		
+		//if(votes[highest])
 		{
-			DoneVote = true;
-			zr_waveconfig.SetString(WaveTypes[highest][1]);
-			PrintToChatAll("Difficulty set to: %s", WaveTypes[highest][0]);
-			Waves_ConfigSetup(null, false);
+			Vote vote;
+			Voting.GetArray(highest, vote);
+			
+			delete Voting;
+			Voting = null;
+			
+			PrintToChatAll("Difficulty set to: %s", vote.Name);
+			
+			char buffer[PLATFORM_MAX_PATH];
+			BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
+			KeyValues kv = new KeyValues("Waves");
+			kv.ImportFromFile(buffer);
+			Waves_SetupWaves(kv, false);
+			delete kv;
 		}
 	}
 	
@@ -337,6 +394,12 @@ public Action Waves_RoundStartTimer(Handle timer)
 }
 
 float MultiGlobal = 0.25;
+
+/*void Waves_ClearWaves()
+{
+	delete Enemies;
+	Enemies = new ArrayStack(sizeof(Enemy));
+}*/
 
 void Waves_Progress()
 {
@@ -424,7 +487,7 @@ void Waves_Progress()
 			}
 			
 			if(wave.Delay > 0.0)
-				WaveTimer = CreateTimer(wave.Delay, Waves_ProgressTimer);
+				WaveTimer = CreateTimer(wave.Delay * MultiGlobal, Waves_ProgressTimer);
 		}
 		else
 		{
@@ -432,6 +495,9 @@ void Waves_Progress()
 			PrintToChatAll("%t","Cash Gained This Wave", round.Cash);
 			CurrentRound++;
 			CurrentWave = -1;
+			
+			delete Enemies;
+			Enemies = new ArrayStack(sizeof(Enemy));
 			
 			for(int client_Penalise=1; client_Penalise<=MaxClients; client_Penalise++)
 			{
@@ -873,20 +939,12 @@ public int Waves_FreeplayVote(Menu menu, MenuAction action, int item, int param2
 	return 0;
 }
 				
-int Waves_GetNextEnemy(int &health, int &isBoss, char[] data, int length, int &IsOutlined, int &IsImmuneToNuke)
+int Waves_GetNextEnemy(Enemy enemy)
 {
 	if(Enemies.Empty)
 		return 0;
 	
-	Enemy enemy;
 	Enemies.PopArray(enemy);
-	
-	isBoss = enemy.Is_Boss;
-	IsOutlined = enemy.Is_Outlined;
-	IsImmuneToNuke = enemy.Is_Immune_To_Nuke;
-	
-	strcopy(data, length, enemy.Data);
-	health = enemy.Health;
 	return enemy.Index;
 }
 

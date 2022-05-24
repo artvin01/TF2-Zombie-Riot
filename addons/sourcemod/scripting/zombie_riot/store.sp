@@ -506,29 +506,32 @@ void Store_ClientCookiesCached(int client)
 
 void Store_LoadLevelPerks(int client)
 {
-	char buffer[512];
-	static int buffers[128];
+	char buffer[1024], buffers[32][64];
 	CookieLoadout.Get(client, buffer, sizeof(buffer));
-	int length = ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
+	int length = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]));
 	
 	Item item;
 	int items = StoreItems.Length;
 	for(int i; i<length; i++)
 	{
-		if(buffers[i] > 0 && buffers[i] < items)
+		for(int a; a<items; a++)
 		{
-			StoreItems.GetArray(buffers[i], item);
-			if(item.Scale)
+			StoreItems.GetArray(a, item);
+			if(StrEqual(buffers[i], item.Name))
 			{
-				item.Scaled[client] = 1;
-				item.Owned[client] = 0;
+				if(item.Scale)
+				{
+					item.Scaled[client] = 1;
+					item.Owned[client] = 0;
+				}
+				else
+				{
+					item.Scaled[client] = 0;
+					item.Owned[client] = 1;
+				}
+				StoreItems.SetArray(a, item);
+				break;
 			}
-			else if(buffers[i] > 0)
-			{
-				item.Scaled[client] = 0;
-				item.Owned[client] = 1;
-			}
-			StoreItems.SetArray(buffers[i], item);
 		}
 	}
 	
@@ -618,7 +621,7 @@ void Store_ClientDisconnect(int client)
 
 void Store_SaveLevelPerks(int client)
 {
-	char buffer[512];
+	char buffer[1024];
 	Item item;
 	ItemInfo info;
 	int length = StoreItems.Length;
@@ -636,11 +639,11 @@ void Store_SaveLevelPerks(int client)
 			{
 				if(buffer[0])
 				{
-					Format(buffer, sizeof(buffer), "%s;%d", buffer, i);
+					Format(buffer, sizeof(buffer), "%s;%s", buffer, item.Name);
 				}
 				else
 				{
-					IntToString(i, buffer, sizeof(buffer));
+					strcopy(buffer, sizeof(buffer), item.Name);
 				}
 			}
 		}
