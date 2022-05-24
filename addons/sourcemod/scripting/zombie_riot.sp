@@ -176,7 +176,6 @@ ConVar tf_bot_quota;
 int CurrentGame;
 bool b_GameOnGoing = true;
 bool b_StoreGotReset = false;
-bool b_PlayerGotTheirCookies[MAXTF2PLAYERS];
 int CurrentCash;
 bool LastMann;
 bool EscapeMode;
@@ -198,6 +197,7 @@ Cookie CookiePlayStreak;
 int CurrentRound;
 int CurrentWave = -1;
 int StartCash;
+float RoundStartTime;
 float healing_cooldown[MAXTF2PLAYERS];
 float Damage_dealt_in_total[MAXTF2PLAYERS];
 int Healing_done_in_total[MAXTF2PLAYERS];
@@ -1057,6 +1057,7 @@ public void OnMapStart()
 		break;
 	}
 	
+	RoundStartTime = 0.0;
 	cvarTimeScale.SetFloat(1.0);
 	Waves_MapStart();
 	Music_MapStart();
@@ -1234,31 +1235,10 @@ public void OnClientPutInServer(int client)
 	if(CurrentRound && Store_PutInServer(client))
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.40);
 	
-//	if(!XP[client] && AreClientCookiesCached(client)) //Ingore this. This only bugs it out, just force it, who cares.
-	if(!b_PlayerGotTheirCookies[client])
-	{
-		if(b_StoreGotReset)
-		{
-			OnClientCookiesCached(client);
-		}
-		else
-		{
-			CreateTimer(0.1, LoadCookiesLater, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
-		}
-	}
+	if(AreClientCookiesCached(client)) //Ingore this. This only bugs it out, just force it, who cares.
+		OnClientCookiesCached(client);	
 }
 
-public Action LoadCookiesLater(Handle timer, int userid)
-{
-	int client = GetClientOfUserId(userid);
-	if(IsValidClient(client) && b_StoreGotReset)
-	{
-		b_PlayerGotTheirCookies[client] = true;
-		OnClientCookiesCached(client);	
-		return Plugin_Stop;
-	}
-	return Plugin_Continue;
-}
 //Maybe Delay it by 1 frame?
 /*
 public void SendProxyActivate(int client)
@@ -1299,14 +1279,10 @@ public void OnClientDisconnect(int client)
 	Escape_DropItem(client, false);
 	if(XP[client] > 0)
 	{
-		if(b_PlayerGotTheirCookies[client])
-		{
-			char buffer[12];
-			IntToString(XP[client], buffer, sizeof(buffer));
-			CookieXP.Set(client, buffer);
-		}
+		char buffer[12];
+		IntToString(XP[client], buffer, sizeof(buffer));
+		CookieXP.Set(client, buffer);
 	}
-	b_PlayerGotTheirCookies[client] = false;
 	XP[client] = 0;
 }
 
@@ -1344,11 +1320,10 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	*/
 	LastMann = false;
 	
-	static float delay;
-	if(delay > GetGameTime())
+	if(RoundStartTime > GetGameTime())
 		return;
 	
-	delay = GetGameTime()+0.1;
+	RoundStartTime = GetGameTime()+0.1;
 	
 	Escape_RoundStart();
 	Store_RoundStart();

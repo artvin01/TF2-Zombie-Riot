@@ -236,7 +236,8 @@ static const int RenderColors[][] =
 
 static Cookie CookieCache;
 static Cookie CookieData;
-static Cookie CookieLoadout;
+static Cookie CookieLoadoutLv;
+static Cookie CookieLoadoutInv;
 static ArrayList StoreItems;
 static int Equipped[MAXTF2PLAYERS][6];
 static bool NPCOnly[MAXTF2PLAYERS];
@@ -250,7 +251,8 @@ void Store_PluginStart()
 {
 	CookieCache = new Cookie("zr_lastgame", "The last game saved data is from", CookieAccess_Protected);
 	CookieData = new Cookie("zr_gamedata", "The last game saved data is from", CookieAccess_Protected);
-	CookieLoadout = new Cookie("zr_lastloadout", "The last loadout saved data is from", CookieAccess_Protected);
+	CookieLoadoutLv = new Cookie("zr_lastloadout_1", "The last loadout saved data is from", CookieAccess_Protected);
+	CookieLoadoutInv = new Cookie("zr_lastloadout_2", "The last loadout saved data is from", CookieAccess_Protected);
 }
 
 void Store_ConfigSetup(KeyValues map)
@@ -403,6 +405,9 @@ void Store_Reset()
 {
 	for(int c=1; c<=MaxClients; c++)
 	{
+		if(IsClientInGame(c))
+			Store_SaveLevelPerks(c);
+		
 		CashSpent[c] = 0;
 		
 		for(int i; i<sizeof(Equipped[]); i++)
@@ -506,12 +511,13 @@ void Store_ClientCookiesCached(int client)
 
 void Store_LoadLevelPerks(int client)
 {
-	char buffer[1024], buffers[32][64];
-	CookieLoadout.Get(client, buffer, sizeof(buffer));
-	int length = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+	char buffer[512], buffers[16][64];
 	
 	Item item;
 	int items = StoreItems.Length;
+	
+	CookieLoadoutLv.Get(client, buffer, sizeof(buffer));
+	int length = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]));
 	for(int i; i<length; i++)
 	{
 		for(int a; a<items; a++)
@@ -519,24 +525,61 @@ void Store_LoadLevelPerks(int client)
 			StoreItems.GetArray(a, item);
 			if(StrEqual(buffers[i], item.Name))
 			{
-				if(item.Scale)
-				{
-					item.Scaled[client] = 1;
-					item.Owned[client] = 0;
-				}
-				else
+				if(!item.Scale)
 				{
 					item.Scaled[client] = 0;
 					item.Owned[client] = 1;
+					StoreItems.SetArray(a, item);
+					
+					ItemInfo info;
+					item.GetItemInfo(0, info);
+					if(info.Classname[0])
+					{
+						int slot = TF2_GetClassnameSlot(info.Classname);
+						if(slot >= 0 && slot < sizeof(Equipped[]))
+							Equipped[client][slot] = a;
+					}
 				}
-				StoreItems.SetArray(a, item);
+				break;
+			}
+		}
+	}
+	
+	CookieLoadoutInv.Get(client, buffer, sizeof(buffer));
+	length = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+	for(int i; i<length; i++)
+	{
+		for(int a; a<items; a++)
+		{
+			StoreItems.GetArray(a, item);
+			if(StrEqual(buffers[i], item.Name))
+			{
+				if(!item.Scale)
+				{
+					item.Scaled[client] = 0;
+					item.Owned[client] = 1;
+					StoreItems.SetArray(a, item);
+					
+					ItemInfo info;
+					item.GetItemInfo(0, info);
+					if(info.Classname[0])
+					{
+						int slot = TF2_GetClassnameSlot(info.Classname);
+						if(slot >= 0 && slot < sizeof(Equipped[]))
+							Equipped[client][slot] = a;
+					}
+				}
 				break;
 			}
 		}
 	}
 	
 	if(IsClientInGame(client))
+	{
 		PrintToChat(client, "Your last equipped level perks were restored.");
+		if(IsPlayerAlive(client))
+			TF2_RegeneratePlayer(client);
+	}
 }
 
 bool Store_LoadLoadout(int client)
@@ -588,15 +631,13 @@ bool Store_LoadLoadout(int client)
 
 void Store_ClientDisconnect(int client)
 {
-	if(b_PlayerGotTheirCookies[client])
-	{
-		char buffer[16];
-		IntToString(CurrentGame, buffer, sizeof(buffer));
-		CookieCache.Set(client, buffer);
-		
-		Store_SaveLevelPerks(client);
-		Store_SaveLoadout(client);
-	}
+	char buffer[16];
+	IntToString(CurrentGame, buffer, sizeof(buffer));
+	CookieCache.Set(client, buffer);
+	
+	Store_SaveLevelPerks(client);
+	Store_SaveLoadout(client);
+	
 	CashSpent[client] = 0;
 	Equipped[client][0] = -1;
 	
@@ -621,11 +662,11 @@ void Store_ClientDisconnect(int client)
 
 void Store_SaveLevelPerks(int client)
 {
-	char buffer[1024];
+	char level[512], inv[512];
 	Item item;
 	ItemInfo info;
-	int length = StoreItems.Length;
-	for(int i; i<length; i++)
+	int length = StoreItems.Length - 1;
+	for(int i = length; i >= 0; i--)
 	{
 		StoreItems.GetArray(i, item);
 		if(item.Scaled[client] || item.Owned[client])
@@ -637,19 +678,34 @@ void Store_SaveLevelPerks(int client)
 			item.GetItemInfo(owned, info);
 			if(!info.Cost)
 			{
-				if(buffer[0])
+				if(item.TextStore[0])
 				{
-					Format(buffer, sizeof(buffer), "%s;%s", buffer, item.Name);
+					if(inv[0])
+					{
+						Format(inv, sizeof(inv), "%s;%s", inv, item.Name);
+					}
+					else
+					{
+						strcopy(inv, sizeof(inv), item.Name);
+					}
+				}
+				else if(level[0])
+				{
+					Format(level, sizeof(level), "%s;%s", level, item.Name);
 				}
 				else
 				{
-					strcopy(buffer, sizeof(buffer), item.Name);
+					strcopy(level, sizeof(level), item.Name);
 				}
 			}
 		}
 	}
 	
-	CookieLoadout.Set(client, buffer);
+	if(level[0])
+		CookieLoadoutLv.Set(client, level);
+	
+	if(inv[0])
+		CookieLoadoutInv.Set(client, inv);
 }
 
 void Store_SaveLoadout(int client)
@@ -1710,7 +1766,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 
 void Store_ApplyAttribs(int client)
 {
-	if(TeutonType[client])
+	if(TeutonType[client] || !StoreItems)
 		return;
 	
 	TF2Attrib_RemoveAll(client);
@@ -1920,6 +1976,9 @@ void Delete_Clip_again(int entity)
 
 int Store_GiveItem(int client, int slot, bool &use=true)
 {
+	if(!StoreItems)
+		return -1;
+	
 	Item item;
 	int entity = -1;
 	int length = StoreItems.Length;

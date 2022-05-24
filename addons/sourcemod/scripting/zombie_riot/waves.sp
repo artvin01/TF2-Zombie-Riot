@@ -54,7 +54,7 @@ void Waves_PluginStart()
 
 bool Waves_InFreeplay()
 {
-	return CurrentRound >= Rounds.Length;
+	return (Rounds && CurrentRound >= Rounds.Length);
 }
 
 void Waves_MapStart()
@@ -490,7 +490,9 @@ void Waves_Progress()
 		else
 		{
 			CurrentCash += round.Cash;
-			PrintToChatAll("%t","Cash Gained This Wave", round.Cash);
+			if(round.Cash)
+				PrintToChatAll("%t","Cash Gained This Wave", round.Cash);
+			
 			CurrentRound++;
 			CurrentWave = -1;
 			
@@ -937,13 +939,13 @@ public int Waves_FreeplayVote(Menu menu, MenuAction action, int item, int param2
 	return 0;
 }
 				
-int Waves_GetNextEnemy(Enemy enemy)
+bool Waves_GetNextEnemy(Enemy enemy)
 {
 	if(Enemies.Empty)
-		return 0;
+		return false;
 	
 	Enemies.PopArray(enemy);
-	return enemy.Index;
+	return true;
 }
 
 bool Waves_Started()
