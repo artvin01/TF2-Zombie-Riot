@@ -3380,7 +3380,7 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 			
 		if (RaidBossActive == pThis)
 		{
-			//Waves_ClearWaves();
+			Raidboss_Clean_Everyone();
 		}
 		NPCDeath(pThis);
 		/*
@@ -5855,6 +5855,24 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_PlayHurtAnimation[entity] = false;
 }
 
+public void Raidboss_Clean_Everyone()
+{
+	int base_boss;
+	while((base_boss=FindEntityByClassname(base_boss, "base_boss")) != -1)
+	{
+		if(IsValidEntity(base_boss) && base_boss > 0)
+		{
+			if(GetEntProp(base_boss, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			{
+				if(!b_Map_BaseBoss_No_Layers[base_boss] && RaidBossActive != base_boss) //Make sure it doesnt actually kill map base_bosses
+				{
+					SDKHooks_TakeDamage(base_boss, 0, 0, 99999999.0, DMG_BLAST); //Kill it so it triggers the neccecary shit.
+					SDKHooks_TakeDamage(base_boss, 0, 0, 99999999.0, DMG_BLAST); //Kill it so it triggers the neccecary shit.
+				}
+			}
+		}
+	}
+}
 //NORMAL
 
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"

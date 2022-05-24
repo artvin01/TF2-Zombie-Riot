@@ -266,8 +266,6 @@ void Waves_RoundStart()
 	Enemies = new ArrayStack(sizeof(Enemy));
 	
 	Waves_RoundEnd();
-	CurrentRound = 0;
-	CurrentWave = -1;
 	
 	CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 	/*

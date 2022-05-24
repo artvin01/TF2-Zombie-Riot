@@ -272,6 +272,8 @@ methodmap TrueFusionWarrior < CClotBody
 		
 		npc.m_bThisNpcIsABoss = true;
 		
+		Raidboss_Clean_Everyone();
+		
 		SDKHook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamage, TrueFusionWarrior_ClotDamaged);
 		

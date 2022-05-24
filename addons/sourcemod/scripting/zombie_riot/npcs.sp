@@ -185,10 +185,14 @@ public Action GetClosestSpawners(Handle timer)
 				}				
 			}
 		}
+		if(IsValidEntity(ClosestTarget))
+		{
+			f_ClosestSpawnerLessCooldown[ClosestTarget] = float(Repeats) / 2.0;
+			b_SpawnIsCloseEnough[ClosestTarget] = true;
+			i_Spawner_Indexes[Repeats] = ClosestTarget;
+		}
+		ClosestTarget = -1;
 		TargetDistance = 0.0;
-		f_ClosestSpawnerLessCooldown[ClosestTarget] = 0.25 * float(Repeats * 2);
-		b_SpawnIsCloseEnough[ClosestTarget] = true;
-		i_Spawner_Indexes[Repeats] = ClosestTarget;
 	}
 	
 	return Plugin_Continue;
@@ -282,27 +286,27 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	{
 		case 1:
 		{
-			Active_Spawners_Calculate = 1.90;
+			Active_Spawners_Calculate = 1.95;
 		}
 		case 2:
 		{
-			Active_Spawners_Calculate = 1.8;
+			Active_Spawners_Calculate = 1.85;
 		}
 		case 3:
 		{
-			Active_Spawners_Calculate = 1.7;
+			Active_Spawners_Calculate = 1.8;
 		}
 		case 4:
 		{
-			Active_Spawners_Calculate = 1.5;
+			Active_Spawners_Calculate = 1.7;
 		}
 		case 5:
 		{
-			Active_Spawners_Calculate = 1.4;
+			Active_Spawners_Calculate = 1.6;
 		}
 		case 6:
 		{
-			Active_Spawners_Calculate = 1.35;
+			Active_Spawners_Calculate = 1.5;
 		}
 	}
 	
@@ -404,7 +408,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			if(index)
 			{
 				entity = list.Get(GetRandomInt(0, entity-1));
-				f_SpawnerCooldown[entity] = gameTime+(2.0 - (Active_Spawners_Calculate * f_ClosestSpawnerLessCooldown[entity]));
+				f_SpawnerCooldown[entity] = gameTime+(2.0 - (Active_Spawners_Calculate / f_ClosestSpawnerLessCooldown[entity]));
 				
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
@@ -813,11 +817,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if(attacker < 1 ||/* attacker > MaxClients ||*/ victim == attacker)
 		return Plugin_Continue;
 		
-	if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+	if(HasEntProp(attacker,Prop_Send,"m_iTeamNum"))
 	{
-		damage = 0.0;
-		return Plugin_Handled;
-	}	
+		if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+		{
+			damage = 0.0;
+			return Plugin_Handled;
+		}	
+	}
 	
 	
 	/*
