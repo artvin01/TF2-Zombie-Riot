@@ -1120,7 +1120,7 @@ public void OnMapEnd()
 
 public void OnConfigsExecuted()
 {
-	Configs_ConfigsExecuted();
+	RequestFrame(Configs_ConfigsExecuted);
 /*	
 	if(Reload_Plugin_Temp_Fix)
 	{
@@ -1132,22 +1132,6 @@ public void OnConfigsExecuted()
 		Reload_Plugin_Temp_Fix = true;
 	}
 */
-	ConVar_Enable();
-	
-	if(EscapeMode)
-	{
-		tf_bot_quota.IntValue = 12;
-	}
-	else
-	{
-		tf_bot_quota.IntValue = 1;
-	}
-	
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-			OnClientPutInServer(client);
-	}
 }
 public Action OnReloadBlockNav(int args)
 {

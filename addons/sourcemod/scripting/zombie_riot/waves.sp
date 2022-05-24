@@ -97,6 +97,7 @@ bool Waves_CallVote(int client)
 		for(int i; i<length; i++)
 		{
 			Voting.GetArray(i, vote);
+			vote.Name[0] = CharToUpper(vote.Name[0]);
 			menu.AddItem(vote.Config, vote.Name);
 		}
 		
