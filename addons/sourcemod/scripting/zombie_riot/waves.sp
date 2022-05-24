@@ -129,6 +129,8 @@ public int Waves_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 
 void Waves_SetupVote(KeyValues map)
 {
+	Cooldown = 0.0;
+	
 	if(Voting)
 	{
 		delete Voting;
@@ -770,7 +772,8 @@ void Waves_Progress()
 		else
 		{
 			CurrentCash += round.Cash;
-			PrintToChatAll("%t","Cash Gained This Wave", round.Cash);
+			if(round.Cash)
+				PrintToChatAll("%t","Cash Gained This Wave", round.Cash);
 			CurrentRound++;
 			CurrentWave = -1;
 			Rounds.GetArray(length, round);

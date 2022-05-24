@@ -233,9 +233,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	}
 	limit += RoundToNearest(f_limit);
 	if(!b_GameOnGoing) //no spawn if the round is over
-	{
 		return;
-	}
 	
 	if(limit >= NPC_HARD_LIMIT)
 		limit = NPC_HARD_LIMIT;
