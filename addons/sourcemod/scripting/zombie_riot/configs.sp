@@ -13,7 +13,7 @@ enum struct WeaponData
 
 static ArrayList WeaponList;
 
-void Configs_ConfigsExecuted()
+public void Configs_ConfigsExecuted()
 {
 	char mapname[64], buffer[PLATFORM_MAX_PATH];
 	GetCurrentMap(mapname, sizeof(mapname));
@@ -82,6 +82,23 @@ void Configs_ConfigsExecuted()
 		}
 	} while(kv.GotoNextKey());
 	delete kv;
+	
+	ConVar_Enable();
+	
+	if(EscapeMode)
+	{
+		tf_bot_quota.IntValue = 12;
+	}
+	else
+	{
+		tf_bot_quota.IntValue = 1;
+	}
+	
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+			OnClientPutInServer(client);
+	}
 }
 
 void Config_CreateDescription(const char[] classname, int[] attrib, float[] value, int attribs, char[] buffer, int length)
