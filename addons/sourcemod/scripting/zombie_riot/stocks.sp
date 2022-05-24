@@ -2446,3 +2446,39 @@ stock int MaxArmorCalculation(int value, int client, float multiplyier)
 	return (RoundToCeil(float(Armor_Max) * multiplyier));
 	
 }
+
+//	f_TimerTickCooldownRaid = 0.0;
+//	f_TimerTickCooldownShop = 0.0;
+stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
+{
+	if(NormalTimer)
+	{
+		if(f_TimerTickCooldownShop < GetGameTime())
+		{
+			f_TimerTickCooldownShop = GetGameTime() + 0.9;
+			EmitSoundToAll("misc/halloween/clock_tick.wav", _, SNDCHAN_AUTO, _, _, 1.0);
+		}
+	}
+	if(RaidTimer)
+	{
+		if(f_TimerTickCooldownRaid < GetGameTime())
+		{
+			float Timer_Show = RaidModeTime - GetGameTime();
+		
+			if(Timer_Show < 0.0)
+				Timer_Show = 0.0;
+				
+			f_TimerTickCooldownRaid = GetGameTime() + 9.9;
+			EmitSoundToAll("mvm/mvm_bomb_warning.wav", _, SNDCHAN_AUTO, _, _, 1.0);
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+				{
+					SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "You have %.1f Seconds left to kill the Raid!", Timer_Show);	
+				}
+			}
+		}
+	}
+}

@@ -183,6 +183,9 @@ bool EscapeModeForNpc;
 
 bool RaidMode; 							//Is this raidmode?
 float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
+float RaidModeTime = 0.0;
+float f_TimerTickCooldownRaid = 0.0;
+float f_TimerTickCooldownShop = 0.0;
 int RaidBossActive;					//Is the raidboss alive, if yes, what index is the raid?
 
 
@@ -964,6 +967,10 @@ public Action Timer_Temp(Handle timer)
 {
 	if(RaidBossActive)
 	{
+		if (RaidModeTime > GetGameTime() && RaidModeTime < GetGameTime() + 60.0)
+		{
+			PlayTickSound(true, false);
+		}
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client))
@@ -971,6 +978,10 @@ public Action Timer_Temp(Handle timer)
 				Calculate_And_Display_hp(client, RaidBossActive, 0.0, true);
 			}
 		}
+	}
+	if (GetWaveSetupCooldown() > GetGameTime() && GetWaveSetupCooldown() < GetGameTime() + 10.0)
+	{
+		PlayTickSound(false, true);
 	}
 	NPC_SpawnNext(false, false, false);
 	return Plugin_Continue;
@@ -1036,6 +1047,8 @@ public void OnMapStart()
 
 	PrecacheSound("zombiesurvival/headshot1.wav");
 	PrecacheSound("zombiesurvival/headshot2.wav");
+	PrecacheSound("misc/halloween/clock_tick.wav");
+	PrecacheSound("mvm/mvm_bomb_warning.wav");
 	
 	MapStartResetAll();
 	EscapeMode = false;
@@ -3120,4 +3133,7 @@ public void MapStartResetAll()
 	Wand_Fire_Spell_ClearAll();
 	Wand_Default_Spell_ClearAll();
 	Wand_Necro_Spell_ClearAll();
+	RaidModeTime = 0.0;
+	f_TimerTickCooldownRaid = 0.0;
+	f_TimerTickCooldownShop = 0.0;
 }

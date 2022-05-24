@@ -772,7 +772,7 @@ public void Func_Breakable_Post(int victim, int attacker, int inflictor, float d
 	{
 		f_CooldownForHurtHud[attacker] = GetGameTime() + 0.1;
 		
-		SetHudTextParams(-1.0, 0.2, 1.0, 255, 200, 200, 255, 0, 0.01, 0.01, 2.0);
+		SetHudTextParams(-1.0, 0.2, 1.0, 255, 200, 200, 255, 0, 0.01, 0.01);
 		ShowSyncHudText(attacker, SyncHud, "%d", Health);
 	}
 }
@@ -799,7 +799,7 @@ public void Map_BaseBoss_Damage_Post(int victim, int attacker, int inflictor, fl
 	{
 		f_CooldownForHurtHud[attacker] = GetGameTime() + 0.1;
 		
-		SetHudTextParams(-1.0, 0.2, 1.0, 255, 200, 200, 255, 0, 0.01, 0.01, 2.0);
+		SetHudTextParams(-1.0, 0.2, 1.0, 255, 200, 200, 255, 0, 0.01, 0.01);
 		ShowSyncHudText(attacker, SyncHud, "%d", Health);
 	}
 }
@@ -1142,13 +1142,18 @@ public void Calculate_And_Display_hp(int attacker, int victim, float damage, boo
 		
 		if(RaidBossActive != victim)
 		{
-			SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01, 2.0);
+			SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
 			ShowSyncHudText(attacker, SyncHud, "%s\n%d / %d", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
 		}
 		else
 		{
-			SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01, 2.0);
-			ShowSyncHudText(attacker, SyncHudRaid, "[Raidboss | Power : %.1f%%]\n%s\n%d / %d", RaidModeScaling * 100, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+			float Timer_Show = RaidModeTime - GetGameTime();
+		
+			if(Timer_Show < 0.0)
+				Timer_Show = 0.0;
+			
+			SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
+			ShowSyncHudText(attacker, SyncHudRaid, "[Raidboss | Power : %.1f%% | TIME: s%.1f]\n%s\n%d / %d", RaidModeScaling * 100, RaidModeTime, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
 		}
 	}	
 }

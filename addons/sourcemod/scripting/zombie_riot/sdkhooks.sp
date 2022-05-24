@@ -313,8 +313,6 @@ public void OnPostThink(int client)
 		 
 		red = 255 - red;
 		
-		SetHudTextParams(-1.0, 0.85, 3.01, red, green, blue, 255);
-		
 		if(red > 255)
 			red = 255;
 		
@@ -326,6 +324,9 @@ public void OnPostThink(int client)
 			
 		if(blue < 0)
 			blue = 0;
+		
+		SetHudTextParams(-1.0, 0.85, 3.01, red, green, blue, 255);
+		
 			
 			
 		SetGlobalTransTarget(client);
@@ -561,7 +562,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 	if(damagetype & DMG_FALL)
 	{
-		if(i_SoftShoes[victim] == 1)
+		if(i_SoftShoes[victim] == 1 || RaidBossActive)
 		{
 			Replicated_Damage *= 0.5;
 			damage *= 0.5;

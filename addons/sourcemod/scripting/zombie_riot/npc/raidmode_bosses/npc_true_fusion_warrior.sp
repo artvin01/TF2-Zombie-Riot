@@ -272,6 +272,12 @@ methodmap TrueFusionWarrior < CClotBody
 		
 		npc.m_bThisNpcIsABoss = true;
 		
+		RaidModeTime = GetGameTime() + 160.0;
+		
+		float RaidModeScaling = float(ZR_GetWaveCount()+1);
+		
+		RaidModeScaling *= 0.2; //abit low, inreacing
+		
 		Raidboss_Clean_Everyone();
 		
 		SDKHook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
@@ -367,6 +373,14 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
+	}
+	if(RaidModeTime < GetGameTime())
+	{
+		int entity = CreateEntityByName("game_round_win"); //You loose.
+		DispatchKeyValue(entity, "force_map_reset", "1");
+		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+		DispatchSpawn(entity);
+		AcceptEntityInput(entity, "RoundWin");
 	}
 	
 	npc.m_flNextThinkTime = GetGameTime() + 0.10;
@@ -585,7 +599,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				{
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 10.0 * RaidModeScaling, 700.0, _, 1.0);	
+					npc.FireRocket(vPredictedPos, 4.0 * RaidModeScaling, 700.0, _, 1.0);	
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
@@ -602,7 +616,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 10.0 * RaidModeScaling, 700.0, _, 1.0);
+					npc.FireRocket(vPredictedPos, 4.0 * RaidModeScaling, 700.0, _, 1.0);
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
@@ -682,10 +696,10 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 								if(target > 0) 
 								{
 									if(!npc.Anger)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0 * RaidModeScaling, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 7.0 * RaidModeScaling, DMG_SLASH|DMG_CLUB);
 										
 									if(npc.Anger)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0 * RaidModeScaling, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 8.0 * RaidModeScaling, DMG_SLASH|DMG_CLUB);
 									
 									// Hit particle
 									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
@@ -820,8 +834,8 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 	FusionWarrior_BEAM_TicksActive[client] = 0;
 
 	FusionWarrior_BEAM_CanUse[client] = true;
-	FusionWarrior_BEAM_CloseDPT[client] = 25.0;
-	FusionWarrior_BEAM_FarDPT[client] = 15.0;
+	FusionWarrior_BEAM_CloseDPT[client] = 10.0 * RaidModeScaling;
+	FusionWarrior_BEAM_FarDPT[client] = 8.0 * RaidModeScaling;
 	FusionWarrior_BEAM_MaxDistance[client] = 2000;
 	FusionWarrior_BEAM_BeamRadius[client] = 45;
 	FusionWarrior_BEAM_ColorHex[client] = ParseColor("EEDD44");
@@ -865,8 +879,6 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 
 	CreateTimer(5.0, TrueFusionWarrior_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, TrueFusionWarrior_TBB_Tick);
-	
-	CreateTimer(999.9, Timer_RemoveEntity, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 }
 
 
@@ -881,8 +893,8 @@ void TrueFusionWarrior_TBB_Ability(int client)
 	FusionWarrior_BEAM_TicksActive[client] = 0;
 
 	FusionWarrior_BEAM_CanUse[client] = true;
-	FusionWarrior_BEAM_CloseDPT[client] = 17.0;
-	FusionWarrior_BEAM_FarDPT[client] = 10.0;
+	FusionWarrior_BEAM_CloseDPT[client] = 7.0 * RaidModeScaling;
+	FusionWarrior_BEAM_FarDPT[client] = 6.0 * RaidModeScaling;
 	FusionWarrior_BEAM_MaxDistance[client] = 2000;
 	FusionWarrior_BEAM_BeamRadius[client] = 25;
 	FusionWarrior_BEAM_ColorHex[client] = ParseColor("FFFFFF");
@@ -927,7 +939,6 @@ void TrueFusionWarrior_TBB_Ability(int client)
 	CreateTimer(5.0, TrueFusionWarrior_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, TrueFusionWarrior_TBB_Tick);
 	
-	CreateTimer(999.9, Timer_RemoveEntity, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 }
 
 public Action TrueFusionWarrior_TBB_Timer(Handle timer, int client)
@@ -1103,7 +1114,7 @@ public Action TrueFusionWarrior_TBB_Tick(int client)
 					if (damage < 0)
 						damage *= -1.0;
 
-					SDKHooks_TakeDamage(victim, client, client, (damage/6) * RaidModeScaling, DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
 				}
 			}
 			
@@ -1303,10 +1314,10 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const color[4]
 		else
 		{
 			if(!b_Anger[client])
-				makeexplosion(client, client, startPosition, "", 90, RoundToCeil(100.0 * RaidModeScaling));
+				makeexplosion(client, client, startPosition, "", 90, RoundToCeil(20.0 * RaidModeScaling));
 				
 			else if(b_Anger[client])
-				makeexplosion(client, client, startPosition, "", 100, RoundToCeil(115.0 * RaidModeScaling));
+				makeexplosion(client, client, startPosition, "", 100, RoundToCeil(25.0 * RaidModeScaling));
 				
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
