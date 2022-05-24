@@ -302,6 +302,8 @@ void Waves_RoundEnd()
 	InSetup = true;
 //	InFreeplay = false;
 	WaveIntencity = 0;
+	CurrentRound = 0;
+	CurrentWave = -1;
 }
 
 public Action Waves_RoundStartTimer(Handle timer)

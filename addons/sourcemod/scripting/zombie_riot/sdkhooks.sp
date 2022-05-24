@@ -353,40 +353,44 @@ public void OnPostThink(int client)
 		if(Armor_CD <= 0.0)
 			Armor_CD = 0.0;
 		*/
-		if(!TeutonType[client])
+		
+		if(Waves_Started())
 		{
-			if(!EscapeMode)
+			if(!TeutonType[client])
 			{
-				PrintKeyHintText(client, "%t\n%t\n%t\n%t\n%t\n%t\n%t\n%t",
-				"Credits_Menu", CurrentCash-CashSpent[client], Resupplies_Supplied[client] * 10,	
-				"Wave", CurrentRound+1, CurrentWave+1,
-				"Armor Counter", Armor_Charge[client],
-				"Ammo Crate Supplies", Ammo_Count_Ready[client], //This bugs in russian
-				"Healing Done", Healing_done_in_total[client],
-				"Damage Dealt", Damage_dealt_in_total[client],
-				PerkNames[i_CurrentEquippedPerk[client]],
-				"Zombies Left", Zombies_Currently_Still_Ongoing);
+				if(!EscapeMode)
+				{
+					PrintKeyHintText(client, "%t\n%t\n%t\n%t\n%t\n%t\n%t\n%t",
+					"Credits_Menu", CurrentCash-CashSpent[client], Resupplies_Supplied[client] * 10,	
+					"Wave", CurrentRound+1, CurrentWave+1,
+					"Armor Counter", Armor_Charge[client],
+					"Ammo Crate Supplies", Ammo_Count_Ready[client], //This bugs in russian
+					"Healing Done", Healing_done_in_total[client],
+					"Damage Dealt", Damage_dealt_in_total[client],
+					PerkNames[i_CurrentEquippedPerk[client]],
+					"Zombies Left", Zombies_Currently_Still_Ongoing);
+				}
+				else
+				{
+					PrintKeyHintText(client, "%t\n%t\n%t",
+					"Armor Counter", Armor_Charge[client],
+					"Healing Done", Healing_done_in_total[client],
+					"Damage Dealt", Damage_dealt_in_total[client]);/*,
+					PerkNames[i_CurrentEquippedPerk[client]]);		*/	
+				}
+			}
+			else if (TeutonType[client] == TEUTON_DEAD)
+			{
+				PrintKeyHintText(client, "%t\n%t\n%t","You Died Teuton",
+											"Wave", CurrentRound+1, CurrentWave+1,
+											"Zombies Left", Zombies_Currently_Still_Ongoing);
 			}
 			else
 			{
-				PrintKeyHintText(client, "%t\n%t\n%t",
-				"Armor Counter", Armor_Charge[client],
-				"Healing Done", Healing_done_in_total[client],
-				"Damage Dealt", Damage_dealt_in_total[client]);/*,
-				PerkNames[i_CurrentEquippedPerk[client]]);		*/	
+				PrintKeyHintText(client, "%t\n%t\n%t","You Wait Teuton",
+											"Wave", CurrentRound+1, CurrentWave+1,
+											"Zombies Left", Zombies_Currently_Still_Ongoing);
 			}
-		}
-		else if (TeutonType[client] == TEUTON_DEAD)
-		{
-			PrintKeyHintText(client, "%t\n%t\n%t","You Died Teuton",
-										"Wave", CurrentRound+1, CurrentWave+1,
-										"Zombies Left", Zombies_Currently_Still_Ongoing);
-		}
-		else
-		{
-			PrintKeyHintText(client, "%t\n%t\n%t","You Wait Teuton",
-										"Wave", CurrentRound+1, CurrentWave+1,
-										"Zombies Left", Zombies_Currently_Still_Ongoing);
 		}
 	}
 	if(f_DelayLookingAtHud[client] < GetGameTime())
