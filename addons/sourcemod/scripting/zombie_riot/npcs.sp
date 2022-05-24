@@ -402,7 +402,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			if(index)
 			{
 				entity = list.Get(GetRandomInt(0, entity-1));
-				f_SpawnerCooldown[entity] = gameTime+(2.0 - (Active_Spawners_Calculate * f_ClosestSpawnerLessCooldown[entity]);
+				f_SpawnerCooldown[entity] = gameTime+(2.0 - (Active_Spawners_Calculate * f_ClosestSpawnerLessCooldown[entity]));
 				
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
@@ -1130,8 +1130,16 @@ public void Calculate_And_Display_hp(int attacker, int victim, float damage, boo
 			blue = 0;
 		}
 		
-		SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01, 2.0);
-		ShowSyncHudText(attacker, SyncHud, "%s\n%d / %d", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+		if(RaidBossActive != victim)
+		{
+			SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01, 2.0);
+			ShowSyncHudText(attacker, SyncHud, "%s\n%d / %d", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+		}
+		else
+		{
+			SetHudTextParams(-1.0, 0.12, 1.0, red, green, blue, 255, 0, 0.01, 0.01, 2.0);
+			ShowSyncHudText(attacker, SyncHud, "[Raidboss | Power : %.1f%%]\n%s\n%d / %d", RaidModeScaling * 100, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+		}
 	}	
 }
 void DoMeleeAnimationFrameLater(int attacker)

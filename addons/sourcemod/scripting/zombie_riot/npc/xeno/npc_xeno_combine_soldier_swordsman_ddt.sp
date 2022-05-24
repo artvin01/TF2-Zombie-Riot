@@ -222,9 +222,16 @@ public void XenoCombineDDT_ClotThink(int iNPC)
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + 0.04;
+	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
+				
+	if(npc.m_blPlayHurtAnimation)
+	{
+		npc.AddGesture("ACT_GESTURE_FLINCH_STOMACH", false);
+		npc.m_blPlayHurtAnimation = false;
+		npc.PlayHurtSound();
+	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime())
 	{
@@ -380,13 +387,8 @@ public Action XenoCombineDDT_ClotDamaged(int victim, int &attacker, int &inflict
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + 0.25;
-		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD");
-		npc.PlayHurtSound();
-//		float startPosition[3];
-//		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
-//		startPosition[2] += 53;
-//		npc.DispatchParticleEffect(npc.index, "BuildSparksMetalCallback", startPosition, NULL_VECTOR, NULL_VECTOR);
+		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_blPlayHurtAnimation = true;
 	}
 		
 	return Plugin_Changed;

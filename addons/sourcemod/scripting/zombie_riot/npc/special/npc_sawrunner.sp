@@ -161,9 +161,15 @@ public void SawRunner_ClotThink(int iNPC)
 	//	return;
 	}
 	
-//	npc.m_flNextDelayTime = GetGameTime() + 0.04;
+//	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
+			
+	if(npc.m_blPlayHurtAnimation)
+	{
+		npc.AddGesture("ACT_HURT", false);
+		npc.m_blPlayHurtAnimation = false;
+	}
 	
 	if(npc.m_flAttackHappens_bullshit >= GetGameTime())
 	{
@@ -256,7 +262,7 @@ public void SawRunner_ClotThink(int iNPC)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
-						if (npc.DoSwingTracePlayerOnly(swingTrace, PrimaryThreatIndex, _, _, _, 1))
+						if (npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, _, _, _, 1, 1))
 							{
 								
 								int target = TR_GetEntityIndex(swingTrace);	
@@ -321,11 +327,9 @@ public Action SawRunner_ClotDamaged(int victim, int &attacker, int &inflictor, f
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + 0.25;
-		npc.AddGesture("ACT_HURT");
-	//	npc.PlayHurtSound();
+		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_blPlayHurtAnimation = true;
 	}
-	
 	
 	return Plugin_Changed;
 }

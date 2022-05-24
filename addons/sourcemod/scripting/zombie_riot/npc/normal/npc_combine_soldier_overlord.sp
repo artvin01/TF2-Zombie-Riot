@@ -238,9 +238,15 @@ public void CombineOverlord_ClotThink(int iNPC)
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + 0.04;
+	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
+	
+	if(npc.m_blPlayHurtAnimation)
+	{
+		npc.m_blPlayHurtAnimation = false;
+		npc.PlayHurtSound();
+	}
 	
 	//Think throttling
 	if(npc.m_flNextThinkTime > GetGameTime()) {
@@ -517,10 +523,8 @@ public Action CombineOverlord_ClotDamaged(int victim, int &attacker, int &inflic
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + 0.25;
-	//	npc.AddGesture("OVERLORD_STAGGER");
-		npc.PlayHurtSound();
-		
+		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_blPlayHurtAnimation = true;
 	}
 	
 	if(npc.m_flAngerDelay > GetGameTime())

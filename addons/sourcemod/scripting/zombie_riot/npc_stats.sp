@@ -1,6 +1,10 @@
 
 #define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_59.mdl"
 
+#define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
+
+#define DEFAULT_HURTDELAY 0.35 //Make it 0 for now
+
 //Arrays for npcs!
 bool b_DissapearOnDeath[MAXENTITIES];
 bool b_IsGiant[MAXENTITIES];
@@ -95,7 +99,7 @@ float fl_StandStill[MAXENTITIES];
 float fl_GrappleCooldown[MAXENTITIES];
 float fl_HookDamageTaken[MAXENTITIES];
 
-
+bool b_PlayHurtAnimation[MAXENTITIES];
 bool b_follow[MAXENTITIES];
 bool b_movedelay_walk[MAXENTITIES];
 bool b_movedelay_run[MAXENTITIES];
@@ -172,6 +176,9 @@ static int g_particleImpactRubber;
 
 #define BOSS_ZOMBIE_SOUNDLEVEL	 90
 #define BOSS_ZOMBIE_VOLUME	 1.0
+
+#define RAIDBOSS_ZOMBIE_SOUNDLEVEL	 95
+#define RAIDBOSSBOSS_ZOMBIE_VOLUME	 1.0
 
 
 char g_GibSound[][] = {
@@ -645,6 +652,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], c
 		{
 			return SawRunner(client, vecPos, vecAng);
 		}
+		case RAIDMODE_TRUE_FUSION_WARRIOR:
+		{
+			return TrueFusionWarrior(client, vecPos, vecAng);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1033,6 +1044,10 @@ public void NPCDeath(int entity)
 		{
 			SawRunner_NPCDeath(entity);
 		}
+		case RAIDMODE_TRUE_FUSION_WARRIOR:
+		{
+			TrueFusionWarrior_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1168,6 +1183,7 @@ public void OnMapStart_NPC_Base()
 	Bad_MapStart();
 	AltMedicApprenticeMage_OnMapStart_NPC();
 	SawRunner_OnMapStart_NPC();
+	TrueFusionWarrior_OnMapStart();
 	
 }
 
@@ -1215,6 +1231,7 @@ Handle g_hSDKWorldSpaceCenter;
 Handle g_hStudio_FindAttachment;
 Handle g_hGetAttachment;
 Handle g_hAddGesture;
+Handle g_hRestartGesture;
 Handle g_hIsPlayingGesture;
 Handle g_hFindBodygroupByName;
 Handle g_hSetBodyGroup;
@@ -1345,7 +1362,8 @@ methodmap CClotBody
 						bool Ally = false,
 						bool Ally_Invince = false,
 						bool isGiant = false,
-						bool IgnoreBuildings = false)
+						bool IgnoreBuildings = false,
+						bool IsRaidBoss = false)
 	{
 		int npc = CreateEntityByName("base_boss");
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
@@ -1399,7 +1417,7 @@ methodmap CClotBody
 		if(!Ally)
 		{
 			NPC_AddToArray(npc);
-			if(IgnoreBuildings)
+			if(IgnoreBuildings || RaidBossActive) //During an active raidboss, make sure that they ignore barricades
 			{
 				list.Push(DHookRaw(g_hShouldCollideWithAllyEnemyIngoreBuilding,   false, pLocomotion));
 			}
@@ -1546,7 +1564,7 @@ methodmap CClotBody
 		
 		HeadcrabZombie CreatePathfinderIndex = view_as<HeadcrabZombie>(npc);
 		
-		CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.4, 1.75); //Global.
+		CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, IsRaidBoss ? 0.1 : 0.4, 1.75); //Global.
 		
 		return view_as<CClotBody>(npc);
 	}
@@ -2042,6 +2060,11 @@ methodmap CClotBody
 		public get()							{ return fl_HeadshotCooldown[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_HeadshotCooldown[this.index] = TempValueForProperty; }
 	}
+	property bool m_blPlayHurtAnimation
+	{
+		public get()							{ return b_PlayHurtAnimation[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_PlayHurtAnimation[this.index] = TempValueForProperty; }
+	}
 	property bool m_fbGunout
 	{
 		public get()							{ return b_Gunout[this.index]; }
@@ -2397,13 +2420,20 @@ methodmap CClotBody
 			
 		return SDKCall(g_hLookupActivity, pStudioHdr, activity);
 	}
-	public void AddGesture(const char[] anim)
+	public void AddGesture(const char[] anim, bool cancel_animation = true)
 	{
 		int iSequence = this.LookupActivity(anim);
 		if(iSequence < 0)
 			return;
 			
-		SDKCall(g_hAddGesture, this.index, iSequence, true);
+		if(cancel_animation)
+		{
+			SDKCall(g_hRestartGesture, this.index, iSequence, true, true); //This is better, it just restarts the sequence instead, if its there or already playing, basically like below but better
+		}
+		else
+		{
+			SDKCall(g_hAddGesture, this.index, iSequence, true);
+		}
 	}
 	public bool IsPlayingGesture(const char[] anim)
 	{
@@ -2529,7 +2559,7 @@ methodmap CClotBody
 		
 		return item;
 	}
-	public bool DoSwingTracePlayerOnly(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0, int Npc_type = 0)
+	public bool DoSwingTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0, int Npc_type = 0, int Ignore_Buildings = 0)
 	{
 		switch(Npc_type)
 		{
@@ -2568,70 +2598,25 @@ methodmap CClotBody
 	//	TE_SetupBeamPoints(vecSwingStart, vecSwingEnd, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
 	//	TE_SendToAll();
 		
+		if(Ignore_Buildings && RaidBossActive)
+		{
+			RaidBossActive = 50000;
+		}
 		// See if we hit anything.
-		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, BulletAndMeleeTracePlayerOnly, this.index );
+		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, RaidBossActive ? BulletAndMeleeTracePlayerOnly : BulletAndMeleeTrace, this.index );
 		if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
 		{
 			delete trace;
-			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID | CONTENTS_SOLID ), BulletAndMeleeTracePlayerOnly, this.index );
+			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID | CONTENTS_SOLID ), RaidBossActive ? BulletAndMeleeTracePlayerOnly : BulletAndMeleeTrace, this.index );
 			if ( TR_GetFraction(trace) < 1.0)
 			{
 				// This is the point on the actual surface (the hull could have hit space)
 				TR_GetEndPosition(vecSwingEnd, trace);	
 			}
 		}
-		return ( TR_GetFraction(trace) < 1.0 );
-	}
-	public bool DoSwingTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0, int Npc_type = 0)
-	{
-		switch(Npc_type)
+		if(Ignore_Buildings && RaidBossActive == 50000)
 		{
-			case 1: //giants
-			{
-				vecSwingMaxs = { 100.0, 100.0, 150.0 };
-				vecSwingMins = { -100.0, -100.0, -150.0 };
-			}
-			case 2: //Ally Invinceable 
-			{
-				vecSwingMaxs = { 250.0, 250.0, 250.0 };
-				vecSwingMins = { -250.0, -250.0, -250.0 };
-			}
-		}
-		
-		float eyePitch[3];
-		GetEntPropVector(this.index, Prop_Data, "m_angRotation", eyePitch);
-		
-		float vecForward[3], vecRight[3], vecTarget[3];
-		
-		vecTarget = WorldSpaceCenter(target);
-		MakeVectorFromPoints(WorldSpaceCenter(this.index), vecTarget, vecForward);
-		GetVectorAngles(vecForward, vecForward);
-		vecForward[1] = eyePitch[1];
-		GetAngleVectors(vecForward, vecForward, vecRight, vecTarget);
-		
-		float vecSwingStart[3]; vecSwingStart = GetAbsOrigin(this.index);
-		
-		vecSwingStart[2] += vecSwingStartOffset;
-		
-		float vecSwingEnd[3];
-		vecSwingEnd[0] = vecSwingStart[0] + vecForward[0] * vecSwingMaxs[0];
-		vecSwingEnd[1] = vecSwingStart[1] + vecForward[1] * vecSwingMaxs[1];
-		vecSwingEnd[2] = vecSwingStart[2] + vecForward[2] * vecSwingMaxs[2];
-		
-	//	TE_SetupBeamPoints(vecSwingStart, vecSwingEnd, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
-	//	TE_SendToAll();
-		
-		// See if we hit anything.
-		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, this.index );
-		if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
-		{
-			delete trace;
-			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID | CONTENTS_SOLID ), BulletAndMeleeTrace, this.index );
-			if ( TR_GetFraction(trace) < 1.0)
-			{
-				// This is the point on the actual surface (the hull could have hit space)
-				TR_GetEndPosition(vecSwingEnd, trace);	
-			}
+			RaidBossActive = 0;
 		}
 		return ( TR_GetFraction(trace) < 1.0 );
 	}
@@ -3187,6 +3172,16 @@ public void NPC_Base_InitGamedata()
 	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain); 
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
 	if((g_hAddGesture = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimatingOverlay::AddGesture");
+	
+	//( Activity activity, bool addifmissing /*=true*/, bool autokill /*=true*/ )
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimatingOverlay::RestartGesture");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);	
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	if((g_hRestartGesture = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimatingOverlay::RestartGesture");
+	
 	
 	//CBaseAnimatingOverlay::IsPlayingGesture( Activity activity )
 	StartPrepSDKCall(SDKCall_Entity);
@@ -4285,7 +4280,7 @@ stock int GetClosestTarget(int entity, bool Onlyplayers = false, float fldistanc
 			}
 		}
 	}
-	if(!Onlyplayers)
+	if(!Onlyplayers && !RaidBossActive) //Make sure that they completly ignore barricades during raids
 	{
 		for (int pass = 0; pass <= 2; pass++)
 		{
@@ -5299,7 +5294,7 @@ public MRESReturn IBody_StartActivity(Address pThis, Handle hReturn, Handle hPar
 	return MRES_Supercede; 
 }
 
-stock float[] PredictSubjectPosition(CClotBody npc, int subject)
+stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lead = 0.0)
 {
 	float botPos[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", botPos);
@@ -5326,7 +5321,7 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject)
 	to[2] /= ( range + 0.0001 );	// avoid divide by zero
 	
 	// estimate time to reach subject, assuming maximum speed
-	float leadTime = 0.1 + ( range / ( npc.GetRunSpeed() + 0.0001 ) );
+	float leadTime = (0.1 + Extra_lead) + ( range / ( npc.GetRunSpeed() + 0.0001 ) );
 	
 	// estimate amount to lead the subject	
 	float SubjectAbsVelocity[3];
@@ -5391,7 +5386,7 @@ public Action SDKHook_Settransmit_Baseboss(int entity, int client)
 {
 	if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
 	{
-		if(b_thisNpcIsABoss[entity] || b_thisNpcHasAnOutline[entity])
+		if(b_thisNpcIsABoss[entity] || b_thisNpcHasAnOutline[entity] || RaidBossActive == entity)
 		{
 			return Plugin_Continue;
 		}
@@ -5711,6 +5706,51 @@ public void PluginBot_OnActorEmoted(int bot_entidx, int who, int concept)
 	}
 }
 
+stock float ApproachAngle( float target, float value, float speed )
+{
+	float delta = AngleDiff_Change(target, value);
+	
+	// Speed is assumed to be positive
+	if ( speed < 0 )
+		speed = -speed;
+	
+	if ( delta < -180 )
+		delta += 360;
+	else if ( delta > 180 )
+		delta -= 360;
+	
+	if ( delta > speed )
+		value += speed;
+	else if ( delta < -speed )
+		value -= speed;
+	else 
+		value = target;
+	
+	return value;
+}
+
+stock float AngleDiff_Change( float destAngle, float srcAngle )
+{
+	float delta = fmodf(destAngle - srcAngle, 360.0);
+	if ( destAngle > srcAngle )
+	{
+		if ( delta >= 180 )
+			delta -= 360;
+	}
+	else
+	{
+		if ( delta <= -180 )
+			delta += 360;
+	}
+	
+	return delta;
+}
+
+stock float fmodf(float num, float denom)
+{
+	return num - denom * RoundToFloor(num / denom);
+}
+
 public void SetDefaultValuesToZeroNPC(int entity)
 {
 	i_Wearable1[entity] = -1;
@@ -5809,6 +5849,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_PoseMoveX[entity] = -1;
 	i_PoseMoveY[entity] = -1;
 	b_NpcHasDied[entity] = false;
+	b_PlayHurtAnimation[entity] = false;
 }
 
 //NORMAL
@@ -5914,3 +5955,5 @@ public void SetDefaultValuesToZeroNPC(int entity)
 
 #include "zombie_riot/npc/alt/npc_alt_combine_soldier_mage.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_apprentice_mage.sp"
+
+#include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"

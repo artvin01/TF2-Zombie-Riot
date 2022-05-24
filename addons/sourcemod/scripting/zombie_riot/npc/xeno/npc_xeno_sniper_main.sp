@@ -213,9 +213,16 @@ public void XenoSniperMain_ClotThink(int iNPC)
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + 0.04;
+	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
+		
+	if(npc.m_blPlayHurtAnimation)
+	{
+		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
+		npc.m_blPlayHurtAnimation = false;
+		npc.PlayHurtSound();
+	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime())
 	{
@@ -237,6 +244,19 @@ public void XenoSniperMain_ClotThink(int iNPC)
 	{
 		if(npc.Anger)
 		{
+			if(npc.m_iChanged_WalkCycle != 2)
+			{
+				if(IsValidEntity(npc.m_iWearable4))
+					RemoveEntity(npc.m_iWearable4);
+			
+				npc.m_iChanged_WalkCycle = 2;
+				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
+				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+				
+				npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_scimitar/c_scimitar.mdl");
+				SetVariantString("1.0");
+				AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+			}
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -438,10 +458,8 @@ public Action XenoSniperMain_ClotDamaged(int victim, int &attacker, int &inflict
 
 	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + 0.25;
-		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST");
-		npc.PlayHurtSound();
-		
+		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_blPlayHurtAnimation = true;
 	}
 	
 	return Plugin_Changed;
@@ -454,21 +472,6 @@ public void XenoSniperMain_ClotDamagedPost(int victim, int attacker, int inflict
 	if(!npc.Anger)
 	{
 		npc.Anger = true; //	>:(
-		
-		if(IsValidEntity(npc.m_iWearable2))
-			RemoveEntity(npc.m_iWearable2);
-		
-		npc.m_flSpeed = 340.0;
-		
-		int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
-		if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_scimitar/c_scimitar.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
 	}
 }
 

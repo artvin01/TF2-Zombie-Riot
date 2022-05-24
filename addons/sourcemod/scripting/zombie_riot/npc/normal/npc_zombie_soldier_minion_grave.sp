@@ -162,6 +162,10 @@ methodmap SoldierMinion < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_picket/c_picket.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		
 		return npc;
 	}
 	
@@ -179,9 +183,16 @@ public void SoldierMinion_ClotThink(int iNPC)
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + 0.04;
+	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
+			
+	if(npc.m_blPlayHurtAnimation)
+	{
+		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
+		npc.m_blPlayHurtAnimation = false;
+		npc.PlayHurtSound();
+	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime())
 	{
@@ -320,10 +331,8 @@ public Action SoldierMinion_ClotDamaged(int victim, int &attacker, int &inflicto
 	*/	
 	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + 0.25;
-		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST");
-		npc.PlayHurtSound();
-		
+		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_blPlayHurtAnimation = true;
 	}
 	
 	return Plugin_Changed;
@@ -343,4 +352,6 @@ public void SoldierMinion_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
 }

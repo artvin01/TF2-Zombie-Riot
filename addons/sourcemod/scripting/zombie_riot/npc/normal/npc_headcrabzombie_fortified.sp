@@ -173,9 +173,18 @@ public void FortifiedHeadcrabZombie_ClotThink(int iNPC)
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + 0.04;
+	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
+		
+	if(npc.m_blPlayHurtAnimation)
+	{
+		npc.m_blPlayHurtAnimation = false;
+		if(!npc.m_flAttackHappenswillhappen)
+			npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
+		npc.PlayHurtSound();
+		
+	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime())
 	{
@@ -300,11 +309,8 @@ public Action FortifiedHeadcrabZombie_OnTakeDamage(int victim, int &attacker, in
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + 0.25;
-		if(!npc.m_flAttackHappenswillhappen)
-			npc.AddGesture("ACT_GESTURE_FLINCH_HEAD");
-		npc.PlayHurtSound();
-		
+		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_blPlayHurtAnimation = true;
 	}
 	return Plugin_Changed;
 }

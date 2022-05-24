@@ -220,6 +220,12 @@ void Music_PostThink(int client)
 			}
 		}
 		
+		if(RaidBossActive)
+		{
+			intencity += 9999; //absolute max.
+			GlobalIntencity += 9999;
+		}
+		
 		if(LastMann)
 		{
 			EmitSoundToClient(client, "#zombiesurvival/lasthuman.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);

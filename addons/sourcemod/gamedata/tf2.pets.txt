@@ -138,6 +138,11 @@
 				"windows"	"\x55\x8B\xEC\x53\x8B\x5D\x08\x57\x53\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x8B\xCF"
 				"linux"		"@_ZN21CBaseAnimatingOverlay10AddGestureE8Activityb"
 			}
+			"CBaseAnimatingOverlay::RestartGesture" //( Activity activity, bool addifmissing /*=true*/, bool autokill /*=true*/ ) //there is some wierd 'L' thing in there, and L to be specific. you get there by using this string "aItemNoLongerAv" and then just hoping.
+			{
+				"windows"	"\x55\x8B\xEC\x56\x8B\x75\x08\x57\x56\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x83\xF8\xFF"
+				"linux"		"@_ZN21CBaseAnimatingOverlay14RestartGestureE8Activitybb"
+			}
 			"CBaseAnimatingOverlay::IsPlayingGesture" //bool IsPlayingGesture( Activity activity ); | Found above "spell_skeleton_goop_green"
 			{
 				"windows"	"\x55\x8B\xEC\xFF\x75\x08\xE8\x2A\x2A\x2A\x2A\x83\xF8\xFF"

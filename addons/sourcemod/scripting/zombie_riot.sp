@@ -181,6 +181,12 @@ int CurrentCash;
 bool LastMann;
 bool EscapeMode;
 bool EscapeModeForNpc;
+
+bool RaidMode; 							//Is this raidmode?
+float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
+int RaidBossActive;					//Is the raidboss alive, if yes, what index is the raid?
+
+
 int CurrentPlayers;
 int GlobalIntencity;
 ConVar cvarTimeScale;
@@ -528,6 +534,8 @@ enum
 	
 	ALT_MEDIC_APPRENTICE_MAGE			= 93,
 	SAWRUNNER							= 94,
+	
+	RAIDMODE_TRUE_FUSION_WARRIOR		= 95,
 }
 
 char NPC_Names[][] =
@@ -633,7 +641,8 @@ char NPC_Names[][] =
 	
 	
 	"Medic Apprentice Mage",
-	"Sawrunner"
+	"Sawrunner",
+	"True Fusion Warrior"
 };
 
 char NPC_Plugin_Names_Converted[][] =
@@ -739,6 +748,7 @@ char NPC_Plugin_Names_Converted[][] =
 	"",
 	"npc_alt_medic_apprentice_mage",
 	"npc_sawrunner",
+	"npc_true_fusion_warrior",
 };
 
 #include "zombie_riot/stocks.sp"
@@ -1289,7 +1299,7 @@ public void OnClientDisconnect_Post(int client)
 	int Players_left;
 	for(int client_check=1; client_check<=MaxClients; client_check++)
 	{
-		if(IsClientInGame(client_check) && IsFakeClient(client_check))
+		if(IsClientInGame(client_check) && !IsFakeClient(client_check))
 			Players_left++;
 	}
 	if(!Players_left)
@@ -1378,6 +1388,12 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			Music_Timer[client] = GetEngineTime() + 20.0;
 //			Armor_Ready[client] = 0.0;
 		}
+	}
+	
+	for(int client_check=1; client_check<=MaxClients; client_check++)
+	{
+		if(IsClientInGame(client_check) && TeutonType[client_check] != TEUTON_WAITING)
+			TeutonType[client_check] = 0;
 	}
 	
 	NPC_RoundEnd();

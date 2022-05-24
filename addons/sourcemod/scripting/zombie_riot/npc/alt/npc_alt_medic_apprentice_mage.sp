@@ -165,7 +165,7 @@ public void AltMedicApprenticeMage_ClotThink(int iNPC)
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + 0.04;
+	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
 	
@@ -294,7 +294,7 @@ public Action AltMedicApprenticeMage_ClotDamaged(int victim, int &attacker, int 
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + 0.25;
+		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST");
 		npc.PlayHurtSound();
 		

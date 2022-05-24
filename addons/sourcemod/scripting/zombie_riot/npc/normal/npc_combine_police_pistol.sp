@@ -196,9 +196,16 @@ public void Combine_Police_Pistol_ClotThink(int iNPC)
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + 0.04;
+	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
+	
+	if(npc.m_blPlayHurtAnimation)
+	{
+		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
+		npc.m_blPlayHurtAnimation = false;
+		npc.PlayHurtSound();
+	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime())
 	{
@@ -435,10 +442,8 @@ public Action Combine_Police_Pistol_OnTakeDamage(int victim, int &attacker, int 
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + 0.25;
-		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD");
-		npc.PlayHurtSound();
-		
+		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_blPlayHurtAnimation = true;
 	}
 		
 	return Plugin_Changed;
