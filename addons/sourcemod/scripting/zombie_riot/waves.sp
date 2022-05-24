@@ -46,6 +46,7 @@ static int WaveIntencity;
 static bool Gave_Ammo_Supply;
 static int VotedFor[MAXTF2PLAYERS];
 
+
 void Waves_PluginStart()
 {
 	RegAdminCmd("zr_setwave", Waves_SetWaveCmd, ADMFLAG_CHEATS);
@@ -967,6 +968,10 @@ int Waves_GetIntencity()
 	return WaveIntencity;
 }
 
+float GetWaveSetupCooldown()
+{
+	return Cooldown;
+}
 public Action Waves_ProgressTimer(Handle timer)
 {
 	WaveTimer = null;
