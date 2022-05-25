@@ -405,10 +405,7 @@ float MultiGlobal = 0.25;
 
 void Waves_Progress()
 {
-	if(InSetup)
-		return;
-	
-	if(CvarNoRoundStart.BoolValue)
+	if(InSetup || !Rounds || CvarNoRoundStart.BoolValue)
 		return;
 		
 	if(WaveTimer)
@@ -975,7 +972,7 @@ public int Waves_FreeplayVote(Menu menu, MenuAction action, int item, int param2
 				
 bool Waves_GetNextEnemy(Enemy enemy)
 {
-	if(Enemies.Empty)
+	if(!Enemies || Enemies.Empty)
 		return false;
 	
 	Enemies.PopArray(enemy);
