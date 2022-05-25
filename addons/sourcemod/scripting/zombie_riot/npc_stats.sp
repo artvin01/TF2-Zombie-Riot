@@ -2614,11 +2614,11 @@ methodmap CClotBody
 			RaidBossActive = 50000;
 		}
 		// See if we hit anything.
-		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, RaidBossActive ? BulletAndMeleeTracePlayerOnly : BulletAndMeleeTrace, this.index );
+		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, RaidBossActive ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, this.index );
 		if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
 		{
 			delete trace;
-			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID | CONTENTS_SOLID ), RaidBossActive ? BulletAndMeleeTracePlayerOnly : BulletAndMeleeTrace, this.index );
+			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID | CONTENTS_SOLID ), RaidBossActive ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, this.index );
 			if ( TR_GetFraction(trace) < 1.0)
 			{
 				// This is the point on the actual surface (the hull could have hit space)
@@ -3893,7 +3893,7 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 	return !(entity == iExclude);
 }
 
-public bool BulletAndMeleeTracePlayerOnly(int entity, int contentsMask, any iExclude)
+public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMask, any iExclude)
 {
 	char class[64];
 	GetEntityClassname(entity, class, sizeof(class));
@@ -3911,10 +3911,6 @@ public bool BulletAndMeleeTracePlayerOnly(int entity, int contentsMask, any iExc
 	{
 		return false;
 	}	
-	else if(StrEqual(class, "base_boss"))
-	{
-		return false;
-	}
 	else if(StrContains(class, "obj_", false) != -1)
 	{
 		return false;
@@ -3933,6 +3929,10 @@ public bool BulletAndMeleeTracePlayerOnly(int entity, int contentsMask, any iExc
 	if(npc.m_bThisEntityIgnored)
 	{
 		return false;
+	}
+	if(StrEqual(class, "base_boss"))
+	{
+		return true;
 	}
 	return !(entity == iExclude);
 }
@@ -4294,7 +4294,7 @@ stock int GetClosestTarget(int entity, bool Onlyplayers = false, float fldistanc
 			}
 		}
 	}
-	if(!Onlyplayers && !RaidBossActive) //Make sure that they completly ignore barricades during raids
+	if(!Onlyplayers) //Make sure that they completly ignore barricades during raids
 	{
 		for (int pass = 0; pass <= 2; pass++)
 		{
@@ -4312,7 +4312,7 @@ stock int GetClosestTarget(int entity, bool Onlyplayers = false, float fldistanc
 					CClotBody npc = view_as<CClotBody>(i);
 					if(pass != 2)
 					{
-						if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+						if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !RaidBossActive) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 						{
 							float EntityLocation[3], TargetLocation[3]; 
 							GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -5780,6 +5780,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_Jumping[entity] = false;
 	fl_JumpStartTime[entity] = 0.0;
 	fl_JumpCooldown[entity] = 0.0;
+	fl_NextDelayTime[entity] = 0.0;
 	fl_NextThinkTime[entity] = 0.0;
 	fl_NextMeleeAttack[entity] = 0.0;
 	fl_Speed[entity] = 0.0;
