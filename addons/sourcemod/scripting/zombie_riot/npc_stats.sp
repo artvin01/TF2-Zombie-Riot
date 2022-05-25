@@ -1567,7 +1567,10 @@ methodmap CClotBody
 		
 		HeadcrabZombie CreatePathfinderIndex = view_as<HeadcrabZombie>(npc);
 		
-		CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, IsRaidBoss ? 0.1 : 0.4, 1.75); //Global.
+		if(IsRaidBoss)
+			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.1, 1.75); //Global.
+		else
+			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.4, 1.75); //Global.
 		
 		return view_as<CClotBody>(npc);
 	}

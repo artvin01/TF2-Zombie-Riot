@@ -444,6 +444,7 @@ void Waves_Progress()
 			
 			if(wave.Count == 0)
 			{
+				Raidboss_Clean_Everyone();
 				ScaleWithHpMore = true;
 			}
 			
