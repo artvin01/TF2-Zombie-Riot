@@ -276,7 +276,7 @@ methodmap TrueFusionWarrior < CClotBody
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		
-		RaidModeScaling *= 0.2; //abit low, inreacing
+		RaidModeScaling *= 0.17; //abit low, inreacing
 		
 		Raidboss_Clean_Everyone();
 		
@@ -381,6 +381,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
 		DispatchSpawn(entity);
 		AcceptEntityInput(entity, "RoundWin");
+		Music_RoundEnd(entity);
 	}
 	
 	npc.m_flNextThinkTime = GetGameTime() + 0.10;
@@ -539,7 +540,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.DispatchParticleEffect(npc.index, "hammer_bell_ring_shockwave2", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
 					
 					
-					npc.m_flNextPull = GetGameTime() + 5.0;
+					npc.m_flNextPull = GetGameTime() + 15.0;
 					npc.PlayPullSound();
 					npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 				}
@@ -586,7 +587,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					
 					npc.DispatchParticleEffect(npc.index, "hammer_bell_ring_shockwave2", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
 	
-					npc.m_flNextPull = GetGameTime() + 4.0;
+					npc.m_flNextPull = GetGameTime() + 13.0;
 					npc.PlayPullSound();
 					npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 				}

@@ -1153,7 +1153,7 @@ public void Calculate_And_Display_hp(int attacker, int victim, float damage, boo
 				Timer_Show = 0.0;
 			
 			SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-			ShowSyncHudText(attacker, SyncHudRaid, "[Raidboss | Power : %.1f%% | TIME: s%.1f]\n%s\n%d / %d", RaidModeScaling * 100, RaidModeTime, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+			ShowSyncHudText(attacker, SyncHudRaid, "[Raidboss | Power : %.1f%% | TIME LEFT: %.1f]\n%s\n%d / %d", RaidModeScaling * 100, Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
 		}
 	}	
 }

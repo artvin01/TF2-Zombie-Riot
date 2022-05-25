@@ -508,7 +508,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	Replicated_Damage = Replicate_Damage_Medications(victim, damage, damagetype);
 	
 	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
-	if(dieingstate[victim] > 0 )
+	if(dieingstate[victim] > 0)
 	{
 		if(flHealth < 1)
 		{
@@ -562,7 +562,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 	if(damagetype & DMG_FALL)
 	{
-		if(i_SoftShoes[victim] == 1 || RaidBossActive)
+		if(RaidBossActive)
+		{
+			Replicated_Damage *= 0.2;
+			damage *= 0.2;			
+		}
+		else if(i_SoftShoes[victim] == 1)
 		{
 			Replicated_Damage *= 0.5;
 			damage *= 0.5;
@@ -649,6 +654,24 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}
 	else if((RoundToCeil(Replicated_Damage) >= flHealth || RoundToCeil(damage) >= flHealth) && !LastMann && !b_IsAloneOnServer)
 	{
+		bool Any_Left = false;
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
+			{
+				if(victim != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+				{
+					Any_Left = true;
+				}
+			}
+		}
+		
+		if(!Any_Left)
+		{
+			CheckAlivePlayers(_, victim);
+			return Plugin_Handled;
+		}
+	
 		i_CurrentEquippedPerk[victim] = 0;
 		SetEntityHealth(victim, 200);
 		dieingstate[victim] = 250;

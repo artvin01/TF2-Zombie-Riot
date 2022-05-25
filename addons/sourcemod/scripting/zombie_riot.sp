@@ -1200,7 +1200,6 @@ public void OnClientPutInServer(int client)
 	if(IsFakeClient(client))
 	{
 		TF2_ChangeClientTeam(client, TFTeam_Blue);
-		DHook_UnhookClient(client);
 		DHook_HookClient(client);
 		b_IsPlayerABot[client] = true;
 		return;
@@ -1209,7 +1208,6 @@ public void OnClientPutInServer(int client)
 	{
 		Queue_PutInServer(client);
 	}
-	DHook_UnhookClient(client);
 	DHook_HookClient(client);
 	SDKHook_HookClient(client);
 	dieingstate[client] = 0;
@@ -1586,7 +1584,7 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 		}
 	}
 	Bob_player_killed(event, name, dontBroadcast);
-	RequestFrame(CheckAlivePlayers, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
+	RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
 }
 
 public Action Timer_Dieing(Handle timer, int client)
@@ -1733,7 +1731,11 @@ public void Spawn_Cured_Grigori()
 
 bool applied_lastmann_buffs_once = false;
 
-void CheckAlivePlayers(int killed=0)
+void CheckAlivePlayersforward(int killed=0)
+{
+	CheckAlivePlayers(killed, _);
+}
+void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 {
 	if(!Waves_Started())
 	{
@@ -1760,7 +1762,7 @@ void CheckAlivePlayers(int killed=0)
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
 		{
 			CurrentPlayers++;
-			if(killed != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+			if(killed != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
 			{
 				if(!alive)
 				{
@@ -1786,14 +1788,27 @@ void CheckAlivePlayers(int killed=0)
 	
 	if(LastMann)
 	{
+		static bool Died[MAXTF2PLAYERS];
+		for(int client=1; client<=MaxClients; client++)
+		{
+			Died[client] = false;
+			if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
+			{
+				if((killed != client || Hurtviasdkhook != client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] > 0)
+				{
+					Died[client] = true;
+					SDKHooks_TakeDamage(client, client, client, 99999.0, DMG_DROWN, _, _, _, true);
+				}
+			}
+		}
 		ExcuteRelay("zr_lasthuman");
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE)
 			{
-			//	Music_Timer[client] = 0.0; Bugs out, dont use.
+		//			Music_Timer[client] = 0.0;
 				
-				if(IsPlayerAlive(client) && !applied_lastmann_buffs_once)
+				if(IsPlayerAlive(client) && !applied_lastmann_buffs_once && !Died[client])
 				{
 					if(dieingstate[client] > 0)
 					{

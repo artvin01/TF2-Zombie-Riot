@@ -443,7 +443,15 @@ void Waves_Progress()
 			
 			MultiGlobal = multi;
 			
+			bool ScaleWithHpMore = false;
+			
+			if(wave.Count == 0)
+			{
+				ScaleWithHpMore = true;
+			}
+			
 			int count = RoundToNearest(float(wave.Count)*multi);
+			
 			if(count < 1)
 				count = 1;
 			
@@ -467,17 +475,37 @@ void Waves_Progress()
 			if(Is_a_boss >= 1 || Is_Health_Scaling >= 1)
 			{			
 				float multi_health;
-							
-				multi_health = 0.25;
+				
+				
+				if(ScaleWithHpMore)
+				{
+					multi_health = 0.25;
+				}
+				else
+				{
+					multi_health = 0.25;
+				}
 							
 				for(int client=1; client<=MaxClients; client++)
 				{
 					if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
-						multi_health += 0.15;
+					{
+						if(ScaleWithHpMore)
+						{
+							multi_health += 0.25;
+						}
+						else
+						{
+							multi_health += 0.15;
+						}
+					}
 				}
-	
-				if(multi_health < 0.5)
-					multi_health = 0.5;	
+				
+				if(!ScaleWithHpMore)
+				{
+					if(multi_health < 0.5)
+						multi_health = 0.5;	
+				}
 					
 				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multi_health);
 				wave.EnemyData.Health = Tempomary_Health;
@@ -592,8 +620,9 @@ void Waves_Progress()
 				{
 					if(IsClientInGame(client) && GetClientTeam(client)==2)
 					{
-						if(!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD)
+						if((!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD) && !RaidBossActive)
 						{
+							applied_lastmann_buffs_once = false;
 							DHook_RespawnPlayer(client);
 						}
 						else if(dieingstate[client] > 0)

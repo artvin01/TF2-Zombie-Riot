@@ -2468,7 +2468,15 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 			if(Timer_Show < 0.0)
 				Timer_Show = 0.0;
 				
-			f_TimerTickCooldownRaid = GetGameTime() + 9.9;
+			if(Timer_Show < 10.0)
+			{
+				if(Timer_Show < 5.0)
+				{
+					f_TimerTickCooldownRaid = GetGameTime() + 0.9;
+				}
+				else
+					f_TimerTickCooldownRaid = GetGameTime() + 1.9;
+			}
 			EmitSoundToAll("mvm/mvm_bomb_warning.wav", _, SNDCHAN_AUTO, _, _, 1.0);
 			for(int client=1; client<=MaxClients; client++)
 			{
