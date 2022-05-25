@@ -451,6 +451,19 @@ void Waves_Progress()
 			if(wave.Count == 0)
 			{
 				Raidboss_Clean_Everyone();
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client) && GetClientTeam(client)==2)
+					{
+						if((!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD))
+						{
+							applied_lastmann_buffs_once = false;
+							DHook_RespawnPlayer(client);
+							TF2_AddCondition(client, TFCond_UberchargedCanteen, 2.0);
+							TF2_AddCondition(client, TFCond_MegaHeal, 2.0);
+						}
+					}
+				}
 				ScaleWithHpMore = true;
 			}
 			
