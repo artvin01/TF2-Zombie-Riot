@@ -281,7 +281,7 @@ int i_ObjectsNpcs_Allied[ZR_MAX_NPCS_ALLIED];
 
 const int i_MaxcountBuilding = ZR_MAX_BUILDINGS;
 int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
-bool i_IsABuilding[ZR_MAX_BUILDINGS];
+bool i_IsABuilding[MAXENTITIES];
 
 const int i_MaxcountTraps = ZR_MAX_TRAPS;
 int i_ObjectsTraps[ZR_MAX_TRAPS];
