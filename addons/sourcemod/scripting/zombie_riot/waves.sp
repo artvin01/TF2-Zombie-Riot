@@ -476,7 +476,7 @@ void Waves_Progress()
 				
 				if(ScaleWithHpMore)
 				{
-					multi_health = 0.25;
+					multi_health = 0.01;
 				}
 				else
 				{
