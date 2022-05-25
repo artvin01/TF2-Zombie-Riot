@@ -274,7 +274,7 @@ methodmap TrueFusionWarrior < CClotBody
 		
 		RaidModeTime = GetGameTime() + 160.0;
 		
-		float RaidModeScaling = float(ZR_GetWaveCount()+1);
+		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		
 		RaidModeScaling *= 0.2; //abit low, inreacing
 		
