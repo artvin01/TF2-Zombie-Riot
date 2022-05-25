@@ -481,7 +481,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				{
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 20.0 * RaidModeScaling, 800.0, _, 1.0);	
+					npc.FireRocket(vPredictedPos, 10.0 * RaidModeScaling, 800.0, _, 1.0);	
 					npc.m_flNextRangedAttack = GetGameTime() + 4.0;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
@@ -490,7 +490,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				{
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 20.0 * RaidModeScaling, 800.0, _, 1.0);	
+					npc.FireRocket(vPredictedPos, 10.0 * RaidModeScaling, 800.0, _, 1.0);	
 					npc.m_flNextRangedAttack = GetGameTime() + 3.0;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
@@ -707,10 +707,10 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 								if(target > 0) 
 								{
 									if(!npc.Anger)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 7.0 * RaidModeScaling, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 12.0 * RaidModeScaling, DMG_SLASH|DMG_CLUB);
 										
 									if(npc.Anger)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 8.0 * RaidModeScaling, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 14.0 * RaidModeScaling, DMG_SLASH|DMG_CLUB);
 									
 									// Hit particle
 									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
@@ -930,19 +930,19 @@ void TrueFusionWarrior_TBB_Ability(int client)
 	{
 		case 1:
 		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", client, 80, _, _, 1.0);					
+			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);					
 		}
 		case 2:
 		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", client, 80, _, _, 1.0);
+			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
 		}
 		case 3:
 		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", client, 80, _, _, 1.0);			
+			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);			
 		}
 		case 4:
 		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", client, 80, _, _, 1.0);
+			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
 		}		
 	}
 			
