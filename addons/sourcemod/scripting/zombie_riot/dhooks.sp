@@ -157,6 +157,16 @@ public MRESReturn DHook_GrenadeExplodePre(int entity)
 		int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
 		Explode_Logic_Custom(original_damage, owner, entity, weapon);
 	}
+	else if(owner > MaxClients)
+	{
+		float original_damage = GetEntPropFloat(entity, Prop_Send, "m_flDamage"); 
+		if(f_CustomGrenadeDamage[entity] > 1.0)
+		{
+			original_damage = f_CustomGrenadeDamage[entity];
+		}
+		SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
+		Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
+	}
 	f_CustomGrenadeDamage[entity] = 0.0;
 	return MRES_Ignored;
 }
@@ -201,6 +211,13 @@ public MRESReturn DHook_RocketExplodePre(int entity)
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
 		int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
 		Explode_Logic_Custom(original_damage, owner, entity, weapon);
+	}
+	else if(owner > MaxClients)
+	{
+		float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
+		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
+	//	int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
+		Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);		
 	}
 	return MRES_Ignored;
 }

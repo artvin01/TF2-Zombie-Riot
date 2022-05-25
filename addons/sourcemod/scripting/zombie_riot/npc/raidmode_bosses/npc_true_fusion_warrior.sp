@@ -257,7 +257,7 @@ methodmap TrueFusionWarrior < CClotBody
 	}
 	public TrueFusionWarrior(int client, float vecPos[3], float vecAng[3])
 	{
-		TrueFusionWarrior npc = view_as<TrueFusionWarrior>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", false, false, true,_,true)); //giant!
+		TrueFusionWarrior npc = view_as<TrueFusionWarrior>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", false, false, true, true,true)); //giant!
 		
 		i_NpcInternalId[npc.index] = RAIDMODE_TRUE_FUSION_WARRIOR;
 		
@@ -440,17 +440,21 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				PF_SetGoalEntity(npc.index, closest);
 			}
 			
-			if(npc.m_flTimebeforekamehameha < GetGameTime() && !npc.Anger)
+			
+			if(ZR_GetWaveCount()+1 > 25)
 			{
-				npc.m_flTimebeforekamehameha = GetGameTime() + 35.0;
-				npc.m_bInKame = true;
-				TrueFusionWarrior_TBB_Ability(npc.index);
-			}
-			else if(npc.m_flTimebeforekamehameha < GetGameTime() && npc.Anger)
-			{
-				npc.m_flTimebeforekamehameha = GetGameTime() + 35.0;
-				npc.m_bInKame = true;
-				TrueFusionWarrior_TBB_Ability_Anger(npc.index);
+				if(npc.m_flTimebeforekamehameha < GetGameTime() && !npc.Anger)
+				{
+					npc.m_flTimebeforekamehameha = GetGameTime() + 35.0;
+					npc.m_bInKame = true;
+					TrueFusionWarrior_TBB_Ability(npc.index);
+				}
+				else if(npc.m_flTimebeforekamehameha < GetGameTime() && npc.Anger)
+				{
+					npc.m_flTimebeforekamehameha = GetGameTime() + 35.0;
+					npc.m_bInKame = true;
+					TrueFusionWarrior_TBB_Ability_Anger(npc.index);
+				}
 			}
 			if(npc.m_bInKame)
 			{
@@ -477,7 +481,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				{
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 20.0 * RaidModeScaling, 800.0, _, 1.0);	
+					npc.FireRocket(vPredictedPos, 10.0 * RaidModeScaling, 800.0, _, 1.0);	
 					npc.m_flNextRangedAttack = GetGameTime() + 4.0;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
@@ -486,7 +490,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				{
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 20.0 * RaidModeScaling, 800.0, _, 1.0);	
+					npc.FireRocket(vPredictedPos, 10.0 * RaidModeScaling, 800.0, _, 1.0);	
 					npc.m_flNextRangedAttack = GetGameTime() + 3.0;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
@@ -605,7 +609,10 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
 					npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.15;
-					TrueFusionwarrior_IOC_Invoke(npc.index, closest);
+					
+					if(ZR_GetWaveCount()+1 > 55)
+						TrueFusionwarrior_IOC_Invoke(npc.index, closest);
+						
 					if (npc.m_iAmountProjectiles >= 8)
 					{
 						npc.m_iAmountProjectiles = 0;
@@ -621,7 +628,10 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
-					TrueFusionwarrior_IOC_Invoke(npc.index, closest);
+					
+					if(ZR_GetWaveCount()+1 > 55)
+						TrueFusionwarrior_IOC_Invoke(npc.index, closest);
+						
 					npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.15;
 					if (npc.m_iAmountProjectiles >= 12)
 					{
@@ -630,7 +640,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					}
 				}
 			}
-			if(npc.m_flNextTeleport < GetGameTime() && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && !npc.m_bInKame)
+			if(npc.m_flNextTeleport < GetGameTime() && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && !npc.m_bInKame && ZR_GetWaveCount()+1 > 40)
 			{
 				static float flVel[3];
 				GetEntPropVector(closest, Prop_Data, "m_vecVelocity", flVel);
@@ -696,11 +706,23 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									if(!npc.Anger)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 7.0 * RaidModeScaling, DMG_SLASH|DMG_CLUB);
+									if(target > MaxClients)
+									{
+										if(!npc.Anger)
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 12.0 * RaidModeScaling * 10.0, DMG_SLASH|DMG_CLUB);
+											
+										if(npc.Anger)
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 14.0 * RaidModeScaling * 10.0, DMG_SLASH|DMG_CLUB);
+									}
+									else
+									{
+										if(!npc.Anger)
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 12.0 * RaidModeScaling, DMG_SLASH|DMG_CLUB);
+											
+										if(npc.Anger)
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 14.0 * RaidModeScaling, DMG_SLASH|DMG_CLUB);									
 										
-									if(npc.Anger)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 8.0 * RaidModeScaling, DMG_SLASH|DMG_CLUB);
+									}
 									
 									// Hit particle
 									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
@@ -920,19 +942,19 @@ void TrueFusionWarrior_TBB_Ability(int client)
 	{
 		case 1:
 		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", client, 80, _, _, 1.0);					
+			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);					
 		}
 		case 2:
 		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", client, 80, _, _, 1.0);
+			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
 		}
 		case 3:
 		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", client, 80, _, _, 1.0);			
+			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);			
 		}
 		case 4:
 		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", client, 80, _, _, 1.0);
+			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
 		}		
 	}
 			

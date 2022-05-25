@@ -315,7 +315,8 @@ methodmap XenoFatherGrigori < CClotBody
 			vecForward[2] = Sine(DegToRad(vecAngles[0]))*-800.0;
 		
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
-			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 75.0); 
+			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 75.0);
+			f_CustomGrenadeDamage[entity] = 75.0;			
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
 			DispatchSpawn(entity);
 			SetEntityModel(entity, "models/weapons/w_grenade.mdl");

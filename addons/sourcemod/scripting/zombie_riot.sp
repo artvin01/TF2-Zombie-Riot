@@ -281,6 +281,7 @@ int i_ObjectsNpcs_Allied[ZR_MAX_NPCS_ALLIED];
 
 const int i_MaxcountBuilding = ZR_MAX_BUILDINGS;
 int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
+bool i_IsABuilding[MAXENTITIES];
 
 const int i_MaxcountTraps = ZR_MAX_TRAPS;
 int i_ObjectsTraps[ZR_MAX_TRAPS];
@@ -380,6 +381,7 @@ float f_ExtraDropChanceRarity = 1.0;
 //GLOBAL npc things
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
+bool applied_lastmann_buffs_once = false;
 
 int AmmoData[][] =
 {
@@ -1729,8 +1731,6 @@ public void Spawn_Cured_Grigori()
 
 
 
-bool applied_lastmann_buffs_once = false;
-
 void CheckAlivePlayersforward(int killed=0)
 {
 	CheckAlivePlayers(killed, _);
@@ -2466,6 +2466,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		EntityFuncReload4[entity] = INVALID_FUNCTION;
 		b_Map_BaseBoss_No_Layers[entity] = false;
 		b_Is_Player_Rocket_Through_Npc[entity] = false;
+		i_IsABuilding[entity] = false;
 		OnEntityCreated_Build_On_Build(entity, classname);
 		SetDefaultValuesToZeroNPC(entity);
 		
@@ -2607,6 +2608,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "obj_"))
 		{
 			npc.bCantCollidieAlly = true;
+			i_IsABuilding[entity] = true;
 			for (int i = 0; i < ZR_MAX_BUILDINGS; i++)
 			{
 				if (EntRefToEntIndex(i_ObjectsBuilding[i]) <= 0)
@@ -3096,6 +3098,7 @@ public Action Hook_BlockUserMessageEx(UserMsg msg_id, BfRead msg, const int[] pl
 public void MapStartResetAll()
 {
 	Zero(f_TempCooldownForVisualManaPotions);
+	Zero(i_IsABuilding);
 	Zero(f_DelayLookingAtHud);
 	Zero(f_TimeUntillNormalHeal);
 	Zero(Mana_Regen_Delay);

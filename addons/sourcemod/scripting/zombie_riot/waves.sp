@@ -444,6 +444,7 @@ void Waves_Progress()
 			
 			if(wave.Count == 0)
 			{
+				Raidboss_Clean_Everyone();
 				ScaleWithHpMore = true;
 			}
 			
@@ -476,7 +477,7 @@ void Waves_Progress()
 				
 				if(ScaleWithHpMore)
 				{
-					multi_health = 0.25;
+					multi_health = 0.01;
 				}
 				else
 				{
@@ -621,6 +622,8 @@ void Waves_Progress()
 						{
 							applied_lastmann_buffs_once = false;
 							DHook_RespawnPlayer(client);
+							TF2_AddCondition(client, TFCond_UberchargedCanteen, 2.0);
+							TF2_AddCondition(client, TFCond_MegaHeal, 2.0);
 						}
 						else if(dieingstate[client] > 0)
 						{

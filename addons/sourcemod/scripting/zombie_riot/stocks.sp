@@ -2351,23 +2351,33 @@ stock int HasNamedItem(int client, const char[] name)
 }
 
 
-stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon, float spawnLoc[3] = {0.0,0.0,0.0}, float explosionRadius = EXPLOSION_RADIUS, float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF, float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF)
+stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon, float spawnLoc[3] = {0.0,0.0,0.0}, float explosionRadius = EXPLOSION_RADIUS, float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF, float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF, bool FromNpc = false)
 {
 	float damage_reduction = 1.0;
 	int Closest_npc = 0;
 	
-	float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
-	
-	explosionRadius *= value;
-	
-	if(spawnLoc[0] == 0.0)
+	if(IsValidEntity(weapon))
 	{
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
-		Closest_npc = GetClosestTarget_BaseBoss(entity);
+		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
+		explosionRadius *= value;
+	}
+	
+	if(!FromNpc)
+	{
+		if(spawnLoc[0] == 0.0)
+		{
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+			Closest_npc = GetClosestTarget_BaseBoss(entity);
+		}
+		else
+		{
+			Closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity);
+		}
 	}
 	else
 	{
-		Closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity);
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+		Closest_npc = GetClosestTarget(entity);
 	}
 	float VicLoc[3];
 	if(IsValidEntity(Closest_npc))
@@ -2380,24 +2390,113 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 			
 			SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 			
-			damage_reduction *= ExplosionDmgMultihitFalloff;
+			if(!FromNpc)
+			{
+				damage_reduction *= ExplosionDmgMultihitFalloff;
+			}
 		}
 		
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		if(!FromNpc)
 		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if (IsValidEntity(baseboss_index))
+			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 			{
-				if(!b_NpcHasDied[baseboss_index] && Closest_npc != baseboss_index)
+				int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+				if (IsValidEntity(baseboss_index))
 				{
-					VicLoc = WorldSpaceCenter(baseboss_index);						
-					if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
+					if(!b_NpcHasDied[baseboss_index] && Closest_npc != baseboss_index)
 					{
-						float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
-						float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
-														
-						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1 / damage_reduction, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius) ,VicLoc);
-						damage_reduction *= ExplosionDmgMultihitFalloff;
+						VicLoc = WorldSpaceCenter(baseboss_index);						
+						if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
+						{
+							float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
+							float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
+															
+							SDKHooks_TakeDamage(baseboss_index, client, client, damage_1 / damage_reduction, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius) ,VicLoc);
+							damage_reduction *= ExplosionDmgMultihitFalloff;
+						}
+					}
+				}
+			}
+		}
+		else //Gotta loop through all here, oopsie!
+		{
+			for( int i = 1; i <= MaxClients; i++ ) 
+			{
+				if (IsValidClient(i))
+				{
+					CClotBody npc = view_as<CClotBody>(i);
+					if (GetEntProp(i, Prop_Send, "m_iTeamNum")!=GetEntProp(entity, Prop_Send, "m_iTeamNum") && !npc.m_bThisEntityIgnored && IsEntityAlive(i)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+					{
+						VicLoc = WorldSpaceCenter(i);						
+						if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
+						{
+							float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
+							float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
+															
+							SDKHooks_TakeDamage(i, client, client, damage_1, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius) ,VicLoc);
+						}
+					}
+				}
+			}
+			for (int pass = 0; pass <= 2; pass++)
+			{
+				static char classname[1024];
+				if (pass == 0) classname = "obj_sentrygun";
+				else if (pass == 1) classname = "obj_dispenser";
+			//	else if (pass == 2) classname = "obj_teleporter";
+				else if (pass == 2) classname = "base_boss";
+		
+				int i = MaxClients + 1;
+				while ((i = FindEntityByClassname(i, classname)) != -1)
+				{
+					if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(i, Prop_Send, "m_iTeamNum")) 
+					{
+						CClotBody npc = view_as<CClotBody>(i);
+						if(pass != 2)
+						{
+							VicLoc = WorldSpaceCenter(i);						
+							if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
+							{
+								Handle trace; 
+								trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
+								int Traced_Target;
+								
+								Traced_Target = TR_GetEntityIndex(trace);
+								delete trace;
+								
+								if(Traced_Target == i)
+								{
+									float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
+									float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
+																
+									SDKHooks_TakeDamage(i, client, client, damage_1, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius) ,VicLoc);
+								}
+							}
+						}		
+						else
+						{
+							if(!npc.m_bThisEntityIgnored && GetEntProp(i, Prop_Data, "m_iHealth") > 0) //Check if dead or even targetable
+							{
+								VicLoc = WorldSpaceCenter(i);						
+								if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
+								{
+									Handle trace; 
+									trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
+									int Traced_Target;
+									
+									Traced_Target = TR_GetEntityIndex(trace);
+									delete trace;
+									
+									if(Traced_Target == i)
+									{
+										float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
+										float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
+																	
+										SDKHooks_TakeDamage(i, client, client, damage_1, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius) ,VicLoc);
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -2468,6 +2567,7 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 			if(Timer_Show < 0.0)
 				Timer_Show = 0.0;
 				
+			
 			if(Timer_Show < 10.0)
 			{
 				if(Timer_Show < 5.0)
@@ -2475,8 +2575,13 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 					f_TimerTickCooldownRaid = GetGameTime() + 0.9;
 				}
 				else
+				{
 					f_TimerTickCooldownRaid = GetGameTime() + 1.9;
+				}
 			}
+			else
+				f_TimerTickCooldownRaid = GetGameTime() + 10.0;
+				
 			EmitSoundToAll("mvm/mvm_bomb_warning.wav", _, SNDCHAN_AUTO, _, _, 1.0);
 			for(int client=1; client<=MaxClients; client++)
 			{
@@ -2489,4 +2594,19 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 			}
 		}
 	}
+}
+
+public bool HitOnlyTargetOrWorld(int entity, int contentsMask, any iExclude)
+{
+	if(entity == 0)
+	{
+		return true;
+	}
+	if(entity == iExclude)
+	{
+		return true;
+	}
+		
+	
+	return false;
 }
