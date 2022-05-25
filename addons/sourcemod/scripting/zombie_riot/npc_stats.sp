@@ -3728,7 +3728,12 @@ public MRESReturn ILocomotion_ShouldCollideWithEnemyIngoreBuilding(Address pThis
 	}
 	if(npc.bCantCollidieAlly) //no change in performance..., almost.
 	{
-		DHookSetReturn(hReturn, false); 
+		if(i_IsABuilding[otherindex])
+		{
+			DHookSetReturn(hReturn, false); 
+			return MRES_Supercede;
+		}
+		DHookSetReturn(hReturn, true); 
 		return MRES_Supercede;
 	}
 	if(otherindex == 0)

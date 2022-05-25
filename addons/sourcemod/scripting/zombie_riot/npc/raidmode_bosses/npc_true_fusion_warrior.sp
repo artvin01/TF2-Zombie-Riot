@@ -257,7 +257,7 @@ methodmap TrueFusionWarrior < CClotBody
 	}
 	public TrueFusionWarrior(int client, float vecPos[3], float vecAng[3])
 	{
-		TrueFusionWarrior npc = view_as<TrueFusionWarrior>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", false, false, true,_,true)); //giant!
+		TrueFusionWarrior npc = view_as<TrueFusionWarrior>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", false, false, true, true,true)); //giant!
 		
 		i_NpcInternalId[npc.index] = RAIDMODE_TRUE_FUSION_WARRIOR;
 		
