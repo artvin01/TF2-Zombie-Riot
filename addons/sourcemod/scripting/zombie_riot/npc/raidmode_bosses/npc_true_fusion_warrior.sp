@@ -734,23 +734,15 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 									{
 										if (IsInvuln(target))
 										{
+											Custom_Knockback(npc.index, target, 900.0);
 											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-									
-											float vAngles[3], vDirection[3];
-											
-											GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles); 
-											
-											if(vAngles[0] > -45.0)
-											{
-												vAngles[0] = -45.0;
-											}
-											
-											GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
-											
-											ScaleVector(vDirection, 600.0);
-																
-											TeleportEntity(target, NULL_VECTOR, NULL_VECTOR, vDirection); 
+										}
+										else
+										{
+											Custom_Knockback(npc.index, target, 450.0);
+											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 										}
 									}
 								} 
