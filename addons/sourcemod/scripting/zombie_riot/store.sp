@@ -516,6 +516,7 @@ void Store_LoadLevelPerks(int client)
 	Item item;
 	int items = StoreItems.Length;
 	
+	bool found;
 	CookieLoadoutLv.Get(client, buffer, sizeof(buffer));
 	int length = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]));
 	for(int i; i<length; i++)
@@ -530,6 +531,7 @@ void Store_LoadLevelPerks(int client)
 					item.Scaled[client] = 0;
 					item.Owned[client] = 1;
 					StoreItems.SetArray(a, item);
+					found = true;
 					
 					ItemInfo info;
 					item.GetItemInfo(0, info);
@@ -559,6 +561,7 @@ void Store_LoadLevelPerks(int client)
 					item.Scaled[client] = 0;
 					item.Owned[client] = 1;
 					StoreItems.SetArray(a, item);
+					found = true;
 					
 					ItemInfo info;
 					item.GetItemInfo(0, info);
@@ -574,7 +577,7 @@ void Store_LoadLevelPerks(int client)
 		}
 	}
 	
-	if(IsClientInGame(client))
+	if(found && IsClientInGame(client))
 	{
 		PrintToChat(client, "Your last equipped level perks were restored.");
 		if(IsPlayerAlive(client))
