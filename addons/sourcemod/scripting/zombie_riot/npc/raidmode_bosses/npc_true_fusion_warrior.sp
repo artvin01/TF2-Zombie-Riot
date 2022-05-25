@@ -706,11 +706,23 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									if(!npc.Anger)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 12.0 * RaidModeScaling, DMG_SLASH|DMG_CLUB);
+									if(target > MaxClients)
+									{
+										if(!npc.Anger)
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 12.0 * RaidModeScaling * 10.0, DMG_SLASH|DMG_CLUB);
+											
+										if(npc.Anger)
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 14.0 * RaidModeScaling * 10.0, DMG_SLASH|DMG_CLUB);
+									}
+									else
+									{
+										if(!npc.Anger)
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 12.0 * RaidModeScaling, DMG_SLASH|DMG_CLUB);
+											
+										if(npc.Anger)
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 14.0 * RaidModeScaling, DMG_SLASH|DMG_CLUB);									
 										
-									if(npc.Anger)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 14.0 * RaidModeScaling, DMG_SLASH|DMG_CLUB);
+									}
 									
 									// Hit particle
 									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
