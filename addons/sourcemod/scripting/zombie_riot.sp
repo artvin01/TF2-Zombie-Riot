@@ -380,6 +380,7 @@ float f_ExtraDropChanceRarity = 1.0;
 //GLOBAL npc things
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
+bool applied_lastmann_buffs_once = false;
 
 int AmmoData[][] =
 {
@@ -1728,8 +1729,6 @@ public void Spawn_Cured_Grigori()
 
 
 
-
-bool applied_lastmann_buffs_once = false;
 
 void CheckAlivePlayersforward(int killed=0)
 {

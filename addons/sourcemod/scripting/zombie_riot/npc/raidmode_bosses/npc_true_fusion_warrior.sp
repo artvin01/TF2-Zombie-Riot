@@ -440,17 +440,21 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				PF_SetGoalEntity(npc.index, closest);
 			}
 			
-			if(npc.m_flTimebeforekamehameha < GetGameTime() && !npc.Anger)
+			
+			if(ZR_GetWaveCount()+1 > 25)
 			{
-				npc.m_flTimebeforekamehameha = GetGameTime() + 35.0;
-				npc.m_bInKame = true;
-				TrueFusionWarrior_TBB_Ability(npc.index);
-			}
-			else if(npc.m_flTimebeforekamehameha < GetGameTime() && npc.Anger)
-			{
-				npc.m_flTimebeforekamehameha = GetGameTime() + 35.0;
-				npc.m_bInKame = true;
-				TrueFusionWarrior_TBB_Ability_Anger(npc.index);
+				if(npc.m_flTimebeforekamehameha < GetGameTime() && !npc.Anger)
+				{
+					npc.m_flTimebeforekamehameha = GetGameTime() + 35.0;
+					npc.m_bInKame = true;
+					TrueFusionWarrior_TBB_Ability(npc.index);
+				}
+				else if(npc.m_flTimebeforekamehameha < GetGameTime() && npc.Anger)
+				{
+					npc.m_flTimebeforekamehameha = GetGameTime() + 35.0;
+					npc.m_bInKame = true;
+					TrueFusionWarrior_TBB_Ability_Anger(npc.index);
+				}
 			}
 			if(npc.m_bInKame)
 			{
@@ -605,7 +609,10 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
 					npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.15;
-					TrueFusionwarrior_IOC_Invoke(npc.index, closest);
+					
+					if(ZR_GetWaveCount()+1 > 55)
+						TrueFusionwarrior_IOC_Invoke(npc.index, closest);
+						
 					if (npc.m_iAmountProjectiles >= 8)
 					{
 						npc.m_iAmountProjectiles = 0;
@@ -621,7 +628,10 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
-					TrueFusionwarrior_IOC_Invoke(npc.index, closest);
+					
+					if(ZR_GetWaveCount()+1 > 55)
+						TrueFusionwarrior_IOC_Invoke(npc.index, closest);
+						
 					npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.15;
 					if (npc.m_iAmountProjectiles >= 12)
 					{
@@ -630,7 +640,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					}
 				}
 			}
-			if(npc.m_flNextTeleport < GetGameTime() && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && !npc.m_bInKame)
+			if(npc.m_flNextTeleport < GetGameTime() && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && !npc.m_bInKame && ZR_GetWaveCount()+1 > 40)
 			{
 				static float flVel[3];
 				GetEntPropVector(closest, Prop_Data, "m_vecVelocity", flVel);

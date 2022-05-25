@@ -621,6 +621,8 @@ void Waves_Progress()
 						{
 							applied_lastmann_buffs_once = false;
 							DHook_RespawnPlayer(client);
+							TF2_AddCondition(client, TFCond_UberchargedCanteen, 2.0);
+							TF2_AddCondition(client, TFCond_MegaHeal, 2.0);
 						}
 						else if(dieingstate[client] > 0)
 						{
