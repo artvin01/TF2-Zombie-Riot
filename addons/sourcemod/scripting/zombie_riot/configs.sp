@@ -15,6 +15,8 @@ static ArrayList WeaponList;
 
 public void Configs_ConfigsExecuted()
 {
+	LogError("Configs_ConfigsExecuted()");
+	
 	char mapname[64], buffer[PLATFORM_MAX_PATH];
 	GetCurrentMap(mapname, sizeof(mapname));
 	KeyValues kv;
