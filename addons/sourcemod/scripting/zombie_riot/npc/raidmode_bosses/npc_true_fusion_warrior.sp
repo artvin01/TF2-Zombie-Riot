@@ -276,8 +276,14 @@ methodmap TrueFusionWarrior < CClotBody
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		
-		RaidModeScaling *= 0.17; //abit low, inreacing
-		
+		if(RaidModeScaling < 55)
+		{
+			RaidModeScaling *= 0.17; //abit low, inreacing
+		}
+		else
+		{
+			RaidModeScaling *= 0.34;
+		}
 		Raidboss_Clean_Everyone();
 		
 		SDKHook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
@@ -459,7 +465,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			}
 			if(npc.m_bInKame)
 			{
-				npc.FaceTowards(vecTarget, 450.0);
+				npc.FaceTowards(vecTarget, 700.0);
 				PF_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_flSpeed = 0.0;
@@ -850,8 +856,8 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 	FusionWarrior_BEAM_TicksActive[client] = 0;
 
 	FusionWarrior_BEAM_CanUse[client] = true;
-	FusionWarrior_BEAM_CloseDPT[client] = 10.0 * RaidModeScaling;
-	FusionWarrior_BEAM_FarDPT[client] = 8.0 * RaidModeScaling;
+	FusionWarrior_BEAM_CloseDPT[client] = 20.0 * RaidModeScaling;
+	FusionWarrior_BEAM_FarDPT[client] = 18.0 * RaidModeScaling;
 	FusionWarrior_BEAM_MaxDistance[client] = 2000;
 	FusionWarrior_BEAM_BeamRadius[client] = 45;
 	FusionWarrior_BEAM_ColorHex[client] = ParseColor("EEDD44");
@@ -909,8 +915,8 @@ void TrueFusionWarrior_TBB_Ability(int client)
 	FusionWarrior_BEAM_TicksActive[client] = 0;
 
 	FusionWarrior_BEAM_CanUse[client] = true;
-	FusionWarrior_BEAM_CloseDPT[client] = 7.0 * RaidModeScaling;
-	FusionWarrior_BEAM_FarDPT[client] = 6.0 * RaidModeScaling;
+	FusionWarrior_BEAM_CloseDPT[client] = 14.0 * RaidModeScaling;
+	FusionWarrior_BEAM_FarDPT[client] = 12.0 * RaidModeScaling;
 	FusionWarrior_BEAM_MaxDistance[client] = 2000;
 	FusionWarrior_BEAM_BeamRadius[client] = 25;
 	FusionWarrior_BEAM_ColorHex[client] = ParseColor("FFFFFF");
@@ -1330,10 +1336,10 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const color[4]
 		else
 		{
 			if(!b_Anger[client])
-				makeexplosion(client, client, startPosition, "", 90, RoundToCeil(20.0 * RaidModeScaling));
+				makeexplosion(client, client, startPosition, "", 120, RoundToCeil(35.0 * RaidModeScaling));
 				
 			else if(b_Anger[client])
-				makeexplosion(client, client, startPosition, "", 100, RoundToCeil(25.0 * RaidModeScaling));
+				makeexplosion(client, client, startPosition, "", 150, RoundToCeil(50.0 * RaidModeScaling));
 				
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
