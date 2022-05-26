@@ -484,7 +484,7 @@ public bool Building_DispenserWall(int client, int entity)
 	CreateTimer(0.2, Building_Set_HP_Colour, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
 	DataPack pack;
-	CreateDataTimer(0.5, Timer_DroppedBuildingWaitWall, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateDataTimer(0.5, Timer_DroppedBuildingWaitWall, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(client); //Need original client index id please.
 	
@@ -516,7 +516,7 @@ public bool Building_DispenserElevator(int client, int entity)
 	CreateTimer(0.5, Timer_DroppedBuildingWait, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
 	DataPack pack;
-	CreateDataTimer(0.5, Building_Is_Elevator_There, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateDataTimer(0.5, Building_Is_Elevator_There, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(entity);
 	
@@ -549,7 +549,7 @@ public bool Building_AmmoBox(int client, int entity)
 	
 	i_SupportBuildingsBuild[client] += 1;
 	DataPack pack;
-	CreateDataTimer(0.5, Timer_DroppedBuildingWaitAmmobox, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateDataTimer(0.5, Timer_DroppedBuildingWaitAmmobox, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(client); //Need original client index id please.
 	
@@ -582,7 +582,7 @@ public bool Building_ArmorTable(int client, int entity)
 	
 	i_SupportBuildingsBuild[client] += 1;
 	DataPack pack;
-	CreateDataTimer(0.5, Timer_DroppedBuildingWaitArmorTable, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateDataTimer(0.5, Timer_DroppedBuildingWaitArmorTable, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(client); //Need original client index id please.
 	
@@ -618,7 +618,7 @@ public bool Building_PerkMachine(int client, int entity)
 	
 	i_SupportBuildingsBuild[client] += 1;
 	DataPack pack;
-	CreateDataTimer(0.5, Timer_DroppedBuildingWaitPerkMachine, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateDataTimer(0.5, Timer_DroppedBuildingWaitPerkMachine, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(client); //Need original client index id please.
 	
@@ -654,7 +654,7 @@ public bool Building_PackAPunch(int client, int entity)
 	
 	i_SupportBuildingsBuild[client] += 1;
 	DataPack pack;
-	CreateDataTimer(0.5, Timer_DroppedBuildingWaitPackAPunch, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateDataTimer(0.5, Timer_DroppedBuildingWaitPackAPunch, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(client); //Need original client index id please.
 	
@@ -1413,7 +1413,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client) && (StrEqual(buffer, "zr_ammobox") || StrEqual(buffer, "zr_armortable") || StrEqual(buffer, "zr_perkmachine") || StrEqual(buffer, "zr_packapunch")))
 						{
 							DataPack pack;
-							CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+							CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 							pack.WriteCell(EntIndexToEntRef(entity));
 							pack.WriteCell(client); //Need original client index id please.
 							i_SupportBuildingsBuild[client] += 1;
@@ -1425,7 +1425,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						else if(StrEqual(buffer, "zr_barricade")) // do not check for if too many barricades, doesnt make sense to do this anyways.
 						{
 							DataPack pack;
-							CreateDataTimer(0.5, Timer_ClaimedBuildingremoveBarricadeCounterOnDeath, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+							CreateDataTimer(0.5, Timer_ClaimedBuildingremoveBarricadeCounterOnDeath, pack, TIMER_REPEAT);
 							pack.WriteCell(EntIndexToEntRef(entity));
 							pack.WriteCell(client); //Need original client index id please.
 							i_BarricadesBuild[client] += 1;
