@@ -1370,7 +1370,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	// past this point we always supercede;
 	// the attribute being present overrides any other behavior
 	
-	int owner = TF2_GetEntityOwner(originalLauncher);
+	int owner = GetEntPropEnt(originalLauncher, Prop_Send, "m_hOwnerEntity");
 	if (!IsValidEntity(owner)) {
 		return MRES_Supercede;
 	}

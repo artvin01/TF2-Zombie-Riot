@@ -32,6 +32,16 @@ stock void ResetToZero2(any[][] array, int length1, int length2)
 #define Zero(%1)        ResetToZero(%1, sizeof(%1))
 #define Zero2(%1)    ResetToZero2(%1, sizeof(%1), sizeof(%1[]))
 
+enum ParticleAttachment_t {
+	PATTACH_ABSORIGIN = 0,
+	PATTACH_ABSORIGIN_FOLLOW,
+	PATTACH_CUSTOMORIGIN,
+	PATTACH_POINT,
+	PATTACH_POINT_FOLLOW,
+	PATTACH_WORLDORIGIN,
+	PATTACH_ROOTBONE_FOLLOW
+};
+
 stock int abs(int x)
 {
 	return x < 0 ? -x : x;

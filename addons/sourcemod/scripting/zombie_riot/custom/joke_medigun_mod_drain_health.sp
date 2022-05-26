@@ -4,11 +4,6 @@
  * For damaging teammates to work properly, mp_friendlyfire must be set to 1.
  */
 
-#include <tf2attributes>
-#include <stocksoup/tf/client>
-#include <stocksoup/tf/entity_prop_stocks>
-#include <stocksoup/tf/tempents_stocks>
-
 
 Handle g_DHookWeaponPostFrame;
 //Handle g_SDKCallFindEntityInSphere;
@@ -190,7 +185,7 @@ public void Medigun_ClearAll()
 }
 
 public MRESReturn OnMedigunPostFramePost(int medigun) {
-	int owner = TF2_GetEntityOwner(medigun);
+	int owner = GetEntPropEnt(medigun, Prop_Send, "m_hOwnerEntity");
 	if(medigun_heal_delay[owner] < GetGameTime())
 	{
 		medigun_heal_delay[owner] = GetGameTime() + 0.1;
