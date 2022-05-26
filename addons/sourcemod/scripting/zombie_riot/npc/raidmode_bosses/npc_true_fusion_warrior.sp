@@ -382,6 +382,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		DispatchSpawn(entity);
 		AcceptEntityInput(entity, "RoundWin");
 		Music_RoundEnd(entity);
+		SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
 	}
 	
 	npc.m_flNextThinkTime = GetGameTime() + 0.10;
