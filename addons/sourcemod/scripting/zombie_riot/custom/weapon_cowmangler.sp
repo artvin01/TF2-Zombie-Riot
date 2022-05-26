@@ -45,6 +45,12 @@ public void Weapon_Mangler(int client, int weapon, const char[] classname, bool 
 {
 	if(!EscapeMode)
 	{
+		float Energy = GetEntPropFloat(weapon, Prop_Send, "m_flEnergy");
+		
+		Energy -= 5.0;
+		
+		SetEntPropFloat(weapon, Prop_Send, "m_flEnergy", Energy);
+		
 		int new_ammo = GetAmmo(client, 23);
 		if(new_ammo >= 10)
 		{
@@ -68,7 +74,7 @@ public void Weapon_Mangler(int client, int weapon, const char[] classname, bool 
 				Strength[client] *= TF2Attrib_GetValue(address);
 				
 			//TBB_Ability(client);
-			RequestFrame(TBB_Ability_Mangler_1, client);
+			TBB_Ability_Mangler_1(client);
 		}
 		else
 		{
@@ -90,8 +96,8 @@ public void Weapon_Mangler(int client, int weapon, const char[] classname, bool 
 		if(address != Address_Null)
 			Strength[client] *= TF2Attrib_GetValue(address);
 			
-//		TBB_Ability(client);
-		RequestFrame(TBB_Ability_Mangler_1, client);
+		TBB_Ability_Mangler_1(client);
+//		RequestFrame(TBB_Ability_Mangler_1, client);
 	}
 }
 
@@ -238,7 +244,9 @@ static void TBB_Tick(int client)
 	static float playerPos[3];
 	GetClientEyeAngles(client, angles);
 	GetClientEyePosition(client, startPoint);
+	
 	Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, BEAM_TraceWallsOnly);
+	
 	if (TR_DidHit(trace))
 	{
 		TR_GetEndPosition(endPoint, trace);
@@ -268,8 +276,11 @@ static void TBB_Tick(int client)
 		hullMax[0] = -hullMin[0];
 		hullMax[1] = -hullMin[1];
 		hullMax[2] = -hullMin[2];
+		b_LagCompNPC_No_Layers = true;
+		StartLagCompensation_Base_Boss(client, false);
 		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 		CloseHandle(trace);
+		FinishLagCompensation_Base_boss();
 //		int weapon = BEAM_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
 		/*
 		for (int victim = 1; victim < MaxClients; victim++)
@@ -303,8 +314,24 @@ static void TBB_Tick(int client)
 					float damage = BEAM_CloseBuildingDPT[client] + (BEAM_FarBuildingDPT[client]-BEAM_CloseBuildingDPT[client]) * (distance/BEAM_MaxDistance[client]);
 					if (damage < 0)
 						damage *= -1.0;
+						
+					float damage_force[3];
+					damage_force = CalculateDamageForce(vecForward, 10000.0);
+					DataPack pack = new DataPack();
+					pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
+					pack.WriteCell(EntIndexToEntRef(client));
+					pack.WriteCell(EntIndexToEntRef(client));
+					pack.WriteFloat(damage/BEAM_Targets_Hit[client]);
+					pack.WriteCell(DMG_PLASMA);
+					pack.WriteCell(EntIndexToEntRef(weapon_active));
+					pack.WriteFloat(damage_force[0]);
+					pack.WriteFloat(damage_force[1]);
+					pack.WriteFloat(damage_force[2]);
+					pack.WriteFloat(playerPos[0]);
+					pack.WriteFloat(playerPos[1]);
+					pack.WriteFloat(playerPos[2]);
+					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 					
-					SDKHooks_TakeDamage(BEAM_BuildingHit[building], client, client, damage/BEAM_Targets_Hit[client], DMG_PLASMA, weapon_active, CalculateDamageForce(vecForward, 10000.0), playerPos);	// 2048 is DMG_NOGIB?
 					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
 				}
 				else

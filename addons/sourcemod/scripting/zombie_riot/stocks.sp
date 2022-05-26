@@ -2620,3 +2620,29 @@ public bool HitOnlyTargetOrWorld(int entity, int contentsMask, any iExclude)
 	
 	return false;
 }
+
+public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
+{
+	pack.Reset();
+	int Victim = EntRefToEntIndex(pack.ReadCell());
+	int client = EntRefToEntIndex(pack.ReadCell());
+	int inflictor = EntRefToEntIndex(pack.ReadCell());
+	float damage = pack.ReadFloat();
+	int damage_type = pack.ReadCell();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	float damage_force[3];
+	damage_force[0] = pack.ReadFloat();
+	damage_force[1] = pack.ReadFloat();
+	damage_force[2] = pack.ReadFloat();
+	float playerPos[3];
+	playerPos[0] = pack.ReadFloat();
+	playerPos[1] = pack.ReadFloat();
+	playerPos[2] = pack.ReadFloat();
+	
+	if(IsValidEntity(Victim) && IsValidEntity(client) && IsValidEntity(weapon) && IsValidEntity(inflictor))
+	{
+		SDKHooks_TakeDamage(Victim, client, inflictor, damage, damage_type, weapon, damage_force, playerPos);
+	}
+	
+	delete pack;
+}

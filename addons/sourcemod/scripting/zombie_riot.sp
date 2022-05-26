@@ -2478,18 +2478,18 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SDKHook(entity, SDKHook_Spawn, Delete_instantly);
 		}
-		else if(!StrContains(classname, "tf_projectile_energy_ring"))
-		{
-			SDKHook(entity, SDKHook_Spawn, Delete_instantly);
-		}
+//		else if(!StrContains(classname, "tf_projectile_energy_ring"))
+//		{
+//			SDKHook(entity, SDKHook_Spawn, Delete_instantly);
+//		}
 		else if(!StrContains(classname, "entity_medigun_shield"))
 		{
 			SDKHook(entity, SDKHook_Spawn, Delete_instantly);
 		}
-		else if(!StrContains(classname, "tf_projectile_energy_ball"))
-		{
-			SDKHook(entity, SDKHook_Spawn, Delete_instantly);
-		}
+//		else if(!StrContains(classname, "tf_projectile_energy_ball"))
+//		{
+//			SDKHook(entity, SDKHook_Spawn, Delete_instantly);
+//		}
 		else if(!StrContains(classname, "item_powerup_rune"))
 		{
 			SDKHook(entity, SDKHook_Spawn, Delete_instantly);
