@@ -121,7 +121,7 @@ public Action GetClosestSpawners(Handle timer)
 {
 	float f3_PositionOfAll[3];
 	float f3_PositionTemp[3];
-	int i_Diviveby;
+	int i_Diviveby = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] < 0 && IsPlayerAlive(client))
