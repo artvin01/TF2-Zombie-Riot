@@ -497,12 +497,16 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if(TeutonType[victim])
 		return Plugin_Handled;
 		
+	if(attacker <= MaxClients && attacker > 0)	
+		return Plugin_Handled;	
+		
 	float gameTime = GetGameTime();
 	
 	f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
 	
 	if(IsInvuln(victim))	
 		return Plugin_Continue;	
+		
 		
 	float Replicated_Damage;
 	Replicated_Damage = Replicate_Damage_Medications(victim, damage, damagetype);
