@@ -77,7 +77,7 @@ public void Weapon_Star_shooter(int client, int weapon, const char[] classname, 
 		Strength[client] *= TF2Attrib_GetValue(address);
 		
 //	TBB_Ability(client);
-	RequestFrame(TBB_Ability_Star_Shooter, client);
+	TBB_Ability_Star_Shooter(client);
 }
 
 void TBB_Precahce_Star_Shooter()
@@ -254,8 +254,11 @@ static void TBB_Tick(int client)
 		hullMax[0] = -hullMin[0];
 		hullMax[1] = -hullMin[1];
 		hullMax[2] = -hullMin[2];
+		b_LagCompNPC_No_Layers = true;
+		StartLagCompensation_Base_Boss(client, false);
 		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 		CloseHandle(trace);
+		FinishLagCompensation_Base_boss();
 //		int weapon = BEAM_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
 		/*
 		for (int victim = 1; victim < MaxClients; victim++)
@@ -287,7 +290,23 @@ static void TBB_Tick(int client)
 					if (damage < 0)
 						damage *= -1.0;
 					
-					SDKHooks_TakeDamage(BEAM_BuildingHit[building], client, client, damage/BEAM_Targets_Hit[client], DMG_PLASMA, weapon_active, CalculateDamageForce(vecForward, 20000.0), playerPos);	// 2048 is DMG_NOGIB?
+					float damage_force[3];
+					damage_force = CalculateDamageForce(vecForward, 10000.0);
+					DataPack pack = new DataPack();
+					pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
+					pack.WriteCell(EntIndexToEntRef(client));
+					pack.WriteCell(EntIndexToEntRef(client));
+					pack.WriteFloat(damage/BEAM_Targets_Hit[client]);
+					pack.WriteCell(DMG_PLASMA);
+					pack.WriteCell(EntIndexToEntRef(weapon_active));
+					pack.WriteFloat(damage_force[0]);
+					pack.WriteFloat(damage_force[1]);
+					pack.WriteFloat(damage_force[2]);
+					pack.WriteFloat(playerPos[0]);
+					pack.WriteFloat(playerPos[1]);
+					pack.WriteFloat(playerPos[2]);
+					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
+					
 					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
 				}
 				else
