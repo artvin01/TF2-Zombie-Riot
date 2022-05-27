@@ -314,6 +314,7 @@ int i_DyingParticleIndication[MAXPLAYERS + 1]={-1, ...};
 //Needs to be global.
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 float f_ChargeTerroriserSniper[MAXENTITIES];
+bool b_npcspawnprotection[MAXENTITIES];
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE

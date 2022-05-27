@@ -739,12 +739,22 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 		damage = 0.0;
 		return Plugin_Handled;
 	}
+	if(RaidBossActive) //They are ignored anyways
+	{
+		damage = 0.0;
+		return Plugin_Handled;
+	}
+	
+	if(b_thisNpcIsABoss[attacker])
+	{
+		damage *= 3.0;
+	}
 	
 	if(damagetype & DMG_BLAST)
 	{
 		damage *= 3.0; //OTHERWISE EXPLOSIVES ARE EXTREAMLY WEAK!!
 	}
-	
+	/*
 	if(Resistance_for_building_High[entity] > GetGameTime())
 	{
 		damage *= 0.15;
@@ -755,7 +765,7 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 		damage *= 0.30;
 		return Plugin_Changed;
 	}
-	
+	*/
 	return Plugin_Changed;
 }
 

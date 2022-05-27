@@ -579,8 +579,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		
 		if(Resistance_Overall_Low[victim] > gameTime)
 		{
-			Replicated_Damage *= 0.75;
-			damage *= 0.75;
+			Replicated_Damage *= 0.85;
+			damage *= 0.85;
 		}
 			
 		if(Armor_Charge[victim] > 0)

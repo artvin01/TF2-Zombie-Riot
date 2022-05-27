@@ -33,6 +33,7 @@ int i_Wearable4[MAXENTITIES]={-1, ...};
 int i_Wearable5[MAXENTITIES]={-1, ...};
 int i_Wearable6[MAXENTITIES]={-1, ...};
 int i_TeamGlow[MAXENTITIES]={-1, ...};
+int i_SpawnProtectionEntity[MAXENTITIES]={-1, ...};
 float f3_VecPunchForce[MAXENTITIES][3];
 float fl_NextDelayTime[MAXENTITIES];
 bool b_ThisEntityIgnored[MAXENTITIES];
@@ -2208,6 +2209,24 @@ methodmap CClotBody
 		public set(float TempValueForProperty) 	{ b_isGiantWalkCycle[this.index] = TempValueForProperty; }
 	}
 	
+	property int m_iSpawnProtectionEntity
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_SpawnProtectionEntity[this.index]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_SpawnProtectionEntity[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_SpawnProtectionEntity[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	property int m_iTeamGlow
 	{
 		public get()		 
@@ -3388,6 +3407,9 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		SDKUnhook(pThis, SDKHook_Think, Check_If_Stuck);
 		if(IsValidEntity(npc.m_iTeamGlow))
 			RemoveEntity(npc.m_iTeamGlow);
+		
+		if(IsValidEntity(npc.m_iSpawnProtectionEntity))
+			RemoveEntity(npc.m_iSpawnProtectionEntity);
 			
 		if (RaidBossActive == pThis)
 		{
@@ -5871,6 +5893,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_NpcHasDied[entity] = false;
 	b_PlayHurtAnimation[entity] = false;
 	i_CreditsOnKill[entity] = 0;
+	b_npcspawnprotection[entity] = false;
 }
 
 public void Raidboss_Clean_Everyone()

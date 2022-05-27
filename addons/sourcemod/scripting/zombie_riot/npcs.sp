@@ -479,7 +479,15 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					{
 						SetEntProp(entity_Spawner, Prop_Send, "m_bGlowEnabled", false);
 					}
+					CClotBody npc = view_as<CClotBody>(entity_Spawner);
 					
+					b_npcspawnprotection[entity_Spawner] = true;
+					npc.m_iSpawnProtectionEntity = TF2_CreateGlow(npc.index);
+			
+					SetVariantColor(view_as<int>({0, 255, 0, 100}));
+					AcceptEntityInput(npc.m_iSpawnProtectionEntity, "SetGlowColor");
+		
+					CreateTimer(2.0, Remove_Spawn_Protection, EntIndexToEntRef(entity_Spawner), TIMER_FLAG_NO_MAPCHANGE);
 					NPC_AddToArray(entity_Spawner);
 				}
 			}
@@ -545,6 +553,21 @@ public Action Timer_Delayed_SawrunnerSpawn(Handle timer, DataPack pack)
 			b_NpcForcepowerupspawn[entity] = forcepowerup;
 			NPC_AddToArray(entity);
 		}
+	}
+	return Plugin_Handled;
+}
+
+public Action Remove_Spawn_Protection(Handle timer, int ref)
+{
+	int index = EntRefToEntIndex(ref);
+	if(IsValidEntity(index) && index>MaxClients)
+	{
+		CClotBody npc = view_as<CClotBody>(index);
+			
+		if(IsValidEntity(npc.m_iSpawnProtectionEntity))
+			RemoveEntity(npc.m_iSpawnProtectionEntity);
+		
+		b_npcspawnprotection[index] = false;
 	}
 	return Plugin_Handled;
 }
@@ -854,6 +877,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		}	
 	}
 	
+	if(b_npcspawnprotection[victim]) //make them resistant on spawn or else itll just be spawncamping fest
+	{
+		damage *= 0.25;
+	}
 	
 	/*
 		The Bloons:
