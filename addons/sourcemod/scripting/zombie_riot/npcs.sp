@@ -1353,3 +1353,8 @@ void CleanAllAppliedEffects(int entity)
 		i_HowManyBombsOnThisEntity[entity][client] = 0; //to clean on death ofc.
 	}
 }
+
+void CleanAllNpcArray()
+{
+	Zero(f_CooldownForHurtHud);
+}

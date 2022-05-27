@@ -3138,4 +3138,5 @@ public void MapStartResetAll()
 	RaidModeTime = 0.0;
 	f_TimerTickCooldownRaid = 0.0;
 	f_TimerTickCooldownShop = 0.0;
+	CleanAllNpcArray();
 }
