@@ -169,7 +169,7 @@ static void TBB_Ability_Mangler_2(int client)
 	BEAM_FarDPT[client] = 1.0;
 	BEAM_MaxDistance[client] = 2500;
 	BEAM_BeamRadius[client] = 15;
-	BEAM_ColorHex[client] = ParseColor("FF0000");
+	BEAM_ColorHex[client] = ParseColor("4169e1");
 	BEAM_ChargeUpTime[client] = 1;
 	BEAM_CloseBuildingDPT[client] = Strength[client];
 	BEAM_FarBuildingDPT[client] = Strength[client];

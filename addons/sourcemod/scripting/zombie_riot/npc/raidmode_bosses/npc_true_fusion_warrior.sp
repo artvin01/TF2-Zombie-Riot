@@ -882,19 +882,19 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 	{
 		case 1:
 		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", client, 80, _, _, 1.0);					
+			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);					
 		}
 		case 2:
 		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", client, 80, _, _, 1.0);
+			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
 		}
 		case 3:
 		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", client, 80, _, _, 1.0);			
+			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);			
 		}
 		case 4:
 		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", client, 80, _, _, 1.0);
+			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
 		}		
 	}
 			

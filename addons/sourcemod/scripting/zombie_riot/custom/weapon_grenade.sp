@@ -89,7 +89,7 @@ public void Weapon_ShotgunGrenadeLauncher(int client, int weapon, const char[] c
 		if(address != Address_Null)
 			speed *= TF2Attrib_GetValue(address);
 			
-		float extra_accuracy = 4.0;
+		float extra_accuracy = 5.0;
 		
 		address = TF2Attrib_GetByDefIndex(weapon, 106);
 		if(address != Address_Null)
@@ -107,11 +107,29 @@ public void Weapon_ShotgunGrenadeLauncher(int client, int weapon, const char[] c
 					GetClientEyeAngles(client, ang);
 					GetClientEyePosition(client, pos);	
 					
-					ang[0] += GetRandomFloat(-extra_accuracy, extra_accuracy);
-	
-					ang[1] += GetRandomFloat(-extra_accuracy, extra_accuracy);
-				
-					ang[2] += GetRandomFloat(-extra_accuracy, extra_accuracy);
+					switch(repeat)
+					{
+						case 1:
+						{
+							angles[0] += -extra_accuracy;
+							angles[1] += extra_accuracy;
+						}
+						case 2:
+						{
+							angles[0] += extra_accuracy;
+							angles[1] += extra_accuracy;
+						}
+						case 3:
+						{
+							angles[0] += extra_accuracy;
+							angles[1] += -extra_accuracy;
+						}
+						case 4:
+						{
+							angles[0] += -extra_accuracy;
+							angles[1] += -extra_accuracy;
+						}
+					}
 	
 					ang[0] -= 8.0;
 	

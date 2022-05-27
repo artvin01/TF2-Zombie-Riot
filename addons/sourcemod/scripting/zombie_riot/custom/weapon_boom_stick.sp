@@ -1,6 +1,8 @@
 #define HITSCAN_BOOM	  "ambient/explosions/explode_4.wav"
+#define LASER_BOOMSTICK	  "npc/scanner/cbot_energyexplosion1.wav"
 
 static float Strength[MAXTF2PLAYERS];
+static float Accuracy[MAXTF2PLAYERS];
 
 #define MAXENTITIES 2048
 
@@ -34,6 +36,7 @@ static float BEAM_Targets_Hit[MAXTF2PLAYERS];
 void BoomStick_MapPrecache()
 {
 	PrecacheSound(HITSCAN_BOOM);
+	PrecacheSound(LASER_BOOMSTICK);
 	TBB_Precahce_Boomstick();
 }
 
@@ -130,12 +133,13 @@ public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, const char[] 
 			velocity[2] += 100.0; // a little boost to alleviate arcing issues
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 	}
-	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, 1.0, 80);
+	EmitSoundToAll(LASER_BOOMSTICK, client, SNDCHAN_STATIC, 80, _, 1.0);
+	EmitSoundToAll(LASER_BOOMSTICK, client, SNDCHAN_STATIC, 80, _, 1.0);
 	Client_Shake(client, 0, 45.0, 30.0, 0.8);
 	
 	BEAM_Targets_Hit[client] = 0.0;
 	
-	Strength[client] = 112.0;
+	Strength[client] = 6.0;
 				
 	Address address = TF2Attrib_GetByDefIndex(weapon, 1);
 	if(address != Address_Null)
@@ -144,6 +148,14 @@ public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, const char[] 
 	address = TF2Attrib_GetByDefIndex(weapon, 2);
 	if(address != Address_Null)
 		Strength[client] *= TF2Attrib_GetValue(address);
+		
+	float extra_accuracy = 6.5;
+		
+	Accuracy[client] = extra_accuracy;
+	
+	address = TF2Attrib_GetByDefIndex(weapon, 106);
+	if(address != Address_Null)
+		Accuracy[client] *= TF2Attrib_GetValue(address);
 			
 	TBB_Ability_Boomstick(client);
 }
@@ -164,17 +176,17 @@ static void TBB_Ability_Boomstick(int client)
 	BEAM_CanUse[client] = true;
 	BEAM_CloseDPT[client] = 2.0;
 	BEAM_FarDPT[client] = 1.0;
-	BEAM_MaxDistance[client] = 1000;
+	BEAM_MaxDistance[client] = 650;
 	BEAM_BeamRadius[client] = 4;
-	BEAM_ColorHex[client] = ParseColor("FF0000");
+	BEAM_ColorHex[client] = ParseColor("FFA500");
 	BEAM_ChargeUpTime[client] = 1;
 	BEAM_CloseBuildingDPT[client] = Strength[client];
 	BEAM_FarBuildingDPT[client] = Strength[client];
 	BEAM_Duration[client] = 2.5;
 	
 	BEAM_BeamOffset[client][0] = 0.0;
-	BEAM_BeamOffset[client][1] = -8.0;
-	BEAM_BeamOffset[client][2] = 15.0;
+	BEAM_BeamOffset[client][1] = 0.0;
+	BEAM_BeamOffset[client][2] = 0.0;
 
 	BEAM_ZOffset[client] = 0.0;
 	BEAM_UseWeapon[client] = false;
@@ -286,16 +298,48 @@ static void TBB_Tick(int client)
 	static float hullMin[3];
 	static float hullMax[3];
 	static float playerPos[3];
-	GetClientEyeAngles(client, angles);
 	
 	
 	GetClientEyePosition(client, startPoint);
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client, false);
-	for (int repeats = 1; repeats < 6; repeats++)
+	for (int repeats = 1; repeats <= 6; repeats++)
 	{
+		GetClientEyeAngles(client, angles);
 		switch(repeats)
 		{
+			case 1:
+			{
+				angles[0] += -Accuracy[client];
+				angles[1] += Accuracy[client]*2.0;
+			}
+			case 2:
+			{
+				angles[0] += -Accuracy[client];
+				angles[1] += 0.0;
+			}
+			case 3:
+			{
+				angles[0] += -Accuracy[client];
+				angles[1] += -(Accuracy[client]*2.0);
+			}
+			case 4:
+			{
+				angles[0] += Accuracy[client];
+				angles[1] += Accuracy[client]*2.0;
+			}
+			case 5:
+			{
+				angles[0] += Accuracy[client];
+				angles[1] += 0.0;
+			}
+			case 6:
+			{
+				angles[0] += Accuracy[client];
+				angles[1] += -(Accuracy[client]*2.0);
+			}
+		}
+		/*
 			case 1:
 			{
 				angles[0] += -5.0;
@@ -326,7 +370,7 @@ static void TBB_Tick(int client)
 				angles[0] += 5.0;
 				angles[1] += -10.0;
 			}
-		}
+		*/
 		BEAM_Targets_Hit[client] = 0.0;
 		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, BEAM_TraceWallsOnly);
 		if (TR_DidHit(trace))
