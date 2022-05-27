@@ -140,7 +140,11 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 		
 		TBB_Ability_Mangler_2(client);
 	}
-	return MRES_Ignored;
+	SetEntPropFloat(entity, Prop_Send, "m_flChargeBeginTime", 0.0);
+	SetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.5);
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.0001);
+	TF2_RemoveCondition(client, TFCond_Slowed);
+	return MRES_Supercede;
 }
 
 static void TBB_Precahce_Mangler_2()
