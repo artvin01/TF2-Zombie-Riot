@@ -246,7 +246,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			{
 				npc_current_count += 1;
 				CClotBody npcstats = view_as<CClotBody>(entity);
-				if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity])
+				if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity] && RaidBossActive != entity)
 				{
 					if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
 						SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
@@ -1279,7 +1279,7 @@ public void NPC_CheckDead()
 		else
 		{
 			CClotBody npcstats = view_as<CClotBody>(npc_index);
-			if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc_index])
+			if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc_index] && RaidBossActive != entity)
 			{
 				if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
 					SetEntProp(npc_index, Prop_Send, "m_bGlowEnabled", true);

@@ -111,23 +111,23 @@ public void Weapon_ShotgunGrenadeLauncher(int client, int weapon, const char[] c
 					{
 						case 1:
 						{
-							angles[0] += -extra_accuracy;
-							angles[1] += extra_accuracy;
+							ang[0] += -extra_accuracy;
+							ang[1] += extra_accuracy;
 						}
 						case 2:
 						{
-							angles[0] += extra_accuracy;
-							angles[1] += extra_accuracy;
+							ang[0] += extra_accuracy;
+							ang[1] += extra_accuracy;
 						}
 						case 3:
 						{
-							angles[0] += extra_accuracy;
-							angles[1] += -extra_accuracy;
+							ang[0] += extra_accuracy;
+							ang[1] += -extra_accuracy;
 						}
 						case 4:
 						{
-							angles[0] += -extra_accuracy;
-							angles[1] += -extra_accuracy;
+							ang[0] += -extra_accuracy;
+							ang[1] += -extra_accuracy;
 						}
 					}
 	
