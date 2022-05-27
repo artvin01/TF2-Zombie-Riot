@@ -455,7 +455,7 @@ static void TBB_Tick(int client)
 						pack.WriteFloat(playerPos[2]);
 						RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 						
-						BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
+						BEAM_Targets_Hit[client] *= (LASER_AOE_DAMAGE_FALLOFF + 0.35); //Nerf the pierce by alot
 					}
 					else
 						BEAM_BuildingHit[building] = false;
