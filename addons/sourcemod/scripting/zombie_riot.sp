@@ -29,6 +29,7 @@
 #define ZR_MAX_NPCS_ALLIED 64
 #define ZR_MAX_BUILDINGS 128
 #define ZR_MAX_TRAPS 64
+#define ZR_MAX_SPAWNERS 64
 
 // THESE ARE TO TOGGLE THINGS!
 
@@ -286,6 +287,10 @@ bool i_IsABuilding[MAXENTITIES];
 const int i_MaxcountTraps = ZR_MAX_TRAPS;
 int i_ObjectsTraps[ZR_MAX_TRAPS];
 
+//We kinda check these almost 24/7, its better to put them into an array!
+const int i_MaxcountSpawners = ZR_MAX_SPAWNERS;
+int i_ObjectsSpawners[ZR_MAX_SPAWNERS];
+			
 int g_CarriedDispenser[MAXPLAYERS+1];
 int i_BeingCarried[MAXENTITIES];
 
@@ -961,7 +966,17 @@ public void OnPluginStart()
 		if(IsClientInGame(client))
 			CurrentClass[client] = TF2_GetPlayerClass(client);
 	}
-	
+	char path[64];
+	for(int i=MAXENTITIES; i>MaxClients; i--)
+	{
+		if(IsValidEntity(i) && GetEntityClassname(i, path, sizeof(path)))
+		{
+			if(StrEqual(path, "info_player_teamspawn")) //whenever the plugin starts, it should already add these to the list!
+			{
+				OnEntityCreated(i, path);
+			}
+		}
+	}
 	b_BlockPanzerInThisDifficulty = false;
 }
 
@@ -2604,7 +2619,17 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			OnManglerCreated(entity);
 		}
-		
+		else if (!StrContains(classname, "info_player_teamspawn")) 
+		{
+			for (int i = 0; i < ZR_MAX_SPAWNERS; i++)
+			{
+				if (EntRefToEntIndex(i_ObjectsSpawners[i]) <= 0)
+				{
+					i_ObjectsSpawners[i] = EntIndexToEntRef(entity);
+					i = ZR_MAX_SPAWNERS;
+				}
+			}
+		}
 		else if(!StrContains(classname, "obj_"))
 		{
 			npc.bCantCollidieAlly = true;

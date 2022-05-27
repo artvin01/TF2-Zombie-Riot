@@ -169,7 +169,7 @@ public void StartLagCompensation_Base_Boss(int client, bool compensate_players)
 				for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 				{
 					int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-					if(IsValidEntity(entity) && !b_NpcHasDied[entity])
+					if(IsValidEntity(entity) && !b_NpcHasDied[entity] && entity != 0)
 					{
 							// Custom checks for if things should lag compensate (based on things like what team the player is on).
 						if(!WantsLagCompensationOnEntity(entity, client, ViewAngles[client]/*, pEntityTransmitBits*/))

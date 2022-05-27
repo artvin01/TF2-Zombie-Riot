@@ -624,15 +624,15 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 			case 3:
 			{
-				damage *= 0.75;
-				Replicated_Damage *= 0.75;
+				damage *= 0.8;
+				Replicated_Damage *= 0.80;
 				if(Though_Armor)
 					EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 			}
 			case 4:
 			{
-				damage *= 0.65;
-				Replicated_Damage *= 0.65;
+				damage *= 0.75;
+				Replicated_Damage *= 0.75;
 				if(Though_Armor)
 					EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 			}

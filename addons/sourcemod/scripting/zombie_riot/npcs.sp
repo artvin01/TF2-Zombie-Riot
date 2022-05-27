@@ -116,7 +116,7 @@ public void NPC_EntitySpawned(int entity)
 
 static bool b_SpawnIsCloseEnough[MAXENTITIES];
 static float f_ClosestSpawnerLessCooldown[MAXENTITIES];
-
+	
 public Action GetClosestSpawners(Handle timer)
 {
 	float f3_PositionOfAll[3];
@@ -124,7 +124,7 @@ public Action GetClosestSpawners(Handle timer)
 	int i_Diviveby = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] < 0 && IsPlayerAlive(client))
+		if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0 && IsPlayerAlive(client))
 		{
 			i_Diviveby += 1;
 			
@@ -139,54 +139,76 @@ public Action GetClosestSpawners(Handle timer)
 	f3_PositionOfAll[0] /= float(i_Diviveby) + 0.00001;
 	f3_PositionOfAll[1] /= float(i_Diviveby) + 0.00001;
 	f3_PositionOfAll[2] /= float(i_Diviveby) + 0.00001;
-	
-	int i_Spawner_Indexes[MAXSPAWNERSACTIVE];
+	/*
+	float PositonBeam[3];
+	PositonBeam = f3_PositionOfAll;
+	PositonBeam[2] += 50;
+	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+	TE_SetupBeamPoints(f3_PositionOfAll, PositonBeam, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 2.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+	TE_SendToAll();
+	*/
+	int i_Spawner_Indexes[MAXSPAWNERSACTIVE + 1];
 	float TargetDistance = 0.0; 
 	float TargetLocation[3];
 	int ClosestTarget = -1; 
-	int entity = MaxClients + 1;
-	
-	for(int Repeats=0; Repeats<MAXSPAWNERSACTIVE; Repeats++)
+
+	for(int Repeats=1; Repeats<=MAXSPAWNERSACTIVE; Repeats++)
 	{
-		while ((entity = FindEntityByClassname(entity, "info_player_teamspawn")) != -1)
+		for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
 		{
-			if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
+			int entity = EntRefToEntIndex(i_ObjectsSpawners[entitycount]);
+			if(IsValidEntity(entity) && entity != 0)
 			{
 				bool Found = false;
-				for(int Repeats_anti=0; Repeats_anti<Repeats; Repeats_anti++)
+				if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
 				{
-					if(i_Spawner_Indexes[Repeats_anti] == entity)
+					for(int Repeats_anti=1; Repeats_anti<=Repeats; Repeats_anti++)
 					{
-						Found = true;
-						break;
+						if(i_Spawner_Indexes[Repeats_anti] == entity)
+						{
+							Found = true;
+							break;
+						}
 					}
-				}
-				if(Found)
-				{
-					continue;
-				}
-				b_SpawnIsCloseEnough[entity] = false;
-				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-						
-						
-				float distance = GetVectorDistance( f3_PositionOfAll, TargetLocation, true); 
-				if (TargetDistance) 
-				{
-					if( distance < TargetDistance ) 
+					if(Found)
+					{
+						continue;
+					}
+					b_SpawnIsCloseEnough[entity] = false;
+					GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+					/*
+					PositonBeam = TargetLocation;
+					TargetLocation[2] += 50;
+					PositonBeam[2] += 100;
+					TE_SetupBeamPoints(TargetLocation, PositonBeam, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 2.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 0, 255}), 30);
+					TE_SendToAll();
+					*/
+					float distance = GetVectorDistance( f3_PositionOfAll, TargetLocation, true); 
+					if (TargetDistance) 
+					{
+						if( distance < TargetDistance ) 
+						{
+							ClosestTarget = entity; 
+							TargetDistance = distance;		  
+						}
+					} 
+					else 
 					{
 						ClosestTarget = entity; 
-						TargetDistance = distance;		  
-					}
-				} 
-				else 
-				{
-					ClosestTarget = entity; 
-					TargetDistance = distance;
-				}				
+						TargetDistance = distance;
+					}				
+				}
 			}
 		}
 		if(IsValidEntity(ClosestTarget))
 		{
+			/*
+			GetEntPropVector(ClosestTarget, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+			PositonBeam = TargetLocation;
+			PositonBeam[2] += 50;
+			TE_SetupBeamPoints(TargetLocation, PositonBeam, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 2.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 255, 255, 255}), 30);
+			TE_SendToAll();
+			*/
 			f_ClosestSpawnerLessCooldown[ClosestTarget] = float(Repeats) / 2.0;
 			b_SpawnIsCloseEnough[ClosestTarget] = true;
 			i_Spawner_Indexes[Repeats] = ClosestTarget;
@@ -201,7 +223,6 @@ public Action GetClosestSpawners(Handle timer)
 public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 {
 	bool found;
-	int entity = MaxClients+1;
 	/*
 	int limit = 10 + RoundToCeil(float(Waves_GetRound())/2.3);
 	*/
@@ -240,20 +261,24 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		
 	if(!panzer)
 	{
-		while((entity=FindEntityByClassname(entity, "base_boss")) != -1)
+		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
 		{
-			if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
+			if(IsValidEntity(entity) && entity != 0)
 			{
-				npc_current_count += 1;
-				CClotBody npcstats = view_as<CClotBody>(entity);
-				if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity] && RaidBossActive != entity)
+				if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 				{
-					if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
-						SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
-					else
-						SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
+					npc_current_count += 1;
+					CClotBody npcstats = view_as<CClotBody>(entity);
+					if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity] && RaidBossActive != entity)
+					{
+						if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
+							SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
+						else
+							SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
+					}
+					found = true;
 				}
-				found = true;
 			}
 		}
 		//emercency stop. 
@@ -268,14 +293,19 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	float gameTime = GetGameTime();
 	ArrayList list = new ArrayList();
 	int Active_Spawners = 0;
-	while((entity=FindEntityByClassname(entity, "info_player_teamspawn")) != -1)
+	int entity_Spawner = -1;
+	for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++)
 	{
-		if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2 && b_SpawnIsCloseEnough[entity])
+		entity_Spawner = EntRefToEntIndex(i_ObjectsSpawners[entitycount]);
+		if(IsValidEntity(entity_Spawner) && entity_Spawner != 0)
 		{
-			Active_Spawners += 1;
-			if(f_SpawnerCooldown[entity] < gameTime)
+			if(!GetEntProp(entity_Spawner, Prop_Data, "m_bDisabled") && GetEntProp(entity_Spawner, Prop_Data, "m_iTeamNum") != 2 && b_SpawnIsCloseEnough[entity_Spawner])
 			{
-				list.Push(entity);
+				Active_Spawners += 1;
+				if(f_SpawnerCooldown[entity_Spawner] < gameTime)
+				{
+					list.Push(entity_Spawner);
+				}
 			}
 		}
 	}
@@ -308,15 +338,15 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		}
 	}
 	
-	entity = list.Length;
-	if(entity)
+	entity_Spawner = list.Length;
+	if(entity_Spawner)
 	{
 		int health, isBoss;
 		if(panzer)
 		{
 			int what_boss = GetRandomInt(0,1);
 			
-			entity = list.Get(GetRandomInt(0, entity-1));
+			entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
 			isBoss = false;
 			int deathforcepowerup = 0;
 			if(panzer_warning)
@@ -377,12 +407,12 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			if(what_boss == 1)
 				health /= 2;
 			
-			f_SpawnerCooldown[entity] = gameTime + 2.0;
+			f_SpawnerCooldown[entity_Spawner] = gameTime + 2.0;
 			if(what_boss == 0)
 			{	
 				DataPack pack;
 				CreateDataTimer(2.0, Timer_Delayed_PanzerSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
-				pack.WriteCell(EntIndexToEntRef(entity));
+				pack.WriteCell(EntIndexToEntRef(entity_Spawner));
 				pack.WriteCell(isBoss);		
 				pack.WriteCell(health);	
 				pack.WriteCell(deathforcepowerup);
@@ -391,7 +421,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			{			
 				DataPack pack;
 				CreateDataTimer(2.0, Timer_Delayed_SawrunnerSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
-				pack.WriteCell(EntIndexToEntRef(entity));
+				pack.WriteCell(EntIndexToEntRef(entity_Spawner));
 				pack.WriteCell(isBoss);		
 				pack.WriteCell(health);	
 				pack.WriteCell(deathforcepowerup);			
@@ -402,32 +432,32 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			Enemy enemy;
 			if(Waves_GetNextEnemy(enemy))
 			{
-				entity = list.Get(GetRandomInt(0, entity-1));
-				f_SpawnerCooldown[entity] = gameTime+(2.0 - (Active_Spawners_Calculate / f_ClosestSpawnerLessCooldown[entity]));
+				entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
+				f_SpawnerCooldown[entity_Spawner] = gameTime+(2.0 - (Active_Spawners_Calculate / f_ClosestSpawnerLessCooldown[entity_Spawner]));
 				
-				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
-				GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+				GetEntPropVector(entity_Spawner, Prop_Data, "m_vecOrigin", pos);
+				GetEntPropVector(entity_Spawner, Prop_Data, "m_angRotation", ang);
 				
-				entity = Npc_Create(enemy.Index, -1, pos, ang, enemy.Data);
-				if(entity != -1)
+				entity_Spawner = Npc_Create(enemy.Index, -1, pos, ang, enemy.Data);
+				if(entity_Spawner != -1)
 				{
 					if(enemy.Is_Outlined)
 					{
-						b_thisNpcHasAnOutline[entity] = true;
+						b_thisNpcHasAnOutline[entity_Spawner] = true;
 					}
 					
 					if(enemy.Is_Immune_To_Nuke)
 					{
-						b_ThisNpcIsImmuneToNuke[entity] = true;
+						b_ThisNpcIsImmuneToNuke[entity_Spawner] = true;
 					}
 			
 					if(enemy.Health)
 					{
-						SetEntProp(entity, Prop_Data, "m_iMaxHealth", enemy.Health);
-						SetEntProp(entity, Prop_Data, "m_iHealth", enemy.Health);
+						SetEntProp(entity_Spawner, Prop_Data, "m_iMaxHealth", enemy.Health);
+						SetEntProp(entity_Spawner, Prop_Data, "m_iHealth", enemy.Health);
 					}
 					
-					CClotBody npcstats = view_as<CClotBody>(entity);
+					CClotBody npcstats = view_as<CClotBody>(entity_Spawner);
 					
 					if(enemy.Is_Boss)
 					{
@@ -443,14 +473,14 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					
 					if(enemy.Is_Boss || enemy.Is_Outlined)
 					{
-						SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
+						SetEntProp(entity_Spawner, Prop_Send, "m_bGlowEnabled", true);
 					}
 					else
 					{
-						SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
+						SetEntProp(entity_Spawner, Prop_Send, "m_bGlowEnabled", false);
 					}
 					
-					NPC_AddToArray(entity);
+					NPC_AddToArray(entity_Spawner);
 				}
 			}
 			else if(!found)

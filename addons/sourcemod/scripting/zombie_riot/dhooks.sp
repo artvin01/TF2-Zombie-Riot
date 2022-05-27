@@ -675,7 +675,7 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-		if(IsValidEntity(entity))
+		if (IsValidEntity(entity) && entity != 0)
 		{
 			if(!Moved_Building[entity]) 
 			{
@@ -694,7 +694,7 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
 	{
 		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied))
+		if (IsValidEntity(baseboss_index_allied) && baseboss_index_allied != 0)
 		{
 			if(!Moved_Building[baseboss_index_allied]) 
 			{
@@ -711,7 +711,7 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++)
 		{
 			int baseboss = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-			if (IsValidEntity(baseboss))
+			if (IsValidEntity(baseboss) && baseboss != 0)
 			{
 				if(!Moved_Building[baseboss]) 
 				{
@@ -753,7 +753,7 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-			if(IsValidEntity(entity))
+			if (IsValidEntity(entity) && entity != 0)
 			{
 				if(Moved_Building[entity]) 
 				{
@@ -768,7 +768,7 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
 	{
 		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if(IsValidEntity(baseboss_index_allied))
+		if (IsValidEntity(baseboss_index_allied) && baseboss_index_allied != 0)
 		{
 			if(Moved_Building[baseboss_index_allied]) 
 			{
@@ -797,7 +797,7 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 		for(int entitycount_again; entitycount_again<i_MaxcountNpc; entitycount_again++)
 		{
 			int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again]);
-			if(IsValidEntity(baseboss_index_allied))
+			if (IsValidEntity(baseboss_index_allied) && baseboss_index_allied != 0)
 			{
 				if(Moved_Building[baseboss_index_allied]) 
 				{
