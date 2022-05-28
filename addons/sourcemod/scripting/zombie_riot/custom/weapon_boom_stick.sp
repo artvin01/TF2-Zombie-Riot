@@ -181,7 +181,7 @@ static void TBB_Ability_Boomstick(int client)
 	BEAM_ColorHex[client] = ParseColor("FFA500");
 	BEAM_ChargeUpTime[client] = 1;
 	BEAM_CloseBuildingDPT[client] = Strength[client];
-	BEAM_FarBuildingDPT[client] = Strength[client] * 0.6;
+	BEAM_FarBuildingDPT[client] = Strength[client] * 0.85;
 	BEAM_Duration[client] = 2.5;
 	
 	BEAM_BeamOffset[client][0] = 0.0;
