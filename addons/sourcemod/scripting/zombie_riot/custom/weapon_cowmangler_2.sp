@@ -86,7 +86,7 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 			
 			Strength[client] = 112.0;
 			
-			Strength[client] *= 3.0;
+			Strength[client] *= 4.0;
 					
 			Address address = TF2Attrib_GetByDefIndex(entity, 1);
 			if(address != Address_Null)
@@ -120,7 +120,7 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 			
 		Strength[client] = 112.0;
 		
-		Strength[client] *= 5.0;
+		Strength[client] *= 4.0;
 				
 		Address address = TF2Attrib_GetByDefIndex(entity, 1);
 		if(address != Address_Null)
@@ -172,7 +172,7 @@ static void TBB_Ability_Mangler_2(int client)
 	BEAM_FarDPT[client] = 1.0;
 	BEAM_MaxDistance[client] = 2500;
 	BEAM_BeamRadius[client] = 15;
-	BEAM_ColorHex[client] = ParseColor("4169e1");
+	BEAM_ColorHex[client] = ParseColor("4169E1");
 	BEAM_ChargeUpTime[client] = 1;
 	BEAM_CloseBuildingDPT[client] = Strength[client];
 	BEAM_FarBuildingDPT[client] = Strength[client];
