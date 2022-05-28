@@ -1035,7 +1035,7 @@ public void OnPluginEnd()
 	
 }
 
-bool Reload_Plugin_Temp_Fix = false;
+//bool Reload_Plugin_Temp_Fix = false;
 
 public Action OnTaunt(int client, const char[] command, int args)
 {
@@ -1135,6 +1135,7 @@ public void OnMapStart()
 	Grenade_Custom_Precache();
 	BoomStick_MapPrecache();
 	Charged_Handgun_Map_Precache();
+	TBB_Precahce_Mangler_2();
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
@@ -1155,7 +1156,7 @@ public void OnMapEnd()
 public void OnConfigsExecuted()
 {
 	RequestFrame(Configs_ConfigsExecuted);
-	
+	/*
 	if(Reload_Plugin_Temp_Fix)
 	{
 		ServerCommand("sm plugins reload zombie_riot");
@@ -1165,7 +1166,7 @@ public void OnConfigsExecuted()
 	{
 		Reload_Plugin_Temp_Fix = true;
 	}
-	
+	*/
 }
 public Action OnReloadBlockNav(int args)
 {
