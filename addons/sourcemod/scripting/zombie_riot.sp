@@ -2488,27 +2488,27 @@ public void OnEntityCreated(int entity, const char[] classname)
 		
 		if(!StrContains(classname, "env_entity_dissolver"))
 		{
-			SDKHook(entity, SDKHook_Spawn, Delete_instantly_Disolve);
+			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly_Disolve);
 		}
 		else if(!StrContains(classname, "item_currencypack_custom"))
 		{
-			SDKHook(entity, SDKHook_Spawn, Delete_instantly);
+			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
-//		else if(!StrContains(classname, "tf_projectile_energy_ring"))
-//		{
-//			SDKHook(entity, SDKHook_Spawn, Delete_instantly);
-//		}
+		else if(!StrContains(classname, "tf_projectile_energy_ring"))
+		{
+			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
+		}
 		else if(!StrContains(classname, "entity_medigun_shield"))
 		{
-			SDKHook(entity, SDKHook_Spawn, Delete_instantly);
+			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
-//		else if(!StrContains(classname, "tf_projectile_energy_ball"))
-//		{
-//			SDKHook(entity, SDKHook_Spawn, Delete_instantly);
-//		}
+		else if(!StrContains(classname, "tf_projectile_energy_ball"))
+		{
+			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
+		}
 		else if(!StrContains(classname, "item_powerup_rune"))
 		{
-			SDKHook(entity, SDKHook_Spawn, Delete_instantly);
+			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
 		else if(!StrContains(classname, "tf_projectile_spellfireball"))
 		{
@@ -2524,7 +2524,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "vgui_screen")) //Delete dispenser screen cut its really not needed at all, just takes up stuff for no reason
 		{
-			SDKHook(entity, SDKHook_Spawn, Delete_instantly);
+			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
 		else if(!StrContains(classname, "base_boss"))
 		{

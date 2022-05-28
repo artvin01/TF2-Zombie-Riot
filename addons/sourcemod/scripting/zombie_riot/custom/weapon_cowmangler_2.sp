@@ -61,13 +61,13 @@ static float BEAM_Targets_Hit[MAXTF2PLAYERS];
 public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 {	
 	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
-	
+	/*
 	float Energy = GetEntPropFloat(entity, Prop_Send, "m_flEnergy");
 		
 	Energy -= 20.0;
 		
 	SetEntPropFloat(entity, Prop_Send, "m_flEnergy", Energy);
-	
+	*/
 	if(!EscapeMode)
 	{
 		int new_ammo = GetAmmo(client, 23);
@@ -140,11 +140,14 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 		
 		TBB_Ability_Mangler_2(client);
 	}
+	/*
 	SetEntPropFloat(entity, Prop_Send, "m_flChargeBeginTime", 0.0);
 	SetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.5);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.0001);
 	TF2_RemoveCondition(client, TFCond_Slowed);
 	return MRES_Supercede;
+	*/
+	return MRES_Ignored;
 }
 
 static void TBB_Precahce_Mangler_2()
