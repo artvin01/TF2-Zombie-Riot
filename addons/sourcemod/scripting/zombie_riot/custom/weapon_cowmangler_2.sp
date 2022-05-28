@@ -18,7 +18,6 @@ public void OnPluginStartMangler()
 	PrecacheSound("weapons/physcannon/superphys_launch4.wav", true);
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
-	TBB_Precahce_Mangler_2();
 }
 
 void OnManglerCreated(int entity) 
@@ -150,7 +149,7 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 	return MRES_Ignored;
 }
 
-static void TBB_Precahce_Mangler_2()
+void TBB_Precahce_Mangler_2()
 {
 	Beam_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
 	Beam_Glow = PrecacheModel("sprites/glow02.vmt", true);
