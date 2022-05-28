@@ -19,20 +19,14 @@ int g_OffsetWeaponPunchAngle;
 */
 void DHook_Setup()
 {
-		
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
-	/*
-	//Ty mikush again :)
-	g_OffsetWeaponMode = gamedata.GetOffset("CTFWeaponBase::m_iWeaponMode");
-	g_OffsetWeaponInfo = gamedata.GetOffset("CTFWeaponBase::m_pWeaponInfo");
-	g_OffsetWeaponPunchAngle = gamedata.GetOffset("WeaponData_t::m_flPunchAngle");
-	*/
 	
 	DHook_CreateDetour(gamedata, "CTFPlayer::CanAirDash", DHook_CanAirDashPre);
 	DHook_CreateDetour(gamedata, "CTFPlayer::DropAmmoPack", DHook_DropAmmoPackPre);
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetMaxAmmo", DHook_GetMaxAmmoPre);
 	DHook_CreateDetour(gamedata, "CTFPlayer::IsPlayerClass", DHook_IsPlayerClassPre);
+	
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
 	#if !defined NoSendProxyClass
@@ -42,14 +36,11 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::FindTarget", DHook_SentryFind_Target, _);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::Fire", DHook_SentryFire_Pre, DHook_SentryFire_Post);
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
-	DHook_CreateDetour(gamedata, "CTFPlayerShared::Disguise", DHook_BlockDisguising, _);
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookRocketExplode = DHook_CreateVirtual(gamedata, "CTFBaseRocket::Explode");
 	g_DHookFireballExplode = DHook_CreateVirtual(gamedata, "CTFProjectile_SpellFireball::Explode");
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
-
-//	DHook_CreateDetour(gamedata, "CTFBaseBoss::BossThink", _, DHook_BlockThink);
 
 	ForceRespawn = DynamicHook.FromConf(gamedata, "CBasePlayer::ForceRespawn");
 	if(!ForceRespawn)
@@ -65,20 +56,15 @@ void DHook_Setup()
 	FrameUpdatePostEntityThink = DynamicHook.FromConf(gamedata, "CGameRules::FrameUpdatePostEntityThink");
 	if(!FrameUpdatePostEntityThink)
 		LogError("[Gamedata] Could not find CGameRules::FrameUpdatePostEntityThink");
-	/*
-	GameData gamedata_mvm = LoadGameConfigFile("mannvsmann");	
-	CreateDynamicDetour(gamedata_mvm, "CTFGameRules::GameModeUsesUpgrades", _, DHookCallback_GameModeUsesUpgrades_Post);
-	CreateDynamicDetour(gamedata_mvm, "CPopulationManager::Update", DHookCallback_PopulationManagerUpdate_Pre, _);
-	*/
+	
 	delete gamedata;
 	
 	GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
-//	DHook_CreateDetour(gamedata, "CLagCompensationManager::StartLagCompensation", DHook_StartLagCompensationPre, DHook_StartLagCompensationPost);
-	
+
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::StartLagCompensation", StartLagCompensationPre, StartLagCompensationPost);
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FinishLagCompensation", FinishLagCompensation, _);
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FrameUpdatePostEntityThink_SIGNATURE", _, LagCompensationThink);
-	
+
 	delete gamedata_lag_comp;
 	
 }
@@ -392,12 +378,6 @@ I suspect that somehow someone got disgusied and thus the sendproxy regarding cl
 i will keep it updated incase this didnt work.
 
 */
-public MRESReturn DHook_BlockDisguising(Address manager) 
-{
-	PrintToServer("Someone tried to disguise, Block it!");
-	return MRES_Supercede;
-}
-
 
 //LAG COMP SECTION! Kinda VERY important.
 

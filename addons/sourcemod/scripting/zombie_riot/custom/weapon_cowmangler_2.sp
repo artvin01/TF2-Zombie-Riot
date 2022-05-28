@@ -61,13 +61,13 @@ static float BEAM_Targets_Hit[MAXTF2PLAYERS];
 public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 {	
 	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
-	/*
+	
 	float Energy = GetEntPropFloat(entity, Prop_Send, "m_flEnergy");
 		
 	Energy -= 20.0;
 		
 	SetEntPropFloat(entity, Prop_Send, "m_flEnergy", Energy);
-	*/
+	
 	if(!EscapeMode)
 	{
 		int new_ammo = GetAmmo(client, 23);

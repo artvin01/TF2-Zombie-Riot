@@ -45,13 +45,13 @@ public void Weapon_Mangler(int client, int weapon, const char[] classname, bool 
 {
 	if(!EscapeMode)
 	{
-		/*
+		
 		float Energy = GetEntPropFloat(weapon, Prop_Send, "m_flEnergy");
 		
 		Energy -= 5.0;
 		
 		SetEntPropFloat(weapon, Prop_Send, "m_flEnergy", Energy);
-		*/
+		
 		int new_ammo = GetAmmo(client, 23);
 		if(new_ammo >= 10)
 		{

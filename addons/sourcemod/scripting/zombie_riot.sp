@@ -965,7 +965,9 @@ public void OnPluginStart()
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))
+		{
 			CurrentClass[client] = TF2_GetPlayerClass(client);
+		}
 	}
 	char path[64];
 	for(int i=MAXENTITIES; i>MaxClients; i--)
@@ -1033,7 +1035,7 @@ public void OnPluginEnd()
 	
 }
 
-//bool Reload_Plugin_Temp_Fix = false;
+bool Reload_Plugin_Temp_Fix = false;
 
 public Action OnTaunt(int client, const char[] command, int args)
 {
@@ -1142,6 +1144,7 @@ public void OnMapStart()
 	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	CreateTimer(2.0, GetClosestSpawners, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 }
+
 public void OnMapEnd()
 {
 	OnRoundEnd(null, NULL_STRING, false);
@@ -1152,7 +1155,7 @@ public void OnMapEnd()
 public void OnConfigsExecuted()
 {
 	RequestFrame(Configs_ConfigsExecuted);
-/*	
+	
 	if(Reload_Plugin_Temp_Fix)
 	{
 		ServerCommand("sm plugins reload zombie_riot");
@@ -1162,7 +1165,7 @@ public void OnConfigsExecuted()
 	{
 		Reload_Plugin_Temp_Fix = true;
 	}
-*/
+	
 }
 public Action OnReloadBlockNav(int args)
 {
@@ -2470,6 +2473,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 {
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		
 		CClotBody npc = view_as<CClotBody>(entity);
 		b_SentryIsCustom[entity] = false;
 		b_Is_Npc_Rocket[entity] = false;
@@ -2605,13 +2609,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		//dontttttttt, npcs need to set this on their own.
 			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
 		}
-		/*
-		else if(!StrContains(classname, "func_respawnroomvisualizer"))
-		{
-			//please work so projectiles go through you
-			b_IsAlliedNpc[entity] = true;
-		}
-		*/
 		else if (!StrContains(classname, "tf_weapon_medigun")) 
 		{
 			Medigun_OnEntityCreated(entity);
@@ -2620,6 +2617,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			OnManglerCreated(entity);
 		}
+		
 		else if (!StrContains(classname, "info_player_teamspawn")) 
 		{
 			for (int i = 0; i < ZR_MAX_SPAWNERS; i++)
@@ -2645,6 +2643,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			}
 			SDKHook(entity, SDKHook_SpawnPost, Building_EntityCreatedPost);
 		}
+		
 	}
 	
 }
