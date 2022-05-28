@@ -5801,6 +5801,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Wearable5[entity] = -1;
 	i_Wearable6[entity] = -1;
 	i_TeamGlow[entity] = -1;
+	i_SpawnProtectionEntity[entity] = -1;
 	b_DissapearOnDeath[entity] = false;
 	b_IsGiant[entity] = false;
 	b_Pathing[entity] = false;
