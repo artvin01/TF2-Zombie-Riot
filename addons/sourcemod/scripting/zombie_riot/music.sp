@@ -220,7 +220,7 @@ void Music_PostThink(int client)
 			}
 		}
 		
-		if(RaidBossActive)
+		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 		{
 			intencity += 9999; //absolute max.
 			GlobalIntencity += 9999;
