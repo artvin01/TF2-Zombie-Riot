@@ -1,0 +1,241 @@
+"Pharses"
+{
+	"Bob The Second"
+	{
+		"en"	"Bob The Second"
+	}
+	"Bob The Second:"
+	{
+		"en"	"Bob The Second:"
+	}
+	"Pistol Ammo"
+	{
+		"en"	"Pistol Ammo"
+	}
+	"Bob The Second is not friendly and follows you!"
+	{
+		"en"	"Bob The Second is not friendly and follows you!"
+	}
+	"Use voice Commands to command him!"
+	{
+		"en"	"Use voice Commands to command him!"
+	}
+	"Bob The Second is friendly and follows you!"
+	{
+		"en"	"Bob The Second is friendly and follows you!"
+	}
+	"Bob The Second is not friendly and doesn't follow you!"
+	{
+		"en"	"Bob The Second is not friendly and doesn't follow you!"
+	}
+	"Bob The Second is friendly and doesn't follow you!"
+	{
+		"en"	"Bob The Second is friendly and doesn't follow you!"
+	}
+	"Bob The Second is not friendly and follows you! BUT stands still."
+	{
+		"en"	"Bob The Second is not friendly and follows you! BUT stands still."
+	}
+	"Bob The Second is friendly and follows you! BUT stands still"
+	{
+		"en"	"Bob The Second is friendly and follows you! BUT stands still"
+	}
+	"Bob The Second is not friendly and doesn't follow you! BUT stands still"
+	{
+		"en"	"Bob The Second is not friendly and doesn't follow you! BUT stands still"
+	}
+	"Bob The Second is friendly and doesn't follow you! BUT stands still"
+	{
+		"en"	"Bob The Second is friendly and doesn't follow you! BUT stands still"
+	}
+
+
+	"I got them!"
+	{
+		"en"	"I got them!"
+	}
+	"Take This!"
+	{
+		"en"	"Take This!"
+	}
+	"I'll stand beside you, sir!"
+	{
+		"en"	"I'll stand beside you, sir!"
+	}
+	"I'll guard you, sir!"
+	{
+		"en"	"I'll guard you, sir!"
+	}
+	"I'm pretty bored..."
+	{
+		"en"	"I'm pretty bored..."
+	}
+	"Reloading near you, sir!"
+	{
+		"en"	"Reloading near you, sir!"
+	}
+	"I hope your day is going well!"
+	{
+		"en"	"I hope your day is going well!"
+	}
+	"Sometimes i wonder why this war exists."
+	{
+		"en"	"Sometimes i wonder why this war exists."
+	}
+	"Just saying, never give up!"
+	{
+		"en"	"Just saying, never give up!"
+	}
+	"Could i borrow your gun perhaps?"
+	{
+		"en"	"Could i borrow your gun perhaps?"
+	}
+	"Im pretty confident in my abilities!"
+	{
+		"en"	"Reloading near you, sir!"
+	}
+	"Pick up that can."
+	{
+		"en"	"Pick up that can."
+	}
+	"On my way, sir!"
+	{
+		"en"	"On my way, sir!"
+	}
+	"Im watching there, dont worry!"
+	{
+		"en"	"Im watching there, dont worry!"
+	}
+	"Spy? I'm keeping my eye there."
+	{
+		"en"	"Spy? I'm keeping my eye there."
+	}
+	"Sentry here? Its better to wait for teammates to engage so i'll look."
+	{
+		"en"	"Sentry here? Its better to wait for teammates to engage so i'll look."
+	}
+	"I cant build a teleporter, sorry."
+	{
+		"en"	"I cant build a teleporter, sorry."
+	}
+	"I cant build a dispenser, sorry."
+	{
+		"en"	"I cant build a dispenser, sorry."
+	}
+	"I cant build a sentry, sorry."
+	{
+		"en"	"I cant build a sentry, sorry."
+	}
+	"I can't give you ubercharge..."
+	{
+		"en"	"I can't give you ubercharge..."
+	}
+	"Standing right here!"
+	{
+		"en"	"Standing right here!"
+	}
+	"I'm on my move again!"
+	{
+		"en"	"I'm on my move again!"
+	}
+	"I am coming !"
+	{
+		"en"	"I am coming !"
+	}
+	"I'm already here!"
+	{
+		"en"	"I'm already here!"
+	}
+	"Follow? Sure!"
+	{
+		"en"	"Follow? Sure!"
+	}
+	"My left or yours?"
+	{
+		"en"	"My left or yours?"
+	}
+	"My right or yours?"
+	{
+		"en"	"My right or yours?"
+	}
+	"Cheers to you too, like a drink, get it?"
+	{
+		"en"	"Cheers to you too, like a drink, get it?"
+	}
+	"Ah come on, lighten your mood!"
+	{
+		"en"	"Ah come on, lighten your mood!"
+	}
+	"Positivity is the way to go!"
+	{
+		"en"	"Positivity is the way to go!"
+	}
+	"Why negative? Nothing to worry about!"
+	{
+		"en"	"Why negative? Nothing to worry about!"
+	}
+	"Not Follow? Sure!"
+	{
+		"en"	"Not Follow? Sure!"
+	}
+	"I'll hurt no one!"
+	{
+		"en"	"I'll hurt no one!"
+	}
+	"I'll attack once more!"
+	{
+		"en"	"I'll attack once more!"
+	}
+	"I try my best to aim well!"
+	{
+		"en"	"I try my best to aim well!"
+	}
+	"I'll attack once more!"
+	{
+		"en"	"I'll attack once more!"
+	}
+	"You are doing a good job aswell!"
+	{
+		"en"	"You are doing a good job aswell!"
+	}
+	"Here, have this medkit!"
+	{
+		"en"	"Here, have this medkit!"
+	}
+	"Sorry, i dont have a medkit on me..."
+	{
+		"en"	"Sorry, i dont have a medkit on me..."
+	}
+	"Sorry, i dont have a medkit on me, please wait."
+	{
+		"en"	"Sorry, i dont have a medkit on me, please wait."
+	}
+	"I do not have a medkit."
+	{
+		"en"	"I do not have a medkit."
+	}
+	"I dont have a medkit, have patience."
+	{
+		"en"	"I dont have a medkit, have patience."
+	}
+	"I told you i do not have a medikit!!!"
+	{
+		"en"	"I told you i do not have a medikit!!!"
+	}
+	"Youre too far away!"
+	{
+		"en"	"Youre too far away!"
+	}
+	"This can't be..."
+	{
+		"en"	"This can't be..."
+	}
+	"I will protect you!"
+	{
+		"en"	"I will protect you!"
+	}
+	"You told me to be friendly."
+	{
+		"en"	"You told me to be friendly. So i wont attack them. But i will keep them in mind..."
+	}
+}
