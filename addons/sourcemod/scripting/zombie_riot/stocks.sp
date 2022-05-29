@@ -2655,7 +2655,7 @@ for(int client=1; client<=MaxClients; client++)
 				{
 					if(IsClientInGame(client) && GetClientTeam(client)==2)
 					{
-						if((!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD) && !RaidBossActive)
+						if((!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD) && !IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 						{
 							applied_lastmann_buffs_once = false;
 							DHook_RespawnPlayer(client);

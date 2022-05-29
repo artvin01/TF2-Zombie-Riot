@@ -792,41 +792,7 @@ void Waves_Progress()
 					}
 				}
 				
-				for(int client=1; client<=MaxClients; client++)
-				{
-					if(IsClientInGame(client) && GetClientTeam(client)==2)
-					{
-						if(!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD)
-						{
-							DHook_RespawnPlayer(client);
-						}
-						else if(dieingstate[client] > 0)
-						{
-							dieingstate[client] = 0;
-							Store_ApplyAttribs(client);
-							TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
-							int entity, i;
-							while(TF2U_GetWearable(client, entity, i))
-							{
-								SetEntityRenderMode(entity, RENDER_NORMAL);
-								SetEntityRenderColor(entity, 255, 255, 255, 255);
-							}
-							SetEntityRenderMode(client, RENDER_NORMAL);
-							SetEntityRenderColor(client, 255, 255, 255, 255);
-							SetEntityCollisionGroup(client, 5);
-							if(!EscapeMode)
-							{
-								SetEntityHealth(client, 50);
-								RequestFrame(SetHealthAfterRevive, client);
-							}	
-							else
-							{
-								SetEntityHealth(client, 150);
-								RequestFrame(SetHealthAfterRevive, client);						
-							}
-						}
-					}
-				}
+				ReviveAll();
 				
 				Music_EndLastmann();
 				CheckAlivePlayers();
