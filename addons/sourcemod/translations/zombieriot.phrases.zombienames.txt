@@ -1,0 +1,367 @@
+"Phrases"
+{
+	"nothing"
+	{
+		"en" 		"This text isnt supposed to apear! Please report this to the admins!"
+	}
+	"Headcrab Zombie"
+	{
+		"en" 		"Headcrab Zombie"
+	}
+	"Fortified Headcrab Zombie"
+	{
+		"en" 		"Fortified Headcrab Zombie"
+	}
+	"Fast Zombie"
+	{
+		"en" 		"Fast Zombie"
+	}
+	"Fortified Fast Zombie"
+	{
+		"en" 		"Fortified Fast Zombie"
+	}
+	"Torsoless Headcrab Zombie"
+	{
+		"en" 		"Torsoless Headcrab Zombie"
+	}
+	"Fortified Giant Poison Zombie"
+	{
+		"en" 		"Fortified Giant Poison Zombie"
+	}
+	"Father Grigori"
+	{
+		"en" 		"Father Grigori"
+	}
+	"Metro Cop"
+	{
+		"en" 		"Metro Cop"
+	}
+	"Metro Raider"
+	{
+		"en" 		"Metro Raider"
+	}
+	"Combine Rifler"
+	{
+		"en" 		"Combine Rifler"
+	}
+	"Combine Shotgunner"
+	{
+		"en" 		"Combine Shotgunner"
+	}
+	"Combine Swordsman"
+	{
+		"en" 		"Combine Swordsman"
+	}
+	"Combine Elite"
+	{
+		"en" 		"Combine Elite"
+	}
+	"Combine Giant Swordsman"
+	{
+		"en" 		"Combine Giant Swordsman"
+	}
+	"Combine DDT"
+	{
+		"en" 		"Combine DDT"
+	}
+	"Combine Golden Collos"
+	{
+		"en" 		"Combine Golden Collos"
+	}
+	"Combine Overlord"
+	{
+		"en" 		"Combine Overlord"
+	}
+	"Scout Assulter"
+	{
+		"en" 		"Scout Assulter"
+	}
+	"Engineer Deconstructor"
+	{
+		"en" 		"Engineer Deconstructor"
+	}
+	"Heavy Brawler"
+	{
+		"en" 		"Heavy Brawler"
+	}
+	"Flying Armor"
+	{
+		"en" 		"Flying Armor"
+	}
+	"Kamikaze Demo"
+	{
+		"en" 		"Kamikaze Demo"
+	}
+	"Medic Supporter"
+	{
+		"en" 		"Medic Supporter"
+	}
+	"Giant Heavy Brawler"
+	{
+		"en" 		"Giant Heavy Brawler"
+	}
+	"Spy Facestabber"
+	{
+		"en" 		"Spy Facestabber"
+	}
+	"Soldier Rocketeer"
+	{
+		"en" 		"Soldier Rocketeer"
+	}
+	"Soldier Minion"
+	{
+		"en" 		"Soldier Minion"
+	}
+	"Soldier Giant Summoner"
+	{
+		"en" 		"Soldier Giant Summoner"
+	}
+	"Spy Thief"
+	{
+		"en" 		"Spy Thief"
+	}
+	"Spy Trickstabber"
+	{
+		"en" 		"Spy Trickstabber"
+	}
+	"Half Cloaked Spy"
+	{
+		"en" 		"Half Cloaked Spy"
+	}
+	"Sniper Main"
+	{
+		"en" 		"Sniper Main"
+	}
+	"Demoknight Main"
+	{
+		"en" 		"Demoknight Main"
+	}
+	"Battle Medic Main"
+	{
+		"en" 		"Battle Medic Main"
+	}	
+	"Giant Pyro Main"
+	{
+		"en" 		"Giant Pyro Main"
+	}
+	"Combine Deutsch Ritter"
+	{
+		"en" 		"Combine Deutsch Ritter"
+	}
+	"X10 Spy Main"
+	{
+		"en" 		"X10 Spy Main"
+	}
+		
+	//XENO
+	
+	"Xeno Headcrab Zombie"
+	{
+		"en" 		"Xeno Headcrab Zombie"
+	}
+	"Xeno Fortified Headcrab Zombie"
+	{
+		"en" 		"Xeno Fortified Headcrab Zombie"
+	}
+	"Xeno Fast Zombie"
+	{
+		"en" 		"Xeno Fast Zombie"
+	}
+	"Xeno Fortified Fast Zombie"
+	{
+		"en" 		"Xeno Fortified Fast Zombie"
+	}
+	"Xeno Torsoless Headcrab Zombie"
+	{
+		"en" 		"Xeno Torsoless Headcrab Zombie"
+	}
+	"Xeno Fortified Giant Poison Zombie"
+	{
+		"en" 		"Xeno Fortified Giant Poison Zombie"
+	}
+	"Xeno Father Grigori"
+	{
+		"en" 		"Xeno Father Grigori"
+	}
+	"Xeno Metro Cop"
+	{
+		"en" 		"Xeno Metro Cop"
+	}
+	"Xeno Metro Raider"
+	{
+		"en" 		"Xeno Metro Raider"
+	}
+	"Xeno Combine Rifler"
+	{
+		"en" 		"Xeno Combine Rifler"
+	}
+	"Xeno Combine Shotgunner"
+	{
+		"en" 		"Xeno Combine Shotgunner"
+	}
+	"Xeno Combine Swordsman"
+	{
+		"en" 		"Xeno Combine Swordsman"
+	}
+	"Xeno Combine Elite"
+	{
+		"en" 		"Xeno Combine Elite"
+	}
+	"Xeno Combine Giant Swordsman"
+	{
+		"en" 		"Xeno Combine Giant Swordsman"
+	}
+	"Xeno Combine DDT"
+	{
+		"en" 		"Xeno Combine DDT"
+	}
+	"Xeno Combine Golden Collos"
+	{
+		"en" 		"Xeno Combine Golden Collos"
+	}
+	"Xeno Combine Overlord"
+	{
+		"en" 		"Xeno Combine Overlord"
+	}
+	"Xeno Scout Assulter"
+	{
+		"en" 		"Xeno Scout Assulter"
+	}
+	"Xeno Engineer Deconstructor"
+	{
+		"en" 		"Xeno Engineer Deconstructor"
+	}
+	"Xeno Heavy Brawler"
+	{
+		"en" 		"Xeno Heavy Brawler"
+	}
+	"Xeno Flying Armor"
+	{
+		"en" 		"Xeno Flying Armor"
+	}
+	"Xeno Kamikaze Demo"
+	{
+		"en" 		"Xeno Kamikaze Demo"
+	}
+	"Xeno Medic Supporter"
+	{
+		"en" 		"Xeno Medic Supporter"
+	}
+	"Xeno Giant Heavy Brawler"
+	{
+		"en" 		"Xeno Giant Heavy Brawler"
+	}
+	"Xeno Spy Facestabber"
+	{
+		"en" 		"Xeno Spy Facestabber"
+	}
+	"Xeno Soldier Rocketeer"
+	{
+		"en" 		"Xeno Soldier Rocketeer"
+	}
+	"Xeno Soldier Minion"
+	{
+		"en" 		"Xeno Soldier Minion"
+	}
+	"Xeno Soldier Giant Summoner"
+	{
+		"en" 		"Xeno Soldier Giant Summoner"
+	}
+	"Xeno Spy Thief"
+	{
+		"en" 		"Xeno Spy Thief"
+	}
+	"Xeno Spy Trickstabber"
+	{
+		"en" 		"Xeno Spy Trickstabber"
+	}
+	"Xeno Half Cloaked Spy"
+	{
+		"en" 		"Xeno Half Cloaked Spy"
+	}
+	"Xeno Sniper Main"
+	{
+		"en" 		"Xeno Sniper Main"
+	}
+	"Xeno Demoknight Main"
+	{
+		"en" 		"Xeno Demoknight Main"
+	}
+	"Xeno Battle Medic Main"
+	{
+		"en" 		"Xeno Battle Medic Main"
+	}	
+	"Xeno Giant Pyro Main"
+	{
+		"en" 		"Xeno Giant Pyro Main"
+	}
+	"Xeno Combine Deutsch Ritter"
+	{
+		"en" 		"Xeno Combine Deutsch Ritter"
+	}
+	"Xeno X10 Spy Main"
+	{
+		"en" 		"Xeno X10 Spy Main"
+	}
+
+	"Nazi Panzer"
+	{
+		"en" 		"Nazi Panzer"
+	}
+	"Bob the Overgod of gods and destroyer of multiverses"
+	{
+		"en" 		"Bob the Overgod of gods and destroyer of multiverses"
+	}
+	"Revived Combine DDT"
+	{
+		"en" 		"Revived Combine DDT"
+	}
+	"Spookmaster Boner"
+	{
+		"en" 		"Spookmaster Boner"
+	}
+	"Cured Father Grigori"
+	{
+		"en" 		"Cured Father Grigori"
+	}
+	"Combine Mage"
+	{
+		"en" 		"Combine Mage"
+	}
+	"Bloon"
+	{
+		"en" 		"Bloon"
+	}
+	"Massive Ornery Air Blimp"
+	{
+		"en" 		"Massive Ornery Air Blimp"
+	}
+	"Brutal Floating Behemoth"
+	{
+		"en" 		"Brutal Floating Behemoth"
+	}
+	"Zeppelin of Mighty Gargantuaness"
+	{
+		"en" 		"Zeppelin of Mighty Gargantuaness"
+	}
+	"Dark Dirigible Titan"
+	{
+		"en" 		"Dark Dirigible Titan"
+	}
+	"Big Airship of Doom"
+	{
+		"en" 		"Big Airship of Doom"
+	}
+	"Medic Apprentice Mage"
+	{
+		"en" 		"Medic Apprentice Mage"
+	}
+	"Sawrunner"
+	{
+		"en" 		"Sawrunner"
+	}
+	"True Fusion Warrior"
+	{
+		"en" 		"True Fusion Warrior"
+	}
+}

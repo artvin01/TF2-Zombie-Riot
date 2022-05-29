@@ -89,7 +89,9 @@ bool Waves_CallVote(int client)
 	{
 		Menu menu = new Menu(Waves_CallVoteH);
 		
-		menu.SetTitle("Vote for the difficulty:\n ");
+		SetGlobalTransTarget(client);
+		
+		menu.SetTitle("%t:\n ","Vote for the difficulty");
 		
 		menu.AddItem("", "No Vote");
 		
@@ -318,7 +320,7 @@ void Waves_RoundStart()
 			delete Voting;
 			Voting = null;
 			
-			PrintToChatAll("Difficulty set to: %s", vote.Name);
+			PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
 			
 			char buffer[PLATFORM_MAX_PATH];
 			BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
@@ -352,7 +354,7 @@ void Waves_RoundStart()
 		Store_Reset();
 		CurrentGame = GetTime();
 		CurrentCash = StartCash;
-		PrintToChatAll("Be sure to spend all your starting cash!");
+		PrintToChatAll("%t", "Be sure to spend all your starting cash!");
 		for(int client=1; client<=MaxClients; client++)
 		{
 			CurrentAmmo[client] = CurrentAmmo[0];
@@ -542,12 +544,14 @@ void Waves_Progress()
 				{
 					if(GetClientTeam(client_Penalise)!=2)
 					{
-						PrintToChat(client_Penalise, "You have only gained 60%% due to not being in-game.");
+						SetGlobalTransTarget(client_Penalise);
+						PrintToChat(client_Penalise, "%t", "You have only gained 60%% due to not being in-game");
 						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.40);
 					}
 					else if (TeutonType[client_Penalise] == TEUTON_WAITING)
 					{
-						PrintToChat(client_Penalise, "You have only gained 70 %% due to being a non-player player, but still helping. (You are a Teutonic Knight!)");
+						SetGlobalTransTarget(client_Penalise);
+						PrintToChat(client_Penalise, "%t", "You have only gained 70 %% due to being a non-player player, but still helping");
 						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.30);
 					}
 				}
@@ -566,7 +570,7 @@ void Waves_Progress()
 						ClientCommand(client_Grigori, "playgamesound vo/ravenholm/yard_greetings.wav");
 						SetHudTextParams(-1.0, -1.0, 3.01, 34, 139, 34, 255);
 						SetGlobalTransTarget(client_Grigori);
-						ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "Grigori Has been cured!\nYou can talk to him during setup times to get a 20%% Discount on random items!");		
+						ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "Father Grigori Spawn");		
 					}
 				}
 				
@@ -614,7 +618,8 @@ void Waves_Progress()
 							GiveXP(client, round.Xp);
 							if(round.Setup > 0.0)
 							{
-								PrintHintText(client, "Press %%+showscores%% to open the store");
+								SetGlobalTransTarget(client);
+								PrintHintText(client, "%t","Press TAB To open the store");
 								StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 							}
 						}

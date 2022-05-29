@@ -24,7 +24,14 @@ There is also an escapemode Verison of this gamemode and more to come. If you ne
 
 IF you wish to see the plugin in action/or just are interrested in playing this gamemode rather then coding/messing with it, the main server for the plugin is this one hosted by disc.ff:
 
- 74.91.119.154:27017 ( steam://connect/74.91.119.154:27017 )
+Main Server:
+(American)
+74.91.119.154:27017 ( steam://connect/74.91.119.154:27017 )
+
+Sub Servers that also host the gamemode:
+
+(Chinese)
+47.100.226.218:27015 ( steam://connect/47.100.226.218:27015 ) 
  
 ## Commands and cvar's
 

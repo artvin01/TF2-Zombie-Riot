@@ -579,6 +579,7 @@ void Store_LoadLevelPerks(int client)
 	
 	if(found && IsClientInGame(client))
 	{
+		SetGlobalTransTarget(client);
 		PrintToChat(client, "Your last equipped level perks were restored.");
 		if(IsPlayerAlive(client))
 			TF2_RegeneratePlayer(client);
@@ -625,7 +626,8 @@ bool Store_LoadLoadout(int client)
 	
 	if(IsClientInGame(client))
 	{
-		PrintToChat(client, "Your loadout was updated from your previous state.");
+		SetGlobalTransTarget(client);
+		PrintToChat(client, "%t","Your loadout was updated from your previous state.");
 		if(IsPlayerAlive(client))
 			TF2_RegeneratePlayer(client);
 	}
@@ -962,35 +964,36 @@ static void MenuPage(int client, int section)
 			if(level < 1)
 				level = 1;
 			
+			SetGlobalTransTarget(client);
 			ItemInfo info2;
 			if(item.GetItemInfo(level, info2))
 			{
 				if(NPCOnly[client])
 				{
-					FormatEx(buffer, sizeof(buffer), "TF2: Zombie Riot\nFather Grigori's Store\nAll Items are 20%% off here!\n \n%t\n \n%s \n<Can Be Pack-A-Punched> [%i] ", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1), info2.Cost);
+					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1),"Can Be Pack-A-Punched", info2.Cost);
 				}
 				else if(Waves_Started())
 				{
-					FormatEx(buffer, sizeof(buffer), "TF2: Zombie Riot\n \n%t\n \n%s  \n<Can Be Pack-A-Punched> [%i] ", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1), info2.Cost);
+					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n \n%s  \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1), info2.Cost);
 				}
 				else
 				{
-					FormatEx(buffer, sizeof(buffer), "TF2: Zombie Riot\n \n%t\n%t\n%s%s  \n<Can Be Pack-A-Punched> [%i] ", "Credits", cash, "Store Discount", TranslateItemName(client, item.Name), AddPluses(level-1), info2.Cost);
+					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n%t\n%s%s  \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, "Store Discount", TranslateItemName(client, item.Name), AddPluses(level-1),"Can Be Pack-A-Punched", info2.Cost);
 				}
 			}
 			else
 			{
 				if(NPCOnly[client])
 				{
-					FormatEx(buffer, sizeof(buffer), "TF2: Zombie Riot\nFather Grigori's Store\nAll Items are 20%% off here!\n \n%t\n \n%s ", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1));
+					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1));
 				}
 				else if(Waves_Started())
 				{
-					FormatEx(buffer, sizeof(buffer), "TF2: Zombie Riot\n \n%t\n \n%s ", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1));
+					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1));
 				}
 				else
 				{
-					FormatEx(buffer, sizeof(buffer), "TF2: Zombie Riot\n \n%t\n%t\n%s%s ", "Credits", cash, "Store Discount", TranslateItemName(client, item.Name), AddPluses(level-1));
+					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n%t\n%s%s ", "TF2: Zombie Riot", "Credits", cash, "Store Discount", TranslateItemName(client, item.Name), AddPluses(level-1));
 				}				
 			}
 			
@@ -1053,7 +1056,7 @@ static void MenuPage(int client, int section)
 				}
 				if(Maxed_Building)
 				{
-					FormatEx(buffer, sizeof(buffer), "%t ($%d) [MAX BARRICADES OUT CURRENTLY] [%i/%i]", "Buy", info.Cost, i_BarricadesBuild[client], MaxBarricadesAllowed(client));
+					FormatEx(buffer, sizeof(buffer), "%t ($%d) [%t] [%i/%i]", "Buy", info.Cost, i_BarricadesBuild[client],"MAX BARRICADES OUT CURRENTLY", MaxBarricadesAllowed(client));
 				}
 				else
 				{
@@ -1132,7 +1135,7 @@ static void MenuPage(int client, int section)
 				if(info.Cost)
 				{
 					int sell = ItemSell(item, level);
-					FormatEx(buffer, sizeof(buffer), "%t ($%d) | (Credits After Selling : $%d)", "Sell", sell, sell + (CurrentCash-CashSpent[client]));
+					FormatEx(buffer, sizeof(buffer), "%t ($%d) | (%t: $%d)", "Sell", sell, "Credits After Selling",sell + (CurrentCash-CashSpent[client]));
 					menu.AddItem(buffer2, buffer);
 				}
 			}
@@ -1145,15 +1148,15 @@ static void MenuPage(int client, int section)
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client])
 		{
-			menu.SetTitle("TF2: Zombie Riot\nFather Grigori's Store\nAll Items are 20%% off here!\n \n%t\n \n%s", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name));
+			menu.SetTitle("%t\n%t\n%t\n \n%t\n \n%s", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name));
 		}
 		else if(Waves_Started())
 		{
-			menu.SetTitle("TF2: Zombie Riot\n \n%t\n \n%s", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name));
+			menu.SetTitle("%t\n \n%t\n \n%s", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name));
 		}
 		else
 		{
-			menu.SetTitle("TF2: Zombie Riot\n \n%t\n%t\n%s", "Credits", CurrentCash-CashSpent[client], "Store Discount", TranslateItemName(client, item.Name));
+			menu.SetTitle("%t\n \n%t\n%t\n%s", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], "Store Discount", TranslateItemName(client, item.Name));
 		}
 	}
 	else
@@ -1170,15 +1173,15 @@ static void MenuPage(int client, int section)
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client])
 		{
-			menu.SetTitle("TF2: Zombie Riot\nFather Grigori's Store\nAll Items are 20%% off here!\n \n%t\n%t\n \n ", "XP and Level", Level[client], extra, nextAt, "Credits", CurrentCash-CashSpent[client]);
+			menu.SetTitle("%t\n%t\n%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!" , "XP and Level", Level[client], extra, nextAt, "Credits", CurrentCash-CashSpent[client]);
 		}
 		else if(Waves_Started())
 		{
-			menu.SetTitle("TF2: Zombie Riot\n \n%t\n%t\n \n ", "XP and Level", Level[client], extra, nextAt, "Credits", CurrentCash-CashSpent[client]);
+			menu.SetTitle("%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "XP and Level", Level[client], extra, nextAt, "Credits", CurrentCash-CashSpent[client]);
 		}
 		else
 		{
-			menu.SetTitle("TF2: Zombie Riot\n \n%t\n%t\n%t\n ", "XP and Level", Level[client], extra, nextAt, "Credits", CurrentCash-CashSpent[client], "Store Discount");
+			menu.SetTitle("%t\n \n%t\n%t\n%t\n ", "TF2: Zombie Riot", "XP and Level", Level[client], extra, nextAt, "Credits", CurrentCash-CashSpent[client], "Store Discount");
 		}
 	}
 	
@@ -2563,7 +2566,7 @@ bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool 
 					}
 					else
 					{
-						PrintHintText(client, "Father Grigori: There is no time to trade my child. The zombies are invading!");
+						PrintHintText(client,"%t", "Father Grigori No Talk");
 					}
 					return true;
 				}

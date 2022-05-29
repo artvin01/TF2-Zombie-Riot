@@ -76,7 +76,9 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 			SetAmmo(client, 23, new_ammo);
 			CurrentAmmo[client][23] = GetAmmo(client, 23);
 			
-			PrintHintText(client,"Laser Battery: %i", new_ammo);
+			SetGlobalTransTarget(client);
+			
+			PrintHintText(client,"%t: %i", "Laser Battery", new_ammo);
 			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 			
 			BEAM_Targets_Hit[client] = 0.0;
@@ -107,8 +109,9 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 		}
 		else
 		{
+			SetGlobalTransTarget(client);
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			PrintHintText(client,"You ran out of Laser Battery!");
+			PrintHintText(client,"%t", "Out of Laser Battery");
 		}
 	}
 	else

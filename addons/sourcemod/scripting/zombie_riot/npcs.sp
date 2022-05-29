@@ -1199,8 +1199,9 @@ public void Calculate_And_Display_hp(int attacker, int victim, float damage, boo
 		
 		if(RaidBossActive != victim)
 		{
+			SetGlobalTransTarget(attacker);
 			SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-			ShowSyncHudText(attacker, SyncHud, "%s\n%d / %d", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+			ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
 		}
 		else
 		{
@@ -1208,9 +1209,10 @@ public void Calculate_And_Display_hp(int attacker, int victim, float damage, boo
 		
 			if(Timer_Show < 0.0)
 				Timer_Show = 0.0;
-			
+				
+			SetGlobalTransTarget(attacker);
 			SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-			ShowSyncHudText(attacker, SyncHudRaid, "[Raidboss | Power : %.1f%% | TIME LEFT: %.1f]\n%s\n%d / %d", RaidModeScaling * 100, Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+			ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
 		}
 	}	
 }

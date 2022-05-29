@@ -938,6 +938,7 @@ public void OnPluginStart()
 	HookEntityOutput("logic_relay", "OnUser1", OnRelayFireUser1);
 	
 	LoadTranslations("zombieriot.phrases");
+	LoadTranslations("zombieriot.phrases.zombienames");
 	
 	DHook_Setup();
 	SDKCall_Setup();

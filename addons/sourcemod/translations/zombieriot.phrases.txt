@@ -410,6 +410,10 @@
 		"es"		"Baterias Láser"
 		"fr"		"Batterie de laser"
 	}
+	"Out of Laser Battery"
+	{
+		"en"		"You ran out of Laser Battery!"
+	}
 	"Potion Supply"
 	{
 		"en"		"Potion Supply"
@@ -844,5 +848,80 @@
 	{
 		"en" 		"You're spectating\nHelp your team by attacking the enemies.\nYou will be put into red team as a survivor when a slot is available."
 	}
-	
+	"Raidboss"
+	{
+		"en" 		"Raidboss"
+	}
+	"Power"
+	{
+		"en" 		"Power"
+	}
+	"TIME LEFT"
+	{
+		"en" 		"TIME LEFT"
+	}	
+	"Father Grigori No Talk"
+	{
+		"en"		"Father Grigori: There is no time to trade my child. The zombies are invading!"
+	}
+	"Father Grigori Spawn"
+	{
+		"en"		"Grigori Has been cured!\nYou can talk to him during setup times to get a 20%% Discount on random items!"
+	}
+	"TF2: Zombie Riot"
+	{
+		"en" 		"TF2: Zombie Riot"
+	}
+	"Father Grigori's Store"
+	{
+		"en" 		"Father Grigori's Store"
+	}
+	"Credits After Selling"
+	{
+		"en" 		"Credits After Selling"
+	}
+	"MAX BARRICADES OUT CURRENTLY"
+	{
+		"en"		"MAX BARRICADES OUT CURRENTLY"
+	}
+	"All Items are 20%% off here!"
+	{
+		"en"		"All Items are 20%% off here!"
+	}	
+	"Can Be Pack-A-Punched"
+	{
+		"en"		"Can Be Pack-A-Punched"
+	}
+	"Your loadout was updated from your previous state"
+	{
+		"en"		"Your loadout was updated from your previous state."
+	}
+	"Your last equipped level perks were restored"
+	{
+		"en"		"Your last equipped level perks were restored."
+	}
+	"Press TAB To open"
+	{
+		"en"		"Press TAB To open the store"
+	}
+	"You have only gained 60%% due to not being in-game"
+	{
+		"en"		"You have only gained 60%% due to not being in-game."
+	}
+	"You have only gained 70 %% due to being a non-player player, but still helping"
+	{
+		"en"		"You have only gained 70 %% due to being a non-player player, but still helping. (You are a Teutonic Knight!)"
+	}
+	"Be sure to spend all your starting cash!"
+	{
+		"en"		"Be sure to spend all your starting cash!"
+	}
+	"Difficulty set to"
+	{
+		"en"		"Difficulty set to"
+	}
+	"Vote for the difficulty"
+	{
+		"en"		"Vote for the difficulty"
+	}
 }
