@@ -892,7 +892,7 @@
 	{
 		"en"		"Can Be Pack-A-Punched"
 	}
-	"Your loadout was updated from your previous state"
+	"Your loadout was updated from your previous state."
 	{
 		"en"		"Your loadout was updated from your previous state."
 	}
@@ -900,7 +900,7 @@
 	{
 		"en"		"Your last equipped level perks were restored."
 	}
-	"Press TAB To open"
+	"Press TAB To open the store"
 	{
 		"en"		"Press TAB To open the store"
 	}
