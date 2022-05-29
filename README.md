@@ -54,7 +54,6 @@ WINDOWS SERVER IS A MUST DUE TO PATHFOLLOWER!!
 
 The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot to run:
 
-- [DHooks2](https://github.com/peace-maker/DHooks2)
 - [Nosoop's TF2Attribute fork](https://github.com/nosoop/tf2attributes)
 - [TF2Items](https://github.com/asherkin/TF2Items)
 - [CollisionHookFIX](https://github.com/SlidyBat/CollisionHook) THIS IS A GAMEDATA FIX FOR...
