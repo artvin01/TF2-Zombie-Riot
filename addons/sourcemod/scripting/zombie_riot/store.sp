@@ -974,7 +974,7 @@ static void MenuPage(int client, int section)
 				}
 				else if(Waves_Started())
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n \n%s  \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1), info2.Cost);
+					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n \n%s  \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1),"Can Be Pack-A-Punched", info2.Cost);
 				}
 				else
 				{
