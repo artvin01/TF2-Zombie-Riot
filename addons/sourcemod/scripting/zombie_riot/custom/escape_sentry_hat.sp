@@ -28,6 +28,7 @@ public Action CancelBuild(int client, const char[] command, int args)
 public Action Object_Detonated(Handle event, const char[] name, bool dontBroadcast)
 {
 	int entity = GetEventInt(event, "index");
+	i_BeingCarried[entity] = false;
 	SetEntProp(entity, Prop_Send, "m_bCarried", false);	
 	return Plugin_Handled;
 }
@@ -39,6 +40,7 @@ public Action Event_player_builtobject(Handle event, const char[] name, bool don
 	int owner = GetClientOfUserId(id);
 	CClotBody npc = view_as<CClotBody>(entity);
 	npc.bBuildingIsPlaced = true;
+	i_BeingCarried[target] = false;
 		char classname[64];
 	
 		if (IsValidEntity(entity))
