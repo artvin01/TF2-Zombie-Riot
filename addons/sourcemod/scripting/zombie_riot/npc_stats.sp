@@ -1421,7 +1421,7 @@ methodmap CClotBody
 		if(!Ally)
 		{
 			NPC_AddToArray(npc);
-			if(IgnoreBuildings || RaidBossActive) //During an active raidboss, make sure that they ignore barricades
+			if(IgnoreBuildings || IsValidEntity(EntRefToEntIndex(RaidBossActive))) //During an active raidboss, make sure that they ignore barricades
 			{
 				list.Push(DHookRaw(g_hShouldCollideWithAllyEnemyIngoreBuilding,   false, pLocomotion));
 			}
@@ -4336,7 +4336,7 @@ stock int GetClosestTarget(int entity, bool Onlyplayers = false, float fldistanc
 					CClotBody npc = view_as<CClotBody>(i);
 					if(pass != 2)
 					{
-						if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !RaidBossActive) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+						if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !IsValidEntity(EntRefToEntIndex(RaidBossActive))) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 						{
 							float EntityLocation[3], TargetLocation[3]; 
 							GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -5424,7 +5424,7 @@ public Action SDKHook_Settransmit_Baseboss(int entity, int client)
 {
 	if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
 	{
-		if(b_thisNpcIsABoss[entity] || b_thisNpcHasAnOutline[entity] || RaidBossActive == entity)
+		if(b_thisNpcIsABoss[entity] || b_thisNpcHasAnOutline[entity] || EntRefToEntIndex(RaidBossActive) == entity)
 		{
 			return Plugin_Continue;
 		}
@@ -5903,7 +5903,7 @@ public void Raidboss_Clean_Everyone()
 		{
 			if(GetEntProp(base_boss, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 			{
-				if(!b_Map_BaseBoss_No_Layers[base_boss] && RaidBossActive != base_boss) //Make sure it doesnt actually kill map base_bosses
+				if(!b_Map_BaseBoss_No_Layers[base_boss] && EntRefToEntIndex(RaidBossActive) != base_boss) //Make sure it doesnt actually kill map base_bosses
 				{
 					SDKHooks_TakeDamage(base_boss, 0, 0, 99999999.0, DMG_BLAST); //Kill it so it triggers the neccecary shit.
 					SDKHooks_TakeDamage(base_boss, 0, 0, 99999999.0, DMG_BLAST); //Kill it so it triggers the neccecary shit.
