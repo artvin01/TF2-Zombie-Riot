@@ -24,6 +24,14 @@
 	{
 		"en" 		"Torsoless Headcrab Zombie"
 	}
+	"Poison Zombie"
+	{
+		"en" 		"Poison Zombie"
+	}
+	"Fortified Poison Zombie"
+	{
+		"en" 		"Fortified Poison Zombie"
+	}
 	"Fortified Giant Poison Zombie"
 	{
 		"en" 		"Fortified Giant Poison Zombie"
@@ -174,6 +182,14 @@
 	"Xeno Torsoless Headcrab Zombie"
 	{
 		"en" 		"Xeno Torsoless Headcrab Zombie"
+	}
+	"Xeno Poison Zombie"
+	{
+		"en" 		"Xeno Poison Zombie"
+	}
+	"Xeno Fortified Poison Zombie"
+	{
+		"en" 		"Xeno Fortified Poison Zombie"
 	}
 	"Xeno Fortified Giant Poison Zombie"
 	{
