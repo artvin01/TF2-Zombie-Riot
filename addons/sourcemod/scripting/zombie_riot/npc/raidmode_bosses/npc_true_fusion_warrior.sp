@@ -272,7 +272,7 @@ methodmap TrueFusionWarrior < CClotBody
 		
 		npc.m_bThisNpcIsABoss = true;
 		
-		RaidModeTime = GetGameTime() + 160.0;
+		RaidModeTime = GetGameTime() + 200.0;
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		
