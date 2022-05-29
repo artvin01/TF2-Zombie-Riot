@@ -1,0 +1,15 @@
+"Phrases" //Example
+{
+	"Weapons"
+	{
+		"en" 		"Weapons"
+	}
+	"Primary Weapons"
+	{
+		"en" 		"Primary Weapons"
+	}
+	"Syringe Gun"
+	{
+		"en" 		"Syringe Gun"
+	}
+}

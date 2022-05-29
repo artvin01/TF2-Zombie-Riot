@@ -939,6 +939,7 @@ public void OnPluginStart()
 	
 	LoadTranslations("zombieriot.phrases");
 	LoadTranslations("zombieriot.phrases.zombienames");
+	LoadTranslations("zombieriot.phrases.weapons");
 	
 	DHook_Setup();
 	SDKCall_Setup();
