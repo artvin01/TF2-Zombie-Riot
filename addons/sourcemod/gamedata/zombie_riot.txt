@@ -502,9 +502,22 @@
 				"return"	"void"
 				"this"		"entity"
 			}
+			"CTFBot::Event_Killed()"
+			{
+				"offset"	"CTFBot::Event_Killed()"
+				"hooktype"	"entity"
+				"return"	"void"
+				"this"		"entity"
+			}
+
 		}
 		"Offsets"
 		{
+			"CTFBot::Event_Killed()"
+			{
+				"windows"	"66"
+				"linux"		"67"
+			}
 			"CWeaponMedigun::PrimaryAttack()"
 			{
 				"windows"	"283"
