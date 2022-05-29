@@ -3,6 +3,21 @@ static int HighestTier;
 static const int SlotLimits[] =
 {
 	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
 	1
 };
 
@@ -25,6 +40,8 @@ enum struct ItemInfo
 	float Value[16];
 	int Attribs;
 	int Ammo;
+	
+	bool CannotBeSavedByCookies;
 	
 	int Reload_ModeForce;
 	
@@ -58,6 +75,9 @@ enum struct ItemInfo
 		
 		FormatEx(buffer, sizeof(buffer), "%sclassname", prefix);
 		kv.GetString(buffer, this.Classname, 36);
+		
+		FormatEx(buffer, sizeof(buffer), "%scannotbesaved", prefix);
+		this.CannotBeSavedByCookies = kv.GetNum(buffer);
 		
 		FormatEx(buffer, sizeof(buffer), "%sindex", prefix);
 		this.Index = kv.GetNum(buffer);
@@ -681,7 +701,7 @@ void Store_SaveLevelPerks(int client)
 				owned = 0;
 			
 			item.GetItemInfo(owned, info);
-			if(!info.Cost)
+			if(!info.Cost && !info.CannotBeSavedByCookies)
 			{
 				if(item.TextStore[0])
 				{
