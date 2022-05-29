@@ -2628,25 +2628,22 @@ methodmap CClotBody
 	//	TE_SetupBeamPoints(vecSwingStart, vecSwingEnd, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
 	//	TE_SendToAll();
 		
-		if(Ignore_Buildings && RaidBossActive)
+		bool ingore_buildings = false;
+		if(Ignore_Buildings || IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 		{
-			RaidBossActive = 50000;
+			ingore_buildings = true;
 		}
 		// See if we hit anything.
-		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, RaidBossActive ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, this.index );
+		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, ingore_buildings ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, this.index );
 		if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
 		{
 			delete trace;
-			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID | CONTENTS_SOLID ), RaidBossActive ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, this.index );
+			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID | CONTENTS_SOLID ), ingore_buildings ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, this.index );
 			if ( TR_GetFraction(trace) < 1.0)
 			{
 				// This is the point on the actual surface (the hull could have hit space)
 				TR_GetEndPosition(vecSwingEnd, trace);	
 			}
-		}
-		if(Ignore_Buildings && RaidBossActive == 50000)
-		{
-			RaidBossActive = 0;
 		}
 		return ( TR_GetFraction(trace) < 1.0 );
 	}
@@ -3411,7 +3408,7 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		if(IsValidEntity(npc.m_iSpawnProtectionEntity))
 			RemoveEntity(npc.m_iSpawnProtectionEntity);
 			
-		if (RaidBossActive == pThis)
+		if (EntRefToEntIndex(RaidBossActive) == pThis)
 		{
 			Raidboss_Clean_Everyone();
 		}

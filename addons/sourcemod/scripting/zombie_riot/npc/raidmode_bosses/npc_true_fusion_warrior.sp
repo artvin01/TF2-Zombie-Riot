@@ -261,7 +261,7 @@ methodmap TrueFusionWarrior < CClotBody
 		
 		i_NpcInternalId[npc.index] = RAIDMODE_TRUE_FUSION_WARRIOR;
 		
-		RaidBossActive = npc.index;
+		RaidBossActive = EntIndexToEntRef(npc.index);
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -388,6 +388,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		DispatchSpawn(entity);
 		AcceptEntityInput(entity, "RoundWin");
 		Music_RoundEnd(entity);
+		RaidBossActive = INVALID_ENT_REFERENCE;
 		SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
 	}
 	
@@ -824,7 +825,7 @@ public void TrueFusionWarrior_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, TrueFusionWarrior_ClotDamaged);
 	
-	RaidBossActive = false;
+	RaidBossActive = INVALID_ENT_REFERENCE;
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

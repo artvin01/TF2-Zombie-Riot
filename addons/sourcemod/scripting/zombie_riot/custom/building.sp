@@ -739,7 +739,7 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 		damage = 0.0;
 		return Plugin_Handled;
 	}
-	if(IsValidEntity(RaidBossActive)) //They are ignored anyways
+	if(RaidBossActive && IsValidEntity(RaidBossActive)) //They are ignored anyways
 	{
 		damage = 0.0;
 		return Plugin_Handled;

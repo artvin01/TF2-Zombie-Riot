@@ -270,7 +270,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 				{
 					npc_current_count += 1;
 					CClotBody npcstats = view_as<CClotBody>(entity);
-					if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity] && RaidBossActive != entity)
+					if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity] && EntRefToEntIndex(RaidBossActive) != entity)
 					{
 						if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
 							SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
@@ -1197,7 +1197,7 @@ public void Calculate_And_Display_hp(int attacker, int victim, float damage, boo
 			blue = 0;
 		}
 		
-		if(RaidBossActive != victim)
+		if(EntRefToEntIndex(RaidBossActive) != victim)
 		{
 			SetGlobalTransTarget(attacker);
 			SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01);

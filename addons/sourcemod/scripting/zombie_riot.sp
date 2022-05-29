@@ -187,7 +187,7 @@ float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
 float RaidModeTime = 0.0;
 float f_TimerTickCooldownRaid = 0.0;
 float f_TimerTickCooldownShop = 0.0;
-int RaidBossActive;					//Is the raidboss alive, if yes, what index is the raid?
+int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 
 
 int CurrentPlayers;
@@ -988,7 +988,7 @@ public void OnPluginStart()
 
 public Action Timer_Temp(Handle timer)
 {
-	if(RaidBossActive)
+	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
 		if (RaidModeTime > GetGameTime() && RaidModeTime < GetGameTime() + 60.0)
 		{
@@ -998,7 +998,7 @@ public Action Timer_Temp(Handle timer)
 		{
 			if(IsClientInGame(client))
 			{
-				Calculate_And_Display_hp(client, RaidBossActive, 0.0, true);
+				Calculate_And_Display_hp(client, EntRefToEntIndex(RaidBossActive), 0.0, true);
 			}
 		}
 	}
@@ -1144,7 +1144,7 @@ public void OnMapStart()
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
 //	CreateEntityByName("info_populator");
-	RaidBossActive = 0;
+	RaidBossActive = INVALID_ENT_REFERENCE;
 	
 	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	CreateTimer(2.0, GetClosestSpawners, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
