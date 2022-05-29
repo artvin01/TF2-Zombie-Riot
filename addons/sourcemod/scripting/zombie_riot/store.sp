@@ -77,7 +77,7 @@ enum struct ItemInfo
 		kv.GetString(buffer, this.Classname, 36);
 		
 		FormatEx(buffer, sizeof(buffer), "%scannotbesaved", prefix);
-		this.CannotBeSavedByCookies = kv.GetNum(buffer);
+		this.CannotBeSavedByCookies = view_as<bool>(kv.GetNum(buffer));
 		
 		FormatEx(buffer, sizeof(buffer), "%sindex", prefix);
 		this.Index = kv.GetNum(buffer);

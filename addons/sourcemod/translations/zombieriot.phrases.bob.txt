@@ -3,239 +3,298 @@
 	"Bob The Second"
 	{
 		"en"	"Bob The Second"
+		"de"	"Bob Der Zweite"
 	}
 	"Bob The Second:"
 	{
 		"en"	"Bob The Second:"
+		"de"	"Bob Der Zweite:"
 	}
 	"Pistol Ammo"
 	{
 		"en"	"Pistol Ammo"
+		"de"	"Pistolen Munition
 	}
 	"Bob The Second is not friendly and follows you!"
 	{
 		"en"	"Bob The Second is not friendly and follows you!"
+		"de"	"Bob Der Zweite ist nicht Freundlich und folgt dir!"
 	}
 	"Use voice Commands to command him!"
 	{
 		"en"	"Use voice Commands to command him!"
+		"de"	"Benutze Sprach Befehle um ihn zu befehlen!"
 	}
 	"Bob The Second is friendly and follows you!"
 	{
 		"en"	"Bob The Second is friendly and follows you!"
+		"de"	"Bob Der Zweite ist freundlich und folgt dir!"
 	}
 	"Bob The Second is not friendly and doesn't follow you!"
 	{
 		"en"	"Bob The Second is not friendly and doesn't follow you!"
+		"de"	"Bob Der Zweite ist nicht Freundlich und folgt dir nicht!"
 	}
 	"Bob The Second is friendly and doesn't follow you!"
 	{
 		"en"	"Bob The Second is friendly and doesn't follow you!"
+		"de"	"Bob Der Zweite ist freundlich und folgt dir nicht!"
 	}
 	"Bob The Second is not friendly and follows you! BUT stands still."
 	{
 		"en"	"Bob The Second is not friendly and follows you! BUT stands still."
+		"de"	"Bob Der Zweite ist nicht freundlich und folgt dir! ABER bleibt stehen."
 	}
 	"Bob The Second is friendly and follows you! BUT stands still"
 	{
 		"en"	"Bob The Second is friendly and follows you! BUT stands still"
+		"de"	"Bob Der Zweite ist freundlich und folgt dir! ABER bleibt stehen"
 	}
 	"Bob The Second is not friendly and doesn't follow you! BUT stands still"
 	{
 		"en"	"Bob The Second is not friendly and doesn't follow you! BUT stands still"
+		"de"	"Bob Der Zweite ist nicht freundlich und folgt dir nicht! ABER bleibt stehen"
 	}
 	"Bob The Second is friendly and doesn't follow you! BUT stands still"
 	{
 		"en"	"Bob The Second is friendly and doesn't follow you! BUT stands still"
+		"de"	"Bob Der Zweite ist nicht freundlich und folgt dir nicht! ABER bleibt stehen"
 	}
 
 
 	"I got them!"
 	{
 		"en"	"I got them!"
+		"de"	"Ich hab sie!"
 	}
 	"Take This!"
 	{
 		"en"	"Take This!"
+		"de"	"Nimm Das!"
 	}
 	"I'll stand beside you, sir!"
 	{
 		"en"	"I'll stand beside you, sir!"
+		"de"	"Ich werde bei dir stehen, sir!"
 	}
 	"I'll guard you, sir!"
 	{
 		"en"	"I'll guard you, sir!"
+		"de"	"Ich werde sie bewachen, sir!"
 	}
 	"I'm pretty bored..."
 	{
 		"en"	"I'm pretty bored..."
+		"de"	"ich bin so gelangweilt..."
 	}
 	"Reloading near you, sir!"
 	{
 		"en"	"Reloading near you, sir!"
+		"de"	"ich lade bei dir nach, sir!"
 	}
 	"I hope your day is going well!"
 	{
 		"en"	"I hope your day is going well!"
+		"de"	"Ich Hoffe dein tag geht gut!"
 	}
 	"Sometimes i wonder why this war exists."
 	{
 		"en"	"Sometimes i wonder why this war exists."
+		"de"	"Manchmal frage ich mich warum dieser krieg existiert"
 	}
 	"Just saying, never give up!"
 	{
 		"en"	"Just saying, never give up!"
+		"de"	"Ich sag nur, Gib niemals auf!"
 	}
 	"Could i borrow your gun perhaps?"
 	{
 		"en"	"Could i borrow your gun perhaps?"
+		"de"	"kann ich vielleicht deine waffe ausleihen?"
 	}
 	"Im pretty confident in my abilities!"
 	{
 		"en"	"Reloading near you, sir!"
+		"de"	"Ich lade bei dir nach, sir!"
 	}
 	"Pick up that can."
 	{
 		"en"	"Pick up that can."
+		"de"	"heb die dose auf."
 	}
 	"On my way, sir!"
 	{
 		"en"	"On my way, sir!"
+		"de"	"Auf den weg, sir!"
 	}
 	"Im watching there, dont worry!"
 	{
 		"en"	"Im watching there, dont worry!"
+		"de"	"Ich gucke dort, keine sorge!" 
 	}
 	"Spy? I'm keeping my eye there."
 	{
 		"en"	"Spy? I'm keeping my eye there."
+		"de"	"Spion? Ich halte mein auge dort." 
 	}
 	"Sentry here? Its better to wait for teammates to engage so i'll look."
 	{
 		"en"	"Sentry here? Its better to wait for teammates to engage so i'll look."
+		"de"	"Sentry hier? es ist besser auf das team zu warten um Anzugreifen, also werde ich gucken."
 	}
 	"I cant build a teleporter, sorry."
 	{
 		"en"	"I cant build a teleporter, sorry."
+		"de"	"Ich kann kein teleporter bauen, entschuldigung."
 	}
 	"I cant build a dispenser, sorry."
 	{
 		"en"	"I cant build a dispenser, sorry."
+		"de"	"Ich kann keinen spender bauen, entschuldigung."
 	}
 	"I cant build a sentry, sorry."
 	{
 		"en"	"I cant build a sentry, sorry."
+		"de"	"Ich kann keine sentry bauen, entschuldigung."
 	}
 	"I can't give you ubercharge..."
 	{
 		"en"	"I can't give you ubercharge..."
+		"de"	"Ich kann dir keine überladung geben..."
 	}
 	"Standing right here!"
 	{
 		"en"	"Standing right here!"
+		"de"	"Stehe genau hier!"
 	}
 	"I'm on my move again!"
 	{
 		"en"	"I'm on my move again!"
+		"de"	"Ich bewege mich wieder!"
 	}
 	"I am coming !"
 	{
 		"en"	"I am coming !"
+		"de"	"Ich komme !"
 	}
 	"I'm already here!"
 	{
 		"en"	"I'm already here!"
+		"de"	"Ich bin schon hier!"
 	}
 	"Follow? Sure!"
 	{
 		"en"	"Follow? Sure!"
+		"de"	"Folgen? Natürlich!"
 	}
 	"My left or yours?"
 	{
 		"en"	"My left or yours?"
+		"de"	"Mein links, oder deins?"
 	}
 	"My right or yours?"
 	{
 		"en"	"My right or yours?"
+		"de"	"Mein rechts, oder deins?"
 	}
 	"Cheers to you too, like a drink, get it?"
 	{
 		"en"	"Cheers to you too, like a drink, get it?"
+		"de"	"Prost auf dich auch, wie ein getränk, kapiert?"
 	}
 	"Ah come on, lighten your mood!"
 	{
 		"en"	"Ah come on, lighten your mood!"
+		"de"	"Ach komm schon, Verbessere deine stimmung!"
 	}
 	"Positivity is the way to go!"
 	{
 		"en"	"Positivity is the way to go!"
+		"de"	"Positivität ist der richtige weg!"
 	}
 	"Why negative? Nothing to worry about!"
 	{
 		"en"	"Why negative? Nothing to worry about!"
+		"de"	"warum so negativ? nichts um sich sorgen zu machen!"
 	}
 	"Not Follow? Sure!"
 	{
 		"en"	"Not Follow? Sure!"
+		"de"	"Nicht folgen? Natürlich!
 	}
 	"I'll hurt no one!"
 	{
 		"en"	"I'll hurt no one!"
+		"de"	"Ich werde niemand verletzen!"
 	}
 	"I'll attack once more!"
 	{
 		"en"	"I'll attack once more!"
+		"de"	"Ich greife nochmal an!"
 	}
 	"I try my best to aim well!"
 	{
 		"en"	"I try my best to aim well!"
+		"de"	"Ich werde mein bestes versuchen um gut zu zielen!"
 	}
 	"I'll attack once more!"
 	{
 		"en"	"I'll attack once more!"
+		"de"	"Ich greife nochmal an!"
 	}
 	"You are doing a good job aswell!"
 	{
 		"en"	"You are doing a good job aswell!"
+		"de"	"Sie machen auch eine gute arbeit!"
 	}
 	"Here, have this medkit!"
 	{
 		"en"	"Here, have this medkit!"
+		"de"	"hier, nimm das Medikit!"
 	}
 	"Sorry, i dont have a medkit on me..."
 	{
 		"en"	"Sorry, i dont have a medkit on me..."
+		"de"	"entschuldigung, ich habe kein medikit bei mir..."
 	}
 	"Sorry, i dont have a medkit on me, please wait."
 	{
 		"en"	"Sorry, i dont have a medkit on me, please wait."
+		"de"	"entschuldigung, ich habe kein medikit bei mir, Bitte warte."
 	}
 	"I do not have a medkit."
 	{
 		"en"	"I do not have a medkit."
+		"de"	"Ich habe kein medikit."
 	}
 	"I dont have a medkit, have patience."
 	{
 		"en"	"I dont have a medkit, have patience."
+		"de"	"Ich habe kein medikit, Habe gedult."
 	}
 	"I told you i do not have a medikit!!!"
 	{
 		"en"	"I told you i do not have a medikit!!!"
+		"de"	"Ich habe dir gesagt das ich kein medikit habe!!!"
 	}
 	"Youre too far away!"
 	{
 		"en"	"Youre too far away!"
+		"de"	"Du bist zu weit weg!"
 	}
 	"This can't be..."
 	{
 		"en"	"This can't be..."
+		"de"	"Das kann nicht sein..."
 	}
 	"I will protect you!"
 	{
 		"en"	"I will protect you!"
+		"de"	"Ich werde dich verteidigen!"
 	}
 	"You told me to be friendly."
 	{
 		"en"	"You told me to be friendly. So i wont attack them. But i will keep them in mind..."
+		"de"	"Du hast mir gesagt freundlich zu sein. Also werde ich sie nicht angreiffen. Aber ich werde sie im gedanken behalten..."
 	}
 }
