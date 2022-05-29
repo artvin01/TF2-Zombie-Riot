@@ -40,7 +40,7 @@ public Action Event_player_builtobject(Handle event, const char[] name, bool don
 	int owner = GetClientOfUserId(id);
 	CClotBody npc = view_as<CClotBody>(entity);
 	npc.bBuildingIsPlaced = true;
-	i_BeingCarried[target] = false;
+	i_BeingCarried[entity] = false;
 		char classname[64];
 	
 		if (IsValidEntity(entity))
