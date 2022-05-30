@@ -454,6 +454,8 @@ void Waves_Progress()
 			{
 				Raidboss_Clean_Everyone();
 				ReviveAll();
+				Music_EndLastmann();
+				CheckAlivePlayers();
 				ScaleWithHpMore = true;
 			}
 			
@@ -627,6 +629,8 @@ void Waves_Progress()
 				}
 				
 				ReviveAll();
+				Music_EndLastmann();
+				CheckAlivePlayers();
 			}
 			if(round.Custom_Refresh_Npc_Store)
 			{
