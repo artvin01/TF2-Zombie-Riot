@@ -1771,11 +1771,11 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					//		float Shave_Seconds_off = 5.0 * Extra;
 							
 						//	Armor_Ready[client] = GetGameTime() + 10.0; //ehhhhhhhh make it rlly small
-							Building_Collect_Cooldown[entity][client] = GetGameTime() + 60.0; //small also
+							Building_Collect_Cooldown[entity][client] = GetGameTime() + 45.0; //small also
 						//	CashSpent[owner] -= 20;
 							if(owner != client)
 							{
-								if(Armor_table_money_limit[owner][client] <= 10)
+								if(Armor_table_money_limit[owner][client] <= 15)
 								{
 									CashSpent[owner] -= 40;
 									Armor_table_money_limit[owner][client] += 1;
