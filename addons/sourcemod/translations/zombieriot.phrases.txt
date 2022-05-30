@@ -1070,4 +1070,9 @@
 		"en"		"Vote for the difficulty"
 		"de"		"Stimmen sie für die Schwierigkeit ab"
 	}
+	"MAX BARRICADES OUT CURRENTLY"
+	{
+		"en"		"MAX BARRICADES OUT CURRENTLY"
+		"de"		"MAXIMALE BARRICADEN DRAUßEN"
+	}	
 }
