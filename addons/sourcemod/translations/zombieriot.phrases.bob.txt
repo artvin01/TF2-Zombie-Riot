@@ -126,7 +126,7 @@
 	{
 		"en"	"Just saying, never give up!"
 		"de"	"Ich sag nur, Gib niemals auf!"
-		"pl|    "Pamiętaj nigdy się nie poddawaj!"
+		"pl"   "Pamiętaj nigdy się nie poddawaj!"
 	}
 	"Could i borrow your gun perhaps?"
 	{
@@ -263,7 +263,7 @@
 	"Not Follow? Sure!"
 	{
 		"en"	"Not Follow? Sure!"
-		"de"	"Nicht folgen? Natürlich!
+		"de"	"Nicht folgen? Natürlich!"
 		"pl"    "Nie podążać? Jasne!"
 	}
 	"I'll hurt no one!"

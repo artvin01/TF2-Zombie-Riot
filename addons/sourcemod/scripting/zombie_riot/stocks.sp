@@ -2519,15 +2519,15 @@ stock void UpdatePlayerPoints(int client)
 {
 	int Points;
 	
-	Points += Healing_done_in_total[client] / 10;
+	Points += Healing_done_in_total[client] / 5;
 	
 	Points += RoundToCeil(Damage_dealt_in_total[client]) / 200;
 	
 	Points += Resupplies_Supplied[client] * 2;
 	
-	Points += i_BarricadeHasBeenDamaged[client] / 100;
+	Points += i_BarricadeHasBeenDamaged[client] / 65;
 	
-	Points += i_ExtraPlayerPoints[client] / 200;
+	Points += i_ExtraPlayerPoints[client] / 50;
 	
 	Points /= 10;
 	
