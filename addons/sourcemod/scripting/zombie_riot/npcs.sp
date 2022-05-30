@@ -729,6 +729,13 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		return Plugin_Handled;
 	}
 	*/
+	/*
+	if((damagetype & (DMG_BLAST))) //make sure any hitscan boom type isnt actually boom
+	{
+		damagetype |= DMG_BULLET; //add bullet logic
+		damagetype &= ~DMG_BLAST; //remove blast logic	
+	}
+	*/
 //	if((damagetype & (DMG_BULLET)) || (damagetype & (DMG_BUCKSHOT))) // Needed, other crap for some reason can trigger headshots, so just make sure only bullets can do this.
 	{
 		if(hitgroup == HITGROUP_HEAD)
