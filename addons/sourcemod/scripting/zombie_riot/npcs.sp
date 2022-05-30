@@ -715,7 +715,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 
 float played_headshotsound_already [MAXTF2PLAYERS];
 
-float f_IsThisExplosiveHitscan[MAXTF2PLAYERS];
+float f_IsThisExplosiveHitscan[MAXENTITIES];
 
 public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
 {

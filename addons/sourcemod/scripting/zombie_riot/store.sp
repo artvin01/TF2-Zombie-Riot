@@ -1076,7 +1076,7 @@ static void MenuPage(int client, int section)
 				}
 				if(Maxed_Building)
 				{
-					FormatEx(buffer, sizeof(buffer), "%t ($%d) [%t] [%i/%i]", "Buy", info.Cost, i_BarricadesBuild[client],"MAX BARRICADES OUT CURRENTLY", MaxBarricadesAllowed(client));
+					FormatEx(buffer, sizeof(buffer), "%t ($%d) [%t] [%i/%i]", "Buy", info.Cost,"MAX BARRICADES OUT CURRENTLY", i_BarricadesBuild[client], MaxBarricadesAllowed(client));
 				}
 				else
 				{

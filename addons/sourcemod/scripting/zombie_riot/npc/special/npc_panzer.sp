@@ -496,7 +496,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 						TF2_IgnitePlayer(target, target, 4.0);
 					}
 					else
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 3.0 * npc.m_flWaveScale, DMG_BURN);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 2.0 * npc.m_flWaveScale, DMG_BURN);
 				}
 				npc.PlayFlameSound();
 			}
@@ -547,7 +547,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 							TF2_IgnitePlayer(target, target, 4.0);
 						}
 						else
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 3.0 * npc.m_flWaveScale, DMG_BURN);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 2.0 * npc.m_flWaveScale, DMG_BURN);
 					}
 					npc.PlayFlameSound();
 				}
@@ -595,7 +595,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 							if(target <= MaxClients)
 								SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_SLASH|DMG_CLUB);
 							else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 3.0 * npc.m_flWaveScale, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 2.0 * npc.m_flWaveScale, DMG_SLASH|DMG_CLUB);
 							
 							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
 								
@@ -652,7 +652,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 							if(target <= MaxClients)
 								SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_SLASH|DMG_CLUB);
 							else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 3.0 * npc.m_flWaveScale, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 2.0 * npc.m_flWaveScale, DMG_SLASH|DMG_CLUB);
 							
 							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
 								

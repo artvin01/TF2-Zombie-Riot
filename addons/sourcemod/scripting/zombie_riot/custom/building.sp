@@ -747,7 +747,7 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 	
 	if(b_thisNpcIsABoss[attacker])
 	{
-		damage *= 3.0;
+		damage *= 2.0;
 	}
 	
 	if(damagetype & DMG_BLAST)
