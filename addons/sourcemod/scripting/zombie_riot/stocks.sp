@@ -2235,6 +2235,17 @@ float[] CalculateDamageForce( const float vecBulletDir[3], float flScale )
 	return vecForce;
 }
 
+float[] CalculateDamageForceSelfCalculated(int client, float flScale )
+{
+	float vecSwingForward[3];
+	float ang[3];
+	GetClientEyeAngles(client, ang);
+	
+	GetAngleVectors(ang, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
+	
+	return CalculateDamageForce(vecSwingForward, flScale);
+}
+
 float ImpulseScale( float flTargetMass, float flDesiredSpeed )
 {
 	return (flTargetMass * flDesiredSpeed);

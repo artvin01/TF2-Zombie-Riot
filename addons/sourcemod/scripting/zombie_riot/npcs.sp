@@ -715,6 +715,8 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 
 float played_headshotsound_already [MAXTF2PLAYERS];
 
+float f_IsThisExplosiveHitscan[MAXTF2PLAYERS];
+
 public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
 {
 	if(attacker < 1 || attacker > MaxClients || victim == attacker)
@@ -729,13 +731,17 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		return Plugin_Handled;
 	}
 	*/
-	/*
 	if((damagetype & (DMG_BLAST))) //make sure any hitscan boom type isnt actually boom
 	{
+		f_IsThisExplosiveHitscan[attacker] = GetGameTime();
 		damagetype |= DMG_BULLET; //add bullet logic
 		damagetype &= ~DMG_BLAST; //remove blast logic	
 	}
-	*/
+	else
+	{
+		f_IsThisExplosiveHitscan[attacker] = 0.0;
+	}
+	
 //	if((damagetype & (DMG_BULLET)) || (damagetype & (DMG_BUCKSHOT))) // Needed, other crap for some reason can trigger headshots, so just make sure only bullets can do this.
 	{
 		if(hitgroup == HITGROUP_HEAD)

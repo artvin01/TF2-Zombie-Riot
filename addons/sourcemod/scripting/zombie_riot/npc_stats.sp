@@ -4594,6 +4594,14 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 	CClotBody npc = view_as<CClotBody>(victim);
 	npc.m_vecpunchforce(damageForce, true);
 	npc.m_bGib = false;
+	
+	if(f_IsThisExplosiveHitscan[attacker] == GetGameTime())
+	{
+		npc.m_vecpunchforce(CalculateDamageForceSelfCalculated(attacker, 10000.0), true);
+		damagetype |= DMG_BULLET; //add bullet logic
+		damagetype &= ~DMG_BLAST; //remove blast logic			
+	}
+	
 	if(!npc.m_bDissapearOnDeath) //Make sure that if they just vanish, its always false. so their deathsound plays.
 	{
 		if((damagetype & DMG_BLAST))

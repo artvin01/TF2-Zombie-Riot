@@ -635,6 +635,12 @@ public Action Bloon_ClotDamaged(int victim, int &attacker, int &inflictor, float
 	
 	Bloon npc = view_as<Bloon>(victim);
 	
+	if(f_IsThisExplosiveHitscan[attacker] == GetGameTime())
+	{
+		damagetype |= DMG_BULLET; //add bullet logic
+		damagetype &= ~DMG_BLAST; //remove blast logic			
+	}
+	
 	switch(npc.m_iType)
 	{
 		case Bloon_Black:
