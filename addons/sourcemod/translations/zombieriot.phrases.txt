@@ -1030,7 +1030,7 @@
 		"en"		"Can Be Pack-A-Punched"
 		"de"		"Kann man Pack-A-Punchen"
 	}
-	"Your loadout was updated from your previous state"
+	"Your loadout was updated from your previous state."
 	{
 		"en"		"Your loadout was updated from your previous state."
 		"de"		"Ihr Loadout wurde geupdated von ihren vorigen zustand."

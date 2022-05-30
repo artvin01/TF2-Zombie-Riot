@@ -96,6 +96,10 @@
 	{
 		"en" 		"Flying Armor"
 	}
+	"Tiny Flying Armor"
+	{
+		"en" 		"Tiny Flying Armor"
+	}
 	"Kamikaze Demo"
 	{
 		"en" 		"Kamikaze Demo"
@@ -254,6 +258,10 @@
 	"Xeno Flying Armor"
 	{
 		"en" 		"Xeno Flying Armor"
+	}
+	"Xeno Tiny Flying Armor"
+	{
+		"en" 		"Xeno Tiny Flying Armor"
 	}
 	"Xeno Kamikaze Demo"
 	{
