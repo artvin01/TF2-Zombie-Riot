@@ -1848,11 +1848,15 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 1.0;
 										if(owner != client)
 										{
-											CashSpent[owner] -= 400;
-											Resupplies_Supplied[owner] += 40;
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-											SetGlobalTransTarget(owner);
-											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Pap Machine Used");
+											if(Pack_A_Punch_Machine_money_limit[owner][client] <= 5)
+											{
+												Pack_A_Punch_Machine_money_limit[owner][client] += 1;
+												CashSpent[owner] -= 400;
+												Resupplies_Supplied[owner] += 40;
+												SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+												SetGlobalTransTarget(owner);
+												ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Pap Machine Used");
+											}
 										}
 										SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 										SetGlobalTransTarget(client);

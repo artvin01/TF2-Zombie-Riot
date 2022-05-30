@@ -270,6 +270,7 @@ float Mana_Hud_Delay[MAXTF2PLAYERS];
 int Armor_table_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int i_Healing_station_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int Perk_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
+int Pack_A_Punch_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 
 
 bool b_NpcHasDied[MAXENTITIES]={true, ...};
@@ -3213,4 +3214,8 @@ public void MapStartResetAll()
 	f_TimerTickCooldownRaid = 0.0;
 	f_TimerTickCooldownShop = 0.0;
 	CleanAllNpcArray();
+	Zero2(Armor_table_money_limit);
+	Zero2(i_Healing_station_money_limit);
+	Zero2(Perk_Machine_money_limit);
+	Zero2(Pack_A_Punch_Machine_money_limit);
 }
