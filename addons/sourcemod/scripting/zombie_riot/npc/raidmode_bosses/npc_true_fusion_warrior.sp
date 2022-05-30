@@ -1337,10 +1337,10 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const color[4]
 		else
 		{
 			if(!b_Anger[client])
-				makeexplosion(client, client, startPosition, "", 120, RoundToCeil(35.0 * RaidModeScaling));
+				makeexplosion(client, client, startPosition, "", RoundToCeil(35.0 * RaidModeScaling), 100);
 				
 			else if(b_Anger[client])
-				makeexplosion(client, client, startPosition, "", 150, RoundToCeil(50.0 * RaidModeScaling));
+				makeexplosion(client, client, startPosition, "", RoundToCeil(50.0 * RaidModeScaling), 120);
 				
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
