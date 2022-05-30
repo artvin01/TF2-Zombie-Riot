@@ -1040,7 +1040,7 @@
 		"en"		"Your last equipped level perks were restored."
 		"de"		"Ihre letzten level perks wurden wiederhergestellt."
 	}
-	"Press TAB To open"
+	"Press TAB To open the store"
 	{
 		"en"		"Press TAB To open the store"
 		"de"		"Drücke auf TAB, um den Shop zu öffnen."
