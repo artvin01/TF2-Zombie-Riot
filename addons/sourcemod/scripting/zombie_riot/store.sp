@@ -600,7 +600,7 @@ void Store_LoadLevelPerks(int client)
 	if(found && IsClientInGame(client))
 	{
 		SetGlobalTransTarget(client);
-		PrintToChat(client, "Your last equipped level perks were restored.");
+		PrintToChat(client, "%t","Your last equipped level perks were restored");
 		if(IsPlayerAlive(client))
 			TF2_RegeneratePlayer(client);
 	}

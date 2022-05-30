@@ -875,7 +875,7 @@ public void BobTheGod_ClotThink(int iNPC)
 						}
 						case 8:
 						{
-							PrintHintText(client, "%t %t","Bob The Second:", "Bob The Second: Pick up that can.");
+							PrintHintText(client, "%t %t","Bob The Second:", "Pick up that can.");
 						}
 					}
 					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");				

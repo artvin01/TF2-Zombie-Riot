@@ -15,7 +15,7 @@
 	"Pistol Ammo"
 	{
 		"en"	"Pistol Ammo"
-		"de"	"Pistolen Munition
+		"de"	"Pistolen Munition"
 		"pl"    "Amunicja do pistoletu"
 	}
 	"Bob The Second is not friendly and follows you!"
@@ -102,7 +102,7 @@
 	{
 		"en"	"I'm pretty bored..."
 		"de"	"ich bin so gelangweilt..."
-		'pl"    "jestem dość znudzony..."
+		"pl"    "jestem dość znudzony..."
 	}
 	"Reloading near you, sir!"
 	{
