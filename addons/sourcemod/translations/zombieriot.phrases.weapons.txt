@@ -1,15 +1,1033 @@
-"Phrases" //Example
+"Phrases"
 {
+	"damage"
+	{
+		"en"		"Damage"
+		"de"		"Schaden"
+	}
+	"pellets"
+	{
+		"en"		"Pellets"
+		"de"		"Pellets"
+	}
+	"firerate"
+	{
+		"en"		"Fire Rate"
+		"de"		"Feuerrate"
+	}
+	"reload"
+	{
+		"en"		"Reload"
+		"de"		"Nachladen"
+	}	
+	"clip"
+	{
+		"en"		"Clip"
+		"de"		"Klipp"
+	}	
+	"chargespeed"
+	{
+		"en"		"Charge Speed"
+		"de"		"Ladegeschwindigkeit"
+	}
+	"chargedmg"
+	{
+		"en"		"Charge Damage"
+		"de"		"Ladungsschaden"
+	}
+	"healing"
+	{
+		"en"		"Healing"
+		"de"		"Heilen"
+	}
+	"range"
+	{
+		"en"		"Range"
+		"de"		"Reichweite"
+	}
 	"Weapons"
 	{
 		"en" 		"Weapons"
+		"de"		"Waffen"
 	}
-	"Primary Weapons"
+	"Primary Weapons"//Primary path here
 	{
 		"en" 		"Primary Weapons"
+		"de"		"Primare Waffen"
 	}
 	"Syringe Gun"
 	{
 		"en" 		"Syringe Gun"
+		"de"		"Spritzenpistole"
+	}
+	"Sniper Rifle"
+	{
+		"en"		"Sniper Rifle"
+		"de"		"Scharfschützengewehr"
+	}
+	"Sawed off Shotgun"
+	{
+		"en"		"Sawed off Shotgun"
+		"de"		"Abgesägte Schrotflinte"
+	}
+	"Annabelle"
+	{
+		"en"		"Annabelle"
+		"de"		"Annabelle"
+	}
+	"Huntsman"
+	{
+		"en"		"Huntsman"
+		"de"		"Huntsman"
+	}
+	"Flamethrower"
+	{
+		"en"		"Flamethrower"
+		"de"		"Flammenwerfer"
+	}
+	"Ranged Spike Layer"
+	{
+		"en"		"Ranged Spike Layer"
+		"de"		"Fernkampfstachelschicht"
+	}
+	"Crusader's Crossbow"
+	{
+		"en"		"Crusader's Crossbow"
+		"de"		"Armbrust des Kreuzritters"
+	}
+	"Grenade Launcher"
+	{
+		"en"		"Grenade Launcher"
+		"de"		"Granatwerfer"
+	}
+	"Tommygun"
+	{
+		"en"		"Tommygun"
+		"de"		"Tommygun"
+	}
+	"Double Barrel Shotgun"
+	{
+		"en"		"Double Barrel Shotgun"
+		"de"		"Doppelläufige Schrotflinte"
+	}
+	"The Pompson 7000"
+	{
+		"en"		"The Pompson 7000"
+		"de"		"The Pompson 7000"
+	}
+	"Dragon's Fury"
+	{
+		"en"		"Dragon's Fury"
+		"de"		"Drachenzorn"
+	}
+	"Marksman Rifle"
+	{
+		"en"		"Marksman Rifle"
+		"de"		"Marksman-Gewehr"
+	}
+	"Aresenal's Tripmine Layer"
+	{
+		"en"		"Aresenal's Tripmine Layer"
+		"de"		"Aresenals Tripminschicht"
+	}
+	"Heavy Charge Builder Laser"
+	{
+		"en"		"Heavy Charge Builder Laser"
+		"de"		"Baulaser für schwere Ladungen"
+	}
+	"Railgun"
+	{
+		"en"		"Railgun"
+		"de"		"Railgun"
+	}
+	"The Loch-N-Load"
+	{
+		"en"		"The Loch-N-Load"
+		"de"		"Der Lochnesser"
+	}
+	"Boomstick"
+	{
+		"en"		"Boomstick"
+		"de"		"Kaboomstock"
+	}
+	"Terroriser Bomb Implanter Sniperrifle"
+	{
+		"en"		"Terroriser Bomb Implanter Sniperrifle"
+		"de"		"Terrorisar Bomben Implantiertes Scharfschützengewehr"
+	}
+	"Rampager Automatic Rifle"
+	{
+		"en"		"Rampager Automatic Rifle"
+		"de"		"Rampager-Automatikgewehr"
+	}
+	"Loose Cannon"
+	{
+		"en"		"Loose Cannon"
+		"de"		"Stimmungskanone"
+	}
+	"RPG"
+	{
+		"en"		"RPG"
+		"de"		"Raketenwerfer"
+	}
+	"Peacock's Screw Ball Cannon"
+	{
+		"en"		"Peacock's Screw Ball Cannon"
+		"de"		"Peacocks Schraubenkugelkanone"
+	}
+	"The Cow Mangler 6000"
+	{
+		"en"		"The Cow Mangler 6000"
+		"de"		"Der Kuhmetzler 6000"
+	}
+	"Anti Material Rifle"
+	{
+		"en"		"Anti Material Rifle"
+		"de"		"Anti-Material-Gewehr"
+	}
+	"Infected Rampager Assult Rifle"
+	{
+		"en"		"Infected Rampager Assult Rifle"
+		"de"		"Infizierte Rampager Sturmgewehr"
+	}
+	"Star Shooter"
+	{
+		"en"		"Star Shooter"
+		"de"		"Sternen Schütze"
+	}
+	"Secondary Weapons"//Secondary here
+	{
+		"en"		"Secondary Weapons"
+		"de"		"Sekundär Waffen"
+	}
+	"Wrangler"
+	{
+		"en"		"Wrangler"
+		"de"		"Sentry-Flüsterer"
+	}
+	"USP tactical"
+	{
+		"en"		"USP tactical"
+		"de"		"USP taktisch"
+	}
+	"Nail Gun"
+	{
+		"en"		"Nail Gun"
+		"de"		"Nagelpistole"
+	}
+	"Deagle"
+	{
+		"en"		"Deagle"
+		"de"		"Deagle"
+	}
+	"Grenade"
+	{
+		"en"		"Grenade"
+		"de"		"Granate"
+	}
+	"Medikit"
+	{
+		"en"		"Medikit"
+		"de"		"Medizinkit"
+	}
+	"Magic Potion"
+	{
+		"en"		"Mage Potion"
+		"de"		"Magie Trank"
+	}
+	"Flaregun"
+	{
+		"en"		"Flaregun"
+		"de"		"Leuchtpistole"
+	}
+	"The Righteous Bison"
+	{
+		"en"		"The Righteous Bison"
+		"de"		"Der Rechtschaffene Bison"
+	}
+	"SMG"
+	{
+		"en"		"SMG"
+		"de"		"SMG"
+	}
+	"Battle Medigun"
+	{
+		"en"		"Battle Medigun"
+		"de"		"Kampf Medigun"
+	}
+	"Charged Handgun"
+	{
+		"en"		"Charged Handgun"
+		"de"		"Aufgeladene Pistole"
+	}
+	"Stickybomb Launcher"
+	{
+		"en"		"Stickybomb Launcher"
+		"de"		"Haftbombenwerfer"
+	}
+	"Mechanical Medigun"
+	{
+		"en"		"Mechanical Medigun"
+		"de"		"Mechanische Medigun"
+	}
+	"The Battalion's Backup"
+	{
+		"en"		"The Battalion's Backup"
+		"de"		"Der Bataillonsbeistand"
+	}
+	"Medigun"
+	{
+		"en"		"Medigun"
+		"de"		"Medigun"
+	}
+	"P15t0l"
+	{
+		"en"		"P15t0l"
+		"de"		"P15t0l3"
+	}
+	"Heavy Desert Eagle"
+	{
+		"en"		"Heavy Desert Eagle"
+		"de"		"Schwerer Desert Eagle"
+	}
+	"Infected Assult Rifle"
+	{
+		"en"		"Infected Assult Rifle"
+		"de"		"Infizierte Sturmgewehr"
+	}
+	"Buff Banner"
+	{
+		"en"		"Buff Banner"
+		"de"		"Das Buff-Banner"
+	}
+	"PhlogStorms Detonator"
+	{
+		"en"		"PhlogStorms Detonator"
+		"de"		"PhlogStorms Zünder"
+	}
+	"Melee Weapons"//Melee Here
+	{
+		"en"		"Melee Weapons"
+		"de"		"Nahkampfwaffen"
+	}
+	"Mounter"
+	{
+		"en"		"Mounter"
+		"de"		"Aufheber"
+	}
+	"Wrench"
+	{
+		"en"		"Wrench"
+		"de"		"Schlüsselwerkzeug"
+	}
+	"Knife"
+	{
+		"en"		"Knife"
+		"de"		"Messer"
+	}
+	"Ubersaw"
+	{
+		"en"		"Ubersaw"
+		"de"		"Übersäge"
+	}
+	"Hammer"
+	{
+		"en"		"Hammer"
+		"de"		"Hammer"
+	}
+	"Fire Axe"
+	{
+		"en"		"Fire Axe"
+		"de"		"Feuerwehraxt"
+	}
+	"Survivalist Blade"
+	{
+		"en"		"Survivalist Blade"
+		"de"		"Klinge des Überlebenskünstlers"
+	}
+	"Kunai"
+	{
+		"en"		"Kunai"
+		"de"		"Kunai"
+	}
+	"Longsword"
+	{
+		"en"		"Longsword"
+		"de"		"Lang Schwert"
+	}
+	"Speed Fists Of Speed"
+	{
+		"en"		"Speed Fists Of Speed"
+		"de"		"Geschwindigkeits-Fäuste von Geschwindigkeit"
+	}
+	"Teslar Staff"
+	{
+		"en"		"Teslar Staff"
+		"de"		"Teslar Stab"
+	}
+	"Fists Of Kahmlstein"
+	{
+		"en"		"Fists Of Kahmlstein"
+		"de"		"Fäuste von Kahmlstein"
+	}
+	"Infinity Blade"
+	{
+		"en"		"Infinity Blade"
+		"de"		"Infinity Blade"
+	}
+	"Mage Weapons"//Mage here
+	{
+		"en"		"Mage Weapons"
+		"de"		"Magie Waffen"
+	}
+	"Bad Wand"
+	{
+		"en"		"Bad Wand"
+		"de"		"Schlechter Zauberstab"
+	}
+	"Fire Wand"
+	{
+		"en"		"Fire Wand"
+		"de"		"Feuer Zauberstab"
+	}
+	"Lightning Staff"
+	{
+		"en"		"Lightning Staff"
+		"de"		"Blitz Stab"
+	}
+	"Necromancy Staff"
+	{
+		"en"		"Necromancy Staff"
+		"de"		"Nekromantie Stab"
+	}
+	"Homing Staff"
+	{
+		"en"		"Homing Staff"
+		"de"		"Homing-Stab"
+	}
+	"Wind Staff"
+	{
+		"en"		"Wind Staff"
+		"de"		"Wind Stab"
+	}
+	"Elemental Staff"
+	{
+		"en"		"Elemental Staff"
+		"de"		"Elementarstab"
+	}
+	"Buildings"//Buildings here
+	{
+		"en"		"Buildings"
+		"de"		"Gebäude"
+	}
+	"Buildable Elevation"
+	{
+		"en"		"Buildable Elevation"
+		"de"		"Baubare Erhebung"
+	}
+	"Buildable Barricade"
+	{
+		"en"		"Buildable Barricade"
+		"de"		"Baubare Barrikade"
+	}
+	"Buildable Armortable"
+	{
+		"en"		"Buildable Armortable"
+		"de"		"Baubare Rüstungstisch"
+	}
+	"Buildable AmmoBox"
+	{
+		"en"		"Buildable AmmoBox"
+		"de"		"Baubare Munitionsbox"
+	}
+	"Buildable Pack-a-Punch"
+	{
+		"en"		"Buildable Pack-a-Punch"
+		"de"		"Baubare"
+	}
+	"Buildable Sentry"
+	{
+		"en"		"Buildable Sentry"
+		"de"		"Baubare Sentry"
+	}
+	"Buildable Healing Station"
+	{
+		"en"		"Buildable Healing Station"
+		"de"		"Baubare Heilstation"
+	}
+	"Upgrades"//Upgrades here!!!!
+	{
+		"en"		"Upgrades"
+		"de"		"Upgrades"
+	}
+	"Melee Upgrades"//Melee Upgrades HERE!!!
+	{
+		"en"		"Melee Upgrades"
+		"de"		"Nahkampf Upgrades"
+	}
+	"Cannibalism"
+	{
+		"en"		"Cannibalism"
+		"de"		"Kannibalismus"
+	}
+	"Copium"
+	{
+		"en"		"Copium"
+		"de"		"Copium"
+	}
+	"Cocain"
+	{
+		"en"		"Cocain"
+		"de"		"Cocaine"
+	}
+	"Steroids"
+	{
+		"en"		"Steroids"
+		"de"		"Steroide"
+	}
+	"LSD"
+	{
+		"en"		"LSD"
+		"de"		"LSD"
+	}
+	"Crystal Meth"
+	{
+		"en"		"Crystal Meth"
+		"de"		"Kristallmeth"
+	}
+	"God's Might"
+	{
+		"en"		"God's Might"
+		"de"		"Gottes Macht"
+	}
+	"Bob's Enhancer"
+	{
+		"en"		"Bob's Enhancer"
+		"de"		"Bobs Verstärker"
+	}
+	"Building Upgrades"//Building Upgrades HERE!!!
+	{
+		"en"		"Building Upgrades"
+		"de"		"Gebäude Upgrades"
+	}
+	"Repair Handling book for dummies"
+	{
+		"en"		"Repair Handling book for dummies"
+		"de"		"Reparaturhandhaltungsbuch für Dummköpfe"
+	}
+	"Construction Novice"
+	{
+		"en"		"Construction Novice"
+		"de"		"Bauanfänger"
+	}
+	"Ikea Repair Handling Book"
+	{
+		"en"		"Ikea Repair Handling Book"
+		"de"		"Ikea Reparaturhandhabungsbuch"
+	}
+	"Engineering Repair Handling book"
+	{
+		"en"		"Engineering Repair Handling book"
+		"de"		"Maschinenbau Reparaturhandhaltungsbuch"
+	}
+	"Construction Apprentice"
+	{
+		"en"		"Construction Apprentice"
+		"de"		"Baulehrling"
+	}
+	"Alien Repair Handling book"
+	{
+		"en"		"Alien Repair Handling book"
+		"de"		"Alien Reparaturhandhaltungsbuch"
+	}
+	"Construction Worker"
+	{
+		"en"		"Construction Worker"
+		"de"		"Bauarbeiter"
+	}
+	"Cosmic Repair Handling book"
+	{
+		"en"		"Cosmic Repair Handling book"
+		"de"		"Kosmisches Reparaturhandhaltungsbuch"
+	}
+	"Construction Expert"
+	{
+		"en"		"Construction Expert"
+		"de"		"Bauexperte"
+	}
+	"Construction Master"
+	{
+		"en"		"Construction Master"
+		"de"		"Baumeister"
+	}
+	"Construction Killer"
+	{
+		"en"		"Construction Killer"
+		"de"		"Baukiller"
+	}
+	"Ranged Upgrades"//Ranged Upgrades HERE!!!
+	{
+		"en"		"Ranged Upgrades"
+		"de"		"Fernkampf-Upgrades"
+	}
+	"Accurate Marksman"
+	{
+		"en"		"Accurate Marksman"
+		"de"		"Akkurater Schütze"
+	}
+	"Ammo Coat"
+	{
+		"en"		"Ammo Coat"
+		"de"		"Munition Mantel"
+	}
+	"Ammo Coat Elite"
+	{
+		"en"		"Ammo Coat Elite"
+		"de"		"Munition Mantel Elite"
+	}
+	"Antidote Coated Bullets"
+	{
+		"en"		"Antidote Coated Bullets"
+		"de"		"Gegenmittelbeschichtete Kugeln"
+	}
+	"Anti-Matter Bullets"
+	{
+		"en"		"Anti-Matter Bullets"
+		"de"		"Anti-Materie-Kugeln"
+	}
+	"Mage Upgrades"//Mage Upgrades HERE!!!
+	{
+		"en"		"Mage Upgrades"
+		"de"		"Magie Upgrades"
+	}
+	"Magical Haste"
+	{
+		"en"		"Magical Haste"
+		"de"		"Magische Eile"
+	}
+	"Hastening Potion"
+	{
+		"en"		"Hastening Potion"
+		"de"		"Beschleunigungstrank"
+	}
+	"The Bombinomicon"
+	{
+		"en"		"The Bombinomicon"
+		"de"		"Das Bombinomicon"
+	}
+	"Betweenlands Potion"
+	{
+		"en"		"Betweenlands Potion"
+		"de"		"Zwischenlande-Trank"
+	}
+	"Master Scorcerer"
+	{
+		"en"		"Master Scorcerer"
+		"de"		"Meister Zauberer"
+	}
+	"Bob's Magic"
+	{
+		"en"		"Bob's Magic"
+		"de"		"Bobs Magie"
+	}
+	"Passive Upgrades"//Passive Upgrades HERE!!!
+	{
+		"en"		"Passive Upgrades"
+		"de"		"Passive Upgrades"
+	}
+	"Body armor"
+	{
+		"en"		"Body armor"
+		"de"		"Körperpanzerung"
+	}
+	"Adrenalin"
+	{
+		"en"		"Adrenalin"
+		"de"		"Adrenaline"
+	}
+	"Kevlar"
+	{
+		"en"		"Kevlar"
+		"de"		"Kevlar"
+	}
+	"Heavy Vest"
+	{
+		"en"		"Heavy Vest"
+		"de"		"Schwere Weste"
+	}
+	"Jesus's Blessing"
+	{
+		"en"		"Jesus's Blessing"
+		"de"		"Jesu Segen"
+	}
+	"Full Riot Gear Set"
+	{
+		"en"		"Full Riot Gear Set"
+		"de"		"Komplettes Riot-Ausrüstungsset"
+	}
+	"Healthy Apple from Bob"
+	{
+		"en"		"Healthy Apple from Bob"
+		"de"		"Gesunder Apfel von Bob"
+	}
+	"Medigun Upgrades"//Medigun Upgrades HERE!!!
+	{
+		"en"		"Medigun Upgrades"
+		"de"		"Medigun Upgrades"
+	}
+	"Doctor Certificate"
+	{
+		"en"		"Doctor Certificate"
+		"de"		"Ärztliche Bescheinigung"
+	}
+	"Professor Certificate"
+	{
+		"en"		"Professor Certificate"
+		"de"		"Professorenzertifikat"
+	}
+	"Hell's Certificate"
+	{
+		"en"		"Hell's Certificate"
+		"de"		"Höllenzertifikat"
+	}
+	"Medic's lost Medical Lisence"
+	{
+		"en"		"Medic's lost Medical Lisences"
+		"de"		"Medics verlorene medizinische Lizenz"
+	}
+	"Level Perks"//Lvl Perks here
+	{
+		"en"		"Level Perks"
+		"de"		"Level Vorteil"
+	}
+	"Melee Perks"//Lvl Melee perks here
+	{
+		"en"		"Melee Perks"
+		"de"		"Nahkampf Vorteil"
+	}
+	"Panic Attack"
+	{
+		"en"		"Panic Attack"
+		"de"		"Panik-Attacke"
+	}
+	"Barbarians Mind"
+	{
+		"en"		"Barbarians Mind"
+		"de"		"Barbaren Verstand"
+	}
+	"Building Perks"//Lvl Building perks HERE!!
+	{
+		"en"		"Building Perks"
+		"de"		"Gebäude Vorteil"
+	}
+	"Mechanic"
+	{
+		"en"		"Mechanic"
+		"de"		"Mechaniker"
+	}
+	"Wrenchy Hands"
+	{
+		"en"		"Wrenchy Hands"
+		"de"		"Schnellere Hände"
+	}
+	"Sniper Sentry"
+	{
+		"en"		"Sniper Sentry"
+		"de"		"Scharfschützen Sentry"
+	}
+	"Minigun Sentry"
+	{
+		"en"		"Minigun Sentry"
+		"de"		"Minigun Sentry"
+	}
+	"Glass Cannon Blueprints"
+	{
+		"en"		"Glass Cannon Blueprints"
+		"de"		"Glas Kanonen Baupläne"
+	}
+	"Ranged Perks"//Lvl Ranged perks HERE!!!
+	{
+		"en"		"Ranged Perk"
+		"de"		"Fernkampf Vorteil"
+	}
+	"Heavy Caliber"
+	{
+		"en"		"Heavy Caliber"
+		"de"		"Schwerer Kaliber"
+	}
+	"Army Belt"
+	{
+		"en"		"Army Belt"
+		"de"		"Armeegürtel"
+	}
+	"Headshot Affinity"
+	{
+		"en"		"Headshot Affinity"
+		"de"		"Kopfschussaffinität"
+	}
+	"Mage Perks"//Lvl Mage perks HERE!!!
+	{
+		"en"		"Mage Perks"
+		"de"		"Magie Vorteil"
+	}
+	"Mage Fragility"
+	{
+		"en"		"Mage Fragility"
+		"de"		"Magier Zerbrechlichkeit"
+	}
+	"Passive Perks"
+	{
+		"en"		"Passive Perks"
+		"de"		"Passive Vorteil"
+	}
+	"Heavy Fat"
+	{
+		"en"		"Heavy Fat"
+		"de"		"Schweres Fett"
+	}
+	"Android"
+	{
+		"en"		"Android"
+		"de"		"Androide"
+	}
+	"Soft Shoes"
+	{
+		"en"		"Soft Shoes"
+		"de"		"Sanfte Schuhe"
+	}
+	"Level Items"
+	{
+		"en"		"Level Items"
+		"de"		"Level Gegenstände"
+	}
+	"Level 15 Peashooter"
+	{
+		"en"		"Level 15 Peashooter"
+		"de"		"Level 15 Erbsenkanone"
+	}
+	"Rusty Wrench"
+	{
+		"en"		"Rusty Wrench"
+		"de"		"Rostiger Schraubenschlüssel"
+	}
+	"Cheap Barricade"
+	{
+		"en"		"Cheap Barricade"
+		"de"		"Billige Barrikade"
+	}
+	"Sand Blocks"
+	{
+		"en"		"Sand Blocks"
+		"de"		"Sand Blöcke"
+	}
+	"Inventory"//Inventory here
+	{
+		"en"		"Inventory"
+		"de"		"Inventar"
+	}
+	"head"
+	{
+		"en"		"Head"
+		"de"		"Kopf"
+	}
+	"Scrap Helmet [Common]"
+	{
+		"en"		"Scrap Helmet [Common]"
+		"de"		"Schrotthelm [Gewöhnlich]"
+	}
+	"Face Mask [Common]"
+	{
+		"en"		"Face Mask [Common]"
+		"de"		"Gesichtsmaske [Gewöhnlich]"
+	}
+	"Chest"
+	{
+		"en"		"Chest"
+		"de"		"Brust"
+	}
+	"Villager Outfit [Common]"
+	{
+		"en"		"Villager Outfit [Common]"
+		"de"		"Dorfbewohner-Outfit [Gewöhnlich]"
+	}
+	"Smithed Scrap Chestplate [Uncommon]"
+	{
+		"en"		"Smithed Scrap Chestplate [Uncommon]"
+		"de"		"Brustplatte aus geschmiedetem Schrott [Ungewöhnlich]"
+	}
+	"Leggings"
+	{
+		"en"		"Leggings"
+		"de"		"Leggings"
+	}
+	"Blue Jeans [Common]"
+	{
+		"en"		"Blue Jeans [Common]"
+		"de"		"Blaue Jeans [Gewöhnlich]"
+	}
+	"shoes"
+	{
+		"en"		"Shoes"
+		"de"		"Schuhe"
+	}
+	"Jordans [Common]"
+	{
+		"en"		"Jordans [Common]"
+		"de"		"Jordans [Gewöhnlich]"
+	}
+	"Monkey Knowledge"
+	{
+		"en"		"Monkey Knowledge"
+		"de"		"Affen-Wissen"
+	}
+	"Fast Tack Attacks [Rare]"
+	{
+		"en"		"Fast Tack Attacks [Rare]"
+		"de"		"Schnelle Wendeangriffe [Selten]"
+	}
+	"Mega Mauler [Rare]"
+	{
+		"en"		"Mega Mauler [Rare]"
+		"de"		"Mega-Mauler [Selten]"
+	}
+	"Big Cryo Blast [Uncommon]"
+	{
+		"en"		"Big Cryo Blast [Uncommon]"
+		"de"		"Große Kryo-Explosion [Ungewöhnlich]"
+	}
+	"Long Turbo [Uncommon]"
+	{
+		"en"		"Long Turbo [Uncommon]"
+		"de"		"Langer Turbo [Ungewöhnlich]"
+	}
+	"Bonus Monkey! [Rare]"
+	{
+		"en"		"Bonus Monkey! [Rare]"
+		"de"		"Bonus-Affe! [Selten]"
+	}
+	"Big Bunch [Rare]"
+	{
+		"en"		"Big Bunch [Rare]"
+		"de"		"Große Menge [Selten]"
+	}
+	"Accelerated Aerodarts [Uncommon]"
+	{
+		"en"		"Accelerated Aerodarts [Uncommon]"
+		"de"		"Beschleunigte Luftpfeile [Ungewöhnlich]"
+	}
+	"Faster Takedowns [Common]"
+	{
+		"en"		"Faster Takedowns [Common]"
+		"de"		"Schnellere Takedowns [Gewöhnlich]"
+	}
+	"Extra Burny Stuff [Uncommon]"
+	{
+		"en"		"Extra Burny Stuff [Uncommon]"
+		"de"		"Extra Burny Stuff [Ungewöhnlich]"
+	}
+	"Quad Burst [Legendary]"
+	{
+		"en"		"Quad Burst [Legendary]"
+		"de"		"Quad Burst [Legendär]"
+	}
+	"Gun Coolant [Rare]"
+	{
+		"en"		"Gun Coolant [Rare]"
+		"de"		"Waffenkühlmittel [Selten]"
+	}
+	"Flanking Maneuvers [Rare]"
+	{
+		"en"		"Flanking Maneuvers [Rare]"
+		"de"		"Flankenmanöver [selten]"
+	}
+	"Charged Chinooks [Uncommon]"
+	{
+		"en"		"Charged Chinooks [Uncommon]"
+		"de"		"Geladene Chinooks [Ungewöhnlich]"
+	}
+	"Big Bloon Sabotage [Legendary]"
+	{
+		"en"		"Big Bloon Sabotage [Legendary]"
+		"de"		"Großer Bloon Sabotage [Legendär]"
+	}
+	"SUPER Range [Rare]"
+	{
+		"en"		"SUPER Range [Rare]"
+		"de"		"SUPER Reichweite"
+	}
+	"Heavy Knockback [Legendary]"
+	{
+		"en"		"Heavy Knockback [Legendary]"
+		"de"		"Starker Rückstoß [Legendär]"
+	}
+	"Speedy Brewing [Uncommon]"
+	{
+		"en"		"Speedy Brewing [Uncommon]"
+		"de"		""
+	}
+	"Strike Down The False [Uncommon]"
+	{
+		"en"		"Strike Down The False [Uncommon]"
+		"de"		"Schnelles Brühen [Ungewöhnlich]"
+	}
+	"Flame Jet [Common]"
+	{
+		"en"		"Flame Jet [Common]"
+		"de"		"Flammenstrahl [Gewöhnlich]"
+	}
+	"Strong Tonic [Rare]"
+	{
+		"en"		"Strong Tonic [Rare]"
+		"de"		"Starkes Stärkungsmittel [Selten]"
+	}
+	"Arcane Impale [Rare]"
+	{
+		"en"		"Arcane Impale [Rare]"
+		"de"		"Arkanes Aufspießen [Selten]"
+	}
+	"Deadly Tranquility [Uncommon]"
+	{
+		"en"		"Deadly Tranquility [Uncommon]"
+		"de"		"Tödliche Ruhe [Ungewöhnlich]"
+	}
+	"There Can Be Only One [Mythic]"
+	{
+		"en"		"There Can Be Only One [Mythic]"
+		"de"		"Es kann nur einen geben [Mythisch]"
+	}
+	"Tiny Tornadoes [Rare]"
+	{
+		"en"		"Tiny Tornadoes [Rare]"
+		"de"		"Kleines Tornados [Selten]"
+	}
+	"Mana Shield [Legendary]"
+	{
+		"en"		"Mana Shield [Legendary]"
+		"de"		"Manaschild [Legendär]"
+	}
+	"Vigilant Sentries [Common]"
+	{
+		"en"		"Vigilant Sentries [Common]"
+		"de"		"Wachsame Wachposten [Gewöhnlich]"
+	}
+	"To ARMS! [Legendary]"
+	{
+		"en"		"To ARMS! [Legendary]"
+		"de"		"Zu den Waffen! [Legendär]"
+	}
+	"Healthy Bananas [Legendary]"
+	{
+		"en"		"Healthy Bananas [Legendary]"
+		"de"		"Gesunde Bananen [Legendär]"
+	}
+	"Veteran Monkey Training [Uncommon]"
+	{
+		"en"		"Veteran Monkey Training [Uncommon]"
+		"de"		"Veteranen-Affentraining [Ungewöhnlich]"
+	}
+	"Pre-Game Prep [Legendary]"
+	{
+		"en"		"Pre-Game Prep [Legendary]"
+		"de"		"Spielvorbereitung [Legendär]"
 	}
 }

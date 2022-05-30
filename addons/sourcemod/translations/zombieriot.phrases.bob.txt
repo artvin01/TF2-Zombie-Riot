@@ -1,4 +1,4 @@
-"Pharses"
+"Phrases"
 {
 	"Bob The Second"
 	{
