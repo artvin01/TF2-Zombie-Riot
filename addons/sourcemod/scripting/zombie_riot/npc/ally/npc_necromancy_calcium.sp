@@ -22,7 +22,7 @@ static char g_IdleAlertedSounds[][] = {
 static char g_MeleeHitSounds[][] = {
 	"weapons/pan/melee_frying_pan_01.wav",
 	"weapons/3rd_degree_hit_01.wav",
-	"weapons/axe_hit_flesh_1.wav",
+	"weapons/axe_hit_flesh1.wav",
 	"weapons/slap_hit1.wav",
 };
 
@@ -177,7 +177,7 @@ methodmap NecroCalcium < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		npc.m_flDuration = GetGameTime() + 15.0; //They should last this long for now.
+		npc.m_flDuration = GetGameTime() + 20.0; //They should last this long for now.
 		
 		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TFTeam_Red);
 		

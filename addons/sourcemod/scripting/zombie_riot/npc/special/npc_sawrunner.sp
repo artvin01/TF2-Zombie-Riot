@@ -262,7 +262,7 @@ public void SawRunner_ClotThink(int iNPC)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
-						if (npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, _, _, _, 1, 1))
+						if (npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 128.0, 128.0, 128.0 }, { -128.0, -128.0, -128.0 }, _, _, 1))
 							{
 								
 								int target = TR_GetEntityIndex(swingTrace);	

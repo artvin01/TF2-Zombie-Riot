@@ -558,7 +558,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 128.0, 128.0, 128.0 }, { -128.0, -128.0, -128.0 })) 
+						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 100.0, 100.0, 100.0 }, { -100.0, -100.0, -100.0 })) 
 							{
 								
 								int target = TR_GetEntityIndex(swingTrace);	
