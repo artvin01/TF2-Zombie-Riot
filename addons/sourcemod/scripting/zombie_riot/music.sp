@@ -163,6 +163,17 @@ void Music_Stop_All(int client)
 	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/8.mp3");
 	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/9.mp3");
 }
+
+float f_ClientMusicVolume[MAXTF2PLAYERS];
+
+//ty miku for tellingg
+
+public void ConVarCallback(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
+{
+	if(result == ConVarQuery_Okay)
+		f_ClientMusicVolume[client] = StringToFloat(cvarValue);
+}
+
 void Music_PostThink(int client)
 {
 	if(LastMann)
@@ -190,6 +201,9 @@ void Music_PostThink(int client)
 	}
 	
 	if(MusicDisabled)
+		return;
+	
+	if(f_ClientMusicVolume[client] < 0.05)
 		return;
 
 	if(Music_Timer[client] < GetEngineTime())

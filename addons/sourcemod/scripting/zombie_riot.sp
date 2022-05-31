@@ -1300,6 +1300,8 @@ public void OnClientPutInServer(int client)
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_bThisEntityIgnored = false;
 	
+	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
+	
 	if(CurrentRound && Store_PutInServer(client))
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.40);
 	

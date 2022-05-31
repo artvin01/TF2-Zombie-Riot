@@ -274,7 +274,7 @@ public void SawRunner_ClotThink(int iNPC)
 								{
 									if(target <= MaxClients)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 2000.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 1000.0, DMG_DROWN);
 									}
 									else
 									{
