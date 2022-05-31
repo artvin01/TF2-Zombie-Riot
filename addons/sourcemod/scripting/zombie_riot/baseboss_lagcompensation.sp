@@ -337,13 +337,15 @@ void BacktrackEntity(int entity, float currentTime)
 		}
 		if(b_LagCompNPC_ExtendBoundingBox)
 		{
-			
-			SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", { 100.0, 100.0, 200.0 });
-			SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", { -100.0, -100.0, 0.0 });
-			
-			
-			CClotBody npc = view_as<CClotBody>(entity);
-			npc.UpdateCollisionBox();
+			if(!b_Map_BaseBoss_No_Layers[entity])
+			{
+				SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", { 100.0, 100.0, 200.0 });
+				SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", { -100.0, -100.0, 0.0 });
+				
+				
+				CClotBody npc = view_as<CClotBody>(entity);
+				npc.UpdateCollisionBox();
+			}
 		}
 		SetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 	}
@@ -520,33 +522,36 @@ public void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 				IntToString(EntIndexToEntRef(entity), refchar, sizeof(refchar));
 				if(EntityRestore.GetArray(refchar, restore, sizeof(restore)))
 				{
-					if(b_LagCompNPC_ExtendBoundingBox)
+					if(!b_Map_BaseBoss_No_Layers[entity])
 					{
-						static float m_vecMaxs[3];
-						static float m_vecMins[3];
-						m_vecMaxs = view_as<float>( { 1.0, 1.0, 2.0 } );
-						m_vecMins = view_as<float>( { -1.0, -1.0, 0.0 } );		
-						
-						SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", m_vecMins);
-						
-						SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", m_vecMaxs);
-						
-						CClotBody npc = view_as<CClotBody>(entity);
-						npc.UpdateCollisionBox();
-						
-						if(b_BoundingBoxVariant[entity] == 1)
+						if(b_LagCompNPC_ExtendBoundingBox)
 						{
-							m_vecMaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
-							m_vecMins = view_as<float>( { -30.0, -30.0, 0.0 } );	
-						}			
-						else
-						{
-							m_vecMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
-							m_vecMins = view_as<float>( { -24.0, -24.0, 0.0 } );		
+							static float m_vecMaxs[3];
+							static float m_vecMins[3];
+							m_vecMaxs = view_as<float>( { 1.0, 1.0, 2.0 } );
+							m_vecMins = view_as<float>( { -1.0, -1.0, 0.0 } );		
+							
+							SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", m_vecMins);
+							
+							SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", m_vecMaxs);
+							
+							CClotBody npc = view_as<CClotBody>(entity);
+							npc.UpdateCollisionBox();
+							
+							if(b_BoundingBoxVariant[entity] == 1)
+							{
+								m_vecMaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+								m_vecMins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+							}			
+							else
+							{
+								m_vecMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+								m_vecMins = view_as<float>( { -24.0, -24.0, 0.0 } );		
+							}
+							SetEntPropVector(entity, Prop_Data, "m_vecMaxs", m_vecMaxs);
+							
+							SetEntPropVector(entity, Prop_Data, "m_vecMins", m_vecMins);
 						}
-						SetEntPropVector(entity, Prop_Data, "m_vecMaxs", m_vecMaxs);
-						
-						SetEntPropVector(entity, Prop_Data, "m_vecMins", m_vecMins);
 					}
 					SetEntPropVector(entity, Prop_Data, "m_angRotation", restore.m_vecAngles); //See start pos on why we use this instead of the SDKCall
 					SDKCall_SetLocalOrigin(entity, restore.m_vecOrigin);
