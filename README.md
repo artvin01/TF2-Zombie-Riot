@@ -33,7 +33,7 @@ Sub Servers that also host the gamemode:
 (Chinese)
 47.100.226.218:27015 ( steam://connect/47.100.226.218:27015 ) 
  
-## Commands and cvar's
+## cvar's
 
 "zr_infinitecash" = "0" ( def. "0" )
  - Money is infinite and always set to 999999
@@ -43,6 +43,17 @@ Sub Servers that also host the gamemode:
  
 "zr_nospecial" = "1" ( def. "1" )
  - No Panzer will spawn or anything alike
+ 
+"zr_privateplugins" = "0" ( def. "0" )
+ - Enable private plugins, set this to zero.
+ 
+"zr_maxbotsforkillfeed" = "6" ( def. "6" )
+ - The maximum amount of blue bots allowed for the killfeed
+ 
+## Commands
+
+"sm_give_cash" "PLAYER" "YOUR AMMOUNT"
+ - Give money or remove money from said person or group
 
 "zr_setwave" 
 - Will set the wave to the number given +1
