@@ -722,7 +722,20 @@ void Waves_Progress()
 		}
 		
 		if(!EscapeMode)
-			tf_bot_quota.IntValue = CurrentWave + 2;
+		{
+			int botscalculaton;
+			
+			if((CurrentWave + 2) > CvarMaxBotsForKillfeed.IntValue)
+			{
+				botscalculaton = CvarMaxBotsForKillfeed.IntValue;
+			}
+			else
+			{
+				botscalculaton = CurrentWave + 2;
+			}
+				
+			tf_bot_quota.IntValue = botscalculaton;
+		}
 	}
 	else
 	{
@@ -757,7 +770,20 @@ void Waves_Progress()
 					NPC_SpawnNext(false, panzer_spawn, false);
 					
 					if(!EscapeMode)
-						tf_bot_quota.IntValue = Max_Enemy_Get + 2;
+					{
+						int botscalculaton;
+						
+						if((CurrentWave + 2) > CvarMaxBotsForKillfeed.IntValue)
+						{
+							botscalculaton = CvarMaxBotsForKillfeed.IntValue;
+						}
+						else
+						{
+							botscalculaton = CurrentWave + 2;
+						}
+							
+						tf_bot_quota.IntValue = botscalculaton;
+					}
 				}
 				else
 				{
@@ -765,7 +791,20 @@ void Waves_Progress()
 					NPC_SpawnNext(false, false, false);
 					
 					if(!EscapeMode)
-						tf_bot_quota.IntValue = Max_Enemy_Get + 1;
+					{
+						int botscalculaton;
+						
+						if((CurrentWave + 2) > CvarMaxBotsForKillfeed.IntValue)
+						{
+							botscalculaton = CvarMaxBotsForKillfeed.IntValue;
+						}
+						else
+						{
+							botscalculaton = CurrentWave + 2;
+						}
+							
+						tf_bot_quota.IntValue = botscalculaton;
+					}
 				}
 			}
 			

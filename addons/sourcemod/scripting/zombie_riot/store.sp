@@ -1310,11 +1310,14 @@ static void MenuPage(int client, int section)
 		FormatEx(buffer, sizeof(buffer), "%t", "Help?");
 		menu.AddItem("-3", buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%t", "Encyclopedia");
-		menu.AddItem("-13", buffer);
-		
-		FormatEx(buffer, sizeof(buffer), "%t", "Bored or Dead");
-		menu.AddItem("-14", buffer);
+		if(CvarEnablePrivatePlugins.BoolValue)
+		{
+			FormatEx(buffer, sizeof(buffer), "%t", "Encyclopedia");
+			menu.AddItem("-13", buffer);
+			
+			FormatEx(buffer, sizeof(buffer), "%t", "Bored or Dead");
+			menu.AddItem("-14", buffer);
+		}
 		
 		FormatEx(buffer, sizeof(buffer), "%t", "Gamemode Credits"); //credits is whatever, put in back.
 		menu.AddItem("-2", buffer);

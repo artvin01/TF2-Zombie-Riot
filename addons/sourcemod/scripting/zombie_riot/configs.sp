@@ -87,13 +87,36 @@ public void Configs_ConfigsExecuted()
 	
 	ConVar_Enable();
 	
+	
 	if(EscapeMode)
 	{
-		tf_bot_quota.IntValue = 12;
+		int botscalculaton;
+		
+		if(12 > CvarMaxBotsForKillfeed.IntValue)
+		{
+			botscalculaton = CvarMaxBotsForKillfeed.IntValue;
+		}
+		else
+		{
+			botscalculaton = 12;
+		}
+			
+		tf_bot_quota.IntValue = botscalculaton;
 	}
 	else
 	{
-		tf_bot_quota.IntValue = 1;
+		int botscalculaton;
+		
+		if(1 > CvarMaxBotsForKillfeed.IntValue)
+		{
+			botscalculaton = CvarMaxBotsForKillfeed.IntValue;
+		}
+		else
+		{
+			botscalculaton = 1;
+		}
+			
+		tf_bot_quota.IntValue = botscalculaton;
 	}
 	
 	for(int client=1; client<=MaxClients; client++)

@@ -96,25 +96,28 @@ public void Map_Precache_Zombie_Drops_Gift()
 
 public void Gift_DropChance(int entity)
 {
-	if(IsValidEntity(entity))
+	if(CvarEnablePrivatePlugins.BoolValue)
 	{
-		if(GetRandomFloat(0.0, 2.0) < ((GIFT_CHANCE / (MultiGlobal + 0.000001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually)) //Never let it divide by 0
+		if(IsValidEntity(entity))
 		{
-			f_IncreaceChanceManually = 1.0;
-			float VecOrigin[3];
-			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
-			for (int client = 1; client <= MaxClients; client++)
+			if(GetRandomFloat(0.0, 2.0) < ((GIFT_CHANCE / (MultiGlobal + 0.000001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually)) //Never let it divide by 0
 			{
-				if (IsValidClient(client) && IsPlayerAlive(client) && GetClientTeam(client) == view_as<int>(TFTeam_Red))
+				f_IncreaceChanceManually = 1.0;
+				float VecOrigin[3];
+				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
+				for (int client = 1; client <= MaxClients; client++)
 				{
-					int rarity = RollRandom(); //Random for each clie
-					Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, client, rarity);
+					if (IsValidClient(client) && IsPlayerAlive(client) && GetClientTeam(client) == view_as<int>(TFTeam_Red))
+					{
+						int rarity = RollRandom(); //Random for each clie
+						Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, client, rarity);
+					}
 				}
+			}	
+			else
+			{
+				f_IncreaceChanceManually += 0.00015;
 			}
-		}	
-		else
-		{
-			f_IncreaceChanceManually += 0.00015;
 		}
 	}
 }

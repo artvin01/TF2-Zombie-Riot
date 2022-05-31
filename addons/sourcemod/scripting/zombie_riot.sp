@@ -53,6 +53,8 @@
 ConVar CvarNoRoundStart;
 ConVar CvarNoSpecialZombieSpawn;
 ConVar CvarInfiniteCash;
+ConVar CvarEnablePrivatePlugins;
+ConVar CvarMaxBotsForKillfeed;
 
 //#define CompensatePlayers
 
