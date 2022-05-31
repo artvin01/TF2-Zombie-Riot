@@ -318,6 +318,7 @@ int i_DyingParticleIndication[MAXPLAYERS + 1]={-1, ...};
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 float f_ChargeTerroriserSniper[MAXENTITIES];
 bool b_npcspawnprotection[MAXENTITIES];
+bool b_ThisNpcIsSawrunner[MAXENTITIES];
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -3222,4 +3223,5 @@ public void MapStartResetAll()
 	Zero2(i_Healing_station_money_limit);
 	Zero2(Perk_Machine_money_limit);
 	Zero2(Pack_A_Punch_Machine_money_limit);
+	CleanAllBuildingEscape();
 }

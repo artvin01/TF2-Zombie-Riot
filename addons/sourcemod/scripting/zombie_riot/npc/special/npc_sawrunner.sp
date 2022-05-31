@@ -130,7 +130,9 @@ methodmap SawRunner < CClotBody
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, SawRunner_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, SawRunner_ClotThink);
-
+		
+		b_ThisNpcIsSawrunner[npc.index] = true;
+		
 		npc.m_iState = 0;
 		npc.m_flSpeed = 200.0;
 		npc.m_flNextRangedAttack = 0.0;

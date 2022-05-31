@@ -139,7 +139,6 @@ int i_CreditsOnKill[MAXENTITIES];
 
 
 
-
 #define RAD2DEG(%1) ((%1) * (180.0 / FLOAT_PI))
 #define DEG2RAD(%1) ((%1) * FLOAT_PI / 180.0)
 
@@ -5904,6 +5903,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_CreditsOnKill[entity] = 0;
 	b_npcspawnprotection[entity] = false;
 	f_CooldownForHurtParticle[entity] = 0.0;
+	b_ThisNpcIsSawrunner[entity] = false;
 }
 
 public void Raidboss_Clean_Everyone()

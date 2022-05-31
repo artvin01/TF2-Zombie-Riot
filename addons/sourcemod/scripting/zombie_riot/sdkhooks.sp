@@ -503,12 +503,14 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		
 	float gameTime = GetGameTime();
 	
-	if(IsInvuln(victim))	
+	if(!(damagetype & DMG_DROWN))
 	{
-		f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
-		return Plugin_Continue;	
+		if(IsInvuln(victim))	
+		{
+			f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
+			return Plugin_Continue;	
+		}
 	}
-		
 		
 	float Replicated_Damage;
 	Replicated_Damage = Replicate_Damage_Medications(victim, damage, damagetype);
@@ -539,119 +541,122 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		
 	f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
 	
-	if(damagetype & DMG_DROWN)
+	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
 	{
 		f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
 		Replicated_Damage *= 2.0;
 		damage *= 2.0;
 		return Plugin_Changed;	
 	}
-
-	if(EscapeMode)
+	
+	if(!b_ThisNpcIsSawrunner[attacker])
 	{
-		int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
-		if(IsValidEntity(Victim_weapon))
+		if(EscapeMode)
 		{
-			if(!IsWandWeapon(Victim_weapon)) //Make sure its not wand.
+			int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+			if(IsValidEntity(Victim_weapon))
 			{
-				char melee_classname[64];
-				GetEntityClassname(Victim_weapon, melee_classname, 64);
-				
-				if (TFWeaponSlot_Melee == TF2_GetClassnameSlot(melee_classname))
+				if(!IsWandWeapon(Victim_weapon)) //Make sure its not wand.
 				{
-					Replicated_Damage *= 0.45;
-					damage *= 0.45;
+					char melee_classname[64];
+					GetEntityClassname(Victim_weapon, melee_classname, 64);
+					
+					if (TFWeaponSlot_Melee == TF2_GetClassnameSlot(melee_classname))
+					{
+						Replicated_Damage *= 0.45;
+						damage *= 0.45;
+					}
 				}
 			}
 		}
-	}
-	
-	if(i_CurrentEquippedPerk[victim] == 2)
-	{
-		Replicated_Damage *= 0.85;
-		damage *= 0.85;
-	}
-	
-	if(damagetype & DMG_FALL)
-	{
-		if(RaidBossActive)
-		{
-			Replicated_Damage *= 0.2;
-			damage *= 0.2;			
-		}
-		else if(i_SoftShoes[victim] == 1)
-		{
-			Replicated_Damage *= 0.5;
-			damage *= 0.5;
-		}
-	}
-	else
-	{
-		bool Though_Armor = false;
 		
-		if(Resistance_Overall_Low[victim] > gameTime)
+		if(i_CurrentEquippedPerk[victim] == 2)
 		{
 			Replicated_Damage *= 0.85;
 			damage *= 0.85;
 		}
-			
-		if(Armor_Charge[victim] > 0)
+		
+		if(damagetype & DMG_FALL)
 		{
-			int dmg_through_armour = RoundToCeil(Replicated_Damage * 0.1);
-			
-			if(RoundToCeil(Replicated_Damage * 0.9) >= Armor_Charge[victim])
+			if(RaidBossActive)
 			{
-				int damage_recieved_after_calc;
-				damage_recieved_after_calc = RoundToCeil(Replicated_Damage) - Armor_Charge[victim];
-				Armor_Charge[victim] = 0;
-				damage = float(damage_recieved_after_calc);
-				Replicated_Damage  = float(damage_recieved_after_calc);
-				EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.25);
+				Replicated_Damage *= 0.2;
+				damage *= 0.2;			
 			}
-			else
+			else if(i_SoftShoes[victim] == 1)
 			{
-				Armor_Charge[victim] -= RoundToCeil(Replicated_Damage * 0.9);
-				damage = 0.0;
-				damage += float(dmg_through_armour);
-				Replicated_Damage = 0.0;
-				Replicated_Damage += float(dmg_through_armour);
-				Though_Armor = true;
+				Replicated_Damage *= 0.5;
+				damage *= 0.5;
 			}
 		}
-		switch(Armour_Level_Current[victim])
+		else
 		{
-			case 1:
+			bool Though_Armor = false;
+			
+			if(Resistance_Overall_Low[victim] > gameTime)
 			{
-				damage *= 0.9;
-				Replicated_Damage *= 0.9;
-				if(Though_Armor)
-					EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
-			}
-			case 2:
-			{
-				damage *= 0.85;
 				Replicated_Damage *= 0.85;
-				if(Though_Armor)
-					EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
+				damage *= 0.85;
 			}
-			case 3:
+				
+			if(Armor_Charge[victim] > 0)
 			{
-				damage *= 0.8;
-				Replicated_Damage *= 0.80;
-				if(Though_Armor)
-					EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
+				int dmg_through_armour = RoundToCeil(Replicated_Damage * 0.1);
+				
+				if(RoundToCeil(Replicated_Damage * 0.9) >= Armor_Charge[victim])
+				{
+					int damage_recieved_after_calc;
+					damage_recieved_after_calc = RoundToCeil(Replicated_Damage) - Armor_Charge[victim];
+					Armor_Charge[victim] = 0;
+					damage = float(damage_recieved_after_calc);
+					Replicated_Damage  = float(damage_recieved_after_calc);
+					EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.25);
+				}
+				else
+				{
+					Armor_Charge[victim] -= RoundToCeil(Replicated_Damage * 0.9);
+					damage = 0.0;
+					damage += float(dmg_through_armour);
+					Replicated_Damage = 0.0;
+					Replicated_Damage += float(dmg_through_armour);
+					Though_Armor = true;
+				}
 			}
-			case 4:
+			switch(Armour_Level_Current[victim])
 			{
-				damage *= 0.75;
-				Replicated_Damage *= 0.75;
-				if(Though_Armor)
-					EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
-			}
-			default:
-			{
-				damage *= 1.0;
-				Replicated_Damage *= 1.0;
+				case 1:
+				{
+					damage *= 0.9;
+					Replicated_Damage *= 0.9;
+					if(Though_Armor)
+						EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
+				}
+				case 2:
+				{
+					damage *= 0.85;
+					Replicated_Damage *= 0.85;
+					if(Though_Armor)
+						EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
+				}
+				case 3:
+				{
+					damage *= 0.8;
+					Replicated_Damage *= 0.80;
+					if(Though_Armor)
+						EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
+				}
+				case 4:
+				{
+					damage *= 0.75;
+					Replicated_Damage *= 0.75;
+					if(Though_Armor)
+						EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
+				}
+				default:
+				{
+					damage *= 1.0;
+					Replicated_Damage *= 1.0;
+				}
 			}
 		}
 	}

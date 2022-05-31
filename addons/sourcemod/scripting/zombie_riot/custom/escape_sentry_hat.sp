@@ -591,3 +591,9 @@ public Action ParticleTransmit(int entity, int client)
 	
 	return Plugin_Continue;
 }
+
+public void CleanAllBuildingEscape()
+{
+	Zero(Player_Mounting_Building);
+	Zero(Building_Mounted);
+}

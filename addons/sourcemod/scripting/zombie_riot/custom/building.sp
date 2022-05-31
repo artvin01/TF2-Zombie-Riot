@@ -312,7 +312,7 @@ public bool Building_Sentry(int client, int entity)
 	Building_Max_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 	Building_cannot_be_repaired[entity] = false;
 	Is_Elevator[entity] = false;
-	Building_Sentry_Cooldown[client] = GetGameTime() + 180.0;
+	Building_Sentry_Cooldown[client] = GetGameTime() + 60.0;
 	for (int i = 1; i <= MaxClients; i++)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
@@ -348,7 +348,7 @@ public bool Building_Railgun(int client, int entity)
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_railgun");
 	Building_cannot_be_repaired[entity] = false;
 	Is_Elevator[entity] = false;
-	Building_Sentry_Cooldown[client] = GetGameTime() + 180.0;
+	Building_Sentry_Cooldown[client] = GetGameTime() + 60.0;
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
 	for (int i = 1; i <= MaxClients; i++)
 	{
@@ -385,7 +385,7 @@ public bool Building_Mortar(int client, int entity)
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_mortar");
 	Building_cannot_be_repaired[entity] = false;
 	Is_Elevator[entity] = false;
-	Building_Sentry_Cooldown[client] = GetGameTime() + 180.0;
+	Building_Sentry_Cooldown[client] = GetGameTime() + 60.0;
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
 	for (int i = 1; i <= MaxClients; i++)
 	{
@@ -422,7 +422,7 @@ public bool Building_HealingStation(int client, int entity)
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_healingstation");
 	Building_cannot_be_repaired[entity] = false;
 	Is_Elevator[entity] = false;
-	Building_Sentry_Cooldown[client] = GetGameTime() + 180.0;
+	Building_Sentry_Cooldown[client] = GetGameTime() + 60.0;
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
 	for (int i = 1; i <= MaxClients; i++)
 	{
