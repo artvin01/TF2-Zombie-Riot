@@ -229,26 +229,29 @@ public void OnPostThink(int client)
 					}
 					
 					SetEntProp(client, Prop_Send, "m_iHealth", newHealth);
-				
+					flHealth = newHealth;
 				}
 			}
-			if(i_BadHealthRegen[client] == 1)
+			if(dieingstate[client] > 0)
 			{
-				if(flHealth < flMaxHealth)
+				if(i_BadHealthRegen[client] == 1)
 				{
-					int healing_Amount = 1;
-					
-					int newHealth = flHealth + healing_Amount;
-						
-					if(newHealth >= flMaxHealth)
+					if(flHealth < flMaxHealth)
 					{
-						healing_Amount -= newHealth - flMaxHealth;
-						newHealth = flMaxHealth;
+						int healing_Amount = 1;
+						
+						int newHealth = flHealth + healing_Amount;
+							
+						if(newHealth >= flMaxHealth)
+						{
+							healing_Amount -= newHealth - flMaxHealth;
+							newHealth = flMaxHealth;
+						}
+						
+						SetEntProp(client, Prop_Send, "m_iHealth", newHealth);
 					}
 					
-					SetEntProp(client, Prop_Send, "m_iHealth", newHealth);
 				}
-				
 			}
 			int Armor_Max = 50;
 			int Extra = 0;
