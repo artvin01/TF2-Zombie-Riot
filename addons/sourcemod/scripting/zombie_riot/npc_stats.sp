@@ -5903,6 +5903,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_PlayHurtAnimation[entity] = false;
 	i_CreditsOnKill[entity] = 0;
 	b_npcspawnprotection[entity] = false;
+	f_CooldownForHurtParticle[entity] = 0.0;
 }
 
 public void Raidboss_Clean_Everyone()

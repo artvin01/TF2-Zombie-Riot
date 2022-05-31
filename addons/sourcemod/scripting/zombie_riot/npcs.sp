@@ -1428,5 +1428,6 @@ void CleanAllAppliedEffects(int entity)
 
 void CleanAllNpcArray()
 {
+	Zero(played_headshotsound_already);
 	Zero(f_CooldownForHurtHud);
 }
