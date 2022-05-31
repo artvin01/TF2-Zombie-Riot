@@ -232,7 +232,7 @@ public void OnPostThink(int client)
 					flHealth = newHealth;
 				}
 			}
-			if(dieingstate[client] > 0)
+			if(dieingstate[client] == 0)
 			{
 				if(i_BadHealthRegen[client] == 1)
 				{
