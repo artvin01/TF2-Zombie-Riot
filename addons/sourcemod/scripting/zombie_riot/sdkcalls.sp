@@ -125,6 +125,9 @@ void SDKCall_Setup()
 	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
 	if ((g_hSDKMakeCarriedObjectSentry = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CObjectSentrygun::MakeCarriedObject");
 	
+	
+	//from kenzzer
+	
 	int iOffset = GameConfGetOffset(gamedata, "CEconItemView::IterateAttributes");
 	g_hDHookItemIterateAttribute = new DynamicHook(iOffset, HookType_Raw, ReturnType_Void, ThisPointer_Address);
 	if (g_hDHookItemIterateAttribute == null)
@@ -135,7 +138,8 @@ void SDKCall_Setup()
 
 	g_iCEconItem_m_Item = FindSendPropInfo("CEconEntity", "m_Item");
 	FindSendPropInfo("CEconEntity", "m_bOnlyIterateItemViewAttributes", _, _, g_iCEconItemView_m_bOnlyIterateItemViewAttributes);
-
+	
+	//from kenzzer
 
 	GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
 //	DHook_CreateDetour(gamedata, "CLagCompensationManager::StartLagCompensation", DHook_StartLagCompensationPre, DHook_StartLagCompensationPost);
