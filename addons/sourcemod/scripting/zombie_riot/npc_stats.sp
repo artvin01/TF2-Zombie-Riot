@@ -138,7 +138,6 @@ int i_CreditsOnKill[MAXENTITIES];
 
 
 
-
 #define RAD2DEG(%1) ((%1) * (180.0 / FLOAT_PI))
 #define DEG2RAD(%1) ((%1) * FLOAT_PI / 180.0)
 
@@ -2126,12 +2125,36 @@ methodmap CClotBody
 		public set(bool TempValueForProperty) 	{ b_bThisNpcGotDefaultStats_INVERTED[this.index] = TempValueForProperty; }
 	}
 	
+	property float m_fHighTeslarDebuff 
+	{
+		public get()							{ return f_HighTeslarDebuff[this.index]; }
+		public set(float TempValueForProperty) 	{ f_HighTeslarDebuff[this.index] = TempValueForProperty; }
+	}
+	property float m_fLowTeslarDebuff 
+	{
+		public get()							{ return f_LowTeslarDebuff[this.index]; }
+		public set(float TempValueForProperty) 	{ f_LowTeslarDebuff[this.index] = TempValueForProperty; }
+	}
+
 	public float GetRunSpeed()//For the future incase we want to alter it easier
 	{
 		float speed_for_return;
 		
 		speed_for_return = this.m_flSpeed;
 		
+		float Gametime = GetGameTime();
+		
+		if(!this.m_bThisNpcIsABoss && EntRefToEntIndex(RaidBossActive) != this.index) //Make sure that any slow debuffs dont affect these.
+		{
+			if(this.m_fHighTeslarDebuff > Gametime)
+			{
+				speed_for_return *= 0.75;
+			}
+			else if(this.m_fLowTeslarDebuff > Gametime)
+			{
+				speed_for_return *= 0.85;
+			}
+		}
 		return speed_for_return; 
 	}
 	public void m_vecLastValidPos(float pos[3], bool set)
@@ -2659,16 +2682,20 @@ methodmap CClotBody
 		
 		// See if we hit anything.
 		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, this.index );
+		/*
 		if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
 		{
 			delete trace;
+			
 			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID | CONTENTS_SOLID ), BulletAndMeleeTrace, this.index );
 			if ( TR_GetFraction(trace) < 1.0)
 			{
 				// This is the point on the actual surface (the hull could have hit space)
 				TR_GetEndPosition(vecSwingEnd, trace);	
 			}
+			
 		}
+		*/
 		return ( TR_GetFraction(trace) < 1.0 );
 	}
 	public void FireRocket(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0) //No defaults, otherwise i cant even judge.
@@ -5904,6 +5931,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_npcspawnprotection[entity] = false;
 	f_CooldownForHurtParticle[entity] = 0.0;
 	b_ThisNpcIsSawrunner[entity] = false;
+	f_LowTeslarDebuff[entity] = 0.0;
+	f_HighTeslarDebuff[entity] = 0.0;
 }
 
 public void Raidboss_Clean_Everyone()

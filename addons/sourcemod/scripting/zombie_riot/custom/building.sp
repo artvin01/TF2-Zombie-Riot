@@ -3274,8 +3274,10 @@ static void Railgun_Boom_Client(int client)
 			hullMax[0] = -hullMin[0];
 			hullMax[1] = -hullMin[1];
 			hullMax[2] = -hullMin[2];
-			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, obj);	// 1073741824 is CONTENTS_LADDER?
+			StartLagCompensation_Base_Boss(client, false);
+			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 			CloseHandle(trace);
+			FinishLagCompensation_Base_boss();
 	//		int weapon = BEAM_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
 			/*
 			for (int victim = 1; victim < MaxClients; victim++)

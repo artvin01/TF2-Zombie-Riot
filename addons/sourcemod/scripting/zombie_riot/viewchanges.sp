@@ -86,7 +86,9 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 			//if(!StrEqual(buffer, "tf_weapon_sapper"))
 			{
 				
-				TFClassType class = TF2_GetWeaponClass(GetEntProp(active, Prop_Send, "m_iItemDefinitionIndex"), CurrentClass[client], TF2_GetClassnameSlot(buffer, true));
+				int itemdefindex = GetEntProp(active, Prop_Send, "m_iItemDefinitionIndex");
+				
+				TFClassType class = TF2_GetWeaponClass(itemdefindex, CurrentClass[client], TF2_GetClassnameSlot(buffer, true));
 
 				SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[class]);
 
@@ -101,6 +103,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 					SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
 					SetEntityCollisionGroup(entity, 11);
 					SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
+					
 					DispatchSpawn(entity);
 					SetVariantString("!activator");
 					ActivateEntity(entity);

@@ -918,6 +918,16 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 	}
 	*/
+	
+	if(f_HighTeslarDebuff[victim] > GetGameTime())
+	{
+		damage *= 1.25;
+	}
+	else if(f_LowTeslarDebuff[victim] > GetGameTime())
+	{
+		damage *= 1.15;
+	}
+	
 	if(attacker <= MaxClients)
 	{
 		if(dieingstate[attacker] > 0)
@@ -1053,6 +1063,15 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				}
 				Apply_Particle_Teroriser_Indicator(victim);
 				damage = 0.0;
+			}
+			
+			if(i_HighTeslarStaff[weapon] == 1)
+			{
+				f_HighTeslarDebuff[victim] = GetGameTime() + 5.0;
+			}
+			else if(i_LowTeslarStaff[weapon] == 1)
+			{
+				f_LowTeslarDebuff[victim] = GetGameTime() + 5.0;
 			}
 			
 			/*
@@ -1209,12 +1228,23 @@ public void Calculate_And_Display_hp(int attacker, int victim, float damage, boo
 			green = 0;
 			blue = 0;
 		}
+		char Debuff_Adder[64];
+		
+		
+		if(f_HighTeslarDebuff[victim] > GetGameTime())
+		{
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "↡");
+		}
+		else if(f_LowTeslarDebuff[victim] > GetGameTime())
+		{
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "↓");
+		}
 		
 		if(EntRefToEntIndex(RaidBossActive) != victim)
 		{
 			SetGlobalTransTarget(attacker);
 			SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-			ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+			ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d %s", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
 		}
 		else
 		{
@@ -1225,7 +1255,7 @@ public void Calculate_And_Display_hp(int attacker, int victim, float damage, boo
 				
 			SetGlobalTransTarget(attacker);
 			SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-			ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth);
+			ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d %s","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
 		}
 	}	
 }

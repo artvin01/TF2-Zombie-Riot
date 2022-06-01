@@ -23,6 +23,10 @@ Handle g_hSDKStartLagComp;
 Handle g_hSDKEndLagComp;
 Handle g_hSDKUpdateBlocked;
 
+DynamicHook g_hDHookItemIterateAttribute;
+int g_iCEconItem_m_Item;
+int g_iCEconItemView_m_bOnlyIterateItemViewAttributes;
+
 void SDKCall_Setup()
 {
 	GameData gamedata = LoadGameConfigFile("sm-tf2.games");
@@ -120,6 +124,17 @@ void SDKCall_Setup()
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CObjectSentrygun::MakeCarriedObject");
 	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
 	if ((g_hSDKMakeCarriedObjectSentry = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CObjectSentrygun::MakeCarriedObject");
+	
+	int iOffset = GameConfGetOffset(gamedata, "CEconItemView::IterateAttributes");
+	g_hDHookItemIterateAttribute = new DynamicHook(iOffset, HookType_Raw, ReturnType_Void, ThisPointer_Address);
+	if (g_hDHookItemIterateAttribute == null)
+	{
+		 SetFailState("Failed to create hook CEconItemView::IterateAttributes offset from SF2 gamedata!");
+	}
+	g_hDHookItemIterateAttribute.AddParam(HookParamType_ObjectPtr);
+
+	g_iCEconItem_m_Item = FindSendPropInfo("CEconEntity", "m_Item");
+	FindSendPropInfo("CEconEntity", "m_bOnlyIterateItemViewAttributes", _, _, g_iCEconItemView_m_bOnlyIterateItemViewAttributes);
 
 
 	GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
@@ -136,6 +151,7 @@ void SDKCall_Setup()
 	PrepSDKCall_SetFromConf(gamedata_lag_comp, SDKConf_Signature, "CLagCompensationManager::FinishLagCompensation");
 	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
 	if ((g_hSDKEndLagComp = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CLagCompensationManager::FinishLagCompensation");
+    
 	
 	delete gamedata_lag_comp;
 	
@@ -384,3 +400,23 @@ public void UpdateBlockedNavmesh()
 {
 	SDKCall(g_hSDKUpdateBlocked);
 }	
+
+
+static MRESReturn CEconItemView_IterateAttributes(Address pThis, DHookParam hParams)
+{
+    StoreToAddress(pThis + view_as<Address>(g_iCEconItemView_m_bOnlyIterateItemViewAttributes), true, NumberType_Int8, false);
+    return MRES_Ignored;
+}
+
+static MRESReturn CEconItemView_IterateAttributes_Post(Address pThis, DHookParam hParams)
+{
+    StoreToAddress(pThis + view_as<Address>(g_iCEconItemView_m_bOnlyIterateItemViewAttributes), false, NumberType_Int8, false);
+    return MRES_Ignored;
+}
+
+public void TF2Items_OnGiveNamedItem_Post_SDK(int iClient, char[] sClassname, int iItemDefIndex, int iLevel, int iQuality, int iEntity)
+{
+	Address pCEconItemView = GetEntityAddress(iEntity) + view_as<Address>(g_iCEconItem_m_Item);
+	g_hDHookItemIterateAttribute.HookRaw(Hook_Pre, pCEconItemView, CEconItemView_IterateAttributes);
+	g_hDHookItemIterateAttribute.HookRaw(Hook_Post, pCEconItemView, CEconItemView_IterateAttributes_Post);
+}

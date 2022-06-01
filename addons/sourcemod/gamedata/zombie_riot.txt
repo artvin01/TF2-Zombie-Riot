@@ -513,6 +513,11 @@
 		}
 		"Offsets"
 		{
+			"CEconItemView::IterateAttributes"
+			{
+				"windows"	"18"
+				"linux"		"19"
+			}
 			"CTFBot::Event_Killed()"
 			{
 				"windows"	"66"

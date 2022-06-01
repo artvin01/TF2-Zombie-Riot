@@ -578,7 +578,7 @@ stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, c
 	int weapon = SpawnWeaponBase(client, name, index, level, qual, attrib, value, count);
 	if(IsValidEntity(weapon))
 	{
-		HandleAttributes(weapon, attrib, value, count); //Thanks suza! i love my min models
+		HandleAttributes(weapon, attrib, value, count, index, client); //Thanks suza! i love my min models
 	}
 	return weapon;
 }
@@ -633,9 +633,9 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	return entity;
 }
 //										 info.Attribs, info.Value, info.Attribs);
-public void HandleAttributes(int weapon, const int[] attributes, const float[] values, int count)
+public void HandleAttributes(int weapon, const int[] attributes, const float[] values, int count, int index, int client)
 {
-	RemoveAllDefaultAttribsExceptStrings(weapon);
+	RemoveAllDefaultAttribsExceptStrings(weapon, index, client);
 	
 	for(int i = 0; i < count; i++) 
 	{
@@ -643,7 +643,7 @@ public void HandleAttributes(int weapon, const int[] attributes, const float[] v
 	}
 }
 
-void RemoveAllDefaultAttribsExceptStrings(int entity)
+void RemoveAllDefaultAttribsExceptStrings(int entity, int index, int client)
 {
 	TF2Attrib_RemoveAll(entity);
 	
@@ -653,6 +653,9 @@ void RemoveAllDefaultAttribsExceptStrings(int entity)
 	int currentAttrib;
 	
 	ArrayList staticAttribs = TF2Econ_GetItemStaticAttributes(GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex"));
+	char Weaponname[64];
+	GetEntityClassname(entity, Weaponname, sizeof(Weaponname));
+	TF2Items_OnGiveNamedItem_Post_SDK(client, Weaponname, index, 5, 6, entity);
 	
 	for(int i = 0; i < staticAttribs.Length; i++)
 	{
@@ -673,6 +676,7 @@ void RemoveAllDefaultAttribsExceptStrings(int entity)
 		// Since we already know what we're working with and what we're looking for, we can manually handpick
 		// the most significative chars to check if they match. Eons faster than doing StrEqual or StrContains.
 	
+		
 		if(valueFormat[9] == 'a' && valueFormat[10] == 'd') // value_is_additive & value_is_additive_percentage
 		{
 			TF2Attrib_SetByDefIndex(entity, currentAttrib, 0.0);
@@ -686,9 +690,27 @@ void RemoveAllDefaultAttribsExceptStrings(int entity)
 		{
 			TF2Attrib_SetByDefIndex(entity, currentAttrib, 0.0);
 		}
+		
+		NullifySpecificAttributes(entity,currentAttrib);
 	}
 	
 	delete staticAttribs;	
+}
+
+stock void NullifySpecificAttributes(int entity, int attribute)
+{
+	switch(attribute)
+	{
+		case 781: //Is sword
+		{
+			TF2Attrib_SetByDefIndex(entity, attribute, 0.0);	
+		}
+		case 128: //Provide on active
+		{
+			TF2Attrib_SetByDefIndex(entity, attribute, 0.0);	
+		}
+	}
+	
 }
 
 stock void SwapWeapons(int client, int wep1, int wep2)

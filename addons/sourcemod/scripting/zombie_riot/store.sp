@@ -1852,6 +1852,12 @@ void Store_ApplyAttribs(int client)
 	{
 		map.SetValue("68", 2.0);
 	}
+	
+	//DOUBLE TAP!
+	if(i_CurrentEquippedPerk[client] == 3) //Increace sentry damage! Not attack rate, could end ugly.
+	{		
+		map.SetValue("287", 1.15);
+	}
 		
 	Item item;
 	ItemInfo info;
@@ -1885,6 +1891,7 @@ void Store_ApplyAttribs(int client)
 			}
 		}
 	}
+	
 	
 	
 	
@@ -2267,6 +2274,12 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 			}
 		}
 		
+		int itemdefindex = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
+		if(itemdefindex == 772 || itemdefindex == 349 || itemdefindex == 30667 || itemdefindex == 200 || itemdefindex == 45 || itemdefindex == 449 || itemdefindex == 773 || itemdefindex == 973 || itemdefindex == 1103 || itemdefindex == 669 || IsWandWeapon(entity))
+		{		
+			TF2Attrib_SetByDefIndex(entity, 49, 1.0);
+		}
+		
 		/*
 			Attributes to Arrays Here
 		*/
@@ -2278,7 +2291,8 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 		i_ArsenalBombImplanter[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 544));
 		i_NoBonusRange[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 410));
 		
-		i_BuffBannerPassively[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 786));
+		i_LowTeslarStaff[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 3002));
+		i_HighTeslarStaff[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 3000));
 		
 		Enable_Management(client, entity);
 		Enable_Arsenal(client, entity);

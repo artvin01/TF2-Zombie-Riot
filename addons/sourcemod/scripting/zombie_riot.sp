@@ -319,6 +319,8 @@ int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 float f_ChargeTerroriserSniper[MAXENTITIES];
 bool b_npcspawnprotection[MAXENTITIES];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
+float f_LowTeslarDebuff[MAXENTITIES];
+float f_HighTeslarDebuff[MAXENTITIES];
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -337,6 +339,9 @@ int i_ArsenalBombImplanter[MAXENTITIES]={0, ...}; 				//544
 int i_NoBonusRange[MAXENTITIES]={0, ...}; 				//410
 int i_BuffBannerPassively[MAXENTITIES]={0, ...}; 				//786
 int i_BadHealthRegen[MAXENTITIES]={0, ...}; 				//805
+
+int i_LowTeslarStaff[MAXENTITIES]={0, ...}; 				//3002
+int i_HighTeslarStaff[MAXENTITIES]={0, ...}; 				//3000
 
 Function EntityFuncAttack[MAXENTITIES];
 Function EntityFuncAttack2[MAXENTITIES];
