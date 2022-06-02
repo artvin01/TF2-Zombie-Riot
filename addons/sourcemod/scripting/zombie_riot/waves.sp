@@ -322,6 +322,8 @@ void Waves_RoundStart()
 			
 			PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
 			
+			Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", vote.Name);
+			
 			char buffer[PLATFORM_MAX_PATH];
 			BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
 			KeyValues kv = new KeyValues("Waves");
@@ -927,7 +929,7 @@ void Waves_Progress()
 	{
 		Gave_Ammo_Supply = false;	
 	}
-	PrintToChatAll("Wave: %d - %d", CurrentRound+1, CurrentWave+1);
+//	PrintToChatAll("Wave: %d - %d", CurrentRound+1, CurrentWave+1);
 	
 }
 

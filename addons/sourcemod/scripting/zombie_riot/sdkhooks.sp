@@ -27,11 +27,16 @@ static float Armor_regen_delay[MAXTF2PLAYERS];
 float max_mana[MAXTF2PLAYERS];
 float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
+	
+static int i_WhatLevelForHudIsThisClientAt[MAXTF2PLAYERS];
 
 public void SDKHooks_ClearAll()
 {
 	Zero(Armor_regen_delay);
-	
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		i_WhatLevelForHudIsThisClientAt[client] = 2000000000; //two billion
+	}
 }
 void SDKHook_PluginStart()
 {
@@ -357,16 +362,34 @@ public void OnPostThink(int client)
 		if(Armor_CD <= 0.0)
 			Armor_CD = 0.0;
 		*/
+		SetGlobalTransTarget(client);
+		char WaveString[64];
+		if(EscapeMode)
+		{
+			Format(WaveString, sizeof(WaveString), "Escape Mode"); 
+		}
+		else
+		{
+			Format(WaveString, sizeof(WaveString), "%s | %t", WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1); 
+		}
+		i_WhatLevelForHudIsThisClientAt[client] -= 1;
+		Handle hKv = CreateKeyValues("Stuff", "title", WaveString);
+		KvSetColor(hKv, "color", 0, 255, 0, 255); //green
+		KvSetNum(hKv,   "level", i_WhatLevelForHudIsThisClientAt[client]); //im not sure..
+		KvSetNum(hKv,   "time",  10); // how long? 
+		//	CreateDialog(client, hKv, DialogType_Text); //Cool hud stuff!
+		CreateDialog(client, hKv, DialogType_Msg);
+		CloseHandle(hKv);
 		
-		if(Waves_Started())
+	//	if(Waves_Started())
 		{
 			if(!TeutonType[client])
 			{
 				if(!EscapeMode)
 				{
-					PrintKeyHintText(client, "%t\n%t\n%t\n%t\n%t\n%t\n%t\n%t",
+					PrintKeyHintText(client, "%t\n%t\n%t\n%t\n%t\n%t\n%t",
 					"Credits_Menu", CurrentCash-CashSpent[client], Resupplies_Supplied[client] * 10,	
-					"Wave", CurrentRound+1, CurrentWave+1,
+				//	"Wave", CurrentRound+1, CurrentWave+1,
 					"Armor Counter", Armor_Charge[client],
 					"Ammo Crate Supplies", Ammo_Count_Ready[client], //This bugs in russian
 					"Healing Done", Healing_done_in_total[client],
@@ -385,14 +408,14 @@ public void OnPostThink(int client)
 			}
 			else if (TeutonType[client] == TEUTON_DEAD)
 			{
-				PrintKeyHintText(client, "%t\n%t\n%t","You Died Teuton",
-											"Wave", CurrentRound+1, CurrentWave+1,
+				PrintKeyHintText(client, "%t\n%t","You Died Teuton",
+				//							"Wave", CurrentRound+1, CurrentWave+1,
 											"Zombies Left", Zombies_Currently_Still_Ongoing);
 			}
 			else
 			{
-				PrintKeyHintText(client, "%t\n%t\n%t","You Wait Teuton",
-											"Wave", CurrentRound+1, CurrentWave+1,
+				PrintKeyHintText(client, "%t\n%t","You Wait Teuton",
+				//							"Wave", CurrentRound+1, CurrentWave+1,
 											"Zombies Left", Zombies_Currently_Still_Ongoing);
 			}
 		}

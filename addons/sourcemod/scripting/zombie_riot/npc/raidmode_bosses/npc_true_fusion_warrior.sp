@@ -266,6 +266,17 @@ methodmap TrueFusionWarrior < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
+		
+		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+		for(int client_check=1; client_check<=MaxClients; client_check++)
+		{
+			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+			{
+				LookAtTarget(client_check, npc.index);
+			}
+		}
+		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
@@ -278,12 +289,13 @@ methodmap TrueFusionWarrior < CClotBody
 		
 		if(RaidModeScaling < 55)
 		{
-			RaidModeScaling *= 0.17; //abit low, inreacing
+			RaidModeScaling *= 0.20; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.34;
+			RaidModeScaling *= 0.40;
 		}
+		
 		Raidboss_Clean_Everyone();
 		
 		SDKHook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);

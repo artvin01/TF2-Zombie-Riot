@@ -204,6 +204,7 @@ int CurrentRound;
 int CurrentWave = -1;
 int StartCash;
 float RoundStartTime;
+char WhatDifficultySetting[64];
 float healing_cooldown[MAXTF2PLAYERS];
 float Damage_dealt_in_total[MAXTF2PLAYERS];
 int Healing_done_in_total[MAXTF2PLAYERS];
@@ -929,6 +930,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_shop", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
 	RegConsoleCmd("sm_give_cash", Command_GiveCash, "Give Cash to the Person",ADMFLAG_ROOT);
+	RegConsoleCmd("sm_give_dialog", Command_GiveDialogBox, "Give a dialog box",ADMFLAG_ROOT);
 	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_GENERIC, "BRB GONNA MURDER MY MOM'S DISHES");
 	
 	cvarTimeScale = FindConVar("host_timescale");
@@ -971,6 +973,8 @@ public void OnPluginStart()
 	OnPluginStart_LagComp();
 #endif
 	NPC_Base_InitGamedata();
+	
+	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet"); 
 	//Global Hud for huds.
 	SyncHud_Notifaction = CreateHudSynchronizer();
 	SyncHud_WandMana = CreateHudSynchronizer();
@@ -1086,6 +1090,8 @@ public void OnMapStart()
 	MapStartResetAll();
 	EscapeMode = false;
 	EscapeModeForNpc = false;
+	
+	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
 	char buffer[16];
 	int entity = -1;
@@ -1258,6 +1264,53 @@ public Action Command_GiveCash(int client, int args)
 			PrintToChat(targets[target], "You lost %i cash due to the admin %N!", money, client);
 			CashSpent[targets[target]] -= money;			
 		}
+	}
+	
+	return Plugin_Handled;
+}
+
+public Action Command_GiveDialogBox(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_give_dialog <target> <Question>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[64];
+	GetCmdArg(2, buf, sizeof(buf));
+	
+	char buf2[64];
+	GetCmdArg(3, buf2, sizeof(buf2));
+
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		SetGlobalTransTarget(client);
+		char yourPoints[64];
+		Format(yourPoints, sizeof(yourPoints), buf); 
+				
+		Handle hKv = CreateKeyValues("Stuff", "title", yourPoints);
+		KvSetColor(hKv, "color", 0, 255, 0, 255); //green
+		KvSetNum(hKv,   "level", 1); //im not sure..
+		KvSetNum(hKv,   "time",  10); // how long? 
+		KvSetString(hKv,   "command", "say /tp"); //command when selected
+		KvSetString(hKv,   "msg",  buf2); // how long? 
+		CreateDialog(client, hKv, DialogType_Menu);
+		CloseHandle(hKv);
 	}
 	
 	return Plugin_Handled;
