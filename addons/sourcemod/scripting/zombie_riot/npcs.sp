@@ -124,15 +124,19 @@ public Action GetClosestSpawners(Handle timer)
 	int i_Diviveby = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0 && IsPlayerAlive(client))
+		if(IsClientInGame(client) && !IsFakeClient(client))
 		{
-			i_Diviveby += 1;
-			
-			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
-			
-			f3_PositionOfAll[0] += f3_PositionTemp[0];
-			f3_PositionOfAll[1] += f3_PositionTemp[1];
-			f3_PositionOfAll[2] += f3_PositionTemp[2];
+			QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
+			if(GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0 && IsPlayerAlive(client))
+			{
+				i_Diviveby += 1;
+				
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+				
+				f3_PositionOfAll[0] += f3_PositionTemp[0];
+				f3_PositionOfAll[1] += f3_PositionTemp[1];
+				f3_PositionOfAll[2] += f3_PositionTemp[2];
+			}
 		}
 	}
 	
