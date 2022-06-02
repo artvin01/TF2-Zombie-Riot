@@ -311,6 +311,7 @@ bool b_Doing_Buildingpickup_Handle[MAXPLAYERS + 1]={false, ...};
 int i_PlayerToCustomBuilding[MAXPLAYERS + 1]={0, ...};
 
 float f_TimeUntillNormalHeal[MAXPLAYERS + 1]={0.0, ...};
+bool f_ClientServerShowMessages[MAXTF2PLAYERS];
 
 float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
 int i_DyingParticleIndication[MAXPLAYERS + 1]={-1, ...};
@@ -1358,6 +1359,7 @@ public void OnClientPutInServer(int client)
 	i_CurrentEquippedPerk[client] = 0;
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_bThisEntityIgnored = false;
+	f_ShowHudDelayForServerMessage[client] = GetGameTime() + 50.0;
 	
 	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
 	
@@ -3282,4 +3284,5 @@ public void MapStartResetAll()
 	Zero2(Perk_Machine_money_limit);
 	Zero2(Pack_A_Punch_Machine_money_limit);
 	CleanAllBuildingEscape();
+	Zero(f_ClientServerShowMessages);
 }

@@ -174,6 +174,13 @@ public void ConVarCallback(QueryCookie cookie, int client, ConVarQueryResult res
 		f_ClientMusicVolume[client] = StringToFloat(cvarValue);
 }
 
+public void ConVarCallback_Plugin_message(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
+{
+	if(result == ConVarQuery_Okay)
+		f_ClientServerShowMessages[client] = view_as<bool>(StringToInt(cvarValue));
+}
+
+
 void Music_PostThink(int client)
 {
 	if(LastMann)

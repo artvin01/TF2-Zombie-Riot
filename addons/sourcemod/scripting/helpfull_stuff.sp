@@ -39,4 +39,12 @@ typedef enum
 	DIALOG_ASKCONNECT	// Ask the client to connect to a specified IP address. Only the "time" and "title" keys are used.
 } DIALOG_TYPE;
 
+
+
+void			SetPenetrate( bool bPenetrate = false ) { m_bPenetrate = bPenetrate; SetSolidFlags( FSOLID_NOT_SOLID | FSOLID_TRIGGER ); }
+bool			CanPenetrate() const { return m_bPenetrate; }
 */
+
+https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/basecombatweapon_shared.cpp#L2547
+
+https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/baseentity_shared.cpp#L1762

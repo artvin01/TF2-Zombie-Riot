@@ -126,7 +126,8 @@ public Action GetClosestSpawners(Handle timer)
 	{
 		if(IsClientInGame(client) && !IsFakeClient(client))
 		{
-			QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
+			QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
+			QueryClientConVar(client, "cl_showpluginmessages", ConVarCallback_Plugin_message); //cl_showpluginmessages
 			if(GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0 && IsPlayerAlive(client))
 			{
 				i_Diviveby += 1;

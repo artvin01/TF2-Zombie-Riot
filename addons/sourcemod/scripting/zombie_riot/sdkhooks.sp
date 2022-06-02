@@ -21,6 +21,7 @@ static const float ViewHeights[] =
 #define SF2_PLAYER_VIEWBOB_SCALE_Z 0.0
 
 static float Armor_regen_delay[MAXTF2PLAYERS];
+float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
 //static float Check_Standstill_Delay[MAXTF2PLAYERS];
 //static bool Check_Standstill_Applied[MAXTF2PLAYERS];
 
@@ -362,25 +363,37 @@ public void OnPostThink(int client)
 		if(Armor_CD <= 0.0)
 			Armor_CD = 0.0;
 		*/
-		SetGlobalTransTarget(client);
-		char WaveString[64];
-		if(EscapeMode)
+		
+		if(f_ClientServerShowMessages[client])
 		{
-			Format(WaveString, sizeof(WaveString), "Escape Mode"); 
+			SetGlobalTransTarget(client);
+			char WaveString[64];
+			if(EscapeMode)
+			{
+				Format(WaveString, sizeof(WaveString), "Escape Mode"); 
+			}
+			else
+			{
+				Format(WaveString, sizeof(WaveString), "%s | %t", WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1); 
+			}
+			i_WhatLevelForHudIsThisClientAt[client] -= 1;
+			Handle hKv = CreateKeyValues("Stuff", "title", WaveString);
+			KvSetColor(hKv, "color", 0, 255, 0, 255); //green
+			KvSetNum(hKv,   "level", i_WhatLevelForHudIsThisClientAt[client]); //im not sure..
+			KvSetNum(hKv,   "time",  10); // how long? 
+			//	CreateDialog(client, hKv, DialogType_Text); //Cool hud stuff!
+			CreateDialog(client, hKv, DialogType_Msg);
+			CloseHandle(hKv);
 		}
 		else
 		{
-			Format(WaveString, sizeof(WaveString), "%s | %t", WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1); 
+			if(f_ShowHudDelayForServerMessage[client] < GetGameTime())
+			{
+				f_ShowHudDelayForServerMessage[client] = GetGameTime() + 300.0;
+				PrintToChat(client,"If you wish to see the wave counter, set cl_showpluginmessages to 1 in the console!");
+			}
 		}
-		i_WhatLevelForHudIsThisClientAt[client] -= 1;
-		Handle hKv = CreateKeyValues("Stuff", "title", WaveString);
-		KvSetColor(hKv, "color", 0, 255, 0, 255); //green
-		KvSetNum(hKv,   "level", i_WhatLevelForHudIsThisClientAt[client]); //im not sure..
-		KvSetNum(hKv,   "time",  10); // how long? 
-		//	CreateDialog(client, hKv, DialogType_Text); //Cool hud stuff!
-		CreateDialog(client, hKv, DialogType_Msg);
-		CloseHandle(hKv);
-		
+		//cl_showpluginmessages
 	//	if(Waves_Started())
 		{
 			if(!TeutonType[client])
