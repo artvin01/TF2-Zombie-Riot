@@ -59,17 +59,13 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 		{
 			float Calculate_HP_Spikes = 75.0; 
 		
-			float Bonus_damage = Attributes_FindOnPlayer(client, 287);
+			float Bonus_damage;
 			
-			
-			//Have to do this, otherwise this shit becomes op as fuck
-			
-			float Sniper_Sentry_Bonus_Removal = Attributes_FindOnPlayer(client, 344);
-			
-			if(Sniper_Sentry_Bonus_Removal >= 1.01) //do 1.01 cus minigun sentry can give abit more then less half range etc
-			{
-				Calculate_HP_Spikes *= 0.5; //Nerf in half as it gives 2x the dmg.
-			}
+			float attack_speed;
+		
+			attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
+				
+			Bonus_damage = attack_speed * Bonus_damage * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
 			
 			if (EscapeMode)
 			{

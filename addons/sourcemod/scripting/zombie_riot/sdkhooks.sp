@@ -417,7 +417,7 @@ public void OnPostThink(int client)
 			
 			red = 255 - red;
 			
-			SetHudTextParams(0.19, 0.86, 3.01, red, green, blue, 255);
+			SetHudTextParams(0.165, 0.86, 3.01, red, green, blue, 255);
 			ShowSyncHudText(client,  SyncHud_ArmorCounter, "|%i|", Armor_Charge[client]);
 			
 			

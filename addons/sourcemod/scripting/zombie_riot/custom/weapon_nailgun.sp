@@ -39,19 +39,16 @@ public void Weapon_Nailgun(int client, int weapon, bool crit)
 	if(mana_cost <= Current_Mana[client])
 	{
 		float damage = 7.5;
-		damage *= Attributes_FindOnPlayer(client, 287);
 		
-		if(damage < 7.5)
-		{
-			damage = 7.5;
-		}
+		float attack_speed;
 		
-		float Sniper_Sentry_Bonus_Removal = Attributes_FindOnPlayer(client, 344);
+		attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
+				
+		damage = attack_speed * damage * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
+		
+		float sentry_range;
 			
-		if(Sniper_Sentry_Bonus_Removal >= 1.01) //do 1.01 cus minigun sentry can give abit more then less half range etc
-		{
-			damage *= 0.5; //Nerf in half as it gives 2x the dmg.
-		}
+		sentry_range = Attributes_FindOnPlayer(client, 344, true, 1.0);			//Sentry Range bonus
 			
 		float speed = 1100.0;
 		address = TF2Attrib_GetByDefIndex(weapon, 103);
@@ -66,7 +63,8 @@ public void Weapon_Nailgun(int client, int weapon, bool crit)
 		if(address != Address_Null)
 			speed *= TF2Attrib_GetValue(address);
 	
-	
+		speed *= sentry_range
+		
 		float time = 500.0/speed;
 		address = TF2Attrib_GetByDefIndex(weapon, 101);
 		if(address != Address_Null)

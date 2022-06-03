@@ -2993,29 +2993,17 @@ public Action MortarFire(Handle timer, int client)
 			float damage = 10.0;
 							
 			damage *= 35.0;
-			float value;
-				
-			value = Attributes_FindOnPlayer(client, 287);
-							
-			if(value > 1.0)
-			{
-				value *= 1.30;
-				damage *= value;
-			}
-			/*
-			value = Attributes_FindOnPlayer(client, 343);
-							
-			if(value < 1.0 && value > 0.1)
-			{
-				damage /= value;
-			}
-			*/
-			float Sniper_Sentry_Bonus_Removal = Attributes_FindOnPlayer(client, 344);
 			
-			if(Sniper_Sentry_Bonus_Removal >= 1.01) //do 1.01 cus minigun sentry can give abit more then less half range etc
-			{
-				damage *= 0.5; //Nerf in half as it gives 2x the dmg.
-			}
+			float attack_speed;
+			float sentry_range;
+		
+			attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
+				
+			damage = attack_speed * damage * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
+			
+			sentry_range = Attributes_FindOnPlayer(client, 344, true, 1.0);			//Sentry Range bonus
+			
+			float AOE_range = 350.0 * sentry_range;
 			
 			int targ = MaxClients + 1;
 			float targPos[3];
@@ -3027,14 +3015,14 @@ public Action MortarFire(Handle timer, int client)
 					if(!b_NpcHasDied[targ])
 					{
 						GetEntPropVector(targ, Prop_Data, "m_vecAbsOrigin", targPos);
-						if (GetVectorDistance(f_MarkerPosition[client], targPos) <= 350.0)
+						if (GetVectorDistance(f_MarkerPosition[client], targPos) <= AOE_range)
 						{
 							
 							float distance_1 = GetVectorDistance(f_MarkerPosition[client], targPos);
-							float damage_1 = Custom_Explosive_Logic(client, distance_1, 0.5, damage, 351.0);
+							float damage_1 = Custom_Explosive_Logic(client, distance_1, 0.5, damage, AOE_range);
 									
 						//	damage_1 /= f_DamageReductionMortar[client];
-							SDKHooks_TakeDamage(targ, obj, client, damage_1/damage_falloff, DMG_BLAST, -1, CalculateExplosiveDamageForce(f_MarkerPosition[client], targPos, 351.0), f_MarkerPosition[client]);
+							SDKHooks_TakeDamage(targ, obj, client, damage_1/damage_falloff, DMG_BLAST, -1, CalculateExplosiveDamageForce(f_MarkerPosition[client], targPos, AOE_range), f_MarkerPosition[client]);
 							damage_falloff *= EXPLOSION_AOE_DAMAGE_FALLOFF;
 						//	f_DamageReductionMortar[client] *= 1.35;
 							//use blast cus it does its own calculations for that ahahahah im evil
@@ -3106,25 +3094,20 @@ static void Railgun_Boom(int client)
 		float Strength = 10.0;
 							
 		Strength *= 45.0;
-		float value;
+
+		float attack_speed;
+
+		attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
 				
-		value = Attributes_FindOnPlayer(client, 287);
-							
-		if(value > 1.0)
-		{
-			value *= 1.30;
-			Strength *= value;
-		}
+		Strength = attack_speed * Strength * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
 		
-		float Sniper_Sentry_Bonus_Removal = Attributes_FindOnPlayer(client, 344);
+		float sentry_range;
 			
-		if(Sniper_Sentry_Bonus_Removal >= 1.01) //do 1.01 cus minigun sentry can give abit more then less half range etc
-		{
-			Strength *= 0.5; //Nerf in half as it gives 2x the dmg.
-		}
+		sentry_range = Attributes_FindOnPlayer(client, 344, true, 1.0);			//Sentry Range bonus
+					
 		float BEAM_CloseBuildingDPT = Strength;
 		float BEAM_FarBuildingDPT = Strength;
-		int BEAM_MaxDistance = 99999;
+		int BEAM_MaxDistance = RoundToCeil(1500.0 * sentry_range);
 		int BEAM_ColorHex = ParseColor("FFA500");
 		float diameter = float(BEAM_BeamRadius * 2);
 		int r = GetR(BEAM_ColorHex);
@@ -3254,25 +3237,19 @@ static void Railgun_Boom_Client(int client)
 		float Strength = 10.0;
 							
 		Strength *= 45.0;
-		float value;
-				
-		value = Attributes_FindOnPlayer(client, 287);
-							
-		if(value > 1.0)
-		{
-			value *= 1.30;
-			Strength *= value;
-		}
+		float attack_speed;
 		
-		float Sniper_Sentry_Bonus_Removal = Attributes_FindOnPlayer(client, 344);
+		attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
+				
+		Strength = attack_speed * Strength * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
+		
+		float sentry_range;
 			
-		if(Sniper_Sentry_Bonus_Removal >= 1.01) //do 1.01 cus minigun sentry can give abit more then less half range etc
-		{
-			Strength *= 0.5; //Nerf in half as it gives 2x the dmg.
-		}
+		sentry_range = Attributes_FindOnPlayer(client, 344, true, 1.0);			//Sentry Range bonus
+		
 		float BEAM_CloseBuildingDPT = Strength;
 		float BEAM_FarBuildingDPT = Strength;
-		int BEAM_MaxDistance = 99999;
+		int BEAM_MaxDistance = RoundToCeil(1500.0 * sentry_range);
 		int BEAM_ColorHex = ParseColor("FFA500");
 		float diameter = float(BEAM_BeamRadius * 2);
 		int r = GetR(BEAM_ColorHex);

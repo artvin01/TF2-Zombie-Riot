@@ -135,14 +135,11 @@ public void Weapon_Wind_Laser_Builder(int client, int weapon, const char[] class
 	
 	Strength[client] = 100.0 * flMultiplier;
 	
-	Strength[client] *= Attributes_FindOnPlayer(client, 287);
-	
-	float Sniper_Sentry_Bonus_Removal = Attributes_FindOnPlayer(client, 344);
-			
-	if(Sniper_Sentry_Bonus_Removal >= 1.01) //do 1.01 cus minigun sentry can give abit more then less half range etc
-	{
-		Strength[client] *= 0.5; //Nerf in half as it gives 2x the dmg.
-	}
+	float attack_speed;
+		
+	attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
+				
+	Strength[client] = attack_speed * Strength[client] * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
 		
 	if (EscapeMode)
 	{
@@ -266,7 +263,12 @@ void TBB_Ability_Wind_Staff(int client)
 	BEAM_CanUse[client] = true;
 	BEAM_CloseDPT[client] = 2.0;
 	BEAM_FarDPT[client] = 1.0;
-	BEAM_MaxDistance[client] = 1000;
+	
+	float sentry_range;
+			
+	sentry_range = Attributes_FindOnPlayer(client, 344, true, 1.0);			//Sentry Range bonus
+	
+	BEAM_MaxDistance[client] = RoundToCeil(1000.0 * sentry_range);
 	BEAM_BeamRadius[client] = 50;
 	BEAM_ColorHex[client] = ParseColor("D3D3D3");
 	BEAM_ChargeUpTime[client] = 1;
