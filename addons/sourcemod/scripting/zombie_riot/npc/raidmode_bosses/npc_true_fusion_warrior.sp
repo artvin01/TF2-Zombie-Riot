@@ -1,11 +1,11 @@
 
-char g_DeathSounds[][] = {
+static char g_DeathSounds[][] = {
 	"vo/medic_paincrticialdeath01.mp3",
 	"vo/medic_paincrticialdeath02.mp3",
 	"vo/medic_paincrticialdeath03.mp3",
 };
 
-char g_HurtSounds[][] = {
+static char g_HurtSounds[][] = {
 	")vo/medic_painsharp01.mp3",
 	")vo/medic_painsharp02.mp3",
 	")vo/medic_painsharp03.mp3",
@@ -16,41 +16,41 @@ char g_HurtSounds[][] = {
 	")vo/medic_painsharp08.mp3",
 };
 
-char g_IdleSounds[][] = {
+static char g_IdleSounds[][] = {
 	")vo/null.mp3",
 };
 
-char g_IdleAlertedSounds[][] = {
+static char g_IdleAlertedSounds[][] = {
 	")vo/medic_battlecry01.mp3",
 	")vo/medic_battlecry02.mp3",
 	")vo/medic_battlecry03.mp3",
 	")vo/medic_battlecry04.mp3",
 };
 
-char g_MeleeHitSounds[][] = {
+static char g_MeleeHitSounds[][] = {
 	"weapons/breadmonster/throwable/bm_throwable_smash.wav",
 };
 
-char g_MeleeAttackSounds[][] = {
+static char g_MeleeAttackSounds[][] = {
 	")weapons/knife_swing.wav",
 };
 
-char g_RangedAttackSounds[][] = {
+static char g_RangedAttackSounds[][] = {
 	"weapons/breadmonster/throwable/bm_throwable_throw.wav",
 };
-char g_TeleportSounds[][] = {
+static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_teleport.wav",
 };
 
-char g_MeleeMissSounds[][] = {
+static char g_MeleeMissSounds[][] = {
 	")weapons/cbar_miss1.wav",
 };
 
-char g_AngerSounds[][] = {
+static char g_AngerSounds[][] = {
 	")vo/medic_hat_taunts04.mp3",
 };
 
-char g_PullSounds[][] = {
+static char g_PullSounds[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav"
 };
 

@@ -388,4 +388,8 @@
 	{
 		"en" 		"True Fusion Warrior"
 	}
+	"Medic Charger"
+	{
+		"en" 		"Medic Charger"
+	}
 }

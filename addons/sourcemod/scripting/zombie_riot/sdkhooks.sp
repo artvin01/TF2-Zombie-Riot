@@ -29,6 +29,8 @@ float max_mana[MAXTF2PLAYERS];
 float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
 	
+Handle SyncHud_ArmorCounter;
+
 static int i_WhatLevelForHudIsThisClientAt[MAXTF2PLAYERS];
 
 public void SDKHooks_ClearAll()
@@ -45,6 +47,7 @@ void SDKHook_PluginStart()
 	g_offsPlayerPunchAngleVel = FindSendPropInfo("CBasePlayer", "m_vecPunchAngleVel");
 	if (g_offsPlayerPunchAngleVel == -1) LogError("Couldn't find CBasePlayer offset for m_vecPunchAngleVel!");
 	*/
+	SyncHud_ArmorCounter = CreateHudSynchronizer();
 	AddNormalSoundHook(SDKHook_NormalSHook);
 }
 
@@ -391,48 +394,71 @@ public void OnPostThink(int client)
 			if(f_ShowHudDelayForServerMessage[client] < GetGameTime())
 			{
 				f_ShowHudDelayForServerMessage[client] = GetGameTime() + 300.0;
-				PrintToChat(client,"If you wish to see the wave counter, set cl_showpluginmessages to 1 in the console!");
+				PrintToChat(client,"If you wish to see the wave counter in a better way, set cl_showpluginmessages to 1 in the console!");
 			}
 		}
 		//cl_showpluginmessages
 	//	if(Waves_Started())
 		{
+			int Armor_Max = 50;
+			int Extra = 0;
+		
+			Extra = Armor_Level[client];
+				
+			Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
+			
+			int red = 255;
+			int green = 255;
+			int blue = 0;
+			
+			red = Armor_Charge[client] * 255  / Armor_Max;
+		//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
+			green = Armor_Charge[client] * 255  / Armor_Max;
+			
+			red = 255 - red;
+			
+			SetHudTextParams(0.19, 0.86, 3.01, red, green, blue, 255);
+			ShowSyncHudText(client,  SyncHud_ArmorCounter, "|%i|", Armor_Charge[client]);
+			
+			
+			
+			
 			if(!TeutonType[client])
 			{
 				if(!EscapeMode)
 				{
 					if(Has_Wave_Showing)
 					{
-						PrintKeyHintText(client, "%t\n%t\n%t\n%t\n%t\n%t\n%t",
+						PrintKeyHintText(client, "%t\n%t\n%t\n%t",
 						"Credits_Menu", CurrentCash-CashSpent[client], Resupplies_Supplied[client] * 10,	
 					//	"Wave", CurrentRound+1, CurrentWave+1,
-						"Armor Counter", Armor_Charge[client],
+				//		"Armor Counter", Armor_Charge[client],
 						"Ammo Crate Supplies", Ammo_Count_Ready[client], //This bugs in russian
-						"Healing Done", Healing_done_in_total[client],
-						"Damage Dealt", Damage_dealt_in_total[client],
+				//		"Healing Done", Healing_done_in_total[client],
+				//		"Damage Dealt", Damage_dealt_in_total[client],
 						PerkNames[i_CurrentEquippedPerk[client]],
 						"Zombies Left", Zombies_Currently_Still_Ongoing);
 					}
 					else
 					{
-						PrintKeyHintText(client, "%t\n%s | %t\n%t\n%t\n%t\n%t\n%t\n%t",
+						PrintKeyHintText(client, "%t\n%s | %t\n%t\n%t\n%t",
 						"Credits_Menu", CurrentCash-CashSpent[client], Resupplies_Supplied[client] * 10,	
 						WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
-						"Armor Counter", Armor_Charge[client],
+			//			"Armor Counter", Armor_Charge[client],
 						"Ammo Crate Supplies", Ammo_Count_Ready[client], 
-						"Healing Done", Healing_done_in_total[client],
-						"Damage Dealt", Damage_dealt_in_total[client],
+			//			"Healing Done", Healing_done_in_total[client],
+			//			"Damage Dealt", Damage_dealt_in_total[client],
 						PerkNames[i_CurrentEquippedPerk[client]],
 						"Zombies Left", Zombies_Currently_Still_Ongoing);	
 					}
 				}
 				else
 				{
-					PrintKeyHintText(client, "%t\n%t\n%t",
+					PrintKeyHintText(client, "%t\n%t",
 					"Armor Counter", Armor_Charge[client],
 					"Healing Done", Healing_done_in_total[client],
-					"Damage Dealt", Damage_dealt_in_total[client]);/*,
-					PerkNames[i_CurrentEquippedPerk[client]]);		*/	
+			//		"Damage Dealt", Damage_dealt_in_total[client]);,
+					PerkNames[i_CurrentEquippedPerk[client]]);		
 				}
 			}
 			else if (TeutonType[client] == TEUTON_DEAD)

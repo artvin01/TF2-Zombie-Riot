@@ -1074,5 +1074,13 @@
 	{
 		"en"		"MAX BARRICADES OUT CURRENTLY"
 		"de"		"MAXIMALE BARRICADEN DRAUßEN"
+	}
+	"Want to Pack a punch?"
+	{
+		"en"		"Do you want to pack-a-punch your current weapon?"
+	}
+	"Want to drink a perk bottle?"
+	{
+		"en"		"Do you want to drink a perk bottle?"
 	}	
 }

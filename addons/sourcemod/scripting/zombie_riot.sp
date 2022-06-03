@@ -558,6 +558,7 @@ enum
 	SAWRUNNER							= 94,
 	
 	RAIDMODE_TRUE_FUSION_WARRIOR		= 95,
+	ALT_MEDIC_CHARGER		= 96,
 }
 
 char NPC_Names[][] =
@@ -664,7 +665,8 @@ char NPC_Names[][] =
 	
 	"Medic Apprentice Mage",
 	"Sawrunner",
-	"True Fusion Warrior"
+	"True Fusion Warrior",
+	"Medic Charger"
 };
 
 char NPC_Plugin_Names_Converted[][] =
@@ -771,6 +773,7 @@ char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_medic_apprentice_mage",
 	"npc_sawrunner",
 	"npc_true_fusion_warrior",
+	"npc_alt_medic_charger",
 };
 
 #include "zombie_riot/stocks.sp"
@@ -954,6 +957,7 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.zombienames");
 	LoadTranslations("zombieriot.phrases.weapons");
 	LoadTranslations("zombieriot.phrases.bob");
+	LoadTranslations("common.phrases");
 	
 	DHook_Setup();
 	SDKCall_Setup();
@@ -2506,35 +2510,46 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		Call_Finish(action);
 	}
 	
-	if(!IsWandWeapon(weapon))
+	if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee && !StrEqual(classname, "tf_weapon_wrench"))
 	{
-		if(Panic_Attack[weapon])
+		float attack_speed;
+		
+		attack_speed = 1.0 / Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+		
+		if(attack_speed > 5.0)
 		{
-			float flHealth = float(GetEntProp(client, Prop_Send, "m_iHealth"));
-			float flpercenthpfrommax = flHealth / SDKCall_GetMaxHealth(client);
-			
-			if(flpercenthpfrommax >= 1.0)
-				flpercenthpfrommax = 1.0; //maths to not allow negative suuuper slow attack speed
-				
-			float Attack_speed = flpercenthpfrommax / Panic_Attack[weapon];
-			
-			if(Attack_speed <= Panic_Attack[weapon])
-			{
-				Attack_speed = Panic_Attack[weapon]; //DONT GO ABOVE THIS, WILL BREAK SOME MELEE'S DUE TO THEIR ALREADY INCREACED ATTACK SPEED.
-			}
-			else if (Attack_speed >= 1.15)
-			{
-				Attack_speed = 1.15; //hardcoding this lol
-			}
-			/*
-			if(TF2_IsPlayerInCondition(client,TFCond_RuneHaste))
-				Attack_speed = 1.0; //If they are last, dont alter attack speed, otherwise breaks melee, again.
-				//would also make them really op
-			*/
-			TF2Attrib_SetByDefIndex(weapon, 396, Attack_speed);
+			attack_speed *= 0.5; //Too fast! It makes animations barely play at all
 		}
-		if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee && !StrEqual(classname, "tf_weapon_wrench"))
+		
+		TF2Attrib_SetByDefIndex(client, 201, attack_speed);
+			
+		if(!IsWandWeapon(weapon))
 		{
+			if(Panic_Attack[weapon])
+			{
+				float flHealth = float(GetEntProp(client, Prop_Send, "m_iHealth"));
+				float flpercenthpfrommax = flHealth / SDKCall_GetMaxHealth(client);
+				
+				if(flpercenthpfrommax >= 1.0)
+					flpercenthpfrommax = 1.0; //maths to not allow negative suuuper slow attack speed
+					
+				float Attack_speed = flpercenthpfrommax / Panic_Attack[weapon];
+				
+				if(Attack_speed <= Panic_Attack[weapon])
+				{
+					Attack_speed = Panic_Attack[weapon]; //DONT GO ABOVE THIS, WILL BREAK SOME MELEE'S DUE TO THEIR ALREADY INCREACED ATTACK SPEED.
+				}
+				else if (Attack_speed >= 1.15)
+				{
+					Attack_speed = 1.15; //hardcoding this lol
+				}
+				/*
+				if(TF2_IsPlayerInCondition(client,TFCond_RuneHaste))
+					Attack_speed = 1.0; //If they are last, dont alter attack speed, otherwise breaks melee, again.
+					//would also make them really op
+				*/
+				TF2Attrib_SetByDefIndex(weapon, 396, Attack_speed);
+			}
 			if(StrEqual(classname, "tf_weapon_knife"))
 			{
 				Handle swingTrace;
@@ -2582,8 +2597,13 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			}
 		}
 	}
+	else
+	{
+		TF2Attrib_SetByDefIndex(client, 201, 1.0);
+	}
 	return action;
 }
+
 public void OnEntityCreated(int entity, const char[] classname)
 {
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
@@ -2758,7 +2778,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 			}
 			SDKHook(entity, SDKHook_SpawnPost, Building_EntityCreatedPost);
 		}
-		
+		/*
+		else if(!StrContains(classname, "tf_gamerules_data"))
+		{
+			GetEntPropString(i, Prop_Data, "m_iName", buffer, sizeof(buffer));
+		}
+		*/
 	}
 	
 }

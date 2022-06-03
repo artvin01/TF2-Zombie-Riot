@@ -93,6 +93,8 @@ static bool Building_Constructed[MAXENTITIES]={false, ...};
 static float Building_Collect_Cooldown[MAXENTITIES][MAXTF2PLAYERS];
 static float Building_Sentry_Cooldown[MAXTF2PLAYERS];
 
+static int i_MachineJustClickedOn[MAXTF2PLAYERS];
+
 public void Building_ClearAll()
 {
 	Zero2(Building_Collect_Cooldown);
@@ -1347,6 +1349,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 	*/
 	if(IsValidEntity(entity))
 	{
+		bool bInteractedBuildingWasMounted = false;
 		if(entity <= MaxClients)
 		{
 			if(dieingstate[entity] > 0)
@@ -1358,6 +1361,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			{
 				return false;
 			}
+			bInteractedBuildingWasMounted = true;
 		}
 		static char buffer[36];
 		GetEntityClassname(entity, buffer, sizeof(buffer));
@@ -1801,26 +1805,44 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					{
 						if(Is_Reload_Button)
 						{
-							TF2_StunPlayer(client, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
-							Building_Collect_Cooldown[entity][client] = GetGameTime() + 20.0;
-							Do_Perk_Machine_Chance(client);
-							if(owner != client)
+							if(bInteractedBuildingWasMounted)
 							{
-								if(Perk_Machine_money_limit[owner][client] <= 10)
-								{
-									CashSpent[owner] -= 40;
-									Perk_Machine_money_limit[owner][client] += 1;
-									Resupplies_Supplied[owner] += 4;
-									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-									SetGlobalTransTarget(owner);
-									ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Perk Machine Used");
-								}
+								i_MachineJustClickedOn[client] = EntIndexToEntRef(entity);
+								
+								Menu menu2 = new Menu(Building_ConfirmMountedAction);
+								menu2.SetTitle("%t", "Want to drink a perk bottle?");
+												
+								FormatEx(buffer, sizeof(buffer), "%t", "Yes");
+								menu2.AddItem("-3", buffer);
+												
+								FormatEx(buffer, sizeof(buffer), "%t", "No");
+								menu2.AddItem("-2", buffer);
+												
+								menu2.Display(client, MENU_TIME_FOREVER); // they have 3 seconds.
 							}
-							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-							SetGlobalTransTarget(client);
-							ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
-							Store_ApplyAttribs(client);
-							Store_GiveAll(client, GetClientHealth(client));
+							else
+							{
+								TF2_StunPlayer(client, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
+								Building_Collect_Cooldown[entity][client] = GetGameTime() + 20.0;
+								Do_Perk_Machine_Chance(client);
+								if(owner != client)
+								{
+									if(Perk_Machine_money_limit[owner][client] <= 10)
+									{
+										CashSpent[owner] -= 40;
+										Perk_Machine_money_limit[owner][client] += 1;
+										Resupplies_Supplied[owner] += 4;
+										SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+										SetGlobalTransTarget(owner);
+										ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Perk Machine Used");
+									}
+								}
+								SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+								SetGlobalTransTarget(client);
+								ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
+								Store_ApplyAttribs(client);
+								Store_GiveAll(client, GetClientHealth(client));
+							}
 						}
 						else if(!b_IgnoreWarningForReloadBuidling[client])
 						{
@@ -1835,56 +1857,76 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					{
 						if(Is_Reload_Button)
 						{
-							int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-							for(int i; i<6; i++)
+							if(bInteractedBuildingWasMounted)
 							{
-								if(weapon == GetPlayerWeaponSlot(client, i))
+								i_MachineJustClickedOn[client] = EntIndexToEntRef(entity);
+								
+								Menu menu2 = new Menu(Building_ConfirmMountedAction);
+								menu2.SetTitle("%t", "Want to Pack a punch?");
+												
+								FormatEx(buffer, sizeof(buffer), "%t", "Yes");
+								menu2.AddItem("-1", buffer);
+												
+								FormatEx(buffer, sizeof(buffer), "%t", "No");
+								menu2.AddItem("-2", buffer);
+												
+								menu2.Display(client, MENU_TIME_FOREVER); // they have 3 seconds.
+							}
+							else
+							{
+							
+								int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+								for(int i; i<6; i++)
 								{
-									int index = Store_GetEquipped(client, i);
-									int number_return = Store_PackCurrentItem(client, index);
-									if(number_return == 3)
+									if(weapon == GetPlayerWeaponSlot(client, i))
 									{
-										TF2_StunPlayer(client, 2.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
-										Building_Collect_Cooldown[entity][client] = GetGameTime() + 1.0;
-										if(owner != client)
+										int index = Store_GetEquipped(client, i);
+										int number_return = Store_PackCurrentItem(client, index);
+										if(number_return == 3)
 										{
-											if(Pack_A_Punch_Machine_money_limit[owner][client] <= 5)
+											TF2_StunPlayer(client, 2.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
+											Building_Collect_Cooldown[entity][client] = GetGameTime() + 1.0;
+											if(owner != client)
 											{
-												Pack_A_Punch_Machine_money_limit[owner][client] += 1;
-												CashSpent[owner] -= 400;
-												Resupplies_Supplied[owner] += 40;
-												SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-												SetGlobalTransTarget(owner);
-												ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Pap Machine Used");
+												if(Pack_A_Punch_Machine_money_limit[owner][client] <= 5)
+												{
+													Pack_A_Punch_Machine_money_limit[owner][client] += 1;
+													CashSpent[owner] -= 400;
+													Resupplies_Supplied[owner] += 40;
+													SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+													SetGlobalTransTarget(owner);
+													ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Pap Machine Used");
+												}
 											}
+											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetGlobalTransTarget(client);
+											ShowSyncHudText(client,  SyncHud_Notifaction, "Your weapon was boosted");
+											Store_ApplyAttribs(client);
+											Store_GiveAll(client, GetClientHealth(client));
 										}
-										SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-										SetGlobalTransTarget(client);
-										ShowSyncHudText(client,  SyncHud_Notifaction, "Your weapon was boosted");
-										Store_ApplyAttribs(client);
-										Store_GiveAll(client, GetClientHealth(client));
+										else if(number_return == 2)
+										{
+											ClientCommand(client, "playgamesound items/medshotno1.wav");
+											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetGlobalTransTarget(client);
+											ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Money To Pap");	
+										}
+										else if(number_return == 1)
+										{
+											ClientCommand(client, "playgamesound items/medshotno1.wav");
+											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetGlobalTransTarget(client);
+											ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Pap this");	
+										}
+										else if(number_return == 0)
+										{
+											ClientCommand(client, "playgamesound items/medshotno1.wav"); //This isnt supposed to ever happen.
+										}
+										break;
 									}
-									else if(number_return == 2)
-									{
-										ClientCommand(client, "playgamesound items/medshotno1.wav");
-										SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-										SetGlobalTransTarget(client);
-										ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Money To Pap");	
-									}
-									else if(number_return == 1)
-									{
-										ClientCommand(client, "playgamesound items/medshotno1.wav");
-										SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-										SetGlobalTransTarget(client);
-										ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Pap this");	
-									}
-									else if(number_return == 0)
-									{
-										ClientCommand(client, "playgamesound items/medshotno1.wav"); //This isnt supposed to ever happen.
-									}
-									break;
 								}
 							}
+							
 						}
 						else if(!b_IgnoreWarningForReloadBuidling[client])
 						{
@@ -3419,4 +3461,128 @@ public int MaxBarricadesAllowed(int client)
 	}
 	
 	return maxAllowed;
+}
+
+
+
+public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+			{
+				delete menu;
+			}
+		}
+		case MenuAction_Select:
+		{
+			char buffer[24];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			int id = StringToInt(buffer);
+			
+			if(id == -1)
+			{
+				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				if(IsValidEntity(entity))
+				{
+					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+					if(IsValidClient(owner))
+					{
+						int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+						for(int i; i<6; i++)
+						{
+							if(weapon == GetPlayerWeaponSlot(client, i))
+							{
+								int index = Store_GetEquipped(client, i);
+								int number_return = Store_PackCurrentItem(client, index);
+								if(number_return == 3)
+								{
+									TF2_StunPlayer(client, 2.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
+									Building_Collect_Cooldown[entity][client] = GetGameTime() + 1.0;
+									if(owner != client)
+									{
+										if(Pack_A_Punch_Machine_money_limit[owner][client] <= 5)
+										{
+											Pack_A_Punch_Machine_money_limit[owner][client] += 1;
+											CashSpent[owner] -= 400;
+											Resupplies_Supplied[owner] += 40;
+											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetGlobalTransTarget(owner);
+											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Pap Machine Used");
+										}
+									}
+									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetGlobalTransTarget(client);
+									ShowSyncHudText(client,  SyncHud_Notifaction, "Your weapon was boosted");
+									Store_ApplyAttribs(client);
+									Store_GiveAll(client, GetClientHealth(client));
+								}
+								else if(number_return == 2)
+								{
+									ClientCommand(client, "playgamesound items/medshotno1.wav");
+									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetGlobalTransTarget(client);
+									ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Money To Pap");	
+								}
+								else if(number_return == 1)
+								{
+									ClientCommand(client, "playgamesound items/medshotno1.wav");
+									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetGlobalTransTarget(client);
+									ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Pap this");	
+								}
+								else if(number_return == 0)
+								{
+									ClientCommand(client, "playgamesound items/medshotno1.wav"); //This isnt supposed to ever happen.
+								}
+								break;
+							}
+						}
+					}
+				}
+			}
+			else if(id == -2)
+			{
+				delete menu;
+			}
+			else if(id == -3)
+			{
+				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				if(IsValidEntity(entity))
+				{
+					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+					if(IsValidClient(owner))
+					{
+						TF2_StunPlayer(client, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
+						Building_Collect_Cooldown[entity][client] = GetGameTime() + 20.0;
+						Do_Perk_Machine_Chance(client);
+						if(owner != client)
+						{
+							if(Perk_Machine_money_limit[owner][client] <= 10)
+							{
+								CashSpent[owner] -= 40;
+								Perk_Machine_money_limit[owner][client] += 1;
+								Resupplies_Supplied[owner] += 4;
+								SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+								SetGlobalTransTarget(owner);
+								ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Perk Machine Used");
+							}
+						}
+						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
+						Store_ApplyAttribs(client);
+						Store_GiveAll(client, GetClientHealth(client));
+					}
+				}
+			}
+		}
+	}
+	return 0;
 }
