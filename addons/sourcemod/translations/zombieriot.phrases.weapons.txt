@@ -187,7 +187,7 @@
 	}
 	"Infected Rampager Assult Rifle"
 	{
-		"en"		"Infected Rampager Assult Rifle"
+		"en"		"Infected Rampager Assault Rifle"
 		"de"		"Infizierte Rampager Sturmgewehr"
 	}
 	"Star Shooter"
@@ -292,7 +292,7 @@
 	}
 	"Infected Assult Rifle"
 	{
-		"en"		"Infected Assult Rifle"
+		"en"		"Infected Assault Rifle"
 		"de"		"Infizierte Sturmgewehr"
 	}
 	"Buff Banner"
@@ -440,15 +440,30 @@
 		"en"		"Buildable AmmoBox"
 		"de"		"Baubare Munitionsbox"
 	}
+	"Buildable Perk Machine"
+	{
+		"en"		"Buildable Perk Machine"
+		"de"		"Baubare Perk Maschine"
+	}
 	"Buildable Pack-a-Punch"
 	{
 		"en"		"Buildable Pack-a-Punch"
-		"de"		"Baubare"
+		"de"		"Baubare Pack-a-Punch"
 	}
 	"Buildable Sentry"
 	{
 		"en"		"Buildable Sentry"
 		"de"		"Baubare Sentry"
+	}
+	"Buildable Mortar"
+	{
+		"en"		"Buildable Mortar"
+		"de"		"Baubare Sentry"
+	}
+	"Buildable Railgun"
+	{
+		"en"		"Buildable Railgun"
+		"de"		"Baubare Railgun"
 	}
 	"Buildable Healing Station"
 	{
@@ -690,9 +705,9 @@
 		"en"		"Hell's Certificate"
 		"de"		"Höllenzertifikat"
 	}
-	"Medic's lost Medical Lisence"
+	"Medic's Lost Medical Lisence"
 	{
-		"en"		"Medic's lost Medical Lisences"
+		"en"		"Medic's Lost Medical Lisences"
 		"de"		"Medics verlorene medizinische Lizenz"
 	}
 	"Level Perks"//Lvl Perks here
