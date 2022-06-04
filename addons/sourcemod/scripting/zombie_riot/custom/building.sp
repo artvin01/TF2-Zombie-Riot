@@ -2992,7 +2992,7 @@ public Action MortarFire(Handle timer, int client)
 		{
 			float damage = 10.0;
 							
-			damage *= 35.0;
+			damage *= 30.0;
 			
 			float attack_speed;
 			float sentry_range;
@@ -3093,7 +3093,7 @@ static void Railgun_Boom(int client)
 		int BEAM_BeamRadius = 40;
 		float Strength = 10.0;
 							
-		Strength *= 45.0;
+		Strength *= 40.0;
 
 		float attack_speed;
 
@@ -3236,7 +3236,7 @@ static void Railgun_Boom_Client(int client)
 		int BEAM_BeamRadius = 40;
 		float Strength = 10.0;
 							
-		Strength *= 45.0;
+		Strength *= 40.0;
 		float attack_speed;
 		
 		attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus

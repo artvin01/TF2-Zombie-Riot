@@ -193,6 +193,7 @@ enum struct Item
 	bool NoEscape;
 	bool MaxBarricadesBuild;
 	bool Hidden;
+	bool NoPrivatePlugin;
 	bool WhiteOut;
 	bool ShouldThisCountSupportBuildings;
 	
@@ -312,16 +313,17 @@ void Store_ConfigSetup(KeyValues map)
 	kv.GotoFirstSubKey();
 	do
 	{
-		ConfigSetup(-1, kv, false, false);
+		ConfigSetup(-1, kv, false, false, false);
 	} while(kv.GotoNextKey());
 }
 
-static void ConfigSetup(int section, KeyValues kv, bool noescape, bool hidden)
+static void ConfigSetup(int section, KeyValues kv, bool noescape, bool hidden, bool noprivateplugin)
 {
 	Item item;
 	item.Section = section;
 	item.Level = kv.GetNum("level");
 	item.Hidden = view_as<bool>(kv.GetNum("hidden", hidden ? 1 : 0));
+	item.NoPrivatePlugin = view_as<bool>(kv.GetNum("noprivateplugin", noprivateplugin ? 1 : 0));
 	item.WhiteOut = view_as<bool>(kv.GetNum("whiteout"));
 	item.ShouldThisCountSupportBuildings = view_as<bool>(kv.GetNum("count_support_buildings"));
 	item.NoEscape = view_as<bool>(kv.GetNum("noescape", noescape ? 1 : 0));
@@ -361,7 +363,7 @@ static void ConfigSetup(int section, KeyValues kv, bool noescape, bool hidden)
 		int sec = StoreItems.PushArray(item);
 		do
 		{
-			ConfigSetup(sec, kv, item.NoEscape, item.Hidden);
+			ConfigSetup(sec, kv, item.NoEscape, item.Hidden, item.NoPrivatePlugin);
 		} while(kv.GotoNextKey());
 		kv.GoBack();
 	}
@@ -1219,6 +1221,13 @@ static void MenuPage(int client, int section)
 		}
 		else if(item.Hidden || item.Section != section || item.Level > Level[client] || (EscapeMode && item.NoEscape))
 		{
+			if(!CvarEnablePrivatePlugins.BoolValue)
+			{
+				if(item.NoPrivatePlugin)
+				{
+					continue;
+				}
+			}
 			continue;
 		}
 		

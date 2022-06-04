@@ -2357,8 +2357,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				was_reviving[client] = true;
 				f_DelayLookingAtHud[client] = GetGameTime() + 0.5;
 				f_DelayLookingAtHud[target] = GetGameTime() + 0.5;
-				PrintCenterText(client, "Reviving... [%i]", dieingstate[target]);
-				PrintCenterText(target, "You're Being Revived. [%i]", dieingstate[target]);
+				PrintCenterText(client, "%t", "Reviving", dieingstate[target]);
+				PrintCenterText(target, "%t", "You're Being Revived.", dieingstate[target]);
 				was_reviving_this[client] = target;
 				f_DisableDyingTimer[target] = GetGameTime() + 0.05;
 				if(i_CurrentEquippedPerk[client] == 1)

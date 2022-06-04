@@ -1083,4 +1083,14 @@
 	{
 		"en"		"Do you want to drink a perk bottle?"
 	}	
+	"Reviving"
+	{
+		"#format"	"{1:d}"
+		"en"		"Reviving... [{1}]"
+	}
+	"You're Being Revived."
+	{
+		"#format"	"{1:d}"
+		"en"		"You're Being Revived. [{1}]"
+	}
 }
