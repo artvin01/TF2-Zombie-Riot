@@ -558,8 +558,7 @@ enum
 	SAWRUNNER							= 94,
 	
 	RAIDMODE_TRUE_FUSION_WARRIOR		= 95,
-	ALT_MEDIC_CHARGER					= 96,
-	ALT_MEDIC_BERSERKER					= 98,
+	ALT_MEDIC_CHARGER		= 96,
 }
 
 char NPC_Names[][] =
@@ -667,8 +666,7 @@ char NPC_Names[][] =
 	"Medic Apprentice Mage",
 	"Sawrunner",
 	"True Fusion Warrior",
-	"Medic Charger",
-	"Medic_Berserker"
+	"Medic Charger"
 };
 
 char NPC_Plugin_Names_Converted[][] =
@@ -776,7 +774,6 @@ char NPC_Plugin_Names_Converted[][] =
 	"npc_sawrunner",
 	"npc_true_fusion_warrior",
 	"npc_alt_medic_charger",
-	"npc_alt_medic_berserker",
 };
 
 #include "zombie_riot/stocks.sp"
