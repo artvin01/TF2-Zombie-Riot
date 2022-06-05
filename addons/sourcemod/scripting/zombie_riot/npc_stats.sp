@@ -659,10 +659,6 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], c
         {
             return AltMedicCharger(client, vecPos, vecAng);
         }
-        case ALT_MEDIC_BERSERKER:
-		{
-			return AltMedicBerseker(client, vecPos, vecAng);
-		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1059,10 +1055,6 @@ public void NPCDeath(int entity)
         {
             AltMedicCharger_NPCDeath(entity);
         }
-        case ALT_MEDIC_BERSERKER:
-		{
-			AltMedicBerseker_NPCDeath(entity);
-		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1206,7 +1198,6 @@ public void OnMapStart_NPC_Base()
 	SawRunner_OnMapStart_NPC();
 	TrueFusionWarrior_OnMapStart();
 	AltMedicCharger_OnMapStart_NPC();
-	AltMedicBerseker_OnMapStart_NPC();
 	
 }
 
@@ -6077,4 +6068,3 @@ public void Raidboss_Clean_Everyone()
 
 #include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_charger.sp"
-#include "zombie_riot/npc/alt/npc_alt_medic_berserker.sp"
