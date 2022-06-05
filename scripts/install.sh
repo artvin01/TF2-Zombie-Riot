@@ -19,6 +19,7 @@ wget "https://raw.githubusercontent.com/FlaminSarge/tf2attributes/master/tf2attr
 wget "https://raw.githubusercontent.com/Batfoxkid/lambda/main/lambda.inc" -O include/lambda.inc
 wget "https://raw.githubusercontent.com/Pelipoika/PathFollower/master/scripting/include/PathFollower.inc" -O include/PathFollower.inc
 wget "https://raw.githubusercontent.com/Pelipoika/PathFollower/master/scripting/include/PathFollower_Nav.inc" -O include/PathFollower_Nav.inc
+wget "https://www.doctormckay.com/download/scripting/include/morecolors.inc" -O include/morecolors.inc
 wget "https://raw.githubusercontent.com/Batfoxkid/Minecraft-TF2/logic/addons/sourcemod/scripting/include/minecraft_tf2.inc" -O include/minecraft_tf2.inc
 wget "https://raw.githubusercontent.com/Batfoxkid/Text-Store/master/addons/sourcemod/scripting/include/textstore.inc" -O include/textstore.inc
 wget "https://raw.githubusercontent.com/Batfoxkid/Batfoxkid/main/addons/sourcemod/scripting/include/menus-controller.inc" -O include/menus-controller.inc
