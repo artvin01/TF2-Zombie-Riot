@@ -345,34 +345,24 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 				PF_StartPathing(npc.index);
 				npc.m_bPathing = true;
 			}
-			int closest = npc.m_iTarget;
-				if(IsValidEnemy(npc.index, closest, true))
+			if(npc.m_flNextTeleport < GetGameTime())
+			{
+				static float flVel[3];
+				GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
+				if (flVel[0] <= 200.0)
 				{
-				float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
-		
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest, 0.3);
-				//Body pitch
-				//		if(flDistanceToTarget < Pow(110.0,2.0))
-				{
-				if(npc.m_flNextTeleport < GetGameTime())
-				{
-					static float flVel[3];
-					GetEntPropVector(closest, Prop_Data, "m_vecVelocity", flVel);
-					 if (flVel[0] <= 200.0)
+					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+					npc.FaceTowards(vecTarget);
+					npc.FaceTowards(vecTarget);
+					npc.m_flNextTeleport = GetGameTime() + 120.0;
+					float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
+					if(Tele_Check > 120)
 					{
-						npc.FaceTowards(vecTarget);
-						npc.FaceTowards(vecTarget);
-						npc.m_flNextTeleport = GetGameTime() + 120.0;
-						float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
-						if(Tele_Check > 120)
-						{
 						TeleportEntity(npc.index, vPredictedPos, NULL_VECTOR, NULL_VECTOR);
 						npc.PlayTeleportSound();
-						}
 					}
 				}
 			}
-		}
 	}
 	else
 	{

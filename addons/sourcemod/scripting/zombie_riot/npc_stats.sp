@@ -33,6 +33,7 @@ int i_Wearable4[MAXENTITIES]={-1, ...};
 int i_Wearable5[MAXENTITIES]={-1, ...};
 int i_Wearable6[MAXENTITIES]={-1, ...};
 int i_TeamGlow[MAXENTITIES]={-1, ...};
+
 int i_SpawnProtectionEntity[MAXENTITIES]={-1, ...};
 float f3_VecPunchForce[MAXENTITIES][3];
 float fl_NextDelayTime[MAXENTITIES];
@@ -5683,7 +5684,9 @@ void TE_ParticleInt(int iParticleIndex, const float origin[3] = NULL_VECTOR, con
 }
 
 
-stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255, float fStartWidth=NORMAL_ZOMBIE_VOLUME, float fEndWidth=NORMAL_ZOMBIE_VOLUME, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt"){
+stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
+							float fStartWidth=NORMAL_ZOMBIE_VOLUME, float fEndWidth=NORMAL_ZOMBIE_VOLUME, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt")
+{
 	int iBeam = CreateEntityByName("env_beam");
 	if(iBeam <= MaxClients)
 		return -1;
