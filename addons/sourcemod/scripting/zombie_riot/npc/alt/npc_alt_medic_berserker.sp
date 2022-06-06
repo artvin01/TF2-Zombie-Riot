@@ -116,7 +116,7 @@ methodmap AltMedicBerseker < CClotBody
 		#endif
 	}
 	public void PlayTeleportSound() {
-		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayTeleportSound()");
