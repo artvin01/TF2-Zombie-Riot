@@ -292,6 +292,8 @@ void Waves_RoundStart()
 	if(Voting && !GameRules_GetProp("m_bInWaitingForPlayers"))
 	{
 		int length = Voting.Length;
+if(length)
+{
 		int[] votes = new int[length];
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -331,6 +333,7 @@ void Waves_RoundStart()
 			Waves_SetupWaves(kv, false);
 			delete kv;
 		}
+}
 	}
 	
 	delete Enemies;
