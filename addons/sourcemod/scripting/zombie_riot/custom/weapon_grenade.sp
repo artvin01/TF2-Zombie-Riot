@@ -163,3 +163,147 @@ public void Weapon_ShotgunGrenadeLauncher(int client, int weapon, const char[] c
 		}
 	}
 }
+
+
+public void Weapon_ShotgunGrenadeLauncher_PAP(int client, int weapon, const char[] classname, bool &result)
+{
+	if(weapon >= MaxClients)
+	{
+		if(!TF2_IsPlayerInCondition(client, TFCond_RuneHaste))
+		{
+			static float anglesB[3];
+			GetClientEyeAngles(client, anglesB);
+			static float velocity[3];
+			GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
+			ScaleVector(velocity, -350.0);
+			if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
+				velocity[2] = fmax(velocity[2], 250.0);
+			else
+				velocity[2] += 100.0; // a little boost to alleviate arcing issues
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
+		}
+		
+		EmitSoundToAll("mvm/giant_demoman/giant_demoman_grenade_shoot.wav", client, SNDCHAN_STATIC, 80, _, 0.8, 80);
+		Client_Shake(client, 0, 35.0, 20.0, 0.8);
+		
+		float speed = 1500.0;
+		float damage = 100.0;
+			
+		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
+		if(address != Address_Null)
+			damage *= TF2Attrib_GetValue(address);
+			
+		address = TF2Attrib_GetByDefIndex(weapon, 103);
+		if(address != Address_Null)
+			speed *= TF2Attrib_GetValue(address);
+		
+		address = TF2Attrib_GetByDefIndex(weapon, 104);
+		if(address != Address_Null)
+			speed *= TF2Attrib_GetValue(address);
+		
+		address = TF2Attrib_GetByDefIndex(weapon, 475);
+		if(address != Address_Null)
+			speed *= TF2Attrib_GetValue(address);
+			
+		float extra_accuracy = 3.5;
+		
+		address = TF2Attrib_GetByDefIndex(weapon, 106);
+		if(address != Address_Null)
+			extra_accuracy *= TF2Attrib_GetValue(address);
+			
+		int team = GetClientTeam(client);
+			
+		for (int repeat = 1; repeat <= 10; repeat++)
+		{
+		
+			int entity = CreateEntityByName("tf_projectile_pipe");
+			if(IsValidEntity(entity))
+			{
+					static float pos[3], ang[3], vel_2[3];
+					GetClientEyeAngles(client, ang);
+					GetClientEyePosition(client, pos);	
+					
+					switch(repeat)
+					{
+						case 1:
+						{
+							ang[0] += -extra_accuracy;
+							ang[1] += extra_accuracy;
+						}
+						case 2:
+						{
+							ang[0] += extra_accuracy;
+							ang[1] += extra_accuracy;
+						}
+						case 3:
+						{
+							ang[0] += extra_accuracy;
+							ang[1] += -extra_accuracy;
+						}
+						case 4:
+						{
+							ang[0] += -extra_accuracy;
+							ang[1] += -extra_accuracy;
+						}
+						case 5:
+						{
+							ang[0] += -extra_accuracy;
+							ang[1] += extra_accuracy * 2.0;
+						}
+						case 6:
+						{
+							ang[0] += extra_accuracy;
+							ang[1] += extra_accuracy * 2.0;
+						}
+						case 7:
+						{
+							ang[0] += extra_accuracy;
+							ang[1] += -(extra_accuracy * 2.0);
+						}
+						case 8:
+						{
+							ang[0] += -extra_accuracy;
+							ang[1] += -(extra_accuracy * 2.0);
+						}
+						case 9:
+						{
+							ang[0] += extra_accuracy;
+						}
+						case 10:
+						{
+							ang[0] += -extra_accuracy;
+						}
+					}
+	
+					ang[0] -= 8.0;
+	
+					vel_2[0] = Cosine(DegToRad(ang[0]))*Cosine(DegToRad(ang[1]))*speed;
+					vel_2[1] = Cosine(DegToRad(ang[0]))*Sine(DegToRad(ang[1]))*speed;
+					vel_2[2] = Sine(DegToRad(ang[0]))*speed;
+					vel_2[2] *= -1;
+					
+					SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
+					SetEntProp(entity, Prop_Send, "m_iTeamNum", team, 1);
+					SetEntProp(entity, Prop_Send, "m_nSkin", (team-2));
+					SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
+					SetEntPropEnt(entity, Prop_Send, "m_hThrower", client);
+					SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher",weapon);
+					for(int i; i<4; i++)
+					{
+						SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
+					}
+					
+					SetVariantInt(team);
+					AcceptEntityInput(entity, "TeamNum", -1, -1, 0);
+					SetVariantInt(team);
+					AcceptEntityInput(entity, "SetTeam", -1, -1, 0); 
+					
+					SetEntPropEnt(entity, Prop_Send, "m_hLauncher", weapon);
+	
+					DispatchSpawn(entity);
+					TeleportEntity(entity, pos, ang, vel_2);
+					IsCustomTfGrenadeProjectile(entity, damage);
+			}
+		}
+	}
+}
