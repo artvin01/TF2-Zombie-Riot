@@ -240,14 +240,15 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		panzer = false;
 		panzer_warning = false;
 	}
+	PlayersAliveScaling = 0;
 	
 	limit = 4 + RoundToCeil(float(Waves_GetRound())/2.65);
-	
 	if(limit > 8) //Make sure to not allow more then this amount so the default max zombie count is 20 at almost all times if player scaling isnt accounted for.
 	{
 		limit = 8;
 	}
 	float f_limit = 0.0;
+	float f_limit_music = 0.0;
 	amount_of_people = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -255,14 +256,24 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		{
 			amount_of_people += 1;
 			f_limit += 2.2;
+			if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+			{
+				f_limit_music += 2.2;
+			}
 		}
 	}
+	PlayersAliveScaling = limit;
+	
+	PlayersAliveScaling += RoundToNearest(f_limit_music);
 	limit += RoundToNearest(f_limit);
 	if(!b_GameOnGoing) //no spawn if the round is over
 		return;
 	
 	if(limit >= NPC_HARD_LIMIT)
 		limit = NPC_HARD_LIMIT;
+		
+	if(PlayersAliveScaling >= NPC_HARD_LIMIT)
+		PlayersAliveScaling = NPC_HARD_LIMIT;
 	
 	if(!panzer)
 	{
@@ -1208,7 +1219,7 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 	
-	if(overkill == 0)
+	if(overkill <= 0)
 	{
 		Damage_dealt_in_total[attacker] += damage;
 	}

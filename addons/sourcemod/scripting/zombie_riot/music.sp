@@ -256,16 +256,16 @@ void Music_PostThink(int client)
 		{
 			Music_Timer[client] = GetEngineTime() + 7.95;
 		}
-		else if(intencity < RoundToCeil(float(CurrentPlayers) * 0.1))
+		else if(intencity < RoundToCeil(float(PlayersAliveScaling) * 0.1))
 		{
 			EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 			EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 			Music_Timer[client] = GetEngineTime() + 5.95;
 			
 		}
-		else if(intencity < RoundToCeil(float(CurrentPlayers) * 0.2))
+		else if(intencity < RoundToCeil(float(PlayersAliveScaling) * 0.2))
 		{
-			if(GlobalIntencity >= RoundToNearest((float(CurrentPlayers) * 0.5)))
+			if(GlobalIntencity >= RoundToNearest((float(PlayersAliveScaling) * 0.5)))
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/2.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/2.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
@@ -279,9 +279,9 @@ void Music_PostThink(int client)
 			}
 			
 		}
-		else if(intencity < RoundToCeil(float(CurrentPlayers) * 0.3))
+		else if(intencity < RoundToCeil(float(PlayersAliveScaling) * 0.3))
 		{
-			if(GlobalIntencity >= RoundToNearest((float(CurrentPlayers) * 0.5)))
+			if(GlobalIntencity >= RoundToNearest((float(PlayersAliveScaling) * 0.5)))
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/3.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/3.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
@@ -295,9 +295,9 @@ void Music_PostThink(int client)
 			}
 			
 		}
-		else if(intencity < RoundToCeil(float(CurrentPlayers) * 0.4))
+		else if(intencity < RoundToCeil(float(PlayersAliveScaling) * 0.4))
 		{
-			if(GlobalIntencity >= RoundToNearest((float(CurrentPlayers) * 0.5)))
+			if(GlobalIntencity >= RoundToNearest((float(PlayersAliveScaling) * 0.5)))
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/4.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/4.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
@@ -311,9 +311,9 @@ void Music_PostThink(int client)
 			}
 			
 		}
-		else if(intencity < RoundToCeil(float(CurrentPlayers) * 0.5))
+		else if(intencity < RoundToCeil(float(PlayersAliveScaling) * 0.5))
 		{
-			if(GlobalIntencity >= RoundToNearest((float(CurrentPlayers) * 0.5)))
+			if(GlobalIntencity >= RoundToNearest((float(PlayersAliveScaling) * 0.5)))
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/5.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/5.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
@@ -327,9 +327,9 @@ void Music_PostThink(int client)
 			}
 			
 		}
-		else if(intencity < RoundToCeil(float(CurrentPlayers) * 0.6))
+		else if(intencity < RoundToCeil(float(PlayersAliveScaling) * 0.6))
 		{
-			if(GlobalIntencity >= RoundToNearest((float(CurrentPlayers) * 0.5)))
+			if(GlobalIntencity >= RoundToNearest((float(PlayersAliveScaling) * 0.5)))
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/6.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/6.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
@@ -343,9 +343,9 @@ void Music_PostThink(int client)
 			}
 			
 		}
-		else if(intencity < RoundToCeil(float(CurrentPlayers) * 0.7))
+		else if(intencity < RoundToCeil(float(PlayersAliveScaling) * 0.7))
 		{
-			if(GlobalIntencity >= RoundToNearest((float(CurrentPlayers) * 0.5)))
+			if(GlobalIntencity >= RoundToNearest((float(PlayersAliveScaling) * 0.5)))
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/7.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/7.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
@@ -359,9 +359,9 @@ void Music_PostThink(int client)
 			}
 			
 		}
-		else if(intencity < RoundToCeil(float(CurrentPlayers) * 0.8))
+		else if(intencity < RoundToCeil(float(PlayersAliveScaling) * 0.8))
 		{
-			if(GlobalIntencity >= RoundToNearest((float(CurrentPlayers) * 0.5)))
+			if(GlobalIntencity >= RoundToNearest((float(PlayersAliveScaling) * 0.5)))
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/8.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/8.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
@@ -375,9 +375,9 @@ void Music_PostThink(int client)
 			}
 			
 		}
-		else if(intencity < RoundToCeil(float(CurrentPlayers) * 0.9))
+		else if(intencity < RoundToCeil(float(PlayersAliveScaling) * 0.9))
 		{
-			if(GlobalIntencity >= RoundToNearest((float(CurrentPlayers) * 0.5)))
+			if(GlobalIntencity >= RoundToNearest((float(PlayersAliveScaling) * 0.5)))
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/9.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/9.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
@@ -391,9 +391,9 @@ void Music_PostThink(int client)
 			}
 			
 		}
-		else if(intencity >= RoundToCeil(float(CurrentPlayers) * 0.9))
+		else if(intencity >= RoundToCeil(float(PlayersAliveScaling) * 0.9))
 		{
-			if(GlobalIntencity >= RoundToNearest((float(CurrentPlayers) * 0.5)))
+			if(GlobalIntencity >= RoundToNearest((float(PlayersAliveScaling) * 0.5)))
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/10.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/10.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);

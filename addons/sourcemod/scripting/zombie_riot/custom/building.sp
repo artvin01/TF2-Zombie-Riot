@@ -3448,7 +3448,7 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 	{
 		case MenuAction_End:
 		{
-			delete menu;
+			return 0;
 		}
 		case MenuAction_Cancel:
 		{

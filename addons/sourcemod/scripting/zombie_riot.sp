@@ -192,6 +192,7 @@ float f_TimerTickCooldownShop = 0.0;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 
 int CurrentPlayers;
+int PlayersAliveScaling;
 int GlobalIntencity;
 ConVar cvarTimeScale;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
@@ -1885,7 +1886,9 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
+			{
 				CurrentPlayers++;
+			}
 		}
 		return;
 	}
