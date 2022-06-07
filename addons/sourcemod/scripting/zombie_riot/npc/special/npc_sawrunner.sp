@@ -36,7 +36,7 @@ void SawRunner_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_IdleChainsaw));   i++) { PrecacheSound(g_IdleChainsaw[i]);   }
 	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSound(g_IdleMusic[i]);   }
-	PrecacheModel("models/zombie_riot/cof/sawrunner.mdl");
+	PrecacheModel("models/zombie_riot/cof/sawrunner_1.mdl");
 }
 
 static float fl_PlayIdleAlertSound[MAXENTITIES];
@@ -114,7 +114,7 @@ methodmap SawRunner < CClotBody
 	
 	public SawRunner(int client, float vecPos[3], float vecAng[3])
 	{
-		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner.mdl", "1.5", "1500", false, false, true, true));
+		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_1.mdl", "1.5", "1500", false, false, true, true));
 		
 		i_NpcInternalId[npc.index] = SAWRUNNER;
 		
@@ -370,7 +370,7 @@ public void SawRunner_NPCDeath(int entity)
 		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
 		
 //		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
-		DispatchKeyValue(entity_death, "model", "models/zombie_riot/cof/sawrunner.mdl");
+		DispatchKeyValue(entity_death, "model", "models/zombie_riot/cof/sawrunner_1.mdl");
 
 		DispatchSpawn(entity_death);
 		
@@ -394,7 +394,7 @@ public Action Timer_RemoveEntitySawrunner(Handle timer, any entid)
 	{
 		float pos[3];
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-		TE_Particle("rd_robot_explosion", pos, NULL_VECTOR, NULL_VECTOR, entity, _, _, _, _, _, _, _, _, _, 0.0);
+		TE_Particle("env_sawblood", pos, NULL_VECTOR, NULL_VECTOR, entity, _, _, _, _, _, _, _, _, _, 0.0);
 //		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
 		RemoveEntity(entity);
 	}

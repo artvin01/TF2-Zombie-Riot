@@ -396,4 +396,8 @@
 	{
 		"en" 		"Medic Berserker"
 	}
+	"Militia"
+	{
+		"en" 		"Militia"
+	}
 }

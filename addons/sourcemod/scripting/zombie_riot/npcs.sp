@@ -1253,7 +1253,6 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 		}
 		char Debuff_Adder[64];
 		
-		
 		if(f_HighTeslarDebuff[victim] > GetGameTime())
 		{
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "↡");
@@ -1262,12 +1261,23 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 		{
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "↓");
 		}
+		CClotBody npc = view_as<CClotBody>(victim);
+		
+		if(npc.m_flMeleeArmor != 1.0)
+		{
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder,npc.m_flMeleeArmor * 100.0);
+		}
+		
+		if(npc.m_flRangedArmor != 1.0)
+		{
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, npc.m_flRangedArmor * 100.0);
+		}
 		
 		if(EntRefToEntIndex(RaidBossActive) != victim)
 		{
 			SetGlobalTransTarget(attacker);
 			SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-			ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d %s", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
+			ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
 		}
 		else
 		{
@@ -1278,7 +1288,7 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 				
 			SetGlobalTransTarget(attacker);
 			SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-			ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d %s","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
+			ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
 		}
 	}	
 }

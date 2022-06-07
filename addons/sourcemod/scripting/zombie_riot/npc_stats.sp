@@ -133,7 +133,8 @@ float b_isGiantWalkCycle[MAXENTITIES];
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 int i_CreditsOnKill[MAXENTITIES];
 
-
+float fl_MeleeArmor[MAXENTITIES];
+float fl_RangedArmor[MAXENTITIES];
 
 
 
@@ -664,6 +665,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], c
 		{
 			return AltMedicBerseker(client, vecPos, vecAng);
 		}
+		case MEDIVAL_MILITIA:
+		{
+			return MedivalMilitia(client, vecPos, vecAng);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1064,6 +1069,10 @@ public void NPCDeath(int entity)
 		{
 			AltMedicBerseker_NPCDeath(entity);
 		}
+		case MEDIVAL_MILITIA:
+		{
+			MedivalMilitia_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1208,6 +1217,8 @@ public void OnMapStart_NPC_Base()
 	TrueFusionWarrior_OnMapStart();
 	AltMedicCharger_OnMapStart_NPC();
 	AltMedicBerseker_OnMapStart_NPC();
+	
+	MedivalMilitia_OnMapStart_NPC();
 	
 }
 
@@ -2024,6 +2035,18 @@ methodmap CClotBody
 	{
 		public get()							{ return b_AttackHappenswillhappen[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_AttackHappenswillhappen[this.index] = TempValueForProperty; }
+	}
+	
+	
+	property float m_flMeleeArmor
+	{
+		public get()							{ return fl_MeleeArmor[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_MeleeArmor[this.index] = TempValueForProperty; }
+	}
+	property float m_flRangedArmor
+	{
+		public get()							{ return fl_RangedArmor[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_RangedArmor[this.index] = TempValueForProperty; }
 	}
 	
 	property float m_flSpeed
@@ -4652,6 +4675,18 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 		damagetype &= ~DMG_BLAST; //remove blast logic			
 	}
 	
+	if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
+	{
+		damage *= fl_MeleeArmor[victim];
+	}
+	else if(!(damagetype & DMG_SLASH))
+	{
+		damage *= fl_RangedArmor[victim];
+	}
+	//No resistances towards slash as its internal.
+	
+	
+	
 	if(!npc.m_bDissapearOnDeath) //Make sure that if they just vanish, its always false. so their deathsound plays.
 	{
 		if((damagetype & DMG_BLAST))
@@ -5959,6 +5994,9 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ThisNpcIsSawrunner[entity] = false;
 	f_LowTeslarDebuff[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
+	
+	fl_MeleeArmor[entity] = 1.0; //yeppers.
+	fl_RangedArmor[entity] = 1.0;
 }
 
 public void Raidboss_Clean_Everyone()
@@ -6086,3 +6124,5 @@ public void Raidboss_Clean_Everyone()
 #include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_charger.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_berserker.sp"
+
+#include "zombie_riot/npc/medival/npc_medival_militia.sp"
