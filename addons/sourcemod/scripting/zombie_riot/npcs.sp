@@ -263,7 +263,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	
 	if(limit >= NPC_HARD_LIMIT)
 		limit = NPC_HARD_LIMIT;
-		
+	
 	if(!panzer)
 	{
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs

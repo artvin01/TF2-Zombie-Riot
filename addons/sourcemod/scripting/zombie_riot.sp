@@ -191,7 +191,6 @@ float f_TimerTickCooldownRaid = 0.0;
 float f_TimerTickCooldownShop = 0.0;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 
-
 int CurrentPlayers;
 int GlobalIntencity;
 ConVar cvarTimeScale;
@@ -1515,7 +1514,7 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			Healing_done_in_total[client] = 0;
 			Ammo_Count_Ready[client] = 0;
 			Armor_Charge[client] = 0;
-			Music_Timer[client] = GetEngineTime() + 20.0;
+//			Music_Timer[client] = GetEngineTime() + 20.0;
 //			Armor_Ready[client] = 0.0;
 		}
 	}
@@ -1924,7 +1923,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	if(CurrentPlayers < players)
 		CurrentPlayers = players;
 	
-	if(LastMann && !GlobalIntencity)
+	if(LastMann && !GlobalIntencity) //Make sure if they are alone, it wont play last man music.
 		LastMann = false;
 	
 	if(LastMann)
