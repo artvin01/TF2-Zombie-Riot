@@ -85,7 +85,79 @@ public void Weapon_Default_Wand(int client, int weapon, bool crit)
 	}
 }
 
-static void Wand_Launch(int client, int iRot, float speed, float time, float damage)
+public void Weapon_Default_Wand_pap2(int client, int weapon, bool crit)
+{
+	int mana_cost;
+	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
+	if(address != Address_Null)
+		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+
+	if(mana_cost <= Current_Mana[client])
+	{
+		float damage = 65.0;
+		address = TF2Attrib_GetByDefIndex(weapon, 410);
+		if(address != Address_Null)
+			damage *= TF2Attrib_GetValue(address);
+		
+		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		Mana_Hud_Delay[client] = 0.0;
+		
+		Current_Mana[client] -= mana_cost;
+		
+		delay_hud[client] = 0.0;
+			
+		float speed = 1100.0;
+		address = TF2Attrib_GetByDefIndex(weapon, 103);
+		if(address != Address_Null)
+			speed *= TF2Attrib_GetValue(address);
+	
+		address = TF2Attrib_GetByDefIndex(weapon, 104);
+		if(address != Address_Null)
+			speed *= TF2Attrib_GetValue(address);
+	
+		address = TF2Attrib_GetByDefIndex(weapon, 475);
+		if(address != Address_Null)
+			speed *= TF2Attrib_GetValue(address);
+	
+	
+		float time = 500.0/speed;
+		address = TF2Attrib_GetByDefIndex(weapon, 101);
+		if(address != Address_Null)
+			time *= TF2Attrib_GetValue(address);
+	
+		address = TF2Attrib_GetByDefIndex(weapon, 102);
+		if(address != Address_Null)
+			time *= TF2Attrib_GetValue(address);
+		
+		int iRot = CreateEntityByName("func_door_rotating");
+		if(iRot == -1) return;
+	
+		float fPos[3];
+		GetClientEyePosition(client, fPos);
+	
+		DispatchKeyValueVector(iRot, "origin", fPos);
+		DispatchKeyValue(iRot, "distance", "99999");
+		DispatchKeyValueFloat(iRot, "speed", speed);
+		DispatchKeyValue(iRot, "spawnflags", "12288"); // passable|silent
+		DispatchSpawn(iRot);
+		SetEntityCollisionGroup(iRot, 27);
+	
+		SetVariantString("!activator");
+		AcceptEntityInput(iRot, "Open");
+		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
+	//	CreateTimer(0.1, Timer_HatThrow_Woosh, EntIndexToEntRef(iRot), TIMER_REPEAT);
+		Wand_Launch(client, iRot, speed, time, damage, 2);
+	}
+	else
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+	}
+}
+
+static void Wand_Launch(int client, int iRot, float speed, float time, float damage, int pap = 0)
 {
 	float fAng[3], fPos[3];
 	GetClientEyeAngles(client, fAng);
@@ -126,13 +198,20 @@ static void Wand_Launch(int client, int iRot, float speed, float time, float dam
 	
 	int particle = 0;
 	
-	switch(GetClientTeam(client))
+	if(pap == 2)
 	{
-		case 2:
-			particle = ParticleEffectAt(position, "drg_cow_rockettrail_normal", 5.0);
-
-		default:
-			particle = ParticleEffectAt(position, "drg_cow_rockettrail_normal_blue", 5.0);
+		particle = ParticleEffectAt(position, "drg_cow_rockettrail_normal_blue", 5.0);
+	}
+	else
+	{
+		switch(GetClientTeam(client))
+		{
+			case 2:
+				particle = ParticleEffectAt(position, "drg_cow_rockettrail_normal", 5.0);
+	
+			default:
+				particle = ParticleEffectAt(position, "drg_cow_rockettrail_normal_blue", 5.0);
+		}
 	}
 	float Angles[3];
 	GetClientEyeAngles(client, Angles);

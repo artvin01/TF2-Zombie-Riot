@@ -3440,9 +3440,14 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 			NPCData npc;
 			NPCList.GetArray(index, npc);
 			int client = GetClientOfUserId(npc.LastHitId);
+			int Health = GetEntProp(pThis, Prop_Data, "m_iHealth");
+			Health *= -1;
+			
+			int overkill = RoundToNearest(npc.Damage - float(Health));
+			
 			if(client && IsClientInGame(client))
 			{
-				Calculate_And_Display_hp(client, pThis, npc.Damage, true);
+				Calculate_And_Display_hp(client, pThis, npc.Damage, true, overkill);
 			}
 		}
 		b_NpcHasDied[pThis] = true;

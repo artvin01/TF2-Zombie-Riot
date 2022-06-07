@@ -1203,12 +1203,19 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 
 }
 
-public void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore)
+stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)
 {
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 	
-	Damage_dealt_in_total[attacker] += damage; //i dont know, i give up.
+	if(overkill == 0)
+	{
+		Damage_dealt_in_total[attacker] += damage;
+	}
+	else
+	{
+		Damage_dealt_in_total[attacker] += overkill; //dont award for overkilling.
+	}
 	
 	if(f_CooldownForHurtHud[attacker] < GetGameTime() || ignore)
 	{
