@@ -132,9 +132,9 @@ methodmap SawRunner < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, SawRunner_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, SawRunner_ClotThink);
 		
-		for(int client=1; client<=MaxClients; client++)
+		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
 		{
-			fl_AlreadyStrippedMusic[client] = 0.0; //reset to 0
+			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
 		
 		b_ThisNpcIsSawrunner[npc.index] = true;
