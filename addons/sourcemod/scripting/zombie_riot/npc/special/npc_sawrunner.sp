@@ -41,6 +41,7 @@ void SawRunner_OnMapStart_NPC()
 
 static float fl_PlayIdleAlertSound[MAXENTITIES];
 static float fl_PlayMusicSound[MAXENTITIES];
+static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 
 methodmap SawRunner < CClotBody
 {
@@ -131,6 +132,11 @@ methodmap SawRunner < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, SawRunner_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, SawRunner_ClotThink);
 		
+		for(int client=1; client<=MaxClients; client++)
+		{
+			fl_AlreadyStrippedMusic[client] = 0.0; //reset to 0
+		}
+		
 		b_ThisNpcIsSawrunner[npc.index] = true;
 		
 		npc.m_iState = 0;
@@ -202,8 +208,12 @@ public void SawRunner_ClotThink(int iNPC)
 				GetClientAbsOrigin(client, targPos);
 				if (GetVectorDistance(chargerPos, targPos, true) <= 4000000) // 1500 range
 				{
-					Music_Stop_All(client);
+					if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
+					{
+						Music_Stop_All(client); //This is actually more expensive then i thought.
+					}
 					Music_Timer[client] = GetEngineTime() + 5.0;
+					fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
 				}
 			}
 		}
