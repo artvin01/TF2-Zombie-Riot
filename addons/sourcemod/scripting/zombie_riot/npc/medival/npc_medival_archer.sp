@@ -29,14 +29,14 @@ static const char g_MeleeHitSounds[][] = {
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/shovel_swing.wav",
+	"weapons/bow_shoot.wav",
 };
 
 static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
-void MedivalMilitia_OnMapStart_NPC()
+void MedivalArcher_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -48,7 +48,7 @@ void MedivalMilitia_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 }
 
-methodmap MedivalMilitia < CClotBody
+methodmap MedivalArcher < CClotBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime())
@@ -97,7 +97,7 @@ methodmap MedivalMilitia < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -120,11 +120,11 @@ methodmap MedivalMilitia < CClotBody
 		#endif
 	}
 	
-	public MedivalMilitia(int client, float vecPos[3], float vecAng[3])
+	public MedivalArcher(int client, float vecPos[3], float vecAng[3])
 	{
-		MedivalMilitia npc = view_as<MedivalMilitia>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400"));
+		MedivalArcher npc = view_as<MedivalArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400"));
 		
-		i_NpcInternalId[npc.index] = MEDIVAL_MILITIA;
+		i_NpcInternalId[npc.index] = MEDIVAL_ARCHER;
 		
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -136,21 +136,21 @@ methodmap MedivalMilitia < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalMilitia_ClotDamaged);
-		SDKHook(npc.index, SDKHook_Think, MedivalMilitia_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalArcher_ClotDamaged);
+		SDKHook(npc.index, SDKHook_Think, MedivalArcher_ClotThink);
 	
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 //		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
-		npc.m_flSpeed = 200.0;
+		npc.m_flSpeed = 170.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		npc.m_flMeleeArmor = 0.8;
+		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
 		
 		if(EscapeModeForNpc)
@@ -158,14 +158,14 @@ methodmap MedivalMilitia < CClotBody
 			npc.m_flSpeed = 270.0;
 		}
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_boston_basher/c_boston_basher.mdl");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bow/c_bow.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/sniper/spr17_archers_sterling/spr17_archers_sterling.mdl");
+	/*	
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/all_class/sbox2014_toowoomba_tunic/sbox2014_toowoomba_tunic_sniper.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
+	*/
 		PF_StartPathing(npc.index);
 		npc.m_bPathing = true;
 		
@@ -177,9 +177,9 @@ methodmap MedivalMilitia < CClotBody
 
 //TODO 
 //Rewrite
-public void MedivalMilitia_ClotThink(int iNPC)
+public void MedivalArcher_ClotThink(int iNPC)
 {
-	MedivalMilitia npc = view_as<MedivalMilitia>(iNPC);
+	MedivalArcher npc = view_as<MedivalArcher>(iNPC);
 	
 	if(npc.m_flNextDelayTime > GetGameTime())
 	{
@@ -215,8 +215,8 @@ public void MedivalMilitia_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
+		
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
@@ -224,8 +224,8 @@ public void MedivalMilitia_ClotThink(int iNPC)
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				
-			/*	int color[4];
+				/*
+				int color[4];
 				color[0] = 255;
 				color[1] = 255;
 				color[2] = 0;
@@ -234,72 +234,46 @@ public void MedivalMilitia_ClotThink(int iNPC)
 				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
 			
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
-				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
+				TE_SendToAllInRange(vecTarget, RangeType_Visibility);
+				*/
+				
+				
 				
 				PF_SetGoalVector(npc.index, vPredictedPos);
 			} else {
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-	
-			//Target close enough to hit
-			if((flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime()) || npc.m_flAttackHappenswillhappen)
+			
+			if(flDistanceToTarget < 160000)
 			{
-			//	npc.FaceTowards(vecTarget, 1000.0);
+				int Enemy_I_See;
 				
-				if(npc.m_flNextMeleeAttack < GetGameTime() || npc.m_flAttackHappenswillhappen)
+				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+				//Target close enough to hit
+				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					if (!npc.m_flAttackHappenswillhappen)
+					
+					//Can we attack right now?
+					if(npc.m_flNextMeleeAttack < GetGameTime())
 					{
-						npc.m_flNextRangedSpecialAttack = GetGameTime() + 2.0;
-						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
-						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime()+0.4;
-						npc.m_flAttackHappens_bullshit = GetGameTime()+0.54;
-						npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
-						npc.m_flAttackHappenswillhappen = true;
-					}
+						npc.FaceTowards(vecTarget, 30000.0);
+						//Play attack anim
+						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 						
-					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
-					{
-						Handle swingTrace;
-						npc.FaceTowards(vecTarget, 20000.0);
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
-							{
-								
-								int target = TR_GetEntityIndex(swingTrace);	
-								
-								float vecHit[3];
-								TR_GetEndPosition(vecHit, swingTrace);
-								
-								if(target > 0) 
-								{
-									
-									if(EscapeModeForNpc)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_SLASH|DMG_CLUB);
-									}
-									else
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_SLASH|DMG_CLUB);
-									}
-									
-									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
-									
-									// Hit sound
-									npc.PlayMeleeHitSound();
-								} 
-							}
-						delete swingTrace;
-						npc.m_flAttackHappenswillhappen = false;
+						npc.PlayMeleeSound();
+						npc.FireArrow(vecTarget, 25.0, 1200.0);
+						npc.m_flNextMeleeAttack = GetGameTime() + 2.0;
 					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
-					{
-						npc.m_flAttackHappenswillhappen = false;
-					}
+					PF_StopPathing(npc.index);
+					npc.m_bPathing = false;
+				}
+				else
+				{
+					PF_StartPathing(npc.index);
+					npc.m_bPathing = true;
 				}
 			}
-			if (npc.m_flReloadDelay < GetGameTime())
+			else
 			{
 				PF_StartPathing(npc.index);
 				npc.m_bPathing = true;
@@ -315,13 +289,13 @@ public void MedivalMilitia_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action MedivalMilitia_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalArcher_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	MedivalMilitia npc = view_as<MedivalMilitia>(victim);
+	MedivalArcher npc = view_as<MedivalArcher>(victim);
 	
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())
@@ -334,16 +308,16 @@ public Action MedivalMilitia_ClotDamaged(int victim, int &attacker, int &inflict
 	return Plugin_Changed;
 }
 
-public void MedivalMilitia_NPCDeath(int entity)
+public void MedivalArcher_NPCDeath(int entity)
 {
-	MedivalMilitia npc = view_as<MedivalMilitia>(entity);
+	MedivalArcher npc = view_as<MedivalArcher>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalMilitia_ClotDamaged);
-	SDKUnhook(npc.index, SDKHook_Think, MedivalMilitia_ClotThink);
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalArcher_ClotDamaged);
+	SDKUnhook(npc.index, SDKHook_Think, MedivalArcher_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

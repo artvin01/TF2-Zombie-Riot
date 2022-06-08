@@ -669,6 +669,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], c
 		{
 			return MedivalMilitia(client, vecPos, vecAng);
 		}
+		case MEDIVAL_ARCHER:
+		{
+			return MedivalArcher(client, vecPos, vecAng);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1073,6 +1077,10 @@ public void NPCDeath(int entity)
 		{
 			MedivalMilitia_NPCDeath(entity);
 		}
+		case MEDIVAL_ARCHER:
+		{
+			MedivalArcher_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1219,6 +1227,7 @@ public void OnMapStart_NPC_Base()
 	AltMedicBerseker_OnMapStart_NPC();
 	
 	MedivalMilitia_OnMapStart_NPC();
+	MedivalArcher_OnMapStart_NPC();
 	
 }
 
@@ -2780,6 +2789,30 @@ methodmap CClotBody
 			}
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
 			SetEntityCollisionGroup(entity, 19); //our savior
+		}
+	}
+	public void FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0) //No defaults, otherwise i cant even judge.
+	{
+		float vecForward[3], vecSwingStart[3], vecAngles[3];
+		this.GetVectors(vecForward, vecSwingStart, vecAngles);
+
+		vecSwingStart = GetAbsOrigin(this.index);
+		vecSwingStart[2] += 54.0;
+
+		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
+		GetVectorAngles(vecAngles, vecAngles);
+		
+
+		int Arrow = SDKCall_CTFCreateArrow(vecSwingStart, vecAngles, rocket_speed, 0.001, 8, this.index, this.index);
+		if(IsValidEntity(Arrow))
+		{
+			RequestFrame(See_Projectile_Team, EntIndexToEntRef(Arrow));
+			SetEntityCollisionGroup(Arrow, 19);
+			SetEntDataFloat(Arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, rocket_damage, true);	// Damage
+			SetEntPropEnt(Arrow, Prop_Send, "m_hOriginalLauncher", this.index);
+			SetEntPropEnt(Arrow, Prop_Send, "m_hLauncher", this.index);
+			SetEntProp(Arrow, Prop_Send, "m_bCritical", false);
+			SetEntProp(Arrow, Prop_Send, "m_iTeamNum", TFTeam_Blue);
 		}
 	}
 	/*
@@ -6126,3 +6159,4 @@ public void Raidboss_Clean_Everyone()
 #include "zombie_riot/npc/alt/npc_alt_medic_berserker.sp"
 
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
+#include "zombie_riot/npc/medival/npc_medival_archer.sp"

@@ -400,4 +400,8 @@
 	{
 		"en" 		"Militia"
 	}
+	"Archer"
+	{
+		"en" 		"Archer"
+	}
 }
