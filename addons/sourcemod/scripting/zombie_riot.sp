@@ -2668,8 +2668,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, Wand_Calcium_Spell);
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
-			RequestFrame(Set_Projectile_Collision, entity);	
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 		//	ApplyExplosionDhook_Rocket(entity);
 			//SDKHook_SpawnPost doesnt work
 		}
@@ -2690,8 +2690,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
-			RequestFrame(Set_Projectile_Collision, entity);	
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 			//SDKHook_SpawnPost doesnt work
 		}
 		
@@ -2699,8 +2699,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
-			RequestFrame(Set_Projectile_Collision, entity);	
-			RequestFrame(See_Projectile_Team_Player, EntIndexToEntRef(entity));
+			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team_Player);
 			//SDKHook_SpawnPost doesnt work
 		}
 		
@@ -2708,8 +2708,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
-			RequestFrame(Set_Projectile_Collision, entity);	
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 			ApplyExplosionDhook_Pipe(entity);
 			//SDKHook_SpawnPost doesnt work
 		}
@@ -2717,8 +2717,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
-			RequestFrame(Set_Projectile_Collision, entity);	
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 			//SDKHook_SpawnPost doesnt work
 		}
 		else if(!StrContains(classname, "prop_dynamic"))
@@ -2740,9 +2740,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
-//			RequestFrame(Set_Projectile_Collision, entity);	
-		//dontttttttt, npcs need to set this on their own.
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 			ApplyExplosionDhook_Pipe(entity);
 			SDKHook(entity, SDKHook_SpawnPost, Is_Pipebomb);
 			//SDKHook_SpawnPost doesnt work
@@ -2752,9 +2751,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, ApplyExplosionDhook_Rocket);
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
-//			RequestFrame(Set_Projectile_Collision, entity);	
-		//dontttttttt, npcs need to set this on their own.
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 		}
 		else if (!StrContains(classname, "tf_weapon_medigun")) 
 		{
@@ -2802,7 +2800,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 public void Set_Projectile_Collision(int entity)
 {
-	if(IsValidEntity(entity))
+	if(IsValidEntity(entity) && GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Blue))
 	{
 		SetEntityCollisionGroup(entity, 27);
 	}

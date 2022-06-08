@@ -2662,7 +2662,16 @@ methodmap CClotBody
 		AcceptEntityInput(item, "SetParentAttachmentMaintainOffset"); 
 		
 		SetEntityCollisionGroup(item, 1);
-		
+		/*
+		if(GetEntProp(this.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue))
+		{
+			b_Is_Blue_Npc[item] = true; //make sure they dont collide with stuff
+		}
+		else if(GetEntProp(this.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
+		{
+			b_IsAlliedNpc[item] = true; //make sure they dont collide with stuff
+		}
+		*/
 		return item;
 	}
 	public bool DoSwingTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0, int Npc_type = 0, int Ignore_Buildings = 0)
@@ -2781,7 +2790,11 @@ methodmap CClotBody
 			DispatchSpawn(entity);
 			if(rocket_model[0])
 			{
-				SetEntityModel(entity, rocket_model);
+				int g_ProjectileModelRocket = PrecacheModel(rocket_model);
+				for(int i; i<4; i++)
+				{
+					SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelRocket, _, i);
+				}
 			}
 			if(model_scale != 1.0)
 			{
@@ -2789,6 +2802,7 @@ methodmap CClotBody
 			}
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
 			SetEntityCollisionGroup(entity, 19); //our savior
+			See_Projectile_Team(entity);
 		}
 	}
 	public void FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0) //No defaults, otherwise i cant even judge.
@@ -2806,7 +2820,15 @@ methodmap CClotBody
 		int Arrow = SDKCall_CTFCreateArrow(vecSwingStart, vecAngles, rocket_speed, 0.001, 8, this.index, this.index);
 		if(IsValidEntity(Arrow))
 		{
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(Arrow));
+			if(rocket_model[0])
+			{
+				int g_ProjectileModelRocket = PrecacheModel(rocket_model);
+				for(int i; i<4; i++)
+				{
+					SetEntProp(Arrow, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelRocket, _, i);
+				}
+			}
+			See_Projectile_Team(Arrow);
 			SetEntityCollisionGroup(Arrow, 19);
 			SetEntDataFloat(Arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, rocket_damage, true);	// Damage
 			SetEntPropEnt(Arrow, Prop_Send, "m_hOriginalLauncher", this.index);

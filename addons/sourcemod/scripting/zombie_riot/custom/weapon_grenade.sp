@@ -10,6 +10,7 @@ public void Grenade_Custom_Precache()
 	model = "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl";
 	g_ProjectileModel = PrecacheModel(model);
 }
+
 public void Weapon_Grenade(int client, int weapon, const char[] classname, bool &result)
 {
 	if(weapon >= MaxClients)

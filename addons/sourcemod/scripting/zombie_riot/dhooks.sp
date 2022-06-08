@@ -78,10 +78,13 @@ public void ApplyExplosionDhook_Pipe(int entity)
 	//I have to do it twice, if its a custom spawn i have to do it insantly, if its a tf2 spawn then i have to do it seperatly.
 }
 
-void See_Projectile_Team(int ref)
+void See_Projectile_Team(int entity)
 {
-	int entity = EntRefToEntIndex(ref);
-	if (IsValidEntity(entity))
+	if (entity < 0 || entity > 2048)
+	{
+		entity = EntRefToEntIndex(entity);
+	}
+	if (IsValidEntity(entity) && entity != 0)
 	{
 		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
 		{
@@ -97,10 +100,13 @@ void See_Projectile_Team(int ref)
 	
 }
 
-void See_Projectile_Team_Player(int ref)
+void See_Projectile_Team_Player(int entity)
 {
-	int entity = EntRefToEntIndex(ref);
-	if (IsValidEntity(entity))
+	if (entity < 0 || entity > 2048)
+	{
+		entity = EntRefToEntIndex(entity);
+	}
+	if (IsValidEntity(entity) && entity != 0)
 	{
 		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
 		{
@@ -219,10 +225,20 @@ public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 				result = false;
 				return Plugin_Handled;	
 			}
+			else if(b_Is_Npc_Rocket[ent1])
+			{
+				result = false;
+				return Plugin_Handled;	
+			}
 		}
 		else if(b_Is_Npc_Rocket[ent1])
 		{
 			if(b_Is_Blue_Npc[ent2])
+			{
+				result = false;
+				return Plugin_Handled;	
+			}
+			else if(b_Is_Npc_Rocket[ent2])
 			{
 				result = false;
 				return Plugin_Handled;	
@@ -288,10 +304,20 @@ public Action CH_PassFilter(int ent1, int ent2, bool &result)
 				result = false;
 				return Plugin_Handled;	
 			}
+			else if(b_Is_Npc_Rocket[ent1])
+			{
+				result = false;
+				return Plugin_Handled;	
+			}
 		}
 		else if(b_Is_Npc_Rocket[ent1])
 		{
 			if(b_Is_Blue_Npc[ent2])
+			{
+				result = false;
+				return Plugin_Handled;	
+			}
+			else if(b_Is_Npc_Rocket[ent2])
 			{
 				result = false;
 				return Plugin_Handled;	
