@@ -563,7 +563,9 @@ enum
 	
 	MEDIVAL_MILITIA						= 98,
 	MEDIVAL_ARCHER						= 99,
+	MEDIVAL_MAN_AT_ARMS					= 100,
 }
+
 
 char NPC_Names[][] =
 {
@@ -673,7 +675,8 @@ char NPC_Names[][] =
 	"Medic Charger",
 	"Medic_Berserker",
 	"Militia",
-	"Archer"
+	"Archer",
+	"Man-At-Arms"
 };
 
 char NPC_Plugin_Names_Converted[][] =
@@ -784,6 +787,7 @@ char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_medic_berserker",
 	"npc_medival_milita",
 	"npc_medival_archer",
+	"npc_medival_man_at_arms",
 };
 
 #include "zombie_riot/stocks.sp"

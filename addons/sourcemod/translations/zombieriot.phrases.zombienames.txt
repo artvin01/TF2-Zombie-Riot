@@ -404,4 +404,8 @@
 	{
 		"en" 		"Archer"
 	}
+	"Man-At-Arms"
+	{
+		"en" 		"Man-At-Arms"
+	}
 }

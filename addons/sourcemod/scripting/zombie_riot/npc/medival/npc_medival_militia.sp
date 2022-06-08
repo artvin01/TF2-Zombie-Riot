@@ -1,32 +1,73 @@
 static const char g_DeathSounds[][] = {
-	"npc/combine_soldier/die1.wav",
-	"npc/combine_soldier/die2.wav",
-	"npc/combine_soldier/die3.wav",
+	"npc/metropolice/die1.wav",
+	"npc/metropolice/die2.wav",
+	"npc/metropolice/die3.wav",
+	"npc/metropolice/die4.wav",
 };
 
 static const char g_HurtSounds[][] = {
-	"npc/combine_soldier/pain1.wav",
-	"npc/combine_soldier/pain2.wav",
-	"npc/combine_soldier/pain3.wav",
+	"npc/metropolice/pain1.wav",
+	"npc/metropolice/pain2.wav",
+	"npc/metropolice/pain3.wav",
+	"npc/metropolice/pain4.wav",
 };
 
 static const char g_IdleSounds[][] = {
-	"npc/combine_soldier/vo/alert1.wav",
-	"npc/combine_soldier/vo/bouncerbouncer.wav",
-	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfirm.wav",
+	"npc/metropolice/vo/affirmative.wav",
+	"npc/metropolice/vo/affirmative2.wav",
+	"npc/metropolice/vo/canalblock.wav",
+	"npc/metropolice/vo/chuckle.wav",
+	"npc/metropolice/vo/citizen.wav",
+	"npc/metropolice/vo/code7.wav",
+	"npc/metropolice/vo/code100.wav",
+	"npc/metropolice/vo/copy.wav",
+	"npc/metropolice/vo/breakhiscover.wav",
+	"npc/metropolice/vo/help.wav",
+	"npc/metropolice/vo/hesgone148.wav",
+	"npc/metropolice/vo/hesrunning.wav",
+	"npc/metropolice/vo/infection.wav",
+	"npc/metropolice/vo/king.wav",
+	"npc/metropolice/vo/needanyhelpwiththisone.wav",
+	"npc/metropolice/vo/pickupthatcan1.wav",
+	"npc/metropolice/vo/pickupthatcan2.wav",
+	"npc/metropolice/vo/pickupthatcan3.wav",
+	"npc/metropolice/vo/sociocide.wav",
+	"npc/metropolice/vo/watchit.wav",
+	"npc/metropolice/vo/xray.wav",
+	"npc/metropolice/vo/youknockeditover.wav",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"npc/combine_soldier/vo/alert1.wav",
-	"npc/combine_soldier/vo/bouncerbouncer.wav",
-	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfim.wav",
+	"npc/metropolice/vo/affirmative.wav",
+	"npc/metropolice/vo/affirmative2.wav",
+	"npc/metropolice/vo/canalblock.wav",
+	"npc/metropolice/vo/chuckle.wav",
+	"npc/metropolice/vo/citizen.wav",
+	"npc/metropolice/vo/code7.wav",
+	"npc/metropolice/vo/code100.wav",
+	"npc/metropolice/vo/copy.wav",
+	"npc/metropolice/vo/breakhiscover.wav",
+	"npc/metropolice/vo/help.wav",
+	"npc/metropolice/vo/hesgone148.wav",
+	"npc/metropolice/vo/hesrunning.wav",
+	"npc/metropolice/vo/infection.wav",
+	"npc/metropolice/vo/king.wav",
+	"npc/metropolice/vo/needanyhelpwiththisone.wav",
+	"npc/metropolice/vo/pickupthecan1.wav",
+	"npc/metropolice/vo/pickupthecan2.wav",
+	"npc/metropolice/vo/pickupthecan3.wav",
+	"npc/metropolice/vo/sociocide.wav",
+	"npc/metropolice/vo/watchit.wav",
+	"npc/metropolice/vo/xray.wav",
+	"npc/metropolice/vo/youknockeditover.wav",
+	"npc/metropolice/takedown.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/bat_baseball_hit_flesh.wav",
-};
+	"mvm/melee_impacts/bottle_hit_robo01.wav",
+	"mvm/melee_impacts/bottle_hit_robo02.wav",
+	"mvm/melee_impacts/bottle_hit_robo03.wav",
+}
 
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/shovel_swing.wav",
@@ -53,7 +94,7 @@ methodmap MedivalMilitia < CClotBody
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime())
 			return;
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(24.0, 48.0);
 		
 		#if defined DEBUG_SOUND
@@ -65,7 +106,7 @@ methodmap MedivalMilitia < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime())
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
@@ -79,7 +120,7 @@ methodmap MedivalMilitia < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime() + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 		
 		#if defined DEBUG_SOUND
@@ -89,7 +130,7 @@ methodmap MedivalMilitia < CClotBody
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
@@ -97,7 +138,7 @@ methodmap MedivalMilitia < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -105,7 +146,7 @@ methodmap MedivalMilitia < CClotBody
 	}
 	
 	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -113,7 +154,7 @@ methodmap MedivalMilitia < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
@@ -134,7 +175,7 @@ methodmap MedivalMilitia < CClotBody
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
+		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalMilitia_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, MedivalMilitia_ClotThink);
@@ -150,7 +191,7 @@ methodmap MedivalMilitia < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		npc.m_flMeleeArmor = 0.8;
+		npc.m_flMeleeArmor = 1.0
 		npc.m_flRangedArmor = 1.0;
 		
 		if(EscapeModeForNpc)

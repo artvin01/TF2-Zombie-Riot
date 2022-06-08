@@ -1,5 +1,5 @@
 
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_59.mdl"
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_65.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
 
@@ -207,6 +207,15 @@ char g_CombineSoldierStepSound[][] = {
 	"npc/combine_soldier/gear6.wav",
 };
 
+char g_CombineMetroStepSound[][] = {
+	"npc/metropolice/gear1.wav",
+	"npc/metropolice/gear2.wav",
+	"npc/metropolice/gear3.wav",
+	"npc/metropolice/gear4.wav",
+	"npc/metropolice/gear5.wav",
+	"npc/metropolice/gear6.wav",
+};
+
 char g_PanzerStepSound[][] = {
 	"mvm/giant_common/giant_common_step_01.wav",
 	"mvm/giant_common/giant_common_step_02.wav",
@@ -247,6 +256,7 @@ enum
 	STEPTYPE_NORMAL = 1,	
 	STEPTYPE_COMBINE = 2,	
 	STEPTYPE_PANZER = 3,
+	STEPTYPE_COMBINE_METRO = 4,
 }
 
 enum
@@ -673,6 +683,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], c
 		{
 			return MedivalArcher(client, vecPos, vecAng);
 		}
+		case MEDIVAL_MAN_AT_ARMS:
+		{
+			return MedivalManAtArms(client, vecPos, vecAng);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1081,6 +1095,10 @@ public void NPCDeath(int entity)
 		{
 			MedivalArcher_NPCDeath(entity);
 		}
+		case MEDIVAL_MAN_AT_ARMS:
+		{
+			MedivalManAtArms_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1096,6 +1114,8 @@ public void OnMapStart_NPC_Base()
 	for (int i = 0; i < (sizeof(g_GibSound));   i++) { PrecacheSound(g_GibSound[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSoundMetal));   i++) { PrecacheSound(g_GibSoundMetal[i]);   }
 	for (int i = 0; i < (sizeof(g_CombineSoldierStepSound));   i++) { PrecacheSound(g_CombineSoldierStepSound[i]);   }
+	for (int i = 0; i < (sizeof(g_CombineMetroStepSound));   i++) { PrecacheSound(g_CombineMetroStepSound[i]);   }
+	
 	for (int i = 0; i < (sizeof(g_PanzerStepSound));   i++) { PrecacheSound(g_PanzerStepSound[i]);   }
 	
 	EscapeModeMap = false;
@@ -1228,6 +1248,7 @@ public void OnMapStart_NPC_Base()
 	
 	MedivalMilitia_OnMapStart_NPC();
 	MedivalArcher_OnMapStart_NPC();
+	MedivalManAtArms_OnMapStart_NPC();
 	
 }
 
@@ -3754,6 +3775,16 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 				}
 			}
 		}
+		case 4:
+		{
+			if(IsWalkEvent(event))
+			{
+				if(npc.m_flDoSpawnGesture < GetGameTime())
+				{
+					npc.PlayStepSound(g_CombineMetroStepSound[GetRandomInt(0, sizeof(g_CombineMetroStepSound) - 1)], 0.65, npc.m_iStepNoiseType);
+				}
+			}
+		}
 	}
 	return MRES_Ignored;
 }
@@ -6182,3 +6213,4 @@ public void Raidboss_Clean_Everyone()
 
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
 #include "zombie_riot/npc/medival/npc_medival_archer.sp"
+#include "zombie_riot/npc/medival/npc_medival_man_at_arms.sp"
