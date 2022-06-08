@@ -36,11 +36,12 @@ void SawRunner_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_IdleChainsaw));   i++) { PrecacheSound(g_IdleChainsaw[i]);   }
 	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSound(g_IdleMusic[i]);   }
-	PrecacheModel("models/zombie_riot/cof/sawrunner.mdl");
+	PrecacheModel("models/zombie_riot/cof/sawrunner_1.mdl");
 }
 
 static float fl_PlayIdleAlertSound[MAXENTITIES];
 static float fl_PlayMusicSound[MAXENTITIES];
+static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 
 methodmap SawRunner < CClotBody
 {
@@ -113,7 +114,7 @@ methodmap SawRunner < CClotBody
 	
 	public SawRunner(int client, float vecPos[3], float vecAng[3])
 	{
-		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner.mdl", "1.5", "1500", false, false, true, true));
+		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_1.mdl", "1.5", "1500", false, false, true, true));
 		
 		i_NpcInternalId[npc.index] = SAWRUNNER;
 		
@@ -130,6 +131,15 @@ methodmap SawRunner < CClotBody
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, SawRunner_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, SawRunner_ClotThink);
+		
+		npc.m_bDoSpawnGesture = true;
+		
+		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
+		{
+			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
+		}
+		
+		npc.m_flDoSpawnGesture = GetGameTime() + 2.0;
 		
 		b_ThisNpcIsSawrunner[npc.index] = true;
 		
@@ -166,7 +176,20 @@ public void SawRunner_ClotThink(int iNPC)
 //	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
-			
+	
+	if(npc.m_bDoSpawnGesture)
+	{
+		npc.AddGesture("ACT_SPAWN");
+		npc.m_bDoSpawnGesture = false;
+	}
+	
+	if(npc.m_flDoSpawnGesture > GetGameTime())
+	{
+		npc.m_flSpeed = 0.0;
+		return;
+	}
+	
+	
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_HURT", false);
@@ -202,8 +225,12 @@ public void SawRunner_ClotThink(int iNPC)
 				GetClientAbsOrigin(client, targPos);
 				if (GetVectorDistance(chargerPos, targPos, true) <= 4000000) // 1500 range
 				{
-					Music_Stop_All(client);
+					if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
+					{
+						Music_Stop_All(client); //This is actually more expensive then i thought.
+					}
 					Music_Timer[client] = GetEngineTime() + 5.0;
+					fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
 				}
 			}
 		}
@@ -253,7 +280,22 @@ public void SawRunner_ClotThink(int iNPC)
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flNextRangedSpecialAttack = GetGameTime() + 2.0;
-						npc.AddGesture("ACT_MELEE");
+						
+						switch(GetRandomInt(1,3))
+						{
+							case 1:
+							{
+								npc.AddGesture("ACT_MELEE_1");
+							}
+							case 2:
+							{
+								npc.AddGesture("ACT_MELEE_2");
+							}
+							case 3:
+							{
+								npc.AddGesture("ACT_MELEE_3");
+							}
+						}
 						npc.PlayMeleeSound();
 						npc.m_flAttackHappens = GetGameTime()+0.4;
 						npc.m_flAttackHappens_bullshit = GetGameTime()+0.54;
@@ -325,7 +367,14 @@ public Action SawRunner_ClotDamaged(int victim, int &attacker, int &inflictor, f
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
+		
+		
 	SawRunner npc = view_as<SawRunner>(victim);
+	
+	if(npc.m_flDoSpawnGesture > GetGameTime())
+	{
+		return Plugin_Handled;
+	}
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{
@@ -360,7 +409,7 @@ public void SawRunner_NPCDeath(int entity)
 		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
 		
 //		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
-		DispatchKeyValue(entity_death, "model", "models/zombie_riot/cof/sawrunner.mdl");
+		DispatchKeyValue(entity_death, "model", "models/zombie_riot/cof/sawrunner_1.mdl");
 
 		DispatchSpawn(entity_death);
 		
@@ -384,7 +433,7 @@ public Action Timer_RemoveEntitySawrunner(Handle timer, any entid)
 	{
 		float pos[3];
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-		TE_Particle("rd_robot_explosion", pos, NULL_VECTOR, NULL_VECTOR, entity, _, _, _, _, _, _, _, _, _, 0.0);
+		TE_Particle("env_sawblood", pos, NULL_VECTOR, NULL_VECTOR, entity, _, _, _, _, _, _, _, _, _, 0.0);
 //		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
 		RemoveEntity(entity);
 	}

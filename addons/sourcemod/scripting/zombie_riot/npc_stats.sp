@@ -1,5 +1,5 @@
 
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_59.mdl"
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_65.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
 
@@ -33,6 +33,7 @@ int i_Wearable4[MAXENTITIES]={-1, ...};
 int i_Wearable5[MAXENTITIES]={-1, ...};
 int i_Wearable6[MAXENTITIES]={-1, ...};
 int i_TeamGlow[MAXENTITIES]={-1, ...};
+
 int i_SpawnProtectionEntity[MAXENTITIES]={-1, ...};
 float f3_VecPunchForce[MAXENTITIES][3];
 float fl_NextDelayTime[MAXENTITIES];
@@ -132,7 +133,8 @@ float b_isGiantWalkCycle[MAXENTITIES];
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 int i_CreditsOnKill[MAXENTITIES];
 
-
+float fl_MeleeArmor[MAXENTITIES];
+float fl_RangedArmor[MAXENTITIES];
 
 
 
@@ -205,6 +207,15 @@ char g_CombineSoldierStepSound[][] = {
 	"npc/combine_soldier/gear6.wav",
 };
 
+char g_CombineMetroStepSound[][] = {
+	"npc/metropolice/gear1.wav",
+	"npc/metropolice/gear2.wav",
+	"npc/metropolice/gear3.wav",
+	"npc/metropolice/gear4.wav",
+	"npc/metropolice/gear5.wav",
+	"npc/metropolice/gear6.wav",
+};
+
 char g_PanzerStepSound[][] = {
 	"mvm/giant_common/giant_common_step_01.wav",
 	"mvm/giant_common/giant_common_step_02.wav",
@@ -245,6 +256,7 @@ enum
 	STEPTYPE_NORMAL = 1,	
 	STEPTYPE_COMBINE = 2,	
 	STEPTYPE_PANZER = 3,
+	STEPTYPE_COMBINE_METRO = 4,
 }
 
 enum
@@ -663,6 +675,18 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], c
 		{
 			return AltMedicBerseker(client, vecPos, vecAng);
 		}
+		case MEDIVAL_MILITIA:
+		{
+			return MedivalMilitia(client, vecPos, vecAng);
+		}
+		case MEDIVAL_ARCHER:
+		{
+			return MedivalArcher(client, vecPos, vecAng);
+		}
+		case MEDIVAL_MAN_AT_ARMS:
+		{
+			return MedivalManAtArms(client, vecPos, vecAng);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1063,6 +1087,18 @@ public void NPCDeath(int entity)
 		{
 			AltMedicBerseker_NPCDeath(entity);
 		}
+		case MEDIVAL_MILITIA:
+		{
+			MedivalMilitia_NPCDeath(entity);
+		}
+		case MEDIVAL_ARCHER:
+		{
+			MedivalArcher_NPCDeath(entity);
+		}
+		case MEDIVAL_MAN_AT_ARMS:
+		{
+			MedivalManAtArms_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1078,6 +1114,8 @@ public void OnMapStart_NPC_Base()
 	for (int i = 0; i < (sizeof(g_GibSound));   i++) { PrecacheSound(g_GibSound[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSoundMetal));   i++) { PrecacheSound(g_GibSoundMetal[i]);   }
 	for (int i = 0; i < (sizeof(g_CombineSoldierStepSound));   i++) { PrecacheSound(g_CombineSoldierStepSound[i]);   }
+	for (int i = 0; i < (sizeof(g_CombineMetroStepSound));   i++) { PrecacheSound(g_CombineMetroStepSound[i]);   }
+	
 	for (int i = 0; i < (sizeof(g_PanzerStepSound));   i++) { PrecacheSound(g_PanzerStepSound[i]);   }
 	
 	EscapeModeMap = false;
@@ -1207,6 +1245,10 @@ public void OnMapStart_NPC_Base()
 	TrueFusionWarrior_OnMapStart();
 	AltMedicCharger_OnMapStart_NPC();
 	AltMedicBerseker_OnMapStart_NPC();
+	
+	MedivalMilitia_OnMapStart_NPC();
+	MedivalArcher_OnMapStart_NPC();
+	MedivalManAtArms_OnMapStart_NPC();
 	
 }
 
@@ -2025,6 +2067,18 @@ methodmap CClotBody
 		public set(bool TempValueForProperty) 	{ b_AttackHappenswillhappen[this.index] = TempValueForProperty; }
 	}
 	
+	
+	property float m_flMeleeArmor
+	{
+		public get()							{ return fl_MeleeArmor[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_MeleeArmor[this.index] = TempValueForProperty; }
+	}
+	property float m_flRangedArmor
+	{
+		public get()							{ return fl_RangedArmor[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_RangedArmor[this.index] = TempValueForProperty; }
+	}
+	
 	property float m_flSpeed
 	{
 		public get()							{ return fl_Speed[this.index]; }
@@ -2629,7 +2683,16 @@ methodmap CClotBody
 		AcceptEntityInput(item, "SetParentAttachmentMaintainOffset"); 
 		
 		SetEntityCollisionGroup(item, 1);
-		
+		/*
+		if(GetEntProp(this.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue))
+		{
+			b_Is_Blue_Npc[item] = true; //make sure they dont collide with stuff
+		}
+		else if(GetEntProp(this.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
+		{
+			b_IsAlliedNpc[item] = true; //make sure they dont collide with stuff
+		}
+		*/
 		return item;
 	}
 	public bool DoSwingTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0, int Npc_type = 0, int Ignore_Buildings = 0)
@@ -2748,7 +2811,11 @@ methodmap CClotBody
 			DispatchSpawn(entity);
 			if(rocket_model[0])
 			{
-				SetEntityModel(entity, rocket_model);
+				int g_ProjectileModelRocket = PrecacheModel(rocket_model);
+				for(int i; i<4; i++)
+				{
+					SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelRocket, _, i);
+				}
 			}
 			if(model_scale != 1.0)
 			{
@@ -2756,6 +2823,39 @@ methodmap CClotBody
 			}
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
 			SetEntityCollisionGroup(entity, 19); //our savior
+			See_Projectile_Team(entity);
+		}
+	}
+	public void FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0) //No defaults, otherwise i cant even judge.
+	{
+		float vecForward[3], vecSwingStart[3], vecAngles[3];
+		this.GetVectors(vecForward, vecSwingStart, vecAngles);
+
+		vecSwingStart = GetAbsOrigin(this.index);
+		vecSwingStart[2] += 54.0;
+
+		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
+		GetVectorAngles(vecAngles, vecAngles);
+		
+
+		int Arrow = SDKCall_CTFCreateArrow(vecSwingStart, vecAngles, rocket_speed, 0.001, 8, this.index, this.index);
+		if(IsValidEntity(Arrow))
+		{
+			if(rocket_model[0])
+			{
+				int g_ProjectileModelRocket = PrecacheModel(rocket_model);
+				for(int i; i<4; i++)
+				{
+					SetEntProp(Arrow, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelRocket, _, i);
+				}
+			}
+			See_Projectile_Team(Arrow);
+			SetEntityCollisionGroup(Arrow, 19);
+			SetEntDataFloat(Arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, rocket_damage, true);	// Damage
+			SetEntPropEnt(Arrow, Prop_Send, "m_hOriginalLauncher", this.index);
+			SetEntPropEnt(Arrow, Prop_Send, "m_hLauncher", this.index);
+			SetEntProp(Arrow, Prop_Send, "m_bCritical", false);
+			SetEntProp(Arrow, Prop_Send, "m_iTeamNum", TFTeam_Blue);
 		}
 	}
 	/*
@@ -3439,9 +3539,14 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 			NPCData npc;
 			NPCList.GetArray(index, npc);
 			int client = GetClientOfUserId(npc.LastHitId);
+			int Health = GetEntProp(pThis, Prop_Data, "m_iHealth");
+			Health *= -1;
+			
+			int overkill = RoundToNearest(npc.Damage - float(Health));
+			
 			if(client && IsClientInGame(client))
 			{
-				Calculate_And_Display_hp(client, pThis, npc.Damage, true);
+				Calculate_And_Display_hp(client, pThis, npc.Damage, true, overkill);
 			}
 		}
 		b_NpcHasDied[pThis] = true;
@@ -3667,6 +3772,16 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 				if(npc.m_flDoSpawnGesture < GetGameTime())
 				{
 					npc.PlayStepSound(g_PanzerStepSound[GetRandomInt(0, sizeof(g_PanzerStepSound) - 1)], 1.0, npc.m_iStepNoiseType);
+				}
+			}
+		}
+		case 4:
+		{
+			if(IsWalkEvent(event))
+			{
+				if(npc.m_flDoSpawnGesture < GetGameTime())
+				{
+					npc.PlayStepSound(g_CombineMetroStepSound[GetRandomInt(0, sizeof(g_CombineMetroStepSound) - 1)], 0.65, npc.m_iStepNoiseType);
 				}
 			}
 		}
@@ -4645,6 +4760,18 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 		damagetype |= DMG_BULLET; //add bullet logic
 		damagetype &= ~DMG_BLAST; //remove blast logic			
 	}
+	
+	if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
+	{
+		damage *= fl_MeleeArmor[victim];
+	}
+	else if(!(damagetype & DMG_SLASH))
+	{
+		damage *= fl_RangedArmor[victim];
+	}
+	//No resistances towards slash as its internal.
+	
+	
 	
 	if(!npc.m_bDissapearOnDeath) //Make sure that if they just vanish, its always false. so their deathsound plays.
 	{
@@ -5683,7 +5810,9 @@ void TE_ParticleInt(int iParticleIndex, const float origin[3] = NULL_VECTOR, con
 }
 
 
-stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255, float fStartWidth=NORMAL_ZOMBIE_VOLUME, float fEndWidth=NORMAL_ZOMBIE_VOLUME, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt"){
+stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
+							float fStartWidth=NORMAL_ZOMBIE_VOLUME, float fEndWidth=NORMAL_ZOMBIE_VOLUME, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt")
+{
 	int iBeam = CreateEntityByName("env_beam");
 	if(iBeam <= MaxClients)
 		return -1;
@@ -5951,6 +6080,9 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ThisNpcIsSawrunner[entity] = false;
 	f_LowTeslarDebuff[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
+	
+	fl_MeleeArmor[entity] = 1.0; //yeppers.
+	fl_RangedArmor[entity] = 1.0;
 }
 
 public void Raidboss_Clean_Everyone()
@@ -6078,3 +6210,7 @@ public void Raidboss_Clean_Everyone()
 #include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_charger.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_berserker.sp"
+
+#include "zombie_riot/npc/medival/npc_medival_militia.sp"
+#include "zombie_riot/npc/medival/npc_medival_archer.sp"
+#include "zombie_riot/npc/medival/npc_medival_man_at_arms.sp"

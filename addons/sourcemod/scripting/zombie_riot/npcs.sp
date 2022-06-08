@@ -240,14 +240,15 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		panzer = false;
 		panzer_warning = false;
 	}
+	PlayersAliveScaling = 0;
 	
 	limit = 4 + RoundToCeil(float(Waves_GetRound())/2.65);
-	
 	if(limit > 8) //Make sure to not allow more then this amount so the default max zombie count is 20 at almost all times if player scaling isnt accounted for.
 	{
 		limit = 8;
 	}
 	float f_limit = 0.0;
+	float f_limit_music = 0.0;
 	amount_of_people = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -255,8 +256,15 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		{
 			amount_of_people += 1;
 			f_limit += 2.2;
+			if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+			{
+				f_limit_music += 2.2;
+			}
 		}
 	}
+	PlayersAliveScaling = limit;
+	
+	PlayersAliveScaling += RoundToNearest(f_limit_music);
 	limit += RoundToNearest(f_limit);
 	if(!b_GameOnGoing) //no spawn if the round is over
 		return;
@@ -264,6 +272,9 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	if(limit >= NPC_HARD_LIMIT)
 		limit = NPC_HARD_LIMIT;
 		
+	if(PlayersAliveScaling >= NPC_HARD_LIMIT)
+		PlayersAliveScaling = NPC_HARD_LIMIT;
+	
 	if(!panzer)
 	{
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
@@ -1203,12 +1214,19 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 
 }
 
-public void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore)
+stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)
 {
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 	
-	Damage_dealt_in_total[attacker] += damage; //i dont know, i give up.
+	if(overkill <= 0)
+	{
+		Damage_dealt_in_total[attacker] += damage;
+	}
+	else
+	{
+		Damage_dealt_in_total[attacker] += overkill; //dont award for overkilling.
+	}
 	
 	if(f_CooldownForHurtHud[attacker] < GetGameTime() || ignore)
 	{
@@ -1235,7 +1253,6 @@ public void Calculate_And_Display_hp(int attacker, int victim, float damage, boo
 		}
 		char Debuff_Adder[64];
 		
-		
 		if(f_HighTeslarDebuff[victim] > GetGameTime())
 		{
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "↡");
@@ -1244,12 +1261,23 @@ public void Calculate_And_Display_hp(int attacker, int victim, float damage, boo
 		{
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "↓");
 		}
+		CClotBody npc = view_as<CClotBody>(victim);
+		
+		if(npc.m_flMeleeArmor != 1.0)
+		{
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder,npc.m_flMeleeArmor * 100.0);
+		}
+		
+		if(npc.m_flRangedArmor != 1.0)
+		{
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, npc.m_flRangedArmor * 100.0);
+		}
 		
 		if(EntRefToEntIndex(RaidBossActive) != victim)
 		{
 			SetGlobalTransTarget(attacker);
 			SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-			ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d %s", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
+			ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
 		}
 		else
 		{
@@ -1260,7 +1288,7 @@ public void Calculate_And_Display_hp(int attacker, int victim, float damage, boo
 				
 			SetGlobalTransTarget(attacker);
 			SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-			ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d %s","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
+			ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
 		}
 	}	
 }

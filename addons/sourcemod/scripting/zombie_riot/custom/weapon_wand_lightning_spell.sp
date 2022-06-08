@@ -26,7 +26,7 @@ public void Weapon_Wand_LightningSpell(int client, int weapon, const char[] clas
 			{
 				ability_cooldown[client] = GetGameTime() + 15.0; //10 sec CD
 				
-				float damage = 120.0;
+				float damage = 200.0;
 				
 				damage *= 7.5;
 				

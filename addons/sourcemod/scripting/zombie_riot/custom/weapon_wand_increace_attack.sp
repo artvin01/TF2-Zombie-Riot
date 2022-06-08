@@ -22,7 +22,7 @@ public void Weapon_Wand_AttackSpeed(int client, int weapon, const char[] classna
 		{
 			if (ability_cooldown[client] < GetGameTime())
 			{
-				ability_cooldown[client] = GetGameTime() + 10.0; //10 sec CD
+				ability_cooldown[client] = GetGameTime() + 15.0; //15 sec CD
 				
 				weapon_id[client] = weapon;
 				
@@ -32,7 +32,7 @@ public void Weapon_Wand_AttackSpeed(int client, int weapon, const char[] classna
 				if(address != Address_Null)
 					Original_Atackspeed[client] = TF2Attrib_GetValue(address);
 		
-				TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] * 0.2);
+				TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] * 0.25);
 				
 				EmitSoundToAll(SOUND_WAND_ATTACKSPEED_ABILITY, client, SNDCHAN_STATIC, 80, _, 0.9);
 				

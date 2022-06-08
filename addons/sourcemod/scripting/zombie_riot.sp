@@ -191,8 +191,8 @@ float f_TimerTickCooldownRaid = 0.0;
 float f_TimerTickCooldownShop = 0.0;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 
-
 int CurrentPlayers;
+int PlayersAliveScaling;
 int GlobalIntencity;
 ConVar cvarTimeScale;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
@@ -559,8 +559,13 @@ enum
 	
 	RAIDMODE_TRUE_FUSION_WARRIOR		= 95,
 	ALT_MEDIC_CHARGER					= 96,
-	ALT_MEDIC_BERSERKER					= 98,
+	ALT_MEDIC_BERSERKER					= 97,
+	
+	MEDIVAL_MILITIA						= 98,
+	MEDIVAL_ARCHER						= 99,
+	MEDIVAL_MAN_AT_ARMS					= 100,
 }
+
 
 char NPC_Names[][] =
 {
@@ -668,7 +673,10 @@ char NPC_Names[][] =
 	"Sawrunner",
 	"True Fusion Warrior",
 	"Medic Charger",
-	"Medic_Berserker"
+	"Medic_Berserker",
+	"Militia",
+	"Archer",
+	"Man-At-Arms"
 };
 
 char NPC_Plugin_Names_Converted[][] =
@@ -777,6 +785,9 @@ char NPC_Plugin_Names_Converted[][] =
 	"npc_true_fusion_warrior",
 	"npc_alt_medic_charger",
 	"npc_alt_medic_berserker",
+	"npc_medival_milita",
+	"npc_medival_archer",
+	"npc_medival_man_at_arms",
 };
 
 #include "zombie_riot/stocks.sp"
@@ -1515,7 +1526,7 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			Healing_done_in_total[client] = 0;
 			Ammo_Count_Ready[client] = 0;
 			Armor_Charge[client] = 0;
-			Music_Timer[client] = GetEngineTime() + 20.0;
+//			Music_Timer[client] = GetEngineTime() + 20.0;
 //			Armor_Ready[client] = 0.0;
 		}
 	}
@@ -1886,7 +1897,9 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
+			{
 				CurrentPlayers++;
+			}
 		}
 		return;
 	}
@@ -1924,7 +1937,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	if(CurrentPlayers < players)
 		CurrentPlayers = players;
 	
-	if(LastMann && !GlobalIntencity)
+	if(LastMann && !GlobalIntencity) //Make sure if they are alone, it wont play last man music.
 		LastMann = false;
 	
 	if(LastMann)
@@ -2659,8 +2672,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, Wand_Calcium_Spell);
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
-			RequestFrame(Set_Projectile_Collision, entity);	
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 		//	ApplyExplosionDhook_Rocket(entity);
 			//SDKHook_SpawnPost doesnt work
 		}
@@ -2681,8 +2694,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
-			RequestFrame(Set_Projectile_Collision, entity);	
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 			//SDKHook_SpawnPost doesnt work
 		}
 		
@@ -2690,8 +2703,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
-			RequestFrame(Set_Projectile_Collision, entity);	
-			RequestFrame(See_Projectile_Team_Player, EntIndexToEntRef(entity));
+			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team_Player);
 			//SDKHook_SpawnPost doesnt work
 		}
 		
@@ -2699,8 +2712,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
-			RequestFrame(Set_Projectile_Collision, entity);	
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 			ApplyExplosionDhook_Pipe(entity);
 			//SDKHook_SpawnPost doesnt work
 		}
@@ -2708,8 +2721,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
-			RequestFrame(Set_Projectile_Collision, entity);	
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 			//SDKHook_SpawnPost doesnt work
 		}
 		else if(!StrContains(classname, "prop_dynamic"))
@@ -2731,9 +2744,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
-//			RequestFrame(Set_Projectile_Collision, entity);	
-		//dontttttttt, npcs need to set this on their own.
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 			ApplyExplosionDhook_Pipe(entity);
 			SDKHook(entity, SDKHook_SpawnPost, Is_Pipebomb);
 			//SDKHook_SpawnPost doesnt work
@@ -2743,9 +2755,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, ApplyExplosionDhook_Rocket);
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
-//			RequestFrame(Set_Projectile_Collision, entity);	
-		//dontttttttt, npcs need to set this on their own.
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 		}
 		else if (!StrContains(classname, "tf_weapon_medigun")) 
 		{
@@ -2793,7 +2804,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 public void Set_Projectile_Collision(int entity)
 {
-	if(IsValidEntity(entity))
+	if(IsValidEntity(entity) && GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Blue))
 	{
 		SetEntityCollisionGroup(entity, 27);
 	}

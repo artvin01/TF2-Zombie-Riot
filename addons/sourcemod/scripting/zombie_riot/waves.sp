@@ -292,44 +292,47 @@ void Waves_RoundStart()
 	if(Voting && !GameRules_GetProp("m_bInWaitingForPlayers"))
 	{
 		int length = Voting.Length;
-		int[] votes = new int[length];
-		for(int client=1; client<=MaxClients; client++)
+		if(length)
 		{
-			if(IsClientInGame(client))
+			int[] votes = new int[length];
+			for(int client=1; client<=MaxClients; client++)
 			{
-				DoOverlay(client, "");
-				if(VotedFor[client]>0 && GetClientTeam(client)==2)
+				if(IsClientInGame(client))
 				{
-					votes[VotedFor[client]-1]++;
+					DoOverlay(client, "");
+					if(VotedFor[client]>0 && GetClientTeam(client)==2)
+					{
+						votes[VotedFor[client]-1]++;
+					}
 				}
 			}
-		}
-		
-		int highest;
-		for(int i=1; i<length; i++)
-		{
-			if(votes[i] > votes[highest])
-				highest = i;
-		}
-		
-		//if(votes[highest])
-		{
-			Vote vote;
-			Voting.GetArray(highest, vote);
 			
-			delete Voting;
-			Voting = null;
+			int highest;
+			for(int i=1; i<length; i++)
+			{
+				if(votes[i] > votes[highest])
+					highest = i;
+			}
 			
-			PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
-			
-			Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", vote.Name);
-			
-			char buffer[PLATFORM_MAX_PATH];
-			BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
-			KeyValues kv = new KeyValues("Waves");
-			kv.ImportFromFile(buffer);
-			Waves_SetupWaves(kv, false);
-			delete kv;
+			//if(votes[highest])
+			{
+				Vote vote;
+				Voting.GetArray(highest, vote);
+				
+				delete Voting;
+				Voting = null;
+				
+				PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
+				
+				Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", vote.Name);
+				
+				char buffer[PLATFORM_MAX_PATH];
+				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
+				KeyValues kv = new KeyValues("Waves");
+				kv.ImportFromFile(buffer);
+				Waves_SetupWaves(kv, false);
+				delete kv;
+			}
 		}
 	}
 	
