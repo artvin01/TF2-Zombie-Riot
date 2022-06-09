@@ -450,8 +450,6 @@ void Store_Reset()
 		}
 		StoreItems.SetArray(i, item);
 	}
-
-	b_StoreGotReset = true;
 }
 
 bool Store_HasAnyItem(int client)

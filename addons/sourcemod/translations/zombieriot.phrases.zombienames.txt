@@ -416,4 +416,8 @@
 	{
 		"en" 		"Long Swordsman"
 	}
+	"Twohanded Swordsman"
+	{
+		"en" 		"Twohanded Swordsman"
+	}
 }

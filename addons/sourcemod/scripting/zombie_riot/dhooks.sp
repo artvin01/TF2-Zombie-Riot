@@ -119,7 +119,10 @@ void See_Projectile_Team_Player(int entity)
 
 public void ApplyExplosionDhook_Rocket(int entity)
 {
-	g_DHookRocketExplode.HookEntity(Hook_Pre, entity, DHook_RocketExplodePre);
+	if(!b_EntityIsArrow[entity]) //No!
+	{
+		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, DHook_RocketExplodePre);
+	}
 	//I have to do it twice, if its a custom spawn i have to do it insantly, if its a tf2 spawn then i have to do it seperatly.
 }
 
