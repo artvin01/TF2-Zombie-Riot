@@ -132,9 +132,7 @@ methodmap AltMedicBerseker < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		
-		
+
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
@@ -241,8 +239,7 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 					int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
 					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 					npc.m_flmovedelay = GetGameTime() + 1.5;
-					npc.m_flSpeed = 300.0;
-					
+					npc.m_flSpeed = 300.0;					
 				}
 			AcceptEntityInput(npc.m_iWearable1, "Enable");
 				
@@ -304,34 +301,44 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									
+									float Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+									float MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+									float damage = 10.0 / (0.1 + (Health / MaxHealth));
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 15.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_SLASH|DMG_CLUB);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 75, DMG_SLASH|DMG_CLUB);
 																						
 									// Hit particle
 									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
-									
 									// Hit sound
 									npc.PlayMeleeHitSound();
 								} 
 							}
 						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime() + 0.05;
+						float Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+						float MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+						float speed = 0.2 * (Health / MaxHealth);
+						npc.m_flNextMeleeAttack = GetGameTime() + speed;
 						npc.m_flAttackHappenswillhappen = false;
 					}
 					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
 					{
+						float Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+						float MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+						float speed = 0.2 * (Health / MaxHealth);
 						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime() + 0.05;
+						npc.m_flNextMeleeAttack = GetGameTime() + speed;
 					}
 				}
 			}
 			else if(flDistanceToTarget > 22500 && npc.m_flAttackHappens_2 < GetGameTime())
 			{
+				float Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+				float MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+				float crocket = 10 * (Health / MaxHealth);
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-				npc.m_flAttackHappens_2 = GetGameTime() + 7.5;
+				npc.m_flAttackHappens_2 = GetGameTime() + crocket;
 				npc.PlayRangedSound();
 				npc.FireRocket(vecTarget, 20.0, 600.0);
 			}
@@ -351,10 +358,13 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 				GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
 				if (flVel[0] <= 200.0)
 				{
+					float Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+					float MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+					float time = 60 * (0.40 + (Health / MaxHealth));
 					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.m_flNextTeleport = GetGameTime() + 120.0;
+					npc.m_flNextTeleport = GetGameTime() + time;
 					float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
 					if(Tele_Check > 120)
 					{
@@ -415,4 +425,3 @@ public void AltMedicBerseker_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 }
-
