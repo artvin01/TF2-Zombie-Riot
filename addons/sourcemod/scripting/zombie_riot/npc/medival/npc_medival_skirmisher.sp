@@ -58,7 +58,7 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
-void MedivalArcher_OnMapStart_NPC()
+void MedivalSkirmisher_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -70,7 +70,7 @@ void MedivalArcher_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 }
 
-methodmap MedivalArcher < CClotBody
+methodmap MedivalSkirmisher < CClotBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime())
@@ -142,13 +142,13 @@ methodmap MedivalArcher < CClotBody
 		#endif
 	}
 	
-	public MedivalArcher(int client, float vecPos[3], float vecAng[3])
+	public MedivalSkirmisher(int client, float vecPos[3], float vecAng[3])
 	{
-		MedivalArcher npc = view_as<MedivalArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400"));
+		MedivalSkirmisher npc = view_as<MedivalSkirmisher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400"));
 		
-		i_NpcInternalId[npc.index] = MEDIVAL_ARCHER;
+		i_NpcInternalId[npc.index] = MEDIVAL_SKIRMISHER;
 		
-		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_BOW");
+		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_SPEAR");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -158,16 +158,18 @@ methodmap MedivalArcher < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bow/c_bow.mdl");
-		SetVariantString("0.8");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
+		SetVariantString("3.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalArcher_ClotDamaged);
-		SDKHook(npc.index, SDKHook_Think, MedivalArcher_ClotThink);
-	
-//		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-//		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalSkirmisher_ClotDamaged);
+		SDKHook(npc.index, SDKHook_Think, MedivalSkirmisher_ClotThink);
 
+
+		npc.m_iWearable2 = npc.EquipItem("weapon_targe", "models/weapons/c_models/c_targe/c_targe.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		
 		npc.m_iState = 0;
 		npc.m_flSpeed = 170.0;
 		npc.m_flNextRangedAttack = 0.0;
@@ -177,7 +179,7 @@ methodmap MedivalArcher < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		
 		npc.m_flMeleeArmor = 1.0;
-		npc.m_flRangedArmor = 1.0;
+		npc.m_flRangedArmor = 0.35;
 		
 		if(EscapeModeForNpc)
 		{
@@ -200,12 +202,9 @@ methodmap MedivalArcher < CClotBody
 
 //TODO 
 //Rewrite
-public void MedivalArcher_ClotThink(int iNPC)
+public void MedivalSkirmisher_ClotThink(int iNPC)
 {
-	MedivalArcher npc = view_as<MedivalArcher>(iNPC);
-	
-	SetVariantInt(1);
-	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+	MedivalSkirmisher npc = view_as<MedivalSkirmisher>(iNPC);
 	
 	if(npc.m_flNextDelayTime > GetGameTime())
 	{
@@ -242,6 +241,10 @@ public void MedivalArcher_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		
+			if(npc.m_flNextMeleeAttack < GetGameTime())
+			{
+				AcceptEntityInput(npc.m_iWearable1, "Enable");
+			}
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -284,7 +287,7 @@ public void MedivalArcher_ClotThink(int iNPC)
 					{
 			//			npc.FaceTowards(vecTarget, 30000.0);
 						//Play attack anim
-						npc.AddGesture("ACT_CUSTOM_ATTACK_BOW");
+						npc.AddGesture("ACT_CUSTOM_ATTACK_SPEAR");
 						
 			//			npc.PlayMeleeSound();
 			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
@@ -315,35 +318,36 @@ public void MedivalArcher_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public void HandleAnimEventMedival_Archer(int entity, int event)
+public void HandleAnimEvent_MedivalSkirmisher(int entity, int event)
 {
 	if(event == 1001)
 	{
-		MedivalArcher npc = view_as<MedivalArcher>(entity);
+		MedivalSkirmisher npc = view_as<MedivalSkirmisher>(entity);
 		
 		int PrimaryThreatIndex = npc.m_iTarget;
 	
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 		{
+			AcceptEntityInput(npc.m_iWearable1, "Disable");
 			
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 				
 			npc.FaceTowards(vecTarget, 30000.0);
 						
 			npc.PlayMeleeSound();
-			npc.FireArrow(vecTarget, 25.0, 1200.0);
+			npc.FireArrow(vecTarget, 15.0, 1200.0);
 		}
 	}
 	
 }
 
-public Action MedivalArcher_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalSkirmisher_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	MedivalArcher npc = view_as<MedivalArcher>(victim);
+	MedivalSkirmisher npc = view_as<MedivalSkirmisher>(victim);
 	
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())
@@ -356,16 +360,16 @@ public Action MedivalArcher_ClotDamaged(int victim, int &attacker, int &inflicto
 	return Plugin_Changed;
 }
 
-public void MedivalArcher_NPCDeath(int entity)
+public void MedivalSkirmisher_NPCDeath(int entity)
 {
-	MedivalArcher npc = view_as<MedivalArcher>(entity);
+	MedivalSkirmisher npc = view_as<MedivalSkirmisher>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalArcher_ClotDamaged);
-	SDKUnhook(npc.index, SDKHook_Think, MedivalArcher_ClotThink);
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalSkirmisher_ClotDamaged);
+	SDKUnhook(npc.index, SDKHook_Think, MedivalSkirmisher_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

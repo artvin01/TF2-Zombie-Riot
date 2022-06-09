@@ -1,5 +1,7 @@
 
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_65.mdl"
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_59.mdl"
+
+//#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_113.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
 
@@ -687,6 +689,14 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], c
 		{
 			return MedivalManAtArms(client, vecPos, vecAng);
 		}
+		case MEDIVAL_SKIRMISHER:
+		{
+			return MedivalSkirmisher(client, vecPos, vecAng);
+		}
+		case MEDIVAL_SWORDSMAN:
+		{
+			return MedivalSwordsman(client, vecPos, vecAng);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1099,6 +1109,14 @@ public void NPCDeath(int entity)
 		{
 			MedivalManAtArms_NPCDeath(entity);
 		}
+		case MEDIVAL_SKIRMISHER:
+		{
+			MedivalSkirmisher_NPCDeath(entity);
+		}
+		case MEDIVAL_SWORDSMAN:
+		{
+			MedivalSwordsman_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1249,7 +1267,8 @@ public void OnMapStart_NPC_Base()
 	MedivalMilitia_OnMapStart_NPC();
 	MedivalArcher_OnMapStart_NPC();
 	MedivalManAtArms_OnMapStart_NPC();
-	
+	MedivalSkirmisher_OnMapStart_NPC();
+	MedivalSwordsman_OnMapStart_NPC();
 }
 
 
@@ -3739,6 +3758,19 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 	int event = DHookGetParamObjectPtrVar(hParams, 1, 0, ObjectValueType_Int);
 //	PrintToChatAll("CBaseAnimating_HandleAnimEvent(%i, %i)", pThis, event);
 	CClotBody npc = view_as<CClotBody>(pThis);
+	
+	
+	switch(i_NpcInternalId[pThis])
+	{
+		case MEDIVAL_ARCHER:
+		{
+			HandleAnimEventMedival_Archer(pThis, event);
+		}
+		case MEDIVAL_SKIRMISHER:
+		{
+			HandleAnimEvent_MedivalSkirmisher(pThis, event);
+		}	
+	}
 	switch(npc.m_iNpcStepVariation)
 	{
 		case 1:
@@ -6214,3 +6246,5 @@ public void Raidboss_Clean_Everyone()
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
 #include "zombie_riot/npc/medival/npc_medival_archer.sp"
 #include "zombie_riot/npc/medival/npc_medival_man_at_arms.sp"
+#include "zombie_riot/npc/medival/npc_medival_skirmisher.sp"
+#include "zombie_riot/npc/medival/npc_medival_swordsman.sp"

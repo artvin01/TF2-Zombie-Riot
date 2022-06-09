@@ -408,4 +408,12 @@
 	{
 		"en" 		"Man-At-Arms"
 	}
+	"Skirmisher"
+	{
+		"en" 		"Skirmisher"
+	}
+	"Long Swordsman"
+	{
+		"en" 		"Long Swordsman"
+	}
 }
