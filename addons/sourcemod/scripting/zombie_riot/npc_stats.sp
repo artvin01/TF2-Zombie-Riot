@@ -138,6 +138,7 @@ float b_isGiantWalkCycle[MAXENTITIES];
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 int i_CreditsOnKill[MAXENTITIES];
 
+int i_InSafeZone[MAXENTITIES];
 float fl_MeleeArmor[MAXENTITIES];
 float fl_RangedArmor[MAXENTITIES];
 
@@ -2246,7 +2247,10 @@ methodmap CClotBody
 		public get()							{ return b_bThisNpcGotDefaultStats_INVERTED[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_bThisNpcGotDefaultStats_INVERTED[this.index] = TempValueForProperty; }
 	}
-	
+	property bool m_bInSafeZone
+	{
+		public get()							{ return view_as<bool>(i_InSafeZone[this.index]); }
+	}
 	property float m_fHighTeslarDebuff 
 	{
 		public get()							{ return f_HighTeslarDebuff[this.index]; }

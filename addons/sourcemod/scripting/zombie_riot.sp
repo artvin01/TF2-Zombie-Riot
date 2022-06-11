@@ -2644,6 +2644,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_Map_BaseBoss_No_Layers[entity] = false;
 		b_Is_Player_Rocket_Through_Npc[entity] = false;
 		i_IsABuilding[entity] = false;
+		i_InSafeZone[entity] = 0;
 		OnEntityCreated_Build_On_Build(entity, classname);
 		SetDefaultValuesToZeroNPC(entity);
 		
@@ -2804,8 +2805,42 @@ public void OnEntityCreated(int entity, const char[] classname)
 			GetEntPropString(i, Prop_Data, "m_iName", buffer, sizeof(buffer));
 		}
 		*/
+		else if(!StrContains(classname, "trigger_hurt"))
+		{
+			SDKHook(entity, SDKHook_StartTouch, SDKHook_SafeSpot_StartTouch);
+			SDKHook(entity, SDKHook_EndTouch, SDKHook_SafeSpot_EndTouch);
+		}
+		else if(!StrContains(classname, "func_respawnroom"))
+		{
+			SDKHook(entity, SDKHook_StartTouch, SDKHook_RespawnRoom_StartTouch);
+			SDKHook(entity, SDKHook_EndTouch, SDKHook_RespawnRoom_EndTouch);
+		}
 	}
 	
+}
+
+public void SDKHook_SafeSpot_StartTouch(int entity, int target)
+{
+	if(target > 0 && target < sizeof(i_InSafeZone))
+		i_InSafeZone[target]++;
+}
+
+public void SDKHook_SafeSpot_EndTouch(int entity, int target)
+{
+	if(target > 0 && target < sizeof(i_InSafeZone))
+		i_InSafeZone[target]--;
+}
+
+public void SDKHook_RespawnRoom_StartTouch(int entity, int target)
+{
+	if(target > 0 && target < sizeof(i_InSafeZone) && GetEntProp(entity, Prop_Send, "m_iTeamNum") == GetEntProp(target, Prop_Send, "m_iTeamNum"))
+		i_InSafeZone[target]++;
+}
+
+public void SDKHook_RespawnRoom_EndTouch(int entity, int target)
+{
+	if(target > 0 && target < sizeof(i_InSafeZone) && GetEntProp(entity, Prop_Send, "m_iTeamNum") == GetEntProp(target, Prop_Send, "m_iTeamNum"))
+		i_InSafeZone[target]--;
 }
 
 public void Set_Projectile_Collision(int entity)
