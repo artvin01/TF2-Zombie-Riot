@@ -1266,9 +1266,9 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 		if(npc.m_flMeleeArmor != 1.0 || Medival_Difficulty_Level != 0)
 		{
 			float percentage = npc.m_flMeleeArmor * 100.0;
-			if(Medival_Difficulty_Level != 0)
+			if(Medival_Difficulty_Level != 0.0)
 			{
-				percentage *= Medival_Difficulty_Level * 0.1;
+				percentage *= Medival_Difficulty_Level;
 			}
 			
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder, percentage);
@@ -1278,9 +1278,9 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 		{
 			float percentage = npc.m_flRangedArmor * 100.0;
 			
-			if(Medival_Difficulty_Level != 0)
+			if(Medival_Difficulty_Level != 0.0)
 			{
-				percentage *= Medival_Difficulty_Level * 0.1;
+				percentage *= Medival_Difficulty_Level;
 			}
 			
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);

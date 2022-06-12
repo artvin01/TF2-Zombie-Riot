@@ -952,10 +952,14 @@ public void Medival_Wave_Difficulty_Riser(int difficulty)
 	
 	difficulty_math *= -1.0;
 	
-	difficulty_math / 10.0;
+	difficulty_math /= 10.0;
 	
 	difficulty_math += 1.0;
 	
+	if(difficulty_math < 0.1) //Just make sure that it doesnt go below.
+	{
+		difficulty_math = 0.1;
+	}
 	//invert the number and then just set the difficulty medival level to the % amount of damage resistance.
 	//This means that you can go upto 100% dmg res but if youre retarded enough to do this then you might aswell have an unplayable experience.
 	

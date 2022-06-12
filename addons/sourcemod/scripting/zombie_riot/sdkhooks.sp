@@ -645,6 +645,15 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		return Plugin_Changed;	
 	}
 	
+	if(Medival_Difficulty_Level != 0.0)
+	{
+		float difficulty_math = Medival_Difficulty_Level;
+		
+		difficulty_math = 1.0 - difficulty_math;
+		
+		damage *= difficulty_math + 1.0; //More damage !! only upto double.
+	}
+	
 	if(!b_ThisNpcIsSawrunner[attacker])
 	{
 		if(EscapeMode)
