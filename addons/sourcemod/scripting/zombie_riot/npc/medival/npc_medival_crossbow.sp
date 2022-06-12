@@ -144,7 +144,7 @@ methodmap MedivalCrossbowMan < CClotBody
 	
 	public MedivalCrossbowMan(int client, float vecPos[3], float vecAng[3])
 	{
-		MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2000"));
+		MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "900"));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_CROSSBOW_MAN;
 		
