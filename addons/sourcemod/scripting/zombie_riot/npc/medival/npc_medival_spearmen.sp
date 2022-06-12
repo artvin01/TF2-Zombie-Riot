@@ -167,7 +167,7 @@ methodmap MedivalSpearMan < CClotBody
 	
 	public MedivalSpearMan(int client, float vecPos[3], float vecAng[3])
 	{
-		MedivalSpearMan npc = view_as<MedivalSpearMan>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "500"));
+		MedivalSpearMan npc = view_as<MedivalSpearMan>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400"));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_SPEARMEN;
 		
@@ -188,7 +188,7 @@ methodmap MedivalSpearMan < CClotBody
 //		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
-		npc.m_flSpeed = 320.0;
+		npc.m_flSpeed = 310.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;

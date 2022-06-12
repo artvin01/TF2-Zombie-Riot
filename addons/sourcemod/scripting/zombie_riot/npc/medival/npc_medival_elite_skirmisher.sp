@@ -58,7 +58,7 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
-void MedivalHandCannoneer_OnMapStart_NPC()
+void MedivalEliteSkirmisher_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -70,7 +70,7 @@ void MedivalHandCannoneer_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 }
 
-methodmap MedivalHandCannoneer < CClotBody
+methodmap MedivalEliteSkirmisher < CClotBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime())
@@ -142,13 +142,13 @@ methodmap MedivalHandCannoneer < CClotBody
 		#endif
 	}
 	
-	public MedivalHandCannoneer(int client, float vecPos[3], float vecAng[3])
+	public MedivalEliteSkirmisher(int client, float vecPos[3], float vecAng[3])
 	{
-		MedivalHandCannoneer npc = view_as<MedivalHandCannoneer>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "10000"));
+		MedivalEliteSkirmisher npc = view_as<MedivalEliteSkirmisher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2000"));
 		
-		i_NpcInternalId[npc.index] = MEDIVAL_HANDCANNONEER;
+		i_NpcInternalId[npc.index] = MEDIVAL_ELITE_SKIRMISHER;
 		
-		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_GUN");
+		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_SPEAR");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -158,18 +158,20 @@ methodmap MedivalHandCannoneer < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_demo_cannon/c_demo_cannon.mdl");
-		SetVariantString("0.6");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
+		SetVariantString("3.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalHandCannoneer_ClotDamaged);
-		SDKHook(npc.index, SDKHook_Think, MedivalHandCannoneer_ClotThink);
-	
-//		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-//		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalEliteSkirmisher_ClotDamaged);
+		SDKHook(npc.index, SDKHook_Think, MedivalEliteSkirmisher_ClotThink);
 
+
+		npc.m_iWearable2 = npc.EquipItem("weapon_targe", "models/workshop/weapons/c_models/c_persian_shield/c_persian_shield_all.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		
 		npc.m_iState = 0;
-		npc.m_flSpeed = 170.0;
+		npc.m_flSpeed = 220.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -177,13 +179,13 @@ methodmap MedivalHandCannoneer < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		
 		npc.m_flMeleeArmor = 1.0;
-		npc.m_flRangedArmor = 1.0;
+		npc.m_flRangedArmor = 0.25;
 
-	/*	
-		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/all_class/sbox2014_toowoomba_tunic/sbox2014_toowoomba_tunic_sniper.mdl");
+	
+		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/workshop/player/items/demo/jul13_stormn_normn/jul13_stormn_normn.mdl");
 		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-	*/
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+	
 		PF_StartPathing(npc.index);
 		npc.m_bPathing = true;
 		
@@ -195,12 +197,9 @@ methodmap MedivalHandCannoneer < CClotBody
 
 //TODO 
 //Rewrite
-public void MedivalHandCannoneer_ClotThink(int iNPC)
+public void MedivalEliteSkirmisher_ClotThink(int iNPC)
 {
-	MedivalHandCannoneer npc = view_as<MedivalHandCannoneer>(iNPC);
-	
-	SetVariantInt(0);
-	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+	MedivalEliteSkirmisher npc = view_as<MedivalEliteSkirmisher>(iNPC);
 	
 	if(npc.m_flNextDelayTime > GetGameTime())
 	{
@@ -237,6 +236,11 @@ public void MedivalHandCannoneer_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		
+			if(npc.m_flJumpStartTime < GetGameTime())
+			{
+				npc.m_flSpeed = 170.0;
+				AcceptEntityInput(npc.m_iWearable1, "Enable");
+			}
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -279,11 +283,13 @@ public void MedivalHandCannoneer_ClotThink(int iNPC)
 					{
 			//			npc.FaceTowards(vecTarget, 30000.0);
 						//Play attack anim
-						npc.AddGesture("ACT_CUSTOM_ATTACK_CANNONEER");
+						npc.m_flSpeed = 0.0;
+						npc.AddGesture("ACT_CUSTOM_ATTACK_SPEAR");
 						
 			//			npc.PlayMeleeSound();
 			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
-						npc.m_flNextMeleeAttack = GetGameTime() + 2.0;
+						npc.m_flNextMeleeAttack = GetGameTime() + 1.5;
+						npc.m_flJumpStartTime = GetGameTime() + 0.9;
 					}
 					PF_StopPathing(npc.index);
 					npc.m_bPathing = false;
@@ -310,35 +316,36 @@ public void MedivalHandCannoneer_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public void HandleAnimEventMedival_HandCannoneer(int entity, int event)
+public void HandleAnimEvent_MedivalEliteSkirmisher(int entity, int event)
 {
 	if(event == 1001)
 	{
-		MedivalHandCannoneer npc = view_as<MedivalHandCannoneer>(entity);
+		MedivalEliteSkirmisher npc = view_as<MedivalEliteSkirmisher>(entity);
 		
 		int PrimaryThreatIndex = npc.m_iTarget;
 	
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 		{
+			AcceptEntityInput(npc.m_iWearable1, "Disable");
 			
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 				
 			npc.FaceTowards(vecTarget, 30000.0);
 						
 			npc.PlayMeleeSound();
-			npc.FireArrow(vecTarget, 25.0, 1200.0);
+			npc.FireArrow(vecTarget, 45.0, 1200.0);
 		}
 	}
 	
 }
 
-public Action MedivalHandCannoneer_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalEliteSkirmisher_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	MedivalHandCannoneer npc = view_as<MedivalHandCannoneer>(victim);
+	MedivalEliteSkirmisher npc = view_as<MedivalEliteSkirmisher>(victim);
 	
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())
@@ -351,19 +358,21 @@ public Action MedivalHandCannoneer_ClotDamaged(int victim, int &attacker, int &i
 	return Plugin_Changed;
 }
 
-public void MedivalHandCannoneer_NPCDeath(int entity)
+public void MedivalEliteSkirmisher_NPCDeath(int entity)
 {
-	MedivalHandCannoneer npc = view_as<MedivalHandCannoneer>(entity);
+	MedivalEliteSkirmisher npc = view_as<MedivalEliteSkirmisher>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalHandCannoneer_ClotDamaged);
-	SDKUnhook(npc.index, SDKHook_Think, MedivalHandCannoneer_ClotThink);
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalEliteSkirmisher_ClotDamaged);
+	SDKUnhook(npc.index, SDKHook_Think, MedivalEliteSkirmisher_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
 }

@@ -13,10 +13,28 @@ static const char g_HurtSounds[][] = {
 };
 
 static const char g_IdleSounds[][] = {
-	"npc/combine_soldier/vo/alert1.wav",
-	"npc/combine_soldier/vo/bouncerbouncer.wav",
-	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfirm.wav",
+	"npc/metropolice/vo/affirmative.wav",
+	"npc/metropolice/vo/affirmative2.wav",
+	"npc/metropolice/vo/canalblock.wav",
+	"npc/metropolice/vo/chuckle.wav",
+	"npc/metropolice/vo/citizen.wav",
+	"npc/metropolice/vo/code7.wav",
+	"npc/metropolice/vo/code100.wav",
+	"npc/metropolice/vo/copy.wav",
+	"npc/metropolice/vo/breakhiscover.wav",
+	"npc/metropolice/vo/help.wav",
+	"npc/metropolice/vo/hesgone148.wav",
+	"npc/metropolice/vo/hesrunning.wav",
+	"npc/metropolice/vo/infection.wav",
+	"npc/metropolice/vo/king.wav",
+	"npc/metropolice/vo/needanyhelpwiththisone.wav",
+	"npc/metropolice/vo/pickupthatcan1.wav",
+	"npc/metropolice/vo/pickupthatcan2.wav",
+	"npc/metropolice/vo/pickupthatcan3.wav",
+	"npc/metropolice/vo/sociocide.wav",
+	"npc/metropolice/vo/watchit.wav",
+	"npc/metropolice/vo/xray.wav",
+	"npc/metropolice/vo/youknockeditover.wav",
 };
 
 static const char g_IdleAlertedSounds[][] = {
@@ -45,20 +63,25 @@ static const char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/takedown.wav",
 };
 
-
 static const char g_MeleeHitSounds[][] = {
-	"weapons/bat_baseball_hit_flesh.wav",
+	"weapons/cleaver_hit_02.wav",
+	"weapons/cleaver_hit_03.wav",
+	"weapons/cleaver_hit_05.wav",
+	"weapons/cleaver_hit_06.wav",
+	"weapons/cleaver_hit_07.wav",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/bow_shoot.wav",
+	"weapons/demo_sword_swing1.wav",
+	"weapons/demo_sword_swing2.wav",
+	"weapons/demo_sword_swing3.wav",
 };
 
 static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
-void MedivalHandCannoneer_OnMapStart_NPC()
+void MedivalPikeman_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -70,7 +93,7 @@ void MedivalHandCannoneer_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 }
 
-methodmap MedivalHandCannoneer < CClotBody
+methodmap MedivalPikeman < CClotBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime())
@@ -142,13 +165,13 @@ methodmap MedivalHandCannoneer < CClotBody
 		#endif
 	}
 	
-	public MedivalHandCannoneer(int client, float vecPos[3], float vecAng[3])
+	public MedivalPikeman(int client, float vecPos[3], float vecAng[3])
 	{
-		MedivalHandCannoneer npc = view_as<MedivalHandCannoneer>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "10000"));
+		MedivalPikeman npc = view_as<MedivalPikeman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2500"));
 		
-		i_NpcInternalId[npc.index] = MEDIVAL_HANDCANNONEER;
+		i_NpcInternalId[npc.index] = MEDIVAL_PIKEMAN;
 		
-		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_GUN");
+		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_SPAERMEN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -158,18 +181,14 @@ methodmap MedivalHandCannoneer < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_demo_cannon/c_demo_cannon.mdl");
-		SetVariantString("0.6");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalHandCannoneer_ClotDamaged);
-		SDKHook(npc.index, SDKHook_Think, MedivalHandCannoneer_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalPikeman_ClotDamaged);
+		SDKHook(npc.index, SDKHook_Think, MedivalPikeman_ClotThink);
 	
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 //		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
-		npc.m_flSpeed = 170.0;
+		npc.m_flSpeed = 335.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -178,12 +197,19 @@ methodmap MedivalHandCannoneer < CClotBody
 		
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
-
-	/*	
-		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/all_class/sbox2014_toowoomba_tunic/sbox2014_toowoomba_tunic_sniper.mdl");
-		SetVariantString("1.0");
+		
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
+		SetVariantString("3.0");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/player/items/soldier/bio_soldier_founders_cover.mdl");
+		SetVariantString("1.1");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-	*/
+		
+		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/workshop/player/items/demo/demolitionists_dustcatcher/demolitionists_dustcatcher.mdl");
+		SetVariantString("0.8");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		
 		PF_StartPathing(npc.index);
 		npc.m_bPathing = true;
 		
@@ -195,12 +221,9 @@ methodmap MedivalHandCannoneer < CClotBody
 
 //TODO 
 //Rewrite
-public void MedivalHandCannoneer_ClotThink(int iNPC)
+public void MedivalPikeman_ClotThink(int iNPC)
 {
-	MedivalHandCannoneer npc = view_as<MedivalHandCannoneer>(iNPC);
-	
-	SetVariantInt(0);
-	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+	MedivalPikeman npc = view_as<MedivalPikeman>(iNPC);
 	
 	if(npc.m_flNextDelayTime > GetGameTime())
 	{
@@ -236,8 +259,8 @@ public void MedivalHandCannoneer_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
@@ -245,8 +268,8 @@ public void MedivalHandCannoneer_ClotThink(int iNPC)
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				/*
-				int color[4];
+				
+			/*	int color[4];
 				color[0] = 255;
 				color[1] = 255;
 				color[2] = 0;
@@ -255,46 +278,68 @@ public void MedivalHandCannoneer_ClotThink(int iNPC)
 				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
 			
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
-				TE_SendToAllInRange(vecTarget, RangeType_Visibility);
-				*/
-				
-				
+				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
 				PF_SetGoalVector(npc.index, vPredictedPos);
 			} else {
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			
-			if(flDistanceToTarget < 160000)
+	
+			//Target close enough to hit
+			if((flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime()) || npc.m_flAttackHappenswillhappen)
 			{
-				int Enemy_I_See;
+			//	npc.FaceTowards(vecTarget, 1000.0);
 				
-				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-				//Target close enough to hit
-				if(IsValidEnemy(npc.index, Enemy_I_See))
+				if(npc.m_flNextMeleeAttack < GetGameTime() || npc.m_flAttackHappenswillhappen)
 				{
-					
-					//Can we attack right now?
-					if(npc.m_flNextMeleeAttack < GetGameTime())
+					if (!npc.m_flAttackHappenswillhappen)
 					{
-			//			npc.FaceTowards(vecTarget, 30000.0);
-						//Play attack anim
-						npc.AddGesture("ACT_CUSTOM_ATTACK_CANNONEER");
-						
-			//			npc.PlayMeleeSound();
-			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
-						npc.m_flNextMeleeAttack = GetGameTime() + 2.0;
+						npc.m_flNextRangedSpecialAttack = GetGameTime() + 2.0;
+						npc.AddGesture("ACT_CUSTOM_ATTACK_SPEARMEN");
+						npc.PlayMeleeSound();
+						npc.m_flAttackHappens = GetGameTime()+0.3;
+						npc.m_flAttackHappens_bullshit = GetGameTime()+0.44;
+						npc.m_flNextMeleeAttack = GetGameTime() + 0.5;
+						npc.m_flAttackHappenswillhappen = true;
 					}
-					PF_StopPathing(npc.index);
-					npc.m_bPathing = false;
-				}
-				else
-				{
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+						
+					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+					{
+						Handle swingTrace;
+						npc.FaceTowards(vecTarget, 20000.0);
+						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
+							{
+								
+								int target = TR_GetEntityIndex(swingTrace);	
+								
+								float vecHit[3];
+								TR_GetEndPosition(vecHit, swingTrace);
+								
+								if(target > 0) 
+								{
+									
+									if(target <= MaxClients)
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 25.0, DMG_SLASH|DMG_CLUB);
+									else
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_SLASH|DMG_CLUB);
+									
+									// Hit particle
+									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
+									// Hit sound
+									npc.PlayMeleeHitSound();
+								} 
+							}
+						delete swingTrace;
+						npc.m_flAttackHappenswillhappen = false;
+					}
+					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+					{
+						npc.m_flAttackHappenswillhappen = false;
+					}
 				}
 			}
-			else
+			if (npc.m_flReloadDelay < GetGameTime())
 			{
 				PF_StartPathing(npc.index);
 				npc.m_bPathing = true;
@@ -310,35 +355,13 @@ public void MedivalHandCannoneer_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public void HandleAnimEventMedival_HandCannoneer(int entity, int event)
-{
-	if(event == 1001)
-	{
-		MedivalHandCannoneer npc = view_as<MedivalHandCannoneer>(entity);
-		
-		int PrimaryThreatIndex = npc.m_iTarget;
-	
-		if(IsValidEnemy(npc.index, PrimaryThreatIndex))
-		{
-			
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-				
-			npc.FaceTowards(vecTarget, 30000.0);
-						
-			npc.PlayMeleeSound();
-			npc.FireArrow(vecTarget, 25.0, 1200.0);
-		}
-	}
-	
-}
-
-public Action MedivalHandCannoneer_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalPikeman_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	MedivalHandCannoneer npc = view_as<MedivalHandCannoneer>(victim);
+	MedivalPikeman npc = view_as<MedivalPikeman>(victim);
 	
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())
@@ -351,19 +374,21 @@ public Action MedivalHandCannoneer_ClotDamaged(int victim, int &attacker, int &i
 	return Plugin_Changed;
 }
 
-public void MedivalHandCannoneer_NPCDeath(int entity)
+public void MedivalPikeman_NPCDeath(int entity)
 {
-	MedivalHandCannoneer npc = view_as<MedivalHandCannoneer>(entity);
+	MedivalPikeman npc = view_as<MedivalPikeman>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalHandCannoneer_ClotDamaged);
-	SDKUnhook(npc.index, SDKHook_Think, MedivalHandCannoneer_ClotThink);
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalPikeman_ClotDamaged);
+	SDKUnhook(npc.index, SDKHook_Think, MedivalPikeman_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
 }

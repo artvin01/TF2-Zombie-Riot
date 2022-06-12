@@ -1,7 +1,7 @@
 
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_59.mdl"
+//#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_59.mdl"
 
-//#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_159.mdl"
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_159.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
 
@@ -732,6 +732,18 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], c
 		{
 			return MedivalHandCannoneer(client, vecPos, vecAng);
 		}
+		case MEDIVAL_ELITE_SKIRMISHER:
+		{
+			return MedivalEliteSkirmisher(client, vecPos, vecAng);
+		}
+		case RAIDMODE_BLITZKRIEG:
+		{
+			return Blitzkrieg(client, vecPos, vecAng);
+		}
+		case MEDIVAL_PIKEMAN:
+		{
+			return MedivalPikeman(client, vecPos, vecAng);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1168,6 +1180,18 @@ public void NPCDeath(int entity)
 		{
 			MedivalHandCannoneer_NPCDeath(entity);
 		}
+		case MEDIVAL_ELITE_SKIRMISHER:
+		{
+			MedivalEliteSkirmisher_NPCDeath(entity);
+		}
+		case RAIDMODE_BLITZKRIEG:
+		{
+			Blitzkrieg_NPCDeath(entity);
+		}
+		case MEDIVAL_PIKEMAN:
+		{
+			MedivalPikeman_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1328,6 +1352,9 @@ public void OnMapStart_NPC_Base()
 	MedivalCrossbowMan_OnMapStart_NPC();
 	MedivalSpearMan_OnMapStart_NPC();
 	MedivalHandCannoneer_OnMapStart_NPC();
+	MedivalEliteSkirmisher_OnMapStart_NPC();
+	Blitzkrieg_OnMapStart();
+	MedivalPikeman_OnMapStart_NPC();
 }
 
 
@@ -3876,6 +3903,10 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		{
 			HandleAnimEventMedival_HandCannoneer(pThis, event);
 		}
+		case MEDIVAL_ELITE_SKIRMISHER:
+		{
+			HandleAnimEvent_MedivalEliteSkirmisher(pThis, event);
+		}
 	}
 	
 	switch(npc.m_iNpcStepVariation)
@@ -4902,10 +4933,18 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 	
 	if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
 	{
+		if(Medival_Difficulty_Level != 0.0)
+		{
+			damage *= Medival_Difficulty_Level;
+		}
 		damage *= fl_MeleeArmor[victim];
 	}
 	else if(!(damagetype & DMG_SLASH))
 	{
+		if(Medival_Difficulty_Level != 0.0)
+		{
+			damage *= Medival_Difficulty_Level;
+		}
 		damage *= fl_RangedArmor[victim];
 	}
 	//No resistances towards slash as its internal.
@@ -6382,6 +6421,8 @@ public MRESReturn Arrow_DHook_RocketExplodePre(int arrow)
 #include "zombie_riot/npc/alt/npc_alt_medic_apprentice_mage.sp"
 
 #include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_blitzkrieg.sp"
+
 #include "zombie_riot/npc/alt/npc_alt_medic_charger.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_berserker.sp"
 
@@ -6394,3 +6435,5 @@ public MRESReturn Arrow_DHook_RocketExplodePre(int arrow)
 #include "zombie_riot/npc/medival/npc_medival_crossbow.sp"
 #include "zombie_riot/npc/medival/npc_medival_spearmen.sp"
 #include "zombie_riot/npc/medival/npc_medival_handcannoneer.sp"
+#include "zombie_riot/npc/medival/npc_medival_elite_skirmisher.sp"
+#include "zombie_riot/npc/medival/npc_medival_pikeman.sp"

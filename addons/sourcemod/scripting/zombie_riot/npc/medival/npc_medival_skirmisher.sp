@@ -156,7 +156,7 @@ methodmap MedivalSkirmisher < CClotBody
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
+		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
 		SetVariantString("3.0");
@@ -240,9 +240,9 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		
-			if(npc.m_flNextMeleeAttack < GetGameTime())
+			if(npc.m_flJumpStartTime < GetGameTime())
 			{
+				npc.m_flSpeed = 170.0;
 				AcceptEntityInput(npc.m_iWearable1, "Enable");
 			}
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
@@ -288,10 +288,11 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 			//			npc.FaceTowards(vecTarget, 30000.0);
 						//Play attack anim
 						npc.AddGesture("ACT_CUSTOM_ATTACK_SPEAR");
-						
+						npc.m_flSpeed = 0.0;
 			//			npc.PlayMeleeSound();
 			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
 						npc.m_flNextMeleeAttack = GetGameTime() + 2.0;
+						npc.m_flJumpStartTime = GetGameTime() + 0.9;
 					}
 					PF_StopPathing(npc.index);
 					npc.m_bPathing = false;

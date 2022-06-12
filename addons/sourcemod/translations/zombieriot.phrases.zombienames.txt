@@ -432,4 +432,16 @@
 	{
 		"en" 		"Hand Cannoneer"
 	}
+	"Elite Skirmisher"
+	{
+		"en" 		"Elite Skirmisher"
+	}
+	"Blitzkrieg"
+	{
+		"en" 		"Blitzkrieg"
+	}
+	"Pikeman"
+	{
+		"en" 		"Pikeman"
+	}
 }

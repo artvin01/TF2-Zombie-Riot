@@ -242,6 +242,10 @@ public void MedivalArcher_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		
+			if(npc.m_flJumpStartTime < GetGameTime())
+			{
+				npc.m_flSpeed = 170.0;
+			}
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -282,6 +286,7 @@ public void MedivalArcher_ClotThink(int iNPC)
 					//Can we attack right now?
 					if(npc.m_flNextMeleeAttack < GetGameTime())
 					{
+						npc.m_flSpeed = 0.0;
 			//			npc.FaceTowards(vecTarget, 30000.0);
 						//Play attack anim
 						npc.AddGesture("ACT_CUSTOM_ATTACK_BOW");
@@ -289,6 +294,7 @@ public void MedivalArcher_ClotThink(int iNPC)
 			//			npc.PlayMeleeSound();
 			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
 						npc.m_flNextMeleeAttack = GetGameTime() + 2.0;
+						npc.m_flJumpStartTime = GetGameTime() + 1.0;
 					}
 					PF_StopPathing(npc.index);
 					npc.m_bPathing = false;

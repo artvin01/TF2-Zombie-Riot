@@ -144,7 +144,7 @@ methodmap MedivalCrossbowMan < CClotBody
 	
 	public MedivalCrossbowMan(int client, float vecPos[3], float vecAng[3])
 	{
-		MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400"));
+		MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2000"));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_CROSSBOW_MAN;
 		
@@ -241,7 +241,10 @@ public void MedivalCrossbowMan_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		
+			if(npc.m_flJumpStartTime < GetGameTime())
+			{
+				npc.m_flSpeed = 170.0;
+			}
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -278,10 +281,10 @@ public void MedivalCrossbowMan_ClotThink(int iNPC)
 				//Target close enough to hit
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					
 					//Can we attack right now?
 					if(npc.m_flNextMeleeAttack < GetGameTime())
 					{
+						npc.m_flSpeed = 0.0;
 			//			npc.FaceTowards(vecTarget, 30000.0);
 						//Play attack anim
 						npc.AddGesture("ACT_CUSTOM_ATTACK_CROSSBOW");
@@ -289,6 +292,7 @@ public void MedivalCrossbowMan_ClotThink(int iNPC)
 			//			npc.PlayMeleeSound();
 			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
 						npc.m_flNextMeleeAttack = GetGameTime() + 2.0;
+						npc.m_flJumpStartTime = GetGameTime() + 0.7; //Reuse this!
 					}
 					PF_StopPathing(npc.index);
 					npc.m_bPathing = false;
@@ -325,13 +329,12 @@ public void HandleAnimEventMedival_CrossbowMan(int entity, int event)
 	
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 		{
-			
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 				
 			npc.FaceTowards(vecTarget, 30000.0);
 						
 			npc.PlayMeleeSound();
-			npc.FireArrow(vecTarget, 25.0, 1200.0);
+			npc.FireArrow(vecTarget, 40.0, 1200.0);
 		}
 	}
 	

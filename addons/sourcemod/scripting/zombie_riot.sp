@@ -190,6 +190,9 @@ float RaidModeTime = 0.0;
 float f_TimerTickCooldownRaid = 0.0;
 float f_TimerTickCooldownShop = 0.0;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
+float Medival_Difficulty_Level = 0.0;	
+
+
 
 int CurrentPlayers;
 int PlayersAliveScaling;
@@ -572,6 +575,9 @@ enum
 	MEDIVAL_CROSSBOW_MAN				= 104,
 	MEDIVAL_SPEARMEN					= 105,
 	MEDIVAL_HANDCANNONEER				= 106,
+	MEDIVAL_ELITE_SKIRMISHER			= 107,
+	RAIDMODE_BLITZKRIEG					= 108,
+	MEDIVAL_PIKEMAN						= 109,
 }
 
 
@@ -690,7 +696,10 @@ char NPC_Names[][] =
 	"Twohanded Swordsman",
 	"Crossbow Man",
 	"Spearman",
-	"Hand Cannoneer"
+	"Hand Cannoneer",
+	"Elite Skirmisher",
+	"Blitzkrieg",
+	"Pikeman"
 };
 
 char NPC_Plugin_Names_Converted[][] =
@@ -799,7 +808,7 @@ char NPC_Plugin_Names_Converted[][] =
 	"npc_true_fusion_warrior",
 	"npc_alt_medic_charger",
 	"npc_alt_medic_berserker",
-	"npc_medival_milita",
+	"npc_medival_militia",
 	"npc_medival_archer",
 	"npc_medival_man_at_arms",
 	"npc_medival_skrirmisher",
@@ -807,7 +816,10 @@ char NPC_Plugin_Names_Converted[][] =
 	"npc_medival_twohanded_swordsman",
 	"npc_medival_crossbow",
 	"npc_medival_spearmen",
-	"npc_medival_handcannoneer"
+	"npc_medival_handcannoneer",
+	"npc_medival_elite_skirmisher",
+	"npc_blitzkrieg",
+	"npc_medival_pikeman"
 };
 
 #include "zombie_riot/stocks.sp"

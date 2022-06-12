@@ -1826,7 +1826,7 @@ void Store_ApplyAttribs(int client)
 	else
 		map.SetValue("26", -RemoveExtraHealth(ClassForStats) + 100 + Extra_Juggernog_Hp);		// Health
 		
-	map.SetValue("107", RemoveExtraSpeed(ClassForStats));		// Move Speed
+	map.SetValue("107", (RemoveExtraSpeed(ClassForStats) * 1.1));		// Move Speed and abit of extra
 	map.SetValue("353", 1.0);											// No manual building pickup.
 	map.SetValue("465", 10.0);											// x10 faster diepsner build
 	map.SetValue("464", 10.0);											// x10 faster sentry build
@@ -2586,7 +2586,7 @@ static void ItemCost(int client, Item item, int &cost)
 	}
 	if(cost < original_cost_With_Sell)
 	{
-		cost == original_cost_With_Sell;
+		cost = original_cost_With_Sell;
 	}
 }
 
