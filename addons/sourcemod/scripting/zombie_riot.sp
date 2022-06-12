@@ -569,6 +569,9 @@ enum
 	MEDIVAL_SKIRMISHER					= 101,
 	MEDIVAL_SWORDSMAN					= 102,
 	MEDIVAL_TWOHANDED_SWORDSMAN			= 103,
+	MEDIVAL_CROSSBOW_MAN				= 104,
+	MEDIVAL_SPEARMEN					= 105,
+	MEDIVAL_HANDCANNONEER				= 106,
 }
 
 
@@ -684,7 +687,10 @@ char NPC_Names[][] =
 	"Man-At-Arms",
 	"Skirmisher",
 	"Long Swordsman",
-	"Twohanded Swordsman"
+	"Twohanded Swordsman",
+	"Crossbow Man",
+	"Spearman",
+	"Hand Cannoneer"
 };
 
 char NPC_Plugin_Names_Converted[][] =
@@ -798,7 +804,10 @@ char NPC_Plugin_Names_Converted[][] =
 	"npc_medival_man_at_arms",
 	"npc_medival_skrirmisher",
 	"npc_medival_swordsman",
-	"npc_medival_twohanded_swordsman"
+	"npc_medival_twohanded_swordsman",
+	"npc_medival_crossbow",
+	"npc_medival_spearmen",
+	"npc_medival_handcannoneer"
 };
 
 #include "zombie_riot/stocks.sp"

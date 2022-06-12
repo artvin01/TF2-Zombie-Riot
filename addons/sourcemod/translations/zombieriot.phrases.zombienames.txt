@@ -420,4 +420,16 @@
 	{
 		"en" 		"Twohanded Swordsman"
 	}
+	"Crossbow Man"
+	{
+		"en" 		"Crossbow Man"
+	}
+	"Spearman"
+	{
+		"en" 		"Spearman"
+	}
+	"Hand Cannoneer"
+	{
+		"en" 		"Hand Cannoneer"
+	}
 }

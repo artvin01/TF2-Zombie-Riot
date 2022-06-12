@@ -1,7 +1,7 @@
 
 #define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_59.mdl"
 
-//#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_113.mdl"
+//#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_159.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
 
@@ -719,6 +719,18 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], c
 		{
 			return MedivalTwoHandedSwordsman(client, vecPos, vecAng);
 		}
+		case MEDIVAL_CROSSBOW_MAN:
+		{
+			return MedivalCrossbowMan(client, vecPos, vecAng);
+		}
+		case MEDIVAL_SPEARMEN:
+		{
+			return MedivalSpearMan(client, vecPos, vecAng);
+		}
+		case MEDIVAL_HANDCANNONEER:
+		{
+			return MedivalHandCannoneer(client, vecPos, vecAng);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1143,6 +1155,18 @@ public void NPCDeath(int entity)
 		{
 			MedivalTwoHandedSwordsman_NPCDeath(entity);
 		}
+		case MEDIVAL_CROSSBOW_MAN:
+		{
+			MedivalCrossbowMan_NPCDeath(entity);
+		}
+		case MEDIVAL_SPEARMEN:
+		{
+			MedivalSpearMan_NPCDeath(entity);
+		}
+		case MEDIVAL_HANDCANNONEER:
+		{
+			MedivalHandCannoneer_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1300,6 +1324,9 @@ public void OnMapStart_NPC_Base()
 	MedivalSkirmisher_OnMapStart_NPC();
 	MedivalSwordsman_OnMapStart_NPC();
 	MedivalTwoHandedSwordsman_OnMapStart_NPC();
+	MedivalCrossbowMan_OnMapStart_NPC();
+	MedivalSpearMan_OnMapStart_NPC();
+	MedivalHandCannoneer_OnMapStart_NPC();
 }
 
 
@@ -3837,7 +3864,16 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		{
 			HandleAnimEvent_MedivalSkirmisher(pThis, event);
 		}	
+		case MEDIVAL_CROSSBOW_MAN:
+		{
+			HandleAnimEventMedival_CrossbowMan(pThis, event);
+		}
+		case MEDIVAL_HANDCANNONEER:
+		{
+			HandleAnimEventMedival_HandCannoneer(pThis, event);
+		}
 	}
+	
 	switch(npc.m_iNpcStepVariation)
 	{
 		case 1:
@@ -6351,3 +6387,6 @@ public MRESReturn Arrow_DHook_RocketExplodePre(int arrow)
 #include "zombie_riot/npc/medival/npc_medival_skirmisher.sp"
 #include "zombie_riot/npc/medival/npc_medival_swordsman.sp"
 #include "zombie_riot/npc/medival/npc_medival_twohanded_swordsman.sp"
+#include "zombie_riot/npc/medival/npc_medival_crossbow.sp"
+#include "zombie_riot/npc/medival/npc_medival_spearmen.sp"
+#include "zombie_riot/npc/medival/npc_medival_handcannoneer.sp"
