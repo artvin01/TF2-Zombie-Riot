@@ -53,7 +53,7 @@ static char g_AngerSounds[][] = {
 	"vo/medic_weapon_taunts03.mp3",
 };
 static const char g_IdleMusic[][] = {
-	"ui/gamestartup12.mp3",	//Do something like base tf2 theme, or lastman zr or idk
+	"#ui/gamestartup12.mp3",	//Do something like base tf2 theme, or lastman zr or idk
 };
 
 static char gGlow1;
@@ -63,7 +63,7 @@ static char gLaser1;
 static int i_AmountProjectiles[MAXENTITIES];
 static int i_NpcCurrentLives[MAXENTITIES];
 static float i_HealthScale[MAXENTITIES];
-
+static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 
 public void Blitzkrieg_OnMapStart()
 {
@@ -135,11 +135,10 @@ methodmap Blitzkrieg < CClotBody
 		if(this.m_flPlayMusicSound > GetEngineTime())
 			return;
 		
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 180, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 180, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 180, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 180, _, BOSS_ZOMBIE_VOLUME, 100);
 		this.m_flPlayMusicSound = GetEngineTime() + 233.0;
 		
 	}
@@ -247,6 +246,14 @@ methodmap Blitzkrieg < CClotBody
 		}
 		Raidboss_Clean_Everyone();
 		
+		
+		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
+		{
+			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
+		}
+		
+		npc.m_flNextRangedBarrage_Spam = GetGameTime() + 15.0
+		
 		SDKHook(npc.index, SDKHook_Think, Blitzkrieg_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamage, Blitzkrieg_ClotDamaged);
 		
@@ -344,20 +351,16 @@ public void Blitzkrieg_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime())
 	{
-		float targPos[3];
-		float chargerPos[3];
-		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", chargerPos);
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client))
 			{
-				GetClientAbsOrigin(client, targPos);
-				if (GetVectorDistance(chargerPos, targPos, true) <= 4000000) // 1500 range
+				if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
 				{
-					Music_Stop_All(client);
-					Music_Stop_All_Beat(client);
-					Music_Timer[client] = GetEngineTime() + 5.0;
+					Music_Stop_All(client); //This is actually more expensive then i thought.
 				}
+				Music_Timer[client] = GetEngineTime() + 5.0;
+				fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
 			}
 		}
 		npc.m_iTarget = GetClosestTarget(npc.index);
