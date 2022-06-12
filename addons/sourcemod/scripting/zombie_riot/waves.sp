@@ -645,7 +645,7 @@ void Waves_Progress()
 				PrintToChatAll("%t", "Grigori Store Refresh");
 				Store_RandomizeNPCStore(); // Refresh me !!!
 			}
-			if(round.medival_difficulty > 0)
+			if(round.medival_difficulty != 0)
 			{
 			//	PrintToChatAll("%t", "Grigori Store Refresh");
 				Medival_Wave_Difficulty_Riser(round.medival_difficulty); // Refresh me !!!
@@ -954,7 +954,7 @@ public void Medival_Wave_Difficulty_Riser(int difficulty)
 	
 	difficulty_math / 10.0;
 	
-	difficulty_math += 1;
+	difficulty_math += 1.0;
 	
 	//invert the number and then just set the difficulty medival level to the % amount of damage resistance.
 	//This means that you can go upto 100% dmg res but if youre retarded enough to do this then you might aswell have an unplayable experience.

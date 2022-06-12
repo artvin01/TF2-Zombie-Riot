@@ -291,7 +291,7 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 				if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
 				{
 						float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-						float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+						float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex,_,_,_,1))
@@ -323,7 +323,7 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
 					{
 						float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-						float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+						float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 						float speed = 0.2 * (Health / MaxHealth);
 						npc.m_flAttackHappenswillhappen = false;
 						npc.m_flNextMeleeAttack = GetGameTime() + speed;
@@ -333,7 +333,7 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 			else if(flDistanceToTarget > 22500 && npc.m_flAttackHappens_2 < GetGameTime())
 			{
 				float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-				float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+				float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 				float crocket = 10.0 * (Health / MaxHealth);
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 				npc.m_flAttackHappens_2 = GetGameTime() + crocket;
@@ -357,7 +357,7 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 				if (flVel[0] <= 200.0)
 				{
 					float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-					float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+					float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 					float time = 60.0 * (0.40 + (Health / MaxHealth));
 					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 					npc.FaceTowards(vecTarget);
