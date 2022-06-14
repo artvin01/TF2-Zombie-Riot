@@ -1093,4 +1093,9 @@
 		"#format"	"{1:d}"
 		"en"		"You're Being Revived. [{1}]"
 	}
+	"Medival_Difficulty"
+	{
+		"#format"	"{1:d}"
+		"en"		"The enemy has researched their equipment to lvl. {1}!!!"
+	}
 }

@@ -1,9 +1,14 @@
 
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_65.mdl"
+//#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_59.mdl"
+
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_159.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
 
 #define DEFAULT_HURTDELAY 0.35 //Make it 0 for now
+
+float f_ArrowDamage[MAXENTITIES];
+int f_ArrowTrailParticle[MAXENTITIES]={INVALID_ENT_REFERENCE, ...};
 
 //Arrays for npcs!
 bool b_DissapearOnDeath[MAXENTITIES];
@@ -133,6 +138,7 @@ float b_isGiantWalkCycle[MAXENTITIES];
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 int i_CreditsOnKill[MAXENTITIES];
 
+int i_InSafeZone[MAXENTITIES];
 float fl_MeleeArmor[MAXENTITIES];
 float fl_RangedArmor[MAXENTITIES];
 
@@ -170,6 +176,7 @@ bool EscapeModeMap;
 static int g_particleImpactMetal;
 static int g_particleImpactFlesh;
 static int g_particleImpactRubber;
+static int g_modelArrow;
 //I put these here so we can change them on fly if we need to, cus zombies can be really loud, or quiet.
 
 #define NORMAL_ZOMBIE_SOUNDLEVEL	 80
@@ -181,6 +188,20 @@ static int g_particleImpactRubber;
 #define RAIDBOSS_ZOMBIE_SOUNDLEVEL	 95
 #define RAIDBOSSBOSS_ZOMBIE_VOLUME	 1.0
 
+#define ARROW_TRAIL "effects/arrowtrail_blu.vmt"
+
+char g_ArrowHitSoundSuccess[][] = {
+	"weapons/fx/rics/arrow_impact_flesh.wav",
+	"weapons/fx/rics/arrow_impact_flesh2.wav",
+	"weapons/fx/rics/arrow_impact_flesh3.wav",
+	"weapons/fx/rics/arrow_impact_flesh4.wav",
+};
+
+char g_ArrowHitSoundMiss[][] = {
+	"weapons/fx/rics/arrow_impact_concrete.wav",
+	"weapons/fx/rics/arrow_impact_concrete2.wav",
+	"weapons/fx/rics/arrow_impact_concrete4.wav",
+};
 
 char g_GibSound[][] = {
 	"physics/flesh/flesh_squishy_impact_hard1.wav",
@@ -687,6 +708,42 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], c
 		{
 			return MedivalManAtArms(client, vecPos, vecAng);
 		}
+		case MEDIVAL_SKIRMISHER:
+		{
+			return MedivalSkirmisher(client, vecPos, vecAng);
+		}
+		case MEDIVAL_SWORDSMAN:
+		{
+			return MedivalSwordsman(client, vecPos, vecAng);
+		}
+		case MEDIVAL_TWOHANDED_SWORDSMAN:
+		{
+			return MedivalTwoHandedSwordsman(client, vecPos, vecAng);
+		}
+		case MEDIVAL_CROSSBOW_MAN:
+		{
+			return MedivalCrossbowMan(client, vecPos, vecAng);
+		}
+		case MEDIVAL_SPEARMEN:
+		{
+			return MedivalSpearMan(client, vecPos, vecAng);
+		}
+		case MEDIVAL_HANDCANNONEER:
+		{
+			return MedivalHandCannoneer(client, vecPos, vecAng);
+		}
+		case MEDIVAL_ELITE_SKIRMISHER:
+		{
+			return MedivalEliteSkirmisher(client, vecPos, vecAng);
+		}
+		case RAIDMODE_BLITZKRIEG:
+		{
+			return Blitzkrieg(client, vecPos, vecAng);
+		}
+		case MEDIVAL_PIKEMAN:
+		{
+			return MedivalPikeman(client, vecPos, vecAng);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1099,6 +1156,42 @@ public void NPCDeath(int entity)
 		{
 			MedivalManAtArms_NPCDeath(entity);
 		}
+		case MEDIVAL_SKIRMISHER:
+		{
+			MedivalSkirmisher_NPCDeath(entity);
+		}
+		case MEDIVAL_SWORDSMAN:
+		{
+			MedivalSwordsman_NPCDeath(entity);
+		}
+		case MEDIVAL_TWOHANDED_SWORDSMAN:
+		{
+			MedivalTwoHandedSwordsman_NPCDeath(entity);
+		}
+		case MEDIVAL_CROSSBOW_MAN:
+		{
+			MedivalCrossbowMan_NPCDeath(entity);
+		}
+		case MEDIVAL_SPEARMEN:
+		{
+			MedivalSpearMan_NPCDeath(entity);
+		}
+		case MEDIVAL_HANDCANNONEER:
+		{
+			MedivalHandCannoneer_NPCDeath(entity);
+		}
+		case MEDIVAL_ELITE_SKIRMISHER:
+		{
+			MedivalEliteSkirmisher_NPCDeath(entity);
+		}
+		case RAIDMODE_BLITZKRIEG:
+		{
+			Blitzkrieg_NPCDeath(entity);
+		}
+		case MEDIVAL_PIKEMAN:
+		{
+			MedivalPikeman_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1115,7 +1208,8 @@ public void OnMapStart_NPC_Base()
 	for (int i = 0; i < (sizeof(g_GibSoundMetal));   i++) { PrecacheSound(g_GibSoundMetal[i]);   }
 	for (int i = 0; i < (sizeof(g_CombineSoldierStepSound));   i++) { PrecacheSound(g_CombineSoldierStepSound[i]);   }
 	for (int i = 0; i < (sizeof(g_CombineMetroStepSound));   i++) { PrecacheSound(g_CombineMetroStepSound[i]);   }
-	
+	for (int i = 0; i < (sizeof(g_ArrowHitSoundSuccess));	   i++) { PrecacheSound(g_ArrowHitSoundSuccess[i]);	   }
+	for (int i = 0; i < (sizeof(g_ArrowHitSoundMiss));	   i++) { PrecacheSound(g_ArrowHitSoundMiss[i]);	   }
 	for (int i = 0; i < (sizeof(g_PanzerStepSound));   i++) { PrecacheSound(g_PanzerStepSound[i]);   }
 	
 	EscapeModeMap = false;
@@ -1135,6 +1229,9 @@ public void OnMapStart_NPC_Base()
 	g_particleImpactMetal = PrecacheParticleSystem("bot_impact_heavy");
 	g_particleImpactFlesh = PrecacheParticleSystem("blood_impact_red_01_goop");
 	g_particleImpactRubber = PrecacheParticleSystem("halloween_explosion_bits");
+	g_modelArrow = PrecacheModel("models/weapons/w_models/w_arrow.mdl");
+	PrecacheModel(ARROW_TRAIL);
+	PrecacheDecal(ARROW_TRAIL, true);
 	InitNavGamedata();
 	
 	HeadcrabZombie_OnMapStart_NPC();
@@ -1249,7 +1346,15 @@ public void OnMapStart_NPC_Base()
 	MedivalMilitia_OnMapStart_NPC();
 	MedivalArcher_OnMapStart_NPC();
 	MedivalManAtArms_OnMapStart_NPC();
-	
+	MedivalSkirmisher_OnMapStart_NPC();
+	MedivalSwordsman_OnMapStart_NPC();
+	MedivalTwoHandedSwordsman_OnMapStart_NPC();
+	MedivalCrossbowMan_OnMapStart_NPC();
+	MedivalSpearMan_OnMapStart_NPC();
+	MedivalHandCannoneer_OnMapStart_NPC();
+	MedivalEliteSkirmisher_OnMapStart_NPC();
+	Blitzkrieg_OnMapStart();
+	MedivalPikeman_OnMapStart_NPC();
 }
 
 
@@ -2196,7 +2301,10 @@ methodmap CClotBody
 		public get()							{ return b_bThisNpcGotDefaultStats_INVERTED[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_bThisNpcGotDefaultStats_INVERTED[this.index] = TempValueForProperty; }
 	}
-	
+	property bool m_bInSafeZone
+	{
+		public get()							{ return view_as<bool>(i_InSafeZone[this.index]); }
+	}
 	property float m_fHighTeslarDebuff 
 	{
 		public get()							{ return f_HighTeslarDebuff[this.index]; }
@@ -2828,6 +2936,7 @@ methodmap CClotBody
 	}
 	public void FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0) //No defaults, otherwise i cant even judge.
 	{
+		//ITS NOT actually an arrow, because of an ANNOOOOOOOOOOOYING sound.
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
 		this.GetVectors(vecForward, vecSwingStart, vecAngles);
 
@@ -2836,26 +2945,61 @@ methodmap CClotBody
 
 		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
 		GetVectorAngles(vecAngles, vecAngles);
-		
 
-		int Arrow = SDKCall_CTFCreateArrow(vecSwingStart, vecAngles, rocket_speed, 0.001, 8, this.index, this.index);
-		if(IsValidEntity(Arrow))
+	//	vecSwingStart[0] += vecForward[0] * 64;
+	//	vecSwingStart[1] += vecForward[1] * 64;
+	//	vecSwingStart[2] += vecForward[2] * 64;
+	// 	this isnt needed anymore 
+
+
+		
+		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*rocket_speed;
+		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
+		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
+
+		int entity = CreateEntityByName("tf_projectile_rocket");
+		if(IsValidEntity(entity))
 		{
+			b_EntityIsArrow[entity] = true;
+			f_ArrowDamage[entity] = rocket_damage;
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
+			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
+			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
+			DispatchSpawn(entity);
 			if(rocket_model[0])
 			{
 				int g_ProjectileModelRocket = PrecacheModel(rocket_model);
 				for(int i; i<4; i++)
 				{
-					SetEntProp(Arrow, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelRocket, _, i);
+					SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelRocket, _, i);
 				}
 			}
-			See_Projectile_Team(Arrow);
-			SetEntityCollisionGroup(Arrow, 19);
-			SetEntDataFloat(Arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, rocket_damage, true);	// Damage
-			SetEntPropEnt(Arrow, Prop_Send, "m_hOriginalLauncher", this.index);
-			SetEntPropEnt(Arrow, Prop_Send, "m_hLauncher", this.index);
-			SetEntProp(Arrow, Prop_Send, "m_bCritical", false);
-			SetEntProp(Arrow, Prop_Send, "m_iTeamNum", TFTeam_Blue);
+			else
+			{
+				for(int i; i<4; i++)
+				{
+					SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_modelArrow, _, i);
+					
+				//	int trail = Trail_Attach(entity, "effects/arrowtrail_blue.vmt", 255, 1.5, 12.0, 0.0, 4);
+					int trail = Trail_Attach(entity, ARROW_TRAIL, 255, 0.3, 3.0, 3.0, 5);
+					
+					f_ArrowTrailParticle[entity] = EntIndexToEntRef(trail);
+					
+					//Just use a timer tbh.
+					
+					CreateTimer(5.0, Timer_RemoveEntity, EntIndexToEntRef(trail), TIMER_FLAG_NO_MAPCHANGE);
+				}
+			}
+			if(model_scale != 1.0)
+			{
+				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", model_scale); // ZZZZ i sleep
+			}
+			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
+			SetEntityCollisionGroup(entity, 19); //our savior
+			See_Projectile_Team(entity);
+			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Arrow_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
+			SDKHook(entity, SDKHook_StartTouch, ArrowStartTouch);
 		}
 	}
 	/*
@@ -3739,6 +3883,32 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 	int event = DHookGetParamObjectPtrVar(hParams, 1, 0, ObjectValueType_Int);
 //	PrintToChatAll("CBaseAnimating_HandleAnimEvent(%i, %i)", pThis, event);
 	CClotBody npc = view_as<CClotBody>(pThis);
+	
+	
+	switch(i_NpcInternalId[pThis])
+	{
+		case MEDIVAL_ARCHER:
+		{
+			HandleAnimEventMedival_Archer(pThis, event);
+		}
+		case MEDIVAL_SKIRMISHER:
+		{
+			HandleAnimEvent_MedivalSkirmisher(pThis, event);
+		}	
+		case MEDIVAL_CROSSBOW_MAN:
+		{
+			HandleAnimEventMedival_CrossbowMan(pThis, event);
+		}
+		case MEDIVAL_HANDCANNONEER:
+		{
+			HandleAnimEventMedival_HandCannoneer(pThis, event);
+		}
+		case MEDIVAL_ELITE_SKIRMISHER:
+		{
+			HandleAnimEvent_MedivalEliteSkirmisher(pThis, event);
+		}
+	}
+	
 	switch(npc.m_iNpcStepVariation)
 	{
 		case 1:
@@ -4763,10 +4933,18 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 	
 	if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
 	{
+		if(Medival_Difficulty_Level != 0.0)
+		{
+			damage *= Medival_Difficulty_Level;
+		}
 		damage *= fl_MeleeArmor[victim];
 	}
 	else if(!(damagetype & DMG_SLASH))
 	{
+		if(Medival_Difficulty_Level != 0.0)
+		{
+			damage *= Medival_Difficulty_Level;
+		}
 		damage *= fl_RangedArmor[victim];
 	}
 	//No resistances towards slash as its internal.
@@ -6103,6 +6281,41 @@ public void Raidboss_Clean_Everyone()
 		}
 	}
 }
+
+public void ArrowStartTouch(int arrow, int entity)
+{
+	if(entity > 0 && entity < MAXENTITIES)
+	{
+		SDKHooks_TakeDamage(entity, arrow, arrow, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
+		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
+		if(IsValidEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow])))
+		{
+			RemoveEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow]));
+		}
+	}
+	else
+	{
+		EmitSoundToAll(g_ArrowHitSoundMiss[GetRandomInt(0, sizeof(g_ArrowHitSoundMiss) - 1)], arrow, _, 80, _, 0.8, 100);
+		if(IsValidEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow])))
+		{
+			RemoveEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow]));
+		}
+	}
+//	PrintToChatAll("touched");
+	RemoveEntity(arrow);
+}
+
+public MRESReturn Arrow_DHook_RocketExplodePre(int arrow)
+{
+//	PrintToChatAll("boom!");
+	RemoveEntity(arrow);
+	if(IsValidEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow])))
+	{
+		RemoveEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow]));
+	}
+	return MRES_Supercede;
+}
+
 //NORMAL
 
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"
@@ -6208,9 +6421,19 @@ public void Raidboss_Clean_Everyone()
 #include "zombie_riot/npc/alt/npc_alt_medic_apprentice_mage.sp"
 
 #include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_blitzkrieg.sp"
+
 #include "zombie_riot/npc/alt/npc_alt_medic_charger.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_berserker.sp"
 
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
 #include "zombie_riot/npc/medival/npc_medival_archer.sp"
 #include "zombie_riot/npc/medival/npc_medival_man_at_arms.sp"
+#include "zombie_riot/npc/medival/npc_medival_skirmisher.sp"
+#include "zombie_riot/npc/medival/npc_medival_swordsman.sp"
+#include "zombie_riot/npc/medival/npc_medival_twohanded_swordsman.sp"
+#include "zombie_riot/npc/medival/npc_medival_crossbow.sp"
+#include "zombie_riot/npc/medival/npc_medival_spearmen.sp"
+#include "zombie_riot/npc/medival/npc_medival_handcannoneer.sp"
+#include "zombie_riot/npc/medival/npc_medival_elite_skirmisher.sp"
+#include "zombie_riot/npc/medival/npc_medival_pikeman.sp"

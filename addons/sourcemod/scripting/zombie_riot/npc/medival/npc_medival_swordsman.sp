@@ -81,7 +81,7 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
-void MedivalManAtArms_OnMapStart_NPC()
+void MedivalSwordsman_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -93,7 +93,7 @@ void MedivalManAtArms_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 }
 
-methodmap MedivalManAtArms < CClotBody
+methodmap MedivalSwordsman < CClotBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime())
@@ -165,13 +165,13 @@ methodmap MedivalManAtArms < CClotBody
 		#endif
 	}
 	
-	public MedivalManAtArms(int client, float vecPos[3], float vecAng[3])
+	public MedivalSwordsman(int client, float vecPos[3], float vecAng[3])
 	{
-		MedivalManAtArms npc = view_as<MedivalManAtArms>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250"));
+		MedivalSwordsman npc = view_as<MedivalSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2000"));
 		
-		i_NpcInternalId[npc.index] = MEDIVAL_MAN_AT_ARMS;
+		i_NpcInternalId[npc.index] = MEDIVAL_SWORDSMAN;
 		
-		int iActivity = npc.LookupActivity("ACT_WALK");
+		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_SWORD");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -181,21 +181,21 @@ methodmap MedivalManAtArms < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalManAtArms_ClotDamaged);
-		SDKHook(npc.index, SDKHook_Think, MedivalManAtArms_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalSwordsman_ClotDamaged);
+		SDKHook(npc.index, SDKHook_Think, MedivalSwordsman_ClotThink);
 	
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 //		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
-		npc.m_flSpeed = 240.0;
+		npc.m_flSpeed = 250.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		npc.m_flMeleeArmor = 0.8;
+		npc.m_flMeleeArmor = 0.75;
 		npc.m_flRangedArmor = 1.0;
 		
 		if(EscapeModeForNpc)
@@ -204,14 +204,14 @@ methodmap MedivalManAtArms < CClotBody
 		}
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("0.75");
+		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/player/items/mvm_loot/soldier/robot_helmet.mdl");
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/demo/jul13_stormn_normn/jul13_stormn_normn.mdl");
 		SetVariantString("1.75");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("weapon_targe", "models/weapons/c_models/c_targe/c_targe.mdl");
+		npc.m_iWearable3 = npc.EquipItem("weapon_targe", "models/workshop/weapons/c_models/c_persian_shield/c_persian_shield.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
@@ -226,9 +226,9 @@ methodmap MedivalManAtArms < CClotBody
 
 //TODO 
 //Rewrite
-public void MedivalManAtArms_ClotThink(int iNPC)
+public void MedivalSwordsman_ClotThink(int iNPC)
 {
-	MedivalManAtArms npc = view_as<MedivalManAtArms>(iNPC);
+	MedivalSwordsman npc = view_as<MedivalSwordsman>(iNPC);
 	
 	if(npc.m_flNextDelayTime > GetGameTime())
 	{
@@ -300,10 +300,10 @@ public void MedivalManAtArms_ClotThink(int iNPC)
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flNextRangedSpecialAttack = GetGameTime() + 2.0;
-						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
+						npc.AddGesture("ACT_CUSTOM_ATTACK_SWORD");
 						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime()+0.4;
-						npc.m_flAttackHappens_bullshit = GetGameTime()+0.54;
+						npc.m_flAttackHappens = GetGameTime()+0.3;
+						npc.m_flAttackHappens_bullshit = GetGameTime()+0.44;
 						npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
 						npc.m_flAttackHappenswillhappen = true;
 					}
@@ -322,11 +322,10 @@ public void MedivalManAtArms_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_SLASH|DMG_CLUB);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_SLASH|DMG_CLUB);
 									
 									// Hit particle
 									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
@@ -360,13 +359,13 @@ public void MedivalManAtArms_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action MedivalManAtArms_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalSwordsman_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	MedivalManAtArms npc = view_as<MedivalManAtArms>(victim);
+	MedivalSwordsman npc = view_as<MedivalSwordsman>(victim);
 	
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())
@@ -379,16 +378,16 @@ public Action MedivalManAtArms_ClotDamaged(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-public void MedivalManAtArms_NPCDeath(int entity)
+public void MedivalSwordsman_NPCDeath(int entity)
 {
-	MedivalManAtArms npc = view_as<MedivalManAtArms>(entity);
+	MedivalSwordsman npc = view_as<MedivalSwordsman>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalManAtArms_ClotDamaged);
-	SDKUnhook(npc.index, SDKHook_Think, MedivalManAtArms_ClotThink);
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalSwordsman_ClotDamaged);
+	SDKUnhook(npc.index, SDKHook_Think, MedivalSwordsman_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -178,18 +178,21 @@ ConVar tf_bot_quota;
 
 int CurrentGame;
 bool b_GameOnGoing = true;
-bool b_StoreGotReset = false;
+//bool b_StoreGotReset = false;
 int CurrentCash;
 bool LastMann;
 bool EscapeMode;
 bool EscapeModeForNpc;
 
-bool RaidMode; 							//Is this raidmode?
+//bool RaidMode; 							//Is this raidmode?
 float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
 float RaidModeTime = 0.0;
 float f_TimerTickCooldownRaid = 0.0;
 float f_TimerTickCooldownShop = 0.0;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
+float Medival_Difficulty_Level = 0.0;	
+
+
 
 int CurrentPlayers;
 int PlayersAliveScaling;
@@ -238,7 +241,7 @@ float Resistance_Overall_Low[MAXTF2PLAYERS];
 bool Moved_Building[MAXENTITIES] = {false,... };
 //bool Do_Not_Regen_Mana[MAXTF2PLAYERS];
 
-float Resistance_for_building_High[MAXENTITIES];
+//float Resistance_for_building_High[MAXENTITIES];
 int Armor_Charge[MAXTF2PLAYERS];
 int Zombies_Currently_Still_Ongoing;
 
@@ -366,6 +369,7 @@ bool b_Map_BaseBoss_No_Layers[MAXENTITIES];
 int b_NpcForcepowerupspawn[MAXENTITIES]={0, ...}; 
 float f_TempCooldownForVisualManaPotions[MAXPLAYERS+1];
 float f_DelayLookingAtHud[MAXPLAYERS+1];
+bool b_EntityIsArrow[MAXENTITIES];
 
 //int g_iLaserMaterial, g_iHaloMaterial;
 
@@ -385,6 +389,7 @@ bool b_BlockLagCompInternal[MAXENTITIES];
 bool b_Dont_Move_Building[MAXENTITIES];
 int b_BoundingBoxVariant[MAXENTITIES];
 bool b_IsAloneOnServer = false;
+
 
 bool b_IsPlayerABot[MAXPLAYERS+1];
 
@@ -564,6 +569,15 @@ enum
 	MEDIVAL_MILITIA						= 98,
 	MEDIVAL_ARCHER						= 99,
 	MEDIVAL_MAN_AT_ARMS					= 100,
+	MEDIVAL_SKIRMISHER					= 101,
+	MEDIVAL_SWORDSMAN					= 102,
+	MEDIVAL_TWOHANDED_SWORDSMAN			= 103,
+	MEDIVAL_CROSSBOW_MAN				= 104,
+	MEDIVAL_SPEARMEN					= 105,
+	MEDIVAL_HANDCANNONEER				= 106,
+	MEDIVAL_ELITE_SKIRMISHER			= 107,
+	RAIDMODE_BLITZKRIEG					= 108,
+	MEDIVAL_PIKEMAN						= 109,
 }
 
 
@@ -676,7 +690,16 @@ char NPC_Names[][] =
 	"Medic_Berserker",
 	"Militia",
 	"Archer",
-	"Man-At-Arms"
+	"Man-At-Arms",
+	"Skirmisher",
+	"Long Swordsman",
+	"Twohanded Swordsman",
+	"Crossbow Man",
+	"Spearman",
+	"Hand Cannoneer",
+	"Elite Skirmisher",
+	"Blitzkrieg",
+	"Pikeman"
 };
 
 char NPC_Plugin_Names_Converted[][] =
@@ -785,9 +808,18 @@ char NPC_Plugin_Names_Converted[][] =
 	"npc_true_fusion_warrior",
 	"npc_alt_medic_charger",
 	"npc_alt_medic_berserker",
-	"npc_medival_milita",
+	"npc_medival_militia",
 	"npc_medival_archer",
 	"npc_medival_man_at_arms",
+	"npc_medival_skrirmisher",
+	"npc_medival_swordsman",
+	"npc_medival_twohanded_swordsman",
+	"npc_medival_crossbow",
+	"npc_medival_spearmen",
+	"npc_medival_handcannoneer",
+	"npc_medival_elite_skirmisher",
+	"npc_blitzkrieg",
+	"npc_medival_pikeman"
 };
 
 #include "zombie_riot/stocks.sp"
@@ -1444,10 +1476,6 @@ public void OnClientDisconnect_Post(int client)
 		if(IsClientInGame(client_check) && !IsFakeClient(client_check))
 			Players_left++;
 	}
-	if(!Players_left)
-	{
-		b_StoreGotReset = false;
-	}
 	CheckAlivePlayers(_);
 }
 
@@ -1515,7 +1543,6 @@ public Action OnPlayerConnect(Event event, const char[] name, bool dontBroadcast
 public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 {
 	b_GameOnGoing = false;
-	b_StoreGotReset = false;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))
@@ -2624,7 +2651,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 {
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
-		
+		b_EntityIsArrow[entity] = false;
 		CClotBody npc = view_as<CClotBody>(entity);
 		b_SentryIsCustom[entity] = false;
 		b_Is_Npc_Rocket[entity] = false;
@@ -2638,6 +2665,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_Map_BaseBoss_No_Layers[entity] = false;
 		b_Is_Player_Rocket_Through_Npc[entity] = false;
 		i_IsABuilding[entity] = false;
+		i_InSafeZone[entity] = 0;
 		OnEntityCreated_Build_On_Build(entity, classname);
 		SetDefaultValuesToZeroNPC(entity);
 		
@@ -2798,8 +2826,42 @@ public void OnEntityCreated(int entity, const char[] classname)
 			GetEntPropString(i, Prop_Data, "m_iName", buffer, sizeof(buffer));
 		}
 		*/
+		else if(!StrContains(classname, "trigger_hurt"))
+		{
+			SDKHook(entity, SDKHook_StartTouch, SDKHook_SafeSpot_StartTouch);
+			SDKHook(entity, SDKHook_EndTouch, SDKHook_SafeSpot_EndTouch);
+		}
+		else if(!StrContains(classname, "func_respawnroom"))
+		{
+			SDKHook(entity, SDKHook_StartTouch, SDKHook_RespawnRoom_StartTouch);
+			SDKHook(entity, SDKHook_EndTouch, SDKHook_RespawnRoom_EndTouch);
+		}
 	}
 	
+}
+
+public void SDKHook_SafeSpot_StartTouch(int entity, int target)
+{
+	if(target > 0 && target < sizeof(i_InSafeZone))
+		i_InSafeZone[target]++;
+}
+
+public void SDKHook_SafeSpot_EndTouch(int entity, int target)
+{
+	if(target > 0 && target < sizeof(i_InSafeZone))
+		i_InSafeZone[target]--;
+}
+
+public void SDKHook_RespawnRoom_StartTouch(int entity, int target)
+{
+	if(target > 0 && target < sizeof(i_InSafeZone) && GetEntProp(entity, Prop_Send, "m_iTeamNum") == GetEntProp(target, Prop_Send, "m_iTeamNum"))
+		i_InSafeZone[target]++;
+}
+
+public void SDKHook_RespawnRoom_EndTouch(int entity, int target)
+{
+	if(target > 0 && target < sizeof(i_InSafeZone) && GetEntProp(entity, Prop_Send, "m_iTeamNum") == GetEntProp(target, Prop_Send, "m_iTeamNum"))
+		i_InSafeZone[target]--;
 }
 
 public void Set_Projectile_Collision(int entity)

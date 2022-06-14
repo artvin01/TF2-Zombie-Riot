@@ -24,6 +24,7 @@ enum struct Round
 	int Xp;
 	int Cash;
 	bool Custom_Refresh_Npc_Store;
+	int medival_difficulty;
 	float Setup;
 	ArrayList Waves;
 }
@@ -234,6 +235,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	{
 		round.Cash = kv.GetNum("cash");
 		round.Custom_Refresh_Npc_Store = view_as<bool>(kv.GetNum("grigori_refresh_store"));
+		round.medival_difficulty = kv.GetNum("medival_research_level");
 		round.Xp = kv.GetNum("xp");
 		round.Setup = kv.GetFloat("setup");
 		if(kv.GotoFirstSubKey())
@@ -376,6 +378,7 @@ void Waves_RoundEnd()
 	WaveIntencity = 0;
 	CurrentRound = 0;
 	CurrentWave = -1;
+	Medival_Difficulty_Level = 0.0; //make sure to set it to 0 othrerwise waves will become impossible
 }
 
 public Action Waves_RoundStartTimer(Handle timer)
@@ -641,6 +644,11 @@ void Waves_Progress()
 			{
 				PrintToChatAll("%t", "Grigori Store Refresh");
 				Store_RandomizeNPCStore(); // Refresh me !!!
+			}
+			if(round.medival_difficulty != 0)
+			{
+			//	PrintToChatAll("%t", "Grigori Store Refresh");
+				Medival_Wave_Difficulty_Riser(round.medival_difficulty); // Refresh me !!!
 			}
 			if(CurrentRound == length)
 			{
@@ -934,6 +942,28 @@ void Waves_Progress()
 	}
 //	PrintToChatAll("Wave: %d - %d", CurrentRound+1, CurrentWave+1);
 	
+}
+
+public void Medival_Wave_Difficulty_Riser(int difficulty)
+{
+	PrintToChatAll("%t", "Medival_Difficulty", difficulty);
+	
+	float difficulty_math = float(difficulty);
+	
+	difficulty_math *= -1.0;
+	
+	difficulty_math /= 10.0;
+	
+	difficulty_math += 1.0;
+	
+	if(difficulty_math < 0.1) //Just make sure that it doesnt go below.
+	{
+		difficulty_math = 0.1;
+	}
+	//invert the number and then just set the difficulty medival level to the % amount of damage resistance.
+	//This means that you can go upto 100% dmg res but if youre retarded enough to do this then you might aswell have an unplayable experience.
+	
+	Medival_Difficulty_Level = difficulty_math; //More armor and damage taken.
 }
 
 public int Waves_FreeplayVote(Menu menu, MenuAction action, int item, int param2)

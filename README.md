@@ -31,7 +31,7 @@ Main Server:
 Sub Servers that also host the gamemode:
 
 (Chinese)
-47.100.226.218:27015 ( steam://connect/47.100.226.218:27015 ) 
+1.12.64.247:27015 ( steam://connect/1.12.64.247:27015 ) 
  
 ## cvar's
 

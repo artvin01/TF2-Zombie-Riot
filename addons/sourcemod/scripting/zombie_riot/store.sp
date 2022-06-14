@@ -1,5 +1,7 @@
 static int HighestTier;
 
+#define SELL_AMOUNT 0.7
+
 static const int SlotLimits[] =
 {
 	1,
@@ -450,8 +452,6 @@ void Store_Reset()
 		}
 		StoreItems.SetArray(i, item);
 	}
-
-	b_StoreGotReset = true;
 }
 
 bool Store_HasAnyItem(int client)
@@ -1826,7 +1826,7 @@ void Store_ApplyAttribs(int client)
 	else
 		map.SetValue("26", -RemoveExtraHealth(ClassForStats) + 100 + Extra_Juggernog_Hp);		// Health
 		
-	map.SetValue("107", RemoveExtraSpeed(ClassForStats));		// Move Speed
+	map.SetValue("107", (RemoveExtraSpeed(ClassForStats) * 1.1));		// Move Speed and abit of extra
 	map.SetValue("353", 1.0);											// No manual building pickup.
 	map.SetValue("465", 10.0);											// x10 faster diepsner build
 	map.SetValue("464", 10.0);											// x10 faster sentry build
@@ -2528,6 +2528,8 @@ static void ItemCost(int client, Item item, int &cost)
 	bool started = Waves_Started();
 	bool GregSale = false;
 	
+	int original_cost_With_Sell = RoundToCeil(float(cost) * SELL_AMOUNT);
+	
 	cost += item.Scale*item.Scaled[client]; 
 	cost += item.CostPerWave * CurrentRound;
 	//make sure anything thats additive is on the top, so sales actually help!!
@@ -2579,7 +2581,13 @@ static void ItemCost(int client, Item item, int &cost)
 	}
 	
 	if(item.MaxCost > 0 && cost > item.MaxCost)
+	{
 		cost = item.MaxCost;
+	}
+	if(cost < original_cost_With_Sell)
+	{
+		cost = original_cost_With_Sell;
+	}
 }
 
 static int ItemSell(Item item, int level)
@@ -2589,7 +2597,7 @@ static int ItemSell(Item item, int level)
 	ItemInfo info;
 	for(int i; i<level && item.GetItemInfo(i, info); i++)
 	{
-		sell += RoundToCeil(float(info.Cost) * 0.7);
+		sell += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
 	}
 	
 	return sell;

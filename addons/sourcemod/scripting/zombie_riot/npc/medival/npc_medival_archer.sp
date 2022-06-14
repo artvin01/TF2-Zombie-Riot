@@ -148,7 +148,7 @@ methodmap MedivalArcher < CClotBody
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_ARCHER;
 		
-		int iActivity = npc.LookupActivity("ACT_WALK");
+		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_BOW");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -157,6 +157,10 @@ methodmap MedivalArcher < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
+		
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bow/c_bow.mdl");
+		SetVariantString("0.8");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalArcher_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, MedivalArcher_ClotThink);
@@ -179,10 +183,7 @@ methodmap MedivalArcher < CClotBody
 		{
 			npc.m_flSpeed = 270.0;
 		}
-		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bow/c_bow.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+
 	/*	
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/all_class/sbox2014_toowoomba_tunic/sbox2014_toowoomba_tunic_sniper.mdl");
 		SetVariantString("1.0");
@@ -202,6 +203,9 @@ methodmap MedivalArcher < CClotBody
 public void MedivalArcher_ClotThink(int iNPC)
 {
 	MedivalArcher npc = view_as<MedivalArcher>(iNPC);
+	
+	SetVariantInt(1);
+	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 	
 	if(npc.m_flNextDelayTime > GetGameTime())
 	{
@@ -238,6 +242,10 @@ public void MedivalArcher_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		
+			if(npc.m_flJumpStartTime < GetGameTime())
+			{
+				npc.m_flSpeed = 170.0;
+			}
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -278,13 +286,15 @@ public void MedivalArcher_ClotThink(int iNPC)
 					//Can we attack right now?
 					if(npc.m_flNextMeleeAttack < GetGameTime())
 					{
-						npc.FaceTowards(vecTarget, 30000.0);
+						npc.m_flSpeed = 0.0;
+			//			npc.FaceTowards(vecTarget, 30000.0);
 						//Play attack anim
-						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+						npc.AddGesture("ACT_CUSTOM_ATTACK_BOW");
 						
-						npc.PlayMeleeSound();
-						npc.FireArrow(vecTarget, 25.0, 1200.0);
+			//			npc.PlayMeleeSound();
+			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
 						npc.m_flNextMeleeAttack = GetGameTime() + 2.0;
+						npc.m_flJumpStartTime = GetGameTime() + 1.0;
 					}
 					PF_StopPathing(npc.index);
 					npc.m_bPathing = false;
@@ -309,6 +319,28 @@ public void MedivalArcher_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
+}
+
+public void HandleAnimEventMedival_Archer(int entity, int event)
+{
+	if(event == 1001)
+	{
+		MedivalArcher npc = view_as<MedivalArcher>(entity);
+		
+		int PrimaryThreatIndex = npc.m_iTarget;
+	
+		if(IsValidEnemy(npc.index, PrimaryThreatIndex))
+		{
+			
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+				
+			npc.FaceTowards(vecTarget, 30000.0);
+						
+			npc.PlayMeleeSound();
+			npc.FireArrow(vecTarget, 25.0, 1200.0);
+		}
+	}
+	
 }
 
 public Action MedivalArcher_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

@@ -1263,14 +1263,27 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 		}
 		CClotBody npc = view_as<CClotBody>(victim);
 		
-		if(npc.m_flMeleeArmor != 1.0)
+		if(npc.m_flMeleeArmor != 1.0 || Medival_Difficulty_Level != 0)
 		{
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder,npc.m_flMeleeArmor * 100.0);
+			float percentage = npc.m_flMeleeArmor * 100.0;
+			if(Medival_Difficulty_Level != 0.0)
+			{
+				percentage *= Medival_Difficulty_Level;
+			}
+			
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder, percentage);
 		}
 		
-		if(npc.m_flRangedArmor != 1.0)
+		if(npc.m_flRangedArmor != 1.0 || Medival_Difficulty_Level != 0)
 		{
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, npc.m_flRangedArmor * 100.0);
+			float percentage = npc.m_flRangedArmor * 100.0;
+			
+			if(Medival_Difficulty_Level != 0.0)
+			{
+				percentage *= Medival_Difficulty_Level;
+			}
+			
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
 		}
 		
 		if(EntRefToEntIndex(RaidBossActive) != victim)

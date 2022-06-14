@@ -2762,3 +2762,42 @@ stock void LookAtTarget(int client, int target)
     angles[1] -= 180; 
     TeleportEntity(client, NULL_VECTOR, angles, NULL_VECTOR); 
 } 
+
+
+int Trail_Attach(int entity, char[] trail, int alpha, float lifetime=1.0, float startwidth=22.0, float endwidth=0.0, int rendermode)
+{
+	int entIndex = CreateEntityByName("env_spritetrail");
+	if (entIndex > 0 && IsValidEntity(entIndex))
+	{
+		char strTargetName[MAX_NAME_LENGTH];
+
+		DispatchKeyValue(entity, "targetname", strTargetName);
+		Format(strTargetName,sizeof(strTargetName),"trail%d",EntIndexToEntRef(entity));
+		DispatchKeyValue(entity, "targetname", strTargetName);
+		DispatchKeyValue(entIndex, "parentname", strTargetName);
+		
+
+		DispatchKeyValue(entIndex, "spritename", trail);
+		SetEntPropFloat(entIndex, Prop_Send, "m_flTextureRes", 1.0);
+			
+		char sTemp[5];
+		IntToString(alpha, sTemp, sizeof(sTemp));
+		DispatchKeyValue(entIndex, "renderamt", sTemp);
+			
+		DispatchKeyValueFloat(entIndex, "lifetime", lifetime);
+		DispatchKeyValueFloat(entIndex, "startwidth", startwidth);
+		DispatchKeyValueFloat(entIndex, "endwidth", endwidth);
+		
+		IntToString(rendermode, sTemp, sizeof(sTemp));
+		DispatchKeyValue(entIndex, "rendermode", sTemp);
+			
+		DispatchSpawn(entIndex);
+		float f_origin[3];
+		f_origin = GetAbsOrigin(entity);
+		TeleportEntity(entIndex, f_origin, NULL_VECTOR, NULL_VECTOR);
+		SetVariantString(strTargetName);
+		AcceptEntityInput(entIndex, "SetParent");
+		return entIndex;
+	}	
+	return -1;
+}

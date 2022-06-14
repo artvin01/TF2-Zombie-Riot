@@ -290,6 +290,8 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 						
 				if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
 				{
+						float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+						float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex,_,_,_,1))
@@ -301,13 +303,11 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									float Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-									float MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 									float damage = 10.0 / (0.1 + (Health / MaxHealth));
 									if(target <= MaxClients)
 										SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_SLASH|DMG_CLUB);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 75, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
 																						
 									// Hit particle
 									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
@@ -316,16 +316,14 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 								} 
 							}
 						delete swingTrace;
-						float Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-						float MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 						float speed = 0.2 * (Health / MaxHealth);
 						npc.m_flNextMeleeAttack = GetGameTime() + speed;
 						npc.m_flAttackHappenswillhappen = false;
 					}
 					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
 					{
-						float Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-						float MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+						float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+						float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 						float speed = 0.2 * (Health / MaxHealth);
 						npc.m_flAttackHappenswillhappen = false;
 						npc.m_flNextMeleeAttack = GetGameTime() + speed;
@@ -334,9 +332,9 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 			}
 			else if(flDistanceToTarget > 22500 && npc.m_flAttackHappens_2 < GetGameTime())
 			{
-				float Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-				float MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-				float crocket = 10 * (Health / MaxHealth);
+				float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+				float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+				float crocket = 10.0 * (Health / MaxHealth);
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 				npc.m_flAttackHappens_2 = GetGameTime() + crocket;
 				npc.PlayRangedSound();
@@ -358,15 +356,15 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 				GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
 				if (flVel[0] <= 200.0)
 				{
-					float Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-					float MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-					float time = 60 * (0.40 + (Health / MaxHealth));
+					float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+					float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+					float time = 60.0 * (0.40 + (Health / MaxHealth));
 					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
 					npc.m_flNextTeleport = GetGameTime() + time;
 					float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
-					if(Tele_Check > 120)
+					if(Tele_Check > 120.0)
 					{
 						TeleportEntity(npc.index, vPredictedPos, NULL_VECTOR, NULL_VECTOR);
 						npc.PlayTeleportSound();

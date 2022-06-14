@@ -408,4 +408,40 @@
 	{
 		"en" 		"Man-At-Arms"
 	}
+	"Skirmisher"
+	{
+		"en" 		"Skirmisher"
+	}
+	"Long Swordsman"
+	{
+		"en" 		"Long Swordsman"
+	}
+	"Twohanded Swordsman"
+	{
+		"en" 		"Twohanded Swordsman"
+	}
+	"Crossbow Man"
+	{
+		"en" 		"Crossbow Man"
+	}
+	"Spearman"
+	{
+		"en" 		"Spearman"
+	}
+	"Hand Cannoneer"
+	{
+		"en" 		"Hand Cannoneer"
+	}
+	"Elite Skirmisher"
+	{
+		"en" 		"Elite Skirmisher"
+	}
+	"Blitzkrieg"
+	{
+		"en" 		"Blitzkrieg"
+	}
+	"Pikeman"
+	{
+		"en" 		"Pikeman"
+	}
 }
