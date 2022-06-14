@@ -53,7 +53,7 @@ static char g_AngerSounds[][] = {
 	"vo/medic_weapon_taunts03.mp3",
 };
 static const char g_IdleMusic[][] = {
-	"#ui/gamestartup12.mp3",	//Do something like base tf2 theme, or lastman zr or idk
+	"#ui/gamestartup12.mp3",
 };
 
 static char gGlow1;
@@ -258,7 +258,7 @@ methodmap Blitzkrieg < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, Blitzkrieg_ClotDamaged);
 		
 		int skin = 5;
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);	//get the rocket launcher trilogy paths
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/w_models/w_rocketlauncher.mdl");
@@ -544,7 +544,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 	
 	
 	if(Health/MaxHealth>0.5 && Health/MaxHealth<0.75 && i_NpcCurrentLives[npc.index] == 0)	//Lifelosses
-	{
+	{	//75%-50%
 		i_NpcCurrentLives[npc.index]=1;
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
@@ -561,7 +561,24 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 		Blitzkrieg_IOC_Invoke(npc.index, closest);
 		
-		PrintToChatAll("Life: %i!",i_NpcCurrentLives[npc.index]);
+		CPrintToChatAll("{crimson}Blitzkrieg{default}: {yellow}Life: %i!",i_NpcCurrentLives[npc.index]);
+		
+		switch(GetRandomInt(1, 3))
+		{
+			case 1:
+			{
+				CPrintToChatAll("{crimson}Blitzkrieg{default}: This is only just the beggining {yellow}%N {default}!", closest);
+			}
+			case 2:
+			{
+				CPrintToChatAll("{crimson}Blitzkrieg{default}: You think this is the end {yellow}%N {default}?", closest);
+			}
+			case 3:
+			{
+				CPrintToChatAll("{crimson}Blitzkrieg{default}: You fool {yellow}%N {default}!", closest);
+			}
+		}
+			
 		
 		EmitSoundToAll("mvm/mvm_tank_end.wav");	
 		
@@ -569,7 +586,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	}
 	else if(Health/MaxHealth>0.25 && Health/MaxHealth<0.5 && i_NpcCurrentLives[npc.index] == 1)
-	{
+	{	//50%-25%
 		i_NpcCurrentLives[npc.index]=2;
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
@@ -586,7 +603,23 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 		Blitzkrieg_IOC_Invoke(npc.index, closest);
 		
-		PrintToChatAll("Life: %i!",i_NpcCurrentLives[npc.index]);
+		CPrintToChatAll("{crimson}Blitzkrieg{default}: {yellow}Life: %i!",i_NpcCurrentLives[npc.index]);
+		
+		switch(GetRandomInt(1, 3))
+		{
+			case 1:
+			{
+				CPrintToChatAll("{crimson}Blitzkrieg{default}: Don't get too cocky {yellow}%N {default}!", closest);
+			}
+			case 2:
+			{
+				CPrintToChatAll("{crimson}Blitzkrieg{default}: The end is near {yellow}%N {default} are you sure you want to proceed?", closest);
+			}
+			case 3:
+			{
+				CPrintToChatAll("{crimson}Blitzkrieg{default}: You Imbecil {yellow}%N {default}!", closest);
+			}
+		}
 		
 		EmitSoundToAll("mvm/mvm_tank_end.wav");
 					
@@ -594,7 +627,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	}
 	else if(Health/MaxHealth>0 && Health/MaxHealth<0.25&& i_NpcCurrentLives[npc.index] == 2)
-	{
+	{	//25%-ded
 		i_NpcCurrentLives[npc.index]=3;
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
@@ -607,7 +640,23 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		npc.m_flSpeed = 330.0;
 		
-		PrintToChatAll("Life: %i!",i_NpcCurrentLives[npc.index]);
+		CPrintToChatAll("{crimson}Blitzkrieg{default}: {yellow}Life: %i!",i_NpcCurrentLives[npc.index]);
+		
+		switch(GetRandomInt(1, 3))
+		{
+			case 1:
+			{
+				CPrintToChatAll("{crimson}Blitzkrieg{default}: Your own foolishness lead you to this {yellow}%N {default} prepare for complete {red} BLITZKRIEG", closest);
+			}
+			case 2:
+			{
+				CPrintToChatAll("{crimson}Blitzkrieg{default}: The end is {red} here {yellow}%N {default} time for you to learn what {red} BLITZKRIEG {default} means", closest);
+			}
+			case 3:
+			{
+				CPrintToChatAll("{crimson}Blitzkrieg{default}: You've gone and done it {red} ITS TIME TO DIE {yellow}%N {red} PREPARE FOR FULL BLITZKRIEG", closest);
+			}
+		}
 		
 		i_HealthScale[npc.index]=0.175;
 		
@@ -631,6 +680,8 @@ public void Blitzkrieg_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Blitzkrieg_ClotDamaged);
 	Music_RoundEnd(entity);
 	
+	int closest = npc.m_iTarget;
+	
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	
 	if(IsValidEntity(npc.m_iWearable1))
@@ -644,6 +695,21 @@ public void Blitzkrieg_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 		
+	switch(GetRandomInt(1, 3))
+		{
+			case 1:
+			{
+				CPrintToChatAll("{crimson}Blitzkrieg{default}: Noooo, this cannot be {yellow}%N {default} you won, {red}this time", closest);
+			}
+			case 2:
+			{
+				CPrintToChatAll("{crimson}Blitzkrieg{default}: It seems I have failed {yellow}%N {default} you were far supperior than me {red}this time", closest);
+			}
+			case 3:
+			{
+				CPrintToChatAll("{crimson}Blitzkrieg{default}: Until next time {yellow}%N {red} until next time...", closest);
+			}
+		}
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 //	npc.Anger = false;
 }
