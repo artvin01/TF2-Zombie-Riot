@@ -600,7 +600,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		i_HealthScale[npc.index]=0.25;
 		
-		npc.m_flSpeed = 295.0;
+		npc.m_flSpeed = 290.0;
 		
 		npc.PlayAngerSound();
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
@@ -641,7 +641,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		EmitSoundToAll("mvm/mvm_tank_end.wav");
 		
-		npc.m_flSpeed = 315.0;
+		npc.m_flSpeed = 300.0;
 		
 		CPrintToChatAll("{crimson}Blitzkrieg{default}: {yellow}Life: %i!",i_NpcCurrentLives[npc.index]);
 		
