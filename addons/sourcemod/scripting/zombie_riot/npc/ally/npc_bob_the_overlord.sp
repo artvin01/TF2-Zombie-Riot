@@ -324,7 +324,7 @@ public void BobTheGod_ClotThink(int iNPC)
 			else if(!npc.m_bIsFriendly && !npc.m_b_follow && !npc.m_b_stand_still)
 			{
 				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
-				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "nBob The Second is not friendly and doesn't follow you!", "Use voice Commands to command him!");
+				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is not friendly and doesn't follow you!", "Use voice Commands to command him!");
 			}
 			else if (npc.m_bIsFriendly && !npc.m_b_follow && !npc.m_b_stand_still)
 			{
