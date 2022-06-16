@@ -109,9 +109,9 @@ methodmap XenoMedicMain < CClotBody
 	
 	
 	
-	public XenoMedicMain(int client, float vecPos[3], float vecAng[3])
+	public XenoMedicMain(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoMedicMain npc = view_as<XenoMedicMain>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000"));
+		XenoMedicMain npc = view_as<XenoMedicMain>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_BATTLE_MEDIC_MAIN;
 		
@@ -152,8 +152,8 @@ methodmap XenoMedicMain < CClotBody
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
@@ -294,8 +294,8 @@ public void XenoMedicMain_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

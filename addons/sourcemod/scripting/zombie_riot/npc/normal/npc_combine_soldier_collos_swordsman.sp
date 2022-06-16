@@ -156,9 +156,9 @@ methodmap CombineCollos < CClotBody
 	}
 	
 	
-	public CombineCollos(int client, float vecPos[3], float vecAng[3])
+	public CombineCollos(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		CombineCollos npc = view_as<CombineCollos>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.85", "30000", false, false, true));
+		CombineCollos npc = view_as<CombineCollos>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.85", "30000", ally, false, true));
 		
 		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_COLLOSS;
@@ -342,8 +342,8 @@ public void CombineCollos_ClotThink(int iNPC)
 			//Target close enough to hit
 			if(flDistanceToTarget < 40000 && npc.m_flReloadDelay < GetGameTime() || npc.m_flAttackHappenswillhappen)
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget);
 			//	npc.FaceTowards(vecTarget);
@@ -411,8 +411,8 @@ public void CombineCollos_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

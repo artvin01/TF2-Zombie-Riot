@@ -76,9 +76,9 @@ methodmap DemoMain < CClotBody
 		PrintToServer("CClot::PlayHurtSound()");
 		#endif
 	}
-	public DemoMain(int client, float vecPos[3], float vecAng[3])
+	public DemoMain(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		DemoMain npc = view_as<DemoMain>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "12500"));
+		DemoMain npc = view_as<DemoMain>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "12500", ally));
 		
 		i_NpcInternalId[npc.index] = DEMO_MAIN;
 		
@@ -97,8 +97,8 @@ methodmap DemoMain < CClotBody
 		SDKHook(npc.index, SDKHook_Think, DemoMain_ClotThink);		
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		
 		int skin = 5;
@@ -122,8 +122,8 @@ methodmap DemoMain < CClotBody
 		
 		npc.m_flCharge_Duration = 0.0;
 		npc.m_flCharge_delay = GetGameTime() + 3.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		return npc;
 	}
 	
@@ -206,8 +206,8 @@ public void DemoMain_ClotThink(int iNPC)
 			{
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			PF_StartPathing(npc.index);
-			npc.m_bPathing = true;
+			npc.StartPathing();
+			
 			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
@@ -265,8 +265,8 @@ public void DemoMain_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

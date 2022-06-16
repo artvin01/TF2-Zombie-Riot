@@ -128,9 +128,9 @@ methodmap SoldierMinion < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	public SoldierMinion(int client, float vecPos[3], float vecAng[3])
+	public SoldierMinion(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SoldierMinion npc = view_as<SoldierMinion>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "0.65", "10"));
+		SoldierMinion npc = view_as<SoldierMinion>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "0.65", "10", ally));
 		
 		i_NpcInternalId[npc.index] = SOLDIER_ZOMBIE_MINION;
 		
@@ -152,8 +152,8 @@ methodmap SoldierMinion < CClotBody
 		npc.m_flSpeed = 330.0;
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -305,8 +305,8 @@ public void SoldierMinion_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

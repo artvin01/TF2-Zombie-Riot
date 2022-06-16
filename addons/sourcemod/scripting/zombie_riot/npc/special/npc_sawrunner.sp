@@ -112,9 +112,9 @@ methodmap SawRunner < CClotBody
 	}
 	
 	
-	public SawRunner(int client, float vecPos[3], float vecAng[3])
+	public SawRunner(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_1.mdl", "1.5", "1500", false, false, true, true));
+		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_1.mdl", "1.5", "1500", ally, false, true, true));
 		
 		i_NpcInternalId[npc.index] = SAWRUNNER;
 		
@@ -153,8 +153,8 @@ methodmap SawRunner < CClotBody
 		
 		npc.m_bDissapearOnDeath = true;
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -345,8 +345,8 @@ public void SawRunner_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

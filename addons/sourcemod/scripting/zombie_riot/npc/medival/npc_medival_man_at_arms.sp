@@ -165,9 +165,9 @@ methodmap MedivalManAtArms < CClotBody
 		#endif
 	}
 	
-	public MedivalManAtArms(int client, float vecPos[3], float vecAng[3])
+	public MedivalManAtArms(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalManAtArms npc = view_as<MedivalManAtArms>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250"));
+		MedivalManAtArms npc = view_as<MedivalManAtArms>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250", ally));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_MAN_AT_ARMS;
 		
@@ -215,8 +215,8 @@ methodmap MedivalManAtArms < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -346,8 +346,8 @@ public void MedivalManAtArms_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

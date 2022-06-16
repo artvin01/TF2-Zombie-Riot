@@ -167,9 +167,9 @@ methodmap CombineSoldierShotgun < CClotBody
 	}
 	
 	
-	public CombineSoldierShotgun(int client, float vecPos[3], float vecAng[3])
+	public CombineSoldierShotgun(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		CombineSoldierShotgun npc = view_as<CombineSoldierShotgun>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "650"));
+		CombineSoldierShotgun npc = view_as<CombineSoldierShotgun>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "650", ally));
 		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_SHOTGUN;
 		
@@ -202,8 +202,8 @@ methodmap CombineSoldierShotgun < CClotBody
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -245,8 +245,8 @@ public void CombineSoldierShotgun_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;

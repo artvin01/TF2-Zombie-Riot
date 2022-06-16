@@ -120,9 +120,9 @@ methodmap XenoFortifiedPoisonZombie < CClotBody
 	
 	
 	
-	public XenoFortifiedPoisonZombie(int client, float vecPos[3], float vecAng[3])
+	public XenoFortifiedPoisonZombie(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoFortifiedPoisonZombie npc = view_as<XenoFortifiedPoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.15", "1500"));
+		XenoFortifiedPoisonZombie npc = view_as<XenoFortifiedPoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.15", "1500", ally));
 		
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -151,8 +151,8 @@ methodmap XenoFortifiedPoisonZombie < CClotBody
 		{
 			npc.m_flSpeed = 190.0;
 		}
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		return npc;
 	}
 	
@@ -305,8 +305,8 @@ public void XenoFortifiedPoisonZombie_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

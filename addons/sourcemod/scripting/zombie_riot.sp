@@ -51,8 +51,9 @@
 
 
 ConVar CvarNoRoundStart;
-ConVar CvarNoSpecialZombieSpawn;
+ConVar CvarDisableThink;
 ConVar CvarInfiniteCash;
+ConVar CvarNoSpecialZombieSpawn;
 ConVar CvarEnablePrivatePlugins;
 ConVar CvarMaxBotsForKillfeed;
 
@@ -1053,6 +1054,15 @@ public void OnPluginStart()
 
 public Action Timer_Temp(Handle timer)
 {
+	if(CvarDisableThink.BoolValue)
+	{
+		float gameTime = GetGameTime() + 1.0;
+		for(int i = MaxClients + 1; i < MAXENTITIES; i++)
+		{
+			view_as<CClotBody>(i).m_flNextDelayTime = gameTime;
+		}
+	}
+	
 	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
 		if (RaidModeTime > GetGameTime() && RaidModeTime < GetGameTime() + 60.0)
@@ -1250,12 +1260,15 @@ public Action OnReloadCommand(int args)
 	BuildPath(Path_SM, path, sizeof(path), "plugins/npc");
 	FileType filetype;
 	Handle directory = OpenDirectory(path);
-	while(ReadDirEntry(directory, filename, sizeof(filename), filetype))
+	if(directory)
 	{
-		if(filetype==FileType_File && StrContains(filename, ".smx", false)!=-1)
-			ServerCommand("sm plugins reload npc/%s", filename);
+		while(ReadDirEntry(directory, filename, sizeof(filename), filetype))
+		{
+			if(filetype==FileType_File && StrContains(filename, ".smx", false)!=-1)
+				ServerCommand("sm plugins reload npc/%s", filename);
+		}
 	}
-
+	
 	for(int i=MAXENTITIES; i>MaxClients; i--)
 	{
 		if(IsValidEntity(i) && GetEntityClassname(i, path, sizeof(path)))
@@ -1860,7 +1873,7 @@ public void Spawn_Bob_Combine(int client)
 	float flPos[3], flAng[3];
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
-	int bob = Npc_Create(BOB_THE_GOD_OF_GODS, client, flPos, flAng);
+	int bob = Npc_Create(BOB_THE_GOD_OF_GODS, client, flPos, flAng, true);
 	Bob_Exists = true;
 	Bob_Exists_Index = EntIndexToEntRef(bob);
 	GiveNamedItem(client, "Bob the Overgod of gods and destroyer of multiverses");
@@ -1888,7 +1901,7 @@ public void Spawn_Cured_Grigori()
 	float flPos[3], flAng[3];
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
-	int entity = Npc_Create(CURED_FATHER_GRIGORI, client, flPos, flAng);
+	int entity = Npc_Create(CURED_FATHER_GRIGORI, client, flPos, flAng, true);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_grigori");
 	
 	for(int client_Give_item=1; client_Give_item<=MaxClients; client_Give_item++)

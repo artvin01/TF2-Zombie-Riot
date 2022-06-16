@@ -77,9 +77,9 @@ methodmap XenoDemoMain < CClotBody
 		PrintToServer("CClot::PlayHurtSound()");
 		#endif
 	}
-	public XenoDemoMain(int client, float vecPos[3], float vecAng[3])
+	public XenoDemoMain(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoDemoMain npc = view_as<XenoDemoMain>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "13500"));
+		XenoDemoMain npc = view_as<XenoDemoMain>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "13500", ally));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -101,8 +101,8 @@ methodmap XenoDemoMain < CClotBody
 		
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		
 		int skin = 5;
@@ -138,8 +138,8 @@ methodmap XenoDemoMain < CClotBody
 		
 		npc.m_flCharge_Duration = 0.0;
 		npc.m_flCharge_delay = GetGameTime() + 3.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		return npc;
 	}
 	
@@ -222,8 +222,8 @@ public void XenoDemoMain_ClotThink(int iNPC)
 			{
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			PF_StartPathing(npc.index);
-			npc.m_bPathing = true;
+			npc.StartPathing();
+			
 			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
@@ -281,8 +281,8 @@ public void XenoDemoMain_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

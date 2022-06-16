@@ -124,6 +124,6 @@ public void Spawn_Necromancy(int client)
 	
 	char buffer[16];
 	FloatToString(Necro_Damage[client], buffer, sizeof(buffer));
-	Npc_Create(NECRO_COMBINE, client, flPos, flAng, buffer);
+	Npc_Create(NECRO_COMBINE, client, flPos, flAng, true, buffer);
 	GiveNamedItem(client, "Revived Combine DDT");
 }

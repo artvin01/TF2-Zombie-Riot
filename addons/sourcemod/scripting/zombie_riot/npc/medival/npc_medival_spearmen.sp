@@ -165,9 +165,9 @@ methodmap MedivalSpearMan < CClotBody
 		#endif
 	}
 	
-	public MedivalSpearMan(int client, float vecPos[3], float vecAng[3])
+	public MedivalSpearMan(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalSpearMan npc = view_as<MedivalSpearMan>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400"));
+		MedivalSpearMan npc = view_as<MedivalSpearMan>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400", ally));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_SPEARMEN;
 		
@@ -210,8 +210,8 @@ methodmap MedivalSpearMan < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		*/
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -341,8 +341,8 @@ public void MedivalSpearMan_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

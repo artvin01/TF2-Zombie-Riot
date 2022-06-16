@@ -108,9 +108,9 @@ methodmap XenoMedicHealer < CClotBody
 		#endif
 	}
 	
-	public XenoMedicHealer(int client, float vecPos[3], float vecAng[3])
+	public XenoMedicHealer(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoMedicHealer npc = view_as<XenoMedicHealer>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "4500"));
+		XenoMedicHealer npc = view_as<XenoMedicHealer>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "4500", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_MEDIC_HEALER;
 		
@@ -135,8 +135,8 @@ methodmap XenoMedicHealer < CClotBody
 		npc.m_bFUCKYOU_move_anim = false;
 		
 		npc.m_bnew_target = false;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -157,8 +157,8 @@ methodmap XenoMedicHealer < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
@@ -264,7 +264,7 @@ public void XenoMedicHealer_ClotThink(int iNPC)
 					}
 					else
 					{
-						PF_StartPathing(npc.index);
+						npc.StartPathing();
 						npc.m_bPathing = false;		
 					}
 					if(!npc.m_bnew_target)
@@ -286,7 +286,7 @@ public void XenoMedicHealer_ClotThink(int iNPC)
 				{
 					if(IsValidEntity(npc.m_iWearable4))
 						RemoveEntity(npc.m_iWearable4);
-					PF_StartPathing(npc.index);
+					npc.StartPathing();
 					npc.m_bPathing = false;		
 					npc.m_bnew_target = false;					
 				}
@@ -422,8 +422,8 @@ public void XenoMedicHealer_ClotThink(int iNPC)
 				}
 				else
 				{
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 				}
 		}
 		else

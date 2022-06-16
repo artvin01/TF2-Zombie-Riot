@@ -142,9 +142,9 @@ methodmap MedivalCrossbowMan < CClotBody
 		#endif
 	}
 	
-	public MedivalCrossbowMan(int client, float vecPos[3], float vecAng[3])
+	public MedivalCrossbowMan(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "900"));
+		MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "900", ally));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_CROSSBOW_MAN;
 		
@@ -189,8 +189,8 @@ methodmap MedivalCrossbowMan < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 	*/
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -299,14 +299,14 @@ public void MedivalCrossbowMan_ClotThink(int iNPC)
 				}
 				else
 				{
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 				}
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

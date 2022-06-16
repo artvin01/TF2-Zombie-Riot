@@ -209,9 +209,9 @@ methodmap Blitzkrieg < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	public Blitzkrieg(int client, float vecPos[3], float vecAng[3])
+	public Blitzkrieg(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Blitzkrieg npc = view_as<Blitzkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.4", "25000", false, false, true, true, true)); //giant!
+		Blitzkrieg npc = view_as<Blitzkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.4", "25000", ally, false, true, true, true)); //giant!
 		
 		i_NpcInternalId[npc.index] = RAIDMODE_BLITZKRIEG;
 		
@@ -298,7 +298,7 @@ methodmap Blitzkrieg < CClotBody
 		
 		
 		//IDLE
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 270.0;
 		
 		npc.PlayMusicSound();
 		Music_Stop_All_Beat(client);
@@ -497,19 +497,22 @@ public void Blitzkrieg_ClotThink(int iNPC)
 						npc.m_flNextMeleeAttack = GetGameTime() + 0.25 * i_HealthScale[npc.index];
 						npc.m_flAttackHappenswillhappen = false;
 					}
+					if(ZR_GetWaveCount()<=30)
+					{
 					PF_StopPathing(npc.index);
 					npc.m_bPathing = false;
+					}
 				}
 				else
 				{
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 				}
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else
@@ -555,7 +558,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		i_HealthScale[npc.index]=0.4;
 		
-		npc.m_flSpeed = 310.0;
+		npc.m_flSpeed = 280.0;
 		
 		npc.PlayAngerSound();
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
@@ -597,7 +600,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		i_HealthScale[npc.index]=0.25;
 		
-		npc.m_flSpeed = 320.0;
+		npc.m_flSpeed = 290.0;
 		
 		npc.PlayAngerSound();
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
@@ -638,7 +641,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		EmitSoundToAll("mvm/mvm_tank_end.wav");
 		
-		npc.m_flSpeed = 330.0;
+		npc.m_flSpeed = 300.0;
 		
 		CPrintToChatAll("{crimson}Blitzkrieg{default}: {yellow}Life: %i!",i_NpcCurrentLives[npc.index]);
 		

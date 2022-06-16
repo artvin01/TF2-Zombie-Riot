@@ -188,9 +188,9 @@ methodmap XenoCombineOverlord < CClotBody
 		#endif
 	}
 	
-	public XenoCombineOverlord(int client, float vecPos[3], float vecAng[3])
+	public XenoCombineOverlord(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoCombineOverlord npc = view_as<XenoCombineOverlord>(CClotBody(vecPos, vecAng, "models/zombie_riot/bosses/overlord_1.mdl", "1.0", "35000"));
+		XenoCombineOverlord npc = view_as<XenoCombineOverlord>(CClotBody(vecPos, vecAng, "models/zombie_riot/bosses/overlord_1.mdl", "1.0", "35000", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_OVERLORD;
 		
@@ -424,8 +424,8 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 			//Target close enough to hit
 			if(flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime() || npc.m_flAttackHappenswillhappen)
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 				
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
@@ -539,8 +539,8 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

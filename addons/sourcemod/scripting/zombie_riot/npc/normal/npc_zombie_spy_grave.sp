@@ -127,9 +127,9 @@ methodmap Spy < CClotBody
 	}
 	
 	
-	public Spy(int client, float vecPos[3], float vecAng[3])
+	public Spy(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Spy npc = view_as<Spy>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "4000"));
+		Spy npc = view_as<Spy>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "4000", ally));
 		
 		i_NpcInternalId[npc.index] = SPY_FACESTABBER;
 		
@@ -164,8 +164,8 @@ methodmap Spy < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 				
 		return npc;
 	}
@@ -297,8 +297,8 @@ public void Spy_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

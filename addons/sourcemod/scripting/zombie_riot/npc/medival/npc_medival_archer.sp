@@ -142,9 +142,9 @@ methodmap MedivalArcher < CClotBody
 		#endif
 	}
 	
-	public MedivalArcher(int client, float vecPos[3], float vecAng[3])
+	public MedivalArcher(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalArcher npc = view_as<MedivalArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400"));
+		MedivalArcher npc = view_as<MedivalArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400", ally));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_ARCHER;
 		
@@ -189,8 +189,8 @@ methodmap MedivalArcher < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 	*/
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -301,14 +301,14 @@ public void MedivalArcher_ClotThink(int iNPC)
 				}
 				else
 				{
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 				}
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

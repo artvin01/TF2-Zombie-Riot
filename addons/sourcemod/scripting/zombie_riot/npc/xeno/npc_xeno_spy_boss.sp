@@ -201,9 +201,9 @@ methodmap XenoSpyMainBoss < CClotBody
 		#endif
 	}
 	
-	public XenoSpyMainBoss(int client, float vecPos[3], float vecAng[3])
+	public XenoSpyMainBoss(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoSpyMainBoss npc = view_as<XenoSpyMainBoss>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "500000"));
+		XenoSpyMainBoss npc = view_as<XenoSpyMainBoss>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "500000", ally));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -244,8 +244,8 @@ methodmap XenoSpyMainBoss < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
@@ -459,8 +459,8 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 				AcceptEntityInput(npc.m_iWearable1, "Disable");
 				AcceptEntityInput(npc.m_iWearable2, "Enable");
 			//	npc.FaceTowards(vecTarget, 1000.0);
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 				
 			}
 			else if (npc.m_flReloadDelay < GetGameTime() && flDistanceToTarget > 40000 && flDistanceToTarget < 90000)
@@ -493,8 +493,8 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 				AcceptEntityInput(npc.m_iWearable1, "Enable");
 				AcceptEntityInput(npc.m_iWearable2, "Disable");
 			//	npc.FaceTowards(vecTarget, 1000.0);
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}		
 		
 			
@@ -613,8 +613,8 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 			}
 			if(flDistanceToTarget < 90000 && npc.m_flReloadDelay < GetGameTime() || flDistanceToTarget > 90000 && npc.m_flReloadDelay < GetGameTime() )
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 				npc.m_fbGunout = false;
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 2000.0);
@@ -811,12 +811,13 @@ public void XenoSpyMainBoss_ClotDamagedPost(int victim, int attacker, int inflic
 					amount_of_people += 1;
 				}
 			}
+			bool ally = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
 			for(int i; i<amount_of_people; i++)
 			{
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 				
-				int spawn_index = Npc_Create(XENO_SPY_TRICKSTABBER, -1, pos, ang);
+				int spawn_index = Npc_Create(XENO_SPY_TRICKSTABBER, -1, pos, ang, ally);
 				if(spawn_index > MaxClients)
 				{
 					Zombies_Currently_Still_Ongoing += 1;

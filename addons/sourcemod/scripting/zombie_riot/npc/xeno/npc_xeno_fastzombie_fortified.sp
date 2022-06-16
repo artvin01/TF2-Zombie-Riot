@@ -176,9 +176,9 @@ methodmap XenoFortifiedFastZombie < CClotBody
 	
 	
 	
-	public XenoFortifiedFastZombie(int client, float vecPos[3], float vecAng[3])
+	public XenoFortifiedFastZombie(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoFortifiedFastZombie npc = view_as<XenoFortifiedFastZombie>(CClotBody(vecPos, vecAng, "models/zombie/fast.mdl", "1.15", "400"));
+		XenoFortifiedFastZombie npc = view_as<XenoFortifiedFastZombie>(CClotBody(vecPos, vecAng, "models/zombie/fast.mdl", "1.15", "400", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_FORTIFIED_FASTZOMBIE;
 		
@@ -208,8 +208,8 @@ methodmap XenoFortifiedFastZombie < CClotBody
 		npc.m_flJumpCooldown = GetGameTime() + 5.0;
 		npc.m_flInJump = 0.0;
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		return npc;
 	}
 	
@@ -354,8 +354,8 @@ public void XenoFortifiedFastZombie_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

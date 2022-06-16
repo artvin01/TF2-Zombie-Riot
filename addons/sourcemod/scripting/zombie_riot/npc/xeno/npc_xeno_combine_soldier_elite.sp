@@ -173,9 +173,9 @@ methodmap XenoCombineElite < CClotBody
 	}
 	
 	
-	public XenoCombineElite(int client, float vecPos[3], float vecAng[3])
+	public XenoCombineElite(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoCombineElite npc = view_as<XenoCombineElite>(CClotBody(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", "1750"));
+		XenoCombineElite npc = view_as<XenoCombineElite>(CClotBody(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", "1750", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_ELITE;
 		
@@ -217,8 +217,8 @@ methodmap XenoCombineElite < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_irifle.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 /*		
 		npc.m_iBatton = npc.EquipItem("anim_attachment_RH", "models/weapons/w_stunbaton.mdl");
@@ -338,8 +338,8 @@ public void XenoCombineElite_ClotThink(int iNPC)
 						if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 						npc.m_bmovedelay = true;
 					}
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 					npc.m_fbGunout = false;
 				}
 				else
@@ -401,8 +401,8 @@ public void XenoCombineElite_ClotThink(int iNPC)
 			//Target close enough to hit
 			if((flDistanceToTarget < 62500 || flDistanceToTarget > 122500) && npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 				npc.m_fbGunout = false;
 					
 			//	npc.FaceTowards(vecTarget, 1000.0);

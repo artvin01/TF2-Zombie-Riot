@@ -119,14 +119,14 @@ methodmap DDT < CClotBody
 		
 		SetEntProp(this.index, Prop_Send, "m_nSkin", type);
 	}
-	public DDT(int client, float vecPos[3], float vecAng[3], const char[] data)
+	public DDT(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		bool fortified = StrContains(data, "f") != -1;
 		
 		char buffer[16];
 		IntToString(MoabHealth(fortified), buffer, sizeof(buffer));
 		
-		DDT npc = view_as<DDT>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/ddt.mdl", "1.0", buffer, false, false, true));
+		DDT npc = view_as<DDT>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/ddt.mdl", "1.0", buffer, ally, false, true));
 		
 		i_NpcInternalId[npc.index] = BTD_DDT;
 		
@@ -157,8 +157,8 @@ methodmap DDT < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 60);
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -265,8 +265,8 @@ public void DDT_ClotThink(int iNPC)
 			}
 		}
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 	}
 	else
 	{
@@ -344,6 +344,7 @@ public void DDT_NPCDeath(int entity)
 		SetEntityCollisionGroup(entity_death, 2);
 		SetVariantString("death");
 		AcceptEntityInput(entity_death, "SetAnimation");
+		SetEntProp(entity_death, Prop_Send, "m_iTeamNum", GetEntProp(npc.index, Prop_Send, "m_iTeamNum"));
 		
 		pos[2] += 20.0;
 		
@@ -360,7 +361,7 @@ public void DDT_PostDeath(const char[] output, int caller, int activator, float 
 	
 	TE_Particle("ExplosionCore_buildings", pos, NULL_VECTOR, NULL_VECTOR, caller, _, _, _, _, _, _, _, _, _, 0.0);
 	
-	int spawn_index = Npc_Create(BTD_BLOON, -1, pos, angles, "9rc");
+	int spawn_index = Npc_Create(BTD_BLOON, -1, pos, angles, GetEntProp(caller, Prop_Send, "m_iTeamNum") == 2, "9rc");
 	if(spawn_index > MaxClients)
 		Zombies_Currently_Still_Ongoing += 1;
 }
@@ -374,7 +375,7 @@ public void DDT_PostFortifiedDeath(const char[] output, int caller, int activato
 	
 	TE_Particle("ExplosionCore_buildings", pos, NULL_VECTOR, NULL_VECTOR, caller, _, _, _, _, _, _, _, _, _, 0.0);
 	
-	int spawn_index = Npc_Create(BTD_BLOON, -1, pos, angles, "9frc");
+	int spawn_index = Npc_Create(BTD_BLOON, -1, pos, angles, GetEntProp(caller, Prop_Send, "m_iTeamNum") == 2, "9frc");
 	if(spawn_index > MaxClients)
 		Zombies_Currently_Still_Ongoing += 1;
 }

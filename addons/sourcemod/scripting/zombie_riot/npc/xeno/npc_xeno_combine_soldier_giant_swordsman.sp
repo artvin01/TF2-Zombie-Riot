@@ -171,9 +171,9 @@ methodmap XenoCombineGaint < CClotBody
 	}
 	
 	
-	public XenoCombineGaint(int client, float vecPos[3], float vecAng[3])
+	public XenoCombineGaint(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoCombineGaint npc = view_as<XenoCombineGaint>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "5000", false, false, true));
+		XenoCombineGaint npc = view_as<XenoCombineGaint>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "5000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_GIANT_SWORDSMAN;
 		
@@ -203,8 +203,8 @@ methodmap XenoCombineGaint < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.7");
@@ -256,8 +256,8 @@ public void XenoCombineGaint_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -348,8 +348,8 @@ public void XenoCombineGaint_ClotThink(int iNPC)
 			//Target close enough to hit
 			if(flDistanceToTarget < 22500 && npc.m_flReloadDelay < GetGameTime()  || npc.m_flAttackHappenswillhappen)
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget);
 			//	npc.FaceTowards(vecTarget);
@@ -407,8 +407,8 @@ public void XenoCombineGaint_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

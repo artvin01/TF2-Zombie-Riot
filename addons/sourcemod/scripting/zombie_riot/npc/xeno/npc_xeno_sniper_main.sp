@@ -128,9 +128,9 @@ methodmap XenoSniperMain < CClotBody
 	
 	
 	
-	public XenoSniperMain(int client, float vecPos[3], float vecAng[3])
+	public XenoSniperMain(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoSniperMain npc = view_as<XenoSniperMain>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "13500"));
+		XenoSniperMain npc = view_as<XenoSniperMain>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "13500", ally));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -154,8 +154,8 @@ methodmap XenoSniperMain < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		npc.m_iAttacksTillReload = 25;
 		npc.Anger = false;
@@ -341,8 +341,8 @@ public void XenoSniperMain_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 		}
 		else if(!npc.Anger)
@@ -381,8 +381,8 @@ public void XenoSniperMain_ClotThink(int iNPC)
 					
 				if(!IsValidEnemy(npc.index, target))
 				{
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 				}
 				else
 				{
@@ -433,8 +433,8 @@ public void XenoSniperMain_ClotThink(int iNPC)
 			}
 			if(flDistanceToTarget > 90000)
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 		}
 	}

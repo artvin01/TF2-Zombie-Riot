@@ -222,8 +222,8 @@ methodmap NecroCombine < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 192, 192, 192, 255);
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -352,8 +352,8 @@ public void NecroCombine_ClotThink(int iNPC)
 				}
 				if (npc.m_flReloadDelay < GetGameTime())
 				{
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 				}
 		}
 		else

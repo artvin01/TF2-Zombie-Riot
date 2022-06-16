@@ -223,9 +223,9 @@ methodmap FatherGrigori < CClotBody
 		#endif
 	}
 	
-	public FatherGrigori(int client, float vecPos[3], float vecAng[3])
+	public FatherGrigori(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		FatherGrigori npc = view_as<FatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000"));
+		FatherGrigori npc = view_as<FatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
 		
 		i_NpcInternalId[npc.index] = FATHER_GRIGORI;
 		
@@ -256,8 +256,8 @@ methodmap FatherGrigori < CClotBody
 		npc.m_flNextTeleport = GetGameTime() + 5.0;
 		npc.m_flDoingAnimation = 0.0;
 		npc.Anger = false;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		if(EscapeModeForNpc)
 		{
 			npc.m_flSpeed = 250.0;
@@ -359,8 +359,8 @@ public void FatherGrigori_ClotThink(int iNPC)
 		{
 			PF_SetGoalEntity(npc.index, closest);
 		}
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		//Target close enough to hit
 		
 			if(npc.m_flNextRangedAttack < GetGameTime() && npc.m_flDoingAnimation < GetGameTime() && flDistanceToTarget < 202500)
@@ -516,8 +516,8 @@ public void FatherGrigori_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

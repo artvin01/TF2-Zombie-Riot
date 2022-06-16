@@ -161,9 +161,9 @@ methodmap MedivalMilitia < CClotBody
 		#endif
 	}
 	
-	public MedivalMilitia(int client, float vecPos[3], float vecAng[3])
+	public MedivalMilitia(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalMilitia npc = view_as<MedivalMilitia>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400"));
+		MedivalMilitia npc = view_as<MedivalMilitia>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400", ally));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_MILITIA;
 		
@@ -207,8 +207,8 @@ methodmap MedivalMilitia < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -337,8 +337,8 @@ public void MedivalMilitia_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

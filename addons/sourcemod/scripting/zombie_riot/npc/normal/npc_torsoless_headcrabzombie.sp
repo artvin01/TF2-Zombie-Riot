@@ -127,9 +127,9 @@ methodmap TorsolessHeadcrabZombie < CClotBody
 	
 	
 	
-	public TorsolessHeadcrabZombie(int client, float vecPos[3], float vecAng[3])
+	public TorsolessHeadcrabZombie(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		TorsolessHeadcrabZombie npc = view_as<TorsolessHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic_torso.mdl", "1.15", "250", false, false));
+		TorsolessHeadcrabZombie npc = view_as<TorsolessHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic_torso.mdl", "1.15", "250", ally, false));
 		
 		i_NpcInternalId[npc.index] = TORSOLESS_HEADCRAB_ZOMBIE;
 		
@@ -148,8 +148,8 @@ methodmap TorsolessHeadcrabZombie < CClotBody
 		//IDLE
 		npc.m_flSpeed = 150.0;
 		npc.m_flAttackHappenswillhappen = false;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		return npc;
 	}
 	
@@ -203,8 +203,8 @@ public void TorsolessHeadcrabZombie_ClotThink(int iNPC)
 		{
 			PF_SetGoalEntity(npc.index, closest);
 		}
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		//Target close enough to hit
 		
 		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)

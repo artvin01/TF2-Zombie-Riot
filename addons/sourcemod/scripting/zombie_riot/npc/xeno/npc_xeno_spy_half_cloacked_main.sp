@@ -163,9 +163,9 @@ methodmap XenoSpyCloaked < CClotBody
 	}
 	
 	
-	public XenoSpyCloaked(int client, float vecPos[3], float vecAng[3])
+	public XenoSpyCloaked(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoSpyCloaked npc = view_as<XenoSpyCloaked>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "16500"));
+		XenoSpyCloaked npc = view_as<XenoSpyCloaked>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "16500", ally));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -197,8 +197,8 @@ methodmap XenoSpyCloaked < CClotBody
 		npc.m_bmovedelay = false;
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		npc.m_iState = 0;
 		npc.m_flSpeed = 290.0;
@@ -335,8 +335,8 @@ public void XenoSpyCloaked_ClotThink(int iNPC)
 					
 				if(!IsValidEnemy(npc.index, target))
 				{
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 					if (!npc.m_bmovedelay)
 					{
 						int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -400,8 +400,8 @@ public void XenoSpyCloaked_ClotThink(int iNPC)
 			}
 			if(flDistanceToTarget < 22500 && npc.m_flReloadDelay < GetGameTime() || flDistanceToTarget > 62500 && npc.m_flReloadDelay < GetGameTime() )
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 				
 				npc.m_fbGunout = false;
 				//Look at target so we hit.

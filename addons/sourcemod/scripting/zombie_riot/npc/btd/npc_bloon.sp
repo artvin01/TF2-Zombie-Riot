@@ -457,7 +457,7 @@ methodmap Bloon < CClotBody
 			}
 		}
 	}
-	public Bloon(int client, float vecPos[3], float vecAng[3], const char[] data)
+	public Bloon(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		bool camo, regrow, fortified;
 		int type = GetBloonTypeOfData(data, camo, fortified, regrow);
@@ -465,7 +465,7 @@ methodmap Bloon < CClotBody
 		char buffer[7];
 		IntToString(Bloon_Health(fortified, type), buffer, sizeof(buffer));
 		
-		Bloon npc = view_as<Bloon>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloons_hitbox.mdl", "1.0", buffer));
+		Bloon npc = view_as<Bloon>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloons_hitbox.mdl", "1.0", buffer, ally));
 		
 		i_NpcInternalId[npc.index] = BTD_BLOON;
 		
@@ -495,8 +495,8 @@ methodmap Bloon < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -615,8 +615,8 @@ public void Bloon_ClotThink(int iNPC)
 			}
 		}
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 	}
 	else
 	{

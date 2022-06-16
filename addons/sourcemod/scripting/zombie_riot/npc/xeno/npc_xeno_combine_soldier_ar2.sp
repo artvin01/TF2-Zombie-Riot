@@ -162,9 +162,9 @@ methodmap XenoCombineSoldierAr2 < CClotBody
 	}
 	
 	
-	public XenoCombineSoldierAr2(int client, float vecPos[3], float vecAng[3])
+	public XenoCombineSoldierAr2(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoCombineSoldierAr2 npc = view_as<XenoCombineSoldierAr2>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "1500"));
+		XenoCombineSoldierAr2 npc = view_as<XenoCombineSoldierAr2>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "1500", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_AR2;
 		
@@ -204,8 +204,8 @@ methodmap XenoCombineSoldierAr2 < CClotBody
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -311,8 +311,8 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 						if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 						npc.m_bmovedelay = true;
 					}
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 					npc.m_fbGunout = false;
 				}
 				else
@@ -382,8 +382,8 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 			//Target close enough to hit
 			if(npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 				npc.m_fbGunout = false;
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget);

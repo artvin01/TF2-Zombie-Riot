@@ -170,9 +170,9 @@ methodmap XenoFlyingArmor < CClotBody
 	}
 	
 	
-	public XenoFlyingArmor(int client, float vecPos[3], float vecAng[3])
+	public XenoFlyingArmor(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoFlyingArmor npc = view_as<XenoFlyingArmor>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2000"));
+		XenoFlyingArmor npc = view_as<XenoFlyingArmor>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2000", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_FLYINGARMOR_ZOMBIE;
 		
@@ -214,8 +214,8 @@ methodmap XenoFlyingArmor < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -361,8 +361,8 @@ public void XenoFlyingArmor_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else
@@ -408,7 +408,7 @@ public void XenoFlyingArmor_NPCDeath(int entity)
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		
-		int spawn_index = Npc_Create(XENO_FLYINGARMOR_TINY_ZOMBIE, -1, pos, ang);
+		int spawn_index = Npc_Create(XENO_FLYINGARMOR_TINY_ZOMBIE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 		if(spawn_index > MaxClients)
 		{
 			Zombies_Currently_Still_Ongoing += 1;
