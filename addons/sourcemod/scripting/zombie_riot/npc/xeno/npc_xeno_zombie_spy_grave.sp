@@ -127,9 +127,9 @@ methodmap XenoSpy < CClotBody
 	}
 	
 	
-	public XenoSpy(int client, float vecPos[3], float vecAng[3])
+	public XenoSpy(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoSpy npc = view_as<XenoSpy>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "5000"));
+		XenoSpy npc = view_as<XenoSpy>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "5000", ally));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -173,8 +173,8 @@ methodmap XenoSpy < CClotBody
 		SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 				
 		return npc;
 	}
@@ -306,8 +306,8 @@ public void XenoSpy_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

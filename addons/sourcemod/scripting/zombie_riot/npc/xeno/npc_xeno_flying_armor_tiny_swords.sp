@@ -173,9 +173,9 @@ methodmap XenoFlyingArmorTiny < CClotBody
 	}
 	
 	
-	public XenoFlyingArmorTiny(int client, float vecPos[3], float vecAng[3])
+	public XenoFlyingArmorTiny(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoFlyingArmorTiny npc = view_as<XenoFlyingArmorTiny>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.9", "180"));
+		XenoFlyingArmorTiny npc = view_as<XenoFlyingArmorTiny>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.9", "180", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_FLYINGARMOR_TINY_ZOMBIE;
 		
@@ -215,8 +215,8 @@ methodmap XenoFlyingArmorTiny < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -362,8 +362,8 @@ public void XenoFlyingArmorTiny_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

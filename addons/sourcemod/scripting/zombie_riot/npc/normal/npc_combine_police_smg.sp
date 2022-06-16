@@ -162,9 +162,9 @@ methodmap CombinePoliceSmg < CClotBody
 	}
 	
 	
-	public CombinePoliceSmg(int client, float vecPos[3], float vecAng[3])
+	public CombinePoliceSmg(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		CombinePoliceSmg npc = view_as<CombinePoliceSmg>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "700"));
+		CombinePoliceSmg npc = view_as<CombinePoliceSmg>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "700", ally));
 		
 		i_NpcInternalId[npc.index] = COMBINE_POLICE_SMG;
 		
@@ -203,8 +203,8 @@ methodmap CombinePoliceSmg < CClotBody
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -311,8 +311,8 @@ public void CombinePoliceSmg_ClotThink(int iNPC)
 						npc.m_bmovedelay = true;
 						npc.m_flSpeed = 180.0;
 					}
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 					npc.m_fbGunout = false;
 				}
 				else
@@ -374,8 +374,8 @@ public void CombinePoliceSmg_ClotThink(int iNPC)
 			//Target close enough to hit
 			if(flDistanceToTarget > 10000 && npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 				npc.m_fbGunout = false;
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 5000.0);

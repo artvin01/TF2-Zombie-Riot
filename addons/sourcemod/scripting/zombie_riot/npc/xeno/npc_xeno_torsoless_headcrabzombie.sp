@@ -125,9 +125,9 @@ methodmap XenoTorsolessHeadcrabZombie < CClotBody
 	
 	
 	
-	public XenoTorsolessHeadcrabZombie(int client, float vecPos[3], float vecAng[3])
+	public XenoTorsolessHeadcrabZombie(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoTorsolessHeadcrabZombie npc = view_as<XenoTorsolessHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic_torso.mdl", "1.15", "300"));
+		XenoTorsolessHeadcrabZombie npc = view_as<XenoTorsolessHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic_torso.mdl", "1.15", "300", ally));
 		
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -154,8 +154,8 @@ methodmap XenoTorsolessHeadcrabZombie < CClotBody
 		//IDLE
 		npc.m_flSpeed = 160.0;
 		npc.m_flAttackHappenswillhappen = false;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		return npc;
 	}
 	
@@ -209,8 +209,8 @@ public void XenoTorsolessHeadcrabZombie_ClotThink(int iNPC)
 		{
 			PF_SetGoalEntity(npc.index, closest);
 		}
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		//Target close enough to hit
 		
 		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)

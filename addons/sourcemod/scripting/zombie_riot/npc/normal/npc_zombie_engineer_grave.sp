@@ -128,9 +128,9 @@ methodmap Engineer < CClotBody
 	}
 	
 	
-	public Engineer(int client, float vecPos[3], float vecAng[3])
+	public Engineer(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Engineer npc = view_as<Engineer>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "2500"));
+		Engineer npc = view_as<Engineer>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "2500", ally));
 		
 		i_NpcInternalId[npc.index] = ENGINEER_ZOMBIE;
 		
@@ -152,8 +152,8 @@ methodmap Engineer < CClotBody
 		npc.m_iState = 0;
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		npc.m_flSpeed = 250.0;
 		
@@ -170,8 +170,8 @@ methodmap Engineer < CClotBody
 		
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		
 		return npc;
@@ -302,8 +302,8 @@ public void Engineer_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 		}
 	else

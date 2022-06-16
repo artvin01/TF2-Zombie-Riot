@@ -128,9 +128,9 @@ methodmap Heavy < CClotBody
 	
 	
 	
-	public Heavy(int client, float vecPos[3], float vecAng[3])
+	public Heavy(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Heavy npc = view_as<Heavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "5000"));
+		Heavy npc = view_as<Heavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "5000", ally));
 		
 		i_NpcInternalId[npc.index] = HEAVY_ZOMBIE;
 		
@@ -155,8 +155,8 @@ methodmap Heavy < CClotBody
 		npc.m_iState = 0;
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -294,8 +294,8 @@ public void Heavy_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 		}
 	else

@@ -131,9 +131,9 @@ methodmap XenoEngineer < CClotBody
 	}
 	
 	
-	public XenoEngineer(int client, float vecPos[3], float vecAng[3])
+	public XenoEngineer(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoEngineer npc = view_as<XenoEngineer>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "3000"));
+		XenoEngineer npc = view_as<XenoEngineer>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "3000", ally));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -155,8 +155,8 @@ methodmap XenoEngineer < CClotBody
 		npc.m_iState = 0;
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		npc.m_flSpeed = 260.0;
 		
@@ -182,8 +182,8 @@ methodmap XenoEngineer < CClotBody
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 255);
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		
 		return npc;
@@ -316,8 +316,8 @@ public void XenoEngineer_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 		}
 	else

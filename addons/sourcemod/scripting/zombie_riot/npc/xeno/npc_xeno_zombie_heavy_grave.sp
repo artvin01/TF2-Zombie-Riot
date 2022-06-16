@@ -131,9 +131,9 @@ methodmap XenoHeavy < CClotBody
 	
 	
 	
-	public XenoHeavy(int client, float vecPos[3], float vecAng[3])
+	public XenoHeavy(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoHeavy npc = view_as<XenoHeavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "6500"));
+		XenoHeavy npc = view_as<XenoHeavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "6500", ally));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -153,8 +153,8 @@ methodmap XenoHeavy < CClotBody
 		npc.m_iState = 0;
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -296,8 +296,8 @@ public void XenoHeavy_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 		}
 	else

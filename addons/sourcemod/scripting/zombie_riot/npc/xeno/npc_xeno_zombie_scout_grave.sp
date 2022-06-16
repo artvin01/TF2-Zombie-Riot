@@ -129,9 +129,9 @@ methodmap XenoScout < CClotBody
 	}
 	
 	
-	public XenoScout(int client, float vecPos[3], float vecAng[3])
+	public XenoScout(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoScout npc = view_as<XenoScout>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1500"));
+		XenoScout npc = view_as<XenoScout>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1500", ally));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -153,8 +153,8 @@ methodmap XenoScout < CClotBody
 		
 		npc.m_flSpeed = 310.0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 200);
@@ -316,8 +316,8 @@ public void XenoScout_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 		}
 	else

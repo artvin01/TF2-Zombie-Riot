@@ -175,9 +175,9 @@ methodmap CombineOverlord < CClotBody
 		#endif
 	}
 	
-	public CombineOverlord(int client, float vecPos[3], float vecAng[3])
+	public CombineOverlord(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		CombineOverlord npc = view_as<CombineOverlord>(CClotBody(vecPos, vecAng, "models/zombie_riot/bosses/overlord_1.mdl", "1.0", "35000"));
+		CombineOverlord npc = view_as<CombineOverlord>(CClotBody(vecPos, vecAng, "models/zombie_riot/bosses/overlord_1.mdl", "1.0", "35000", ally));
 		
 		i_NpcInternalId[npc.index] = COMBINE_OVERLORD;
 		
@@ -383,8 +383,8 @@ public void CombineOverlord_ClotThink(int iNPC)
 			//Target close enough to hit
 			if(flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime() || npc.m_flAttackHappenswillhappen)
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 				
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
@@ -498,8 +498,8 @@ public void CombineOverlord_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

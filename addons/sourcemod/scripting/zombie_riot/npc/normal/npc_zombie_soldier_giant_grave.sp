@@ -143,9 +143,9 @@ methodmap SoldierGiant < CClotBody
 	}
 	
 	
-	public SoldierGiant(int client, float vecPos[3], float vecAng[3])
+	public SoldierGiant(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SoldierGiant npc = view_as<SoldierGiant>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.5", "200000", false, false, true));
+		SoldierGiant npc = view_as<SoldierGiant>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.5", "200000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = SOLDIER_ZOMBIE_BOSS;
 		
@@ -167,8 +167,8 @@ methodmap SoldierGiant < CClotBody
 		//IDLE
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
 		npc.m_flSpeed = 300.0;
@@ -343,8 +343,8 @@ public void SoldierGiant_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else
@@ -387,7 +387,7 @@ public void SoldierGiant_ClotDamaged_Post(int victim, int attacker, int inflicto
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
-			int spawn_index = Npc_Create(SOLDIER_ZOMBIE_MINION, -1, pos, ang);
+			int spawn_index = Npc_Create(SOLDIER_ZOMBIE_MINION, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 			if(spawn_index > MaxClients)
 			{
 				Zombies_Currently_Still_Ongoing += 1;

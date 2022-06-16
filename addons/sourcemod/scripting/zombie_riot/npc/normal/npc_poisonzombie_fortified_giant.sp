@@ -121,9 +121,9 @@ methodmap FortifiedGiantPoisonZombie < CClotBody
 	
 	
 	
-	public FortifiedGiantPoisonZombie(int client, float vecPos[3], float vecAng[3])
+	public FortifiedGiantPoisonZombie(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		FortifiedGiantPoisonZombie npc = view_as<FortifiedGiantPoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.75", "3000", false, false, true));
+		FortifiedGiantPoisonZombie npc = view_as<FortifiedGiantPoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.75", "3000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = FORTIFIED_GIANT_POISON_ZOMBIE;
 		
@@ -146,8 +146,8 @@ methodmap FortifiedGiantPoisonZombie < CClotBody
 		{
 			npc.m_flSpeed = 180.0;
 		}
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		return npc;
 	}
 	
@@ -290,8 +290,8 @@ public void FortifiedGiantPoisonZombie_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

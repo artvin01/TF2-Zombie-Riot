@@ -104,9 +104,9 @@ methodmap AltMedicApprenticeMage < CClotBody
 	
 	
 	
-	public AltMedicApprenticeMage(int client, float vecPos[3], float vecAng[3])
+	public AltMedicApprenticeMage(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		AltMedicApprenticeMage npc = view_as<AltMedicApprenticeMage>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000"));
+		AltMedicApprenticeMage npc = view_as<AltMedicApprenticeMage>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_MEDIC_APPRENTICE_MAGE;
 		
@@ -145,8 +145,8 @@ methodmap AltMedicApprenticeMage < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -271,8 +271,8 @@ public void AltMedicApprenticeMage_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

@@ -198,9 +198,9 @@ methodmap SpyMainBoss < CClotBody
 		#endif
 	}
 
-	public SpyMainBoss(int client, float vecPos[3], float vecAng[3])
+	public SpyMainBoss(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SpyMainBoss npc = view_as<SpyMainBoss>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "500000"));
+		SpyMainBoss npc = view_as<SpyMainBoss>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "500000", ally));
 		
 		i_NpcInternalId[npc.index] = SPY_MAIN_BOSS;
 		
@@ -228,8 +228,8 @@ methodmap SpyMainBoss < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
@@ -406,8 +406,8 @@ public void SpyMainBoss_ClotThink(int iNPC)
 				AcceptEntityInput(npc.m_iWearable5, "Disable");
 				AcceptEntityInput(npc.m_iWearable4, "Enable");
 			//	npc.FaceTowards(vecTarget, 1000.0);
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 				
 			}
 			else if (npc.m_flReloadDelay < GetGameTime() && flDistanceToTarget > 40000 && flDistanceToTarget < 90000)
@@ -428,8 +428,8 @@ public void SpyMainBoss_ClotThink(int iNPC)
 				AcceptEntityInput(npc.m_iWearable5, "Enable");
 				AcceptEntityInput(npc.m_iWearable4, "Disable");
 			//	npc.FaceTowards(vecTarget, 1000.0);
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}		
 		
 			
@@ -537,8 +537,8 @@ public void SpyMainBoss_ClotThink(int iNPC)
 			}
 			if(flDistanceToTarget < 90000 && npc.m_flReloadDelay < GetGameTime() || flDistanceToTarget > 90000 && npc.m_flReloadDelay < GetGameTime() )
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 				npc.m_fbGunout = false;
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 2000.0);

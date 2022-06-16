@@ -124,9 +124,9 @@ methodmap AltMedicBerseker < CClotBody
 	}
 	
 	
-	public AltMedicBerseker(int client, float vecPos[3], float vecAng[3])
+	public AltMedicBerseker(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		AltMedicBerseker npc = view_as<AltMedicBerseker>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.00", "25000"));
+		AltMedicBerseker npc = view_as<AltMedicBerseker>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.00", "25000", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_MEDIC_BERSERKER;
 		
@@ -182,8 +182,8 @@ methodmap AltMedicBerseker < CClotBody
 		
 		AcceptEntityInput(npc.m_iWearable1, "Enable");
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -342,13 +342,13 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 			if(npc.m_flNextTeleport < GetGameTime())
 			{

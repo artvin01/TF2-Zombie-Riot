@@ -173,9 +173,9 @@ methodmap XenoCombineDeutsch < CClotBody
 	}
 	
 	
-	public XenoCombineDeutsch(int client, float vecPos[3], float vecAng[3])
+	public XenoCombineDeutsch(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoCombineDeutsch npc = view_as<XenoCombineDeutsch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "110000"));
+		XenoCombineDeutsch npc = view_as<XenoCombineDeutsch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "110000", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_DEUTSCH_RITTER;
 		
@@ -217,8 +217,8 @@ methodmap XenoCombineDeutsch < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 150, 255, 150, 255);
@@ -361,8 +361,8 @@ public void XenoCombineDeutsch_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

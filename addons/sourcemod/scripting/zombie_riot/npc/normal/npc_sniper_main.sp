@@ -129,9 +129,9 @@ methodmap SniperMain < CClotBody
 	
 	
 	
-	public SniperMain(int client, float vecPos[3], float vecAng[3])
+	public SniperMain(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SniperMain npc = view_as<SniperMain>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "12500"));
+		SniperMain npc = view_as<SniperMain>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "12500", ally));
 		
 		i_NpcInternalId[npc.index] = SNIPER_MAIN;
 
@@ -157,8 +157,8 @@ methodmap SniperMain < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		npc.m_iAttacksTillReload = 25;
 		npc.Anger = false;
@@ -328,8 +328,8 @@ public void SniperMain_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 		}
 		else if(!npc.Anger)
@@ -368,8 +368,8 @@ public void SniperMain_ClotThink(int iNPC)
 					
 				if(!IsValidEnemy(npc.index, target))
 				{
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 				}
 				else
 				{
@@ -420,8 +420,8 @@ public void SniperMain_ClotThink(int iNPC)
 			}
 			if(flDistanceToTarget > 90000)
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 		}
 	}

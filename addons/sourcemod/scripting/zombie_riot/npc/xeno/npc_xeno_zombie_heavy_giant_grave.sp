@@ -127,9 +127,9 @@ methodmap XenoHeavyGiant < CClotBody
 	}
 	
 	
-	public XenoHeavyGiant(int client, float vecPos[3], float vecAng[3])
+	public XenoHeavyGiant(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoHeavyGiant npc = view_as<XenoHeavyGiant>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "15000", false, false, true));
+		XenoHeavyGiant npc = view_as<XenoHeavyGiant>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "15000", ally, false, true));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -154,8 +154,8 @@ methodmap XenoHeavyGiant < CClotBody
 		npc.m_iState = 0;
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		
 		int skin = 5;
@@ -300,8 +300,8 @@ public void XenoHeavyGiant_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 		}
 	else
@@ -346,7 +346,7 @@ public void XenoHeavyGiant_NPCDeath(int entity)
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		
-		int spawn_index = Npc_Create(XENO_HEAVY_ZOMBIE, -1, pos, ang);
+		int spawn_index = Npc_Create(XENO_HEAVY_ZOMBIE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 		if(spawn_index > MaxClients)
 		{
 			Zombies_Currently_Still_Ongoing += 1;

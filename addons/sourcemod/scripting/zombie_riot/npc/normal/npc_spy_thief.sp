@@ -126,9 +126,9 @@ methodmap SpyThief < CClotBody
 	
 	
 	
-	public SpyThief(int client, float vecPos[3], float vecAng[3])
+	public SpyThief(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SpyThief npc = view_as<SpyThief>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "7500"));
+		SpyThief npc = view_as<SpyThief>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "7500", ally));
 		
 		i_NpcInternalId[npc.index] = SPY_THIEF;
 		
@@ -154,8 +154,8 @@ methodmap SpyThief < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/spy/spy_zombie.mdl");
@@ -307,8 +307,8 @@ public void SpyThief_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

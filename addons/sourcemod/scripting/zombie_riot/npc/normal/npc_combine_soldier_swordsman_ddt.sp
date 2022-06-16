@@ -155,9 +155,9 @@ methodmap CombineDDT < CClotBody
 	}
 	
 	
-	public CombineDDT(int client, float vecPos[3], float vecAng[3])
+	public CombineDDT(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		CombineDDT npc = view_as<CombineDDT>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250"));
+		CombineDDT npc = view_as<CombineDDT>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250", ally));
 		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_DDT;
 		
@@ -193,8 +193,8 @@ methodmap CombineDDT < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 192, 192, 192, 255);
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -338,8 +338,8 @@ public void CombineDDT_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

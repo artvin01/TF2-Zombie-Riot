@@ -166,9 +166,9 @@ methodmap AltCombineMage < CClotBody
 		#endif
 	}
 	
-	public AltCombineMage(int client, float vecPos[3], float vecAng[3])
+	public AltCombineMage(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		AltCombineMage npc = view_as<AltCombineMage>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "200"));
+		AltCombineMage npc = view_as<AltCombineMage>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "200", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_COMBINE_MAGE;
 		
@@ -316,16 +316,16 @@ public void AltCombineMage_ClotThink(int iNPC)
 				}
 				else
 				{
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;	
+					npc.StartPathing();
+						
 				}
 			}
 			
 			//Target close enough to hit
 			if((flDistanceToTarget < 7225 || flDistanceToTarget > 250000) || npc.m_flAttackHappenswillhappen)
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 				
 				if(npc.m_flNextMeleeAttack < GetGameTime() && flDistanceToTarget < 7225)
 				{
@@ -393,8 +393,8 @@ public void AltCombineMage_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

@@ -162,9 +162,9 @@ methodmap SpyTrickstabber < CClotBody
 		#endif
 	}
 	
-	public SpyTrickstabber(int client, float vecPos[3], float vecAng[3])
+	public SpyTrickstabber(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SpyTrickstabber npc = view_as<SpyTrickstabber>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "6000"));
+		SpyTrickstabber npc = view_as<SpyTrickstabber>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "6000", ally));
 		
 		i_NpcInternalId[npc.index] = SPY_TRICKSTABBER;
 		
@@ -188,8 +188,8 @@ methodmap SpyTrickstabber < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		int skin = 23;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -282,8 +282,8 @@ public void SpyTrickstabber_ClotThink(int iNPC)
 			}
 			if(flDistanceToTarget < 62500 || npc.m_flAttackHappenswillhappen)
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 2000.0);
 				
@@ -339,8 +339,8 @@ public void SpyTrickstabber_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

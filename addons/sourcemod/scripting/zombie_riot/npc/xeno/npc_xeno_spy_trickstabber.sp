@@ -166,9 +166,9 @@ methodmap XenoSpyTrickstabber < CClotBody
 		#endif
 	}
 	
-	public XenoSpyTrickstabber(int client, float vecPos[3], float vecAng[3])
+	public XenoSpyTrickstabber(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoSpyTrickstabber npc = view_as<XenoSpyTrickstabber>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "7000"));
+		XenoSpyTrickstabber npc = view_as<XenoSpyTrickstabber>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "7000", ally));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -192,8 +192,8 @@ methodmap XenoSpyTrickstabber < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		int skin = 23;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -298,8 +298,8 @@ public void XenoSpyTrickstabber_ClotThink(int iNPC)
 			}
 			if(flDistanceToTarget < 62500 || npc.m_flAttackHappenswillhappen)
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 2000.0);
 				
@@ -355,8 +355,8 @@ public void XenoSpyTrickstabber_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

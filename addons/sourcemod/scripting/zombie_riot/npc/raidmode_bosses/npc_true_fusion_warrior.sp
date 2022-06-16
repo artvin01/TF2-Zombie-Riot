@@ -255,9 +255,9 @@ methodmap TrueFusionWarrior < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	public TrueFusionWarrior(int client, float vecPos[3], float vecAng[3])
+	public TrueFusionWarrior(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		TrueFusionWarrior npc = view_as<TrueFusionWarrior>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", false, false, true, true,true)); //giant!
+		TrueFusionWarrior npc = view_as<TrueFusionWarrior>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
 		i_NpcInternalId[npc.index] = RAIDMODE_TRUE_FUSION_WARRIOR;
 		
@@ -783,8 +783,8 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		}
 	if  (!npc.m_bInKame)
 	{
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 	}
 	npc.PlayIdleAlertSound();
 }

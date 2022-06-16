@@ -327,8 +327,8 @@ methodmap CuredFatherGrigori < CClotBody
 		npc.m_iAttacksTillReload = 2;
 		npc.m_bWasSadAlready = false;
 		npc.Anger = false;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_annabelle.mdl");
 		SetVariantString("1.0");
@@ -415,8 +415,8 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 						npc.m_bisWalking = true;
 						npc.m_flSpeed = 150.0;
 					}
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 				}
 				else
 				{
@@ -488,8 +488,8 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 			//Target close enough to hit
 			if((flDistanceToTarget < 15000 && npc.m_flReloadDelay < GetGameTime()) || npc.m_flAttackHappenswillhappen)
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true; //Walk at all times when they are close enough.
+				npc.StartPathing();
+				 //Walk at all times when they are close enough.
 					
 				if(npc.m_iChanged_WalkCycle != 2) 	
 				{
@@ -587,8 +587,8 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 2;
 					npc.m_bisWalking = true;
 					npc.m_flSpeed = 250.0;
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 				}
 				PF_SetGoalEntity(npc.index, npc.m_iTargetAlly);	
 				npc.m_flGetClosestTargetTime = 0.0;
@@ -604,8 +604,8 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 1;
 					npc.m_bisWalking = true;
 					npc.m_flSpeed = 125.0;
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 				}
 				PF_SetGoalEntity(npc.index, npc.m_iTargetAlly);	
 				npc.m_flGetClosestTargetTime = 0.0;
