@@ -1123,7 +1123,7 @@
 	}
 	"Your last equipped level perks were restored"
 	{
-		"en"		"Your last equipped level perks were restored
+		"en"		"Your last equipped level perks were restored"
 		"ru"		"Ваши последние имеющиеся уровневые перки были восстановлены."
 		"de"		"Ihre letzten level perks wurden wiederhergestellt."
 	}
