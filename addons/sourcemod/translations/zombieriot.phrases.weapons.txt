@@ -3,1046 +3,1255 @@
 	"damage"
 	{
 		"en"		"Damage"
+		"ru"		"Урон"
 		"de"		"Schaden"
 	}
 	"pellets"
 	{
 		"en"		"Pellets"
+		"ru"		"Дробинок"
 		"de"		"Pellets"
 	}
 	"firerate"
 	{
 		"en"		"Fire Rate"
+		"ru"		"Скорострельность"
 		"de"		"Feuerrate"
 	}
 	"reload"
 	{
 		"en"		"Reload"
+		"ru"		"Перезарядка"
 		"de"		"Nachladen"
 	}	
 	"clip"
 	{
 		"en"		"Clip"
+		"ru"		"Магазин"
 		"de"		"Klipp"
 	}	
 	"chargespeed"
 	{
 		"en"		"Charge Speed"
+		"ru"		"Скорость во время рывка"
 		"de"		"Ladegeschwindigkeit"
 	}
 	"chargedmg"
 	{
 		"en"		"Charge Damage"
+		"ru"		"Урон от рывка"
 		"de"		"Ladungsschaden"
 	}
 	"healing"
 	{
 		"en"		"Healing"
+		"ru"		"Лечение"
 		"de"		"Heilen"
 	}
 	"range"
 	{
 		"en"		"Range"
+		"ru"		"Радиус"
 		"de"		"Reichweite"
 	}
 	"Weapons"
 	{
 		"en" 		"Weapons"
+		"ru" 		"Оружие"
 		"de"		"Waffen"
 	}
 	"Primary Weapons"//Primary path here
 	{
 		"en" 		"Primary Weapons"
+		"ru" 		"Основное оружие"
 		"de"		"Primare Waffen"
 	}
 	"Syringe Gun"
 	{
 		"en" 		"Syringe Gun"
+		"ru" 		"Шприцемёт"
 		"de"		"Spritzenpistole"
 	}
 	"Sniper Rifle"
 	{
 		"en"		"Sniper Rifle"
+		"ru"		"Снайперская винтовка"
 		"de"		"Scharfschützengewehr"
 	}
 	"Sawed off Shotgun"
 	{
 		"en"		"Sawed off Shotgun"
+		"ru"		"Обрез"
 		"de"		"Abgesägte Schrotflinte"
 	}
 	"Annabelle"
 	{
 		"en"		"Annabelle"
+		"ru"		"Аннабелль"
 		"de"		"Annabelle"
 	}
 	"Huntsman"
 	{
 		"en"		"Huntsman"
+		"ru"		"Охотник"
 		"de"		"Huntsman"
 	}
 	"Flamethrower"
 	{
 		"en"		"Flamethrower"
+		"ru"		"Огнемёт"
 		"de"		"Flammenwerfer"
 	}
 	"Ranged Spike Layer"
 	{
 		"en"		"Ranged Spike Layer"
+		"ru"		"Дальнобойный шипоукладчик"
 		"de"		"Fernkampfstachelschicht"
 	}
 	"Crusader's Crossbow"
 	{
 		"en"		"Crusader's Crossbow"
+		"ru"		"Арбалет крестоносца"
 		"de"		"Armbrust des Kreuzritters"
 	}
 	"Grenade Launcher"
 	{
 		"en"		"Grenade Launcher"
+		"ru"		"Гранатомёт"
 		"de"		"Granatwerfer"
 	}
 	"Tommygun"
 	{
 		"en"		"Tommygun"
+		"ru"		"Томми-ган"
 		"de"		"Tommygun"
 	}
 	"Double Barrel Shotgun"
 	{
 		"en"		"Double Barrel Shotgun"
+		"ru"		"Двустволка"
 		"de"		"Doppelläufige Schrotflinte"
 	}
 	"The Pompson 7000"
 	{
 		"en"		"The Pompson 7000"
+		"ru"		"Помсон 7000"
 		"de"		"The Pompson 7000"
 	}
 	"Dragon's Fury"
 	{
 		"en"		"Dragon's Fury"
+		"ru"		"Ярость дракона"
 		"de"		"Drachenzorn"
 	}
 	"Marksman Rifle"
 	{
 		"en"		"Marksman Rifle"
+		"ru"		"Винтовка стрелка"
 		"de"		"Marksman-Gewehr"
 	}
 	"Aresenal's Tripmine Layer"
 	{
 		"en"		"Aresenal's Tripmine Layer"
+		"ru"		"Арсенальный миноукладчик"
 		"de"		"Aresenals Tripminschicht"
 	}
 	"Heavy Charge Builder Laser"
 	{
 		"en"		"Heavy Charge Builder Laser"
+		"ru"		"Высокозарядный строительный лазер"
 		"de"		"Baulaser für schwere Ladungen"
 	}
 	"Railgun"
 	{
 		"en"		"Railgun"
+		"ru"		"Рельсотрон"
 		"de"		"Railgun"
 	}
 	"The Loch-N-Load"
 	{
 		"en"		"The Loch-N-Load"
+		"ru"		"Подкидыш"
 		"de"		"Der Lochnesser"
 	}
 	"Boomstick"
 	{
 		"en"		"Boomstick"
+		"ru"		"Огнестрел"
 		"de"		"Kaboomstock"
 	}
 	"Terroriser Bomb Implanter Sniperrifle"
 	{
 		"en"		"Terroriser Bomb Implanter Sniperrifle"
+		"ru"		"Снайперская винтовка террориста-бомбиста"
 		"de"		"Terrorisar Bomben Implantiertes Scharfschützengewehr"
 	}
 	"Rampager Automatic Rifle"
 	{
 		"en"		"Rampager Automatic Rifle"
+		"ru"		"Яростный автомат"
 		"de"		"Rampager-Automatikgewehr"
 	}
 	"Loose Cannon"
 	{
 		"en"		"Loose Cannon"
+		"ru"		"Пушка без лафета"
 		"de"		"Stimmungskanone"
 	}
 	"RPG"
 	{
 		"en"		"RPG"
+		"ru"		"РПГ"
 		"de"		"Raketenwerfer"
 	}
 	"Peacock's Screw Ball Cannon"
 	{
 		"en"		"Peacock's Screw Ball Cannon"
+		"ru"		"Шаровая пушка винта Павлина"
 		"de"		"Peacocks Schraubenkugelkanone"
 	}
 	"The Cow Mangler 6000"
 	{
 		"en"		"The Cow Mangler 6000"
+		"ru"		"Линчеватель скота 6000"
 		"de"		"Der Kuhmetzler 6000"
 	}
 	"Anti Material Rifle"
 	{
 		"en"		"Anti Material Rifle"
+		"ru"		"Крупнокалиберная снайперская винтовка"
 		"de"		"Anti-Material-Gewehr"
 	}
 	"Infected Rampager Assult Rifle"
 	{
 		"en"		"Infected Rampager Assault Rifle"
+		"ru"		"Заражённая яростная штурмовая винтовка"
 		"de"		"Infizierte Rampager Sturmgewehr"
 	}
 	"Star Shooter"
 	{
 		"en"		"Star Shooter"
+		"ru"		"Звёздный стрелок"
 		"de"		"Sternen Schütze"
 	}
 	"Secondary Weapons"//Secondary here
 	{
 		"en"		"Secondary Weapons"
+		"ru"		"Доп. оружие"
 		"de"		"Sekundär Waffen"
 	}
 	"Wrangler"
 	{
 		"en"		"Wrangler"
+		"ru"		"Поводырь"
 		"de"		"Sentry-Flüsterer"
 	}
 	"USP tactical"
 	{
 		"en"		"USP tactical"
+		"ru"		"Тактический пистолет"
 		"de"		"USP taktisch"
 	}
 	"Nail Gun"
 	{
 		"en"		"Nail Gun"
+		"ru"		"Гвоздемёт"
 		"de"		"Nagelpistole"
 	}
 	"Deagle"
 	{
 		"en"		"Deagle"
+		"ru"		"Deagle"
 		"de"		"Deagle"
 	}
 	"Grenade"
 	{
 		"en"		"Grenade"
+		"ru"		"Граната"
 		"de"		"Granate"
 	}
 	"Medikit"
 	{
 		"en"		"Medikit"
+		"ru"		"Аптечка"
 		"de"		"Medizinkit"
 	}
 	"Magic Potion"
 	{
 		"en"		"Mage Potion"
+		"ru"		"Зелье мага"
 		"de"		"Magie Trank"
 	}
 	"Flaregun"
 	{
 		"en"		"Flaregun"
+		"ru"		"Ракетница"
 		"de"		"Leuchtpistole"
 	}
 	"The Righteous Bison"
 	{
 		"en"		"The Righteous Bison"
+		"ru"		"Благочестивый бизон"
 		"de"		"Der Rechtschaffene Bison"
 	}
 	"SMG"
 	{
 		"en"		"SMG"
+		"ru"		"Пистолет-пулемёт"
 		"de"		"SMG"
 	}
 	"Battle Medigun"
 	{
 		"en"		"Battle Medigun"
+		"ru"		"Боевая лечебная пушка"
 		"de"		"Kampf Medigun"
 	}
 	"Charged Handgun"
 	{
 		"en"		"Charged Handgun"
+		"ru"		"Заряженный пистолет"
 		"de"		"Aufgeladene Pistole"
 	}
 	"Stickybomb Launcher"
 	{
 		"en"		"Stickybomb Launcher"
+		"ru"		"Липучкомёт"
 		"de"		"Haftbombenwerfer"
 	}
 	"Mechanical Medigun"
 	{
 		"en"		"Mechanical Medigun"
+		"ru"		"Механическая лечебная пушка"
 		"de"		"Mechanische Medigun"
 	}
 	"The Battalion's Backup"
 	{
 		"en"		"The Battalion's Backup"
+		"ru"		"Поддержка батальона"
 		"de"		"Der Bataillonsbeistand"
 	}
 	"Medigun"
 	{
 		"en"		"Medigun"
+		"ru"		"Лечебная пушка"
 		"de"		"Medigun"
 	}
 	"P15t0l"
 	{
 		"en"		"P15t0l"
+		"ru"		"Пи6т0л3т"
 		"de"		"P15t0l3"
 	}
 	"Heavy Desert Eagle"
 	{
 		"en"		"Heavy Desert Eagle"
+		"ru"		"Тяжёлый Desert Eagle"
 		"de"		"Schwerer Desert Eagle"
 	}
 	"Infected Assult Rifle"
 	{
 		"en"		"Infected Assault Rifle"
+		"ru"		"Заражённая штурмовая винтовка"
 		"de"		"Infizierte Sturmgewehr"
 	}
 	"Buff Banner"
 	{
 		"en"		"Buff Banner"
+		"ru"		"Вдохновляющее знамя"
 		"de"		"Das Buff-Banner"
 	}
 	"PhlogStorms Detonator"
 	{
 		"en"		"PhlogStorms Detonator"
+		"ru"		"Детонатор ФлогШторм"
 		"de"		"PhlogStorms Zünder"
 	}
 	"Melee Weapons"//Melee Here
 	{
 		"en"		"Melee Weapons"
+		"ru"		"Ближний бой"
 		"de"		"Nahkampfwaffen"
 	}
 	"Mounter"
 	{
 		"en"		"Mounter"
+		"ru"		"Монтажник"
 		"de"		"Aufheber"
 	}
 	"Wrench"
 	{
 		"en"		"Wrench"
+		"ru"		"Гаечный ключ"
 		"de"		"Schlüsselwerkzeug"
 	}
 	"Knife"
 	{
 		"en"		"Knife"
+		"ru"		"Нож"
 		"de"		"Messer"
 	}
 	"Ubersaw"
 	{
 		"en"		"Ubersaw"
+		"ru"		"Убер-пила"
 		"de"		"Übersäge"
 	}
 	"Hammer"
 	{
 		"en"		"Hammer"
+		"ru"		"Молот"
 		"de"		"Hammer"
 	}
 	"Fire Axe"
 	{
 		"en"		"Fire Axe"
+		"ru"		"Пожарный топор"
 		"de"		"Feuerwehraxt"
 	}
 	"Survivalist Blade"
 	{
 		"en"		"Survivalist Blade"
+		"ru"		"Клинок выживальщика"
 		"de"		"Klinge des Überlebenskünstlers"
 	}
 	"Kunai"
 	{
 		"en"		"Kunai"
+		"ru"		"Кунай"
 		"de"		"Kunai"
 	}
 	"Longsword"
 	{
 		"en"		"Longsword"
+		"ru"		"Длинный меч"
 		"de"		"Lang Schwert"
 	}
 	"Speed Fists Of Speed"
 	{
 		"en"		"Speed Fists Of Speed"
+		"ru"		"Кулаки скорости"
 		"de"		"Geschwindigkeits-Fäuste von Geschwindigkeit"
 	}
 	"Teslar Staff"
 	{
 		"en"		"Teslar Staff"
+		"ru"		"Посох Теслар"
 		"de"		"Teslar Stab"
 	}
 	"Fists Of Kahmlstein"
 	{
 		"en"		"Fists Of Kahmlstein"
+		"ru"		"Кулаки Кахмльштейна"
 		"de"		"Fäuste von Kahmlstein"
 	}
 	"Infinity Blade"
 	{
 		"en"		"Infinity Blade"
+		"ru"		"Клинок бесконечности"
 		"de"		"Infinity Blade"
 	}
 	"Mage Weapons"//Mage here
 	{
 		"en"		"Mage Weapons"
+		"ru"		"Оружие магов"
 		"de"		"Magie Waffen"
 	}
 	"Bad Wand"
 	{
 		"en"		"Bad Wand"
+		"ru"		"Жезл вреда"
 		"de"		"Schlechter Zauberstab"
 	}
 	"Fire Wand"
 	{
 		"en"		"Fire Wand"
+		"ru"		"Жезл огня"
 		"de"		"Feuer Zauberstab"
 	}
 	"Lightning Staff"
 	{
 		"en"		"Lightning Staff"
+		"ru"		"Жезл молнии"
 		"de"		"Blitz Stab"
 	}
 	"Necromancy Staff"
 	{
 		"en"		"Necromancy Staff"
+		"ru"		"Посох некромантии"
 		"de"		"Nekromantie Stab"
 	}
 	"Homing Staff"
 	{
 		"en"		"Homing Staff"
+		"ru"		"Посох самонаведения"
 		"de"		"Homing-Stab"
 	}
 	"Wind Staff"
 	{
 		"en"		"Wind Staff"
+		"ru"		"Посох воздуха"
 		"de"		"Wind Stab"
 	}
 	"Elemental Staff"
 	{
 		"en"		"Elemental Staff"
+		"ru"		"Посох стихий"
 		"de"		"Elementarstab"
 	}
 	"Buildings"//Buildings here
 	{
 		"en"		"Buildings"
+		"ru"		"Постройки"
 		"de"		"Gebäude"
 	}
 	"Buildable Elevation"
 	{
 		"en"		"Buildable Elevation"
+		"ru"		"Возведение поднятия постройки"
 		"de"		"Baubare Erhebung"
 	}
 	"Buildable Barricade"
 	{
 		"en"		"Buildable Barricade"
+		"ru"		"Возведение баррикады"
 		"de"		"Baubare Barrikade"
 	}
 	"Buildable Armortable"
 	{
 		"en"		"Buildable Armortable"
+		"ru"		"Возведение верстака брони"
 		"de"		"Baubare Rüstungstisch"
 	}
 	"Buildable AmmoBox"
 	{
 		"en"		"Buildable AmmoBox"
+		"ru"		"Возведение ящика с боеприпасами"
 		"de"		"Baubare Munitionsbox"
 	}
 	"Buildable Perk Machine"
 	{
 		"en"		"Buildable Perk Machine"
+		"ru"		"Возведение перк-машины"
 		"de"		"Baubare Perk Maschine"
 	}
 	"Buildable Pack-a-Punch"
 	{
 		"en"		"Buildable Pack-a-Punch"
+		"ru"		"Возведение улучшайзера"
 		"de"		"Baubare Pack-a-Punch"
 	}
 	"Buildable Sentry"
 	{
 		"en"		"Buildable Sentry"
+		"ru"		"Возведение турели"
 		"de"		"Baubare Sentry"
 	}
 	"Buildable Mortar"
 	{
 		"en"		"Buildable Mortar"
+		"ru"		"Возведение миномёта"
 		"de"		"Baubare Sentry"
 	}
 	"Buildable Railgun"
 	{
 		"en"		"Buildable Railgun"
+		"ru"		"Возведение рельсотрона"
 		"de"		"Baubare Railgun"
 	}
 	"Buildable Healing Station"
 	{
 		"en"		"Buildable Healing Station"
+		"ru"		"Возведение лечебной станции"
 		"de"		"Baubare Heilstation"
 	}
 	"Upgrades"//Upgrades here!!!!
 	{
 		"en"		"Upgrades"
+		"ru"		"Улучшения"
 		"de"		"Upgrades"
 	}
 	"Melee Upgrades"//Melee Upgrades HERE!!!
 	{
 		"en"		"Melee Upgrades"
+		"ru"		"Улучшения ближнего боя"
 		"de"		"Nahkampf Upgrades"
 	}
 	"Cannibalism"
 	{
 		"en"		"Cannibalism"
+		"ru"		"Каннибализм"
 		"de"		"Kannibalismus"
 	}
 	"Copium"
 	{
 		"en"		"Copium"
+		"ru"		"Копиум"
 		"de"		"Copium"
 	}
 	"Cocain"
 	{
 		"en"		"Cocain"
+		"ru"		"Кокаин"
 		"de"		"Cocaine"
 	}
 	"Steroids"
 	{
 		"en"		"Steroids"
+		"ru"		"Стероиды"
 		"de"		"Steroide"
 	}
 	"LSD"
 	{
 		"en"		"LSD"
+		"ru"		"ЛСД"
 		"de"		"LSD"
 	}
 	"Crystal Meth"
 	{
 		"en"		"Crystal Meth"
+		"ru"		"Кристаллический мет"
 		"de"		"Kristallmeth"
 	}
 	"God's Might"
 	{
 		"en"		"God's Might"
+		"ru"		"Божье могущество"
 		"de"		"Gottes Macht"
 	}
 	"Bob's Enhancer"
 	{
 		"en"		"Bob's Enhancer"
+		"ru"		"Усилитель Боба"
 		"de"		"Bobs Verstärker"
 	}
 	"Building Upgrades"//Building Upgrades HERE!!!
 	{
 		"en"		"Building Upgrades"
+		"ru"		"Улучшения построек"
 		"de"		"Gebäude Upgrades"
 	}
 	"Repair Handling book for dummies"
 	{
 		"en"		"Repair Handling book for dummies"
+		"ru"		"Книга по ремонту для чайников"
 		"de"		"Reparaturhandhaltungsbuch für Dummköpfe"
 	}
 	"Construction Novice"
 	{
 		"en"		"Construction Novice"
+		"ru"		"Начинающий строитель"
 		"de"		"Bauanfänger"
 	}
 	"Ikea Repair Handling Book"
 	{
 		"en"		"Ikea Repair Handling Book"
+		"ru"		"Книга по ремонту из икеи"
 		"de"		"Ikea Reparaturhandhabungsbuch"
 	}
 	"Engineering Repair Handling book"
 	{
 		"en"		"Engineering Repair Handling book"
+		"ru"		"Инженерная книга по ремонту"
 		"de"		"Maschinenbau Reparaturhandhaltungsbuch"
 	}
 	"Construction Apprentice"
 	{
 		"en"		"Construction Apprentice"
+		"ru"		"Ученик строителя"
 		"de"		"Baulehrling"
 	}
 	"Alien Repair Handling book"
 	{
 		"en"		"Alien Repair Handling book"
+		"ru"		"Книга по ремонту от пришельцев"
 		"de"		"Alien Reparaturhandhaltungsbuch"
 	}
 	"Construction Worker"
 	{
 		"en"		"Construction Worker"
+		"ru"		"Рабочий-строитель"
 		"de"		"Bauarbeiter"
 	}
 	"Cosmic Repair Handling book"
 	{
 		"en"		"Cosmic Repair Handling book"
+		"ru"		"Книга по космическому ремонту"
 		"de"		"Kosmisches Reparaturhandhaltungsbuch"
 	}
 	"Construction Expert"
 	{
 		"en"		"Construction Expert"
+		"ru"		"Эксперт по строительству"
 		"de"		"Bauexperte"
 	}
 	"Construction Master"
 	{
 		"en"		"Construction Master"
+		"ru"		"Мастер по строительству"
 		"de"		"Baumeister"
 	}
 	"Construction Killer"
 	{
 		"en"		"Construction Killer"
+		"ru"		"Строительный убийца"
 		"de"		"Baukiller"
 	}
 	"Ranged Upgrades"//Ranged Upgrades HERE!!!
 	{
 		"en"		"Ranged Upgrades"
+		"ru"		"Улучшения винтовки"
 		"de"		"Fernkampf-Upgrades"
 	}
 	"Accurate Marksman"
 	{
 		"en"		"Accurate Marksman"
+		"ru"		"Меткий стрелок"
 		"de"		"Akkurater Schütze"
 	}
 	"Ammo Coat"
 	{
 		"en"		"Ammo Coat"
+		"ru"		"Патронное пальто"
 		"de"		"Munition Mantel"
 	}
 	"Ammo Coat Elite"
 	{
 		"en"		"Ammo Coat Elite"
+		"ru"		"Элитное патронное пальто"
 		"de"		"Munition Mantel Elite"
 	}
 	"Antidote Coated Bullets"
 	{
 		"en"		"Antidote Coated Bullets"
+		"ru"		"Пули с антидотным покрытием"
 		"de"		"Gegenmittelbeschichtete Kugeln"
 	}
 	"Anti-Matter Bullets"
 	{
 		"en"		"Anti-Matter Bullets"
+		"ru"		"Пули из антиматерии"
 		"de"		"Anti-Materie-Kugeln"
 	}
 	"Mage Upgrades"//Mage Upgrades HERE!!!
 	{
 		"en"		"Mage Upgrades"
+		"ru"		"Улучшения мага"
 		"de"		"Magie Upgrades"
 	}
 	"Magical Haste"
 	{
 		"en"		"Magical Haste"
+		"ru"		"Магическая спешка"
 		"de"		"Magische Eile"
 	}
 	"Hastening Potion"
 	{
 		"en"		"Hastening Potion"
+		"ru"		"Зелье ускорения"
 		"de"		"Beschleunigungstrank"
 	}
 	"The Bombinomicon"
 	{
 		"en"		"The Bombinomicon"
+		"ru"		"Бомбиномикон"
 		"de"		"Das Bombinomicon"
 	}
 	"Betweenlands Potion"
 	{
 		"en"		"Betweenlands Potion"
+		"ru"		"Зелье межземелья"
 		"de"		"Zwischenlande-Trank"
 	}
 	"Master Scorcerer"
 	{
 		"en"		"Master Scorcerer"
+		"ru"		"Мастер колдовства"
 		"de"		"Meister Zauberer"
 	}
 	"Bob's Magic"
 	{
 		"en"		"Bob's Magic"
+		"ru"		"Магия Боба"
 		"de"		"Bobs Magie"
 	}
 	"Passive Upgrades"//Passive Upgrades HERE!!!
 	{
 		"en"		"Passive Upgrades"
+		"ru"		"Постоянные улучшения"
 		"de"		"Passive Upgrades"
 	}
 	"Body armor"
 	{
 		"en"		"Body armor"
+		"ru"		"Бронежилет"
 		"de"		"Körperpanzerung"
 	}
 	"Adrenalin"
 	{
 		"en"		"Adrenalin"
+		"ru"		"Адреналин"
 		"de"		"Adrenaline"
 	}
 	"Kevlar"
 	{
 		"en"		"Kevlar"
+		"ru"		"Кевлар"
 		"de"		"Kevlar"
 	}
 	"Heavy Vest"
 	{
 		"en"		"Heavy Vest"
+		"ru"		"Тяжёлый жилет"
 		"de"		"Schwere Weste"
 	}
 	"Jesus's Blessing"
 	{
 		"en"		"Jesus's Blessing"
+		"ru"		"Благословение Иисуса"
 		"de"		"Jesu Segen"
 	}
 	"Full Riot Gear Set"
 	{
 		"en"		"Full Riot Gear Set"
+		"ru"		"Полный комплект спецназа"
 		"de"		"Komplettes Riot-Ausrüstungsset"
 	}
 	"Healthy Apple from Bob"
 	{
 		"en"		"Healthy Apple from Bob"
+		"ru"		"Вкусное яблоко от Боба"
 		"de"		"Gesunder Apfel von Bob"
 	}
 	"Medigun Upgrades"//Medigun Upgrades HERE!!!
 	{
 		"en"		"Medigun Upgrades"
+		"ru"		"Улучшения лечебной пушки"
 		"de"		"Medigun Upgrades"
 	}
 	"Doctor Certificate"
 	{
 		"en"		"Doctor Certificate"
+		"ru"		"Сертификат доктора"
 		"de"		"Ärztliche Bescheinigung"
 	}
 	"Professor Certificate"
 	{
 		"en"		"Professor Certificate"
+		"ru"		"Сертификат профессора"
 		"de"		"Professorenzertifikat"
 	}
 	"Hell's Certificate"
 	{
 		"en"		"Hell's Certificate"
+		"ru"		"Адский сертификат"
 		"de"		"Höllenzertifikat"
 	}
 	"Medic's Lost Medical Lisence"
 	{
 		"en"		"Medic's Lost Medical Lisences"
+		"ru"		"Потерянная медицинская лицензия"
 		"de"		"Medics verlorene medizinische Lizenz"
 	}
 	"Level Perks"//Lvl Perks here
 	{
 		"en"		"Level Perks"
+		"ru"		"Уровневые перки"
 		"de"		"Level Vorteil"
 	}
 	"Melee Perks"//Lvl Melee perks here
 	{
 		"en"		"Melee Perks"
+		"ru"		"Перки ближнего боя"
 		"de"		"Nahkampf Vorteil"
 	}
 	"Panic Attack"
 	{
 		"en"		"Panic Attack"
+		"ru"		"Паническая атака"
 		"de"		"Panik-Attacke"
 	}
 	"Barbarians Mind"
 	{
 		"en"		"Barbarians Mind"
+		"ru"		"Разум варвара"
 		"de"		"Barbaren Verstand"
 	}
 	"Building Perks"//Lvl Building perks HERE!!
 	{
 		"en"		"Building Perks"
+		"ru"		"Перки построек"
 		"de"		"Gebäude Vorteil"
 	}
 	"Mechanic"
 	{
 		"en"		"Mechanic"
+		"ru"		"Механик"
 		"de"		"Mechaniker"
 	}
 	"Wrenchy Hands"
 	{
 		"en"		"Wrenchy Hands"
+		"ru"		"Гаечные руки"
 		"de"		"Schnellere Hände"
 	}
 	"Sniper Sentry"
 	{
 		"en"		"Sniper Sentry"
+		"ru"		"Снайперская турель"
 		"de"		"Scharfschützen Sentry"
 	}
 	"Minigun Sentry"
 	{
 		"en"		"Minigun Sentry"
+		"ru"		"Пулемётная турель"
 		"de"		"Minigun Sentry"
 	}
 	"Glass Cannon Blueprints"
 	{
 		"en"		"Glass Cannon Blueprints"
+		"ru"		"Чертежи стеклянной пушки"
 		"de"		"Glas Kanonen Baupläne"
 	}
 	"Ranged Perks"//Lvl Ranged perks HERE!!!
 	{
 		"en"		"Ranged Perk"
+		"ru"		"Перк винтовки"
 		"de"		"Fernkampf Vorteil"
 	}
 	"Heavy Caliber"
 	{
 		"en"		"Heavy Caliber"
+		"ru"		"Крупный калибр"
 		"de"		"Schwerer Kaliber"
 	}
 	"Army Belt"
 	{
 		"en"		"Army Belt"
+		"ru"		"Армейский пояс"
 		"de"		"Armeegürtel"
 	}
 	"Headshot Affinity"
 	{
 		"en"		"Headshot Affinity"
+		"ru"		"Близость к выстрелу в голову"
 		"de"		"Kopfschussaffinität"
 	}
 	"Mage Perks"//Lvl Mage perks HERE!!!
 	{
 		"en"		"Mage Perks"
+		"ru"		"Перки мага"
 		"de"		"Magie Vorteil"
 	}
 	"Mage Fragility"
 	{
 		"en"		"Mage Fragility"
+		"ru"		"Хрупкость мага"
 		"de"		"Magier Zerbrechlichkeit"
 	}
 	"Passive Perks"
 	{
 		"en"		"Passive Perks"
+		"ru"		"Постоянные перки"
 		"de"		"Passive Vorteil"
 	}
 	"Heavy Fat"
 	{
 		"en"		"Heavy Fat"
+		"ru"		"Тяжёлая жировая ткань"
 		"de"		"Schweres Fett"
 	}
 	"Android"
 	{
 		"en"		"Android"
+		"ru"		"Андроид"
 		"de"		"Androide"
 	}
 	"Soft Shoes"
 	{
 		"en"		"Soft Shoes"
+		"ru"		"Мягкие ботинки"
 		"de"		"Sanfte Schuhe"
 	}
 	"Level Items"
 	{
 		"en"		"Level Items"
+		"ru"		"Уровневые предметы"
 		"de"		"Level Gegenstände"
 	}
 	"Level 15 Peashooter"
 	{
 		"en"		"Level 15 Peashooter"
+		"ru"		"Горохострел 15-го уровня"
 		"de"		"Level 15 Erbsenkanone"
 	}
 	"Rusty Wrench"
 	{
 		"en"		"Rusty Wrench"
+		"ru"		"Ржавый гаечный ключ"
 		"de"		"Rostiger Schraubenschlüssel"
 	}
 	"Cheap Barricade"
 	{
 		"en"		"Cheap Barricade"
+		"ru"		"Дешёвая баррикада"
 		"de"		"Billige Barrikade"
 	}
 	"Sand Blocks"
 	{
 		"en"		"Sand Blocks"
+		"ru"		"Блоки из песка"
 		"de"		"Sand Blöcke"
 	}
 	"Inventory"//Inventory here
 	{
 		"en"		"Inventory"
+		"ru"		"Инвентарь"
 		"de"		"Inventar"
 	}
 	"head"
 	{
 		"en"		"Head"
+		"ru"		"Голова"
 		"de"		"Kopf"
 	}
 	"Scrap Helmet [Common]"
 	{
 		"en"		"Scrap Helmet [Common]"
+		"ru"		"Шлем из металлолома [Обычное]"
 		"de"		"Schrotthelm [Gewöhnlich]"
 	}
 	"Face Mask [Common]"
 	{
 		"en"		"Face Mask [Common]"
+		"ru"		"Лицевая маска [Обычное]"
 		"de"		"Gesichtsmaske [Gewöhnlich]"
 	}
 	"Chest"
 	{
 		"en"		"Chest"
+		"ru"		"Грудь"
 		"de"		"Brust"
 	}
 	"Villager Outfit [Common]"
 	{
 		"en"		"Villager Outfit [Common]"
+		"ru"		"Костюм деревенщины [Обычное]"
 		"de"		"Dorfbewohner-Outfit [Gewöhnlich]"
 	}
 	"Smithed Scrap Chestplate [Uncommon]"
 	{
 		"en"		"Smithed Scrap Chestplate [Uncommon]"
+		"ru"		"Нагрудник из смятого металлолома [Необычное]"
 		"de"		"Brustplatte aus geschmiedetem Schrott [Ungewöhnlich]"
 	}
 	"Leggings"
 	{
 		"en"		"Leggings"
+		"ru"		"Поножи"
 		"de"		"Leggings"
 	}
 	"Blue Jeans [Common]"
 	{
 		"en"		"Blue Jeans [Common]"
+		"ru"		"Синие джинсы [Обычное]"
 		"de"		"Blaue Jeans [Gewöhnlich]"
 	}
 	"shoes"
 	{
 		"en"		"Shoes"
+		"ru"		"Обувь"
 		"de"		"Schuhe"
 	}
 	"Jordans [Common]"
 	{
 		"en"		"Jordans [Common]"
+		"ru"		"Джорданы [Обычное]"
 		"de"		"Jordans [Gewöhnlich]"
 	}
 	"Monkey Knowledge"
 	{
 		"en"		"Monkey Knowledge"
+		"ru"		"Знание обезьян"
 		"de"		"Affen-Wissen"
 	}
 	"Fast Tack Attacks [Rare]"
 	{
 		"en"		"Fast Tack Attacks [Rare]"
+		"ru"		"Атаки быстрым приёмом [Редкое]"
 		"de"		"Schnelle Wendeangriffe [Selten]"
 	}
 	"Mega Mauler [Rare]"
 	{
 		"en"		"Mega Mauler [Rare]"
+		"ru"		"Мега-истязатель [Редкое]"
 		"de"		"Mega-Mauler [Selten]"
 	}
 	"Big Cryo Blast [Uncommon]"
 	{
 		"en"		"Big Cryo Blast [Uncommon]"
+		"ru"		"Большой криовзрыв [Необычное]"
 		"de"		"Große Kryo-Explosion [Ungewöhnlich]"
 	}
 	"Long Turbo [Uncommon]"
 	{
 		"en"		"Long Turbo [Uncommon]"
+		"ru"		"Длинное турбо [Необычное]"
 		"de"		"Langer Turbo [Ungewöhnlich]"
 	}
 	"Bonus Monkey! [Rare]"
 	{
 		"en"		"Bonus Monkey! [Rare]"
+		"ru"		"Бонусная обезьянка! [Редкое]"
 		"de"		"Bonus-Affe! [Selten]"
 	}
 	"Big Bunch [Rare]"
 	{
 		"en"		"Big Bunch [Rare]"
+		"ru"		"Большая кучка [Редкое]"
 		"de"		"Große Menge [Selten]"
 	}
 	"Accelerated Aerodarts [Uncommon]"
 	{
 		"en"		"Accelerated Aerodarts [Uncommon]"
+		"ru"		"Разогнанный полёт [Необычное]"
 		"de"		"Beschleunigte Luftpfeile [Ungewöhnlich]"
 	}
 	"Faster Takedowns [Common]"
 	{
 		"en"		"Faster Takedowns [Common]"
+		"ru"		"Быстрые приёмы [Обычное]"
 		"de"		"Schnellere Takedowns [Gewöhnlich]"
 	}
 	"Extra Burny Stuff [Uncommon]"
 	{
 		"en"		"Extra Burny Stuff [Uncommon]"
+		"ru"		"Очень жгучий материал [Необычное]"
 		"de"		"Extra Burny Stuff [Ungewöhnlich]"
 	}
 	"Quad Burst [Legendary]"
 	{
 		"en"		"Quad Burst [Legendary]"
+		"ru"		"Четверной взрыв [Легендарное]"
 		"de"		"Quad Burst [Legendär]"
 	}
 	"Gun Coolant [Rare]"
 	{
 		"en"		"Gun Coolant [Rare]"
+		"ru"		"Охлаждающая жидкость пистолета [Редкое]"
 		"de"		"Waffenkühlmittel [Selten]"
 	}
 	"Flanking Maneuvers [Rare]"
 	{
 		"en"		"Flanking Maneuvers [Rare]"
-		"de"		"Flankenmanöver [selten]"
+		"ru"		"Фланговые манёвры [Редкое]"
+		"de"		"Flankenmanöver [Selten]"
 	}
 	"Charged Chinooks [Uncommon]"
 	{
 		"en"		"Charged Chinooks [Uncommon]"
+		"ru"		"Заряженные чинуки [Необычное]"
 		"de"		"Geladene Chinooks [Ungewöhnlich]"
 	}
 	"Big Bloon Sabotage [Legendary]"
 	{
 		"en"		"Big Bloon Sabotage [Legendary]"
+		"ru"		"Саботаж большого Блуна [Легендарное]"
 		"de"		"Großer Bloon Sabotage [Legendär]"
 	}
 	"SUPER Range [Rare]"
 	{
 		"en"		"SUPER Range [Rare]"
-		"de"		"SUPER Reichweite"
+		"ru"		"СУПЕРрадиус [Редкое]"
+		"de"		"SUPER Reichweite [Selten]"
 	}
 	"Heavy Knockback [Legendary]"
 	{
 		"en"		"Heavy Knockback [Legendary]"
+		"ru"		"Сильная отдача [Легендарное]"
 		"de"		"Starker Rückstoß [Legendär]"
 	}
 	"Speedy Brewing [Uncommon]"
 	{
 		"en"		"Speedy Brewing [Uncommon]"
-		"de"		""
+		"ru"		"Скоростное пивоварение [Необычное]"
+	--	"de"		""
 	}
 	"Strike Down The False [Uncommon]"
 	{
 		"en"		"Strike Down The False [Uncommon]"
+		"ru"		"Поразить лжеца [Необычное]"
 		"de"		"Schnelles Brühen [Ungewöhnlich]"
 	}
 	"Flame Jet [Common]"
 	{
 		"en"		"Flame Jet [Common]"
+		"ru"		"Пламенная струя [Обычное]"
 		"de"		"Flammenstrahl [Gewöhnlich]"
 	}
 	"Strong Tonic [Rare]"
 	{
 		"en"		"Strong Tonic [Rare]"
+		"ru"		"Крепкий тоник [Редкое]"
 		"de"		"Starkes Stärkungsmittel [Selten]"
 	}
 	"Arcane Impale [Rare]"
 	{
 		"en"		"Arcane Impale [Rare]"
+		"ru"		"Магическое пронзание [Редкое]"
 		"de"		"Arkanes Aufspießen [Selten]"
 	}
 	"Deadly Tranquility [Uncommon]"
 	{
 		"en"		"Deadly Tranquility [Uncommon]"
+		"ru"		"Смертельный покой [Необычное]"
 		"de"		"Tödliche Ruhe [Ungewöhnlich]"
 	}
 	"There Can Be Only One [Mythic]"
 	{
 		"en"		"There Can Be Only One [Mythic]"
+		"ru"		"Может быть только один [Мифическое]"
 		"de"		"Es kann nur einen geben [Mythisch]"
 	}
 	"Tiny Tornadoes [Rare]"
 	{
 		"en"		"Tiny Tornadoes [Rare]"
+		"ru"		"Крохотные торнадо [Редкое]"
 		"de"		"Kleines Tornados [Selten]"
 	}
 	"Mana Shield [Legendary]"
 	{
 		"en"		"Mana Shield [Legendary]"
+		"ru"		"Щит маны [Легендарное]"
 		"de"		"Manaschild [Legendär]"
 	}
 	"Vigilant Sentries [Common]"
 	{
 		"en"		"Vigilant Sentries [Common]"
+		"ru"		"Бдительные стражи [Обычное]"
 		"de"		"Wachsame Wachposten [Gewöhnlich]"
 	}
 	"To ARMS! [Legendary]"
 	{
 		"en"		"To ARMS! [Legendary]"
+		"ru"		"К оружию! [Легендарное]"
 		"de"		"Zu den Waffen! [Legendär]"
 	}
 	"Healthy Bananas [Legendary]"
 	{
 		"en"		"Healthy Bananas [Legendary]"
+		"ru"		"Полезные бананы [Легендарное]"
 		"de"		"Gesunde Bananen [Legendär]"
 	}
 	"Veteran Monkey Training [Uncommon]"
 	{
 		"en"		"Veteran Monkey Training [Uncommon]"
+		"ru"		"Обучение обезьян-ветеранов [Необычное]"
 		"de"		"Veteranen-Affentraining [Ungewöhnlich]"
 	}
 	"Pre-Game Prep [Legendary]"
 	{
 		"en"		"Pre-Game Prep [Legendary]"
+		"ru"		"Предварительная игра [Легендарное]"
 		"de"		"Spielvorbereitung [Legendär]"
 	}
 }
