@@ -126,9 +126,9 @@ methodmap XenoSoldier < CClotBody
 		#endif
 	}
 	
-	public XenoSoldier(int client, float vecPos[3], float vecAng[3])
+	public XenoSoldier(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoSoldier npc = view_as<XenoSoldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "3000"));
+		XenoSoldier npc = view_as<XenoSoldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "3000", ally));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -149,8 +149,8 @@ methodmap XenoSoldier < CClotBody
 		npc.m_flSpeed = 280.0;
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -169,8 +169,8 @@ methodmap XenoSoldier < CClotBody
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -278,14 +278,14 @@ public void XenoSoldier_ClotThink(int iNPC)
 				}
 				else
 				{
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 				}
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

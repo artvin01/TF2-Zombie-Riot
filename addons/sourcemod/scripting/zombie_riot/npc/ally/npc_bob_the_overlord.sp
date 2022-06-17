@@ -324,7 +324,7 @@ public void BobTheGod_ClotThink(int iNPC)
 			else if(!npc.m_bIsFriendly && !npc.m_b_follow && !npc.m_b_stand_still)
 			{
 				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
-				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "nBob The Second is not friendly and doesn't follow you!", "Use voice Commands to command him!");
+				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is not friendly and doesn't follow you!", "Use voice Commands to command him!");
 			}
 			else if (npc.m_bIsFriendly && !npc.m_b_follow && !npc.m_b_stand_still)
 			{
@@ -523,8 +523,8 @@ public void BobTheGod_ClotThink(int iNPC)
 					AcceptEntityInput(npc.m_iWearable2, "Disable");
 					AcceptEntityInput(npc.m_iWearable1, "Enable");
 					npc.FaceTowards(vecTarget);
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 					npc.m_fbGunout = false;
 				}
 				else
@@ -563,8 +563,8 @@ public void BobTheGod_ClotThink(int iNPC)
 			{
 				if(!npc.m_b_stand_still && flDistanceToTarget > 100)
 				{
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 					npc.m_fbGunout = false;
 					//Look at target so we hit.
 					npc.FaceTowards(vecTarget, 1500.0);
@@ -740,8 +740,8 @@ public void BobTheGod_ClotThink(int iNPC)
 			
 			if (flDistanceToTarget > 300 && npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 				PF_SetGoalEntity(npc.index, client);
 				if (!npc.m_bmovedelay_run)
 				{
@@ -760,8 +760,8 @@ public void BobTheGod_ClotThink(int iNPC)
 			}
 			else if (flDistanceToTarget > 140 && flDistanceToTarget < 300 && npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 				PF_SetGoalEntity(npc.index, client);
 				if (!npc.m_bmovedelay_walk)
 				{
@@ -966,12 +966,12 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		delete TraceRay;
 		
 		
-		PF_StartPathing(npc.index);
+		npc.StartPathing();
 		npc.m_fbGunout = false;
 		
 		PF_SetGoalVector(npc.index, vecPos);
 		
-		npc.m_bPathing = true;
+		
 		
 		npc.FaceTowards(vecPos, 500.0);
 		npc.m_flDoingSpecial = GetGameTime() + 3.5;
@@ -1246,7 +1246,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			npc.m_bmovedelay = false;
 					
 			PF_SetGoalEntity(npc.index, client);
-			npc.m_bPathing = true;
+			
 			SetGlobalTransTarget(client);
 			PrintHintText(client, "%t %t","Bob The Second:", "I am coming !");
 			npc.m_flidle_talk += 2.0;

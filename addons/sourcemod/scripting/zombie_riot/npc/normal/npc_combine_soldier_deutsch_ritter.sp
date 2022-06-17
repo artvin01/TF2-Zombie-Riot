@@ -160,9 +160,9 @@ methodmap CombineDeutsch < CClotBody
 	}
 	
 	
-	public CombineDeutsch(int client, float vecPos[3], float vecAng[3])
+	public CombineDeutsch(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		CombineDeutsch npc = view_as<CombineDeutsch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "90000"));
+		CombineDeutsch npc = view_as<CombineDeutsch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "90000", ally));
 		
 		i_NpcInternalId[npc.index] = COMBINE_DEUTSCH_RITTER;
 		
@@ -211,8 +211,8 @@ methodmap CombineDeutsch < CClotBody
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 200, 255, 200, 255);
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -348,8 +348,8 @@ public void CombineDeutsch_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

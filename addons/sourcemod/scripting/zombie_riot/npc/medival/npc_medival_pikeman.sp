@@ -165,9 +165,9 @@ methodmap MedivalPikeman < CClotBody
 		#endif
 	}
 	
-	public MedivalPikeman(int client, float vecPos[3], float vecAng[3])
+	public MedivalPikeman(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalPikeman npc = view_as<MedivalPikeman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2500"));
+		MedivalPikeman npc = view_as<MedivalPikeman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2500", ally));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_PIKEMAN;
 		
@@ -210,8 +210,8 @@ methodmap MedivalPikeman < CClotBody
 		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -341,8 +341,8 @@ public void MedivalPikeman_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

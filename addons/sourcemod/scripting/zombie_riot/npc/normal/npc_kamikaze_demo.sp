@@ -62,9 +62,9 @@ methodmap Kamikaze < CClotBody
 		PrintToServer("CClot::PlayHurtSound()");
 		#endif
 	}
-	public Kamikaze(int client, float vecPos[3], float vecAng[3])
+	public Kamikaze(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Kamikaze npc = view_as<Kamikaze>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "700"));
+		Kamikaze npc = view_as<Kamikaze>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "700", ally));
 		
 		i_NpcInternalId[npc.index] = KAMIKAZE_DEMO;
 		
@@ -78,8 +78,8 @@ methodmap Kamikaze < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, Kamikaze_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, Kamikaze_ClotThink);
@@ -98,8 +98,8 @@ methodmap Kamikaze < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		
 		npc.m_flSpeed = 400.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		return npc;
 	}
 	
@@ -160,8 +160,8 @@ public void Kamikaze_ClotThink(int iNPC)
 			{
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			PF_StartPathing(npc.index);
-			npc.m_bPathing = true;
+			npc.StartPathing();
+			
 			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
@@ -223,8 +223,8 @@ public void Kamikaze_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

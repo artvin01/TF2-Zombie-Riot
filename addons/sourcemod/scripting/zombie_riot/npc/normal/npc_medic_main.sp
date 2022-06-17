@@ -105,9 +105,9 @@ methodmap MedicMain < CClotBody
 	
 	
 	
-	public MedicMain(int client, float vecPos[3], float vecAng[3])
+	public MedicMain(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedicMain npc = view_as<MedicMain>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000"));
+		MedicMain npc = view_as<MedicMain>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
 		i_NpcInternalId[npc.index] = BATTLE_MEDIC_MAIN;
 		
@@ -146,8 +146,8 @@ methodmap MedicMain < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -279,8 +279,8 @@ public void MedicMain_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

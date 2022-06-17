@@ -106,9 +106,9 @@ methodmap MedicHealer < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	public MedicHealer(int client, float vecPos[3], float vecAng[3])
+	public MedicHealer(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedicHealer npc = view_as<MedicHealer>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "3500"));
+		MedicHealer npc = view_as<MedicHealer>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "3500", ally));
 		
 		i_NpcInternalId[npc.index] = MEDIC_HEALER;
 		
@@ -134,8 +134,8 @@ methodmap MedicHealer < CClotBody
 		npc.m_bFUCKYOU_move_anim = false;
 		
 		npc.m_bnew_target = false;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -156,8 +156,8 @@ methodmap MedicHealer < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -249,7 +249,7 @@ public void MedicHealer_ClotThink(int iNPC)
 					}
 					else
 					{
-						PF_StartPathing(npc.index);
+						npc.StartPathing();
 						npc.m_bPathing = false;		
 					}
 					if(!npc.m_bnew_target)
@@ -272,7 +272,7 @@ public void MedicHealer_ClotThink(int iNPC)
 					if(IsValidEntity(npc.m_iWearable4))
 						RemoveEntity(npc.m_iWearable4);
 						
-					PF_StartPathing(npc.index);
+					npc.StartPathing();
 					npc.m_bPathing = false;		
 					npc.m_bnew_target = false;					
 				}
@@ -405,8 +405,8 @@ public void MedicHealer_ClotThink(int iNPC)
 				}
 				else
 				{
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 				}
 		}
 		else

@@ -124,9 +124,9 @@ methodmap XenoPyroGiant < CClotBody
 	}
 	
 	
-	public XenoPyroGiant(int client, float vecPos[3], float vecAng[3])
+	public XenoPyroGiant(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoPyroGiant npc = view_as<XenoPyroGiant>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.5", "85000", false, false, true));
+		XenoPyroGiant npc = view_as<XenoPyroGiant>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.5", "85000", ally, false, true));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -149,8 +149,8 @@ methodmap XenoPyroGiant < CClotBody
 		npc.m_iState = 0;
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		
 		int skin = 5;
@@ -322,8 +322,8 @@ public void XenoPyroGiant_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 		}
 	else

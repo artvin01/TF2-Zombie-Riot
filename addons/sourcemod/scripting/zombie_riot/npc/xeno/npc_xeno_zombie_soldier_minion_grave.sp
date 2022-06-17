@@ -135,9 +135,9 @@ methodmap XenoSoldierMinion < CClotBody
 	}
 	
 	
-	public XenoSoldierMinion(int client, float vecPos[3], float vecAng[3])
+	public XenoSoldierMinion(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoSoldierMinion npc = view_as<XenoSoldierMinion>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "0.65", "10"));
+		XenoSoldierMinion npc = view_as<XenoSoldierMinion>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "0.65", "10", ally));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -161,8 +161,8 @@ methodmap XenoSoldierMinion < CClotBody
 		npc.m_flSpeed = 350.0;
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
@@ -310,8 +310,8 @@ public void XenoSoldierMinion_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

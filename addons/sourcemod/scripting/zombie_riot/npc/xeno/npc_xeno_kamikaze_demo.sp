@@ -65,9 +65,9 @@ methodmap XenoKamikaze < CClotBody
 		#endif
 	}
 
-	public XenoKamikaze(int client, float vecPos[3], float vecAng[3])
+	public XenoKamikaze(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoKamikaze npc = view_as<XenoKamikaze>(CClotBody(vecPos, vecAng, "models/player/demo.mdl" , "1.0", "700"));
+		XenoKamikaze npc = view_as<XenoKamikaze>(CClotBody(vecPos, vecAng, "models/player/demo.mdl" , "1.0", "700", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_KAMIKAZE_DEMO;
 		
@@ -91,8 +91,8 @@ methodmap XenoKamikaze < CClotBody
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		
 		int skin = 5;
@@ -112,8 +112,8 @@ methodmap XenoKamikaze < CClotBody
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
 		
 		npc.m_flSpeed = 410.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		return npc;
 	}
 	
@@ -174,8 +174,8 @@ public void XenoKamikaze_ClotThink(int iNPC)
 			{
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			PF_StartPathing(npc.index);
-			npc.m_bPathing = true;
+			npc.StartPathing();
+			
 			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
@@ -237,8 +237,8 @@ public void XenoKamikaze_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

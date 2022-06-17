@@ -224,9 +224,9 @@ methodmap NaziPanzer < CClotBody
 	}
 	
 	
-	public NaziPanzer(int client, float vecPos[3], float vecAng[3])
+	public NaziPanzer(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		NaziPanzer npc = view_as<NaziPanzer>(CClotBody(vecPos, vecAng, "models/zombie_riot/cod_zombies/panzer_soldat_13.mdl", "1.15", "300", false, false, true));
+		NaziPanzer npc = view_as<NaziPanzer>(CClotBody(vecPos, vecAng, "models/zombie_riot/cod_zombies/panzer_soldat_13.mdl", "1.15", "300", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = NAZI_PANZER;
 		
@@ -304,8 +304,8 @@ methodmap NaziPanzer < CClotBody
 		
 //		SetEntPropFloat(npc.index, Prop_Data, "m_speed",npc.m_flSpeed);
 		npc.m_flAttackHappenswillhappen = false;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		return npc;
 	}
 	
@@ -475,8 +475,8 @@ public void NaziPanzer_ClotThink(int iNPC)
 			PF_SetGoalEntity(npc.index, closest);
 		}
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		if(npc.m_bGrabbedSomeone)
 		{
 			Handle swingTrace;

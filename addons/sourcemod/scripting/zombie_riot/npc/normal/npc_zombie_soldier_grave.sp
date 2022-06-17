@@ -124,9 +124,9 @@ methodmap Soldier < CClotBody
 		#endif
 	}
 	
-	public Soldier(int client, float vecPos[3], float vecAng[3])
+	public Soldier(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Soldier npc = view_as<Soldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "2000"));
+		Soldier npc = view_as<Soldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "2000", ally));
 		
 		i_NpcInternalId[npc.index] = SOLDIER_ROCKET_ZOMBIE;
 		
@@ -149,8 +149,8 @@ methodmap Soldier < CClotBody
 		npc.m_flSpeed = 280.0;
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -164,8 +164,8 @@ methodmap Soldier < CClotBody
 		
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -273,14 +273,14 @@ public void Soldier_ClotThink(int iNPC)
 				}
 				else
 				{
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 				}
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

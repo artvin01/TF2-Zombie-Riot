@@ -226,9 +226,9 @@ methodmap XenoFatherGrigori < CClotBody
 		#endif
 	}
 	
-	public XenoFatherGrigori(int client, float vecPos[3], float vecAng[3])
+	public XenoFatherGrigori(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoFatherGrigori npc = view_as<XenoFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000"));
+		XenoFatherGrigori npc = view_as<XenoFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_FATHER_GRIGORI;
 		
@@ -277,8 +277,8 @@ methodmap XenoFatherGrigori < CClotBody
 		npc.m_flNextTeleport = GetGameTime() + 5.0;
 		npc.m_flDoingAnimation = 0.0;
 		npc.Anger = false;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		if(EscapeModeForNpc)
 		{
 			npc.m_flSpeed = 250.0;
@@ -379,8 +379,8 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 		{
 			PF_SetGoalEntity(npc.index, closest);
 		}
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		//Target close enough to hit
 		
 			if(npc.m_flNextRangedAttack < GetGameTime() && npc.m_flDoingAnimation < GetGameTime())
@@ -542,8 +542,8 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

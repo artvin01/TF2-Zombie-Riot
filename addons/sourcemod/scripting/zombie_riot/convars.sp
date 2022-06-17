@@ -58,8 +58,9 @@ void ConVar_PluginStart()
 	
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
 	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
-	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "1", "No Panzer will spawn or anything alike");
-	CvarEnablePrivatePlugins = CreateConVar("zr_privateplugins", "0", "Enable private plugins, set this to zero.");
+	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
+	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "1", "No Panzer will spawn or anything alike", FCVAR_DONTRECORD);
+	CvarEnablePrivatePlugins = CreateConVar("zr_privateplugins", "0", "Enable private plugins, set this to zero.", FCVAR_DONTRECORD);
 	CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "6", "The maximum amount of blue bots allowed for the killfeed");
 	
 	AutoExecConfig(true, "zombie_riot");

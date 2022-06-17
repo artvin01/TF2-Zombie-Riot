@@ -70,7 +70,7 @@ public Action LF_OnMakeNPC(char[] classname, int &entity)
 	if(!index)
 		index = GetIndexByPluginName(classname);
 	
-	entity = Npc_Create(index, -1, NULL_VECTOR, NULL_VECTOR);
+	entity = Npc_Create(index, -1, NULL_VECTOR, NULL_VECTOR, false);
 	if(entity == -1)
 		return Plugin_Continue;
 	
@@ -108,7 +108,7 @@ public void NPC_EntitySpawned(int entity)
 		
 		RemoveEntity(entity);
 		
-		int npc = Npc_Create(index, -1, pos, ang);
+		int npc = Npc_Create(index, -1, pos, ang, false);
 		if(npc != -1)
 			NPC_AddToArray(npc);
 	}
@@ -454,7 +454,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 				GetEntPropVector(entity_Spawner, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(entity_Spawner, Prop_Data, "m_angRotation", ang);
 				
-				entity_Spawner = Npc_Create(enemy.Index, -1, pos, ang, enemy.Data);
+				entity_Spawner = Npc_Create(enemy.Index, -1, pos, ang, false, enemy.Data);
 				if(entity_Spawner != -1)
 				{
 					if(enemy.Is_Outlined)
@@ -546,7 +546,7 @@ public Action Timer_Delayed_SawrunnerSpawn(Handle timer, DataPack pack)
 		GetEntPropVector(spawner_entity, Prop_Data, "m_vecOrigin", pos);
 		GetEntPropVector(spawner_entity, Prop_Data, "m_angRotation", ang);
 		Zombies_Currently_Still_Ongoing += 1;
-		int entity = Npc_Create(SAWRUNNER, -1, pos, ang);
+		int entity = Npc_Create(SAWRUNNER, -1, pos, ang, false);
 		if(entity != -1)
 		{
 			if(health)
@@ -604,7 +604,7 @@ public Action Timer_Delayed_PanzerSpawn(Handle timer, DataPack pack)
 		GetEntPropVector(spawner_entity, Prop_Data, "m_vecOrigin", pos);
 		GetEntPropVector(spawner_entity, Prop_Data, "m_angRotation", ang);
 		Zombies_Currently_Still_Ongoing += 1;
-		int entity = Npc_Create(NAZI_PANZER, -1, pos, ang);
+		int entity = Npc_Create(NAZI_PANZER, -1, pos, ang, false);
 		if(entity != -1)
 		{
 			if(health)

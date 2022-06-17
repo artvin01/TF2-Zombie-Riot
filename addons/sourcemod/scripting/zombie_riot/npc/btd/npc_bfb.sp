@@ -106,14 +106,14 @@ methodmap BFB < CClotBody
 		
 		SetEntProp(this.index, Prop_Send, "m_nSkin", type);
 	}
-	public BFB(int client, float vecPos[3], float vecAng[3], const char[] data)
+	public BFB(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		bool fortified = StrContains(data, "f") != -1;
 		
 		char buffer[16];
 		IntToString(MoabHealth(fortified), buffer, sizeof(buffer));
 		
-		BFB npc = view_as<BFB>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bfb.mdl", "1.0", buffer, false, false, true));
+		BFB npc = view_as<BFB>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bfb.mdl", "1.0", buffer, ally, false, true));
 		
 		i_NpcInternalId[npc.index] = BTD_BFB;
 		
@@ -140,8 +140,8 @@ methodmap BFB < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bfb_ClotDamagedPost);
 		SDKHook(npc.index, SDKHook_Think, Bfb_ClotThink);
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -248,8 +248,8 @@ public void Bfb_ClotThink(int iNPC)
 			}
 		}
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 	}
 	else
 	{
@@ -290,7 +290,7 @@ public void Bfb_NPCDeath(int entity)
 	GetEntPropVector(entity, Prop_Data, "m_angRotation", angles);
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 	
-	int spawn_index = Npc_Create(BTD_MOAB, -1, pos, angles, npc.m_bFortified ? "f" : "");
+	int spawn_index = Npc_Create(BTD_MOAB, -1, pos, angles, GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2, npc.m_bFortified ? "f" : "");
 	if(spawn_index > MaxClients)
 		Zombies_Currently_Still_Ongoing += 1;
 }

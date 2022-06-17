@@ -172,9 +172,9 @@ methodmap XenoCombineSwordsman < CClotBody
 	}
 	
 	
-	public XenoCombineSwordsman(int client, float vecPos[3], float vecAng[3])
+	public XenoCombineSwordsman(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoCombineSwordsman npc = view_as<XenoCombineSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1750"));
+		XenoCombineSwordsman npc = view_as<XenoCombineSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1750", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_SWORDSMAN;
 		
@@ -219,8 +219,8 @@ methodmap XenoCombineSwordsman < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -426,8 +426,8 @@ public void XenoCombineSwordsman_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

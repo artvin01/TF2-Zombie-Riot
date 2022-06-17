@@ -209,9 +209,9 @@ methodmap Blitzkrieg < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	public Blitzkrieg(int client, float vecPos[3], float vecAng[3])
+	public Blitzkrieg(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Blitzkrieg npc = view_as<Blitzkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.4", "25000", false, false, true, true, true)); //giant!
+		Blitzkrieg npc = view_as<Blitzkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.4", "25000", ally, false, true, true, true)); //giant!
 		
 		i_NpcInternalId[npc.index] = RAIDMODE_BLITZKRIEG;
 		
@@ -505,14 +505,14 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				}
 				else
 				{
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 				}
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

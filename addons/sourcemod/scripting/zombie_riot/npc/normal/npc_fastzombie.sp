@@ -176,9 +176,9 @@ methodmap FastZombie < CClotBody
 	
 	
 	
-	public FastZombie(int client, float vecPos[3], float vecAng[3])
+	public FastZombie(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		FastZombie npc = view_as<FastZombie>(CClotBody(vecPos, vecAng, "models/zombie/fast.mdl", "1.15", "150", false, false));
+		FastZombie npc = view_as<FastZombie>(CClotBody(vecPos, vecAng, "models/zombie/fast.mdl", "1.15", "150", ally, false));
 		
 		i_NpcInternalId[npc.index] = FASTZOMBIE;
 		
@@ -201,8 +201,8 @@ methodmap FastZombie < CClotBody
 		npc.m_flJumpCooldown = GetGameTime() + 5.0;
 		npc.m_flInJump = 0.0;
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		return npc;
 	}
 	
@@ -345,8 +345,8 @@ public void FastZombie_FastZombieThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

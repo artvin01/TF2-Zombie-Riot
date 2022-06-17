@@ -121,9 +121,9 @@ methodmap PyroGiant < CClotBody
 	}
 	
 	
-	public PyroGiant(int client, float vecPos[3], float vecAng[3])
+	public PyroGiant(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		PyroGiant npc = view_as<PyroGiant>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.5", "75000", false, false, true));
+		PyroGiant npc = view_as<PyroGiant>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.5", "75000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = GIANT_PYRO_MAIN;
 		
@@ -147,8 +147,8 @@ methodmap PyroGiant < CClotBody
 		npc.m_iState = 0;
 		
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		
 		int skin = 5;
@@ -310,8 +310,8 @@ public void PyroGiant_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 		}
 	else

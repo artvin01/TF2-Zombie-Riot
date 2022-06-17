@@ -142,9 +142,9 @@ methodmap MedivalEliteSkirmisher < CClotBody
 		#endif
 	}
 	
-	public MedivalEliteSkirmisher(int client, float vecPos[3], float vecAng[3])
+	public MedivalEliteSkirmisher(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalEliteSkirmisher npc = view_as<MedivalEliteSkirmisher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2000"));
+		MedivalEliteSkirmisher npc = view_as<MedivalEliteSkirmisher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2000", ally));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_ELITE_SKIRMISHER;
 		
@@ -186,8 +186,8 @@ methodmap MedivalEliteSkirmisher < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 	
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -296,14 +296,14 @@ public void MedivalEliteSkirmisher_ClotThink(int iNPC)
 				}
 				else
 				{
-					PF_StartPathing(npc.index);
-					npc.m_bPathing = true;
+					npc.StartPathing();
+					
 				}
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

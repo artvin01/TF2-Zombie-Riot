@@ -156,9 +156,9 @@ methodmap XenoCombineDDT < CClotBody
 	}
 	
 	
-	public XenoCombineDDT(int client, float vecPos[3], float vecAng[3])
+	public XenoCombineDDT(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoCombineDDT npc = view_as<XenoCombineDDT>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250"));
+		XenoCombineDDT npc = view_as<XenoCombineDDT>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_DDT;
 		
@@ -199,8 +199,8 @@ methodmap XenoCombineDDT < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 192, 255, 192, 255);
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -344,8 +344,8 @@ public void XenoCombineDDT_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

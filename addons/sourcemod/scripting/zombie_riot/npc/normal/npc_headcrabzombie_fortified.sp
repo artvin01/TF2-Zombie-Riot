@@ -125,9 +125,9 @@ methodmap FortifiedHeadcrabZombie < CClotBody
 	
 	
 	
-	public FortifiedHeadcrabZombie(int client, float vecPos[3], float vecAng[3])
+	public FortifiedHeadcrabZombie(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		FortifiedHeadcrabZombie npc = view_as<FortifiedHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "500", false, false));
+		FortifiedHeadcrabZombie npc = view_as<FortifiedHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "500", ally, false));
 		
 		i_NpcInternalId[npc.index] = FORTIFIED_HEADCRAB_ZOMBIE;
 		
@@ -150,8 +150,8 @@ methodmap FortifiedHeadcrabZombie < CClotBody
 		}
 //		SetEntPropFloat(npc.index, Prop_Data, "m_speed",npc.m_flSpeed);
 		npc.m_flAttackHappenswillhappen = false;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		return npc;
 	}
 	
@@ -219,8 +219,8 @@ public void FortifiedHeadcrabZombie_ClotThink(int iNPC)
 		{
 			PF_SetGoalEntity(npc.index, closest);
 		}
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		//Target close enough to hit
 		
 		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)

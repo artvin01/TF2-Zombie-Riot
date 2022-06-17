@@ -159,9 +159,9 @@ methodmap CombineGaint < CClotBody
 	}
 	
 	
-	public CombineGaint(int client, float vecPos[3], float vecAng[3])
+	public CombineGaint(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		CombineGaint npc = view_as<CombineGaint>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "5000", false, false, true));
+		CombineGaint npc = view_as<CombineGaint>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "5000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_GIANT_SWORDSMAN;
 		
@@ -188,8 +188,8 @@ methodmap CombineGaint < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		if(EscapeModeForNpc)
 		{
@@ -243,8 +243,8 @@ public void CombineGaint_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -335,8 +335,8 @@ public void CombineGaint_ClotThink(int iNPC)
 			//Target close enough to hit
 			if(flDistanceToTarget < 22500 && npc.m_flReloadDelay < GetGameTime()  || npc.m_flAttackHappenswillhappen)
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget);
 			//	npc.FaceTowards(vecTarget);
@@ -394,8 +394,8 @@ public void CombineGaint_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else

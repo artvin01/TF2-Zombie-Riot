@@ -255,6 +255,12 @@ public Action Command_PetMenu(int client, int argc)
 	if(!(client > 0 && client <= MaxClients && IsClientInGame(client)))
 		return Plugin_Handled;
 	
+	if(argc < 1)
+	{
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [data] [ally]");
+		return Plugin_Handled;
+	}
+	
 	float flPos[3], flAng[3];
 	GetClientAbsAngles(client, flAng);
 	if(!SetTeleportEndPoint(client, flPos))
@@ -265,7 +271,12 @@ public Action Command_PetMenu(int client, int argc)
 	
 	char buffer[16];
 	GetCmdArg(2, buffer, sizeof(buffer));
-	if(IsValidEntity(Npc_Create(GetCmdArgInt(1), client, flPos, flAng, buffer)))
+	
+	bool ally;
+	if(argc > 2)
+		ally = view_as<bool>(GetCmdArgInt(3));
+	
+	if(IsValidEntity(Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer)))
 	{
 		Zombies_Currently_Still_Ongoing += 1;
 	}
@@ -303,453 +314,455 @@ int GetIndexByPluginName(const char[] name)
 	return 0;
 }
 
-any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], const char[] data="") //dmg mult only used for summonings
+any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
 {
+	any entity = -1;
 	switch(Index_Of_Npc)
 	{
 		case HEADCRAB_ZOMBIE:
 		{
-			return HeadcrabZombie(client, vecPos, vecAng);
+			entity = HeadcrabZombie(client, vecPos, vecAng, ally);
 		}
 		case FORTIFIED_HEADCRAB_ZOMBIE:
 		{
-			return FortifiedHeadcrabZombie(client, vecPos, vecAng);
+			entity = FortifiedHeadcrabZombie(client, vecPos, vecAng, ally);
 		}
 		case FASTZOMBIE:
 		{
-			return FastZombie(client, vecPos, vecAng);
+			entity = FastZombie(client, vecPos, vecAng, ally);
 		}
 		case FORTIFIED_FASTZOMBIE:
 		{
-			return FortifiedFastZombie(client, vecPos, vecAng);
+			entity = FortifiedFastZombie(client, vecPos, vecAng, ally);
 		}
 		case TORSOLESS_HEADCRAB_ZOMBIE:
 		{
-			return TorsolessHeadcrabZombie(client, vecPos, vecAng);
+			entity = TorsolessHeadcrabZombie(client, vecPos, vecAng, ally);
 		}
 		case FORTIFIED_GIANT_POISON_ZOMBIE:
 		{
-			return FortifiedGiantPoisonZombie(client, vecPos, vecAng);
+			entity = FortifiedGiantPoisonZombie(client, vecPos, vecAng, ally);
 		}
 		case POISON_ZOMBIE:
 		{
-			return PoisonZombie(client, vecPos, vecAng);
+			entity = PoisonZombie(client, vecPos, vecAng, ally);
 		}
 		case FORTIFIED_POISON_ZOMBIE:
 		{
-			return FortifiedPoisonZombie(client, vecPos, vecAng);
+			entity = FortifiedPoisonZombie(client, vecPos, vecAng, ally);
 		}
 		case FATHER_GRIGORI:
 		{
-			return FatherGrigori(client, vecPos, vecAng);
+			entity = FatherGrigori(client, vecPos, vecAng, ally);
 		}
 		case COMBINE_POLICE_PISTOL:
 		{
-			return Combine_Police_Pistol(client, vecPos, vecAng);
+			entity = Combine_Police_Pistol(client, vecPos, vecAng, ally);
 		}
 		case COMBINE_POLICE_SMG:
 		{
-			return CombinePoliceSmg(client, vecPos, vecAng);
+			entity = CombinePoliceSmg(client, vecPos, vecAng, ally);
 		}
 		case COMBINE_SOLDIER_AR2:
 		{
-			return CombineSoldierAr2(client, vecPos, vecAng);
+			entity = CombineSoldierAr2(client, vecPos, vecAng, ally);
 		}
 		case COMBINE_SOLDIER_SHOTGUN:
 		{
-			return CombineSoldierShotgun(client, vecPos, vecAng);
+			entity = CombineSoldierShotgun(client, vecPos, vecAng, ally);
 		}
 		case COMBINE_SOLDIER_SWORDSMAN:
 		{
-			return CombineSwordsman(client, vecPos, vecAng);
+			entity = CombineSwordsman(client, vecPos, vecAng, ally);
 		}
 		case COMBINE_SOLDIER_ELITE:
 		{
-			return CombineElite(client, vecPos, vecAng);
+			entity = CombineElite(client, vecPos, vecAng, ally);
 		}
 		case COMBINE_SOLDIER_GIANT_SWORDSMAN:
 		{
-			return CombineGaint(client, vecPos, vecAng);
+			entity = CombineGaint(client, vecPos, vecAng, ally);
 		}
 		case COMBINE_SOLDIER_DDT:
 		{
-			return CombineDDT(client, vecPos, vecAng);
+			entity = CombineDDT(client, vecPos, vecAng, ally);
 		}
 		case COMBINE_SOLDIER_COLLOSS:
 		{
-			return CombineCollos(client, vecPos, vecAng);
+			entity = CombineCollos(client, vecPos, vecAng, ally);
 		}
 		case COMBINE_OVERLORD:
 		{
-			return CombineOverlord(client, vecPos, vecAng);
+			entity = CombineOverlord(client, vecPos, vecAng, ally);
 		}
 		case SCOUT_ZOMBIE:
 		{
-			return Scout(client, vecPos, vecAng);
+			entity = Scout(client, vecPos, vecAng, ally);
 		}
 		case ENGINEER_ZOMBIE:
 		{
-			return Engineer(client, vecPos, vecAng);
+			entity = Engineer(client, vecPos, vecAng, ally);
 		}
 		case HEAVY_ZOMBIE:
 		{
-			return Heavy(client, vecPos, vecAng);
+			entity = Heavy(client, vecPos, vecAng, ally);
 		}
 		case FLYINGARMOR_ZOMBIE:
 		{
-			return FlyingArmor(client, vecPos, vecAng);
+			entity = FlyingArmor(client, vecPos, vecAng, ally);
 		}
 		case FLYINGARMOR_TINY_ZOMBIE:
 		{
-			return FlyingArmorTiny(client, vecPos, vecAng);
+			entity = FlyingArmorTiny(client, vecPos, vecAng, ally);
 		}
 		case KAMIKAZE_DEMO:
 		{
-			return Kamikaze(client, vecPos, vecAng);
+			entity = Kamikaze(client, vecPos, vecAng, ally);
 		}
 		case MEDIC_HEALER:
 		{
-			return MedicHealer(client, vecPos, vecAng);
+			entity = MedicHealer(client, vecPos, vecAng, ally);
 		}
 		case HEAVY_ZOMBIE_GIANT:
 		{
-			return HeavyGiant(client, vecPos, vecAng);
+			entity = HeavyGiant(client, vecPos, vecAng, ally);
 		}
 		case SPY_FACESTABBER:
 		{
-			return Spy(client, vecPos, vecAng);
+			entity = Spy(client, vecPos, vecAng, ally);
 		}
 		case SOLDIER_ROCKET_ZOMBIE:
 		{
-			return Soldier(client, vecPos, vecAng);
+			entity = Soldier(client, vecPos, vecAng, ally);
 		}
 		case SOLDIER_ZOMBIE_MINION:
 		{
-			return SoldierMinion(client, vecPos, vecAng);
+			entity = SoldierMinion(client, vecPos, vecAng, ally);
 		}
 		case SOLDIER_ZOMBIE_BOSS:
 		{
-			return SoldierGiant(client, vecPos, vecAng);
+			entity = SoldierGiant(client, vecPos, vecAng, ally);
 		}
 		case SPY_THIEF:
 		{
-			return SpyThief(client, vecPos, vecAng);
+			entity = SpyThief(client, vecPos, vecAng, ally);
 		}
 		case SPY_TRICKSTABBER:
 		{
-			return SpyTrickstabber(client, vecPos, vecAng);
+			entity = SpyTrickstabber(client, vecPos, vecAng, ally);
 		}
 		case SPY_HALF_CLOACKED:
 		{
-			return SpyCloaked(client, vecPos, vecAng);
+			entity = SpyCloaked(client, vecPos, vecAng, ally);
 		}
 		case SNIPER_MAIN:
 		{
-			return SniperMain(client, vecPos, vecAng);
+			entity = SniperMain(client, vecPos, vecAng, ally);
 		}
 		case DEMO_MAIN:
 		{
-			return DemoMain(client, vecPos, vecAng);
+			entity = DemoMain(client, vecPos, vecAng, ally);
 		}
 		case BATTLE_MEDIC_MAIN:
 		{
-			return MedicMain(client, vecPos, vecAng);
+			entity = MedicMain(client, vecPos, vecAng, ally);
 		}
 		case GIANT_PYRO_MAIN:
 		{
-			return PyroGiant(client, vecPos, vecAng);
+			entity = PyroGiant(client, vecPos, vecAng, ally);
 		}
 		case COMBINE_DEUTSCH_RITTER:
 		{
-			return CombineDeutsch(client, vecPos, vecAng);
+			entity = CombineDeutsch(client, vecPos, vecAng, ally);
 		}
 		case SPY_MAIN_BOSS:
 		{
-			return SpyMainBoss(client, vecPos, vecAng);
+			entity = SpyMainBoss(client, vecPos, vecAng, ally);
 		}
 		//XENO
 		case XENO_HEADCRAB_ZOMBIE:
 		{
-			return XenoHeadcrabZombie(client, vecPos, vecAng);
+			entity = XenoHeadcrabZombie(client, vecPos, vecAng, ally);
 		}
 		case XENO_FORTIFIED_HEADCRAB_ZOMBIE:
 		{
-			return XenoFortifiedHeadcrabZombie(client, vecPos, vecAng);
+			entity = XenoFortifiedHeadcrabZombie(client, vecPos, vecAng, ally);
 		}
 		case XENO_FASTZOMBIE:
 		{
-			return XenoFastZombie(client, vecPos, vecAng);
+			entity = XenoFastZombie(client, vecPos, vecAng, ally);
 		}
 		case XENO_FORTIFIED_FASTZOMBIE:
 		{
-			return XenoFortifiedFastZombie(client, vecPos, vecAng);
+			entity = XenoFortifiedFastZombie(client, vecPos, vecAng, ally);
 		}
 		case XENO_TORSOLESS_HEADCRAB_ZOMBIE:
 		{
-			return XenoTorsolessHeadcrabZombie(client, vecPos, vecAng);
+			entity = XenoTorsolessHeadcrabZombie(client, vecPos, vecAng, ally);
 		}
 		case XENO_FORTIFIED_GIANT_POISON_ZOMBIE:
 		{
-			return XenoFortifiedGiantPoisonZombie(client, vecPos, vecAng);
+			entity = XenoFortifiedGiantPoisonZombie(client, vecPos, vecAng, ally);
 		}
 		case XENO_POISON_ZOMBIE:
 		{
-			return XenoPoisonZombie(client, vecPos, vecAng);
+			entity = XenoPoisonZombie(client, vecPos, vecAng, ally);
 		}
 		case XENO_FORTIFIED_POISON_ZOMBIE:
 		{
-			return XenoFortifiedPoisonZombie(client, vecPos, vecAng);
+			entity = XenoFortifiedPoisonZombie(client, vecPos, vecAng, ally);
 		}
 		case XENO_FATHER_GRIGORI:
 		{
-			return XenoFatherGrigori(client, vecPos, vecAng);
+			entity = XenoFatherGrigori(client, vecPos, vecAng, ally);
 		}
 		case XENO_COMBINE_POLICE_PISTOL:
 		{
-			return XenoCombinePolicePistol(client, vecPos, vecAng);
+			entity = XenoCombinePolicePistol(client, vecPos, vecAng, ally);
 		}
 		case XENO_COMBINE_POLICE_SMG:
 		{
-			return XenoCombinePoliceSmg(client, vecPos, vecAng);
+			entity = XenoCombinePoliceSmg(client, vecPos, vecAng, ally);
 		}
 		case XENO_COMBINE_SOLDIER_AR2:
 		{
-			return XenoCombineSoldierAr2(client, vecPos, vecAng);
+			entity = XenoCombineSoldierAr2(client, vecPos, vecAng, ally);
 		}
 		case XENO_COMBINE_SOLDIER_SHOTGUN:
 		{
-			return XenoCombineSoldierShotgun(client, vecPos, vecAng);
+			entity = XenoCombineSoldierShotgun(client, vecPos, vecAng, ally);
 		}
 		case XENO_COMBINE_SOLDIER_SWORDSMAN:
 		{
-			return XenoCombineSwordsman(client, vecPos, vecAng);
+			entity = XenoCombineSwordsman(client, vecPos, vecAng, ally);
 		}
 		case XENO_COMBINE_SOLDIER_ELITE:
 		{
-			return XenoCombineElite(client, vecPos, vecAng);
+			entity = XenoCombineElite(client, vecPos, vecAng, ally);
 		}
 		case XENO_COMBINE_SOLDIER_GIANT_SWORDSMAN:
 		{
-			return XenoCombineGaint(client, vecPos, vecAng);
+			entity = XenoCombineGaint(client, vecPos, vecAng, ally);
 		}
 		case XENO_COMBINE_SOLDIER_DDT:
 		{
-			return XenoCombineDDT(client, vecPos, vecAng);
+			entity = XenoCombineDDT(client, vecPos, vecAng, ally);
 		}
 		case XENO_COMBINE_SOLDIER_COLLOSS:
 		{
-			return XenoCombineCollos(client, vecPos, vecAng);
+			entity = XenoCombineCollos(client, vecPos, vecAng, ally);
 		}
 		case XENO_COMBINE_OVERLORD:
 		{
-			return XenoCombineOverlord(client, vecPos, vecAng);
+			entity = XenoCombineOverlord(client, vecPos, vecAng, ally);
 		}
 		case XENO_SCOUT_ZOMBIE:
 		{
-			return XenoScout(client, vecPos, vecAng);
+			entity = XenoScout(client, vecPos, vecAng, ally);
 		}
 		case XENO_ENGINEER_ZOMBIE:
 		{
-			return XenoEngineer(client, vecPos, vecAng);
+			entity = XenoEngineer(client, vecPos, vecAng, ally);
 		}
 		case XENO_HEAVY_ZOMBIE:
 		{
-			return XenoHeavy(client, vecPos, vecAng);
+			entity = XenoHeavy(client, vecPos, vecAng, ally);
 		}
 		case XENO_FLYINGARMOR_ZOMBIE:
 		{
-			return XenoFlyingArmor(client, vecPos, vecAng);
+			entity = XenoFlyingArmor(client, vecPos, vecAng, ally);
 		}
 		case XENO_FLYINGARMOR_TINY_ZOMBIE:
 		{
-			return XenoFlyingArmorTiny(client, vecPos, vecAng);
+			entity = XenoFlyingArmorTiny(client, vecPos, vecAng, ally);
 		}
 		case XENO_KAMIKAZE_DEMO:
 		{
-			return XenoKamikaze(client, vecPos, vecAng);
+			entity = XenoKamikaze(client, vecPos, vecAng, ally);
 		}
 		case XENO_MEDIC_HEALER:
 		{
-			return XenoMedicHealer(client, vecPos, vecAng);
+			entity = XenoMedicHealer(client, vecPos, vecAng, ally);
 		}
 		case XENO_HEAVY_ZOMBIE_GIANT:
 		{
-			return XenoHeavyGiant(client, vecPos, vecAng);
+			entity = XenoHeavyGiant(client, vecPos, vecAng, ally);
 		}
 		case XENO_SPY_FACESTABBER:
 		{
-			return XenoSpy(client, vecPos, vecAng);
+			entity = XenoSpy(client, vecPos, vecAng, ally);
 		}
 		case XENO_SOLDIER_ROCKET_ZOMBIE:
 		{
-			return XenoSoldier(client, vecPos, vecAng);
+			entity = XenoSoldier(client, vecPos, vecAng, ally);
 		}
 		case XENO_SOLDIER_ZOMBIE_MINION:
 		{
-			return XenoSoldierMinion(client, vecPos, vecAng);
+			entity = XenoSoldierMinion(client, vecPos, vecAng, ally);
 		}
 		case XENO_SOLDIER_ZOMBIE_BOSS:
 		{
-			return XenoSoldierGiant(client, vecPos, vecAng);
+			entity = XenoSoldierGiant(client, vecPos, vecAng, ally);
 		}
 		case XENO_SPY_THIEF:
 		{
-			return XenoSpyThief(client, vecPos, vecAng);
+			entity = XenoSpyThief(client, vecPos, vecAng, ally);
 		}
 		case XENO_SPY_TRICKSTABBER:
 		{
-			return XenoSpyTrickstabber(client, vecPos, vecAng);
+			entity = XenoSpyTrickstabber(client, vecPos, vecAng, ally);
 		}
 		case XENO_SPY_HALF_CLOACKED:
 		{
-			return XenoSpyCloaked(client, vecPos, vecAng);
+			entity = XenoSpyCloaked(client, vecPos, vecAng, ally);
 		}
 		case XENO_SNIPER_MAIN:
 		{
-			return XenoSniperMain(client, vecPos, vecAng);
+			entity = XenoSniperMain(client, vecPos, vecAng, ally);
 		}
 		case XENO_DEMO_MAIN:
 		{
-			return XenoDemoMain(client, vecPos, vecAng);
+			entity = XenoDemoMain(client, vecPos, vecAng, ally);
 		}
 		case XENO_BATTLE_MEDIC_MAIN:
 		{
-			return XenoMedicMain(client, vecPos, vecAng);
+			entity = XenoMedicMain(client, vecPos, vecAng, ally);
 		}
 		case XENO_GIANT_PYRO_MAIN:
 		{
-			return XenoPyroGiant(client, vecPos, vecAng);
+			entity = XenoPyroGiant(client, vecPos, vecAng, ally);
 		}
 		case XENO_COMBINE_DEUTSCH_RITTER:
 		{
-			return XenoCombineDeutsch(client, vecPos, vecAng);
+			entity = XenoCombineDeutsch(client, vecPos, vecAng, ally);
 		}
 		case XENO_SPY_MAIN_BOSS:
 		{
-			return XenoSpyMainBoss(client, vecPos, vecAng);
+			entity = XenoSpyMainBoss(client, vecPos, vecAng, ally);
 		}
 		case NAZI_PANZER:
 		{
-			return NaziPanzer(client, vecPos, vecAng);
+			entity = NaziPanzer(client, vecPos, vecAng, ally);
 		}
 		case BOB_THE_GOD_OF_GODS:
 		{
-			return BobTheGod(client, vecPos, vecAng);
+			entity = BobTheGod(client, vecPos, vecAng);
 		}
 		case NECRO_COMBINE:
 		{
-			return NecroCombine(client, vecPos, vecAng, StringToFloat(data));
+			entity = NecroCombine(client, vecPos, vecAng, StringToFloat(data));
 		}
 		case NECRO_CALCIUM:
 		{
-			return NecroCalcium(client, vecPos, vecAng, StringToFloat(data));
+			entity = NecroCalcium(client, vecPos, vecAng, StringToFloat(data));
 		}
 		case CURED_FATHER_GRIGORI:
 		{
-			return CuredFatherGrigori(client, vecPos, vecAng);
+			entity = CuredFatherGrigori(client, vecPos, vecAng);
 		}
 		case ALT_COMBINE_MAGE:
 		{
-			return AltCombineMage(client, vecPos, vecAng);
+			entity = AltCombineMage(client, vecPos, vecAng, ally);
 		}
 		case BTD_BLOON:
 		{
-			return Bloon(client, vecPos, vecAng, data);
+			entity = Bloon(client, vecPos, vecAng, ally, data);
 		}
 		case BTD_MOAB:
 		{
-			return Moab(client, vecPos, vecAng, data);
+			entity = Moab(client, vecPos, vecAng, ally, data);
 		}
 		case BTD_BFB:
 		{
-			return BFB(client, vecPos, vecAng, data);
+			entity = BFB(client, vecPos, vecAng, ally, data);
 		}
 		case BTD_ZOMG:
 		{
-			return Zomg(client, vecPos, vecAng, data);
+			entity = Zomg(client, vecPos, vecAng, ally, data);
 		}
 		case BTD_DDT:
 		{
-			return DDT(client, vecPos, vecAng, data);
+			entity = DDT(client, vecPos, vecAng, ally, data);
 		}
 		case BTD_BAD:
 		{
-			return Bad(client, vecPos, vecAng, data);
+			entity = Bad(client, vecPos, vecAng, ally, data);
 		}
 		case ALT_MEDIC_APPRENTICE_MAGE:
 		{
-			return AltMedicApprenticeMage(client, vecPos, vecAng);
+			entity = AltMedicApprenticeMage(client, vecPos, vecAng, ally);
 		}
 		case SAWRUNNER:
 		{
-			return SawRunner(client, vecPos, vecAng);
+			entity = SawRunner(client, vecPos, vecAng, ally);
 		}
 		case RAIDMODE_TRUE_FUSION_WARRIOR:
 		{
-			return TrueFusionWarrior(client, vecPos, vecAng);
+			entity = TrueFusionWarrior(client, vecPos, vecAng, ally);
 		}
 		case ALT_MEDIC_CHARGER:
         {
-            return AltMedicCharger(client, vecPos, vecAng);
+            entity = AltMedicCharger(client, vecPos, vecAng, ally);
         }
         case ALT_MEDIC_BERSERKER:
 		{
-			return AltMedicBerseker(client, vecPos, vecAng);
+			entity = AltMedicBerseker(client, vecPos, vecAng, ally);
 		}
 		case MEDIVAL_MILITIA:
 		{
-			return MedivalMilitia(client, vecPos, vecAng);
+			entity = MedivalMilitia(client, vecPos, vecAng, ally);
 		}
 		case MEDIVAL_ARCHER:
 		{
-			return MedivalArcher(client, vecPos, vecAng);
+			entity = MedivalArcher(client, vecPos, vecAng, ally);
 		}
 		case MEDIVAL_MAN_AT_ARMS:
 		{
-			return MedivalManAtArms(client, vecPos, vecAng);
+			entity = MedivalManAtArms(client, vecPos, vecAng, ally);
 		}
 		case MEDIVAL_SKIRMISHER:
 		{
-			return MedivalSkirmisher(client, vecPos, vecAng);
+			entity = MedivalSkirmisher(client, vecPos, vecAng, ally);
 		}
 		case MEDIVAL_SWORDSMAN:
 		{
-			return MedivalSwordsman(client, vecPos, vecAng);
+			entity = MedivalSwordsman(client, vecPos, vecAng, ally);
 		}
 		case MEDIVAL_TWOHANDED_SWORDSMAN:
 		{
-			return MedivalTwoHandedSwordsman(client, vecPos, vecAng);
+			entity = MedivalTwoHandedSwordsman(client, vecPos, vecAng, ally);
 		}
 		case MEDIVAL_CROSSBOW_MAN:
 		{
-			return MedivalCrossbowMan(client, vecPos, vecAng);
+			entity = MedivalCrossbowMan(client, vecPos, vecAng, ally);
 		}
 		case MEDIVAL_SPEARMEN:
 		{
-			return MedivalSpearMan(client, vecPos, vecAng);
+			entity = MedivalSpearMan(client, vecPos, vecAng, ally);
 		}
 		case MEDIVAL_HANDCANNONEER:
 		{
-			return MedivalHandCannoneer(client, vecPos, vecAng);
+			entity = MedivalHandCannoneer(client, vecPos, vecAng, ally);
 		}
 		case MEDIVAL_ELITE_SKIRMISHER:
 		{
-			return MedivalEliteSkirmisher(client, vecPos, vecAng);
+			entity = MedivalEliteSkirmisher(client, vecPos, vecAng, ally);
 		}
 		case RAIDMODE_BLITZKRIEG:
 		{
-			return Blitzkrieg(client, vecPos, vecAng);
+			entity = Blitzkrieg(client, vecPos, vecAng, ally);
 		}
 		case MEDIVAL_PIKEMAN:
 		{
-			return MedivalPikeman(client, vecPos, vecAng);
+			entity = MedivalPikeman(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
 		}
 	}
-	return -1;
+	
+	return entity;
 }	
 public void NPCDeath(int entity)
 {
@@ -2723,7 +2736,14 @@ methodmap CClotBody
 		PF_DisableCallback(entity, PFCB_OnActorEmoted);
 		PF_Destroy(entity);
 	}	
-	
+	public void StartPathing()
+	{
+		if(!CvarDisableThink.BoolValue)
+		{
+			PF_StartPathing(this.index);
+			this.m_bPathing = true;
+		}
+	}
 	public void FaceTowards(const float vecGoal[3] , const float turnrate = 250.0)
 	{
 		

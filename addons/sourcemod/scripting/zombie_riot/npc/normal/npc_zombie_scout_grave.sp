@@ -128,9 +128,9 @@ methodmap Scout < CClotBody
 	}
 	
 	
-	public Scout(int client, float vecPos[3], float vecAng[3])
+	public Scout(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Scout npc = view_as<Scout>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250"));
+		Scout npc = view_as<Scout>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		
 		i_NpcInternalId[npc.index] = SCOUT_ZOMBIE;
 		
@@ -151,8 +151,8 @@ methodmap Scout < CClotBody
 		
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -295,8 +295,8 @@ public void Scout_ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 		}
 	else

@@ -165,9 +165,9 @@ methodmap MedivalTwoHandedSwordsman < CClotBody
 		#endif
 	}
 	
-	public MedivalTwoHandedSwordsman(int client, float vecPos[3], float vecAng[3])
+	public MedivalTwoHandedSwordsman(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalTwoHandedSwordsman npc = view_as<MedivalTwoHandedSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "6000"));
+		MedivalTwoHandedSwordsman npc = view_as<MedivalTwoHandedSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "6000", ally));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_TWOHANDED_SWORDSMAN;
 		
@@ -217,8 +217,8 @@ methodmap MedivalTwoHandedSwordsman < CClotBody
 
 
 		
-		PF_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		
 		return npc;
 	}
@@ -347,8 +347,8 @@ public void MedivalTwoHandedSwordsman_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
-				npc.m_bPathing = true;
+				npc.StartPathing();
+				
 			}
 	}
 	else
