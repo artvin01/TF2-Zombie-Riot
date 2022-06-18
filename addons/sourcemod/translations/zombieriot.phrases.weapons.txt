@@ -15,13 +15,13 @@
 	"firerate"
 	{
 		"en"		"Fire Rate"
-		"ru"		"Скорострельность"
+		"ru"		"Скоростр."
 		"de"		"Feuerrate"
 	}
 	"reload"
 	{
 		"en"		"Reload"
-		"ru"		"Перезарядка"
+		"ru"		"Перезар."
 		"de"		"Nachladen"
 	}	
 	"clip"
@@ -33,7 +33,7 @@
 	"chargespeed"
 	{
 		"en"		"Charge Speed"
-		"ru"		"Скорость во время рывка"
+		"ru"		"Скорость рывка"
 		"de"		"Ladegeschwindigkeit"
 	}
 	"chargedmg"
@@ -507,7 +507,7 @@
 	"Buildable Elevation"
 	{
 		"en"		"Buildable Elevation"
-		"ru"		"Возведение поднятия постройки"
+		"ru"		"Поднятие постройки"
 		"de"		"Baubare Erhebung"
 	}
 	"Buildable Barricade"
@@ -519,49 +519,49 @@
 	"Buildable Armortable"
 	{
 		"en"		"Buildable Armortable"
-		"ru"		"Возведение верстака брони"
+		"ru"		"Возвед. верстака брони"
 		"de"		"Baubare Rüstungstisch"
 	}
 	"Buildable AmmoBox"
 	{
 		"en"		"Buildable AmmoBox"
-		"ru"		"Возведение ящика с боеприпасами"
+		"ru"		"Возвед. ящика с боепр."
 		"de"		"Baubare Munitionsbox"
 	}
 	"Buildable Perk Machine"
 	{
 		"en"		"Buildable Perk Machine"
-		"ru"		"Возведение перк-машины"
+		"ru"		"Возвед. перк-машины"
 		"de"		"Baubare Perk Maschine"
 	}
 	"Buildable Pack-a-Punch"
 	{
 		"en"		"Buildable Pack-a-Punch"
-		"ru"		"Возведение улучшайзера"
+		"ru"		"Возвед. улучшайзера"
 		"de"		"Baubare Pack-a-Punch"
 	}
 	"Buildable Sentry"
 	{
 		"en"		"Buildable Sentry"
-		"ru"		"Возведение турели"
+		"ru"		"Возвед. турели"
 		"de"		"Baubare Sentry"
 	}
 	"Buildable Mortar"
 	{
 		"en"		"Buildable Mortar"
-		"ru"		"Возведение миномёта"
+		"ru"		"Возвед. миномёта"
 		"de"		"Baubare Sentry"
 	}
 	"Buildable Railgun"
 	{
 		"en"		"Buildable Railgun"
-		"ru"		"Возведение рельсотрона"
+		"ru"		"Возвед. рельсотрона"
 		"de"		"Baubare Railgun"
 	}
 	"Buildable Healing Station"
 	{
 		"en"		"Buildable Healing Station"
-		"ru"		"Возведение лечебной станции"
+		"ru"		"Возвед. лечебной станции"
 		"de"		"Baubare Heilstation"
 	}
 	"Upgrades"//Upgrades here!!!!
