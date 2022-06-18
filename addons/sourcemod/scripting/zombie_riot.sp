@@ -366,6 +366,14 @@ bool b_Is_Npc_Rocket[MAXENTITIES];
 bool b_Is_Player_Rocket[MAXENTITIES];
 bool b_Is_Player_Rocket_Through_Npc[MAXENTITIES];
 bool b_Is_Blue_Npc[MAXENTITIES];
+
+int i_ExplosiveProjectileHexArray[MAXENTITIES];
+
+#define EP_GENERIC                  0          	//Nothing special.
+#define EP_NO_KNOCKBACK              (1 << 0)   	// No knockback
+
+
+
 bool b_Map_BaseBoss_No_Layers[MAXENTITIES];
 int b_NpcForcepowerupspawn[MAXENTITIES]={0, ...}; 
 float f_TempCooldownForVisualManaPotions[MAXPLAYERS+1];
@@ -3085,6 +3093,7 @@ public void OnEntityDestroyed(int entity)
 			
 			RemoveNpcThingsAgain(entity);
 		}
+		i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 	}
 	
 	OnEntityDestroyed_Build_On_Build(entity);
