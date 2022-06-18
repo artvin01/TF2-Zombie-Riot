@@ -233,11 +233,11 @@ methodmap Blitzkrieg < CClotBody
 		
 		i_NpcCurrentLives[npc.index] = 0;
 		
-		i_HealthScale[npc.index] = 0.5;
+		i_HealthScale[npc.index] = 0.5;	//cant be 0, default 1, 0,5- 2x scaling.
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		
-		i_RangeScale[npc.index] = 1.0;
+		i_RangeScale[npc.index] = 1.0;	//Cant be a 0, default 1, 0.5= 2x range.
 		
 		if(ZR_GetWaveCount()>30)
 		{
