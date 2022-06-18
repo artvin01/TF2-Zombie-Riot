@@ -2907,7 +2907,7 @@ methodmap CClotBody
 		*/
 		return ( TR_GetFraction(trace) < 1.0 );
 	}
-	public void FireRocket(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0) //No defaults, otherwise i cant even judge.
+	public void FireRocket(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, int flags = 0) //No defaults, otherwise i cant even judge.
 	{
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
 		this.GetVectors(vecForward, vecSwingStart, vecAngles);
@@ -2932,6 +2932,7 @@ methodmap CClotBody
 		int entity = CreateEntityByName("tf_projectile_rocket");
 		if(IsValidEntity(entity))
 		{
+			i_ExplosiveProjectileHexArray[entity] = flags;
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, rocket_damage, true);	// Damage
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
