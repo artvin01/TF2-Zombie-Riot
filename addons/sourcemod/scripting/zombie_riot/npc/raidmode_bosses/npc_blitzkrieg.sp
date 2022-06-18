@@ -469,7 +469,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 						
 						npc.PlayMeleeSound();
-						npc.FireRocket(vecTarget, 26.0, 500.0/(0.25+i_HealthScale[npc.index]), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
+						npc.FireRocket(vecTarget, 26.0, 500.0/(0.25+i_HealthScale[npc.index]), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0, EP_NO_KNOCKBACK);
 						npc.m_flNextMeleeAttack = GetGameTime() + 0.25 * i_HealthScale[npc.index];
 						npc.m_flReloadIn = GetGameTime() + 0.25 * i_HealthScale[npc.index];
 					}
