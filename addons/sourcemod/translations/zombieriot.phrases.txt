@@ -803,13 +803,13 @@
 	"Difficulty Help?"
 	{
 		"en" 		"Difficulty Help?"
-		"ru" 		"Уровни сложности?"
+		"ru" 		"Уров. сложн.?"
 		"de"		"Schwierigkeitgrad Hilfe?"
 	}
 	"Level Help?"
 	{
 		"en" 		"Level Help?"
-		"ru" 		"Уровни игрока?"
+		"ru" 		"Уров. игрока?"
 		"de"		"Level Hilfe?"
 	}
 	"Special Zombies Help?"
@@ -821,7 +821,7 @@
 	"Revival Help?"
 	{
 		"en" 		"Revival Help?"
-		"ru" 		"Оживление игрока?"
+		"ru" 		"Оживл. игрока?"
 		"de"		"Wiederbelebungshilfe?"
 	}
 	"Building Help?"
@@ -851,13 +851,13 @@
 	"Difficulty Help Explained"
 	{
 		"en" 		"Each Higher Difficulty is harder and gives but no extra cash and different zombie types/mutations.\nThey are there as a challange but reward almost upto 3x the EXP.\nMap difficulties are arbitrary and only state how hard the layout is."
-		"ru" 		"Каждая более высокая сложность сложнее и даёт дополнительные деньги и имеет различные типы зомби/мутации.\nОни существуют как испытание вашего мастерства, но в них вы получите почти в 3 раза больше опыта.\nСложности на картах произвольны и только указывают, насколько сложны структуры врагов."
+		"ru" 		"Каждая более высокая сложность - сложнее и даёт доп. деньги и имеет новые типы зомби.\nЭто как испытание вашего мастерства, но в нём вы получите почти в 3 раза больше опыта.\nСложности на картах произвольны и только указывают, насколько сложны структуры врагов."
 		"de"		"Jeder höhere Schwierigkeitsgrad ist schwerer aber gibt dir kein extra Geld, aber Neue Zombie Typen/Mutationen.\nDie sind eine Herausforderung aber geben bis zu 3-mal mehr XP.\n Karten Schwierigkeitsgrade sind willkürlich und zustand wie hart das Layout ist."
 	}
 	"Level Help Explained"
 	{
 		"en" 		"You gain EXP per survived wave.\nHigh levels unlock items and perks for you that are for free.\nSome have returns for upgrades, Some are just free buffs or items.\nYou keep levels when you leave
-		"ru" 		"Вы получаете опыт за каждую пережитую волну.\nВысокие уровни открывают для вас предметы и перки, которые вы получаете бесплатно.\nНекоторые из них это улучшения, некоторые просто бесплатные усиления или предметы.\nВаш текущий уровень сохраняется, когда вы уходите из игры."
+		"ru" 		"Вы получаете опыт за каждую пережитую волну.\nВысокие уровни открывают для вас предметы и перки, которые вы получаете бесплатно.\nНекоторые из них это улучшения, некоторые просто бесплатные усиления или предметы.\nНабранный уровень сохраняется, когда вы уходите из игры."
 		"de"		"Sie bekommen XP per runde.\nHohe Levels freischalten Gegenstände und Perks für dich gratis.\nPaar haben Umgekährte Upgrades, Paar sind gratis Buffs oder Gegenstände.\nDu behältst die Levels, wenn du gehst."
 	}
 	"Special Zombies Explained"
@@ -875,13 +875,13 @@
 	"Building Explained"
 	{
 		"en" 		"You can use machines by pressing R on them.\nPeople can mount buildings and will have an icon above their head.\nThis allows you to press R on them for the same effect.\nRegen icon: Ammo box.\nArmour icon: Armour Table.\nKing icon: Perk Machine.\nPunch icon: Pack-A-Punch.\nVampire icon: Healing Station."
-		"ru" 		"Вы можете использовать постройки, нажимая на них R.\nЛюди могут поднимать свои постройки, и над их головой будет значок.\nЭто позволит вам нажать на них R для того же эффекта.\nЗначок регенерации: Ящик с боеприпасами.\nЗначок брони: Верстак брони.\nЗначок короля: Перк-машина.\nЗначок кулака: Улучшайзер.\nЗначок вампира: Лечебная станция."
+		"ru" 		"Для использования построек, нажмите R.\nЛюди могут поднимать свои постройки, и над их головой будет значок.\nЭто позволит вам нажать на них R для того же эффекта.\nЗначок реген.: Ящик с боеприпасами.\nЗначок брони: Верстак брони.\nЗначок короля: Перк-машина.\nЗначок кулака: Улучшайзер.\nЗначок вампира: Лечебная станция."
 		"de"		"Sie können Maschinen mit NACHLADEN benutzen.\nLeute können ihre Gebäude aufheben und haben ein Symbol auf deren Kopf.\nDies ermöglicht Ihnen mit NACHLADEN für denselben Effekt.\nRegen Symbol: Munitionsbox\nRüstung Symbol: Rüstungstisch\nKönig Symbol: Perkmachine\nFaust Symbol: Pack-A-Punch.\nVampire Symbol: Heilstation."
 	}
 	"Escape Explained"
 	{
 		"en" 		"During Escape maps only level perks can be bought.\nYou can pickup items with R or M2.\nSome maps have special items, pick them up with R and drop them with the DROP INTEL button or ''dropitem'' in console if you dont have it bound.\nItem Rarity in order: Normal, Green, Blue, Yellow, Red, Purple.\n Higher colour means better, Black means that its a map specific/special item."
-		"ru" 		"На картах режима спасения можно купить только перки определённого уровня.\nВы можете подбирать предметы с помощью R или ПКМ.\nНа некоторых картах есть особые предметы, подбирайте их с помощью R и бросайте с помощью кнопки БРОСИТЬ ДИПЛОМАТ или ''dropitem'' в консоли, если она у вас не привязана.\nРедкость предметов по порядку: Обычное, зелёное, синее, жёлтое, красное, фиолетовое.\n Выше цвет означает лучше, чёрный означает, что это особый/специальный предмет карты."
+		"ru" 		"На картах спасения можно купить только перки определённого уровня.\nПодобрать предмет - R или ПКМ.\nНекоторые карты имеют особые предметы. Подобрать - R. Бросить - БРОСИТЬ ДИПЛОМАТ или ''dropitem'' в консоли.\nРедкость предметов: Обычное, зелёное, синее, жёлтое, красное, фиолетовое.\n Выше цвет означает лучше, чёрный означает, что это особый предмет карты."
 		"de"		"Während der Flucht Karten können nur Level Perks gekauft werden.\nSie können Gegenstände aufheben mit NACHLADEN oder MAUS2.\nEin paar Karten haben Speziale Gegenstände, heben sie die auf mit NACHLADEN und lassen sie es fallen mit ihren L Key(dropitem).\n Gegenstände Seltenheit in reihe: Normal, Grüne, Blau, Gelb, Rot, Violett.\nHöhere Farbe ist besser, Schwarze ist Spezial."
 	}
 	"Drank Mana Regen Potion"
