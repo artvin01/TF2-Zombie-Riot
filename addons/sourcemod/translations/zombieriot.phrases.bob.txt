@@ -17,70 +17,70 @@
 	"Pistol Ammo"
 	{
 		"en"	"Pistol Ammo"
-		"ru"	"Патроны для пистолета"
+		"ru"	"Пистолет"
 		"de"	"Pistolen Munition"
 		"pl"    "Amunicja do pistoletu"
 	}
 	"Bob The Second is not friendly and follows you!"
 	{
 		"en"	"Bob The Second is not friendly and follows you!"
-		"ru"	"Боб Второй не дружелюбен и преследует вас!"
+		"ru"	"Боб Второй атакует врагов и следует за вами!"
 		"de"	"Bob Der Zweite ist nicht Freundlich und folgt dir!"
 		"pl"    "Bob drugi nie jest przyjazny i podąża za tobą!"
 	}
 	"Use voice Commands to command him!"
 	{
 		"en"	"Use voice Commands to command him!"
-		"ru"	"Используйте голосовые команды, чтобы командовать им!"
+		"ru"	"Голосовые команды - отдать команду!"
 		"de"	"Benutze Sprach Befehle um ihn zu befehlen!"
 		"pl"    "Używaj komend głowosych aby jemu rozkazywać!"
 	}
 	"Bob The Second is friendly and follows you!"
 	{
 		"en"	"Bob The Second is friendly and follows you!"
-		"ru"	"Боб Второй дружелюбен и следует за вами!"
+		"ru"	"Боб Второй не атакует врагов и следует за вами!"
 		"de"	"Bob Der Zweite ist freundlich und folgt dir!"
 		"pl"    "Bob drugi jest przyjazny i podąża za tobą!"
 	}
 	"Bob The Second is not friendly and doesn't follow you!"
 	{
 		"en"	"Bob The Second is not friendly and doesn't follow you!"
-		"ru"	"Боб Второй не дружелюбен и не преследует вас!"
+		"ru"	"Боб Второй атакует врагов и не следует за вами!"
 		"de"	"Bob Der Zweite ist nicht Freundlich und folgt dir nicht!"
 		"pl"    "Bob drugi nie jest przyjazny i nie podąża za tobą!"
 	}
 	"Bob The Second is friendly and doesn't follow you!"
 	{
 		"en"	"Bob The Second is friendly and doesn't follow you!"
-		"ru"	"Боб Второй дружелюбен и не следует за вами!"
+		"ru"	"Боб Второй не атакует врагов и не следует за вами!"
 		"de"	"Bob Der Zweite ist freundlich und folgt dir nicht!"
 		"pl"    "Bob drugi jest przyjazny i nie podąża za tobą!"
 	}
 	"Bob The Second is not friendly and follows you! BUT stands still."
 	{
 		"en"	"Bob The Second is not friendly and follows you! BUT stands still."
-		"ru"	"Боб Второй не дружелюбен и преследует вас! НО стоит на месте."
+		"ru"	"Боб Второй атакует врагов и следует за вами! НО стоит на месте."
 		"de"	"Bob Der Zweite ist nicht freundlich und folgt dir! ABER bleibt stehen."
 		"pl"    "Bob drugi nie jest przyjazny i podąża za tobą! Ale stoi w miejscu."
 	}
 	"Bob The Second is friendly and follows you! BUT stands still"
 	{
 		"en"	"Bob The Second is friendly and follows you! BUT stands still."
-		"ru"	"Боб Второй дружелюбен и следует за вами! НО стоит на месте."
+		"ru"	"Боб Второй не атакует врагов и следует за вами! НО стоит на месте."
 		"de"	"Bob Der Zweite ist freundlich und folgt dir! ABER bleibt stehen."
 		"pl"    "Bob drugi jest przyjazny is podąża za tobą! Ale stoi w miejscu."
 	}
 	"Bob The Second is not friendly and doesn't follow you! BUT stands still"
 	{
 		"en"	"Bob The Second is not friendly and doesn't follow you! BUT stands still."
-		"ru"	"Боб Второй не дружелюбен и не преследует вас! НО стоит на месте."
+		"ru"	"Боб Второй атакует врагов и не следует за вами! НО стоит на месте."
 		"de"	"Bob Der Zweite ist nicht freundlich und folgt dir nicht! ABER bleibt stehen."
 		"pl"    "Bob drugi nie jest przyjazny i nie podąża za tobą! Ale stoi w miejscu."
 	}
 	"Bob The Second is friendly and doesn't follow you! BUT stands still"
 	{
 		"en"	"Bob The Second is friendly and doesn't follow you! BUT stands still."
-		"ru"	"Боб Второй дружелюбен и не следует за вами! НО стоит на месте."
+		"ru"	"Боб Второй не атакует врагов и не следует за вами! НО стоит на месте."
 		"de"	"Bob Der Zweite ist nicht freundlich und folgt dir nicht! ABER bleibt stehen."
 		"pl"    "Bob drugi jest przyjazny i nie podąża za tobą! Ale stoi w miejscu."
 	}
