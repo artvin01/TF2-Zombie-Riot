@@ -63,6 +63,7 @@ static char gLaser1;
 static int i_AmountProjectiles[MAXENTITIES];
 static int i_NpcCurrentLives[MAXENTITIES];
 static float i_HealthScale[MAXENTITIES];
+static float i_RangeScale[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 
 public void Blitzkrieg_OnMapStart()
@@ -236,6 +237,12 @@ methodmap Blitzkrieg < CClotBody
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		
+		i_RangeScale[npc.index] = 1.0;
+		
+		if(ZR_GetWaveCount()>30)
+		{
+			i_RangeScale[npc.index] = 0.75;
+		}
 		if(RaidModeScaling < 55)
 		{
 			RaidModeScaling *= 0.17; //abit low, inreacing
@@ -444,7 +451,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
 				npc.m_flReloadIn = 0.0;
 			}
-			if(flDistanceToTarget < 100000)
+			if(flDistanceToTarget < 100000/i_RangeScale[npc.index])
 			{
 				int Enemy_I_See;
 				
@@ -485,11 +492,11 @@ public void Blitzkrieg_ClotThink(int iNPC)
 								else
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0 * RaidModeScaling / i_HealthScale[npc.index], DMG_SLASH|DMG_CLUB);
 								
-								
 								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
 								
 								// Hit sound
 								npc.PlayMeleeHitSound();
+								
 								
 							} 
 						}
@@ -497,7 +504,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 						npc.m_flNextMeleeAttack = GetGameTime() + 0.25 * i_HealthScale[npc.index];
 						npc.m_flAttackHappenswillhappen = false;
 					}
-					if(ZR_GetWaveCount()<=30)
+					if(ZR_GetWaveCount()<=15)
 					{
 					PF_StopPathing(npc.index);
 					npc.m_bPathing = false;
@@ -552,6 +559,14 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
 		
+		if(ZR_GetWaveCount()>=60)
+		{
+			i_RangeScale[npc.index] = 0.5;
+		}
+		if(ZR_GetWaveCount()==30)
+		{
+			i_RangeScale[npc.index] = 0.75;
+		}
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_liberty_launcher/c_liberty_launcher.mdl");	//Liberty
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -593,7 +608,16 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		i_NpcCurrentLives[npc.index]=2;
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
-			
+		
+		if(ZR_GetWaveCount()>=60)
+		{
+			i_RangeScale[npc.index] = 0.25;
+		}
+		if(ZR_GetWaveCount()==30)
+		{
+			i_RangeScale[npc.index] = 0.5;
+		}
+		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl");	//Dumpster deive aka beggars
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -634,6 +658,15 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		i_NpcCurrentLives[npc.index]=3;
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
+		
+		if(ZR_GetWaveCount()>=60)
+		{
+			i_RangeScale[npc.index] = 0.01;
+		}
+		if(ZR_GetWaveCount()==30)
+		{
+			i_RangeScale[npc.index] = 0.1;
+		}
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_atom_launcher/c_atom_launcher.mdl");	//The thing everyone fears, the airstrike.
 		SetVariantString("1.0");
