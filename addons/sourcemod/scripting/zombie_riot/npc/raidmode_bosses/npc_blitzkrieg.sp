@@ -233,11 +233,11 @@ methodmap Blitzkrieg < CClotBody
 		
 		i_NpcCurrentLives[npc.index] = 0;
 		
-		i_HealthScale[npc.index] = 0.5;	//cant be 0, default 1, 0,5- 2x scaling.
+		i_HealthScale[npc.index] = 0.5;	//cant be 0, default 1, 0,5= 2x scaling
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		
-		i_RangeScale[npc.index] = 1.0;	//Cant be a 0, default 1, 0.5= 2x range.
+		i_RangeScale[npc.index] = 1.0;	//Cant be a 0, default 1, 0.5= 2x range
 		
 		if(ZR_GetWaveCount()>30)
 		{
@@ -469,7 +469,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 						
 						npc.PlayMeleeSound();
-						npc.FireRocket(vecTarget, 26.0, 500.0/(0.25+i_HealthScale[npc.index]), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0, EP_NO_KNOCKBACK);
+						npc.FireRocket(vecTarget, 26.0, 500.0/(0.25+i_HealthScale[npc.index]), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0, EP_NO_KNOCKBACK); //remove the no kb if people cant escape, or just lower the dmg
 						npc.m_flNextMeleeAttack = GetGameTime() + 0.25 * i_HealthScale[npc.index];
 						npc.m_flReloadIn = GetGameTime() + 0.25 * i_HealthScale[npc.index];
 					}
