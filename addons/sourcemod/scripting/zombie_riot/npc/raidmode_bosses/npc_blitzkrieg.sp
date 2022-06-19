@@ -408,23 +408,23 @@ public void Blitzkrieg_ClotThink(int iNPC)
 			}
 			if(npc.m_flNextRangedBarrage_Spam < GetGameTime() && npc.m_flNextRangedBarrage_Singular < GetGameTime() && flDistanceToTarget > Pow(110.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0))
 			{	
-					EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
-			  	    npc.FaceTowards(vecTarget);
-					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 7.5 * RaidModeScaling / i_HealthScale[npc.index], 300.0/(0.25+i_HealthScale[npc.index]), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
-					npc.m_iAmountProjectiles += 1;
-					npc.PlayRangedSound();
-					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-					npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.15 * i_HealthScale[npc.index];
-					if (npc.m_iAmountProjectiles >= 10.0 / (i_HealthScale[npc.index]+0.5))
-					{
+				EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
+			 	npc.FaceTowards(vecTarget);
+				npc.FaceTowards(vecTarget);
+				npc.FireRocket(vPredictedPos, 7.5 * RaidModeScaling / i_HealthScale[npc.index], 300.0/(0.25+i_HealthScale[npc.index]), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
+				npc.m_iAmountProjectiles += 1;
+				npc.PlayRangedSound();
+				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+				npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.15 * i_HealthScale[npc.index];
+				if (npc.m_iAmountProjectiles >= 10.0 / (i_HealthScale[npc.index]+0.5))
+				{
 					npc.m_iAmountProjectiles = 0;
 					npc.m_flNextRangedBarrage_Spam = GetGameTime() + 45.0 * i_HealthScale[npc.index];
-						if(i_NpcCurrentLives[npc.index]==3)
-						{
+					if(i_NpcCurrentLives[npc.index]==3)
+					{
 						Blitzkrieg_IOC_Invoke(npc.index, closest);
-						}
 					}
+				}
 			}
 			if(npc.m_flNextTeleport < GetGameTime() && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0))
 			{
@@ -550,7 +550,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 	int closest = npc.m_iTarget;
 	
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-    float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 	
 	
 	if(Health/MaxHealth>0.5 && Health/MaxHealth<0.75 && i_NpcCurrentLives[npc.index] == 0)	//Lifelosses

@@ -403,101 +403,101 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-	if(npc.m_flDead_Ringer_Invis < GetGameTime() && npc.m_flDead_Ringer_Invis_bool)
-	{
-		npc.m_flDead_Ringer_Invis_bool = false;
-		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
-		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
-		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 255);
-		
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 150, 255, 150, 255);
-		
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 150, 255, 150, 255);
-		
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable5, 150, 255, 150, 255);
-		
-		npc.PlayDecloakSound();
-		npc.PlayDecloakSound();
-	}
+		if(npc.m_flDead_Ringer_Invis < GetGameTime() && npc.m_flDead_Ringer_Invis_bool)
+		{
+			npc.m_flDead_Ringer_Invis_bool = false;
+			
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 150, 255, 150, 255);
+			
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
+			
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 255);
+			
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable3, 150, 255, 150, 255);
+			
+			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable4, 150, 255, 150, 255);
+			
+			SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable5, 150, 255, 150, 255);
+			
+			npc.PlayDecloakSound();
+			npc.PlayDecloakSound();
+		}
 	
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			if (npc.m_flReloadDelay < GetGameTime() && flDistanceToTarget < 40000 || flDistanceToTarget > 90000 && npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime())
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		if (npc.m_flReloadDelay < GetGameTime() && flDistanceToTarget < 40000 || flDistanceToTarget > 90000 && npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime())
+		{
+			if (!npc.m_bmovedelay)
 			{
-				if (!npc.m_bmovedelay)
+				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
+				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+				npc.m_bmovedelay = true;
+				if(EscapeModeForNpc)
 				{
-					int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
-					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-					npc.m_bmovedelay = true;
-					if(EscapeModeForNpc)
-					{
-						if(!npc.Anger)
-							npc.m_flSpeed = 310.0;
-						else if(npc.Anger)
-							npc.m_flSpeed = 320.0;
-					}
-					else
-					{
-						if(!npc.Anger)
-							npc.m_flSpeed = 330.0;
-						else if(npc.Anger)
-							npc.m_flSpeed = 340.0;					
-						
-					}
-					npc.m_bmovedelay_gun = false;
+					if(!npc.Anger)
+						npc.m_flSpeed = 310.0;
+					else if(npc.Anger)
+						npc.m_flSpeed = 320.0;
 				}
-				
-				AcceptEntityInput(npc.m_iWearable1, "Disable");
-				AcceptEntityInput(npc.m_iWearable2, "Enable");
-			//	npc.FaceTowards(vecTarget, 1000.0);
-				npc.StartPathing();
-				
-				
-			}
-			else if (npc.m_flReloadDelay < GetGameTime() && flDistanceToTarget > 40000 && flDistanceToTarget < 90000)
-			{
-				if (!npc.m_bmovedelay_gun)
+				else
 				{
-					int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
-					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-					npc.m_bmovedelay_gun = true;
+					if(!npc.Anger)
+						npc.m_flSpeed = 330.0;
+					else if(npc.Anger)
+						npc.m_flSpeed = 340.0;					
 					
-					if(EscapeModeForNpc)
-					{
-						if(!npc.Anger)
-							npc.m_flSpeed = 310.0;
-						else if(npc.Anger)
-							npc.m_flSpeed = 320.0;
-							
-					}
-					else
-					{
-						if(!npc.Anger)
-							npc.m_flSpeed = 330.0;
-						else if(npc.Anger)
-							npc.m_flSpeed = 340.0;					
-						
-					}
-						
-					npc.m_bmovedelay = false;
 				}
+				npc.m_bmovedelay_gun = false;
+			}
+			
+			AcceptEntityInput(npc.m_iWearable1, "Disable");
+			AcceptEntityInput(npc.m_iWearable2, "Enable");
+		//	npc.FaceTowards(vecTarget, 1000.0);
+			npc.StartPathing();
+			
+			
+		}
+		else if (npc.m_flReloadDelay < GetGameTime() && flDistanceToTarget > 40000 && flDistanceToTarget < 90000)
+		{
+			if (!npc.m_bmovedelay_gun)
+			{
+				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
+				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+				npc.m_bmovedelay_gun = true;
+					
+				if(EscapeModeForNpc)
+				{
+					if(!npc.Anger)
+						npc.m_flSpeed = 310.0;
+					else if(npc.Anger)
+						npc.m_flSpeed = 320.0;
+						
+				}
+				else
+				{
+					if(!npc.Anger)
+						npc.m_flSpeed = 330.0;
+					else if(npc.Anger)
+						npc.m_flSpeed = 340.0;					
+					
+				}
+					
+				npc.m_bmovedelay = false;
+			
 				AcceptEntityInput(npc.m_iWearable1, "Enable");
 				AcceptEntityInput(npc.m_iWearable2, "Disable");
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				npc.StartPathing();
 				
 			}		
+	
 		
-			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
@@ -635,73 +635,73 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 128.0, 128.0, 128.0 }, { -128.0, -128.0, -128.0 })) 
+						{
+								
+							int target = TR_GetEntityIndex(swingTrace);	
+								
+							float vecHit[3];
+							TR_GetEndPosition(vecHit, swingTrace);
+									
+							if(target > 0) 
 							{
-								
-								int target = TR_GetEntityIndex(swingTrace);	
-								
-								float vecHit[3];
-								TR_GetEndPosition(vecHit, swingTrace);
-								
-								if(target > 0) 
+								if(!EscapeModeForNpc)
 								{
+									if(!npc.Anger)
+									{
+										if(target <= MaxClients)
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 180.0, DMG_SLASH|DMG_CLUB);
+										else
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_SLASH|DMG_CLUB);	
+									}
+									else if(npc.Anger)
+									{
+										if(target <= MaxClients)
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_SLASH|DMG_CLUB);
+										else
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 7500.0, DMG_SLASH|DMG_CLUB);	
+									}
+								}
+								else
+								{
+									if(!npc.Anger)
+									{
+										if(target <= MaxClients)
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
+										else
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_SLASH|DMG_CLUB);	
+									}
+									else if(npc.Anger)
+									{
+										if(target <= MaxClients)
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_SLASH|DMG_CLUB);
+										else
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_SLASH|DMG_CLUB);	
+									}										
+								}
+									
+								if(npc.m_iAttacksTillMegahit >= 3)
+								{
+									Custom_Knockback(npc.index, target, 500.0);
 									if(!EscapeModeForNpc)
 									{
-										if(!npc.Anger)
-										{
-											if(target <= MaxClients)
-												SDKHooks_TakeDamage(target, npc.index, npc.index, 180.0, DMG_SLASH|DMG_CLUB);
-											else
-												SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_SLASH|DMG_CLUB);	
-										}
-										else if(npc.Anger)
-										{
-											if(target <= MaxClients)
-												SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_SLASH|DMG_CLUB);
-											else
-												SDKHooks_TakeDamage(target, npc.index, npc.index, 7500.0, DMG_SLASH|DMG_CLUB);	
-										}
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_SLASH|DMG_CLUB);
 									}
 									else
 									{
-										if(!npc.Anger)
-										{
-											if(target <= MaxClients)
-												SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
-											else
-												SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_SLASH|DMG_CLUB);	
-										}
-										else if(npc.Anger)
-										{
-											if(target <= MaxClients)
-												SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_SLASH|DMG_CLUB);
-											else
-												SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_SLASH|DMG_CLUB);	
-										}										
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 35.0, DMG_SLASH|DMG_CLUB);
 									}
-										
-									if(npc.m_iAttacksTillMegahit >= 3)
-									{
-										Custom_Knockback(npc.index, target, 500.0);
-										if(!EscapeModeForNpc)
-										{
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_SLASH|DMG_CLUB);
-										}
-										else
-										{
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 35.0, DMG_SLASH|DMG_CLUB);
-										}
-										npc.m_iAttacksTillMegahit = 0;
-										
-									}
+									npc.m_iAttacksTillMegahit = 0;
 									
-									npc.m_iAttacksTillMegahit += 1;
-									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+								}
+								
+								npc.m_iAttacksTillMegahit += 1;
+								// Hit particle
+								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
 									
-									// Hit sound
-									npc.PlayMeleeHitSound();
-								} 
-							}
+								// Hit sound
+								npc.PlayMeleeHitSound();
+							} 
+						}
 						delete swingTrace;
 						npc.m_flNextMeleeAttack = GetGameTime() + 0.65;
 						npc.m_flAttackHappenswillhappen = false;
@@ -713,6 +713,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 					}
 				}
 			}
+		}
 	}
 	else
 	{

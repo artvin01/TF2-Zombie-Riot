@@ -6069,32 +6069,32 @@ stock int GetClosestAlly(int entity)
 	float TargetDistance = 0.0; 
 	int ClosestTarget = 0; 
 
-		int i = MaxClients + 1;
-		while ((i = FindEntityByClassname(i, "base_boss")) != -1)
+	int i = MaxClients + 1;
+	while ((i = FindEntityByClassname(i, "base_boss")) != -1)
+	{
+		if (GetEntProp(entity, Prop_Send, "m_iTeamNum")==GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && GetEntProp(i, Prop_Data, "m_iHealth") > 0)  //The is a medic thing is really needed
 		{
-			if (GetEntProp(entity, Prop_Send, "m_iTeamNum")==GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && GetEntProp(i, Prop_Data, "m_iHealth") > 0)  //The is a medic thing is really needed
+			float EntityLocation[3], TargetLocation[3]; 
+			GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+			GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+				
+				
+			float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+			if( TargetDistance ) 
 			{
-				float EntityLocation[3], TargetLocation[3]; 
-				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
-				GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-					
-					
-				float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-				if( TargetDistance ) 
-				{
-					if( distance < TargetDistance ) 
-					{
-						ClosestTarget = i; 
-						TargetDistance = distance;		  
-					}
-				} 
-				else 
+				if( distance < TargetDistance ) 
 				{
 					ClosestTarget = i; 
-					TargetDistance = distance;
-				}			
-			}
+					TargetDistance = distance;		  
+				}
+			} 
+			else 
+			{
+				ClosestTarget = i; 
+				TargetDistance = distance;
+			}			
 		}
+	}
 	return ClosestTarget; 
 }
 

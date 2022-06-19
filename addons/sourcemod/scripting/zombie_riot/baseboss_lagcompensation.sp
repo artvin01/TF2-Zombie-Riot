@@ -226,19 +226,19 @@ bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles
 	
 //	if(!b_LagCompNPC_No_Layers)
 //	{
-		// If their origin is not within a 45 degree cone in front of us, no need to lag compensate.
-		float forwar[3];
-		GetAngleVectors(viewangles, forwar, NULL_VECTOR, NULL_VECTOR );
-		
-		float diff[3];
-		SubtractVectors(pos2, pos1, diff);
-		NormalizeVector(diff, diff);
-		
-		static const float flCosAngle = 0.707107;	// 45 degree angle
-		if(GetVectorDotProduct(forwar, diff) > flCosAngle)
-		{
-			return false;
-		}
+	// If their origin is not within a 45 degree cone in front of us, no need to lag compensate.
+	float forwar[3];
+	GetAngleVectors(viewangles, forwar, NULL_VECTOR, NULL_VECTOR );
+	
+	float diff[3];
+	SubtractVectors(pos2, pos1, diff);
+	NormalizeVector(diff, diff);
+	
+	static const float flCosAngle = 0.707107;	// 45 degree angle
+	if(GetVectorDotProduct(forwar, diff) > flCosAngle)
+	{
+		return false;
+	}
 //	}
 //	else
 //	{

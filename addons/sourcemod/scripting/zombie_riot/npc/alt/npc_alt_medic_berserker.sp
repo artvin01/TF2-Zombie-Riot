@@ -231,53 +231,53 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			if (npc.m_flReloadDelay < GetGameTime())
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		if (npc.m_flReloadDelay < GetGameTime())
+		{
+			if (npc.m_flmovedelay < GetGameTime())
 			{
-				if (npc.m_flmovedelay < GetGameTime())
-				{
-					int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
-					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-					npc.m_flmovedelay = GetGameTime() + 1.5;
-					npc.m_flSpeed = 300.0;					
-				}
+				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
+				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+				npc.m_flmovedelay = GetGameTime() + 1.5;
+				npc.m_flSpeed = 300.0;					
+			}
 			AcceptEntityInput(npc.m_iWearable1, "Enable");
-				
-			}
 			
+		}
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+	
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		
+		//Predict their pos.
+		if(flDistanceToTarget < npc.GetLeadRadius()) {
 			
-			//Predict their pos.
-			if(flDistanceToTarget < npc.GetLeadRadius()) {
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				
-			/*	int color[4];
-				color[0] = 255;
-				color[1] = 255;
-				color[2] = 0;
-				color[3] = 255;
+		/*	int color[4];
+			color[0] = 255;
+			color[1] = 255;
+			color[2] = 0;
+			color[3] = 255;
+		
+			int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
+		
+			TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
+			TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 			
-				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
+			PF_SetGoalVector(npc.index, vPredictedPos);
+		} else {
+			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		}
+		
+		//Target close enough to hit
+		if(flDistanceToTarget < 22500 || npc.m_flAttackHappenswillhappen)
+		{
+			//Look at target so we hit.
+		//	npc.FaceTowards(vecTarget, 2000.0);
 			
-				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
-				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
-				
-				PF_SetGoalVector(npc.index, vPredictedPos);
-			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
-			}
-			
-			//Target close enough to hit
-			if(flDistanceToTarget < 22500 || npc.m_flAttackHappenswillhappen)
+			//Can we attack right now?
+			if(npc.m_flNextMeleeAttack < GetGameTime())
 			{
-				//Look at target so we hit.
-			//	npc.FaceTowards(vecTarget, 2000.0);
-				
-				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GetGameTime())
-				{
 					//Play attack ani
 				if (!npc.m_flAttackHappenswillhappen)
 				{
@@ -290,87 +290,87 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 						
 				if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
 				{
-						float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-						float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-						Handle swingTrace;
-						npc.FaceTowards(vecTarget, 20000.0);
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex,_,_,_,1))
-							{
-								int target = TR_GetEntityIndex(swingTrace);	
-								
-								float vecHit[3];
-								TR_GetEndPosition(vecHit, swingTrace);
-								
-								if(target > 0) 
-								{
-									float damage = 10.0 / (0.1 + (Health / MaxHealth));
-									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_SLASH|DMG_CLUB);
-									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
-																						
-									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
-									// Hit sound
-									npc.PlayMeleeHitSound();
-								} 
-							}
-						delete swingTrace;
-						float speed = 0.2 * (Health / MaxHealth);
-						npc.m_flNextMeleeAttack = GetGameTime() + speed;
-						npc.m_flAttackHappenswillhappen = false;
-					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+					float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+					float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+					Handle swingTrace;
+					npc.FaceTowards(vecTarget, 20000.0);
+					if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex,_,_,_,1))
 					{
-						float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-						float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-						float speed = 0.2 * (Health / MaxHealth);
-						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime() + speed;
+						int target = TR_GetEntityIndex(swingTrace);	
+							
+						float vecHit[3];
+						TR_GetEndPosition(vecHit, swingTrace);
+								
+						if(target > 0) 
+						{
+							float damage = 10.0 / (0.1 + (Health / MaxHealth));
+							if(target <= MaxClients)
+								SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_SLASH|DMG_CLUB);
+							else
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
+																				
+							// Hit particle
+							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+							// Hit sound
+							npc.PlayMeleeHitSound();
+						} 
 					}
+					delete swingTrace;
+					float speed = 0.2 * (Health / MaxHealth);
+					npc.m_flNextMeleeAttack = GetGameTime() + speed;
+					npc.m_flAttackHappenswillhappen = false;
 				}
-			}
-			else if(flDistanceToTarget > 22500 && npc.m_flAttackHappens_2 < GetGameTime())
-			{
-				float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-				float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-				float crocket = 10.0 * (Health / MaxHealth);
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-				npc.m_flAttackHappens_2 = GetGameTime() + crocket;
-				npc.PlayRangedSound();
-				npc.FireRocket(vecTarget, 20.0, 600.0);
-			}
-			else
-			{
-				npc.StartPathing();
-				
-			}
-			if (npc.m_flReloadDelay < GetGameTime())
-			{
-				npc.StartPathing();
-				
-			}
-			if(npc.m_flNextTeleport < GetGameTime())
-			{
-				static float flVel[3];
-				GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
-				if (flVel[0] <= 200.0)
+				else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
 				{
 					float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 					float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-					float time = 60.0 * (0.40 + (Health / MaxHealth));
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-					npc.FaceTowards(vecTarget);
-					npc.FaceTowards(vecTarget);
-					npc.m_flNextTeleport = GetGameTime() + time;
-					float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
-					if(Tele_Check > 120.0)
-					{
-						TeleportEntity(npc.index, vPredictedPos, NULL_VECTOR, NULL_VECTOR);
-						npc.PlayTeleportSound();
-					}
+					float speed = 0.2 * (Health / MaxHealth);
+					npc.m_flAttackHappenswillhappen = false;
+					npc.m_flNextMeleeAttack = GetGameTime() + speed;
 				}
 			}
+		}
+		else if(flDistanceToTarget > 22500 && npc.m_flAttackHappens_2 < GetGameTime())
+		{
+			float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+			float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			float crocket = 10.0 * (Health / MaxHealth);
+			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+			npc.m_flAttackHappens_2 = GetGameTime() + crocket;
+			npc.PlayRangedSound();
+			npc.FireRocket(vecTarget, 20.0, 600.0);
+		}
+		else
+		{
+			npc.StartPathing();
+			
+		}
+		if (npc.m_flReloadDelay < GetGameTime())
+		{
+			npc.StartPathing();
+			
+		}
+		if(npc.m_flNextTeleport < GetGameTime())
+		{
+			static float flVel[3];
+			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
+			if (flVel[0] <= 200.0)
+			{
+				float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+				float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+				float time = 60.0 * (0.40 + (Health / MaxHealth));
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				npc.FaceTowards(vecTarget);
+				npc.FaceTowards(vecTarget);
+				npc.m_flNextTeleport = GetGameTime() + time;
+				float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
+				if(Tele_Check > 120.0)
+				{
+					TeleportEntity(npc.index, vPredictedPos, NULL_VECTOR, NULL_VECTOR);
+					npc.PlayTeleportSound();
+				}
+			}
+		}
 	}
 	else
 	{

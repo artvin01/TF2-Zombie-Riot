@@ -690,7 +690,7 @@ public Action Reset_weapon_charged_handgun(Handle cut_timer, int client)
 		}
 		else 
 		{
-			if (weapon = GetPlayerWeaponSlot(client, 0))
+			if (weapon == GetPlayerWeaponSlot(client, 0))
 			{
 				TF2Attrib_SetByDefIndex(weapon, 466, base_chargetime[client]);
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
