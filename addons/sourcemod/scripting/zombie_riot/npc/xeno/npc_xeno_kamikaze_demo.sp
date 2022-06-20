@@ -259,7 +259,7 @@ public Action XenoKamikaze_ClotDamaged(int victim, int &attacker, int &inflictor
 		
 	XenoKamikaze npc = view_as<XenoKamikaze>(victim);
 	
-		if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{
 		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;

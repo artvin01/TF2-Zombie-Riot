@@ -14,10 +14,6 @@ Most of the code is made towards client prediction to make the best experience.
 
 Also keep in mind that i (artvin) started coding here with only half a year of knowledege so you'll see a fuckton of shitcode.
 
-You will also see alot of "inconsistent indentation" warnings, if 1.11 compiler told me where this shit happend then i would fix it
-but i honestly dont got the patience to look though all these sub files (more then 100)
-
-
 There is also an escapemode Verison of this gamemode and more to come. If you need help, ask me questions, and i will awnser them and put a FAQ here too so i dont have to repeat myself.
 
 ### Where can I see this gamemode in action?

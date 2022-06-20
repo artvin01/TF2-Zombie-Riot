@@ -1174,7 +1174,7 @@
 	{
 		"en"		"Speedy Brewing [Uncommon]"
 		"ru"		"Скоростное пивоварение [Необычное]"
-	--	"de"		""
+	//	"de"		""
 	}
 	"Strike Down The False [Uncommon]"
 	{
