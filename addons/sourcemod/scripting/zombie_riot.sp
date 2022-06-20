@@ -3089,11 +3089,12 @@ public void OnEntityDestroyed(int entity)
 		
 		if(entity > MaxClients)
 		{
+			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
+			
 			OnEntityDestroyed_BackPack(entity);
 			
 			RemoveNpcThingsAgain(entity);
 		}
-		i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 	}
 	
 	OnEntityDestroyed_Build_On_Build(entity);
