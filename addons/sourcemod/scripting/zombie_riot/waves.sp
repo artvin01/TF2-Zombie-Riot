@@ -693,7 +693,7 @@ void Waves_Progress()
 				EmitSoundToAll("#zombiesurvival/music_win.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 			
 				Menu menu = new Menu(Waves_FreeplayVote);
-				menu.SetTitle("The Zombies have been defeated!\nGo into Freeplay..?\nFreeplay will play infinitly.\nThe further you go, the harder it gets.\n ");
+				menu.SetTitle("%t","Victory Menu");
 				menu.AddItem("", "Yes");
 				menu.AddItem("", "No");
 				menu.ExitButton = false;
