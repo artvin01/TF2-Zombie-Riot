@@ -1191,4 +1191,9 @@
 		"en"		"The enemy has researched their equipment to lvl. {1}!!!"
 		"ru"		"Противник исследовал своё снаряжение до уров. {1}!!!"
 	}
+	"Victory Tips"
+	{		
+		"en"		"The Zombies have been defeated!\nGo into Freeplay..?\nFreeplay will play infinitly.\nThe further you go, the harder it gets.\n"
+		"chi"       "恭喜你击败了所有僵尸！\n是否进行自由模式？\n"
+	}
 }
