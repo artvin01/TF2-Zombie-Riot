@@ -587,6 +587,7 @@ enum
 	MEDIVAL_ELITE_SKIRMISHER			= 107,
 	RAIDMODE_BLITZKRIEG					= 108,
 	MEDIVAL_PIKEMAN						= 109,
+	ALT_MEDIC_SUPPERIOR_MAGE			= 110,
 }
 
 
@@ -708,7 +709,8 @@ char NPC_Names[][] =
 	"Hand Cannoneer",
 	"Elite Skirmisher",
 	"Blitzkrieg",
-	"Pikeman"
+	"Pikeman",
+	"Medic Supperior Mage"
 };
 
 char NPC_Plugin_Names_Converted[][] =
@@ -828,7 +830,8 @@ char NPC_Plugin_Names_Converted[][] =
 	"npc_medival_handcannoneer",
 	"npc_medival_elite_skirmisher",
 	"npc_blitzkrieg",
-	"npc_medival_pikeman"
+	"npc_medival_pikeman",
+	"npc_alt_medic_supperior_mage"
 };
 
 #include "zombie_riot/stocks.sp"

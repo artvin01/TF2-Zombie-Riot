@@ -756,6 +756,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = MedivalPikeman(client, vecPos, vecAng, ally);
 		}
+		case ALT_MEDIC_SUPPERIOR_MAGE:
+		{
+			entity = NPC_ALT_MEDIC_SUPPERIOR_MAGE(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1205,6 +1209,10 @@ public void NPCDeath(int entity)
 		{
 			MedivalPikeman_NPCDeath(entity);
 		}
+		case ALT_MEDIC_SUPPERIOR_MAGE:
+		{
+			NPC_ALT_MEDIC_SUPPERIOR_MAGE_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1368,6 +1376,7 @@ public void OnMapStart_NPC_Base()
 	MedivalEliteSkirmisher_OnMapStart_NPC();
 	Blitzkrieg_OnMapStart();
 	MedivalPikeman_OnMapStart_NPC();
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_OnMapStart_NPC();
 }
 
 
@@ -6458,3 +6467,4 @@ public MRESReturn Arrow_DHook_RocketExplodePre(int arrow)
 #include "zombie_riot/npc/medival/npc_medival_handcannoneer.sp"
 #include "zombie_riot/npc/medival/npc_medival_elite_skirmisher.sp"
 #include "zombie_riot/npc/medival/npc_medival_pikeman.sp"
+#include "zombie_riot/npc/alt/npc_alt_medic_supperior_mage.sp"
