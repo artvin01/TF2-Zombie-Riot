@@ -195,7 +195,7 @@ methodmap NPC_ALT_MEDIC_SUPPERIOR_MAGE < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink);
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/C_Crossing_Guard/C_Crossing_Guard.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/C_Crossing_Guard/C_Crossing_Guard.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
@@ -327,7 +327,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 		} else {
 			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
-		if(flDistanceToTarget < 10000)	//Do laser of hopefully not doom within a 100 hu's, might be too close but who knows.
+		if(flDistanceToTarget < 30000)	//Do laser of hopefully not doom within a 100 hu's, might be too close but who knows.
 		{
 			if(npc.m_flTimebeforekamehameha < GetGameTime() && !npc.Anger)
 			{
@@ -351,7 +351,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 		{
 			npc.m_flSpeed = 300.0;
 		}
-		if(flDistanceToTarget > 10000 && flDistanceToTarget < 90000 && !npc.m_bInKame && fl_TimebeforeIOC[npc.index] < GetGameTime())
+		if(flDistanceToTarget > 30000 && flDistanceToTarget < 90000 && !npc.m_bInKame && fl_TimebeforeIOC[npc.index] < GetGameTime())
 		{
 			if(!npc.Anger)
 			{
@@ -515,19 +515,13 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability_Anger(int client)
 	{
 		NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BuildingHit[building] = false;
 	}
-	int iNPC;
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE npc = view_as<NPC_ALT_MEDIC_SUPPERIOR_MAGE>(iNPC);
 	
-	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-	
-	float HealthScale = 0.1+Health/MaxHealth;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_IsUsing[client] = false;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TicksActive[client] = 0;
 
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CanUse[client] = true;
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseDPT[client] = 2.5 * HealthScale;
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarDPT[client] = 1.5 * HealthScale;
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseDPT[client] = 15.0;
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarDPT[client] = 10.0;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_MaxDistance[client] = 2000;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BeamRadius[client] = 10;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ColorHex[client] = ParseColor("FFFFFF");
@@ -581,20 +575,12 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability(int client)
 		NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BuildingHit[building] = false;
 	}
 	
-	int iNPC;
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE npc = view_as<NPC_ALT_MEDIC_SUPPERIOR_MAGE>(iNPC);
-	
-	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-	
-	float HealthScale = 0.1+Health/MaxHealth;
-	
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_IsUsing[client] = false;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TicksActive[client] = 0;
 
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CanUse[client] = true;
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseDPT[client] = 2.0 * HealthScale;
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarDPT[client] = 1.0 * HealthScale;
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseDPT[client] = 12.5;
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarDPT[client] = 7.5;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_MaxDistance[client] = 2000;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BeamRadius[client] = 10;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ColorHex[client] = ParseColor("0509FA");
