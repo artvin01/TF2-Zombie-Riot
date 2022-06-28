@@ -29,6 +29,7 @@
 #define ZR_MAX_NPCS_ALLIED 64
 #define ZR_MAX_BUILDINGS 128
 #define ZR_MAX_TRAPS 64
+#define ZR_MAX_BREAKBLES 32
 #define ZR_MAX_SPAWNERS 64
 
 // THESE ARE TO TOGGLE THINGS!
@@ -294,6 +295,9 @@ bool i_IsABuilding[MAXENTITIES];
 
 const int i_MaxcountTraps = ZR_MAX_TRAPS;
 int i_ObjectsTraps[ZR_MAX_TRAPS];
+
+const int i_MaxcountBreakable = ZR_MAX_BREAKBLES;
+int i_ObjectsBreakable[ZR_MAX_BREAKBLES];
 
 //We kinda check these almost 24/7, its better to put them into an array!
 const int i_MaxcountSpawners = ZR_MAX_SPAWNERS;
@@ -2740,6 +2744,14 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "func_breakable"))
 		{
+			for (int i = 0; i < ZR_MAX_BREAKBLES; i++)
+			{
+				if (EntRefToEntIndex(i_ObjectsBreakable[i]) <= 0)
+				{
+					i_ObjectsBreakable[i] = EntIndexToEntRef(entity);
+					i = ZR_MAX_BREAKBLES;
+				}
+			}
 			SDKHook(entity, SDKHook_OnTakeDamagePost, Func_Breakable_Post);
 		}
 		else if(!StrContains(classname, "tf_projectile_syringe"))
@@ -2833,6 +2845,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "obj_"))
 		{
 			npc.bCantCollidieAlly = true;
+			
 			i_IsABuilding[entity] = true;
 			for (int i = 0; i < ZR_MAX_BUILDINGS; i++)
 			{

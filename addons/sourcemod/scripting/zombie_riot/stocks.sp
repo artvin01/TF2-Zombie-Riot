@@ -1638,6 +1638,33 @@ stock int GetClosestTarget_BaseBoss_Pos(float pos[3],int entity)
 			}
 		}
 	}
+	for(int entitycount; entitycount<i_MaxcountBreakable; entitycount++)
+	{
+		int breakable_entity = EntRefToEntIndex(i_ObjectsBreakable[entitycount]);
+		if(IsValidEntity(breakable_entity))
+		{
+			if (GetEntProp(breakable_entity, Prop_Send, "m_iTeamNum")!=GetEntProp(breakable_entity, Prop_Send, "m_iTeamNum")) 
+			{
+				float TargetLocation[3]; 
+				GetEntPropVector( breakable_entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+				
+				float distance = GetVectorDistance( pos, TargetLocation ); 
+				if( TargetDistance ) 
+				{
+					if( distance < TargetDistance ) 
+					{
+						ClosestTarget = breakable_entity; 
+						TargetDistance = distance;		  
+					}
+				} 
+				else 
+				{
+					ClosestTarget = breakable_entity; 
+					TargetDistance = distance;
+				}				
+			}
+		}
+	}
 	if(IsValidEntity(ClosestTarget))
 	{
 		b_WasAlreadyCalculatedToBeClosest[ClosestTarget] = true;
@@ -2473,7 +2500,7 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 				int new_closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity); //alotta loops :)
 				if (IsValidEntity(new_closest_npc)) //Make sure its valid bla bla bla
 				{
-					if(!b_NpcHasDied[new_closest_npc] && Closest_npc != new_closest_npc) //Double check JUST to be sure.
+					if(Closest_npc != new_closest_npc) //Double check JUST to be sure.
 					{
 						//Damage Calculations
 						VicLoc = WorldSpaceCenter(new_closest_npc);						
