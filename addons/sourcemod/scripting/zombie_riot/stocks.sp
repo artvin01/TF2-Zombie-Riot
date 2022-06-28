@@ -2420,11 +2420,18 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 	{
 		b_WasAlreadyCalculatedToBeClosest[i] = false;
 	}
-	
+		
 	if(!FromNpc) //make sure that there even is any valid npc before we do these huge calcs.
 	{
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
-		Closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity);
+		if(spawnLoc[0] == 0.0)
+		{
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+			Closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity);
+		}
+		else
+		{
+			Closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity);
+		}
 	}
 	else
 	{

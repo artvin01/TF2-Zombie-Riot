@@ -24,7 +24,7 @@
 #tryinclude <menus-controller>
 
 
-#define NPC_HARD_LIMIT 42
+#define NPC_HARD_LIMIT 42 
 #define ZR_MAX_NPCS (NPC_HARD_LIMIT*2)
 #define ZR_MAX_NPCS_ALLIED 64
 #define ZR_MAX_BUILDINGS 128
