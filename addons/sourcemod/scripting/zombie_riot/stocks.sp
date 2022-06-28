@@ -1602,33 +1602,45 @@ stock int GetClosestTarget_BaseBoss(int entity)
 	return ClosestTarget; 
 }
 
+bool b_WasAlreadyCalculatedToBeClosest[MAXENTITIES]; //should be false by default...
+
 stock int GetClosestTarget_BaseBoss_Pos(float pos[3],int entity)
 {
 	float TargetDistance = 0.0; 
-	int ClosestTarget = 0; 
-	int i = MaxClients + 1;
-	while ((i = FindEntityByClassname(i, "base_boss")) != -1)
+	int ClosestTarget = -1; 
+	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 	{
-		if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(i, Prop_Send, "m_iTeamNum")) 
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+		if (IsValidEntity(baseboss_index) && !b_WasAlreadyCalculatedToBeClosest[baseboss_index])
 		{
-			float TargetLocation[3]; 
-			GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-			
-			float distance = GetVectorDistance( pos, TargetLocation ); 
-			if( TargetDistance ) 
+			if(!b_NpcHasDied[baseboss_index])
 			{
-				if( distance < TargetDistance ) 
+				if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
 				{
-					ClosestTarget = i; 
-					TargetDistance = distance;		  
+					float TargetLocation[3]; 
+					GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+					
+					float distance = GetVectorDistance( pos, TargetLocation ); 
+					if( TargetDistance ) 
+					{
+						if( distance < TargetDistance ) 
+						{
+							ClosestTarget = baseboss_index; 
+							TargetDistance = distance;		  
+						}
+					} 
+					else 
+					{
+						ClosestTarget = baseboss_index; 
+						TargetDistance = distance;
+					}				
 				}
-			} 
-			else 
-			{
-				ClosestTarget = i; 
-				TargetDistance = distance;
-			}				
+			}
 		}
+	}
+	if(IsValidEntity(ClosestTarget))
+	{
+		b_WasAlreadyCalculatedToBeClosest[ClosestTarget] = true;
 	}
 	return ClosestTarget; 
 }
@@ -2393,7 +2405,6 @@ stock int HasNamedItem(int client, const char[] name)
 	return amount;
 }
 
-
 stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon, float spawnLoc[3] = {0.0,0.0,0.0}, float explosionRadius = EXPLOSION_RADIUS, float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF, float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF, bool FromNpc = false)
 {
 	float damage_reduction = 1.0;
@@ -2405,17 +2416,15 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 		explosionRadius *= value;
 	}
 	
+	for( int i = 1; i < MAXENTITIES; i++ ) 
+	{
+		b_WasAlreadyCalculatedToBeClosest[i] = false;
+	}
+	
 	if(!FromNpc)
 	{
-		if(spawnLoc[0] == 0.0)
-		{
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
-			Closest_npc = GetClosestTarget_BaseBoss(entity);
-		}
-		else
-		{
-			Closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity);
-		}
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+		Closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity);
 	}
 	else
 	{
@@ -2423,7 +2432,9 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
 		Closest_npc = GetClosestTarget(entity);
 	}
+	
 	float VicLoc[3];
+
 	if(IsValidEntity(Closest_npc))
 	{
 		VicLoc = WorldSpaceCenter(Closest_npc);
@@ -2441,21 +2452,49 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 				SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 			}
 			
-			if(!FromNpc)
+			if(!FromNpc) //Npcs do not have damage falloff, dodge.
 			{
 				damage_reduction *= ExplosionDmgMultihitFalloff;
 			}
+		//	b_WasAlreadyCalculatedToBeClosest[Closest_npc] = true; //First target hit/closest might want special stuff idk
 		}
 		
 		if(!FromNpc)
 		{
-			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)  //Loop as often as there can be even be max NPC's.
 			{
+				int new_closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity); //alotta loops :)
+				if (IsValidEntity(new_closest_npc)) //Make sure its valid bla bla bla
+				{
+					if(!b_NpcHasDied[new_closest_npc] && Closest_npc != new_closest_npc) //Double check JUST to be sure.
+					{
+						//Damage Calculations
+						VicLoc = WorldSpaceCenter(new_closest_npc);						
+						if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
+						{
+							float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
+							float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
+															
+							if((i_ExplosiveProjectileHexArray[entity] & EP_NO_KNOCKBACK))
+							{
+								SDKHooks_TakeDamage(new_closest_npc, client, client, damage_1 / damage_reduction, DMG_BLAST|DMG_PREVENT_PHYSICS_FORCE, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+							}
+							else
+							{
+								SDKHooks_TakeDamage(new_closest_npc, client, client, damage_1 / damage_reduction, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+							}
+							damage_reduction *= ExplosionDmgMultihitFalloff;
+						}
+						//Damage Calculations
+					}
+				}
+				/*
 				int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
 				if (IsValidEntity(baseboss_index))
 				{
 					if(!b_NpcHasDied[baseboss_index] && Closest_npc != baseboss_index)
 					{
+						//Damage Calculations
 						VicLoc = WorldSpaceCenter(baseboss_index);						
 						if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
 						{
@@ -2472,8 +2511,10 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 							}
 							damage_reduction *= ExplosionDmgMultihitFalloff;
 						}
+						//Damage Calculations
 					}
 				}
+				*/
 			}
 		}
 		else //Gotta loop through all here, oopsie!
@@ -2583,6 +2624,7 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 			}
 		}
 	}
+	
 }
 
 stock void UpdatePlayerPoints(int client)
