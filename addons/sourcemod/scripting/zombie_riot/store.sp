@@ -2416,6 +2416,11 @@ bool Store_Interact(int client, int entity, const char[] classname)
 								if(tier >= sizeof(RenderColors))
 									tier = sizeof(RenderColors)-1;
 								
+								if(tier < 0)
+								{
+									tier = 0;
+								}
+								
 								SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 								SetEntityRenderColor(entity, RenderColors[tier][0], RenderColors[tier][1], RenderColors[tier][2], RenderColors[tier][3]);
 							}
