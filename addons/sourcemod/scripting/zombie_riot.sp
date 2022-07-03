@@ -3130,6 +3130,14 @@ public void OnEntityDestroyed(int entity)
 			OnEntityDestroyed_BackPack(entity);
 			
 			RemoveNpcThingsAgain(entity);
+			
+			if(h_NpcCollissionHookType[entity] != 0)
+			{
+				if(!DHookRemoveHookID(h_NpcCollissionHookType[entity]))
+				{
+					PrintToConsoleAll("Somehow Failed to unhook h_NpcCollissionHookType");
+				}
+			}
 		}
 	}
 	
