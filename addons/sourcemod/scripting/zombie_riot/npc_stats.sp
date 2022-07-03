@@ -1611,25 +1611,26 @@ methodmap CClotBody
 			NPC_AddToArray(npc);
 			if(IgnoreBuildings || IsValidEntity(EntRefToEntIndex(RaidBossActive))) //During an active raidboss, make sure that they ignore barricades
 			{
-				list.Push(DHookRaw(g_hShouldCollideWithAllyEnemyIngoreBuilding,   false, pLocomotion));
+				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyEnemyIngoreBuilding,   false, pLocomotion);
 			}
 			else
 			{
-				list.Push(DHookRaw(g_hShouldCollideWithAllyEnemy,   false, pLocomotion));
+				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyEnemy,   false, pLocomotion);
 			}
 		}
 		else
 		{
 			if(Ally_Invince)
 			{
-				list.Push(DHookRaw(g_hShouldCollideWithAllyInvince,   false, pLocomotion));
+				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyInvince,   false, pLocomotion);
 			}
 			else
 			{
-				list.Push(DHookRaw(g_hShouldCollideWithAlly,   false, pLocomotion));
+				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAlly,   false, pLocomotion);
 			}
 		}
 		
+		list.Push(h_NpcCollissionHookType[npc]);
 		
 		
 		list.Push(DHookRaw(g_hGetMaxAcceleration,  true, pLocomotion));
@@ -6344,6 +6345,41 @@ public MRESReturn Arrow_DHook_RocketExplodePre(int arrow)
 		RemoveEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow]));
 	}
 	return MRES_Supercede;
+}
+
+public void Change_Npc_Collision(int npc, int CollisionType)
+{
+	if(IsValidEntity(npc))
+	{
+		Address pNB =		 SDKCall(g_hMyNextBotPointer,	   npc);
+		Address pLocomotion = SDKCall(g_hGetLocomotionInterface, pNB);
+		if(!DHookRemoveHookID(h_NpcCollissionHookType[npc]))
+		{
+			PrintToChatAll("FAILED HOOK REMOVAL");
+		}
+		else
+		{
+			switch(CollisionType)
+			{
+				case 1:
+				{
+					h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyEnemyIngoreBuilding,   false, pLocomotion);
+				}
+				case 2:
+				{
+					h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyEnemy,   false, pLocomotion);
+				}
+				case 3:
+				{
+					h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyInvince,   false, pLocomotion);
+				}
+				case 4:
+				{
+					h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAlly,   false, pLocomotion);
+				}
+			}	
+		}
+	}
 }
 
 //NORMAL

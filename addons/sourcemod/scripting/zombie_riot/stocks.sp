@@ -10,6 +10,23 @@ void Stock_TakeDamage(int entity = 0, int inflictor = 0, int attacker = 0, float
 //im sorry.
 #define SDKHooks_TakeDamage Stock_TakeDamage
 
+bool Stock_IsValidEntity(entity)
+{
+	if(entity == 0)
+	{
+		return false;
+	}
+	else
+	{
+		return IsValidEntity(entity);
+	}
+
+}
+
+#define IsValidEntity Stock_IsValidEntity
+
+//In this case i never need the world ever.
+
 stock void ResetToZero(any[] array, int length)
 {
     for(int i; i<length; i++)
