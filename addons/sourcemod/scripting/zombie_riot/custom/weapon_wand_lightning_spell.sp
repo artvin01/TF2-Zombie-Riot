@@ -47,7 +47,6 @@ public void Weapon_Wand_LightningSpell(int client, int weapon, const char[] clas
 				float vAngles[3];
 				float vOrigin[3];
 				float vEnd[3];
-				float targPos[3];
 	
 				GetClientEyePosition(client, vOrigin);
 				GetClientEyeAngles(client, vAngles);
@@ -59,26 +58,8 @@ public void Weapon_Wand_LightningSpell(int client, int weapon, const char[] clas
 			
 					CloseHandle(trace);
 					
-					int targ = MaxClients + 1;
+					Explode_Logic_Custom(damage, client, client, weapon, vEnd,_,_,_,false);
 					
-					while ((targ = FindEntityByClassname(targ, "base_boss")) != -1)
-					{
-						if (GetEntProp(client, Prop_Send, "m_iTeamNum")!=GetEntProp(targ, Prop_Send, "m_iTeamNum")) 
-						{
-							GetEntPropVector(targ, Prop_Data, "m_vecAbsOrigin", targPos);
-							if (GetVectorDistance(vEnd, targPos) <= 250.0)
-							{
-								float distance_1 = GetVectorDistance(vEnd, targPos);
-								float damage_1 = Custom_Explosive_Logic(client, distance_1, 0.75, damage, 251.0);
-								
-								damage_1 /= Damage_Reduction[client];
-								SDKHooks_TakeDamage(targ, client, client, damage_1, DMG_PLASMA, -1, {0.0, 0.0, -50000.0}, vEnd);
-								
-								Damage_Reduction[client] *= EXPLOSION_AOE_DAMAGE_FALLOFF;
-								//use blast cus it does its own calculations for that ahahahah im evil
-							}
-						}
-					}
 					float position[3];
 					position[0] = vEnd[0];
 					position[1] = vEnd[1];

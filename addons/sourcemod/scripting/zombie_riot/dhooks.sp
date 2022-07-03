@@ -216,165 +216,102 @@ public MRESReturn DHook_RocketExplodePre(int entity)
 	}
 	return MRES_Ignored;
 }
-
+/*
 public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 {
 	if(IsValidEntity(ent1) && IsValidEntity(ent2))
 	{
-		if(b_Is_Npc_Rocket[ent2])
-		{
-			if(b_Is_Blue_Npc[ent1])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-			else if(b_Is_Npc_Rocket[ent1])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-		}
-		else if(b_Is_Npc_Rocket[ent1])
-		{
-			if(b_Is_Blue_Npc[ent2])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-			else if(b_Is_Npc_Rocket[ent2])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-		}
-		else if(b_Is_Player_Rocket[ent1])
-		{
-			if(ent2 <= MaxClients && ent2 > 0)
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-			else if(b_IsAlliedNpc[ent2])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-		}
-		else if(b_Is_Player_Rocket[ent2])
-		{
-			if(ent1 <= MaxClients && ent1 > 0)
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-			else if(b_IsAlliedNpc[ent1])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-		}
-		
-		else if (b_Is_Player_Rocket_Through_Npc[ent2])
-		{
-			if(b_Is_Blue_Npc[ent1])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-		}
-		else if (b_Is_Player_Rocket_Through_Npc[ent1])
-		{
-			if(b_Is_Blue_Npc[ent2])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-		}
-		
+		result = PassfilterGlobal(ent1, ent2, result);
+		return Plugin_Handled;
 	}
-	
 	return Plugin_Continue;
 }
+*/
 
 public Action CH_PassFilter(int ent1, int ent2, bool &result)
 {
 	if(IsValidEntity(ent1) && IsValidEntity(ent2))
 	{
-		if(b_Is_Npc_Rocket[ent2])
+		result = PassfilterGlobal(ent1, ent2, true);
+		if(result)
 		{
-			if(b_Is_Blue_Npc[ent1])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-			else if(b_Is_Npc_Rocket[ent1])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
+			return Plugin_Continue;
 		}
-		else if(b_Is_Npc_Rocket[ent1])
+		else
 		{
-			if(b_Is_Blue_Npc[ent2])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-			else if(b_Is_Npc_Rocket[ent2])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
+			return Plugin_Handled;
 		}
-		else if(b_Is_Player_Rocket[ent1])
-		{
-			if(ent2 <= MaxClients && ent2 > 0)
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-			else if(b_IsAlliedNpc[ent2])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-		}
-		else if(b_Is_Player_Rocket[ent2])
-		{
-			if(ent1 <= MaxClients && ent1 > 0)
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-			else if(b_IsAlliedNpc[ent1])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-		}
-		
-		else if (b_Is_Player_Rocket_Through_Npc[ent2])
-		{
-			if(b_Is_Blue_Npc[ent1])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-		}
-		else if (b_Is_Player_Rocket_Through_Npc[ent1])
-		{
-			if(b_Is_Blue_Npc[ent2])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-		}
-		
 	}
-	
 	return Plugin_Continue;
 }
 
+public bool PassfilterGlobal(int ent1, int ent2, bool result)
+{
+	if(b_Is_Npc_Rocket[ent2])
+	{
+		if(b_Is_Blue_Npc[ent1])
+		{
+			return false;
+		}
+		else if(b_Is_Npc_Rocket[ent1])
+		{
+			return false;
+		}
+	}
+	else if(b_Is_Npc_Rocket[ent1])
+	{
+		if(b_Is_Blue_Npc[ent2])
+		{
+			return false;
+		}
+		else if(b_Is_Npc_Rocket[ent2])
+		{
+			return false;	
+		}
+	}
+	else if(b_Is_Player_Rocket[ent1])
+	{
+		if(ent2 <= MaxClients && ent2 > 0)
+		{
+			return false;
+		}
+		else if(b_IsAlliedNpc[ent2])
+		{
+			return false;
+		}
+	}
+	else if(b_Is_Player_Rocket[ent2])
+	{
+		if(ent1 <= MaxClients && ent1 > 0)
+		{
+			return false;
+		}
+		else if(b_IsAlliedNpc[ent1])
+		{
+			return false;	
+		}
+	}
+	
+	else if (b_Is_Player_Rocket_Through_Npc[ent2])
+	{
+		if(b_Is_Blue_Npc[ent1])
+		{
+			return false;
+		}
+	}
+	else if (b_Is_Player_Rocket_Through_Npc[ent1])
+	{
+		if(b_Is_Blue_Npc[ent2])
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return result;	
+	}
+	return result;	
+}
 static DynamicHook DHook_CreateVirtual(GameData gamedata, const char[] name)
 {
 	DynamicHook hook = DynamicHook.FromConf(gamedata, name);
@@ -1505,3 +1442,4 @@ void SetWeaponViewPunch(int weapon, float viewpunch = 0.0)
 	StoreToAddress(view_as<Address>(GetWeaponData(weapon) + g_OffsetWeaponPunchAngle), viewpunch, NumberType_Int32);
 }
 */
+

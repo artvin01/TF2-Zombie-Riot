@@ -303,6 +303,12 @@ static void TBB_Tick(int client)
 	GetClientEyePosition(client, startPoint);
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client, false);
+	float Damage_dealt[MAX_TARGETS_HIT];
+	
+	for (int building = 0; building < MAX_TARGETS_HIT; building++)
+	{
+		Damage_dealt[building] = 0.0;
+	}
 	for (int repeats = 1; repeats <= 6; repeats++)
 	{
 		GetClientEyeAngles(client, angles);
@@ -424,7 +430,7 @@ static void TBB_Tick(int client)
 			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 			
 			BEAM_Targets_Hit[client] = 1.0;
-			int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		//	int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			for (int building = 0; building < MAX_TARGETS_HIT; building++)
 			{
 				if (BEAM_BuildingHit[building])
@@ -437,7 +443,7 @@ static void TBB_Tick(int client)
 						float damage = BEAM_CloseBuildingDPT[client] + (BEAM_FarBuildingDPT[client]-BEAM_CloseBuildingDPT[client]) * (distance/BEAM_MaxDistance[client]);
 						if (damage < 0)
 							damage *= -1.0;
-							
+						/*
 						float damage_force[3];
 						damage_force = CalculateDamageForce(vecForward, 20000.0);
 						DataPack pack = new DataPack();
@@ -454,7 +460,8 @@ static void TBB_Tick(int client)
 						pack.WriteFloat(playerPos[1]);
 						pack.WriteFloat(playerPos[2]);
 						RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
-						
+						*/
+						Damage_dealt[building] += (damage / BEAM_Targets_Hit[client]);
 						BEAM_Targets_Hit[client] *= (LASER_AOE_DAMAGE_FALLOFF + 0.35); //Nerf the pierce by alot
 					}
 					else
@@ -488,6 +495,40 @@ static void TBB_Tick(int client)
 		else
 		{
 			PrintToConsoleAll("Error with dot_beam, could not determine end point for beam.");
+		}
+	}
+	float vecForward[3];
+	GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+	
+	//Do another loop that does the actual damages!
+	int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	for (int building = 0; building < MAX_TARGETS_HIT; building++)
+	{
+		if (BEAM_BuildingHit[building])
+		{
+			if(IsValidEntity(BEAM_BuildingHit[building]))
+			{
+				playerPos = WorldSpaceCenter(BEAM_BuildingHit[building]);
+						
+			//	float distance = GetVectorDistance(startPoint, playerPos, false);
+				
+				float damage_force[3];
+				damage_force = CalculateDamageForce(vecForward, 20000.0);
+				DataPack pack = new DataPack();
+				pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
+				pack.WriteCell(EntIndexToEntRef(client));
+				pack.WriteCell(EntIndexToEntRef(client));
+				pack.WriteFloat(Damage_dealt[building]);
+				pack.WriteCell(DMG_PLASMA);
+				pack.WriteCell(EntIndexToEntRef(weapon_active));
+				pack.WriteFloat(damage_force[0]);
+				pack.WriteFloat(damage_force[1]);
+				pack.WriteFloat(damage_force[2]);
+				pack.WriteFloat(playerPos[0]);
+				pack.WriteFloat(playerPos[1]);
+				pack.WriteFloat(playerPos[2]);
+				RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
+			}
 		}
 	}
 	FinishLagCompensation_Base_boss();
