@@ -221,78 +221,9 @@ public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 {
 	if(IsValidEntity(ent1) && IsValidEntity(ent2))
 	{
-		if(b_Is_Npc_Rocket[ent2])
-		{
-			if(b_Is_Blue_Npc[ent1])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-			else if(b_Is_Npc_Rocket[ent1])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-		}
-		else if(b_Is_Npc_Rocket[ent1])
-		{
-			if(b_Is_Blue_Npc[ent2])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-			else if(b_Is_Npc_Rocket[ent2])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-		}
-		else if(b_Is_Player_Rocket[ent1])
-		{
-			if(ent2 <= MaxClients && ent2 > 0)
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-			else if(b_IsAlliedNpc[ent2])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-		}
-		else if(b_Is_Player_Rocket[ent2])
-		{
-			if(ent1 <= MaxClients && ent1 > 0)
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-			else if(b_IsAlliedNpc[ent1])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-		}
-		
-		else if (b_Is_Player_Rocket_Through_Npc[ent2])
-		{
-			if(b_Is_Blue_Npc[ent1])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-		}
-		else if (b_Is_Player_Rocket_Through_Npc[ent1])
-		{
-			if(b_Is_Blue_Npc[ent2])
-			{
-				result = false;
-				return Plugin_Handled;	
-			}
-		}
-		
+		result = PassfilterGlobal(ent1, ent2, result);
+		return Plugin_Handled;
 	}
-	
 	return Plugin_Continue;
 }
 
@@ -300,56 +231,58 @@ public Action CH_PassFilter(int ent1, int ent2, bool &result)
 {
 	if(IsValidEntity(ent1) && IsValidEntity(ent2))
 	{
+		result = PassfilterGlobal(ent1, ent2, result);
+		return Plugin_Handled;
+	}
+	return Plugin_Continue;
+}
+
+public bool PassfilterGlobal(int ent1, int ent2, bool &result)
+{
+//	if(IsValidEntity(ent1) && IsValidEntity(ent2))
+	{
 		if(b_Is_Npc_Rocket[ent2])
 		{
 			if(b_Is_Blue_Npc[ent1])
 			{
-				result = false;
-				return Plugin_Handled;	
+				return false;
 			}
 			else if(b_Is_Npc_Rocket[ent1])
 			{
-				result = false;
-				return Plugin_Handled;	
+				return false;
 			}
 		}
 		else if(b_Is_Npc_Rocket[ent1])
 		{
 			if(b_Is_Blue_Npc[ent2])
 			{
-				result = false;
-				return Plugin_Handled;	
+				return false;
 			}
 			else if(b_Is_Npc_Rocket[ent2])
 			{
-				result = false;
-				return Plugin_Handled;	
+				return false;	
 			}
 		}
 		else if(b_Is_Player_Rocket[ent1])
 		{
 			if(ent2 <= MaxClients && ent2 > 0)
 			{
-				result = false;
-				return Plugin_Handled;	
+				return false;
 			}
 			else if(b_IsAlliedNpc[ent2])
 			{
-				result = false;
-				return Plugin_Handled;	
+				return false;
 			}
 		}
 		else if(b_Is_Player_Rocket[ent2])
 		{
 			if(ent1 <= MaxClients && ent1 > 0)
 			{
-				result = false;
-				return Plugin_Handled;	
+				return false;
 			}
 			else if(b_IsAlliedNpc[ent1])
 			{
-				result = false;
-				return Plugin_Handled;	
+				return false;	
 			}
 		}
 		
@@ -357,24 +290,19 @@ public Action CH_PassFilter(int ent1, int ent2, bool &result)
 		{
 			if(b_Is_Blue_Npc[ent1])
 			{
-				result = false;
-				return Plugin_Handled;	
+				return false;
 			}
 		}
 		else if (b_Is_Player_Rocket_Through_Npc[ent1])
 		{
 			if(b_Is_Blue_Npc[ent2])
 			{
-				result = false;
-				return Plugin_Handled;	
+				return false;
 			}
 		}
-		
 	}
-	
-	return Plugin_Continue;
+	return result;
 }
-
 static DynamicHook DHook_CreateVirtual(GameData gamedata, const char[] name)
 {
 	DynamicHook hook = DynamicHook.FromConf(gamedata, name);
