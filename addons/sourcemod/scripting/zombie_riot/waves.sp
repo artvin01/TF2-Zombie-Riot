@@ -61,6 +61,11 @@ bool Waves_InFreeplay()
 
 void Waves_MapStart()
 {
+	if(Voting)
+	{
+		delete Voting;
+	}
+	Zero(VotedFor);
 	PrecacheSound("zombie_riot/panzer/siren.mp3", true);
 	PrecacheSound("zombie_riot/sawrunner/iliveinyourwalls.mp3", true);
 }
