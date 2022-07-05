@@ -10,7 +10,7 @@ void Stock_TakeDamage(int entity = 0, int inflictor = 0, int attacker = 0, float
 //im sorry.
 #define SDKHooks_TakeDamage Stock_TakeDamage
 
-bool Stock_IsValidEntity(entity)
+bool Stock_IsValidEntity(int entity)
 {
 	if(entity == 0)
 	{
@@ -26,6 +26,13 @@ bool Stock_IsValidEntity(entity)
 #define IsValidEntity Stock_IsValidEntity
 
 //In this case i never need the world ever.
+
+void Stock_SetHudTextParams(float x, float y, float holdTime, int r, int g, int b, int a, int effect = 1, float fxTime=0.1, float fadeIn=0.1, float fadeOut=0.1)
+{
+	SetHudTextParams(x, y, holdTime, r, g, b, a, effect, fxTime, fadeIn, fadeOut);
+}
+
+#define SetHudTextParams Stock_SetHudTextParams
 
 stock void ResetToZero(any[] array, int length)
 {
@@ -1740,12 +1747,12 @@ bool IsEntityStuck(int entity)
 stock bool IsWandWeapon(int entity)
 {
 	int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-	return (index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758);
+	return (index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758 || index == 1013 || index == 173);
 }
 
 stock bool IsWandWeaponStore(int index)
 {
-	return (index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758);
+	return (index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758 || index == 1013 || index == 173);
 }
 
 stock int SpawnWeapon_Special(int client, char[] name, int index, int level, int qual, const char[] att, bool visible=true)
