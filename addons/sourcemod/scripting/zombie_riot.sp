@@ -1056,8 +1056,8 @@ public void OnPluginStart()
 			CurrentClass[client] = TF2_GetPlayerClass(client);
 		}
 	}
-    for (int ent = -1; (ent = FindEntityByClassname(ent, "info_player_teamspawn")) != -1;) 
-    {
+	for (int ent = -1; (ent = FindEntityByClassname(ent, "info_player_teamspawn")) != -1;) 
+	{
 		OnEntityCreated(ent, "info_player_teamspawn");	
 	}
 	b_BlockPanzerInThisDifficulty = false;
