@@ -61,11 +61,6 @@ bool Waves_InFreeplay()
 
 void Waves_MapStart()
 {
-	if(Voting)
-	{
-		delete Voting;
-	}
-	Zero(VotedFor);
 	PrecacheSound("zombie_riot/panzer/siren.mp3", true);
 	PrecacheSound("zombie_riot/sawrunner/iliveinyourwalls.mp3", true);
 }
@@ -135,6 +130,15 @@ public int Waves_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 		}
 	}
 	return 0;
+}
+
+void OnMapEndWaves()
+{
+	if(Voting)
+	{
+		delete Voting;
+	}
+	Zero(VotedFor);	
 }
 
 void Waves_SetupVote(KeyValues map)
