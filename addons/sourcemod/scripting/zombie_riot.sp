@@ -1056,16 +1056,9 @@ public void OnPluginStart()
 			CurrentClass[client] = TF2_GetPlayerClass(client);
 		}
 	}
-	char path[64];
-	for(int i=MAXENTITIES; i>MaxClients; i--)
-	{
-		if(IsValidEntity(i) && GetEntityClassname(i, path, sizeof(path)))
-		{
-			if(StrEqual(path, "info_player_teamspawn")) //whenever the plugin starts, it should already add these to the list!
-			{
-				OnEntityCreated(i, path);
-			}
-		}
+    for (int ent = -1; (ent = FindEntityByClassname(ent, "info_player_teamspawn")) != -1;) 
+    {
+		OnEntityCreated(ent, "info_player_teamspawn");	
 	}
 	b_BlockPanzerInThisDifficulty = false;
 }
@@ -1250,6 +1243,7 @@ public void OnMapEnd()
 {
 	OnRoundEnd(null, NULL_STRING, false);
 //	OnMapEnd_LagComp();
+	OnMapEndWaves();
 	ConVar_Disable();
 }
 
@@ -2698,7 +2692,19 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
+	if (!StrContains(classname, "info_player_teamspawn")) 
+	{
+		for (int i = 0; i < ZR_MAX_SPAWNERS; i++)
+		{
+			if (!IsValidEntity(i_ObjectsSpawners[i]) || i_ObjectsSpawners[i] == 0)
+			{
+				Spawner_AddToArray(entity);
+				i_ObjectsSpawners[i] = entity;
+				i = ZR_MAX_SPAWNERS;
+			}
+		}
+	}
+	else if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
 		b_EntityIsArrow[entity] = false;
 		CClotBody npc = view_as<CClotBody>(entity);
@@ -2851,18 +2857,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if (!StrContains(classname, "tf_weapon_particle_cannon")) 
 		{
 			OnManglerCreated(entity);
-		}
-		
-		else if (!StrContains(classname, "info_player_teamspawn")) 
-		{
-			for (int i = 0; i < ZR_MAX_SPAWNERS; i++)
-			{
-				if (EntRefToEntIndex(i_ObjectsSpawners[i]) <= 0)
-				{
-					i_ObjectsSpawners[i] = EntIndexToEntRef(entity);
-					i = ZR_MAX_SPAWNERS;
-				}
-			}
 		}
 		else if(!StrContains(classname, "obj_"))
 		{

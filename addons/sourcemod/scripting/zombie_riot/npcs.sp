@@ -38,18 +38,29 @@ enum struct NPCData
 	int IgniteId;
 	int IgniteRef;
 }
+
+enum struct SpawnerData
+{
+	int 	indexnumber;
+	bool	b_SpawnIsCloseEnough;
+	float	f_ClosestSpawnerLessCooldown;
+	float	f_SpawnerCooldown;
+}
 ArrayList NPCList;
+ArrayList SpawnerList;
 static Handle SyncHud;
 static Handle SyncHudRaid;
 static char LastClassname[2049][64];
-static float f_SpawnerCooldown[MAXENTITIES];
+//static float f_SpawnerCooldown[MAXENTITIES];
 
 public void NPC_Spawn_ClearAll()
 {
-	Zero(f_SpawnerCooldown);
+//	Zero(f_SpawnerCooldown);
 }
+
 void NPC_PluginStart()
 {
+	SpawnerList = new ArrayList(sizeof(SpawnerData));
 	NPCList = new ArrayList(sizeof(NPCData));
 	SyncHud = CreateHudSynchronizer();
 	SyncHudRaid = CreateHudSynchronizer();
@@ -60,6 +71,8 @@ void NPC_PluginStart()
 
 void NPC_RoundEnd()
 {
+	delete SpawnerList;
+	SpawnerList = new ArrayList(sizeof(SpawnerData));
 	delete NPCList;
 	NPCList = new ArrayList(sizeof(NPCData));
 }
@@ -114,9 +127,6 @@ public void NPC_EntitySpawned(int entity)
 	}
 }
 
-static bool b_SpawnIsCloseEnough[MAXENTITIES];
-static float f_ClosestSpawnerLessCooldown[MAXENTITIES];
-	
 public Action GetClosestSpawners(Handle timer)
 {
 	float f3_PositionOfAll[3];
@@ -161,52 +171,71 @@ public Action GetClosestSpawners(Handle timer)
 	{
 		for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
 		{
-			int entity = EntRefToEntIndex(i_ObjectsSpawners[entitycount]);
+			int entity = i_ObjectsSpawners[entitycount];
 			if(IsValidEntity(entity) && entity != 0)
 			{
-				bool Found = false;
-				if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
+				int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
+				if(index != -1)
 				{
-					for(int Repeats_anti=1; Repeats_anti<=Repeats; Repeats_anti++)
+					SpawnerData Spawner;
+					SpawnerList.GetArray(index, Spawner);
+					bool Found = false;
+					if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
 					{
-						if(i_Spawner_Indexes[Repeats_anti] == entity)
+						
+						for(int Repeats_anti=1; Repeats_anti<=Repeats; Repeats_anti++)
 						{
-							Found = true;
-							break;
+							if(i_Spawner_Indexes[Repeats_anti] == entity)
+							{
+								Found = true;
+								break;
+							}
 						}
-					}
-					if(Found)
-					{
-						continue;
-					}
-					b_SpawnIsCloseEnough[entity] = false;
-					GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-					/*
-					PositonBeam = TargetLocation;
-					TargetLocation[2] += 50;
-					PositonBeam[2] += 100;
-					TE_SetupBeamPoints(TargetLocation, PositonBeam, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 2.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 0, 255}), 30);
-					TE_SendToAll();
-					*/
-					float distance = GetVectorDistance( f3_PositionOfAll, TargetLocation, true); 
-					if (TargetDistance) 
-					{
-						if( distance < TargetDistance ) 
+						
+						if(Found)
+						{
+							continue;
+						}
+						Spawner.b_SpawnIsCloseEnough = false;
+						GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+						/*
+						PositonBeam = TargetLocation;
+						TargetLocation[2] += 50;
+						PositonBeam[2] += 100;
+						TE_SetupBeamPoints(TargetLocation, PositonBeam, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 2.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 0, 255}), 30);
+						TE_SendToAll();
+						*/
+						float distance = GetVectorDistance( f3_PositionOfAll, TargetLocation, true); 
+						if (TargetDistance) 
+						{
+							if( distance < TargetDistance ) 
+							{
+								ClosestTarget = entity; 
+								TargetDistance = distance;		  
+							}
+						} 
+						else 
 						{
 							ClosestTarget = entity; 
-							TargetDistance = distance;		  
-						}
-					} 
-					else 
-					{
-						ClosestTarget = entity; 
-						TargetDistance = distance;
-					}				
+							TargetDistance = distance;
+						}								
+					}
+					SpawnerList.SetArray(index, Spawner);
 				}
 			}
 		}
 		if(IsValidEntity(ClosestTarget))
 		{
+			int index = SpawnerList.FindValue(ClosestTarget, SpawnerData::indexnumber);
+			if(index != -1)
+			{
+				SpawnerData Spawner;
+				SpawnerList.GetArray(index, Spawner);
+				Spawner.f_ClosestSpawnerLessCooldown = float(Repeats) / 2.0;
+				Spawner.b_SpawnIsCloseEnough = true;
+				SpawnerList.SetArray(index, Spawner);
+			}
+			i_Spawner_Indexes[Repeats] = ClosestTarget;
 			/*
 			GetEntPropVector(ClosestTarget, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 			PositonBeam = TargetLocation;
@@ -214,9 +243,6 @@ public Action GetClosestSpawners(Handle timer)
 			TE_SetupBeamPoints(TargetLocation, PositonBeam, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 2.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 255, 255, 255}), 30);
 			TE_SendToAll();
 			*/
-			f_ClosestSpawnerLessCooldown[ClosestTarget] = float(Repeats) / 2.0;
-			b_SpawnIsCloseEnough[ClosestTarget] = true;
-			i_Spawner_Indexes[Repeats] = ClosestTarget;
 		}
 		ClosestTarget = -1;
 		TargetDistance = 0.0;
@@ -312,16 +338,23 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	int entity_Spawner = -1;
 	for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++)
 	{
-		entity_Spawner = EntRefToEntIndex(i_ObjectsSpawners[entitycount]);
+		entity_Spawner = i_ObjectsSpawners[entitycount];
 		if(IsValidEntity(entity_Spawner) && entity_Spawner != 0)
 		{
-			if(!GetEntProp(entity_Spawner, Prop_Data, "m_bDisabled") && GetEntProp(entity_Spawner, Prop_Data, "m_iTeamNum") != 2 && b_SpawnIsCloseEnough[entity_Spawner])
+			int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
+			if(index != -1)
 			{
-				Active_Spawners += 1;
-				if(f_SpawnerCooldown[entity_Spawner] < gameTime)
+				SpawnerData Spawner;
+				SpawnerList.GetArray(index, Spawner);
+				if(!GetEntProp(entity_Spawner, Prop_Data, "m_bDisabled") && GetEntProp(entity_Spawner, Prop_Data, "m_iTeamNum") != 2 && Spawner.b_SpawnIsCloseEnough)
 				{
-					list.Push(entity_Spawner);
+					Active_Spawners += 1;
+					if(Spawner.f_SpawnerCooldown < gameTime)
+					{
+						list.Push(entity_Spawner);
+					}
 				}
+				SpawnerList.SetArray(index, Spawner);
 			}
 		}
 	}
@@ -423,12 +456,19 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			if(what_boss == 1)
 				health /= 2;
 			
-			f_SpawnerCooldown[entity_Spawner] = gameTime + 2.0;
+			int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
+			if(index != -1)
+			{
+				SpawnerData Spawner;
+				SpawnerList.GetArray(index, Spawner);
+				Spawner.f_SpawnerCooldown = gameTime + 4.0;
+				SpawnerList.SetArray(index, Spawner);
+			}
 			if(what_boss == 0)
 			{	
 				DataPack pack;
 				CreateDataTimer(2.0, Timer_Delayed_PanzerSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
-				pack.WriteCell(EntIndexToEntRef(entity_Spawner));
+				pack.WriteCell(entity_Spawner);
 				pack.WriteCell(isBoss);		
 				pack.WriteCell(health);	
 				pack.WriteCell(deathforcepowerup);
@@ -437,7 +477,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			{			
 				DataPack pack;
 				CreateDataTimer(2.0, Timer_Delayed_SawrunnerSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
-				pack.WriteCell(EntIndexToEntRef(entity_Spawner));
+				pack.WriteCell(entity_Spawner);
 				pack.WriteCell(isBoss);		
 				pack.WriteCell(health);	
 				pack.WriteCell(deathforcepowerup);			
@@ -448,8 +488,15 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			Enemy enemy;
 			if(Waves_GetNextEnemy(enemy))
 			{
+				int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
+				if(index != -1)
+				{
+					SpawnerData Spawner;
+					SpawnerList.GetArray(index, Spawner);
+					Spawner.f_SpawnerCooldown = gameTime+(2.0 - (Active_Spawners_Calculate / Spawner.f_ClosestSpawnerLessCooldown));
+					SpawnerList.SetArray(index, Spawner);
+				}
 				entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
-				f_SpawnerCooldown[entity_Spawner] = gameTime+(2.0 - (Active_Spawners_Calculate / f_ClosestSpawnerLessCooldown[entity_Spawner]));
 				
 				GetEntPropVector(entity_Spawner, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(entity_Spawner, Prop_Data, "m_angRotation", ang);
@@ -533,16 +580,14 @@ void NPC_AddToArray(int entity)
 public Action Timer_Delayed_SawrunnerSpawn(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	int spawner_entity = EntRefToEntIndex(pack.ReadCell());
+	int spawner_entity = pack.ReadCell();
 	bool isBoss = pack.ReadCell();
 	int health = pack.ReadCell();
 	int forcepowerup = pack.ReadCell();
-	if(IsValidEdict(spawner_entity) && spawner_entity>MaxClients)
+	if(IsValidEntity(spawner_entity) && spawner_entity != 0)
 	{
 		float pos[3], ang[3];
-		float gameTime = GetGameTime();
-		f_SpawnerCooldown[spawner_entity] = gameTime + 2.0;
-			
+		
 		GetEntPropVector(spawner_entity, Prop_Data, "m_vecOrigin", pos);
 		GetEntPropVector(spawner_entity, Prop_Data, "m_angRotation", ang);
 		Zombies_Currently_Still_Ongoing += 1;
@@ -591,15 +636,13 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 public Action Timer_Delayed_PanzerSpawn(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	int spawner_entity = EntRefToEntIndex(pack.ReadCell());
+	int spawner_entity = pack.ReadCell();
 	bool isBoss = pack.ReadCell();
 	int health = pack.ReadCell();
 	int forcepowerup = pack.ReadCell();
-	if(IsValidEdict(spawner_entity) && spawner_entity>MaxClients)
+	if(IsValidEntity(spawner_entity) && spawner_entity != 0)
 	{
 		float pos[3], ang[3];
-		float gameTime = GetGameTime();
-		f_SpawnerCooldown[spawner_entity] = gameTime + 2.0;
 			
 		GetEntPropVector(spawner_entity, Prop_Data, "m_vecOrigin", pos);
 		GetEntPropVector(spawner_entity, Prop_Data, "m_angRotation", ang);
@@ -630,7 +673,6 @@ public Action Timer_Delayed_PanzerSpawn(Handle timer, DataPack pack)
 	}
 	return Plugin_Handled;
 }
-
 void NPC_Ignite(int entity, int client, float duration, int weapon)
 {
 	int index = NPCList.FindValue(EntIndexToEntRef(entity), NPCData::Ref);
@@ -1506,4 +1548,16 @@ void CleanAllNpcArray()
 {
 	Zero(played_headshotsound_already);
 	Zero(f_CooldownForHurtHud);
+}
+
+
+void Spawner_AddToArray(int entity) //cant use ent ref here...
+{
+	SpawnerData Spawner;
+	int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
+	if(index == -1)
+	{
+		Spawner.indexnumber = entity;
+		SpawnerList.PushArray(Spawner);
+	}
 }

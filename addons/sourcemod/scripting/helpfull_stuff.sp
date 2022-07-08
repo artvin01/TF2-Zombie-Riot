@@ -43,8 +43,26 @@ typedef enum
 
 void			SetPenetrate( bool bPenetrate = false ) { m_bPenetrate = bPenetrate; SetSolidFlags( FSOLID_NOT_SOLID | FSOLID_TRIGGER ); }
 bool			CanPenetrate() const { return m_bPenetrate; }
-*/
+
 
 https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/basecombatweapon_shared.cpp#L2547
 
 https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/baseentity_shared.cpp#L1762
+
+*/
+
+
+#include <sdktools>
+public void OnPluginStart() {
+    RegAdminCmd("sm_spawncoords", ListSpawnCoords, ADMFLAG_ROOT);
+}
+
+Action ListSpawnCoords(int client, int argc) {
+    for (int ent = -1; (ent = FindEntityByClassname(ent, "info_player_teamspawn")) != -1;) {
+        float origin[3];
+        GetEntPropVector(ent, Prop_Data, "m_vecAbsOrigin", origin);
+        ReplyToCommand(client, "[%d] %.2f %.2f %.2f (valid? %b)", ent,
+                origin[0], origin[1], origin[2], IsValidEntity(ent));
+        
+    }
+}
