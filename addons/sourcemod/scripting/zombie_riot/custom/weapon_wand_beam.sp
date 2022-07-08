@@ -1,7 +1,12 @@
 static float Strength[MAXTF2PLAYERS];
 
 #define MAXENTITIES 2048
+//the R
+static int weapon_id[MAXPLAYERS+1]={0, ...};
+static float Original_Atackspeed[MAXPLAYERS+1]={0.0, ...};
+static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 
+#define SOUND_BEAMWAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
 
 #define MAX_TARGETS_HIT 64
 #define MAX_SOUND_FILE_LENGTH 80
@@ -38,8 +43,49 @@ void BeamWand_MapStart()
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 	TBB_Precahce_BeamWand();
 }
-
+public void BeamWand_m2_ClearAll()
+{
+	Zero(ability_cooldown);
+}
 public void Weapon_Wand_Beam(int client, int weapon, bool crit)
+{
+	int mana_cost;
+	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
+	if(address != Address_Null)
+		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+
+	if(mana_cost <= Current_Mana[client])
+	{
+		
+		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		Mana_Hud_Delay[client] = 0.0;
+		
+		Current_Mana[client] -= mana_cost;
+		
+		delay_hud[client] = 0.0;
+		
+		BeamWand_Targets_Hit[client] = 0.0;
+
+		Strength[client] = 65.0;
+		
+		address = TF2Attrib_GetByDefIndex(weapon, 410);
+		if(address != Address_Null)
+			Strength[client] *= TF2Attrib_GetValue(address);
+					
+	//	TBB_Ability(client);
+		TBB_Ability_BeamWand(client);
+	//	RequestFrame(TBB_Ability_BeamWand, client);
+	}
+	else
+	{
+
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255, 1, 0.1, 0.1, 0.1);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+	}
+}
+public void Weapon_Wand_Beam_pap(int client, int weapon, bool crit)
 {
 	int mana_cost;
 	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
@@ -66,7 +112,7 @@ public void Weapon_Wand_Beam(int client, int weapon, bool crit)
 			
 					
 	//	TBB_Ability(client);
-		TBB_Ability_BeamWand(client);
+		TBB_Ability_BeamWand_pap(client);
 	//	RequestFrame(TBB_Ability_BeamWand, client);
 	}
 	else
@@ -78,13 +124,157 @@ public void Weapon_Wand_Beam(int client, int weapon, bool crit)
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 	}
 }
-
 static void TBB_Precahce_BeamWand()
 {
 	BeamWand_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
 	BeamWand_Glow = PrecacheModel("sprites/glow02.vmt", true);
+	PrecacheSound(SOUND_BEAMWAND_ATTACKSPEED_ABILITY);
+}
+public void Weapon_BeamWand_M2(int client, int weapon, const char[] classname, bool &result)
+{
+	if(weapon >= MaxClients)
+	{
+		int Actualmana = Current_Mana[client]/2+50;
+		int attackmana = Actualmana;
+		if(attackmana >= 200)
+		{
+		attackmana = 200;
+		}
+		int mana_cost = attackmana;
+		if(mana_cost <= Current_Mana[client])
+		{
+			if (ability_cooldown[client] < GetGameTime())
+			{
+				float speedtime = Actualmana / 100.0 + 5.0;
+				ability_cooldown[client] = GetGameTime() + speedtime; //Cooldown based on how much mana the player currently has.
+				
+				weapon_id[client] = weapon;
+				
+				Original_Atackspeed[client] = 1.0;
+				
+				Address address = TF2Attrib_GetByDefIndex(weapon, 6);
+				if(address != Address_Null)
+					Original_Atackspeed[client] = TF2Attrib_GetValue(address);
+				
+				float Attackmanaspeed = Actualmana / 1000.0;
+				if(Attackmanaspeed<=1.25)
+				{
+					Attackmanaspeed = 1.25;
+				}
+				TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] / Attackmanaspeed);
+				
+				EmitSoundToAll(SOUND_BEAMWAND_ATTACKSPEED_ABILITY, client, SNDCHAN_STATIC, 80, _, 0.9);
+				
+				CreateTimer(3.0, Reset_BeamWand_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
+				
+				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				Mana_Hud_Delay[client] = 0.0;
+				
+				Current_Mana[client] -= mana_cost;
+				
+				delay_hud[client] = 0.0;
+				
+			}
+			else
+			{
+				float Ability_CD = ability_cooldown[client] - GetGameTime();
+		
+				if(Ability_CD <= 0.0)
+					Ability_CD = 0.0;
+			
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+			}
+		}
+		else
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		}
+	}
+}
+public void Weapon_BeamWand_M2_pap(int client, int weapon, const char[] classname, bool &result)
+{
+	if(weapon >= MaxClients)
+	{
+		int Actualmana = Current_Mana[client]/2+100;
+		int attackmana = Actualmana;
+		if(attackmana >= 400)
+		{
+		attackmana = 400;
+		}
+		int mana_cost = attackmana;
+		if(mana_cost <= Current_Mana[client])
+		{
+			if (ability_cooldown[client] < GetGameTime())
+			{
+				float speedtime = Actualmana / 100.0 + 5.0;
+				ability_cooldown[client] = GetGameTime() + speedtime; //Cooldown based on how much mana the player currently has.
+				
+				weapon_id[client] = weapon;
+				
+				Original_Atackspeed[client] = 1.0;
+				
+				Address address = TF2Attrib_GetByDefIndex(weapon, 6);
+				if(address != Address_Null)
+					Original_Atackspeed[client] = TF2Attrib_GetValue(address);
+				
+				float Attackmanaspeed = Actualmana / 1000.0 + 1.25;
+				TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] / Attackmanaspeed);
+				
+				EmitSoundToAll(SOUND_BEAMWAND_ATTACKSPEED_ABILITY, client, SNDCHAN_STATIC, 80, _, 0.9);
+				
+				CreateTimer(3.0, Reset_BeamWand_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
+				
+				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				Mana_Hud_Delay[client] = 0.0;
+				
+				Current_Mana[client] -= mana_cost;
+				
+				delay_hud[client] = 0.0;
+				
+			}
+			else
+			{
+				float Ability_CD = ability_cooldown[client] - GetGameTime();
+		
+				if(Ability_CD <= 0.0)
+					Ability_CD = 0.0;
+			
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+			}
+		}
+		else
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		}
+	}
 }
 
+
+public Action Reset_BeamWand_Attackspeed(Handle cut_timer, int client)
+{
+	if (IsValidClient(client))
+	{
+		
+		int weapon = GetPlayerWeaponSlot(client, 2);
+		if(weapon == weapon_id[client])
+		{
+			TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client]);
+		}
+	}
+	return Plugin_Handled;
+}
 static void TBB_Ability_BeamWand(int client)
 {
 	for (int building = 1; building < MAX_TARGETS_HIT; building++)
@@ -110,6 +300,71 @@ static void TBB_Ability_BeamWand(int client)
 //	BeamWand_ColorHex[client] = ParseColor("0398FC");
 	BeamWand_ChargeUpTime[client] = 1;
 	BeamWand_CloseBuildingDPT[client] = Strength[client];
+	BeamWand_FarBuildingDPT[client] = Strength[client];
+	BeamWand_Duration[client] = 2.5;
+	
+	BeamWand_BeamOffset[client][0] = 0.0;
+	BeamWand_BeamOffset[client][1] = -8.0;
+	BeamWand_BeamOffset[client][2] = 15.0;
+
+	BeamWand_ZOffset[client] = 0.0;
+	BeamWand_UseWeapon[client] = false;
+
+	BeamWand_IsUsing[client] = true;
+	BeamWand_TicksActive[client] = 0;
+	/*
+	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 80, _, 1.0, 75);
+	
+	switch(GetRandomInt(1, 4))
+	{
+		case 1:
+		{
+			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", client, 80, _, _, 1.0);					
+		}
+		case 2:
+		{
+			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", client, 80, _, _, 1.0);
+		}
+		case 3:
+		{
+			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", client, 80, _, _, 1.0);			
+		}
+		case 4:
+		{
+			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", client, 80, _, _, 1.0);
+		}		
+	}
+			*/
+	TBB_Tick(client);
+//	SDKHook(client, SDKHook_PreThink, TBB_Tick);
+	
+	CreateTimer(999.9, Timer_RemoveEntity, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+}
+static void TBB_Ability_BeamWand_pap(int client)
+{
+	for (int building = 1; building < MAX_TARGETS_HIT; building++)
+	{
+		BeamWand_BuildingHit[building] = false;
+		BeamWand_Targets_Hit[client] = 0.0;
+	}
+	/*float shoottimer;
+	if(shoottimer < GetGameTime())
+	{
+		ClientCommand(client, "playgamesound player/crit_hit_mini.wav");
+		shoottimer = GetGameTime() + 0.75;
+	}
+	*/
+	BeamWand_IsUsing[client] = false;
+	BeamWand_TicksActive[client] = 0;
+
+	BeamWand_CanUse[client] = true;
+	BeamWand_CloseDPT[client] = 2.0;
+	BeamWand_FarDPT[client] = 1.0;
+	BeamWand_MaxDistance[client] = 1500;
+	BeamWand_BeamRadius[client] = 7;
+//	BeamWand_ColorHex[client] = ParseColor("0398FC");
+	BeamWand_ChargeUpTime[client] = 1;
+	BeamWand_CloseBuildingDPT[client] = 1.5 * Strength[client];
 	BeamWand_FarBuildingDPT[client] = Strength[client];
 	BeamWand_Duration[client] = 2.5;
 	
