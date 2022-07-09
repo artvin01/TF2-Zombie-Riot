@@ -922,6 +922,7 @@ char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_calcium_wand.sp"
 #include "zombie_riot/custom/weapon_wand_calcium_spell.sp"
 #include "zombie_riot/custom/weapon_passive_banner.sp"
+#include "zombie_riot/custom/pets.sp"
 
 //FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
@@ -929,7 +930,7 @@ char NPC_Plugin_Names_Converted[][] =
 public Plugin myinfo =
 {
 	name		=	"TF2: Zombie Riot",
-	author		=	"Batfoxkid & Artvin & Mikusch",
+	author		=	"Artvin & Batfoxkid & Mikusch",
 	description	=	"Zombie Riot, Gamemode based off Gmod Zombie survival and the millions of CSS Zombie Riot servers.",
 	version		=	"1.0"
 };
@@ -1132,6 +1133,8 @@ public Action OnTaunt(int client, const char[] command, int args)
 	{
 		return Plugin_Handled;
 	}
+	
+	Pets_OnTaunt(client);
 	return Plugin_Continue;
 }
 
@@ -1488,6 +1491,7 @@ public void OnClientCookiesCached(int client)
 
 public void OnClientDisconnect(int client)
 {
+	Pets_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
 //	DHook_ClientDisconnect();
 	Store_ClientDisconnect(client);
@@ -1773,8 +1777,8 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			}
 			
 			ViewChange_PlayerModel(client);
-			
 			Store_ApplyAttribs(client);
+			Pets_PlayerResupply(client);
 			
 			if(dieingstate[client])
 			{
@@ -2529,6 +2533,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 //	Building_PlayerRunCmd(client, buttons);
 	Medikit_healing(client, buttons);
 	return Plugin_Continue;
+}
+
+public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3])
+{
+	Pets_PlayerRunCmdPost(client, buttons, angles);
 }
 
 public void SetHealthAfterRevive(int client)

@@ -2937,3 +2937,12 @@ int Trail_Attach(int entity, char[] trail, int alpha, float lifetime=1.0, float 
 	}	
 	return -1;
 }
+
+stock void ConstrainDistance(const float[] startPoint, float[] endPoint, float distance, float maxDistance, bool do2)
+{
+	float constrainFactor = maxDistance / distance;
+	endPoint[0] = ((endPoint[0] - startPoint[0]) * constrainFactor) + startPoint[0];
+	endPoint[1] = ((endPoint[1] - startPoint[1]) * constrainFactor) + startPoint[1];
+	if(do2)
+		endPoint[2] = ((endPoint[2] - startPoint[2]) * constrainFactor) + startPoint[2];
+}

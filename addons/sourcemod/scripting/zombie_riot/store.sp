@@ -191,6 +191,7 @@ enum struct Item
 	int MaxCost;
 	int Level;
 	int Slot;
+	int Special;
 	bool Default;
 	bool NoEscape;
 	bool MaxBarricadesBuild;
@@ -270,6 +271,19 @@ int Store_GetEquipped(int client, int slot)
 	return Equipped[client][slot];
 }
 
+int Store_GetSpecialOfSlot(int client, int slot)
+{
+	Item item;
+	int length = StoreItems.Length;
+	for(int i; i<length; i++)
+	{
+		StoreItems.GetArray(i, item);
+		if(item.Slot == slot && item.Owned[client])
+			return item.Special;
+	}
+	return -1;
+}
+
 void Store_PluginStart()
 {
 	CookieCache = new Cookie("zr_lastgame", "The last game saved data is from", CookieAccess_Protected);
@@ -341,6 +355,7 @@ static void ConfigSetup(int section, KeyValues kv, bool noescape, bool hidden, b
 		item.CostPerWave = kv.GetNum("extracost_per_wave");
 		item.MaxBarricadesBuild = view_as<bool>(kv.GetNum("max_barricade_buy_logic"));
 		item.MaxCost = kv.GetNum("maxcost");
+		item.Special = kv.GetNum("special", -1);
 		item.Slot = kv.GetNum("slot", -1);
 		item.ItemInfos = new ArrayList(sizeof(ItemInfo));
 		
