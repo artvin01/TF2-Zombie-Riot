@@ -59,6 +59,11 @@ bool Waves_InFreeplay()
 	return (Rounds && CurrentRound >= Rounds.Length);
 }
 
+bool Waves_InSetup()
+{
+	return (InSetup || !Waves_Started());
+}
+
 void Waves_MapStart()
 {
 	PrecacheSound("zombie_riot/panzer/siren.mp3", true);

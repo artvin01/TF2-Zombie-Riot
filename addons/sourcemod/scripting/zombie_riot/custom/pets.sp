@@ -19,7 +19,7 @@ static const char PetAnimation[][][] =
 {
 	// These are sequence names
 	//{ "idle", "duck", "walk", "run", "attack", "stun", "taunt", "jump"	}
-	{ "idle", "duck", "walk", "run", "attack", "stun", "taunt", "jump"	}
+	{ "Idle_Baton", "Crouch_idle_pistol", "Crouch_all", "run_all", "pushplayer", "forcescanner", "activatebaton", "jump_holding_jump"	}
 };
 
 enum
