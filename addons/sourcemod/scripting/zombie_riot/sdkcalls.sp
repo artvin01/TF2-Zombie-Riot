@@ -147,7 +147,7 @@ void SDKCall_Setup()
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(gamedata_lag_comp, SDKConf_Signature, "CLagCompensationManager::StartLagCompensation");
 	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain); //cmd? I dont know.
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Pointer); //cmd? I dont know.
 	if ((g_hSDKStartLagComp = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CLagCompensationManager::StartLagCompensation");
 	
 	

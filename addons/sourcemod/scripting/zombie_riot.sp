@@ -2531,13 +2531,13 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	}
 	
 //	Building_PlayerRunCmd(client, buttons);
-	Medikit_healing(client, buttons);
 	return Plugin_Continue;
 }
 
 public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3])
 {
 	Pets_PlayerRunCmdPost(client, buttons, angles);
+	Medikit_healing(client, buttons);
 }
 
 public void SetHealthAfterRevive(int client)
