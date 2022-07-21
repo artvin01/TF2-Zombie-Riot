@@ -36,9 +36,9 @@ public Action Medikit_healing(int client, int buttons)
 						if(healing_cooldown[client] < GetGameTime())
 						{
 							int player_looking_at;
-							StartPlayerOnlyLagComp(client, true);
+							SDK_StartPlayerOnlyLagComp(client, true);
 							player_looking_at = GetClientPointVisibleOnlyClient(client, 150.0);
-					//		EndPlayerOnlyLagComp(client);
+							SDK_EndPlayerOnlyLagComp(client);
 							if(player_looking_at <= MAXPLAYERS && player_looking_at > 0 && dieingstate[player_looking_at] == 0 && dieingstate[client] == 0)
 							{
 								float Healer[3];
