@@ -62,6 +62,7 @@ static const char RareDrops[][] =
 	"SUPER Range [Rare]",
 	"Strong Tonic [Rare]",
 	"Arcane Impale [Rare]",
+	"Combine Soldier [Rare]",
 	"Tiny Tornadoes [Rare]"
 };
 
