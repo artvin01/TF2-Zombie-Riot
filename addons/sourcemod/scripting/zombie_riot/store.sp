@@ -206,6 +206,7 @@ enum struct Item
 	int Scaled[MAXTF2PLAYERS];
 	bool NPCSeller;
 	int NPCWeapon;
+	bool NPCWeaponAlways;
 	char TextStore[64];
 	
 	bool GetItemInfo(int index, ItemInfo info)
@@ -361,6 +362,7 @@ static void ConfigSetup(int section, KeyValues kv, bool noescape, bool hidden, b
 		item.Special = kv.GetNum("special", -1);
 		item.Slot = kv.GetNum("slot", -1);
 		item.NPCWeapon = kv.GetNum("npc_type", -1);
+		item.NPCWeaponAlways = item.NPCWeapon > 9;
 		item.ItemInfos = new ArrayList(sizeof(ItemInfo));
 		
 		ItemInfo info;
@@ -1060,7 +1062,9 @@ static void MenuPage(int client, int section)
 				IntToString(section, buffer2, sizeof(buffer2));
 				
 				ItemCost(client, item, info.Cost);
-				info.Cost -= NPCCash[client];
+				if(!item.NPCWeaponAlways)
+					info.Cost -= NPCCash[client];
+				
 				FormatEx(buffer, sizeof(buffer), "%t ($%d)", "Buy", info.Cost);
 				menu.AddItem(buffer2, buffer, info.Cost > cash ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			}
@@ -1307,11 +1311,13 @@ static void MenuPage(int client, int section)
 		{
 			if(item.ItemInfos)
 			{
+				int npcwallet = item.NPCWeaponAlways ? 0 : NPCCash[client];
+				
 				item.GetItemInfo(0, info);
-				if(info.Cost <= CurrentCash && RoundToCeil(float(info.Cost) * SELL_AMOUNT) > NPCCash[client])
+				if(info.Cost <= CurrentCash && RoundToCeil(float(info.Cost) * SELL_AMOUNT) > npcwallet)
 				{
 					ItemCost(client, item, info.Cost);
-					FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name), info.Cost - NPCCash[client]);
+					FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name), info.Cost - npcwallet);
 					
 					IntToString(i, info.Classname, sizeof(info.Classname));
 					menu.AddItem(info.Classname, buffer);
@@ -1757,27 +1763,34 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					ItemInfo info;
 					item.GetItemInfo(0, info);
 					
+					int sell = RoundToCeil(float(cost) * SELL_AMOUNT);
 					ItemCost(client, item, info.Cost);
+					if(!item.NPCWeaponAlways)
+						info.Cost -= NPCCash[client];
+					
 					if(info.Cost <= cash)
 					{
 						int entity = EntRefToEntIndex(NPCTarget[client]);
 						if(entity != INVALID_ENT_REFERENCE)
 						{
-							CashSpent[client] += info.Cost;
-							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
-							
-							//Citizen_UpdateWeaponStats(entity, item.NPCWeapon, info);
-							
-							for(int i = 1; i <= MaxClients; i++)
+							//if(Citizen_UpdateWeaponStats(entity, item.NPCWeapon, sell, info))
 							{
-								if(GetClientMenu(i) && NPCOnly[i] == 2 && NPCTarget[client] == NPCTarget[i])
+								CashSpent[client] += info.Cost;
+								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+								
+								if(!item.NPCWeaponAlways)
 								{
-									CancelClientMenu(i);
-									NPCTarget[i] = -1;
+									for(int i = 1; i <= MaxClients; i++)
+									{
+										if(GetClientMenu(i) && NPCOnly[i] == 2 && NPCTarget[client] == NPCTarget[i])
+										{
+											CancelClientMenu(i);
+											NPCTarget[i] = -1;
+										}
+									}
+									return 0;
 								}
 							}
-							
-							return 0;
 						}
 					}
 				}
