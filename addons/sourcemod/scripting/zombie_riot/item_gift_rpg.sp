@@ -179,6 +179,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 					}
 					if(GetFeatureStatus(FeatureType_Native, "TextStore_GetItems") == FeatureStatus_Available)
 					{
+						int rand = GetURandomInt();
 						int length = TextStore_GetItems();
 						for(int i; i<length; i++)
 						{
@@ -187,7 +188,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 							
 							if(length && i_RarityType[entity] >= Rarity_Mythic)
 							{
-								int start = (GetURandomInt() % sizeof(MythicDrops));
+								int start = (rand % sizeof(MythicDrops));
 								int a = start;
 								do
 								{
@@ -212,7 +213,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 							
 							if(length && i_RarityType[entity] >= Rarity_Legend)
 							{
-								int start = (GetURandomInt() % sizeof(LegendDrops));
+								int start = (rand % sizeof(LegendDrops));
 								int a = start;
 								do
 								{
@@ -237,7 +238,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 							
 							if(length && i_RarityType[entity] >= Rarity_Rare)
 							{
-								int start = (GetURandomInt() % sizeof(RareDrops));
+								int start = (rand % sizeof(RareDrops));
 								int a = start;
 								do
 								{
@@ -262,7 +263,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 							
 							if(length && i_RarityType[entity] >= Rarity_Uncommon)
 							{
-								int start = (GetURandomInt() % sizeof(UncommonDrops));
+								int start = (rand % sizeof(UncommonDrops));
 								int a = start;
 								do
 								{
@@ -287,7 +288,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 							
 							if(length && i_RarityType[entity] >= Rarity_Common)
 							{
-								int start = (GetURandomInt() % sizeof(CommonDrops));
+								int start = (rand % sizeof(CommonDrops));
 								int a = start;
 								do
 								{
