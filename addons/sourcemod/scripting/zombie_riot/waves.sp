@@ -639,7 +639,7 @@ void Waves_Progress()
 						DoOverlay(client, "off");
 						if(GetClientTeam(client)==2 && IsPlayerAlive(client))
 						{
-							GiveXP(client, round.Xp);
+							GiveXP(client, round.Xp * 3);
 							if(round.Setup > 0.0)
 							{
 								SetGlobalTransTarget(client);
