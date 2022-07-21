@@ -385,8 +385,6 @@ public void StartLagCompResetValues()
 //if you find a way thats better to ignore fellow dispensers then tell me..!
 public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 {
-	PrintToChatAll("lagcomp %f", GetEngineTime());
-	
 	int Compensator = param.Get(1);
 	StartLagCompResetValues();
 	/*
@@ -690,8 +688,6 @@ public void FinishLagCompensationResetValues()
 */
 public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //This code does not need to be touched. mostly.
 {
-	
-	PrintToChatAll("lagcomp end %f", GetEngineTime());
 	//Set this to false to be sure.
 //	StartLagCompensation_Base_Boss
 //	FinishLagCompensation_Base_boss(param);

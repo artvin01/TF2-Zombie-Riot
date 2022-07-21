@@ -198,6 +198,7 @@ enum struct Item
 	bool Hidden;
 	bool NoPrivatePlugin;
 	bool WhiteOut;
+	char BuildingExistName[64];
 	bool ShouldThisCountSupportBuildings;
 	
 	ArrayList ItemInfos;
@@ -350,6 +351,7 @@ static void ConfigSetup(int section, KeyValues kv, bool noescape, bool hidden, b
 	kv.GetString("textstore", item.TextStore, sizeof(item.TextStore));
 	kv.GetSectionName(item.Name, sizeof(item.Name));
 	CharToUpper(item.Name[0]);
+	kv.GetString("buildingexistname", item.BuildingExistName, sizeof(item.BuildingExistName));
 	
 	if(kv.GetNum("cost", -1) >= 0)
 	{
@@ -1339,21 +1341,47 @@ static void MenuPage(int client, int section)
 				int style = ITEMDRAW_DEFAULT;
 				int slot = TF2_GetClassnameSlot(info.Classname);
 				IntToString(i, info.Classname, sizeof(info.Classname));
+				
+				char BuildingExtraCounter[8];
+				if(item.BuildingExistName[0])
+				{
+					char BuildingGetName[24];
+					char BuildingGetName_2[24];
+					
+					int How_Many_Buildings_Exist = 0;
+					
+					strcopy(BuildingGetName, sizeof(BuildingGetName), item.BuildingExistName);
+					
+					for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
+					{
+						int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+						if(IsValidEntity(entity))
+						{
+							GetEntPropString(entity, Prop_Data, "m_iName", BuildingGetName_2, sizeof(BuildingGetName_2));
+							if(StrEqual(BuildingGetName_2, BuildingGetName, true))
+							{
+								How_Many_Buildings_Exist += 1;
+							}
+						}
+					}
+					Format(BuildingExtraCounter, sizeof(BuildingExtraCounter), "{%i}", How_Many_Buildings_Exist);
+				}
+				
 				if(slot < sizeof(Equipped[]) && Equipped[client][slot] == i)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [%t]", TranslateItemName(client, item.Name), "Equipped");
+					FormatEx(buffer, sizeof(buffer), "%s [%t] %s", TranslateItemName(client, item.Name), "Equipped", BuildingExtraCounter);
 				}
 				else if(item.Owned[client] == 2)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [%t]", TranslateItemName(client, item.Name), "Packed");
+					FormatEx(buffer, sizeof(buffer), "%s [%t] %s", TranslateItemName(client, item.Name), "Packed", BuildingExtraCounter);
 				}
 				else if(item.Owned[client])
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [%t]", TranslateItemName(client, item.Name), "Purchased");
+					FormatEx(buffer, sizeof(buffer), "%s [%t] %s", TranslateItemName(client, item.Name), "Purchased", BuildingExtraCounter);
 				}
 				else if(!info.Cost && item.Level)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [Lv %d]", TranslateItemName(client, item.Name), item.Level);
+					FormatEx(buffer, sizeof(buffer), "%s [Lv %d] %s", TranslateItemName(client, item.Name), item.Level, BuildingExtraCounter);
 				}
 				else
 				{
@@ -1372,7 +1400,7 @@ static void MenuPage(int client, int section)
 					}
 					else
 					{
-						FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name), info.Cost);
+						FormatEx(buffer, sizeof(buffer), "%s [$%d] %s", TranslateItemName(client, item.Name), info.Cost, BuildingExtraCounter);
 					}
 				}
 				
