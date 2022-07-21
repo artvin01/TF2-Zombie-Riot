@@ -1791,7 +1791,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					ItemInfo info;
 					item.GetItemInfo(0, info);
 					
-					int sell = RoundToCeil(float(cost) * SELL_AMOUNT);
+					int sell = RoundToCeil(float(info.Cost) * SELL_AMOUNT);
 					ItemCost(client, item, info.Cost);
 					if(!item.NPCWeaponAlways)
 						info.Cost -= NPCCash[client];
