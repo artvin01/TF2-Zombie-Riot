@@ -773,10 +773,10 @@ int Citizen_BuildingInteract(int entity)
 
 bool Citizen_Interact(int client, int entity)
 {
-	//PrintToChatAll("Citizen_Interact %d", i_NpcInternalId[entity]);
+	PrintToChatAll("Citizen_Interact %d", i_NpcInternalId[entity]);
 	if(i_NpcInternalId[entity] == CITIZEN)
 	{
-		//PrintToChatAll("Found");
+		PrintToChatAll("Found");
 		Citizen npc = view_as<Citizen>(entity);
 		
 		if(npc.m_bDowned)

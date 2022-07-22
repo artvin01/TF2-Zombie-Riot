@@ -388,9 +388,9 @@ public void StartLagCompResetValues()
 public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 {
 	int Compensator = param.Get(1);
+//	PrintToChatAll("called %i",Compensator);
 	StartLagCompResetValues();
 	/*
-	PrintToChatAll("StartLagCompensation_Post %i",Compensator);
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
 		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Red)) //Hardcode to red as there will be no blue players.
@@ -434,115 +434,6 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		{
 			LagCompEntitiesThatAreIntheWay(Compensator);
 		}
-		
-		
-		
-		//i dont know if this is a good idea, if it backfires, i can always revert.
-		
-		
-		
-		/*
-		int weaponindex = GetEntProp(active_weapon, Prop_Send, "m_iItemDefinitionIndex");
-		switch(weaponindex)
-		{
-			case 197, 329: // Wrenches
-			{
-				Dont_Move_Building = true;
-			}
-			case 998: // Mechanical Medigun
-			{
-				b_LagCompNPC = false;
-				
-				Move_Players = Compensator;
-				Dont_Move_Building = true;
-				for(int client=1; client<=MaxClients; client++)
-				{
-					if(IsClientInGame(client) && client != Compensator)
-					{
-					//	if (GetEntProp(Compensator, Prop_Send, "m_iTeamNum")==GetEntProp(client, Prop_Send, "m_iTeamNum")) 
-						{
-							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[client]);
-							SetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", OFF_THE_MAP);
-						}
-					}
-				}
-				
-			}
-			case 411, 35: // Battle Medigun
-			{
-				b_LagCompNPC = false;
-				
-				Move_Players = Compensator;
-				Dont_Move_Building = true;
-				for(int client=1; client<=MaxClients; client++)
-				{
-					if(IsClientInGame(client) && client != Compensator)
-					{
-					//	if (GetEntProp(Compensator, Prop_Send, "m_iTeamNum")==GetEntProp(client, Prop_Send, "m_iTeamNum")) 
-						{
-							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[client]);
-							SetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", OFF_THE_MAP);
-						}
-					}
-				}
-				
-			}
-			
-			case DO_NOT_COMPENSATE_THESE: // Normal Medigun , bison, pompson, star shooter, and all wands ignore lag compensation entirely.
-			{
-				b_LagCompNPC = false;
-			}
-			default:
-			{
-				
-				for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
-				{
-					int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-					if(IsValidEntity(entity))
-					{
-						if(!Moved_Building[entity]) 
-						{
-							CClotBody npc = view_as<CClotBody>(entity);
-							if(npc.bBuildingIsPlaced) //making sure.
-							{
-								Moved_Building[entity] = true;
-								//PrintToChatAll("test1");
-								GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[entity]);
-								//TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
-								SetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", OFF_THE_MAP);
-							}
-						}
-					}
-				}
-				for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
-				{
-					int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-					if (IsValidEntity(baseboss_index_allied))
-					{
-						if(!Moved_Building[baseboss_index_allied]) 
-						{
-							Moved_Building[baseboss_index_allied] = true;
-							//PrintToChatAll("test1");
-							GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[baseboss_index_allied]);
-							//TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
-							SetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", OFF_THE_MAP);
-						}
-					}
-				}
-			}
-		}
-		if(b_LagCompNPC)
-		{
-			static char buffer[64];
-			if(GetEntityClassname(active_weapon, buffer, sizeof(buffer)))
-			{
-				if(TF2_GetClassnameSlot(buffer) == TFWeaponSlot_Melee)
-				{
-					b_LagCompNPC = false; //We do our own logic. Check custom_melee_logic
-				}
-			}
-		}
-		*/
 	}
 	#if defined LagCompensation
 	if(b_LagCompNPC)
@@ -647,7 +538,6 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 			if(!Moved_Building[baseboss_index_allied]) 
 			{
 				Moved_Building[baseboss_index_allied] = true;
-				//PrintToChatAll("test1");
 				GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[baseboss_index_allied]);
 				//TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
 				SDKCall_SetLocalOrigin(baseboss_index_allied, vec_origin);
@@ -664,7 +554,6 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 				if(!Moved_Building[baseboss]) 
 				{
 					Moved_Building[baseboss] = true;
-					//PrintToChatAll("test1");
 					GetEntPropVector(baseboss, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[baseboss]);
 					//TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
 					SDKCall_SetLocalOrigin(baseboss, vec_origin);
@@ -690,11 +579,11 @@ public void FinishLagCompensationResetValues()
 */
 public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //This code does not need to be touched. mostly.
 {
+//	PrintToChatAll("finish lag comp");
 	//Set this to false to be sure.
 //	StartLagCompensation_Base_Boss
 //	FinishLagCompensation_Base_boss(param);
 //	int Compensator = param.Get(1);
-//	PrintToChatAll("FinishLagCompensation %i",Compensator);
 	
 	if(!Dont_Move_Building)
 	{
@@ -707,7 +596,6 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 				{
 					Moved_Building[entity] = false;
 					SDKCall_SetLocalOrigin(entity, Get_old_pos_back[entity]);
-				//	PrintToChatAll("test2");
 				}
 				Moved_Building[entity] = false;
 			}
@@ -722,7 +610,6 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 			{
 				Moved_Building[baseboss_index_allied] = false;
 				SDKCall_SetLocalOrigin(baseboss_index_allied, Get_old_pos_back[baseboss_index_allied]);
-			//	PrintToChatAll("test2");
 			}
 			Moved_Building[baseboss_index_allied] = false;
 		}
@@ -751,7 +638,6 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 				{
 					Moved_Building[baseboss_index_allied] = false;
 					SDKCall_SetLocalOrigin(baseboss_index_allied, Get_old_pos_back[baseboss_index_allied]);
-				//	PrintToChatAll("test2");
 				}
 				Moved_Building[baseboss_index_allied] = false;
 			}

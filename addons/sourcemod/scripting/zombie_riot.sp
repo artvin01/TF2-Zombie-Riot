@@ -2600,7 +2600,15 @@ public void SetHealthAfterRevive(int client)
 	{	
 		RequestFrame(SetHealthAfterReviveAgain, client);	
 	}
-	
+}
+
+public void DoLagCompTest(int client)
+{
+	if(IsValidClient(client))
+	{	
+		SDK_StartPlayerOnlyLagComp(client, true);
+		SDK_EndPlayerOnlyLagComp(client);
+	}
 }
 
 public void SetHealthAfterReviveAgain(int client)
@@ -3375,7 +3383,7 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 					
 				if(Store_Girogi_Interact(client, entity, buffer, Is_Reload_Button))
 					return true;
-				
+					
 				if(Escape_Interact(client, entity))
 					return true;
 				
@@ -3384,6 +3392,7 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				
 				if(Citizen_Interact(client, entity))
 					return true;
+				
 			}
 		}
 	}

@@ -1567,10 +1567,11 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 				buildingType = 6;
 			}
 		}
-		else if(StrEqual(buffer, "base_boss"))
+		else if(StrEqual(buffer, "base_boss") && !Is_Reload_Button && i_NpcInternalId[entity] == CITIZEN)
 		{
 			bInteractedBuildingWasMounted = true;
 			buildingType = Citizen_BuildingInteract(entity);
+			return true;
 		}
 		
 		if(buildingType)
