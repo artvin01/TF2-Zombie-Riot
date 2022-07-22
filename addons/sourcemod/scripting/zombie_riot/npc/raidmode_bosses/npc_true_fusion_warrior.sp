@@ -864,7 +864,9 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 	{
 		FusionWarrior_BEAM_BuildingHit[building] = false;
 	}
-			
+	
+	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
+	
 	FusionWarrior_BEAM_IsUsing[client] = false;
 	FusionWarrior_BEAM_TicksActive[client] = 0;
 
@@ -923,6 +925,8 @@ void TrueFusionWarrior_TBB_Ability(int client)
 	{
 		FusionWarrior_BEAM_BuildingHit[building] = false;
 	}
+	
+	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
 			
 	FusionWarrior_BEAM_IsUsing[client] = false;
 	FusionWarrior_BEAM_TicksActive[client] = 0;

@@ -148,7 +148,7 @@ void OnMapEndWaves()
 
 void Waves_SetupVote(KeyValues map)
 {
-	LogError("Waves_SetupVote()");
+//	LogError("Waves_SetupVote()");
 	
 	Cooldown = 0.0;
 	
@@ -164,7 +164,7 @@ void Waves_SetupVote(KeyValues map)
 		kv.Rewind();
 		if(kv.JumpToKey("Waves"))
 		{
-			LogError("Found map specific wave");
+//			LogError("Found map specific wave");
 			Waves_SetupWaves(kv, true);
 			return;
 		}
@@ -179,7 +179,7 @@ void Waves_SetupVote(KeyValues map)
 	{
 		zr_voteconfig.GetString(buffer, sizeof(buffer));
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
-		LogError(buffer);
+//		LogError(buffer);
 		kv = new KeyValues("Setup");
 		kv.ImportFromFile(buffer);
 		RequestFrame(DeleteHandle, kv);
@@ -189,7 +189,7 @@ void Waves_SetupVote(KeyValues map)
 	if(!kv.JumpToKey("Waves"))
 	{
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "waves");
-		LogError(buffer);
+//		LogError(buffer);
 		kv = new KeyValues("Waves");
 		kv.ImportFromFile(buffer);
 		Waves_SetupWaves(kv, true);
@@ -205,7 +205,7 @@ void Waves_SetupVote(KeyValues map)
 	{
 		kv.GetSectionName(vote.Name, sizeof(vote.Name));
 		kv.GetString(NULL_STRING, vote.Config, sizeof(vote.Config));
-		LogError("%s %s", vote.Name, vote.Config);
+//		LogError("%s %s", vote.Name, vote.Config);
 		Voting.PushArray(vote);
 	} while(kv.GotoNextKey(false));
 	

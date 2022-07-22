@@ -703,7 +703,7 @@ public const char NPC_Names[][] =
 	"Sawrunner",
 	"True Fusion Warrior",
 	"Medic Charger",
-	"Medic_Berserker",
+	"Medic Berserker",
 	"Militia",
 	"Archer",
 	"Man-At-Arms",
@@ -1005,6 +1005,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_give_dialog", Command_GiveDialogBox, "Give a dialog box",ADMFLAG_ROOT);
 	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_GENERIC, "BRB GONNA MURDER MY MOM'S DISHES");
 	RegAdminCmd("sm_change_collision", Command_ChangeCollision, ADMFLAG_GENERIC, "change all npc's collisions");
+	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_GENERIC, "Forcefully summon grigori");
+	
 	
 	cvarTimeScale = FindConVar("host_timescale");
 	tf_bot_quota = FindConVar("tf_bot_quota");
@@ -1423,6 +1425,13 @@ public Action Command_ChangeCollision(int client, int args)
 			Change_Npc_Collision(baseboss_index, Collision);
 		}
 	}
+	return Plugin_Handled;
+}
+
+public Action Command_SpawnGrigori(int client, int args)
+{
+	Store_RandomizeNPCStore();
+	Spawn_Cured_Grigori();
 	return Plugin_Handled;
 }
 
@@ -2335,7 +2344,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		
 		b_IgnoreWarningForReloadBuidling[client] = false;
-		
 		if(IsValidEntity(weapon_holding))
 		{
 			char classname[32];
@@ -2905,6 +2913,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if (!StrContains(classname, "tf_weapon_medigun")) 
 		{
 			Medigun_OnEntityCreated(entity);
+		}
+		else if (!StrContains(classname, "tf_weapon_handgun_scout_primary")) 
+		{
+			ScatterGun_Prevent_M2_OnEntityCreated(entity);
 		}
 		else if (!StrContains(classname, "tf_weapon_particle_cannon")) 
 		{

@@ -10,6 +10,7 @@ static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
 DynamicHook g_DHookFireballExplode; //from mikusch but edited
 DynamicHook g_DHookMedigunPrimary; 
+DynamicHook g_DHookScoutSecondaryFire; 
 
 /*
 // Offsets from mikusch but edited
@@ -41,7 +42,8 @@ void DHook_Setup()
 	g_DHookRocketExplode = DHook_CreateVirtual(gamedata, "CTFBaseRocket::Explode");
 	g_DHookFireballExplode = DHook_CreateVirtual(gamedata, "CTFProjectile_SpellFireball::Explode");
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
-
+	g_DHookScoutSecondaryFire = DHook_CreateVirtual(gamedata, "CTFPistol_ScoutPrimary::SecondaryAttack()");
+	
 	ForceRespawn = DynamicHook.FromConf(gamedata, "CBasePlayer::ForceRespawn");
 	if(!ForceRespawn)
 		LogError("[Gamedata] Could not find CBasePlayer::ForceRespawn");
@@ -1425,21 +1427,13 @@ MRESReturn OnWeaponReplenishClipPre(int weapon) // Not when the player press rel
 	return MRES_Ignored;
 	
 }
-/*
-//from mikusch my bloved
-#define WEAPONDATA_SIZE	58	// sizeof(WeaponData_t)
 
-int GetWeaponData(int weapon)
+void ScatterGun_Prevent_M2_OnEntityCreated(int entity)
 {
-	int weaponMode = GetEntData(weapon, g_OffsetWeaponMode);
-	int weaponInfo = GetEntData(weapon, g_OffsetWeaponInfo);
-	return weaponInfo + (WEAPONDATA_SIZE * weaponMode);
+	g_DHookScoutSecondaryFire.HookEntity(Hook_Pre, entity, DHook_ScoutSecondaryFire);
 }
 
-void SetWeaponViewPunch(int weapon, float viewpunch = 0.0)
+public MRESReturn DHook_ScoutSecondaryFire(int entity) //BLOCK!!
 {
-	// m_pWeaponInfo->GetWeaponData( m_iWeaponMode ).m_flTimeFireDelay
-	StoreToAddress(view_as<Address>(GetWeaponData(weapon) + g_OffsetWeaponPunchAngle), viewpunch, NumberType_Int32);
+	return MRES_Supercede;	//NEVER APPLY. Causes you to not fire if accidentally pressing m2
 }
-*/
-
