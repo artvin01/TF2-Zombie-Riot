@@ -1326,6 +1326,10 @@ void Building_ShowInteractionHud(int client, int entity)
 		{
 			switch(Citizen_ShowInteractionHud(entity, client))
 			{
+				case -1:
+				{
+					Hide_Hud = false;
+				}
 				case 1:
 				{
 					Hide_Hud = false;
@@ -1474,9 +1478,9 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 		
 		static char buffer[36];
 		GetEntityClassname(entity, buffer, sizeof(buffer));
-		GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
 		if(StrEqual(buffer, "obj_sentrygun"))
 		{
+			owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
 			GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 			if(StrEqual(buffer, "zr_healingstation"))
 			{

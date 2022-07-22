@@ -442,13 +442,14 @@ static bool IsDowned[MAXENTITIES];
 static int ReviveTime[MAXENTITIES];
 static int GunType[MAXENTITIES];
 static int GunValue[MAXENTITIES];
-static int EquippedGun[MAXENTITIES];
 static int PerkType[MAXENTITIES];
 static float GunDamage[MAXENTITIES];
 static float GunFireRate[MAXENTITIES];
 static float GunReload[MAXENTITIES];
 static int GunClip[MAXENTITIES];
 static float TalkCooldown[MAXENTITIES];
+static float TalkTurnPos[MAXENTITIES][3];
+static float TalkTurningFor[MAXENTITIES];
 
 methodmap Citizen < CClotBody
 {
@@ -484,7 +485,7 @@ methodmap Citizen < CClotBody
 		npc.m_bThisEntityIgnored = true;
 		npc.m_iReviveTicks = 0;
 		npc.m_bFirstBlood = false;
-		npc.m_iEquipped = Cit_None;
+		npc.m_iGunType = Cit_None;
 		npc.m_iGunValue = 0;
 		npc.m_iBuildingType = -1;
 		npc.m_iWearable1 = -1;
@@ -526,11 +527,6 @@ methodmap Citizen < CClotBody
 	{
 		public get()		{ return this.m_b_follow; }
 		public set(bool value) 	{ this.m_b_follow = value; }
-	}
-	property int m_iEquipped
-	{
-		public get()		{ return EquippedGun[this.index]; }
-		public set(int value) 	{ EquippedGun[this.index] = value; }
 	}
 	property int m_iBuildingType
 	{
@@ -578,6 +574,13 @@ methodmap Citizen < CClotBody
 		public set(int value) 	{ GunClip[this.index] = value; }
 	}
 	
+	public void SlowTurn(const float pos[3])
+	{
+		TalkTurningFor[this.index] = GetGameTime() + 1.25;
+		TalkTurnPos[this.index][0] = pos[0];
+		TalkTurnPos[this.index][1] = pos[1];
+		TalkTurnPos[this.index][2] = pos[2];
+	}
 	public void UpdateModel()
 	{
 		int type = Cit_Unarmed;
@@ -596,10 +599,11 @@ methodmap Citizen < CClotBody
 	}
 	public void SetActivity(const char[] animation)
 	{
-		int activity = this.LookupActivity("ACT_RUN_PANICKED");
+		int activity = this.LookupActivity(animation);
 		if(activity > 0 && activity != this.m_iState)
 		{
 			this.m_iState = activity;
+			this.m_bisWalking = false;
 			this.StartActivity(activity);
 		}
 	}
@@ -609,8 +613,10 @@ methodmap Citizen < CClotBody
 		
 		if(this.m_bDowned)
 		{
-			this.m_iReviveTicks = 250;
+			Change_Npc_Collision(this.index, 3);
+			this.bCantCollidie = true;
 			this.m_bThisEntityIgnored = true;
+			this.m_iReviveTicks = 250;
 			this.SetActivity("ACT_BUSY_SIT_GROUND");
 			this.AddGesture("ACT_BUSY_SIT_GROUND_ENTRY");
 			
@@ -636,6 +642,8 @@ methodmap Citizen < CClotBody
 		}
 		else
 		{
+			Change_Npc_Collision(this.index, 4);
+			this.bCantCollidie = false;
 			this.m_bThisEntityIgnored = false;
 			this.SetActivity("ACT_BUSY_SIT_GROUND_EXIT");
 			this.m_flReloadDelay = GetGameTime() + 2.4;
@@ -733,19 +741,20 @@ int Citizen_ReviveTicks(int entity, int amount)
 
 int Citizen_ShowInteractionHud(int entity, int client)
 {
-	Citizen npc = view_as<Citizen>(entity);
-	
-	if(npc.m_bDowned)
+	if(i_NpcInternalId[entity] == CITIZEN)
 	{
-		SetGlobalTransTarget(client);
-		PrintCenterText(client, "%t", "Revive Teammate tooltip");
-		return -1;
-	}
+		Citizen npc = view_as<Citizen>(entity);
+		
+		if(npc.m_bDowned)
+		{
+			SetGlobalTransTarget(client);
+			PrintCenterText(client, "%t", "Revive Teammate tooltip");
+			return -1;
+		}
 	
-	if(i_NpcInternalId[npc.index] == CITIZEN)
 		return npc.m_iBuildingType;
-	
-	return -1;
+	}
+	return 0;
 }
 
 int Citizen_BuildingInteract(int entity)
@@ -762,10 +771,12 @@ int Citizen_BuildingInteract(int entity)
 	return 0;
 }
 
-bool Citizen_Interact(int entity, int client)
+bool Citizen_Interact(int client, int entity)
 {
+	//PrintToChatAll("Citizen_Interact %d", i_NpcInternalId[entity]);
 	if(i_NpcInternalId[entity] == CITIZEN)
 	{
+		//PrintToChatAll("Found");
 		Citizen npc = view_as<Citizen>(entity);
 		
 		if(npc.m_bDowned)
@@ -957,6 +968,7 @@ public void Citizen_ClotThink(int iNPC)
 	
 	if(npc.m_bDowned)
 	{
+		//PrintCenterTextAll("CIV: Downed");
 		if(npc.m_flidle_talk == FAR_FUTURE)
 		{
 			npc.m_flidle_talk = gameTime + 30.0 + (float(npc.m_iSeed) / 214748364.7);
@@ -971,6 +983,7 @@ public void Citizen_ClotThink(int iNPC)
 	
 	if(npc.m_flAttackHappens)
 	{
+		//PrintCenterTextAll("CIV: Throwing Melee");
 		if(npc.m_iGunType != Cit_Melee)
 		{
 			npc.m_flAttackHappens = 0.0;
@@ -1027,6 +1040,7 @@ public void Citizen_ClotThink(int iNPC)
 	
 	if(npc.m_flReloadDelay > gameTime)
 	{
+		//PrintCenterTextAll("CIV: Reloading");
 		if(npc.m_bPathing)
 		{
 			PF_StopPathing(npc.index);
@@ -1035,19 +1049,23 @@ public void Citizen_ClotThink(int iNPC)
 		return;
 	}
 	
-	if(npc.m_iGunType != Cit_None && npc.m_flGetClosestTargetTime < gameTime)
+	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, _, 1000.0, npc.m_bCamo);
-		npc.m_flGetClosestTargetTime = gameTime + 0.5;
 		npc.m_bGetClosestTargetTimeAlly = false;
-		if(npc.m_iTarget > 0 && npc.m_bCamo)
-			npc.PlaySound(Cit_Behind);
+		npc.m_flGetClosestTargetTime = gameTime + 0.5;
+		if(npc.m_iGunType != Cit_None)
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index, _, 1000.0, npc.m_bCamo);
+			if(npc.m_iTarget > 0 && npc.m_bCamo)
+				npc.PlaySound(Cit_Behind);
+		}
 	}
 	
 	bool moveBack = true;
 	bool wantReload = npc.m_iAttacksTillReload == 0;
 	if(npc.m_iTarget > 0)
 	{
+		//PrintCenterTextAll("CIV: Attacking");
 		npc.m_flidle_talk = FAR_FUTURE;
 		moveBack = false;
 		wantReload = false;
@@ -1548,6 +1566,7 @@ public void Citizen_ClotThink(int iNPC)
 	
 	if(wantReload)
 	{
+		//PrintCenterTextAll("CIV: Wants to Reload");
 		switch(npc.m_iGunType)
 		{
 			case Cit_Pistol:
@@ -1641,6 +1660,8 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_bGetClosestTargetTimeAlly = true;
 		}
 		
+		//PrintCenterTextAll("CIV: Moving Back %d", npc.m_iTargetAlly);
+		
 		if(npc.m_iTargetAlly > 0)
 		{
 			if(npc.m_iTarget > 0)
@@ -1650,7 +1671,7 @@ public void Citizen_ClotThink(int iNPC)
 				return;
 			}
 			
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
 			float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
 			bool combat = !Waves_InSetup();
@@ -1692,7 +1713,7 @@ public void Citizen_ClotThink(int iNPC)
 				return;
 			}
 			
-			if(distance > 20000.0 || (combat && distance > 2500.0))
+			if(distance > 20000.0 || (combat && distance > (2500.0 + (float(npc.m_iSeed) / 2147483.647 * 2.0))))
 			{
 				switch(npc.m_iGunType)
 				{
@@ -1735,6 +1756,8 @@ public void Citizen_ClotThink(int iNPC)
 			}
 		}
 	}
+	
+	//PrintCenterTextAll("CIV: Idle");
 	
 	bool combat = !Waves_InSetup();
 	bool low = GetEntProp(npc.index, Prop_Data, "m_iHealth") < 200;
@@ -1829,7 +1852,7 @@ public void Citizen_ClotThink(int iNPC)
 				if(talkingTo > MaxClients)
 					vecTarget = WorldSpaceCenter(talkingTo);
 				
-				npc.FaceTowards(vecTarget, 500.0);
+				npc.SlowTurn(vecTarget);
 				
 				if(npc.m_iBuildingType == 7 && talkingTo <= MaxClients && GetClientHealth(talkingTo) < 100)
 				{
@@ -1849,7 +1872,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 				else
 				{
-					view_as<Citizen>(talkingTo).FaceTowards(vecMe, 500.0);
+					view_as<Citizen>(talkingTo).SlowTurn(vecMe);
 					view_as<Citizen>(talkingTo).m_flidle_talk += 35.0;
 					npc.PlaySound(Cit_Question);
 					CreateTimer(3.0, Citizen_ReactionTimer, EntIndexToEntRef(talkingTo), TIMER_FLAG_NO_MAPCHANGE);
@@ -1857,6 +1880,9 @@ public void Citizen_ClotThink(int iNPC)
 			}
 		}
 	}
+	
+	if(TalkTurningFor[npc.index] > gameTime)
+		npc.FaceTowards(TalkTurnPos[npc.index], 300.0);
 	
 	if(npc.m_bPathing)
 	{
@@ -1904,7 +1930,7 @@ void Citizen_LiveCitizenReaction(int entity)
 		if(talkingTo > MaxClients)
 		{
 			vecTarget = WorldSpaceCenter(talkingTo);
-			view_as<Citizen>(talkingTo).FaceTowards(vecMe, 500.0);
+			view_as<Citizen>(talkingTo).SlowTurn(vecMe);
 			view_as<Citizen>(talkingTo).m_flidle_talk += 35.0;
 			CreateTimer(3.0, Citizen_ReactionTimer, EntIndexToEntRef(talkingTo), TIMER_FLAG_NO_MAPCHANGE);
 		}
@@ -1967,12 +1993,13 @@ public Action Citizen_ClotDamaged(int victim, int &attacker, int &inflictor, flo
 	if(damage > 9999999.0)
 		return Plugin_Continue;
 	
+	if(view_as<Citizen>(victim).m_bDowned || (attacker > 0 && GetEntProp(victim, Prop_Send, "m_iTeamNum") == GetEntProp(attacker, Prop_Send, "m_iTeamNum")))
+		return Plugin_Handled;
+	
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth") - RoundToFloor(damage);
 	if(health < 1)
 	{
-		view_as<Citizen>(victim).m_bDowned = true;
-		
-		
+		view_as<Citizen>(victim).SetDowned(true);
 	}
 	else
 	{
@@ -2001,5 +2028,5 @@ public void Citizen_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	
 	if(npc.m_iWearable3 > 0 && IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable2);
+		RemoveEntity(npc.m_iWearable3);
 }

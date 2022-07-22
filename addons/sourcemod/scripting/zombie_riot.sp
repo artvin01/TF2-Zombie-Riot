@@ -3343,12 +3343,12 @@ public Action SendProp_OnClientClass(int client, const char[] name, int &value, 
 	return Plugin_Changed;
 }
 
-bool InteractKey(int client, int entity, bool Is_Reload_Button = false)
+bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 {
-	if(entity!=-1) //Just allow. || GetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack")<GetGameTime())
+	if(weapon!=-1) //Just allow. || GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack")<GetGameTime())
 	{
 		StartPlayerOnlyLagComp(client, true);
-		entity = GetClientPointVisible(client); //So you can also correctly interact with players holding shit.
+		int entity = GetClientPointVisible(client); //So you can also correctly interact with players holding shit.
 		EndPlayerOnlyLagComp();
 		if(entity > 0)
 		{

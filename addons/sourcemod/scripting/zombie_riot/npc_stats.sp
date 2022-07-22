@@ -1640,6 +1640,7 @@ methodmap CClotBody
 		}
 		
 		
+		list.Push(h_NpcCollissionHookType[npc]);
 		list.Push(DHookRaw(g_hGetMaxAcceleration,  true, pLocomotion));
 		list.Push(DHookRaw(g_hGetFrictionSideways, true, pLocomotion));
 		list.Push(DHookRaw(g_hGetRunSpeed,		 true, pLocomotion));
