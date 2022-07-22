@@ -62,6 +62,7 @@ void ConVar_PluginStart()
 	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "1", "No Panzer will spawn or anything alike", FCVAR_DONTRECORD);
 	CvarEnablePrivatePlugins = CreateConVar("zr_privateplugins", "0", "Enable private plugins, set this to zero.", FCVAR_DONTRECORD);
 	CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "6", "The maximum amount of blue bots allowed for the killfeed");
+	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
 	
 	AutoExecConfig(true, "zombie_riot");
 	

@@ -57,6 +57,7 @@ ConVar CvarInfiniteCash;
 ConVar CvarNoSpecialZombieSpawn;
 ConVar CvarEnablePrivatePlugins;
 ConVar CvarMaxBotsForKillfeed;
+ConVar CvarXpMultiplier;
 
 //#define CompensatePlayers
 
@@ -3389,7 +3390,7 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 
 void GiveXP(int client, int xp)
 {
-	XP[client] += xp;
+	XP[client] += RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
 	int nextLevel = XpToLevel(XP[client]);
 	if(nextLevel > Level[client])
 	{
