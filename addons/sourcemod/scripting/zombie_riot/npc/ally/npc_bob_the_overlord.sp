@@ -878,7 +878,8 @@ public void BobTheGod_ClotThink(int iNPC)
 							PrintHintText(client, "%t %t","Bob The Second:", "Pick up that can.");
 						}
 					}
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");				
+					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");	
+					Citizen_LiveCitizenReaction(npc.index);			
 				}
 				/*
 				else if (npc.m_flidle_talk < GetGameTime() && GetEntProp(npc.index, Prop_Data, "m_iHealth") < 500)

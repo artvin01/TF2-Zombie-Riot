@@ -1280,8 +1280,15 @@ static void MenuPage(int client, int section)
 			continue;
 		}
 		
-		if(NPCOnly[client] == 2 && item.NPCWeapon < 0)
+		if(NPCOnly[client] == 2)
+		{
+			if(item.NPCWeapon < 0)
+				continue;
+		}
+		else if(item.NPCWeapon > 9)
+		{
 			continue;
+		}
 		
 		if(item.TextStore[0] && !HasNamedItem(client, item.TextStore))
 			continue;
@@ -1801,7 +1808,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						int entity = EntRefToEntIndex(NPCTarget[client]);
 						if(entity != INVALID_ENT_REFERENCE)
 						{
-							//if(Citizen_UpdateWeaponStats(entity, item.NPCWeapon, sell, info))
+							if(Citizen_UpdateWeaponStats(entity, item.NPCWeapon, sell, info))
 							{
 								CashSpent[client] += info.Cost;
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");

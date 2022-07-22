@@ -760,6 +760,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = NPC_ALT_MEDIC_SUPPERIOR_MAGE(client, vecPos, vecAng, ally);
 		}
+		case CITIZEN:
+		{
+			entity = Citizen(client, vecPos, vecAng);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1213,6 +1217,10 @@ public void NPCDeath(int entity)
 		{
 			NPC_ALT_MEDIC_SUPPERIOR_MAGE_NPCDeath(entity);
 		}
+		case CITIZEN:
+		{
+			Citizen_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1377,6 +1385,7 @@ public void OnMapStart_NPC_Base()
 	Blitzkrieg_OnMapStart();
 	MedivalPikeman_OnMapStart_NPC();
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_OnMapStart_NPC();
+	Citizen_OnMapStart();
 }
 
 
@@ -6480,6 +6489,7 @@ public void Change_Npc_Collision(int npc, int CollisionType)
 #include "zombie_riot/npc/ally/npc_necromancy_combine.sp"
 #include "zombie_riot/npc/ally/npc_necromancy_calcium.sp"
 #include "zombie_riot/npc/ally/npc_cured_last_survivor.sp"
+#include "zombie_riot/npc/ally/npc_citizen.sp"
 
 #include "zombie_riot/npc/alt/npc_alt_combine_soldier_mage.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_apprentice_mage.sp"

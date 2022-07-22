@@ -1322,6 +1322,111 @@ void Building_ShowInteractionHud(int client, int entity)
 				}
 			}
 		}
+		else if(StrEqual(buffer, "base_boss"))
+		{
+			switch(Citizen_ShowInteractionHud(entity, client))
+			{
+				case 1:
+				{
+					Hide_Hud = false;
+					if(Building_Collect_Cooldown[entity][client] > GetGameTime())
+					{
+						float Building_Picking_up_cd = Building_Collect_Cooldown[entity][client] - GetGameTime();
+						
+						if(Building_Picking_up_cd <= 0.0)
+							Building_Picking_up_cd = 0.0;
+							
+						SetGlobalTransTarget(client);
+						PrintCenterText(client, "%t","Object Cooldown",Building_Picking_up_cd);
+					}
+					else
+					{
+						SetGlobalTransTarget(client);
+						PrintCenterText(client, "%t", "Ammobox Tooltip");						
+					}
+				}
+				case 2:
+				{
+					Hide_Hud = false;
+					if(Building_Collect_Cooldown[entity][client] > GetGameTime())
+					{
+						float Building_Picking_up_cd = Building_Collect_Cooldown[entity][client] - GetGameTime();
+						
+						if(Building_Picking_up_cd <= 0.0)
+							Building_Picking_up_cd = 0.0;
+							
+						SetGlobalTransTarget(client);
+						PrintCenterText(client, "%t","Object Cooldown",Building_Picking_up_cd);
+					}
+					else
+					{
+						SetGlobalTransTarget(client);
+						PrintCenterText(client, "%t", "Armortable Tooltip");						
+					}
+				}
+				case 5:
+				{
+					Hide_Hud = false;
+					if(Building_Collect_Cooldown[entity][client] > GetGameTime())
+					{
+						float Building_Picking_up_cd = Building_Collect_Cooldown[entity][client] - GetGameTime();
+						
+						if(Building_Picking_up_cd <= 0.0)
+							Building_Picking_up_cd = 0.0;
+							
+						SetGlobalTransTarget(client);
+						PrintCenterText(client, "%t","Object Cooldown",Building_Picking_up_cd);
+					}
+					else
+					{
+						SetGlobalTransTarget(client);
+						PrintCenterText(client, "%t", "Perkmachine Tooltip");						
+					}
+				}
+				case 6:
+				{
+					int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+					for(int i; i<6; i++)
+					{
+						if(weapon == GetPlayerWeaponSlot(client, i))
+						{
+							int index = Store_GetEquipped(client, i);
+							int number_return = Store_CheckMoneyForPap(client, index);
+							if(number_return > 0)
+							{
+								PrintCenterText(client, "%t", "PackAPunch Tooltip",number_return);	
+							}
+							else
+							{
+								PrintCenterText(client, "%t", "Cannot Pap this");	
+							}
+							break;
+						}
+					}
+					Hide_Hud = false;
+					//Unused for now, will have extra code saying how much it costs and stuff.
+				}
+				case 7:
+				{
+					Hide_Hud = false;
+					if(Building_Collect_Cooldown[entity][client] > GetGameTime())
+					{
+						float Building_Picking_up_cd = Building_Collect_Cooldown[entity][client] - GetGameTime();
+						
+						if(Building_Picking_up_cd <= 0.0)
+							Building_Picking_up_cd = 0.0;
+							
+						SetGlobalTransTarget(client);
+						PrintCenterText(client, "%t","Object Cooldown",Building_Picking_up_cd);
+					}
+					else
+					{
+						SetGlobalTransTarget(client);
+						PrintCenterText(client, "%t", "Healing Station Tooltip");						
+					}
+				}
+			}
+		}
 	}
 	if(Hide_Hud)
 	{
@@ -1363,60 +1468,26 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			}
 			bInteractedBuildingWasMounted = true;
 		}
+		
+		int buildingType;
+		int owner = -1;
+		
 		static char buffer[36];
 		GetEntityClassname(entity, buffer, sizeof(buffer));
+		GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
 		if(StrEqual(buffer, "obj_sentrygun"))
 		{
 			GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 			if(StrEqual(buffer, "zr_healingstation"))
 			{
-				if(!Is_Reload_Button && !b_IgnoreWarningForReloadBuidling[client])
-				{
-					ClientCommand(client, "playgamesound items/medshotno1.wav");
-					SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-					SetGlobalTransTarget(client);
-					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");
-					return true;
-				}
-				else
-				{
-					if(Building_Collect_Cooldown[entity][client] < GetGameTime())
-					{
-						int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-						Building_Collect_Cooldown[entity][client] = GetGameTime() + 75.0;
-						ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-						StartHealingTimer(client, 0.1, 1, 30);
-						if(i_Healing_station_money_limit[owner][client] <= 3)
-						{
-							if(owner != client)
-							{
-								i_Healing_station_money_limit[owner][client] += 1;
-								Resupplies_Supplied[owner] += 2;
-								CashSpent[owner] -= 20;
-								SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-								SetGlobalTransTarget(owner);
-								ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Healing Station Used");
-							}
-						}
-					}
-					else
-					{
-						float Ability_CD = Building_Collect_Cooldown[entity][client] - GetGameTime();
-							
-						if(Ability_CD <= 0.0)
-							Ability_CD = 0.0;
-								
-						ClientCommand(client, "playgamesound items/medshotno1.wav");
-						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
-					}
-				}
+				owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+				buildingType = 7;
 			}
 		}
 		else if(StrEqual(buffer, "obj_dispenser"))
 		{
-			if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == -1)
+			owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+			if(owner == -1)
 			{
 				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 				if(weapon > MaxClients && GetEntityClassname(weapon, buffer, sizeof(buffer)) && (StrEqual(buffer, "tf_weapon_wrench") || StrEqual(buffer, "tf_weapon_robot_arm")))
@@ -1460,34 +1531,91 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						ClientCommand(client, "playgamesound items/medshotno1.wav");
 						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");				
+						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");	
+						return true;			
 					}
 				}
 			}
-			GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-			if(StrEqual(buffer, "zr_ammobox") || StrEqual(buffer, "zr_armortable") || StrEqual(buffer, "zr_perkmachine") || StrEqual(buffer, "zr_packapunch"))
-			{
-				if(!Is_Reload_Button && !b_IgnoreWarningForReloadBuidling[client])
-				{
-				//	if(GrabAt[client] < GetGameTime())
-				//	{
-						ClientCommand(client, "playgamesound items/medshotno1.wav");
-						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");
-						return true;
-				//	}
-				//	else
-				//	{
-				//		return true;
-				//	}
-				}
 			
-				if(Building_Collect_Cooldown[entity][client] < GetGameTime())
+			GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+			if(StrEqual(buffer, "zr_ammobox"))
+			{
+				buildingType = 2;
+			}
+			else if (StrEqual(buffer, "zr_armortable"))
+			{
+				buildingType = 1;
+			}	
+			else if (StrEqual(buffer, "zr_mortar"))
+			{
+				buildingType = 3;
+			}	
+			else if (StrEqual(buffer, "zr_railgun"))
+			{
+				buildingType = 4;
+			}	
+			else if (StrEqual(buffer, "zr_perkmachine"))
+			{
+				buildingType = 5;
+			}					
+			else if (StrEqual(buffer, "zr_packapunch"))
+			{
+				buildingType = 6;
+			}
+		}
+		else if(StrEqual(buffer, "base_boss"))
+		{
+			bInteractedBuildingWasMounted = true;
+			buildingType = Citizen_BuildingInteract(entity);
+		}
+		
+		if(buildingType)
+		{
+			if(!Is_Reload_Button && !b_IgnoreWarningForReloadBuidling[client])
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");
+				return true;
+			}
+			
+			if(Building_Collect_Cooldown[entity][client] > GetGameTime())
+			{
+				float Building_Picking_up_cd = Building_Collect_Cooldown[entity][client] - GetGameTime();
+				
+				if(Building_Picking_up_cd <= 0.0)
+					Building_Picking_up_cd = 0.0;
+					
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t","Object Cooldown",Building_Picking_up_cd);
+				return true;
+			}
+			
+			switch(buildingType)
+			{
+				case 7:
 				{
-					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					if(owner > 0 && StrEqual(buffer, "zr_ammobox"))
+					Building_Collect_Cooldown[entity][client] = GetGameTime() + 75.0;
+					ClientCommand(client, "playgamesound items/smallmedkit1.wav");
+					StartHealingTimer(client, 0.1, 1, 30);
+					if(owner != -1 && i_Healing_station_money_limit[owner][client] <= 3)
 					{
+						if(owner != client)
+						{
+							i_Healing_station_money_limit[owner][client] += 1;
+							Resupplies_Supplied[owner] += 2;
+							CashSpent[owner] -= 20;
+							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+							SetGlobalTransTarget(owner);
+							ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Healing Station Used");
+						}
+					}
+				}
+				case 2:
+				{
 						if(Ammo_Count_Ready[client] > 0)
 						{
 							int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -1528,7 +1656,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 												Current_Mana[client] = RoundToCeil(max_mana_temp);
 										}
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != client)
+										if(owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -1562,7 +1690,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}	
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != client)
+										if(owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -1585,7 +1713,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}	
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != client)
+										if(owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -1605,7 +1733,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}	
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != client)
+										if(owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -1625,9 +1753,10 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}		
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != client)
+										if(owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
+											CashSpent[owner] -= 20;
 											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
@@ -1644,7 +1773,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}	
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != client)
+										if(owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -1664,7 +1793,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != client)
+										if(owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -1706,7 +1835,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											
 									//		float Shave_Seconds_off = 5.0 * Extra;
 											Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-											if(owner != client)
+											if(owner != -1 && owner != client)
 											{
 												Resupplies_Supplied[owner] += 2;
 												CashSpent[owner] -= 20;
@@ -1737,9 +1866,9 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "No Ammo Supplies");
 							
 						}
-					}
-					if(owner > 0 && StrEqual(buffer, "zr_armortable")/* && Armor_Ready[client] < GetGameTime()*/)
-					{
+				}
+				case 1:
+				{
 						int Armor_Max = 300;
 						int Extra = 0;
 					
@@ -1777,7 +1906,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						//	Armor_Ready[client] = GetGameTime() + 10.0; //ehhhhhhhh make it rlly small
 							Building_Collect_Cooldown[entity][client] = GetGameTime() + 45.0; //small also
 						//	CashSpent[owner] -= 20;
-							if(owner != client)
+							if(owner != -1 && owner != client)
 							{
 								if(Armor_table_money_limit[owner][client] <= 15)
 								{
@@ -1799,10 +1928,9 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							SetGlobalTransTarget(client);
 							ShowSyncHudText(client,  SyncHud_Notifaction, "%t" , "Armor Max Reached");
 						}
-						return true;
-					}
-					if(owner > 0 && StrEqual(buffer, "zr_perkmachine")/* && Armor_Ready[client] < GetGameTime()*/)
-					{
+				}
+				case 5:
+				{
 						if(Is_Reload_Button)
 						{
 							if(bInteractedBuildingWasMounted)
@@ -1825,7 +1953,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 								TF2_StunPlayer(client, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
 								Building_Collect_Cooldown[entity][client] = GetGameTime() + 20.0;
 								Do_Perk_Machine_Chance(client);
-								if(owner != client)
+								if(owner != -1 && owner != client)
 								{
 									if(Perk_Machine_money_limit[owner][client] <= 10)
 									{
@@ -1851,10 +1979,9 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							SetGlobalTransTarget(client);
 							ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");				
 						}
-						return true;
-					}
-					if(owner > 0 && StrEqual(buffer, "zr_packapunch")/* && Armor_Ready[client] < GetGameTime()*/)
-					{
+				}
+				case 6:
+				{
 						if(Is_Reload_Button)
 						{
 							if(bInteractedBuildingWasMounted)
@@ -1886,7 +2013,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											TF2_StunPlayer(client, 2.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
 											Building_Collect_Cooldown[entity][client] = GetGameTime() + 1.0;
-											if(owner != client)
+											if(owner != -1 && owner != client)
 											{
 												if(Pack_A_Punch_Machine_money_limit[owner][client] <= 5)
 												{
@@ -1935,23 +2062,9 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							SetGlobalTransTarget(client);
 							ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");				
 						}
-						return true;
-					}
-				}
-				else
-				{
-					float Building_Picking_up_cd = Building_Collect_Cooldown[entity][client] - GetGameTime();
-					
-					if(Building_Picking_up_cd <= 0.0)
-						Building_Picking_up_cd = 0.0;
-						
-					ClientCommand(client, "playgamesound items/medshotno1.wav");
-					SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-					SetGlobalTransTarget(client);
-					ShowSyncHudText(client,  SyncHud_Notifaction, "%t","Object Cooldown",Building_Picking_up_cd);
-					return true;
 				}
 			}
+			return true;
 		}
 	}
 	return false;
@@ -3469,7 +3582,7 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				if(IsValidEntity(entity))
 				{
 					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					if(IsValidClient(owner))
+					//if(IsValidClient(owner))
 					{
 						int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 						for(int i; i<6; i++)
@@ -3482,7 +3595,7 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 								{
 									TF2_StunPlayer(client, 2.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
 									Building_Collect_Cooldown[entity][client] = GetGameTime() + 1.0;
-									if(owner != client)
+									if(owner != -1 && owner != client)
 									{
 										if(Pack_A_Punch_Machine_money_limit[owner][client] <= 5)
 										{
@@ -3534,12 +3647,12 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				if(IsValidEntity(entity))
 				{
 					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					if(IsValidClient(owner))
+					//if(IsValidClient(owner))
 					{
 						TF2_StunPlayer(client, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
 						Building_Collect_Cooldown[entity][client] = GetGameTime() + 20.0;
 						Do_Perk_Machine_Chance(client);
-						if(owner != client)
+						if(owner != -1 && owner != client)
 						{
 							if(Perk_Machine_money_limit[owner][client] <= 10)
 							{

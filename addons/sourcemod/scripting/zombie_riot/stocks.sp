@@ -1172,6 +1172,10 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 			}
 		}
 	}
+	else if(!Citizen_ThatIsDowned(entity))
+	{
+		return false;
+	}
 	
 	return entity!=data;
 }

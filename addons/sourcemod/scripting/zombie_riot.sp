@@ -593,10 +593,11 @@ enum
 	RAIDMODE_BLITZKRIEG					= 108,
 	MEDIVAL_PIKEMAN						= 109,
 	ALT_MEDIC_SUPPERIOR_MAGE			= 110,
+	CITIZEN					= 111,
 }
 
 
-char NPC_Names[][] =
+public const char NPC_Names[][] =
 {
 	"nothing",
 	"Headcrab Zombie",
@@ -715,10 +716,11 @@ char NPC_Names[][] =
 	"Elite Skirmisher",
 	"Blitzkrieg",
 	"Pikeman",
-	"Medic Supperior Mage"
+	"Medic Supperior Mage",
+	"Rebel"
 };
 
-char NPC_Plugin_Names_Converted[][] =
+public const char NPC_Plugin_Names_Converted[][] =
 {
 	"npc_nothing",
 	"npc_headcrabzombie",
@@ -836,7 +838,8 @@ char NPC_Plugin_Names_Converted[][] =
 	"npc_medival_elite_skirmisher",
 	"npc_blitzkrieg",
 	"npc_medival_pikeman",
-	"npc_alt_medic_supperior_mage"
+	"npc_alt_medic_supperior_mage",
+	""
 };
 
 #include "zombie_riot/stocks.sp"
@@ -1811,6 +1814,8 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 			DestroyDispenser(client);
 		}
 	}
+	
+	Citizen_PlayerDeath(client);
 	Bob_player_killed(event, name, dontBroadcast);
 	RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
 }
@@ -2430,10 +2435,10 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			Attributes_Fire(client, entity);
 	}
 	
-	if(holding[client] == IN_RELOAD && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+	if(holding[client] == IN_RELOAD && dieingstate[client] <= 0 && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 	{
 		int target = GetClientPointVisibleRevive(client);
-		if(target > 0 && target <= MaxClients && dieingstate[target] > 0 && dieingstate[client] <= 0)
+		if(target > 0 && target <= MaxClients)
 		{
 			float Healer[3];
 			Healer[2] += 62;
@@ -2506,6 +2511,44 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				was_reviving[client] = false;
 				PrintCenterText(client, "");
 				PrintCenterText(target, "");
+			}
+		}
+		else if(target > MaxClients)
+		{
+			float Healer[3];
+			Healer[2] += 62;
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Healer); 
+			float Injured[3];
+			Injured[2] += 62;
+			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", Injured);
+			if(GetVectorDistance(Healer, Injured) <= 250.0)
+			{
+				int ticks;
+				was_reviving[client] = true;
+				f_DelayLookingAtHud[client] = GetGameTime() + 0.5;
+				was_reviving_this[client] = target;
+				if(i_CurrentEquippedPerk[client] == 1)
+				{
+					ticks = Citizen_ReviveTicks(target, 2);
+				}
+				else
+				{
+					ticks = Citizen_ReviveTicks(target, 2);
+				}
+				
+				if(ticks <= 0)
+				{
+					PrintCenterText(client, "");
+				}
+				else
+				{
+					PrintCenterText(client, "%t", "Reviving", ticks);
+				}
+			}
+			else if (was_reviving[client])
+			{
+				was_reviving[client] = false;
+				PrintCenterText(client, "");
 			}
 		}
 		else if (was_reviving[client])
@@ -3322,6 +3365,9 @@ bool InteractKey(int client, int entity, bool Is_Reload_Button = false)
 					return true;
 				
 				if(Store_Interact(client, entity, buffer))
+					return true;
+				
+				if(Citizen_Interact(client, entity))
 					return true;
 			}
 		}
