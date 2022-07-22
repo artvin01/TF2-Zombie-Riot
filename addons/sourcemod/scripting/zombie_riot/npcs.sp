@@ -127,6 +127,7 @@ public void NPC_EntitySpawned(int entity)
 	}
 }
 
+
 public Action GetClosestSpawners(Handle timer)
 {
 	float f3_PositionOfAll[3];
@@ -138,6 +139,23 @@ public Action GetClosestSpawners(Handle timer)
 		{
 			QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
 			QueryClientConVar(client, "cl_showpluginmessages", ConVarCallback_Plugin_message); //cl_showpluginmessages
+			
+			int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
+			
+			if(point_difference > 0)
+			{
+				if(Waves_GetRound() +1 > 60)
+				{
+					GiveXP(client, point_difference / 10); //Any round above 60 will give way less xp due to just being xp grind fests. This includes the bloons rounds as the points there get ridicilous at later rounds.
+				}
+				else
+				{
+					GiveXP(client, point_difference * 2); //Give extra.
+				}
+			}
+			
+			i_PreviousPointAmount[client] = PlayerPoints[client];
+			
 			if(GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0 && IsPlayerAlive(client))
 			{
 				i_Diviveby += 1;
