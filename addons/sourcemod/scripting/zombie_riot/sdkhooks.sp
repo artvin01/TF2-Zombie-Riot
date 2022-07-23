@@ -499,7 +499,7 @@ public void OnPostThink(int client)
 		{
 			StartPlayerOnlyLagComp(client, true);
 			int entity = GetClientPointVisible(client); //So you can also correctly interact with players holding shit.
-			EndPlayerOnlyLagComp();
+			EndPlayerOnlyLagComp(client);
 			Building_ShowInteractionHud(client, entity);
 			f_DelayLookingAtHud[client] = GetGameTime() + 0.2;	
 		}

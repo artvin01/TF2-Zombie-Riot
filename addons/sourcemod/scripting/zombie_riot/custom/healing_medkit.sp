@@ -37,9 +37,8 @@ public Action Medikit_healing(int client, int buttons)
 						{
 							int player_looking_at;
 							
-					//		SDK_StartPlayerOnlyLagComp(client, true);
+							StartPlayerOnlyLagComp(client, true);
 							player_looking_at = GetClientPointVisibleOnlyClient(client, 150.0);
-					//		SDK_EndPlayerOnlyLagComp(client);
 							if(player_looking_at <= MAXPLAYERS && player_looking_at > 0 && dieingstate[player_looking_at] == 0 && dieingstate[client] == 0)
 							{
 								float Healer[3];
@@ -119,7 +118,7 @@ public Action Medikit_healing(int client, int buttons)
 									}
 								}
 							}
-							EndPlayerOnlyLagComp();
+							EndPlayerOnlyLagComp(client);
 						}
 						else
 						{

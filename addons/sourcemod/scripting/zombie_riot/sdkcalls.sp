@@ -139,56 +139,6 @@ void SDKCall_Setup()
 	g_iCEconItem_m_Item = FindSendPropInfo("CEconEntity", "m_Item");
 	FindSendPropInfo("CEconEntity", "m_bOnlyIterateItemViewAttributes", _, _, g_iCEconItemView_m_bOnlyIterateItemViewAttributes);
 	
-	//from kenzzer
-
-	GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
-//	DHook_CreateDetour(gamedata, "CLagCompensationManager::StartLagCompensation", DHook_StartLagCompensationPre, DHook_StartLagCompensationPost);
-	
-	StartPrepSDKCall(SDKCall_Static);//StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(gamedata_lag_comp, SDKConf_Signature, "CLagCompensationManager::StartLagCompensation");
-	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Pointer); //cmd? I dont know.
-	if ((g_hSDKStartLagComp = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CLagCompensationManager::StartLagCompensation");
-	
-	
-	StartPrepSDKCall(SDKCall_Static);//StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(gamedata_lag_comp, SDKConf_Signature, "CLagCompensationManager::FinishLagCompensation");
-	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
-	if ((g_hSDKEndLagComp = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CLagCompensationManager::FinishLagCompensation");
-    
-	
-	delete gamedata_lag_comp;
-	
-	/*
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBaseObject::MakeCarriedObject");
-	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
-	if ((g_hSDKMakeCarriedObject = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CBaseObject::MakeCarriedObject");
-	*/
-/*		
-( const Vector &position, const QAngle &angles, 
-																	const Vector &velocity, const AngularImpulse &angVelocity, 
-																	CBaseCombatCharacter *pOwner, const CTFWeaponInfo &weaponInfo, 
-																	int iPipeBombType, float flMultDmg )
-*/
-/*
-	StartPrepSDKCall(SDKCall_Static);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFGrenadePipebombProjectile::Create");
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef); //const Vector &positio
-	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef); //const QAngle &angles
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef); //const Vector &velocity
-	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef); //const AngularImpulse &angVelocity
-	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer); //CBaseCombatCharacter *pOwner
-	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer); //const CTFWeaponInfo &weaponInfo
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain); //int iPipeBombType
-	PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain); //float flMultDmg
-	PrepSDKCall_SetReturnInfo(SDKType_CBaseEntity, SDKPass_Pointer); //ENTITY INDEX PIPE
-	g_hCTFCreatePipe = EndPrepSDKCall();
-	if(!g_hCTFCreatePipe)
-		LogError("[Gamedata] Could not find CTFGrenadePipebombProjectile::Create");
-	*/
-//	g_SDKCallRemoveImmediate = PrepSDKCall_RemoveImmediate(gamedata);
-	
 	delete gamedata;
 	
 	Handle hConf = LoadGameConfigFile("tf2.pets");
@@ -364,39 +314,31 @@ public void GetVectors(int client, float pForward[3], float pRight[3], float pUp
 	SDKCall(g_hGetVectors, client, pForward, pRight, pUp);
 }
 
-public void SDK_StartPlayerOnlyLagComp(int client, bool Compensate_allies)
-{
-	if(Compensate_allies)
-	{
-	//	b_LagCompAlliedPlayers = true;
-	}
-	SDKCall(g_hSDKStartLagComp, client, (GetEntityAddress(client) + view_as<Address>(3512)));
-}
-
-public void SDK_EndPlayerOnlyLagComp(int client)
-{
-	SDKCall(g_hSDKEndLagComp, client);
-}
-
 public void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 {
 #if defined CompensatePlayers
-	StartLagCompResetValues();
-	
-	if(Compensate_allies)
+	if(g_GottenAddressesForLagComp)
 	{
-	//	b_LagCompAlliedPlayers = true;
+	//	StartLagCompResetValues();
+		
+		if(Compensate_allies)
+		{
+			b_LagCompAlliedPlayers = true;
+		}
+		SDKCall(g_hSDKStartLagComp, g_hSDKStartLagCompAddress, client, (GetEntityAddress(client) + view_as<Address>(3512)));
+//		StartLagCompensation_Base_Boss(client, true);
 	}
-	StartLagCompensation_Base_Boss(client, true);
 #endif
 }
 
-public void EndPlayerOnlyLagComp()
+public void EndPlayerOnlyLagComp(int client)
 {
 #if defined CompensatePlayers
-	FinishLagCompensation_Base_boss();
-	
-	FinishLagCompensationResetValues();
+	if(g_GottenAddressesForLagComp)
+	{
+	//	FinishLagCompensation_Base_boss();
+		SDKCall(g_hSDKEndLagComp, g_hSDKEndLagCompAddress, client);
+	}
 #endif
 }
 
@@ -423,4 +365,30 @@ public void TF2Items_OnGiveNamedItem_Post_SDK(int iClient, char[] sClassname, in
 	Address pCEconItemView = GetEntityAddress(iEntity) + view_as<Address>(g_iCEconItem_m_Item);
 	g_hDHookItemIterateAttribute.HookRaw(Hook_Pre, pCEconItemView, CEconItemView_IterateAttributes);
 	g_hDHookItemIterateAttribute.HookRaw(Hook_Post, pCEconItemView, CEconItemView_IterateAttributes_Post);
+}
+
+
+//BIG thanks to backwards#8236 on discord for helping me out, YOU ARE MY HERO.
+
+public void Sdkcall_Load_Lagcomp()
+{
+	if(!g_GottenAddressesForLagComp)
+	{
+		GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
+		g_GottenAddressesForLagComp = true;
+		
+		StartPrepSDKCall(SDKCall_Raw);
+		PrepSDKCall_SetFromConf(gamedata_lag_comp, SDKConf_Signature, "CLagCompensationManager::StartLagCompensation");
+		PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
+		PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_ByValue); //cmd? I dont know.
+		if ((g_hSDKStartLagComp = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CLagCompensationManager::StartLagCompensation");
+		
+		
+		StartPrepSDKCall(SDKCall_Raw);
+		PrepSDKCall_SetFromConf(gamedata_lag_comp, SDKConf_Signature, "CLagCompensationManager::FinishLagCompensation");
+		PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
+		if ((g_hSDKEndLagComp = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CLagCompensationManager::FinishLagCompensation");	
+		
+		delete gamedata_lag_comp;	
+	}
 }

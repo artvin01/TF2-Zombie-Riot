@@ -59,7 +59,7 @@ ConVar CvarEnablePrivatePlugins;
 ConVar CvarMaxBotsForKillfeed;
 ConVar CvarXpMultiplier;
 
-//#define CompensatePlayers
+#define CompensatePlayers
 
 //#define FastStart
 
@@ -2371,12 +2371,14 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				}
 			}
 		}
-		
-		if(InteractKey(client, weapon_holding, false))
+		StartPlayerOnlyLagComp(client, true);
+		if(InteractKey(client, weapon_holding, false)) //doesnt matter which one
 		{
 			buttons &= ~IN_ATTACK2;
+			EndPlayerOnlyLagComp(client);
 			return Plugin_Changed;
 		}
+		EndPlayerOnlyLagComp(client);
 	}
 	else if(buttons & IN_RELOAD)
 	{
@@ -2602,14 +2604,6 @@ public void SetHealthAfterRevive(int client)
 	}
 }
 
-public void DoLagCompTest(int client)
-{
-	if(IsValidClient(client))
-	{	
-		SDK_StartPlayerOnlyLagComp(client, true);
-		SDK_EndPlayerOnlyLagComp(client);
-	}
-}
 
 public void SetHealthAfterReviveAgain(int client)
 {
@@ -3370,9 +3364,7 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 {
 	if(weapon!=-1) //Just allow. || GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack")<GetGameTime())
 	{
-		StartPlayerOnlyLagComp(client, true);
 		int entity = GetClientPointVisible(client); //So you can also correctly interact with players holding shit.
-		EndPlayerOnlyLagComp();
 		if(entity > 0)
 		{
 			static char buffer[64];

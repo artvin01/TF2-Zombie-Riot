@@ -13,6 +13,11 @@ DynamicHook g_DHookFireballExplode; //from mikusch but edited
 DynamicHook g_DHookMedigunPrimary; 
 DynamicHook g_DHookScoutSecondaryFire; 
 
+
+Address g_hSDKStartLagCompAddress;
+Address g_hSDKEndLagCompAddress;
+bool g_GottenAddressesForLagComp;
+
 /*
 // Offsets from mikusch but edited
 int g_OffsetWeaponMode;
@@ -362,7 +367,7 @@ bool b_LagCompNPC_AwayEnemies;
 bool b_LagCompNPC_ExtendBoundingBox;
 bool b_LagCompNPC_BlockInteral;
 
-//bool b_LagCompAlliedPlayers; //Make sure this actually compensates allies.
+bool b_LagCompAlliedPlayers; //Make sure this actually compensates allies.
 /*
 public MRESReturn StartLagCompensation_Pre(Address manager, DHookParam param)
 {
@@ -392,13 +397,13 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 //	PrintToChatAll("called %i",Compensator);
 	StartLagCompResetValues();
 	
-	/*
+	
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
-		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Red)) //Hardcode to red as there will be no blue players.
+		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Spectator)) //Hardcode to red as there will be no blue players.
 		return MRES_Ignored;
-	}
-	*/
+	} //dont do anything else.
+	
 	
 	int active_weapon = GetEntPropEnt(Compensator, Prop_Send, "m_hActiveWeapon");
 	if(IsValidEntity(active_weapon))
@@ -451,6 +456,8 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 	//	return MRES_Supercede;
 	}
 	
+	g_hSDKStartLagCompAddress = manager;
+	
 	return MRES_Ignored;
 }
 public MRESReturn StartLagCompensationPost(Address manager, DHookParam param)
@@ -461,6 +468,12 @@ public MRESReturn StartLagCompensationPost(Address manager, DHookParam param)
 		TF2_SetPlayerClass(Compensator, WeaponClass[Compensator], false, false); 
 	//	return MRES_Supercede;
 	}
+	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
+	{
+		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Red)) //Hardcode to red as there will be no blue players.
+		return MRES_Ignored;
+	} 
+	b_LagCompAlliedPlayers = false;
 	return MRES_Ignored;
 }
 
@@ -660,6 +673,10 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 		Move_Players = 0;
 //		return MRES_Supercede;
 	}
+	
+	g_hSDKEndLagCompAddress = manager;
+	Sdkcall_Load_Lagcomp();
+	
 	return MRES_Ignored;
 //	return MRES_Supercede;
 }
