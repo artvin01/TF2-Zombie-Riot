@@ -2079,8 +2079,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 							SetEntPropEnt(i, Prop_Send, "m_hObserverTarget", client);
 						}
 					}
-				//	cvarTimeScale.SetFloat(0.1);
-				//	CreateTimer(0.5, SetTimeBack);
+					cvarTimeScale.SetFloat(0.1);
+					CreateTimer(0.3, SetTimeBack);
 				
 					applied_lastmann_buffs_once = true;
 					SetHudTextParams(-1.0, -1.0, 3.0, 255, 0, 0, 255);
