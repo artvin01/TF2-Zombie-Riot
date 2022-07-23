@@ -1265,18 +1265,16 @@ static void MenuPage(int client, int section)
 		StoreItems.GetArray(i, item);
 		if(NPCOnly[client] == 1)
 		{
-			if(!item.NPCSeller)
+			if(!item.NPCSeller || item.Level > Level[client])
 				continue;
 		}
-		else if(item.Hidden || item.Section != section || item.Level > Level[client] || (NPCOnly[client] != 2 && EscapeMode && item.NoEscape))
+		else if(NPCOnly[client] == 2)
 		{
-			if(!CvarEnablePrivatePlugins.BoolValue)
-			{
-				if(item.NoPrivatePlugin)
-				{
-					continue;
-				}
-			}
+			if(item.Level > Level[client])
+				continue;
+		}
+		else if(item.Hidden || item.Section != section || item.Level > Level[client] || (EscapeMode && item.NoEscape))
+		{
 			continue;
 		}
 		
@@ -1289,6 +1287,9 @@ static void MenuPage(int client, int section)
 		{
 			continue;
 		}
+		
+		if(item.NoPrivatePlugin && !CvarEnablePrivatePlugins.BoolValue)
+			continue;
 		
 		if(item.TextStore[0] && !HasNamedItem(client, item.TextStore))
 			continue;

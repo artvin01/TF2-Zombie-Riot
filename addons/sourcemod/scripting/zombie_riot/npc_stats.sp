@@ -2953,7 +2953,7 @@ methodmap CClotBody
 			i_ExplosiveProjectileHexArray[entity] = flags;
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, rocket_damage, true);	// Damage
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(this.index, Prop_Send, "m_iTeamNum"));
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
 			DispatchSpawn(entity);
 			if(rocket_model[0])
@@ -4813,7 +4813,7 @@ stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false)
 				GetClientAbsOrigin( i, TargetLocation ); 
 				
 				
-				float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+				float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 				if( TargetDistance ) 
 				{
 					if( distance < TargetDistance ) 
@@ -6097,7 +6097,7 @@ stock int GetClosestAlly(int entity)
 			GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 				
 				
-			float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+			float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 			if( TargetDistance ) 
 			{
 				if( distance < TargetDistance ) 

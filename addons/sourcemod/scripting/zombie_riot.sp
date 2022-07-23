@@ -2544,7 +2544,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				}
 				else
 				{
-					ticks = Citizen_ReviveTicks(target, 2);
+					ticks = Citizen_ReviveTicks(target, 1);
 				}
 				
 				if(ticks <= 0)

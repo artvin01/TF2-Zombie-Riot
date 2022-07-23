@@ -6,6 +6,7 @@ static bool IsPlayerClass;
 static bool IsRespawning;
 //static bool Disconnecting;
 
+
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
 DynamicHook g_DHookFireballExplode; //from mikusch but edited
@@ -390,6 +391,7 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 	int Compensator = param.Get(1);
 //	PrintToChatAll("called %i",Compensator);
 	StartLagCompResetValues();
+	
 	/*
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
@@ -397,6 +399,7 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		return MRES_Ignored;
 	}
 	*/
+	
 	int active_weapon = GetEntPropEnt(Compensator, Prop_Send, "m_hActiveWeapon");
 	if(IsValidEntity(active_weapon))
 	{

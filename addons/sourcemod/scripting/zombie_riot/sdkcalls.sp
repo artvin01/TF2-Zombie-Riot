@@ -144,14 +144,14 @@ void SDKCall_Setup()
 	GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
 //	DHook_CreateDetour(gamedata, "CLagCompensationManager::StartLagCompensation", DHook_StartLagCompensationPre, DHook_StartLagCompensationPost);
 	
-	StartPrepSDKCall(SDKCall_Static);
+	StartPrepSDKCall(SDKCall_Static);//StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(gamedata_lag_comp, SDKConf_Signature, "CLagCompensationManager::StartLagCompensation");
 	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Pointer); //cmd? I dont know.
 	if ((g_hSDKStartLagComp = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CLagCompensationManager::StartLagCompensation");
 	
 	
-	StartPrepSDKCall(SDKCall_Static);
+	StartPrepSDKCall(SDKCall_Static);//StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(gamedata_lag_comp, SDKConf_Signature, "CLagCompensationManager::FinishLagCompensation");
 	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
 	if ((g_hSDKEndLagComp = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CLagCompensationManager::FinishLagCompensation");
