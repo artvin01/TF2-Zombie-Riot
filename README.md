@@ -96,6 +96,7 @@ Current coders that in anyway actively helped, in order of how much:
 - [Spookmaster](https://github.com/SupremeSpookmaster)
 - [Kenzzer](https://github.com/Kenzzer) (Got gamedata and make an extention edit for us)
 - [Pelipoika](https://github.com/Pelipoika) (Npc base code that we heavily edited, thank you SO much for publishing it all.)
+- [backwards] (backwards#8236) on discord. (Helped with sdkcall lag compensation.)
 
 IF YOU WISH TO USE THE MODELS THAT ARENT IN THE SOURCECODE, CONTACT THIS PERSON FOR PERMISSION, OTHERWISE PLEASE HAVE THIS CVAR (zr_nospecial) ON 1
 USING THESE MODELS WITHOUT PERMISSION WILL ANGER US. thanks.
