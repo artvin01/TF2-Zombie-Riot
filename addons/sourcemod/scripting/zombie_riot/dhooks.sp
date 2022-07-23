@@ -402,7 +402,7 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 	{
 		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Spectator)) //Hardcode to red as there will be no blue players.
 		return MRES_Ignored;
-	} //dont do anything else.
+	}
 	
 	
 	int active_weapon = GetEntPropEnt(Compensator, Prop_Send, "m_hActiveWeapon");
@@ -471,9 +471,9 @@ public MRESReturn StartLagCompensationPost(Address manager, DHookParam param)
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
 		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Red)) //Hardcode to red as there will be no blue players.
+		b_LagCompAlliedPlayers = false;
 		return MRES_Ignored;
 	} 
-	b_LagCompAlliedPlayers = false;
 	return MRES_Ignored;
 }
 
