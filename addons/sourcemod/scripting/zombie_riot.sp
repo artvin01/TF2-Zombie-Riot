@@ -844,7 +844,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_blitzkrieg",
 	"npc_medival_pikeman",
 	"npc_alt_medic_supperior_mage",
-	""
+	"npc_citizen"
 };
 
 #include "zombie_riot/stocks.sp"
