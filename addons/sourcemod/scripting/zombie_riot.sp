@@ -24,6 +24,11 @@
 #tryinclude <menus-controller>
 
 
+#define CHAR_FULL	"█"
+#define CHAR_PARTFULL	"▓"
+#define CHAR_PARTEMPTY	"▒"
+#define CHAR_EMPTY	"░"
+
 #define NPC_HARD_LIMIT 42 
 #define ZR_MAX_NPCS (NPC_HARD_LIMIT*2)
 #define ZR_MAX_NPCS_ALLIED 64

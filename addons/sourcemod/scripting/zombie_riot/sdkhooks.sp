@@ -340,9 +340,31 @@ public void OnPostThink(int client)
 		SetHudTextParams(-1.0, 0.85, 3.01, red, green, blue, 255);
 		
 			
+		char buffer[64];
+		{
+			for(int i=1; i<21; i++)
+			{
+				if(Current_Mana[client] >= max_mana[client]*(i*0.05))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+				}
+				else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/60.0))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+				}
+				else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/30.0))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+				}
+				else
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+				}
+			}
+		}
 			
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_WandMana, "%t", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client]);
+		ShowSyncHudText(client,  SyncHud_WandMana, "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
 	}
 	if(delay_hud[client] < gameTime)	
 	{
@@ -416,41 +438,35 @@ public void OnPostThink(int client)
 			green = Armor_Charge[client] * 255  / Armor_Max;
 			
 			red = 255 - red;
-			/*
+			
 			char buffer[64];
 			{
-				int xpLevel = LevelToXp(Level[client]);
-				int xpNext = LevelToXp(Level[client]+1);
-		
-				int extra = XP[client]-xpLevel;
-				int nextAt = xpNext-xpLevel;
-		
-				for(int i=1; i<21; i++)
+				for(int i=5; i>0; i--)
 				{
-					if(extra > nextAt*(i*0.05))
+					if(Armor_Charge[client] >= Armor_Max*(i*0.20))
 					{
-						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+						Format(buffer, sizeof(buffer), "%s%s\n", buffer, CHAR_FULL);
 					}
-					else if(extra > nextAt*(i*0.05 - 1.0/60.0))
+					else if(Armor_Charge[client] > Armor_Max*(i*0.20 - 1.0/60.0))
 					{
-						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+						Format(buffer, sizeof(buffer), "%s%s\n", buffer, CHAR_PARTFULL);
 					}
-					else if(extra > nextAt*(i*0.05 - 1.0/30.0))
+					else if(Armor_Charge[client] > Armor_Max*(i*0.20 - 1.0/30.0))
 					{
-						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+						Format(buffer, sizeof(buffer), "%s%s\n", buffer, CHAR_PARTEMPTY);
 					}
 					else
 					{
-						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+						Format(buffer, sizeof(buffer), "%s%s\n", buffer, CHAR_EMPTY);
 					}
 				}
 		
-				SetHudTextParams(-1.0, 0.96, 1.8, 200, 69, 0, 200);
-				ShowSyncHudText(client, HudLevel, "Level %d\n%d %s %d", Level[client], extra, buffer, xpNext-XP[client]);
+				SetHudTextParams(0.175, 0.86, 3.01, red, green, blue, 255);
+				ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
 			}
-			*/
-			SetHudTextParams(0.165, 0.86, 3.01, red, green, blue, 255);
-			ShowSyncHudText(client,  SyncHud_ArmorCounter, "|%i|", Armor_Charge[client]);
+			
+		//	SetHudTextParams(0.165, 0.86, 3.01, red, green, blue, 255);
+		//	ShowSyncHudText(client,  SyncHud_ArmorCounter, "|%i|", Armor_Charge[client]);
 			
 			
 			
