@@ -529,9 +529,9 @@ public void OnPostThink(int client)
 	{
 		if (IsPlayerAlive(client))
 		{
-			StartPlayerOnlyLagComp(client, true);
-			int entity = GetClientPointVisible(client); //So you can also correctly interact with players holding shit.
-			EndPlayerOnlyLagComp(client);
+		//	StartPlayerOnlyLagComp(client, true); //do not lag compensate, its actually way too expensive, and it doesnt really matter most of the time.
+			int entity = GetClientPointVisible(client); //allow them to get info if they stare at something for abit long
+		//	EndPlayerOnlyLagComp(client);
 			Building_ShowInteractionHud(client, entity);
 			f_DelayLookingAtHud[client] = GetGameTime() + 0.2;	
 		}
