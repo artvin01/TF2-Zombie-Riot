@@ -40,7 +40,7 @@ void ConVar_PluginStart()
 	
 	ConVar_Add("sv_parallel_packentities", "1.0");
 	ConVar_Add("sv_parallel_sendsnapshot", "0.0");
-	ConVar_Add("sv_maxunlag", "0.3");		
+	ConVar_Add("sv_maxunlag", "1.0");	
 	ConVar_Add("tf_scout_air_dash_count", "0");
 	ConVar_Add("sv_cheats", "1.0"); //just enable it at all times!
 	
