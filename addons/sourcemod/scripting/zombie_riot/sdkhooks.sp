@@ -416,7 +416,39 @@ public void OnPostThink(int client)
 			green = Armor_Charge[client] * 255  / Armor_Max;
 			
 			red = 255 - red;
-			
+			/*
+			char buffer[64];
+			{
+				int xpLevel = LevelToXp(Level[client]);
+				int xpNext = LevelToXp(Level[client]+1);
+		
+				int extra = XP[client]-xpLevel;
+				int nextAt = xpNext-xpLevel;
+		
+				for(int i=1; i<21; i++)
+				{
+					if(extra > nextAt*(i*0.05))
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+					}
+					else if(extra > nextAt*(i*0.05 - 1.0/60.0))
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+					}
+					else if(extra > nextAt*(i*0.05 - 1.0/30.0))
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+					}
+				}
+		
+				SetHudTextParams(-1.0, 0.96, 1.8, 200, 69, 0, 200);
+				ShowSyncHudText(client, HudLevel, "Level %d\n%d %s %d", Level[client], extra, buffer, xpNext-XP[client]);
+			}
+			*/
 			SetHudTextParams(0.165, 0.86, 3.01, red, green, blue, 255);
 			ShowSyncHudText(client,  SyncHud_ArmorCounter, "|%i|", Armor_Charge[client]);
 			
