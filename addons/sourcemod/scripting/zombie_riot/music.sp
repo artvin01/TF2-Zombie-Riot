@@ -110,12 +110,26 @@ void Music_RoundEnd(int victim)
 		}
 	}
 	
+	for(int i=1; i<=MaxClients; i++)
+	{
+		if(IsClientInGame(i) && !IsFakeClient(i))
+		{
+			SendConVarValue(i, sv_cheats, "0");
+		}
+	}
 	cvarTimeScale.SetFloat(0.1);
 	CreateTimer(0.5, SetTimeBack);
 }
 
 public Action SetTimeBack(Handle timer)
 {
+	for(int i=1; i<=MaxClients; i++)
+	{
+		if(IsClientInGame(i) && !IsFakeClient(i))
+		{
+			SendConVarValue(i, sv_cheats, "0");
+		}
+	}
 	cvarTimeScale.SetFloat(1.0);
 	return Plugin_Handled;
 }

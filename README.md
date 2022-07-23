@@ -75,8 +75,7 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [TFEconData](https://github.com/nosoop/SM-TFEconData)
 - [PathFollower](https://github.com/Pelipoika/PathFollower)
 - [lambda](https://github.com/Batfoxkid/lambda)
-- [Cheat Control](https://forums.alliedmods.net/showthread.php?t=68805) VERY IMPORTANT, SV CHEATS IS 1 BY DEFAULT
-BUT USE MY VERSION OF IT OR ELSE SLOWDOWN WONT WORK! its in the github. just compile it.
+- [Timescale Windows Fix](https://forums.alliedmods.net/showthread.php?t=324264)
 
 ### Supported
 

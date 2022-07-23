@@ -39,6 +39,7 @@
 #define HaveLayersForLagCompensation
 
 //Not used cus i need all the performance i can get.
+
 #define NoSendProxyClass
 
 //#define DisableInterpolation
@@ -59,6 +60,7 @@ ConVar CvarEnablePrivatePlugins;
 ConVar CvarMaxBotsForKillfeed;
 ConVar CvarXpMultiplier;
 
+bool Toggle_sv_cheats = false;
 #define CompensatePlayers
 
 //#define FastStart
@@ -202,6 +204,7 @@ int PlayersAliveScaling;
 int GlobalIntencity;
 ConVar cvarTimeScale;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
+Handle sv_cheats;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie CookieXP;
 Cookie CookiePlayStreak;
@@ -1009,7 +1012,11 @@ public void OnPluginStart()
 	RegAdminCmd("sm_change_collision", Command_ChangeCollision, ADMFLAG_GENERIC, "change all npc's collisions");
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_GENERIC, "Forcefully summon grigori");
 	
+	RegAdminCmd("sm_toggle_fake_cheats", Command_ToggleCheats, ADMFLAG_GENERIC, "ToggleCheats");
 	
+
+					
+	sv_cheats = FindConVar("sv_cheats");
 	cvarTimeScale = FindConVar("host_timescale");
 	tf_bot_quota = FindConVar("tf_bot_quota");
 	
@@ -1437,6 +1444,34 @@ public Action Command_SpawnGrigori(int client, int args)
 	return Plugin_Handled;
 }
 
+public Action Command_ToggleCheats(int client, int args)
+{
+	if(Toggle_sv_cheats)
+	{
+		Toggle_sv_cheats = false;
+		for(int i=1; i<=MaxClients; i++)
+		{
+			if(IsClientInGame(i) && !IsFakeClient(i))
+			{
+				SendConVarValue(i, sv_cheats, "0");
+			}
+		}	
+	}
+	else
+	{
+		Toggle_sv_cheats = true;
+		for(int i=1; i<=MaxClients; i++)
+		{
+			if(IsClientInGame(i) && !IsFakeClient(i))
+			{
+				SendConVarValue(i, sv_cheats, "1");
+			}
+		}
+	}
+	return Plugin_Handled;
+}
+
+					
 public void OnClientPutInServer(int client)
 {
 	b_IsPlayerABot[client] = false;
@@ -2077,6 +2112,14 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 						{
 							Music_Stop_All(i);
 							SetEntPropEnt(i, Prop_Send, "m_hObserverTarget", client);
+						}
+					}
+					
+					for(int i=1; i<=MaxClients; i++)
+					{
+						if(IsClientInGame(i) && !IsFakeClient(i))
+						{
+							SendConVarValue(i, sv_cheats, "1");
 						}
 					}
 					cvarTimeScale.SetFloat(0.1);
