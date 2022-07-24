@@ -1165,17 +1165,24 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					int melee = GetIndexOfWeaponSlot(attacker, TFWeaponSlot_Melee);
 					if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
 					{
+						float attack_speed;
+		
+						attack_speed = Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);
+						
 						EmitSoundToAll("weapons/knife_swing_crit.wav", attacker, _, _, _, 0.7);
 						RequestFrame(DoMeleeAnimationFrameLater, attacker);
 					//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
 						damage *= 3.00;
+						
 						damage *= 1.75;
+						
+						if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
+						{
+							damage *= 1.25;
+						}
 						
 						if(EscapeMode)
 							damage *= 1.35;
-						
-					//	SDKCall_PlaySpecificSequence(attacker, "Melee_Overhand_Swing"); //Melee_Overhand_Swing, ty 42!!
-					//	SDKCall_DoAnimationEvent(attacker, 21, 150);//test
 				
 						if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
 						{
@@ -1192,14 +1199,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						if(melee == 356)
 						{
 							StartHealingTimer(attacker, 0.1, 1, 10);
-							SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+1.5);
-							SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+1.5);
+							SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
+							SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.5 * attack_speed));
 						}
 						else if(melee == 225)
 						{
 							StartHealingTimer(attacker, 0.1, 2, 25);
-							SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+1.0);
-							SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+1.0);
+							SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.0 * attack_speed));
+							SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.0 * attack_speed));
 						}
 						else if(melee == 727)
 						{
@@ -1210,8 +1217,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						}
 						else
 						{
-							SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+1.5);
-							SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+1.5);	
+							SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
+							SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.5 * attack_speed));	
 						}
 					}
 				}
@@ -1371,11 +1378,11 @@ void DoMeleeAnimationFrameLater(int attacker)
 	int melee = GetIndexOfWeaponSlot(attacker, TFWeaponSlot_Melee);
 	if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
 	{
-		int animation = 42;
+		int animation = 38;
 		switch(melee)
 		{
 			case 225, 356, 423, 461, 574, 649, 1071, 30758:  //Your Eternal Reward, Conniver's Kunai, Saxxy, Wanga Prick, Big Earner, Spy-cicle, Golden Frying Pan, Prinny Machete
-				animation=16;
+				animation=12;
 
 			case 638:  //Sharp Dresser
 				animation=32;

@@ -441,23 +441,28 @@ public void OnPostThink(int client)
 			
 			char buffer[64];
 			{
-				for(int i=5; i>0; i--)
+				for(int i=10; i>0; i--)
 				{
-					if(Armor_Charge[client] >= Armor_Max*(i*0.20))
+					if(Armor_Charge[client] >= Armor_Max*(i*0.1))
 					{
-						Format(buffer, sizeof(buffer), "%s%s\n", buffer, CHAR_FULL);
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
 					}
-					else if(Armor_Charge[client] > Armor_Max*(i*0.20 - 1.0/60.0))
+					else if(Armor_Charge[client] > Armor_Max*(i*0.1 - 1.0/60.0))
 					{
-						Format(buffer, sizeof(buffer), "%s%s\n", buffer, CHAR_PARTFULL);
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
 					}
-					else if(Armor_Charge[client] > Armor_Max*(i*0.20 - 1.0/30.0))
+					else if(Armor_Charge[client] > Armor_Max*(i*0.1 - 1.0/30.0))
 					{
-						Format(buffer, sizeof(buffer), "%s%s\n", buffer, CHAR_PARTEMPTY);
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
 					}
 					else
 					{
-						Format(buffer, sizeof(buffer), "%s%s\n", buffer, CHAR_EMPTY);
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+					}
+					
+					if((i % 2) == 1)
+					{
+						Format(buffer, sizeof(buffer), "%s\n", buffer);
 					}
 				}
 		
