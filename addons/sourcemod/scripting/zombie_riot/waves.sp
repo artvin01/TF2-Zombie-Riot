@@ -47,6 +47,7 @@ static int WaveIntencity;
 static bool Gave_Ammo_Supply;
 static int VotedFor[MAXTF2PLAYERS];
 
+static char LastWaveWas[64];
 
 void Waves_PluginStart()
 {
@@ -148,8 +149,6 @@ void OnMapEndWaves()
 
 void Waves_SetupVote(KeyValues map)
 {
-//	LogError("Waves_SetupVote()");
-	
 	Cooldown = 0.0;
 	
 	if(Voting)
@@ -164,7 +163,6 @@ void Waves_SetupVote(KeyValues map)
 		kv.Rewind();
 		if(kv.JumpToKey("Waves"))
 		{
-//			LogError("Found map specific wave");
 			Waves_SetupWaves(kv, true);
 			return;
 		}
@@ -179,7 +177,6 @@ void Waves_SetupVote(KeyValues map)
 	{
 		zr_voteconfig.GetString(buffer, sizeof(buffer));
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
-//		LogError(buffer);
 		kv = new KeyValues("Setup");
 		kv.ImportFromFile(buffer);
 		RequestFrame(DeleteHandle, kv);
@@ -188,8 +185,7 @@ void Waves_SetupVote(KeyValues map)
 	StartCash = kv.GetNum("cash");
 	if(!kv.JumpToKey("Waves"))
 	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "waves");
-//		LogError(buffer);
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "waves")
 		kv = new KeyValues("Waves");
 		kv.ImportFromFile(buffer);
 		Waves_SetupWaves(kv, true);
@@ -205,9 +201,25 @@ void Waves_SetupVote(KeyValues map)
 	{
 		kv.GetSectionName(vote.Name, sizeof(vote.Name));
 		kv.GetString(NULL_STRING, vote.Config, sizeof(vote.Config));
-//		LogError("%s %s", vote.Name, vote.Config);
 		Voting.PushArray(vote);
 	} while(kv.GotoNextKey(false));
+	
+	if(LastWaveWas[0])
+	{
+		int length = Voting.Length;
+		if(length > 2)
+		{
+			for(int i; i < length; i++)
+			{
+				Voting.GetArray(i, vote);
+				if(StrEqual(vote.Config, LastWaveWas))
+				{
+					Voting.Erase(i);
+					break;
+				}
+			}
+		}
+	}
 	
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -338,6 +350,7 @@ void Waves_RoundStart()
 				delete Voting;
 				Voting = null;
 				
+				strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
 				PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
 				
 				Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", vote.Name);
