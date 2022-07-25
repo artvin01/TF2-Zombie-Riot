@@ -297,7 +297,7 @@ public void PlaceableTempomaryHealingGrenade(int client)
 			SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher", 0);
 			for(int i; i<4; i++)
 			{
-				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelArmor, _, i);
+				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
 			}
 			
 			SetVariantInt(team);
