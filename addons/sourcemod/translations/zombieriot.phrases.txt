@@ -712,7 +712,7 @@
 	}
 	"Juggernog"
 	{
-		"en" 		"Perk: Juggernog
+		"en" 		"Perk: Juggernog"
 		"ru" 		"Перк: Джаггер-фанта"
 	}
 	"Double Tap"
@@ -922,9 +922,9 @@
 	}
 	"Perkmachine Tooltip"
 	{
-		"en" 		"Press RELOAD on the Perkmachine to gain a strong temporary random perk."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКУ на перк-машине, чтобы получить сильный временный случайный перк."
-		"de"		"Drücke NACHLADEN an der Perkmachine um einen starken temporären zufälligen Perk zubekommen."
+		"en" 		"Press RELOAD on the Perkmachine to gain a strong tempomary perk."
+//		"ru" 		"Нажмите ПЕРЕЗАРЯДКУ на перк-машине, чтобы получить сильный временный случайный перк."
+//		"de"		"Drücke NACHLADEN an der Perkmachine um einen starken temporären zufälligen Perk zubekommen."
 	}
 	"PackAPunch Tooltip"
 	{
@@ -1168,10 +1168,9 @@
 		"en"		"Do you want to pack-a-punch your current weapon?"
 		"ru"		"Хотите ли вы улучшить своё текущее оружие?"
 	}
-	"Want to drink a perk bottle?"
+	"Which perk do you desire?"
 	{
-		"en"		"Do you want to drink a perk bottle?"
-		"ru"		"Хотите выпить бутылку перка?"
+		"en"		"Which Bottle do you wish to drink?"
 	}	
 	"Reviving"
 	{

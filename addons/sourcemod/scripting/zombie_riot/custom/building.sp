@@ -1937,44 +1937,32 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 				{
 						if(Is_Reload_Button)
 						{
-							if(bInteractedBuildingWasMounted)
-							{
-								i_MachineJustClickedOn[client] = EntIndexToEntRef(entity);
+							i_MachineJustClickedOn[client] = EntIndexToEntRef(entity);
+							
+							SetGlobalTransTarget(client);
+							
+							Menu menu2 = new Menu(Building_ConfirmMountedAction);
+							menu2.SetTitle("%t", "Which perk do you desire?");
 								
-								Menu menu2 = new Menu(Building_ConfirmMountedAction);
-								menu2.SetTitle("%t", "Want to drink a perk bottle?");
+							FormatEx(buffer, sizeof(buffer), "%t", "Deadshot Daiquiri");
+							menu2.AddItem("-7", buffer);
+							
+							FormatEx(buffer, sizeof(buffer), "%t", "Speed Cola");
+							menu2.AddItem("-6", buffer);
+							
+							FormatEx(buffer, sizeof(buffer), "%t", "Double Tap");
+							menu2.AddItem("-5", buffer);
+							
+							FormatEx(buffer, sizeof(buffer), "%t", "Juggernog");
+							menu2.AddItem("-4", buffer);
+							
+							FormatEx(buffer, sizeof(buffer), "%t", "Quick Revive");
+							menu2.AddItem("-3", buffer);
+											
+							FormatEx(buffer, sizeof(buffer), "%t", "No");
+							menu2.AddItem("-2", buffer);
 												
-								FormatEx(buffer, sizeof(buffer), "%t", "Yes");
-								menu2.AddItem("-3", buffer);
-												
-								FormatEx(buffer, sizeof(buffer), "%t", "No");
-								menu2.AddItem("-2", buffer);
-												
-								menu2.Display(client, MENU_TIME_FOREVER); // they have 3 seconds.
-							}
-							else
-							{
-								TF2_StunPlayer(client, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
-								Building_Collect_Cooldown[entity][client] = GetGameTime() + 20.0;
-								Do_Perk_Machine_Chance(client);
-								if(owner != -1 && owner != client)
-								{
-									if(Perk_Machine_money_limit[owner][client] <= 10)
-									{
-										CashSpent[owner] -= 40;
-										Perk_Machine_money_limit[owner][client] += 1;
-										Resupplies_Supplied[owner] += 4;
-										SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-										SetGlobalTransTarget(owner);
-										ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Perk Machine Used");
-									}
-								}
-								SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-								SetGlobalTransTarget(client);
-								ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
-								Store_ApplyAttribs(client);
-								Store_GiveAll(client, GetClientHealth(client));
-							}
+							menu2.Display(client, MENU_TIME_FOREVER); // they have 3 seconds.
 						}
 						else if(!b_IgnoreWarningForReloadBuidling[client])
 						{
@@ -2725,47 +2713,6 @@ public bool BuildingCustomCommand(int client)
 		return true;
 	}
 	return false;
-}
-
-public void Do_Perk_Machine_Chance(int client)
-{
-	int Which_perk = GetRandomInt(1, 5);
-	
-	//25 for insanity check.
-	for(int i; i<25; i++)
-	{
-		if(Which_perk == i_CurrentEquippedPerk[client])
-		{
-			Which_perk = GetRandomInt(1, 5); //Try again
-		}
-		else
-		{
-			break; // yay!
-		}
-	}
-	switch(Which_perk)
-	{
-		case 1:
-		{
-			i_CurrentEquippedPerk[client] = 1;
-		}
-		case 2:
-		{
-			i_CurrentEquippedPerk[client] = 2;
-		}
-		case 3:
-		{
-			i_CurrentEquippedPerk[client] = 3;
-		}
-		case 4:
-		{
-			i_CurrentEquippedPerk[client] = 4;
-		}
-		case 5:
-		{
-			i_CurrentEquippedPerk[client] = 5;
-		}
-	}	
 }
 						
 						
@@ -3557,10 +3504,8 @@ public int MaxBarricadesAllowed(int client)
 	}
 	
 	return maxAllowed;
-}
-
-
-
+}						
+							
 public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
@@ -3653,32 +3598,87 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				if(IsValidEntity(entity))
 				{
 					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					//if(IsValidClient(owner))
+					if(IsValidClient(owner))
 					{
-						TF2_StunPlayer(client, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
-						Building_Collect_Cooldown[entity][client] = GetGameTime() + 20.0;
-						Do_Perk_Machine_Chance(client);
-						if(owner != -1 && owner != client)
-						{
-							if(Perk_Machine_money_limit[owner][client] <= 10)
-							{
-								CashSpent[owner] -= 40;
-								Perk_Machine_money_limit[owner][client] += 1;
-								Resupplies_Supplied[owner] += 4;
-								SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-								SetGlobalTransTarget(owner);
-								ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Perk Machine Used");
-							}
-						}
-						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
-						Store_ApplyAttribs(client);
-						Store_GiveAll(client, GetClientHealth(client));
+						Do_Perk_Machine_Logic(owner, client, entity, 1);
+					}
+				}
+			}
+			else if(id == -4)
+			{
+				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				if(IsValidEntity(entity))
+				{
+					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+					if(IsValidClient(owner))
+					{
+						Do_Perk_Machine_Logic(owner, client, entity, 2);
+					}
+				}
+			}
+			else if(id == -5)
+			{
+				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				if(IsValidEntity(entity))
+				{
+					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+					if(IsValidClient(owner))
+					{
+						Do_Perk_Machine_Logic(owner, client, entity, 3);
+					}
+				}
+			}
+			else if(id == -6)
+			{
+				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				if(IsValidEntity(entity))
+				{
+					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+					if(IsValidClient(owner))
+					{
+						Do_Perk_Machine_Logic(owner, client, entity, 4);
+					}
+				}
+			}
+			else if(id == -7)
+			{
+				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				if(IsValidEntity(entity))
+				{
+					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+					if(IsValidClient(owner))
+					{
+						Do_Perk_Machine_Logic(owner, client, entity, 5);
 					}
 				}
 			}
 		}
 	}
 	return 0;
+}
+
+public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk)
+{
+	TF2_StunPlayer(client, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
+	Building_Collect_Cooldown[entity][client] = GetGameTime() + 20.0;
+	
+	i_CurrentEquippedPerk[client] = what_perk;
+	
+	if(owner != -1 && owner != client)
+	{
+		if(Perk_Machine_money_limit[owner][client] <= 10)
+		{
+			CashSpent[owner] -= 80;
+			Perk_Machine_money_limit[owner][client] += 2;
+			Resupplies_Supplied[owner] += 8;
+			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetGlobalTransTarget(owner);
+			ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Perk Machine Used");
+		}
+	}
+	SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+	SetGlobalTransTarget(client);
+	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
+	Store_ApplyAttribs(client);
+	Store_GiveAll(client, GetClientHealth(client));	
 }
