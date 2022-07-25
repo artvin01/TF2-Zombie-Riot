@@ -1174,7 +1174,13 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
 						damage *= 5.25;
 						
-						damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER!
+						
+						CClotBody npc = view_as<CClotBody>(victim);
+						
+						if(attacker == npc.m_iTarget)
+						{
+							damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER!
+						}
 						
 						if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
 						{
