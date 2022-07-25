@@ -91,6 +91,7 @@ public void XenoSpyMainBoss_OnMapStart_NPC()
 }
 
 //should be alone only here!
+static int g_MasterEntRef;
 static int Allies_Alive;
 
 methodmap XenoSpyMainBoss < CClotBody
@@ -252,6 +253,9 @@ methodmap XenoSpyMainBoss < CClotBody
 		npc.Anger = false;
 		npc.m_iState = 0;
 		
+		g_MasterEntRef = EntIndexToEntRef(npc.index);
+		
+		EscapeModeForNpc = true;
 		if(!EscapeModeForNpc)
 		{
 			npc.m_flSpeed = 330.0;
@@ -260,7 +264,6 @@ methodmap XenoSpyMainBoss < CClotBody
 		{
 			npc.m_flSpeed = 300.0;
 		}
-		
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flHalf_Life_Regen = false;
@@ -840,7 +843,18 @@ public Action XenoSpyMainBoss_Timer_MinionDespawnCheck_Spy(Handle timer, int ref
 	{
 		SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
 		
-		return Plugin_Continue;
+		if(IsValidEntity(EntRefToEntIndex(g_MasterEntRef)))
+			return Plugin_Continue;
+
+		if(StartFuncByPluginName("npc_xeno_spy_trickstabber", "NPC_Despawn"))
+		{
+			Call_PushCell(entity);
+			Call_Finish();
+		}
+		else
+		{
+			AcceptEntityInput(entity, "KillHierarchy");
+		}
 	}
 	Allies_Alive -= 1;
 	return Plugin_Stop;
