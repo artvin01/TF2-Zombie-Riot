@@ -1196,4 +1196,8 @@
 		"en"		"The Zombies have been defeated!\nGo into Freeplay..?\nFreeplay will play infinitly.\nThe further you go, the harder it gets.\n"
 		"chi"       "恭喜你击败了所有僵尸！\n是否进行自由模式？\n"
 	}
+	"M3 Ability Is Back"
+	{		
+		"en"		"Your MOUSE3 Ability is ready again to be used!"
+	}
 }

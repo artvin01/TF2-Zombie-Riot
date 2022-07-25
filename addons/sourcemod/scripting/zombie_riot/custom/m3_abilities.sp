@@ -1,4 +1,5 @@
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
+static float ability_cooldown_2[MAXPLAYERS+1]={0.0, ...};
 static int Attack3AbilitySlotArray[MAXPLAYERS+1]={0, ...};
 static float f_HealDelay[MAXENTITIES];
 static float f_Duration[MAXENTITIES];
@@ -34,6 +35,7 @@ public void M3_Abilities_Precache()
 public void M3_ClearAll()
 {
 	Zero(ability_cooldown);
+	Zero(ability_cooldown_2);
 	Zero(Attack3AbilitySlotArray);
 	Zero(f_HealDelay);
 	Zero(f_Duration);
@@ -59,52 +61,80 @@ public void M3_Abilities(int client)
 }
 public void WeakDash(int client)
 {
-	if (ability_cooldown[client] < GetGameTime())
+	if(dieingstate[client] > 0)
 	{
-		ability_cooldown[client] = GetGameTime() + 120.0;
-		
-		EmitSoundToAll(SOUND_DASH, client, _, 70, _, 1.0);
-		
-		static float EntLoc[3];
-		
-		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", EntLoc);
-		
-		SpawnSmallExplosion(EntLoc);
-		
-		static float anglesB[3];
-		GetClientEyeAngles(client, anglesB);
-		static float velocity[3];
-		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		float knockback = 750.0;
-		
-		ScaleVector(velocity, knockback);
-		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
-			velocity[2] = fmax(velocity[2], 300.0);
+		if (ability_cooldown_2[client] < GetGameTime())
+		{
+			ability_cooldown_2[client] = GetGameTime() + 120.0;
+			WeakDashLogic(client);
+		}
 		else
-			velocity[2] += 150.0; // a little boost to alleviate arcing issues
-		
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);	
+		{
+			float Ability_CD = ability_cooldown_2[client] - GetGameTime();
+			
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+				
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+		}		
 	}
 	else
 	{
-		float Ability_CD = ability_cooldown[client] - GetGameTime();
-		
-		if(Ability_CD <= 0.0)
-			Ability_CD = 0.0;
+		if (ability_cooldown[client] < GetGameTime())
+		{
+			ability_cooldown[client] = GetGameTime() + 60.0;
+			CreateTimer(60.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			WeakDashLogic(client);
+		}
+		else
+		{
+			float Ability_CD = ability_cooldown[client] - GetGameTime();
 			
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+				
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+		}
 	}
 }
 
+public void WeakDashLogic(int client)
+{
+	EmitSoundToAll(SOUND_DASH, client, _, 70, _, 1.0);
+			
+	static float EntLoc[3];
+			
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", EntLoc);
+			
+	SpawnSmallExplosion(EntLoc);
+			
+	static float anglesB[3];
+	GetClientEyeAngles(client, anglesB);
+	static float velocity[3];
+	GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
+	float knockback = 750.0;
+			
+	ScaleVector(velocity, knockback);
+	if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
+		velocity[2] = fmax(velocity[2], 300.0);
+	else
+		velocity[2] += 150.0; // a little boost to alleviate arcing issues
+			
+	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);		
+}
 
 public void PlaceableTempomaryArmorGrenade(int client)
 {
 	if (ability_cooldown[client] < GetGameTime())
 	{
 		ability_cooldown[client] = GetGameTime() + 100.0;
+		CreateTimer(100.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 		
 		int entity = CreateEntityByName("tf_projectile_pipe");
 		if(IsValidEntity(entity))
@@ -271,6 +301,8 @@ public void PlaceableTempomaryHealingGrenade(int client)
 	{
 		ability_cooldown[client] = GetGameTime() + 140.0;
 		
+		CreateTimer(140.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+		
 		int entity = CreateEntityByName("tf_projectile_pipe");
 		if(IsValidEntity(entity))
 		{
@@ -425,7 +457,19 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 }
 
 
-
+public Action M3_Ability_Is_Back(Handle cut_timer, int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	
+	if (IsValidClient(client))
+	{
+		ClientCommand(client, "playgamesound items/gunpickup2.wav");
+		SetHudTextParams(-1.0, 0.45, 3.01, 34, 139, 34, 255);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "M3 Ability Is Back");
+	}
+	return Plugin_Handled;
+}
 
 
 

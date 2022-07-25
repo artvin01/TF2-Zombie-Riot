@@ -5,7 +5,6 @@ static bool is_pressisng_m1[MAXTF2PLAYERS];
 static bool is_pressisng_m2[MAXTF2PLAYERS];
 static float f_cooldown_per_usage_global[MAXTF2PLAYERS];
 
-
 public void MedKit_ClearAll()
 {
 	Zero(f_cooldown_per_usage_global);

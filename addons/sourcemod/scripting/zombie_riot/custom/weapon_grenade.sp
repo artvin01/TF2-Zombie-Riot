@@ -40,7 +40,7 @@ public Action Give_Back_Grenade(Handle cut_timer, int client)
 		SetAmmo(client, Ammo_Hand_Grenade, 1); //Give ammo back that they just spend like an idiot
 		CurrentAmmo[client][Ammo_Hand_Grenade] = GetAmmo(client, Ammo_Hand_Grenade);
 		ClientCommand(client, "playgamesound items/gunpickup2.wav");
-		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetHudTextParams(-1.0, 0.45, 3.01, 34, 139, 34, 255);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Grenade Is Back");
 		Handle_on[client] = false;
