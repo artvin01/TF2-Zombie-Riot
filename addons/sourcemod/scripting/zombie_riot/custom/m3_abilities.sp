@@ -132,7 +132,7 @@ public void PlaceableTempomaryArmorGrenade(int client)
 			SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher", 0);
 			for(int i; i<4; i++)
 			{
-				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
+				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelArmor, _, i);
 			}
 			
 			SetVariantInt(team);
@@ -213,32 +213,32 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 							int Armor_Max = 300;
 							int Extra = 0;
 						
-							Extra = Armor_Level[client];
+							Extra = Armor_Level[target];
 								
-							Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
+							Armor_Max = MaxArmorCalculation(Extra, target, 1.0);
 								
 							
 								
-							if(Armor_Charge[client] < Armor_Max)
+							if(Armor_Charge[target] < Armor_Max)
 							{
 								if(Extra == 50)
-									Armor_Charge[client] += 75 / 5;
+									Armor_Charge[target] += 75 / 5;
 									
 								else if(Extra == 100)
-									Armor_Charge[client] += 100 / 5;
+									Armor_Charge[target] += 100 / 5;
 									
 								else if(Extra == 150)
-									Armor_Charge[client] += 200 / 5;
+									Armor_Charge[target] += 200 / 5;
 									
 								else if(Extra == 200)
-									Armor_Charge[client] += 350 / 5;
+									Armor_Charge[target] += 350 / 5;
 									
 								else
-									Armor_Charge[client] += 25 / 5;
+									Armor_Charge[target] += 25 / 5;
 											
-								if(Armor_Charge[client] >= Armor_Max)
+								if(Armor_Charge[target] >= Armor_Max)
 								{
-									Armor_Charge[client] = Armor_Max;
+									Armor_Charge[target] = Armor_Max;
 								}
 							}
 						}
