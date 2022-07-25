@@ -55,11 +55,29 @@ public void Weapon_Boom_Stick(int client, int weapon, const char[] classname, bo
 		GetClientEyeAngles(client, anglesB);
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(velocity, -500.0);
+		float Attribute_Knockback = Attributes_FindOnPlayer(client, 252, true, 1.0);	
+		
+		float knockback = -400.0;
+		
+		knockback *= Attribute_Knockback;
+		
+		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 			velocity[2] = fmax(velocity[2], 300.0);
 		else
 			velocity[2] += 100.0; // a little boost to alleviate arcing issues
+			
+		float newVel[3];
+		
+		newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
+						
+		for (new i = 0; i < 3; i++)
+		{
+			velocity[i] += newVel[i];
+		}
+		
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 	}
 	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
@@ -74,11 +92,31 @@ public void Weapon_Boom_Stick_Louder(int client, int weapon, const char[] classn
 		GetClientEyeAngles(client, anglesB);
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(velocity, -500.0);
+		
+		float Attribute_Knockback = Attributes_FindOnPlayer(client, 252, true, 1.0);	
+		
+		float knockback = -400.0;
+		
+		knockback *= Attribute_Knockback;
+		
+		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 			velocity[2] = fmax(velocity[2], 300.0);
 		else
 			velocity[2] += 100.0; // a little boost to alleviate arcing issues
+			
+			
+		float newVel[3];
+		
+		newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
+						
+		for (new i = 0; i < 3; i++)
+		{
+			velocity[i] += newVel[i];
+		}
+		
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 	}
 	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, 1.0, 80);

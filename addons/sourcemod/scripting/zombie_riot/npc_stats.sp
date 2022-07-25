@@ -1768,7 +1768,7 @@ methodmap CClotBody
 		if(IsRaidBoss)
 			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.1, 1.75); //Global.
 		else
-			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.4, 1.75); //Global.
+			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.29, 1.75); //Global.
 		
 		return view_as<CClotBody>(npc);
 	}
@@ -5045,8 +5045,25 @@ public void Custom_Knockback(int attacker, int enemy, float knockback)
 		}
 										
 		GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
-										
+			
+		float Attribute_Knockback = Attributes_FindOnPlayer(enemy, 252, true, 1.0);	
+		
+		knockback *= Attribute_Knockback;
+		
+		knockback *= 0.75; //oops, too much knockback now!
+						
 		ScaleVector(vDirection, knockback);
+		
+		float newVel[3];
+		
+		newVel[0] = GetEntPropFloat(enemy, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(enemy, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(enemy, Prop_Send, "m_vecVelocity[2]");
+						
+		for (new i = 0; i < 3; i++)
+		{
+			vDirection[i] += newVel[i];
+		}
 															
 		TeleportEntity(enemy, NULL_VECTOR, NULL_VECTOR, vDirection); 
 	}
@@ -5739,6 +5756,9 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 	float subjectPos[3];
 	GetEntPropVector(subject, Prop_Data, "m_vecAbsOrigin", subjectPos);
 	
+	botPos[2] += 1.0;
+	subjectPos[2] += 1.0;
+	
 	float to[3];
 	SubtractVectors(subjectPos, botPos, to);
 	to[2] = 0.0;
@@ -5815,6 +5835,43 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 		return subjectPos;	
 	}
 
+	pathTarget[2] += 20.0; //Clip them up, minimum crouch level preferred, or else the bots get really confused and sometimees go otther ways if the player goes up or down somewhere, very thin stairs break these bots.
+
+/*	
+	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+	TE_SetupBeamPoints(botPos, pathTarget, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 5.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+	TE_SendToAll();
+*/
+	/*
+	//Extra check on if they try to follow through a wall again, double check is always good. Specficially check for only COLLIDING WITH THE WORLD.
+	
+	int Looking_At_This; 
+	Looking_At_This = GetEntPropEnt(sentry, Prop_Send, "m_hEnemy");
+	if(IsValidEntity(Looking_At_This) && IsValidEnemy(sentry, Looking_At_This))
+	{
+		Handle trace; 
+		float pos_sentry[3]; GetEntPropVector(sentry, Prop_Data, "m_vecAbsOrigin", pos_sentry);
+		float pos_enemy[3]; GetEntPropVector(Looking_At_This, Prop_Data, "m_vecAbsOrigin", pos_enemy);
+		pos_sentry[2] += 25.0;
+		pos_enemy[2] += 45.0;
+		
+		trace = TR_TraceRayFilterEx(pos_sentry, pos_enemy, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, Base_Boss_Hit, sentry);
+		int Traced_Target;
+		
+//		int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+//		TE_SetupBeamPoints(pos_sentry, pos_enemy, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+//		TE_SendToAll();
+		
+		Traced_Target = TR_GetEntityIndex(trace);
+		delete trace;
+		
+		if(IsValidEntity(Traced_Target) && IsValidEnemy(sentry, Traced_Target))
+		{
+			DHookSetReturn(hReturn, true); 
+			return MRES_Supercede;		
+		}
+	}
+	*/
 	
 	return pathTarget;
 }

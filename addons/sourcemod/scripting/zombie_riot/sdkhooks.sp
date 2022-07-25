@@ -736,20 +736,22 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		
 		if(damagetype & DMG_FALL)
 		{
-			if(RaidBossActive)
+			Replicated_Damage *= 0.65; //Reduce falldmg by passive overall
+			damage *= 0.65;
+			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 			{
 				Replicated_Damage *= 0.2;
 				damage *= 0.2;			
 			}
 			else if(i_SoftShoes[victim] == 1)
 			{
-				Replicated_Damage *= 0.5;
-				damage *= 0.5;
+				Replicated_Damage *= 0.65;
+				damage *= 0.65;
 			}
 		}
 		else
 		{
-			bool Though_Armor = false;
+		//	bool Though_Armor = false;
 			
 			if(Resistance_Overall_Low[victim] > gameTime)
 			{
@@ -777,7 +779,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					damage += float(dmg_through_armour);
 					Replicated_Damage = 0.0;
 					Replicated_Damage += float(dmg_through_armour);
-					Though_Armor = true;
+			//		Though_Armor = true;
 				}
 			}
 			switch(Armour_Level_Current[victim])
@@ -786,29 +788,29 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				{
 					damage *= 0.9;
 					Replicated_Damage *= 0.9;
-					if(Though_Armor)
-						EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
+				//	if(Though_Armor)
+				//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 				}
 				case 2:
 				{
 					damage *= 0.85;
 					Replicated_Damage *= 0.85;
-					if(Though_Armor)
-						EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
+				//	if(Though_Armor)
+				//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 				}
 				case 3:
 				{
 					damage *= 0.8;
 					Replicated_Damage *= 0.80;
-					if(Though_Armor)
-						EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
+				//	if(Though_Armor)
+				//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 				}
 				case 4:
 				{
 					damage *= 0.75;
 					Replicated_Damage *= 0.75;
-					if(Though_Armor)
-						EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
+				//	if(Though_Armor)
+				//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 				}
 				default:
 				{
@@ -824,7 +826,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		TF2_AddCondition(victim, TFCond_UberchargedCanteen, 1.0);
 		TF2_AddCondition(victim, TFCond_MegaHeal, 1.0);
 		EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
-		f_OneShotProtectionTimer[victim] = gameTime + 120.0; // 120 second cooldown
+		f_OneShotProtectionTimer[victim] = gameTime + 60.0; // 60 second cooldown
 		return Plugin_Changed;
 	}
 	else if((RoundToCeil(Replicated_Damage) >= flHealth || RoundToCeil(damage) >= flHealth) && !LastMann && !b_IsAloneOnServer)

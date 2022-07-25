@@ -1172,9 +1172,9 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						EmitSoundToAll("weapons/knife_swing_crit.wav", attacker, _, _, _, 0.7);
 						RequestFrame(DoMeleeAnimationFrameLater, attacker);
 					//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
-						damage *= 3.00;
+						damage *= 5.25;
 						
-						damage *= 1.75;
+						damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER!
 						
 						if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
 						{
@@ -1183,6 +1183,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						
 						if(EscapeMode)
 							damage *= 1.35;
+						
 				
 						if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
 						{
