@@ -2582,7 +2582,7 @@ public Action Timer_DroppedBuildingWaitSentry(Handle htimer, int entref)
 	}
 	return Plugin_Continue;
 }
-public void BuildingCustomCommand(int client)
+public bool BuildingCustomCommand(int client)
 {
 	int obj=EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
 	if(IsValidEntity(obj) && obj>MaxClients)
@@ -2722,7 +2722,9 @@ public void BuildingCustomCommand(int client)
 				}
 			}
 		}
+		return true;
 	}
+	return false;
 }
 
 public void Do_Perk_Machine_Chance(int client)

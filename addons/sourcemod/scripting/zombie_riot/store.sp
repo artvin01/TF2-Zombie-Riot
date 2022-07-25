@@ -53,6 +53,8 @@ enum struct ItemInfo
 	Function FuncReload4;
 	Function FuncOnBuy;
 	
+	int Attack3AbilitySlot;
+	
 	bool SniperBugged;
 	
 	char Model[128];
@@ -146,6 +148,9 @@ enum struct ItemInfo
 		FormatEx(buffer, sizeof(buffer), "%sfunc_onbuy", prefix)
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncOnBuy = GetFunctionByName(null, buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%sattack_3_ability_slot", prefix)
+		this.Attack3AbilitySlot			= kv.GetNum(buffer);
 		
 		char buffers[32][16];
 		FormatEx(buffer, sizeof(buffer), "%sattributes", prefix)
@@ -1139,7 +1144,7 @@ static void MenuPage(int client, int section)
 				{
 					if(item.Owned[client])
 					{
-						if(info.Classname[0] || (!info.Cost && !Waves_Started())) //make sure they cant sell or unqeuip perks though.
+						if(info.Attack3AbilitySlot != 0 || info.Classname[0] || (!info.Cost && !Waves_Started())) //make sure they cant sell or unqeuip perks though.
 						{
 							canSellInsideMenu = true;
 							canSell = true;
@@ -1983,8 +1988,29 @@ void Store_ApplyAttribs(int client)
 //	map.SetValue("345", 0.0);											// No dispenser range
 //	map.SetValue("732", 0.0);											// No dispenser metal gain
 
+
+	int wave_count = Waves_GetRound() + 1;
+	
+	if(wave_count > 15 && wave_count < 30)
+	{
+		map.SetValue("252", 0.75);
+	}
+	else if(wave_count >= 30 && wave_count < 45)
+	{
+		map.SetValue("252", 0.65);
+	}
+	else if(wave_count >= 45 && wave_count < 60)
+	{
+		map.SetValue("252", 0.50);
+	}
+	else if(wave_count >= 60)
+	{
+		map.SetValue("252", 0.40);
+	}
+	
 	if(EscapeMode)	//infinite ammo stuff
 	{
+		map.SetValue("252", 0.50);
 		map.SetValue("76", 10.0); //inf ammo
 		map.SetValue("78", 10.0); //inf ammo
 		map.SetValue("112", 100.0); //inf ammo
@@ -2115,6 +2141,9 @@ void Store_GiveAll(int client, int health)
 	
 	TF2_RemoveAllWeapons(client);
 	
+	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
+	SetAbilitySlotCount(client, 0);
+						
 	bool use = true;
 	for(int i; i<sizeof(Equipped[]); i++)
 	{
@@ -2333,6 +2362,10 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 					item.GetItemInfo(item.Owned[client]-1, info);
 					if(!info.Classname[0])
 					{
+						if(info.Attack3AbilitySlot != 0)
+						{
+							SetAbilitySlotCount(client, info.Attack3AbilitySlot);
+						}
 						switch(info.Index)
 						{
 							case 0, 1, 2:
@@ -2359,6 +2392,7 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 							}
 							case 9:
 							{
+								
 							}
 							default:
 							{

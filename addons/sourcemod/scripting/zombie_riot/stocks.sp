@@ -2154,6 +2154,9 @@ public void SpawnSmallExplosion(float DetLoc[3])
 		
 		char particleName[255];
 		
+		
+		particleName = EXPLOSION_PARTICLE_SMALL_1;
+		/*
 		switch(GetRandomInt(1, 4))
 		{
 			case 1:
@@ -2173,7 +2176,7 @@ public void SpawnSmallExplosion(float DetLoc[3])
 				particleName = EXPLOSION_PARTICLE_SMALL_4;
 			}
 		}
-		
+		*/
 		DispatchKeyValue(littleBoom, "effect_name", particleName);
 		DispatchKeyValue(littleBoom, "targetname", "present");
 		DispatchSpawn(littleBoom);

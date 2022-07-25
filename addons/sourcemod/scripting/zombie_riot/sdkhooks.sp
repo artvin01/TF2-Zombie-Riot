@@ -973,3 +973,25 @@ static void ClientViewPunch(int client, const float angleOffset[3])
 	SetEntDataVector(client, g_offsPlayerPunchAngleVel, flOffset, true);
 }
 */
+
+public Action Command_Voicemenu(int client, const char[] command, int args)
+{
+	if(client && args == 2 && IsPlayerAlive(client) && TeutonType[client] == 0)
+	{
+		char arg[4];
+		GetCmdArg(1, arg, sizeof(arg));
+		if(arg[0] == '0')
+		{
+			GetCmdArg(2, arg, sizeof(arg));
+			if(arg[0] == '0')
+			{
+				bool has_been_done = BuildingCustomCommand(client);
+				if(has_been_done)
+				{
+					return Plugin_Handled;
+				}
+			}
+		}
+	}
+	return Plugin_Continue;
+}

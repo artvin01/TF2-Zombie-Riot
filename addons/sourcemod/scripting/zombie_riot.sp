@@ -939,6 +939,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 
 //FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
+#include "zombie_riot/custom/m3_abilities.sp"
 
 public Plugin myinfo =
 {
@@ -1003,6 +1004,7 @@ public void OnPluginStart()
 	AddCommandListener(OnTaunt, "+taunt");
 	AddCommandListener(OnSayCommand, "say");
 	AddCommandListener(OnSayCommand, "say_team");
+	AddCommandListener(Command_Voicemenu, "voicemenu");
 //	AddCommandListener(OnTaunt, "taunt");
 	
 	RegServerCmd("zr_reloadnpcs", OnReloadCommand, "Reload NPCs");
@@ -1250,6 +1252,7 @@ public void OnMapStart()
 	Charged_Handgun_Map_Precache();
 	TBB_Precahce_Mangler_2();
 	BeamWand_MapStart();
+	M3_Abilities_Precache();
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
@@ -2487,7 +2490,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		
 		if (IsPlayerAlive(client))
 		{
-			BuildingCustomCommand(client);
+			M3_Abilities(client);
 		}
 	}
 	
@@ -3571,4 +3574,5 @@ public void MapStartResetAll()
 	CleanAllBuildingEscape();
 	Zero(f_ClientServerShowMessages);
 	Zero(h_NpcCollissionHookType);
+	M3_ClearAll();
 }

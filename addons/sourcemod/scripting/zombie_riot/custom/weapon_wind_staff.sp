@@ -145,6 +145,8 @@ public void Weapon_Wind_Laser_Builder(int client, int weapon, const char[] class
 	{
 		Strength[client] *= 3.0;
 	}
+	
+	Strength[client] *= 0.5;
 			
 	//	TBB_Ability(client);
 	RequestFrame(TBB_Ability_Wind_Staff, client);

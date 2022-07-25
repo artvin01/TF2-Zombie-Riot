@@ -151,24 +151,38 @@ public MRESReturn DHook_GrenadeExplodePre(int entity)
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hThrower");
 	if (0 < owner <= MaxClients)
 	{
-		float original_damage = GetEntPropFloat(entity, Prop_Send, "m_flDamage"); 
-		if(f_CustomGrenadeDamage[entity] > 1.0)
+		if(f_CustomGrenadeDamage[entity] < 999999)
 		{
-			original_damage = f_CustomGrenadeDamage[entity];
+			float original_damage = GetEntPropFloat(entity, Prop_Send, "m_flDamage"); 
+			if(f_CustomGrenadeDamage[entity] > 1.0)
+			{
+				original_damage = f_CustomGrenadeDamage[entity];
+			}
+			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
+			int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
+			Explode_Logic_Custom(original_damage, owner, entity, weapon);
 		}
-		SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
-		int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
-		Explode_Logic_Custom(original_damage, owner, entity, weapon);
+		else
+		{
+			return MRES_Supercede;
+		}
 	}
 	else if(owner > MaxClients)
 	{
-		float original_damage = GetEntPropFloat(entity, Prop_Send, "m_flDamage"); 
-		if(f_CustomGrenadeDamage[entity] > 1.0)
+		if(f_CustomGrenadeDamage[entity] < 999999)
 		{
-			original_damage = f_CustomGrenadeDamage[entity];
+			float original_damage = GetEntPropFloat(entity, Prop_Send, "m_flDamage"); 
+			if(f_CustomGrenadeDamage[entity] > 1.0)
+			{
+				original_damage = f_CustomGrenadeDamage[entity];
+			}
+			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
+			Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
 		}
-		SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
-		Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
+		else
+		{
+			return MRES_Supercede;
+		}
 	}
 	f_CustomGrenadeDamage[entity] = 0.0;
 	return MRES_Ignored;
