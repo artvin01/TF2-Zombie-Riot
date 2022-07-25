@@ -2443,12 +2443,14 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		{
 			int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			
+			StartPlayerOnlyLagComp(client, true);
 			if(InteractKey(client, weapon_holding, true))
 			{
 				buttons &= ~IN_RELOAD;
+				EndPlayerOnlyLagComp(client);
 				return Plugin_Changed;
 			}
-			
+			EndPlayerOnlyLagComp(client);
 			if(IsValidEntity(weapon_holding))
 			{
 				Action action = Plugin_Continue;

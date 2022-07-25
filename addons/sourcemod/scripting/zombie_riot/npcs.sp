@@ -150,7 +150,7 @@ public Action GetClosestSpawners(Handle timer)
 				}
 				else
 				{
-					GiveXP(client, point_difference * 2); //Give extra.
+					GiveXP(client, point_difference);
 				}
 			}
 			
