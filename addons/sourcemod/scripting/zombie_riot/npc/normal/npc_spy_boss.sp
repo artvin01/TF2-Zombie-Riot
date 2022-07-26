@@ -293,7 +293,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
-			
+		
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);

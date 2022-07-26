@@ -253,6 +253,7 @@ public void MedivalCrossbowMan_ClotThink(int iNPC)
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				
 				/*
 				int color[4];
 				color[0] = 255;
@@ -329,8 +330,12 @@ public void HandleAnimEventMedival_CrossbowMan(int entity, int event)
 	
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3];
 				
+			float projectile_speed = 1200.0;
+			
+			vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
+			
 			npc.FaceTowards(vecTarget, 30000.0);
 						
 			npc.PlayMeleeSound();

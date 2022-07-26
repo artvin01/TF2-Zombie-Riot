@@ -539,7 +539,8 @@ void Store_PutInServer(int client)
 			if(!TeutonType[client])
 			{
 				Store_GiveItem(client, slot);
-				ImpulseBuffer[client] = GetClientHealth(client);
+				Manual_Impulse_101(client, GetClientHealth(client));
+			//	ImpulseBuffer[client] = GetClientHealth(client);
 			}
 			break;
 		}
@@ -1888,7 +1889,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							{
 								TF2_RemoveWeaponSlot(client, slot);
 								Store_GiveItem(client, slot);
-								ImpulseBuffer[client] = GetClientHealth(client);
+								Manual_Impulse_101(client, GetClientHealth(client));
+							//	ImpulseBuffer[client] = GetClientHealth(client);
 							}
 						}
 					}
@@ -2158,7 +2160,8 @@ void Store_GiveAll(int client, int health)
 		TF2_SetPlayerClass(client, TFClass_Engineer);
 	}
 	*/
-	ImpulseBuffer[client] = health;
+	Manual_Impulse_101(client, health);
+	//ImpulseBuffer[client] = health;
 }
 
 void Delete_Clip(int entity)
@@ -2608,7 +2611,8 @@ bool Store_Interact(int client, int entity, const char[] classname)
 							{
 								TF2_RemoveWeaponSlot(client, slot);
 								Store_GiveItem(client, slot);
-								ImpulseBuffer[client] = GetClientHealth(client);
+								Manual_Impulse_101(client, GetClientHealth(client));
+						//		ImpulseBuffer[client] = GetClientHealth(client);
 							}
 						}
 						return true;

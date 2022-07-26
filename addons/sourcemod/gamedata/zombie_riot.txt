@@ -640,6 +640,11 @@
 				"linux"		"1716"
 				"windows"	"1712"
 			}
+			"CBasePlayer::CheatImpulseCommands"
+			{
+				"linux"		"376"
+				"windows"	"375"
+			}
 		}
 		"Addresses"
 		{

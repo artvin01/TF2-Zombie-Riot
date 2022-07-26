@@ -718,6 +718,7 @@ void Waves_Progress()
 					if(IsClientInGame(i) && !IsFakeClient(i))
 					{
 						Music_Stop_All(i);
+						SendConVarValue(i, sv_cheats, "1");
 						players[total++] = i;
 					}
 				}
