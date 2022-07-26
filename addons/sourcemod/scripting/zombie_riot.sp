@@ -935,6 +935,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_calcium_wand.sp"
 #include "zombie_riot/custom/weapon_wand_calcium_spell.sp"
 #include "zombie_riot/custom/weapon_passive_banner.sp"
+#include "zombie_riot/custom/weapon_zeroknife.sp"
 #include "zombie_riot/custom/pets.sp"
 
 //FOR ESCAPE MAP ONLY!
@@ -3575,4 +3576,5 @@ public void MapStartResetAll()
 	Zero(f_ClientServerShowMessages);
 	Zero(h_NpcCollissionHookType);
 	M3_ClearAll();
+	ZeroRage_ClearAll();
 }
