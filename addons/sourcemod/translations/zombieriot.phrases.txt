@@ -733,6 +733,11 @@
 		"ru" 		"Перк: Снайпер-лайм"
 		"de"		"Vorteil: Todesschuss Daiquiri"
 	}
+	
+	"Widows Wine"
+	{
+		"en" 		"Perk: Widows Wine"
+	}
 
 	"Quick Revive Recieved"
 	{
@@ -763,6 +768,10 @@
 		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot and backstab damage"
 		"ru" 		"СНАЙПЕР-ЛАЙМ! 1.35x точность оружия и 1.25x дополнительного урона от выстрела в голову и удар в спину"
 		"de"		"TODESSCHUSS DAIQUIRI! 1.35-fache Waffengenauigkeit und 1.25-facher zusätzlicher Kopfschussschaden und Rücken messerstich schaden"
+	}
+	"Widows Wine Recieved"
+	{
+		"en" 		"WIDOWS WINE! Rechargeable protection that debuffs zombies and blocks 75% of the damage if activated."
 	}
 	"Nuke Activated"
 	{

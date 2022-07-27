@@ -1004,6 +1004,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		damage *= 1.15;
 	}
 	
+	if(f_WidowsWineDebuff[victim] > GetGameTime())
+	{
+		damage *= 1.35;
+	}
+	
 	if(attacker <= MaxClients)
 	{
 		if(dieingstate[attacker] > 0)
@@ -1334,6 +1339,10 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 		else if(f_LowTeslarDebuff[victim] > GetGameTime())
 		{
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "↓");
+		}
+		if(f_WidowsWineDebuff[victim] > GetGameTime())
+		{
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s४", Debuff_Adder);
 		}
 		CClotBody npc = view_as<CClotBody>(victim);
 		

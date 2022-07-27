@@ -465,7 +465,17 @@ public void OnPostThink(int client)
 						Format(buffer, sizeof(buffer), "%s\n", buffer);
 					}
 				}
-		
+				
+				if(i_CurrentEquippedPerk[client] == 6)
+				{
+					float slowdown_amount = f_WidowsWineDebuffPlayerCooldown[client] - GetGameTime();
+					
+					if(slowdown_amount < 0.0)
+					{
+						slowdown_amount = 0.0;
+					}
+					Format(buffer, sizeof(buffer), "%s%.1f", buffer, slowdown_amount);
+				}
 				SetHudTextParams(0.175, 0.86, 3.01, red, green, blue, 255);
 				ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
 			}
@@ -752,6 +762,48 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		else
 		{
 		//	bool Though_Armor = false;
+		
+			if(i_CurrentEquippedPerk[victim] == 6)
+			{
+
+				//s	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
+				int flMaxHealth = SDKCall_GetMaxHealth(victim);
+			
+				if((damage > float(flMaxHealth / 20) || flHealth > flMaxHealth / 10) && f_WidowsWineDebuffPlayerCooldown[victim] < GetGameTime()) //either too much dmg, or your health is too low.
+				{
+					f_WidowsWineDebuffPlayerCooldown[victim] = GetGameTime() + 20.0;
+					
+					float vecVictim[3]; vecVictim = WorldSpaceCenter(victim);
+					
+					ParticleEffectAt(vecVictim, "breadjar_impact_cloud", 0.5);
+					
+					EmitSoundToAll("weapons/jar_explode.wav", victim, SNDCHAN_AUTO, 80, _, 1.0);
+					
+					Replicated_Damage *= 0.25;
+					damage *= 0.25;
+					for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+					{
+						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+						if (IsValidEntity(baseboss_index))
+						{
+							if(!b_NpcHasDied[baseboss_index])
+							{
+								if (GetEntProp(victim, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
+								{
+									float vecTarget[3]; vecTarget = WorldSpaceCenter(baseboss_index);
+									
+									float flDistanceToTarget = GetVectorDistance(vecVictim, vecTarget, true);
+									if(flDistanceToTarget < 90000)
+									{
+										ParticleEffectAt(vecTarget, "breadjar_impact_cloud", 0.5);
+										f_WidowsWineDebuff[baseboss_index] = GetGameTime() + FL_WIDOWS_WINE_DURATION;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 			
 			if(Resistance_Overall_Low[victim] > gameTime)
 			{

@@ -2346,6 +2346,12 @@ methodmap CClotBody
 		public get()							{ return f_LowTeslarDebuff[this.index]; }
 		public set(float TempValueForProperty) 	{ f_LowTeslarDebuff[this.index] = TempValueForProperty; }
 	}
+	
+	property float mf_WidowsWineDebuff 
+	{
+		public get()							{ return f_WidowsWineDebuff[this.index]; }
+		public set(float TempValueForProperty) 	{ f_WidowsWineDebuff[this.index] = TempValueForProperty; }
+	}
 
 	public float GetRunSpeed()//For the future incase we want to alter it easier
 	{
@@ -2355,16 +2361,70 @@ methodmap CClotBody
 		
 		float Gametime = GetGameTime();
 		
-		if(!this.m_bThisNpcIsABoss && EntRefToEntIndex(RaidBossActive) != this.index) //Make sure that any slow debuffs dont affect these.
+		bool Is_Boss = true;
+		if(!this.m_bThisNpcIsABoss && EntRefToEntIndex(RaidBossActive) != this.index)
+		{
+			Is_Boss = false;
+		}
+		
+		if(!Is_Boss) //Make sure that any slow debuffs dont affect these.
 		{
 			if(this.m_fHighTeslarDebuff > Gametime)
 			{
-				speed_for_return *= 0.75;
+				speed_for_return *= 0.65;
 			}
 			else if(this.m_fLowTeslarDebuff > Gametime)
 			{
-				speed_for_return *= 0.85;
+				speed_for_return *= 0.75;
 			}
+		}
+		else
+		{
+			if(this.m_fHighTeslarDebuff > Gametime)
+			{
+				speed_for_return *= 0.9;
+			}
+			else if(this.m_fLowTeslarDebuff > Gametime)
+			{
+				speed_for_return *= 0.95;
+			}			
+			
+		}
+		if(this.mf_WidowsWineDebuff > Gametime)
+		{
+			float slowdown_amount = this.mf_WidowsWineDebuff - Gametime;
+			
+			float max_amount = FL_WIDOWS_WINE_DURATION;
+			
+			slowdown_amount = slowdown_amount / max_amount;
+			
+			slowdown_amount -= 1.0;
+			
+			slowdown_amount *= -1.0;
+			
+			if(!Is_Boss)
+			{
+				if(slowdown_amount < 0.1)
+				{
+					slowdown_amount = 0.1;
+				}
+				else if(slowdown_amount > 1.0)
+				{
+					slowdown_amount = 1.0;
+				}	
+			}
+			else
+			{
+				if(slowdown_amount < 0.8)
+				{
+					slowdown_amount = 0.8;
+				}
+				else if(slowdown_amount > 1.0)
+				{
+					slowdown_amount = 1.0;
+				}	
+			}
+			speed_for_return *= slowdown_amount;
 		}
 		return speed_for_return; 
 	}
@@ -6425,6 +6485,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ThisNpcIsSawrunner[entity] = false;
 	f_LowTeslarDebuff[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
+	f_WidowsWineDebuff[entity] = 0.0;
 	
 	fl_MeleeArmor[entity] = 1.0; //yeppers.
 	fl_RangedArmor[entity] = 1.0;

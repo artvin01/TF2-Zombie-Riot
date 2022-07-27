@@ -1944,6 +1944,9 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							Menu menu2 = new Menu(Building_ConfirmMountedAction);
 							menu2.SetTitle("%t", "Which perk do you desire?");
 								
+							FormatEx(buffer, sizeof(buffer), "%t", "Widows Wine");
+							menu2.AddItem("-8", buffer);
+							
 							FormatEx(buffer, sizeof(buffer), "%t", "Deadshot Daiquiri");
 							menu2.AddItem("-7", buffer);
 							
@@ -3637,6 +3640,18 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 					if(IsValidClient(owner))
 					{
 						Do_Perk_Machine_Logic(owner, client, entity, 5);
+					}
+				}
+			}
+			else if(id == -8)
+			{
+				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				if(IsValidEntity(entity))
+				{
+					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+					if(IsValidClient(owner))
+					{
+						Do_Perk_Machine_Logic(owner, client, entity, 6);
 					}
 				}
 			}
