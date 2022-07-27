@@ -17,7 +17,7 @@ public void ZeroAoeKnife(int client, int weapon, bool crit)
 	if(how_many_times_fisted[client] >= 3)
 	{
 		CreateTimer(0.15, ASX_Timer5, client, TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(0.2, Apply_Effect, client, TIMER_FLAG_NO_MAPCHANGE);
+//		CreateTimer(0.2, Apply_Effect, client, TIMER_FLAG_NO_MAPCHANGE);
 		how_many_times_fisted[client] = 0;
 	}
 	else
@@ -223,13 +223,13 @@ public Action ASX_Timer5_pap(Handle timer, int client)
 	return Plugin_Handled;
 }
 
-public void ZeroRage(int client, int weapon, const char[] classname)
+public void ZeroRage(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
-		if (ability_cooldown[client] < GetGameTime())
+		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			ability_cooldown[client] = GetGameTime() + 60.0;
+			Ability_Apply_Cooldown(client, slot, 60.0);
 			
 			weapon_id[client] = weapon;
 			switch(GetRandomInt(1,2))
@@ -292,7 +292,7 @@ public void ZeroRage(int client, int weapon, const char[] classname)
 		}
 		else
 		{
-			float Ability_CD = ability_cooldown[client] - GetGameTime();
+			float Ability_CD =  Ability_Check_Cooldown(client, slot);
 			if(Ability_CD <= 0.0)
 				Ability_CD = 0.0;
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -303,13 +303,13 @@ public void ZeroRage(int client, int weapon, const char[] classname)
 	}
 }
 
-public void ZeroDefenceRage(int client, int weapon, const char[] classname)
+public void ZeroDefenceRage(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
-		if (ability_cooldown[client] < GetGameTime())
+		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			ability_cooldown[client] = GetGameTime() + 80.0;
+			Ability_Apply_Cooldown(client, slot, 15.0);
 			
 			weapon_id[client] = weapon;
 			
@@ -324,7 +324,7 @@ public void ZeroDefenceRage(int client, int weapon, const char[] classname)
 		}
 		else
 		{
-			float Ability_CD = ability_cooldown[client] - GetGameTime();
+			float Ability_CD =  Ability_Check_Cooldown(client, slot);
 			if(Ability_CD <= 0.0)
 				Ability_CD = 0.0;
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -335,13 +335,13 @@ public void ZeroDefenceRage(int client, int weapon, const char[] classname)
 	}
 }
 
-public void ZeroWrathRage(int client, int weapon, const char[] classname)
+public void ZeroWrathRage(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
-		if (ability_cooldown[client] < GetGameTime())
+		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			ability_cooldown[client] = GetGameTime() + 80.0;
+			Ability_Apply_Cooldown(client, slot, 80.0);
 			
 			weapon_id[client] = weapon;
 			
@@ -379,7 +379,7 @@ public void ZeroWrathRage(int client, int weapon, const char[] classname)
 		}
 		else
 		{
-			float Ability_CD = ability_cooldown[client] - GetGameTime();
+			float Ability_CD = Ability_Check_Cooldown(client, slot);
 			if(Ability_CD <= 0.0)
 				Ability_CD = 0.0;
 			ClientCommand(client, "playgamesound items/medshotno1.wav");

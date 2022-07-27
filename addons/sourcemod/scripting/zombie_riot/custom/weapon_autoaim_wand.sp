@@ -31,16 +31,16 @@ void Wand_autoaim_Map_Precache()
 //	PrecacheModel(ENERGY_BALL_MODEL);
 }
 
-public void Weapon_autoaim_Wand_Shotgun(int client, int weapon, bool crit)
+public void Weapon_autoaim_Wand_Shotgun(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
 		int mana_cost = 120;
 		if(mana_cost <= Current_Mana[client])
 		{
-			if (ability_cooldown[client] < GetGameTime())
+			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				ability_cooldown[client] = GetGameTime() + 5.0; //10 sec CD
+				Ability_Apply_Cooldown(client, slot, 5.0);
 				
 				float damage = 65.0;
 				Address address = TF2Attrib_GetByDefIndex(weapon, 410);
@@ -105,7 +105,7 @@ public void Weapon_autoaim_Wand_Shotgun(int client, int weapon, bool crit)
 			}
 			else
 			{
-				float Ability_CD = ability_cooldown[client] - GetGameTime();
+				float Ability_CD = Ability_Check_Cooldown(client, slot);
 		
 				if(Ability_CD <= 0.0)
 					Ability_CD = 0.0;
@@ -125,7 +125,7 @@ public void Weapon_autoaim_Wand_Shotgun(int client, int weapon, bool crit)
 		}
 	}
 }
-public void Weapon_autoaim_Wand(int client, int weapon, bool crit)
+public void Weapon_autoaim_Wand(int client, int weapon, bool crit, int slot)
 {
 	int mana_cost;
 	Address address = TF2Attrib_GetByDefIndex(weapon, 733);

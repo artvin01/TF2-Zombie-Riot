@@ -315,6 +315,7 @@ int i_ObjectsSpawners[ZR_MAX_SPAWNERS];
 			
 int g_CarriedDispenser[MAXPLAYERS+1];
 int i_BeingCarried[MAXENTITIES];
+float f_BuildingIsNotReady[MAXTF2PLAYERS];
 
 //bool b_AllowBuildCommand[MAXPLAYERS + 1];
 
@@ -344,6 +345,18 @@ float f_HighTeslarDebuff[MAXENTITIES];
 
 float f_WidowsWineDebuff[MAXENTITIES];
 float f_WidowsWineDebuffPlayerCooldown[MAXENTITIES];
+
+float f_Ability_Cooldown_m1[MAXENTITIES][3]; //Incase any ability uses m1 lol
+float f_Ability_Cooldown_m2[MAXENTITIES][3];
+float f_Ability_Cooldown_r[MAXENTITIES][3];
+
+int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
+
+#define ABILITY_NONE                 0          	//Nothing special.
+
+#define ABILITY_M1				(1 << 1) 
+#define ABILITY_M2				(1 << 2) 
+#define ABILITY_R				(1 << 3) 	
 
 #define FL_WIDOWS_WINE_DURATION 5.0
 
@@ -2415,11 +2428,12 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			if(EntityFuncAttack2[weapon_holding] && EntityFuncAttack2[weapon_holding]!=INVALID_FUNCTION)
 			{
 				bool result = false; //ignore crit.
+				int slot = 2;
 				Call_StartFunction(null, EntityFuncAttack2[weapon_holding]);
 				Call_PushCell(client);
 				Call_PushCell(weapon_holding);
-				Call_PushString(classname);
 				Call_PushCellRef(result);
+				Call_PushCell(slot); //This is attack 2 :)
 				Call_Finish(action);
 			}
 			if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
@@ -2469,13 +2483,14 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				if(EntityFuncAttack3[weapon_holding] && EntityFuncAttack3[weapon_holding]!=INVALID_FUNCTION)
 				{
 					bool result = false; //ignore crit.
+					int slot = 3;
 					char classname[32];
 					GetEntityClassname(weapon_holding, classname, 32);
 					Call_StartFunction(null, EntityFuncAttack3[weapon_holding]);
 					Call_PushCell(client);
 					Call_PushCell(weapon_holding);
-					Call_PushString(classname);
 					Call_PushCellRef(result);
+					Call_PushCell(slot);	//This is R :)
 					Call_Finish(action);
 				}
 			}
@@ -2715,11 +2730,12 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	Function func = EntityFuncAttack[weapon];
 	if(func && func!=INVALID_FUNCTION)
 	{
+		int slot = 1;
 		Call_StartFunction(null, func);
 		Call_PushCell(client);
 		Call_PushCell(weapon);
-		Call_PushString(classname);
 		Call_PushCellRef(result);
+		Call_PushCell(slot);	//This is m1 :)
 		Call_Finish(action);
 	}
 	
@@ -3535,6 +3551,10 @@ public Action Hook_BlockUserMessageEx(UserMsg msg_id, BfRead msg, const int[] pl
 
 public void MapStartResetAll()
 {
+	Zero2(f_Ability_Cooldown_m1);
+	Zero2(f_Ability_Cooldown_r);
+	Zero(i_Hex_WeaponUsesTheseAbilities);
+	Zero(i_Hex_WeaponUsesTheseAbilities);
 	Zero(f_WidowsWineDebuffPlayerCooldown);
 	Zero(f_TempCooldownForVisualManaPotions);
 	Zero(i_IsABuilding);

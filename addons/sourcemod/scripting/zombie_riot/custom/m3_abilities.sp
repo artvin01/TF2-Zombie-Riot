@@ -475,7 +475,10 @@ public Action M3_Ability_Is_Back(Handle cut_timer, int ref)
 
 
 
-
+public float GetAbilityCooldownM3(int client)
+{
+	return ability_cooldown[client] - GetGameTime();
+}
 
 
 public void SetAbilitySlotCount(int client, int value)

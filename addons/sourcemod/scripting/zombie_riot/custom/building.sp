@@ -43,8 +43,6 @@ int i_HasMarker[MAXTF2PLAYERS];
 
 float f_MarkerPosition[MAXTF2PLAYERS][3];
 
-float f_BuildingIsNotReady[MAXTF2PLAYERS];
-
 static Handle h_Pickup_Building[MAXPLAYERS + 1];
 
 void Building_MapStart()
@@ -3124,7 +3122,6 @@ public Action MortarReload(Handle timer, int client)
 			EmitSoundToAll(MORTAR_RELOAD, 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, pos_obj);
 			EmitSoundToAll(MORTAR_RELOAD, 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, pos_obj);			
 		}
-		f_BuildingIsNotReady[client] = GetGameTime() + 2.2;
 	}
 	return Plugin_Handled;
 }

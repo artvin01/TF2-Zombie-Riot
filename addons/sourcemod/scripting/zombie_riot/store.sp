@@ -2259,6 +2259,22 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 							SetEntProp(entity, Prop_Send, "m_iSecondaryAmmoType", 30);
 						}
 					}
+					
+					i_Hex_WeaponUsesTheseAbilities[entity] = 0;
+		
+					if(info.FuncAttack != INVALID_FUNCTION)
+					{
+						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_M1; //m1 status to weapon
+					}
+					if(info.FuncAttack2 != INVALID_FUNCTION)
+					{
+						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_M2; //m2 status to weapon
+					}
+					if(info.FuncAttack3 != INVALID_FUNCTION)
+					{
+						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_R;  //R status to weapon
+					}
+					
 					EntityFuncAttack[entity] = info.FuncAttack;
 					EntityFuncAttack2[entity] = info.FuncAttack2;
 					EntityFuncAttack3[entity] = info.FuncAttack3;

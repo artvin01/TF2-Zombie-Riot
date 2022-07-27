@@ -14,6 +14,11 @@ static float Damage_Projectile[MAXENTITIES]={0.0, ...};
 static int Projectile_To_Client[MAXENTITIES]={0, ...};
 static int Projectile_To_Particle[MAXENTITIES]={0, ...};
 
+#define KNIFE_SPEED_1 2500.0
+#define KNIFE_SPEED_2 2700.0
+#define KNIFE_SPEED_3 3000.0
+
+
 
 public void Survival_Knife_ClearAll()
 {
@@ -137,7 +142,7 @@ public void Kill_Timer_Management(int client)
 	}
 }
 
-public void Survival_Knife_Tier1_Alt(int client, int weapon, bool crit)
+public void Survival_Knife_Tier1_Alt(int client, int weapon, bool crit, int slot)
 {
 	Enable_Management(client, weapon);
 	
@@ -148,11 +153,15 @@ public void Survival_Knife_Tier1_Alt(int client, int weapon, bool crit)
 	{
 		Knife_Count[client] -= 1;
 		CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
-		Throw_Knife(client, weapon, 1100.0, 0);
+		Throw_Knife(client, weapon, KNIFE_SPEED_1, 0);
 		
 		SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t" , "Knife Amount", Knife_Count[client]);
+		if(Knife_Count[client] <= 0)
+		{
+			Ability_Apply_Cooldown(client, slot, CD_Knife[client]-GetGameTime());	
+		}
 	}
 	else
 	{
@@ -172,7 +181,7 @@ public void Survival_Knife_Tier2_Reload(int client, int weapon, bool crit)
 	CD_Mode[client] = GetGameTime() + 0.3;
 }
 
-public void Survival_Knife_Tier2_Alt(int client, int weapon, bool crit)
+public void Survival_Knife_Tier2_Alt(int client, int weapon, bool crit, int slot)
 {
 	Enable_Management(client, weapon);
 	
@@ -185,11 +194,15 @@ public void Survival_Knife_Tier2_Alt(int client, int weapon, bool crit)
 		{
 			Knife_Count[client] -= 1;
 			CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
-			Throw_Knife(client, weapon, 1700.0, 1);
+			Throw_Knife(client, weapon, KNIFE_SPEED_2, 1);
 			
 			SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t" , "Knife Amount", Knife_Count[client]);
+			if(Knife_Count[client] <= 0)
+			{
+				Ability_Apply_Cooldown(client, slot, CD_Knife[client]-GetGameTime());	
+			}
 		}
 		else
 		{
@@ -205,13 +218,17 @@ public void Survival_Knife_Tier2_Alt(int client, int weapon, bool crit)
 		{
 			Knife_Count[client] -= 3;
 			CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
-			Throw_Knife(client, weapon, 1500.0, 1);
+			Throw_Knife(client, weapon, KNIFE_SPEED_2, 1);
 			CreateTimer(0.1, Timer_Throw_Extra_Knife, client, TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(0.2, Timer_Throw_Extra_Knife, client, TIMER_FLAG_NO_MAPCHANGE);
 			
 			SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Knife Amount", Knife_Count[client]);
+			if(Knife_Count[client] <= 0)
+			{
+				Ability_Apply_Cooldown(client, slot, CD_Knife[client]-GetGameTime());	
+			}
 		}
 		else
 		{
@@ -223,10 +240,12 @@ public void Survival_Knife_Tier2_Alt(int client, int weapon, bool crit)
 	}
 }
 
-public void Survival_Knife_Tier3_Reload(int client, int weapon, bool crit)
+public void Survival_Knife_Tier3_Reload(int client, int weapon, bool crit, int slot)
 {
 	if (InMadness[client])
 		return;
+
+	Ability_Apply_Cooldown(client, slot, 15.0); //yeah.
 	
 	if (CD_Madness[client]>GetGameTime())
 	{
@@ -290,7 +309,7 @@ public Action Timer_Reable_Madness(Handle timer, int client)
 	return Plugin_Handled;
 }
 
-public void Survival_Knife_Tier3_Alt(int client, int weapon, bool crit)
+public void Survival_Knife_Tier3_Alt(int client, int weapon, bool crit, int slot)
 {
 	Enable_Management(client, weapon);
 	
@@ -303,7 +322,11 @@ public void Survival_Knife_Tier3_Alt(int client, int weapon, bool crit)
 		{
 			Knife_Count[client] -= 1;
 			CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
-			Throw_Knife(client, weapon, 1900.0, 2);
+			Throw_Knife(client, weapon, KNIFE_SPEED_3, 2);
+			if(Knife_Count[client] <= 0)
+			{
+				Ability_Apply_Cooldown(client, slot, CD_Knife[client]-GetGameTime());	
+			}
 		}
 		else
 		{
@@ -316,7 +339,7 @@ public void Survival_Knife_Tier3_Alt(int client, int weapon, bool crit)
 	else
 	{
 			CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
-			Throw_Knife(client, weapon, 1700.0, 2);
+			Throw_Knife(client, weapon, KNIFE_SPEED_3, 2);
 	}
 }
 public Action Timer_Throw_Extra_Knife(Handle timer, int client)
@@ -326,7 +349,7 @@ public Action Timer_Throw_Extra_Knife(Handle timer, int client)
 		if (IsPlayerAlive(client))
 		{
 			int weapon = GetPlayerWeaponSlot(client, 2);
-			Throw_Knife(client, weapon, 1500.0, 1);
+			Throw_Knife(client, weapon, KNIFE_SPEED_2, 1);
 		}
 	}
 	return Plugin_Continue;
