@@ -3059,7 +3059,7 @@ public Action MortarFire(Handle timer, int client)
 		{
 			float damage = 10.0;
 							
-			damage *= 30.0;
+			damage *= 35.0;
 			
 			float attack_speed;
 			float sentry_range;
@@ -3072,7 +3072,7 @@ public Action MortarFire(Handle timer, int client)
 			
 			float AOE_range = 350.0 * sentry_range;
 			
-			Explode_Logic_Custom(damage, client, client, -1, f_MarkerPosition[client], AOE_range, _, _, false);
+			Explode_Logic_Custom(damage, client, client, -1, f_MarkerPosition[client], AOE_range, 1.45, _, false);
 			
 			CreateEarthquake(f_MarkerPosition[client], 0.5, 350.0, 16.0, 255.0);
 			CreateTimer(10.0, MortarReload, client, TIMER_FLAG_NO_MAPCHANGE);
@@ -3216,6 +3216,8 @@ static void Railgun_Boom(int client)
 			float vecForward[3];
 			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 			
+			bool First_Target_Hit = false;
+			
 			BEAM_Targets_Hit[client] = 1.0;
 			for (int building = 0; building < MAX_TARGETS_HIT; building++)
 			{
@@ -3228,6 +3230,12 @@ static void Railgun_Boom(int client)
 						float damage = BEAM_CloseBuildingDPT + (BEAM_FarBuildingDPT-BEAM_CloseBuildingDPT) * (distance/BEAM_MaxDistance);
 						if (damage < 0)
 							damage *= -1.0;
+							
+						if(First_Target_Hit)
+						{
+							damage *= 1.65;
+							First_Target_Hit = false;
+						}
 					
 						SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0), startPoint);	// 2048 is DMG_NOGIB?
 						BEAM_Targets_Hit[obj] *= LASER_AOE_DAMAGE_FALLOFF;
@@ -3359,6 +3367,7 @@ static void Railgun_Boom_Client(int client)
 			float vecForward[3];
 			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 			
+			bool First_Target_Hit = true;
 			BEAM_Targets_Hit[client] = 1.0;
 			for (int building = 0; building < MAX_TARGETS_HIT; building++)
 			{
@@ -3371,6 +3380,12 @@ static void Railgun_Boom_Client(int client)
 						float damage = BEAM_CloseBuildingDPT + (BEAM_FarBuildingDPT-BEAM_CloseBuildingDPT) * (distance/BEAM_MaxDistance);
 						if (damage < 0)
 							damage *= -1.0;
+							
+						if(First_Target_Hit)
+						{
+							damage *= 1.65;
+							First_Target_Hit = false;
+						}
 	
 						SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0), startPoint);	// 2048 is DMG_NOGIB?
 						BEAM_Targets_Hit[obj] *= LASER_AOE_DAMAGE_FALLOFF;
