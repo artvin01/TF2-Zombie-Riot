@@ -923,7 +923,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				//s	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 				int flMaxHealth = SDKCall_GetMaxHealth(victim);
 			
-				if((damage > float(flMaxHealth / 20) || flHealth > flMaxHealth / 10) && f_WidowsWineDebuffPlayerCooldown[victim] < GetGameTime()) //either too much dmg, or your health is too low.
+				if((damage > float(flMaxHealth / 15) || flHealth < flMaxHealth / 10) && f_WidowsWineDebuffPlayerCooldown[victim] < GetGameTime()) //either too much dmg, or your health is too low.
 				{
 					f_WidowsWineDebuffPlayerCooldown[victim] = GetGameTime() + 20.0;
 					

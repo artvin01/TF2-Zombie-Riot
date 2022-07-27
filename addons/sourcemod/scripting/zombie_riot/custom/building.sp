@@ -3672,7 +3672,7 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk)
 {
 	TF2_StunPlayer(client, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
-	Building_Collect_Cooldown[entity][client] = GetGameTime() + 20.0;
+	Building_Collect_Cooldown[entity][client] = GetGameTime() + 40.0;
 	
 	i_CurrentEquippedPerk[client] = what_perk;
 	
