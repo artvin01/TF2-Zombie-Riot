@@ -114,7 +114,7 @@ void Music_RoundEnd(int victim)
 	{
 		if(IsClientInGame(i) && !IsFakeClient(i))
 		{
-			SendConVarValue(i, sv_cheats, "1");
+			SendConVarValue(i, sv_cheats, "0");
 		}
 	}
 	cvarTimeScale.SetFloat(0.1);

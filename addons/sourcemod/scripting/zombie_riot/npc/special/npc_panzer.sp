@@ -687,8 +687,8 @@ public void NaziPanzer_ClotThink(int iNPC)
 			{
 				float vecTargetHook[3]; vecTargetHook = WorldSpaceCenter(HumanTarget);
 				npc.FaceTowards(vecTargetHook, 20000.0);
-				float vPredictedPosHuman[3];
-				vPredictedPosHuman = PredictSubjectPositionForProjectiles(npc, HumanTarget, 1200.0);
+				float vPredictedPosHuman[3]; vPredictedPosHuman = PredictSubjectPositionHook(npc, HumanTarget);
+				vPredictedPosHuman[2] += 45;
 				npc.FireHook(vPredictedPosHuman);
 				npc.m_flGrappleCooldown = GetGameTime() + 30.0;
 				
@@ -712,7 +712,6 @@ public void NaziPanzer_ClotThink(int iNPC)
 			
 			if(IsValidEntity(npc.m_iWearable2))
 				RemoveEntity(npc.m_iWearable2);
-			
 			float flPos[3]; // original
 			float flAng[3]; // original
 	

@@ -237,6 +237,7 @@ int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
 int CashSpent[MAXTF2PLAYERS];
 int Level[MAXTF2PLAYERS];
 int XP[MAXTF2PLAYERS];
+int ImpulseBuffer[MAXTF2PLAYERS];
 int Ammo_Count_Ready[MAXTF2PLAYERS];
 //float Armor_Ready[MAXTF2PLAYERS];
 float Increaced_Sentry_damage_Low[MAXENTITIES];
@@ -1052,10 +1053,6 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.weapons");
 	LoadTranslations("zombieriot.phrases.bob");
 	LoadTranslations("common.phrases");
-	
-	int cvarCheatsflags = GetConVarFlags(sv_cheats);
-	cvarCheatsflags &= ~FCVAR_NOTIFY;
-	SetConVarFlags(sv_cheats, cvarCheatsflags);
 	
 	DHook_Setup();
 	SDKCall_Setup();
@@ -2347,9 +2344,15 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	#if defined LagCompensation
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 	#endif
-	/*
 	if(ImpulseBuffer[client] > 0)
 	{
+		/*
+		if(!CvarCheats.BoolValue)
+		{
+			CvarCheats.SetBool(true, false, false);
+			RequestFrame(Frame_OffCheats);
+		}
+		*/
 		
 		ImpulseBuffer[client] = -ImpulseBuffer[client];
 		impulse = 101;
@@ -2378,7 +2381,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		
 		OnWeaponSwitchPost(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
 	}
-	*/
+	
 	Escape_PlayerRunCmd(client);
 	/*
 	if(dieingstate[client] > 0)

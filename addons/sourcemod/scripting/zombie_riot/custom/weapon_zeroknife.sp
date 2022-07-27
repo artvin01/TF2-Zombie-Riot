@@ -3,15 +3,9 @@ static int how_many_times_fisted[MAXTF2PLAYERS];
 static int weapon_id[MAXPLAYERS+1]={0, ...};
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float Original_Atackspeed[MAXPLAYERS+1]={0.0, ...};
-static float MovementSpeed_Bonus[MAXPLAYERS+1]={0.0, ...};
-static float HealOnHit[MAXTF2PLAYERS+1]={0.0, ...};
 
 #define MAXANGLEPITCH	65.0
 #define MAXANGLEYAW		75.0
-#define TIMER			0.15
-#define DEFENCERAGE		CreateTimer(TIMER, ZeroDefenceRage, client, TIMER_FLAG_NO_MAPCHANGE)
-#define SPEEDBOOSTRAGE	CreateTimer(TIMER, ZeroSpeedModifierRage, client, TIMER_FLAG_NO_MAPCHANGE)
-#define WRATHRAGE		CreateTimer(TIMER, ZeroWrathRage, client, TIMER_FLAG_NO_MAPCHANGE)
 
 public void ZeroRage_ClearAll()
 {
@@ -31,15 +25,20 @@ public void ZeroAoeKnife(int client, int weapon, bool crit)
 		how_many_times_fisted[client] += 1;
 	}
 }
-public Action Apply_Effect(Handle cut_timer, int client)
+
+public void ZeroAoeKnife_pap(int client, int weapon, bool crit)
 {
-	if (IsValidClient(client))
+	if(how_many_times_fisted[client] >= 2)
 	{
-		EmitSoundToAll("weapons/samurai/tf_katana_06.wav", client, SNDCHAN_STATIC, 70, _, 0.35);
-		Client_Shake(client, 0, 25.0, 15.0, 0.25);
+		CreateTimer(0.15, ASX_Timer5_pap, client, TIMER_FLAG_NO_MAPCHANGE);
+		how_many_times_fisted[client] = 0;
 	}
-	return Plugin_Handled;
+	else
+	{
+		how_many_times_fisted[client] += 1;
+	}
 }
+
 public Action ASX_Timer5(Handle timer, int client)
 {
 	if(client <= MaxClients)
@@ -131,13 +130,106 @@ public Action ASX_Timer5(Handle timer, int client)
 	}
 	return Plugin_Handled;
 }
+
+public Action ASX_Timer5_pap(Handle timer, int client)
+{
+	if(client <= MaxClients)
+	{
+		if(IsValidClient(client))
+		{
+			if(IsPlayerAlive(client))
+			{
+				static float pos2[3], ang2[3];
+				GetClientEyePosition(client, pos2);
+				GetClientEyeAngles(client, ang2);
+				ang2[0] = fixAngle(ang2[0]);
+				ang2[1] = fixAngle(ang2[1]);
+				
+				float damage = 17.0;
+				
+				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				
+				Address address = TF2Attrib_GetByDefIndex(weapon, 1);
+				if(address != Address_Null)
+					damage *= TF2Attrib_GetValue(address);
+					
+				address = TF2Attrib_GetByDefIndex(weapon, 2);
+				if(address != Address_Null)
+					damage *= TF2Attrib_GetValue(address);
+					
+				address = TF2Attrib_GetByDefIndex(weapon, 476);
+				if(address != Address_Null)
+					damage *= TF2Attrib_GetValue(address);	
+					
+				bool hit = false;
+				float hit_enemies = 1.0;
+				b_LagCompNPC_No_Layers = true;
+				StartLagCompensation_Base_Boss(client, false);
+				
+				for(int entitycount_2; entitycount_2<i_MaxcountNpc; entitycount_2++)
+				{
+					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount_2]);
+					if (IsValidEntity(baseboss_index))
+					{
+						if(!b_NpcHasDied[baseboss_index])
+						{
+							static float pos1[3];
+							GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", pos1);
+							pos1[2] += 54;
+							if(GetVectorDistance(pos2, pos1, true) < 30000)
+							{
+								static float ang3[3];
+								GetVectorAnglesTwoPoints(pos2, pos1, ang3);
+	
+								// fix all angles
+								ang3[0] = fixAngle(ang3[0]);
+								ang3[1] = fixAngle(ang3[1]);
+	
+								// verify angle validity
+								if(!(fabs(ang2[0] - ang3[0]) <= MAXANGLEPITCH ||
+								(fabs(ang2[0] - ang3[0]) >= (360.0-MAXANGLEPITCH))))
+									continue;
+	
+								if(!(fabs(ang2[1] - ang3[1]) <= MAXANGLEYAW ||
+								(fabs(ang2[1] - ang3[1]) >= (360.0-MAXANGLEYAW))))
+									continue;
+	
+								// ensure no wall is obstructing
+								TR_TraceRayFilter(pos2, pos1, (CONTENTS_SOLID | CONTENTS_AREAPORTAL | CONTENTS_GRATE), RayType_EndPoint, TraceWallsOnly);
+								TR_GetEndPosition(ang3);
+								if(ang3[0]!=pos1[0] || ang3[1]!=pos1[1] || ang3[2]!=pos1[2])
+									continue;
+								
+								hit = true;
+								SDKHooks_TakeDamage(baseboss_index, client, client, damage/hit_enemies, DMG_CLUB, weapon);
+								hit_enemies *= 1.4;
+							}
+						}
+					}
+				}
+				FinishLagCompensation_Base_boss();
+				if(hit)
+				{
+					/*
+					if(IsValidEntity(weapon))
+					{	
+					}
+					*/
+					//EmitSoundToAll("weapons/samurai/tf_katana_06.wav",  client,_ ,_ ,_ ,0.75);
+				}
+			}
+		}
+	}
+	return Plugin_Handled;
+}
+
 public void ZeroRage(int client, int weapon, const char[] classname)
 {
 	if(weapon >= MaxClients)
 	{
 		if (ability_cooldown[client] < GetGameTime())
 		{
-			ability_cooldown[client] = GetGameTime() + 120.0;
+			ability_cooldown[client] = GetGameTime() + 60.0;
 			
 			weapon_id[client] = weapon;
 			switch(GetRandomInt(1,2))
@@ -151,7 +243,7 @@ public void ZeroRage(int client, int weapon, const char[] classname)
 						TF2_AddCondition(client, TFCond_DefenseBuffed, 6.5, 0);
 				
 						ClientCommand(client, "playgamesound items/powerup_pickup_resistance.wav")
-				
+						CreateTimer(60.0, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
 						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "Defence Rage has striked.");
@@ -167,15 +259,11 @@ public void ZeroRage(int client, int weapon, const char[] classname)
 						Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 						if(address != Address_Null)
 						Original_Atackspeed[client] = TF2Attrib_GetValue(address);
-						TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] * 0.20);
+						TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] * 0.45);
+						
+						CreateTimer(60.0, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
 			
-						//HealOnHit[client] = 1.0;
-						//address = TF2Attrib_GetByDefIndex(weapon, 110);
-						//if(address != Address_Null)
-						//HealOnHit[client] = TF2Attrib_GetValue(address);
-						//TF2Attrib_SetByDefIndex(weapon, 110, HealOnHit[client] * 0.90);
-			
-						TF2_StunPlayer(client, 3.5, _, TF_STUNFLAG_BONKSTUCK, 0);
+						TF2_StunPlayer(client, 2.5, _, TF_STUNFLAG_BONKSTUCK, 0);
 						TF2_AddCondition(client, TFCond_UberchargedHidden, 1.5, 0);
 						TF2_AddCondition(client, TFCond_UberBlastResist, 1.5, 0);
 			
@@ -197,8 +285,7 @@ public void ZeroRage(int client, int weapon, const char[] classname)
 						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "Wrath Rage has striked.");
-						CreateTimer(17.0, Reset_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
-						//CreateTimer(15.0, Reset_HealOnHit, client, TIMER_FLAG_NO_MAPCHANGE);
+						CreateTimer(10.0, Reset_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
 					}
 				}
 			}
@@ -215,23 +302,25 @@ public void ZeroRage(int client, int weapon, const char[] classname)
 		}
 	}
 }
+
 public void ZeroDefenceRage(int client, int weapon, const char[] classname)
 {
 	if(weapon >= MaxClients)
 	{
 		if (ability_cooldown[client] < GetGameTime())
 		{
-			ability_cooldown[client] = GetGameTime() + 195.0;
+			ability_cooldown[client] = GetGameTime() + 80.0;
 			
 			weapon_id[client] = weapon;
 			
-			TF2_AddCondition(client, TFCond_DefenseBuffed, 6.5, 0);
+			TF2_AddCondition(client, TFCond_DefenseBuffed, 10.0, 0);
 			
 			ClientCommand(client, "playgamesound items/powerup_pickup_resistance.wav")
 			
 			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Defence Rage has striked.");
+			CreateTimer(80.0, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
 		}
 		else
 		{
@@ -246,48 +335,13 @@ public void ZeroDefenceRage(int client, int weapon, const char[] classname)
 	}
 }
 
-public void ZeroSpeedModifierRage(int client, int weapon, const char[] classname)
-{
-	if(weapon >= MaxClients)
-	{
-		if(ability_cooldown[client] < GetGameTime())
-		{
-			ability_cooldown[client] = GetGameTime() + 150.0;
-			
-			weapon_id[client] = weapon;
-			MovementSpeed_Bonus[client] = 1.0;
-			Address address = TF2Attrib_GetByDefIndex(weapon, 54);
-			if(address != Address_Null)
-			MovementSpeed_Bonus[client] = TF2Attrib_GetValue(address);
-			
-			TF2Attrib_SetByDefIndex(weapon, 54, MovementSpeed_Bonus[client] * 1.25);
-			
-			ClientCommand(client, "playgamesound items/powerup_pickup_haste.wav")
-			
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Speed Modifier has striked.");
-			CreateTimer(6.0, Reset_MovementSpeed_Bonus, client, TIMER_FLAG_NO_MAPCHANGE);
-		}
-		else
-		{
-			float Ability_CD = ability_cooldown[client] - GetGameTime();
-			if(Ability_CD <= 0.0)
-				Ability_CD = 0.0;
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
-		}
-	}
-}
 public void ZeroWrathRage(int client, int weapon, const char[] classname)
 {
 	if(weapon >= MaxClients)
 	{
 		if (ability_cooldown[client] < GetGameTime())
 		{
-			ability_cooldown[client] = GetGameTime() + 150.0;
+			ability_cooldown[client] = GetGameTime() + 80.0;
 			
 			weapon_id[client] = weapon;
 			
@@ -296,17 +350,9 @@ public void ZeroWrathRage(int client, int weapon, const char[] classname)
 			Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 			if(address != Address_Null)
 			Original_Atackspeed[client] = TF2Attrib_GetValue(address);
-			TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] * 0.20);
+			TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] * 0.30);
 			
-			
-			HealOnHit[client] = 1.0;
-			address = TF2Attrib_GetByDefIndex(weapon, 110);
-			if(address != Address_Null)
-			HealOnHit[client] = TF2Attrib_GetValue(address);
-			TF2Attrib_SetByDefIndex(weapon, 110, HealOnHit[client] * 0.99);
-			
-			
-			TF2_StunPlayer(client, 3.5, _, TF_STUNFLAG_BONKSTUCK, 0);
+			TF2_StunPlayer(client, 2.5, _, TF_STUNFLAG_BONKSTUCK, 0);
 			TF2_AddCondition(client, TFCond_UberchargedHidden, 1.5, 0);
 			TF2_AddCondition(client, TFCond_UberBlastResist, 1.5, 0);
 			
@@ -329,8 +375,7 @@ public void ZeroWrathRage(int client, int weapon, const char[] classname)
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Wrath Rage has striked.");
 			CreateTimer(17.0, Reset_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
-			CreateTimer(15.0, Reset_HealOnHit, client, TIMER_FLAG_NO_MAPCHANGE);
-			
+			CreateTimer(80.0, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
 		}
 		else
 		{
@@ -344,6 +389,19 @@ public void ZeroWrathRage(int client, int weapon, const char[] classname)
 		}
 	}
 }
+
+public Action Ability_charged(Handle cut_timer, int client)
+{
+	if (IsValidClient(client))
+	{
+		ClientCommand(client, "playgamesound items/gunpickup2.wav");
+		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Rage Ability Is Back");
+	}
+	return Plugin_Handled;
+}
+
 public Action Reset_Attackspeed(Handle cut_timer, int client)
 {
 	if (IsValidClient(client))
@@ -352,30 +410,6 @@ public Action Reset_Attackspeed(Handle cut_timer, int client)
 		if(weapon == weapon_id[client])
 		{
 			TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client]);
-		}
-	}
-	return Plugin_Handled;
-}
-public Action Reset_MovementSpeed_Bonus(Handle cut_timer, int client)
-{
-	if (IsValidClient(client))
-	{
-		int weapon = GetPlayerWeaponSlot(client, 2);
-		if(weapon == weapon_id[client])
-		{
-			TF2Attrib_SetByDefIndex(weapon, 54, MovementSpeed_Bonus[client]);
-		}
-	}
-	return Plugin_Handled;
-}
-public Action Reset_HealOnHit(Handle cut_timer, int client)
-{
-	if (IsValidClient(client))
-	{
-		int weapon = GetPlayerWeaponSlot(client, 2);
-		if(weapon == weapon_id[client])
-		{
-			TF2Attrib_SetByDefIndex(weapon, 110, HealOnHit[client]);
 		}
 	}
 	return Plugin_Handled;
