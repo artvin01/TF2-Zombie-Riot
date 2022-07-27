@@ -417,6 +417,10 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 							{
 								StartHealingTimer(target, 0.1, 1, 1);
 								EmitSoundToClient(target, SOUND_HEAL_BEAM, target, _, 90, _, 1.0);
+								if(i_CurrentEquippedPerk[client] == 1)
+								{
+									dieingstate[target] -= 10;
+								}
 								dieingstate[target] -= 10;
 								if(dieingstate[target] < 1)
 								{
