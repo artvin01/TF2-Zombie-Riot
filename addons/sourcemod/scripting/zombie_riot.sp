@@ -344,7 +344,7 @@ float f_LowTeslarDebuff[MAXENTITIES];
 float f_HighTeslarDebuff[MAXENTITIES];
 
 float f_WidowsWineDebuff[MAXENTITIES];
-float f_WidowsWineDebuffPlayerCooldown[MAXENTITIES];
+float f_WidowsWineDebuffPlayerCooldown[MAXTF2PLAYERS];
 
 float f_Ability_Cooldown_m1[MAXTF2PLAYERS][10]; //Incase any ability uses m1 lol
 float f_Ability_Cooldown_m2[MAXTF2PLAYERS][10];
