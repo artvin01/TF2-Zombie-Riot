@@ -3216,7 +3216,7 @@ static void Railgun_Boom(int client)
 			float vecForward[3];
 			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 			
-			bool First_Target_Hit = false;
+			bool First_Target_Hit = true;
 			
 			BEAM_Targets_Hit[client] = 1.0;
 			for (int building = 0; building < MAX_TARGETS_HIT; building++)
