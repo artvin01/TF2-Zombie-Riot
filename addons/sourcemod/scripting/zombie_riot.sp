@@ -346,9 +346,9 @@ float f_HighTeslarDebuff[MAXENTITIES];
 float f_WidowsWineDebuff[MAXENTITIES];
 float f_WidowsWineDebuffPlayerCooldown[MAXENTITIES];
 
-float f_Ability_Cooldown_m1[MAXENTITIES][3]; //Incase any ability uses m1 lol
-float f_Ability_Cooldown_m2[MAXENTITIES][3];
-float f_Ability_Cooldown_r[MAXENTITIES][3];
+float f_Ability_Cooldown_m1[MAXTF2PLAYERS][10]; //Incase any ability uses m1 lol
+float f_Ability_Cooldown_m2[MAXTF2PLAYERS][10];
+float f_Ability_Cooldown_r[MAXTF2PLAYERS][10];
 
 int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
 
