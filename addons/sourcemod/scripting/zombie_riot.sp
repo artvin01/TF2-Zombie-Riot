@@ -237,7 +237,6 @@ int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
 int CashSpent[MAXTF2PLAYERS];
 int Level[MAXTF2PLAYERS];
 int XP[MAXTF2PLAYERS];
-int ImpulseBuffer[MAXTF2PLAYERS];
 int Ammo_Count_Ready[MAXTF2PLAYERS];
 //float Armor_Ready[MAXTF2PLAYERS];
 float Increaced_Sentry_damage_Low[MAXENTITIES];
@@ -2357,43 +2356,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	#if defined LagCompensation
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 	#endif
-	if(ImpulseBuffer[client] > 0)
-	{
-		/*
-		if(!CvarCheats.BoolValue)
-		{
-			CvarCheats.SetBool(true, false, false);
-			RequestFrame(Frame_OffCheats);
-		}
-		*/
-		
-		ImpulseBuffer[client] = -ImpulseBuffer[client];
-		impulse = 101;
-		return Plugin_Changed;
-	}
-	
-	if(ImpulseBuffer[client] < 0)
-	{
-		SetEntityHealth(client, -ImpulseBuffer[client]);
-		
-		ImpulseBuffer[client] = 0;
-
-		SetAmmo(client, 1, 9999);
-		SetAmmo(client, 2, 9999);
-		SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
-		for(int i=Ammo_Jar; i<Ammo_MAX; i++)
-		{
-			SetAmmo(client, i, CurrentAmmo[client][i]);
-		}
-		if(EscapeMode)
-		{
-			SetAmmo(client, Ammo_Metal, 99099); //just give infinite metal. There is no reason not to. (in Escape.)
-			SetAmmo(client, 21, 99999);
-		}
-		SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 0.0);
-		
-		OnWeaponSwitchPost(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
-	}
 	
 	Escape_PlayerRunCmd(client);
 	/*
