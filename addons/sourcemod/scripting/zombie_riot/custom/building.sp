@@ -3062,18 +3062,7 @@ public Action MortarFire(Handle timer, int client)
 			
 			float attack_speed;
 			float sentry_range;
-			/*
-			int BEAM_BeamRadius = 40;
-			float Strength = 10.0;
-								
-			Strength *= 40.0;
-	
-			float attack_speed;
-	
-			attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
-					
-			Strength = attack_speed * Strength * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
-			*/
+		
 			attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
 				
 			damage = attack_speed * damage * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
@@ -3082,8 +3071,31 @@ public Action MortarFire(Handle timer, int client)
 			
 			float AOE_range = 350.0 * sentry_range;
 			
-			Explode_Logic_Custom(damage, client, client, -1, f_MarkerPosition[client], AOE_range, _, _, false);
-			
+			int targ = MaxClients + 1;
+			float targPos[3];
+			float damage_falloff = 1.0;
+			while ((targ = FindEntityByClassname(targ, "base_boss")) != -1)
+			{
+				if (GetEntProp(client, Prop_Send, "m_iTeamNum")!=GetEntProp(targ, Prop_Send, "m_iTeamNum")) 
+				{
+					if(!b_NpcHasDied[targ])
+					{
+						GetEntPropVector(targ, Prop_Data, "m_vecAbsOrigin", targPos);
+						if (GetVectorDistance(f_MarkerPosition[client], targPos) <= AOE_range)
+						{
+							
+							float distance_1 = GetVectorDistance(f_MarkerPosition[client], targPos);
+							float damage_1 = Custom_Explosive_Logic(client, distance_1, 0.5, damage, AOE_range);
+									
+						//	damage_1 /= f_DamageReductionMortar[client];
+							SDKHooks_TakeDamage(targ, obj, client, damage_1/damage_falloff, DMG_BLAST, -1, CalculateExplosiveDamageForce(f_MarkerPosition[client], targPos, AOE_range), f_MarkerPosition[client]);
+							damage_falloff *= EXPLOSION_AOE_DAMAGE_FALLOFF;
+						//	f_DamageReductionMortar[client] *= 1.35;
+							//use blast cus it does its own calculations for that ahahahah im evil
+						}
+					}
+				}
+			}
 			CreateEarthquake(f_MarkerPosition[client], 0.5, 350.0, 16.0, 255.0);
 			CreateTimer(10.0, MortarReload, client, TIMER_FLAG_NO_MAPCHANGE);
 			EmitSoundToAll(MORTAR_BOOM, 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, f_MarkerPosition[client]);

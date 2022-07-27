@@ -2,7 +2,6 @@ enum struct Enemy
 {
 	int Health;
 	int Is_Boss;
-	int Does_Not_Scale;
 	int Is_Outlined;
 	int Is_Health_Scaled;
 	int Is_Immune_To_Nuke;
@@ -285,7 +284,6 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						
 						enemy.Health = kv.GetNum("health");
 						enemy.Is_Boss = kv.GetNum("is_boss");
-						enemy.Does_Not_Scale = kv.GetNum("does_not_scale");
 						enemy.Is_Outlined = kv.GetNum("is_outlined");
 						enemy.Is_Health_Scaled = kv.GetNum("is_health_scaling");
 						enemy.Is_Immune_To_Nuke = kv.GetNum("is_immune_to_nuke");
@@ -496,20 +494,14 @@ void Waves_Progress()
 				ScaleWithHpMore = true;
 			}
 			
-			int count = wave.Count;
-			
-			if(wave.EnemyData.Does_Not_Scale != 0)
-			{
-				count = RoundToNearest(float(count)*multi);
-					
-			}
+			int count = RoundToNearest(float(wave.Count)*multi);
 			
 			if(count < 1)
 				count = 1;
-				
+			
 			if(count > 150)
 				count = 150;
-					
+			
 			Zombies_Currently_Still_Ongoing += count;
 			
 			
@@ -718,7 +710,6 @@ void Waves_Progress()
 					if(IsClientInGame(i) && !IsFakeClient(i))
 					{
 						Music_Stop_All(i);
-						SendConVarValue(i, sv_cheats, "1");
 						players[total++] = i;
 					}
 				}
