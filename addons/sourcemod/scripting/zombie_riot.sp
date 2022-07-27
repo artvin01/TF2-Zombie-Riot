@@ -2474,7 +2474,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		holding[client] = IN_ATTACK3;
 		
-		if (IsPlayerAlive(client))
+		if (IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 		{
 			M3_Abilities(client);
 		}

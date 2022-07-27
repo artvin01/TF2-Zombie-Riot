@@ -1191,10 +1191,13 @@ public Action Command_Voicemenu(int client, const char[] command, int args)
 			GetCmdArg(2, arg, sizeof(arg));
 			if(arg[0] == '0')
 			{
-				bool has_been_done = BuildingCustomCommand(client);
-				if(has_been_done)
+				if(TeutonType[client] == TEUTON_NONE)
 				{
-					return Plugin_Handled;
+					bool has_been_done = BuildingCustomCommand(client);
+					if(has_been_done)
+					{
+						return Plugin_Handled;
+					}
 				}
 			}
 		}
