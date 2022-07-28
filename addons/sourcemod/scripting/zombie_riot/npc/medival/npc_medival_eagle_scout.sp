@@ -169,7 +169,7 @@ methodmap MedivalEagleScout < CClotBody
 	{
 		MedivalEagleScout npc = view_as<MedivalEagleScout>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "600", ally));
 		
-		i_NpcInternalId[npc.index] = MEDIVAL_SAMURAI;
+		i_NpcInternalId[npc.index] = MEDIVAL_EAGLE_SCOUT;
 		
 		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_EAGLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);

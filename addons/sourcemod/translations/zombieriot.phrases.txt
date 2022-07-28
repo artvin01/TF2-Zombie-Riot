@@ -502,9 +502,9 @@
 	}
 	"Perk Machine Used"
 	{
-		"en"		"Someone used your perk machine, you gain +40 Credits!"
-		"ru"		"Кто-то воспользовался вашей перк-машиной, вы получили +40 кредитов!"
-		"de"		"Jemand hat deine perk Maschine benutzt, du bekommst +40 Kredit!"
+		"en"		"Someone used your perk machine, you gain +80 Credits!"
+		"ru"		"Кто-то воспользовался вашей перк-машиной, вы получили +80 кредитов!"
+		"de"		"Jemand hat deine perk Maschine benutzt, du bekommst +80 Kredit!"
 	}
 	"Pap Machine Used"
 	{
