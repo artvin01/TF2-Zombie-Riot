@@ -3518,10 +3518,11 @@ public Action Hook_BlockUserMessageEx(UserMsg msg_id, BfRead msg, const int[] pl
 public void MapStartResetAll()
 {
 	Zero2(f_Ability_Cooldown_m1);
+	Zero2(f_Ability_Cooldown_m2);
 	Zero2(f_Ability_Cooldown_r);
 	Zero(i_Hex_WeaponUsesTheseAbilities);
-	Zero(i_Hex_WeaponUsesTheseAbilities);
 	Zero(f_WidowsWineDebuffPlayerCooldown);
+	Zero(f_WidowsWineDebuff);
 	Zero(f_TempCooldownForVisualManaPotions);
 	Zero(i_IsABuilding);
 	Zero(f_DelayLookingAtHud);
