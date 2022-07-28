@@ -642,7 +642,7 @@ methodmap Citizen < CClotBody
 			this.StartActivity(activity);
 		}
 	}
-	public void SetDowned(bool state)
+	public void SetDowned(bool state, int client = 0)
 	{
 		this.m_bDowned = state;
 		this.UpdateCollision(state);
@@ -691,9 +691,10 @@ methodmap Citizen < CClotBody
 				SetEntityRenderColor(this.index, 255, 255, 255, 255);
 				SetEntityRenderMode(this.index, RENDER_NORMAL);
 			}
-			else
+			else if(client)
 			{
 				this.PlaySound(Cit_Found);
+				GiveNamedItem(client, "Rebel");
 			}
 		}
 	}
@@ -755,17 +756,43 @@ methodmap Citizen < CClotBody
 	}
 }
 
+void Citizen_SpawnAtPoint()
+{
+	int count;
+	int[] list = new int[i_MaxcountSpawners];
+	for(int i; i < i_MaxcountSpawners; i++)
+	{
+		int entity = i_ObjectsSpawners[i];
+		if(IsValidEntity(entity))
+		{
+			if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") == 2)
+				list[count++] = entity;
+		}
+	}
+	
+	if(count)
+	{
+		int entity = list[GetURandomInt() % count];
+		
+		float pos[3], ang[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
+		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+		
+		Npc_Create(CITIZEN, 0, flPos, flAng, true);
+	}
+}
+
 bool Citizen_ThatIsDowned(int entity)
 {
 	return (i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_bDowned);
 }
 
-int Citizen_ReviveTicks(int entity, int amount)
+int Citizen_ReviveTicks(int entity, int amount, int client)
 {
 	Citizen npc = view_as<Citizen>(entity);
 	npc.m_iReviveTicks -= amount;
 	if(npc.m_iReviveTicks < 1)
-		npc.SetDowned(false);
+		npc.SetDowned(false, client);
 	
 	return npc.m_iReviveTicks;
 }
@@ -1081,7 +1108,6 @@ public void Citizen_ClotThink(int iNPC)
 	
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_bGetClosestTargetTimeAlly = false;
 		npc.m_flGetClosestTargetTime = gameTime + 0.5;
 		if(npc.m_iGunType != Cit_None)
 		{
@@ -1107,9 +1133,8 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			//Stop chasing dead target.
 			npc.m_iTarget = 0;
-			PF_StopPathing(npc.index);
-			npc.m_bPathing = false;
 			npc.m_flGetClosestTargetTime = 0.0;
+			standing = true;
 		}
 		else
 		{
@@ -1585,6 +1610,7 @@ public void Citizen_ClotThink(int iNPC)
 		}
 	}
 	
+	bool standing = npc.m_iTarget < 1;
 	if(wantReload)
 	{
 		//PrintCenterTextAll("CIV: Wants to Reload");
@@ -1751,54 +1777,49 @@ public void Citizen_ClotThink(int iNPC)
 		
 		//PrintCenterTextAll("CIV: Moving Back %d", npc.m_iTargetAlly);
 		
-		if((npc.m_iTargetAlly <= MaxClients && !IsValidClient(npc.m_iTargetAlly)) || !IsValidEntity(npc.m_iTargetAlly))
+		if((npc.m_iTargetAlly <= MaxClients && !IsValidClient(npc.m_iTargetAlly) && !IsPlayerAlive(npc.m_iTargetAlly)) || !IsValidEntity(npc.m_iTargetAlly))
 		{
 			npc.m_bGetClosestTargetTimeAlly = false;
 			npc.m_bSeakingMedic = false;
-			PF_StopPathing(npc.index);
-			npc.m_bPathing = false;
 			npc.m_flGetClosestTargetTime = 0.0;
+			standing = true;
 		}
 		else
 		{
-			if(npc.m_iTarget > 0)
-			{
-				npc.StartPathing();
-				PF_SetGoalEntity(npc.index, npc.m_iTargetAlly);
-				return;
-			}
-			
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
 			float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
-			if(distance > 100000.0 || ((combat || npc.m_bSeakingMedic) && distance > 20000.0))
+			if(npc.m_iTarget < 1)
 			{
-				npc.m_flidle_talk = FAR_FUTURE;
-				
-				switch(npc.m_iGunType)
+				if(distance > 100000.0 || ((combat || npc.m_bSeakingMedic) && distance > 20000.0))
 				{
-					case Cit_SMG:
+					npc.m_flidle_talk = FAR_FUTURE;
+					
+					switch(npc.m_iGunType)
 					{
-						npc.SetActivity(combat ? "ACT_RUN_RIFLE" : low ? "ACT_RUN_RIFLE_STIMULATED" : "ACT_RUN_RIFLE_RELAXED");
-						npc.m_flSpeed = combat ? 210.0 : 240.0;
-					}
-					case Cit_AR, Cit_Shotgun:
-					{
-						npc.SetActivity(combat ? "ACT_RUN_AR2" : low ? "ACT_RUN_AR2_STIMULATED" : "ACT_RUN_AR2_RELAXED");
-						npc.m_flSpeed = combat ? 210.0 : 240.0;
-					}
-					case Cit_RPG:
-					{
-						npc.SetActivity(combat ? "ACT_RUN_RPG" : "ACT_RUN_RPG_RELAXED");
-						npc.m_flSpeed = 240.0;
-					}
-					default:
-					{
-						npc.SetActivity("ACT_RUN");
-						npc.m_flSpeed = 240.0;
-						
-						if(npc.m_iWearable1 > 0)
-							AcceptEntityInput(npc.m_iWearable1, "Disable");
+						case Cit_SMG:
+						{
+							npc.SetActivity(combat ? "ACT_RUN_RIFLE" : low ? "ACT_RUN_RIFLE_STIMULATED" : "ACT_RUN_RIFLE_RELAXED");
+							npc.m_flSpeed = combat ? 210.0 : 240.0;
+						}
+						case Cit_AR, Cit_Shotgun:
+						{
+							npc.SetActivity(combat ? "ACT_RUN_AR2" : low ? "ACT_RUN_AR2_STIMULATED" : "ACT_RUN_AR2_RELAXED");
+							npc.m_flSpeed = combat ? 210.0 : 240.0;
+						}
+						case Cit_RPG:
+						{
+							npc.SetActivity(combat ? "ACT_RUN_RPG" : "ACT_RUN_RPG_RELAXED");
+							npc.m_flSpeed = 240.0;
+						}
+						default:
+						{
+							npc.SetActivity("ACT_RUN");
+							npc.m_flSpeed = 240.0;
+							
+							if(npc.m_iWearable1 > 0)
+								AcceptEntityInput(npc.m_iWearable1, "Disable");
+						}
 					}
 				}
 				
@@ -1832,38 +1853,41 @@ public void Citizen_ClotThink(int iNPC)
 			
 			if(distance > 20000.0 || (combat && distance > (2500.0 + (float(npc.m_iSeed) / 2147483.647 * 2.0))))
 			{
-				switch(npc.m_iGunType)
+				if(npc.m_iTarget < 1)
 				{
-					case Cit_Melee:
+					switch(npc.m_iGunType)
 					{
-						npc.SetActivity("ACT_WALK_SUITCASE");
-						npc.m_flSpeed = 90.0;
-						
-						if(npc.m_iWearable1 > 0)
-							AcceptEntityInput(npc.m_iWearable1, "Enable");
-					}
-					case Cit_SMG:
-					{
-						npc.SetActivity(combat ? "ACT_WALK_RIFLE" : low ? "ACT_WALK_RIFLE_STIMULATED" : "ACT_WALK_RIFLE_RELAXED");
-						npc.m_flSpeed = 90.0;
-					}
-					case Cit_AR, Cit_Shotgun:
-					{
-						npc.SetActivity(combat ? "ACT_WALK_AR2" : low ? "ACT_WALK_AR2_STIMULATED" : "ACT_WALK_AR2_RELAXED");
-						npc.m_flSpeed = 90.0;
-					}
-					case Cit_RPG:
-					{
-						npc.SetActivity(combat ? "ACT_WALK_RPG" : "ACT_WALK_RPG_RELAXED");
-						npc.m_flSpeed = 90.0;
-					}
-					default:
-					{
-						npc.SetActivity("ACT_WALK");
-						npc.m_flSpeed = 90.0;
-						
-						if(npc.m_iWearable1 > 0)
-							AcceptEntityInput(npc.m_iWearable1, "Disable");
+						case Cit_Melee:
+						{
+							npc.SetActivity("ACT_WALK_SUITCASE");
+							npc.m_flSpeed = 90.0;
+							
+							if(npc.m_iWearable1 > 0)
+								AcceptEntityInput(npc.m_iWearable1, "Enable");
+						}
+						case Cit_SMG:
+						{
+							npc.SetActivity(combat ? "ACT_WALK_RIFLE" : low ? "ACT_WALK_RIFLE_STIMULATED" : "ACT_WALK_RIFLE_RELAXED");
+							npc.m_flSpeed = 90.0;
+						}
+						case Cit_AR, Cit_Shotgun:
+						{
+							npc.SetActivity(combat ? "ACT_WALK_AR2" : low ? "ACT_WALK_AR2_STIMULATED" : "ACT_WALK_AR2_RELAXED");
+							npc.m_flSpeed = 90.0;
+						}
+						case Cit_RPG:
+						{
+							npc.SetActivity(combat ? "ACT_WALK_RPG" : "ACT_WALK_RPG_RELAXED");
+							npc.m_flSpeed = 90.0;
+						}
+						default:
+						{
+							npc.SetActivity("ACT_WALK");
+							npc.m_flSpeed = 90.0;
+							
+							if(npc.m_iWearable1 > 0)
+								AcceptEntityInput(npc.m_iWearable1, "Disable");
+						}
 					}
 				}
 				
@@ -1871,134 +1895,141 @@ public void Citizen_ClotThink(int iNPC)
 				PF_SetGoalVector(npc.index, vecTarget);
 				return;
 			}
+			else
+			{
+				standing = true;
+			}
 		}
 	}
 	
-	if(npc.m_iTarget < 1)
+	if(standing)
 	{
 		//PrintCenterTextAll("CIV: Idle");
 		
-		if(npc.m_flidle_talk == FAR_FUTURE)
-			npc.m_flidle_talk = gameTime + 10.0 + (GetURandomFloat() * 10.0) + (float(npc.m_iSeed) / 214748364.7);
-		
-		switch(npc.m_iGunType)
+		if(npc.m_iTarget < 1 || npc.m_iGunType == Cit_Melee)
 		{
-			case Cit_Melee:
-			{
-				npc.SetActivity(combat ? "ACT_IDLE_ANGRY_MELEE" : "ACT_IDLE_SUITCASE");
-				npc.m_flSpeed = 0.0;
-				
-				if(npc.m_iWearable1 > 0)
-					AcceptEntityInput(npc.m_iWearable1, "Enable");
-			}
-			case Cit_SMG:
-			{
-				npc.SetActivity(combat ? "ACT_IDLE_SMG1" : low ? "ACT_IDLE_SMG1_STIMULATED" : "ACT_IDLE_SMG1_RELAXED");
-				npc.m_flSpeed = 0.0;
-			}
-			case Cit_AR:
-			{
-				npc.SetActivity(combat ? "ACT_IDLE_AR2" : low ? "ACT_IDLE_AR2_STIMULATED" : "ACT_IDLE_AR2_RELAXED");
-				npc.m_flSpeed = 0.0;
-			}
-			case Cit_Shotgun:
-			{
-				npc.SetActivity(combat ? "ACT_IDLE_SHOTGUN_AGITATED" : low ? "ACT_IDLE_SHOTGUN_STIMULATED" : "ACT_IDLE_SHOTGUN_RELAXED");
-				npc.m_flSpeed = 0.0;
-			}
-			case Cit_RPG:
-			{
-				npc.SetActivity(combat ? "ACT_IDLE_RPG" : "ACT_IDLE_RPG_RELAXED");
-				npc.m_flSpeed = 0.0;
-			}
-			default:
-			{
-				npc.SetActivity(combat ? "ACT_IDLE_ANGRY" : "ACT_IDLE");
-				npc.m_flSpeed = 0.0;
-				
-				if(npc.m_iWearable1 > 0)
-					AcceptEntityInput(npc.m_iWearable1, "Disable");
-			}
-		}
-		
-		if(npc.m_flidle_talk < gameTime)
-		{
-			npc.m_flidle_talk = gameTime + 50.0;
+			if(npc.m_flidle_talk == FAR_FUTURE)
+				npc.m_flidle_talk = gameTime + 10.0 + (GetURandomFloat() * 10.0) + (float(npc.m_iSeed) / 214748364.7);
 			
-			if(low)
+			switch(npc.m_iGunType)
 			{
-				npc.PlaySound(Cit_LowHealth);
-			}
-			else
-			{
-				int talkingTo;
-				float distance = 60000.0;
-				
-				float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
-				float vecTarget[3];
-				for(int i = MaxClients + 1; i < MAXENTITIES; i++)
+				case Cit_Melee:
 				{
-					if(i_NpcInternalId[i] == CITIZEN && i != npc.index && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
+					npc.SetActivity(combat ? "ACT_IDLE_ANGRY_MELEE" : "ACT_IDLE_SUITCASE");
+					npc.m_flSpeed = 0.0;
+					
+					if(npc.m_iWearable1 > 0)
+						AcceptEntityInput(npc.m_iWearable1, "Enable");
+				}
+				case Cit_SMG:
+				{
+					npc.SetActivity(combat ? "ACT_IDLE_SMG1" : low ? "ACT_IDLE_SMG1_STIMULATED" : "ACT_IDLE_SMG1_RELAXED");
+					npc.m_flSpeed = 0.0;
+				}
+				case Cit_AR:
+				{
+					npc.SetActivity(combat ? "ACT_IDLE_AR2" : low ? "ACT_IDLE_AR2_STIMULATED" : "ACT_IDLE_AR2_RELAXED");
+					npc.m_flSpeed = 0.0;
+				}
+				case Cit_Shotgun:
+				{
+					npc.SetActivity(combat ? "ACT_IDLE_SHOTGUN_AGITATED" : low ? "ACT_IDLE_SHOTGUN_STIMULATED" : "ACT_IDLE_SHOTGUN_RELAXED");
+					npc.m_flSpeed = 0.0;
+				}
+				case Cit_RPG:
+				{
+					npc.SetActivity(combat ? "ACT_IDLE_RPG" : "ACT_IDLE_RPG_RELAXED");
+					npc.m_flSpeed = 0.0;
+				}
+				default:
+				{
+					npc.SetActivity(combat ? "ACT_IDLE_ANGRY" : "ACT_IDLE");
+					npc.m_flSpeed = 0.0;
+					
+					if(npc.m_iWearable1 > 0)
+						AcceptEntityInput(npc.m_iWearable1, "Disable");
+				}
+			}
+			
+			if(npc.m_flidle_talk < gameTime)
+			{
+				npc.m_flidle_talk = gameTime + 50.0;
+				
+				if(low)
+				{
+					npc.PlaySound(Cit_LowHealth);
+				}
+				else
+				{
+					int talkingTo;
+					float distance = 60000.0;
+					
+					float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+					float vecTarget[3];
+					for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 					{
-						vecTarget = WorldSpaceCenter(i);
-						float dist = GetVectorDistance(vecTarget, vecMe, true);
-						if(dist < 60000.0)
+						if(i_NpcInternalId[i] == CITIZEN && i != npc.index && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
 						{
-							view_as<Citizen>(i).m_flidle_talk += 15.0;
-							
-							if(!combat && dist < distance)
+							vecTarget = WorldSpaceCenter(i);
+							float dist = GetVectorDistance(vecTarget, vecMe, true);
+							if(dist < 60000.0)
 							{
-								talkingTo = i;
-								distance = dist;
+								view_as<Citizen>(i).m_flidle_talk += 15.0;
+								
+								if(!combat && dist < distance)
+								{
+									talkingTo = i;
+									distance = dist;
+								}
 							}
 						}
 					}
-				}
-				
-				int client = GetClosestAllyPlayer(npc.index);
-				if(client > 0)
-				{
-					vecTarget = WorldSpaceCenter(client);
-					if(GetVectorDistance(vecTarget, vecMe, true) < distance)
-						talkingTo = client
-				}
-				
-				if(talkingTo)
-				{
-					if(talkingTo > MaxClients)
-						vecTarget = WorldSpaceCenter(talkingTo);
 					
-					npc.SlowTurn(vecTarget);
+					int client = GetClosestAllyPlayer(npc.index);
+					if(client > 0)
+					{
+						vecTarget = WorldSpaceCenter(client);
+						if(GetVectorDistance(vecTarget, vecMe, true) < distance)
+							talkingTo = client
+					}
 					
-					if(npc.m_iBuildingType == 7 && talkingTo <= MaxClients && GetClientHealth(talkingTo) < 100)
+					if(talkingTo)
 					{
-						npc.PlaySound(Cit_Healer);
-					}
-					else if(npc.m_iBuildingType == 2 && talkingTo <= MaxClients)
-					{
-						npc.PlaySound(Cit_Ammo);
-					}
-					else if(combat)
-					{
-						npc.PlaySound(Cit_DoSomething);
-					}
-					else if(talkingTo <= MaxClients)
-					{
-						npc.PlaySound((npc.m_iSeed % 3) ? Cit_Answer : Cit_Question);
-					}
-					else
-					{
-						view_as<Citizen>(talkingTo).SlowTurn(vecMe);
-						view_as<Citizen>(talkingTo).m_flidle_talk += 35.0;
-						npc.PlaySound(Cit_Question);
-						CreateTimer(3.0, Citizen_ReactionTimer, EntIndexToEntRef(talkingTo), TIMER_FLAG_NO_MAPCHANGE);
+						if(talkingTo > MaxClients)
+							vecTarget = WorldSpaceCenter(talkingTo);
+						
+						npc.SlowTurn(vecTarget);
+						
+						if(npc.m_iBuildingType == 7 && talkingTo <= MaxClients && GetClientHealth(talkingTo) < 100)
+						{
+							npc.PlaySound(Cit_Healer);
+						}
+						else if(npc.m_iBuildingType == 2 && talkingTo <= MaxClients)
+						{
+							npc.PlaySound(Cit_Ammo);
+						}
+						else if(combat)
+						{
+							npc.PlaySound(Cit_DoSomething);
+						}
+						else if(talkingTo <= MaxClients)
+						{
+							npc.PlaySound((npc.m_iSeed % 3) ? Cit_Answer : Cit_Question);
+						}
+						else
+						{
+							view_as<Citizen>(talkingTo).SlowTurn(vecMe);
+							view_as<Citizen>(talkingTo).m_flidle_talk += 35.0;
+							npc.PlaySound(Cit_Question);
+							CreateTimer(3.0, Citizen_ReactionTimer, EntIndexToEntRef(talkingTo), TIMER_FLAG_NO_MAPCHANGE);
+						}
 					}
 				}
 			}
+			
+			if(TalkTurningFor[npc.index] > gameTime)
+				npc.FaceTowards(TalkTurnPos[npc.index], 300.0);
 		}
-		
-		if(TalkTurningFor[npc.index] > gameTime)
-			npc.FaceTowards(TalkTurnPos[npc.index], 300.0);
 		
 		if(npc.m_bPathing)
 		{

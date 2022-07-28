@@ -606,7 +606,11 @@ void Waves_Progress()
 			
 			Zombies_Currently_Still_Ongoing = 0;
 			
-			if(CurrentRound == 15) //He should spawn at wave 16.
+			if(CurrentRound == 4)
+			{
+				Citizen_SpawnAtPoint();
+			}
+			else if(CurrentRound == 15) //He should spawn at wave 16.
 			{
 				for(int client_Grigori=1; client_Grigori<=MaxClients; client_Grigori++)
 				{

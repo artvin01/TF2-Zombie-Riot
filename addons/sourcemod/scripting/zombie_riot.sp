@@ -2591,11 +2591,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				was_reviving_this[client] = target;
 				if(i_CurrentEquippedPerk[client] == 1)
 				{
-					ticks = Citizen_ReviveTicks(target, 2);
+					ticks = Citizen_ReviveTicks(target, 2, client);
 				}
 				else
 				{
-					ticks = Citizen_ReviveTicks(target, 1);
+					ticks = Citizen_ReviveTicks(target, 1, client);
 				}
 				
 				if(ticks <= 0)
