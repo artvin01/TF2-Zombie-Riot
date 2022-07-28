@@ -1054,6 +1054,10 @@ public void OnPluginStart()
 	ConVar cvar = FindConVar("tf_bot_count");
 	cvar.Flags &= ~FCVAR_NOTIFY;
 	
+	int cvarCheatsflags = GetConVarFlags(sv_cheats);
+	cvarCheatsflags &= ~FCVAR_NOTIFY;
+	SetConVarFlags(sv_cheats, cvarCheatsflags);
+	
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
 	
