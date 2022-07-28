@@ -452,4 +452,8 @@
 	{
 		"en" 		"Rebel"
 	}
+	"Eagle Scout"
+	{
+		"en" 		"Eagle Scout"
+	}
 }

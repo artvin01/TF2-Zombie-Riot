@@ -622,7 +622,9 @@ enum
 	RAIDMODE_BLITZKRIEG					= 108,
 	MEDIVAL_PIKEMAN						= 109,
 	ALT_MEDIC_SUPPERIOR_MAGE			= 110,
-	CITIZEN					= 111,
+	CITIZEN								= 111,
+	
+	MEDIVAL_EAGLE_SCOUT					= 112,
 }
 
 
@@ -746,7 +748,8 @@ public const char NPC_Names[][] =
 	"Blitzkrieg",
 	"Pikeman",
 	"Medic Supperior Mage",
-	"Rebel"
+	"Rebel",
+	"Eagle Scout"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -868,7 +871,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_blitzkrieg",
 	"npc_medival_pikeman",
 	"npc_alt_medic_supperior_mage",
-	"npc_citizen"
+	"npc_citizen",
+	"npc_medival_eagle_scout"
 };
 
 #include "zombie_riot/stocks.sp"

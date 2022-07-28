@@ -764,6 +764,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = Citizen(client, vecPos, vecAng);
 		}
+		case MEDIVAL_EAGLE_SCOUT:
+		{
+			entity = MedivalEagleScout(entity, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1221,6 +1225,10 @@ public void NPCDeath(int entity)
 		{
 			Citizen_NPCDeath(entity);
 		}
+		case MEDIVAL_EAGLE_SCOUT:
+		{
+			MedivalEagleScout_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1386,6 +1394,7 @@ public void OnMapStart_NPC_Base()
 	MedivalPikeman_OnMapStart_NPC();
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_OnMapStart_NPC();
 	Citizen_OnMapStart();
+	MedivalEagleScout_OnMapStart_NPC();
 }
 
 
@@ -6701,3 +6710,4 @@ public void Change_Npc_Collision(int npc, int CollisionType)
 #include "zombie_riot/npc/medival/npc_medival_elite_skirmisher.sp"
 #include "zombie_riot/npc/medival/npc_medival_pikeman.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_supperior_mage.sp"
+#include "zombie_riot/npc/medival/npc_medival_eagle_scout.sp"
