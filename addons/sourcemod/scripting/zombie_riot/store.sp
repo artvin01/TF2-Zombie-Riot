@@ -283,13 +283,16 @@ int Store_GetEquipped(int client, int slot)
 
 int Store_GetSpecialOfSlot(int client, int slot)
 {
-	Item item;
-	int length = StoreItems.Length;
-	for(int i; i<length; i++)
+	if(StoreItems)
 	{
-		StoreItems.GetArray(i, item);
-		if(item.Slot == slot && item.Owned[client])
-			return item.Special;
+		Item item;
+		int length = StoreItems.Length;
+		for(int i; i<length; i++)
+		{
+			StoreItems.GetArray(i, item);
+			if(item.Slot == slot && item.Owned[client])
+				return item.Special;
+		}
 	}
 	return -1;
 }
@@ -1726,7 +1729,9 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					}
 					
 					item.Owned[client] = 0;
-					item.Scaled[client]--;
+					if(item.Scaled[client] > 0)
+						item.Scaled[client]--;
+					
 					StoreItems.SetArray(index, item);
 					
 					int slot = TF2_GetClassnameSlot(info.Classname);

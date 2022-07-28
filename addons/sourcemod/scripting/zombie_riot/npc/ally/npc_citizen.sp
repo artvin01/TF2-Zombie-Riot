@@ -602,6 +602,19 @@ methodmap Citizen < CClotBody
 		TalkTurnPos[this.index][1] = pos[1];
 		TalkTurnPos[this.index][2] = pos[2];
 	}
+	public void UpdateCollision(bool state)
+	{
+		if(state)
+		{
+			Change_Npc_Collision(this.index, 3);
+			this.bCantCollidie = true;
+		}
+		else
+		{
+			Change_Npc_Collision(this.index, 4);
+			this.bCantCollidie = false;
+		}
+	}
 	public void UpdateModel()
 	{
 		int type = Cit_Unarmed;
@@ -632,11 +645,10 @@ methodmap Citizen < CClotBody
 	public void SetDowned(bool state)
 	{
 		this.m_bDowned = state;
+		this.UpdateCollision(state);
 		
 		if(this.m_bDowned)
 		{
-			Change_Npc_Collision(this.index, 3);
-			this.bCantCollidie = true;
 			this.m_bThisEntityIgnored = true;
 			this.m_iReviveTicks = 250;
 			this.SetActivity("ACT_BUSY_SIT_GROUND");
@@ -664,8 +676,6 @@ methodmap Citizen < CClotBody
 		}
 		else
 		{
-			Change_Npc_Collision(this.index, 4);
-			this.bCantCollidie = false;
 			this.m_bThisEntityIgnored = false;
 			this.SetActivity("ACT_BUSY_SIT_GROUND_EXIT");
 			this.m_flReloadDelay = GetGameTime() + 2.4;
@@ -817,6 +827,7 @@ bool Citizen_GivePerk(int entity, int type)
 	
 	npc.m_iBuildingType = type;
 	npc.m_bCamo = npc.m_iBuildingType == 0;
+	npc.UpdateCollision(npc.m_bCamo);
 	
 	npc.m_flReloadDelay = GetGameTime() + 1.0;
 	npc.UpdateModel();
