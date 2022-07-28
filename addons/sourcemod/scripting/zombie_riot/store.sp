@@ -542,7 +542,7 @@ void Store_PutInServer(int client)
 			if(!TeutonType[client])
 			{
 				Store_GiveItem(client, slot);
-				ImpulseBuffer[client] = GetClientHealth(client);
+				Manual_Impulse_101(client, GetClientHealth(client));
 			}
 			break;
 		}
@@ -1893,7 +1893,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							{
 								TF2_RemoveWeaponSlot(client, slot);
 								Store_GiveItem(client, slot);
-								ImpulseBuffer[client] = GetClientHealth(client);
+								Manual_Impulse_101(client, GetClientHealth(client));
 							}
 						}
 					}
@@ -2163,7 +2163,7 @@ void Store_GiveAll(int client, int health)
 		TF2_SetPlayerClass(client, TFClass_Engineer);
 	}
 	*/
-	ImpulseBuffer[client] = health;
+	Manual_Impulse_101(client, health);
 }
 
 void Delete_Clip(int entity)
@@ -2264,6 +2264,22 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 							SetEntProp(entity, Prop_Send, "m_iSecondaryAmmoType", 30);
 						}
 					}
+					
+					i_Hex_WeaponUsesTheseAbilities[entity] = 0;
+		
+					if(info.FuncAttack != INVALID_FUNCTION)
+					{
+						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_M1; //m1 status to weapon
+					}
+					if(info.FuncAttack2 != INVALID_FUNCTION)
+					{
+						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_M2; //m2 status to weapon
+					}
+					if(info.FuncAttack3 != INVALID_FUNCTION)
+					{
+						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_R;  //R status to weapon
+					}
+					
 					EntityFuncAttack[entity] = info.FuncAttack;
 					EntityFuncAttack2[entity] = info.FuncAttack2;
 					EntityFuncAttack3[entity] = info.FuncAttack3;
@@ -2613,7 +2629,7 @@ bool Store_Interact(int client, int entity, const char[] classname)
 							{
 								TF2_RemoveWeaponSlot(client, slot);
 								Store_GiveItem(client, slot);
-								ImpulseBuffer[client] = GetClientHealth(client);
+								Manual_Impulse_101(client, GetClientHealth(client));
 							}
 						}
 						return true;

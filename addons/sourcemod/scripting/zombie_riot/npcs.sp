@@ -1004,6 +1004,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		damage *= 1.15;
 	}
 	
+	if(f_WidowsWineDebuff[victim] > GetGameTime())
+	{
+		damage *= 1.35;
+	}
+	
 	if(attacker <= MaxClients)
 	{
 		if(dieingstate[attacker] > 0)
@@ -1327,14 +1332,29 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 		}
 		char Debuff_Adder[64];
 		
+		bool Debuff_added = false;
+		
 		if(f_HighTeslarDebuff[victim] > GetGameTime())
 		{
+			Debuff_added = true;
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "↡");
 		}
 		else if(f_LowTeslarDebuff[victim] > GetGameTime())
 		{
+			Debuff_added = true;
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "↓");
 		}
+		if(f_WidowsWineDebuff[victim] > GetGameTime())
+		{
+			Debuff_added = true;
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s४", Debuff_Adder);
+		}
+		
+		if(Debuff_added)
+		{
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s\n", Debuff_Adder);
+		}
+		
 		CClotBody npc = view_as<CClotBody>(victim);
 		
 		if(npc.m_flMeleeArmor != 1.0 || Medival_Difficulty_Level != 0)

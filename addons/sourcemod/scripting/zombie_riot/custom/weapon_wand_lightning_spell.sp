@@ -15,16 +15,16 @@ public void Lighting_Wand_Spell_ClearAll()
 	Zero(ability_cooldown);
 }
 
-public void Weapon_Wand_LightningSpell(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Wand_LightningSpell(int client, int weapon, bool &result, int slot)
 {
 	if(weapon >= MaxClients)
 	{
 		int mana_cost = 100;
 		if(mana_cost <= Current_Mana[client])
 		{
-			if (ability_cooldown[client] < GetGameTime())
+			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				ability_cooldown[client] = GetGameTime() + 15.0; //10 sec CD
+				Ability_Apply_Cooldown(client, slot, 15.0);
 				
 				float damage = 200.0;
 				
@@ -115,7 +115,7 @@ public void Weapon_Wand_LightningSpell(int client, int weapon, const char[] clas
 			}
 			else
 			{
-				float Ability_CD = ability_cooldown[client] - GetGameTime();
+				float Ability_CD = Ability_Check_Cooldown(client, slot);
 		
 				if(Ability_CD <= 0.0)
 					Ability_CD = 0.0;

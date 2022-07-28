@@ -237,7 +237,6 @@ int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
 int CashSpent[MAXTF2PLAYERS];
 int Level[MAXTF2PLAYERS];
 int XP[MAXTF2PLAYERS];
-int ImpulseBuffer[MAXTF2PLAYERS];
 int Ammo_Count_Ready[MAXTF2PLAYERS];
 //float Armor_Ready[MAXTF2PLAYERS];
 float Increaced_Sentry_damage_Low[MAXENTITIES];
@@ -315,6 +314,7 @@ int i_ObjectsSpawners[ZR_MAX_SPAWNERS];
 			
 int g_CarriedDispenser[MAXPLAYERS+1];
 int i_BeingCarried[MAXENTITIES];
+float f_BuildingIsNotReady[MAXTF2PLAYERS];
 
 //bool b_AllowBuildCommand[MAXPLAYERS + 1];
 
@@ -341,6 +341,23 @@ bool b_npcspawnprotection[MAXENTITIES];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
 float f_HighTeslarDebuff[MAXENTITIES];
+
+float f_WidowsWineDebuff[MAXENTITIES];
+float f_WidowsWineDebuffPlayerCooldown[MAXTF2PLAYERS];
+
+float f_Ability_Cooldown_m1[MAXTF2PLAYERS][10]; //Incase any ability uses m1 lol
+float f_Ability_Cooldown_m2[MAXTF2PLAYERS][10];
+float f_Ability_Cooldown_r[MAXTF2PLAYERS][10];
+
+int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
+
+#define ABILITY_NONE                 0          	//Nothing special.
+
+#define ABILITY_M1				(1 << 1) 
+#define ABILITY_M2				(1 << 2) 
+#define ABILITY_R				(1 << 3) 	
+
+#define FL_WIDOWS_WINE_DURATION 5.0
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -470,6 +487,7 @@ char PerkNames[][] =
 	"Double Tap",
 	"Speed Cola",
 	"Deadshot Daiquiri",
+	"Widows Wine",
 };
 
 char PerkNames_Recieved[][] =
@@ -479,7 +497,8 @@ char PerkNames_Recieved[][] =
 	"Juggernog Recieved",
 	"Double Tap Recieved",
 	"Speed Cola Recieved",
-	"Deadshot Daiquiri Recieved"
+	"Deadshot Daiquiri Recieved",
+	"Widows Wine Recieved",
 };
 
 enum
@@ -935,6 +954,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_calcium_wand.sp"
 #include "zombie_riot/custom/weapon_wand_calcium_spell.sp"
 #include "zombie_riot/custom/weapon_passive_banner.sp"
+#include "zombie_riot/custom/weapon_zeroknife.sp"
 #include "zombie_riot/custom/pets.sp"
 
 //FOR ESCAPE MAP ONLY!
@@ -1033,6 +1053,10 @@ public void OnPluginStart()
 	
 	ConVar cvar = FindConVar("tf_bot_count");
 	cvar.Flags &= ~FCVAR_NOTIFY;
+	
+	int cvarCheatsflags = GetConVarFlags(sv_cheats);
+	cvarCheatsflags &= ~FCVAR_NOTIFY;
+	SetConVarFlags(sv_cheats, cvarCheatsflags);
 	
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
@@ -1182,6 +1206,7 @@ public void OnMapStart()
 	PrecacheSound("zombiesurvival/headshot2.wav");
 	PrecacheSound("misc/halloween/clock_tick.wav");
 	PrecacheSound("mvm/mvm_bomb_warning.wav");
+	PrecacheSound("weapons/jar_explode.wav");
 	
 	MapStartResetAll();
 	EscapeMode = false;
@@ -2335,43 +2360,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	#if defined LagCompensation
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 	#endif
-	if(ImpulseBuffer[client] > 0)
-	{
-		/*
-		if(!CvarCheats.BoolValue)
-		{
-			CvarCheats.SetBool(true, false, false);
-			RequestFrame(Frame_OffCheats);
-		}
-		*/
-		
-		ImpulseBuffer[client] = -ImpulseBuffer[client];
-		impulse = 101;
-		return Plugin_Changed;
-	}
-	
-	if(ImpulseBuffer[client] < 0)
-	{
-		SetEntityHealth(client, -ImpulseBuffer[client]);
-		
-		ImpulseBuffer[client] = 0;
-
-		SetAmmo(client, 1, 9999);
-		SetAmmo(client, 2, 9999);
-		SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
-		for(int i=Ammo_Jar; i<Ammo_MAX; i++)
-		{
-			SetAmmo(client, i, CurrentAmmo[client][i]);
-		}
-		if(EscapeMode)
-		{
-			SetAmmo(client, Ammo_Metal, 99099); //just give infinite metal. There is no reason not to. (in Escape.)
-			SetAmmo(client, 21, 99999);
-		}
-		SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 0.0);
-		
-		OnWeaponSwitchPost(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
-	}
 	
 	Escape_PlayerRunCmd(client);
 	/*
@@ -2406,11 +2394,12 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			if(EntityFuncAttack2[weapon_holding] && EntityFuncAttack2[weapon_holding]!=INVALID_FUNCTION)
 			{
 				bool result = false; //ignore crit.
+				int slot = 2;
 				Call_StartFunction(null, EntityFuncAttack2[weapon_holding]);
 				Call_PushCell(client);
 				Call_PushCell(weapon_holding);
-				Call_PushString(classname);
 				Call_PushCellRef(result);
+				Call_PushCell(slot); //This is attack 2 :)
 				Call_Finish(action);
 			}
 			if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
@@ -2460,13 +2449,14 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				if(EntityFuncAttack3[weapon_holding] && EntityFuncAttack3[weapon_holding]!=INVALID_FUNCTION)
 				{
 					bool result = false; //ignore crit.
+					int slot = 3;
 					char classname[32];
 					GetEntityClassname(weapon_holding, classname, 32);
 					Call_StartFunction(null, EntityFuncAttack3[weapon_holding]);
 					Call_PushCell(client);
 					Call_PushCell(weapon_holding);
-					Call_PushString(classname);
 					Call_PushCellRef(result);
+					Call_PushCell(slot);	//This is R :)
 					Call_Finish(action);
 				}
 			}
@@ -2488,7 +2478,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		holding[client] = IN_ATTACK3;
 		
-		if (IsPlayerAlive(client))
+		if (IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 		{
 			M3_Abilities(client);
 		}
@@ -2706,11 +2696,12 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	Function func = EntityFuncAttack[weapon];
 	if(func && func!=INVALID_FUNCTION)
 	{
+		int slot = 1;
 		Call_StartFunction(null, func);
 		Call_PushCell(client);
 		Call_PushCell(weapon);
-		Call_PushString(classname);
 		Call_PushCellRef(result);
+		Call_PushCell(slot);	//This is m1 :)
 		Call_Finish(action);
 	}
 	
@@ -3248,6 +3239,7 @@ public void OnEntityDestroyed(int entity)
 			OnEntityDestroyed_BackPack(entity);
 			
 			RemoveNpcThingsAgain(entity);
+			IsCustomTfGrenadeProjectile(entity, 0.0);
 			
 			if(h_NpcCollissionHookType[entity] != 0)
 			{
@@ -3525,6 +3517,11 @@ public Action Hook_BlockUserMessageEx(UserMsg msg_id, BfRead msg, const int[] pl
 
 public void MapStartResetAll()
 {
+	Zero2(f_Ability_Cooldown_m1);
+	Zero2(f_Ability_Cooldown_r);
+	Zero(i_Hex_WeaponUsesTheseAbilities);
+	Zero(i_Hex_WeaponUsesTheseAbilities);
+	Zero(f_WidowsWineDebuffPlayerCooldown);
 	Zero(f_TempCooldownForVisualManaPotions);
 	Zero(i_IsABuilding);
 	Zero(f_DelayLookingAtHud);
@@ -3575,4 +3572,5 @@ public void MapStartResetAll()
 	Zero(f_ClientServerShowMessages);
 	Zero(h_NpcCollissionHookType);
 	M3_ClearAll();
+	ZeroRage_ClearAll();
 }

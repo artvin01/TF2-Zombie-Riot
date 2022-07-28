@@ -43,8 +43,6 @@ int i_HasMarker[MAXTF2PLAYERS];
 
 float f_MarkerPosition[MAXTF2PLAYERS][3];
 
-float f_BuildingIsNotReady[MAXTF2PLAYERS];
-
 static Handle h_Pickup_Building[MAXPLAYERS + 1];
 
 void Building_MapStart()
@@ -1944,6 +1942,9 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							Menu menu2 = new Menu(Building_ConfirmMountedAction);
 							menu2.SetTitle("%t", "Which perk do you desire?");
 								
+							FormatEx(buffer, sizeof(buffer), "%t", "Widows Wine");
+							menu2.AddItem("-8", buffer);
+							
 							FormatEx(buffer, sizeof(buffer), "%t", "Deadshot Daiquiri");
 							menu2.AddItem("-7", buffer);
 							
@@ -3058,7 +3059,7 @@ public Action MortarFire(Handle timer, int client)
 		{
 			float damage = 10.0;
 							
-			damage *= 30.0;
+			damage *= 35.0;
 			
 			float attack_speed;
 			float sentry_range;
@@ -3071,31 +3072,8 @@ public Action MortarFire(Handle timer, int client)
 			
 			float AOE_range = 350.0 * sentry_range;
 			
-			int targ = MaxClients + 1;
-			float targPos[3];
-			float damage_falloff = 1.0;
-			while ((targ = FindEntityByClassname(targ, "base_boss")) != -1)
-			{
-				if (GetEntProp(client, Prop_Send, "m_iTeamNum")!=GetEntProp(targ, Prop_Send, "m_iTeamNum")) 
-				{
-					if(!b_NpcHasDied[targ])
-					{
-						GetEntPropVector(targ, Prop_Data, "m_vecAbsOrigin", targPos);
-						if (GetVectorDistance(f_MarkerPosition[client], targPos) <= AOE_range)
-						{
-							
-							float distance_1 = GetVectorDistance(f_MarkerPosition[client], targPos);
-							float damage_1 = Custom_Explosive_Logic(client, distance_1, 0.5, damage, AOE_range);
-									
-						//	damage_1 /= f_DamageReductionMortar[client];
-							SDKHooks_TakeDamage(targ, obj, client, damage_1/damage_falloff, DMG_BLAST, -1, CalculateExplosiveDamageForce(f_MarkerPosition[client], targPos, AOE_range), f_MarkerPosition[client]);
-							damage_falloff *= EXPLOSION_AOE_DAMAGE_FALLOFF;
-						//	f_DamageReductionMortar[client] *= 1.35;
-							//use blast cus it does its own calculations for that ahahahah im evil
-						}
-					}
-				}
-			}
+			Explode_Logic_Custom(damage, client, client, -1, f_MarkerPosition[client], AOE_range, 1.45, _, false);
+			
 			CreateEarthquake(f_MarkerPosition[client], 0.5, 350.0, 16.0, 255.0);
 			CreateTimer(10.0, MortarReload, client, TIMER_FLAG_NO_MAPCHANGE);
 			EmitSoundToAll(MORTAR_BOOM, 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, f_MarkerPosition[client]);
@@ -3121,7 +3099,6 @@ public Action MortarReload(Handle timer, int client)
 			EmitSoundToAll(MORTAR_RELOAD, 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, pos_obj);
 			EmitSoundToAll(MORTAR_RELOAD, 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, pos_obj);			
 		}
-		f_BuildingIsNotReady[client] = GetGameTime() + 2.2;
 	}
 	return Plugin_Handled;
 }
@@ -3239,6 +3216,8 @@ static void Railgun_Boom(int client)
 			float vecForward[3];
 			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 			
+			bool First_Target_Hit = true;
+			
 			BEAM_Targets_Hit[client] = 1.0;
 			for (int building = 0; building < MAX_TARGETS_HIT; building++)
 			{
@@ -3251,6 +3230,12 @@ static void Railgun_Boom(int client)
 						float damage = BEAM_CloseBuildingDPT + (BEAM_FarBuildingDPT-BEAM_CloseBuildingDPT) * (distance/BEAM_MaxDistance);
 						if (damage < 0)
 							damage *= -1.0;
+							
+						if(First_Target_Hit)
+						{
+							damage *= 1.65;
+							First_Target_Hit = false;
+						}
 					
 						SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0), startPoint);	// 2048 is DMG_NOGIB?
 						BEAM_Targets_Hit[obj] *= LASER_AOE_DAMAGE_FALLOFF;
@@ -3382,6 +3367,7 @@ static void Railgun_Boom_Client(int client)
 			float vecForward[3];
 			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 			
+			bool First_Target_Hit = true;
 			BEAM_Targets_Hit[client] = 1.0;
 			for (int building = 0; building < MAX_TARGETS_HIT; building++)
 			{
@@ -3394,6 +3380,12 @@ static void Railgun_Boom_Client(int client)
 						float damage = BEAM_CloseBuildingDPT + (BEAM_FarBuildingDPT-BEAM_CloseBuildingDPT) * (distance/BEAM_MaxDistance);
 						if (damage < 0)
 							damage *= -1.0;
+							
+						if(First_Target_Hit)
+						{
+							damage *= 1.65;
+							First_Target_Hit = false;
+						}
 	
 						SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0), startPoint);	// 2048 is DMG_NOGIB?
 						BEAM_Targets_Hit[obj] *= LASER_AOE_DAMAGE_FALLOFF;
@@ -3652,6 +3644,18 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 					}
 				}
 			}
+			else if(id == -8)
+			{
+				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				if(IsValidEntity(entity))
+				{
+					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+					if(IsValidClient(owner))
+					{
+						Do_Perk_Machine_Logic(owner, client, entity, 6);
+					}
+				}
+			}
 		}
 	}
 	return 0;
@@ -3660,7 +3664,7 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk)
 {
 	TF2_StunPlayer(client, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
-	Building_Collect_Cooldown[entity][client] = GetGameTime() + 20.0;
+	Building_Collect_Cooldown[entity][client] = GetGameTime() + 40.0;
 	
 	i_CurrentEquippedPerk[client] = what_perk;
 	

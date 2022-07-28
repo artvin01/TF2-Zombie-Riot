@@ -2346,6 +2346,12 @@ methodmap CClotBody
 		public get()							{ return f_LowTeslarDebuff[this.index]; }
 		public set(float TempValueForProperty) 	{ f_LowTeslarDebuff[this.index] = TempValueForProperty; }
 	}
+	
+	property float mf_WidowsWineDebuff 
+	{
+		public get()							{ return f_WidowsWineDebuff[this.index]; }
+		public set(float TempValueForProperty) 	{ f_WidowsWineDebuff[this.index] = TempValueForProperty; }
+	}
 
 	public float GetRunSpeed()//For the future incase we want to alter it easier
 	{
@@ -2355,16 +2361,70 @@ methodmap CClotBody
 		
 		float Gametime = GetGameTime();
 		
-		if(!this.m_bThisNpcIsABoss && EntRefToEntIndex(RaidBossActive) != this.index) //Make sure that any slow debuffs dont affect these.
+		bool Is_Boss = true;
+		if(!this.m_bThisNpcIsABoss && EntRefToEntIndex(RaidBossActive) != this.index)
+		{
+			Is_Boss = false;
+		}
+		
+		if(!Is_Boss) //Make sure that any slow debuffs dont affect these.
 		{
 			if(this.m_fHighTeslarDebuff > Gametime)
 			{
-				speed_for_return *= 0.75;
+				speed_for_return *= 0.65;
 			}
 			else if(this.m_fLowTeslarDebuff > Gametime)
 			{
-				speed_for_return *= 0.85;
+				speed_for_return *= 0.75;
 			}
+		}
+		else
+		{
+			if(this.m_fHighTeslarDebuff > Gametime)
+			{
+				speed_for_return *= 0.9;
+			}
+			else if(this.m_fLowTeslarDebuff > Gametime)
+			{
+				speed_for_return *= 0.95;
+			}			
+			
+		}
+		if(this.mf_WidowsWineDebuff > Gametime)
+		{
+			float slowdown_amount = this.mf_WidowsWineDebuff - Gametime;
+			
+			float max_amount = FL_WIDOWS_WINE_DURATION;
+			
+			slowdown_amount = slowdown_amount / max_amount;
+			
+			slowdown_amount -= 1.0;
+			
+			slowdown_amount *= -1.0;
+			
+			if(!Is_Boss)
+			{
+				if(slowdown_amount < 0.1)
+				{
+					slowdown_amount = 0.1;
+				}
+				else if(slowdown_amount > 1.0)
+				{
+					slowdown_amount = 1.0;
+				}	
+			}
+			else
+			{
+				if(slowdown_amount < 0.8)
+				{
+					slowdown_amount = 0.8;
+				}
+				else if(slowdown_amount > 1.0)
+				{
+					slowdown_amount = 1.0;
+				}	
+			}
+			speed_for_return *= slowdown_amount;
 		}
 		return speed_for_return; 
 	}
@@ -5894,6 +5954,76 @@ public Action SDKHook_Settransmit_Baseboss(int entity, int client)
 	return Plugin_Continue;
 }
 
+stock float[] PredictSubjectPositionForProjectiles(CClotBody npc, int subject, float projectile_speed)
+{
+	float botPos[3];
+	botPos = WorldSpaceCenter(npc.index);
+	
+	float subjectPos[3];
+	subjectPos = WorldSpaceCenter(subject);
+	
+	float to[3];
+	SubtractVectors(subjectPos, botPos, to);
+	to[2] = 0.0;
+	
+	float flRangeSq = GetVectorLength(to, true);
+	
+	// Normalize in place
+	float range = SquareRoot( flRangeSq );
+	to[0] /= ( range + 0.0001 );	// avoid divide by zero
+	to[1] /= ( range + 0.0001 );	// avoid divide by zero
+	to[2] /= ( range + 0.0001 );	// avoid divide by zero
+	
+	// estimate time to reach subject, assuming maximum speed
+	float leadTime = (0.0001) + ( range / ( projectile_speed + 0.0001 ) );
+	
+	// estimate amount to lead the subject	
+	float SubjectAbsVelocity[3];
+	GetEntPropVector(subject, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+	float lead[3];	
+	lead[0] = leadTime * SubjectAbsVelocity[0];
+	lead[1] = leadTime * SubjectAbsVelocity[1];
+	lead[2] = 0.0;	
+
+	if(GetVectorDotProduct(to, lead) < 0.0)
+	{
+		// the subject is moving towards us - only pay attention 
+		// to his perpendicular velocity for leading
+		float to2D[3]; to2D = to;
+		to2D[2] = 0.0;
+		NormalizeVector(to2D, to2D);
+		
+		float perp[2];
+		perp[0] = -to2D[1];
+		perp[1] = to2D[0];
+
+		float enemyGroundSpeed = lead[0] * perp[0] + lead[1] * perp[1];
+
+		lead[0] = enemyGroundSpeed * perp[0];
+		lead[1] = enemyGroundSpeed * perp[1];
+	}
+
+	// compute our desired destination
+	float pathTarget[3];
+	AddVectors(subjectPos, lead, pathTarget);
+
+	// validate this destination
+
+	// don't lead through walls
+	if (GetVectorLength(lead, true) > 36.0)
+	{
+		float fraction;
+		if (!PF_IsPotentiallyTraversable( npc.index, subjectPos, pathTarget, IMMEDIATELY, fraction))
+		{
+			// tried to lead through an unwalkable area - clip to walkable space
+			pathTarget[0] = subjectPos[0] + fraction * ( pathTarget[0] - subjectPos[0] );
+			pathTarget[1] = subjectPos[1] + fraction * ( pathTarget[1] - subjectPos[1] );
+			pathTarget[2] = subjectPos[2] + fraction * ( pathTarget[2] - subjectPos[2] );
+		}
+	}
+	return pathTarget;
+}
+
 stock float[] PredictSubjectPositionHook(CClotBody npc, int subject)
 {
 	float botPos[3];
@@ -6354,6 +6484,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ThisNpcIsSawrunner[entity] = false;
 	f_LowTeslarDebuff[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
+	f_WidowsWineDebuff[entity] = 0.0;
 	
 	fl_MeleeArmor[entity] = 1.0; //yeppers.
 	fl_RangedArmor[entity] = 1.0;

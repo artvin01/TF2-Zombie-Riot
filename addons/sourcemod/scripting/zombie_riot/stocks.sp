@@ -2953,3 +2953,58 @@ stock void ConstrainDistance(const float[] startPoint, float[] endPoint, float d
 	if(do2)
 		endPoint[2] = ((endPoint[2] - startPoint[2]) * constrainFactor) + startPoint[2];
 }
+
+public float Ability_Check_Cooldown(int client, int what_slot)
+{
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	
+	char classname[32];
+	GetEntityClassname(weapon, classname, 32);
+	
+	int weapon_slot = TF2_GetClassnameSlot(classname);
+	
+	switch(what_slot)
+	{
+		case 1:	
+		{
+			return (f_Ability_Cooldown_m1[client][weapon_slot] - GetGameTime());
+		}
+		case 2:	
+		{
+			return (f_Ability_Cooldown_m2[client][weapon_slot] - GetGameTime());
+		}
+		case 3:	
+		{
+			return (f_Ability_Cooldown_r[client][weapon_slot] - GetGameTime());
+		}
+	}
+	PrintToChatAll("Somehow something has no cooldown :( Please report!!!");
+	return 0.0;
+}
+
+public void Ability_Apply_Cooldown(int client, int what_slot, float cooldown)
+{
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	
+	char classname[32];
+	GetEntityClassname(weapon, classname, 32);
+	
+	int weapon_slot = TF2_GetClassnameSlot(classname);
+	
+	cooldown += GetGameTime(); //lol
+	switch(what_slot)
+	{
+		case 1:	
+		{
+			f_Ability_Cooldown_m1[client][weapon_slot] = cooldown;
+		}
+		case 2:	
+		{
+			f_Ability_Cooldown_m2[client][weapon_slot] = cooldown;
+		}
+		case 3:	
+		{
+			f_Ability_Cooldown_r[client][weapon_slot] = cooldown;
+		}
+	}
+}

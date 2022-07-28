@@ -23,6 +23,8 @@ Handle g_hSDKStartLagComp;
 Handle g_hSDKEndLagComp;
 Handle g_hSDKUpdateBlocked;
 
+static Handle g_hImpulse;
+
 DynamicHook g_hDHookItemIterateAttribute;
 int g_iCEconItem_m_Item;
 int g_iCEconItemView_m_bOnlyIterateItemViewAttributes;
@@ -80,6 +82,14 @@ void SDKCall_Setup()
 	if(!g_hSetAbsAngle)
 		LogError("[Gamedata] Could not find CBaseEntity::SetAbsAngles");
 		*/
+		
+	StartPrepSDKCall(SDKCall_Player);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBasePlayer::CheatImpulseCommands");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain); //Player
+	g_hImpulse = EndPrepSDKCall();
+	if(!g_hImpulse)
+		LogError("[Gamedata] Could not find CBasePlayer::CheatImpulseCommands");
+		
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseAnimating::InvalidateBoneCache");
 	if((g_hInvalidateBoneCache = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::InvalidateBoneCache");
@@ -391,4 +401,47 @@ public void Sdkcall_Load_Lagcomp()
 		
 		delete gamedata_lag_comp;	
 	}
+}
+
+public void Manual_Impulse_101(int client, int health)
+{
+	SetConVarInt(sv_cheats, 1, false, false);
+	
+	SDKCall(g_hImpulse, client, 101);
+	
+	SetConVarInt(sv_cheats, 0, false, false);
+	
+	
+	float host_timescale;
+	host_timescale = GetConVarFloat(cvarTimeScale);
+	
+	if(host_timescale != 1.0)
+	{
+		for(int i=1; i<=MaxClients; i++)
+		{
+			if(IsClientInGame(i) && !IsFakeClient(i))
+			{
+				SendConVarValue(i, sv_cheats, "1");
+			}
+		}
+	}
+	
+	//how quirky.
+	SetAmmo(client, 1, 9999);
+	SetAmmo(client, 2, 9999);
+	SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
+	for(int i=Ammo_Jar; i<Ammo_MAX; i++)
+	{
+		SetAmmo(client, i, CurrentAmmo[client][i]);
+	}
+	if(EscapeMode)
+	{
+		SetAmmo(client, Ammo_Metal, 99099); //just give infinite metal. There is no reason not to. (in Escape.)
+		SetAmmo(client, 21, 99999);
+	}
+	SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 0.0);
+	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
+	OnWeaponSwitchPost(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
+	
+	SetEntityHealth(client, health);
 }
