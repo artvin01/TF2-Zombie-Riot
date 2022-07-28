@@ -4767,7 +4767,7 @@ stock int GetClosestTarget(int entity, bool Onlyplayers = false, float fldistanc
 			}
 		}
 	}
-	if(!Onlyplayers) //Make sure that they completly ignore barricades during raids
+//	if() //Make sure that they completly ignore barricades during raids
 	{
 		for (int pass = 0; pass <= 2; pass++)
 		{
@@ -4785,7 +4785,7 @@ stock int GetClosestTarget(int entity, bool Onlyplayers = false, float fldistanc
 					CClotBody npc = view_as<CClotBody>(i);
 					if(pass != 2)
 					{
-						if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !IsValidEntity(EntRefToEntIndex(RaidBossActive))) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+						if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !IsValidEntity(EntRefToEntIndex(RaidBossActive)) && !Onlyplayers) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 						{
 							float EntityLocation[3], TargetLocation[3]; 
 							GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
