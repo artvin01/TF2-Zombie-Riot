@@ -1608,8 +1608,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						if(owner != client)
 						{
 							i_Healing_station_money_limit[owner][client] += 1;
-							Resupplies_Supplied[owner] += 2;
-							CashSpent[owner] -= 20;
+							Resupplies_Supplied[owner] += 4;
+							CashSpent[owner] -= 40;
 							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 							SetGlobalTransTarget(owner);
 							ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Healing Station Used");
