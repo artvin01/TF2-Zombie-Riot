@@ -778,7 +778,7 @@ void Citizen_SpawnAtPoint()
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		
-		Npc_Create(CITIZEN, 0, flPos, flAng, true);
+		Npc_Create(CITIZEN, 0, pos, ang, true);
 	}
 }
 
@@ -1118,6 +1118,7 @@ public void Citizen_ClotThink(int iNPC)
 	}
 	
 	bool moveBack = true;
+	bool standing = npc.m_iTarget < 1;
 	bool wantReload = (npc.m_iGunClip > 0 && npc.m_iAttacksTillReload != npc.m_iGunClip);
 	bool combat = !Waves_InSetup();
 	bool low = GetEntProp(npc.index, Prop_Data, "m_iHealth") < 300;
@@ -1610,7 +1611,6 @@ public void Citizen_ClotThink(int iNPC)
 		}
 	}
 	
-	bool standing = npc.m_iTarget < 1;
 	if(wantReload)
 	{
 		//PrintCenterTextAll("CIV: Wants to Reload");
