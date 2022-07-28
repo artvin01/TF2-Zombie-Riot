@@ -19,7 +19,6 @@
 #undef REQUIRE_PLUGIN
 #include <minecraft_tf2>
 #include <textstore>
-
 	
 #tryinclude <menus-controller>
 
@@ -625,6 +624,7 @@ enum
 	CITIZEN								= 111,
 	
 	MEDIVAL_EAGLE_SCOUT					= 112,
+	MEDIVAL_SAMURAI						= 113,
 }
 
 
@@ -749,7 +749,8 @@ public const char NPC_Names[][] =
 	"Pikeman",
 	"Medic Supperior Mage",
 	"Rebel",
-	"Eagle Scout"
+	"Eagle Scout",
+	"Samurai",
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -872,7 +873,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_medival_pikeman",
 	"npc_alt_medic_supperior_mage",
 	"npc_citizen",
-	"npc_medival_eagle_scout"
+	"npc_medival_eagle_scout",
+	"npc_medival_samurai"
 };
 
 #include "zombie_riot/stocks.sp"

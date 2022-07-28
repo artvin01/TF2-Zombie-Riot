@@ -1,7 +1,7 @@
 
 //#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_59.mdl"
 
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_159.mdl"
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_164.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
 
@@ -768,6 +768,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = MedivalEagleScout(entity, vecPos, vecAng, ally);
 		}
+		case MEDIVAL_SAMURAI:
+		{
+			entity = MedivalSamurai(entity, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1229,6 +1233,10 @@ public void NPCDeath(int entity)
 		{
 			MedivalEagleScout_NPCDeath(entity);
 		}
+		case MEDIVAL_SAMURAI:
+		{
+			MedivalSamurai_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1395,6 +1403,7 @@ public void OnMapStart_NPC_Base()
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_OnMapStart_NPC();
 	Citizen_OnMapStart();
 	MedivalEagleScout_OnMapStart_NPC();
+	MedivalSamurai_OnMapStart_NPC();
 }
 
 
@@ -6711,3 +6720,4 @@ public void Change_Npc_Collision(int npc, int CollisionType)
 #include "zombie_riot/npc/medival/npc_medival_pikeman.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_supperior_mage.sp"
 #include "zombie_riot/npc/medival/npc_medival_eagle_scout.sp"
+#include "zombie_riot/npc/medival/npc_medival_samurai.sp"

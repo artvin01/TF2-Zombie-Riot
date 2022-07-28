@@ -289,7 +289,7 @@ public void XenoSniperMain_ClotThink(int iNPC)
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
 				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GetGameTime())
+				if(npc.m_flNextMeleeAttack < GetGameTime() || npc.m_flAttackHappenswillhappen)
 				{
 					//Play attack ani
 					if (!npc.m_flAttackHappenswillhappen)

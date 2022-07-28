@@ -456,4 +456,8 @@
 	{
 		"en" 		"Eagle Scout"
 	}
+	"Samurai"
+	{
+		"en" 		"Samurai"
+	}
 }

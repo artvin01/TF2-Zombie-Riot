@@ -64,24 +64,25 @@ static const char g_IdleAlertedSounds[][] = {
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/cleaver_hit_02.wav",
-	"weapons/cleaver_hit_03.wav",
-	"weapons/cleaver_hit_05.wav",
-	"weapons/cleaver_hit_06.wav",
-	"weapons/cleaver_hit_07.wav",
-};
+	"weapons/samurai/tf_katana_slice_01.wav",
+	"weapons/samurai/tf_katana_slice_02.wav",
+	"weapons/samurai/tf_katana_slice_03.wav",
+}
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/demo_sword_swing1.wav",
-	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
+	"weapons/samurai/tf_katana_01.wav",
+	"weapons/samurai/tf_katana_02.wav",
+	"weapons/samurai/tf_katana_03.wav",
+	"weapons/samurai/tf_katana_04.wav",
+	"weapons/samurai/tf_katana_05.wav",
+	"weapons/samurai/tf_katana_06.wav",
 };
 
 static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
-void MedivalEagleScout_OnMapStart_NPC()
+void MedivalSamurai_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -93,24 +94,14 @@ void MedivalEagleScout_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 }
 
-methodmap MedivalEagleScout < CClotBody
+methodmap MedivalSamurai < CClotBody
 {
-	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
-			return;
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(24.0, 48.0);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
-	}
 	
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime())
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
@@ -124,7 +115,7 @@ methodmap MedivalEagleScout < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime() + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		
 		#if defined DEBUG_SOUND
@@ -134,7 +125,7 @@ methodmap MedivalEagleScout < CClotBody
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
@@ -142,38 +133,39 @@ methodmap MedivalEagleScout < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-	
 	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
+		
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
 	
-	public MedivalEagleScout(int client, float vecPos[3], float vecAng[3], bool ally)
+	
+	
+	public MedivalSamurai(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalEagleScout npc = view_as<MedivalEagleScout>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "600", ally));
+		MedivalSamurai npc = view_as<MedivalSamurai>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "25000", ally));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_SAMURAI;
-		
-		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_EAGLE");
+
+		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_SAMURAI");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -181,39 +173,37 @@ methodmap MedivalEagleScout < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalEagleScout_ClotDamaged);
-		SDKHook(npc.index, SDKHook_Think, MedivalEagleScout_ClotThink);
-	
-//		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-//		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
-
-		npc.m_iState = 0;
-		npc.m_flSpeed = 340.0;
-		npc.m_flNextRangedAttack = 0.0;
-		npc.m_flNextRangedSpecialAttack = 0.0;
-		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flAttackHappenswillhappen = false;
-		npc.m_fbRangedSpecialOn = false;
+		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalSamurai_ClotDamaged);
+		SDKHook(npc.index, SDKHook_Think, MedivalSamurai_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamagePost, MedivalSamurai_ClotDamaged_Post);
 		
-		npc.m_flMeleeArmor = 1.30; //They take MORE melee damage.
-		npc.m_flRangedArmor = 0.5;
+		//IDLE
+		npc.m_flSpeed = 330.0;
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
-		SetVariantString("-3.0");
+		int skin = 5;
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		
+		npc.m_flGetClosestTargetTime = 0.0;
+		npc.StartPathing();
+		
+		
+		npc.Anger = false;
+		
+		npc.m_flMeleeArmor = 1.30; 		//Honorable fighters!
+		npc.m_flRangedArmor = 0.9;		//FUCK YOU RANGED KILL YOURSELF AAAAAAAAAAAAAAA
+		
+		
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
+		SetVariantString("-1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("weapon_targe", "models/weapons/c_models/c_targe/c_targe.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/demo/sbox2014_demo_samurai_armour/sbox2014_demo_samurai_armour.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/workshop/player/items/all_class/fall17_war_eagle/fall17_war_eagle_soldier.mdl");
-		SetVariantString("1.0");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop_partner/player/items/demo/demo_shogun_kabuto/demo_shogun_kabuto.mdl");
+		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		
-
-		
-		npc.StartPathing();
-		
 		
 		return npc;
 	}
@@ -223,9 +213,9 @@ methodmap MedivalEagleScout < CClotBody
 
 //TODO 
 //Rewrite
-public void MedivalEagleScout_ClotThink(int iNPC)
+public void MedivalSamurai_ClotThink(int iNPC)
 {
-	MedivalEagleScout npc = view_as<MedivalEagleScout>(iNPC);
+	MedivalSamurai npc = view_as<MedivalSamurai>(iNPC);
 	
 	if(npc.m_flNextDelayTime > GetGameTime())
 	{
@@ -234,8 +224,8 @@ public void MedivalEagleScout_ClotThink(int iNPC)
 	
 	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
 	
-	npc.Update();	
-	
+	npc.Update();
+			
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
@@ -250,9 +240,9 @@ public void MedivalEagleScout_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GetGameTime() + 0.1;
 
+	
 	if(npc.m_flGetClosestTargetTime < GetGameTime())
 	{
-	
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
 	}
@@ -261,8 +251,18 @@ public void MedivalEagleScout_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
+	//	if(npc.Anger)
+		{
+			if(npc.Anger)
+			{
+				if(npc.m_iChanged_WalkCycle != 2)
+				{
+					npc.m_iChanged_WalkCycle = 2;
+					int iActivity_melee = npc.LookupActivity("ACT_CUSTOM_RUN_SAMURAI");
+					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+				}
+			}
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
@@ -286,21 +286,32 @@ public void MedivalEagleScout_ClotThink(int iNPC)
 			} else {
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-	
+			
 			//Target close enough to hit
-			if((flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime()) || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
 			{
+				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
+				//Can we attack right now?
 				if(npc.m_flNextMeleeAttack < GetGameTime() || npc.m_flAttackHappenswillhappen)
 				{
+					//Play attack ani
 					if (!npc.m_flAttackHappenswillhappen)
 					{
-						npc.AddGesture("ACT_CUSTOM_ATTACK_EAGLE");
+						if(npc.Anger)
+						{
+							npc.AddGesture("ACT_CUSTOM_ATTACK_SAMURAI_ANGRY");
+						}
+						else
+						{
+							npc.AddGesture("ACT_CUSTOM_ATTACK_SAMURAI_CALM");
+						}
+						
 						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime()+0.3;
-						npc.m_flAttackHappens_bullshit = GetGameTime()+0.44;
-						npc.m_flNextMeleeAttack = GetGameTime() + 1.2;
+						npc.m_flAttackHappens = GetGameTime()+0.4;
+						npc.m_flAttackHappens_bullshit = GetGameTime()+0.54;
+						npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
 						npc.m_flAttackHappenswillhappen = true;
 					}
 						
@@ -309,28 +320,54 @@ public void MedivalEagleScout_ClotThink(int iNPC)
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
+						{
+							int target = TR_GetEntityIndex(swingTrace);	
+							
+							float vecHit[3];
+							TR_GetEndPosition(vecHit, swingTrace);
+							
+							if(target > 0) 
 							{
 								
-								int target = TR_GetEntityIndex(swingTrace);	
+								float Bonus_damage = 1.0;
 								
-								float vecHit[3];
-								TR_GetEndPosition(vecHit, swingTrace);
-								
-								if(target > 0) 
+								if(target <= MaxClients)
 								{
+									int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
+	
+									char classname[32];
+									GetEntityClassname(weapon, classname, 32);
 									
+									int weapon_slot = TF2_GetClassnameSlot(classname);
+									
+									if(weapon_slot != 2)
+									{
+										Bonus_damage = 1.5;
+									}
+								}
+								if(npc.Anger)
+								{
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 35.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0 * Bonus_damage, DMG_SLASH|DMG_CLUB);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_SLASH|DMG_CLUB);
-									
-									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
-									
-									// Hit sound
-									npc.PlayMeleeHitSound();
-								} 
-							}
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 1200.0, DMG_SLASH|DMG_CLUB);
+								}
+								else
+								{
+									if(target <= MaxClients)
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0 * Bonus_damage, DMG_SLASH|DMG_CLUB);
+									else
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 800.0, DMG_SLASH|DMG_CLUB);									
+								}
+								
+								
+								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+								
+								// Hit sound
+								npc.PlayMeleeHitSound();
+								
+							} 
+						}
 						delete swingTrace;
 						npc.m_flAttackHappenswillhappen = false;
 					}
@@ -341,9 +378,11 @@ public void MedivalEagleScout_ClotThink(int iNPC)
 				}
 			}
 			npc.StartPathing();
+		}
 	}
 	else
 	{
+		
 		PF_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -352,40 +391,54 @@ public void MedivalEagleScout_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action MedivalEagleScout_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalSamurai_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	//Valid attackers only.
+	MedivalSamurai npc = view_as<MedivalSamurai>(victim);
+		
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
-	MedivalEagleScout npc = view_as<MedivalEagleScout>(victim);
-	
-	
+
 	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{
 		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
-	
 	return Plugin_Changed;
 }
 
-public void MedivalEagleScout_NPCDeath(int entity)
+public void MedivalSamurai_ClotDamaged_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
-	MedivalEagleScout npc = view_as<MedivalEagleScout>(entity);
+	MedivalSamurai npc = view_as<MedivalSamurai>(victim);
+
+	if(!(damagetype & (DMG_CLUB|DMG_SLASH)))
+	{
+		npc.Anger = true; //	>:(
+		npc.m_flSpeed = 350.0;
+	}
+}
+
+public void MedivalSamurai_NPCDeath(int entity)
+{
+	MedivalSamurai npc = view_as<MedivalSamurai>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalEagleScout_ClotDamaged);
-	SDKUnhook(npc.index, SDKHook_Think, MedivalEagleScout_ClotThink);
-		
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalSamurai_ClotDamaged);
+	SDKUnhook(npc.index, SDKHook_Think, MedivalSamurai_ClotThink);
+	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, MedivalSamurai_ClotDamaged_Post);	
+	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 }
+
+
+
