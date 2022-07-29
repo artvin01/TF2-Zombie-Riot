@@ -1574,7 +1574,7 @@ public void Citizen_ClotThink(int iNPC)
 										npc.m_iAttacksTillReload--;
 										
 										npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_RPG");
-										npc.FireRocket(vecTarget, npc.m_fGunDamage, 1100.0);
+										npc.FireRocket(vecTarget, npc.m_fGunDamage * 0.10, 1100.0); //WAAY TOO OP
 										npc.PlayRPGSound();
 									}
 								}
