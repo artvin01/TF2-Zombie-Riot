@@ -65,6 +65,7 @@ ConVar CvarMaxBotsForKillfeed;
 ConVar CvarXpMultiplier;
 
 bool Toggle_sv_cheats = false;
+bool b_MarkForReload = false; //When you wanna reload the plugin on map change...
 #define CompensatePlayers
 
 //#define FastStart
@@ -1046,6 +1047,7 @@ public void OnPluginStart()
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_GENERIC, "Forcefully summon grigori");
 	
 	RegAdminCmd("sm_toggle_fake_cheats", Command_ToggleCheats, ADMFLAG_GENERIC, "ToggleCheats");
+	RegAdminCmd("zr_reload_plugin", Command_ToggleReload, ADMFLAG_GENERIC, "ToggleCheats");
 	
 
 					
@@ -1306,17 +1308,11 @@ public void OnMapEnd()
 public void OnConfigsExecuted()
 {
 	RequestFrame(Configs_ConfigsExecuted);
-	/*
-	if(Reload_Plugin_Temp_Fix)
+	if(b_MarkForReload)
 	{
 		ServerCommand("sm plugins reload zombie_riot");
 		return;
 	}
-	else
-	{
-		Reload_Plugin_Temp_Fix = true;
-	}
-	*/
 }
 public Action OnReloadBlockNav(int args)
 {
@@ -1510,6 +1506,20 @@ public Action Command_ToggleCheats(int client, int args)
 	return Plugin_Handled;
 }
 
+public Action Command_ToggleReload(int client, int args)
+{
+	if(b_MarkForReload)
+	{
+		PrintToChat(client, "The plugin WILL NOT reload on map change.");
+		b_MarkForReload = false;
+	}
+	else
+	{
+		PrintToChat(client, "The plugin WILL reload on map change.");
+		b_MarkForReload = true;
+	}
+	return Plugin_Handled;
+}
 					
 public void OnClientPutInServer(int client)
 {
