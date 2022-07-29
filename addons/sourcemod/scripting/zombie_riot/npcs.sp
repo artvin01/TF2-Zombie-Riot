@@ -135,36 +135,43 @@ public Action GetClosestSpawners(Handle timer)
 	int i_Diviveby = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsClientInGame(client) && !IsFakeClient(client))
+		if(IsClientInGame(client))
 		{
-			QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
-			QueryClientConVar(client, "cl_showpluginmessages", ConVarCallback_Plugin_message); //cl_showpluginmessages
-			
-			int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
-			
-			if(point_difference > 0)
+			if(IsPlayerAlive(client) && IsFakeClient(client))
 			{
-				if(Waves_GetRound() +1 > 60)
-				{
-					GiveXP(client, point_difference / 10); //Any round above 60 will give way less xp due to just being xp grind fests. This includes the bloons rounds as the points there get ridicilous at later rounds.
-				}
-				else
-				{
-					GiveXP(client, point_difference);
-				}
+				KickClient(client); //This bot was somehow alive, kick them.
 			}
-			
-			i_PreviousPointAmount[client] = PlayerPoints[client];
-			
-			if(GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0 && IsPlayerAlive(client))
+			else if(!IsFakeClient(client))
 			{
-				i_Diviveby += 1;
+				QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
+				QueryClientConVar(client, "cl_showpluginmessages", ConVarCallback_Plugin_message); //cl_showpluginmessages
 				
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+				int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 				
-				f3_PositionOfAll[0] += f3_PositionTemp[0];
-				f3_PositionOfAll[1] += f3_PositionTemp[1];
-				f3_PositionOfAll[2] += f3_PositionTemp[2];
+				if(point_difference > 0)
+				{
+					if(Waves_GetRound() +1 > 60)
+					{
+						GiveXP(client, point_difference / 10); //Any round above 60 will give way less xp due to just being xp grind fests. This includes the bloons rounds as the points there get ridicilous at later rounds.
+					}
+					else
+					{
+						GiveXP(client, point_difference);
+					}
+				}
+				
+				i_PreviousPointAmount[client] = PlayerPoints[client];
+				
+				if(GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0 && IsPlayerAlive(client))
+				{
+					i_Diviveby += 1;
+					
+					GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+					
+					f3_PositionOfAll[0] += f3_PositionTemp[0];
+					f3_PositionOfAll[1] += f3_PositionTemp[1];
+					f3_PositionOfAll[2] += f3_PositionTemp[2];
+				}
 			}
 		}
 	}

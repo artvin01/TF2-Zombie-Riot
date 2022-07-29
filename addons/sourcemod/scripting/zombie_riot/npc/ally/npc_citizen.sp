@@ -1779,10 +1779,10 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_bGetClosestTargetTimeAlly = true;
 			npc.m_bSeakingMedic = false;
 		}
-		
+		 
 		//PrintCenterTextAll("CIV: Moving Back %d", npc.m_iTargetAlly);
 		
-		if((npc.m_iTargetAlly <= MaxClients && !IsValidClient(npc.m_iTargetAlly) && !IsPlayerAlive(npc.m_iTargetAlly)) || !IsValidEntity(npc.m_iTargetAlly))
+		if((npc.m_iTargetAlly <= MaxClients || !IsValidClient(npc.m_iTargetAlly) || !IsPlayerAlive(npc.m_iTargetAlly)) || !IsValidEntity(npc.m_iTargetAlly))
 		{
 			npc.m_bGetClosestTargetTimeAlly = false;
 			npc.m_bSeakingMedic = false;
