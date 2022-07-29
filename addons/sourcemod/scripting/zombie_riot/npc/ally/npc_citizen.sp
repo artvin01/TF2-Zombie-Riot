@@ -1123,7 +1123,7 @@ public void Citizen_ClotThink(int iNPC)
 	bool combat = !Waves_InSetup();
 	bool low = GetEntProp(npc.index, Prop_Data, "m_iHealth") < 300;
 	
-	if(npc.m_iTarget > 0)
+	if(!standing)
 	{
 		//PrintCenterTextAll("CIV: Attacking");
 		npc.m_flidle_talk = FAR_FUTURE;
