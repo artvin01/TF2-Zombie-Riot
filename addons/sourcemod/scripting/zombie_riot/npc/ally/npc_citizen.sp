@@ -1821,11 +1821,11 @@ public void Citizen_ClotThink(int iNPC)
 								AcceptEntityInput(npc.m_iWearable1, "Disable");
 						}
 					}
+					
+					npc.StartPathing();
+					PF_SetGoalVector(npc.index, vecTarget);
+					return;
 				}
-				
-				npc.StartPathing();
-				PF_SetGoalVector(npc.index, vecTarget);
-				return;
 			}
 			
 			if(npc.m_bSeakingMedic && distance < 5000.0)
