@@ -5954,6 +5954,161 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 	return pathTarget;
 }
 
+float f_PickThisDirectionForabit[MAXENTITIES];
+int i_PickThisDirectionForabit[MAXENTITIES];
+
+stock float[] BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject, float extra_backoff = 64.0)
+{
+	float botPos[3];
+	botPos = WorldSpaceCenter(npc.index);
+	
+	float subjectPos[3];
+	subjectPos = WorldSpaceCenter(subject);
+
+	// compute our desired destination
+	float pathTarget[3];
+	
+		
+	//https://forums.alliedmods.net/showthread.php?t=278691 im too stupid for vectors.
+	
+	float vvector[3], ang[3];
+	SubtractVectors(botPos, subjectPos, vvector);
+	NormalizeVector(vvector, vvector);
+	GetVectorAngles(vvector, ang); 
+	
+	ang[0] = 0.0; //I dont want him to go up or down with his prediction.
+	
+	float flDistanceToTarget;
+	
+	if(f_PickThisDirectionForabit[npc.index] < GetGameTime())
+	{
+		float vecForward[3], vecRight[3], vecTarget[3];
+			
+		vecTarget = WorldSpaceCenter(subject);
+		MakeVectorFromPoints(botPos, vecTarget, vecForward);
+		GetVectorAngles(vecForward, vecForward);
+		vecForward[1] = ang[1];
+		GetAngleVectors(vecForward, vecForward, vecRight, vecTarget);
+			
+		float vecSwingStart[3]; vecSwingStart = botPos;
+			
+		float vecSwingEnd[3];
+		vecSwingEnd[0] = vecSwingStart[0] + vecForward[0] * extra_backoff;
+		vecSwingEnd[1] = vecSwingStart[1] + vecForward[1] * extra_backoff;
+		vecSwingEnd[2] = vecSwingStart[2] + vecForward[2] * extra_backoff;
+			
+		Handle trace; 
+		trace = TR_TraceRayFilterEx(botPos, vecSwingEnd, MASK_ALL, RayType_EndPoint, HitOnlyTargetOrWorld, 0); //If i hit a wall, i stop retreatring and accept death, for now!
+		
+		//Make sure to actually back off...
+		
+		//I could reuse this code for if npcs get stuck, might actually work out....
+		
+		TR_GetEndPosition(pathTarget, trace);
+		
+		delete trace;
+		
+		flDistanceToTarget = GetVectorDistance(botPos, pathTarget, true);
+	}
+	else
+	{
+		flDistanceToTarget = 0.0;
+	}
+	
+	//Check of on if its too close, if yes, try again, but left or right, randomly chosen!
+	if(flDistanceToTarget < ((Pow(extra_backoff, 2.0)) / 2.0))
+	{
+	//	PrintToChatAll("Im against a wall! try other running away methods!");
+		int Direction = GetRandomInt(1, 2);
+		
+		float gameTime = GetGameTime();
+		
+		if(f_PickThisDirectionForabit[npc.index] < GetGameTime())
+		{
+			f_PickThisDirectionForabit[npc.index] = gameTime + 1.2;
+			i_PickThisDirectionForabit[npc.index] = Direction;
+		}
+		else
+		{
+			Direction = i_PickThisDirectionForabit[npc.index];
+		}
+		
+		if(Direction == 1)
+		{
+			float vecForward_2[3], vecRight_2[3], vecTarget_2[3];
+		
+			vecTarget_2 = WorldSpaceCenter(subject);
+			MakeVectorFromPoints(botPos, vecTarget_2, vecForward_2);
+			GetVectorAngles(vecForward_2, vecForward_2);
+			
+			ang[1] += 90.0; //try to the left/right.
+			
+			vecForward_2[1] = ang[1];
+			GetAngleVectors(vecForward_2, vecForward_2, vecRight_2, vecTarget_2);
+					
+			float vecSwingStart_2[3]; vecSwingStart_2 = botPos;
+				
+			float vecSwingEnd_2[3];
+			vecSwingEnd_2[0] = vecSwingStart_2[0] + vecForward_2[0] * extra_backoff;
+			vecSwingEnd_2[1] = vecSwingStart_2[1] + vecForward_2[1] * extra_backoff;
+			vecSwingEnd_2[2] = vecSwingStart_2[2] + vecForward_2[2] * extra_backoff;
+			
+			Handle trace_2; 
+			
+			trace_2 = TR_TraceRayFilterEx(botPos, vecSwingEnd_2, MASK_SOLID, RayType_EndPoint, HitOnlyTargetOrWorld, 0); //If i hit a wall, i stop retreatring and accept death, for now!
+			TR_GetEndPosition(pathTarget, trace_2);
+			
+			delete trace_2;
+		}
+		else
+		{
+			float vecForward_2[3], vecRight_2[3], vecTarget_2[3];
+		
+			vecTarget_2 = WorldSpaceCenter(subject);
+			MakeVectorFromPoints(botPos, vecTarget_2, vecForward_2);
+			GetVectorAngles(vecForward_2, vecForward_2);
+			
+			ang[1] -= 90.0; //try to the left/right.
+			
+			vecForward_2[1] = ang[1];
+			GetAngleVectors(vecForward_2, vecForward_2, vecRight_2, vecTarget_2);
+					
+			float vecSwingStart_2[3]; vecSwingStart_2 = botPos;
+				
+			float vecSwingEnd_2[3];
+			vecSwingEnd_2[0] = vecSwingStart_2[0] + vecForward_2[0] * extra_backoff;
+			vecSwingEnd_2[1] = vecSwingStart_2[1] + vecForward_2[1] * extra_backoff;
+			vecSwingEnd_2[2] = vecSwingStart_2[2] + vecForward_2[2] * extra_backoff;
+			
+			Handle trace_2; 
+			
+			trace_2 = TR_TraceRayFilterEx(botPos, vecSwingEnd_2, MASK_SOLID, RayType_EndPoint, HitOnlyTargetOrWorld, 0); //If i hit a wall, i stop retreatring and accept death, for now!
+			TR_GetEndPosition(pathTarget, trace_2);
+			
+			delete trace_2;			
+		}
+		
+	}
+	
+	Handle trace_3; //2nd one, make sure to actually hit the ground!
+	
+	trace_3 = TR_TraceRayFilterEx(pathTarget, {89.0, 1.0, 0.0}, MASK_SOLID, RayType_Infinite, HitOnlyTargetOrWorld, 0); //If i hit a wall, i stop retreatring and accept death, for now!
+	
+	TR_GetEndPosition(pathTarget, trace_3);
+	
+	delete trace_3;
+	
+	/*
+	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+	TE_SetupBeamPoints(botPos, pathTarget, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 5.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+	TE_SendToAll();
+	*/
+	
+	pathTarget[2] += 20.0; //Clip them up, minimum crouch level preferred, or else the bots get really confused and sometimees go otther ways if the player goes up or down somewhere, very thin stairs break these bots.
+	
+	return pathTarget;
+}
+
 public Action SDKHook_Settransmit_Baseboss(int entity, int client)
 {
 	if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
@@ -6506,6 +6661,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	
 	fl_MeleeArmor[entity] = 1.0; //yeppers.
 	fl_RangedArmor[entity] = 1.0;
+	f_PickThisDirectionForabit[entity] = 0.0;
 }
 
 public void Raidboss_Clean_Everyone()
