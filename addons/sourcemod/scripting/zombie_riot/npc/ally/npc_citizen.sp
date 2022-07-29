@@ -1231,6 +1231,8 @@ public void Citizen_ClotThink(int iNPC)
 								
 								if(IsValidEnemy(npc.index, enemy, true))
 								{
+									npc.FaceTowards(vecTarget, 15000.0);
+									
 									npc.m_iState = -1
 									npc.AddGesture("ACT_RANGE_ATTACK_PISTOL");
 									
@@ -1251,7 +1253,6 @@ public void Citizen_ClotThink(int iNPC)
 									vecDirShooting[1] = eyePitch[1];
 									GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 									
-									npc.FaceTowards(vecTarget, 10000.0);
 									npc.m_flNextRangedAttack = gameTime + npc.m_fGunFirerate;
 									npc.m_iAttacksTillReload--;
 									
@@ -1316,6 +1317,8 @@ public void Citizen_ClotThink(int iNPC)
 								
 								if(IsValidEnemy(npc.index, enemy, true))
 								{
+									npc.FaceTowards(vecTarget, 15000.0);
+									
 									npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SMG1");
 									
 									float vecSpread = 0.1;
@@ -1335,7 +1338,6 @@ public void Citizen_ClotThink(int iNPC)
 									vecDirShooting[1] = eyePitch[1];
 									GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 									
-									npc.FaceTowards(vecTarget, 10000.0);
 									npc.m_flNextRangedAttack = gameTime + npc.m_fGunFirerate;
 									npc.m_iAttacksTillReload--;
 									
@@ -1404,6 +1406,9 @@ public void Citizen_ClotThink(int iNPC)
 								
 								if(IsValidEnemy(npc.index, enemy, true))
 								{
+									
+									npc.FaceTowards(vecTarget, 15000.0);
+									
 									npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SMG1");
 									
 									float vecSpread = 0.1;
@@ -1423,7 +1428,6 @@ public void Citizen_ClotThink(int iNPC)
 									vecDirShooting[1] = eyePitch[1];
 									GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 									
-									npc.FaceTowards(vecTarget, 10000.0);
 									npc.m_flNextRangedAttack = gameTime + npc.m_fGunFirerate;
 									npc.m_iAttacksTillReload--;
 									
@@ -1478,6 +1482,8 @@ public void Citizen_ClotThink(int iNPC)
 								
 								if(IsValidEnemy(npc.index, enemy, true))
 								{
+									npc.FaceTowards(vecTarget, 15000.0);
+									
 									npc.AddGesture("ACT_RANGE_ATTACK_SHOTGUN");
 									
 									float vecSpread = 0.1;
@@ -1497,7 +1503,6 @@ public void Citizen_ClotThink(int iNPC)
 									vecDirShooting[1] = eyePitch[1];
 									GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 									
-									npc.FaceTowards(vecTarget, 10000.0);
 									npc.m_flNextRangedAttack = gameTime + npc.m_fGunFirerate;
 									npc.m_iAttacksTillReload--;
 									
