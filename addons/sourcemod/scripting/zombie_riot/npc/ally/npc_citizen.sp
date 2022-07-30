@@ -481,12 +481,14 @@ methodmap Citizen < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, Citizen_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, Citizen_ClotThink);
 		
+		
 		int glow = view_as<CClotBody>(npc).m_iTeamGlow;
 		if(glow > 0)
 		{
 			RemoveEntity(glow);
 			view_as<CClotBody>(npc).m_iTeamGlow = -1;
 		}
+		
 		
 		npc.m_iSeed = seed;
 		
@@ -511,6 +513,15 @@ methodmap Citizen < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flSelfHealTime = 0.0;
 		npc.m_flidle_talk = FAR_FUTURE;
+		
+		this.m_iWearable3 = TF2_CreateGlow(this.index);
+			
+		SetVariantColor(view_as<int>({0, 255, 0, 255}));
+		AcceptEntityInput(this.m_iWearable3, "SetGlowColor");
+			
+		SetEntityRenderMode(this.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(this.index, 255, 255, 255, 125);
+			
 		return npc;
 	}
 	
