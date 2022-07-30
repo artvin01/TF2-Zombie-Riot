@@ -1073,7 +1073,7 @@ public void Citizen_ClotThink(int iNPC)
 					
 					if(target > 0) 
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, npc.m_fGunDamage, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, npc.m_fGunDamage, DMG_SLASH);
 						
 						// Hit particle
 						npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
@@ -1273,7 +1273,7 @@ public void Citizen_ClotThink(int iNPC)
 									vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 									vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 									NormalizeVector(vecDir, vecDir);
-									FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_BULLET, "bullet_tracer01_red", npc.index, _ , "muzzle");
+									FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_SLASH, "bullet_tracer01_red", npc.index, _ , "muzzle");
 									npc.PlayPistolSound();
 									
 									if(!npc.m_bFirstBlood && npc.CanTalk() && npc.m_iTarget > 0 && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
@@ -1358,7 +1358,7 @@ public void Citizen_ClotThink(int iNPC)
 									vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 									vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 									NormalizeVector(vecDir, vecDir);
-									FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_BULLET, "bullet_tracer01_red", npc.index, _ , "muzzle");
+									FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_SLASH, "bullet_tracer01_red", npc.index, _ , "muzzle");
 									npc.PlaySMGSound();
 									
 									if(!npc.m_bFirstBlood && npc.CanTalk() && npc.m_iTarget > 0 && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
@@ -1448,7 +1448,7 @@ public void Citizen_ClotThink(int iNPC)
 									vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 									vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 									NormalizeVector(vecDir, vecDir);
-									FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_BULLET, "bullet_tracer01_red", npc.index, _ , "muzzle");
+									FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_SLASH, "bullet_tracer01_red", npc.index, _ , "muzzle");
 									npc.PlayARSound();
 									
 									if(!npc.m_bFirstBlood && npc.CanTalk() && npc.m_iTarget > 0 && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
@@ -1523,7 +1523,7 @@ public void Citizen_ClotThink(int iNPC)
 									vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 									vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 									NormalizeVector(vecDir, vecDir);
-									FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_BULLET, "bullet_tracer01_red", npc.index, _ , "muzzle");
+									FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_SLASH, "bullet_tracer01_red", npc.index, _ , "muzzle");
 									npc.PlayShotgunSound();
 									
 									if(!npc.m_bFirstBlood && npc.CanTalk() && npc.m_iTarget > 0 && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
@@ -1585,7 +1585,7 @@ public void Citizen_ClotThink(int iNPC)
 										npc.m_iAttacksTillReload--;
 										
 										npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_RPG");
-										npc.FireRocket(vecTarget, npc.m_fGunDamage * 0.10, 1100.0); //WAAY TOO OP
+										npc.FireRocket(vecTarget, npc.m_fGunDamage, 1100.0, _, _, EP_DEALS_SLASH_DAMAGE); //WAAY TOO OP
 										npc.PlayRPGSound();
 									}
 								}

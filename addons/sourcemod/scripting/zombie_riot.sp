@@ -401,8 +401,9 @@ bool b_Is_Blue_Npc[MAXENTITIES];
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
 int h_NpcCollissionHookType[MAXENTITIES];
 
-#define EP_GENERIC                  0          	//Nothing special.
-#define EP_NO_KNOCKBACK              (1 << 0)   	// No knockback
+#define EP_GENERIC                  		0          					// Nothing special.
+#define EP_NO_KNOCKBACK              		(1 << 0)   					// No knockback
+#define EP_DEALS_SLASH_DAMAGE              	(1 << 1)   					// Slash Damage (For no npc scaling, or ignoring resistances.)
 
 
 

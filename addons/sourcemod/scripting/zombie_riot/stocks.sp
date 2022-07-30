@@ -2508,14 +2508,22 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 			float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 			float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
 			
-			if((i_ExplosiveProjectileHexArray[entity] & EP_NO_KNOCKBACK))
+			int damage_flags = 0;
+			if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_SLASH_DAMAGE))
 			{
-				SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, DMG_BLAST|DMG_PREVENT_PHYSICS_FORCE, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+				damage_flags |= DMG_SLASH;
 			}
 			else
 			{
-				SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+				damage_flags |= DMG_BLAST;
 			}
+			
+			if((i_ExplosiveProjectileHexArray[entity] & EP_NO_KNOCKBACK))
+			{
+				damage_flags |= DMG_PREVENT_PHYSICS_FORCE;
+			}
+			
+			SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 			
 			if(!FromNpc) //Npcs do not have damage falloff, dodge.
 			{
