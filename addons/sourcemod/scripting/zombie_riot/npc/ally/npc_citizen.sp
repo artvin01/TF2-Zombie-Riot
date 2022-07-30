@@ -513,14 +513,6 @@ methodmap Citizen < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flSelfHealTime = 0.0;
 		npc.m_flidle_talk = FAR_FUTURE;
-		
-		npc.m_iWearable3 = TF2_CreateGlow(npc.index);
-			
-		SetVariantColor(view_as<int>({0, 255, 0, 255}));
-		AcceptEntityInput(npc.m_iWearable3, "SetGlowColor");
-			
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 255, 255, 255, 125);
 			
 		return npc;
 	}
@@ -789,7 +781,17 @@ void Citizen_SpawnAtPoint()
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		
-		Npc_Create(CITIZEN, 0, pos, ang, true);
+		int npc_entity = Npc_Create(CITIZEN, 0, pos, ang, true);
+		
+		Citizen npc = view_as<Citizen>(npc_entity);
+		
+		npc.m_iWearable3 = TF2_CreateGlow(npc.index);
+			
+		SetVariantColor(view_as<int>({0, 255, 0, 255}));
+		AcceptEntityInput(npc.m_iWearable3, "SetGlowColor");
+			
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 125);
 	}
 }
 
