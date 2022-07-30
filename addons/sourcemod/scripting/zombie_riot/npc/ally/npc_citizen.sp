@@ -514,13 +514,13 @@ methodmap Citizen < CClotBody
 		npc.m_flSelfHealTime = 0.0;
 		npc.m_flidle_talk = FAR_FUTURE;
 		
-		this.m_iWearable3 = TF2_CreateGlow(this.index);
+		npc.m_iWearable3 = TF2_CreateGlow(npc.index);
 			
 		SetVariantColor(view_as<int>({0, 255, 0, 255}));
-		AcceptEntityInput(this.m_iWearable3, "SetGlowColor");
+		AcceptEntityInput(npc.m_iWearable3, "SetGlowColor");
 			
-		SetEntityRenderMode(this.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(this.index, 255, 255, 255, 125);
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 125);
 			
 		return npc;
 	}
