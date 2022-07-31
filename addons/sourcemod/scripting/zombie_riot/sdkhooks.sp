@@ -871,11 +871,22 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		damage *= difficulty_math + 1.0; //More damage !! only upto double.
 	}
 	
+	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+	
+	//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
+	
+	float modified_damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom, Victim_weapon);
+	
+	damage = modified_damage;
+	Replicated_Damage = modified_damage;
+	
+	//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
+	//It will just return the same damage if nothing is done.
+	
 	if(!b_ThisNpcIsSawrunner[attacker])
 	{
 		if(EscapeMode)
 		{
-			int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 			if(IsValidEntity(Victim_weapon))
 			{
 				if(!IsWandWeapon(Victim_weapon)) //Make sure its not wand.
@@ -1203,4 +1214,24 @@ public Action Command_Voicemenu(int client, const char[] command, int args)
 		}
 	}
 	return Plugin_Continue;
+}
+
+
+enum
+{
+	WEAPON_ARK = 1,
+	
+}
+
+
+float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, int equipped_weapon)
+{
+	switch(i_CustomWeaponEquipLogic[equipped_weapon])
+	{
+		case WEAPON_ARK: // weapon_ark
+		{
+			return Player_OnTakeDamage_Ark(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom, equipped_weapon);
+		}
+	}
+	return damage;
 }

@@ -55,6 +55,8 @@ enum struct ItemInfo
 	
 	int Attack3AbilitySlot;
 	
+	int CustomWeaponOnEquip;
+	
 	bool SniperBugged;
 	
 	char Model[128];
@@ -148,6 +150,10 @@ enum struct ItemInfo
 		FormatEx(buffer, sizeof(buffer), "%sfunc_onbuy", prefix)
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncOnBuy = GetFunctionByName(null, buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%sint_ability_onequip", prefix)
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.CustomWeaponOnEquip 		= kv.GetNum(buffer);
 		
 		FormatEx(buffer, sizeof(buffer), "%sattack_3_ability_slot", prefix)
 		this.Attack3AbilitySlot			= kv.GetNum(buffer);
@@ -2372,6 +2378,7 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 		i_ArsenalBombImplanter[entity] = 0;
 		i_NoBonusRange[entity] = 0;
 		i_BuffBannerPassively[entity] = 0;
+		i_CustomWeaponEquipLogic[entity] = 0;
 		if(!TeutonType[client])
 		{
 			ItemInfo info;
@@ -2386,6 +2393,10 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 						if(info.Attack3AbilitySlot != 0)
 						{
 							SetAbilitySlotCount(client, info.Attack3AbilitySlot);
+						}
+						if(info.CustomWeaponOnEquip != 0)
+						{
+							i_CustomWeaponEquipLogic[entity] = info.CustomWeaponOnEquip;
 						}
 						switch(info.Index)
 						{

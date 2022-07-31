@@ -262,6 +262,7 @@ int i_BarricadesBuild[MAXTF2PLAYERS]={0, ...};
 int Elevator_Owner[MAXENTITIES]={0, ...};
 bool Is_Elevator[MAXENTITIES]={false, ...};
 int Dont_Crouch[MAXENTITIES]={0, ...};
+int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 
 enum
 {
@@ -964,6 +965,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_wand_calcium_spell.sp"
 #include "zombie_riot/custom/weapon_passive_banner.sp"
 #include "zombie_riot/custom/weapon_zeroknife.sp"
+#include "zombie_riot/custom/weapon_ark.sp"
 #include "zombie_riot/custom/pets.sp"
 
 //FOR ESCAPE MAP ONLY!
@@ -1288,6 +1290,7 @@ public void OnMapStart()
 	TBB_Precahce_Mangler_2();
 	BeamWand_MapStart();
 	M3_Abilities_Precache();
+	Ark_autoaim_Map_Precache();
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
