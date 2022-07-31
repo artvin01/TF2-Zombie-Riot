@@ -326,8 +326,13 @@ public void SawRunner_ClotThink(int iNPC)
 										if(IsInvuln(target))	
 										{
 											flMaxHealth *= 0.5; //If under uber, give em more resistance so uber isnt completly useless
+											Custom_Knockback(npc.index, target, 5000.0);
 										}
-										Custom_Knockback(npc.index, target, 1000.0); //Give them massive knockback so they can get away/dont make this boy stuck.
+										else
+										{
+											Custom_Knockback(npc.index, target, 1000.0); //Give them massive knockback so they can get away/dont make this boy stuck.
+										}
+										
 										
 										SDKHooks_TakeDamage(target, npc.index, npc.index, flMaxHealth + 50.0, DMG_DROWN); //adding 100 damage so they cant cheese this with healing and very low hp people
 									}
