@@ -39,42 +39,41 @@ void Ark_autoaim_Map_Precache()
 
 public void Ark_empower_ability(int client, int weapon, bool crit, int slot) // the main ability used to recover the unique mana needed to for the weapon to fire projectiles
 {
-			if (Ability_Check_Cooldown(client, slot) < 0.0)
-			{
-				Ability_Apply_Cooldown(client, slot, 15.0);
-                ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		Ability_Apply_Cooldown(client, slot, 15.0);
+		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 
 
-                weapon_id[client] = weapon;
+		weapon_id[client] = weapon;
 
-				Ark_Hits[client] = 3;
+		Ark_Hits[client] = 3;
 				
-				Original_Atackspeed[client] = 1.0;
+		Original_Atackspeed[client] = 1.0;
 				
-				Address address = TF2Attrib_GetByDefIndex(weapon, 6);
-				if(address != Address_Null)
-					Original_Atackspeed[client] = TF2Attrib_GetValue(address);
+		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
+		if(address != Address_Null)
+			Original_Atackspeed[client] = TF2Attrib_GetValue(address);
 		
-				TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] * 0.75);
+		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] * 0.75);
 				
-				CreateTimer(3.0, Reset_Ark_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(3.0, Reset_Ark_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
 
-				//PrintToChatAll("test empower");
+		//PrintToChatAll("test empower");
 
-			}
-			else
-			{
-				float Ability_CD = Ability_Check_Cooldown(client, slot);
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
 		
-				if(Ability_CD <= 0.0)
-					Ability_CD = 0.0;
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
 			
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
-            }
-
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+	}
 }
 
 public void Ark_attack0(int client, int weapon, bool crit, int slot) // stats for the base version of the weapon
@@ -84,10 +83,10 @@ public void Ark_attack0(int client, int weapon, bool crit, int slot) // stats fo
 public void Ark_attack1(int client, int weapon, bool crit, int slot) //first pap version
 {
 	
-    if(Ark_Hits[client] >= 1)
+	if(Ark_Hits[client] >= 1)
 	{
 
-        Ark_Hits[client] -= 1
+		Ark_Hits[client] -= 1;
 
 		float damage = 50.0;
 		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
@@ -144,7 +143,7 @@ public void Ark_attack2(int client, int weapon, bool crit, int slot) //second pa
 	if(Ark_Hits[client] >= 1)
 	{
 
-        Ark_Hits[client] -= 1;
+		Ark_Hits[client] -= 1;
 
 		float damage = 10.0;
 		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
@@ -192,7 +191,7 @@ public void Ark_attack2(int client, int weapon, bool crit, int slot) //second pa
 			SetVariantString("!activator");
 			AcceptEntityInput(iRot, "Open");
 		//	CreateTimer(0.1, Timer_HatThrow_Woosh, EntIndexToEntRef(iRot), TIMER_REPEAT);
-			Wand_Launch2(client, iRot, speed, time, damage, weapon, false);
+			Wand_Launch2(client, iRot, speed, time, damage, weapon);
 		}
 		int iRot = CreateEntityByName("func_door_rotating");
 		if(iRot == -1) return;
@@ -212,11 +211,11 @@ public void Ark_attack2(int client, int weapon, bool crit, int slot) //second pa
 		
 		damage = damage * 5;
 		
-	    Wand_Launch1(client, iRot, speed, time, damage, weapon);
+		Wand_Launch1(client, iRot, speed, time, damage, weapon);
 	}
 }
 
-static void Wand_Launch2(int client, int iRot, float speed, float time, float damage, int weapon, bool silent = false) //the projectile from homing wand
+static void Wand_Launch2(int client, int iRot, float speed, float time, float damage, int weapon) //the projectile from homing wand
 {
 	float fAng[3], fPos[3];
 	GetClientEyeAngles(client, fAng);
@@ -353,14 +352,14 @@ static void Wand_Launch1(int client, int iRot, float speed, float time, float da
 	int particle = 0;
 	
 	
-		switch(GetClientTeam(client))
-		{
-			case 2:
-				particle = ParticleEffectAt(position, "drg_cow_rockettrail_normal", 5.0);
+	switch(GetClientTeam(client))
+	{
+		case 2:
+			particle = ParticleEffectAt(position, "drg_cow_rockettrail_normal", 5.0);
 	
-			default:
-				particle = ParticleEffectAt(position, "drg_cow_rockettrail_normal_blue", 5.0);
-		}
+		default:
+			particle = ParticleEffectAt(position, "drg_cow_rockettrail_normal_blue", 5.0);
+	}
 	
 	float Angles[3];
 	GetClientEyeAngles(client, Angles);
@@ -582,7 +581,6 @@ public Action Reset_Ark_Attackspeed(Handle cut_timer, int client)//code that res
 {
 	if (IsValidClient(client))
 	{
-		
 		int weapon = GetPlayerWeaponSlot(client, 2);
 		if(weapon == weapon_id[client])
 		{
@@ -594,18 +592,19 @@ public Action Reset_Ark_Attackspeed(Handle cut_timer, int client)//code that res
 
 
 //stuff that gets activated upon taking damage
-float Player_OnTakeDamage_Ark(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, int equipped_weapon)
+float Player_OnTakeDamage_Ark(int victim, float &damage)
 {
-     if (Ability_Check_Cooldown(victim, 2) >= 14.0 && Ability_Check_Cooldown(victim, 2) < 16.0)
-    {
-    //PrintToChatAll("parry worked");
-	
-    Ark_Hits[victim] = 7;
-	ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
-    return 10.0;
+	if (Ability_Check_Cooldown(victim, 2) >= 14.0 && Ability_Check_Cooldown(victim, 2) < 16.0)
+	{
+		//PrintToChatAll("parry worked");
+		
+		Ark_Hits[victim] = 7;
+		ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
+		return damage * 0.1;
 	}
-    else {
-    //PrintToChatAll("parry failed");
-    return damage;
+	else 
+	{
+		 //PrintToChatAll("parry failed");
+		return damage;
 	}
 }
