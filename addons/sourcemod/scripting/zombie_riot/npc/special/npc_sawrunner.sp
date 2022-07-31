@@ -275,7 +275,7 @@ public void SawRunner_ClotThink(int iNPC)
 			{
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
-				if(npc.m_flNextMeleeAttack < GetGameTime())
+				if(npc.m_flNextMeleeAttack < GetGameTime() || npc.m_flAttackHappenswillhappen)
 				{
 					if (!npc.m_flAttackHappenswillhappen)
 					{
@@ -327,8 +327,9 @@ public void SawRunner_ClotThink(int iNPC)
 										{
 											flMaxHealth *= 0.5; //If under uber, give em more resistance so uber isnt completly useless
 										}
-										Custom_Knockback(npc.index, target, 1500.0); //Give them massive knockback so they can get away/dont make this boy stuck.
-										SDKHooks_TakeDamage(target, npc.index, npc.index, flMaxHealth, DMG_DROWN);
+										Custom_Knockback(npc.index, target, 1000.0); //Give them massive knockback so they can get away/dont make this boy stuck.
+										
+										SDKHooks_TakeDamage(target, npc.index, npc.index, flMaxHealth + 50.0, DMG_DROWN); //adding 100 damage so they cant cheese this with healing and very low hp people
 									}
 									else
 									{

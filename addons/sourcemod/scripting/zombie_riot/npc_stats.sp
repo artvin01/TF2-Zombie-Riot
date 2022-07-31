@@ -4378,7 +4378,6 @@ public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMas
 			return false;
 		}
 	}
-	
 	CClotBody npc = view_as<CClotBody>(entity);
 	if(StrEqual(class, "func_respawnroomvisualizer"))
 	{
