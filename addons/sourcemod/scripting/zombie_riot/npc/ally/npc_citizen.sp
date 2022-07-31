@@ -1657,7 +1657,7 @@ public void Citizen_ClotThink(int iNPC)
 				npc.SetActivity("ACT_RELOAD_SMG1");
 				npc.m_flSpeed = 0.0;
 				npc.m_iAttacksTillReload = npc.m_iGunClip;
-				npc.m_flReloadDelay = gameTime + 3.4;
+				npc.m_flReloadDelay = gameTime + 2.4;
 				npc.PlaySMGReloadSound();
 				
 				if(npc.m_bPathing)
@@ -1795,7 +1795,8 @@ public void Citizen_ClotThink(int iNPC)
 		 
 		//PrintCenterTextAll("CIV: Moving Back %d", npc.m_iTargetAlly);
 		
-		if((npc.m_iTargetAlly > MaxClients || !IsValidClient(npc.m_iTargetAlly) || !IsPlayerAlive(npc.m_iTargetAlly)) || !IsValidEntity(npc.m_iTargetAlly))
+		// If our ally was a player, run standard player checks; otherwise our entity check
+		if((npc.m_iTargetAlly <= MaxClients && (!IsValidClient(npc.m_iTargetAlly) || !IsPlayerAlive(npc.m_iTargetAlly))) || !IsValidEntity(npc.m_iTargetAlly))
 		{
 			npc.m_bGetClosestTargetTimeAlly = false;
 			npc.m_bSeakingMedic = false;
