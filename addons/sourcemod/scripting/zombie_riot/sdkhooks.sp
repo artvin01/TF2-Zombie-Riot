@@ -875,10 +875,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 	//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
 	
-	float modified_damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom, Victim_weapon);
-	
-	damage = modified_damage;
-	Replicated_Damage = modified_damage;
+	if(IsValidEntity(Victim_weapon))
+	{
+		float modified_damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom, Victim_weapon);
+		
+		damage = modified_damage;
+		Replicated_Damage = modified_damage;
+	}
 	
 	//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
 	//It will just return the same damage if nothing is done.

@@ -152,7 +152,6 @@ enum struct ItemInfo
 		this.FuncOnBuy = GetFunctionByName(null, buffer);
 		
 		FormatEx(buffer, sizeof(buffer), "%sint_ability_onequip", prefix)
-		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.CustomWeaponOnEquip 		= kv.GetNum(buffer);
 		
 		FormatEx(buffer, sizeof(buffer), "%sattack_3_ability_slot", prefix)
@@ -2228,9 +2227,15 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 				}
 				
 				entity = SpawnWeapon(client, info.Classname, info.Index, 5, 6, info.Attrib, info.Value, info.Attribs);
-			
+				
+				i_CustomWeaponEquipLogic[entity] = 0;
+				
 				if(entity > MaxClients)
 				{
+					if(info.CustomWeaponOnEquip != 0)
+					{
+						i_CustomWeaponEquipLogic[entity] = info.CustomWeaponOnEquip;
+					}
 					if(info.Ammo > 0)
 					{
 						if(!StrEqual(info.Classname[0], "tf_weapon_medigun"))
@@ -2378,7 +2383,6 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 		i_ArsenalBombImplanter[entity] = 0;
 		i_NoBonusRange[entity] = 0;
 		i_BuffBannerPassively[entity] = 0;
-		i_CustomWeaponEquipLogic[entity] = 0;
 		if(!TeutonType[client])
 		{
 			ItemInfo info;
@@ -2393,10 +2397,6 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 						if(info.Attack3AbilitySlot != 0)
 						{
 							SetAbilitySlotCount(client, info.Attack3AbilitySlot);
-						}
-						if(info.CustomWeaponOnEquip != 0)
-						{
-							i_CustomWeaponEquipLogic[entity] = info.CustomWeaponOnEquip;
 						}
 						switch(info.Index)
 						{

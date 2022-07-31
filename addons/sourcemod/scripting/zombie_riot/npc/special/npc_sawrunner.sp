@@ -297,8 +297,8 @@ public void SawRunner_ClotThink(int iNPC)
 							}
 						}
 						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime()+0.4;
-						npc.m_flAttackHappens_bullshit = GetGameTime()+0.54;
+						npc.m_flAttackHappens = GetGameTime()+0.5;
+						npc.m_flAttackHappens_bullshit = GetGameTime()+0.64;
 						npc.m_flAttackHappenswillhappen = true;
 						npc.m_flNextMeleeAttack = GetGameTime() + 1.5;
 					}
@@ -319,7 +319,16 @@ public void SawRunner_ClotThink(int iNPC)
 								{
 									if(target <= MaxClients)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 1000.0, DMG_DROWN);
+										float flMaxHealth = float(SDKCall_GetMaxHealth(target));
+										
+										flMaxHealth *= 0.5; //Because drown damage is 2x in anycase
+										
+										if(IsInvuln(target))	
+										{
+											flMaxHealth *= 0.5; //If under uber, give em more resistance so uber isnt completly useless
+										}
+										Custom_Knockback(npc.index, target, 1500.0); //Give them massive knockback so they can get away/dont make this boy stuck.
+										SDKHooks_TakeDamage(target, npc.index, npc.index, flMaxHealth, DMG_DROWN);
 									}
 									else
 									{
