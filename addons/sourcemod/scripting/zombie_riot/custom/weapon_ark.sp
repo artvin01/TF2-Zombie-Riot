@@ -41,13 +41,13 @@ public void Ark_empower_ability(int client, int weapon, bool crit, int slot) // 
 {
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				Ability_Apply_Cooldown(client, slot, 10.0);
-                ClientCommand(client, "playgamesound weapons/det_pack_timer.wav");
+				Ability_Apply_Cooldown(client, slot, 15.0);
+                ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 
 
                 weapon_id[client] = weapon;
 
-				Ark_Hits[client] = 15;
+				Ark_Hits[client] = 3;
 				
 				Original_Atackspeed[client] = 1.0;
 				
@@ -59,7 +59,7 @@ public void Ark_empower_ability(int client, int weapon, bool crit, int slot) // 
 				
 				CreateTimer(3.0, Reset_Ark_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
 
-				PrintToChatAll("test empower");
+				//PrintToChatAll("test empower");
 
 			}
 			else
@@ -79,7 +79,7 @@ public void Ark_empower_ability(int client, int weapon, bool crit, int slot) // 
 
 public void Ark_attack0(int client, int weapon, bool crit, int slot) // stats for the base version of the weapon
 {       
-	PrintToChatAll("test attack");
+	//PrintToChatAll("test attack");
 }
 public void Ark_attack1(int client, int weapon, bool crit, int slot) //first pap version
 {
@@ -89,7 +89,7 @@ public void Ark_attack1(int client, int weapon, bool crit, int slot) //first pap
 
         Ark_Hits[client] -= 1
 
-		float damage = 200.0;
+		float damage = 50.0;
 		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
 		if(address != Address_Null)
 			damage *= TF2Attrib_GetValue(address);
@@ -144,9 +144,9 @@ public void Ark_attack2(int client, int weapon, bool crit, int slot) //second pa
 	if(Ark_Hits[client] >= 1)
 	{
 
-        Ark_Hits[client] -= 1
+        Ark_Hits[client] -= 1;
 
-		float damage = 45.0;
+		float damage = 10.0;
 		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
 		if(address != Address_Null)
 			damage *= TF2Attrib_GetValue(address);
@@ -544,7 +544,7 @@ public Action Ark_Homing_Repeat_Timer(Handle timer, int ref)
 	return Plugin_Continue;
 }	
 
-public Action Event_Ark_OnHatTouch(int entity, int other)
+public Action Event_Ark_OnHatTouch(int entity, int other)// code responsible for doing damage to the enemy
 {
 	int target = Target_Hit_Wand_Detection(entity, other);
 	if (target > 0)	
@@ -578,7 +578,7 @@ public Action Event_Ark_OnHatTouch(int entity, int other)
 	return Plugin_Handled;
 }
 
-public Action Reset_Ark_Attackspeed(Handle cut_timer, int client)
+public Action Reset_Ark_Attackspeed(Handle cut_timer, int client)//code that resets the bonus attack speed from the empower ability
 {
 	if (IsValidClient(client))
 	{
@@ -593,9 +593,19 @@ public Action Reset_Ark_Attackspeed(Handle cut_timer, int client)
 }
 
 
-
+//stuff that gets activated upon taking damage
 float Player_OnTakeDamage_Ark(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, int equipped_weapon)
 {
-	PrintToChatAll("Player_OnTakeDamage_Ark");
-	return damage;
+     if (Ability_Check_Cooldown(victim, 2) >= 14.0 && Ability_Check_Cooldown(victim, 2) < 16.0)
+    {
+    //PrintToChatAll("parry worked");
+	
+    Ark_Hits[victim] = 7;
+	ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
+    return 10.0;
+	}
+    else {
+    //PrintToChatAll("parry failed");
+    return damage;
+	}
 }
