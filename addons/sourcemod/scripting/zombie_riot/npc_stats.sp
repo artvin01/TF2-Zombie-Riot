@@ -4785,7 +4785,7 @@ stock int GetClosestTarget(int entity, bool Onlyplayers = false, float fldistanc
 					CClotBody npc = view_as<CClotBody>(i);
 					if(pass != 2)
 					{
-						if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !IsValidEntity(EntRefToEntIndex(RaidBossActive)) && !Onlyplayers) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+						if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && (!IsValidEntity(EntRefToEntIndex(RaidBossActive)) || !Onlyplayers)) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 						{
 							float EntityLocation[3], TargetLocation[3]; 
 							GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 

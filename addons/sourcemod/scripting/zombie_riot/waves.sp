@@ -45,6 +45,7 @@ static bool InSetup;
 //static bool InFreeplay;
 static int WaveIntencity;
 static bool b_BlockPanzerInThisMap;
+static bool b_BlockSawrunnerSpecificallyInThisMap;
 
 static bool Gave_Ammo_Supply;
 static int VotedFor[MAXTF2PLAYERS];
@@ -186,6 +187,8 @@ void Waves_SetupVote(KeyValues map)
 	
 	StartCash = kv.GetNum("cash");
 	b_BlockPanzerInThisMap = view_as<bool>(kv.GetNum("block_panzer"));
+	
+	b_BlockSawrunnerSpecificallyInThisMap = view_as<bool>(kv.GetNum("block_sawrunner"));
 	if(!kv.JumpToKey("Waves"))
 	{
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "waves")
@@ -248,6 +251,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	
 	StartCash = kv.GetNum("cash");
 	b_BlockPanzerInThisDifficulty = (b_BlockPanzerInThisMap || view_as<bool>(kv.GetNum("block_panzer")));
+	b_BlockSawrunnerSpecificallyInThisDifficulty = (b_BlockSawrunnerSpecificallyInThisMap || view_as<bool>(kv.GetNum("block_sawrunner")));
 	b_SpecialGrigoriStore = view_as<bool>(kv.GetNum("grigori_special_shop_logic"));
 	f_ExtraDropChanceRarity = kv.GetFloat("gift_drop_chance_multiplier");
 	

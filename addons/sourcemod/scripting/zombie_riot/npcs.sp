@@ -420,6 +420,14 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		{
 			int what_boss = GetRandomInt(0,1);
 			
+			if(b_BlockSawrunnerSpecificallyInThisDifficulty)
+			{
+				if(what_boss == 1)
+				{
+					what_boss = 0;
+				}
+			}
+			
 			entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
 			isBoss = false;
 			int deathforcepowerup = 0;
@@ -430,7 +438,6 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 				{
 					case 0:
 					{
-						what_boss = 0;
 						for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
 						{
 							if(IsClientInGame(panzer_warning_client))
@@ -442,7 +449,6 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					}
 					case 1:
 					{
-						what_boss = 1;
 						for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
 						{
 							if(IsClientInGame(panzer_warning_client))

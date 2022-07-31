@@ -438,6 +438,7 @@ bool b_IsPlayerABot[MAXPLAYERS+1];
 bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
 
 bool b_BlockPanzerInThisDifficulty;
+bool b_BlockSawrunnerSpecificallyInThisDifficulty;
 bool b_SpecialGrigoriStore;
 float f_ExtraDropChanceRarity = 1.0;
 

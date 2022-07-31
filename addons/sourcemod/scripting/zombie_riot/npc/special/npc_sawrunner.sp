@@ -300,6 +300,7 @@ public void SawRunner_ClotThink(int iNPC)
 						npc.m_flAttackHappens = GetGameTime()+0.4;
 						npc.m_flAttackHappens_bullshit = GetGameTime()+0.54;
 						npc.m_flAttackHappenswillhappen = true;
+						npc.m_flNextMeleeAttack = GetGameTime() + 1.5;
 					}
 						
 					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
@@ -333,13 +334,11 @@ public void SawRunner_ClotThink(int iNPC)
 								} 
 							}
 						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime() + 0.6;
 						npc.m_flAttackHappenswillhappen = false;
 					}
 					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime() + 0.6;
 					}
 				}
 			}
