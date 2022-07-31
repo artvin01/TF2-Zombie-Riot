@@ -26,6 +26,11 @@ enum struct Round
 	int Cash;
 	bool Custom_Refresh_Npc_Store;
 	int medival_difficulty;
+	
+	char music_round_1[255];
+	int music_duration_1;
+	char music_round_2[255];
+	int music_duration_2;
 	float Setup;
 	ArrayList Waves;
 }
@@ -271,6 +276,19 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		round.medival_difficulty = kv.GetNum("medival_research_level");
 		round.Xp = kv.GetNum("xp");
 		round.Setup = kv.GetFloat("setup");
+	
+		kv.GetString("music_track_1", round.music_round_1, sizeof(round.music_round_1));
+		round.music_duration_1 = kv.GetNum("music_seconds_1");
+		
+		kv.GetString("music_track_2", round.music_round_2, sizeof(round.music_round_2));
+		round.music_duration_2 = kv.GetNum("music_seconds_2");
+		
+		if(round.music_round_1[0])
+			PrecacheSound(round.music_round_1, true);
+		
+		if(round.music_round_2[0])
+			PrecacheSound(round.music_round_2, true);
+
 		if(kv.GotoFirstSubKey())
 		{
 			round.Waves = new ArrayList(sizeof(Wave));
@@ -695,6 +713,50 @@ void Waves_Progress()
 			//	PrintToChatAll("%t", "Grigori Store Refresh");
 				Medival_Wave_Difficulty_Riser(round.medival_difficulty); // Refresh me !!!
 			}
+			
+			//MUSIC LOGIC
+			
+			bool RoundHasCustomMusic = false;
+		
+			if(char_MusicString1[0])
+				RoundHasCustomMusic = true;
+					
+			if(char_MusicString2[0])
+				RoundHasCustomMusic = true;
+				
+			if(RoundHasCustomMusic) //only do it when there was actually custom music previously
+			{
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client))
+					{
+						Music_Stop_All(client);
+					}
+				}	
+			}
+			//This should nullfy anyways if nothings in it
+			FormatEx(char_MusicString1, sizeof(round.music_round_1), round.music_round_1);
+			
+			FormatEx(char_MusicString2, sizeof(round.music_round_2), round.music_round_2);
+
+			i_MusicLength1 = round.music_duration_1;
+			
+			i_MusicLength2 = round.music_duration_2;
+			
+			if(char_MusicString1[0] || char_MusicString2[0])
+			{
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client))
+					{
+						Music_Timer[client] = GetEngineTime() + round.Setup; //Give roundsetup time time.
+					}
+				}
+			}
+			
+			
+			
+			//MUSIC LOGIC
 			if(CurrentRound == length)
 			{
 				Cooldown = round.Setup + 30.0;
@@ -737,6 +799,15 @@ void Waves_Progress()
 				
 				EmitSoundToAll("#zombiesurvival/music_win.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToAll("#zombiesurvival/music_win.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+				
+				FormatEx(char_MusicString1, sizeof(char_MusicString1), "");
+			
+				FormatEx(char_MusicString2, sizeof(char_MusicString2), "");
+		
+				i_MusicLength1 = 1;
+					
+				i_MusicLength2 = 1;
+			
 			
 				Menu menu = new Menu(Waves_FreeplayVote);
 				menu.SetTitle("%t","Victory Menu");

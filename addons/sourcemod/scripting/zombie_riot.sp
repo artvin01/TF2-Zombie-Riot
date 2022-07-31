@@ -214,6 +214,13 @@ bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie CookieXP;
 Cookie CookiePlayStreak;
 
+//custom wave music.
+char char_MusicString1[256];
+int i_MusicLength1;
+char char_MusicString2[256];
+int i_MusicLength2;
+//custom wave music.
+
 int CurrentRound;
 int CurrentWave = -1;
 int StartCash;
