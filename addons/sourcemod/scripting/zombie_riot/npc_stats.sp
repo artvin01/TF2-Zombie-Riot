@@ -4702,7 +4702,7 @@ stock bool IsValidAllyPlayer(int index, int Ally)
 }
 
 
-stock int GetClosestTarget(int entity, bool Onlyplayers = false, float fldistancelimit = 999999.9, bool camoDetection=false)
+stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldistancelimit = 999999.9, bool camoDetection=false, bool onlyPlayers = false)
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = -1; 
@@ -4768,6 +4768,7 @@ stock int GetClosestTarget(int entity, bool Onlyplayers = false, float fldistanc
 	}
 //	if() //Make sure that they completly ignore barricades during raids
 	{
+		bool its_raid = true;
 		for (int pass = 0; pass <= 2; pass++)
 		{
 			static char classname[1024];
@@ -4784,36 +4785,68 @@ stock int GetClosestTarget(int entity, bool Onlyplayers = false, float fldistanc
 					CClotBody npc = view_as<CClotBody>(i);
 					if(pass != 2)
 					{
-						if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && (!IsValidEntity(EntRefToEntIndex(RaidBossActive)) || !Onlyplayers)) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+						if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 						{
-							float EntityLocation[3], TargetLocation[3]; 
-							GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
-							GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-								
-								
-							float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-							if(distance < fldistancelimit)
+							
+							if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 							{
-								if( TargetDistance ) 
+								float EntityLocation[3], TargetLocation[3]; 
+								GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+								GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+									
+									
+								float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+								if(distance < fldistancelimit)
 								{
-									if( distance < TargetDistance ) 
+									if( TargetDistance ) 
+									{
+										if( distance < TargetDistance ) 
+										{
+											ClosestTarget = i; 
+											TargetDistance = distance;		  
+										}
+									} 
+									else 
 									{
 										ClosestTarget = i; 
-										TargetDistance = distance;		  
-									}
-								} 
-								else 
-								{
-									ClosestTarget = i; 
-									TargetDistance = distance;
-								}	
+										TargetDistance = distance;
+									}	
+								}
 							}
-	
+							else
+							{
+								its_raid = true;
+							}
+							if (!IgnoreBuildings && !its_raid)
+							{
+								float EntityLocation[3], TargetLocation[3]; 
+								GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+								GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+									
+									
+								float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+								if(distance < fldistancelimit)
+								{
+									if( TargetDistance ) 
+									{
+										if( distance < TargetDistance ) 
+										{
+											ClosestTarget = i; 
+											TargetDistance = distance;		  
+										}
+									} 
+									else 
+									{
+										ClosestTarget = i; 
+										TargetDistance = distance;
+									}	
+								}
+							}
 						}			
 					}		
 					else
 					{
-						if(!npc.m_bThisEntityIgnored && GetEntProp(i, Prop_Data, "m_iHealth") > 0) //Check if dead or even targetable
+						if(!npc.m_bThisEntityIgnored && GetEntProp(i, Prop_Data, "m_iHealth") > 0 && !onlyPlayers) //Check if dead or even targetable
 						{
 							if(camoDetection)
 							{

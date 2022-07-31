@@ -188,10 +188,14 @@ void Music_Stop_All(int client)
 	{
 		StopSound(client, SNDCHAN_STATIC, char_MusicString1);
 		StopSound(client, SNDCHAN_STATIC, char_MusicString1);
+		StopSound(client, SNDCHAN_STATIC, char_MusicString1);
+		StopSound(client, SNDCHAN_STATIC, char_MusicString1);
 	}
 		
 	if(char_MusicString2[0])
 	{
+		StopSound(client, SNDCHAN_STATIC, char_MusicString2);
+		StopSound(client, SNDCHAN_STATIC, char_MusicString2);
 		StopSound(client, SNDCHAN_STATIC, char_MusicString2);
 		StopSound(client, SNDCHAN_STATIC, char_MusicString2);
 	}

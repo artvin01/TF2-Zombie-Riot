@@ -1276,7 +1276,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			*/
 		}
 	}
-	
 	switch (damagecustom) //Make sure taunts dont do any damage, cus op as fuck
 	{
 		case TF_CUSTOM_TAUNT_HADOUKEN, TF_CUSTOM_TAUNT_HIGH_NOON, TF_CUSTOM_TAUNT_GRAND_SLAM, TF_CUSTOM_TAUNT_FENCING,

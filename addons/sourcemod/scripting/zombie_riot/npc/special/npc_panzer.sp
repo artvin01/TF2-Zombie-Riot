@@ -886,8 +886,8 @@ public MRESReturn Panzer_DHook_RocketExplodePre(int entity)
 		float ProjectileLoc[3];
 		float VicLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-		int Closest_Player = GetClosestTarget(entity, true);
-		if(IsValidEntity(Closest_Player))
+		int Closest_Player = GetClosestTarget(entity, true, _, false, true);
+		if(IsValidEntity(Closest_Player) && IsValidClient(Closest_Player))
 		{
 			GetEntPropVector(Closest_Player, Prop_Data, "m_vecAbsOrigin", VicLoc);
 			VicLoc[2] += 45;
