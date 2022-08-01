@@ -1035,7 +1035,7 @@ public void DHook_TeleportToAlly(int userid)
 		{
 			if(i != client && IsClientInGame(i))
 			{
-				if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && (f_TimeAfterSpawn[client] + 1.0 < GetGameTime())) //dont spawn near players who just spawned
+				if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && (f_TimeAfterSpawn[i] + 1.0 < GetGameTime())) //dont spawn near players who just spawned
 				{
 					target = i;
 					break;
