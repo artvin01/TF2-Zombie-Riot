@@ -940,10 +940,11 @@ public MRESReturn DHook_ForceRespawn(int client)
 	SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	
+
 	if(started)
-		RequestFrame(DHook_TeleportToAlly, GetClientUserId(client));
+		CreateTimer(0.1, DHook_TeleportToAlly, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		
-	f_TimeAfterSpawn[client] = GetGameTime();
+	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;
 	
 	return MRES_Ignored;
 }
@@ -1023,10 +1024,10 @@ public void DHook_TeleportToObserver(DataPack pack)
 	delete pack;
 }
 
-public void DHook_TeleportToAlly(int userid)
+public Action DHook_TeleportToAlly(Handle timer, int userid)
 {
 	int client = GetClientOfUserId(userid);
-	if(client)
+	if(IsValidClient(client))
 	{
 		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
 		TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
@@ -1035,7 +1036,7 @@ public void DHook_TeleportToAlly(int userid)
 		{
 			if(i != client && IsClientInGame(i))
 			{
-				if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && (f_TimeAfterSpawn[i] + 1.0 < GetGameTime())) //dont spawn near players who just spawned
+				if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime()) //dont spawn near players who just spawned
 				{
 					target = i;
 					break;
@@ -1054,6 +1055,7 @@ public void DHook_TeleportToAlly(int userid)
 			SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 		}
 	}
+	return Plugin_Handled;
 }
 
 public MRESReturn DHook_FrameUpdatePostEntityThinkPre()

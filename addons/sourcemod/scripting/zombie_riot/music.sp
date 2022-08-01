@@ -75,9 +75,6 @@ void Music_EndLastmann()
 
 	if(LastMann)
 	{
-		PrintToChatAll("THIS IS A TEST MESSAGE! MUSIC TIMER HAS JUST BEEN RESET.");
-		PrintToChatAll("THIS IS A TEST MESSAGE! MUSIC TIMER HAS JUST BEEN RESET.");
-		PrintToChatAll("THIS IS A TEST MESSAGE! MUSIC TIMER HAS JUST BEEN RESET.");
 		
 		for(int client=1; client<=MaxClients; client++)
 		{
