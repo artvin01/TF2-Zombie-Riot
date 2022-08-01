@@ -1307,6 +1307,14 @@ public void OnMapStart()
 	
 	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	CreateTimer(2.0, GetClosestSpawners, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	
+	
+	FormatEx(char_MusicString1, sizeof(char_MusicString1), "");
+			
+	FormatEx(char_MusicString2, sizeof(char_MusicString2), "");
+			
+	i_MusicLength1 = 0;
+	i_MusicLength2 = 0;
 }
 
 public void OnMapEnd()

@@ -735,21 +735,24 @@ void Waves_Progress()
 				}	
 			}
 			//This should nullfy anyways if nothings in it
-			FormatEx(char_MusicString1, sizeof(round.music_round_1), round.music_round_1);
+			FormatEx(char_MusicString1, sizeof(char_MusicString1), round.music_round_1);
 			
-			FormatEx(char_MusicString2, sizeof(round.music_round_2), round.music_round_2);
+			FormatEx(char_MusicString2, sizeof(char_MusicString2), round.music_round_2);
 
 			i_MusicLength1 = round.music_duration_1;
 			
 			i_MusicLength2 = round.music_duration_2;
 			
-			if(char_MusicString1[0] || char_MusicString2[0])
+			if(round.Setup > 1.0)
 			{
-				for(int client=1; client<=MaxClients; client++)
+				if(char_MusicString1[0] || char_MusicString2[0])
 				{
-					if(IsClientInGame(client))
+					for(int client=1; client<=MaxClients; client++)
 					{
-						Music_Timer[client] = GetEngineTime() + round.Setup; //Give roundsetup time time.
+						if(IsClientInGame(client))
+						{
+							Music_Timer[client] = GetEngineTime() + round.Setup; //Give roundsetup time time.
+						}
 					}
 				}
 			}
