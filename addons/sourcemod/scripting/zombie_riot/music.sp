@@ -93,6 +93,7 @@ void Music_EndLastmann()
 				TF2_RemoveCondition(client, TFCond_CritCanteen);
 			}
 		}
+		LastMann = false;
 	}
 }
 
