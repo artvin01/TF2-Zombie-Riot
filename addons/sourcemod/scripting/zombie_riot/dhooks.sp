@@ -904,6 +904,8 @@ public MRESReturn DHook_DropAmmoPackPre(int client, DHookParam param)
 	return MRES_Supercede;
 }
 
+float f_TimeAfterSpawn[MAXTF2PLAYERS];
+
 public MRESReturn DHook_ForceRespawn(int client)
 {
 	if(IsFakeClient(client))
@@ -940,6 +942,8 @@ public MRESReturn DHook_ForceRespawn(int client)
 	
 	if(started)
 		RequestFrame(DHook_TeleportToAlly, GetClientUserId(client));
+		
+	f_TimeAfterSpawn[client] = GetGameTime();
 	
 	return MRES_Ignored;
 }
@@ -1017,6 +1021,39 @@ public void DHook_TeleportToObserver(DataPack pack)
 		}
 	}
 	delete pack;
+}
+
+public void DHook_TeleportToAlly(int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(client)
+	{
+		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
+		TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
+		int target = 0;
+		for(int i=1; i<=MaxClients; i++)
+		{
+			if(i != client && IsClientInGame(i))
+			{
+				if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && (f_TimeAfterSpawn[client] + 1.0 < GetGameTime())) //dont spawn near players who just spawned
+				{
+					target = i;
+					break;
+				}
+			}
+		}		
+		if(target)
+		{
+			float pos[3], ang[3];
+			GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+			GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+			SetEntProp(client, Prop_Send, "m_bDucked", true);
+			SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
+			TeleportEntity(client, pos, ang, NULL_VECTOR);
+			SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+			SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+		}
+	}
 }
 
 public MRESReturn DHook_FrameUpdatePostEntityThinkPre()

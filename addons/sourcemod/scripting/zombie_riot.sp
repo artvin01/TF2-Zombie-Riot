@@ -3541,6 +3541,7 @@ public Action Hook_BlockUserMessageEx(UserMsg msg_id, BfRead msg, const int[] pl
 
 public void MapStartResetAll()
 {
+	Zero(f_TimeAfterSpawn);
 	Zero2(f_Ability_Cooldown_m1);
 	Zero2(f_Ability_Cooldown_m2);
 	Zero2(f_Ability_Cooldown_r);
