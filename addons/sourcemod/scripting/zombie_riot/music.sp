@@ -75,6 +75,10 @@ void Music_EndLastmann()
 
 	if(LastMann)
 	{
+		PrintToChatAll("THIS IS A TEST MESSAGE! MUSIC TIMER HAS JUST BEEN RESET.");
+		PrintToChatAll("THIS IS A TEST MESSAGE! MUSIC TIMER HAS JUST BEEN RESET.");
+		PrintToChatAll("THIS IS A TEST MESSAGE! MUSIC TIMER HAS JUST BEEN RESET.");
+		
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client))
@@ -250,10 +254,9 @@ void Music_PostThink(int client)
 	
 	if(f_ClientMusicVolume[client] < 0.05)
 		return;
-
+	
 	if(Music_Timer[client] < GetEngineTime())
 	{
-		
 		bool RoundHasCustomMusic = false;
 		
 		if(char_MusicString1[0])
@@ -277,13 +280,13 @@ void Music_PostThink(int client)
 					{
 						EmitSoundToClient(client, char_MusicString1[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						EmitSoundToClient(client, char_MusicString1[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-						Music_Timer[client] = GetEngineTime() + i_MusicLength1;
+						Music_Timer[client] = GetEngineTime() + float(i_MusicLength1);
 					}
 					else if(char_MusicString2[0])
 					{
 						EmitSoundToClient(client, char_MusicString2[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						EmitSoundToClient(client, char_MusicString2[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-						Music_Timer[client] = GetEngineTime() + i_MusicLength2;					
+						Music_Timer[client] = GetEngineTime() + float(i_MusicLength2);					
 					}
 					//Make checks to be sure.
 				}
@@ -293,13 +296,13 @@ void Music_PostThink(int client)
 					{
 						EmitSoundToClient(client, char_MusicString2[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						EmitSoundToClient(client, char_MusicString2[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-						Music_Timer[client] = GetEngineTime() + i_MusicLength2;
+						Music_Timer[client] = GetEngineTime() + float(i_MusicLength2);
 					}
 					else if(char_MusicString1[0])
 					{
 						EmitSoundToClient(client, char_MusicString1[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						EmitSoundToClient(client, char_MusicString1[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-						Music_Timer[client] = GetEngineTime() + i_MusicLength1;					
+						Music_Timer[client] = GetEngineTime() + float(i_MusicLength1);					
 					}
 					//Make checks to be sure.
 				}

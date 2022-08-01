@@ -1711,8 +1711,6 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			Healing_done_in_total[client] = 0;
 			Ammo_Count_Ready[client] = 0;
 			Armor_Charge[client] = 0;
-//			Music_Timer[client] = GetEngineTime() + 20.0;
-//			Armor_Ready[client] = 0.0;
 		}
 	}
 	for(int client_check=1; client_check<=MaxClients; client_check++)
@@ -2147,8 +2145,6 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE)
 			{
-		//			Music_Timer[client] = 0.0;
-				
 				if(IsPlayerAlive(client) && !applied_lastmann_buffs_once && !Died[client])
 				{
 					if(dieingstate[client] > 0)
