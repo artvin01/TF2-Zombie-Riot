@@ -694,9 +694,12 @@ bool Store_LoadLoadout(int client)
 
 void Store_ClientDisconnect(int client)
 {
-	char buffer[16];
-	IntToString(CurrentGame, buffer, sizeof(buffer));
-	CookieCache.Set(client, buffer);
+	if(AreClientCookiesCached(client))
+	{
+		char buffer[16];
+		IntToString(CurrentGame, buffer, sizeof(buffer));
+		CookieCache.Set(client, buffer);
+	}
 	
 	Store_SaveLevelPerks(client);
 	Store_SaveLoadout(client);

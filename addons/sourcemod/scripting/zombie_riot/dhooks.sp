@@ -939,12 +939,8 @@ public MRESReturn DHook_ForceRespawn(int client)
 	SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	
 	if(started)
-	{
-		DataPack pack = new DataPack();
-		RequestFrame(DHook_TeleportToObserver, pack);
-		pack.WriteCell(GetClientUserId(client));
-		pack.WriteCell(GetEntPropEnt(client, Prop_Send, "m_hObserverTarget"));
-	}
+		RequestFrame(DHook_TeleportToAlly, GetClientUserId(client));
+	
 	return MRES_Ignored;
 }
 		
@@ -992,7 +988,7 @@ public void DHook_TeleportToObserver(DataPack pack)
 		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
 		TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
 		int target = pack.ReadCell();
-		if(target < 1 || target > MaxClients || !IsClientInGame(target) || !IsPlayerAlive(target) || TeutonType[target] != TEUTON_NONE)
+		if(target == client || target < 1 || target > MaxClients || !IsClientInGame(target) || !IsPlayerAlive(target) || TeutonType[target] != TEUTON_NONE)
 		{
 			target = 0;
 			for(int i=1; i<=MaxClients; i++)

@@ -940,7 +940,7 @@ void Waves_Progress()
 			
 			if(Enemies.Empty)
 			{
-				CurrentWave--;
+				CurrentWave++;
 				Waves_Progress();
 				return;
 			}

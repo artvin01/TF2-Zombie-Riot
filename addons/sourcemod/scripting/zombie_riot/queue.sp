@@ -238,7 +238,9 @@ bool Queue_JoinTeam(int client)
 	}
 	
 	WaitingInQueue[client] = false;
-	CookiePlayStreak.Set(client, "1");
+	if(AreClientCookiesCached(client))
+		CookiePlayStreak.Set(client, "1");
+	
 	return true;
 }
 
