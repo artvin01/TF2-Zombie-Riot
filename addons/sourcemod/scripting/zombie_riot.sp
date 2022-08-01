@@ -2551,6 +2551,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					dieingstate[target] = 0;
 					
 					SetEntPropEnt(target, Prop_Send, "m_hObserverTarget", client);
+					f_WasRecentlyRevivedViaNonWave[target] = GetGameTime() + 1.0;
 					DHook_RespawnPlayer(target);
 					
 					float pos[3], ang[3];
@@ -3541,6 +3542,7 @@ public Action Hook_BlockUserMessageEx(UserMsg msg_id, BfRead msg, const int[] pl
 
 public void MapStartResetAll()
 {
+	Zero(f_WasRecentlyRevivedViaNonWave);
 	Zero(f_TimeAfterSpawn);
 	Zero2(f_Ability_Cooldown_m1);
 	Zero2(f_Ability_Cooldown_m2);

@@ -18,6 +18,9 @@ Address g_hSDKStartLagCompAddress;
 Address g_hSDKEndLagCompAddress;
 bool g_GottenAddressesForLagComp;
 
+float f_TimeAfterSpawn[MAXTF2PLAYERS];
+float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
+
 /*
 // Offsets from mikusch but edited
 int g_OffsetWeaponMode;
@@ -904,7 +907,6 @@ public MRESReturn DHook_DropAmmoPackPre(int client, DHookParam param)
 	return MRES_Supercede;
 }
 
-float f_TimeAfterSpawn[MAXTF2PLAYERS];
 
 public MRESReturn DHook_ForceRespawn(int client)
 {
@@ -940,9 +942,12 @@ public MRESReturn DHook_ForceRespawn(int client)
 	SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	
-
-	if(started)
-		CreateTimer(0.1, DHook_TeleportToAlly, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+	
+	if(f_WasRecentlyRevivedViaNonWave[client] < GetGameTime())
+	{
+		if(started)
+			CreateTimer(0.2, DHook_TeleportToAlly, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+	}
 		
 	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;
 	
@@ -1036,7 +1041,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 		{
 			if(i != client && IsClientInGame(i))
 			{
-				if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime()) //dont spawn near players who just spawned
+				if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] > 0) //dont spawn near players who just spawned
 				{
 					target = i;
 					break;
