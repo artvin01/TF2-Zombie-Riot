@@ -47,7 +47,7 @@ public void Ark_empower_ability(int client, int weapon, bool crit, int slot) // 
 
 		weapon_id[client] = weapon;
 
-		Ark_Hits[client] = 3;
+		Ark_Hits[client] = 6;
 				
 		Original_Atackspeed[client] = 1.0;
 				
@@ -598,7 +598,7 @@ float Player_OnTakeDamage_Ark(int victim, float &damage)
 	{
 		//PrintToChatAll("parry worked");
 		
-		Ark_Hits[victim] = 7;
+		Ark_Hits[victim] = 12;
 		ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
 		return damage * 0.1;
 	}
