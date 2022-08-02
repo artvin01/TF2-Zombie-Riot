@@ -33,7 +33,28 @@
 
 #define PACKAPUNCH_MODEL "models/props_spytech/computer_low.mdl"
 
+#define VILLAGE_MODEL "models/props_rooftop/roof_dish001.mdl"
+
 #define BUILDINGCOLLISIONNUMBER	27
+
+#define VILLAGE_100	(0 << 1)
+#define VILLAGE_200	(0 << 2)
+#define VILLAGE_300	(0 << 3)
+#define VILLAGE_400	(0 << 4)
+#define VILLAGE_500	(0 << 5)
+#define VILLAGE_010	(0 << 6)
+#define VILLAGE_020	(0 << 7)
+#define VILLAGE_030	(0 << 8)
+#define VILLAGE_040	(0 << 9)
+#define VILLAGE_050	(0 << 10)
+#define VILLAGE_001	(0 << 11)
+#define VILLAGE_002	(0 << 12)
+#define VILLAGE_003	(0 << 13)
+#define VILLAGE_004	(0 << 14)
+#define VILLAGE_005	(0 << 15)
+
+static int Village_Flags[MAXTF2PLAYERS];
+
 //static int gLaser1;
 
 static int Beam_Laser;
@@ -77,6 +98,7 @@ void Building_MapStart()
 	
 	PrecacheModel(PACKAPUNCH_MODEL);
 	PrecacheModel(HEALING_STATION_MODEL);
+	PrecacheModel(VILLAGE_MODEL);
 }
 
 static int Building_Repair_Health[MAXENTITIES]={0, ...};
@@ -1224,6 +1246,30 @@ void Building_ShowInteractionHud(int client, int entity)
 						PrintCenterText(client, "%t", "Healing Station Tooltip");						
 					}
 				}
+				else if(!StrContains(buffer, "zr_village_") && GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
+				{
+					Hide_Hud = false;
+					if(Building_Collect_Cooldown[entity][0] > GetGameTime())
+					{
+						float Building_Picking_up_cd = Building_Collect_Cooldown[entity][0] - GetGameTime();
+						
+						if(Building_Picking_up_cd <= 0.0)
+							Building_Picking_up_cd = 0.0;
+							
+						SetGlobalTransTarget(client);
+						PrintCenterText(client, "%t","Object Cooldown",Building_Picking_up_cd);
+					}
+					else if(!StrContains(buffer, "zr_village_2"))
+					{
+						SetGlobalTransTarget(client);
+						PrintCenterText(client, "%t", "Village Buff Large Tooltip");						
+					}
+					else
+					{
+						SetGlobalTransTarget(client);
+						PrintCenterText(client, "%t", "Village Buff Small Tooltip");						
+					}
+				}
 			}
 		}
 		else if(StrEqual(buffer, "obj_dispenser"))
@@ -1482,8 +1528,12 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 			if(StrEqual(buffer, "zr_healingstation"))
 			{
-				owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
 				buildingType = 7;
+			}
+			else if(!StrContains(buffer, "zr_village"))
+			{
+				if(owner == client)
+					buildingType = 8;
 			}
 		}
 		else if(StrEqual(buffer, "obj_dispenser"))
@@ -2055,6 +2105,25 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							SetGlobalTransTarget(client);
 							ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");				
 						}
+				}
+				case 8:
+				{
+					Building_Collect_Cooldown[entity][0] = GetGameTime() + 120.0;
+					EmitSoundToAll("items/powerup_pickup_base.wav", entity);
+					ClientCommand(client, "playgamesound items/smallmedkit1.wav");
+					StartHealingTimer(client, 0.1, 1, 30);
+					if(owner != -1 && i_Healing_station_money_limit[owner][client] <= 3)
+					{
+						if(owner != client)
+						{
+							i_Healing_station_money_limit[owner][client] += 1;
+							Resupplies_Supplied[owner] += 4;
+							CashSpent[owner] -= 40;
+							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+							SetGlobalTransTarget(owner);
+							ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Healing Station Used");
+						}
+					}
 				}
 			}
 			return true;
@@ -3685,4 +3754,166 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
 	Store_ApplyAttribs(client);
 	Store_GiveAll(client, GetClientHealth(client));	
+}
+
+void Building_CheckItems(int client)
+{
+	Village_Flags[client] = 0;
+	
+	switch(Store_HasNamedItem(client, "Village NPC Expert"))
+	{
+		case 1:
+			Village_Flags[client] = VILLAGE_100;
+		
+		case 2:
+			Village_Flags[client] = VILLAGE_100 + VILLAGE_200;
+		
+		case 3:
+			Village_Flags[client] = VILLAGE_100 + VILLAGE_200 + VILLAGE_300;
+		
+		case 4:
+			Village_Flags[client] = VILLAGE_100 + VILLAGE_200 + VILLAGE_300 + VILLAGE_400;
+		
+		case 5:
+			Village_Flags[client] = VILLAGE_100 + VILLAGE_200 + VILLAGE_300 + VILLAGE_400 + VILLAGE_500;
+		
+		default:
+			Village_Flags[client] = 0;
+	}
+	
+	switch(Store_HasNamedItem(client, "Village Buffing Expert"))
+	{
+		case 1:
+			Village_Flags[client] += VILLAGE_010;
+		
+		case 2:
+			Village_Flags[client] += VILLAGE_010 + VILLAGE_020;
+		
+		case 3:
+			Village_Flags[client] += VILLAGE_010 + VILLAGE_020 + VILLAGE_030;
+		
+		case 4:
+			Village_Flags[client] += VILLAGE_010 + VILLAGE_020 + VILLAGE_030 + VILLAGE_040;
+		
+		case 5:
+			Village_Flags[client] += VILLAGE_010 + VILLAGE_020 + VILLAGE_030 + VILLAGE_040 + VILLAGE_050;
+	}
+	
+	switch(Store_HasNamedItem(client, "Village Support Expert"))
+	{
+		case 1:
+			Village_Flags[client] += VILLAGE_001;
+		
+		case 2:
+			Village_Flags[client] += VILLAGE_001 + VILLAGE_002;
+		
+		case 3:
+			Village_Flags[client] += VILLAGE_001 + VILLAGE_002 + VILLAGE_003;
+		
+		case 4:
+			Village_Flags[client] += VILLAGE_001 + VILLAGE_002 + VILLAGE_003 + VILLAGE_004;
+		
+		case 5:
+			Village_Flags[client] += VILLAGE_001 + VILLAGE_002 + VILLAGE_003 + VILLAGE_004 + VILLAGE_005;
+	}
+}
+
+public Action Building_PlaceVillage(int client, int weapon, const char[] classname, bool &result)
+{
+	int Sentrygun = EntRefToEntIndex(i_HasSentryGunAlive[client]);
+	if(!IsValidEntity(Sentrygun))
+	{
+		if(Building_Sentry_Cooldown[client] > GetGameTime())
+		{
+			result = false;
+			float Ability_CD = Building_Sentry_Cooldown[client] - GetGameTime();
+			
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+				
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+		}
+		else
+		{
+			PlaceBuilding(client, Building_Village, TFObject_Sentry);
+		}
+	}
+	return Plugin_Continue;
+}
+
+public bool Building_Village(int client, int entity)
+{
+	i_HasSentryGunAlive[client] = EntIndexToEntRef(entity);
+	b_SentryIsCustom[entity] = true;
+	Building_Constructed[entity] = false;
+	CreateTimer(0.2, Building_Set_HP_Colour_Sentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateTimer(0.5, Timer_VillageThink, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT); //No custom anims
+	
+	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
+	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
+	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
+	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
+	Building_Repair_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	Building_Max_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	SetEntPropString(entity, Prop_Data, "m_iName", "zr_village");
+	Building_cannot_be_repaired[entity] = false;
+	Is_Elevator[entity] = false;
+	Building_Sentry_Cooldown[client] = GetGameTime() + 60.0;
+	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
+	Building_Collect_Cooldown[entity][0] = 0.0;
+	
+	if(!EscapeMode)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+public Action Timer_VillageThink(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(entity == INVALID_ENT_REFERENCE)
+		return Plugin_Stop;
+	
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+	if(owner < 1 || owner > MaxClients)
+	{
+		SDKHooks_TakeDamage(entity, entity, entity, 999999.9);
+		return Plugin_Continue;
+	}
+	
+	float pos[3];
+	if(Building_Mounted[owner] == ref)
+	{
+		GetClientEyePosition(owner, pos);
+	}
+	else if(GetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed") == 1.0)
+	{
+		if(Building_Constructed[entity])
+		{
+			//BELOW IS SET ONCE!
+			view_as<CClotBody>(entity).bBuildingIsPlaced = true;
+			Building_Constructed[entity] = true;
+			
+			static const float minbounds[3] = {-10.0, -20.0, 0.0};
+			static const float maxbounds[3] = {10.0, 20.0, -2.0};
+			SetEntPropVector(entity, Prop_Send, "m_vecMins", minbounds);
+			SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxbounds);
+			
+			SetEntityModel(entity, VILLAGE_MODEL);
+		}
+	}
+	else
+	{
+		Building_Constructed[entity] = false;
+		return Plugin_Continue;
+	}
+	
+	return Plugin_Continue;
 }
