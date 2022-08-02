@@ -634,6 +634,14 @@ methodmap Citizen < CClotBody
 		char buffer[PLATFORM_MAX_PATH];
 		Citizen_GenerateModel(this.m_iSeed, this.m_bFemale, type, buffer, sizeof(buffer));
 		SetEntityModel(this.index, buffer);
+				
+		SetEntPropVector(this.index, Prop_Send, "m_vecMaxsPreScaled", view_as<float>( { 1.0, 1.0, 2.0 } ));
+		SetEntPropVector(this.index, Prop_Send, "m_vecMinsPreScaled", view_as<float>( { -1.0, -1.0, 0.0 } ));
+		
+		this.UpdateCollisionBox();
+					
+		SetEntPropVector(this.index, Prop_Data, "m_vecMaxs", view_as<float>( { 24.0, 24.0, 82.0 } ));
+		SetEntPropVector(this.index, Prop_Data, "m_vecMins", view_as<float>( { -24.0, -24.0, 0.0 } ));
 	}
 	public void SetActivity(const char[] animation)
 	{
