@@ -1853,6 +1853,8 @@ public void Citizen_ClotThink(int iNPC)
 					}
 				}
 			}
+			
+			PrintToChatAll("Seaking Medic Target: %d", npc.m_iTargetAlly);
 		}
 		
 		if(!npc.m_bGetClosestTargetTimeAlly)
@@ -1860,6 +1862,8 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_iTargetAlly = GetClosestAllyPlayer(npc.index);
 			npc.m_bGetClosestTargetTimeAlly = true;
 			npc.m_bSeakingMedic = false;
+			
+			PrintToChatAll("Seaking Ally Target: %d", npc.m_iTargetAlly);
 		}
 		 
 		//PrintCenterTextAll("CIV: Moving Back %d", npc.m_iTargetAlly);
@@ -1871,6 +1875,8 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_bSeakingMedic = false;
 			npc.m_flGetClosestTargetTime = 0.0;
 			standing = true;
+			
+			PrintToChatAll("Lost Ally Target: %d", npc.m_iTargetAlly);
 		}
 		else
 		{
@@ -1935,6 +1941,8 @@ public void Citizen_ClotThink(int iNPC)
 					health = maxhealth;
 				
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
+				
+				PrintToChatAll("At Healing Target: %d", npc.m_iTargetAlly);
 				return;
 			}
 			
