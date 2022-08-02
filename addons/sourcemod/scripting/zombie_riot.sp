@@ -943,6 +943,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_wand_lightning_spell.sp"
 #include "zombie_riot/custom/weapon_necromancy_wand.sp"
 #include "zombie_riot/custom/weapon_wand_necro_spell.sp"
+#include "zombie_riot/custom/weapon_wand_lightning_pap.sp"
 #include "zombie_riot/custom/weapon_autoaim_wand.sp"
 #include "zombie_riot/custom/weapon_arrow_shot.sp"
 //#include "zombie_riot/custom/weapon_pipe_shot.sp"
@@ -1264,6 +1265,7 @@ public void OnMapStart()
 	Wand_FireBall_Map_Precache();
 	Wand_Lightning_Map_Precache();
 	Wand_LightningAbility_Map_Precache();
+	Wand_LightningPap_Map_Precache();
 	Wand_Necro_Map_Precache();
 	Wand_NerosSpell_Map_Precache();
 	Wand_autoaim_Map_Precache();
