@@ -23,7 +23,7 @@ public void Weapon_Wand_FireBallSpell(int client, int weapon, bool &result, int 
 			{
 				Ability_Apply_Cooldown(client, slot, 10.0);
 				
-				float damage = 65.0;
+				float damage = 50.0;
 				
 				damage *= 3.5;
 				

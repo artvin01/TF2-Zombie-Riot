@@ -4330,6 +4330,10 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 			return false;
 		}
 	}
+	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
+	{
+		return false;
+	}
 	
 	CClotBody npc = view_as<CClotBody>(entity);
 	if(StrEqual(class, "func_respawnroomvisualizer"))
@@ -4377,6 +4381,10 @@ public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMas
 		{
 			return false;
 		}
+	}
+	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
+	{
+		return false;
 	}
 	CClotBody npc = view_as<CClotBody>(entity);
 	if(StrEqual(class, "func_respawnroomvisualizer"))

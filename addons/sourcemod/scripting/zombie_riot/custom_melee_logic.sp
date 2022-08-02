@@ -316,10 +316,10 @@ public void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward
 //	TE_SendToAll();
 	
 	// See if we hit anything.
-	trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, IngorePlayersAndBuildings, client );
+	trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, client );
 	if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
 	{
-		trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), IngorePlayersAndBuildings, client );
+		trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
 	//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
 	}
 }

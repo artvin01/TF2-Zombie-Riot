@@ -1160,6 +1160,7 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 	return entity!=data;
 }
 
+
 public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 {
 	if(entity <= MaxClients)
