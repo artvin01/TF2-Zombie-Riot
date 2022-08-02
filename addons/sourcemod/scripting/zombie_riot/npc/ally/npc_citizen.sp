@@ -1046,7 +1046,6 @@ public void Citizen_ClotThink(int iNPC)
 	
 	if(npc.m_bDowned)
 	{
-		//PrintCenterTextAll("CIV: Downed");
 		if(npc.m_flidle_talk == FAR_FUTURE)
 		{
 			npc.m_flidle_talk = gameTime + 30.0 + (float(npc.m_iSeed) / 214748364.7);
@@ -1061,7 +1060,6 @@ public void Citizen_ClotThink(int iNPC)
 	
 	if(npc.m_flAttackHappens)
 	{
-		//PrintCenterTextAll("CIV: Throwing Melee");
 		if(npc.m_iGunType != Cit_Melee)
 		{
 			npc.m_flAttackHappens = 0.0;
@@ -1118,7 +1116,6 @@ public void Citizen_ClotThink(int iNPC)
 	
 	if(npc.m_flReloadDelay > gameTime)
 	{
-		//PrintCenterTextAll("CIV: Reloading");
 		if(npc.m_bPathing)
 		{
 			PF_StopPathing(npc.index);
@@ -1149,7 +1146,6 @@ public void Citizen_ClotThink(int iNPC)
 	
 	if(!standing)
 	{
-		//PrintCenterTextAll("CIV: Attacking");
 		npc.m_flidle_talk = FAR_FUTURE;
 		
 		moveBack = false;
@@ -1698,7 +1694,6 @@ public void Citizen_ClotThink(int iNPC)
 	
 	if(wantReload)
 	{
-		//PrintCenterTextAll("CIV: Wants to Reload");
 		switch(npc.m_iGunType)
 		{
 			case Cit_Pistol:
@@ -1853,8 +1848,6 @@ public void Citizen_ClotThink(int iNPC)
 					}
 				}
 			}
-			
-			PrintToChatAll("Seaking Medic Target: %d", npc.m_iTargetAlly);
 		}
 		
 		if(!npc.m_bGetClosestTargetTimeAlly)
@@ -1862,11 +1855,7 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_iTargetAlly = GetClosestAllyPlayer(npc.index);
 			npc.m_bGetClosestTargetTimeAlly = true;
 			npc.m_bSeakingMedic = false;
-			
-			PrintToChatAll("Seaking Ally Target: %d", npc.m_iTargetAlly);
 		}
-		 
-		//PrintCenterTextAll("CIV: Moving Back %d", npc.m_iTargetAlly);
 		
 		// If our ally was a player, run standard player checks; otherwise our entity check
 		if((npc.m_iTargetAlly <= MaxClients && (!IsValidClient(npc.m_iTargetAlly) || dieingstate[npc.m_iTargetAlly] || !IsPlayerAlive(npc.m_iTargetAlly))) || !IsValidEntity(npc.m_iTargetAlly))
@@ -1875,8 +1864,6 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_bSeakingMedic = false;
 			npc.m_flGetClosestTargetTime = 0.0;
 			standing = true;
-			
-			PrintToChatAll("Lost Ally Target: %d", npc.m_iTargetAlly);
 		}
 		else
 		{
@@ -1941,8 +1928,6 @@ public void Citizen_ClotThink(int iNPC)
 					health = maxhealth;
 				
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-				
-				PrintToChatAll("At Healing Target: %d", npc.m_iTargetAlly);
 				return;
 			}
 			
@@ -1993,15 +1978,12 @@ public void Citizen_ClotThink(int iNPC)
 			else
 			{
 				standing = true;
-				PrintToChatAll("Idle 1");
 			}
 		}
 	}
 	
 	if(standing)
 	{
-		PrintToChatAll("Idle 2");
-		
 		if(npc.m_iTarget < 1 || npc.m_iGunType == Cit_Melee)
 		{
 			if(npc.m_flidle_talk == FAR_FUTURE)
