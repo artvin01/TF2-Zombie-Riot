@@ -2464,11 +2464,12 @@ stock int HasNamedItem(int client, const char[] name)
 	return amount;
 }
 
-stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon, float spawnLoc[3] = {0.0,0.0,0.0}, float explosionRadius = EXPLOSION_RADIUS, float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF, float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF, bool FromNpc = false)
+stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon, float spawnLoc[3] = {0.0,0.0,0.0}, float explosionRadius = EXPLOSION_RADIUS, float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF, float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF, bool FromNpc = false, int maxtargetshit = 10)
 {
 	float damage_reduction = 1.0;
 	int Closest_npc = 0;
-	
+	int TargetsHit = 0; //This will not exeed 10 ever, beacuse at that point your damage is nothing.
+	//maxtargetshit
 	if(IsValidEntity(weapon))
 	{
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
@@ -2543,6 +2544,10 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 		{
 			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)  //Loop as often as there can be even be max NPC's.
 			{
+				if(TargetsHit > maxtargetshit)
+				{
+					break;
+				}
 				int new_closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity); //alotta loops :)
 				if (IsValidEntity(new_closest_npc)) //Make sure its valid bla bla bla
 				{
@@ -2562,43 +2567,21 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 							SDKHooks_TakeDamage(new_closest_npc, client, client, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 							
 							damage_reduction *= ExplosionDmgMultihitFalloff;
+							TargetsHit += 1;
 						}
 						//Damage Calculations
 					}
 				}
-				/*
-				int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-				if (IsValidEntity(baseboss_index))
-				{
-					if(!b_NpcHasDied[baseboss_index] && Closest_npc != baseboss_index)
-					{
-						//Damage Calculations
-						VicLoc = WorldSpaceCenter(baseboss_index);						
-						if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
-						{
-							float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
-							float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
-															
-							if((i_ExplosiveProjectileHexArray[entity] & EP_NO_KNOCKBACK))
-							{
-								SDKHooks_TakeDamage(Closest_npc, client, client, damage_1 / damage_reduction, DMG_BLAST|DMG_PREVENT_PHYSICS_FORCE, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
-							}
-							else
-							{
-								SDKHooks_TakeDamage(Closest_npc, client, client, damage_1 / damage_reduction, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
-							}
-							damage_reduction *= ExplosionDmgMultihitFalloff;
-						}
-						//Damage Calculations
-					}
-				}
-				*/
 			}
 		}
 		else //Gotta loop through all here, oopsie!
 		{
 			for( int i = 1; i <= MaxClients; i++ ) 
 			{
+				if(TargetsHit > maxtargetshit)
+				{
+					break;
+				}
 				if (IsValidClient(i))
 				{
 					CClotBody npc = view_as<CClotBody>(i);
@@ -2616,6 +2599,7 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 							}
 							
 							SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+							TargetsHit += 1;
 						}
 					}
 				}
@@ -2627,10 +2611,14 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 				else if (pass == 1) classname = "obj_dispenser";
 			//	else if (pass == 2) classname = "obj_teleporter";
 				else if (pass == 2) classname = "base_boss";
-		
+				
 				int i = MaxClients + 1;
 				while ((i = FindEntityByClassname(i, classname)) != -1)
 				{
+					if(TargetsHit > maxtargetshit)
+					{
+						break;
+					}
 					if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(i, Prop_Send, "m_iTeamNum")) 
 					{
 						CClotBody npc = view_as<CClotBody>(i);
@@ -2657,6 +2645,7 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 									}
 							
 									SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+									TargetsHit += 1;
 								}
 							}
 						}		
@@ -2685,6 +2674,7 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 										}
 							
 										SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+										TargetsHit += 1;
 									}
 								}
 							}

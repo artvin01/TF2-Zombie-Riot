@@ -4714,17 +4714,19 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = -1; 
+	int searcher_team = GetEntProp(entity, Prop_Send, "m_iTeamNum"); //do it only once lol
+	float EntityLocation[3]; 
+	GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
 	for( int i = 1; i <= MaxClients; i++ ) 
 	{
 		if (IsValidClient(i))
 		{
 			CClotBody npc = view_as<CClotBody>(i);
-			if (TF2_GetClientTeam(i)!=view_as<TFTeam>(GetEntProp(entity, Prop_Send, "m_iTeamNum")) && !npc.m_bThisEntityIgnored && IsEntityAlive(i)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+			if (TF2_GetClientTeam(i)!=view_as<TFTeam>(searcher_team) && !npc.m_bThisEntityIgnored && IsEntityAlive(i)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 			{
 				if(camoDetection)
 				{
-					float EntityLocation[3], TargetLocation[3]; 
-					GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+					float TargetLocation[3]; 
 					GetClientAbsOrigin( i, TargetLocation ); 
 					
 					
@@ -4748,8 +4750,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 				}
 				else if (!npc.m_bCamo)
 				{
-					float EntityLocation[3], TargetLocation[3]; 
-					GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+					float TargetLocation[3]; 
 					GetClientAbsOrigin( i, TargetLocation ); 
 					
 					
@@ -4774,6 +4775,179 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			}
 		}
 	}
+	/*
+	
+	
+	enum TFTeam
+	{
+		TFTeam_Unassigned = 0,
+		TFTeam_Spectator = 1,
+		TFTeam_Red = 2,
+		TFTeam_Blue = 3
+	};
+	*/
+	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
+	{
+		int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+		if(IsValidEntity(entity_close))
+		{
+			if(searcher_team != 3) 
+			{
+				CClotBody npc = view_as<CClotBody>(entity_close);
+				if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0 && !onlyPlayers) //Check if dead or even targetable
+				{
+					if(camoDetection)
+					{
+						float TargetLocation[3]; 
+						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+									
+									
+						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+						if(distance < fldistancelimit)
+						{
+							if( TargetDistance ) 
+							{
+								if( distance < TargetDistance ) 
+								{
+									ClosestTarget = entity_close; 
+									TargetDistance = distance;		  
+								}
+							} 
+							else 
+							{
+								ClosestTarget =entity_close; 
+								TargetDistance = distance;
+							}	
+						}	
+					}
+					else if (!npc.m_bCamo)
+					{
+						float TargetLocation[3]; 
+						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+							
+							
+						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+						if(distance < fldistancelimit)
+						{
+							if( TargetDistance ) 
+							{
+								if( distance < TargetDistance ) 
+								{
+									ClosestTarget = entity_close; 
+									TargetDistance = distance;		  
+								}
+							} 
+							else 
+							{
+								ClosestTarget = entity_close; 
+								TargetDistance = distance;
+							}	
+						}	
+					}
+				}
+			}
+		}
+	}
+	for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+	{
+		int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+		if(IsValidEntity(entity_close))
+		{
+			if(searcher_team != 2)
+			{
+				CClotBody npc = view_as<CClotBody>(entity_close);
+				if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0 && !onlyPlayers) //Check if dead or even targetable
+				{
+					if(camoDetection)
+					{
+						float TargetLocation[3]; 
+						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+									
+									
+						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+						if(distance < fldistancelimit)
+						{
+							if( TargetDistance ) 
+							{
+								if( distance < TargetDistance ) 
+								{
+									ClosestTarget = entity_close; 
+									TargetDistance = distance;		  
+								}
+							} 
+							else 
+							{
+								ClosestTarget = entity_close; 
+								TargetDistance = distance;
+							}	
+						}	
+					}
+					else if (!npc.m_bCamo)
+					{
+						float TargetLocation[3]; 
+						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+							
+							
+						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+						if(distance < fldistancelimit)
+						{
+							if( TargetDistance ) 
+							{
+								if( distance < TargetDistance ) 
+								{
+									ClosestTarget = entity_close; 
+									TargetDistance = distance;		  
+								}
+							} 
+							else 
+							{
+								ClosestTarget = entity_close; 
+								TargetDistance = distance;
+							}	
+						}	
+					}
+				}
+			}
+		}
+	}
+	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
+	{
+		int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+		{
+			if(searcher_team != 2)
+			{
+				CClotBody npc = view_as<CClotBody>(entity_close);
+				if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+				{	
+					if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)) && !IgnoreBuildings)
+					{
+						float TargetLocation[3]; 
+						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+									
+									
+						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+						if(distance < fldistancelimit)
+						{
+							if( TargetDistance ) 
+							{
+								if( distance < TargetDistance ) 
+								{
+									ClosestTarget = entity_close; 
+									TargetDistance = distance;		  
+								}
+							} 
+							else 
+							{
+								ClosestTarget = entity_close; 
+								TargetDistance = distance;
+							}	
+						}
+					}
+				}
+			}
+		}
+	}
+	/*
 //	if() //Make sure that they completly ignore barricades during raids
 	{
 		for (int pass = 0; pass <= 2; pass++)
@@ -4787,7 +4961,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			int i = MaxClients + 1;
 			while ((i = FindEntityByClassname(i, classname)) != -1)
 			{
-				if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(i, Prop_Send, "m_iTeamNum")) 
+				if (searcher_team != GetEntProp(i, Prop_Send, "m_iTeamNum")) 
 				{
 					CClotBody npc = view_as<CClotBody>(i);
 					if(pass != 2)
@@ -4882,6 +5056,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			}
 		}
 	}
+	*/
 	return ClosestTarget; 
 }
 
