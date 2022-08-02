@@ -568,7 +568,7 @@ void Waves_Progress()
 					{
 						if(ScaleWithHpMore)
 						{
-							multi_health += 0.25;
+							multi_health += 0.20;
 						}
 						else
 						{
@@ -582,6 +582,16 @@ void Waves_Progress()
 					if(multi_health < 0.5)
 						multi_health = 0.5;	
 				}
+				
+				float amount_of_people = float(CountPlayersOnRed());
+		
+				amount_of_people *= 0.12;
+				
+				if(amount_of_people < 10.0)
+					amount_of_people = 1.0;
+					
+				multi_health *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
+		
 					
 				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multi_health);
 				wave.EnemyData.Health = Tempomary_Health;
