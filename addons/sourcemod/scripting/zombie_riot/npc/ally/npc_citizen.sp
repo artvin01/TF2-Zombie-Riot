@@ -1788,6 +1788,8 @@ public void Citizen_ClotThink(int iNPC)
 	{
 		if(!npc.m_bSeakingMedic && npc.m_flSelfHealTime < gameTime && (low || (!combat && health < maxhealth)))
 		{
+			npc.m_bGetClosestTargetTimeAlly = false;
+			
 			float distance;
 			float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
 			float vecTarget[3];
