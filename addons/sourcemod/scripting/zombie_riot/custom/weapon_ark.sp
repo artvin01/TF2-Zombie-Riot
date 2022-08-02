@@ -133,7 +133,7 @@ public void Ark_attack1(int client, int weapon, bool crit, int slot) //first pap
 		AcceptEntityInput(iRot, "Open");
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 	//	CreateTimer(0.1, Timer_HatThrow_Woosh, EntIndexToEntRef(iRot), TIMER_REPEAT);
-		Wand_Launch1(client, iRot, speed, time, damage, weapon);		
+		Wand_Launch1(client, iRot, speed, time, damage);		
 	}
 }
 
@@ -211,7 +211,7 @@ public void Ark_attack2(int client, int weapon, bool crit, int slot) //second pa
 		
 		damage = damage * 5;
 		
-		Wand_Launch1(client, iRot, speed, time, damage, weapon);
+		Wand_Launch1(client, iRot, speed, time, damage);
 	}
 }
 
@@ -310,7 +310,7 @@ static void Wand_Launch2(int client, int iRot, float speed, float time, float da
 	
 }
 
-static void Wand_Launch1(int client, int iRot, float speed, float time, float damage, int weapon) //the projectile from bad wand
+static void Wand_Launch1(int client, int iRot, float speed, float time, float damage) //the projectile from bad wand
 {
 	float fAng[3], fPos[3];
 	GetClientEyeAngles(client, fAng);

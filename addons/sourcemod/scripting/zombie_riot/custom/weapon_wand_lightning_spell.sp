@@ -26,7 +26,7 @@ public void Weapon_Wand_LightningSpell(int client, int weapon, bool &result, int
 			{
 				Ability_Apply_Cooldown(client, slot, 15.0);
 				
-				float damage = 200.0;
+				float damage = 175.0;
 				
 				damage *= 7.5;
 				
@@ -50,10 +50,13 @@ public void Weapon_Wand_LightningSpell(int client, int weapon, bool &result, int
 	
 				GetClientEyePosition(client, vOrigin);
 				GetClientEyeAngles(client, vAngles);
-				Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, Trace_DontHitEntityOrPlayer);
+				b_LagCompNPC_ExtendBoundingBox = true;
+				StartLagCompensation_Base_Boss(client, false);
+				Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
+				FinishLagCompensation_Base_boss();
 				
 				if(TR_DidHit(trace))
-				{   	 
+				{   
 		   		 	TR_GetEndPosition(vEnd, trace);
 			
 					CloseHandle(trace);

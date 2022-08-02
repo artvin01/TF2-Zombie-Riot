@@ -105,9 +105,6 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 	
 	Alot of code is borrowed/just takes from other plugins i or friends made, often with permission,
 	rarely without cus i couldnt contact the person or it was just open sourcecode, credited anyways when i did that.
-	
-	You will also see alot of "inconsistent indentation" warnings, if 1.11 compiler told me where this shit happend then i would fix it
-	but i honestly dont got the patience to look though all these sub files (more then 100)
 */
 
 //ATTENTION PLEASE!!!!!!!!!

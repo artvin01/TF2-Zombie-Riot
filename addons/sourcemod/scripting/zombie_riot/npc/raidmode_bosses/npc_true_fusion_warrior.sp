@@ -296,6 +296,15 @@ methodmap TrueFusionWarrior < CClotBody
 			RaidModeScaling *= 0.40;
 		}
 		
+		float amount_of_people = float(CountPlayersOnRed());
+		
+		amount_of_people *= 0.11;
+		
+		if(amount_of_people < 10.0)
+			amount_of_people = 1.0;
+			
+		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
+		
 		Raidboss_Clean_Everyone();
 		
 		SDKHook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);

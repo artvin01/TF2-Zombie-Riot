@@ -877,7 +877,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 	if(IsValidEntity(Victim_weapon))
 	{
-		float modified_damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom, Victim_weapon);
+		float modified_damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon);
 		
 		damage = modified_damage;
 		Replicated_Damage = modified_damage;
@@ -1227,8 +1227,10 @@ enum
 }
 
 
-float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, int equipped_weapon)
+float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon)
 {
+	
+	
 	switch(i_CustomWeaponEquipLogic[equipped_weapon])
 	{
 		case WEAPON_ARK: // weapon_ark
