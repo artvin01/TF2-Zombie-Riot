@@ -2590,16 +2590,26 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 						VicLoc = WorldSpaceCenter(i);						
 						if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
 						{
-							float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
-							float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
-							
-							if(damage_1 > damage)
+							Handle trace; 
+							trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
+							int Traced_Target;
+								
+							Traced_Target = TR_GetEntityIndex(trace);
+							delete trace;
+								
+							if(Traced_Target == i)
 							{
-								damage_1 = damage;
+								float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
+								float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
+								
+								if(damage_1 > damage)
+								{
+									damage_1 = damage;
+								}
+								
+								SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+								TargetsHit += 1;
 							}
-							
-							SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
-							TargetsHit += 1;
 						}
 					}
 				}
@@ -2628,7 +2638,7 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 							if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
 							{
 								Handle trace; 
-								trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
+								trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
 								int Traced_Target;
 								
 								Traced_Target = TR_GetEntityIndex(trace);
@@ -2657,7 +2667,7 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 								if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
 								{
 									Handle trace; 
-									trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
+									trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
 									int Traced_Target;
 									
 									Traced_Target = TR_GetEntityIndex(trace);
