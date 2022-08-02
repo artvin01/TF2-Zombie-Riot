@@ -1946,7 +1946,7 @@ public void Citizen_ClotThink(int iNPC)
 				return;
 			}
 			
-			if(distance > 20000.0 || (combat && distance > (2500.0 + (float(npc.m_iSeed) / 2147483.647 * 2.0))))
+			if(npc.m_bSeakingMedic || distance > 20000.0 || (combat && distance > (2500.0 + (float(npc.m_iSeed) / 2147483.647 * 2.0))))
 			{
 				if(npc.m_iTarget < 1)
 				{
