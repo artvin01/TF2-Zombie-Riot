@@ -942,7 +942,9 @@ public MRESReturn DHook_ForceRespawn(int client)
 	SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	
-	
+	TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
+	TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
+			
 	if(f_WasRecentlyRevivedViaNonWave[client] < GetGameTime())
 	{
 		CreateTimer(0.1, DHook_TeleportToAlly, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
