@@ -1142,7 +1142,10 @@ public void Citizen_ClotThink(int iNPC)
 	bool standing = npc.m_iTarget < 1;
 	bool wantReload = (npc.m_iGunClip > 0 && npc.m_iAttacksTillReload != npc.m_iGunClip);
 	bool combat = !Waves_InSetup();
-	bool low = GetEntProp(npc.index, Prop_Data, "m_iHealth") < 300;
+	
+	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	bool low = (health < 100) || (health < (maxhealth / 5));
 	
 	if(!standing)
 	{
@@ -1783,7 +1786,7 @@ public void Citizen_ClotThink(int iNPC)
 	}
 	else if(moveBack)
 	{
-		if(!npc.m_bGetClosestTargetTimeAlly && npc.m_flSelfHealTime < gameTime && (low || (!combat && GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))))
+		if(!npc.m_bSeakingMedic && npc.m_flSelfHealTime < gameTime && (low || (!combat && health < maxhealth)))
 		{
 			float distance;
 			float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
@@ -1925,8 +1928,7 @@ public void Citizen_ClotThink(int iNPC)
 				npc.SetActivity("ACT_CIT_HEAL");
 				npc.m_flSpeed = 0.0;
 				
-				int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-				int health = GetEntProp(npc.index, Prop_Data, "m_iHealth") + 100 + (maxhealth / 10);
+				health += 100 + (maxhealth / 10);
 				if(health > maxhealth)
 					health = maxhealth;
 				
