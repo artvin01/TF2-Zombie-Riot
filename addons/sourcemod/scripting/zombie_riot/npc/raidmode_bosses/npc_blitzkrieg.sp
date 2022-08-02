@@ -374,7 +374,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				{
 					Music_Stop_All(client); //This is actually more expensive then i thought.
 				}
-				Music_Timer[client] = GetEngineTime() + 5.0;
+				SetMusicTimer(client, GetEngineTime() + 5.0);
 				fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
 			}
 		}

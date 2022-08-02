@@ -1,9 +1,10 @@
-float Music_Timer[MAXTF2PLAYERS];
+static float Music_Timer[MAXTF2PLAYERS];
 static float Give_Cond_Timer[MAXTF2PLAYERS];
 static bool MusicDisabled;
 
 void Music_ClearAll()
 {
+	Zero(Music_Timer);
 	Zero(Give_Cond_Timer);
 }
 
@@ -75,12 +76,11 @@ void Music_EndLastmann()
 
 	if(LastMann)
 	{
-		
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client))
 			{
-				Music_Timer[client] = 0.0;
+				SetMusicTimer(client, 0.0);
 				StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3");
 				StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3");
 				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
@@ -100,7 +100,7 @@ void Music_RoundEnd(int victim)
 	{
 		if(IsClientInGame(client) && !IsFakeClient(client))
 		{
-			Music_Timer[client] = GetEngineTime() + 45.0;
+			SetMusicTimer(client, GetEngineTime() + 45.0);
 			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 			TF2_RemoveCondition(client, TFCond_DefenseBuffed);
 			TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
@@ -501,4 +501,15 @@ void Music_PostThink(int client)
 	}
 }
 
+public void SetMusicTimer(int client, float time)
+{
+	Music_Timer[client] = time;
+	PrintToConsole(client, "THIS IS A TEST MESSAGE IGNORE IT! Music timer has been set somehow. time: %.2f, raw number: %.2f", time - GetEngineTime(), time);
+	PrintToConsole(client, "THIS IS A TEST MESSAGE IGNORE IT! Music timer has been set somehow. time: %.2f, raw number: %.2f", time - GetEngineTime(), time);
+	PrintToConsole(client, "THIS IS A TEST MESSAGE IGNORE IT! Music timer has been set somehow. time: %.2f, raw number: %.2f", time - GetEngineTime(), time);
+	PrintToConsole(client, "THIS IS A TEST MESSAGE IGNORE IT! Music timer has been set somehow. time: %.2f, raw number: %.2f", time - GetEngineTime(), time);
+	PrintToConsole(client, "THIS IS A TEST MESSAGE IGNORE IT! Music timer has been set somehow. time: %.2f, raw number: %.2f", time - GetEngineTime(), time);
+	PrintToConsole(client, "THIS IS A TEST MESSAGE IGNORE IT! Music timer has been set somehow. time: %.2f, raw number: %.2f", time - GetEngineTime(), time);
+	PrintToConsole(client, "THIS IS A TEST MESSAGE IGNORE IT! Music timer has been set somehow. time: %.2f, raw number: %.2f", time - GetEngineTime(), time);
+}
 //CHECK SDKHOOKS PRETHINK!!!

@@ -3571,7 +3571,6 @@ public void MapStartResetAll()
 	Zero(Increaced_Sentry_damage_High);
 	Zero(Resistance_for_building_Low);
 	Zero(f_RingDelayGift);
-	Zero(Music_Timer);
 	Music_ClearAll();
 	Zero(f_BotDelayShow);
 	NPC_Spawn_ClearAll();
