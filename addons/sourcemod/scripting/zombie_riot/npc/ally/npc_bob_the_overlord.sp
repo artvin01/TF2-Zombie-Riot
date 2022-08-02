@@ -257,6 +257,7 @@ methodmap BobTheGod < CClotBody
 		npc.m_flSpeed = 180.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
+		npc.m_bScalesWithWaves = true;
 
 		npc.m_iWearable2 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_pistol.mdl");
 		SetVariantString("1.15");

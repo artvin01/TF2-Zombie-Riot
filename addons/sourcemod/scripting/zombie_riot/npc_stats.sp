@@ -143,6 +143,7 @@ int i_InSafeZone[MAXENTITIES];
 float fl_MeleeArmor[MAXENTITIES];
 float fl_RangedArmor[MAXENTITIES];
 
+bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
 
 
@@ -2233,7 +2234,12 @@ methodmap CClotBody
 		public get()							{ return fl_RangedArmor[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_RangedArmor[this.index] = TempValueForProperty; }
 	}
+	property bool m_bScalesWithWaves
+	{
+		public get()							{ return b_ScalesWithWaves[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_ScalesWithWaves[this.index] = TempValueForProperty; }	
 	
+	}
 	property float m_flSpeed
 	{
 		public get()							{ return fl_Speed[this.index]; }
@@ -3088,7 +3094,7 @@ methodmap CClotBody
 			f_ArrowDamage[entity] = rocket_damage;
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(this.index, Prop_Send, "m_iTeamNum"));
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
 			DispatchSpawn(entity);
 			if(rocket_model[0])
@@ -6857,6 +6863,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_MeleeArmor[entity] = 1.0; //yeppers.
 	fl_RangedArmor[entity] = 1.0;
 	f_PickThisDirectionForabit[entity] = 0.0;
+	b_ScalesWithWaves[entity] = false;
 }
 
 public void Raidboss_Clean_Everyone()

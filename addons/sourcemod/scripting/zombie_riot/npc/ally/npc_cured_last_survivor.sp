@@ -327,6 +327,7 @@ methodmap CuredFatherGrigori < CClotBody
 		npc.m_iAttacksTillReload = 2;
 		npc.m_bWasSadAlready = false;
 		npc.Anger = false;
+		npc.m_bScalesWithWaves = true;
 		npc.StartPathing();
 		
 		

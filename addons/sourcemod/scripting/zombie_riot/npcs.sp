@@ -976,7 +976,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			damage = 0.0;
 			return Plugin_Handled;
-		}	
+		}
 	}
 	
 	if(b_npcspawnprotection[victim]) //make them resistant on spawn or else itll just be spawncamping fest
@@ -1104,42 +1104,46 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 			else if(StrEqual(classname, "base_boss") && b_IsAlliedNpc[inflictor]) //add a filter so it only does it for allied base_bosses
 			{
-				int Wave_Count = Waves_GetRound() + 1;
-				if(!EscapeMode) //Buff in escapemode overall!
+				CClotBody npc = view_as<CClotBody>(inflictor);
+				if(npc.m_bScalesWithWaves)
 				{
-					if(Wave_Count <= 10)
-						damage *= 0.5;
+					int Wave_Count = Waves_GetRound() + 1;
+					if(!EscapeMode) //Buff in escapemode overall!
+					{
+						if(Wave_Count <= 10)
+							damage *= 0.5;
+							
+						else if(Wave_Count <= 15)
+							damage *= 1.25;
 						
-					else if(Wave_Count <= 15)
-						damage *= 1.25;
-					
-					else if(Wave_Count <= 20)
-						damage *= 2.0;
+						else if(Wave_Count <= 20)
+							damage *= 2.0;
+							
+						else if(Wave_Count <= 25)
+							damage *= 3.0;
+							
+						else if(Wave_Count <= 30)
+							damage *= 7.0;
+							
+						else if(Wave_Count <= 40)
+							damage *= 10.0;
+							
+						else if(Wave_Count <= 45)
+							damage *= 30.0;
 						
-					else if(Wave_Count <= 25)
-						damage *= 3.0;
+						else if(Wave_Count <= 50)
+							damage *= 45.0;
 						
-					else if(Wave_Count <= 30)
-						damage *= 7.0;
+						else if(Wave_Count <= 60)
+							damage *= 60.0;
 						
-					else if(Wave_Count <= 40)
-						damage *= 10.0;
-						
-					else if(Wave_Count <= 45)
-						damage *= 30.0;
-					
-					else if(Wave_Count <= 50)
-						damage *= 45.0;
-					
-					else if(Wave_Count <= 60)
-						damage *= 60.0;
-					
+						else
+							damage *= 100.0;
+					}
 					else
-						damage *= 100.0;
-				}
-				else
-				{
-					damage *= 1.5;
+					{
+						damage *= 1.5;
+					}
 				}
 			}
 		}
