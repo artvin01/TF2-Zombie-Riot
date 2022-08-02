@@ -761,7 +761,7 @@ void Waves_Progress()
 					{
 						if(IsClientInGame(client))
 						{
-							Music_Timer[client] = GetEngineTime() + round.Setup; //Give roundsetup time time.
+							SetMusicTimer(client, GetEngineTime() + round.Setup);
 						}
 					}
 				}
