@@ -1869,7 +1869,7 @@ public void Citizen_ClotThink(int iNPC)
 		//PrintCenterTextAll("CIV: Moving Back %d", npc.m_iTargetAlly);
 		
 		// If our ally was a player, run standard player checks; otherwise our entity check
-		if((npc.m_iTargetAlly <= MaxClients && (!IsValidClient(npc.m_iTargetAlly) || !IsPlayerAlive(npc.m_iTargetAlly))) || !IsValidEntity(npc.m_iTargetAlly))
+		if((npc.m_iTargetAlly <= MaxClients && (!IsValidClient(npc.m_iTargetAlly) || dieingstate[npc.m_iTargetAlly] || !IsPlayerAlive(npc.m_iTargetAlly))) || !IsValidEntity(npc.m_iTargetAlly))
 		{
 			npc.m_bGetClosestTargetTimeAlly = false;
 			npc.m_bSeakingMedic = false;
@@ -1993,13 +1993,14 @@ public void Citizen_ClotThink(int iNPC)
 			else
 			{
 				standing = true;
+				PrintToChatAll("Idle 1");
 			}
 		}
 	}
 	
 	if(standing)
 	{
-		//PrintCenterTextAll("CIV: Idle");
+		PrintToChatAll("Idle 2");
 		
 		if(npc.m_iTarget < 1 || npc.m_iGunType == Cit_Melee)
 		{
