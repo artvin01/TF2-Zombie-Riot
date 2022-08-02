@@ -4913,6 +4913,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 	{
 		int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+		if(IsValidEntity(entity_close))
 		{
 			if(searcher_team != 2)
 			{
