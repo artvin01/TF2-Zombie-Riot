@@ -230,7 +230,7 @@ public void ConVarCallbackDuckToVolume(QueryCookie cookie, int client, ConVarQue
 	}
 }
 
-
+//TODO: This music just breaks and cuts off earlier and plays earlier, i really dont know why. I hate it! Find a fix!
 
 void Music_PostThink(int client)
 {
@@ -515,13 +515,6 @@ void Music_PostThink(int client)
 public void SetMusicTimer(int client, float time)
 {
 	Music_Timer[client] = time;
-	PrintToConsole(client, "THIS IS A TEST MESSAGE IGNORE IT! Music timer has been set somehow. time: %.2f, raw number: %.2f", time - GetEngineTime(), time);
-	PrintToConsole(client, "THIS IS A TEST MESSAGE IGNORE IT! Music timer has been set somehow. time: %.2f, raw number: %.2f", time - GetEngineTime(), time);
-	PrintToConsole(client, "THIS IS A TEST MESSAGE IGNORE IT! Music timer has been set somehow. time: %.2f, raw number: %.2f", time - GetEngineTime(), time);
-	PrintToConsole(client, "THIS IS A TEST MESSAGE IGNORE IT! Music timer has been set somehow. time: %.2f, raw number: %.2f", time - GetEngineTime(), time);
-	PrintToConsole(client, "THIS IS A TEST MESSAGE IGNORE IT! Music timer has been set somehow. time: %.2f, raw number: %.2f", time - GetEngineTime(), time);
-	PrintToConsole(client, "THIS IS A TEST MESSAGE IGNORE IT! Music timer has been set somehow. time: %.2f, raw number: %.2f", time - GetEngineTime(), time);
-	PrintToConsole(client, "THIS IS A TEST MESSAGE IGNORE IT! Music timer has been set somehow. time: %.2f, raw number: %.2f", time - GetEngineTime(), time);
 }
 //CHECK SDKHOOKS PRETHINK!!!
 

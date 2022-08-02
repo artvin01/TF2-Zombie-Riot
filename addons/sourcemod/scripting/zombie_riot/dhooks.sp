@@ -945,10 +945,8 @@ public MRESReturn DHook_ForceRespawn(int client)
 	TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
 	TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
 			
-	if(f_WasRecentlyRevivedViaNonWave[client] < GetGameTime())
-	{
-		CreateTimer(0.1, DHook_TeleportToAlly, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
-	}
+	
+	CreateTimer(0.1, DHook_TeleportToAlly, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		
 	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;
 	
@@ -1032,35 +1030,38 @@ public void DHook_TeleportToObserver(DataPack pack)
 
 public Action DHook_TeleportToAlly(Handle timer, int userid)
 {
-	if(!Waves_InSetup())
+	int client = GetClientOfUserId(userid);
+	if(IsValidClient(client))
 	{
-		int client = GetClientOfUserId(userid);
-		if(IsValidClient(client))
-		{
-			TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
-			TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
-			int target = 0;
-			for(int i=1; i<=MaxClients; i++)
+		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
+		TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
+		if(f_WasRecentlyRevivedViaNonWave[client] < GetGameTime())
+		{	
+			if(!Waves_InSetup())
 			{
-				if(i != client && IsClientInGame(i))
+				int target = 0;
+				for(int i=1; i<=MaxClients; i++)
 				{
-					if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
+					if(i != client && IsClientInGame(i))
 					{
-						target = i;
-						break;
+						if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
+						{
+							target = i;
+							break;
+						}
 					}
 				}
-			}
-			if(IsValidClient(target))
-			{
-				float pos[3], ang[3];
-				GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
-				GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-				SetEntProp(client, Prop_Send, "m_bDucked", true);
-				SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
-				TeleportEntity(client, pos, ang, NULL_VECTOR);
-				SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-				SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+				if(IsValidClient(target))
+				{
+					float pos[3], ang[3];
+					GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+					GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+					SetEntProp(client, Prop_Send, "m_bDucked", true);
+					SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
+					TeleportEntity(client, pos, ang, NULL_VECTOR);
+					SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+					SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+				}
 			}
 		}
 	}
