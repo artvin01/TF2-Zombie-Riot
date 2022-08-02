@@ -309,7 +309,7 @@ public void ZeroDefenceRage(int client, int weapon, bool crit, int slot)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Ability_Apply_Cooldown(client, slot, 15.0);
+			Ability_Apply_Cooldown(client, slot, 80.0);
 			
 			weapon_id[client] = weapon;
 			
