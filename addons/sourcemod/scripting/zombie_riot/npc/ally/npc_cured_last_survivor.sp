@@ -510,11 +510,13 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 				{
 				//	npc.FaceTowards(vecTarget, 1000.0);
 					
-					if(npc.m_flNextMeleeAttack < GetGameTime())
+					if(npc.m_flNextMeleeAttack < GetGameTime() || npc.m_flAttackHappenswillhappen)
 					{
+						npc.m_flSpeed = 0.0;
 						if (!npc.m_flAttackHappenswillhappen)
 						{
-							npc.m_flNextRangedAttack = GetGameTime() + 2.0;
+							npc.m_flNextMeleeAttack = GetGameTime() + 1.5;
+							npc.m_flNextRangedAttack = GetGameTime() + 1.5;
 							npc.AddGesture("ACT_MELEE_ATTACK");
 							npc.PlayMeleeSound();
 							npc.m_flAttackHappens = GetGameTime()+0.4;
@@ -536,8 +538,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB);
 									
 									// Hit particle
 									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
@@ -552,13 +553,11 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 								} 
 							}
 							delete swingTrace;
-							npc.m_flNextMeleeAttack = GetGameTime() + 1.5;
 							npc.m_flAttackHappenswillhappen = false;
 						}
 						else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
 						{
 							npc.m_flAttackHappenswillhappen = false;
-							npc.m_flNextMeleeAttack = GetGameTime() + 1.5;
 						}
 					}
 				}
