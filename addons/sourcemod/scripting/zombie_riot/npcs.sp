@@ -485,7 +485,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			
 			
 			if(what_boss == 1)
-				health /= 2;
+				health = RoundToCeil(float(health) * 0.75);
 			
 			int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
 			if(index != -1)

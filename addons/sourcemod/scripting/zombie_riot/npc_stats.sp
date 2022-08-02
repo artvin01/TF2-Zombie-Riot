@@ -4768,7 +4768,6 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 	}
 //	if() //Make sure that they completly ignore barricades during raids
 	{
-		bool its_raid = true;
 		for (int pass = 0; pass <= 2; pass++)
 		{
 			static char classname[1024];
@@ -4788,36 +4787,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 						if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 						{
 							
-							if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)))
-							{
-								float EntityLocation[3], TargetLocation[3]; 
-								GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
-								GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-									
-									
-								float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-								if(distance < fldistancelimit)
-								{
-									if( TargetDistance ) 
-									{
-										if( distance < TargetDistance ) 
-										{
-											ClosestTarget = i; 
-											TargetDistance = distance;		  
-										}
-									} 
-									else 
-									{
-										ClosestTarget = i; 
-										TargetDistance = distance;
-									}	
-								}
-							}
-							else
-							{
-								its_raid = true;
-							}
-							if (!IgnoreBuildings && !its_raid)
+							if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)) && !IgnoreBuildings)
 							{
 								float EntityLocation[3], TargetLocation[3]; 
 								GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
