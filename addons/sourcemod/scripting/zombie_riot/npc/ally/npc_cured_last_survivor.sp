@@ -375,6 +375,13 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
+	if(npc.m_flReloadDelay > GetGameTime())
+	{
+		npc.m_iChanged_WalkCycle = 999;
+		npc.m_flSpeed = 0.0;
+		return;
+	}
+						
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
