@@ -1650,7 +1650,7 @@ public void Citizen_ClotThink(int iNPC)
 				npc.m_bAllowBackWalking = true;
 				
 				float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				PF_SetGoalVector(npc.index, vBackoffPos);
 				
 				if(!npc.m_bPathing)
 					npc.StartPathing();

@@ -2372,7 +2372,7 @@ methodmap CClotBody
 		public set(float TempValueForProperty) 	{ f_WidowsWineDebuff[this.index] = TempValueForProperty; }
 	}
 	
-	public bool m_bAllowBackWalking
+	property bool m_bAllowBackWalking
 	{
 		public get()				{ return b_AllowBackWalking[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_AllowBackWalking[this.index] = TempValueForProperty; }
@@ -6758,6 +6758,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_IsGiant[entity] = false;
 	b_Pathing[entity] = false;
 	b_Jumping[entity] = false;
+	b_AllowBackWalking[entity] = false;
 	fl_JumpStartTime[entity] = 0.0;
 	fl_JumpCooldown[entity] = 0.0;
 	fl_NextDelayTime[entity] = 0.0;
