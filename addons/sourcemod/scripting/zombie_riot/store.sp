@@ -411,7 +411,7 @@ int Store_PackCurrentItem(int client, int index)
 {
 	if(index > 0)
 	{
-		Item item;
+		static Item item;
 		StoreItems.GetArray(index, item);
 		if(item.Owned[client])
 		{
@@ -447,7 +447,7 @@ int Store_CheckMoneyForPap(int client, int index)
 {
 	if(index > 0)
 	{
-		Item item;
+		static Item item;
 		StoreItems.GetArray(index, item);
 		if(item.Owned[client])
 		{
@@ -476,7 +476,7 @@ void Store_Reset()
 		}
 	}
 	
-	Item item;
+	static Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
 	{
@@ -492,8 +492,8 @@ void Store_Reset()
 
 bool Store_HasAnyItem(int client)
 {
-	Item item;
-	ItemInfo info;
+	static Item item;
+	static ItemInfo info;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
 	{
@@ -509,12 +509,26 @@ bool Store_HasAnyItem(int client)
 	return false;
 }
 
+int Store_HasNamedItem(int client, const char[] name)
+{
+	static Item item;
+	int length = StoreItems.Length;
+	for(int i; i<length; i++)
+	{
+		StoreItems.GetArray(i, item);
+		if(StrEqual(name, item.Name, false))
+			return item.Owned[client];
+	}
+	
+	return 0;
+}
+
 void Store_PutInServer(int client)
 {
 	if(EscapeMode)
 		return;
 	
-	Item item;
+	static Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
 	{
@@ -571,7 +585,7 @@ void Store_LoadLevelPerks(int client)
 {
 	char buffer[512], buffers[16][64];
 	
-	Item item;
+	static Item item;
 	int items = StoreItems.Length;
 	
 	bool found;
@@ -661,7 +675,7 @@ bool Store_LoadLoadout(int client)
 		Equipped[client][i-1] = buffers[i];
 	}
 	
-	Item item;
+	static Item item;
 	int items = StoreItems.Length;
 	for(i++; i<length; i+=2)
 	{
@@ -712,7 +726,7 @@ void Store_ClientDisconnect(int client)
 		Equipped[client][i] = -1;
 	}
 	
-	Item item;
+	static Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
 	{
@@ -729,8 +743,8 @@ void Store_ClientDisconnect(int client)
 void Store_SaveLevelPerks(int client)
 {
 	char level[512], inv[512];
-	Item item;
-	ItemInfo info;
+	static Item item;
+	static ItemInfo info;
 	int length = StoreItems.Length - 1;
 	for(int i = length; i >= 0; i--)
 	{
@@ -784,8 +798,8 @@ void Store_SaveLoadout(int client)
 		Format(buffer, sizeof(buffer), "%s;%d", buffer, Equipped[client][i]);
 	}
 	
-	Item item;
-	ItemInfo info;
+	static Item item;
+	static ItemInfo info;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
 	{
@@ -818,12 +832,12 @@ public void Store_RandomizeNPCStore()
 	int length = StoreItems.Length;
 	int[] indexes = new int[length];
 	
-	Item item;
-	ItemInfo info;
+	static Item item;
+	static ItemInfo info;
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(item.ItemInfos && !item.TextStore[0])
+		if(item.ItemInfos && !item.TextStore[0] && !item.NPCWeaponAlways)
 		{
 			item.NPCSeller = false;
 			item.GetItemInfo(0, info);
@@ -845,8 +859,8 @@ public void Store_RandomizeNPCStore()
 
 void Store_RoundStart()
 {
-	Item item;
-	ItemInfo info;
+	static Item item;
+	static ItemInfo info;
 	ArrayList[] lists = new ArrayList[HighestTier+1];
 	char buffer[PLATFORM_MAX_PATH], buffers[4][12];
 	int entity = MaxClients+1;
@@ -936,8 +950,8 @@ static ArrayList GetAllWeaponsWithTier(int tier)
 {
 	ArrayList list = new ArrayList(2);
 	
-	Item item;
-	ItemInfo info;
+	static Item item;
+	static ItemInfo info;
 	int length = StoreItems.Length;
 	int array[2];
 	for(int i; i<length; i++)
@@ -1015,8 +1029,8 @@ static void MenuPage(int client, int section)
 		CurrentCash = 999999;
 		CashSpent[client] = 0;
 	}
-	Item item;
-	ItemInfo info;
+	static Item item;
+	static ItemInfo info;
 	if(section != -1)
 	{
 		StoreItems.GetArray(section, item);
@@ -1275,7 +1289,7 @@ static void MenuPage(int client, int section)
 	bool found;
 	char buffer[96];
 	int length = StoreItems.Length;
-	Item item2;
+	static Item item2;
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);

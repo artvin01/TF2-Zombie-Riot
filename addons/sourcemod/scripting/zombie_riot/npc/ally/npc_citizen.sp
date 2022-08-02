@@ -1140,6 +1140,7 @@ public void Citizen_ClotThink(int iNPC)
 	{
 		//PrintCenterTextAll("CIV: Attacking");
 		npc.m_flidle_talk = FAR_FUTURE;
+		
 		moveBack = false;
 		wantReload = false;
 		
@@ -1154,6 +1155,7 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 			
+			bool backOff;
 			bool moveUp;
 			float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			if(i_NpcInternalId[npc.m_iTarget] == SAWRUNNER && view_as<SawRunner>(npc.m_iTarget).m_iTarget == npc.index && distance < 250000.0)
@@ -1294,7 +1296,15 @@ public void Citizen_ClotThink(int iNPC)
 						{
 							npc.SetActivity("ACT_RUN");
 							npc.m_flSpeed = 240.0;
-							moveBack = true;
+							
+							if(low || distance > 22500.0)
+							{
+								moveBack = true;
+							}
+							else
+							{
+								backOff = true;
+							}
 							
 							if(npc.m_iWearable1 > 0)
 								AcceptEntityInput(npc.m_iWearable1, "Disable");
@@ -1308,7 +1318,7 @@ public void Citizen_ClotThink(int iNPC)
 							{
 								npc.SetActivity("ACT_WALK_AIM_RIFLE");
 								npc.m_flSpeed = 90.0;
-								moveBack = true;
+								backOff = true;
 							}
 							else
 							{
@@ -1377,7 +1387,15 @@ public void Citizen_ClotThink(int iNPC)
 							{
 								npc.SetActivity("ACT_WALK_AIM_RIFLE");
 								npc.m_flSpeed = 90.0;
-								moveBack = true;
+								
+								if(low)
+								{
+									moveBack = true;
+								}
+								else
+								{
+									backOff = true;
+								}
 							}
 							else
 							{
@@ -1467,7 +1485,15 @@ public void Citizen_ClotThink(int iNPC)
 							{
 								npc.SetActivity("ACT_WALK_AIM_RIFLE");
 								npc.m_flSpeed = 90.0;
-								moveBack = true;
+								
+								if(low)
+								{
+									moveBack = true;
+								}
+								else
+								{
+									backOff = true;
+								}
 							}
 							
 							if(npc.m_flNextRangedAttack < gameTime && npc.m_iAttacksTillReload == 0)
@@ -1542,7 +1568,15 @@ public void Citizen_ClotThink(int iNPC)
 							{
 								npc.SetActivity("ACT_RUN_AR2");
 								npc.m_flSpeed = 210.0;
-								moveBack = true;
+								
+								if(low)
+								{
+									moveBack = true;
+								}
+								else
+								{
+									backOff = true;
+								}
 							}
 							else
 							{
@@ -1597,14 +1631,34 @@ public void Citizen_ClotThink(int iNPC)
 						{
 							npc.SetActivity("ACT_RUN_RPG");
 							npc.m_flSpeed = 240.0;
-							moveBack = true;
+							
+							if(low)
+							{
+								moveBack = true;
+							}
+							else
+							{
+								backOff = true;
+							}
 						}
 					}
 				}
 			}
 			
-			if(moveUp)
+			if(backOff)
 			{
+				npc.m_bAllowBackWalking = true;
+				
+				float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
+				PF_SetGoalVector(npc.index, vPredictedPos);
+				
+				if(!npc.m_bPathing)
+					npc.StartPathing();
+			}
+			else if(moveUp)
+			{
+				npc.m_bAllowBackWalking = true;
+				
 				if(distance > 170.0)
 				{
 					PF_SetGoalEntity(npc.index, npc.m_iTarget);
@@ -1628,6 +1682,8 @@ public void Citizen_ClotThink(int iNPC)
 			}
 		}
 	}
+	
+	npc.m_bAllowBackWalking = false;
 	
 	if(wantReload)
 	{

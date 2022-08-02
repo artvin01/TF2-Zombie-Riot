@@ -15,6 +15,7 @@ bool b_DissapearOnDeath[MAXENTITIES];
 bool b_IsGiant[MAXENTITIES];
 bool b_Pathing[MAXENTITIES];
 bool b_Jumping[MAXENTITIES];
+bool b_AllowBackWalking[MAXENTITIES];
 float fl_JumpStartTime[MAXENTITIES];
 float fl_JumpCooldown[MAXENTITIES];
 float fl_NextThinkTime[MAXENTITIES];
@@ -2370,6 +2371,12 @@ methodmap CClotBody
 		public get()							{ return f_WidowsWineDebuff[this.index]; }
 		public set(float TempValueForProperty) 	{ f_WidowsWineDebuff[this.index] = TempValueForProperty; }
 	}
+	
+	public bool m_bAllowBackWalking
+	{
+		public get()				{ return b_AllowBackWalking[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_AllowBackWalking[this.index] = TempValueForProperty; }
+	}
 
 	public float GetRunSpeed()//For the future incase we want to alter it easier
 	{
@@ -4314,8 +4321,9 @@ public bool PluginBot_IsEntityTraversable(int bot_entidx, int other_entidx, Trav
 public void PluginBot_Approach(int bot_entidx, const float vec[3])
 {
 	CClotBody npc = view_as<CClotBody>(bot_entidx);
-	npc.Approach(vec);	
-	npc.FaceTowards(vec);
+	npc.Approach(vec);
+	if(!npc.m_bAllowBackWalking)
+		npc.FaceTowards(vec);
 }
 
 public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
