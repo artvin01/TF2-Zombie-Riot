@@ -302,11 +302,6 @@
 				"this"		"entity"
 				"arguments"
 				{
-					"info"
-					{
-						"type"	"objectptr"
-						"flags"	"byref"
-					}
 					"bEmpty"
 					{
 						"type"	"bool"
