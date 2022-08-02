@@ -976,7 +976,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			damage = 0.0;
 			return Plugin_Handled;
-		}	
+		}
 	}
 	
 	if(b_npcspawnprotection[victim]) //make them resistant on spawn or else itll just be spawncamping fest
@@ -1102,7 +1102,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					damage *= 1.3;
 				}
 			}
-			else if(StrEqual(classname, "base_boss") && b_IsAlliedNpc[inflictor]) //add a filter so it only does it for allied base_bosses
+			else if(StrEqual(classname, "base_boss") && b_IsAlliedNpc[inflictor] && b_ScalesWithWaves[inflictor]) //add a filter so it only does it for allied base_bosses
 			{
 				int Wave_Count = Waves_GetRound() + 1;
 				if(!EscapeMode) //Buff in escapemode overall!
