@@ -1062,7 +1062,7 @@ public void OnPluginStart()
 	sv_cheats = FindConVar("sv_cheats");
 	cvarTimeScale = FindConVar("host_timescale");
 	tf_bot_quota = FindConVar("tf_bot_quota");
-	
+
 	CvarMpSolidObjects = FindConVar("tf_solidobjects");
 	if(CvarMpSolidObjects)
 		CvarMpSolidObjects.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);

@@ -137,6 +137,7 @@ public Action GetClosestSpawners(Handle timer)
 	{
 		if(IsClientInGame(client))
 		{
+
 			if(IsPlayerAlive(client) && IsFakeClient(client))
 			{
 				KickClient(client); //This bot was somehow alive, kick them.
@@ -144,8 +145,8 @@ public Action GetClosestSpawners(Handle timer)
 			else if(!IsFakeClient(client))
 			{
 				QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
+				QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //cl_showpluginmessages
 				QueryClientConVar(client, "cl_showpluginmessages", ConVarCallback_Plugin_message); //cl_showpluginmessages
-				
 				int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 				
 				if(point_difference > 0)

@@ -570,7 +570,7 @@ public void OnPostThink(int client)
 			if(f_ShowHudDelayForServerMessage[client] < GetGameTime())
 			{
 				f_ShowHudDelayForServerMessage[client] = GetGameTime() + 300.0;
-				PrintToChat(client,"If you wish to see the wave counter in a better way, set cl_showpluginmessages to 1 in the console!");
+				PrintToChat(client,"If you wish to see the wave counter in a better way, set ''cl_showpluginmessages'' to 1 in the console!");
 			}
 		}
 		//cl_showpluginmessages

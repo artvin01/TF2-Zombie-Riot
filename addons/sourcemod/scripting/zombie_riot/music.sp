@@ -2,12 +2,6 @@ static float Music_Timer[MAXTF2PLAYERS];
 static float Give_Cond_Timer[MAXTF2PLAYERS];
 static bool MusicDisabled;
 
-void Music_ClearAll()
-{
-	Zero(Music_Timer);
-	Zero(Give_Cond_Timer);
-}
-
 void Music_MapStart()
 {
 	MusicDisabled = FindInfoTarget("zr_nomusic");
@@ -205,6 +199,7 @@ void Music_Stop_All(int client)
 }
 
 float f_ClientMusicVolume[MAXTF2PLAYERS];
+float f_BegPlayerToSetDuckConvar[MAXTF2PLAYERS];
 
 //ty miku for tellingg
 
@@ -219,6 +214,22 @@ public void ConVarCallback_Plugin_message(QueryCookie cookie, int client, ConVar
 	if(result == ConVarQuery_Okay)
 		f_ClientServerShowMessages[client] = view_as<bool>(StringToInt(cvarValue));
 }
+
+public void ConVarCallbackDuckToVolume(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
+{
+	if(result == ConVarQuery_Okay)
+	{
+		if(f_BegPlayerToSetDuckConvar[client] < GetGameTime())
+		{
+			f_BegPlayerToSetDuckConvar[client] = GetGameTime() + 300.0;
+			if(StringToFloat(cvarValue) < 0.9)
+			{
+				PrintToChat(client,"If you wish for Grigori to not half mute your game volume when he talks, set ''snd_ducktovolume'' to 1 in the console!");
+			}
+		}
+	}
+}
+
 
 
 void Music_PostThink(int client)
@@ -513,3 +524,12 @@ public void SetMusicTimer(int client, float time)
 	PrintToConsole(client, "THIS IS A TEST MESSAGE IGNORE IT! Music timer has been set somehow. time: %.2f, raw number: %.2f", time - GetEngineTime(), time);
 }
 //CHECK SDKHOOKS PRETHINK!!!
+
+
+void Music_ClearAll()
+{
+	Zero(Music_Timer);
+	Zero(Give_Cond_Timer);
+	Zero(f_ClientMusicVolume);
+	Zero(f_BegPlayerToSetDuckConvar);
+}

@@ -167,7 +167,9 @@ methodmap CuredFatherGrigori < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime())
 			return;
 			
-	//	EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
+		Citizen_LiveCitizenReaction(this.index);	
+		
+		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		
 		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(48.0, 60.0);
 		#if defined DEBUG_SOUND
@@ -179,7 +181,9 @@ methodmap CuredFatherGrigori < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime())
 			return;
 		
-	//	EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
+		Citizen_LiveCitizenReaction(this.index);
+		
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(24.0, 38.0);
 		
 		#if defined DEBUG_SOUND
@@ -193,7 +197,7 @@ methodmap CuredFatherGrigori < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime() + 0.4;
 		
-	//	EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		
 		
 		#if defined DEBUG_SOUND
@@ -203,7 +207,7 @@ methodmap CuredFatherGrigori < CClotBody
 	
 	public void PlayDeathSound() {
 	
-	//	EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CCuredFatherGrigori::PlayDeathSound()");
@@ -220,7 +224,7 @@ methodmap CuredFatherGrigori < CClotBody
 	public void PlayMeleeSound() {
 	//	if (GetRandomInt(0, 5) == 2)
 		{
-	//		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
+			EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 			
 			#if defined DEBUG_SOUND
 			PrintToServer("CCuredFatherGrigori::PlayMeleeHitSound()");
@@ -230,8 +234,8 @@ methodmap CuredFatherGrigori < CClotBody
 	
 	public void PlayAngerSound() {
 	
-	//	EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, 95, _, 1.0);
-	//	EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, 95, _, 1.0);
+		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, 95, _, 1.0);
+		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, 95, _, 1.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CCuredFatherGrigori::Playnpc.AngerSound()");
@@ -247,7 +251,7 @@ methodmap CuredFatherGrigori < CClotBody
 	}
 	
 	public void PlayKilledEnemy() {
-	//	EmitSoundToAll(g_KilledEnemy[GetRandomInt(0, sizeof(g_KilledEnemy) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
+		EmitSoundToAll(g_KilledEnemy[GetRandomInt(0, sizeof(g_KilledEnemy) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		this.m_flNextIdleSound += 2.0;
 		#if defined DEBUG_SOUND
 		PrintToServer("CCuredFatherGrigori::PlayRangedSound()");
@@ -255,7 +259,7 @@ methodmap CuredFatherGrigori < CClotBody
 	}
 	
 	public void PlayPullSound() {
-	//	EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
+		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CCuredFatherGrigori::PlayPullSound()");
@@ -264,21 +268,21 @@ methodmap CuredFatherGrigori < CClotBody
 	
 	
 	public void PlayTeleportSound() {
-	//	EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
+		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CCuredFatherGrigori::PlayTeleportSound()");
 		#endif
 	}
 	public void PlaySadMourn() {
-	//	EmitSoundToAll(g_SadDueToAllyDeath[GetRandomInt(0, sizeof(g_SadDueToAllyDeath) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
+		EmitSoundToAll(g_SadDueToAllyDeath[GetRandomInt(0, sizeof(g_SadDueToAllyDeath) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		this.m_flNextIdleSound += 2.0;
 		#if defined DEBUG_SOUND
 		PrintToServer("CCuredFatherGrigori::PlayTeleportSound()");
 		#endif
 	}
 	public void PlayMeleeHitSound() {
-	//	EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CCuredFatherGrigori::PlayMeleeHitSound()");
@@ -286,7 +290,7 @@ methodmap CuredFatherGrigori < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-	//	EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0);
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
