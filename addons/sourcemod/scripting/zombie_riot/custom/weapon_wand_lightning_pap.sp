@@ -3,7 +3,7 @@ static float Smite_Damage[MAXPLAYERS+1]={0.0, ...};
 static float Damage_Reduction[MAXPLAYERS+1]={0.0, ...};
 static int Smite_Cost = 250;
 static float Smite_BaseDMG = 400.0;
-static float Smite_DMGMult = 7.5;
+static float Smite_DMGMult = 2.25;
 static float Smite_ChargeTime = 0.99;
 static float Smite_ChargeSpan = 0.33;
 static float Smite_Radius = 400.0;
@@ -79,7 +79,7 @@ public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int s
 					
 					EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);
 					EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);
-					spawnBeam(0.8, 255, 255, 0, 255, "materials/sprites/lgtning.vmt", 16.0, 16.2, _, 5.0, vOrigin, vEnd);
+					spawnBeam(0.8, 255, 255, 0, 120, "materials/sprites/lgtning.vmt", 8.0, 8.2, _, 5.0, vOrigin, vEnd);
 					spawnRing_Vectors(vEnd, Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 200, 1, Smite_ChargeTime, 6.0, 0.1, 1, 1.0);
 				}
 				
