@@ -398,7 +398,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 								
 						if(target > 0) 
 						{
-							float damage = 10.0 / (0.1 + (Health / MaxHealth));
+							float damage = 20.0 / (0.1 + (Health / MaxHealth));
 							if(target <= MaxClients)
 								SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_SLASH|DMG_CLUB);
 							else
@@ -520,8 +520,8 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability_Anger(int client)
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TicksActive[client] = 0;
 
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CanUse[client] = true;
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseDPT[client] = 15.0;
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarDPT[client] = 10.0;
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseDPT[client] = 30.0;	//beam dmg 1, 50%<
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarDPT[client] = 20.0;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_MaxDistance[client] = 2000;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BeamRadius[client] = 10;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ColorHex[client] = ParseColor("FFFFFF");
@@ -579,8 +579,8 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability(int client)
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TicksActive[client] = 0;
 
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CanUse[client] = true;
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseDPT[client] = 12.5;
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarDPT[client] = 7.5;
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseDPT[client] = 25.0;	//beam dmg 2, 50%>
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarDPT[client] = 14.0;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_MaxDistance[client] = 2000;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BeamRadius[client] = 10;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ColorHex[client] = ParseColor("0509FA");
