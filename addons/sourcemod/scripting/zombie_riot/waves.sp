@@ -4,6 +4,7 @@ enum struct Enemy
 	int Is_Boss;
 	int Is_Outlined;
 	int Is_Health_Scaled;
+	int Does_Not_Scale;
 	int Is_Immune_To_Nuke;
 	int Index;
 	int Credits;
@@ -25,6 +26,11 @@ enum struct Round
 	int Cash;
 	bool Custom_Refresh_Npc_Store;
 	int medival_difficulty;
+	
+	char music_round_1[255];
+	int music_duration_1;
+	char music_round_2[255];
+	int music_duration_2;
 	float Setup;
 	ArrayList Waves;
 }
@@ -43,10 +49,13 @@ static float Cooldown;
 static bool InSetup;
 //static bool InFreeplay;
 static int WaveIntencity;
+static bool b_BlockPanzerInThisMap;
+static bool b_BlockSawrunnerSpecificallyInThisMap;
 
 static bool Gave_Ammo_Supply;
 static int VotedFor[MAXTF2PLAYERS];
 
+static char LastWaveWas[64];
 
 void Waves_PluginStart()
 {
@@ -59,13 +68,13 @@ bool Waves_InFreeplay()
 	return (Rounds && CurrentRound >= Rounds.Length);
 }
 
+bool Waves_InSetup()
+{
+	return (InSetup || !Waves_Started());
+}
+
 void Waves_MapStart()
 {
-	if(Voting)
-	{
-		delete Voting;
-	}
-	Zero(VotedFor);
 	PrecacheSound("zombie_riot/panzer/siren.mp3", true);
 	PrecacheSound("zombie_riot/sawrunner/iliveinyourwalls.mp3", true);
 }
@@ -137,10 +146,17 @@ public int Waves_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
+void OnMapEndWaves()
+{
+	if(Voting)
+	{
+		delete Voting;
+	}
+	Zero(VotedFor);	
+}
+
 void Waves_SetupVote(KeyValues map)
 {
-	LogError("Waves_SetupVote()");
-	
 	Cooldown = 0.0;
 	
 	if(Voting)
@@ -155,7 +171,6 @@ void Waves_SetupVote(KeyValues map)
 		kv.Rewind();
 		if(kv.JumpToKey("Waves"))
 		{
-			LogError("Found map specific wave");
 			Waves_SetupWaves(kv, true);
 			return;
 		}
@@ -170,17 +185,18 @@ void Waves_SetupVote(KeyValues map)
 	{
 		zr_voteconfig.GetString(buffer, sizeof(buffer));
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
-		LogError(buffer);
 		kv = new KeyValues("Setup");
 		kv.ImportFromFile(buffer);
 		RequestFrame(DeleteHandle, kv);
 	}
 	
 	StartCash = kv.GetNum("cash");
+	b_BlockPanzerInThisMap = view_as<bool>(kv.GetNum("block_panzer"));
+	
+	b_BlockSawrunnerSpecificallyInThisMap = view_as<bool>(kv.GetNum("block_sawrunner"));
 	if(!kv.JumpToKey("Waves"))
 	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "waves");
-		LogError(buffer);
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "waves")
 		kv = new KeyValues("Waves");
 		kv.ImportFromFile(buffer);
 		Waves_SetupWaves(kv, true);
@@ -196,9 +212,25 @@ void Waves_SetupVote(KeyValues map)
 	{
 		kv.GetSectionName(vote.Name, sizeof(vote.Name));
 		kv.GetString(NULL_STRING, vote.Config, sizeof(vote.Config));
-		LogError("%s %s", vote.Name, vote.Config);
 		Voting.PushArray(vote);
 	} while(kv.GotoNextKey(false));
+	
+	if(LastWaveWas[0])
+	{
+		int length = Voting.Length;
+		if(length > 2)
+		{
+			for(int i; i < length; i++)
+			{
+				Voting.GetArray(i, vote);
+				if(StrEqual(vote.Config, LastWaveWas))
+				{
+					Voting.Erase(i);
+					break;
+				}
+			}
+		}
+	}
 	
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -222,8 +254,8 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	
 	Enemies = new ArrayStack(sizeof(Enemy));
 	
-	StartCash = kv.GetNum("cash");
-	b_BlockPanzerInThisDifficulty = view_as<bool>(kv.GetNum("block_panzer"));
+	b_BlockPanzerInThisDifficulty = (b_BlockPanzerInThisMap || view_as<bool>(kv.GetNum("block_panzer")));
+	b_BlockSawrunnerSpecificallyInThisDifficulty = (b_BlockSawrunnerSpecificallyInThisMap || view_as<bool>(kv.GetNum("block_sawrunner")));
 	b_SpecialGrigoriStore = view_as<bool>(kv.GetNum("grigori_special_shop_logic"));
 	f_ExtraDropChanceRarity = kv.GetFloat("gift_drop_chance_multiplier");
 	
@@ -243,6 +275,19 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		round.medival_difficulty = kv.GetNum("medival_research_level");
 		round.Xp = kv.GetNum("xp");
 		round.Setup = kv.GetFloat("setup");
+	
+		kv.GetString("music_track_1", round.music_round_1, sizeof(round.music_round_1));
+		round.music_duration_1 = kv.GetNum("music_seconds_1");
+		
+		kv.GetString("music_track_2", round.music_round_2, sizeof(round.music_round_2));
+		round.music_duration_2 = kv.GetNum("music_seconds_2");
+		
+		if(round.music_round_1[0])
+			PrecacheSound(round.music_round_1, true);
+		
+		if(round.music_round_2[0])
+			PrecacheSound(round.music_round_2, true);
+
 		if(kv.GotoFirstSubKey())
 		{
 			round.Waves = new ArrayList(sizeof(Wave));
@@ -263,6 +308,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						
 						enemy.Health = kv.GetNum("health");
 						enemy.Is_Boss = kv.GetNum("is_boss");
+						enemy.Does_Not_Scale = kv.GetNum("does_not_scale");
 						enemy.Is_Outlined = kv.GetNum("is_outlined");
 						enemy.Is_Health_Scaled = kv.GetNum("is_health_scaling");
 						enemy.Is_Immune_To_Nuke = kv.GetNum("is_immune_to_nuke");
@@ -329,6 +375,7 @@ void Waves_RoundStart()
 				delete Voting;
 				Voting = null;
 				
+				strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
 				PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
 				
 				Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", vote.Name);
@@ -472,10 +519,16 @@ void Waves_Progress()
 				ScaleWithHpMore = true;
 			}
 			
-			int count = RoundToNearest(float(wave.Count)*multi);
+			int count = wave.Count;
+			
+			if(wave.EnemyData.Does_Not_Scale == 0)
+			{
+				count = RoundToNearest(float(count)*multi);
+			}
 			
 			if(count < 1)
 				count = 1;
+				
 			
 			if(count > 150)
 				count = 150;
@@ -514,7 +567,7 @@ void Waves_Progress()
 					{
 						if(ScaleWithHpMore)
 						{
-							multi_health += 0.25;
+							multi_health += 0.20;
 						}
 						else
 						{
@@ -528,6 +581,16 @@ void Waves_Progress()
 					if(multi_health < 0.5)
 						multi_health = 0.5;	
 				}
+				
+				float amount_of_people = float(CountPlayersOnRed());
+		
+				amount_of_people *= 0.12;
+				
+				if(amount_of_people < 10.0)
+					amount_of_people = 1.0;
+					
+				multi_health *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
+		
 					
 				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multi_health);
 				wave.EnemyData.Health = Tempomary_Health;
@@ -576,7 +639,11 @@ void Waves_Progress()
 			
 			Zombies_Currently_Still_Ongoing = 0;
 			
-			if(CurrentRound == 15) //He should spawn at wave 16.
+			if(CurrentRound == 4)
+			{
+				Citizen_SpawnAtPoint();
+			}
+			else if(CurrentRound == 15) //He should spawn at wave 16.
 			{
 				for(int client_Grigori=1; client_Grigori<=MaxClients; client_Grigori++)
 				{
@@ -655,6 +722,53 @@ void Waves_Progress()
 			//	PrintToChatAll("%t", "Grigori Store Refresh");
 				Medival_Wave_Difficulty_Riser(round.medival_difficulty); // Refresh me !!!
 			}
+			
+			//MUSIC LOGIC
+			
+			bool RoundHasCustomMusic = false;
+		
+			if(char_MusicString1[0])
+				RoundHasCustomMusic = true;
+					
+			if(char_MusicString2[0])
+				RoundHasCustomMusic = true;
+				
+			if(RoundHasCustomMusic) //only do it when there was actually custom music previously
+			{
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client))
+					{
+						Music_Stop_All(client);
+					}
+				}	
+			}
+			//This should nullfy anyways if nothings in it
+			FormatEx(char_MusicString1, sizeof(char_MusicString1), round.music_round_1);
+			
+			FormatEx(char_MusicString2, sizeof(char_MusicString2), round.music_round_2);
+
+			i_MusicLength1 = round.music_duration_1;
+			
+			i_MusicLength2 = round.music_duration_2;
+			
+			if(round.Setup > 1.0)
+			{
+				if(char_MusicString1[0] || char_MusicString2[0])
+				{
+					for(int client=1; client<=MaxClients; client++)
+					{
+						if(IsClientInGame(client))
+						{
+							SetMusicTimer(client, GetTime() + RoundToNearest(round.Setup));
+						}
+					}
+				}
+			}
+			
+			
+			
+			//MUSIC LOGIC
 			if(CurrentRound == length)
 			{
 				Cooldown = round.Setup + 30.0;
@@ -688,6 +802,7 @@ void Waves_Progress()
 					if(IsClientInGame(i) && !IsFakeClient(i))
 					{
 						Music_Stop_All(i);
+						SendConVarValue(i, sv_cheats, "1");
 						players[total++] = i;
 					}
 				}
@@ -696,6 +811,15 @@ void Waves_Progress()
 				
 				EmitSoundToAll("#zombiesurvival/music_win.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToAll("#zombiesurvival/music_win.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+				
+				FormatEx(char_MusicString1, sizeof(char_MusicString1), "");
+			
+				FormatEx(char_MusicString2, sizeof(char_MusicString2), "");
+		
+				i_MusicLength1 = 1;
+					
+				i_MusicLength2 = 1;
+			
 			
 				Menu menu = new Menu(Waves_FreeplayVote);
 				menu.SetTitle("%t","Victory Menu");
@@ -828,7 +952,7 @@ void Waves_Progress()
 			
 			if(Enemies.Empty)
 			{
-				CurrentWave--;
+				CurrentWave++;
 				Waves_Progress();
 				return;
 			}

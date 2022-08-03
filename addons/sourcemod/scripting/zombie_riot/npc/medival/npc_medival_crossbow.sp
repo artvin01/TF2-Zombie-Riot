@@ -329,12 +329,17 @@ public void HandleAnimEventMedival_CrossbowMan(int entity, int event)
 	
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float vecTarget[3];
+				
+			float projectile_speed = 1200.0;
+			
+			vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
 				
 			npc.FaceTowards(vecTarget, 30000.0);
 						
 			npc.PlayMeleeSound();
-			npc.FireArrow(vecTarget, 40.0, 1200.0);
+			
+			npc.FireArrow(vecTarget, 40.0, projectile_speed);
 		}
 	}
 	

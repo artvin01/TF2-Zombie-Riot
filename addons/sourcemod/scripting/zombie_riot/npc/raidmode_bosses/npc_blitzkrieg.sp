@@ -86,8 +86,6 @@ public void Blitzkrieg_OnMapStart()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/freak_fortress_2/shadow93/dmedic/d_medic2.mdl");
 	
-	PrecacheSound("ui/gamestartup12.mp3");
-	
 	PrecacheSound("mvm/mvm_cpoint_klaxon.wav");
 	PrecacheSound("mvm/mvm_tank_end.wav");
 	PrecacheSound("zombiesurvival/beats/defaultzombiev2/10.mp3");
@@ -135,11 +133,11 @@ methodmap Blitzkrieg < CClotBody
 	public void PlayMusicSound() {
 		if(this.m_flPlayMusicSound > GetEngineTime())
 			return;
-		
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 180, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 180, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 180, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 180, _, BOSS_ZOMBIE_VOLUME, 100);
+			
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 		this.m_flPlayMusicSound = GetEngineTime() + 233.0;
 		
 	}
@@ -251,6 +249,16 @@ methodmap Blitzkrieg < CClotBody
 		{
 			RaidModeScaling *= 0.34;
 		}
+		
+		float amount_of_people = float(CountPlayersOnRed());
+		
+		amount_of_people *= 0.11;
+		
+		if(amount_of_people < 10.0)
+			amount_of_people = 1.0;
+			
+		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
+		
 		Raidboss_Clean_Everyone();
 		
 		
@@ -366,7 +374,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				{
 					Music_Stop_All(client); //This is actually more expensive then i thought.
 				}
-				Music_Timer[client] = GetEngineTime() + 5.0;
+				SetMusicTimer(client, GetTime() + 5);
 				fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
 			}
 		}
@@ -448,7 +456,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 			if(npc.m_flReloadIn && npc.m_flReloadIn<GetGameTime())
 			{
 				//Play attack anim
-				npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
+				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 				npc.m_flReloadIn = 0.0;
 			}
 			if(flDistanceToTarget < 100000/i_RangeScale[npc.index])
@@ -529,7 +537,8 @@ public void Blitzkrieg_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-	npc.PlayIdleAlertSound()
+	npc.PlayMusicSound();
+	npc.PlayIdleAlertSound();
 }
 
 public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -714,7 +723,7 @@ public void Blitzkrieg_NPCDeath(int entity)
 	Music_Stop_All_Blitzkrieg(entity);
 	SDKUnhook(npc.index, SDKHook_Think, Blitzkrieg_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Blitzkrieg_ClotDamaged);
-	Music_RoundEnd(entity);
+//	Music_RoundEnd(entity);
 	
 	int closest = npc.m_iTarget;
 	
@@ -956,22 +965,22 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const color[4])
 }
 void Music_Stop_All_Blitzkrieg(int entity)
 {
-	StopSound(entity, SNDCHAN_AUTO, "ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
 }
 void Music_Stop_All_Beat(int entity)
 {
-	StopSound(entity, SNDCHAN_AUTO, "zombiesurvival/beats/defaultzombiev2/10.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombiesurvival/beats/defaultzombiev2/10.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombiesurvival/beats/defaultzombiev2/10.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombiesurvival/beats/defaultzombiev2/10.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombiesurvival/beats/defaultzombiev2/10.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombiesurvival/beats/defaultzombiev2/10.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombiesurvival/beats/defaultzombiev2/10.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
 }

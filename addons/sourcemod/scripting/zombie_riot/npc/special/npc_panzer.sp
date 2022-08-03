@@ -687,8 +687,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 			{
 				float vecTargetHook[3]; vecTargetHook = WorldSpaceCenter(HumanTarget);
 				npc.FaceTowards(vecTargetHook, 20000.0);
-				float vPredictedPosHuman[3]; vPredictedPosHuman = PredictSubjectPositionHook(npc, HumanTarget);
-				vPredictedPosHuman[2] += 45;
+				float vPredictedPosHuman[3]; vPredictedPosHuman = PredictSubjectPositionForProjectiles(npc, HumanTarget, 1200.0);
 				npc.FireHook(vPredictedPosHuman);
 				npc.m_flGrappleCooldown = GetGameTime() + 30.0;
 				
@@ -886,8 +885,8 @@ public MRESReturn Panzer_DHook_RocketExplodePre(int entity)
 		float ProjectileLoc[3];
 		float VicLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-		int Closest_Player = GetClosestTarget(entity, true);
-		if(IsValidEntity(Closest_Player))
+		int Closest_Player = GetClosestTarget(entity, true, _, false, true);
+		if(IsValidEntity(Closest_Player) && IsValidClient(Closest_Player))
 		{
 			GetEntPropVector(Closest_Player, Prop_Data, "m_vecAbsOrigin", VicLoc);
 			VicLoc[2] += 45;

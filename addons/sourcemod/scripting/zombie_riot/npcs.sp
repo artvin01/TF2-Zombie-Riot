@@ -38,18 +38,29 @@ enum struct NPCData
 	int IgniteId;
 	int IgniteRef;
 }
+
+enum struct SpawnerData
+{
+	int 	indexnumber;
+	bool	b_SpawnIsCloseEnough;
+	float	f_ClosestSpawnerLessCooldown;
+	float	f_SpawnerCooldown;
+}
 ArrayList NPCList;
+ArrayList SpawnerList;
 static Handle SyncHud;
 static Handle SyncHudRaid;
 static char LastClassname[2049][64];
-static float f_SpawnerCooldown[MAXENTITIES];
+//static float f_SpawnerCooldown[MAXENTITIES];
 
 public void NPC_Spawn_ClearAll()
 {
-	Zero(f_SpawnerCooldown);
+//	Zero(f_SpawnerCooldown);
 }
+
 void NPC_PluginStart()
 {
+	SpawnerList = new ArrayList(sizeof(SpawnerData));
 	NPCList = new ArrayList(sizeof(NPCData));
 	SyncHud = CreateHudSynchronizer();
 	SyncHudRaid = CreateHudSynchronizer();
@@ -60,6 +71,8 @@ void NPC_PluginStart()
 
 void NPC_RoundEnd()
 {
+	delete SpawnerList;
+	SpawnerList = new ArrayList(sizeof(SpawnerData));
 	delete NPCList;
 	NPCList = new ArrayList(sizeof(NPCData));
 }
@@ -114,9 +127,7 @@ public void NPC_EntitySpawned(int entity)
 	}
 }
 
-static bool b_SpawnIsCloseEnough[MAXENTITIES];
-static float f_ClosestSpawnerLessCooldown[MAXENTITIES];
-	
+
 public Action GetClosestSpawners(Handle timer)
 {
 	float f3_PositionOfAll[3];
@@ -124,19 +135,44 @@ public Action GetClosestSpawners(Handle timer)
 	int i_Diviveby = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsClientInGame(client) && !IsFakeClient(client))
+		if(IsClientInGame(client))
 		{
-			QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
-			QueryClientConVar(client, "cl_showpluginmessages", ConVarCallback_Plugin_message); //cl_showpluginmessages
-			if(GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0 && IsPlayerAlive(client))
+
+			if(IsPlayerAlive(client) && IsFakeClient(client))
 			{
-				i_Diviveby += 1;
+				KickClient(client); //This bot was somehow alive, kick them.
+			}
+			else if(!IsFakeClient(client))
+			{
+				QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
+				QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //cl_showpluginmessages
+				QueryClientConVar(client, "cl_showpluginmessages", ConVarCallback_Plugin_message); //cl_showpluginmessages
+				int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 				
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+				if(point_difference > 0)
+				{
+					if(Waves_GetRound() +1 > 60)
+					{
+						GiveXP(client, point_difference / 10); //Any round above 60 will give way less xp due to just being xp grind fests. This includes the bloons rounds as the points there get ridicilous at later rounds.
+					}
+					else
+					{
+						GiveXP(client, point_difference);
+					}
+				}
 				
-				f3_PositionOfAll[0] += f3_PositionTemp[0];
-				f3_PositionOfAll[1] += f3_PositionTemp[1];
-				f3_PositionOfAll[2] += f3_PositionTemp[2];
+				i_PreviousPointAmount[client] = PlayerPoints[client];
+				
+				if(GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0 && IsPlayerAlive(client))
+				{
+					i_Diviveby += 1;
+					
+					GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+					
+					f3_PositionOfAll[0] += f3_PositionTemp[0];
+					f3_PositionOfAll[1] += f3_PositionTemp[1];
+					f3_PositionOfAll[2] += f3_PositionTemp[2];
+				}
 			}
 		}
 	}
@@ -161,52 +197,71 @@ public Action GetClosestSpawners(Handle timer)
 	{
 		for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
 		{
-			int entity = EntRefToEntIndex(i_ObjectsSpawners[entitycount]);
+			int entity = i_ObjectsSpawners[entitycount];
 			if(IsValidEntity(entity) && entity != 0)
 			{
-				bool Found = false;
-				if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
+				int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
+				if(index != -1)
 				{
-					for(int Repeats_anti=1; Repeats_anti<=Repeats; Repeats_anti++)
+					SpawnerData Spawner;
+					SpawnerList.GetArray(index, Spawner);
+					bool Found = false;
+					if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
 					{
-						if(i_Spawner_Indexes[Repeats_anti] == entity)
+						
+						for(int Repeats_anti=1; Repeats_anti<=Repeats; Repeats_anti++)
 						{
-							Found = true;
-							break;
+							if(i_Spawner_Indexes[Repeats_anti] == entity)
+							{
+								Found = true;
+								break;
+							}
 						}
-					}
-					if(Found)
-					{
-						continue;
-					}
-					b_SpawnIsCloseEnough[entity] = false;
-					GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-					/*
-					PositonBeam = TargetLocation;
-					TargetLocation[2] += 50;
-					PositonBeam[2] += 100;
-					TE_SetupBeamPoints(TargetLocation, PositonBeam, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 2.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 0, 255}), 30);
-					TE_SendToAll();
-					*/
-					float distance = GetVectorDistance( f3_PositionOfAll, TargetLocation, true); 
-					if (TargetDistance) 
-					{
-						if( distance < TargetDistance ) 
+						
+						if(Found)
+						{
+							continue;
+						}
+						Spawner.b_SpawnIsCloseEnough = false;
+						GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+						/*
+						PositonBeam = TargetLocation;
+						TargetLocation[2] += 50;
+						PositonBeam[2] += 100;
+						TE_SetupBeamPoints(TargetLocation, PositonBeam, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 2.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 0, 255}), 30);
+						TE_SendToAll();
+						*/
+						float distance = GetVectorDistance( f3_PositionOfAll, TargetLocation, true); 
+						if (TargetDistance) 
+						{
+							if( distance < TargetDistance ) 
+							{
+								ClosestTarget = entity; 
+								TargetDistance = distance;		  
+							}
+						} 
+						else 
 						{
 							ClosestTarget = entity; 
-							TargetDistance = distance;		  
-						}
-					} 
-					else 
-					{
-						ClosestTarget = entity; 
-						TargetDistance = distance;
-					}				
+							TargetDistance = distance;
+						}								
+					}
+					SpawnerList.SetArray(index, Spawner);
 				}
 			}
 		}
 		if(IsValidEntity(ClosestTarget))
 		{
+			int index = SpawnerList.FindValue(ClosestTarget, SpawnerData::indexnumber);
+			if(index != -1)
+			{
+				SpawnerData Spawner;
+				SpawnerList.GetArray(index, Spawner);
+				Spawner.f_ClosestSpawnerLessCooldown = float(Repeats) / 2.0;
+				Spawner.b_SpawnIsCloseEnough = true;
+				SpawnerList.SetArray(index, Spawner);
+			}
+			i_Spawner_Indexes[Repeats] = ClosestTarget;
 			/*
 			GetEntPropVector(ClosestTarget, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 			PositonBeam = TargetLocation;
@@ -214,9 +269,6 @@ public Action GetClosestSpawners(Handle timer)
 			TE_SetupBeamPoints(TargetLocation, PositonBeam, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 2.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 255, 255, 255}), 30);
 			TE_SendToAll();
 			*/
-			f_ClosestSpawnerLessCooldown[ClosestTarget] = float(Repeats) / 2.0;
-			b_SpawnIsCloseEnough[ClosestTarget] = true;
-			i_Spawner_Indexes[Repeats] = ClosestTarget;
 		}
 		ClosestTarget = -1;
 		TargetDistance = 0.0;
@@ -312,16 +364,23 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	int entity_Spawner = -1;
 	for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++)
 	{
-		entity_Spawner = EntRefToEntIndex(i_ObjectsSpawners[entitycount]);
+		entity_Spawner = i_ObjectsSpawners[entitycount];
 		if(IsValidEntity(entity_Spawner) && entity_Spawner != 0)
 		{
-			if(!GetEntProp(entity_Spawner, Prop_Data, "m_bDisabled") && GetEntProp(entity_Spawner, Prop_Data, "m_iTeamNum") != 2 && b_SpawnIsCloseEnough[entity_Spawner])
+			int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
+			if(index != -1)
 			{
-				Active_Spawners += 1;
-				if(f_SpawnerCooldown[entity_Spawner] < gameTime)
+				SpawnerData Spawner;
+				SpawnerList.GetArray(index, Spawner);
+				if(!GetEntProp(entity_Spawner, Prop_Data, "m_bDisabled") && GetEntProp(entity_Spawner, Prop_Data, "m_iTeamNum") != 2 && Spawner.b_SpawnIsCloseEnough)
 				{
-					list.Push(entity_Spawner);
+					Active_Spawners += 1;
+					if(Spawner.f_SpawnerCooldown < gameTime)
+					{
+						list.Push(entity_Spawner);
+					}
 				}
+				SpawnerList.SetArray(index, Spawner);
 			}
 		}
 	}
@@ -362,6 +421,14 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		{
 			int what_boss = GetRandomInt(0,1);
 			
+			if(b_BlockSawrunnerSpecificallyInThisDifficulty)
+			{
+				if(what_boss == 1)
+				{
+					what_boss = 0;
+				}
+			}
+			
 			entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
 			isBoss = false;
 			int deathforcepowerup = 0;
@@ -372,7 +439,6 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 				{
 					case 0:
 					{
-						what_boss = 0;
 						for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
 						{
 							if(IsClientInGame(panzer_warning_client))
@@ -384,7 +450,6 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					}
 					case 1:
 					{
-						what_boss = 1;
 						for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
 						{
 							if(IsClientInGame(panzer_warning_client))
@@ -421,14 +486,21 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			
 			
 			if(what_boss == 1)
-				health /= 2;
+				health = RoundToCeil(float(health) * 0.75);
 			
-			f_SpawnerCooldown[entity_Spawner] = gameTime + 2.0;
+			int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
+			if(index != -1)
+			{
+				SpawnerData Spawner;
+				SpawnerList.GetArray(index, Spawner);
+				Spawner.f_SpawnerCooldown = gameTime + 4.0;
+				SpawnerList.SetArray(index, Spawner);
+			}
 			if(what_boss == 0)
 			{	
 				DataPack pack;
 				CreateDataTimer(2.0, Timer_Delayed_PanzerSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
-				pack.WriteCell(EntIndexToEntRef(entity_Spawner));
+				pack.WriteCell(entity_Spawner);
 				pack.WriteCell(isBoss);		
 				pack.WriteCell(health);	
 				pack.WriteCell(deathforcepowerup);
@@ -437,7 +509,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			{			
 				DataPack pack;
 				CreateDataTimer(2.0, Timer_Delayed_SawrunnerSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
-				pack.WriteCell(EntIndexToEntRef(entity_Spawner));
+				pack.WriteCell(entity_Spawner);
 				pack.WriteCell(isBoss);		
 				pack.WriteCell(health);	
 				pack.WriteCell(deathforcepowerup);			
@@ -448,8 +520,15 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			Enemy enemy;
 			if(Waves_GetNextEnemy(enemy))
 			{
+				int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
+				if(index != -1)
+				{
+					SpawnerData Spawner;
+					SpawnerList.GetArray(index, Spawner);
+					Spawner.f_SpawnerCooldown = gameTime+(2.0 - (Active_Spawners_Calculate / Spawner.f_ClosestSpawnerLessCooldown));
+					SpawnerList.SetArray(index, Spawner);
+				}
 				entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
-				f_SpawnerCooldown[entity_Spawner] = gameTime+(2.0 - (Active_Spawners_Calculate / f_ClosestSpawnerLessCooldown[entity_Spawner]));
 				
 				GetEntPropVector(entity_Spawner, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(entity_Spawner, Prop_Data, "m_angRotation", ang);
@@ -533,16 +612,14 @@ void NPC_AddToArray(int entity)
 public Action Timer_Delayed_SawrunnerSpawn(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	int spawner_entity = EntRefToEntIndex(pack.ReadCell());
+	int spawner_entity = pack.ReadCell();
 	bool isBoss = pack.ReadCell();
 	int health = pack.ReadCell();
 	int forcepowerup = pack.ReadCell();
-	if(IsValidEdict(spawner_entity) && spawner_entity>MaxClients)
+	if(IsValidEntity(spawner_entity) && spawner_entity != 0)
 	{
 		float pos[3], ang[3];
-		float gameTime = GetGameTime();
-		f_SpawnerCooldown[spawner_entity] = gameTime + 2.0;
-			
+		
 		GetEntPropVector(spawner_entity, Prop_Data, "m_vecOrigin", pos);
 		GetEntPropVector(spawner_entity, Prop_Data, "m_angRotation", ang);
 		Zombies_Currently_Still_Ongoing += 1;
@@ -591,15 +668,13 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 public Action Timer_Delayed_PanzerSpawn(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	int spawner_entity = EntRefToEntIndex(pack.ReadCell());
+	int spawner_entity = pack.ReadCell();
 	bool isBoss = pack.ReadCell();
 	int health = pack.ReadCell();
 	int forcepowerup = pack.ReadCell();
-	if(IsValidEdict(spawner_entity) && spawner_entity>MaxClients)
+	if(IsValidEntity(spawner_entity) && spawner_entity != 0)
 	{
 		float pos[3], ang[3];
-		float gameTime = GetGameTime();
-		f_SpawnerCooldown[spawner_entity] = gameTime + 2.0;
 			
 		GetEntPropVector(spawner_entity, Prop_Data, "m_vecOrigin", pos);
 		GetEntPropVector(spawner_entity, Prop_Data, "m_angRotation", ang);
@@ -630,7 +705,6 @@ public Action Timer_Delayed_PanzerSpawn(Handle timer, DataPack pack)
 	}
 	return Plugin_Handled;
 }
-
 void NPC_Ignite(int entity, int client, float duration, int weapon)
 {
 	int index = NPCList.FindValue(EntIndexToEntRef(entity), NPCData::Ref);
@@ -903,7 +977,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			damage = 0.0;
 			return Plugin_Handled;
-		}	
+		}
 	}
 	
 	if(b_npcspawnprotection[victim]) //make them resistant on spawn or else itll just be spawncamping fest
@@ -942,6 +1016,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	else if(f_LowTeslarDebuff[victim] > GetGameTime())
 	{
 		damage *= 1.15;
+	}
+	
+	if(f_WidowsWineDebuff[victim] > GetGameTime())
+	{
+		damage *= 1.35;
 	}
 	
 	if(attacker <= MaxClients)
@@ -1026,42 +1105,46 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 			else if(StrEqual(classname, "base_boss") && b_IsAlliedNpc[inflictor]) //add a filter so it only does it for allied base_bosses
 			{
-				int Wave_Count = Waves_GetRound() + 1;
-				if(!EscapeMode) //Buff in escapemode overall!
+				CClotBody npc = view_as<CClotBody>(inflictor);
+				if(npc.m_bScalesWithWaves)
 				{
-					if(Wave_Count <= 10)
-						damage *= 0.5;
+					int Wave_Count = Waves_GetRound() + 1;
+					if(!EscapeMode) //Buff in escapemode overall!
+					{
+						if(Wave_Count <= 10)
+							damage *= 0.5;
+							
+						else if(Wave_Count <= 15)
+							damage *= 1.25;
 						
-					else if(Wave_Count <= 15)
-						damage *= 1.25;
-					
-					else if(Wave_Count <= 20)
-						damage *= 2.0;
+						else if(Wave_Count <= 20)
+							damage *= 2.0;
+							
+						else if(Wave_Count <= 25)
+							damage *= 3.0;
+							
+						else if(Wave_Count <= 30)
+							damage *= 7.0;
+							
+						else if(Wave_Count <= 40)
+							damage *= 10.0;
+							
+						else if(Wave_Count <= 45)
+							damage *= 30.0;
 						
-					else if(Wave_Count <= 25)
-						damage *= 3.0;
+						else if(Wave_Count <= 50)
+							damage *= 45.0;
 						
-					else if(Wave_Count <= 30)
-						damage *= 7.0;
+						else if(Wave_Count <= 60)
+							damage *= 60.0;
 						
-					else if(Wave_Count <= 40)
-						damage *= 10.0;
-						
-					else if(Wave_Count <= 45)
-						damage *= 30.0;
-					
-					else if(Wave_Count <= 50)
-						damage *= 45.0;
-					
-					else if(Wave_Count <= 60)
-						damage *= 60.0;
-					
+						else
+							damage *= 100.0;
+					}
 					else
-						damage *= 100.0;
-				}
-				else
-				{
-					damage *= 1.5;
+					{
+						damage *= 1.5;
+					}
 				}
 			}
 		}
@@ -1105,17 +1188,31 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					int melee = GetIndexOfWeaponSlot(attacker, TFWeaponSlot_Melee);
 					if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
 					{
+						float attack_speed;
+		
+						attack_speed = Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);
+						
 						EmitSoundToAll("weapons/knife_swing_crit.wav", attacker, _, _, _, 0.7);
 						RequestFrame(DoMeleeAnimationFrameLater, attacker);
 					//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
-						damage *= 3.00;
-						damage *= 1.75;
+						damage *= 5.25;
+						
+						
+						CClotBody npc = view_as<CClotBody>(victim);
+						
+						if(attacker == npc.m_iTarget)
+						{
+							damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER!
+						}
+						
+						if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
+						{
+							damage *= 1.25;
+						}
 						
 						if(EscapeMode)
 							damage *= 1.35;
 						
-					//	SDKCall_PlaySpecificSequence(attacker, "Melee_Overhand_Swing"); //Melee_Overhand_Swing, ty 42!!
-					//	SDKCall_DoAnimationEvent(attacker, 21, 150);//test
 				
 						if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
 						{
@@ -1132,14 +1229,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						if(melee == 356)
 						{
 							StartHealingTimer(attacker, 0.1, 1, 10);
-							SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+1.5);
-							SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+1.5);
+							SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
+							SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.5 * attack_speed));
 						}
 						else if(melee == 225)
 						{
 							StartHealingTimer(attacker, 0.1, 2, 25);
-							SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+1.0);
-							SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+1.0);
+							SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.0 * attack_speed));
+							SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.0 * attack_speed));
 						}
 						else if(melee == 727)
 						{
@@ -1150,8 +1247,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						}
 						else
 						{
-							SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+1.5);
-							SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+1.5);	
+							SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
+							SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.5 * attack_speed));	
 						}
 					}
 				}
@@ -1184,7 +1281,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			*/
 		}
 	}
-	
 	switch (damagecustom) //Make sure taunts dont do any damage, cus op as fuck
 	{
 		case TF_CUSTOM_TAUNT_HADOUKEN, TF_CUSTOM_TAUNT_HIGH_NOON, TF_CUSTOM_TAUNT_GRAND_SLAM, TF_CUSTOM_TAUNT_FENCING,
@@ -1253,14 +1349,29 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 		}
 		char Debuff_Adder[64];
 		
+		bool Debuff_added = false;
+		
 		if(f_HighTeslarDebuff[victim] > GetGameTime())
 		{
+			Debuff_added = true;
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "↡");
 		}
 		else if(f_LowTeslarDebuff[victim] > GetGameTime())
 		{
+			Debuff_added = true;
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "↓");
 		}
+		if(f_WidowsWineDebuff[victim] > GetGameTime())
+		{
+			Debuff_added = true;
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s४", Debuff_Adder);
+		}
+		
+		if(Debuff_added)
+		{
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s\n", Debuff_Adder);
+		}
+		
 		CClotBody npc = view_as<CClotBody>(victim);
 		
 		if(npc.m_flMeleeArmor != 1.0 || Medival_Difficulty_Level != 0)
@@ -1311,11 +1422,11 @@ void DoMeleeAnimationFrameLater(int attacker)
 	int melee = GetIndexOfWeaponSlot(attacker, TFWeaponSlot_Melee);
 	if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
 	{
-		int animation = 42;
+		int animation = 38;
 		switch(melee)
 		{
 			case 225, 356, 423, 461, 574, 649, 1071, 30758:  //Your Eternal Reward, Conniver's Kunai, Saxxy, Wanga Prick, Big Earner, Spy-cicle, Golden Frying Pan, Prinny Machete
-				animation=16;
+				animation=12;
 
 			case 638:  //Sharp Dresser
 				animation=32;
@@ -1506,4 +1617,16 @@ void CleanAllNpcArray()
 {
 	Zero(played_headshotsound_already);
 	Zero(f_CooldownForHurtHud);
+}
+
+
+void Spawner_AddToArray(int entity) //cant use ent ref here...
+{
+	SpawnerData Spawner;
+	int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
+	if(index == -1)
+	{
+		Spawner.indexnumber = entity;
+		SpawnerList.PushArray(Spawner);
+	}
 }

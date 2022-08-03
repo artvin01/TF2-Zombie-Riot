@@ -302,11 +302,6 @@
 				"this"		"entity"
 				"arguments"
 				{
-					"info"
-					{
-						"type"	"objectptr"
-						"flags"	"byref"
-					}
 					"bEmpty"
 					{
 						"type"	"bool"
@@ -502,6 +497,13 @@
 				"return"	"void"
 				"this"		"entity"
 			}
+			"CTFPistol_ScoutPrimary::SecondaryAttack()"
+			{
+				"offset"	"CTFPistol_ScoutPrimary::SecondaryAttack()"
+				"hooktype"	"entity"
+				"return"	"void"
+				"this"		"entity"
+			}
 			"CTFBot::Event_Killed()"
 			{
 				"offset"	"CTFBot::Event_Killed()"
@@ -527,6 +529,11 @@
 			{
 				"windows"	"283"
 				"linux"		"289"
+			}
+			"CTFPistol_ScoutPrimary::SecondaryAttack()"
+			{
+				"windows"	"284"
+				"linux"		"290"
 			}
 			"CTFWeaponBase::FinishReload()"
 			{
@@ -627,6 +634,11 @@
 			{
 				"linux"		"1716"
 				"windows"	"1712"
+			}
+			"CBasePlayer::CheatImpulseCommands"
+			{
+				"linux"		"376"
+				"windows"	"375"
 			}
 		}
 		"Addresses"

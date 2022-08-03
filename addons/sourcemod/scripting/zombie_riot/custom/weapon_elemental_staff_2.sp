@@ -22,17 +22,16 @@ void Wand_Elemental_2_Map_Precache()
 	PrecacheSound("ambient/explosions/explode_9.wav", true);
 }
 
-public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit)
+public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
 		int mana_cost = 350;
 		if(mana_cost <= Current_Mana[client])
 		{
-			if (ability_cooldown[client] < GetGameTime())
+			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				ability_cooldown[client] = GetGameTime() + 15.0;
-				
+				Ability_Apply_Cooldown(client, slot, 15.0);
 				Current_Mana[client] -= mana_cost;
 				float damage = 160.0;
 				Address	address = TF2Attrib_GetByDefIndex(weapon, 410);
@@ -109,7 +108,7 @@ public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit)
 			}
 			else
 			{
-				float Ability_CD = ability_cooldown[client] - GetGameTime();
+				float Ability_CD = Ability_Check_Cooldown(client, slot);
 		
 				if(Ability_CD <= 0.0)
 					Ability_CD = 0.0;

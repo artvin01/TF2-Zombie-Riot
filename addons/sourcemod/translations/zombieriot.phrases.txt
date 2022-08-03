@@ -502,9 +502,9 @@
 	}
 	"Perk Machine Used"
 	{
-		"en"		"Someone used your perk machine, you gain +40 Credits!"
-		"ru"		"Кто-то воспользовался вашей перк-машиной, вы получили +40 кредитов!"
-		"de"		"Jemand hat deine perk Maschine benutzt, du bekommst +40 Kredit!"
+		"en"		"Someone used your perk machine, you gain +80 Credits!"
+		"ru"		"Кто-то воспользовался вашей перк-машиной, вы получили +80 кредитов!"
+		"de"		"Jemand hat deine perk Maschine benutzt, du bekommst +80 Kredit!"
 	}
 	"Pap Machine Used"
 	{
@@ -712,7 +712,7 @@
 	}
 	"Juggernog"
 	{
-		"en" 		"Perk: Juggernog
+		"en" 		"Perk: Juggernog"
 		"ru" 		"Перк: Джаггер-фанта"
 	}
 	"Double Tap"
@@ -733,6 +733,11 @@
 		"ru" 		"Перк: Снайпер-лайм"
 		"de"		"Vorteil: Todesschuss Daiquiri"
 	}
+	
+	"Widows Wine"
+	{
+		"en" 		"Perk: Widows Wine"
+	}
 
 	"Quick Revive Recieved"
 	{
@@ -748,21 +753,21 @@
 	}
 	"Double Tap Recieved"
 	{
-		"en" 		"DOUBLE TAP! 1.15x Extra attack speed"
-		"ru" 		"ПИФ-ПАФ! 1.15x дополнительной скорости атаки"
-		"de"		"DOPPELTIPPEN! 1.15-fache Extra Angriff Geschwindigkeit"
+		"en" 		"DOUBLE TAP! 1.15x Extra attack speed and Building Damage"
 	}	
 	"Speed Cola Recieved"
 	{
-		"en" 		"SPEED COLA! 1.35x Extra reload and switchspeed"
-		"ru" 		"БЫСТРОКОЛА! 1.35x дополнительной скорости перезарядки и переключения оружия"
-		"de"		"GESCHWINDIGKEITS COLA! 1.35-fache extra nachlade und Schaltgeschwindigkeit"
+		"en" 		"SPEED COLA! 1.35x Extra reload, switchspeed and Mana regen"
 	}
 	"Deadshot Daiquiri Recieved"
 	{
-		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot damage"
-		"ru" 		"СНАЙПЕР-ЛАЙМ! 1.35x точность оружия и 1.25x дополнительного урона от выстрела в голову"
-		"de"		"TODESSCHUSS DAIQUIRI! 1.35-fache Waffengenauigkeit und 1.25-facher zusätzlicher Kopfschussschaden"
+		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot and backstab damage"
+		"ru" 		"СНАЙПЕР-ЛАЙМ! 1.35x точность оружия и 1.25x дополнительного урона от выстрела в голову и удар в спину"
+		"de"		"TODESSCHUSS DAIQUIRI! 1.35-fache Waffengenauigkeit und 1.25-facher zusätzlicher Kopfschussschaden und Rücken messerstich schaden"
+	}
+	"Widows Wine Recieved"
+	{
+		"en" 		"WIDOWS WINE! Rechargeable protection that debuffs zombies and blocks 75 Percent of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
 	}
 	"Nuke Activated"
 	{
@@ -922,9 +927,9 @@
 	}
 	"Perkmachine Tooltip"
 	{
-		"en" 		"Press RELOAD on the Perkmachine to gain a strong temporary random perk."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКУ на перк-машине, чтобы получить сильный временный случайный перк."
-		"de"		"Drücke NACHLADEN an der Perkmachine um einen starken temporären zufälligen Perk zubekommen."
+		"en" 		"Press RELOAD on the Perkmachine to gain a strong tempomary perk."
+//		"ru" 		"Нажмите ПЕРЕЗАРЯДКУ на перк-машине, чтобы получить сильный временный случайный перк."
+//		"de"		"Drücke NACHLADEN an der Perkmachine um einen starken temporären zufälligen Perk zubekommen."
 	}
 	"PackAPunch Tooltip"
 	{
@@ -1168,10 +1173,9 @@
 		"en"		"Do you want to pack-a-punch your current weapon?"
 		"ru"		"Хотите ли вы улучшить своё текущее оружие?"
 	}
-	"Want to drink a perk bottle?"
+	"Which perk do you desire?"
 	{
-		"en"		"Do you want to drink a perk bottle?"
-		"ru"		"Хотите выпить бутылку перка?"
+		"en"		"Which Bottle do you wish to drink?"
 	}	
 	"Reviving"
 	{
@@ -1195,5 +1199,9 @@
 	{		
 		"en"		"The Zombies have been defeated!\nGo into Freeplay..?\nFreeplay will play infinitly.\nThe further you go, the harder it gets.\n"
 		"chi"       "恭喜你击败了所有僵尸！\n是否进行自由模式？\n"
+	}
+	"M3 Ability Is Back"
+	{		
+		"en"		"Your MOUSE3 Ability is ready again to be used!"
 	}
 }

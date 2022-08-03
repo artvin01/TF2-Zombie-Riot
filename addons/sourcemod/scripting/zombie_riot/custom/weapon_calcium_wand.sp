@@ -12,7 +12,7 @@ void Wand_Calcium_Map_Precache()
 	PrecacheSound(SOUND_CALCIUM_IMPACT);
 }
 
-public void Weapon_Calcium_Wand(int client, int weapon, bool crit)
+public void Weapon_Calcium_Wand(int client, int weapon, bool crit, int slot)
 {
 	int mana_cost;
 	Address address = TF2Attrib_GetByDefIndex(weapon, 733);

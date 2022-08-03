@@ -882,6 +882,11 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIonBeam(float startPosition[3], con
 		int Iondamage = ReadPackCell(data);
 		int client = ReadPackCell(data);
 		
+		if(!IsValidEntity(client))
+		{
+			return;
+		}
+		
 		if (Iondistance > 0)
 		{
 			EmitSoundToAll("ambient/energy/weld1.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);

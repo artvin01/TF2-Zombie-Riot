@@ -3,7 +3,7 @@ static float Strength[MAXTF2PLAYERS];
 #define MAXENTITIES 2048
 
 
-#define MAX_TARGETS_HIT 64
+#define MAX_TARGETS_HIT 10
 #define MAX_SOUND_FILE_LENGTH 80
 #define MAX_EFFECT_NAME_LENGTH 48
 
@@ -162,7 +162,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 			
 			if (((!StrContains(classname, "base_boss", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
 			{
-				for(int i=1; i <= MAXENTITIES; i++)
+				for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
 				{
 					if(!BEAM_BuildingHit[i])
 					{

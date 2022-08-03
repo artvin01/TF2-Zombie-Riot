@@ -6,8 +6,7 @@ static float Accuracy[MAXTF2PLAYERS];
 
 #define MAXENTITIES 2048
 
-
-#define MAX_TARGETS_HIT 64
+#define MAX_TARGETS_HIT 10
 #define MAX_SOUND_FILE_LENGTH 80
 #define MAX_EFFECT_NAME_LENGTH 48
 
@@ -55,11 +54,26 @@ public void Weapon_Boom_Stick(int client, int weapon, const char[] classname, bo
 		GetClientEyeAngles(client, anglesB);
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(velocity, -500.0);
+		float knockback = -400.0;
+		
+		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 			velocity[2] = fmax(velocity[2], 300.0);
 		else
 			velocity[2] += 100.0; // a little boost to alleviate arcing issues
+			
+			
+		float newVel[3];
+		
+		newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
+						
+		for (new i = 0; i < 3; i++)
+		{
+			velocity[i] += newVel[i];
+		}
+		
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 	}
 	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
@@ -74,11 +88,27 @@ public void Weapon_Boom_Stick_Louder(int client, int weapon, const char[] classn
 		GetClientEyeAngles(client, anglesB);
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(velocity, -500.0);
+		
+		float knockback = -400.0;
+		
+		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 			velocity[2] = fmax(velocity[2], 300.0);
 		else
 			velocity[2] += 100.0; // a little boost to alleviate arcing issues
+			
+			
+		float newVel[3];
+		
+		newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
+						
+		for (new i = 0; i < 3; i++)
+		{
+			velocity[i] += newVel[i];
+		}
+		
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 	}
 	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, 1.0, 80);
@@ -126,11 +156,25 @@ public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, const char[] 
 		GetClientEyeAngles(client, anglesB);
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(velocity, -500.0);
+		float knockback = -400.0;
+		
+		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 			velocity[2] = fmax(velocity[2], 300.0);
 		else
 			velocity[2] += 100.0; // a little boost to alleviate arcing issues
+			
+		float newVel[3];
+		
+		newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
+						
+		for (new i = 0; i < 3; i++)
+		{
+			velocity[i] += newVel[i];
+		}
+		
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 	}
 	EmitSoundToAll(LASER_BOOMSTICK, client, SNDCHAN_STATIC, 80, _, 1.0);
@@ -239,7 +283,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 			
 			if (((!StrContains(classname, "base_boss", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
 			{
-				for(int i=1; i <= MAXENTITIES; i++)
+				for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
 				{
 					if(!BEAM_BuildingHit[i])
 					{

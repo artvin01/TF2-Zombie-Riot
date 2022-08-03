@@ -1160,6 +1160,7 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 	return entity!=data;
 }
 
+
 public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 {
 	if(entity <= MaxClients)
@@ -1171,6 +1172,10 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 				return false;
 			}
 		}
+	}
+	else if(!Citizen_ThatIsDowned(entity))
+	{
+		return false;
 	}
 	
 	return entity!=data;
@@ -2150,6 +2155,9 @@ public void SpawnSmallExplosion(float DetLoc[3])
 		
 		char particleName[255];
 		
+		
+		particleName = EXPLOSION_PARTICLE_SMALL_1;
+		/*
 		switch(GetRandomInt(1, 4))
 		{
 			case 1:
@@ -2169,7 +2177,7 @@ public void SpawnSmallExplosion(float DetLoc[3])
 				particleName = EXPLOSION_PARTICLE_SMALL_4;
 			}
 		}
-		
+		*/
 		DispatchKeyValue(littleBoom, "effect_name", particleName);
 		DispatchKeyValue(littleBoom, "targetname", "present");
 		DispatchSpawn(littleBoom);
@@ -2456,11 +2464,12 @@ stock int HasNamedItem(int client, const char[] name)
 	return amount;
 }
 
-stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon, float spawnLoc[3] = {0.0,0.0,0.0}, float explosionRadius = EXPLOSION_RADIUS, float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF, float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF, bool FromNpc = false)
+stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon, float spawnLoc[3] = {0.0,0.0,0.0}, float explosionRadius = EXPLOSION_RADIUS, float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF, float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF, bool FromNpc = false, int maxtargetshit = 10)
 {
 	float damage_reduction = 1.0;
 	int Closest_npc = 0;
-	
+	int TargetsHit = 0; //This will not exeed 10 ever, beacuse at that point your damage is nothing.
+	//maxtargetshit
 	if(IsValidEntity(weapon))
 	{
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
@@ -2492,7 +2501,22 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 	}
 	
 	float VicLoc[3];
-
+	
+	int damage_flags = 0;
+	if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_SLASH_DAMAGE))
+	{
+		damage_flags |= DMG_SLASH;
+	}
+	else
+	{
+		damage_flags |= DMG_BLAST;
+	}
+	
+	if((i_ExplosiveProjectileHexArray[entity] & EP_NO_KNOCKBACK))
+	{
+		damage_flags |= DMG_PREVENT_PHYSICS_FORCE;
+	}
+			
 	if(IsValidEntity(Closest_npc))
 	{
 		VicLoc = WorldSpaceCenter(Closest_npc);
@@ -2501,14 +2525,13 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 			float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 			float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
 			
-			if((i_ExplosiveProjectileHexArray[entity] & EP_NO_KNOCKBACK))
+
+			if(damage_1 > damage)
 			{
-				SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, DMG_BLAST|DMG_PREVENT_PHYSICS_FORCE, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
-			}
-			else
-			{
-				SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
-			}
+				damage_1 = damage;
+			}	
+			
+			SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 			
 			if(!FromNpc) //Npcs do not have damage falloff, dodge.
 			{
@@ -2521,6 +2544,10 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 		{
 			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)  //Loop as often as there can be even be max NPC's.
 			{
+				if(TargetsHit > maxtargetshit)
+				{
+					break;
+				}
 				int new_closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity); //alotta loops :)
 				if (IsValidEntity(new_closest_npc)) //Make sure its valid bla bla bla
 				{
@@ -2532,53 +2559,29 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 						{
 							float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 							float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
-															
-							if((i_ExplosiveProjectileHexArray[entity] & EP_NO_KNOCKBACK))
+											
+							if(damage_1 > damage)
 							{
-								SDKHooks_TakeDamage(new_closest_npc, client, client, damage_1 / damage_reduction, DMG_BLAST|DMG_PREVENT_PHYSICS_FORCE, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
-							}
-							else
-							{
-								SDKHooks_TakeDamage(new_closest_npc, client, client, damage_1 / damage_reduction, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
-							}
+								damage_1 = damage;
+							}											
+							SDKHooks_TakeDamage(new_closest_npc, client, client, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+							
 							damage_reduction *= ExplosionDmgMultihitFalloff;
+							TargetsHit += 1;
 						}
 						//Damage Calculations
 					}
 				}
-				/*
-				int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-				if (IsValidEntity(baseboss_index))
-				{
-					if(!b_NpcHasDied[baseboss_index] && Closest_npc != baseboss_index)
-					{
-						//Damage Calculations
-						VicLoc = WorldSpaceCenter(baseboss_index);						
-						if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
-						{
-							float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
-							float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
-															
-							if((i_ExplosiveProjectileHexArray[entity] & EP_NO_KNOCKBACK))
-							{
-								SDKHooks_TakeDamage(Closest_npc, client, client, damage_1 / damage_reduction, DMG_BLAST|DMG_PREVENT_PHYSICS_FORCE, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
-							}
-							else
-							{
-								SDKHooks_TakeDamage(Closest_npc, client, client, damage_1 / damage_reduction, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
-							}
-							damage_reduction *= ExplosionDmgMultihitFalloff;
-						}
-						//Damage Calculations
-					}
-				}
-				*/
 			}
 		}
 		else //Gotta loop through all here, oopsie!
 		{
 			for( int i = 1; i <= MaxClients; i++ ) 
 			{
+				if(TargetsHit > maxtargetshit)
+				{
+					break;
+				}
 				if (IsValidClient(i))
 				{
 					CClotBody npc = view_as<CClotBody>(i);
@@ -2587,18 +2590,26 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 						VicLoc = WorldSpaceCenter(i);						
 						if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
 						{
-							float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
-							float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
-									
-
-							if((i_ExplosiveProjectileHexArray[entity] & EP_NO_KNOCKBACK))
+							Handle trace; 
+							trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
+							int Traced_Target;
+								
+							Traced_Target = TR_GetEntityIndex(trace);
+							delete trace;
+								
+							if(Traced_Target == i)
 							{
-								SDKHooks_TakeDamage(i, client, client, damage_1, DMG_BLAST|DMG_PREVENT_PHYSICS_FORCE, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+								float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
+								float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
+								
+								if(damage_1 > damage)
+								{
+									damage_1 = damage;
+								}
+								
+								SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+								TargetsHit += 1;
 							}
-							else
-							{
-								SDKHooks_TakeDamage(i, client, client, damage_1, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
-							}	
 						}
 					}
 				}
@@ -2610,10 +2621,14 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 				else if (pass == 1) classname = "obj_dispenser";
 			//	else if (pass == 2) classname = "obj_teleporter";
 				else if (pass == 2) classname = "base_boss";
-		
+				
 				int i = MaxClients + 1;
 				while ((i = FindEntityByClassname(i, classname)) != -1)
 				{
+					if(TargetsHit > maxtargetshit)
+					{
+						break;
+					}
 					if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(i, Prop_Send, "m_iTeamNum")) 
 					{
 						CClotBody npc = view_as<CClotBody>(i);
@@ -2623,7 +2638,7 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 							if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
 							{
 								Handle trace; 
-								trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
+								trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
 								int Traced_Target;
 								
 								Traced_Target = TR_GetEntityIndex(trace);
@@ -2634,15 +2649,13 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 									float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 									float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
 																				
-									if((i_ExplosiveProjectileHexArray[entity] & EP_NO_KNOCKBACK))
+									if(damage_1 > damage)
 									{
-										SDKHooks_TakeDamage(i, client, client, damage_1, DMG_BLAST|DMG_PREVENT_PHYSICS_FORCE, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+										damage_1 = damage;
 									}
-									else
-									{
-										SDKHooks_TakeDamage(i, client, client, damage_1, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
-									}
-	
+							
+									SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+									TargetsHit += 1;
 								}
 							}
 						}		
@@ -2654,7 +2667,7 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 								if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
 								{
 									Handle trace; 
-									trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
+									trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
 									int Traced_Target;
 									
 									Traced_Target = TR_GetEntityIndex(trace);
@@ -2665,14 +2678,13 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 										float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 										float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
 																	
-										if((i_ExplosiveProjectileHexArray[entity] & EP_NO_KNOCKBACK))
+										if(damage_1 > damage)
 										{
-											SDKHooks_TakeDamage(i, client, client, damage_1, DMG_BLAST|DMG_PREVENT_PHYSICS_FORCE, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+											damage_1 = damage;
 										}
-										else
-										{
-											SDKHooks_TakeDamage(i, client, client, damage_1, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
-										}
+							
+										SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+										TargetsHit += 1;
 									}
 								}
 							}
@@ -2936,4 +2948,68 @@ int Trail_Attach(int entity, char[] trail, int alpha, float lifetime=1.0, float 
 		return entIndex;
 	}	
 	return -1;
+}
+
+stock void ConstrainDistance(const float[] startPoint, float[] endPoint, float distance, float maxDistance, bool do2)
+{
+	float constrainFactor = maxDistance / distance;
+	endPoint[0] = ((endPoint[0] - startPoint[0]) * constrainFactor) + startPoint[0];
+	endPoint[1] = ((endPoint[1] - startPoint[1]) * constrainFactor) + startPoint[1];
+	if(do2)
+		endPoint[2] = ((endPoint[2] - startPoint[2]) * constrainFactor) + startPoint[2];
+}
+
+public float Ability_Check_Cooldown(int client, int what_slot)
+{
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	
+	char classname[32];
+	GetEntityClassname(weapon, classname, 32);
+	
+	int weapon_slot = TF2_GetClassnameSlot(classname);
+	
+	switch(what_slot)
+	{
+		case 1:	
+		{
+			return (f_Ability_Cooldown_m1[client][weapon_slot] - GetGameTime());
+		}
+		case 2:	
+		{
+			return (f_Ability_Cooldown_m2[client][weapon_slot] - GetGameTime());
+		}
+		case 3:	
+		{
+			return (f_Ability_Cooldown_r[client][weapon_slot] - GetGameTime());
+		}
+	}
+	PrintToChatAll("Somehow something has no cooldown :( Please report!!!");
+	return 0.0;
+}
+
+public void Ability_Apply_Cooldown(int client, int what_slot, float cooldown)
+{
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	
+	char classname[32];
+	GetEntityClassname(weapon, classname, 32);
+	
+	int weapon_slot = TF2_GetClassnameSlot(classname);
+	
+	cooldown += GetGameTime(); //lol
+	switch(what_slot)
+	{
+		case 1:	
+		{
+			f_Ability_Cooldown_m1[client][weapon_slot] = cooldown;
+		}
+		case 2:	
+		{
+			f_Ability_Cooldown_m2[client][weapon_slot] = cooldown;
+		}
+		case 3:	
+		{
+			f_Ability_Cooldown_r[client][weapon_slot] = cooldown;
+		}
+	}
 }

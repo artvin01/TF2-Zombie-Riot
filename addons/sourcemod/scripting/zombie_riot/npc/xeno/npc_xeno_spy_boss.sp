@@ -91,7 +91,6 @@ public void XenoSpyMainBoss_OnMapStart_NPC()
 }
 
 //should be alone only here!
-static int g_MasterEntRef;
 static int Allies_Alive;
 
 methodmap XenoSpyMainBoss < CClotBody
@@ -224,7 +223,7 @@ methodmap XenoSpyMainBoss < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		if(EscapeModeForNpc)
+		if(EscapeMode)
 		{
 			int amount_of_people = CountPlayersOnRed();
 			int health = 25000;
@@ -234,9 +233,9 @@ methodmap XenoSpyMainBoss < CClotBody
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
-		npc.m_bThisNpcIsABoss = true;
+		
 		npc.m_iAttacksTillReload = 6;
-
+		npc.m_bThisNpcIsABoss = true;
 		npc.m_fbGunout = false;
 		npc.m_bmovedelay_gun = false;
 		npc.m_bmovedelay = false;
@@ -252,11 +251,12 @@ methodmap XenoSpyMainBoss < CClotBody
 		
 		npc.Anger = false;
 		npc.m_iState = 0;
+		npc.m_flSpeed = 330.0;
+		npc.m_flNextRangedAttack = 0.0;
+		npc.m_flAttackHappenswillhappen = false;
+		npc.m_flHalf_Life_Regen = false;
 		
-		g_MasterEntRef = EntIndexToEntRef(npc.index);
-		
-		EscapeModeForNpc = true;
-		if(!EscapeModeForNpc)
+		if(!EscapeMode)
 		{
 			npc.m_flSpeed = 330.0;
 		}
@@ -264,9 +264,7 @@ methodmap XenoSpyMainBoss < CClotBody
 		{
 			npc.m_flSpeed = 300.0;
 		}
-		npc.m_flNextRangedAttack = 0.0;
-		npc.m_flAttackHappenswillhappen = false;
-		npc.m_flHalf_Life_Regen = false;
+		
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop_partner/weapons/c_models/c_dex_revolver/c_dex_revolver.mdl");
 		SetVariantString("1.0");
@@ -342,7 +340,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(EscapeModeForNpc)
+	if(EscapeMode)
 	{
 		if(Allies_Alive != 0)
 		{
@@ -438,7 +436,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 				npc.m_bmovedelay = true;
-				if(EscapeModeForNpc)
+				if(EscapeMode)
 				{
 					if(!npc.Anger)
 						npc.m_flSpeed = 310.0;
@@ -459,7 +457,6 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 			AcceptEntityInput(npc.m_iWearable1, "Disable");
 			AcceptEntityInput(npc.m_iWearable2, "Enable");
 		//	npc.FaceTowards(vecTarget, 1000.0);
-			npc.StartPathing();
 			
 			
 		}
@@ -471,7 +468,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 				npc.m_bmovedelay_gun = true;
 					
-				if(EscapeModeForNpc)
+				if(EscapeMode)
 				{
 					if(!npc.Anger)
 						npc.m_flSpeed = 310.0;
@@ -487,22 +484,23 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 						npc.m_flSpeed = 340.0;					
 					
 				}
+				
 					
 				npc.m_bmovedelay = false;
 			
 				AcceptEntityInput(npc.m_iWearable1, "Enable");
 				AcceptEntityInput(npc.m_iWearable2, "Disable");
-			//	npc.FaceTowards(vecTarget, 1000.0);
-				npc.StartPathing();
 				
-			}		
+			}
+		}			
 	
 		
-			//Predict their pos.
-			if(flDistanceToTarget < npc.GetLeadRadius()) {
+		//Predict their pos.
+		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		{
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			
 			/*	int color[4];
 				color[0] = 255;
 				color[1] = 255;
@@ -514,203 +512,202 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
-			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
-			}
-			if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 40000 && flDistanceToTarget < 90000 && npc.m_flReloadDelay < GetGameTime() && !npc.Anger)
+			PF_SetGoalVector(npc.index, vPredictedPos);
+		} else {
+			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		}
+		if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 40000 && flDistanceToTarget < 90000 && npc.m_flReloadDelay < GetGameTime() && !npc.Anger)
+		{
+			float vecSpread = 0.1;
+			
+			npc.FaceTowards(vecTarget, 20000.0);
+			
+			float eyePitch[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+			
+			
+			float x, y;
+			x = GetRandomFloat( -0.0, 0.0 ) + GetRandomFloat( -0.0, 0.0 );
+			y = GetRandomFloat( -0.0, 0.0 ) + GetRandomFloat( -0.0, 0.0 );
+			
+			float vecDirShooting[3], vecRight[3], vecUp[3];
+			
+			vecTarget[2] += 15.0;
+			MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
+			GetVectorAngles(vecDirShooting, vecDirShooting);
+			vecDirShooting[1] = eyePitch[1];
+			GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+			
+			float m_vecSrc[3];
+			
+			m_vecSrc = WorldSpaceCenter(npc.index);
+			
+			float vecEnd[3];
+			vecEnd[0] = m_vecSrc[0] + vecDirShooting[0] * 9000; 
+			vecEnd[1] = m_vecSrc[1] + vecDirShooting[1] * 9000;
+			vecEnd[2] = m_vecSrc[2] + vecDirShooting[2] * 9000;
+			
+			//add the spray
+			float vecbro[3];
+			vecbro[0] = vecDirShooting[0] + 0.0 * vecSpread * vecRight[0] + 0.0 * vecSpread * vecUp[0]; 
+			vecbro[1] = vecDirShooting[1] + 0.0 * vecSpread * vecRight[1] + 0.0 * vecSpread * vecUp[1]; 
+			vecbro[2] = vecDirShooting[2] + 0.0 * vecSpread * vecRight[2] + 0.0 * vecSpread * vecUp[2]; 
+			NormalizeVector(vecbro, vecbro);
+			
+			npc.m_bmovedelay = false;
+			
+			npc.m_flNextRangedAttack = GetGameTime() + 0.7;
+			npc.m_iAttacksTillReload -= 1;
+			
+			if (npc.m_iAttacksTillReload == 0)
 			{
-				float vecSpread = 0.1;
-				
-				npc.FaceTowards(vecTarget, 20000.0);
-				
-				float eyePitch[3];
-				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
-				
-				
-				float x, y;
-				x = GetRandomFloat( -0.0, 0.0 ) + GetRandomFloat( -0.0, 0.0 );
-				y = GetRandomFloat( -0.0, 0.0 ) + GetRandomFloat( -0.0, 0.0 );
-				
-				float vecDirShooting[3], vecRight[3], vecUp[3];
-				
-				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
-				GetVectorAngles(vecDirShooting, vecDirShooting);
-				vecDirShooting[1] = eyePitch[1];
-				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-				
-				float m_vecSrc[3];
-				
-				m_vecSrc = WorldSpaceCenter(npc.index);
-				
-				float vecEnd[3];
-				vecEnd[0] = m_vecSrc[0] + vecDirShooting[0] * 9000; 
-				vecEnd[1] = m_vecSrc[1] + vecDirShooting[1] * 9000;
-				vecEnd[2] = m_vecSrc[2] + vecDirShooting[2] * 9000;
-				
-				//add the spray
-				float vecbro[3];
-				vecbro[0] = vecDirShooting[0] + 0.0 * vecSpread * vecRight[0] + 0.0 * vecSpread * vecUp[0]; 
-				vecbro[1] = vecDirShooting[1] + 0.0 * vecSpread * vecRight[1] + 0.0 * vecSpread * vecUp[1]; 
-				vecbro[2] = vecDirShooting[2] + 0.0 * vecSpread * vecRight[2] + 0.0 * vecSpread * vecUp[2]; 
-				NormalizeVector(vecbro, vecbro);
-				
-				npc.m_bmovedelay = false;
-				
-				npc.m_flNextRangedAttack = GetGameTime() + 0.7;
-				npc.m_iAttacksTillReload -= 1;
-				
-				if (npc.m_iAttacksTillReload == 0)
-				{
-					npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY");
-					npc.m_flReloadDelay = GetGameTime() + 1.4;
-					npc.m_iAttacksTillReload = 6;
-					npc.PlayRangedReloadSound();
-				}
-				
-				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
-				float vecDir[3];
-				vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0]; 
-				vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
-				vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
-				NormalizeVector(vecDir, vecDir);
-				if(EscapeModeForNpc)
-				{
-					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 10.0, 9000.0, DMG_BULLET|DMG_CRIT, "bullet_tracer01_blue");
-				}
-				else
-				{
-					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 20.0, 9000.0, DMG_BULLET|DMG_CRIT, "bullet_tracer01_blue");
-				}
-				npc.PlayRangedSound();
+				npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY");
+				npc.m_flReloadDelay = GetGameTime() + 1.4;
+				npc.m_iAttacksTillReload = 6;
+				npc.PlayRangedReloadSound();
 			}
-			else if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 40000 && flDistanceToTarget < 90000 && npc.m_flReloadDelay < GetGameTime() && npc.Anger)
-			{		
-				npc.FaceTowards(vecTarget, 20000.0);
-				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				
-				npc.m_flNextRangedAttack = GetGameTime() + 0.3;
-				npc.m_iAttacksTillReload -= 1;
-				
-				if (npc.m_iAttacksTillReload == 0)
-				{
-					npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY");
-					npc.m_flReloadDelay = GetGameTime() + 1.4;
-					npc.m_iAttacksTillReload = 6;
-					npc.PlayRangedReloadSound();
-				}
-				if(EscapeModeForNpc)
-				{
-					npc.FireRocket(vPredictedPos, 30.0, 900.0);
-				}
-				else
-				{
-					npc.FireRocket(vPredictedPos, 75.0, 900.0);
-				}
-				npc.PlayRangedSound();
-			}
-			if(flDistanceToTarget < 90000 && npc.m_flReloadDelay < GetGameTime() || flDistanceToTarget > 90000 && npc.m_flReloadDelay < GetGameTime() )
+			
+			npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
+			float vecDir[3];
+			vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0]; 
+			vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
+			vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
+			NormalizeVector(vecDir, vecDir);
+			if(EscapeMode)
 			{
-				npc.StartPathing();
-				
-				npc.m_fbGunout = false;
-				//Look at target so we hit.
-			//	npc.FaceTowards(vecTarget, 2000.0);
-				
-				if(npc.m_flNextMeleeAttack < GetGameTime() && flDistanceToTarget < 40000)
+				FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 10.0, 9000.0, DMG_BULLET|DMG_CRIT, "bullet_tracer01_blue");
+			}
+			else
+			{
+				FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 20.0, 9000.0, DMG_BULLET|DMG_CRIT, "bullet_tracer01_blue");
+			}
+			npc.PlayRangedSound();
+		}
+		else if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 40000 && flDistanceToTarget < 90000 && npc.m_flReloadDelay < GetGameTime() && npc.Anger)
+		{		
+			npc.FaceTowards(vecTarget, 20000.0);
+			
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			
+			npc.m_flNextRangedAttack = GetGameTime() + 0.3;
+			npc.m_iAttacksTillReload -= 1;
+			
+			if (npc.m_iAttacksTillReload == 0)
+			{
+				npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY");
+				npc.m_flReloadDelay = GetGameTime() + 1.4;
+				npc.m_iAttacksTillReload = 6;
+				npc.PlayRangedReloadSound();
+			}
+			if(EscapeMode)
+			{
+				npc.FireRocket(vPredictedPos, 30.0, 900.0);
+			}
+			else
+			{
+				npc.FireRocket(vPredictedPos, 75.0, 900.0);
+			}
+			npc.PlayRangedSound();
+		}
+		if(flDistanceToTarget < 90000 && npc.m_flReloadDelay < GetGameTime() || flDistanceToTarget > 90000 && npc.m_flReloadDelay < GetGameTime() )
+		{
+			npc.StartPathing();
+			
+			npc.m_fbGunout = false;
+			//Look at target so we hit.
+		//	npc.FaceTowards(vecTarget, 2000.0);
+			
+			if(npc.m_flNextMeleeAttack < GetGameTime() && flDistanceToTarget < 40000)
+			{
+				if (!npc.m_flAttackHappenswillhappen)
 				{
-					if (!npc.m_flAttackHappenswillhappen)
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
+					npc.PlayMeleeSound();
+					npc.m_flAttackHappens = GetGameTime()+0.1;
+					npc.m_flAttackHappens_bullshit = GetGameTime()+0.21;
+					npc.m_flAttackHappenswillhappen = true;
+				}
+					
+				if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+				{
+					Handle swingTrace;
+					npc.FaceTowards(vecTarget, 20000.0);
+					if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 128.0, 128.0, 128.0 }, { -128.0, -128.0, -128.0 })) 
 					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
-						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime()+0.1;
-						npc.m_flAttackHappens_bullshit = GetGameTime()+0.21;
-						npc.m_flAttackHappenswillhappen = true;
-					}
-						
-					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
-					{
-						Handle swingTrace;
-						npc.FaceTowards(vecTarget, 20000.0);
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 128.0, 128.0, 128.0 }, { -128.0, -128.0, -128.0 })) 
+							
+						int target = TR_GetEntityIndex(swingTrace);	
+							
+						float vecHit[3];
+						TR_GetEndPosition(vecHit, swingTrace);
+								
+						if(target > 0) 
 						{
-								
-							int target = TR_GetEntityIndex(swingTrace);	
-								
-							float vecHit[3];
-							TR_GetEndPosition(vecHit, swingTrace);
-									
-							if(target > 0) 
+							if(!EscapeMode)
 							{
-								if(!EscapeModeForNpc)
+								if(!npc.Anger)
 								{
-									if(!npc.Anger)
-									{
-										if(target <= MaxClients)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 180.0, DMG_SLASH|DMG_CLUB);
-										else
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_SLASH|DMG_CLUB);	
-									}
-									else if(npc.Anger)
-									{
-										if(target <= MaxClients)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_SLASH|DMG_CLUB);
-										else
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 7500.0, DMG_SLASH|DMG_CLUB);	
-									}
+									if(target <= MaxClients)
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 180.0, DMG_SLASH|DMG_CLUB);
+									else
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_SLASH|DMG_CLUB);	
+								}
+								else if(npc.Anger)
+								{
+									if(target <= MaxClients)
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_SLASH|DMG_CLUB);
+									else
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 7500.0, DMG_SLASH|DMG_CLUB);	
+								}
+							}
+							else
+							{
+								if(!npc.Anger)
+								{
+									if(target <= MaxClients)
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
+									else
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_SLASH|DMG_CLUB);	
+								}
+								else if(npc.Anger)
+								{
+									if(target <= MaxClients)
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_SLASH|DMG_CLUB);
+									else
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_SLASH|DMG_CLUB);	
+								}										
+							}
+								
+							if(npc.m_iAttacksTillMegahit >= 3)
+							{
+								Custom_Knockback(npc.index, target, 500.0);
+								if(!EscapeMode)
+								{
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_SLASH|DMG_CLUB);
 								}
 								else
 								{
-									if(!npc.Anger)
-									{
-										if(target <= MaxClients)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
-										else
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_SLASH|DMG_CLUB);	
-									}
-									else if(npc.Anger)
-									{
-										if(target <= MaxClients)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_SLASH|DMG_CLUB);
-										else
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_SLASH|DMG_CLUB);	
-									}										
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 35.0, DMG_SLASH|DMG_CLUB);
 								}
-									
-								if(npc.m_iAttacksTillMegahit >= 3)
-								{
-									Custom_Knockback(npc.index, target, 500.0);
-									if(!EscapeModeForNpc)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_SLASH|DMG_CLUB);
-									}
-									else
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 35.0, DMG_SLASH|DMG_CLUB);
-									}
-									npc.m_iAttacksTillMegahit = 0;
-									
-								}
+								npc.m_iAttacksTillMegahit = 0;
 								
-								npc.m_iAttacksTillMegahit += 1;
-								// Hit particle
-								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
-									
-								// Hit sound
-								npc.PlayMeleeHitSound();
-							} 
-						}
-						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime() + 0.65;
-						npc.m_flAttackHappenswillhappen = false;
+							}
+							
+							npc.m_iAttacksTillMegahit += 1;
+							// Hit particle
+							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+								
+							// Hit sound
+							npc.PlayMeleeHitSound();
+						} 
 					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
-					{
-						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime() + 0.65;
-					}
+					delete swingTrace;
+					npc.m_flNextMeleeAttack = GetGameTime() + 0.65;
+					npc.m_flAttackHappenswillhappen = false;
+				}
+				else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+				{
+					npc.m_flAttackHappenswillhappen = false;
+					npc.m_flNextMeleeAttack = GetGameTime() + 0.65;
 				}
 			}
 		}
@@ -798,7 +795,7 @@ public void XenoSpyMainBoss_ClotDamagedPost(int victim, int attacker, int inflic
 		npc.m_flHalf_Life_Regen = false;
 		
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
-		if(EscapeModeForNpc)
+		if(EscapeMode)
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2 ));
 			CreateTimer(0.1, XenoSpyMainBoss_Set_Spymain_HP, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
@@ -843,18 +840,7 @@ public Action XenoSpyMainBoss_Timer_MinionDespawnCheck_Spy(Handle timer, int ref
 	{
 		SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
 		
-		if(IsValidEntity(EntRefToEntIndex(g_MasterEntRef)))
-			return Plugin_Continue;
-
-		if(StartFuncByPluginName("npc_xeno_spy_trickstabber", "NPC_Despawn"))
-		{
-			Call_PushCell(entity);
-			Call_Finish();
-		}
-		else
-		{
-			AcceptEntityInput(entity, "KillHierarchy");
-		}
+		return Plugin_Continue;
 	}
 	Allies_Alive -= 1;
 	return Plugin_Stop;

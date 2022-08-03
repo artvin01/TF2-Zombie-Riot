@@ -415,4 +415,8 @@
 		"de"	"Du hast mir gesagt freundlich zu sein. Also werde ich sie nicht angreiffen. Aber ich werde sie im gedanken behalten..."
 		"pl"    "Powiedziałeś mi, żebym był przyjacielski. Więc ich nie zaatakuję. Ale będę o nich pamiętał..."
 	}
+	"I'm glad to help!"
+	{
+		"en"	"I'm glad to help!"
+	}
 }

@@ -229,7 +229,7 @@ public void SawRunner_ClotThink(int iNPC)
 					{
 						Music_Stop_All(client); //This is actually more expensive then i thought.
 					}
-					Music_Timer[client] = GetEngineTime() + 5.0;
+					SetMusicTimer(client, GetTime() + 5);
 					fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
 				}
 			}
@@ -275,7 +275,7 @@ public void SawRunner_ClotThink(int iNPC)
 			{
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
-				if(npc.m_flNextMeleeAttack < GetGameTime())
+				if(npc.m_flNextMeleeAttack < GetGameTime() || npc.m_flAttackHappenswillhappen)
 				{
 					if (!npc.m_flAttackHappenswillhappen)
 					{
@@ -297,9 +297,10 @@ public void SawRunner_ClotThink(int iNPC)
 							}
 						}
 						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime()+0.4;
-						npc.m_flAttackHappens_bullshit = GetGameTime()+0.54;
+						npc.m_flAttackHappens = GetGameTime()+0.5;
+						npc.m_flAttackHappens_bullshit = GetGameTime()+0.64;
 						npc.m_flAttackHappenswillhappen = true;
+						npc.m_flNextMeleeAttack = GetGameTime() + 1.5;
 					}
 						
 					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
@@ -318,7 +319,22 @@ public void SawRunner_ClotThink(int iNPC)
 								{
 									if(target <= MaxClients)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 1000.0, DMG_DROWN);
+										float flMaxHealth = float(SDKCall_GetMaxHealth(target));
+										
+										flMaxHealth *= 0.5; //Because drown damage is 2x in anycase
+										
+										if(IsInvuln(target))	
+										{
+											flMaxHealth *= 0.5; //If under uber, give em more resistance so uber isnt completly useless
+											Custom_Knockback(npc.index, target, 5000.0);
+										}
+										else
+										{
+											Custom_Knockback(npc.index, target, 1000.0); //Give them massive knockback so they can get away/dont make this boy stuck.
+										}
+										
+										
+										SDKHooks_TakeDamage(target, npc.index, npc.index, flMaxHealth + 50.0, DMG_DROWN); //adding 100 damage so they cant cheese this with healing and very low hp people
 									}
 									else
 									{
@@ -333,13 +349,11 @@ public void SawRunner_ClotThink(int iNPC)
 								} 
 							}
 						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime() + 0.6;
 						npc.m_flAttackHappenswillhappen = false;
 					}
 					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime() + 0.6;
 					}
 				}
 			}

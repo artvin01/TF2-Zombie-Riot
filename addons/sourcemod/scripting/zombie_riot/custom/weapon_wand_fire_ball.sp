@@ -12,18 +12,18 @@ void Wand_FireBall_Map_Precache()
 	PrecacheSound(SOUND_WAND_ATTACKSPEED_ABILITY);
 }
 
-public void Weapon_Wand_FireBallSpell(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Wand_FireBallSpell(int client, int weapon, bool &result, int slot)
 {
 	if(weapon >= MaxClients)
 	{
 		int mana_cost = 35;
 		if(mana_cost <= Current_Mana[client])
 		{
-			if (ability_cooldown[client] < GetGameTime())
+			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				ability_cooldown[client] = GetGameTime() + 10.0; //10 sec CD
+				Ability_Apply_Cooldown(client, slot, 10.0);
 				
-				float damage = 65.0;
+				float damage = 50.0;
 				
 				damage *= 3.5;
 				
@@ -57,7 +57,7 @@ public void Weapon_Wand_FireBallSpell(int client, int weapon, const char[] class
 			}
 			else
 			{
-				float Ability_CD = ability_cooldown[client] - GetGameTime();
+				float Ability_CD = Ability_Check_Cooldown(client, slot);
 		
 				if(Ability_CD <= 0.0)
 					Ability_CD = 0.0;
