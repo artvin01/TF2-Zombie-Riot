@@ -760,7 +760,7 @@ void Waves_Progress()
 					{
 						if(IsClientInGame(client))
 						{
-							SetMusicTimer(client, GetEngineTime() + round.Setup);
+							SetMusicTimer(client, GetTime() + RoundToNearest(round.Setup));
 						}
 					}
 				}
