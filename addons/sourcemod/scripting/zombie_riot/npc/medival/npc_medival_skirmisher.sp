@@ -277,11 +277,18 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 			{
 				if(flDistanceToTarget < 40000) //too close, back off!! Now!
 				{
-					float vBackoffPos[3];
-					
-					vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
-					
-					PF_SetGoalVector(npc.index, vBackoffPos);
+					int Enemy_I_See;
+				
+					Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+					//Target close enough to hit
+					if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
+					{
+						float vBackoffPos[3];
+						
+						vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
+						
+						PF_SetGoalVector(npc.index, vBackoffPos);
+					}
 					
 					npc.StartPathing();
 				}
