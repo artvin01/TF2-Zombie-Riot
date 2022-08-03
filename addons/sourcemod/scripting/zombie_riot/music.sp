@@ -3,6 +3,12 @@ static int Music_Timer_2[MAXTF2PLAYERS];
 static float Give_Cond_Timer[MAXTF2PLAYERS];
 static bool MusicDisabled;
 
+
+/*
+Big thanks to backwards#8236 For pointing me towards GetTime and helping me with this music tgimer,
+DO NOT USE GetEngineTime, its not good in this case
+*/
+
 void Music_MapStart()
 {
 	MusicDisabled = FindInfoTarget("zr_nomusic");
