@@ -1,4 +1,5 @@
 static float Music_Timer[MAXTF2PLAYERS];
+static float Music_Timer_2[MAXTF2PLAYERS];
 static float Give_Cond_Timer[MAXTF2PLAYERS];
 static bool MusicDisabled;
 
@@ -264,7 +265,7 @@ void Music_PostThink(int client)
 	if(f_ClientMusicVolume[client] < 0.05)
 		return;
 	
-	if(Music_Timer[client] < GetEngineTime())
+	if(Music_Timer[client] < GetEngineTime() && Music_Timer_2[client] < GetEngineTime())
 	{
 		bool RoundHasCustomMusic = false;
 		
@@ -289,13 +290,13 @@ void Music_PostThink(int client)
 					{
 						EmitSoundToClient(client, char_MusicString1[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						EmitSoundToClient(client, char_MusicString1[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-						Music_Timer[client] = GetEngineTime() + float(i_MusicLength1);
+						SetMusicTimer(client, GetEngineTime() + float(i_MusicLength1));
 					}
 					else if(char_MusicString2[0])
 					{
 						EmitSoundToClient(client, char_MusicString2[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						EmitSoundToClient(client, char_MusicString2[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-						Music_Timer[client] = GetEngineTime() + float(i_MusicLength2);					
+						SetMusicTimer(client, GetEngineTime() + float(i_MusicLength2));				
 					}
 					//Make checks to be sure.
 				}
@@ -305,13 +306,13 @@ void Music_PostThink(int client)
 					{
 						EmitSoundToClient(client, char_MusicString2[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						EmitSoundToClient(client, char_MusicString2[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-						Music_Timer[client] = GetEngineTime() + float(i_MusicLength2);
+						SetMusicTimer(client, GetEngineTime() + float(i_MusicLength2));
 					}
 					else if(char_MusicString1[0])
 					{
 						EmitSoundToClient(client, char_MusicString1[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						EmitSoundToClient(client, char_MusicString1[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-						Music_Timer[client] = GetEngineTime() + float(i_MusicLength1);					
+						SetMusicTimer(client, GetEngineTime() + float(i_MusicLength1));				
 					}
 					//Make checks to be sure.
 				}
@@ -352,18 +353,17 @@ void Music_PostThink(int client)
 		if(LastMann)
 		{
 			EmitSoundToClient(client, "#zombiesurvival/lasthuman.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-			Music_Timer[client] = GetEngineTime() + 119.95;
-			
+			SetMusicTimer(client, GetEngineTime() + 119.95);		
 		}
 		else if(intencity < 1)
 		{
-			Music_Timer[client] = GetEngineTime() + 7.95;
+			SetMusicTimer(client, GetEngineTime() + 7.95);
 		}
 		else if(intencity < RoundToCeil(float(PlayersAliveScaling) * 0.1))
 		{
 			EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 			EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-			Music_Timer[client] = GetEngineTime() + 5.95;
+			SetMusicTimer(client, GetEngineTime() + 5.95);
 			
 		}
 		else if(intencity < RoundToCeil(float(PlayersAliveScaling) * 0.2))
@@ -372,13 +372,13 @@ void Music_PostThink(int client)
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/2.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/2.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				Music_Timer[client] = GetEngineTime() + 7.95;
+				SetMusicTimer(client, GetEngineTime() + 7.95);
 			}
 			else
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaulthuman/1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaulthuman/1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				Music_Timer[client] = GetEngineTime() + 6.95;
+				SetMusicTimer(client, GetEngineTime() + 6.95);
 			}
 			
 		}
@@ -388,13 +388,13 @@ void Music_PostThink(int client)
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/3.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/3.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				Music_Timer[client] = GetEngineTime() + 7.95;
+				SetMusicTimer(client, GetEngineTime() + 7.95);
 			}
 			else
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaulthuman/2.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaulthuman/2.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				Music_Timer[client] = GetEngineTime() + 6.95;
+				SetMusicTimer(client, GetEngineTime() + 6.95);
 			}
 			
 		}
@@ -404,13 +404,13 @@ void Music_PostThink(int client)
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/4.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/4.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				Music_Timer[client] = GetEngineTime() + 7.95;
+				SetMusicTimer(client, GetEngineTime() + 7.95);
 			}
 			else
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaulthuman/3.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaulthuman/3.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				Music_Timer[client] = GetEngineTime() + 6.95;
+				SetMusicTimer(client, GetEngineTime() + 6.95);
 			}
 			
 		}
@@ -420,13 +420,13 @@ void Music_PostThink(int client)
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/5.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/5.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				Music_Timer[client] = GetEngineTime() + 7.95;
+				SetMusicTimer(client, GetEngineTime() + 7.95);
 			}
 			else
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaulthuman/4.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaulthuman/4.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				Music_Timer[client] = GetEngineTime() + 6.95;
+				SetMusicTimer(client, GetEngineTime() + 6.95);
 			}
 			
 		}
@@ -436,13 +436,13 @@ void Music_PostThink(int client)
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/6.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/6.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				Music_Timer[client] = GetEngineTime() + 5.95;
+				SetMusicTimer(client, GetEngineTime() + 5.95);
 			}
 			else
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaulthuman/5.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaulthuman/5.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				Music_Timer[client] = GetEngineTime() + 5.95;
+				SetMusicTimer(client, GetEngineTime() + 5.95);
 			}
 			
 		}
@@ -452,13 +452,13 @@ void Music_PostThink(int client)
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/7.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/7.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				Music_Timer[client] = GetEngineTime() + 5.95;
+				SetMusicTimer(client, GetEngineTime() + 5.95);
 			}
 			else
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaulthuman/6.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaulthuman/6.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				Music_Timer[client] = GetEngineTime() + 13.95;
+				SetMusicTimer(client, GetEngineTime() + 13.95);
 			}
 			
 		}
@@ -468,13 +468,13 @@ void Music_PostThink(int client)
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/8.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/8.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				Music_Timer[client] = GetEngineTime() + 5.95;
+				SetMusicTimer(client, GetEngineTime() + 5.95);
 			}
 			else
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaulthuman/7.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaulthuman/7.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				Music_Timer[client] = GetEngineTime() + 13.95;
+				SetMusicTimer(client, GetEngineTime() + 13.95);
 			}
 			
 		}
@@ -484,13 +484,13 @@ void Music_PostThink(int client)
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/9.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/9.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				Music_Timer[client] = GetEngineTime() + 5.95;
+				SetMusicTimer(client, GetEngineTime() + 5.95);
 			}
 			else
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaulthuman/8.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaulthuman/8.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				Music_Timer[client] = GetEngineTime() + 6.95;
+				SetMusicTimer(client, GetEngineTime() + 6.95);
 			}
 			
 		}
@@ -500,13 +500,13 @@ void Music_PostThink(int client)
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/10.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/10.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				Music_Timer[client] = GetEngineTime() + 5.95;
+				SetMusicTimer(client, GetEngineTime() + 5.95);
 			}
 			else
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaulthuman/9.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaulthuman/9.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				Music_Timer[client] = GetEngineTime() + 13.95;
+				SetMusicTimer(client, GetEngineTime() + 13.95);
 			}
 		}
 	}
@@ -515,6 +515,7 @@ void Music_PostThink(int client)
 public void SetMusicTimer(int client, float time)
 {
 	Music_Timer[client] = time;
+	Music_Timer_2[client] = time;
 }
 //CHECK SDKHOOKS PRETHINK!!!
 
@@ -522,6 +523,7 @@ public void SetMusicTimer(int client, float time)
 void Music_ClearAll()
 {
 	Zero(Music_Timer);
+	Zero(Music_Timer_2);
 	Zero(Give_Cond_Timer);
 	Zero(f_ClientMusicVolume);
 	Zero(f_BegPlayerToSetDuckConvar);
