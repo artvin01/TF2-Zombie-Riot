@@ -12,11 +12,8 @@ methodmap MedivalRam < CClotBody
 		MedivalRam npc = view_as<MedivalRam>(CClotBody(vecPos, vecAng, buffer, "1.0", "300", ally, false, true));
 		i_NpcInternalId[npc.index] = MEDIVAL_RAM;
 		
-		npc.m_iState = -1;
-		npc.SetActivity("ACT_SPAWN");
-		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_GIANT;
+		npc.m_iBleedType = BLEEDTYPE_METAL;
+		npc.m_iStepNoiseType = 0;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalRam_ClotDamaged);

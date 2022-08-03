@@ -254,7 +254,6 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	
 	Enemies = new ArrayStack(sizeof(Enemy));
 	
-	StartCash = kv.GetNum("cash");
 	b_BlockPanzerInThisDifficulty = (b_BlockPanzerInThisMap || view_as<bool>(kv.GetNum("block_panzer")));
 	b_BlockSawrunnerSpecificallyInThisDifficulty = (b_BlockSawrunnerSpecificallyInThisMap || view_as<bool>(kv.GetNum("block_sawrunner")));
 	b_SpecialGrigoriStore = view_as<bool>(kv.GetNum("grigori_special_shop_logic"));
