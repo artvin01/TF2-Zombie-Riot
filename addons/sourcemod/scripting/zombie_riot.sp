@@ -943,7 +943,6 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_wand_lightning_spell.sp"
 #include "zombie_riot/custom/weapon_necromancy_wand.sp"
 #include "zombie_riot/custom/weapon_wand_necro_spell.sp"
-#include "zombie_riot/custom/weapon_wand_lightning_pap.sp"
 #include "zombie_riot/custom/weapon_autoaim_wand.sp"
 #include "zombie_riot/custom/weapon_arrow_shot.sp"
 //#include "zombie_riot/custom/weapon_pipe_shot.sp"
@@ -965,6 +964,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_gb_medigun.sp"
 #include "zombie_riot/custom/weapon_charged_handgun.sp"
 #include "zombie_riot/custom/weapon_wand_beam.sp"
+#include "zombie_riot/custom/weapon_wand_lightning_pap.sp"
 
 #include "zombie_riot/custom/weapon_calcium_wand.sp"
 #include "zombie_riot/custom/weapon_wand_calcium_spell.sp"
@@ -1265,7 +1265,6 @@ public void OnMapStart()
 	Wand_FireBall_Map_Precache();
 	Wand_Lightning_Map_Precache();
 	Wand_LightningAbility_Map_Precache();
-	Wand_LightningPap_Map_Precache();
 	Wand_Necro_Map_Precache();
 	Wand_NerosSpell_Map_Precache();
 	Wand_autoaim_Map_Precache();
@@ -1297,6 +1296,7 @@ public void OnMapStart()
 	BeamWand_MapStart();
 	M3_Abilities_Precache();
 	Ark_autoaim_Map_Precache();
+	Wand_LightningPap_Map_Precache();
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
