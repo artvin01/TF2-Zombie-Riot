@@ -755,10 +755,8 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	}
-	else if(Health/MaxHealth>0 && Health/MaxHealth<0.1 && i_NpcCurrentLives[npc.index] == 3)
+	else if(Health/MaxHealth>0 && Health/MaxHealth<0.1 && i_NpcCurrentLives[npc.index] == 3 && ZR_GetWaveCount()>30)
 	{	//The final push
-		i_NpcCurrentLives[npc.index]=4;
-		
 		
 		EmitSoundToAll("mvm/mvm_tank_horn.wav");
 		
