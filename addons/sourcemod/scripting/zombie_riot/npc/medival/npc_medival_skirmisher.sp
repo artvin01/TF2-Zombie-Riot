@@ -275,8 +275,11 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 			
 			if(flDistanceToTarget < 160000)
 			{
+				
 				if(flDistanceToTarget < 40000) //too close, back off!! Now!
 				{
+					npc.StartPathing();
+					
 					int Enemy_I_See;
 				
 					Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
@@ -289,8 +292,6 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 						
 						PF_SetGoalVector(npc.index, vBackoffPos);
 					}
-					
-					npc.StartPathing();
 				}
 				else
 				{
@@ -316,12 +317,15 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 						PF_StopPathing(npc.index);
 						npc.m_bPathing = false;
 					}
+					else
+					{
+						npc.StartPathing();
+					}
 				}
 			}
 			else
 			{
 				npc.StartPathing();
-				
 			}
 	}
 	else
@@ -350,6 +354,7 @@ public void HandleAnimEvent_MedivalSkirmisher(int entity, int event)
 				
 			npc.FaceTowards(vecTarget, 30000.0);
 						
+				
 			npc.PlayMeleeSound();
 			npc.FireArrow(vecTarget, 15.0, 1200.0);
 		}
