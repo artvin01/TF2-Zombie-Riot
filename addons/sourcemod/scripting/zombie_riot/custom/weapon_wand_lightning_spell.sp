@@ -9,6 +9,7 @@ void Wand_LightningAbility_Map_Precache()
 	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 	PrecacheSound(SOUND_WAND_LIGHTNING_ABILITY);
 }
+#define spirite "spirites/zerogxplode.spr"
 
 public void Lighting_Wand_Spell_ClearAll()
 {
@@ -107,6 +108,29 @@ public void Weapon_Wand_LightningSpell(int client, int weapon, bool &result, int
 					particle_extra = ParticleEffectAt(vEnd, "utaunt_lightning_bolt", 1.0);
 					Angles [1] = GetRandomFloat(-180.0, 180.0);
 					TeleportEntity(particle_extra, NULL_VECTOR, Angles, NULL_VECTOR);
+					
+					int ent = CreateEntityByName("env_explosion");
+					if(ent != -1)
+					{
+						SetEntPropEnt(ent, Prop_Data, "m_hOwnerEntity", client);
+										
+						EmitAmbientSound("ambient/explosions/explode_9.wav", vEnd);
+										
+						DispatchKeyValueVector(ent, "origin", vEnd);
+						DispatchKeyValue(ent, "spawnflags", "64");
+						
+						DispatchKeyValue(ent, "rendermode", "5");
+						DispatchKeyValue(ent, "fireballsprite", spirite);
+										
+						SetEntProp(ent, Prop_Data, "m_iMagnitude", 0); 
+						SetEntProp(ent, Prop_Data, "m_iRadiusOverride", 200); 
+									
+						DispatchSpawn(ent);
+						ActivateEntity(ent);
+									
+						AcceptEntityInput(ent, "explode");
+						AcceptEntityInput(ent, "kill");
+					}
 					
 					TE_SetupBeamPoints(vEnd, position, gLaser1, 0, 0, 0, 0.33, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
 					TE_SendToAll(0.0);
