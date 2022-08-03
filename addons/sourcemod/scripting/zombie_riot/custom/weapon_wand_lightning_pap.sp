@@ -59,7 +59,11 @@ public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int s
 	
 				GetClientEyePosition(client, vOrigin);
 				GetClientEyeAngles(client, vAngles);
-				Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, Trace_DontHitEntityOrPlayer);
+				
+				b_LagCompNPC_ExtendBoundingBox = true;
+				StartLagCompensation_Base_Boss(client, false);
+				Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
+				FinishLagCompensation_Base_boss();
 				
 				if(TR_DidHit(trace))
 				{   	 
