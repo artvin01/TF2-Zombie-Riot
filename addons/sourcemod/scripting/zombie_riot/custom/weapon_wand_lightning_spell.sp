@@ -8,8 +8,11 @@ void Wand_LightningAbility_Map_Precache()
 {
 	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 	PrecacheSound(SOUND_WAND_LIGHTNING_ABILITY);
+	PrecacheSound("ambient/explosions/explode_3.wav", true);
+	PrecacheSound("weapons/physcannon/energy_sing_flyby2.wav", true);
+	PrecacheSound("ambient/atmosphere/terrain_rumble1.wav", true);
+	PrecacheSound("ambient/explosions/explode_9.wav", true);
 }
-#define spirite "spirites/zerogxplode.spr"
 
 public void Lighting_Wand_Spell_ClearAll()
 {
@@ -109,31 +112,15 @@ public void Weapon_Wand_LightningSpell(int client, int weapon, bool &result, int
 					Angles [1] = GetRandomFloat(-180.0, 180.0);
 					TeleportEntity(particle_extra, NULL_VECTOR, Angles, NULL_VECTOR);
 					
-					int ent = CreateEntityByName("env_explosion");
-					if(ent != -1)
-					{
-						SetEntPropEnt(ent, Prop_Data, "m_hOwnerEntity", client);
-										
-						EmitAmbientSound("ambient/explosions/explode_9.wav", vEnd);
-										
-						DispatchKeyValueVector(ent, "origin", vEnd);
-						DispatchKeyValue(ent, "spawnflags", "64");
-						
-						DispatchKeyValue(ent, "rendermode", "5");
-						DispatchKeyValue(ent, "fireballsprite", spirite);
-										
-						SetEntProp(ent, Prop_Data, "m_iMagnitude", 0); 
-						SetEntProp(ent, Prop_Data, "m_iRadiusOverride", 200); 
-									
-						DispatchSpawn(ent);
-						ActivateEntity(ent);
-									
-						AcceptEntityInput(ent, "explode");
-						AcceptEntityInput(ent, "kill");
-					}
-					
 					TE_SetupBeamPoints(vEnd, position, gLaser1, 0, 0, 0, 0.33, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
 					TE_SendToAll(0.0);
+					
+					DataPack pack = new DataPack();
+					pack.WriteFloat(vEnd[0]);
+					pack.WriteFloat(vEnd[1]);
+					pack.WriteFloat(vEnd[2]);
+					RequestFrame(MakeExplosionFrameLater, pack);
+					
 					EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);
 					EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);	
 

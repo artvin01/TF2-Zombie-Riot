@@ -3013,3 +3013,40 @@ public void Ability_Apply_Cooldown(int client, int what_slot, float cooldown)
 		}
 	}
 }
+
+#define spirite "spirites/zerogxplode.spr"
+
+
+public void MakeExplosionFrameLater(DataPack pack)
+{
+	pack.Reset();
+	float vec_pos[3];
+	vec_pos[0] = pack.ReadFloat();
+	vec_pos[1] = pack.ReadFloat();
+	vec_pos[2] = pack.ReadFloat();
+	
+	int ent = CreateEntityByName("env_explosion");
+	if(ent != -1)
+	{
+	//	SetEntPropEnt(ent, Prop_Data, "m_hOwnerEntity", client);
+												
+		EmitAmbientSound("ambient/explosions/explode_3.wav", vec_pos);
+										
+		DispatchKeyValueVector(ent, "origin", vec_pos);
+		DispatchKeyValue(ent, "spawnflags", "64");
+						
+		DispatchKeyValue(ent, "rendermode", "5");
+		DispatchKeyValue(ent, "fireballsprite", spirite);
+										
+		DispatchKeyValueFloat(ent, "DamageForce", 0.0);								
+		SetEntProp(ent, Prop_Data, "m_iMagnitude", 0); 
+		SetEntProp(ent, Prop_Data, "m_iRadiusOverride", 0); 
+									
+		DispatchSpawn(ent);
+		ActivateEntity(ent);
+									
+		AcceptEntityInput(ent, "explode");
+		AcceptEntityInput(ent, "kill");
+	}		
+	delete pack;
+}

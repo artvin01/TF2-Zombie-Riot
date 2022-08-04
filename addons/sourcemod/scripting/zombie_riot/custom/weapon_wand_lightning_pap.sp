@@ -112,7 +112,7 @@ public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int s
 	}
 }
 
-public Action Smite_Timer(Handle Smite_Logic, any pack)
+public Action Smite_Timer(Handle Smite_Logic, DataPack pack)
 {
 	ResetPack(pack);
 	int client = GetClientOfUserId(ReadPackCell(pack));
@@ -154,28 +154,12 @@ public Action Smite_Timer(Handle Smite_Logic, any pack)
 		
 		EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, spawnLoc, _, 120);
 		
-		int ent = CreateEntityByName("env_explosion");
-		if(ent != -1)
-		{
-			SetEntPropEnt(ent, Prop_Data, "m_hOwnerEntity", client);
-										
-			EmitAmbientSound("ambient/explosions/explode_9.wav", spawnLoc);
-										
-			DispatchKeyValueVector(ent, "origin", spawnLoc);
-			DispatchKeyValue(ent, "spawnflags", "64");
-						
-			DispatchKeyValue(ent, "rendermode", "5");
-			DispatchKeyValue(ent, "fireballsprite", spirite);
-										
-			SetEntProp(ent, Prop_Data, "m_iMagnitude", 0); 
-			SetEntProp(ent, Prop_Data, "m_iRadiusOverride", 200); 
-									
-			DispatchSpawn(ent);
-			ActivateEntity(ent);
-									
-			AcceptEntityInput(ent, "explode");
-			AcceptEntityInput(ent, "kill");
-		}
+		DataPack pack_boom = new DataPack();
+		pack_boom.WriteFloat(spawnLoc[0]);
+		pack_boom.WriteFloat(spawnLoc[1]);
+		pack_boom.WriteFloat(spawnLoc[2]);
+		RequestFrame(MakeExplosionFrameLater, pack_boom);
+		
 		Explode_Logic_Custom(damage, client, client, weapon, spawnLoc, Smite_Radius,_,_,false);
 		
 		return Plugin_Stop;
