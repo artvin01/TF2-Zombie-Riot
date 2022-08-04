@@ -195,7 +195,7 @@ methodmap MedivalEagleScout < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		npc.m_flMeleeArmor = 1.30; //They take MORE melee damage.
+		npc.m_flMeleeArmor = 1.6; //They take MORE melee damage.
 		npc.m_flRangedArmor = 0.5;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
@@ -320,9 +320,9 @@ public void MedivalEagleScout_ClotThink(int iNPC)
 								{
 									
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 35.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 20.0, DMG_SLASH|DMG_CLUB);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 45.0, DMG_SLASH|DMG_CLUB);
 									
 									// Hit particle
 									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
