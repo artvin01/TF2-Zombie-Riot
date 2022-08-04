@@ -760,6 +760,8 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		EmitSoundToAll("mvm/mvm_tank_horn.wav");
 		
+		i_NpcCurrentLives[npc.index]=4;
+		
 		npc.m_flSpeed = 0.0;
 		
 		CPrintToChatAll("{crimson}Blitzkrieg{default}: {crimson}THE END IS HERE");
@@ -774,7 +776,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		fl_LifelossReload[npc.index] = 0.001;
 		
-		npc.m_flRangedArmor = 0.25;
+		npc.m_flRangedArmor = 0.1;
 		
 		npc.PlayAngerSound();
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
