@@ -339,7 +339,7 @@ public void HandleAnimEventMedival_CrossbowMan(int entity, int event)
 						
 			npc.PlayMeleeSound();
 			
-			npc.FireArrow(vecTarget, 40.0, projectile_speed);
+			npc.FireArrow(vecTarget, 30.0, projectile_speed);
 		}
 	}
 	
