@@ -18,6 +18,7 @@ void Wand_LightningPap_Map_Precache()
 	PrecacheSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE);
 	PrecacheSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE);
 }
+#define spirite "spirites/zerogxplode.spr"
 
 public void Lighting_Wand_Pap_ClearAll()
 {
@@ -153,6 +154,28 @@ public Action Smite_Timer(Handle Smite_Logic, any pack)
 		
 		EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, spawnLoc, _, 120);
 		
+		int ent = CreateEntityByName("env_explosion");
+		if(ent != -1)
+		{
+			SetEntPropEnt(ent, Prop_Data, "m_hOwnerEntity", client);
+										
+			EmitAmbientSound("ambient/explosions/explode_9.wav", spawnLoc);
+										
+			DispatchKeyValueVector(ent, "origin", spawnLoc);
+			DispatchKeyValue(ent, "spawnflags", "64");
+						
+			DispatchKeyValue(ent, "rendermode", "5");
+			DispatchKeyValue(ent, "fireballsprite", spirite);
+										
+			SetEntProp(ent, Prop_Data, "m_iMagnitude", 0); 
+			SetEntProp(ent, Prop_Data, "m_iRadiusOverride", 200); 
+									
+			DispatchSpawn(ent);
+			ActivateEntity(ent);
+									
+			AcceptEntityInput(ent, "explode");
+			AcceptEntityInput(ent, "kill");
+		}
 		Explode_Logic_Custom(damage, client, client, weapon, spawnLoc, Smite_Radius,_,_,false);
 		
 		return Plugin_Stop;
@@ -196,7 +219,7 @@ static void spawnRing_Vectors(float center[3], float range, float modif_X, float
 	center[1] += modif_Y;
 	center[2] += modif_Z;
 			
-	new ICE_INT = PrecacheModel(sprite);
+	int ICE_INT = PrecacheModel(sprite);
 		
 	int color[4];
 	color[0] = r;

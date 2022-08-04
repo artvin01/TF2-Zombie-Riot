@@ -1248,7 +1248,9 @@ public void OnMapStart()
 	cvarTimeScale.SetFloat(1.0);
 	Waves_MapStart();
 	Music_MapStart();
+#if !defined NoSendProxyClass
 	DHook_MapStart();
+#endif
 	SDKHook_MapStart();
 	ViewChange_MapStart();
 	Remove_Healthcooldown();

@@ -468,7 +468,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 			if(i_PrimaryRocketsFired[npc.index] > 20)	//Every 20 rockets npc enters a 10 second reload time
 			{
 				npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
-				npc.m_flReloadIn = GetGameTime() + 10.0 * fl_LifelossReload[npc.index];
+				npc.m_flReloadIn = GetGameTime() + (3.0 * fl_LifelossReload[npc.index]);
 				npc.m_flMeleeArmor = 1.0;
 				i_PrimaryRocketsFired[npc.index] = 0;
 			}

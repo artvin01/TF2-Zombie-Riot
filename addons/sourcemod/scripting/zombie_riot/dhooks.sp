@@ -1,8 +1,10 @@
 static DynamicHook ForceRespawn;
-static DynamicHook FrameUpdatePostEntityThink;
 static int ForceRespawnHook[MAXTF2PLAYERS];
 static int GetChargeEffectBeingProvided;
+#if !defined NoSendProxyClass
 static bool IsPlayerClass;
+static DynamicHook FrameUpdatePostEntityThink;
+#endif
 static bool IsRespawning;
 //static bool Disconnecting;
 
@@ -35,7 +37,10 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFPlayer::DropAmmoPack", DHook_DropAmmoPackPre);
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetMaxAmmo", DHook_GetMaxAmmoPre);
+	
+	#if !defined NoSendProxyClass
 	DHook_CreateDetour(gamedata, "CTFPlayer::IsPlayerClass", DHook_IsPlayerClassPre);
+	#endif
 	
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
@@ -62,11 +67,13 @@ void DHook_Setup()
 		SetFailState("Failed to create detour %s", "CBaseCombatWeapon::FinishReload()");
 	}
 	DHookEnableDetour(dtWeaponFinishReload, false, OnWeaponReplenishClipPre);
-	
-	
+		
+		
+	#if !defined NoSendProxyClass
 	FrameUpdatePostEntityThink = DynamicHook.FromConf(gamedata, "CGameRules::FrameUpdatePostEntityThink");
 	if(!FrameUpdatePostEntityThink)
 		LogError("[Gamedata] Could not find CGameRules::FrameUpdatePostEntityThink");
+	#endif
 	
 	delete gamedata;
 	
@@ -836,7 +843,7 @@ void DHook_UnhookClient(int client)
 		RequestFrame(CheckIfAloneOnServer);
 	}
 }
-
+#if !defined NoSendProxyClass
 void DHook_MapStart()
 {
 	if(FrameUpdatePostEntityThink)
@@ -845,6 +852,7 @@ void DHook_MapStart()
 		FrameUpdatePostEntityThink.HookGamerules(Hook_Post, DHook_FrameUpdatePostEntityThinkPost);
 	}
 }
+#endif
 /*
 void DHook_ClientDisconnect()
 {
@@ -1067,7 +1075,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 	}
 	return Plugin_Handled;
 }
-
+#if !defined NoSendProxyClass
 public MRESReturn DHook_FrameUpdatePostEntityThinkPre()
 {
 	IsPlayerClass = true;
@@ -1079,7 +1087,7 @@ public MRESReturn DHook_FrameUpdatePostEntityThinkPost()
 	IsPlayerClass = false;
 	return MRES_Ignored;
 }
-
+#endif
 public MRESReturn DHook_GetChargeEffectBeingProvidedPre(int client, DHookReturn ret)
 {
 	if(IsClientInGame(client))
@@ -1147,7 +1155,7 @@ public MRESReturn DHook_GetMaxAmmoPre(int client, DHookReturn ret, DHookParam pa
 	}
 	return MRES_Supercede;
 }
-
+#if !defined NoSendProxyClass
 public MRESReturn DHook_IsPlayerClassPre(int client, DHookReturn ret, DHookParam param)
 {
 	if(!IsPlayerClass)
@@ -1156,6 +1164,7 @@ public MRESReturn DHook_IsPlayerClassPre(int client, DHookReturn ret, DHookParam
 	ret.Value = true;
 	return MRES_Supercede;
 }
+#endif
 
 public MRESReturn DHook_RegenThinkPre(int client, DHookParam param)
 {
