@@ -191,6 +191,7 @@ static int g_modelArrow;
 #define RAIDBOSSBOSS_ZOMBIE_VOLUME	 1.0
 
 #define ARROW_TRAIL "effects/arrowtrail_blu.vmt"
+#define ARROW_TRAIL_RED "effects/arrowtrail_red.vmt"
 
 char g_ArrowHitSoundSuccess[][] = {
 	"weapons/fx/rics/arrow_impact_flesh.wav",
@@ -1279,6 +1280,9 @@ public void OnMapStart_NPC_Base()
 	g_modelArrow = PrecacheModel("models/weapons/w_models/w_arrow.mdl");
 	PrecacheModel(ARROW_TRAIL);
 	PrecacheDecal(ARROW_TRAIL, true);
+	PrecacheModel(ARROW_TRAIL_RED);
+	PrecacheDecal(ARROW_TRAIL_RED, true);
+	
 	InitNavGamedata();
 	
 	HeadcrabZombie_OnMapStart_NPC();
