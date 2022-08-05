@@ -162,18 +162,21 @@ public Action Coin_on_ground(Handle timer, int ref)
 		float targPos[3];
 		float chargerPos[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);
-		chargerPos[2] += 32;
-		if(IsValidClient(Entity_Owner[entity]))
+		
+		chargerPos[0] = targPos[0];
+		chargerPos[1] = targPos[1];
+		chargerPos[2] = targPos[2];
+		
+		chargerPos[2] -= 20.0;
+		
+		TR_TraceRayFilter(targPos, chargerPos, MASK_SHOT, RayType_EndPoint, HitOnlyWorld, entity);
+		if (TR_DidHit())
 		{
-			GetEntPropVector(Entity_Owner[entity], Prop_Data, "m_vecAbsOrigin", chargerPos);
-			
-			if(chargerPos[2] > targPos[2])
-				AcceptEntityInput(entity, "break");
-				
-			return Plugin_Continue;
+			AcceptEntityInput(entity, "break");
+			return Plugin_Handled;
 		}
-		KillTimer(timer);
-		return Plugin_Handled;
+				
+		return Plugin_Continue;
 	}
 	else
 	{
@@ -284,6 +287,11 @@ public Action flip_extra(Handle timer, int client)
 				damage_multiplier[entity] *= TF2Attrib_GetValue(address);
 				
 			damage_multiplier[entity] *= 2.0;
+			
+			if(i_CurrentEquippedPerk[client] == 5)
+			{
+				damage_multiplier[entity] *= 1.35;
+			}
 			
 			newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
 			newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
@@ -429,7 +437,7 @@ stock void Do_Coin_calc(int victim)
 	
 	if (IsValidEntity(Closest_entity))
 	{
-		damage_multiplier[victim] *= 1.5;
+		damage_multiplier[victim] *= 1.4;
 		damage_multiplier[Closest_entity] = damage_multiplier[victim]; //Extra bonus dmg
 		
 		static char classname[36];
@@ -443,8 +451,8 @@ stock void Do_Coin_calc(int victim)
 				already_ricocated[victim] = true;
 				CreateTimer(0.05, coin_got_rioceted, EntIndexToEntRef(Closest_entity), TIMER_FLAG_NO_MAPCHANGE);
 				mb_coin[Closest_entity] = false;
-				/*
-				TR_TraceRayFilter( chargerPos, targPos, ( MASK_SOLID | CONTENTS_HITBOX ), RayType_EndPoint, WorldOnly, victim );
+				
+				TR_TraceRayFilter( chargerPos, targPos, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, WorldOnly, victim );
 				if(TR_DidHit())
 				{
 					int target = TR_GetEntityIndex();	
@@ -465,7 +473,6 @@ stock void Do_Coin_calc(int victim)
 					TE_SendToAll();
 				}
 				else
-				*/
 				{
 					TE_SetupBeamPoints(chargerPos, targPos, Beam_Laser, Beam_Laser, 0, 30, 1.0, 5.0, 5.0, 5, 0.0, view_as<int>({160, 160, 255, 255}), 30);
 					TE_SendToAll();
@@ -486,8 +493,7 @@ stock void Do_Coin_calc(int victim)
 						if (GetVectorDistance(chargerPos, targPos) <= 1300.0 && !already_ricocated[victim])
 						{
 							already_ricocated[victim] = true;
-							/*
-							TR_TraceRayFilter( chargerPos, targPos, ( MASK_SOLID | CONTENTS_HITBOX ), RayType_EndPoint, WorldOnly, victim );
+							TR_TraceRayFilter( chargerPos, targPos, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, WorldOnly, victim );
 							if(TR_DidHit())
 							{
 								int target = TR_GetEntityIndex();	
@@ -508,7 +514,6 @@ stock void Do_Coin_calc(int victim)
 								TE_SendToAll();
 							}
 							else
-							*/
 							{
 								TE_SetupBeamPoints(chargerPos, targPos, Beam_Laser, Beam_Laser, 0, 30, 1.0, 5.0, 5.0, 5, 0.0, view_as<int>({160, 160, 255, 255}), 30);
 								TE_SendToAll();
@@ -563,8 +568,7 @@ stock void Do_Coin_calc(int victim)
 					if (GetVectorDistance(chargerPos, targPos) <= 1300.0 && !already_ricocated[victim])
 					{
 						already_ricocated[victim] = true;
-						/*
-						TR_TraceRayFilter( chargerPos, targPos, ( MASK_SOLID | CONTENTS_HITBOX ), RayType_EndPoint, WorldOnly, victim );
+						TR_TraceRayFilter( chargerPos, targPos, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, WorldOnly, victim );
 						if(TR_DidHit())
 						{
 							int target = TR_GetEntityIndex();	
@@ -585,7 +589,6 @@ stock void Do_Coin_calc(int victim)
 							TE_SendToAll();
 						}
 						else
-						*/
 						{
 							TE_SetupBeamPoints(chargerPos, targPos, Beam_Laser, Beam_Laser, 0, 30, 1.0, 5.0, 5.0, 5, 0.0, view_as<int>({160, 160, 255, 255}), 30);
 							TE_SendToAll();
@@ -733,6 +736,7 @@ stock int GetClosestTarget_Coin(int entity)
 	}
 	return ClosestTarget; 
 }
+
 
 public bool WorldOnly(int entity, int contentsMask, any iExclude)
 {

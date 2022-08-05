@@ -2804,6 +2804,17 @@ public bool HitOnlyTargetOrWorld(int entity, int contentsMask, any iExclude)
 	return false;
 }
 
+
+public bool HitOnlyWorld(int entity, int contentsMask, any iExclude)
+{
+	if(entity == 0)
+	{
+		return true;
+	}	
+	
+	return false;
+}
+
 public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 {
 	pack.Reset();
