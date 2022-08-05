@@ -9,7 +9,7 @@ static int particle_1[MAXTF2PLAYERS];
 static bool mb_coin[MAXENTITIES];
 static bool already_ricocated[MAXENTITIES];
 static int Beam_Laser;
-static int entity_test[MAXENTITIES];
+static int Entity_Owner[MAXENTITIES];
 static float damage_multiplier[MAXENTITIES];
 static float mf_extra_damage[MAXENTITIES];
 static int coins_flipped[MAXTF2PLAYERS];
@@ -144,7 +144,7 @@ public Action Coin_on_for_too_long(Handle timer, int ref)
 	if(entity > 0)
 	{
 		mb_coin[entity] = false;
-		entity_test[entity] = 0;
+		Entity_Owner[entity] = 0;
 		AcceptEntityInput(entity, "break");
 	}
 	else
@@ -163,9 +163,9 @@ public Action Coin_on_ground(Handle timer, int ref)
 		float chargerPos[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);
 		chargerPos[2] += 32;
-		if(IsValidClient(entity_test[entity]))
+		if(IsValidClient(Entity_Owner[entity]))
 		{
-			GetEntPropVector(entity_test[entity], Prop_Data, "m_vecAbsOrigin", chargerPos);
+			GetEntPropVector(Entity_Owner[entity], Prop_Data, "m_vecAbsOrigin", chargerPos);
 			
 			if(chargerPos[2] > targPos[2])
 				AcceptEntityInput(entity, "break");
@@ -217,7 +217,7 @@ public Action flip_extra(Handle timer, int client)
 			}
 			b_IsAlliedNpc[entity] = true;
 			
-			entity_test[entity] = client;
+			Entity_Owner[entity] = client;
 
 			fPlayerPos[0] = fPlayerPos[0] + fLen * Cosine( DegToRad( fPlayerAngles[1] + 0.0) );
 			fPlayerPos[1] = fPlayerPos[1] + fLen * Sine( DegToRad( fPlayerAngles[1] + 0.0) );
@@ -358,7 +358,7 @@ public Action coin_got_rioceted(Handle timer, int client)
 		
 		Do_Coin_calc(victim);
 		
-		entity_test[victim] = 0;
+		Entity_Owner[victim] = 0;
 		mb_coin[victim] = false;
 		AcceptEntityInput(victim, "break");
 	}
@@ -374,7 +374,7 @@ public Action Coin_HookDamaged(int victim, int &attacker, int &inflictor, float 
 	if(attacker < 0)
 		return Plugin_Continue;
 	
-	if (entity_test[victim] != attacker)
+	if (Entity_Owner[victim] != attacker)
 		return Plugin_Continue;
 		
 	float targPos[3];
@@ -412,7 +412,7 @@ public Action Coin_HookDamaged(int victim, int &attacker, int &inflictor, float 
 	
 	Do_Coin_calc(victim);
 			
-	entity_test[victim] = 0;
+	Entity_Owner[victim] = 0;
 	mb_coin[victim] = false;
 	AcceptEntityInput(victim, "break");
 	
@@ -429,8 +429,8 @@ stock void Do_Coin_calc(int victim)
 	
 	if (IsValidEntity(Closest_entity))
 	{
-		damage_multiplier[victim] *= 1.3;
-		damage_multiplier[Closest_entity] = damage_multiplier[victim] * 1.3; //Extra bonus dmg
+		damage_multiplier[victim] *= 1.5;
+		damage_multiplier[Closest_entity] = damage_multiplier[victim]; //Extra bonus dmg
 		
 		static char classname[36];
 		GetEntityClassname(Closest_entity, classname, sizeof(classname));
@@ -443,7 +443,7 @@ stock void Do_Coin_calc(int victim)
 				already_ricocated[victim] = true;
 				CreateTimer(0.05, coin_got_rioceted, EntIndexToEntRef(Closest_entity), TIMER_FLAG_NO_MAPCHANGE);
 				mb_coin[Closest_entity] = false;
-				
+				/*
 				TR_TraceRayFilter( chargerPos, targPos, ( MASK_SOLID | CONTENTS_HITBOX ), RayType_EndPoint, WorldOnly, victim );
 				if(TR_DidHit())
 				{
@@ -454,17 +454,18 @@ stock void Do_Coin_calc(int victim)
 					{
 						if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 2.0) //You got one second.
 						{
-							SDKHooks_TakeDamage(target, victim, entity_test[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
+							SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 						}
 						else
 						{
-							SDKHooks_TakeDamage(target, victim, entity_test[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
+							SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 						}
 					}
 					TE_SetupBeamPoints(chargerPos, targPos, Beam_Laser, Beam_Laser, 0, 30, 1.0, 5.0, 5.0, 5, 0.0, view_as<int>({255, 0, 0, 255}), 30);
 					TE_SendToAll();
 				}
 				else
+				*/
 				{
 					TE_SetupBeamPoints(chargerPos, targPos, Beam_Laser, Beam_Laser, 0, 30, 1.0, 5.0, 5.0, 5, 0.0, view_as<int>({160, 160, 255, 255}), 30);
 					TE_SendToAll();
@@ -485,6 +486,7 @@ stock void Do_Coin_calc(int victim)
 						if (GetVectorDistance(chargerPos, targPos) <= 1300.0 && !already_ricocated[victim])
 						{
 							already_ricocated[victim] = true;
+							/*
 							TR_TraceRayFilter( chargerPos, targPos, ( MASK_SOLID | CONTENTS_HITBOX ), RayType_EndPoint, WorldOnly, victim );
 							if(TR_DidHit())
 							{
@@ -495,17 +497,18 @@ stock void Do_Coin_calc(int victim)
 								{
 									if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 2.0) //You got one second.
 									{
-										SDKHooks_TakeDamage(target, victim, entity_test[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
+										SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, victim, entity_test[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
+										SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 									}
 								}
 								TE_SetupBeamPoints(chargerPos, targPos, Beam_Laser, Beam_Laser, 0, 30, 1.0, 5.0, 5.0, 5, 0.0, view_as<int>({255, 0, 0, 255}), 30);
 								TE_SendToAll();
 							}
 							else
+							*/
 							{
 								TE_SetupBeamPoints(chargerPos, targPos, Beam_Laser, Beam_Laser, 0, 30, 1.0, 5.0, 5.0, 5, 0.0, view_as<int>({160, 160, 255, 255}), 30);
 								TE_SendToAll();
@@ -515,7 +518,7 @@ stock void Do_Coin_calc(int victim)
 							if(ent != -1)
 							{
 								
-								SetEntPropEnt(ent, Prop_Data, "m_hOwnerEntity", entity_test[victim]);
+								SetEntPropEnt(ent, Prop_Data, "m_hOwnerEntity", Entity_Owner[victim]);
 								
 								EmitAmbientSound(SOUND_GORDON_MINE_DET, targPos);
 								EmitAmbientSound(SOUND_GORDON_MINE_DET, targPos);
@@ -535,11 +538,11 @@ stock void Do_Coin_calc(int victim)
 				
 							if(mf_extra_damage[victim] > GetGameTime())
 							{
-								SDKHooks_TakeDamage(Closest_entity, victim, entity_test[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
+								SDKHooks_TakeDamage(Closest_entity, victim, Entity_Owner[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 							}
 							else
 							{
-								SDKHooks_TakeDamage(Closest_entity, victim, entity_test[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
+								SDKHooks_TakeDamage(Closest_entity, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 							}
 						}
 					}
@@ -560,6 +563,7 @@ stock void Do_Coin_calc(int victim)
 					if (GetVectorDistance(chargerPos, targPos) <= 1300.0 && !already_ricocated[victim])
 					{
 						already_ricocated[victim] = true;
+						/*
 						TR_TraceRayFilter( chargerPos, targPos, ( MASK_SOLID | CONTENTS_HITBOX ), RayType_EndPoint, WorldOnly, victim );
 						if(TR_DidHit())
 						{
@@ -570,17 +574,18 @@ stock void Do_Coin_calc(int victim)
 							{
 								if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 2.0) //You got one second.
 								{
-									SDKHooks_TakeDamage(target, victim, entity_test[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
+									SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 								}
 								else
 								{
-									SDKHooks_TakeDamage(target, victim, entity_test[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
+									SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 								}
 							}
 							TE_SetupBeamPoints(chargerPos, targPos, Beam_Laser, Beam_Laser, 0, 30, 1.0, 5.0, 5.0, 5, 0.0, view_as<int>({255, 0, 0, 255}), 30);
 							TE_SendToAll();
 						}
 						else
+						*/
 						{
 							TE_SetupBeamPoints(chargerPos, targPos, Beam_Laser, Beam_Laser, 0, 30, 1.0, 5.0, 5.0, 5, 0.0, view_as<int>({160, 160, 255, 255}), 30);
 							TE_SendToAll();
@@ -589,7 +594,7 @@ stock void Do_Coin_calc(int victim)
 						int ent = CreateEntityByName("env_explosion");
 						if(ent != -1)
 						{
-							SetEntPropEnt(ent, Prop_Data, "m_hOwnerEntity", entity_test[victim]);
+							SetEntPropEnt(ent, Prop_Data, "m_hOwnerEntity", Entity_Owner[victim]);
 							
 							EmitAmbientSound(SOUND_GORDON_MINE_DET, targPos);
 							EmitAmbientSound(SOUND_GORDON_MINE_DET, targPos);
@@ -609,11 +614,11 @@ stock void Do_Coin_calc(int victim)
 							
 						if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 2.0) //You got one second.
 						{
-							SDKHooks_TakeDamage(Closest_entity, victim, entity_test[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
+							SDKHooks_TakeDamage(Closest_entity, victim, Entity_Owner[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 						}
 						else
 						{
-							SDKHooks_TakeDamage(Closest_entity, victim, entity_test[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
+							SDKHooks_TakeDamage(Closest_entity, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 						}
 					}
 				}
@@ -659,7 +664,7 @@ stock int GetClosestTarget_Coin(int entity)
 		{
 			static char classname[36];
 			GetEntityClassname(new_entity, classname, sizeof(classname));
-			if (mb_coin[new_entity] && !StrContains(classname, "prop_physics_multiplayer", false) && entity != new_entity)
+			if (mb_coin[new_entity] && !StrContains(classname, "prop_physics_multiplayer", false) && entity != new_entity && Entity_Owner[entity] == Entity_Owner[entity])
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
