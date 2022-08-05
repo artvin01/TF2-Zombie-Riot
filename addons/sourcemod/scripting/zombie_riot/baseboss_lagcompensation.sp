@@ -85,7 +85,7 @@ public Action OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcoun
 }
 
 /* Manually remove no longer in use entites */
-void OnEntityDestroyed_LagComp(int entity)
+public void OnEntityDestroyed_LagComp(int entity)
 {
 	if(entity > 0)
 	{
@@ -201,7 +201,7 @@ public void StartLagCompensation_Base_Boss(int client, bool compensate_players)
 }
 
 /* game/server/player.cpp#L732 */
-bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles[3]/*, const CBitVec<MAX_EDICTS> *pEntityTransmitBits */)
+public bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles[3]/*, const CBitVec<MAX_EDICTS> *pEntityTransmitBits */)
 {
 	// Team members shouldn't be adjusted unless friendly fire is on.
 	/*
@@ -248,7 +248,7 @@ bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles
 }
 
 /* game/server/player_lagcompensation.cpp#L423 */
-void BacktrackEntity(int entity, float currentTime) //Make sure that allies only get compensated for their bounding box.
+public void BacktrackEntity(int entity, float currentTime) //Make sure that allies only get compensated for their bounding box.
 {
 	int ref = EntIndexToEntRef(entity);
 	
@@ -384,18 +384,18 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 	{
 		if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
 		{
-	#if !defined DisableInterpolation
+#if !defined DisableInterpolation
 			bool interpolationAllowed = (multi && frac > 0.0 && record.m_masterSequence == prevRecord.m_masterSequence);
 			
 			if(interpolationAllowed)
 			{
-				SetEntProp(entity, Prop_Data, "m_nSequence", Lerp(frac, record.m_masterSequence, prevRecord.m_masterSequence));
+				SetEntProp(entity, Prop_Data, "m_nSequence", Lerpint(frac, record.m_masterSequence, prevRecord.m_masterSequence));
 				
 				if(record.m_masterCycle > prevRecord.m_masterCycle)
 				{
 					// the older record is higher in frame than the newer, it must have wrapped around from 1 back to 0
 					// add one to the newer so it is lerping from .9 to 1.1 instead of .9 to .1, for example.
-					float newCycle = Lerp(frac, record.m_masterCycle, prevRecord.m_masterCycle + 1.0);
+					float newCycle = Lerpfloat(frac, record.m_masterCycle, prevRecord.m_masterCycle + 1.0);
 					
 					if (newCycle<0.01)
 						newCycle = 0.01;
@@ -406,7 +406,7 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 				}
 				else
 				{
-					float newCycle = Lerp(frac, record.m_masterCycle, prevRecord.m_masterCycle);
+					float newCycle = Lerpfloat(frac, record.m_masterCycle, prevRecord.m_masterCycle);
 					
 					if (newCycle<0.01)
 						newCycle = 0.01;
@@ -417,14 +417,14 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 				}
 			}
 			else
-	#endif
+#endif
 			{
 				SetEntProp(entity, Prop_Data, "m_nSequence", record.m_masterSequence);
 				SetEntPropFloat(entity, Prop_Data, "m_flCycle", record.m_masterCycle);
 			}
 		////////////////////////
 		// Now do all the layers
-	#if defined HaveLayersForLagCompensation
+#if defined HaveLayersForLagCompensation
 			if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 			{
 				CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
@@ -440,7 +440,7 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 					layer.m_sequence = currentLayer.Get(m_nSequence);
 					layer.m_weight = currentLayer.Get(m_flWeight);
 					restore.m_layerRecords.PushArray(layer);
-		#if !defined DisableInterpolation
+#if !defined DisableInterpolation
 					bool interpolated = false;
 					if(interpolationAllowed)
 					{
@@ -454,22 +454,22 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 							{
 								// the older record is higher in frame than the newer, it must have wrapped around from 1 back to 0
 								// add one to the newer so it is lerping from .9 to 1.1 instead of .9 to .1, for example.
-								float newCycle = Lerp(frac, recordsLayerRecord.m_cycle, prevRecordsLayerRecord.m_cycle + 1.0);
+								float newCycle = Lerpfloat(frac, recordsLayerRecord.m_cycle, prevRecordsLayerRecord.m_cycle + 1.0);
 								currentLayer.Set(m_flCycle, newCycle < 1.0 ? newCycle : newCycle - 1.0);// and make sure .9 to 1.2 does not end up 1.05
 							}
 							else
 							{
-								currentLayer.Set(m_flCycle, Lerp(frac, recordsLayerRecord.m_cycle, prevRecordsLayerRecord.m_cycle));
+								currentLayer.Set(m_flCycle, Lerpfloat(frac, recordsLayerRecord.m_cycle, prevRecordsLayerRecord.m_cycle));
 							}
 							
 							currentLayer.Set(m_nOrder, recordsLayerRecord.m_order);
 							currentLayer.Set(m_nSequence, recordsLayerRecord.m_sequence);
-							currentLayer.Set(m_flWeight, Lerp(frac, recordsLayerRecord.m_weight, prevRecordsLayerRecord.m_weight));
+							currentLayer.Set(m_flWeight, Lerpfloat(frac, recordsLayerRecord.m_weight, prevRecordsLayerRecord.m_weight));
 						}
 					}
 					
 					if(!interpolated)
-		#endif
+#endif
 					{
 						//Either no interp, or interp failed.  Just use record.
 						currentLayer.Set(m_flCycle, layer.m_cycle);
@@ -478,7 +478,7 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 						currentLayer.Set(m_flWeight, layer.m_weight);
 					}
 				}
-		#endif
+#endif
 			}
 			SDKCall_InvalidateBoneCache(entity);
 	//		Test_Hitbox(entity);
@@ -723,7 +723,7 @@ public void LagCompensationThink_Forward()
 }
 
 /* public/mathlib/vector.h#L1153 */
-stock void VectorLerp(const float src1[3], const float src2[3], float t, float dest[3])
+public void VectorLerp(const float src1[3], const float src2[3], float t, float dest[3])
 {
 	dest[0] = src1[0] + (src2[0] - src1[0]) * t;
 	dest[1] = src1[1] + (src2[1] - src1[1]) * t;
@@ -731,9 +731,14 @@ stock void VectorLerp(const float src1[3], const float src2[3], float t, float d
 }
 
 /* game/client/particle_util.h#L19 */
-stock any Lerp(any t, any minVal, any maxVal)
+public float Lerpfloat(float t, float minVal, float maxVal)
 {
 	return minVal + (maxVal - minVal) * t;
+}
+
+public int Lerpint(float t, int minVal, int maxVal)
+{
+	return RoundToNearest(minVal + (maxVal - minVal) * t);
 }
 
 /*  */
