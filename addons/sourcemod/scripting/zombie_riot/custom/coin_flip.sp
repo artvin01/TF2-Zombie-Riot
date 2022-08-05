@@ -160,18 +160,19 @@ public Action Coin_on_ground(Handle timer, int ref)
 		float targPos[3];
 		float chargerPos[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);
-		targPos[2] += 32;
+		chargerPos[2] += 32;
 		GetEntPropVector(entity_test[entity], Prop_Data, "m_vecAbsOrigin", chargerPos);
 		
 		if(chargerPos[2] > targPos[2])
 			AcceptEntityInput(entity, "break");
+			
+		return Plugin_Continue;
 	}
 	else
 	{
 		KillTimer(timer);
 		return Plugin_Handled;
 	}
-	return Plugin_Handled;
 }
 
 
@@ -239,7 +240,7 @@ public Action flip_extra(Handle timer, int client)
 			
 			CreateTimer(3.0, Coin_on_for_too_long, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 			
-	//		CreateTimer(0.1, Coin_on_ground, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+			CreateTimer(0.1, Coin_on_ground, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 
 			float fScal = gf_gordon_propthrowforce * Sine( DegToRad( fPlayerAngles[0] + 90.0 ) );
 
