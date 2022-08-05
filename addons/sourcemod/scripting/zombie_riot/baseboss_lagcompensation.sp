@@ -479,8 +479,8 @@ public void BacktrackEntity(int entity, float currentTime) //Make sure that alli
 					}
 				}
 #endif
-			}
 			SDKCall_InvalidateBoneCache(entity);
+			}
 	//		Test_Hitbox(entity);
 		}
 	}
