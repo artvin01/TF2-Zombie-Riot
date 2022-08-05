@@ -161,12 +161,17 @@ public Action Coin_on_ground(Handle timer, int ref)
 		float chargerPos[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);
 		chargerPos[2] += 32;
-		GetEntPropVector(entity_test[entity], Prop_Data, "m_vecAbsOrigin", chargerPos);
-		
-		if(chargerPos[2] > targPos[2])
-			AcceptEntityInput(entity, "break");
+		if(IsValidClient(entity_test[entity]))
+		{
+			GetEntPropVector(entity_test[entity], Prop_Data, "m_vecAbsOrigin", chargerPos);
 			
-		return Plugin_Continue;
+			if(chargerPos[2] > targPos[2])
+				AcceptEntityInput(entity, "break");
+				
+			return Plugin_Continue;
+		}
+		KillTimer(timer);
+		return Plugin_Handled;
 	}
 	else
 	{
