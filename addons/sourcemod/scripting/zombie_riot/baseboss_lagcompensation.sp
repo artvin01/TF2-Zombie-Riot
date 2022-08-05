@@ -103,7 +103,7 @@ void OnEntityDestroyed_LagComp(int entity)
 			for(int a; a<length2; a++)
 			{
 				list.GetArray(a, record);
-				if(entity > MaxClients && !b_Map_BaseBoss_No_Layers[entity])
+				if(entity > MaxClients && !b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 				{
 					delete record.m_layerRecords;
 				}
@@ -113,7 +113,7 @@ void OnEntityDestroyed_LagComp(int entity)
 	
 		LagRecord record;
 		EntityRestore.GetArray(key, record, sizeof(record));
-		if(entity > MaxClients && !b_Map_BaseBoss_No_Layers[entity])
+		if(entity > MaxClients && !b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 		{
 			delete record.m_layerRecords;
 		}
@@ -166,10 +166,10 @@ public void StartLagCompensation_Base_Boss(int client, bool compensate_players)
 			//const CBitVec<MAX_EDICTS> *pEntityTransmitBits = engine.GetEntityTransmitBitsForClient( player.entindex() - 1 );
 			if(!compensate_players)
 			{
-				for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+				for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
 				{
-					int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-					if(IsValidEntity(entity) && !b_NpcHasDied[entity] && entity != 0)
+					int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
+					if(IsValidEntity(entity) /*&& !b_NpcHasDied[entity]*/ && entity != 0)
 					{
 							// Custom checks for if things should lag compensate (based on things like what team the player is on).
 						if(!WantsLagCompensationOnEntity(entity, client, ViewAngles[client]/*, pEntityTransmitBits*/))
@@ -248,7 +248,7 @@ bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles
 }
 
 /* game/server/player_lagcompensation.cpp#L423 */
-void BacktrackEntity(int entity, float currentTime)
+void BacktrackEntity(int entity, float currentTime) //Make sure that allies only get compensated for their bounding box.
 {
 	int ref = EntIndexToEntRef(entity);
 	
@@ -329,7 +329,7 @@ void BacktrackEntity(int entity, float currentTime)
 //	if(!b_LagCompAlliedPlayers)
 	{
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", restore.m_vecAngles);
-		if(!b_LagCompNPC_No_Layers)
+		if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
 		{
 			restore.m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
 			restore.m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
@@ -337,7 +337,7 @@ void BacktrackEntity(int entity, float currentTime)
 		}
 		if(b_LagCompNPC_ExtendBoundingBox)
 		{
-			if(!b_Map_BaseBoss_No_Layers[entity])
+			if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 			{
 				SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", { 100.0, 100.0, 200.0 });
 				SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", { -100.0, -100.0, 0.0 });
@@ -382,7 +382,7 @@ void BacktrackEntity(int entity, float currentTime)
 	// If the master state changes, all layers will be invalid too, so don't interp (ya know, interp barely ever happens anyway)
 //	if(!b_LagCompAlliedPlayers)
 	{
-		if(!b_LagCompNPC_No_Layers)
+		if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
 		{
 	#if !defined DisableInterpolation
 			bool interpolationAllowed = (multi && frac > 0.0 && record.m_masterSequence == prevRecord.m_masterSequence);
@@ -425,7 +425,7 @@ void BacktrackEntity(int entity, float currentTime)
 		////////////////////////
 		// Now do all the layers
 	#if defined HaveLayersForLagCompensation
-			if(!b_Map_BaseBoss_No_Layers[entity])
+			if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 			{
 				CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
 				
@@ -514,15 +514,15 @@ public void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 #if defined HaveLayersForLagCompensation
 		LayerRecord layer;
 #endif
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if(IsValidEntity(entity) && !b_NpcHasDied[entity])
+			int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
+			if(IsValidEntity(entity) /*&& !b_NpcHasDied[entity]*/ && entity != 0)
 			{
 				IntToString(EntIndexToEntRef(entity), refchar, sizeof(refchar));
 				if(EntityRestore.GetArray(refchar, restore, sizeof(restore)))
 				{
-					if(!b_Map_BaseBoss_No_Layers[entity])
+					if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 					{
 						if(b_LagCompNPC_ExtendBoundingBox)
 						{
@@ -555,9 +555,9 @@ public void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 					}
 					SetEntPropVector(entity, Prop_Data, "m_angRotation", restore.m_vecAngles); //See start pos on why we use this instead of the SDKCall
 					SDKCall_SetLocalOrigin(entity, restore.m_vecOrigin);
-					if(!b_Map_BaseBoss_No_Layers[entity])
+					if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 					{
-						if(!b_LagCompNPC_No_Layers)
+						if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
 						{
 							SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", restore.m_flSimulationTime);
 							SetEntProp(entity, Prop_Data, "m_nSequence", restore.m_masterSequence);
@@ -602,10 +602,10 @@ public void LagCompensationThink_Forward()
 		LayerRecord layer;
 #endif
 		// Iterate all active NPCs
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if(IsValidEntity(entity) && !b_NpcHasDied[entity])
+			int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
+			if(IsValidEntity(entity) /*&& !b_NpcHasDied[entity]*/ && entity != 0)
 			{
 				IntToString(EntIndexToEntRef(entity), refchar, sizeof(refchar));
 				if(!EntityTrack.GetValue(refchar, list))
@@ -626,7 +626,7 @@ public void LagCompensationThink_Forward()
 						break;
 					
 					// remove tail, get new tail
-					if(!b_Map_BaseBoss_No_Layers[entity])
+					if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 					{
 						delete record.m_layerRecords;
 					}
@@ -652,7 +652,7 @@ public void LagCompensationThink_Forward()
 			//	GetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", record.m_vecMaxsPreScaled);
 			
 #if defined HaveLayersForLagCompensation
-				if(!b_Map_BaseBoss_No_Layers[entity])
+				if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity]) //If its an allied baseboss, make sure to not get layers.
 				{
 					CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
 					if(overlay.Address == Address_Null)

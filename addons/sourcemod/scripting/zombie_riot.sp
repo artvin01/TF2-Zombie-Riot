@@ -30,7 +30,8 @@
 
 #define NPC_HARD_LIMIT 42 
 #define ZR_MAX_NPCS (NPC_HARD_LIMIT*2)
-#define ZR_MAX_NPCS_ALLIED 64
+#define ZR_MAX_NPCS_ALLIED 32 //Never need more.
+#define ZR_MAX_LAG_COMP 128 
 #define ZR_MAX_BUILDINGS 128
 #define ZR_MAX_TRAPS 64
 #define ZR_MAX_BREAKBLES 32
@@ -298,6 +299,10 @@ int Pack_A_Punch_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 bool b_NpcHasDied[MAXENTITIES]={true, ...};
 const int i_MaxcountNpc = ZR_MAX_NPCS;
 int i_ObjectsNpcs[ZR_MAX_NPCS];
+
+const int i_Maxcount_Apply_Lagcompensation = ZR_MAX_LAG_COMP;
+int i_Objects_Apply_Lagcompensation[ZR_MAX_LAG_COMP];
+
 
 bool b_IsAlliedNpc[MAXENTITIES]={false, ...};
 const int i_MaxcountNpc_Allied = ZR_MAX_NPCS_ALLIED;
@@ -972,6 +977,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_zeroknife.sp"
 #include "zombie_riot/custom/weapon_ark.sp"
 #include "zombie_riot/custom/pets.sp"
+#include "zombie_riot/custom/coin_flip.sp"
 
 //FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
@@ -1299,6 +1305,7 @@ public void OnMapStart()
 	M3_Abilities_Precache();
 	Ark_autoaim_Map_Precache();
 	Wand_LightningPap_Map_Precache();
+	Abiltity_Coin_Flip_Map_Change();
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
@@ -3114,6 +3121,14 @@ public void Check_For_Team_Npc(int entity)
 					i = ZR_MAX_NPCS_ALLIED;
 				}
 			}
+			for (int i = 0; i < ZR_MAX_LAG_COMP; i++) //Make them lag compensate
+			{
+				if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) <= 0)
+				{
+					i_Objects_Apply_Lagcompensation[i] = EntIndexToEntRef(entity);
+					i = ZR_MAX_LAG_COMP;
+				}
+			}
 			
 		}	
 		else
@@ -3151,7 +3166,14 @@ public void Check_For_Team_Npc(int entity)
 					i = ZR_MAX_NPCS;
 				}
 			}
-			
+			for (int i = 0; i < ZR_MAX_LAG_COMP; i++) //Make them lag compensate
+			{
+				if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) <= 0)
+				{
+					i_Objects_Apply_Lagcompensation[i] = EntIndexToEntRef(entity);
+					i = ZR_MAX_LAG_COMP;
+				}
+			}
 		}
 	}
 }
