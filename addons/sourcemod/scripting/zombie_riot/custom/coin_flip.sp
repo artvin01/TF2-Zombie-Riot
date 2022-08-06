@@ -238,26 +238,6 @@ public Action flip_extra(Handle timer, int client)
 			SetEntProp(entity, Prop_Send, "m_usSolidFlags", 8);			// Fire trigger even if not solid (8)
 			
 			DispatchKeyValueFloat(entity, "modelscale", 0.65);
-
-			static float m_vecMaxs[3];
-			static float m_vecMins[3];
-			m_vecMaxs = view_as<float>( { 1.0, 1.0, 2.0 } );
-			m_vecMins = view_as<float>( { -1.0, -1.0, 0.0 } );		
-							
-			SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", m_vecMins);
-							
-			SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", m_vecMaxs);
-			
-							
-			CClotBody npc = view_as<CClotBody>(entity);
-			npc.UpdateCollisionBox();
-							
-			m_vecMaxs = view_as<float>( { 1.0, 1.0, 1.0 } );
-			m_vecMins = view_as<float>( { -1.0, -1.0, -1.0 } );		
-			
-			SetEntPropVector(entity, Prop_Data, "m_vecMaxs", m_vecMaxs);
-							
-			SetEntPropVector(entity, Prop_Data, "m_vecMins", m_vecMins);
 		
 			Coin_flip[client] = EntIndexToEntRef(entity);
 			mb_coin[entity] = true;
@@ -703,7 +683,7 @@ stock int GetClosestTarget_Coin(int entity)
 		{
 			static char classname[36];
 			GetEntityClassname(new_entity, classname, sizeof(classname));
-			if (!StrContains(classname, "base_boss", false) && (GetEntProp(new_entity, Prop_Send, "m_iTeamNum") != GetEntProp(entity, Prop_Send, "m_iTeamNum")) && entity != new_entity)
+			if (!b_npcspawnprotection[new_entity] && !StrContains(classname, "base_boss", false) && (GetEntProp(new_entity, Prop_Send, "m_iTeamNum") != GetEntProp(entity, Prop_Send, "m_iTeamNum")) && entity != new_entity)
 			{ 
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -719,7 +699,7 @@ stock int GetClosestTarget_Coin(int entity)
 				{
 					if( Health ) 
 					{
-						if( HighestHealth < Health ) 
+						if( HighestHealth > Health ) 
 						{
 							ClosestTarget = new_entity; 
 							Health = HighestHealth;          
