@@ -50,7 +50,6 @@ ConVar sv_maxunlag;
 
 StringMap EntityTrack;
 StringMap EntityRestore;
-bool DoingLagCompensation;
 int TickCount[MAXTF2PLAYERS];
 float ViewAngles[MAXTF2PLAYERS][3];
 
@@ -164,7 +163,7 @@ public void StartLagCompensation_Base_Boss(int client, bool compensate_players)
 			
 			// Iterate all active NPCs
 			//const CBitVec<MAX_EDICTS> *pEntityTransmitBits = engine.GetEntityTransmitBitsForClient( player.entindex() - 1 );
-			if(!compensate_players)
+		//	if(!compensate_players)
 			{
 				for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
 				{
@@ -179,22 +178,6 @@ public void StartLagCompensation_Base_Boss(int client, bool compensate_players)
 						BacktrackEntity(entity, TICKS_TO_TIME(targettick));
 					}
 				}
-			}
-			else
-			{
-				for(int entity=1; entity<=MaxClients; entity++)
-				{
-					if(entity != client && IsClientInGame(entity) && IsPlayerAlive(entity))
-					{
-						// Custom checks for if things should lag compensate (based on things like what team the player is on).
-						if(!WantsLagCompensationOnEntity(entity, client, ViewAngles[client]/*, pEntityTransmitBits*/))
-							continue;
-
-						// Move other NPCs back in time
-						BacktrackEntity(entity, TICKS_TO_TIME(targettick));
-					}
-				}
-				
 			}
 		}
 	}
@@ -384,7 +367,6 @@ public void BacktrackEntity(int entity, float currentTime) //Make sure that alli
 	{
 		if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
 		{
-#if !defined DisableInterpolation
 			bool interpolationAllowed = (multi && frac > 0.0 && record.m_masterSequence == prevRecord.m_masterSequence);
 			
 			if(interpolationAllowed)
@@ -417,7 +399,6 @@ public void BacktrackEntity(int entity, float currentTime) //Make sure that alli
 				}
 			}
 			else
-#endif
 			{
 				SetEntProp(entity, Prop_Data, "m_nSequence", record.m_masterSequence);
 				SetEntPropFloat(entity, Prop_Data, "m_flCycle", record.m_masterCycle);
@@ -440,7 +421,6 @@ public void BacktrackEntity(int entity, float currentTime) //Make sure that alli
 					layer.m_sequence = currentLayer.Get(m_nSequence);
 					layer.m_weight = currentLayer.Get(m_flWeight);
 					restore.m_layerRecords.PushArray(layer);
-#if !defined DisableInterpolation
 					bool interpolated = false;
 					if(interpolationAllowed)
 					{
@@ -469,7 +449,6 @@ public void BacktrackEntity(int entity, float currentTime) //Make sure that alli
 					}
 					
 					if(!interpolated)
-#endif
 					{
 						//Either no interp, or interp failed.  Just use record.
 						currentLayer.Set(m_flCycle, layer.m_cycle);
@@ -676,49 +655,6 @@ public void LagCompensationThink_Forward()
 				list.PushArray(record);
 			}
 		}
-#if defined	CompensatePlayers
-		for(int client_compensate=1; client_compensate<=MaxClients; client_compensate++)
-		{
-			if(IsClientInGame(client_compensate))// && IsPlayerAlive(client_compensate))
-			{
-				IntToString(EntIndexToEntRef(client_compensate), refchar, sizeof(refchar));
-				if(!EntityTrack.GetValue(refchar, list))
-				{
-					list = new ArrayList(sizeof(LagRecord));
-					EntityTrack.SetValue(refchar, list);
-					continue; // give a frame to spawn in before we do anything
-				}
-				// remove tail records that are too old
-				int length = list.Length;
-				while(length)
-				{
-					list.GetArray(0, record);
-					
-					// if tail is within limits, stop
-					if(record.m_flSimulationTime >= deadTime)
-						break;
-					
-					// remove tail, get new tail
-//					delete record.m_layerRecords; Never gets recorded
-					list.Erase(0);
-					length--;
-				}
-				
-				// check if head has same simulation time
-				if(length)
-				{
-					list.GetArray(length-1, record);
-					
-					// check if player changed simulation time since last time updated
-					if(record.m_flSimulationTime >= GetEntPropFloat(client_compensate, Prop_Data, "m_flSimulationTime"))
-						continue; // don't add new entry for same or older time
-				}
-				record.m_flSimulationTime	= GetEntPropFloat(client_compensate, Prop_Data, "m_flSimulationTime");				
-				GetEntPropVector(client_compensate, Prop_Data, "m_vecOrigin", record.m_vecOrigin);
-				list.PushArray(record);
-			}
-		}
-#endif
 	}
 }
 

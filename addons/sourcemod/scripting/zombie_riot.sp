@@ -47,8 +47,6 @@
 
 #define NoSendProxyClass
 
-//#define DisableInterpolation
-
 //maybe doing this will help lag, as there are no aim layers in zombies, they always look forwards no matter what.
 
 //edit: No, makes you miss more often.
@@ -67,7 +65,7 @@ ConVar CvarXpMultiplier;
 
 bool Toggle_sv_cheats = false;
 bool b_MarkForReload = false; //When you wanna reload the plugin on map change...
-#define CompensatePlayers
+//#define CompensatePlayers
 
 //#define FastStart
 
@@ -191,6 +189,7 @@ int CurrentCash;
 bool LastMann;
 bool EscapeMode;
 bool EscapeModeForNpc;
+bool DoingLagCompensation;
 
 //bool RaidMode; 							//Is this raidmode?
 float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
@@ -3121,14 +3120,6 @@ public void Check_For_Team_Npc(int entity)
 					i = ZR_MAX_NPCS_ALLIED;
 				}
 			}
-			for (int i = 0; i < ZR_MAX_LAG_COMP; i++) //Make them lag compensate
-			{
-				if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) <= 0)
-				{
-					i_Objects_Apply_Lagcompensation[i] = EntIndexToEntRef(entity);
-					i = ZR_MAX_LAG_COMP;
-				}
-			}
 			
 		}	
 		else
@@ -3249,6 +3240,14 @@ public void Check_For_Team_Npc_Delayed(int ref)
 				{
 					i_ObjectsNpcs[i] = EntIndexToEntRef(entity);
 					i = ZR_MAX_NPCS;
+				}
+			}
+			for (int i = 0; i < ZR_MAX_LAG_COMP; i++) //Make them lag compensate
+			{
+				if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) <= 0)
+				{
+					i_Objects_Apply_Lagcompensation[i] = EntIndexToEntRef(entity);
+					i = ZR_MAX_LAG_COMP;
 				}
 			}
 			

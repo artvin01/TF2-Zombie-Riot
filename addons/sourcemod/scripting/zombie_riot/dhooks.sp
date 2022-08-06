@@ -501,6 +501,15 @@ public MRESReturn StartLagCompensationPost(Address manager, DHookParam param)
 	return MRES_Ignored;
 }
 
+
+/*
+THINGS I TRIED THAT DONT WORK!
+
+Setting collision groups
+Trying to pass through them via passfilter, it works but stops. probably cus the trace ends there... :(
+
+*/
+
 public void LagCompMovePlayersExceptYouBack()
 {
 	if(Move_Players != 0)
