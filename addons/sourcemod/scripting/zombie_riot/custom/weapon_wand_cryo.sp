@@ -1,14 +1,14 @@
-static float Cryo_M1_Damage = 25.0; //M1 base damage per particle
+static float Cryo_M1_Damage = 16.0; //M1 base damage per particle
 static int Cryo_M1_Particles = 2;	//Number of particles fired by each M1 attack
-static float Cryo_M1_Damage_Pap = 42.0; //M1 base damage per particle (Pack-a-Punch)
+static float Cryo_M1_Damage_Pap = 32.0; //M1 base damage per particle (Pack-a-Punch)
 static int Cryo_M1_Particles_Pap = 2;	//Number of particles fired by each M1 attack (Pack-a-Punch)
 static int Cryo_M1_Particles_Pap2 = 3; //Number of particles fired by each M1 attack (Pack-a-Punch Tier 2)
-static float Cryo_M1_Damage_Pap2 = 80.0; //M1 base damage per particle (Pack-a-Punch Tier 2)
+static float Cryo_M1_Damage_Pap2 = 60.0; //M1 base damage per particle (Pack-a-Punch Tier 2)
 static float Cryo_M1_Radius = 100.0;	//Size of each cryo particle, in hammer units
 static float Cryo_M1_Spread = 6.0;	//Random spread for particles
 static float Cryo_M1_Time = 175.0;	//Time of M1 particles
 static float Cryo_M1_Velocity = 500.0;	//Velocity of M1 particles
-static float Cryo_M1_ReductionScale = 0.5; //Amount to multiply M1 damage each time it hits a zombie
+static float Cryo_M1_ReductionScale = 0.66; //Amount to multiply M1 damage each time it hits a zombie
 
 static float Cryo_M2_Damage = 350.0; //M2 base damage
 static float Cryo_M2_FreezeMult = 2.0;	//Amount to multiply damage dealt by M2 to frozen zombies
@@ -25,7 +25,7 @@ static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float Cryo_M2_Cooldown = 10.0;	//M2 Cooldown
 static float Cryo_M2_Falloff = 0.7;	//Amount to multiply damage dealt by M2 for each zombie it hits, like explosives
 
-static float Cryo_FreezeRequirement = 0.3; //% of target's max health M1 must do in order to trigger the freeze
+static float Cryo_FreezeRequirement = 0.35; //% of target's max health M1 must do in order to trigger the freeze
 static float Cryo_FreezeDuration = 3.0; //Duration to freeze zombies when the threshold is surpassed
 static float Cryo_SlowDuration = 5.0; //Duration to slow zombies when they are unfrozen
 static int Cryo_SlowType[MAXENTITIES] = {0, ...}; //Type of slow applied by the projectile, 0: None, 1: Weak Teslar Slow, 2: Strong Teslar Slow
@@ -458,6 +458,11 @@ public Action Cryo_Timer(Handle CryoDMG, int ref)
 					
 					Cryo_AlreadyHit[entity][target] = true;
 					Damage_Projectile[entity] *= Cryo_M1_ReductionScale;
+					
+					if(Damage_Projectile[entity] <= 1.0) //Damage it too low, just delete it.
+					{
+						return Plugin_Stop;
+					}
 				}
 			}
 		}
