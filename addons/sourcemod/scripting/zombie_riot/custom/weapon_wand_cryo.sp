@@ -1,9 +1,9 @@
-static float Cryo_M1_Damage = 12.5; //M1 base damage per particle
+static float Cryo_M1_Damage = 25.0; //M1 base damage per particle
 static int Cryo_M1_Particles = 2;	//Number of particles fired by each M1 attack
-static float Cryo_M1_Damage_Pap = 21.5; //M1 base damage per particle (Pack-a-Punch)
+static float Cryo_M1_Damage_Pap = 42.0; //M1 base damage per particle (Pack-a-Punch)
 static int Cryo_M1_Particles_Pap = 2;	//Number of particles fired by each M1 attack (Pack-a-Punch)
 static int Cryo_M1_Particles_Pap2 = 3; //Number of particles fired by each M1 attack (Pack-a-Punch Tier 2)
-static float Cryo_M1_Damage_Pap2 = 40.0; //M1 base damage per particle (Pack-a-Punch Tier 2)
+static float Cryo_M1_Damage_Pap2 = 80.0; //M1 base damage per particle (Pack-a-Punch Tier 2)
 static float Cryo_M1_Radius = 100.0;	//Size of each cryo particle, in hammer units
 static float Cryo_M1_Spread = 6.0;	//Random spread for particles
 static float Cryo_M1_Time = 175.0;	//Time of M1 particles
@@ -368,7 +368,7 @@ static void Wand_Launch_Cryo(int client, int iRot, float speed, float time, floa
 	
 	for (int i = 0; i < MAXENTITIES; i++)
 	{
-		Cryo_AlreadyHit[i][iCarrier] = false;
+//		Cryo_AlreadyHit[i][iCarrier] = false; //This will make all rehitable with the same projectile, i doubt thats what you want.
 		Cryo_AlreadyHit[iCarrier][i] = false;
 	}
 	
@@ -456,7 +456,7 @@ public Action Cryo_Timer(Handle CryoDMG, int ref)
 						}
 					}
 					
-					Cryo_AlreadyHit[target][entity] = true;
+					Cryo_AlreadyHit[entity][target] = true;
 					Damage_Projectile[entity] *= Cryo_M1_ReductionScale;
 				}
 			}
@@ -548,6 +548,6 @@ public void CleanAllApplied_Cryo(int entity)
 	for (int i = 0; i < MAXENTITIES; i++)
 	{
 		Cryo_AlreadyHit[i][entity] = false;
-		Cryo_AlreadyHit[entity][i] = false;
+//		Cryo_AlreadyHit[entity][i] = false;
 	}
 }
