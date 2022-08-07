@@ -1,10 +1,10 @@
-static float Cryo_M1_Damage = 16.0; //M1 base damage per particle
+static float Cryo_M1_Damage = 14.0; //M1 base damage per particle
 static int Cryo_M1_Particles = 2;	//Number of particles fired by each M1 attack
-static float Cryo_M1_Damage_Pap = 32.0; //M1 base damage per particle (Pack-a-Punch)
+static float Cryo_M1_Damage_Pap = 28.0; //M1 base damage per particle (Pack-a-Punch)
 static int Cryo_M1_Particles_Pap = 2;	//Number of particles fired by each M1 attack (Pack-a-Punch)
 static int Cryo_M1_Particles_Pap2 = 3; //Number of particles fired by each M1 attack (Pack-a-Punch Tier 2)
-static float Cryo_M1_Damage_Pap2 = 60.0; //M1 base damage per particle (Pack-a-Punch Tier 2)
-static float Cryo_M1_Radius = 100.0;	//Size of each cryo particle, in hammer units
+static float Cryo_M1_Damage_Pap2 = 40.0; //M1 base damage per particle (Pack-a-Punch Tier 2)
+static float Cryo_M1_Radius = 150.0; //Size of each cryo particle, in hammer units
 static float Cryo_M1_Spread = 6.0;	//Random spread for particles
 static float Cryo_M1_Time = 175.0;	//Time of M1 particles
 static float Cryo_M1_Velocity = 500.0;	//Velocity of M1 particles
@@ -377,7 +377,7 @@ static void Wand_Launch_Cryo(int client, int iRot, float speed, float time, floa
 	Cryo_IsCryo[iRot] = true;
 	Cryo_SlowType[iRot] = SlowType;
 	
-	CreateTimer(0.1, Cryo_Timer, EntIndexToEntRef(iCarrier), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.25, Cryo_Timer, EntIndexToEntRef(iCarrier), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 }
 
 //SearchDamage is a last resort, it uses zombie_riot.sp's OnGameFrame so you probably shouldn't use this unless all else fails:
