@@ -1,13 +1,14 @@
-static float Cryo_M1_Damage = 7.5; //M1 base damage per particle
+static float Cryo_M1_Damage = 12.5; //M1 base damage per particle
 static int Cryo_M1_Particles = 2;	//Number of particles fired by each M1 attack
-static float Cryo_M1_Damage_Pap = 10.0; //M1 base damage per particle (Pack-a-Punch)
+static float Cryo_M1_Damage_Pap = 15.0; //M1 base damage per particle (Pack-a-Punch)
 static int Cryo_M1_Particles_Pap = 2;	//Number of particles fired by each M1 attack (Pack-a-Punch)
 static int Cryo_M1_Particles_Pap2 = 3; //Number of particles fired by each M1 attack (Pack-a-Punch Tier 2)
-static float Cryo_M1_Damage_Pap2 = 12.5; //M1 base damage per particle (Pack-a-Punch Tier 2)
+static float Cryo_M1_Damage_Pap2 = 20.0; //M1 base damage per particle (Pack-a-Punch Tier 2)
 static float Cryo_M1_Radius = 100.0;	//Size of each cryo particle, in hammer units
 static float Cryo_M1_Spread = 6.0;	//Random spread for particles
 static float Cryo_M1_Time = 175.0;	//Time of M1 particles
 static float Cryo_M1_Velocity = 500.0;	//Velocity of M1 particles
+static float Cryo_M1_ReductionScale = 0.66; //Amount to multiply M1 damage each time it hits a zombie
 
 static float Cryo_M2_Damage = 350.0; //M2 base damage
 static float Cryo_M2_FreezeMult = 2.0;	//Amount to multiply damage dealt by M2 to frozen zombies
@@ -53,10 +54,6 @@ static bool Cryo_AlreadyHit[MAXENTITIES][MAXENTITIES];
 #define CRYO_PARTICLE_2			"unusual_icetornado_white_parent"
 #define CRYO_PARTICLE_3			"unusual_icetornado_purple_parent"
 #define CRYO_FREEZE_PARTICLE	"utaunt_snowring_space_parent"
-
-//TODO: Fix zombie movement on test server so you can see if the freeze actually works
-//TODO: Add M2 spell
-//TODO: Optimize M1 code so you don't have 3 methods doing a lot of the same shit
 
 void Wand_Cryo_Precache()
 {
@@ -421,14 +418,15 @@ public Action Cryo_Timer(Handle CryoDMG, int ref)
 			int target = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
 			if(IsValidEntity(target))
 			{
-				VicLoc = WorldSpaceCenter(target);
+				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", VicLoc);
 				
 				if (GetVectorDistance(ProjLoc, VicLoc) <= Cryo_M1_Radius)
 				{
 					//Code to do damage position and ragdolls
+					Entity_Position = WorldSpaceCenter(target);
 					//Code to do damage position and ragdolls
 					
-					SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_SHOCK, -1, CalculateDamageForce(vecForward, 0.0), VicLoc); // 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_SHOCK, -1, CalculateDamageForce(vecForward, 0.0), Entity_Position); // 2048 is DMG_NOGIB?
 					//SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_SHOCK, -1); // 2048 is DMG_NOGIB?
 					
 					if (!Cryo_Frozen[target] && !Cryo_Slowed[target] && HasEntProp(target, Prop_Data, "m_iMaxHealth"))
@@ -443,6 +441,7 @@ public Action Cryo_Timer(Handle CryoDMG, int ref)
 					}
 					
 					Cryo_AlreadyHit[target][entity] = true;
+					Damage_Projectile[entity] *= Cryo_M1_ReductionScale;
 				}
 			}
 		}
