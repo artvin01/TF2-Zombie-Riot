@@ -414,7 +414,6 @@ public Action Cryo_Timer(Handle CryoDMG, int ref)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenter(target);
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 
 		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
@@ -422,14 +421,14 @@ public Action Cryo_Timer(Handle CryoDMG, int ref)
 			int target = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
 			if(IsValidEntity(target))
 			{
-				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", VicLoc);
+				VicLoc = WorldSpaceCenter(target);
 				
 				if (GetVectorDistance(ProjLoc, VicLoc) <= Cryo_M1_Radius)
 				{
 					//Code to do damage position and ragdolls
 					//Code to do damage position and ragdolls
 					
-					SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_SHOCK, -1, CalculateDamageForce(vecForward, 0.0), Entity_Position); // 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_SHOCK, -1, CalculateDamageForce(vecForward, 0.0), VicLoc); // 2048 is DMG_NOGIB?
 					//SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_SHOCK, -1); // 2048 is DMG_NOGIB?
 					
 					if (!Cryo_Frozen[target] && !Cryo_Slowed[target] && HasEntProp(target, Prop_Data, "m_iMaxHealth"))
