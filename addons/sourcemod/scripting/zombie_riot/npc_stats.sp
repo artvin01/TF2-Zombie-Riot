@@ -5142,11 +5142,31 @@ stock bool IsSpaceOccupiedDontIgnorePlayers(const float pos[3], const float mins
 	return bHit;
 }
 
+stock int IsSpaceOccupiedOnlyPlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
+{
+	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayHitPlayersOnly, entity);
+	bool bHit = TR_DidHit(hTrace);
+	ref = TR_GetEntityIndex(hTrace);
+	delete hTrace;
+	if(ref <= 0)
+		return 0;
+		
+	return ref;
+}
+
 public bool TraceRayHitPlayers(int entity,int mask,any data)
 {
 	if (entity == 0) return true;
 	
 	if (entity <= MaxClients) return true;
+	
+	return false;
+}
+
+public bool TraceRayHitPlayersOnly(int entity,int mask,any data)
+{
+	if (entity > 0 && entity <= MaxClients)
+		return true;
 	
 	return false;
 }
@@ -5160,29 +5180,58 @@ public bool TraceRayDontHitPlayersOrEntity(int entity,int mask,any data)
 
 public void Check_If_Stuck(int iNPC)
 {
-//	PrintToChatAll("%i",GetEdictFlags(iNPC));
-//	SetEdictFlags(iNPC, 133); //Remove this if it causes lag
-//	PrintToChatAll("%i"GetEdictFlags(iNPC));
 	CClotBody npc = view_as<CClotBody>(iNPC);
-	/*
-	if(npc.m_flCheckNavCooldown < GetGameTime() && npc.m_flJumpCooldown < GetGameTime())
+	
+	
+	//This is a tempomary fix. find a better one for players getting stuck.
+	static float hullcheckmaxs_Player[3];
+	static float hullcheckmins_Player[3];
+	if(b_IsGiant[iNPC])
 	{
-		npc.m_flCheckNavCooldown = GetGameTime() + 0.1; //A little delay to ease server performance
-		NavArea area = TheNavMesh.GetNearestNavArea_Vec(WorldSpaceCenter(npc.index), true);
-		if(area != NavArea_Null)
-		{
-			//NavArea.HasAttributes(NavAttributeType bits);
-			NavArea nav_area_property = view_as<NavArea>(area);
+	 	hullcheckmaxs_Player = view_as<float>( { 30.0, 30.0, 120.0 } );
+		hullcheckmins_Player = view_as<float>( { -30.0, -30.0, 0.0 } );	
+	}
+	else
+	{
 			
-			if(nav_area_property.HasAttributes(NAV_MESH_JUMP))
-			{
-				npc.m_flJumpStartTime = GetGameTime() + 1.0;
-				PluginBot_Jump_Now(npc.index);
-			}
+		hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
+		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
+	}
+		
+	float flMyPos[3];
+	GetEntPropVector(iNPC, Prop_Data, "m_vecOrigin", flMyPos);
+	
+	int Hit_player = IsSpaceOccupiedOnlyPlayers(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
+		
+	if (Hit_player) //The boss will start to merge with player, STOP!
+	{
+		float flPlayerPos[3];
+		GetEntPropVector(Hit_player, Prop_Data, "m_vecOrigin", flPlayerPos);
+		float flMyPos_2[3];
+		flMyPos_2[0] = flPlayerPos[0];
+		flMyPos_2[1] = flPlayerPos[1];
+		flMyPos_2[2] = flMyPos[2];
+		
+		if(flPlayerPos[2] > flMyPos_2[2]) //PLAYER IS ABOVE ZOMBIE
+		{
+			flMyPos_2[2] += hullcheckmaxs_Player[2];
+			
+			SDKCall_SetLocalOrigin(Hit_player, flMyPos_2);			
+		}
+		else //PLAYER IS BELOW ZOMBIE
+		{
+			flMyPos_2[0] = flMyPos[0];
+			flMyPos_2[1] = flMyPos[1];
+			flMyPos_2[2] = flMyPos[2];
+			flMyPos_2[2] += hullcheckmaxs_Player[2];
+			flMyPos_2[2] += 5.0;
+			SDKCall_SetLocalOrigin(iNPC, flMyPos_2);
 		}
 	}
-	
-	*/
+	//This is a tempomary fix. find a better one for players getting stuck.
+
+
+
 	if (!npc.IsOnGround())
 	{
 		static float hullcheckmaxs[3];
@@ -5209,9 +5258,6 @@ public void Check_If_Stuck(int iNPC)
 		
 		hullcheckmins[2] -= 16.0; //STEP HEIGHT
 		hullcheckmaxs[2] += 16.0;
-		
-		float flMyPos[3];
-		GetEntPropVector(iNPC, Prop_Data, "m_vecOrigin",flMyPos);
 		
 		if (!npc.g_bNPCVelocityCancel && IsSpaceOccupiedIgnorePlayers(flMyPos, hullcheckmins, hullcheckmaxs, iNPC))//The boss will start to merge with shits, cancel out velocity.
 		{
