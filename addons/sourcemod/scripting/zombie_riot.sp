@@ -351,6 +351,8 @@ bool b_npcspawnprotection[MAXENTITIES];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
 float f_HighTeslarDebuff[MAXENTITIES];
+float f_LowIceDebuff[MAXENTITIES];
+float f_HighIceDebuff[MAXENTITIES];
 bool b_Frozen[MAXENTITIES];
 
 float f_WidowsWineDebuff[MAXENTITIES];
@@ -408,10 +410,10 @@ bool b_Is_Npc_Rocket[MAXENTITIES];
 bool b_Is_Player_Rocket[MAXENTITIES];
 bool b_Is_Player_Rocket_Through_Npc[MAXENTITIES];
 bool b_Is_Blue_Npc[MAXENTITIES];
+bool b_IsInUpdateGroundConstraintLogic;
 
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
 int h_NpcCollissionHookType[MAXENTITIES];
-
 #define EP_GENERIC                  		0          					// Nothing special.
 #define EP_NO_KNOCKBACK              		(1 << 0)   					// No knockback
 #define EP_DEALS_SLASH_DAMAGE              	(1 << 1)   					// Slash Damage (For no npc scaling, or ignoring resistances.)
@@ -442,7 +444,8 @@ bool b_BlockLagCompInternal[MAXENTITIES];
 bool b_Dont_Move_Building[MAXENTITIES];
 int b_BoundingBoxVariant[MAXENTITIES];
 bool b_IsAloneOnServer = false;
-
+bool b_ThisEntityIgnored[MAXENTITIES];
+bool b_ThisEntityIsAProjectileForUpdateContraints[MAXENTITIES];
 
 bool b_IsPlayerABot[MAXPLAYERS+1];
 
@@ -2861,6 +2864,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	}
 	else if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
 		b_EntityIsArrow[entity] = false;
 		CClotBody npc = view_as<CClotBody>(entity);
 		b_SentryIsCustom[entity] = false;
@@ -2939,6 +2943,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "tf_projectile_syringe"))
 		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
@@ -2948,6 +2953,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		
 		else if(!StrContains(classname, "tf_projectile_healing_bolt"))
 		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
@@ -2957,6 +2963,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		
 		else if(!StrContains(classname, "tf_projectile_pipe_remote"))
 		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
@@ -2966,6 +2973,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "tf_projectile_arrow"))
 		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
@@ -2979,16 +2987,31 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "prop_physics_multiplayer"))
 		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+			npc.bCantCollidie = true;
+			npc.bCantCollidieAlly = true;
+		}
+		else if(!StrContains(classname, "prop_physics_override"))
+		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+			npc.bCantCollidie = true;
+			npc.bCantCollidieAlly = true;
+		}
+		else if(!StrContains(classname, "func_door_rotating"))
+		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
 		else if(!StrContains(classname, "prop_physics"))
 		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
 		else if(!StrContains(classname, "tf_projectile_pipe"))
 		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
@@ -2999,6 +3022,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "tf_projectile_rocket"))
 		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			SDKHook(entity, SDKHook_SpawnPost, ApplyExplosionDhook_Rocket);
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;

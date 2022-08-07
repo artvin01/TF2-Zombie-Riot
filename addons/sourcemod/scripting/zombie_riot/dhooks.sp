@@ -279,7 +279,18 @@ public Action CH_PassFilter(int ent1, int ent2, bool &result)
 
 public bool PassfilterGlobal(int ent1, int ent2, bool result)
 {
-	if(b_Is_Npc_Rocket[ent2])
+	if(b_IsInUpdateGroundConstraintLogic)
+	{
+		if(b_ThisEntityIsAProjectileForUpdateContraints[ent1])
+		{
+			return false;
+		}
+		else if(b_ThisEntityIsAProjectileForUpdateContraints[ent1])
+		{
+			return false;
+		}
+	}
+	else if(b_Is_Npc_Rocket[ent2])
 	{
 		if(b_Is_Blue_Npc[ent1])
 		{
@@ -337,10 +348,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		{
 			return false;
 		}
-	}
-	else
-	{
-		return result;	
 	}
 	return result;	
 }
@@ -878,25 +885,6 @@ void DHook_RespawnPlayer(int client)
 	IsRespawning = true;
 	TF2_RespawnPlayer(client);
 	IsRespawning = false;
-}
-
-static void DHook_CreateDetour(GameData gamedata, const char[] name, DHookCallback preCallback = INVALID_FUNCTION, DHookCallback postCallback = INVALID_FUNCTION)
-{
-	DynamicDetour detour = DynamicDetour.FromConf(gamedata, name);
-	if(detour)
-	{
-		if(preCallback!=INVALID_FUNCTION && !DHookEnableDetour(detour, false, preCallback))
-			LogError("[Gamedata] Failed to enable pre detour: %s", name);
-
-		if(postCallback!=INVALID_FUNCTION && !DHookEnableDetour(detour, true, postCallback))
-			LogError("[Gamedata] Failed to enable post detour: %s", name);
-
-		delete detour;
-	}
-	else
-	{
-		LogError("[Gamedata] Could not find %s", name);
-	}
 }
 
 public MRESReturn DHook_CanAirDashPre(int client, DHookReturn ret)

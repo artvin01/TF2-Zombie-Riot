@@ -230,7 +230,7 @@ static void Wand_Launch(int client, int iRot, float speed, float time, float dam
 	pack.WriteCell(EntIndexToEntRef(iCarrier));
 	pack.WriteCell(EntIndexToEntRef(particle));
 	pack.WriteCell(EntIndexToEntRef(iRot));
-		
+	
 	SDKHook(iCarrier, SDKHook_StartTouch, Event_Wand_OnHatTouch);
 }
 
@@ -255,6 +255,7 @@ public Action Event_Wand_OnHatTouch(int entity, int other)
 			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
 			RemoveEntity(particle);
 		}
+
 		RemoveEntity(entity);
 	}
 	else if(target == 0)
@@ -265,6 +266,7 @@ public Action Event_Wand_OnHatTouch(int entity, int other)
 			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
 			RemoveEntity(particle);
 		}
+
 		RemoveEntity(entity);
 	}
 	return Plugin_Handled;

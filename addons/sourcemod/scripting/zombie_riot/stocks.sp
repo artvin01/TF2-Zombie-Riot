@@ -3061,3 +3061,23 @@ public void MakeExplosionFrameLater(DataPack pack)
 	}		
 	delete pack;
 }
+
+
+stock void DHook_CreateDetour(GameData gamedata, const char[] name, DHookCallback preCallback = INVALID_FUNCTION, DHookCallback postCallback = INVALID_FUNCTION)
+{
+	DynamicDetour detour = DynamicDetour.FromConf(gamedata, name);
+	if(detour)
+	{
+		if(preCallback!=INVALID_FUNCTION && !DHookEnableDetour(detour, false, preCallback))
+			LogError("[Gamedata] Failed to enable pre detour: %s", name);
+
+		if(postCallback!=INVALID_FUNCTION && !DHookEnableDetour(detour, true, postCallback))
+			LogError("[Gamedata] Failed to enable post detour: %s", name);
+
+		delete detour;
+	}
+	else
+	{
+		LogError("[Gamedata] Could not find %s", name);
+	}
+}

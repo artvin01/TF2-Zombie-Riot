@@ -42,7 +42,6 @@ int i_TeamGlow[MAXENTITIES]={-1, ...};
 int i_SpawnProtectionEntity[MAXENTITIES]={-1, ...};
 float f3_VecPunchForce[MAXENTITIES][3];
 float fl_NextDelayTime[MAXENTITIES];
-bool b_ThisEntityIgnored[MAXENTITIES];
 float fl_NextIdleSound[MAXENTITIES];
 float fl_AttackHappensMinimum[MAXENTITIES];
 float fl_AttackHappensMaximum[MAXENTITIES];
@@ -1617,6 +1616,9 @@ methodmap CClotBody
 			SetEntityCollisionGroup(npc, 24);
 		}
 		
+		
+		
+		
 		//Enable Harder zombies once in freeplay.
 		if(!EscapeModeForNpc)
 		{
@@ -1722,6 +1724,8 @@ methodmap CClotBody
 		HookIdMap.SetValue(buffer, list);
 		
 		//Ragdoll, hopefully
+		DHookEntity(g_hEvent_Killed,	 false, npc);
+		
 		DHookEntity(g_hEvent_Killed,	 false, npc);
 		
 		//Animevents 
@@ -2417,6 +2421,14 @@ methodmap CClotBody
 			{
 				speed_for_return *= 0.75;
 			}
+			if(f_HighIceDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.65;
+			}
+			else if(f_LowIceDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.75;
+			}
 		}
 		else
 		{
@@ -2428,7 +2440,14 @@ methodmap CClotBody
 			{
 				speed_for_return *= 0.95;
 			}			
-			
+			if(f_HighIceDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.9;
+			}
+			else if(f_LowIceDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.95;
+			}
 		}
 		if(this.mf_WidowsWineDebuff > Gametime)
 		{
@@ -3433,6 +3452,14 @@ public void NPC_Base_InitGamedata()
 	
 	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_ROOT);
 	
+	
+	GameData gamedata = LoadGameConfigFile("tf2.pets");
+	
+	// thanks to Dysphie#4094 on discord for help
+	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::UpdateGroundConstraint", Dhook_UpdateGroundConstraint_Pre, Dhook_UpdateGroundConstraint_Post);
+	
+	delete gamedata;
+	
 	Handle hConf = LoadGameConfigFile("tf2.pets");
 	
 	//SDKCalls
@@ -3456,6 +3483,7 @@ public void NPC_Base_InitGamedata()
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::ResetSequenceInfo");
 	if ((g_hResetSequenceInfo = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::ResetSequenceInfo signature!"); 
+	
 	
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseEntity::MyNextBotPointer");
@@ -5196,54 +5224,55 @@ public void Check_If_Stuck(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	
-	
-	//This is a tempomary fix. find a better one for players getting stuck.
-	static float hullcheckmaxs_Player[3];
-	static float hullcheckmins_Player[3];
-	if(b_IsGiant[iNPC])
-	{
-	 	hullcheckmaxs_Player = view_as<float>( { 30.0, 30.0, 120.0 } );
-		hullcheckmins_Player = view_as<float>( { -30.0, -30.0, 0.0 } );	
-	}
-	else
-	{
-			
-		hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
-		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
-	}
-		
 	float flMyPos[3];
 	GetEntPropVector(iNPC, Prop_Data, "m_vecOrigin", flMyPos);
-	
-	int Hit_player = IsSpaceOccupiedOnlyPlayers(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
-		
-	if (Hit_player) //The boss will start to merge with player, STOP!
+	if(!b_IsAlliedNpc[iNPC])
 	{
-		float flPlayerPos[3];
-		GetEntPropVector(Hit_player, Prop_Data, "m_vecOrigin", flPlayerPos);
-		float flMyPos_2[3];
-		flMyPos_2[0] = flPlayerPos[0];
-		flMyPos_2[1] = flPlayerPos[1];
-		flMyPos_2[2] = flMyPos[2];
-		
-		if(flPlayerPos[2] > flMyPos_2[2]) //PLAYER IS ABOVE ZOMBIE
+		//This is a tempomary fix. find a better one for players getting stuck.
+		static float hullcheckmaxs_Player[3];
+		static float hullcheckmins_Player[3];
+		if(b_IsGiant[iNPC])
 		{
-			flMyPos_2[2] += hullcheckmaxs_Player[2];
+		 	hullcheckmaxs_Player = view_as<float>( { 30.0, 30.0, 120.0 } );
+			hullcheckmins_Player = view_as<float>( { -30.0, -30.0, 0.0 } );	
+		}
+		else
+		{
+				
+			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
+			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
+		}
 			
-			SDKCall_SetLocalOrigin(Hit_player, flMyPos_2);			
-		}
-		else //PLAYER IS BELOW ZOMBIE
+		
+		int Hit_player = IsSpaceOccupiedOnlyPlayers(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
+			
+		if (Hit_player) //The boss will start to merge with player, STOP!
 		{
-			flMyPos_2[0] = flMyPos[0];
-			flMyPos_2[1] = flMyPos[1];
+			float flPlayerPos[3];
+			GetEntPropVector(Hit_player, Prop_Data, "m_vecOrigin", flPlayerPos);
+			float flMyPos_2[3];
+			flMyPos_2[0] = flPlayerPos[0];
+			flMyPos_2[1] = flPlayerPos[1];
 			flMyPos_2[2] = flMyPos[2];
-			flMyPos_2[2] += hullcheckmaxs_Player[2];
-			flMyPos_2[2] += 5.0;
-			SDKCall_SetLocalOrigin(iNPC, flMyPos_2);
+			
+			if(flPlayerPos[2] > flMyPos_2[2]) //PLAYER IS ABOVE ZOMBIE
+			{
+				flMyPos_2[2] += hullcheckmaxs_Player[2];
+				
+				SDKCall_SetLocalOrigin(Hit_player, flMyPos_2);			
+			}
+			else //PLAYER IS BELOW ZOMBIE
+			{
+				flMyPos_2[0] = flMyPos[0];
+				flMyPos_2[1] = flMyPos[1];
+				flMyPos_2[2] = flMyPos[2];
+				flMyPos_2[2] += hullcheckmaxs_Player[2];
+				flMyPos_2[2] += 5.0;
+				SDKCall_SetLocalOrigin(iNPC, flMyPos_2);
+			}
 		}
+		//This is a tempomary fix. find a better one for players getting stuck.
 	}
-	//This is a tempomary fix. find a better one for players getting stuck.
-
 
 
 	if (!npc.IsOnGround())
@@ -6923,6 +6952,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_LowTeslarDebuff[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
 	f_WidowsWineDebuff[entity] = 0.0;
+	f_LowIceDebuff[entity] = 0.0;
+	f_HighIceDebuff[entity] = 0.0;
 	b_Frozen[entity] = false;
 	
 	fl_MeleeArmor[entity] = 1.0; //yeppers.
@@ -7019,6 +7050,18 @@ public void Change_Npc_Collision(int npc, int CollisionType)
 	}
 }
 
+
+public MRESReturn Dhook_UpdateGroundConstraint_Pre(DHookParam param)
+{
+	b_IsInUpdateGroundConstraintLogic = true;
+	return MRES_Ignored;
+}
+
+public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
+{
+	b_IsInUpdateGroundConstraintLogic = false;
+	return MRES_Ignored;
+}
 //NORMAL
 
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"

@@ -222,6 +222,12 @@
 			{
 				"windows"	"\x55\x8B\xEC\x83\xEC\x70\x53\x8B\x5D\x08\x56\x57"
 			}
+
+			"NextBotGroundLocomotion::UpdateGroundConstraint" //Has alot of strings, no need for instructions.
+			{
+				"windows"	"\x55\x8B\xEC\x83\xEC\x30\x8B\x15\x2A\x2A\x2A\x2A\x53\x56\x33\xF6\x33\xDB"
+				"linux"		"@_ZN23NextBotGroundLocomotion22UpdateGroundConstraintEv"
+			}
 			
 		}
 		"Functions"
@@ -232,6 +238,13 @@
 				"hooktype"	"entity"
 				"return"	"int"
 				"this"		"entity"
+			}
+			"NextBotGroundLocomotion::UpdateGroundConstraint"
+			{
+				"signature"	"NextBotGroundLocomotion::UpdateGroundConstraint"
+				"hooktype"	"address"
+				"return"	"void"
+				"this"		"address"
 			}
 		}
 		"Offsets"

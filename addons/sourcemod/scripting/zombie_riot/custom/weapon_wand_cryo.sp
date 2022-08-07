@@ -26,7 +26,7 @@ static float Cryo_M2_Cooldown = 10.0;	//M2 Cooldown
 static float Cryo_M2_Falloff = 0.7;	//Amount to multiply damage dealt by M2 for each zombie it hits, like explosives
 
 static float Cryo_FreezeRequirement = 0.3; //% of target's max health M1 must do in order to trigger the freeze
-static float Cryo_FreezeDuration = 4.0; //Duration to freeze zombies when the threshold is surpassed
+static float Cryo_FreezeDuration = 3.0; //Duration to freeze zombies when the threshold is surpassed
 static float Cryo_SlowDuration = 5.0; //Duration to slow zombies when they are unfrozen
 static int Cryo_SlowType[MAXENTITIES] = {0, ...}; //Type of slow applied by the projectile, 0: None, 1: Weak Teslar Slow, 2: Strong Teslar Slow
 static int Cryo_SlowType_Zombie[MAXENTITIES] = {0, ...};	//^Ditto, but applied to zombies when they get frozen
@@ -161,7 +161,7 @@ public void Cryo_ActivateBurst(int client, int weapon, bool &result, int slot, f
 	
 	for (int target = 1; target < MAXENTITIES; target++)
 	{
-		if (IsValidEntity(target))
+		if (IsValidEntity(target) && !b_NpcHasDied[target])
 		{
 			char TargName[255];
 			GetEntityClassname(target, TargName, sizeof(TargName));
@@ -287,7 +287,7 @@ public void Weapon_Wand_Cryo_Shoot(int client, int weapon, bool crit, int slot, 
 			DispatchKeyValueFloat(iRot, "speed", speed);
 			DispatchKeyValue(iRot, "spawnflags", "12288"); // passable|silent
 			DispatchSpawn(iRot);
-			SetEntityCollisionGroup(iRot, 27);
+			SetEntityCollisionGroup(iRot, 1);
 			
 			SetVariantString("!activator");
 			AcceptEntityInput(iRot, "Open");
@@ -339,8 +339,8 @@ static void Wand_Launch_Cryo(int client, int iRot, float speed, float time, floa
 	
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);
-	SetEntityCollisionGroup(iCarrier, 27);
-	
+	SetEntityCollisionGroup(iCarrier, 1);
+			
 	Projectile_To_Client[iCarrier] = client;
 	Damage_Projectile[iCarrier] = damage;
 	Projectile_To_Weapon[iCarrier] = weapon;
@@ -382,6 +382,8 @@ static void Wand_Launch_Cryo(int client, int iRot, float speed, float time, floa
 	
 	Cryo_IsCryo[iCarrier] = true;
 	Cryo_SlowType[iCarrier] = SlowType;
+	Cryo_IsCryo[iRot] = true;
+	Cryo_SlowType[iRot] = SlowType;
 	
 	CreateTimer(0.1, Cryo_Timer, EntIndexToEntRef(iCarrier), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 }
@@ -416,7 +418,7 @@ public Action Cryo_Timer(Handle CryoDMG, int ref)
 		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 		{
 			int target = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if(IsValidEntity(target))
+			if(IsValidEntity(target) && !b_NpcHasDied[target])
 			{
 				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", VicLoc);
 				
@@ -468,6 +470,17 @@ public void Cryo_FreezeZombie(int zombie)
 	CreateTimer(Cryo_FreezeDuration, Cryo_Unfreeze, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
 	float position[3];
 	GetEntPropVector(zombie, Prop_Data, "m_vecAbsOrigin", position);
+	switch (Cryo_SlowType_Zombie[zombie])
+	{
+		case 1:
+		{
+			f_LowIceDebuff[zombie] = GetGameTime() + (Cryo_SlowDuration + Cryo_FreezeDuration);
+		}
+		case 2:
+		{
+			f_HighIceDebuff[zombie] = GetGameTime() + (Cryo_SlowDuration + Cryo_FreezeDuration);
+		}
+	}
 	//Un-comment the following line if you want a particle to appear on frozen zombies:
 	//int particle = ParticleEffectAt(position, CRYO_FREEZE_PARTICLE, Cryo_FreezeDuration);
 }
@@ -486,18 +499,6 @@ public Action Cryo_Unfreeze(Handle Unfreeze, int ref)
 		
 		CClotBody ZNPC = view_as<CClotBody>(zombie);
 		ZNPC.m_bFrozen = false;
-		
-		switch (Cryo_SlowType_Zombie[zombie])
-		{
-			case 1:
-			{
-				ZNPC.m_fLowTeslarDebuff = Cryo_SlowDuration;
-			}
-			case 2:
-			{
-				ZNPC.m_fHighTeslarDebuff = Cryo_SlowDuration;
-			}
-		}
 		
 		CreateTimer(Cryo_SlowDuration, Cryo_Unslow, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
 		SetEntityRenderColor(zombie, 0, 255, 255, 255);
