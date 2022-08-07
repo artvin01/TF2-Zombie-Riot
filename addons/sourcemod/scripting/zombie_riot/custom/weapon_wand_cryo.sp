@@ -430,6 +430,30 @@ public Action Cryo_Timer(Handle CryoDMG, int ref)
 					
 					SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 0.0), Entity_Position); // 2048 is DMG_NOGIB?
 					//SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_SHOCK, -1); // 2048 is DMG_NOGIB?
+					switch (Cryo_SlowType[entity])
+					{
+						case 0:
+						{
+							if((f_VeryLowIceDebuff[target] - 1.0) < GetGameTime())
+							{
+								f_VeryLowIceDebuff[target] = GetGameTime() + 1.1;
+							}
+						}
+						case 1:
+						{
+							if((f_LowIceDebuff[target] - 1.0) < GetGameTime())
+							{
+								f_LowIceDebuff[target] = GetGameTime() + 1.1;
+							}
+						}
+						case 2:
+						{
+							if((f_HighIceDebuff[target] - 1.0) < GetGameTime())
+							{
+								f_HighIceDebuff[target] = GetGameTime() + 1.1;
+							}
+						}
+					}
 					
 					if (!Cryo_Frozen[target] && !Cryo_Slowed[target] && HasEntProp(target, Prop_Data, "m_iMaxHealth"))
 					{
@@ -472,6 +496,10 @@ public void Cryo_FreezeZombie(int zombie)
 	GetEntPropVector(zombie, Prop_Data, "m_vecAbsOrigin", position);
 	switch (Cryo_SlowType_Zombie[zombie])
 	{
+		case 0:
+		{
+			f_VeryLowIceDebuff[zombie] = GetGameTime() + (Cryo_SlowDuration + Cryo_FreezeDuration);
+		}
 		case 1:
 		{
 			f_LowIceDebuff[zombie] = GetGameTime() + (Cryo_SlowDuration + Cryo_FreezeDuration);

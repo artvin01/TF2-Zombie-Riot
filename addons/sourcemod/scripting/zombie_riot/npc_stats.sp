@@ -2396,12 +2396,11 @@ methodmap CClotBody
 		public get()				{ return b_AllowBackWalking[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_AllowBackWalking[this.index] = TempValueForProperty; }
 	}
-
-	public float GetRunSpeed()//For the future incase we want to alter it easier
+	public float GetDebuffPercentage()//For the future incase we want to alter it easier
 	{
 		float speed_for_return;
 		
-		speed_for_return = this.m_flSpeed;
+		speed_for_return = 1.0;
 		
 		float Gametime = GetGameTime();
 		
@@ -2423,11 +2422,15 @@ methodmap CClotBody
 			}
 			if(f_HighIceDebuff[this.index] > Gametime)
 			{
-				speed_for_return *= 0.65;
+				speed_for_return *= 0.85;
 			}
 			else if(f_LowIceDebuff[this.index] > Gametime)
 			{
-				speed_for_return *= 0.75;
+				speed_for_return *= 0.90;
+			}
+			else if (f_VeryLowIceDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.95;
 			}
 		}
 		else
@@ -2442,11 +2445,15 @@ methodmap CClotBody
 			}			
 			if(f_HighIceDebuff[this.index] > Gametime)
 			{
-				speed_for_return *= 0.9;
+				speed_for_return *= 0.95;
 			}
 			else if(f_LowIceDebuff[this.index] > Gametime)
 			{
-				speed_for_return *= 0.95;
+				speed_for_return *= 0.96;
+			}
+			else if (f_VeryLowIceDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.97;
 			}
 		}
 		if(this.mf_WidowsWineDebuff > Gametime)
@@ -2489,7 +2496,16 @@ methodmap CClotBody
 		if (this.m_bFrozen)
 		{
 			speed_for_return = 1.0;
-		}
+		}		
+		return speed_for_return;
+	}
+	public float GetRunSpeed()//For the future incase we want to alter it easier
+	{
+		float speed_for_return;
+		
+		speed_for_return = this.m_flSpeed;
+		
+		speed_for_return *= this.GetDebuffPercentage();
 		
 		return speed_for_return; 
 	}
@@ -4371,8 +4387,9 @@ public void PluginBot_Approach(int bot_entidx, const float vec[3])
 {
 	CClotBody npc = view_as<CClotBody>(bot_entidx);
 	npc.Approach(vec);
+	
 	if(!npc.m_bAllowBackWalking)
-		npc.FaceTowards(vec);
+		npc.FaceTowards(vec, (250.0 * npc.GetDebuffPercentage()));
 }
 
 public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
@@ -6954,6 +6971,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_LowTeslarDebuff[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
 	f_WidowsWineDebuff[entity] = 0.0;
+	f_VeryLowIceDebuff[entity] = 0.0;
 	f_LowIceDebuff[entity] = 0.0;
 	f_HighIceDebuff[entity] = 0.0;
 	b_Frozen[entity] = false;

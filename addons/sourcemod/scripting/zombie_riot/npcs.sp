@@ -1020,11 +1020,15 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	
 	if(f_HighIceDebuff[victim] > GetGameTime())
 	{
-		damage *= 1.25;
+		damage *= 1.20;
 	}
 	else if(f_LowIceDebuff[victim] > GetGameTime())
 	{
 		damage *= 1.15;
+	}
+	else if(f_VeryLowIceDebuff[victim] > GetGameTime())
+	{
+		damage *= 1.10;
 	}
 	
 	if(f_WidowsWineDebuff[victim] > GetGameTime())
@@ -1380,6 +1384,11 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 		{
 			Debuff_added = true;
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "❃");
+		}
+		else if (f_VeryLowIceDebuff[victim] > GetGameTime())
+		{
+			Debuff_added = true;
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "❆");	
 		}
 		
 		if(f_WidowsWineDebuff[victim] > GetGameTime())
