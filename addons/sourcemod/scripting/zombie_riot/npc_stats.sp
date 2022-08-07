@@ -2495,7 +2495,7 @@ methodmap CClotBody
 		
 		if (this.m_bFrozen)
 		{
-			speed_for_return = 1.0;
+			speed_for_return = 0.01;
 		}		
 		return speed_for_return;
 	}

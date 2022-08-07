@@ -158,42 +158,34 @@ public void Cryo_ActivateBurst(int client, int weapon, bool &result, int slot, f
 	particle = ParticleEffectAt(UserLoc, "xms_snowburst_child03", 4.0);
 	
 	float TestDMG = damage;
-	
-	for (int target = 1; target < MAXENTITIES; target++)
+	static float angles[3];
+	GetEntPropVector(client, Prop_Send, "m_angRotation", angles);
+	float vecForward[3];
+	GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+				
+	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 	{
-		if (IsValidEntity(target) && !b_NpcHasDied[target])
+		int target = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+		if(IsValidEntity(target) && !b_NpcHasDied[target])
 		{
-			char TargName[255];
-			GetEntityClassname(target, TargName, sizeof(TargName));
-				
-			if (StrContains(TargName, "base_boss") != -1)
+			static float Entity_Position[3];
+			VicLoc = WorldSpaceCenter(target);
+			
+			if (GetVectorDistance(UserLoc, VicLoc) <= radius)
 			{
-				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", VicLoc);
 				
-				if (GetVectorDistance(UserLoc, VicLoc) <= radius)
+				if (Cryo_Frozen[target])
 				{
-					//Code to do damage position and ragdolls
-					static float angles[3];
-					GetEntPropVector(client, Prop_Send, "m_angRotation", angles);
-					float vecForward[3];
-					GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-					static float Entity_Position[3];
-					Entity_Position = WorldSpaceCenter(target);
-					//Code to do damage position and ragdolls
-						
-					if (Cryo_Frozen[target])
-					{
-						CreateTimer(0.1, Cryo_Unfreeze, EntIndexToEntRef(target), TIMER_FLAG_NO_MAPCHANGE);
-						EmitSoundToAll(SOUND_WAND_CRYO_SHATTER, target);
-						SDKHooks_TakeDamage(target, weapon, client, TestDMG * freezemult, DMG_SHOCK, -1, CalculateDamageForce(vecForward, 100000.0), Entity_Position); // 2048 is DMG_NOGIB?
-					}
-					else
-					{
-						SDKHooks_TakeDamage(target, weapon, client, TestDMG, DMG_SHOCK, -1, CalculateDamageForce(vecForward, 100000.0), Entity_Position); // 2048 is DMG_NOGIB?
-					}
-						
-					TestDMG *= Cryo_M2_Falloff;
+					CreateTimer(0.1, Cryo_Unfreeze, EntIndexToEntRef(target), TIMER_FLAG_NO_MAPCHANGE);
+					EmitSoundToAll(SOUND_WAND_CRYO_SHATTER, target);
+					SDKHooks_TakeDamage(target, weapon, client, TestDMG * freezemult, DMG_SHOCK, -1, CalculateDamageForce(vecForward, 100000.0), VicLoc); // 2048 is DMG_NOGIB?
 				}
+				else
+				{
+					SDKHooks_TakeDamage(target, weapon, client, TestDMG, DMG_SHOCK, -1, CalculateDamageForce(vecForward, 100000.0), Entity_Position); // 2048 is DMG_NOGIB?
+				}
+					
+				TestDMG *= Cryo_M2_Falloff;
 			}
 		}
 	}
