@@ -417,9 +417,6 @@ public Action Cryo_Timer(Handle CryoDMG, int ref)
 				{
 					//Code to do damage position and ragdolls
 					//Code to do damage position and ragdolls
-					
-					SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 0.0), VicLoc); // 2048 is DMG_NOGIB?
-					//SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_SHOCK, -1); // 2048 is DMG_NOGIB?
 					switch (Cryo_SlowType[entity])
 					{
 						case 0:
@@ -444,6 +441,9 @@ public Action Cryo_Timer(Handle CryoDMG, int ref)
 							}
 						}
 					}
+					
+					SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 0.0), VicLoc); // 2048 is DMG_NOGIB?
+					//SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_SHOCK, -1); // 2048 is DMG_NOGIB?
 					
 					if (!Cryo_Frozen[target] && !Cryo_Slowed[target] && HasEntProp(target, Prop_Data, "m_iMaxHealth"))
 					{
