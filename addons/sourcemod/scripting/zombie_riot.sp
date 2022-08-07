@@ -225,6 +225,7 @@ float RoundStartTime;
 char WhatDifficultySetting[64];
 float healing_cooldown[MAXTF2PLAYERS];
 float Damage_dealt_in_total[MAXTF2PLAYERS];
+
 int Healing_done_in_total[MAXTF2PLAYERS];
 int i_BarricadeHasBeenDamaged[MAXTF2PLAYERS];
 int Resupplies_Supplied[MAXTF2PLAYERS];
@@ -350,6 +351,7 @@ bool b_npcspawnprotection[MAXENTITIES];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
 float f_HighTeslarDebuff[MAXENTITIES];
+bool b_Frozen[MAXENTITIES];
 
 float f_WidowsWineDebuff[MAXENTITIES];
 float f_WidowsWineDebuffPlayerCooldown[MAXTF2PLAYERS];
@@ -944,6 +946,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_fire_wand.sp"
 #include "zombie_riot/custom/weapon_wand_fire_ball.sp"
 #include "zombie_riot/custom/weapon_lightning_wand.sp"
+#include "zombie_riot/custom/weapon_wand_cryo.sp"
 #include "zombie_riot/custom/weapon_wand_lightning_spell.sp"
 #include "zombie_riot/custom/weapon_necromancy_wand.sp"
 #include "zombie_riot/custom/weapon_wand_necro_spell.sp"
@@ -1304,7 +1307,9 @@ public void OnMapStart()
 	M3_Abilities_Precache();
 	Ark_autoaim_Map_Precache();
 	Wand_LightningPap_Map_Precache();
+	Wand_Cryo_Precache();
 	Abiltity_Coin_Flip_Map_Change();
+	Wand_Cryo_Precache();
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
@@ -1739,12 +1744,13 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 	Escape_RoundEnd();
 	CurrentGame = 0;
 }
-/*
-public void OnGameFrame()
+
+/*public void OnGameFrame()
 {
-	Wand_Homing();
-}
-*/
+	//Wand_Homing();
+	Cryo_SearchDamage();
+}*/
+
 
 public Action OnTeutonHealth(int client, int &health)
 {
@@ -3326,6 +3332,7 @@ public void RemoveNpcThingsAgain(int entity)
 	//incase this breaks, add a baseboss check
 	CleanAllAppliedEffects(entity);
 	CleanAllApplied_Aresenal(entity);
+	CleanAllApplied_Cryo(entity);
 	b_NpcForcepowerupspawn[entity] = 0;	
 }
 /*
@@ -3607,6 +3614,7 @@ public void MapStartResetAll()
 	Medigun_ClearAll();
 	WindStaff_ClearAll();
 	Lighting_Wand_Spell_ClearAll();
+	Wand_Cryo_Burst_ClearAll();
 	Arrow_Spell_ClearAll();
 	Survival_Knife_ClearAll();
 	Zero(healing_cooldown);

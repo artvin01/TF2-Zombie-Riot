@@ -2382,6 +2382,12 @@ methodmap CClotBody
 		public set(float TempValueForProperty) 	{ f_WidowsWineDebuff[this.index] = TempValueForProperty; }
 	}
 	
+	property bool m_bFrozen
+	{
+		public get()				{ return b_Frozen[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_Frozen[this.index] = TempValueForProperty; }
+	}
+	
 	property bool m_bAllowBackWalking
 	{
 		public get()				{ return b_AllowBackWalking[this.index]; }
@@ -2461,6 +2467,12 @@ methodmap CClotBody
 			}
 			speed_for_return *= slowdown_amount;
 		}
+		
+		if (this.m_bFrozen)
+		{
+			speed_for_return = 1.0;
+		}
+		
 		return speed_for_return; 
 	}
 	public void m_vecLastValidPos(float pos[3], bool set)
@@ -6863,6 +6875,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_LowTeslarDebuff[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
 	f_WidowsWineDebuff[entity] = 0.0;
+	b_Frozen[entity] = false;
 	
 	fl_MeleeArmor[entity] = 1.0; //yeppers.
 	fl_RangedArmor[entity] = 1.0;
