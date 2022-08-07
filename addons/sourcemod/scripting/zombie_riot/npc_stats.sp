@@ -2486,12 +2486,9 @@ methodmap CClotBody
 			speed_for_return *= slowdown_amount;
 		}
 		
-		if(!Is_Boss)
+		if (this.m_bFrozen)
 		{
-			if (this.m_bFrozen)
-			{
-				speed_for_return = 1.0;
-			}
+			speed_for_return = 1.0;
 		}
 		
 		return speed_for_return; 
@@ -5199,7 +5196,12 @@ stock int IsSpaceOccupiedOnlyPlayers(const float pos[3], const float mins[3], co
 public bool TraceRayHitPlayersOnly(int entity,int mask,any data)
 {
 	if (entity > 0 && entity <= MaxClients)
-		return true;
+	{
+		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0)
+		{
+			return true;
+		}
+	}
 	
 	return false;
 }
