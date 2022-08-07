@@ -409,7 +409,7 @@ public Action Cryo_Timer(Handle CryoDMG, int ref)
 		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 		{
 			int target = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if(IsValidEntity(target) && !b_NpcHasDied[target])
+			if(IsValidEntity(target) && !b_NpcHasDied[target] && !Cryo_AlreadyHit[entity][target])
 			{
 				VicLoc = WorldSpaceCenter(target);
 				
@@ -480,7 +480,7 @@ public void Cryo_FreezeZombie(int zombie)
 	if (!IsValidEntity(zombie))
 	return;
 	
-	EmitSoundToAll(SOUND_WAND_CRYO_FREEZE, zombie, SNDCHAN_STATIC, 120);
+	EmitSoundToAll(SOUND_WAND_CRYO_FREEZE, zombie, SNDCHAN_STATIC, 80);
 	CClotBody ZNPC = view_as<CClotBody>(zombie);
 	ZNPC.m_bFrozen = true;
 	Cryo_Frozen[zombie] = true;
