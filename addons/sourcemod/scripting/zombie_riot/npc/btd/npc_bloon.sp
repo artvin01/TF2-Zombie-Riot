@@ -652,7 +652,7 @@ public Action Bloon_ClotDamaged(int victim, int &attacker, int &inflictor, float
 			pierce = true;
 		}
 		
-		if((damagetype & DMG_VEHICLE) || (i_HexCustomDamageTypes[victim] & ZR_DAMAGE_ICE))
+		if(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_ICE)
 		{
 			cold = true;
 		}
