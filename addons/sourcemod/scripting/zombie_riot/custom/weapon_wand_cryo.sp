@@ -442,11 +442,15 @@ public Action Cryo_Timer(Handle CryoDMG, int ref)
 						}
 					}
 					
+					float Health_Before_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
+					
 					SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 0.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
+					
+					float Health_After_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
 					
 					if (!Cryo_Frozen[target] && !Cryo_Slowed[target] && HasEntProp(target, Prop_Data, "m_iMaxHealth"))
 					{
-						Cryo_FreezeLevel[target] += Damage_Projectile[entity];
+						Cryo_FreezeLevel[target] += (Health_Before_Hurt - Health_After_Hurt);
 						float maxHealth = float(GetEntProp(target, Prop_Data, "m_iMaxHealth"));
 						if (Cryo_FreezeLevel[target] >= maxHealth * Cryo_FreezeRequirement)
 						{
