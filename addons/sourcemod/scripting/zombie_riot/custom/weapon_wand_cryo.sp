@@ -178,11 +178,11 @@ public void Cryo_ActivateBurst(int client, int weapon, bool &result, int slot, f
 				{
 					CreateTimer(0.1, Cryo_Unfreeze, EntIndexToEntRef(target), TIMER_FLAG_NO_MAPCHANGE);
 					EmitSoundToAll(SOUND_WAND_CRYO_SHATTER, target);
-					SDKHooks_TakeDamage(target, weapon, client, TestDMG * freezemult, DMG_SHOCK, -1, CalculateDamageForce(vecForward, 100000.0), VicLoc); // 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(target, weapon, client, TestDMG * freezemult, DMG_PLASMA, -1, CalculateDamageForce(vecForward, 100000.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
 				}
 				else
 				{
-					SDKHooks_TakeDamage(target, weapon, client, TestDMG, DMG_SHOCK, -1, CalculateDamageForce(vecForward, 100000.0), Entity_Position); // 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(target, weapon, client, TestDMG, DMG_PLASMA, -1, CalculateDamageForce(vecForward, 100000.0), Entity_Position, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
 				}
 					
 				TestDMG *= Cryo_M2_Falloff;
@@ -442,8 +442,7 @@ public Action Cryo_Timer(Handle CryoDMG, int ref)
 						}
 					}
 					
-					SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 0.0), VicLoc); // 2048 is DMG_NOGIB?
-					//SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_SHOCK, -1); // 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 0.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
 					
 					if (!Cryo_Frozen[target] && !Cryo_Slowed[target] && HasEntProp(target, Prop_Data, "m_iMaxHealth"))
 					{
