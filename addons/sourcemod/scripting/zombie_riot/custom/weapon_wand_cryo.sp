@@ -26,7 +26,7 @@ static float Cryo_M2_Cooldown = 10.0;	//M2 Cooldown
 static float Cryo_M2_Falloff = 0.7;	//Amount to multiply damage dealt by M2 for each zombie it hits, like explosives
 
 static float Cryo_FreezeRequirement = 0.35; //% of target's max health M1 must do in order to trigger the freeze
-static float Cryo_FreezeDuration = 3.0; //Duration to freeze zombies when the threshold is surpassed
+static float Cryo_FreezeDuration = 2.0; //Duration to freeze zombies when the threshold is surpassed
 static float Cryo_SlowDuration = 5.0; //Duration to slow zombies when they are unfrozen
 static int Cryo_SlowType[MAXENTITIES] = {0, ...}; //Type of slow applied by the projectile, 0: None, 1: Weak Teslar Slow, 2: Strong Teslar Slow
 static int Cryo_SlowType_Zombie[MAXENTITIES] = {0, ...};	//^Ditto, but applied to zombies when they get frozen
