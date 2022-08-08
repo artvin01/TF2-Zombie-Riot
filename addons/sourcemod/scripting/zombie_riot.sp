@@ -382,7 +382,6 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 #define ZR_DAMAGE_NONE                	0          	//Nothing special.
 #define ZR_DAMAGE_ICE					(1 << 1)
 #define ZR_DAMAGE_LASER_NO_BLAST		(1 << 2)
-#define ZR_DAMAGE_LASER_YES_BLAST		(1 << 3)
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
