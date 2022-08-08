@@ -345,7 +345,9 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 						else
 							SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
 					}
-					found = true;
+					
+					if(!npcstats.m_bStaticNPC)
+						found = true;
 				}
 			}
 		}
@@ -545,7 +547,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					{
 						b_ThisNpcIsImmuneToNuke[entity_Spawner] = true;
 					}
-			
+					
 					if(enemy.Health)
 					{
 						SetEntProp(entity_Spawner, Prop_Data, "m_iMaxHealth", enemy.Health);
@@ -553,6 +555,8 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					}
 					
 					CClotBody npcstats = view_as<CClotBody>(entity_Spawner);
+					
+					npcstats.m_bStaticNPC = enemy.Is_Static;
 					
 					if(enemy.Is_Boss)
 					{

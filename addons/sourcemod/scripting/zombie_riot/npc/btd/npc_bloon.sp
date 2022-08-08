@@ -635,27 +635,54 @@ public Action Bloon_ClotDamaged(int victim, int &attacker, int &inflictor, float
 	
 	Bloon npc = view_as<Bloon>(victim);
 	
-	if(f_IsThisExplosiveHitscan[attacker] == GetGameTime())
+	bool hot;
+	bool cold;
+	bool magic;
+	bool pierce;
+	
+	if(damagetype & DMG_SLASH)
 	{
-		damagetype |= DMG_BULLET; //add bullet logic
-		damagetype &= ~DMG_BLAST; //remove blast logic			
+		pierce = true;
+	}
+	else
+	{
+		if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime())
+		{
+			hot = true;
+			pierce = true;
+		}
+		
+		if((damagetype & DMG_VEHICLE) || (i_HexCustomDamageTypes[victim] & ZR_DAMAGE_ICE))
+		{
+			cold = true;
+		}
+		
+		if(damagetype & DMG_PLASMA)
+		{
+			magic = true;
+			pierce = true;
+		}
+		else if((damagetype & DMG_SHOCK) || (i_HexCustomDamageTypes[victim] & ZR_DAMAGE_LASER_NO_BLAST))
+		{
+			magic = true;
+		}
 	}
 	
 	switch(npc.m_iType)
 	{
 		case Bloon_Black:
 		{
-			if(damagetype & DMG_BLAST)
+			if(hot)
 				damage *= 0.15;
 		}
 		case Bloon_White:
 		{
-			if(damagetype & DMG_VEHICLE)
+			if(cold)
 				damage *= 0.15;
 		}
 		case Bloon_Purple:
 		{
-			if((damagetype & DMG_SHOCK) || (damagetype & DMG_PLASMA))
+			if(magic)
 			{
 				damage *= 0.1;
 				npc.PlayPurpleSound();
@@ -663,7 +690,7 @@ public Action Bloon_ClotDamaged(int victim, int &attacker, int &inflictor, float
 		}
 		case Bloon_Lead:
 		{
-			if(!(damagetype & (DMG_BLAST|DMG_PLASMA|DMG_SLASH)))
+			if(!pierce)
 			{
 				damage *= 0.15;
 				npc.PlayLeadSound();
@@ -671,7 +698,7 @@ public Action Bloon_ClotDamaged(int victim, int &attacker, int &inflictor, float
 		}
 		case Bloon_Zebra:
 		{
-			if((damagetype & DMG_BLAST) || (damagetype & DMG_VEHICLE))
+			if(hot || cold)
 				damage *= 0.15;
 		}
 		case Bloon_Ceramic:

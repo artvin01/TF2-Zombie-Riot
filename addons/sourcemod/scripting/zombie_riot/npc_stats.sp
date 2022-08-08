@@ -47,6 +47,7 @@ float fl_AttackHappensMinimum[MAXENTITIES];
 float fl_AttackHappensMaximum[MAXENTITIES];
 bool b_AttackHappenswillhappen[MAXENTITIES];
 bool b_thisNpcIsABoss[MAXENTITIES];
+bool b_StaticNPC[MAXENTITIES];
 float f3_VecTeleportBackSave[MAXENTITIES][3];
 float f3_VecTeleportBackSaveJump[MAXENTITIES][3];
 bool b_NPCVelocityCancel[MAXENTITIES];
@@ -2357,6 +2358,11 @@ methodmap CClotBody
 	{
 		public get()							{ return b_thisNpcIsABoss[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_thisNpcIsABoss[this.index] = TempValueForProperty; }
+	}
+	property bool m_bStaticNPC
+	{
+		public get()							{ return b_StaticNPC[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_StaticNPC[this.index] = TempValueForProperty; }
 	}
 	
 	property bool m_bThisNpcGotDefaultStats_INVERTED //This is the only one, reasoning is that is that i kinda need to check globablly if any base_boss spawned outside of this plugin and apply stuff accordingly.
@@ -6900,6 +6906,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_AttackHappensMaximum[entity] = 0.0;
 	b_AttackHappenswillhappen[entity] = false;
 	b_thisNpcIsABoss[entity] = false;
+	b_StaticNPC[entity] = false;
 	b_thisNpcHasAnOutline[entity] = false;
 	b_ThisNpcIsImmuneToNuke[entity] = false;
 	b_NPCVelocityCancel[entity] = false;
