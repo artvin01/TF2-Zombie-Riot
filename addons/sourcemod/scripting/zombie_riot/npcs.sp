@@ -1020,15 +1020,15 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	
 	if(f_HighIceDebuff[victim] > GetGameTime())
 	{
-		damage *= 1.20;
+		damage *= 1.15;
 	}
 	else if(f_LowIceDebuff[victim] > GetGameTime())
 	{
-		damage *= 1.15;
+		damage *= 1.10;
 	}
 	else if(f_VeryLowIceDebuff[victim] > GetGameTime())
 	{
-		damage *= 1.10;
+		damage *= 1.05;
 	}
 	
 	if(f_WidowsWineDebuff[victim] > GetGameTime())
@@ -1089,7 +1089,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		if(i_BarbariansMind[attacker] == 1)	// Deal extra damage with melee, but none with everything else
 		{
 			if(damagetype & (DMG_CLUB|DMG_SLASH)) // if you want anything to be melee based, just give them this.
-				damage *= 1.25;
+				damage *= 1.10;
 			else
 				damage = 0.0;
 		}
