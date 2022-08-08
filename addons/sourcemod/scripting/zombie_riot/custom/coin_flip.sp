@@ -270,7 +270,7 @@ public Action flip_extra(Handle timer, int client)
 			
 			if(i_CurrentEquippedPerk[client] == 5)
 			{
-				damage_multiplier[entity] *= 1.35;
+				damage_multiplier[entity] *= 1.25;
 			}
 			
 			newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
