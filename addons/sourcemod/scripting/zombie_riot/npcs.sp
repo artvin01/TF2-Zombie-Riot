@@ -1310,6 +1310,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
+	i_HexCustomDamageTypes[victim] = 0; //Reset it back to 0.
 	if(attacker < 1 || attacker > MaxClients)
 		return;
 		
