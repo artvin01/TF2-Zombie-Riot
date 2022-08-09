@@ -1167,7 +1167,7 @@ public void Citizen_ClotThink(int iNPC)
 			float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			if(i_NpcInternalId[npc.m_iTarget] == SAWRUNNER && view_as<SawRunner>(npc.m_iTarget).m_iTarget == npc.index && distance < 250000.0)
 			{
-				moveBack = true;
+				backOff = true;
 				low = false;
 				
 				npc.SetActivity("ACT_RUN_PANICKED");
