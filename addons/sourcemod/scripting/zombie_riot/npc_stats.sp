@@ -774,6 +774,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = MedivalSamurai(entity, vecPos, vecAng, ally);
 		}
+		case THEADDICTION:
+		{
+			entity = Addicition(entity, vecPos, vecAng, ally, data);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1238,6 +1242,10 @@ public void NPCDeath(int entity)
 		case MEDIVAL_SAMURAI:
 		{
 			MedivalSamurai_NPCDeath(entity);
+		}
+		case THEADDICTION:
+		{
+			Addicition_NPCDeath(entity);
 		}
 		default:
 		{
@@ -7214,3 +7222,5 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/alt/npc_alt_medic_supperior_mage.sp"
 #include "zombie_riot/npc/medival/npc_medival_eagle_scout.sp"
 #include "zombie_riot/npc/medival/npc_medival_samurai.sp"
+
+#include "zombie_riot/npc/cof/npc_addiction.sp"

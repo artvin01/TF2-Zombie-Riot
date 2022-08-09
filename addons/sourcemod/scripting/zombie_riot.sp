@@ -653,6 +653,10 @@ enum
 	
 	MEDIVAL_EAGLE_SCOUT					= 112,
 	MEDIVAL_SAMURAI						= 113,
+	
+	THEADDICTION	= 114,
+	THEDOCTOR	= 115,
+	BOOKSIMON	= 116
 }
 
 
@@ -779,6 +783,9 @@ public const char NPC_Names[][] =
 	"Rebel",
 	"Eagle Scout",
 	"Samurai",
+	"The Addiction",
+	"The Doctor",
+	"Book Simon",
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -902,7 +909,10 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_medic_supperior_mage",
 	"npc_citizen",
 	"npc_medival_eagle_scout",
-	"npc_medival_samurai"
+	"npc_medival_samurai",
+	"",
+	"",
+	""
 };
 
 #include "zombie_riot/stocks.sp"

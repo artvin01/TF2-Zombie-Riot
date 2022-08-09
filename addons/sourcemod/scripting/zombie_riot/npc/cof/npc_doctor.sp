@@ -1,9 +1,9 @@
-methodmap Addicition < CClotBody
+methodmap Doctor < CClotBody
 {
-	public Addicition(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Doctor(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		Addicition npc = view_as<Addicition>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_1.mdl", "1.5", "10000", ally, false, true));
-		i_NpcInternalId[npc.index] = THEADDICTION;
+		Doctor npc = view_as<Doctor>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_1.mdl", "1.5", "35000", ally, false, true));
+		i_NpcInternalId[npc.index] = THEDOCTOR;
 		
 		npc.m_iState = -1;
 		npc.SetActivity("ACT_SPAWN");
@@ -12,32 +12,26 @@ methodmap Addicition < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Addicition_ClotDamaged);
-		SDKHook(npc.index, SDKHook_Think, Addicition_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, Doctor_ClotDamaged);
+		SDKHook(npc.index, SDKHook_Think, Doctor_ClotThink);
 		
 		npc.m_bThisNpcIsABoss = true;
-		npc.m_flSpeed = 150.0;
+		npc.m_flSpeed = 250.0;
 		npc.m_iTarget = -1;
-		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flAttackHappens = 0.0;
-		npc.m_flNextRangedSpecialAttack = 0.0;
-		npc.m_flRangedSpecialDelay = 1.0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_flReloadDelay = GetGameTime() + 2.0;
-		npc.m_bLostHalfHealth = false;
 		npc.m_bDissapearOnDeath = true;
 		
-		if(data[0])
-			npc.SetHalfLifeStats();
+		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flAttackHappens = 0.0;
 		
+		npc.m_flNextRangedAttack = 0.0;
+		npc.m_iAttacksTillReload = 5.0;
+		npc.m_flReloadDelay = GetGameTime() + 2.0;
+		
+		npc.m_bLostHalfHealth = view_as<bool>(data[0]);
 		return npc;
 	}
 	
-	public void SetHalfLifeStats()
-	{
-		this.m_bLostHalfHealth = true;
-		this.m_flSpeed = 350.0;
-	}
 	public void SetActivity(const char[] animation)
 	{
 		int activity = this.LookupActivity(animation);
@@ -50,9 +44,9 @@ methodmap Addicition < CClotBody
 	}
 }
 
-public void Addicition_ClotThink(int iNPC)
+public void Doctor_ClotThink(int iNPC)
 {
-	Addicition npc = view_as<Addicition>(iNPC);
+	Doctor npc = view_as<Doctor>(iNPC);
 	
 	float gameTime = GetGameTime();
 	if(npc.m_flNextThinkTime > gameTime)
@@ -60,34 +54,6 @@ public void Addicition_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.04;
 	npc.Update();
-	
-	if(npc.m_bLostHalfHealth)
-	{
-		npc.m_flMeleeArmor = 1.0 - Pow(0.98, float(Zombies_Currently_Still_Ongoing));
-		npc.m_flRangedArmor = npc.m_flMeleeArmor;
-	}
-	else if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2)
-	{
-		npc.SetHalfLifeStats();
-	}
-	
-	if(npc.m_flRangedSpecialDelay > 1.0)
-	{
-		if(npc.m_flRangedSpecialDelay < gameTime)
-		{
-			npc.m_flRangedSpecialDelay = 1.0;
-			
-			float vecMe[3];
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecMe); 
-			vecMe[2] += 45;
-			
-			makeexplosion(npc.index, npc.index, vecMe, "", 2000, 1000, 1000.0);
-			
-			npc.m_flRangedSpecialDelay = 0.0;
-		}
-		
-		return;
-	}
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -108,7 +74,8 @@ public void Addicition_ClotThink(int iNPC)
 					
 					if(target > 0) 
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 600.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 200, DMG_CLUB);
+						Custom_Knockback(npc.index, target, 500.0);
 						
 						// Hit particle
 						npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
@@ -120,19 +87,6 @@ public void Addicition_ClotThink(int iNPC)
 		
 		return;
 	}
-	
-	if(npc.m_flReloadDelay > gameTime)
-	{
-		if(npc.m_bPathing)
-		{
-			PF_StopPathing(npc.index);
-			npc.m_bPathing = false;
-		}
-		return;
-	}
-	
-	if(npc.m_flRangedSpecialDelay == 1.0)
-		npc.m_flRangedSpecialDelay = 0.0;
 	
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
@@ -152,6 +106,7 @@ public void Addicition_ClotThink(int iNPC)
 		{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 			
+			bool moveUp;
 			float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			if(distance < 40000.0 && npc.m_flNextMeleeAttack < gameTime)
 			{
@@ -161,7 +116,7 @@ public void Addicition_ClotThink(int iNPC)
 				
 				npc.AddGesture("ACT_MELEE_1");
 				
-				npc.m_flAttackHappens = gameTime + 0.4;
+				npc.m_flAttackHappens = gameTime + 0.1;
 				npc.m_flReloadDelay = gameTime + 0.6;
 				npc.m_flNextMeleeAttack = gameTime + 0.8;
 				
@@ -202,20 +157,20 @@ public void Addicition_ClotThink(int iNPC)
 	npc.SetActivity("ACT_IDLE");
 }
 
-public Action Addicition_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Doctor_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(damage < 9999999.0 && view_as<Addicition>(victim).m_flRangedSpecialDelay == 1.0)
+	if(damage < 9999999.0 && view_as<Doctor>(victim).m_flRangedSpecialDelay == 1.0)
 		return Plugin_Handled;
 	
 	return Plugin_Continue;
 }
 
-public void Addicition_NPCDeath(int entity)
+public void Doctor_NPCDeath(int entity)
 {
-	Addicition npc = view_as<Addicition>(entity);
+	Doctor npc = view_as<Doctor>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Addicition_ClotDamaged);
-	SDKUnhook(npc.index, SDKHook_Think, Addicition_ClotThink);
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Doctor_ClotDamaged);
+	SDKUnhook(npc.index, SDKHook_Think, Doctor_ClotThink);
 	
 	PF_StopPathing(npc.index);
 	npc.m_bPathing = false;
@@ -230,7 +185,7 @@ public void Addicition_NPCDeath(int entity)
 		TeleportEntity(entity_death, pos, angles, NULL_VECTOR);
 		
 //		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
-		DispatchKeyValue(entity_death, "model", "models/zombie_riot/cof/sawrunner_1.mdl");
+		DispatchKeyValue(entity_death, "model", NPCModel);
 		DispatchKeyValue(entity_death, "skin", "0");
 		
 		DispatchSpawn(entity_death);
@@ -240,11 +195,11 @@ public void Addicition_NPCDeath(int entity)
 		SetVariantString("death");
 		AcceptEntityInput(entity_death, "SetAnimation");
 		
-		HookSingleEntityOutput(entity_death, "OnAnimationDone", Addicition_PostDeath, true);
+		HookSingleEntityOutput(entity_death, "OnAnimationDone", Doctor_PostDeath, true);
 	}
 }
 
-public void Addicition_PostDeath(const char[] output, int caller, int activator, float delay)
+public void Doctor_PostDeath(const char[] output, int caller, int activator, float delay)
 {
 	RemoveEntity(caller);
 }

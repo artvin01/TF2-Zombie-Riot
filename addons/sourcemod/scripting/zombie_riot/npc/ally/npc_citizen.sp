@@ -933,6 +933,8 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	npc.m_iGunType = type;
 	npc.m_iGunValue = sell;
 	
+	int wave = 90;
+	
 	if(info.Attrib[0] == 99999)
 	{
 		ThereCanBeOnlyOne = EntIndexToEntRef(entity);
@@ -975,11 +977,16 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 			npc.m_fGunReload = data.Reload;
 			npc.m_iGunClip = RoundFloat(data.Clip);
 		}
+		
+		wave = ZR_GetWaveCount() + 1;
+		if(wave > 90)
+			wave = 90;
 	}
 	
 	npc.m_iAttacksTillReload = npc.m_iGunClip;
 	npc.m_bFirstBlood = false;
 	npc.m_flReloadDelay = GetGameTime() + 1.0;
+	npc.m_fGunDamage *= 1.0 + float(wave / 15);
 	
 	npc.UpdateModel();
 	npc.PlaySound(Cit_NewWeapon);
