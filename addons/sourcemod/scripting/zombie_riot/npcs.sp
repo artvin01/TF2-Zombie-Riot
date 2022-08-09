@@ -881,7 +881,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					{
 						if(IsClientInGame(client) && client != attacker)
 						{
-							EmitSoundToClient(attacker, "zombiesurvival/headshot1.wav", victim, _, 80, _, volume, pitch);
+							EmitSoundToClient(client, "zombiesurvival/headshot1.wav", victim, _, 80, _, volume, pitch);
 						}
 					}
 					EmitSoundToClient(attacker, "zombiesurvival/headshot1.wav", _, _, 90, _, volume, pitch);
@@ -892,7 +892,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					{
 						if(IsClientInGame(client) && client != attacker)
 						{
-							EmitSoundToClient(attacker, "zombiesurvival/headshot2.wav", victim, _, 80, _, volume, pitch);
+							EmitSoundToClient(client, "zombiesurvival/headshot2.wav", victim, _, 80, _, volume, pitch);
 						}
 					}
 					EmitSoundToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, volume, pitch);
