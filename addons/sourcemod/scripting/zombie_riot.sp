@@ -2214,6 +2214,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 						if(IsClientInGame(i) && !IsFakeClient(i))
 						{
 							Music_Stop_All(i);
+							SetMusicTimer(i, 0);
 							SetEntPropEnt(i, Prop_Send, "m_hObserverTarget", client);
 						}
 					}
@@ -2229,6 +2230,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 					CreateTimer(0.3, SetTimeBack);
 				
 					applied_lastmann_buffs_once = true;
+					
 					SetHudTextParams(-1.0, -1.0, 3.0, 255, 0, 0, 255);
 					ShowHudText(client, -1, "%T", "Last Alive", client);
 					int MaxHealth;
