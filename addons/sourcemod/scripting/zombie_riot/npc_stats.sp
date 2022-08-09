@@ -178,6 +178,10 @@ static int g_particleImpactMetal;
 static int g_particleImpactFlesh;
 static int g_particleImpactRubber;
 static int g_modelArrow;
+
+
+static int g_sModelIndexBloodDrop;
+static int g_sModelIndexBloodSpray;
 //I put these here so we can change them on fly if we need to, cus zombies can be really loud, or quiet.
 
 #define NORMAL_ZOMBIE_SOUNDLEVEL	 80
@@ -304,6 +308,7 @@ enum
 	BLEEDTYPE_NORMAL = 1,	
 	BLEEDTYPE_METAL = 2,	
 	BLEEDTYPE_RUBBER = 3,	
+	BLEEDTYPE_XENO = 4,	
 }
 
 int GetIndexByPluginName(const char[] name)
@@ -1281,8 +1286,14 @@ public void OnMapStart_NPC_Base()
 		break;
 	}
 	
+	g_sModelIndexBloodDrop = PrecacheModel("sprites/bloodspray.vmt");
+	g_sModelIndexBloodSpray = PrecacheModel("sprites/blood.vmt");
+	
+	PrecacheDecal("sprites/blood.vmt", true);
+	PrecacheDecal("sprites/bloodspray.vmt", true);
+	
 	g_particleImpactMetal = PrecacheParticleSystem("bot_impact_heavy");
-	g_particleImpactFlesh = PrecacheParticleSystem("blood_impact_red_01_goop");
+	g_particleImpactFlesh = PrecacheParticleSystem("blood_impact_red_01");
 	g_particleImpactRubber = PrecacheParticleSystem("halloween_explosion_bits");
 	g_modelArrow = PrecacheModel("models/weapons/w_models/w_arrow.mdl");
 	PrecacheModel(ARROW_TRAIL);
@@ -2782,7 +2793,7 @@ methodmap CClotBody
 		return SDKCall(g_hStudio_FindAttachment, pStudioHdr, pAttachmentName) + 1;
 	}
 	public void DispatchParticleEffect(int entity, const char[] strParticle, float flStartPos[3], float vecAngles[3], float flEndPos[3], 
-									   int iAttachmentPointIndex = 0, ParticleAttachment_t iAttachType = PATTACH_CUSTOMORIGIN, bool bResetAllParticlesOnEntity = false)
+									   int iAttachmentPointIndex = 0, ParticleAttachment_t iAttachType = PATTACH_CUSTOMORIGIN, bool bResetAllParticlesOnEntity = false, float colour[3] = {0.0,0.0,0.0})
 	{
 		int tblidx = FindStringTable("ParticleEffectNames");
 		if (tblidx == INVALID_STRING_TABLE) 
@@ -2823,6 +2834,7 @@ methodmap CClotBody
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[0]", flEndPos[0]);
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[1]", flEndPos[1]);
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[2]", flEndPos[2]);
+
 		TE_SendToAll();
 	}
 	public int LookupPoseParameter(const char[] szName)
@@ -3965,9 +3977,9 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						startPosition[2] += 64;
 						Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, damageForce, true, false, true, true); //dont gigantify this one.
 						startPosition[2] -= 15;
-						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, damageForce, false, true);
+						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, damageForce, false, true, true);
 						startPosition[2] += 44;
-						Place_Gib("models/gibs/metal_gib2.mdl", startPosition, damageForce, false, true);	
+						Place_Gib("models/gibs/metal_gib2.mdl", startPosition, damageForce, false, true, true);	
 					}
 					else
 					{
@@ -3978,8 +3990,32 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, damageForce, false, false, true);
 						startPosition[2] += 34;
 						Place_Gib("models/gibs/metal_gib2.mdl", startPosition, damageForce, false, false, true);	
+					}		
+				}
+				else if(npc.m_iBleedType == 4)
+				{
+					npc.PlayGibSound();
+					if(npc.m_bIsGiant)
+					{
+						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+						startPosition[2] += 64;
+						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, damageForce, true, true, _, _, _, true);
+						startPosition[2] -= 15;
+						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, damageForce, false, true, _, _, _, true);
+						startPosition[2] += 44;
+						Place_Gib("models/Gibs/HGIBS.mdl", startPosition, damageForce, false, true, _, _, _, true);	
+					}
+					else
+					{
+						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+						startPosition[2] += 42;
+						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, damageForce, true, _, _, _, _, true);
+						startPosition[2] -= 10;
+						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, damageForce, _, _, _, _, _, true);
+						startPosition[2] += 34;
+						Place_Gib("models/Gibs/HGIBS.mdl", startPosition, damageForce, _, _, _, _, _, true);	
 					}	
-				}	
+				}				
 			//	#endif					
 				Do_Death_Frame_Later(EntIndexToEntRef(pThis));
 				//RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));						
@@ -5428,6 +5464,12 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 					TE_ParticleInt(g_particleImpactRubber, damagePosition);
 					TE_SendToAll();
 				}
+				else if (npc.m_iBleedType == 4)
+				{
+					//If you cant find any good blood effect, use this one and just recolour it.
+					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 125, 255, 125, 255, 32);
+					TE_SendToAll();
+				}
 			}
 		}
 	}
@@ -5533,7 +5575,7 @@ public void RequestFramesCallback(DataPack pack)
 
 
 
-static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduce_masively = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false)
+static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, bool xeno = false)
 {
 	int prop = CreateEntityByName("prop_physics_multiplayer");
 	if(!IsValidEntity(prop))
@@ -5569,7 +5611,8 @@ static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduc
 	{
 		DispatchKeyValue(prop, "modelscale", "0.8");
 	}
-	if(Reduce_masively)
+	
+	if(Reduce_masively_Weight)
 		ScaleVector(vel, 0.02);
 		
 	if(!Rotate)
@@ -5588,13 +5631,21 @@ static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduc
 	SDKHook(prop, SDKHook_ShouldCollide, Gib_ShouldCollide);
 	if(!metal_colour)
 	{
-		npc.DispatchParticleEffect(prop, "blood_impact_backscatter", pos, NULL_VECTOR, NULL_VECTOR, 1,PATTACH_ABSORIGIN_FOLLOW);
-		SetEntityRenderColor(prop, 255, 0, 0, 255);
+		if(!xeno)
+		{
+			npc.DispatchParticleEffect(prop, "blood_trail_red_01_goop", pos, NULL_VECTOR, NULL_VECTOR, 1,PATTACH_ROOTBONE_FOLLOW);
+			SetEntityRenderColor(prop, 255, 0, 0, 255);
+		}
+		else
+		{
+			npc.DispatchParticleEffect(prop, "blood_impact_green_01", pos, NULL_VECTOR, NULL_VECTOR, 1,PATTACH_ROOTBONE_FOLLOW);
+			SetEntityRenderColor(prop, 0, 255, 0, 255);
+		}
 	}
 	else
 	{
-		pos[2] -= 40.0;
-		npc.DispatchParticleEffect(prop, "bot_impact_heavy", pos, NULL_VECTOR, NULL_VECTOR, 1,PATTACH_ABSORIGIN_FOLLOW);	
+//		pos[2] -= 40.0;
+		npc.DispatchParticleEffect(prop, "tpdamage_4", pos, NULL_VECTOR, NULL_VECTOR, 1, PATTACH_ROOTBONE_FOLLOW);	
 	}
 	CreateTimer(GetRandomFloat(2.0, 3.0), Timer_RemoveEntity_Prop, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 //	CreateTimer(1.5, Timer_DisableMotion, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
@@ -6710,6 +6761,24 @@ void TE_ParticleInt(int iParticleIndex, const float origin[3] = NULL_VECTOR, con
 		TE_WriteNum("m_iAttachmentPointIndex", attachpoint);
 	}
 	TE_WriteNum("m_bResetParticles", resetParticles ? 1 : 0);
+}
+
+void TE_BloodSprite(float Origin[3],float Direction[3], int red, int green, int blue, int alpha, int size)
+{
+	TE_Start("Blood Sprite");
+	TE_WriteVector("m_vecOrigin", Origin);
+	TE_WriteVector("m_vecDirection", Direction);
+	TE_WriteNum("r", red);
+	TE_WriteNum("g", green);
+	TE_WriteNum("b", blue);
+	TE_WriteNum("a", alpha);
+	TE_WriteNum("m_nSize", size);
+	
+	TE_WriteNum("m_nSprayModel", g_sModelIndexBloodSpray);
+	TE_WriteNum("m_nDropModel", g_sModelIndexBloodDrop);
+	
+	
+//	TE_SendToAll();
 }
 
 

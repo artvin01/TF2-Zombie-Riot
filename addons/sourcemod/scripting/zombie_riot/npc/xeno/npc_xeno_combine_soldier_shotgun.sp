@@ -176,7 +176,7 @@ methodmap XenoCombineSoldierShotgun < CClotBody
 		int iActivity = npc.LookupActivity("ACT_RUN_AIM_SHOTGUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;		
 		

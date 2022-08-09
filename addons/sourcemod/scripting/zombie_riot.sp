@@ -1334,6 +1334,7 @@ public void OnMapStart()
 	Wand_Cryo_Precache();
 	Abiltity_Coin_Flip_Map_Change();
 	Wand_Cryo_Precache();
+	Npc_Sp_Precache();
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;

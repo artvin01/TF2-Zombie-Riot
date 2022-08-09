@@ -58,6 +58,13 @@ public void NPC_Spawn_ClearAll()
 //	Zero(f_SpawnerCooldown);
 }
 
+static int g_particleCritText;
+
+public void Npc_Sp_Precache()
+{
+	g_particleCritText = PrecacheParticleSystem("crit_text");
+}
+
 void NPC_PluginStart()
 {
 	SpawnerList = new ArrayList(sizeof(SpawnerData));
@@ -868,8 +875,39 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			}
 			else
 			{
+				float chargerPos[3];
+				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
+				if(b_BoundingBoxVariant[victim] == 1)
+				{
+					chargerPos[2] += 120.0;
+				}
+				else
+				{
+					chargerPos[2] += 82.0;
+				}
+				
+				TE_ParticleInt(g_particleCritText, chargerPos);
+				TE_SendToClient(attacker);
 				played_headshotsound_already_Case[attacker] = random_case;
 				played_headshotsound_already_Pitch[attacker] = pitch;
+			}
+			
+			int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
+			if(IsValidEntity(weapon)) //Extra bombs!
+			{
+				if(i_ArsenalBombImplanter[weapon] > 0)
+				{
+					if(f_ChargeTerroriserSniper[weapon] > 149.0)
+					{
+						i_HowManyBombsOnThisEntity[victim][attacker] += 2;
+					}
+					else
+					{
+						i_HowManyBombsOnThisEntity[victim][attacker] += 1;
+					}
+					Apply_Particle_Teroriser_Indicator(victim);
+					damage = 0.0;
+				}
 			}
 			
 			played_headshotsound_already[attacker] = GetGameTime();
@@ -1201,7 +1239,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			{
 				if(f_ChargeTerroriserSniper[weapon] > 149.0)
 				{
-					i_HowManyBombsOnThisEntity[victim][attacker] += 3;
+					i_HowManyBombsOnThisEntity[victim][attacker] += 2;
 				}
 				else
 				{

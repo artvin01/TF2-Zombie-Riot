@@ -179,8 +179,6 @@ methodmap NPC_ALT_MEDIC_SUPPERIOR_MAGE < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
-
-		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_iState = 0;
 		npc.m_flSpeed = 300.0;

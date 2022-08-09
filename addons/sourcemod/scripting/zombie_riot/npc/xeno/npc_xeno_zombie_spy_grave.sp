@@ -137,7 +137,7 @@ methodmap XenoSpy < CClotBody
 		i_NpcInternalId[npc.index] = XENO_SPY_FACESTABBER;
 		
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
 		
