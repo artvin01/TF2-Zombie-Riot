@@ -809,6 +809,9 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 
 float played_headshotsound_already [MAXTF2PLAYERS];
 
+int played_headshotsound_already_Case [MAXTF2PLAYERS];
+int played_headshotsound_already_Pitch [MAXTF2PLAYERS];
+
 float f_IsThisExplosiveHitscan[MAXENTITIES];
 
 public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
@@ -852,20 +855,47 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			{
 				damage *= 1.25;
 			}
-			if(played_headshotsound_already[attacker] < GetGameTime())
+			
+			int pitch = GetRandomInt(90, 110);
+			int random_case = GetRandomInt(1, 2);
+			float volume = 0.7;
+			
+			if(played_headshotsound_already[attacker] >= GetGameTime())
 			{
-				int pitch = GetRandomInt(90, 110);
-				played_headshotsound_already[attacker] = GetGameTime();
-				switch(GetRandomInt(1, 2))
+				random_case = played_headshotsound_already_Case[attacker];
+				pitch = played_headshotsound_already_Pitch[attacker];
+				volume = 0.15;
+			}
+			else
+			{
+				played_headshotsound_already_Case[attacker] = random_case;
+				played_headshotsound_already_Pitch[attacker] = pitch;
+			}
+			
+			played_headshotsound_already[attacker] = GetGameTime();
+			switch(random_case)
+			{
+				case 1:
 				{
-					case 1:
+					for(int client=1; client<=MaxClients; client++)
 					{
-						EmitSoundToClient(attacker, "zombiesurvival/headshot1.wav", _, _, 90, _, 0.7, pitch);
+						if(IsClientInGame(client) && client != attacker)
+						{
+							EmitSoundToClient(attacker, "zombiesurvival/headshot1.wav", victim, _, 80, _, volume, pitch);
+						}
 					}
-					case 2:
+					EmitSoundToClient(attacker, "zombiesurvival/headshot1.wav", _, _, 90, _, volume, pitch);
+				}
+				case 2:
+				{
+					for(int client=1; client<=MaxClients; client++)
 					{
-						EmitSoundToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, 0.7, pitch);
+						if(IsClientInGame(client) && client != attacker)
+						{
+							EmitSoundToClient(attacker, "zombiesurvival/headshot2.wav", victim, _, 80, _, volume, pitch);
+						}
 					}
+					EmitSoundToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, volume, pitch);
 				}
 			}
 			return Plugin_Changed;
