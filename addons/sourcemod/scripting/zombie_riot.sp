@@ -656,7 +656,8 @@ enum
 	
 	THEADDICTION	= 114,
 	THEDOCTOR	= 115,
-	BOOKSIMON	= 116
+	BOOKSIMON	= 116,
+	ALT_KAHMLSTEIN						= 117
 }
 
 
@@ -786,6 +787,7 @@ public const char NPC_Names[][] =
 	"The Addiction",
 	"The Doctor",
 	"Book Simon",
+	"Kahmlstein",
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -912,7 +914,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_medival_samurai",
 	"",
 	"",
-	""
+	"",
+	"npc_ALT_KAHMLSTEIN"
 };
 
 #include "zombie_riot/stocks.sp"
