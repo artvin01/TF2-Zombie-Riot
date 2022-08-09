@@ -285,17 +285,11 @@ public Action DDT_ClotDamaged(int victim, int &attacker, int &inflictor, float &
 	
 	DDT npc = view_as<DDT>(victim);
 	
-	if(f_IsThisExplosiveHitscan[attacker] == GetGameTime())
-	{
-		damagetype |= DMG_BULLET; //add bullet logic
-		damagetype &= ~DMG_BLAST; //remove blast logic			
-	}
-	
 	if((damagetype & DMG_PLASMA) || (damagetype & DMG_SLASH))
 	{
 		npc.PlayHitSound();
 	}
-	else if(damagetype & DMG_BLAST)
+	else if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime())
 	{
 		damage *= 0.15;
 	}
