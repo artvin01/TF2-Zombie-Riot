@@ -85,7 +85,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 			//GetEntityClassname(active, buffer, sizeof(buffer));
 			//if(!StrEqual(buffer, "tf_weapon_sapper"))
 			{
-				
+
 				int itemdefindex = GetEntProp(active, Prop_Send, "m_iItemDefinitionIndex");
 				
 				TFClassType class = TF2_GetWeaponClass(itemdefindex, CurrentClass[client], TF2_GetClassnameSlot(buffer, true));

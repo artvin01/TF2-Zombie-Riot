@@ -96,6 +96,20 @@ char g_WeebKnifeLaughBackstab[][] = {
 };
 
 
+char g_KatanaHitFlesh[][] = {
+	"weapons/samurai/tf_katana_slice_01.wav",
+	"weapons/samurai/tf_katana_slice_02.wav",
+	"weapons/samurai/tf_katana_slice_03.wav",
+};
+
+
+char g_KatanaHitWorld[][] = {
+	"weapons/samurai/tf_katana_impact_object_01.wav",
+	"weapons/samurai/tf_katana_impact_object_02.wav",
+	"weapons/samurai/tf_katana_impact_object_03.wav",
+};
+
+
 public void MapStart_CustomMeleePrecache()
 {
 	for (int i = 0; i < (sizeof(g_KnifeHitFlesh));	   i++) { PrecacheSound(g_KnifeHitFlesh[i]);	   }
@@ -115,6 +129,8 @@ public void MapStart_CustomMeleePrecache()
 	for (int i = 0; i < (sizeof(g_AxeHitFlesh));	   i++) { PrecacheSound(g_AxeHitFlesh[i]);	   }
 	for (int i = 0; i < (sizeof(g_BatHitFlesh));	   i++) { PrecacheSound(g_BatHitFlesh[i]);	   }
 	for (int i = 0; i < (sizeof(g_WeebKnifeLaughBackstab));	   i++) { PrecacheSound(g_WeebKnifeLaughBackstab[i]);	   }
+	for (int i = 0; i < (sizeof(g_KatanaHitWorld));	   i++) { PrecacheSound(g_KatanaHitWorld[i]);	   }
+	for (int i = 0; i < (sizeof(g_KatanaHitFlesh));	   i++) { PrecacheSound(g_KatanaHitFlesh[i]);	   }
 }
 
 public void SepcialBackstabLaughSpy(int attacker)
@@ -300,10 +316,10 @@ public void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward
 //	TE_SendToAll();
 	
 	// See if we hit anything.
-	trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, IngorePlayersAndBuildings, client );
+	trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, client );
 	if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
 	{
-		trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), IngorePlayersAndBuildings, client );
+		trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
 	//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
 	}
 }
@@ -398,8 +414,18 @@ public void PlayCustomWeaponSoundFromPlayerCorrectly(int target, int client, int
 				EmitSoundToAll(g_SwordHitWorld[GetRandomInt(0, sizeof(g_SwordHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
 			}			
 		}
-	
-		
+	}
+	else if(StrEqual(classname, "tf_weapon_katana"))
+	{
+
+		if(target > 0 && !b_NpcHasDied[target])
+		{
+			EmitSoundToAll(g_KatanaHitFlesh[GetRandomInt(0, sizeof(g_KatanaHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
+		}
+		else
+		{
+			EmitSoundToAll(g_KatanaHitWorld[GetRandomInt(0, sizeof(g_KatanaHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
+		}			
 	}
 	else if(StrEqual(classname, "tf_weapon_bat"))
 	{

@@ -63,7 +63,12 @@ static char gLaser1;
 static int i_AmountProjectiles[MAXENTITIES];
 static int i_NpcCurrentLives[MAXENTITIES];
 static float i_HealthScale[MAXENTITIES];
+static float i_RangeScale[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+static int i_PrimaryRocketsFired[MAXENTITIES];
+static float fl_LifelossReload[MAXENTITIES];
+static float fl_TheFinalCountdown[MAXENTITIES];
+static float fl_TheFinalCountdown2[MAXENTITIES];
 
 public void Blitzkrieg_OnMapStart()
 {
@@ -83,12 +88,11 @@ public void Blitzkrieg_OnMapStart()
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 	
 	PrecacheSound("player/flow.wav");
-	PrecacheModel("models/freak_fortress_2/shadow93/dmedic/d_medic2.mdl");
-	
-	PrecacheSound("ui/gamestartup12.mp3");
 	
 	PrecacheSound("mvm/mvm_cpoint_klaxon.wav");
 	PrecacheSound("mvm/mvm_tank_end.wav");
+	PrecacheSound("mvm/mvm_tank_horn.wav");
+	PrecacheSound("mvm/mvm_tank_explode.wav");
 	PrecacheSound("zombiesurvival/beats/defaultzombiev2/10.mp3");
 	
 	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
@@ -134,11 +138,11 @@ methodmap Blitzkrieg < CClotBody
 	public void PlayMusicSound() {
 		if(this.m_flPlayMusicSound > GetEngineTime())
 			return;
-		
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 180, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 180, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 180, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 180, _, BOSS_ZOMBIE_VOLUME, 100);
+			
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 		this.m_flPlayMusicSound = GetEngineTime() + 233.0;
 		
 	}
@@ -232,18 +236,34 @@ methodmap Blitzkrieg < CClotBody
 		
 		i_NpcCurrentLives[npc.index] = 0;
 		
-		i_HealthScale[npc.index] = 0.5;
+		i_HealthScale[npc.index] = 0.5;	//cant be 0, default 1, 0,5= 2x scaling
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		
+		i_RangeScale[npc.index] = 1.0;	//Cant be a 0, default 1, 0.5= 2x range
+		
+		if(ZR_GetWaveCount()>30)
+		{
+			i_RangeScale[npc.index] = 0.75;
+		}
 		if(RaidModeScaling < 55)
 		{
-			RaidModeScaling *= 0.17; //abit low, inreacing
+			RaidModeScaling *= 0.16; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.34;
+			RaidModeScaling *= 0.33;
 		}
+		
+		float amount_of_people = float(CountPlayersOnRed());
+		
+		amount_of_people *= 0.12;
+		
+		if(amount_of_people < 1.0)
+			amount_of_people = 1.0;
+			
+		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
+		
 		Raidboss_Clean_Everyone();
 		
 		
@@ -298,7 +318,14 @@ methodmap Blitzkrieg < CClotBody
 		
 		
 		//IDLE
-		npc.m_flSpeed = 270.0;
+		npc.m_flSpeed = 280.0;
+		
+		npc.m_flMeleeArmor = 1.5;
+		
+		fl_TheFinalCountdown[npc.index] = 0.0;
+		fl_TheFinalCountdown2[npc.index] = 0.0;
+		i_PrimaryRocketsFired[npc.index] = 0;
+		fl_LifelossReload[npc.index] = 1.0;
 		
 		npc.PlayMusicSound();
 		Music_Stop_All_Beat(client);
@@ -359,7 +386,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				{
 					Music_Stop_All(client); //This is actually more expensive then i thought.
 				}
-				Music_Timer[client] = GetEngineTime() + 5.0;
+				SetMusicTimer(client, GetTime() + 5);
 				fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
 			}
 		}
@@ -399,25 +426,25 @@ public void Blitzkrieg_ClotThink(int iNPC)
 			} else {
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			if(npc.m_flNextRangedBarrage_Spam < GetGameTime() && npc.m_flNextRangedBarrage_Singular < GetGameTime() && flDistanceToTarget > Pow(110.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0))
+			if(npc.m_flNextRangedBarrage_Spam < GetGameTime() && npc.m_flNextRangedBarrage_Singular < GetGameTime() && flDistanceToTarget > Pow(110.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && i_NpcCurrentLives[npc.index]>4)
 			{	
-					EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
-			  	    npc.FaceTowards(vecTarget);
-					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 7.5 * RaidModeScaling / i_HealthScale[npc.index], 300.0/(0.25+i_HealthScale[npc.index]), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
-					npc.m_iAmountProjectiles += 1;
-					npc.PlayRangedSound();
-					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-					npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.15 * i_HealthScale[npc.index];
-					if (npc.m_iAmountProjectiles >= 10.0 / (i_HealthScale[npc.index]+0.5))
-					{
+				EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
+			 	npc.FaceTowards(vecTarget);
+				npc.FaceTowards(vecTarget);
+				npc.FireRocket(vPredictedPos, 5.0 * RaidModeScaling / i_HealthScale[npc.index], 300.0/(0.25+i_HealthScale[npc.index]), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
+				npc.m_iAmountProjectiles += 1;
+				npc.PlayRangedSound();
+				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+				npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.15 * i_HealthScale[npc.index];
+				if (npc.m_iAmountProjectiles >= 10.0 / (i_HealthScale[npc.index]+0.5))
+				{
 					npc.m_iAmountProjectiles = 0;
 					npc.m_flNextRangedBarrage_Spam = GetGameTime() + 45.0 * i_HealthScale[npc.index];
-						if(i_NpcCurrentLives[npc.index]==3)
-						{
+					if(i_NpcCurrentLives[npc.index]==3)
+					{
 						Blitzkrieg_IOC_Invoke(npc.index, closest);
-						}
 					}
+				}
 			}
 			if(npc.m_flNextTeleport < GetGameTime() && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0))
 			{
@@ -438,15 +465,17 @@ public void Blitzkrieg_ClotThink(int iNPC)
 					}
 				}
 			}
-			if(npc.m_flReloadIn && npc.m_flReloadIn<GetGameTime())
+			if(i_PrimaryRocketsFired[npc.index] > 20)	//Every 20 rockets npc enters a 10 second reload time
 			{
-				//Play attack anim
 				npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
-				npc.m_flReloadIn = 0.0;
+				npc.m_flReloadIn = GetGameTime() + (3.0 * fl_LifelossReload[npc.index]);
+				npc.m_flMeleeArmor = 1.0;
+				i_PrimaryRocketsFired[npc.index] = 0;
 			}
-			if(flDistanceToTarget < 100000)
+			if(flDistanceToTarget < 100000/i_RangeScale[npc.index] && npc.m_flReloadIn <= GetGameTime())
 			{
 				int Enemy_I_See;
+				npc.m_flMeleeArmor = 1.5;
 				
 				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
@@ -462,9 +491,9 @@ public void Blitzkrieg_ClotThink(int iNPC)
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 						
 						npc.PlayMeleeSound();
-						npc.FireRocket(vecTarget, 26.0, 500.0/(0.25+i_HealthScale[npc.index]), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
+						npc.FireRocket(vecTarget, 26.0, 500.0/(0.25+i_HealthScale[npc.index]), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0, EP_NO_KNOCKBACK); //remove the no kb if people cant escape, or just lower the dmg
 						npc.m_flNextMeleeAttack = GetGameTime() + 0.25 * i_HealthScale[npc.index];
-						npc.m_flReloadIn = GetGameTime() + 0.25 * i_HealthScale[npc.index];
+						i_PrimaryRocketsFired[npc.index]++;
 					}
 					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
 					{
@@ -481,9 +510,25 @@ public void Blitzkrieg_ClotThink(int iNPC)
 							{
 								
 								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 7.5 * RaidModeScaling / i_HealthScale[npc.index], DMG_SLASH|DMG_CLUB);
+								{
+									float Bonus_damage = 1.0;
+									int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
+	
+									char classname[32];
+									GetEntityClassname(weapon, classname, 32);
+									
+									int weapon_slot = TF2_GetClassnameSlot(classname);
+									
+									if(weapon_slot != 2)
+									{
+										Bonus_damage = 1.5;
+									}
+									float truedamage = 5 * RaidModeScaling / i_HealthScale[npc.index] * Bonus_damage;
+									SDKHooks_TakeDamage(target, npc.index, npc.index, truedamage, DMG_SLASH|DMG_CLUB);
+								}
+				
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0 * RaidModeScaling / i_HealthScale[npc.index], DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 7.5 * RaidModeScaling / i_HealthScale[npc.index], DMG_SLASH|DMG_CLUB);
 								
 								
 								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
@@ -491,13 +536,14 @@ public void Blitzkrieg_ClotThink(int iNPC)
 								// Hit sound
 								npc.PlayMeleeHitSound();
 								
+								
 							} 
 						}
 						delete swingTrace;
 						npc.m_flNextMeleeAttack = GetGameTime() + 0.25 * i_HealthScale[npc.index];
 						npc.m_flAttackHappenswillhappen = false;
 					}
-					if(ZR_GetWaveCount()<=30)
+					if(ZR_GetWaveCount()<=15)
 					{
 					PF_StopPathing(npc.index);
 					npc.m_bPathing = false;
@@ -522,7 +568,14 @@ public void Blitzkrieg_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-	npc.PlayIdleAlertSound()
+	
+	npc.PlayMusicSound();
+	npc.PlayIdleAlertSound();
+	if(i_NpcCurrentLives[npc.index]==4 && fl_TheFinalCountdown[npc.index] <= GetGameTime())
+	{
+    	EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
+    	fl_TheFinalCountdown[npc.index] = GetGameTime()+1.0;
+    }
 }
 
 public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -543,7 +596,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 	int closest = npc.m_iTarget;
 	
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-    float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 	
 	
 	if(Health/MaxHealth>0.5 && Health/MaxHealth<0.75 && i_NpcCurrentLives[npc.index] == 0)	//Lifelosses
@@ -552,13 +605,23 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
 		
+		if(ZR_GetWaveCount()>=60)
+		{
+			i_RangeScale[npc.index] = 0.5;
+		}
+		if(ZR_GetWaveCount()==30)
+		{
+			i_RangeScale[npc.index] = 0.75;
+		}
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_liberty_launcher/c_liberty_launcher.mdl");	//Liberty
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		i_HealthScale[npc.index]=0.4;
 		
-		npc.m_flSpeed = 280.0;
+		fl_LifelossReload[npc.index] = 0.8;
+		
+		npc.m_flSpeed = 290.0;
 		
 		npc.PlayAngerSound();
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
@@ -593,14 +656,25 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		i_NpcCurrentLives[npc.index]=2;
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
-			
+		
+		if(ZR_GetWaveCount()>=60)
+		{
+			i_RangeScale[npc.index] = 0.25;
+		}
+		if(ZR_GetWaveCount()==30)
+		{
+			i_RangeScale[npc.index] = 0.5;
+		}
+		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl");	//Dumpster deive aka beggars
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		i_HealthScale[npc.index]=0.25;
 		
-		npc.m_flSpeed = 290.0;
+		fl_LifelossReload[npc.index] = 0.75
+		
+		npc.m_flSpeed = 300.0;
 		
 		npc.PlayAngerSound();
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
@@ -629,11 +703,20 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	}
-	else if(Health/MaxHealth>0 && Health/MaxHealth<0.25&& i_NpcCurrentLives[npc.index] == 2)
+	else if(Health/MaxHealth>0.1 && Health/MaxHealth<0.25&& i_NpcCurrentLives[npc.index] == 2)
 	{	//25%-ded
 		i_NpcCurrentLives[npc.index]=3;
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
+		
+		if(ZR_GetWaveCount()>=60)
+		{
+			i_RangeScale[npc.index] = 0.01;
+		}
+		if(ZR_GetWaveCount()==30)
+		{
+			i_RangeScale[npc.index] = 0.1;
+		}
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_atom_launcher/c_atom_launcher.mdl");	//The thing everyone fears, the airstrike.
 		SetVariantString("1.0");
@@ -641,7 +724,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		EmitSoundToAll("mvm/mvm_tank_end.wav");
 		
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 310.0;
 		
 		CPrintToChatAll("{crimson}Blitzkrieg{default}: {yellow}Life: %i!",i_NpcCurrentLives[npc.index]);
 		
@@ -663,6 +746,8 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		i_HealthScale[npc.index]=0.175;
 		
+		fl_LifelossReload[npc.index] = 0.65;
+		
 		npc.PlayAngerSound();
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 		Blitzkrieg_IOC_Invoke(npc.index, closest);
@@ -670,7 +755,57 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	}
-	
+	else if(Health/MaxHealth>0 && Health/MaxHealth<0.1 && i_NpcCurrentLives[npc.index] == 3 && ZR_GetWaveCount()>30)
+	{	//The final push
+		
+		EmitSoundToAll("mvm/mvm_tank_horn.wav");
+		
+		i_NpcCurrentLives[npc.index]=4;
+		
+		npc.m_flSpeed = 0.0;
+		
+		CPrintToChatAll("{crimson}Blitzkrieg{default}: {crimson}THE END IS HERE");
+		
+		Blitzkrieg_Final_IOC_Invoke(npc.index, closest, 500.0);
+		
+		fl_TheFinalCountdown2[npc.index] = GetGameTime()+7.5;
+			
+		npc.m_flNextTeleport = GetGameTime() + 1000.0;
+		
+		i_HealthScale[npc.index]=0.175;
+		
+		fl_LifelossReload[npc.index] = 0.001;
+		
+		npc.m_flRangedArmor = 0.1;
+		
+		npc.PlayAngerSound();
+		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
+					
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+		if(iActivity > 0) npc.StartActivity(iActivity);
+	}
+	else if(fl_TheFinalCountdown2[npc.index] <= GetGameTime() && i_NpcCurrentLives[npc.index] == 4)
+	{	//reset
+		i_NpcCurrentLives[npc.index]=5;
+		
+		EmitSoundToAll("mvm/mvm_tank_explode.wav");
+		
+		CPrintToChatAll("{crimson}Blitzkrieg{default}: You lived? {crimson}no matter");
+		
+		npc.m_flSpeed = 320.0;
+		
+			
+		npc.m_flNextTeleport = GetGameTime() + 1.0;
+		
+		i_HealthScale[npc.index]=0.095;
+		
+		fl_LifelossReload[npc.index] = 0.25;
+		
+		npc.m_flRangedArmor = 1.0;
+		
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+		if(iActivity > 0) npc.StartActivity(iActivity);
+	}
 	return Plugin_Changed;
 }
 
@@ -681,7 +816,7 @@ public void Blitzkrieg_NPCDeath(int entity)
 	Music_Stop_All_Blitzkrieg(entity);
 	SDKUnhook(npc.index, SDKHook_Think, Blitzkrieg_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Blitzkrieg_ClotDamaged);
-	Music_RoundEnd(entity);
+//	Music_RoundEnd(entity);
 	
 	int closest = npc.m_iTarget;
 	
@@ -739,6 +874,28 @@ public void Blitzkrieg_IOC_Invoke(int client, int enemy)	//Ion cannon from above
 	WritePackCell(data, client);
 	ResetPack(data);
 	Blitzkrieg_IonAttack(data);
+}
+public void Blitzkrieg_Final_IOC_Invoke(int client, int enemy, float howfarIOC)	//Ion cannon from above
+{
+	//static float distance=howfarIOC; // /29 for duartion till boom
+	static float IOCDist=1000.0;
+	static float IOCdamage=2500.0;
+	
+	float vecTarget[3];
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vecTarget);
+	
+	Handle data = CreateDataPack();
+	WritePackFloat(data, vecTarget[0]);
+	WritePackFloat(data, vecTarget[1]);
+	WritePackFloat(data, vecTarget[2]);
+	WritePackCell(data, howfarIOC); // Distance
+	WritePackFloat(data, 0.0); // nphi
+	WritePackCell(data, IOCDist); // Range
+	WritePackCell(data, IOCdamage); // Damge
+	WritePackCell(data, client);
+	ResetPack(data);
+	Blitzkrieg_Final_IonAttack(data);
+	
 }
 
 public Action Blitzkrieg_DrawIon(Handle Timer, any data)
@@ -921,24 +1078,290 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const color[4])
 */
 		}
 }
+public void Blitzkrieg_Final_IonAttack(Handle &data)
+	{
+		float startPosition[3];
+		float position[3];
+		startPosition[0] = ReadPackFloat(data);
+		startPosition[1] = ReadPackFloat(data);
+		startPosition[2] = ReadPackFloat(data);
+		float Iondistance = ReadPackCell(data);
+		float nphi = ReadPackFloat(data);
+		int Ionrange = ReadPackCell(data);
+		int Iondamage = ReadPackCell(data);
+		int client = ReadPackCell(data);
+		
+		if (Iondistance > 0)
+		{
+			EmitSoundToAll("ambient/energy/weld1.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
+			
+			//Iondistance=300.0;
+			// Stage 1
+			float s=Sine(nphi/360*6.28)*Iondistance;
+			float c=Cosine(nphi/360*6.28)*Iondistance;
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[2] = startPosition[2];
+			
+			position[0] += s;
+			position[1] += c;
+			Blitzkrieg_DrawIonBeam(position, {255, 0, 0, 255});
+	
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] -= s;
+			position[1] -= c;
+			Blitzkrieg_DrawIonBeam(position, {255, 0, 0, 255});
+			
+			// Stage 2
+			s=Sine((nphi+36.0)/360*6.28)*Iondistance;
+			c=Cosine((nphi+36.0)/360*6.28)*Iondistance;
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] += s;
+			position[1] += c;
+			Blitzkrieg_DrawIonBeam(position, {0, 255, 0, 255});
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] -= s;
+			position[1] -= c;
+			Blitzkrieg_DrawIonBeam(position, {0, 255, 0, 255});
+			
+			// Stage 3
+			s=Sine((nphi+72.0)/360*6.28)*Iondistance;
+			c=Cosine((nphi+72.0)/360*6.28)*Iondistance;
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] += s;
+			position[1] += c;
+			Blitzkrieg_DrawIonBeam(position, {0, 0, 255, 255});
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] -= s;
+			position[1] -= c;
+			Blitzkrieg_DrawIonBeam(position, {0, 0, 255, 255});
+			
+			// Stage 4
+			s=Sine((nphi+108.0)/360*6.28)*Iondistance;
+			c=Cosine((nphi+108.0)/360*6.28)*Iondistance;
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] += s;
+			position[1] += c;
+			Blitzkrieg_DrawIonBeam(position, {255, 255, 0, 255});
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] -= s;
+			position[1] -= c;
+			Blitzkrieg_DrawIonBeam(position, {255, 255, 0, 255});
+			
+			// Stage 5
+			s=Sine((nphi+144.0)/360*6.28)*Iondistance;
+			c=Cosine((nphi+144.0)/360*6.28)*Iondistance;
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] += s;
+			position[1] += c;
+			Blitzkrieg_DrawIonBeam(position, {255, 0, 255, 255});
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] -= s;
+			position[1] -= c;
+			Blitzkrieg_DrawIonBeam(position, {255, 0, 255, 255});
+			
+			// Stage 6
+			s=Sine((nphi+180.0)/360*6.28)*Iondistance;
+			c=Cosine((nphi+180.0)/360*6.28)*Iondistance;
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] += s;
+			position[1] += c;
+			Blitzkrieg_DrawIonBeam(position, {0, 255, 255, 255});
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] -= s;
+			position[1] -= c;
+			Blitzkrieg_DrawIonBeam(position, {0, 255, 255, 255});
+			
+			// Stage 7
+			s=Sine((nphi+216.0)/360*6.28)*Iondistance;
+			c=Cosine((nphi+216.0)/360*6.28)*Iondistance;
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] += s;
+			position[1] += c;
+			Blitzkrieg_DrawIonBeam(position, {255, 255, 255, 255});
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] -= s;
+			position[1] -= c;
+			Blitzkrieg_DrawIonBeam(position, {255, 255, 255, 255});
+			
+			// Stage 8
+			s=Sine((nphi+252.0)/360*6.28)*Iondistance;
+			c=Cosine((nphi+252.0)/360*6.28)*Iondistance;
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] += s;
+			position[1] += c;
+			Blitzkrieg_DrawIonBeam(position, {221, 5, 245, 255});
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] -= s;
+			position[1] -= c;
+			Blitzkrieg_DrawIonBeam(position, {221, 5, 245, 255});
+			
+			// Stage 9
+			s=Sine((nphi+288.0)/360*6.28)*Iondistance;
+			c=Cosine((nphi+288.0)/360*6.28)*Iondistance;
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] += s;
+			position[1] += c;
+			Blitzkrieg_DrawIonBeam(position, {5, 209, 245, 255});
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] -= s;
+			position[1] -= c;
+			Blitzkrieg_DrawIonBeam(position, {5, 209, 245, 255});
+			
+			// Stage 10
+			s=Sine((nphi+324.0)/360*6.28)*Iondistance;
+			c=Cosine((nphi+324.0)/360*6.28)*Iondistance;
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] += s;
+			position[1] += c;
+			Blitzkrieg_DrawIonBeam(position, {245, 237, 5, 255});
+			
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[0] -= s;
+			position[1] -= c;
+			Blitzkrieg_DrawIonBeam(position, {245, 237, 5, 255});
+			
+			if (nphi >= 360)
+				nphi = 0.0;
+			else
+				nphi += 5.0;
+		}
+		Iondistance -= 10;
+		
+		Handle nData = CreateDataPack();
+		WritePackFloat(nData, startPosition[0]);
+		WritePackFloat(nData, startPosition[1]);
+		WritePackFloat(nData, startPosition[2]);
+		WritePackCell(nData, Iondistance);
+		WritePackFloat(nData, nphi);
+		WritePackCell(nData, Ionrange);
+		WritePackCell(nData, Iondamage);
+		WritePackCell(nData, client);
+		ResetPack(nData);
+		
+		if (Iondistance > -30)
+		CreateTimer(0.1, Blitzkrieg_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
+		else
+		{
+			
+			makeexplosion(client, client, startPosition, "", RoundToCeil(35.0 * RaidModeScaling), 100);
+			
+			
+				
+			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
+			TE_SendToAll();
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[2] += startPosition[2] + 900.0;
+			startPosition[2] += -200;
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 30.0, 30.0, 0, 1.0, {255, 0, 0, 255}, 3);
+			TE_SendToAll();
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 50.0, 50.0, 0, 1.0, {255, 0, 0, 200}, 3);
+			TE_SendToAll();
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {255, 0, 0, 120}, 3);
+			TE_SendToAll();
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {255, 0, 0, 75}, 3);
+			TE_SendToAll();
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {255, 0, 0, 75}, 3);
+			TE_SendToAll();
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {255, 0, 0, 75}, 3);
+			TE_SendToAll();
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {255, 0, 0, 75}, 3);
+			TE_SendToAll();
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {255, 0, 0, 75}, 3);
+			TE_SendToAll();
+	
+			position[2] = startPosition[2] + 50.0;
+			//new Float:fDirection[3] = {-90.0,0.0,0.0};
+			//env_shooter(fDirection, 25.0, 0.1, fDirection, 800.0, 120.0, 120.0, position, "models/props_wasteland/rockgranite03b.mdl");
+	
+			//env_shake(startPosition, 120.0, 10000.0, 15.0, 250.0);
+			
+			// Sound
+			EmitSoundToAll("ambient/explosions/explode_9.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
+	
+			// Blend
+			//sendfademsg(0, 10, 200, FFADE_OUT, 255, 255, 255, 150);
+			
+			// Knockback
+	/*		float vReturn[3];
+			float vClientPosition[3];
+			float dist;
+			for (int i = 1; i <= MaxClients; i++)
+			{
+				if (IsClientConnected(i) && IsClientInGame(i) && IsPlayerAlive(i))
+				{	
+					GetClientEyePosition(i, vClientPosition);
+	
+					dist = GetVectorDistance(vClientPosition, position, false);
+					if (dist < Ionrange)
+					{
+						MakeVectorFromPoints(position, vClientPosition, vReturn);
+						NormalizeVector(vReturn, vReturn);
+						ScaleVector(vReturn, 10000.0 - dist*10);
+	
+						TeleportEntity(i, NULL_VECTOR, NULL_VECTOR, vReturn);
+					}
+				}
+			}
+*/
+		}
+}
 void Music_Stop_All_Blitzkrieg(int entity)
 {
-	StopSound(entity, SNDCHAN_AUTO, "ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
 }
 void Music_Stop_All_Beat(int entity)
 {
-	StopSound(entity, SNDCHAN_AUTO, "zombiesurvival/beats/defaultzombiev2/10.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombiesurvival/beats/defaultzombiev2/10.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombiesurvival/beats/defaultzombiev2/10.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombiesurvival/beats/defaultzombiev2/10.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombiesurvival/beats/defaultzombiev2/10.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombiesurvival/beats/defaultzombiev2/10.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombiesurvival/beats/defaultzombiev2/10.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
 }

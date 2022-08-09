@@ -289,12 +289,21 @@ methodmap TrueFusionWarrior < CClotBody
 		
 		if(RaidModeScaling < 55)
 		{
-			RaidModeScaling *= 0.20; //abit low, inreacing
+			RaidModeScaling *= 0.19; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.40;
+			RaidModeScaling *= 0.38;
 		}
+		
+		float amount_of_people = float(CountPlayersOnRed());
+		
+		amount_of_people *= 0.12;
+		
+		if(amount_of_people < 1.0)
+			amount_of_people = 1.0;
+			
+		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
 		Raidboss_Clean_Everyone();
 		
@@ -864,7 +873,9 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 	{
 		FusionWarrior_BEAM_BuildingHit[building] = false;
 	}
-			
+	
+	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
+	
 	FusionWarrior_BEAM_IsUsing[client] = false;
 	FusionWarrior_BEAM_TicksActive[client] = 0;
 
@@ -923,6 +934,8 @@ void TrueFusionWarrior_TBB_Ability(int client)
 	{
 		FusionWarrior_BEAM_BuildingHit[building] = false;
 	}
+	
+	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
 			
 	FusionWarrior_BEAM_IsUsing[client] = false;
 	FusionWarrior_BEAM_TicksActive[client] = 0;

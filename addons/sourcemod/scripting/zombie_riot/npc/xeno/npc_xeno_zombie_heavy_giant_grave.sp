@@ -137,7 +137,7 @@ methodmap XenoHeavyGiant < CClotBody
 		i_NpcInternalId[npc.index] = XENO_HEAVY_ZOMBIE_GIANT;
 		
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
 		

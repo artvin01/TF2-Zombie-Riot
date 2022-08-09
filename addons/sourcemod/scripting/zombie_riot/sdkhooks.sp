@@ -312,37 +312,213 @@ public void OnPostThink(int client)
 			Armor_regen_delay[client] = gameTime + 1.0;
 		}
 	}
-	if(has_mage_weapon[client] && Mana_Hud_Delay[client] < gameTime)	
+	if(Mana_Hud_Delay[client] < gameTime)	
 	{
 		Mana_Hud_Delay[client] = gameTime + 0.4;
-		int red = 255;
-		int green = 0;
-		int blue = 255;
+		char buffer[255];
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		
-		red = Current_Mana[client] * 255  / RoundToFloor(max_mana[client]);
-		
-		blue = Current_Mana[client] * 255  / RoundToFloor(max_mana[client]);
+		if(IsValidEntity(weapon))
+		{
+			
+			char classname[32];
+			GetEntityClassname(weapon, classname, 32);
+			
+			int weapon_slot = TF2_GetClassnameSlot(classname);
+	
+			float cooldown_time;
+			bool had_An_ability = false;
+			bool IsReady = false;
+			
+			if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_M1)
+			{
+				had_An_ability = true;
+				
+				cooldown_time = f_Ability_Cooldown_m1[client][weapon_slot] - gameTime;
+				
+				if(cooldown_time < 0.0)
+				{
+					IsReady = true;
+					cooldown_time = 0.0;
+				}
+					
+				if(IsReady)
+				{
+					Format(buffer, sizeof(buffer), "[M1] %s", buffer);
+				}
+				else
+				{
+					Format(buffer, sizeof(buffer), "M1 : %.1f %s", cooldown_time, buffer);
+				}
+				IsReady = false;
+			}
+			if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_M2)
+			{
+				cooldown_time = f_Ability_Cooldown_m2[client][weapon_slot] - gameTime;
+				
+				if(had_An_ability)
+				{
+					Format(buffer, sizeof(buffer), "| %s", buffer);
+				}
+				if(cooldown_time < 0.0)
+				{
+					IsReady = true;
+					cooldown_time = 0.0;
+				}
+					
+				if(IsReady)
+				{
+					Format(buffer, sizeof(buffer), "[M2] %s", buffer);
+				}
+				else
+				{
+					Format(buffer, sizeof(buffer), "M2 : %.1f %s", cooldown_time, buffer);
+				}
+				had_An_ability = true;
+				IsReady = false;
+				
+			}
+			if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_R)
+			{
+				cooldown_time = f_Ability_Cooldown_r[client][weapon_slot] - gameTime;
+				
+				if(had_An_ability)
+				{
+					Format(buffer, sizeof(buffer), "| %s", buffer);
+				}	
+				if(cooldown_time < 0.0)
+				{
+					IsReady = true;
+					cooldown_time = 0.0;
+				}
+					
+				if(IsReady)
+				{
+					Format(buffer, sizeof(buffer), "[R] %s", buffer);
+				}
+				else
+				{
+					Format(buffer, sizeof(buffer), "R : %.1f %s", cooldown_time, buffer);
+				}
+				had_An_ability = true;
+				IsReady = false;
+			}
+			
+			if(GetAbilitySlotCount(client) > 0)
+			{
+				cooldown_time = GetAbilityCooldownM3(client);
+					
+				if(had_An_ability)
+				{
+					Format(buffer, sizeof(buffer), "| %s", buffer);
+				}	
+				
+				if(cooldown_time < 0.0)
+				{
+					IsReady = true;
+					cooldown_time = 0.0;
+				}
+					
+				if(IsReady)
+				{
+					Format(buffer, sizeof(buffer), "[M3] %s", buffer);
+				}
+				else
+				{
+					Format(buffer, sizeof(buffer), "M3 : %.1f %s", cooldown_time, buffer);
+				}
+				
+				had_An_ability = true;
+				IsReady = false;
+					
+			}
+			int obj=EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
+			if(IsValidEntity(obj) && obj>MaxClients)
+			{
+				cooldown_time = f_BuildingIsNotReady[client] - gameTime;
+					
+				if(had_An_ability)
+				{
+					Format(buffer, sizeof(buffer), "| %s", buffer);
+				}	
+				if(cooldown_time < 0.0)
+				{
+					IsReady = true;
+					cooldown_time = 0.0;
+				}
+					
+				if(IsReady)
+				{
+					Format(buffer, sizeof(buffer), "[E] %s", buffer);
+				}
+				else
+				{
+					Format(buffer, sizeof(buffer), "E : %.1f %s", cooldown_time, buffer);
+				}
+				IsReady = false;
+				had_An_ability = true;
+			}
+			if(had_An_ability)
+			{
+				Format(buffer, sizeof(buffer), "%s\n", buffer);
+			}
+		}
 		 
-		red = 255 - red;
+		int red = 0;
+		int green = 255;
+		int blue = 0;
 		
-		if(red > 255)
+		if(has_mage_weapon[client])
+		{
 			red = 255;
-		
-		if(blue > 255)
+			green = 0;
 			blue = 255;
 			
-		if(red < 0)
-			red = 0;
+			red = Current_Mana[client] * 255  / RoundToFloor(max_mana[client]);
 			
-		if(blue < 0)
-			blue = 0;
-		
-		SetHudTextParams(-1.0, 0.85, 3.01, red, green, blue, 255);
-		
+			blue = Current_Mana[client] * 255  / RoundToFloor(max_mana[client]);
+			 
+			red = 255 - red;
+			
+			if(red > 255)
+				red = 255;
+			
+			if(blue > 255)
+				blue = 255;
+				
+			if(red < 0)
+				red = 0;
+				
+			if(blue < 0)
+				blue = 0;
 			
 			
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_WandMana, "%t", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client]);
+			for(int i=1; i<21; i++)
+			{
+				if(Current_Mana[client] >= max_mana[client]*(i*0.05))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+				}
+				else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/60.0))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+				}
+				else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/30.0))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+				}
+				else
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+				}
+			}
+				
+			SetGlobalTransTarget(client);
+			
+			Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
+		}
+		SetHudTextParams(-1.0, 0.85, 0.81, red, green, blue, 255);
+		ShowSyncHudText(client,  SyncHud_WandMana, "%s", buffer);
 	}
 	if(delay_hud[client] < gameTime)	
 	{
@@ -394,7 +570,7 @@ public void OnPostThink(int client)
 			if(f_ShowHudDelayForServerMessage[client] < GetGameTime())
 			{
 				f_ShowHudDelayForServerMessage[client] = GetGameTime() + 300.0;
-				PrintToChat(client,"If you wish to see the wave counter in a better way, set cl_showpluginmessages to 1 in the console!");
+				PrintToChat(client,"If you wish to see the wave counter in a better way, set ''cl_showpluginmessages'' to 1 in the console!");
 			}
 		}
 		//cl_showpluginmessages
@@ -417,8 +593,49 @@ public void OnPostThink(int client)
 			
 			red = 255 - red;
 			
-			SetHudTextParams(0.165, 0.86, 3.01, red, green, blue, 255);
-			ShowSyncHudText(client,  SyncHud_ArmorCounter, "|%i|", Armor_Charge[client]);
+			char buffer[64];
+			{
+				for(int i=10; i>0; i--)
+				{
+					if(Armor_Charge[client] >= Armor_Max*(i*0.1))
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+					}
+					else if(Armor_Charge[client] > Armor_Max*(i*0.1 - 1.0/60.0))
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+					}
+					else if(Armor_Charge[client] > Armor_Max*(i*0.1 - 1.0/30.0))
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+					}
+					
+					if((i % 2) == 1)
+					{
+						Format(buffer, sizeof(buffer), "%s\n", buffer);
+					}
+				}
+				
+				if(i_CurrentEquippedPerk[client] == 6)
+				{
+					float slowdown_amount = f_WidowsWineDebuffPlayerCooldown[client] - GetGameTime();
+					
+					if(slowdown_amount < 0.0)
+					{
+						slowdown_amount = 0.0;
+					}
+					Format(buffer, sizeof(buffer), "%s%.1f", buffer, slowdown_amount);
+				}
+				SetHudTextParams(0.175, 0.86, 0.81, red, green, blue, 255);
+				ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
+			}
+			
+		//	SetHudTextParams(0.165, 0.86, 3.01, red, green, blue, 255);
+		//	ShowSyncHudText(client,  SyncHud_ArmorCounter, "|%i|", Armor_Charge[client]);
 			
 			
 			
@@ -497,9 +714,9 @@ public void OnPostThink(int client)
 	{
 		if (IsPlayerAlive(client))
 		{
-			StartPlayerOnlyLagComp(client, true);
-			int entity = GetClientPointVisible(client); //So you can also correctly interact with players holding shit.
-			EndPlayerOnlyLagComp();
+		//	StartPlayerOnlyLagComp(client, true); //do not lag compensate, its actually way too expensive, and it doesnt really matter most of the time.
+			int entity = GetClientPointVisible(client); //allow them to get info if they stare at something for abit long
+		//	EndPlayerOnlyLagComp(client);
 			Building_ShowInteractionHud(client, entity);
 			f_DelayLookingAtHud[client] = GetGameTime() + 0.2;	
 		}
@@ -654,11 +871,25 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		damage *= difficulty_math + 1.0; //More damage !! only upto double.
 	}
 	
+	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+	
+	//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
+	
+	if(IsValidEntity(Victim_weapon))
+	{
+		float modified_damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon);
+		
+		damage = modified_damage;
+		Replicated_Damage = modified_damage;
+	}
+	
+	//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
+	//It will just return the same damage if nothing is done.
+	
 	if(!b_ThisNpcIsSawrunner[attacker])
 	{
 		if(EscapeMode)
 		{
-			int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 			if(IsValidEntity(Victim_weapon))
 			{
 				if(!IsWandWeapon(Victim_weapon)) //Make sure its not wand.
@@ -683,20 +914,64 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		
 		if(damagetype & DMG_FALL)
 		{
-			if(RaidBossActive)
+			Replicated_Damage *= 0.65; //Reduce falldmg by passive overall
+			damage *= 0.65;
+			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 			{
 				Replicated_Damage *= 0.2;
 				damage *= 0.2;			
 			}
 			else if(i_SoftShoes[victim] == 1)
 			{
-				Replicated_Damage *= 0.5;
-				damage *= 0.5;
+				Replicated_Damage *= 0.65;
+				damage *= 0.65;
 			}
 		}
 		else
 		{
-			bool Though_Armor = false;
+		//	bool Though_Armor = false;
+		
+			if(i_CurrentEquippedPerk[victim] == 6)
+			{
+
+				//s	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
+				int flMaxHealth = SDKCall_GetMaxHealth(victim);
+			
+				if((damage > float(flMaxHealth / 20) || flHealth < flMaxHealth / 5 || damage > 25.0) && f_WidowsWineDebuffPlayerCooldown[victim] < GetGameTime()) //either too much dmg, or your health is too low.
+				{
+					f_WidowsWineDebuffPlayerCooldown[victim] = GetGameTime() + 20.0;
+					
+					float vecVictim[3]; vecVictim = WorldSpaceCenter(victim);
+					
+					ParticleEffectAt(vecVictim, "peejar_impact_cloud_milk", 0.5);
+					
+					EmitSoundToAll("weapons/jar_explode.wav", victim, SNDCHAN_AUTO, 80, _, 1.0);
+					
+					Replicated_Damage *= 0.25;
+					damage *= 0.25;
+					for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+					{
+						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+						if (IsValidEntity(baseboss_index))
+						{
+							if(!b_NpcHasDied[baseboss_index])
+							{
+								if (GetEntProp(victim, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
+								{
+									float vecTarget[3]; vecTarget = WorldSpaceCenter(baseboss_index);
+									
+									float flDistanceToTarget = GetVectorDistance(vecVictim, vecTarget, true);
+									if(flDistanceToTarget < 90000)
+									{
+										ParticleEffectAt(vecTarget, "peejar_impact_cloud_milk", 0.5);
+										f_WidowsWineDebuff[baseboss_index] = GetGameTime() + FL_WIDOWS_WINE_DURATION;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 			
 			if(Resistance_Overall_Low[victim] > gameTime)
 			{
@@ -724,7 +999,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					damage += float(dmg_through_armour);
 					Replicated_Damage = 0.0;
 					Replicated_Damage += float(dmg_through_armour);
-					Though_Armor = true;
+			//		Though_Armor = true;
 				}
 			}
 			switch(Armour_Level_Current[victim])
@@ -733,29 +1008,29 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				{
 					damage *= 0.9;
 					Replicated_Damage *= 0.9;
-					if(Though_Armor)
-						EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
+				//	if(Though_Armor)
+				//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 				}
 				case 2:
 				{
 					damage *= 0.85;
 					Replicated_Damage *= 0.85;
-					if(Though_Armor)
-						EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
+				//	if(Though_Armor)
+				//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 				}
 				case 3:
 				{
 					damage *= 0.8;
 					Replicated_Damage *= 0.80;
-					if(Though_Armor)
-						EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
+				//	if(Though_Armor)
+				//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 				}
 				case 4:
 				{
 					damage *= 0.75;
 					Replicated_Damage *= 0.75;
-					if(Though_Armor)
-						EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
+				//	if(Though_Armor)
+				//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 				}
 				default:
 				{
@@ -771,7 +1046,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		TF2_AddCondition(victim, TFCond_UberchargedCanteen, 1.0);
 		TF2_AddCondition(victim, TFCond_MegaHeal, 1.0);
 		EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
-		f_OneShotProtectionTimer[victim] = gameTime + 120.0; // 120 second cooldown
+		f_OneShotProtectionTimer[victim] = gameTime + 60.0; // 60 second cooldown
 		return Plugin_Changed;
 	}
 	else if((RoundToCeil(Replicated_Damage) >= flHealth || RoundToCeil(damage) >= flHealth) && !LastMann && !b_IsAloneOnServer)
@@ -918,3 +1193,50 @@ static void ClientViewPunch(int client, const float angleOffset[3])
 	SetEntDataVector(client, g_offsPlayerPunchAngleVel, flOffset, true);
 }
 */
+
+public Action Command_Voicemenu(int client, const char[] command, int args)
+{
+	if(client && args == 2 && IsPlayerAlive(client) && TeutonType[client] == 0)
+	{
+		char arg[4];
+		GetCmdArg(1, arg, sizeof(arg));
+		if(arg[0] == '0')
+		{
+			GetCmdArg(2, arg, sizeof(arg));
+			if(arg[0] == '0')
+			{
+				if(TeutonType[client] == TEUTON_NONE)
+				{
+					bool has_been_done = BuildingCustomCommand(client);
+					if(has_been_done)
+					{
+						return Plugin_Handled;
+					}
+				}
+			}
+		}
+	}
+	return Plugin_Continue;
+}
+
+
+enum
+{
+	WEAPON_ARK = 1,
+	
+}
+
+
+float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon)
+{
+	
+	
+	switch(i_CustomWeaponEquipLogic[equipped_weapon])
+	{
+		case WEAPON_ARK: // weapon_ark
+		{
+			return Player_OnTakeDamage_Ark(victim, damage);
+		}
+	}
+	return damage;
+}

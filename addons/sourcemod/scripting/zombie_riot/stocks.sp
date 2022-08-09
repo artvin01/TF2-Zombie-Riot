@@ -1,7 +1,9 @@
 static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 
-void Stock_TakeDamage(int entity = 0, int inflictor = 0, int attacker = 0, float damage = 0.0, int damageType=DMG_GENERIC, int weapon=-1,const float damageForce[3]=NULL_VECTOR, const float damagePosition[3]=NULL_VECTOR, bool bypassHooks = false)
+void Stock_TakeDamage(int entity = 0, int inflictor = 0, int attacker = 0, float damage = 0.0, int damageType=DMG_GENERIC, int weapon=-1,const float damageForce[3]=NULL_VECTOR, const float damagePosition[3]=NULL_VECTOR, bool bypassHooks = false, int Zr_damage_custom = 0)
 {
+	i_HexCustomDamageTypes[entity] = Zr_damage_custom;
+	
 	SDKHooks_TakeDamage(entity, inflictor, attacker, damage, damageType, weapon, damageForce, damagePosition, bypassHooks);
 
 }
@@ -9,6 +11,30 @@ void Stock_TakeDamage(int entity = 0, int inflictor = 0, int attacker = 0, float
 //We need custom Defaults for this, mainly bypass hooks to FALSE. i dont want to spend 5 years on replacing everything.
 //im sorry.
 #define SDKHooks_TakeDamage Stock_TakeDamage
+
+bool Stock_IsValidEntity(int entity)
+{
+	if(entity == 0)
+	{
+		return false;
+	}
+	else
+	{
+		return IsValidEntity(entity);
+	}
+
+}
+
+#define IsValidEntity Stock_IsValidEntity
+
+//In this case i never need the world ever.
+
+void Stock_SetHudTextParams(float x, float y, float holdTime, int r, int g, int b, int a, int effect = 1, float fxTime=0.1, float fadeIn=0.1, float fadeOut=0.1)
+{
+	SetHudTextParams(x, y, holdTime, r, g, b, a, effect, fxTime, fadeIn, fadeOut);
+}
+
+#define SetHudTextParams Stock_SetHudTextParams
 
 stock void ResetToZero(any[] array, int length)
 {
@@ -1136,6 +1162,7 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 	return entity!=data;
 }
 
+
 public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 {
 	if(entity <= MaxClients)
@@ -1147,6 +1174,10 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 				return false;
 			}
 		}
+	}
+	else if(!Citizen_ThatIsDowned(entity))
+	{
+		return false;
 	}
 	
 	return entity!=data;
@@ -1602,33 +1633,72 @@ stock int GetClosestTarget_BaseBoss(int entity)
 	return ClosestTarget; 
 }
 
+bool b_WasAlreadyCalculatedToBeClosest[MAXENTITIES]; //should be false by default...
+
 stock int GetClosestTarget_BaseBoss_Pos(float pos[3],int entity)
 {
 	float TargetDistance = 0.0; 
-	int ClosestTarget = 0; 
-	int i = MaxClients + 1;
-	while ((i = FindEntityByClassname(i, "base_boss")) != -1)
+	int ClosestTarget = -1; 
+	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 	{
-		if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(i, Prop_Send, "m_iTeamNum")) 
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+		if (IsValidEntity(baseboss_index) && !b_WasAlreadyCalculatedToBeClosest[baseboss_index])
 		{
-			float TargetLocation[3]; 
-			GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-			
-			float distance = GetVectorDistance( pos, TargetLocation ); 
-			if( TargetDistance ) 
+			if(!b_NpcHasDied[baseboss_index])
 			{
-				if( distance < TargetDistance ) 
+				if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
 				{
-					ClosestTarget = i; 
-					TargetDistance = distance;		  
+					float TargetLocation[3]; 
+					GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+					
+					float distance = GetVectorDistance( pos, TargetLocation ); 
+					if( TargetDistance ) 
+					{
+						if( distance < TargetDistance ) 
+						{
+							ClosestTarget = baseboss_index; 
+							TargetDistance = distance;		  
+						}
+					} 
+					else 
+					{
+						ClosestTarget = baseboss_index; 
+						TargetDistance = distance;
+					}				
 				}
-			} 
-			else 
-			{
-				ClosestTarget = i; 
-				TargetDistance = distance;
-			}				
+			}
 		}
+	}
+	for(int entitycount; entitycount<i_MaxcountBreakable; entitycount++)
+	{
+		int breakable_entity = EntRefToEntIndex(i_ObjectsBreakable[entitycount]);
+		if(IsValidEntity(breakable_entity))
+		{
+			if (GetEntProp(breakable_entity, Prop_Send, "m_iTeamNum")!=GetEntProp(breakable_entity, Prop_Send, "m_iTeamNum")) 
+			{
+				float TargetLocation[3]; 
+				GetEntPropVector( breakable_entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+				
+				float distance = GetVectorDistance( pos, TargetLocation ); 
+				if( TargetDistance ) 
+				{
+					if( distance < TargetDistance ) 
+					{
+						ClosestTarget = breakable_entity; 
+						TargetDistance = distance;		  
+					}
+				} 
+				else 
+				{
+					ClosestTarget = breakable_entity; 
+					TargetDistance = distance;
+				}				
+			}
+		}
+	}
+	if(IsValidEntity(ClosestTarget))
+	{
+		b_WasAlreadyCalculatedToBeClosest[ClosestTarget] = true;
 	}
 	return ClosestTarget; 
 }
@@ -1684,12 +1754,12 @@ bool IsEntityStuck(int entity)
 stock bool IsWandWeapon(int entity)
 {
 	int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-	return (index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758);
+	return (index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758 || index == 1013 || index == 173 || index == 648);
 }
 
 stock bool IsWandWeaponStore(int index)
 {
-	return (index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758);
+	return (index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758 || index == 1013 || index == 173 || index == 648);
 }
 
 stock int SpawnWeapon_Special(int client, char[] name, int index, int level, int qual, const char[] att, bool visible=true)
@@ -2087,6 +2157,9 @@ public void SpawnSmallExplosion(float DetLoc[3])
 		
 		char particleName[255];
 		
+		
+		particleName = EXPLOSION_PARTICLE_SMALL_1;
+		/*
 		switch(GetRandomInt(1, 4))
 		{
 			case 1:
@@ -2106,7 +2179,7 @@ public void SpawnSmallExplosion(float DetLoc[3])
 				particleName = EXPLOSION_PARTICLE_SMALL_4;
 			}
 		}
-		
+		*/
 		DispatchKeyValue(littleBoom, "effect_name", particleName);
 		DispatchKeyValue(littleBoom, "targetname", "present");
 		DispatchSpawn(littleBoom);
@@ -2393,24 +2466,29 @@ stock int HasNamedItem(int client, const char[] name)
 	return amount;
 }
 
-
-stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon, float spawnLoc[3] = {0.0,0.0,0.0}, float explosionRadius = EXPLOSION_RADIUS, float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF, float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF, bool FromNpc = false)
+stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon, float spawnLoc[3] = {0.0,0.0,0.0}, float explosionRadius = EXPLOSION_RADIUS, float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF, float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF, bool FromNpc = false, int maxtargetshit = 10)
 {
 	float damage_reduction = 1.0;
 	int Closest_npc = 0;
-	
+	int TargetsHit = 0; //This will not exeed 10 ever, beacuse at that point your damage is nothing.
+	//maxtargetshit
 	if(IsValidEntity(weapon))
 	{
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
 		explosionRadius *= value;
 	}
 	
-	if(!FromNpc)
+	for( int i = 1; i < MAXENTITIES; i++ ) 
+	{
+		b_WasAlreadyCalculatedToBeClosest[i] = false;
+	}
+		
+	if(!FromNpc) //make sure that there even is any valid npc before we do these huge calcs.
 	{
 		if(spawnLoc[0] == 0.0)
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
-			Closest_npc = GetClosestTarget_BaseBoss(entity);
+			Closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity);
 		}
 		else
 		{
@@ -2423,7 +2501,24 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
 		Closest_npc = GetClosestTarget(entity);
 	}
+	
 	float VicLoc[3];
+	
+	int damage_flags = 0;
+	if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_SLASH_DAMAGE))
+	{
+		damage_flags |= DMG_SLASH;
+	}
+	else
+	{
+		damage_flags |= DMG_BLAST;
+	}
+	
+	if((i_ExplosiveProjectileHexArray[entity] & EP_NO_KNOCKBACK))
+	{
+		damage_flags |= DMG_PREVENT_PHYSICS_FORCE;
+	}
+			
 	if(IsValidEntity(Closest_npc))
 	{
 		VicLoc = WorldSpaceCenter(Closest_npc);
@@ -2432,32 +2527,51 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 			float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 			float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
 			
-			SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+
+			if(damage_1 > damage)
+			{
+				damage_1 = damage;
+			}	
 			
-			if(!FromNpc)
+			SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+			
+			if(!FromNpc) //Npcs do not have damage falloff, dodge.
 			{
 				damage_reduction *= ExplosionDmgMultihitFalloff;
 			}
+		//	b_WasAlreadyCalculatedToBeClosest[Closest_npc] = true; //First target hit/closest might want special stuff idk
 		}
 		
 		if(!FromNpc)
 		{
-			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)  //Loop as often as there can be even be max NPC's.
 			{
-				int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-				if (IsValidEntity(baseboss_index))
+				if(TargetsHit > maxtargetshit)
 				{
-					if(!b_NpcHasDied[baseboss_index] && Closest_npc != baseboss_index)
+					break;
+				}
+				int new_closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity); //alotta loops :)
+				if (IsValidEntity(new_closest_npc)) //Make sure its valid bla bla bla
+				{
+					if(Closest_npc != new_closest_npc) //Double check JUST to be sure.
 					{
-						VicLoc = WorldSpaceCenter(baseboss_index);						
+						//Damage Calculations
+						VicLoc = WorldSpaceCenter(new_closest_npc);						
 						if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
 						{
 							float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 							float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
-															
-							SDKHooks_TakeDamage(baseboss_index, client, client, damage_1 / damage_reduction, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius) ,VicLoc);
+											
+							if(damage_1 > damage)
+							{
+								damage_1 = damage;
+							}											
+							SDKHooks_TakeDamage(new_closest_npc, client, client, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+							
 							damage_reduction *= ExplosionDmgMultihitFalloff;
+							TargetsHit += 1;
 						}
+						//Damage Calculations
 					}
 				}
 			}
@@ -2466,6 +2580,10 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 		{
 			for( int i = 1; i <= MaxClients; i++ ) 
 			{
+				if(TargetsHit > maxtargetshit)
+				{
+					break;
+				}
 				if (IsValidClient(i))
 				{
 					CClotBody npc = view_as<CClotBody>(i);
@@ -2474,10 +2592,26 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 						VicLoc = WorldSpaceCenter(i);						
 						if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
 						{
-							float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
-							float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
-															
-							SDKHooks_TakeDamage(i, client, client, damage_1, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius) ,VicLoc);
+							Handle trace; 
+							trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
+							int Traced_Target;
+								
+							Traced_Target = TR_GetEntityIndex(trace);
+							delete trace;
+								
+							if(Traced_Target == i)
+							{
+								float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
+								float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
+								
+								if(damage_1 > damage)
+								{
+									damage_1 = damage;
+								}
+								
+								SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+								TargetsHit += 1;
+							}
 						}
 					}
 				}
@@ -2489,10 +2623,14 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 				else if (pass == 1) classname = "obj_dispenser";
 			//	else if (pass == 2) classname = "obj_teleporter";
 				else if (pass == 2) classname = "base_boss";
-		
+				
 				int i = MaxClients + 1;
 				while ((i = FindEntityByClassname(i, classname)) != -1)
 				{
+					if(TargetsHit > maxtargetshit)
+					{
+						break;
+					}
 					if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(i, Prop_Send, "m_iTeamNum")) 
 					{
 						CClotBody npc = view_as<CClotBody>(i);
@@ -2502,7 +2640,7 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 							if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
 							{
 								Handle trace; 
-								trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
+								trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
 								int Traced_Target;
 								
 								Traced_Target = TR_GetEntityIndex(trace);
@@ -2512,8 +2650,14 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 								{
 									float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 									float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
-																
-									SDKHooks_TakeDamage(i, client, client, damage_1, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius) ,VicLoc);
+																				
+									if(damage_1 > damage)
+									{
+										damage_1 = damage;
+									}
+							
+									SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+									TargetsHit += 1;
 								}
 							}
 						}		
@@ -2525,7 +2669,7 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 								if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
 								{
 									Handle trace; 
-									trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
+									trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
 									int Traced_Target;
 									
 									Traced_Target = TR_GetEntityIndex(trace);
@@ -2536,7 +2680,13 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 										float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 										float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
 																	
-										SDKHooks_TakeDamage(i, client, client, damage_1, DMG_BLAST, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius) ,VicLoc);
+										if(damage_1 > damage)
+										{
+											damage_1 = damage;
+										}
+							
+										SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+										TargetsHit += 1;
 									}
 								}
 							}
@@ -2546,6 +2696,7 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 			}
 		}
 	}
+	
 }
 
 stock void UpdatePlayerPoints(int client)
@@ -2655,6 +2806,17 @@ public bool HitOnlyTargetOrWorld(int entity, int contentsMask, any iExclude)
 	return false;
 }
 
+
+public bool HitOnlyWorld(int entity, int contentsMask, any iExclude)
+{
+	if(entity == 0)
+	{
+		return true;
+	}	
+	
+	return false;
+}
+
 public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 {
 	pack.Reset();
@@ -2684,51 +2846,50 @@ public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 
 public void ReviveAll()
 {
-for(int client=1; client<=MaxClients; client++)
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			DoOverlay(client, "");
+			if(GetClientTeam(client)==2)
+			{
+				if((!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD)/* && !IsValidEntity(EntRefToEntIndex(RaidBossActive))*/)
 				{
-					if(IsClientInGame(client))
+					applied_lastmann_buffs_once = false;
+					DHook_RespawnPlayer(client);
+					TF2_AddCondition(client, TFCond_UberchargedCanteen, 2.0);
+					TF2_AddCondition(client, TFCond_MegaHeal, 2.0);
+				}
+				else if(dieingstate[client] > 0)
+				{
+					dieingstate[client] = 0;
+					Store_ApplyAttribs(client);
+					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+					int entity, i;
+					while(TF2U_GetWearable(client, entity, i))
 					{
-						DoOverlay(client, "");
-						if(GetClientTeam(client)==2)
-						{
-							if((!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD)/* && !IsValidEntity(EntRefToEntIndex(RaidBossActive))*/)
-							{
-								applied_lastmann_buffs_once = false;
-								DHook_RespawnPlayer(client);
-								TF2_AddCondition(client, TFCond_UberchargedCanteen, 2.0);
-								TF2_AddCondition(client, TFCond_MegaHeal, 2.0);
-							}
-							else if(dieingstate[client] > 0)
-							{
-								dieingstate[client] = 0;
-								Store_ApplyAttribs(client);
-								TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
-								int entity, i;
-								while(TF2U_GetWearable(client, entity, i))
-								{
-									SetEntityRenderMode(entity, RENDER_NORMAL);
-									SetEntityRenderColor(entity, 255, 255, 255, 255);
-								}
-								SetEntityRenderMode(client, RENDER_NORMAL);
-								SetEntityRenderColor(client, 255, 255, 255, 255);
-								SetEntityCollisionGroup(client, 5);
-								if(!EscapeMode)
-								{
-									SetEntityHealth(client, 50);
-									RequestFrame(SetHealthAfterRevive, client);
-								}	
-								else
-								{
-									SetEntityHealth(client, 150);
-									RequestFrame(SetHealthAfterRevive, client);						
-								}
-							}
-						}
+						SetEntityRenderMode(entity, RENDER_NORMAL);
+						SetEntityRenderColor(entity, 255, 255, 255, 255);
+					}
+					SetEntityRenderMode(client, RENDER_NORMAL);
+					SetEntityRenderColor(client, 255, 255, 255, 255);
+					SetEntityCollisionGroup(client, 5);
+					if(!EscapeMode)
+					{
+						SetEntityHealth(client, 50);
+						RequestFrame(SetHealthAfterRevive, client);
+					}	
+					else
+					{
+						SetEntityHealth(client, 150);
+						RequestFrame(SetHealthAfterRevive, client);						
 					}
 				}
-				
-				Music_EndLastmann();
-				CheckAlivePlayers();
+			}
+		}
+	}	
+	Music_EndLastmann();
+	CheckAlivePlayers();
 }
 
 
@@ -2800,4 +2961,125 @@ int Trail_Attach(int entity, char[] trail, int alpha, float lifetime=1.0, float 
 		return entIndex;
 	}	
 	return -1;
+}
+
+stock void ConstrainDistance(const float[] startPoint, float[] endPoint, float distance, float maxDistance, bool do2)
+{
+	float constrainFactor = maxDistance / distance;
+	endPoint[0] = ((endPoint[0] - startPoint[0]) * constrainFactor) + startPoint[0];
+	endPoint[1] = ((endPoint[1] - startPoint[1]) * constrainFactor) + startPoint[1];
+	if(do2)
+		endPoint[2] = ((endPoint[2] - startPoint[2]) * constrainFactor) + startPoint[2];
+}
+
+public float Ability_Check_Cooldown(int client, int what_slot)
+{
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	
+	char classname[32];
+	GetEntityClassname(weapon, classname, 32);
+	
+	int weapon_slot = TF2_GetClassnameSlot(classname);
+	
+	switch(what_slot)
+	{
+		case 1:	
+		{
+			return (f_Ability_Cooldown_m1[client][weapon_slot] - GetGameTime());
+		}
+		case 2:	
+		{
+			return (f_Ability_Cooldown_m2[client][weapon_slot] - GetGameTime());
+		}
+		case 3:	
+		{
+			return (f_Ability_Cooldown_r[client][weapon_slot] - GetGameTime());
+		}
+	}
+	PrintToChatAll("Somehow something has no cooldown :( Please report!!!");
+	return 0.0;
+}
+
+public void Ability_Apply_Cooldown(int client, int what_slot, float cooldown)
+{
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	
+	char classname[32];
+	GetEntityClassname(weapon, classname, 32);
+	
+	int weapon_slot = TF2_GetClassnameSlot(classname);
+	
+	cooldown += GetGameTime(); //lol
+	switch(what_slot)
+	{
+		case 1:	
+		{
+			f_Ability_Cooldown_m1[client][weapon_slot] = cooldown;
+		}
+		case 2:	
+		{
+			f_Ability_Cooldown_m2[client][weapon_slot] = cooldown;
+		}
+		case 3:	
+		{
+			f_Ability_Cooldown_r[client][weapon_slot] = cooldown;
+		}
+	}
+}
+
+#define spirite "spirites/zerogxplode.spr"
+
+
+public void MakeExplosionFrameLater(DataPack pack)
+{
+	pack.Reset();
+	float vec_pos[3];
+	vec_pos[0] = pack.ReadFloat();
+	vec_pos[1] = pack.ReadFloat();
+	vec_pos[2] = pack.ReadFloat();
+	
+	int ent = CreateEntityByName("env_explosion");
+	if(ent != -1)
+	{
+	//	SetEntPropEnt(ent, Prop_Data, "m_hOwnerEntity", client);
+												
+		EmitAmbientSound("ambient/explosions/explode_3.wav", vec_pos);
+										
+		DispatchKeyValueVector(ent, "origin", vec_pos);
+		DispatchKeyValue(ent, "spawnflags", "64");
+						
+		DispatchKeyValue(ent, "rendermode", "5");
+		DispatchKeyValue(ent, "fireballsprite", spirite);
+										
+		DispatchKeyValueFloat(ent, "DamageForce", 0.0);								
+		SetEntProp(ent, Prop_Data, "m_iMagnitude", 0); 
+		SetEntProp(ent, Prop_Data, "m_iRadiusOverride", 0); 
+									
+		DispatchSpawn(ent);
+		ActivateEntity(ent);
+									
+		AcceptEntityInput(ent, "explode");
+		AcceptEntityInput(ent, "kill");
+	}		
+	delete pack;
+}
+
+
+stock void DHook_CreateDetour(GameData gamedata, const char[] name, DHookCallback preCallback = INVALID_FUNCTION, DHookCallback postCallback = INVALID_FUNCTION)
+{
+	DynamicDetour detour = DynamicDetour.FromConf(gamedata, name);
+	if(detour)
+	{
+		if(preCallback!=INVALID_FUNCTION && !DHookEnableDetour(detour, false, preCallback))
+			LogError("[Gamedata] Failed to enable pre detour: %s", name);
+
+		if(postCallback!=INVALID_FUNCTION && !DHookEnableDetour(detour, true, postCallback))
+			LogError("[Gamedata] Failed to enable post detour: %s", name);
+
+		delete detour;
+	}
+	else
+	{
+		LogError("[Gamedata] Could not find %s", name);
+	}
 }

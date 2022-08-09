@@ -363,162 +363,160 @@ public void FatherGrigori_ClotThink(int iNPC)
 		
 		//Target close enough to hit
 		
-			if(npc.m_flNextRangedAttack < GetGameTime() && npc.m_flDoingAnimation < GetGameTime() && flDistanceToTarget < 202500)
+		if(npc.m_flNextRangedAttack < GetGameTime() && npc.m_flDoingAnimation < GetGameTime() && flDistanceToTarget < 202500)
+		{
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
+			if (!npc.Anger)
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
-				if (!npc.Anger)
-				{
-					npc.FaceTowards(vecTarget, 1000.0);
-					npc.m_flNextRangedAttack = GetGameTime() + 3.5;
-					npc.m_flDoingAnimation = GetGameTime() + 1.0;
-					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");
-					npc.FireRocket(vPredictedPos, 20.0, 800.0, "models/weapons/w_bullet.mdl", 2.0);	
-					npc.PlayRangedSound();
+				npc.FaceTowards(vecTarget, 1000.0);
+				npc.m_flNextRangedAttack = GetGameTime() + 3.5;
+				npc.m_flDoingAnimation = GetGameTime() + 1.0;
+				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");
+				npc.FireRocket(vPredictedPos, 20.0, 800.0, "models/weapons/w_bullet.mdl", 2.0);	
+				npc.PlayRangedSound();
+			}
+			else if (npc.Anger)
+			{
+				npc.FaceTowards(vecTarget, 1000.0);
+				npc.m_flNextRangedAttack = GetGameTime() + 2.0;
+				npc.m_flDoingAnimation = GetGameTime() + 1.0;
+				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");
+				npc.FireRocket(vPredictedPos, 20.0, 800.0, "models/weapons/w_bullet.mdl", 2.0);	
+				npc.PlayRangedSound();
+			}
+		}
+											
+		if(npc.m_flNextRangedBarrage_Spam < GetGameTime() && flDistanceToTarget < 202500)
+		{
+			if (!npc.Anger)
+			{
+				npc.FaceTowards(vecTarget, 500.0);
+				npc.m_flDoingAnimation = GetGameTime() + 1.0;
+				if (!npc.m_bNextRangedBarrage_OnGoing)
+				{	
+					npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.45;
+					npc.m_bNextRangedBarrage_OnGoing = true;
+					npc.AddGesture("ACT_RANGE_ATTACK_THROW");
 				}
-				else if (npc.Anger)
+				if (npc.m_flNextRangedBarrage_Singular < GetGameTime() && npc.m_bNextRangedBarrage_OnGoing)
 				{
-					npc.FaceTowards(vecTarget, 1000.0);
-					npc.m_flNextRangedAttack = GetGameTime() + 2.0;
-					npc.m_flDoingAnimation = GetGameTime() + 1.0;
-					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");
-					npc.FireRocket(vPredictedPos, 20.0, 800.0, "models/weapons/w_bullet.mdl", 2.0);	
-					npc.PlayRangedSound();
+					npc.FireGrenade(vecTarget);
+					npc.m_flNextRangedBarrage_Spam = GetGameTime() + 8.0;
+					npc.m_bNextRangedBarrage_OnGoing = false;
 				}
 			}
-												
-			if(npc.m_flNextRangedBarrage_Spam < GetGameTime() && flDistanceToTarget < 202500)
+			else if (npc.Anger)
 			{
-				if (!npc.Anger)
-				{
-					npc.FaceTowards(vecTarget, 500.0);
-					npc.m_flDoingAnimation = GetGameTime() + 1.0;
-					if (!npc.m_bNextRangedBarrage_OnGoing)
-					{	
-						npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.45;
-						npc.m_bNextRangedBarrage_OnGoing = true;
-						npc.AddGesture("ACT_RANGE_ATTACK_THROW");
-					}
-					if (npc.m_flNextRangedBarrage_Singular < GetGameTime() && npc.m_bNextRangedBarrage_OnGoing)
-					{
-						npc.FireGrenade(vecTarget);
-						npc.m_flNextRangedBarrage_Spam = GetGameTime() + 8.0;
-						npc.m_bNextRangedBarrage_OnGoing = false;
-					}
+				npc.FaceTowards(vecTarget, 500.0);
+				npc.m_flDoingAnimation = GetGameTime() + 1.0;
+				if (!npc.m_bNextRangedBarrage_OnGoing)
+				{	
+					npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.45;
+					npc.m_bNextRangedBarrage_OnGoing = true;
+					npc.AddGesture("ACT_RANGE_ATTACK_THROW");
 				}
-				else if (npc.Anger)
+				if (npc.m_flNextRangedBarrage_Singular < GetGameTime() && npc.m_bNextRangedBarrage_OnGoing)
 				{
-					npc.FaceTowards(vecTarget, 500.0);
-					npc.m_flDoingAnimation = GetGameTime() + 1.0;
-					if (!npc.m_bNextRangedBarrage_OnGoing)
-					{	
-						npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.45;
-						npc.m_bNextRangedBarrage_OnGoing = true;
-						npc.AddGesture("ACT_RANGE_ATTACK_THROW");
-					}
-					if (npc.m_flNextRangedBarrage_Singular < GetGameTime() && npc.m_bNextRangedBarrage_OnGoing)
-					{
-						npc.FireGrenade(vecTarget);
-						npc.m_flNextRangedBarrage_Spam = GetGameTime() + 7.0;
-						npc.m_bNextRangedBarrage_OnGoing = false;
-					}
+					npc.FireGrenade(vecTarget);
+					npc.m_flNextRangedBarrage_Spam = GetGameTime() + 7.0;
+					npc.m_bNextRangedBarrage_OnGoing = false;
 				}
 			}
-
-			if(npc.m_flNextTeleport < GetGameTime() && npc.m_flDoingAnimation < GetGameTime() && flDistanceToTarget < 202500)
+		}
+		if(npc.m_flNextTeleport < GetGameTime() && npc.m_flDoingAnimation < GetGameTime() && flDistanceToTarget < 202500)
+		{
+			if (!npc.Anger)
 			{
-				if (!npc.Anger)
-				{
-					npc.FaceTowards(vecTarget, 500.0);
-					npc.m_flNextTeleport = GetGameTime() + 10.0;
-					npc.m_flDoingAnimation = GetGameTime() + 1.5;
-		//			npc.AddGesture("ACT_SIGNAL1");
-					npc.PlayPullSound();
-					FatherGrigori_IOC_Invoke(npc.index, closest);
-				}
-				else if (npc.Anger)
-				{
-					npc.FaceTowards(vecTarget, 500.0);
-		//			npc.AddGesture("ACT_SIGNAL1");
-					npc.m_flNextTeleport = GetGameTime() + 7.0;
-					npc.m_flDoingAnimation = GetGameTime() + 1.5;
-					npc.PlayPullSound();
-					FatherGrigori_IOC_Invoke(npc.index, closest);
-				}
+				npc.FaceTowards(vecTarget, 500.0);
+				npc.m_flNextTeleport = GetGameTime() + 10.0;
+				npc.m_flDoingAnimation = GetGameTime() + 1.5;
+	//			npc.AddGesture("ACT_SIGNAL1");
+				npc.PlayPullSound();
+				FatherGrigori_IOC_Invoke(npc.index, closest);
 			}
-
-			//Target close enough to hit
-			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+			else if (npc.Anger)
 			{
-				//Look at target so we hit.
-		//		npc.FaceTowards(vecTarget, 1000.0);
+				npc.FaceTowards(vecTarget, 500.0);
+	//			npc.AddGesture("ACT_SIGNAL1");
+				npc.m_flNextTeleport = GetGameTime() + 7.0;
+				npc.m_flDoingAnimation = GetGameTime() + 1.5;
+				npc.PlayPullSound();
+				FatherGrigori_IOC_Invoke(npc.index, closest);
+			}
+		}
+		//Target close enough to hit
+		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+		{
+			//Look at target so we hit.
+	//		npc.FaceTowards(vecTarget, 1000.0);
 				
-				if(npc.m_flNextMeleeAttack < GetGameTime())
+			if(npc.m_flNextMeleeAttack < GetGameTime())
+			{
+				if (!npc.m_flAttackHappenswillhappen)
 				{
-					if (!npc.m_flAttackHappenswillhappen)
+					npc.AddGesture("ACT_MELEE_ATTACK");
+					npc.PlayMeleeSound();
+					npc.m_flAttackHappens = GetGameTime()+0.6;
+					npc.m_flAttackHappens_bullshit = GetGameTime()+1.0;
+					npc.m_flAttackHappenswillhappen = true;
+					npc.m_flDoingAnimation = GetGameTime() + 1.0;
+				}
+					
+				if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+				{
+					Handle swingTrace;
+					npc.FaceTowards(vecTarget, 20000.0);
+					if(npc.DoSwingTrace(swingTrace, closest))
 					{
-						npc.AddGesture("ACT_MELEE_ATTACK");
-						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime()+0.6;
-						npc.m_flAttackHappens_bullshit = GetGameTime()+1.0;
-						npc.m_flAttackHappenswillhappen = true;
-						npc.m_flDoingAnimation = GetGameTime() + 1.0;
-					}
+								
+						int target = TR_GetEntityIndex(swingTrace);	
 						
-					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
-					{
-						Handle swingTrace;
-						npc.FaceTowards(vecTarget, 20000.0);
-						if(npc.DoSwingTrace(swingTrace, closest))
+						float vecHit[3];
+						TR_GetEndPosition(vecHit, swingTrace);
+						
+						if(target > 0) 
+						{
+							
+							if(EscapeModeForNpc)
 							{
-								
-								int target = TR_GetEntityIndex(swingTrace);	
-								
-								float vecHit[3];
-								TR_GetEndPosition(vecHit, swingTrace);
-								
-								if(target > 0) 
-								{
-									
-									if(EscapeModeForNpc)
-									{
-										if(target <= MaxClients)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_SLASH|DMG_CLUB);
-										else
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_SLASH|DMG_CLUB);
-									}
-									else
-									{
-										if(target <= MaxClients)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
-										else
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_SLASH|DMG_CLUB);
-									}
-									
-									Custom_Knockback(npc.index, target, 500.0);
-									
-									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
-									
-									// Hit sound
-									npc.PlayMeleeHitSound();
-								} 
+								if(target <= MaxClients)
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_SLASH|DMG_CLUB);
+								else
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_SLASH|DMG_CLUB);
 							}
-						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime() + 1.3;
-						npc.m_flAttackHappenswillhappen = false;
+							else
+							{
+								if(target <= MaxClients)
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
+								else
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_SLASH|DMG_CLUB);
+							}
+							
+							Custom_Knockback(npc.index, target, 500.0);
+							
+							// Hit particle
+							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
+							// Hit sound
+							npc.PlayMeleeHitSound();
+						} 
 					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
-					{
-						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime() + 1.3;
-					}
+					delete swingTrace;
+					npc.m_flNextMeleeAttack = GetGameTime() + 1.3;
+					npc.m_flAttackHappenswillhappen = false;
+				}
+				else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+				{
+					npc.m_flAttackHappenswillhappen = false;
+					npc.m_flNextMeleeAttack = GetGameTime() + 1.3;
 				}
 			}
-			else
-			{
-				npc.StartPathing();
-				
-			}
+		}
+		else
+		{
+			npc.StartPathing();
+			
+		}
 	}
 	else
 	{

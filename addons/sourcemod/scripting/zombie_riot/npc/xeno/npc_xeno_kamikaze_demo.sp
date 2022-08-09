@@ -75,7 +75,7 @@ methodmap XenoKamikaze < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;	
 
@@ -259,7 +259,7 @@ public Action XenoKamikaze_ClotDamaged(int victim, int &attacker, int &inflictor
 		
 	XenoKamikaze npc = view_as<XenoKamikaze>(victim);
 	
-		if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{
 		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;

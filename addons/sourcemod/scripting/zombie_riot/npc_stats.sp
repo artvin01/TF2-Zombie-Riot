@@ -1,7 +1,6 @@
-
 //#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_59.mdl"
 
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_159.mdl"
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_164.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
 
@@ -15,6 +14,7 @@ bool b_DissapearOnDeath[MAXENTITIES];
 bool b_IsGiant[MAXENTITIES];
 bool b_Pathing[MAXENTITIES];
 bool b_Jumping[MAXENTITIES];
+bool b_AllowBackWalking[MAXENTITIES];
 float fl_JumpStartTime[MAXENTITIES];
 float fl_JumpCooldown[MAXENTITIES];
 float fl_NextThinkTime[MAXENTITIES];
@@ -42,12 +42,12 @@ int i_TeamGlow[MAXENTITIES]={-1, ...};
 int i_SpawnProtectionEntity[MAXENTITIES]={-1, ...};
 float f3_VecPunchForce[MAXENTITIES][3];
 float fl_NextDelayTime[MAXENTITIES];
-bool b_ThisEntityIgnored[MAXENTITIES];
 float fl_NextIdleSound[MAXENTITIES];
 float fl_AttackHappensMinimum[MAXENTITIES];
 float fl_AttackHappensMaximum[MAXENTITIES];
 bool b_AttackHappenswillhappen[MAXENTITIES];
 bool b_thisNpcIsABoss[MAXENTITIES];
+bool b_StaticNPC[MAXENTITIES];
 float f3_VecTeleportBackSave[MAXENTITIES][3];
 float f3_VecTeleportBackSaveJump[MAXENTITIES][3];
 bool b_NPCVelocityCancel[MAXENTITIES];
@@ -142,6 +142,7 @@ int i_InSafeZone[MAXENTITIES];
 float fl_MeleeArmor[MAXENTITIES];
 float fl_RangedArmor[MAXENTITIES];
 
+bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
 
 
@@ -177,6 +178,10 @@ static int g_particleImpactMetal;
 static int g_particleImpactFlesh;
 static int g_particleImpactRubber;
 static int g_modelArrow;
+
+
+static int g_sModelIndexBloodDrop;
+static int g_sModelIndexBloodSpray;
 //I put these here so we can change them on fly if we need to, cus zombies can be really loud, or quiet.
 
 #define NORMAL_ZOMBIE_SOUNDLEVEL	 80
@@ -189,6 +194,7 @@ static int g_modelArrow;
 #define RAIDBOSSBOSS_ZOMBIE_VOLUME	 1.0
 
 #define ARROW_TRAIL "effects/arrowtrail_blu.vmt"
+#define ARROW_TRAIL_RED "effects/arrowtrail_red.vmt"
 
 char g_ArrowHitSoundSuccess[][] = {
 	"weapons/fx/rics/arrow_impact_flesh.wav",
@@ -302,6 +308,7 @@ enum
 	BLEEDTYPE_NORMAL = 1,	
 	BLEEDTYPE_METAL = 2,	
 	BLEEDTYPE_RUBBER = 3,	
+	BLEEDTYPE_XENO = 4,	
 }
 
 int GetIndexByPluginName(const char[] name)
@@ -756,6 +763,26 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = MedivalPikeman(client, vecPos, vecAng, ally);
 		}
+		case ALT_MEDIC_SUPPERIOR_MAGE:
+		{
+			entity = NPC_ALT_MEDIC_SUPPERIOR_MAGE(client, vecPos, vecAng, ally);
+		}
+		case CITIZEN:
+		{
+			entity = Citizen(client, vecPos, vecAng);
+		}
+		case MEDIVAL_EAGLE_SCOUT:
+		{
+			entity = MedivalEagleScout(entity, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_SAMURAI:
+		{
+			entity = MedivalSamurai(entity, vecPos, vecAng, ally);
+		}
+		case THEADDICTION:
+		{
+			entity = Addicition(entity, vecPos, vecAng, ally, data);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1205,6 +1232,26 @@ public void NPCDeath(int entity)
 		{
 			MedivalPikeman_NPCDeath(entity);
 		}
+		case ALT_MEDIC_SUPPERIOR_MAGE:
+		{
+			NPC_ALT_MEDIC_SUPPERIOR_MAGE_NPCDeath(entity);
+		}
+		case CITIZEN:
+		{
+			Citizen_NPCDeath(entity);
+		}
+		case MEDIVAL_EAGLE_SCOUT:
+		{
+			MedivalEagleScout_NPCDeath(entity);
+		}
+		case MEDIVAL_SAMURAI:
+		{
+			MedivalSamurai_NPCDeath(entity);
+		}
+		case THEADDICTION:
+		{
+			Addicition_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1239,12 +1286,21 @@ public void OnMapStart_NPC_Base()
 		break;
 	}
 	
+	g_sModelIndexBloodDrop = PrecacheModel("sprites/bloodspray.vmt");
+	g_sModelIndexBloodSpray = PrecacheModel("sprites/blood.vmt");
+	
+	PrecacheDecal("sprites/blood.vmt", true);
+	PrecacheDecal("sprites/bloodspray.vmt", true);
+	
 	g_particleImpactMetal = PrecacheParticleSystem("bot_impact_heavy");
-	g_particleImpactFlesh = PrecacheParticleSystem("blood_impact_red_01_goop");
+	g_particleImpactFlesh = PrecacheParticleSystem("blood_impact_red_01");
 	g_particleImpactRubber = PrecacheParticleSystem("halloween_explosion_bits");
 	g_modelArrow = PrecacheModel("models/weapons/w_models/w_arrow.mdl");
 	PrecacheModel(ARROW_TRAIL);
 	PrecacheDecal(ARROW_TRAIL, true);
+	PrecacheModel(ARROW_TRAIL_RED);
+	PrecacheDecal(ARROW_TRAIL_RED, true);
+	
 	InitNavGamedata();
 	
 	HeadcrabZombie_OnMapStart_NPC();
@@ -1368,6 +1424,10 @@ public void OnMapStart_NPC_Base()
 	MedivalEliteSkirmisher_OnMapStart_NPC();
 	Blitzkrieg_OnMapStart();
 	MedivalPikeman_OnMapStart_NPC();
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_OnMapStart_NPC();
+	Citizen_OnMapStart();
+	MedivalEagleScout_OnMapStart_NPC();
+	MedivalSamurai_OnMapStart_NPC();
 }
 
 
@@ -1576,6 +1636,9 @@ methodmap CClotBody
 			SetEntityCollisionGroup(npc, 24);
 		}
 		
+		
+		
+		
 		//Enable Harder zombies once in freeplay.
 		if(!EscapeModeForNpc)
 		{
@@ -1602,27 +1665,27 @@ methodmap CClotBody
 			NPC_AddToArray(npc);
 			if(IgnoreBuildings || IsValidEntity(EntRefToEntIndex(RaidBossActive))) //During an active raidboss, make sure that they ignore barricades
 			{
-				list.Push(DHookRaw(g_hShouldCollideWithAllyEnemyIngoreBuilding,   false, pLocomotion));
+				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyEnemyIngoreBuilding,   false, pLocomotion);
 			}
 			else
 			{
-				list.Push(DHookRaw(g_hShouldCollideWithAllyEnemy,   false, pLocomotion));
+				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyEnemy,   false, pLocomotion);
 			}
 		}
 		else
 		{
 			if(Ally_Invince)
 			{
-				list.Push(DHookRaw(g_hShouldCollideWithAllyInvince,   false, pLocomotion));
+				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyInvince,   false, pLocomotion);
 			}
 			else
 			{
-				list.Push(DHookRaw(g_hShouldCollideWithAlly,   false, pLocomotion));
+				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAlly,   false, pLocomotion);
 			}
 		}
 		
 		
-		
+		list.Push(h_NpcCollissionHookType[npc]);
 		list.Push(DHookRaw(g_hGetMaxAcceleration,  true, pLocomotion));
 		list.Push(DHookRaw(g_hGetFrictionSideways, true, pLocomotion));
 		list.Push(DHookRaw(g_hGetRunSpeed,		 true, pLocomotion));
@@ -1681,6 +1744,8 @@ methodmap CClotBody
 		HookIdMap.SetValue(buffer, list);
 		
 		//Ragdoll, hopefully
+		DHookEntity(g_hEvent_Killed,	 false, npc);
+		
 		DHookEntity(g_hEvent_Killed,	 false, npc);
 		
 		//Animevents 
@@ -1750,7 +1815,7 @@ methodmap CClotBody
 		if(IsRaidBoss)
 			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.1, 1.75); //Global.
 		else
-			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.4, 1.75); //Global.
+			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.29, 1.75); //Global.
 		
 		return view_as<CClotBody>(npc);
 	}
@@ -2196,7 +2261,12 @@ methodmap CClotBody
 		public get()							{ return fl_RangedArmor[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_RangedArmor[this.index] = TempValueForProperty; }
 	}
+	property bool m_bScalesWithWaves
+	{
+		public get()							{ return b_ScalesWithWaves[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_ScalesWithWaves[this.index] = TempValueForProperty; }	
 	
+	}
 	property float m_flSpeed
 	{
 		public get()							{ return fl_Speed[this.index]; }
@@ -2308,6 +2378,11 @@ methodmap CClotBody
 		public get()							{ return b_thisNpcIsABoss[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_thisNpcIsABoss[this.index] = TempValueForProperty; }
 	}
+	property bool m_bStaticNPC
+	{
+		public get()							{ return b_StaticNPC[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_StaticNPC[this.index] = TempValueForProperty; }
+	}
 	
 	property bool m_bThisNpcGotDefaultStats_INVERTED //This is the only one, reasoning is that is that i kinda need to check globablly if any base_boss spawned outside of this plugin and apply stuff accordingly.
 	{
@@ -2328,26 +2403,135 @@ methodmap CClotBody
 		public get()							{ return f_LowTeslarDebuff[this.index]; }
 		public set(float TempValueForProperty) 	{ f_LowTeslarDebuff[this.index] = TempValueForProperty; }
 	}
-
+	
+	property float mf_WidowsWineDebuff 
+	{
+		public get()							{ return f_WidowsWineDebuff[this.index]; }
+		public set(float TempValueForProperty) 	{ f_WidowsWineDebuff[this.index] = TempValueForProperty; }
+	}
+	
+	property bool m_bFrozen
+	{
+		public get()				{ return b_Frozen[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_Frozen[this.index] = TempValueForProperty; }
+	}
+	
+	property bool m_bAllowBackWalking
+	{
+		public get()				{ return b_AllowBackWalking[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_AllowBackWalking[this.index] = TempValueForProperty; }
+	}
+	public float GetDebuffPercentage()//For the future incase we want to alter it easier
+	{
+		float speed_for_return;
+		
+		speed_for_return = 1.0;
+		
+		float Gametime = GetGameTime();
+		
+		bool Is_Boss = true;
+		if(!this.m_bThisNpcIsABoss && EntRefToEntIndex(RaidBossActive) != this.index)
+		{
+			Is_Boss = false;
+		}
+		
+		if(!Is_Boss) //Make sure that any slow debuffs dont affect these.
+		{
+			if(this.m_fHighTeslarDebuff > Gametime)
+			{
+				speed_for_return *= 0.65;
+			}
+			else if(this.m_fLowTeslarDebuff > Gametime)
+			{
+				speed_for_return *= 0.75;
+			}
+			if(f_HighIceDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.85;
+			}
+			else if(f_LowIceDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.90;
+			}
+			else if (f_VeryLowIceDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.95;
+			}
+		}
+		else
+		{
+			if(this.m_fHighTeslarDebuff > Gametime)
+			{
+				speed_for_return *= 0.9;
+			}
+			else if(this.m_fLowTeslarDebuff > Gametime)
+			{
+				speed_for_return *= 0.95;
+			}			
+			if(f_HighIceDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.95;
+			}
+			else if(f_LowIceDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.96;
+			}
+			else if (f_VeryLowIceDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.97;
+			}
+		}
+		if(this.mf_WidowsWineDebuff > Gametime)
+		{
+			float slowdown_amount = this.mf_WidowsWineDebuff - Gametime;
+			
+			float max_amount = FL_WIDOWS_WINE_DURATION;
+			
+			slowdown_amount = slowdown_amount / max_amount;
+			
+			slowdown_amount -= 1.0;
+			
+			slowdown_amount *= -1.0;
+			
+			if(!Is_Boss)
+			{
+				if(slowdown_amount < 0.1)
+				{
+					slowdown_amount = 0.1;
+				}
+				else if(slowdown_amount > 1.0)
+				{
+					slowdown_amount = 1.0;
+				}	
+			}
+			else
+			{
+				if(slowdown_amount < 0.8)
+				{
+					slowdown_amount = 0.8;
+				}
+				else if(slowdown_amount > 1.0)
+				{
+					slowdown_amount = 1.0;
+				}	
+			}
+			speed_for_return *= slowdown_amount;
+		}
+		
+		if (this.m_bFrozen)
+		{
+			speed_for_return = 0.01;
+		}		
+		return speed_for_return;
+	}
 	public float GetRunSpeed()//For the future incase we want to alter it easier
 	{
 		float speed_for_return;
 		
 		speed_for_return = this.m_flSpeed;
 		
-		float Gametime = GetGameTime();
+		speed_for_return *= this.GetDebuffPercentage();
 		
-		if(!this.m_bThisNpcIsABoss && EntRefToEntIndex(RaidBossActive) != this.index) //Make sure that any slow debuffs dont affect these.
-		{
-			if(this.m_fHighTeslarDebuff > Gametime)
-			{
-				speed_for_return *= 0.75;
-			}
-			else if(this.m_fLowTeslarDebuff > Gametime)
-			{
-				speed_for_return *= 0.85;
-			}
-		}
 		return speed_for_return; 
 	}
 	public void m_vecLastValidPos(float pos[3], bool set)
@@ -2609,7 +2793,7 @@ methodmap CClotBody
 		return SDKCall(g_hStudio_FindAttachment, pStudioHdr, pAttachmentName) + 1;
 	}
 	public void DispatchParticleEffect(int entity, const char[] strParticle, float flStartPos[3], float vecAngles[3], float flEndPos[3], 
-									   int iAttachmentPointIndex = 0, ParticleAttachment_t iAttachType = PATTACH_CUSTOMORIGIN, bool bResetAllParticlesOnEntity = false)
+									   int iAttachmentPointIndex = 0, ParticleAttachment_t iAttachType = PATTACH_CUSTOMORIGIN, bool bResetAllParticlesOnEntity = false, float colour[3] = {0.0,0.0,0.0})
 	{
 		int tblidx = FindStringTable("ParticleEffectNames");
 		if (tblidx == INVALID_STRING_TABLE) 
@@ -2650,6 +2834,7 @@ methodmap CClotBody
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[0]", flEndPos[0]);
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[1]", flEndPos[1]);
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[2]", flEndPos[2]);
+
 		TE_SendToAll();
 	}
 	public int LookupPoseParameter(const char[] szName)
@@ -2907,7 +3092,7 @@ methodmap CClotBody
 		*/
 		return ( TR_GetFraction(trace) < 1.0 );
 	}
-	public void FireRocket(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0) //No defaults, otherwise i cant even judge.
+	public void FireRocket(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, int flags = 0) //No defaults, otherwise i cant even judge.
 	{
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
 		this.GetVectors(vecForward, vecSwingStart, vecAngles);
@@ -2932,9 +3117,10 @@ methodmap CClotBody
 		int entity = CreateEntityByName("tf_projectile_rocket");
 		if(IsValidEntity(entity))
 		{
+			i_ExplosiveProjectileHexArray[entity] = flags;
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, rocket_damage, true);	// Damage
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(this.index, Prop_Send, "m_iTeamNum"));
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
 			DispatchSpawn(entity);
 			if(rocket_model[0])
@@ -2984,7 +3170,7 @@ methodmap CClotBody
 			f_ArrowDamage[entity] = rocket_damage;
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(this.index, Prop_Send, "m_iTeamNum"));
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
 			DispatchSpawn(entity);
 			if(rocket_model[0])
@@ -3305,6 +3491,14 @@ public void NPC_Base_InitGamedata()
 	
 	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_ROOT);
 	
+	
+	GameData gamedata = LoadGameConfigFile("tf2.pets");
+	
+	// thanks to Dysphie#4094 on discord for help
+	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::UpdateGroundConstraint", Dhook_UpdateGroundConstraint_Pre, Dhook_UpdateGroundConstraint_Post);
+	
+	delete gamedata;
+	
 	Handle hConf = LoadGameConfigFile("tf2.pets");
 	
 	//SDKCalls
@@ -3328,6 +3522,7 @@ public void NPC_Base_InitGamedata()
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::ResetSequenceInfo");
 	if ((g_hResetSequenceInfo = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::ResetSequenceInfo signature!"); 
+	
 	
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseEntity::MyNextBotPointer");
@@ -3782,9 +3977,9 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						startPosition[2] += 64;
 						Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, damageForce, true, false, true, true); //dont gigantify this one.
 						startPosition[2] -= 15;
-						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, damageForce, false, true);
+						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, damageForce, false, true, true);
 						startPosition[2] += 44;
-						Place_Gib("models/gibs/metal_gib2.mdl", startPosition, damageForce, false, true);	
+						Place_Gib("models/gibs/metal_gib2.mdl", startPosition, damageForce, false, true, true);	
 					}
 					else
 					{
@@ -3795,8 +3990,32 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, damageForce, false, false, true);
 						startPosition[2] += 34;
 						Place_Gib("models/gibs/metal_gib2.mdl", startPosition, damageForce, false, false, true);	
+					}		
+				}
+				else if(npc.m_iBleedType == 4)
+				{
+					npc.PlayGibSound();
+					if(npc.m_bIsGiant)
+					{
+						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+						startPosition[2] += 64;
+						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, damageForce, true, true, _, _, _, true);
+						startPosition[2] -= 15;
+						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, damageForce, false, true, _, _, _, true);
+						startPosition[2] += 44;
+						Place_Gib("models/Gibs/HGIBS.mdl", startPosition, damageForce, false, true, _, _, _, true);	
+					}
+					else
+					{
+						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+						startPosition[2] += 42;
+						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, damageForce, true, _, _, _, _, true);
+						startPosition[2] -= 10;
+						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, damageForce, _, _, _, _, _, true);
+						startPosition[2] += 34;
+						Place_Gib("models/Gibs/HGIBS.mdl", startPosition, damageForce, _, _, _, _, _, true);	
 					}	
-				}	
+				}				
 			//	#endif					
 				Do_Death_Frame_Later(EntIndexToEntRef(pThis));
 				//RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));						
@@ -4217,8 +4436,10 @@ public bool PluginBot_IsEntityTraversable(int bot_entidx, int other_entidx, Trav
 public void PluginBot_Approach(int bot_entidx, const float vec[3])
 {
 	CClotBody npc = view_as<CClotBody>(bot_entidx);
-	npc.Approach(vec);	
-	npc.FaceTowards(vec);
+	npc.Approach(vec);
+	
+	if(!npc.m_bAllowBackWalking)
+		npc.FaceTowards(vec, (250.0 * npc.GetDebuffPercentage()));
 }
 
 public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
@@ -4232,6 +4453,10 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		{
 			return false;
 		}
+	}
+	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
+	{
+		return false;
 	}
 	
 	CClotBody npc = view_as<CClotBody>(entity);
@@ -4281,7 +4506,10 @@ public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMas
 			return false;
 		}
 	}
-	
+	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
+	{
+		return false;
+	}
 	CClotBody npc = view_as<CClotBody>(entity);
 	if(StrEqual(class, "func_respawnroomvisualizer"))
 	{
@@ -4606,21 +4834,23 @@ stock bool IsValidAllyPlayer(int index, int Ally)
 }
 
 
-stock int GetClosestTarget(int entity, bool Onlyplayers = false, float fldistancelimit = 999999.9, bool camoDetection=false)
+stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldistancelimit = 999999.9, bool camoDetection=false, bool onlyPlayers = false)
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = -1; 
+	int searcher_team = GetEntProp(entity, Prop_Send, "m_iTeamNum"); //do it only once lol
+	float EntityLocation[3]; 
+	GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
 	for( int i = 1; i <= MaxClients; i++ ) 
 	{
 		if (IsValidClient(i))
 		{
 			CClotBody npc = view_as<CClotBody>(i);
-			if (TF2_GetClientTeam(i)!=view_as<TFTeam>(GetEntProp(entity, Prop_Send, "m_iTeamNum")) && !npc.m_bThisEntityIgnored && IsEntityAlive(i)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+			if (TF2_GetClientTeam(i)!=view_as<TFTeam>(searcher_team) && !npc.m_bThisEntityIgnored && IsEntityAlive(i)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 			{
 				if(camoDetection)
 				{
-					float EntityLocation[3], TargetLocation[3]; 
-					GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+					float TargetLocation[3]; 
 					GetClientAbsOrigin( i, TargetLocation ); 
 					
 					
@@ -4644,8 +4874,7 @@ stock int GetClosestTarget(int entity, bool Onlyplayers = false, float fldistanc
 				}
 				else if (!npc.m_bCamo)
 				{
-					float EntityLocation[3], TargetLocation[3]; 
-					GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+					float TargetLocation[3]; 
 					GetClientAbsOrigin( i, TargetLocation ); 
 					
 					
@@ -4670,7 +4899,181 @@ stock int GetClosestTarget(int entity, bool Onlyplayers = false, float fldistanc
 			}
 		}
 	}
-	if(!Onlyplayers) //Make sure that they completly ignore barricades during raids
+	/*
+	
+	
+	enum TFTeam
+	{
+		TFTeam_Unassigned = 0,
+		TFTeam_Spectator = 1,
+		TFTeam_Red = 2,
+		TFTeam_Blue = 3
+	};
+	*/
+	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
+	{
+		int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+		if(IsValidEntity(entity_close))
+		{
+			if(searcher_team != 3) 
+			{
+				CClotBody npc = view_as<CClotBody>(entity_close);
+				if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0 && !onlyPlayers) //Check if dead or even targetable
+				{
+					if(camoDetection)
+					{
+						float TargetLocation[3]; 
+						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+									
+									
+						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+						if(distance < fldistancelimit)
+						{
+							if( TargetDistance ) 
+							{
+								if( distance < TargetDistance ) 
+								{
+									ClosestTarget = entity_close; 
+									TargetDistance = distance;		  
+								}
+							} 
+							else 
+							{
+								ClosestTarget =entity_close; 
+								TargetDistance = distance;
+							}	
+						}	
+					}
+					else if (!npc.m_bCamo)
+					{
+						float TargetLocation[3]; 
+						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+							
+							
+						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+						if(distance < fldistancelimit)
+						{
+							if( TargetDistance ) 
+							{
+								if( distance < TargetDistance ) 
+								{
+									ClosestTarget = entity_close; 
+									TargetDistance = distance;		  
+								}
+							} 
+							else 
+							{
+								ClosestTarget = entity_close; 
+								TargetDistance = distance;
+							}	
+						}	
+					}
+				}
+			}
+		}
+	}
+	for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+	{
+		int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+		if(IsValidEntity(entity_close))
+		{
+			if(searcher_team != 2)
+			{
+				CClotBody npc = view_as<CClotBody>(entity_close);
+				if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0 && !onlyPlayers) //Check if dead or even targetable
+				{
+					if(camoDetection)
+					{
+						float TargetLocation[3]; 
+						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+									
+									
+						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+						if(distance < fldistancelimit)
+						{
+							if( TargetDistance ) 
+							{
+								if( distance < TargetDistance ) 
+								{
+									ClosestTarget = entity_close; 
+									TargetDistance = distance;		  
+								}
+							} 
+							else 
+							{
+								ClosestTarget = entity_close; 
+								TargetDistance = distance;
+							}	
+						}	
+					}
+					else if (!npc.m_bCamo)
+					{
+						float TargetLocation[3]; 
+						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+							
+							
+						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+						if(distance < fldistancelimit)
+						{
+							if( TargetDistance ) 
+							{
+								if( distance < TargetDistance ) 
+								{
+									ClosestTarget = entity_close; 
+									TargetDistance = distance;		  
+								}
+							} 
+							else 
+							{
+								ClosestTarget = entity_close; 
+								TargetDistance = distance;
+							}	
+						}	
+					}
+				}
+			}
+		}
+	}
+	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
+	{
+		int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+		if(IsValidEntity(entity_close))
+		{
+			if(searcher_team != 2)
+			{
+				CClotBody npc = view_as<CClotBody>(entity_close);
+				if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+				{	
+					if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)) && !IgnoreBuildings)
+					{
+						float TargetLocation[3]; 
+						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+									
+									
+						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+						if(distance < fldistancelimit)
+						{
+							if( TargetDistance ) 
+							{
+								if( distance < TargetDistance ) 
+								{
+									ClosestTarget = entity_close; 
+									TargetDistance = distance;		  
+								}
+							} 
+							else 
+							{
+								ClosestTarget = entity_close; 
+								TargetDistance = distance;
+							}	
+						}
+					}
+				}
+			}
+		}
+	}
+	/*
+//	if() //Make sure that they completly ignore barricades during raids
 	{
 		for (int pass = 0; pass <= 2; pass++)
 		{
@@ -4683,41 +5086,44 @@ stock int GetClosestTarget(int entity, bool Onlyplayers = false, float fldistanc
 			int i = MaxClients + 1;
 			while ((i = FindEntityByClassname(i, classname)) != -1)
 			{
-				if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(i, Prop_Send, "m_iTeamNum")) 
+				if (searcher_team != GetEntProp(i, Prop_Send, "m_iTeamNum")) 
 				{
 					CClotBody npc = view_as<CClotBody>(i);
 					if(pass != 2)
 					{
-						if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !IsValidEntity(EntRefToEntIndex(RaidBossActive))) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+						if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 						{
-							float EntityLocation[3], TargetLocation[3]; 
-							GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
-							GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-								
-								
-							float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-							if(distance < fldistancelimit)
+							
+							if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)) && !IgnoreBuildings)
 							{
-								if( TargetDistance ) 
+								float EntityLocation[3], TargetLocation[3]; 
+								GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+								GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+									
+									
+								float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+								if(distance < fldistancelimit)
 								{
-									if( distance < TargetDistance ) 
+									if( TargetDistance ) 
+									{
+										if( distance < TargetDistance ) 
+										{
+											ClosestTarget = i; 
+											TargetDistance = distance;		  
+										}
+									} 
+									else 
 									{
 										ClosestTarget = i; 
-										TargetDistance = distance;		  
-									}
-								} 
-								else 
-								{
-									ClosestTarget = i; 
-									TargetDistance = distance;
-								}	
+										TargetDistance = distance;
+									}	
+								}
 							}
-	
 						}			
 					}		
 					else
 					{
-						if(!npc.m_bThisEntityIgnored && GetEntProp(i, Prop_Data, "m_iHealth") > 0) //Check if dead or even targetable
+						if(!npc.m_bThisEntityIgnored && GetEntProp(i, Prop_Data, "m_iHealth") > 0 && !onlyPlayers) //Check if dead or even targetable
 						{
 							if(camoDetection)
 							{
@@ -4775,6 +5181,7 @@ stock int GetClosestTarget(int entity, bool Onlyplayers = false, float fldistanc
 			}
 		}
 	}
+	*/
 	return ClosestTarget; 
 }
 
@@ -4794,7 +5201,7 @@ stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false)
 				GetClientAbsOrigin( i, TargetLocation ); 
 				
 				
-				float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+				float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 				if( TargetDistance ) 
 				{
 					if( distance < TargetDistance ) 
@@ -4841,6 +5248,31 @@ stock bool IsSpaceOccupiedDontIgnorePlayers(const float pos[3], const float mins
 	return bHit;
 }
 
+stock int IsSpaceOccupiedOnlyPlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
+{
+	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayHitPlayersOnly, entity);
+//	bool bHit = TR_DidHit(hTrace);
+	ref = TR_GetEntityIndex(hTrace);
+	delete hTrace;
+	if(ref <= 0)
+		return 0;
+		
+	return ref;
+}
+
+public bool TraceRayHitPlayersOnly(int entity,int mask,any data)
+{
+	if (entity > 0 && entity <= MaxClients)
+	{
+		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0)
+		{
+			return true;
+		}
+	}
+	
+	return false;
+}
+
 public bool TraceRayHitPlayers(int entity,int mask,any data)
 {
 	if (entity == 0) return true;
@@ -4859,29 +5291,59 @@ public bool TraceRayDontHitPlayersOrEntity(int entity,int mask,any data)
 
 public void Check_If_Stuck(int iNPC)
 {
-//	PrintToChatAll("%i",GetEdictFlags(iNPC));
-//	SetEdictFlags(iNPC, 133); //Remove this if it causes lag
-//	PrintToChatAll("%i"GetEdictFlags(iNPC));
 	CClotBody npc = view_as<CClotBody>(iNPC);
-	/*
-	if(npc.m_flCheckNavCooldown < GetGameTime() && npc.m_flJumpCooldown < GetGameTime())
+	
+	float flMyPos[3];
+	GetEntPropVector(iNPC, Prop_Data, "m_vecOrigin", flMyPos);
+	if(!b_IsAlliedNpc[iNPC])
 	{
-		npc.m_flCheckNavCooldown = GetGameTime() + 0.1; //A little delay to ease server performance
-		NavArea area = TheNavMesh.GetNearestNavArea_Vec(WorldSpaceCenter(npc.index), true);
-		if(area != NavArea_Null)
+		//This is a tempomary fix. find a better one for players getting stuck.
+		static float hullcheckmaxs_Player[3];
+		static float hullcheckmins_Player[3];
+		if(b_IsGiant[iNPC])
 		{
-			//NavArea.HasAttributes(NavAttributeType bits);
-			NavArea nav_area_property = view_as<NavArea>(area);
+		 	hullcheckmaxs_Player = view_as<float>( { 30.0, 30.0, 120.0 } );
+			hullcheckmins_Player = view_as<float>( { -30.0, -30.0, 0.0 } );	
+		}
+		else
+		{
+				
+			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
+			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
+		}
 			
-			if(nav_area_property.HasAttributes(NAV_MESH_JUMP))
+		
+		int Hit_player = IsSpaceOccupiedOnlyPlayers(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
+			
+		if (Hit_player) //The boss will start to merge with player, STOP!
+		{
+			float flPlayerPos[3];
+			GetEntPropVector(Hit_player, Prop_Data, "m_vecOrigin", flPlayerPos);
+			float flMyPos_2[3];
+			flMyPos_2[0] = flPlayerPos[0];
+			flMyPos_2[1] = flPlayerPos[1];
+			flMyPos_2[2] = flMyPos[2];
+			
+			if(flPlayerPos[2] > flMyPos_2[2]) //PLAYER IS ABOVE ZOMBIE
 			{
-				npc.m_flJumpStartTime = GetGameTime() + 1.0;
-				PluginBot_Jump_Now(npc.index);
+				flMyPos_2[2] += hullcheckmaxs_Player[2];
+				
+				SDKCall_SetLocalOrigin(Hit_player, flMyPos_2);			
+			}
+			else //PLAYER IS BELOW ZOMBIE
+			{
+				flMyPos_2[0] = flMyPos[0];
+				flMyPos_2[1] = flMyPos[1];
+				flMyPos_2[2] = flMyPos[2];
+				flMyPos_2[2] += hullcheckmaxs_Player[2];
+				flMyPos_2[2] += 5.0;
+				SDKCall_SetLocalOrigin(iNPC, flMyPos_2);
 			}
 		}
+		//This is a tempomary fix. find a better one for players getting stuck.
 	}
-	
-	*/
+
+
 	if (!npc.IsOnGround())
 	{
 		static float hullcheckmaxs[3];
@@ -4908,9 +5370,6 @@ public void Check_If_Stuck(int iNPC)
 		
 		hullcheckmins[2] -= 16.0; //STEP HEIGHT
 		hullcheckmaxs[2] += 16.0;
-		
-		float flMyPos[3];
-		GetEntPropVector(iNPC, Prop_Data, "m_vecOrigin",flMyPos);
 		
 		if (!npc.g_bNPCVelocityCancel && IsSpaceOccupiedIgnorePlayers(flMyPos, hullcheckmins, hullcheckmaxs, iNPC))//The boss will start to merge with shits, cancel out velocity.
 		{
@@ -5005,6 +5464,12 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 					TE_ParticleInt(g_particleImpactRubber, damagePosition);
 					TE_SendToAll();
 				}
+				else if (npc.m_iBleedType == 4)
+				{
+					//If you cant find any good blood effect, use this one and just recolour it.
+					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 125, 255, 125, 255, 32);
+					TE_SendToAll();
+				}
 			}
 		}
 	}
@@ -5026,8 +5491,25 @@ public void Custom_Knockback(int attacker, int enemy, float knockback)
 		}
 										
 		GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
-										
+			
+		float Attribute_Knockback = Attributes_FindOnPlayer(enemy, 252, true, 1.0);	
+		
+		knockback *= Attribute_Knockback;
+		
+		knockback *= 0.75; //oops, too much knockback now!
+						
 		ScaleVector(vDirection, knockback);
+		
+		float newVel[3];
+		
+		newVel[0] = GetEntPropFloat(enemy, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(enemy, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(enemy, Prop_Send, "m_vecVelocity[2]");
+						
+		for (new i = 0; i < 3; i++)
+		{
+			vDirection[i] += newVel[i];
+		}
 															
 		TeleportEntity(enemy, NULL_VECTOR, NULL_VECTOR, vDirection); 
 	}
@@ -5093,7 +5575,7 @@ public void RequestFramesCallback(DataPack pack)
 
 
 
-static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduce_masively = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false)
+static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, bool xeno = false)
 {
 	int prop = CreateEntityByName("prop_physics_multiplayer");
 	if(!IsValidEntity(prop))
@@ -5129,7 +5611,8 @@ static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduc
 	{
 		DispatchKeyValue(prop, "modelscale", "0.8");
 	}
-	if(Reduce_masively)
+	
+	if(Reduce_masively_Weight)
 		ScaleVector(vel, 0.02);
 		
 	if(!Rotate)
@@ -5148,13 +5631,21 @@ static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduc
 	SDKHook(prop, SDKHook_ShouldCollide, Gib_ShouldCollide);
 	if(!metal_colour)
 	{
-		npc.DispatchParticleEffect(prop, "blood_impact_backscatter", pos, NULL_VECTOR, NULL_VECTOR, 1,PATTACH_ABSORIGIN_FOLLOW);
-		SetEntityRenderColor(prop, 255, 0, 0, 255);
+		if(!xeno)
+		{
+			npc.DispatchParticleEffect(prop, "blood_trail_red_01_goop", pos, NULL_VECTOR, NULL_VECTOR, 1,PATTACH_ROOTBONE_FOLLOW);
+			SetEntityRenderColor(prop, 255, 0, 0, 255);
+		}
+		else
+		{
+			npc.DispatchParticleEffect(prop, "blood_impact_green_01", pos, NULL_VECTOR, NULL_VECTOR, 1,PATTACH_ROOTBONE_FOLLOW);
+			SetEntityRenderColor(prop, 0, 255, 0, 255);
+		}
 	}
 	else
 	{
-		pos[2] -= 40.0;
-		npc.DispatchParticleEffect(prop, "bot_impact_heavy", pos, NULL_VECTOR, NULL_VECTOR, 1,PATTACH_ABSORIGIN_FOLLOW);	
+//		pos[2] -= 40.0;
+		npc.DispatchParticleEffect(prop, "tpdamage_4", pos, NULL_VECTOR, NULL_VECTOR, 1, PATTACH_ROOTBONE_FOLLOW);	
 	}
 	CreateTimer(GetRandomFloat(2.0, 3.0), Timer_RemoveEntity_Prop, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 //	CreateTimer(1.5, Timer_DisableMotion, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
@@ -5720,6 +6211,9 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 	float subjectPos[3];
 	GetEntPropVector(subject, Prop_Data, "m_vecAbsOrigin", subjectPos);
 	
+	botPos[2] += 1.0;
+	subjectPos[2] += 1.0;
+	
 	float to[3];
 	SubtractVectors(subjectPos, botPos, to);
 	to[2] = 0.0;
@@ -5796,6 +6290,198 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 		return subjectPos;	
 	}
 
+	pathTarget[2] += 20.0; //Clip them up, minimum crouch level preferred, or else the bots get really confused and sometimees go otther ways if the player goes up or down somewhere, very thin stairs break these bots.
+
+/*	
+	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+	TE_SetupBeamPoints(botPos, pathTarget, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 5.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+	TE_SendToAll();
+*/
+	/*
+	//Extra check on if they try to follow through a wall again, double check is always good. Specficially check for only COLLIDING WITH THE WORLD.
+	
+	int Looking_At_This; 
+	Looking_At_This = GetEntPropEnt(sentry, Prop_Send, "m_hEnemy");
+	if(IsValidEntity(Looking_At_This) && IsValidEnemy(sentry, Looking_At_This))
+	{
+		Handle trace; 
+		float pos_sentry[3]; GetEntPropVector(sentry, Prop_Data, "m_vecAbsOrigin", pos_sentry);
+		float pos_enemy[3]; GetEntPropVector(Looking_At_This, Prop_Data, "m_vecAbsOrigin", pos_enemy);
+		pos_sentry[2] += 25.0;
+		pos_enemy[2] += 45.0;
+		
+		trace = TR_TraceRayFilterEx(pos_sentry, pos_enemy, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, Base_Boss_Hit, sentry);
+		int Traced_Target;
+		
+//		int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+//		TE_SetupBeamPoints(pos_sentry, pos_enemy, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+//		TE_SendToAll();
+		
+		Traced_Target = TR_GetEntityIndex(trace);
+		delete trace;
+		
+		if(IsValidEntity(Traced_Target) && IsValidEnemy(sentry, Traced_Target))
+		{
+			DHookSetReturn(hReturn, true); 
+			return MRES_Supercede;		
+		}
+	}
+	*/
+	
+	return pathTarget;
+}
+
+float f_PickThisDirectionForabit[MAXENTITIES];
+int i_PickThisDirectionForabit[MAXENTITIES];
+
+stock float[] BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject, float extra_backoff = 64.0)
+{
+	float botPos[3];
+	botPos = WorldSpaceCenter(npc.index);
+	
+	float subjectPos[3];
+	subjectPos = WorldSpaceCenter(subject);
+
+	// compute our desired destination
+	float pathTarget[3];
+	
+		
+	//https://forums.alliedmods.net/showthread.php?t=278691 im too stupid for vectors.
+	
+	float vvector[3], ang[3];
+	SubtractVectors(botPos, subjectPos, vvector);
+	NormalizeVector(vvector, vvector);
+	GetVectorAngles(vvector, ang); 
+	
+	ang[0] = 0.0; //I dont want him to go up or down with his prediction.
+	
+	float flDistanceToTarget;
+	
+	if(f_PickThisDirectionForabit[npc.index] < GetGameTime())
+	{
+		float vecForward[3], vecRight[3], vecTarget[3];
+			
+		vecTarget = WorldSpaceCenter(subject);
+		MakeVectorFromPoints(botPos, vecTarget, vecForward);
+		GetVectorAngles(vecForward, vecForward);
+		vecForward[1] = ang[1];
+		GetAngleVectors(vecForward, vecForward, vecRight, vecTarget);
+			
+		float vecSwingStart[3]; vecSwingStart = botPos;
+			
+		float vecSwingEnd[3];
+		vecSwingEnd[0] = vecSwingStart[0] + vecForward[0] * extra_backoff;
+		vecSwingEnd[1] = vecSwingStart[1] + vecForward[1] * extra_backoff;
+		vecSwingEnd[2] = vecSwingStart[2] + vecForward[2] * extra_backoff;
+			
+		Handle trace; 
+		trace = TR_TraceRayFilterEx(botPos, vecSwingEnd, MASK_ALL, RayType_EndPoint, HitOnlyTargetOrWorld, 0); //If i hit a wall, i stop retreatring and accept death, for now!
+		
+		//Make sure to actually back off...
+		
+		//I could reuse this code for if npcs get stuck, might actually work out....
+		
+		TR_GetEndPosition(pathTarget, trace);
+		
+		delete trace;
+		
+		flDistanceToTarget = GetVectorDistance(botPos, pathTarget, true);
+	}
+	else
+	{
+		flDistanceToTarget = 0.0;
+	}
+	
+	//Check of on if its too close, if yes, try again, but left or right, randomly chosen!
+	if(flDistanceToTarget < ((Pow(extra_backoff, 2.0)) / 2.0))
+	{
+	//	PrintToChatAll("Im against a wall! try other running away methods!");
+		int Direction = GetRandomInt(1, 2);
+		
+		float gameTime = GetGameTime();
+		
+		if(f_PickThisDirectionForabit[npc.index] < GetGameTime())
+		{
+			f_PickThisDirectionForabit[npc.index] = gameTime + 1.2;
+			i_PickThisDirectionForabit[npc.index] = Direction;
+		}
+		else
+		{
+			Direction = i_PickThisDirectionForabit[npc.index];
+		}
+		
+		if(Direction == 1)
+		{
+			float vecForward_2[3], vecRight_2[3], vecTarget_2[3];
+		
+			vecTarget_2 = WorldSpaceCenter(subject);
+			MakeVectorFromPoints(botPos, vecTarget_2, vecForward_2);
+			GetVectorAngles(vecForward_2, vecForward_2);
+			
+			ang[1] += 90.0; //try to the left/right.
+			
+			vecForward_2[1] = ang[1];
+			GetAngleVectors(vecForward_2, vecForward_2, vecRight_2, vecTarget_2);
+					
+			float vecSwingStart_2[3]; vecSwingStart_2 = botPos;
+				
+			float vecSwingEnd_2[3];
+			vecSwingEnd_2[0] = vecSwingStart_2[0] + vecForward_2[0] * extra_backoff;
+			vecSwingEnd_2[1] = vecSwingStart_2[1] + vecForward_2[1] * extra_backoff;
+			vecSwingEnd_2[2] = vecSwingStart_2[2] + vecForward_2[2] * extra_backoff;
+			
+			Handle trace_2; 
+			
+			trace_2 = TR_TraceRayFilterEx(botPos, vecSwingEnd_2, MASK_SOLID, RayType_EndPoint, HitOnlyTargetOrWorld, 0); //If i hit a wall, i stop retreatring and accept death, for now!
+			TR_GetEndPosition(pathTarget, trace_2);
+			
+			delete trace_2;
+		}
+		else
+		{
+			float vecForward_2[3], vecRight_2[3], vecTarget_2[3];
+		
+			vecTarget_2 = WorldSpaceCenter(subject);
+			MakeVectorFromPoints(botPos, vecTarget_2, vecForward_2);
+			GetVectorAngles(vecForward_2, vecForward_2);
+			
+			ang[1] -= 90.0; //try to the left/right.
+			
+			vecForward_2[1] = ang[1];
+			GetAngleVectors(vecForward_2, vecForward_2, vecRight_2, vecTarget_2);
+					
+			float vecSwingStart_2[3]; vecSwingStart_2 = botPos;
+				
+			float vecSwingEnd_2[3];
+			vecSwingEnd_2[0] = vecSwingStart_2[0] + vecForward_2[0] * extra_backoff;
+			vecSwingEnd_2[1] = vecSwingStart_2[1] + vecForward_2[1] * extra_backoff;
+			vecSwingEnd_2[2] = vecSwingStart_2[2] + vecForward_2[2] * extra_backoff;
+			
+			Handle trace_2; 
+			
+			trace_2 = TR_TraceRayFilterEx(botPos, vecSwingEnd_2, MASK_SOLID, RayType_EndPoint, HitOnlyTargetOrWorld, 0); //If i hit a wall, i stop retreatring and accept death, for now!
+			TR_GetEndPosition(pathTarget, trace_2);
+			
+			delete trace_2;			
+		}
+		
+	}
+	
+	Handle trace_3; //2nd one, make sure to actually hit the ground!
+	
+	trace_3 = TR_TraceRayFilterEx(pathTarget, {89.0, 1.0, 0.0}, MASK_SOLID, RayType_Infinite, HitOnlyTargetOrWorld, 0); //If i hit a wall, i stop retreatring and accept death, for now!
+	
+	TR_GetEndPosition(pathTarget, trace_3);
+	
+	delete trace_3;
+	
+	/*
+	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+	TE_SetupBeamPoints(botPos, pathTarget, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 5.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+	TE_SendToAll();
+	*/
+	
+	pathTarget[2] += 20.0; //Clip them up, minimum crouch level preferred, or else the bots get really confused and sometimees go otther ways if the player goes up or down somewhere, very thin stairs break these bots.
 	
 	return pathTarget;
 }
@@ -5816,6 +6502,76 @@ public Action SDKHook_Settransmit_Baseboss(int entity, int client)
 	}
 	
 	return Plugin_Continue;
+}
+
+stock float[] PredictSubjectPositionForProjectiles(CClotBody npc, int subject, float projectile_speed)
+{
+	float botPos[3];
+	botPos = WorldSpaceCenter(npc.index);
+	
+	float subjectPos[3];
+	subjectPos = WorldSpaceCenter(subject);
+	
+	float to[3];
+	SubtractVectors(subjectPos, botPos, to);
+	to[2] = 0.0;
+	
+	float flRangeSq = GetVectorLength(to, true);
+	
+	// Normalize in place
+	float range = SquareRoot( flRangeSq );
+	to[0] /= ( range + 0.0001 );	// avoid divide by zero
+	to[1] /= ( range + 0.0001 );	// avoid divide by zero
+	to[2] /= ( range + 0.0001 );	// avoid divide by zero
+	
+	// estimate time to reach subject, assuming maximum speed
+	float leadTime = (0.0001) + ( range / ( projectile_speed + 0.0001 ) );
+	
+	// estimate amount to lead the subject	
+	float SubjectAbsVelocity[3];
+	GetEntPropVector(subject, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+	float lead[3];	
+	lead[0] = leadTime * SubjectAbsVelocity[0];
+	lead[1] = leadTime * SubjectAbsVelocity[1];
+	lead[2] = 0.0;	
+
+	if(GetVectorDotProduct(to, lead) < 0.0)
+	{
+		// the subject is moving towards us - only pay attention 
+		// to his perpendicular velocity for leading
+		float to2D[3]; to2D = to;
+		to2D[2] = 0.0;
+		NormalizeVector(to2D, to2D);
+		
+		float perp[2];
+		perp[0] = -to2D[1];
+		perp[1] = to2D[0];
+
+		float enemyGroundSpeed = lead[0] * perp[0] + lead[1] * perp[1];
+
+		lead[0] = enemyGroundSpeed * perp[0];
+		lead[1] = enemyGroundSpeed * perp[1];
+	}
+
+	// compute our desired destination
+	float pathTarget[3];
+	AddVectors(subjectPos, lead, pathTarget);
+
+	// validate this destination
+
+	// don't lead through walls
+	if (GetVectorLength(lead, true) > 36.0)
+	{
+		float fraction;
+		if (!PF_IsPotentiallyTraversable( npc.index, subjectPos, pathTarget, IMMEDIATELY, fraction))
+		{
+			// tried to lead through an unwalkable area - clip to walkable space
+			pathTarget[0] = subjectPos[0] + fraction * ( pathTarget[0] - subjectPos[0] );
+			pathTarget[1] = subjectPos[1] + fraction * ( pathTarget[1] - subjectPos[1] );
+			pathTarget[2] = subjectPos[2] + fraction * ( pathTarget[2] - subjectPos[2] );
+		}
+	}
+	return pathTarget;
 }
 
 stock float[] PredictSubjectPositionHook(CClotBody npc, int subject)
@@ -6007,6 +6763,24 @@ void TE_ParticleInt(int iParticleIndex, const float origin[3] = NULL_VECTOR, con
 	TE_WriteNum("m_bResetParticles", resetParticles ? 1 : 0);
 }
 
+void TE_BloodSprite(float Origin[3],float Direction[3], int red, int green, int blue, int alpha, int size)
+{
+	TE_Start("Blood Sprite");
+	TE_WriteVector("m_vecOrigin", Origin);
+	TE_WriteVector("m_vecDirection", Direction);
+	TE_WriteNum("r", red);
+	TE_WriteNum("g", green);
+	TE_WriteNum("b", blue);
+	TE_WriteNum("a", alpha);
+	TE_WriteNum("m_nSize", size);
+	
+	TE_WriteNum("m_nSprayModel", g_sModelIndexBloodSpray);
+	TE_WriteNum("m_nDropModel", g_sModelIndexBloodDrop);
+	
+	
+//	TE_SendToAll();
+}
+
 
 stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
 							float fStartWidth=NORMAL_ZOMBIE_VOLUME, float fEndWidth=NORMAL_ZOMBIE_VOLUME, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt")
@@ -6068,32 +6842,32 @@ stock int GetClosestAlly(int entity)
 	float TargetDistance = 0.0; 
 	int ClosestTarget = 0; 
 
-		int i = MaxClients + 1;
-		while ((i = FindEntityByClassname(i, "base_boss")) != -1)
+	int i = MaxClients + 1;
+	while ((i = FindEntityByClassname(i, "base_boss")) != -1)
+	{
+		if (GetEntProp(entity, Prop_Send, "m_iTeamNum")==GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && GetEntProp(i, Prop_Data, "m_iHealth") > 0)  //The is a medic thing is really needed
 		{
-			if (GetEntProp(entity, Prop_Send, "m_iTeamNum")==GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && GetEntProp(i, Prop_Data, "m_iHealth") > 0)  //The is a medic thing is really needed
+			float EntityLocation[3], TargetLocation[3]; 
+			GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+			GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+				
+				
+			float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+			if( TargetDistance ) 
 			{
-				float EntityLocation[3], TargetLocation[3]; 
-				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
-				GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-					
-					
-				float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-				if( TargetDistance ) 
-				{
-					if( distance < TargetDistance ) 
-					{
-						ClosestTarget = i; 
-						TargetDistance = distance;		  
-					}
-				} 
-				else 
+				if( distance < TargetDistance ) 
 				{
 					ClosestTarget = i; 
-					TargetDistance = distance;
-				}			
-			}
+					TargetDistance = distance;		  
+				}
+			} 
+			else 
+			{
+				ClosestTarget = i; 
+				TargetDistance = distance;
+			}			
 		}
+	}
 	return ClosestTarget; 
 }
 
@@ -6185,6 +6959,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_IsGiant[entity] = false;
 	b_Pathing[entity] = false;
 	b_Jumping[entity] = false;
+	b_AllowBackWalking[entity] = false;
 	fl_JumpStartTime[entity] = 0.0;
 	fl_JumpCooldown[entity] = 0.0;
 	fl_NextDelayTime[entity] = 0.0;
@@ -6208,6 +6983,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_AttackHappensMaximum[entity] = 0.0;
 	b_AttackHappenswillhappen[entity] = false;
 	b_thisNpcIsABoss[entity] = false;
+	b_StaticNPC[entity] = false;
 	b_thisNpcHasAnOutline[entity] = false;
 	b_ThisNpcIsImmuneToNuke[entity] = false;
 	b_NPCVelocityCancel[entity] = false;
@@ -6278,9 +7054,16 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ThisNpcIsSawrunner[entity] = false;
 	f_LowTeslarDebuff[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
+	f_WidowsWineDebuff[entity] = 0.0;
+	f_VeryLowIceDebuff[entity] = 0.0;
+	f_LowIceDebuff[entity] = 0.0;
+	f_HighIceDebuff[entity] = 0.0;
+	b_Frozen[entity] = false;
 	
 	fl_MeleeArmor[entity] = 1.0; //yeppers.
 	fl_RangedArmor[entity] = 1.0;
+	f_PickThisDirectionForabit[entity] = 0.0;
+	b_ScalesWithWaves[entity] = false;
 }
 
 public void Raidboss_Clean_Everyone()
@@ -6336,6 +7119,53 @@ public MRESReturn Arrow_DHook_RocketExplodePre(int arrow)
 	return MRES_Supercede;
 }
 
+public void Change_Npc_Collision(int npc, int CollisionType)
+{
+	if(IsValidEntity(npc))
+	{
+		Address pNB =		 SDKCall(g_hMyNextBotPointer,	   npc);
+		Address pLocomotion = SDKCall(g_hGetLocomotionInterface, pNB);
+		if(!DHookRemoveHookID(h_NpcCollissionHookType[npc]))
+		{
+			PrintToChatAll("FAILED HOOK REMOVAL");
+		}
+		else
+		{
+			switch(CollisionType)
+			{
+				case 1:
+				{
+					h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyEnemyIngoreBuilding,   false, pLocomotion);
+				}
+				case 2:
+				{
+					h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyEnemy,   false, pLocomotion);
+				}
+				case 3:
+				{
+					h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyInvince,   false, pLocomotion);
+				}
+				case 4:
+				{
+					h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAlly,   false, pLocomotion);
+				}
+			}	
+		}
+	}
+}
+
+
+public MRESReturn Dhook_UpdateGroundConstraint_Pre(DHookParam param)
+{
+	b_IsInUpdateGroundConstraintLogic = true;
+	return MRES_Ignored;
+}
+
+public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
+{
+	b_IsInUpdateGroundConstraintLogic = false;
+	return MRES_Ignored;
+}
 //NORMAL
 
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"
@@ -6436,6 +7266,7 @@ public MRESReturn Arrow_DHook_RocketExplodePre(int arrow)
 #include "zombie_riot/npc/ally/npc_necromancy_combine.sp"
 #include "zombie_riot/npc/ally/npc_necromancy_calcium.sp"
 #include "zombie_riot/npc/ally/npc_cured_last_survivor.sp"
+#include "zombie_riot/npc/ally/npc_citizen.sp"
 
 #include "zombie_riot/npc/alt/npc_alt_combine_soldier_mage.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_apprentice_mage.sp"
@@ -6457,3 +7288,8 @@ public MRESReturn Arrow_DHook_RocketExplodePre(int arrow)
 #include "zombie_riot/npc/medival/npc_medival_handcannoneer.sp"
 #include "zombie_riot/npc/medival/npc_medival_elite_skirmisher.sp"
 #include "zombie_riot/npc/medival/npc_medival_pikeman.sp"
+#include "zombie_riot/npc/alt/npc_alt_medic_supperior_mage.sp"
+#include "zombie_riot/npc/medival/npc_medival_eagle_scout.sp"
+#include "zombie_riot/npc/medival/npc_medival_samurai.sp"
+
+#include "zombie_riot/npc/cof/npc_addiction.sp"

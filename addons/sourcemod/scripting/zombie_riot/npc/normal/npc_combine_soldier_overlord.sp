@@ -285,6 +285,11 @@ public void CombineOverlord_ClotThink(int iNPC)
 			//	npc.FaceTowards(vecTarget);
 			}
 			
+			if(npc.m_flJumpStartTime > GetGameTime())
+			{
+				npc.m_flSpeed = 0.0;
+			}
+			
 		//	npc.FaceTowards(vecTarget, 1000.0);
 			
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -321,6 +326,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 				int iActivity_melee = npc.LookupActivity("OVERLORD_RAGE");
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 				npc.m_flmovedelay = GetGameTime() + 0.5;
+				npc.m_flJumpStartTime = GetGameTime() + 2.0;
 				PF_StopPathing(npc.index);
 				npc.m_bPathing = false;
 			}
@@ -385,9 +391,6 @@ public void CombineOverlord_ClotThink(int iNPC)
 			{
 				npc.StartPathing();
 				
-				
-			//	npc.FaceTowards(vecTarget, 1000.0);
-				
 				if(npc.m_flAngerDelay > GetGameTime() && npc.m_flReloadDelay < GetGameTime())
 				{
 					
@@ -404,9 +407,9 @@ public void CombineOverlord_ClotThink(int iNPC)
 						if(target > 0) 
 						{
 							if(target <= MaxClients)
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 25.0, DMG_SLASH|DMG_CLUB);
-							else
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_SLASH|DMG_CLUB);
+							else
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_SLASH|DMG_CLUB);
 								
 							Custom_Knockback(npc.index, target, 200.0);
 							// Hit particle
@@ -457,26 +460,13 @@ public void CombineOverlord_ClotThink(int iNPC)
 									
 									if(target > 0) 
 									{
-										if(npc.m_flAngerDelay < GetGameTime())
-										{
-											if(target <= MaxClients)
-												SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_SLASH|DMG_CLUB);
-											else
-												SDKHooks_TakeDamage(target, npc.index, npc.index, 400.0, DMG_SLASH|DMG_CLUB);
+										if(target <= MaxClients)
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_SLASH|DMG_CLUB);
+										else
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 400.0, DMG_SLASH|DMG_CLUB);
 												
-											Custom_Knockback(npc.index, target, 450.0);
-										}
-										
-										else if(npc.m_flAngerDelay > GetGameTime())
-										{
-											if(target <= MaxClients)
-												SDKHooks_TakeDamage(target, npc.index, npc.index, 25.0, DMG_SLASH|DMG_CLUB);
-											else
-												SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_SLASH|DMG_CLUB);
-												
-											Custom_Knockback(npc.index, target, 200.0);
-										}
-										
+										Custom_Knockback(npc.index, target, 450.0);
+									
 										// Hit particle
 										npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
 										

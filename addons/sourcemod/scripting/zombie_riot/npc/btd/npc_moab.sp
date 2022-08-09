@@ -31,7 +31,7 @@ static int MoabHealth(bool fortified)
 {
 	float value = 20000.0;	// 200 RGB
 	if(CurrentRound != 39 && CurrentRound != 59 && CurrentRound != 79 && CurrentRound != 99)
-		value *= 0.5;
+		value *= 0.25;
 	
 	if(fortified)
 		value *= 2.0;

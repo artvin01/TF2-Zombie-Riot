@@ -10,7 +10,7 @@ static int Projectile_To_Weapon[MAXENTITIES]={0, ...};
 #define MAXENTITIES 2048
 
 
-#define MAX_TARGETS_HIT 64
+#define MAX_TARGETS_HIT 10
 #define MAX_SOUND_FILE_LENGTH 80
 #define MAX_EFFECT_NAME_LENGTH 48
 
@@ -145,6 +145,8 @@ public void Weapon_Wind_Laser_Builder(int client, int weapon, const char[] class
 	{
 		Strength[client] *= 3.0;
 	}
+	
+	Strength[client] *= 0.5;
 			
 	//	TBB_Ability(client);
 	RequestFrame(TBB_Ability_Wind_Staff, client);
@@ -330,7 +332,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 			
 			if (((!StrContains(classname, "base_boss", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
 			{
-				for(int i=1; i <= MAXENTITIES; i++)
+				for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
 				{
 					if(!BEAM_BuildingHit[i])
 					{

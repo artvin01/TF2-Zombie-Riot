@@ -88,7 +88,7 @@ methodmap XenoDemoMain < CClotBody
 		i_NpcInternalId[npc.index] = XENO_DEMO_MAIN;
 		
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
 		

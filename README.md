@@ -14,10 +14,6 @@ Most of the code is made towards client prediction to make the best experience.
 
 Also keep in mind that i (artvin) started coding here with only half a year of knowledege so you'll see a fuckton of shitcode.
 
-You will also see alot of "inconsistent indentation" warnings, if 1.11 compiler told me where this shit happend then i would fix it
-but i honestly dont got the patience to look though all these sub files (more then 100)
-
-
 There is also an escapemode Verison of this gamemode and more to come. If you need help, ask me questions, and i will awnser them and put a FAQ here too so i dont have to repeat myself.
 
 ### Where can I see this gamemode in action?
@@ -79,7 +75,7 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [TFEconData](https://github.com/nosoop/SM-TFEconData)
 - [PathFollower](https://github.com/Pelipoika/PathFollower)
 - [lambda](https://github.com/Batfoxkid/lambda)
-- [Cheat Control](https://forums.alliedmods.net/showthread.php?t=68805) VERY IMPORTANT, SV CHEATS IS 1 BY DEFAULT
+- [Timescale Windows Fix](https://forums.alliedmods.net/showthread.php?t=324264)
 
 ### Supported
 
@@ -100,6 +96,7 @@ Current coders that in anyway actively helped, in order of how much:
 - [Spookmaster](https://github.com/SupremeSpookmaster)
 - [Kenzzer](https://github.com/Kenzzer) (Got gamedata and make an extention edit for us)
 - [Pelipoika](https://github.com/Pelipoika) (Npc base code that we heavily edited, thank you SO much for publishing it all.)
+- [backwards] (backwards#8236) on discord. (Helped with sdkcall lag compensation.)
 
 IF YOU WISH TO USE THE MODELS THAT ARENT IN THE SOURCECODE, CONTACT THIS PERSON FOR PERMISSION, OTHERWISE PLEASE HAVE THIS CVAR (zr_nospecial) ON 1
 USING THESE MODELS WITHOUT PERMISSION WILL ANGER US. thanks.

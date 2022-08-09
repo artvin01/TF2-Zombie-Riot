@@ -89,7 +89,7 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 		
 		attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
 				
-		Bonus_damage = attack_speed * Bonus_damage * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
+		Bonus_damage = attack_speed * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
 		
 		if (EscapeMode)
 		{
@@ -248,10 +248,14 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 									Damage_Calc = Spike_Health[entity];
 								}
 								
+								float Health_Before_Hurt = float(GetEntProp(baseboss_index, Prop_Data, "m_iHealth"));
+					
 								//Just do full damage.
 								SDKHooks_TakeDamage(baseboss_index, client, client, float(Damage_Calc), DMG_BULLET, -1, NULL_VECTOR, Spikepos);
 								
-								Spike_Health[entity] -= Damage_Calc;
+								float Health_After_Hurt = float(GetEntProp(baseboss_index, Prop_Data, "m_iHealth"));
+								
+								Spike_Health[entity] -= RoundToCeil(Health_Before_Hurt - Health_After_Hurt);
 								
 								if (Spike_Health[entity] == 0)
 								{
@@ -265,7 +269,8 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 									RemoveEntity(entity);
 									Is_Spike[entity] = false;
 									Spikes_Alive[client] -= 1;
-									PrintToConsoleAll("Somehow the spike did more dmg then it has health? BUG!!!!!!!");
+								//	not anymore bug, enemies CAN take more damage.
+								//	PrintToConsoleAll("Somehow the spike did more dmg then it has health? BUG!!!!!!!");
 									return Plugin_Stop;
 								}
 								

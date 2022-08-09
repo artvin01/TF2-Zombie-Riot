@@ -22,17 +22,16 @@ void Wand_Elemental_2_Map_Precache()
 	PrecacheSound("ambient/explosions/explode_9.wav", true);
 }
 
-public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit)
+public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
 		int mana_cost = 350;
 		if(mana_cost <= Current_Mana[client])
 		{
-			if (ability_cooldown[client] < GetGameTime())
+			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				ability_cooldown[client] = GetGameTime() + 15.0;
-				
+				Ability_Apply_Cooldown(client, slot, 15.0);
 				Current_Mana[client] -= mana_cost;
 				float damage = 160.0;
 				Address	address = TF2Attrib_GetByDefIndex(weapon, 410);
@@ -55,57 +54,20 @@ public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit)
 				
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vecUp);
 				
-				int ent = CreateEntityByName("env_explosion");
-				if(ent != -1)
-				{
-					SetEntPropEnt(ent, Prop_Data, "m_hOwnerEntity", client);
-											
-					EmitAmbientSound("ambient/explosions/explode_3.wav", vecUp);
-									
-					DispatchKeyValueVector(ent, "origin", vecUp);
-					DispatchKeyValue(ent, "spawnflags", "64");
-					
-					DispatchKeyValue(ent, "rendermode", "5");
-					DispatchKeyValue(ent, "fireballsprite", spirite);
-									
-					SetEntProp(ent, Prop_Data, "m_iMagnitude", 0); 
-					SetEntProp(ent, Prop_Data, "m_iRadiusOverride", 200); 
-								
-					DispatchSpawn(ent);
-					ActivateEntity(ent);
-								
-					AcceptEntityInput(ent, "explode");
-					AcceptEntityInput(ent, "kill");
-					float damage_reduction = 1.0;
-					for(int entitycount_2; entitycount_2<i_MaxcountNpc; entitycount_2++)
-					{
-						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount_2]);
-						if (IsValidEntity(baseboss_index))
-						{
-							if(!b_NpcHasDied[baseboss_index])
-							{
-								float VicLoc[3];
-								VicLoc = WorldSpaceCenter(baseboss_index);
-															
-								if (GetVectorDistance(VicLoc, vecSwingEnd, true) <= Pow(EarthStyleShockwaveRange, 2.0))
-								{
-									float distance_1 = GetVectorDistance(VicLoc, vecSwingEnd);
-									float damage_1 = Custom_Explosive_Logic(client, distance_1, 0.35, f_OriginalDamage[client], 351.0);
-												
-									VicLoc[2] += 45;													
-									SDKHooks_TakeDamage(baseboss_index, client, client, damage_1 / damage_reduction,DMG_PLASMA,_, CalculateExplosiveDamageForce(vecSwingEnd, VicLoc, 351.0), VicLoc);
-									damage_reduction *= EXPLOSION_AOE_DAMAGE_FALLOFF;
-								}
-							}
-						}
-					}
-				}
+				
+				DataPack pack = new DataPack();
+				pack.WriteFloat(vecUp[0]);
+				pack.WriteFloat(vecUp[1]);
+				pack.WriteFloat(vecUp[2]);
+				RequestFrame(MakeExplosionFrameLater, pack);
+				
+				Explode_Logic_Custom(damage, client, client, weapon,vecUp,_,_,_,false);
 			
 				CreateTimer(0.1, shockwave_explosions, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 			}
 			else
 			{
-				float Ability_CD = ability_cooldown[client] - GetGameTime();
+				float Ability_CD = Ability_Check_Cooldown(client, slot);
 		
 				if(Ability_CD <= 0.0)
 					Ability_CD = 0.0;
@@ -158,29 +120,7 @@ public Action shockwave_explosions(Handle timer, int client)
 						
 			AcceptEntityInput(ent, "explode");
 			AcceptEntityInput(ent, "kill");
-			float damage_reduction = 1.0;
-			for(int entitycount_2; entitycount_2<i_MaxcountNpc; entitycount_2++)
-			{
-				int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount_2]);
-				if (IsValidEntity(baseboss_index))
-				{
-					if(!b_NpcHasDied[baseboss_index])
-					{
-						float VicLoc[3];
-						VicLoc = WorldSpaceCenter(baseboss_index);
-															
-						if (GetVectorDistance(VicLoc, vecSwingEnd, true) <= Pow(EarthStyleShockwaveRange, 2.0))
-						{
-							float distance_1 = GetVectorDistance(VicLoc, vecSwingEnd);
-							float damage_1 = Custom_Explosive_Logic(client, distance_1, 0.35, f_OriginalDamage[client], 351.0);
-										
-							VicLoc[2] += 45;													
-							SDKHooks_TakeDamage(baseboss_index, client, client, damage_1 / damage_reduction,DMG_PLASMA,_, CalculateExplosiveDamageForce(vecSwingEnd, VicLoc, 351.0), VicLoc);
-							damage_reduction *= EXPLOSION_AOE_DAMAGE_FALLOFF;
-						}
-					}
-				}
-			}
+			Explode_Logic_Custom(f_OriginalDamage[client], client, client, -1, vecSwingEnd,_,_,_,false);
 		}
 		if(client_slammed_how_many_times[client] > client_slammed_how_many_times_limit[client])
 		{

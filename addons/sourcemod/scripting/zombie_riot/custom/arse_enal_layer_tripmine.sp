@@ -65,7 +65,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 		
 			attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
 				
-			Bonus_damage = attack_speed * Bonus_damage * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
+			Bonus_damage = attack_speed * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
 			
 			if (EscapeMode)
 			{
@@ -386,37 +386,9 @@ public void Trip_TrackPlanted(int client)
 											EmitSoundToAll(TERRORIZER_BLAST3, ent2, _);
 										}
 									}
-									float damage_falloff_1 = 1.0;
-									float damage_falloff_2 = 1.0;
-									for(int entitycount_2; entitycount_2<i_MaxcountNpc; entitycount_2++)
-									{
-										int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount_2]);
-										if (IsValidEntity(baseboss_index))
-										{
-											if(!b_NpcHasDied[baseboss_index])
-											{
-												float VicLoc[3];
-												GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", VicLoc);
-												VicLoc[2] += 44.0;	
-												if (GetVectorDistance(VicLoc, EntLoc2, true) <= Pow(Trip_BlastRadius, 2.0))
-												{
-													float distance_1 = GetVectorDistance(VicLoc, EntLoc2);
-													float damage_1 = Custom_Explosive_Logic(client, distance_1, 0.35, Trip_BlastDMG[client], 451.0);
-													
-													SDKHooks_TakeDamage(baseboss_index, client, client, damage_1/damage_falloff_1, DMG_BLAST, -1, CalculateExplosiveDamageForce(EntLoc2, VicLoc, Trip_BlastRadius) ,VicLoc);
-													damage_falloff_1 *= EXPLOSION_AOE_DAMAGE_FALLOFF;
-												}
-												
-												if (GetVectorDistance(VicLoc, EntLoc, true) <= Pow(Trip_BlastRadius, 2.0))
-												{
-													float distance_1 = GetVectorDistance(VicLoc, EntLoc);
-													float damage_1 = Custom_Explosive_Logic(client, distance_1, 0.35, Trip_BlastDMG[client], 451.0);
-													SDKHooks_TakeDamage(baseboss_index, client, client, damage_1/damage_falloff_2, DMG_BLAST, -1, CalculateExplosiveDamageForce(EntLoc, VicLoc, Trip_BlastRadius) ,VicLoc);
-													damage_falloff_2 *= EXPLOSION_AOE_DAMAGE_FALLOFF;
-												}
-											}
-										}
-									}
+									
+									Explode_Logic_Custom(Trip_BlastDMG[client], client, client, -1, EntLoc2,Trip_BlastRadius,_,_,false);
+									Explode_Logic_Custom(Trip_BlastDMG[client], client, client, -1, EntLoc,Trip_BlastRadius,_,_,false);
 									
 									RemoveEntity(ent);
 									RemoveEntity(ent2);

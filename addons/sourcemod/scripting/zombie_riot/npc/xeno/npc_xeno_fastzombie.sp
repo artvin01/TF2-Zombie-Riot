@@ -189,7 +189,7 @@ methodmap XenoFastZombie < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
 		
@@ -283,78 +283,78 @@ public void XenoFastZombie_ClotThink(int iNPC)
 			
 		}
 			
-			//Predict their pos.
-			if(flDistanceToTarget < npc.GetLeadRadius()) {
-				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				
-				PF_SetGoalVector(npc.index, vPredictedPos);
-			}
-			else 
+		//Predict their pos.
+		if(flDistanceToTarget < npc.GetLeadRadius())
+		{
+			
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			
+			PF_SetGoalVector(npc.index, vPredictedPos);
+		}
+		else 
+		{
+			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		}
+		//Target close enough to hit
+		if(flDistanceToTarget < 10000)
+		{
+			//Look at target so we hit.
+		//	npc.FaceTowards(vecTarget, 1000.0);
+			
+			//Can we attack right now?
+			if(npc.m_flNextMeleeAttack < GetGameTime())
 			{
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
-			}
-			//Target close enough to hit
-			if(flDistanceToTarget < 10000)
-			{
-				//Look at target so we hit.
-			//	npc.FaceTowards(vecTarget, 1000.0);
-
+				//Play attack anim
+				npc.AddGesture("ACT_MELEE_ATTACK1");
 				
-				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GetGameTime())
+				Handle swingTrace;
+				npc.FaceTowards(vecTarget, 20000.0);
+				if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
 				{
-					//Play attack anim
-					npc.AddGesture("ACT_MELEE_ATTACK1");
-					
-					Handle swingTrace;
-					npc.FaceTowards(vecTarget, 20000.0);
-					if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
-						{
-							
-							int target = TR_GetEntityIndex(swingTrace);	
-							
-							float vecHit[3];
-							TR_GetEndPosition(vecHit, swingTrace);
-							
-							if(target > 0) 
-							{
-								
-								if(EscapeModeForNpc)
-								{
-									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0, DMG_SLASH|DMG_CLUB);
-									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 15.0, DMG_SLASH|DMG_CLUB);
-								}
-								else
-								{
-									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 3.0, DMG_SLASH|DMG_CLUB);
-									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0, DMG_SLASH|DMG_CLUB);
-								}
-								
-								
-								// Hit particle
-								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
-								
-								// Hit sound
-								npc.PlayMeleeSound();
-								npc.PlayMeleeHitSound();
-							} 
-						}
-					delete swingTrace;
-					npc.m_flNextMeleeAttack = GetGameTime() + 0.6;
-				}
-				PF_StopPathing(npc.index);
-				npc.m_bPathing = false;
-			}
-			else
-			{
-				npc.StartPathing();
+						
+					int target = TR_GetEntityIndex(swingTrace);	
 				
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
+					
+					if(target > 0) 
+					{
+						
+						if(EscapeModeForNpc)
+						{
+							if(target <= MaxClients)
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0, DMG_SLASH|DMG_CLUB);
+							else
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 15.0, DMG_SLASH|DMG_CLUB);
+						}
+						else
+						{
+							if(target <= MaxClients)
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 3.0, DMG_SLASH|DMG_CLUB);
+							else
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0, DMG_SLASH|DMG_CLUB);
+						}
+								
+						
+						// Hit particle
+						npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+						
+						// Hit sound
+						npc.PlayMeleeSound();
+						npc.PlayMeleeHitSound();
+					} 
+				}
+				delete swingTrace;
+				npc.m_flNextMeleeAttack = GetGameTime() + 0.6;
 			}
+			PF_StopPathing(npc.index);
+			npc.m_bPathing = false;
+		}
+		else
+		{
+			npc.StartPathing();
+			
+		}
 	}
 	else
 	{

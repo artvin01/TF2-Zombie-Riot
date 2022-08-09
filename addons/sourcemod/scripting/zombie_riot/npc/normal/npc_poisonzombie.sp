@@ -51,7 +51,7 @@ public void PoisonZombie_OnMapStart_NPC()
 methodmap PoisonZombie < CClotBody
 {
 	public void PlayIdleSound() {
-	if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime())
 			return;
 		
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -316,7 +316,7 @@ public Action PoisonZombie_OnTakeDamage(int victim, int &attacker, int &inflicto
 		return Plugin_Continue;
 	*/
 	
-		if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{
 		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;

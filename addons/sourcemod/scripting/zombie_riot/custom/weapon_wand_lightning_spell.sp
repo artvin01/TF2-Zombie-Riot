@@ -8,6 +8,10 @@ void Wand_LightningAbility_Map_Precache()
 {
 	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 	PrecacheSound(SOUND_WAND_LIGHTNING_ABILITY);
+	PrecacheSound("ambient/explosions/explode_3.wav", true);
+	PrecacheSound("weapons/physcannon/energy_sing_flyby2.wav", true);
+	PrecacheSound("ambient/atmosphere/terrain_rumble1.wav", true);
+	PrecacheSound("ambient/explosions/explode_9.wav", true);
 }
 
 public void Lighting_Wand_Spell_ClearAll()
@@ -15,18 +19,18 @@ public void Lighting_Wand_Spell_ClearAll()
 	Zero(ability_cooldown);
 }
 
-public void Weapon_Wand_LightningSpell(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Wand_LightningSpell(int client, int weapon, bool &result, int slot)
 {
 	if(weapon >= MaxClients)
 	{
 		int mana_cost = 100;
 		if(mana_cost <= Current_Mana[client])
 		{
-			if (ability_cooldown[client] < GetGameTime())
+			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				ability_cooldown[client] = GetGameTime() + 15.0; //10 sec CD
+				Ability_Apply_Cooldown(client, slot, 15.0);
 				
-				float damage = 200.0;
+				float damage = 150.0;
 				
 				damage *= 7.5;
 				
@@ -47,38 +51,22 @@ public void Weapon_Wand_LightningSpell(int client, int weapon, const char[] clas
 				float vAngles[3];
 				float vOrigin[3];
 				float vEnd[3];
-				float targPos[3];
 	
 				GetClientEyePosition(client, vOrigin);
 				GetClientEyeAngles(client, vAngles);
-				Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, Trace_DontHitEntityOrPlayer);
+				b_LagCompNPC_ExtendBoundingBox = true;
+				StartLagCompensation_Base_Boss(client, false);
+				Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
+				FinishLagCompensation_Base_boss();
 				
 				if(TR_DidHit(trace))
-				{   	 
+				{   
 		   		 	TR_GetEndPosition(vEnd, trace);
 			
 					CloseHandle(trace);
 					
-					int targ = MaxClients + 1;
+					Explode_Logic_Custom(damage, client, client, weapon, vEnd,_,_,_,false);
 					
-					while ((targ = FindEntityByClassname(targ, "base_boss")) != -1)
-					{
-						if (GetEntProp(client, Prop_Send, "m_iTeamNum")!=GetEntProp(targ, Prop_Send, "m_iTeamNum")) 
-						{
-							GetEntPropVector(targ, Prop_Data, "m_vecAbsOrigin", targPos);
-							if (GetVectorDistance(vEnd, targPos) <= 250.0)
-							{
-								float distance_1 = GetVectorDistance(vEnd, targPos);
-								float damage_1 = Custom_Explosive_Logic(client, distance_1, 0.75, damage, 251.0);
-								
-								damage_1 /= Damage_Reduction[client];
-								SDKHooks_TakeDamage(targ, client, client, damage_1, DMG_PLASMA, -1, {0.0, 0.0, -50000.0}, vEnd);
-								
-								Damage_Reduction[client] *= EXPLOSION_AOE_DAMAGE_FALLOFF;
-								//use blast cus it does its own calculations for that ahahahah im evil
-							}
-						}
-					}
 					float position[3];
 					position[0] = vEnd[0];
 					position[1] = vEnd[1];
@@ -126,6 +114,13 @@ public void Weapon_Wand_LightningSpell(int client, int weapon, const char[] clas
 					
 					TE_SetupBeamPoints(vEnd, position, gLaser1, 0, 0, 0, 0.33, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
 					TE_SendToAll(0.0);
+					
+					DataPack pack = new DataPack();
+					pack.WriteFloat(vEnd[0]);
+					pack.WriteFloat(vEnd[1]);
+					pack.WriteFloat(vEnd[2]);
+					RequestFrame(MakeExplosionFrameLater, pack);
+					
 					EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);
 					EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);	
 
@@ -134,7 +129,7 @@ public void Weapon_Wand_LightningSpell(int client, int weapon, const char[] clas
 			}
 			else
 			{
-				float Ability_CD = ability_cooldown[client] - GetGameTime();
+				float Ability_CD = Ability_Check_Cooldown(client, slot);
 		
 				if(Ability_CD <= 0.0)
 					Ability_CD = 0.0;

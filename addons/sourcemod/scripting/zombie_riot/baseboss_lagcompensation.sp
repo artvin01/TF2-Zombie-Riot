@@ -50,7 +50,6 @@ ConVar sv_maxunlag;
 
 StringMap EntityTrack;
 StringMap EntityRestore;
-bool DoingLagCompensation;
 int TickCount[MAXTF2PLAYERS];
 float ViewAngles[MAXTF2PLAYERS][3];
 
@@ -85,7 +84,7 @@ public Action OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcoun
 }
 
 /* Manually remove no longer in use entites */
-void OnEntityDestroyed_LagComp(int entity)
+public void OnEntityDestroyed_LagComp(int entity)
 {
 	if(entity > 0)
 	{
@@ -103,7 +102,7 @@ void OnEntityDestroyed_LagComp(int entity)
 			for(int a; a<length2; a++)
 			{
 				list.GetArray(a, record);
-				if(entity > MaxClients && !b_Map_BaseBoss_No_Layers[entity])
+				if(entity > MaxClients && !b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 				{
 					delete record.m_layerRecords;
 				}
@@ -113,7 +112,7 @@ void OnEntityDestroyed_LagComp(int entity)
 	
 		LagRecord record;
 		EntityRestore.GetArray(key, record, sizeof(record));
-		if(entity > MaxClients && !b_Map_BaseBoss_No_Layers[entity])
+		if(entity > MaxClients && !b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 		{
 			delete record.m_layerRecords;
 		}
@@ -164,12 +163,12 @@ public void StartLagCompensation_Base_Boss(int client, bool compensate_players)
 			
 			// Iterate all active NPCs
 			//const CBitVec<MAX_EDICTS> *pEntityTransmitBits = engine.GetEntityTransmitBitsForClient( player.entindex() - 1 );
-			if(!compensate_players)
+		//	if(!compensate_players)
 			{
-				for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+				for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
 				{
-					int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-					if(IsValidEntity(entity) && !b_NpcHasDied[entity] && entity != 0)
+					int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
+					if(IsValidEntity(entity) /*&& !b_NpcHasDied[entity]*/ && entity != 0)
 					{
 							// Custom checks for if things should lag compensate (based on things like what team the player is on).
 						if(!WantsLagCompensationOnEntity(entity, client, ViewAngles[client]/*, pEntityTransmitBits*/))
@@ -180,28 +179,12 @@ public void StartLagCompensation_Base_Boss(int client, bool compensate_players)
 					}
 				}
 			}
-			else
-			{
-				for(int entity=1; entity<=MaxClients; entity++)
-				{
-					if(entity != client && IsClientInGame(entity) && IsPlayerAlive(entity))
-					{
-						// Custom checks for if things should lag compensate (based on things like what team the player is on).
-						if(!WantsLagCompensationOnEntity(entity, client, ViewAngles[client]/*, pEntityTransmitBits*/))
-							continue;
-
-						// Move other NPCs back in time
-						BacktrackEntity(entity, TICKS_TO_TIME(targettick));
-					}
-				}
-				
-			}
 		}
 	}
 }
 
 /* game/server/player.cpp#L732 */
-bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles[3]/*, const CBitVec<MAX_EDICTS> *pEntityTransmitBits */)
+public bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles[3]/*, const CBitVec<MAX_EDICTS> *pEntityTransmitBits */)
 {
 	// Team members shouldn't be adjusted unless friendly fire is on.
 	/*
@@ -226,19 +209,19 @@ bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles
 	
 //	if(!b_LagCompNPC_No_Layers)
 //	{
-		// If their origin is not within a 45 degree cone in front of us, no need to lag compensate.
-		float forwar[3];
-		GetAngleVectors(viewangles, forwar, NULL_VECTOR, NULL_VECTOR );
-		
-		float diff[3];
-		SubtractVectors(pos2, pos1, diff);
-		NormalizeVector(diff, diff);
-		
-		static const float flCosAngle = 0.707107;	// 45 degree angle
-		if(GetVectorDotProduct(forwar, diff) > flCosAngle)
-		{
-			return false;
-		}
+	// If their origin is not within a 45 degree cone in front of us, no need to lag compensate.
+	float forwar[3];
+	GetAngleVectors(viewangles, forwar, NULL_VECTOR, NULL_VECTOR );
+	
+	float diff[3];
+	SubtractVectors(pos2, pos1, diff);
+	NormalizeVector(diff, diff);
+	
+	static const float flCosAngle = 0.707107;	// 45 degree angle
+	if(GetVectorDotProduct(forwar, diff) > flCosAngle)
+	{
+		return false;
+	}
 //	}
 //	else
 //	{
@@ -248,7 +231,7 @@ bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles
 }
 
 /* game/server/player_lagcompensation.cpp#L423 */
-void BacktrackEntity(int entity, float currentTime)
+public void BacktrackEntity(int entity, float currentTime) //Make sure that allies only get compensated for their bounding box.
 {
 	int ref = EntIndexToEntRef(entity);
 	
@@ -329,7 +312,7 @@ void BacktrackEntity(int entity, float currentTime)
 //	if(!b_LagCompAlliedPlayers)
 	{
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", restore.m_vecAngles);
-		if(!b_LagCompNPC_No_Layers)
+		if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
 		{
 			restore.m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
 			restore.m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
@@ -337,7 +320,7 @@ void BacktrackEntity(int entity, float currentTime)
 		}
 		if(b_LagCompNPC_ExtendBoundingBox)
 		{
-			if(!b_Map_BaseBoss_No_Layers[entity])
+			if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 			{
 				SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", { 100.0, 100.0, 200.0 });
 				SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", { -100.0, -100.0, 0.0 });
@@ -382,20 +365,19 @@ void BacktrackEntity(int entity, float currentTime)
 	// If the master state changes, all layers will be invalid too, so don't interp (ya know, interp barely ever happens anyway)
 //	if(!b_LagCompAlliedPlayers)
 	{
-		if(!b_LagCompNPC_No_Layers)
+		if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
 		{
-	#if !defined DisableInterpolation
 			bool interpolationAllowed = (multi && frac > 0.0 && record.m_masterSequence == prevRecord.m_masterSequence);
 			
 			if(interpolationAllowed)
 			{
-				SetEntProp(entity, Prop_Data, "m_nSequence", Lerp(frac, record.m_masterSequence, prevRecord.m_masterSequence));
+				SetEntProp(entity, Prop_Data, "m_nSequence", Lerpint(frac, record.m_masterSequence, prevRecord.m_masterSequence));
 				
 				if(record.m_masterCycle > prevRecord.m_masterCycle)
 				{
 					// the older record is higher in frame than the newer, it must have wrapped around from 1 back to 0
 					// add one to the newer so it is lerping from .9 to 1.1 instead of .9 to .1, for example.
-					float newCycle = Lerp(frac, record.m_masterCycle, prevRecord.m_masterCycle + 1.0);
+					float newCycle = Lerpfloat(frac, record.m_masterCycle, prevRecord.m_masterCycle + 1.0);
 					
 					if (newCycle<0.01)
 						newCycle = 0.01;
@@ -406,7 +388,7 @@ void BacktrackEntity(int entity, float currentTime)
 				}
 				else
 				{
-					float newCycle = Lerp(frac, record.m_masterCycle, prevRecord.m_masterCycle);
+					float newCycle = Lerpfloat(frac, record.m_masterCycle, prevRecord.m_masterCycle);
 					
 					if (newCycle<0.01)
 						newCycle = 0.01;
@@ -417,15 +399,14 @@ void BacktrackEntity(int entity, float currentTime)
 				}
 			}
 			else
-	#endif
 			{
 				SetEntProp(entity, Prop_Data, "m_nSequence", record.m_masterSequence);
 				SetEntPropFloat(entity, Prop_Data, "m_flCycle", record.m_masterCycle);
 			}
 		////////////////////////
 		// Now do all the layers
-	#if defined HaveLayersForLagCompensation
-			if(!b_Map_BaseBoss_No_Layers[entity])
+#if defined HaveLayersForLagCompensation
+			if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 			{
 				CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
 				
@@ -440,7 +421,6 @@ void BacktrackEntity(int entity, float currentTime)
 					layer.m_sequence = currentLayer.Get(m_nSequence);
 					layer.m_weight = currentLayer.Get(m_flWeight);
 					restore.m_layerRecords.PushArray(layer);
-		#if !defined DisableInterpolation
 					bool interpolated = false;
 					if(interpolationAllowed)
 					{
@@ -454,22 +434,21 @@ void BacktrackEntity(int entity, float currentTime)
 							{
 								// the older record is higher in frame than the newer, it must have wrapped around from 1 back to 0
 								// add one to the newer so it is lerping from .9 to 1.1 instead of .9 to .1, for example.
-								float newCycle = Lerp(frac, recordsLayerRecord.m_cycle, prevRecordsLayerRecord.m_cycle + 1.0);
+								float newCycle = Lerpfloat(frac, recordsLayerRecord.m_cycle, prevRecordsLayerRecord.m_cycle + 1.0);
 								currentLayer.Set(m_flCycle, newCycle < 1.0 ? newCycle : newCycle - 1.0);// and make sure .9 to 1.2 does not end up 1.05
 							}
 							else
 							{
-								currentLayer.Set(m_flCycle, Lerp(frac, recordsLayerRecord.m_cycle, prevRecordsLayerRecord.m_cycle));
+								currentLayer.Set(m_flCycle, Lerpfloat(frac, recordsLayerRecord.m_cycle, prevRecordsLayerRecord.m_cycle));
 							}
 							
 							currentLayer.Set(m_nOrder, recordsLayerRecord.m_order);
 							currentLayer.Set(m_nSequence, recordsLayerRecord.m_sequence);
-							currentLayer.Set(m_flWeight, Lerp(frac, recordsLayerRecord.m_weight, prevRecordsLayerRecord.m_weight));
+							currentLayer.Set(m_flWeight, Lerpfloat(frac, recordsLayerRecord.m_weight, prevRecordsLayerRecord.m_weight));
 						}
 					}
 					
 					if(!interpolated)
-		#endif
 					{
 						//Either no interp, or interp failed.  Just use record.
 						currentLayer.Set(m_flCycle, layer.m_cycle);
@@ -478,9 +457,9 @@ void BacktrackEntity(int entity, float currentTime)
 						currentLayer.Set(m_flWeight, layer.m_weight);
 					}
 				}
-		#endif
-			}
+#endif
 			SDKCall_InvalidateBoneCache(entity);
+			}
 	//		Test_Hitbox(entity);
 		}
 	}
@@ -514,15 +493,15 @@ public void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 #if defined HaveLayersForLagCompensation
 		LayerRecord layer;
 #endif
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if(IsValidEntity(entity) && !b_NpcHasDied[entity])
+			int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
+			if(IsValidEntity(entity) /*&& !b_NpcHasDied[entity]*/ && entity != 0)
 			{
 				IntToString(EntIndexToEntRef(entity), refchar, sizeof(refchar));
 				if(EntityRestore.GetArray(refchar, restore, sizeof(restore)))
 				{
-					if(!b_Map_BaseBoss_No_Layers[entity])
+					if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 					{
 						if(b_LagCompNPC_ExtendBoundingBox)
 						{
@@ -555,9 +534,9 @@ public void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 					}
 					SetEntPropVector(entity, Prop_Data, "m_angRotation", restore.m_vecAngles); //See start pos on why we use this instead of the SDKCall
 					SDKCall_SetLocalOrigin(entity, restore.m_vecOrigin);
-					if(!b_Map_BaseBoss_No_Layers[entity])
+					if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 					{
-						if(!b_LagCompNPC_No_Layers)
+						if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
 						{
 							SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", restore.m_flSimulationTime);
 							SetEntProp(entity, Prop_Data, "m_nSequence", restore.m_masterSequence);
@@ -602,10 +581,10 @@ public void LagCompensationThink_Forward()
 		LayerRecord layer;
 #endif
 		// Iterate all active NPCs
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if(IsValidEntity(entity) && !b_NpcHasDied[entity])
+			int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
+			if(IsValidEntity(entity) /*&& !b_NpcHasDied[entity]*/ && entity != 0)
 			{
 				IntToString(EntIndexToEntRef(entity), refchar, sizeof(refchar));
 				if(!EntityTrack.GetValue(refchar, list))
@@ -626,7 +605,7 @@ public void LagCompensationThink_Forward()
 						break;
 					
 					// remove tail, get new tail
-					if(!b_Map_BaseBoss_No_Layers[entity])
+					if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 					{
 						delete record.m_layerRecords;
 					}
@@ -652,7 +631,7 @@ public void LagCompensationThink_Forward()
 			//	GetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", record.m_vecMaxsPreScaled);
 			
 #if defined HaveLayersForLagCompensation
-				if(!b_Map_BaseBoss_No_Layers[entity])
+				if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity]) //If its an allied baseboss, make sure to not get layers.
 				{
 					CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
 					if(overlay.Address == Address_Null)
@@ -676,54 +655,11 @@ public void LagCompensationThink_Forward()
 				list.PushArray(record);
 			}
 		}
-#if defined	CompensatePlayers
-		for(int client_compensate=1; client_compensate<=MaxClients; client_compensate++)
-		{
-			if(IsClientInGame(client_compensate))// && IsPlayerAlive(client_compensate))
-			{
-				IntToString(EntIndexToEntRef(client_compensate), refchar, sizeof(refchar));
-				if(!EntityTrack.GetValue(refchar, list))
-				{
-					list = new ArrayList(sizeof(LagRecord));
-					EntityTrack.SetValue(refchar, list);
-					continue; // give a frame to spawn in before we do anything
-				}
-				// remove tail records that are too old
-				int length = list.Length;
-				while(length)
-				{
-					list.GetArray(0, record);
-					
-					// if tail is within limits, stop
-					if(record.m_flSimulationTime >= deadTime)
-						break;
-					
-					// remove tail, get new tail
-//					delete record.m_layerRecords; Never gets recorded
-					list.Erase(0);
-					length--;
-				}
-				
-				// check if head has same simulation time
-				if(length)
-				{
-					list.GetArray(length-1, record);
-					
-					// check if player changed simulation time since last time updated
-					if(record.m_flSimulationTime >= GetEntPropFloat(client_compensate, Prop_Data, "m_flSimulationTime"))
-						continue; // don't add new entry for same or older time
-				}
-				record.m_flSimulationTime	= GetEntPropFloat(client_compensate, Prop_Data, "m_flSimulationTime");				
-				GetEntPropVector(client_compensate, Prop_Data, "m_vecOrigin", record.m_vecOrigin);
-				list.PushArray(record);
-			}
-		}
-#endif
 	}
 }
 
 /* public/mathlib/vector.h#L1153 */
-stock void VectorLerp(const float src1[3], const float src2[3], float t, float dest[3])
+public void VectorLerp(const float src1[3], const float src2[3], float t, float dest[3])
 {
 	dest[0] = src1[0] + (src2[0] - src1[0]) * t;
 	dest[1] = src1[1] + (src2[1] - src1[1]) * t;
@@ -731,9 +667,14 @@ stock void VectorLerp(const float src1[3], const float src2[3], float t, float d
 }
 
 /* game/client/particle_util.h#L19 */
-stock any Lerp(any t, any minVal, any maxVal)
+public float Lerpfloat(float t, float minVal, float maxVal)
 {
 	return minVal + (maxVal - minVal) * t;
+}
+
+public int Lerpint(float t, int minVal, int maxVal)
+{
+	return RoundToNearest(minVal + (maxVal - minVal) * t);
 }
 
 /*  */

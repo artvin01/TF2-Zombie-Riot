@@ -1,4 +1,4 @@
-#define MAX_PLAYER_COUNT	14
+#define MAX_PLAYER_COUNT	12 //cant do more then 12, more then 12 cause memory isssues because that many npcs can just cause that much lag
 
 static bool AddedPoint[MAXTF2PLAYERS];
 
@@ -238,7 +238,9 @@ bool Queue_JoinTeam(int client)
 	}
 	
 	WaitingInQueue[client] = false;
-	CookiePlayStreak.Set(client, "1");
+	if(AreClientCookiesCached(client))
+		CookiePlayStreak.Set(client, "1");
+	
 	return true;
 }
 

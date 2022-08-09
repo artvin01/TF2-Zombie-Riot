@@ -257,6 +257,7 @@ methodmap BobTheGod < CClotBody
 		npc.m_flSpeed = 180.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
+		npc.m_bScalesWithWaves = true;
 
 		npc.m_iWearable2 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_pistol.mdl");
 		SetVariantString("1.15");
@@ -878,7 +879,8 @@ public void BobTheGod_ClotThink(int iNPC)
 							PrintHintText(client, "%t %t","Bob The Second:", "Pick up that can.");
 						}
 					}
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");				
+					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");	
+					Citizen_LiveCitizenReaction(npc.index);			
 				}
 				/*
 				else if (npc.m_flidle_talk < GetGameTime() && GetEntProp(npc.index, Prop_Data, "m_iHealth") < 500)

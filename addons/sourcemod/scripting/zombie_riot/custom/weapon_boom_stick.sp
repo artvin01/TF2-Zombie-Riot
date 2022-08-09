@@ -6,8 +6,7 @@ static float Accuracy[MAXTF2PLAYERS];
 
 #define MAXENTITIES 2048
 
-
-#define MAX_TARGETS_HIT 64
+#define MAX_TARGETS_HIT 10
 #define MAX_SOUND_FILE_LENGTH 80
 #define MAX_EFFECT_NAME_LENGTH 48
 
@@ -55,11 +54,26 @@ public void Weapon_Boom_Stick(int client, int weapon, const char[] classname, bo
 		GetClientEyeAngles(client, anglesB);
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(velocity, -500.0);
+		float knockback = -400.0;
+		
+		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 			velocity[2] = fmax(velocity[2], 300.0);
 		else
 			velocity[2] += 100.0; // a little boost to alleviate arcing issues
+			
+			
+		float newVel[3];
+		
+		newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
+						
+		for (new i = 0; i < 3; i++)
+		{
+			velocity[i] += newVel[i];
+		}
+		
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 	}
 	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
@@ -74,11 +88,27 @@ public void Weapon_Boom_Stick_Louder(int client, int weapon, const char[] classn
 		GetClientEyeAngles(client, anglesB);
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(velocity, -500.0);
+		
+		float knockback = -400.0;
+		
+		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 			velocity[2] = fmax(velocity[2], 300.0);
 		else
 			velocity[2] += 100.0; // a little boost to alleviate arcing issues
+			
+			
+		float newVel[3];
+		
+		newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
+						
+		for (new i = 0; i < 3; i++)
+		{
+			velocity[i] += newVel[i];
+		}
+		
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 	}
 	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, 1.0, 80);
@@ -126,11 +156,25 @@ public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, const char[] 
 		GetClientEyeAngles(client, anglesB);
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(velocity, -500.0);
+		float knockback = -400.0;
+		
+		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 			velocity[2] = fmax(velocity[2], 300.0);
 		else
 			velocity[2] += 100.0; // a little boost to alleviate arcing issues
+			
+		float newVel[3];
+		
+		newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
+						
+		for (new i = 0; i < 3; i++)
+		{
+			velocity[i] += newVel[i];
+		}
+		
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 	}
 	EmitSoundToAll(LASER_BOOMSTICK, client, SNDCHAN_STATIC, 80, _, 1.0);
@@ -239,7 +283,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 			
 			if (((!StrContains(classname, "base_boss", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
 			{
-				for(int i=1; i <= MAXENTITIES; i++)
+				for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
 				{
 					if(!BEAM_BuildingHit[i])
 					{
@@ -303,6 +347,12 @@ static void TBB_Tick(int client)
 	GetClientEyePosition(client, startPoint);
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client, false);
+	float Damage_dealt[MAX_TARGETS_HIT];
+	
+	for (int building = 0; building < MAX_TARGETS_HIT; building++)
+	{
+		Damage_dealt[building] = 0.0;
+	}
 	for (int repeats = 1; repeats <= 6; repeats++)
 	{
 		GetClientEyeAngles(client, angles);
@@ -424,7 +474,7 @@ static void TBB_Tick(int client)
 			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 			
 			BEAM_Targets_Hit[client] = 1.0;
-			int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		//	int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			for (int building = 0; building < MAX_TARGETS_HIT; building++)
 			{
 				if (BEAM_BuildingHit[building])
@@ -437,7 +487,7 @@ static void TBB_Tick(int client)
 						float damage = BEAM_CloseBuildingDPT[client] + (BEAM_FarBuildingDPT[client]-BEAM_CloseBuildingDPT[client]) * (distance/BEAM_MaxDistance[client]);
 						if (damage < 0)
 							damage *= -1.0;
-							
+						/*
 						float damage_force[3];
 						damage_force = CalculateDamageForce(vecForward, 20000.0);
 						DataPack pack = new DataPack();
@@ -454,7 +504,8 @@ static void TBB_Tick(int client)
 						pack.WriteFloat(playerPos[1]);
 						pack.WriteFloat(playerPos[2]);
 						RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
-						
+						*/
+						Damage_dealt[building] += (damage / BEAM_Targets_Hit[client]);
 						BEAM_Targets_Hit[client] *= (LASER_AOE_DAMAGE_FALLOFF + 0.35); //Nerf the pierce by alot
 					}
 					else
@@ -488,6 +539,40 @@ static void TBB_Tick(int client)
 		else
 		{
 			PrintToConsoleAll("Error with dot_beam, could not determine end point for beam.");
+		}
+	}
+	float vecForward[3];
+	GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+	
+	//Do another loop that does the actual damages!
+	int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	for (int building = 0; building < MAX_TARGETS_HIT; building++)
+	{
+		if (BEAM_BuildingHit[building])
+		{
+			if(IsValidEntity(BEAM_BuildingHit[building]))
+			{
+				playerPos = WorldSpaceCenter(BEAM_BuildingHit[building]);
+						
+			//	float distance = GetVectorDistance(startPoint, playerPos, false);
+				
+				float damage_force[3];
+				damage_force = CalculateDamageForce(vecForward, 20000.0);
+				DataPack pack = new DataPack();
+				pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
+				pack.WriteCell(EntIndexToEntRef(client));
+				pack.WriteCell(EntIndexToEntRef(client));
+				pack.WriteFloat(Damage_dealt[building]);
+				pack.WriteCell(DMG_PLASMA);
+				pack.WriteCell(EntIndexToEntRef(weapon_active));
+				pack.WriteFloat(damage_force[0]);
+				pack.WriteFloat(damage_force[1]);
+				pack.WriteFloat(damage_force[2]);
+				pack.WriteFloat(playerPos[0]);
+				pack.WriteFloat(playerPos[1]);
+				pack.WriteFloat(playerPos[2]);
+				RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
+			}
 		}
 	}
 	FinishLagCompensation_Base_boss();

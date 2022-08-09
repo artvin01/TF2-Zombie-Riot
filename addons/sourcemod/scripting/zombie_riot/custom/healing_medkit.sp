@@ -5,7 +5,6 @@ static bool is_pressisng_m1[MAXTF2PLAYERS];
 static bool is_pressisng_m2[MAXTF2PLAYERS];
 static float f_cooldown_per_usage_global[MAXTF2PLAYERS];
 
-
 public void MedKit_ClearAll()
 {
 	Zero(f_cooldown_per_usage_global);
@@ -36,9 +35,9 @@ public Action Medikit_healing(int client, int buttons)
 						if(healing_cooldown[client] < GetGameTime())
 						{
 							int player_looking_at;
+							
 							StartPlayerOnlyLagComp(client, true);
 							player_looking_at = GetClientPointVisibleOnlyClient(client, 150.0);
-					//		EndPlayerOnlyLagComp(client);
 							if(player_looking_at <= MAXPLAYERS && player_looking_at > 0 && dieingstate[player_looking_at] == 0 && dieingstate[client] == 0)
 							{
 								float Healer[3];
@@ -118,7 +117,7 @@ public Action Medikit_healing(int client, int buttons)
 									}
 								}
 							}
-							EndPlayerOnlyLagComp();
+							EndPlayerOnlyLagComp(client);
 						}
 						else
 						{
