@@ -1,4 +1,3 @@
-
 //#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_59.mdl"
 
 #define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_164.mdl"
@@ -43,12 +42,12 @@ int i_TeamGlow[MAXENTITIES]={-1, ...};
 int i_SpawnProtectionEntity[MAXENTITIES]={-1, ...};
 float f3_VecPunchForce[MAXENTITIES][3];
 float fl_NextDelayTime[MAXENTITIES];
-bool b_ThisEntityIgnored[MAXENTITIES];
 float fl_NextIdleSound[MAXENTITIES];
 float fl_AttackHappensMinimum[MAXENTITIES];
 float fl_AttackHappensMaximum[MAXENTITIES];
 bool b_AttackHappenswillhappen[MAXENTITIES];
 bool b_thisNpcIsABoss[MAXENTITIES];
+bool b_StaticNPC[MAXENTITIES];
 float f3_VecTeleportBackSave[MAXENTITIES][3];
 float f3_VecTeleportBackSaveJump[MAXENTITIES][3];
 bool b_NPCVelocityCancel[MAXENTITIES];
@@ -179,6 +178,10 @@ static int g_particleImpactMetal;
 static int g_particleImpactFlesh;
 static int g_particleImpactRubber;
 static int g_modelArrow;
+
+
+static int g_sModelIndexBloodDrop;
+static int g_sModelIndexBloodSpray;
 //I put these here so we can change them on fly if we need to, cus zombies can be really loud, or quiet.
 
 #define NORMAL_ZOMBIE_SOUNDLEVEL	 80
@@ -191,6 +194,7 @@ static int g_modelArrow;
 #define RAIDBOSSBOSS_ZOMBIE_VOLUME	 1.0
 
 #define ARROW_TRAIL "effects/arrowtrail_blu.vmt"
+#define ARROW_TRAIL_RED "effects/arrowtrail_red.vmt"
 
 char g_ArrowHitSoundSuccess[][] = {
 	"weapons/fx/rics/arrow_impact_flesh.wav",
@@ -304,6 +308,7 @@ enum
 	BLEEDTYPE_NORMAL = 1,	
 	BLEEDTYPE_METAL = 2,	
 	BLEEDTYPE_RUBBER = 3,	
+	BLEEDTYPE_XENO = 4,	
 }
 
 int GetIndexByPluginName(const char[] name)
@@ -774,6 +779,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = MedivalSamurai(entity, vecPos, vecAng, ally);
 		}
+		case THEADDICTION:
+		{
+			entity = Addicition(entity, vecPos, vecAng, ally, data);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1239,6 +1248,10 @@ public void NPCDeath(int entity)
 		{
 			MedivalSamurai_NPCDeath(entity);
 		}
+		case THEADDICTION:
+		{
+			Addicition_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1273,12 +1286,21 @@ public void OnMapStart_NPC_Base()
 		break;
 	}
 	
+	g_sModelIndexBloodDrop = PrecacheModel("sprites/bloodspray.vmt");
+	g_sModelIndexBloodSpray = PrecacheModel("sprites/blood.vmt");
+	
+	PrecacheDecal("sprites/blood.vmt", true);
+	PrecacheDecal("sprites/bloodspray.vmt", true);
+	
 	g_particleImpactMetal = PrecacheParticleSystem("bot_impact_heavy");
-	g_particleImpactFlesh = PrecacheParticleSystem("blood_impact_red_01_goop");
+	g_particleImpactFlesh = PrecacheParticleSystem("blood_impact_red_01");
 	g_particleImpactRubber = PrecacheParticleSystem("halloween_explosion_bits");
 	g_modelArrow = PrecacheModel("models/weapons/w_models/w_arrow.mdl");
 	PrecacheModel(ARROW_TRAIL);
 	PrecacheDecal(ARROW_TRAIL, true);
+	PrecacheModel(ARROW_TRAIL_RED);
+	PrecacheDecal(ARROW_TRAIL_RED, true);
+	
 	InitNavGamedata();
 	
 	HeadcrabZombie_OnMapStart_NPC();
@@ -1614,6 +1636,9 @@ methodmap CClotBody
 			SetEntityCollisionGroup(npc, 24);
 		}
 		
+		
+		
+		
 		//Enable Harder zombies once in freeplay.
 		if(!EscapeModeForNpc)
 		{
@@ -1719,6 +1744,8 @@ methodmap CClotBody
 		HookIdMap.SetValue(buffer, list);
 		
 		//Ragdoll, hopefully
+		DHookEntity(g_hEvent_Killed,	 false, npc);
+		
 		DHookEntity(g_hEvent_Killed,	 false, npc);
 		
 		//Animevents 
@@ -2351,6 +2378,11 @@ methodmap CClotBody
 		public get()							{ return b_thisNpcIsABoss[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_thisNpcIsABoss[this.index] = TempValueForProperty; }
 	}
+	property bool m_bStaticNPC
+	{
+		public get()							{ return b_StaticNPC[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_StaticNPC[this.index] = TempValueForProperty; }
+	}
 	
 	property bool m_bThisNpcGotDefaultStats_INVERTED //This is the only one, reasoning is that is that i kinda need to check globablly if any base_boss spawned outside of this plugin and apply stuff accordingly.
 	{
@@ -2378,17 +2410,22 @@ methodmap CClotBody
 		public set(float TempValueForProperty) 	{ f_WidowsWineDebuff[this.index] = TempValueForProperty; }
 	}
 	
+	property bool m_bFrozen
+	{
+		public get()				{ return b_Frozen[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_Frozen[this.index] = TempValueForProperty; }
+	}
+	
 	property bool m_bAllowBackWalking
 	{
 		public get()				{ return b_AllowBackWalking[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_AllowBackWalking[this.index] = TempValueForProperty; }
 	}
-
-	public float GetRunSpeed()//For the future incase we want to alter it easier
+	public float GetDebuffPercentage()//For the future incase we want to alter it easier
 	{
 		float speed_for_return;
 		
-		speed_for_return = this.m_flSpeed;
+		speed_for_return = 1.0;
 		
 		float Gametime = GetGameTime();
 		
@@ -2408,6 +2445,18 @@ methodmap CClotBody
 			{
 				speed_for_return *= 0.75;
 			}
+			if(f_HighIceDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.85;
+			}
+			else if(f_LowIceDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.90;
+			}
+			else if (f_VeryLowIceDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.95;
+			}
 		}
 		else
 		{
@@ -2419,7 +2468,18 @@ methodmap CClotBody
 			{
 				speed_for_return *= 0.95;
 			}			
-			
+			if(f_HighIceDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.95;
+			}
+			else if(f_LowIceDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.96;
+			}
+			else if (f_VeryLowIceDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.97;
+			}
 		}
 		if(this.mf_WidowsWineDebuff > Gametime)
 		{
@@ -2457,6 +2517,21 @@ methodmap CClotBody
 			}
 			speed_for_return *= slowdown_amount;
 		}
+		
+		if (this.m_bFrozen)
+		{
+			speed_for_return = 0.01;
+		}		
+		return speed_for_return;
+	}
+	public float GetRunSpeed()//For the future incase we want to alter it easier
+	{
+		float speed_for_return;
+		
+		speed_for_return = this.m_flSpeed;
+		
+		speed_for_return *= this.GetDebuffPercentage();
+		
 		return speed_for_return; 
 	}
 	public void m_vecLastValidPos(float pos[3], bool set)
@@ -2718,7 +2793,7 @@ methodmap CClotBody
 		return SDKCall(g_hStudio_FindAttachment, pStudioHdr, pAttachmentName) + 1;
 	}
 	public void DispatchParticleEffect(int entity, const char[] strParticle, float flStartPos[3], float vecAngles[3], float flEndPos[3], 
-									   int iAttachmentPointIndex = 0, ParticleAttachment_t iAttachType = PATTACH_CUSTOMORIGIN, bool bResetAllParticlesOnEntity = false)
+									   int iAttachmentPointIndex = 0, ParticleAttachment_t iAttachType = PATTACH_CUSTOMORIGIN, bool bResetAllParticlesOnEntity = false, float colour[3] = {0.0,0.0,0.0})
 	{
 		int tblidx = FindStringTable("ParticleEffectNames");
 		if (tblidx == INVALID_STRING_TABLE) 
@@ -2759,6 +2834,7 @@ methodmap CClotBody
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[0]", flEndPos[0]);
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[1]", flEndPos[1]);
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[2]", flEndPos[2]);
+
 		TE_SendToAll();
 	}
 	public int LookupPoseParameter(const char[] szName)
@@ -3415,6 +3491,14 @@ public void NPC_Base_InitGamedata()
 	
 	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_ROOT);
 	
+	
+	GameData gamedata = LoadGameConfigFile("tf2.pets");
+	
+	// thanks to Dysphie#4094 on discord for help
+	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::UpdateGroundConstraint", Dhook_UpdateGroundConstraint_Pre, Dhook_UpdateGroundConstraint_Post);
+	
+	delete gamedata;
+	
 	Handle hConf = LoadGameConfigFile("tf2.pets");
 	
 	//SDKCalls
@@ -3438,6 +3522,7 @@ public void NPC_Base_InitGamedata()
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::ResetSequenceInfo");
 	if ((g_hResetSequenceInfo = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::ResetSequenceInfo signature!"); 
+	
 	
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseEntity::MyNextBotPointer");
@@ -3892,9 +3977,9 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						startPosition[2] += 64;
 						Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, damageForce, true, false, true, true); //dont gigantify this one.
 						startPosition[2] -= 15;
-						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, damageForce, false, true);
+						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, damageForce, false, true, true);
 						startPosition[2] += 44;
-						Place_Gib("models/gibs/metal_gib2.mdl", startPosition, damageForce, false, true);	
+						Place_Gib("models/gibs/metal_gib2.mdl", startPosition, damageForce, false, true, true);	
 					}
 					else
 					{
@@ -3905,8 +3990,32 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, damageForce, false, false, true);
 						startPosition[2] += 34;
 						Place_Gib("models/gibs/metal_gib2.mdl", startPosition, damageForce, false, false, true);	
+					}		
+				}
+				else if(npc.m_iBleedType == 4)
+				{
+					npc.PlayGibSound();
+					if(npc.m_bIsGiant)
+					{
+						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+						startPosition[2] += 64;
+						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, damageForce, true, true, _, _, _, true);
+						startPosition[2] -= 15;
+						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, damageForce, false, true, _, _, _, true);
+						startPosition[2] += 44;
+						Place_Gib("models/Gibs/HGIBS.mdl", startPosition, damageForce, false, true, _, _, _, true);	
+					}
+					else
+					{
+						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+						startPosition[2] += 42;
+						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, damageForce, true, _, _, _, _, true);
+						startPosition[2] -= 10;
+						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, damageForce, _, _, _, _, _, true);
+						startPosition[2] += 34;
+						Place_Gib("models/Gibs/HGIBS.mdl", startPosition, damageForce, _, _, _, _, _, true);	
 					}	
-				}	
+				}				
 			//	#endif					
 				Do_Death_Frame_Later(EntIndexToEntRef(pThis));
 				//RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));						
@@ -4328,8 +4437,9 @@ public void PluginBot_Approach(int bot_entidx, const float vec[3])
 {
 	CClotBody npc = view_as<CClotBody>(bot_entidx);
 	npc.Approach(vec);
+	
 	if(!npc.m_bAllowBackWalking)
-		npc.FaceTowards(vec);
+		npc.FaceTowards(vec, (250.0 * npc.GetDebuffPercentage()));
 }
 
 public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
@@ -5138,6 +5248,31 @@ stock bool IsSpaceOccupiedDontIgnorePlayers(const float pos[3], const float mins
 	return bHit;
 }
 
+stock int IsSpaceOccupiedOnlyPlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
+{
+	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayHitPlayersOnly, entity);
+//	bool bHit = TR_DidHit(hTrace);
+	ref = TR_GetEntityIndex(hTrace);
+	delete hTrace;
+	if(ref <= 0)
+		return 0;
+		
+	return ref;
+}
+
+public bool TraceRayHitPlayersOnly(int entity,int mask,any data)
+{
+	if (entity > 0 && entity <= MaxClients)
+	{
+		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0)
+		{
+			return true;
+		}
+	}
+	
+	return false;
+}
+
 public bool TraceRayHitPlayers(int entity,int mask,any data)
 {
 	if (entity == 0) return true;
@@ -5156,29 +5291,59 @@ public bool TraceRayDontHitPlayersOrEntity(int entity,int mask,any data)
 
 public void Check_If_Stuck(int iNPC)
 {
-//	PrintToChatAll("%i",GetEdictFlags(iNPC));
-//	SetEdictFlags(iNPC, 133); //Remove this if it causes lag
-//	PrintToChatAll("%i"GetEdictFlags(iNPC));
 	CClotBody npc = view_as<CClotBody>(iNPC);
-	/*
-	if(npc.m_flCheckNavCooldown < GetGameTime() && npc.m_flJumpCooldown < GetGameTime())
+	
+	float flMyPos[3];
+	GetEntPropVector(iNPC, Prop_Data, "m_vecOrigin", flMyPos);
+	if(!b_IsAlliedNpc[iNPC])
 	{
-		npc.m_flCheckNavCooldown = GetGameTime() + 0.1; //A little delay to ease server performance
-		NavArea area = TheNavMesh.GetNearestNavArea_Vec(WorldSpaceCenter(npc.index), true);
-		if(area != NavArea_Null)
+		//This is a tempomary fix. find a better one for players getting stuck.
+		static float hullcheckmaxs_Player[3];
+		static float hullcheckmins_Player[3];
+		if(b_IsGiant[iNPC])
 		{
-			//NavArea.HasAttributes(NavAttributeType bits);
-			NavArea nav_area_property = view_as<NavArea>(area);
+		 	hullcheckmaxs_Player = view_as<float>( { 30.0, 30.0, 120.0 } );
+			hullcheckmins_Player = view_as<float>( { -30.0, -30.0, 0.0 } );	
+		}
+		else
+		{
+				
+			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
+			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
+		}
 			
-			if(nav_area_property.HasAttributes(NAV_MESH_JUMP))
+		
+		int Hit_player = IsSpaceOccupiedOnlyPlayers(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
+			
+		if (Hit_player) //The boss will start to merge with player, STOP!
+		{
+			float flPlayerPos[3];
+			GetEntPropVector(Hit_player, Prop_Data, "m_vecOrigin", flPlayerPos);
+			float flMyPos_2[3];
+			flMyPos_2[0] = flPlayerPos[0];
+			flMyPos_2[1] = flPlayerPos[1];
+			flMyPos_2[2] = flMyPos[2];
+			
+			if(flPlayerPos[2] > flMyPos_2[2]) //PLAYER IS ABOVE ZOMBIE
 			{
-				npc.m_flJumpStartTime = GetGameTime() + 1.0;
-				PluginBot_Jump_Now(npc.index);
+				flMyPos_2[2] += hullcheckmaxs_Player[2];
+				
+				SDKCall_SetLocalOrigin(Hit_player, flMyPos_2);			
+			}
+			else //PLAYER IS BELOW ZOMBIE
+			{
+				flMyPos_2[0] = flMyPos[0];
+				flMyPos_2[1] = flMyPos[1];
+				flMyPos_2[2] = flMyPos[2];
+				flMyPos_2[2] += hullcheckmaxs_Player[2];
+				flMyPos_2[2] += 5.0;
+				SDKCall_SetLocalOrigin(iNPC, flMyPos_2);
 			}
 		}
+		//This is a tempomary fix. find a better one for players getting stuck.
 	}
-	
-	*/
+
+
 	if (!npc.IsOnGround())
 	{
 		static float hullcheckmaxs[3];
@@ -5205,9 +5370,6 @@ public void Check_If_Stuck(int iNPC)
 		
 		hullcheckmins[2] -= 16.0; //STEP HEIGHT
 		hullcheckmaxs[2] += 16.0;
-		
-		float flMyPos[3];
-		GetEntPropVector(iNPC, Prop_Data, "m_vecOrigin",flMyPos);
 		
 		if (!npc.g_bNPCVelocityCancel && IsSpaceOccupiedIgnorePlayers(flMyPos, hullcheckmins, hullcheckmaxs, iNPC))//The boss will start to merge with shits, cancel out velocity.
 		{
@@ -5300,6 +5462,12 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 				else if (npc.m_iBleedType == 3)
 				{
 					TE_ParticleInt(g_particleImpactRubber, damagePosition);
+					TE_SendToAll();
+				}
+				else if (npc.m_iBleedType == 4)
+				{
+					//If you cant find any good blood effect, use this one and just recolour it.
+					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 125, 255, 125, 255, 32);
 					TE_SendToAll();
 				}
 			}
@@ -5407,7 +5575,7 @@ public void RequestFramesCallback(DataPack pack)
 
 
 
-static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduce_masively = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false)
+static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, bool xeno = false)
 {
 	int prop = CreateEntityByName("prop_physics_multiplayer");
 	if(!IsValidEntity(prop))
@@ -5443,7 +5611,8 @@ static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduc
 	{
 		DispatchKeyValue(prop, "modelscale", "0.8");
 	}
-	if(Reduce_masively)
+	
+	if(Reduce_masively_Weight)
 		ScaleVector(vel, 0.02);
 		
 	if(!Rotate)
@@ -5462,13 +5631,21 @@ static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduc
 	SDKHook(prop, SDKHook_ShouldCollide, Gib_ShouldCollide);
 	if(!metal_colour)
 	{
-		npc.DispatchParticleEffect(prop, "blood_impact_backscatter", pos, NULL_VECTOR, NULL_VECTOR, 1,PATTACH_ABSORIGIN_FOLLOW);
-		SetEntityRenderColor(prop, 255, 0, 0, 255);
+		if(!xeno)
+		{
+			npc.DispatchParticleEffect(prop, "blood_trail_red_01_goop", pos, NULL_VECTOR, NULL_VECTOR, 1,PATTACH_ROOTBONE_FOLLOW);
+			SetEntityRenderColor(prop, 255, 0, 0, 255);
+		}
+		else
+		{
+			npc.DispatchParticleEffect(prop, "blood_impact_green_01", pos, NULL_VECTOR, NULL_VECTOR, 1,PATTACH_ROOTBONE_FOLLOW);
+			SetEntityRenderColor(prop, 0, 255, 0, 255);
+		}
 	}
 	else
 	{
-		pos[2] -= 40.0;
-		npc.DispatchParticleEffect(prop, "bot_impact_heavy", pos, NULL_VECTOR, NULL_VECTOR, 1,PATTACH_ABSORIGIN_FOLLOW);	
+//		pos[2] -= 40.0;
+		npc.DispatchParticleEffect(prop, "tpdamage_4", pos, NULL_VECTOR, NULL_VECTOR, 1, PATTACH_ROOTBONE_FOLLOW);	
 	}
 	CreateTimer(GetRandomFloat(2.0, 3.0), Timer_RemoveEntity_Prop, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 //	CreateTimer(1.5, Timer_DisableMotion, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
@@ -6586,6 +6763,24 @@ void TE_ParticleInt(int iParticleIndex, const float origin[3] = NULL_VECTOR, con
 	TE_WriteNum("m_bResetParticles", resetParticles ? 1 : 0);
 }
 
+void TE_BloodSprite(float Origin[3],float Direction[3], int red, int green, int blue, int alpha, int size)
+{
+	TE_Start("Blood Sprite");
+	TE_WriteVector("m_vecOrigin", Origin);
+	TE_WriteVector("m_vecDirection", Direction);
+	TE_WriteNum("r", red);
+	TE_WriteNum("g", green);
+	TE_WriteNum("b", blue);
+	TE_WriteNum("a", alpha);
+	TE_WriteNum("m_nSize", size);
+	
+	TE_WriteNum("m_nSprayModel", g_sModelIndexBloodSpray);
+	TE_WriteNum("m_nDropModel", g_sModelIndexBloodDrop);
+	
+	
+//	TE_SendToAll();
+}
+
 
 stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
 							float fStartWidth=NORMAL_ZOMBIE_VOLUME, float fEndWidth=NORMAL_ZOMBIE_VOLUME, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt")
@@ -6788,6 +6983,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_AttackHappensMaximum[entity] = 0.0;
 	b_AttackHappenswillhappen[entity] = false;
 	b_thisNpcIsABoss[entity] = false;
+	b_StaticNPC[entity] = false;
 	b_thisNpcHasAnOutline[entity] = false;
 	b_ThisNpcIsImmuneToNuke[entity] = false;
 	b_NPCVelocityCancel[entity] = false;
@@ -6859,6 +7055,10 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_LowTeslarDebuff[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
 	f_WidowsWineDebuff[entity] = 0.0;
+	f_VeryLowIceDebuff[entity] = 0.0;
+	f_LowIceDebuff[entity] = 0.0;
+	f_HighIceDebuff[entity] = 0.0;
+	b_Frozen[entity] = false;
 	
 	fl_MeleeArmor[entity] = 1.0; //yeppers.
 	fl_RangedArmor[entity] = 1.0;
@@ -6954,6 +7154,18 @@ public void Change_Npc_Collision(int npc, int CollisionType)
 	}
 }
 
+
+public MRESReturn Dhook_UpdateGroundConstraint_Pre(DHookParam param)
+{
+	b_IsInUpdateGroundConstraintLogic = true;
+	return MRES_Ignored;
+}
+
+public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
+{
+	b_IsInUpdateGroundConstraintLogic = false;
+	return MRES_Ignored;
+}
 //NORMAL
 
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"
@@ -7079,3 +7291,5 @@ public void Change_Npc_Collision(int npc, int CollisionType)
 #include "zombie_riot/npc/alt/npc_alt_medic_supperior_mage.sp"
 #include "zombie_riot/npc/medival/npc_medival_eagle_scout.sp"
 #include "zombie_riot/npc/medival/npc_medival_samurai.sp"
+
+#include "zombie_riot/npc/cof/npc_addiction.sp"

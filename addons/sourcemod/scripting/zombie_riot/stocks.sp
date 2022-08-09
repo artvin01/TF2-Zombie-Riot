@@ -1,7 +1,9 @@
 static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 
-void Stock_TakeDamage(int entity = 0, int inflictor = 0, int attacker = 0, float damage = 0.0, int damageType=DMG_GENERIC, int weapon=-1,const float damageForce[3]=NULL_VECTOR, const float damagePosition[3]=NULL_VECTOR, bool bypassHooks = false)
+void Stock_TakeDamage(int entity = 0, int inflictor = 0, int attacker = 0, float damage = 0.0, int damageType=DMG_GENERIC, int weapon=-1,const float damageForce[3]=NULL_VECTOR, const float damagePosition[3]=NULL_VECTOR, bool bypassHooks = false, int Zr_damage_custom = 0)
 {
+	i_HexCustomDamageTypes[entity] = Zr_damage_custom;
+	
 	SDKHooks_TakeDamage(entity, inflictor, attacker, damage, damageType, weapon, damageForce, damagePosition, bypassHooks);
 
 }
@@ -1752,12 +1754,12 @@ bool IsEntityStuck(int entity)
 stock bool IsWandWeapon(int entity)
 {
 	int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-	return (index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758 || index == 1013 || index == 173);
+	return (index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758 || index == 1013 || index == 173 || index == 648);
 }
 
 stock bool IsWandWeaponStore(int index)
 {
-	return (index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758 || index == 1013 || index == 173);
+	return (index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758 || index == 1013 || index == 173 || index == 648);
 }
 
 stock int SpawnWeapon_Special(int client, char[] name, int index, int level, int qual, const char[] att, bool visible=true)
@@ -2804,6 +2806,17 @@ public bool HitOnlyTargetOrWorld(int entity, int contentsMask, any iExclude)
 	return false;
 }
 
+
+public bool HitOnlyWorld(int entity, int contentsMask, any iExclude)
+{
+	if(entity == 0)
+	{
+		return true;
+	}	
+	
+	return false;
+}
+
 public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 {
 	pack.Reset();
@@ -3049,4 +3062,24 @@ public void MakeExplosionFrameLater(DataPack pack)
 		AcceptEntityInput(ent, "kill");
 	}		
 	delete pack;
+}
+
+
+stock void DHook_CreateDetour(GameData gamedata, const char[] name, DHookCallback preCallback = INVALID_FUNCTION, DHookCallback postCallback = INVALID_FUNCTION)
+{
+	DynamicDetour detour = DynamicDetour.FromConf(gamedata, name);
+	if(detour)
+	{
+		if(preCallback!=INVALID_FUNCTION && !DHookEnableDetour(detour, false, preCallback))
+			LogError("[Gamedata] Failed to enable pre detour: %s", name);
+
+		if(postCallback!=INVALID_FUNCTION && !DHookEnableDetour(detour, true, postCallback))
+			LogError("[Gamedata] Failed to enable post detour: %s", name);
+
+		delete detour;
+	}
+	else
+	{
+		LogError("[Gamedata] Could not find %s", name);
+	}
 }

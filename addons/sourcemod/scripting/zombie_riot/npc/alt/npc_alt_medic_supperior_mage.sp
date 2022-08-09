@@ -179,8 +179,6 @@ methodmap NPC_ALT_MEDIC_SUPPERIOR_MAGE < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
-
-		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_iState = 0;
 		npc.m_flSpeed = 300.0;
@@ -828,26 +826,30 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick(int client)
 }
 public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(int client, int enemy)
 {
-	static float distance=87.0; // /29 for duartion till boom
-	static float IOCDist=250.0;
-	static float IOCdamage=10.0;
-	
-	float vecTarget[3];
-	GetClientEyePosition(enemy, vecTarget);
-	vecTarget[2] -= 54.0;
-	
-	Handle data = CreateDataPack();
-	WritePackFloat(data, vecTarget[0]);
-	WritePackFloat(data, vecTarget[1]);
-	WritePackFloat(data, vecTarget[2]);
-	WritePackCell(data, distance); // Distance
-	WritePackFloat(data, 0.0); // nphi
-	WritePackCell(data, IOCDist); // Range
-	WritePackCell(data, IOCdamage); // Damge
-	WritePackCell(data, client);
-	ResetPack(data);
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_IonAttack(data);
+	if(IsValidClient(enemy))
+	{
+		static float distance=87.0; // /29 for duartion till boom
+		static float IOCDist=250.0;
+		static float IOCdamage=10.0;
+		
+		float vecTarget[3];
+		GetClientEyePosition(enemy, vecTarget);
+		vecTarget[2] -= 54.0;
+		
+		Handle data = CreateDataPack();
+		WritePackFloat(data, vecTarget[0]);
+		WritePackFloat(data, vecTarget[1]);
+		WritePackFloat(data, vecTarget[2]);
+		WritePackCell(data, distance); // Distance
+		WritePackFloat(data, 0.0); // nphi
+		WritePackCell(data, IOCDist); // Range
+		WritePackCell(data, IOCdamage); // Damge
+		WritePackCell(data, client);
+		ResetPack(data);
+		NPC_ALT_MEDIC_SUPPERIOR_MAGE_IonAttack(data);
+	}
 }
+
 public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIon(Handle Timer, any data)
 {
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_IonAttack(data);

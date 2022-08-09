@@ -6,6 +6,7 @@ enum struct Enemy
 	int Is_Health_Scaled;
 	int Does_Not_Scale;
 	int Is_Immune_To_Nuke;
+	bool Is_Static;
 	int Index;
 	int Credits;
 	char Data[16];
@@ -312,6 +313,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.Is_Outlined = kv.GetNum("is_outlined");
 						enemy.Is_Health_Scaled = kv.GetNum("is_health_scaling");
 						enemy.Is_Immune_To_Nuke = kv.GetNum("is_immune_to_nuke");
+						enemy.Is_Static = view_as<bool>(kv.GetNum("is_static"));
 						enemy.Credits = kv.GetNum("cash");
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
@@ -584,9 +586,9 @@ void Waves_Progress()
 				
 				float amount_of_people = float(CountPlayersOnRed());
 		
-				amount_of_people *= 0.12;
+				amount_of_people *= 0.14;
 				
-				if(amount_of_people < 10.0)
+				if(amount_of_people < 1.0)
 					amount_of_people = 1.0;
 					
 				multi_health *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff

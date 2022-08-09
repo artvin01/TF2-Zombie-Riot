@@ -248,18 +248,18 @@ methodmap Blitzkrieg < CClotBody
 		}
 		if(RaidModeScaling < 55)
 		{
-			RaidModeScaling *= 0.17; //abit low, inreacing
+			RaidModeScaling *= 0.16; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.34;
+			RaidModeScaling *= 0.33;
 		}
 		
 		float amount_of_people = float(CountPlayersOnRed());
 		
-		amount_of_people *= 0.11;
+		amount_of_people *= 0.12;
 		
-		if(amount_of_people < 10.0)
+		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
 			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff

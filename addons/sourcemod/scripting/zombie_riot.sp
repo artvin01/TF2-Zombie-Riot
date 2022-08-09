@@ -30,7 +30,8 @@
 
 #define NPC_HARD_LIMIT 42 
 #define ZR_MAX_NPCS (NPC_HARD_LIMIT*2)
-#define ZR_MAX_NPCS_ALLIED 64
+#define ZR_MAX_NPCS_ALLIED 32 //Never need more.
+#define ZR_MAX_LAG_COMP 128 
 #define ZR_MAX_BUILDINGS 128
 #define ZR_MAX_TRAPS 64
 #define ZR_MAX_BREAKBLES 32
@@ -45,8 +46,6 @@
 //Not used cus i need all the performance i can get.
 
 #define NoSendProxyClass
-
-//#define DisableInterpolation
 
 //maybe doing this will help lag, as there are no aim layers in zombies, they always look forwards no matter what.
 
@@ -66,7 +65,7 @@ ConVar CvarXpMultiplier;
 
 bool Toggle_sv_cheats = false;
 bool b_MarkForReload = false; //When you wanna reload the plugin on map change...
-#define CompensatePlayers
+//#define CompensatePlayers
 
 //#define FastStart
 
@@ -190,6 +189,7 @@ int CurrentCash;
 bool LastMann;
 bool EscapeMode;
 bool EscapeModeForNpc;
+bool DoingLagCompensation;
 
 //bool RaidMode; 							//Is this raidmode?
 float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
@@ -225,6 +225,7 @@ float RoundStartTime;
 char WhatDifficultySetting[64];
 float healing_cooldown[MAXTF2PLAYERS];
 float Damage_dealt_in_total[MAXTF2PLAYERS];
+
 int Healing_done_in_total[MAXTF2PLAYERS];
 int i_BarricadeHasBeenDamaged[MAXTF2PLAYERS];
 int Resupplies_Supplied[MAXTF2PLAYERS];
@@ -299,6 +300,10 @@ bool b_NpcHasDied[MAXENTITIES]={true, ...};
 const int i_MaxcountNpc = ZR_MAX_NPCS;
 int i_ObjectsNpcs[ZR_MAX_NPCS];
 
+const int i_Maxcount_Apply_Lagcompensation = ZR_MAX_LAG_COMP;
+int i_Objects_Apply_Lagcompensation[ZR_MAX_LAG_COMP];
+
+
 bool b_IsAlliedNpc[MAXENTITIES]={false, ...};
 const int i_MaxcountNpc_Allied = ZR_MAX_NPCS_ALLIED;
 int i_ObjectsNpcs_Allied[ZR_MAX_NPCS_ALLIED];
@@ -346,6 +351,10 @@ bool b_npcspawnprotection[MAXENTITIES];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
 float f_HighTeslarDebuff[MAXENTITIES];
+float f_VeryLowIceDebuff[MAXENTITIES];
+float f_LowIceDebuff[MAXENTITIES];
+float f_HighIceDebuff[MAXENTITIES];
+bool b_Frozen[MAXENTITIES];
 
 float f_WidowsWineDebuff[MAXENTITIES];
 float f_WidowsWineDebuffPlayerCooldown[MAXTF2PLAYERS];
@@ -363,6 +372,16 @@ int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
 #define ABILITY_R				(1 << 3) 	
 
 #define FL_WIDOWS_WINE_DURATION 4.0
+
+
+int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's damage types in cases we dont want to, i.e. too many used, we cant use more. For like white stuff and all, this is just extra on what we already have.
+
+//Use what already exists in tf2 please, only add stuff here if it needs extra spacing like ice damage and so on
+//I dont want to use DMG_SHOCK for example due to its extra ugly effect thats annoying!
+
+#define ZR_DAMAGE_NONE                	0          	//Nothing special.
+#define ZR_DAMAGE_ICE					(1 << 1)
+#define ZR_DAMAGE_LASER_NO_BLAST		(1 << 2)
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -402,10 +421,10 @@ bool b_Is_Npc_Rocket[MAXENTITIES];
 bool b_Is_Player_Rocket[MAXENTITIES];
 bool b_Is_Player_Rocket_Through_Npc[MAXENTITIES];
 bool b_Is_Blue_Npc[MAXENTITIES];
+bool b_IsInUpdateGroundConstraintLogic;
 
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
 int h_NpcCollissionHookType[MAXENTITIES];
-
 #define EP_GENERIC                  		0          					// Nothing special.
 #define EP_NO_KNOCKBACK              		(1 << 0)   					// No knockback
 #define EP_DEALS_SLASH_DAMAGE              	(1 << 1)   					// Slash Damage (For no npc scaling, or ignoring resistances.)
@@ -436,7 +455,8 @@ bool b_BlockLagCompInternal[MAXENTITIES];
 bool b_Dont_Move_Building[MAXENTITIES];
 int b_BoundingBoxVariant[MAXENTITIES];
 bool b_IsAloneOnServer = false;
-
+bool b_ThisEntityIgnored[MAXENTITIES];
+bool b_ThisEntityIsAProjectileForUpdateContraints[MAXENTITIES];
 
 bool b_IsPlayerABot[MAXPLAYERS+1];
 
@@ -633,6 +653,10 @@ enum
 	
 	MEDIVAL_EAGLE_SCOUT					= 112,
 	MEDIVAL_SAMURAI						= 113,
+	
+	THEADDICTION	= 114,
+	THEDOCTOR	= 115,
+	BOOKSIMON	= 116
 }
 
 
@@ -759,6 +783,9 @@ public const char NPC_Names[][] =
 	"Rebel",
 	"Eagle Scout",
 	"Samurai",
+	"The Addiction",
+	"The Doctor",
+	"Book Simon",
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -882,7 +909,10 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_medic_supperior_mage",
 	"npc_citizen",
 	"npc_medival_eagle_scout",
-	"npc_medival_samurai"
+	"npc_medival_samurai",
+	"",
+	"",
+	""
 };
 
 #include "zombie_riot/stocks.sp"
@@ -940,6 +970,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_fire_wand.sp"
 #include "zombie_riot/custom/weapon_wand_fire_ball.sp"
 #include "zombie_riot/custom/weapon_lightning_wand.sp"
+#include "zombie_riot/custom/weapon_wand_cryo.sp"
 #include "zombie_riot/custom/weapon_wand_lightning_spell.sp"
 #include "zombie_riot/custom/weapon_necromancy_wand.sp"
 #include "zombie_riot/custom/weapon_wand_necro_spell.sp"
@@ -972,6 +1003,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_zeroknife.sp"
 #include "zombie_riot/custom/weapon_ark.sp"
 #include "zombie_riot/custom/pets.sp"
+#include "zombie_riot/custom/coin_flip.sp"
 
 //FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
@@ -1299,6 +1331,10 @@ public void OnMapStart()
 	M3_Abilities_Precache();
 	Ark_autoaim_Map_Precache();
 	Wand_LightningPap_Map_Precache();
+	Wand_Cryo_Precache();
+	Abiltity_Coin_Flip_Map_Change();
+	Wand_Cryo_Precache();
+	Npc_Sp_Precache();
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
@@ -1733,12 +1769,13 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 	Escape_RoundEnd();
 	CurrentGame = 0;
 }
-/*
-public void OnGameFrame()
+
+/*public void OnGameFrame()
 {
-	Wand_Homing();
-}
-*/
+	//Wand_Homing();
+	Cryo_SearchDamage();
+}*/
+
 
 public Action OnTeutonHealth(int client, int &health)
 {
@@ -2177,6 +2214,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 						if(IsClientInGame(i) && !IsFakeClient(i))
 						{
 							Music_Stop_All(i);
+							SetMusicTimer(i, 0);
 							SetEntPropEnt(i, Prop_Send, "m_hObserverTarget", client);
 						}
 					}
@@ -2192,6 +2230,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 					CreateTimer(0.3, SetTimeBack);
 				
 					applied_lastmann_buffs_once = true;
+					
 					SetHudTextParams(-1.0, -1.0, 3.0, 255, 0, 0, 255);
 					ShowHudText(client, -1, "%T", "Last Alive", client);
 					int MaxHealth;
@@ -2849,6 +2888,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	}
 	else if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
 		b_EntityIsArrow[entity] = false;
 		CClotBody npc = view_as<CClotBody>(entity);
 		b_SentryIsCustom[entity] = false;
@@ -2927,6 +2967,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "tf_projectile_syringe"))
 		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
@@ -2936,6 +2977,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		
 		else if(!StrContains(classname, "tf_projectile_healing_bolt"))
 		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
@@ -2945,6 +2987,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		
 		else if(!StrContains(classname, "tf_projectile_pipe_remote"))
 		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
@@ -2954,6 +2997,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "tf_projectile_arrow"))
 		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
@@ -2967,16 +3011,31 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "prop_physics_multiplayer"))
 		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+			npc.bCantCollidie = true;
+			npc.bCantCollidieAlly = true;
+		}
+		else if(!StrContains(classname, "prop_physics_override"))
+		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+			npc.bCantCollidie = true;
+			npc.bCantCollidieAlly = true;
+		}
+		else if(!StrContains(classname, "func_door_rotating"))
+		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
 		else if(!StrContains(classname, "prop_physics"))
 		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
 		else if(!StrContains(classname, "tf_projectile_pipe"))
 		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
@@ -2987,6 +3046,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "tf_projectile_rocket"))
 		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			SDKHook(entity, SDKHook_SpawnPost, ApplyExplosionDhook_Rocket);
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
@@ -3151,7 +3211,14 @@ public void Check_For_Team_Npc(int entity)
 					i = ZR_MAX_NPCS;
 				}
 			}
-			
+			for (int i = 0; i < ZR_MAX_LAG_COMP; i++) //Make them lag compensate
+			{
+				if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) <= 0)
+				{
+					i_Objects_Apply_Lagcompensation[i] = EntIndexToEntRef(entity);
+					i = ZR_MAX_LAG_COMP;
+				}
+			}
 		}
 	}
 }
@@ -3227,6 +3294,14 @@ public void Check_For_Team_Npc_Delayed(int ref)
 				{
 					i_ObjectsNpcs[i] = EntIndexToEntRef(entity);
 					i = ZR_MAX_NPCS;
+				}
+			}
+			for (int i = 0; i < ZR_MAX_LAG_COMP; i++) //Make them lag compensate
+			{
+				if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) <= 0)
+				{
+					i_Objects_Apply_Lagcompensation[i] = EntIndexToEntRef(entity);
+					i = ZR_MAX_LAG_COMP;
 				}
 			}
 			
@@ -3305,7 +3380,9 @@ public void RemoveNpcThingsAgain(int entity)
 	//incase this breaks, add a baseboss check
 	CleanAllAppliedEffects(entity);
 	CleanAllApplied_Aresenal(entity);
+	CleanAllApplied_Cryo(entity);
 	b_NpcForcepowerupspawn[entity] = 0;	
+	i_HexCustomDamageTypes[entity] = 0;
 }
 /*
 //Looping function for above!
@@ -3586,6 +3663,7 @@ public void MapStartResetAll()
 	Medigun_ClearAll();
 	WindStaff_ClearAll();
 	Lighting_Wand_Spell_ClearAll();
+	Wand_Cryo_Burst_ClearAll();
 	Arrow_Spell_ClearAll();
 	Survival_Knife_ClearAll();
 	Zero(healing_cooldown);

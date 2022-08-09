@@ -326,7 +326,6 @@ public void GetVectors(int client, float pForward[3], float pRight[3], float pUp
 
 public void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 {
-#if defined CompensatePlayers
 	if(g_GottenAddressesForLagComp)
 	{
 	//	StartLagCompResetValues();
@@ -338,18 +337,15 @@ public void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 		SDKCall(g_hSDKStartLagComp, g_hSDKStartLagCompAddress, client, (GetEntityAddress(client) + view_as<Address>(3512)));
 //		StartLagCompensation_Base_Boss(client, true);
 	}
-#endif
 }
 
 public void EndPlayerOnlyLagComp(int client)
 {
-#if defined CompensatePlayers
 	if(g_GottenAddressesForLagComp)
 	{
 	//	FinishLagCompensation_Base_boss();
 		SDKCall(g_hSDKEndLagComp, g_hSDKEndLagCompAddress, client);
 	}
-#endif
 }
 
 public void UpdateBlockedNavmesh()

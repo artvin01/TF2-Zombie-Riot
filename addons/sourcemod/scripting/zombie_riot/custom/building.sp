@@ -3755,7 +3755,7 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	Store_ApplyAttribs(client);
 	Store_GiveAll(client, GetClientHealth(client));	
 }
-
+/*
 void Building_CheckItems(int client)
 {
 	Village_Flags[client] = 0;
@@ -3817,7 +3817,7 @@ void Building_CheckItems(int client)
 			Village_Flags[client] += VILLAGE_001 + VILLAGE_002 + VILLAGE_003 + VILLAGE_004 + VILLAGE_005;
 	}
 }
-
+*/
 public Action Building_PlaceVillage(int client, int weapon, const char[] classname, bool &result)
 {
 	int Sentrygun = EntRefToEntIndex(i_HasSentryGunAlive[client]);

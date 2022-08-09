@@ -302,7 +302,7 @@ public Action Event_Charged_Hand_OnHatTouch(int entity, int other)
 		Entity_Position = WorldSpaceCenter(target);
 		//Code to do damage position and ragdolls
 		
-		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_SHOCK, -1, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)
 		{
@@ -425,7 +425,7 @@ public Action Event_Wand_IEM_OnHatTouch(int entity, int other)
 		Entity_Position = WorldSpaceCenter(target);
 		//Code to do damage position and ragdolls
 		
-		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_SHOCK, -1, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 	}
 	else if(target == 0)
 	{
@@ -626,7 +626,7 @@ public Action Timer_Electric_Think(Handle timer, int iCarrier)
 						float damage_1 = Custom_Explosive_Logic(client, distance_1, 0.75, Damage_Tornado[iCarrier], TORNADO_Radius[client]+1.0);				
 						damage_1 /= Damage_Reduction[iCarrier];
 						
-						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1, DMG_SHOCK, -1, CalculateDamageForce(vecForward, 10000.0), targPos);
+						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1, DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0), targPos, _ , ZR_DAMAGE_LASER_NO_BLAST);
 						
 						//If the npc is gibbed at anytime, it will cause this to just go to the world origin...
 						/*			

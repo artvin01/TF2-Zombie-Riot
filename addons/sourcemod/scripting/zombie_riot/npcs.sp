@@ -58,6 +58,13 @@ public void NPC_Spawn_ClearAll()
 //	Zero(f_SpawnerCooldown);
 }
 
+static int g_particleCritText;
+
+public void Npc_Sp_Precache()
+{
+	g_particleCritText = PrecacheParticleSystem("crit_text");
+}
+
 void NPC_PluginStart()
 {
 	SpawnerList = new ArrayList(sizeof(SpawnerData));
@@ -345,7 +352,9 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 						else
 							SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
 					}
-					found = true;
+					
+					if(!npcstats.m_bStaticNPC)
+						found = true;
 				}
 			}
 		}
@@ -545,7 +554,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					{
 						b_ThisNpcIsImmuneToNuke[entity_Spawner] = true;
 					}
-			
+					
 					if(enemy.Health)
 					{
 						SetEntProp(entity_Spawner, Prop_Data, "m_iMaxHealth", enemy.Health);
@@ -553,6 +562,8 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					}
 					
 					CClotBody npcstats = view_as<CClotBody>(entity_Spawner);
+					
+					npcstats.m_bStaticNPC = enemy.Is_Static;
 					
 					if(enemy.Is_Boss)
 					{
@@ -805,6 +816,9 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 
 float played_headshotsound_already [MAXTF2PLAYERS];
 
+int played_headshotsound_already_Case [MAXTF2PLAYERS];
+int played_headshotsound_already_Pitch [MAXTF2PLAYERS];
+
 float f_IsThisExplosiveHitscan[MAXENTITIES];
 
 public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
@@ -848,20 +862,78 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			{
 				damage *= 1.25;
 			}
-			if(played_headshotsound_already[attacker] < GetGameTime())
+			
+			int pitch = GetRandomInt(90, 110);
+			int random_case = GetRandomInt(1, 2);
+			float volume = 0.7;
+			
+			if(played_headshotsound_already[attacker] >= GetGameTime())
 			{
-				int pitch = GetRandomInt(90, 110);
-				played_headshotsound_already[attacker] = GetGameTime();
-				switch(GetRandomInt(1, 2))
+				random_case = played_headshotsound_already_Case[attacker];
+				pitch = played_headshotsound_already_Pitch[attacker];
+				volume = 0.15;
+			}
+			else
+			{
+				float chargerPos[3];
+				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
+				if(b_BoundingBoxVariant[victim] == 1)
 				{
-					case 1:
+					chargerPos[2] += 120.0;
+				}
+				else
+				{
+					chargerPos[2] += 82.0;
+				}
+				
+				TE_ParticleInt(g_particleCritText, chargerPos);
+				TE_SendToClient(attacker);
+				played_headshotsound_already_Case[attacker] = random_case;
+				played_headshotsound_already_Pitch[attacker] = pitch;
+			}
+			
+			int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
+			if(IsValidEntity(weapon)) //Extra bombs!
+			{
+				if(i_ArsenalBombImplanter[weapon] > 0)
+				{
+					if(f_ChargeTerroriserSniper[weapon] > 149.0)
 					{
-						EmitSoundToClient(attacker, "zombiesurvival/headshot1.wav", _, _, 90, _, 0.7, pitch);
+						i_HowManyBombsOnThisEntity[victim][attacker] += 2;
 					}
-					case 2:
+					else
 					{
-						EmitSoundToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, 0.7, pitch);
+						i_HowManyBombsOnThisEntity[victim][attacker] += 1;
 					}
+					Apply_Particle_Teroriser_Indicator(victim);
+					damage = 0.0;
+				}
+			}
+			
+			played_headshotsound_already[attacker] = GetGameTime();
+			switch(random_case)
+			{
+				case 1:
+				{
+					for(int client=1; client<=MaxClients; client++)
+					{
+						if(IsClientInGame(client) && client != attacker)
+						{
+							EmitSoundToClient(client, "zombiesurvival/headshot1.wav", victim, _, 80, _, volume, pitch);
+						}
+					}
+					EmitSoundToClient(attacker, "zombiesurvival/headshot1.wav", _, _, 90, _, volume, pitch);
+				}
+				case 2:
+				{
+					for(int client=1; client<=MaxClients; client++)
+					{
+						if(IsClientInGame(client) && client != attacker)
+						{
+							EmitSoundToClient(client, "zombiesurvival/headshot2.wav", victim, _, 80, _, volume, pitch);
+						}
+					}
+					EmitSoundToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, volume, pitch);
 				}
 			}
 			return Plugin_Changed;
@@ -1018,6 +1090,19 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		damage *= 1.15;
 	}
 	
+	if(f_HighIceDebuff[victim] > GetGameTime())
+	{
+		damage *= 1.15;
+	}
+	else if(f_LowIceDebuff[victim] > GetGameTime())
+	{
+		damage *= 1.10;
+	}
+	else if(f_VeryLowIceDebuff[victim] > GetGameTime())
+	{
+		damage *= 1.05;
+	}
+	
 	if(f_WidowsWineDebuff[victim] > GetGameTime())
 	{
 		damage *= 1.35;
@@ -1076,7 +1161,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		if(i_BarbariansMind[attacker] == 1)	// Deal extra damage with melee, but none with everything else
 		{
 			if(damagetype & (DMG_CLUB|DMG_SLASH)) // if you want anything to be melee based, just give them this.
-				damage *= 1.25;
+				damage *= 1.10;
 			else
 				damage = 0.0;
 		}
@@ -1154,7 +1239,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			{
 				if(f_ChargeTerroriserSniper[weapon] > 149.0)
 				{
-					i_HowManyBombsOnThisEntity[victim][attacker] += 3;
+					i_HowManyBombsOnThisEntity[victim][attacker] += 2;
 				}
 				else
 				{
@@ -1297,6 +1382,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
+	i_HexCustomDamageTypes[victim] = 0; //Reset it back to 0.
 	if(attacker < 1 || attacker > MaxClients)
 		return;
 		
@@ -1361,6 +1447,23 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 			Debuff_added = true;
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "↓");
 		}
+		
+		if(f_HighIceDebuff[victim] > GetGameTime())
+		{
+			Debuff_added = true;
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "❅");
+		}
+		else if(f_LowIceDebuff[victim] > GetGameTime())
+		{
+			Debuff_added = true;
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "❃");
+		}
+		else if (f_VeryLowIceDebuff[victim] > GetGameTime())
+		{
+			Debuff_added = true;
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "❆");	
+		}
+		
 		if(f_WidowsWineDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;

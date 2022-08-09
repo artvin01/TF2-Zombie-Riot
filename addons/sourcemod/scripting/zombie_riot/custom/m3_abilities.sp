@@ -351,7 +351,7 @@ public void PlaceableTempomaryHealingGrenade(int client)
 			
 			if(IsValidEntity(weapon))
 			{
-				Healing_Amount *= RoundToCeil(Attributes_FindOnWeapon(client, weapon, 8));
+				Healing_Amount *= Attributes_FindOnWeapon(client, weapon, 8);
 			}
 			
 			f_HealDelay[entity] = GetGameTime() + 1.0;
@@ -436,6 +436,10 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 								if(f_TimeUntillNormalHeal[target] < GetGameTime())
 								{
 									Healing_Amount *= 0.25;
+								}
+								if(Healing_Amount < 10.0)
+								{
+									Healing_Amount = 10.0;
 								}
 								EmitSoundToClient(target, SOUND_HEAL_BEAM, target, _, 90, _, 1.0);
 								StartHealingTimer(target, 0.1, RoundToCeil(Healing_Amount * 0.1), 10);
