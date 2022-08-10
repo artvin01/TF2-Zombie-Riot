@@ -538,7 +538,6 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				{
 					//Look at target so we hit.
 					npc.FaceTowards(vecTarget, 1500.0);
-					
 					//Can we attack right now?
 					if(npc.m_flNextMeleeAttack < GetGameTime())
 					{
@@ -559,13 +558,11 @@ public void Blitzkrieg_ClotThink(int iNPC)
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
 						{
 							int target = TR_GetEntityIndex(swingTrace);	
-							
 							float vecHit[3];
 							TR_GetEndPosition(vecHit, swingTrace);
 							
 							if(target > 0) 
 							{
-								
 								if(target <= MaxClients)
 								{
 									float Bonus_damage = 1.0;
@@ -583,17 +580,11 @@ public void Blitzkrieg_ClotThink(int iNPC)
 									float truedamage = 5 * RaidModeScaling / i_HealthScale[npc.index] * Bonus_damage;
 									SDKHooks_TakeDamage(target, npc.index, npc.index, truedamage, DMG_SLASH|DMG_CLUB);
 								}
-				
 								else
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 7.5 * RaidModeScaling / i_HealthScale[npc.index], DMG_SLASH|DMG_CLUB);
-								
-								
 								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
-								
 								// Hit sound
 								npc.PlayMeleeHitSound();
-								
-								
 							} 
 						}
 						delete swingTrace;
@@ -604,21 +595,19 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				else
 				{
 					npc.StartPathing();
-					
 				}
 			}
 			else
 			{
 				npc.StartPathing();
-				
 			}
-		if(b_Are_we_reloading[npc.index])
-		{
+			if(b_Are_we_reloading[npc.index])
+			{
 			//Target close enough to hit
 			if(flDistanceToTarget < 40000 || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
-			//	npc.FaceTowards(vecTarget, 1000.0);
+				//npc.FaceTowards(vecTarget, 1000.0);
 				
 				//Can we attack right now?
 				if(npc.m_flNextMeleeAttack < GetGameTime())
@@ -639,7 +628,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, _, _, _, 1))
 						{
 							int target = TR_GetEntityIndex(swingTrace);	
-							
+						
 							float vecHit[3];
 							TR_GetEndPosition(vecHit, swingTrace);
 							
@@ -649,15 +638,14 @@ public void Blitzkrieg_ClotThink(int iNPC)
 								meleedmg = 100.0 * RaidModeScaling / i_HealthScale[npc.index]
 								if(target <= MaxClients)
 								{
-									
 									float Bonus_damage = 1.0;
 									int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
 	
 									char classname[32];
 									GetEntityClassname(weapon, classname, 32);
-									
+								
 									int weapon_slot = TF2_GetClassnameSlot(classname);
-									
+								
 									if(weapon_slot != 2)
 									{
 										Bonus_damage = 1.5;
@@ -667,29 +655,27 @@ public void Blitzkrieg_ClotThink(int iNPC)
 								}
 								else
 								SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_SLASH|DMG_CLUB);
-								
-									npc.PlayMeleeHitSound();		
-								
+								npc.PlayMeleeHitSound();		
 								if(IsValidClient(target))
+								{
+									if (IsInvuln(target))
 									{
-										if (IsInvuln(target))
-										{
-											Custom_Knockback(npc.index, target, 450.0);
-											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-										}
-										else
-										{
-											Custom_Knockback(npc.index, target, 225.0);
-											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-										}
+										Custom_Knockback(npc.index, target, 450.0);
+										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 									}
+									else
+									{
+										Custom_Knockback(npc.index, target, 225.0);
+										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+									}
+								}
 								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
-								
+							
 								// Hit sound
 								npc.PlayPullSound()
-								
+							
 							} 
 						}
 						delete swingTrace;
@@ -721,9 +707,9 @@ public void Blitzkrieg_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 	if(i_NpcCurrentLives[npc.index]==4 && fl_TheFinalCountdown[npc.index] <= GetGameTime())
 	{
-    	EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
-    	fl_TheFinalCountdown[npc.index] = GetGameTime()+1.0;
-    }
+		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
+		fl_TheFinalCountdown[npc.index] = GetGameTime()+1.0;
+	}
 }
 
 public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
