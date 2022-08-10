@@ -577,5 +577,6 @@
 	"Kahmlstein"
 	{
 		"en"		"Kahmlstein"
+		"ru"		"Кахмльштайн"
 	}
 }
