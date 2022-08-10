@@ -1235,6 +1235,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		}
 		if(attacker <= MaxClients && IsValidEntity(weapon))
 		{
+			
+			float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon);
+		
+			damage = modified_damage;
+			
 			if(i_ArsenalBombImplanter[weapon] > 0)
 			{
 				if(f_ChargeTerroriserSniper[weapon] > 149.0)
@@ -1732,4 +1737,17 @@ void Spawner_AddToArray(int entity) //cant use ent ref here...
 		Spawner.indexnumber = entity;
 		SpawnerList.PushArray(Spawner);
 	}
+}
+
+
+float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+{
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case 2: // weapon_fusion
+		{
+			return Npc_OnTakeDamage_Fusion(victim, damage, weapon);
+		}
+	}
+	return damage;
 }

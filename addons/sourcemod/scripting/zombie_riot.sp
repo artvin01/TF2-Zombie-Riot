@@ -964,7 +964,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_cowmangler_2.sp"
 #include "zombie_riot/custom/weapon_auto_shotgun.sp"
 #include "zombie_riot/custom/weapon_fists_of_kahml.sp"
-//#include "zombie_riot/custom/weapon_fusion_melee.sp"
+#include "zombie_riot/custom/weapon_fusion_melee.sp"
 #include "zombie_riot/custom/spike_layer.sp"
 #include "zombie_riot/custom/weapon_grenade.sp"
 #include "zombie_riot/custom/weapon_pipebomb.sp"
@@ -1338,6 +1338,7 @@ public void OnMapStart()
 	Abiltity_Coin_Flip_Map_Change();
 	Wand_Cryo_Precache();
 	Npc_Sp_Precache();
+	Fusion_Melee_OnMapStart();
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
