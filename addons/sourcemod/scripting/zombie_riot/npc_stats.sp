@@ -783,6 +783,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = Addicition(entity, vecPos, vecAng, ally, data);
 		}
+		case ALT_KAHMLSTEIN:
+		{
+			entity = Kahmlstein(entity, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1252,6 +1256,10 @@ public void NPCDeath(int entity)
 		{
 			Addicition_NPCDeath(entity);
 		}
+		case ALT_KAHMLSTEIN:
+		{
+			Kahmlstein_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1428,6 +1436,7 @@ public void OnMapStart_NPC_Base()
 	Citizen_OnMapStart();
 	MedivalEagleScout_OnMapStart_NPC();
 	MedivalSamurai_OnMapStart_NPC();
+	Kahmlstein_OnMapStart_NPC();
 }
 
 
@@ -7276,6 +7285,7 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 
 #include "zombie_riot/npc/alt/npc_alt_medic_charger.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_berserker.sp"
+#include "zombie_riot/npc/alt/npc_alt_kahml.sp"
 
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
 #include "zombie_riot/npc/medival/npc_medival_archer.sp"

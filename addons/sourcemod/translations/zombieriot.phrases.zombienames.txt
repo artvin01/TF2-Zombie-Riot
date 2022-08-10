@@ -574,4 +574,8 @@
 		"en" 		"Samurai"
 		"ru" 		"Самурай"
 	}
+	"Kahmlstein"
+	{
+		"en"		"Kahmlstein"
+	}
 }
