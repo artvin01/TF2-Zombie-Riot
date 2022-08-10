@@ -460,4 +460,8 @@
 	{
 		"en" 		"Samurai"
 	}
+	"Kahmlstein"
+	{
+		"en"		"Kahmlstein"
+	}
 }
