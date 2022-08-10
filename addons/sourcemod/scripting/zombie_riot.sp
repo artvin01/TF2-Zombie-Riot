@@ -915,7 +915,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",
 	"",
 	"",
-	"npc_ALT_KAHMLSTEIN"
+	"npc_alt_kahml"
 };
 
 #include "zombie_riot/stocks.sp"
