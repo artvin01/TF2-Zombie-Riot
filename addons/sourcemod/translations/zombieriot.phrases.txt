@@ -2,8 +2,8 @@
 {
 	"Credits Page"
 	{
-		"en" 		"Artvin: NPC And Gamemode Development\nBatfoxkid: Gamemode Development\nPelipoika: Original NPC base and help\nAlex: Weapon Plugins and overall plugin Assistance\nSuza: Weapon and some Base stock help\nMikusch: Early Gamedata help\nKenzzer: Npc help and bug fix help\nAlex Turtle & Stranger & Syko: Map Assistance\nCrusty: Model/Animating\njDeivid: Alternative Waves\nGMOD Zombie Survival Devs: Music and base concept from them"
-		"ru" 		"Artvin: Разработка NPC и режима\nBatfoxkid: Разработка режима\nPelipoika: База оригинальных NPC и помощь\nAlex: Плагины оружия и помощь с плагинами\nSuza: Оружие и помощь с основными запасами\nMikusch: Ранняя помощь с игровыми данными\nKenzzer: Помощь с Npc и исправление ошибок\nAlex Turtle и Stranger и Syko: Помощь с картами\nCrusty: Модели/анимация\njDeivid: Новые волны\nРазработчики Zombie Survival в GMOD: Музыка и концепция игры от них"
+		"en" 		"Artvin: NPC And Gamemode Development\nBatfoxkid: Gamemode Development\nPelipoika: Original NPC base and help\nAlex: Weapon Plugins and overall plugin Assistance\nSuza: Weapon and some Base stock help\nMikusch: Early Gamedata help\nKenzzer: NPC help and bug fix help\nAlex Turtle & Stranger & Syko: Map Assistance\nCrusty: Model/Animating\njDeivid: Alternative Waves\nGMOD Zombie Survival Devs: Music and base concept from them"
+		"ru" 		"Artvin: Разработка NPC и режима\nBatfoxkid: Разработка режима\nPelipoika: База оригинальных NPC и помощь\nAlex: Плагины оружия и помощь с плагинами\nSuza: Оружие и помощь с базой\nMikusch: Помощь с игровыми данными\nKenzzer: Помощь с NPC и исправление ошибок\nAlex Turtle и Stranger и Syko: Помощь с картами\nCrusty: Модели/анимация\njDeivid: Новые волны\nРазработчики ZS в GMOD: Музыка и концепция игры от них"
 		"de"		"Artvin: NPC und Spielmodus entwickler\nBatfoxkid: Spielmodus Entwickler\nPelipoika: Original NPC basis und hilfe\nAlex: Waffen Plugins und überall plugin hilfe\nSuza: Waffe und etwas Basismaterial geholfen\nMikusch früher spieldatei helfer\nKenzzer: NPC hilfe und bug fix hilfe\nAlex Turtle, Stranger, Syko: Map Hilfe\nCrusty Model/Animationen\njDeivid: Alternative Wellen\nGMOD Zombie überleben Entwickler: Musik und Basis konzept von ihnen"
 	}
 	"Open Store"
@@ -621,7 +621,7 @@
 		"en" 		"Hand Grenade"
 		"de"		"Hand Granate"
 //		"it"		"Questo Oggetto ha ancora un cooldown di {1} secondi prima di poterlo usare."
-		"ru"		"Граната"
+		"ru"		"Ручная граната"
 //		"pl"		"Ten przedmiot jeszcze będzie się odświerzał przez {1} sekund przed następnym użyciem"
 //		"es"		"Ten paciencia, aun quedan {1} segundos para volver a usar esto"
 //		"fr"		"Temps de recharge de cette objet avant ré-utilisation: {1}"
@@ -737,6 +737,7 @@
 	"Widows Wine"
 	{
 		"en" 		"Perk: Widows Wine"
+		"ru" 		"Перк: Вино вдовы"
 	}
 
 	"Quick Revive Recieved"
@@ -754,10 +755,12 @@
 	"Double Tap Recieved"
 	{
 		"en" 		"DOUBLE TAP! 1.15x Extra attack speed and Building Damage"
+		"ru" 		"ПИФ-ПАФ! 1.15x дополнительной скорости атаки и урон от построек"
 	}	
 	"Speed Cola Recieved"
 	{
 		"en" 		"SPEED COLA! 1.35x Extra reload, switchspeed and Mana regen"
+		"ru" 		"БЫСТРОКОЛА! 1.35x доп. скорости перезарядки, скорости смены оружия и регенерации маны"
 	}
 	"Deadshot Daiquiri Recieved"
 	{
@@ -768,6 +771,7 @@
 	"Widows Wine Recieved"
 	{
 		"en" 		"WIDOWS WINE! Rechargeable protection that debuffs zombies and blocks 75 Percent of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
+		"ru" 		"ВИНО ВДОВЫ! Перезаряжаемая защита, накладывающая негативный эффект на зомби и блокирующая 75% урона при активации.\nЭффект сильно замедляет врагов и наносит на 35% больше урона."
 	}
 	"Nuke Activated"
 	{
@@ -843,7 +847,7 @@
 	}
 	"Gamemode Help Explained"
 	{
-		"en" 		"You survive against waves of zombies upto usually 60 waves.\nBuy guns and baricade yourself to survive.\nMake sure to play as a team and dont save up all the time.\nOr else you will be the downfall of your team."
+		"en" 		"You survive against waves of zombies upto usually 60 waves.\nBuy guns and barricade yourself to survive.\nMake sure to play as a team and don't save up all the time.\nOr else you will be the downfall of your team."
 		"ru" 		"Вам предстоит выжить против 60 волн зомби.\nПокупайте оружие и баррикады, чтобы выжить.\nУбедитесь, что вы играете в команде и не копили деньги понапрасну.\nИначе вы станете гибелью вашей команды."
 		"de"		"Du überlebst gegen wellen von Zombies, bis zu 60 runde.\nKaufe Waffen und Barrikade für dich selber um zu überleben.\nSei sicher mit deinem Team zu spielen und Sparre nicht die ganze zeit!\nOder sie werden der Untergang für ihr Team sein."
 	}
@@ -855,14 +859,14 @@
 	}
 	"Difficulty Help Explained"
 	{
-		"en" 		"Each Higher Difficulty is harder and gives but no extra cash and different zombie types/mutations.\nThey are there as a challange but reward almost upto 3x the EXP.\nMap difficulties are arbitrary and only state how hard the layout is."
-		"ru" 		"Каждая более высокая сложность - сложнее и даёт доп. деньги и имеет новые типы зомби.\nЭто как испытание вашего мастерства, но в нём вы получите почти в 3 раза больше опыта.\nСложности на картах произвольны и только указывают, насколько сложны структуры врагов."
+		"en" 		"Each Higher Difficulty is harder and gives but no extra cash and different zombie types/mutations.\nThey are there as a challenge but reward almost upto 3x the EXP.\nMap difficulties are arbitrary and only state how hard the layout is."
+		"ru" 		"Более высокая сложность - сложнее и даёт доп. деньги и имеет новые типы зомби.\nЭто как испытание вашего мастерства, но в нём вы получите почти в 3 раза больше опыта.\nСложности на картах произвольны и только указывают, насколько сложны структуры врагов."
 		"de"		"Jeder höhere Schwierigkeitsgrad ist schwerer aber gibt dir kein extra Geld, aber Neue Zombie Typen/Mutationen.\nDie sind eine Herausforderung aber geben bis zu 3-mal mehr XP.\n Karten Schwierigkeitsgrade sind willkürlich und zustand wie hart das Layout ist."
 	}
 	"Level Help Explained"
 	{
 		"en" 		"You gain EXP per survived wave.\nHigh levels unlock items and perks for you that are for free.\nSome have returns for upgrades, Some are just free buffs or items.\nYou keep levels when you leave
-		"ru" 		"Вы получаете опыт за каждую пережитую волну.\nВысокие уровни открывают для вас предметы и перки, которые вы получаете бесплатно.\nНекоторые из них это улучшения, некоторые просто бесплатные усиления или предметы.\nНабранный уровень сохраняется, когда вы уходите из игры."
+		"ru" 		"Вы получаете опыт за каждую пережитую волну.\nВысокие уровни открывают для вас предметы и перки - бесплатно.\nНекоторые из них это улучшения или просто бесплатные усиления и предметы.\nНабранный уровень сохраняется, когда вы уходите из игры."
 		"de"		"Sie bekommen XP per runde.\nHohe Levels freischalten Gegenstände und Perks für dich gratis.\nPaar haben Umgekährte Upgrades, Paar sind gratis Buffs oder Gegenstände.\nDu behältst die Levels, wenn du gehst."
 	}
 	"Special Zombies Explained"
@@ -880,7 +884,7 @@
 	"Building Explained"
 	{
 		"en" 		"You can use machines by pressing R on them.\nPeople can mount buildings and will have an icon above their head.\nThis allows you to press R on them for the same effect.\nRegen icon: Ammo box.\nArmour icon: Armour Table.\nKing icon: Perk Machine.\nPunch icon: Pack-A-Punch.\nVampire icon: Healing Station."
-		"ru" 		"Для использования построек, нажмите R.\nЛюди могут поднимать свои постройки, и над их головой будет значок.\nЭто позволит вам нажать на них R для того же эффекта.\nЗначок реген.: Ящик с боеприпасами.\nЗначок брони: Верстак брони.\nЗначок короля: Перк-машина.\nЗначок кулака: Улучшайзер.\nЗначок вампира: Лечебная станция."
+		"ru" 		"Для использования построек, нажмите R.\nЛюди могут поднимать свои постройки, и над их головой будет значок.\nЭто позволит вам нажать на них R для того же эффекта.\nЗначок реген.: Ящик с боеприпасами.\nБроня: Верстак брони.\nКороль: Перк-машина.\nКулак: Улучшайзер.\nВампир: Лечебная станция."
 		"de"		"Sie können Maschinen mit NACHLADEN benutzen.\nLeute können ihre Gebäude aufheben und haben ein Symbol auf deren Kopf.\nDies ermöglicht Ihnen mit NACHLADEN für denselben Effekt.\nRegen Symbol: Munitionsbox\nRüstung Symbol: Rüstungstisch\nKönig Symbol: Perkmachine\nFaust Symbol: Pack-A-Punch.\nVampire Symbol: Heilstation."
 	}
 	"Escape Explained"
@@ -927,8 +931,8 @@
 	}
 	"Perkmachine Tooltip"
 	{
-		"en" 		"Press RELOAD on the Perkmachine to gain a strong tempomary perk."
-//		"ru" 		"Нажмите ПЕРЕЗАРЯДКУ на перк-машине, чтобы получить сильный временный случайный перк."
+		"en" 		"Press RELOAD on the Perkmachine to gain a strong temporary perk."
+		"ru" 		"Нажмите ПЕРЕЗАРЯДКУ на перк-машине, чтобы получить сильный временный случайный перк."
 //		"de"		"Drücke NACHLADEN an der Perkmachine um einen starken temporären zufälligen Perk zubekommen."
 	}
 	"PackAPunch Tooltip"
@@ -1027,7 +1031,7 @@
 	}
 	"No Ammo Supplies"
 	{
-		"en" 		"You dont have any Ammo Supplies!"
+		"en" 		"You don't have any Ammo Supplies!"
 		"ru" 		"У вас больше нет запасов боеприпасов!"
 		"de"		"Sie haben keine Munitionsvorräte!"
 	}
@@ -1176,6 +1180,7 @@
 	"Which perk do you desire?"
 	{
 		"en"		"Which Bottle do you wish to drink?"
+		"ru"		"Какую бутылку вы хотите выпить?"
 	}	
 	"Reviving"
 	{
@@ -1198,10 +1203,12 @@
 	"Victory Menu"
 	{		
 		"en"		"The Zombies have been defeated!\nGo into Freeplay..?\nFreeplay will play infinitly.\nThe further you go, the harder it gets.\n"
+		"ru"		"Зомби побеждены!\nПерейти в режим свободной игры..?\nСвободный режим игры бесконечен.\nЧем дальше, тем сложнее.\n"
 		"chi"       "恭喜你击败了所有僵尸！\n是否进行自由模式？\n"
 	}
 	"M3 Ability Is Back"
 	{		
 		"en"		"Your MOUSE3 Ability is ready again to be used!"
+		"ru"		"Ваша способность MOUSE3 снова готова к использованию!"
 	}
 }

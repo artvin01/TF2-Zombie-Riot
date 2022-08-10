@@ -418,5 +418,6 @@
 	"I'm glad to help!"
 	{
 		"en"	"I'm glad to help!"
+		"ru"	"Был рад помочь!"
 	}
 }
