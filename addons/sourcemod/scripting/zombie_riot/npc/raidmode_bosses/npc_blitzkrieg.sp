@@ -37,7 +37,7 @@ static char g_MeleeAttackSounds[][] = {
 };
 
 static char g_RangedAttackSounds[][] = {
-	"weapons/airstrike_fire_crit.wav",
+	"weapons/airstrike_fire_03.wav",
 };
 static char g_TeleportSounds[][] = {
 	"weapons/bison_main_shot.wav",
@@ -55,6 +55,9 @@ static char g_AngerSounds[][] = {
 static const char g_IdleMusic[][] = {
 	"#ui/gamestartup12.mp3",
 };
+static char g_PullSounds[][] = {
+	"weapons/knife_swing.wav",
+};
 
 static char gGlow1;
 static char gExplosive1;
@@ -63,12 +66,14 @@ static char gLaser1;
 static int i_AmountProjectiles[MAXENTITIES];
 static int i_NpcCurrentLives[MAXENTITIES];
 static float i_HealthScale[MAXENTITIES];
-static float i_RangeScale[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 static int i_PrimaryRocketsFired[MAXENTITIES];
 static float fl_LifelossReload[MAXENTITIES];
 static float fl_TheFinalCountdown[MAXENTITIES];
 static float fl_TheFinalCountdown2[MAXENTITIES];
+static int i_maxfirerockets[MAXENTITIES];
+
+static bool b_Are_we_reloading[MAXENTITIES];
 
 public void Blitzkrieg_OnMapStart()
 {
@@ -83,6 +88,7 @@ public void Blitzkrieg_OnMapStart()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   				}
 	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSound(g_IdleMusic[i]);   }
+	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
@@ -213,6 +219,13 @@ methodmap Blitzkrieg < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
+	public void PlayPullSound() {
+		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayPullSound()");
+		#endif
+	}
 	public Blitzkrieg(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		Blitzkrieg npc = view_as<Blitzkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.4", "25000", ally, false, true, true, true)); //giant!
@@ -236,16 +249,10 @@ methodmap Blitzkrieg < CClotBody
 		
 		i_NpcCurrentLives[npc.index] = 0;
 		
-		i_HealthScale[npc.index] = 0.5;	//cant be 0, default 1, 0,5= 2x scaling
+		i_HealthScale[npc.index] = 0.75;	//cant be 0, default 1, 0,5= 2x scaling
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		
-		i_RangeScale[npc.index] = 1.0;	//Cant be a 0, default 1, 0.5= 2x range
-		
-		if(ZR_GetWaveCount()>30)
-		{
-			i_RangeScale[npc.index] = 0.75;
-		}
 		if(RaidModeScaling < 55)
 		{
 			RaidModeScaling *= 0.16; //abit low, inreacing
@@ -326,7 +333,9 @@ methodmap Blitzkrieg < CClotBody
 		fl_TheFinalCountdown2[npc.index] = 0.0;
 		i_PrimaryRocketsFired[npc.index] = 0;
 		fl_LifelossReload[npc.index] = 1.0;
+		i_maxfirerockets[npc.index] = 20;
 		
+		b_Are_we_reloading[npc.index] = false;
 		npc.PlayMusicSound();
 		Music_Stop_All_Beat(client);
 		return npc;
@@ -426,7 +435,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 			} else {
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			if(npc.m_flNextRangedBarrage_Spam < GetGameTime() && npc.m_flNextRangedBarrage_Singular < GetGameTime() && flDistanceToTarget > Pow(110.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && i_NpcCurrentLives[npc.index]>4)
+			if(npc.m_flNextRangedBarrage_Spam < GetGameTime() && npc.m_flNextRangedBarrage_Singular < GetGameTime() && flDistanceToTarget > Pow(110.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && i_NpcCurrentLives[npc.index]>4 && !b_Are_we_reloading[npc.index])
 			{	
 				EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 			 	npc.FaceTowards(vecTarget);
@@ -465,14 +474,60 @@ public void Blitzkrieg_ClotThink(int iNPC)
 					}
 				}
 			}
-			if(i_PrimaryRocketsFired[npc.index] > 20)	//Every 20 rockets npc enters a 10 second reload time
+			if(i_PrimaryRocketsFired[npc.index] > i_maxfirerockets[npc.index])	//Every 40 rockets npc enters a 10 second reload time
 			{
 				npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
-				npc.m_flReloadIn = GetGameTime() + (3.0 * fl_LifelossReload[npc.index]);
+				npc.m_flReloadIn = GetGameTime() + (10.0 * fl_LifelossReload[npc.index]);
 				npc.m_flMeleeArmor = 1.0;
 				i_PrimaryRocketsFired[npc.index] = 0;
+				b_Are_we_reloading[npc.index] = true;
+				if(IsValidEntity(npc.m_iWearable1))
+					RemoveEntity(npc.m_iWearable1);
+				npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_ubersaw/c_ubersaw.mdl");
+				SetVariantString("1.0");
+				AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+				int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+				if(iActivity > 0) npc.StartActivity(iActivity);
 			}
-			if(flDistanceToTarget < 100000/i_RangeScale[npc.index] && npc.m_flReloadIn <= GetGameTime())
+			if(npc.m_flReloadIn <= GetGameTime() && b_Are_we_reloading[npc.index])	//fast1
+			{
+				b_Are_we_reloading[npc.index] = false;
+				int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+				if(iActivity > 0) npc.StartActivity(iActivity);
+				if(i_NpcCurrentLives[npc.index]==0)
+				{
+					if(IsValidEntity(npc.m_iWearable1))
+						RemoveEntity(npc.m_iWearable1);
+					npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/w_models/w_rocketlauncher.mdl");
+					SetVariantString("1.0");
+					AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+				}
+				if(i_NpcCurrentLives[npc.index]==1)
+				{
+					if(IsValidEntity(npc.m_iWearable1))
+						RemoveEntity(npc.m_iWearable1);
+					npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_liberty_launcher/c_liberty_launcher.mdl");
+					SetVariantString("1.0");
+					AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+				}
+				if(i_NpcCurrentLives[npc.index]==2)
+				{
+					if(IsValidEntity(npc.m_iWearable1))
+						RemoveEntity(npc.m_iWearable1);
+					npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl");
+					SetVariantString("1.0");
+					AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+				}
+				if(i_NpcCurrentLives[npc.index]>=3)
+				{
+					if(IsValidEntity(npc.m_iWearable1))
+						RemoveEntity(npc.m_iWearable1);
+					npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_atom_launcher/c_atom_launcher.mdl");
+					SetVariantString("1.0");
+					AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+				}
+			}
+			if(flDistanceToTarget < 1000000 && npc.m_flReloadIn <= GetGameTime() && !b_Are_we_reloading[npc.index])
 			{
 				int Enemy_I_See;
 				npc.m_flMeleeArmor = 1.5;
@@ -489,11 +544,13 @@ public void Blitzkrieg_ClotThink(int iNPC)
 					{
 						//Play attack anim
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-						
+						float projectile_speed = 900.0/(0.25+i_HealthScale[npc.index]);
+						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
 						npc.PlayMeleeSound();
-						npc.FireRocket(vecTarget, 26.0, 500.0/(0.25+i_HealthScale[npc.index]), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0, EP_NO_KNOCKBACK); //remove the no kb if people cant escape, or just lower the dmg
-						npc.m_flNextMeleeAttack = GetGameTime() + 0.25 * i_HealthScale[npc.index];
+						npc.FireRocket(vecTarget, 26.0, projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0, EP_NO_KNOCKBACK); //remove the no kb if people cant escape, or just lower the dmg
+						npc.m_flNextMeleeAttack = GetGameTime() + 0.2 * i_HealthScale[npc.index];
 						i_PrimaryRocketsFired[npc.index]++;
+						npc.m_flAttackHappens=0.0;
 					}
 					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
 					{
@@ -540,13 +597,8 @@ public void Blitzkrieg_ClotThink(int iNPC)
 							} 
 						}
 						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime() + 0.25 * i_HealthScale[npc.index];
+						npc.m_flNextMeleeAttack = GetGameTime() + 0.2 * i_HealthScale[npc.index];
 						npc.m_flAttackHappenswillhappen = false;
-					}
-					if(ZR_GetWaveCount()<=15)
-					{
-					PF_StopPathing(npc.index);
-					npc.m_bPathing = false;
 					}
 				}
 				else
@@ -560,6 +612,102 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				npc.StartPathing();
 				
 			}
+		if(b_Are_we_reloading[npc.index])
+		{
+			//Target close enough to hit
+			if(flDistanceToTarget < 40000 || npc.m_flAttackHappenswillhappen)
+			{
+				//Look at target so we hit.
+			//	npc.FaceTowards(vecTarget, 1000.0);
+				
+				//Can we attack right now?
+				if(npc.m_flNextMeleeAttack < GetGameTime())
+				{
+					//Play attack ani
+					if (!npc.m_flAttackHappenswillhappen)
+					{
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+						npc.PlayPullSound()
+						npc.m_flAttackHappens = 0.0;
+						npc.m_flAttackHappens_bullshit = GetGameTime()+0.4;
+						npc.m_flAttackHappenswillhappen = true;
+					}
+					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+					{
+						Handle swingTrace;
+						npc.FaceTowards(vecTarget, 20000.0);
+						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, _, _, _, 1))
+						{
+							int target = TR_GetEntityIndex(swingTrace);	
+							
+							float vecHit[3];
+							TR_GetEndPosition(vecHit, swingTrace);
+							
+							if(target > 0) 
+							{
+								float meleedmg;
+								meleedmg = 100.0 * RaidModeScaling / i_HealthScale[npc.index]
+								if(target <= MaxClients)
+								{
+									
+									float Bonus_damage = 1.0;
+									int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
+	
+									char classname[32];
+									GetEntityClassname(weapon, classname, 32);
+									
+									int weapon_slot = TF2_GetClassnameSlot(classname);
+									
+									if(weapon_slot != 2)
+									{
+										Bonus_damage = 1.5;
+									}
+									meleedmg *= Bonus_damage;
+									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_SLASH|DMG_CLUB);
+								}
+								else
+								SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_SLASH|DMG_CLUB);
+								
+									npc.PlayMeleeHitSound();		
+								
+								if(IsValidClient(target))
+									{
+										if (IsInvuln(target))
+										{
+											Custom_Knockback(npc.index, target, 450.0);
+											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+										}
+										else
+										{
+											Custom_Knockback(npc.index, target, 225.0);
+											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+										}
+									}
+								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+								
+								// Hit sound
+								npc.PlayPullSound()
+								
+							} 
+						}
+						delete swingTrace;
+						npc.m_flNextMeleeAttack = GetGameTime() +0.4;
+						npc.m_flAttackHappenswillhappen = false;
+					}
+					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+					{
+						npc.m_flAttackHappenswillhappen = false;
+						npc.m_flNextMeleeAttack = GetGameTime() + 0.4;
+					}
+				}
+			}
+			else
+			{
+				npc.StartPathing();
+			}
+		}
 	}
 	else
 	{
@@ -604,20 +752,13 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		i_NpcCurrentLives[npc.index]=1;
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
-		
-		if(ZR_GetWaveCount()>=60)
-		{
-			i_RangeScale[npc.index] = 0.5;
-		}
-		if(ZR_GetWaveCount()==30)
-		{
-			i_RangeScale[npc.index] = 0.75;
-		}
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_liberty_launcher/c_liberty_launcher.mdl");	//Liberty
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		i_HealthScale[npc.index]=0.4;
+		i_maxfirerockets[npc.index] =25;
+		
+		i_HealthScale[npc.index]=0.6;
 		
 		fl_LifelossReload[npc.index] = 0.8;
 		
@@ -657,20 +798,13 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
 		
-		if(ZR_GetWaveCount()>=60)
-		{
-			i_RangeScale[npc.index] = 0.25;
-		}
-		if(ZR_GetWaveCount()==30)
-		{
-			i_RangeScale[npc.index] = 0.5;
-		}
-		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl");	//Dumpster deive aka beggars
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		i_HealthScale[npc.index]=0.25;
+		i_maxfirerockets[npc.index] =30;
+		
+		i_HealthScale[npc.index]=0.5;
 		
 		fl_LifelossReload[npc.index] = 0.75
 		
@@ -709,20 +843,13 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
 		
-		if(ZR_GetWaveCount()>=60)
-		{
-			i_RangeScale[npc.index] = 0.01;
-		}
-		if(ZR_GetWaveCount()==30)
-		{
-			i_RangeScale[npc.index] = 0.1;
-		}
-		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_atom_launcher/c_atom_launcher.mdl");	//The thing everyone fears, the airstrike.
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		EmitSoundToAll("mvm/mvm_tank_end.wav");
+		
+		i_maxfirerockets[npc.index] = 40;
 		
 		npc.m_flSpeed = 310.0;
 		
@@ -744,7 +871,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 			}
 		}
 		
-		i_HealthScale[npc.index]=0.175;
+		i_HealthScale[npc.index]=0.35;
 		
 		fl_LifelossReload[npc.index] = 0.65;
 		
@@ -771,6 +898,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		fl_TheFinalCountdown2[npc.index] = GetGameTime()+7.5;
 			
 		npc.m_flNextTeleport = GetGameTime() + 1000.0;
+		i_maxfirerockets[npc.index] = 696969;
 		
 		i_HealthScale[npc.index]=0.175;
 		
@@ -796,6 +924,8 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 			
 		npc.m_flNextTeleport = GetGameTime() + 1.0;
+		
+		i_maxfirerockets[npc.index] = 75;
 		
 		i_HealthScale[npc.index]=0.095;
 		
