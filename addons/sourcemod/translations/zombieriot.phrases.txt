@@ -737,6 +737,7 @@
 	"Widows Wine"
 	{
 		"en" 		"Perk: Widows Wine"
+		"ru" 		"Перк: Вино вдовы"
 	}
 
 	"Quick Revive Recieved"
@@ -754,10 +755,12 @@
 	"Double Tap Recieved"
 	{
 		"en" 		"DOUBLE TAP! 1.15x Extra attack speed and Building Damage"
+		"ru" 		"ПИФ-ПАФ! 1.15x дополнительной скорости атаки и урон от построек"
 	}	
 	"Speed Cola Recieved"
 	{
 		"en" 		"SPEED COLA! 1.35x Extra reload, switchspeed and Mana regen"
+		"ru" 		"БЫСТРОКОЛА! 1.35x доп. скорости перезарядки, скорости смены оружия и регенерации маны"
 	}
 	"Deadshot Daiquiri Recieved"
 	{
@@ -768,6 +771,7 @@
 	"Widows Wine Recieved"
 	{
 		"en" 		"WIDOWS WINE! Rechargeable protection that debuffs zombies and blocks 75 Percent of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
+		"ru" 		"ВИНО ВДОВЫ! Перезаряжаемая защита, накладывающая негативный эффект на зомби и блокирующая 75% урона при активации.\nЭффект сильно замедляет врагов и наносит на 35% больше урона."
 	}
 	"Nuke Activated"
 	{
@@ -880,7 +884,7 @@
 	"Building Explained"
 	{
 		"en" 		"You can use machines by pressing R on them.\nPeople can mount buildings and will have an icon above their head.\nThis allows you to press R on them for the same effect.\nRegen icon: Ammo box.\nArmour icon: Armour Table.\nKing icon: Perk Machine.\nPunch icon: Pack-A-Punch.\nVampire icon: Healing Station."
-		"ru" 		"Для использования построек, нажмите R.\nЛюди могут поднимать свои постройки, и над их головой будет значок.\nЭто позволит вам нажать на них R для того же эффекта.\nЗначок реген.: Ящик с боеприпасами.\nЗначок брони: Верстак брони.\nЗначок короля: Перк-машина.\nЗначок кулака: Улучшайзер.\nЗначок вампира: Лечебная станция."
+		"ru" 		"Для использования построек, нажмите R.\nЛюди могут поднимать свои постройки, и над их головой будет значок.\nЭто позволит вам нажать на них R для того же эффекта.\nЗначок реген.: Ящик с боеприпасами.\nБроня: Верстак брони.\nКороль: Перк-машина.\nКулак: Улучшайзер.\nВампир: Лечебная станция."
 		"de"		"Sie können Maschinen mit NACHLADEN benutzen.\nLeute können ihre Gebäude aufheben und haben ein Symbol auf deren Kopf.\nDies ermöglicht Ihnen mit NACHLADEN für denselben Effekt.\nRegen Symbol: Munitionsbox\nRüstung Symbol: Rüstungstisch\nKönig Symbol: Perkmachine\nFaust Symbol: Pack-A-Punch.\nVampire Symbol: Heilstation."
 	}
 	"Escape Explained"
@@ -927,8 +931,8 @@
 	}
 	"Perkmachine Tooltip"
 	{
-		"en" 		"Press RELOAD on the Perkmachine to gain a strong tempomary perk."
-//		"ru" 		"Нажмите ПЕРЕЗАРЯДКУ на перк-машине, чтобы получить сильный временный случайный перк."
+		"en" 		"Press RELOAD on the Perkmachine to gain a strong temporary perk."
+		"ru" 		"Нажмите ПЕРЕЗАРЯДКУ на перк-машине, чтобы получить сильный временный случайный перк."
 //		"de"		"Drücke NACHLADEN an der Perkmachine um einen starken temporären zufälligen Perk zubekommen."
 	}
 	"PackAPunch Tooltip"
@@ -1176,6 +1180,7 @@
 	"Which perk do you desire?"
 	{
 		"en"		"Which Bottle do you wish to drink?"
+		"ru"		"Какую бутылку вы хотите выпить?"
 	}	
 	"Reviving"
 	{
@@ -1198,10 +1203,12 @@
 	"Victory Menu"
 	{		
 		"en"		"The Zombies have been defeated!\nGo into Freeplay..?\nFreeplay will play infinitly.\nThe further you go, the harder it gets.\n"
+		"ru"		"Зомби побеждены!\nПерейти в режим свободной игры..?\nСвободный режим игры бесконечен.\nЧем дальше, тем сложнее.\n"
 		"chi"       "恭喜你击败了所有僵尸！\n是否进行自由模式？\n"
 	}
 	"M3 Ability Is Back"
 	{		
 		"en"		"Your MOUSE3 Ability is ready again to be used!"
+		"ru"		"Ваша способность MOUSE3 снова готова к использованию!"
 	}
 }
