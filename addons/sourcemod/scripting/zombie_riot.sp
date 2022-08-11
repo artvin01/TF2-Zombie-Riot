@@ -180,6 +180,8 @@ Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;
 
 ConVar zr_voteconfig;
+ConVar zr_weaponsconfig;
+ConVar zr_ignoremapconfig;
 ConVar tf_bot_quota;
 
 int CurrentGame;

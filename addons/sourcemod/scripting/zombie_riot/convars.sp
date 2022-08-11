@@ -11,8 +11,6 @@ static bool CvarEnabled;
 
 void ConVar_PluginStart()
 {
-	zr_voteconfig = CreateConVar("zr_voteconfig", "vote", "Vote config zr/ .cfg already included", FCVAR_DONTRECORD);
-	
 	if(CvarList != INVALID_HANDLE)
 		delete CvarList;
 
@@ -63,6 +61,9 @@ void ConVar_PluginStart()
 	CvarEnablePrivatePlugins = CreateConVar("zr_privateplugins", "0", "Enable private plugins, set this to zero.", FCVAR_DONTRECORD);
 	CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "6", "The maximum amount of blue bots allowed for the killfeed");
 	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
+	zr_voteconfig = CreateConVar("zr_voteconfig", "vote", "Vote config zr/ .cfg already included");
+	zr_weaponsconfig = CreateConVar("zr_weaponsconfig", "weapons", "Weapons config zr/ .cfg already included");
+	zr_ignoremapconfig = CreateConVar("zr_ignoremapconfig", "0", "If to ignore map-specific configs");
 	
 	AutoExecConfig(true, "zombie_riot");
 	

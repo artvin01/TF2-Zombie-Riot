@@ -1090,9 +1090,6 @@ public void Citizen_ClotThink(int iNPC)
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, npc.m_fGunDamage, DMG_SLASH);
 						
-						// Hit particle
-						npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
-						
 						//Did we kill them?
 						if(GetEntProp(target, Prop_Data, "m_iHealth") < 1)
 						{

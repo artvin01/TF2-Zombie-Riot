@@ -338,7 +338,8 @@ void Store_ConfigSetup(KeyValues map)
 	char buffer[PLATFORM_MAX_PATH];
 	if(!kv)
 	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons");
+		zr_weaponsconfig.GetString(buffer, sizeof(buffer));
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
 		kv = new KeyValues("Weapons");
 		kv.ImportFromFile(buffer);
 		RequestFrame(DeleteHandle, kv);
