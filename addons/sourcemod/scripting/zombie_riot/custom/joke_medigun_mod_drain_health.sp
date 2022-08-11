@@ -611,7 +611,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
 						
 				
-				flChargeLevel += 0.2*GetGameFrameTime();
+				flChargeLevel += 0.15*GetGameFrameTime();
 				
 				if (flChargeLevel > 1.0)
 				{
@@ -704,7 +704,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 				if (flChargeLevel > 0.0) 
 				{
-					float heatrefresh = 0.3;
+					float heatrefresh = 0.4;
 					Address address = TF2Attrib_GetByDefIndex(medigun, 314);
 					if(address != Address_Null)
 						heatrefresh *= 1.0+(TF2Attrib_GetValue(address)-9.0)/3;
@@ -729,7 +729,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
 				if (flChargeLevel > 0.0) 
 				{
-					float heatrefresh = 0.2;
+					float heatrefresh = 0.3;
 					Address address = TF2Attrib_GetByDefIndex(medigun, 314);
 					if(address != Address_Null)
 						heatrefresh *= 1.0+(TF2Attrib_GetValue(address)-9.0)/3;
@@ -750,7 +750,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 				if (flChargeLevel > 0.0) 
 				{
-					float heatrefresh = 0.1;
+					float heatrefresh = 0.2;
 					Address address = TF2Attrib_GetByDefIndex(medigun, 314);
 					if(address != Address_Null)
 						heatrefresh *= 1.0+(TF2Attrib_GetValue(address)-9.0)/3;
@@ -797,7 +797,7 @@ public void GB_Check_Ball(int client, int weapon, bool crit)
 		return;
 	}
 	
-	float flChargeLevel = GetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel")+0.05;
+	float flChargeLevel = GetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel")+0.03;
 						
 	if (flChargeLevel >= 1.0) 
 	{
