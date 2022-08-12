@@ -42,6 +42,8 @@ static int Projectile_To_Particle[MAXENTITIES]={0, ...};
 static int Projectile_To_Weapon[MAXENTITIES]={0, ...};
 static bool Cryo_AlreadyHit[MAXENTITIES][MAXENTITIES];
 
+
+
 //#define SOUND_WAND_CRYO_M1		"weapons/syringegun_reload_air1.wav"
 #define SOUND_WAND_CRYO_M1		"weapons/flame_thrower_bb_end.wav"
 #define SOUND_WAND_CRYO_M2		"weapons/icicle_melt_01.wav"
@@ -354,7 +356,7 @@ static void Wand_Launch_Cryo(int client, int iRot, float speed, float time, floa
 	TeleportEntity(iCarrier, NULL_VECTOR, Angles, NULL_VECTOR);
 	TeleportEntity(iRot, NULL_VECTOR, Angles, NULL_VECTOR);
 	SetParent(iCarrier, particle);
-	
+
 	SetEntityRenderMode(iCarrier, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(iCarrier, 0, 0, 0, 0);
 	
@@ -488,7 +490,10 @@ public void Cryo_FreezeZombie(int zombie)
 	ZNPC.m_bFrozen = true;
 	Cryo_Frozen[zombie] = true;
 	Cryo_FreezeLevel[zombie] = 0.0;
-	SetEntityRenderColor(zombie, 0, 0, 255, 255);
+
+
+	SetEntityRenderMode(zombie, RENDER_TRANSCOLOR, false, 1, false, true);
+	SetEntityRenderColor(zombie, 0, 0, 255, 255, false, false, true);
 	CreateTimer(Cryo_FreezeDuration, Cryo_Unfreeze, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
 	float position[3];
 	GetEntPropVector(zombie, Prop_Data, "m_vecAbsOrigin", position);
@@ -527,7 +532,9 @@ public Action Cryo_Unfreeze(Handle Unfreeze, int ref)
 		ZNPC.m_bFrozen = false;
 		
 		CreateTimer(Cryo_SlowDuration, Cryo_Unslow, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
-		SetEntityRenderColor(zombie, 0, 255, 255, 255);
+		
+		SetEntityRenderMode(zombie, i_EntityRenderMode[zombie], true, 2, false, true);
+		SetEntityRenderColor(zombie, i_EntityRenderColour1[zombie], i_EntityRenderColour2[zombie], i_EntityRenderColour3[zombie], i_EntityRenderColour4[zombie], true, false, true);
 	}
 	
 	return Plugin_Continue;
@@ -541,7 +548,6 @@ public Action Cryo_Unslow(Handle Unslow, int ref)
 	return Plugin_Continue;
 	
 	Cryo_Slowed[zombie] = false;
-	SetEntityRenderColor(zombie, 255, 255, 255, 255);
 	
 	return Plugin_Continue;
 }
