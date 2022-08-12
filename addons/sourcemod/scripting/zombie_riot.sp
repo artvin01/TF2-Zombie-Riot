@@ -358,6 +358,16 @@ float f_LowIceDebuff[MAXENTITIES];
 float f_HighIceDebuff[MAXENTITIES];
 bool b_Frozen[MAXENTITIES];
 
+RenderMode i_EntityRenderMode[MAXENTITIES]={RENDER_NORMAL, ...};
+int i_EntityRenderColour1[MAXENTITIES]={255, ...};
+int i_EntityRenderColour2[MAXENTITIES]={255, ...};
+int i_EntityRenderColour3[MAXENTITIES]={255, ...};
+int i_EntityRenderColour4[MAXENTITIES]={255, ...};
+bool i_EntityRenderOverride[MAXENTITIES]={false, ...};
+
+//6 wearables
+int i_Wearable[MAXENTITIES][6];
+
 float f_WidowsWineDebuff[MAXENTITIES];
 float f_WidowsWineDebuffPlayerCooldown[MAXTF2PLAYERS];
 
@@ -920,6 +930,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_kahml"
 };
 
+#include "zombie_riot/stocks_override.sp"
 #include "zombie_riot/stocks.sp"
 #include "zombie_riot/music.sp"
 #include "zombie_riot/waves.sp"
@@ -2894,6 +2905,16 @@ public void OnEntityCreated(int entity, const char[] classname)
 	}
 	else if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		
+		//Normal entity render stuff, This should be set to these things on spawn, just to be sure.
+		
+		i_EntityRenderMode[entity] = RENDER_NORMAL;
+		i_EntityRenderColour1[entity] = 255;
+		i_EntityRenderColour2[entity] = 255;
+		i_EntityRenderColour3[entity] = 255;
+		i_EntityRenderColour4[entity] = 255;
+		i_EntityRenderOverride[entity] = false;
+
 		b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
 		b_EntityIsArrow[entity] = false;
 		CClotBody npc = view_as<CClotBody>(entity);

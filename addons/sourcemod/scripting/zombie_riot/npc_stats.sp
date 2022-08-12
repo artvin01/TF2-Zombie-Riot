@@ -31,12 +31,6 @@ bool b_bBuildingIsPlaced[MAXENTITIES];
 bool b_XenoInfectedSpecialHurt[MAXENTITIES];
 float fl_XenoInfectedSpecialHurtTime[MAXENTITIES];
 bool b_DoGibThisNpc[MAXENTITIES];
-int i_Wearable1[MAXENTITIES]={-1, ...};
-int i_Wearable2[MAXENTITIES]={-1, ...};
-int i_Wearable3[MAXENTITIES]={-1, ...};
-int i_Wearable4[MAXENTITIES]={-1, ...};
-int i_Wearable5[MAXENTITIES]={-1, ...};
-int i_Wearable6[MAXENTITIES]={-1, ...};
 int i_TeamGlow[MAXENTITIES]={-1, ...};
 
 int i_SpawnProtectionEntity[MAXENTITIES]={-1, ...};
@@ -2660,17 +2654,17 @@ methodmap CClotBody
 	{
 		public get()		 
 		{ 
-			return EntRefToEntIndex(i_Wearable1[this.index]); 
+			return EntRefToEntIndex(i_Wearable[this.index][0]); 
 		}
 		public set(int iInt) 
 		{
 			if(iInt == -1)
 			{
-				i_Wearable1[this.index] = INVALID_ENT_REFERENCE;
+				i_Wearable[this.index][0] = INVALID_ENT_REFERENCE;
 			}
 			else
 			{
-				i_Wearable1[this.index] = EntIndexToEntRef(iInt);
+				i_Wearable[this.index][0] = EntIndexToEntRef(iInt);
 			}
 		}
 	}
@@ -2678,17 +2672,17 @@ methodmap CClotBody
 	{
 		public get()		 
 		{ 
-			return EntRefToEntIndex(i_Wearable2[this.index]); 
+			return EntRefToEntIndex(i_Wearable[this.index][1]); 
 		}
 		public set(int iInt) 
 		{
 			if(iInt == -1)
 			{
-				i_Wearable2[this.index] = INVALID_ENT_REFERENCE;
+				i_Wearable[this.index][1] = INVALID_ENT_REFERENCE;
 			}
 			else
 			{
-				i_Wearable2[this.index] = EntIndexToEntRef(iInt);
+				i_Wearable[this.index][1] = EntIndexToEntRef(iInt);
 			}
 		}
 	}
@@ -2696,17 +2690,17 @@ methodmap CClotBody
 	{
 		public get()		 
 		{ 
-			return EntRefToEntIndex(i_Wearable3[this.index]); 
+			return EntRefToEntIndex(i_Wearable[this.index][2]); 
 		}
 		public set(int iInt) 
 		{
 			if(iInt == -1)
 			{
-				i_Wearable3[this.index] = INVALID_ENT_REFERENCE;
+				i_Wearable[this.index][2] = INVALID_ENT_REFERENCE;
 			}
 			else
 			{
-				i_Wearable3[this.index] = EntIndexToEntRef(iInt);
+				i_Wearable[this.index][2] = EntIndexToEntRef(iInt);
 			}
 		}
 	}
@@ -2714,17 +2708,17 @@ methodmap CClotBody
 	{
 		public get()		 
 		{ 
-			return EntRefToEntIndex(i_Wearable4[this.index]); 
+			return EntRefToEntIndex(i_Wearable[this.index][3]); 
 		}
 		public set(int iInt) 
 		{
 			if(iInt == -1)
 			{
-				i_Wearable4[this.index] = INVALID_ENT_REFERENCE;
+				i_Wearable[this.index][3] = INVALID_ENT_REFERENCE;
 			}
 			else
 			{
-				i_Wearable4[this.index] = EntIndexToEntRef(iInt);
+				i_Wearable[this.index][3] = EntIndexToEntRef(iInt);
 			}
 		}
 	}
@@ -2732,17 +2726,17 @@ methodmap CClotBody
 	{
 		public get()		 
 		{ 
-			return EntRefToEntIndex(i_Wearable5[this.index]); 
+			return EntRefToEntIndex(i_Wearable[this.index][5]); 
 		}
 		public set(int iInt) 
 		{
 			if(iInt == -1)
 			{
-				i_Wearable5[this.index] = INVALID_ENT_REFERENCE;
+				i_Wearable[this.index][4] = INVALID_ENT_REFERENCE;
 			}
 			else
 			{
-				i_Wearable5[this.index] = EntIndexToEntRef(iInt);
+				i_Wearable[this.index][4] = EntIndexToEntRef(iInt);
 			}
 		}
 	}
@@ -2750,17 +2744,17 @@ methodmap CClotBody
 	{
 		public get()		 
 		{ 
-			return EntRefToEntIndex(i_Wearable5[this.index]); 
+			return EntRefToEntIndex(i_Wearable[this.index][5]); 
 		}
 		public set(int iInt) 
 		{
 			if(iInt == -1)
 			{
-				i_Wearable6[this.index] = INVALID_ENT_REFERENCE;
+				i_Wearable[this.index][5] = INVALID_ENT_REFERENCE;
 			}
 			else
 			{
-				i_Wearable6[this.index] = EntIndexToEntRef(iInt);
+				i_Wearable[this.index][5] = EntIndexToEntRef(iInt);
 			}
 		}
 	}
@@ -5636,6 +5630,7 @@ static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduc
 	TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vel);
 //	SetEntProp(prop, Prop_Send, "m_CollisionGroup", 2);
 
+	float Random_time = GetRandomFloat(2.0, 3.0);
 	SetEntityCollisionGroup(prop, 2); //COLLISION_GROUP_DEBRIS_TRIGGER
 	SDKHook(prop, SDKHook_ShouldCollide, Gib_ShouldCollide);
 	if(!metal_colour)
@@ -5654,9 +5649,10 @@ static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduc
 	else
 	{
 //		pos[2] -= 40.0;
-		npc.DispatchParticleEffect(prop, "tpdamage_4", pos, NULL_VECTOR, NULL_VECTOR, 1, PATTACH_ROOTBONE_FOLLOW);	
+		int particle = ParticleEffectAt(pos, "tpdamage_4", Random_time); //This is a permanent particle, gotta delete it manually...
+		SetParent(prop, particle);
 	}
-	CreateTimer(GetRandomFloat(2.0, 3.0), Timer_RemoveEntity_Prop, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(Random_time, Timer_RemoveEntity_Prop, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 //	CreateTimer(1.5, Timer_DisableMotion, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 }
 
@@ -6985,12 +6981,12 @@ stock float fmodf(float num, float denom)
 
 public void SetDefaultValuesToZeroNPC(int entity)
 {
-	i_Wearable1[entity] = -1;
-	i_Wearable2[entity] = -1;
-	i_Wearable3[entity] = -1;
-	i_Wearable4[entity] = -1;
-	i_Wearable5[entity] = -1;
-	i_Wearable6[entity] = -1;
+	i_Wearable[entity][0] = -1;
+	i_Wearable[entity][1] = -1;
+	i_Wearable[entity][2] = -1;
+	i_Wearable[entity][3] = -1;
+	i_Wearable[entity][4] = -1;
+	i_Wearable[entity][5] = -1;
 	i_TeamGlow[entity] = -1;
 	i_SpawnProtectionEntity[entity] = -1;
 	b_DissapearOnDeath[entity] = false;
