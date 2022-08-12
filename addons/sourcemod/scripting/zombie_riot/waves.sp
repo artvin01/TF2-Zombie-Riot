@@ -248,7 +248,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	Round round;
 	if(Rounds)
 	{
-		int length = round.Length;
+		int length = Rounds.Length;
 		for(int i; i < length; i++)
 		{
 			Rounds.GetArray(i, round);
