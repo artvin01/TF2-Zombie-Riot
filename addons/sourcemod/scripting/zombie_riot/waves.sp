@@ -245,8 +245,16 @@ void Waves_SetupVote(KeyValues map)
 
 void Waves_SetupWaves(KeyValues kv, bool start)
 {
+	Round round;
 	if(Rounds)
+	{
+		for(int i; i < length; i++)
+		{
+			Rounds.GetArray(i, round);
+			delete round.Waves;
+		}
 		delete Rounds;
+	}
 	
 	Rounds = new ArrayList(sizeof(Round));
 	
@@ -265,7 +273,6 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		f_ExtraDropChanceRarity = 1.0;
 	}
 	Enemy enemy;
-	Round round;
 	Wave wave;
 	kv.GotoFirstSubKey();
 	char buffer[64], plugin[64];
@@ -289,9 +296,9 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		if(round.music_round_2[0])
 			PrecacheSound(round.music_round_2, true);
 
+		round.Waves = new ArrayList(sizeof(Wave));
 		if(kv.GotoFirstSubKey())
 		{
-			round.Waves = new ArrayList(sizeof(Wave));
 			do
 			{
 				if(kv.GetSectionName(buffer, sizeof(buffer)))
@@ -325,8 +332,9 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 			} while(kv.GotoNextKey());
 			
 			kv.GoBack();
-			Rounds.PushArray(round);
 		}
+		
+		Rounds.PushArray(round);
 	} while(kv.GotoNextKey());
 	
 	if(start)

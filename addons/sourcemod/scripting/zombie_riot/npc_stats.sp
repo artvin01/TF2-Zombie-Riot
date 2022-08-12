@@ -5953,7 +5953,36 @@ stock int FireBullet(int m_pAttacker, int iWeapon, float m_vecSrc[3], float m_ve
 			
 			if(StrEqual(class, "base_boss"))
 			{
-				CreateParticle("blood_impact_backscatter", endpos, vecNormal);
+				if (f_CooldownForHurtParticle[TR_GetEntityIndex(trace)] < GetGameTime())
+				{
+					f_CooldownForHurtParticle[TR_GetEntityIndex(trace)] = GetGameTime() + 0.1;
+					switch(view_as<CClotBody>(TR_GetEntityIndex(trace)).m_iBleedType)
+					{
+						case 1:
+						{
+							TE_ParticleInt(g_particleImpactFlesh, endpos);
+							TE_SendToAll();
+						}
+						case 2:
+						{
+							endpos[2] -= 40.0;
+							TE_ParticleInt(g_particleImpactMetal, endpos);
+							TE_SendToAll();
+							endpos[2] += 40.0;
+						}
+						case 3:
+						{
+							TE_ParticleInt(g_particleImpactRubber, endpos);
+							TE_SendToAll();
+						}
+						case 4:
+						{
+							//If you cant find any good blood effect, use this one and just recolour it.
+							TE_BloodSprite(endpos, { 0.0, 0.0, 0.0 }, 125, 255, 125, 255, 32);
+							TE_SendToAll();
+						}
+					}
+				}
 			}
 			else
 			{
