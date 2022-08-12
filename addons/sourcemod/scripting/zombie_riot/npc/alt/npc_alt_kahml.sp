@@ -797,8 +797,8 @@ public void Kahmlstein_ClotThink(int iNPC)
 								//else
 								//	SDKHooks_TakeDamage(target, npc.index, npc.index, 0.3 * fl_kahml_main_melee_damage[npc.index], DMG_SLASH|DMG_CLUB);
 								
-									Custom_Knockback(npc.index, target, fl_kahml_knockback[npc.index]);
-									npc.PlayMeleeHitSound();		
+								Custom_Knockback(npc.index, target, fl_kahml_knockback[npc.index]);
+								npc.PlayMeleeHitSound();		
 								
 								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
 								
