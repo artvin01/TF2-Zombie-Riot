@@ -5583,7 +5583,6 @@ static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduc
 	int prop = CreateEntityByName("prop_physics_multiplayer");
 	if(!IsValidEntity(prop))
 		return;
-	CClotBody npc = view_as<CClotBody>(prop);
 	DispatchKeyValue(prop, "model", model);
 	DispatchKeyValue(prop, "physicsmode", "2");
 	DispatchKeyValue(prop, "massScale", "1.0");
@@ -5637,12 +5636,14 @@ static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduc
 	{
 		if(!xeno)
 		{
-			npc.DispatchParticleEffect(prop, "blood_trail_red_01_goop", pos, NULL_VECTOR, NULL_VECTOR, 1,PATTACH_ROOTBONE_FOLLOW);
+			int particle = ParticleEffectAt(pos, "blood_trail_red_01_goop", Random_time); //This is a permanent particle, gotta delete it manually...
+			SetParent(prop, particle);
 			SetEntityRenderColor(prop, 255, 0, 0, 255);
 		}
 		else
 		{
-			npc.DispatchParticleEffect(prop, "blood_impact_green_01", pos, NULL_VECTOR, NULL_VECTOR, 1,PATTACH_ROOTBONE_FOLLOW);
+			int particle = ParticleEffectAt(pos, "blood_impact_green_01", Random_time); //This is a permanent particle, gotta delete it manually...
+			SetParent(prop, particle);
 			SetEntityRenderColor(prop, 0, 255, 0, 255);
 		}
 	}
