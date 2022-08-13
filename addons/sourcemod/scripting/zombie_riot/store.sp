@@ -30,6 +30,8 @@ enum struct ItemInfo
 	bool HasNoClip;
 	bool SemiAuto;
 	
+	bool NoHeadshot;
+	
 	float SemiAutoStats_FireRate;
 	int SemiAutoStats_MaxAmmo;
 	float SemiAutoStats_ReloadTime;
@@ -138,6 +140,11 @@ enum struct ItemInfo
 		
 		FormatEx(buffer, sizeof(buffer), "%ssemi_auto", prefix);
 		this.SemiAuto				= view_as<bool>(kv.GetNum(buffer));
+		
+		FormatEx(buffer, sizeof(buffer), "%sno_headshot", prefix);
+		this.NoHeadshot				= view_as<bool>(kv.GetNum(buffer));
+		
+
 		
 		FormatEx(buffer, sizeof(buffer), "%ssemi_auto_stats_fire_rate", prefix);
 		this.SemiAutoStats_FireRate				= kv.GetFloat(buffer);
@@ -2267,6 +2274,7 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 				
 				i_CustomWeaponEquipLogic[entity] = 0;
 				i_SemiAutoWeapon[entity] = false;
+				i_WeaponCannotHeadshot[entity] = false;
 				
 				if(entity > MaxClients)
 				{
@@ -2292,7 +2300,10 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 										RequestFrame(Delete_Clip, entity);
 										Delete_Clip(entity);
 									}
-									
+									if(info.NoHeadshot)
+									{
+										i_WeaponCannotHeadshot[entity] = true;
+									}
 									if(info.SemiAuto)
 									{
 										i_SemiAutoWeapon[entity] = true;

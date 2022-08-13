@@ -138,7 +138,7 @@ void Reload_Me(int client)
 						
 					float Reload_Rate = f_SemiAutoStats_ReloadTime[entity];
 						
-					Address address = TF2Attrib_GetByDefIndex(entity, 96);
+					Address address = TF2Attrib_GetByDefIndex(entity, 97);
 					if(address != Address_Null)
 					Reload_Rate *= TF2Attrib_GetValue(address);
 	
@@ -183,7 +183,7 @@ void DoReloadAnimation(int attacker, int slot)
 		int animation = 1;
 		switch(melee)
 		{
-			case 199,1004,141: 
+			case 199,1004,141,1141: 
 				animation=6;
 		}
 		SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);

@@ -440,7 +440,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 			 	npc.FaceTowards(vecTarget);
 				npc.FaceTowards(vecTarget);
-				npc.FireRocket(vPredictedPos, 5.0 * RaidModeScaling / i_HealthScale[npc.index], 300.0/(0.25+i_HealthScale[npc.index]), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
+				npc.FireRocket(vPredictedPos, 3.0 * (RaidModeScaling / i_HealthScale[npc.index]), (300.0/(0.25+i_HealthScale[npc.index])), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
 				npc.m_iAmountProjectiles += 1;
 				npc.PlayRangedSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
@@ -546,7 +546,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 						float projectile_speed = 900.0/(0.25+i_HealthScale[npc.index]);
 						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
 						npc.PlayMeleeSound();
-						npc.FireRocket(vecTarget, 26.0, projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0, EP_NO_KNOCKBACK); //remove the no kb if people cant escape, or just lower the dmg
+/*why 26 at all times*/	npc.FireRocket(vecTarget, 26.0, projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0, EP_NO_KNOCKBACK); //remove the no kb if people cant escape, or just lower the dmg
 						npc.m_flNextMeleeAttack = GetGameTime() + 0.2 * i_HealthScale[npc.index];
 						i_PrimaryRocketsFired[npc.index]++;
 						npc.m_flAttackHappens=0.0;
@@ -565,23 +565,12 @@ public void Blitzkrieg_ClotThink(int iNPC)
 							{
 								if(target <= MaxClients)
 								{
-									float Bonus_damage = 1.0;
-									int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
-	
-									char classname[32];
-									GetEntityClassname(weapon, classname, 32);
+									float truedamage = 4 * (RaidModeScaling / i_HealthScale[npc.index]);
 									
-									int weapon_slot = TF2_GetClassnameSlot(classname);
-									
-									if(weapon_slot != 2)
-									{
-										Bonus_damage = 1.5;
-									}
-									float truedamage = 5 * RaidModeScaling / i_HealthScale[npc.index] * Bonus_damage;
 									SDKHooks_TakeDamage(target, npc.index, npc.index, truedamage, DMG_SLASH|DMG_CLUB);
 								}
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 7.5 * RaidModeScaling / i_HealthScale[npc.index], DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 7.5 * (RaidModeScaling / i_HealthScale[npc.index]), DMG_SLASH|DMG_CLUB);
 								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
 								// Hit sound
 								npc.PlayMeleeHitSound();

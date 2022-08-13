@@ -835,6 +835,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		return Plugin_Handled;
 	}
 	*/
+	
 	if((damagetype & (DMG_BLAST))) //make sure any hitscan boom type isnt actually boom
 	{
 		f_IsThisExplosiveHitscan[attacker] = GetGameTime();
@@ -847,54 +848,55 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 	}
 	
 //	if((damagetype & (DMG_BULLET)) || (damagetype & (DMG_BUCKSHOT))) // Needed, other crap for some reason can trigger headshots, so just make sure only bullets can do this.
+	int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
+	if(IsValidEntity(weapon))
 	{
-		if(hitgroup == HITGROUP_HEAD)
+		if(!i_WeaponCannotHeadshot[weapon])
 		{
-			if(i_HeadshotAffinity[attacker] == 1)
+			if(hitgroup == HITGROUP_HEAD)
 			{
-				damage *= 1.65;
-			}
-			else
-			{
-				damage *= 1.4;
-			}
-			if(i_CurrentEquippedPerk[attacker] == 5)
-			{
-				damage *= 1.25;
-			}
-			
-			int pitch = GetRandomInt(90, 110);
-			int random_case = GetRandomInt(1, 2);
-			float volume = 0.7;
-			
-			if(played_headshotsound_already[attacker] >= GetGameTime())
-			{
-				random_case = played_headshotsound_already_Case[attacker];
-				pitch = played_headshotsound_already_Pitch[attacker];
-				volume = 0.15;
-			}
-			else
-			{
-				float chargerPos[3];
-				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
-				if(b_BoundingBoxVariant[victim] == 1)
+				if(i_HeadshotAffinity[attacker] == 1)
 				{
-					chargerPos[2] += 120.0;
+					damage *= 1.65;
 				}
 				else
 				{
-					chargerPos[2] += 82.0;
+					damage *= 1.4;
+				}
+				if(i_CurrentEquippedPerk[attacker] == 5)
+				{
+					damage *= 1.25;
 				}
 				
-				TE_ParticleInt(g_particleCritText, chargerPos);
-				TE_SendToClient(attacker);
-				played_headshotsound_already_Case[attacker] = random_case;
-				played_headshotsound_already_Pitch[attacker] = pitch;
-			}
-			
-			int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
-			if(IsValidEntity(weapon)) //Extra bombs!
-			{
+				int pitch = GetRandomInt(90, 110);
+				int random_case = GetRandomInt(1, 2);
+				float volume = 0.7;
+				
+				if(played_headshotsound_already[attacker] >= GetGameTime())
+				{
+					random_case = played_headshotsound_already_Case[attacker];
+					pitch = played_headshotsound_already_Pitch[attacker];
+					volume = 0.15;
+				}
+				else
+				{
+					float chargerPos[3];
+					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
+					if(b_BoundingBoxVariant[victim] == 1)
+					{
+						chargerPos[2] += 120.0;
+					}
+					else
+					{
+						chargerPos[2] += 82.0;
+					}
+					
+					TE_ParticleInt(g_particleCritText, chargerPos);
+					TE_SendToClient(attacker);
+					played_headshotsound_already_Case[attacker] = random_case;
+					played_headshotsound_already_Pitch[attacker] = pitch;
+				}
+				
 				if(i_ArsenalBombImplanter[weapon] > 0)
 				{
 					if(f_ChargeTerroriserSniper[weapon] > 149.0)
@@ -908,47 +910,47 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					Apply_Particle_Teroriser_Indicator(victim);
 					damage = 0.0;
 				}
-			}
-			
-			played_headshotsound_already[attacker] = GetGameTime();
-			switch(random_case)
-			{
-				case 1:
+				
+				played_headshotsound_already[attacker] = GetGameTime();
+				switch(random_case)
 				{
-					for(int client=1; client<=MaxClients; client++)
+					case 1:
 					{
-						if(IsClientInGame(client) && client != attacker)
+						for(int client=1; client<=MaxClients; client++)
 						{
-							EmitSoundToClient(client, "zombiesurvival/headshot1.wav", victim, _, 80, _, volume, pitch);
+							if(IsClientInGame(client) && client != attacker)
+							{
+								EmitSoundToClient(client, "zombiesurvival/headshot1.wav", victim, _, 80, _, volume, pitch);
+							}
 						}
+						EmitSoundToClient(attacker, "zombiesurvival/headshot1.wav", _, _, 90, _, volume, pitch);
 					}
-					EmitSoundToClient(attacker, "zombiesurvival/headshot1.wav", _, _, 90, _, volume, pitch);
-				}
-				case 2:
-				{
-					for(int client=1; client<=MaxClients; client++)
+					case 2:
 					{
-						if(IsClientInGame(client) && client != attacker)
+						for(int client=1; client<=MaxClients; client++)
 						{
-							EmitSoundToClient(client, "zombiesurvival/headshot2.wav", victim, _, 80, _, volume, pitch);
+							if(IsClientInGame(client) && client != attacker)
+							{
+								EmitSoundToClient(client, "zombiesurvival/headshot2.wav", victim, _, 80, _, volume, pitch);
+							}
 						}
+						EmitSoundToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, volume, pitch);
 					}
-					EmitSoundToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, volume, pitch);
 				}
-			}
-			return Plugin_Changed;
-		}
-		else
-		{
-			if(i_HeadshotAffinity[attacker] == 1)
-			{
-				damage *= 0.75;
 				return Plugin_Changed;
 			}
-			return Plugin_Continue;		
+			else
+			{
+				if(i_HeadshotAffinity[attacker] == 1)
+				{
+					damage *= 0.75;
+					return Plugin_Changed;
+				}
+				return Plugin_Continue;		
+			}
 		}
 	}
-//	return Plugin_Continue;
+	return Plugin_Continue;
 }
 		
 static float f_CooldownForHurtHud[MAXPLAYERS];	

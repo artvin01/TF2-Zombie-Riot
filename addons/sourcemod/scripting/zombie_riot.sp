@@ -243,6 +243,7 @@ TFClassType WeaponClass[MAXTF2PLAYERS];
 int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
 int i_SemiAutoWeapon[MAXENTITIES];
 int i_SemiAutoWeapon_AmmoCount[MAXTF2PLAYERS][10]; //idk like 10 slots lol
+bool i_WeaponCannotHeadshot[MAXENTITIES];
 
 float f_SemiAutoStats_FireRate[MAXENTITIES];
 int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
