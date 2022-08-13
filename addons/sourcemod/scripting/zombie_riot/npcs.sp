@@ -542,7 +542,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 				GetEntPropVector(entity_Spawner, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(entity_Spawner, Prop_Data, "m_angRotation", ang);
 				
-				entity_Spawner = Npc_Create(enemy.Index, -1, pos, ang, false, enemy.Data);
+				entity_Spawner = Npc_Create(enemy.Index, -1, pos, ang, enemy.Friendly, enemy.Data);
 				if(entity_Spawner != -1)
 				{
 					if(enemy.Is_Outlined)

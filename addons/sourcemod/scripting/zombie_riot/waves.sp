@@ -7,6 +7,7 @@ enum struct Enemy
 	int Does_Not_Scale;
 	int Is_Immune_To_Nuke;
 	bool Is_Static;
+	bool Friendly;
 	int Index;
 	int Credits;
 	char Data[16];
@@ -322,6 +323,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.Is_Health_Scaled = kv.GetNum("is_health_scaling");
 						enemy.Is_Immune_To_Nuke = kv.GetNum("is_immune_to_nuke");
 						enemy.Is_Static = view_as<bool>(kv.GetNum("is_static"));
+						enemy.Friendly = view_as<bool>(kv.GetNum("friendly"));
 						enemy.Credits = kv.GetNum("cash");
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
