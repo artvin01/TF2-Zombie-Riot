@@ -2816,6 +2816,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		int slot = TF2_GetClassnameSlot(classname);
 		i_SemiAutoWeapon_AmmoCount[client][slot] -= 1;
 		PrintHintText(client, "[%i/%i]", i_SemiAutoStats_MaxAmmo[weapon],i_SemiAutoWeapon_AmmoCount[client][slot]);
+		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 	}
 	
 	if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee && !StrEqual(classname, "tf_weapon_wrench"))
