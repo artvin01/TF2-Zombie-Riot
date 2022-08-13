@@ -174,8 +174,15 @@ void ApplyPrimaryAttackDelay(DataPack pack)
 	delete pack;
 }
 
+//int animation_count_up;
+
 void DoReloadAnimation(int attacker, int slot)
 {
+	
+//	animation_count_up += 1;
+	
+	
+	
 	int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
 	int melee = GetIndexOfWeaponSlot(attacker, slot);
 	if(viewmodel>MaxClients && IsValidEntity(viewmodel))
@@ -185,7 +192,11 @@ void DoReloadAnimation(int attacker, int slot)
 		{
 			case 199,1004,141,1141: 
 				animation=6;
+			
+			case 449,773:
+				animation = 20;
 		}
+	//	PrintToChatAll("%i",animation_count_up
 		SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);
 	}
 	
