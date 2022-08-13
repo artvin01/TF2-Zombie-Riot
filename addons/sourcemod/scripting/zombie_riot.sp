@@ -243,6 +243,12 @@ TFClassType WeaponClass[MAXTF2PLAYERS];
 int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
 int i_SemiAutoWeapon[MAXENTITIES];
 int i_SemiAutoWeapon_AmmoCount[MAXTF2PLAYERS][10]; //idk like 10 slots lol
+
+float f_SemiAutoStats_FireRate[MAXENTITIES];
+int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
+float f_SemiAutoStats_ReloadTime[MAXENTITIES];
+
+	
 int CashSpent[MAXTF2PLAYERS];
 int Level[MAXTF2PLAYERS];
 int XP[MAXTF2PLAYERS];
@@ -1275,6 +1281,7 @@ public void OnMapStart()
 	PrecacheSound("misc/halloween/clock_tick.wav");
 	PrecacheSound("mvm/mvm_bomb_warning.wav");
 	PrecacheSound("weapons/jar_explode.wav");
+	PrecacheSound("weapons/shotgun_empty.wav");
 	
 	MapStartResetAll();
 	EscapeMode = false;
@@ -2808,7 +2815,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	{
 		int slot = TF2_GetClassnameSlot(classname);
 		i_SemiAutoWeapon_AmmoCount[client][slot] -= 1;
-		PrintToChatAll("%i",i_SemiAutoWeapon_AmmoCount[client][slot]);
+		PrintHintText(client, "[%i/%i]", i_SemiAutoStats_MaxAmmo[weapon],i_SemiAutoWeapon_AmmoCount[client][slot]);
 	}
 	
 	if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee && !StrEqual(classname, "tf_weapon_wrench"))

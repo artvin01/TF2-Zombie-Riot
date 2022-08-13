@@ -30,6 +30,10 @@ enum struct ItemInfo
 	bool HasNoClip;
 	bool SemiAuto;
 	
+	float SemiAutoStats_FireRate;
+	int SemiAutoStats_MaxAmmo;
+	float SemiAutoStats_ReloadTime;
+	
 	bool NoLagComp;
 	bool OnlyLagCompCollision;
 	bool OnlyLagCompAwayEnemy;
@@ -134,6 +138,17 @@ enum struct ItemInfo
 		
 		FormatEx(buffer, sizeof(buffer), "%ssemi_auto", prefix);
 		this.SemiAuto				= view_as<bool>(kv.GetNum(buffer));
+		
+		FormatEx(buffer, sizeof(buffer), "%ssemi_auto_stats_fire_rate", prefix);
+		this.SemiAutoStats_FireRate				= kv.GetFloat(buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%ssemi_auto_stats_maxAmmo", prefix);
+		this.SemiAutoStats_MaxAmmo				= kv.GetNum(buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%ssemi_auto_stats_reloadtime", prefix);
+		this.SemiAutoStats_ReloadTime			= kv.GetFloat(buffer);
+	
+	
 		
 		FormatEx(buffer, sizeof(buffer), "%sfunc_attack", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
@@ -2251,9 +2266,11 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 				entity = SpawnWeapon(client, info.Classname, info.Index, 5, 6, info.Attrib, info.Value, info.Attribs);
 				
 				i_CustomWeaponEquipLogic[entity] = 0;
+				i_SemiAutoWeapon[entity] = false;
 				
 				if(entity > MaxClients)
 				{
+					
 					if(info.CustomWeaponOnEquip != 0)
 					{
 						i_CustomWeaponEquipLogic[entity] = info.CustomWeaponOnEquip;
@@ -2275,17 +2292,20 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 										RequestFrame(Delete_Clip, entity);
 										Delete_Clip(entity);
 									}
+									
 									if(info.SemiAuto)
 									{
 										i_SemiAutoWeapon[entity] = true;
 										int slot_weapon_ammo = TF2_GetClassnameSlot(info.Classname);
 										
-										i_SemiAutoWeapon_AmmoCount[client][slot_weapon_ammo] = 10; //Set the ammo to 0
+										i_SemiAutoWeapon_AmmoCount[client][slot_weapon_ammo] = 0; //Set the ammo to 0 so they cant abuse it.
+										
+										f_SemiAutoStats_FireRate[entity] = info.SemiAutoStats_FireRate;
+										i_SemiAutoStats_MaxAmmo[entity] = info.SemiAutoStats_MaxAmmo;
+										f_SemiAutoStats_ReloadTime[entity] = info.SemiAutoStats_ReloadTime;
+	
 									}
-									else
-									{
-										i_SemiAutoWeapon[entity] = false;
-									}
+									
 									if(!EscapeMode || info.Ammo < 3) //my man broke my shit.
 									{
 										SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", info.Ammo);

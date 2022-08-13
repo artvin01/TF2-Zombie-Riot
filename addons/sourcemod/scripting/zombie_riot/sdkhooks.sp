@@ -71,12 +71,12 @@ void SDKHook_HookClient(int client)
 {
 	SDKUnhook(client, SDKHook_PostThink, OnPostThink);
 	SDKUnhook(client, SDKHook_PreThinkPost, OnPreThinkPost);
-	SDKUnhook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost);
+	SDKUnhook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost)
 	SDKUnhook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
 	
 	SDKHook(client, SDKHook_PostThink, OnPostThink);
 	SDKHook(client, SDKHook_PreThinkPost, OnPreThinkPost);
-	SDKHook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost);
+	SDKHook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost)
 	SDKHook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
 	
 	#if !defined NoSendProxyClass
@@ -1154,16 +1154,45 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	return Plugin_Continue;
 }
 
+int i_PreviousWeapon[MAXTF2PLAYERS];
+
 public void OnWeaponSwitchPost(int client, int weapon)
 {
 	if(weapon != -1)
 	{
 		int weapon2 = weapon;
 		
+		if(EntRefToEntIndex(i_PreviousWeapon[client]) != weapon)
+			OnWeaponSwitchPre(client, EntRefToEntIndex(i_PreviousWeapon[client]));
+		
+		i_PreviousWeapon[client] = EntIndexToEntRef(weapon);
+		
 		char buffer[36];
 		GetEntityClassname(weapon2, buffer, sizeof(buffer));
 		Building_WeaponSwitchPost(client, weapon2, buffer);
 		ViewChange_Switch(client, weapon2, buffer);
+		
+		if(i_SemiAutoWeapon[weapon])
+		{
+			char classname[64];
+			GetEntityClassname(weapon, classname, sizeof(classname));
+			int slot = TF2_GetClassnameSlot(classname);
+			if(i_SemiAutoWeapon_AmmoCount[client][slot] > 0)
+			{
+				TF2Attrib_SetByDefIndex(weapon, 821, 0.0);
+			}
+		}
+	}
+}
+
+public void OnWeaponSwitchPre(int client, int weapon)
+{
+	if(weapon != -1)
+	{
+		if(i_SemiAutoWeapon[weapon])
+		{
+			TF2Attrib_SetByDefIndex(weapon, 821, 0.0);
+		}
 	}
 }
 
