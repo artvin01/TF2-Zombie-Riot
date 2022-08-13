@@ -2726,7 +2726,7 @@ methodmap CClotBody
 	{
 		public get()		 
 		{ 
-			return EntRefToEntIndex(i_Wearable[this.index][5]); 
+			return EntRefToEntIndex(i_Wearable[this.index][4]); 
 		}
 		public set(int iInt) 
 		{
