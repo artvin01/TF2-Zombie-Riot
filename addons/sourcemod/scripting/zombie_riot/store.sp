@@ -28,6 +28,7 @@ enum struct ItemInfo
 	int Cost;
 	
 	bool HasNoClip;
+	bool SemiAuto;
 	
 	bool NoLagComp;
 	bool OnlyLagCompCollision;
@@ -130,6 +131,9 @@ enum struct ItemInfo
 		
 		FormatEx(buffer, sizeof(buffer), "%sno_clip", prefix);
 		this.HasNoClip				= view_as<bool>(kv.GetNum(buffer));
+		
+		FormatEx(buffer, sizeof(buffer), "%ssemi_auto", prefix);
+		this.SemiAuto				= view_as<bool>(kv.GetNum(buffer));
 		
 		FormatEx(buffer, sizeof(buffer), "%sfunc_attack", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
@@ -2270,6 +2274,17 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 									{
 										RequestFrame(Delete_Clip, entity);
 										Delete_Clip(entity);
+									}
+									if(info.SemiAuto)
+									{
+										i_SemiAutoWeapon[entity] = true;
+										int slot_weapon_ammo = TF2_GetClassnameSlot(info.Classname);
+										
+										i_SemiAutoWeapon_AmmoCount[client][slot_weapon_ammo] = 10; //Set the ammo to 0
+									}
+									else
+									{
+										i_SemiAutoWeapon[entity] = false;
 									}
 									if(!EscapeMode || info.Ammo < 3) //my man broke my shit.
 									{

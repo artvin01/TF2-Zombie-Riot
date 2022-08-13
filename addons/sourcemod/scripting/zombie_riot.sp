@@ -241,6 +241,8 @@ int dieingstate[MAXTF2PLAYERS];
 TFClassType CurrentClass[MAXTF2PLAYERS];
 TFClassType WeaponClass[MAXTF2PLAYERS];
 int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
+int i_SemiAutoWeapon[MAXENTITIES];
+int i_SemiAutoWeapon_AmmoCount[MAXTF2PLAYERS][10]; //idk like 10 slots lol
 int CashSpent[MAXTF2PLAYERS];
 int Level[MAXTF2PLAYERS];
 int XP[MAXTF2PLAYERS];
@@ -1020,6 +1022,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_ark.sp"
 #include "zombie_riot/custom/pets.sp"
 #include "zombie_riot/custom/coin_flip.sp"
+#include "zombie_riot/custom/weapon_manual_reload.sp"
 
 //FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
@@ -2451,6 +2454,18 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	#endif
 	
 	Escape_PlayerRunCmd(client);
+	
+	
+	if(buttons & IN_ATTACK)
+	{
+		int entity = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(entity > MaxClients)
+		{
+			f_Actualm_flNextPrimaryAttack[entity] = GetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack");
+			Attributes_Fire(client, entity);
+		}
+	}
+	
 	/*
 	if(dieingstate[client] > 0)
 	{
@@ -2572,14 +2587,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			M3_Abilities(client);
 		}
 	}
-	
-	if(buttons & IN_ATTACK)
-	{
-		int entity = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(entity > MaxClients)
-			Attributes_Fire(client, entity);
-	}
-	
+
 	if(holding[client] == IN_RELOAD && dieingstate[client] <= 0 && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 	{
 		int target = GetClientPointVisibleRevive(client);
@@ -2725,6 +2733,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 
 public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3])
 {
+	SemiAutoWeapon(client, buttons);
 	Pets_PlayerRunCmdPost(client, buttons, angles);
 	Medikit_healing(client, buttons);
 }
@@ -2793,6 +2802,13 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		Call_PushCellRef(result);
 		Call_PushCell(slot);	//This is m1 :)
 		Call_Finish(action);
+	}
+	
+	if(i_SemiAutoWeapon[weapon])
+	{
+		int slot = TF2_GetClassnameSlot(classname);
+		i_SemiAutoWeapon_AmmoCount[client][slot] -= 1;
+		PrintToChatAll("%i",i_SemiAutoWeapon_AmmoCount[client][slot]);
 	}
 	
 	if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee && !StrEqual(classname, "tf_weapon_wrench"))
