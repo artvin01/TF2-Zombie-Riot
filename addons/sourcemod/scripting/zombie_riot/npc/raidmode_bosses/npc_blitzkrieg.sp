@@ -440,7 +440,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 			 	npc.FaceTowards(vecTarget);
 				npc.FaceTowards(vecTarget);
-				npc.FireRocket(vPredictedPos, 3.0 * (RaidModeScaling / i_HealthScale[npc.index]), (300.0/(0.25+i_HealthScale[npc.index])), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
+				npc.FireRocket(vPredictedPos, 20.0 * (RaidModeScaling / i_HealthScale[npc.index]), (300.0/(0.25+i_HealthScale[npc.index])), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
 				npc.m_iAmountProjectiles += 1;
 				npc.PlayRangedSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
@@ -546,7 +546,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 						float projectile_speed = 900.0/(0.25+i_HealthScale[npc.index]);
 						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
 						npc.PlayMeleeSound();
-/*why 26 at all times*/	npc.FireRocket(vecTarget, 26.0, projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0, EP_NO_KNOCKBACK); //remove the no kb if people cant escape, or just lower the dmg
+						npc.FireRocket(vecTarget, 7.5 * (RaidModeScaling / i_HealthScale[npc.index]), projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0, EP_NO_KNOCKBACK); //remove the no kb if people cant escape, or just lower the dmg
 						npc.m_flNextMeleeAttack = GetGameTime() + 0.2 * i_HealthScale[npc.index];
 						i_PrimaryRocketsFired[npc.index]++;
 						npc.m_flAttackHappens=0.0;
@@ -624,7 +624,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float meleedmg;
-								meleedmg = 100.0 * RaidModeScaling / i_HealthScale[npc.index]
+								meleedmg = 15.0 * (RaidModeScaling / i_HealthScale[npc.index]);	//So assmuing wave 15, life 1, and vs non melee its 40.5 dmg base
 								if(target <= MaxClients)
 								{
 									float Bonus_damage = 1.0;
