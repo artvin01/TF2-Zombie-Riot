@@ -28,6 +28,13 @@ enum struct ItemInfo
 	int Cost;
 	
 	bool HasNoClip;
+	bool SemiAuto;
+	
+	bool NoHeadshot;
+	
+	float SemiAutoStats_FireRate;
+	int SemiAutoStats_MaxAmmo;
+	float SemiAutoStats_ReloadTime;
 	
 	bool NoLagComp;
 	bool OnlyLagCompCollision;
@@ -130,6 +137,25 @@ enum struct ItemInfo
 		
 		FormatEx(buffer, sizeof(buffer), "%sno_clip", prefix);
 		this.HasNoClip				= view_as<bool>(kv.GetNum(buffer));
+		
+		FormatEx(buffer, sizeof(buffer), "%ssemi_auto", prefix);
+		this.SemiAuto				= view_as<bool>(kv.GetNum(buffer));
+		
+		FormatEx(buffer, sizeof(buffer), "%sno_headshot", prefix);
+		this.NoHeadshot				= view_as<bool>(kv.GetNum(buffer));
+		
+
+		
+		FormatEx(buffer, sizeof(buffer), "%ssemi_auto_stats_fire_rate", prefix);
+		this.SemiAutoStats_FireRate				= kv.GetFloat(buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%ssemi_auto_stats_maxAmmo", prefix);
+		this.SemiAutoStats_MaxAmmo				= kv.GetNum(buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%ssemi_auto_stats_reloadtime", prefix);
+		this.SemiAutoStats_ReloadTime			= kv.GetFloat(buffer);
+	
+	
 		
 		FormatEx(buffer, sizeof(buffer), "%sfunc_attack", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
@@ -338,7 +364,8 @@ void Store_ConfigSetup(KeyValues map)
 	char buffer[PLATFORM_MAX_PATH];
 	if(!kv)
 	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons");
+		zr_weaponsconfig.GetString(buffer, sizeof(buffer));
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
 		kv = new KeyValues("Weapons");
 		kv.ImportFromFile(buffer);
 		RequestFrame(DeleteHandle, kv);
@@ -1290,20 +1317,28 @@ static void MenuPage(int client, int section)
 	char buffer[96];
 	int length = StoreItems.Length;
 	static Item item2;
+	
+	int ClientLevel = Level[client];
+	
+	if(CvarInfiniteCash.BoolValue)
+	{
+		ClientLevel = 9999; //Set client lvl to 9999 for shop if infinite cash is enabled.
+	}
+	
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
 		if(NPCOnly[client] == 1)
 		{
-			if(!item.NPCSeller || item.Level > Level[client])
+			if(!item.NPCSeller || item.Level > ClientLevel)
 				continue;
 		}
 		else if(NPCOnly[client] == 2)
 		{
-			if(item.Level > Level[client])
+			if(item.Level > ClientLevel)
 				continue;
 		}
-		else if(item.Hidden || item.Section != section || item.Level > Level[client] || (EscapeMode && item.NoEscape))
+		else if(item.Hidden || item.Section != section || item.Level > ClientLevel || (EscapeMode && item.NoEscape))
 		{
 			continue;
 		}
@@ -1858,6 +1893,23 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									}
 									return 0;
 								}
+								else
+								{
+									int client_previously = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
+									if(IsValidClient(client_previously) && client_previously != client)
+									{
+										//Give them some their money back! Some other person just override theirs, i dont think they should be punished for that.......
+										//BUT ONLY IF ITS ACTUALLY A DIFFERENT CLIENT. :(
+										int money_back = RoundToCeil(float(i_ThisEntityHasAMachineThatBelongsToClientMoney[entity]) * 0.7);
+										SetGlobalTransTarget(client_previously);
+										PrintToChat(client_previously, "%t","You got your money back npc", money_back);
+										CashSpent[client_previously] -= money_back;
+										i_ThisEntityHasAMachineThatBelongsToClientMoney[entity] = 0;
+										
+									}
+									i_ThisEntityHasAMachineThatBelongsToClient[entity] = GetClientUserId(client);
+									i_ThisEntityHasAMachineThatBelongsToClientMoney[entity] = info.Cost;
+								}
 							}
 						}
 					}
@@ -2246,9 +2298,12 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 				entity = SpawnWeapon(client, info.Classname, info.Index, 5, 6, info.Attrib, info.Value, info.Attribs);
 				
 				i_CustomWeaponEquipLogic[entity] = 0;
+				i_SemiAutoWeapon[entity] = false;
+				i_WeaponCannotHeadshot[entity] = false;
 				
 				if(entity > MaxClients)
 				{
+					
 					if(info.CustomWeaponOnEquip != 0)
 					{
 						i_CustomWeaponEquipLogic[entity] = info.CustomWeaponOnEquip;
@@ -2270,6 +2325,23 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 										RequestFrame(Delete_Clip, entity);
 										Delete_Clip(entity);
 									}
+									if(info.NoHeadshot)
+									{
+										i_WeaponCannotHeadshot[entity] = true;
+									}
+									if(info.SemiAuto)
+									{
+										i_SemiAutoWeapon[entity] = true;
+										int slot_weapon_ammo = TF2_GetClassnameSlot(info.Classname);
+										
+										i_SemiAutoWeapon_AmmoCount[client][slot_weapon_ammo] = 0; //Set the ammo to 0 so they cant abuse it.
+										
+										f_SemiAutoStats_FireRate[entity] = info.SemiAutoStats_FireRate;
+										i_SemiAutoStats_MaxAmmo[entity] = info.SemiAutoStats_MaxAmmo;
+										f_SemiAutoStats_ReloadTime[entity] = info.SemiAutoStats_ReloadTime;
+	
+									}
+									
 									if(!EscapeMode || info.Ammo < 3) //my man broke my shit.
 									{
 										SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", info.Ammo);

@@ -3593,7 +3593,15 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
-					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+					int owner = -1;
+					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
+					{
+						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+					}
+					else
+					{
+						owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
+					}
 					//if(IsValidClient(owner))
 					{
 						int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -3658,11 +3666,16 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
-					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					if(IsValidClient(owner))
+					int owner = -1;
+					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
 					{
-						Do_Perk_Machine_Logic(owner, client, entity, 1);
+						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
 					}
+					else
+					{
+						owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
+					}
+					Do_Perk_Machine_Logic(owner, client, entity, 1);
 				}
 			}
 			else if(id == -4)
@@ -3670,11 +3683,16 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
-					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					if(IsValidClient(owner))
+					int owner = -1;
+					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
 					{
-						Do_Perk_Machine_Logic(owner, client, entity, 2);
+						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
 					}
+					else
+					{
+						owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
+					}
+					Do_Perk_Machine_Logic(owner, client, entity, 2);
 				}
 			}
 			else if(id == -5)
@@ -3682,11 +3700,16 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
-					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					if(IsValidClient(owner))
+					int owner = -1;
+					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
 					{
-						Do_Perk_Machine_Logic(owner, client, entity, 3);
+						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
 					}
+					else
+					{
+						owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
+					}
+					Do_Perk_Machine_Logic(owner, client, entity, 3);
 				}
 			}
 			else if(id == -6)
@@ -3694,11 +3717,16 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
-					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					if(IsValidClient(owner))
+					int owner = -1;
+					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
 					{
-						Do_Perk_Machine_Logic(owner, client, entity, 4);
+						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
 					}
+					else
+					{
+						owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
+					}
+					Do_Perk_Machine_Logic(owner, client, entity, 4);
 				}
 			}
 			else if(id == -7)
@@ -3706,11 +3734,16 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
-					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					if(IsValidClient(owner))
+					int owner = -1;
+					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
 					{
-						Do_Perk_Machine_Logic(owner, client, entity, 5);
+						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
 					}
+					else
+					{
+						owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
+					}	
+					Do_Perk_Machine_Logic(owner, client, entity, 5);
 				}
 			}
 			else if(id == -8)
@@ -3718,11 +3751,12 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
-					int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					if(IsValidClient(owner))
+					int owner = -1;
+					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
 					{
-						Do_Perk_Machine_Logic(owner, client, entity, 6);
+						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
 					}
+					Do_Perk_Machine_Logic(owner, client, entity, 6);
 				}
 			}
 		}

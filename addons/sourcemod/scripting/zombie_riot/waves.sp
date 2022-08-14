@@ -7,6 +7,7 @@ enum struct Enemy
 	int Does_Not_Scale;
 	int Is_Immune_To_Nuke;
 	bool Is_Static;
+	bool Friendly;
 	int Index;
 	int Credits;
 	char Data[16];
@@ -245,8 +246,17 @@ void Waves_SetupVote(KeyValues map)
 
 void Waves_SetupWaves(KeyValues kv, bool start)
 {
+	Round round;
 	if(Rounds)
+	{
+		int length = Rounds.Length;
+		for(int i; i < length; i++)
+		{
+			Rounds.GetArray(i, round);
+			delete round.Waves;
+		}
 		delete Rounds;
+	}
 	
 	Rounds = new ArrayList(sizeof(Round));
 	
@@ -265,7 +275,6 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		f_ExtraDropChanceRarity = 1.0;
 	}
 	Enemy enemy;
-	Round round;
 	Wave wave;
 	kv.GotoFirstSubKey();
 	char buffer[64], plugin[64];
@@ -289,9 +298,9 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		if(round.music_round_2[0])
 			PrecacheSound(round.music_round_2, true);
 
+		round.Waves = new ArrayList(sizeof(Wave));
 		if(kv.GotoFirstSubKey())
 		{
-			round.Waves = new ArrayList(sizeof(Wave));
 			do
 			{
 				if(kv.GetSectionName(buffer, sizeof(buffer)))
@@ -314,6 +323,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.Is_Health_Scaled = kv.GetNum("is_health_scaling");
 						enemy.Is_Immune_To_Nuke = kv.GetNum("is_immune_to_nuke");
 						enemy.Is_Static = view_as<bool>(kv.GetNum("is_static"));
+						enemy.Friendly = view_as<bool>(kv.GetNum("friendly"));
 						enemy.Credits = kv.GetNum("cash");
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
@@ -325,8 +335,9 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 			} while(kv.GotoNextKey());
 			
 			kv.GoBack();
-			Rounds.PushArray(round);
 		}
+		
+		Rounds.PushArray(round);
 	} while(kv.GotoNextKey());
 	
 	if(start)

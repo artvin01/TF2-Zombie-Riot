@@ -290,7 +290,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			return false;
 		}
 	}
-	else if(b_Is_Npc_Rocket[ent2])
+	if(b_Is_Npc_Rocket[ent2])
 	{
 		if(b_Is_Blue_Npc[ent1])
 		{

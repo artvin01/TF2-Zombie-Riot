@@ -338,7 +338,7 @@ public void SawRunner_ClotThink(int iNPC)
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 3000000000.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 999999.0, DMG_SLASH|DMG_CLUB);
 									}
 									
 									// Hit particle

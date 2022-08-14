@@ -76,9 +76,6 @@ public void Doctor_ClotThink(int iNPC)
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 200, DMG_CLUB);
 						Custom_Knockback(npc.index, target, 500.0);
-						
-						// Hit particle
-						npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
 					}
 				}
 				delete swingTrace;

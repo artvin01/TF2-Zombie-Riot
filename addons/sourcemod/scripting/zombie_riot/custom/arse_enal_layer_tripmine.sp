@@ -571,12 +571,12 @@ public Action Terroriser_Explosion(Handle Trip_ArmMine_Handle, any pack)
 	if (IsValidMulti(client) && IsValidEntity(npc) && !b_NpcHasDied[npc])
 	{
 		damage *= bomb_amount;
-		SDKHooks_TakeDamage(npc, client, client, damage, DMG_BLAST);
 		float EntLoc2[3];
-		GetEntPropVector(npc, Prop_Data, "m_vecAbsOrigin", EntLoc2);
+		
+		EntLoc2 = WorldSpaceCenter(npc);
 							
 		SpawnSmallExplosion(EntLoc2);
-									
+
 		switch(GetRandomInt(1, 3))
 		{
 			case 1:
@@ -592,29 +592,11 @@ public Action Terroriser_Explosion(Handle Trip_ArmMine_Handle, any pack)
 				EmitSoundToAll(TERRORIZER_BLAST2, npc, _);
 			}
 		}
-		float damage_reduction = 1.0;
 		CleanAllApplied_Aresenal(npc);
-		for(int entitycount_2; entitycount_2<i_MaxcountNpc; entitycount_2++)
-		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount_2]);
-			if (IsValidEntity(baseboss_index))
-			{
-				if(!b_NpcHasDied[baseboss_index] && baseboss_index != npc)
-				{
-					float VicLoc[3];
-					GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", VicLoc);
-												
-					if (GetVectorDistance(VicLoc, EntLoc2, true) <= Pow(Terroriser_Implant_Radius, 2.0))
-					{
-						float distance_1 = GetVectorDistance(VicLoc, EntLoc2);
-						float damage_1 = Custom_Explosive_Logic(client, distance_1, 0.35, damage * 0.8, 351.0);
-													
-						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1 / damage_reduction ,DMG_BLAST);
-						damage_reduction *= EXPLOSION_AOE_DAMAGE_FALLOFF;
-					}
-				}
-			}
-		}
+		
+		Explode_Logic_Custom(damage, client, client, -1, EntLoc2, Terroriser_Implant_Radius,_,_,false);
+		f_CooldownForHurtHud[client] = 0.0; //So it shows the damage delt by by secondary internal combustion too.
+		SDKHooks_TakeDamage(npc, client, client, damage * 0.5, DMG_BLAST); //extra damage to the target that was hit cus yeah.
 	}
 	return Plugin_Handled;
 }

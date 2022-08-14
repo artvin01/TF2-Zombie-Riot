@@ -109,9 +109,6 @@ public void Addicition_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 600.0, DMG_CLUB);
-						
-						// Hit particle
-						npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
 					}
 				}
 				delete swingTrace;
