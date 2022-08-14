@@ -953,7 +953,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 	return Plugin_Continue;
 }
 		
-static float f_CooldownForHurtHud[MAXPLAYERS];	
+float f_CooldownForHurtHud[MAXPLAYERS];	
 //Otherwise we get kicks if there is too much hurting going on.
 
 public void Func_Breakable_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
