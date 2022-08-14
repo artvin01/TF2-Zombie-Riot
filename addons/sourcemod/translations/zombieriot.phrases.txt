@@ -1211,4 +1211,9 @@
 		"en"		"Your MOUSE3 Ability is ready again to be used!"
 		"ru"		"Ваша способность MOUSE3 снова готова к использованию!"
 	}
+	"You got your money back npc"
+	{
+		"#format"	"{1:d}"
+		"en"		"Someone bought something else for the npc, You get [{1}] Cash back in return as a compesation."
+	}
 }

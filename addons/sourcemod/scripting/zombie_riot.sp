@@ -307,6 +307,7 @@ int Perk_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int Pack_A_Punch_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 
 int i_ThisEntityHasAMachineThatBelongsToClient[MAXENTITIES];
+int i_ThisEntityHasAMachineThatBelongsToClientMoney[MAXENTITIES];
 
 bool b_NpcHasDied[MAXENTITIES]={true, ...};
 const int i_MaxcountNpc = ZR_MAX_NPCS;
@@ -3686,6 +3687,7 @@ public Action Hook_BlockUserMessageEx(UserMsg msg_id, BfRead msg, const int[] pl
 
 public void MapStartResetAll()
 {
+	Zero(i_ThisEntityHasAMachineThatBelongsToClientMoney);
 	Zero(f_WasRecentlyRevivedViaNonWave);
 	Zero(f_TimeAfterSpawn);
 	Zero2(f_Ability_Cooldown_m1);

@@ -1895,7 +1895,20 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								}
 								else
 								{
+									int client_previously = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
+									if(IsValidClient(client_previously) && client_previously != client)
+									{
+										//Give them some their money back! Some other person just override theirs, i dont think they should be punished for that.......
+										//BUT ONLY IF ITS ACTUALLY A DIFFERENT CLIENT. :(
+										int money_back = RoundToCeil(float(i_ThisEntityHasAMachineThatBelongsToClientMoney[entity]) * 0.7);
+										SetGlobalTransTarget(client_previously);
+										PrintToChat(client_previously, "%t","You got your money back npc", money_back);
+										CashSpent[client_previously] -= money_back;
+										i_ThisEntityHasAMachineThatBelongsToClientMoney[entity] = 0;
+										
+									}
 									i_ThisEntityHasAMachineThatBelongsToClient[entity] = GetClientUserId(client);
+									i_ThisEntityHasAMachineThatBelongsToClientMoney[entity] = info.Cost;
 								}
 							}
 						}
