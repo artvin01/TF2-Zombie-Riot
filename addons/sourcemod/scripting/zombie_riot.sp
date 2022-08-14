@@ -2961,6 +2961,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		h_NpcCollissionHookType[entity] = 0;
 		OnEntityCreated_Build_On_Build(entity, classname);
 		SetDefaultValuesToZeroNPC(entity);
+		i_SemiAutoWeapon[entity] = false;
 		
 		if(!StrContains(classname, "env_entity_dissolver"))
 		{
