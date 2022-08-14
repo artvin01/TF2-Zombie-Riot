@@ -306,6 +306,7 @@ int i_Healing_station_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int Perk_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int Pack_A_Punch_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 
+int i_ThisEntityHasAMachineThatBelongsToClient[MAXENTITIES];
 
 bool b_NpcHasDied[MAXENTITIES]={true, ...};
 const int i_MaxcountNpc = ZR_MAX_NPCS;

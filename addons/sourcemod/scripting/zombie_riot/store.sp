@@ -1317,20 +1317,28 @@ static void MenuPage(int client, int section)
 	char buffer[96];
 	int length = StoreItems.Length;
 	static Item item2;
+	
+	int ClientLevel = Level[client];
+	
+	if(CvarInfiniteCash.BoolValue)
+	{
+		ClientLevel = 9999; //Set client lvl to 9999 for shop if infinite cash is enabled.
+	}
+	
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
 		if(NPCOnly[client] == 1)
 		{
-			if(!item.NPCSeller || item.Level > Level[client])
+			if(!item.NPCSeller || item.Level > ClientLevel)
 				continue;
 		}
 		else if(NPCOnly[client] == 2)
 		{
-			if(item.Level > Level[client])
+			if(item.Level > ClientLevel)
 				continue;
 		}
-		else if(item.Hidden || item.Section != section || item.Level > Level[client] || (EscapeMode && item.NoEscape))
+		else if(item.Hidden || item.Section != section || item.Level > ClientLevel || (EscapeMode && item.NoEscape))
 		{
 			continue;
 		}
@@ -1884,6 +1892,10 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 										}
 									}
 									return 0;
+								}
+								else
+								{
+									i_ThisEntityHasAMachineThatBelongsToClient[entity] = GetClientUserId(client);
 								}
 							}
 						}
