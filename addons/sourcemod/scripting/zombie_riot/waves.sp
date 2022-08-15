@@ -41,6 +41,7 @@ enum struct Vote
 {
 	char Name[64];
 	char Config[64];
+	int Level;
 }
 
 static ArrayList Rounds;
@@ -118,7 +119,16 @@ bool Waves_CallVote(int client)
 		{
 			Voting.GetArray(i, vote);
 			vote.Name[0] = CharToUpper(vote.Name[0]);
-			menu.AddItem(vote.Config, vote.Name);
+			
+			if(Level[client] < vote.Level)
+			{
+				Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, Level[client]);
+				menu.AddItem(vote.Config, vote.Name, ITEMDRAW_DISABLED);
+			}
+			else
+			{
+				menu.AddItem(vote.Config, vote.Name);
+			}
 		}
 		
 		menu.ExitButton = false;
@@ -209,13 +219,14 @@ void Waves_SetupVote(KeyValues map)
 	Voting = new ArrayList(sizeof(Vote));
 	
 	Vote vote;
-	kv.GotoFirstSubKey(false);
+	kv.GotoFirstSubKey();
 	do
 	{
 		kv.GetSectionName(vote.Name, sizeof(vote.Name));
-		kv.GetString(NULL_STRING, vote.Config, sizeof(vote.Config));
+		kv.GetString("file", vote.Config, sizeof(vote.Config));
+		vote.Level = kv.GetNum("level");
 		Voting.PushArray(vote);
-	} while(kv.GotoNextKey(false));
+	} while(kv.GotoNextKey());
 	
 	if(LastWaveWas[0])
 	{
@@ -227,7 +238,9 @@ void Waves_SetupVote(KeyValues map)
 				Voting.GetArray(i, vote);
 				if(StrEqual(vote.Config, LastWaveWas))
 				{
-					Voting.Erase(i);
+					if(vote.Level > 0)
+						Voting.Erase(i);
+					
 					break;
 				}
 			}

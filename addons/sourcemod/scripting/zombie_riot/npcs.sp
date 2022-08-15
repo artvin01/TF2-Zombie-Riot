@@ -299,6 +299,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		panzer = false;
 		panzer_warning = false;
 	}
+	
 	PlayersAliveScaling = 0;
 	
 	limit = 4 + RoundToCeil(float(Waves_GetRound())/2.65);
@@ -306,6 +307,8 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	{
 		limit = 8;
 	}
+	
+	bool canSeePanzer;
 	float f_limit = 0.0;
 	float f_limit_music = 0.0;
 	amount_of_people = 0;
@@ -315,12 +318,23 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		{
 			amount_of_people += 1;
 			f_limit += 2.2;
+			
+			if(Level[client] > 7)
+				canSeePanzer = true;
+			
 			if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 			{
 				f_limit_music += 2.2;
 			}
 		}
 	}
+	
+	if(!canSeePanzer)
+	{
+		panzer = false;
+		panzer_warning = false;
+	}
+	
 	PlayersAliveScaling = limit;
 	
 	PlayersAliveScaling += RoundToNearest(f_limit_music);
