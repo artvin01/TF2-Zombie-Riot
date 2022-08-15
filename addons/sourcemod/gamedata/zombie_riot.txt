@@ -479,7 +479,7 @@
 			"CTFProjectile_Rocket::RocketTouch"
 			{
 				"offset"	"CTFProjectile_Rocket::RocketTouch"
-				"hooktype"	"entity"
+				"callconv" 	"thiscall"
 				"return"	"void"
 				"this"		"entity"
 				"arguments"
@@ -511,10 +511,30 @@
 				"return"	"void"
 				"this"		"entity"
 			}
+			"CTFGrenadePipebombProjectile::PipebombTouch" 
+			{
+				// virtual void PipebombTouch( CBaseEntity *pOther )
+				"offset" 		"CTFGrenadePipebombProjectile::PipebombTouch"
+				"hooktype" 		"entity"
+				"return" 		"void"
+				"this" 			"entity"
+				"arguments"
+				{
+					"other"
+					{
+						"type" "cbaseentity"
+					}
+				}
+			}
 
 		}
 		"Offsets"
 		{
+			"CTFGrenadePipebombProjectile::PipebombTouch" 
+			{
+				"linux" 	"258"
+				"windows" 	"257"
+			}
 			"CEconItemView::IterateAttributes"
 			{
 				"windows"	"18"

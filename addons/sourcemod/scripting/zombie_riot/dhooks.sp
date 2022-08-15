@@ -15,6 +15,8 @@ DynamicHook g_DHookFireballExplode; //from mikusch but edited
 DynamicHook g_DHookMedigunPrimary; 
 DynamicHook g_DHookScoutSecondaryFire; 
 
+Handle g_detour_CTFGrenadePipebombProjectile_PipebombTouch;
+
 
 Address g_hSDKStartLagCompAddress;
 Address g_hSDKEndLagCompAddress;
@@ -29,6 +31,17 @@ int g_OffsetWeaponMode;
 int g_OffsetWeaponInfo;
 int g_OffsetWeaponPunchAngle;
 */
+
+stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
+    Handle res = DHookCreateFromConf(game_config, name);
+
+    if (res == INVALID_HANDLE) {
+        SetFailState("Failed to create detour for %s", name);
+    }
+
+    return res;
+}
+
 void DHook_Setup()
 {
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
@@ -53,6 +66,9 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
+	
+	g_detour_CTFGrenadePipebombProjectile_PipebombTouch = CheckedDHookCreateFromConf(gamedata, "CTFGrenadePipebombProjectile::PipebombTouch");
+	
 	g_DHookRocketExplode = DHook_CreateVirtual(gamedata, "CTFBaseRocket::Explode");
 	g_DHookFireballExplode = DHook_CreateVirtual(gamedata, "CTFProjectile_SpellFireball::Explode");
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
@@ -90,7 +106,8 @@ void DHook_Setup()
 
 public void ApplyExplosionDhook_Pipe(int entity)
 {
-	g_DHookGrenadeExplode.HookEntity(Hook_Pre, entity, DHook_GrenadeExplodePre);	
+	g_DHookGrenadeExplode.HookEntity(Hook_Pre, entity, DHook_GrenadeExplodePre);
+	DHookEntity(g_detour_CTFGrenadePipebombProjectile_PipebombTouch, false, entity, _, GrenadePipebombProjectile_PipebombTouch)
 	//Hacky? yes, But i gotta.
 	
 	//I have to do it twice, if its a custom spawn i have to do it insantly, if its a tf2 spawn then i have to do it seperatly.
@@ -155,6 +172,30 @@ public void IsCustomTfGrenadeProjectile(int entity, float damage) //I cant make 
 {
 	f_CustomGrenadeDamage[entity] = damage;
 }
+
+
+
+static MRESReturn GrenadePipebombProjectile_PipebombTouch(int self, Handle params) 
+{
+	int other = DHookGetParam(params, 1);
+
+	bool result = PassfilterGlobal(self, other, true);
+
+	if(!result)
+	{
+		return MRES_Supercede;
+	}
+	return MRES_Ignored;
+}
+
+/*
+	GrenadePipebombProjectile_PipebombTouch is from From:
+	
+	https://github.com/aarmastah/zesty-tf2-servers/blob/a96250f1c41c96ff10bf5b35e209095769f28d22/tf2/tf/addons/sourcemod/scripting/tf2-comp-fixes/projectiles-ignore-teammates.sp
+	
+	Because im too stupid to do it myself.
+*/
+
 
 public MRESReturn DHook_GrenadeExplodePre(int entity)
 {
