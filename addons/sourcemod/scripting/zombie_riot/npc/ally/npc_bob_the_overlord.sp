@@ -305,6 +305,7 @@ public void BobTheGod_ClotThink(int iNPC)
 	if(!IsValidClient(client))
 	{
 		SDKHooks_TakeDamage(iNPC, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
+		return;
 	}
 	
 	if(npc.m_flNextThinkTime < GetGameTime())
@@ -380,6 +381,7 @@ public void BobTheGod_ClotThink(int iNPC)
 	else
 	{
 		SDKHooks_TakeDamage(iNPC, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
+		return;
 	}
 	
 	if(npc.m_flGetClosestTargetTime < GetGameTime())
