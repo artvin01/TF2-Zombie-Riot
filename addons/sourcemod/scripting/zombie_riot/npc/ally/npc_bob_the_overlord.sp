@@ -365,14 +365,21 @@ public void BobTheGod_ClotThink(int iNPC)
 		return;
 		
 	float flDistanceToOwner;
-	if(IsPlayerAlive(client) && npc.m_b_follow)
+	if(IsValidClient(client))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(client);
-		flDistanceToOwner = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index));
+		if(IsPlayerAlive(client) && npc.m_b_follow)
+		{
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(client);
+			flDistanceToOwner = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index));
+		}
+		else
+		{
+			flDistanceToOwner = 0.0;
+		}
 	}
 	else
 	{
-		flDistanceToOwner = 0.0;
+		SDKHooks_TakeDamage(iNPC, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
 	}
 	
 	if(npc.m_flGetClosestTargetTime < GetGameTime())
