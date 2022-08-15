@@ -440,9 +440,9 @@ float f_assist_heal_player_time[MAXTF2PLAYERS];
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
 
-bool b_Is_Npc_Rocket[MAXENTITIES];
-bool b_Is_Player_Rocket[MAXENTITIES];
-bool b_Is_Player_Rocket_Through_Npc[MAXENTITIES];
+bool b_Is_Npc_Projectile[MAXENTITIES];
+bool b_Is_Player_Projectile[MAXENTITIES];
+bool b_Is_Player_Projectile_Through_Npc[MAXENTITIES];
 bool b_Is_Blue_Npc[MAXENTITIES];
 bool b_IsInUpdateGroundConstraintLogic;
 
@@ -2946,8 +2946,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_EntityIsArrow[entity] = false;
 		CClotBody npc = view_as<CClotBody>(entity);
 		b_SentryIsCustom[entity] = false;
-		b_Is_Npc_Rocket[entity] = false;
-		b_Is_Player_Rocket[entity] = false;
+		b_Is_Npc_Projectile[entity] = false;
+		b_Is_Player_Projectile[entity] = false;
 		Moved_Building[entity] = false;
 		b_Is_Blue_Npc[entity] = false;
 		EntityFuncAttack[entity] = INVALID_FUNCTION;
@@ -2955,7 +2955,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		EntityFuncAttack3[entity] = INVALID_FUNCTION;
 		EntityFuncReload4[entity] = INVALID_FUNCTION;
 		b_Map_BaseBoss_No_Layers[entity] = false;
-		b_Is_Player_Rocket_Through_Npc[entity] = false;
+		b_Is_Player_Projectile_Through_Npc[entity] = false;
 		i_IsABuilding[entity] = false;
 		i_InSafeZone[entity] = 0;
 		h_NpcCollissionHookType[entity] = 0;
@@ -3389,7 +3389,7 @@ public void Delete_instantly_Laser_ball(int entity)
 	}
 	if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue))
 	{
-		b_Is_Npc_Rocket[entity] = true; 
+		b_Is_Npc_Projectile[entity] = true; 
 	}
 }
 */

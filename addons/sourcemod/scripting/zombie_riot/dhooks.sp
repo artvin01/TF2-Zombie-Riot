@@ -123,13 +123,13 @@ void See_Projectile_Team(int entity)
 	{
 		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
 		{
-			b_Is_Player_Rocket[entity] = true;	 //try this
+			b_Is_Player_Projectile[entity] = true;	 //try this
 			//Update: worked! Will now pass through players/teammates
 			//Nice.
 		}	
 		else if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue))
 		{
-			b_Is_Npc_Rocket[entity] = true; 
+			b_Is_Npc_Projectile[entity] = true; 
 		}
 	}
 	
@@ -145,7 +145,7 @@ void See_Projectile_Team_Player(int entity)
 	{
 		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
 		{
-			b_Is_Player_Rocket_Through_Npc[entity] = true;	 //try this
+			b_Is_Player_Projectile_Through_Npc[entity] = true;	 //try this
 			//Update: worked! Will now pass through players/teammates
 			//Nice.
 		}	
@@ -331,29 +331,29 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			return false;
 		}
 	}
-	if(b_Is_Npc_Rocket[ent2])
+	if(b_Is_Npc_Projectile[ent2])
 	{
 		if(b_Is_Blue_Npc[ent1])
 		{
 			return false;
 		}
-		else if(b_Is_Npc_Rocket[ent1])
+		else if(b_Is_Npc_Projectile[ent1])
 		{
 			return false;
 		}
 	}
-	else if(b_Is_Npc_Rocket[ent1])
+	else if(b_Is_Npc_Projectile[ent1])
 	{
 		if(b_Is_Blue_Npc[ent2])
 		{
 			return false;
 		}
-		else if(b_Is_Npc_Rocket[ent2])
+		else if(b_Is_Npc_Projectile[ent2])
 		{
 			return false;	
 		}
 	}
-	else if(b_Is_Player_Rocket[ent1])
+	else if(b_Is_Player_Projectile[ent1])
 	{
 		if(ent2 <= MaxClients && ent2 > 0)
 		{
@@ -364,7 +364,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			return false;
 		}
 	}
-	else if(b_Is_Player_Rocket[ent2])
+	else if(b_Is_Player_Projectile[ent2])
 	{
 		if(ent1 <= MaxClients && ent1 > 0)
 		{
@@ -376,14 +376,14 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 	}
 	
-	else if (b_Is_Player_Rocket_Through_Npc[ent2])
+	else if (b_Is_Player_Projectile_Through_Npc[ent2])
 	{
 		if(b_Is_Blue_Npc[ent1])
 		{
 			return false;
 		}
 	}
-	else if (b_Is_Player_Rocket_Through_Npc[ent1])
+	else if (b_Is_Player_Projectile_Through_Npc[ent1])
 	{
 		if(b_Is_Blue_Npc[ent2])
 		{
