@@ -69,6 +69,7 @@ void DHook_Setup()
 	
 	g_detour_CTFGrenadePipebombProjectile_PipebombTouch = CheckedDHookCreateFromConf(gamedata, "CTFGrenadePipebombProjectile::PipebombTouch");
 	
+	
 	g_DHookRocketExplode = DHook_CreateVirtual(gamedata, "CTFBaseRocket::Explode");
 	g_DHookFireballExplode = DHook_CreateVirtual(gamedata, "CTFProjectile_SpellFireball::Explode");
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
@@ -103,11 +104,16 @@ void DHook_Setup()
 	
 }
 
-
-public void ApplyExplosionDhook_Pipe(int entity)
+public void ApplyExplosionDhook_Pipe(int entity, bool Sticky)
 {
 	g_DHookGrenadeExplode.HookEntity(Hook_Pre, entity, DHook_GrenadeExplodePre);
 	DHookEntity(g_detour_CTFGrenadePipebombProjectile_PipebombTouch, false, entity, _, GrenadePipebombProjectile_PipebombTouch)
+	
+	if(Sticky)
+	{
+		SDKHook(entity, SDKHook_StartTouch, SdkHook_StickStickybombToBaseBoss);
+	}
+	
 	//Hacky? yes, But i gotta.
 	
 	//I have to do it twice, if its a custom spawn i have to do it insantly, if its a tf2 spawn then i have to do it seperatly.
@@ -152,6 +158,20 @@ void See_Projectile_Team_Player(int entity)
 	}
 }
 
+
+public Action SdkHook_StickStickybombToBaseBoss(int entity, int other)
+{
+	if(!GetEntProp(entity, Prop_Send, "m_bTouched"))
+	{
+		if(!b_StickyIsSticking[entity] && b_Is_Blue_Npc[other])
+		{
+			SetParent(other, entity);
+			b_StickyIsSticking[entity] = true;
+		}
+	}
+	return Plugin_Continue;
+}
+
 public void ApplyExplosionDhook_Rocket(int entity)
 {
 	if(!b_EntityIsArrow[entity]) //No!
@@ -187,7 +207,6 @@ static MRESReturn GrenadePipebombProjectile_PipebombTouch(int self, Handle param
 	}
 	return MRES_Ignored;
 }
-
 /*
 	GrenadePipebombProjectile_PipebombTouch is from From:
 	
@@ -195,6 +214,8 @@ static MRESReturn GrenadePipebombProjectile_PipebombTouch(int self, Handle param
 	
 	Because im too stupid to do it myself.
 */
+
+
 
 
 public MRESReturn DHook_GrenadeExplodePre(int entity)
@@ -363,6 +384,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		{
 			return false;
 		}
+		else if(b_Is_Player_Projectile[ent2])
+		{
+			return false;
+		}
 	}
 	else if(b_Is_Player_Projectile[ent2])
 	{
@@ -373,6 +398,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		else if(b_IsAlliedNpc[ent1])
 		{
 			return false;	
+		}
+		else if(b_Is_Player_Projectile[ent1])
+		{
+			return false;
 		}
 	}
 	

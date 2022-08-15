@@ -369,6 +369,8 @@ float f_LowIceDebuff[MAXENTITIES];
 float f_HighIceDebuff[MAXENTITIES];
 bool b_Frozen[MAXENTITIES];
 
+bool b_StickyIsSticking[MAXENTITIES];
+
 RenderMode i_EntityRenderMode[MAXENTITIES]={RENDER_NORMAL, ...};
 int i_EntityRenderColour1[MAXENTITIES]={255, ...};
 int i_EntityRenderColour2[MAXENTITIES]={255, ...};
@@ -2941,6 +2943,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_EntityRenderColour3[entity] = 255;
 		i_EntityRenderColour4[entity] = 255;
 		i_EntityRenderOverride[entity] = false;
+		b_StickyIsSticking[entity] = false;
 
 		b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
 		b_EntityIsArrow[entity] = false;
@@ -3049,7 +3052,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
-			ApplyExplosionDhook_Pipe(entity);
+			ApplyExplosionDhook_Pipe(entity, true);
 			//SDKHook_SpawnPost doesnt work
 		}
 		else if(!StrContains(classname, "tf_projectile_arrow"))
@@ -3098,7 +3101,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
-			ApplyExplosionDhook_Pipe(entity);
+			ApplyExplosionDhook_Pipe(entity, false);
 			SDKHook(entity, SDKHook_SpawnPost, Is_Pipebomb);
 			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
 			//SDKHook_SpawnPost doesnt work

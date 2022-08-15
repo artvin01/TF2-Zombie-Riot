@@ -674,7 +674,7 @@ public float Lerpfloat(float t, float minVal, float maxVal)
 
 public int Lerpint(float t, int minVal, int maxVal)
 {
-	return RoundToNearest(minVal + (maxVal - minVal) * t);
+	return RoundToNearest(minVal + float((maxVal - minVal)) * t);
 }
 
 /*  */
