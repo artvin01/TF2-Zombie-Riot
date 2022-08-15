@@ -262,8 +262,9 @@ float Resistance_for_building_Low[MAXENTITIES];
 int Armour_Level_Current[MAXTF2PLAYERS];
 
 
-float Increaced_Overall_damage_Low[MAXTF2PLAYERS];
-float Resistance_Overall_Low[MAXTF2PLAYERS];
+float Increaced_Overall_damage_Low[MAXENTITIES];
+float Resistance_Overall_Low[MAXENTITIES];
+
 bool Moved_Building[MAXENTITIES] = {false,... };
 //bool Do_Not_Regen_Mana[MAXTF2PLAYERS];
 
@@ -351,7 +352,7 @@ bool b_Doing_Buildingpickup_Handle[MAXPLAYERS + 1]={false, ...};
 
 int i_PlayerToCustomBuilding[MAXPLAYERS + 1]={0, ...};
 
-float f_TimeUntillNormalHeal[MAXPLAYERS + 1]={0.0, ...};
+float f_TimeUntillNormalHeal[MAXENTITIES]={0.0, ...};
 bool f_ClientServerShowMessages[MAXTF2PLAYERS];
 
 float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
@@ -478,6 +479,7 @@ bool b_Only_Compensate_AwayPlayers[MAXENTITIES];
 bool b_ExtendBoundingBox[MAXENTITIES];
 bool b_BlockLagCompInternal[MAXENTITIES];
 bool b_Dont_Move_Building[MAXENTITIES];
+bool b_Dont_Move_Allied_Npc[MAXENTITIES];
 int b_BoundingBoxVariant[MAXENTITIES];
 bool b_IsAloneOnServer = false;
 bool b_ThisEntityIgnored[MAXENTITIES];

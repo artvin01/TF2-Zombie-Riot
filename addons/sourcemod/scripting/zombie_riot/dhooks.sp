@@ -459,6 +459,7 @@ i will keep it updated incase this didnt work.
 static float Get_old_pos_back[MAXENTITIES][3];
 static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 static bool Dont_Move_Building;											//dont move buildings
+static bool Dont_Move_Allied_Npc;											//dont move buildings
 static int Move_Players = 0;		
 static int Move_Players_Teutons = 0;		
 
@@ -484,6 +485,7 @@ public MRESReturn StartLagCompensation_Pre(Address manager, DHookParam param)
 public void StartLagCompResetValues()
 {
 	Dont_Move_Building = false;
+	Dont_Move_Allied_Npc = false;
 	b_LagCompNPC = true;
 	b_LagCompNPC_No_Layers = false;	
 	b_LagCompNPC_AwayEnemies = false;
@@ -512,6 +514,10 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		if(b_Dont_Move_Building[active_weapon])
 		{
 			Dont_Move_Building = true;
+		}
+		if(b_Dont_Move_Allied_Npc[active_weapon])
+		{
+			Dont_Move_Allied_Npc = true;
 		}
 		if(b_Only_Compensate_CollisionBox[active_weapon]) //This is mostly unused, but keep it for mediguns if needed. Otherwise kinda useless.
 		{
@@ -663,10 +669,13 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 		{
 			if(!Moved_Building[baseboss_index_allied]) 
 			{
-				Moved_Building[baseboss_index_allied] = true;
-				GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[baseboss_index_allied]);
-				//TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
-				SDKCall_SetLocalOrigin(baseboss_index_allied, vec_origin);
+				if(!Dont_Move_Allied_Npc || b_ThisEntityIgnored[baseboss_index_allied])
+				{
+					Moved_Building[baseboss_index_allied] = true;
+					GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[baseboss_index_allied]);
+					//TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
+					SDKCall_SetLocalOrigin(baseboss_index_allied, vec_origin);
+				}
 			}
 		}
 	}
