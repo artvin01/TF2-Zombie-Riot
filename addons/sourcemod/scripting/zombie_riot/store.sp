@@ -30,6 +30,8 @@ enum struct ItemInfo
 	bool HasNoClip;
 	bool SemiAuto;
 	
+	bool SemiAuto_SingularReload;
+	
 	bool NoHeadshot;
 	
 	float SemiAutoStats_FireRate;
