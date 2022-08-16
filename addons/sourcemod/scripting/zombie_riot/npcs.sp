@@ -1261,6 +1261,16 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					}
 				}
 			}
+			else if(!StrContains(classname, "tf_weapon_compound_bow", false))
+			{
+				if(damagetype & DMG_CRIT)
+				{		
+					if(i_CurrentEquippedPerk[attacker] == 5) //Just give them 25% more damage if they do crits with the huntsman, includes buffbanner i guess
+					{
+						damage *= 1.25;
+					}
+				}
+			}
 			/*
 			else
 			{	
