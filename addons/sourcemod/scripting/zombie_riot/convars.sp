@@ -63,6 +63,7 @@ void ConVar_PluginStart()
 	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
 	zr_voteconfig = CreateConVar("zr_voteconfig", "vote", "Vote config zr/ .cfg already included");
 	zr_weaponsconfig = CreateConVar("zr_weaponsconfig", "weapons", "Weapons config zr/ .cfg already included");
+	zr_minibossconfig = CreateConVar("zr_minibossconfig", "miniboss", "Mini Boss config zr/ .cfg already included");
 	zr_ignoremapconfig = CreateConVar("zr_ignoremapconfig", "0", "If to ignore map-specific configs");
 	
 	AutoExecConfig(true, "zombie_riot");

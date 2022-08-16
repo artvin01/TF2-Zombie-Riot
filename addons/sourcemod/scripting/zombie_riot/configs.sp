@@ -56,6 +56,7 @@ public void Configs_ConfigsExecuted()
 	
 	Store_ConfigSetup(kv);
 	Waves_SetupVote(kv);
+	Waves_SetupMiniBosses(kv);
 	if(kv)
 		delete kv;
 	

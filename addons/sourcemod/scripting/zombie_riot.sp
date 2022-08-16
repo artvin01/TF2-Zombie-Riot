@@ -181,6 +181,7 @@ Handle SyncHud_WandMana;
 
 ConVar zr_voteconfig;
 ConVar zr_weaponsconfig;
+ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
 ConVar tf_bot_quota;
 
@@ -485,8 +486,6 @@ bool b_IsPlayerABot[MAXPLAYERS+1];
 
 bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
 
-bool b_BlockPanzerInThisDifficulty;
-bool b_BlockSawrunnerSpecificallyInThisDifficulty;
 bool b_SpecialGrigoriStore;
 float f_ExtraDropChanceRarity = 1.0;
 
@@ -1183,7 +1182,6 @@ public void OnPluginStart()
 	{
 		OnEntityCreated(ent, "info_player_teamspawn");	
 	}
-	b_BlockPanzerInThisDifficulty = false;
 }
 
 public Action Timer_Temp(Handle timer)
