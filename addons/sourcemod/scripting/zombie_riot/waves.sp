@@ -210,7 +210,7 @@ void Waves_SetupVote(KeyValues map)
 	}
 	
 	StartCash = kv.GetNum("cash");
-	if(!kv.JumpToKey("Waves"))
+	/*if(!kv.JumpToKey("Waves"))
 	{
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "waves")
 		kv = new KeyValues("Waves");
@@ -218,7 +218,7 @@ void Waves_SetupVote(KeyValues map)
 		Waves_SetupWaves(kv, true);
 		delete kv;
 		return;
-	}
+	}*/
 	
 	Voting = new ArrayList(sizeof(Vote));
 	
