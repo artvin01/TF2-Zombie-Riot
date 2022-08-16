@@ -158,6 +158,12 @@ void See_Projectile_Team_Player(int entity)
 	}
 }
 
+/*
+#define MAXSTICKYCOUNTTONPC 12
+const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
+int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max amount of stickies.
+*/
+
 
 public Action SdkHook_StickStickybombToBaseBoss(int entity, int other)
 {
@@ -165,8 +171,19 @@ public Action SdkHook_StickStickybombToBaseBoss(int entity, int other)
 	{
 		if(!b_StickyIsSticking[entity] && b_Is_Blue_Npc[other])
 		{
-			SetParent(other, entity);
-			b_StickyIsSticking[entity] = true;
+			//Dont stick if it already has max.
+			for (int i = 0; i < MAXSTICKYCOUNTTONPC; i++)
+			{
+				if (EntRefToEntIndex(i_StickyToNpcCount[other][i]) <= 0)
+				{
+					i_StickyToNpcCount[other][i] = EntIndexToEntRef(entity);
+					i = MAXSTICKYCOUNTTONPC;
+					
+					SetEntProp(entity, Prop_Send, "m_bTouched", true);
+					SetParent(other, entity);
+					b_StickyIsSticking[entity] = true;
+				}
+			}
 		}
 	}
 	return Plugin_Continue;

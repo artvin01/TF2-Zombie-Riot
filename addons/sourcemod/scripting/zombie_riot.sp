@@ -246,6 +246,10 @@ int i_SemiAutoWeapon[MAXENTITIES];
 int i_SemiAutoWeapon_AmmoCount[MAXTF2PLAYERS][10]; //idk like 10 slots lol
 bool i_WeaponCannotHeadshot[MAXENTITIES];
 
+#define MAXSTICKYCOUNTTONPC 12
+const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
+int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max amount of stickies.
+
 float f_SemiAutoStats_FireRate[MAXENTITIES];
 int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
 float f_SemiAutoStats_ReloadTime[MAXENTITIES];
@@ -3751,4 +3755,5 @@ public void MapStartResetAll()
 	Zero(h_NpcCollissionHookType);
 	M3_ClearAll();
 	ZeroRage_ClearAll();
+	Zero2(i_StickyToNpcCount);
 }
