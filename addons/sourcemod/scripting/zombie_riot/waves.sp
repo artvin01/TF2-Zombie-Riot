@@ -1124,7 +1124,8 @@ void Waves_Progress()
 			if(IsClientInGame(client) && GetClientTeam(client)==2)
 			{
 				Ammo_Count_Ready[client] = 8;
-				CashSpent[client] = StartCash;
+				if(StartCash < 10000)
+					CashSpent[client] = StartCash;
 			}
 		}
 	}
