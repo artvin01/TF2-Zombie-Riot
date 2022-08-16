@@ -1024,7 +1024,7 @@ public Action Access_StoreViaCommand(int client, int args)
 
 public void Store_Menu(int client)
 {
-	if(!IsVoteInProgress() && !Waves_CallVote(client))
+	if(StoreItems && !IsVoteInProgress() && !Waves_CallVote(client))
 	{
 		NPCOnly[client] = 0;
 		MenuPage(client, -1);
@@ -1033,7 +1033,7 @@ public void Store_Menu(int client)
 
 void Store_OpenNPCStore(int client)
 {
-	if(!IsVoteInProgress() && !Waves_CallVote(client))
+	if(StoreItems && !IsVoteInProgress() && !Waves_CallVote(client))
 	{
 		NPCOnly[client] = 1;
 		MenuPage(client, -1);
@@ -1042,7 +1042,7 @@ void Store_OpenNPCStore(int client)
 
 void Store_OpenGiftStore(int client, int entity, int price)
 {
-	if(!IsVoteInProgress() && !Waves_CallVote(client))
+	if(StoreItems && !IsVoteInProgress() && !Waves_CallVote(client))
 	{
 		NPCOnly[client] = 2;
 		NPCTarget[client] = EntIndexToEntRef(entity);
