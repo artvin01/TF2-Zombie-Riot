@@ -297,17 +297,20 @@ void Waves_SetupMiniBosses(KeyValues map)
 	do
 	{
 		kv.GetSectionName(buffer, sizeof(buffer));
-		boss.Index = StringToInt(buffer);
-		if(!boss.Index)
-			boss.Index = GetIndexByPluginName(buffer);
-		
-		boss.Powerup = kv.GetNum("powerup");
-		boss.Delay = kv.GetFloat("delay", 2.0);
-		kv.GetString("sound", boss.Sound, sizeof(boss.Sound));
-		if(boss.Sound[0])
-			PrecacheSound(boss.Sound);
-		
-		MiniBosses.PushArray(boss);
+		if(buffer[0])
+		{
+			boss.Index = StringToInt(buffer);
+			if(!boss.Index)
+				boss.Index = GetIndexByPluginName(buffer);
+			
+			boss.Powerup = kv.GetNum("powerup");
+			boss.Delay = kv.GetFloat("delay", 2.0);
+			kv.GetString("sound", boss.Sound, sizeof(boss.Sound));
+			if(boss.Sound[0])
+				PrecacheSound(boss.Sound);
+			
+			MiniBosses.PushArray(boss);
+		}
 	} while(kv.GotoNextKey());
 	
 	if(MiniBosses.Length == 0)
