@@ -263,8 +263,9 @@ float Resistance_for_building_Low[MAXENTITIES];
 int Armour_Level_Current[MAXTF2PLAYERS];
 
 
-float Increaced_Overall_damage_Low[MAXTF2PLAYERS];
-float Resistance_Overall_Low[MAXTF2PLAYERS];
+float Increaced_Overall_damage_Low[MAXENTITIES];
+float Resistance_Overall_Low[MAXENTITIES];
+
 bool Moved_Building[MAXENTITIES] = {false,... };
 //bool Do_Not_Regen_Mana[MAXTF2PLAYERS];
 
@@ -352,7 +353,7 @@ bool b_Doing_Buildingpickup_Handle[MAXPLAYERS + 1]={false, ...};
 
 int i_PlayerToCustomBuilding[MAXPLAYERS + 1]={0, ...};
 
-float f_TimeUntillNormalHeal[MAXPLAYERS + 1]={0.0, ...};
+float f_TimeUntillNormalHeal[MAXENTITIES]={0.0, ...};
 bool f_ClientServerShowMessages[MAXTF2PLAYERS];
 
 float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
@@ -369,6 +370,8 @@ float f_VeryLowIceDebuff[MAXENTITIES];
 float f_LowIceDebuff[MAXENTITIES];
 float f_HighIceDebuff[MAXENTITIES];
 bool b_Frozen[MAXENTITIES];
+
+bool b_StickyIsSticking[MAXENTITIES];
 
 RenderMode i_EntityRenderMode[MAXENTITIES]={RENDER_NORMAL, ...};
 int i_EntityRenderColour1[MAXENTITIES]={255, ...};
@@ -441,9 +444,9 @@ float f_assist_heal_player_time[MAXTF2PLAYERS];
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
 
-bool b_Is_Npc_Rocket[MAXENTITIES];
-bool b_Is_Player_Rocket[MAXENTITIES];
-bool b_Is_Player_Rocket_Through_Npc[MAXENTITIES];
+bool b_Is_Npc_Projectile[MAXENTITIES];
+bool b_Is_Player_Projectile[MAXENTITIES];
+bool b_Is_Player_Projectile_Through_Npc[MAXENTITIES];
 bool b_Is_Blue_Npc[MAXENTITIES];
 bool b_IsInUpdateGroundConstraintLogic;
 
@@ -477,6 +480,7 @@ bool b_Only_Compensate_AwayPlayers[MAXENTITIES];
 bool b_ExtendBoundingBox[MAXENTITIES];
 bool b_BlockLagCompInternal[MAXENTITIES];
 bool b_Dont_Move_Building[MAXENTITIES];
+bool b_Dont_Move_Allied_Npc[MAXENTITIES];
 int b_BoundingBoxVariant[MAXENTITIES];
 bool b_IsAloneOnServer = false;
 bool b_ThisEntityIgnored[MAXENTITIES];
@@ -2939,13 +2943,14 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_EntityRenderColour3[entity] = 255;
 		i_EntityRenderColour4[entity] = 255;
 		i_EntityRenderOverride[entity] = false;
+		b_StickyIsSticking[entity] = false;
 
 		b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
 		b_EntityIsArrow[entity] = false;
 		CClotBody npc = view_as<CClotBody>(entity);
 		b_SentryIsCustom[entity] = false;
-		b_Is_Npc_Rocket[entity] = false;
-		b_Is_Player_Rocket[entity] = false;
+		b_Is_Npc_Projectile[entity] = false;
+		b_Is_Player_Projectile[entity] = false;
 		Moved_Building[entity] = false;
 		b_Is_Blue_Npc[entity] = false;
 		EntityFuncAttack[entity] = INVALID_FUNCTION;
@@ -2953,7 +2958,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		EntityFuncAttack3[entity] = INVALID_FUNCTION;
 		EntityFuncReload4[entity] = INVALID_FUNCTION;
 		b_Map_BaseBoss_No_Layers[entity] = false;
-		b_Is_Player_Rocket_Through_Npc[entity] = false;
+		b_Is_Player_Projectile_Through_Npc[entity] = false;
 		i_IsABuilding[entity] = false;
 		i_InSafeZone[entity] = 0;
 		h_NpcCollissionHookType[entity] = 0;
@@ -3047,7 +3052,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
-			ApplyExplosionDhook_Pipe(entity);
+			ApplyExplosionDhook_Pipe(entity, true);
 			//SDKHook_SpawnPost doesnt work
 		}
 		else if(!StrContains(classname, "tf_projectile_arrow"))
@@ -3096,7 +3101,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
-			ApplyExplosionDhook_Pipe(entity);
+			ApplyExplosionDhook_Pipe(entity, false);
 			SDKHook(entity, SDKHook_SpawnPost, Is_Pipebomb);
 			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
 			//SDKHook_SpawnPost doesnt work
@@ -3387,7 +3392,7 @@ public void Delete_instantly_Laser_ball(int entity)
 	}
 	if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue))
 	{
-		b_Is_Npc_Rocket[entity] = true; 
+		b_Is_Npc_Projectile[entity] = true; 
 	}
 }
 */

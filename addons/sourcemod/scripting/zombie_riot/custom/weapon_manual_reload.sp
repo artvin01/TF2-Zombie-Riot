@@ -35,12 +35,6 @@ public void SemiAutoWeapon(int client, int buttons)
 							SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + Fire_rate);
 							SetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + Fire_rate);
 							
-							DataPack pack = new DataPack();
-							pack.WriteCell(EntIndexToEntRef(entity));
-							pack.WriteCell(EntIndexToEntRef(client));
-							pack.WriteFloat(Fire_rate);
-							RequestFrame(ApplyPrimaryAttackDelay, pack);
-							
 							TF2Attrib_SetByDefIndex(entity, 821, 1.0);
 							holding_semiauto[client] = true;
 						}
@@ -105,10 +99,18 @@ public void SemiAutoWeapon(int client, int buttons)
 			}
 		}
 	}
-	
+	static int holding_semiauto_reload[MAXTF2PLAYERS];
 	if(buttons & IN_RELOAD)
 	{
-		Reload_Me(client);
+		if(!holding_semiauto_reload[client])
+		{
+			Reload_Me(client);
+			holding_semiauto_reload[client] = true;
+		}
+	}
+	else
+	{
+		holding_semiauto_reload[client] = false;
 	}
 }
 
@@ -149,6 +151,7 @@ void Reload_Me(int client)
 						
 					SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + Reload_Rate);
 					SetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + Reload_Rate);
+							
 					TF2Attrib_SetByDefIndex(entity, 821, 0.0);
 					
 					PrintHintText(client, "[%i/%i]", i_SemiAutoStats_MaxAmmo[entity], i_SemiAutoWeapon_AmmoCount[client][slot]);
@@ -158,7 +161,13 @@ void Reload_Me(int client)
 		}	
 	}
 }
-
+/*
+DataPack pack = new DataPack();
+pack.WriteCell(EntIndexToEntRef(entity));
+pack.WriteCell(EntIndexToEntRef(client));
+pack.WriteFloat(Fire_rate);
+RequestFrame(ApplyPrimaryAttackDelay, pack);
+													
 void ApplyPrimaryAttackDelay(DataPack pack)
 {
 	pack.Reset();
@@ -173,7 +182,7 @@ void ApplyPrimaryAttackDelay(DataPack pack)
 	}
 	delete pack;
 }
-
+*/
 //int animation_count_up;
 
 void DoReloadAnimation(int attacker, int slot)

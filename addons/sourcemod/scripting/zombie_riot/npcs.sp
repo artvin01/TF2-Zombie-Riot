@@ -962,6 +962,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		}
 	}
 	
+	f_TimeUntillNormalHeal[victim] = GetGameTime() + 4.0;
+	
 	if(b_npcspawnprotection[victim]) //make them resistant on spawn or else itll just be spawncamping fest
 	{
 		damage *= 0.25;
@@ -1018,15 +1020,21 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		damage *= 1.35;
 	}
 	
+	if(Resistance_Overall_Low[victim] > GetGameTime())
+	{
+		damage *= 0.85;
+	}
+	
+	if(Increaced_Overall_damage_Low[attacker] > GetGameTime())
+	{
+		damage *= 1.25;
+	}
+		
 	if(attacker <= MaxClients)
 	{
 		if(dieingstate[attacker] > 0)
 		{
 			damage *= 0.25;
-		}
-		if(Increaced_Overall_damage_Low[attacker] > GetGameTime())
-		{
-			damage *= 1.25;
 		}
 		if(damagecustom>=TF_CUSTOM_SPELL_TELEPORT && damagecustom<=TF_CUSTOM_SPELL_BATS)
 		{
@@ -1308,7 +1316,6 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		return;
 	}
 	*/
-
 }
 
 stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)

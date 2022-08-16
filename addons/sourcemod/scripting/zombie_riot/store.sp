@@ -30,6 +30,8 @@ enum struct ItemInfo
 	bool HasNoClip;
 	bool SemiAuto;
 	
+	bool SemiAuto_SingularReload;
+	
 	bool NoHeadshot;
 	
 	float SemiAutoStats_FireRate;
@@ -41,6 +43,7 @@ enum struct ItemInfo
 	bool OnlyLagCompAwayEnemy;
 	bool ExtendBoundingBox;
 	bool DontMoveBuildingComp;
+	bool DontMoveAlliedNpcs;
 	bool BlockLagCompInternal;
 	
 	char Classname[36];
@@ -131,6 +134,9 @@ enum struct ItemInfo
 		
 		FormatEx(buffer, sizeof(buffer), "%slag_comp_dont_move_building", prefix);
 		this.DontMoveBuildingComp	= view_as<bool>(kv.GetNum(buffer));
+		
+		FormatEx(buffer, sizeof(buffer), "%slag_comp_dont_allied_npc", prefix);
+		this.DontMoveAlliedNpcs	= view_as<bool>(kv.GetNum(buffer));
 		
 		FormatEx(buffer, sizeof(buffer), "%slag_comp_block_internal", prefix);
 		this.BlockLagCompInternal	= view_as<bool>(kv.GetNum(buffer));
@@ -2390,6 +2396,9 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 					b_Only_Compensate_AwayPlayers[entity]		= info.OnlyLagCompAwayEnemy;
 					b_ExtendBoundingBox[entity]		 			= info.ExtendBoundingBox;
 					b_Dont_Move_Building[entity] 				= info.DontMoveBuildingComp;
+					
+					b_Dont_Move_Allied_Npc[entity]				= info.DontMoveAlliedNpcs;
+					
 					b_BlockLagCompInternal[entity] 				= info.BlockLagCompInternal;
 					
 				//	EntityFuncReloadSingular5[entity]  = info.FuncReloadSingular5;
