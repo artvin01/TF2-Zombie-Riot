@@ -411,7 +411,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 				}
 				b_ThrowPlayerImmenent[npc.index] = false;
 				i_GrabbedThis[npc.index] = -1;
-				fl_ThrowPlayerCooldown[npc.index] = GetGameTime() + 30.0;
+				fl_ThrowPlayerCooldown[npc.index] = GetGameTime() + 13.0;
 			}
 		}
 		else
@@ -442,7 +442,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 							TR_GetEndPosition(vecHit, swingTrace);
 							if(target > 0) 
 							{
-								float damage = 65.0;
+								float damage = 69.0;
 								
 								if(target <= MaxClients)
 									SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_SLASH|DMG_CLUB);
