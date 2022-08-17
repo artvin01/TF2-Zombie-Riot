@@ -7051,7 +7051,7 @@ stock int TF2_CreateParticle(int iEnt, const char[] attachment, const char[] par
 }
 
 
-stock int GetClosestAlly(int entity)
+stock int GetClosestAlly(int entity, float limitsquared = 99999999.9)
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = 0; 
@@ -7067,19 +7067,22 @@ stock int GetClosestAlly(int entity)
 				
 				
 			float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
-			if( TargetDistance ) 
+			if( distance < limitsquared )
 			{
-				if( distance < TargetDistance ) 
+				if( TargetDistance ) 
+				{
+					if( distance < TargetDistance ) 
+					{
+						ClosestTarget = i; 
+						TargetDistance = distance;		  
+					}
+				} 
+				else 
 				{
 					ClosestTarget = i; 
-					TargetDistance = distance;		  
-				}
-			} 
-			else 
-			{
-				ClosestTarget = i; 
-				TargetDistance = distance;
-			}			
+					TargetDistance = distance;
+				}			
+			}
 		}
 	}
 	return ClosestTarget; 
@@ -7510,3 +7513,4 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/medival/npc_medival_samurai.sp"
 
 #include "zombie_riot/npc/cof/npc_addiction.sp"
+#include "zombie_riot/npc/cof/npc_doctor.sp"

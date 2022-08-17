@@ -2,7 +2,7 @@ methodmap Addicition < CClotBody
 {
 	public Addicition(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		Addicition npc = view_as<Addicition>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_1.mdl", "1.5", "10000", ally, false, true));
+		Addicition npc = view_as<Addicition>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_1.mdl", "1.5", data[0] == 'f' ? "250000" : "10000", ally, false, true));
 		i_NpcInternalId[npc.index] = THEADDICTION;
 		
 		npc.m_iState = -1;
@@ -44,7 +44,7 @@ methodmap Addicition < CClotBody
 		if(activity > 0 && activity != this.m_iState)
 		{
 			this.m_iState = activity;
-			this.m_bisWalking = false;
+			//this.m_bisWalking = false;
 			this.StartActivity(activity);
 		}
 	}
