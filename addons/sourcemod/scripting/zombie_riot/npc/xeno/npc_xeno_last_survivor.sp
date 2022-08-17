@@ -385,14 +385,20 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 		
 		if(npc.m_flNextRangedAttack < GetGameTime() && npc.m_flDoingAnimation < GetGameTime())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
 			if (!npc.Anger)
 			{
 				npc.FaceTowards(vecTarget, 1000.0);
 				npc.m_flNextRangedAttack = GetGameTime() + 1.5;
 				npc.m_flDoingAnimation = GetGameTime() + 1.0;
 				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");
-				npc.FireRocket(vPredictedPos, 20.0, 800.0, "models/weapons/w_bullet.mdl", 2.0);	
+				
+				float projectile_speed = 800.0;
+				
+				vecTarget = PredictSubjectPositionForProjectiles(npc, closest, projectile_speed);
+							
+				npc.PlayMeleeSound();
+				
+				npc.FireRocket(vecTarget, 20.0, projectile_speed, "models/weapons/w_bullet.mdl", 2.0);	
 				npc.PlayRangedSound();
 			}
 			else if (npc.Anger)
@@ -400,8 +406,14 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 1000.0);
 				npc.m_flNextRangedAttack = GetGameTime() + 1.5;
 				npc.m_flDoingAnimation = GetGameTime() + 1.0;
-				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");
-				npc.FireRocket(vPredictedPos, 20.0, 800.0, "models/weapons/w_bullet.mdl", 2.0);	
+				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");		
+				float projectile_speed = 800.0;
+				
+				vecTarget = PredictSubjectPositionForProjectiles(npc, closest, projectile_speed);
+							
+				npc.PlayMeleeSound();
+				
+				npc.FireRocket(vecTarget, 20.0, projectile_speed, "models/weapons/w_bullet.mdl", 2.0);	
 				npc.PlayRangedSound();
 			}
 		}

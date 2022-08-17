@@ -938,7 +938,9 @@ public void Blitzkrieg_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 		
-	switch(GetRandomInt(1, 3))
+	if(IsValidClient(closest))
+	{
+		switch(GetRandomInt(1, 3))
 		{
 			case 1:
 			{
@@ -953,6 +955,7 @@ public void Blitzkrieg_NPCDeath(int entity)
 				CPrintToChatAll("{crimson}Blitzkrieg{default}: Until next time {yellow}%N {red} until next time...", closest);
 			}
 		}
+	}
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 //	npc.Anger = false;
 }
@@ -1036,6 +1039,11 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const color[4])
 		int Ionrange = ReadPackCell(data);
 		int Iondamage = ReadPackCell(data);
 		int client = ReadPackCell(data);
+		
+		if(!IsValidEntity(client))
+		{
+			return;
+		}
 		
 		if (Iondistance > 0)
 		{

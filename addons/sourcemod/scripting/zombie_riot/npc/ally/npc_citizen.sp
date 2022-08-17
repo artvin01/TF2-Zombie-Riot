@@ -959,7 +959,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 		
 		npc.m_iGunValue += amount;
 		npc.m_fGunDamage = 3000.0 + (float(amount) / 10.0);
-		npc.m_fGunFirerate = 0.0;
+		npc.m_fGunFirerate = 0.45;
 		npc.m_fGunReload = 0.0;
 		npc.m_iGunClip = -1;
 	}

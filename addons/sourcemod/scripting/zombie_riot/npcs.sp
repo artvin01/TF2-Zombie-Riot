@@ -292,13 +292,13 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	*/
 	int limit = 0;
 	int npc_current_count = 0;
-	int amount_of_people;
 	
 	if(CvarNoSpecialZombieSpawn.BoolValue)//PLEASE ASK CRUSTY FOR MODELS
 	{		
 		panzer = false;
 		panzer_warning = false;
 	}
+	
 	PlayersAliveScaling = 0;
 	
 	limit = 4 + RoundToCeil(float(Waves_GetRound())/2.65);
@@ -306,21 +306,32 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	{
 		limit = 8;
 	}
+	
+	bool canSeePanzer;
 	float f_limit = 0.0;
 	float f_limit_music = 0.0;
-	amount_of_people = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 		{
-			amount_of_people += 1;
 			f_limit += 2.2;
+			
+			if(Level[client] > 7)
+				canSeePanzer = true;
+			
 			if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 			{
 				f_limit_music += 2.2;
 			}
 		}
 	}
+	
+	if(!canSeePanzer)
+	{
+		panzer = false;
+		panzer_warning = false;
+	}
+	
 	PlayersAliveScaling = limit;
 	
 	PlayersAliveScaling += RoundToNearest(f_limit_music);
@@ -425,104 +436,47 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	entity_Spawner = list.Length;
 	if(entity_Spawner)
 	{
-		int health, isBoss;
-		if(panzer)
+		MiniBoss boss;
+		if(panzer && Waves_GetMiniBoss(boss))
 		{
-			int what_boss = GetRandomInt(0,1);
-			
-			if(b_BlockSawrunnerSpecificallyInThisDifficulty)
-			{
-				if(what_boss == 1)
-				{
-					what_boss = 0;
-				}
-			}
-			
 			entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
-			isBoss = false;
-			int deathforcepowerup = 0;
+			bool isBoss = false;
+			int deathforcepowerup = boss.Powerup;
 			if(panzer_warning)
 			{
-				deathforcepowerup = 2;
-				switch(what_boss)
+				if(boss.Sound[0])
 				{
-					case 0:
+					for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
 					{
-						for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
+						if(IsClientInGame(panzer_warning_client))
 						{
-							if(IsClientInGame(panzer_warning_client))
-							{
-								EmitSoundToClient(panzer_warning_client,"zombie_riot/panzer/siren.mp3", panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
-								EmitSoundToClient(panzer_warning_client,"zombie_riot/panzer/siren.mp3", panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
-							}
+							EmitSoundToClient(panzer_warning_client, boss.Sound, panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
+							EmitSoundToClient(panzer_warning_client, boss.Sound, panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
 						}
-					}
-					case 1:
-					{
-						for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
-						{
-							if(IsClientInGame(panzer_warning_client))
-							{
-								EmitSoundToClient(panzer_warning_client,"zombie_riot/sawrunner/iliveinyourwalls.mp3", panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
-								EmitSoundToClient(panzer_warning_client,"zombie_riot/sawrunner/iliveinyourwalls.mp3", panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
-							}
-						}	
 					}
 				}
 				isBoss = true;
 			}
-			health = 80;
-			 
-			health *= amount_of_people; //yep its high! will need tos cale with waves expoentially.
-			
-			float temp_float_hp = float(health);
-			
-			if(CurrentRound+1 < 30)
-			{
-				health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.20));
-				health /= 2;
-			}
-			else if(CurrentRound+1 < 45)
-			{
-				health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.25));
-				health /= 2;
-			}
 			else
 			{
-				health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-				health /= 2;
+				deathforcepowerup = 0;
 			}
-			
-			
-			if(what_boss == 1)
-				health = RoundToCeil(float(health) * 0.75);
 			
 			int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
 			if(index != -1)
 			{
 				SpawnerData Spawner;
 				SpawnerList.GetArray(index, Spawner);
-				Spawner.f_SpawnerCooldown = gameTime + 4.0;
+				Spawner.f_SpawnerCooldown = gameTime + boss.Delay + 2.0;
 				SpawnerList.SetArray(index, Spawner);
 			}
-			if(what_boss == 0)
-			{	
-				DataPack pack;
-				CreateDataTimer(2.0, Timer_Delayed_PanzerSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
-				pack.WriteCell(entity_Spawner);
-				pack.WriteCell(isBoss);		
-				pack.WriteCell(health);	
-				pack.WriteCell(deathforcepowerup);
-			}	
-			else if(what_boss == 1)
-			{			
-				DataPack pack;
-				CreateDataTimer(2.0, Timer_Delayed_SawrunnerSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
-				pack.WriteCell(entity_Spawner);
-				pack.WriteCell(isBoss);		
-				pack.WriteCell(health);	
-				pack.WriteCell(deathforcepowerup);			
-			}
+			
+			DataPack pack;
+			CreateDataTimer(boss.Delay, Timer_Delayed_BossSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(entity_Spawner);
+			pack.WriteCell(isBoss);		
+			pack.WriteCell(boss.Index);	
+			pack.WriteCell(deathforcepowerup);
 		}
 		else
 		{
@@ -620,46 +574,6 @@ void NPC_AddToArray(int entity)
 		NPCList.PushArray(npc);
 	}
 }
-public Action Timer_Delayed_SawrunnerSpawn(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int spawner_entity = pack.ReadCell();
-	bool isBoss = pack.ReadCell();
-	int health = pack.ReadCell();
-	int forcepowerup = pack.ReadCell();
-	if(IsValidEntity(spawner_entity) && spawner_entity != 0)
-	{
-		float pos[3], ang[3];
-		
-		GetEntPropVector(spawner_entity, Prop_Data, "m_vecOrigin", pos);
-		GetEntPropVector(spawner_entity, Prop_Data, "m_angRotation", ang);
-		Zombies_Currently_Still_Ongoing += 1;
-		int entity = Npc_Create(SAWRUNNER, -1, pos, ang, false);
-		if(entity != -1)
-		{
-			if(health)
-			{
-				SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
-				SetEntProp(entity, Prop_Data, "m_iHealth", health);
-			}
-			
-			CClotBody npcstats = view_as<CClotBody>(entity);
-			if(isBoss)
-			{
-				SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
-				npcstats.m_bThisNpcIsABoss = true; //Set to true!
-			}
-			else
-			{
-				npcstats.m_bThisNpcIsABoss = false; //Set to true!
-			}
-			
-			b_NpcForcepowerupspawn[entity] = forcepowerup;
-			NPC_AddToArray(entity);
-		}
-	}
-	return Plugin_Handled;
-}
 
 public Action Remove_Spawn_Protection(Handle timer, int ref)
 {
@@ -676,12 +590,12 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 	return Plugin_Handled;
 }
 
-public Action Timer_Delayed_PanzerSpawn(Handle timer, DataPack pack)
+public Action Timer_Delayed_BossSpawn(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int spawner_entity = pack.ReadCell();
 	bool isBoss = pack.ReadCell();
-	int health = pack.ReadCell();
+	int index = pack.ReadCell();
 	int forcepowerup = pack.ReadCell();
 	if(IsValidEntity(spawner_entity) && spawner_entity != 0)
 	{
@@ -690,15 +604,9 @@ public Action Timer_Delayed_PanzerSpawn(Handle timer, DataPack pack)
 		GetEntPropVector(spawner_entity, Prop_Data, "m_vecOrigin", pos);
 		GetEntPropVector(spawner_entity, Prop_Data, "m_angRotation", ang);
 		Zombies_Currently_Still_Ongoing += 1;
-		int entity = Npc_Create(NAZI_PANZER, -1, pos, ang, false);
+		int entity = Npc_Create(index, -1, pos, ang, false);
 		if(entity != -1)
 		{
-			if(health)
-			{
-				SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
-				SetEntProp(entity, Prop_Data, "m_iHealth", health);
-			}
-			
 			CClotBody npcstats = view_as<CClotBody>(entity);
 			if(isBoss)
 			{
@@ -1054,6 +962,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		}
 	}
 	
+	f_TimeUntillNormalHeal[victim] = GetGameTime() + 4.0;
+	
 	if(b_npcspawnprotection[victim]) //make them resistant on spawn or else itll just be spawncamping fest
 	{
 		damage *= 0.25;
@@ -1110,15 +1020,21 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		damage *= 1.35;
 	}
 	
+	if(Resistance_Overall_Low[victim] > GetGameTime())
+	{
+		damage *= 0.85;
+	}
+	
+	if(Increaced_Overall_damage_Low[attacker] > GetGameTime())
+	{
+		damage *= 1.25;
+	}
+		
 	if(attacker <= MaxClients)
 	{
 		if(dieingstate[attacker] > 0)
 		{
 			damage *= 0.25;
-		}
-		if(Increaced_Overall_damage_Low[attacker] > GetGameTime())
-		{
-			damage *= 1.25;
 		}
 		if(damagecustom>=TF_CUSTOM_SPELL_TELEPORT && damagecustom<=TF_CUSTOM_SPELL_BATS)
 		{
@@ -1345,6 +1261,16 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					}
 				}
 			}
+			else if(!StrContains(classname, "tf_weapon_compound_bow", false))
+			{
+				if(damagetype & DMG_CRIT)
+				{		
+					if(i_CurrentEquippedPerk[attacker] == 5) //Just give them 25% more damage if they do crits with the huntsman, includes buffbanner i guess
+					{
+						damage *= 1.25;
+					}
+				}
+			}
 			/*
 			else
 			{	
@@ -1400,7 +1326,6 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		return;
 	}
 	*/
-
 }
 
 stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)

@@ -1003,7 +1003,7 @@ void StartHealingTimer(int client, float delay, int health, int amount=0, bool m
 {
 	DataPack pack;
 	CreateDataTimer(delay, Timer_Healing, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(GetClientUserId(client));
+	pack.WriteCell(EntIndexToEntRef(client));
 	pack.WriteCell(health);
 	pack.WriteCell(maxhealth);
 	pack.WriteCell(amount);
@@ -1012,15 +1012,50 @@ void StartHealingTimer(int client, float delay, int health, int amount=0, bool m
 public Action Timer_Healing(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	int client = GetClientOfUserId(pack.ReadCell());
-	if(!client || !IsClientInGame(client) || !IsPlayerAlive(client) || dieingstate[client] > 0)
+	int client = EntRefToEntIndex(pack.ReadCell());
+	
+	bool IsAnEntity = false;
+	
+	if(IsValidEntity(client))
+	{
+		if(client <= MAXENTITIES && client > MaxClients)
+		{
+			IsAnEntity = true;
+		}
+	}
+	else
+	{
 		return Plugin_Stop;
-
-	int current = GetClientHealth(client);
+	}
+	
+	if(!IsAnEntity)
+	{
+		if(!client || !IsClientInGame(client) || !IsPlayerAlive(client) || dieingstate[client] > 0)
+			return Plugin_Stop;
+	}
+	int current;
+	if(!IsAnEntity)
+	{
+		current = GetClientHealth(client);
+	}
+	else
+	{
+		current = GetEntProp(client, Prop_Data, "m_iHealth");
+	}
+	
 	int health = pack.ReadCell();
 	if(pack.ReadCell())
 	{
-		int maxhealth = SDKCall_GetMaxHealth(client);
+		int maxhealth
+		if(!IsAnEntity)
+		{
+			maxhealth = SDKCall_GetMaxHealth(client);
+		}
+		else
+		{
+			maxhealth = GetEntProp(client, Prop_Data, "m_iMaxHealth");
+		}
+		
 		if(current > maxhealth)
 		{
 			health = 0;
@@ -1034,13 +1069,19 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	current += health;
 	if(current < 1)
 	{
-		ForcePlayerSuicide(client);
+		if(!IsAnEntity)
+		{
+			ForcePlayerSuicide(client);
+		}
 	}
 	else if(current)
 	{
-		SetEntityHealth(client, current);
-		if(health>1 || health<-1)
-			ApplyHealEvent(client, client, health);
+		SetEntProp(client, Prop_Data, "m_iHealth", current);
+		if(!IsAnEntity)
+		{
+			if(health>1 || health<-1)
+				ApplyHealEvent(client, client, health);
+		}
 	}
 
 	current = pack.ReadCell();

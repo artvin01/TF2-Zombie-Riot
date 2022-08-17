@@ -13,6 +13,14 @@ enum struct Enemy
 	char Data[16];
 }
 
+enum struct MiniBoss
+{
+	int Index;
+	int Powerup;
+	float Delay;
+	char Sound[128];
+}
+
 enum struct Wave
 {
 	float Delay;
@@ -41,18 +49,18 @@ enum struct Vote
 {
 	char Name[64];
 	char Config[64];
+	int Level;
 }
 
 static ArrayList Rounds;
 static ArrayList Voting;
+static ArrayList MiniBosses;
 static ArrayStack Enemies;
 static Handle WaveTimer;
 static float Cooldown;
 static bool InSetup;
 //static bool InFreeplay;
 static int WaveIntencity;
-static bool b_BlockPanzerInThisMap;
-static bool b_BlockSawrunnerSpecificallyInThisMap;
 
 static bool Gave_Ammo_Supply;
 static int VotedFor[MAXTF2PLAYERS];
@@ -118,7 +126,16 @@ bool Waves_CallVote(int client)
 		{
 			Voting.GetArray(i, vote);
 			vote.Name[0] = CharToUpper(vote.Name[0]);
-			menu.AddItem(vote.Config, vote.Name);
+			
+			if(Level[client] < vote.Level)
+			{
+				Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, Level[client]);
+				menu.AddItem(vote.Config, vote.Name, ITEMDRAW_DISABLED);
+			}
+			else
+			{
+				menu.AddItem(vote.Config, vote.Name);
+			}
 		}
 		
 		menu.ExitButton = false;
@@ -193,9 +210,6 @@ void Waves_SetupVote(KeyValues map)
 	}
 	
 	StartCash = kv.GetNum("cash");
-	b_BlockPanzerInThisMap = view_as<bool>(kv.GetNum("block_panzer"));
-	
-	b_BlockSawrunnerSpecificallyInThisMap = view_as<bool>(kv.GetNum("block_sawrunner"));
 	if(!kv.JumpToKey("Waves"))
 	{
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "waves")
@@ -209,13 +223,14 @@ void Waves_SetupVote(KeyValues map)
 	Voting = new ArrayList(sizeof(Vote));
 	
 	Vote vote;
-	kv.GotoFirstSubKey(false);
+	kv.GotoFirstSubKey();
 	do
 	{
 		kv.GetSectionName(vote.Name, sizeof(vote.Name));
-		kv.GetString(NULL_STRING, vote.Config, sizeof(vote.Config));
+		kv.GetString("file", vote.Config, sizeof(vote.Config));
+		vote.Level = kv.GetNum("level");
 		Voting.PushArray(vote);
-	} while(kv.GotoNextKey(false));
+	} while(kv.GotoNextKey());
 	
 	if(LastWaveWas[0])
 	{
@@ -227,7 +242,9 @@ void Waves_SetupVote(KeyValues map)
 				Voting.GetArray(i, vote);
 				if(StrEqual(vote.Config, LastWaveWas))
 				{
-					Voting.Erase(i);
+					if(vote.Level > 0)
+						Voting.Erase(i);
+					
 					break;
 				}
 			}
@@ -242,6 +259,74 @@ void Waves_SetupVote(KeyValues map)
 			break;
 		}
 	}
+}
+
+void Waves_SetupMiniBosses(KeyValues map)
+{
+	if(MiniBosses)
+	{
+		delete MiniBosses;
+		MiniBosses = null;
+	}
+	
+	if(CvarNoSpecialZombieSpawn.BoolValue)
+		return;
+	
+	KeyValues kv = map;
+	if(kv)
+	{
+		kv.Rewind();
+		if(!kv.JumpToKey("MiniBoss"))
+			kv = null;
+	}
+	
+	char buffer[PLATFORM_MAX_PATH];
+	if(!kv)
+	{
+		zr_minibossconfig.GetString(buffer, sizeof(buffer));
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
+		kv = new KeyValues("MiniBoss");
+		kv.ImportFromFile(buffer);
+		RequestFrame(DeleteHandle, kv);
+	}
+	
+	MiniBosses = new ArrayList(sizeof(MiniBoss));
+	
+	MiniBoss boss;
+	kv.GotoFirstSubKey();
+	do
+	{
+		kv.GetSectionName(buffer, sizeof(buffer));
+		if(buffer[0])
+		{
+			boss.Index = StringToInt(buffer);
+			if(!boss.Index)
+				boss.Index = GetIndexByPluginName(buffer);
+			
+			boss.Powerup = kv.GetNum("powerup");
+			boss.Delay = kv.GetFloat("delay", 2.0);
+			kv.GetString("sound", boss.Sound, sizeof(boss.Sound));
+			if(boss.Sound[0])
+				PrecacheSound(boss.Sound);
+			
+			MiniBosses.PushArray(boss);
+		}
+	} while(kv.GotoNextKey());
+	
+	if(MiniBosses.Length == 0)
+	{
+		delete MiniBosses;
+		MiniBosses = null;
+	}
+}
+
+bool Waves_GetMiniBoss(MiniBoss boss)
+{
+	if(!MiniBosses)
+		return false;
+	
+	MiniBosses.GetArray(GetURandomInt() % MiniBosses.Length, boss);
+	return true;
 }
 
 void Waves_SetupWaves(KeyValues kv, bool start)
@@ -265,8 +350,6 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	
 	Enemies = new ArrayStack(sizeof(Enemy));
 	
-	b_BlockPanzerInThisDifficulty = (b_BlockPanzerInThisMap || view_as<bool>(kv.GetNum("block_panzer")));
-	b_BlockSawrunnerSpecificallyInThisDifficulty = (b_BlockSawrunnerSpecificallyInThisMap || view_as<bool>(kv.GetNum("block_sawrunner")));
 	b_SpecialGrigoriStore = view_as<bool>(kv.GetNum("grigori_special_shop_logic"));
 	f_ExtraDropChanceRarity = kv.GetFloat("gift_drop_chance_multiplier");
 	
@@ -672,27 +755,24 @@ void Waves_Progress()
 				Store_RandomizeNPCStore();
 				Spawn_Cured_Grigori();
 			}
-			if(!b_BlockPanzerInThisDifficulty)
+			if(CurrentRound == 11)
 			{
-				if(CurrentRound == 11)
+				panzer_spawn = true;
+				panzer_sound = true;
+				panzer_chance = 10;
+			}
+			else if(CurrentRound > 11 && round.Setup <= 30.0)
+			{
+				bool chance = (panzer_chance == 10 ? false : !GetRandomInt(0, panzer_chance));
+				panzer_spawn = chance;
+				panzer_sound = chance;
+				if(panzer_spawn)
 				{
-					panzer_spawn = true;
-					panzer_sound = true;
 					panzer_chance = 10;
 				}
-				else if(CurrentRound > 11 && round.Setup <= 30.0)
+				else
 				{
-					bool chance = (panzer_chance == 10 ? false : !GetRandomInt(0, panzer_chance));
-					panzer_spawn = chance;
-					panzer_sound = chance;
-					if(panzer_spawn)
-					{
-						panzer_chance = 10;
-					}
-					else
-					{
-						panzer_chance--;
-					}
+					panzer_chance--;
 				}
 			}
 			else
@@ -917,49 +997,46 @@ void Waves_Progress()
 					}
 				}
 			}
-			if(!b_BlockPanzerInThisDifficulty)
+			if(GetRandomInt(0, 1) == 1) //make him spawn way more often in freeplay.
 			{
-				if(GetRandomInt(0, 1) == 1) //make him spawn way more often in freeplay.
+				panzer_spawn = true;
+				NPC_SpawnNext(false, panzer_spawn, false);
+				
+				if(!EscapeMode)
 				{
-					panzer_spawn = true;
-					NPC_SpawnNext(false, panzer_spawn, false);
+					int botscalculaton;
 					
-					if(!EscapeMode)
+					if((CurrentWave + 2) > CvarMaxBotsForKillfeed.IntValue)
 					{
-						int botscalculaton;
-						
-						if((CurrentWave + 2) > CvarMaxBotsForKillfeed.IntValue)
-						{
-							botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-						}
-						else
-						{
-							botscalculaton = CurrentWave + 2;
-						}
-							
-						tf_bot_quota.IntValue = botscalculaton;
+						botscalculaton = CvarMaxBotsForKillfeed.IntValue;
 					}
+					else
+					{
+						botscalculaton = CurrentWave + 2;
+					}
+						
+					tf_bot_quota.IntValue = botscalculaton;
 				}
-				else
+			}
+			else
+			{
+				panzer_spawn = false;
+				NPC_SpawnNext(false, false, false);
+				
+				if(!EscapeMode)
 				{
-					panzer_spawn = false;
-					NPC_SpawnNext(false, false, false);
+					int botscalculaton;
 					
-					if(!EscapeMode)
+					if((CurrentWave + 2) > CvarMaxBotsForKillfeed.IntValue)
 					{
-						int botscalculaton;
-						
-						if((CurrentWave + 2) > CvarMaxBotsForKillfeed.IntValue)
-						{
-							botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-						}
-						else
-						{
-							botscalculaton = CurrentWave + 2;
-						}
-							
-						tf_bot_quota.IntValue = botscalculaton;
+						botscalculaton = CvarMaxBotsForKillfeed.IntValue;
 					}
+					else
+					{
+						botscalculaton = CurrentWave + 2;
+					}
+					
+					tf_bot_quota.IntValue = botscalculaton;
 				}
 			}
 			
@@ -1050,7 +1127,8 @@ void Waves_Progress()
 			if(IsClientInGame(client) && GetClientTeam(client)==2)
 			{
 				Ammo_Count_Ready[client] = 8;
-				CashSpent[client] = StartCash;
+				if(StartCash < 10000)
+					CashSpent[client] = StartCash;
 			}
 		}
 	}

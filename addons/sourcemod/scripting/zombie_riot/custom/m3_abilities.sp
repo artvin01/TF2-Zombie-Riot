@@ -449,6 +449,30 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 						}
 					}
 				}
+				for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+				{
+					int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+					if (IsValidEntity(baseboss_index_allied))
+					{
+						if(!b_ThisEntityIgnored[baseboss_index_allied])
+						{
+							GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", client_pos);
+							if (GetVectorDistance(powerup_pos, client_pos, true) <= 90000)
+							{
+								if(f_TimeUntillNormalHeal[baseboss_index_allied] < GetGameTime())
+								{
+									Healing_Amount *= 0.25;
+								}
+								if(Healing_Amount < 10.0)
+								{
+									Healing_Amount = 10.0;
+								}
+							
+								StartHealingTimer(baseboss_index_allied, 0.1, RoundToCeil(Healing_Amount * 0.1), 10);
+							}
+						}
+					}
+				}
    			}
    			if(f_Duration[entity] < GetGameTime())
    			{

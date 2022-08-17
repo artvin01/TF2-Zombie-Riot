@@ -15,6 +15,8 @@ DynamicHook g_DHookFireballExplode; //from mikusch but edited
 DynamicHook g_DHookMedigunPrimary; 
 DynamicHook g_DHookScoutSecondaryFire; 
 
+Handle g_detour_CTFGrenadePipebombProjectile_PipebombTouch;
+
 
 Address g_hSDKStartLagCompAddress;
 Address g_hSDKEndLagCompAddress;
@@ -29,6 +31,17 @@ int g_OffsetWeaponMode;
 int g_OffsetWeaponInfo;
 int g_OffsetWeaponPunchAngle;
 */
+
+stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
+    Handle res = DHookCreateFromConf(game_config, name);
+
+    if (res == INVALID_HANDLE) {
+        SetFailState("Failed to create detour for %s", name);
+    }
+
+    return res;
+}
+
 void DHook_Setup()
 {
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
@@ -53,6 +66,10 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
+	
+	g_detour_CTFGrenadePipebombProjectile_PipebombTouch = CheckedDHookCreateFromConf(gamedata, "CTFGrenadePipebombProjectile::PipebombTouch");
+	
+	
 	g_DHookRocketExplode = DHook_CreateVirtual(gamedata, "CTFBaseRocket::Explode");
 	g_DHookFireballExplode = DHook_CreateVirtual(gamedata, "CTFProjectile_SpellFireball::Explode");
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
@@ -87,10 +104,16 @@ void DHook_Setup()
 	
 }
 
-
-public void ApplyExplosionDhook_Pipe(int entity)
+public void ApplyExplosionDhook_Pipe(int entity, bool Sticky)
 {
-	g_DHookGrenadeExplode.HookEntity(Hook_Pre, entity, DHook_GrenadeExplodePre);	
+	g_DHookGrenadeExplode.HookEntity(Hook_Pre, entity, DHook_GrenadeExplodePre);
+	DHookEntity(g_detour_CTFGrenadePipebombProjectile_PipebombTouch, false, entity, _, GrenadePipebombProjectile_PipebombTouch)
+	
+	if(Sticky)
+	{
+		SDKHook(entity, SDKHook_StartTouch, SdkHook_StickStickybombToBaseBoss);
+	}
+	
 	//Hacky? yes, But i gotta.
 	
 	//I have to do it twice, if its a custom spawn i have to do it insantly, if its a tf2 spawn then i have to do it seperatly.
@@ -106,13 +129,13 @@ void See_Projectile_Team(int entity)
 	{
 		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
 		{
-			b_Is_Player_Rocket[entity] = true;	 //try this
+			b_Is_Player_Projectile[entity] = true;	 //try this
 			//Update: worked! Will now pass through players/teammates
 			//Nice.
 		}	
 		else if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue))
 		{
-			b_Is_Npc_Rocket[entity] = true; 
+			b_Is_Npc_Projectile[entity] = true; 
 		}
 	}
 	
@@ -128,11 +151,42 @@ void See_Projectile_Team_Player(int entity)
 	{
 		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
 		{
-			b_Is_Player_Rocket_Through_Npc[entity] = true;	 //try this
+			b_Is_Player_Projectile_Through_Npc[entity] = true;	 //try this
 			//Update: worked! Will now pass through players/teammates
 			//Nice.
 		}	
 	}
+}
+
+/*
+#define MAXSTICKYCOUNTTONPC 12
+const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
+int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max amount of stickies.
+*/
+
+
+public Action SdkHook_StickStickybombToBaseBoss(int entity, int other)
+{
+	if(!GetEntProp(entity, Prop_Send, "m_bTouched"))
+	{
+		if(!b_StickyIsSticking[entity] && b_Is_Blue_Npc[other])
+		{
+			//Dont stick if it already has max.
+			for (int i = 0; i < MAXSTICKYCOUNTTONPC; i++)
+			{
+				if (EntRefToEntIndex(i_StickyToNpcCount[other][i]) <= 0)
+				{
+					i_StickyToNpcCount[other][i] = EntIndexToEntRef(entity);
+					i = MAXSTICKYCOUNTTONPC;
+					
+					SetEntProp(entity, Prop_Send, "m_bTouched", true);
+					SetParent(other, entity);
+					b_StickyIsSticking[entity] = true;
+				}
+			}
+		}
+	}
+	return Plugin_Continue;
 }
 
 public void ApplyExplosionDhook_Rocket(int entity)
@@ -155,6 +209,31 @@ public void IsCustomTfGrenadeProjectile(int entity, float damage) //I cant make 
 {
 	f_CustomGrenadeDamage[entity] = damage;
 }
+
+
+
+static MRESReturn GrenadePipebombProjectile_PipebombTouch(int self, Handle params) 
+{
+	int other = DHookGetParam(params, 1);
+
+	bool result = PassfilterGlobal(self, other, true);
+
+	if(!result)
+	{
+		return MRES_Supercede;
+	}
+	return MRES_Ignored;
+}
+/*
+	GrenadePipebombProjectile_PipebombTouch is from From:
+	
+	https://github.com/aarmastah/zesty-tf2-servers/blob/a96250f1c41c96ff10bf5b35e209095769f28d22/tf2/tf/addons/sourcemod/scripting/tf2-comp-fixes/projectiles-ignore-teammates.sp
+	
+	Because im too stupid to do it myself.
+*/
+
+
+
 
 public MRESReturn DHook_GrenadeExplodePre(int entity)
 {
@@ -290,29 +369,29 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			return false;
 		}
 	}
-	if(b_Is_Npc_Rocket[ent2])
+	if(b_Is_Npc_Projectile[ent2])
 	{
 		if(b_Is_Blue_Npc[ent1])
 		{
 			return false;
 		}
-		else if(b_Is_Npc_Rocket[ent1])
+		else if(b_Is_Npc_Projectile[ent1])
 		{
 			return false;
 		}
 	}
-	else if(b_Is_Npc_Rocket[ent1])
+	else if(b_Is_Npc_Projectile[ent1])
 	{
 		if(b_Is_Blue_Npc[ent2])
 		{
 			return false;
 		}
-		else if(b_Is_Npc_Rocket[ent2])
+		else if(b_Is_Npc_Projectile[ent2])
 		{
 			return false;	
 		}
 	}
-	else if(b_Is_Player_Rocket[ent1])
+	else if(b_Is_Player_Projectile[ent1])
 	{
 		if(ent2 <= MaxClients && ent2 > 0)
 		{
@@ -322,8 +401,12 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		{
 			return false;
 		}
+		else if(b_Is_Player_Projectile[ent2])
+		{
+			return false;
+		}
 	}
-	else if(b_Is_Player_Rocket[ent2])
+	else if(b_Is_Player_Projectile[ent2])
 	{
 		if(ent1 <= MaxClients && ent1 > 0)
 		{
@@ -333,16 +416,20 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		{
 			return false;	
 		}
+		else if(b_Is_Player_Projectile[ent1])
+		{
+			return false;
+		}
 	}
 	
-	else if (b_Is_Player_Rocket_Through_Npc[ent2])
+	else if (b_Is_Player_Projectile_Through_Npc[ent2])
 	{
 		if(b_Is_Blue_Npc[ent1])
 		{
 			return false;
 		}
 	}
-	else if (b_Is_Player_Rocket_Through_Npc[ent1])
+	else if (b_Is_Player_Projectile_Through_Npc[ent1])
 	{
 		if(b_Is_Blue_Npc[ent2])
 		{
@@ -389,6 +476,7 @@ i will keep it updated incase this didnt work.
 static float Get_old_pos_back[MAXENTITIES][3];
 static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 static bool Dont_Move_Building;											//dont move buildings
+static bool Dont_Move_Allied_Npc;											//dont move buildings
 static int Move_Players = 0;		
 static int Move_Players_Teutons = 0;		
 
@@ -414,6 +502,7 @@ public MRESReturn StartLagCompensation_Pre(Address manager, DHookParam param)
 public void StartLagCompResetValues()
 {
 	Dont_Move_Building = false;
+	Dont_Move_Allied_Npc = false;
 	b_LagCompNPC = true;
 	b_LagCompNPC_No_Layers = false;	
 	b_LagCompNPC_AwayEnemies = false;
@@ -442,6 +531,10 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		if(b_Dont_Move_Building[active_weapon])
 		{
 			Dont_Move_Building = true;
+		}
+		if(b_Dont_Move_Allied_Npc[active_weapon])
+		{
+			Dont_Move_Allied_Npc = true;
 		}
 		if(b_Only_Compensate_CollisionBox[active_weapon]) //This is mostly unused, but keep it for mediguns if needed. Otherwise kinda useless.
 		{
@@ -593,10 +686,13 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 		{
 			if(!Moved_Building[baseboss_index_allied]) 
 			{
-				Moved_Building[baseboss_index_allied] = true;
-				GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[baseboss_index_allied]);
-				//TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
-				SDKCall_SetLocalOrigin(baseboss_index_allied, vec_origin);
+				if(!Dont_Move_Allied_Npc || b_ThisEntityIgnored[baseboss_index_allied])
+				{
+					Moved_Building[baseboss_index_allied] = true;
+					GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[baseboss_index_allied]);
+					//TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
+					SDKCall_SetLocalOrigin(baseboss_index_allied, vec_origin);
+				}
 			}
 		}
 	}

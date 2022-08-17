@@ -78,6 +78,34 @@ public void NaziPanzer_OnMapStart_NPC()
 	PrecacheModel("models/zombie_riot/cod_zombies/panzer_soldat_13.mdl");
 }
 
+static char[] GetPanzerHealth()
+{
+	int health = 80;
+	
+	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	
+	float temp_float_hp = float(health);
+	
+	if(CurrentRound+1 < 30)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.20));
+	}
+	else if(CurrentRound+1 < 45)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.25));
+	}
+	else
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+	}
+	
+	health /= 2;
+	
+	char buffer[16];
+	IntToString(health, buffer, sizeof(buffer));
+	return buffer;
+}
+	
 methodmap NaziPanzer < CClotBody
 {
 	public void PlayIdleSound() {
@@ -223,10 +251,9 @@ methodmap NaziPanzer < CClotBody
 		}
 	}
 	
-	
 	public NaziPanzer(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		NaziPanzer npc = view_as<NaziPanzer>(CClotBody(vecPos, vecAng, "models/zombie_riot/cod_zombies/panzer_soldat_13.mdl", "1.15", "300", ally, false, true));
+		NaziPanzer npc = view_as<NaziPanzer>(CClotBody(vecPos, vecAng, "models/zombie_riot/cod_zombies/panzer_soldat_13.mdl", "1.15", GetPanzerHealth(), ally, false, true));
 		
 		i_NpcInternalId[npc.index] = NAZI_PANZER;
 		

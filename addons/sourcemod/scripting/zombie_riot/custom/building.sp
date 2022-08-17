@@ -2958,9 +2958,13 @@ public void BuildingMortarAction(int client, int mortar)
 			   
 	GetClientEyePosition(client, eyePos);
 	GetClientEyeAngles(client, eyeAng);
-			   
+	
+	b_LagCompNPC_No_Layers = true;
+	StartLagCompensation_Base_Boss(client, false);
+	
 	Handle trace = TR_TraceRayFilterEx(eyePos, eyeAng, MASK_SHOT, RayType_Infinite, TraceEntityFilterPlayer);
-			  
+	
+	FinishLagCompensation_Base_boss();
 	if (TR_DidHit(trace))
 	{
 		TR_GetEndPosition(spawnLoc, trace);

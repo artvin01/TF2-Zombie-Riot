@@ -58,11 +58,12 @@ void ConVar_PluginStart()
 	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
 	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "1", "No Panzer will spawn or anything alike", FCVAR_DONTRECORD);
-	CvarEnablePrivatePlugins = CreateConVar("zr_privateplugins", "0", "Enable private plugins, set this to zero.", FCVAR_DONTRECORD);
 	CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "6", "The maximum amount of blue bots allowed for the killfeed");
 	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
 	zr_voteconfig = CreateConVar("zr_voteconfig", "vote", "Vote config zr/ .cfg already included");
-	zr_weaponsconfig = CreateConVar("zr_weaponsconfig", "weapons", "Weapons config zr/ .cfg already included");
+	zr_tagblacklist = CreateConVar("zr_tagblacklist", "private", "Tags to blacklist from weapons config");
+	zr_tagwhitelist = CreateConVar("zr_tagwhitelist", "", "Tags to whitelist from weapons config");
+	zr_minibossconfig = CreateConVar("zr_minibossconfig", "miniboss", "Mini Boss config zr/ .cfg already included");
 	zr_ignoremapconfig = CreateConVar("zr_ignoremapconfig", "0", "If to ignore map-specific configs");
 	
 	AutoExecConfig(true, "zombie_riot");

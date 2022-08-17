@@ -157,7 +157,7 @@ public void Cryo_ActivateBurst(int client, int weapon, bool &result, int slot, f
 	int particle = ParticleEffectAt(UserLoc, "xms_snowburst", 4.0);
 	particle = ParticleEffectAt(UserLoc, "xms_snowburst_child01", 4.0);
 	particle = ParticleEffectAt(UserLoc, "xms_snowburst_child02", 4.0);
-	particle = ParticleEffectAt(UserLoc, "xms_snowburst_child03", 4.0);
+//	particle = ParticleEffectAt(UserLoc, "xms_snowburst_child03", 4.0);
 	
 	float TestDMG = damage;
 	static float angles[3];
