@@ -97,7 +97,9 @@ public void Map_Precache_Zombie_Drops_Gift()
 
 public void Gift_DropChance(int entity)
 {
-	if(CvarEnablePrivatePlugins.BoolValue)
+	char buffer[32];
+	zr_tagblacklist.GetString(buffer, sizeof(buffer));
+	if(StrContains(buffer, "private", false) == -1)
 	{
 		if(IsValidEntity(entity))
 		{

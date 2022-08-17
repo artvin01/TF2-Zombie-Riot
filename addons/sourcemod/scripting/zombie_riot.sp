@@ -59,7 +59,7 @@ ConVar CvarNoRoundStart;
 ConVar CvarDisableThink;
 ConVar CvarInfiniteCash;
 ConVar CvarNoSpecialZombieSpawn;
-ConVar CvarEnablePrivatePlugins;
+//ConVar CvarEnablePrivatePlugins;
 ConVar CvarMaxBotsForKillfeed;
 ConVar CvarXpMultiplier;
 
@@ -180,7 +180,8 @@ Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;
 
 ConVar zr_voteconfig;
-ConVar zr_weaponsconfig;
+ConVar zr_tagblacklist;
+ConVar zr_tagwhitelist;
 ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
 ConVar tf_bot_quota;

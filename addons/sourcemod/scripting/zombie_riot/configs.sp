@@ -54,7 +54,7 @@ public void Configs_ConfigsExecuted()
 		}
 	}
 	
-	Store_ConfigSetup(kv);
+	Store_ConfigSetup();
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
 	if(kv)

@@ -500,7 +500,7 @@ void Music_PostThink(int client)
 			}
 			
 		}
-		else if(intencity >= RoundToCeil(float(PlayersAliveScaling) * 0.9))
+		else
 		{
 			if(GlobalIntencity >= RoundToNearest((float(PlayersAliveScaling) * 0.5)))
 			{

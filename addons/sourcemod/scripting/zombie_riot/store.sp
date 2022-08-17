@@ -342,7 +342,7 @@ void Store_PluginStart()
 	CookieLoadoutInv = new Cookie("zr_lastloadout_2", "The last loadout saved data is from", CookieAccess_Protected);
 }
 
-void Store_ConfigSetup(KeyValues map)
+void Store_ConfigSetup()
 {
 	if(StoreItems)
 	{
@@ -359,47 +359,95 @@ void Store_ConfigSetup(KeyValues map)
 	
 	StoreItems = new ArrayList(sizeof(Item));
 	
-	KeyValues kv = map;
-	if(kv)
-	{
-		kv.Rewind();
-		if(!kv.JumpToKey("Weapons"))
-			kv = null;
-	}
-
 	char buffer[PLATFORM_MAX_PATH];
-	if(!kv)
-	{
-		zr_weaponsconfig.GetString(buffer, sizeof(buffer));
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
-		kv = new KeyValues("Weapons");
-		kv.ImportFromFile(buffer);
-		RequestFrame(DeleteHandle, kv);
-	}
+	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons");
+	KeyValues kv = new KeyValues("Weapons");
+	kv.ImportFromFile(buffer);
+	RequestFrame(DeleteHandle, kv);
+	
+	char blacklist[32][6];
+	zr_tagblacklist.GetString(buffer, sizeof(buffer));
+	int blackcount;
+	if(buffer[0])
+		blackcount = ExplodeString(buffer, ";", blacklist, sizeof(blacklist), sizeof(blacklist[]));
+	
+	char whitelist[32][6];
+	zr_tagwhitelist.GetString(buffer, sizeof(buffer));
+	int whitecount;
+	if(buffer[0])
+		whitecount = ExplodeString(buffer, ";", whitelist, sizeof(whitelist), sizeof(whitelist[]));
 	
 	kv.GotoFirstSubKey();
 	do
 	{
-		ConfigSetup(-1, kv, false, false, false);
+		ConfigSetup(-1, kv, false, whitelist, whitecount, blacklist, blackcount);
 	} while(kv.GotoNextKey());
 }
 
-static void ConfigSetup(int section, KeyValues kv, bool noescape, bool hidden, bool noprivateplugin)
+static void ConfigSetup(int section, KeyValues kv, bool hidden, const char[][] whitelist, int whitecount, const char[][] blacklist, int blackcount)
 {
+	bool isItem = kv.GetNum("cost", -1) >= 0;
+
 	Item item;
 	item.Section = section;
 	item.Level = kv.GetNum("level");
 	item.Hidden = view_as<bool>(kv.GetNum("hidden", hidden ? 1 : 0));
-	item.NoPrivatePlugin = view_as<bool>(kv.GetNum("noprivateplugin", noprivateplugin ? 1 : 0));
+	if(whitecount || blackcount)
+	{
+		char buffers[32][6];
+		kv.GetString("tags", item.Desc, sizeof(item.Desc));
+		if(item.Desc[0] || isItem)
+		{
+			int tags = ExplodeString(item.Desc, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			
+			if(whitecount)
+			{
+				item.Hidden = true;
+				
+				for(int a; a < tags; a++)
+				{
+					for(int b; b < whitecount; b++)
+					{
+						if(StrEqual(buffers[a], whitelist[b], false))
+						{
+							item.Hidden = false;
+							break;
+						}
+					}
+					
+					if(!item.Hidden)
+						break;
+				}
+			}
+			
+			if(blackcount)
+			{
+				for(int a; a < tags; a++)
+				{
+					for(int b; b < whitecount; b++)
+					{
+						if(StrEqual(buffers[a], whitelist[b], false))
+						{
+							item.Hidden = true;
+							break;
+						}
+					}
+					
+					if(item.Hidden)
+						break;
+				}
+			}
+		}
+	}
+	
 	item.WhiteOut = view_as<bool>(kv.GetNum("whiteout"));
 	item.ShouldThisCountSupportBuildings = view_as<bool>(kv.GetNum("count_support_buildings"));
-	item.NoEscape = view_as<bool>(kv.GetNum("noescape", noescape ? 1 : 0));
 	kv.GetString("textstore", item.TextStore, sizeof(item.TextStore));
 	kv.GetSectionName(item.Name, sizeof(item.Name));
 	CharToUpper(item.Name[0]);
 	kv.GetString("buildingexistname", item.BuildingExistName, sizeof(item.BuildingExistName));
 	
-	if(kv.GetNum("cost", -1) >= 0)
+	if(isItem)
 	{
 		kv.GetString("desc", item.Desc, sizeof(item.Desc));
 		item.Default = view_as<bool>(kv.GetNum("default"));
@@ -434,7 +482,7 @@ static void ConfigSetup(int section, KeyValues kv, bool noescape, bool hidden, b
 		int sec = StoreItems.PushArray(item);
 		do
 		{
-			ConfigSetup(sec, kv, item.NoEscape, item.Hidden, item.NoPrivatePlugin);
+			ConfigSetup(sec, kv, item.Hidden, whitelist, whitecount, blacklist, blackcount);
 		} while(kv.GotoNextKey());
 		kv.GoBack();
 	}
@@ -631,7 +679,7 @@ void Store_LoadLevelPerks(int client)
 			StoreItems.GetArray(a, item);
 			if(StrEqual(buffers[i], item.Name))
 			{
-				if(!item.Scale)
+				if(!item.Scale && !item.Hidden)
 				{
 					item.Scaled[client] = 0;
 					item.Owned[client] = 1;
@@ -661,7 +709,7 @@ void Store_LoadLevelPerks(int client)
 			StoreItems.GetArray(a, item);
 			if(StrEqual(buffers[i], item.Name))
 			{
-				if(!item.Scale)
+				if(!item.Scale && !item.Hidden)
 				{
 					item.Scaled[client] = 0;
 					item.Owned[client] = 1;
@@ -775,7 +823,16 @@ void Store_ClientDisconnect(int client)
 
 void Store_SaveLevelPerks(int client)
 {
-	char level[512], inv[512];
+	char level[512];
+	zr_tagblacklist.GetString(level, sizeof(level));
+	if(level[0])
+		return;
+	
+	zr_tagwhitelist.GetString(level, sizeof(level));
+	if(level[0])
+		return;
+	
+	char inv[512];
 	static Item item;
 	static ItemInfo info;
 	int length = StoreItems.Length - 1;
@@ -1359,9 +1416,6 @@ static void MenuPage(int client, int section)
 			continue;
 		}
 		
-		if(item.NoPrivatePlugin && !CvarEnablePrivatePlugins.BoolValue)
-			continue;
-		
 		if(item.TextStore[0] && !HasNamedItem(client, item.TextStore))
 			continue;
 		
@@ -1494,7 +1548,8 @@ static void MenuPage(int client, int section)
 		FormatEx(buffer, sizeof(buffer), "%t", "Help?");
 		menu.AddItem("-3", buffer);
 		
-		if(CvarEnablePrivatePlugins.BoolValue)
+		zr_tagblacklist.GetString(buffer, sizeof(buffer));
+		if(StrContains(buffer, "private", false) == -1)
 		{
 			FormatEx(buffer, sizeof(buffer), "%t", "Encyclopedia");
 			menu.AddItem("-13", buffer);
