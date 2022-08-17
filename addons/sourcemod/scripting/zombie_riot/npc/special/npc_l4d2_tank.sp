@@ -526,18 +526,17 @@ public void L4D2_Tank_ClotThink(int iNPC)
 				else
 				{
 					i_IWantToThrowHim[npc.index] = -1;
-					return;
 				}
 				
-				if(IsValidEntity(ally))
+				if(IsValidEntity(ally) && !b_NpcHasDied[ally])
 				{
+
 					if(!I_Wanna_Throw_ally)
 					{
 						i_IWantToThrowHim[npc.index] = EntIndexToEntRef(ally);
 					}
 					else if(flDistanceToTarget < 12500)
 					{
-						
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", f3_LastValidPosition[ally]);
 						
 						f_TankGrabbedStandStill[ally] = GetGameTime() + 1.2;
@@ -564,15 +563,10 @@ public void L4D2_Tank_ClotThink(int iNPC)
 						npc.m_flStandStill = GetGameTime() + 1.5;
 						i_IWantToThrowHim[npc.index] = -1;
 					}
-					else
-					{
-						ally = GetClosestAlly(npc.index);
-						i_IWantToThrowHim[npc.index] = EntIndexToEntRef(ally);
-					}
 				}
 				else
 				{
-					fl_ThrowPlayerCooldown[npc.index] = GetGameTime() + 10.0;
+					i_IWantToThrowHim[npc.index] = -1;
 				}
 			}
 			npc.StartPathing();
