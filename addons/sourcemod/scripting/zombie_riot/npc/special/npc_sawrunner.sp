@@ -451,7 +451,7 @@ public void SawRunner_NPCDeath(int entity)
 		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
 		
 //		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
-		DispatchKeyValue(entity_death, "model", "models/zombie_riot/cof/sawrunner_1.mdl");
+		DispatchKeyValue(entity_death, "model", "models/zombie_riot/cof/sawrunner_2.mdl");
 
 		DispatchSpawn(entity_death);
 		
