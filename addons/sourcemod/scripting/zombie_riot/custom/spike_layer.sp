@@ -115,6 +115,7 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 		int entity = CreateEntityByName("tf_projectile_pipe_remote");
 		if(IsValidEntity(entity))
 		{
+			b_StickyIsSticking[entity] = true; //Make them not stick to npcs.
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
 			SetEntProp(entity, Prop_Send, "m_bCritical", false); 	//No crits, causes particles which cause FPS DEATH!! Crits in tf2 cause immensive lag from what i know from ff2.

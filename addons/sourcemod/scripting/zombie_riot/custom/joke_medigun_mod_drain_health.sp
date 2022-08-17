@@ -178,12 +178,15 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 static float medigun_heal_delay[MAXTF2PLAYERS];
 static float medigun_hud_delay[MAXTF2PLAYERS];
 
+static float f_IncrementalSmallHeal[MAXENTITIES];
+
 float target_sucked_long[MAXENTITIES]={0.85, ...};
 static Handle Revert_target_sucked_long_timer[MAXENTITIES];
 static bool Handle_on_target_sucked_long[MAXENTITIES]={false, ...};
 
 public void Medigun_ClearAll()
 {
+	Zero(f_IncrementalSmallHeal); //Do not save the heal across stages of the game.
 	Zero(f_MedigunDelayAttackThink);
 	Zero(medigun_heal_delay);
 	Zero(medigun_hud_delay);
@@ -513,43 +516,124 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if(team)
 				{
 					bool Is_Allied_Npc = false;
-					if(b_IsAlliedNpc[healTarget])
+					if(b_IsAlliedNpc[healTarget]) //Give uber
 					{
+						float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
+						
+						flChargeLevel += 0.03*GetGameFrameTime();
+					
+						if (flChargeLevel > 1.0)
+						{
+							flChargeLevel = 1.0;
+						}
+						
+						SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
+						
 						Is_Allied_Npc = true;
 					}
 					
-					int Healing_Value = RoundToCeil(Attributes_FindOnWeapon(owner, medigun, 8) * 0.5);
-					//int newHealth = GetEntProp(healTarget, Prop_Send, "m_iHealth") + (flDrainRate * GetGameFrameTime());
-					int healing_Amount = Healing_Value;
-					int healing_Amount_Self = Healing_Value;
+					float Healing_Value = Attributes_FindOnWeapon(owner, medigun, 8) * 0.5;
+					
+					float healing_Amount = Healing_Value;
+					float healing_Amount_Self = Healing_Value;
 					
 					if(EscapeMode)
-						healing_Amount = 2;
+						healing_Amount = 2.0;
 						
 					if(EscapeMode)
-						healing_Amount_Self = 2;
+						healing_Amount_Self = 2.0;
 						
 					
 					if(f_TimeUntillNormalHeal[healTarget] > GetGameTime())
 					{
-						healing_Amount /= 4;
+						healing_Amount *= 0.25;
 					}
 					if(f_TimeUntillNormalHeal[owner] > GetGameTime())
 					{
-						healing_Amount_Self /= 4;
+						healing_Amount_Self *= 0.25;
 					}
 					
 					
-					if (healing_Amount <= 1)
-						healing_Amount = 1;
+					int i_SelfHealAmount;
+					int i_TargetHealAmount;
+					//The healing is less then 1 ? Do own logic.
 					
-					if (healing_Amount_Self <= 1)
-						healing_Amount_Self = 1;
+					if (healing_Amount <= 1.0)
+					{
+						f_IncrementalSmallHeal[healTarget] += healing_Amount;
+						
+						if(f_IncrementalSmallHeal[healTarget] >= 1.0)
+						{
+							f_IncrementalSmallHeal[healTarget] -= 1.0;
+							i_TargetHealAmount = 1;
+						}
+						else
+						{
+							if(b_IsAlliedNpc[healTarget])
+							{
+								Calculate_And_Display_hp(owner, healTarget, 0.0, true);
+							}
+							return MRES_Ignored;
+						}
+					}
+					else
+					{
+						i_TargetHealAmount = RoundToFloor(healing_Amount);
+						
+						float Decimal_healing = FloatFraction(healing_Amount);
+						
+						
+						f_IncrementalSmallHeal[healTarget] += Decimal_healing;
+						
+						if(f_IncrementalSmallHeal[healTarget] >= 1.0)
+						{
+							f_IncrementalSmallHeal[healTarget] -= 1.0;
+							i_TargetHealAmount += 1;
+						}
+					}
+					
+					if (healing_Amount_Self <= 1.0)
+					{
+						f_IncrementalSmallHeal[owner] += healing_Amount_Self;
+						
+						if(f_IncrementalSmallHeal[owner] >= 1.0)
+						{
+							f_IncrementalSmallHeal[owner] -= 1.0;
+							i_SelfHealAmount = 1;
+						}
+						else
+						{
+							if(b_IsAlliedNpc[healTarget])
+							{
+								Calculate_And_Display_hp(owner, healTarget, 0.0, true);
+							}
+							return MRES_Ignored;
+						}
+					}
+					else
+					{
+						i_SelfHealAmount = RoundToFloor(healing_Amount_Self);
+						
+						float Decimal_healing = FloatFraction(healing_Amount_Self);
+						
+						
+						f_IncrementalSmallHeal[owner] += Decimal_healing;
+						
+						if(f_IncrementalSmallHeal[owner] >= 1.0)
+						{
+							f_IncrementalSmallHeal[owner] -= 1.0;
+							i_SelfHealAmount += 1;
+						}
+					}
+					
+					
+					
+					//HEALING STARTS NOW!
 					
 						
 					int flHealth = GetEntProp(healTarget, Prop_Data, "m_iHealth");
 						
-					int newHealth = flHealth + healing_Amount;
+					int newHealth = flHealth + i_TargetHealAmount;
 					
 					int flMaxHealth;
 					
@@ -567,33 +651,30 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 					if(newHealth >= flMaxHealth)
 					{
-						healing_Amount -= newHealth - flMaxHealth;
+						i_TargetHealAmount -= newHealth - flMaxHealth;
 						newHealth = flMaxHealth;
 					}
 					
 					SetEntProp(healTarget, Prop_Data, "m_iHealth", newHealth);
-					new_ammo -= healing_Amount;
-					Healing_done_in_total[owner] += healing_Amount;
+					new_ammo -= i_TargetHealAmount;
+					Healing_done_in_total[owner] += i_TargetHealAmount;
 					
-					
-					if (healing_Amount <= 1)
-						healing_Amount = 1;
 						
 					flHealth = GetEntProp(owner, Prop_Data, "m_iHealth");
 						
-					newHealth = flHealth + healing_Amount_Self;
+					newHealth = flHealth + i_SelfHealAmount;
 					
 					flMaxHealth = SDKCall_GetMaxHealth(owner);
 					
 					if(newHealth >= flMaxHealth)
 					{
-						healing_Amount_Self -= newHealth - flMaxHealth;
+						i_SelfHealAmount -= newHealth - flMaxHealth;
 						newHealth = flMaxHealth;
 					}
 					
 					SetEntProp(owner, Prop_Data, "m_iHealth", newHealth);
-					new_ammo -= healing_Amount_Self;
-					Healing_done_in_total[owner] += healing_Amount_Self;
+					new_ammo -= i_SelfHealAmount;
+					Healing_done_in_total[owner] += i_SelfHealAmount;
 					
 					Increaced_Overall_damage_Low[owner] = GetGameTime() + 0.11;
 					Increaced_Overall_damage_Low[healTarget] = GetGameTime() + 0.11;
