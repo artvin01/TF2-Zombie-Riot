@@ -4389,7 +4389,10 @@ public void InitNavGamedata()
 	
 	if(LoadFromAddress(navarea_count, NumberType_Int32) <= 0)
 	{
-		SetFailState("[CClotBody] No nav mesh!");
+		char buffer[64];
+		GetCurrentMap(buffer, sizeof(buffer));
+		PrintToServer("No Nav Mesh for %s, aborting map", buffer);
+		RemoveEntity(0);
 		return;
 	}
 	
