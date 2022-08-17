@@ -4554,6 +4554,32 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 	return !(entity == iExclude);
 }
 
+int Entity_to_Respect;
+
+public void AddEntityToTraceStuckCheck(int entity)
+{
+	Entity_to_Respect = entity;
+}
+public void RemoveEntityToTraceStuckCheck(int entity)
+{
+	Entity_to_Respect = -1;
+}
+
+public bool TraceStuckCheck(int entity, int contentsMask, any iExclude)
+{
+	if(entity == 0)
+	{
+		return !(entity == iExclude);
+	}
+	
+	if(entity == Entity_to_Respect)
+	{
+		return !(entity == iExclude);	
+	}
+	
+	return false;
+}
+
 public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMask, any iExclude)
 {
 	char class[64];
@@ -5349,6 +5375,8 @@ public bool TraceRayDontHitPlayersOrEntity(int entity,int mask,any data)
 	return false;
 }
 
+float f_StuckTextChatNotif[MAXTF2PLAYERS];
+
 public void Check_If_Stuck(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
@@ -5367,11 +5395,9 @@ public void Check_If_Stuck(int iNPC)
 		}
 		else
 		{
-				
 			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
 			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
 		}
-			
 		
 		int Hit_player = IsSpaceOccupiedOnlyPlayers(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
 			
@@ -5388,7 +5414,42 @@ public void Check_If_Stuck(int iNPC)
 			{
 				flMyPos_2[2] += hullcheckmaxs_Player[2];
 				
-				SDKCall_SetLocalOrigin(Hit_player, flMyPos_2);			
+				if(IsValidEntity(Hit_player))
+				{
+					
+					static float hullcheckmaxs_Player_Again[3];
+					static float hullcheckmins_Player_Again[3];
+					if(b_IsGiant[Hit_player])
+					{
+					 	hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 120.0 } );
+						hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
+					}
+					else
+					{	
+						hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
+						hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );			
+					}
+					
+					if(IsValidClient(Hit_player)) //Player size
+					{
+						hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
+						hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
+					}
+					
+					if(!IsSpaceOccupiedIgnorePlayers(flMyPos_2, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, Hit_player))
+					{
+						SDKCall_SetLocalOrigin(Hit_player, flMyPos_2);	
+					//	TeleportEntity(entity, f3_LastValidPosition[entity], NULL_VECTOR, { 0.0, 0.0, 0.0 });
+					}
+					else
+					{
+						if(f_StuckTextChatNotif[Hit_player] < GetGameTime())
+						{
+							f_StuckTextChatNotif[Hit_player] = GetGameTime() + 1.0;
+							PrintToChat(Hit_player, "You are stuck, yet Unstucking you will stuck you again, you will remain in this position so if you kill the npc, you can get free.");
+						}
+					}
+				}		
 			}
 			else //PLAYER IS BELOW ZOMBIE
 			{
@@ -5397,7 +5458,42 @@ public void Check_If_Stuck(int iNPC)
 				flMyPos_2[2] = flMyPos[2];
 				flMyPos_2[2] += hullcheckmaxs_Player[2];
 				flMyPos_2[2] += 5.0;
-				SDKCall_SetLocalOrigin(iNPC, flMyPos_2);
+				
+				if(IsValidEntity(Hit_player))
+				{
+					static float hullcheckmaxs_Player_Again[3];
+					static float hullcheckmins_Player_Again[3];
+					if(b_IsGiant[Hit_player])
+					{
+					 	hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 120.0 } );
+						hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
+					}
+					else
+					{	
+						hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
+						hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );			
+					}
+					
+					if(IsValidClient(Hit_player)) //Player size
+					{
+						hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
+						hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
+					}
+					
+					if(!IsSpaceOccupiedIgnorePlayers(flMyPos_2, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, iNPC))
+					{
+						SDKCall_SetLocalOrigin(iNPC, flMyPos_2);	
+						TeleportEntity(iNPC, flMyPos_2, NULL_VECTOR, { 0.0, 0.0, 0.0 }); //Reset their speed
+					}
+					else
+					{
+						if(f_StuckTextChatNotif[Hit_player] < GetGameTime())
+						{
+							f_StuckTextChatNotif[Hit_player] = GetGameTime() + 1.0;
+							PrintToChat(Hit_player, "You are stuck, yet Unstucking you will stuck you again, you will remain in this position so if you kill the npc, you can get free.");
+						}
+					}
+				}
 			}
 		}
 		//This is a tempomary fix. find a better one for players getting stuck.
@@ -5594,6 +5690,27 @@ public int Can_I_See_Enemy(int attacker, int enemy)
 //	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 //	TE_SetupBeamPoints(pos_npc, pos_enemy, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
 //	TE_SendToAll();
+		
+	Traced_Target = TR_GetEntityIndex(trace);
+	delete trace;
+	return Traced_Target;
+}
+
+
+public int Can_I_See_Enemy_Only(int attacker, int enemy)
+{
+	Handle trace; 
+	float pos_npc[3]; GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", pos_npc);
+	float pos_enemy[3]; GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", pos_enemy);
+	pos_npc[2] += 45.0;
+	pos_enemy[2] += 35.0;
+	
+	AddEntityToTraceStuckCheck(enemy);
+	
+	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_PLAYERSOLID, RayType_EndPoint, TraceStuckCheck, attacker);
+	int Traced_Target;
+	
+	RemoveEntityToTraceStuckCheck(enemy);
 		
 	Traced_Target = TR_GetEntityIndex(trace);
 	delete trace;

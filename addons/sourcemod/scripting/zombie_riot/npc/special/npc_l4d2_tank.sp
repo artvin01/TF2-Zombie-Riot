@@ -47,6 +47,9 @@ public void L4D2_Tank_OnMapStart_NPC()
 	PrecacheModel("models/infected/hulk.mdl");
 }
 
+
+static int i_TankAntiStuck[MAXENTITIES];
+
 static int i_PlayMusicSound[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 
@@ -340,6 +343,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 								npc.FaceTowards(vecTarget_closest, 20000.0);
 								PluginBot_Jump(client, vecTarget_closest);
 								RequestFrame(ApplySdkHookTankThrow, EntIndexToEntRef(client));
+								i_TankAntiStuck[client] = EntIndexToEntRef(npc.index);
 								CreateTimer(0.1, CheckStuckTank, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 							}
 						}
@@ -397,13 +401,14 @@ public void L4D2_Tank_ClotThink(int iNPC)
 									RequestFrame(ApplySdkHookTankThrow, EntIndexToEntRef(client));
 									PluginBot_Jump(client, vecTarget_closest);
 								}
+								i_TankAntiStuck[client] = EntIndexToEntRef(npc.index);
 								CreateTimer(0.1, CheckStuckTank, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 							}
 						}
 						if(client <= MaxClients)
 						{
 							SDKHook(client, SDKHook_PreThink, contact_throw_tank);	
-		
+							i_TankAntiStuck[client] = EntIndexToEntRef(npc.index);
 							CreateTimer(0.1, CheckStuckTank, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 							Custom_Knockback(npc.index, client, 3000.0, true, true);
 						}
@@ -922,6 +927,29 @@ public Action CheckStuckTank(Handle timer, any entid)
 				SDKHooks_TakeDamage(entity, 0, 0, float(damage), DMG_GENERIC, -1, NULL_VECTOR);
 			}
 			TeleportEntity(entity, f3_LastValidPosition[entity], NULL_VECTOR, { 0.0, 0.0, 0.0 });
+		}
+		else
+		{
+			int tank = EntRefToEntIndex(i_TankAntiStuck[entity]);
+			if(IsValidEntity(tank))
+			{
+				int entity_I_see = Can_I_See_Enemy_Only(tank, entity);
+				//Target close enough to hit
+				if(entity_I_see != entity)
+				{	
+					if(IsValidClient(entity)) //Player Unstuck, but give them a penalty for doing this in the first place.
+					{
+						int damage = SDKCall_GetMaxHealth(entity) / 8;
+						SDKHooks_TakeDamage(entity, 0, 0, float(damage), DMG_GENERIC, -1, NULL_VECTOR);
+					}
+					TeleportEntity(entity, f3_LastValidPosition[entity], NULL_VECTOR, { 0.0, 0.0, 0.0 });
+				}
+			}
+			else
+			{
+				//Just teleport back, dont fucking risk it.
+				TeleportEntity(entity, f3_LastValidPosition[entity], NULL_VECTOR, { 0.0, 0.0, 0.0 });
+			}
 		}
 	}
 	return Plugin_Handled;
