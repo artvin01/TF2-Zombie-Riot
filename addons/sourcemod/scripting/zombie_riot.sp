@@ -237,6 +237,7 @@ int Resupplies_Supplied[MAXTF2PLAYERS];
 bool thirdperson[MAXTF2PLAYERS];
 bool WaitingInQueue[MAXTF2PLAYERS];
 int dieingstate[MAXTF2PLAYERS];
+bool b_DoNotUnStuck[MAXENTITIES];
 
 //bool Wand_Fired;
 
@@ -375,6 +376,7 @@ float f_VeryLowIceDebuff[MAXENTITIES];
 float f_LowIceDebuff[MAXENTITIES];
 float f_HighIceDebuff[MAXENTITIES];
 bool b_Frozen[MAXENTITIES];
+float f_TankGrabbedStandStill[MAXENTITIES];
 
 bool b_StickyIsSticking[MAXENTITIES];
 
@@ -685,10 +687,12 @@ enum
 	MEDIVAL_EAGLE_SCOUT					= 112,
 	MEDIVAL_SAMURAI						= 113,
 	
-	THEADDICTION	= 114,
-	THEDOCTOR	= 115,
-	BOOKSIMON	= 116,
-	ALT_KAHMLSTEIN						= 117
+	THEADDICTION						= 114,
+	THEDOCTOR							= 115,
+	BOOKSIMON							= 116,
+	ALT_KAHMLSTEIN						= 117,
+	
+	L4D2_TANK							= 118,
 }
 
 
@@ -819,6 +823,7 @@ public const char NPC_Names[][] =
 	"The Doctor",
 	"Book Simon",
 	"Kahmlstein",
+	"L4D2 Tank",
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -946,7 +951,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",
 	"",
 	"",
-	"npc_alt_kahml"
+	"npc_alt_kahml",
+	"npc_l4d2_tank"
 };
 
 #include "zombie_riot/stocks_override.sp"
