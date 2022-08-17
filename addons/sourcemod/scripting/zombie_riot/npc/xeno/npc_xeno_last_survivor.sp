@@ -385,7 +385,6 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 		
 		if(npc.m_flNextRangedAttack < GetGameTime() && npc.m_flDoingAnimation < GetGameTime())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
 			if (!npc.Anger)
 			{
 				npc.FaceTowards(vecTarget, 1000.0);

@@ -649,6 +649,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						flMaxHealth = RoundToNearest(float(GetEntProp(healTarget, Prop_Data, "m_iMaxHealth")) * 1.25);
 					}
 						
+					//TARGET HEAL
 					if(newHealth >= flMaxHealth)
 					{
 						i_TargetHealAmount -= newHealth - flMaxHealth;
@@ -658,10 +659,13 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					SetEntProp(healTarget, Prop_Data, "m_iHealth", newHealth);
 					new_ammo -= i_TargetHealAmount;
 					Healing_done_in_total[owner] += i_TargetHealAmount;
-					
+					//TARGET HEAL
 						
 					flHealth = GetEntProp(owner, Prop_Data, "m_iHealth");
-						
+					
+					
+					
+					//SELF HEAL
 					newHealth = flHealth + i_SelfHealAmount;
 					
 					flMaxHealth = SDKCall_GetMaxHealth(owner);
@@ -675,6 +679,8 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					SetEntProp(owner, Prop_Data, "m_iHealth", newHealth);
 					new_ammo -= i_SelfHealAmount;
 					Healing_done_in_total[owner] += i_SelfHealAmount;
+					
+					//SELF HEAL
 					
 					Increaced_Overall_damage_Low[owner] = GetGameTime() + 0.11;
 					Increaced_Overall_damage_Low[healTarget] = GetGameTime() + 0.11;
