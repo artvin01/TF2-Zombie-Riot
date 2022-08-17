@@ -591,22 +591,22 @@ public Action SpyMainBoss_ClotDamaged(int victim, int &attacker, int &inflictor,
 	if(npc.m_flDead_Ringer < GetGameTime())
 	{
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 		
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 0);
+		SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 1);
 		
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 0);
+		SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 1);
 		
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 0);
+		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 1);
 		
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 0);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 		
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 0);
+		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 1);
 		
 		npc.m_flDead_Ringer_Invis = GetGameTime() + 2.0;
 		npc.m_flDead_Ringer = GetGameTime() + 13.0;
