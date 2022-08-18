@@ -693,6 +693,8 @@ enum
 	ALT_KAHMLSTEIN						= 117,
 	
 	L4D2_TANK							= 118,
+	ALT_COMBINE_DEUTSCH_RITTER			= 119,
+	ALT_SNIPER_RAILGUNNER				= 120,
 }
 
 
@@ -824,6 +826,8 @@ public const char NPC_Names[][] =
 	"Book Simon",
 	"Kahmlstein",
 	"L4D2 Tank",
+	"Holy Knight",
+	"Sniper Railgunner"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -952,7 +956,9 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",
 	"",
 	"npc_alt_kahml",
-	"npc_l4d2_tank"
+	"npc_l4d2_tank",
+	"npc_alt_combine_soldier_deutsch_ritter",
+	"npc_alt_sniper_railgunner"
 };
 
 #include "zombie_riot/stocks_override.sp"
