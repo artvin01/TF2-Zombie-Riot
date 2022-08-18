@@ -579,4 +579,8 @@
 		"en"		"Kahmlstein"
 		"ru"		"Кахмльштайн"
 	}
+	"L4D2 Tank"
+	{
+		"en"		"Tank"
+	}
 }

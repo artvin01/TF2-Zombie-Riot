@@ -3018,11 +3018,8 @@ public Action MortarMarkSpot(Handle timer, int client)
 			if(!GetEntProp(entity, Prop_Send, "m_bTouched"))
 				return Plugin_Continue;
 
-			static float pos[3],pos_obj[3], ang[3];
-			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-			GetClientEyeAngles(client, ang);
-			ang[0] = 0.0;
-			ang[2] = 0.0;
+			static float pos[3],pos_obj[3];
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 			RemoveEntity(entity);
 			int obj=EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
 			if(IsValidEntity(obj))

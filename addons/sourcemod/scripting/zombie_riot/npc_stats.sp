@@ -248,6 +248,10 @@ char g_PanzerStepSound[][] = {
 	"mvm/giant_common/giant_common_step_08.wav",
 };
 
+char g_TankStepSound[][] = {
+	"infected_riot/tank/tank_walk_1.mp3",
+};
+
 
 public Action Command_PetMenu(int client, int argc)
 {
@@ -767,19 +771,23 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		}
 		case MEDIVAL_EAGLE_SCOUT:
 		{
-			entity = MedivalEagleScout(entity, vecPos, vecAng, ally);
+			entity = MedivalEagleScout(client, vecPos, vecAng, ally);
 		}
 		case MEDIVAL_SAMURAI:
 		{
-			entity = MedivalSamurai(entity, vecPos, vecAng, ally);
+			entity = MedivalSamurai(client, vecPos, vecAng, ally);
 		}
 		case THEADDICTION:
 		{
-			entity = Addicition(entity, vecPos, vecAng, ally, data);
+			entity = Addicition(client, vecPos, vecAng, ally, data);
 		}
 		case ALT_KAHMLSTEIN:
 		{
-			entity = Kahmlstein(entity, vecPos, vecAng, ally);
+			entity = Kahmlstein(client, vecPos, vecAng, ally);
+		}
+		case L4D2_TANK:
+		{
+			entity = L4D2_Tank(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -1254,6 +1262,10 @@ public void NPCDeath(int entity)
 		{
 			Kahmlstein_NPCDeath(entity);
 		}
+		case L4D2_TANK:
+		{
+			L4D2_Tank_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1273,6 +1285,8 @@ public void OnMapStart_NPC_Base()
 	for (int i = 0; i < (sizeof(g_ArrowHitSoundSuccess));	   i++) { PrecacheSound(g_ArrowHitSoundSuccess[i]);	   }
 	for (int i = 0; i < (sizeof(g_ArrowHitSoundMiss));	   i++) { PrecacheSound(g_ArrowHitSoundMiss[i]);	   }
 	for (int i = 0; i < (sizeof(g_PanzerStepSound));   i++) { PrecacheSound(g_PanzerStepSound[i]);   }
+	for (int i = 0; i < (sizeof(g_TankStepSound));   i++) { PrecacheSound(g_TankStepSound[i]);   }
+	
 	
 	EscapeModeMap = false;
 	
@@ -1431,6 +1445,8 @@ public void OnMapStart_NPC_Base()
 	MedivalEagleScout_OnMapStart_NPC();
 	MedivalSamurai_OnMapStart_NPC();
 	Kahmlstein_OnMapStart_NPC();
+	
+	L4D2_Tank_OnMapStart_NPC();
 }
 
 
@@ -2438,6 +2454,10 @@ methodmap CClotBody
 			Is_Boss = false;
 		}
 		
+		if(f_TankGrabbedStandStill[this.index] > Gametime)
+		{
+			speed_for_return = 0.0;
+		}
 		if(!Is_Boss) //Make sure that any slow debuffs dont affect these.
 		{
 			if(this.m_fHighTeslarDebuff > Gametime)
@@ -3911,6 +3931,24 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 				Calculate_And_Display_hp(client, pThis, npc.Damage, true, overkill);
 			}
 		}
+		
+		for(int entitycount; entitycount<i_MaxcountSticky; entitycount++)
+		{
+			int Sticky_Index = EntRefToEntIndex(i_StickyToNpcCount[pThis][entitycount]);
+			if (IsValidEntity(Sticky_Index)) //Am i valid still exiting sticky ?
+			{
+				float Vector_Pos[3];
+				GetEntPropVector(Sticky_Index, Prop_Data, "m_vecAbsOrigin", Vector_Pos); 
+				AcceptEntityInput(Sticky_Index, "ClearParent");
+				i_StickyToNpcCount[pThis][entitycount] = -1; //Remove it being parented.
+				TeleportEntity(Sticky_Index, Vector_Pos);
+				
+				SetEntProp(Sticky_Index, Prop_Send, "m_bTouched", false);
+				b_StickyIsSticking[Sticky_Index] = false;
+				
+			}
+		}
+		
 		b_NpcHasDied[pThis] = true;
 		ZR_ApplyKillEffects(pThis); //Do kill attribute stuff
 		CClotBody npc = view_as<CClotBody>(pThis);
@@ -3923,19 +3961,6 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 			RemoveEntity(npc.m_iSpawnProtectionEntity);
 			
 			
-		for(int entitycount; entitycount<i_MaxcountSticky; entitycount++)
-		{
-			int Sticky_Index = EntRefToEntIndex(i_StickyToNpcCount[pThis][entitycount]);
-			if (IsValidEntity(Sticky_Index)) //Am i valid still exiting sticky ?
-			{
-				AcceptEntityInput(Sticky_Index, "ClearParent");
-				i_StickyToNpcCount[pThis][entitycount] = -1; //Remove it being parented.
-				
-				SetEntProp(Sticky_Index, Prop_Send, "m_bTouched", false);
-				b_StickyIsSticking[Sticky_Index] = false;
-				
-			}
-		}
 			
 		if (EntRefToEntIndex(RaidBossActive) == pThis)
 		{
@@ -4126,10 +4151,18 @@ public void Kill_Npc(int ref)
 	}
 }
 
-bool IsWalkEvent(int event)
+bool IsWalkEvent(int event, int special = 0)
 {
-	if (event == 7001 || event == 59 || event == 58 || event == 66 || event == 65 || event == 6004 || event == 6005 || event == 7005 || event == 7004 || event || 7001)
-		return true;
+	if(special == 5)
+	{
+		if (event == 52)
+			return true;	
+	}
+	else 
+	{
+		if (event == 7001 || event == 59 || event == 58 || event == 66 || event == 65 || event == 6004 || event == 6005 || event == 7005 || event == 7004 || event || 7001)
+			return true;
+	}
 		
 	return false;
 	
@@ -4209,6 +4242,17 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 				if(npc.m_flDoSpawnGesture < GetGameTime())
 				{
 					npc.PlayStepSound(g_CombineMetroStepSound[GetRandomInt(0, sizeof(g_CombineMetroStepSound) - 1)], 0.65, npc.m_iStepNoiseType);
+				}
+			}
+		}
+		case 5:
+		{
+			if(IsWalkEvent(event, 5))
+			{
+				if(npc.m_flDoSpawnGesture < GetGameTime())
+				{
+					npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, npc.m_iStepNoiseType);
+					npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, npc.m_iStepNoiseType);
 				}
 			}
 		}
@@ -4513,6 +4557,32 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		return false;
 	}
 	return !(entity == iExclude);
+}
+
+int Entity_to_Respect;
+
+public void AddEntityToTraceStuckCheck(int entity)
+{
+	Entity_to_Respect = entity;
+}
+public void RemoveEntityToTraceStuckCheck(int entity)
+{
+	Entity_to_Respect = -1;
+}
+
+public bool TraceStuckCheck(int entity, int contentsMask, any iExclude)
+{
+	if(entity == 0)
+	{
+		return !(entity == iExclude);
+	}
+	
+	if(entity == Entity_to_Respect)
+	{
+		return !(entity == iExclude);	
+	}
+	
+	return false;
 }
 
 public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMask, any iExclude)
@@ -4855,7 +4925,7 @@ stock bool IsValidAllyPlayer(int index, int Ally)
 }
 
 
-stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldistancelimit = 999999.9, bool camoDetection=false, bool onlyPlayers = false)
+stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldistancelimit = 999999.9, bool camoDetection=false, bool onlyPlayers = false, int ingore_client = -1)
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = -1; 
@@ -4864,7 +4934,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 	GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
 	for( int i = 1; i <= MaxClients; i++ ) 
 	{
-		if (IsValidClient(i))
+		if (IsValidClient(i) && i != ingore_client)
 		{
 			CClotBody npc = view_as<CClotBody>(i);
 			if (TF2_GetClientTeam(i)!=view_as<TFTeam>(searcher_team) && !npc.m_bThisEntityIgnored && IsEntityAlive(i)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
@@ -4934,7 +5004,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
 	{
 		int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-		if(IsValidEntity(entity_close))
+		if(IsValidEntity(entity_close) && entity_close != ingore_client)
 		{
 			if(searcher_team != 3) 
 			{
@@ -4996,7 +5066,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 	for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
 	{
 		int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
-		if(IsValidEntity(entity_close))
+		if(IsValidEntity(entity_close) && entity_close != ingore_client)
 		{
 			if(searcher_team != 2)
 			{
@@ -5058,7 +5128,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 	{
 		int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-		if(IsValidEntity(entity_close))
+		if(IsValidEntity(entity_close) && entity_close != ingore_client)
 		{
 			if(searcher_team != 2)
 			{
@@ -5285,7 +5355,7 @@ public bool TraceRayHitPlayersOnly(int entity,int mask,any data)
 {
 	if (entity > 0 && entity <= MaxClients)
 	{
-		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0)
+		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0 && !b_DoNotUnStuck[entity])
 		{
 			return true;
 		}
@@ -5310,6 +5380,8 @@ public bool TraceRayDontHitPlayersOrEntity(int entity,int mask,any data)
 	return false;
 }
 
+float f_StuckTextChatNotif[MAXTF2PLAYERS];
+
 public void Check_If_Stuck(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
@@ -5328,11 +5400,9 @@ public void Check_If_Stuck(int iNPC)
 		}
 		else
 		{
-				
 			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
 			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
 		}
-			
 		
 		int Hit_player = IsSpaceOccupiedOnlyPlayers(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
 			
@@ -5349,7 +5419,42 @@ public void Check_If_Stuck(int iNPC)
 			{
 				flMyPos_2[2] += hullcheckmaxs_Player[2];
 				
-				SDKCall_SetLocalOrigin(Hit_player, flMyPos_2);			
+				if(IsValidEntity(Hit_player))
+				{
+					
+					static float hullcheckmaxs_Player_Again[3];
+					static float hullcheckmins_Player_Again[3];
+					if(b_IsGiant[Hit_player])
+					{
+					 	hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 120.0 } );
+						hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
+					}
+					else
+					{	
+						hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
+						hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );			
+					}
+					
+					if(IsValidClient(Hit_player)) //Player size
+					{
+						hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
+						hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
+					}
+					
+					if(!IsSpaceOccupiedIgnorePlayers(flMyPos_2, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, Hit_player))
+					{
+						SDKCall_SetLocalOrigin(Hit_player, flMyPos_2);	
+					//	TeleportEntity(entity, f3_LastValidPosition[entity], NULL_VECTOR, { 0.0, 0.0, 0.0 });
+					}
+					else
+					{
+						if(f_StuckTextChatNotif[Hit_player] < GetGameTime())
+						{
+							f_StuckTextChatNotif[Hit_player] = GetGameTime() + 1.0;
+							PrintToChat(Hit_player, "You are stuck, yet Unstucking you will stuck you again, you will remain in this position so if you kill the npc, you can get free.");
+						}
+					}
+				}		
 			}
 			else //PLAYER IS BELOW ZOMBIE
 			{
@@ -5358,7 +5463,42 @@ public void Check_If_Stuck(int iNPC)
 				flMyPos_2[2] = flMyPos[2];
 				flMyPos_2[2] += hullcheckmaxs_Player[2];
 				flMyPos_2[2] += 5.0;
-				SDKCall_SetLocalOrigin(iNPC, flMyPos_2);
+				
+				if(IsValidEntity(Hit_player))
+				{
+					static float hullcheckmaxs_Player_Again[3];
+					static float hullcheckmins_Player_Again[3];
+					if(b_IsGiant[Hit_player])
+					{
+					 	hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 120.0 } );
+						hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
+					}
+					else
+					{	
+						hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
+						hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );			
+					}
+					
+					if(IsValidClient(Hit_player)) //Player size
+					{
+						hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
+						hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
+					}
+					
+					if(!IsSpaceOccupiedIgnorePlayers(flMyPos_2, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, iNPC))
+					{
+						SDKCall_SetLocalOrigin(iNPC, flMyPos_2);	
+						TeleportEntity(iNPC, flMyPos_2, NULL_VECTOR, { 0.0, 0.0, 0.0 }); //Reset their speed
+					}
+					else
+					{
+						if(f_StuckTextChatNotif[Hit_player] < GetGameTime())
+						{
+							f_StuckTextChatNotif[Hit_player] = GetGameTime() + 1.0;
+							PrintToChat(Hit_player, "You are stuck, yet Unstucking you will stuck you again, you will remain in this position so if you kill the npc, you can get free.");
+						}
+					}
+				}
 			}
 		}
 		//This is a tempomary fix. find a better one for players getting stuck.
@@ -5498,9 +5638,9 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 	//return CClotBodyDamaged_flare(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 }
 
-public void Custom_Knockback(int attacker, int enemy, float knockback)
+stock Custom_Knockback(int attacker, int enemy, float knockback, bool ignore_attribute = false, bool override = false, bool work_on_entity = false)
 {
-	if(enemy <= MaxClients)
+	if(enemy <= MaxClients || work_on_entity)
 	{							
 		float vAngles[3], vDirection[3];
 										
@@ -5513,25 +5653,30 @@ public void Custom_Knockback(int attacker, int enemy, float knockback)
 										
 		GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
 			
-		float Attribute_Knockback = Attributes_FindOnPlayer(enemy, 252, true, 1.0);	
-		
-		knockback *= Attribute_Knockback;
+		if(!ignore_attribute && !work_on_entity)
+		{
+			float Attribute_Knockback = Attributes_FindOnPlayer(enemy, 252, true, 1.0);	
+			
+			knockback *= Attribute_Knockback;
+		}
 		
 		knockback *= 0.75; //oops, too much knockback now!
 						
 		ScaleVector(vDirection, knockback);
 		
-		float newVel[3];
-		
-		newVel[0] = GetEntPropFloat(enemy, Prop_Send, "m_vecVelocity[0]");
-		newVel[1] = GetEntPropFloat(enemy, Prop_Send, "m_vecVelocity[1]");
-		newVel[2] = GetEntPropFloat(enemy, Prop_Send, "m_vecVelocity[2]");
-						
-		for (new i = 0; i < 3; i++)
+		if(!override)
 		{
-			vDirection[i] += newVel[i];
-		}
-															
+			float newVel[3];
+			
+			newVel[0] = GetEntPropFloat(enemy, Prop_Send, "m_vecVelocity[0]");
+			newVel[1] = GetEntPropFloat(enemy, Prop_Send, "m_vecVelocity[1]");
+			newVel[2] = GetEntPropFloat(enemy, Prop_Send, "m_vecVelocity[2]");
+							
+			for (new i = 0; i < 3; i++)
+			{
+				vDirection[i] += newVel[i];
+			}
+		}												
 		TeleportEntity(enemy, NULL_VECTOR, NULL_VECTOR, vDirection); 
 	}
 }
@@ -5550,6 +5695,27 @@ public int Can_I_See_Enemy(int attacker, int enemy)
 //	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 //	TE_SetupBeamPoints(pos_npc, pos_enemy, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
 //	TE_SendToAll();
+		
+	Traced_Target = TR_GetEntityIndex(trace);
+	delete trace;
+	return Traced_Target;
+}
+
+
+public int Can_I_See_Enemy_Only(int attacker, int enemy)
+{
+	Handle trace; 
+	float pos_npc[3]; GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", pos_npc);
+	float pos_enemy[3]; GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", pos_enemy);
+	pos_npc[2] += 45.0;
+	pos_enemy[2] += 35.0;
+	
+	AddEntityToTraceStuckCheck(enemy);
+	
+	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_PLAYERSOLID, RayType_EndPoint, TraceStuckCheck, attacker);
+	int Traced_Target;
+	
+	RemoveEntityToTraceStuckCheck(enemy);
 		
 	Traced_Target = TR_GetEntityIndex(trace);
 	delete trace;
@@ -6890,7 +7056,7 @@ stock int TF2_CreateParticle(int iEnt, const char[] attachment, const char[] par
 }
 
 
-stock int GetClosestAlly(int entity)
+stock int GetClosestAlly(int entity, float limitsquared = 99999999.9)
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = 0; 
@@ -6898,7 +7064,7 @@ stock int GetClosestAlly(int entity)
 	int i = MaxClients + 1;
 	while ((i = FindEntityByClassname(i, "base_boss")) != -1)
 	{
-		if (GetEntProp(entity, Prop_Send, "m_iTeamNum")==GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && GetEntProp(i, Prop_Data, "m_iHealth") > 0)  //The is a medic thing is really needed
+		if (i != entity && GetEntProp(entity, Prop_Send, "m_iTeamNum")==GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && GetEntProp(i, Prop_Data, "m_iHealth") > 0)  //The is a medic thing is really needed
 		{
 			float EntityLocation[3], TargetLocation[3]; 
 			GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -6906,19 +7072,22 @@ stock int GetClosestAlly(int entity)
 				
 				
 			float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
-			if( TargetDistance ) 
+			if( distance < limitsquared )
 			{
-				if( distance < TargetDistance ) 
+				if( TargetDistance ) 
+				{
+					if( distance < TargetDistance ) 
+					{
+						ClosestTarget = i; 
+						TargetDistance = distance;		  
+					}
+				} 
+				else 
 				{
 					ClosestTarget = i; 
-					TargetDistance = distance;		  
-				}
-			} 
-			else 
-			{
-				ClosestTarget = i; 
-				TargetDistance = distance;
-			}			
+					TargetDistance = distance;
+				}			
+			}
 		}
 	}
 	return ClosestTarget; 
@@ -7112,6 +7281,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_LowIceDebuff[entity] = 0.0;
 	f_HighIceDebuff[entity] = 0.0;
 	b_Frozen[entity] = false;
+	f_TankGrabbedStandStill[entity] = 0.0;
 	
 	fl_MeleeArmor[entity] = 1.0; //yeppers.
 	fl_RangedArmor[entity] = 1.0;
@@ -7307,6 +7477,7 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 
 #include "zombie_riot/npc/special/npc_panzer.sp"
 #include "zombie_riot/npc/special/npc_sawrunner.sp"
+#include "zombie_riot/npc/special/npc_l4d2_tank.sp"
 
 #include "zombie_riot/npc/btd/npc_bloon.sp"
 #include "zombie_riot/npc/btd/npc_moab.sp"
@@ -7347,3 +7518,4 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/medival/npc_medival_samurai.sp"
 
 #include "zombie_riot/npc/cof/npc_addiction.sp"
+#include "zombie_riot/npc/cof/npc_doctor.sp"

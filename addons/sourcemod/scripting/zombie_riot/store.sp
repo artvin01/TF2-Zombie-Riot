@@ -590,7 +590,7 @@ bool Store_HasAnyItem(int client)
 	return false;
 }
 
-int Store_HasNamedItem(int client, const char[] name)
+/*int Store_HasNamedItem(int client, const char[] name)
 {
 	static Item item;
 	int length = StoreItems.Length;
@@ -602,7 +602,7 @@ int Store_HasNamedItem(int client, const char[] name)
 	}
 	
 	return 0;
-}
+}*/
 
 void Store_PutInServer(int client)
 {
