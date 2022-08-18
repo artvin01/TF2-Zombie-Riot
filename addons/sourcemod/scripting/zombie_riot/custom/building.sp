@@ -3019,7 +3019,7 @@ public Action MortarMarkSpot(Handle timer, int client)
 				return Plugin_Continue;
 
 			static float pos[3],pos_obj[3], ang[3];
-			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 			GetClientEyeAngles(client, ang);
 			ang[0] = 0.0;
 			ang[2] = 0.0;

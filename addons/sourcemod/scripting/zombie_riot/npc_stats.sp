@@ -3931,6 +3931,24 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 				Calculate_And_Display_hp(client, pThis, npc.Damage, true, overkill);
 			}
 		}
+		
+		for(int entitycount; entitycount<i_MaxcountSticky; entitycount++)
+		{
+			int Sticky_Index = EntRefToEntIndex(i_StickyToNpcCount[pThis][entitycount]);
+			if (IsValidEntity(Sticky_Index)) //Am i valid still exiting sticky ?
+			{
+				float Vector_Pos[3];
+				GetEntPropVector(Sticky_Index, Prop_Data, "m_vecAbsOrigin", Vector_Pos); 
+				AcceptEntityInput(Sticky_Index, "ClearParent");
+				i_StickyToNpcCount[pThis][entitycount] = -1; //Remove it being parented.
+				TeleportEntity(Sticky_Index, Vector_Pos);
+				
+				SetEntProp(Sticky_Index, Prop_Send, "m_bTouched", false);
+				b_StickyIsSticking[Sticky_Index] = false;
+				
+			}
+		}
+		
 		b_NpcHasDied[pThis] = true;
 		ZR_ApplyKillEffects(pThis); //Do kill attribute stuff
 		CClotBody npc = view_as<CClotBody>(pThis);
@@ -3943,19 +3961,6 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 			RemoveEntity(npc.m_iSpawnProtectionEntity);
 			
 			
-		for(int entitycount; entitycount<i_MaxcountSticky; entitycount++)
-		{
-			int Sticky_Index = EntRefToEntIndex(i_StickyToNpcCount[pThis][entitycount]);
-			if (IsValidEntity(Sticky_Index)) //Am i valid still exiting sticky ?
-			{
-				AcceptEntityInput(Sticky_Index, "ClearParent");
-				i_StickyToNpcCount[pThis][entitycount] = -1; //Remove it being parented.
-				
-				SetEntProp(Sticky_Index, Prop_Send, "m_bTouched", false);
-				b_StickyIsSticking[Sticky_Index] = false;
-				
-			}
-		}
 			
 		if (EntRefToEntIndex(RaidBossActive) == pThis)
 		{
