@@ -1264,7 +1264,7 @@ float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &
 	{
 		case WEAPON_ARK: // weapon_ark
 		{
-			return Player_OnTakeDamage_Ark(victim, damage);
+			return Player_OnTakeDamage_Ark(victim, damage, attacker, equipped_weapon);
 		}
 	}
 	return damage;
