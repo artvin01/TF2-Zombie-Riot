@@ -444,12 +444,19 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			int deathforcepowerup = boss.Powerup;
 			if(panzer_warning)
 			{
+				
 				if(boss.Sound[0])
 				{
 					for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
 					{
 						if(IsClientInGame(panzer_warning_client))
 						{
+							if(IsValidClient(panzer_warning_client))
+							{
+								SetGlobalTransTarget(panzer_warning_client);
+								ShowGameText(panzer_warning_client, "leaderboard_streak_dneg", 0, "%t", "A Miniboss has Spawned..");
+							}
+				
 							EmitSoundToClient(panzer_warning_client, boss.Sound, panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
 							EmitSoundToClient(panzer_warning_client, boss.Sound, panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
 						}

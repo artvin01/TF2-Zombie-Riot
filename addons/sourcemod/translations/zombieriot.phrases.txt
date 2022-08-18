@@ -1216,4 +1216,8 @@
 		"#format"	"{1:d}"
 		"en"		"Someone bought something else for the npc, You get [{1}] Cash back in return as a compesation."
 	}
+	"A Miniboss has Spawned.."
+	{
+		"en"		"A Miniboss has Spawned.."
+	}
 }

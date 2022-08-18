@@ -198,6 +198,7 @@ methodmap L4D2_Tank < CClotBody
 		wave *= 0.1;
 	
 		npc.m_flWaveScale = wave;
+	
 		
 //		SetEntPropFloat(npc.index, Prop_Data, "m_speed",npc.m_flSpeed);
 		npc.m_flAttackHappenswillhappen = false;
