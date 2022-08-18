@@ -144,10 +144,9 @@ public Action GetClosestSpawners(Handle timer)
 	{
 		if(IsClientInGame(client))
 		{
-
-			if(IsPlayerAlive(client) && IsFakeClient(client))
+			if(IsPlayerAlive(client) && GetClientTeam(client)==3)
 			{
-				KickClient(client); //This bot was somehow alive, kick them.
+				KickClient(client, "You were somehow alive on blue team and were bugged, please reconnect.");
 			}
 			else if(!IsFakeClient(client))
 			{
