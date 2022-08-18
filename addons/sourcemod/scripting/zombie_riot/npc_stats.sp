@@ -480,6 +480,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = CombineDeutsch(client, vecPos, vecAng, ally);
 		}
+		case ALT_COMBINE_DEUTSCH_RITTER:
+		{
+			entity = Alt_CombineDeutsch(client, vecPos, vecAng, ally);
+		}
 		case SPY_MAIN_BOSS:
 		{
 			entity = SpyMainBoss(client, vecPos, vecAng, ally);
@@ -789,6 +793,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = L4D2_Tank(client, vecPos, vecAng, ally);
 		}
+		case ALT_SNIPER_RAILGUNNER:
+		{
+			entity = Sniper_railgunner(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -956,6 +964,10 @@ public void NPCDeath(int entity)
 		case COMBINE_DEUTSCH_RITTER:
 		{
 			CombineDeutsch_NPCDeath(entity);
+		}
+		case ALT_COMBINE_DEUTSCH_RITTER:
+		{
+			Alt_CombineDeutsch_NPCDeath(entity);
 		}
 		case SPY_MAIN_BOSS:
 		{
@@ -1266,6 +1278,10 @@ public void NPCDeath(int entity)
 		{
 			L4D2_Tank_NPCDeath(entity);
 		}
+		case ALT_SNIPER_RAILGUNNER:
+		{
+			Sniper_railgunner_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1361,6 +1377,7 @@ public void OnMapStart_NPC_Base()
 	MedicMain_OnMapStart_NPC();
 	PyroGiant_OnMapStart_NPC();
 	CombineDeutsch_OnMapStart_NPC();
+	Alt_CombineDeutsch_OnMapStart_NPC();
 	SpyMainBoss_OnMapStart_NPC();
 	/*
 	XenoHeadcrabZombie_OnMapStart_NPC();
@@ -1445,6 +1462,7 @@ public void OnMapStart_NPC_Base()
 	MedivalEagleScout_OnMapStart_NPC();
 	MedivalSamurai_OnMapStart_NPC();
 	Kahmlstein_OnMapStart_NPC();
+	Sniper_railgunner_OnMapStart_NPC();
 	
 	L4D2_Tank_OnMapStart_NPC();
 }
@@ -7501,6 +7519,8 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/alt/npc_alt_medic_charger.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_berserker.sp"
 #include "zombie_riot/npc/alt/npc_alt_kahml.sp"
+#include "zombie_riot/npc/alt/npc_alt_combine_soldier_deutsch_ritter.sp"
+#include "zombie_riot/npc/alt/npc_alt_sniper_railgunner.sp"
 
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
 #include "zombie_riot/npc/medival/npc_medival_archer.sp"
