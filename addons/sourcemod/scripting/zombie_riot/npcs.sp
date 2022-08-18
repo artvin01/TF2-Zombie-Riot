@@ -146,7 +146,14 @@ public Action GetClosestSpawners(Handle timer)
 		{
 			if(IsPlayerAlive(client) && GetClientTeam(client)==3)
 			{
-				KickClient(client, "You were somehow alive on blue team and were bugged, please reconnect.");
+				if(IsFakeClient(client))
+				{
+					KickClient(client);	
+				}
+				else
+				{
+					ClientCommand(client, "retry");
+				}
 			}
 			else if(!IsFakeClient(client))
 			{
@@ -454,6 +461,60 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 							{
 								SetGlobalTransTarget(panzer_warning_client);
 								ShowGameText(panzer_warning_client, "leaderboard_streak_dneg", 0, "%t", "A Miniboss has Spawned..");
+								
+								/*
+									TODO:
+									Use Custom texts and maybe icons for each boss.
+								
+									(Panzer)
+
+									You can discern faint metalic screams not like the others...
+									
+									Distant low rumbles fill the air space...
+									
+									Die SS Division hat einer ihrer Infizierten soldaten Gesendet...
+									
+									(Sawrunner)
+									
+									Faint rattling can be heard, and its approaching at a fast pace...
+									
+									Something rapidly rams through hordes in your direction...
+									
+									Common means might not stop this agile enemy...
+									
+									(Tank)
+									
+									You have alerted the horde...
+									
+									Destruction echoes through a nearby space...
+									
+									A massive foe has entered this field...
+									
+									(Ghostface after getting found out before killing anyone)
+									
+									We are just getting started!
+									
+									Asshole!
+									
+									Lousy shot!
+									
+									(Whiteface and HER)
+									
+									Find HER
+									
+									I love watching You
+									
+									I'm afraid I can't let you do that
+									
+									{completely optional based on how masochistic you feel to code such useless detail}
+									
+									Ready for round 2?
+									
+									STAY WITH ME
+									
+									He won't let us leave
+								
+								*/
 							}
 				
 							EmitSoundToClient(panzer_warning_client, boss.Sound, panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
