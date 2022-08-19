@@ -561,36 +561,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 						npc.FireRocket(vecTarget, 7.5 * (RaidModeScaling / i_HealthScale[npc.index]), projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0, EP_NO_KNOCKBACK); //remove the no kb if people cant escape, or just lower the dmg
 						npc.m_flNextMeleeAttack = GetGameTime() + 0.2 * i_HealthScale[npc.index];
 						i_PrimaryRocketsFired[npc.index]++;
-						npc.m_flAttackHappens=0.0;
-					}
-					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
-					{
-						Handle swingTrace;
-						npc.FaceTowards(vecTarget, 20000.0);
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
-						{
-							int target = TR_GetEntityIndex(swingTrace);	
-							float vecHit[3];
-							TR_GetEndPosition(vecHit, swingTrace);
-							
-							if(target > 0) 
-							{
-								if(target <= MaxClients)
-								{
-									float truedamage = 4 * (RaidModeScaling / i_HealthScale[npc.index]);
-									
-									SDKHooks_TakeDamage(target, npc.index, npc.index, truedamage, DMG_SLASH|DMG_CLUB);
-								}
-								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 7.5 * (RaidModeScaling / i_HealthScale[npc.index]), DMG_SLASH|DMG_CLUB);
-								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
-								// Hit sound
-								npc.PlayMeleeHitSound();
-							} 
-						}
-						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime() + 0.2 * i_HealthScale[npc.index];
-						npc.m_flAttackHappenswillhappen = false;
+						npc.m_flAttackHappens = 0.0;
 					}
 				}
 				else
@@ -611,16 +582,17 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				//npc.FaceTowards(vecTarget, 1000.0);
 				
 				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GetGameTime())
+				if(npc.m_flNextMeleeAttack < GetGameTime() || npc.m_flAttackHappenswillhappen)
 				{
 					//Play attack ani
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 						npc.PlayPullSound()
-						npc.m_flAttackHappens = 0.0;
-						npc.m_flAttackHappens_bullshit = GetGameTime()+0.4;
+						npc.m_flAttackHappens = GetGameTime()+0.3;
+						npc.m_flAttackHappens_bullshit = GetGameTime()+0.43;
 						npc.m_flAttackHappenswillhappen = true;
+						npc.m_flNextMeleeAttack = GetGameTime() + 0.9;
 					}
 					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
 					{
@@ -636,7 +608,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float meleedmg;
-								meleedmg = 15.0 * (RaidModeScaling / i_HealthScale[npc.index]);	//So assmuing wave 15, life 1, and vs non melee its 40.5 dmg base
+								meleedmg = 20.0 * (RaidModeScaling / i_HealthScale[npc.index]);	//So assmuing wave 15, life 1, and vs non melee its 40.5 dmg base
 								if(target <= MaxClients)
 								{
 									float Bonus_damage = 1.0;
@@ -647,7 +619,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 								
 									int weapon_slot = TF2_GetClassnameSlot(classname);
 								
-									if(weapon_slot != 2)
+									if(weapon_slot != 2 || IsWandWeapon(weapon))
 									{
 										Bonus_damage = 1.5;
 									}
@@ -655,7 +627,10 @@ public void Blitzkrieg_ClotThink(int iNPC)
 									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_SLASH|DMG_CLUB);
 								}
 								else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_SLASH|DMG_CLUB);
+								{
+									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg * 2, DMG_SLASH|DMG_CLUB);
+								}
+								
 								npc.PlayMeleeHitSound();		
 								if(IsValidClient(target))
 								{
@@ -680,13 +655,11 @@ public void Blitzkrieg_ClotThink(int iNPC)
 							} 
 						}
 						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime() +0.4;
 						npc.m_flAttackHappenswillhappen = false;
 					}
 					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime() + 0.4;
 					}
 				}
 			}
