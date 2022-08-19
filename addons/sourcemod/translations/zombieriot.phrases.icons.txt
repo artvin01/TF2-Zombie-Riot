@@ -1,0 +1,48 @@
+"Phrases"
+{
+	"True Fusion Warrior Spawn"
+	{
+		"en" 		"The True Fusion Warrior has arrived."
+	}
+	"Blitzkrieg Spawn"
+	{
+		"en" 		"Blitzkrieg has arrived."
+	}
+	"You have alerted the horde..."
+	{
+		"en" 		"You have alerted the horde..."
+	}
+	"Destruction echoes through a nearby space..."
+	{
+		"en" 		"Destruction echoes through a nearby space..."
+	}
+	"A massive foe has entered this field..."
+	{
+		"en" 		"A massive foe has entered this field..."
+	}
+	"You can discern faint metalic screams not like the others..."
+	{
+		"en" 		"You can discern faint metalic screams not like the others..."
+	}
+	"Distant low rumbles fill the air space..."
+	{
+		"en" 		"Distant low rumbles fill the air space..."
+	}
+	"Die SS Division hat einer ihrer Infizierten soldaten Gesendet..."
+	{
+		"en" 		"Die SS Division hat einer ihrer Infizierten soldaten Gesendet..."
+	}
+	"Faint rattling can be heard, and its approaching at a fast pace..."
+	{
+		"en" 		"Faint rattling can be heard, and its approaching at a fast pace..."
+	}
+	"Something rapidly rams through hordes in your direction..."
+	{
+		"en" 		"Something rapidly rams through hordes in your direction..."
+	}
+	"Common means might not stop this agile enemy..."
+	{
+		"en" 		"Common means might not stop this agile enemy..."
+	}
+
+}

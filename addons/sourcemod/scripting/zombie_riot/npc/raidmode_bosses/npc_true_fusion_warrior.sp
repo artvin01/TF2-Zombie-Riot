@@ -275,6 +275,8 @@ methodmap TrueFusionWarrior < CClotBody
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
 			{
 				LookAtTarget(client_check, npc.index);
+				SetGlobalTransTarget(client_check);
+				ShowGameText(client_check, "item_armor", 1, "%t", "True Fusion Warrior Spawn");
 			}
 		}
 		

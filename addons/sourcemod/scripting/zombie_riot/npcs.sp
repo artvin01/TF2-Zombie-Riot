@@ -450,7 +450,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			int deathforcepowerup = boss.Powerup;
 			if(panzer_warning)
 			{
-				
+				int Text_Int = GetRandomInt(0, 2);
 				if(boss.Sound[0])
 				{
 					for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
@@ -460,8 +460,32 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 							if(IsValidClient(panzer_warning_client))
 							{
 								SetGlobalTransTarget(panzer_warning_client);
-								ShowGameText(panzer_warning_client, "leaderboard_streak_dneg", 0, "%t", "A Miniboss has Spawned..");
+								/*
+									https://github.com/SteamDatabase/GameTracking-TF2/blob/master/tf/tf2_misc_dir/scripts/mod_textures.txt	
 								
+								*/
+								switch(Text_Int)
+								{
+									case 0:
+									{
+										ShowGameText(panzer_warning_client, boss.Icon, 1, "%t", boss.Text_1);
+									}
+									case 1:
+									{
+										ShowGameText(panzer_warning_client, boss.Icon, 1, "%t", boss.Text_2);
+									}
+									case 2:
+									{
+										ShowGameText(panzer_warning_client, boss.Icon, 1, "%t", boss.Text_3);
+									}
+								}
+								
+								/*
+									Good images:
+									
+									"hud_menu_heavy_red" Fat Streched heavy
+
+								*/
 								/*
 									TODO:
 									Use Custom texts and maybe icons for each boss.

@@ -448,7 +448,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 							TR_GetEndPosition(vecHit, swingTrace);
 							if(target > 0) 
 							{
-								float damage = 69.0;
+								float damage = 60.0;
 								
 								if(target <= MaxClients)
 									SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_SLASH|DMG_CLUB);
@@ -706,7 +706,7 @@ public void L4D2_Tank_NPCDeath(int entity)
 
 static char[] GetTankHealth()
 {
-	int health = 120;
+	int health = 90;
 	
 	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
 	
@@ -726,6 +726,9 @@ static char[] GetTankHealth()
 	}
 	
 	health /= 2;
+	
+	
+	health = RoundToCeil(float(health) * 1.2);
 	
 	char buffer[16];
 	IntToString(health, buffer, sizeof(buffer));
