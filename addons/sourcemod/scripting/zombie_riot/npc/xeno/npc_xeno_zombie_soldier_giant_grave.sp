@@ -377,10 +377,10 @@ public void XenoSoldierGiant_ClotDamagedPost(int victim, int attacker, int infli
 	XenoSoldierGiant npc = view_as<XenoSoldierGiant>(victim);
 	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
-	if(0.9-(npc.g_TimesSummoned*0.1) > ratio)
+	if(0.9-(npc.g_TimesSummoned*0.2) > ratio)
 	{
 		npc.g_TimesSummoned++;
-		maxhealth /= 13;
+		maxhealth /= 7;
 		for(int i; i<1; i++)
 		{
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
