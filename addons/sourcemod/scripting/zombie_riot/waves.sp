@@ -684,11 +684,22 @@ void Waves_Progress()
 				}
 				
 				float amount_of_people = float(CountPlayersOnRed());
-		
-				amount_of_people *= 0.14;
 				
-				if(amount_of_people < 1.0)
-					amount_of_people = 1.0;
+				if(ScaleWithHpMore)
+				{
+					amount_of_people *= 0.14;
+					
+					if(amount_of_people < 1.0)
+						amount_of_people = 1.0;
+				}
+				else
+				{
+					amount_of_people *= 0.1;
+				
+					if(amount_of_people < 1.0)
+						amount_of_people = 1.0;				
+					
+				}
 					
 				multi_health *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		

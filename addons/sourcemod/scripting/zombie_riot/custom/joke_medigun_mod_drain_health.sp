@@ -510,7 +510,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 		else if(What_type_Heal == 1.0)
 		{
 			int new_ammo = GetAmmo(owner, 21);
-			if((IsValidClient(healTarget) && healTarget<=MaxClients) || (IsValidEntity(healTarget) && b_IsAlliedNpc[healTarget]) && GetAmmo(owner, 21) > 0)
+			if((IsValidClient(healTarget) && healTarget<=MaxClients && GetAmmo(owner, 21) > 0) || (IsValidEntity(healTarget) && b_IsAlliedNpc[healTarget]) && GetAmmo(owner, 21) > 0)
 			{
 				bool team = GetEntProp(owner, Prop_Data, "m_iTeamNum")==GetEntProp(healTarget, Prop_Data, "m_iTeamNum");
 				if(team)
@@ -632,7 +632,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					
 						
 					int flHealth = GetEntProp(healTarget, Prop_Data, "m_iHealth");
-						
+					
+					int Current_health_target = flHealth;
+					
 					int newHealth = flHealth + i_TargetHealAmount;
 					
 					int flMaxHealth;
@@ -648,52 +650,59 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					{
 						flMaxHealth = RoundToNearest(float(GetEntProp(healTarget, Prop_Data, "m_iMaxHealth")) * 1.25);
 					}
-						
-					//TARGET HEAL
-					if(newHealth >= flMaxHealth)
-					{
-						i_TargetHealAmount -= newHealth - flMaxHealth;
-						newHealth = flMaxHealth;
-					}
 					
-					SetEntProp(healTarget, Prop_Data, "m_iHealth", newHealth);
-					new_ammo -= i_TargetHealAmount;
-					Healing_done_in_total[owner] += i_TargetHealAmount;
-					//TARGET HEAL
+					if(Current_health_target < flMaxHealth)
+					{	
+						//TARGET HEAL
+						if(newHealth >= flMaxHealth)
+						{
+							i_TargetHealAmount -= newHealth - flMaxHealth;
+							newHealth = flMaxHealth;
+						}
 						
+						SetEntProp(healTarget, Prop_Data, "m_iHealth", newHealth);
+						new_ammo -= i_TargetHealAmount;
+						Healing_done_in_total[owner] += i_TargetHealAmount;
+						if(!b_IsAlliedNpc[healTarget])
+						{
+							Give_Assist_Points(healTarget, owner);
+						}
+						if(b_IsAlliedNpc[healTarget])
+						{
+							Calculate_And_Display_hp(owner, healTarget, 0.0, true);
+						}
+						//TARGET HEAL
+					}
 					flHealth = GetEntProp(owner, Prop_Data, "m_iHealth");
 					
 					
+					int Current_health_owner = flHealth;
 					
 					//SELF HEAL
 					newHealth = flHealth + i_SelfHealAmount;
 					
 					flMaxHealth = SDKCall_GetMaxHealth(owner);
 					
-					if(newHealth >= flMaxHealth)
+					if(Current_health_owner < flMaxHealth)
 					{
-						i_SelfHealAmount -= newHealth - flMaxHealth;
-						newHealth = flMaxHealth;
+						if(newHealth >= flMaxHealth)
+						{
+							i_SelfHealAmount -= newHealth - flMaxHealth;
+							newHealth = flMaxHealth;
+						}
+						
+						SetEntProp(owner, Prop_Data, "m_iHealth", newHealth);
+						new_ammo -= i_SelfHealAmount;
+						Healing_done_in_total[owner] += i_SelfHealAmount;
+						
+						//SELF HEAL
+						
 					}
-					
-					SetEntProp(owner, Prop_Data, "m_iHealth", newHealth);
-					new_ammo -= i_SelfHealAmount;
-					Healing_done_in_total[owner] += i_SelfHealAmount;
-					
-					//SELF HEAL
 					
 					Increaced_Overall_damage_Low[owner] = GetGameTime() + 0.11;
-					Increaced_Overall_damage_Low[healTarget] = GetGameTime() + 0.11;
 					Resistance_Overall_Low[owner] = GetGameTime() + 0.11;
+					Increaced_Overall_damage_Low[healTarget] = GetGameTime() + 0.11;
 					Resistance_Overall_Low[healTarget] = GetGameTime() + 0.11;
-					if(!b_IsAlliedNpc[healTarget])
-					{
-						Give_Assist_Points(healTarget, owner);
-					}
-					if(b_IsAlliedNpc[healTarget])
-					{
-						Calculate_And_Display_hp(owner, healTarget, 0.0, true);
-					}
 					
 				}
 				if(!EscapeMode)
