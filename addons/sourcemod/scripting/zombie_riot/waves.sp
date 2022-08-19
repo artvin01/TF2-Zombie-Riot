@@ -19,6 +19,11 @@ enum struct MiniBoss
 	int Powerup;
 	float Delay;
 	char Sound[128];
+	char Icon[128];
+	char Text_1[128];
+	char Text_2[128];
+	char Text_3[128];
+	char Text_4[128];
 }
 
 enum struct Wave
@@ -290,15 +295,15 @@ void Waves_SetupMiniBosses(KeyValues map)
 		RequestFrame(DeleteHandle, kv);
 	}
 	
-	MiniBosses = new ArrayList(sizeof(MiniBoss));
-	
-	MiniBoss boss;
-	kv.GotoFirstSubKey();
-	do
+	if(kv.GotoFirstSubKey())
 	{
-		kv.GetSectionName(buffer, sizeof(buffer));
-		if(buffer[0])
+		MiniBoss boss;
+		MiniBosses = new ArrayList(sizeof(MiniBoss));
+		
+		do
 		{
+			kv.GetSectionName(buffer, sizeof(buffer));
+			
 			boss.Index = StringToInt(buffer);
 			if(!boss.Index)
 				boss.Index = GetIndexByPluginName(buffer);
@@ -308,15 +313,15 @@ void Waves_SetupMiniBosses(KeyValues map)
 			kv.GetString("sound", boss.Sound, sizeof(boss.Sound));
 			if(boss.Sound[0])
 				PrecacheSound(boss.Sound);
+				
+			kv.GetString("icon", boss.Icon, sizeof(boss.Icon));
+			
+			kv.GetString("text_1", boss.Text_1, sizeof(boss.Text_1));
+			kv.GetString("text_2", boss.Text_2, sizeof(boss.Text_2));
+			kv.GetString("text_3", boss.Text_3, sizeof(boss.Text_3));
 			
 			MiniBosses.PushArray(boss);
-		}
-	} while(kv.GotoNextKey());
-	
-	if(MiniBosses.Length == 0)
-	{
-		delete MiniBosses;
-		MiniBosses = null;
+		} while(kv.GotoNextKey());
 	}
 }
 

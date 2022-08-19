@@ -532,7 +532,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						Is_Allied_Npc = true;
 					}
 					
-					float Healing_Value = Attributes_FindOnWeapon(owner, medigun, 8) * 0.5;
+					float Healing_Value = Attributes_FindOnWeapon(owner, medigun, 8);
 					
 					float healing_Amount = Healing_Value;
 					float healing_Amount_Self = Healing_Value;

@@ -15,6 +15,8 @@ DynamicHook g_DHookFireballExplode; //from mikusch but edited
 DynamicHook g_DHookMedigunPrimary; 
 DynamicHook g_DHookScoutSecondaryFire; 
 
+DynamicDetour g_CalcPlayerScore;
+
 Handle g_detour_CTFGrenadePipebombProjectile_PipebombTouch;
 
 
@@ -92,6 +94,21 @@ void DHook_Setup()
 		LogError("[Gamedata] Could not find CGameRules::FrameUpdatePostEntityThink");
 	#endif
 	
+	
+	// from https://github.com/shavitush/bhoptimer/blob/b78ae36a0ef72d15620d2b18017bbff18d41b9fc/addons/sourcemod/scripting/shavit-misc.sp
+	
+	if (!(g_CalcPlayerScore = DHookCreateDetour(Address_Null, CallConv_CDECL, ReturnType_Int, ThisPointer_Ignore)))
+	{
+		SetFailState("Failed to create detour for CTFGameRules::CalcPlayerScore");
+	}
+	if (DHookSetFromConf(g_CalcPlayerScore, gamedata, SDKConf_Signature, "CTFGameRules::CalcPlayerScore"))
+	{
+		g_CalcPlayerScore.AddParam(HookParamType_Int);
+		g_CalcPlayerScore.AddParam(HookParamType_CBaseEntity);
+		g_CalcPlayerScore.Enable(Hook_Pre, Detour_CalcPlayerScore);
+	}
+		
+	
 	delete gamedata;
 	
 	GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
@@ -102,6 +119,16 @@ void DHook_Setup()
 
 	delete gamedata_lag_comp;
 	
+}
+
+//prevent infinite score gain
+MRESReturn Detour_CalcPlayerScore(DHookReturn hReturn, DHookParam hParams)
+{
+	int client = hParams.Get(2);
+	int iScore = PlayerPoints[client];
+
+	hReturn.Value = iScore;
+	return MRES_Supercede;
 }
 
 public void ApplyExplosionDhook_Pipe(int entity, bool Sticky)

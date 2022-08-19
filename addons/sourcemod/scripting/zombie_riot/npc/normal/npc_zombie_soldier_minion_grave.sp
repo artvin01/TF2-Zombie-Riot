@@ -130,7 +130,7 @@ methodmap SoldierMinion < CClotBody
 	}
 	public SoldierMinion(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SoldierMinion npc = view_as<SoldierMinion>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "0.65", "10", ally));
+		SoldierMinion npc = view_as<SoldierMinion>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "10", ally));
 		
 		i_NpcInternalId[npc.index] = SOLDIER_ZOMBIE_MINION;
 		
@@ -271,9 +271,9 @@ public void SoldierMinion_ClotThink(int iNPC)
 								{
 									
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_SLASH|DMG_CLUB);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_SLASH|DMG_CLUB);
 									
 									// Hit particle
 									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);

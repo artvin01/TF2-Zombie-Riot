@@ -1136,7 +1136,9 @@ public void OnPluginStart()
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_GENERIC, "Forcefully summon grigori");
 	
 	RegAdminCmd("sm_toggle_fake_cheats", Command_ToggleCheats, ADMFLAG_GENERIC, "ToggleCheats");
-	RegAdminCmd("zr_reload_plugin", Command_ToggleReload, ADMFLAG_GENERIC, "ToggleCheats");
+	RegAdminCmd("zr_reload_plugin", Command_ToggleReload, ADMFLAG_GENERIC, "Reload plugin on map change");
+	
+	RegAdminCmd("sm_test_hud_notif", Command_Hudnotif, ADMFLAG_GENERIC, "Hud Notif");
 	
 
 					
@@ -1165,6 +1167,7 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.zombienames");
 	LoadTranslations("zombieriot.phrases.weapons");
 	LoadTranslations("zombieriot.phrases.bob");
+	LoadTranslations("zombieriot.phrases.icons"); 
 	LoadTranslations("common.phrases");
 	
 	DHook_Setup();
@@ -1609,6 +1612,16 @@ public Action Command_ToggleCheats(int client, int args)
 			}
 		}
 	}
+	return Plugin_Handled;
+}
+
+
+public Action Command_Hudnotif(int client, int args)
+{
+	char buf[64];
+	GetCmdArg(1, buf, sizeof(buf));
+	ShowGameText(client, buf, 0, "%t", "A Miniboss has Spawned..");
+	
 	return Plugin_Handled;
 }
 

@@ -144,10 +144,16 @@ public Action GetClosestSpawners(Handle timer)
 	{
 		if(IsClientInGame(client))
 		{
-
-			if(IsPlayerAlive(client) && IsFakeClient(client))
+			if(IsPlayerAlive(client) && GetClientTeam(client)==3)
 			{
-				KickClient(client); //This bot was somehow alive, kick them.
+				if(IsFakeClient(client))
+				{
+					KickClient(client);	
+				}
+				else
+				{
+					ClientCommand(client, "retry");
+				}
 			}
 			else if(!IsFakeClient(client))
 			{
@@ -444,12 +450,97 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			int deathforcepowerup = boss.Powerup;
 			if(panzer_warning)
 			{
+				int Text_Int = GetRandomInt(0, 2);
 				if(boss.Sound[0])
 				{
 					for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
 					{
 						if(IsClientInGame(panzer_warning_client))
 						{
+							if(IsValidClient(panzer_warning_client))
+							{
+								SetGlobalTransTarget(panzer_warning_client);
+								/*
+									https://github.com/SteamDatabase/GameTracking-TF2/blob/master/tf/tf2_misc_dir/scripts/mod_textures.txt	
+								
+								*/
+								switch(Text_Int)
+								{
+									case 0:
+									{
+										ShowGameText(panzer_warning_client, boss.Icon, 1, "%t", boss.Text_1);
+									}
+									case 1:
+									{
+										ShowGameText(panzer_warning_client, boss.Icon, 1, "%t", boss.Text_2);
+									}
+									case 2:
+									{
+										ShowGameText(panzer_warning_client, boss.Icon, 1, "%t", boss.Text_3);
+									}
+								}
+								
+								/*
+									Good images:
+									
+									"hud_menu_heavy_red" Fat Streched heavy
+
+								*/
+								/*
+									TODO:
+									Use Custom texts and maybe icons for each boss.
+								
+									(Panzer)
+
+									You can discern faint metalic screams not like the others...
+									
+									Distant low rumbles fill the air space...
+									
+									Die SS Division hat einer ihrer Infizierten soldaten Gesendet...
+									
+									(Sawrunner)
+									
+									Faint rattling can be heard, and its approaching at a fast pace...
+									
+									Something rapidly rams through hordes in your direction...
+									
+									Common means might not stop this agile enemy...
+									
+									(Tank)
+									
+									You have alerted the horde...
+									
+									Destruction echoes through a nearby space...
+									
+									A massive foe has entered this field...
+									
+									(Ghostface after getting found out before killing anyone)
+									
+									We are just getting started!
+									
+									Asshole!
+									
+									Lousy shot!
+									
+									(Whiteface and HER)
+									
+									Find HER
+									
+									I love watching You
+									
+									I'm afraid I can't let you do that
+									
+									{completely optional based on how masochistic you feel to code such useless detail}
+									
+									Ready for round 2?
+									
+									STAY WITH ME
+									
+									He won't let us leave
+								
+								*/
+							}
+				
 							EmitSoundToClient(panzer_warning_client, boss.Sound, panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
 							EmitSoundToClient(panzer_warning_client, boss.Sound, panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
 						}

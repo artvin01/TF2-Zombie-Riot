@@ -847,9 +847,9 @@
 	}
 	"Gamemode Help Explained"
 	{
-		"en" 		"You survive against waves of zombies upto usually 60 waves.\nBuy guns and barricade yourself to survive.\nMake sure to play as a team and don't save up all the time.\nOr else you will be the downfall of your team."
-		"ru" 		"Вам предстоит выжить против 60 волн зомби.\nПокупайте оружие и баррикады, чтобы выжить.\nУбедитесь, что вы играете в команде и не копили деньги понапрасну.\nИначе вы станете гибелью вашей команды."
-		"de"		"Du überlebst gegen wellen von Zombies, bis zu 60 runde.\nKaufe Waffen und Barrikade für dich selber um zu überleben.\nSei sicher mit deinem Team zu spielen und Sparre nicht die ganze zeit!\nOder sie werden der Untergang für ihr Team sein."
+		"en" 		"You survive against waves of zombies upto usually 60 waves.\nBuy guns and barricade yourself to survive.\nMake sure to play as a team and don't save up all the time.\nOr else you will be the downfall of your team.\n\n If you dont know what to buy, Then buy any high cost weapon of your choice and get upgrades for that weapon type in the upgrade tab.\nAlso buy passive upgrades to have more surviveability.\nThe rest will come to you naturally."
+	//	"ru" 		"Вам предстоит выжить против 60 волн зомби.\nПокупайте оружие и баррикады, чтобы выжить.\nУбедитесь, что вы играете в команде и не копили деньги понапрасну.\nИначе вы станете гибелью вашей команды."
+	//	"de"		"Du überlebst gegen wellen von Zombies, bis zu 60 runde.\nKaufe Waffen und Barrikade für dich selber um zu überleben.\nSei sicher mit deinem Team zu spielen und Sparre nicht die ganze zeit!\nOder sie werden der Untergang für ihr Team sein."
 	}
 	"Command Help Explained"
 	{
@@ -1215,5 +1215,9 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"Someone bought something else for the npc, You get [{1}] Cash back in return as a compesation."
+	}
+	"A Miniboss has Spawned.."
+	{
+		"en"		"A Miniboss has Spawned.."
 	}
 }

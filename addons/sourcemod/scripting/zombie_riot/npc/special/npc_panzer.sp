@@ -80,7 +80,7 @@ public void NaziPanzer_OnMapStart_NPC()
 
 static char[] GetPanzerHealth()
 {
-	int health = 80;
+	int health = 90;
 	
 	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
 	
