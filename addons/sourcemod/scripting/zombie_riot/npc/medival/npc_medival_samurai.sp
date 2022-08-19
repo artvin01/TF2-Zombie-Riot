@@ -340,7 +340,7 @@ public void MedivalSamurai_ClotThink(int iNPC)
 									
 									int weapon_slot = TF2_GetClassnameSlot(classname);
 									
-									if(weapon_slot != 2)
+									if(weapon_slot != 2 || IsWandWeapon(weapon))
 									{
 										Bonus_damage = 1.5;
 									}

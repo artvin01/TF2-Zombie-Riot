@@ -488,6 +488,12 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
+	
+	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotDamaged);
 	SDKUnhook(npc.index, SDKHook_Think, NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink);
 		
@@ -634,6 +640,9 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Timer(Handle timer, int client)
 	
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TicksActive[client] = 0;
 	
+	StopSound(client,	SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	EmitSoundToAll("weapons/physcannon/physcannon_drop.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
 	

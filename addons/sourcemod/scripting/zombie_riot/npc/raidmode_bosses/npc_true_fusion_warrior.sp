@@ -513,7 +513,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				{
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 10.0 * RaidModeScaling, 800.0, _, 1.0);	
+					npc.FireRocket(vPredictedPos, 10.0 * RaidModeScaling, 800.0, "models/effects/combineball.mdl", 1.0);	
 					npc.m_flNextRangedAttack = GetGameTime() + 4.0;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
@@ -522,7 +522,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				{
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 10.0 * RaidModeScaling, 800.0, _, 1.0);	
+					npc.FireRocket(vPredictedPos, 10.0 * RaidModeScaling, 800.0, "models/effects/combineball.mdl", 1.0);	
 					npc.m_flNextRangedAttack = GetGameTime() + 3.0;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
@@ -537,7 +537,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					
 					for(int client = 1; client <= MaxClients; client++)
 					{
-						if (IsClientInGame(client))
+						if (IsClientInGame(client) && dieingstate[client] == 0 && TeutonType[client] == 0)
 						{
 							float vAngles[3], vDirection[3];
 							
@@ -585,7 +585,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.FaceTowards(vecTarget);
 					for(int client = 1; client <= MaxClients; client++)
 					{
-						if (IsClientInGame(client))
+						if (IsClientInGame(client) && dieingstate[client] == 0 && TeutonType[client] == 0)
 						{
 							float vAngles[3], vDirection[3];
 							
@@ -636,7 +636,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				{
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 4.0 * RaidModeScaling, 700.0, _, 1.0);	
+					npc.FireRocket(vPredictedPos, 4.0 * RaidModeScaling, 700.0, "models/effects/combineball.mdl", 1.0);	
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
@@ -656,7 +656,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 4.0 * RaidModeScaling, 700.0, _, 1.0);
+					npc.FireRocket(vPredictedPos, 4.0 * RaidModeScaling, 700.0, "models/effects/combineball.mdl", 1.0);
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
@@ -846,6 +846,9 @@ public void TrueFusionWarrior_NPCDeath(int entity)
 	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(entity);
 	npc.PlayDeathSound();
 	StopSound(entity,SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, TrueFusionWarrior_ClotDamaged);
 	
@@ -903,24 +906,30 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 	FusionWarrior_BEAM_IsUsing[client] = true;
 	FusionWarrior_BEAM_TicksActive[client] = 0;
 	
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 80, _, 1.0, 75);
+	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
+	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
+	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
 	
 	switch(GetRandomInt(1, 4))
 	{
 		case 1:
 		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);					
+			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);
+			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);			
 		}
 		case 2:
 		{
 			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
+			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
 		}
 		case 3:
 		{
+			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);	
 			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);			
 		}
 		case 4:
 		{
+			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
 			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
 		}		
 	}
@@ -964,24 +973,30 @@ void TrueFusionWarrior_TBB_Ability(int client)
 	FusionWarrior_BEAM_IsUsing[client] = true;
 	FusionWarrior_BEAM_TicksActive[client] = 0;
 	
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 80, _, 1.0, 75);
+	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
+	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
+	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
 	
 	switch(GetRandomInt(1, 4))
 	{
 		case 1:
 		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);					
+			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);
+			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);			
 		}
 		case 2:
 		{
 			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
+			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
 		}
 		case 3:
 		{
+			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);	
 			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);			
 		}
 		case 4:
 		{
+			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
 			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
 		}		
 	}
@@ -1001,6 +1016,8 @@ public Action TrueFusionWarrior_TBB_Timer(Handle timer, int client)
 	
 	FusionWarrior_BEAM_TicksActive[client] = 0;
 	
+	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	EmitSoundToAll("weapons/physcannon/physcannon_drop.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
 	
@@ -1212,8 +1229,6 @@ public Action Fusion_RepeatSound_Doublevoice(Handle timer, DataPack pack)
 	}
 	return Plugin_Handled; 
 }
-
-
 
 public void TrueFusionwarrior_IOC_Invoke(int client, int enemy)
 {
