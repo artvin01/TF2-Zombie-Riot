@@ -290,15 +290,15 @@ void Waves_SetupMiniBosses(KeyValues map)
 		RequestFrame(DeleteHandle, kv);
 	}
 	
-	MiniBosses = new ArrayList(sizeof(MiniBoss));
-	
-	MiniBoss boss;
-	kv.GotoFirstSubKey();
-	do
+	if(kv.GotoFirstSubKey())
 	{
-		kv.GetSectionName(buffer, sizeof(buffer));
-		if(buffer[0])
+		MiniBoss boss;
+		MiniBosses = new ArrayList(sizeof(MiniBoss));
+		
+		do
 		{
+			kv.GetSectionName(buffer, sizeof(buffer));
+			
 			boss.Index = StringToInt(buffer);
 			if(!boss.Index)
 				boss.Index = GetIndexByPluginName(buffer);
@@ -310,13 +310,7 @@ void Waves_SetupMiniBosses(KeyValues map)
 				PrecacheSound(boss.Sound);
 			
 			MiniBosses.PushArray(boss);
-		}
-	} while(kv.GotoNextKey());
-	
-	if(MiniBosses.Length == 0)
-	{
-		delete MiniBosses;
-		MiniBosses = null;
+		} while(kv.GotoNextKey());
 	}
 }
 
