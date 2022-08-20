@@ -243,6 +243,16 @@ public void Addicition_ClotThink(int iNPC)
 			else
 			{
 				npc.SetActivity(npc.m_bLostHalfHealth ? "ACT_RUN_HALFLIFE" : "ACT_RUN");
+				
+				if(distance > 29000.0)
+				{
+					PF_SetGoalEntity(npc.index, npc.m_iTarget);
+				}
+				else
+				{
+					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+					PF_SetGoalVector(npc.index, vPredictedPos);
+				}
 			}
 		}
 	}

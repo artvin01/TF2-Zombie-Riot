@@ -1670,7 +1670,7 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				npc.m_bAllowBackWalking = true;
 				
-				if(distance > 170.0)
+				if(distance > 29000.0)
 				{
 					PF_SetGoalEntity(npc.index, npc.m_iTarget);
 				}
