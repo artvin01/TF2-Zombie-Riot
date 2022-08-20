@@ -1,0 +1,517 @@
+static char g_HurtSounds[][] =
+{
+	"cof/simon/hurt1.mp3",
+	"cof/simon/hurt2.mp3",
+	"cof/simon/hurt3.mp3"
+};
+
+static bool SimonHasDied;
+static int SimonRagdollRef = INVALID_ENT_REFERENCE;
+
+methodmap Simon < CClotBody
+{
+	public void PlayIdleSound()
+	{
+		if(this.m_flNextIdleSound > GetGameTime())
+			return;
+		
+		this.m_flNextIdleSound = GetGameTime() + 18.0;
+		EmitSoundToAll("cof/simon/passive.mp3", this.index);
+	}
+	public void PlayHurtSound()
+	{
+		if(this.m_flNextHurtSound > GetGameTime())
+			return;
+		
+		this.m_flNextHurtSound = GetGameTime() + 0.4;
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE);
+	}
+	public void PlayDeathSound()
+	{
+		EmitSoundToAll("cof/simon/death7.mp3");
+		EmitSoundToAll("cof/simon/death7.mp3");
+	}
+	public void PlayIntroSound()
+	{
+		EmitSoundToAll("cof/simon/Intro.mp3");
+		EmitSoundToAll("cof/simon/Intro.mp3");
+	}
+	public void PlayReloadSound()
+	{
+		EmitSoundToAll("cof/simon/reload.mp3", this.index);
+		EmitSoundToAll("cof/simon/reload.mp3", this.index);
+	}
+	public void PlayShootSound()
+	{
+		EmitSoundToAll("cof/simon/shoot.mp3", this.index);
+	}
+	public void PlayBuffSound(int entity)
+	{
+		EmitSoundToAll("cof/purnell/buff.mp3", entity);
+	}
+	
+	public Simon(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	{
+		bool newSimon = data[0] == 's';
+		
+		if(data[0])
+			SimonHasDied = false;
+		
+		if(SimonHasDied)
+			return view_as<Simon>(INVALID_ENT_REFERENCE);
+		
+		Simon npc = view_as<Simon>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/booksimon.mdl", "1.0", data[0] == 'f' ? "300000" : "200000", ally));
+		i_NpcInternalId[npc.index] = BOOKSIMON;
+		
+		int body = EntRefToEntIndex(SimonRagdollRef);
+		if(body > MaxClients)
+			RemoveEntity(body);
+		
+		npc.m_iState = -1;
+		npc.SetActivity("ACT_SPAWN");
+		npc.PlayIntroSound();
+		
+		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iStepNoiseType = STEPSOUND_GIANT;
+		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		
+		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Simon_ClotDamagedPost);
+		SDKHook(npc.index, SDKHook_Think, Simon_ClotThink);
+		
+		npc.m_bThisNpcIsABoss = true;
+		npc.m_iTarget = -1;
+		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_bDissapearOnDeath = true;
+		npc.m_bInjured = false;
+		npc.m_iOverlordComboAttack = 0;
+		
+		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flAttackHappens = 0.0;
+		
+		npc.m_flNextRangedAttack = 0.0;
+		npc.m_iAttacksTillReload = 7;
+		npc.m_flReloadDelay = GetGameTime() + 1.4;
+		
+		npc.m_flNextRangedSpecialAttack = 0.0;
+		
+		npc.m_bLostHalfHealth = (!newSimon && view_as<bool>(data[0]));
+		return npc;
+	}
+	
+	public void SetActivity(const char[] animation)
+	{
+		int activity = this.LookupActivity(animation);
+		if(activity > 0 && activity != this.m_iState)
+		{
+			this.m_iState = activity;
+			//this.m_bisWalking = false;
+			this.StartActivity(activity);
+		}
+	}
+	property bool m_bInjured
+	{
+		public get()		{ return view_as<bool>(this.m_iMedkitAnnoyance); }
+		public set(bool value) 	{ this.m_iMedkitAnnoyance = value ? 1 : 0; }
+	}
+	property bool m_bHasKilled
+	{
+		public get()		{ return view_as<bool>(this.m_iOverlordComboAttack); }
+		public set(bool value) 	{ this.m_iOverlordComboAttack = 1; }
+	}
+	property bool m_bRetreating
+	{
+		public get()		{ return this.m_iOverlordComboAttack > 1; }
+		public set(bool value) 	{ this.m_iOverlordComboAttack = 2; }
+	}
+	property bool m_bRanAway
+	{
+		public get()		{ return this.m_iOverlordComboAttack == 3; }
+		public set(bool value) 	{ this.m_iOverlordComboAttack = 3; }
+	}
+}
+
+public void Simon_ClotThink(int iNPC)
+{
+	Simon npc = view_as<Simon>(iNPC);
+	
+	float gameTime = GetGameTime();
+	if(npc.m_flNextThinkTime > gameTime)
+		return;
+	
+	npc.m_flNextThinkTime = gameTime + 0.04;
+	npc.Update();
+	npc.PlayIdleSound();
+	
+	if(!npc.m_bRetreating && npc.m_flNextRangedSpecialAttack < gameTime)
+	{
+		npc.m_flNextRangedSpecialAttack = gameTime + 0.25;
+		
+		int target = GetClosestAlly(npc.index, 40000.0);
+		if(target)
+		{
+			CClotBody ally = view_as<CClotBody>(target);
+			
+			ally.m_flRangedArmor = 0.7;
+			
+			if(npc.m_bLostHalfHealth)
+			{
+				if(!ally.m_bLostHalfHealth)
+				{
+					ally.m_bLostHalfHealth = true;
+					ally.m_flSpeed *= 1.15;
+					npc.PlayBuffSound(target);
+				}
+			}
+		}
+	}
+	
+	if(npc.m_iTarget > 0 && !IsValidEnemy(npc.index, npc.m_iTarget))
+	{
+		if(npc.m_iTarget <= MaxClients)
+			npc.m_bHasKilled = true;
+		
+		npc.m_iTarget = 0;
+		npc.m_flGetClosestTargetTime = 0.0;
+	}
+	
+	if(npc.m_flGetClosestTargetTime < gameTime)
+	{
+		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		if(!npc.m_bRetreating && npc.m_bHasKilled && health < (maxhealth / 2))
+		{
+			if(Waves_GetRound() != (npc.m_bLostHalfHealth ? 59 : 54))
+				npc.m_bRetreating = true;
+		}
+		
+		if(!npc.m_bInjured && health < (maxhealth / 5))
+			npc.m_bInjured = true;
+		
+		npc.m_flGetClosestTargetTime = gameTime + 0.5;
+		npc.m_iTarget = GetClosestTarget(npc.index);
+	}
+	
+	int behavior = npc.m_bRetreating ? 5 : -1;
+	
+	if(npc.m_flAttackHappens)
+	{
+		if(npc.m_flAttackHappens < gameTime)
+		{
+			npc.m_flAttackHappens = 0.0;
+			
+			if(IsValidEnemy(npc.index, npc.m_iTarget))
+			{
+				Handle swingTrace;
+				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 2))
+				{
+					int target = TR_GetEntityIndex(swingTrace);	
+					
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
+					
+					if(target > 0) 
+					{
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_CLUB);
+						Custom_Knockback(npc.index, target, 500.0);
+						npc.m_iAttacksTillReload++;
+					}
+				}
+				delete swingTrace;
+			}
+		}
+		
+		behavior = 0;
+	}
+	
+	if(behavior == -1 || behavior == 5)
+	{
+		if(npc.m_iTarget > 0)	// We have a target
+		{
+			float vecPos[3]; vecPos = WorldSpaceCenter(npc.index);
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+			
+			float distance = GetVectorDistance(vecTarget, vecPos, true);
+			if(distance < 40000.0 && npc.m_flNextMeleeAttack < gameTime)	// Close at any time: Melee
+			{
+				npc.FaceTowards(vecTarget, 15000.0);
+				
+				npc.AddGesture("ACT_SHOVE");
+				
+				npc.m_flAttackHappens = gameTime + 0.35;
+				npc.m_flReloadDelay = gameTime + 0.6;
+				npc.m_flNextMeleeAttack = gameTime + (behavior == 5 ? 2.0 : 1.0);
+				
+				behavior = 0;
+			}
+			else if(npc.m_flReloadDelay > gameTime)	// Reloading
+			{
+				behavior = 0;
+			}
+			else if(behavior == 5)	// Escaping
+			{
+			}
+			else if(distance < 200000.0)	// In shooting range
+			{
+				if(npc.m_flNextRangedAttack < gameTime)	// Not in attack cooldown
+				{
+					if(npc.m_iAttacksTillReload > 0)	// Has ammo
+					{
+						vecPos[2] += 30.0;
+						
+						Handle trace = TR_TraceRayFilterEx(vecPos, vecTarget, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, npc.index);
+						
+						if(TR_GetEntityIndex(trace) == npc.m_iTarget)
+						{
+							behavior = 0;
+							npc.SetActivity("ACT_IDLE");
+							
+							npc.FaceTowards(vecTarget, 15000.0);
+							
+							npc.AddGesture("ACT_SHOOT");
+							
+							npc.m_flNextRangedAttack = gameTime + 0.8;
+							npc.m_iAttacksTillReload--;
+							
+							vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1600.0);
+							npc.FireRocket(vecTarget, 140.0, 1600.0, "models/weapons/w_bullet.mdl", 1.5);
+							
+							npc.PlayShootSound();
+						}
+						else	// Something in the way, move closer
+						{
+							behavior = 1;
+						}
+						
+						delete trace;
+					}
+					else	// No ammo, retreat
+					{
+						behavior = 3;
+					}
+				}
+				else	// In attack cooldown
+				{
+					behavior = 0;
+					npc.SetActivity("ACT_IDLE");
+				}
+			}
+			else if(npc.m_iAttacksTillReload < 7)	// Take the time to reload
+			{
+				behavior = 4;
+			}
+			else	// Sprint Time
+			{
+				behavior = 2;
+			}
+		}
+		else if(npc.m_flReloadDelay > gameTime)	// Reloading...
+		{
+			behavior = 0;
+		}
+		else if(behavior == 5)	// Escaping
+		{
+		}
+		else if(npc.m_iAttacksTillReload < 7)	// Nobody here..?
+		{
+			behavior = 4;
+		}
+		else	// I'm bored, let's get out of here
+		{
+			behavior = 5;
+		}
+	}
+	
+	// Reload anyways if we can't run
+	if(npc.m_flRangedSpecialDelay && behavior == 3 && npc.m_flRangedSpecialDelay > gameTime)
+		behavior = 4;
+	
+	switch(behavior)
+	{
+		case 0:	// Stand
+		{
+			// Activity handled above
+			npc.m_flSpeed = 0.0;
+			
+			if(npc.m_bPathing)
+			{
+				PF_StopPathing(npc.index);
+				npc.m_bPathing = false;
+			}
+		}
+		case 1:	// Move After the Player
+		{
+			npc.SetActivity(npc.m_bInjured ? "ACT_RUNHURT" : "ACT_RUN");
+			npc.m_flSpeed = npc.m_bInjured ? 250.0 : 300.0;
+			npc.m_flRangedSpecialDelay = 0.0;
+			
+			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			if(!npc.m_bPathing)
+				npc.StartPathing();
+		}
+		case 2:	// Sprint After the Player
+		{
+			npc.SetActivity(npc.m_bInjured ? "ACT_RUNHURT" : "ACT_RUNFASTER");
+			npc.m_flSpeed = npc.m_bInjured ? 250.0 : 375.0;
+			npc.m_flRangedSpecialDelay = 0.0;
+			
+			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			if(!npc.m_bPathing)
+				npc.StartPathing();
+		}
+		case 3:	// Retreat
+		{
+			npc.SetActivity(npc.m_bInjured ? "ACT_RUNHIDE" : "ACT_RUNFASTER");
+			npc.m_flSpeed = npc.m_bInjured ? 275.0 : 375.0;
+			
+			if(!npc.m_flRangedSpecialDelay)	// Reload anyways timer
+				npc.m_flRangedSpecialDelay = gameTime + 3.0;
+			
+			float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
+			PF_SetGoalVector(npc.index, vBackoffPos);
+			
+			if(!npc.m_bPathing)
+				npc.StartPathing();
+		}
+		case 4:	// Reload
+		{
+			npc.SetActivity("ACT_RELOAD");
+			npc.m_flSpeed = 0.0;
+			npc.m_flRangedSpecialDelay = 0.0;
+			npc.m_flReloadDelay = gameTime + 3.6;
+			npc.m_iAttacksTillReload = 7;
+			
+			if(npc.m_bPathing)
+			{
+				PF_StopPathing(npc.index);
+				npc.m_bPathing = false;
+			}
+			
+			npc.PlayReloadSound();
+		}
+		case 5:	// Escape
+		{
+			npc.SetActivity(npc.m_bInjured ? "ACT_RUNHIDE" : "ACT_RUNFASTER");
+			npc.m_flSpeed = npc.m_bInjured ? 275.0 : 375.0;
+			
+			int ClosestTarget;
+			float TargetLocation[3];
+			float TargetDistance;
+			float vecPos[3]; vecPos = WorldSpaceCenter(npc.index);
+			for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
+			{
+				int entity = i_ObjectsSpawners[entitycount];
+				if(IsValidEntity(entity) && entity != 0)
+				{
+					if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
+					{
+						GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+						float distance = GetVectorDistance( vecPos, TargetLocation, true); 
+						if (TargetDistance) 
+						{
+							if( distance < TargetDistance ) 
+							{
+								ClosestTarget = entity; 
+								TargetDistance = distance;		  
+							}
+						} 
+						else 
+						{
+							ClosestTarget = entity; 
+							TargetDistance = distance;
+						}
+					}
+				}
+			}
+			
+			if(ClosestTarget)
+			{
+				if(TargetDistance < 5000.0)
+				{
+					npc.m_bRanAway = true;
+					npc.m_iCreditsOnKill = 0;
+					SDKHooks_TakeDamage(npc.index, 0, 0, 99999999.9);
+					return;
+				}
+				
+				GetEntPropVector( ClosestTarget, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+				PF_SetGoalVector(npc.index, TargetLocation);
+				
+				if(!npc.m_bPathing)
+					npc.StartPathing();
+			}
+			else
+			{
+				if(!npc.m_flRangedSpecialDelay)
+				{
+					npc.m_flRangedSpecialDelay = gameTime + 10.0;
+				}
+				else if(npc.m_flRangedSpecialDelay < gameTime)
+				{
+					npc.m_bRanAway = true;
+					npc.m_iCreditsOnKill = 0;
+					SDKHooks_TakeDamage(npc.index, 0, 0, 99999999.9);
+					return;
+				}
+				
+				if(npc.m_iTarget)
+				{
+					float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
+					PF_SetGoalVector(npc.index, vBackoffPos);
+					
+					if(!npc.m_bPathing)
+						npc.StartPathing();
+				}
+			}
+		}
+	}
+}
+
+public void Simon_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
+{
+	if(damage > 100.0)
+	{
+		Simon npc = view_as<Simon>(victim);
+		npc.PlayHurtSound();
+	}
+}
+
+public void Simon_NPCDeath(int entity)
+{
+	Simon npc = view_as<Simon>(entity);
+	
+	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Simon_ClotDamagedPost);
+	SDKUnhook(npc.index, SDKHook_Think, Simon_ClotThink);
+	
+	PF_StopPathing(npc.index);
+	npc.m_bPathing = false;
+	
+	if(!npc.m_bRanAway)
+	{
+		npc.PlayDeathSound();
+		SimonHasDied = true;
+		
+		int entity_death = CreateEntityByName("prop_dynamic_override");
+		if(IsValidEntity(entity_death))
+		{
+			float pos[3], angles[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
+			GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
+			
+			TeleportEntity(entity_death, pos, angles, NULL_VECTOR);
+			
+	//		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
+			DispatchKeyValue(entity_death, "model", "models/zombie_riot/cof/booksimon.mdl");
+			DispatchKeyValue(entity_death, "skin", "0");
+			
+			DispatchSpawn(entity_death);
+			
+			SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.0); 
+			SetEntityCollisionGroup(entity_death, 2);
+			SetVariantString("death");
+			AcceptEntityInput(entity_death, "SetAnimation");
+			
+			SimonRagdollRef = EntIndexToEntRef(entity_death);
+		}
+	}
+}

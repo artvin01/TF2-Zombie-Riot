@@ -18,6 +18,7 @@ enum struct MiniBoss
 	int Index;
 	int Powerup;
 	float Delay;
+	float HealthMulti;
 	char Sound[128];
 	char Icon[128];
 	char Text_1[128];
@@ -310,6 +311,7 @@ void Waves_SetupMiniBosses(KeyValues map)
 			
 			boss.Powerup = kv.GetNum("powerup");
 			boss.Delay = kv.GetFloat("delay", 2.0);
+			boss.HealthMulti = kv.GetFloat("healthmulti");
 			kv.GetString("sound", boss.Sound, sizeof(boss.Sound));
 			if(boss.Sound[0])
 				PrecacheSound(boss.Sound);
@@ -479,7 +481,10 @@ void Waves_RoundStart()
 				strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
 				PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
 				
-				Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", vote.Name);
+				Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "FireUser%d", highest + 1);
+				ExcuteRelay("zr_waveselected", WhatDifficultySetting);
+				
+				strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), vote.Name);
 				
 				char buffer[PLATFORM_MAX_PATH];
 				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
@@ -609,15 +614,15 @@ void Waves_Progress()
 			
 			MultiGlobal = multi;
 			
-			bool ScaleWithHpMore = false;
+			int Is_a_boss = wave.EnemyData.Is_Boss;
+			bool ScaleWithHpMore = wave.Count == 0;
 			
-			if(wave.Count == 0)
+			if(Is_a_boss == 2)
 			{
 				Raidboss_Clean_Everyone();
 				ReviveAll();
 				Music_EndLastmann();
 				CheckAlivePlayers();
-				ScaleWithHpMore = true;
 			}
 			
 			int count = wave.Count;
@@ -637,15 +642,12 @@ void Waves_Progress()
 			Zombies_Currently_Still_Ongoing += count;
 			
 			
-			int Is_a_boss;
 			int Is_Health_Scaling;
-						
-			Is_a_boss = 0;
+			
 			Is_Health_Scaling = 0;
 			
 			BalanceDropMinimum(multi);
 			
-			Is_a_boss = wave.EnemyData.Is_Boss;
 			Is_Health_Scaling = wave.EnemyData.Is_Health_Scaled;
 			
 			if(Is_a_boss >= 1 || Is_Health_Scaling >= 1)
@@ -684,11 +686,22 @@ void Waves_Progress()
 				}
 				
 				float amount_of_people = float(CountPlayersOnRed());
-		
-				amount_of_people *= 0.14;
 				
-				if(amount_of_people < 1.0)
-					amount_of_people = 1.0;
+				if(ScaleWithHpMore)
+				{
+					amount_of_people *= 0.14;
+					
+					if(amount_of_people < 1.0)
+						amount_of_people = 1.0;
+				}
+				else
+				{
+					amount_of_people *= 0.1;
+				
+					if(amount_of_people < 1.0)
+						amount_of_people = 1.0;				
+					
+				}
 					
 				multi_health *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		

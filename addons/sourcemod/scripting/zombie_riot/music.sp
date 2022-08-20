@@ -97,6 +97,8 @@ void Music_EndLastmann()
 
 void Music_RoundEnd(int victim)
 {
+	ExcuteRelay("zr_gamelost");
+	
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && !IsFakeClient(client))

@@ -785,6 +785,14 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = Addicition(client, vecPos, vecAng, ally, data);
 		}
+		case THEDOCTOR:
+		{
+			entity = Doctor(client, vecPos, vecAng, ally, data);
+		}
+		case BOOKSIMON:
+		{
+			entity = Simon(client, vecPos, vecAng, ally, data);
+		}
 		case ALT_KAHMLSTEIN:
 		{
 			entity = Kahmlstein(client, vecPos, vecAng, ally);
@@ -1270,6 +1278,14 @@ public void NPCDeath(int entity)
 		{
 			Addicition_NPCDeath(entity);
 		}
+		case THEDOCTOR:
+		{
+			Doctor_NPCDeath(entity);
+		}
+		case BOOKSIMON:
+		{
+			Simon_NPCDeath(entity);
+		}
 		case ALT_KAHMLSTEIN:
 		{
 			Kahmlstein_NPCDeath(entity);
@@ -1468,8 +1484,8 @@ public void OnMapStart_NPC_Base()
 }
 
 
-native void ZR_ApplyKillEffects(int npc);
-native int ZR_GetWaveCount();
+#define ZR_ApplyKillEffects NPC_DeadEffects
+#define ZR_GetWaveCount Waves_GetRound
 
 StringMap HookIdMap;
 StringMap HookListMap;
@@ -7539,3 +7555,4 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 
 #include "zombie_riot/npc/cof/npc_addiction.sp"
 #include "zombie_riot/npc/cof/npc_doctor.sp"
+#include "zombie_riot/npc/cof/npc_simon.sp"

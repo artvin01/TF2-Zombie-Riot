@@ -1,8 +1,64 @@
+static char g_HurtSounds[][] =
+{
+	"cof/addiction/hurt1.mp3",
+	"cof/addiction/hurt2.mp3"
+};
+
+static char g_PassiveSounds[][] =
+{
+	"cof/addiction/passive1.mp3",
+	"cof/addiction/passive2.mp3"
+};
+
+static char g_ThunderSounds[][] =
+{
+	"cof/addiction/thunder_attack1.wav",
+	"cof/addiction/thunder_attack2.wav",
+	"cof/addiction/thunder_attack3.wav"
+};
+
 methodmap Addicition < CClotBody
 {
+	public void PlayIdleSound()
+	{
+		if(this.m_flNextIdleSound > GetGameTime())
+			return;
+		
+		this.m_flNextIdleSound = GetGameTime() + 3.5;
+		EmitSoundToAll(g_PassiveSounds[GetRandomInt(0, sizeof(g_PassiveSounds) - 1)], this.index);
+	}
+	public void PlayHurtSound()
+	{
+		if(this.m_flNextHurtSound > GetGameTime())
+			return;
+		
+		this.m_flNextHurtSound = GetGameTime() + 2.0;
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE);
+	}
+	public void PlayDeathSound()
+	{
+		EmitSoundToAll("cof/addiction/death.mp3");
+		EmitSoundToAll("cof/addiction/death.mp3");
+	}
+	public void PlayIntroSound()
+	{
+		EmitSoundToAll("cof/simon/Intro.mp3");
+		EmitSoundToAll("cof/simon/Intro.mp3");
+	}
+	public void PlayAttackSound()
+	{
+		this.m_flNextHurtSound = GetGameTime() + 2.0;
+		EmitSoundToAll("cof/simon/attack.mp3", this.index, SNDCHAN_VOICE);
+	}
+	public void PlayLightningSound()
+	{
+		EmitSoundToAll(g_ThunderSounds[GetRandomInt(0, sizeof(g_ThunderSounds) - 1)], this.index);
+		EmitSoundToAll(g_ThunderSounds[GetRandomInt(0, sizeof(g_ThunderSounds) - 1)]);
+	}
+	
 	public Addicition(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		Addicition npc = view_as<Addicition>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_1.mdl", "1.5", data[0] == 'f' ? "250000" : "10000", ally, false, true));
+		Addicition npc = view_as<Addicition>(CClotBody(vecPos, vecAng, "models/zombie_riot/aom/david_monster.mdl", "1.0", data[0] == 'f' ? "250000" : "10000", ally));
 		i_NpcInternalId[npc.index] = THEADDICTION;
 		
 		npc.m_iState = -1;
@@ -20,10 +76,10 @@ methodmap Addicition < CClotBody
 		npc.m_iTarget = -1;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flRangedSpecialDelay = 1.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flReloadDelay = GetGameTime() + 2.0;
+		npc.m_flNextRangedSpecialAttack = npc.m_flReloadDelay + 18.0;
 		npc.m_bLostHalfHealth = false;
 		npc.m_bDissapearOnDeath = true;
 		
@@ -36,7 +92,7 @@ methodmap Addicition < CClotBody
 	public void SetHalfLifeStats()
 	{
 		this.m_bLostHalfHealth = true;
-		this.m_flSpeed = 350.0;
+		this.m_flSpeed = 275.0;
 	}
 	public void SetActivity(const char[] animation)
 	{
@@ -60,6 +116,7 @@ public void Addicition_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.04;
 	npc.Update();
+	npc.PlayIdleSound();
 	
 	if(npc.m_bLostHalfHealth)
 	{
@@ -84,6 +141,7 @@ public void Addicition_ClotThink(int iNPC)
 			makeexplosion(npc.index, npc.index, vecMe, "", 2000, 1000, 1000.0);
 			
 			npc.m_flRangedSpecialDelay = 0.0;
+			npc.PlayLightningSound();
 		}
 		
 		return;
@@ -154,9 +212,9 @@ public void Addicition_ClotThink(int iNPC)
 			{
 				npc.FaceTowards(vecTarget, 15000.0);
 				
-				npc.SetActivity("ACT_MELEE_ANGRY_MELEE");
-				
-				npc.AddGesture("ACT_MELEE_1");
+				npc.SetActivity("ACT_IDLE");
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+				npc.PlayAttackSound();
 				
 				npc.m_flAttackHappens = gameTime + 0.4;
 				npc.m_flReloadDelay = gameTime + 0.6;
@@ -170,10 +228,10 @@ public void Addicition_ClotThink(int iNPC)
 			}
 			else if(distance < 200000.0 && npc.m_flNextRangedSpecialAttack < gameTime)
 			{
-				npc.SetActivity("ACT_SPAWN");
+				npc.SetActivity("ACT_LIGHTNING");
 				
-				npc.m_flRangedSpecialDelay = gameTime + 3.5;
-				npc.m_flReloadDelay = gameTime + 4.25;
+				npc.m_flRangedSpecialDelay = gameTime + 3.0;
+				npc.m_flReloadDelay = gameTime + 5.0;
 				npc.m_flNextRangedSpecialAttack = gameTime + 30.0;
 				
 				if(npc.m_bPathing)
@@ -184,8 +242,20 @@ public void Addicition_ClotThink(int iNPC)
 			}
 			else
 			{
-				npc.SetActivity("ACT_RUN");
+				npc.SetActivity(npc.m_bLostHalfHealth ? "ACT_RUN_HALFLIFE" : "ACT_RUN");
+				
+				if(distance > 29000.0)
+				{
+					PF_SetGoalEntity(npc.index, npc.m_iTarget);
+				}
+				else
+				{
+					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+					PF_SetGoalVector(npc.index, vPredictedPos);
+				}
 			}
+			
+			return;
 		}
 	}
 	
@@ -204,6 +274,7 @@ public Action Addicition_ClotDamaged(int victim, int &attacker, int &inflictor, 
 	if(damage < 9999999.0 && view_as<Addicition>(victim).m_flRangedSpecialDelay == 1.0)
 		return Plugin_Handled;
 	
+	view_as<Addicition>(victim).PlayHurtSound();
 	return Plugin_Continue;
 }
 
@@ -217,6 +288,8 @@ public void Addicition_NPCDeath(int entity)
 	PF_StopPathing(npc.index);
 	npc.m_bPathing = false;
 	
+	npc.PlayDeathSound();
+	
 	int entity_death = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity_death))
 	{
@@ -227,21 +300,16 @@ public void Addicition_NPCDeath(int entity)
 		TeleportEntity(entity_death, pos, angles, NULL_VECTOR);
 		
 //		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
-		DispatchKeyValue(entity_death, "model", "models/zombie_riot/cof/sawrunner_1.mdl");
+		DispatchKeyValue(entity_death, "model", "models/zombie_riot/aom/david_monster.mdl");
 		DispatchKeyValue(entity_death, "skin", "0");
 		
 		DispatchSpawn(entity_death);
 		
-		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.5); 
+		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.0); 
 		SetEntityCollisionGroup(entity_death, 2);
 		SetVariantString("death");
 		AcceptEntityInput(entity_death, "SetAnimation");
 		
-		HookSingleEntityOutput(entity_death, "OnAnimationDone", Addicition_PostDeath, true);
+		CreateTimer(1.0, Timer_RemoveEntityOverlord, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
 	}
-}
-
-public void Addicition_PostDeath(const char[] output, int caller, int activator, float delay)
-{
-	RemoveEntity(caller);
 }

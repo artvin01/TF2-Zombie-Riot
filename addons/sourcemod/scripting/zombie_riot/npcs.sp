@@ -565,9 +565,10 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			DataPack pack;
 			CreateDataTimer(boss.Delay, Timer_Delayed_BossSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(entity_Spawner);
-			pack.WriteCell(isBoss);		
-			pack.WriteCell(boss.Index);	
+			pack.WriteCell(isBoss);
+			pack.WriteCell(boss.Index);
 			pack.WriteCell(deathforcepowerup);
+			pack.WriteFloat(boss.HealthMulti);
 		}
 		else
 		{
@@ -610,7 +611,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					
 					npcstats.m_bStaticNPC = enemy.Is_Static;
 					
-					if(enemy.Is_Boss)
+					if(enemy.Is_Boss == 1)
 					{
 						npcstats.m_bThisNpcIsABoss = true; //Set to true!
 					}
@@ -688,6 +689,7 @@ public Action Timer_Delayed_BossSpawn(Handle timer, DataPack pack)
 	bool isBoss = pack.ReadCell();
 	int index = pack.ReadCell();
 	int forcepowerup = pack.ReadCell();
+	float healthmulti = pack.ReadFloat();
 	if(IsValidEntity(spawner_entity) && spawner_entity != 0)
 	{
 		float pos[3], ang[3];
@@ -707,6 +709,12 @@ public Action Timer_Delayed_BossSpawn(Handle timer, DataPack pack)
 			else
 			{
 				npcstats.m_bThisNpcIsABoss = false; //Set to true!
+			}
+			
+			if(healthmulti)
+			{
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * healthmulti));
+				SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * healthmulti));
 			}
 			
 			b_NpcForcepowerupspawn[entity] = forcepowerup;

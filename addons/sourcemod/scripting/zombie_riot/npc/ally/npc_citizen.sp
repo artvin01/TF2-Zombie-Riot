@@ -466,7 +466,7 @@ methodmap Citizen < CClotBody
 		char buffer[PLATFORM_MAX_PATH];
 		Citizen_GenerateModel(seed, female, Cit_Unarmed, buffer, sizeof(buffer));
 		
-		Citizen npc = view_as<Citizen>(CClotBody(vecPos, vecAng, buffer, "1.15", "300", true, true));
+		Citizen npc = view_as<Citizen>(CClotBody(vecPos, vecAng, buffer, "1.15", "150", true, true));
 		i_NpcInternalId[npc.index] = CITIZEN;
 		
 		npc.m_iState = -1;
@@ -698,7 +698,7 @@ methodmap Citizen < CClotBody
 			{
 				RemoveEntity(this.m_iWearable3);
 				
-				SetEntProp(this.index, Prop_Data, "m_iHealth", 100);
+				SetEntProp(this.index, Prop_Data, "m_iHealth", 50);
 				SetEntityRenderColor(this.index, 255, 255, 255, 255);
 				SetEntityRenderMode(this.index, RENDER_NORMAL);
 			}
@@ -953,7 +953,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 			}
 		}
 		
-		int health = 7500 + (amount / 3);
+		int health = 3600 + (amount / 6);
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		
@@ -965,7 +965,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	}
 	else
 	{
-		int health = 300 + npc.m_iGunValue / 4;
+		int health = 200 + npc.m_iGunValue / 8;
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		
@@ -978,7 +978,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 			npc.m_iGunClip = RoundFloat(data.Clip);
 		}
 		
-		wave = ZR_GetWaveCount() + 1;
+		wave = Waves_GetRound() + 1;
 		if(wave > 90)
 			wave = 90;
 	}
@@ -1100,7 +1100,7 @@ public void Citizen_ClotThink(int iNPC)
 							}
 							
 							int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-							int health = GetEntProp(npc.index, Prop_Data, "m_iHealth") + (maxhealth / 50);
+							int health = GetEntProp(npc.index, Prop_Data, "m_iHealth") + (maxhealth / 15);
 							if(health > maxhealth)
 								health = maxhealth;
 							
@@ -1146,7 +1146,7 @@ public void Citizen_ClotThink(int iNPC)
 	
 	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-	bool low = (health < 100) || (health < (maxhealth / 5));
+	bool low = (health < 60) || (health < (maxhealth / 5));
 	
 	if(!standing)
 	{
@@ -1670,7 +1670,7 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				npc.m_bAllowBackWalking = true;
 				
-				if(distance > 170.0)
+				if(distance > 29000.0)
 				{
 					PF_SetGoalEntity(npc.index, npc.m_iTarget);
 				}
@@ -1935,7 +1935,7 @@ public void Citizen_ClotThink(int iNPC)
 				return;
 			}
 			
-			if(npc.m_bSeakingMedic || distance > 20000.0 || (combat && distance > (2500.0 + (float(npc.m_iSeed) / 2147483.647 * 2.0))))
+			if(npc.m_bSeakingMedic || distance > 20000.0 || (combat && distance > (3000.0 + (float(npc.m_iSeed) / 2147483.647 * 2.0))))
 			{
 				if(npc.m_iTarget < 1)
 				{
@@ -2228,7 +2228,7 @@ public Action Citizen_ClotDamaged(int victim, int &attacker, int &inflictor, flo
 	if(view_as<Citizen>(victim).m_bDowned || (attacker > 0 && GetEntProp(victim, Prop_Send, "m_iTeamNum") == GetEntProp(attacker, Prop_Send, "m_iTeamNum")))
 		return Plugin_Handled;
 	
-	int health = GetEntProp(victim, Prop_Data, "m_iHealth") - RoundToFloor(damage / 2.0);
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth") - RoundToFloor(damage / (3.0 + float((Waves_GetRound() + 1) / 15 * 2)));
 	if(health < 1)
 	{
 		view_as<Citizen>(victim).SetDowned(true);
