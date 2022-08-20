@@ -785,6 +785,14 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = Addicition(client, vecPos, vecAng, ally, data);
 		}
+		case THEDOCTOR:
+		{
+			entity = Doctor(client, vecPos, vecAng, ally, data);
+		}
+		case BOOKSIMON:
+		{
+			entity = Simon(client, vecPos, vecAng, ally, data);
+		}
 		case ALT_KAHMLSTEIN:
 		{
 			entity = Kahmlstein(client, vecPos, vecAng, ally);
@@ -1269,6 +1277,14 @@ public void NPCDeath(int entity)
 		case THEADDICTION:
 		{
 			Addicition_NPCDeath(entity);
+		}
+		case THEDOCTOR:
+		{
+			Doctor_NPCDeath(entity);
+		}
+		case BOOKSIMON:
+		{
+			Simon_NPCDeath(entity);
 		}
 		case ALT_KAHMLSTEIN:
 		{
