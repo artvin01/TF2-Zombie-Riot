@@ -574,6 +574,18 @@
 		"en" 		"Samurai"
 		"ru" 		"Самурай"
 	}
+	"The Addiction"
+	{
+		"en" 		"The Addiction"
+	}
+	"The Doctor"
+	{
+		"en" 		"The Doctor"
+	}
+	"Book Simon"
+	{
+		"en" 		"Book Simon"
+	}
 	"Kahmlstein"
 	{
 		"en"		"Kahmlstein"

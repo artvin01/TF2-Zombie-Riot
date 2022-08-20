@@ -1468,8 +1468,8 @@ public void OnMapStart_NPC_Base()
 }
 
 
-native void ZR_ApplyKillEffects(int npc);
-native int ZR_GetWaveCount();
+#define ZR_ApplyKillEffects NPC_DeadEffects
+#define ZR_GetWaveCount Waves_GetRound
 
 StringMap HookIdMap;
 StringMap HookListMap;
@@ -7539,3 +7539,4 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 
 #include "zombie_riot/npc/cof/npc_addiction.sp"
 #include "zombie_riot/npc/cof/npc_doctor.sp"
+#include "zombie_riot/npc/cof/npc_simon.sp"
