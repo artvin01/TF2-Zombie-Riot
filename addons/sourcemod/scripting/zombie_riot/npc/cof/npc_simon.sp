@@ -239,7 +239,7 @@ public void Simon_ClotThink(int iNPC)
 			{
 				npc.FaceTowards(vecTarget, 15000.0);
 				
-				npc.AddGesture("ACT_SHOVE");
+				npc.AddGesture("ACT_MELEE");
 				npc.m_flAttackHappens = gameTime + 0.35;
 				npc.m_flReloadDelay = gameTime + 0.6;
 				npc.m_flNextMeleeAttack = gameTime + (behavior == 5 ? 2.0 : 1.0);
