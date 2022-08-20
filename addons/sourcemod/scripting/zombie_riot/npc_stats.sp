@@ -4335,8 +4335,8 @@ public MRESReturn ILocomotion_ShouldCollideWithAlly(Address pThis, Handle hRetur
 	//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/server/NextBot/NextBotLocomotionInterface.h#L152
 	//ALWAYS YES, WHY??????
 	
-	DHookSetReturn(hReturn, true); 
-	return MRES_Supercede;
+//	DHookSetReturn(hReturn, true); 
+	return MRES_Ignored;
 }
 public MRESReturn ILocomotion_ShouldCollideWithAllyInvince(Address pThis, Handle hReturn, Handle hParams)   
 { 
@@ -4360,8 +4360,8 @@ public MRESReturn ILocomotion_ShouldCollideWithAllyInvince(Address pThis, Handle
 		return MRES_Supercede;
 	}
 	
-	DHookSetReturn(hReturn, true); 
-	return MRES_Supercede;
+//	DHookSetReturn(hReturn, true); 
+	return MRES_Ignored;
 }
 
 public MRESReturn ILocomotion_ShouldCollideWithEnemy(Address pThis, Handle hReturn, Handle hParams)   
@@ -4375,8 +4375,8 @@ public MRESReturn ILocomotion_ShouldCollideWithEnemy(Address pThis, Handle hRetu
 			DHookSetReturn(hReturn, false); 
 			return MRES_Supercede;
 		}
-		DHookSetReturn(hReturn, true); 
-		return MRES_Supercede;
+	//	DHookSetReturn(hReturn, true); 
+		return MRES_Ignored;
 	}
 	 
 	if(b_CantCollidie[otherindex]) //no change in performance..., almost.
@@ -4384,16 +4384,10 @@ public MRESReturn ILocomotion_ShouldCollideWithEnemy(Address pThis, Handle hRetu
 		DHookSetReturn(hReturn, false); 
 		return MRES_Supercede;
 	}
-	
-	if(otherindex == 0)
-	{
-		DHookSetReturn(hReturn, true); 
-		return MRES_Supercede;
-	}
 
 	
-	DHookSetReturn(hReturn, false); 
-	return MRES_Supercede;
+//	DHookSetReturn(hReturn, true); 
+	return MRES_Ignored;
 }
 
 public MRESReturn ILocomotion_ShouldCollideWithEnemyIngoreBuilding(Address pThis, Handle hReturn, Handle hParams)   
@@ -4423,12 +4417,12 @@ public MRESReturn ILocomotion_ShouldCollideWithEnemyIngoreBuilding(Address pThis
 			DHookSetReturn(hReturn, false); 
 			return MRES_Supercede;
 		}
-		DHookSetReturn(hReturn, true); 
-		return MRES_Supercede;
+	//	DHookSetReturn(hReturn, true); 
+		return MRES_Ignored;
 	}
 	
-	DHookSetReturn(hReturn, true); 
-	return MRES_Supercede;
+//	DHookSetReturn(hReturn, true); 
+	return MRES_Ignored;
 }
 //2 * m_vecMaxs
 public MRESReturn IBody_GetHullWidth_ISGIANT(Address pThis, Handle hReturn, Handle hParams)			  { DHookSetReturn(hReturn, 60.0); return MRES_Supercede; }
