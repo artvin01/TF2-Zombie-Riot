@@ -199,6 +199,7 @@ public void HeadcrabZombie_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.StartPathing();
 		//PluginBot_NormalJump(npc.index);
 	}
 	
