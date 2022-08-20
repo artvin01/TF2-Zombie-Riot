@@ -1481,6 +1481,7 @@ public void OnMapStart_NPC_Base()
 	Sniper_railgunner_OnMapStart_NPC();
 	
 	L4D2_Tank_OnMapStart_NPC();
+	Addiction_OnMapStart_NPC();
 }
 
 
@@ -2492,6 +2493,11 @@ methodmap CClotBody
 		{
 			speed_for_return = 0.0;
 		}
+		if(b_PernellBuff[this.index])
+		{
+			speed_for_return *= 1.15;
+		}
+		
 		if(!Is_Boss) //Make sure that any slow debuffs dont affect these.
 		{
 			if(this.m_fHighTeslarDebuff > Gametime)
@@ -2923,6 +2929,15 @@ methodmap CClotBody
 		else
 		{
 			SDKCall(g_hAddGesture, this.index, iSequence, true);
+		}
+	}
+	public void SetActivity(const char[] animation)
+	{
+		int activity = this.LookupActivity(animation);
+		if(activity > 0 && activity != this.m_iState)
+		{
+			this.m_iState = activity;
+			this.StartActivity(activity);
 		}
 	}
 	public bool IsPlayingGesture(const char[] anim)
@@ -4823,22 +4838,28 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 
 public void PluginBot_PathSuccess(int bot_entidx, Address path)
 {
+	/*
 	PF_StopPathing(bot_entidx);
 	view_as<CClotBody>(bot_entidx).m_bPathing = true;
+	*/
 	//view_as<CClotBody>(bot_entidx).m_flNextTargetTime = GetGameTime() + GetRandomFloat(1.0, 4.0);
 }
 
 public void PluginBot_MoveToSuccess(int bot_entidx, Address path)
 {
+	/*
 	PF_StopPathing(bot_entidx);
 	view_as<CClotBody>(bot_entidx).m_bPathing = false;
+	*/
 	//view_as<CClotBody>(bot_entidx).m_flNextTargetTime = GetGameTime() + GetRandomFloat(1.0, 4.0);
 }
 
 public void PluginBot_MoveToFailure(int bot_entidx, Address path, MoveToFailureType type)
 {
+	/*
 	PF_StopPathing(bot_entidx);
 	view_as<CClotBody>(bot_entidx).m_bPathing = false;
+	*/
 	//view_as<CClotBody>(bot_entidx).m_flNextTargetTime = GetGameTime() + GetRandomFloat(1.0, 4.0);
 }
 
@@ -7321,6 +7342,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_RangedArmor[entity] = 1.0;
 	f_PickThisDirectionForabit[entity] = 0.0;
 	b_ScalesWithWaves[entity] = false;
+	b_PernellBuff[entity] = false;
 }
 
 public void Raidboss_Clean_Everyone()

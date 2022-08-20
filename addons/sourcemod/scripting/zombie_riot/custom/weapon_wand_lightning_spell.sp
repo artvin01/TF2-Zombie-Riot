@@ -119,6 +119,7 @@ public void Weapon_Wand_LightningSpell(int client, int weapon, bool &result, int
 					pack.WriteFloat(vEnd[0]);
 					pack.WriteFloat(vEnd[1]);
 					pack.WriteFloat(vEnd[2]);
+					pack.WriteCell(1);
 					RequestFrame(MakeExplosionFrameLater, pack);
 					
 					EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);

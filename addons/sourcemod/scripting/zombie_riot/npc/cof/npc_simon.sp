@@ -60,7 +60,7 @@ methodmap Simon < CClotBody
 		if(SimonHasDied)
 			return view_as<Simon>(INVALID_ENT_REFERENCE);
 		
-		Simon npc = view_as<Simon>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/booksimon.mdl", "1.0", data[0] == 'f' ? "300000" : "200000", ally));
+		Simon npc = view_as<Simon>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/booksimon.mdl", "1.15", data[0] == 'f' ? "300000" : "200000", ally, false, false, true));
 		i_NpcInternalId[npc.index] = BOOKSIMON;
 		
 		int body = EntRefToEntIndex(SimonRagdollRef);
@@ -188,7 +188,7 @@ public void Simon_ClotThink(int iNPC)
 			npc.m_bInjured = true;
 		
 		npc.m_flGetClosestTargetTime = gameTime + 0.5;
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_iTarget = GetClosestTarget(npc.index, true);
 	}
 	
 	int behavior = npc.m_bRetreating ? 5 : -1;
@@ -203,7 +203,7 @@ public void Simon_ClotThink(int iNPC)
 			{
 				Handle swingTrace;
 				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 2))
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _, 1))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
@@ -212,7 +212,10 @@ public void Simon_ClotThink(int iNPC)
 					
 					if(target > 0) 
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_CLUB);
+						if(target <= MaxClients)
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
+						else
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 1500.0, DMG_CLUB, -1, _, vecHit);	
 						Custom_Knockback(npc.index, target, 500.0);
 						npc.m_iAttacksTillReload++;
 					}
@@ -232,12 +235,11 @@ public void Simon_ClotThink(int iNPC)
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 			
 			float distance = GetVectorDistance(vecTarget, vecPos, true);
-			if(distance < 40000.0 && npc.m_flNextMeleeAttack < gameTime)	// Close at any time: Melee
+			if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)	// Close at any time: Melee
 			{
 				npc.FaceTowards(vecTarget, 15000.0);
 				
 				npc.AddGesture("ACT_SHOVE");
-				
 				npc.m_flAttackHappens = gameTime + 0.35;
 				npc.m_flReloadDelay = gameTime + 0.6;
 				npc.m_flNextMeleeAttack = gameTime + (behavior == 5 ? 2.0 : 1.0);
@@ -257,11 +259,11 @@ public void Simon_ClotThink(int iNPC)
 				{
 					if(npc.m_iAttacksTillReload > 0)	// Has ammo
 					{
-						vecPos[2] += 30.0;
-						
-						Handle trace = TR_TraceRayFilterEx(vecPos, vecTarget, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, npc.index);
-						
-						if(TR_GetEntityIndex(trace) == npc.m_iTarget)
+						int Enemy_I_See;
+				
+						Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+						//Target close enough to hit
+						if(IsValidEnemy(npc.index, npc.m_iTarget) && npc.m_iTarget == Enemy_I_See)
 						{
 							behavior = 0;
 							npc.SetActivity("ACT_IDLE");
@@ -271,10 +273,11 @@ public void Simon_ClotThink(int iNPC)
 							npc.AddGesture("ACT_SHOOT");
 							
 							npc.m_flNextRangedAttack = gameTime + 0.8;
+							
 							npc.m_iAttacksTillReload--;
 							
-							vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1600.0);
-							npc.FireRocket(vecTarget, 140.0, 1600.0, "models/weapons/w_bullet.mdl", 1.5);
+							vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1000.0);
+							npc.FireRocket(vecTarget, 140.0, 1000.0, "models/weapons/w_bullet.mdl", 2.0);
 							
 							npc.PlayShootSound();
 						}
@@ -282,8 +285,6 @@ public void Simon_ClotThink(int iNPC)
 						{
 							behavior = 1;
 						}
-						
-						delete trace;
 					}
 					else	// No ammo, retreat
 					{
@@ -296,8 +297,9 @@ public void Simon_ClotThink(int iNPC)
 					npc.SetActivity("ACT_IDLE");
 				}
 			}
-			else if(npc.m_iAttacksTillReload < 7)	// Take the time to reload
+			else if(npc.m_iAttacksTillReload < 0)	// Take the time to reload
 			{
+				//Only if empty.
 				behavior = 4;
 			}
 			else	// Sprint Time
@@ -342,7 +344,7 @@ public void Simon_ClotThink(int iNPC)
 		case 1:	// Move After the Player
 		{
 			npc.SetActivity(npc.m_bInjured ? "ACT_RUNHURT" : "ACT_RUN");
-			npc.m_flSpeed = npc.m_bInjured ? 250.0 : 300.0;
+			npc.m_flSpeed = npc.m_bInjured ? 200.0 : 220.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
 			PF_SetGoalEntity(npc.index, npc.m_iTarget);
@@ -352,7 +354,7 @@ public void Simon_ClotThink(int iNPC)
 		case 2:	// Sprint After the Player
 		{
 			npc.SetActivity(npc.m_bInjured ? "ACT_RUNHURT" : "ACT_RUNFASTER");
-			npc.m_flSpeed = npc.m_bInjured ? 250.0 : 375.0;
+			npc.m_flSpeed = npc.m_bInjured ? 220.0 : 240.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
 			PF_SetGoalEntity(npc.index, npc.m_iTarget);
@@ -362,7 +364,7 @@ public void Simon_ClotThink(int iNPC)
 		case 3:	// Retreat
 		{
 			npc.SetActivity(npc.m_bInjured ? "ACT_RUNHIDE" : "ACT_RUNFASTER");
-			npc.m_flSpeed = npc.m_bInjured ? 275.0 : 375.0;
+			npc.m_flSpeed = npc.m_bInjured ? 400.0 : 450.0;
 			
 			if(!npc.m_flRangedSpecialDelay)	// Reload anyways timer
 				npc.m_flRangedSpecialDelay = gameTime + 3.0;
@@ -375,7 +377,7 @@ public void Simon_ClotThink(int iNPC)
 		}
 		case 4:	// Reload
 		{
-			npc.SetActivity("ACT_RELOAD");
+			npc.AddGesture("ACT_RELOAD");
 			npc.m_flSpeed = 0.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			npc.m_flReloadDelay = gameTime + 3.6;
@@ -506,7 +508,7 @@ public void Simon_NPCDeath(int entity)
 			
 			DispatchSpawn(entity_death);
 			
-			SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.0); 
+			SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15); 
 			SetEntityCollisionGroup(entity_death, 2);
 			SetVariantString("death");
 			AcceptEntityInput(entity_death, "SetAnimation");
