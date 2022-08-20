@@ -1739,6 +1739,8 @@ methodmap CClotBody
 		}
 		
 		
+		
+		
 		list.Push(h_NpcCollissionHookType[npc]);
 		list.Push(DHookRaw(g_hGetMaxAcceleration,  true, pLocomotion));
 		list.Push(DHookRaw(g_hGetFrictionSideways, true, pLocomotion));
@@ -3522,7 +3524,6 @@ methodmap CClotBody
 	
 	public void RestartMainSequence()
 	{
-	
 		SetEntPropFloat(this.index, Prop_Data, "m_flAnimTime", GetGameTime());
 		
 		this.SetCycle(0.0);
@@ -4317,7 +4318,6 @@ public MRESReturn ILocomotion_GetGravity(Address pThis, Handle hReturn, Handle h
 public MRESReturn ILocomotion_ShouldCollideWithAlly(Address pThis, Handle hReturn, Handle hParams)   
 { 
 	int otherindex = DHookGetParam(hParams, 1);
-	CClotBody npc = view_as<CClotBody>(otherindex);
 	
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
@@ -4326,25 +4326,21 @@ public MRESReturn ILocomotion_ShouldCollideWithAlly(Address pThis, Handle hRetur
 	}	
 	 //OPTIMISEEEEEEEEE!!!!!!!!
 	 
-	if(npc.bCantCollidieAlly) //no change in performance..., almost.
+	if(b_CantCollidieAlly[otherindex]) //no change in performance..., almost.
 	{
 		DHookSetReturn(hReturn, false); 
 		return MRES_Supercede;
 	}
-	if(otherindex == 0)
-	{
-		DHookSetReturn(hReturn, true); 
-		return MRES_Supercede;
-	}
 
+	//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/server/NextBot/NextBotLocomotionInterface.h#L152
+	//ALWAYS YES, WHY??????
 	
-	DHookSetReturn(hReturn, true); 
-	return MRES_Supercede;
+//	DHookSetReturn(hReturn, true); 
+	return MRES_Ignored;
 }
 public MRESReturn ILocomotion_ShouldCollideWithAllyInvince(Address pThis, Handle hReturn, Handle hParams)   
 { 
 	int otherindex = DHookGetParam(hParams, 1);
-	CClotBody npc = view_as<CClotBody>(otherindex);
 	
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
@@ -4353,99 +4349,86 @@ public MRESReturn ILocomotion_ShouldCollideWithAllyInvince(Address pThis, Handle
 	}	
 	 //OPTIMISEEEEEEEEE!!!!!!!!
 	 
-	if(npc.bCantCollidie) //no change in performance..., almost.
+	if(b_CantCollidie[otherindex]) //no change in performance..., almost.
 	{
 		DHookSetReturn(hReturn, false); 
 		return MRES_Supercede;
 	}
-	if(npc.bCantCollidieAlly) //no change in performance..., almost.
+	if(b_CantCollidieAlly[otherindex]) //no change in performance..., almost.
 	{
 		DHookSetReturn(hReturn, false); 
 		return MRES_Supercede;
 	}
-	if(otherindex == 0)
-	{
-		DHookSetReturn(hReturn, true); 
-		return MRES_Supercede;
-	}
-
 	
-	DHookSetReturn(hReturn, true); 
-	return MRES_Supercede;
+//	DHookSetReturn(hReturn, true); 
+	return MRES_Ignored;
 }
 
 public MRESReturn ILocomotion_ShouldCollideWithEnemy(Address pThis, Handle hReturn, Handle hParams)   
 { 
 	int otherindex = DHookGetParam(hParams, 1);
-	CClotBody npc = view_as<CClotBody>(otherindex);
 	
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
-		if(npc.m_bThisEntityIgnored)
+		if(b_ThisEntityIgnored[otherindex])
 		{
 			DHookSetReturn(hReturn, false); 
 			return MRES_Supercede;
 		}
-		DHookSetReturn(hReturn, true); 
-		return MRES_Supercede; 
+//		DHookSetReturn(hReturn, true); 
+		return MRES_Ignored;
 	}
 	 
-	if(npc.bCantCollidie) //no change in performance..., almost.
+	if(b_CantCollidie[otherindex]) //no change in performance..., almost.
 	{
 		DHookSetReturn(hReturn, false); 
 		return MRES_Supercede;
 	}
+	
 	if(otherindex == 0)
 	{
-		DHookSetReturn(hReturn, true); 
-		return MRES_Supercede;
+	//	DHookSetReturn(hReturn, true); 
+		return MRES_Ignored;
 	}
 
 	
-	DHookSetReturn(hReturn, true); 
+	DHookSetReturn(hReturn, false); 
 	return MRES_Supercede;
 }
 
 public MRESReturn ILocomotion_ShouldCollideWithEnemyIngoreBuilding(Address pThis, Handle hReturn, Handle hParams)   
 { 
 	int otherindex = DHookGetParam(hParams, 1);
-	CClotBody npc = view_as<CClotBody>(otherindex);
 	
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
-		if(npc.m_bThisEntityIgnored)
+		if(b_ThisEntityIgnored[otherindex])
 		{
 			DHookSetReturn(hReturn, false); 
 			return MRES_Supercede;
 		}
-		DHookSetReturn(hReturn, true); 
-		return MRES_Supercede; 
+	//	DHookSetReturn(hReturn, true); 
+		return MRES_Ignored;
 	}
 	 
-	if(npc.bCantCollidie) //no change in performance..., almost.
+	if(b_CantCollidie[otherindex]) //no change in performance..., almost.
 	{
 		DHookSetReturn(hReturn, false); 
 		return MRES_Supercede;
 	}
-	if(npc.bCantCollidieAlly) //no change in performance..., almost.
+	if(b_CantCollidieAlly[otherindex]) //no change in performance..., almost.
 	{
 		if(i_IsABuilding[otherindex])
 		{
 			DHookSetReturn(hReturn, false); 
 			return MRES_Supercede;
 		}
-		DHookSetReturn(hReturn, true); 
-		return MRES_Supercede;
+	//	DHookSetReturn(hReturn, true); 
+		return MRES_Ignored;
 	}
-	if(otherindex == 0)
-	{
-		DHookSetReturn(hReturn, true); 
-		return MRES_Supercede;
-	}
-
 	
-	DHookSetReturn(hReturn, true); 
-	return MRES_Supercede;
+//	DHookSetReturn(hReturn, true); 
+	return MRES_Ignored;
 }
 //2 * m_vecMaxs
 public MRESReturn IBody_GetHullWidth_ISGIANT(Address pThis, Handle hReturn, Handle hParams)			  { DHookSetReturn(hReturn, 60.0); return MRES_Supercede; }
@@ -5544,6 +5527,7 @@ public void Check_If_Stuck(int iNPC)
 					{
 						SDKCall_SetLocalOrigin(iNPC, flMyPos_2);	
 						TeleportEntity(iNPC, flMyPos_2, NULL_VECTOR, { 0.0, 0.0, 0.0 }); //Reset their speed
+						npc.SetVelocity({ 0.0, 0.0, 0.0 });
 					}
 					else
 					{

@@ -221,7 +221,6 @@ public void HeadcrabZombie_ClotThink(int iNPC)
 		{
 			PF_SetGoalEntity(npc.index, closest);
 		}
-		npc.StartPathing();
 		
 		//Target close enough to hit
 		
