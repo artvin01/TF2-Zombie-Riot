@@ -254,6 +254,8 @@ public void Addicition_ClotThink(int iNPC)
 					PF_SetGoalVector(npc.index, vPredictedPos);
 				}
 			}
+			
+			return;
 		}
 	}
 	
