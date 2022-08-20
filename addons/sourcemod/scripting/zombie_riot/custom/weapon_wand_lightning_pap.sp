@@ -158,6 +158,7 @@ public Action Smite_Timer(Handle Smite_Logic, DataPack pack)
 		pack_boom.WriteFloat(spawnLoc[0]);
 		pack_boom.WriteFloat(spawnLoc[1]);
 		pack_boom.WriteFloat(spawnLoc[2]);
+		pack_boom.WriteCell(1);
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		
 		Explode_Logic_Custom(damage, client, client, weapon, spawnLoc, Smite_Radius,_,_,false);

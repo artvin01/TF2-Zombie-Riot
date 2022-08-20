@@ -377,6 +377,7 @@ float f_LowIceDebuff[MAXENTITIES];
 float f_HighIceDebuff[MAXENTITIES];
 bool b_Frozen[MAXENTITIES];
 float f_TankGrabbedStandStill[MAXENTITIES];
+bool b_PernellBuff[MAXENTITIES];
 
 bool b_StickyIsSticking[MAXENTITIES];
 

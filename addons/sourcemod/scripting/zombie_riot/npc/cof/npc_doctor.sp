@@ -69,7 +69,7 @@ methodmap Doctor < CClotBody
 	
 	public Doctor(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		Doctor npc = view_as<Doctor>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/doctor_purnell.mdl", "1.0", data[0] == 'f' ? "200000" : "30000", ally));
+		Doctor npc = view_as<Doctor>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/doctor_purnell.mdl", "1.15", data[0] == 'f' ? "200000" : "30000", ally, false, false, true));
 		i_NpcInternalId[npc.index] = THEDOCTOR;
 		
 		npc.m_iState = -1;
@@ -160,7 +160,7 @@ public void Doctor_ClotThink(int iNPC)
 			if(!ally.m_bLostHalfHealth)
 			{
 				ally.m_bLostHalfHealth = true;
-				ally.m_flSpeed *= 1.15;
+				b_PernellBuff[target] = true;
 				npc.PlayBuffSound(target);
 				npc.AddGesture("ACT_SIGNAL");
 			}
@@ -179,7 +179,7 @@ public void Doctor_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_flGetClosestTargetTime = gameTime + 0.5;
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_iTarget = GetClosestTarget(npc.index, true);
 	}
 	
 	int behavior = -1;
@@ -195,7 +195,7 @@ public void Doctor_ClotThink(int iNPC)
 			{
 				Handle swingTrace;
 				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 2))
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _, 1))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
@@ -204,7 +204,11 @@ public void Doctor_ClotThink(int iNPC)
 					
 					if(target > 0) 
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB);
+						if(target <= MaxClients)
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_CLUB, -1, _, vecHit);
+						else
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 800.0, DMG_CLUB, -1, _, vecHit);	
+							
 						Custom_Knockback(npc.index, target, 500.0);
 						npc.m_iAttacksTillReload++;
 						npc.PlayHitSound();
@@ -225,7 +229,7 @@ public void Doctor_ClotThink(int iNPC)
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 			
 			float distance = GetVectorDistance(vecTarget, vecPos, true);
-			if(distance < 40000.0 && npc.m_flNextMeleeAttack < gameTime)	// Close at any time: Melee
+			if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)	// Close at any time: Melee
 			{
 				npc.FaceTowards(vecTarget, 15000.0);
 				
@@ -248,11 +252,11 @@ public void Doctor_ClotThink(int iNPC)
 				{
 					if(npc.m_iAttacksTillReload > 0)	// Has ammo
 					{
-						vecPos[2] += 30.0;
-						
-						Handle trace = TR_TraceRayFilterEx(vecPos, vecTarget, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, npc.index);
-						
-						if(TR_GetEntityIndex(trace) == npc.m_iTarget)
+						int Enemy_I_See;
+				
+						Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+						//Target close enough to hit
+						if(IsValidEnemy(npc.index, npc.m_iTarget) && npc.m_iTarget == Enemy_I_See)
 						{
 							behavior = 0;
 							npc.SetActivity("ACT_IDLE");
@@ -264,8 +268,8 @@ public void Doctor_ClotThink(int iNPC)
 							npc.m_flNextRangedAttack = gameTime + 1.0;
 							npc.m_iAttacksTillReload--;
 							
-							vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1300.0);
-							npc.FireRocket(vecTarget, 80.0, 1300.0, "models/weapons/w_bullet.mdl", 1.5);
+							vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 700.0);
+							npc.FireRocket(vecTarget, 80.0, 700.0, "models/weapons/w_bullet.mdl", 2.0);
 							
 							npc.PlayShootSound();
 						}
@@ -273,8 +277,6 @@ public void Doctor_ClotThink(int iNPC)
 						{
 							behavior = 1;
 						}
-						
-						delete trace;
 					}
 					else	// No ammo, retreat
 					{
@@ -287,8 +289,9 @@ public void Doctor_ClotThink(int iNPC)
 					npc.SetActivity("ACT_IDLE");
 				}
 			}
-			else if(npc.m_iAttacksTillReload < 5)	// Take the time to reload
+			else if(npc.m_iAttacksTillReload < 0)	// Take the time to reload
 			{
+				//Only if low ammo, otherwise it can be abused.
 				behavior = 4;
 			}
 			else	// Sprint Time
@@ -331,7 +334,7 @@ public void Doctor_ClotThink(int iNPC)
 		case 1:	// Move After the Player
 		{
 			npc.SetActivity("ACT_RUN");
-			npc.m_flSpeed = 275.0;
+			npc.m_flSpeed = 100.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
 			PF_SetGoalEntity(npc.index, npc.m_iTarget);
@@ -340,8 +343,8 @@ public void Doctor_ClotThink(int iNPC)
 		}
 		case 2:	// Sprint After the Player
 		{
-			npc.SetActivity("ACT_RUNHIDE");
-			npc.m_flSpeed = 350.0;
+			npc.SetActivity("ACT_RUN");
+			npc.m_flSpeed = 150.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
 			PF_SetGoalEntity(npc.index, npc.m_iTarget);
@@ -351,7 +354,7 @@ public void Doctor_ClotThink(int iNPC)
 		case 3:	// Retreat
 		{
 			npc.SetActivity("ACT_RUNHIDE");
-			npc.m_flSpeed = 350.0;
+			npc.m_flSpeed = 500.0;
 			
 			if(!npc.m_flRangedSpecialDelay)	// Reload anyways timer
 				npc.m_flRangedSpecialDelay = gameTime + 4.0;
@@ -364,7 +367,7 @@ public void Doctor_ClotThink(int iNPC)
 		}
 		case 4:	// Reload
 		{
-			npc.SetActivity("ACT_RELOAD");
+			npc.AddGesture("ACT_RELOAD");
 			npc.m_flSpeed = 0.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			npc.m_flReloadDelay = gameTime + 4.25;

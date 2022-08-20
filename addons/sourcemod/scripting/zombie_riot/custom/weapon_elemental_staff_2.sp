@@ -59,6 +59,7 @@ public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit, int slot)
 				pack.WriteFloat(vecUp[0]);
 				pack.WriteFloat(vecUp[1]);
 				pack.WriteFloat(vecUp[2]);
+				pack.WriteCell(1);
 				RequestFrame(MakeExplosionFrameLater, pack);
 				
 				Explode_Logic_Custom(damage, client, client, weapon,vecUp,_,_,_,false);
