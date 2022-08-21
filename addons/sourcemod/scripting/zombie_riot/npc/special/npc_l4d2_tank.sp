@@ -737,11 +737,11 @@ static char[] GetTankHealth()
 
 void Music_Stop_All_Tank(int entity)
 {
-	StopSound(entity, SNDCHAN_AUTO, "infected_riot/tank/onebadtank.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "infected_riot/tank/onebadtank.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "infected_riot/tank/onebadtank.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "infected_riot/tank/onebadtank.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "infected_riot/tank/onebadtank.mp3");
+	StopSound(entity, SNDCHAN_STATIC, "infected_riot/tank/onebadtank.mp3");
+	StopSound(entity, SNDCHAN_STATIC, "infected_riot/tank/onebadtank.mp3");
+	StopSound(entity, SNDCHAN_STATIC, "infected_riot/tank/onebadtank.mp3");
+	StopSound(entity, SNDCHAN_STATIC, "infected_riot/tank/onebadtank.mp3");
+	StopSound(entity, SNDCHAN_STATIC, "infected_riot/tank/onebadtank.mp3");
 }
 
 
