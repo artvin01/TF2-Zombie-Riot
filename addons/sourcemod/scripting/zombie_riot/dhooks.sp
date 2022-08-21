@@ -383,6 +383,7 @@ public Action CH_PassFilter(int ent1, int ent2, bool &result)
 	return Plugin_Continue;
 }
 
+
 public bool PassfilterGlobal(int ent1, int ent2, bool result)
 {
 	if(b_IsInUpdateGroundConstraintLogic)
@@ -455,7 +456,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 		else if(b_Is_Blue_Npc[entity1])
 		{
-			if(b_ThisEntityIgnored[entity2])
+			if(b_ThisEntityIgnored[entity2] && !DoingLagCompensation) //Only Ignore when not shooting/compensating, which is shooting only.
 			{
 				return false;
 			}
