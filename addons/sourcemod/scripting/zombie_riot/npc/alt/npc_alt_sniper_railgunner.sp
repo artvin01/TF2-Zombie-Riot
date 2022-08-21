@@ -301,22 +301,28 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 							float speed;
 							speed = 1250.0;
 							damage = 50.0;
-							if(i_overcharge[npc.index] > 10)	//tl;dr, 11th shot is super pew pew. quad pew for 400 dmg 
+							if(i_overcharge[npc.index] > 5)	//tl;dr, 6th shot is super pew pew. quad pew for 400 dmg 
 							{
 								speed = 2000.0;
 								damage = 50.0;
 								i_overcharge[npc.index] = 0;
 								npc.m_flNextMeleeAttack = GetGameTime() + 7.5;	//long reload, the gun overheated from the charge shot.
 								npc.PlayMeleeSound();
-								vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed);
+								if(flDistanceToTarget > 1000000)	//doesn't predict over 1000 hu
+								{
+									vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed);
+								}
 								npc.FireRocket(vecTarget, damage, speed, "models/effects/combineball.mdl", 1.0);
 								npc.FireRocket(vecTarget, damage, speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0, EP_NO_KNOCKBACK);
-								npc.FireRocket(vecTarget, damage, speed, "" , 1.0, EP_NO_KNOCKBACK);
+								npc.FireRocket(vecTarget, damage, speed);
 								npc.FireArrow(vecTarget, damage, speed);
 							}
 							else
 							{
-								vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed);
+								if(flDistanceToTarget > 562500)	//Doesn't predict over 750 hu
+								{
+									vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed);
+								}
 								npc.FireArrow(vecTarget, damage, speed);
 								npc.m_flNextMeleeAttack = GetGameTime() + 2.0;
 								i_overcharge[npc.index]++;

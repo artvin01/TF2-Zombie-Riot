@@ -228,7 +228,7 @@ methodmap Alt_CombineDeutsch < CClotBody
 		npc.StartPathing();
 		
 		i_barrage[npc.index] = 0;
-		fl_barragetimer[npc.index] = GetGameTime() + 60.0;
+		fl_barragetimer[npc.index] = GetGameTime() + 15.0;
 		fl_singularbarrage[npc.index] = GetGameTime() + 1.0
 		b_barrage[npc.index] = false;
 		return npc;
