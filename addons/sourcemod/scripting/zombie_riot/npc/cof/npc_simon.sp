@@ -70,6 +70,7 @@ methodmap Simon < CClotBody
 		npc.m_iState = -1;
 		npc.SetActivity("ACT_SPAWN");
 		npc.PlayIntroSound();
+		ExcuteRelay("zr_simonspawn");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
@@ -453,6 +454,7 @@ public void Simon_ClotThink(int iNPC)
 					npc.m_bRanAway = true;
 					npc.m_iCreditsOnKill = 0;
 					SDKHooks_TakeDamage(npc.index, 0, 0, 99999999.9);
+					ExcuteRelay("zr_simonescaped");
 					return;
 				}
 				

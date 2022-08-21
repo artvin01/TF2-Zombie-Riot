@@ -481,14 +481,9 @@ methodmap Citizen < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, Citizen_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, Citizen_ClotThink);
 		
-		
-		int glow = view_as<CClotBody>(npc).m_iTeamGlow;
+		int glow = npc.m_iTeamGlow;
 		if(glow > 0)
-		{
-			RemoveEntity(glow);
-			view_as<CClotBody>(npc).m_iTeamGlow = -1;
-		}
-		
+			AcceptEntityInput(glow, "Disable");
 		
 		npc.m_iSeed = seed;
 		
@@ -671,6 +666,10 @@ methodmap Citizen < CClotBody
 				this.m_bPathing = false;
 			}
 			
+			int glow = this.m_iTeamGlow;
+			if(glow > 0)
+				AcceptEntityInput(glow, "Disable");
+			
 			if(this.m_iWearable1 > 0)
 				AcceptEntityInput(this.m_iWearable1, "Disable");
 			
@@ -690,6 +689,10 @@ methodmap Citizen < CClotBody
 			this.m_bThisEntityIgnored = false;
 			this.SetActivity("ACT_BUSY_SIT_GROUND_EXIT");
 			this.m_flReloadDelay = GetGameTime() + 2.4;
+			
+			int glow = this.m_iTeamGlow;
+			if(glow > 0)
+				AcceptEntityInput(glow, "Enable");
 			
 			if(this.m_iWearable1 > 0)
 				AcceptEntityInput(this.m_iWearable1, "Enable");
