@@ -1,94 +1,16 @@
 #pragma semicolon 1
 
-static const char SoundMoabHit[][] =
+static float MoabSpeed(bool elite)
 {
-	"zombie_riot/btd/hitmoab01.wav",
-	"zombie_riot/btd/hitmoab02.wav",
-	"zombie_riot/btd/hitmoab03.wav",
-	"zombie_riot/btd/hitmoab04.wav"
-};
-
-static const char SoundZomgPop[][] =
-{
-	"zombie_riot/btd/zomgdestroyed01.wav",
-	"zombie_riot/btd/zomgdestroyed02.wav"
-};
-
-static float MoabSpeed()
-{
-	if(CurrentRound < 80)
-		return 150.0;
+	if(CurrentRound < (elite ? 29 : 59))
+		return 12.5;
 	
-	if(CurrentRound < 100)
-		return 150.0 * (1.0 + (CurrentRound - 79) * 0.02);
-	
-	return 150.0 * (1.0 + (CurrentRound - 70) * 0.02);
+	return 15.0;
 }
 
-static int MoabHealth(bool fortified)
+methodmap Bloonarius < CClotBody
 {
-	float value = 2000000.0;	// 20000 RGB 
-	if(CurrentRound == 99)
-	{
-		value *= 10.0;
-	}
-	else
-	{
-		value *= 0.25;
-	}
-	
-	if(fortified)
-		value *= 2.0;
-	
-	if(CurrentRound > 123)
-	{
-		value *= 1.05 + (CurrentRound - 106) * 0.15;
-	}
-	else if(CurrentRound > 99)
-	{
-		value *= 1.0 + (CurrentRound - 71) * 0.05;
-	}
-	else if(CurrentRound > 79)
-	{
-		value *= 1.0 + (CurrentRound - 79) * 0.02;
-	}
-	return RoundFloat(value);
-}
-
-void Bad_MapStart()
-{
-	#if defined FORCE_BLOON_ENABLED
-	char buffer[256];
-	for(int i; i<sizeof(SoundZomgPop); i++)
-	{
-		PrecacheSound(SoundZomgPop[i]);
-		FormatEx(buffer, sizeof(buffer), "sound/%s", SoundZomgPop[i]);
-		AddFileToDownloadsTable(buffer);
-	}
-	
-	PrecacheModel("models/zombie_riot/btd/bad.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bad.dx80.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bad.dx90.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bad.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bad.vvd");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/baddamage1diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/baddamage1diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/baddamage2diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/baddamage2diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/baddamage3diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/baddamage3diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/baddamage4diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/baddamage4diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/badstandarddiffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/badstandarddiffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbreinforceddiffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbreinforceddiffuse.vtf");
-	#endif
-}
-
-methodmap Bad < CClotBody
-{
-	property bool m_bFortified
+	property bool m_bElite
 	{
 		public get()
 		{
@@ -117,16 +39,13 @@ methodmap Bad < CClotBody
 		
 		SetEntProp(this.index, Prop_Send, "m_nSkin", type);
 	}
-	public Bad(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Bloonarius(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		bool fortified = StrContains(data, "f") != -1;
+		bool elite = StrContains(data, "e") != -1;
 		
-		char buffer[16];
-		IntToString(MoabHealth(fortified), buffer, sizeof(buffer));
+		Bloonarius npc = view_as<Bloonarius>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bad.mdl", "1.0", "20000", ally, false, true));
 		
-		Bad npc = view_as<Bad>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bad.mdl", "1.0", buffer, ally, false, true));
-		
-		i_NpcInternalId[npc.index] = BTD_BAD;
+		i_NpcInternalId[npc.index] = BTD_BLOOONARIUS;
 		
 		int iActivity = npc.LookupActivity("ACT_FLOAT");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -135,10 +54,11 @@ methodmap Bad < CClotBody
 		npc.m_iStepNoiseType = NOTHING;	
 		npc.m_iNpcStepVariation = NOTHING;	
 		npc.m_bDissapearOnDeath = true;
+		npc.m_bThisNpcIsABoss = true;
 		npc.m_bisWalking = false;
 		
 		npc.m_flSpeed = MoabSpeed();
-		npc.m_bFortified = fortified;
+		npc.m_bElite = elite;
 		
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iState = 0;
@@ -147,57 +67,75 @@ methodmap Bad < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Bad_ClotDamaged);
-		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bad_ClotDamagedPost);
-		SDKHook(npc.index, SDKHook_Think, Bad_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, Bloonarius_ClotDamaged);
+		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bloonarius_ClotDamagedPost);
+		SDKHook(npc.index, SDKHook_Think, Bloonarius_ClotThink);
 		
 		npc.StartPathing();
 		
+		RaidBossActive = EntIndexToEntRef(npc.index);
 		
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client) && !IsFakeClient(client))
+				LookAtTarget(client, npc.index);
+		}
+		
+		RaidModeTime = GetGameTime() + 300.0;
+		RaidModeScaling = float(ZR_GetWaveCount()+1);
+		
+		if(RaidModeScaling < 55)
+		{
+			RaidModeScaling *= 0.19; //abit low, inreacing
+		}
+		else
+		{
+			RaidModeScaling *= 0.38;
+		}
+		
+		float amount_of_people = float(CountPlayersOnRed());
+		
+		amount_of_people *= 0.12;
+		
+		if(amount_of_people < 1.0)
+			amount_of_people = 1.0;
+			
+		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
+		
+		Raidboss_Clean_Everyone();
 		return npc;
 	}
-	
-	
 }
 
-//TODO 
-//Rewrite
-public void Bad_ClotThink(int iNPC)
+public void Bloonarius_ClotThink(int iNPC)
 {
-	Bad npc = view_as<Bad>(iNPC);
+	Bloonarius npc = view_as<Bloonarius>(iNPC);
 	
-	if(npc.m_bFortified)
+	if(npc.m_bElite)
 	{
 		SetVariantInt(1);
-		AcceptEntityInput(iNPC, "SetBodyGroup");
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 	}
 	
 	float gameTime = GetGameTime();
 	if(npc.m_flNextDelayTime > gameTime)
-	{
 		return;
-	}
 	
 	npc.m_flNextDelayTime = gameTime + 0.04;
-	
-	npc.Update();	
+	npc.Update();
 	
 	if(npc.m_flNextThinkTime > gameTime)
-	{
 		return;
-	}
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = gameTime + 1.0;
+		npc.m_flGetClosestTargetTime = gameTime + 5.0;
 	}
 	
-	int PrimaryThreatIndex = npc.m_iTarget;
-	
-	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
+	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 													
@@ -274,31 +212,31 @@ public void Bad_ClotThink(int iNPC)
 	}
 }
 
-public Action Bad_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Bloonarius_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 	
-	Bad npc = view_as<Bad>(victim);
+	Bloonarius npc = view_as<Bloonarius>(victim);
 	npc.PlayHitSound();
 	return Plugin_Changed;
 }
 
-public void Bad_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
+public void Bloonarius_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
-	Bad npc = view_as<Bad>(victim);
+	Bloonarius npc = view_as<Bloonarius>(victim);
 	npc.UpdateBloonOnDamage();
 }
 
-public void Bad_NPCDeath(int entity)
+public void Bloonarius_NPCDeath(int entity)
 {
-	Bad npc = view_as<Bad>(entity);
+	Bloonarius npc = view_as<Bloonarius>(entity);
 	npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bad_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Bad_ClotDamaged);
-	SDKUnhook(npc.index, SDKHook_Think, Bad_ClotThink);
+	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bloonarius_ClotDamagedPost);
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Bloonarius_ClotDamaged);
+	SDKUnhook(npc.index, SDKHook_Think, Bloonarius_ClotThink);
 	
 	int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
 	
@@ -318,7 +256,7 @@ public void Bad_NPCDeath(int entity)
 		TeleportEntity(entity_death, pos, angles, NULL_VECTOR);
 		
 //		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
-		DispatchKeyValue(entity_death, "model", "models/zombie_riot/btd/bad.mdl");
+		DispatchKeyValue(entity_death, "model", "models/zombie_riot/btd/Bloonarius.mdl");
 		DispatchKeyValue(entity_death, "skin", "4");
 		if(npc.m_bFortified)
 			DispatchKeyValue(entity_death, "body", "1");
@@ -333,11 +271,11 @@ public void Bad_NPCDeath(int entity)
 		
 		pos[2] += 20.0;
 		
-		HookSingleEntityOutput(entity_death, "OnAnimationDone", npc.m_bFortified ? Bad_PostFortifiedDeath : Bad_PostDeath, true);
+		HookSingleEntityOutput(entity_death, "OnAnimationDone", npc.m_bFortified ? Bloonarius_PostFortifiedDeath : Bloonarius_PostDeath, true);
 	}
 }
 
-public void Bad_PostDeath(const char[] output, int caller, int activator, float delay)
+public void Bloonarius_PostDeath(const char[] output, int caller, int activator, float delay)
 {
 	float pos[3], angles[3];
 	GetEntPropVector(caller, Prop_Data, "m_angRotation", angles);
@@ -354,7 +292,7 @@ public void Bad_PostDeath(const char[] output, int caller, int activator, float 
 	}
 }
 
-public void Bad_PostFortifiedDeath(const char[] output, int caller, int activator, float delay)
+public void Bloonarius_PostFortifiedDeath(const char[] output, int caller, int activator, float delay)
 {
 	float pos[3], angles[3];
 	GetEntPropVector(caller, Prop_Data, "m_angRotation", angles);

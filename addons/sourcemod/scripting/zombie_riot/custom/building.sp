@@ -53,7 +53,7 @@
 #define VILLAGE_004	(0 << 14)
 #define VILLAGE_005	(0 << 15)
 
-static int Village_Flags[MAXTF2PLAYERS];
+//static int Village_Flags[MAXTF2PLAYERS];
 
 //static int gLaser1;
 

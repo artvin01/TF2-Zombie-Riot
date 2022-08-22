@@ -227,7 +227,6 @@ void Bloon_MapStart()
 static int BType[MAXENTITIES];
 static bool Regrow[MAXENTITIES];
 //static bool Camo[MAXENTITIES];
-static bool Fortified[MAXENTITIES];
 static int TypeOg[MAXENTITIES];
 static int Sprite[MAXENTITIES];
 
@@ -281,11 +280,11 @@ methodmap Bloon < CClotBody
 	{
 		public get()
 		{
-			return Fortified[this.index];
+			return this.m_bLostHalfHealth;
 		}
 		public set(bool value)
 		{
-			Fortified[this.index] = value;
+			this.m_bLostHalfHealth = value;
 		}
 	}
 	property int m_iSprite
