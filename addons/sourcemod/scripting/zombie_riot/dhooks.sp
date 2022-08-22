@@ -383,6 +383,7 @@ public Action CH_PassFilter(int ent1, int ent2, bool &result)
 	return Plugin_Continue;
 }
 
+
 public bool PassfilterGlobal(int ent1, int ent2, bool result)
 {
 	if(b_IsInUpdateGroundConstraintLogic)
@@ -396,71 +397,80 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			return false;
 		}
 	}
-	if(b_Is_Npc_Projectile[ent2])
-	{
-		if(b_Is_Blue_Npc[ent1])
-		{
-			return false;
-		}
-		else if(b_Is_Npc_Projectile[ent1])
-		{
-			return false;
-		}
-	}
-	else if(b_Is_Npc_Projectile[ent1])
-	{
-		if(b_Is_Blue_Npc[ent2])
-		{
-			return false;
-		}
-		else if(b_Is_Npc_Projectile[ent2])
-		{
-			return false;	
-		}
-	}
-	else if(b_Is_Player_Projectile[ent1])
-	{
-		if(ent2 <= MaxClients && ent2 > 0)
-		{
-			return false;
-		}
-		else if(b_IsAlliedNpc[ent2])
-		{
-			return false;
-		}
-		else if(b_Is_Player_Projectile[ent2])
-		{
-			return false;
-		}
-	}
-	else if(b_Is_Player_Projectile[ent2])
-	{
-		if(ent1 <= MaxClients && ent1 > 0)
-		{
-			return false;
-		}
-		else if(b_IsAlliedNpc[ent1])
-		{
-			return false;	
-		}
-		else if(b_Is_Player_Projectile[ent1])
-		{
-			return false;
-		}
-	}
 	
-	else if (b_Is_Player_Projectile_Through_Npc[ent2])
+	for( int ent = 1; ent <= 2; ent++ ) 
 	{
-		if(b_Is_Blue_Npc[ent1])
+		static int entity1;
+		static int entity2;
+		if(ent == 1)
 		{
-			return false;
+			entity1 = ent1;
+			entity2 = ent2;
 		}
-	}
-	else if (b_Is_Player_Projectile_Through_Npc[ent1])
-	{
-		if(b_Is_Blue_Npc[ent2])
+		else
 		{
-			return false;
+			entity1 = ent2;
+			entity2 = ent1;			
+		}
+		
+		if(b_Is_Npc_Projectile[entity1])
+		{
+			if(b_ThisEntityIgnored[entity2])
+			{
+				return false;
+			}
+			if(b_Is_Blue_Npc[entity2])
+			{
+				return false;
+			}
+			else if(b_Is_Npc_Projectile[entity2])
+			{
+				return false;
+			}
+		}
+		else if(b_Is_Player_Projectile[entity1])
+		{
+			if(b_ThisEntityIgnored[entity2])
+			{
+				return false;
+			}
+			if(entity2 <= MaxClients && entity2 > 0)
+			{
+				return false;
+			}
+			else if(b_IsAlliedNpc[entity2])
+			{
+				return false;
+			}
+			else if(b_Is_Player_Projectile[entity2])
+			{
+				return false;
+			}
+		}
+		else if (b_Is_Player_Projectile_Through_Npc[entity2])
+		{
+			if(b_Is_Blue_Npc[entity2])
+			{
+				return false;
+			}
+		}
+		else if(b_Is_Blue_Npc[entity1])
+		{
+			if(b_ThisEntityIgnored[entity2] && !DoingLagCompensation) //Only Ignore when not shooting/compensating, which is shooting only.
+			{
+				return false;
+			}
+			else if(b_Is_Blue_Npc[entity2])
+			{
+				return false;
+			}
+		}
+		else if(b_IsAlliedNpc[entity1])
+		{
+			if(b_IsAlliedNpc[entity2])
+			{
+				return false;
+			}
 		}
 	}
 	return result;	

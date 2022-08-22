@@ -2664,6 +2664,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				if(dieingstate[target] <= 0)
 				{
 					SetEntityMoveType(target, MOVETYPE_WALK);
+					RequestFrame(Movetype_walk, target);
 					dieingstate[target] = 0;
 					
 					SetEntPropEnt(target, Prop_Send, "m_hObserverTarget", client);
@@ -2772,6 +2773,15 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	
 //	Building_PlayerRunCmd(client, buttons);
 	return Plugin_Continue;
+}
+
+public void Movetype_walk(int client)
+{
+	if(IsValidClient(client))
+	{
+		SetEntityMoveType(client, MOVETYPE_WALK);
+	}
+	
 }
 
 public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3])

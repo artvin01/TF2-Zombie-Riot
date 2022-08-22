@@ -134,9 +134,9 @@ methodmap L4D2_Tank < CClotBody
 		if(this.m_iPlayMusicSound > GetTime())
 			return;
 		
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 		this.m_iPlayMusicSound = GetTime() + 53;
 		
 	}
@@ -737,11 +737,11 @@ static char[] GetTankHealth()
 
 void Music_Stop_All_Tank(int entity)
 {
-	StopSound(entity, SNDCHAN_AUTO, "infected_riot/tank/onebadtank.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "infected_riot/tank/onebadtank.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "infected_riot/tank/onebadtank.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "infected_riot/tank/onebadtank.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "infected_riot/tank/onebadtank.mp3");
+	StopSound(entity, SNDCHAN_STATIC, "infected_riot/tank/onebadtank.mp3");
+	StopSound(entity, SNDCHAN_STATIC, "infected_riot/tank/onebadtank.mp3");
+	StopSound(entity, SNDCHAN_STATIC, "infected_riot/tank/onebadtank.mp3");
+	StopSound(entity, SNDCHAN_STATIC, "infected_riot/tank/onebadtank.mp3");
+	StopSound(entity, SNDCHAN_STATIC, "infected_riot/tank/onebadtank.mp3");
 }
 
 
