@@ -263,6 +263,7 @@ public void XenoSoldier_ClotThink(int iNPC)
 					//Can we attack right now?
 					if(npc.m_flNextMeleeAttack < GetGameTime())
 					{
+						npc.FaceTowards(vecTarget, 20000.0);
 						//Play attack anim
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 						
@@ -272,10 +273,8 @@ public void XenoSoldier_ClotThink(int iNPC)
 						
 						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
 						
-						npc.FaceTowards(vecTarget, 1500.0);
-						
 						npc.FireRocket(vecTarget, 26.0, projectile_speed);
-						npc.m_flNextMeleeAttack = GetGameTime() + 1.5;
+						npc.m_flNextMeleeAttack = GetGameTime() + 2.0;
 						npc.m_flReloadIn = GetGameTime() + 1.0;
 					}
 					PF_StopPathing(npc.index);
