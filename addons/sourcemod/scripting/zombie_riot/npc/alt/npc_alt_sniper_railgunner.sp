@@ -306,7 +306,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 								speed = 2000.0;
 								damage = 50.0;
 								i_overcharge[npc.index] = 0;
-								npc.m_flNextMeleeAttack = GetGameTime() + 7.5;	//long reload, the gun overheated from the charge shot.
+								npc.m_flNextMeleeAttack = GetGameTime() + 7.0;	//long reload, the gun overheated from the charge shot.
 								npc.PlayMeleeSound();
 								if(flDistanceToTarget > 1000000)	//doesn't predict over 1000 hu
 								{
@@ -324,7 +324,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 									vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed);
 								}
 								npc.FireArrow(vecTarget, damage, speed);
-								npc.m_flNextMeleeAttack = GetGameTime() + 2.0;
+								npc.m_flNextMeleeAttack = GetGameTime() + 1.75;
 								i_overcharge[npc.index]++;
 								npc.PlayRangedSound();
 							}	
