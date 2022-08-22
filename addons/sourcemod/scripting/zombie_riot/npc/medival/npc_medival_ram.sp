@@ -116,7 +116,7 @@ public void MedivalRam_ClotThink(int iNPC)
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 600, DMG_CLUB);
 						
 						// Hit particle
-						npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+						
 					}
 				}
 				delete swingTrace;

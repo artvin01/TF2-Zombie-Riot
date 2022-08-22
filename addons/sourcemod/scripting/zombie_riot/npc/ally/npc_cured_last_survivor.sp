@@ -548,7 +548,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB);
 									
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();

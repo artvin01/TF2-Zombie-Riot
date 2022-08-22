@@ -511,7 +511,7 @@ public void ClotThink(int iNPC)
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_SLASH);
 									
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();

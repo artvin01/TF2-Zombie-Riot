@@ -741,23 +741,23 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 									if(target > MaxClients)
 									{
 										if(!npc.Anger)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 12.0 * RaidModeScaling * 10.0, DMG_SLASH|DMG_CLUB);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 12.0 * RaidModeScaling * 10.0, DMG_CLUB, -1, _, vecHit);
 											
 										if(npc.Anger)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 14.0 * RaidModeScaling * 10.0, DMG_SLASH|DMG_CLUB);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 14.0 * RaidModeScaling * 10.0, DMG_CLUB, -1, _, vecHit);
 									}
 									else
 									{
 										if(!npc.Anger)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 12.0 * RaidModeScaling, DMG_SLASH|DMG_CLUB);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 12.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 											
 										if(npc.Anger)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 14.0 * RaidModeScaling, DMG_SLASH|DMG_CLUB);									
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 14.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
 										
 									}
 									
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();

@@ -451,13 +451,13 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 						if(target > 0) 
 						{
 							if(target <= MaxClients)
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, vecHit);
 							else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 120.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 120.0, DMG_CLUB, -1, _, vecHit);
 								
 							Custom_Knockback(npc.index, target, 200.0);
 							// Hit particle
-							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+							
 							
 							// Hit sound
 							npc.PlayMeleeHitSound();
@@ -505,14 +505,14 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 									if(target > 0) 
 									{
 										if(target <= MaxClients)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 110.0, DMG_SLASH|DMG_CLUB);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 110.0, DMG_CLUB, -1, _, vecHit);
 										else
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 450.0, DMG_SLASH|DMG_CLUB);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 450.0, DMG_CLUB, -1, _, vecHit);
 												
 										Custom_Knockback(npc.index, target, 450.0);
 										
 										// Hit particle
-										npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+										
 										
 										// Hit sound
 										npc.PlayMeleeHitSound();
@@ -557,7 +557,7 @@ public Action XenoCombineOverlord_Timer_Combo_Attack(Handle Debuff_lightning_hud
 		XenoCombineOverlord npc = view_as<XenoCombineOverlord>(npczombie);
 		if(npc.m_iOverlordComboAttack <= 5)
 		{
-			SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0, DMG_SLASH|DMG_CLUB);
+			SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0, DMG_CLUB);
 			Custom_Knockback(npc.index, target, 250.0);
 			float startPosition[3];
 			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", startPosition);
