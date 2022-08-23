@@ -1,11 +1,165 @@
 #pragma semicolon 1
 
+static const char BloonLowData[][] =
+{
+	"3",
+	"4",
+	"5",
+	"7"
+};
+
+static const int BloonLowCount[] =
+{
+	8,
+	15,
+	25,
+	15
+};
+
+static const int BloonHigh[] =
+{
+	BTD_BLOON,
+	BTD_BLOON,
+	BTD_MOAB,
+	BTD_ZOMG
+};
+
+static const char BloonHighData[][] =
+{
+	"9",
+	"9",
+	"",
+	""
+};
+
+// Halved on Elite
+static const int BloonHighCount[] =
+{
+	30,
+	60,
+	6,
+	10
+};
+
+static const int ZombieLow[] =
+{
+	XENO_HEADCRAB_ZOMBIE,
+	XENO_COMBINE_POLICE_PISTOL,
+	XENO_SCOUT_ZOMBIE,
+	XENO_SPY_THIEF
+};
+
+static const int ZombieLowCount[] =
+{
+	1,
+	1,
+	1,
+	1
+};
+
+static const int ZombieHigh[] =
+{
+	XENO_FORTIFIED_GIANT_POISON_ZOMBIE,
+	XENO_COMBINE_SOLDIER_DDT,
+	XENO_KAMIKAZE_DEMO,
+	XENO_COMBINE_DEUTSCH_RITTER
+};
+
+static const int ZombieHighCount[] =
+{
+	5,
+	20,
+	20,
+	5
+};
+
+static int SpawnMulti(int count, int players, bool elite)
+{
+	float multi = float(players) * 0.25;
+	if(elite)
+		multi *= 0.5;
+	
+	
+}
+
 static float MoabSpeed(bool elite)
 {
 	if(CurrentRound < (elite ? 29 : 59))
 		return 12.5;
 	
 	return 15.0;
+}
+
+static int CurrentTier(bool elite)
+{
+	int round = CurrentRound - 14;
+	
+	if(!elite)	// 40,60,80,100 -> 15,30,45,60
+	{
+		round = (round - 20) * 3 / 4;
+	}
+	
+	round /= 15;
+	if(round > 3)
+	{
+		round = 3;
+	}
+	else if(round < 0)
+	{
+		round = 0;
+	}
+}
+
+static void SetBossBloonPower(int players, bool elite)
+{
+	if(elite)
+	{
+		if(CurrentRound > 58)
+		{
+			RaidModeScaling = 80.0 / 3.0;
+		}
+		else if(CurrentRound > 43)
+		{
+			RaidModeScaling = 20.0 / 3.0;
+		}
+		else if(CurrentRound > 28)
+		{
+			RaidModeScaling = 1.0;
+		}
+		else
+		{
+			RaidModeScaling = 1.0 / 6.0;
+		}
+	}
+	else if(CurrentRound > 98)
+	{
+		RaidModeScaling = 10.0;
+	}
+	else if(CurrentRound > 78)
+	{
+		RaidModeScaling = 14.0 / 3.0;
+	}
+	else if(CurrentRound > 58)
+	{
+		RaidModeScaling = 1.0;
+	}
+	else
+	{
+		RaidModeScaling = 4.0 / 15.0;
+	}
+	
+	// Reference to +20% increase in BTD6 co-op
+	RaidModeScaling *= 0.2 + (players * 0.2);
+	
+	// Reference to late game scaling
+	if(CurrentRound > 99)
+	{
+		RaidModeScaling *= 1.0 + (CurrentRound - 71) * 0.05;
+	}
+	else if(CurrentRound > 79)
+	{
+		RaidModeScaling *= 1.0 + (CurrentRound - 79) * 0.02;
+	}
 }
 
 methodmap Bloonarius < CClotBody
@@ -21,15 +175,34 @@ methodmap Bloonarius < CClotBody
 			this.m_bLostHalfHealth = value;
 		}
 	}
-	public void PlayHitSound()
+	property int m_iLivesLost
 	{
-		int sound = GetRandomInt(0, sizeof(SoundMoabHit) - 1);
-		EmitSoundToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		public get()
+		{
+			return this.m_iOverlordComboAttack;
+		}
+		public set(int value)
+		{
+			this.m_iOverlordComboAttack = value;
+		}
 	}
-	public void PlayDeathSound()
+	property int m_iTier
 	{
-		int sound = GetRandomInt(0, sizeof(SoundZomgPop) - 1);
-		EmitSoundToAll(SoundZomgPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+		public get()
+		{
+			return round;
+		}
+	}
+	property int m_iMiniLivesLost
+	{
+		public get()
+		{
+			return this.m_iAttacksTillMegahit;
+		}
+		public set(int value)
+		{
+			this.m_iAttacksTillMegahit = value;
+		}
 	}
 	public int UpdateBloonOnDamage()
 	{
@@ -59,9 +232,9 @@ methodmap Bloonarius < CClotBody
 		
 		npc.m_flSpeed = MoabSpeed();
 		npc.m_bElite = elite;
+		npc.m_iLivesLost = 0;
 		
 		npc.m_iStepNoiseType = 0;	
-		npc.m_iState = 0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
@@ -73,7 +246,19 @@ methodmap Bloonarius < CClotBody
 		
 		npc.StartPathing();
 		
+		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		{
+			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+			{
+				Spawner_AddToArray(entity);
+				i_ObjectsSpawners[i] = entity;
+				break;
+			}
+		}
+		
 		RaidBossActive = EntIndexToEntRef(npc.index);
+		
+		SetBossBloonPower(CountPlayersOnRed(), npc.m_bElite);
 		
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -82,25 +267,6 @@ methodmap Bloonarius < CClotBody
 		}
 		
 		RaidModeTime = GetGameTime() + 300.0;
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
-		
-		if(RaidModeScaling < 55)
-		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
-		}
-		else
-		{
-			RaidModeScaling *= 0.38;
-		}
-		
-		float amount_of_people = float(CountPlayersOnRed());
-		
-		amount_of_people *= 0.12;
-		
-		if(amount_of_people < 1.0)
-			amount_of_people = 1.0;
-			
-		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
 		Raidboss_Clean_Everyone();
 		return npc;
@@ -124,11 +290,55 @@ public void Bloonarius_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = gameTime + 0.04;
 	npc.Update();
 	
+	if(npc.m_bElite)
+	{
+		float armor = 1.0;
+		if(Zombies_Currently_Still_Ongoing > 30)
+			armor *= Pow(0.97, float(Zombies_Currently_Still_Ongoing - 30));
+		
+		npc.m_flMeleeArmor = armor;
+		npc.m_flRangedArmor = armor;
+	}
+	
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
-
+	
+	int nextLoss = -999999;
+	if(npc.m_bElite)
+	{
+		if(npc.m_iLivesLost < 7)
+			nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (7 - npc.m_iLivesLost) / 8;
+	}
+	else if(npc.m_iLivesLost < 4)
+	{
+		nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (3 - npc.m_iLivesLost) / 4;
+	}
+	
+	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+	if(health < nextLoss)
+	{
+		npc.m_iLivesLost++;
+		
+		int players = CountPlayersOnRed();
+		if(CurrentRound > 80)
+			SetBossBloonPower(CountPlayersOnRed(), npc.m_bElite);
+	}
+	
+	if(npc.m_iMiniLivesLost < 99)
+	{
+		nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (99 - npc.m_iMiniLivesLost) / 100;
+		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < nextLoss)
+		{
+			npc.m_iMiniLivesLost++;
+			
+			float multi = float(CountPlayersOnRed() / 8.0);
+			
+			int tier = npc.m_iTier;
+		}
+	}
+	
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -137,7 +347,7 @@ public void Bloonarius_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 													
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 		
@@ -237,6 +447,17 @@ public void Bloonarius_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bloonarius_ClotDamagedPost);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Bloonarius_ClotDamaged);
 	SDKUnhook(npc.index, SDKHook_Think, Bloonarius_ClotThink);
+	
+	Spawner_RemoveFromArray(entity);
+	
+	for(int i; i < ZR_MAX_SPAWNERS; i++)
+	{
+		if(i_ObjectsSpawners[i] == entity)
+		{
+			i_ObjectsSpawners[i] = 0;
+			break;
+		}
+	}
 	
 	int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
 	

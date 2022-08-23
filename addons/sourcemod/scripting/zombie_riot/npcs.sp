@@ -1765,6 +1765,13 @@ void Spawner_AddToArray(int entity) //cant use ent ref here...
 	}
 }
 
+void Spawner_RemoveFromArray(int entity)
+{
+	SpawnerData Spawner;
+	int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
+	if(index != -1)
+		SpawnerList.Erase(index);
+}
 
 float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
