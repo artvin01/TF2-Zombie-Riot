@@ -1226,7 +1226,7 @@ public int Waves_FreeplayVote(Menu menu, MenuAction action, int item, int param2
 	}
 	return 0;
 }
-				
+
 bool Waves_GetNextEnemy(Enemy enemy)
 {
 	if(!Enemies || Enemies.Empty)
@@ -1234,6 +1234,12 @@ bool Waves_GetNextEnemy(Enemy enemy)
 	
 	Enemies.PopArray(enemy);
 	return true;
+}
+
+void Waves_AddNextEnemy(const Enemy enemy)
+{
+	if(Enemies)
+		Enemies.PushArray(enemy);
 }
 
 bool Waves_Started()

@@ -79,7 +79,7 @@ static int SpawnMulti(int count, int players, bool elite)
 	if(elite)
 		multi *= 0.5;
 	
-	
+	return RoundToCeil(float(count) * multi);
 }
 
 static float MoabSpeed(bool elite)
@@ -290,20 +290,20 @@ public void Bloonarius_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = gameTime + 0.04;
 	npc.Update();
 	
-	if(npc.m_bElite)
-	{
-		float armor = 1.0;
-		if(Zombies_Currently_Still_Ongoing > 30)
-			armor *= Pow(0.97, float(Zombies_Currently_Still_Ongoing - 30));
-		
-		npc.m_flMeleeArmor = armor;
-		npc.m_flRangedArmor = armor;
-	}
-	
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
+	
+	if(npc.m_bElite)
+	{
+		float armor = 1.0;
+		if(Zombies_Currently_Still_Ongoing > 50)
+			armor *= Pow(0.97, float(Zombies_Currently_Still_Ongoing - 50));
+		
+		npc.m_flMeleeArmor = armor;
+		npc.m_flRangedArmor = armor;
+	}
 	
 	int nextLoss = -999999;
 	if(npc.m_bElite)
@@ -320,10 +320,47 @@ public void Bloonarius_ClotThink(int iNPC)
 	if(health < nextLoss)
 	{
 		npc.m_iLivesLost++;
+		npc.m_iMiniLivesLost++;
 		
 		int players = CountPlayersOnRed();
 		if(CurrentRound > 80)
 			SetBossBloonPower(CountPlayersOnRed(), npc.m_bElite);
+		
+		int entity = -1;
+		while((entity=FindEntityByClassname(entity, "base_boss")) != -1)
+		{
+			if(entity != npc.index && !view_as<CClotBody>(entity).m_bThisNpcIsABoss && !b_Map_BaseBoss_No_Layers[entity] && !b_ThisNpcIsImmuneToNuke[entity] && GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			{
+				SDKHooks_TakeDamage(entity, 0, 0, 99999999.0, DMG_BLAST);
+				SDKHooks_TakeDamage(entity, 0, 0, 99999999.0, DMG_BLAST);
+			}
+		}
+		
+		int tier = npc.m_iTier;
+		int count = SpawnMulti(BloonHighCount[tier], players, npc.m_bElite);
+		
+		for(int i; i < count; i++)
+		{
+			CreateTimer(float(i) * 0.1, Bloonarius_SpawnBloonHighTimer, npc.m_bElite, TIMER_FLAG_NO_MAPCHANGE);
+		}
+		
+		if(npc.m_bElite)
+		{
+			count = SpawnMulti(ZombieHighCount[tier], players, false);
+			
+			for(int i; i < count; i++)
+			{
+				CreateTimer(float(i) * 0.1, Bloonarius_SpawnBloonHighTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+			}
+		}
+		
+		npc.m_flNextThinkTime = gameTime + 2.0;
+		
+		if(npc.m_bElite)
+		{
+			npc.m_flMeleeArmor = 0.1;
+			npc.m_flRangedArmor = 0.1;
+		}
 	}
 	
 	if(npc.m_iMiniLivesLost < 99)
@@ -333,9 +370,32 @@ public void Bloonarius_ClotThink(int iNPC)
 		{
 			npc.m_iMiniLivesLost++;
 			
-			float multi = float(CountPlayersOnRed() / 8.0);
-			
 			int tier = npc.m_iTier;
+			int count = SpawnMulti(BloonLowCount[tier], players, npc.m_bElite);
+			
+			Enemy enemy;
+			enemy.Index = BTD_BLOON;
+			enemy.Is_Static = !npc.m_bElite;
+			strcopy(enemy.Data, sizeof(enemy.Data), BloonLowData[tier]);
+			
+			for(int i; i<count; i++)
+			{
+				Waves_AddNextEnemy(enemy);
+			}
+			
+			if(npc.m_bElite)
+			{
+				Enemy enemy;
+				enemy.Index = ZombieLow[tier];
+				enemy.Data[0] = 0;
+				
+				count = SpawnMulti(ZombieLowCount[tier], players, false);
+				
+				for(int i; i < count; i++)
+				{
+					Waves_AddNextEnemy(enemy);
+				}
+			}
 		}
 	}
 	
@@ -420,6 +480,70 @@ public void Bloonarius_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
+}
+
+public Action Bloonarius_SpawnBloonLowTimer(Handle timer, bool elite)
+{
+	if(IsValidEntity(RaidBossActive))
+	{
+		int tier = CurrentTier(elite);
+		
+		float pos[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_vecAbsOrigin", pos);
+		float ang[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_angRotation", ang);
+		
+		int spawn_index = Npc_Create(BTD_BLOON, -1, pos, ang, false, BloonLowData[tier]);
+		if(spawn_index > MaxClients)
+			Zombies_Currently_Still_Ongoing++;
+	}
+	return Plugin_Continue;
+}
+
+public Action Bloonarius_SpawnBloonHighTimer(Handle timer, bool elite)
+{
+	if(IsValidEntity(RaidBossActive))
+	{
+		int tier = CurrentTier(elite);
+		
+		float pos[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_vecAbsOrigin", pos);
+		float ang[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_angRotation", ang);
+		
+		int spawn_index = Npc_Create(BloonHigh[tier], -1, pos, ang, false, BloonHighData[tier]);
+		if(spawn_index > MaxClients)
+			Zombies_Currently_Still_Ongoing++;
+	}
+	return Plugin_Continue;
+}
+
+public Action Bloonarius_SpawnZombieLowTimer(Handle timer)
+{
+	if(IsValidEntity(RaidBossActive))
+	{
+		int tier = CurrentTier(true);
+		
+		float pos[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_vecAbsOrigin", pos);
+		float ang[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_angRotation", ang);
+		
+		int spawn_index = Npc_Create(ZombieLow[tier], -1, pos, ang, false);
+		if(spawn_index > MaxClients)
+			Zombies_Currently_Still_Ongoing++;
+	}
+	return Plugin_Continue;
+}
+
+public Action Bloonarius_SpawnZombieHighTimer(Handle timer)
+{
+	if(IsValidEntity(RaidBossActive))
+	{
+		int tier = CurrentTier(true);
+		
+		float pos[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_vecAbsOrigin", pos);
+		float ang[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_angRotation", ang);
+		
+		int spawn_index = Npc_Create(ZombieHigh[tier], -1, pos, ang, false);
+		if(spawn_index > MaxClients)
+			Zombies_Currently_Still_Ongoing++;
+	}
+	return Plugin_Continue;
 }
 
 public Action Bloonarius_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
