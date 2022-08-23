@@ -1053,6 +1053,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/pets.sp"
 #include "zombie_riot/custom/coin_flip.sp"
 #include "zombie_riot/custom/weapon_manual_reload.sp"
+#include "zombie_riot/custom/weapon_atomic.sp"
 
 //FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
@@ -1388,6 +1389,7 @@ public void OnMapStart()
 	Wand_Cryo_Precache();
 	Npc_Sp_Precache();
 	Fusion_Melee_OnMapStart();
+	Atomic_MapStart();
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
