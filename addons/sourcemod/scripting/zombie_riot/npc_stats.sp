@@ -5390,7 +5390,7 @@ public bool TraceRayHitPlayers(int entity,int mask,any data)
 	return false;
 }
 
-//This is mainly to see if youre stuck inside the WORLD OR BRUSHES OR STUFF LIKE THAT. Not stuck inside an npc, because this code is not made for that.
+//This is mainly to see if you THE PLAYER!!!!! is stuck inside the WORLD OR BRUSHES OR STUFF LIKE THAT. Not stuck inside an npc, because this code is not made for that.
 public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 {
 	char class[64];
