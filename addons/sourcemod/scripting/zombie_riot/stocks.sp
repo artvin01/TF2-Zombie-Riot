@@ -2481,7 +2481,10 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 	else
 	{
 		explosionRadius *= 0.65;
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+		if(spawnLoc[0] == 0.0) //only get position if thhey got notin
+		{
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+		}
 		Closest_npc = GetClosestTarget(entity);
 	}
 	

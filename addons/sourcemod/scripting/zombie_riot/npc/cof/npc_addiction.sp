@@ -582,8 +582,8 @@ public Action Smite_Timer_Addiction(Handle Smite_Logic, DataPack pack)
 		pack_boom.WriteCell(0);
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, ADDICTION_LIGHTNING_RANGE,_,0.9,false);
-		
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, ADDICTION_LIGHTNING_RANGE * 1.4,_,0.8, true);  //Explosion range increace
+	
 		return Plugin_Stop;
 	}
 	else
