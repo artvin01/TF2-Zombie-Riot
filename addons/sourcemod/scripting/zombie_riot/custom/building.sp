@@ -37,6 +37,14 @@
 
 #define BUILDINGCOLLISIONNUMBER	27
 
+enum VillageBuff
+{
+	int EntityRef;
+	int VillageRef;
+	int Effects;
+	bool IsWeapon;
+}
+
 #define VILLAGE_100	(0 << 1)
 #define VILLAGE_200	(0 << 2)
 #define VILLAGE_300	(0 << 3)
@@ -53,7 +61,9 @@
 #define VILLAGE_004	(0 << 14)
 #define VILLAGE_005	(0 << 15)
 
-//static int Village_Flags[MAXTF2PLAYERS];
+static int Village_Flags[MAXTF2PLAYERS];
+static bool Village_ForceUpdate[MAXTF2PLAYERS];
+static ArrayList Village_Effects;
 
 //static int gLaser1;
 
@@ -68,6 +78,11 @@ static Handle h_Pickup_Building[MAXPLAYERS + 1];
 
 void Building_MapStart()
 {
+	if(Village_Effects)
+		delete Village_Effects;
+	
+	Village_Effects = new ArrayList(sizeof(VillageBuff));
+	
 //	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 //	SyncHud_Notifaction = CreateHudSynchronizer();
 	PrecacheModel(CUSTOM_SENTRYGUN_MODEL); //MORTAR MODEL AND RAILGUN MODEL!!!
@@ -3790,9 +3805,10 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	Store_ApplyAttribs(client);
 	Store_GiveAll(client, GetClientHealth(client));	
 }
-/*
+
 void Building_CheckItems(int client)
 {
+	int lastFlags = Village_Flags[client];
 	Village_Flags[client] = 0;
 	
 	switch(Store_HasNamedItem(client, "Village NPC Expert"))
@@ -3851,8 +3867,11 @@ void Building_CheckItems(int client)
 		case 5:
 			Village_Flags[client] += VILLAGE_001 + VILLAGE_002 + VILLAGE_003 + VILLAGE_004 + VILLAGE_005;
 	}
+	
+	if(lastFlags != Village_Flags[client])
+		Village_ForceUpdate[client] = true;
 }
-*/
+
 public Action Building_PlaceVillage(int client, int weapon, const char[] classname, bool &result)
 {
 	int Sentrygun = EntRefToEntIndex(i_HasSentryGunAlive[client]);
@@ -3912,43 +3931,153 @@ public bool Building_Village(int client, int entity)
 
 public Action Timer_VillageThink(Handle timer, int ref)
 {
+	float pos1[3] = {999999999.9, 999999999.9, 999999999.9};
+	bool mounted;
 	int entity = EntRefToEntIndex(ref);
-	if(entity == INVALID_ENT_REFERENCE)
-		return Plugin_Stop;
-	
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-	if(owner < 1 || owner > MaxClients)
+	if(entity != INVALID_ENT_REFERENCE)
 	{
-		SDKHooks_TakeDamage(entity, entity, entity, 999999.9);
-		return Plugin_Continue;
-	}
-	
-	float pos[3];
-	if(Building_Mounted[owner] == ref)
-	{
-		GetClientEyePosition(owner, pos);
-	}
-	else if(GetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed") == 1.0)
-	{
-		if(Building_Constructed[entity])
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+		if(owner < 1 || owner > MaxClients)
 		{
-			//BELOW IS SET ONCE!
-			view_as<CClotBody>(entity).bBuildingIsPlaced = true;
-			Building_Constructed[entity] = true;
+			SDKHooks_TakeDamage(entity, entity, entity, 999999.9);
+			entity = INVALID_ENT_REFERENCE;
+		}
+		else if(Building_Mounted[owner] == ref)
+		{
+			GetClientEyePosition(owner, pos1);
+			mounted = true;
+		}
+		else if(GetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed") == 1.0)
+		{
+			if(Building_Constructed[entity])
+			{
+				//BELOW IS SET ONCE!
+				view_as<CClotBody>(entity).bBuildingIsPlaced = true;
+				Building_Constructed[entity] = true;
+				
+				static const float minbounds[3] = {-10.0, -20.0, 0.0};
+				static const float maxbounds[3] = {10.0, 20.0, -2.0};
+				SetEntPropVector(entity, Prop_Send, "m_vecMins", minbounds);
+				SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxbounds);
+				
+				SetEntityModel(entity, VILLAGE_MODEL);
+			}
 			
-			static const float minbounds[3] = {-10.0, -20.0, 0.0};
-			static const float maxbounds[3] = {10.0, 20.0, -2.0};
-			SetEntPropVector(entity, Prop_Send, "m_vecMins", minbounds);
-			SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxbounds);
-			
-			SetEntityModel(entity, VILLAGE_MODEL);
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+		}
+		else
+		{
+			Building_Constructed[entity] = false;
 		}
 	}
-	else
+	
+	float range = (Village_Flags[owner] & VILLAGE_100) ? 720.0 : 600.0;
+	
+	if(Village_Flags[owner] & VILLAGE_500)
 	{
-		Building_Constructed[entity] = false;
-		return Plugin_Continue;
+		range += 195.0;
+	}
+	else if(Village_Flags[owner] & VILLAGE_400)
+	{
+		range += 75.0;
+	}
+	else if(Village_Flags[owner] & VILLAGE_004)
+	{
+		range += 150.0;
 	}
 	
-	return Plugin_Continue;
+	if(mounted)
+		range *= 0.55;
+	
+	range = range * range;
+	
+	ArrayList clients = new ArrayList();
+	ArrayList weapons = new ArrayList();
+	ArrayList allies = new ArrayList();
+	
+	float pos2[3];
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsPlayerAlive(client))
+		{
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
+			if(GetVectorDistance(pos1, pos2, true) < range)
+			{
+				clients.PushCell(client);
+				
+				int entity = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(entity > MaxClients)
+					weapons.PushCell(entity);
+			}
+		}
+	}
+	
+	int i = MaxClients + 1;
+	while((i = FindEntityByClassname(i, "base_boss")) != -1)
+	{
+		if(GetEntProp(i, Prop_Send, "m_iTeamNum") == 2)
+		{
+			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
+			if(GetVectorDistance(pos1, pos2, true) < range)
+				allies.PushCell(i);
+		}
+	}
+	
+	VillageBuff buff;
+	int length = Village_Effects.Length;
+	for(int i; i < length; i++)
+	{
+		Village_Effects.GetArray(i, buff);
+		if(buff.VillageRef == ref)
+		{
+			int target = EntRefToEntIndex(buff.EntityRef);
+			if(target == -1)
+			{
+				Village_Effects.Erase(i--);
+				length--;
+			}
+			else if(clients.FindValue(target) == -1 && weapons.FindValue(target) == -1 && allies.FindValue(target) == -1)
+			{
+				if(buff.IsWeapon)
+					RemoveBuffAttributes(target, buff.Effects);
+				
+				Village_Effects.Erase(i--);
+				length--;
+			}
+		}
+	}
+	
+	delete clients;
+	delete weapons;
+	delete allies;
+	return entity == INVALID_ENT_REFERENCE ? Plugin_Stop : Plugin_Continue;
+}
+
+float Building_GetDiscount()
+{
+	int extra;
+	bool found;
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
+		{
+			if(Village_Flags[client] & VILLAGE_001)
+				found = true;
+			
+			if(Village_Flags[client] & VILLAGE_002)
+				extra++;
+		}
+	}
+	
+	if(!found)
+		return 1.0;
+	
+	if(extra > 3)
+		extra = 3;
+	
+	return 0.98 - (extra * 0.01);
+}
+
+static void RemoveBuffAttributes(int entity, int buffs)
+{
 }

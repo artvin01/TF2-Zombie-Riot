@@ -293,6 +293,7 @@ enum
 	STEPTYPE_COMBINE = 2,	
 	STEPTYPE_PANZER = 3,
 	STEPTYPE_COMBINE_METRO = 4,
+	STEPTYPE_TANK = 5
 }
 
 enum
@@ -306,7 +307,7 @@ enum
 	BLEEDTYPE_NORMAL = 1,	
 	BLEEDTYPE_METAL = 2,	
 	BLEEDTYPE_RUBBER = 3,	
-	BLEEDTYPE_XENO = 4,	
+	BLEEDTYPE_XENO = 4,
 }
 
 int GetIndexByPluginName(const char[] name)
@@ -805,6 +806,18 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = Sniper_railgunner(client, vecPos, vecAng, ally);
 		}
+		case BTD_GOLDBLOON:
+		{
+			entity = GoldBloon(client, vecPos, vecAng, ally, data);
+		}
+		case BTD_BLOONARIUS:
+		{
+			entity = Bloonarius(client, vecPos, vecAng, ally, data);
+		}
+		case MEDIVAL_RAM:
+		{
+			entity = MedivalRam(client, vecPos, vecAng, ally, data);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1298,6 +1311,18 @@ public void NPCDeath(int entity)
 		{
 			Sniper_railgunner_NPCDeath(entity);
 		}
+		case BTD_GOLDBLOON:
+		{
+			GoldBloon_NPCDeath(entity);
+		}
+		case BTD_BLOONARIUS:
+		{
+			Bloonarius_NPCDeath(entity);
+		}
+		case MEDIVAL_RAM:
+		{
+			MedivalRam_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1482,6 +1507,7 @@ public void OnMapStart_NPC_Base()
 	
 	L4D2_Tank_OnMapStart_NPC();
 	Addiction_OnMapStart_NPC();
+	MedivalRam_OnMapStart();
 }
 
 
@@ -1897,11 +1923,11 @@ methodmap CClotBody
 	{
 		switch(Npc_Type)
 		{
-			case 1: //normal
+			case STEPSOUND_NORMAL: //normal
 			{
 				EmitSoundToAll(sound, this.index, SNDCHAN_AUTO, 80, _, volume, 100, _);
 			}
-			case 2: //giant
+			case STEPSOUND_GIANT: //giant
 			{
 				EmitSoundToAll(sound, this.index, SNDCHAN_AUTO, 80, _, volume, 80, _);
 			}
@@ -4251,7 +4277,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 	
 	switch(npc.m_iNpcStepVariation)
 	{
-		case 1:
+		case STEPTYPE_NORMAL:
 		{
 			if(IsWalkEvent(event))
 			{
@@ -4268,14 +4294,14 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 				npc.PlayStepSound(strSound,0.8, npc.m_iStepNoiseType);
 			}
 		}
-		case 2:
+		case STEPTYPE_COMBINE:
 		{
 			if(IsWalkEvent(event))
 			{
 				npc.PlayStepSound(g_CombineSoldierStepSound[GetRandomInt(0, sizeof(g_CombineSoldierStepSound) - 1)], 0.8, npc.m_iStepNoiseType);
 			}
 		}
-		case 3:
+		case STEPTYPE_PANZER:
 		{
 			if(IsWalkEvent(event))
 			{
@@ -4285,7 +4311,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 				}
 			}
 		}
-		case 4:
+		case STEPTYPE_COMBINE_METRO:
 		{
 			if(IsWalkEvent(event))
 			{
@@ -4295,7 +4321,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 				}
 			}
 		}
-		case 5:
+		case STEPTYPE_TANK:
 		{
 			if(IsWalkEvent(event, 5))
 			{
@@ -7519,6 +7545,8 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/btd/npc_zomg.sp"
 #include "zombie_riot/npc/btd/npc_ddt.sp"
 #include "zombie_riot/npc/btd/npc_bad.sp"
+#include "zombie_riot/npc/btd/npc_goldbloon.sp"
+#include "zombie_riot/npc/btd/npc_bloonarius.sp"
 
 #include "zombie_riot/npc/ally/npc_bob_the_overlord.sp"
 #include "zombie_riot/npc/ally/npc_necromancy_combine.sp"
@@ -7534,6 +7562,7 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 
 #include "zombie_riot/npc/alt/npc_alt_medic_charger.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_berserker.sp"
+#include "zombie_riot/npc/alt/npc_alt_medic_supperior_mage.sp"
 #include "zombie_riot/npc/alt/npc_alt_kahml.sp"
 #include "zombie_riot/npc/alt/npc_alt_combine_soldier_deutsch_ritter.sp"
 #include "zombie_riot/npc/alt/npc_alt_sniper_railgunner.sp"
@@ -7549,9 +7578,9 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/medival/npc_medival_handcannoneer.sp"
 #include "zombie_riot/npc/medival/npc_medival_elite_skirmisher.sp"
 #include "zombie_riot/npc/medival/npc_medival_pikeman.sp"
-#include "zombie_riot/npc/alt/npc_alt_medic_supperior_mage.sp"
 #include "zombie_riot/npc/medival/npc_medival_eagle_scout.sp"
 #include "zombie_riot/npc/medival/npc_medival_samurai.sp"
+#include "zombie_riot/npc/medival/npc_medival_ram.sp"
 
 #include "zombie_riot/npc/cof/npc_addiction.sp"
 #include "zombie_riot/npc/cof/npc_doctor.sp"

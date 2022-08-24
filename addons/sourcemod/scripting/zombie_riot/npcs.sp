@@ -1767,7 +1767,6 @@ void Spawner_AddToArray(int entity) //cant use ent ref here...
 
 void Spawner_RemoveFromArray(int entity)
 {
-	SpawnerData Spawner;
 	int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
 	if(index != -1)
 		SpawnerList.Erase(index);

@@ -8,6 +8,7 @@ static const char BloonLowData[][] =
 	"7"
 };
 
+// Halved on Elite
 static const int BloonLowCount[] =
 {
 	8,
@@ -108,6 +109,7 @@ static int CurrentTier(bool elite)
 	{
 		round = 0;
 	}
+	return round;
 }
 
 static void SetBossBloonPower(int players, bool elite)
@@ -131,39 +133,48 @@ static void SetBossBloonPower(int players, bool elite)
 			RaidModeScaling = 1.0 / 6.0;
 		}
 	}
-	else if(CurrentRound > 98)
-	{
-		RaidModeScaling = 10.0;
-	}
-	else if(CurrentRound > 78)
-	{
-		RaidModeScaling = 14.0 / 3.0;
-	}
-	else if(CurrentRound > 58)
-	{
-		RaidModeScaling = 1.0;
-	}
 	else
 	{
-		RaidModeScaling = 4.0 / 15.0;
+		if(CurrentRound > 98)
+		{
+			RaidModeScaling = 10.0;
+		}
+		else if(CurrentRound > 78)
+		{
+			RaidModeScaling = 14.0 / 3.0;
+		}
+		else if(CurrentRound > 58)
+		{
+			RaidModeScaling = 1.0;
+		}
+		else
+		{
+			RaidModeScaling = 4.0 / 15.0;
+		}
+		
+		// Reference to late game scaling
+		if(CurrentRound > 99)
+		{
+			RaidModeScaling *= 1.0 + (CurrentRound - 71) * 0.05;
+		}
+		else if(CurrentRound > 79)
+		{
+			RaidModeScaling *= 1.0 + (CurrentRound - 79) * 0.02;
+		}
 	}
 	
 	// Reference to +20% increase in BTD6 co-op
 	RaidModeScaling *= 0.2 + (players * 0.2);
-	
-	// Reference to late game scaling
-	if(CurrentRound > 99)
-	{
-		RaidModeScaling *= 1.0 + (CurrentRound - 71) * 0.05;
-	}
-	else if(CurrentRound > 79)
-	{
-		RaidModeScaling *= 1.0 + (CurrentRound - 79) * 0.02;
-	}
 }
 
 methodmap Bloonarius < CClotBody
 {
+	public void PlayDeathSound()
+	{
+	}
+	public void PlayLifelossSound()
+	{
+	}
 	property bool m_bElite
 	{
 		public get()
@@ -190,7 +201,7 @@ methodmap Bloonarius < CClotBody
 	{
 		public get()
 		{
-			return round;
+			return CurrentTier(this.m_bElite);
 		}
 	}
 	property int m_iMiniLivesLost
@@ -212,16 +223,17 @@ methodmap Bloonarius < CClotBody
 		
 		SetEntProp(this.index, Prop_Send, "m_nSkin", type);
 	}
-	public Bloonarius(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Bloonarius(int clien, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		bool elite = StrContains(data, "e") != -1;
 		
-		Bloonarius npc = view_as<Bloonarius>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bad.mdl", "1.0", "20000", ally, false, true));
+		Bloonarius npc = view_as<Bloonarius>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloonarius.mdl", "1.0", "1000000", ally, false, true, true, true));
 		
-		i_NpcInternalId[npc.index] = BTD_BLOOONARIUS;
+		i_NpcInternalId[npc.index] = BTD_BLOONARIUS;
 		
-		int iActivity = npc.LookupActivity("ACT_FLOAT");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		int activity = npc.LookupActivity("ACT_FLOAT");
+		if(activity > 0)
+			npc.StartActivity(activity);
 		
 		npc.m_iBleedType = BLEEDTYPE_RUBBER;
 		npc.m_iStepNoiseType = NOTHING;	
@@ -230,35 +242,29 @@ methodmap Bloonarius < CClotBody
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_bisWalking = false;
 		
-		npc.m_flSpeed = MoabSpeed();
+		npc.m_flSpeed = MoabSpeed(elite);
 		npc.m_bElite = elite;
 		npc.m_iLivesLost = 0;
 		
 		npc.m_iStepNoiseType = 0;	
-		npc.m_flNextRangedAttack = 0.0;
-		npc.m_flNextRangedSpecialAttack = 0.0;
-		npc.m_flAttackHappenswillhappen = false;
-		npc.m_fbRangedSpecialOn = false;
+		npc.m_flNextMeleeAttack = 0.0;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Bloonarius_ClotDamaged);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bloonarius_ClotDamagedPost);
 		SDKHook(npc.index, SDKHook_Think, Bloonarius_ClotThink);
-		
-		npc.StartPathing();
 		
 		for(int i; i < ZR_MAX_SPAWNERS; i++)
 		{
 			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
 			{
-				Spawner_AddToArray(entity);
-				i_ObjectsSpawners[i] = entity;
+				Spawner_AddToArray(npc.index);
+				i_ObjectsSpawners[i] = npc.index;
 				break;
 			}
 		}
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		
-		SetBossBloonPower(CountPlayersOnRed(), npc.m_bElite);
+		SetBossBloonPower(CountPlayersOnRed(), elite);
 		
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -269,6 +275,8 @@ methodmap Bloonarius < CClotBody
 		RaidModeTime = GetGameTime() + 300.0;
 		
 		Raidboss_Clean_Everyone();
+		
+		ExcuteRelay("zr_btdraid", "FireUser1");
 		return npc;
 	}
 }
@@ -319,12 +327,9 @@ public void Bloonarius_ClotThink(int iNPC)
 	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	if(health < nextLoss)
 	{
+		npc.PlayLifelossSound();
 		npc.m_iLivesLost++;
 		npc.m_iMiniLivesLost++;
-		
-		int players = CountPlayersOnRed();
-		if(CurrentRound > 80)
-			SetBossBloonPower(CountPlayersOnRed(), npc.m_bElite);
 		
 		int entity = -1;
 		while((entity=FindEntityByClassname(entity, "base_boss")) != -1)
@@ -336,12 +341,16 @@ public void Bloonarius_ClotThink(int iNPC)
 			}
 		}
 		
+		int players = CountPlayersOnRed();
 		int tier = npc.m_iTier;
+		if(!npc.m_bElite)
+			SetBossBloonPower(players, false);
+		
 		int count = SpawnMulti(BloonHighCount[tier], players, npc.m_bElite);
 		
 		for(int i; i < count; i++)
 		{
-			CreateTimer(float(i) * 0.1, Bloonarius_SpawnBloonHighTimer, npc.m_bElite, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(float(i) * 0.1, Bloonarius_SpawnBloonTimer, npc.m_bElite, TIMER_FLAG_NO_MAPCHANGE);
 		}
 		
 		if(npc.m_bElite)
@@ -350,7 +359,7 @@ public void Bloonarius_ClotThink(int iNPC)
 			
 			for(int i; i < count; i++)
 			{
-				CreateTimer(float(i) * 0.1, Bloonarius_SpawnBloonHighTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(float(i) * 0.1, Bloonarius_SpawnZombieTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 			}
 		}
 		
@@ -370,7 +379,9 @@ public void Bloonarius_ClotThink(int iNPC)
 		{
 			npc.m_iMiniLivesLost++;
 			
+			int players = CountPlayersOnRed();
 			int tier = npc.m_iTier;
+			
 			int count = SpawnMulti(BloonLowCount[tier], players, npc.m_bElite);
 			
 			Enemy enemy;
@@ -385,7 +396,6 @@ public void Bloonarius_ClotThink(int iNPC)
 			
 			if(npc.m_bElite)
 			{
-				Enemy enemy;
 				enemy.Index = ZombieLow[tier];
 				enemy.Data[0] = 0;
 				
@@ -399,69 +409,45 @@ public void Bloonarius_ClotThink(int iNPC)
 		}
 	}
 	
+	if(npc.m_iTarget < 1 && !IsValidEnemy(npc.index, npc.m_iTarget))
+		npc.m_flGetClosestTargetTime = 0.0;
+	
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_iTarget = GetClosestTarget(npc.index, false, _, true);
 		npc.m_flGetClosestTargetTime = gameTime + 5.0;
 	}
 	
-	if(IsValidEnemy(npc.index, npc.m_iTarget))
+	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-													
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		PF_SetGoalEntity(npc.index, npc.m_iTarget);
+		npc.StartPathing();
 		
-		//Predict their pos.
-		if(flDistanceToTarget < npc.GetLeadRadius())
+		if(npc.m_flNextMeleeAttack < gameTime)
 		{
-			//float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
-			PF_SetGoalVector(npc.index, PredictSubjectPosition(npc, PrimaryThreatIndex));
-		}
-		else
-		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
-		}
-		
-		//Target close enough to hit
-		if(flDistanceToTarget < 20000)
-		{
-		//	npc.FaceTowards(vecTarget, 1000.0);
-			
-			if(npc.m_flNextMeleeAttack < gameTime)
+			//Target close enough to hit
+			if(flDistanceToTarget < 20000)
 			{
 				npc.m_flNextMeleeAttack = gameTime + 0.35;
 				
 				Handle swingTrace;
-				if(npc.DoAimbotTrace(swingTrace, PrimaryThreatIndex))
+				if(npc.DoAimbotTrace(swingTrace, npc.m_iTarget))
 				{
-					int target = TR_GetEntityIndex(swingTrace);
-					if(target > 0)
+					if(TR_GetEntityIndex(swingTrace) == npc.m_iTarget)
 					{
 						float vecHit[3];
 						TR_GetEndPosition(vecHit, swingTrace);
 						
-						if(npc.m_bFortified)
+						if(npc.m_iTarget > MaxClients)
 						{
-							if(target <= MaxClients)
-							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_CLUB, -1, _, vecHit);
-							}
-							else
-							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 7000.0, DMG_CLUB, -1, _, vecHit);
-							}
+							SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 10.0 * float(CurrentRound), DMG_CLUB, -1, _, vecHit);
 						}
 						else
 						{
-							if(target <= MaxClients)
-							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
-							}
-							else
-							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_CLUB, -1, _, vecHit);
-							}
+							SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 8.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 						}
 					}
 					
@@ -469,36 +455,15 @@ public void Bloonarius_ClotThink(int iNPC)
 				}
 			}
 		}
-		
-		npc.StartPathing();
-		
 	}
 	else
 	{
 		PF_StopPathing(npc.index);
 		npc.m_bPathing = false;
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 }
 
-public Action Bloonarius_SpawnBloonLowTimer(Handle timer, bool elite)
-{
-	if(IsValidEntity(RaidBossActive))
-	{
-		int tier = CurrentTier(elite);
-		
-		float pos[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_vecAbsOrigin", pos);
-		float ang[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_angRotation", ang);
-		
-		int spawn_index = Npc_Create(BTD_BLOON, -1, pos, ang, false, BloonLowData[tier]);
-		if(spawn_index > MaxClients)
-			Zombies_Currently_Still_Ongoing++;
-	}
-	return Plugin_Continue;
-}
-
-public Action Bloonarius_SpawnBloonHighTimer(Handle timer, bool elite)
+public Action Bloonarius_SpawnBloonTimer(Handle timer, bool elite)
 {
 	if(IsValidEntity(RaidBossActive))
 	{
@@ -514,23 +479,7 @@ public Action Bloonarius_SpawnBloonHighTimer(Handle timer, bool elite)
 	return Plugin_Continue;
 }
 
-public Action Bloonarius_SpawnZombieLowTimer(Handle timer)
-{
-	if(IsValidEntity(RaidBossActive))
-	{
-		int tier = CurrentTier(true);
-		
-		float pos[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_vecAbsOrigin", pos);
-		float ang[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_angRotation", ang);
-		
-		int spawn_index = Npc_Create(ZombieLow[tier], -1, pos, ang, false);
-		if(spawn_index > MaxClients)
-			Zombies_Currently_Still_Ongoing++;
-	}
-	return Plugin_Continue;
-}
-
-public Action Bloonarius_SpawnZombieHighTimer(Handle timer)
+public Action Bloonarius_SpawnZombieTimer(Handle timer)
 {
 	if(IsValidEntity(RaidBossActive))
 	{
@@ -546,17 +495,6 @@ public Action Bloonarius_SpawnZombieHighTimer(Handle timer)
 	return Plugin_Continue;
 }
 
-public Action Bloonarius_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	//Valid attackers only.
-	if(attacker <= 0)
-		return Plugin_Continue;
-	
-	Bloonarius npc = view_as<Bloonarius>(victim);
-	npc.PlayHitSound();
-	return Plugin_Changed;
-}
-
 public void Bloonarius_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
 	Bloonarius npc = view_as<Bloonarius>(victim);
@@ -569,7 +507,6 @@ public void Bloonarius_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bloonarius_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Bloonarius_ClotDamaged);
 	SDKUnhook(npc.index, SDKHook_Think, Bloonarius_ClotThink);
 	
 	Spawner_RemoveFromArray(entity);
@@ -583,27 +520,17 @@ public void Bloonarius_NPCDeath(int entity)
 		}
 	}
 	
-	int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
-	
-	float pos[3], angles[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
-	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
-	for(int i; i<3; i++)
-	{
-		int spawn_index = Npc_Create(BTD_DDT, -1, pos, angles, team == 2, npc.m_bFortified ? "f" : "");
-		if(spawn_index > MaxClients)
-			Zombies_Currently_Still_Ongoing++;
-	}
-	
 	int entity_death = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity_death))
 	{
+		float pos[3], angles[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
+		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 		TeleportEntity(entity_death, pos, angles, NULL_VECTOR);
 		
-//		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
-		DispatchKeyValue(entity_death, "model", "models/zombie_riot/btd/Bloonarius.mdl");
+		DispatchKeyValue(entity_death, "model", "models/zombie_riot/btd/bloonarius.mdl");
 		DispatchKeyValue(entity_death, "skin", "4");
-		if(npc.m_bFortified)
+		if(npc.m_bElite)
 			DispatchKeyValue(entity_death, "body", "1");
 		
 		DispatchSpawn(entity_death);
@@ -612,44 +539,17 @@ public void Bloonarius_NPCDeath(int entity)
 		SetEntityCollisionGroup(entity_death, 2);
 		SetVariantString("death");
 		AcceptEntityInput(entity_death, "SetAnimation");
-		SetEntProp(entity_death, Prop_Send, "m_iTeamNum", team);
 		
 		pos[2] += 20.0;
 		
-		HookSingleEntityOutput(entity_death, "OnAnimationDone", npc.m_bFortified ? Bloonarius_PostFortifiedDeath : Bloonarius_PostDeath, true);
+		HookSingleEntityOutput(entity_death, "OnAnimationDone", Bloonarius_PostDeath, true);
 	}
 }
 
 public void Bloonarius_PostDeath(const char[] output, int caller, int activator, float delay)
 {
-	float pos[3], angles[3];
-	GetEntPropVector(caller, Prop_Data, "m_angRotation", angles);
+	float pos[3];
 	GetEntPropVector(caller, Prop_Send, "m_vecOrigin", pos);
-	RemoveEntity(caller);
-	
 	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, caller, _, _, _, _, _, _, _, _, _, 0.0);
-	
-	for(int i; i<2; i++)
-	{
-		int spawn_index = Npc_Create(BTD_ZOMG, -1, pos, angles, GetEntProp(caller, Prop_Send, "m_iTeamNum") == 2);
-		if(spawn_index > MaxClients)
-			Zombies_Currently_Still_Ongoing++;
-	}
-}
-
-public void Bloonarius_PostFortifiedDeath(const char[] output, int caller, int activator, float delay)
-{
-	float pos[3], angles[3];
-	GetEntPropVector(caller, Prop_Data, "m_angRotation", angles);
-	GetEntPropVector(caller, Prop_Send, "m_vecOrigin", pos);
 	RemoveEntity(caller);
-	
-	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, caller, _, _, _, _, _, _, _, _, _, 0.0);
-	
-	for(int i; i<2; i++)
-	{
-		int spawn_index = Npc_Create(BTD_ZOMG, -1, pos, angles, GetEntProp(caller, Prop_Send, "m_iTeamNum") == 2, "f");
-		if(spawn_index > MaxClients)
-			Zombies_Currently_Still_Ongoing++;
-	}
 }

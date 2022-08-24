@@ -1,256 +1,351 @@
 static const char NPCModel[] = "models/combine_apc.mdl";
 
+static const char g_DeathSounds[][] = {
+	"npc/metropolice/die1.wav",
+	"npc/metropolice/die2.wav",
+	"npc/metropolice/die3.wav",
+	"npc/metropolice/die4.wav",
+};
+
+static const char g_HurtSounds[][] = {
+	"npc/metropolice/pain1.wav",
+	"npc/metropolice/pain2.wav",
+	"npc/metropolice/pain3.wav",
+	"npc/metropolice/pain4.wav",
+};
+
+static const char g_IdleSounds[][] = {
+	"npc/metropolice/vo/affirmative.wav",
+	"npc/metropolice/vo/affirmative2.wav",
+	"npc/metropolice/vo/canalblock.wav",
+	"npc/metropolice/vo/chuckle.wav",
+	"npc/metropolice/vo/citizen.wav",
+	"npc/metropolice/vo/code7.wav",
+	"npc/metropolice/vo/code100.wav",
+	"npc/metropolice/vo/copy.wav",
+	"npc/metropolice/vo/breakhiscover.wav",
+	"npc/metropolice/vo/help.wav",
+	"npc/metropolice/vo/hesgone148.wav",
+	"npc/metropolice/vo/hesrunning.wav",
+	"npc/metropolice/vo/infection.wav",
+	"npc/metropolice/vo/king.wav",
+	"npc/metropolice/vo/needanyhelpwiththisone.wav",
+	"npc/metropolice/vo/pickupthatcan1.wav",
+	"npc/metropolice/vo/pickupthatcan2.wav",
+	"npc/metropolice/vo/pickupthatcan3.wav",
+	"npc/metropolice/vo/sociocide.wav",
+	"npc/metropolice/vo/watchit.wav",
+	"npc/metropolice/vo/xray.wav",
+	"npc/metropolice/vo/youknockeditover.wav",
+};
+
+static const char g_IdleAlertedSounds[][] = {
+	"npc/metropolice/vo/affirmative.wav",
+	"npc/metropolice/vo/affirmative2.wav",
+	"npc/metropolice/vo/canalblock.wav",
+	"npc/metropolice/vo/chuckle.wav",
+	"npc/metropolice/vo/citizen.wav",
+	"npc/metropolice/vo/code7.wav",
+	"npc/metropolice/vo/code100.wav",
+	"npc/metropolice/vo/copy.wav",
+	"npc/metropolice/vo/breakhiscover.wav",
+	"npc/metropolice/vo/help.wav",
+	"npc/metropolice/vo/hesgone148.wav",
+	"npc/metropolice/vo/hesrunning.wav",
+	"npc/metropolice/vo/infection.wav",
+	"npc/metropolice/vo/king.wav",
+	"npc/metropolice/vo/needanyhelpwiththisone.wav",
+	"npc/metropolice/vo/pickupthecan1.wav",
+	"npc/metropolice/vo/pickupthecan2.wav",
+	"npc/metropolice/vo/pickupthecan3.wav",
+	"npc/metropolice/vo/sociocide.wav",
+	"npc/metropolice/vo/watchit.wav",
+	"npc/metropolice/vo/xray.wav",
+	"npc/metropolice/vo/youknockeditover.wav",
+	"npc/metropolice/takedown.wav",
+};
+
+static const char g_MeleeHitSounds[][] = {
+	"mvm/melee_impacts/bottle_hit_robo01.wav",
+	"mvm/melee_impacts/bottle_hit_robo02.wav",
+	"mvm/melee_impacts/bottle_hit_robo03.wav",
+}
+
+static const char g_MeleeAttackSounds[][] = {
+	"weapons/shovel_swing.wav",
+};
+
+static const char g_MeleeMissSounds[][] = {
+	"weapons/cbar_miss1.wav",
+};
+
 void MedivalRam_OnMapStart()
 {
+	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(NPCModel);
 }
 
+static int Garrison[MAXENTITIES];
+
 methodmap MedivalRam < CClotBody
 {
+	public void PlayIdleSound()
+	{
+		if(this.m_flNextIdleSound > GetGameTime())
+			return;
+		
+		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(24.0, 48.0);
+	}
+	
+	public void PlayIdleAlertSound()
+	{
+		if(this.m_flNextIdleSound > GetGameTime())
+			return;
+		
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
+	}
+	
+	public void PlayHurtSound()
+	{
+		if(this.m_flNextHurtSound > GetGameTime())
+			return;
+		
+		this.m_flNextHurtSound = GetGameTime() + 0.4;
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+	}
+	
+	public void PlayDeathSound()
+	{
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+	}
+	
+	public void PlayMeleeSound()
+	{
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+	}
+	
+	public void PlayMeleeHitSound()
+	{
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+	}
+
+	public void PlayMeleeMissSound()
+	{
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+	}
+	
 	public MedivalRam(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		MedivalRam npc = view_as<MedivalRam>(CClotBody(vecPos, vecAng, buffer, "1.0", "300", ally, false, true));
+		MedivalRam npc = view_as<MedivalRam>(CClotBody(vecPos, vecAng, NPCModel, "1.15", "1500", ally));
 		i_NpcInternalId[npc.index] = MEDIVAL_RAM;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
-		npc.m_iStepNoiseType = 0;
-		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalRam_ClotDamaged);
-		SDKHook(npc.index, SDKHook_Think, MedivalRam_ClotThink);
-		
-		npc.m_bThisNpcIsABoss = true;
-		npc.m_flSpeed = 150.0;
-		npc.m_iTarget = -1;
-		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flAttackHappens = 0.0;
-		npc.m_flNextRangedSpecialAttack = 0.0;
-		npc.m_flRangedSpecialDelay = 1.0;
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_flReloadDelay = GetGameTime() + 2.0;
-		npc.m_bLostHalfHealth = false;
-		npc.m_bDissapearOnDeath = true;
+		npc.m_iStepNoiseType = STEPSOUND_GIANT;
+		npc.m_iNpcStepVariation = 0;
 		
 		if(data[0])
-			npc.SetHalfLifeStats();
+		{
+			Garrison[npc.index] = StringToInt(data);
+			if(!Garrison[npc.index])
+				Garrison[npc.index] = GetIndexByPluginName(data);
+			
+			if(Garrison[npc.index] && !ally)
+				Zombies_Currently_Still_Ongoing += 4;
+		}
+		else
+		{
+			Garrison[npc.index] = 0;
+		}
 		
-		npc.StartPathing();
+		SDKHook(npc.index, SDKHook_Think, MedivalRam_ClotThink);
+		
+		npc.m_iState = 0;
+		npc.m_flSpeed = EscapeModeForNpc ? 240.0 : Garrison[npc.index] ? 170.0 : 150.0;
+		npc.m_flNextRangedAttack = 0.0;
+		npc.m_flNextRangedSpecialAttack = 0.0;
+		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flAttackHappenswillhappen = false;
+		npc.m_fbRangedSpecialOn = false;
+		
+		npc.m_flMeleeArmor = 2.0;
+		npc.m_flRangedArmor = 0.2;
+		
+		if(Garrison[npc.index])
+		{
+			//TODO: Give flag wearable
+			npc.m_iWearable1 = -1;
+		}
+		else
+		{
+			npc.m_iWearable1 = -1;
+		}
+		
 		return npc;
 	}
 	
-	public void SetHalfLifeStats()
-	{
-		npc.m_bLostHalfHealth = true;
-		npc.m_flSpeed = 350.0;
-	}
-	public void SetActivity(const char[] animation)
-	{
-		int activity = this.LookupActivity(animation);
-		if(activity > 0 && activity != this.m_iState)
-		{
-			this.m_iState = activity;
-			this.m_bisWalking = false;
-			this.StartActivity(activity);
-		}
-	}
+	
 }
 
+//TODO 
+//Rewrite
 public void MedivalRam_ClotThink(int iNPC)
 {
 	MedivalRam npc = view_as<MedivalRam>(iNPC);
 	
-	float gameTime = GetGameTime();
-	if(npc.m_flNextThinkTime > gameTime)
+	if(npc.m_flNextDelayTime > GetGameTime())
+	{
 		return;
+	}
 	
-	npc.m_flNextThinkTime = gameTime + 0.04;
+	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
+	
 	npc.Update();
 	
-	if(npc.m_bLostHalfHealth)
+	if(npc.m_flNextThinkTime > GetGameTime())
 	{
-		npc.m_flMeleeArmor = 1.0 - Pow(0.98, float(Zombies_Currently_Still_Ongoing));
-		npc.m_flRangedArmor = npc.m_flMeleeArmor;
-	}
-	else if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2)
-	{
-		npc.SetHalfLifeStats();
-	}
-	
-	if(npc.m_flRangedSpecialDelay > 1.0)
-	{
-		if(npc.m_flRangedSpecialDelay < gameTime)
-		{
-			npc.m_flRangedSpecialDelay = 1.0;
-			
-			float vecMe[3];
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecMe); 
-			vecMe[2] += 45;
-			
-			makeexplosion(entity, entity, vecMe, "", 2000, 1000, 1000.0);
-			
-			npc.m_flRangedSpecialDelay = 0.0;
-		}
-		
 		return;
 	}
 	
-	if(npc.m_flAttackHappens)
+	npc.m_flNextThinkTime = GetGameTime() + 0.1;
+
+	if(npc.m_flGetClosestTargetTime < GetGameTime())
 	{
-		if(npc.m_flAttackHappens < gameTime)
-		{
-			npc.m_flAttackHappens = 0.0;
+	
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+	}
+	
+	int PrimaryThreatIndex = npc.m_iTarget;
+	
+	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
+	{
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			
-			if(IsValidEnemy(npc.index, npc.m_iTarget))
+		
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			
+			//Predict their pos.
+			if(flDistanceToTarget < npc.GetLeadRadius()) {
+				
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				
+			/*	int color[4];
+				color[0] = 255;
+				color[1] = 255;
+				color[2] = 0;
+				color[3] = 255;
+			
+				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
+			
+				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
+				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
+				
+				PF_SetGoalVector(npc.index, vPredictedPos);
+			} else {
+				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			}
+	
+			//Target close enough to hit
+			if((flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime()) || npc.m_flAttackHappenswillhappen)
 			{
-				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 2))
+			//	npc.FaceTowards(vecTarget, 1000.0);
+				
+				if(npc.m_flNextMeleeAttack < GetGameTime() || npc.m_flAttackHappenswillhappen)
 				{
-					int target = TR_GetEntityIndex(swingTrace);	
-					
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-					
-					if(target > 0) 
+					if (!npc.m_flAttackHappenswillhappen)
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 600, DMG_CLUB);
+						npc.m_flNextRangedSpecialAttack = GetGameTime() + 2.0;
+						npc.PlayMeleeSound();
+						npc.m_flAttackHappens = GetGameTime()+0.4;
+						npc.m_flAttackHappens_bullshit = GetGameTime()+0.54;
+						npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
+						npc.m_flAttackHappenswillhappen = true;
+					}
 						
-						// Hit particle
-						
+					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+					{
+						Handle swingTrace;
+						npc.FaceTowards(vecTarget, 20000.0);
+						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
+							{
+								
+								int target = TR_GetEntityIndex(swingTrace);	
+								
+								float vecHit[3];
+								TR_GetEndPosition(vecHit, swingTrace);
+								
+								if(target > 0) 
+								{
+									if(target <= MaxClients)
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 20.0, DMG_CLUB, -1, _, vecHit);
+									else
+										SDKHooks_TakeDamage(target, npc.index, npc.index, Garrison[npc.index] ? 3300.0 : 2500.0, DMG_CLUB, -1, _, vecHit);
+									
+									// Hit particle
+									
+									
+									// Hit sound
+									npc.PlayMeleeHitSound();
+								} 
+							}
+						delete swingTrace;
+						npc.m_flAttackHappenswillhappen = false;
+					}
+					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+					{
+						npc.m_flAttackHappenswillhappen = false;
 					}
 				}
-				delete swingTrace;
 			}
-		}
-		
-		return;
-	}
-	
-	if(npc.m_flReloadDelay > gameTime)
-	{
-		if(npc.m_bPathing)
-		{
-			PF_StopPathing(npc.index);
-			npc.m_bPathing = false;
-		}
-		return;
-	}
-	
-	if(npc.m_flRangedSpecialDelay == 1.0)
-		npc.m_flRangedSpecialDelay = 0.0;
-	
-	if(npc.m_flGetClosestTargetTime < gameTime)
-	{
-		npc.m_flGetClosestTargetTime = gameTime + 0.5;
-		npc.m_iTarget = GetClosestTarget(npc.index, _, 1000.0, npc.m_bCamo);
-	}
-	
-	if(npc.m_iTarget > 0)
-	{
-		if(!IsValidEnemy(npc.index, npc.m_iTarget))
-		{
-			//Stop chasing dead target.
-			npc.m_iTarget = 0;
-			npc.m_flGetClosestTargetTime = 0.0;
-		}
-		else
-		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-			
-			bool moveUp;
-			float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			if(distance < 40000.0 && npc.m_flNextMeleeAttack < gameTime)
+			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				npc.FaceTowards(vecTarget, 15000.0);
+				npc.StartPathing();
 				
-				npc.SetActivity("ACT_MELEE_ANGRY_MELEE");
-				
-				npc.AddGesture("ACT_MELEE_1");
-				
-				npc.m_flAttackHappens = gameTime + 0.4;
-				npc.m_flReloadDelay = gameTime + 0.6;
-				npc.m_flNextMeleeAttack = gameTime + 0.8;
-				
-				if(npc.m_bPathing)
-				{
-					PF_StopPathing(npc.index);
-					npc.m_bPathing = false;
-				}
 			}
-			else if(distance < 200000.0 && npc.m_flNextRangedSpecialAttack < gameTime)
-			{
-				npc.SetActivity("ACT_SPAWN");
-				
-				npc.m_flRangedSpecialDelay = gameTime + 3.5;
-				npc.m_flReloadDelay = gameTime + 4.25;
-				npc.m_flNextRangedSpecialAttack = gameTime + 30.0;
-				
-				if(npc.m_bPathing)
-				{
-					PF_StopPathing(npc.index);
-					npc.m_bPathing = false;
-				}
-			}
-			else
-			{
-				npc.SetActivity("ACT_RUN");
-			}
-		}
 	}
-	
-	if(npc.m_bPathing)
+	else
 	{
 		PF_StopPathing(npc.index);
 		npc.m_bPathing = false;
+		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-	
-	npc.m_flGetClosestTargetTime = 0.0;
-	npc.SetActivity("ACT_IDLE");
-}
-
-public Action MedivalRam_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	if(damage < 9999999.0 && view_as<MedivalRam>(victim).m_flRangedSpecialDelay == 1.0)
-		return Plugin_Handled;
-	
-	return Plugin_Continue;
+	npc.PlayIdleAlertSound();
 }
 
 public void MedivalRam_NPCDeath(int entity)
 {
 	MedivalRam npc = view_as<MedivalRam>(entity);
-	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalRam_ClotDamaged);
-	SDKUnhook(npc.index, SDKHook_Think, MedivalRam_ClotThink);
-	
-	PF_StopPathing(npc.index);
-	npc.m_bPathing = false;
-	
-	int entity_death = CreateEntityByName("prop_dynamic_override");
-	if(IsValidEntity(entity_death))
+	if(!npc.m_bGib)
 	{
-		float pos[3], angles[3];
-		GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
-		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
-		
-		TeleportEntity(entity_death, pos, angles, NULL_VECTOR);
-		
-//		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
-		DispatchKeyValue(entity_death, "model", NPCModel);
-		DispatchKeyValue(entity_death, "skin", "0");
-		
-		DispatchSpawn(entity_death);
-		
-		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.5); 
-		SetEntityCollisionGroup(entity_death, 2);
-		SetVariantString("death");
-		AcceptEntityInput(entity_death, "SetAnimation");
-		
-		HookSingleEntityOutput(entity_death, "OnAnimationDone", MedivalRam_PostDeath, true);
+		npc.PlayDeathSound();	
 	}
-}
-
-public void MedivalRam_PostDeath(const char[] output, int caller, int activator, float delay)
-{
-	RemoveEntity(caller);
+	
+	SDKUnhook(npc.index, SDKHook_Think, MedivalRam_ClotThink);
+		
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+	
+	if(Garrison[entity])
+	{
+		bool friendly = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
+		
+		float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+		float ang[3]; GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+		
+		for(int i; i < 4; i++)
+		{
+			int spawn_index = Npc_Create(Garrison[entity], -1, pos, ang, friendly);
+			if(!friendly && spawn_index <= MaxClients)
+				Zombies_Currently_Still_Ongoing--;
+		}
+	}
 }
