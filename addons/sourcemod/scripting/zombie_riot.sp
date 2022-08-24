@@ -1310,8 +1310,6 @@ public void OnMapStart()
 	PrecacheSound("weapons/jar_explode.wav");
 	PrecacheSound("weapons/shotgun_empty.wav");
 	
-	Store_RandomizeNPCStore(true);
-	
 	MapStartResetAll();
 	EscapeMode = false;
 	EscapeModeForNpc = false;
@@ -1409,6 +1407,8 @@ public void OnMapStart()
 			
 	i_MusicLength1 = 0;
 	i_MusicLength2 = 0;
+	
+	Store_RandomizeNPCStore(true);
 }
 
 public void OnMapEnd()
