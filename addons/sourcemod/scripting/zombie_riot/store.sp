@@ -248,6 +248,7 @@ enum struct Item
 	int Owned[MAXTF2PLAYERS];
 	int Scaled[MAXTF2PLAYERS];
 	bool NPCSeller;
+	bool NPCSeller_First;
 	int NPCWeapon;
 	bool NPCWeaponAlways;
 	char TextStore[64];
@@ -916,7 +917,7 @@ void Store_SaveLoadout(int client)
 	CookieData.Set(client, buffer);
 }
 
-public void Store_RandomizeNPCStore()
+public void Store_RandomizeNPCStore(bool ResetStore)
 {
 	int amount;
 	int length = StoreItems.Length;
@@ -929,6 +930,7 @@ public void Store_RandomizeNPCStore()
 		StoreItems.GetArray(i, item);
 		if(item.ItemInfos && !item.TextStore[0] && !item.NPCWeaponAlways)
 		{
+			item.NPCSeller_First = false;
 			item.NPCSeller = false;
 			item.GetItemInfo(0, info);
 			if(info.Cost > 0 && info.Cost > (CurrentCash / 3 - 1000) && info.Cost < CurrentCash)
@@ -937,13 +939,21 @@ public void Store_RandomizeNPCStore()
 			StoreItems.SetArray(i, item);
 		}
 	}
-	
-	SortIntegers(indexes, amount, Sort_Random);
-	for(int i; i<3 && i<amount; i++) //amount of items to sell
+	if(!ResetStore)
 	{
-		StoreItems.GetArray(indexes[i], item);
-		item.NPCSeller = true;
-		StoreItems.SetArray(indexes[i], item);
+		bool OneSuperSale = true;
+		SortIntegers(indexes, amount, Sort_Random);
+		for(int i; i<3 && i<amount; i++) //amount of items to sell
+		{
+			StoreItems.GetArray(indexes[i], item);
+			if(OneSuperSale)
+			{
+				item.NPCSeller_First = true;
+				OneSuperSale = false;
+			}
+			item.NPCSeller = true;
+			StoreItems.SetArray(indexes[i], item);
+		}
 	}
 }
 
@@ -1454,6 +1464,15 @@ static void MenuPage(int client, int section)
 					ItemCost(client, item, info.Cost);
 					FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name), info.Cost - npcwallet);
 					
+					if(item.NPCSeller_First)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$$}");
+					}	
+					else if(item.NPCSeller)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$}");
+					}
+					
 					IntToString(i, info.Classname, sizeof(info.Classname));
 					menu.AddItem(info.Classname, buffer);
 					found = true;
@@ -1535,6 +1554,15 @@ static void MenuPage(int client, int section)
 					{
 						FormatEx(buffer, sizeof(buffer), "%s [$%d] %s", TranslateItemName(client, item.Name), info.Cost, BuildingExtraCounter);
 					}
+				}
+				
+				if(item.NPCSeller_First)
+				{
+					FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$$}");
+				}	
+				else if(item.NPCSeller)
+				{
+					FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$}");
 				}
 				
 				menu.AddItem(info.Classname, buffer, style);
@@ -2901,15 +2929,19 @@ static void ItemCost(int client, Item item, int &cost)
 	cost += item.Scale*item.Scaled[client]; 
 	cost += item.CostPerWave * CurrentRound;
 	//make sure anything thats additive is on the top, so sales actually help!!
-	
-	if(CurrentRound > 14) //Add a safety net so the extra sale doesnt apply before round 15
+	if(b_SpecialGrigoriStore) //during maps where he alaways sells, always sell!
 	{
-		if(b_SpecialGrigoriStore) //during maps where he alaways sells, always sell!
+		if(item.NPCSeller_First)
 		{
-			cost = RoundToCeil(float(cost) * (item.NPCSeller ? 0.8 : 1.0));	
-			if(item.NPCSeller)
-				GregSale = true;
+			cost = RoundToCeil(float(cost) * 0.7);
 		}
+		else if(item.NPCSeller)
+		{
+			cost = RoundToCeil(float(cost) * 0.8);
+		}
+		
+		if(item.NPCSeller)
+			GregSale = true;
 	}
 	if(!started && !GregSale)
 	{
@@ -2919,9 +2951,13 @@ static void ItemCost(int client, Item item, int &cost)
 		}
 		else
 		{
-			if(CurrentRound > 14) //Add a safety net so the extra sale doesnt apply before round 15
+			if(item.NPCSeller_First)
 			{
-				cost = RoundToCeil(float(cost) * (item.NPCSeller ? 0.8 : 0.9));	
+				cost = RoundToCeil(float(cost) * 0.7);
+			}
+			else if(item.NPCSeller)
+			{
+				cost = RoundToCeil(float(cost) * 0.8);
 			}
 			else
 			{
