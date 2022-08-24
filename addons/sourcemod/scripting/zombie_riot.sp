@@ -1310,8 +1310,6 @@ public void OnMapStart()
 	PrecacheSound("weapons/jar_explode.wav");
 	PrecacheSound("weapons/shotgun_empty.wav");
 	
-	Store_RandomizeNPCStore(true);
-	
 	MapStartResetAll();
 	EscapeMode = false;
 	EscapeModeForNpc = false;
@@ -1413,7 +1411,6 @@ public void OnMapStart()
 
 public void OnMapEnd()
 {
-	Store_RandomizeNPCStore(true);
 	OnRoundEnd(null, NULL_STRING, false);
 //	OnMapEnd_LagComp();
 	OnMapEndWaves();
@@ -1589,7 +1586,7 @@ public Action Command_ChangeCollision(int client, int args)
 
 public Action Command_SpawnGrigori(int client, int args)
 {
-	Store_RandomizeNPCStore(false);
+	Store_RandomizeNPCStore();
 	Spawn_Cured_Grigori();
 	return Plugin_Handled;
 }
@@ -1813,8 +1810,6 @@ public Action OnPlayerConnect(Event event, const char[] name, bool dontBroadcast
 
 public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 {
-	Store_RandomizeNPCStore(true);
-	
 	b_GameOnGoing = false;
 	for(int client=1; client<=MaxClients; client++)
 	{
