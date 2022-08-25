@@ -45,22 +45,24 @@ enum VillageBuff
 	bool IsWeapon;
 }
 
-#define VILLAGE_100	(0 << 1)
-#define VILLAGE_200	(0 << 2)
-#define VILLAGE_300	(0 << 3)
-#define VILLAGE_400	(0 << 4)
-#define VILLAGE_500	(0 << 5)
-#define VILLAGE_010	(0 << 6)
-#define VILLAGE_020	(0 << 7)
-#define VILLAGE_030	(0 << 8)
-#define VILLAGE_040	(0 << 9)
-#define VILLAGE_050	(0 << 10)
-#define VILLAGE_001	(0 << 11)
-#define VILLAGE_002	(0 << 12)
-#define VILLAGE_003	(0 << 13)
-#define VILLAGE_004	(0 << 14)
-#define VILLAGE_005	(0 << 15)
+#define VILLAGE_000	(1 << 0)
+#define VILLAGE_100	(1 << 1)
+#define VILLAGE_200	(1 << 2)
+#define VILLAGE_300	(1 << 3)
+#define VILLAGE_400	(1 << 4)
+#define VILLAGE_500	(1 << 5)
+#define VILLAGE_010	(1 << 6)
+#define VILLAGE_020	(1 << 7)
+#define VILLAGE_030	(1 << 8)
+#define VILLAGE_040	(1 << 9)
+#define VILLAGE_050	(1 << 10)
+#define VILLAGE_001	(1 << 11)
+#define VILLAGE_002	(1 << 12)
+#define VILLAGE_003	(1 << 13)
+#define VILLAGE_004	(1 << 14)
+#define VILLAGE_005	(1 << 15)
 
+static float Village_ReloadBuffFor[MAXTF2PLAYERS];
 static int Village_Flags[MAXTF2PLAYERS];
 static bool Village_ForceUpdate[MAXTF2PLAYERS];
 static ArrayList Village_Effects;
@@ -3809,67 +3811,72 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 void Building_CheckItems(int client)
 {
 	int lastFlags = Village_Flags[client];
-	Village_Flags[client] = 0;
 	
-	switch(Store_HasNamedItem(client, "Village NPC Expert"))
+	if(Store_HasNamedItem(client, "Bunker Village"))
 	{
-		case 1:
-			Village_Flags[client] = VILLAGE_100;
+		Village_Flags[client] = Village_000;
 		
-		case 2:
-			Village_Flags[client] = VILLAGE_100 + VILLAGE_200;
+		switch(Store_HasNamedItem(client, "Village NPC Expert"))
+		{
+			case 1:
+				Village_Flags[client] += VILLAGE_100;
+			
+			case 2:
+				Village_Flags[client] += VILLAGE_100 + VILLAGE_200;
+			
+			case 3:
+				Village_Flags[client] += VILLAGE_100 + VILLAGE_200 + VILLAGE_300;
+			
+			case 4:
+				Village_Flags[client] += VILLAGE_100 + VILLAGE_200 + VILLAGE_300 + VILLAGE_400;
+			
+			case 5:
+				Village_Flags[client] += VILLAGE_100 + VILLAGE_200 + VILLAGE_300 + VILLAGE_400 + VILLAGE_500;
+		}
 		
-		case 3:
-			Village_Flags[client] = VILLAGE_100 + VILLAGE_200 + VILLAGE_300;
+		switch(Store_HasNamedItem(client, "Village Buffing Expert"))
+		{
+			case 1:
+				Village_Flags[client] += VILLAGE_010;
+			
+			case 2:
+				Village_Flags[client] += VILLAGE_010 + VILLAGE_020;
+			
+			case 3:
+				Village_Flags[client] += VILLAGE_010 + VILLAGE_020 + VILLAGE_030;
+			
+			case 4:
+				Village_Flags[client] += VILLAGE_010 + VILLAGE_020 + VILLAGE_030 + VILLAGE_040;
+			
+			case 5:
+				Village_Flags[client] += VILLAGE_010 + VILLAGE_020 + VILLAGE_030 + VILLAGE_040 + VILLAGE_050;
+		}
 		
-		case 4:
-			Village_Flags[client] = VILLAGE_100 + VILLAGE_200 + VILLAGE_300 + VILLAGE_400;
+		switch(Store_HasNamedItem(client, "Village Support Expert"))
+		{
+			case 1:
+				Village_Flags[client] += VILLAGE_001;
+			
+			case 2:
+				Village_Flags[client] += VILLAGE_001 + VILLAGE_002;
+			
+			case 3:
+				Village_Flags[client] += VILLAGE_001 + VILLAGE_002 + VILLAGE_003;
+			
+			case 4:
+				Village_Flags[client] += VILLAGE_001 + VILLAGE_002 + VILLAGE_003 + VILLAGE_004;
+			
+			case 5:
+				Village_Flags[client] += VILLAGE_001 + VILLAGE_002 + VILLAGE_003 + VILLAGE_004 + VILLAGE_005;
+		}
 		
-		case 5:
-			Village_Flags[client] = VILLAGE_100 + VILLAGE_200 + VILLAGE_300 + VILLAGE_400 + VILLAGE_500;
-		
-		default:
-			Village_Flags[client] = 0;
+		if(lastFlags != Village_Flags[client])
+			Village_ForceUpdate[client] = true;
 	}
-	
-	switch(Store_HasNamedItem(client, "Village Buffing Expert"))
+	else
 	{
-		case 1:
-			Village_Flags[client] += VILLAGE_010;
-		
-		case 2:
-			Village_Flags[client] += VILLAGE_010 + VILLAGE_020;
-		
-		case 3:
-			Village_Flags[client] += VILLAGE_010 + VILLAGE_020 + VILLAGE_030;
-		
-		case 4:
-			Village_Flags[client] += VILLAGE_010 + VILLAGE_020 + VILLAGE_030 + VILLAGE_040;
-		
-		case 5:
-			Village_Flags[client] += VILLAGE_010 + VILLAGE_020 + VILLAGE_030 + VILLAGE_040 + VILLAGE_050;
+		Village_Flags[client] = 0;
 	}
-	
-	switch(Store_HasNamedItem(client, "Village Support Expert"))
-	{
-		case 1:
-			Village_Flags[client] += VILLAGE_001;
-		
-		case 2:
-			Village_Flags[client] += VILLAGE_001 + VILLAGE_002;
-		
-		case 3:
-			Village_Flags[client] += VILLAGE_001 + VILLAGE_002 + VILLAGE_003;
-		
-		case 4:
-			Village_Flags[client] += VILLAGE_001 + VILLAGE_002 + VILLAGE_003 + VILLAGE_004;
-		
-		case 5:
-			Village_Flags[client] += VILLAGE_001 + VILLAGE_002 + VILLAGE_003 + VILLAGE_004 + VILLAGE_005;
-	}
-	
-	if(lastFlags != Village_Flags[client])
-		Village_ForceUpdate[client] = true;
 }
 
 public Action Building_PlaceVillage(int client, int weapon, const char[] classname, bool &result)
@@ -3971,19 +3978,38 @@ public Action Timer_VillageThink(Handle timer, int ref)
 		}
 	}
 	
-	float range = (Village_Flags[owner] & VILLAGE_100) ? 720.0 : 600.0;
+	int effects = Village_Flags[owner];
 	
-	if(Village_Flags[owner] & VILLAGE_500)
+	float range = 600.0;
+	
+	if(Village_ReloadBuffFor[owner] > GetGameTime())
 	{
-		range += 195.0;
+		if(effects & VILLAGE_500)
+			range = 10000.0;
 	}
-	else if(Village_Flags[owner] & VILLAGE_400)
+	else
 	{
-		range += 75.0;
+		effects &= ~VILLAGE_050;
+		effects &= ~VILLAGE_040;
 	}
-	else if(Village_Flags[owner] & VILLAGE_004)
+	
+	if(!(effects & VILLAGE_500))
 	{
-		range += 150.0;
+		if(effects & VILLAGE_100)
+			range += 120.0;
+		
+		if(effects & VILLAGE_500)
+		{
+			range += 195.0;
+		}
+		else if(effects & VILLAGE_400)
+		{
+			range += 75.0;
+		}
+		else if(effects & VILLAGE_004)
+		{
+			range += 150.0;
+		}
 	}
 	
 	if(mounted)
@@ -3991,7 +4017,6 @@ public Action Timer_VillageThink(Handle timer, int ref)
 	
 	range = range * range;
 	
-	ArrayList clients = new ArrayList();
 	ArrayList weapons = new ArrayList();
 	ArrayList allies = new ArrayList();
 	
@@ -4003,7 +4028,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < range)
 			{
-				clients.PushCell(client);
+				allies.PushCell(client);
 				
 				int entity = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 				if(entity > MaxClients)
@@ -4036,21 +4061,92 @@ public Action Timer_VillageThink(Handle timer, int ref)
 				Village_Effects.Erase(i--);
 				length--;
 			}
-			else if(clients.FindValue(target) == -1 && weapons.FindValue(target) == -1 && allies.FindValue(target) == -1)
+			else
 			{
-				if(buff.IsWeapon)
-					RemoveBuffAttributes(target, buff.Effects);
+				int weapPos = -1;
+				int allyPos = allies.FindValue(target);
+				if(allyPos == -1)
+					weapPos = weapons.FindValue(target);
 				
-				Village_Effects.Erase(i--);
-				length--;
+				if(allyPos == -1 && weapPos == -1)
+				{
+					int oldBuffs = GetBuffEffects(buff.EntityRef);
+					
+					Village_Effects.Erase(i--);
+					length--;
+					
+					UpdateBuffEffects(target, buff.IsWeapon, oldBuffs, GetBuffEffects(buff.EntityRef));
+				}
+				else
+				{
+					if(allyPos != -1)
+					{
+						allies.Erase(allyPos);
+					}
+					else
+					{
+						weapons.Erase(weapPos);
+					}
+					
+					if(Village_ForceUpdate[owner])
+					{
+						int oldBuffs = GetBuffEffects(buff.EntityRef);
+						
+						buff.Effects = effects;
+						Village_Effects.SetArray(i, buff);
+						
+						UpdateBuffEffects(target, buff.IsWeapon, oldBuffs, GetBuffEffects(buff.EntityRef));
+					}
+				}
 			}
 		}
 	}
 	
-	delete clients;
+	length = allies.Length;
+	for(int i; i < length; i++)
+	{
+		int target = allies.Get(i);
+		
+		buff.EntityRef = EntIndexToEntRef(target);
+		
+		int oldBuffs = GetBuffEffects(buff.EntityRef);
+		
+		buff.VillageRef = ref;
+		buff.IsWeapon = false;
+		buff.Effects = effects;
+		Village_Effects.PushArray(i, buff);
+		
+		UpdateBuffEffects(target, buff.IsWeapon, oldBuffs, GetBuffEffects(buff.EntityRef));
+	}
+	
+	length = weapons.Length;
+	for(int i; i < length; i++)
+	{
+		int target = weapons.Get(i);
+		
+		buff.EntityRef = EntIndexToEntRef(target);
+		
+		int oldBuffs = GetBuffEffects(buff.EntityRef);
+		
+		buff.VillageRef = ref;
+		buff.IsWeapon = true;
+		buff.Effects = effects;
+		Village_Effects.PushArray(i, buff);
+		
+		UpdateBuffEffects(target, buff.IsWeapon, oldBuffs, GetBuffEffects(buff.EntityRef));
+	}
+	
 	delete weapons;
 	delete allies;
 	return entity == INVALID_ENT_REFERENCE ? Plugin_Stop : Plugin_Continue;
+}
+
+void Building_ClearRefBuffs(int ref)
+{
+	for(int i = -1; (i = Village_Effects.FindValue(ref, VillageBuff::EntityRef)) != -1; )
+	{
+		Village_Effects.Erase(i);
+	}
 }
 
 float Building_GetDiscount()
@@ -4078,6 +4174,232 @@ float Building_GetDiscount()
 	return 0.98 - (extra * 0.01);
 }
 
-static void RemoveBuffAttributes(int entity, int buffs)
+static int GetBuffEffects(int ref)
 {
+	int flags;
+	
+	VillageBuff buff;
+	int length = Village_Effects.Length;
+	for(int i; i < length; i++)
+	{
+		Village_Effects.GetArray(i, buff);
+		if(buff.EntityRef == ref)
+			flags |= buff.Effects;
+	}
+	
+	return flags;
+}
+
+static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuffs)
+{
+	if(weapon)
+	{
+		for(int i; i < 16; i++)
+		{
+			int flag = (1 << i);
+			bool hadBefore = view_as<bool>(oldBuffs & flag);
+			
+			if(newBuffs & flag)
+			{
+				if(!hadBefore)
+				{
+					switch(flag)
+					{
+						case VILLAGE_000:
+						{
+							Address attrib = TF2Attrib_GetByDefIndex(entity, 101);	// Projectile Range
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 101, TF2Attrib_GetValue(attrib) * 1.1);
+							
+							attrib = TF2Attrib_GetByDefIndex(entity, 103);	// Projectile Speed
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 103, TF2Attrib_GetValue(attrib) * 1.1);
+						}
+						case VILLAGE_200:
+						{
+							Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) * 0.97);
+							
+							attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) * 0.97);
+							
+							attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) * 1.06);
+						}
+						case VILLAGE_040, VILLAGE_050:
+						{
+							Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) * 0.85);
+							
+							attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) * 0.85);
+							
+							attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) * 1.3);
+						}
+					}
+				}
+			}
+			else if(hadBefore)
+			{
+				switch(flag)
+				{
+					case VILLAGE_000:
+					{
+						Address attrib = TF2Attrib_GetByDefIndex(entity, 101);	// Projectile Range
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 101, TF2Attrib_GetValue(attrib) / 1.1);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 103);	// Projectile Speed
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 103, TF2Attrib_GetValue(attrib) / 1.1);
+					}
+					case VILLAGE_200:
+					{
+						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.97);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.97);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.06);
+					}
+					case VILLAGE_040, VILLAGE_050:
+					{
+						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.85);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.85);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.3);
+					}
+				}
+			}
+		}
+	}
+	else if(i_NpcInternalId[entity] == CITIZEN)
+	{
+		Citizen npc = view_as<Citizen>(entity);
+		
+		for(int i; i < 16; i++)
+		{
+			int flag = (1 << i);
+			bool hadBefore = view_as<bool>(oldBuffs & flag);
+			
+			if(newBuffs & flag)
+			{
+				if(!hadBefore)
+				{
+					switch(flag)
+					{
+						case VILLAGE_000:
+						{
+							
+						}
+						case VILLAGE_200:
+						{
+							npc.m_fGunFirerate *= 0.97;
+							npc.m_fGunReload *= 0.97;
+						}
+						case VILLAGE_300:
+						{
+							if(npc.m_iGunClip > 0)
+								npc.m_iGunClip++;
+							
+							npc.m_fGunFirerate *= 0.95;
+							npc.m_fGunReload *= 0.95;
+						}
+						case VILLAGE_400:
+						{
+							if(npc.m_iGunValue < 1000)
+								npc.m_iGunValue = 1000;
+							
+							npc.m_fGunFirerate *= 0.9;
+							npc.m_fGunReload *= 0.9;
+						}
+						case VILLAGE_500:
+						{
+							if(npc.m_iGunClip > 0)
+								npc.m_iGunClip += 2;
+							
+							if(npc.m_iGunValue < 3000)
+								npc.m_iGunValue = 3000;
+							
+							npc.m_fGunFirerate *= 0.9;
+							npc.m_fGunReload *= 0.9;
+						}
+						case VILLAGE_040:
+						{
+							npc.m_fGunFirerate *= 0.85;
+							npc.m_fGunReload *= 0.85;
+						}
+						case VILLAGE_050:
+						{
+							npc.m_fGunFirerate *= 0.85;
+							npc.m_fGunReload *= 0.85;
+						}
+					}
+				}
+			}
+			else if(hadBefore)
+			{
+				switch(flag)
+				{
+					case VILLAGE_000:
+					{
+						Address attrib = TF2Attrib_GetByDefIndex(entity, 101);	// Projectile Range
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 101, TF2Attrib_GetValue(attrib) / 1.1);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 103);	// Projectile Speed
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 103, TF2Attrib_GetValue(attrib) / 1.1);
+					}
+					case VILLAGE_200:
+					{
+						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.97);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.97);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.06);
+					}
+					case VILLAGE_040, VILLAGE_050:
+					{
+						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.85);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.85);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.3);
+					}
+				}
+			}
+		}
+	}
 }

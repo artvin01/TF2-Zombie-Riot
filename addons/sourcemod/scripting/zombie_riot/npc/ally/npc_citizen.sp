@@ -936,6 +936,8 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	npc.m_iGunType = type;
 	npc.m_iGunValue = sell;
 	
+	Building_ClearRefBuffs(EntIndexToEntRef(entity));
+	
 	int wave = 90;
 	
 	if(info.Attrib[0] == 99999)
