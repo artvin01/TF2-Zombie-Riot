@@ -527,23 +527,23 @@ public void SpyMainBoss_ClotThink(int iNPC)
 							if(!npc.Anger)
 							{
 								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 180.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 180.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_SLASH|DMG_CLUB);	
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_CLUB, -1, _, vecHit);	
 							}
 							else if(npc.Anger)
 							{
 								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 7500.0, DMG_SLASH|DMG_CLUB);	
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 7500.0, DMG_CLUB, -1, _, vecHit);	
 							}
 								
 							if(npc.m_iAttacksTillMegahit >= 3)
 							{
 								Custom_Knockback(npc.index, target, 500.0);
 								
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 										
 								npc.m_iAttacksTillMegahit = 0;
 										
@@ -551,7 +551,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 									
 							npc.m_iAttacksTillMegahit += 1;
 							// Hit particle
-							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+							
 								
 							// Hit sound
 							npc.PlayMeleeHitSound();

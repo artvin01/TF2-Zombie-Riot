@@ -235,9 +235,9 @@ public void TorsolessHeadcrabZombie_ClotThink(int iNPC)
 						TR_GetEndPosition(vecHit, swingTrace);
 						if(target > 0) 
 						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 30.0, DMG_SLASH|DMG_CLUB);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 30.0, DMG_CLUB, -1, _, vecHit);
 							
-							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+							
 								
 							// Hit sound
 							npc.PlayMeleeHitSound();

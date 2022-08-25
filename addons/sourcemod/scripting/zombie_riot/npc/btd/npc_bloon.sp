@@ -581,6 +581,9 @@ public void Bloon_ClotThink(int iNPC)
 					int target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
+						float vecHit[3];
+						TR_GetEndPosition(vecHit, swingTrace);
+						
 						for(int i; i<9; i++)
 						{
 							if(npc.RegrowsInto(i) == npc.m_iType)
@@ -589,22 +592,22 @@ public void Bloon_ClotThink(int iNPC)
 								{
 									if(npc.m_bFortified)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 1.0 + float(i) * 0.8 * 1.4, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 1.0 + float(i) * 0.8 * 1.4, DMG_CLUB, -1, _, vecHit);
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 1.0 + float(i) * 0.8, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 1.0 + float(i) * 0.8, DMG_CLUB, -1, _, vecHit);
 									}
 								}
 								else
 								{
 									if(npc.m_bFortified)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 2.0 + float(i) * 1.6 * 1.4, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 2.0 + float(i) * 1.6 * 1.4, DMG_CLUB, -1, _, vecHit);
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 2.0 + float(i) * 1.6, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 2.0 + float(i) * 1.6, DMG_CLUB, -1, _, vecHit);
 									}
 								}
 								delete swingTrace;

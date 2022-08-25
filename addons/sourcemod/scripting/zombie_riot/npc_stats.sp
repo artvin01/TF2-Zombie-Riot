@@ -4596,21 +4596,6 @@ public void RemoveEntityToTraceStuckCheck(int entity)
 	Entity_to_Respect = -1;
 }
 
-public bool TraceStuckCheck(int entity, int contentsMask, any iExclude)
-{
-	if(entity == 0)
-	{
-		return !(entity == iExclude);
-	}
-	
-	if(entity == Entity_to_Respect)
-	{
-		return !(entity == iExclude);	
-	}
-	
-	return false;
-}
-
 public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMask, any iExclude)
 {
 	char class[64];
@@ -5355,7 +5340,7 @@ stock bool CheckForSee(int client)
 
 stock bool IsSpaceOccupiedIgnorePlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
-	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayDontHitPlayersOrEntity, entity);
+	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayDontHitPlayersOrEntityCombat, entity);
 	bool bHit = TR_DidHit(hTrace);
 	ref = TR_GetEntityIndex(hTrace);
 	delete hTrace;
@@ -5405,11 +5390,63 @@ public bool TraceRayHitPlayers(int entity,int mask,any data)
 	return false;
 }
 
-public bool TraceRayDontHitPlayersOrEntity(int entity,int mask,any data)
+//This is mainly to see if you THE PLAYER!!!!! is stuck inside the WORLD OR BRUSHES OR STUFF LIKE THAT. Not stuck inside an npc, because this code is not made for that.
+public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 {
-	if (entity == 0) return true;
+	char class[64];
+	GetEntityClassname(entity, class, sizeof(class));
 	
-	return false;
+	if(entity > 0 && entity <= MaxClients) 
+	{
+		return false;
+	}
+	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
+	{
+		return false;
+	}
+	
+	CClotBody npc = view_as<CClotBody>(entity);
+	
+	if(StrEqual(class, "base_boss"))
+	{
+		return false;
+	}
+	
+	else if(StrContains(class, "tf_projectile_", false) != -1)
+	{
+		return false;
+	}
+	
+	//if anything else is team
+	
+	if(GetEntProp(data, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		return false;
+	
+	if(StrEqual(class, "func_brush"))
+	{
+		return true;//They blockin me
+	}
+	else if(StrEqual(class, "func_respawnroomvisualizer"))
+	{
+		return true;//They blockin me and not on same team, otherwsie top filter
+	}	
+	
+	if(npc.m_bThisEntityIgnored)
+	{
+		return false;
+	}
+	
+	if(entity == 0)
+	{
+		return true;
+	}
+	
+	if(entity == Entity_to_Respect)
+	{
+		return false;
+	}
+	
+	return true;
 }
 
 float f_StuckTextChatNotif[MAXTF2PLAYERS];
@@ -5735,7 +5772,7 @@ public int Can_I_See_Enemy(int attacker, int enemy)
 }
 
 
-public int Can_I_See_Enemy_Only(int attacker, int enemy)
+public bool Can_I_See_Enemy_Only(int attacker, int enemy)
 {
 	Handle trace; 
 	float pos_npc[3]; GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", pos_npc);
@@ -5745,14 +5782,14 @@ public int Can_I_See_Enemy_Only(int attacker, int enemy)
 	
 	AddEntityToTraceStuckCheck(enemy);
 	
-	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_PLAYERSOLID, RayType_EndPoint, TraceStuckCheck, attacker);
-	int Traced_Target;
+	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_PLAYERSOLID, RayType_EndPoint, TraceRayDontHitPlayersOrEntityCombat, attacker);
 	
 	RemoveEntityToTraceStuckCheck(enemy);
-		
-	Traced_Target = TR_GetEntityIndex(trace);
+	
+	bool bHit = TR_DidHit(trace);	
+
 	delete trace;
-	return Traced_Target;
+	return bHit;
 }
 
 /*

@@ -325,12 +325,12 @@ public void MedivalTwoHandedSwordsman_ClotThink(int iNPC)
 								if(target > 0) 
 								{
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 350.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 350.0, DMG_CLUB, -1, _, vecHit);
 									
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();

@@ -647,16 +647,16 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 								if(!npc.Anger)
 								{
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 180.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 180.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_SLASH|DMG_CLUB);	
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_CLUB, -1, _, vecHit);	
 								}
 								else if(npc.Anger)
 								{
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 7500.0, DMG_SLASH|DMG_CLUB);	
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 7500.0, DMG_CLUB, -1, _, vecHit);	
 								}
 							}
 							else
@@ -664,16 +664,16 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 								if(!npc.Anger)
 								{
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_SLASH|DMG_CLUB);	
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_CLUB, -1, _, vecHit);	
 								}
 								else if(npc.Anger)
 								{
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_SLASH|DMG_CLUB);	
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_CLUB, -1, _, vecHit);	
 								}										
 							}
 								
@@ -682,11 +682,11 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 								Custom_Knockback(npc.index, target, 500.0);
 								if(!EscapeMode)
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 								}
 								else
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 35.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 35.0, DMG_CLUB, -1, _, vecHit);
 								}
 								npc.m_iAttacksTillMegahit = 0;
 								
@@ -694,7 +694,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 							
 							npc.m_iAttacksTillMegahit += 1;
 							// Hit particle
-							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+							
 								
 							// Hit sound
 							npc.PlayMeleeHitSound();

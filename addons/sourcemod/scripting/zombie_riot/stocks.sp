@@ -1737,12 +1737,12 @@ bool IsEntityStuck(int entity)
 stock bool IsWandWeapon(int entity)
 {
 	int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-	return (index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758 || index == 1013 || index == 173 || index == 648);
+	return (index == 450 || index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758 || index == 1013 || index == 173 || index == 648);
 }
 
 stock bool IsWandWeaponStore(int index)
 {
-	return (index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758 || index == 1013 || index == 173 || index == 648);
+	return (index == 450 || index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758 || index == 1013 || index == 173 || index == 648);
 }
 
 stock int SpawnWeapon_Special(int client, char[] name, int index, int level, int qual, const char[] att, bool visible=true)
@@ -2481,7 +2481,10 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 	else
 	{
 		explosionRadius *= 0.65;
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+		if(spawnLoc[0] == 0.0) //only get position if thhey got notin
+		{
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+		}
 		Closest_npc = GetClosestTarget(entity);
 	}
 	

@@ -333,7 +333,7 @@ public void NecroCombine_ClotThink(int iNPC)
 										SDKHooks_TakeDamage(target, owner, owner, (65.0 * npc.m_flExtraDamage), DMG_SLASH); //Do acid so i can filter it well.
 										
 										// Hit particle
-										npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+										
 										
 										// Hit sound
 										npc.PlayMeleeHitSound();

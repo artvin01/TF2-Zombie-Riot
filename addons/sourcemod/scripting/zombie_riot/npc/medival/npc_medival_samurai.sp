@@ -348,20 +348,20 @@ public void MedivalSamurai_ClotThink(int iNPC)
 								if(npc.Anger)
 								{
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0 * Bonus_damage, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0 * Bonus_damage, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 1200.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 1200.0, DMG_CLUB, -1, _, vecHit);
 								}
 								else
 								{
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0 * Bonus_damage, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0 * Bonus_damage, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 800.0, DMG_SLASH|DMG_CLUB);									
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 800.0, DMG_CLUB, -1, _, vecHit);									
 								}
 								
 								
-								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+								
 								
 								// Hit sound
 								npc.PlayMeleeHitSound();

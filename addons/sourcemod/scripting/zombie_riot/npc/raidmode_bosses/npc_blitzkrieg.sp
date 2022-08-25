@@ -624,11 +624,11 @@ public void Blitzkrieg_ClotThink(int iNPC)
 										Bonus_damage = 1.5;
 									}
 									meleedmg *= Bonus_damage;
-									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
 								}
 								else
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg * 2, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg * 2, DMG_CLUB, -1, _, vecHit);
 								}
 								
 								npc.PlayMeleeHitSound();		
@@ -647,7 +647,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 									}
 								}
-								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+								
 							
 								// Hit sound
 								npc.PlayPullSound()

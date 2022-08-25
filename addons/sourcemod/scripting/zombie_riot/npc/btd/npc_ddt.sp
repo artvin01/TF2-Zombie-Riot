@@ -236,26 +236,29 @@ public void DDT_ClotThink(int iNPC)
 					int target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
+						float vecHit[3];
+						TR_GetEndPosition(vecHit, swingTrace);
+						
 						if(npc.m_bFortified)
 						{
 							if(target <= MaxClients)
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, vecHit);
 							}
 							else
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
 							}
 						}
 						else
 						{
 							if(target <= MaxClients)
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 							}
 							else
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 165.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 165.0, DMG_CLUB, -1, _, vecHit);
 							}
 						}					
 					}

@@ -388,14 +388,14 @@ public void Combine_Police_Pistol_ClotThink(int iNPC)
 									
 									if(EscapeModeForNpc)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_CLUB, -1, _, vecHit);
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 									}
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();
