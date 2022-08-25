@@ -448,6 +448,7 @@ static float GunDamage[MAXENTITIES];
 static float GunFireRate[MAXENTITIES];
 static float GunReload[MAXENTITIES];
 static int GunClip[MAXENTITIES];
+static float GunRangeBonus[MAXENTITIES];
 static float SelfHealCooldown[MAXENTITIES];
 static float TalkCooldown[MAXENTITIES];
 static float TalkTurnPos[MAXENTITIES][3];
@@ -572,6 +573,16 @@ methodmap Citizen < CClotBody
 		public get()		{ return GunReload[this.index]; }
 		public set(float value) 	{ GunReload[this.index] = value; }
 	}
+	property int m_iGunClip
+	{
+		public get()		{ return GunClip[this.index]; }
+		public set(int value) 	{ GunClip[this.index] = value; }
+	}
+	property float m_fGunRangeBonus
+	{
+		public get()		{ return GunRangeBonus[this.index]; }
+		public set(float value) 	{ GunRangeBonus[this.index] = value; }
+	}
 	property float m_fTalkTimeIn
 	{
 		public get()		{ return TalkCooldown[this.index]; }
@@ -581,11 +592,6 @@ methodmap Citizen < CClotBody
 	{
 		public get()		{ return SelfHealCooldown[this.index]; }
 		public set(float value) 	{ SelfHealCooldown[this.index] = value; }
-	}
-	property int m_iGunClip
-	{
-		public get()		{ return GunClip[this.index]; }
-		public set(int value) 	{ GunClip[this.index] = value; }
 	}
 	property bool m_bSeakingMedic
 	{
@@ -701,7 +707,7 @@ methodmap Citizen < CClotBody
 			{
 				RemoveEntity(this.m_iWearable3);
 				
-				SetEntProp(this.index, Prop_Data, "m_iHealth", 50);
+				SetEntProp(this.index, Prop_Data, "m_iHealth", Waves_GetRound() * 10);
 				SetEntityRenderColor(this.index, 255, 255, 255, 255);
 				SetEntityRenderMode(this.index, RENDER_NORMAL);
 			}
@@ -979,7 +985,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 		{
 			npc.m_fGunDamage = data.Damage * data.Pellets;
 			npc.m_fGunFirerate = data.FireRate;
-			npc.m_fGunReload = data.Reload;
+			npc.m_fGunReload = 1.0;//data.Reload;
 			npc.m_iGunClip = RoundFloat(data.Clip);
 		}
 		
@@ -988,6 +994,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 			wave = 90;
 	}
 	
+	npc.m_fGunRangeBonus = 1.0;
 	npc.m_iAttacksTillReload = npc.m_iGunClip;
 	npc.m_bFirstBlood = false;
 	npc.m_flReloadDelay = GetGameTime() + 1.0;
@@ -1138,7 +1145,7 @@ public void Citizen_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 0.5;
 		if(npc.m_iGunType != Cit_None)
 		{
-			npc.m_iTarget = GetClosestTarget(npc.index, _, 1000.0, npc.m_bCamo);
+			npc.m_iTarget = GetClosestTarget(npc.index, _, 1000.0 * npc.m_fGunRangeBonus, npc.m_bCamo);
 			if(npc.m_iTarget > 0 && view_as<CClotBody>(npc.m_iTarget).m_bCamo)
 				npc.PlaySound(Cit_Behind);
 		}
@@ -1194,7 +1201,7 @@ public void Citizen_ClotThink(int iNPC)
 				{
 					case Cit_Melee:
 					{
-						if(distance < 14500.0 && npc.m_flNextMeleeAttack < gameTime)
+						if(distance < (14500.0 * npc.m_fGunRangeBonus) && npc.m_flNextMeleeAttack < gameTime)
 						{
 							//Look at target so we hit.
 							npc.FaceTowards(vecTarget, 15000.0);
@@ -1240,7 +1247,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					case Cit_Pistol:
 					{
-						if(distance > 22500.0 && distance < 1000000.0 && npc.m_iAttacksTillReload != 0)
+						if(distance > 22500.0 && distance < (1000000.0 * npc.m_fGunRangeBonus) && npc.m_iAttacksTillReload != 0)
 						{
 							if(npc.m_iWearable1 > 0)
 								AcceptEntityInput(npc.m_iWearable1, "Enable");
@@ -1328,7 +1335,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					case Cit_SMG:
 					{
-						if(distance < 600000.0 && npc.m_iAttacksTillReload != 0)	// Attack at 800 HU
+						if(distance < (600000.0 * npc.m_fGunRangeBonus) && npc.m_iAttacksTillReload != 0)	// Attack at 800 HU
 						{
 							if(distance < 150000.0)	// Walk backwards at 400 HU
 							{
@@ -1425,7 +1432,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					case Cit_AR:
 					{
-						if(distance < 800000.0 && npc.m_iAttacksTillReload != 0)	// Attack at 900 HU
+						if(distance < (800000.0 * npc.m_fGunRangeBonus) && npc.m_iAttacksTillReload != 0)	// Attack at 900 HU
 						{
 							if(distance < 150000.0)	// Walk backwards at 400 HU
 							{
@@ -1518,7 +1525,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					case Cit_Shotgun:
 					{
-						if(distance < 125000.0 && npc.m_iAttacksTillReload != 0)	// Attack at 350 HU
+						if(distance < (125000.0 * npc.m_fGunRangeBonus) && npc.m_iAttacksTillReload != 0)	// Attack at 350 HU
 						{
 							npc.SetActivity("ACT_IDLE_ANGRY_AR2");
 							npc.m_flSpeed = 0.0;
@@ -1710,7 +1717,7 @@ public void Citizen_ClotThink(int iNPC)
 				npc.SetActivity("ACT_RELOAD_PISTOL");
 				npc.m_flSpeed = 0.0;
 				npc.m_iAttacksTillReload = npc.m_iGunClip;
-				npc.m_flReloadDelay = gameTime + 1.4;
+				npc.m_flReloadDelay = gameTime + (1.4 * npc.m_fGunReload);
 				npc.PlayPistolReloadSound();
 				
 				if(npc.m_iWearable1 > 0)
@@ -1728,7 +1735,7 @@ public void Citizen_ClotThink(int iNPC)
 				npc.SetActivity("ACT_RELOAD_SMG1");
 				npc.m_flSpeed = 0.0;
 				npc.m_iAttacksTillReload = npc.m_iGunClip;
-				npc.m_flReloadDelay = gameTime + 2.4;
+				npc.m_flReloadDelay = gameTime + (2.4 * npc.m_fGunReload);
 				npc.PlaySMGReloadSound();
 				
 				if(npc.m_bPathing)
@@ -1743,7 +1750,7 @@ public void Citizen_ClotThink(int iNPC)
 				npc.SetActivity("ACT_RELOAD_AR2");
 				npc.m_flSpeed = 0.0;
 				npc.m_iAttacksTillReload = npc.m_iGunClip;
-				npc.m_flReloadDelay = gameTime + 1.6;
+				npc.m_flReloadDelay = gameTime + (1.6 * npc.m_fGunReload);
 				npc.PlayARReloadSound();
 				
 				if(npc.m_bPathing)
@@ -1758,7 +1765,7 @@ public void Citizen_ClotThink(int iNPC)
 				npc.SetActivity("ACT_RELOAD_shotgun");
 				npc.m_flSpeed = 0.0;
 				npc.m_iAttacksTillReload = npc.m_iGunClip;
-				npc.m_flReloadDelay = gameTime + 2.6;
+				npc.m_flReloadDelay = gameTime + (2.6 * npc.m_fGunReload);
 				npc.PlayShotgunReloadSound();
 				
 				if(npc.m_bPathing)

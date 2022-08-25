@@ -4174,6 +4174,40 @@ float Building_GetDiscount()
 	return 0.98 - (extra * 0.01);
 }
 
+float Building_GetCashOnKillMulti(int client)
+{
+	if(GetBuffEffects(EntIndexToEntRef(client)) & VILLAGE_003)
+		return 1.5;
+	
+	return 1.0;
+}
+
+int Building_GetCashOnWave(int current)
+{
+	int popCash;
+	int extras;
+	int farms;
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
+		{
+			if(Village_Flags[client] & VILLAGE_003)
+				popCash++;
+			
+			if(Village_Flags[client] & VILLAGE_004)
+				extras++;
+			
+			if(Village_Flags[client] & VILLAGE_005)
+				farms++;
+		}
+	}
+	
+	if(popCash > 3)
+		popCash = 3;
+	
+	return (current * popCash / 6) + (farms * (Waves_InFreeplay() ? (extras > 1 ? 575 : 500) : (extras > 1 ? 2875 : 2500)) / CountPlayersOnRed());
+}
+
 static int GetBuffEffects(int ref)
 {
 	int flags;
