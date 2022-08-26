@@ -327,6 +327,10 @@ public void CombinePrime_ClotThink(int iNPC)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
+		else if(flDistanceToTarget > Pow(100.0, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		{
+			npc.m_iState = 1; //Engage in Close Range Destruction.
+		}
 		else
 		{
 			npc.m_iState = 0; //Walk to target
@@ -361,7 +365,7 @@ public void CombinePrime_ClotThink(int iNPC)
 					npc.AddGesture("ACT_SHOVE");
 					npc.PlayMeleeSound();
 					
-					npc.m_flAttackHappens = gameTime + 0.45;
+					npc.m_flAttackHappens = gameTime + 0.3;
 					npc.m_flNextMeleeAttack = gameTime + 1.0;
 					npc.m_bisWalking = false;
 				}
@@ -384,6 +388,7 @@ public Action CombinePrime_ClotDamaged(int victim, int &attacker, int &inflictor
 		
 	CombinePrime npc = view_as<CombinePrime>(victim);
 	
+	//Have a cooldown for hurt animations and hurt sound alike, incase we want them.
 	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{
 		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
