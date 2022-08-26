@@ -257,7 +257,7 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 	}
 	else
 	{
-		npc.m_flSpeed = 260.0;
+		npc.m_flSpeed = 190.0;
 		if(EscapeModeForNpc)
 		{
 			npc.m_flSpeed = 270.0;

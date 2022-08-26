@@ -253,7 +253,7 @@ public void CombineSoldierAr2_ClotThink(int iNPC)
 	}
 	else
 	{
-		npc.m_flSpeed = 260.0;
+		npc.m_flSpeed = 180.0;
 		if(EscapeModeForNpc)
 		{
 			npc.m_flSpeed = 270.0;
