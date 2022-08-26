@@ -753,7 +753,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 	
 	if(ZR_GetWaveCount()<=i_wave_life1[npc.index])
 	{
-		RaidModeScaling= fl_blitzscale[npc.index]*1.0+(1-(Health/MaxHealth));	//now blitz becomes more powerfull the less hp he has rather than via lifelosses
+		RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth)));	//now blitz becomes more powerfull the less hp he has rather than via lifelosses
 		i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth));
 		fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.25;
 		if(fl_rocket_firerate[npc.index]<=0.35)
@@ -763,7 +763,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 	}
 	else if(ZR_GetWaveCount()<=i_wave_life2[npc.index])
 	{
-		RaidModeScaling= fl_blitzscale[npc.index]*1.0+(1-(Health/MaxHealth))*1.3;
+		RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.25);
 		i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*1.3;
 		fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.30;
 		if(fl_rocket_firerate[npc.index]<=0.3)
@@ -773,7 +773,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 	}
 	else if(ZR_GetWaveCount()<=i_wave_life3[npc.index])
 	{
-		RaidModeScaling= fl_blitzscale[npc.index]*1.0+(1-(Health/MaxHealth))*1.8;
+		RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.75);
 		i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*1.8;
 		fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.4;
 		if(fl_rocket_firerate[npc.index]<=0.2)
@@ -783,7 +783,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 	}
 	else if(ZR_GetWaveCount()>=i_wave_life4[npc.index])
 	{
-		RaidModeScaling= fl_blitzscale[npc.index]*1.0+(1-(Health/MaxHealth))*2.55;
+		RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*2.25);
 		i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*2.55;
 		fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.55;	//No limit to the firerate, probably a bad idea
 		if(fl_rocket_firerate[npc.index]<=0.01)	//just incase it goes negative...
