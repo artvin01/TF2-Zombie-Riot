@@ -198,6 +198,11 @@ public void XenoFortifiedHeadcrabZombie_ClotThink(int iNPC)
 		return;
 	}
 	
+	if(npc.bXenoInfectedSpecialHurt)
+	{
+		npc.SetActivity("ACT_WALK_ON_FIRE");
+	}
+	
 	npc.m_flNextThinkTime = GetGameTime() + 0.1;
 
 	

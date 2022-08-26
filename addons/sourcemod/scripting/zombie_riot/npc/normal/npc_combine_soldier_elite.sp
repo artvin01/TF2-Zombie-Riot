@@ -249,6 +249,21 @@ public void CombineElite_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
 	}
 	
+	if(npc.m_flReloadDelay > GetGameTime())
+	{
+		npc.m_flSpeed = 0.0;
+		PF_StopPathing(npc.index);
+		npc.m_bPathing = false;		
+	}
+	else
+	{
+		npc.m_flSpeed = 260.0;
+		if(EscapeModeForNpc)
+		{
+			npc.m_flSpeed = 270.0;
+		}
+	}
+	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -301,12 +316,11 @@ public void CombineElite_ClotThink(int iNPC)
 			if(npc.m_flNextRangedSpecialAttack < GetGameTime() && flDistanceToTarget > 62500 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < GetGameTime())
 			{
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				npc.FireRocket(vPredictedPos, 5.0, 400.0, "models/effects/combineball.mdl");
+				npc.FireRocket(vPredictedPos, 15.0, 400.0, "models/effects/combineball.mdl");
 				npc.m_flNextRangedSpecialAttack = GetGameTime() + 9.0;
-				npc.m_flReloadDelay = GetGameTime() + 1.0;
 				npc.PlayRangedAttackSecondarySound();
 			}
-			if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 62500 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < GetGameTime())
+			if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 25000 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < GetGameTime())
 			{
 				int target;
 			
@@ -328,7 +342,6 @@ public void CombineElite_ClotThink(int iNPC)
 				{
 					npc.m_fbGunout = true;
 					
-					npc.m_bmovedelay = false;
 					
 					npc.FaceTowards(vecTarget, 10000.0);
 					npc.m_flNextRangedAttack = GetGameTime() + 0.15;

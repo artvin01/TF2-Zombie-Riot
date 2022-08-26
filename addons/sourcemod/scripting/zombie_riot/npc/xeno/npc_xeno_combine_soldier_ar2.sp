@@ -249,6 +249,20 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
 	}
 	
+	if(npc.m_flReloadDelay > GetGameTime())
+	{
+		npc.m_flSpeed = 0.0;
+		PF_StopPathing(npc.index);
+		npc.m_bPathing = false;		
+	}
+	else
+	{
+		npc.m_flSpeed = 260.0;
+		if(EscapeModeForNpc)
+		{
+			npc.m_flSpeed = 270.0;
+		}
+	}
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -297,7 +311,7 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 			} else {
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 7225 && flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime())
+			if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 25000 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < GetGameTime())
 			{
 				int target;
 			

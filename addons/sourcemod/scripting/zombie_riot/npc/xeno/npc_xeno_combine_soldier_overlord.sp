@@ -379,7 +379,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 				if(npc.m_flRangedSpecialDelay < GetGameTime())
 				{
 					npc.m_fbRangedSpecialOn = false;
-					npc.m_flNextRangedSpecialAttack = GetGameTime() + 4.0;
+					npc.m_flNextRangedSpecialAttack = GetGameTime() + 8.0;
 					npc.PlayRangedAttackSecondarySound();
 
 					float vecSpread = 0.1;
@@ -415,7 +415,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 					
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
-					int player_hurt = FireBullet(npc.index, npc.index, WorldSpaceCenter(npc.index), vecDir, 50.0, 150.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
+					int player_hurt = FireBullet(npc.index, npc.index, WorldSpaceCenter(npc.index), vecDir, 75.0, 150.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 					
 					if(IsValidClient(player_hurt))
 					{
