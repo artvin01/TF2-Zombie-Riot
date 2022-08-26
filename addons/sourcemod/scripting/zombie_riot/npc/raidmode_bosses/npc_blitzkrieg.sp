@@ -95,6 +95,8 @@ static int i_wave_life4[MAXENTITIES];
 
 static float fl_blitzscale[MAXENTITIES];
 
+static bool b_final_push[MAXENTITIES];
+
 public void Blitzkrieg_OnMapStart()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);      		}
@@ -282,10 +284,10 @@ methodmap Blitzkrieg < CClotBody
 		fl_rocket_firerate[npc.index] = 0.4;
 		fl_rocket_base_dmg[npc.index] = 5.0;
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
-		//wave control	| at which wave or beyond will the life activate
+		//wave control	| at which wave or beyond will the life activate | Now that I think about it, this one might just be useless
 		i_wave_life1[npc.index] = 15;
 		i_wave_life2[npc.index] = 30;
-		i_wave_life3[npc.index] = 45;
+		i_wave_life3[npc.index] = 45;	//Final IOC triggered at this one and beyond.
 		i_wave_life4[npc.index] = 60;
 		
 		//i_wave_blitzstorm[npc.index] = 60;	//Blitz storm ability on final wave. | Curently does nothing.
@@ -386,8 +388,10 @@ methodmap Blitzkrieg < CClotBody
 		
 		fl_blitzscale[npc.index] = RaidModeScaling;
 		
+		b_final_push[npc.index] = false;
 		b_Are_we_reloading[npc.index] = false;
 		npc.PlayMusicSound();
+		npc.StartPathing();
 		Music_Stop_All_Beat(client);
 		return npc;
 	}
@@ -525,7 +529,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 					}
 				}
 			}
-			if(i_PrimaryRocketsFired[npc.index] > i_maxfirerockets[npc.index])	//Every 40 rockets npc enters a 10 second reload time
+			if(i_PrimaryRocketsFired[npc.index] > i_maxfirerockets[npc.index])	//Every x rockets npc enters a 10 second reload time
 			{
 				npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
 				npc.m_flReloadIn = GetGameTime() + (10.0 * fl_LifelossReload[npc.index]);
@@ -569,7 +573,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 					SetVariantString("1.0");
 					AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 				}
-				if(i_NpcCurrentLives[npc.index]>=3)
+				if(i_NpcCurrentLives[npc.index]>=3 && ZR_GetWaveCount()!=i_wave_life3[npc.index])	//Rocket launcher doesn't spawn for the funny wave 45 last push.
 				{
 					if(IsValidEntity(npc.m_iWearable1))
 						RemoveEntity(npc.m_iWearable1);
@@ -592,7 +596,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 					//Can we attack right now?
 					if(npc.m_flNextMeleeAttack < GetGameTime())
 					{
-						npc.m_flSpeed = fl_move_speed[npc.index]-20;	//base speed life 0.	25 speed slower when using rocket launcher
+						npc.m_flSpeed = fl_move_speed[npc.index]-20;	//base speed life 0.	20 speed slower when using rocket launcher
 						//Play attack anim
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 						float projectile_speed = 500.0*i_HealthScale[npc.index];
@@ -649,7 +653,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float meleedmg;
-								meleedmg = 12.5 * RaidModeScaling;
+								meleedmg = 13.5 * RaidModeScaling;
 								if(target <= MaxClients)
 								{
 									float Bonus_damage = 1.0;
@@ -782,9 +786,9 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		RaidModeScaling= fl_blitzscale[npc.index]*1.0+(1-(Health/MaxHealth))*2.55;
 		i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*2.55;
 		fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.55;	//No limit to the firerate, probably a bad idea
-		if(fl_rocket_firerate[npc.index]<=0.0)	//just incase it goes negative...
+		if(fl_rocket_firerate[npc.index]<=0.01)	//just incase it goes negative...
 		{
-			fl_rocket_firerate[npc.index]=0.000000001;	//just incase.....
+			fl_rocket_firerate[npc.index]=0.01;	//so infinite fire rate is not a good idea since it probably can crash the server, probably.
 		}
 	}
 	
@@ -935,10 +939,12 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	}
-	else if(Health/MaxHealth>0 && Health/MaxHealth<0.1 && i_NpcCurrentLives[npc.index] == 3 && ZR_GetWaveCount()>30)
+	else if(Health/MaxHealth>0 && Health/MaxHealth<0.1 && ZR_GetWaveCount()>=i_wave_life3[npc.index] && !b_final_push[npc.index])
 	{	//The final push
 		
 		EmitSoundToAll("mvm/mvm_tank_horn.wav");
+		
+		b_final_push[npc.index] = true;
 		
 		i_NpcCurrentLives[npc.index]=4;
 		

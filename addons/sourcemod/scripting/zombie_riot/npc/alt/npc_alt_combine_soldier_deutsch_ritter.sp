@@ -228,7 +228,7 @@ methodmap Alt_CombineDeutsch < CClotBody
 		npc.StartPathing();
 		
 		i_barrage[npc.index] = 0;
-		fl_barragetimer[npc.index] = GetGameTime() + 15.0;
+		fl_barragetimer[npc.index] = GetGameTime() + 20.0;
 		fl_singularbarrage[npc.index] = GetGameTime() + 1.0
 		b_barrage[npc.index] = false;
 		return npc;
@@ -312,19 +312,19 @@ public void Alt_CombineDeutsch_ClotThink(int iNPC)
 				SetEntityRenderColor(npc.m_iWearable3, 1, 1, 1, 1);
 				npc.FaceTowards(vecTarget);
 				npc.FaceTowards(vecTarget);
-				vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 900.0);
-				npc.FireRocket(vecTarget, 50.0, 900.0, "models/effects/combineball.mdl", 1.0);
+				vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 450.0);
+				npc.FireRocket(vecTarget, 40.0, 450.0, "models/effects/combineball.mdl", 1.0);
 				i_barrage[npc.index]++;
 				npc.PlayRangedSound();
 				npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
-				fl_singularbarrage[npc.index] = GetGameTime() + 0.15;
+				fl_singularbarrage[npc.index] = GetGameTime() + 0.25;
 				b_barrage[npc.index] = true;
-				if (i_barrage[npc.index] >= 10)
+				if (i_barrage[npc.index] >= 5)
 				{
 					SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc.m_iWearable3, 255, 1, 1, 255);
 					i_barrage[npc.index] = 0;
-					fl_barragetimer[npc.index] = GetGameTime() + 45.0;
+					fl_barragetimer[npc.index] = GetGameTime() + 60.0;
 					b_barrage[npc.index] = false;
 				}
 			}
