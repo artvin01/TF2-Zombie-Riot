@@ -416,7 +416,7 @@ public Action CombineGaint_ClotDamaged(int victim, int &attacker, int &inflictor
 		
 	CombineGaint npc = view_as<CombineGaint>(victim);
 	
-	if(npc.m_fbRangedSpecialOn)
+	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
 		damage *= 0.75;
 
 	

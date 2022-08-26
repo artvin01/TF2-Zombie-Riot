@@ -590,7 +590,7 @@ bool Store_HasAnyItem(int client)
 	return false;
 }
 
-/*int Store_HasNamedItem(int client, const char[] name)
+int Store_HasNamedItem(int client, const char[] name)
 {
 	static Item item;
 	int length = StoreItems.Length;
@@ -602,7 +602,22 @@ bool Store_HasAnyItem(int client)
 	}
 	
 	return 0;
-}*/
+}
+
+void Store_SetNamedItem(int client, const char[] name, int amount)
+{
+	static Item item;
+	int length = StoreItems.Length;
+	for(int i; i<length; i++)
+	{
+		StoreItems.GetArray(i, item);
+		if(StrEqual(name, item.Name, false))
+		{
+			item.Owned[client] = amount;
+			StoreItems.SetArray(i, item);
+		}
+	}
+}
 
 void Store_PutInServer(int client)
 {
@@ -2873,7 +2888,7 @@ bool Store_PrintLevelItems(int client, int level)
 	return found;
 }
 
-static char[] TranslateItemName(int client, const char name[64])
+char[] TranslateItemName(int client, const char name[64])
 {
 	static int ServerLang = -1;
 	if(ServerLang == -1)
@@ -2931,6 +2946,9 @@ static void ItemCost(int client, Item item, int &cost)
 
 	}
 	
+	float discount = Building_GetDiscount();
+	if(discount != 1.0)
+		cost = RoundToNearest(float(cost) * discount);
 	
 	if((CurrentRound != 0 || CurrentWave != -1) && cost)
 	{

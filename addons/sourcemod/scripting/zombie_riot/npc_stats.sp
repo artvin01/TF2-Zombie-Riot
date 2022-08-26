@@ -1330,7 +1330,19 @@ public void NPCDeath(int entity)
 	}
 	
 	if(view_as<CClotBody>(entity).m_iCreditsOnKill)
+	{
 		CurrentCash += view_as<CClotBody>(entity).m_iCreditsOnKill;
+		
+		int index = NPCList.FindValue(EntIndexToEntRef(entity), NPCData::Ref);
+		if(index != -1)
+		{
+			NPCData npc;
+			NPCList.GetArray(index, npc);
+			int client = GetClientOfUserId(npc.LastHitId);
+			if(client && IsClientInGame(client))
+				CurrentCash += RoundToFloor(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * Building_GetCashOnKillMulti(client));
+		}
+	}
 }
 
 public void OnMapStart_NPC_Base()
@@ -5636,7 +5648,9 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 		{
 			damage *= Medival_Difficulty_Level;
 		}
-		damage *= fl_MeleeArmor[victim];
+		
+		if(fl_MeleeArmor[victim] >= 1.0 || !Building_DoesPierce(attacker))
+			damage *= fl_MeleeArmor[victim];
 	}
 	else if(!(damagetype & DMG_SLASH))
 	{
@@ -5644,7 +5658,9 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 		{
 			damage *= Medival_Difficulty_Level;
 		}
-		damage *= fl_RangedArmor[victim];
+		
+		if(fl_RangedArmor[victim] >= 1.0 || !Building_DoesPierce(attacker))
+			damage *= fl_RangedArmor[victim];
 	}
 	//No resistances towards slash as its internal.
 	

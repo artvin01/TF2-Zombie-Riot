@@ -460,6 +460,7 @@ methodmap Bloon < CClotBody
 	{
 		bool camo, regrow, fortified;
 		int type = GetBloonTypeOfData(data, camo, fortified, regrow);
+		Building_CamoOrRegrowBlocker(camo, regrow);
 		
 		char buffer[7];
 		IntToString(Bloon_Health(fortified, type), buffer, sizeof(buffer));
@@ -642,7 +643,7 @@ public Action Bloon_ClotDamaged(int victim, int &attacker, int &inflictor, float
 	bool magic;
 	bool pierce;
 	
-	if(damagetype & DMG_SLASH)
+	if((damagetype & DMG_SLASH) || Building_DoesPierce(attacker))
 	{
 		pierce = true;
 	}

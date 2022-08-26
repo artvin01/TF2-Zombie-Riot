@@ -433,7 +433,7 @@ public Action CombineCollos_ClotDamaged(int victim, int &attacker, int &inflicto
 		
 	CombineCollos npc = view_as<CombineCollos>(victim);
 		
-	if(npc.m_fbRangedSpecialOn)
+	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
 		damage *= 0.75;
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())

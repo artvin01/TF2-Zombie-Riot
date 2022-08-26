@@ -383,7 +383,7 @@ public Action XenoCombineDeutsch_ClotDamaged(int victim, int &attacker, int &inf
 		
 	XenoCombineDeutsch npc = view_as<XenoCombineDeutsch>(victim);
 	
-	if(npc.m_fbRangedSpecialOn)
+	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
 		damage *= 0.75;
 	
 	/*
