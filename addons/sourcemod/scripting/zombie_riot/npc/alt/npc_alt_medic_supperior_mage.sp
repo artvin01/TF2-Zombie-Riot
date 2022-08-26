@@ -335,7 +335,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 			}
 			else if(npc.m_flTimebeforekamehameha < GetGameTime() && npc.Anger)
 			{
-				npc.m_flTimebeforekamehameha = GetGameTime() + 45;
+				npc.m_flTimebeforekamehameha = GetGameTime() + 45.0;
 				npc.m_bInKame = true;
 				NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability_Anger(npc.index);
 			}
@@ -354,12 +354,12 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 			if(!npc.Anger)
 			{
 				NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(npc.index, PrimaryThreatIndex);
-				fl_TimebeforeIOC[npc.index] = GetGameTime() + 60;
+				fl_TimebeforeIOC[npc.index] = GetGameTime() + 60.0;
 			}
 			if(npc.Anger)
 			{
 				NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(npc.index, PrimaryThreatIndex);
-				fl_TimebeforeIOC[npc.index] = GetGameTime() + 45;
+				fl_TimebeforeIOC[npc.index] = GetGameTime() + 45.0;
 			}
 		}
 		//Target close enough to hit
@@ -400,7 +400,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 							if(target <= MaxClients)
 								SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 							else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 																				
 							// Hit particle
 							
