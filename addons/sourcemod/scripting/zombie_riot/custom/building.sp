@@ -4212,7 +4212,7 @@ static void VillageCheckItems(int client)
 {
 	int lastFlags = Village_Flags[client];
 	
-	if(Store_HasNamedItem(client, "Monkey Village"))
+	if(Store_HasNamedItem(client, "Buildable Village"))
 	{
 		Village_Flags[client] = VILLAGE_000;
 		
@@ -4285,7 +4285,7 @@ static void VillageUpgradeMenu(int client)
 	
 	SetGlobalTransTarget(client);
 	int cash = CurrentCash-CashSpent[client];
-	menu.SetTitle("%t\n \n%t\n \n%s\n ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, "Monkey Village"));
+	menu.SetTitle("%t\n \n%t\n \n%s\n ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, "Buildable Village"));
 	
 	int paths;
 	if(Village_Flags[client] & VILLAGE_100)
