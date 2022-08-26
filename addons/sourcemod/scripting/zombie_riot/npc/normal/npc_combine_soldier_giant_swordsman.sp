@@ -178,8 +178,6 @@ methodmap CombineGaint < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, CombineGaint_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, CombineGaint_ClotThink);
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 120.0;
@@ -417,7 +415,7 @@ public Action CombineGaint_ClotDamaged(int victim, int &attacker, int &inflictor
 	CombineGaint npc = view_as<CombineGaint>(victim);
 	
 	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.75;
+		damage *= 0.15;
 
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())

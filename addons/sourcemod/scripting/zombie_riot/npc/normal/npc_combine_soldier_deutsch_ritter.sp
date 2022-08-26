@@ -180,9 +180,6 @@ methodmap CombineDeutsch < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, CombineDeutsch_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, CombineDeutsch_ClotThink);
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
-
 		npc.m_iState = 0;
 		npc.m_flSpeed = 250.0;
 		npc.m_flNextRangedAttack = 0.0;
@@ -203,13 +200,6 @@ methodmap CombineDeutsch < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 200, 255, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 200, 255, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 200, 255, 200, 255);
 		
 		npc.StartPathing();
 		

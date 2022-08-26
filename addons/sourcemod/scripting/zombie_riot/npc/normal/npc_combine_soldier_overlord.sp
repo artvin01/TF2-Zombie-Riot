@@ -521,7 +521,7 @@ public Action CombineOverlord_ClotDamaged(int victim, int &attacker, int &inflic
 		damage *= 0.25;
 		
 	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.75;
+		damage *= 0.15;
 		
 	
 	return Plugin_Changed;

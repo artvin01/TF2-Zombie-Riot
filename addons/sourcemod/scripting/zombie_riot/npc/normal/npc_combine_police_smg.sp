@@ -173,9 +173,6 @@ methodmap CombinePoliceSmg < CClotBody
 		
 		
 		npc.m_flNextMeleeAttack = 0.0;
-		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_fbGunout = false;
 		

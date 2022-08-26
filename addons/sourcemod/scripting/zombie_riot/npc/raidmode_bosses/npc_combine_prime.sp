@@ -327,6 +327,10 @@ public void CombinePrime_ClotThink(int iNPC)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
+		else if(flDistanceToTarget > Pow(100.0, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		{
+			npc.m_iState = 1; //Engage in Close Range Destruction.
+		}
 		else
 		{
 			npc.m_iState = 0; //Walk to target

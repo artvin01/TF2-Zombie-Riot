@@ -179,9 +179,6 @@ methodmap CombineSwordsman < CClotBody
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, CombineSwordsman_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, CombineSwordsman_ClotThink);
-	
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 200.0;
@@ -429,7 +426,7 @@ public Action CombineSwordsman_ClotDamaged(int victim, int &attacker, int &infli
 	CombineSwordsman npc = view_as<CombineSwordsman>(victim);
 	
 	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.75;
+		damage *= 0.15;
 	
 	/*
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))

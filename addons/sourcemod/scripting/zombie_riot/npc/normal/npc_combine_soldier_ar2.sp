@@ -179,9 +179,6 @@ methodmap CombineSoldierAr2 < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
-		
 		npc.m_fbGunout = false;
 		npc.m_iAttacksTillReload = 30;
 		npc.m_bmovedelay = false;

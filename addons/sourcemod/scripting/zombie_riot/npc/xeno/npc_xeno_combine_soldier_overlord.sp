@@ -595,7 +595,7 @@ public Action XenoCombineOverlord_ClotDamaged(int victim, int &attacker, int &in
 		damage *= 0.25;
 		
 	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.75;
+		damage *= 0.15;
 		
 	
 	return Plugin_Changed;
