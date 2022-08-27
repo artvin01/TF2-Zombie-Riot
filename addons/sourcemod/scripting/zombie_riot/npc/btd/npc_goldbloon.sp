@@ -10,10 +10,10 @@ static const char SoundPop[][] =
 
 static const char SoundHit[][] =
 {
-	"zombie_riot/btd/pop01.wav",
-	"zombie_riot/btd/pop02.wav",
-	"zombie_riot/btd/pop03.wav",
-	"zombie_riot/btd/pop04.wav"
+	"zombie_riot/btd/hitgolden01.wav",
+	"zombie_riot/btd/hitgolden02.wav",
+	"zombie_riot/btd/hitgolden03.wav",
+	"zombie_riot/btd/hitgolden04.wav"
 };
 
 static const char SoundLead[][] =
@@ -87,10 +87,8 @@ methodmap GoldBloon < CClotBody
 	}
 	public void PlayDeathSound()
 	{
-		int sound = GetRandomInt(0, sizeof(SoundPop) - 1);
-		EmitSoundToAll(SoundPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
-		EmitSoundToAll(SoundPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
-		EmitSoundToAll(SoundPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+		EmitSoundToAll("zombie_riot/btd/popgolden.wav", this.index, SNDCHAN_AUTO, 80, _, 1.0);
+		EmitSoundToAll("zombie_riot/btd/popgolden.wav", this.index, SNDCHAN_AUTO, 80, _, 1.0);
 	}
 	public GoldBloon(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
@@ -128,6 +126,8 @@ methodmap GoldBloon < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_bCamo = (range == 3 || range > 4);
+		
+		npc.DispatchParticleEffect("utaunt_glitter_parent_gold");
 		
 		int sprite = CreateEntityByName("env_sprite");
 		if(sprite != -1)
