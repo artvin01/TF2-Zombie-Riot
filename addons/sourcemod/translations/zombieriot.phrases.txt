@@ -1118,9 +1118,9 @@
 	}
 	"All Items are 20%% off here!"
 	{
-		"en"		"All Items are 20%% off here!"
-		"ru"		"На все товары скидка 20%%!"
-		"de"		"All Gegenstände sind 20%% off hier!"
+		"en"		"All Items are 20%% off here! {$}\nOne Item is 30%% off! {$$}"
+//		"ru"		"На все товары скидка 20%%!"
+//		"de"		"All Gegenstände sind 20%% off hier!"
 	}	
 	"Can Be Pack-A-Punched"
 	{

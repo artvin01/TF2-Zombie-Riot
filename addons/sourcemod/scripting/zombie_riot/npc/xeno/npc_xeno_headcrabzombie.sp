@@ -195,6 +195,10 @@ public void XenoHeadcrabZombie_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GetGameTime() + 0.1;
 
+	if(npc.bXenoInfectedSpecialHurt)
+	{
+		npc.SetActivity("ACT_WALK_ON_FIRE");
+	}
 	
 	if(npc.m_flGetClosestTargetTime < GetGameTime())
 	{

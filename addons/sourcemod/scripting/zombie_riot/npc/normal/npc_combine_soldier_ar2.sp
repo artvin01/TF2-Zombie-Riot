@@ -179,9 +179,6 @@ methodmap CombineSoldierAr2 < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
-		
 		npc.m_fbGunout = false;
 		npc.m_iAttacksTillReload = 30;
 		npc.m_bmovedelay = false;
@@ -248,6 +245,21 @@ public void CombineSoldierAr2_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
 	}
 	
+	if(npc.m_flReloadDelay > GetGameTime())
+	{
+		npc.m_flSpeed = 0.0;
+		PF_StopPathing(npc.index);
+		npc.m_bPathing = false;		
+	}
+	else
+	{
+		npc.m_flSpeed = 180.0;
+		if(EscapeModeForNpc)
+		{
+			npc.m_flSpeed = 270.0;
+		}
+	}
+	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -296,7 +308,7 @@ public void CombineSoldierAr2_ClotThink(int iNPC)
 			} else {
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 7225 && flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime())
+			if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 25000 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < GetGameTime())
 			{
 				int target;
 			
@@ -318,9 +330,7 @@ public void CombineSoldierAr2_ClotThink(int iNPC)
 				{
 					npc.m_fbGunout = true;
 					
-					npc.m_bmovedelay = false;
-					
-					npc.FaceTowards(vecTarget, 1000.0);
+					npc.FaceTowards(vecTarget, 10000.0);
 					
 					float vecSpread = 0.1;
 				

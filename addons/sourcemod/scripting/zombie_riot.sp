@@ -1075,6 +1075,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/pets.sp"
 #include "zombie_riot/custom/coin_flip.sp"
 #include "zombie_riot/custom/weapon_manual_reload.sp"
+#include "zombie_riot/custom/weapon_atomic.sp"
 
 //FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
@@ -1410,6 +1411,7 @@ public void OnMapStart()
 	Wand_Cryo_Precache();
 	Npc_Sp_Precache();
 	Fusion_Melee_OnMapStart();
+	Atomic_MapStart();
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
@@ -1427,10 +1429,13 @@ public void OnMapStart()
 			
 	i_MusicLength1 = 0;
 	i_MusicLength2 = 0;
+	
+	Store_RandomizeNPCStore(true);
 }
 
 public void OnMapEnd()
 {
+	Store_RandomizeNPCStore(true);
 	OnRoundEnd(null, NULL_STRING, false);
 //	OnMapEnd_LagComp();
 	OnMapEndWaves();
@@ -1606,7 +1611,7 @@ public Action Command_ChangeCollision(int client, int args)
 
 public Action Command_SpawnGrigori(int client, int args)
 {
-	Store_RandomizeNPCStore();
+	Store_RandomizeNPCStore(false);
 	Spawn_Cured_Grigori();
 	return Plugin_Handled;
 }
@@ -1830,6 +1835,8 @@ public Action OnPlayerConnect(Event event, const char[] name, bool dontBroadcast
 
 public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 {
+	Store_RandomizeNPCStore(true);
+	
 	b_GameOnGoing = false;
 	for(int client=1; client<=MaxClients; client++)
 	{

@@ -152,8 +152,6 @@ methodmap Combine_Police_Pistol < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 		npc.m_iState = 0;
 		npc.m_flSpeed = 160.0;
 		

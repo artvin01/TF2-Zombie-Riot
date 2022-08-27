@@ -1237,8 +1237,7 @@ public void TrueFusionwarrior_IOC_Invoke(int client, int enemy)
 	static float IOCdamage=10.0;
 	
 	float vecTarget[3];
-	GetClientEyePosition(enemy, vecTarget);
-	vecTarget[2] -= 54.0;
+	GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecTarget);
 	
 	Handle data = CreateDataPack();
 	WritePackFloat(data, vecTarget[0]);

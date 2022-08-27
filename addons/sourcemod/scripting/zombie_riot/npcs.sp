@@ -1289,73 +1289,76 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			GetEntityClassname(weapon, classname, sizeof(classname));
 			if(!StrContains(classname, "tf_weapon_knife", false))
 			{
-				if(IsBehindAndFacingTarget(attacker, victim))
+				if(damagetype & DMG_CLUB) //Use dmg slash for any npc that shouldnt be scaled.
 				{
-					int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
-					int melee = GetIndexOfWeaponSlot(attacker, TFWeaponSlot_Melee);
-					if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
+					if(IsBehindAndFacingTarget(attacker, victim))
 					{
-						float attack_speed;
-		
-						attack_speed = Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);
-						
-						EmitSoundToAll("weapons/knife_swing_crit.wav", attacker, _, _, _, 0.7);
-						RequestFrame(DoMeleeAnimationFrameLater, attacker);
-					//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
-						damage *= 5.25;
-						
-						
-						CClotBody npc = view_as<CClotBody>(victim);
-						
-						if(attacker == npc.m_iTarget)
+						int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
+						int melee = GetIndexOfWeaponSlot(attacker, TFWeaponSlot_Melee);
+						if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
 						{
-							damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER!
-						}
-						
-						if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
-						{
-							damage *= 1.25;
-						}
-						
-						if(EscapeMode)
-							damage *= 1.35;
-						
-				
-						if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
-						{
+							float attack_speed;
+			
+							attack_speed = Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);
 							
-							RequestFrame(Try_Backstab_Anim_Again, attacker);
-							TE_Start("PlayerAnimEvent");
-							Animation_Setting[attacker] = 1;
-							Animation_Index[attacker] = 33;
-							TE_WriteNum("m_iPlayerIndex", attacker);
-							TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
-							TE_WriteNum("m_nData", Animation_Index[attacker]);
-							TE_SendToAll();
-						}
-						if(melee == 356)
-						{
-							StartHealingTimer(attacker, 0.1, 1, 10);
-							SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
-							SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.5 * attack_speed));
-						}
-						else if(melee == 225)
-						{
-							StartHealingTimer(attacker, 0.1, 2, 25);
-							SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.0 * attack_speed));
-							SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.0 * attack_speed));
-						}
-						else if(melee == 727)
-						{
-							//THIS MELEE WILL HAVE SPECIAL PROPERTIES SO ITS RECONISED AS A SPY MELEE AT ALL TIMES!
-							StartHealingTimer(attacker, 0.1, 3, 25);
-							SepcialBackstabLaughSpy(attacker);
-							damage *= 0.75; //Nerf the dmg abit for the last knife as itsotheriwse ridicilous
-						}
-						else
-						{
-							SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
-							SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.5 * attack_speed));	
+							EmitSoundToAll("weapons/knife_swing_crit.wav", attacker, _, _, _, 0.7);
+							RequestFrame(DoMeleeAnimationFrameLater, attacker);
+						//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
+							damage *= 5.25;
+							
+							
+							CClotBody npc = view_as<CClotBody>(victim);
+							
+							if(attacker == npc.m_iTarget)
+							{
+								damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER!
+							}
+							
+							if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
+							{
+								damage *= 1.25;
+							}
+							
+							if(EscapeMode)
+								damage *= 1.35;
+							
+					
+							if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
+							{
+								
+								RequestFrame(Try_Backstab_Anim_Again, attacker);
+								TE_Start("PlayerAnimEvent");
+								Animation_Setting[attacker] = 1;
+								Animation_Index[attacker] = 33;
+								TE_WriteNum("m_iPlayerIndex", attacker);
+								TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
+								TE_WriteNum("m_nData", Animation_Index[attacker]);
+								TE_SendToAll();
+							}
+							if(melee == 356)
+							{
+								StartHealingTimer(attacker, 0.1, 1, 10);
+								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
+								SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.5 * attack_speed));
+							}
+							else if(melee == 225)
+							{
+								StartHealingTimer(attacker, 0.1, 2, 25);
+								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.0 * attack_speed));
+								SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.0 * attack_speed));
+							}
+							else if(melee == 727)
+							{
+								//THIS MELEE WILL HAVE SPECIAL PROPERTIES SO ITS RECONISED AS A SPY MELEE AT ALL TIMES!
+								StartHealingTimer(attacker, 0.1, 3, 25);
+								SepcialBackstabLaughSpy(attacker);
+								damage *= 0.75; //Nerf the dmg abit for the last knife as itsotheriwse ridicilous
+							}
+							else
+							{
+								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
+								SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.5 * attack_speed));	
+							}
 						}
 					}
 				}

@@ -771,7 +771,7 @@ void Waves_Progress()
 					}
 				}
 				
-				Store_RandomizeNPCStore();
+				Store_RandomizeNPCStore(false);
 				Spawn_Cured_Grigori();
 			}
 			if(CurrentRound == 11)
@@ -827,7 +827,7 @@ void Waves_Progress()
 			if(round.Custom_Refresh_Npc_Store)
 			{
 				PrintToChatAll("%t", "Grigori Store Refresh");
-				Store_RandomizeNPCStore(); // Refresh me !!!
+				Store_RandomizeNPCStore(false); // Refresh me !!!
 			}
 			if(round.medival_difficulty != 0)
 			{
@@ -885,7 +885,7 @@ void Waves_Progress()
 			{
 				Cooldown = round.Setup + 30.0;
 				
-				Store_RandomizeNPCStore();
+				Store_RandomizeNPCStore(false);
 				InSetup = true;
 				ExcuteRelay("zr_setuptime");
 				
@@ -945,7 +945,7 @@ void Waves_Progress()
 			{
 				Cooldown = round.Setup+GetGameTime();
 				
-				Store_RandomizeNPCStore();
+				Store_RandomizeNPCStore(false);
 				InSetup = true;
 				ExcuteRelay("zr_setuptime");
 				
