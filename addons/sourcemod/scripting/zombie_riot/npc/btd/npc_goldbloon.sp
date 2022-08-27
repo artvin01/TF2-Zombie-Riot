@@ -127,7 +127,7 @@ methodmap GoldBloon < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_bCamo = (range == 3 || range > 4);
 		
-		npc.DispatchParticleEffect("utaunt_glitter_parent_gold");
+		npc.DispatchParticleEffect(npc.index, "utaunt_glitter_parent_gold");
 		
 		int sprite = CreateEntityByName("env_sprite");
 		if(sprite != -1)
