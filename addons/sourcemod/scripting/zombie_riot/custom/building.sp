@@ -2768,11 +2768,11 @@ public bool BuildingCustomCommand(int client)
 			}
 			else if((Village_Flags[client] & VILLAGE_040) && StrEqual(buffer, "zr_village"))
 			{
-				if(Resupplies_Supplied[client] > 0)
+				if(Ammo_Count_Ready[client] > 0)
 				{
 					if(f_BuildingIsNotReady[client] < GetGameTime())
 					{
-						Resupplies_Supplied[client]--;
+						Ammo_Count_Ready[client]--;
 						f_BuildingIsNotReady[client] = GetGameTime() + 45.0;
 						
 						if(Village_Flags[client] & VILLAGE_050)
@@ -3934,6 +3934,9 @@ public Action Timer_VillageThink(Handle timer, int ref)
 	
 	float range = 600.0;
 	
+	if(effects & VILLAGE_040)
+		Village_ForceUpdate[owner] = true;
+	
 	if(Village_ReloadBuffFor[owner] > GetGameTime())
 	{
 		if(effects & VILLAGE_050)
@@ -4398,7 +4401,7 @@ static void VillageUpgradeMenu(int client)
 	else if(paths < 2)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s [$250]", TranslateItemName(client, "Grow Blocker"));
-		menu.AddItem(VilN(VILLAGE_010), buffer, cash < 400 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(VilN(VILLAGE_010), buffer, cash < 250 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Provides a stackable 20% to remove", ITEMDRAW_DISABLED);
 		menu.AddItem("", "Regrow properties from spawning bloons.\n ", ITEMDRAW_DISABLED);
 	}

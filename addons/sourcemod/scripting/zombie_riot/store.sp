@@ -603,6 +603,7 @@ int Store_HasNamedItem(int client, const char[] name)
 	}
 	
 	ThrowError("Unknown item name %s", name);
+	return 0;
 }
 
 void Store_SetNamedItem(int client, const char[] name, int amount)
@@ -616,7 +617,7 @@ void Store_SetNamedItem(int client, const char[] name, int amount)
 		{
 			item.Owned[client] = amount;
 			StoreItems.SetArray(i, item);
-			break;
+			return;
 		}
 	}
 	
@@ -2724,7 +2725,6 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 
 int Store_GiveSpecificItem(int client, const char[] name)
 {
-	int entity = -1;
 	Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
@@ -2734,6 +2734,7 @@ int Store_GiveSpecificItem(int client, const char[] name)
 		{
 			ItemInfo info;
 			item.GetItemInfo(0, info);
+			int entity = -1;
 			int slot = TF2_GetClassnameSlot(info.Classname);
 			if(slot < sizeof(Equipped[]))
 			{
@@ -2750,10 +2751,12 @@ int Store_GiveSpecificItem(int client, const char[] name)
 				item.Owned[client] = lastOwned;
 				StoreItems.SetArray(i, item);
 			}
-			break;
+			return entity;
 		}
 	}
-	return entity;
+	
+	ThrowError("Unknown item name %s", name);
+	return 0;
 }
 
 bool Store_Interact(int client, int entity, const char[] classname)
