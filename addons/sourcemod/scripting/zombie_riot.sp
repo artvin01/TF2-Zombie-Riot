@@ -1430,7 +1430,7 @@ public void OnMapStart()
 	i_MusicLength1 = 0;
 	i_MusicLength2 = 0;
 	
-	Store_RandomizeNPCStore(true);
+	//Store_RandomizeNPCStore(true);
 }
 
 public void OnMapEnd()

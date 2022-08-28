@@ -602,7 +602,7 @@ int Store_HasNamedItem(int client, const char[] name)
 			return item.Owned[client];
 	}
 	
-	return 0;
+	ThrowError("Unknown item name %s", name);
 }
 
 void Store_SetNamedItem(int client, const char[] name, int amount)
@@ -616,8 +616,11 @@ void Store_SetNamedItem(int client, const char[] name, int amount)
 		{
 			item.Owned[client] = amount;
 			StoreItems.SetArray(i, item);
+			break;
 		}
 	}
+	
+	ThrowError("Unknown item name %s", name);
 }
 
 void Store_PutInServer(int client)

@@ -1,13 +1,5 @@
 #pragma semicolon 1
 
-static const char SoundPop[][] =
-{
-	"zombie_riot/btd/pop01.wav",
-	"zombie_riot/btd/pop02.wav",
-	"zombie_riot/btd/pop03.wav",
-	"zombie_riot/btd/pop04.wav"
-};
-
 static const char SoundHit[][] =
 {
 	"zombie_riot/btd/hitgolden01.wav",

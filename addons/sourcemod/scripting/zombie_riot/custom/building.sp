@@ -980,7 +980,7 @@ void Building_WeaponSwitchPost(int client, int &weapon, const char[] buffer)
 	if(EntityFuncAttack[weapon] && EntityFuncAttack[weapon]!=INVALID_FUNCTION)
 	{
 		Function func = EntityFuncAttack[weapon];
-		if(func == Building_PlaceHealingStation || func == Building_PlacePackAPunch || func == Building_PlacePerkMachine || func==Building_PlaceRailgun || func==Building_PlaceMortar || func==Building_PlaceSentry || func==Building_PlaceDispenser || func==Building_PlaceAmmoBox || func==Building_PlaceArmorTable || func==Building_PlaceElevator)
+		if(func == Building_PlaceVillage || func == Building_PlaceHealingStation || func == Building_PlacePackAPunch || func == Building_PlacePerkMachine || func==Building_PlaceRailgun || func==Building_PlaceMortar || func==Building_PlaceSentry || func==Building_PlaceDispenser || func==Building_PlaceAmmoBox || func==Building_PlaceArmorTable || func==Building_PlaceElevator)
 		{
 			if(Building[client] != INVALID_FUNCTION)
 			{
@@ -3901,7 +3901,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 		}
 		else if(GetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed") == 1.0)
 		{
-			if(Building_Constructed[entity])
+			if(!Building_Constructed[entity])
 			{
 				//BELOW IS SET ONCE!
 				view_as<CClotBody>(entity).bBuildingIsPlaced = true;
@@ -3973,7 +3973,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 	{
 		if(IsClientInGame(client) && IsPlayerAlive(client))
 		{
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < range)
 			{
 				allies.Push(client);
@@ -4476,8 +4476,8 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 			{
 				case VILLAGE_500:
 				{
-					CashSpent[client] += 25000;
 					Store_SetNamedItem(client, "Village NPC Expert", 5);
+					CashSpent[client] += 25000;
 					
 					int entity = EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
 					if(entity > MaxClients && IsValidEntity(entity))
@@ -4488,75 +4488,75 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				}
 				case VILLAGE_400:
 				{
-					CashSpent[client] += 2500;
 					Store_SetNamedItem(client, "Village NPC Expert", 4);
+					CashSpent[client] += 2500;
 				}
 				case VILLAGE_300:
 				{
-					CashSpent[client] += 800;
 					Store_SetNamedItem(client, "Village NPC Expert", 3);
+					CashSpent[client] += 800;
 				}
 				case VILLAGE_200:
 				{
-					CashSpent[client] += 1500;
 					Store_SetNamedItem(client, "Village NPC Expert", 2);
+					CashSpent[client] += 1500;
 				}
 				case VILLAGE_100:
 				{
-					CashSpent[client] += 400;
 					Store_SetNamedItem(client, "Village NPC Expert", 1);
+					CashSpent[client] += 400;
 				}
 				case VILLAGE_050:
 				{
-					CashSpent[client] += 40000;
 					Store_SetNamedItem(client, "Village Buffing Expert", 5);
+					CashSpent[client] += 40000;
 					f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
 				}
 				case VILLAGE_040:
 				{
-					CashSpent[client] += 20000;
 					Store_SetNamedItem(client, "Village Buffing Expert", 4);
+					CashSpent[client] += 20000;
 					f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
 				}
 				case VILLAGE_030:
 				{
-					CashSpent[client] += 7500;
 					Store_SetNamedItem(client, "Village Buffing Expert", 3);
+					CashSpent[client] += 7500;
 				}
 				case VILLAGE_020:
 				{
-					CashSpent[client] += 2000;
 					Store_SetNamedItem(client, "Village Buffing Expert", 2);
+					CashSpent[client] += 2000;
 				}
 				case VILLAGE_010:
 				{
-					CashSpent[client] += 250;
 					Store_SetNamedItem(client, "Village Buffing Expert", 1);
+					CashSpent[client] += 250;
 				}
 				case VILLAGE_005:
 				{
-					CashSpent[client] += 29000;
 					Store_SetNamedItem(client, "Village Support Expert", 5);
+					CashSpent[client] += 29000;
 				}
 				case VILLAGE_004:
 				{
-					CashSpent[client] += 3000;
 					Store_SetNamedItem(client, "Village Support Expert", 4);
+					CashSpent[client] += 3000;
 				}
 				case VILLAGE_003:
 				{
-					CashSpent[client] += 9000;
 					Store_SetNamedItem(client, "Village Support Expert", 3);
+					CashSpent[client] += 9000;
 				}
 				case VILLAGE_002:
 				{
-					CashSpent[client] += 1000;
 					Store_SetNamedItem(client, "Village Support Expert", 2);
+					CashSpent[client] += 1000;
 				}
 				case VILLAGE_001:
 				{
-					CashSpent[client] += 1000;
 					Store_SetNamedItem(client, "Village Support Expert", 1);
+					CashSpent[client] += 1000;
 				}
 			}
 			
@@ -4803,6 +4803,19 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					}
 				}
 			}
+		}
+	}
+	else if(entity <= MaxClients)
+	{
+		bool oldBuff = (oldBuffs & VILLAGE_200) || (oldBuffs & VILLAGE_030) || (oldBuffs & VILLAGE_003);
+		if((newBuffs & VILLAGE_200) || (newBuffs & VILLAGE_030) || (newBuffs & VILLAGE_003))
+		{
+			if(!oldBuff)
+				TF2_AddCondition(entity, TFCond_TeleportedGlow);
+		}
+		else if(oldBuff)
+		{
+			TF2_RemoveCondition(entity, TFCond_TeleportedGlow);
 		}
 	}
 }
