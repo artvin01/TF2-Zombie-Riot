@@ -173,6 +173,8 @@ static int g_particleImpactFlesh;
 static int g_particleImpactRubber;
 static int g_modelArrow;
 
+char c_HeadPlaceAttachmentGibName[MAXENTITIES][64];
+
 
 static int g_sModelIndexBloodDrop;
 static int g_sModelIndexBloodSpray;
@@ -4032,7 +4034,11 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 			}
 			else
 			{
-				float startPosition[3];
+				float startPosition[3]; //This is what we use if we cannot find the correct name of said bone for this npc.
+				
+				float accurateposition[3]; //What we use if it has one.
+				float accurateAngle[3]; //What we use if it has one.
+				
 				float damageForce[3];
 				npc.m_vecpunchforce(damageForce, false);
 				
@@ -4048,7 +4054,15 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						startPosition[2] -= 15;
 						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, damageForce, false, true);
 						startPosition[2] += 44;
-						Place_Gib("models/Gibs/HGIBS.mdl", startPosition, damageForce, false, true);	
+						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						{
+							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, damageForce, false, true);	
+						}
+						else
+						{
+							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, damageForce, false, true);	
+						}
 					}
 					else
 					{
@@ -4058,7 +4072,15 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						startPosition[2] -= 10;
 						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, damageForce);
 						startPosition[2] += 34;
-						Place_Gib("models/Gibs/HGIBS.mdl", startPosition, damageForce);	
+						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						{
+							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, damageForce);	
+						}
+						else
+						{
+							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, damageForce);	
+						}
 					}	
 				}	
 				else if(npc.m_iBleedType == 2)
@@ -4072,7 +4094,15 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						startPosition[2] -= 15;
 						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, damageForce, false, true, true);
 						startPosition[2] += 44;
-						Place_Gib("models/gibs/metal_gib2.mdl", startPosition, damageForce, false, true, true);	
+						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						{
+							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+							Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, damageForce, false, true, true);	
+						}
+						else
+						{
+							Place_Gib("models/gibs/metal_gib2.mdl", startPosition, damageForce, false, true, true);		
+						}
 					}
 					else
 					{
@@ -4082,7 +4112,15 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						startPosition[2] -= 10;
 						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, damageForce, false, false, true);
 						startPosition[2] += 34;
-						Place_Gib("models/gibs/metal_gib2.mdl", startPosition, damageForce, false, false, true);	
+						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						{
+							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+							Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, damageForce, false, false, true);
+						}
+						else
+						{
+							Place_Gib("models/gibs/metal_gib2.mdl", startPosition, damageForce, false, false, true);		
+						}
 					}		
 				}
 				else if(npc.m_iBleedType == 4)
@@ -4096,7 +4134,15 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						startPosition[2] -= 15;
 						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, damageForce, false, true, _, _, _, true);
 						startPosition[2] += 44;
-						Place_Gib("models/Gibs/HGIBS.mdl", startPosition, damageForce, false, true, _, _, _, true);	
+						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						{
+							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, damageForce, false, true, _, _, _, true);	
+						}
+						else
+						{
+							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, damageForce, false, true, _, _, _, true);		
+						}
 					}
 					else
 					{
@@ -4106,7 +4152,15 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						startPosition[2] -= 10;
 						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, damageForce, _, _, _, _, _, true);
 						startPosition[2] += 34;
-						Place_Gib("models/Gibs/HGIBS.mdl", startPosition, damageForce, _, _, _, _, _, true);	
+						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						{
+							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, damageForce, _, _, _, _, _, true);
+						}
+						else
+						{
+							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, damageForce, _, _, _, _, _, true);
+						}
 					}	
 				}				
 			//	#endif					
@@ -7358,6 +7412,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_PickThisDirectionForabit[entity] = 0.0;
 	b_ScalesWithWaves[entity] = false;
 	b_PernellBuff[entity] = false;
+	
+	FormatEx(c_HeadPlaceAttachmentGibName[enity], sizeof(c_HeadPlaceAttachmentGibName[enity]), "");
 }
 
 public void Raidboss_Clean_Everyone()
