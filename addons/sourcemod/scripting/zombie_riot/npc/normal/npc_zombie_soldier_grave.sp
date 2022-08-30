@@ -130,6 +130,8 @@ methodmap Soldier < CClotBody
 		
 		i_NpcInternalId[npc.index] = SOLDIER_ROCKET_ZOMBIE;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		

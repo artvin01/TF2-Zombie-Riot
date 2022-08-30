@@ -168,6 +168,8 @@ methodmap XenoCombineSoldierAr2 < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_AR2;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_RUN_AIM_RIFLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		

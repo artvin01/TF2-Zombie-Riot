@@ -147,6 +147,8 @@ methodmap CombinePrime < CClotBody
 		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_SWORDSMAN;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		

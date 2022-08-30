@@ -469,6 +469,8 @@ methodmap Citizen < CClotBody
 		Citizen npc = view_as<Citizen>(CClotBody(vecPos, vecAng, buffer, "1.15", "150", true, true));
 		i_NpcInternalId[npc.index] = CITIZEN;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		npc.m_iState = -1;
 		npc.SetActivity("ACT_BUSY_SIT_GROUND");
 		

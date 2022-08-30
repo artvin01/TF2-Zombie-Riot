@@ -167,6 +167,8 @@ methodmap SpyCloaked < CClotBody
 		
 		i_NpcInternalId[npc.index] = SPY_HALF_CLOACKED;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		

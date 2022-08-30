@@ -166,6 +166,8 @@ methodmap CombineDeutsch < CClotBody
 		
 		i_NpcInternalId[npc.index] = COMBINE_DEUTSCH_RITTER;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		

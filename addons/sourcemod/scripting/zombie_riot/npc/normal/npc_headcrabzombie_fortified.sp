@@ -131,6 +131,8 @@ methodmap FortifiedHeadcrabZombie < CClotBody
 		
 		i_NpcInternalId[npc.index] = FORTIFIED_HEADCRAB_ZOMBIE;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	

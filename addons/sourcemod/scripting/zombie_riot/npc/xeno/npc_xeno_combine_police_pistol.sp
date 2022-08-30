@@ -169,6 +169,8 @@ methodmap XenoCombinePolicePistol < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_POLICE_PISTOL;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		

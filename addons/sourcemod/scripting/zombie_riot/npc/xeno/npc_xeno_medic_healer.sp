@@ -114,6 +114,8 @@ methodmap XenoMedicHealer < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_MEDIC_HEALER;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		

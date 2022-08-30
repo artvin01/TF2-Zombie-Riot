@@ -229,6 +229,8 @@ methodmap FatherGrigori < CClotBody
 		
 		i_NpcInternalId[npc.index] = FATHER_GRIGORI;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_WALK_AIM_RIFLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		

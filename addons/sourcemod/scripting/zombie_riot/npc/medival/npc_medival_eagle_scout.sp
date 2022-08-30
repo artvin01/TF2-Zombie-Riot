@@ -171,6 +171,8 @@ methodmap MedivalEagleScout < CClotBody
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_EAGLE_SCOUT;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_EAGLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		

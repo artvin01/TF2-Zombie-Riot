@@ -254,6 +254,8 @@ methodmap Blitzkrieg < CClotBody
 		
 		i_NpcInternalId[npc.index] = RAIDMODE_BLITZKRIEG;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");

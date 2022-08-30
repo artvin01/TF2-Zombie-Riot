@@ -163,6 +163,8 @@ methodmap CombineCollos < CClotBody
 		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_COLLOSS;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
