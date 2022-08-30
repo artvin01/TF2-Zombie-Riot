@@ -4057,7 +4057,7 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
 						{
 							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, damageForce, false, true);	
+							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true);	
 						}
 						else
 						{
@@ -4159,7 +4159,7 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						}
 						else
 						{
-							Place_Gib("models/Gibs/HGIBS.mdl", startPositio, _, damageForce, _, _, _, _, _, true);
+							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
 						}
 					}	
 				}				
