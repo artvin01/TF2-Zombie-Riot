@@ -5915,7 +5915,7 @@ static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0
 	*/
 	if(big_gibs)
 	{
-		DispatchKeyValue(prop, "modelscale", "1.5");
+		DispatchKeyValue(prop, "modelscale", "1.6");
 	}
 	if(smaller_gibs)
 	{
