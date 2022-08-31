@@ -81,19 +81,17 @@ void DDT_MapStart()
 	#endif
 }
 
-static bool Fortified[MAXENTITIES];
-
 methodmap DDT < CClotBody
 {
 	property bool m_bFortified
 	{
 		public get()
 		{
-			return Fortified[this.index];
+			return this.m_bLostHalfHealth;
 		}
 		public set(bool value)
 		{
-			Fortified[this.index] = value;
+			this.m_bLostHalfHealth = value;
 		}
 	}
 	public void PlayLeadSound()
@@ -141,7 +139,10 @@ methodmap DDT < CClotBody
 		
 		npc.m_flSpeed = MoabSpeed();
 		npc.m_bFortified = fortified;
-		npc.m_bCamo = true;
+		
+		bool camo = true;
+		Building_CamoOrRegrowBlocker(camo, camo);
+		npc.m_bCamo = camo;
 		
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iState = 0;
@@ -154,8 +155,11 @@ methodmap DDT < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, DDT_ClotDamagedPost);
 		SDKHook(npc.index, SDKHook_Think, DDT_ClotThink);
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 255, 255, 255, 60);
+		if(camo)
+		{
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 255, 255, 255, 60);
+		}
 		
 		npc.StartPathing();
 		
@@ -288,7 +292,7 @@ public Action DDT_ClotDamaged(int victim, int &attacker, int &inflictor, float &
 	
 	DDT npc = view_as<DDT>(victim);
 	
-	if((damagetype & DMG_PLASMA) || (damagetype & DMG_SLASH))
+	if((damagetype & DMG_PLASMA) || (damagetype & DMG_SLASH) || Building_DoesPierce(attacker))
 	{
 		npc.PlayHitSound();
 	}

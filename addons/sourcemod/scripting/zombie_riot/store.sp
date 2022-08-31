@@ -591,7 +591,7 @@ bool Store_HasAnyItem(int client)
 	return false;
 }
 
-/*int Store_HasNamedItem(int client, const char[] name)
+int Store_HasNamedItem(int client, const char[] name)
 {
 	static Item item;
 	int length = StoreItems.Length;
@@ -602,8 +602,27 @@ bool Store_HasAnyItem(int client)
 			return item.Owned[client];
 	}
 	
+	ThrowError("Unknown item name %s", name);
 	return 0;
-}*/
+}
+
+void Store_SetNamedItem(int client, const char[] name, int amount)
+{
+	static Item item;
+	int length = StoreItems.Length;
+	for(int i; i<length; i++)
+	{
+		StoreItems.GetArray(i, item);
+		if(StrEqual(name, item.Name, false))
+		{
+			item.Owned[client] = amount;
+			StoreItems.SetArray(i, item);
+			return;
+		}
+	}
+	
+	ThrowError("Unknown item name %s", name);
+}
 
 void Store_PutInServer(int client)
 {
@@ -2706,7 +2725,6 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 
 int Store_GiveSpecificItem(int client, const char[] name)
 {
-	int entity = -1;
 	Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
@@ -2716,6 +2734,7 @@ int Store_GiveSpecificItem(int client, const char[] name)
 		{
 			ItemInfo info;
 			item.GetItemInfo(0, info);
+			int entity = -1;
 			int slot = TF2_GetClassnameSlot(info.Classname);
 			if(slot < sizeof(Equipped[]))
 			{
@@ -2732,10 +2751,12 @@ int Store_GiveSpecificItem(int client, const char[] name)
 				item.Owned[client] = lastOwned;
 				StoreItems.SetArray(i, item);
 			}
-			break;
+			return entity;
 		}
 	}
-	return entity;
+	
+	ThrowError("Unknown item name %s", name);
+	return 0;
 }
 
 bool Store_Interact(int client, int entity, const char[] classname)
@@ -2901,7 +2922,7 @@ bool Store_PrintLevelItems(int client, int level)
 	return found;
 }
 
-static char[] TranslateItemName(int client, const char name[64])
+char[] TranslateItemName(int client, const char name[64])
 {
 	static int ServerLang = -1;
 	if(ServerLang == -1)
@@ -2967,6 +2988,9 @@ static void ItemCost(int client, Item item, int &cost)
 
 	}
 	
+	float discount = Building_GetDiscount();
+	if(discount != 1.0)
+		cost = RoundToNearest(float(cost) * discount);
 	
 	if((CurrentRound != 0 || CurrentWave != -1) && cost)
 	{

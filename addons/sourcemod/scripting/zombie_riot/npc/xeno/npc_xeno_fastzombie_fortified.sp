@@ -379,7 +379,7 @@ public Action XenoFortifiedFastZombie_ClotDamaged(int victim, int &attacker, int
 	XenoFortifiedFastZombie npc = view_as<XenoFortifiedFastZombie>(victim);
 	
 	
-	if(!npc.bXenoInfectedSpecialHurt)
+	if(!npc.bXenoInfectedSpecialHurt && !Building_DoesPierce(attacker))
 	{
 		npc.bXenoInfectedSpecialHurt = true;
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);

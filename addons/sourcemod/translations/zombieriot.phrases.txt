@@ -1002,6 +1002,10 @@
 		"ru" 		"Вы не можете установить это."
 		"de"		"Das kannst du nicht aufheben."
 	}
+	"Village Upgrade Tooltip"
+	{
+		"en" 		"Press RELOAD to upgrade your village."
+	}
 	"Pong"
 	{
 		"en" 		"Pong"

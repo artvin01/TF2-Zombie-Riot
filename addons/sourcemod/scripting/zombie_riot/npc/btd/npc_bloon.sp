@@ -227,7 +227,6 @@ void Bloon_MapStart()
 static int BType[MAXENTITIES];
 static bool Regrow[MAXENTITIES];
 //static bool Camo[MAXENTITIES];
-static bool Fortified[MAXENTITIES];
 static int TypeOg[MAXENTITIES];
 static int Sprite[MAXENTITIES];
 
@@ -281,11 +280,11 @@ methodmap Bloon < CClotBody
 	{
 		public get()
 		{
-			return Fortified[this.index];
+			return this.m_bLostHalfHealth;
 		}
 		public set(bool value)
 		{
-			Fortified[this.index] = value;
+			this.m_bLostHalfHealth = value;
 		}
 	}
 	property int m_iSprite
@@ -461,6 +460,7 @@ methodmap Bloon < CClotBody
 	{
 		bool camo, regrow, fortified;
 		int type = GetBloonTypeOfData(data, camo, fortified, regrow);
+		Building_CamoOrRegrowBlocker(camo, regrow);
 		
 		char buffer[7];
 		IntToString(Bloon_Health(fortified, type), buffer, sizeof(buffer));
@@ -643,7 +643,7 @@ public Action Bloon_ClotDamaged(int victim, int &attacker, int &inflictor, float
 	bool magic;
 	bool pierce;
 	
-	if(damagetype & DMG_SLASH)
+	if((damagetype & DMG_SLASH) || Building_DoesPierce(attacker))
 	{
 		pierce = true;
 	}

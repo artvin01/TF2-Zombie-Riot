@@ -450,9 +450,8 @@ public Action XenoCombineSwordsman_ClotDamaged(int victim, int &attacker, int &i
 		
 	XenoCombineSwordsman npc = view_as<XenoCombineSwordsman>(victim);
 	
-	if(npc.m_fbRangedSpecialOn)
+	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
 		damage *= 0.15;
-	
 	
 	if(!npc.bXenoInfectedSpecialHurt)
 	{

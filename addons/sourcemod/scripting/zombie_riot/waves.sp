@@ -720,9 +720,10 @@ void Waves_Progress()
 		}
 		else
 		{
-			CurrentCash += round.Cash;
-			if(round.Cash)
-				PrintToChatAll("%t","Cash Gained This Wave", round.Cash);
+			int extra = Building_GetCashOnWave(round.Cash);
+			CurrentCash += round.Cash + extra;
+			if(round.Cash + extra)
+				PrintToChatAll("%t","Cash Gained This Wave", round.Cash + extra);
 			
 			CurrentRound++;
 			CurrentWave = -1;
@@ -738,13 +739,13 @@ void Waves_Progress()
 					{
 						SetGlobalTransTarget(client_Penalise);
 						PrintToChat(client_Penalise, "%t", "You have only gained 60%% due to not being in-game");
-						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.40);
+						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.40) + extra;
 					}
 					else if (TeutonType[client_Penalise] == TEUTON_WAITING)
 					{
 						SetGlobalTransTarget(client_Penalise);
 						PrintToChat(client_Penalise, "%t", "You have only gained 70 %% due to being a non-player player, but still helping");
-						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.30);
+						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.30) + extra;
 					}
 				}
 			}
@@ -1226,7 +1227,7 @@ public int Waves_FreeplayVote(Menu menu, MenuAction action, int item, int param2
 	}
 	return 0;
 }
-				
+
 bool Waves_GetNextEnemy(Enemy enemy)
 {
 	if(!Enemies || Enemies.Empty)
@@ -1234,6 +1235,12 @@ bool Waves_GetNextEnemy(Enemy enemy)
 	
 	Enemies.PopArray(enemy);
 	return true;
+}
+
+void Waves_AddNextEnemy(const Enemy enemy)
+{
+	if(Enemies)
+		Enemies.PushArray(enemy);
 }
 
 bool Waves_Started()

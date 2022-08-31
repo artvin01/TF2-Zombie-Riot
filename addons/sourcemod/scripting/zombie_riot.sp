@@ -696,6 +696,14 @@ enum
 	L4D2_TANK							= 118,
 	ALT_COMBINE_DEUTSCH_RITTER			= 119,
 	ALT_SNIPER_RAILGUNNER				= 120,
+	
+	BTD_GOLDBLOON	= 121,
+	BTD_BLOONARIUS	= 122,
+	BTD_LYCH		= 123,
+	BTD_LYCHSOUL	= 124,
+	BTD_VORTEX	= 125,
+	
+	MEDIVAL_RAM	= 126
 }
 
 
@@ -828,7 +836,15 @@ public const char NPC_Names[][] =
 	"Kahmlstein",
 	"L4D2 Tank",
 	"Holy Knight",
-	"Sniper Railgunner"
+	"Sniper Railgunner",
+	
+	"Gold Bloon",
+	"Bloonarius",
+	"Gravelord Lych",
+	"Lych-Soul",
+	"Vortex",
+	
+	"Capped Ram"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -959,7 +975,13 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_kahml",
 	"npc_l4d2_tank",
 	"npc_alt_combine_soldier_deutsch_ritter",
-	"npc_alt_sniper_railgunner"
+	"npc_alt_sniper_railgunner",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"npc_medival_ram"
 };
 
 #include "zombie_riot/stocks_override.sp"
@@ -1408,7 +1430,7 @@ public void OnMapStart()
 	i_MusicLength1 = 0;
 	i_MusicLength2 = 0;
 	
-	Store_RandomizeNPCStore(true);
+	//Store_RandomizeNPCStore(true);
 }
 
 public void OnMapEnd()

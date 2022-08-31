@@ -37,23 +37,35 @@
 
 #define BUILDINGCOLLISIONNUMBER	27
 
-#define VILLAGE_100	(0 << 1)
-#define VILLAGE_200	(0 << 2)
-#define VILLAGE_300	(0 << 3)
-#define VILLAGE_400	(0 << 4)
-#define VILLAGE_500	(0 << 5)
-#define VILLAGE_010	(0 << 6)
-#define VILLAGE_020	(0 << 7)
-#define VILLAGE_030	(0 << 8)
-#define VILLAGE_040	(0 << 9)
-#define VILLAGE_050	(0 << 10)
-#define VILLAGE_001	(0 << 11)
-#define VILLAGE_002	(0 << 12)
-#define VILLAGE_003	(0 << 13)
-#define VILLAGE_004	(0 << 14)
-#define VILLAGE_005	(0 << 15)
+enum struct VillageBuff
+{
+	int EntityRef;
+	int VillageRef;
+	int Effects;
+	bool IsWeapon;
+}
 
+#define VILLAGE_000	(1 << 0)
+#define VILLAGE_100	(1 << 1)
+#define VILLAGE_200	(1 << 2)
+#define VILLAGE_300	(1 << 3)
+#define VILLAGE_400	(1 << 4)
+#define VILLAGE_500	(1 << 5)
+#define VILLAGE_010	(1 << 6)
+#define VILLAGE_020	(1 << 7)
+#define VILLAGE_030	(1 << 8)
+#define VILLAGE_040	(1 << 9)
+#define VILLAGE_050	(1 << 10)
+#define VILLAGE_001	(1 << 11)
+#define VILLAGE_002	(1 << 12)
+#define VILLAGE_003	(1 << 13)
+#define VILLAGE_004	(1 << 14)
+#define VILLAGE_005	(1 << 15)
+
+static float Village_ReloadBuffFor[MAXTF2PLAYERS];
 static int Village_Flags[MAXTF2PLAYERS];
+static bool Village_ForceUpdate[MAXTF2PLAYERS];
+static ArrayList Village_Effects;
 
 //static int gLaser1;
 
@@ -68,6 +80,11 @@ static Handle h_Pickup_Building[MAXPLAYERS + 1];
 
 void Building_MapStart()
 {
+	if(Village_Effects)
+		delete Village_Effects;
+	
+	Village_Effects = new ArrayList(sizeof(VillageBuff));
+	
 //	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 //	SyncHud_Notifaction = CreateHudSynchronizer();
 	PrecacheModel(CUSTOM_SENTRYGUN_MODEL); //MORTAR MODEL AND RAILGUN MODEL!!!
@@ -963,7 +980,7 @@ void Building_WeaponSwitchPost(int client, int &weapon, const char[] buffer)
 	if(EntityFuncAttack[weapon] && EntityFuncAttack[weapon]!=INVALID_FUNCTION)
 	{
 		Function func = EntityFuncAttack[weapon];
-		if(func == Building_PlaceHealingStation || func == Building_PlacePackAPunch || func == Building_PlacePerkMachine || func==Building_PlaceRailgun || func==Building_PlaceMortar || func==Building_PlaceSentry || func==Building_PlaceDispenser || func==Building_PlaceAmmoBox || func==Building_PlaceArmorTable || func==Building_PlaceElevator)
+		if(func == Building_PlaceVillage || func == Building_PlaceHealingStation || func == Building_PlacePackAPunch || func == Building_PlacePerkMachine || func==Building_PlaceRailgun || func==Building_PlaceMortar || func==Building_PlaceSentry || func==Building_PlaceDispenser || func==Building_PlaceAmmoBox || func==Building_PlaceArmorTable || func==Building_PlaceElevator)
 		{
 			if(Building[client] != INVALID_FUNCTION)
 			{
@@ -1249,26 +1266,8 @@ void Building_ShowInteractionHud(int client, int entity)
 				else if(!StrContains(buffer, "zr_village_") && GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
 				{
 					Hide_Hud = false;
-					if(Building_Collect_Cooldown[entity][0] > GetGameTime())
-					{
-						float Building_Picking_up_cd = Building_Collect_Cooldown[entity][0] - GetGameTime();
-						
-						if(Building_Picking_up_cd <= 0.0)
-							Building_Picking_up_cd = 0.0;
-							
-						SetGlobalTransTarget(client);
-						PrintCenterText(client, "%t","Object Cooldown",Building_Picking_up_cd);
-					}
-					else if(!StrContains(buffer, "zr_village_2"))
-					{
-						SetGlobalTransTarget(client);
-						PrintCenterText(client, "%t", "Village Buff Large Tooltip");						
-					}
-					else
-					{
-						SetGlobalTransTarget(client);
-						PrintCenterText(client, "%t", "Village Buff Small Tooltip");						
-					}
+					SetGlobalTransTarget(client);
+					PrintCenterText(client, "%t", "Village Upgrade Tooltip");
 				}
 			}
 		}
@@ -2108,21 +2107,9 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 				}
 				case 8:
 				{
-					Building_Collect_Cooldown[entity][0] = GetGameTime() + 120.0;
-					EmitSoundToAll("items/powerup_pickup_base.wav", entity);
-					ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-					StartHealingTimer(client, 0.1, 1, 30);
-					if(owner != -1 && i_Healing_station_money_limit[owner][client] <= 3)
+					if(Is_Reload_Button && owner == client)
 					{
-						if(owner != client)
-						{
-							i_Healing_station_money_limit[owner][client] += 1;
-							Resupplies_Supplied[owner] += 4;
-							CashSpent[owner] -= 40;
-							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-							SetGlobalTransTarget(owner);
-							ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Healing Station Used");
-						}
+						VillageUpgradeMenu(client);
 					}
 				}
 			}
@@ -2777,6 +2764,49 @@ public bool BuildingCustomCommand(int client)
 							}
 						}
 					}
+				}
+			}
+			else if((Village_Flags[client] & VILLAGE_040) && StrEqual(buffer, "zr_village"))
+			{
+				if(Ammo_Count_Ready[client] > 0)
+				{
+					if(f_BuildingIsNotReady[client] < GetGameTime())
+					{
+						Ammo_Count_Ready[client]--;
+						f_BuildingIsNotReady[client] = GetGameTime() + 45.0;
+						
+						if(Village_Flags[client] & VILLAGE_050)
+						{
+							Village_ReloadBuffFor[client] = GetGameTime() + 20.0;
+							EmitSoundToAll("items/powerup_pickup_uber.wav");
+							EmitSoundToAll("items/powerup_pickup_uber.wav");
+						}
+						else
+						{
+							Village_ReloadBuffFor[client] = GetGameTime() + 15.0;
+							EmitSoundToAll("player/mannpower_invulnerable.wav", client);
+							EmitSoundToAll("player/mannpower_invulnerable.wav", client);
+						}
+					}
+					else
+					{
+						float Ability_CD = f_BuildingIsNotReady[client] - GetGameTime();
+						
+						if(Ability_CD <= 0.0)
+							Ability_CD = 0.0;
+						
+						ClientCommand(client, "playgamesound items/medshotno1.wav");
+						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+					}
+				}
+				else
+				{
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "No Ammo Supplies");
 				}
 			}
 		}
@@ -3790,69 +3820,7 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	Store_ApplyAttribs(client);
 	Store_GiveAll(client, GetClientHealth(client));	
 }
-/*
-void Building_CheckItems(int client)
-{
-	Village_Flags[client] = 0;
-	
-	switch(Store_HasNamedItem(client, "Village NPC Expert"))
-	{
-		case 1:
-			Village_Flags[client] = VILLAGE_100;
-		
-		case 2:
-			Village_Flags[client] = VILLAGE_100 + VILLAGE_200;
-		
-		case 3:
-			Village_Flags[client] = VILLAGE_100 + VILLAGE_200 + VILLAGE_300;
-		
-		case 4:
-			Village_Flags[client] = VILLAGE_100 + VILLAGE_200 + VILLAGE_300 + VILLAGE_400;
-		
-		case 5:
-			Village_Flags[client] = VILLAGE_100 + VILLAGE_200 + VILLAGE_300 + VILLAGE_400 + VILLAGE_500;
-		
-		default:
-			Village_Flags[client] = 0;
-	}
-	
-	switch(Store_HasNamedItem(client, "Village Buffing Expert"))
-	{
-		case 1:
-			Village_Flags[client] += VILLAGE_010;
-		
-		case 2:
-			Village_Flags[client] += VILLAGE_010 + VILLAGE_020;
-		
-		case 3:
-			Village_Flags[client] += VILLAGE_010 + VILLAGE_020 + VILLAGE_030;
-		
-		case 4:
-			Village_Flags[client] += VILLAGE_010 + VILLAGE_020 + VILLAGE_030 + VILLAGE_040;
-		
-		case 5:
-			Village_Flags[client] += VILLAGE_010 + VILLAGE_020 + VILLAGE_030 + VILLAGE_040 + VILLAGE_050;
-	}
-	
-	switch(Store_HasNamedItem(client, "Village Support Expert"))
-	{
-		case 1:
-			Village_Flags[client] += VILLAGE_001;
-		
-		case 2:
-			Village_Flags[client] += VILLAGE_001 + VILLAGE_002;
-		
-		case 3:
-			Village_Flags[client] += VILLAGE_001 + VILLAGE_002 + VILLAGE_003;
-		
-		case 4:
-			Village_Flags[client] += VILLAGE_001 + VILLAGE_002 + VILLAGE_003 + VILLAGE_004;
-		
-		case 5:
-			Village_Flags[client] += VILLAGE_001 + VILLAGE_002 + VILLAGE_003 + VILLAGE_004 + VILLAGE_005;
-	}
-}
-*/
+
 public Action Building_PlaceVillage(int client, int weapon, const char[] classname, bool &result)
 {
 	int Sentrygun = EntRefToEntIndex(i_HasSentryGunAlive[client]);
@@ -3881,8 +3849,9 @@ public Action Building_PlaceVillage(int client, int weapon, const char[] classna
 
 public bool Building_Village(int client, int entity)
 {
+	VillageCheckItems(client);
 	i_HasSentryGunAlive[client] = EntIndexToEntRef(entity);
-	b_SentryIsCustom[entity] = true;
+	b_SentryIsCustom[entity] = !(Village_Flags[client] & VILLAGE_500);
 	Building_Constructed[entity] = false;
 	CreateTimer(0.2, Building_Set_HP_Colour_Sentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	CreateTimer(0.5, Timer_VillageThink, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT); //No custom anims
@@ -3912,43 +3881,944 @@ public bool Building_Village(int client, int entity)
 
 public Action Timer_VillageThink(Handle timer, int ref)
 {
+	float pos1[3] = {999999999.9, 999999999.9, 999999999.9};
+	bool mounted;
+	int owner;
 	int entity = EntRefToEntIndex(ref);
-	if(entity == INVALID_ENT_REFERENCE)
-		return Plugin_Stop;
-	
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-	if(owner < 1 || owner > MaxClients)
+	if(entity != INVALID_ENT_REFERENCE)
 	{
-		SDKHooks_TakeDamage(entity, entity, entity, 999999.9);
-		return Plugin_Continue;
-	}
-	
-	float pos[3];
-	if(Building_Mounted[owner] == ref)
-	{
-		GetClientEyePosition(owner, pos);
-	}
-	else if(GetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed") == 1.0)
-	{
-		if(Building_Constructed[entity])
+		owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+		if(owner < 1 || owner > MaxClients)
 		{
-			//BELOW IS SET ONCE!
-			view_as<CClotBody>(entity).bBuildingIsPlaced = true;
-			Building_Constructed[entity] = true;
-			
-			static const float minbounds[3] = {-10.0, -20.0, 0.0};
-			static const float maxbounds[3] = {10.0, 20.0, -2.0};
-			SetEntPropVector(entity, Prop_Send, "m_vecMins", minbounds);
-			SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxbounds);
-			
-			SetEntityModel(entity, VILLAGE_MODEL);
+			SDKHooks_TakeDamage(entity, entity, entity, 999999.9);
+			entity = INVALID_ENT_REFERENCE;
+			owner = 0;
 		}
+		else if(Building_Mounted[owner] == ref)
+		{
+			GetClientEyePosition(owner, pos1);
+			mounted = true;
+		}
+		else if(GetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed") == 1.0)
+		{
+			if(!Building_Constructed[entity])
+			{
+				//BELOW IS SET ONCE!
+				view_as<CClotBody>(entity).bBuildingIsPlaced = true;
+				Building_Constructed[entity] = true;
+				
+				if(Village_Flags[owner] & VILLAGE_500)
+				{
+					SetEntityModel(entity, "models/buildables/sentry1.mdl");
+				}
+				else
+				{
+					static const float minbounds[3] = {-10.0, -20.0, 0.0};
+					static const float maxbounds[3] = {10.0, 20.0, -2.0};
+					SetEntPropVector(entity, Prop_Send, "m_vecMins", minbounds);
+					SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxbounds);
+					
+					SetEntityModel(entity, VILLAGE_MODEL);
+				}
+			}
+			
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+		}
+		else
+		{
+			Building_Constructed[entity] = false;
+		}
+	}
+	
+	int effects = Village_Flags[owner];
+	
+	float range = 600.0;
+	
+	if(effects & VILLAGE_040)
+		Village_ForceUpdate[owner] = true;
+	
+	if(Village_ReloadBuffFor[owner] > GetGameTime())
+	{
+		if(effects & VILLAGE_050)
+			range = 10000.0;
 	}
 	else
 	{
-		Building_Constructed[entity] = false;
-		return Plugin_Continue;
+		effects &= ~VILLAGE_050;
+		effects &= ~VILLAGE_040;
 	}
 	
-	return Plugin_Continue;
+	if(!(effects & VILLAGE_050))
+	{
+		if(effects & VILLAGE_100)
+			range += 120.0;
+		
+		if(effects & VILLAGE_500)
+		{
+			range += 125.0;
+		}
+		else if(effects & VILLAGE_004)
+		{
+			range += 150.0;
+		}
+	}
+	
+	if(mounted)
+		range *= 0.55;
+	
+	range = range * range;
+	
+	ArrayList weapons = new ArrayList();
+	ArrayList allies = new ArrayList();
+	
+	float pos2[3];
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsPlayerAlive(client))
+		{
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos2);
+			if(GetVectorDistance(pos1, pos2, true) < range)
+			{
+				allies.Push(client);
+				
+				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon > MaxClients)
+					weapons.Push(weapon);
+			}
+		}
+	}
+	
+	int i = MaxClients + 1;
+	while((i = FindEntityByClassname(i, "base_boss")) != -1)
+	{
+		if(GetEntProp(i, Prop_Send, "m_iTeamNum") == 2)
+		{
+			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
+			if(GetVectorDistance(pos1, pos2, true) < range)
+				allies.Push(i);
+		}
+	}
+	
+	VillageBuff buff;
+	int length = Village_Effects.Length;
+	for(i = 0; i < length; i++)
+	{
+		Village_Effects.GetArray(i, buff);
+		if(buff.VillageRef == ref)
+		{
+			int target = EntRefToEntIndex(buff.EntityRef);
+			if(target == -1)
+			{
+				Village_Effects.Erase(i--);
+				length--;
+			}
+			else
+			{
+				int weapPos = -1;
+				int allyPos = allies.FindValue(target);
+				if(allyPos == -1)
+					weapPos = weapons.FindValue(target);
+				
+				if(allyPos == -1 && weapPos == -1)
+				{
+					int oldBuffs = GetBuffEffects(buff.EntityRef);
+					
+					Village_Effects.Erase(i--);
+					length--;
+					
+					UpdateBuffEffects(target, buff.IsWeapon, oldBuffs, GetBuffEffects(buff.EntityRef));
+				}
+				else
+				{
+					if(allyPos != -1)
+					{
+						allies.Erase(allyPos);
+					}
+					else
+					{
+						weapons.Erase(weapPos);
+					}
+					
+					if(Village_ForceUpdate[owner])
+					{
+						int oldBuffs = GetBuffEffects(buff.EntityRef);
+						
+						buff.Effects = effects;
+						Village_Effects.SetArray(i, buff);
+						
+						UpdateBuffEffects(target, buff.IsWeapon, oldBuffs, GetBuffEffects(buff.EntityRef));
+					}
+				}
+			}
+		}
+	}
+	
+	length = allies.Length;
+	for(i = 0; i < length; i++)
+	{
+		int target = allies.Get(i);
+		
+		buff.EntityRef = EntIndexToEntRef(target);
+		
+		int oldBuffs = GetBuffEffects(buff.EntityRef);
+		
+		buff.VillageRef = ref;
+		buff.IsWeapon = false;
+		buff.Effects = effects;
+		Village_Effects.PushArray(buff);
+		
+		UpdateBuffEffects(target, buff.IsWeapon, oldBuffs, GetBuffEffects(buff.EntityRef));
+	}
+	
+	length = weapons.Length;
+	for(i = 0; i < length; i++)
+	{
+		int target = weapons.Get(i);
+		
+		buff.EntityRef = EntIndexToEntRef(target);
+		
+		int oldBuffs = GetBuffEffects(buff.EntityRef);
+		
+		buff.VillageRef = ref;
+		buff.IsWeapon = true;
+		buff.Effects = effects;
+		Village_Effects.PushArray(buff);
+		
+		UpdateBuffEffects(target, buff.IsWeapon, oldBuffs, GetBuffEffects(buff.EntityRef));
+	}
+	
+	delete weapons;
+	delete allies;
+	
+	Village_ForceUpdate[owner] = false;
+	return entity == INVALID_ENT_REFERENCE ? Plugin_Stop : Plugin_Continue;
+}
+
+void Building_ClearRefBuffs(int ref)
+{
+	for(int i = -1; (i = Village_Effects.FindValue(ref, VillageBuff::EntityRef)) != -1; )
+	{
+		Village_Effects.Erase(i);
+	}
+}
+
+float Building_GetDiscount()
+{
+	int extra;
+	bool found;
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
+		{
+			if(Village_Flags[client] & VILLAGE_001)
+				found = true;
+			
+			if(Village_Flags[client] & VILLAGE_002)
+				extra++;
+		}
+	}
+	
+	if(!found)
+		return 1.0;
+	
+	if(extra > 3)
+		extra = 3;
+	
+	return 0.98 - (extra * 0.01);
+}
+
+void Building_CamoOrRegrowBlocker(bool &camo, bool &regrow)
+{
+	if(camo || regrow)
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
+			{
+				if(camo && (Village_Flags[client] & VILLAGE_010) && (GetURandomInt() % 2))
+					camo = false;
+				
+				if(regrow && (Village_Flags[client] & VILLAGE_020) && !(GetURandomInt() % 5))
+					regrow = false;
+			}
+		}
+	}
+}
+
+float Building_GetCashOnKillMulti(int client)
+{
+	if(GetBuffEffects(EntIndexToEntRef(client)) & VILLAGE_003)
+		return 1.5;
+	
+	return 1.0;
+}
+
+bool Building_DoesPierce(int client)
+{
+	return (client > 0 && client <= MaxClients && (GetBuffEffects(EntIndexToEntRef(client)) & VILLAGE_030));
+}
+
+int Building_GetCashOnWave(int current)
+{
+	static int freeRebel;
+	
+	int popCash;
+	int extras;
+	int farms;
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
+		{
+			if(Village_Flags[client] & VILLAGE_003)
+				popCash++;
+			
+			if(Village_Flags[client] & VILLAGE_004)
+				extras++;
+			
+			if(Village_Flags[client] & VILLAGE_005)
+				farms++;
+		}
+	}
+	
+	if(!extras)
+	{
+		freeRebel = 0;
+	}
+	else if(freeRebel > 9)
+	{
+		freeRebel -= 10 - extras;
+		
+		int count;
+		
+		int i = MaxClients + 1;
+		while((i = FindEntityByClassname(i, "base_boss")) != -1)
+		{
+			if(i_NpcInternalId[i] == CITIZEN)
+				count++;
+		}
+		
+		if(count < 6)
+			Citizen_SpawnAtPoint();
+	}
+	else
+	{
+		freeRebel += extras;
+	}
+	
+	if(popCash > 3)
+		popCash = 3;
+	
+	return (current * popCash / 6) + (farms * (Waves_InFreeplay() ? (extras > 1 ? 575 : 500) : (extras > 1 ? 2760 : 2400)) / CountPlayersOnRed());
+}
+
+static void VillageCheckItems(int client)
+{
+	int lastFlags = Village_Flags[client];
+	
+	if(Store_HasNamedItem(client, "Buildable Village"))
+	{
+		Village_Flags[client] = VILLAGE_000;
+		
+		switch(Store_HasNamedItem(client, "Village NPC Expert"))
+		{
+			case 1:
+				Village_Flags[client] += VILLAGE_100;
+			
+			case 2:
+				Village_Flags[client] += VILLAGE_100 + VILLAGE_200;
+			
+			case 3:
+				Village_Flags[client] += VILLAGE_100 + VILLAGE_200 + VILLAGE_300;
+			
+			case 4:
+				Village_Flags[client] += VILLAGE_100 + VILLAGE_200 + VILLAGE_300 + VILLAGE_400;
+			
+			case 5:
+				Village_Flags[client] += VILLAGE_100 + VILLAGE_200 + VILLAGE_300 + VILLAGE_400 + VILLAGE_500;
+		}
+		
+		switch(Store_HasNamedItem(client, "Village Buffing Expert"))
+		{
+			case 1:
+				Village_Flags[client] += VILLAGE_010;
+			
+			case 2:
+				Village_Flags[client] += VILLAGE_010 + VILLAGE_020;
+			
+			case 3:
+				Village_Flags[client] += VILLAGE_010 + VILLAGE_020 + VILLAGE_030;
+			
+			case 4:
+				Village_Flags[client] += VILLAGE_010 + VILLAGE_020 + VILLAGE_030 + VILLAGE_040;
+			
+			case 5:
+				Village_Flags[client] += VILLAGE_010 + VILLAGE_020 + VILLAGE_030 + VILLAGE_040 + VILLAGE_050;
+		}
+		
+		switch(Store_HasNamedItem(client, "Village Support Expert"))
+		{
+			case 1:
+				Village_Flags[client] += VILLAGE_001;
+			
+			case 2:
+				Village_Flags[client] += VILLAGE_001 + VILLAGE_002;
+			
+			case 3:
+				Village_Flags[client] += VILLAGE_001 + VILLAGE_002 + VILLAGE_003;
+			
+			case 4:
+				Village_Flags[client] += VILLAGE_001 + VILLAGE_002 + VILLAGE_003 + VILLAGE_004;
+			
+			case 5:
+				Village_Flags[client] += VILLAGE_001 + VILLAGE_002 + VILLAGE_003 + VILLAGE_004 + VILLAGE_005;
+		}
+		
+		if(lastFlags != Village_Flags[client])
+			Village_ForceUpdate[client] = true;
+	}
+	else
+	{
+		Village_Flags[client] = 0;
+	}
+}
+
+static void VillageUpgradeMenu(int client)
+{
+	Menu menu = new Menu(VillageUpgradeMenuH);
+	
+	SetGlobalTransTarget(client);
+	int cash = CurrentCash-CashSpent[client];
+	menu.SetTitle("%t\n \n%t\n \n%s\n ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, "Buildable Village"));
+	
+	int paths;
+	if(Village_Flags[client] & VILLAGE_100)
+		paths++;
+	
+	if(Village_Flags[client] & VILLAGE_010)
+		paths++;
+	
+	if(Village_Flags[client] & VILLAGE_001)
+		paths++;
+	
+	bool tier = (Village_Flags[client] & VILLAGE_300) || (Village_Flags[client] & VILLAGE_030) || (Village_Flags[client] & VILLAGE_003);
+	
+	char buffer[256];
+	if(Village_Flags[client] & VILLAGE_500)
+	{
+		menu.AddItem("", TranslateItemName(client, "Rebel Expertise"), ITEMDRAW_DISABLED);
+		menu.AddItem("", "Village becomes an attacking sentry, plus all Rebels in", ITEMDRAW_DISABLED);
+		menu.AddItem("", "radius attack faster, deal more damage, and start with $3000.\n ", ITEMDRAW_DISABLED);
+	}
+	else if(Village_Flags[client] & VILLAGE_400)
+	{
+		FormatEx(buffer, sizeof(buffer), "%s [$25000]", TranslateItemName(client, "Rebel Expertise"));
+		menu.AddItem(VilN(VILLAGE_500), buffer, cash < 25000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("", "Village becomes an attacking sentry, plus all Rebels in", ITEMDRAW_DISABLED);
+		menu.AddItem("", "radius attack faster, deal more damage, and start with $3000.\n ", ITEMDRAW_DISABLED);
+	}
+	else if(Village_Flags[client] & VILLAGE_300)
+	{
+		FormatEx(buffer, sizeof(buffer), "%s [$2500]", TranslateItemName(client, "Rebel Mentoring"));
+		menu.AddItem(VilN(VILLAGE_400), buffer, cash < 2500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("", "All Rebels in radius start with $1000,", ITEMDRAW_DISABLED);
+		menu.AddItem("", "increased range and attack speed.\n ", ITEMDRAW_DISABLED);
+	}
+	else if(Village_Flags[client] & VILLAGE_200)
+	{
+		if(tier)
+		{
+			menu.AddItem("", TranslateItemName(client, "Jungle Drums"), ITEMDRAW_DISABLED);
+			menu.AddItem("", "Increases attack speed of all", ITEMDRAW_DISABLED);
+			menu.AddItem("", "players and allies in the radius.\n ", ITEMDRAW_DISABLED);
+		}
+		else
+		{
+			FormatEx(buffer, sizeof(buffer), "%s [$800]", TranslateItemName(client, "Rebel Training"));
+			menu.AddItem(VilN(VILLAGE_300), buffer, cash < 800 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem("", "All Rebels in radius get", ITEMDRAW_DISABLED);
+			menu.AddItem("", "more range and more damage.\n ", ITEMDRAW_DISABLED);
+		}
+	}
+	else if(Village_Flags[client] & VILLAGE_100)
+	{
+		FormatEx(buffer, sizeof(buffer), "%s [$1500]", TranslateItemName(client, "Jungle Drums"));
+		menu.AddItem(VilN(VILLAGE_200), buffer, cash < 1500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("", "Increases attack speed of all", ITEMDRAW_DISABLED);
+		menu.AddItem("", "players and allies in the radius.\n ", ITEMDRAW_DISABLED);
+	}
+	else if(paths < 2)
+	{
+		menu.AddItem("", "TIP: Only two paths can be choosen and one tier 3 path.\n ", ITEMDRAW_DISABLED);
+		
+		FormatEx(buffer, sizeof(buffer), "%s [$400]", TranslateItemName(client, "Bigger Radius"));
+		menu.AddItem(VilN(VILLAGE_100), buffer, cash < 400 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("", "Increases influence radius of the village.\n ", ITEMDRAW_DISABLED);
+	}
+	
+	if(Village_Flags[client] & VILLAGE_050)
+	{
+		menu.AddItem("", TranslateItemName(client, "Homeland Defense"), ITEMDRAW_DISABLED);
+		menu.AddItem("", "Ability now increases attack speed by 100%", ITEMDRAW_DISABLED);
+		menu.AddItem("", "for all players and allies for 20 seconds.\n ", ITEMDRAW_DISABLED);
+	}
+	else if(Village_Flags[client] & VILLAGE_040)
+	{
+		FormatEx(buffer, sizeof(buffer), "%s [$40000]", TranslateItemName(client, "Homeland Defense"));
+		menu.AddItem(VilN(VILLAGE_050), buffer, cash < 40000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("", "Ability now increases attack speed by 100%", ITEMDRAW_DISABLED);
+		menu.AddItem("", "for all players and allies for 20 seconds.\n ", ITEMDRAW_DISABLED);
+	}
+	else if(Village_Flags[client] & VILLAGE_030)
+	{
+		FormatEx(buffer, sizeof(buffer), "%s [$20000]", TranslateItemName(client, "Rebel Mentoring"));
+		menu.AddItem(VilN(VILLAGE_040), buffer, cash < 20000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("", "Press RELOAD on the village to activate an ability that gives", ITEMDRAW_DISABLED);
+		menu.AddItem("", "nearby players and allies +50% attack speed for a short time.\n ", ITEMDRAW_DISABLED);
+	}
+	else if(Village_Flags[client] & VILLAGE_020)
+	{
+		if(tier)
+		{
+			menu.AddItem("", TranslateItemName(client, "Radar Scanner"), ITEMDRAW_DISABLED);
+			menu.AddItem("", "Provides a stackable 50% to remove", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Camo properties from spawning bloons.\n ", ITEMDRAW_DISABLED);
+		}
+		else
+		{
+			FormatEx(buffer, sizeof(buffer), "%s [$7500]", TranslateItemName(client, "Monkey Intelligence Bureau"));
+			menu.AddItem(VilN(VILLAGE_030), buffer, cash < 7500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem("", "The Bureau grants special Bloon popping knowledge, allowing", ITEMDRAW_DISABLED);
+			menu.AddItem("", "nearby players and allies to ignore non-boss resistances.\n ", ITEMDRAW_DISABLED);
+		}
+	}
+	else if(Village_Flags[client] & VILLAGE_010)
+	{
+		FormatEx(buffer, sizeof(buffer), "%s [$2000]", TranslateItemName(client, "Radar Scanner"));
+		menu.AddItem(VilN(VILLAGE_020), buffer, cash < 2000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("", "Provides a stackable 50% to remove", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Camo properties from spawning bloons.\n ", ITEMDRAW_DISABLED);
+	}
+	else if(paths < 2)
+	{
+		FormatEx(buffer, sizeof(buffer), "%s [$250]", TranslateItemName(client, "Grow Blocker"));
+		menu.AddItem(VilN(VILLAGE_010), buffer, cash < 250 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("", "Provides a stackable 20% to remove", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Regrow properties from spawning bloons.\n ", ITEMDRAW_DISABLED);
+	}
+	
+	if(Village_Flags[client] & VILLAGE_005)
+	{
+		menu.AddItem("", TranslateItemName(client, "Monkeyopolis"), ITEMDRAW_DISABLED);
+		menu.AddItem("", "Provides extra $2400 for each non-freeplay", ITEMDRAW_DISABLED);
+		menu.AddItem("", "passing round that's split among other players.\n ", ITEMDRAW_DISABLED);
+	}
+	else if(Village_Flags[client] & VILLAGE_004)
+	{
+		FormatEx(buffer, sizeof(buffer), "%s [$29000]", TranslateItemName(client, "Monkeyopolis"));
+		menu.AddItem(VilN(VILLAGE_005), buffer, cash < 29000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("", "Provides extra $2400 for each non-freeplay", ITEMDRAW_DISABLED);
+		menu.AddItem("", "passing round that's split among other players.\n ", ITEMDRAW_DISABLED);
+	}
+	else if(Village_Flags[client] & VILLAGE_003)
+	{
+		FormatEx(buffer, sizeof(buffer), "%s [$3000]", TranslateItemName(client, "Monkey City"));
+		menu.AddItem(VilN(VILLAGE_004), buffer, cash < 3000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("", "Increases influence radius, cash generation from other Monkeyopolis,", ITEMDRAW_DISABLED);
+		menu.AddItem("", "and spawns a Rebel every 10 round up to 6 Rebels at once.\n ", ITEMDRAW_DISABLED);
+	}
+	else if(Village_Flags[client] & VILLAGE_002)
+	{
+		if(tier)
+		{
+			menu.AddItem("", TranslateItemName(client, "Monkey Commerce"), ITEMDRAW_DISABLED);
+			menu.AddItem("", "An additional 1% discount that can stack with", ITEMDRAW_DISABLED);
+			menu.AddItem("", "up to 2 other Villages with this upgrade.\n ", ITEMDRAW_DISABLED);
+		}
+		else
+		{
+			FormatEx(buffer, sizeof(buffer), "%s [$9000]", TranslateItemName(client, "Monkey Town"));
+			menu.AddItem(VilN(VILLAGE_003), buffer, cash < 9000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem("", "All players within the radius of the Monkey Town get extra cash per", ITEMDRAW_DISABLED);
+			menu.AddItem("", "kill and a stackable (up to 3) increase in cash gained on wave end.\n ", ITEMDRAW_DISABLED);
+		}
+	}
+	else if(Village_Flags[client] & VILLAGE_001)
+	{
+		FormatEx(buffer, sizeof(buffer), "%s [$1000]", TranslateItemName(client, "Monkey Commerce"));
+		menu.AddItem(VilN(VILLAGE_002), buffer, cash < 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("", "An additional 1% discount that can stack with", ITEMDRAW_DISABLED);
+		menu.AddItem("", "up to 2 other Villages with this upgrade.\n ", ITEMDRAW_DISABLED);
+	}
+	else if(paths < 2)
+	{
+		FormatEx(buffer, sizeof(buffer), "%s [$1000]", TranslateItemName(client, "Monkey Business"));
+		menu.AddItem(VilN(VILLAGE_001), buffer, cash < 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("", "Provides a global 2% discount", ITEMDRAW_DISABLED);
+		menu.AddItem("", "on items in the main store.\n ", ITEMDRAW_DISABLED);
+	}
+	
+	menu.Pagination = 0;
+	menu.ExitButton = true;
+	menu.Display(client, MENU_TIME_FOREVER);
+}
+
+public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Select:
+		{
+			char num[16];
+			menu.GetItem(choice, num, sizeof(num));
+			
+			switch(StringToInt(num))
+			{
+				case VILLAGE_500:
+				{
+					Store_SetNamedItem(client, "Village NPC Expert", 5);
+					CashSpent[client] += 25000;
+					
+					int entity = EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
+					if(entity > MaxClients && IsValidEntity(entity))
+					{
+						SDKHooks_TakeDamage(entity, 0, 0, 99999999.9);
+						f_BuildingIsNotReady[client] = 0.0;
+					}
+				}
+				case VILLAGE_400:
+				{
+					Store_SetNamedItem(client, "Village NPC Expert", 4);
+					CashSpent[client] += 2500;
+				}
+				case VILLAGE_300:
+				{
+					Store_SetNamedItem(client, "Village NPC Expert", 3);
+					CashSpent[client] += 800;
+				}
+				case VILLAGE_200:
+				{
+					Store_SetNamedItem(client, "Village NPC Expert", 2);
+					CashSpent[client] += 1500;
+				}
+				case VILLAGE_100:
+				{
+					Store_SetNamedItem(client, "Village NPC Expert", 1);
+					CashSpent[client] += 400;
+				}
+				case VILLAGE_050:
+				{
+					Store_SetNamedItem(client, "Village Buffing Expert", 5);
+					CashSpent[client] += 40000;
+					f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
+				}
+				case VILLAGE_040:
+				{
+					Store_SetNamedItem(client, "Village Buffing Expert", 4);
+					CashSpent[client] += 20000;
+					f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
+				}
+				case VILLAGE_030:
+				{
+					Store_SetNamedItem(client, "Village Buffing Expert", 3);
+					CashSpent[client] += 7500;
+				}
+				case VILLAGE_020:
+				{
+					Store_SetNamedItem(client, "Village Buffing Expert", 2);
+					CashSpent[client] += 2000;
+				}
+				case VILLAGE_010:
+				{
+					Store_SetNamedItem(client, "Village Buffing Expert", 1);
+					CashSpent[client] += 250;
+				}
+				case VILLAGE_005:
+				{
+					Store_SetNamedItem(client, "Village Support Expert", 5);
+					CashSpent[client] += 29000;
+				}
+				case VILLAGE_004:
+				{
+					Store_SetNamedItem(client, "Village Support Expert", 4);
+					CashSpent[client] += 3000;
+				}
+				case VILLAGE_003:
+				{
+					Store_SetNamedItem(client, "Village Support Expert", 3);
+					CashSpent[client] += 9000;
+				}
+				case VILLAGE_002:
+				{
+					Store_SetNamedItem(client, "Village Support Expert", 2);
+					CashSpent[client] += 1000;
+				}
+				case VILLAGE_001:
+				{
+					Store_SetNamedItem(client, "Village Support Expert", 1);
+					CashSpent[client] += 1000;
+				}
+			}
+			
+			ClientCommand(client, "playgamesound \"mvm/mvm_money_pickup.wav\"");
+			VillageCheckItems(client);
+			VillageUpgradeMenu(client);
+		}
+	}
+	return 0;
+}
+
+static char[] VilN(int flag)
+{
+	char num[16];
+	IntToString(flag, num, sizeof(num));
+	return num;
+}
+
+static int GetBuffEffects(int ref)
+{
+	int flags;
+	
+	VillageBuff buff;
+	int length = Village_Effects.Length;
+	for(int i; i < length; i++)
+	{
+		Village_Effects.GetArray(i, buff);
+		if(buff.EntityRef == ref)
+			flags |= buff.Effects;
+	}
+	
+	return flags;
+}
+
+static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuffs)
+{
+	if(weapon)
+	{
+		for(int i; i < 16; i++)
+		{
+			int flag = (1 << i);
+			bool hadBefore = view_as<bool>(oldBuffs & flag);
+			
+			if(newBuffs & flag)
+			{
+				if(!hadBefore)
+				{
+					switch(flag)
+					{
+						case VILLAGE_000:
+						{
+							Address attrib = TF2Attrib_GetByDefIndex(entity, 101);	// Projectile Range
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 101, TF2Attrib_GetValue(attrib) * 1.1);
+							
+							attrib = TF2Attrib_GetByDefIndex(entity, 103);	// Projectile Speed
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 103, TF2Attrib_GetValue(attrib) * 1.1);
+						}
+						case VILLAGE_200:
+						{
+							Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) * 0.97);
+							
+							attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) * 0.97);
+							
+							attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) * 1.06);
+						}
+						case VILLAGE_040, VILLAGE_050:
+						{
+							Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) * 0.75);
+							
+							attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) * 0.75);
+							
+							attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) * 1.5);
+						}
+					}
+				}
+			}
+			else if(hadBefore)
+			{
+				switch(flag)
+				{
+					case VILLAGE_000:
+					{
+						Address attrib = TF2Attrib_GetByDefIndex(entity, 101);	// Projectile Range
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 101, TF2Attrib_GetValue(attrib) / 1.1);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 103);	// Projectile Speed
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 103, TF2Attrib_GetValue(attrib) / 1.1);
+					}
+					case VILLAGE_200:
+					{
+						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.97);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.97);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.06);
+					}
+					case VILLAGE_040, VILLAGE_050:
+					{
+						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.75);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.75);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.5);
+					}
+				}
+			}
+		}
+	}
+	else if(i_NpcInternalId[entity] == CITIZEN)
+	{
+		Citizen npc = view_as<Citizen>(entity);
+		
+		for(int i; i < 16; i++)
+		{
+			int flag = (1 << i);
+			bool hadBefore = view_as<bool>(oldBuffs & flag);
+			
+			if(newBuffs & flag)
+			{
+				if(!hadBefore)
+				{
+					switch(flag)
+					{
+						case VILLAGE_000:
+						{
+							npc.m_fGunRangeBonus *= 1.1;
+						}
+						case VILLAGE_200:
+						{
+							npc.m_fGunFirerate *= 0.97;
+							npc.m_fGunReload *= 0.97;
+						}
+						case VILLAGE_300:
+						{
+							if(npc.m_iGunClip > 0)
+								npc.m_iGunClip++;
+							
+							npc.m_fGunRangeBonus *= 1.1;
+						}
+						case VILLAGE_400:
+						{
+							if(npc.m_iGunValue < 1000)
+								npc.m_iGunValue = 1000;
+							
+							npc.m_fGunFirerate *= 0.9;
+							npc.m_fGunReload *= 0.9;
+						}
+						case VILLAGE_500:
+						{
+							if(npc.m_iGunClip > 0)
+								npc.m_iGunClip += 2;
+							
+							if(npc.m_iGunValue < 3000)
+								npc.m_iGunValue = 3000;
+							
+							npc.m_fGunRangeBonus *= 1.2;
+							npc.m_fGunFirerate *= 0.8;
+							npc.m_fGunReload *= 0.8;
+						}
+						case VILLAGE_040:
+						{
+							npc.m_fGunFirerate *= 0.75;
+							npc.m_fGunReload *= 0.75;
+						}
+						case VILLAGE_050:
+						{
+							npc.m_fGunFirerate *= 0.75;
+							npc.m_fGunReload *= 0.75;
+						}
+					}
+				}
+			}
+			else if(hadBefore)
+			{
+				switch(flag)
+				{
+					case VILLAGE_000:
+					{
+						npc.m_fGunRangeBonus /= 1.1;
+					}
+					case VILLAGE_200:
+					{
+						npc.m_fGunFirerate /= 0.97;
+						npc.m_fGunReload /= 0.97;
+					}
+					case VILLAGE_300:
+					{
+						if(npc.m_iGunClip > 1)
+							npc.m_iGunClip--;
+						
+						npc.m_fGunRangeBonus /= 1.1;
+					}
+					case VILLAGE_400:
+					{
+						npc.m_fGunFirerate /= 0.9;
+						npc.m_fGunReload /= 0.9;
+					}
+					case VILLAGE_500:
+					{
+						if(npc.m_iGunClip > 2)
+							npc.m_iGunClip -= 2;
+						
+						npc.m_fGunRangeBonus /= 1.2;
+						npc.m_fGunFirerate /= 0.8;
+						npc.m_fGunReload /= 0.8;
+					}
+					case VILLAGE_040:
+					{
+						npc.m_fGunFirerate /= 0.75;
+						npc.m_fGunReload /= 0.75;
+					}
+					case VILLAGE_050:
+					{
+						npc.m_fGunFirerate /= 0.75;
+						npc.m_fGunReload /= 0.75;
+					}
+				}
+			}
+		}
+	}
+	else if(entity <= MaxClients)
+	{
+		bool oldBuff = (oldBuffs & VILLAGE_200) || (oldBuffs & VILLAGE_030) || (oldBuffs & VILLAGE_003);
+		if((newBuffs & VILLAGE_200) || (newBuffs & VILLAGE_030) || (newBuffs & VILLAGE_003))
+		{
+			if(!oldBuff)
+				TF2_AddCondition(entity, TFCond_TeleportedGlow);
+		}
+		else if(oldBuff)
+		{
+			TF2_RemoveCondition(entity, TFCond_TeleportedGlow);
+		}
+	}
 }
