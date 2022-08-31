@@ -154,9 +154,9 @@ public void Cryo_ActivateBurst(int client, int weapon, bool &result, int slot, f
 	float UserLoc[3], VicLoc[3];
 	GetClientAbsOrigin(client, UserLoc);
 	//int particle = ParticleEffectAt(UserLoc, "bombinomicon_burningdebris", 4.0);
-	int particle = ParticleEffectAt(UserLoc, "xms_snowburst", 4.0);
-	particle = ParticleEffectAt(UserLoc, "xms_snowburst_child01", 4.0);
-	particle = ParticleEffectAt(UserLoc, "xms_snowburst_child02", 4.0);
+	ParticleEffectAt(UserLoc, "xms_snowburst", 4.0);
+	ParticleEffectAt(UserLoc, "xms_snowburst_child01", 4.0);
+	ParticleEffectAt(UserLoc, "xms_snowburst_child02", 4.0);
 //	particle = ParticleEffectAt(UserLoc, "xms_snowburst_child03", 4.0);
 	
 	float TestDMG = damage;
