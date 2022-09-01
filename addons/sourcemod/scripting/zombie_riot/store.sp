@@ -2950,19 +2950,22 @@ static void ItemCost(int client, Item item, int &cost)
 	cost += item.Scale*item.Scaled[client]; 
 	cost += item.CostPerWave * CurrentRound;
 	//make sure anything thats additive is on the top, so sales actually help!!
-	if(b_SpecialGrigoriStore) //during maps where he alaways sells, always sell!
+	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
 	{
-		if(item.NPCSeller_First)
+		if(b_SpecialGrigoriStore) //during maps where he alaways sells, always sell!
 		{
-			cost = RoundToCeil(float(cost) * 0.7);
+			if(item.NPCSeller_First)
+			{
+				cost = RoundToCeil(float(cost) * 0.7);
+			}
+			else if(item.NPCSeller)
+			{
+				cost = RoundToCeil(float(cost) * 0.8);
+			}
+			
+			if(item.NPCSeller)
+				GregSale = true;
 		}
-		else if(item.NPCSeller)
-		{
-			cost = RoundToCeil(float(cost) * 0.8);
-		}
-		
-		if(item.NPCSeller)
-			GregSale = true;
 	}
 	if(!started && !GregSale)
 	{
@@ -2972,13 +2975,20 @@ static void ItemCost(int client, Item item, int &cost)
 		}
 		else
 		{
-			if(item.NPCSeller_First)
+			if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
 			{
-				cost = RoundToCeil(float(cost) * 0.7);
-			}
-			else if(item.NPCSeller)
-			{
-				cost = RoundToCeil(float(cost) * 0.8);
+				if(item.NPCSeller_First)
+				{
+					cost = RoundToCeil(float(cost) * 0.7);
+				}
+				else if(item.NPCSeller)
+				{
+					cost = RoundToCeil(float(cost) * 0.8);
+				}
+				else
+				{
+					cost = RoundToCeil(float(cost) * 0.9);	
+				}
 			}
 			else
 			{

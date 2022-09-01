@@ -202,7 +202,7 @@ float f_TimerTickCooldownRaid = 0.0;
 float f_TimerTickCooldownShop = 0.0;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 float Medival_Difficulty_Level = 0.0;	
-
+int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 
 
 int CurrentPlayers;
@@ -2185,6 +2185,7 @@ public void Spawn_Cured_Grigori()
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
 	int entity = Npc_Create(CURED_FATHER_GRIGORI, client, flPos, flAng, true);
+	SalesmanAlive = EntIndexToEntRef(entity);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_grigori");
 	
 	for(int client_Give_item=1; client_Give_item<=MaxClients; client_Give_item++)
