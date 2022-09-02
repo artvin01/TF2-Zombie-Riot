@@ -280,6 +280,7 @@ bool Moved_Building[MAXENTITIES] = {false,... };
 //float Resistance_for_building_High[MAXENTITIES];
 int Armor_Charge[MAXTF2PLAYERS];
 int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
+bool b_FaceStabber[MAXTF2PLAYERS];
 int Zombies_Currently_Still_Ongoing;
 
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
