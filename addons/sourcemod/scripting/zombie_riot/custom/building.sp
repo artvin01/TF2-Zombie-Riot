@@ -575,6 +575,7 @@ public bool Building_DispenserElevator(int client, int entity)
 	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
 	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
+	SetEntPropString(entity, Prop_Data, "m_iName", "zr_elevator");
 	SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(entity, 255, 255, 255, 60);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -1572,6 +1573,22 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", client);		
 							SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);							
 						}
+						else if(StrEqual(buffer, "zr_elevator")) // bruh why.
+						{
+							DataPack pack;
+							CreateDataTimer(0.5, Timer_ClaimedBuildingremoveElevatorCounterOnDeath, pack, TIMER_REPEAT);
+							pack.WriteCell(EntIndexToEntRef(entity));
+							pack.WriteCell(client); //Need original client index id please.
+							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
+							AcceptEntityInput(entity, "SetBuilder", client);
+							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", client);		
+							SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+							
+							Elevators_Currently_Build[client] += 1;
+							Is_Elevator[entity] = true;
+							Building_Constructed[entity] = false;
+							Elevator_Owner[entity] = client;
+						}
 						else
 						{
 							ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -2209,6 +2226,22 @@ public Action Timer_ClaimedBuildingremoveBarricadeCounterOnDeath(Handle htimer, 
 	if(!IsValidEntity(obj))
 	{
 		i_BarricadesBuild[client_original_index] -= 1;
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
+}
+
+public Action Timer_ClaimedBuildingremoveElevatorCounterOnDeath(Handle htimer,  DataPack pack)
+{
+	pack.Reset();
+	int entref = pack.ReadCell();
+	int client_original_index = pack.ReadCell(); //Need original!
+	
+	int obj=EntRefToEntIndex(entref);
+	
+	if(!IsValidEntity(obj))
+	{
+		Elevators_Currently_Build[client_original_index] -= 1;
 		return Plugin_Stop;
 	}
 	return Plugin_Continue;
