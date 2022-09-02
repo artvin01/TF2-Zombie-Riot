@@ -4243,7 +4243,11 @@ int Building_GetCashOnWave(int current)
 	if(popCash > 3)
 		popCash = 3;
 	
-	return (current * popCash / 6) + (farms * (Waves_InFreeplay() ? (extras > 1 ? 575 : 500) : (extras > 1 ? 2760 : 2400)) / CountPlayersOnRed());
+	int red = CountPlayersOnRed();
+	if(!red)
+		red = 1;
+	
+	return (current * popCash / 6) + (farms * (Waves_InFreeplay() ? (extras > 1 ? 575 : 500) : (extras > 1 ? 2760 : 2400)) / red);
 }
 
 static void VillageCheckItems(int client)
