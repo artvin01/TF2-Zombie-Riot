@@ -3027,6 +3027,7 @@ static void ItemCost(int client, Item item, int &cost)
 			
 	}
 	
+	//Keep this here, both of these make sure that the item doesnt go into infinite cost, and so it doesnt go below the sell value, no inf money bug!
 	if(item.MaxCost > 0 && cost > item.MaxCost)
 	{
 		cost = item.MaxCost;
