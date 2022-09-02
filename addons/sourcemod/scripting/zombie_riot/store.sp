@@ -2326,6 +2326,15 @@ void Store_GiveAll(int client, int health)
 		return;
 	}
 	
+	int weapon = GetPlayerWeaponSlot(client, 1); //Secondary
+	if(IsValidEntity(weapon))
+	{
+		if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
+		{
+			f_MedigunChargeSave[client] = GetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel");
+		}
+	}
+	
 	TF2_RemoveAllWeapons(client);
 	
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.

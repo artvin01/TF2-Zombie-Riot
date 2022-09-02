@@ -2773,7 +2773,7 @@ public bool BuildingCustomCommand(int client)
 					if(f_BuildingIsNotReady[client] < GetGameTime())
 					{
 						Ammo_Count_Ready[client]--;
-						f_BuildingIsNotReady[client] = GetGameTime() + 45.0;
+						f_BuildingIsNotReady[client] = GetGameTime() + 60.0;
 						
 						if(Village_Flags[client] & VILLAGE_050)
 						{
@@ -4311,8 +4311,8 @@ static void VillageUpgradeMenu(int client)
 	}
 	else if(Village_Flags[client] & VILLAGE_400)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$25000]", TranslateItemName(client, "Rebel Expertise"));
-		menu.AddItem(VilN(VILLAGE_500), buffer, cash < 25000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer, sizeof(buffer), "%s [$10000]", TranslateItemName(client, "Rebel Expertise"));
+		menu.AddItem(VilN(VILLAGE_500), buffer, cash < 10000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Village becomes an attacking sentry, plus all Rebels in", ITEMDRAW_DISABLED);
 		menu.AddItem("", "radius attack faster, deal more damage, and start with $3000.\n ", ITEMDRAW_DISABLED);
 	}
@@ -4363,15 +4363,15 @@ static void VillageUpgradeMenu(int client)
 	}
 	else if(Village_Flags[client] & VILLAGE_040)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$40000]", TranslateItemName(client, "Homeland Defense"));
-		menu.AddItem(VilN(VILLAGE_050), buffer, cash < 40000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer, sizeof(buffer), "%s [$15000]", TranslateItemName(client, "Homeland Defense"));
+		menu.AddItem(VilN(VILLAGE_050), buffer, cash < 15000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Ability now increases attack speed by 100%", ITEMDRAW_DISABLED);
 		menu.AddItem("", "for all players and allies for 20 seconds.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_030)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$20000]", TranslateItemName(client, "Rebel Mentoring"));
-		menu.AddItem(VilN(VILLAGE_040), buffer, cash < 20000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer, sizeof(buffer), "%s [$8000]", TranslateItemName(client, "Rebel Mentoring"));
+		menu.AddItem(VilN(VILLAGE_040), buffer, cash < 8000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Press RELOAD on the village to activate an ability that gives", ITEMDRAW_DISABLED);
 		menu.AddItem("", "nearby players and allies +50% attack speed for a short time.\n ", ITEMDRAW_DISABLED);
 	}
@@ -4414,8 +4414,8 @@ static void VillageUpgradeMenu(int client)
 	}
 	else if(Village_Flags[client] & VILLAGE_004)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$29000]", TranslateItemName(client, "Monkeyopolis"));
-		menu.AddItem(VilN(VILLAGE_005), buffer, cash < 29000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer, sizeof(buffer), "%s [$12000]", TranslateItemName(client, "Monkeyopolis"));
+		menu.AddItem(VilN(VILLAGE_005), buffer, cash < 12000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Provides extra $2400 for each non-freeplay", ITEMDRAW_DISABLED);
 		menu.AddItem("", "passing round that's split among other players.\n ", ITEMDRAW_DISABLED);
 	}
@@ -4480,13 +4480,14 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				case VILLAGE_500:
 				{
 					Store_SetNamedItem(client, "Village NPC Expert", 5);
-					CashSpent[client] += 25000;
+					CashSpent[client] += 1000;
 					
 					int entity = EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
 					if(entity > MaxClients && IsValidEntity(entity))
 					{
 						SDKHooks_TakeDamage(entity, 0, 0, 99999999.9);
-						f_BuildingIsNotReady[client] = 0.0;
+						f_BuildingIsNotReady[client] = 0.0; 
+						Building_Sentry_Cooldown[client] = 0.0; //Reset the cooldown!
 					}
 				}
 				case VILLAGE_400:
@@ -4512,13 +4513,13 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				case VILLAGE_050:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 5);
-					CashSpent[client] += 40000;
+					CashSpent[client] += 15000;
 					f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
 				}
 				case VILLAGE_040:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 4);
-					CashSpent[client] += 20000;
+					CashSpent[client] += 8000;
 					f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
 				}
 				case VILLAGE_030:
@@ -4539,7 +4540,7 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				case VILLAGE_005:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 5);
-					CashSpent[client] += 29000;
+					CashSpent[client] += 12000;
 				}
 				case VILLAGE_004:
 				{
