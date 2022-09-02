@@ -2353,6 +2353,7 @@ void Store_GiveAll(int client, int health)
 	}
 	
 	b_PhaseThroughBuildingsPerma[client] = 1;
+	b_FaceStabber[client] = false;
 	
 	if(!IsFakeClient(client) && Was_phasing)
 	{
@@ -2632,6 +2633,10 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 						if(info.SpecialAdditionViaNonAttribute == 1)
 						{
 							b_PhaseThroughBuildingsPerma[client] = 2; //Set to true if its 1, other attribs will use other things!
+						}
+						if(info.SpecialAdditionViaNonAttribute == 2) //stabbb
+						{
+							b_FaceStabber[client] = true;
 						}
 						switch(info.Index)
 						{
