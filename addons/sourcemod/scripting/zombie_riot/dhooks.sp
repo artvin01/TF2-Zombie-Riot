@@ -293,7 +293,16 @@ public MRESReturn DHook_GrenadeExplodePre(int entity)
 				original_damage = f_CustomGrenadeDamage[entity];
 			}
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
-			Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
+			
+			//Important, make them not act as an ai if its on red, or else they are BUSTED AS FUCK.
+			if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			{
+				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
+			}
+			else
+			{
+				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,false);
+			}
 		}
 		else
 		{
@@ -350,7 +359,15 @@ public MRESReturn DHook_RocketExplodePre(int entity)
 		float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
 	//	int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
-		Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);		
+	//Important, make them not act as an ai if its on red, or else they are BUSTED AS FUCK.
+		if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+		{
+			Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
+		}
+		else
+		{
+			Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,false);
+		}
 	}
 	return MRES_Ignored;
 }

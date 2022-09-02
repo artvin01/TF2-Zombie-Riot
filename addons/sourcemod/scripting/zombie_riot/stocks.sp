@@ -2449,7 +2449,7 @@ stock int HasNamedItem(int client, const char[] name)
 	return amount;
 }
 
-stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon, float spawnLoc[3] = {0.0,0.0,0.0}, float explosionRadius = EXPLOSION_RADIUS, float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF, float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF, bool FromNpc = false, int maxtargetshit = 10)
+stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon, float spawnLoc[3] = {0.0,0.0,0.0}, float explosionRadius = EXPLOSION_RADIUS, float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF, float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF, bool FromBlueNpc = false, int maxtargetshit = 10)
 {
 	float damage_reduction = 1.0;
 	int Closest_npc = 0;
@@ -2466,8 +2466,8 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 		b_WasAlreadyCalculatedToBeClosest[i] = false;
 	}
 		
-	if(!FromNpc) //make sure that there even is any valid npc before we do these huge calcs.
-	{
+	if(!FromBlueNpc) //make sure that there even is any valid npc before we do these huge calcs.
+	{ 
 		if(spawnLoc[0] == 0.0)
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
@@ -2478,13 +2478,13 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 			Closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity);
 		}
 	}
-	else
+	else //only nerf blue npc radius!
 	{
 		explosionRadius *= 0.65;
 		if(spawnLoc[0] == 0.0) //only get position if thhey got notin
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
-		}
+		} 
 		Closest_npc = GetClosestTarget(entity);
 	}
 	
@@ -2521,14 +2521,14 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 			
 			SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 			
-			if(!FromNpc) //Npcs do not have damage falloff, dodge.
+			if(!FromBlueNpc) //Npcs do not have damage falloff, dodge.
 			{
 				damage_reduction *= ExplosionDmgMultihitFalloff;
 			}
 		//	b_WasAlreadyCalculatedToBeClosest[Closest_npc] = true; //First target hit/closest might want special stuff idk
 		}
 		
-		if(!FromNpc)
+		if(!FromBlueNpc)
 		{
 			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)  //Loop as often as there can be even be max NPC's.
 			{
