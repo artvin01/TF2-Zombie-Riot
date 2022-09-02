@@ -65,6 +65,8 @@ enum struct ItemInfo
 	
 	int Attack3AbilitySlot;
 	
+	int SpecialAdditionViaNonAttribute; //better then spamming attribs.
+	
 	int CustomWeaponOnEquip;
 	
 	bool SniperBugged;
@@ -188,6 +190,9 @@ enum struct ItemInfo
 		
 		FormatEx(buffer, sizeof(buffer), "%sattack_3_ability_slot", prefix)
 		this.Attack3AbilitySlot			= kv.GetNum(buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%sspecial_attribute", prefix)
+		this.SpecialAdditionViaNonAttribute			= kv.GetNum(buffer);
 		
 		char buffers[32][16];
 		FormatEx(buffer, sizeof(buffer), "%sattributes", prefix)
@@ -2340,6 +2345,21 @@ void Store_GiveAll(int client, int health)
 	
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
 	SetAbilitySlotCount(client, 0);
+	
+	bool Was_phasing = false;
+	
+	if(b_PhaseThroughBuildingsPerma[client] == 2)
+	{
+		Was_phasing = true;
+	}
+	
+	b_PhaseThroughBuildingsPerma[client] = 1;
+	
+	if(!IsFakeClient(client) && Was_phasing)
+	{
+		SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+		SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+	}
 						
 	bool use = true;
 	for(int i; i<sizeof(Equipped[]); i++)
@@ -2393,6 +2413,8 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 {
 	if(!StoreItems)
 		return -1;
+		
+		
 	
 	Item item;
 	int entity = -1;
@@ -2608,6 +2630,10 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 						{
 							SetAbilitySlotCount(client, info.Attack3AbilitySlot);
 						}
+						if(info.SpecialAdditionViaNonAttribute == 1)
+						{
+							b_PhaseThroughBuildingsPerma[client] = 2; //Set to true if its 1, other attribs will use other things!
+						}
 						switch(info.Index)
 						{
 							case 0, 1, 2:
@@ -2728,6 +2754,7 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 		Enable_Arsenal(client, entity);
 		On_Glitched_Give(client, entity);
 		Enable_Management_Banner(client, entity);
+		
 		
 	}
 	return entity;

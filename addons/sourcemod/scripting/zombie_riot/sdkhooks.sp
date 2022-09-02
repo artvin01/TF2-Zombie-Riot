@@ -88,7 +88,16 @@ void SDKHook_HookClient(int client)
 public void OnPreThinkPost(int client)
 {
 	if(CvarMpSolidObjects)
-		CvarMpSolidObjects.IntValue	= b_PhasesThroughBuildingsCurrently[client] ? 0 : 1;
+	{
+		if(b_PhaseThroughBuildingsPerma[client] == 0)
+		{
+			CvarMpSolidObjects.IntValue	= b_PhasesThroughBuildingsCurrently[client] ? 0 : 1;
+		}
+		else
+		{
+			CvarMpSolidObjects.IntValue = 0;
+		}
+	}
 }
 
 public void OnPostThink(int client)
@@ -99,6 +108,7 @@ public void OnPostThink(int client)
 #endif
 	{
 #if !defined NoSendProxyClass
+
 		if(WeaponClass[client]!=TFClass_Unknown)
 		{
 			TF2_SetPlayerClass(client, WeaponClass[client], false, false);
@@ -106,6 +116,19 @@ public void OnPostThink(int client)
 				SetEntPropFloat(client, Prop_Send, "m_vecViewOffset[2]", ViewHeights[WeaponClass[client]]);
 		}
 #endif
+
+		if(b_PhaseThroughBuildingsPerma[client] == 2)
+		{
+			CvarMpSolidObjects.ReplicateToClient(client, "0");
+		}
+		else
+		{
+			if(b_PhaseThroughBuildingsPerma[client] == 1)
+			{
+				b_PhaseThroughBuildingsPerma[client] = 0;
+				CvarMpSolidObjects.ReplicateToClient(client, "1"); //set replicate back to normal.
+			}
+		}
 		/*
 		if(Check_Standstill_Delay[client] < gameTime)
 		{

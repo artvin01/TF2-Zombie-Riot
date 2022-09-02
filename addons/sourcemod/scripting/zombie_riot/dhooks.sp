@@ -1111,6 +1111,12 @@ public MRESReturn DHook_ForceRespawn(int client)
 //Ty miku for showing me this cvar.
 public void PhaseThroughOwnBuildings(int client)
 {
+	if(b_PhaseThroughBuildingsPerma[client] == 2) //They already ignore everything 24/7, dont bother.
+	{
+		SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+		return;
+	}
+	
 	float PlayerLoc[3];
 	float otherLoc[3];
 	bool Collides_with_atleast_one_building = false;
