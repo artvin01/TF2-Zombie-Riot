@@ -368,6 +368,7 @@ void Store_ConfigSetup()
 	char buffer[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons");
 	KeyValues kv = new KeyValues("Weapons");
+	kv.SetEscapeSequences = true;
 	kv.ImportFromFile(buffer);
 	RequestFrame(DeleteHandle, kv);
 	
