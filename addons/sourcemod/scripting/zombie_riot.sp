@@ -2260,10 +2260,15 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 				{
 					LastMann = false;
 				}
+				
 			}
 			else
 			{
 				GlobalIntencity++;
+			}
+			if(Hurtviasdkhook != 0)
+			{
+				LastMann = true;
 			}
 		}
 	}

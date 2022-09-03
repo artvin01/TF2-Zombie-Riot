@@ -1345,7 +1345,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 								heal_amount = 10;
 								if(b_FaceStabber[attacker])
 								{
-									heal_amount = 3;
+									heal_amount = 2;
 								}
 								StartHealingTimer(attacker, 0.1, 1, heal_amount);
 								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
@@ -1356,7 +1356,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 								heal_amount = 25;
 								if(b_FaceStabber[attacker])
 								{
-									heal_amount = 9;
+									heal_amount = 5;
 								}
 								StartHealingTimer(attacker, 0.1, 2, heal_amount);
 								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.0 * attack_speed));
@@ -1367,7 +1367,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 								heal_amount = 25;
 								if(b_FaceStabber[attacker])
 								{
-									heal_amount = 9;
+									heal_amount = 5;
 								}
 								//THIS MELEE WILL HAVE SPECIAL PROPERTIES SO ITS RECONISED AS A SPY MELEE AT ALL TIMES!
 								StartHealingTimer(attacker, 0.1, 3, heal_amount);
