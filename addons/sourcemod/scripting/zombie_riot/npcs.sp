@@ -1814,3 +1814,12 @@ float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inf
 	}
 	return damage;
 }
+
+
+public void OnNpcHurt(Event event, const char[] name, bool dontBroadcast)
+{
+	int entity = event.GetInt("entindex");
+
+	PrintToChatAll("%i",entity);
+	PrintToChatAll("%i",event.GetInt("attacker_player"));
+}

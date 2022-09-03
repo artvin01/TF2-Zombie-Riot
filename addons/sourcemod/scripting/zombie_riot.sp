@@ -1172,6 +1172,7 @@ public void OnPluginStart()
 	RegAdminCmd("zr_reload_plugin", Command_ToggleReload, ADMFLAG_GENERIC, "Reload plugin on map change");
 	
 	RegAdminCmd("sm_test_hud_notif", Command_Hudnotif, ADMFLAG_GENERIC, "Hud Notif");
+//	HookEvent("npc_hurt", OnNpcHurt);
 	
 
 					
