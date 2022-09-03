@@ -1085,7 +1085,7 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	}
 
 	current = pack.ReadCell();
-	if(current < 1)
+	if(current < 2)
 		return Plugin_Stop;
 
 	pack.Position--;
