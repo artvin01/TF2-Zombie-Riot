@@ -2250,7 +2250,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
 		{
 			CurrentPlayers++;
-			if(killed != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+			if(killed != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE/* && dieingstate[client] == 0*/)
 			{
 				if(!alive)
 				{
@@ -2266,6 +2266,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 			{
 				GlobalIntencity++;
 			}
+			
 			if(Hurtviasdkhook != 0)
 			{
 				LastMann = true;
