@@ -1697,10 +1697,13 @@ public void NPC_CheckDead()
 			CClotBody npcstats = view_as<CClotBody>(npc_index);
 			if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc_index] && RaidBossActive != npc_index)
 			{
-				if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
-					SetEntProp(npc_index, Prop_Send, "m_bGlowEnabled", true);
-				else
-					SetEntProp(npc_index, Prop_Send, "m_bGlowEnabled", false);
+				if(GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+				{
+					if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
+						SetEntProp(npc_index, Prop_Send, "m_bGlowEnabled", true);
+					else
+						SetEntProp(npc_index, Prop_Send, "m_bGlowEnabled", false);
+				}
 			}
 		}
 	}

@@ -479,7 +479,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 		}
-		else if (b_Is_Player_Projectile_Through_Npc[entity2])
+		else if (b_Is_Player_Projectile_Through_Npc[entity1])
 		{
 			if(b_Is_Blue_Npc[entity2])
 			{

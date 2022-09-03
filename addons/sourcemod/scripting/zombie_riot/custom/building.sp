@@ -4646,7 +4646,7 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 			
 			ClientCommand(client, "playgamesound \"mvm/mvm_money_pickup.wav\"");
 			VillageCheckItems(client);
-			VillageUpgradeMenu(client);
+			VillageUpgradeMenu(client, client == client);
 		}
 	}
 	return 0;
