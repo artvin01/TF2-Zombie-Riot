@@ -6032,29 +6032,33 @@ static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0
 
 public void GibCollidePlayerInteraction(int gib, int player)
 {
-	if(b_IsCannibal[player])
+	if(b_IsCannibal[player] && dieingstate[player] == 0)
 	{
 		int weapon = GetPlayerWeaponSlot(player, 2); //Check melee weapon healing.
 		if(IsValidEntity(weapon) && weapon == GetEntPropEnt(player, Prop_Send, "m_hActiveWeapon")) //Must also hold melee out 
 		{
-			if(SDKCall_GetMaxHealth(player) > GetEntProp(player, Prop_Send, "m_iHealth"))
+			if(!IsWandWeapon(weapon)) //Make sure its not wand.
 			{
-				int Heal_Amount = 0;
-				
-				Address address = TF2Attrib_GetByDefIndex(weapon, 180);
-				if(address != Address_Null)
-					Heal_Amount = RoundToNearest(TF2Attrib_GetValue(address));
-		
-				
-				Heal_Amount = RoundToNearest(float(Heal_Amount) * 0.65);
-				
-				if(Heal_Amount > 0)
+				if(SDKCall_GetMaxHealth(player) > GetEntProp(player, Prop_Send, "m_iHealth"))
 				{
-					StartHealingTimer(player, 0.1, 1, Heal_Amount);
-					int sound = GetRandomInt(0, sizeof(g_GibEating) - 1);
-					EmitSoundToAll(g_GibEating[sound], player, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-					EmitSoundToAll(g_GibEating[sound], player, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-					RemoveEntity(gib);
+					float Heal_Amount = 0.0;
+					
+					Address address = TF2Attrib_GetByDefIndex(weapon, 180);
+					if(address != Address_Null)
+						Heal_Amount = TF2Attrib_GetValue(address);
+			
+					
+					int Heal_Amount_calc;
+					
+					Heal_Amount_calc = RoundToNearest(Heal_Amount * 0.75);
+					
+					if(Heal_Amount_calc > 0)
+					{
+						StartHealingTimer(player, 0.1, 1, Heal_Amount_calc);
+						int sound = GetRandomInt(0, sizeof(g_GibEating) - 1);
+						EmitSoundToAll(g_GibEating[sound], player, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+						RemoveEntity(gib);
+					}
 				}
 			}
 		}
