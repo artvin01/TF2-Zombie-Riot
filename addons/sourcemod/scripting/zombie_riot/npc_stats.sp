@@ -6046,7 +6046,7 @@ public void GibCollidePlayerInteraction(int gib, int player)
 					Heal_Amount = RoundToNearest(TF2Attrib_GetValue(address));
 		
 				
-				Heal_Amount = RoundToCeil(float(Heal_Amount) * 0.65);
+				Heal_Amount = RoundToNearest(float(Heal_Amount) * 0.65);
 				
 				if(Heal_Amount > 0)
 				{
