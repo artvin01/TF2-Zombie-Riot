@@ -1534,8 +1534,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			}
 			else if(!StrContains(buffer, "zr_village"))
 			{
-				if(owner == client)
-					buildingType = 8;
+				buildingType = 8;
 			}
 		}
 		else if(StrEqual(buffer, "obj_dispenser"))
@@ -2126,9 +2125,9 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 				}
 				case 8:
 				{
-					if(Is_Reload_Button && owner == client)
+					if(Is_Reload_Button)
 					{
-						VillageUpgradeMenu(client);
+						VillageUpgradeMenu(client, owner == client);
 					}
 				}
 			}
@@ -4321,7 +4320,7 @@ static void VillageCheckItems(int client)
 	}
 }
 
-static void VillageUpgradeMenu(int client)
+static void VillageUpgradeMenu(int client, bool owner)
 {
 	Menu menu = new Menu(VillageUpgradeMenuH);
 	
@@ -4359,7 +4358,7 @@ static void VillageUpgradeMenu(int client)
 		else
 		{
 			FormatEx(buffer, sizeof(buffer), "%s [$10000]", TranslateItemName(client, "Rebel Expertise"));
-			menu.AddItem(VilN(VILLAGE_500), buffer, cash < 10000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem(VilN(VILLAGE_500), buffer, (!owner || cash < 10000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "Village becomes an attacking sentry, plus all Rebels in", ITEMDRAW_DISABLED);
 			menu.AddItem("", "radius attack faster, deal more damage, and start with $3000.\n ", ITEMDRAW_DISABLED);
 		}
@@ -4367,7 +4366,7 @@ static void VillageUpgradeMenu(int client)
 	else if(Village_Flags[client] & VILLAGE_300)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s [$2500]%s", TranslateItemName(client, "Rebel Mentoring"), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_400), buffer, cash < 2500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(VilN(VILLAGE_400), buffer, (!owner || cash < 2500) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "All Rebels in radius start with $1000,", ITEMDRAW_DISABLED);
 		menu.AddItem("", "increased range and attack speed.\n ", ITEMDRAW_DISABLED);
 	}
@@ -4382,7 +4381,7 @@ static void VillageUpgradeMenu(int client)
 		else
 		{
 			FormatEx(buffer, sizeof(buffer), "%s [$800]%s", TranslateItemName(client, "Rebel Training"), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : "");
-			menu.AddItem(VilN(VILLAGE_300), buffer, cash < 800 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem(VilN(VILLAGE_300), buffer, (!owner || cash < 800) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "All Rebels in radius get", ITEMDRAW_DISABLED);
 			menu.AddItem("", "more range and more damage.\n ", ITEMDRAW_DISABLED);
 		}
@@ -4390,7 +4389,7 @@ static void VillageUpgradeMenu(int client)
 	else if(Village_Flags[client] & VILLAGE_100)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s [$1500]%s", TranslateItemName(client, "Jungle Drums"), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : Village_TierExists[0] == 2 ? " [Tier 2 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_200), buffer, cash < 1500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(VilN(VILLAGE_200), buffer, (!owner || cash < 1500) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Increases attack speed of all", ITEMDRAW_DISABLED);
 		menu.AddItem("", "players and allies in the radius.\n ", ITEMDRAW_DISABLED);
 	}
@@ -4399,7 +4398,7 @@ static void VillageUpgradeMenu(int client)
 		menu.AddItem("", "TIP: Only two paths can be choosen and one tier 3 path.\n ", ITEMDRAW_DISABLED);
 		
 		FormatEx(buffer, sizeof(buffer), "%s [$400]%s", TranslateItemName(client, "Bigger Radius"), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : Village_TierExists[0] == 2 ? " [Tier 2 Exists]" : Village_TierExists[0] == 1 ? " [Tier 1 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_100), buffer, cash < 400 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(VilN(VILLAGE_100), buffer, (!owner || cash < 400) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Increases influence radius of the village.\n ", ITEMDRAW_DISABLED);
 	}
 	
@@ -4420,7 +4419,7 @@ static void VillageUpgradeMenu(int client)
 		else
 		{
 			FormatEx(buffer, sizeof(buffer), "%s [$15000]", TranslateItemName(client, "Homeland Defense"));
-			menu.AddItem(VilN(VILLAGE_050), buffer, cash < 15000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem(VilN(VILLAGE_050), buffer, (!owner || cash < 15000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "Ability now increases attack speed by 100%", ITEMDRAW_DISABLED);
 			menu.AddItem("", "for all players and allies for 20 seconds.\n ", ITEMDRAW_DISABLED);
 		}
@@ -4428,7 +4427,7 @@ static void VillageUpgradeMenu(int client)
 	else if(Village_Flags[client] & VILLAGE_030)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s [$8000]%s", TranslateItemName(client, "Call To Arms"), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_040), buffer, cash < 8000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(VilN(VILLAGE_040), buffer, (!owner || cash < 8000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Press E to activate an ability that gives nearby", ITEMDRAW_DISABLED);
 		menu.AddItem("", "players and allies +50% attack speed for a short time.\n ", ITEMDRAW_DISABLED);
 	}
@@ -4443,7 +4442,7 @@ static void VillageUpgradeMenu(int client)
 		else
 		{
 			FormatEx(buffer, sizeof(buffer), "%s [$7500]%s", TranslateItemName(client, "Monkey Intelligence Bureau"), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : "");
-			menu.AddItem(VilN(VILLAGE_030), buffer, cash < 7500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem(VilN(VILLAGE_030), buffer, (!owner || cash < 7500) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "The Bureau grants special Bloon popping knowledge, allowing", ITEMDRAW_DISABLED);
 			menu.AddItem("", "nearby players and allies to ignore non-boss resistances.\n ", ITEMDRAW_DISABLED);
 		}
@@ -4451,14 +4450,14 @@ static void VillageUpgradeMenu(int client)
 	else if(Village_Flags[client] & VILLAGE_010)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s [$2000]%s", TranslateItemName(client, "Radar Scanner"), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_020), buffer, cash < 2000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(VilN(VILLAGE_020), buffer, (!owner || cash < 2000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Provides a stackable 50% to remove", ITEMDRAW_DISABLED);
 		menu.AddItem("", "Camo properties from spawning bloons.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(paths < 2)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s [$250]", TranslateItemName(client, "Grow Blocker"), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : Village_TierExists[1] == 1 ? " [Tier 1 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_010), buffer, cash < 250 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(VilN(VILLAGE_010), buffer, (!owner || cash < 250) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Provides a stackable 20% to remove", ITEMDRAW_DISABLED);
 		menu.AddItem("", "Regrow properties from spawning bloons.\n ", ITEMDRAW_DISABLED);
 	}
@@ -4480,7 +4479,7 @@ static void VillageUpgradeMenu(int client)
 		else
 		{
 			FormatEx(buffer, sizeof(buffer), "%s [$12000]", TranslateItemName(client, "Monkeyopolis"));
-			menu.AddItem(VilN(VILLAGE_005), buffer, cash < 12000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem(VilN(VILLAGE_005), buffer, (!owner || cash < 12000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "Provides extra $2400 for each passive", ITEMDRAW_DISABLED);
 			menu.AddItem("", "round that's split among other players.\n ", ITEMDRAW_DISABLED);
 		}
@@ -4488,7 +4487,7 @@ static void VillageUpgradeMenu(int client)
 	else if(Village_Flags[client] & VILLAGE_003)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s [$3000]", TranslateItemName(client, "Monkey City"));
-		menu.AddItem(VilN(VILLAGE_004), buffer, cash < 3000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(VilN(VILLAGE_004), buffer, (!owner || cash < 3000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Increases influence radius, cash generation from other Monkeyopolis,", ITEMDRAW_DISABLED);
 		menu.AddItem("", "and spawns a Rebel every 10 round up to 6 Rebels at once.\n ", ITEMDRAW_DISABLED);
 	}
@@ -4503,7 +4502,7 @@ static void VillageUpgradeMenu(int client)
 		else
 		{
 			FormatEx(buffer, sizeof(buffer), "%s [$9000]%s", TranslateItemName(client, "Monkey Town"), Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : "");
-			menu.AddItem(VilN(VILLAGE_003), buffer, cash < 9000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem(VilN(VILLAGE_003), buffer, (!owner || cash < 9000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "All players within the radius of the Monkey Town get extra cash per", ITEMDRAW_DISABLED);
 			menu.AddItem("", "kill and a stackable (up to 3) increase in cash gained on wave end.\n ", ITEMDRAW_DISABLED);
 		}
@@ -4511,14 +4510,14 @@ static void VillageUpgradeMenu(int client)
 	else if(Village_Flags[client] & VILLAGE_001)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s [$1000]", TranslateItemName(client, "Monkey Commerce"), Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_002), buffer, cash < 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(VilN(VILLAGE_002), buffer, (!owner || cash < 1000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "An additional 1% discount that can stack with", ITEMDRAW_DISABLED);
 		menu.AddItem("", "up to 2 other Villages with this upgrade.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(paths < 2)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s [$1000]", TranslateItemName(client, "Monkey Business"), Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : Village_TierExists[2] == 1 ? " [Tier 1 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_001), buffer, cash < 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(VilN(VILLAGE_001), buffer, (!owner || cash < 1000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Provides a global 2% discount", ITEMDRAW_DISABLED);
 		menu.AddItem("", "on items in the main store.\n ", ITEMDRAW_DISABLED);
 	}
