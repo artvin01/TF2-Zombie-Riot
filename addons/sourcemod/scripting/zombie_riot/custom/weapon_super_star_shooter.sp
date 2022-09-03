@@ -7,7 +7,7 @@ static int Star_HitTarget[MAXENTITIES][MAXENTITIES];
 
 Handle Timer_Starshooter_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 
-#define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
+#define COLLISION_DETECTION_MODEL	"models/props_lab/monitor01a.mdl"
 #define SOUND_WAND_SHOT_STAR 	"weapons/gauss/fire1.wav"
 #define SOUND_ZAP_STAR "ambient/energy/zap1.wav"
 
@@ -15,7 +15,7 @@ void SSS_Map_Precache()
 {
 	PrecacheSound(SOUND_WAND_SHOT_STAR);
 	PrecacheSound(SOUND_ZAP_STAR);
-	PrecacheModel(ENERGY_BALL_MODEL);
+	PrecacheModel(COLLISION_DETECTION_MODEL);
 
 }
 
@@ -93,7 +93,7 @@ public void Super_Star_Shooter_Main(int client, int weapon, bool crit, int slot)
 	
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "Open");
-	EmitSoundToAll(SOUND_WAND_SHOT_STAR, client, _, 65, _, 0.7);
+//	EmitSoundToAll(SOUND_WAND_SHOT_STAR, client, _, 65, _, 0.7);
 	//	CreateTimer(0.1, Timer_HatThrow_Woosh, EntIndexToEntRef(iRot), TIMER_REPEAT);
 	Wand_Launch(client, iRot, speed, time, damage);
 	
@@ -115,10 +115,14 @@ static void Wand_Launch(int client, int iRot, float speed, float time, float dam
 	fVel[2] = fBuf[2]*speed;
 
 	SetEntPropEnt(iCarrier, Prop_Send, "m_hOwnerEntity", client);
-	DispatchKeyValue(iCarrier, "model", ENERGY_BALL_MODEL);
+	DispatchKeyValue(iCarrier, "model", COLLISION_DETECTION_MODEL);
 	DispatchKeyValue(iCarrier, "modelscale", "0");
 	DispatchSpawn(iCarrier);
-
+				
+				
+	CClotBody npc = view_as<CClotBody>(iCarrier);
+	npc.UpdateCollisionBox();
+				
 	TeleportEntity(iCarrier, fPos, NULL_VECTOR, fVel);
 	SetEntityMoveType(iCarrier, MOVETYPE_NOCLIP);
 	
@@ -146,7 +150,7 @@ static void Wand_Launch(int client, int iRot, float speed, float time, float dam
 	}
 	else
 	{
-		particle = ParticleEffectAt(position, "spellbook_rainbow_stars", 5.0);
+		particle = ParticleEffectAt(position, "powerup_icon_supernova", 5.0);
 	}
 	
         
