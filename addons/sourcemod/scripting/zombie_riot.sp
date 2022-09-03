@@ -2145,11 +2145,15 @@ public void CheckIfAloneOnServer()
 			player_alone = client;
 		}
 	}
-	if (players == 1)
+	if(players == 1)
 	{
-		b_IsAloneOnServer = true;
+		b_IsAloneOnServer = true;	
+	}
+	if (players < 4 && players > 0)
+	{
 		if (Bob_Exists)
 			return;
+		
 		Spawn_Bob_Combine(player_alone);
 		
 	}
@@ -2252,6 +2256,10 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 			CurrentPlayers++;
 			if(killed != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE/* && dieingstate[client] == 0*/)
 			{
+				if(dieingstate[client] > 0)
+				{
+					GlobalIntencity++;	
+				}
 				if(!alive)
 				{
 					alive = true;

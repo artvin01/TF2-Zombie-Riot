@@ -566,7 +566,14 @@ public void BobTheGod_ClotThink(int iNPC)
 					vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
-					FireBullet(npc.index, npc.m_iWearable2, npc_pos, vecDir, 18.0, 9000.0, DMG_BULLET, "bullet_tracer01_red", client, _ , "muzzle");
+					if(CurrentPlayers == 1)
+					{
+						FireBullet(npc.index, npc.m_iWearable2, npc_pos, vecDir, 30.0, 9000.0, DMG_BULLET, "bullet_tracer01_red", client, _ , "muzzle");
+					}
+					else
+					{
+						FireBullet(npc.index, npc.m_iWearable2, npc_pos, vecDir, 21.0, 9000.0, DMG_BULLET, "bullet_tracer01_red", client, _ , "muzzle");
+					}
 					npc.PlayRangedSound();
 					npc.m_bReloaded = false;
 				}
@@ -635,8 +642,14 @@ public void BobTheGod_ClotThink(int iNPC)
 						NormalizeVector(vecDir, vecDir);
 						
 						npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-						
-						FireBullet(npc.index, npc.index, npc_pos, vecDir, 200.0, 9999.0, DMG_BULLET, "bullet_tracer02_blue", client);
+						if(CurrentPlayers == 1)
+						{
+							FireBullet(npc.index, npc.index, npc_pos, vecDir, 400.0, 9999.0, DMG_BULLET, "bullet_tracer02_blue", client);
+						}
+						else
+						{
+							FireBullet(npc.index, npc.index, npc_pos, vecDir, 250.0, 9999.0, DMG_BULLET, "bullet_tracer02_blue", client);
+						}
 					}
 				}
 				if(npc.m_flNextMeleeAttack < GetGameTime() && flDistanceToTarget < 100 && !npc.m_fbRangedSpecialOn || (npc.m_flAttackHappenswillhappen && !npc.m_fbRangedSpecialOn))
@@ -671,9 +684,14 @@ public void BobTheGod_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									
-									SDKHooks_TakeDamage(target, npc.index, client, 100.0, DMG_CLUB);
-									
+									if(CurrentPlayers == 1)
+									{
+										SDKHooks_TakeDamage(target, npc.index, client, 200.0, DMG_CLUB, -1, _, vecHit);
+									}
+									else
+									{
+										SDKHooks_TakeDamage(target, npc.index, client, 125.0, DMG_CLUB, -1, _, vecHit);
+									}
 									// Hit particle
 									
 									

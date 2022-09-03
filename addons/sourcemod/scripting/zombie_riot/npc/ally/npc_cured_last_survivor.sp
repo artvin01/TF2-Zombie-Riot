@@ -547,7 +547,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB, -1, _, vecHit);
 									
 									// Hit particle
 									

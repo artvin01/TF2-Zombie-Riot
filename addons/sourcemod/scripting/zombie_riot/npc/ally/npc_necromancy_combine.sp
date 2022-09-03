@@ -332,7 +332,7 @@ public void NecroCombine_ClotThink(int iNPC)
 									if(target > 0) 
 									{
 										
-										SDKHooks_TakeDamage(target, owner, owner, (65.0 * npc.m_flExtraDamage), DMG_SLASH); //Do acid so i can filter it well.
+										SDKHooks_TakeDamage(target, owner, owner, (65.0 * npc.m_flExtraDamage), DMG_SLASH, -1, _, vecHit); //Do acid so i can filter it well.
 										
 										// Hit particle
 										

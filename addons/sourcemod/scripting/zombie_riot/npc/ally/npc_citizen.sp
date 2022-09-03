@@ -1102,7 +1102,7 @@ public void Citizen_ClotThink(int iNPC)
 					
 					if(target > 0) 
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, npc.m_fGunDamage, DMG_SLASH);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, npc.m_fGunDamage, DMG_SLASH, -1, _, vecHit);
 						
 						//Did we kill them?
 						if(GetEntProp(target, Prop_Data, "m_iHealth") < 1)
