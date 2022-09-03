@@ -376,8 +376,15 @@ public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 {
 	if(IsValidEntity(ent1) && IsValidEntity(ent2))
 	{
-		result = PassfilterGlobal(ent1, ent2, result);
-		return Plugin_Handled;
+		result = PassfilterGlobal(ent1, ent2, true);
+		if(result)
+		{
+			return Plugin_Continue;
+		}
+		else
+		{
+			return Plugin_Handled;
+		}
 	}
 	return Plugin_Continue;
 }
@@ -430,7 +437,15 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			entity2 = ent1;			
 		}
 		
-		if(b_Is_Npc_Projectile[entity1])
+		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
+		{
+			if(entity2 <= MaxClients && entity2 > 0)
+			{
+				GibCollidePlayerInteraction(entity1, entity2);
+				return false;
+			}
+		}
+		else if(b_Is_Npc_Projectile[entity1])
 		{
 			if(b_ThisEntityIgnored[entity2])
 			{

@@ -2355,6 +2355,7 @@ void Store_GiveAll(int client, int health)
 	
 	b_PhaseThroughBuildingsPerma[client] = 1;
 	b_FaceStabber[client] = false;
+	b_IsCannibal[client] = false;
 	
 	if(!IsFakeClient(client) && Was_phasing)
 	{
@@ -2639,6 +2640,10 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 						{
 							b_FaceStabber[client] = true;
 						}
+						if(info.SpecialAdditionViaNonAttribute == 3) //eated it all
+						{
+							b_IsCannibal[client] = true;
+						}
 						switch(info.Index)
 						{
 							case 0, 1, 2:
@@ -2759,6 +2764,8 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 		Enable_Arsenal(client, entity);
 		On_Glitched_Give(client, entity);
 		Enable_Management_Banner(client, entity);
+		
+		Enable_StarShooter(client, entity);
 		
 		
 	}

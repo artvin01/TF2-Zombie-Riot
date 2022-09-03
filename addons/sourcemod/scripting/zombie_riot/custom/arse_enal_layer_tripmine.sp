@@ -463,6 +463,10 @@ public void Enable_Arsenal(int client, int weapon) // Enable management, handle 
 	{	
 		Timer_Trip_Management[client] = CreateTimer(0.1, Timer_Management_Trap, client, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 	}
+	else
+	{
+		Kill_Timer_Trap(client);
+	}
 }
 
 public Action Timer_Management_Trap(Handle timer, int client)

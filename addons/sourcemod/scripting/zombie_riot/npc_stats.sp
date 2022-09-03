@@ -212,6 +212,12 @@ char g_GibSound[][] = {
 	"physics/flesh/flesh_squishy_impact_hard4.wav",
 	"physics/flesh/flesh_bloody_break.wav",
 };
+char g_GibEating[][] = {
+	"physics/flesh/flesh_squishy_impact_hard1.wav",
+	"physics/flesh/flesh_squishy_impact_hard2.wav",
+	"physics/flesh/flesh_squishy_impact_hard3.wav",
+	"physics/flesh/flesh_squishy_impact_hard4.wav",
+};
 
 char g_GibSoundMetal[][] = {
 	"ui/item_metal_pot_drop.wav",
@@ -5936,7 +5942,7 @@ static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0
 	DispatchKeyValue(prop, "model", model);
 	DispatchKeyValue(prop, "physicsmode", "2");
 	DispatchKeyValue(prop, "massScale", "1.0");
-	DispatchKeyValue(prop, "spawnflags", "6");
+	DispatchKeyValue(prop, "spawnflags", "2");
 /*
 	TF2_CreateGlow(prop, model, client, color);
 
@@ -5993,11 +5999,12 @@ static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0
 	}
 	DispatchSpawn(prop);
 	TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vel);
-//	SetEntProp(prop, Prop_Send, "m_CollisionGroup", 2);
 
-	float Random_time = GetRandomFloat(2.0, 3.0);
+	float Random_time = GetRandomFloat(6.0, 7.0);
 	SetEntityCollisionGroup(prop, 2); //COLLISION_GROUP_DEBRIS_TRIGGER
-	SDKHook(prop, SDKHook_ShouldCollide, Gib_ShouldCollide);
+	
+	b_IsAGib[prop] = true;
+	
 	if(!metal_colour)
 	{
 		if(!xeno)
@@ -6023,12 +6030,46 @@ static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0
 //	CreateTimer(1.5, Timer_DisableMotion, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 }
 
+public void GibCollidePlayerInteraction(int gib, int player)
+{
+	if(b_IsCannibal[player] && dieingstate[player] == 0)
+	{
+		int weapon = GetPlayerWeaponSlot(player, 2); //Check melee weapon healing.
+		if(IsValidEntity(weapon) && weapon == GetEntPropEnt(player, Prop_Send, "m_hActiveWeapon")) //Must also hold melee out 
+		{
+			if(!IsWandWeapon(weapon)) //Make sure its not wand.
+			{
+				if(SDKCall_GetMaxHealth(player) > GetEntProp(player, Prop_Send, "m_iHealth"))
+				{
+					float Heal_Amount = 0.0;
+					
+					Address address = TF2Attrib_GetByDefIndex(weapon, 180);
+					if(address != Address_Null)
+						Heal_Amount = TF2Attrib_GetValue(address);
+			
+					
+					int Heal_Amount_calc;
+					
+					Heal_Amount_calc = RoundToNearest(Heal_Amount * 0.75);
+					
+					if(Heal_Amount_calc > 0)
+					{
+						StartHealingTimer(player, 0.1, 1, Heal_Amount_calc);
+						int sound = GetRandomInt(0, sizeof(g_GibEating) - 1);
+						EmitSoundToAll(g_GibEating[sound], player, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+						RemoveEntity(gib);
+					}
+				}
+			}
+		}
+	}
+}
+
 public Action Timer_RemoveEntity_Prop(Handle timer, any entid)
 {
 	int entity = EntRefToEntIndex(entid);
 	if(IsValidEntity(entity) && entity>MaxClients)
 	{
-		SDKUnhook(entity, SDKHook_ShouldCollide, Gib_ShouldCollide);
 //		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
 		RemoveEntity(entity);
 	}
@@ -6070,11 +6111,6 @@ public Action Timer_RemoveEntityOverlord(Handle timer, any entid)
 	}
 	return Plugin_Handled;
 }
-
-public bool Gib_ShouldCollide(int client, int collisiongroup, int contentsmask, bool originalResult)
-{
-	return false;
-} 
 
 stock char[] GetStepSoundForMaterial(const char[] material)
 {

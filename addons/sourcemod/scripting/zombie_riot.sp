@@ -279,8 +279,6 @@ bool Moved_Building[MAXENTITIES] = {false,... };
 
 //float Resistance_for_building_High[MAXENTITIES];
 int Armor_Charge[MAXTF2PLAYERS];
-int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
-bool b_FaceStabber[MAXTF2PLAYERS];
 int Zombies_Currently_Still_Ongoing;
 
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
@@ -346,6 +344,9 @@ int i_ObjectsBreakable[ZR_MAX_BREAKBLES];
 //We kinda check these almost 24/7, its better to put them into an array!
 const int i_MaxcountSpawners = ZR_MAX_SPAWNERS;
 int i_ObjectsSpawners[ZR_MAX_SPAWNERS];
+
+
+bool b_IsAGib[MAXENTITIES];
 			
 int g_CarriedDispenser[MAXPLAYERS+1];
 int i_BeingCarried[MAXENTITIES];
@@ -442,6 +443,9 @@ int i_BadHealthRegen[MAXENTITIES]={0, ...}; 				//805
 
 int i_LowTeslarStaff[MAXENTITIES]={0, ...}; 				//3002
 int i_HighTeslarStaff[MAXENTITIES]={0, ...}; 				//3000
+int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
+bool b_FaceStabber[MAXTF2PLAYERS];
+bool b_IsCannibal[MAXTF2PLAYERS];
 
 Function EntityFuncAttack[MAXENTITIES];
 Function EntityFuncAttack2[MAXENTITIES];
@@ -1080,6 +1084,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/coin_flip.sp"
 #include "zombie_riot/custom/weapon_manual_reload.sp"
 #include "zombie_riot/custom/weapon_atomic.sp"
+#include "zombie_riot/custom/weapon_super_star_shooter.sp"
 
 //FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
@@ -1416,6 +1421,7 @@ public void OnMapStart()
 	Npc_Sp_Precache();
 	Fusion_Melee_OnMapStart();
 	Atomic_MapStart();
+	SSS_Map_Precache();
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
@@ -2244,7 +2250,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
 		{
 			CurrentPlayers++;
-			if(killed != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+			if(killed != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE/* && dieingstate[client] == 0*/)
 			{
 				if(!alive)
 				{
@@ -2254,10 +2260,16 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 				{
 					LastMann = false;
 				}
+				
 			}
 			else
 			{
 				GlobalIntencity++;
+			}
+			
+			if(Hurtviasdkhook != 0)
+			{
+				LastMann = true;
 			}
 		}
 	}
@@ -3481,6 +3493,7 @@ public void OnEntityDestroyed(int entity)
 		
 		if(entity > MaxClients)
 		{
+			b_IsAGib[entity] = false;
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			
 			OnEntityDestroyed_BackPack(entity);
@@ -3766,6 +3779,8 @@ public Action Hook_BlockUserMessageEx(UserMsg msg_id, BfRead msg, const int[] pl
 
 public void MapStartResetAll()
 {
+	Zero(b_IsAGib);
+	Reset_stats_starshooter();
 	Zero(f_StuckTextChatNotif);
 	Zero(i_ThisEntityHasAMachineThatBelongsToClientMoney);
 	Zero(f_WasRecentlyRevivedViaNonWave);
