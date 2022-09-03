@@ -1367,11 +1367,16 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 								heal_amount = 25;
 								if(b_FaceStabber[attacker])
 								{
-									heal_amount = 5;
+									heal_amount = 3;
 								}
 								//THIS MELEE WILL HAVE SPECIAL PROPERTIES SO ITS RECONISED AS A SPY MELEE AT ALL TIMES!
 								StartHealingTimer(attacker, 0.1, 3, heal_amount);
 								SepcialBackstabLaughSpy(attacker);
+								
+								if(b_FaceStabber[attacker])
+								{
+									damage *= 0.75;
+								}
 								damage *= 0.75; //Nerf the dmg abit for the last knife as itsotheriwse ridicilous
 							}
 							else
