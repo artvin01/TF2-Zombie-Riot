@@ -273,6 +273,11 @@ public Action flip_extra(Handle timer, int client)
 				damage_multiplier[entity] *= 1.25;
 			}
 			
+			if(i_HeadshotAffinity[client] == 1)
+			{
+				damage_multiplier[entity] *= 1.20;
+			}
+			
 			newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
 			newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
 			newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
