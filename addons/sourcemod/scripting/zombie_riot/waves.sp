@@ -723,7 +723,7 @@ void Waves_Progress()
 			int extra = Building_GetCashOnWave(round.Cash);
 			CurrentCash += round.Cash + extra;
 			if(round.Cash + extra)
-				PrintToChatAll("%t","Cash Gained This Wave", round.Cash + extra);
+				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash + extra);
 			
 			CurrentRound++;
 			CurrentWave = -1;
@@ -769,13 +769,13 @@ void Waves_Progress()
 				}
 			}
 			
-			if(Zombies_Currently_Still_Ongoing > 0)
+			if(Zombies_Currently_Still_Ongoing > 0 && (Zombies_Currently_Still_Ongoing - Zombies_alive_still) > 0)
 			{
 				for(int client_Penalise=1; client_Penalise<=MaxClients; client_Penalise++)
 				{
-					if(IsClientInGame(client_Penalise))
+					if(IsClientInGame(client_Penalise))	
 					{
-						PrintToChat(client_Penalise, "%i Zombies have been wasted... you have lost money!", Zombies_Currently_Still_Ongoing - Zombies_alive_still);
+						CPrintToChat(client_Penalise, "{crimson}%i Zombies have been wasted...{default} you have lost money!", Zombies_Currently_Still_Ongoing - Zombies_alive_still);
 					}
 				}
 			}
