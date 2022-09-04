@@ -3177,18 +3177,21 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "prop_physics_override"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+			b_Is_Player_Projectile[entity] = true; //Pretend its a player projectile for now.
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
 		else if(!StrContains(classname, "func_door_rotating"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+			b_Is_Player_Projectile[entity] = true; //Pretend its a player projectile for now.
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
 		else if(!StrContains(classname, "prop_physics"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+			b_Is_Player_Projectile[entity] = true; //Pretend its a player projectile for now.
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
