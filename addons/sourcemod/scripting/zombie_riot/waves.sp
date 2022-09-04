@@ -752,7 +752,39 @@ void Waves_Progress()
 			
 			Rounds.GetArray(CurrentRound, round);
 			
+			//Loop through all the still alive enemies that are indexed!
+			int Zombies_alive_still = 0;
+			
+			NPCData npc;
+			for(int i=NPCList.Length-1; i>=0; i--)
+			{
+				NPCList.GetArray(i, npc);
+				int npc_index = EntRefToEntIndex(npc.Ref);
+				if(npc_index > MaxClients)
+				{
+					if(GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+					{
+						Zombies_alive_still += 1;
+					}
+				}
+			}
+			
+			if(Zombies_Currently_Still_Ongoing > 0)
+			{
+				for(int client_Penalise=1; client_Penalise<=MaxClients; client_Penalise++)
+				{
+					if(IsClientInGame(client_Penalise))
+					{
+						PrintToChat(client_Penalise, "%i Zombies have been wasted... you have lost money!", Zombies_Currently_Still_Ongoing - Zombies_alive_still);
+					}
+				}
+			}
+			
 			Zombies_Currently_Still_Ongoing = 0;
+			
+			Zombies_Currently_Still_Ongoing = Zombies_alive_still;
+			
+			//Loop through all the still alive enemies that are indexed!
 			
 			if(CurrentRound == 4)
 			{
