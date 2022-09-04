@@ -290,9 +290,18 @@ public Action GetClosestSpawners(Handle timer)
 	return Plugin_Continue;
 }
 
+float GlobalAntiSameFrameCheck_NPC_SpawnNext;
+
 public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 {
 	bool found;
+	
+	if(GlobalAntiSameFrameCheck_NPC_SpawnNext == GetGameTime())
+	{
+		return;
+	}
+		
+	GlobalAntiSameFrameCheck_NPC_SpawnNext = GetGameTime();
 	/*
 	int limit = 10 + RoundToCeil(float(Waves_GetRound())/2.3);
 	*/

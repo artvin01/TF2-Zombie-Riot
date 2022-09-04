@@ -533,10 +533,22 @@
 					}
 				}
 			}
+			"CTFWrench::Smack()" 
+			{
+				"offset" 		"CTFWrench::Smack()" 
+				"hooktype" 		"entity"
+				"return" 		"void"
+				"this" 			"entity"
+			}
 
 		}
 		"Offsets"
 		{
+			"CTFWrench::Smack()" 
+			{
+				"linux" 	"473"
+				"windows" 	"466"
+			}
 			"CTFGrenadePipebombProjectile::PipebombTouch" 
 			{
 				"linux" 	"258"
