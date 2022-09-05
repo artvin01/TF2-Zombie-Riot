@@ -328,6 +328,7 @@ ArrayList NPCList;
 
 const int i_Maxcount_Apply_Lagcompensation = ZR_MAX_LAG_COMP;
 int i_Objects_Apply_Lagcompensation[ZR_MAX_LAG_COMP];
+bool b_DoNotIgnoreDuringLagCompAlly[MAXENTITIES]={false, ...};
 
 
 bool b_IsAlliedNpc[MAXENTITIES]={false, ...};
@@ -3042,7 +3043,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	{
 		
 		//Normal entity render stuff, This should be set to these things on spawn, just to be sure.
-		
+		b_DoNotIgnoreDuringLagCompAlly[entity] = false;
 		i_EntityRenderMode[entity] = RENDER_NORMAL;
 		i_EntityRenderColour1[entity] = 255;
 		i_EntityRenderColour2[entity] = 255;
@@ -3188,7 +3189,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "prop_physics_multiplayer"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
-			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}

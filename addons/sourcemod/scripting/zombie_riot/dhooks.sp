@@ -539,10 +539,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		else if(b_IsAlliedNpc[entity1])
 		{
 			if(b_IsAlliedNpc[entity2])
-			{
+			{	
 				return false;
 			}
-			else if((entity2 <= MaxClients && entity2 > 0) && !Dont_Move_Allied_Npc)
+			else if((entity2 <= MaxClients && entity2 > 0) && !Dont_Move_Allied_Npc && !b_DoNotIgnoreDuringLagCompAlly[entity1])
 			{
 				return false;
 			}
@@ -832,20 +832,17 @@ public void FinishLagCompensationResetValues()
 */
 public void FinishLagCompMoveBack()
 {
-	if(!Dont_Move_Building)
+	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 	{
-		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
+		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+		if (IsValidEntity(entity) && entity != 0)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-			if (IsValidEntity(entity) && entity != 0)
+			if(Moved_Building[entity]) 
 			{
-				if(Moved_Building[entity]) 
-				{
-					Moved_Building[entity] = false;
-					SDKCall_SetLocalOrigin(entity, Get_old_pos_back[entity]);
-				}
 				Moved_Building[entity] = false;
+				SDKCall_SetLocalOrigin(entity, Get_old_pos_back[entity]);
 			}
+			Moved_Building[entity] = false;
 		}
 	}
 	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
