@@ -673,7 +673,7 @@ public bool NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceUsers(int entity, int content
 			
 			if (!StrContains(classname, "base_boss", true) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
 			{
-				for(int i=1; i <= MAXENTITIES; i++)
+				for(int i=1; i < MAXENTITIES; i++)
 				{
 					if(!NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BuildingHit[i])
 					{
