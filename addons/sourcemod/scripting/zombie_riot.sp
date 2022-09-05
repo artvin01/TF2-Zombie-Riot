@@ -714,7 +714,8 @@ enum
 	BTD_LYCHSOUL	= 124,
 	BTD_VORTEX	= 125,
 	
-	MEDIVAL_RAM	= 126
+	MEDIVAL_RAM	= 126,
+	ALT_SOLDIER_BARRAGER = 127
 }
 
 
@@ -855,7 +856,8 @@ public const char NPC_Names[][] =
 	"Lych-Soul",
 	"Vortex",
 	
-	"Capped Ram"
+	"Capped Ram",
+	"Soldier Barrager"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -992,7 +994,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",
 	"",
 	"",
-	"npc_medival_ram"
+	"npc_medival_ram",
+	"npc_alt_soldier_barrager"
 };
 
 #include "zombie_riot/stocks_override.sp"
