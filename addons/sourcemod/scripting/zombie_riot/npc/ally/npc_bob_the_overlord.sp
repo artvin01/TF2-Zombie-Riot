@@ -317,42 +317,42 @@ public void BobTheGod_ClotThink(int iNPC)
 			SetGlobalTransTarget(client);
 			if(!npc.m_bIsFriendly && npc.m_b_follow && !npc.m_b_stand_still)
 			{
-				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				SetHudTextParams(0.9, 0.72, 0.15, 180, 180, 180, 180);
 				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is not friendly and follows you!", "Use voice Commands to command him!");
 			}
 			else if (npc.m_bIsFriendly && npc.m_b_follow && !npc.m_b_stand_still)
 			{
-				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				SetHudTextParams(0.9, 0.72, 0.15, 180, 180, 180, 180);
 				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is friendly and follows you!", "Use voice Commands to command him!");
 			}
 			else if(!npc.m_bIsFriendly && !npc.m_b_follow && !npc.m_b_stand_still)
 			{
-				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				SetHudTextParams(0.9, 0.72, 0.15, 180, 180, 180, 180);
 				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is not friendly and doesn't follow you!", "Use voice Commands to command him!");
 			}
 			else if (npc.m_bIsFriendly && !npc.m_b_follow && !npc.m_b_stand_still)
 			{
-				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				SetHudTextParams(0.9, 0.72, 0.15, 180, 180, 180, 180);
 				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is friendly and doesn't follow you!", "Use voice Commands to command him!");
 			}
 			else if(!npc.m_bIsFriendly && npc.m_b_follow && npc.m_b_stand_still)
 			{
-				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				SetHudTextParams(0.9, 0.72, 0.15, 180, 180, 180, 180);
 				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is not friendly and follows you! BUT stands still.", "Use voice Commands to command him!");
 			}
 			else if (npc.m_bIsFriendly && npc.m_b_follow && npc.m_b_stand_still)
 			{
-				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				SetHudTextParams(0.9, 0.72, 0.15, 180, 180, 180, 180);
 				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is friendly and follows you! BUT stands still", "Use voice Commands to command him!");
 			}
 			else if(!npc.m_bIsFriendly && !npc.m_b_follow && npc.m_b_stand_still)
 			{
-				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				SetHudTextParams(0.9, 0.72, 0.15, 180, 180, 180, 180);
 				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is not friendly and doesn't follow you! BUT stands still", "Use voice Commands to command him!");
 			}
 			else if (npc.m_bIsFriendly && !npc.m_b_follow && npc.m_b_stand_still)
 			{
-				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				SetHudTextParams(0.9, 0.72, 0.15, 180, 180, 180, 180);
 				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is friendly and doesn't follow you! BUT stands still", "Use voice Commands to command him!");
 			}
 			npc.m_flNextThinkTime = GetGameTime() + 0.04;
