@@ -204,6 +204,8 @@ methodmap SpyMainBoss < CClotBody
 		
 		i_NpcInternalId[npc.index] = SPY_MAIN_BOSS;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -622,7 +624,7 @@ public Action SpyMainBoss_ClotDamaged(int victim, int &attacker, int &inflictor,
 			npc.m_blPlayHurtAnimation = true;
 		}
 	}
-	else
+	else if(!Building_DoesPierce(attacker))
 	{
 		damage *= 0.1;
 	}

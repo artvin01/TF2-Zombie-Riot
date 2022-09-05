@@ -179,6 +179,8 @@ methodmap XenoCombineDeutsch < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_DEUTSCH_RITTER;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -383,7 +385,7 @@ public Action XenoCombineDeutsch_ClotDamaged(int victim, int &attacker, int &inf
 		
 	XenoCombineDeutsch npc = view_as<XenoCombineDeutsch>(victim);
 	
-	if(npc.m_fbRangedSpecialOn)
+	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
 		damage *= 0.75;
 	
 	/*

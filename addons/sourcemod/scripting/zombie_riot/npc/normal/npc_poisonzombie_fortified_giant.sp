@@ -127,6 +127,8 @@ methodmap FortifiedGiantPoisonZombie < CClotBody
 		
 		i_NpcInternalId[npc.index] = FORTIFIED_GIANT_POISON_ZOMBIE;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		

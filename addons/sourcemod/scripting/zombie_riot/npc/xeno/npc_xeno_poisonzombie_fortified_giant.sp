@@ -129,6 +129,8 @@ methodmap XenoFortifiedGiantPoisonZombie < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_FORTIFIED_GIANT_POISON_ZOMBIE;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
@@ -330,7 +332,7 @@ public Action XenoFortifiedGiantPoisonZombie_ClotDamaged(int victim, int &attack
 		CreateTimer(2.0, XenoFortifiedGiantPoisonZombie_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(10.0, XenoFortifiedGiantPoisonZombie_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 	}
-	if(npc.flXenoInfectedSpecialHurtTime > GetGameTime())
+	if(npc.flXenoInfectedSpecialHurtTime > GetGameTime() && !Building_DoesPierce(attacker))
 	{
 		damage *= 0.25;
 	}

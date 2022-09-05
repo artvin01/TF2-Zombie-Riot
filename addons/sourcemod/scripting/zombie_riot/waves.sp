@@ -720,9 +720,11 @@ void Waves_Progress()
 		}
 		else
 		{
+			int extra = Building_GetCashOnWave(round.Cash);
 			CurrentCash += round.Cash;
-			if(round.Cash)
-				PrintToChatAll("%t","Cash Gained This Wave", round.Cash);
+			if(round.Cash + extra)
+				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
+				
 			
 			CurrentRound++;
 			CurrentWave = -1;
@@ -734,6 +736,13 @@ void Waves_Progress()
 			{
 				if(IsClientInGame(client_Penalise))
 				{
+					if(extra)
+					{
+						CashSpent[client_Penalise] -= extra;
+						CashRecievedNonWave[client_Penalise] += extra;
+						CPrintToChat(client_Penalise, "{green}%t{default}","Cash Gained This Wave Village", extra);
+					}
+					
 					if(GetClientTeam(client_Penalise)!=2)
 					{
 						SetGlobalTransTarget(client_Penalise);
@@ -751,7 +760,39 @@ void Waves_Progress()
 			
 			Rounds.GetArray(CurrentRound, round);
 			
+			//Loop through all the still alive enemies that are indexed!
+			int Zombies_alive_still = 0;
+			
+			NPCData npc;
+			for(int i=NPCList.Length-1; i>=0; i--)
+			{
+				NPCList.GetArray(i, npc);
+				int npc_index = EntRefToEntIndex(npc.Ref);
+				if(npc_index > MaxClients)
+				{
+					if(GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+					{
+						Zombies_alive_still += 1;
+					}
+				}
+			}
+			
+			if(Zombies_Currently_Still_Ongoing > 0 && (Zombies_Currently_Still_Ongoing - Zombies_alive_still) > 0)
+			{
+				for(int client_Penalise=1; client_Penalise<=MaxClients; client_Penalise++)
+				{
+					if(IsClientInGame(client_Penalise))	
+					{
+						CPrintToChat(client_Penalise, "{crimson}%i Zombies have been wasted...{default} you have lost money!", Zombies_Currently_Still_Ongoing - Zombies_alive_still);
+					}
+				}
+			}
+			
 			Zombies_Currently_Still_Ongoing = 0;
+			
+			Zombies_Currently_Still_Ongoing = Zombies_alive_still;
+			
+			//Loop through all the still alive enemies that are indexed!
 			
 			if(CurrentRound == 4)
 			{
@@ -1226,7 +1267,7 @@ public int Waves_FreeplayVote(Menu menu, MenuAction action, int item, int param2
 	}
 	return 0;
 }
-				
+
 bool Waves_GetNextEnemy(Enemy enemy)
 {
 	if(!Enemies || Enemies.Empty)
@@ -1234,6 +1275,12 @@ bool Waves_GetNextEnemy(Enemy enemy)
 	
 	Enemies.PopArray(enemy);
 	return true;
+}
+
+void Waves_AddNextEnemy(const Enemy enemy)
+{
+	if(Enemies)
+		Enemies.PushArray(enemy);
 }
 
 bool Waves_Started()

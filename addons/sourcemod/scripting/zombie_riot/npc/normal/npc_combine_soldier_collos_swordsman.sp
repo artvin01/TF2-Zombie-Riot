@@ -163,6 +163,8 @@ methodmap CombineCollos < CClotBody
 		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_COLLOSS;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -432,8 +434,8 @@ public Action CombineCollos_ClotDamaged(int victim, int &attacker, int &inflicto
 		return Plugin_Continue;
 		
 	CombineCollos npc = view_as<CombineCollos>(victim);
-		
-	if(npc.m_fbRangedSpecialOn)
+	
+	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
 		damage *= 0.15;
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())

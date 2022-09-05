@@ -165,6 +165,8 @@ methodmap CombineGaint < CClotBody
 		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_GIANT_SWORDSMAN;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -414,9 +416,8 @@ public Action CombineGaint_ClotDamaged(int victim, int &attacker, int &inflictor
 		
 	CombineGaint npc = view_as<CombineGaint>(victim);
 	
-	if(npc.m_fbRangedSpecialOn)
+	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
 		damage *= 0.15;
-
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{

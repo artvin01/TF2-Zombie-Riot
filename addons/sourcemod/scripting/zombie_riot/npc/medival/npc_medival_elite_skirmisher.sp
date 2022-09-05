@@ -148,6 +148,8 @@ methodmap MedivalEliteSkirmisher < CClotBody
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_ELITE_SKIRMISHER;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_SPEAR");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		

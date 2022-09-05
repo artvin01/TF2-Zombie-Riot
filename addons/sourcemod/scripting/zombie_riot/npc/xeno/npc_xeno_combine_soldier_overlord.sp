@@ -194,6 +194,8 @@ methodmap XenoCombineOverlord < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_OVERLORD;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -591,12 +593,11 @@ public Action XenoCombineOverlord_ClotDamaged(int victim, int &attacker, int &in
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
-	if(npc.m_flAngerDelay > GetGameTime())
+	if(npc.m_flAngerDelay > GetGameTime() && !Building_DoesPierce(attacker))
 		damage *= 0.25;
-		
-	if(npc.m_fbRangedSpecialOn)
+	
+	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
 		damage *= 0.15;
-		
 	
 	return Plugin_Changed;
 }

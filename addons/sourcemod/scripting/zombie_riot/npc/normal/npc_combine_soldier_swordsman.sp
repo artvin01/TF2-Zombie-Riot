@@ -166,6 +166,8 @@ methodmap CombineSwordsman < CClotBody
 		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_SWORDSMAN;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -425,7 +427,7 @@ public Action CombineSwordsman_ClotDamaged(int victim, int &attacker, int &infli
 		
 	CombineSwordsman npc = view_as<CombineSwordsman>(victim);
 	
-	if(npc.m_fbRangedSpecialOn)
+	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
 		damage *= 0.15;
 	
 	/*

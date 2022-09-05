@@ -134,6 +134,8 @@ methodmap XenoPyroGiant < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_GIANT_PYRO_MAIN;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	

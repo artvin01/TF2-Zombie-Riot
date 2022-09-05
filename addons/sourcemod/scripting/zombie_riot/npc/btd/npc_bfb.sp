@@ -73,19 +73,17 @@ void Bfb_MapStart()
 	#endif
 }
 
-static bool Fortified[MAXENTITIES];
-
 methodmap BFB < CClotBody
 {
 	property bool m_bFortified
 	{
 		public get()
 		{
-			return Fortified[this.index];
+			return this.m_bLostHalfHealth;
 		}
 		public set(bool value)
 		{
-			Fortified[this.index] = value;
+			this.m_bLostHalfHealth = value;
 		}
 	}
 	public void PlayHitSound()

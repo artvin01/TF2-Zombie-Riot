@@ -168,6 +168,8 @@ methodmap XenoCombineSoldierAr2 < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_AR2;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_RUN_AIM_RIFLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -187,7 +189,7 @@ methodmap XenoCombineSoldierAr2 < CClotBody
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		
 		npc.m_fbGunout = false;
-		npc.m_iAttacksTillReload = 30;
+		npc.m_iAttacksTillReload = 5;
 		npc.m_bmovedelay = false;
 		
 		npc.m_iState = 0;
@@ -311,7 +313,7 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 			} else {
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 25000 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < GetGameTime())
+			if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 25000 && flDistanceToTarget < 40000 && npc.m_flReloadDelay < GetGameTime())
 			{
 				int target;
 			
@@ -371,7 +373,7 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 					{
 						npc.AddGesture("ACT_RELOAD");
 						npc.m_flReloadDelay = GetGameTime() + 2.2;
-						npc.m_iAttacksTillReload = 30;
+						npc.m_iAttacksTillReload = 5;
 						npc.PlayRangedReloadSound();
 					}
 					

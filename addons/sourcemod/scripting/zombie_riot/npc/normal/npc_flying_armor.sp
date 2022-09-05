@@ -162,6 +162,8 @@ methodmap FlyingArmor < CClotBody
 		
 		i_NpcInternalId[npc.index] = FLYINGARMOR_ZOMBIE;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		

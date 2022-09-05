@@ -8,6 +8,7 @@ static DynamicHook FrameUpdatePostEntityThink;
 static bool IsRespawning;
 //static bool Disconnecting;
 
+static DynamicHook g_WrenchSmack;
 
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
@@ -26,6 +27,23 @@ bool g_GottenAddressesForLagComp;
 
 float f_TimeAfterSpawn[MAXTF2PLAYERS];
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
+
+
+static float Get_old_pos_back[MAXENTITIES][3];
+static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
+static bool Dont_Move_Building;											//dont move buildings
+static bool Dont_Move_Allied_Npc;											//dont move buildings
+static int Move_Players = 0;		
+static int Move_Players_Teutons = 0;		
+
+static bool b_LagCompNPC;
+bool b_LagCompNPC_No_Layers;
+bool b_LagCompNPC_AwayEnemies;
+bool b_LagCompNPC_ExtendBoundingBox;
+bool b_LagCompNPC_BlockInteral;
+
+bool b_LagCompAlliedPlayers; //Make sure this actually compensates allies.
+
 
 /*
 // Offsets from mikusch but edited
@@ -68,6 +86,8 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
+	
+	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
 	
 	g_detour_CTFGrenadePipebombProjectile_PipebombTouch = CheckedDHookCreateFromConf(gamedata, "CTFGrenadePipebombProjectile::PipebombTouch");
 	
@@ -119,6 +139,25 @@ void DHook_Setup()
 
 	delete gamedata_lag_comp;
 	
+}
+
+void OnWrenchCreated(int entity) 
+{
+	g_WrenchSmack.HookEntity(Hook_Pre, entity, Wrench_SmackPre);
+	g_WrenchSmack.HookEntity(Hook_Post, entity, Wrench_SmackPost);
+}
+
+public MRESReturn Wrench_SmackPre(int entity, DHookReturn ret, DHookParam param)
+{	
+	Dont_Move_Building = true;
+	int Compensator = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	LagCompEntitiesThatAreIntheWay(Compensator);
+	return MRES_Ignored;
+}
+public MRESReturn Wrench_SmackPost(int entity, DHookReturn ret, DHookParam param)
+{	
+	FinishLagCompMoveBack();
+	return MRES_Ignored;
 }
 
 //prevent infinite score gain
@@ -267,7 +306,7 @@ public MRESReturn DHook_GrenadeExplodePre(int entity)
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hThrower");
 	if (0 < owner <= MaxClients)
 	{
-		if(f_CustomGrenadeDamage[entity] < 999999)
+		if(f_CustomGrenadeDamage[entity] < 999999.9)
 		{
 			float original_damage = GetEntPropFloat(entity, Prop_Send, "m_flDamage"); 
 			if(f_CustomGrenadeDamage[entity] > 1.0)
@@ -285,7 +324,7 @@ public MRESReturn DHook_GrenadeExplodePre(int entity)
 	}
 	else if(owner > MaxClients)
 	{
-		if(f_CustomGrenadeDamage[entity] < 999999)
+		if(f_CustomGrenadeDamage[entity] < 999999.9)
 		{
 			float original_damage = GetEntPropFloat(entity, Prop_Send, "m_flDamage"); 
 			if(f_CustomGrenadeDamage[entity] > 1.0)
@@ -293,7 +332,16 @@ public MRESReturn DHook_GrenadeExplodePre(int entity)
 				original_damage = f_CustomGrenadeDamage[entity];
 			}
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
-			Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
+			
+			//Important, make them not act as an ai if its on red, or else they are BUSTED AS FUCK.
+			if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			{
+				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
+			}
+			else
+			{
+				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,false);
+			}
 		}
 		else
 		{
@@ -350,7 +398,15 @@ public MRESReturn DHook_RocketExplodePre(int entity)
 		float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
 	//	int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
-		Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);		
+	//Important, make them not act as an ai if its on red, or else they are BUSTED AS FUCK.
+		if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+		{
+			Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
+		}
+		else
+		{
+			Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,false);
+		}
 	}
 	return MRES_Ignored;
 }
@@ -359,8 +415,15 @@ public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 {
 	if(IsValidEntity(ent1) && IsValidEntity(ent2))
 	{
-		result = PassfilterGlobal(ent1, ent2, result);
-		return Plugin_Handled;
+		result = PassfilterGlobal(ent1, ent2, true);
+		if(result)
+		{
+			return Plugin_Continue;
+		}
+		else
+		{
+			return Plugin_Handled;
+		}
 	}
 	return Plugin_Continue;
 }
@@ -413,7 +476,15 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			entity2 = ent1;			
 		}
 		
-		if(b_Is_Npc_Projectile[entity1])
+		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
+		{
+			if(entity2 <= MaxClients && entity2 > 0)
+			{
+				GibCollidePlayerInteraction(entity1, entity2);
+				return false;
+			}
+		}
+		else if(b_Is_Npc_Projectile[entity1])
 		{
 			if(b_ThisEntityIgnored[entity2])
 			{
@@ -447,7 +518,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 		}
-		else if (b_Is_Player_Projectile_Through_Npc[entity2])
+		else if (b_Is_Player_Projectile_Through_Npc[entity1])
 		{
 			if(b_Is_Blue_Npc[entity2])
 			{
@@ -468,6 +539,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		else if(b_IsAlliedNpc[entity1])
 		{
 			if(b_IsAlliedNpc[entity2])
+			{
+				return false;
+			}
+			else if((entity2 <= MaxClients && entity2 > 0) && !Dont_Move_Allied_Npc)
 			{
 				return false;
 			}
@@ -510,20 +585,6 @@ i will keep it updated incase this didnt work.
 
 //LAG COMP SECTION! Kinda VERY important.
 
-static float Get_old_pos_back[MAXENTITIES][3];
-static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
-static bool Dont_Move_Building;											//dont move buildings
-static bool Dont_Move_Allied_Npc;											//dont move buildings
-static int Move_Players = 0;		
-static int Move_Players_Teutons = 0;		
-
-static bool b_LagCompNPC;
-bool b_LagCompNPC_No_Layers;
-bool b_LagCompNPC_AwayEnemies;
-bool b_LagCompNPC_ExtendBoundingBox;
-bool b_LagCompNPC_BlockInteral;
-
-bool b_LagCompAlliedPlayers; //Make sure this actually compensates allies.
 /*
 public MRESReturn StartLagCompensation_Pre(Address manager, DHookParam param)
 {
@@ -697,21 +758,24 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 			}
 		}
 	}
-	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
+	if(!Dont_Move_Building)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-		if (IsValidEntity(entity) && entity != 0)
+		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 		{
-			if(!Moved_Building[entity]) 
+			int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+			if (IsValidEntity(entity) && entity != 0)
 			{
-				CClotBody npc = view_as<CClotBody>(entity);
-				if(npc.bBuildingIsPlaced) //making sure.
+				if(!Moved_Building[entity]) 
 				{
-					Moved_Building[entity] = true;
-					//PrintToChatAll("test1");
-					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[entity]);
-					//TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
-					SDKCall_SetLocalOrigin(entity, vec_origin);
+					CClotBody npc = view_as<CClotBody>(entity);
+					if(npc.bBuildingIsPlaced) //making sure.
+					{
+						Moved_Building[entity] = true;
+						//PrintToChatAll("test1");
+						GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[entity]);
+						//TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
+						SDKCall_SetLocalOrigin(entity, vec_origin);
+					}
 				}
 			}
 		}
@@ -766,14 +830,8 @@ public void FinishLagCompensationResetValues()
 	b_LagCompAlliedPlayers = false; //Do it here.
 }
 */
-public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //This code does not need to be touched. mostly.
+public void FinishLagCompMoveBack()
 {
-//	PrintToChatAll("finish lag comp");
-	//Set this to false to be sure.
-//	StartLagCompensation_Base_Boss
-//	FinishLagCompensation_Base_boss(param);
-//	int Compensator = param.Get(1);
-	
 	if(!Dont_Move_Building)
 	{
 		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
@@ -831,7 +889,17 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 				Moved_Building[baseboss_index_allied] = false;
 			}
 		}
-	}
+	}	
+}
+public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //This code does not need to be touched. mostly.
+{
+//	PrintToChatAll("finish lag comp");
+	//Set this to false to be sure.
+//	StartLagCompensation_Base_Boss
+//	FinishLagCompensation_Base_boss(param);
+//	int Compensator = param.Get(1);
+	
+	FinishLagCompMoveBack();
 	#if defined LagCompensation
 	if(b_LagCompNPC)
 		FinishLagCompensation_Base_boss();
@@ -1094,6 +1162,12 @@ public MRESReturn DHook_ForceRespawn(int client)
 //Ty miku for showing me this cvar.
 public void PhaseThroughOwnBuildings(int client)
 {
+	if(b_PhaseThroughBuildingsPerma[client] == 2) //They already ignore everything 24/7, dont bother.
+	{
+		SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+		return;
+	}
+	
 	float PlayerLoc[3];
 	float otherLoc[3];
 	bool Collides_with_atleast_one_building = false;

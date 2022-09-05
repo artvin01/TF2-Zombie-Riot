@@ -177,6 +177,8 @@ methodmap XenoCombineGaint < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_GIANT_SWORDSMAN;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -429,9 +431,8 @@ public Action XenoCombineGaint_ClotDamaged(int victim, int &attacker, int &infli
 		
 	XenoCombineGaint npc = view_as<XenoCombineGaint>(victim);
 	
-	if(npc.m_fbRangedSpecialOn)
+	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
 		damage *= 0.15;
-
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{

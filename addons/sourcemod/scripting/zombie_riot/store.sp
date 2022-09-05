@@ -65,6 +65,8 @@ enum struct ItemInfo
 	
 	int Attack3AbilitySlot;
 	
+	int SpecialAdditionViaNonAttribute; //better then spamming attribs.
+	
 	int CustomWeaponOnEquip;
 	
 	bool SniperBugged;
@@ -188,6 +190,9 @@ enum struct ItemInfo
 		
 		FormatEx(buffer, sizeof(buffer), "%sattack_3_ability_slot", prefix)
 		this.Attack3AbilitySlot			= kv.GetNum(buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%sspecial_attribute", prefix)
+		this.SpecialAdditionViaNonAttribute			= kv.GetNum(buffer);
 		
 		char buffers[32][16];
 		FormatEx(buffer, sizeof(buffer), "%sattributes", prefix)
@@ -363,6 +368,7 @@ void Store_ConfigSetup()
 	char buffer[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons");
 	KeyValues kv = new KeyValues("Weapons");
+	kv.SetEscapeSequences(true);
 	kv.ImportFromFile(buffer);
 	RequestFrame(DeleteHandle, kv);
 	
@@ -591,7 +597,7 @@ bool Store_HasAnyItem(int client)
 	return false;
 }
 
-/*int Store_HasNamedItem(int client, const char[] name)
+int Store_HasNamedItem(int client, const char[] name)
 {
 	static Item item;
 	int length = StoreItems.Length;
@@ -602,8 +608,27 @@ bool Store_HasAnyItem(int client)
 			return item.Owned[client];
 	}
 	
+	ThrowError("Unknown item name %s", name);
 	return 0;
-}*/
+}
+
+void Store_SetNamedItem(int client, const char[] name, int amount)
+{
+	static Item item;
+	int length = StoreItems.Length;
+	for(int i; i<length; i++)
+	{
+		StoreItems.GetArray(i, item);
+		if(StrEqual(name, item.Name, false))
+		{
+			item.Owned[client] = amount;
+			StoreItems.SetArray(i, item);
+			return;
+		}
+	}
+	
+	ThrowError("Unknown item name %s", name);
+}
 
 void Store_PutInServer(int client)
 {
@@ -2307,10 +2332,36 @@ void Store_GiveAll(int client, int health)
 		return;
 	}
 	
+	int weapon = GetPlayerWeaponSlot(client, 1); //Secondary
+	if(IsValidEntity(weapon))
+	{
+		if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
+		{
+			f_MedigunChargeSave[client] = GetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel");
+		}
+	}
+	
 	TF2_RemoveAllWeapons(client);
 	
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
 	SetAbilitySlotCount(client, 0);
+	
+	bool Was_phasing = false;
+	
+	if(b_PhaseThroughBuildingsPerma[client] == 2)
+	{
+		Was_phasing = true;
+	}
+	
+	b_PhaseThroughBuildingsPerma[client] = 1;
+	b_FaceStabber[client] = false;
+	b_IsCannibal[client] = false;
+	
+	if(!IsFakeClient(client) && Was_phasing)
+	{
+		SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+		SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+	}
 						
 	bool use = true;
 	for(int i; i<sizeof(Equipped[]); i++)
@@ -2364,6 +2415,8 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 {
 	if(!StoreItems)
 		return -1;
+		
+		
 	
 	Item item;
 	int entity = -1;
@@ -2579,6 +2632,18 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 						{
 							SetAbilitySlotCount(client, info.Attack3AbilitySlot);
 						}
+						if(info.SpecialAdditionViaNonAttribute == 1)
+						{
+							b_PhaseThroughBuildingsPerma[client] = 2; //Set to true if its 1, other attribs will use other things!
+						}
+						if(info.SpecialAdditionViaNonAttribute == 2) //stabbb
+						{
+							b_FaceStabber[client] = true;
+						}
+						if(info.SpecialAdditionViaNonAttribute == 3) //eated it all
+						{
+							b_IsCannibal[client] = true;
+						}
 						switch(info.Index)
 						{
 							case 0, 1, 2:
@@ -2700,13 +2765,15 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 		On_Glitched_Give(client, entity);
 		Enable_Management_Banner(client, entity);
 		
+		Enable_StarShooter(client, entity);
+		
+		
 	}
 	return entity;
 }
 
 int Store_GiveSpecificItem(int client, const char[] name)
 {
-	int entity = -1;
 	Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
@@ -2716,6 +2783,7 @@ int Store_GiveSpecificItem(int client, const char[] name)
 		{
 			ItemInfo info;
 			item.GetItemInfo(0, info);
+			int entity = -1;
 			int slot = TF2_GetClassnameSlot(info.Classname);
 			if(slot < sizeof(Equipped[]))
 			{
@@ -2732,10 +2800,12 @@ int Store_GiveSpecificItem(int client, const char[] name)
 				item.Owned[client] = lastOwned;
 				StoreItems.SetArray(i, item);
 			}
-			break;
+			return entity;
 		}
 	}
-	return entity;
+	
+	ThrowError("Unknown item name %s", name);
+	return 0;
 }
 
 bool Store_Interact(int client, int entity, const char[] classname)
@@ -2901,7 +2971,7 @@ bool Store_PrintLevelItems(int client, int level)
 	return found;
 }
 
-static char[] TranslateItemName(int client, const char name[64])
+char[] TranslateItemName(int client, const char name[64])
 {
 	static int ServerLang = -1;
 	if(ServerLang == -1)
@@ -2929,27 +2999,9 @@ static void ItemCost(int client, Item item, int &cost)
 	cost += item.Scale*item.Scaled[client]; 
 	cost += item.CostPerWave * CurrentRound;
 	//make sure anything thats additive is on the top, so sales actually help!!
-	if(b_SpecialGrigoriStore) //during maps where he alaways sells, always sell!
+	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
 	{
-		if(item.NPCSeller_First)
-		{
-			cost = RoundToCeil(float(cost) * 0.7);
-		}
-		else if(item.NPCSeller)
-		{
-			cost = RoundToCeil(float(cost) * 0.8);
-		}
-		
-		if(item.NPCSeller)
-			GregSale = true;
-	}
-	if(!started && !GregSale)
-	{
-		if(CurrentRound < 2)
-		{
-			cost = RoundToCeil(float(cost) * 0.7);	
-		}
-		else
+		if(b_SpecialGrigoriStore) //during maps where he alaways sells, always sell!
 		{
 			if(item.NPCSeller_First)
 			{
@@ -2959,6 +3011,34 @@ static void ItemCost(int client, Item item, int &cost)
 			{
 				cost = RoundToCeil(float(cost) * 0.8);
 			}
+			
+			if(item.NPCSeller)
+				GregSale = true;
+		}
+	}
+	if(!started && !GregSale)
+	{
+		if(CurrentRound < 2)
+		{
+			cost = RoundToCeil(float(cost) * 0.7);	
+		}
+		else
+		{
+			if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
+			{
+				if(item.NPCSeller_First)
+				{
+					cost = RoundToCeil(float(cost) * 0.7);
+				}
+				else if(item.NPCSeller)
+				{
+					cost = RoundToCeil(float(cost) * 0.8);
+				}
+				else
+				{
+					cost = RoundToCeil(float(cost) * 0.9);	
+				}
+			}
 			else
 			{
 				cost = RoundToCeil(float(cost) * 0.9);	
@@ -2967,6 +3047,9 @@ static void ItemCost(int client, Item item, int &cost)
 
 	}
 	
+	float discount = Building_GetDiscount();
+	if(discount != 1.0)
+		cost = RoundToNearest(float(cost) * discount);
 	
 	if((CurrentRound != 0 || CurrentWave != -1) && cost)
 	{
@@ -2984,6 +3067,7 @@ static void ItemCost(int client, Item item, int &cost)
 			
 	}
 	
+	//Keep this here, both of these make sure that the item doesnt go into infinite cost, and so it doesnt go below the sell value, no inf money bug!
 	if(item.MaxCost > 0 && cost > item.MaxCost)
 	{
 		cost = item.MaxCost;

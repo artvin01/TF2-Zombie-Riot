@@ -171,6 +171,8 @@ methodmap MedivalManAtArms < CClotBody
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_MAN_AT_ARMS;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		

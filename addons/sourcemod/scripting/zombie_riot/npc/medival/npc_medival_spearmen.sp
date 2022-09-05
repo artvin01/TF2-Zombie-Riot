@@ -171,6 +171,8 @@ methodmap MedivalSpearMan < CClotBody
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_SPEARMEN;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_SPAERMEN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		

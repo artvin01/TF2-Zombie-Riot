@@ -521,14 +521,29 @@ public Action Timer_Do_Melee_Attack(Handle timer, DataPack pack)
 		//	PrintToChatAll("%i",MELEE_HIT);
 		//	SDKCall_CallCorrectWeaponSound(weapon, MELEE_HIT, 1.0);
 		// 	This doesnt work sadly and i dont have the power/patience to make it work, just do a custom check with some big shit, im sorry.
+			Address address;
+			
 			float damage = 65.0;
 			if(StrEqual(classname, "tf_weapon_bat"))
 			{
 				damage = 35.0;
 			}
-			Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-			if(address != Address_Null)
-				damage *= TF2Attrib_GetValue(address);
+			if(Item_Index != 155)
+			{
+				address = TF2Attrib_GetByDefIndex(weapon, 2);
+				if(address != Address_Null)
+					damage *= TF2Attrib_GetValue(address);
+				
+			}
+			else
+			{
+				damage = 30.0;
+				float attack_speed;
+					
+				attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
+							
+				damage = attack_speed * damage * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
+			}
 				
 			address = TF2Attrib_GetByDefIndex(weapon, 1);
 			if(address != Address_Null)

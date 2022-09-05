@@ -173,6 +173,8 @@ static int g_particleImpactFlesh;
 static int g_particleImpactRubber;
 static int g_modelArrow;
 
+char c_HeadPlaceAttachmentGibName[MAXENTITIES][64];
+
 
 static int g_sModelIndexBloodDrop;
 static int g_sModelIndexBloodSpray;
@@ -209,6 +211,12 @@ char g_GibSound[][] = {
 	"physics/flesh/flesh_squishy_impact_hard3.wav",
 	"physics/flesh/flesh_squishy_impact_hard4.wav",
 	"physics/flesh/flesh_bloody_break.wav",
+};
+char g_GibEating[][] = {
+	"physics/flesh/flesh_squishy_impact_hard1.wav",
+	"physics/flesh/flesh_squishy_impact_hard2.wav",
+	"physics/flesh/flesh_squishy_impact_hard3.wav",
+	"physics/flesh/flesh_squishy_impact_hard4.wav",
 };
 
 char g_GibSoundMetal[][] = {
@@ -293,6 +301,7 @@ enum
 	STEPTYPE_COMBINE = 2,	
 	STEPTYPE_PANZER = 3,
 	STEPTYPE_COMBINE_METRO = 4,
+	STEPTYPE_TANK = 5
 }
 
 enum
@@ -306,7 +315,7 @@ enum
 	BLEEDTYPE_NORMAL = 1,	
 	BLEEDTYPE_METAL = 2,	
 	BLEEDTYPE_RUBBER = 3,	
-	BLEEDTYPE_XENO = 4,	
+	BLEEDTYPE_XENO = 4,
 }
 
 int GetIndexByPluginName(const char[] name)
@@ -805,6 +814,18 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = Sniper_railgunner(client, vecPos, vecAng, ally);
 		}
+		case BTD_GOLDBLOON:
+		{
+			entity = GoldBloon(client, vecPos, vecAng, ally, data);
+		}
+		case BTD_BLOONARIUS:
+		{
+			entity = Bloonarius(client, vecPos, vecAng, ally, data);
+		}
+		case MEDIVAL_RAM:
+		{
+			entity = MedivalRam(client, vecPos, vecAng, ally, data);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1298,6 +1319,18 @@ public void NPCDeath(int entity)
 		{
 			Sniper_railgunner_NPCDeath(entity);
 		}
+		case BTD_GOLDBLOON:
+		{
+			GoldBloon_NPCDeath(entity);
+		}
+		case BTD_BLOONARIUS:
+		{
+			Bloonarius_NPCDeath(entity);
+		}
+		case MEDIVAL_RAM:
+		{
+			MedivalRam_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1305,7 +1338,49 @@ public void NPCDeath(int entity)
 	}
 	
 	if(view_as<CClotBody>(entity).m_iCreditsOnKill)
+	{
 		CurrentCash += view_as<CClotBody>(entity).m_iCreditsOnKill;
+			
+		int extra;
+		
+		
+		int index = NPCList.FindValue(EntIndexToEntRef(entity), NPCData::Ref);
+		if(index != -1)
+		{
+			NPCData npc;
+			NPCList.GetArray(index, npc);
+			int client = GetClientOfUserId(npc.LastHitId);
+			if(client && IsClientInGame(client))
+			{
+				extra = RoundToFloor(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * Building_GetCashOnKillMulti(client));
+				
+				extra -= view_as<CClotBody>(entity).m_iCreditsOnKill;
+				
+				if(extra > 0)
+				{
+					CashSpent[client] -= extra;
+					CashRecievedNonWave[client] += extra;
+				}
+			}
+		}
+		
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				if(GetClientTeam(client)!=2)
+				{
+					SetGlobalTransTarget(client);
+					CashSpent[client] += RoundToCeil(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * 0.40);
+				}
+				else if (TeutonType[client] == TEUTON_WAITING)
+				{
+					SetGlobalTransTarget(client);
+					CashSpent[client] += RoundToCeil(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * 0.30);
+				}
+			}
+		}
+	}
 }
 
 public void OnMapStart_NPC_Base()
@@ -1482,6 +1557,7 @@ public void OnMapStart_NPC_Base()
 	
 	L4D2_Tank_OnMapStart_NPC();
 	Addiction_OnMapStart_NPC();
+	MedivalRam_OnMapStart();
 }
 
 
@@ -1897,11 +1973,11 @@ methodmap CClotBody
 	{
 		switch(Npc_Type)
 		{
-			case 1: //normal
+			case STEPSOUND_NORMAL: //normal
 			{
 				EmitSoundToAll(sound, this.index, SNDCHAN_AUTO, 80, _, volume, 100, _);
 			}
-			case 2: //giant
+			case STEPSOUND_GIANT: //giant
 			{
 				EmitSoundToAll(sound, this.index, SNDCHAN_AUTO, 80, _, volume, 80, _);
 			}
@@ -3209,6 +3285,7 @@ methodmap CClotBody
 			{
 				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", model_scale); // ZZZZ i sleep
 			}
+			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
 			SetEntityCollisionGroup(entity, 19); //our savior
 			See_Projectile_Team(entity);
@@ -3279,6 +3356,7 @@ methodmap CClotBody
 			SetEntityCollisionGroup(entity, 19); //our savior
 			See_Projectile_Team(entity);
 			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Arrow_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
+			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, ArrowStartTouch);
 		}
 	}
@@ -4032,7 +4110,11 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 			}
 			else
 			{
-				float startPosition[3];
+				float startPosition[3]; //This is what we use if we cannot find the correct name of said bone for this npc.
+				
+				float accurateposition[3]; //What we use if it has one.
+				float accurateAngle[3]; //What we use if it has one.
+				
 				float damageForce[3];
 				npc.m_vecpunchforce(damageForce, false);
 				
@@ -4044,21 +4126,37 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 						startPosition[2] += 64;
-						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, damageForce, true, true);
+						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true);
 						startPosition[2] -= 15;
-						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, damageForce, false, true);
+						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true);
 						startPosition[2] += 44;
-						Place_Gib("models/Gibs/HGIBS.mdl", startPosition, damageForce, false, true);	
+						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						{
+							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true);	
+						}
+						else
+						{
+							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true);	
+						}
 					}
 					else
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 						startPosition[2] += 42;
-						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, damageForce, true);
+						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true);
 						startPosition[2] -= 10;
-						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, damageForce);
+						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce);
 						startPosition[2] += 34;
-						Place_Gib("models/Gibs/HGIBS.mdl", startPosition, damageForce);	
+						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						{
+							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce);	
+						}
+						else
+						{
+							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce);	
+						}
 					}	
 				}	
 				else if(npc.m_iBleedType == 2)
@@ -4068,21 +4166,37 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 						startPosition[2] += 64;
-						Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, damageForce, true, false, true, true); //dont gigantify this one.
+						Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, _, damageForce, true, false, true, true); //dont gigantify this one.
 						startPosition[2] -= 15;
-						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, damageForce, false, true, true);
+						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, _, damageForce, false, true, true);
 						startPosition[2] += 44;
-						Place_Gib("models/gibs/metal_gib2.mdl", startPosition, damageForce, false, true, true);	
+						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						{
+							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+							Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, accurateAngle, damageForce, false, true, true);	
+						}
+						else
+						{
+							Place_Gib("models/gibs/metal_gib2.mdl", startPosition, _, damageForce, false, true, true);		
+						}
 					}
 					else
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 						startPosition[2] += 42;
-						Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, damageForce, true, false, true, true, true);
+						Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, _, damageForce, true, false, true, true, true);
 						startPosition[2] -= 10;
-						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, damageForce, false, false, true);
+						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, _, damageForce, false, false, true);
 						startPosition[2] += 34;
-						Place_Gib("models/gibs/metal_gib2.mdl", startPosition, damageForce, false, false, true);	
+						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						{
+							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+							Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, accurateAngle, damageForce, false, false, true);
+						}
+						else
+						{
+							Place_Gib("models/gibs/metal_gib2.mdl", startPosition, _, damageForce, false, false, true);		
+						}
 					}		
 				}
 				else if(npc.m_iBleedType == 4)
@@ -4092,21 +4206,37 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 						startPosition[2] += 64;
-						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, damageForce, true, true, _, _, _, true);
+						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true, _, _, _, true);
 						startPosition[2] -= 15;
-						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, damageForce, false, true, _, _, _, true);
+						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true, _, _, _, true);
 						startPosition[2] += 44;
-						Place_Gib("models/Gibs/HGIBS.mdl", startPosition, damageForce, false, true, _, _, _, true);	
+						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						{
+							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, true);	
+						}
+						else
+						{
+							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true, _, _, _, true);		
+						}
 					}
 					else
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 						startPosition[2] += 42;
-						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, damageForce, true, _, _, _, _, true);
+						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, _, _, _, _, true);
 						startPosition[2] -= 10;
-						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, damageForce, _, _, _, _, _, true);
+						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
 						startPosition[2] += 34;
-						Place_Gib("models/Gibs/HGIBS.mdl", startPosition, damageForce, _, _, _, _, _, true);	
+						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						{
+							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, true);
+						}
+						else
+						{
+							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
+						}
 					}	
 				}				
 			//	#endif					
@@ -4251,7 +4381,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 	
 	switch(npc.m_iNpcStepVariation)
 	{
-		case 1:
+		case STEPTYPE_NORMAL:
 		{
 			if(IsWalkEvent(event))
 			{
@@ -4268,14 +4398,14 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 				npc.PlayStepSound(strSound,0.8, npc.m_iStepNoiseType);
 			}
 		}
-		case 2:
+		case STEPTYPE_COMBINE:
 		{
 			if(IsWalkEvent(event))
 			{
 				npc.PlayStepSound(g_CombineSoldierStepSound[GetRandomInt(0, sizeof(g_CombineSoldierStepSound) - 1)], 0.8, npc.m_iStepNoiseType);
 			}
 		}
-		case 3:
+		case STEPTYPE_PANZER:
 		{
 			if(IsWalkEvent(event))
 			{
@@ -4285,7 +4415,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 				}
 			}
 		}
-		case 4:
+		case STEPTYPE_COMBINE_METRO:
 		{
 			if(IsWalkEvent(event))
 			{
@@ -4295,7 +4425,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 				}
 			}
 		}
-		case 5:
+		case STEPTYPE_TANK:
 		{
 			if(IsWalkEvent(event, 5))
 			{
@@ -5647,7 +5777,9 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 		{
 			damage *= Medival_Difficulty_Level;
 		}
-		damage *= fl_MeleeArmor[victim];
+		
+		if(fl_MeleeArmor[victim] >= 1.0 || !Building_DoesPierce(attacker))
+			damage *= fl_MeleeArmor[victim];
 	}
 	else if(!(damagetype & DMG_SLASH))
 	{
@@ -5655,7 +5787,9 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 		{
 			damage *= Medival_Difficulty_Level;
 		}
-		damage *= fl_RangedArmor[victim];
+		
+		if(fl_RangedArmor[victim] >= 1.0 || !Building_DoesPierce(attacker))
+			damage *= fl_RangedArmor[victim];
 	}
 	//No resistances towards slash as its internal.
 	
@@ -5832,7 +5966,7 @@ public void RequestFramesCallback(DataPack pack)
 
 
 
-static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, bool xeno = false)
+static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, bool xeno = false)
 {
 	int prop = CreateEntityByName("prop_physics_multiplayer");
 	if(!IsValidEntity(prop))
@@ -5840,7 +5974,7 @@ static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduc
 	DispatchKeyValue(prop, "model", model);
 	DispatchKeyValue(prop, "physicsmode", "2");
 	DispatchKeyValue(prop, "massScale", "1.0");
-	DispatchKeyValue(prop, "spawnflags", "6");
+	DispatchKeyValue(prop, "spawnflags", "2");
 /*
 	TF2_CreateGlow(prop, model, client, color);
 
@@ -5861,7 +5995,7 @@ static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduc
 	*/
 	if(big_gibs)
 	{
-		DispatchKeyValue(prop, "modelscale", "1.5");
+		DispatchKeyValue(prop, "modelscale", "1.6");
 	}
 	if(smaller_gibs)
 	{
@@ -5871,21 +6005,38 @@ static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduc
 	if(Reduce_masively_Weight)
 		ScaleVector(vel, 0.02);
 		
-	if(!Rotate)
+	if(ang[0] != 0.0)
 	{
-		TeleportEntity(prop, pos, NULL_VECTOR, NULL_VECTOR);
+		if(!Rotate)
+		{
+			TeleportEntity(prop, pos, NULL_VECTOR, NULL_VECTOR);
+		}
+		else
+		{
+			TeleportEntity(prop, pos, {90.0,0.0,0.0}, NULL_VECTOR);
+		}
 	}
 	else
 	{
-		TeleportEntity(prop, pos, {90.0,0.0,0.0}, NULL_VECTOR);
+		if(!Rotate)
+		{
+			TeleportEntity(prop, pos, ang, NULL_VECTOR);
+		}
+		else
+		{
+			ang[0] += 90.0;
+			TeleportEntity(prop, pos, ang, NULL_VECTOR);
+		}		
+		
 	}
 	DispatchSpawn(prop);
 	TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vel);
-//	SetEntProp(prop, Prop_Send, "m_CollisionGroup", 2);
 
-	float Random_time = GetRandomFloat(2.0, 3.0);
+	float Random_time = GetRandomFloat(6.0, 7.0);
 	SetEntityCollisionGroup(prop, 2); //COLLISION_GROUP_DEBRIS_TRIGGER
-	SDKHook(prop, SDKHook_ShouldCollide, Gib_ShouldCollide);
+	
+	b_IsAGib[prop] = true;
+	
 	if(!metal_colour)
 	{
 		if(!xeno)
@@ -5911,12 +6062,46 @@ static void Place_Gib(const char[] model, float pos[3], float vel[3], bool Reduc
 //	CreateTimer(1.5, Timer_DisableMotion, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 }
 
+public void GibCollidePlayerInteraction(int gib, int player)
+{
+	if(b_IsCannibal[player] && dieingstate[player] == 0)
+	{
+		int weapon = GetPlayerWeaponSlot(player, 2); //Check melee weapon healing.
+		if(IsValidEntity(weapon) && weapon == GetEntPropEnt(player, Prop_Send, "m_hActiveWeapon")) //Must also hold melee out 
+		{
+			if(!IsWandWeapon(weapon)) //Make sure its not wand.
+			{
+				if(SDKCall_GetMaxHealth(player) > GetEntProp(player, Prop_Send, "m_iHealth"))
+				{
+					float Heal_Amount = 0.0;
+					
+					Address address = TF2Attrib_GetByDefIndex(weapon, 180);
+					if(address != Address_Null)
+						Heal_Amount = TF2Attrib_GetValue(address);
+			
+					
+					int Heal_Amount_calc;
+					
+					Heal_Amount_calc = RoundToNearest(Heal_Amount * 0.75);
+					
+					if(Heal_Amount_calc > 0)
+					{
+						StartHealingTimer(player, 0.1, 1, Heal_Amount_calc);
+						int sound = GetRandomInt(0, sizeof(g_GibEating) - 1);
+						EmitSoundToAll(g_GibEating[sound], player, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+						RemoveEntity(gib);
+					}
+				}
+			}
+		}
+	}
+}
+
 public Action Timer_RemoveEntity_Prop(Handle timer, any entid)
 {
 	int entity = EntRefToEntIndex(entid);
 	if(IsValidEntity(entity) && entity>MaxClients)
 	{
-		SDKUnhook(entity, SDKHook_ShouldCollide, Gib_ShouldCollide);
 //		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
 		RemoveEntity(entity);
 	}
@@ -5958,11 +6143,6 @@ public Action Timer_RemoveEntityOverlord(Handle timer, any entid)
 	}
 	return Plugin_Handled;
 }
-
-public bool Gib_ShouldCollide(int client, int collisiongroup, int contentsmask, bool originalResult)
-{
-	return false;
-} 
 
 stock char[] GetStepSoundForMaterial(const char[] material)
 {
@@ -7358,6 +7538,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_PickThisDirectionForabit[entity] = 0.0;
 	b_ScalesWithWaves[entity] = false;
 	b_PernellBuff[entity] = false;
+	
+	FormatEx(c_HeadPlaceAttachmentGibName[entity], sizeof(c_HeadPlaceAttachmentGibName[]), "");
 }
 
 public void Raidboss_Clean_Everyone()
@@ -7556,6 +7738,8 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/btd/npc_zomg.sp"
 #include "zombie_riot/npc/btd/npc_ddt.sp"
 #include "zombie_riot/npc/btd/npc_bad.sp"
+#include "zombie_riot/npc/btd/npc_goldbloon.sp"
+#include "zombie_riot/npc/btd/npc_bloonarius.sp"
 
 #include "zombie_riot/npc/ally/npc_bob_the_overlord.sp"
 #include "zombie_riot/npc/ally/npc_necromancy_combine.sp"
@@ -7571,6 +7755,7 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 
 #include "zombie_riot/npc/alt/npc_alt_medic_charger.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_berserker.sp"
+#include "zombie_riot/npc/alt/npc_alt_medic_supperior_mage.sp"
 #include "zombie_riot/npc/alt/npc_alt_kahml.sp"
 #include "zombie_riot/npc/alt/npc_alt_combine_soldier_deutsch_ritter.sp"
 #include "zombie_riot/npc/alt/npc_alt_sniper_railgunner.sp"
@@ -7586,10 +7771,16 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/medival/npc_medival_handcannoneer.sp"
 #include "zombie_riot/npc/medival/npc_medival_elite_skirmisher.sp"
 #include "zombie_riot/npc/medival/npc_medival_pikeman.sp"
-#include "zombie_riot/npc/alt/npc_alt_medic_supperior_mage.sp"
 #include "zombie_riot/npc/medival/npc_medival_eagle_scout.sp"
 #include "zombie_riot/npc/medival/npc_medival_samurai.sp"
+#include "zombie_riot/npc/medival/npc_medival_ram.sp"
 
 #include "zombie_riot/npc/cof/npc_addiction.sp"
 #include "zombie_riot/npc/cof/npc_doctor.sp"
 #include "zombie_riot/npc/cof/npc_simon.sp"
+
+
+public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask, bool originalResult)
+{
+	return false;
+} 

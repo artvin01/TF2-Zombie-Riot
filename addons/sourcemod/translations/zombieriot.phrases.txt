@@ -558,13 +558,18 @@
 	"Cash Gained This Wave"
 	{
 		"#format"	"{1:d}"
-		"en" 		"Gained {1} This Wave!"
+		"en" 		"Gained {1} cash this wave!"
 		"de"		"Gewinn {1} dieser Runde!"
 		"it"		"Ricevuto {1} in questa ondata!"
 		"ru"		"Получено +{1} кредитов за эту волну!"
 		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
 		"es"		"Encontraste {1} en esta oleada!"
 		"fr"		"Vous avez gagnez {1} Cette vague!"
+	}
+	"Cash Gained This Wave Village"
+	{
+		"#format"	"{1:d}"
+		"en" 		"Gained an extra {1} cash this wave thanks to Villages!"
 	}
 	"Picking Up Building"
 	{
@@ -1001,6 +1006,10 @@
 		"en" 		"You can't mount this."
 		"ru" 		"Вы не можете установить это."
 		"de"		"Das kannst du nicht aufheben."
+	}
+	"Village Upgrade Tooltip"
+	{
+		"en" 		"Press RELOAD to upgrade your village."
 	}
 	"Pong"
 	{

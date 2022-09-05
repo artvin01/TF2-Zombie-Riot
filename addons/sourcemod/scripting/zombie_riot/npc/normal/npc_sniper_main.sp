@@ -135,6 +135,8 @@ methodmap SniperMain < CClotBody
 		
 		i_NpcInternalId[npc.index] = SNIPER_MAIN;
 
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		

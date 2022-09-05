@@ -140,6 +140,8 @@ methodmap XenoHeavy < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_HEAVY_ZOMBIE;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	

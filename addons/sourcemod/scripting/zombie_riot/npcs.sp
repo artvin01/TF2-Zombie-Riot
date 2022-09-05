@@ -46,7 +46,7 @@ enum struct SpawnerData
 	float	f_ClosestSpawnerLessCooldown;
 	float	f_SpawnerCooldown;
 }
-ArrayList NPCList;
+//ArrayList NPCList; Make this global, i need it globally.
 ArrayList SpawnerList;
 static Handle SyncHud;
 static Handle SyncHudRaid;
@@ -290,9 +290,18 @@ public Action GetClosestSpawners(Handle timer)
 	return Plugin_Continue;
 }
 
+float GlobalAntiSameFrameCheck_NPC_SpawnNext;
+
 public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 {
 	bool found;
+	
+	if(GlobalAntiSameFrameCheck_NPC_SpawnNext == GetGameTime())
+	{
+		return;
+	}
+		
+	GlobalAntiSameFrameCheck_NPC_SpawnNext = GetGameTime();
 	/*
 	int limit = 10 + RoundToCeil(float(Waves_GetRound())/2.3);
 	*/
@@ -362,9 +371,9 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 				{
 					npc_current_count += 1;
 					CClotBody npcstats = view_as<CClotBody>(entity);
-					if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity] && EntRefToEntIndex(RaidBossActive) != entity)
+					if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity])
 					{
-						if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
+						if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0 && !IsValidEntity(npcstats.m_iTeamGlow))
 							SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
 						else
 							SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
@@ -1291,7 +1300,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			{
 				if(damagetype & DMG_CLUB) //Use dmg slash for any npc that shouldnt be scaled.
 				{
-					if(IsBehindAndFacingTarget(attacker, victim))
+					if(IsBehindAndFacingTarget(attacker, victim) || b_FaceStabber[attacker])
 					{
 						int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
 						int melee = GetIndexOfWeaponSlot(attacker, TFWeaponSlot_Melee);
@@ -1306,12 +1315,16 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
 							damage *= 5.25;
 							
+							if(b_FaceStabber[attacker])
+							{
+								damage *= 0.4; //cut damage in half and then some.
+							}
 							
 							CClotBody npc = view_as<CClotBody>(victim);
 							
-							if(attacker == npc.m_iTarget)
+							if(attacker == npc.m_iTarget && !b_FaceStabber[attacker])
 							{
-								damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER!
+								damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER! But not for facestabbers.
 							}
 							
 							if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
@@ -1335,23 +1348,44 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 								TE_WriteNum("m_nData", Animation_Index[attacker]);
 								TE_SendToAll();
 							}
+							int heal_amount = 0;
 							if(melee == 356)
 							{
-								StartHealingTimer(attacker, 0.1, 1, 10);
+								heal_amount = 10;
+								if(b_FaceStabber[attacker])
+								{
+									heal_amount = 2;
+								}
+								StartHealingTimer(attacker, 0.1, 1, heal_amount);
 								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
 								SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.5 * attack_speed));
 							}
 							else if(melee == 225)
 							{
-								StartHealingTimer(attacker, 0.1, 2, 25);
+								heal_amount = 25;
+								if(b_FaceStabber[attacker])
+								{
+									heal_amount = 5;
+								}
+								StartHealingTimer(attacker, 0.1, 2, heal_amount);
 								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.0 * attack_speed));
 								SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.0 * attack_speed));
 							}
 							else if(melee == 727)
 							{
+								heal_amount = 25;
+								if(b_FaceStabber[attacker])
+								{
+									heal_amount = 3;
+								}
 								//THIS MELEE WILL HAVE SPECIAL PROPERTIES SO ITS RECONISED AS A SPY MELEE AT ALL TIMES!
-								StartHealingTimer(attacker, 0.1, 3, 25);
+								StartHealingTimer(attacker, 0.1, 3, heal_amount);
 								SepcialBackstabLaughSpy(attacker);
+								
+								if(b_FaceStabber[attacker])
+								{
+									damage *= 0.75;
+								}
 								damage *= 0.75; //Nerf the dmg abit for the last knife as itsotheriwse ridicilous
 							}
 							else
@@ -1675,12 +1709,15 @@ public void NPC_CheckDead()
 		else
 		{
 			CClotBody npcstats = view_as<CClotBody>(npc_index);
-			if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc_index] && RaidBossActive != npc_index)
+			if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc_index])
 			{
-				if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
-					SetEntProp(npc_index, Prop_Send, "m_bGlowEnabled", true);
-				else
-					SetEntProp(npc_index, Prop_Send, "m_bGlowEnabled", false);
+				if(GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+				{
+					if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0 && !IsValidEntity(npcstats.m_iTeamGlow))
+						SetEntProp(npc_index, Prop_Send, "m_bGlowEnabled", true);
+					else
+						SetEntProp(npc_index, Prop_Send, "m_bGlowEnabled", false);
+				}
 			}
 		}
 	}
@@ -1768,6 +1805,12 @@ void Spawner_AddToArray(int entity) //cant use ent ref here...
 	}
 }
 
+void Spawner_RemoveFromArray(int entity)
+{
+	int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
+	if(index != -1)
+		SpawnerList.Erase(index);
+}
 
 float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
@@ -1779,4 +1822,13 @@ float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inf
 		}
 	}
 	return damage;
+}
+
+
+public void OnNpcHurt(Event event, const char[] name, bool dontBroadcast)
+{
+	int entity = event.GetInt("entindex");
+
+	PrintToChatAll("%i",entity);
+	PrintToChatAll("%i",event.GetInt("attacker_player"));
 }

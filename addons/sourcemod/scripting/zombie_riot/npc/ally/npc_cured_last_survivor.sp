@@ -303,6 +303,8 @@ methodmap CuredFatherGrigori < CClotBody
 		
 		i_NpcInternalId[npc.index] = CURED_FATHER_GRIGORI;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_WALK_AIM_RIFLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -545,7 +547,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB, -1, _, vecHit);
 									
 									// Hit particle
 									

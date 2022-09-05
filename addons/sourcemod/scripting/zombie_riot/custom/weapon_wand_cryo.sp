@@ -44,6 +44,8 @@ static bool Cryo_AlreadyHit[MAXENTITIES][MAXENTITIES];
 
 
 
+#define COLLISION_DETECTION_MODEL_BIG	"models/props_junk/wood_crate001a.mdl"
+
 //#define SOUND_WAND_CRYO_M1		"weapons/syringegun_reload_air1.wav"
 #define SOUND_WAND_CRYO_M1		"weapons/flame_thrower_bb_end.wav"
 #define SOUND_WAND_CRYO_M2		"weapons/icicle_melt_01.wav"
@@ -65,6 +67,7 @@ void Wand_Cryo_Precache()
 	PrecacheSound(SOUND_WAND_CRYO_M2_3);
 	PrecacheSound(SOUND_WAND_CRYO_FREEZE);
 	PrecacheSound(SOUND_WAND_CRYO_SHATTER);
+	PrecacheModel(COLLISION_DETECTION_MODEL_BIG);
 }
 
 public void Wand_Cryo_Burst_ClearAll()
@@ -154,9 +157,9 @@ public void Cryo_ActivateBurst(int client, int weapon, bool &result, int slot, f
 	float UserLoc[3], VicLoc[3];
 	GetClientAbsOrigin(client, UserLoc);
 	//int particle = ParticleEffectAt(UserLoc, "bombinomicon_burningdebris", 4.0);
-	int particle = ParticleEffectAt(UserLoc, "xms_snowburst", 4.0);
-	particle = ParticleEffectAt(UserLoc, "xms_snowburst_child01", 4.0);
-	particle = ParticleEffectAt(UserLoc, "xms_snowburst_child02", 4.0);
+	ParticleEffectAt(UserLoc, "xms_snowburst", 4.0);
+	ParticleEffectAt(UserLoc, "xms_snowburst_child01", 4.0);
+	ParticleEffectAt(UserLoc, "xms_snowburst_child02", 4.0);
 //	particle = ParticleEffectAt(UserLoc, "xms_snowburst_child03", 4.0);
 	
 	float TestDMG = damage;
@@ -318,8 +321,8 @@ static void Wand_Launch_Cryo(int client, int iRot, float speed, float time, floa
 	fVel[2] = fBuf[2]*speed;
 	
 	SetEntPropEnt(iCarrier, Prop_Send, "m_hOwnerEntity", client);
-	DispatchKeyValue(iCarrier, "model", ENERGY_BALL_MODEL);
-	DispatchKeyValue(iCarrier, "modelscale", "0");
+	DispatchKeyValue(iCarrier, "model", COLLISION_DETECTION_MODEL_BIG);
+	DispatchKeyValue(iCarrier, "modelscale", "1");
 	DispatchSpawn(iCarrier);
 	
 	TeleportEntity(iCarrier, fPos, NULL_VECTOR, fVel);
@@ -333,6 +336,7 @@ static void Wand_Launch_Cryo(int client, int iRot, float speed, float time, floa
 	
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);
+//	SetEntityCollisionGroup(iCarrier, 27);
 	SetEntityCollisionGroup(iCarrier, 1);
 			
 	Projectile_To_Client[iCarrier] = client;
@@ -380,6 +384,7 @@ static void Wand_Launch_Cryo(int client, int iRot, float speed, float time, floa
 	Cryo_SlowType[iRot] = SlowType;
 	
 	CreateTimer(0.25, Cryo_Timer, EntIndexToEntRef(iCarrier), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+//	SDKHook(iCarrier, SDKHook_StartTouch, Cryo_Touch);
 }
 
 //SearchDamage is a last resort, it uses zombie_riot.sp's OnGameFrame so you probably shouldn't use this unless all else fails:
@@ -395,6 +400,72 @@ static void Wand_Launch_Cryo(int client, int iRot, float speed, float time, floa
 }*/
 
 //If you use SearchDamage (above), convert this timer to a void method and rename it to Cryo_DealDamage:
+public Action Cryo_Touch(int entity, int other)
+{
+	int target = Target_Hit_Wand_Detection(entity, other);
+	if (target > 0)	
+	{
+		static float angles[3];
+		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);		
+		float ProjLoc[3], VicLoc[3];
+		float vecForward[3];
+		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
+		if(!Cryo_AlreadyHit[entity][target])
+		{
+			VicLoc = WorldSpaceCenter(target);
+			//Code to do damage position and ragdolls
+			//Code to do damage position and ragdolls
+			switch (Cryo_SlowType[entity])
+			{
+				case 0:
+				{
+					if((f_VeryLowIceDebuff[target] - 1.0) < GetGameTime())
+					{
+						f_VeryLowIceDebuff[target] = GetGameTime() + 1.1;
+					}
+				}
+				case 1:
+				{
+					if((f_LowIceDebuff[target] - 1.0) < GetGameTime())
+					{
+						f_LowIceDebuff[target] = GetGameTime() + 1.1;
+					}
+				}
+				case 2:
+				{
+					if((f_HighIceDebuff[target] - 1.0) < GetGameTime())
+					{
+						f_HighIceDebuff[target] = GetGameTime() + 1.1;
+					}
+				}
+			}
+			
+			float Health_Before_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
+			
+			SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 0.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
+			
+			float Health_After_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
+			
+			if (!Cryo_Frozen[target] && !Cryo_Slowed[target] && HasEntProp(target, Prop_Data, "m_iMaxHealth"))
+			{
+				Cryo_FreezeLevel[target] += (Health_Before_Hurt - Health_After_Hurt);
+				float maxHealth = float(GetEntProp(target, Prop_Data, "m_iMaxHealth"));
+				if (Cryo_FreezeLevel[target] >= maxHealth * Cryo_FreezeRequirement)
+				{
+					Cryo_SlowType_Zombie[target] = Cryo_SlowType[entity];
+					Cryo_FreezeZombie(target);
+				}
+			}
+			
+			Cryo_AlreadyHit[entity][target] = true;
+			Damage_Projectile[entity] *= Cryo_M1_ReductionScale;
+		}
+	}
+	return Plugin_Continue;
+}
+
+
 public Action Cryo_Timer(Handle CryoDMG, int ref)
 {
 	int entity = EntRefToEntIndex(ref);

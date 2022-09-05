@@ -55,7 +55,6 @@ static const char RareDrops[][] =
 {
 	"Fast Tack Attacks [Rare]",
 	"Mega Mauler [Rare]",
-	"Bonus Monkey! [Rare]",
 	"Big Bunch [Rare]",
 	"Gun Coolant [Rare]",
 	"Flanking Maneuvers [Rare]",

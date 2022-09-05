@@ -115,6 +115,8 @@ methodmap XenoMedicMain < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_BATTLE_MEDIC_MAIN;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -332,7 +334,7 @@ public Action XenoMedicMain_ClotDamaged(int victim, int &attacker, int &inflicto
 		CreateTimer(2.0, XenoMedicMain_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(10.0, XenoMedicMain_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 	}
-	if(npc.flXenoInfectedSpecialHurtTime > GetGameTime())
+	if(npc.flXenoInfectedSpecialHurtTime > GetGameTime() && !Building_DoesPierce(attacker))
 	{
 		damage *= 0.25;
 	}

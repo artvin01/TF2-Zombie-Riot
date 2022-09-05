@@ -458,10 +458,10 @@ public void BacktrackEntity(int entity, float currentTime) //Make sure that alli
 					}
 				}
 #endif
-			SDKCall_InvalidateBoneCache(entity);
 			}
 	//		Test_Hitbox(entity);
 		}
+		SDKCall_InvalidateBoneCache(entity); //Do at all times, yes, ew but i have to,
 	}
 	EntityRestore.SetArray(refchar, restore, sizeof(restore));
 }

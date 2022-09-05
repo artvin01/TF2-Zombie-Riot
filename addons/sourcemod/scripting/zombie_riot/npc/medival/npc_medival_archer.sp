@@ -148,6 +148,8 @@ methodmap MedivalArcher < CClotBody
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_ARCHER;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_BOW");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		

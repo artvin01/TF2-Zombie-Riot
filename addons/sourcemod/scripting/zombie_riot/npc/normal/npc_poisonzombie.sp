@@ -127,6 +127,8 @@ methodmap PoisonZombie < CClotBody
 		
 		i_NpcInternalId[npc.index] = POISON_ZOMBIE;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
