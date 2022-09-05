@@ -670,7 +670,7 @@ public void OnPostThink(int client)
 					if(Has_Wave_Showing)
 					{
 						PrintKeyHintText(client, "%t\n%t\n%t\n%t",
-						"Credits_Menu", CurrentCash-CashSpent[client], Resupplies_Supplied[client] * 10,	
+						"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
 					//	"Wave", CurrentRound+1, CurrentWave+1,
 				//		"Armor Counter", Armor_Charge[client],
 						"Ammo Crate Supplies", Ammo_Count_Ready[client], //This bugs in russian
@@ -682,7 +682,7 @@ public void OnPostThink(int client)
 					else
 					{
 						PrintKeyHintText(client, "%t\n%s | %t\n%t\n%t\n%t",
-						"Credits_Menu", CurrentCash-CashSpent[client], Resupplies_Supplied[client] * 10,	
+						"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
 						WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
 			//			"Armor Counter", Armor_Charge[client],
 						"Ammo Crate Supplies", Ammo_Count_Ready[client], 

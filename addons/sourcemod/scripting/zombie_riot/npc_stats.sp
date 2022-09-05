@@ -1340,6 +1340,9 @@ public void NPCDeath(int entity)
 	if(view_as<CClotBody>(entity).m_iCreditsOnKill)
 	{
 		CurrentCash += view_as<CClotBody>(entity).m_iCreditsOnKill;
+			
+		int extra;
+		
 		
 		int index = NPCList.FindValue(EntIndexToEntRef(entity), NPCData::Ref);
 		if(index != -1)
@@ -1348,7 +1351,34 @@ public void NPCDeath(int entity)
 			NPCList.GetArray(index, npc);
 			int client = GetClientOfUserId(npc.LastHitId);
 			if(client && IsClientInGame(client))
-				CurrentCash += RoundToFloor(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * Building_GetCashOnKillMulti(client));
+			{
+				extra = RoundToFloor(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * Building_GetCashOnKillMulti(client));
+				
+				extra -= view_as<CClotBody>(entity).m_iCreditsOnKill;
+				
+				if(extra > 0)
+				{
+					CashSpent[client] -= extra;
+					CashRecievedNonWave[client] += extra;
+				}
+			}
+		}
+		
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				if(GetClientTeam(client)!=2)
+				{
+					SetGlobalTransTarget(client);
+					CashSpent[client] += RoundToCeil(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * 0.40);
+				}
+				else if (TeutonType[client] == TEUTON_WAITING)
+				{
+					SetGlobalTransTarget(client);
+					CashSpent[client] += RoundToCeil(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * 0.30);
+				}
+			}
 		}
 	}
 }

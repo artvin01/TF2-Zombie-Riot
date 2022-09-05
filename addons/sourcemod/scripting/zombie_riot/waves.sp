@@ -721,9 +721,10 @@ void Waves_Progress()
 		else
 		{
 			int extra = Building_GetCashOnWave(round.Cash);
-			CurrentCash += round.Cash + extra;
+			CurrentCash += round.Cash;
 			if(round.Cash + extra)
-				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash + extra);
+				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
+				
 			
 			CurrentRound++;
 			CurrentWave = -1;
@@ -735,17 +736,24 @@ void Waves_Progress()
 			{
 				if(IsClientInGame(client_Penalise))
 				{
+					if(extra)
+					{
+						CashSpent[client_Penalise] -= extra;
+						CashRecievedNonWave[client_Penalise] += extra;
+						CPrintToChat(client_Penalise, "{green}%t{default}","Cash Gained This Wave Village", extra);
+					}
+					
 					if(GetClientTeam(client_Penalise)!=2)
 					{
 						SetGlobalTransTarget(client_Penalise);
 						PrintToChat(client_Penalise, "%t", "You have only gained 60%% due to not being in-game");
-						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.40) + extra;
+						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.40);
 					}
 					else if (TeutonType[client_Penalise] == TEUTON_WAITING)
 					{
 						SetGlobalTransTarget(client_Penalise);
 						PrintToChat(client_Penalise, "%t", "You have only gained 70 %% due to being a non-player player, but still helping");
-						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.30) + extra;
+						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.30);
 					}
 				}
 			}

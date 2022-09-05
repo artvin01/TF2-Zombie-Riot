@@ -260,6 +260,7 @@ float f_MedigunChargeSave[MAXTF2PLAYERS];
 
 	
 int CashSpent[MAXTF2PLAYERS];
+int CashRecievedNonWave[MAXTF2PLAYERS];
 int Level[MAXTF2PLAYERS];
 int XP[MAXTF2PLAYERS];
 int Ammo_Count_Ready[MAXTF2PLAYERS];
@@ -1087,6 +1088,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_manual_reload.sp"
 #include "zombie_riot/custom/weapon_atomic.sp"
 #include "zombie_riot/custom/weapon_super_star_shooter.sp"
+#include "zombie_riot/custom/weapon_Texan_business.sp"
 
 //FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
@@ -1701,6 +1703,7 @@ public void OnClientPutInServer(int client)
 	TeutonType[client] = 0;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
+	CashRecievedNonWave[client] = 0;
 	Healing_done_in_total[client] = 0;
 	i_BarricadeHasBeenDamaged[client] = 0;
 	Ammo_Count_Ready[client] = 0;
@@ -1755,6 +1758,7 @@ public void OnClientDisconnect(int client)
 	Store_ClientDisconnect(client);
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
+	CashRecievedNonWave[client] = 0;
 	Healing_done_in_total[client] = 0;
 	Ammo_Count_Ready[client] = 0;
 	Armor_Charge[client] = 0;
@@ -1858,6 +1862,7 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			Escape_DropItem(client);
 			Damage_dealt_in_total[client] = 0.0;
 			Resupplies_Supplied[client] = 0;
+			CashRecievedNonWave[client] = 0;
 			Healing_done_in_total[client] = 0;
 			Ammo_Count_Ready[client] = 0;
 			Armor_Charge[client] = 0;
