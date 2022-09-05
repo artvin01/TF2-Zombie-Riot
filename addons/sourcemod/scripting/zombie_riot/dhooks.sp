@@ -306,7 +306,7 @@ public MRESReturn DHook_GrenadeExplodePre(int entity)
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hThrower");
 	if (0 < owner <= MaxClients)
 	{
-		if(f_CustomGrenadeDamage[entity] < 999999)
+		if(f_CustomGrenadeDamage[entity] < 999999.9)
 		{
 			float original_damage = GetEntPropFloat(entity, Prop_Send, "m_flDamage"); 
 			if(f_CustomGrenadeDamage[entity] > 1.0)
@@ -324,7 +324,7 @@ public MRESReturn DHook_GrenadeExplodePre(int entity)
 	}
 	else if(owner > MaxClients)
 	{
-		if(f_CustomGrenadeDamage[entity] < 999999)
+		if(f_CustomGrenadeDamage[entity] < 999999.9)
 		{
 			float original_damage = GetEntPropFloat(entity, Prop_Send, "m_flDamage"); 
 			if(f_CustomGrenadeDamage[entity] > 1.0)
