@@ -603,4 +603,8 @@
 	{
 		"en"		"Sniper Railgunner"
 	}
+	"Soldier Barrager"
+	{
+		"en"		"Soldier Barrager"
+	}
 }
