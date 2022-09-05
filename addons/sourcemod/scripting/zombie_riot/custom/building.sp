@@ -4187,7 +4187,7 @@ void Building_CamoOrRegrowBlocker(bool &camo, bool &regrow)
 float Building_GetCashOnKillMulti(int client)
 {
 	if(GetBuffEffects(EntIndexToEntRef(client)) & VILLAGE_003)
-		return 1.5;
+		return 1.15;
 	
 	return 1.0;
 }
@@ -4906,9 +4906,11 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 			}
 		}
 	}
+	/*
 	else if(entity <= MaxClients)
 	{
 		bool oldBuff = (oldBuffs & VILLAGE_200) || (oldBuffs & VILLAGE_030) || (oldBuffs & VILLAGE_003);
+		
 		if((newBuffs & VILLAGE_200) || (newBuffs & VILLAGE_030) || (newBuffs & VILLAGE_003))
 		{
 			if(!oldBuff)
@@ -4918,5 +4920,7 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 		{
 			TF2_RemoveCondition(entity, TFCond_TeleportedGlow);
 		}
+		
 	}
+	*/
 }

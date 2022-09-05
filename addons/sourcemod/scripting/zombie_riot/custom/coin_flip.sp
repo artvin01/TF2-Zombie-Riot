@@ -444,8 +444,6 @@ stock void Do_Coin_calc(int victim)
 	
 	if (IsValidEntity(Closest_entity))
 	{
-		GetEntPropVector(Closest_entity, Prop_Data, "m_vecAbsOrigin", chargerPos);
-		ParticleEffectAt(chargerPos, "raygun_projectile_red_crit", 0.3);
 		
 		SetEntityMoveType(Closest_entity, MOVETYPE_NONE);
 		damage_multiplier[victim] *= 1.4;
@@ -455,6 +453,9 @@ stock void Do_Coin_calc(int victim)
 		GetEntityClassname(Closest_entity, classname, sizeof(classname));
 		if (mb_coin[Closest_entity] && !StrContains(classname, "prop_physics_multiplayer", true))
 		{
+			GetEntPropVector(Closest_entity, Prop_Data, "m_vecAbsOrigin", chargerPos);
+			ParticleEffectAt(chargerPos, "raygun_projectile_red_crit", 0.3);
+			
 			GetEntPropVector(Closest_entity, Prop_Data, "m_vecAbsOrigin", targPos);
 			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
 			if (GetVectorDistance(chargerPos, targPos) <= 1200.0 && !already_ricocated[victim] && Closest_entity != victim)
@@ -678,14 +679,14 @@ stock int GetClosestTarget_Coin(int entity)
 		{
 			static char classname[36];
 			GetEntityClassname(new_entity, classname, sizeof(classname));
-			if (mb_coin[new_entity] && !StrContains(classname, "prop_physics_multiplayer", false) && entity != new_entity && Entity_Owner[entity] == Entity_Owner[entity])
+			if (mb_coin[new_entity] && !StrContains(classname, "prop_physics_multiplayer", false) && entity != new_entity && Entity_Owner[entity] == Entity_Owner[new_entity])
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
 				GetEntPropVector( new_entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-				float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+				float distance = GetVectorDistance( EntityLocation, TargetLocation, true );  
 				
-				if(distance <= 1200.0)
+				if(distance <= Pow(1300.0, 2.0))
 				{
 					if( TargetDistance ) 
 					{
@@ -720,13 +721,13 @@ stock int GetClosestTarget_Coin(int entity)
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
 				GetEntPropVector( new_entity, Prop_Data, "m_vecAbsOrigin", TargetLocation );
 				TargetLocation[2] += 35;				
-				float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+				float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 				
 				int HighestHealth;
 				
-				GetEntProp(new_entity, Prop_Data, "m_iHealth", HighestHealth);
+				HighestHealth = GetEntProp(new_entity, Prop_Data, "m_iHealth");
 				
-				if(distance <= 1300.0)
+				if(distance <= Pow(1300.0, 2.0))
 				{
 					if( Health ) 
 					{

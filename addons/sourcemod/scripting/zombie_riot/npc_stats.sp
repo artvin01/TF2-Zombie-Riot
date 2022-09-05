@@ -1351,7 +1351,6 @@ public void NPCDeath(int entity)
 			
 		int extra;
 		
-		
 		int index = NPCList.FindValue(EntIndexToEntRef(entity), NPCData::Ref);
 		if(index != -1)
 		{
@@ -1361,14 +1360,7 @@ public void NPCDeath(int entity)
 			if(client && IsClientInGame(client))
 			{
 				extra = RoundToFloor(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * Building_GetCashOnKillMulti(client));
-				
 				extra -= view_as<CClotBody>(entity).m_iCreditsOnKill;
-				
-				if(extra > 0)
-				{
-					CashSpent[client] -= extra;
-					CashRecievedNonWave[client] += extra;
-				}
 			}
 		}
 		
@@ -1376,10 +1368,16 @@ public void NPCDeath(int entity)
 		{
 			if(IsClientInGame(client))
 			{
+				if(extra > 0)
+				{
+					CashSpent[client] -= extra;
+					CashRecievedNonWave[client] += extra;
+				}
 				if(GetClientTeam(client)!=2)
 				{
 					SetGlobalTransTarget(client);
 					CashSpent[client] += RoundToCeil(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * 0.40);
+					
 				}
 				else if (TeutonType[client] == TEUTON_WAITING)
 				{
@@ -4088,7 +4086,6 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		}
 		
 		b_NpcHasDied[pThis] = true;
-		ZR_ApplyKillEffects(pThis); //Do kill attribute stuff
 		CClotBody npc = view_as<CClotBody>(pThis);
 		SDKUnhook(pThis, SDKHook_OnTakeDamage, NPC_OnTakeDamage_Base);
 		SDKUnhook(pThis, SDKHook_Think, Check_If_Stuck);
@@ -4105,6 +4102,7 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 			Raidboss_Clean_Everyone();
 		}
 		NPCDeath(pThis);
+		ZR_ApplyKillEffects(pThis); //Do kill attribute stuff
 		/*
 		#if defined ISSPECIALDEATHANIMATION
 			RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));

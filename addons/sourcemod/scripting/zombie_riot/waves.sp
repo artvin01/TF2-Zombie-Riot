@@ -722,7 +722,7 @@ void Waves_Progress()
 		{
 			int extra = Building_GetCashOnWave(round.Cash);
 			CurrentCash += round.Cash;
-			if(round.Cash + extra)
+			if(round.Cash)
 				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
 				
 			
