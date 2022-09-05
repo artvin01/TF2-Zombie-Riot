@@ -446,7 +446,7 @@ stock void Do_Coin_calc(int victim)
 	{
 		
 		SetEntityMoveType(Closest_entity, MOVETYPE_NONE);
-		damage_multiplier[victim] *= 1.4;
+		damage_multiplier[victim] *= 1.6;
 		damage_multiplier[Closest_entity] = damage_multiplier[victim]; //Extra bonus dmg
 		
 		static char classname[36];

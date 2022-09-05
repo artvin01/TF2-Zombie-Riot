@@ -607,4 +607,8 @@
 	{
 		"en"		"Soldier Barrager"
 	}
+	"Capped Ram"
+	{
+		"en"		"Capped Ram"
+	}
 }
