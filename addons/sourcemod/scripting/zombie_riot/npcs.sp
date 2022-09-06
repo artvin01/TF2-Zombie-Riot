@@ -293,6 +293,7 @@ public Action GetClosestSpawners(Handle timer)
 
 
 float GlobalCheckDelayAntiLagPlayerScale;
+bool AllowSpecialSpawns;
 int LimitNpcs;
 
 public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
@@ -314,7 +315,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	
 	if(GlobalCheckDelayAntiLagPlayerScale < GetGameTime())
 	{
-	
+		AllowSpecialSpawns = false;
 		GlobalCheckDelayAntiLagPlayerScale = GetGameTime() + 5.0;//only check every 5 seconds.
 		PlayersAliveScaling = 0;
 		
@@ -331,6 +332,9 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 			{
 				f_limit += 2.2;
+				
+				if(Level[client] > 7)
+					AllowSpecialSpawns = true;
 				
 				if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
 				{
@@ -357,13 +361,13 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	
 	if(!b_GameOnGoing) //no spawn if the round is over
 		return;
-	/*
-	if(!canSeePanzer)
+	
+	if(!AllowSpecialSpawns)
 	{
 		panzer = false;
 		panzer_warning = false;
 	}
-	*/
+	
 	if(!panzer)
 	{
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
