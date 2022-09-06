@@ -3540,13 +3540,13 @@ public void OnEntityDestroyed(int entity)
 {
 	if(IsValidEntity(entity))
 	{
-		NPC_CheckDead(entity);
 		#if defined LagCompensation
 		OnEntityDestroyed_LagComp(entity);
 		#endif
 		
 		if(entity > MaxClients)
 		{
+			NPC_CheckDead(entity);
 			b_IsAGib[entity] = false;
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			
