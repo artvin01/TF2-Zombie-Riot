@@ -777,6 +777,10 @@ void Waves_Progress()
 				}
 			}
 			
+			
+			Zombies_Currently_Still_Ongoing -= 1; //one zombieis always still aliv
+			
+			
 			if(Zombies_Currently_Still_Ongoing > 0 && (Zombies_Currently_Still_Ongoing - Zombies_alive_still) > 0)
 			{
 				for(int client_Penalise=1; client_Penalise<=MaxClients; client_Penalise++)
