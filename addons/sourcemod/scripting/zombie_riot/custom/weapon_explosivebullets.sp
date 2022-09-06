@@ -64,7 +64,13 @@ public void Weapon_ExplosiveBullets(int client, int weapon, const char[] classna
 		
 		Explode_Logic_Custom(BaseDMG, client, client, weapon, spawnLoc, Radius, Falloff);
 		
-		ExplosiveBullets_SpawnExplosion(spawnLoc);
+		//ExplosiveBullets_SpawnExplosion(spawnLoc);
+		DataPack pack_boom = new DataPack();
+		pack_boom.WriteFloat(spawnLoc[0]);
+		pack_boom.WriteFloat(spawnLoc[1]);
+		pack_boom.WriteFloat(spawnLoc[2]);
+		pack_boom.WriteCell(0);
+		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		EmitAmbientSound(ExplosiveBullets_SFX[GetRandomInt(0, 2)], spawnLoc, _, _, _, _, GetRandomInt(75, 110));
 	}
 }
