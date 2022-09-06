@@ -40,10 +40,14 @@ public void Weapon_ExplosiveBullets(int client, int weapon, const char[] classna
 	float Radius = Attributes_FindOnWeapon(client, weapon, 2001);	//Useless attribute, used in config to determine base radius
 	float Falloff = Attributes_FindOnWeapon(client, weapon, 117);	//Damage falloff penalty
 	
+	StartLagCompensation_Base_Boss(client, false);
+	
 	float spawnLoc[3], eyePos[3], eyeAng[3], randAng[3];
 			   
 	GetClientEyePosition(client, eyePos);
 	GetClientEyeAngles(client, eyeAng);
+	
+	FinishLagCompensation_Base_boss();
 	
 	for (int i = 0; i < NumPellets; i++)
 	{
