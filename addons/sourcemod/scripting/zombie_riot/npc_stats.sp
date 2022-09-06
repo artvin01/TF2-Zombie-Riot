@@ -830,6 +830,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = Soldier_Barrager(client, vecPos, vecAng, ally);
 		}
+		case ALT_The_Shit_Slapper:
+		{
+			entity = The_Shit_Slapper(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1339,6 +1343,10 @@ public void NPCDeath(int entity)
 		{
 			Soldier_Barrager_NPCDeath(entity);
 		}
+		case ALT_The_Shit_Slapper:
+		{
+			The_Shit_Slapper_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1566,6 +1574,7 @@ public void OnMapStart_NPC_Base()
 	MedivalRam_OnMapStart();
 	
 	Soldier_Barrager_OnMapStart_NPC();
+	The_Shit_Slapper_OnMapStart_NPC();
 }
 
 
@@ -7790,6 +7799,7 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/alt/npc_alt_combine_soldier_deutsch_ritter.sp"
 #include "zombie_riot/npc/alt/npc_alt_sniper_railgunner.sp"
 #include "zombie_riot/npc/alt/npc_alt_soldier_barrager.sp"
+#include "zombie_riot/npc/alt/npc_alt_the_shit_slapper.sp"
 
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
 #include "zombie_riot/npc/medival/npc_medival_archer.sp"
