@@ -3036,9 +3036,9 @@ public void MakeExplosionFrameLater(DataPack pack)
 		}
 		
 		DispatchKeyValueVector(ent, "origin", vec_pos);
-		DispatchKeyValue(ent, "spawnflags", "64");
+		DispatchKeyValue(ent, "spawnflags", "69");
 						
-		DispatchKeyValue(ent, "rendermode", "5");
+		DispatchKeyValue(ent, "rendermode", "0");
 		DispatchKeyValue(ent, "fireballsprite", spirite);
 										
 		DispatchKeyValueFloat(ent, "DamageForce", 0.0);								
@@ -3051,6 +3051,7 @@ public void MakeExplosionFrameLater(DataPack pack)
 		AcceptEntityInput(ent, "explode");
 		AcceptEntityInput(ent, "kill");
 	}		
+	SpawnSmallExplosionNotRandom(vec_pos);
 	delete pack;
 }
 
