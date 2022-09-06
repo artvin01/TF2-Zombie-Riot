@@ -328,6 +328,7 @@ ArrayList NPCList;
 
 const int i_Maxcount_Apply_Lagcompensation = ZR_MAX_LAG_COMP;
 int i_Objects_Apply_Lagcompensation[ZR_MAX_LAG_COMP];
+bool b_DoNotIgnoreDuringLagCompAlly[MAXENTITIES]={false, ...};
 
 
 bool b_IsAlliedNpc[MAXENTITIES]={false, ...};
@@ -355,6 +356,7 @@ int g_CarriedDispenser[MAXPLAYERS+1];
 int i_BeingCarried[MAXENTITIES];
 float f_BuildingIsNotReady[MAXTF2PLAYERS];
 
+float GlobalAntiSameFrameCheck_NPC_SpawnNext;
 //bool b_AllowBuildCommand[MAXPLAYERS + 1];
 
 int Building_Mounted[MAXENTITIES];
@@ -1092,6 +1094,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_atomic.sp"
 #include "zombie_riot/custom/weapon_super_star_shooter.sp"
 #include "zombie_riot/custom/weapon_Texan_business.sp"
+#include "zombie_riot/custom/weapon_explosivebullets.sp"
 
 //FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
@@ -1430,6 +1433,8 @@ public void OnMapStart()
 	Fusion_Melee_OnMapStart();
 	Atomic_MapStart();
 	SSS_Map_Precache();
+	ExplosiveBullets_Precache();
+	
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
@@ -3042,7 +3047,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	{
 		
 		//Normal entity render stuff, This should be set to these things on spawn, just to be sure.
-		
+		b_DoNotIgnoreDuringLagCompAlly[entity] = false;
 		i_EntityRenderMode[entity] = RENDER_NORMAL;
 		i_EntityRenderColour1[entity] = 255;
 		i_EntityRenderColour2[entity] = 255;
@@ -3188,7 +3193,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "prop_physics_multiplayer"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
-			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
@@ -3551,7 +3556,11 @@ public void OnEntityDestroyed(int entity)
 			
 	if(Waves_Started())
 	{
-		RequestFrame(NPC_CheckDead);
+		if(GlobalAntiSameFrameCheck_NPC_SpawnNext != GetGameTime())
+		{
+			RequestFrame(NPC_CheckDead);
+		}
+		GlobalAntiSameFrameCheck_NPC_SpawnNext = GetGameTime();
 	}
 	NPC_Base_OnEntityDestroyed(entity);
 }

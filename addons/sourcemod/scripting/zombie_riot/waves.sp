@@ -722,7 +722,7 @@ void Waves_Progress()
 		{
 			int extra = Building_GetCashOnWave(round.Cash);
 			CurrentCash += round.Cash;
-			if(round.Cash + extra)
+			if(round.Cash)
 				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
 				
 			
@@ -768,14 +768,18 @@ void Waves_Progress()
 			{
 				NPCList.GetArray(i, npc);
 				int npc_index = EntRefToEntIndex(npc.Ref);
-				if(npc_index > MaxClients)
+				if(npc_index > MaxClients && IsValidEntity(npc_index))
 				{
-					if(GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+					if(GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red) && !b_NpcHasDied[npc_index])
 					{
 						Zombies_alive_still += 1;
 					}
 				}
 			}
+			
+			
+		//	Zombies_Currently_Still_Ongoing -= 1; //one zombieis always still aliv
+			
 			
 			if(Zombies_Currently_Still_Ongoing > 0 && (Zombies_Currently_Still_Ongoing - Zombies_alive_still) > 0)
 			{
@@ -814,7 +818,7 @@ void Waves_Progress()
 				Store_RandomizeNPCStore(false);
 				Spawn_Cured_Grigori();
 			}
-			if(CurrentRound == 11)
+			else if(CurrentRound == 11)
 			{
 				panzer_spawn = true;
 				panzer_sound = true;

@@ -942,10 +942,8 @@
 	}
 	"PackAPunch Tooltip"
 	{
-		"#format"	"{1:d}"
-		"en" 		"Press RELOAD To Pack-a-Punch your current holding weapon. Cost: [{1}]"
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКУ для улучшения оружия, которое вы держите. Цена: [{1}]"
-		"de"		"Drücke NACHLADEN mit ihrer aktuelle Waffe um zu Pack-A-Punchen Kosten: [{1]]"
+		"en" 		"Press RELOAD To Pack-a-Punch your current holding weapon."
+		"ru" 		"Нажмите ПЕРЕЗАРЯДКУ для улучшения оружия, которое вы держите."
 	}
 	"Packed"
 	{

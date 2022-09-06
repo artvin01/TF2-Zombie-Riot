@@ -26,6 +26,7 @@ static const int SlotLimits[] =
 enum struct ItemInfo
 {
 	int Cost;
+	char Desc[256];
 	
 	bool HasNoClip;
 	bool SemiAuto;
@@ -75,7 +76,8 @@ enum struct ItemInfo
 	
 	int Tier;
 	int Rarity;
-	int PackCost;
+	int PackBranches;
+	int PackSkip;
 	
 	void Self(ItemInfo info)
 	{
@@ -90,6 +92,9 @@ enum struct ItemInfo
 		this.Cost = kv.GetNum(buffer, -1);
 		if(this.Cost < 0)
 			return false;
+		
+		FormatEx(buffer, sizeof(buffer), "%sdesc", prefix);
+		kv.GetString(buffer, this.Desc, 256);
 		
 		FormatEx(buffer, sizeof(buffer), "%sclassname", prefix);
 		kv.GetString(buffer, this.Classname, 36);
@@ -224,6 +229,12 @@ enum struct ItemInfo
 		if(this.Model[0])
 			PrecacheModel(this.Model);
 		
+		FormatEx(buffer, sizeof(buffer), "%spappaths", prefix);
+		this.PackBranches = kv.GetNum(buffer, 1);
+		
+		FormatEx(buffer, sizeof(buffer), "%spapskip", prefix);
+		this.PackSkip = kv.GetNum(buffer);
+		
 		return true;
 	}
 }
@@ -231,7 +242,6 @@ enum struct ItemInfo
 enum struct Item
 {
 	char Name[64];
-	char Desc[256];
 	int Section;
 	int Scale;
 	int CostPerWave;
@@ -401,11 +411,11 @@ static void ConfigSetup(int section, KeyValues kv, bool hidden, const char[][] w
 	item.Hidden = view_as<bool>(kv.GetNum("hidden", hidden ? 1 : 0));
 	if(whitecount || blackcount)
 	{
-		char buffers[32][6];
-		kv.GetString("tags", item.Desc, sizeof(item.Desc));
-		if(item.Desc[0] || isItem)
+		char buffer[128], buffers[32][6];
+		kv.GetString("tags", buffer, sizeof(buffer));
+		if(buffer[0] || isItem)
 		{
-			int tags = ExplodeString(item.Desc, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			int tags = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]));
 			
 			if(whitecount)
 			{
@@ -456,7 +466,6 @@ static void ConfigSetup(int section, KeyValues kv, bool hidden, const char[][] w
 	
 	if(isItem)
 	{
-		kv.GetString("desc", item.Desc, sizeof(item.Desc));
 		item.Default = view_as<bool>(kv.GetNum("default"));
 		item.Scale = kv.GetNum("scale");
 		item.CostPerWave = kv.GetNum("extracost_per_wave");
@@ -495,7 +504,148 @@ static void ConfigSetup(int section, KeyValues kv, bool hidden, const char[][] w
 	}
 }
 
-int Store_PackCurrentItem(int client, int index)
+bool Store_CanPapItem(int client, int index)
+{
+	if(index > 0)
+	{
+		static Item item;
+		StoreItems.GetArray(index, item);
+		if(item.Owned[client])
+		{
+			ItemInfo info;
+			if(!item.GetItemInfo(item.Owned[client] - 1, info))
+				return false;
+			
+			if(!item.GetItemInfo(item.Owned[client] + info.PackSkip, info))
+				return false;
+			
+			return view_as<bool>(info.Cost);
+		}
+	}
+	return false;
+}
+
+void Store_PackMenu(int client, int index, int entity, int owner)
+{
+	if(index > 0)
+	{
+		static Item item;
+		StoreItems.GetArray(index, item);
+		if(item.Owned[client])
+		{
+			ItemInfo info;
+			if(item.GetItemInfo(item.Owned[client] - 1, info))
+			{
+				int count = info.PackBranches;
+				if(count > 0)
+				{
+					Menu menu = new Menu(Store_PackMenuH);
+					
+					SetGlobalTransTarget(client);
+					int cash = CurrentCash-CashSpent[client];
+					menu.SetTitle("%t\n \n%t\n \n%s%s\n ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(item.Owned[client]-1));
+					
+					int skip = info.PackSkip;
+					count += skip;
+					
+					int userid = (client == owner || owner == -1) ? -1 : GetClientUserId(owner);
+					
+					char data[64], buffer[64];
+					for(int i = skip; i < count; i++)
+					{
+						if(item.GetItemInfo(item.Owned[client] + i, info) && info.Cost)
+						{
+							FormatEx(data, sizeof(data), "%d;%d;%d;%d", index, item.Owned[client] + i, entity, userid);
+							FormatEx(buffer, sizeof(buffer), "%s%s [$%d]", TranslateItemName(client, item.Name), AddPluses(item.Owned[client] + i), info.Cost);
+							menu.AddItem(data, buffer, cash < info.Cost ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+							
+							if(info.Desc[0])
+							{
+								StrCat(info.Desc, sizeof(info.Desc), "\n ");
+								menu.AddItem("", info.Desc, ITEMDRAW_DISABLED);
+							}
+						}
+					}
+					
+					if(!data[0])
+					{
+						FormatEx(buffer, sizeof(buffer), "%t", "Cannot Pap this");
+						menu.AddItem("", buffer, ITEMDRAW_DISABLED);
+					}
+					
+					menu.Pagination = 6;
+					menu.ExitButton = true;
+					menu.Display(client, MENU_TIME_FOREVER);
+				}
+			}
+		}
+	}
+}
+
+public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Select:
+		{
+			char buffer[64];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			
+			int values[4];
+			ExplodeStringInt(buffer, ";", values, sizeof(values));
+			
+			static Item item;
+			StoreItems.GetArray(values[0], item);
+			if(item.Owned[client])
+			{
+				int owner = -1;
+				
+				ItemInfo info;
+				if(item.GetItemInfo(values[1], info) && info.Cost && (CurrentCash-CashSpent[client]) >= info.Cost)
+				{
+					CashSpent[client] += info.Cost;
+					item.Owned[client] = values[1] + 1;
+					StoreItems.SetArray(values[0], item);
+					
+					TF2_StunPlayer(client, 2.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
+					
+					SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client, SyncHud_Notifaction, "Your weapon was boosted");
+					Store_ApplyAttribs(client);
+					Store_GiveAll(client, GetClientHealth(client));
+					
+					owner = GetClientOfUserId(values[3]);
+					if(owner)
+					{
+						if(Pack_A_Punch_Machine_money_limit[owner][client] <= 5)
+						{
+							Pack_A_Punch_Machine_money_limit[owner][client] += 1;
+							CashSpent[owner] -= 400;
+							Resupplies_Supplied[owner] += 40;
+							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+							SetGlobalTransTarget(owner);
+							ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Pap Machine Used");
+						}
+					}
+					else
+					{
+						owner = -1;
+					}
+				}
+				
+				Store_PackMenu(client, values[0], values[2], owner);
+			}
+		}
+	}
+	return 0;
+}
+
+/*int Store_PackCurrentItem(int client, int index)
 {
 	if(index > 0)
 	{
@@ -529,25 +679,7 @@ int Store_PackCurrentItem(int client, int index)
 		}
 	}
 	return 0; //you dont own the item.
-}
-
-int Store_CheckMoneyForPap(int client, int index)
-{
-	if(index > 0)
-	{
-		static Item item;
-		StoreItems.GetArray(index, item);
-		if(item.Owned[client])
-		{
-			ItemInfo info;
-			if(!item.GetItemInfo(item.Owned[client], info))
-				return 0;
-			
-			return info.Cost;
-		}
-	}
-	return 0; //you dont own the item.
-}
+}*/
 
 void Store_Reset()
 {
@@ -1211,7 +1343,7 @@ static void MenuPage(int client, int section)
 
 			//		, TranslateItemName(client, item.Name) , item.PackCost > 0 ? "<Packable>" : ""
 			Config_CreateDescription(info.Classname, info.Attrib, info.Value, info.Attribs, buffer, sizeof(buffer));
-			menu.SetTitle("%s\n%s\n ", buffer, item.Desc);
+			menu.SetTitle("%s\n%s\n ", buffer, info.Desc);
 			
 			if(NPCOnly[client] == 2)
 			{
@@ -1626,12 +1758,14 @@ static void MenuPage(int client, int section)
 static char[] AddPluses(int amount)
 {
 	char buffer[16];
-	for(int i; i<amount; i++)
+	if(amount)
 	{
-		buffer[i] = '+';
+		FormatEx(buffer, sizeof(buffer), " V%d", amount + 1);
 	}
-	
-	buffer[amount] = '\0';
+	else
+	{
+		buffer[amount] = '\0';
+	}
 	return buffer;
 }
 

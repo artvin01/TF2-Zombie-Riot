@@ -290,18 +290,17 @@ public Action GetClosestSpawners(Handle timer)
 	return Plugin_Continue;
 }
 
-float GlobalAntiSameFrameCheck_NPC_SpawnNext;
+
+
+float GlobalCheckDelayAntiLagPlayerScale;
+bool AllowSpecialSpawns;
+int LimitNpcs;
 
 public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 {
 	bool found;
-	
-	if(GlobalAntiSameFrameCheck_NPC_SpawnNext == GetGameTime())
-	{
-		return;
-	}
-		
-	GlobalAntiSameFrameCheck_NPC_SpawnNext = GetGameTime();
+	/*
+	*/
 	/*
 	int limit = 10 + RoundToCeil(float(Waves_GetRound())/2.3);
 	*/
@@ -314,51 +313,60 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		panzer_warning = false;
 	}
 	
-	PlayersAliveScaling = 0;
-	
-	limit = 4 + RoundToCeil(float(Waves_GetRound())/2.65);
-	if(limit > 8) //Make sure to not allow more then this amount so the default max zombie count is 20 at almost all times if player scaling isnt accounted for.
+	if(GlobalCheckDelayAntiLagPlayerScale < GetGameTime())
 	{
-		limit = 8;
-	}
-	
-	bool canSeePanzer;
-	float f_limit = 0.0;
-	float f_limit_music = 0.0;
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
+		AllowSpecialSpawns = false;
+		GlobalCheckDelayAntiLagPlayerScale = GetGameTime() + 5.0;//only check every 5 seconds.
+		PlayersAliveScaling = 0;
+		
+		limit = 4 + RoundToCeil(float(Waves_GetRound())/2.65);
+		if(limit > 8) //Make sure to not allow more then this amount so the default max zombie count is 20 at almost all times if player scaling isnt accounted for.
 		{
-			f_limit += 2.2;
-			
-			if(Level[client] > 7)
-				canSeePanzer = true;
-			
-			if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+			limit = 8;
+		}
+		
+		float f_limit = 0.0;
+		float f_limit_music = 0.0;
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 			{
-				f_limit_music += 2.2;
+				f_limit += 2.2;
+				
+				if(Level[client] > 7)
+					AllowSpecialSpawns = true;
+				
+				if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+				{
+					f_limit_music += 2.2;
+				}
 			}
 		}
+		
+		
+		PlayersAliveScaling = limit;
+		
+		PlayersAliveScaling += RoundToNearest(f_limit_music);
+		limit += RoundToNearest(f_limit);
+		
+		if(limit >= NPC_HARD_LIMIT)
+			limit = NPC_HARD_LIMIT;
+			
+		LimitNpcs = limit;
+		
+		if(PlayersAliveScaling >= NPC_HARD_LIMIT)
+			PlayersAliveScaling = NPC_HARD_LIMIT;
+		
 	}
 	
-	if(!canSeePanzer)
+	if(!b_GameOnGoing) //no spawn if the round is over
+		return;
+	
+	if(!AllowSpecialSpawns)
 	{
 		panzer = false;
 		panzer_warning = false;
 	}
-	
-	PlayersAliveScaling = limit;
-	
-	PlayersAliveScaling += RoundToNearest(f_limit_music);
-	limit += RoundToNearest(f_limit);
-	if(!b_GameOnGoing) //no spawn if the round is over
-		return;
-	
-	if(limit >= NPC_HARD_LIMIT)
-		limit = NPC_HARD_LIMIT;
-		
-	if(PlayersAliveScaling >= NPC_HARD_LIMIT)
-		PlayersAliveScaling = NPC_HARD_LIMIT;
 	
 	if(!panzer)
 	{
@@ -385,7 +393,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			}
 		}
 		//emercency stop. 
-		if(npc_current_count >= limit)
+		if(npc_current_count >= LimitNpcs)
 		{
 			return;
 		}
@@ -1700,9 +1708,17 @@ public void NPC_CheckDead()
 		int npc_index = EntRefToEntIndex(npc.Ref);
 		if(npc_index <= MaxClients)
 		{
-			RequestFrame(NPC_SpawnNextRequestFrame, false);
-			//make sure that if they despawned instead of dying, that their shit still gets cleaned just in case.
 			Zombies_Currently_Still_Ongoing -= 1;
+			if(GlobalAntiSameFrameCheck_NPC_SpawnNext == GetGameTime())
+			{
+				continue;
+			}
+				
+			GlobalAntiSameFrameCheck_NPC_SpawnNext = GetGameTime();
+			
+			RequestFrame(NPC_SpawnNextRequestFrame, false);
+			//dont call if its multiple at once, can cause lag
+			//make sure that if they despawned instead of dying, that their shit still gets cleaned just in case.
 			
 			NPCList.Erase(i);
 		}
@@ -1731,7 +1747,11 @@ void NPC_DeadEffects(int entity)
 		NPCList.GetArray(i, npc);
 		if(EntRefToEntIndex(npc.Ref) == entity)
 		{
-			RequestFrame(NPC_SpawnNextRequestFrame, false);
+			if(GlobalAntiSameFrameCheck_NPC_SpawnNext != GetGameTime())
+			{
+				RequestFrame(NPC_SpawnNextRequestFrame, false);
+			}
+			GlobalAntiSameFrameCheck_NPC_SpawnNext = GetGameTime();
 			Zombies_Currently_Still_Ongoing -= 1;
 			/*
 			RequestFrame(entity, Remove_

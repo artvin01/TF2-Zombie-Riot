@@ -296,7 +296,6 @@ methodmap FatherGrigori < CClotBody
 			
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntPropEnt(entity, Prop_Send, "m_hThrower", this.index);
-			SetEntPropEnt(entity, Prop_Send, "m_bTouched", true);
 			
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 75.0); 
 			f_CustomGrenadeDamage[entity] = 75.0;	
