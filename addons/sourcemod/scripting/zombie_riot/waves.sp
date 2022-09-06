@@ -722,9 +722,18 @@ void Waves_Progress()
 		{
 			int extra = Building_GetCashOnWave(round.Cash);
 			CurrentCash += round.Cash;
-			if(round.Cash)
+			if(round.Cash && !extra)
+			{
 				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
-				
+			}
+			else if(round.Cash && extra)
+			{
+				CPrintToChatAll("{green}%t\n%t{default}","Cash Gained This Wave","Cash Gained This Wave Village", round.Cash, extra);
+			}
+			else if(!round.Cash && extra)
+			{
+				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave Village", extra);
+			}
 			
 			CurrentRound++;
 			CurrentWave = -1;
@@ -740,7 +749,6 @@ void Waves_Progress()
 					{
 						CashSpent[client_Penalise] -= extra;
 						CashRecievedNonWave[client_Penalise] += extra;
-						CPrintToChat(client_Penalise, "{green}%t{default}","Cash Gained This Wave Village", extra);
 					}
 					
 					if(GetClientTeam(client_Penalise)!=2)
@@ -770,9 +778,16 @@ void Waves_Progress()
 				int npc_index = EntRefToEntIndex(npc.Ref);
 				if(npc_index > MaxClients && IsValidEntity(npc_index))
 				{
-					if(!b_NpcHasDied[npc_index] && GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+					if(!b_NpcHasDied[npc_index])
 					{
-						Zombies_alive_still += 1;
+						if(GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+						{
+							Zombies_alive_still += 1;
+						}
+					}
+					else //Erase if non existant.
+					{
+						NPCList.Erase(i);
 					}
 				}
 				else //Erase if non existant.
@@ -787,15 +802,8 @@ void Waves_Progress()
 			
 			if(Zombies_Currently_Still_Ongoing > 0 && (Zombies_Currently_Still_Ongoing - Zombies_alive_still) > 0)
 			{
-				for(int client_Penalise=1; client_Penalise<=MaxClients; client_Penalise++)
-				{
-					if(IsClientInGame(client_Penalise))	
-					{
-						CPrintToChat(client_Penalise, "{crimson}%i Zombies have been wasted...{default} you have lost money!", Zombies_Currently_Still_Ongoing - Zombies_alive_still);
-					}
-				}
+				CPrintToChatAll("{crimson}%i Zombies have been wasted...{default} you have lost money!", Zombies_Currently_Still_Ongoing - Zombies_alive_still);
 			}
-			
 			Zombies_Currently_Still_Ongoing = 0;
 			
 			Zombies_Currently_Still_Ongoing = Zombies_alive_still;
