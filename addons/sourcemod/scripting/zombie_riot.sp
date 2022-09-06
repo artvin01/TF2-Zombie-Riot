@@ -356,6 +356,7 @@ int g_CarriedDispenser[MAXPLAYERS+1];
 int i_BeingCarried[MAXENTITIES];
 float f_BuildingIsNotReady[MAXTF2PLAYERS];
 
+float GlobalAntiSameFrameCheck_NPC_SpawnNext;
 //bool b_AllowBuildCommand[MAXPLAYERS + 1];
 
 int Building_Mounted[MAXENTITIES];
@@ -3555,7 +3556,11 @@ public void OnEntityDestroyed(int entity)
 			
 	if(Waves_Started())
 	{
-		RequestFrame(NPC_CheckDead);
+		if(GlobalAntiSameFrameCheck_NPC_SpawnNext != GetGameTime())
+		{
+			RequestFrame(NPC_CheckDead);
+		}
+		GlobalAntiSameFrameCheck_NPC_SpawnNext = GetGameTime();
 	}
 	NPC_Base_OnEntityDestroyed(entity);
 }
