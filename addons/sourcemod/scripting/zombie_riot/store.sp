@@ -1096,20 +1096,23 @@ public void Store_RandomizeNPCStore(bool ResetStore)
 			StoreItems.SetArray(i, item);
 		}
 	}
-	if(!ResetStore)
+	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
 	{
-		bool OneSuperSale = true;
-		SortIntegers(indexes, amount, Sort_Random);
-		for(int i; i<3 && i<amount; i++) //amount of items to sell
+		if(!ResetStore)
 		{
-			StoreItems.GetArray(indexes[i], item);
-			if(OneSuperSale)
+			bool OneSuperSale = true;
+			SortIntegers(indexes, amount, Sort_Random);
+			for(int i; i<3 && i<amount; i++) //amount of items to sell
 			{
-				item.NPCSeller_First = true;
-				OneSuperSale = false;
+				StoreItems.GetArray(indexes[i], item);
+				if(OneSuperSale)
+				{
+					item.NPCSeller_First = true;
+					OneSuperSale = false;
+				}
+				item.NPCSeller = true;
+				StoreItems.SetArray(indexes[i], item);
 			}
-			item.NPCSeller = true;
-			StoreItems.SetArray(indexes[i], item);
 		}
 	}
 }

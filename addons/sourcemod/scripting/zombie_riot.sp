@@ -1635,8 +1635,8 @@ public Action Command_ChangeCollision(int client, int args)
 
 public Action Command_SpawnGrigori(int client, int args)
 {
-	Store_RandomizeNPCStore(false);
 	Spawn_Cured_Grigori();
+	Store_RandomizeNPCStore(false);
 	return Plugin_Handled;
 }
 

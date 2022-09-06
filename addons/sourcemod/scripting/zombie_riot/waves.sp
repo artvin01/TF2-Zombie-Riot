@@ -817,8 +817,8 @@ void Waves_Progress()
 					}
 				}
 				
-				Store_RandomizeNPCStore(false);
 				Spawn_Cured_Grigori();
+				Store_RandomizeNPCStore(false);
 			}
 			else if(CurrentRound == 11)
 			{
