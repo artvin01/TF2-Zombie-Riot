@@ -1657,24 +1657,27 @@ public void Try_Backstab_Anim_Again3(int attacker)
 
 public void NPC_CheckDead(int entity)
 {
-	if(!b_NpcHasDied[entity])
+	if(IsValidEntity(entity))
 	{
-		b_NpcHasDied[entity] = true;
-		
-		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+		if(!b_NpcHasDied[entity])
 		{
-			Zombies_Currently_Still_Ongoing -= 1;
-		}
-		if(GlobalAntiSameFrameCheck_NPC_SpawnNext == GetGameTime())
-		{
-			return;
-		}
+			b_NpcHasDied[entity] = true;
 			
-		GlobalAntiSameFrameCheck_NPC_SpawnNext = GetGameTime();
-		
-		RequestFrame(NPC_SpawnNextRequestFrame, false);
-		//dont call if its multiple at once, can cause lag
-		//make sure that if they despawned instead of dying, that their shit still gets cleaned just in case.
+			if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			{
+				Zombies_Currently_Still_Ongoing -= 1;
+			}
+			if(GlobalAntiSameFrameCheck_NPC_SpawnNext == GetGameTime())
+			{
+				return;
+			}
+				
+			GlobalAntiSameFrameCheck_NPC_SpawnNext = GetGameTime();
+			
+			RequestFrame(NPC_SpawnNextRequestFrame, false);
+			//dont call if its multiple at once, can cause lag
+			//make sure that if they despawned instead of dying, that their shit still gets cleaned just in case.
+		}
 	}
 }
 
