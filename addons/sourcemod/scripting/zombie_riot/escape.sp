@@ -45,6 +45,7 @@ public Action Remove_All(Handle Timer_Handle, any Null)
 			}
 		}
 	}
+	RequestFrame(NPC_CheckDead); //check for all dead 
 	return Plugin_Handled;
 }
 

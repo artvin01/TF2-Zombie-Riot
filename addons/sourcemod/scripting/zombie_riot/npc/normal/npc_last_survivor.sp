@@ -304,7 +304,8 @@ methodmap FatherGrigori < CClotBody
 			DispatchSpawn(entity);
 			SetEntityModel(entity, "models/weapons/w_grenade.mdl");
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
-			SetEntPropEnt(entity, Prop_Send, "m_bTouched", true);
+			
+			SetEntProp(entity, Prop_Send, "m_bTouched", true);
 			SetEntityCollisionGroup(entity, 1);
 		}
 	}

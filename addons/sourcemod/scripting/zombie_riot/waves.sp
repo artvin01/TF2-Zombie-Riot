@@ -770,10 +770,14 @@ void Waves_Progress()
 				int npc_index = EntRefToEntIndex(npc.Ref);
 				if(npc_index > MaxClients && IsValidEntity(npc_index))
 				{
-					if(GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red) && !b_NpcHasDied[npc_index])
+					if(!b_NpcHasDied[npc_index] && GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 					{
 						Zombies_alive_still += 1;
 					}
+				}
+				else //Erase if non existant.
+				{
+					NPCList.Erase(i);
 				}
 			}
 			
