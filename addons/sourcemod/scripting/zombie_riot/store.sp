@@ -602,7 +602,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 				int owner = -1;
 				
 				ItemInfo info;
-				if(item.GetItemInfo(item.Owned[client] + values[1], info) && info.Cost && (CurrentCash-CashSpent[client]) >= info.Cost)
+				if(item.GetItemInfo(values[1], info) && info.Cost && (CurrentCash-CashSpent[client]) >= info.Cost)
 				{
 					CashSpent[client] += info.Cost;
 					item.Owned[client] = values[1] + 1;
