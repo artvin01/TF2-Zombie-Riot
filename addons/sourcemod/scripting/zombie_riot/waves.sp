@@ -1117,7 +1117,9 @@ void Waves_Progress()
 		{
 			CurrentCash += round.Cash;
 			if(round.Cash)
-				PrintToChatAll("%t","Cash Gained This Wave", round.Cash);
+			{
+				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
+			}
 			CurrentRound++;
 			CurrentWave = -1;
 			Rounds.GetArray(length, round);
