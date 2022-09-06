@@ -717,7 +717,8 @@ enum
 	BTD_VORTEX	= 125,
 	
 	MEDIVAL_RAM	= 126,
-	ALT_SOLDIER_BARRAGER = 127
+	ALT_SOLDIER_BARRAGER = 127,
+	ALT_The_Shit_Slapper = 128
 }
 
 
@@ -859,7 +860,8 @@ public const char NPC_Names[][] =
 	"Vortex",
 	
 	"Capped Ram",
-	"Soldier Barrager"
+	"Soldier Barrager",
+	"The Shit Slapper"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -997,7 +999,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",
 	"",
 	"npc_medival_ram",
-	"npc_alt_soldier_barrager"
+	"npc_alt_soldier_barrager",
+	"npc_alt_the_shit_slapper"
 };
 
 #include "zombie_riot/stocks_override.sp"

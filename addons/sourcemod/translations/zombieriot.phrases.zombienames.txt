@@ -611,4 +611,8 @@
 	{
 		"en"		"Capped Ram"
 	}
+	"The Shit Slapper"
+	{
+		"en"		"The Shit Slapper"
+	}
 }
