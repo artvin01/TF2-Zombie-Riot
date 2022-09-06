@@ -149,6 +149,7 @@ void OnWrenchCreated(int entity)
 
 public MRESReturn Wrench_SmackPre(int entity, DHookReturn ret, DHookParam param)
 {	
+	StartLagCompResetValues();
 	Dont_Move_Building = true;
 	int Compensator = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	LagCompEntitiesThatAreIntheWay(Compensator);
@@ -883,7 +884,6 @@ public void FinishLagCompMoveBack()
 					Moved_Building[baseboss_index_allied] = false;
 					SDKCall_SetLocalOrigin(baseboss_index_allied, Get_old_pos_back[baseboss_index_allied]);
 				}
-				Moved_Building[baseboss_index_allied] = false;
 			}
 		}
 	}	
