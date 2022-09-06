@@ -22,40 +22,44 @@ void ExplosiveBullets_Precache()
 
 public void Weapon_ExplosiveBullets(int client, int weapon, const char[] classname, bool &result)
 {
-	int NumPellets = RoundFloat(Attributes_FindOnWeapon(client, weapon, 2000));
+	int NumPellets = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 118));
 	if (NumPellets < 1)
 		return;
 		
-	float BaseDMG = Attributes_FindOnWeapon(client, weapon, 2002); //Base damage
+	float BaseDMG = 5.0; //lets set it to 5
 	
 	Address address = TF2Attrib_GetByDefIndex(weapon, 2);
 	if(address != Address_Null)
 		BaseDMG *= TF2Attrib_GetValue(address);
 		
-	float Spread = Attributes_FindOnWeapon(client, weapon, 36);	//Spread Penalty
+	float Spread = 1.0;
+	
 	address = TF2Attrib_GetByDefIndex(weapon, 106);
 	if(address != Address_Null)
 		Spread *= TF2Attrib_GetValue(address);
 	
-	float Radius = Attributes_FindOnWeapon(client, weapon, 2001);	//Useless attribute, used in config to determine base radius
+	float Radius = 100.0; //base radius
 	float Falloff = Attributes_FindOnWeapon(client, weapon, 117);	//Damage falloff penalty
 	
-	StartLagCompensation_Base_Boss(client, false);
+	address = TF2Attrib_GetByDefIndex(weapon, 99);
+	if(address != Address_Null)
+		Radius *= TF2Attrib_GetValue(address);
+	
 	
 	float spawnLoc[3], eyePos[3], eyeAng[3], randAng[3];
 			   
 	GetClientEyePosition(client, eyePos);
 	GetClientEyeAngles(client, eyeAng);
 	
-	FinishLagCompensation_Base_boss();
-	
+	b_LagCompNPC_ExtendBoundingBox = true;
+	StartLagCompensation_Base_Boss(client, false);
 	for (int i = 0; i < NumPellets; i++)
 	{
 		randAng[0] = eyeAng[0] + GetRandomFloat(-Spread, Spread);
 		randAng[1] = eyeAng[1] + GetRandomFloat(-Spread, Spread);
 		randAng[2] = eyeAng[2] + GetRandomFloat(-Spread, Spread);
 		
-		Handle trace = TR_TraceRayFilterEx(eyePos, randAng, MASK_SHOT, RayType_Infinite, TraceEntityFilterPlayer);
+		Handle trace = TR_TraceRayFilterEx(eyePos, randAng, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
 		if (TR_DidHit(trace))
 		{
 			TR_GetEndPosition(spawnLoc, trace);
@@ -71,13 +75,16 @@ public void Weapon_ExplosiveBullets(int client, int weapon, const char[] classna
 		pack_boom.WriteFloat(spawnLoc[2]);
 		pack_boom.WriteCell(0);
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
+		
 		EmitAmbientSound(ExplosiveBullets_SFX[GetRandomInt(0, 2)], spawnLoc, _, _, _, _, GetRandomInt(75, 110));
+				 
 	}
+	FinishLagCompensation_Base_boss();
 }
 
 stock void ExplosiveBullets_SpawnExplosion(float DetLoc[3])
 {
-	new littleBoom = CreateEntityByName("info_particle_system");
+	int littleBoom = CreateEntityByName("info_particle_system");
 	
 	if (IsValidEdict(littleBoom))
 	{

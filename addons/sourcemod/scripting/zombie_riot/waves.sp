@@ -768,7 +768,7 @@ void Waves_Progress()
 			{
 				NPCList.GetArray(i, npc);
 				int npc_index = EntRefToEntIndex(npc.Ref);
-				if(npc_index > MaxClients)
+				if(npc_index > MaxClients && IsValidEntity(npc_index))
 				{
 					if(GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 					{
@@ -814,7 +814,7 @@ void Waves_Progress()
 				Store_RandomizeNPCStore(false);
 				Spawn_Cured_Grigori();
 			}
-			if(CurrentRound == 11)
+			else if(CurrentRound == 11)
 			{
 				panzer_spawn = true;
 				panzer_sound = true;
