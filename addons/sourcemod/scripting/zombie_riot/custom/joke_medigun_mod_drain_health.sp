@@ -180,6 +180,8 @@ static float medigun_hud_delay[MAXTF2PLAYERS];
 
 static float f_IncrementalSmallHeal[MAXENTITIES];
 
+static int i_targethealedLastBy[MAXENTITIES];
+
 float target_sucked_long[MAXENTITIES]={0.85, ...};
 static Handle Revert_target_sucked_long_timer[MAXENTITIES];
 static bool Handle_on_target_sucked_long[MAXENTITIES]={false, ...};
@@ -543,6 +545,12 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					if(EscapeMode)
 						healing_Amount_Self = 2.0;
 						
+					if(i_targethealedLastBy[healTarget] != owner) //If youre healing someone thats already being healed, then the healing amount will be heavily reduced.
+					{
+						healing_Amount *= 0.25;
+					}
+					
+					i_targethealedLastBy[healTarget] = owner;
 					
 					if(f_TimeUntillNormalHeal[healTarget] > GetGameTime())
 					{

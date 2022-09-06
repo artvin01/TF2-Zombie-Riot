@@ -4582,8 +4582,30 @@ public float clamp(float a, float b, float c) { return (a > c ? c : (a < b ? b :
 
 stock float[] WorldSpaceCenter(int entity)
 {
+	//We need to do an exception here, if we detect that we actually make the size bigger via lag comp
+	//then we just get an offset of the abs origin, abit innacurate but it works like a charm.
 	float vecPos[3];
-	SDKCall(g_hSDKWorldSpaceCenter, entity, vecPos);
+	if(b_LagCompNPC_ExtendBoundingBox)
+	{
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", vecPos);
+		//did you know abs origin only exists for the server? crazy right
+		
+		
+		//This is usually the middle, so this should work out just fine!
+		
+		if(b_IsGiant[entity])
+		{
+			vecPos[2] += 64.0;
+		}
+		else
+		{
+			vecPos[2] += 42.0;
+		}
+	}
+	else
+	{
+		SDKCall(g_hSDKWorldSpaceCenter, entity, vecPos);
+	}
 	
 	return vecPos;
 }

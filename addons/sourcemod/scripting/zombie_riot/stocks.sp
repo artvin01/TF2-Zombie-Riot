@@ -2128,69 +2128,17 @@ public bool AntiTraceEntityFilterPlayer(int entity, any contentsMask) //Borrowed
 
 public void SpawnSmallExplosion(float DetLoc[3])
 {
-	int littleBoom = CreateEntityByName("info_particle_system");
+	float pos[3];
+	pos[0] += DetLoc[0] + GetRandomFloat(-80.0, 80.0);
+	pos[1] += DetLoc[1] + GetRandomFloat(-80.0, 80.0);
+	pos[2] += DetLoc[2] + GetRandomFloat(0.0, 80.0);
 	
-	if (IsValidEntity(littleBoom))
-	{
-		float pos[3];
-		pos[0] += DetLoc[0] + GetRandomFloat(-80.0, 80.0);
-		pos[1] += DetLoc[1] + GetRandomFloat(-80.0, 80.0);
-		pos[2] += DetLoc[2] + GetRandomFloat(0.0, 80.0);
-		TeleportEntity(littleBoom, pos, NULL_VECTOR, NULL_VECTOR);
-		
-		char particleName[255];
-		
-		
-		particleName = EXPLOSION_PARTICLE_SMALL_1;
-		/*
-		switch(GetRandomInt(1, 4))
-		{
-			case 1:
-			{
-				particleName = EXPLOSION_PARTICLE_SMALL_1;
-			}
-			case 2:
-			{
-				particleName = EXPLOSION_PARTICLE_SMALL_2;
-			}
-			case 3:
-			{
-				particleName = EXPLOSION_PARTICLE_SMALL_3;
-			}
-			case 4:
-			{
-				particleName = EXPLOSION_PARTICLE_SMALL_4;
-			}
-		}
-		*/
-		DispatchKeyValue(littleBoom, "effect_name", particleName);
-		DispatchKeyValue(littleBoom, "targetname", "present");
-		DispatchSpawn(littleBoom);
-		ActivateEntity(littleBoom);
-		AcceptEntityInput(littleBoom, "Start");
-		CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(littleBoom), TIMER_FLAG_NO_MAPCHANGE);
-	}
+	TE_Particle(EXPLOSION_PARTICLE_SMALL_1, pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 }
 
 public void SpawnSmallExplosionNotRandom(float DetLoc[3])
 {
-	int littleBoom = CreateEntityByName("info_particle_system");
-	
-	if (IsValidEntity(littleBoom))
-	{
-		TeleportEntity(littleBoom, DetLoc, NULL_VECTOR, NULL_VECTOR);
-		
-		char particleName[255];
-		
-		particleName = EXPLOSION_PARTICLE_SMALL_1;
-		
-		DispatchKeyValue(littleBoom, "effect_name", particleName);
-		DispatchKeyValue(littleBoom, "targetname", "present");
-		DispatchSpawn(littleBoom);
-		ActivateEntity(littleBoom);
-		AcceptEntityInput(littleBoom, "Start");
-		CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(littleBoom), TIMER_FLAG_NO_MAPCHANGE);
-	}
+	TE_Particle(EXPLOSION_PARTICLE_SMALL_1, DetLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 }
 
 void GetVectorAnglesTwoPoints(const float startPos[3], const float endPos[3], float angles[3])
@@ -3036,7 +2984,7 @@ public void MakeExplosionFrameLater(DataPack pack)
 		}
 		
 		DispatchKeyValueVector(ent, "origin", vec_pos);
-		DispatchKeyValue(ent, "spawnflags", "69");
+		DispatchKeyValue(ent, "spawnflags", "581");
 						
 		DispatchKeyValue(ent, "rendermode", "0");
 		DispatchKeyValue(ent, "fireballsprite", spirite);
