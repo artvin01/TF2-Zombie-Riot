@@ -531,27 +531,15 @@ stock void Do_Coin_calc(int victim)
 								TE_SendToAll();
 							}
 							
-							int ent = CreateEntityByName("env_explosion");
-							if(ent != -1)
-							{
-								
-								SetEntPropEnt(ent, Prop_Data, "m_hOwnerEntity", Entity_Owner[victim]);
-								
-								EmitAmbientSound(SOUND_GORDON_MINE_DET, targPos);
-								EmitAmbientSound(SOUND_GORDON_MINE_DET, targPos);
-						
-								DispatchKeyValueVector(ent, "origin", targPos);
-								DispatchKeyValue(ent, "spawnflags", "64");
+							EmitAmbientSound(SOUND_GORDON_MINE_DET, targPos);
+							EmitAmbientSound(SOUND_GORDON_MINE_DET, targPos);
 							
-								SetEntProp(ent, Prop_Data, "m_iMagnitude", 0); 
-								SetEntProp(ent, Prop_Data, "m_iRadiusOverride", 0); 
-						
-								DispatchSpawn(ent);
-								ActivateEntity(ent);
-						
-								AcceptEntityInput(ent, "explode");
-								AcceptEntityInput(ent, "kill");
-							}
+							DataPack pack_boom = new DataPack();
+							pack_boom.WriteFloat(targPos[0]);
+							pack_boom.WriteFloat(targPos[1]);
+							pack_boom.WriteFloat(targPos[2]);
+							pack_boom.WriteCell(0);
+							RequestFrame(MakeExplosionFrameLater, pack_boom);
 				
 							if(mf_extra_damage[victim] > GetGameTime())
 							{
@@ -606,26 +594,15 @@ stock void Do_Coin_calc(int victim)
 							TE_SendToAll();
 						}
 						
-						int ent = CreateEntityByName("env_explosion");
-						if(ent != -1)
-						{
-							SetEntPropEnt(ent, Prop_Data, "m_hOwnerEntity", Entity_Owner[victim]);
-							
-							EmitAmbientSound(SOUND_GORDON_MINE_DET, targPos);
-							EmitAmbientSound(SOUND_GORDON_MINE_DET, targPos);
-					
-							DispatchKeyValueVector(ent, "origin", targPos);
-							DispatchKeyValue(ent, "spawnflags", "64");
+						EmitAmbientSound(SOUND_GORDON_MINE_DET, targPos);
+						EmitAmbientSound(SOUND_GORDON_MINE_DET, targPos);
 						
-							SetEntProp(ent, Prop_Data, "m_iMagnitude", 0); 
-							SetEntProp(ent, Prop_Data, "m_iRadiusOverride", 0); 
-					
-							DispatchSpawn(ent);
-							ActivateEntity(ent);
-						
-							AcceptEntityInput(ent, "explode");
-							AcceptEntityInput(ent, "kill");
-						}
+						DataPack pack_boom = new DataPack();
+						pack_boom.WriteFloat(targPos[0]);
+						pack_boom.WriteFloat(targPos[1]);
+						pack_boom.WriteFloat(targPos[2]);
+						pack_boom.WriteCell(0);
+						RequestFrame(MakeExplosionFrameLater, pack_boom);
 							
 						if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 2.0) //You got one second.
 						{
