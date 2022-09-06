@@ -770,7 +770,7 @@ void Waves_Progress()
 				int npc_index = EntRefToEntIndex(npc.Ref);
 				if(npc_index > MaxClients && IsValidEntity(npc_index))
 				{
-					if(GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+					if(GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red) && !b_NpcHasDied[npc_index])
 					{
 						Zombies_alive_still += 1;
 					}
@@ -778,7 +778,7 @@ void Waves_Progress()
 			}
 			
 			
-			Zombies_Currently_Still_Ongoing -= 1; //one zombieis always still aliv
+		//	Zombies_Currently_Still_Ongoing -= 1; //one zombieis always still aliv
 			
 			
 			if(Zombies_Currently_Still_Ongoing > 0 && (Zombies_Currently_Still_Ongoing - Zombies_alive_still) > 0)
