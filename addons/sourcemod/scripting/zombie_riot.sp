@@ -1093,6 +1093,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_atomic.sp"
 #include "zombie_riot/custom/weapon_super_star_shooter.sp"
 #include "zombie_riot/custom/weapon_Texan_business.sp"
+#include "zombie_riot/custom/weapon_explosivebullets.sp"
 
 //FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
@@ -1431,6 +1432,8 @@ public void OnMapStart()
 	Fusion_Melee_OnMapStart();
 	Atomic_MapStart();
 	SSS_Map_Precache();
+	ExplosiveBullets_Precache();
+	
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
