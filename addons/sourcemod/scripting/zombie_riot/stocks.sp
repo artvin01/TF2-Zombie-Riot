@@ -2397,6 +2397,10 @@ stock int HasNamedItem(int client, const char[] name)
 	return amount;
 }
 
+
+//TODO: Better detection that doesnt make large enemies have better suriveability
+//idea: Fire a trace to all nearby enemies, and use that distance different to dertermine falloff.
+
 stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon, float spawnLoc[3] = {0.0,0.0,0.0}, float explosionRadius = EXPLOSION_RADIUS, float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF, float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF, bool FromBlueNpc = false, int maxtargetshit = 10)
 {
 	float damage_reduction = 1.0;
