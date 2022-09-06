@@ -1351,10 +1351,9 @@ void Building_ShowInteractionHud(int client, int entity)
 						if(weapon == GetPlayerWeaponSlot(client, i))
 						{
 							int index = Store_GetEquipped(client, i);
-							int number_return = Store_CheckMoneyForPap(client, index);
-							if(number_return > 0)
+							if(Store_CanPapItem(client, index))
 							{
-								PrintCenterText(client, "%t", "PackAPunch Tooltip",number_return);	
+								PrintCenterText(client, "%t", "PackAPunch Tooltip");
 							}
 							else
 							{
@@ -1441,10 +1440,9 @@ void Building_ShowInteractionHud(int client, int entity)
 						if(weapon == GetPlayerWeaponSlot(client, i))
 						{
 							int index = Store_GetEquipped(client, i);
-							int number_return = Store_CheckMoneyForPap(client, index);
-							if(number_return > 0)
+							if(Store_CanPapItem(client, index))
 							{
-								PrintCenterText(client, "%t", "PackAPunch Tooltip",number_return);	
+								PrintCenterText(client, "%t", "PackAPunch Tooltip");	
 							}
 							else
 							{
@@ -2061,53 +2059,22 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							}
 							else
 							{
-							
 								int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 								for(int i; i<6; i++)
 								{
 									if(weapon == GetPlayerWeaponSlot(client, i))
 									{
 										int index = Store_GetEquipped(client, i);
-										int number_return = Store_PackCurrentItem(client, index);
-										if(number_return == 3)
+										if(Store_CanPapItem(client, index))
 										{
-											TF2_StunPlayer(client, 2.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
-											Building_Collect_Cooldown[entity][client] = GetGameTime() + 1.0;
-											if(owner != -1 && owner != client)
-											{
-												if(Pack_A_Punch_Machine_money_limit[owner][client] <= 5)
-												{
-													Pack_A_Punch_Machine_money_limit[owner][client] += 1;
-													CashSpent[owner] -= 400;
-													Resupplies_Supplied[owner] += 40;
-													SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-													SetGlobalTransTarget(owner);
-													ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Pap Machine Used");
-												}
-											}
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-											SetGlobalTransTarget(client);
-											ShowSyncHudText(client,  SyncHud_Notifaction, "Your weapon was boosted");
-											Store_ApplyAttribs(client);
-											Store_GiveAll(client, GetClientHealth(client));
+											Store_PackMenu(client, index, entity, owner);
 										}
-										else if(number_return == 2)
-										{
-											ClientCommand(client, "playgamesound items/medshotno1.wav");
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-											SetGlobalTransTarget(client);
-											ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Money To Pap");	
-										}
-										else if(number_return == 1)
+										else
 										{
 											ClientCommand(client, "playgamesound items/medshotno1.wav");
 											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 											SetGlobalTransTarget(client);
 											ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Pap this");	
-										}
-										else if(number_return == 0)
-										{
-											ClientCommand(client, "playgamesound items/medshotno1.wav"); //This isnt supposed to ever happen.
 										}
 										break;
 									}
@@ -3638,14 +3605,7 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 	{
 		case MenuAction_End:
 		{
-			return 0;
-		}
-		case MenuAction_Cancel:
-		{
-			if(choice == MenuCancel_ExitBack)
-			{
-				delete menu;
-			}
+			delete menu;
 		}
 		case MenuAction_Select:
 		{
@@ -3653,7 +3613,7 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			int id = StringToInt(buffer);
 			
-			if(id == -1)
+			/*if(id == -1)
 			{
 				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
@@ -3726,7 +3686,8 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 			{
 				delete menu;
 			}
-			else if(id == -3)
+			else */
+			if(id == -3)
 			{
 				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
