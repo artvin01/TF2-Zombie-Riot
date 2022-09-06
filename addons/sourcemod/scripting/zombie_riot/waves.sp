@@ -770,13 +770,11 @@ void Waves_Progress()
 			
 			//Loop through all the still alive enemies that are indexed!
 			int Zombies_alive_still = 0;
-			
-			NPCData npc;
-			for(int i=NPCList.Length-1; i>=0; i--)
+
+			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 			{
-				NPCList.GetArray(i, npc);
-				int npc_index = EntRefToEntIndex(npc.Ref);
-				if(npc_index > MaxClients && IsValidEntity(npc_index))
+				int npc_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+				if (IsValidEntity(npc_index) && npc_index != 0)
 				{
 					if(!b_NpcHasDied[npc_index])
 					{
@@ -785,14 +783,6 @@ void Waves_Progress()
 							Zombies_alive_still += 1;
 						}
 					}
-					else //Erase if non existant.
-					{
-						NPCList.Erase(i);
-					}
-				}
-				else //Erase if non existant.
-				{
-					NPCList.Erase(i);
 				}
 			}
 			

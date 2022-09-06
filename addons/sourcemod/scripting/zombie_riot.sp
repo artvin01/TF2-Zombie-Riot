@@ -324,8 +324,6 @@ bool b_NpcHasDied[MAXENTITIES]={true, ...};
 const int i_MaxcountNpc = ZR_MAX_NPCS;
 int i_ObjectsNpcs[ZR_MAX_NPCS];
 
-ArrayList NPCList; 
-
 const int i_Maxcount_Apply_Lagcompensation = ZR_MAX_LAG_COMP;
 int i_Objects_Apply_Lagcompensation[ZR_MAX_LAG_COMP];
 bool b_DoNotIgnoreDuringLagCompAlly[MAXENTITIES]={false, ...};
@@ -3049,6 +3047,16 @@ public void OnEntityCreated(int entity, const char[] classname)
 	else if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
 		
+		
+		LastHitId[entity] = -1;
+		DamageBits[entity] = -1;
+		Damage[entity] = 0.0;
+		LastHitWeaponRef[entity] = -1;
+		IgniteTimer[entity] = INVALID_HANDLE;
+		IgniteFor[entity] = -1;
+		IgniteId[entity] = -1;
+		IgniteRef[entity] = -1;
+
 		//Normal entity render stuff, This should be set to these things on spawn, just to be sure.
 		b_DoNotIgnoreDuringLagCompAlly[entity] = false;
 		i_EntityRenderMode[entity] = RENDER_NORMAL;
@@ -3079,6 +3087,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		OnEntityCreated_Build_On_Build(entity, classname);
 		SetDefaultValuesToZeroNPC(entity);
 		i_SemiAutoWeapon[entity] = false;
+		b_NpcHasDied[entity] = true;
 		
 		if(!StrContains(classname, "env_entity_dissolver"))
 		{
@@ -3531,6 +3540,7 @@ public void OnEntityDestroyed(int entity)
 {
 	if(IsValidEntity(entity))
 	{
+		NPC_CheckDead(entity);
 		#if defined LagCompensation
 		OnEntityDestroyed_LagComp(entity);
 		#endif
@@ -3556,15 +3566,7 @@ public void OnEntityDestroyed(int entity)
 	}
 	
 	OnEntityDestroyed_Build_On_Build(entity);
-			
-	if(Waves_Started())
-	{
-		if(GlobalAntiSameFrameCheck_NPC_SpawnNext != GetGameTime())
-		{
-			RequestFrame(NPC_CheckDead);
-		}
-		GlobalAntiSameFrameCheck_NPC_SpawnNext = GetGameTime();
-	}
+	
 	NPC_Base_OnEntityDestroyed(entity);
 }
 

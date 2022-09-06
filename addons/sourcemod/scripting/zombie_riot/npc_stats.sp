@@ -288,9 +288,13 @@ public Action Command_PetMenu(int client, int argc)
 	if(argc > 2)
 		ally = view_as<bool>(GetCmdArgInt(3));
 	
-	if(IsValidEntity(Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer)))
+	int entity = Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer);
+	if(IsValidEntity(entity))
 	{
-		Zombies_Currently_Still_Ongoing += 1;
+		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+		{
+			Zombies_Currently_Still_Ongoing += 1;
+		}
 	}
 	return Plugin_Handled;
 }
@@ -1359,17 +1363,11 @@ public void NPCDeath(int entity)
 			
 		int extra;
 		
-		int index = NPCList.FindValue(EntIndexToEntRef(entity), NPCData::Ref);
-		if(index != -1)
+		int client_killer = GetClientOfUserId(LastHitId[entity]);
+		if(client_killer && IsClientInGame(client_killer))
 		{
-			NPCData npc;
-			NPCList.GetArray(index, npc);
-			int client = GetClientOfUserId(npc.LastHitId);
-			if(client && IsClientInGame(client))
-			{
-				extra = RoundToFloor(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * Building_GetCashOnKillMulti(client));
-				extra -= view_as<CClotBody>(entity).m_iCreditsOnKill;
-			}
+			extra = RoundToFloor(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * Building_GetCashOnKillMulti(client_killer));
+			extra -= view_as<CClotBody>(entity).m_iCreditsOnKill;
 		}
 		
 		for(int client=1; client<=MaxClients; client++)
@@ -1809,7 +1807,6 @@ methodmap CClotBody
 		
 		if(!Ally)
 		{
-			NPC_AddToArray(npc);
 			if(IgnoreBuildings || IsValidEntity(EntRefToEntIndex(RaidBossActive))) //During an active raidboss, make sure that they ignore barricades
 			{
 				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyEnemyIngoreBuilding,   false, pLocomotion);
@@ -4060,21 +4057,15 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 	CTakeDamageInfo -= view_as<Address>(16*4);
 	if(!b_NpcHasDied[pThis])
 	{
-		int index = NPCList.FindValue(EntIndexToEntRef(pThis), NPCData::Ref);
-		if(index != -1)
+		int client = GetClientOfUserId(LastHitId[pThis]);
+		int Health = GetEntProp(pThis, Prop_Data, "m_iHealth");
+		Health *= -1;
+		
+		int overkill = RoundToNearest(Damage[pThis] - float(Health));
+		
+		if(client && IsClientInGame(client))
 		{
-			NPCData npc;
-			NPCList.GetArray(index, npc);
-			int client = GetClientOfUserId(npc.LastHitId);
-			int Health = GetEntProp(pThis, Prop_Data, "m_iHealth");
-			Health *= -1;
-			
-			int overkill = RoundToNearest(npc.Damage - float(Health));
-			
-			if(client && IsClientInGame(client))
-			{
-				Calculate_And_Display_hp(client, pThis, npc.Damage, true, overkill);
-			}
+			Calculate_And_Display_hp(client, pThis, Damage[pThis], true, overkill);
 		}
 		
 		for(int entitycount; entitycount<i_MaxcountSticky; entitycount++)
@@ -4094,7 +4085,6 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 			}
 		}
 		
-		b_NpcHasDied[pThis] = true;
 		CClotBody npc = view_as<CClotBody>(pThis);
 		SDKUnhook(pThis, SDKHook_OnTakeDamage, NPC_OnTakeDamage_Base);
 		SDKUnhook(pThis, SDKHook_Think, Check_If_Stuck);
@@ -4112,6 +4102,8 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		}
 		NPCDeath(pThis);
 		ZR_ApplyKillEffects(pThis); //Do kill attribute stuff
+		
+		b_NpcHasDied[pThis] = true;
 		/*
 		#if defined ISSPECIALDEATHANIMATION
 			RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));
