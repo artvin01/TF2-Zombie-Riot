@@ -260,6 +260,7 @@ float f_MedigunChargeSave[MAXTF2PLAYERS];
 
 	
 int CashSpent[MAXTF2PLAYERS];
+int CashRecievedNonWave[MAXTF2PLAYERS];
 int Level[MAXTF2PLAYERS];
 int XP[MAXTF2PLAYERS];
 int Ammo_Count_Ready[MAXTF2PLAYERS];
@@ -323,8 +324,11 @@ bool b_NpcHasDied[MAXENTITIES]={true, ...};
 const int i_MaxcountNpc = ZR_MAX_NPCS;
 int i_ObjectsNpcs[ZR_MAX_NPCS];
 
+ArrayList NPCList; 
+
 const int i_Maxcount_Apply_Lagcompensation = ZR_MAX_LAG_COMP;
 int i_Objects_Apply_Lagcompensation[ZR_MAX_LAG_COMP];
+bool b_DoNotIgnoreDuringLagCompAlly[MAXENTITIES]={false, ...};
 
 
 bool b_IsAlliedNpc[MAXENTITIES]={false, ...};
@@ -711,7 +715,8 @@ enum
 	BTD_LYCHSOUL	= 124,
 	BTD_VORTEX	= 125,
 	
-	MEDIVAL_RAM	= 126
+	MEDIVAL_RAM	= 126,
+	ALT_SOLDIER_BARRAGER = 127
 }
 
 
@@ -852,7 +857,8 @@ public const char NPC_Names[][] =
 	"Lych-Soul",
 	"Vortex",
 	
-	"Capped Ram"
+	"Capped Ram",
+	"Soldier Barrager"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -989,7 +995,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",
 	"",
 	"",
-	"npc_medival_ram"
+	"npc_medival_ram",
+	"npc_alt_soldier_barrager"
 };
 
 #include "zombie_riot/stocks_override.sp"
@@ -1085,6 +1092,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_manual_reload.sp"
 #include "zombie_riot/custom/weapon_atomic.sp"
 #include "zombie_riot/custom/weapon_super_star_shooter.sp"
+#include "zombie_riot/custom/weapon_Texan_business.sp"
+#include "zombie_riot/custom/weapon_explosivebullets.sp"
 
 //FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
@@ -1423,6 +1432,8 @@ public void OnMapStart()
 	Fusion_Melee_OnMapStart();
 	Atomic_MapStart();
 	SSS_Map_Precache();
+	ExplosiveBullets_Precache();
+	
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
@@ -1699,6 +1710,7 @@ public void OnClientPutInServer(int client)
 	TeutonType[client] = 0;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
+	CashRecievedNonWave[client] = 0;
 	Healing_done_in_total[client] = 0;
 	i_BarricadeHasBeenDamaged[client] = 0;
 	Ammo_Count_Ready[client] = 0;
@@ -1753,6 +1765,7 @@ public void OnClientDisconnect(int client)
 	Store_ClientDisconnect(client);
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
+	CashRecievedNonWave[client] = 0;
 	Healing_done_in_total[client] = 0;
 	Ammo_Count_Ready[client] = 0;
 	Armor_Charge[client] = 0;
@@ -1856,6 +1869,7 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			Escape_DropItem(client);
 			Damage_dealt_in_total[client] = 0.0;
 			Resupplies_Supplied[client] = 0;
+			CashRecievedNonWave[client] = 0;
 			Healing_done_in_total[client] = 0;
 			Ammo_Count_Ready[client] = 0;
 			Armor_Charge[client] = 0;
@@ -3032,7 +3046,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	{
 		
 		//Normal entity render stuff, This should be set to these things on spawn, just to be sure.
-		
+		b_DoNotIgnoreDuringLagCompAlly[entity] = false;
 		i_EntityRenderMode[entity] = RENDER_NORMAL;
 		i_EntityRenderColour1[entity] = 255;
 		i_EntityRenderColour2[entity] = 255;
@@ -3096,12 +3110,17 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		//	ApplyExplosionDhook_Rocket(entity);
 			//SDKHook_SpawnPost doesnt work
 		}
 		else if(!StrContains(classname, "vgui_screen")) //Delete dispenser screen cut its really not needed at all, just takes up stuff for no reason
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
+		}
+		else if(!StrContains(classname, "tf_weapon_wrench")) //need custom logic here
+		{
+			OnWrenchCreated(entity);
 		}
 		else if(!StrContains(classname, "base_boss"))
 		{
@@ -3127,6 +3146,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
+			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
 			//SDKHook_SpawnPost doesnt work
 		}
@@ -3138,6 +3158,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team_Player);
+			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			//SDKHook_SpawnPost doesnt work
 		}
 		
@@ -3148,6 +3169,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
+			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			ApplyExplosionDhook_Pipe(entity, true);
 			//SDKHook_SpawnPost doesnt work
 		}
@@ -3158,6 +3180,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
+			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
 			//SDKHook_SpawnPost doesnt work
 		}
@@ -3169,24 +3192,30 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "prop_physics_multiplayer"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
 		else if(!StrContains(classname, "prop_physics_override"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			b_Is_Player_Projectile[entity] = true; //Pretend its a player projectile for now.
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
 		else if(!StrContains(classname, "func_door_rotating"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			b_Is_Player_Projectile[entity] = true; //Pretend its a player projectile for now.
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
 		else if(!StrContains(classname, "prop_physics"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+			b_Is_Player_Projectile[entity] = true; //Pretend its a player projectile for now.
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
@@ -3199,6 +3228,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 			ApplyExplosionDhook_Pipe(entity, false);
 			SDKHook(entity, SDKHook_SpawnPost, Is_Pipebomb);
+			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
 			//SDKHook_SpawnPost doesnt work
 		}
@@ -3210,6 +3240,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
+			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
 		}
 		else if (!StrContains(classname, "tf_weapon_medigun")) 

@@ -46,7 +46,7 @@ enum struct SpawnerData
 	float	f_ClosestSpawnerLessCooldown;
 	float	f_SpawnerCooldown;
 }
-ArrayList NPCList;
+//ArrayList NPCList; Make this global, i need it globally.
 ArrayList SpawnerList;
 static Handle SyncHud;
 static Handle SyncHudRaid;
@@ -290,9 +290,18 @@ public Action GetClosestSpawners(Handle timer)
 	return Plugin_Continue;
 }
 
+float GlobalAntiSameFrameCheck_NPC_SpawnNext;
+
 public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 {
 	bool found;
+	
+	if(GlobalAntiSameFrameCheck_NPC_SpawnNext == GetGameTime())
+	{
+		return;
+	}
+		
+	GlobalAntiSameFrameCheck_NPC_SpawnNext = GetGameTime();
 	/*
 	int limit = 10 + RoundToCeil(float(Waves_GetRound())/2.3);
 	*/
@@ -362,9 +371,9 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 				{
 					npc_current_count += 1;
 					CClotBody npcstats = view_as<CClotBody>(entity);
-					if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity] && EntRefToEntIndex(RaidBossActive) != entity)
+					if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity])
 					{
-						if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
+						if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0 && !IsValidEntity(npcstats.m_iTeamGlow))
 							SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
 						else
 							SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
@@ -1700,11 +1709,11 @@ public void NPC_CheckDead()
 		else
 		{
 			CClotBody npcstats = view_as<CClotBody>(npc_index);
-			if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc_index] && RaidBossActive != npc_index)
+			if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc_index])
 			{
 				if(GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 				{
-					if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
+					if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0 && !IsValidEntity(npcstats.m_iTeamGlow))
 						SetEntProp(npc_index, Prop_Send, "m_bGlowEnabled", true);
 					else
 						SetEntProp(npc_index, Prop_Send, "m_bGlowEnabled", false);

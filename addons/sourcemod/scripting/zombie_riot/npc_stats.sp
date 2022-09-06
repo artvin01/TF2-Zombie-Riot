@@ -826,6 +826,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = MedivalRam(client, vecPos, vecAng, ally, data);
 		}
+		case ALT_SOLDIER_BARRAGER:
+		{
+			entity = Soldier_Barrager(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1331,6 +1335,10 @@ public void NPCDeath(int entity)
 		{
 			MedivalRam_NPCDeath(entity);
 		}
+		case ALT_SOLDIER_BARRAGER:
+		{
+			Soldier_Barrager_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1340,6 +1348,8 @@ public void NPCDeath(int entity)
 	if(view_as<CClotBody>(entity).m_iCreditsOnKill)
 	{
 		CurrentCash += view_as<CClotBody>(entity).m_iCreditsOnKill;
+			
+		int extra;
 		
 		int index = NPCList.FindValue(EntIndexToEntRef(entity), NPCData::Ref);
 		if(index != -1)
@@ -1348,7 +1358,33 @@ public void NPCDeath(int entity)
 			NPCList.GetArray(index, npc);
 			int client = GetClientOfUserId(npc.LastHitId);
 			if(client && IsClientInGame(client))
-				CurrentCash += RoundToFloor(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * Building_GetCashOnKillMulti(client));
+			{
+				extra = RoundToFloor(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * Building_GetCashOnKillMulti(client));
+				extra -= view_as<CClotBody>(entity).m_iCreditsOnKill;
+			}
+		}
+		
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				if(extra > 0)
+				{
+					CashSpent[client] -= extra;
+					CashRecievedNonWave[client] += extra;
+				}
+				if(GetClientTeam(client)!=2)
+				{
+					SetGlobalTransTarget(client);
+					CashSpent[client] += RoundToCeil(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * 0.40);
+					
+				}
+				else if (TeutonType[client] == TEUTON_WAITING)
+				{
+					SetGlobalTransTarget(client);
+					CashSpent[client] += RoundToCeil(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * 0.30);
+				}
+			}
 		}
 	}
 }
@@ -1528,6 +1564,8 @@ public void OnMapStart_NPC_Base()
 	L4D2_Tank_OnMapStart_NPC();
 	Addiction_OnMapStart_NPC();
 	MedivalRam_OnMapStart();
+	
+	Soldier_Barrager_OnMapStart_NPC();
 }
 
 
@@ -3255,6 +3293,7 @@ methodmap CClotBody
 			{
 				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", model_scale); // ZZZZ i sleep
 			}
+			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
 			SetEntityCollisionGroup(entity, 19); //our savior
 			See_Projectile_Team(entity);
@@ -3325,6 +3364,7 @@ methodmap CClotBody
 			SetEntityCollisionGroup(entity, 19); //our savior
 			See_Projectile_Team(entity);
 			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Arrow_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
+			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, ArrowStartTouch);
 		}
 	}
@@ -4046,7 +4086,6 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		}
 		
 		b_NpcHasDied[pThis] = true;
-		ZR_ApplyKillEffects(pThis); //Do kill attribute stuff
 		CClotBody npc = view_as<CClotBody>(pThis);
 		SDKUnhook(pThis, SDKHook_OnTakeDamage, NPC_OnTakeDamage_Base);
 		SDKUnhook(pThis, SDKHook_Think, Check_If_Stuck);
@@ -4063,6 +4102,7 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 			Raidboss_Clean_Everyone();
 		}
 		NPCDeath(pThis);
+		ZR_ApplyKillEffects(pThis); //Do kill attribute stuff
 		/*
 		#if defined ISSPECIALDEATHANIMATION
 			RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));
@@ -7727,6 +7767,7 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/alt/npc_alt_kahml.sp"
 #include "zombie_riot/npc/alt/npc_alt_combine_soldier_deutsch_ritter.sp"
 #include "zombie_riot/npc/alt/npc_alt_sniper_railgunner.sp"
+#include "zombie_riot/npc/alt/npc_alt_soldier_barrager.sp"
 
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
 #include "zombie_riot/npc/medival/npc_medival_archer.sp"
@@ -7746,3 +7787,9 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/cof/npc_addiction.sp"
 #include "zombie_riot/npc/cof/npc_doctor.sp"
 #include "zombie_riot/npc/cof/npc_simon.sp"
+
+
+public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask, bool originalResult)
+{
+	return false;
+} 

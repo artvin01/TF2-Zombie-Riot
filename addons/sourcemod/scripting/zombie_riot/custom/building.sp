@@ -2778,12 +2778,14 @@ public bool BuildingCustomCommand(int client)
 						
 						if(Village_Flags[client] & VILLAGE_050)
 						{
+							i_ExtraPlayerPoints[client] += 10000; //Static point increace.
 							Village_ReloadBuffFor[client] = GetGameTime() + 20.0;
 							EmitSoundToAll("items/powerup_pickup_uber.wav");
 							EmitSoundToAll("items/powerup_pickup_uber.wav");
 						}
 						else
 						{
+							i_ExtraPlayerPoints[client] += 5000; //Static point increace.
 							Village_ReloadBuffFor[client] = GetGameTime() + 15.0;
 							EmitSoundToAll("player/mannpower_invulnerable.wav", client);
 							EmitSoundToAll("player/mannpower_invulnerable.wav", client);
@@ -3925,6 +3927,9 @@ public Action Timer_VillageThink(Handle timer, int ref)
 		}
 	}
 	
+	
+	i_ExtraPlayerPoints[owner] += 25; //Static low point increace.
+	
 	int effects = Village_Flags[owner];
 	
 	float range = 600.0;
@@ -4143,7 +4148,7 @@ void Building_CamoOrRegrowBlocker(bool &camo, bool &regrow)
 float Building_GetCashOnKillMulti(int client)
 {
 	if(GetBuffEffects(EntIndexToEntRef(client)) & VILLAGE_003)
-		return 1.5;
+		return 1.15;
 	
 	return 1.0;
 }
@@ -4165,13 +4170,22 @@ int Building_GetCashOnWave(int current)
 		if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
 		{
 			if(Village_Flags[client] & VILLAGE_003)
+			{
+				i_ExtraPlayerPoints[client] += 5000;
 				popCash++;
+			}
 			
 			if(Village_Flags[client] & VILLAGE_004)
+			{
+				i_ExtraPlayerPoints[client] += 10000;
 				extras++;
+			}
 			
 			if(Village_Flags[client] & VILLAGE_005)
+			{
+				i_ExtraPlayerPoints[client] += 20000; //Alot of free points.
 				farms++;
+			}
 		}
 	}
 	
@@ -4853,9 +4867,11 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 			}
 		}
 	}
+	/*
 	else if(entity <= MaxClients)
 	{
 		bool oldBuff = (oldBuffs & VILLAGE_200) || (oldBuffs & VILLAGE_030) || (oldBuffs & VILLAGE_003);
+		
 		if((newBuffs & VILLAGE_200) || (newBuffs & VILLAGE_030) || (newBuffs & VILLAGE_003))
 		{
 			if(!oldBuff)
@@ -4865,5 +4881,7 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 		{
 			TF2_RemoveCondition(entity, TFCond_TeleportedGlow);
 		}
+		
 	}
+	*/
 }

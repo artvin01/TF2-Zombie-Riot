@@ -293,8 +293,11 @@ methodmap FatherGrigori < CClotBody
 			vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*800.0;
 			vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*800.0;
 			vecForward[2] = Sine(DegToRad(vecAngles[0]))*-800.0;
-		
+			
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
+			SetEntPropEnt(entity, Prop_Send, "m_hThrower", this.index);
+			SetEntPropEnt(entity, Prop_Send, "m_bTouched", true);
+			
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 75.0); 
 			f_CustomGrenadeDamage[entity] = 75.0;	
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
@@ -302,6 +305,7 @@ methodmap FatherGrigori < CClotBody
 			DispatchSpawn(entity);
 			SetEntityModel(entity, "models/weapons/w_grenade.mdl");
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
+			SetEntPropEnt(entity, Prop_Send, "m_bTouched", true);
 			SetEntityCollisionGroup(entity, 1);
 		}
 	}
