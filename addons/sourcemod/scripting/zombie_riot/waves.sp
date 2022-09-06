@@ -1060,6 +1060,7 @@ void Waves_Progress()
 					{
 						Enemies.PushArray(wave.EnemyData);
 					}
+					Zombies_Currently_Still_Ongoing += count;
 				}
 			}
 			if(GetRandomInt(0, 1) == 1) //make him spawn way more often in freeplay.
