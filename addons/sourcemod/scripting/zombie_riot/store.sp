@@ -559,8 +559,11 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 							FormatEx(buffer, sizeof(buffer), "%s%s [$%d]", TranslateItemName(client, item.Name), AddPluses(item.Owned[client] + i), info.Cost);
 							menu.AddItem(data, buffer, cash < info.Cost ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 							
-							StrCat(info.Desc, sizeof(info.Desc), "\n ");
-							menu.AddItem("", info.Desc, ITEMDRAW_DISABLED);
+							if(info.Desc[0])
+							{
+								StrCat(info.Desc, sizeof(info.Desc), "\n ");
+								menu.AddItem("", info.Desc, ITEMDRAW_DISABLED);
+							}
 						}
 					}
 					
