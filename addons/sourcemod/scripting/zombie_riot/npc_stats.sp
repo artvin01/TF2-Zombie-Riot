@@ -6498,12 +6498,12 @@ float[] CalculateBulletDamageForce( const float vecBulletDir[3], float flScale )
 	return vecForce;
 }
 
-stock bool makeexplosion(int attacker = 0, int inflictor = -1, float attackposition[3],  char[] weaponname = "", int magnitude = 200, int radiusoverride = 200, float damageforce = 200.0, int flags = 0)
+stock bool makeexplosion(int attacker = 0, int inflictor = -1, float attackposition[3],  char[] weaponname = "", int magnitude = 200, int radiusoverride = 200, float damageforce = 200.0, int flags = 0, bool FromNpcForced = false)
 {
 	if(IsValidEntity(attacker)) //Is this just for effect?
 	{
 		bool FromBlueNpc = false;
-		if(!b_NpcHasDied[attacker])
+		if(!b_NpcHasDied[attacker] || FromNpcForced)
 		{
 			if(!b_IsAlliedNpc[attacker])
 			{

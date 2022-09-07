@@ -266,7 +266,7 @@ public void Kamikaze_NPCDeath(int entity)
 	float startPosition[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", startPosition); 
 	startPosition[2] += 45;
-	makeexplosion(entity, entity, startPosition, "", 50, 100);
+	makeexplosion(entity, entity, startPosition, "", 50, 100, _, _, true);
 	
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);

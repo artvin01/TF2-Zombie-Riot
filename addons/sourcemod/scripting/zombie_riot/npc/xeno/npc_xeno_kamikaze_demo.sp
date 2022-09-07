@@ -278,7 +278,7 @@ public void XenoKamikaze_NPCDeath(int entity)
 	float startPosition[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", startPosition); 
 	startPosition[2] += 45;
-	makeexplosion(entity, entity, startPosition, "", 65, 125);
+	makeexplosion(entity, entity, startPosition, "", 65, 125, _, _, true);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
