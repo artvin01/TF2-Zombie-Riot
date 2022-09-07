@@ -101,8 +101,6 @@ float SniperMonkey_MaimMoab(int victim, int &attacker, int &inflictor, float dam
 		}
 	}
 	
-	PrintToChatAll("SniperMonkey_MaimMoab::%f", duration);
-	
 	if(duration)
 	{
 		if((damagetype & DMG_SLASH) || (damagetype & DMG_BLAST))
@@ -156,8 +154,6 @@ float SniperMonkey_CrippleMoab(int victim, int &attacker, int &inflictor, float 
 		if((duration + time) > f_CrippleDebuff[victim])
 			f_CrippleDebuff[victim] = (duration + time);
 	}
-	
-	PrintToChatAll("SniperMonkey_CrippleMoab::%f", duration);
 	
 	return SniperMonkey_BouncingBullets(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 }

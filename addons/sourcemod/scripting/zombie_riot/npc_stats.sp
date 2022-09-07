@@ -7553,6 +7553,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_HighIceDebuff[entity] = 0.0;
 	b_Frozen[entity] = false;
 	f_TankGrabbedStandStill[entity] = 0.0;
+	f_MaimDebuff[entity] = 0.0;
+	f_CrippleDebuff[entity] = 0.0;
 	
 	fl_MeleeArmor[entity] = 1.0; //yeppers.
 	fl_RangedArmor[entity] = 1.0;
