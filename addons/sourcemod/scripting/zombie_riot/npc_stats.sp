@@ -288,9 +288,13 @@ public Action Command_PetMenu(int client, int argc)
 	if(argc > 2)
 		ally = view_as<bool>(GetCmdArgInt(3));
 	
-	if(IsValidEntity(Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer)))
+	int entity = Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer);
+	if(IsValidEntity(entity))
 	{
-		Zombies_Currently_Still_Ongoing += 1;
+		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+		{
+			Zombies_Currently_Still_Ongoing += 1;
+		}
 	}
 	return Plugin_Handled;
 }
@@ -1359,17 +1363,11 @@ public void NPCDeath(int entity)
 			
 		int extra;
 		
-		int index = NPCList.FindValue(EntIndexToEntRef(entity), NPCData::Ref);
-		if(index != -1)
+		int client_killer = GetClientOfUserId(LastHitId[entity]);
+		if(client_killer && IsClientInGame(client_killer))
 		{
-			NPCData npc;
-			NPCList.GetArray(index, npc);
-			int client = GetClientOfUserId(npc.LastHitId);
-			if(client && IsClientInGame(client))
-			{
-				extra = RoundToFloor(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * Building_GetCashOnKillMulti(client));
-				extra -= view_as<CClotBody>(entity).m_iCreditsOnKill;
-			}
+			extra = RoundToFloor(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * Building_GetCashOnKillMulti(client_killer));
+			extra -= view_as<CClotBody>(entity).m_iCreditsOnKill;
 		}
 		
 		for(int client=1; client<=MaxClients; client++)
@@ -1809,7 +1807,6 @@ methodmap CClotBody
 		
 		if(!Ally)
 		{
-			NPC_AddToArray(npc);
 			if(IgnoreBuildings || IsValidEntity(EntRefToEntIndex(RaidBossActive))) //During an active raidboss, make sure that they ignore barricades
 			{
 				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyEnemyIngoreBuilding,   false, pLocomotion);
@@ -1893,8 +1890,6 @@ methodmap CClotBody
 		HookIdMap.SetValue(buffer, list);
 		
 		//Ragdoll, hopefully
-		DHookEntity(g_hEvent_Killed,	 false, npc);
-		
 		DHookEntity(g_hEvent_Killed,	 false, npc);
 		
 		//Animevents 
@@ -4060,21 +4055,15 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 	CTakeDamageInfo -= view_as<Address>(16*4);
 	if(!b_NpcHasDied[pThis])
 	{
-		int index = NPCList.FindValue(EntIndexToEntRef(pThis), NPCData::Ref);
-		if(index != -1)
+		int client = GetClientOfUserId(LastHitId[pThis]);
+		int Health = GetEntProp(pThis, Prop_Data, "m_iHealth");
+		Health *= -1;
+		
+		int overkill = RoundToNearest(Damage[pThis] - float(Health));
+		
+		if(client && IsClientInGame(client))
 		{
-			NPCData npc;
-			NPCList.GetArray(index, npc);
-			int client = GetClientOfUserId(npc.LastHitId);
-			int Health = GetEntProp(pThis, Prop_Data, "m_iHealth");
-			Health *= -1;
-			
-			int overkill = RoundToNearest(npc.Damage - float(Health));
-			
-			if(client && IsClientInGame(client))
-			{
-				Calculate_And_Display_hp(client, pThis, npc.Damage, true, overkill);
-			}
+			Calculate_And_Display_hp(client, pThis, Damage[pThis], true, overkill);
 		}
 		
 		for(int entitycount; entitycount<i_MaxcountSticky; entitycount++)
@@ -4094,7 +4083,6 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 			}
 		}
 		
-		b_NpcHasDied[pThis] = true;
 		CClotBody npc = view_as<CClotBody>(pThis);
 		SDKUnhook(pThis, SDKHook_OnTakeDamage, NPC_OnTakeDamage_Base);
 		SDKUnhook(pThis, SDKHook_Think, Check_If_Stuck);
@@ -4110,8 +4098,10 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		{
 			Raidboss_Clean_Everyone();
 		}
-		NPCDeath(pThis);
 		ZR_ApplyKillEffects(pThis); //Do kill attribute stuff
+		b_NpcHasDied[pThis] = true;
+		NPCDeath(pThis);
+		
 		/*
 		#if defined ISSPECIALDEATHANIMATION
 			RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));
@@ -5111,13 +5101,15 @@ stock bool IsValidAllyPlayer(int index, int Ally)
 }
 
 
-stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldistancelimit = 999999.9, bool camoDetection=false, bool onlyPlayers = false, int ingore_client = -1)
+stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldistancelimit = 999999.9, bool camoDetection=false, bool onlyPlayers = false, int ingore_client = -1, float EntityLocation[3] = {0.0,0.0,0.0})
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = -1; 
 	int searcher_team = GetEntProp(entity, Prop_Send, "m_iTeamNum"); //do it only once lol
-	float EntityLocation[3]; 
-	GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+	if(EntityLocation[2] == 0.0)
+	{
+		GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+	}
 	for( int i = 1; i <= MaxClients; i++ ) 
 	{
 		if (IsValidClient(i) && i != ingore_client)
@@ -6506,51 +6498,34 @@ float[] CalculateBulletDamageForce( const float vecBulletDir[3], float flScale )
 	return vecForce;
 }
 
-stock bool makeexplosion(int attacker = 0, int inflictor = -1, float attackposition[3],  char[] weaponname = "", int magnitude = 200, int radiusoverride = 200, float damageforce = 200.0, int flags = 0)
+stock bool makeexplosion(int attacker = 0, int inflictor = -1, float attackposition[3],  char[] weaponname = "", int magnitude = 200, int radiusoverride = 200, float damageforce = 200.0, int flags = 0, bool FromNpcForced = false)
 {
-
-		
-		int explosion = CreateEntityByName("env_explosion");
-		
-		if(explosion != -1)
+	if(IsValidEntity(attacker)) //Is this just for effect?
+	{
+		bool FromBlueNpc = false;
+		if(!b_NpcHasDied[attacker] || FromNpcForced)
 		{
-			DispatchKeyValueVector(explosion, "Origin", attackposition);
-			
-			char intbuffer[64];
-			IntToString(magnitude, intbuffer, 64);
-			DispatchKeyValue(explosion,"iMagnitude", intbuffer);
-			if(radiusoverride > 0)
+			if(!b_IsAlliedNpc[attacker])
 			{
-				IntToString(radiusoverride, intbuffer, 64);
-				DispatchKeyValue(explosion,"iRadiusOverride", intbuffer);
-			}
-			
-			if(damageforce > 0.0)
-				DispatchKeyValueFloat(explosion,"DamageForce", damageforce);
-	
-			if(flags != 0)
-			{
-				IntToString(flags, intbuffer, 64);
-				DispatchKeyValue(explosion,"spawnflags", intbuffer);
-			}
-	
-			if(!StrEqual(weaponname, "", false))
-				DispatchKeyValue(explosion,"classname", weaponname);
-	
-			DispatchSpawn(explosion);
-			SetEntPropEnt(explosion, Prop_Send, "m_hOwnerEntity", attacker);
-	
-			if(inflictor != -1)
-				SetEntPropEnt(explosion, Prop_Data, "m_hInflictor", inflictor);
+				FromBlueNpc = true;
 				
-			AcceptEntityInput(explosion, "Explode");
-			RemoveEntity(explosion);
-			
-			return (true);
+				radiusoverride = RoundToCeil(float(radiusoverride) * 1.65);
+			}
 		}
-		else
-			return (false);
-	}	
+		radiusoverride = RoundToCeil(float(radiusoverride) * 1.1); //Overall abit more range due to how our checks work.
+		Explode_Logic_Custom(float(magnitude), attacker, attacker, -1, attackposition, float(radiusoverride), _, _, FromBlueNpc, _);
+
+	}
+	
+	DataPack pack_boom = new DataPack();
+	pack_boom.WriteFloat(attackposition[0]);
+	pack_boom.WriteFloat(attackposition[1]);
+	pack_boom.WriteFloat(attackposition[2]);
+	pack_boom.WriteCell(1);
+	RequestFrame(MakeExplosionFrameLater, pack_boom);
+	
+	return true;
+}	
 	
 	
 stock void CreateParticle(char[] particle, float pos[3], float ang[3])

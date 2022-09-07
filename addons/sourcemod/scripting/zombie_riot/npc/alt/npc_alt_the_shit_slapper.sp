@@ -252,11 +252,15 @@ public void The_Shit_Slapper_ClotThink(int iNPC)
 						if(target > 0) 
 						{
 							SDKHooks_TakeDamage(target, npc.index, npc.index, 45.0, DMG_CLUB, -1, _, vecHit);
-							if(i_slap[npc.index]==5)
+							if(i_slap[npc.index] >= 5)
 							{
-								Custom_Knockback(npc.index, target, 2000.0);
-								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+								if(IsValidClient(target))
+								{
+									Custom_Knockback(npc.index, target, 2000.0);
+									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+									i_slap[npc.index] = 0;
+								}
 							}
 							i_slap[npc.index]++;
 							// Hit sound

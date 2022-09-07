@@ -37,6 +37,10 @@
 #define ZR_MAX_BREAKBLES 32
 #define ZR_MAX_SPAWNERS 64
 
+
+//#pragma dynamic    131072
+//Allah This plugin has so much we need to do this.
+
 // THESE ARE TO TOGGLE THINGS!
 
 #define LagCompensation
@@ -324,8 +328,6 @@ bool b_NpcHasDied[MAXENTITIES]={true, ...};
 const int i_MaxcountNpc = ZR_MAX_NPCS;
 int i_ObjectsNpcs[ZR_MAX_NPCS];
 
-ArrayList NPCList; 
-
 const int i_Maxcount_Apply_Lagcompensation = ZR_MAX_LAG_COMP;
 int i_Objects_Apply_Lagcompensation[ZR_MAX_LAG_COMP];
 bool b_DoNotIgnoreDuringLagCompAlly[MAXENTITIES]={false, ...};
@@ -520,7 +522,7 @@ bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 bool applied_lastmann_buffs_once = false;
 
-int AmmoData[][] =
+public const int AmmoData[][] =
 {
 	// Price, Ammo
 	{ 0, 0 },			//N/A
@@ -553,7 +555,7 @@ int AmmoData[][] =
 
 int i_CurrentEquippedPerk[MAXTF2PLAYERS];
 //FOR PERK MACHINE!
-char PerkNames[][] =
+public const char PerkNames[][] =
 {
 	"No Perk",
 	"Quick Revive",
@@ -564,7 +566,7 @@ char PerkNames[][] =
 	"Widows Wine",
 };
 
-char PerkNames_Recieved[][] =
+public const char PerkNames_Recieved[][] =
 {
 	"No Perk",
 	"Quick Revive Recieved",
@@ -1208,7 +1210,7 @@ public void OnPluginStart()
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
 	
 	HookEntityOutput("logic_relay", "OnTrigger", OnRelayTrigger);
-	HookEntityOutput("logic_relay", "OnUser1", OnRelayFireUser1);
+	//HookEntityOutput("logic_relay", "OnUser1", OnRelayFireUser1);
 	
 	LoadTranslations("zombieriot.phrases");
 	LoadTranslations("zombieriot.phrases.zombienames");
@@ -1309,7 +1311,7 @@ public void OnPluginEnd()
 	{
 		if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
 		{
-			if(StrEqual(buffer, "base_boss"))
+			if(!StrContains(buffer, "base_boss"))
 				RemoveEntity(i);
 		}
 	}
@@ -1366,7 +1368,7 @@ public void OnMapStart()
 	while((entity=FindEntityByClassname(entity, "info_target")) != -1)
 	{
 		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-		if(!StrEqual(buffer, "zr_escapemode", false))
+		if(StrContains(buffer, "zr_escapemode", false))
 			continue;
 		
 		EscapeMode = true;
@@ -1501,7 +1503,7 @@ public Action OnReloadCommand(int args)
 	{
 		if(IsValidEntity(i) && GetEntityClassname(i, path, sizeof(path)))
 		{
-			if(StrEqual(path, "base_boss"))
+			if(!StrContains(path, "base_boss"))
 				RemoveEntity(i);
 		}
 	}
@@ -1637,8 +1639,8 @@ public Action Command_ChangeCollision(int client, int args)
 
 public Action Command_SpawnGrigori(int client, int args)
 {
-	Store_RandomizeNPCStore(false);
 	Spawn_Cured_Grigori();
+	Store_RandomizeNPCStore(false);
 	return Plugin_Handled;
 }
 
@@ -2246,7 +2248,7 @@ void CheckAlivePlayersforward(int killed=0)
 }
 void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 {
-	if(!Waves_Started())
+	if(!Waves_Started() || GameRules_GetRoundState() != RoundState_RoundRunning)
 	{
 		LastMann = false;
 		GlobalIntencity = 0;
@@ -2350,7 +2352,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 						if(IsClientInGame(i) && !IsFakeClient(i))
 						{
 							Music_Stop_All(i);
-							SetMusicTimer(i, 0);
+							SetMusicTimer(i, GetTime() + 5); //give them 5 seconds to react to full on panic.
 							SetEntPropEnt(i, Prop_Send, "m_hObserverTarget", client);
 						}
 					}
@@ -2428,7 +2430,7 @@ public Action OnBroadcast(Event event, const char[] name, bool dontBroadcast)
 {
 	static char sound[PLATFORM_MAX_PATH];
 	event.GetString("sound", sound, sizeof(sound));
-	if(!StrContains(sound, "Game.Your", false) || StrEqual(sound, "Game.Stalemate", false) || !StrContains(sound, "Announcer.", false))
+	if(!StrContains(sound, "Game.Your", false) || !StrContains(sound, "Game.Stalemate", false) || !StrContains(sound, "Announcer.", false))
 		return Plugin_Handled;
 
 	return Plugin_Continue;
@@ -2938,7 +2940,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 	}
 	
-	if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee && !StrEqual(classname, "tf_weapon_wrench"))
+	if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee && StrContains(classname, "tf_weapon_wrench"))
 	{
 		float attack_speed;
 		
@@ -2978,7 +2980,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 				*/
 				TF2Attrib_SetByDefIndex(weapon, 396, Attack_speed);
 			}
-			if(StrEqual(classname, "tf_weapon_knife"))
+			if(!StrContains(classname, "tf_weapon_knife"))
 			{
 				Handle swingTrace;
 				b_LagCompNPC_No_Layers = true;
@@ -3049,6 +3051,16 @@ public void OnEntityCreated(int entity, const char[] classname)
 	else if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
 		
+		
+		LastHitId[entity] = -1;
+		DamageBits[entity] = -1;
+		Damage[entity] = 0.0;
+		LastHitWeaponRef[entity] = -1;
+		IgniteTimer[entity] = INVALID_HANDLE;
+		IgniteFor[entity] = -1;
+		IgniteId[entity] = -1;
+		IgniteRef[entity] = -1;
+
 		//Normal entity render stuff, This should be set to these things on spawn, just to be sure.
 		b_DoNotIgnoreDuringLagCompAlly[entity] = false;
 		i_EntityRenderMode[entity] = RENDER_NORMAL;
@@ -3079,6 +3091,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		OnEntityCreated_Build_On_Build(entity, classname);
 		SetDefaultValuesToZeroNPC(entity);
 		i_SemiAutoWeapon[entity] = false;
+		b_NpcHasDied[entity] = true;
 		
 		if(!StrContains(classname, "env_entity_dissolver"))
 		{
@@ -3203,7 +3216,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "prop_physics_override"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
-			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			b_Is_Player_Projectile[entity] = true; //Pretend its a player projectile for now.
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
@@ -3537,6 +3550,7 @@ public void OnEntityDestroyed(int entity)
 		
 		if(entity > MaxClients)
 		{
+			NPC_CheckDead(entity);
 			b_IsAGib[entity] = false;
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			
@@ -3556,15 +3570,7 @@ public void OnEntityDestroyed(int entity)
 	}
 	
 	OnEntityDestroyed_Build_On_Build(entity);
-			
-	if(Waves_Started())
-	{
-		if(GlobalAntiSameFrameCheck_NPC_SpawnNext != GetGameTime())
-		{
-			RequestFrame(NPC_CheckDead);
-		}
-		GlobalAntiSameFrameCheck_NPC_SpawnNext = GetGameTime();
-	}
+	
 	NPC_Base_OnEntityDestroyed(entity);
 }
 

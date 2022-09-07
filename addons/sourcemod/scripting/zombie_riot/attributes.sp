@@ -1,23 +1,23 @@
 void Attributes_Fire(int client, int weapon)
 {
-	float value = Attributes_FindOnWeapon(client, weapon, 298, true);	// mod ammo per shot
-	if(value)
+	int clip = GetEntProp(weapon, Prop_Data, "m_iClip1");
+	if(clip > 0)
 	{
-		int clip = GetEntProp(weapon, Prop_Data, "m_iClip1");
-		if(clip > 0 && clip < RoundFloat(value))
+		float gameTime = GetGameTime()+0.2;
+		if(gameTime < GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack"))
 		{
-			float gameTime = GetGameTime()+0.2;
-			if(gameTime > GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack"))
+			float value = Attributes_FindOnWeapon(client, weapon, 298, true);	// mod ammo per shot
+			if(value && clip < RoundFloat(value))
 				SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", gameTime);
 		}
 	}
 }
 
-int Attributes_Airdashes(int client)
+/*int Attributes_Airdashes(int client)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	return RoundFloat(Attributes_FindOnWeapon(client, weapon, 250) + Attributes_FindOnPlayer(client, 393));	// air dash count, sniper rage DISPLAY ONLY
-}
+}*/
 
 void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype)
 {

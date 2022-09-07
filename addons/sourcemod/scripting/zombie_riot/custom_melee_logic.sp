@@ -1,71 +1,71 @@
-char g_KnifeHitFlesh[][] = {
+static const char g_KnifeHitFlesh[][] = {
 	"weapons/blade_hit1.wav",
 	"weapons/blade_hit2.wav",
 	"weapons/blade_hit3.wav",
 	"weapons/blade_hit4.wav",
 };
 
-char g_KnifeHitWorld[][] = {
+static const char g_KnifeHitWorld[][] = {
 	"weapons/blade_hitworld.wav",
 };
 
-char g_UberSawHitFlesh[][] = {
+static const char g_UberSawHitFlesh[][] = {
 	"weapons/ubersaw_hit1.wav",
 	"weapons/ubersaw_hit2.wav",
 	"weapons/ubersaw_hit3.wav",
 	"weapons/ubersaw_hit4.wav",
 };
 
-char g_DefaultHitWorld[][] = {
+static const char g_DefaultHitWorld[][] = {
 	"weapons/cbar_hit1.wav",
 	"weapons/cbar_hit2.wav",
 };
 
-char g_DefaultHitFlesh[][] = {
+static const char g_DefaultHitFlesh[][] = {
 	"weapons/cbar_hitbod1.wav",
 	"weapons/cbar_hitbod2.wav",
 	"weapons/cbar_hitbod3.wav",
 };
 
-char g_SwordHitWorld[][] = {
+static const char g_SwordHitWorld[][] = {
 	"weapons/demo_sword_hit_world1.wav",
 	"weapons/demo_sword_hit_world2.wav",
 };
 
-char g_SwordHitFlesh[][] = {
+static const char g_SwordHitFlesh[][] = {
 	"weapons/blade_slice_2.wav",
 	"weapons/blade_slice_3.wav",
 	"weapons/blade_slice_4.wav",
 };
 
 
-char g_BatSaberHitWorld[][] = {
+static const char g_BatSaberHitWorld[][] = {
 	"weapons/batsaber_hit_world1.wav",
 	"weapons/batsaber_hit_world2.wav",
 };
 
-char g_BatSaberHitFlesh[][] = {
+static const char g_BatSaberHitFlesh[][] = {
 	"weapons/batsaber_hit_flesh1.wav",
 	"weapons/batsaber_hit_flesh2.wav",
 };
 
 
-char g_HHHAxeHitWorld[][] = {
+static const char g_HHHAxeHitWorld[][] = {
 	"weapons/halloween_boss/knight_axe_miss.wav",
 };
 
-char g_HHHAxeHitFlesh[][] = {
+static const char g_HHHAxeHitFlesh[][] = {
 	"weapons/halloween_boss/knight_axe_hit.wav",
 };
 
-char g_FistsMetalHitWorld[][] = {
+static const char g_FistsMetalHitWorld[][] = {
 	"weapons/metal_gloves_hit_world1.wav",
 	"weapons/metal_gloves_hit_world2.wav",
 	"weapons/metal_gloves_hit_world3.wav",
 	"weapons/metal_gloves_hit_world4.wav",
 };
 
-char g_FistsMetalHitFlesh[][] = {
+static const char g_FistsMetalHitFlesh[][] = {
 	"weapons/metal_gloves_hit_flesh1.wav",
 	"weapons/metal_gloves_hit_flesh2.wav",
 	"weapons/metal_gloves_hit_flesh3.wav",
@@ -73,37 +73,37 @@ char g_FistsMetalHitFlesh[][] = {
 };
 
 
-char g_FistsHitWorld[][] = {
+static const char g_FistsHitWorld[][] = {
 	"weapons/fist_hit_world1.wav",
 	"weapons/fist_hit_world2.wav",
 };
 
-char g_AxeHitFlesh[][] = {
+static const char g_AxeHitFlesh[][] = {
 	"weapons/axe_hit_flesh1.wav",
 	"weapons/axe_hit_flesh2.wav",
 	"weapons/axe_hit_flesh3.wav",
 };
 
-char g_BatHitFlesh[][] = {
+static const char g_BatHitFlesh[][] = {
 	"weapons/bat_hit.wav",
 };
 
 
-char g_WeebKnifeLaughBackstab[][] = {
+static const char g_WeebKnifeLaughBackstab[][] = {
 	"vo/spy_laughhappy01.mp3",
 	"vo/spy_laughhappy02.mp3",
 	"vo/spy_laughhappy03.mp3",
 };
 
 
-char g_KatanaHitFlesh[][] = {
+static const char g_KatanaHitFlesh[][] = {
 	"weapons/samurai/tf_katana_slice_01.wav",
 	"weapons/samurai/tf_katana_slice_02.wav",
 	"weapons/samurai/tf_katana_slice_03.wav",
 };
 
 
-char g_KatanaHitWorld[][] = {
+static const char g_KatanaHitWorld[][] = {
 	"weapons/samurai/tf_katana_impact_object_01.wav",
 	"weapons/samurai/tf_katana_impact_object_02.wav",
 	"weapons/samurai/tf_katana_impact_object_03.wav",
@@ -319,6 +319,7 @@ public void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward
 	trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, client );
 	if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
 	{
+		delete trace;
 		trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
 	//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
 	}
@@ -330,7 +331,7 @@ public void PlayCustomWeaponSoundFromPlayerCorrectly(int target, int client, int
 		return;
 		
 		
-	if(StrEqual(classname, "tf_weapon_knife"))
+	if(!StrContains(classname, "tf_weapon_knife"))
 	{
 		if(target > 0 && !b_NpcHasDied[target])
 		{
@@ -341,7 +342,7 @@ public void PlayCustomWeaponSoundFromPlayerCorrectly(int target, int client, int
 			EmitSoundToAll(g_KnifeHitWorld[GetRandomInt(0, sizeof(g_KnifeHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
 		}
 	}
-	else if(StrEqual(classname, "tf_weapon_bonesaw"))
+	else if(!StrContains(classname, "tf_weapon_bonesaw"))
 	{
 		if(target > 0 && !b_NpcHasDied[target])
 		{
@@ -353,7 +354,7 @@ public void PlayCustomWeaponSoundFromPlayerCorrectly(int target, int client, int
 		}		
 		
 	}
-	else if(StrEqual(classname, "tf_weapon_club"))
+	else if(!StrContains(classname, "tf_weapon_club"))
 	{
 		if(target > 0 && !b_NpcHasDied[target])
 		{
@@ -365,7 +366,7 @@ public void PlayCustomWeaponSoundFromPlayerCorrectly(int target, int client, int
 		}		
 		
 	}
-	else if(StrEqual(classname, "tf_weapon_fireaxe"))
+	else if(!StrContains(classname, "tf_weapon_fireaxe"))
 	{
 		if(item_index == 153)
 		{
@@ -390,7 +391,7 @@ public void PlayCustomWeaponSoundFromPlayerCorrectly(int target, int client, int
 			}				
 		}
 	}
-	else if(StrEqual(classname, "tf_weapon_sword"))
+	else if(!StrContains(classname, "tf_weapon_sword"))
 	{
 		if(item_index == 266)
 		{
@@ -415,7 +416,7 @@ public void PlayCustomWeaponSoundFromPlayerCorrectly(int target, int client, int
 			}			
 		}
 	}
-	else if(StrEqual(classname, "tf_weapon_katana"))
+	else if(!StrContains(classname, "tf_weapon_katana"))
 	{
 
 		if(target > 0 && !b_NpcHasDied[target])
@@ -427,7 +428,7 @@ public void PlayCustomWeaponSoundFromPlayerCorrectly(int target, int client, int
 			EmitSoundToAll(g_KatanaHitWorld[GetRandomInt(0, sizeof(g_KatanaHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
 		}			
 	}
-	else if(StrEqual(classname, "tf_weapon_bat"))
+	else if(!StrContains(classname, "tf_weapon_bat"))
 	{
 		if(item_index == 30667)
 		{
@@ -452,7 +453,7 @@ public void PlayCustomWeaponSoundFromPlayerCorrectly(int target, int client, int
 			}				
 		}
 	}
-	else if(StrEqual(classname, "tf_weapon_fists"))
+	else if(!StrContains(classname, "tf_weapon_fists"))
 	{
 		if(item_index == 331)
 		{
@@ -524,7 +525,7 @@ public Action Timer_Do_Melee_Attack(Handle timer, DataPack pack)
 			Address address;
 			
 			float damage = 65.0;
-			if(StrEqual(classname, "tf_weapon_bat"))
+			if(!StrContains(classname, "tf_weapon_bat"))
 			{
 				damage = 35.0;
 			}

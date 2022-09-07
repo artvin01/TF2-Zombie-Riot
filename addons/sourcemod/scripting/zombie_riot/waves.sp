@@ -723,8 +723,14 @@ void Waves_Progress()
 			int extra = Building_GetCashOnWave(round.Cash);
 			CurrentCash += round.Cash;
 			if(round.Cash)
-				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
-				
+			{
+				CPrintToChatAll("{green}%t","Cash Gained This Wave", round.Cash);
+			}
+			
+			if(extra)
+			{
+				CPrintToChatAll("{green}%t","Cash Gained This Wave Village", extra);
+			}
 			
 			CurrentRound++;
 			CurrentWave = -1;
@@ -740,7 +746,6 @@ void Waves_Progress()
 					{
 						CashSpent[client_Penalise] -= extra;
 						CashRecievedNonWave[client_Penalise] += extra;
-						CPrintToChat(client_Penalise, "{green}%t{default}","Cash Gained This Wave Village", extra);
 					}
 					
 					if(GetClientTeam(client_Penalise)!=2)
@@ -762,17 +767,18 @@ void Waves_Progress()
 			
 			//Loop through all the still alive enemies that are indexed!
 			int Zombies_alive_still = 0;
-			
-			NPCData npc;
-			for(int i=NPCList.Length-1; i>=0; i--)
+
+			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 			{
-				NPCList.GetArray(i, npc);
-				int npc_index = EntRefToEntIndex(npc.Ref);
-				if(npc_index > MaxClients && IsValidEntity(npc_index))
+				int npc_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+				if (IsValidEntity(npc_index) && npc_index != 0)
 				{
-					if(GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red) && !b_NpcHasDied[npc_index])
+					if(!b_NpcHasDied[npc_index])
 					{
-						Zombies_alive_still += 1;
+						if(GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+						{
+							Zombies_alive_still += 1;
+						}
 					}
 				}
 			}
@@ -783,15 +789,8 @@ void Waves_Progress()
 			
 			if(Zombies_Currently_Still_Ongoing > 0 && (Zombies_Currently_Still_Ongoing - Zombies_alive_still) > 0)
 			{
-				for(int client_Penalise=1; client_Penalise<=MaxClients; client_Penalise++)
-				{
-					if(IsClientInGame(client_Penalise))	
-					{
-						CPrintToChat(client_Penalise, "{crimson}%i Zombies have been wasted...{default} you have lost money!", Zombies_Currently_Still_Ongoing - Zombies_alive_still);
-					}
-				}
+				CPrintToChatAll("{crimson}%i Zombies have been wasted...{default} you have lost money!", Zombies_Currently_Still_Ongoing - Zombies_alive_still);
 			}
-			
 			Zombies_Currently_Still_Ongoing = 0;
 			
 			Zombies_Currently_Still_Ongoing = Zombies_alive_still;
@@ -815,8 +814,8 @@ void Waves_Progress()
 					}
 				}
 				
-				Store_RandomizeNPCStore(false);
 				Spawn_Cured_Grigori();
+				Store_RandomizeNPCStore(false);
 			}
 			else if(CurrentRound == 11)
 			{
@@ -1058,6 +1057,7 @@ void Waves_Progress()
 					{
 						Enemies.PushArray(wave.EnemyData);
 					}
+					Zombies_Currently_Still_Ongoing += count;
 				}
 			}
 			if(GetRandomInt(0, 1) == 1) //make him spawn way more often in freeplay.
@@ -1114,7 +1114,9 @@ void Waves_Progress()
 		{
 			CurrentCash += round.Cash;
 			if(round.Cash)
-				PrintToChatAll("%t","Cash Gained This Wave", round.Cash);
+			{
+				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
+			}
 			CurrentRound++;
 			CurrentWave = -1;
 			Rounds.GetArray(length, round);

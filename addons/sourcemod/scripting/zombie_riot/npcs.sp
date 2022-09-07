@@ -25,19 +25,14 @@ enum //hitgroup_t
 	NUM_HITGROUPS
 };
 
-enum struct NPCData
-{
-	int Ref;
-	int LastHitId;
-	int DamageBits;
-	float Damage;
-	int LastHitWeaponRef;
-	
-	Handle IgniteTimer;
-	int IgniteFor;
-	int IgniteId;
-	int IgniteRef;
-}
+int LastHitId[2048];
+int DamageBits[2048];
+float Damage[2048];
+int LastHitWeaponRef[2048];
+Handle IgniteTimer[2048];
+int IgniteFor[2048];
+int IgniteId[2048];
+int IgniteRef[2048];
 
 enum struct SpawnerData
 {
@@ -68,7 +63,6 @@ public void Npc_Sp_Precache()
 void NPC_PluginStart()
 {
 	SpawnerList = new ArrayList(sizeof(SpawnerData));
-	NPCList = new ArrayList(sizeof(NPCData));
 	SyncHud = CreateHudSynchronizer();
 	SyncHudRaid = CreateHudSynchronizer();
 	
@@ -80,8 +74,6 @@ void NPC_RoundEnd()
 {
 	delete SpawnerList;
 	SpawnerList = new ArrayList(sizeof(SpawnerData));
-	delete NPCList;
-	NPCList = new ArrayList(sizeof(NPCData));
 }
 
 public Action LF_OnMakeNPC(char[] classname, int &entity)
@@ -94,7 +86,6 @@ public Action LF_OnMakeNPC(char[] classname, int &entity)
 	if(entity == -1)
 		return Plugin_Continue;
 	
-	NPC_AddToArray(entity);
 	return Plugin_Handled;
 }
 
@@ -128,9 +119,7 @@ public void NPC_EntitySpawned(int entity)
 		
 		RemoveEntity(entity);
 		
-		int npc = Npc_Create(index, -1, pos, ang, false);
-		if(npc != -1)
-			NPC_AddToArray(npc);
+		Npc_Create(index, -1, pos, ang, false);
 	}
 }
 
@@ -657,7 +646,6 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					AcceptEntityInput(npc.m_iSpawnProtectionEntity, "SetGlowColor");
 		
 					CreateTimer(2.0, Remove_Spawn_Protection, EntIndexToEntRef(entity_Spawner), TIMER_FLAG_NO_MAPCHANGE);
-					NPC_AddToArray(entity_Spawner);
 				}
 			}
 			else if(!found)
@@ -673,16 +661,6 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	delete list;
 }
 
-void NPC_AddToArray(int entity)
-{
-	NPCData npc;
-	int index = NPCList.FindValue(EntIndexToEntRef(entity), NPCData::Ref);
-	if(index == -1)
-	{
-		npc.Ref = EntIndexToEntRef(entity);
-		NPCList.PushArray(npc);
-	}
-}
 
 public Action Remove_Spawn_Protection(Handle timer, int ref)
 {
@@ -735,30 +713,21 @@ public Action Timer_Delayed_BossSpawn(Handle timer, DataPack pack)
 			}
 			
 			b_NpcForcepowerupspawn[entity] = forcepowerup;
-			NPC_AddToArray(entity);
 		}
 	}
 	return Plugin_Handled;
 }
 void NPC_Ignite(int entity, int client, float duration, int weapon)
 {
-	int index = NPCList.FindValue(EntIndexToEntRef(entity), NPCData::Ref);
-	if(index != -1)
-	{
-		NPCData npc;
-		NPCList.GetArray(index, npc);
-		
-		npc.IgniteFor += RoundToCeil(duration*2.0);
-		if(npc.IgniteFor > 20)
-			npc.IgniteFor = 20;
-		
-		if(!npc.IgniteTimer)
-			npc.IgniteTimer = CreateTimer(0.5, NPC_TimerIgnite, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-		
-		npc.IgniteId = GetClientUserId(client);
-		npc.IgniteRef = EntIndexToEntRef(weapon);
-		NPCList.SetArray(index, npc);
-	}
+	IgniteFor[entity] += RoundToCeil(duration*2.0);
+	if(IgniteFor[entity] > 20)
+		IgniteFor[entity] = 20;
+	
+	if(!IgniteTimer[entity])
+		IgniteTimer[entity] = CreateTimer(0.5, NPC_TimerIgnite, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	
+	IgniteId[entity] = GetClientUserId(client);
+	IgniteRef[entity] = EntIndexToEntRef(weapon);
 }
 
 /*
@@ -788,52 +757,43 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(entity > MaxClients)
 	{
-		int index = NPCList.FindValue(ref, NPCData::Ref);
-		if(index != -1)
+		if(IgniteFor[entity] > 0)
 		{
-			NPCData npc;
-			NPCList.GetArray(index, npc);
-			
-			if(npc.IgniteFor > 0)
+			int client = GetClientOfUserId(IgniteId[entity]);
+			if(client && IsClientInGame(client))
 			{
-				int client = GetClientOfUserId(npc.IgniteId);
-				if(client && IsClientInGame(client))
+				IgniteFor[entity]--;
+				
+				float pos[3], ang[3];
+				GetClientEyeAngles(client, ang);
+				int weapon = EntRefToEntIndex(IgniteRef[entity]);
+				if(weapon > MaxClients && IsValidEntity(weapon))
 				{
-					npc.IgniteFor--;
-					NPCList.SetArray(index, npc);
+					float value = 8.0;
 					
-					float pos[3], ang[3];
-					GetClientEyeAngles(client, ang);
-					int weapon = EntRefToEntIndex(npc.IgniteRef);
-					if(weapon > MaxClients && IsValidEntity(weapon))
-					{
-						float value = 8.0;
-						
-						value *= Attributes_FindOnWeapon(client, weapon, 2, true, 1.0);	  //For normal weapons
-						
-						value *= Attributes_FindOnWeapon(client, weapon, 410, true, 1.0); //For wand
-						
-						value *= Attributes_FindOnWeapon(client, weapon, 71, true, 1.0); //For wand
-						
-						pos = WorldSpaceCenter(entity);
-						
-						SDKHooks_TakeDamage(entity, client, client, value, DMG_SLASH, weapon, ang, pos, false);
-						//Setting burn dmg to slash cus i want it to work with melee!!!
-						//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
-						//In this case ill buff it so its 2x as good as bleed! or more in the future
-						//Also now allows hp gain and other stuff for that reason. pretty cool.
-					}
-					else
-					{
-						return Plugin_Stop;
-					}
-					return Plugin_Continue;
+					value *= Attributes_FindOnWeapon(client, weapon, 2, true, 1.0);	  //For normal weapons
+					
+					value *= Attributes_FindOnWeapon(client, weapon, 410, true, 1.0); //For wand
+					
+					value *= Attributes_FindOnWeapon(client, weapon, 71, true, 1.0); //For wand
+					
+					pos = WorldSpaceCenter(entity);
+					
+					SDKHooks_TakeDamage(entity, client, client, value, DMG_SLASH, weapon, ang, pos, false);
+					//Setting burn dmg to slash cus i want it to work with melee!!!
+					//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
+					//In this case ill buff it so its 2x as good as bleed! or more in the future
+					//Also now allows hp gain and other stuff for that reason. pretty cool.
 				}
+				else
+				{
+					return Plugin_Stop;
+				}
+				return Plugin_Continue;
 			}
-			
-			npc.IgniteTimer = null;
-			NPCList.SetArray(index, npc);
 		}
+		
+		IgniteTimer[entity] = null;
 	}
 	return Plugin_Stop;
 }
@@ -1173,22 +1133,18 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				}
 			}
 		}
-		int index = NPCList.FindValue(EntIndexToEntRef(victim), NPCData::Ref);
-		if(index != -1)
-		{
-			NPCData npc;
-			NPCList.GetArray(index, npc);
-			npc.LastHitId = GetClientUserId(attacker);
-			npc.DamageBits = damagetype;
-			npc.Damage = damage;
+		
+		//NPC STUFF FOR RECORD AND ON KILL
+		LastHitId[victim] = GetClientUserId(attacker);
+		DamageBits[victim] = damagetype;
+		Damage[victim] = damage;
+		
+		if(weapon > MaxClients)
+			LastHitWeaponRef[victim] = EntIndexToEntRef(weapon);
+		else
+			LastHitWeaponRef[victim] = -1;
 			
-			if(weapon > MaxClients)
-				npc.LastHitWeaponRef = EntIndexToEntRef(weapon);
-			else
-				npc.LastHitWeaponRef = -1;
-				
-			NPCList.SetArray(index, npc);
-		}
+		//NPC STUFF FOR RECORD AND ON KILL
 		
 		Attributes_OnHit(attacker, victim, weapon, damage, damagetype);
 					
@@ -1699,19 +1655,21 @@ public void Try_Backstab_Anim_Again3(int attacker)
 					
 }
 
-public void NPC_CheckDead()
+public void NPC_CheckDead(int entity)
 {
-	NPCData npc;
-	for(int i=NPCList.Length-1; i>=0; i--)
+	if(IsValidEntity(entity))
 	{
-		NPCList.GetArray(i, npc);
-		int npc_index = EntRefToEntIndex(npc.Ref);
-		if(npc_index <= MaxClients)
+		if(!b_NpcHasDied[entity])
 		{
-			Zombies_Currently_Still_Ongoing -= 1;
+			b_NpcHasDied[entity] = true;
+			
+			if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			{
+				Zombies_Currently_Still_Ongoing -= 1;
+			}
 			if(GlobalAntiSameFrameCheck_NPC_SpawnNext == GetGameTime())
 			{
-				continue;
+				return;
 			}
 				
 			GlobalAntiSameFrameCheck_NPC_SpawnNext = GetGameTime();
@@ -1719,60 +1677,30 @@ public void NPC_CheckDead()
 			RequestFrame(NPC_SpawnNextRequestFrame, false);
 			//dont call if its multiple at once, can cause lag
 			//make sure that if they despawned instead of dying, that their shit still gets cleaned just in case.
-			
-			NPCList.Erase(i);
-		}
-		else
-		{
-			CClotBody npcstats = view_as<CClotBody>(npc_index);
-			if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc_index])
-			{
-				if(GetEntProp(npc_index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
-				{
-					if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0 && !IsValidEntity(npcstats.m_iTeamGlow))
-						SetEntProp(npc_index, Prop_Send, "m_bGlowEnabled", true);
-					else
-						SetEntProp(npc_index, Prop_Send, "m_bGlowEnabled", false);
-				}
-			}
 		}
 	}
 }
 
 void NPC_DeadEffects(int entity)
 {
-	NPCData npc;
-	for(int i=NPCList.Length-1; i>=0; i--)
+	if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 	{
-		NPCList.GetArray(i, npc);
-		if(EntRefToEntIndex(npc.Ref) == entity)
+		if(GlobalAntiSameFrameCheck_NPC_SpawnNext != GetGameTime())
 		{
-			if(GlobalAntiSameFrameCheck_NPC_SpawnNext != GetGameTime())
-			{
-				RequestFrame(NPC_SpawnNextRequestFrame, false);
-			}
-			GlobalAntiSameFrameCheck_NPC_SpawnNext = GetGameTime();
-			Zombies_Currently_Still_Ongoing -= 1;
-			/*
-			RequestFrame(entity, Remove_
-			SDKUnhook(entity, SDKHook_TraceAttack, NPC_TraceAttack);
-			SDKUnhook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
-			SDKUnhook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);
-			*/
-			DropPowerupChance(entity);
-			Gift_DropChance(entity);
-			int WeaponLastHit = EntRefToEntIndex(npc.LastHitWeaponRef);
-			int client = GetClientOfUserId(npc.LastHitId);
-			if(client && IsClientInGame(client))
-			{
-				GiveXP(client, 1);
-				NPC_Killed_Show_Hud(client, entity, WeaponLastHit, NPC_Names[i_NpcInternalId[entity]], npc.DamageBits);
-				Attributes_OnKill(client, WeaponLastHit);
-				GiveNamedItem(client, NPC_Names[i_NpcInternalId[entity]]);
-			}
-			
-			NPCList.Erase(i);
-			break;
+			RequestFrame(NPC_SpawnNextRequestFrame, false);
+		}
+		GlobalAntiSameFrameCheck_NPC_SpawnNext = GetGameTime();
+		Zombies_Currently_Still_Ongoing -= 1;
+		DropPowerupChance(entity);
+		Gift_DropChance(entity);
+		int WeaponLastHit = EntRefToEntIndex(LastHitWeaponRef[entity]);
+		int client = GetClientOfUserId(LastHitId[entity]);
+		if(client && IsClientInGame(client))
+		{
+			GiveXP(client, 1);
+			NPC_Killed_Show_Hud(client, entity, WeaponLastHit, NPC_Names[i_NpcInternalId[entity]], DamageBits[entity]);
+			Attributes_OnKill(client, WeaponLastHit);
+			GiveNamedItem(client, NPC_Names[i_NpcInternalId[entity]]);
 		}
 	}
 	RemoveNpcThingsAgain(entity);

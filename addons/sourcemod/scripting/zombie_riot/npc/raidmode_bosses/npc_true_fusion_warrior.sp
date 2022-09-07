@@ -645,7 +645,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.15;
 					
 					if(ZR_GetWaveCount()+1 > 55)
-						TrueFusionwarrior_IOC_Invoke(npc.index, closest);
+						TrueFusionwarrior_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 						
 					if (npc.m_iAmountProjectiles >= 8)
 					{
@@ -664,7 +664,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.AddGesture("ACT_MP_THROW");
 					
 					if(ZR_GetWaveCount()+1 > 55)
-						TrueFusionwarrior_IOC_Invoke(npc.index, closest);
+						TrueFusionwarrior_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 						
 					npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.15;
 					if (npc.m_iAmountProjectiles >= 12)
@@ -1232,26 +1232,30 @@ public Action Fusion_RepeatSound_Doublevoice(Handle timer, DataPack pack)
 	return Plugin_Handled; 
 }
 
-public void TrueFusionwarrior_IOC_Invoke(int client, int enemy)
+public void TrueFusionwarrior_IOC_Invoke(int ref, int enemy)
 {
-	static float distance=87.0; // /29 for duartion till boom
-	static float IOCDist=250.0;
-	static float IOCdamage=10.0;
-	
-	float vecTarget[3];
-	GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecTarget);
-	
-	Handle data = CreateDataPack();
-	WritePackFloat(data, vecTarget[0]);
-	WritePackFloat(data, vecTarget[1]);
-	WritePackFloat(data, vecTarget[2]);
-	WritePackCell(data, distance); // Distance
-	WritePackFloat(data, 0.0); // nphi
-	WritePackCell(data, IOCDist); // Range
-	WritePackCell(data, IOCdamage); // Damge
-	WritePackCell(data, client);
-	ResetPack(data);
-	TrueFusionwarrior_IonAttack(data);
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
+	{
+		static float distance=87.0; // /29 for duartion till boom
+		static float IOCDist=250.0;
+		static float IOCdamage=10.0;
+		
+		float vecTarget[3];
+		GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecTarget);
+		
+		Handle data = CreateDataPack();
+		WritePackFloat(data, vecTarget[0]);
+		WritePackFloat(data, vecTarget[1]);
+		WritePackFloat(data, vecTarget[2]);
+		WritePackCell(data, distance); // Distance
+		WritePackFloat(data, 0.0); // nphi
+		WritePackCell(data, IOCDist); // Range
+		WritePackCell(data, IOCdamage); // Damge
+		WritePackCell(data, ref);
+		ResetPack(data);
+		TrueFusionwarrior_IonAttack(data);
+	}
 }
 
 public Action TrueFusionwarrior_DrawIon(Handle Timer, any data)
@@ -1286,7 +1290,12 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const color[4]
 		float nphi = ReadPackFloat(data);
 		int Ionrange = ReadPackCell(data);
 		int Iondamage = ReadPackCell(data);
-		int client = ReadPackCell(data);
+		int client = EntRefToEntIndex(ReadPackCell(data));
+		
+		if(!IsValidEntity(client))
+		{
+			return;
+		}
 		
 		if (Iondistance > 0)
 		{
@@ -1373,19 +1382,21 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const color[4]
 		WritePackFloat(nData, nphi);
 		WritePackCell(nData, Ionrange);
 		WritePackCell(nData, Iondamage);
-		WritePackCell(nData, client);
+		WritePackCell(nData, EntIndexToEntRef(client));
 		ResetPack(nData);
 		
 		if (Iondistance > -30)
 		CreateTimer(0.1, TrueFusionwarrior_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
 		else
 		{
+			startPosition[2] += 25.0;
 			if(!b_Anger[client])
 				makeexplosion(client, client, startPosition, "", RoundToCeil(35.0 * RaidModeScaling), 100);
 				
 			else if(b_Anger[client])
 				makeexplosion(client, client, startPosition, "", RoundToCeil(50.0 * RaidModeScaling), 120);
 				
+			startPosition[2] -= 25.0;
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
 			position[0] = startPosition[0];

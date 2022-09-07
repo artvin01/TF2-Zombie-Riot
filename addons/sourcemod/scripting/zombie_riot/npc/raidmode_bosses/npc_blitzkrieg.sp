@@ -508,7 +508,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 					npc.m_flNextRangedBarrage_Spam = GetGameTime() + 45.0 / i_HealthScale[npc.index];
 					if(i_NpcCurrentLives[npc.index]==3)
 					{
-						Blitzkrieg_IOC_Invoke(npc.index, closest);
+						Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 					}
 				}
 			}
@@ -817,7 +817,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		npc.PlayAngerSound();
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-		Blitzkrieg_IOC_Invoke(npc.index, closest);
+		Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 		
 		CPrintToChatAll("{crimson}Blitzkrieg{default}: {yellow}Life: %i!",i_NpcCurrentLives[npc.index]);
 		
@@ -867,7 +867,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		npc.PlayAngerSound();
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-		Blitzkrieg_IOC_Invoke(npc.index, closest);
+		Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 		
 		CPrintToChatAll("{crimson}Blitzkrieg{default}: {yellow}Life: %i!",i_NpcCurrentLives[npc.index]);
 		
@@ -936,7 +936,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		npc.PlayAngerSound();
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-		Blitzkrieg_IOC_Invoke(npc.index, closest);
+		Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 					
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -954,7 +954,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		CPrintToChatAll("{crimson}Blitzkrieg{default}: {crimson}THE END IS HERE");
 		
-		Blitzkrieg_Final_IOC_Invoke(npc.index, closest, 500.0);
+		Blitzkrieg_Final_IOC_Invoke(EntIndexToEntRef(npc.index), closest, 500.0);
 		
 		b_Are_we_reloading[npc.index]=false;
 		
@@ -1055,49 +1055,56 @@ public void Blitzkrieg_NPCDeath(int entity)
 }
 // Ent_Create style position from Doomsday Nuke
 
-public void Blitzkrieg_IOC_Invoke(int client, int enemy)	//Ion cannon from above
+public void Blitzkrieg_IOC_Invoke(int ref, int enemy)	//Ion cannon from above
 {
-	static float distance=87.0; // /29 for duartion till boom
-	static float IOCDist=250.0;
-	static float IOCdamage=100.0;
-	
-	float vecTarget[3];
-	GetClientEyePosition(enemy, vecTarget);
-	vecTarget[2] -= 54.0;
-	
-	Handle data = CreateDataPack();
-	WritePackFloat(data, vecTarget[0]);
-	WritePackFloat(data, vecTarget[1]);
-	WritePackFloat(data, vecTarget[2]);
-	WritePackCell(data, distance); // Distance
-	WritePackFloat(data, 0.0); // nphi
-	WritePackCell(data, IOCDist); // Range
-	WritePackCell(data, IOCdamage); // Damge
-	WritePackCell(data, client);
-	ResetPack(data);
-	Blitzkrieg_IonAttack(data);
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
+	{
+		static float distance=87.0; // /29 for duartion till boom
+		static float IOCDist=250.0;
+		static float IOCdamage=100.0;
+		
+		float vecTarget[3];
+		GetClientEyePosition(enemy, vecTarget);
+		vecTarget[2] -= 54.0;
+		
+		Handle data = CreateDataPack();
+		WritePackFloat(data, vecTarget[0]);
+		WritePackFloat(data, vecTarget[1]);
+		WritePackFloat(data, vecTarget[2]);
+		WritePackCell(data, distance); // Distance
+		WritePackFloat(data, 0.0); // nphi
+		WritePackCell(data, IOCDist); // Range
+		WritePackCell(data, IOCdamage); // Damge
+		WritePackCell(data, ref);
+		ResetPack(data);
+		Blitzkrieg_IonAttack(data);
+	}
 }
-public void Blitzkrieg_Final_IOC_Invoke(int client, int enemy, float howfarIOC)	//Ion cannon from above
+public void Blitzkrieg_Final_IOC_Invoke(int ref, int enemy, float howfarIOC)	//Ion cannon from above
 {
-	//static float distance=howfarIOC; // /29 for duartion till boom
-	static float IOCDist=1000.0;
-	static float IOCdamage=2500.0;
-	
-	float vecTarget[3];
-	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vecTarget);
-	
-	Handle data = CreateDataPack();
-	WritePackFloat(data, vecTarget[0]);
-	WritePackFloat(data, vecTarget[1]);
-	WritePackFloat(data, vecTarget[2]);
-	WritePackCell(data, howfarIOC); // Distance
-	WritePackFloat(data, 0.0); // nphi
-	WritePackCell(data, IOCDist); // Range
-	WritePackCell(data, IOCdamage); // Damge
-	WritePackCell(data, client);
-	ResetPack(data);
-	Blitzkrieg_Final_IonAttack(data);
-	
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
+	{
+		//static float distance=howfarIOC; // /29 for duartion till boom
+		static float IOCDist=1000.0;
+		static float IOCdamage=2500.0;
+		
+		float vecTarget[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", vecTarget);
+		
+		Handle data = CreateDataPack();
+		WritePackFloat(data, vecTarget[0]);
+		WritePackFloat(data, vecTarget[1]);
+		WritePackFloat(data, vecTarget[2]);
+		WritePackCell(data, howfarIOC); // Distance
+		WritePackFloat(data, 0.0); // nphi
+		WritePackCell(data, IOCDist); // Range
+		WritePackCell(data, IOCdamage); // Damge
+		WritePackCell(data, ref);
+		ResetPack(data);
+		Blitzkrieg_Final_IonAttack(data);
+	}
 }
 
 public Action Blitzkrieg_DrawIon(Handle Timer, any data)
@@ -1132,7 +1139,7 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const color[4])
 		float nphi = ReadPackFloat(data);
 		int Ionrange = ReadPackCell(data);
 		int Iondamage = ReadPackCell(data);
-		int client = ReadPackCell(data);
+		int client = EntRefToEntIndex(ReadPackCell(data));
 		
 		if(!IsValidEntity(client))
 		{
@@ -1224,7 +1231,7 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const color[4])
 		WritePackFloat(nData, nphi);
 		WritePackCell(nData, Ionrange);
 		WritePackCell(nData, Iondamage);
-		WritePackCell(nData, client);
+		WritePackCell(nData, EntIndexToEntRef(client));
 		ResetPack(nData);
 		
 		if (Iondistance > -30)
@@ -1296,8 +1303,12 @@ public void Blitzkrieg_Final_IonAttack(Handle &data)
 		float nphi = ReadPackFloat(data);
 		int Ionrange = ReadPackCell(data);
 		int Iondamage = ReadPackCell(data);
-		int client = ReadPackCell(data);
+		int client = EntRefToEntIndex(ReadPackCell(data));
 		
+		if(!IsValidEntity(client))
+		{
+			return;
+		}
 		if (Iondistance > 0)
 		{
 			EmitSoundToAll("ambient/energy/weld1.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
@@ -1480,7 +1491,7 @@ public void Blitzkrieg_Final_IonAttack(Handle &data)
 		WritePackFloat(nData, nphi);
 		WritePackCell(nData, Ionrange);
 		WritePackCell(nData, Iondamage);
-		WritePackCell(nData, client);
+		WritePackCell(nData, EntIndexToEntRef(client));
 		ResetPack(nData);
 		
 		if (Iondistance > -30)

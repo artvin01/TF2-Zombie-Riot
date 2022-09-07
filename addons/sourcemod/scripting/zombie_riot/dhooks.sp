@@ -69,7 +69,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFPlayer::CanAirDash", DHook_CanAirDashPre);
 	DHook_CreateDetour(gamedata, "CTFPlayer::DropAmmoPack", DHook_DropAmmoPackPre);
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
-	DHook_CreateDetour(gamedata, "CTFPlayer::GetMaxAmmo", DHook_GetMaxAmmoPre);
+	//DHook_CreateDetour(gamedata, "CTFPlayer::GetMaxAmmo", DHook_GetMaxAmmoPre);
 	
 	#if !defined NoSendProxyClass
 	DHook_CreateDetour(gamedata, "CTFPlayer::IsPlayerClass", DHook_IsPlayerClassPre);
@@ -149,6 +149,7 @@ void OnWrenchCreated(int entity)
 
 public MRESReturn Wrench_SmackPre(int entity, DHookReturn ret, DHookParam param)
 {	
+	StartLagCompResetValues();
 	Dont_Move_Building = true;
 	int Compensator = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	LagCompEntitiesThatAreIntheWay(Compensator);
@@ -883,7 +884,6 @@ public void FinishLagCompMoveBack()
 					Moved_Building[baseboss_index_allied] = false;
 					SDKCall_SetLocalOrigin(baseboss_index_allied, Get_old_pos_back[baseboss_index_allied]);
 				}
-				Moved_Building[baseboss_index_allied] = false;
 			}
 		}
 	}	
@@ -1087,7 +1087,7 @@ void DHook_RespawnPlayer(int client)
 
 public MRESReturn DHook_CanAirDashPre(int client, DHookReturn ret)
 {
-	int current = GetEntProp(client, Prop_Send, "m_iAirDash");
+	/*int current = GetEntProp(client, Prop_Send, "m_iAirDash");
 	int max_Value = Attributes_Airdashes(client);
 
 	if(TF2_IsPlayerInCondition(client, TFCond_CritHype))
@@ -1098,7 +1098,7 @@ public MRESReturn DHook_CanAirDashPre(int client, DHookReturn ret)
 		ret.Value = true;
 		SetEntProp(client, Prop_Send, "m_iAirDash", current+1);
 	}
-	else
+	else*/
 	{
 		ret.Value = false;
 	}
@@ -1148,6 +1148,11 @@ public MRESReturn DHook_ForceRespawn(int client)
 	TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
 	TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
 			
+	if(started && TeutonType[client] == TEUTON_NONE)
+	{
+		SetEntityHealth(client, 50);
+		RequestFrame(SetHealthAfterRevive, client);
+	}
 	
 	CreateTimer(0.1, DHook_TeleportToAlly, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		
