@@ -223,17 +223,18 @@ enum struct ItemInfo
 		this.Rarity = kv.GetNum(buffer);
 		if(this.Rarity > HighestTier)
 			HighestTier = this.Rarity;
-		
-		FormatEx(buffer, sizeof(buffer), "%smodel", prefix);
-		kv.GetString(buffer, this.Model, 128);
-		if(this.Model[0])
-			PrecacheModel(this.Model);
-		
+
 		FormatEx(buffer, sizeof(buffer), "%spappaths", prefix);
 		this.PackBranches = kv.GetNum(buffer, 1);
 		
 		FormatEx(buffer, sizeof(buffer), "%spapskip", prefix);
 		this.PackSkip = kv.GetNum(buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%smodel", prefix);
+		kv.GetString(buffer, this.Model, 128);
+		if(this.Model[0])
+			PrecacheModel(this.Model);
+
 		
 		return true;
 	}
