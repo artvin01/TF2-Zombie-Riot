@@ -106,6 +106,7 @@ float SniperMonkey_MaimMoab(int victim, int &attacker, int &inflictor, float dam
 		if((damagetype & DMG_SLASH) || (damagetype & DMG_BLAST))
 			duration *= 2.0 / 3.0;
 		
+		duration += GetGameTime();
 		if(duration > f_MaimDebuff[victim])
 			f_MaimDebuff[victim] = duration;
 	}
@@ -148,12 +149,13 @@ float SniperMonkey_CrippleMoab(int victim, int &attacker, int &inflictor, float 
 		if((damagetype & DMG_SLASH) || (damagetype & DMG_BLAST))
 			duration *= 2.0 / 3.0;
 		
-		if(duration > f_MaimDebuff[victim])
-			f_MaimDebuff[victim] = duration;
+		float time = GetGameTime();
+		if((duration + time) > f_MaimDebuff[victim])
+			f_MaimDebuff[victim] = (duration + time);
 		
 		duration *= 2.0;
-		if(duration > f_CrippleDebuff[victim])
-			f_CrippleDebuff[victim] = duration;
+		if((duration + time) > f_CrippleDebuff[victim])
+			f_CrippleDebuff[victim] = (duration + time);
 	}
 	
 	return SniperMonkey_BouncingBullets(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
