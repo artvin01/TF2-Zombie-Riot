@@ -2983,7 +2983,7 @@ public void MakeExplosionFrameLater(DataPack pack)
 		
 		if(Do_Sound == 1)
 		{		
-			EmitAmbientSound("ambient/explosions/explode_3.wav", vec_pos);
+			EmitAmbientSound("ambient/explosions/explode_3.wav", vec_pos, _, 75, _,0.7, GetRandomInt(75, 110));
 		}
 		
 		DispatchKeyValueVector(ent, "origin", vec_pos);
