@@ -117,6 +117,9 @@ void Building_MapStart()
 	PrecacheModel(PACKAPUNCH_MODEL);
 	PrecacheModel(HEALING_STATION_MODEL);
 	PrecacheModel(VILLAGE_MODEL);
+	
+	PrecacheSound("items/powerup_pickup_uber.wav");
+	PrecacheSound("player/mannpower_invulnerable.wav");
 }
 
 static int Building_Repair_Health[MAXENTITIES]={0, ...};
@@ -2042,42 +2045,24 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 				{
 						if(Is_Reload_Button)
 						{
-							if(bInteractedBuildingWasMounted)
+							int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+							for(int i; i<6; i++)
 							{
-								i_MachineJustClickedOn[client] = EntIndexToEntRef(entity);
-								
-								Menu menu2 = new Menu(Building_ConfirmMountedAction);
-								menu2.SetTitle("%t", "Want to Pack a punch?");
-												
-								FormatEx(buffer, sizeof(buffer), "%t", "Yes");
-								menu2.AddItem("-1", buffer);
-												
-								FormatEx(buffer, sizeof(buffer), "%t", "No");
-								menu2.AddItem("-2", buffer);
-												
-								menu2.Display(client, MENU_TIME_FOREVER); // they have 3 seconds.
-							}
-							else
-							{
-								int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-								for(int i; i<6; i++)
+								if(weapon == GetPlayerWeaponSlot(client, i))
 								{
-									if(weapon == GetPlayerWeaponSlot(client, i))
+									int index = Store_GetEquipped(client, i);
+									if(Store_CanPapItem(client, index))
 									{
-										int index = Store_GetEquipped(client, i);
-										if(Store_CanPapItem(client, index))
-										{
-											Store_PackMenu(client, index, entity, owner);
-										}
-										else
-										{
-											ClientCommand(client, "playgamesound items/medshotno1.wav");
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-											SetGlobalTransTarget(client);
-											ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Pap this");	
-										}
-										break;
+										Store_PackMenu(client, index, entity, owner);
 									}
+									else
+									{
+										ClientCommand(client, "playgamesound items/medshotno1.wav");
+										SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+										SetGlobalTransTarget(client);
+										ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Pap this");	
+									}
+									break;
 								}
 							}
 							

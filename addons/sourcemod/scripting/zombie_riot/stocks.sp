@@ -306,7 +306,7 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0)
 	int iReturn = -1;
 	int iHit = TR_GetEntityIndex(hTrace);
 	
-	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin) < flDistance)
+	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
 		iReturn = iHit;
 	
 	delete hTrace;
@@ -325,7 +325,7 @@ stock int GetClientPointVisibleRevive(int iClient, float flDistance = 100.0)
 	int iReturn = -1;
 	int iHit = TR_GetEntityIndex(hTrace);
 	
-	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin) < flDistance)
+	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
 		iReturn = iHit;
 	
 	delete hTrace;
@@ -344,7 +344,7 @@ stock int GetClientPointVisibleOnlyClient(int iClient, float flDistance = 100.0)
 	int iReturn = -1;
 	int iHit = TR_GetEntityIndex(hTrace);
 	
-	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin) < flDistance)
+	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
 		iReturn = iHit;
 	
 	delete hTrace;
@@ -1597,7 +1597,7 @@ stock int GetClosestTarget_BaseBoss(int entity)
 			GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 				
 				
-			float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+			float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 			if( TargetDistance ) 
 			{
 				if( distance < TargetDistance ) 
@@ -1634,7 +1634,7 @@ stock int GetClosestTarget_BaseBoss_Pos(float pos[3],int entity)
 					float TargetLocation[3]; 
 					GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 					
-					float distance = GetVectorDistance( pos, TargetLocation ); 
+					float distance = GetVectorDistance( pos, TargetLocation, true ); 
 					if( TargetDistance ) 
 					{
 						if( distance < TargetDistance ) 
@@ -1662,7 +1662,7 @@ stock int GetClosestTarget_BaseBoss_Pos(float pos[3],int entity)
 				float TargetLocation[3]; 
 				GetEntPropVector( breakable_entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 				
-				float distance = GetVectorDistance( pos, TargetLocation ); 
+				float distance = GetVectorDistance( pos, TargetLocation, true ); 
 				if( TargetDistance ) 
 				{
 					if( distance < TargetDistance ) 
@@ -2460,9 +2460,9 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 	if(IsValidEntity(Closest_npc))
 	{
 		VicLoc = WorldSpaceCenter(Closest_npc);
-		if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
+		float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
+		if (distance_1 <= explosionRadius)
 		{			
-			float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 			float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
 			
 
@@ -2494,10 +2494,10 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 					if(Closest_npc != new_closest_npc) //Double check JUST to be sure.
 					{
 						//Damage Calculations
-						VicLoc = WorldSpaceCenter(new_closest_npc);						
-						if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
+						VicLoc = WorldSpaceCenter(new_closest_npc);		
+						distance_1 = GetVectorDistance(VicLoc, spawnLoc);				
+						if (distance_1 <= explosionRadius)
 						{
-							float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 							float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
 											
 							if(damage_1 > damage)
@@ -2527,8 +2527,9 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 					CClotBody npc = view_as<CClotBody>(i);
 					if (GetEntProp(i, Prop_Send, "m_iTeamNum")!=GetEntProp(entity, Prop_Send, "m_iTeamNum") && !npc.m_bThisEntityIgnored && IsEntityAlive(i)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 					{
-						VicLoc = WorldSpaceCenter(i);						
-						if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
+						VicLoc = WorldSpaceCenter(i);
+						distance_1 = GetVectorDistance(VicLoc, spawnLoc);						
+						if (distance_1 <= explosionRadius)
 						{
 							Handle trace; 
 							trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
@@ -2539,7 +2540,6 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 								
 							if(Traced_Target == i)
 							{
-								float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 								float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
 								
 								if(damage_1 > damage)
@@ -2573,8 +2573,9 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 						CClotBody npc = view_as<CClotBody>(i);
 						if(pass != 2)
 						{
-							VicLoc = WorldSpaceCenter(i);						
-							if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
+							VicLoc = WorldSpaceCenter(i);	
+							distance_1 = GetVectorDistance(VicLoc, spawnLoc);					
+							if (distance_1 <= explosionRadius)
 							{
 								Handle trace; 
 								trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
@@ -2585,7 +2586,6 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 								
 								if(Traced_Target == i)
 								{
-									float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 									float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
 																				
 									if(damage_1 > damage)
@@ -2602,8 +2602,9 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 						{
 							if(!npc.m_bThisEntityIgnored && GetEntProp(i, Prop_Data, "m_iHealth") > 0) //Check if dead or even targetable
 							{
-								VicLoc = WorldSpaceCenter(i);						
-								if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
+								VicLoc = WorldSpaceCenter(i);	
+								distance_1 = GetVectorDistance(VicLoc, spawnLoc);					
+								if (distance_1 <= explosionRadius)
 								{
 									Handle trace; 
 									trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
@@ -2614,7 +2615,6 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 									
 									if(Traced_Target == i)
 									{
-										float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 										float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
 																	
 										if(damage_1 > damage)

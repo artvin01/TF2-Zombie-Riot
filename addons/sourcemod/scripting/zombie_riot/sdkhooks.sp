@@ -1271,14 +1271,6 @@ public Action Command_Voicemenu(int client, const char[] command, int args)
 	return Plugin_Continue;
 }
 
-
-enum
-{
-	WEAPON_ARK = 1,
-	
-}
-
-
 float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon)
 {
 	
