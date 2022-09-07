@@ -2590,6 +2590,11 @@ methodmap CClotBody
 		
 		if(!Is_Boss) //Make sure that any slow debuffs dont affect these.
 		{
+			if(f_MaimDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.35;
+			}
+			
 			if(this.m_fHighTeslarDebuff > Gametime)
 			{
 				speed_for_return *= 0.65;
@@ -2598,6 +2603,7 @@ methodmap CClotBody
 			{
 				speed_for_return *= 0.75;
 			}
+			
 			if(f_HighIceDebuff[this.index] > Gametime)
 			{
 				speed_for_return *= 0.85;
@@ -2620,7 +2626,8 @@ methodmap CClotBody
 			else if(this.m_fLowTeslarDebuff > Gametime)
 			{
 				speed_for_return *= 0.95;
-			}			
+			}
+			
 			if(f_HighIceDebuff[this.index] > Gametime)
 			{
 				speed_for_return *= 0.95;
