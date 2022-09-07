@@ -353,12 +353,12 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 		{
 			if(!npc.Anger)
 			{
-				NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(npc.index, PrimaryThreatIndex);
+				NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(EntIndexToEntRef(npc.index), PrimaryThreatIndex);
 				fl_TimebeforeIOC[npc.index] = GetGameTime() + 60.0;
 			}
 			if(npc.Anger)
 			{
-				NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(npc.index, PrimaryThreatIndex);
+				NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(EntIndexToEntRef(npc.index), PrimaryThreatIndex);
 				fl_TimebeforeIOC[npc.index] = GetGameTime() + 45.0;
 			}
 		}
@@ -833,17 +833,17 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick(int client)
 	}
 	return Plugin_Continue;
 }
-public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(int client, int enemy)
+public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(int ref, int enemy)
 {
-	if(IsValidClient(enemy))
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
 	{
 		static float distance=87.0; // /29 for duartion till boom
 		static float IOCDist=250.0;
 		static float IOCdamage=10.0;
 		
 		float vecTarget[3];
-		GetClientEyePosition(enemy, vecTarget);
-		vecTarget[2] -= 54.0;
+		GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecTarget);	
 		
 		Handle data = CreateDataPack();
 		WritePackFloat(data, vecTarget[0]);
@@ -853,7 +853,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(int client, int enemy)
 		WritePackFloat(data, 0.0); // nphi
 		WritePackCell(data, IOCDist); // Range
 		WritePackCell(data, IOCdamage); // Damge
-		WritePackCell(data, client);
+		WritePackCell(data, ref);
 		ResetPack(data);
 		NPC_ALT_MEDIC_SUPPERIOR_MAGE_IonAttack(data);
 	}
@@ -891,7 +891,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIonBeam(float startPosition[3], con
 		float nphi = ReadPackFloat(data);
 		int Ionrange = ReadPackCell(data);
 		int Iondamage = ReadPackCell(data);
-		int client = ReadPackCell(data);
+		int client = EntRefToEntIndex(ReadPackCell(data));
 		
 		if(!IsValidEntity(client))
 		{
@@ -983,7 +983,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIonBeam(float startPosition[3], con
 		WritePackFloat(nData, nphi);
 		WritePackCell(nData, Ionrange);
 		WritePackCell(nData, Iondamage);
-		WritePackCell(nData, client);
+		WritePackCell(nData, EntIndexToEntRef(client));
 		ResetPack(nData);
 		
 		if (Iondistance > -30)

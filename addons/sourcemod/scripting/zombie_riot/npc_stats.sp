@@ -6512,7 +6512,7 @@ stock bool makeexplosion(int attacker = 0, int inflictor = -1, float attackposit
 				radiusoverride = RoundToCeil(float(radiusoverride) * 1.65);
 			}
 		}
-		radiusoverride = RoundToCeil(float(radiusoverride) * 1.35); //Overall abit more range due to how our checks work.
+		radiusoverride = RoundToCeil(float(radiusoverride) * 1.1); //Overall abit more range due to how our checks work.
 		Explode_Logic_Custom(float(magnitude), attacker, attacker, -1, attackposition, float(radiusoverride), _, _, FromBlueNpc, _);
 
 	}
