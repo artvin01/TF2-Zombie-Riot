@@ -2412,7 +2412,6 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
 		explosionRadius *= value;
 	}
-	
 	for( int i = 1; i < MAXENTITIES; i++ ) 
 	{
 		b_WasAlreadyCalculatedToBeClosest[i] = false;
@@ -2437,7 +2436,8 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
 		} 
-		Closest_npc = GetClosestTarget(entity);
+
+		Closest_npc = GetClosestTarget(entity, _, _, true, _, _, spawnLoc);
 	}
 	
 	float VicLoc[3];
@@ -2546,7 +2546,6 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 								{
 									damage_1 = damage;
 								}
-								
 								SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 								TargetsHit += 1;
 							}

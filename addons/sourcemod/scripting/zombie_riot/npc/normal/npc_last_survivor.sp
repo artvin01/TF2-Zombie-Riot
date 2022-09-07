@@ -660,7 +660,9 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 		CreateTimer(0.1, FatherGrigori_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
 		else
 		{
-			makeexplosion(-1, -1, startPosition, "", 150, 300);
+			startPosition[2] += 25.0;
+			makeexplosion(client, client, startPosition, "", 150, 300);
+			startPosition[2] -= 25.0;
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
 			position[0] = startPosition[0];

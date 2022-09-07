@@ -37,6 +37,10 @@
 #define ZR_MAX_BREAKBLES 32
 #define ZR_MAX_SPAWNERS 64
 
+
+//#pragma dynamic    131072
+//Allah This plugin has so much we need to do this.
+
 // THESE ARE TO TOGGLE THINGS!
 
 #define LagCompensation

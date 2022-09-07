@@ -722,17 +722,14 @@ void Waves_Progress()
 		{
 			int extra = Building_GetCashOnWave(round.Cash);
 			CurrentCash += round.Cash;
-			if(round.Cash && !extra)
+			if(round.Cash)
 			{
-				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
+				CPrintToChatAll("{green}%t","Cash Gained This Wave", round.Cash);
 			}
-			else if(round.Cash && extra)
+			
+			else if(extra)
 			{
-				CPrintToChatAll("{green}%t | %t{default}","Cash Gained This Wave", "Cash Gained This Wave Village", round.Cash, extra);
-			}
-			else if(!round.Cash && extra)
-			{
-				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave Village", extra);
+				CPrintToChatAll("{green}%t","Cash Gained This Wave Village", extra);
 			}
 			
 			CurrentRound++;
