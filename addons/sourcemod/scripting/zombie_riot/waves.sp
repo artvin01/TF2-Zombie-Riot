@@ -727,7 +727,7 @@ void Waves_Progress()
 				CPrintToChatAll("{green}%t","Cash Gained This Wave", round.Cash);
 			}
 			
-			else if(extra)
+			if(extra)
 			{
 				CPrintToChatAll("{green}%t","Cash Gained This Wave Village", extra);
 			}
