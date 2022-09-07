@@ -234,6 +234,7 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 		
 		if(target != -1)
 		{
+			b_NpcForcepowerupspawn[target] = 2;
 			ClientCommand(client, "playgamesound ui/quest_status_tick_advanced_friend.wav");
 			Ability_Apply_Cooldown(client, slot, 300.0);
 		}
@@ -270,6 +271,7 @@ public void Weapon_SupplyDropElite(int client, int weapon, bool &result, int slo
 		
 		if(target != -1)
 		{
+			b_NpcForcepowerupspawn[target] = 2;
 			ClientCommand(client, "playgamesound ui/quest_status_tick_expert_friend.wav");
 			Ability_Apply_Cooldown(client, slot, 240.0);
 		}
