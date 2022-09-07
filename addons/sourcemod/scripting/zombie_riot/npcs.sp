@@ -1477,28 +1477,28 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 		if(f_HighTeslarDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "⌁");
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "⌁⌁");
 		}
 		else if(f_LowTeslarDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "☇");
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "⌁");
 		}
 		
 		if(f_HighIceDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅");
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅", Debuff_Adder);
 		}
 		else if(f_LowIceDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❃");
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❃", Debuff_Adder);
 		}
 		else if (f_VeryLowIceDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❆");	
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❆", Debuff_Adder);	
 		}
 		
 		if(f_WidowsWineDebuff[victim] > GetGameTime())
@@ -1510,7 +1510,7 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 		if(f_CrippleDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%sꜜ", Debuff_Adder);
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s⯯", Debuff_Adder);
 		}
 		
 		if(f_MaimDebuff[victim] > GetGameTime())
