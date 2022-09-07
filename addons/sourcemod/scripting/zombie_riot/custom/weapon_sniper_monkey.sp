@@ -86,22 +86,18 @@ float SniperMonkey_MaimMoab(int victim, int &attacker, int &inflictor, float dam
 	{
 		case BTD_MOAB:
 		{
-			duration = 3.0;
+			duration = 6.0;
 		}
 		case BTD_BFB:
 		{
-			duration = 1.5;
-		}
-		case BTD_ZOMG, BTD_DDT:
-		{
-			duration = 0.75;
+			duration = 3.0;
 		}
 		case BTD_BLOON, BTD_GOLDBLOON, BTD_BAD:
 		{
 		}
 		default:
 		{
-			duration = 0.75;
+			duration = 1.5;
 		}
 	}
 	
@@ -127,23 +123,23 @@ float SniperMonkey_CrippleMoab(int victim, int &attacker, int &inflictor, float 
 		}
 		case BTD_MOAB:
 		{
-			duration = 7.0;
+			duration = 14.0;
 		}
 		case BTD_BFB:
 		{
-			duration = 6.0;
+			duration = 12.0;
 		}
 		case BTD_ZOMG:
 		{
-			duration = 3.0;
+			duration = 6.0;
 		}
 		case BTD_DDT:
 		{
-			duration = 4.0;
+			duration = 8.0;
 		}
 		default:
 		{
-			duration = 0.75;
+			duration = 1.5;
 		}
 	}
 	
