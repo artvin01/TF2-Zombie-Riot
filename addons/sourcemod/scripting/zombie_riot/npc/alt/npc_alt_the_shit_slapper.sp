@@ -218,9 +218,8 @@ public void The_Shit_Slapper_ClotThink(int iNPC)
 		}
 		float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 		float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-		float speed;
-		speed = 150.0*(1.0+(1-(Health/MaxHealth))*1.3);
-		npc.m_flSpeed = speed;
+		float scale = 1.0+(1-(Health/MaxHealth))*1.5;
+		npc.m_flSpeed = 150.0*(1.0+(1-(Health/MaxHealth))*1.3);
 		if(flDistanceToTarget < 50000 || npc.m_flAttackHappenswillhappen)
 		{
 			//Look at target so we hit.
@@ -234,8 +233,8 @@ public void The_Shit_Slapper_ClotThink(int iNPC)
 
 					npc.AddGesture("ACT_MELEE_ATTACK1");
 					npc.PlayMeleeSound();
-					npc.m_flAttackHappens = GetGameTime()+0.4;
-					npc.m_flAttackHappens_bullshit = GetGameTime()+0.53;
+					npc.m_flAttackHappens = GetGameTime()+0.4/scale;
+					npc.m_flAttackHappens_bullshit = GetGameTime()+0.53/scale;
 					npc.m_flAttackHappenswillhappen = true;
 					npc.m_flSpeed = 420.0;
 				}
@@ -251,12 +250,12 @@ public void The_Shit_Slapper_ClotThink(int iNPC)
 						TR_GetEndPosition(vecHit, swingTrace);
 						if(target > 0) 
 						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 45.0, DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 30.0*scale, DMG_CLUB, -1, _, vecHit);
 							if(i_slap[npc.index] >= 5)
 							{
 								if(IsValidClient(target))
 								{
-									Custom_Knockback(npc.index, target, 2000.0);
+									Custom_Knockback(npc.index, target, 1000.0);
 									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 									i_slap[npc.index] = 0;
