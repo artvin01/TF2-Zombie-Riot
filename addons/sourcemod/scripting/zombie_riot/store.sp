@@ -2746,7 +2746,12 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 		}
 	}
 	
+	bool EntityIsAWeapon = false;
 	if(entity > MaxClients)
+	{
+		EntityIsAWeapon = true;
+	}
+	if(EntityIsAWeapon)
 	{
 		Panic_Attack[entity] = 0.0;
 		Mana_Regen_Level[entity] = 0.0;
@@ -2756,37 +2761,40 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 		i_ArsenalBombImplanter[entity] = 0;
 		i_NoBonusRange[entity] = 0;
 		i_BuffBannerPassively[entity] = 0;
-		if(!TeutonType[client])
+	}
+	if(!TeutonType[client])
+	{
+		ItemInfo info;
+		for(int i; i<length; i++)
 		{
-			ItemInfo info;
-			for(int i; i<length; i++)
+			StoreItems.GetArray(i, item);
+			if(item.Owned[client])
 			{
-				StoreItems.GetArray(i, item);
-				if(item.Owned[client])
+				item.GetItemInfo(item.Owned[client]-1, info);
+				if(!info.Classname[0])
 				{
-					item.GetItemInfo(item.Owned[client]-1, info);
-					if(!info.Classname[0])
+					if(info.Attack3AbilitySlot != 0)
 					{
-						if(info.Attack3AbilitySlot != 0)
-						{
-							SetAbilitySlotCount(client, info.Attack3AbilitySlot);
-						}
-						if(info.SpecialAdditionViaNonAttribute == 1)
-						{
-							b_PhaseThroughBuildingsPerma[client] = 2; //Set to true if its 1, other attribs will use other things!
-						}
-						if(info.SpecialAdditionViaNonAttribute == 2) //stabbb
-						{
-							b_FaceStabber[client] = true;
-						}
-						if(info.SpecialAdditionViaNonAttribute == 3) //eated it all
-						{
-							b_IsCannibal[client] = true;
-						}
-						if(info.SpecialAdditionViaNonAttribute == 4) //Glass Builder
-						{
-							b_HasGlassBuilder[client] = true;
-						}
+						SetAbilitySlotCount(client, info.Attack3AbilitySlot);
+					}
+					if(info.SpecialAdditionViaNonAttribute == 1)
+					{
+						b_PhaseThroughBuildingsPerma[client] = 2; //Set to true if its 1, other attribs will use other things!
+					}
+					if(info.SpecialAdditionViaNonAttribute == 2) //stabbb
+					{
+						b_FaceStabber[client] = true;
+					}
+					if(info.SpecialAdditionViaNonAttribute == 3) //eated it all
+					{
+						b_IsCannibal[client] = true;
+					}
+					if(info.SpecialAdditionViaNonAttribute == 4) //Glass Builder
+					{
+						b_HasGlassBuilder[client] = true;
+					}
+					if(EntityIsAWeapon)
+					{
 						switch(info.Index)
 						{
 							case 0, 1, 2:
@@ -2841,7 +2849,9 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 				}
 			}
 		}
-		
+	}
+	if(EntityIsAWeapon)
+	{
 		//SPEED COLA!
 		if(i_CurrentEquippedPerk[client] == 4)
 		{
@@ -2909,8 +2919,6 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 		Enable_Management_Banner(client, entity);
 		
 		Enable_StarShooter(client, entity);
-		
-		
 	}
 	return entity;
 }
