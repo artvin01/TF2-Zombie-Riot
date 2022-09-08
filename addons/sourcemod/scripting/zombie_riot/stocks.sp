@@ -2459,6 +2459,7 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 			
 	if(IsValidEntity(Closest_npc))
 	{
+		
 		VicLoc = WorldSpaceCenter(Closest_npc);
 		float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 		if (distance_1 <= explosionRadius)
@@ -2553,38 +2554,28 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 					}
 				}
 			}
-			for (int pass = 0; pass <= 2; pass++)
+			for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
 			{
-				static char classname[1024];
-				if (pass == 0) classname = "obj_sentrygun";
-				else if (pass == 1) classname = "obj_dispenser";
-			//	else if (pass == 2) classname = "obj_teleporter";
-				else if (pass == 2) classname = "base_boss";
-				
-				int i = MaxClients + 1;
-				while ((i = FindEntityByClassname(i, classname)) != -1)
+				int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+				if(IsValidEntity(entity_close) && entity_close != client)
 				{
-					if(TargetsHit > maxtargetshit)
+			//		if(searcher_team != 2)
 					{
-						break;
-					}
-					if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(i, Prop_Send, "m_iTeamNum")) 
-					{
-						CClotBody npc = view_as<CClotBody>(i);
-						if(pass != 2)
+						CClotBody npc = view_as<CClotBody>(entity_close);
+						if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0) //Check if dead or even targetable
 						{
-							VicLoc = WorldSpaceCenter(i);	
+							VicLoc = WorldSpaceCenter(entity_close);	
 							distance_1 = GetVectorDistance(VicLoc, spawnLoc);					
 							if (distance_1 <= explosionRadius)
 							{
 								Handle trace; 
-								trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
+								trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, entity_close);
 								int Traced_Target;
 								
 								Traced_Target = TR_GetEntityIndex(trace);
 								delete trace;
 								
-								if(Traced_Target == i)
+								if(Traced_Target == entity_close)
 								{
 									float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
 																				
@@ -2593,36 +2584,47 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 										damage_1 = damage;
 									}
 							
-									SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+									SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 									TargetsHit += 1;
 								}
 							}
-						}		
-						else
-						{
-							if(!npc.m_bThisEntityIgnored && GetEntProp(i, Prop_Data, "m_iHealth") > 0) //Check if dead or even targetable
+						}
+					}
+				}
+			}
+			for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
+			{
+				int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+				if(IsValidEntity(entity_close) && entity_close != client)
+				{
+				//	if(searcher_team != 2)
+					{
+						CClotBody npc = view_as<CClotBody>(entity_close);
+						if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+						{	
+							if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 							{
-								VicLoc = WorldSpaceCenter(i);	
+								VicLoc = WorldSpaceCenter(entity_close);	
 								distance_1 = GetVectorDistance(VicLoc, spawnLoc);					
 								if (distance_1 <= explosionRadius)
 								{
 									Handle trace; 
-									trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
+									trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, entity_close);
 									int Traced_Target;
 									
 									Traced_Target = TR_GetEntityIndex(trace);
 									delete trace;
 									
-									if(Traced_Target == i)
+									if(Traced_Target == entity_close)
 									{
 										float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
-																	
+																					
 										if(damage_1 > damage)
 										{
 											damage_1 = damage;
 										}
-							
-										SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+								
+										SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 										TargetsHit += 1;
 									}
 								}
