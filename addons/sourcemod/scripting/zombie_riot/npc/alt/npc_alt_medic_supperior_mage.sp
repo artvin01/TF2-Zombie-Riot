@@ -335,7 +335,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 			}
 			else if(npc.m_flTimebeforekamehameha < GetGameTime() && npc.Anger)
 			{
-				npc.m_flTimebeforekamehameha = GetGameTime() + 45;
+				npc.m_flTimebeforekamehameha = GetGameTime() + 45.0;
 				npc.m_bInKame = true;
 				NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability_Anger(npc.index);
 			}
@@ -353,13 +353,13 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 		{
 			if(!npc.Anger)
 			{
-				NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(npc.index, PrimaryThreatIndex);
-				fl_TimebeforeIOC[npc.index] = GetGameTime() + 60;
+				NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(EntIndexToEntRef(npc.index), PrimaryThreatIndex);
+				fl_TimebeforeIOC[npc.index] = GetGameTime() + 60.0;
 			}
 			if(npc.Anger)
 			{
-				NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(npc.index, PrimaryThreatIndex);
-				fl_TimebeforeIOC[npc.index] = GetGameTime() + 45;
+				NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(EntIndexToEntRef(npc.index), PrimaryThreatIndex);
+				fl_TimebeforeIOC[npc.index] = GetGameTime() + 45.0;
 			}
 		}
 		//Target close enough to hit
@@ -398,12 +398,12 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 						{
 							float damage = 20.0 / (0.1 + (Health / MaxHealth));
 							if(target <= MaxClients)
-								SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 							else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 																				
 							// Hit particle
-							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+							
 							// Hit sound
 							npc.PlayMeleeHitSound();
 						} 
@@ -487,6 +487,12 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+	
+	
+	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotDamaged);
 	SDKUnhook(npc.index, SDKHook_Think, NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink);
@@ -634,6 +640,9 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Timer(Handle timer, int client)
 	
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TicksActive[client] = 0;
 	
+	StopSound(client,	SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	EmitSoundToAll("weapons/physcannon/physcannon_drop.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
 	
@@ -664,7 +673,7 @@ public bool NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceUsers(int entity, int content
 			
 			if (!StrContains(classname, "base_boss", true) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
 			{
-				for(int i=1; i <= MAXENTITIES; i++)
+				for(int i=1; i < MAXENTITIES; i++)
 				{
 					if(!NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BuildingHit[i])
 					{
@@ -824,17 +833,17 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick(int client)
 	}
 	return Plugin_Continue;
 }
-public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(int client, int enemy)
+public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(int ref, int enemy)
 {
-	if(IsValidClient(enemy))
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
 	{
 		static float distance=87.0; // /29 for duartion till boom
 		static float IOCDist=250.0;
 		static float IOCdamage=10.0;
 		
 		float vecTarget[3];
-		GetClientEyePosition(enemy, vecTarget);
-		vecTarget[2] -= 54.0;
+		GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecTarget);	
 		
 		Handle data = CreateDataPack();
 		WritePackFloat(data, vecTarget[0]);
@@ -844,7 +853,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(int client, int enemy)
 		WritePackFloat(data, 0.0); // nphi
 		WritePackCell(data, IOCDist); // Range
 		WritePackCell(data, IOCdamage); // Damge
-		WritePackCell(data, client);
+		WritePackCell(data, ref);
 		ResetPack(data);
 		NPC_ALT_MEDIC_SUPPERIOR_MAGE_IonAttack(data);
 	}
@@ -882,7 +891,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIonBeam(float startPosition[3], con
 		float nphi = ReadPackFloat(data);
 		int Ionrange = ReadPackCell(data);
 		int Iondamage = ReadPackCell(data);
-		int client = ReadPackCell(data);
+		int client = EntRefToEntIndex(ReadPackCell(data));
 		
 		if(!IsValidEntity(client))
 		{
@@ -974,7 +983,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIonBeam(float startPosition[3], con
 		WritePackFloat(nData, nphi);
 		WritePackCell(nData, Ionrange);
 		WritePackCell(nData, Iondamage);
-		WritePackCell(nData, client);
+		WritePackCell(nData, EntIndexToEntRef(client));
 		ResetPack(nData);
 		
 		if (Iondistance > -30)

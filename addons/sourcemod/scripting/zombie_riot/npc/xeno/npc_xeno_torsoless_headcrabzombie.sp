@@ -134,6 +134,8 @@ methodmap XenoTorsolessHeadcrabZombie < CClotBody
 	
 		i_NpcInternalId[npc.index] = XENO_TORSOLESS_HEADCRAB_ZOMBIE;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -241,9 +243,9 @@ public void XenoTorsolessHeadcrabZombie_ClotThink(int iNPC)
 						TR_GetEndPosition(vecHit, swingTrace);
 						if(target > 0) 
 						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 35.0, DMG_SLASH|DMG_CLUB);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 35.0, DMG_CLUB, -1, _, vecHit);
 							
-							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+							
 								
 							// Hit sound
 							npc.PlayMeleeHitSound();

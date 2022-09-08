@@ -181,6 +181,8 @@ methodmap CombineOverlord < CClotBody
 		
 		i_NpcInternalId[npc.index] = COMBINE_OVERLORD;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -346,7 +348,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 				if(npc.m_flRangedSpecialDelay < GetGameTime())
 				{
 					npc.m_fbRangedSpecialOn = false;
-					npc.m_flNextRangedSpecialAttack = GetGameTime() + 2.0;
+					npc.m_flNextRangedSpecialAttack = GetGameTime() + 8.0;
 					npc.PlayRangedAttackSecondarySound();
 
 					float vecSpread = 0.1;
@@ -382,7 +384,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 					
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
-					FireBullet(npc.index, npc.index, WorldSpaceCenter(npc.index), vecDir, 50.0, 150.0, DMG_BULLET, "bullet_tracer02_blue");
+					FireBullet(npc.index, npc.index, WorldSpaceCenter(npc.index), vecDir, 100.0, 150.0, DMG_BULLET, "bullet_tracer02_blue");
 				}
 			}
 			
@@ -407,13 +409,13 @@ public void CombineOverlord_ClotThink(int iNPC)
 						if(target > 0) 
 						{
 							if(target <= MaxClients)
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 							else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 								
 							Custom_Knockback(npc.index, target, 200.0);
 							// Hit particle
-							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+							
 							
 							// Hit sound
 							npc.PlayMeleeHitSound();
@@ -461,14 +463,14 @@ public void CombineOverlord_ClotThink(int iNPC)
 									if(target > 0) 
 									{
 										if(target <= MaxClients)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_SLASH|DMG_CLUB);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 										else
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 400.0, DMG_SLASH|DMG_CLUB);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 400.0, DMG_CLUB, -1, _, vecHit);
 												
 										Custom_Knockback(npc.index, target, 450.0);
 									
 										// Hit particle
-										npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+										
 										
 										// Hit sound
 										npc.PlayMeleeHitSound();
@@ -517,12 +519,11 @@ public Action CombineOverlord_ClotDamaged(int victim, int &attacker, int &inflic
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
-	if(npc.m_flAngerDelay > GetGameTime())
+	if(npc.m_flAngerDelay > GetGameTime() && !Building_DoesPierce(attacker))
 		damage *= 0.25;
-		
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.75;
-		
+	
+	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
+		damage *= 0.15;
 	
 	return Plugin_Changed;
 }

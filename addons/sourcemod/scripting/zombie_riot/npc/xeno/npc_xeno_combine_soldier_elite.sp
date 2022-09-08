@@ -179,6 +179,8 @@ methodmap XenoCombineElite < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_ELITE;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_IDLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -267,6 +269,21 @@ public void XenoCombineElite_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
 	}
 	
+	if(npc.m_flReloadDelay > GetGameTime())
+	{
+		npc.m_flSpeed = 0.0;
+		PF_StopPathing(npc.index);
+		npc.m_bPathing = false;		
+	}
+	else
+	{
+		npc.m_flSpeed = 260.0;
+		if(EscapeModeForNpc)
+		{
+			npc.m_flSpeed = 270.0;
+		}
+	}
+	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -321,10 +338,9 @@ public void XenoCombineElite_ClotThink(int iNPC)
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 				npc.FireRocket(vPredictedPos, 5.0, 400.0, "models/effects/combineball.mdl");
 				npc.m_flNextRangedSpecialAttack = GetGameTime() + 4.0;
-				npc.m_flReloadDelay = GetGameTime() + 1.0;
 				npc.PlayRangedAttackSecondarySound();
 			}
-			if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 62500 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < GetGameTime())
+			if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 25000 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < GetGameTime())
 			{
 				int target;
 			
@@ -345,8 +361,6 @@ public void XenoCombineElite_ClotThink(int iNPC)
 				else
 				{
 					npc.m_fbGunout = true;
-					
-					npc.m_bmovedelay = false;
 					
 					npc.FaceTowards(vecTarget, 10000.0);
 					npc.m_flNextRangedAttack = GetGameTime() + 0.10;
@@ -435,17 +449,17 @@ public void XenoCombineElite_ClotThink(int iNPC)
 								{
 									if(EscapeModeForNpc)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_CLUB, -1, _, vecHit);
 									}
 									
 									Custom_Knockback(npc.index, target, -250.0);
 									
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();

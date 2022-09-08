@@ -73,19 +73,17 @@ void Bfb_MapStart()
 	#endif
 }
 
-static bool Fortified[MAXENTITIES];
-
 methodmap BFB < CClotBody
 {
 	property bool m_bFortified
 	{
 		public get()
 		{
-			return Fortified[this.index];
+			return this.m_bLostHalfHealth;
 		}
 		public set(bool value)
 		{
-			Fortified[this.index] = value;
+			this.m_bLostHalfHealth = value;
 		}
 	}
 	public void PlayHitSound()
@@ -219,26 +217,29 @@ public void Bfb_ClotThink(int iNPC)
 					int target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
+						float vecHit[3];
+						TR_GetEndPosition(vecHit, swingTrace);
+						
 						if(npc.m_bFortified)
 						{
 							if(target <= MaxClients)
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 20.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 20.0, DMG_CLUB, -1, _, vecHit);
 							}
 							else
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_CLUB, -1, _, vecHit);
 							}
 						}
 						else
 						{
 							if(target <= MaxClients)
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 30.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 30.0, DMG_CLUB, -1, _, vecHit);
 							}
 							else
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 							}
 						}
 					}

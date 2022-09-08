@@ -1,63 +1,5 @@
 static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 
-void Stock_TakeDamage(int entity = 0, int inflictor = 0, int attacker = 0, float damage = 0.0, int damageType=DMG_GENERIC, int weapon=-1,const float damageForce[3]=NULL_VECTOR, const float damagePosition[3]=NULL_VECTOR, bool bypassHooks = false, int Zr_damage_custom = 0)
-{
-	i_HexCustomDamageTypes[entity] = Zr_damage_custom;
-	
-	SDKHooks_TakeDamage(entity, inflictor, attacker, damage, damageType, weapon, damageForce, damagePosition, bypassHooks);
-
-}
-
-//We need custom Defaults for this, mainly bypass hooks to FALSE. i dont want to spend 5 years on replacing everything.
-//im sorry.
-#define SDKHooks_TakeDamage Stock_TakeDamage
-
-bool Stock_IsValidEntity(int entity)
-{
-	if(entity == 0)
-	{
-		return false;
-	}
-	else
-	{
-		return IsValidEntity(entity);
-	}
-
-}
-
-#define IsValidEntity Stock_IsValidEntity
-
-//In this case i never need the world ever.
-
-void Stock_SetHudTextParams(float x, float y, float holdTime, int r, int g, int b, int a, int effect = 1, float fxTime=0.1, float fadeIn=0.1, float fadeOut=0.1)
-{
-	SetHudTextParams(x, y, holdTime, r, g, b, a, effect, fxTime, fadeIn, fadeOut);
-}
-
-#define SetHudTextParams Stock_SetHudTextParams
-
-stock void ResetToZero(any[] array, int length)
-{
-    for(int i; i<length; i++)
-    {
-        array[i] = 0;
-    }
-}
-
-stock void ResetToZero2(any[][] array, int length1, int length2)
-{
-    for(int a; a<length1; a++)
-    {
-        for(int b; b<length2; b++)
-        {
-            array[a][b] = 0;
-        }
-    }
-}
-
-#define Zero(%1)        ResetToZero(%1, sizeof(%1))
-#define Zero2(%1)    ResetToZero2(%1, sizeof(%1), sizeof(%1[]))
-
 enum ParticleAttachment_t {
 	PATTACH_ABSORIGIN = 0,
 	PATTACH_ABSORIGIN_FOLLOW,
@@ -364,7 +306,7 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0)
 	int iReturn = -1;
 	int iHit = TR_GetEntityIndex(hTrace);
 	
-	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin) < flDistance)
+	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
 		iReturn = iHit;
 	
 	delete hTrace;
@@ -383,7 +325,7 @@ stock int GetClientPointVisibleRevive(int iClient, float flDistance = 100.0)
 	int iReturn = -1;
 	int iHit = TR_GetEntityIndex(hTrace);
 	
-	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin) < flDistance)
+	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
 		iReturn = iHit;
 	
 	delete hTrace;
@@ -402,7 +344,7 @@ stock int GetClientPointVisibleOnlyClient(int iClient, float flDistance = 100.0)
 	int iReturn = -1;
 	int iHit = TR_GetEntityIndex(hTrace);
 	
-	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin) < flDistance)
+	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
 		iReturn = iHit;
 	
 	delete hTrace;
@@ -1061,7 +1003,7 @@ void StartHealingTimer(int client, float delay, int health, int amount=0, bool m
 {
 	DataPack pack;
 	CreateDataTimer(delay, Timer_Healing, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(GetClientUserId(client));
+	pack.WriteCell(EntIndexToEntRef(client));
 	pack.WriteCell(health);
 	pack.WriteCell(maxhealth);
 	pack.WriteCell(amount);
@@ -1070,15 +1012,50 @@ void StartHealingTimer(int client, float delay, int health, int amount=0, bool m
 public Action Timer_Healing(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	int client = GetClientOfUserId(pack.ReadCell());
-	if(!client || !IsClientInGame(client) || !IsPlayerAlive(client) || dieingstate[client] > 0)
+	int client = EntRefToEntIndex(pack.ReadCell());
+	
+	bool IsAnEntity = false;
+	
+	if(IsValidEntity(client))
+	{
+		if(client <= MAXENTITIES && client > MaxClients)
+		{
+			IsAnEntity = true;
+		}
+	}
+	else
+	{
 		return Plugin_Stop;
-
-	int current = GetClientHealth(client);
+	}
+	
+	if(!IsAnEntity)
+	{
+		if(!client || !IsClientInGame(client) || !IsPlayerAlive(client) || dieingstate[client] > 0)
+			return Plugin_Stop;
+	}
+	int current;
+	if(!IsAnEntity)
+	{
+		current = GetClientHealth(client);
+	}
+	else
+	{
+		current = GetEntProp(client, Prop_Data, "m_iHealth");
+	}
+	
 	int health = pack.ReadCell();
 	if(pack.ReadCell())
 	{
-		int maxhealth = SDKCall_GetMaxHealth(client);
+		int maxhealth
+		if(!IsAnEntity)
+		{
+			maxhealth = SDKCall_GetMaxHealth(client);
+		}
+		else
+		{
+			maxhealth = GetEntProp(client, Prop_Data, "m_iMaxHealth");
+		}
+		
 		if(current > maxhealth)
 		{
 			health = 0;
@@ -1092,17 +1069,23 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	current += health;
 	if(current < 1)
 	{
-		ForcePlayerSuicide(client);
+		if(!IsAnEntity)
+		{
+			ForcePlayerSuicide(client);
+		}
 	}
 	else if(current)
 	{
-		SetEntityHealth(client, current);
-		if(health>1 || health<-1)
-			ApplyHealEvent(client, client, health);
+		SetEntProp(client, Prop_Data, "m_iHealth", current);
+		if(!IsAnEntity)
+		{
+			if(health>1 || health<-1)
+				ApplyHealEvent(client, client, health);
+		}
 	}
 
 	current = pack.ReadCell();
-	if(current < 1)
+	if(current < 2)
 		return Plugin_Stop;
 
 	pack.Position--;
@@ -1614,7 +1597,7 @@ stock int GetClosestTarget_BaseBoss(int entity)
 			GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 				
 				
-			float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+			float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 			if( TargetDistance ) 
 			{
 				if( distance < TargetDistance ) 
@@ -1651,7 +1634,7 @@ stock int GetClosestTarget_BaseBoss_Pos(float pos[3],int entity)
 					float TargetLocation[3]; 
 					GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 					
-					float distance = GetVectorDistance( pos, TargetLocation ); 
+					float distance = GetVectorDistance( pos, TargetLocation, true ); 
 					if( TargetDistance ) 
 					{
 						if( distance < TargetDistance ) 
@@ -1679,7 +1662,7 @@ stock int GetClosestTarget_BaseBoss_Pos(float pos[3],int entity)
 				float TargetLocation[3]; 
 				GetEntPropVector( breakable_entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 				
-				float distance = GetVectorDistance( pos, TargetLocation ); 
+				float distance = GetVectorDistance( pos, TargetLocation, true ); 
 				if( TargetDistance ) 
 				{
 					if( distance < TargetDistance ) 
@@ -1754,12 +1737,12 @@ bool IsEntityStuck(int entity)
 stock bool IsWandWeapon(int entity)
 {
 	int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-	return (index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758 || index == 1013 || index == 173 || index == 648);
+	return (index == 450 || index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758 || index == 1013 || index == 173 || index == 648);
 }
 
 stock bool IsWandWeaponStore(int index)
 {
-	return (index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758 || index == 1013 || index == 173 || index == 648);
+	return (index == 450 || index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758 || index == 1013 || index == 173 || index == 648);
 }
 
 stock int SpawnWeapon_Special(int client, char[] name, int index, int level, int qual, const char[] att, bool visible=true)
@@ -2145,69 +2128,17 @@ public bool AntiTraceEntityFilterPlayer(int entity, any contentsMask) //Borrowed
 
 public void SpawnSmallExplosion(float DetLoc[3])
 {
-	int littleBoom = CreateEntityByName("info_particle_system");
+	float pos[3];
+	pos[0] += DetLoc[0] + GetRandomFloat(-80.0, 80.0);
+	pos[1] += DetLoc[1] + GetRandomFloat(-80.0, 80.0);
+	pos[2] += DetLoc[2] + GetRandomFloat(0.0, 80.0);
 	
-	if (IsValidEntity(littleBoom))
-	{
-		float pos[3];
-		pos[0] += DetLoc[0] + GetRandomFloat(-80.0, 80.0);
-		pos[1] += DetLoc[1] + GetRandomFloat(-80.0, 80.0);
-		pos[2] += DetLoc[2] + GetRandomFloat(0.0, 80.0);
-		TeleportEntity(littleBoom, pos, NULL_VECTOR, NULL_VECTOR);
-		
-		char particleName[255];
-		
-		
-		particleName = EXPLOSION_PARTICLE_SMALL_1;
-		/*
-		switch(GetRandomInt(1, 4))
-		{
-			case 1:
-			{
-				particleName = EXPLOSION_PARTICLE_SMALL_1;
-			}
-			case 2:
-			{
-				particleName = EXPLOSION_PARTICLE_SMALL_2;
-			}
-			case 3:
-			{
-				particleName = EXPLOSION_PARTICLE_SMALL_3;
-			}
-			case 4:
-			{
-				particleName = EXPLOSION_PARTICLE_SMALL_4;
-			}
-		}
-		*/
-		DispatchKeyValue(littleBoom, "effect_name", particleName);
-		DispatchKeyValue(littleBoom, "targetname", "present");
-		DispatchSpawn(littleBoom);
-		ActivateEntity(littleBoom);
-		AcceptEntityInput(littleBoom, "Start");
-		CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(littleBoom), TIMER_FLAG_NO_MAPCHANGE);
-	}
+	TE_Particle(EXPLOSION_PARTICLE_SMALL_1, pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 }
 
 public void SpawnSmallExplosionNotRandom(float DetLoc[3])
 {
-	int littleBoom = CreateEntityByName("info_particle_system");
-	
-	if (IsValidEntity(littleBoom))
-	{
-		TeleportEntity(littleBoom, DetLoc, NULL_VECTOR, NULL_VECTOR);
-		
-		char particleName[255];
-		
-		particleName = EXPLOSION_PARTICLE_SMALL_1;
-		
-		DispatchKeyValue(littleBoom, "effect_name", particleName);
-		DispatchKeyValue(littleBoom, "targetname", "present");
-		DispatchSpawn(littleBoom);
-		ActivateEntity(littleBoom);
-		AcceptEntityInput(littleBoom, "Start");
-		CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(littleBoom), TIMER_FLAG_NO_MAPCHANGE);
-	}
+	TE_Particle(EXPLOSION_PARTICLE_SMALL_1, DetLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 }
 
 void GetVectorAnglesTwoPoints(const float startPos[3], const float endPos[3], float angles[3])
@@ -2466,7 +2397,11 @@ stock int HasNamedItem(int client, const char[] name)
 	return amount;
 }
 
-stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon, float spawnLoc[3] = {0.0,0.0,0.0}, float explosionRadius = EXPLOSION_RADIUS, float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF, float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF, bool FromNpc = false, int maxtargetshit = 10)
+
+//TODO: Better detection that doesnt make large enemies have better suriveability
+//idea: Fire a trace to all nearby enemies, and use that distance different to dertermine falloff.
+
+stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon, float spawnLoc[3] = {0.0,0.0,0.0}, float explosionRadius = EXPLOSION_RADIUS, float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF, float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF, bool FromBlueNpc = false, int maxtargetshit = 10)
 {
 	float damage_reduction = 1.0;
 	int Closest_npc = 0;
@@ -2477,14 +2412,13 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
 		explosionRadius *= value;
 	}
-	
 	for( int i = 1; i < MAXENTITIES; i++ ) 
 	{
 		b_WasAlreadyCalculatedToBeClosest[i] = false;
 	}
 		
-	if(!FromNpc) //make sure that there even is any valid npc before we do these huge calcs.
-	{
+	if(!FromBlueNpc) //make sure that there even is any valid npc before we do these huge calcs.
+	{ 
 		if(spawnLoc[0] == 0.0)
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
@@ -2495,11 +2429,15 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 			Closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity);
 		}
 	}
-	else
+	else //only nerf blue npc radius!
 	{
 		explosionRadius *= 0.65;
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
-		Closest_npc = GetClosestTarget(entity);
+		if(spawnLoc[0] == 0.0) //only get position if thhey got notin
+		{
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+		} 
+
+		Closest_npc = GetClosestTarget(entity, _, _, true, _, _, spawnLoc);
 	}
 	
 	float VicLoc[3];
@@ -2522,9 +2460,9 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 	if(IsValidEntity(Closest_npc))
 	{
 		VicLoc = WorldSpaceCenter(Closest_npc);
-		if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
+		float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
+		if (distance_1 <= explosionRadius)
 		{			
-			float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 			float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
 			
 
@@ -2535,14 +2473,14 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 			
 			SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 			
-			if(!FromNpc) //Npcs do not have damage falloff, dodge.
+			if(!FromBlueNpc) //Npcs do not have damage falloff, dodge.
 			{
 				damage_reduction *= ExplosionDmgMultihitFalloff;
 			}
 		//	b_WasAlreadyCalculatedToBeClosest[Closest_npc] = true; //First target hit/closest might want special stuff idk
 		}
 		
-		if(!FromNpc)
+		if(!FromBlueNpc)
 		{
 			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)  //Loop as often as there can be even be max NPC's.
 			{
@@ -2556,10 +2494,10 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 					if(Closest_npc != new_closest_npc) //Double check JUST to be sure.
 					{
 						//Damage Calculations
-						VicLoc = WorldSpaceCenter(new_closest_npc);						
-						if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
+						VicLoc = WorldSpaceCenter(new_closest_npc);		
+						distance_1 = GetVectorDistance(VicLoc, spawnLoc);				
+						if (distance_1 <= explosionRadius)
 						{
-							float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 							float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
 											
 							if(damage_1 > damage)
@@ -2589,8 +2527,9 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 					CClotBody npc = view_as<CClotBody>(i);
 					if (GetEntProp(i, Prop_Send, "m_iTeamNum")!=GetEntProp(entity, Prop_Send, "m_iTeamNum") && !npc.m_bThisEntityIgnored && IsEntityAlive(i)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 					{
-						VicLoc = WorldSpaceCenter(i);						
-						if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
+						VicLoc = WorldSpaceCenter(i);
+						distance_1 = GetVectorDistance(VicLoc, spawnLoc);						
+						if (distance_1 <= explosionRadius)
 						{
 							Handle trace; 
 							trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
@@ -2601,14 +2540,12 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 								
 							if(Traced_Target == i)
 							{
-								float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 								float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
 								
 								if(damage_1 > damage)
 								{
 									damage_1 = damage;
 								}
-								
 								SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 								TargetsHit += 1;
 							}
@@ -2636,8 +2573,9 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 						CClotBody npc = view_as<CClotBody>(i);
 						if(pass != 2)
 						{
-							VicLoc = WorldSpaceCenter(i);						
-							if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
+							VicLoc = WorldSpaceCenter(i);	
+							distance_1 = GetVectorDistance(VicLoc, spawnLoc);					
+							if (distance_1 <= explosionRadius)
 							{
 								Handle trace; 
 								trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
@@ -2648,7 +2586,6 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 								
 								if(Traced_Target == i)
 								{
-									float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 									float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
 																				
 									if(damage_1 > damage)
@@ -2665,8 +2602,9 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 						{
 							if(!npc.m_bThisEntityIgnored && GetEntProp(i, Prop_Data, "m_iHealth") > 0) //Check if dead or even targetable
 							{
-								VicLoc = WorldSpaceCenter(i);						
-								if (GetVectorDistance(spawnLoc, VicLoc, true) <= Pow(explosionRadius, 2.0))
+								VicLoc = WorldSpaceCenter(i);	
+								distance_1 = GetVectorDistance(VicLoc, spawnLoc);					
+								if (distance_1 <= explosionRadius)
 								{
 									Handle trace; 
 									trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
@@ -2677,7 +2615,6 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 									
 									if(Traced_Target == i)
 									{
-										float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
 										float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
 																	
 										if(damage_1 > damage)
@@ -3037,18 +2974,22 @@ public void MakeExplosionFrameLater(DataPack pack)
 	vec_pos[0] = pack.ReadFloat();
 	vec_pos[1] = pack.ReadFloat();
 	vec_pos[2] = pack.ReadFloat();
+	int Do_Sound = pack.ReadCell();
 	
 	int ent = CreateEntityByName("env_explosion");
 	if(ent != -1)
 	{
 	//	SetEntPropEnt(ent, Prop_Data, "m_hOwnerEntity", client);
-												
-		EmitAmbientSound("ambient/explosions/explode_3.wav", vec_pos);
-										
+		
+		if(Do_Sound == 1)
+		{		
+			EmitAmbientSound("ambient/explosions/explode_3.wav", vec_pos, _, 75, _,0.7, GetRandomInt(75, 110));
+		}
+		
 		DispatchKeyValueVector(ent, "origin", vec_pos);
-		DispatchKeyValue(ent, "spawnflags", "64");
+		DispatchKeyValue(ent, "spawnflags", "581");
 						
-		DispatchKeyValue(ent, "rendermode", "5");
+		DispatchKeyValue(ent, "rendermode", "0");
 		DispatchKeyValue(ent, "fireballsprite", spirite);
 										
 		DispatchKeyValueFloat(ent, "DamageForce", 0.0);								
@@ -3061,6 +3002,7 @@ public void MakeExplosionFrameLater(DataPack pack)
 		AcceptEntityInput(ent, "explode");
 		AcceptEntityInput(ent, "kill");
 	}		
+	SpawnSmallExplosionNotRandom(vec_pos);
 	delete pack;
 }
 

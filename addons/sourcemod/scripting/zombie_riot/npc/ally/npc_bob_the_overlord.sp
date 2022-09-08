@@ -208,6 +208,8 @@ methodmap BobTheGod < CClotBody
 		
 		i_NpcInternalId[npc.index] = BOB_THE_GOD_OF_GODS;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_IDLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -305,6 +307,7 @@ public void BobTheGod_ClotThink(int iNPC)
 	if(!IsValidClient(client))
 	{
 		SDKHooks_TakeDamage(iNPC, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
+		return;
 	}
 	
 	if(npc.m_flNextThinkTime < GetGameTime())
@@ -314,42 +317,42 @@ public void BobTheGod_ClotThink(int iNPC)
 			SetGlobalTransTarget(client);
 			if(!npc.m_bIsFriendly && npc.m_b_follow && !npc.m_b_stand_still)
 			{
-				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				SetHudTextParams(0.9, 0.72, 0.15, 180, 180, 180, 180);
 				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is not friendly and follows you!", "Use voice Commands to command him!");
 			}
 			else if (npc.m_bIsFriendly && npc.m_b_follow && !npc.m_b_stand_still)
 			{
-				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				SetHudTextParams(0.9, 0.72, 0.15, 180, 180, 180, 180);
 				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is friendly and follows you!", "Use voice Commands to command him!");
 			}
 			else if(!npc.m_bIsFriendly && !npc.m_b_follow && !npc.m_b_stand_still)
 			{
-				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				SetHudTextParams(0.9, 0.72, 0.15, 180, 180, 180, 180);
 				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is not friendly and doesn't follow you!", "Use voice Commands to command him!");
 			}
 			else if (npc.m_bIsFriendly && !npc.m_b_follow && !npc.m_b_stand_still)
 			{
-				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				SetHudTextParams(0.9, 0.72, 0.15, 180, 180, 180, 180);
 				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is friendly and doesn't follow you!", "Use voice Commands to command him!");
 			}
 			else if(!npc.m_bIsFriendly && npc.m_b_follow && npc.m_b_stand_still)
 			{
-				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				SetHudTextParams(0.9, 0.72, 0.15, 180, 180, 180, 180);
 				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is not friendly and follows you! BUT stands still.", "Use voice Commands to command him!");
 			}
 			else if (npc.m_bIsFriendly && npc.m_b_follow && npc.m_b_stand_still)
 			{
-				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				SetHudTextParams(0.9, 0.72, 0.15, 180, 180, 180, 180);
 				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is friendly and follows you! BUT stands still", "Use voice Commands to command him!");
 			}
 			else if(!npc.m_bIsFriendly && !npc.m_b_follow && npc.m_b_stand_still)
 			{
-				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				SetHudTextParams(0.9, 0.72, 0.15, 180, 180, 180, 180);
 				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is not friendly and doesn't follow you! BUT stands still", "Use voice Commands to command him!");
 			}
 			else if (npc.m_bIsFriendly && !npc.m_b_follow && npc.m_b_stand_still)
 			{
-				SetHudTextParams(0.9, 0.72, 1.01, 180, 180, 180, 180);
+				SetHudTextParams(0.9, 0.72, 0.15, 180, 180, 180, 180);
 				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is friendly and doesn't follow you! BUT stands still", "Use voice Commands to command him!");
 			}
 			npc.m_flNextThinkTime = GetGameTime() + 0.04;
@@ -365,14 +368,22 @@ public void BobTheGod_ClotThink(int iNPC)
 		return;
 		
 	float flDistanceToOwner;
-	if(IsPlayerAlive(client) && npc.m_b_follow)
+	if(IsValidClient(client))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(client);
-		flDistanceToOwner = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index));
+		if(IsPlayerAlive(client) && npc.m_b_follow)
+		{
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(client);
+			flDistanceToOwner = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index));
+		}
+		else
+		{
+			flDistanceToOwner = 0.0;
+		}
 	}
 	else
 	{
-		flDistanceToOwner = 0.0;
+		SDKHooks_TakeDamage(iNPC, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
+		return;
 	}
 	
 	if(npc.m_flGetClosestTargetTime < GetGameTime())
@@ -555,7 +566,14 @@ public void BobTheGod_ClotThink(int iNPC)
 					vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
-					FireBullet(npc.index, npc.m_iWearable2, npc_pos, vecDir, 18.0, 9000.0, DMG_BULLET, "bullet_tracer01_red", client, _ , "muzzle");
+					if(CurrentPlayers == 1)
+					{
+						FireBullet(npc.index, npc.m_iWearable2, npc_pos, vecDir, 30.0, 9000.0, DMG_BULLET, "bullet_tracer01_red", client, _ , "muzzle");
+					}
+					else
+					{
+						FireBullet(npc.index, npc.m_iWearable2, npc_pos, vecDir, 21.0, 9000.0, DMG_BULLET, "bullet_tracer01_red", client, _ , "muzzle");
+					}
 					npc.PlayRangedSound();
 					npc.m_bReloaded = false;
 				}
@@ -624,8 +642,14 @@ public void BobTheGod_ClotThink(int iNPC)
 						NormalizeVector(vecDir, vecDir);
 						
 						npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-						
-						FireBullet(npc.index, npc.index, npc_pos, vecDir, 200.0, 9999.0, DMG_BULLET, "bullet_tracer02_blue", client);
+						if(CurrentPlayers == 1)
+						{
+							FireBullet(npc.index, npc.index, npc_pos, vecDir, 400.0, 9999.0, DMG_BULLET, "bullet_tracer02_blue", client);
+						}
+						else
+						{
+							FireBullet(npc.index, npc.index, npc_pos, vecDir, 250.0, 9999.0, DMG_BULLET, "bullet_tracer02_blue", client);
+						}
 					}
 				}
 				if(npc.m_flNextMeleeAttack < GetGameTime() && flDistanceToTarget < 100 && !npc.m_fbRangedSpecialOn || (npc.m_flAttackHappenswillhappen && !npc.m_fbRangedSpecialOn))
@@ -660,11 +684,16 @@ public void BobTheGod_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									
-									SDKHooks_TakeDamage(target, npc.index, client, 100.0, DMG_CLUB);
-									
+									if(CurrentPlayers == 1)
+									{
+										SDKHooks_TakeDamage(target, npc.index, client, 200.0, DMG_CLUB, -1, _, vecHit);
+									}
+									else
+									{
+										SDKHooks_TakeDamage(target, npc.index, client, 125.0, DMG_CLUB, -1, _, vecHit);
+									}
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();

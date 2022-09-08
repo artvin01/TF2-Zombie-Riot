@@ -8,12 +8,17 @@ static DynamicHook FrameUpdatePostEntityThink;
 static bool IsRespawning;
 //static bool Disconnecting;
 
+static DynamicHook g_WrenchSmack;
 
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
 DynamicHook g_DHookFireballExplode; //from mikusch but edited
 DynamicHook g_DHookMedigunPrimary; 
 DynamicHook g_DHookScoutSecondaryFire; 
+
+DynamicDetour g_CalcPlayerScore;
+
+Handle g_detour_CTFGrenadePipebombProjectile_PipebombTouch;
 
 
 Address g_hSDKStartLagCompAddress;
@@ -23,12 +28,40 @@ bool g_GottenAddressesForLagComp;
 float f_TimeAfterSpawn[MAXTF2PLAYERS];
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
 
+
+static float Get_old_pos_back[MAXENTITIES][3];
+static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
+static bool Dont_Move_Building;											//dont move buildings
+static bool Dont_Move_Allied_Npc;											//dont move buildings
+static int Move_Players = 0;		
+static int Move_Players_Teutons = 0;		
+
+static bool b_LagCompNPC;
+bool b_LagCompNPC_No_Layers;
+bool b_LagCompNPC_AwayEnemies;
+bool b_LagCompNPC_ExtendBoundingBox;
+bool b_LagCompNPC_BlockInteral;
+
+bool b_LagCompAlliedPlayers; //Make sure this actually compensates allies.
+
+
 /*
 // Offsets from mikusch but edited
 int g_OffsetWeaponMode;
 int g_OffsetWeaponInfo;
 int g_OffsetWeaponPunchAngle;
 */
+
+stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
+    Handle res = DHookCreateFromConf(game_config, name);
+
+    if (res == INVALID_HANDLE) {
+        SetFailState("Failed to create detour for %s", name);
+    }
+
+    return res;
+}
+
 void DHook_Setup()
 {
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
@@ -36,7 +69,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFPlayer::CanAirDash", DHook_CanAirDashPre);
 	DHook_CreateDetour(gamedata, "CTFPlayer::DropAmmoPack", DHook_DropAmmoPackPre);
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
-	DHook_CreateDetour(gamedata, "CTFPlayer::GetMaxAmmo", DHook_GetMaxAmmoPre);
+	//DHook_CreateDetour(gamedata, "CTFPlayer::GetMaxAmmo", DHook_GetMaxAmmoPre);
 	
 	#if !defined NoSendProxyClass
 	DHook_CreateDetour(gamedata, "CTFPlayer::IsPlayerClass", DHook_IsPlayerClassPre);
@@ -53,6 +86,12 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
+	
+	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
+	
+	g_detour_CTFGrenadePipebombProjectile_PipebombTouch = CheckedDHookCreateFromConf(gamedata, "CTFGrenadePipebombProjectile::PipebombTouch");
+	
+	
 	g_DHookRocketExplode = DHook_CreateVirtual(gamedata, "CTFBaseRocket::Explode");
 	g_DHookFireballExplode = DHook_CreateVirtual(gamedata, "CTFProjectile_SpellFireball::Explode");
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
@@ -75,6 +114,21 @@ void DHook_Setup()
 		LogError("[Gamedata] Could not find CGameRules::FrameUpdatePostEntityThink");
 	#endif
 	
+	
+	// from https://github.com/shavitush/bhoptimer/blob/b78ae36a0ef72d15620d2b18017bbff18d41b9fc/addons/sourcemod/scripting/shavit-misc.sp
+	
+	if (!(g_CalcPlayerScore = DHookCreateDetour(Address_Null, CallConv_CDECL, ReturnType_Int, ThisPointer_Ignore)))
+	{
+		SetFailState("Failed to create detour for CTFGameRules::CalcPlayerScore");
+	}
+	if (DHookSetFromConf(g_CalcPlayerScore, gamedata, SDKConf_Signature, "CTFGameRules::CalcPlayerScore"))
+	{
+		g_CalcPlayerScore.AddParam(HookParamType_Int);
+		g_CalcPlayerScore.AddParam(HookParamType_CBaseEntity);
+		g_CalcPlayerScore.Enable(Hook_Pre, Detour_CalcPlayerScore);
+	}
+		
+	
 	delete gamedata;
 	
 	GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
@@ -87,10 +141,46 @@ void DHook_Setup()
 	
 }
 
-
-public void ApplyExplosionDhook_Pipe(int entity)
+void OnWrenchCreated(int entity) 
 {
-	g_DHookGrenadeExplode.HookEntity(Hook_Pre, entity, DHook_GrenadeExplodePre);	
+	g_WrenchSmack.HookEntity(Hook_Pre, entity, Wrench_SmackPre);
+	g_WrenchSmack.HookEntity(Hook_Post, entity, Wrench_SmackPost);
+}
+
+public MRESReturn Wrench_SmackPre(int entity, DHookReturn ret, DHookParam param)
+{	
+	StartLagCompResetValues();
+	Dont_Move_Building = true;
+	int Compensator = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	LagCompEntitiesThatAreIntheWay(Compensator);
+	return MRES_Ignored;
+}
+public MRESReturn Wrench_SmackPost(int entity, DHookReturn ret, DHookParam param)
+{	
+	FinishLagCompMoveBack();
+	return MRES_Ignored;
+}
+
+//prevent infinite score gain
+MRESReturn Detour_CalcPlayerScore(DHookReturn hReturn, DHookParam hParams)
+{
+	int client = hParams.Get(2);
+	int iScore = PlayerPoints[client];
+
+	hReturn.Value = iScore;
+	return MRES_Supercede;
+}
+
+public void ApplyExplosionDhook_Pipe(int entity, bool Sticky)
+{
+	g_DHookGrenadeExplode.HookEntity(Hook_Pre, entity, DHook_GrenadeExplodePre);
+	DHookEntity(g_detour_CTFGrenadePipebombProjectile_PipebombTouch, false, entity, _, GrenadePipebombProjectile_PipebombTouch)
+	
+	if(Sticky)
+	{
+		SDKHook(entity, SDKHook_StartTouch, SdkHook_StickStickybombToBaseBoss);
+	}
+	
 	//Hacky? yes, But i gotta.
 	
 	//I have to do it twice, if its a custom spawn i have to do it insantly, if its a tf2 spawn then i have to do it seperatly.
@@ -106,13 +196,13 @@ void See_Projectile_Team(int entity)
 	{
 		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
 		{
-			b_Is_Player_Rocket[entity] = true;	 //try this
+			b_Is_Player_Projectile[entity] = true;	 //try this
 			//Update: worked! Will now pass through players/teammates
 			//Nice.
 		}	
 		else if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue))
 		{
-			b_Is_Npc_Rocket[entity] = true; 
+			b_Is_Npc_Projectile[entity] = true; 
 		}
 	}
 	
@@ -128,11 +218,42 @@ void See_Projectile_Team_Player(int entity)
 	{
 		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
 		{
-			b_Is_Player_Rocket_Through_Npc[entity] = true;	 //try this
+			b_Is_Player_Projectile_Through_Npc[entity] = true;	 //try this
 			//Update: worked! Will now pass through players/teammates
 			//Nice.
 		}	
 	}
+}
+
+/*
+#define MAXSTICKYCOUNTTONPC 12
+const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
+int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max amount of stickies.
+*/
+
+
+public Action SdkHook_StickStickybombToBaseBoss(int entity, int other)
+{
+	if(!GetEntProp(entity, Prop_Send, "m_bTouched"))
+	{
+		if(!b_StickyIsSticking[entity] && b_Is_Blue_Npc[other])
+		{
+			//Dont stick if it already has max.
+			for (int i = 0; i < MAXSTICKYCOUNTTONPC; i++)
+			{
+				if (EntRefToEntIndex(i_StickyToNpcCount[other][i]) <= 0)
+				{
+					i_StickyToNpcCount[other][i] = EntIndexToEntRef(entity);
+					i = MAXSTICKYCOUNTTONPC;
+					
+					SetEntProp(entity, Prop_Send, "m_bTouched", true);
+					SetParent(other, entity);
+					b_StickyIsSticking[entity] = true;
+				}
+			}
+		}
+	}
+	return Plugin_Continue;
 }
 
 public void ApplyExplosionDhook_Rocket(int entity)
@@ -156,12 +277,37 @@ public void IsCustomTfGrenadeProjectile(int entity, float damage) //I cant make 
 	f_CustomGrenadeDamage[entity] = damage;
 }
 
+
+
+static MRESReturn GrenadePipebombProjectile_PipebombTouch(int self, Handle params) 
+{
+	int other = DHookGetParam(params, 1);
+
+	bool result = PassfilterGlobal(self, other, true);
+
+	if(!result)
+	{
+		return MRES_Supercede;
+	}
+	return MRES_Ignored;
+}
+/*
+	GrenadePipebombProjectile_PipebombTouch is from From:
+	
+	https://github.com/aarmastah/zesty-tf2-servers/blob/a96250f1c41c96ff10bf5b35e209095769f28d22/tf2/tf/addons/sourcemod/scripting/tf2-comp-fixes/projectiles-ignore-teammates.sp
+	
+	Because im too stupid to do it myself.
+*/
+
+
+
+
 public MRESReturn DHook_GrenadeExplodePre(int entity)
 {
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hThrower");
 	if (0 < owner <= MaxClients)
 	{
-		if(f_CustomGrenadeDamage[entity] < 999999)
+		if(f_CustomGrenadeDamage[entity] < 999999.9)
 		{
 			float original_damage = GetEntPropFloat(entity, Prop_Send, "m_flDamage"); 
 			if(f_CustomGrenadeDamage[entity] > 1.0)
@@ -179,7 +325,7 @@ public MRESReturn DHook_GrenadeExplodePre(int entity)
 	}
 	else if(owner > MaxClients)
 	{
-		if(f_CustomGrenadeDamage[entity] < 999999)
+		if(f_CustomGrenadeDamage[entity] < 999999.9)
 		{
 			float original_damage = GetEntPropFloat(entity, Prop_Send, "m_flDamage"); 
 			if(f_CustomGrenadeDamage[entity] > 1.0)
@@ -187,7 +333,16 @@ public MRESReturn DHook_GrenadeExplodePre(int entity)
 				original_damage = f_CustomGrenadeDamage[entity];
 			}
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
-			Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
+			
+			//Important, make them not act as an ai if its on red, or else they are BUSTED AS FUCK.
+			if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			{
+				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
+			}
+			else
+			{
+				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,false);
+			}
 		}
 		else
 		{
@@ -244,7 +399,15 @@ public MRESReturn DHook_RocketExplodePre(int entity)
 		float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
 	//	int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
-		Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);		
+	//Important, make them not act as an ai if its on red, or else they are BUSTED AS FUCK.
+		if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+		{
+			Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
+		}
+		else
+		{
+			Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,false);
+		}
 	}
 	return MRES_Ignored;
 }
@@ -253,8 +416,15 @@ public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 {
 	if(IsValidEntity(ent1) && IsValidEntity(ent2))
 	{
-		result = PassfilterGlobal(ent1, ent2, result);
-		return Plugin_Handled;
+		result = PassfilterGlobal(ent1, ent2, true);
+		if(result)
+		{
+			return Plugin_Continue;
+		}
+		else
+		{
+			return Plugin_Handled;
+		}
 	}
 	return Plugin_Continue;
 }
@@ -277,6 +447,7 @@ public Action CH_PassFilter(int ent1, int ent2, bool &result)
 	return Plugin_Continue;
 }
 
+
 public bool PassfilterGlobal(int ent1, int ent2, bool result)
 {
 	if(b_IsInUpdateGroundConstraintLogic)
@@ -290,63 +461,92 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			return false;
 		}
 	}
-	else if(b_Is_Npc_Rocket[ent2])
-	{
-		if(b_Is_Blue_Npc[ent1])
-		{
-			return false;
-		}
-		else if(b_Is_Npc_Rocket[ent1])
-		{
-			return false;
-		}
-	}
-	else if(b_Is_Npc_Rocket[ent1])
-	{
-		if(b_Is_Blue_Npc[ent2])
-		{
-			return false;
-		}
-		else if(b_Is_Npc_Rocket[ent2])
-		{
-			return false;	
-		}
-	}
-	else if(b_Is_Player_Rocket[ent1])
-	{
-		if(ent2 <= MaxClients && ent2 > 0)
-		{
-			return false;
-		}
-		else if(b_IsAlliedNpc[ent2])
-		{
-			return false;
-		}
-	}
-	else if(b_Is_Player_Rocket[ent2])
-	{
-		if(ent1 <= MaxClients && ent1 > 0)
-		{
-			return false;
-		}
-		else if(b_IsAlliedNpc[ent1])
-		{
-			return false;	
-		}
-	}
 	
-	else if (b_Is_Player_Rocket_Through_Npc[ent2])
+	for( int ent = 1; ent <= 2; ent++ ) 
 	{
-		if(b_Is_Blue_Npc[ent1])
+		static int entity1;
+		static int entity2;
+		if(ent == 1)
 		{
-			return false;
+			entity1 = ent1;
+			entity2 = ent2;
 		}
-	}
-	else if (b_Is_Player_Rocket_Through_Npc[ent1])
-	{
-		if(b_Is_Blue_Npc[ent2])
+		else
 		{
-			return false;
+			entity1 = ent2;
+			entity2 = ent1;			
+		}
+		
+		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
+		{
+			if(entity2 <= MaxClients && entity2 > 0)
+			{
+				GibCollidePlayerInteraction(entity1, entity2);
+				return false;
+			}
+		}
+		else if(b_Is_Npc_Projectile[entity1])
+		{
+			if(b_ThisEntityIgnored[entity2])
+			{
+				return false;
+			}
+			if(b_Is_Blue_Npc[entity2])
+			{
+				return false;
+			}
+			else if(b_Is_Npc_Projectile[entity2])
+			{
+				return false;
+			}
+		}
+		else if(b_Is_Player_Projectile[entity1])
+		{
+			if(b_ThisEntityIgnored[entity2])
+			{
+				return false;
+			}
+			if(entity2 <= MaxClients && entity2 > 0)
+			{
+				return false;
+			}
+			else if(b_IsAlliedNpc[entity2])
+			{
+				return false;
+			}
+			else if(b_Is_Player_Projectile[entity2])
+			{
+				return false;
+			}
+		}
+		else if (b_Is_Player_Projectile_Through_Npc[entity1])
+		{
+			if(b_Is_Blue_Npc[entity2])
+			{
+				return false;
+			}
+		}
+		else if(b_Is_Blue_Npc[entity1])
+		{
+			if(b_ThisEntityIgnored[entity2] && !DoingLagCompensation) //Only Ignore when not shooting/compensating, which is shooting only.
+			{
+				return false;
+			}
+			else if(b_Is_Blue_Npc[entity2])
+			{
+				return false;
+			}
+		}
+		else if(b_IsAlliedNpc[entity1])
+		{
+			if(b_IsAlliedNpc[entity2])
+			{	
+				return false;
+			}
+			else if((entity2 <= MaxClients && entity2 > 0) && !Dont_Move_Allied_Npc && !b_DoNotIgnoreDuringLagCompAlly[entity1])
+			{
+				return false;
+			}
 		}
 	}
 	return result;	
@@ -386,19 +586,6 @@ i will keep it updated incase this didnt work.
 
 //LAG COMP SECTION! Kinda VERY important.
 
-static float Get_old_pos_back[MAXENTITIES][3];
-static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
-static bool Dont_Move_Building;											//dont move buildings
-static int Move_Players = 0;		
-static int Move_Players_Teutons = 0;		
-
-static bool b_LagCompNPC;
-bool b_LagCompNPC_No_Layers;
-bool b_LagCompNPC_AwayEnemies;
-bool b_LagCompNPC_ExtendBoundingBox;
-bool b_LagCompNPC_BlockInteral;
-
-bool b_LagCompAlliedPlayers; //Make sure this actually compensates allies.
 /*
 public MRESReturn StartLagCompensation_Pre(Address manager, DHookParam param)
 {
@@ -414,6 +601,7 @@ public MRESReturn StartLagCompensation_Pre(Address manager, DHookParam param)
 public void StartLagCompResetValues()
 {
 	Dont_Move_Building = false;
+	Dont_Move_Allied_Npc = false;
 	b_LagCompNPC = true;
 	b_LagCompNPC_No_Layers = false;	
 	b_LagCompNPC_AwayEnemies = false;
@@ -442,6 +630,10 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		if(b_Dont_Move_Building[active_weapon])
 		{
 			Dont_Move_Building = true;
+		}
+		if(b_Dont_Move_Allied_Npc[active_weapon])
+		{
+			Dont_Move_Allied_Npc = true;
 		}
 		if(b_Only_Compensate_CollisionBox[active_weapon]) //This is mostly unused, but keep it for mediguns if needed. Otherwise kinda useless.
 		{
@@ -567,21 +759,24 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 			}
 		}
 	}
-	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
+	if(!Dont_Move_Building)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-		if (IsValidEntity(entity) && entity != 0)
+		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 		{
-			if(!Moved_Building[entity]) 
+			int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+			if (IsValidEntity(entity) && entity != 0)
 			{
-				CClotBody npc = view_as<CClotBody>(entity);
-				if(npc.bBuildingIsPlaced) //making sure.
+				if(!Moved_Building[entity]) 
 				{
-					Moved_Building[entity] = true;
-					//PrintToChatAll("test1");
-					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[entity]);
-					//TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
-					SDKCall_SetLocalOrigin(entity, vec_origin);
+					CClotBody npc = view_as<CClotBody>(entity);
+					if(npc.bBuildingIsPlaced) //making sure.
+					{
+						Moved_Building[entity] = true;
+						//PrintToChatAll("test1");
+						GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[entity]);
+						//TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
+						SDKCall_SetLocalOrigin(entity, vec_origin);
+					}
 				}
 			}
 		}
@@ -593,10 +788,13 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 		{
 			if(!Moved_Building[baseboss_index_allied]) 
 			{
-				Moved_Building[baseboss_index_allied] = true;
-				GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[baseboss_index_allied]);
-				//TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
-				SDKCall_SetLocalOrigin(baseboss_index_allied, vec_origin);
+				if(!Dont_Move_Allied_Npc || b_ThisEntityIgnored[baseboss_index_allied])
+				{
+					Moved_Building[baseboss_index_allied] = true;
+					GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[baseboss_index_allied]);
+					//TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
+					SDKCall_SetLocalOrigin(baseboss_index_allied, vec_origin);
+				}
 			}
 		}
 	}
@@ -633,28 +831,19 @@ public void FinishLagCompensationResetValues()
 	b_LagCompAlliedPlayers = false; //Do it here.
 }
 */
-public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //This code does not need to be touched. mostly.
+public void FinishLagCompMoveBack()
 {
-//	PrintToChatAll("finish lag comp");
-	//Set this to false to be sure.
-//	StartLagCompensation_Base_Boss
-//	FinishLagCompensation_Base_boss(param);
-//	int Compensator = param.Get(1);
-	
-	if(!Dont_Move_Building)
+	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 	{
-		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
+		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+		if (IsValidEntity(entity) && entity != 0)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-			if (IsValidEntity(entity) && entity != 0)
+			if(Moved_Building[entity]) 
 			{
-				if(Moved_Building[entity]) 
-				{
-					Moved_Building[entity] = false;
-					SDKCall_SetLocalOrigin(entity, Get_old_pos_back[entity]);
-				}
 				Moved_Building[entity] = false;
+				SDKCall_SetLocalOrigin(entity, Get_old_pos_back[entity]);
 			}
+			Moved_Building[entity] = false;
 		}
 	}
 	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
@@ -695,10 +884,19 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 					Moved_Building[baseboss_index_allied] = false;
 					SDKCall_SetLocalOrigin(baseboss_index_allied, Get_old_pos_back[baseboss_index_allied]);
 				}
-				Moved_Building[baseboss_index_allied] = false;
 			}
 		}
-	}
+	}	
+}
+public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //This code does not need to be touched. mostly.
+{
+//	PrintToChatAll("finish lag comp");
+	//Set this to false to be sure.
+//	StartLagCompensation_Base_Boss
+//	FinishLagCompensation_Base_boss(param);
+//	int Compensator = param.Get(1);
+	
+	FinishLagCompMoveBack();
 	#if defined LagCompensation
 	if(b_LagCompNPC)
 		FinishLagCompensation_Base_boss();
@@ -889,7 +1087,7 @@ void DHook_RespawnPlayer(int client)
 
 public MRESReturn DHook_CanAirDashPre(int client, DHookReturn ret)
 {
-	int current = GetEntProp(client, Prop_Send, "m_iAirDash");
+	/*int current = GetEntProp(client, Prop_Send, "m_iAirDash");
 	int max_Value = Attributes_Airdashes(client);
 
 	if(TF2_IsPlayerInCondition(client, TFCond_CritHype))
@@ -900,7 +1098,7 @@ public MRESReturn DHook_CanAirDashPre(int client, DHookReturn ret)
 		ret.Value = true;
 		SetEntProp(client, Prop_Send, "m_iAirDash", current+1);
 	}
-	else
+	else*/
 	{
 		ret.Value = false;
 	}
@@ -950,6 +1148,11 @@ public MRESReturn DHook_ForceRespawn(int client)
 	TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
 	TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
 			
+	if(started && TeutonType[client] == TEUTON_NONE)
+	{
+		SetEntityHealth(client, 50);
+		RequestFrame(SetHealthAfterRevive, client);
+	}
 	
 	CreateTimer(0.1, DHook_TeleportToAlly, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		
@@ -961,6 +1164,12 @@ public MRESReturn DHook_ForceRespawn(int client)
 //Ty miku for showing me this cvar.
 public void PhaseThroughOwnBuildings(int client)
 {
+	if(b_PhaseThroughBuildingsPerma[client] == 2) //They already ignore everything 24/7, dont bother.
+	{
+		SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+		return;
+	}
+	
 	float PlayerLoc[3];
 	float otherLoc[3];
 	bool Collides_with_atleast_one_building = false;

@@ -179,6 +179,8 @@ methodmap XenoFlyingArmorTiny < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_FLYINGARMOR_TINY_ZOMBIE;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -335,15 +337,15 @@ public void XenoFlyingArmorTiny_ClotThink(int iNPC)
 								{
 									
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 30.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 30.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
 									
 									if(target <= MaxClients)
 										Client_Shake(target, 0, 25.0, 25.0, 0.5);
 									
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();

@@ -136,6 +136,8 @@ methodmap XenoSpy < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_SPY_FACESTABBER;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -281,12 +283,12 @@ public void XenoSpy_ClotThink(int iNPC)
 							{
 								
 								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 35.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 35.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_CLUB, -1, _, vecHit);
 								
 								
-								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+								
 								
 								// Hit sound
 								npc.PlayMeleeHitSound();

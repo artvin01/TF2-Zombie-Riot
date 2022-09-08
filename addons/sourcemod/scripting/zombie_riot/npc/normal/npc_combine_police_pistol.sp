@@ -141,6 +141,7 @@ methodmap Combine_Police_Pistol < CClotBody
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -152,8 +153,6 @@ methodmap Combine_Police_Pistol < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 		npc.m_iState = 0;
 		npc.m_flSpeed = 160.0;
 		
@@ -388,14 +387,14 @@ public void Combine_Police_Pistol_ClotThink(int iNPC)
 									
 									if(EscapeModeForNpc)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_CLUB, -1, _, vecHit);
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 									}
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();

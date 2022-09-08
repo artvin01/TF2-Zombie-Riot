@@ -115,6 +115,8 @@ methodmap XenoMedicMain < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_BATTLE_MEDIC_MAIN;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -269,12 +271,12 @@ public void XenoMedicMain_ClotThink(int iNPC)
 							{
 								
 								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 550.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 550.0, DMG_CLUB, -1, _, vecHit);
 								
 								
-								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+								
 								
 								// Hit sound
 								npc.PlayMeleeHitSound();
@@ -332,7 +334,7 @@ public Action XenoMedicMain_ClotDamaged(int victim, int &attacker, int &inflicto
 		CreateTimer(2.0, XenoMedicMain_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(10.0, XenoMedicMain_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 	}
-	if(npc.flXenoInfectedSpecialHurtTime > GetGameTime())
+	if(npc.flXenoInfectedSpecialHurtTime > GetGameTime() && !Building_DoesPierce(attacker))
 	{
 		damage *= 0.25;
 	}

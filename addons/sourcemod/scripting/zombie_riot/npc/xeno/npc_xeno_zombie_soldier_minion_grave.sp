@@ -137,13 +137,15 @@ methodmap XenoSoldierMinion < CClotBody
 	
 	public XenoSoldierMinion(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoSoldierMinion npc = view_as<XenoSoldierMinion>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "0.65", "10", ally));
+		XenoSoldierMinion npc = view_as<XenoSoldierMinion>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "10", ally));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
 		i_NpcInternalId[npc.index] = XENO_SOLDIER_ZOMBIE_MINION;
+		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
@@ -284,12 +286,12 @@ public void XenoSoldierMinion_ClotThink(int iNPC)
 								{
 									
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_CLUB, -1, _, vecHit);
 									
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();

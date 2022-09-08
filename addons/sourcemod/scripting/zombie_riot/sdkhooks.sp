@@ -71,12 +71,12 @@ void SDKHook_HookClient(int client)
 {
 	SDKUnhook(client, SDKHook_PostThink, OnPostThink);
 	SDKUnhook(client, SDKHook_PreThinkPost, OnPreThinkPost);
-	SDKUnhook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost);
+	SDKUnhook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost)
 	SDKUnhook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
 	
 	SDKHook(client, SDKHook_PostThink, OnPostThink);
 	SDKHook(client, SDKHook_PreThinkPost, OnPreThinkPost);
-	SDKHook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost);
+	SDKHook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost)
 	SDKHook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
 	
 	#if !defined NoSendProxyClass
@@ -88,7 +88,16 @@ void SDKHook_HookClient(int client)
 public void OnPreThinkPost(int client)
 {
 	if(CvarMpSolidObjects)
-		CvarMpSolidObjects.IntValue	= b_PhasesThroughBuildingsCurrently[client] ? 0 : 1;
+	{
+		if(b_PhaseThroughBuildingsPerma[client] == 0)
+		{
+			CvarMpSolidObjects.IntValue	= b_PhasesThroughBuildingsCurrently[client] ? 0 : 1;
+		}
+		else
+		{
+			CvarMpSolidObjects.IntValue = 0;
+		}
+	}
 }
 
 public void OnPostThink(int client)
@@ -99,6 +108,7 @@ public void OnPostThink(int client)
 #endif
 	{
 #if !defined NoSendProxyClass
+
 		if(WeaponClass[client]!=TFClass_Unknown)
 		{
 			TF2_SetPlayerClass(client, WeaponClass[client], false, false);
@@ -106,6 +116,19 @@ public void OnPostThink(int client)
 				SetEntPropFloat(client, Prop_Send, "m_vecViewOffset[2]", ViewHeights[WeaponClass[client]]);
 		}
 #endif
+
+		if(b_PhaseThroughBuildingsPerma[client] == 2)
+		{
+			CvarMpSolidObjects.ReplicateToClient(client, "0");
+		}
+		else
+		{
+			if(b_PhaseThroughBuildingsPerma[client] == 1)
+			{
+				b_PhaseThroughBuildingsPerma[client] = 0;
+				CvarMpSolidObjects.ReplicateToClient(client, "1"); //set replicate back to normal.
+			}
+		}
 		/*
 		if(Check_Standstill_Delay[client] < gameTime)
 		{
@@ -647,7 +670,7 @@ public void OnPostThink(int client)
 					if(Has_Wave_Showing)
 					{
 						PrintKeyHintText(client, "%t\n%t\n%t\n%t",
-						"Credits_Menu", CurrentCash-CashSpent[client], Resupplies_Supplied[client] * 10,	
+						"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
 					//	"Wave", CurrentRound+1, CurrentWave+1,
 				//		"Armor Counter", Armor_Charge[client],
 						"Ammo Crate Supplies", Ammo_Count_Ready[client], //This bugs in russian
@@ -659,7 +682,7 @@ public void OnPostThink(int client)
 					else
 					{
 						PrintKeyHintText(client, "%t\n%s | %t\n%t\n%t\n%t",
-						"Credits_Menu", CurrentCash-CashSpent[client], Resupplies_Supplied[client] * 10,	
+						"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
 						WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
 			//			"Armor Counter", Armor_Charge[client],
 						"Ammo Crate Supplies", Ammo_Count_Ready[client], 
@@ -1154,16 +1177,45 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	return Plugin_Continue;
 }
 
+int i_PreviousWeapon[MAXTF2PLAYERS];
+
 public void OnWeaponSwitchPost(int client, int weapon)
 {
 	if(weapon != -1)
 	{
 		int weapon2 = weapon;
 		
+		if(EntRefToEntIndex(i_PreviousWeapon[client]) != weapon)
+			OnWeaponSwitchPre(client, EntRefToEntIndex(i_PreviousWeapon[client]));
+		
+		i_PreviousWeapon[client] = EntIndexToEntRef(weapon);
+		
 		char buffer[36];
 		GetEntityClassname(weapon2, buffer, sizeof(buffer));
 		Building_WeaponSwitchPost(client, weapon2, buffer);
 		ViewChange_Switch(client, weapon2, buffer);
+		
+		if(i_SemiAutoWeapon[weapon])
+		{
+			char classname[64];
+			GetEntityClassname(weapon, classname, sizeof(classname));
+			int slot = TF2_GetClassnameSlot(classname);
+			if(i_SemiAutoWeapon_AmmoCount[client][slot] > 0)
+			{
+				TF2Attrib_SetByDefIndex(weapon, 821, 0.0);
+			}
+		}
+	}
+}
+
+public void OnWeaponSwitchPre(int client, int weapon)
+{
+	if(weapon != -1)
+	{
+		if(i_SemiAutoWeapon[weapon])
+		{
+			TF2Attrib_SetByDefIndex(weapon, 821, 0.0);
+		}
 	}
 }
 
@@ -1219,14 +1271,6 @@ public Action Command_Voicemenu(int client, const char[] command, int args)
 	return Plugin_Continue;
 }
 
-
-enum
-{
-	WEAPON_ARK = 1,
-	
-}
-
-
 float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon)
 {
 	
@@ -1235,7 +1279,7 @@ float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &
 	{
 		case WEAPON_ARK: // weapon_ark
 		{
-			return Player_OnTakeDamage_Ark(victim, damage);
+			return Player_OnTakeDamage_Ark(victim, damage, attacker, equipped_weapon);
 		}
 	}
 	return damage;

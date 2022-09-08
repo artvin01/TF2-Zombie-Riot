@@ -169,6 +169,8 @@ methodmap XenoCombinePolicePistol < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_POLICE_PISTOL;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -429,14 +431,14 @@ public void XenoCombinePolicePistol_ClotThink(int iNPC)
 									
 									if(EscapeModeForNpc)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_CLUB, -1, _, vecHit);
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 									}
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();

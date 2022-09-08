@@ -134,9 +134,11 @@ methodmap HeadcrabZombie < CClotBody
 		
 		i_NpcInternalId[npc.index] = HEADCRAB_ZOMBIE;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
+
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -199,6 +201,7 @@ public void HeadcrabZombie_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.StartPathing();
 		//PluginBot_NormalJump(npc.index);
 	}
 	
@@ -221,7 +224,6 @@ public void HeadcrabZombie_ClotThink(int iNPC)
 		{
 			PF_SetGoalEntity(npc.index, closest);
 		}
-		npc.StartPathing();
 		
 		//Target close enough to hit
 		
@@ -256,19 +258,19 @@ public void HeadcrabZombie_ClotThink(int iNPC)
 							if(EscapeModeForNpc)
 							{
 								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB, -1, _, vecHit);
 							}
 							else
 							{
 								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_SLASH|DMG_CLUB);					
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_CLUB, -1, _, vecHit);					
 							}
 							
-							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+							
 								
 							// Hit sound
 							npc.PlayMeleeHitSound();

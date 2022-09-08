@@ -97,6 +97,8 @@ void Music_EndLastmann()
 
 void Music_RoundEnd(int victim)
 {
+	ExcuteRelay("zr_gamelost");
+	
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && !IsFakeClient(client))
@@ -335,7 +337,7 @@ void Music_PostThink(int client)
 				float chargerPos[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);
 				GetClientAbsOrigin(client, chargerPos);
-				if (GetVectorDistance(chargerPos, targPos) <= 1500.0)
+				if (GetVectorDistance(chargerPos, targPos, true) <= Pow(1750.0, 2.0))
 				{
 					CClotBody npcstats = view_as<CClotBody>(entity);
 					if(!npcstats.m_bThisNpcIsABoss)
@@ -500,7 +502,7 @@ void Music_PostThink(int client)
 			}
 			
 		}
-		else if(intencity >= RoundToCeil(float(PlayersAliveScaling) * 0.9))
+		else
 		{
 			if(GlobalIntencity >= RoundToNearest((float(PlayersAliveScaling) * 0.5)))
 			{

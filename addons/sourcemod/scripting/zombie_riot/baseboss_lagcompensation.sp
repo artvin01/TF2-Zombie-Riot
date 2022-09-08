@@ -458,10 +458,10 @@ public void BacktrackEntity(int entity, float currentTime) //Make sure that alli
 					}
 				}
 #endif
-			SDKCall_InvalidateBoneCache(entity);
 			}
 	//		Test_Hitbox(entity);
 		}
+		SDKCall_InvalidateBoneCache(entity); //Do at all times, yes, ew but i have to,
 	}
 	EntityRestore.SetArray(refchar, restore, sizeof(restore));
 }
@@ -674,7 +674,7 @@ public float Lerpfloat(float t, float minVal, float maxVal)
 
 public int Lerpint(float t, int minVal, int maxVal)
 {
-	return RoundToNearest(minVal + (maxVal - minVal) * t);
+	return RoundToNearest(minVal + float((maxVal - minVal)) * t);
 }
 
 /*  */

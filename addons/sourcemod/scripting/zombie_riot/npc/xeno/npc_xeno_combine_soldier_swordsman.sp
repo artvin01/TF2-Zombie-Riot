@@ -178,6 +178,8 @@ methodmap XenoCombineSwordsman < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_SWORDSMAN;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -397,17 +399,17 @@ public void XenoCombineSwordsman_ClotThink(int iNPC)
 									
 									if(EscapeModeForNpc)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_CLUB, -1, _, vecHit);
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, vecHit);
 									}
 									
 									Custom_Knockback(npc.index, target, 350.0);
 									
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();
@@ -448,9 +450,8 @@ public Action XenoCombineSwordsman_ClotDamaged(int victim, int &attacker, int &i
 		
 	XenoCombineSwordsman npc = view_as<XenoCombineSwordsman>(victim);
 	
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.75;
-	
+	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
+		damage *= 0.15;
 	
 	if(!npc.bXenoInfectedSpecialHurt)
 	{

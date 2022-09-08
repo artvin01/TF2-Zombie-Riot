@@ -129,6 +129,8 @@ methodmap XenoPoisonZombie < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_POISON_ZOMBIE;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
@@ -258,15 +260,15 @@ public void XenoPoisonZombie_ClotThink(int iNPC)
 								{
 									if(EscapeModeForNpc)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
 									}
 									
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();
@@ -324,7 +326,7 @@ public Action XenoPoisonZombie_ClotDamaged(int victim, int &attacker, int &infli
 		CreateTimer(2.0, XenoPoisonZombie_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(10.0, XenoPoisonZombie_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 	}
-	if(npc.flXenoInfectedSpecialHurtTime > GetGameTime())
+	if(npc.flXenoInfectedSpecialHurtTime > GetGameTime() && !Building_DoesPierce(attacker))
 	{
 		damage *= 0.25;
 	}

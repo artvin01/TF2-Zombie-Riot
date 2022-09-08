@@ -168,14 +168,13 @@ methodmap CombinePoliceSmg < CClotBody
 		
 		i_NpcInternalId[npc.index] = COMBINE_POLICE_SMG;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_RUN_AIM_RIFLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
 		npc.m_flNextMeleeAttack = 0.0;
-		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_fbGunout = false;
 		

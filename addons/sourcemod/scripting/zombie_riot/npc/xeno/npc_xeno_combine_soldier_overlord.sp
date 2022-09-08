@@ -194,6 +194,8 @@ methodmap XenoCombineOverlord < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_OVERLORD;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -379,7 +381,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 				if(npc.m_flRangedSpecialDelay < GetGameTime())
 				{
 					npc.m_fbRangedSpecialOn = false;
-					npc.m_flNextRangedSpecialAttack = GetGameTime() + 4.0;
+					npc.m_flNextRangedSpecialAttack = GetGameTime() + 8.0;
 					npc.PlayRangedAttackSecondarySound();
 
 					float vecSpread = 0.1;
@@ -415,7 +417,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 					
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
-					int player_hurt = FireBullet(npc.index, npc.index, WorldSpaceCenter(npc.index), vecDir, 50.0, 150.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
+					int player_hurt = FireBullet(npc.index, npc.index, WorldSpaceCenter(npc.index), vecDir, 75.0, 150.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 					
 					if(IsValidClient(player_hurt))
 					{
@@ -451,13 +453,13 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 						if(target > 0) 
 						{
 							if(target <= MaxClients)
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, vecHit);
 							else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 120.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 120.0, DMG_CLUB, -1, _, vecHit);
 								
 							Custom_Knockback(npc.index, target, 200.0);
 							// Hit particle
-							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+							
 							
 							// Hit sound
 							npc.PlayMeleeHitSound();
@@ -505,14 +507,14 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 									if(target > 0) 
 									{
 										if(target <= MaxClients)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 110.0, DMG_SLASH|DMG_CLUB);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 110.0, DMG_CLUB, -1, _, vecHit);
 										else
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 450.0, DMG_SLASH|DMG_CLUB);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 450.0, DMG_CLUB, -1, _, vecHit);
 												
 										Custom_Knockback(npc.index, target, 450.0);
 										
 										// Hit particle
-										npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+										
 										
 										// Hit sound
 										npc.PlayMeleeHitSound();
@@ -557,7 +559,7 @@ public Action XenoCombineOverlord_Timer_Combo_Attack(Handle Debuff_lightning_hud
 		XenoCombineOverlord npc = view_as<XenoCombineOverlord>(npczombie);
 		if(npc.m_iOverlordComboAttack <= 5)
 		{
-			SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0, DMG_SLASH|DMG_CLUB);
+			SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0, DMG_CLUB);
 			Custom_Knockback(npc.index, target, 250.0);
 			float startPosition[3];
 			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", startPosition);
@@ -591,12 +593,11 @@ public Action XenoCombineOverlord_ClotDamaged(int victim, int &attacker, int &in
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
-	if(npc.m_flAngerDelay > GetGameTime())
+	if(npc.m_flAngerDelay > GetGameTime() && !Building_DoesPierce(attacker))
 		damage *= 0.25;
-		
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.75;
-		
+	
+	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
+		damage *= 0.15;
 	
 	return Plugin_Changed;
 }

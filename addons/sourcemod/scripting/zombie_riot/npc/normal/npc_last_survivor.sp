@@ -229,6 +229,8 @@ methodmap FatherGrigori < CClotBody
 		
 		i_NpcInternalId[npc.index] = FATHER_GRIGORI;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_WALK_AIM_RIFLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -291,8 +293,10 @@ methodmap FatherGrigori < CClotBody
 			vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*800.0;
 			vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*800.0;
 			vecForward[2] = Sine(DegToRad(vecAngles[0]))*-800.0;
-		
+			
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
+			SetEntPropEnt(entity, Prop_Send, "m_hThrower", this.index);
+			
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 75.0); 
 			f_CustomGrenadeDamage[entity] = 75.0;	
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
@@ -300,6 +304,8 @@ methodmap FatherGrigori < CClotBody
 			DispatchSpawn(entity);
 			SetEntityModel(entity, "models/weapons/w_grenade.mdl");
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
+			
+			SetEntProp(entity, Prop_Send, "m_bTouched", true);
 			SetEntityCollisionGroup(entity, 1);
 		}
 	}
@@ -432,7 +438,7 @@ public void FatherGrigori_ClotThink(int iNPC)
 				npc.m_flDoingAnimation = GetGameTime() + 1.5;
 	//			npc.AddGesture("ACT_SIGNAL1");
 				npc.PlayPullSound();
-				FatherGrigori_IOC_Invoke(npc.index, closest);
+				FatherGrigori_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 			}
 			else if (npc.Anger)
 			{
@@ -441,7 +447,7 @@ public void FatherGrigori_ClotThink(int iNPC)
 				npc.m_flNextTeleport = GetGameTime() + 7.0;
 				npc.m_flDoingAnimation = GetGameTime() + 1.5;
 				npc.PlayPullSound();
-				FatherGrigori_IOC_Invoke(npc.index, closest);
+				FatherGrigori_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 			}
 		}
 		//Target close enough to hit
@@ -480,22 +486,22 @@ public void FatherGrigori_ClotThink(int iNPC)
 							if(EscapeModeForNpc)
 							{
 								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_CLUB, -1, _, vecHit);
 							}
 							else
 							{
 								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_CLUB, -1, _, vecHit);
 							}
 							
 							Custom_Knockback(npc.index, target, 500.0);
 							
 							// Hit particle
-							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+							
 									
 							// Hit sound
 							npc.PlayMeleeHitSound();
@@ -560,7 +566,12 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 		float nphi = ReadPackFloat(data);
 		int Ionrange = ReadPackCell(data);
 		int Iondamage = ReadPackCell(data);
-		int client = ReadPackCell(data);
+		int client = EntRefToEntIndex(ReadPackCell(data));
+		
+		if(!IsValidEntity(client))
+		{
+			return;
+		}
 		
 		if (Iondistance > 0)
 		{
@@ -647,14 +658,16 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 		WritePackFloat(nData, nphi);
 		WritePackCell(nData, Ionrange);
 		WritePackCell(nData, Iondamage);
-		WritePackCell(nData, client);
+		WritePackCell(nData, EntIndexToEntRef(client));
 		ResetPack(nData);
 		
 		if (Iondistance > -50)
 		CreateTimer(0.1, FatherGrigori_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
 		else
 		{
-			makeexplosion(-1, -1, startPosition, "", 150, 300);
+			startPosition[2] += 25.0;
+			makeexplosion(client, client, startPosition, "", 150, 175);
+			startPosition[2] -= 25.0;
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
 			position[0] = startPosition[0];
@@ -707,26 +720,30 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 		}
 }
 
-public void FatherGrigori_IOC_Invoke(int client, int enemy)
+public void FatherGrigori_IOC_Invoke(int ref, int enemy)
 {
-	static float distance=87.0 // /29 for duartion till boom
-	static float IOCDist=250.0
-	static float IOCdamage=10.0
-	
-	float vecTarget[3];
-	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vecTarget);	
-	
-	Handle data = CreateDataPack();
-	WritePackFloat(data, vecTarget[0]);
-	WritePackFloat(data, vecTarget[1]);
-	WritePackFloat(data, vecTarget[2]);
-	WritePackCell(data, distance); // Distance
-	WritePackFloat(data, 0.0); // nphi
-	WritePackCell(data, IOCDist); // Range
-	WritePackCell(data, IOCdamage); // Damge
-	WritePackCell(data, client);
-	ResetPack(data);
-	FatherGrigori_IonAttack(data);
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
+	{
+		static float distance=87.0 // /29 for duartion till boom
+		static float IOCDist=250.0
+		static float IOCdamage=10.0
+		
+		float vecTarget[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", vecTarget);	
+		
+		Handle data = CreateDataPack();
+		WritePackFloat(data, vecTarget[0]);
+		WritePackFloat(data, vecTarget[1]);
+		WritePackFloat(data, vecTarget[2]);
+		WritePackCell(data, distance); // Distance
+		WritePackFloat(data, 0.0); // nphi
+		WritePackCell(data, IOCDist); // Range
+		WritePackCell(data, IOCdamage); // Damge
+		WritePackCell(data, ref);
+		ResetPack(data);
+		FatherGrigori_IonAttack(data);
+	}
 		
 }
 

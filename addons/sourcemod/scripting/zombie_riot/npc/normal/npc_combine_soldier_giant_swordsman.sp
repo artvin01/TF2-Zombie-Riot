@@ -165,6 +165,8 @@ methodmap CombineGaint < CClotBody
 		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_GIANT_SWORDSMAN;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -178,8 +180,6 @@ methodmap CombineGaint < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, CombineGaint_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, CombineGaint_ClotThink);
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 120.0;
@@ -368,14 +368,14 @@ public void CombineGaint_ClotThink(int iNPC)
 								{
 									
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
 									
 									Custom_Knockback(npc.index, target, 750.0);
 									
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();
@@ -416,9 +416,8 @@ public Action CombineGaint_ClotDamaged(int victim, int &attacker, int &inflictor
 		
 	CombineGaint npc = view_as<CombineGaint>(victim);
 	
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.75;
-
+	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
+		damage *= 0.15;
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{

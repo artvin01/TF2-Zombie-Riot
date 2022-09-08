@@ -36,12 +36,42 @@ void SawRunner_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_IdleChainsaw));   i++) { PrecacheSound(g_IdleChainsaw[i]);   }
 	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSound(g_IdleMusic[i]);   }
-	PrecacheModel("models/zombie_riot/cof/sawrunner_1.mdl");
+	PrecacheModel("models/zombie_riot/cof/sawrunner_2.mdl");
 }
 
 static float fl_PlayIdleAlertSound[MAXENTITIES];
 static float fl_PlayMusicSound[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+
+static char[] GetSawRunnerHealth()
+{
+	int health = 90;
+	
+	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	
+	float temp_float_hp = float(health);
+	
+	if(CurrentRound+1 < 30)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.20));
+	}
+	else if(CurrentRound+1 < 45)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.25));
+	}
+	else
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+	}
+	
+	health /= 2;
+	
+	health = RoundToCeil(float(health) * 0.75);
+	
+	char buffer[16];
+	IntToString(health, buffer, sizeof(buffer));
+	return buffer;
+}
 
 methodmap SawRunner < CClotBody
 {
@@ -114,7 +144,7 @@ methodmap SawRunner < CClotBody
 	
 	public SawRunner(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_1.mdl", "1.5", "1500", ally, false, true, true));
+		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_2.mdl", "1.5", GetSawRunnerHealth(), ally, false, true, true));
 		
 		i_NpcInternalId[npc.index] = SAWRUNNER;
 		
@@ -338,11 +368,11 @@ public void SawRunner_ClotThink(int iNPC)
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 3000000000.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 999999.0, DMG_CLUB, -1, _, vecHit);
 									}
 									
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();
@@ -423,7 +453,7 @@ public void SawRunner_NPCDeath(int entity)
 		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
 		
 //		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
-		DispatchKeyValue(entity_death, "model", "models/zombie_riot/cof/sawrunner_1.mdl");
+		DispatchKeyValue(entity_death, "model", "models/zombie_riot/cof/sawrunner_2.mdl");
 
 		DispatchSpawn(entity_death);
 		

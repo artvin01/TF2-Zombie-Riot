@@ -558,13 +558,19 @@
 	"Cash Gained This Wave"
 	{
 		"#format"	"{1:d}"
-		"en" 		"Gained {1} This Wave!"
+		"en" 		"Gained {1} cash this wave!"
 		"de"		"Gewinn {1} dieser Runde!"
 		"it"		"Ricevuto {1} in questa ondata!"
 		"ru"		"Получено +{1} кредитов за эту волну!"
 		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
 		"es"		"Encontraste {1} en esta oleada!"
 		"fr"		"Vous avez gagnez {1} Cette vague!"
+	}
+	"Cash Gained This Wave Village"
+	{
+		"#format"	"{1:d}"
+		"en" 		"Gained an extra {1} cash this wave thanks to Villages!"
+		"ru" 		"Получено дополнительно +{1} кредитов за волну благодаря деревням!"
 	}
 	"Picking Up Building"
 	{
@@ -847,9 +853,9 @@
 	}
 	"Gamemode Help Explained"
 	{
-		"en" 		"You survive against waves of zombies upto usually 60 waves.\nBuy guns and barricade yourself to survive.\nMake sure to play as a team and don't save up all the time.\nOr else you will be the downfall of your team."
-		"ru" 		"Вам предстоит выжить против 60 волн зомби.\nПокупайте оружие и баррикады, чтобы выжить.\nУбедитесь, что вы играете в команде и не копили деньги понапрасну.\nИначе вы станете гибелью вашей команды."
-		"de"		"Du überlebst gegen wellen von Zombies, bis zu 60 runde.\nKaufe Waffen und Barrikade für dich selber um zu überleben.\nSei sicher mit deinem Team zu spielen und Sparre nicht die ganze zeit!\nOder sie werden der Untergang für ihr Team sein."
+		"en" 		"You survive against waves of zombies upto usually 60 waves.\nBuy guns and barricade yourself to survive.\nMake sure to play as a team and don't save up all the time.\nOr else you will be the downfall of your team.\n\n If you dont know what to buy, Then buy any high cost weapon of your choice and get upgrades for that weapon type in the upgrade tab.\nAlso buy passive upgrades to have more surviveability.\nThe rest will come to you naturally."
+		"ru" 		"Вам предстоит выжить против 60 волн зомби.\nПокупайте оружие и баррикады, чтобы выжить.\nУбедитесь, что вы играете в команде и не копили деньги понапрасну.\nИначе вы станете гибелью вашей команды.\n\n Если вы не знаете, что купить, купите любое дорогое оружие по своему выбору и получите улучшения для этого типа оружия на вкладке УЛУЧШЕНИЯ.\nТакже покупайте пассивные улучшения, чтобы повысить выживаемость.\nОстальное придёт само собой."
+	//	"de"		"Du überlebst gegen wellen von Zombies, bis zu 60 runde.\nKaufe Waffen und Barrikade für dich selber um zu überleben.\nSei sicher mit deinem Team zu spielen und Sparre nicht die ganze zeit!\nOder sie werden der Untergang für ihr Team sein."
 	}
 	"Command Help Explained"
 	{
@@ -860,7 +866,7 @@
 	"Difficulty Help Explained"
 	{
 		"en" 		"Each Higher Difficulty is harder and gives but no extra cash and different zombie types/mutations.\nThey are there as a challenge but reward almost upto 3x the EXP.\nMap difficulties are arbitrary and only state how hard the layout is."
-		"ru" 		"Более высокая сложность - сложнее и даёт доп. деньги и имеет новые типы зомби.\nЭто как испытание вашего мастерства, но в нём вы получите почти в 3 раза больше опыта.\nСложности на картах произвольны и только указывают, насколько сложны структуры врагов."
+		"ru" 		"Более высокая сложность - сложнее и даёт доп. деньги и имеет новые типы зомби.\nЭто как испытание, но в нём вы получите почти в 3 раза больше опыта.\nСложности на картах случайны и только указывают, насколько сложны структуры врагов."
 		"de"		"Jeder höhere Schwierigkeitsgrad ist schwerer aber gibt dir kein extra Geld, aber Neue Zombie Typen/Mutationen.\nDie sind eine Herausforderung aber geben bis zu 3-mal mehr XP.\n Karten Schwierigkeitsgrade sind willkürlich und zustand wie hart das Layout ist."
 	}
 	"Level Help Explained"
@@ -884,7 +890,7 @@
 	"Building Explained"
 	{
 		"en" 		"You can use machines by pressing R on them.\nPeople can mount buildings and will have an icon above their head.\nThis allows you to press R on them for the same effect.\nRegen icon: Ammo box.\nArmour icon: Armour Table.\nKing icon: Perk Machine.\nPunch icon: Pack-A-Punch.\nVampire icon: Healing Station."
-		"ru" 		"Для использования построек, нажмите R.\nЛюди могут поднимать свои постройки, и над их головой будет значок.\nЭто позволит вам нажать на них R для того же эффекта.\nЗначок реген.: Ящик с боеприпасами.\nБроня: Верстак брони.\nКороль: Перк-машина.\nКулак: Улучшайзер.\nВампир: Лечебная станция."
+		"ru" 		"Для использования построек, нажмите R.\nЛюди могут поднимать свои постройки, и над их головой будет значок.\nЭто позволит вам нажать на них R для того же действия.\nЗначок реген.: Ящик с боеприпасами.\nБроня: Верстак брони.\nКороль: Перк-машина.\nКулак: Улучшайзер.\nВампир: Лечебная станция."
 		"de"		"Sie können Maschinen mit NACHLADEN benutzen.\nLeute können ihre Gebäude aufheben und haben ein Symbol auf deren Kopf.\nDies ermöglicht Ihnen mit NACHLADEN für denselben Effekt.\nRegen Symbol: Munitionsbox\nRüstung Symbol: Rüstungstisch\nKönig Symbol: Perkmachine\nFaust Symbol: Pack-A-Punch.\nVampire Symbol: Heilstation."
 	}
 	"Escape Explained"
@@ -914,33 +920,31 @@
 	"Claim this building"
 	{
 		"en"		"Claim this building with RELOAD while holding a wrench."
-		"ru"		"Эта постройка может принадлежать вам - нажмите ПЕРЕЗАРЯДКУ, держа в руках гаечный ключ."
+		"ru"		"Эта постройка может принадлежать вам - нажмите ПЕРЕЗАРЯДКА, держа в руках гаечный ключ."
 		"de"		"Beanspruchen Sie dieses Gebäude mit NACHLADEN mit einem Schlüsselwerkzeug."
 	}
 	"Ammobox Tooltip"
 	{
 		"en" 		"Press RELOAD on the Ammobox to gain Ammo for your current holding weapon."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКУ на ящике с боеприпасами, чтобы получить боеприпасы для текущего оружия."
+		"ru" 		"Нажмите ПЕРЕЗАРЯДКА на ящике с боеприпасами, чтобы получить боеприпасы для текущего оружия."
 		"de"		"Drücke NACHLADEN an der Munitionsbox um Munition für deine aktuelle Waffe zubekommen."
 	}
 	"Armortable Tooltip"
 	{
 		"en" 		"Press RELOAD on the Armortable to gain Armor."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКУ на верстаке брони, чтобы получить броню."
+		"ru" 		"Нажмите ПЕРЕЗАРЯДКА на верстаке брони, чтобы получить броню."
 		"de"		"Drücke NACHLADEN an dem Rüstungstisch um Rüstung zubekommen."
 	}
 	"Perkmachine Tooltip"
 	{
 		"en" 		"Press RELOAD on the Perkmachine to gain a strong temporary perk."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКУ на перк-машине, чтобы получить сильный временный случайный перк."
+		"ru" 		"Нажмите ПЕРЕЗАРЯДКА на перк-машине, чтобы получить мощный временный перк."
 //		"de"		"Drücke NACHLADEN an der Perkmachine um einen starken temporären zufälligen Perk zubekommen."
 	}
 	"PackAPunch Tooltip"
 	{
-		"#format"	"{1:d}"
-		"en" 		"Press RELOAD To Pack-a-Punch your current holding weapon. Cost: [{1}]"
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКУ для улучшения оружия, которое вы держите. Цена: [{1}]"
-		"de"		"Drücke NACHLADEN mit ihrer aktuelle Waffe um zu Pack-A-Punchen Kosten: [{1]]"
+		"en" 		"Press RELOAD To Pack-a-Punch your current holding weapon."
+		"ru" 		"Нажмите ПЕРЕЗАРЯДКА для улучшения оружия, которое вы держите."
 	}
 	"Packed"
 	{
@@ -951,7 +955,7 @@
 	"Not Enough Money To Pap"
 	{
 		"en" 		"You do not have enough money to Pack-a-Punch your Weapon."
-		"ru" 		"У вас не хватает денег на улучшение вашего оружия."
+		"ru" 		"У вас не хватает кредитов на улучшение вашего оружия."
 		"de"		"Sie haben nicht genügend Geld um ihre Waffe zu Pack-A-Punchen."
 	}
 	"Cannot Pap this"
@@ -963,7 +967,7 @@
 	"Revive Teammate tooltip"
 	{
 		"en" 		"Hold RELOAD to revive this dying teammate."
-		"ru" 		"Удерживайте ПЕРЕЗАРЯДКУ, чтобы оживить умирающего союзника."
+		"ru" 		"Удерживайте ПЕРЕЗАРЯДКА, чтобы оживить умирающего союзника."
 		"de"		"Halten NACHLADEN, um ihren absterben Kameraden zu beleben."
 	}
 	"Bored or Dead"
@@ -1001,6 +1005,11 @@
 		"en" 		"You can't mount this."
 		"ru" 		"Вы не можете установить это."
 		"de"		"Das kannst du nicht aufheben."
+	}
+	"Village Upgrade Tooltip"
+	{
+		"en" 		"Press RELOAD to upgrade your village."
+		"ru" 		"Нажмите ПЕРЕЗАРЯДКА, чтобы улучшить свою деревню."
 	}
 	"Pong"
 	{
@@ -1114,9 +1123,9 @@
 	}
 	"All Items are 20%% off here!"
 	{
-		"en"		"All Items are 20%% off here!"
-		"ru"		"На все товары скидка 20%%!"
-		"de"		"All Gegenstände sind 20%% off hier!"
+		"en"		"All Items are 20%% off here! {$}\nOne Item is 30%% off! {$$}"
+		"ru"		"На все товары скидка 20%%! {$}\nНа один товар скидка 30%! {$$}"
+//		"de"		"All Gegenstände sind 20%% off hier!"
 	}	
 	"Can Be Pack-A-Punched"
 	{
@@ -1157,7 +1166,7 @@
 	"Be sure to spend all your starting cash!"
 	{
 		"en"		"Be sure to spend all your starting cash!"
-		"ru"		"Не забудьте потратить все свои начальные деньги!"
+		"ru"		"Не забудьте потратить все свои кредиты!"
 		"de"		"Sein sie sicher das sie ihr ganzes Startgeld verbrauchen!"
 	}
 	"Difficulty set to"
@@ -1210,5 +1219,16 @@
 	{		
 		"en"		"Your MOUSE3 Ability is ready again to be used!"
 		"ru"		"Ваша способность MOUSE3 снова готова к использованию!"
+	}
+	"You got your money back npc"
+	{
+		"#format"	"{1:d}"
+		"en"		"Someone bought something else for the npc, You get [{1}] Cash back in return as a compesation."
+		"ru"		"Кто-то купил что-то другое для NPC, вы получили [{1}] кредитов взамен в качестве компенсации."
+	}
+	"A Miniboss has Spawned.."
+	{
+		"en"		"A Miniboss has Spawned.."
+		"ru"		"Мини-босс появился.."
 	}
 }

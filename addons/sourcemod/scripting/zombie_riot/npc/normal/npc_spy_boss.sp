@@ -204,6 +204,8 @@ methodmap SpyMainBoss < CClotBody
 		
 		i_NpcInternalId[npc.index] = SPY_MAIN_BOSS;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -527,23 +529,23 @@ public void SpyMainBoss_ClotThink(int iNPC)
 							if(!npc.Anger)
 							{
 								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 180.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 180.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_SLASH|DMG_CLUB);	
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_CLUB, -1, _, vecHit);	
 							}
 							else if(npc.Anger)
 							{
 								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 7500.0, DMG_SLASH|DMG_CLUB);	
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 7500.0, DMG_CLUB, -1, _, vecHit);	
 							}
 								
 							if(npc.m_iAttacksTillMegahit >= 3)
 							{
 								Custom_Knockback(npc.index, target, 500.0);
 								
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 										
 								npc.m_iAttacksTillMegahit = 0;
 										
@@ -551,7 +553,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 									
 							npc.m_iAttacksTillMegahit += 1;
 							// Hit particle
-							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+							
 								
 							// Hit sound
 							npc.PlayMeleeHitSound();
@@ -591,22 +593,22 @@ public Action SpyMainBoss_ClotDamaged(int victim, int &attacker, int &inflictor,
 	if(npc.m_flDead_Ringer < GetGameTime())
 	{
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 		
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 0);
+		SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 1);
 		
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 0);
+		SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 1);
 		
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 0);
+		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 1);
 		
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 0);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 		
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 0);
+		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 1);
 		
 		npc.m_flDead_Ringer_Invis = GetGameTime() + 2.0;
 		npc.m_flDead_Ringer = GetGameTime() + 13.0;
@@ -622,7 +624,7 @@ public Action SpyMainBoss_ClotDamaged(int victim, int &attacker, int &inflictor,
 			npc.m_blPlayHurtAnimation = true;
 		}
 	}
-	else
+	else if(!Building_DoesPierce(attacker))
 	{
 		damage *= 0.1;
 	}

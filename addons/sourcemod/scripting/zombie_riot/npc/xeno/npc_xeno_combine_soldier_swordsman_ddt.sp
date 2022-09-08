@@ -162,6 +162,8 @@ methodmap XenoCombineDDT < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_DDT;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -312,20 +314,20 @@ public void XenoCombineDDT_ClotThink(int iNPC)
 									if(EscapeModeForNpc)
 									{
 										if(target <= MaxClients)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 45.0, DMG_SLASH|DMG_CLUB);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 45.0, DMG_CLUB, -1, _, vecHit);
 										else
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_SLASH|DMG_CLUB);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_CLUB, -1, _, vecHit);
 									}
 									else
 									{
 										if(target <= MaxClients)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 35.0, DMG_SLASH|DMG_CLUB);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 35.0, DMG_CLUB, -1, _, vecHit);
 										else
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_SLASH|DMG_CLUB);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_CLUB, -1, _, vecHit);
 									}
 									
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();

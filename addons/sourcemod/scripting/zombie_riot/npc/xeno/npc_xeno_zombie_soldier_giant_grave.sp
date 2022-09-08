@@ -154,6 +154,8 @@ methodmap XenoSoldierGiant < CClotBody
 				
 		i_NpcInternalId[npc.index] = XENO_SOLDIER_ZOMBIE_BOSS;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
@@ -307,16 +309,16 @@ public void XenoSoldierGiant_ClotThink(int iNPC)
 								{
 									
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 135.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 135.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 1000.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 1000.0, DMG_CLUB, -1, _, vecHit);
 									
 									
 									Custom_Knockback(npc.index, target, 750.0);
 									
 									
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();
@@ -377,10 +379,10 @@ public void XenoSoldierGiant_ClotDamagedPost(int victim, int attacker, int infli
 	XenoSoldierGiant npc = view_as<XenoSoldierGiant>(victim);
 	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
-	if(0.9-(npc.g_TimesSummoned*0.1) > ratio)
+	if(0.9-(npc.g_TimesSummoned*0.2) > ratio)
 	{
 		npc.g_TimesSummoned++;
-		maxhealth /= 13;
+		maxhealth /= 7;
 		for(int i; i<1; i++)
 		{
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);

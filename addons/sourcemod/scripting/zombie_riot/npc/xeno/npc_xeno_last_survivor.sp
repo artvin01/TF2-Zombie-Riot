@@ -232,6 +232,8 @@ methodmap XenoFatherGrigori < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_FATHER_GRIGORI;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_WALK_AIM_RIFLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -385,14 +387,20 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 		
 		if(npc.m_flNextRangedAttack < GetGameTime() && npc.m_flDoingAnimation < GetGameTime())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
 			if (!npc.Anger)
 			{
 				npc.FaceTowards(vecTarget, 1000.0);
 				npc.m_flNextRangedAttack = GetGameTime() + 1.5;
 				npc.m_flDoingAnimation = GetGameTime() + 1.0;
 				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");
-				npc.FireRocket(vPredictedPos, 20.0, 800.0, "models/weapons/w_bullet.mdl", 2.0);	
+				
+				float projectile_speed = 800.0;
+				
+				vecTarget = PredictSubjectPositionForProjectiles(npc, closest, projectile_speed);
+							
+				npc.PlayMeleeSound();
+				
+				npc.FireRocket(vecTarget, 20.0, projectile_speed, "models/weapons/w_bullet.mdl", 2.0);	
 				npc.PlayRangedSound();
 			}
 			else if (npc.Anger)
@@ -400,8 +408,14 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 1000.0);
 				npc.m_flNextRangedAttack = GetGameTime() + 1.5;
 				npc.m_flDoingAnimation = GetGameTime() + 1.0;
-				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");
-				npc.FireRocket(vPredictedPos, 20.0, 800.0, "models/weapons/w_bullet.mdl", 2.0);	
+				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");		
+				float projectile_speed = 800.0;
+				
+				vecTarget = PredictSubjectPositionForProjectiles(npc, closest, projectile_speed);
+							
+				npc.PlayMeleeSound();
+				
+				npc.FireRocket(vecTarget, 20.0, projectile_speed, "models/weapons/w_bullet.mdl", 2.0);	
 				npc.PlayRangedSound();
 			}
 		}
@@ -458,7 +472,7 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 					npc.m_flDoingAnimation = GetGameTime() + 1.5;
 		//			npc.AddGesture("ACT_SIGNAL1");
 					npc.PlayPullSound();
-					XenoFatherGrigori_IOC_Invoke(npc.index, closest);
+					XenoFatherGrigori_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 				}
 				else if (npc.Anger)
 				{
@@ -467,7 +481,7 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 					npc.m_flNextTeleport = GetGameTime() + 7.0;
 					npc.m_flDoingAnimation = GetGameTime() + 1.5;
 					npc.PlayPullSound();
-					XenoFatherGrigori_IOC_Invoke(npc.index, closest);
+					XenoFatherGrigori_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 				}
 			}
 		}
@@ -507,22 +521,22 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 							if(EscapeModeForNpc)
 							{
 								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_CLUB, -1, _, vecHit);
 							}
 							else
 							{
 								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_CLUB, -1, _, vecHit);
 							}
 							
 							Custom_Knockback(npc.index, target, 500.0);
 							
 							// Hit particle
-							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+							
 									
 							// Hit sound
 							npc.PlayMeleeHitSound();
@@ -587,7 +601,11 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 		float nphi = ReadPackFloat(data);
 		int Ionrange = ReadPackCell(data);
 		int Iondamage = ReadPackCell(data);
-		int client = ReadPackCell(data);
+		int client = EntRefToEntIndex(ReadPackCell(data));
+		if(!IsValidEntity(client))
+		{
+			return;
+		}
 		
 		if (Iondistance > 0)
 		{
@@ -674,14 +692,16 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 		WritePackFloat(nData, nphi);
 		WritePackCell(nData, Ionrange);
 		WritePackCell(nData, Iondamage);
-		WritePackCell(nData, client);
+		WritePackCell(nData, EntIndexToEntRef(client));
 		ResetPack(nData);
 		
 		if (Iondistance > -50)
 		CreateTimer(0.1, XenoFatherGrigori_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
 		else
 		{
-			makeexplosion(-1, -1, startPosition, "", 150, 300);
+			startPosition[2] += 25.0;
+			makeexplosion(client, client, startPosition, "", 150, 175);
+			startPosition[2] -= 25.0;
 			TE_SetupExplosion(startPosition, gExplosive1_Xeno, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
 			position[0] = startPosition[0];
@@ -734,26 +754,30 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 		}
 }
 
-public void XenoFatherGrigori_IOC_Invoke(int client, int enemy)
+public void XenoFatherGrigori_IOC_Invoke(int ref, int enemy)
 {
-	static float distance=87.0 // /29 for duartion till boom
-	static float IOCDist=250.0
-	static float IOCdamage=10.0
-	
-	float vecTarget[3];
-	GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecTarget);	
-	
-	Handle data = CreateDataPack();
-	WritePackFloat(data, vecTarget[0]);
-	WritePackFloat(data, vecTarget[1]);
-	WritePackFloat(data, vecTarget[2]);
-	WritePackCell(data, distance); // Distance
-	WritePackFloat(data, 0.0); // nphi
-	WritePackCell(data, IOCDist); // Range
-	WritePackCell(data, IOCdamage); // Damge
-	WritePackCell(data, client);
-	ResetPack(data);
-	XenoFatherGrigori_IonAttack(data);
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
+	{
+		static float distance=87.0 // /29 for duartion till boom
+		static float IOCDist=250.0
+		static float IOCdamage=10.0
+		
+		float vecTarget[3];
+		GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecTarget);	
+		
+		Handle data = CreateDataPack();
+		WritePackFloat(data, vecTarget[0]);
+		WritePackFloat(data, vecTarget[1]);
+		WritePackFloat(data, vecTarget[2]);
+		WritePackCell(data, distance); // Distance
+		WritePackFloat(data, 0.0); // nphi
+		WritePackCell(data, IOCDist); // Range
+		WritePackCell(data, IOCdamage); // Damge
+		WritePackCell(data, ref);
+		ResetPack(data);
+		XenoFatherGrigori_IonAttack(data);
+	}
 }
 
 public Action XenoFatherGrigori_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

@@ -401,6 +401,17 @@ public void Sdkcall_Load_Lagcomp()
 
 public void Manual_Impulse_101(int client, int health)
 {
+	if(f_MedigunChargeSave[client] == 0.0)
+	{
+		int weapon_before = GetPlayerWeaponSlot(client, 1); //Secondary
+		if(IsValidEntity(weapon_before))
+		{
+			if(HasEntProp(weapon_before, Prop_Send, "m_flChargeLevel"))
+			{
+				f_MedigunChargeSave[client] = GetEntPropFloat(weapon_before, Prop_Send, "m_flChargeLevel");
+			}
+		}
+	}
 	SetConVarInt(sv_cheats, 1, false, false);
 	
 	SDKCall(g_hImpulse, client, 101);
@@ -438,6 +449,17 @@ public void Manual_Impulse_101(int client, int health)
 	SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 0.0);
 	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
 	OnWeaponSwitchPost(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
+	
+	
+	int weapon = GetPlayerWeaponSlot(client, 1); //Secondary
+	if(IsValidEntity(weapon))
+	{
+		if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
+		{
+			SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client]);
+			f_MedigunChargeSave[client] = 0.0;
+		}
+	}
 	
 	SetEntityHealth(client, health);
 }

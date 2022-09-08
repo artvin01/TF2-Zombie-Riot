@@ -787,20 +787,20 @@ public void Kahmlstein_ClotThink(int iNPC)
 										Bonus_damage = 1.5;
 									}
 									fl_kahml_main_melee_damage[npc.index] *= Bonus_damage;
-									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index], DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
 								}
 								else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 5.0*fl_kahml_main_melee_damage[npc.index], DMG_SLASH|DMG_CLUB);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 5.0*fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
 								//fastmelee
 								//if(target <= MaxClients)
-								//	SDKHooks_TakeDamage(target, npc.index, npc.index, 0.1 * fl_kahml_main_melee_damage[npc.index], DMG_SLASH|DMG_CLUB);
+								//	SDKHooks_TakeDamage(target, npc.index, npc.index, 0.1 * fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
 								//else
-								//	SDKHooks_TakeDamage(target, npc.index, npc.index, 0.3 * fl_kahml_main_melee_damage[npc.index], DMG_SLASH|DMG_CLUB);
+								//	SDKHooks_TakeDamage(target, npc.index, npc.index, 0.3 * fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
 								
-									Custom_Knockback(npc.index, target, fl_kahml_knockback[npc.index]);
-									npc.PlayMeleeHitSound();		
+								Custom_Knockback(npc.index, target, fl_kahml_knockback[npc.index]);
+								npc.PlayMeleeHitSound();		
 								
-								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+								
 								
 								// Hit sound
 								npc.PlayMeleeHitSound();
@@ -875,13 +875,13 @@ public void Kahmlstein_ClotThink(int iNPC)
 										Bonus_damage = 1.5;
 									}
 									fl_kahml_main_melee_damage[npc.index] *= Bonus_damage;
-									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index], DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
 								}
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index], DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
 								
 								
-								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+								
 								
 								
 							} 

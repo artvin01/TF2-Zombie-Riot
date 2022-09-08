@@ -15,6 +15,10 @@ static int weapon_id[MAXPLAYERS+1]={0, ...};
 static float Original_Atackspeed[MAXPLAYERS+1]={0.0, ...};
 static int Ark_Hits[MAXPLAYERS+1]={0, ...};
 
+static int Ark_Level[MAXPLAYERS+1]={0, ...};
+
+static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
+
 #define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
 #define SOUND_WAND_SHOT_AUTOAIM 	"weapons/man_melter_fire.wav"
 #define SOUND_WAND_SHOT_AUTOAIM_ABILITY	"weapons/man_melter_fire_crit.wav"
@@ -35,6 +39,7 @@ void Ark_autoaim_Map_Precache()
 	PrecacheModel(ENERGY_BALL_MODEL);
 	PrecacheSound(SOUND_WAND_SHOT);
 	PrecacheSound(SOUND_ZAP);
+	Zero(f_AniSoundSpam);
 }
 
 public void Ark_empower_ability(int client, int weapon, bool crit, int slot) // the main ability used to recover the unique mana needed to for the weapon to fire projectiles
@@ -44,7 +49,8 @@ public void Ark_empower_ability(int client, int weapon, bool crit, int slot) // 
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 
-
+		Ark_Level[client] = 0;
+		
 		weapon_id[client] = weapon;
 
 		Ark_Hits[client] = 6;
@@ -54,8 +60,111 @@ public void Ark_empower_ability(int client, int weapon, bool crit, int slot) // 
 		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 		if(address != Address_Null)
 			Original_Atackspeed[client] = TF2Attrib_GetValue(address);
+		float flPos[3]; // original
+		float flAng[3]; // original	
+		GetAttachment(client, "effect_hand_r", flPos, flAng);
+				
+		int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 1.0);
+				
+		SetParent(client, particler, "effect_hand_r");
 		
 		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] * 0.75);
+				
+		CreateTimer(3.0, Reset_Ark_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
+
+		//PrintToChatAll("test empower");
+
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+	}
+}
+
+public void Ark_empower_ability_2(int client, int weapon, bool crit, int slot) // the main ability used to recover the unique mana needed to for the weapon to fire projectiles
+{
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		Ability_Apply_Cooldown(client, slot, 15.0);
+		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
+
+		Ark_Level[client] = 1;
+		
+		weapon_id[client] = weapon;
+
+		Ark_Hits[client] = 10;
+				
+		Original_Atackspeed[client] = 1.0;
+				
+		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
+		if(address != Address_Null)
+			Original_Atackspeed[client] = TF2Attrib_GetValue(address);
+		
+		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] * 0.75);
+		
+		float flPos[3]; // original
+		float flAng[3]; // original
+		
+		GetAttachment(client, "effect_hand_r", flPos, flAng);
+				
+		int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 1.0);
+				
+		SetParent(client, particler, "effect_hand_r");
+				
+		CreateTimer(3.0, Reset_Ark_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
+
+		//PrintToChatAll("test empower");
+
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+	}
+}
+
+public void Ark_empower_ability_3(int client, int weapon, bool crit, int slot) // the main ability used to recover the unique mana needed to for the weapon to fire projectiles
+{
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		Ability_Apply_Cooldown(client, slot, 15.0);
+		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
+
+		Ark_Level[client] = 2;
+		
+		weapon_id[client] = weapon;
+
+		Ark_Hits[client] = 10;
+				
+		Original_Atackspeed[client] = 1.0;
+				
+		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
+		if(address != Address_Null)
+			Original_Atackspeed[client] = TF2Attrib_GetValue(address);
+		
+		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] * 0.75);
+		float flPos[3]; // original
+		float flAng[3]; // original
+		GetAttachment(client, "effect_hand_r", flPos, flAng);
+			
+		int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 1.0);
+				
+		SetParent(client, particler, "effect_hand_r");
 				
 		CreateTimer(3.0, Reset_Ark_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
 
@@ -440,7 +549,7 @@ public Action Ark_Homing_Repeat_Timer(Handle timer, int ref)
 						if (!AngleWithinTolerance(rocketAngle, tmpAngles, RWI_HomeAngle[entity]))
 						{
 							RMR_CurrentHomingTarget[entity] = -1;
-							}
+						}
 					}
 				}
 			}
@@ -592,14 +701,63 @@ public Action Reset_Ark_Attackspeed(Handle cut_timer, int client)//code that res
 
 
 //stuff that gets activated upon taking damage
-float Player_OnTakeDamage_Ark(int victim, float &damage)
+float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, int weapon)
 {
 	if (Ability_Check_Cooldown(victim, 2) >= 14.0 && Ability_Check_Cooldown(victim, 2) < 16.0)
 	{
+		float damage_reflected = damage;
 		//PrintToChatAll("parry worked");
+		if(Ark_Level[victim] == 2)
+		{
+			damage_reflected *= 10.0;
+			
+			Ark_Hits[victim] = 20;
+		}
+		else if(Ark_Level[victim] == 1)
+		{
+			damage_reflected *= 5.0;
+			
+			Ark_Hits[victim] = 12;			
+		}
+		else
+		{
+			damage_reflected *= 2.0;
+			
+			Ark_Hits[victim] = 12;
+		}
 		
-		Ark_Hits[victim] = 12;
-		ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
+		if(f_AniSoundSpam[victim] < GetGameTime())
+		{
+			f_AniSoundSpam[victim] = GetGameTime() + 0.2;
+			ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
+		}
+		
+		static float angles[3];
+		GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
+		float vecForward[3];
+		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+		static float Entity_Position[3];
+		Entity_Position = WorldSpaceCenter(attacker);
+		
+		float flPos[3]; // original
+		float flAng[3]; // original
+		
+		GetAttachment(victim, "effect_hand_r", flPos, flAng);
+		
+		int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.1);
+		
+		
+		DataPack pack = new DataPack();
+		pack.WriteCell(EntIndexToEntRef(particler));
+		pack.WriteFloat(Entity_Position[0]);
+		pack.WriteFloat(Entity_Position[1]);
+		pack.WriteFloat(Entity_Position[2]);
+		
+		RequestFrame(TeleportParticleArk, pack);
+	
+		
+		SDKHooks_TakeDamage(attacker, victim, victim, damage_reflected, DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);
+		
 		return damage * 0.1;
 	}
 	else 
@@ -607,4 +765,20 @@ float Player_OnTakeDamage_Ark(int victim, float &damage)
 		 //PrintToChatAll("parry failed");
 		return damage;
 	}
+}
+
+void TeleportParticleArk(DataPack pack)
+{
+	pack.Reset();
+	int particleEntity = EntRefToEntIndex(pack.ReadCell());
+	float Vec_Pos[3];
+	Vec_Pos[0] = pack.ReadFloat();
+	Vec_Pos[1] = pack.ReadFloat();
+	Vec_Pos[2] = pack.ReadFloat();
+	
+	if(IsValidEntity(particleEntity))
+	{
+		TeleportEntity(particleEntity, Vec_Pos);
+	}
+	delete pack;
 }

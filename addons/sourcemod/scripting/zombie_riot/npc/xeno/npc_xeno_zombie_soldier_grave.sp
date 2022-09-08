@@ -135,6 +135,8 @@ methodmap XenoSoldier < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_SOLDIER_ROCKET_ZOMBIE;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -260,17 +262,21 @@ public void XenoSoldier_ClotThink(int iNPC)
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					//Look at target so we hit.
-					npc.FaceTowards(vecTarget, 1500.0);
-					
 					//Can we attack right now?
 					if(npc.m_flNextMeleeAttack < GetGameTime())
 					{
+						npc.FaceTowards(vecTarget, 20000.0);
 						//Play attack anim
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 						
 						npc.PlayMeleeSound();
-						npc.FireRocket(vecTarget, 26.0, 1000.0);
-						npc.m_flNextMeleeAttack = GetGameTime() + 1.5;
+						
+						float projectile_speed = 1000.0;
+						
+						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
+						
+						npc.FireRocket(vecTarget, 26.0, projectile_speed);
+						npc.m_flNextMeleeAttack = GetGameTime() + 2.0;
 						npc.m_flReloadIn = GetGameTime() + 1.0;
 					}
 					PF_StopPathing(npc.index);

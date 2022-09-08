@@ -130,6 +130,8 @@ methodmap Soldier < CClotBody
 		
 		i_NpcInternalId[npc.index] = SOLDIER_ROCKET_ZOMBIE;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -255,7 +257,7 @@ public void Soldier_ClotThink(int iNPC)
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					//Look at target so we hit.
-					npc.FaceTowards(vecTarget, 1500.0);
+					npc.FaceTowards(vecTarget, 20000.0);
 					
 					//Can we attack right now?
 					if(npc.m_flNextMeleeAttack < GetGameTime())
@@ -265,7 +267,7 @@ public void Soldier_ClotThink(int iNPC)
 						
 						npc.PlayMeleeSound();
 						npc.FireRocket(vecTarget, 26.0, 600.0);
-						npc.m_flNextMeleeAttack = GetGameTime() + 1.5;
+						npc.m_flNextMeleeAttack = GetGameTime() + 2.0;
 						npc.m_flReloadIn = GetGameTime() + 1.0;
 					}
 					PF_StopPathing(npc.index);

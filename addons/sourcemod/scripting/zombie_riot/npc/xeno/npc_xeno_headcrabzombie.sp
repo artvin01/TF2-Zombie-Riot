@@ -130,6 +130,8 @@ methodmap XenoHeadcrabZombie < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_HEADCRAB_ZOMBIE;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	
@@ -195,6 +197,10 @@ public void XenoHeadcrabZombie_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GetGameTime() + 0.1;
 
+	if(npc.bXenoInfectedSpecialHurt)
+	{
+		npc.SetActivity("ACT_WALK_ON_FIRE");
+	}
 	
 	if(npc.m_flGetClosestTargetTime < GetGameTime())
 	{
@@ -257,19 +263,19 @@ public void XenoHeadcrabZombie_ClotThink(int iNPC)
 							if(EscapeModeForNpc)
 							{
 								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB, -1, _, vecHit);
 							}
 							else
 							{
 								if(target <= MaxClients)
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_SLASH|DMG_CLUB);					
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_CLUB, -1, _, vecHit);					
 							}
 							
-							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+							
 								
 							// Hit sound
 							npc.PlayMeleeHitSound();

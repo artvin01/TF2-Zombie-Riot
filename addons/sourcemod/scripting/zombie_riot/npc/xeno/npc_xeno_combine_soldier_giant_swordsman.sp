@@ -177,6 +177,8 @@ methodmap XenoCombineGaint < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_GIANT_SWORDSMAN;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -381,14 +383,14 @@ public void XenoCombineGaint_ClotThink(int iNPC)
 								{
 									
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 90.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 90.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 220.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 220.0, DMG_CLUB, -1, _, vecHit);
 									
 									Custom_Knockback(npc.index, target, 750.0);
 									
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();
@@ -429,9 +431,8 @@ public Action XenoCombineGaint_ClotDamaged(int victim, int &attacker, int &infli
 		
 	XenoCombineGaint npc = view_as<XenoCombineGaint>(victim);
 	
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.75;
-
+	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
+		damage *= 0.15;
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{

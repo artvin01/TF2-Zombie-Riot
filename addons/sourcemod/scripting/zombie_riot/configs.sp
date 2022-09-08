@@ -15,43 +15,48 @@ static ArrayList WeaponList;
 
 public void Configs_ConfigsExecuted()
 {
-	char mapname[64], buffer[PLATFORM_MAX_PATH];
-	GetCurrentMap(mapname, sizeof(mapname));
+	char buffer[PLATFORM_MAX_PATH];
 	KeyValues kv;
 
-	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG);
-	DirectoryListing dir = OpenDirectory(buffer);
-	if(dir != INVALID_HANDLE)
+	if(!zr_ignoremapconfig.BoolValue)
 	{
-		FileType file;
-		char filename[68];
-		while(dir.GetNext(filename, sizeof(filename), file))
+		char mapname[64];
+		GetCurrentMap(mapname, sizeof(mapname));
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG);
+		DirectoryListing dir = OpenDirectory(buffer);
+		if(dir != INVALID_HANDLE)
 		{
-			if(file != FileType_File)
-				continue;
+			FileType file;
+			char filename[68];
+			while(dir.GetNext(filename, sizeof(filename), file))
+			{
+				if(file != FileType_File)
+					continue;
 
-			if(SplitString(filename, ".cfg", filename, sizeof(filename)) == -1)
-				continue;
-				
-			if(StrContains(mapname, filename))
-				continue;
+				if(SplitString(filename, ".cfg", filename, sizeof(filename)) == -1)
+					continue;
+					
+				if(StrContains(mapname, filename))
+					continue;
 
-			kv = new KeyValues("Map");
-			Format(buffer, sizeof(buffer), "%s/%s.cfg", buffer, filename);
-			if(!kv.ImportFromFile(buffer))
-				LogError("[Config] Found '%s' but was unable to read", buffer);
+				kv = new KeyValues("Map");
+				Format(buffer, sizeof(buffer), "%s/%s.cfg", buffer, filename);
+				if(!kv.ImportFromFile(buffer))
+					LogError("[Config] Found '%s' but was unable to read", buffer);
 
-			break;
+				break;
+			}
+			delete dir;
 		}
-		delete dir;
+		else
+		{
+			LogError("[Config] Directory '%s' does not exist", buffer);
+		}
 	}
-	else
-	{
-		LogError("[Config] Directory '%s' does not exist", buffer);
-	}
-
-	Store_ConfigSetup(kv);
+	
+	Store_ConfigSetup();
 	Waves_SetupVote(kv);
+	Waves_SetupMiniBosses(kv);
 	if(kv)
 		delete kv;
 	

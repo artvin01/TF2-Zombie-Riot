@@ -209,6 +209,8 @@ methodmap XenoSpyMainBoss < CClotBody
 		
 		i_NpcInternalId[npc.index] = XENO_SPY_MAIN_BOSS;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -647,16 +649,16 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 								if(!npc.Anger)
 								{
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 180.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 180.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_SLASH|DMG_CLUB);	
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_CLUB, -1, _, vecHit);	
 								}
 								else if(npc.Anger)
 								{
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 7500.0, DMG_SLASH|DMG_CLUB);	
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 7500.0, DMG_CLUB, -1, _, vecHit);	
 								}
 							}
 							else
@@ -664,16 +666,16 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 								if(!npc.Anger)
 								{
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_SLASH|DMG_CLUB);	
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_CLUB, -1, _, vecHit);	
 								}
 								else if(npc.Anger)
 								{
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_SLASH|DMG_CLUB);	
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_CLUB, -1, _, vecHit);	
 								}										
 							}
 								
@@ -682,11 +684,11 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 								Custom_Knockback(npc.index, target, 500.0);
 								if(!EscapeMode)
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 								}
 								else
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 35.0, DMG_SLASH|DMG_CLUB);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 35.0, DMG_CLUB, -1, _, vecHit);
 								}
 								npc.m_iAttacksTillMegahit = 0;
 								
@@ -694,7 +696,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 							
 							npc.m_iAttacksTillMegahit += 1;
 							// Hit particle
-							npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+							
 								
 							// Hit sound
 							npc.PlayMeleeHitSound();
@@ -740,22 +742,22 @@ public Action XenoSpyMainBoss_ClotDamaged(int victim, int &attacker, int &inflic
 	if(npc.m_flDead_Ringer < GetGameTime())
 	{
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 		
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 0);
+		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 1);
 		
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 0);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 		
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 0);
+		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 1);
 		
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 0);
+		SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 1);
 		
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 0);
+		SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 1);
 		
 		npc.m_flDead_Ringer_Invis = GetGameTime() + 2.0;
 		npc.m_flDead_Ringer = GetGameTime() + 13.0;
@@ -771,7 +773,7 @@ public Action XenoSpyMainBoss_ClotDamaged(int victim, int &attacker, int &inflic
 			npc.m_blPlayHurtAnimation = true;
 		}
 	}
-	else
+	else if(!Building_DoesPierce(attacker))
 	{
 		damage *= 0.1;
 	}

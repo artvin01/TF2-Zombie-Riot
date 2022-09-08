@@ -166,6 +166,8 @@ methodmap CombineSwordsman < CClotBody
 		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_SWORDSMAN;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -179,9 +181,6 @@ methodmap CombineSwordsman < CClotBody
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, CombineSwordsman_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, CombineSwordsman_ClotThink);
-	
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 200.0;
@@ -377,17 +376,17 @@ public void CombineSwordsman_ClotThink(int iNPC)
 									
 									if(EscapeModeForNpc)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_CLUB, -1, _, vecHit);
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, vecHit);
 									}
 									
 									Custom_Knockback(npc.index, target, 350.0);
 									
 									// Hit particle
-									npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+									
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();
@@ -428,8 +427,8 @@ public Action CombineSwordsman_ClotDamaged(int victim, int &attacker, int &infli
 		
 	CombineSwordsman npc = view_as<CombineSwordsman>(victim);
 	
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.75;
+	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
+		damage *= 0.15;
 	
 	/*
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))

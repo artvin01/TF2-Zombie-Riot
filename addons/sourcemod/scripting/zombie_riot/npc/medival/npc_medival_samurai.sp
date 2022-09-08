@@ -164,6 +164,8 @@ methodmap MedivalSamurai < CClotBody
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_SAMURAI;
 
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_SAMURAI");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -340,7 +342,7 @@ public void MedivalSamurai_ClotThink(int iNPC)
 									
 									int weapon_slot = TF2_GetClassnameSlot(classname);
 									
-									if(weapon_slot != 2)
+									if(weapon_slot != 2 || IsWandWeapon(weapon))
 									{
 										Bonus_damage = 1.5;
 									}
@@ -348,20 +350,20 @@ public void MedivalSamurai_ClotThink(int iNPC)
 								if(npc.Anger)
 								{
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0 * Bonus_damage, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0 * Bonus_damage, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 1200.0, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 1200.0, DMG_CLUB, -1, _, vecHit);
 								}
 								else
 								{
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0 * Bonus_damage, DMG_SLASH|DMG_CLUB);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0 * Bonus_damage, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 800.0, DMG_SLASH|DMG_CLUB);									
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 800.0, DMG_CLUB, -1, _, vecHit);									
 								}
 								
 								
-								npc.DispatchParticleEffect(npc.index, "blood_impact_backscatter", vecHit, NULL_VECTOR, NULL_VECTOR);
+								
 								
 								// Hit sound
 								npc.PlayMeleeHitSound();

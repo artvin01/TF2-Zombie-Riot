@@ -25,19 +25,14 @@ enum //hitgroup_t
 	NUM_HITGROUPS
 };
 
-enum struct NPCData
-{
-	int Ref;
-	int LastHitId;
-	int DamageBits;
-	float Damage;
-	int LastHitWeaponRef;
-	
-	Handle IgniteTimer;
-	int IgniteFor;
-	int IgniteId;
-	int IgniteRef;
-}
+int LastHitId[2048];
+int DamageBits[2048];
+float Damage[2048];
+int LastHitWeaponRef[2048];
+Handle IgniteTimer[2048];
+int IgniteFor[2048];
+int IgniteId[2048];
+int IgniteRef[2048];
 
 enum struct SpawnerData
 {
@@ -46,7 +41,7 @@ enum struct SpawnerData
 	float	f_ClosestSpawnerLessCooldown;
 	float	f_SpawnerCooldown;
 }
-ArrayList NPCList;
+//ArrayList NPCList; Make this global, i need it globally.
 ArrayList SpawnerList;
 static Handle SyncHud;
 static Handle SyncHudRaid;
@@ -68,7 +63,6 @@ public void Npc_Sp_Precache()
 void NPC_PluginStart()
 {
 	SpawnerList = new ArrayList(sizeof(SpawnerData));
-	NPCList = new ArrayList(sizeof(NPCData));
 	SyncHud = CreateHudSynchronizer();
 	SyncHudRaid = CreateHudSynchronizer();
 	
@@ -80,8 +74,6 @@ void NPC_RoundEnd()
 {
 	delete SpawnerList;
 	SpawnerList = new ArrayList(sizeof(SpawnerData));
-	delete NPCList;
-	NPCList = new ArrayList(sizeof(NPCData));
 }
 
 public Action LF_OnMakeNPC(char[] classname, int &entity)
@@ -94,7 +86,6 @@ public Action LF_OnMakeNPC(char[] classname, int &entity)
 	if(entity == -1)
 		return Plugin_Continue;
 	
-	NPC_AddToArray(entity);
 	return Plugin_Handled;
 }
 
@@ -128,9 +119,7 @@ public void NPC_EntitySpawned(int entity)
 		
 		RemoveEntity(entity);
 		
-		int npc = Npc_Create(index, -1, pos, ang, false);
-		if(npc != -1)
-			NPC_AddToArray(npc);
+		Npc_Create(index, -1, pos, ang, false);
 	}
 }
 
@@ -144,10 +133,16 @@ public Action GetClosestSpawners(Handle timer)
 	{
 		if(IsClientInGame(client))
 		{
-
-			if(IsPlayerAlive(client) && IsFakeClient(client))
+			if(IsPlayerAlive(client) && GetClientTeam(client)==3)
 			{
-				KickClient(client); //This bot was somehow alive, kick them.
+				if(IsFakeClient(client))
+				{
+					KickClient(client);	
+				}
+				else
+				{
+					ClientCommand(client, "retry");
+				}
 			}
 			else if(!IsFakeClient(client))
 			{
@@ -284,55 +279,83 @@ public Action GetClosestSpawners(Handle timer)
 	return Plugin_Continue;
 }
 
+
+
+float GlobalCheckDelayAntiLagPlayerScale;
+bool AllowSpecialSpawns;
+int LimitNpcs;
+
 public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 {
 	bool found;
+	/*
+	*/
 	/*
 	int limit = 10 + RoundToCeil(float(Waves_GetRound())/2.3);
 	*/
 	int limit = 0;
 	int npc_current_count = 0;
-	int amount_of_people;
 	
 	if(CvarNoSpecialZombieSpawn.BoolValue)//PLEASE ASK CRUSTY FOR MODELS
 	{		
 		panzer = false;
 		panzer_warning = false;
 	}
-	PlayersAliveScaling = 0;
 	
-	limit = 4 + RoundToCeil(float(Waves_GetRound())/2.65);
-	if(limit > 8) //Make sure to not allow more then this amount so the default max zombie count is 20 at almost all times if player scaling isnt accounted for.
+	if(GlobalCheckDelayAntiLagPlayerScale < GetGameTime())
 	{
-		limit = 8;
-	}
-	float f_limit = 0.0;
-	float f_limit_music = 0.0;
-	amount_of_people = 0;
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
+		AllowSpecialSpawns = false;
+		GlobalCheckDelayAntiLagPlayerScale = GetGameTime() + 5.0;//only check every 5 seconds.
+		PlayersAliveScaling = 0;
+		
+		limit = 4 + RoundToCeil(float(Waves_GetRound())/2.65);
+		if(limit > 8) //Make sure to not allow more then this amount so the default max zombie count is 20 at almost all times if player scaling isnt accounted for.
 		{
-			amount_of_people += 1;
-			f_limit += 2.2;
-			if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+			limit = 8;
+		}
+		
+		float f_limit = 0.0;
+		float f_limit_music = 0.0;
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 			{
-				f_limit_music += 2.2;
+				f_limit += 2.2;
+				
+				if(Level[client] > 7)
+					AllowSpecialSpawns = true;
+				
+				if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+				{
+					f_limit_music += 2.2;
+				}
 			}
 		}
+		
+		
+		PlayersAliveScaling = limit;
+		
+		PlayersAliveScaling += RoundToNearest(f_limit_music);
+		limit += RoundToNearest(f_limit);
+		
+		if(limit >= NPC_HARD_LIMIT)
+			limit = NPC_HARD_LIMIT;
+			
+		LimitNpcs = limit;
+		
+		if(PlayersAliveScaling >= NPC_HARD_LIMIT)
+			PlayersAliveScaling = NPC_HARD_LIMIT;
+		
 	}
-	PlayersAliveScaling = limit;
 	
-	PlayersAliveScaling += RoundToNearest(f_limit_music);
-	limit += RoundToNearest(f_limit);
 	if(!b_GameOnGoing) //no spawn if the round is over
 		return;
 	
-	if(limit >= NPC_HARD_LIMIT)
-		limit = NPC_HARD_LIMIT;
-		
-	if(PlayersAliveScaling >= NPC_HARD_LIMIT)
-		PlayersAliveScaling = NPC_HARD_LIMIT;
+	if(!AllowSpecialSpawns)
+	{
+		panzer = false;
+		panzer_warning = false;
+	}
 	
 	if(!panzer)
 	{
@@ -345,9 +368,9 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 				{
 					npc_current_count += 1;
 					CClotBody npcstats = view_as<CClotBody>(entity);
-					if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity] && EntRefToEntIndex(RaidBossActive) != entity)
+					if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity])
 					{
-						if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
+						if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0 && !IsValidEntity(npcstats.m_iTeamGlow))
 							SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
 						else
 							SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
@@ -359,7 +382,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			}
 		}
 		//emercency stop. 
-		if(npc_current_count >= limit)
+		if(npc_current_count >= LimitNpcs)
 		{
 			return;
 		}
@@ -425,104 +448,133 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	entity_Spawner = list.Length;
 	if(entity_Spawner)
 	{
-		int health, isBoss;
-		if(panzer)
+		MiniBoss boss;
+		if(panzer && Waves_GetMiniBoss(boss))
 		{
-			int what_boss = GetRandomInt(0,1);
-			
-			if(b_BlockSawrunnerSpecificallyInThisDifficulty)
-			{
-				if(what_boss == 1)
-				{
-					what_boss = 0;
-				}
-			}
-			
 			entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
-			isBoss = false;
-			int deathforcepowerup = 0;
+			bool isBoss = false;
+			int deathforcepowerup = boss.Powerup;
 			if(panzer_warning)
 			{
-				deathforcepowerup = 2;
-				switch(what_boss)
+				int Text_Int = GetRandomInt(0, 2);
+				if(boss.Sound[0])
 				{
-					case 0:
+					for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
 					{
-						for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
+						if(IsClientInGame(panzer_warning_client))
 						{
-							if(IsClientInGame(panzer_warning_client))
+							if(IsValidClient(panzer_warning_client))
 							{
-								EmitSoundToClient(panzer_warning_client,"zombie_riot/panzer/siren.mp3", panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
-								EmitSoundToClient(panzer_warning_client,"zombie_riot/panzer/siren.mp3", panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
+								SetGlobalTransTarget(panzer_warning_client);
+								/*
+									https://github.com/SteamDatabase/GameTracking-TF2/blob/master/tf/tf2_misc_dir/scripts/mod_textures.txt	
+								
+								*/
+								switch(Text_Int)
+								{
+									case 0:
+									{
+										ShowGameText(panzer_warning_client, boss.Icon, 1, "%t", boss.Text_1);
+									}
+									case 1:
+									{
+										ShowGameText(panzer_warning_client, boss.Icon, 1, "%t", boss.Text_2);
+									}
+									case 2:
+									{
+										ShowGameText(panzer_warning_client, boss.Icon, 1, "%t", boss.Text_3);
+									}
+								}
+								
+								/*
+									Good images:
+									
+									"hud_menu_heavy_red" Fat Streched heavy
+
+								*/
+								/*
+									TODO:
+									Use Custom texts and maybe icons for each boss.
+								
+									(Panzer)
+
+									You can discern faint metalic screams not like the others...
+									
+									Distant low rumbles fill the air space...
+									
+									Die SS Division hat einer ihrer Infizierten soldaten Gesendet...
+									
+									(Sawrunner)
+									
+									Faint rattling can be heard, and its approaching at a fast pace...
+									
+									Something rapidly rams through hordes in your direction...
+									
+									Common means might not stop this agile enemy...
+									
+									(Tank)
+									
+									You have alerted the horde...
+									
+									Destruction echoes through a nearby space...
+									
+									A massive foe has entered this field...
+									
+									(Ghostface after getting found out before killing anyone)
+									
+									We are just getting started!
+									
+									Asshole!
+									
+									Lousy shot!
+									
+									(Whiteface and HER)
+									
+									Find HER
+									
+									I love watching You
+									
+									I'm afraid I can't let you do that
+									
+									{completely optional based on how masochistic you feel to code such useless detail}
+									
+									Ready for round 2?
+									
+									STAY WITH ME
+									
+									He won't let us leave
+								
+								*/
 							}
+				
+							EmitSoundToClient(panzer_warning_client, boss.Sound, panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
+							EmitSoundToClient(panzer_warning_client, boss.Sound, panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
 						}
-					}
-					case 1:
-					{
-						for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
-						{
-							if(IsClientInGame(panzer_warning_client))
-							{
-								EmitSoundToClient(panzer_warning_client,"zombie_riot/sawrunner/iliveinyourwalls.mp3", panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
-								EmitSoundToClient(panzer_warning_client,"zombie_riot/sawrunner/iliveinyourwalls.mp3", panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
-							}
-						}	
 					}
 				}
 				isBoss = true;
 			}
-			health = 80;
-			 
-			health *= amount_of_people; //yep its high! will need tos cale with waves expoentially.
-			
-			float temp_float_hp = float(health);
-			
-			if(CurrentRound+1 < 30)
-			{
-				health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.20));
-				health /= 2;
-			}
-			else if(CurrentRound+1 < 45)
-			{
-				health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.25));
-				health /= 2;
-			}
 			else
 			{
-				health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-				health /= 2;
+				deathforcepowerup = 0;
 			}
-			
-			
-			if(what_boss == 1)
-				health = RoundToCeil(float(health) * 0.75);
 			
 			int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
 			if(index != -1)
 			{
 				SpawnerData Spawner;
 				SpawnerList.GetArray(index, Spawner);
-				Spawner.f_SpawnerCooldown = gameTime + 4.0;
+				Spawner.f_SpawnerCooldown = gameTime + boss.Delay + 2.0;
 				SpawnerList.SetArray(index, Spawner);
 			}
-			if(what_boss == 0)
-			{	
-				DataPack pack;
-				CreateDataTimer(2.0, Timer_Delayed_PanzerSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
-				pack.WriteCell(entity_Spawner);
-				pack.WriteCell(isBoss);		
-				pack.WriteCell(health);	
-				pack.WriteCell(deathforcepowerup);
-			}	
-			else if(what_boss == 1)
-			{			
-				DataPack pack;
-				CreateDataTimer(2.0, Timer_Delayed_SawrunnerSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
-				pack.WriteCell(entity_Spawner);
-				pack.WriteCell(isBoss);		
-				pack.WriteCell(health);	
-				pack.WriteCell(deathforcepowerup);			
-			}
+			
+			DataPack pack;
+			CreateDataTimer(boss.Delay, Timer_Delayed_BossSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(entity_Spawner);
+			pack.WriteCell(isBoss);
+			pack.WriteCell(boss.Index);
+			pack.WriteCell(deathforcepowerup);
+			pack.WriteFloat(boss.HealthMulti);
 		}
 		else
 		{
@@ -542,7 +594,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 				GetEntPropVector(entity_Spawner, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(entity_Spawner, Prop_Data, "m_angRotation", ang);
 				
-				entity_Spawner = Npc_Create(enemy.Index, -1, pos, ang, false, enemy.Data);
+				entity_Spawner = Npc_Create(enemy.Index, -1, pos, ang, enemy.Friendly, enemy.Data);
 				if(entity_Spawner != -1)
 				{
 					if(enemy.Is_Outlined)
@@ -565,7 +617,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					
 					npcstats.m_bStaticNPC = enemy.Is_Static;
 					
-					if(enemy.Is_Boss)
+					if(enemy.Is_Boss == 1)
 					{
 						npcstats.m_bThisNpcIsABoss = true; //Set to true!
 					}
@@ -594,7 +646,6 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					AcceptEntityInput(npc.m_iSpawnProtectionEntity, "SetGlowColor");
 		
 					CreateTimer(2.0, Remove_Spawn_Protection, EntIndexToEntRef(entity_Spawner), TIMER_FLAG_NO_MAPCHANGE);
-					NPC_AddToArray(entity_Spawner);
 				}
 			}
 			else if(!found)
@@ -610,56 +661,6 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	delete list;
 }
 
-void NPC_AddToArray(int entity)
-{
-	NPCData npc;
-	int index = NPCList.FindValue(EntIndexToEntRef(entity), NPCData::Ref);
-	if(index == -1)
-	{
-		npc.Ref = EntIndexToEntRef(entity);
-		NPCList.PushArray(npc);
-	}
-}
-public Action Timer_Delayed_SawrunnerSpawn(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int spawner_entity = pack.ReadCell();
-	bool isBoss = pack.ReadCell();
-	int health = pack.ReadCell();
-	int forcepowerup = pack.ReadCell();
-	if(IsValidEntity(spawner_entity) && spawner_entity != 0)
-	{
-		float pos[3], ang[3];
-		
-		GetEntPropVector(spawner_entity, Prop_Data, "m_vecOrigin", pos);
-		GetEntPropVector(spawner_entity, Prop_Data, "m_angRotation", ang);
-		Zombies_Currently_Still_Ongoing += 1;
-		int entity = Npc_Create(SAWRUNNER, -1, pos, ang, false);
-		if(entity != -1)
-		{
-			if(health)
-			{
-				SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
-				SetEntProp(entity, Prop_Data, "m_iHealth", health);
-			}
-			
-			CClotBody npcstats = view_as<CClotBody>(entity);
-			if(isBoss)
-			{
-				SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
-				npcstats.m_bThisNpcIsABoss = true; //Set to true!
-			}
-			else
-			{
-				npcstats.m_bThisNpcIsABoss = false; //Set to true!
-			}
-			
-			b_NpcForcepowerupspawn[entity] = forcepowerup;
-			NPC_AddToArray(entity);
-		}
-	}
-	return Plugin_Handled;
-}
 
 public Action Remove_Spawn_Protection(Handle timer, int ref)
 {
@@ -676,13 +677,14 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 	return Plugin_Handled;
 }
 
-public Action Timer_Delayed_PanzerSpawn(Handle timer, DataPack pack)
+public Action Timer_Delayed_BossSpawn(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int spawner_entity = pack.ReadCell();
 	bool isBoss = pack.ReadCell();
-	int health = pack.ReadCell();
+	int index = pack.ReadCell();
 	int forcepowerup = pack.ReadCell();
+	float healthmulti = pack.ReadFloat();
 	if(IsValidEntity(spawner_entity) && spawner_entity != 0)
 	{
 		float pos[3], ang[3];
@@ -690,15 +692,9 @@ public Action Timer_Delayed_PanzerSpawn(Handle timer, DataPack pack)
 		GetEntPropVector(spawner_entity, Prop_Data, "m_vecOrigin", pos);
 		GetEntPropVector(spawner_entity, Prop_Data, "m_angRotation", ang);
 		Zombies_Currently_Still_Ongoing += 1;
-		int entity = Npc_Create(NAZI_PANZER, -1, pos, ang, false);
+		int entity = Npc_Create(index, -1, pos, ang, false);
 		if(entity != -1)
 		{
-			if(health)
-			{
-				SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
-				SetEntProp(entity, Prop_Data, "m_iHealth", health);
-			}
-			
 			CClotBody npcstats = view_as<CClotBody>(entity);
 			if(isBoss)
 			{
@@ -710,31 +706,28 @@ public Action Timer_Delayed_PanzerSpawn(Handle timer, DataPack pack)
 				npcstats.m_bThisNpcIsABoss = false; //Set to true!
 			}
 			
+			if(healthmulti)
+			{
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * healthmulti));
+				SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * healthmulti));
+			}
+			
 			b_NpcForcepowerupspawn[entity] = forcepowerup;
-			NPC_AddToArray(entity);
 		}
 	}
 	return Plugin_Handled;
 }
 void NPC_Ignite(int entity, int client, float duration, int weapon)
 {
-	int index = NPCList.FindValue(EntIndexToEntRef(entity), NPCData::Ref);
-	if(index != -1)
-	{
-		NPCData npc;
-		NPCList.GetArray(index, npc);
-		
-		npc.IgniteFor += RoundToCeil(duration*2.0);
-		if(npc.IgniteFor > 20)
-			npc.IgniteFor = 20;
-		
-		if(!npc.IgniteTimer)
-			npc.IgniteTimer = CreateTimer(0.5, NPC_TimerIgnite, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-		
-		npc.IgniteId = GetClientUserId(client);
-		npc.IgniteRef = EntIndexToEntRef(weapon);
-		NPCList.SetArray(index, npc);
-	}
+	IgniteFor[entity] += RoundToCeil(duration*2.0);
+	if(IgniteFor[entity] > 20)
+		IgniteFor[entity] = 20;
+	
+	if(!IgniteTimer[entity])
+		IgniteTimer[entity] = CreateTimer(0.5, NPC_TimerIgnite, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	
+	IgniteId[entity] = GetClientUserId(client);
+	IgniteRef[entity] = EntIndexToEntRef(weapon);
 }
 
 /*
@@ -764,52 +757,43 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(entity > MaxClients)
 	{
-		int index = NPCList.FindValue(ref, NPCData::Ref);
-		if(index != -1)
+		if(IgniteFor[entity] > 0)
 		{
-			NPCData npc;
-			NPCList.GetArray(index, npc);
-			
-			if(npc.IgniteFor > 0)
+			int client = GetClientOfUserId(IgniteId[entity]);
+			if(client && IsClientInGame(client))
 			{
-				int client = GetClientOfUserId(npc.IgniteId);
-				if(client && IsClientInGame(client))
+				IgniteFor[entity]--;
+				
+				float pos[3], ang[3];
+				GetClientEyeAngles(client, ang);
+				int weapon = EntRefToEntIndex(IgniteRef[entity]);
+				if(weapon > MaxClients && IsValidEntity(weapon))
 				{
-					npc.IgniteFor--;
-					NPCList.SetArray(index, npc);
+					float value = 8.0;
 					
-					float pos[3], ang[3];
-					GetClientEyeAngles(client, ang);
-					int weapon = EntRefToEntIndex(npc.IgniteRef);
-					if(weapon > MaxClients && IsValidEntity(weapon))
-					{
-						float value = 8.0;
-						
-						value *= Attributes_FindOnWeapon(client, weapon, 2, true, 1.0);	  //For normal weapons
-						
-						value *= Attributes_FindOnWeapon(client, weapon, 410, true, 1.0); //For wand
-						
-						value *= Attributes_FindOnWeapon(client, weapon, 71, true, 1.0); //For wand
-						
-						pos = WorldSpaceCenter(entity);
-						
-						SDKHooks_TakeDamage(entity, client, client, value, DMG_SLASH, weapon, ang, pos, false);
-						//Setting burn dmg to slash cus i want it to work with melee!!!
-						//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
-						//In this case ill buff it so its 2x as good as bleed! or more in the future
-						//Also now allows hp gain and other stuff for that reason. pretty cool.
-					}
-					else
-					{
-						return Plugin_Stop;
-					}
-					return Plugin_Continue;
+					value *= Attributes_FindOnWeapon(client, weapon, 2, true, 1.0);	  //For normal weapons
+					
+					value *= Attributes_FindOnWeapon(client, weapon, 410, true, 1.0); //For wand
+					
+					value *= Attributes_FindOnWeapon(client, weapon, 71, true, 1.0); //For wand
+					
+					pos = WorldSpaceCenter(entity);
+					
+					SDKHooks_TakeDamage(entity, client, client, value, DMG_SLASH, weapon, ang, pos, false);
+					//Setting burn dmg to slash cus i want it to work with melee!!!
+					//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
+					//In this case ill buff it so its 2x as good as bleed! or more in the future
+					//Also now allows hp gain and other stuff for that reason. pretty cool.
 				}
+				else
+				{
+					return Plugin_Stop;
+				}
+				return Plugin_Continue;
 			}
-			
-			npc.IgniteTimer = null;
-			NPCList.SetArray(index, npc);
 		}
+		
+		IgniteTimer[entity] = null;
 	}
 	return Plugin_Stop;
 }
@@ -835,6 +819,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		return Plugin_Handled;
 	}
 	*/
+	
 	if((damagetype & (DMG_BLAST))) //make sure any hitscan boom type isnt actually boom
 	{
 		f_IsThisExplosiveHitscan[attacker] = GetGameTime();
@@ -847,54 +832,55 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 	}
 	
 //	if((damagetype & (DMG_BULLET)) || (damagetype & (DMG_BUCKSHOT))) // Needed, other crap for some reason can trigger headshots, so just make sure only bullets can do this.
+	int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
+	if(IsValidEntity(weapon))
 	{
-		if(hitgroup == HITGROUP_HEAD)
+		if(!i_WeaponCannotHeadshot[weapon])
 		{
-			if(i_HeadshotAffinity[attacker] == 1)
+			if(hitgroup == HITGROUP_HEAD)
 			{
-				damage *= 1.65;
-			}
-			else
-			{
-				damage *= 1.4;
-			}
-			if(i_CurrentEquippedPerk[attacker] == 5)
-			{
-				damage *= 1.25;
-			}
-			
-			int pitch = GetRandomInt(90, 110);
-			int random_case = GetRandomInt(1, 2);
-			float volume = 0.7;
-			
-			if(played_headshotsound_already[attacker] >= GetGameTime())
-			{
-				random_case = played_headshotsound_already_Case[attacker];
-				pitch = played_headshotsound_already_Pitch[attacker];
-				volume = 0.15;
-			}
-			else
-			{
-				float chargerPos[3];
-				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
-				if(b_BoundingBoxVariant[victim] == 1)
+				if(i_HeadshotAffinity[attacker] == 1)
 				{
-					chargerPos[2] += 120.0;
+					damage *= 1.65;
 				}
 				else
 				{
-					chargerPos[2] += 82.0;
+					damage *= 1.4;
+				}
+				if(i_CurrentEquippedPerk[attacker] == 5)
+				{
+					damage *= 1.25;
 				}
 				
-				TE_ParticleInt(g_particleCritText, chargerPos);
-				TE_SendToClient(attacker);
-				played_headshotsound_already_Case[attacker] = random_case;
-				played_headshotsound_already_Pitch[attacker] = pitch;
-			}
-			
-			int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
-			if(IsValidEntity(weapon)) //Extra bombs!
-			{
+				int pitch = GetRandomInt(90, 110);
+				int random_case = GetRandomInt(1, 2);
+				float volume = 0.7;
+				
+				if(played_headshotsound_already[attacker] >= GetGameTime())
+				{
+					random_case = played_headshotsound_already_Case[attacker];
+					pitch = played_headshotsound_already_Pitch[attacker];
+					volume = 0.15;
+				}
+				else
+				{
+					float chargerPos[3];
+					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
+					if(b_BoundingBoxVariant[victim] == 1)
+					{
+						chargerPos[2] += 120.0;
+					}
+					else
+					{
+						chargerPos[2] += 82.0;
+					}
+					
+					TE_ParticleInt(g_particleCritText, chargerPos);
+					TE_SendToClient(attacker);
+					played_headshotsound_already_Case[attacker] = random_case;
+					played_headshotsound_already_Pitch[attacker] = pitch;
+				}
+				
 				if(i_ArsenalBombImplanter[weapon] > 0)
 				{
 					if(f_ChargeTerroriserSniper[weapon] > 149.0)
@@ -908,50 +894,50 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					Apply_Particle_Teroriser_Indicator(victim);
 					damage = 0.0;
 				}
-			}
-			
-			played_headshotsound_already[attacker] = GetGameTime();
-			switch(random_case)
-			{
-				case 1:
+				
+				played_headshotsound_already[attacker] = GetGameTime();
+				switch(random_case)
 				{
-					for(int client=1; client<=MaxClients; client++)
+					case 1:
 					{
-						if(IsClientInGame(client) && client != attacker)
+						for(int client=1; client<=MaxClients; client++)
 						{
-							EmitSoundToClient(client, "zombiesurvival/headshot1.wav", victim, _, 80, _, volume, pitch);
+							if(IsClientInGame(client) && client != attacker)
+							{
+								EmitSoundToClient(client, "zombiesurvival/headshot1.wav", victim, _, 80, _, volume, pitch);
+							}
 						}
+						EmitSoundToClient(attacker, "zombiesurvival/headshot1.wav", _, _, 90, _, volume, pitch);
 					}
-					EmitSoundToClient(attacker, "zombiesurvival/headshot1.wav", _, _, 90, _, volume, pitch);
-				}
-				case 2:
-				{
-					for(int client=1; client<=MaxClients; client++)
+					case 2:
 					{
-						if(IsClientInGame(client) && client != attacker)
+						for(int client=1; client<=MaxClients; client++)
 						{
-							EmitSoundToClient(client, "zombiesurvival/headshot2.wav", victim, _, 80, _, volume, pitch);
+							if(IsClientInGame(client) && client != attacker)
+							{
+								EmitSoundToClient(client, "zombiesurvival/headshot2.wav", victim, _, 80, _, volume, pitch);
+							}
 						}
+						EmitSoundToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, volume, pitch);
 					}
-					EmitSoundToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, volume, pitch);
 				}
-			}
-			return Plugin_Changed;
-		}
-		else
-		{
-			if(i_HeadshotAffinity[attacker] == 1)
-			{
-				damage *= 0.75;
 				return Plugin_Changed;
 			}
-			return Plugin_Continue;		
+			else
+			{
+				if(i_HeadshotAffinity[attacker] == 1)
+				{
+					damage *= 0.75;
+					return Plugin_Changed;
+				}
+				return Plugin_Continue;		
+			}
 		}
 	}
-//	return Plugin_Continue;
+	return Plugin_Continue;
 }
 		
-static float f_CooldownForHurtHud[MAXPLAYERS];	
+float f_CooldownForHurtHud[MAXPLAYERS];	
 //Otherwise we get kicks if there is too much hurting going on.
 
 public void Func_Breakable_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
@@ -1052,6 +1038,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		}
 	}
 	
+	f_TimeUntillNormalHeal[victim] = GetGameTime() + 4.0;
+	
 	if(b_npcspawnprotection[victim]) //make them resistant on spawn or else itll just be spawncamping fest
 	{
 		damage *= 0.25;
@@ -1108,15 +1096,26 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		damage *= 1.35;
 	}
 	
+	if(Resistance_Overall_Low[victim] > GetGameTime())
+	{
+		damage *= 0.85;
+	}
+	
+	if(Increaced_Overall_damage_Low[attacker] > GetGameTime())
+	{
+		damage *= 1.25;
+	}
+	
+	if(f_CrippleDebuff[victim] > GetGameTime())
+	{
+		damage *= 1.4;
+	}
+	
 	if(attacker <= MaxClients)
 	{
 		if(dieingstate[attacker] > 0)
 		{
 			damage *= 0.25;
-		}
-		if(Increaced_Overall_damage_Low[attacker] > GetGameTime())
-		{
-			damage *= 1.25;
 		}
 		if(damagecustom>=TF_CUSTOM_SPELL_TELEPORT && damagecustom<=TF_CUSTOM_SPELL_BATS)
 		{
@@ -1139,22 +1138,18 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				}
 			}
 		}
-		int index = NPCList.FindValue(EntIndexToEntRef(victim), NPCData::Ref);
-		if(index != -1)
-		{
-			NPCData npc;
-			NPCList.GetArray(index, npc);
-			npc.LastHitId = GetClientUserId(attacker);
-			npc.DamageBits = damagetype;
-			npc.Damage = damage;
+		
+		//NPC STUFF FOR RECORD AND ON KILL
+		LastHitId[victim] = GetClientUserId(attacker);
+		DamageBits[victim] = damagetype;
+		Damage[victim] = damage;
+		
+		if(weapon > MaxClients)
+			LastHitWeaponRef[victim] = EntIndexToEntRef(weapon);
+		else
+			LastHitWeaponRef[victim] = -1;
 			
-			if(weapon > MaxClients)
-				npc.LastHitWeaponRef = EntIndexToEntRef(weapon);
-			else
-				npc.LastHitWeaponRef = -1;
-				
-			NPCList.SetArray(index, npc);
-		}
+		//NPC STUFF FOR RECORD AND ON KILL
 		
 		Attributes_OnHit(attacker, victim, weapon, damage, damagetype);
 					
@@ -1236,7 +1231,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		if(attacker <= MaxClients && IsValidEntity(weapon))
 		{
 			
-			float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon);
+			float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		
 			damage = modified_damage;
 			
@@ -1272,74 +1267,112 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			GetEntityClassname(weapon, classname, sizeof(classname));
 			if(!StrContains(classname, "tf_weapon_knife", false))
 			{
-				if(IsBehindAndFacingTarget(attacker, victim))
+				if(damagetype & DMG_CLUB) //Use dmg slash for any npc that shouldnt be scaled.
 				{
-					int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
-					int melee = GetIndexOfWeaponSlot(attacker, TFWeaponSlot_Melee);
-					if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
+					if(IsBehindAndFacingTarget(attacker, victim) || b_FaceStabber[attacker])
 					{
-						float attack_speed;
-		
-						attack_speed = Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);
-						
-						EmitSoundToAll("weapons/knife_swing_crit.wav", attacker, _, _, _, 0.7);
-						RequestFrame(DoMeleeAnimationFrameLater, attacker);
-					//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
-						damage *= 5.25;
-						
-						
-						CClotBody npc = view_as<CClotBody>(victim);
-						
-						if(attacker == npc.m_iTarget)
+						int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
+						int melee = GetIndexOfWeaponSlot(attacker, TFWeaponSlot_Melee);
+						if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
 						{
-							damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER!
-						}
-						
-						if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
-						{
-							damage *= 1.25;
-						}
-						
-						if(EscapeMode)
-							damage *= 1.35;
-						
-				
-						if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
-						{
+							float attack_speed;
+			
+							attack_speed = Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);
 							
-							RequestFrame(Try_Backstab_Anim_Again, attacker);
-							TE_Start("PlayerAnimEvent");
-							Animation_Setting[attacker] = 1;
-							Animation_Index[attacker] = 33;
-							TE_WriteNum("m_iPlayerIndex", attacker);
-							TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
-							TE_WriteNum("m_nData", Animation_Index[attacker]);
-							TE_SendToAll();
+							EmitSoundToAll("weapons/knife_swing_crit.wav", attacker, _, _, _, 0.7);
+							RequestFrame(DoMeleeAnimationFrameLater, attacker);
+						//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
+							damage *= 5.25;
+							
+							if(b_FaceStabber[attacker])
+							{
+								damage *= 0.4; //cut damage in half and then some.
+							}
+							
+							CClotBody npc = view_as<CClotBody>(victim);
+							
+							if(attacker == npc.m_iTarget && !b_FaceStabber[attacker])
+							{
+								damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER! But not for facestabbers.
+							}
+							
+							if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
+							{
+								damage *= 1.25;
+							}
+							
+							if(EscapeMode)
+								damage *= 1.35;
+							
+					
+							if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
+							{
+								
+								RequestFrame(Try_Backstab_Anim_Again, attacker);
+								TE_Start("PlayerAnimEvent");
+								Animation_Setting[attacker] = 1;
+								Animation_Index[attacker] = 33;
+								TE_WriteNum("m_iPlayerIndex", attacker);
+								TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
+								TE_WriteNum("m_nData", Animation_Index[attacker]);
+								TE_SendToAll();
+							}
+							int heal_amount = 0;
+							if(melee == 356)
+							{
+								heal_amount = 10;
+								if(b_FaceStabber[attacker])
+								{
+									heal_amount = 2;
+								}
+								StartHealingTimer(attacker, 0.1, 1, heal_amount);
+								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
+								SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.5 * attack_speed));
+							}
+							else if(melee == 225)
+							{
+								heal_amount = 25;
+								if(b_FaceStabber[attacker])
+								{
+									heal_amount = 5;
+								}
+								StartHealingTimer(attacker, 0.1, 2, heal_amount);
+								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.0 * attack_speed));
+								SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.0 * attack_speed));
+							}
+							else if(melee == 727)
+							{
+								heal_amount = 25;
+								if(b_FaceStabber[attacker])
+								{
+									heal_amount = 3;
+								}
+								//THIS MELEE WILL HAVE SPECIAL PROPERTIES SO ITS RECONISED AS A SPY MELEE AT ALL TIMES!
+								StartHealingTimer(attacker, 0.1, 3, heal_amount);
+								SepcialBackstabLaughSpy(attacker);
+								
+								if(b_FaceStabber[attacker])
+								{
+									damage *= 0.75;
+								}
+								damage *= 0.75; //Nerf the dmg abit for the last knife as itsotheriwse ridicilous
+							}
+							else
+							{
+								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
+								SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.5 * attack_speed));	
+							}
 						}
-						if(melee == 356)
-						{
-							StartHealingTimer(attacker, 0.1, 1, 10);
-							SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
-							SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.5 * attack_speed));
-						}
-						else if(melee == 225)
-						{
-							StartHealingTimer(attacker, 0.1, 2, 25);
-							SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.0 * attack_speed));
-							SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.0 * attack_speed));
-						}
-						else if(melee == 727)
-						{
-							//THIS MELEE WILL HAVE SPECIAL PROPERTIES SO ITS RECONISED AS A SPY MELEE AT ALL TIMES!
-							StartHealingTimer(attacker, 0.1, 3, 25);
-							SepcialBackstabLaughSpy(attacker);
-							damage *= 0.75; //Nerf the dmg abit for the last knife as itsotheriwse ridicilous
-						}
-						else
-						{
-							SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
-							SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.5 * attack_speed));	
-						}
+					}
+				}
+			}
+			else if(!StrContains(classname, "tf_weapon_compound_bow", false))
+			{
+				if(damagetype & DMG_CRIT)
+				{		
+					if(i_CurrentEquippedPerk[attacker] == 5) //Just give them 25% more damage if they do crits with the huntsman, includes buffbanner i guess
+					{
+						damage *= 1.25;
 					}
 				}
 			}
@@ -1398,7 +1431,6 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		return;
 	}
 	*/
-
 }
 
 stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)
@@ -1445,28 +1477,28 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 		if(f_HighTeslarDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "↡");
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "⌁⌁");
 		}
 		else if(f_LowTeslarDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "↓");
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "⌁");
 		}
 		
 		if(f_HighIceDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "❅");
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅", Debuff_Adder);
 		}
 		else if(f_LowIceDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "❃");
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❃", Debuff_Adder);
 		}
 		else if (f_VeryLowIceDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "❆");	
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❆", Debuff_Adder);	
 		}
 		
 		if(f_WidowsWineDebuff[victim] > GetGameTime())
@@ -1474,6 +1506,19 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 			Debuff_added = true;
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s४", Debuff_Adder);
 		}
+		
+		if(f_CrippleDebuff[victim] > GetGameTime())
+		{
+			Debuff_added = true;
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s⯯", Debuff_Adder);
+		}
+		
+		if(f_MaimDebuff[victim] > GetGameTime())
+		{
+			Debuff_added = true;
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s↓", Debuff_Adder);
+		}
+		
 		
 		if(Debuff_added)
 		{
@@ -1628,65 +1673,52 @@ public void Try_Backstab_Anim_Again3(int attacker)
 					
 }
 
-public void NPC_CheckDead()
+public void NPC_CheckDead(int entity)
 {
-	NPCData npc;
-	for(int i=NPCList.Length-1; i>=0; i--)
+	if(IsValidEntity(entity))
 	{
-		NPCList.GetArray(i, npc);
-		int npc_index = EntRefToEntIndex(npc.Ref);
-		if(npc_index <= MaxClients)
+		if(!b_NpcHasDied[entity])
 		{
-			RequestFrame(NPC_SpawnNextRequestFrame, false);
-			//make sure that if they despawned instead of dying, that their shit still gets cleaned just in case.
-			Zombies_Currently_Still_Ongoing -= 1;
+			b_NpcHasDied[entity] = true;
 			
-			NPCList.Erase(i);
-		}
-		else
-		{
-			CClotBody npcstats = view_as<CClotBody>(npc_index);
-			if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc_index] && RaidBossActive != npc_index)
+			if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 			{
-				if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
-					SetEntProp(npc_index, Prop_Send, "m_bGlowEnabled", true);
-				else
-					SetEntProp(npc_index, Prop_Send, "m_bGlowEnabled", false);
+				Zombies_Currently_Still_Ongoing -= 1;
 			}
+			if(GlobalAntiSameFrameCheck_NPC_SpawnNext == GetGameTime())
+			{
+				return;
+			}
+				
+			GlobalAntiSameFrameCheck_NPC_SpawnNext = GetGameTime();
+			
+			RequestFrame(NPC_SpawnNextRequestFrame, false);
+			//dont call if its multiple at once, can cause lag
+			//make sure that if they despawned instead of dying, that their shit still gets cleaned just in case.
 		}
 	}
 }
 
 void NPC_DeadEffects(int entity)
 {
-	NPCData npc;
-	for(int i=NPCList.Length-1; i>=0; i--)
+	if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 	{
-		NPCList.GetArray(i, npc);
-		if(EntRefToEntIndex(npc.Ref) == entity)
+		if(GlobalAntiSameFrameCheck_NPC_SpawnNext != GetGameTime())
 		{
 			RequestFrame(NPC_SpawnNextRequestFrame, false);
-			Zombies_Currently_Still_Ongoing -= 1;
-			/*
-			RequestFrame(entity, Remove_
-			SDKUnhook(entity, SDKHook_TraceAttack, NPC_TraceAttack);
-			SDKUnhook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
-			SDKUnhook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);
-			*/
-			DropPowerupChance(entity);
-			Gift_DropChance(entity);
-			int WeaponLastHit = EntRefToEntIndex(npc.LastHitWeaponRef);
-			int client = GetClientOfUserId(npc.LastHitId);
-			if(client && IsClientInGame(client))
-			{
-				GiveXP(client, 1);
-				NPC_Killed_Show_Hud(client, entity, WeaponLastHit, NPC_Names[i_NpcInternalId[entity]], npc.DamageBits);
-				Attributes_OnKill(client, WeaponLastHit);
-				GiveNamedItem(client, NPC_Names[i_NpcInternalId[entity]]);
-			}
-			
-			NPCList.Erase(i);
-			break;
+		}
+		GlobalAntiSameFrameCheck_NPC_SpawnNext = GetGameTime();
+		Zombies_Currently_Still_Ongoing -= 1;
+		DropPowerupChance(entity);
+		Gift_DropChance(entity);
+		int WeaponLastHit = EntRefToEntIndex(LastHitWeaponRef[entity]);
+		int client = GetClientOfUserId(LastHitId[entity]);
+		if(client && IsClientInGame(client))
+		{
+			GiveXP(client, 1);
+			NPC_Killed_Show_Hud(client, entity, WeaponLastHit, NPC_Names[i_NpcInternalId[entity]], DamageBits[entity]);
+			Attributes_OnKill(client, WeaponLastHit);
+			GiveNamedItem(client, NPC_Names[i_NpcInternalId[entity]]);
 		}
 	}
 	RemoveNpcThingsAgain(entity);
@@ -1739,15 +1771,42 @@ void Spawner_AddToArray(int entity) //cant use ent ref here...
 	}
 }
 
+void Spawner_RemoveFromArray(int entity)
+{
+	int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
+	if(index != -1)
+		SpawnerList.Erase(index);
+}
 
-float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case 2: // weapon_fusion
+		case WEAPON_FUSION:
 		{
 			return Npc_OnTakeDamage_Fusion(victim, damage, weapon);
 		}
+		case WEAPON_BOUNCING:
+		{
+			return SniperMonkey_BouncingBullets(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+		}
+		case WEAPON_MAIMMOAB:
+		{
+			return SniperMonkey_MaimMoab(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+		}
+		case WEAPON_CRIPPLEMOAB:
+		{
+			return SniperMonkey_CrippleMoab(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+		}
 	}
 	return damage;
+}
+
+
+public void OnNpcHurt(Event event, const char[] name, bool dontBroadcast)
+{
+	int entity = event.GetInt("entindex");
+
+	PrintToChatAll("%i",entity);
+	PrintToChatAll("%i",event.GetInt("attacker_player"));
 }

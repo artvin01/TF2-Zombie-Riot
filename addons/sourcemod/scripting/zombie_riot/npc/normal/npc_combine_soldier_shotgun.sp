@@ -173,6 +173,8 @@ methodmap CombineSoldierShotgun < CClotBody
 		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_SHOTGUN;
 		
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		
 		int iActivity = npc.LookupActivity("ACT_RUN_AIM_SHOTGUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -182,9 +184,6 @@ methodmap CombineSoldierShotgun < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_fbGunout = false;
 
