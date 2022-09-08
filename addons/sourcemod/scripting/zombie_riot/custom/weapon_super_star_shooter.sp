@@ -203,7 +203,7 @@ public Action Event_SSS_OnHatTouch(int entity, int other)
 			int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 			if(IsValidEntity(particle) && particle != 0)
 			{
-				EmitSoundToAll(SOUND_ZAP_STAR, other, SNDCHAN_STATIC, 70, _, 0.9);
+				EmitSoundToAll(SOUND_ZAP_STAR, other, SNDCHAN_STATIC, 70, _, 0.6);
 			//	RemoveEntity(particle);
 			}
 			
@@ -216,7 +216,7 @@ public Action Event_SSS_OnHatTouch(int entity, int other)
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)
 		{
-			EmitSoundToAll(SOUND_ZAP_STAR, entity, SNDCHAN_STATIC, 70, _, 0.9);
+			EmitSoundToAll(SOUND_ZAP_STAR, entity, SNDCHAN_STATIC, 70, _, 0.6);
 			RemoveEntity(particle);
 		}
 

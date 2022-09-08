@@ -48,6 +48,7 @@ public void Weapon_ExplosiveBullets(int client, int weapon, const char[] classna
 	GetClientEyePosition(client, eyePos);
 	GetClientEyeAngles(client, eyeAng);
 	
+	bool Made_sound = true;
 	b_LagCompNPC_ExtendBoundingBox = true;
 	StartLagCompensation_Base_Boss(client, false);
 	for (int i = 0; i < NumPellets; i++)
@@ -73,7 +74,15 @@ public void Weapon_ExplosiveBullets(int client, int weapon, const char[] classna
 		pack_boom.WriteCell(0);
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		
-		EmitAmbientSound(ExplosiveBullets_SFX[GetRandomInt(0, 2)], spawnLoc, _, _, _, _, GetRandomInt(75, 110));
+		if(Made_sound)
+		{
+			EmitAmbientSound(ExplosiveBullets_SFX[GetRandomInt(0, 2)], spawnLoc, _, 75, _,0.7, GetRandomInt(75, 110));
+		}
+		else
+		{
+			EmitAmbientSound(ExplosiveBullets_SFX[GetRandomInt(0, 2)], spawnLoc, _, 75, _, 0.3, GetRandomInt(75, 110));
+		}
+		Made_sound = false;
 				 
 	}
 	FinishLagCompensation_Base_boss();

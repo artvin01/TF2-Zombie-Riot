@@ -293,7 +293,17 @@ int i_BarricadesBuild[MAXTF2PLAYERS]={0, ...};
 int Elevator_Owner[MAXENTITIES]={0, ...};
 bool Is_Elevator[MAXENTITIES]={false, ...};
 int Dont_Crouch[MAXENTITIES]={0, ...};
+
+
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
+enum
+{
+	WEAPON_ARK = 1,
+	WEAPON_FUSION = 2,
+	WEAPON_BOUNCING = 3,
+	WEAPON_MAIMMOAB = 4,
+	WEAPON_CRIPPLEMOAB = 5
+}
 
 enum
 {
@@ -390,6 +400,8 @@ float f_HighIceDebuff[MAXENTITIES];
 bool b_Frozen[MAXENTITIES];
 float f_TankGrabbedStandStill[MAXENTITIES];
 bool b_PernellBuff[MAXENTITIES];
+float f_MaimDebuff[MAXENTITIES];
+float f_CrippleDebuff[MAXENTITIES];
 
 bool b_StickyIsSticking[MAXENTITIES];
 
@@ -1087,7 +1099,6 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_charged_handgun.sp"
 #include "zombie_riot/custom/weapon_wand_beam.sp"
 #include "zombie_riot/custom/weapon_wand_lightning_pap.sp"
-
 #include "zombie_riot/custom/weapon_calcium_wand.sp"
 #include "zombie_riot/custom/weapon_wand_calcium_spell.sp"
 #include "zombie_riot/custom/weapon_passive_banner.sp"
@@ -1100,6 +1111,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_super_star_shooter.sp"
 #include "zombie_riot/custom/weapon_Texan_business.sp"
 #include "zombie_riot/custom/weapon_explosivebullets.sp"
+#include "zombie_riot/custom/weapon_sniper_monkey.sp"
 
 //FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
@@ -3897,4 +3909,5 @@ public void MapStartResetAll()
 	M3_ClearAll();
 	ZeroRage_ClearAll();
 	Zero2(i_StickyToNpcCount);
+	SniperMonkey_ClearAll();
 }

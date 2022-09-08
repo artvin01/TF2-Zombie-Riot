@@ -57,7 +57,6 @@ public void Weapon_Wand_LightningSpell(int client, int weapon, bool &result, int
 				b_LagCompNPC_ExtendBoundingBox = true;
 				StartLagCompensation_Base_Boss(client, false);
 				Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
-				FinishLagCompensation_Base_boss();
 				
 				if(TR_DidHit(trace))
 				{   
@@ -126,6 +125,7 @@ public void Weapon_Wand_LightningSpell(int client, int weapon, bool &result, int
 					EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);	
 
 				}
+				FinishLagCompensation_Base_boss();
 				
 			}
 			else

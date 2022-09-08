@@ -17,6 +17,8 @@ static int Ark_Hits[MAXPLAYERS+1]={0, ...};
 
 static int Ark_Level[MAXPLAYERS+1]={0, ...};
 
+static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
+
 #define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
 #define SOUND_WAND_SHOT_AUTOAIM 	"weapons/man_melter_fire.wav"
 #define SOUND_WAND_SHOT_AUTOAIM_ABILITY	"weapons/man_melter_fire_crit.wav"
@@ -37,6 +39,7 @@ void Ark_autoaim_Map_Precache()
 	PrecacheModel(ENERGY_BALL_MODEL);
 	PrecacheSound(SOUND_WAND_SHOT);
 	PrecacheSound(SOUND_ZAP);
+	Zero(f_AniSoundSpam);
 }
 
 public void Ark_empower_ability(int client, int weapon, bool crit, int slot) // the main ability used to recover the unique mana needed to for the weapon to fire projectiles
@@ -723,7 +726,11 @@ float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, int weapo
 			Ark_Hits[victim] = 12;
 		}
 		
-		ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
+		if(f_AniSoundSpam[victim] < GetGameTime())
+		{
+			f_AniSoundSpam[victim] = GetGameTime() + 0.2;
+			ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
+		}
 		
 		static float angles[3];
 		GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);

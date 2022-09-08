@@ -1105,7 +1105,12 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		damage *= 1.25;
 	}
-		
+	
+	if(f_CrippleDebuff[victim] > GetGameTime())
+	{
+		damage *= 1.4;
+	}
+	
 	if(attacker <= MaxClients)
 	{
 		if(dieingstate[attacker] > 0)
@@ -1226,7 +1231,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		if(attacker <= MaxClients && IsValidEntity(weapon))
 		{
 			
-			float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon);
+			float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		
 			damage = modified_damage;
 			
@@ -1472,28 +1477,28 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 		if(f_HighTeslarDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "↡");
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "⌁⌁");
 		}
 		else if(f_LowTeslarDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "↓");
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "⌁");
 		}
 		
 		if(f_HighIceDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "❅");
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅", Debuff_Adder);
 		}
 		else if(f_LowIceDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "❃");
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❃", Debuff_Adder);
 		}
 		else if (f_VeryLowIceDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "❆");	
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❆", Debuff_Adder);	
 		}
 		
 		if(f_WidowsWineDebuff[victim] > GetGameTime())
@@ -1501,6 +1506,19 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 			Debuff_added = true;
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s४", Debuff_Adder);
 		}
+		
+		if(f_CrippleDebuff[victim] > GetGameTime())
+		{
+			Debuff_added = true;
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s⯯", Debuff_Adder);
+		}
+		
+		if(f_MaimDebuff[victim] > GetGameTime())
+		{
+			Debuff_added = true;
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s↓", Debuff_Adder);
+		}
+		
 		
 		if(Debuff_added)
 		{
@@ -1760,13 +1778,25 @@ void Spawner_RemoveFromArray(int entity)
 		SpawnerList.Erase(index);
 }
 
-float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case 2: // weapon_fusion
+		case WEAPON_FUSION:
 		{
 			return Npc_OnTakeDamage_Fusion(victim, damage, weapon);
+		}
+		case WEAPON_BOUNCING:
+		{
+			return SniperMonkey_BouncingBullets(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+		}
+		case WEAPON_MAIMMOAB:
+		{
+			return SniperMonkey_MaimMoab(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+		}
+		case WEAPON_CRIPPLEMOAB:
+		{
+			return SniperMonkey_CrippleMoab(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		}
 	}
 	return damage;
