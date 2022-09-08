@@ -3845,6 +3845,7 @@ public Action Hook_BlockUserMessageEx(UserMsg msg_id, BfRead msg, const int[] pl
 
 public void MapStartResetAll()
 {
+	GlobalCheckDelayAntiLagPlayerScale = 0.0;
 	Zero(b_IsAGib);
 	Reset_stats_starshooter();
 	Zero(f_StuckTextChatNotif);
