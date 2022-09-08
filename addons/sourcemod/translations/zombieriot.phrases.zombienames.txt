@@ -577,14 +577,17 @@
 	"The Addiction"
 	{
 		"en" 		"The Addiction"
+		"ru" 		"Зависимость"
 	}
 	"The Doctor"
 	{
 		"en" 		"The Doctor"
+		"ru" 		"Доктор"
 	}
 	"Book Simon"
 	{
 		"en" 		"Book Simon"
+		"ru" 		"Книжный Саймон"
 	}
 	"Kahmlstein"
 	{
@@ -594,22 +597,27 @@
 	"L4D2 Tank"
 	{
 		"en"		"Tank"
+		"ru"		"Танк"
 	}
 	"Holy Knight"
 	{
 		"en"		"Holy Knight"
+		"ru"		"Священный рыцарь"
 	}
 	"Sniper Railgunner"
 	{
 		"en"		"Sniper Railgunner"
+		"ru"		"Снайпер с рельсотроном"
 	}
 	"Soldier Barrager"
 	{
 		"en"		"Soldier Barrager"
+		"ru"		"Солдат-бомбардир"
 	}
 	"Capped Ram"
 	{
 		"en"		"Capped Ram"
+		"ru"		"Таран"
 	}
 	"The Shit Slapper"
 	{
