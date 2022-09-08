@@ -277,7 +277,7 @@ public Action Building_PlaceElevator(int client, int weapon, const char[] classn
 }
 public Action Building_PlaceAmmoBox(int client, int weapon, const char[] classname, bool &result)
 {
-	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client))
+	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false))
 	{
 		PlaceBuilding(client, Building_AmmoBox, TFObject_Dispenser);
 		return Plugin_Continue;		
@@ -292,7 +292,7 @@ public Action Building_PlaceAmmoBox(int client, int weapon, const char[] classna
 
 public Action Building_PlaceArmorTable(int client, int weapon, const char[] classname, bool &result)
 {
-	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client))
+	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false))
 	{
 		PlaceBuilding(client, Building_ArmorTable, TFObject_Dispenser);
 		return Plugin_Continue;		
@@ -307,7 +307,7 @@ public Action Building_PlaceArmorTable(int client, int weapon, const char[] clas
 
 public Action Building_PlacePerkMachine(int client, int weapon, const char[] classname, bool &result)
 {
-	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client))
+	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false))
 	{
 		PlaceBuilding(client, Building_PerkMachine, TFObject_Dispenser);
 		return Plugin_Continue;		
@@ -322,7 +322,7 @@ public Action Building_PlacePerkMachine(int client, int weapon, const char[] cla
 
 public Action Building_PlacePackAPunch(int client, int weapon, const char[] classname, bool &result)
 {
-	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client))
+	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false))
 	{
 		PlaceBuilding(client, Building_PackAPunch, TFObject_Dispenser);
 		return Plugin_Continue;		
@@ -1549,7 +1549,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					if(Is_Reload_Button)
 					{
 						GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-						if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client) && (StrEqual(buffer, "zr_ammobox") || StrEqual(buffer, "zr_armortable") || StrEqual(buffer, "zr_perkmachine") || StrEqual(buffer, "zr_packapunch")))
+						if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false) && (StrEqual(buffer, "zr_ammobox") || StrEqual(buffer, "zr_armortable") || StrEqual(buffer, "zr_perkmachine") || StrEqual(buffer, "zr_packapunch")))
 						{
 							DataPack pack;
 							CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
@@ -3553,19 +3553,23 @@ static void GetBeamDrawStartPoint_Client(int client, float startPoint[3])
 }
 
 
-public int MaxSupportBuildingsAllowed(int client)
+public int MaxSupportBuildingsAllowed(int client, bool ingore_glass)
 {
 	int maxAllowed = 1;
 	
   	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayer(client, 762)); //762 is how many extra buildings are allowed on you.
 	
-	maxAllowed += Building_health_attribute;
+	maxAllowed += Building_health_attribute; 
 	
 	if(maxAllowed < 1)
 	{
 		maxAllowed = 1;
 	}
 	
+	if(!ingore_glass && b_HasGlassBuilder[client])
+	{
+		maxAllowed = 1;
+	}
 	return maxAllowed;
 }
 

@@ -1703,7 +1703,7 @@ static void MenuPage(int client, int section)
 					{
 						if(item.ShouldThisCountSupportBuildings)
 						{
-							FormatEx(buffer, sizeof(buffer), "%s[%d/%d]", TranslateItemName(client, item.Name), i_SupportBuildingsBuild[client], MaxSupportBuildingsAllowed(client));
+							FormatEx(buffer, sizeof(buffer), "%s[%d/%d]", TranslateItemName(client, item.Name), i_SupportBuildingsBuild[client], MaxSupportBuildingsAllowed(client, false));
 						}
 						else
 						{
@@ -2494,6 +2494,7 @@ void Store_GiveAll(int client, int health)
 	b_PhaseThroughBuildingsPerma[client] = 1;
 	b_FaceStabber[client] = false;
 	b_IsCannibal[client] = false;
+	b_HasGlassBuilder[client] = false;
 	
 	if(!IsFakeClient(client) && Was_phasing)
 	{
@@ -2781,6 +2782,10 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 						if(info.SpecialAdditionViaNonAttribute == 3) //eated it all
 						{
 							b_IsCannibal[client] = true;
+						}
+						if(info.SpecialAdditionViaNonAttribute == 4) //Glass Builder
+						{
+							b_HasGlassBuilder[client] = true;
 						}
 						switch(info.Index)
 						{

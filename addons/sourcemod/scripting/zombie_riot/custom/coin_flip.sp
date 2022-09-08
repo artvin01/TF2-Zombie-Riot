@@ -120,14 +120,14 @@ public void Ability_Coin_Flip4(int client, int weapon, bool crit, int slot)
 	}
 }
 
-public Action short_bonus_damage(Handle timer, int ref)
+public Action short_bonus_damage(Handle timer, int ref) 
 {
 	int entity = EntRefToEntIndex(ref);
 	if(entity > 0)
 	{
 		float chargerPos[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", chargerPos);
-		mf_extra_damage[entity] = GetGameTime() + 1.0;
+		mf_extra_damage[entity] = GetGameTime() + 0.30; //how much time is given for extra damage to apply for the flash appeared
 		ParticleEffectAt(chargerPos, "raygun_projectile_blue_crit", 0.3);
 	}
 	else
@@ -256,7 +256,7 @@ public Action flip_extra(Handle timer, int client)
 			fThrowingVector[1] = fScal * Sine( DegToRad( fPlayerAngles[1] ) );
 			fThrowingVector[2] = gf_gordon_propthrowforce * Sine( DegToRad( -1 * fPlayerAngles[0] ) );
 			
-			CreateTimer(0.75, short_bonus_damage, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(0.33, short_bonus_damage, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 			
 			float newVel[3];
 			
@@ -472,7 +472,7 @@ stock void Do_Coin_calc(int victim)
 					GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
 					if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "base_boss", true) && (GetEntProp(target, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum")))
 					{
-						if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 2.0) //You got one second.
+						if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 1) //You got one second.
 						{
 							SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 						}
@@ -513,7 +513,7 @@ stock void Do_Coin_calc(int victim)
 								GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
 								if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "base_boss", true) && (GetEntProp(target, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum")))
 								{
-									if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 2.0) //You got one second.
+									if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 1.0) //You got one second.
 									{
 										SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 									}
@@ -576,7 +576,7 @@ stock void Do_Coin_calc(int victim)
 							GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
 							if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "base_boss", true) && (GetEntProp(target, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum")))
 							{
-								if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 2.0) //You got one second.
+								if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 1.0) //You got one second.
 								{
 									SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 								}
@@ -604,7 +604,7 @@ stock void Do_Coin_calc(int victim)
 						pack_boom.WriteCell(0);
 						RequestFrame(MakeExplosionFrameLater, pack_boom);
 							
-						if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 2.0) //You got one second.
+						if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 1.0) //You got one second.
 						{
 							SDKHooks_TakeDamage(Closest_entity, victim, Entity_Owner[victim], damage_multiplier[victim]*2, DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 						}

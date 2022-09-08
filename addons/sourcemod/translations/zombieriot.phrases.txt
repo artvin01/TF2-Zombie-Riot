@@ -1227,4 +1227,8 @@
 	{
 		"en"		"A Miniboss has Spawned.."
 	}
+	"Not Enough Builder Upgrades"
+	{
+		"en"		"You do not have enough builder upgrades to use this skill."
+	}
 }
