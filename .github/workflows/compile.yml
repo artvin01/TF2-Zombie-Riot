@@ -23,4 +23,4 @@ jobs:
       - name: Compile
         run: |
           cd build/addons/sourcemod/scripting
-          ./spcomp zombie_riot.sp -o ../plugins/zombie_riot.smx
+          ./spcomp -E zombie_riot.sp
