@@ -37,7 +37,7 @@ public void Texan_business_attack(int client, int weapon, const char[] classname
 
 public void Texan_business_altattack(int client, int weapon, bool crit, int slot)
 {
-    if(MaxSupportBuildingsAllowed(client) >= 3)
+    if(MaxSupportBuildingsAllowed(client, true) >= 4)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
@@ -84,6 +84,14 @@ public void Texan_business_altattack(int client, int weapon, bool crit, int slot
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		}
+	}
+	else
+	{
+
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Not Enough Builder Upgrades");
 	}
 }
 
