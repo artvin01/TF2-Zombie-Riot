@@ -215,6 +215,9 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 									if(++a >= sizeof(MythicDrops))
 										a = 0;
 								} while(a != start);
+								
+								if(length)
+									PrintToChat(client, "You already have everything in this rarity");
 							}
 							
 							if(length && i_RarityType[entity] >= Rarity_Legend)
@@ -240,6 +243,9 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 									if(++a >= sizeof(LegendDrops))
 										a = 0;
 								} while(a != start);
+								
+								if(length)
+									PrintToChat(client, "You already have everything in this rarity");
 							}
 							
 							if(length && i_RarityType[entity] >= Rarity_Rare)
@@ -265,6 +271,9 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 									if(++a >= sizeof(RareDrops))
 										a = 0;
 								} while(a != start);
+								
+								if(length)
+									PrintToChat(client, "You already have everything in this rarity");
 							}
 							
 							if(length && i_RarityType[entity] >= Rarity_Uncommon)
@@ -290,6 +299,9 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 									if(++a >= sizeof(UncommonDrops))
 										a = 0;
 								} while(a != start);
+								
+								if(length)
+									PrintToChat(client, "You already have everything in this rarity");
 							}
 							
 							if(length && i_RarityType[entity] >= Rarity_Common)
