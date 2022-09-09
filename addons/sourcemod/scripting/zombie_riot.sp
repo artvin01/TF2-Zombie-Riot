@@ -2968,7 +2968,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		
 		TF2Attrib_SetByDefIndex(client, 201, attack_speed);
 			
-		if(!IsWandWeapon(weapon))
+		if(!IsWandWeapon(weapon) && !IsEngineerWeapon(weapon))
 		{
 			if(Panic_Attack[weapon])
 			{

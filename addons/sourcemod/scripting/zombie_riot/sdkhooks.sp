@@ -915,7 +915,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			if(IsValidEntity(Victim_weapon))
 			{
-				if(!IsWandWeapon(Victim_weapon)) //Make sure its not wand.
+				if(!IsWandWeapon(Victim_weapon) && !IsEngineerWeapon(Victim_weapon)) //Make sure its not wand.
 				{
 					char melee_classname[64];
 					GetEntityClassname(Victim_weapon, melee_classname, 64);

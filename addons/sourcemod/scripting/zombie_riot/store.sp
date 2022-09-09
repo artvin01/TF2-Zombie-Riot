@@ -2799,22 +2799,22 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 						{
 							case 0, 1, 2:
 							{
-								if(info.Index != slot || IsWandWeapon(entity))
+								if(info.Index != slot || (IsWandWeapon(entity) && !IsEngineerWeapon(entity)))
 									continue;
 							}
 							case 6:
 							{
-								if(slot != TFWeaponSlot_Melee && slot != TFWeaponSlot_Secondary || IsWandWeapon(entity))
+								if(slot != TFWeaponSlot_Melee && slot != TFWeaponSlot_Secondary || (IsWandWeapon(entity) && !IsEngineerWeapon(entity)))
 									continue;
 							}
 							case 7:
 							{
-								if(slot != TFWeaponSlot_Secondary && slot != TFWeaponSlot_Primary || IsWandWeapon(entity))
+								if(slot != TFWeaponSlot_Secondary && slot != TFWeaponSlot_Primary || (IsWandWeapon(entity) && !IsEngineerWeapon(entity)))
 									continue;
 							}
 							case 8:
 							{
-								if(slot != TFWeaponSlot_Melee || !IsWandWeapon(entity))
+								if(slot != TFWeaponSlot_Melee || (!IsWandWeapon(entity) && !IsEngineerWeapon(entity)))
 								{
 									continue;
 								}
