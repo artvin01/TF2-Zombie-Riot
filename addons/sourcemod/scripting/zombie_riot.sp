@@ -465,6 +465,7 @@ int i_HighTeslarStaff[MAXENTITIES]={0, ...}; 				//3000
 int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
 bool b_FaceStabber[MAXTF2PLAYERS];
 bool b_IsCannibal[MAXTF2PLAYERS];
+bool b_HasGlassBuilder[MAXTF2PLAYERS];
 
 Function EntityFuncAttack[MAXENTITIES];
 Function EntityFuncAttack2[MAXENTITIES];
@@ -1202,7 +1203,7 @@ public void OnPluginStart()
 //	HookEvent("npc_hurt", OnNpcHurt);
 	
 
-					
+		
 	sv_cheats = FindConVar("sv_cheats");
 	cvarTimeScale = FindConVar("host_timescale");
 	tf_bot_quota = FindConVar("tf_bot_quota");
@@ -1710,6 +1711,7 @@ public Action Command_ToggleReload(int client, int args)
 					
 public void OnClientPutInServer(int client)
 {
+	
 	b_IsPlayerABot[client] = false;
 	if(IsFakeClient(client))
 	{
@@ -1750,6 +1752,7 @@ public void OnClientPutInServer(int client)
 	
 	if(AreClientCookiesCached(client)) //Ingore this. This only bugs it out, just force it, who cares.
 		OnClientCookiesCached(client);	
+	
 }
 
 //Maybe Delay it by 1 frame?
@@ -2965,7 +2968,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		
 		TF2Attrib_SetByDefIndex(client, 201, attack_speed);
 			
-		if(!IsWandWeapon(weapon))
+		if(!IsWandWeapon(weapon) && !IsEngineerWeapon(weapon))
 		{
 			if(Panic_Attack[weapon])
 			{
@@ -3108,6 +3111,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		if(!StrContains(classname, "env_entity_dissolver"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly_Disolve);
+		}
+		else if(!StrContains(classname, "tf_ammo_pack"))
+		{
+			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
 		else if(!StrContains(classname, "item_currencypack_custom"))
 		{
@@ -3845,6 +3852,7 @@ public Action Hook_BlockUserMessageEx(UserMsg msg_id, BfRead msg, const int[] pl
 
 public void MapStartResetAll()
 {
+	GlobalCheckDelayAntiLagPlayerScale = 0.0;
 	Zero(b_IsAGib);
 	Reset_stats_starshooter();
 	Zero(f_StuckTextChatNotif);

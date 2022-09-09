@@ -250,7 +250,12 @@ public void The_Shit_Slapper_ClotThink(int iNPC)
 						TR_GetEndPosition(vecHit, swingTrace);
 						if(target > 0) 
 						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 30.0*scale, DMG_CLUB, -1, _, vecHit);
+							float damage = 30.0;
+							if(ZR_GetWaveCount()<30)	//the shit slapper will become the most feard thing on the planet
+							{
+									damage=150.0;
+							}
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage*scale, DMG_CLUB, -1, _, vecHit);
 							if(i_slap[npc.index] >= 5)
 							{
 								if(IsValidClient(target))

@@ -3223,6 +3223,7 @@ methodmap CClotBody
 		}
 		// See if we hit anything.
 		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, ingore_buildings ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, this.index );
+		/*
 		if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
 		{
 			delete trace;
@@ -3233,7 +3234,8 @@ methodmap CClotBody
 				TR_GetEndPosition(vecSwingEnd, trace);	
 			}
 		}
-		return ( TR_GetFraction(trace) < 1.0 );
+		*/
+		return (TR_GetFraction(trace) < 1.0);
 	}
 	public bool DoAimbotTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0)
 	{
@@ -3259,7 +3261,7 @@ methodmap CClotBody
 			
 		}
 		*/
-		return ( TR_GetFraction(trace) < 1.0 );
+		return (TR_GetFraction(trace) < 1.0);
 	}
 	public void FireRocket(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, int flags = 0) //No defaults, otherwise i cant even judge.
 	{
