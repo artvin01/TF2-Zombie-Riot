@@ -709,6 +709,12 @@ void Store_Reset()
 		}
 		StoreItems.SetArray(i, item);
 	}
+	
+	for(int c=1; c<=MaxClients; c++)
+	{
+		if(IsClientInGame(c))
+			Store_LoadLevelPerks(c, true);
+	}
 }
 
 bool Store_HasAnyItem(int client)
@@ -821,7 +827,7 @@ void Store_ClientCookiesCached(int client)
 		Store_LoadLoadout(client);
 }
 
-void Store_LoadLevelPerks(int client)
+void Store_LoadLevelPerks(int client, bool silent=false)
 {
 	char buffer[512], buffers[16][64];
 	
@@ -889,7 +895,7 @@ void Store_LoadLevelPerks(int client)
 		}
 	}
 	
-	if(found && IsClientInGame(client))
+	if(!silent && found && IsClientInGame(client))
 	{
 		SetGlobalTransTarget(client);
 		PrintToChat(client, "%t","Your last equipped level perks were restored");
