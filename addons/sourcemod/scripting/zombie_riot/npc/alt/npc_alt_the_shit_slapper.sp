@@ -261,7 +261,6 @@ public void The_Shit_Slapper_ClotThink(int iNPC)
 											Custom_Knockback(npc.index, target, 1250.0);
 											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-											i_slap[npc.index] = 0;
 										}
 									}
 									else
