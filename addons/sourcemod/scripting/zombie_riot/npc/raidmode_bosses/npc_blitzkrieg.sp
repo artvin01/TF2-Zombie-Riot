@@ -97,6 +97,8 @@ static float fl_blitzscale[MAXENTITIES];
 
 static bool b_final_push[MAXENTITIES];
 
+static int i_final_nr[MAXENTITIES];
+
 public void Blitzkrieg_OnMapStart()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);      		}
@@ -387,6 +389,7 @@ methodmap Blitzkrieg < CClotBody
 		i_PrimaryRocketsFired[npc.index] = 0;
 		fl_LifelossReload[npc.index] = 1.0;
 		i_maxfirerockets[npc.index] = 20;
+		i_final_nr[npc.index] = 0;
 		
 		fl_blitzscale[npc.index] = RaidModeScaling;
 		
@@ -492,6 +495,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 			} else {
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
+			npc.StartPathing();
 			if(npc.m_flNextRangedBarrage_Spam < GetGameTime() && npc.m_flNextRangedBarrage_Singular < GetGameTime() && flDistanceToTarget > Pow(110.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && i_NpcCurrentLives[npc.index]>4 && !b_Are_we_reloading[npc.index])
 			{	
 				EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
@@ -598,7 +602,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 					//Can we attack right now?
 					if(npc.m_flNextMeleeAttack < GetGameTime())
 					{
-						npc.m_flSpeed = fl_move_speed[npc.index]-20;	//base speed life 0.	20 speed slower when using rocket launcher
+						npc.m_flSpeed = fl_move_speed[npc.index]-50;	//base speed life 0.	50 speed slower when using rocket launcher
 						//Play attack anim
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 						float projectile_speed = 500.0*i_HealthScale[npc.index];
@@ -655,7 +659,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float meleedmg;
-								meleedmg = 13.5 * RaidModeScaling;
+								meleedmg = 11.5 * RaidModeScaling;
 								if(target <= MaxClients)
 								{
 									float Bonus_damage = 1.0;
@@ -726,7 +730,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 	
 	npc.PlayMusicSound();
 	npc.PlayIdleAlertSound();
-	if(i_NpcCurrentLives[npc.index]==4 && fl_TheFinalCountdown[npc.index] <= GetGameTime())
+	if(i_final_nr[npc.index]==1 && fl_TheFinalCountdown[npc.index] <= GetGameTime())
 	{
 		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 		fl_TheFinalCountdown[npc.index] = GetGameTime()+1.0;
@@ -763,7 +767,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 			fl_rocket_firerate[npc.index]=0.35;
 		}
 	}
-	else if(ZR_GetWaveCount()<=i_wave_life2[npc.index])
+	if(ZR_GetWaveCount()==i_wave_life2[npc.index])
 	{
 		RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.25);
 		i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*1.3;
@@ -773,7 +777,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 			fl_rocket_firerate[npc.index]=0.3;
 		}
 	}
-	else if(ZR_GetWaveCount()<=i_wave_life3[npc.index])
+	if(ZR_GetWaveCount()==i_wave_life3[npc.index])
 	{
 		RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.75);
 		i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*1.8;
@@ -783,7 +787,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 			fl_rocket_firerate[npc.index]=0.2;
 		}
 	}
-	else if(ZR_GetWaveCount()>=i_wave_life4[npc.index])
+	if(ZR_GetWaveCount()>=i_wave_life4[npc.index])
 	{
 		RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*2.25);
 		i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*2.55;
@@ -940,17 +944,17 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 					
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-	}
-	else if(Health/MaxHealth>0 && Health/MaxHealth<0.1 && ZR_GetWaveCount()>=i_wave_life3[npc.index] && !b_final_push[npc.index])
+	} 
+	if(Health/MaxHealth>0 && Health/MaxHealth<0.1 && ZR_GetWaveCount()>=i_wave_life3[npc.index] && !b_final_push[npc.index])
 	{	//The final push
 		
 		EmitSoundToAll("mvm/mvm_tank_horn.wav");
 		
 		b_final_push[npc.index] = true;
 		
-		i_NpcCurrentLives[npc.index]=4;
+		i_final_nr[npc.index]=1;
 		
-		fl_move_speed[npc.index] = 20.0;
+		fl_move_speed[npc.index] = 50.0;
 		
 		CPrintToChatAll("{crimson}Blitzkrieg{default}: {crimson}THE END IS HERE");
 		
@@ -977,9 +981,9 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	}
-	else if(fl_TheFinalCountdown2[npc.index] <= GetGameTime() && i_NpcCurrentLives[npc.index] == 4)
+	else if(fl_TheFinalCountdown2[npc.index] <= GetGameTime() && i_final_nr[npc.index] == 1)
 	{	//reset
-		i_NpcCurrentLives[npc.index]=5;
+		i_final_nr[npc.index]=5;
 		
 		b_Are_we_reloading[npc.index]=false;
 		
@@ -989,16 +993,14 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		CPrintToChatAll("{crimson}Blitzkrieg{default}: You lived? {crimson}no matter");
 		
-		fl_move_speed[npc.index] = 295.0;	//2 speed less than a running player.
+		fl_move_speed[npc.index] = 275.0;	//Less speed since blitz just becomes death
 		
 			
 		npc.m_flNextTeleport = GetGameTime() + 1.0;
 		
 		i_maxfirerockets[npc.index] = 100;
 		
-		fl_rocket_firerate[npc.index] = 0.09;
-		
-		fl_LifelossReload[npc.index] = 0.25;
+		fl_LifelossReload[npc.index] = 0.3;
 		
 		npc.m_flRangedArmor = 1.0;
 		

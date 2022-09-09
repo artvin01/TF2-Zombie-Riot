@@ -370,7 +370,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 	
-	fl_kahml_galactic_strenght[npc.index] = 1+(1-(Health/MaxHealth));
+	fl_kahml_galactic_strenght[npc.index] = 1+(1-(Health/MaxHealth))*1.5;
 	
 	if(Health/MaxHealth<=0.5)
 	{
@@ -408,7 +408,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		}//fast3
 		if(fl_kahml_combo_reset_timer[npc.index] <= GetGameTime() && i_kahml_combo_offest[npc.index] != 0 && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index])
 		{
-			fl_kahml_main_melee_damage[npc.index] = 65.0 * fl_kahml_galactic_strenght[npc.index];
+			fl_kahml_main_melee_damage[npc.index] = 75.0 * fl_kahml_galactic_strenght[npc.index];
 			i_kahml_combo_offest[npc.index] = 0;
 			i_kahml_combo[npc.index] = 0;
 			if(IsValidEntity(npc.m_iWearable1))
@@ -428,7 +428,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		}
 		if(i_kahml_combo[npc.index] == 3 && i_kahml_combo_offest[npc.index] == 0 && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index])
 		{
-			fl_kahml_main_melee_damage[npc.index] = 70.0 * fl_kahml_galactic_strenght[npc.index];
+			fl_kahml_main_melee_damage[npc.index] = 80.0 * fl_kahml_galactic_strenght[npc.index];
 			fl_kahml_combo_reset_timer[npc.index] = GetGameTime() + 5.0;
 			i_kahml_combo_offest[npc.index]++;
 			if(IsValidEntity(npc.m_iWearable1))
@@ -452,7 +452,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		}
 		if(i_kahml_combo[npc.index] == 5 && i_kahml_combo_offest[npc.index] == 1 && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index])
 		{
-			fl_kahml_main_melee_damage[npc.index] = 80.0 * fl_kahml_galactic_strenght[npc.index];
+			fl_kahml_main_melee_damage[npc.index] = 95.0 * fl_kahml_galactic_strenght[npc.index];
 			fl_kahml_combo_reset_timer[npc.index] = GetGameTime() + 5.0;
 			i_kahml_combo_offest[npc.index]++;
 			if(IsValidEntity(npc.m_iWearable1))
@@ -476,7 +476,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		}
 		if(i_kahml_combo[npc.index] == 7 && i_kahml_combo_offest[npc.index] == 2 && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index])
 		{
-			fl_kahml_main_melee_damage[npc.index] = 90.0 * fl_kahml_galactic_strenght[npc.index];
+			fl_kahml_main_melee_damage[npc.index] = 100.0 * fl_kahml_galactic_strenght[npc.index];
 			fl_kahml_combo_reset_timer[npc.index] = GetGameTime() + 5.0;
 			i_kahml_combo_offest[npc.index]++;
 			if(IsValidEntity(npc.m_iWearable1))
@@ -500,7 +500,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		}
 		if(i_kahml_combo[npc.index] == 8 && i_kahml_combo_offest[npc.index] == 3 && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index]) 
 		{
-			fl_kahml_main_melee_damage[npc.index] = 100.0 * fl_kahml_galactic_strenght[npc.index];
+			fl_kahml_main_melee_damage[npc.index] = 125.0 * fl_kahml_galactic_strenght[npc.index];
 			fl_kahml_combo_reset_timer[npc.index] = GetGameTime() + 5.0;
 			i_kahml_combo_offest[npc.index]++;
 			if(IsValidEntity(npc.m_iWearable1))
@@ -524,7 +524,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		}
 		if(i_kahml_combo[npc.index] == 9 && i_kahml_combo_offest[npc.index] == 4 && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index])
 		{
-			fl_kahml_main_melee_damage[npc.index] = 110.0 * fl_kahml_galactic_strenght[npc.index];
+			fl_kahml_main_melee_damage[npc.index] = 130.0 * fl_kahml_galactic_strenght[npc.index];
 			fl_kahml_combo_reset_timer[npc.index] = GetGameTime() + 30.0;
 			i_kahml_combo_offest[npc.index]++;
 			if(IsValidEntity(npc.m_iWearable1))
@@ -568,7 +568,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		if(Health/MaxHealth>0 && Health/MaxHealth<0.25 && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index] && !b_kahml_annihilation_used[npc.index])
 		{
 			
-			fl_kahml_main_melee_damage[npc.index] = 50.0 * fl_kahml_galactic_strenght[npc.index];
+			fl_kahml_main_melee_damage[npc.index] = 100.0 * fl_kahml_galactic_strenght[npc.index];
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
 			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_gatling_gun/c_gatling_gun.mdl");
@@ -602,12 +602,12 @@ public void Kahmlstein_ClotThink(int iNPC)
 		}
 		if(b_kahml_inNANOMACHINESSON[npc.index])
 		{
-			fl_kahml_main_melee_damage[npc.index] = 25.0 * fl_kahml_galactic_strenght[npc.index];	//cause funny 3x thingy makes this thing go brrrrrrr and his dmg becomes god-like
+			fl_kahml_main_melee_damage[npc.index] = 50.0 * fl_kahml_galactic_strenght[npc.index];	//cause funny 3x thingy makes this thing go brrrrrrr and his dmg becomes god-like
 		}
 		if(fl_kahml_nano_reset[npc.index] <= GetGameTime() && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index])
 		{
 			CPrintToChatAll("{blue}Kahmlstein{default}: NANOMACHINES SON, THEY HARDEN IN RESPONSE TO PHYSICAL TRAUMA, YOU CAN'T HURT ME.");
-			fl_kahml_main_melee_damage[npc.index] = 25.0 * fl_kahml_galactic_strenght[npc.index];
+			fl_kahml_main_melee_damage[npc.index] = 50.0 * fl_kahml_galactic_strenght[npc.index];
 			fl_kahml_bulletres[npc.index] = 0.1;
 			fl_kahml_meleeres[npc.index] = 0.1;
 			b_kahml_inNANOMACHINESSON[npc.index] = true;
@@ -769,10 +769,6 @@ public void Kahmlstein_ClotThink(int iNPC)
 							{
 								if(target <= MaxClients)
 								{
-									i_kahml_combo[npc.index]++;
-									i_kahml_teleport_combo[npc.index]++;
-									i_kahml_dash_combo[npc.index]++;
-									i_kahml_megahit[npc.index]++;
 									
 									float Bonus_damage = 1.0;
 									int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
@@ -796,10 +792,15 @@ public void Kahmlstein_ClotThink(int iNPC)
 								//	SDKHooks_TakeDamage(target, npc.index, npc.index, 0.1 * fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
 								//else
 								//	SDKHooks_TakeDamage(target, npc.index, npc.index, 0.3 * fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
-								
-								Custom_Knockback(npc.index, target, fl_kahml_knockback[npc.index]);
+								if(IsValidClient(target))
+								{
+									Custom_Knockback(npc.index, target, fl_kahml_knockback[npc.index]);
+								}
 								npc.PlayMeleeHitSound();		
-								
+								i_kahml_combo[npc.index]++;
+								i_kahml_teleport_combo[npc.index]++;
+								i_kahml_dash_combo[npc.index]++;
+								i_kahml_megahit[npc.index]++;
 								
 								
 								// Hit sound
