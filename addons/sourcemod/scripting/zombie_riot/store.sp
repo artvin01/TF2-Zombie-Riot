@@ -829,8 +829,16 @@ void Store_ClientCookiesCached(int client)
 
 void Store_LoadLevelPerks(int client, bool silent=false)
 {
-	char buffer[512], buffers[16][64];
+	char buffer[512];
+	zr_tagblacklist.GetString(buffer, sizeof(buffer));
+	if(buffer[0])
+		return;
 	
+	zr_tagwhitelist.GetString(buffer, sizeof(buffer));
+	if(buffer[0])
+		return;
+	
+	char buffers[16][64];
 	static Item item;
 	int items = StoreItems.Length;
 	
