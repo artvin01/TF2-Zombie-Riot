@@ -354,7 +354,12 @@ public void Soldier_Barrager_ClotThink(int iNPC)
 						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 750.0);
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.PlayMeleeSound();
-						npc.FireRocket(vecTarget, 15.0, 750.0);
+						float dmg = 12.5;
+						if(ZR_GetWaveCount()>=45)
+						{
+							dmg=17.5;
+						}
+						npc.FireRocket(vecTarget, dmg, 750.0);
 						npc.m_flNextMeleeAttack = GetGameTime() + 0.5;
 						npc.m_flReloadIn = GetGameTime() + 1.75;
 						i_ammo_count[npc.index]--;

@@ -313,7 +313,12 @@ public void Alt_CombineDeutsch_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget);
 				npc.FaceTowards(vecTarget);
 				vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 450.0);
-				npc.FireRocket(vecTarget, 40.0, 450.0, "models/effects/combineball.mdl", 1.0);
+				float  dmg=40.0;
+				if(ZR_GetWaveCount()<40)
+				{
+					dmg=20.0;
+				}
+				npc.FireRocket(vecTarget, dmg, 450.0, "models/effects/combineball.mdl", 1.0);
 				i_barrage[npc.index]++;
 				npc.PlayRangedSound();
 				npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
@@ -359,11 +364,15 @@ public void Alt_CombineDeutsch_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									
+									float damage=150.0;
+									if(ZR_GetWaveCount()<40)
+									{
+										damage=75.0;
+									}
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, damage*3.3333, DMG_CLUB, -1, _, vecHit);//the *3.333 is the closest I could get to 500 building dmg.
 									
 									// Hit particle
 									
