@@ -623,4 +623,8 @@
 	{
 		"en"		"The Shit Slapper"
 	}
+	"Basic Bones"
+	{
+		"en"		"Basic Bones"
+	}
 }

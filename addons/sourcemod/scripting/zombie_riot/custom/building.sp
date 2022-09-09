@@ -1394,7 +1394,7 @@ void Building_ShowInteractionHud(int client, int entity)
 					else
 					{
 						SetGlobalTransTarget(client);
-						PrintCenterText(client, "%t", "Ammobox Tooltip");						
+						PrintCenterText(client, "%t", "Armortable Tooltip");				
 					}
 				}
 				case 2:
@@ -1413,7 +1413,7 @@ void Building_ShowInteractionHud(int client, int entity)
 					else
 					{
 						SetGlobalTransTarget(client);
-						PrintCenterText(client, "%t", "Armortable Tooltip");						
+						PrintCenterText(client, "%t", "Ammobox Tooltip");						
 					}
 				}
 				case 5:

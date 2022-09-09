@@ -733,7 +733,9 @@ enum
 	
 	MEDIVAL_RAM	= 126,
 	ALT_SOLDIER_BARRAGER = 127,
-	ALT_The_Shit_Slapper = 128
+	ALT_The_Shit_Slapper = 128,
+	
+	BONEZONE_BASICBONES = 129
 }
 
 
@@ -876,7 +878,9 @@ public const char NPC_Names[][] =
 	
 	"Capped Ram",
 	"Soldier Barrager",
-	"The Shit Slapper"
+	"The Shit Slapper",
+	
+	"Basic Bones"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -1015,7 +1019,9 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",
 	"npc_medival_ram",
 	"npc_alt_soldier_barrager",
-	"npc_alt_the_shit_slapper"
+	"npc_alt_the_shit_slapper",
+	
+	"npc_basicbones"
 };
 
 #include "zombie_riot/stocks_override.sp"
@@ -2955,7 +2961,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 	}
 	
-	if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee && StrContains(classname, "tf_weapon_wrench"))
+	if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
 	{
 		float attack_speed;
 		
@@ -2968,9 +2974,9 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		
 		TF2Attrib_SetByDefIndex(client, 201, attack_speed);
 			
-		if(!IsWandWeapon(weapon) && !IsEngineerWeapon(weapon))
+		if(!IsWandWeapon(weapon) && StrContains(classname, "tf_weapon_wrench"))
 		{
-			if(Panic_Attack[weapon])
+			if(Panic_Attack[weapon] && !IsEngineerWeapon(weapon))
 			{
 				float flHealth = float(GetEntProp(client, Prop_Send, "m_iHealth"));
 				float flpercenthpfrommax = flHealth / SDKCall_GetMaxHealth(client);

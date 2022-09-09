@@ -838,6 +838,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = The_Shit_Slapper(client, vecPos, vecAng, ally);
 		}
+		case BONEZONE_BASICBONES:
+		{
+			entity = BasicBones(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1351,6 +1355,10 @@ public void NPCDeath(int entity)
 		{
 			The_Shit_Slapper_NPCDeath(entity);
 		}
+		case BONEZONE_BASICBONES:
+		{
+			BasicBones_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1573,6 +1581,8 @@ public void OnMapStart_NPC_Base()
 	
 	Soldier_Barrager_OnMapStart_NPC();
 	The_Shit_Slapper_OnMapStart_NPC();
+	
+	BasicBones_OnMapStart_NPC();
 }
 
 
@@ -7805,6 +7815,8 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/cof/npc_addiction.sp"
 #include "zombie_riot/npc/cof/npc_doctor.sp"
 #include "zombie_riot/npc/cof/npc_simon.sp"
+
+#include "zombie_riot/npc/bonezone/npc_basicbones.sp"
 
 
 public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask, bool originalResult)
