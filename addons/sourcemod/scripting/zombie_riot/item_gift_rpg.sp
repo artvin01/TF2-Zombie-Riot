@@ -48,7 +48,11 @@ static const char UncommonDrops[][] =
 	"Speedy Brewing [Uncommon]",
 	"Strike Down The False [Uncommon]",
 	"Deadly Tranquility [Uncommon]",
-	"Veteran Monkey Training [Uncommon]"
+	"Veteran Monkey Training [Uncommon]",
+	"Aztec Warrior Paint [Uncommon]",
+	"Iron Ammo Coating [Uncommon]",
+	"Sandals [Uncommon]",
+	"Baggy Trousers [Uncommon]",
 };
 
 static const char RareDrops[][] =
