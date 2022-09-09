@@ -18,21 +18,26 @@ static char g_IdleAlertedSounds[][] = {
 };
 
 static char g_MeleeHitSounds[][] = {
-	")misc/halloween/skeletons/skelly_medium_02.wav",
+	")weapons/grappling_hook_impact_flesh.wav",
 };
 
 static char g_MeleeAttackSounds[][] = {
-	"weapons/3rd_degree_hit_01.wav",
-	"weapons/axe_hit_flesh1.wav",
-	"weapons/slap_hit1.wav",
+	"player/cyoa_pda_fly_swoosh.wav",
 };
 
 static char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
+	"misc/blank.wav",
 };
 
 static char g_HeIsAwake[][] = {
-	")misc/halloween/spell_skeleton_horde_rise.wav",
+	"physics/concrete/concrete_break2.wav",
+	"physics/concrete/concrete_break3.wav",
+};
+
+static char g_GibSounds[][] = {
+	"items/pumpkin_explode1.wav",
+	"items/pumpkin_explode2.wav",
+	"items/pumpkin_explode3.wav",
 };
 
 static bool WakeTheFUCKUp[MAXENTITIES];
@@ -46,6 +51,7 @@ public void BasicBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 
 //	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 
@@ -88,6 +94,15 @@ methodmap BasicBones < CClotBody
 		#endif
 	}
 	
+	public void PlayGibSound() {
+	
+		EmitSoundToAll(g_GibSounds[GetRandomInt(0, sizeof(g_GibSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CBasicBones::PlayGibSound()");
+		#endif
+	}
+	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
@@ -123,7 +138,7 @@ methodmap BasicBones < CClotBody
 	
 	public BasicBones(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BasicBones npc = view_as<BasicBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", "1.15", "300", ally, false));
+		BasicBones npc = view_as<BasicBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", "1.0", "300", ally, false));
 		
 		i_NpcInternalId[npc.index] = BONEZONE_BASICBONES;
 		
@@ -137,7 +152,7 @@ methodmap BasicBones < CClotBody
 
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_SKELETON;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		

@@ -320,6 +320,7 @@ enum
 	BLEEDTYPE_METAL = 2,	
 	BLEEDTYPE_RUBBER = 3,	
 	BLEEDTYPE_XENO = 4,
+	BLEEDTYPE_SKELETON = 5
 }
 
 int GetIndexByPluginName(const char[] name)
@@ -4264,7 +4265,47 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
 						}
 					}	
-				}				
+				}
+				else if(npc.m_iBleedType == 5)
+				{
+					npc.PlayGibSound();
+					if(npc.m_bIsGiant)
+					{
+						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+						startPosition[2] += 64;
+						Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);
+						startPosition[2] -= 15;
+						Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);
+						startPosition[2] += 44;
+						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						{
+							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+							Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, false, true);	
+						}
+						else
+						{
+							Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);		
+						}
+					}
+					else
+					{
+						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+						startPosition[2] += 42;
+						Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, true, _, _, _, _, false, true);
+						startPosition[2] -= 10;
+						Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl", startPosition, _, damageForce, _, _, _, _, _, false, true);
+						startPosition[2] += 34;
+						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						{
+							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, false, true);
+						}
+						else
+						{
+							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, false, true);
+						}
+					}	
+				}
 			//	#endif					
 				Do_Death_Frame_Later(EntIndexToEntRef(pThis));
 				//RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));						
@@ -6016,7 +6057,7 @@ public void RequestFramesCallback(DataPack pack)
 
 
 
-static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, bool xeno = false)
+static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, bool xeno = false, bool nobleed = false)
 {
 	int prop = CreateEntityByName("prop_physics_multiplayer");
 	if(!IsValidEntity(prop))
@@ -6087,26 +6128,29 @@ static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0
 	
 	b_IsAGib[prop] = true;
 	
-	if(!metal_colour)
+	if (!nobleed)
 	{
-		if(!xeno)
+		if(!metal_colour)
 		{
-			int particle = ParticleEffectAt(pos, "blood_trail_red_01_goop", Random_time); //This is a permanent particle, gotta delete it manually...
-			SetParent(prop, particle);
-			SetEntityRenderColor(prop, 255, 0, 0, 255);
+			if(!xeno)
+			{
+				int particle = ParticleEffectAt(pos, "blood_trail_red_01_goop", Random_time); //This is a permanent particle, gotta delete it manually...
+				SetParent(prop, particle);
+				SetEntityRenderColor(prop, 255, 0, 0, 255);
+			}
+			else
+			{
+				int particle = ParticleEffectAt(pos, "blood_impact_green_01", Random_time); //This is a permanent particle, gotta delete it manually...
+				SetParent(prop, particle);
+				SetEntityRenderColor(prop, 0, 255, 0, 255);
+			}
 		}
 		else
 		{
-			int particle = ParticleEffectAt(pos, "blood_impact_green_01", Random_time); //This is a permanent particle, gotta delete it manually...
+	//		pos[2] -= 40.0;
+			int particle = ParticleEffectAt(pos, "tpdamage_4", Random_time); //This is a permanent particle, gotta delete it manually...
 			SetParent(prop, particle);
-			SetEntityRenderColor(prop, 0, 255, 0, 255);
 		}
-	}
-	else
-	{
-//		pos[2] -= 40.0;
-		int particle = ParticleEffectAt(pos, "tpdamage_4", Random_time); //This is a permanent particle, gotta delete it manually...
-		SetParent(prop, particle);
 	}
 	CreateTimer(Random_time, Timer_RemoveEntity_Prop, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 //	CreateTimer(1.5, Timer_DisableMotion, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
