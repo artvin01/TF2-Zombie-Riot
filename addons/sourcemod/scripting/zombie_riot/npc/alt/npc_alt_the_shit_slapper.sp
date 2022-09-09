@@ -190,6 +190,7 @@ public void The_Shit_Slapper_ClotThink(int iNPC)
 	}
 	
 	int closest = npc.m_iTarget;
+	int PrimaryThreatIndex = npc.m_iTarget;
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
@@ -220,73 +221,75 @@ public void The_Shit_Slapper_ClotThink(int iNPC)
 		float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 		float scale = 1.0+(1-(Health/MaxHealth))*1.5;
 		npc.m_flSpeed = 150.0*(1.0+(1-(Health/MaxHealth))*1.3);
-		if(flDistanceToTarget < 50000 || npc.m_flAttackHappenswillhappen)
-		{
-			//Look at target so we hit.
-		//	npc.FaceTowards(vecTarget, 20000.0);
-			
-			if(npc.m_flNextMeleeAttack < GetGameTime())
-			{
-				//Play attack ani
-				if (!npc.m_flAttackHappenswillhappen)
+		if(npc.m_flNextMeleeAttack < GetGameTime() && flDistanceToTarget < 30000)
 				{
-
-					npc.AddGesture("ACT_MELEE_ATTACK1");
-					npc.PlayMeleeSound();
-					npc.m_flAttackHappens = GetGameTime()+0.4/scale;
-					npc.m_flAttackHappens_bullshit = GetGameTime()+0.53/scale;
-					npc.m_flAttackHappenswillhappen = true;
-					npc.m_flSpeed = 420.0;
-				}
-				//Can we attack right now?
-				if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
-				{
-					Handle swingTrace;
-					npc.FaceTowards(vecTarget, 20000.0);
-					if(npc.DoSwingTrace(swingTrace, closest))
+					if (!npc.m_flAttackHappenswillhappen)
 					{
-						int target = TR_GetEntityIndex(swingTrace);	
-						float vecHit[3];
-						TR_GetEndPosition(vecHit, swingTrace);
-						if(target > 0) 
-						{
-							float damage = 30.0;
-							if(ZR_GetWaveCount()<30)	//the shit slapper will become the most feard thing on the planet
-							{
-									damage=150.0;
-							}
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damage*scale, DMG_CLUB, -1, _, vecHit);
-							if(i_slap[npc.index] >= 5)
-							{
-								if(IsValidClient(target))
-								{
-									Custom_Knockback(npc.index, target, 1000.0);
-									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-									i_slap[npc.index] = 0;
-								}
-							}
-							i_slap[npc.index]++;
-							// Hit sound
-							npc.PlayMeleeHitSound();
-						}
-						else
-						{
-							npc.PlayMeleeMissSound();
-						}
+						npc.AddGesture("ACT_MELEE_ATTACK1");
+						npc.PlayMeleeSound();
+						npc.m_flAttackHappens = GetGameTime()+0.1;
+						npc.m_flAttackHappens_bullshit = GetGameTime()+0.21;
+						npc.m_flAttackHappenswillhappen = true;
 					}
-					delete swingTrace;
-					npc.m_flNextMeleeAttack = GetGameTime() + 1.2;
-					npc.m_flAttackHappenswillhappen = false;
+						
+					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+					{
+						Handle swingTrace;
+						npc.FaceTowards(vecTarget, 20000.0);
+						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 128.0, 128.0, 128.0 }, { -128.0, -128.0, -128.0 }))
+							{
+								
+								int target = TR_GetEntityIndex(swingTrace);	
+								
+								float vecHit[3];
+								TR_GetEndPosition(vecHit, swingTrace);
+								
+								if(target > 0) 
+								{
+									
+									float damage = 30.0;
+									if(ZR_GetWaveCount()>30)	//the shit slapper will become the most feard thing on the planet
+									{
+										damage=175.0;
+									}
+									SDKHooks_TakeDamage(target, npc.index, npc.index, damage*scale, DMG_CLUB, -1, _, vecHit);
+									i_slap[npc.index]++;
+									if(i_slap[npc.index] >= 5)
+									{
+										if(IsValidClient(target))
+										{
+											Custom_Knockback(npc.index, target, 1250.0);
+											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+											i_slap[npc.index] = 0;
+										}
+									}
+									else
+									{
+										if(IsValidClient(target))
+										{
+											Custom_Knockback(npc.index, target, 250.0);
+											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+										}
+									}	
+								} 
+							}
+						delete swingTrace;
+						npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
+						npc.m_flAttackHappenswillhappen = false;
+					}
+					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+					{
+						npc.m_flAttackHappenswillhappen = false;
+						npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
+					}
 				}
-				else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
-				{
-					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GetGameTime() + 1.2;
-				}
+			else
+			{
+				npc.StartPathing();
+				
 			}
-			
-		}
 	}
 	else
 	{
