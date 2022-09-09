@@ -312,6 +312,10 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 								{
 									vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed);
 								}
+								if(ZR_GetWaveCount()<40)
+								{
+									damage=20.0;
+								}
 								npc.FireRocket(vecTarget, damage, speed, "models/effects/combineball.mdl", 1.0);
 								npc.FireRocket(vecTarget, damage, speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0, EP_NO_KNOCKBACK);
 								npc.FireRocket(vecTarget, damage, speed);
@@ -322,6 +326,10 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 								if(flDistanceToTarget > 562500)	//Doesn't predict over 750 hu
 								{
 									vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed);
+								}
+								if(ZR_GetWaveCount()<40)
+								{
+									damage=25.0;
 								}
 								npc.FireArrow(vecTarget, damage, speed);
 								npc.m_flNextMeleeAttack = GetGameTime() + 1.75;
