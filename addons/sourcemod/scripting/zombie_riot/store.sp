@@ -247,6 +247,7 @@ enum struct Item
 	int Scale;
 	int CostPerWave;
 	int MaxCost;
+	int MaxScaled;
 	int Level;
 	int Slot;
 	int Special;
@@ -472,6 +473,7 @@ static void ConfigSetup(int section, KeyValues kv, bool hidden, const char[][] w
 		item.CostPerWave = kv.GetNum("extracost_per_wave");
 		item.MaxBarricadesBuild = view_as<bool>(kv.GetNum("max_barricade_buy_logic"));
 		item.MaxCost = kv.GetNum("maxcost");
+		item.MaxScaled = kv.GetNum("max_times_scale");
 		item.Special = kv.GetNum("special", -1);
 		item.Slot = kv.GetNum("slot", -1);
 		item.NPCWeapon = kv.GetNum("npc_type", -1);
@@ -787,6 +789,11 @@ void Store_PutInServer(int client)
 			CashSpent[client] += info.Cost;
 			item.Owned[client] = 1;
 			item.Scaled[client]++;
+			
+			if(item.MaxScaled < item.Scaled[client])
+			{
+				item.Scaled[client] = item.MaxScaled;
+			}
 			StoreItems.SetArray(i, item);
 			
 			int slot = TF2_GetClassnameSlot(info.Classname);
@@ -829,7 +836,9 @@ void Store_ClientCookiesCached(int client)
 
 void Store_LoadLevelPerks(int client, bool silent=false)
 {
+//	PrintToChatAll("load level perks");
 	char buffer[512];
+	
 	zr_tagblacklist.GetString(buffer, sizeof(buffer));
 	if(buffer[0])
 		return;
@@ -852,7 +861,7 @@ void Store_LoadLevelPerks(int client, bool silent=false)
 			StoreItems.GetArray(a, item);
 			if(StrEqual(buffers[i], item.Name))
 			{
-				if(!item.Scale && !item.Hidden)
+				if(item.Scale == 0 && !item.Hidden)
 				{
 					item.Scaled[client] = 0;
 					item.Owned[client] = 1;
@@ -882,7 +891,7 @@ void Store_LoadLevelPerks(int client, bool silent=false)
 			StoreItems.GetArray(a, item);
 			if(StrEqual(buffers[i], item.Name))
 			{
-				if(!item.Scale && !item.Hidden)
+				if(item.Scale == 0 && !item.Hidden)
 				{
 					item.Scaled[client] = 0;
 					item.Owned[client] = 1;
@@ -936,7 +945,7 @@ bool Store_LoadLoadout(int client)
 		if(buffers[i-1] > 0 && buffers[i-1] < items)
 		{
 			StoreItems.GetArray(buffers[i-1], item);
-			if(item.Scale)
+			if(item.Scale != 0)
 			{
 				item.Scaled[client] = buffers[i];
 				item.Owned[client] = 0;
@@ -985,7 +994,7 @@ void Store_ClientDisconnect(int client)
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(item.Owned[client] || item.Scaled[client])
+		if(item.Owned[client] || item.Scale != 0)
 		{
 			item.Owned[client] = 0;
 			item.Scaled[client] = 0;
@@ -996,6 +1005,7 @@ void Store_ClientDisconnect(int client)
 
 void Store_SaveLevelPerks(int client)
 {
+//	PrintToChatAll("Saving LeveL Perks");
 	char level[512];
 	zr_tagblacklist.GetString(level, sizeof(level));
 	if(level[0])
@@ -1010,9 +1020,9 @@ void Store_SaveLevelPerks(int client)
 	static ItemInfo info;
 	int length = StoreItems.Length - 1;
 	for(int i = length; i >= 0; i--)
-	{
+	{	
 		StoreItems.GetArray(i, item);
-		if(item.Scaled[client] || item.Owned[client])
+		if(item.Scaled[client] > 0 || item.Owned[client])
 		{
 			int owned = item.Owned[client] - 1;
 			if(owned < 0)
@@ -1045,14 +1055,24 @@ void Store_SaveLevelPerks(int client)
 	}
 	
 	if(level[0])
+	{
+//		PrintToChatAll("%s",level);
 		CookieLoadoutLv.Set(client, level);
+	}
+//	else
+//	{
+//		PrintToChatAll("NO SAVE");	
+//	}
 	
 	if(inv[0])
+	{
 		CookieLoadoutInv.Set(client, inv);
+	}
 }
 
 void Store_SaveLoadout(int client)
 {
+//	PrintToChatAll("Save Loadout");
 	char buffer[512];
 	Format(buffer, sizeof(buffer), "%d;%d", CashSpent[client], Equipped[client][0]);
 	
@@ -1509,7 +1529,7 @@ static void MenuPage(int client, int section)
 					
 					if(info.Cost)
 					{
-						int sell = ItemSell(item, level);
+						int sell = ItemSell(item, level, client);
 						FormatEx(buffer, sizeof(buffer), "%t ($%d) | (%t: $%d)", "Sell", sell, "Credits After Selling",sell + (CurrentCash-CashSpent[client]));
 						menu.AddItem(buffer2, buffer);
 					}
@@ -2047,7 +2067,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					item.GetItemInfo(item.Owned[client]-1, info);
 					if(info.Cost) //make sure it even can be sold.
 					{
-						CashSpent[client] -= ItemSell(item, item.Owned[client]);
+						CashSpent[client] -= ItemSell(item, item.Owned[client], client);
 						ClientCommand(client, "playgamesound \"mvm/mvm_money_pickup.wav\"");
 					}
 					
@@ -2212,6 +2232,10 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								CashSpent[client] += info.Cost;
 								item.Owned[client] = 1;
 								item.Scaled[client]++;
+								if(item.MaxScaled < item.Scaled[client])
+								{
+									item.Scaled[client] = item.MaxScaled;
+								}
 								StoreItems.SetArray(index, item);
 								
 								if(info.FuncOnBuy != INVALID_FUNCTION)
@@ -2245,6 +2269,10 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							CashSpent[client] += info.Cost;
 							item.Owned[client] = 1;
 							item.Scaled[client]++;
+							if(item.MaxScaled < item.Scaled[client])
+							{
+								item.Scaled[client] = item.MaxScaled;
+							}
 							StoreItems.SetArray(index, item);
 							if(info.Cost)
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
@@ -3158,11 +3186,13 @@ static void ItemCost(int client, Item item, int &cost)
 {
 	bool started = Waves_Started();
 	bool GregSale = false;
+
+	//these should account for selling.
+	cost += item.Scale*item.Scaled[client]; 
+	cost += item.CostPerWave * CurrentRound;
 	
 	int original_cost_With_Sell = RoundToCeil(float(cost) * SELL_AMOUNT);
 	
-	cost += item.Scale*item.Scaled[client]; 
-	cost += item.CostPerWave * CurrentRound;
 	//make sure anything thats additive is on the top, so sales actually help!!
 	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
 	{
@@ -3243,14 +3273,19 @@ static void ItemCost(int client, Item item, int &cost)
 	}
 }
 
-static int ItemSell(Item item, int level)
+static int ItemSell(Item item, int level, int client)
 {
 	int sell;
 	
 	ItemInfo info;
 	for(int i; i<level && item.GetItemInfo(i, info); i++)
 	{
-		sell += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
+		sell = info.Cost;
+		sell += item.Scale*item.Scaled[client]; 
+		sell += item.CostPerWave * CurrentRound;
+		
+		sell = RoundToCeil(float(sell) * SELL_AMOUNT)
+		
 	}
 	
 	return sell;
