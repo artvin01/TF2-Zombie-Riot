@@ -52,7 +52,7 @@ static const char UncommonDrops[][] =
 	"Aztec Warrior Paint [Uncommon]",
 	"Iron Ammo Coating [Uncommon]",
 	"Sandals [Uncommon]",
-	"Baggy Trousers [Uncommon]",
+	"Baggy Trousers [Uncommon]"
 };
 
 static const char RareDrops[][] =

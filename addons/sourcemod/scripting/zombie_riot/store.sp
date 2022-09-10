@@ -836,7 +836,9 @@ void Store_ClientCookiesCached(int client)
 
 void Store_LoadLevelPerks(int client, bool silent=false)
 {
+//	PrintToChatAll("load level perks");
 	char buffer[512];
+	
 	zr_tagblacklist.GetString(buffer, sizeof(buffer));
 	if(buffer[0])
 		return;
@@ -1003,6 +1005,7 @@ void Store_ClientDisconnect(int client)
 
 void Store_SaveLevelPerks(int client)
 {
+//	PrintToChatAll("Saving LeveL Perks");
 	char level[512];
 	zr_tagblacklist.GetString(level, sizeof(level));
 	if(level[0])
@@ -1017,9 +1020,9 @@ void Store_SaveLevelPerks(int client)
 	static ItemInfo info;
 	int length = StoreItems.Length - 1;
 	for(int i = length; i >= 0; i--)
-	{
+	{	
 		StoreItems.GetArray(i, item);
-		if(item.Scaled[client] || item.Owned[client])
+		if(item.Scaled[client] > 0 || item.Owned[client])
 		{
 			int owned = item.Owned[client] - 1;
 			if(owned < 0)
@@ -1052,14 +1055,24 @@ void Store_SaveLevelPerks(int client)
 	}
 	
 	if(level[0])
+	{
+//		PrintToChatAll("%s",level);
 		CookieLoadoutLv.Set(client, level);
+	}
+//	else
+//	{
+//		PrintToChatAll("NO SAVE");	
+//	}
 	
 	if(inv[0])
+	{
 		CookieLoadoutInv.Set(client, inv);
+	}
 }
 
 void Store_SaveLoadout(int client)
 {
+//	PrintToChatAll("Save Loadout");
 	char buffer[512];
 	Format(buffer, sizeof(buffer), "%d;%d", CashSpent[client], Equipped[client][0]);
 	
