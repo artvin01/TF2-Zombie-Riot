@@ -163,7 +163,7 @@ methodmap SpyCloaked < CClotBody
 	
 	public SpyCloaked(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SpyCloaked npc = view_as<SpyCloaked>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "15000", ally));
+		SpyCloaked npc = view_as<SpyCloaked>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "18000", ally));
 		
 		i_NpcInternalId[npc.index] = SPY_HALF_CLOACKED;
 		

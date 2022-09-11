@@ -577,11 +577,11 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 			NormalizeVector(vecDir, vecDir);
 			if(EscapeMode)
 			{
-				FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 10.0, 9000.0, DMG_BULLET|DMG_CRIT, "bullet_tracer01_blue");
+				FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 30.0, 9000.0, DMG_BULLET, "bullet_tracer01_blue");
 			}
 			else
 			{
-				FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 20.0, 9000.0, DMG_BULLET|DMG_CRIT, "bullet_tracer01_blue");
+				FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 60.0, 9000.0, DMG_BULLET, "bullet_tracer01_blue");
 			}
 			npc.PlayRangedSound();
 		}

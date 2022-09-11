@@ -1058,9 +1058,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		DMG_SHOCK = Bad vs purple and lead
 	*/
-	
-	damagetype |= DMG_NOCLOSEDISTANCEMOD; //Remove damage ramp up cus it makes camping like 9458349573483285734895x more efficient then walking to wallmart
-	damagetype &= ~DMG_USEDISTANCEMOD; //Remove damage falloff.
+	if(!(damagetype & DMG_NOCLOSEDISTANCEMOD))
+	{
+		damagetype |= DMG_NOCLOSEDISTANCEMOD; //Remove damage ramp up cus it makes camping like 9458349573483285734895x more efficient then walking to wallmart
+	}
+	if(damagetype & DMG_USEDISTANCEMOD)
+	{
+		damagetype &= ~DMG_USEDISTANCEMOD; //Remove damage falloff.
+	}
 	/*
 	if(i_CurrentEquippedPerk[attacker] == 3)
 	{

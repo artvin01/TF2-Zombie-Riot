@@ -838,7 +838,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		
 		
 	float gameTime = GetGameTime();
-	
+	if(damagetype & DMG_CRIT)
+	{
+		damagetype &= ~DMG_CRIT; //Remove Crit Damage at all times, it breaks calculations for no good reason.
+	}
 	if(!(damagetype & DMG_DROWN))
 	{
 		if(IsInvuln(victim))	
