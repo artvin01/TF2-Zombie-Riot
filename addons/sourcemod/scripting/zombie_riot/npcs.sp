@@ -25,14 +25,6 @@ enum //hitgroup_t
 	NUM_HITGROUPS
 };
 
-int LastHitId[2048];
-int DamageBits[2048];
-float Damage[2048];
-int LastHitWeaponRef[2048];
-Handle IgniteTimer[2048];
-int IgniteFor[2048];
-int IgniteId[2048];
-int IgniteRef[2048];
 
 enum struct SpawnerData
 {
@@ -52,8 +44,6 @@ public void NPC_Spawn_ClearAll()
 {
 //	Zero(f_SpawnerCooldown);
 }
-
-static int g_particleCritText;
 
 public void Npc_Sp_Precache()
 {
@@ -757,7 +747,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(entity > MaxClients)
 	{
-		if(IgniteFor[entity] > 0)
+		if(IgniteFor[entity] > 0 && !b_NpcHasDied[entity])
 		{
 			int client = GetClientOfUserId(IgniteId[entity]);
 			if(client && IsClientInGame(client))
@@ -787,6 +777,8 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				}
 				else
 				{
+					IgniteTimer[entity] = null;
+					IgniteFor[entity] = 0;
 					return Plugin_Stop;
 				}
 				return Plugin_Continue;
@@ -794,6 +786,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 		}
 		
 		IgniteTimer[entity] = null;
+		IgniteFor[entity] = 0;
 	}
 	return Plugin_Stop;
 }
@@ -864,19 +857,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				else
 				{
-					float chargerPos[3];
-					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
-					if(b_BoundingBoxVariant[victim] == 1)
-					{
-						chargerPos[2] += 120.0;
-					}
-					else
-					{
-						chargerPos[2] += 82.0;
-					}
-					
-					TE_ParticleInt(g_particleCritText, chargerPos);
-					TE_SendToClient(attacker);
+					DisplayCritAboveNpc(victim, attacker, false);
 					played_headshotsound_already_Case[attacker] = random_case;
 					played_headshotsound_already_Pitch[attacker] = pitch;
 				}
@@ -1490,20 +1471,32 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "⌁");
 		}
 		
+		if(BleedAmountCountStack[victim] > 0) //bleed
+		{
+			Debuff_added = true;
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❣%i", Debuff_Adder, BleedAmountCountStack[victim]);			
+		}
+		
+		if(IgniteFor[victim] > 0) //burn
+		{
+			Debuff_added = true;
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s♨", Debuff_Adder);			
+		}
+		
 		if(f_HighIceDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅", Debuff_Adder);
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅❅❅", Debuff_Adder);
 		}
 		else if(f_LowIceDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❃", Debuff_Adder);
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅❅", Debuff_Adder);
 		}
 		else if (f_VeryLowIceDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❆", Debuff_Adder);	
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅", Debuff_Adder);	
 		}
 		
 		if(f_WidowsWineDebuff[victim] > GetGameTime())

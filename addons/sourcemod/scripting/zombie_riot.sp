@@ -402,6 +402,16 @@ float f_TankGrabbedStandStill[MAXENTITIES];
 bool b_PernellBuff[MAXENTITIES];
 float f_MaimDebuff[MAXENTITIES];
 float f_CrippleDebuff[MAXENTITIES];
+int BleedAmountCountStack[MAXENTITIES];
+int g_particleCritText;
+int LastHitId[MAXENTITIES];
+int DamageBits[MAXENTITIES];
+float Damage[MAXENTITIES];
+int LastHitWeaponRef[MAXENTITIES];
+Handle IgniteTimer[MAXENTITIES];
+int IgniteFor[MAXENTITIES];
+int IgniteId[MAXENTITIES];
+int IgniteRef[MAXENTITIES];
 
 bool b_StickyIsSticking[MAXENTITIES];
 
