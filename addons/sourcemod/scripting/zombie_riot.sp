@@ -402,6 +402,16 @@ float f_TankGrabbedStandStill[MAXENTITIES];
 bool b_PernellBuff[MAXENTITIES];
 float f_MaimDebuff[MAXENTITIES];
 float f_CrippleDebuff[MAXENTITIES];
+int BleedAmountCountStack[MAXENTITIES];
+int g_particleCritText;
+int LastHitId[MAXENTITIES];
+int DamageBits[MAXENTITIES];
+float Damage[MAXENTITIES];
+int LastHitWeaponRef[MAXENTITIES];
+Handle IgniteTimer[MAXENTITIES];
+int IgniteFor[MAXENTITIES];
+int IgniteId[MAXENTITIES];
+int IgniteRef[MAXENTITIES];
 
 bool b_StickyIsSticking[MAXENTITIES];
 
@@ -1374,7 +1384,11 @@ public void OnMapStart()
 	PrecacheSound("misc/halloween/clock_tick.wav");
 	PrecacheSound("mvm/mvm_bomb_warning.wav");
 	PrecacheSound("weapons/jar_explode.wav");
-	PrecacheSound("weapons/shotgun_empty.wav");
+	PrecacheSound("player/crit_hit5.wav");
+	PrecacheSound("player/crit_hit4.wav");
+	PrecacheSound("player/crit_hit3.wav");
+	PrecacheSound("player/crit_hit2.wav");
+	PrecacheSound("player/crit_hit.wav");
 	
 	MapStartResetAll();
 	EscapeMode = false;

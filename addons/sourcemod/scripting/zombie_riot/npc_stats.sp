@@ -7617,6 +7617,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_PickThisDirectionForabit[entity] = 0.0;
 	b_ScalesWithWaves[entity] = false;
 	b_PernellBuff[entity] = false;
+	IgniteFor[entity] = 0;
 	
 	FormatEx(c_HeadPlaceAttachmentGibName[entity], sizeof(c_HeadPlaceAttachmentGibName[]), "");
 }
