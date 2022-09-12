@@ -27,7 +27,7 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 				if(i != victim && !b_NpcHasDied[i] && GetEntProp(i, Prop_Send, "m_iTeamNum") != 2)
 				{
 					GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos);
-					if(GetVectorDistance(pos, damagePosition, true) < 15000.0) 
+					if(GetVectorDistance(pos, damagePosition, true) < 62500.0) 
 					{
 						int hp = GetEntProp(i, Prop_Data, "m_iHealth");
 						if(healths[0] < hp)
@@ -70,7 +70,7 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 			i_ExplosiveProjectileHexArray[attacker] = 0;	// If DMG_SLASH doesn't block NPC_OnTakeDamage_Equipped_Weapon_Logic, adjust this
 			LastHitTarget = victim;
 			
-			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 120.0, 1.2, 0.0, false, 4);
+			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 250.0, 1.2, 0.0, false, 4);
 			
 			i_ExplosiveProjectileHexArray[attacker] = value;
 			LastHitTarget = 0;
