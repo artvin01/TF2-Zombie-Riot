@@ -707,6 +707,10 @@ public Action Timer_Delayed_BossSpawn(Handle timer, DataPack pack)
 	}
 	return Plugin_Handled;
 }
+
+
+float BurnDamage[MAXPLAYERS];
+
 void NPC_Ignite(int entity, int client, float duration, int weapon)
 {
 	IgniteFor[entity] += RoundToCeil(duration*2.0);
@@ -716,38 +720,31 @@ void NPC_Ignite(int entity, int client, float duration, int weapon)
 	if(!IgniteTimer[entity])
 		IgniteTimer[entity] = CreateTimer(0.5, NPC_TimerIgnite, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
-	IgniteId[entity] = GetClientUserId(client);
-	IgniteRef[entity] = EntIndexToEntRef(weapon);
-}
-
-/*
-int NPC_Extinguish(int entity)
-{
-	int index = NPCList.FindValue(EntIndexToEntRef(entity), NPCData::Ref);
-	if(index != -1)
+	
+	float value = 8.0;
+	if(weapon > MaxClients && IsValidEntity(weapon))
 	{
-		NPCData npc;
-		NPCList.GetArray(index, npc);
-		if(npc.IgniteFor && npc.IgniteTimer)
-		{
-			int ticks = npc.IgniteFor;
-			npc.IgniteFor = 0;
-			KillTimer(npc.IgniteTimer);
-			npc.IgniteTimer = null;
-			NPCList.SetArray(index, npc);
-			return ticks;
-		}
+		value *= Attributes_FindOnWeapon(client, weapon, 2, true, 1.0);	  //For normal weapons
+			
+		value *= Attributes_FindOnWeapon(client, weapon, 410, true, 1.0); //For wand
+					
+		value *= Attributes_FindOnWeapon(client, weapon, 71, true, 1.0); //For wand
 	}
-	return 0;
+			
+	if(value > BurnDamage[client]) //Dont override if damage is lower.
+	{
+		IgniteId[entity] = GetClientUserId(client);
+	
+		IgniteRef[entity] = EntIndexToEntRef(weapon);
+	}
 }
-*/
 
 public Action NPC_TimerIgnite(Handle timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);
 	if(entity > MaxClients)
 	{
-		if(IgniteFor[entity] > 0 && !b_NpcHasDied[entity])
+		if(!b_NpcHasDied[entity])
 		{
 			int client = GetClientOfUserId(IgniteId[entity]);
 			if(client && IsClientInGame(client))
@@ -757,36 +754,46 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				float pos[3], ang[3];
 				GetClientEyeAngles(client, ang);
 				int weapon = EntRefToEntIndex(IgniteRef[entity]);
+				float value = 8.0;
 				if(weapon > MaxClients && IsValidEntity(weapon))
 				{
-					float value = 8.0;
-					
 					value *= Attributes_FindOnWeapon(client, weapon, 2, true, 1.0);	  //For normal weapons
 					
 					value *= Attributes_FindOnWeapon(client, weapon, 410, true, 1.0); //For wand
 					
 					value *= Attributes_FindOnWeapon(client, weapon, 71, true, 1.0); //For wand
-					
-					pos = WorldSpaceCenter(entity);
-					
-					SDKHooks_TakeDamage(entity, client, client, value, DMG_SLASH, weapon, ang, pos, false);
-					//Setting burn dmg to slash cus i want it to work with melee!!!
-					//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
-					//In this case ill buff it so its 2x as good as bleed! or more in the future
-					//Also now allows hp gain and other stuff for that reason. pretty cool.
 				}
 				else
 				{
+					weapon = -1;
+				}
+				
+				pos = WorldSpaceCenter(entity);
+				
+				if(value < BurnDamage[client])
+				{
+					value = BurnDamage[client];
+				}
+				else
+				{
+					BurnDamage[client] = value;
+				}
+				
+				SDKHooks_TakeDamage(entity, client, client, value, DMG_SLASH, weapon, ang, pos, false);
+				//Setting burn dmg to slash cus i want it to work with melee!!!
+				//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
+				//In this case ill buff it so its 2x as good as bleed! or more in the future
+				//Also now allows hp gain and other stuff for that reason. pretty cool.
+				if(IgniteFor[entity] == 0)
+				{
 					IgniteTimer[entity] = null;
 					IgniteFor[entity] = 0;
+					BurnDamage[client] = 0.0;
 					return Plugin_Stop;
 				}
 				return Plugin_Continue;
 			}
 		}
-		
-		IgniteTimer[entity] = null;
-		IgniteFor[entity] = 0;
 	}
 	return Plugin_Stop;
 }
