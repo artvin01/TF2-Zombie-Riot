@@ -27,6 +27,21 @@ static const char g_DefaultHitFlesh[][] = {
 	"weapons/cbar_hitbod3.wav",
 };
 
+static const char g_ThirdDegreeHitWorld[][] = {
+	"weapons/3rd_degree_hit_world_01.wav",
+	"weapons/3rd_degree_hit_world_02.wav",
+	"weapons/3rd_degree_hit_world_03.wav",
+	"weapons/3rd_degree_hit_world_04.wav",
+	
+};
+
+static const char g_ThirdDegreeHitFlesh[][] = {
+	"weapons/3rd_degree_hit_01.wav",
+	"weapons/3rd_degree_hit_02.wav",
+	"weapons/3rd_degree_hit_03.wav",
+	"weapons/3rd_degree_hit_04.wav",
+};
+
 static const char g_SwordHitWorld[][] = {
 	"weapons/demo_sword_hit_world1.wav",
 	"weapons/demo_sword_hit_world2.wav",
@@ -114,6 +129,8 @@ public void MapStart_CustomMeleePrecache()
 {
 	for (int i = 0; i < (sizeof(g_KnifeHitFlesh));	   i++) { PrecacheSound(g_KnifeHitFlesh[i]);	   }
 	for (int i = 0; i < (sizeof(g_KnifeHitWorld));	   i++) { PrecacheSound(g_KnifeHitWorld[i]);	   }
+	for (int i = 0; i < (sizeof(g_ThirdDegreeHitWorld));	   i++) { PrecacheSound(g_ThirdDegreeHitWorld[i]);	   }
+	for (int i = 0; i < (sizeof(g_ThirdDegreeHitFlesh));	   i++) { PrecacheSound(g_ThirdDegreeHitFlesh[i]);	   }
 	for (int i = 0; i < (sizeof(g_UberSawHitFlesh));	   i++) { PrecacheSound(g_UberSawHitFlesh[i]);	   }
 	for (int i = 0; i < (sizeof(g_DefaultHitWorld));	   i++) { PrecacheSound(g_DefaultHitWorld[i]);	   }
 	for (int i = 0; i < (sizeof(g_DefaultHitFlesh));	   i++) { PrecacheSound(g_DefaultHitFlesh[i]);	   }
@@ -378,6 +395,17 @@ public void PlayCustomWeaponSoundFromPlayerCorrectly(int target, int client, int
 			{
 				EmitSoundToAll(g_DefaultHitWorld[GetRandomInt(0, sizeof(g_DefaultHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
 			}	
+		}
+		else if(item_index == 593)
+		{
+			if(target > 0 && !b_NpcHasDied[target])
+			{
+				EmitSoundToAll(g_ThirdDegreeHitFlesh[GetRandomInt(0, sizeof(g_ThirdDegreeHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
+			}
+			else
+			{
+				EmitSoundToAll(g_ThirdDegreeHitWorld[GetRandomInt(0, sizeof(g_ThirdDegreeHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
+			}				
 		}
 		else
 		{

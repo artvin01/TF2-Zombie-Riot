@@ -627,14 +627,17 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					{
 						SetEntProp(entity_Spawner, Prop_Send, "m_bGlowEnabled", false);
 					}
-					CClotBody npc = view_as<CClotBody>(entity_Spawner);
-					
+			
 					b_npcspawnprotection[entity_Spawner] = true;
+					
+					/*
+					CClotBody npc = view_as<CClotBody>(entity_Spawner);
 					npc.m_iSpawnProtectionEntity = TF2_CreateGlow(npc.index);
 			
 					SetVariantColor(view_as<int>({0, 255, 0, 100}));
 					AcceptEntityInput(npc.m_iSpawnProtectionEntity, "SetGlowColor");
-		
+					*/
+					
 					CreateTimer(2.0, Remove_Spawn_Protection, EntIndexToEntRef(entity_Spawner), TIMER_FLAG_NO_MAPCHANGE);
 				}
 			}
@@ -1450,19 +1453,29 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 		int red = 255;
 		int green = 255;
 		int blue = 0;
-				
-		red = Health * 255  / MaxHealth;
-		//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-		green = Health * 255  / MaxHealth;
-				
-		red = 255 - red;
-			
-		if(Health <= 0)
+		
+		if(!b_npcspawnprotection[victim])
 		{
-			red = 255;
-			green = 0;
-			blue = 0;
+			red = Health * 255  / MaxHealth;
+			//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
+			green = Health * 255  / MaxHealth;
+					
+			red = 255 - red;
+				
+			if(Health <= 0)
+			{
+				red = 255;
+				green = 0;
+				blue = 0;
+			}
 		}
+		else
+		{
+			red = 0;
+			green = 0;
+			blue = 255;
+		}
+		
 		char Debuff_Adder[64];
 		
 		bool Debuff_added = false;
