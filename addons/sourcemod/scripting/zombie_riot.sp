@@ -1384,7 +1384,11 @@ public void OnMapStart()
 	PrecacheSound("misc/halloween/clock_tick.wav");
 	PrecacheSound("mvm/mvm_bomb_warning.wav");
 	PrecacheSound("weapons/jar_explode.wav");
-	PrecacheSound("weapons/shotgun_empty.wav");
+	PrecacheSound("player/crit_hit5.wav");
+	PrecacheSound("player/crit_hit4.wav");
+	PrecacheSound("player/crit_hit3.wav");
+	PrecacheSound("player/crit_hit2.wav");
+	PrecacheSound("player/crit_hit.wav");
 	
 	MapStartResetAll();
 	EscapeMode = false;
