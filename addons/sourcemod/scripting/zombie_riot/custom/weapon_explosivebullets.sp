@@ -38,7 +38,7 @@ public void Weapon_ExplosiveBullets(int client, int weapon, const char[] classna
 	if(address != Address_Null)
 		Spread *= TF2Attrib_GetValue(address);
 	
-	float Radius = 150.0; //base radius
+	float Radius = EXPLOSION_RADIUS; //base radius
 	
 	float Falloff = Attributes_FindOnWeapon(client, weapon, 117);	//Damage falloff penalty
 	
