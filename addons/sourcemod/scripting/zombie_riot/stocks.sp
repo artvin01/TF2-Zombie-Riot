@@ -2436,7 +2436,8 @@ bool ignite = false)
 {
 	float damage_reduction = 1.0;
 	int Closest_npc = 0;
-	int TargetsHit = 0; //This will not exeed 10 ever, beacuse at that point your damage is nothing.
+	int TargetsHit = 1; //This will not exeed 10 ever, beacuse at that point your damage is nothing.
+	//It also already hits 1 target!
 	//maxtargetshit
 	bool weapon_valid = false;
 	if(IsValidEntity(weapon))
@@ -2526,7 +2527,7 @@ bool ignite = false)
 		{
 			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)  //Loop as often as there can be even be max NPC's.
 			{
-				if(TargetsHit > maxtargetshit)
+				if(TargetsHit >= maxtargetshit)
 				{
 					break;
 				}
@@ -2564,7 +2565,7 @@ bool ignite = false)
 		{
 			for( int i = 1; i <= MaxClients; i++ ) 
 			{
-				if(TargetsHit > maxtargetshit)
+				if(TargetsHit >= maxtargetshit)
 				{
 					break;
 				}
