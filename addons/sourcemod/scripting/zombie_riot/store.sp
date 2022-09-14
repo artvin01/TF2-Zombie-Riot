@@ -3280,15 +3280,12 @@ static int ItemSell(Item item, int level, int client)
 	ItemInfo info;
 	for(int i; i<level && item.GetItemInfo(i, info); i++)
 	{
-		sell = info.Cost;
-		sell += item.Scale*item.Scaled[client]; 
+		sell += info.Cost;
+		sell += item.Scale * item.Scaled[client]; 
 		sell += item.CostPerWave * CurrentRound;
-		
-		sell = RoundToCeil(float(sell) * SELL_AMOUNT)
-		
 	}
 	
-	return sell;
+	return RoundToCeil(float(sell) * SELL_AMOUNT);
 }
 
 bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool Is_Reload_Button = false)
