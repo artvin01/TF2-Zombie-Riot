@@ -5,6 +5,10 @@
 #define EXPLOSIVEBULLETS_PARTICLE_1	"ExplosionCore_Wall"
 #define EXPLOSIVEBULLETS_PARTICLE_2	"ExplosionCore_MidAir"
 
+#define SPRITE_SPRITE	"materials/sprites/laserbeam.vmt"
+
+static int LaserSprite;
+
 char ExplosiveBullets_SFX[3][255];
 char ExplosiveBullets_Particles[2][255];
 void ExplosiveBullets_Precache()
@@ -18,6 +22,7 @@ void ExplosiveBullets_Precache()
 	
 	ExplosiveBullets_Particles[0] = EXPLOSIVEBULLETS_PARTICLE_1;
 	ExplosiveBullets_Particles[1] = EXPLOSIVEBULLETS_PARTICLE_2;
+	LaserSprite = PrecacheModel(SPRITE_SPRITE, false);
 }
 
 public void Weapon_ExplosiveBullets(int client, int weapon, const char[] classname, bool &result)
@@ -51,6 +56,17 @@ public void Weapon_ExplosiveBullets(int client, int weapon, const char[] classna
 	bool Made_sound = true;
 	b_LagCompNPC_ExtendBoundingBox = true;
 	StartLagCompensation_Base_Boss(client, false);
+	float amp = 0.5;
+	float life = 0.1;
+	float GunPos[3];
+	float GunAng[3];
+	GetAttachment(client, "effect_hand_R", GunPos, GunAng);
+	int color[4];
+	color[0] = 255;
+	color[1] = 0;
+	color[2] = 0;
+	color[3] = 255;			
+				
 	for (int i = 0; i < NumPellets; i++)
 	{
 		randAng[0] = eyeAng[0] + GetRandomFloat(-Spread, Spread);
@@ -66,6 +82,8 @@ public void Weapon_ExplosiveBullets(int client, int weapon, const char[] classna
 		
 		Explode_Logic_Custom(BaseDMG, client, client, weapon, spawnLoc, Radius, Falloff);
 		
+		TE_SetupBeamPoints(GunPos, spawnLoc, LaserSprite, 0, 0, 0, life, 1.0, 2.2, 1, amp, color, 0);
+		TE_SendToAll();
 		//ExplosiveBullets_SpawnExplosion(spawnLoc);
 		DataPack pack_boom = new DataPack();
 		pack_boom.WriteFloat(spawnLoc[0]);

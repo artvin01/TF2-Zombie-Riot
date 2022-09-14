@@ -545,40 +545,54 @@ public Action Timer_Do_Melee_Attack(Handle timer, DataPack pack)
 		int Item_Index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 		PlayCustomWeaponSoundFromPlayerCorrectly(target, client, weapon, Item_Index, classname);	
 			
-		if(target > 0)
+		Address address;
+		
+		float damage = 65.0;
+		if(!StrContains(classname, "tf_weapon_bat"))
+		{
+			damage = 35.0;
+		}
+		if(Item_Index != 155)
+		{
+			address = TF2Attrib_GetByDefIndex(weapon, 2);
+			if(address != Address_Null)
+				damage *= TF2Attrib_GetValue(address);
+			
+		}
+		else
+		{
+			damage = 30.0;
+			float attack_speed;
+				
+			attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
+						
+			damage = attack_speed * damage * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
+		}
+		
+			
+		address = TF2Attrib_GetByDefIndex(weapon, 1);
+		if(address != Address_Null)
+			damage *= TF2Attrib_GetValue(address);
+				
+		if(target > 0 && Item_Index != 214)
 		{
 		//	PrintToChatAll("%i",MELEE_HIT);
 		//	SDKCall_CallCorrectWeaponSound(weapon, MELEE_HIT, 1.0);
 		// 	This doesnt work sadly and i dont have the power/patience to make it work, just do a custom check with some big shit, im sorry.
-			Address address;
 			
-			float damage = 65.0;
-			if(!StrContains(classname, "tf_weapon_bat"))
-			{
-				damage = 35.0;
-			}
-			if(Item_Index != 155)
-			{
-				address = TF2Attrib_GetByDefIndex(weapon, 2);
-				if(address != Address_Null)
-					damage *= TF2Attrib_GetValue(address);
-				
-			}
-			else
-			{
-				damage = 30.0;
-				float attack_speed;
-					
-				attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
-							
-				damage = attack_speed * damage * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
-			}
-				
-			address = TF2Attrib_GetByDefIndex(weapon, 1);
-			if(address != Address_Null)
-				damage *= TF2Attrib_GetValue(address);
 				
 			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), vecHit);	
+		}
+		else if(target > -1 && Item_Index == 214)
+		{
+			i_ExplosiveProjectileHexArray[weapon] = EP_DEALS_CLUB_DAMAGE;
+			Explode_Logic_Custom(damage, client, weapon, weapon, vecHit, _, _, _, _, 5); //Only allow 5 targets hit, otherwise it can be really op.
+			DataPack pack_boom = new DataPack();
+			pack_boom.WriteFloat(vecHit[0]);
+			pack_boom.WriteFloat(vecHit[1]);
+			pack_boom.WriteFloat(vecHit[2]);
+			pack_boom.WriteCell(1);
+			RequestFrame(MakeExplosionFrameLater, pack_boom);
 		}
 		delete swingTrace;
 	 }
