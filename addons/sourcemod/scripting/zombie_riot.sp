@@ -746,7 +746,8 @@ enum
 	ALT_SOLDIER_BARRAGER = 127,
 	ALT_The_Shit_Slapper = 128,
 	
-	BONEZONE_BASICBONES = 129
+	BONEZONE_BASICBONES = 129,
+	ITSTILIVES	= 666
 }
 
 
@@ -1207,8 +1208,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_store", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_shop", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
-	RegConsoleCmd("sm_give_cash", Command_GiveCash, "Give Cash to the Person",ADMFLAG_ROOT);
-	RegConsoleCmd("sm_give_dialog", Command_GiveDialogBox, "Give a dialog box",ADMFLAG_ROOT);
+	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
+	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");
 	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_GENERIC, "BRB GONNA MURDER MY MOM'S DISHES");
 	RegAdminCmd("sm_change_collision", Command_ChangeCollision, ADMFLAG_GENERIC, "change all npc's collisions");
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_GENERIC, "Forcefully summon grigori");
@@ -2002,43 +2003,43 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			if(Wave_Count < 5)
 				damage = 0.25;
 				
-			if(Wave_Count <= 10)
+			if(Wave_Count < 10)
 				damage = 0.4;
 						
-			else if(Wave_Count <= 15)
+			else if(Wave_Count < 15)
 				damage = 1.0;
 					
-			else if(Wave_Count <= 20)
+			else if(Wave_Count < 20)
 				damage = 1.5;
 						
-			else if(Wave_Count <= 25)
+			else if(Wave_Count < 25)
 				damage = 2.5;
 						
-			else if(Wave_Count <= 30)
+			else if(Wave_Count < 30)
 				damage = 5.0;
 						
-			else if(Wave_Count <= 40)
+			else if(Wave_Count < 40)
 				damage = 7.0;
 						
-			else if(Wave_Count <= 45)
+			else if(Wave_Count < 45)
 				damage = 25.0;
 					
-			else if(Wave_Count <= 50)
+			else if(Wave_Count < 50)
 				damage = 35.0;
 				
-			else if(Wave_Count <= 55)
+			else if(Wave_Count < 55)
 				damage = 45.0;
 					
-			else if(Wave_Count <= 60)
+			else if(Wave_Count < 60)
 				damage = 50.0;
 				
-			else if(Wave_Count <= 70)
+			else if(Wave_Count < 70)
 				damage = 60.0;
 				
-			else if(Wave_Count <= 80)
+			else if(Wave_Count < 80)
 				damage = 80.0;
 				
-			else if(Wave_Count <= 90)
+			else if(Wave_Count < 90)
 				damage = 90.0;
 					
 			else

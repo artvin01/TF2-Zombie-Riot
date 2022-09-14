@@ -843,6 +843,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = BasicBones(client, vecPos, vecAng, ally);
 		}
+		case ITSTILIVES:
+		{
+			entity = Itstilives(client, vecPos, vecAng);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1584,6 +1588,7 @@ public void OnMapStart_NPC_Base()
 	The_Shit_Slapper_OnMapStart_NPC();
 	
 	BasicBones_OnMapStart_NPC();
+	Itstilives_MapStart();
 }
 
 
@@ -7811,6 +7816,7 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/special/npc_panzer.sp"
 #include "zombie_riot/npc/special/npc_sawrunner.sp"
 #include "zombie_riot/npc/special/npc_l4d2_tank.sp"
+#include "zombie_riot/npc/special/npc_itstilives.sp"
 
 #include "zombie_riot/npc/btd/npc_bloon.sp"
 #include "zombie_riot/npc/btd/npc_moab.sp"
