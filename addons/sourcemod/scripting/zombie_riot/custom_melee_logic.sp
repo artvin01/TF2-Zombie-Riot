@@ -535,7 +535,6 @@ public Action Timer_Do_Melee_Attack(Handle timer, DataPack pack)
 		float vecSwingForward[3];
 		StartLagCompensation_Base_Boss(client, false);
 		DoSwingTrace_Custom(swingTrace, client, vecSwingForward);
-		FinishLagCompensation_Base_boss();
 				
 		int target = TR_GetEntityIndex(swingTrace);	
 										
@@ -595,6 +594,7 @@ public Action Timer_Do_Melee_Attack(Handle timer, DataPack pack)
 			RequestFrame(MakeExplosionFrameLater, pack_boom);
 		}
 		delete swingTrace;
-	 }
+		FinishLagCompensation_Base_boss();
+	}
 	return Plugin_Handled;
 }

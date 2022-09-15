@@ -634,8 +634,14 @@ public void XenoCombineOverlord_NPCDeath(int entity)
 		AcceptEntityInput(entity_death, "SetAnimation");
 		
 		pos[2] += 20.0;
-		
-		CreateTimer(2.0, Timer_RemoveEntityOverlord, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+		if(npc.m_bThisNpcIsABoss)
+		{
+			CreateTimer(2.0, Timer_RemoveEntityOverlord, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		else
+		{
+			CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+		}
 
 	}
 	
