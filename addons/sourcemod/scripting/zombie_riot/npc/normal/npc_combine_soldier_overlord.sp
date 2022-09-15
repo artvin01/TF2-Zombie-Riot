@@ -323,7 +323,10 @@ public void CombineOverlord_ClotThink(int iNPC)
 				npc.m_flReloadDelay = GetGameTime() + 2.0;
 				npc.m_flRangedSpecialDelay += GetGameTime() + 2.0;
 				npc.m_flAngerDelay = GetGameTime() + 5.0;
-				npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
+				if(npc.m_bThisNpcIsABoss)
+				{
+					npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
+				}
 				npc.PlaySpecialChargeSound();
 				int iActivity_melee = npc.LookupActivity("OVERLORD_RAGE");
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
