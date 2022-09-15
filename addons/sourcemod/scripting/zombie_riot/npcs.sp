@@ -1353,6 +1353,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 								}
 								damage *= 0.75; //Nerf the dmg abit for the last knife as itsotheriwse ridicilous
 							}
+							else if(melee == 910)
+							{
+								damage *= 0.10;
+							}
 							else
 							{
 								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
