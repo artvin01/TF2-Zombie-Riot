@@ -1131,6 +1131,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_Texan_business.sp"
 #include "zombie_riot/custom/weapon_explosivebullets.sp"
 #include "zombie_riot/custom/weapon_sniper_monkey.sp"
+#include "zombie_riot/custom/weapon_cspyknife.sp"
 
 //FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
@@ -3940,4 +3941,5 @@ public void MapStartResetAll()
 	ZeroRage_ClearAll();
 	Zero2(i_StickyToNpcCount);
 	SniperMonkey_ClearAll();
+	Weapon_Cspyknife_ClearAll();
 }
