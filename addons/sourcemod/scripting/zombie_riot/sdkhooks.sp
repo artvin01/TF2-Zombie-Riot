@@ -1094,39 +1094,74 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			CheckAlivePlayers(_, victim);
 			return Plugin_Handled;
 		}
-	
-		i_CurrentEquippedPerk[victim] = 0;
-		SetEntityHealth(victim, 200);
-		dieingstate[victim] = 250;
-		SetEntityCollisionGroup(victim, 1);
-		CClotBody player = view_as<CClotBody>(victim);
-		player.m_bThisEntityIgnored = true;
-		TF2Attrib_SetByDefIndex(victim, 489, 0.15);
-		TF2Attrib_SetByDefIndex(victim, 820, 1.0);
-		TF2Attrib_SetByDefIndex(victim, 819, 1.0);	
-		TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 0.00001);
 		
-		int entity = EntRefToEntIndex(i_DyingParticleIndication[victim]);
-		if(entity > MaxClients)
-			RemoveEntity(entity);
-		
-		entity = TF2_CreateGlow(victim);
-		i_DyingParticleIndication[victim] = EntIndexToEntRef(entity);
-		
-		SetVariantColor(view_as<int>({0, 255, 0, 255}));
-		AcceptEntityInput(entity, "SetGlowColor");
-		
-		CreateTimer(0.1, Timer_Dieing, victim, TIMER_REPEAT);
-		
-		int i;
-		while(TF2U_GetWearable(victim, entity, i))
+		i_AmountDowned[victim] += 1;
+		if((i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
 		{
-			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(entity, 255, 255, 255, 125);
+			i_CurrentEquippedPerk[victim] = 0;
+			SetEntityHealth(victim, 200);
+			if(!b_LeftForDead[victim])
+			{
+				dieingstate[victim] = 250;
+			}
+			else
+			{
+				dieingstate[victim] = 500;
+			}
+			SetEntityCollisionGroup(victim, 1);
+			CClotBody player = view_as<CClotBody>(victim);
+			player.m_bThisEntityIgnored = true;
+			TF2Attrib_SetByDefIndex(victim, 489, 0.15);
+			TF2Attrib_SetByDefIndex(victim, 820, 1.0);
+			TF2Attrib_SetByDefIndex(victim, 819, 1.0);	
+			TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 0.00001);
+			int entity;
+			if(!b_LeftForDead[victim])
+			{
+				entity = EntRefToEntIndex(i_DyingParticleIndication[victim]);
+				if(entity > MaxClients)
+					RemoveEntity(entity);
+				
+				entity = TF2_CreateGlow(victim);
+				i_DyingParticleIndication[victim] = EntIndexToEntRef(entity);
+				
+				SetVariantColor(view_as<int>({0, 255, 0, 255}));
+				AcceptEntityInput(entity, "SetGlowColor");
+			}
+			CreateTimer(0.1, Timer_Dieing, victim, TIMER_REPEAT);
+			
+			int i;
+			while(TF2U_GetWearable(victim, entity, i))
+			{
+				if(!b_LeftForDead[victim])
+				{
+					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+					SetEntityRenderColor(entity, 255, 255, 255, 125);
+				}
+				else
+				{
+					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+					SetEntityRenderColor(entity, 255, 255, 255, 10);
+				}
+			}
+			if(!b_LeftForDead[victim])
+			{
+				SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(victim, 255, 255, 255, 125);
+			}
+			else
+			{
+				SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(victim, 255, 255, 255, 10);
+			}
+			return Plugin_Handled;
 		}
-		SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(victim, 255, 255, 255, 125);
-		return Plugin_Handled;
+		else
+		{
+			damage = 99999.9;
+			i_AmountDowned[victim] = 0;
+			return Plugin_Changed;
+		}
 	}
 	return Plugin_Changed;
 }

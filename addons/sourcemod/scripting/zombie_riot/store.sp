@@ -2551,6 +2551,7 @@ void Store_GiveAll(int client, int health)
 	b_FaceStabber[client] = false;
 	b_IsCannibal[client] = false;
 	b_HasGlassBuilder[client] = false;
+	b_LeftForDead[client] = false;
 	
 	if(!IsFakeClient(client) && Was_phasing)
 	{
@@ -2848,6 +2849,10 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 					if(info.SpecialAdditionViaNonAttribute == 4) //Glass Builder
 					{
 						b_HasGlassBuilder[client] = true;
+					}
+					if(info.SpecialAdditionViaNonAttribute == 5) //Left For Dead
+					{
+						b_LeftForDead[client] = true;
 					}
 					if(EntityIsAWeapon)
 					{

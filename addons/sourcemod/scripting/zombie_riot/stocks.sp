@@ -1147,7 +1147,14 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 			int Building_Index = EntRefToEntIndex(Building_Mounted[entity]);
 			if(dieingstate[entity] > 0)
 			{
-				return entity!=data;
+				if(!b_LeftForDead[entity])
+				{
+					return entity!=data;
+				}
+				else
+				{
+					return false;	
+				}
 			}
 			else if(Building_Index == 0 || !IsValidEntity(Building_Index))
 			{
@@ -1168,6 +1175,10 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 		if(entity != data)
 		{
 			if(dieingstate[entity] <= 0)
+			{
+				return false;
+			}
+			if(b_LeftForDead[entity])
 			{
 				return false;
 			}
@@ -2877,6 +2888,7 @@ public void ReviveAll()
 	{
 		if(IsClientInGame(client))
 		{
+			i_AmountDowned[client] = 0;
 			DoOverlay(client, "");
 			if(GetClientTeam(client)==2)
 			{

@@ -476,6 +476,7 @@ int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
 bool b_FaceStabber[MAXTF2PLAYERS];
 bool b_IsCannibal[MAXTF2PLAYERS];
 bool b_HasGlassBuilder[MAXTF2PLAYERS];
+bool b_LeftForDead[MAXTF2PLAYERS];
 
 Function EntityFuncAttack[MAXENTITIES];
 Function EntityFuncAttack2[MAXENTITIES];
@@ -534,6 +535,7 @@ bool b_ThisEntityIgnored[MAXENTITIES];
 bool b_ThisEntityIsAProjectileForUpdateContraints[MAXENTITIES];
 
 bool b_IsPlayerABot[MAXPLAYERS+1];
+int i_AmountDowned[MAXPLAYERS+1];
 
 bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
 
@@ -1734,7 +1736,7 @@ public Action Command_ToggleReload(int client, int args)
 					
 public void OnClientPutInServer(int client)
 {
-	
+	i_AmountDowned[client] = 0;
 	b_IsPlayerABot[client] = false;
 	if(IsFakeClient(client))
 	{
@@ -2137,6 +2139,58 @@ public Action Timer_Dieing(Handle timer, int client)
 {
 	if(IsClientInGame(client) && IsPlayerAlive(client) && dieingstate[client] > 0)
 	{
+		if(b_LeftForDead[client])
+		{
+			dieingstate[client] -= 3;
+			f_DelayLookingAtHud[client] = GetGameTime() + 0.2;
+			PrintCenterText(client, "%t", "Reviving", dieingstate[client]);
+			
+			if(dieingstate[client] <= 0)
+			{
+				SetEntityMoveType(client, MOVETYPE_WALK);
+				RequestFrame(Movetype_walk, client);
+				dieingstate[client] = 0;
+					
+				SetEntPropEnt(client, Prop_Send, "m_hObserverTarget", client);
+				f_WasRecentlyRevivedViaNonWave[client] = GetGameTime() + 1.0;
+				
+				float pos[3], ang[3];
+				GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
+				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
+				DHook_RespawnPlayer(client);
+				
+				TeleportEntity(client, pos, ang, NULL_VECTOR);
+				SetEntProp(client, Prop_Send, "m_bDucked", true);
+				SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
+				CClotBody npc = view_as<CClotBody>(client);
+				npc.m_bThisEntityIgnored = false;
+				SetEntityCollisionGroup(client, 5);
+				PrintCenterText(client, "");
+				DoOverlay(client, "");
+				if(!EscapeMode)
+				{
+					SetEntityHealth(client, 50);
+					RequestFrame(SetHealthAfterRevive, client);
+				}	
+				else
+				{
+					SetEntityHealth(client, 150);
+					RequestFrame(SetHealthAfterRevive, client);						
+				}
+				int entity, i;
+				while(TF2U_GetWearable(client, entity, i))
+				{
+					SetEntityRenderMode(entity, RENDER_NORMAL);
+					SetEntityRenderColor(entity, 255, 255, 255, 255);
+				}
+				SetEntityRenderMode(client, RENDER_NORMAL);
+				SetEntityRenderColor(client, 255, 255, 255, 255);
+				
+				return Plugin_Stop;
+			}
+			return Plugin_Continue;
+		}
+		
 		if(f_DisableDyingTimer[client] >= GetGameTime())
 		{
 			return Plugin_Continue;
@@ -2144,22 +2198,25 @@ public Action Timer_Dieing(Handle timer, int client)
 		SetEntityHealth(client, GetClientHealth(client) - 1);
 		SDKHooks_TakeDamage(client, client, client, 1.0);
 		
-		int particle = EntRefToEntIndex(i_DyingParticleIndication[client]);
-		if(IsValidEntity(particle))
+		if(!b_LeftForDead[client])
 		{
-			int color[4];
-			color[0] = 255;
-			color[1] = 255;
-			color[2] = 0;
-			color[3] = 255;
-			
-			color[0] = GetEntProp(client, Prop_Send, "m_iHealth") * 255  / 210; // red  200 is the max health you can have while dying.
-			color[1] = GetEntProp(client, Prop_Send, "m_iHealth") * 255  / 210;	// green
+			int particle = EntRefToEntIndex(i_DyingParticleIndication[client]);
+			if(IsValidEntity(particle))
+			{
+				int color[4];
+				color[0] = 255;
+				color[1] = 255;
+				color[2] = 0;
+				color[3] = 255;
 				
-			color[0] = 255 - color[0];
-			
-			SetVariantColor(color);
-			AcceptEntityInput(particle, "SetGlowColor");
+				color[0] = GetEntProp(client, Prop_Send, "m_iHealth") * 255  / 210; // red  200 is the max health you can have while dying.
+				color[1] = GetEntProp(client, Prop_Send, "m_iHealth") * 255  / 210;	// green
+					
+				color[0] = 255 - color[0];
+				
+				SetVariantColor(color);
+				AcceptEntityInput(particle, "SetGlowColor");
+			}
 		}
 			
 		return Plugin_Continue;
