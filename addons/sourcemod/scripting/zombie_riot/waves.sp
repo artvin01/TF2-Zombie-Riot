@@ -177,7 +177,7 @@ void OnMapEndWaves()
 	{
 		delete Voting;
 	}
-	Zero(VotedFor);	
+	Zero(VotedFor);
 }
 
 void Waves_SetupVote(KeyValues map)
@@ -531,6 +531,7 @@ void Waves_RoundStart()
 
 void Waves_RoundEnd()
 {
+	Cooldown = 0.0;
 	InSetup = true;
 //	InFreeplay = false;
 	WaveIntencity = 0;
@@ -579,7 +580,7 @@ float MultiGlobal = 0.25;
 
 void Waves_Progress()
 {
-	if(InSetup || !Rounds || CvarNoRoundStart.BoolValue)
+	if(InSetup || !Rounds || CvarNoRoundStart.BoolValue || Cooldown > GetGameTime())
 		return;
 		
 	if(WaveTimer)
@@ -1009,6 +1010,28 @@ void Waves_Progress()
 				event.Fire();
 				
 				CreateTimer(round.Setup, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+			}
+			else if(LastMann)
+			{
+				Cooldown = GetGameTime() + 20.0;
+				
+				int timer = CreateEntityByName("team_round_timer");
+				DispatchKeyValue(timer, "show_in_hud", "1");
+				DispatchSpawn(timer);
+				
+				SetVariantInt(20);
+				AcceptEntityInput(timer, "SetTime");
+				AcceptEntityInput(timer, "Resume");
+				AcceptEntityInput(timer, "Enable");
+				SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
+				
+				GameRules_SetPropFloat("m_flStateTransitionTime", Cooldown);
+				CreateTimer(20.0, Timer_RemoveEntity, EntIndexToEntRef(timer));
+				
+				Event event = CreateEvent("teamplay_update_timer", true);
+				event.Fire();
+				
+				CreateTimer(20.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 			}
 			else
 			{
