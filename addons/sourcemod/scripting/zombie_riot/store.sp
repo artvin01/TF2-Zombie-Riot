@@ -1613,7 +1613,12 @@ static void MenuPage(int client, int section)
 			if(item.Level > ClientLevel)
 				continue;
 		}
-		else if(item.Hidden || (section == -2 && (item.Owned[client] || item.Scaled[client])) || (section != -2 && item.Section != section) || item.Level > ClientLevel || (EscapeMode && item.NoEscape))
+		else if(section == -2)
+		{
+			if(item.Hidden || (!item.Owned[client] && !item.Scaled[client]))
+				continue;
+		}
+		else if(item.Hidden || item.Section != section || item.Level > ClientLevel || (EscapeMode && item.NoEscape))
 		{
 			continue;
 		}
