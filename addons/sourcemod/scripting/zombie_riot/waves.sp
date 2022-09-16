@@ -1014,25 +1014,25 @@ void Waves_Progress()
 			}
 			else if(wasLastMann)
 			{
-				Cooldown = GetGameTime() + 20.0;
+				Cooldown = GetGameTime() + 30.0;
 				
 				int timer = CreateEntityByName("team_round_timer");
 				DispatchKeyValue(timer, "show_in_hud", "1");
 				DispatchSpawn(timer);
 				
-				SetVariantInt(20);
+				SetVariantInt(30);
 				AcceptEntityInput(timer, "SetTime");
 				AcceptEntityInput(timer, "Resume");
 				AcceptEntityInput(timer, "Enable");
 				SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
 				
 				GameRules_SetPropFloat("m_flStateTransitionTime", Cooldown);
-				CreateTimer(20.0, Timer_RemoveEntity, EntIndexToEntRef(timer));
+				CreateTimer(30.0, Timer_RemoveEntity, EntIndexToEntRef(timer));
 				
 				Event event = CreateEvent("teamplay_update_timer", true);
 				event.Fire();
 				
-				CreateTimer(20.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 			}
 			else
 			{
@@ -1315,7 +1315,7 @@ void Waves_AddNextEnemy(const Enemy enemy)
 
 bool Waves_Started()
 {
-	return CurrentWave != -1;
+	return CurrentRound != -1;
 }
 
 int Waves_GetRound()

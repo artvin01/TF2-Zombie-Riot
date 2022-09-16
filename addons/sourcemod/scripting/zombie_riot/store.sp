@@ -1353,7 +1353,7 @@ static void MenuPage(int client, int section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s%s \n<%t> [%i] ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1),"Can Be Pack-A-Punched", info2.Cost);
 				}
-				else if(Waves_Started())
+				else if(Waves_InSetup())
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n \n \n%t\n \n%s%s \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1),"Can Be Pack-A-Punched", info2.Cost);
 				}
@@ -1368,7 +1368,7 @@ static void MenuPage(int client, int section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1));
 				}
-				else if(Waves_Started())
+				else if(Waves_InSetup())
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1));
 				}
@@ -1464,7 +1464,7 @@ static void MenuPage(int client, int section)
 				{
 					if(item.Owned[client])
 					{
-						if(info.Attack3AbilitySlot != 0 || info.Classname[0] || (!info.Cost && !Waves_Started())) //make sure they cant sell or unqeuip perks though.
+						if(info.Attack3AbilitySlot != 0 || info.Classname[0] || (!info.Cost && !Waves_InSetup())) //make sure they cant sell or unqeuip perks though.
 						{
 							canSellInsideMenu = true;
 							canSell = true;
@@ -1492,9 +1492,9 @@ static void MenuPage(int client, int section)
 				}
 
 				//ima just make it so it sells for now since you fucked it up WITHOUT TESTING BATFOXKID
-				if(/*item.FuncOnBuy != INVALID_FUNCTION && */(canSell && (!EscapeMode || !Waves_Started())) || item.TextStore[0] || item.Level && !Waves_Started())
+				if(/*item.FuncOnBuy != INVALID_FUNCTION && */(canSell && (!EscapeMode || !Waves_InSetup())) || item.TextStore[0] || item.Level && !Waves_InSetup())
 				{
-					if(item.TextStore[0] || item.Level && !Waves_Started() || (!info.Cost && !info.Classname[0]))
+					if(item.TextStore[0] || item.Level && !Waves_InSetup() || (!info.Cost && !info.Classname[0]))
 					{
 						int style_unequip = ITEMDRAW_DEFAULT;
 						
@@ -1546,7 +1546,7 @@ static void MenuPage(int client, int section)
 		{
 			menu.SetTitle("%t\n%t\n%t\n \n%t\n \n%s", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name));
 		}
-		else if(Waves_Started())
+		else if(Waves_InSetup())
 		{
 			menu.SetTitle("%t\n \n%t\n \n%s", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name));
 		}
@@ -1571,7 +1571,7 @@ static void MenuPage(int client, int section)
 		{
 			menu.SetTitle("%t\n%t\n%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!" , "XP and Level", Level[client], extra, nextAt, "Credits", CurrentCash-CashSpent[client]);
 		}
-		else if(Waves_Started())
+		else if(Waves_InSetup())
 		{
 			menu.SetTitle("%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "XP and Level", Level[client], extra, nextAt, "Credits", CurrentCash-CashSpent[client]);
 		}
@@ -3053,10 +3053,10 @@ bool Store_Interact(int client, int entity, const char[] classname)
 						{
 							if(Equipped[client][slot] == -1)
 							{
-								if(Waves_Started())
+								if(Waves_InSetup())
 									RemoveEntity(entity);
 							}
-							else if(!Waves_Started())
+							else if(!Waves_InSetup())
 							{
 								if(Equipped[client][slot] != index)
 								{
@@ -3203,7 +3203,7 @@ char[] TranslateItemName(int client, const char name[64])
 
 static void ItemCost(int client, Item item, int &cost)
 {
-	bool started = Waves_Started();
+	bool started = Waves_InSetup();
 	bool GregSale = false;
 
 	//these should account for selling.
@@ -3319,7 +3319,7 @@ bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool 
 				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 				if(StrEqual(buffer, "zr_grigori"))
 				{
-					if(!Waves_Started() || b_SpecialGrigoriStore)
+					if(!Waves_InSetup() || b_SpecialGrigoriStore)
 					{
 						Store_OpenNPCStore(client);
 					}
