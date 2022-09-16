@@ -844,7 +844,7 @@ void Waves_Progress()
 				panzer_sound = false;
 			}
 			
-			bool wasLastMann = LastMann;
+			bool wasLastMann = (LastMann && EntRefToEntIndex(RaidBossActive) != -1);
 		//	if( 1 == 1)//	if(!LastMann || round.Setup > 0.0)
 			{
 				for(int client=1; client<=MaxClients; client++)
@@ -1033,6 +1033,8 @@ void Waves_Progress()
 				event.Fire();
 				
 				CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+				
+				PrintToChatAll("You were given extra 30 seconds to prepare...");
 			}
 			else
 			{
