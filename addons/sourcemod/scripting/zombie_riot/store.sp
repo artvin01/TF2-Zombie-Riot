@@ -1582,6 +1582,7 @@ static void MenuPage(int client, int section)
 		
 		if(section == -1)
 		{
+			char buffer[32];
 			FormatEx(buffer, sizeof(buffer), "%t", "Owned Items");
 			menu.AddItem("-2", buffer);
 		}
