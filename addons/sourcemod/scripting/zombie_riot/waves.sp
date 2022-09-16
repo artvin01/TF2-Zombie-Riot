@@ -1315,7 +1315,7 @@ void Waves_AddNextEnemy(const Enemy enemy)
 
 bool Waves_Started()
 {
-	return CurrentRound != -1;
+	return (CurrentRound || CurrentWave != -1);
 }
 
 int Waves_GetRound()
