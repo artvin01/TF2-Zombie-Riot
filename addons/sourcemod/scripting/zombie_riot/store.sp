@@ -1580,7 +1580,7 @@ static void MenuPage(int client, int section)
 			menu.SetTitle("%t\n \n%t\n%t\n%t\n ", "TF2: Zombie Riot", "XP and Level", Level[client], extra, nextAt, "Credits", CurrentCash-CashSpent[client], "Store Discount");
 		}
 		
-		if(section == -1)
+		if(!NPCOnly[client] && section == -1)
 		{
 			char buffer[32];
 			FormatEx(buffer, sizeof(buffer), "%t", "Owned Items");
