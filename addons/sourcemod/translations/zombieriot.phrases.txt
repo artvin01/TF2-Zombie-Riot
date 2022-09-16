@@ -217,6 +217,10 @@
 		"ru"		"Снять"
 		"de"		"Ablegen"
 	}
+	"Owned Items"
+	{
+		"en"		"Bought Items"
+	}
 	"N/A"
 	{
 		"en"		"N/A"

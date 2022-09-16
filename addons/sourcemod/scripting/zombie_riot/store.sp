@@ -1326,7 +1326,7 @@ static void MenuPage(int client, int section)
 	}
 	static Item item;
 	static ItemInfo info;
-	if(section != -1)
+	if(section > -1)
 	{
 		StoreItems.GetArray(section, item);
 		if(item.ItemInfos)
@@ -1579,6 +1579,12 @@ static void MenuPage(int client, int section)
 		{
 			menu.SetTitle("%t\n \n%t\n%t\n%t\n ", "TF2: Zombie Riot", "XP and Level", Level[client], extra, nextAt, "Credits", CurrentCash-CashSpent[client], "Store Discount");
 		}
+		
+		if(section == -1)
+		{
+			FormatEx(buffer, sizeof(buffer), "%t", "Owned Items");
+			menu.AddItem("-2", buffer);
+		}
 	}
 	
 	bool found;
@@ -1606,7 +1612,7 @@ static void MenuPage(int client, int section)
 			if(item.Level > ClientLevel)
 				continue;
 		}
-		else if(item.Hidden || item.Section != section || item.Level > ClientLevel || (EscapeMode && item.NoEscape))
+		else if(item.Hidden || (section == -2 ? (item.Owned[client] || item.Scaled[client]) : item.Section != section) || item.Level > ClientLevel || (EscapeMode && item.NoEscape))
 		{
 			continue;
 		}
@@ -1782,7 +1788,7 @@ static void MenuPage(int client, int section)
 		}
 		
 		FormatEx(buffer, sizeof(buffer), "%t", "Gamemode Credits"); //credits is whatever, put in back.
-		menu.AddItem("-2", buffer);
+		menu.AddItem("-21", buffer);
 	}
 	else if(!found)
 	{
@@ -1839,7 +1845,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			int id = StringToInt(buffer);
-			if(id == -2)
+			if(id == -21)
 			{
 				Menu menu2 = new Menu(Store_MenuPage);
 				menu2.SetTitle("%t", "Credits Page");
@@ -2105,7 +2111,9 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							else if(!info.Classname[0] && !info.Cost) //make sure it even can be sold.
 							{
 								item.Owned[client] = 0;
-								item.Scaled[client]--;
+								if(--item.Scaled[client] < 0)
+									item.Scaled[client] = 0;
+								
 								StoreItems.SetArray(index, item);
 							}
 							Store_ApplyAttribs(client);
