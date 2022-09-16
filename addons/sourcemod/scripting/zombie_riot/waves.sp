@@ -844,6 +844,7 @@ void Waves_Progress()
 				panzer_sound = false;
 			}
 			
+			bool wasLastMann = LastMann;
 		//	if( 1 == 1)//	if(!LastMann || round.Setup > 0.0)
 			{
 				for(int client=1; client<=MaxClients; client++)
@@ -1011,7 +1012,7 @@ void Waves_Progress()
 				
 				CreateTimer(round.Setup, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 			}
-			else if(LastMann)
+			else if(wasLastMann)
 			{
 				Cooldown = GetGameTime() + 20.0;
 				
