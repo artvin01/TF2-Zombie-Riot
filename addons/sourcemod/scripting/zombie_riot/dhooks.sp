@@ -1134,7 +1134,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 		return MRES_Supercede;
 	}
 	
-	bool started = Waves_Started();
+	bool started = !Waves_InSetup();
 	TeutonType[client] = (!IsRespawning && started) ? TEUTON_DEAD : TEUTON_NONE;
 	
 	CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
