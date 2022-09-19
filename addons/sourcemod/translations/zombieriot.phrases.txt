@@ -27,7 +27,7 @@
 		"es"		"Eres el último humano con vida.\nGana la siguiente oleada de jefe para revivirlos a todos"
 		"fr"		"Vous êtes le dernier survivant.\nSurviver au prochain boss pour réanimeer vos coéquipier."
 		"de"		"Du bist der letzte mensch am Leben.\nGewinne Die nächste boss runde um alle wiederzubeleben"
-		"pt"		"Você é o ultimo humano vivo. \nVença o proximo chefe do round para reviver todos."
+		"pt"		"Você é o ultimo humano vivo. \nVença o próximo chefe do round para reviver todos."
 	}
 	"Level Up"
 	{
@@ -664,7 +664,7 @@
 		"ru"		"Вы кинули свою гранату, вы получите её обратно через 15 секунд!"
 		"es"		"Has tirado una granada. Obtendras otra granada en 15 segundos"
 		"fr"		"Vous avez jeté vôtre grenade, vous en aurez une autre dans 15 secondes!"
-		"pt"		"Você jogou uma granada, você vai ter outra em 15 segundos!"
+		"pt"		"Você jogou uma granada, você terá outra em 15 segundos!"
 	}
 	"Grenade Is Back"
 	{
@@ -673,6 +673,7 @@
 		"ru"		"Ваша граната перезарядилась!"
 		"es"		"Has recuperado la granada"
 		"fr"		"Vous avez récuperez vôtre grenade!"
+		"pt"		"Sua granada regenerou-se!"
 	}
 	"Threw Pipebomb"
 	{
@@ -681,6 +682,7 @@
 		"ru"		"Вы кинули свою бомбу, вы получите её обратно через 15 секунд!"
 		"es"		"Obtendras otra granada en 15 segundos, no mueras"
 		"fr"		"Vous avez jeté vôtre grenade, vous en aurez une autre dans 15 secondes!"
+		"pt"		"Você jogou uma Bomba-de-Cano, você terá outra em 15 segundos!"
 	}
 	"Pipebomb Is Back"
 	{
@@ -689,6 +691,7 @@
 		"ru"		"Ваша бомба перезарядилась!"
 		"es"		"Ya tienes otra granada, que arda troya"
 		"fr"		"Vous avez récuperez vôtre grenade!"
+		"pt"		"Sua Bomba-de-Cano regenerou-se!"
 	}
 	"Hand Grenade"
 	{
@@ -699,6 +702,7 @@
 //		"pl"		"Ten przedmiot jeszcze będzie się odświerzał przez {1} sekund przed następnym użyciem"
 //		"es"		"Ten paciencia, aun quedan {1} segundos para volver a usar esto"
 //		"fr"		"Temps de recharge de cette objet avant ré-utilisation: {1}"
+		"pt"		"Granada de mão"
 	}
 	"Current Mana"
 	{
@@ -709,6 +713,7 @@
 //		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
 //		"es"		"Encontraste {1} en esta oleada!"
 //		"fr"		"Vous avez gagnez {1} Cette vague!"
+		"pt"		"Mana: [{1}/{2}] (+{3})"
 	}
 	"Not Enough Mana"
 	{
@@ -720,6 +725,7 @@
 //		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
 //		"es"		"Encontraste {1} en esta oleada!"
 //		"fr"		"Vous avez gagnez {1} Cette vague!"
+		"pt"		"Mana insuficiente! Você precisa de {1} Mana!"
 	}
 	"Ability has cooldown"
 	{
@@ -731,12 +737,14 @@
 //		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
 //		"es"		"Encontraste {1} en esta oleada!"
 //		"fr"		"Vous avez gagnez {1} Cette vague!"
+		"pt"		"Está habilidade ainda está em recarga de {1} segundos!"
 	}
 	"Gamemode Credits"
 	{
 		"en" 		"Gamemode Credits"
 		"ru" 		"Создатели режима"
 		"de"		"Spielmodus Kredite"
+		"pt"		"Creditos do Modo de Jogo"
 	}
 	"Gained a Knife"
 	{
@@ -744,6 +752,7 @@
 		"en" 		"You gained a knife, [{1}]"
 		"ru" 		"Вы получили нож, [{1}]"
 		"de"		"Sie haben ein Messer bekommen, [{1}]"
+		"pt"		"Você ganhou uma faca, [{1}]"
 	}
 	"Knife Amount"
 	{
@@ -751,6 +760,7 @@
 		"en" 		"Knifes: [{1}]"
 		"ru" 		"Ножей: [{1}]"
 		"de"		"Messer: [{1}]"
+		"pt"		"Facas: [{1}]"
 	}
 	"No Knifes left"
 	{
@@ -758,6 +768,7 @@
 		"en" 		"Not Enough Knifes, next one in [{1}] seconds"
 		"ru" 		"Недостаточно ножей, следующий через [{1}] сек."
 		"de"		"Nicht Genügend Messer, nächstes in [{1}] Sekunden"
+		"pt"		"Facas insuficientes, próxima faca em [{1}] segundos"
 	}
 	"No Knifes left ability"
 	{
@@ -765,53 +776,62 @@
 		"en" 		"Not Enough Knifes[{1}], next one in [{2}] seconds"
 		"ru" 		"Недостаточно ножей[{1}], следующий через [{2}] сек."
 		"de"		"Nicht Genügend Messer[{1}], nächste in [{2}] Sekunden"
+		"pt"		"Facas insuficientes[{1}], próxima faca em [{2}] segundos"
 	}
 	"Too Far Away"
 	{
-		"en" 		"You're too far away, get closer
+		"en" 		"You're too far away, get closer"
 		"ru" 		"Вы слишком далеко, подойдите ближе."
 		"de"		"Sie sind zu weit weg, kommen Sie näher."
+		"pt"		"Você está longe demais, aproxime-se"
 	}
 	"No Perk"
 	{
 		"en" 		"No Perk"
 		"ru" 		"Нет перка"
 		"de"		"Kein Perk"
+		"pt"		"Sem habilidade"
 	}
 	"Quick Revive"
 	{
 		"en" 		"Perk: Quick Revive"
 		"ru" 		"Перк: Реаниматор"
 		"de"		"Vorteil: Schnelles Wiederbeleben"
+		"pt"		"Habilidade: Rapida ressureição"
 	}
 	"Juggernog"
 	{
 		"en" 		"Perk: Juggernog"
 		"ru" 		"Перк: Джаггер-фанта"
+		"pt"		"Habilidade: Juggernog"
 	}
 	"Double Tap"
 	{
 		"en" 		"Perk: Double Tap"
 		"ru" 		"Перк: Пиф-паф"
 		"de"		"Vorteil: Doppeltippen"
+		"pt"		"Habilidade: Toque Duplo"
 	}	
 	"Speed Cola"
 	{
 		"en" 		"Perk: Speed Cola"
 		"ru" 		"Перк: Быстрокола"
 		"de"		"Vorteil: Geschwindigkeits Cola"
+		"pt"		"Habilidade: Refri-Veloz"
 	}
 	"Deadshot Daiquiri"
 	{
 		"en" 		"Perk: Deadshot Daiquiri"
 		"ru" 		"Перк: Снайпер-лайм"
 		"de"		"Vorteil: Todesschuss Daiquiri"
+		"pt"		"Habilidade: Tiro morto de Daiquiri"
 	}
 	
 	"Widows Wine"
 	{
 		"en" 		"Perk: Widows Wine"
 		"ru" 		"Перк: Вино вдовы"
+		"pt"		"Habilidade: Vinho Viúvo"
 	}
 
 	"Quick Revive Recieved"
@@ -819,93 +839,109 @@
 		"en" 		"QUICK REVIVE! 2x Revive speed"
 		"ru" 		"РЕАНИМАТОР! Вдвойне быстрее оживление"
 		"de"		"SCHNELLES WIEDERBELEBEN! 2-fache Wiederbelebungs-Geschwindigkeit"
+		"pt"		"RÁPIDA RESSUREIÇÃO! 2x Velocidade de Reanimação"
 	}
 	"Juggernog Recieved"
 	{
 		"en" 		"JUGGERNOG! 1.15x Damage resistance and +100HP"
 		"ru" 		"ДЖАГГЕР-ФАНТА! 1.15x сопротивления урону и +100 ед. здоровья"
 		"de"		"JUGGERNOG!	1.15-fache Schaden Resistenz und +100HP"
+		"pt"		"JUGGERNOG! 1.15x Resistência a danos e +100HP"
 	}
 	"Double Tap Recieved"
 	{
 		"en" 		"DOUBLE TAP! 1.15x Extra attack speed and Building Damage"
 		"ru" 		"ПИФ-ПАФ! 1.15x дополнительной скорости атаки и урон от построек"
+		"pt"		"TOQUE DUPLO! 1.15 Velocidade de Ataque extra e Dano com construções"
 	}	
 	"Speed Cola Recieved"
 	{
 		"en" 		"SPEED COLA! 1.35x Extra reload, switchspeed and Mana regen"
 		"ru" 		"БЫСТРОКОЛА! 1.35x доп. скорости перезарядки, скорости смены оружия и регенерации маны"
+		"pt"		"REFRI-VELOZ! 1.35x Velocidade de recarga, de troca e regeneração de mana"
 	}
 	"Deadshot Daiquiri Recieved"
 	{
 		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot and backstab damage"
 		"ru" 		"СНАЙПЕР-ЛАЙМ! 1.35x точность оружия и 1.25x дополнительного урона от выстрела в голову и удар в спину"
 		"de"		"TODESSCHUSS DAIQUIRI! 1.35-fache Waffengenauigkeit und 1.25-facher zusätzlicher Kopfschussschaden und Rücken messerstich schaden"
+		"pt"		TIRO MORTO DE DAIQUIRI! 1.35x Precisão com armas e 1.25x Dano extra com tiros na cabeça e facas nas costas"
 	}
 	"Widows Wine Recieved"
 	{
 		"en" 		"WIDOWS WINE! Rechargeable protection that debuffs zombies and blocks 75 Percent of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
 		"ru" 		"ВИНО ВДОВЫ! Перезаряжаемая защита, накладывающая негативный эффект на зомби и блокирующая 75% урона при активации.\nЭффект сильно замедляет врагов и наносит на 35% больше урона."
+		"pt"		"VINHO VIÚVO! Proteção recarregavel que afeta negativamente zumbis e bloqueia 75% do dano quando ativado.\nInimigos afetados negativamente tem a sua velocidade diminuida drasticamente e tomam 35% mais dano."
 	}
 	"Nuke Activated"
 	{
 		"en" 		"Nuke!"
 		"ru" 		"Бомба!"
 		"de"		"KERNWAFFENEXPLOSION!"
+		"pt"		"NUKE!"
 	}
 	"Max Ammo Activated"
 	{
 		"en" 		"Extra Ammo!"
 		"ru" 		"Дополнительные патроны!"
 		"de"		"Extra Munition!"
+		"pt"		"Munição extra!"
 	}
 	"Help?"
 	{
 		"en" 		"Help?"
 		"ru" 		"Помощь?"
 		"de"		"Hilfe?"
+		"pt"		"Ajuda?"
 	}
 	"Help Title?"
 	{
 		"en" 		"Select in what you need help for."
 		"ru" 		"Выберите, с чем вам нужна помощь."
 		"de"		"Wählen Sie aus wofür Sie Hilfe benötigen."
+		"pt"		"Selecione no que você precisa de ajuda."
 	}
 	"Gamemode Help?"
 	{
 		"en" 		"Gamemode Help?"
 		"ru" 		"Игровой режим?"
 		"de"		"Spielmodus Hilfe?"
+		"pt"		"Ajuda no Modo de Jogo?"
 	}
 	"Command Help?"
 	{
 		"en" 		"Command Help?"
 		"ru" 		"Команды?"
 		"de"		"Befehl Hilfe?"
+		"pt"		"Ajdua com Comandos?"
 	}
 	"Difficulty Help?"
 	{
 		"en" 		"Difficulty Help?"
 		"ru" 		"Уров. сложн.?"
 		"de"		"Schwierigkeitgrad Hilfe?"
+		"pt"		"Ajuda na Dificuldade?"
 	}
 	"Level Help?"
 	{
 		"en" 		"Level Help?"
 		"ru" 		"Уров. игрока?"
 		"de"		"Level Hilfe?"
+		"pt"		"Ajuda com níveis?"
 	}
 	"Special Zombies Help?"
 	{
 		"en" 		"Special Zombies Help?"
 		"ru" 		"Особые зомби?"
 		"de"		"Speziale Zombies Hilfe?"
+		"pt"		"Ajuda com zumbis especiais?"
 	}
 	"Revival Help?"
 	{
 		"en" 		"Revival Help?"
 		"ru" 		"Оживл. игрока?"
 		"de"		"Wiederbelebungshilfe?"
+		"pt"		""
 	}
 	"Building Help?"
 	{
