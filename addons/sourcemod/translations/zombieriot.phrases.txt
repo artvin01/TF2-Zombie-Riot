@@ -484,7 +484,7 @@
 		"es"		"Medicamentos"
 		"fr"		"Médicaments"
 		"de"		"heilungs Medizin"
-		"pt"		"Medicamentos"
+		"pt"		"Maquina de Cura"
 	}
 	"Medigun Fluid"
 	{
@@ -548,11 +548,11 @@
 	"Armor Table Used"
 	{
 		"en"		"Someone used your armor table, you gain +40 Credits!"
-		"it"		"Qualcuno ha usato la tua cassa di munizioni, hai ricevuto +40 Crediti!"
+	//	"it"		"Qualcuno ha usato la tua cassa di munizioni, hai ricevuto +40 Crediti!"
 		"ru"		"Кто-то воспользовался вашим верстаком брони, вы получили +40 кредитов!"
-		"pl"		"Ktoś użył twojego pudła z amunicją, otrzymujesz +40 Kredytów!"
-		"es"		"Alguién usó tu caja de munición, ganas 40 dolares"
-		"fr"		"Quelqu'un a utilisé votre boite de munitions, vous gagnez 40 dollars!"
+	//	"pl"		"Ktoś użył twojego pudła z amunicją, otrzymujesz +40 Kredytów!"
+	//	"es"		"Alguién usó tu caja de munición, ganas 40 dolares"
+	//	"fr"		"Quelqu'un a utilisé votre boite de munitions, vous gagnez 40 dollars!"
 		"de"		"Jemand hat deinen Rüstungstisch benutzt, Du bekommst +40 Kredits!"
 		"pt"		"Alguém usou sua mesa de armadura, você ganhou +40 Créditos!"
 	}
@@ -941,37 +941,42 @@
 		"en" 		"Revival Help?"
 		"ru" 		"Оживл. игрока?"
 		"de"		"Wiederbelebungshilfe?"
-		"pt"		""
+		"pt"		"Ajuda com Ressureções?"
 	}
 	"Building Help?"
 	{
 		"en" 		"Building Help?"
 		"ru" 		"Постройки?"
 		"de"		"Gebäude Hilfe?"
+		"pt"		"Ajuda construindo?"
 	}
 	"Escape Help?"
 	{
 		"en" 		"Escape Help?"
 		"ru" 		"Режим спасения?"
 		"de"		"Flucht Hilfe?"
+		"pt"		"Ajuda fugindo?"
 	}
 	"Gamemode Help Explained"
 	{
 		"en" 		"You survive against waves of zombies upto usually 60 waves.\nBuy guns and barricade yourself to survive.\nMake sure to play as a team and don't save up all the time.\nOr else you will be the downfall of your team.\n\n If you dont know what to buy, Then buy any high cost weapon of your choice and get upgrades for that weapon type in the upgrade tab.\nAlso buy passive upgrades to have more surviveability.\nThe rest will come to you naturally."
 		"ru" 		"Вам предстоит выжить против 60 волн зомби.\nПокупайте оружие и баррикады, чтобы выжить.\nУбедитесь, что вы играете в команде и не копили деньги понапрасну.\nИначе вы станете гибелью вашей команды.\n\n Если вы не знаете, что купить, купите любое дорогое оружие по своему выбору и получите улучшения для этого типа оружия на вкладке УЛУЧШЕНИЯ.\nТакже покупайте пассивные улучшения, чтобы повысить выживаемость.\nОстальное придёт само собой."
 	//	"de"		"Du überlebst gegen wellen von Zombies, bis zu 60 runde.\nKaufe Waffen und Barrikade für dich selber um zu überleben.\nSei sicher mit deinem Team zu spielen und Sparre nicht die ganze zeit!\nOder sie werden der Untergang für ihr Team sein."
+		"pt"		"Sobrevive contra ondas de zumbis até normalmente 60 ondas.\nComprar armas e barricar-se para sobreviver.\nNão se esqueça de jogar em equipa e não poupe o tempo todo.\n Senão será a queda da sua equipa.\n Se não souber o que comprar, então compre qualquer arma de alto custo à sua escolha e obtenha melhorias para esse tipo de arma no separador das melhorias.\nTambém compre melhorias passivas para ter mais capacidade de sobrevivência.\n O resto virá até si naturalmente."
 	}
 	"Command Help Explained"
 	{
 		"en" 		"''/flashlight'' To toggle your flashlight.\n''/tp'' To toggle thirdperson."
 		"ru" 		"''/flashlight'' для переключения фонарика.\n''/tp'' для переключения режима от 3-го лица."
 		"de"		"''/flashlight'' Umschaltung für ihre Taschenlampe.\n''/tp'' Umschaltung für Dritte Person."
+		"pt"		"''/flashlight'' Para ligar sua lanterna.\n''/tp'' Para ativar 3ª pessoa."
 	}
 	"Difficulty Help Explained"
 	{
 		"en" 		"Each Higher Difficulty is harder and gives but no extra cash and different zombie types/mutations.\nThey are there as a challenge but reward almost upto 3x the EXP.\nMap difficulties are arbitrary and only state how hard the layout is."
 		"ru" 		"Более высокая сложность - сложнее и даёт доп. деньги и имеет новые типы зомби.\nЭто как испытание, но в нём вы получите почти в 3 раза больше опыта.\nСложности на картах случайны и только указывают, насколько сложны структуры врагов."
 		"de"		"Jeder höhere Schwierigkeitsgrad ist schwerer aber gibt dir kein extra Geld, aber Neue Zombie Typen/Mutationen.\nDie sind eine Herausforderung aber geben bis zu 3-mal mehr XP.\n Karten Schwierigkeitsgrade sind willkürlich und zustand wie hart das Layout ist."
+		"pt"		"Cada dificuldade mais elevada é mais difícil e não dá mas nenhum dinheiro extra e diferentes tipos/mutações de zumbis.\nEstão lá como um desafio, mas recompensam até 3x em Experiência.\nAs restrições do mapa são arbitrárias e apenas declaram quão difícil é o layout."
 	}
 	"Level Help Explained"
 	{
@@ -1020,145 +1025,170 @@
 		"en"		"Encyclopedia"
 		"ru"		"Энциклопедия"
 		"de"		"Enzyklopädie"
+		"pt"		"Enciclopédia"
 	}
 	"Claim this building"
 	{
 		"en"		"Claim this building with RELOAD while holding a wrench."
 		"ru"		"Эта постройка может принадлежать вам - нажмите ПЕРЕЗАРЯДКА, держа в руках гаечный ключ."
 		"de"		"Beanspruchen Sie dieses Gebäude mit NACHLADEN mit einem Schlüsselwerkzeug."
+		"pt"		"Para reivindicar está construção aperte o botão re RECARREGAR enquando segurando sua chave inglesa."
 	}
 	"Ammobox Tooltip"
 	{
 		"en" 		"Press RELOAD on the Ammobox to gain Ammo for your current holding weapon."
 		"ru" 		"Нажмите ПЕРЕЗАРЯДКА на ящике с боеприпасами, чтобы получить боеприпасы для текущего оружия."
 		"de"		"Drücke NACHLADEN an der Munitionsbox um Munition für deine aktuelle Waffe zubekommen."
+		"pt"		"Pegue mais munição apertando o botão de RECARREGAR enquanto olha para caixa de munições."
 	}
 	"Armortable Tooltip"
 	{
 		"en" 		"Press RELOAD on the Armortable to gain Armor."
 		"ru" 		"Нажмите ПЕРЕЗАРЯДКА на верстаке брони, чтобы получить броню."
 		"de"		"Drücke NACHLADEN an dem Rüstungstisch um Rüstung zubekommen."
+		"pt"		"Pressione o botão de RECARREGAR para pegar mais armadura."
 	}
 	"Perkmachine Tooltip"
 	{
 		"en" 		"Press RELOAD on the Perkmachine to gain a strong temporary perk."
 		"ru" 		"Нажмите ПЕРЕЗАРЯДКА на перк-машине, чтобы получить мощный временный перк."
 //		"de"		"Drücke NACHLADEN an der Perkmachine um einen starken temporären zufälligen Perk zubekommen."
+		"pt"		"Pressione o botão de RECARREGAR para ganhar uma habilidade temporaria."
 	}
 	"PackAPunch Tooltip"
 	{
 		"en" 		"Press RELOAD To Pack-a-Punch your current holding weapon."
 		"ru" 		"Нажмите ПЕРЕЗАРЯДКА для улучшения оружия, которое вы держите."
+		"pt"		"Aperte o botão de RECARREGAR com sua arma atual para melhora-lá."
 	}
 	"Packed"
 	{
 		"en" 		"Packed"
 		"ru" 		"Улучшено"
 		"de"		"Verpackt"
+		"pt"		"Carregado"
 	}
 	"Not Enough Money To Pap"
 	{
 		"en" 		"You do not have enough money to Pack-a-Punch your Weapon."
 		"ru" 		"У вас не хватает кредитов на улучшение вашего оружия."
 		"de"		"Sie haben nicht genügend Geld um ihre Waffe zu Pack-A-Punchen."
+		"pt"		"Você não tem dinheiro suficiente para dar um Pack-a-Punch em sua arma."
 	}
 	"Cannot Pap this"
 	{
 		"en" 		"Your weapon cannot be Pack-a-Punched."
 		"ru" 		"Ваше оружие не может быть улучшено."
 		"de"		"Ihre Waffe kann nicht Pack-A-Punched werden."
+		"pt"		"Está arma não pode ser melhorada."
 	}
 	"Revive Teammate tooltip"
 	{
 		"en" 		"Hold RELOAD to revive this dying teammate."
 		"ru" 		"Удерживайте ПЕРЕЗАРЯДКА, чтобы оживить умирающего союзника."
 		"de"		"Halten NACHLADEN, um ihren absterben Kameraden zu beleben."
+		"pt"		"Segure o botão de RECARREGAR para reanimar seu colega de equipe morrendo."
 	}
 	"Bored or Dead"
 	{
 		"en" 		"Bored or Dead?"
 		"ru" 		"Скучно или вы мертвы?"
 		"de"		"Tot oder gelangweilt?"
+		"pt"		"No tedio ou morto(a)?"
 	}
 	"Bored or Dead Minigame"
 	{
 		"en" 		"Youre dead or bored, try out some of these minigames to kill time."
 		"ru" 		"Если вы умерли или вам скучно, попробуйте сыграть в эти мини-игры, чтобы убить время."
 		"de"		"Du bist tot oder gelangweilt, versuch mal diese Mini-Spiele um Zeit zu töten."
+		"pt"		"Você está morto(a) ou entediado(a), tente alguns minigames para passar o tempo."
 	}
 	"Idlemine"
 	{
 		"en" 		"Idlemine"
 		"ru" 		"Ленивая шахта"
 		"de"		"Leerlauf meiner"
+		"pt"		"Farm afk"
 	}
 	"Healing Station Tooltip"
 	{
 		"en" 		"Use this to heal yourself a tiny bit."
 		"ru" 		"Используйте это, чтобы хоть немного вылечить себя."
 		"de"		"Benutzt das, um dich etwas selber zu heilen."
+		"pt"		"Use insto para curar um pouco de seus ferimentos."
 	}
 	"Healing Station Used"
 	{
 		"en" 		"Someone used your Healing Station, you gain +40 Credits!"
 		"ru" 		"Кто-то воспользовался вашей лечебной станцией, вы получили +40 кредитов!"
 		"de"		"Jemand hat deine Heilstation benutzt, du hast +40 Kredit bekommen!"
+		"pt"		"Alguem se curou em sua Estação de Cura, você ganhou +40 créditos!"
 	}
 	"Cant Mount This"
 	{
 		"en" 		"You can't mount this."
 		"ru" 		"Вы не можете установить это."
 		"de"		"Das kannst du nicht aufheben."
+		"pt"		"Você não pode montar isso"
 	}
 	"Village Upgrade Tooltip"
 	{
 		"en" 		"Press RELOAD to upgrade your village."
 		"ru" 		"Нажмите ПЕРЕЗАРЯДКА, чтобы улучшить свою деревню."
+		"pt"		"Aperte o botão de RECARREGAR para aprimorar sua vilá."
 	}
 	"Pong"
 	{
 		"en" 		"Pong"
 		"ru" 		"Понг"
+		"pt"		"Pong"
 	}
 	"Tetris"
 	{
 		"en" 		"Tetris"
 		"ru" 		"Тетрис"
+		"pt"		"Tetris"
 	}
 	"Snake"
 	{
 		"en" 		"Snake"
 		"ru" 		"Змейка"
 		"de"		"Schlange"
+		"pt"		"Jogo da Cobra"
 	}
 	"Solitaire"
 	{
 		"en" 		"Solitaire"
 		"ru" 		"Пасьянс"
+		"pt"		"Paciência"
 	}
 	"Connect 4"
 	{
 		"en" 		"Connect 4"
 		"ru" 		"Собери 4"
 		"de"		"Verbinden 4"
+		"pt"		"Conecte-4"
 	}
 	"No Ammo Supplies"
 	{
 		"en" 		"You don't have any Ammo Supplies!"
 		"ru" 		"У вас больше нет запасов боеприпасов!"
 		"de"		"Sie haben keine Munitionsvorräte!"
+		"pt"		"Você não tem suplemento de munições!"
 	}
 	"Grigori Store Refresh"
 	{
 		"en" 		"Grigori has refreshed his shop! Check it out!"
 		"ru" 		"Григорий обновил свой ассортимент! Зацените!"
 		"de"		"Grigori hat sein Shop aufgefrischt! Schauen Sie nach!"
+		"pt"		"Grigori alterou sua loja! vá dar uma olhada!"
 	}
 	"Pickup this weapon with RELOAD"
 	{
 		"en" 		"Pickup this weapon with RELOAD!"
 		"ru" 		"Подберите это оружие с помощью ПЕРЕЗАРЯДКИ!"
 		"de"		"Heben Sie diese Waffe mit NACHLADEN auf."
+		"pt"		"Pegue está arma usando o botão de RECARREGAR!"
 	}
 	"You Died Teuton"
 	{
