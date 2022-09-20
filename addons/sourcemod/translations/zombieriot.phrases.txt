@@ -548,11 +548,11 @@
 	"Armor Table Used"
 	{
 		"en"		"Someone used your armor table, you gain +40 Credits!"
-	//	"it"		"Qualcuno ha usato la tua cassa di munizioni, hai ricevuto +40 Crediti!"
+		"it"		"Qualcuno ha usato la tua cassa di munizioni, hai ricevuto +40 Crediti!"
 		"ru"		"Кто-то воспользовался вашим верстаком брони, вы получили +40 кредитов!"
-	//	"pl"		"Ktoś użył twojego pudła z amunicją, otrzymujesz +40 Kredytów!"
-	//	"es"		"Alguién usó tu caja de munición, ganas 40 dolares"
-	//	"fr"		"Quelqu'un a utilisé votre boite de munitions, vous gagnez 40 dollars!"
+		"pl"		"Ktoś użył twojego pudła z amunicją, otrzymujesz +40 Kredytów!"
+		"es"		"Alguién usó tu caja de munición, ganas 40 dolares"
+		"fr"		"Quelqu'un a utilisé votre boite de munitions, vous gagnez 40 dollars!"
 		"de"		"Jemand hat deinen Rüstungstisch benutzt, Du bekommst +40 Kredits!"
 		"pt"		"Alguém usou sua mesa de armadura, você ganhou +40 Créditos!"
 	}
