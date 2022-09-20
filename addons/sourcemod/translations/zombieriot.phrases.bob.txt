@@ -6,6 +6,7 @@
 		"ru"	"Боб Второй"
 		"de"	"Bob Der Zweite"
 		"pl"    "Bob drugi"
+		"pt"	"Bob o 2°"
 	}
 	"Bob The Second:"
 	{
@@ -13,6 +14,7 @@
 		"ru"	"Боб Второй:"
 		"de"	"Bob Der Zweite:"
 		"pl"    "Bob drugi:"
+		"pt"	"Bob o 2°:"
 	}
 	"Pistol Ammo"
 	{
@@ -20,6 +22,7 @@
 		"ru"	"Пистолет"
 		"de"	"Pistolen Munition"
 		"pl"    "Amunicja do pistoletu"
+		"pt"	"Munição da Pistola"
 	}
 	"Bob The Second is not friendly and follows you!"
 	{
@@ -27,6 +30,7 @@
 		"ru"	"Боб Второй атакует врагов и следует за вами!"
 		"de"	"Bob Der Zweite ist nicht Freundlich und folgt dir!"
 		"pl"    "Bob drugi nie jest przyjazny i podąża za tobą!"
+		"pt"	"Bob o 2° não é amigável e segue você!"
 	}
 	"Use voice Commands to command him!"
 	{
@@ -34,6 +38,7 @@
 		"ru"	"Голосовые команды - отдать команду!"
 		"de"	"Benutze Sprach Befehle um ihn zu befehlen!"
 		"pl"    "Używaj komend głowosych aby jemu rozkazywać!"
+		"pt"	"Use comandos de voz para o comandar!"
 	}
 	"Bob The Second is friendly and follows you!"
 	{
@@ -41,6 +46,7 @@
 		"ru"	"Боб Второй не атакует врагов и следует за вами!"
 		"de"	"Bob Der Zweite ist freundlich und folgt dir!"
 		"pl"    "Bob drugi jest przyjazny i podąża za tobą!"
+		"pt"	"Bob o 2° é amigável e te segue!"
 	}
 	"Bob The Second is not friendly and doesn't follow you!"
 	{
@@ -48,6 +54,7 @@
 		"ru"	"Боб Второй атакует врагов и не следует за вами!"
 		"de"	"Bob Der Zweite ist nicht Freundlich und folgt dir nicht!"
 		"pl"    "Bob drugi nie jest przyjazny i nie podąża za tobą!"
+		"pt"	"Bob o 2° não é amigável e não te segue!"
 	}
 	"Bob The Second is friendly and doesn't follow you!"
 	{
@@ -55,6 +62,7 @@
 		"ru"	"Боб Второй не атакует врагов и не следует за вами!"
 		"de"	"Bob Der Zweite ist freundlich und folgt dir nicht!"
 		"pl"    "Bob drugi jest przyjazny i nie podąża za tobą!"
+		"pt"	"Bob o 2° é amigável e nao te segue!"
 	}
 	"Bob The Second is not friendly and follows you! BUT stands still."
 	{
@@ -62,6 +70,7 @@
 		"ru"	"Боб Второй атакует врагов и следует за вами! НО стоит на месте."
 		"de"	"Bob Der Zweite ist nicht freundlich und folgt dir! ABER bleibt stehen."
 		"pl"    "Bob drugi nie jest przyjazny i podąża za tobą! Ale stoi w miejscu."
+		"pt"	"Bob o 2° não é amigável e te segue! MAS está parado."
 	}
 	"Bob The Second is friendly and follows you! BUT stands still"
 	{
@@ -69,6 +78,7 @@
 		"ru"	"Боб Второй не атакует врагов и следует за вами! НО стоит на месте."
 		"de"	"Bob Der Zweite ist freundlich und folgt dir! ABER bleibt stehen."
 		"pl"    "Bob drugi jest przyjazny is podąża za tobą! Ale stoi w miejscu."
+		"pt"	"Bob o 2° é amigável e te segue! MAS está parado."
 	}
 	"Bob The Second is not friendly and doesn't follow you! BUT stands still"
 	{
@@ -76,6 +86,7 @@
 		"ru"	"Боб Второй атакует врагов и не следует за вами! НО стоит на месте."
 		"de"	"Bob Der Zweite ist nicht freundlich und folgt dir nicht! ABER bleibt stehen."
 		"pl"    "Bob drugi nie jest przyjazny i nie podąża za tobą! Ale stoi w miejscu."
+		"pt"	"Bob o 2° não é amigável e nao te segue! MAS está parado."
 	}
 	"Bob The Second is friendly and doesn't follow you! BUT stands still"
 	{
@@ -83,6 +94,7 @@
 		"ru"	"Боб Второй не атакует врагов и не следует за вами! НО стоит на месте."
 		"de"	"Bob Der Zweite ist nicht freundlich und folgt dir nicht! ABER bleibt stehen."
 		"pl"    "Bob drugi jest przyjazny i nie podąża za tobą! Ale stoi w miejscu."
+		"pt"	"Bob o 2° é amigável e nao te segue! MAS está parado."
 	}
 
 
