@@ -5,66 +5,77 @@
 		"en"		"Damage"
 		"ru"		"Урон"
 		"de"		"Schaden"
+		"pt"		"Dano"
 	}
 	"pellets"
 	{
 		"en"		"Pellets"
 		"ru"		"Дробинок"
 		"de"		"Pellets"
+		"pt"		"Balas"
 	}
 	"firerate"
 	{
 		"en"		"Fire Rate"
 		"ru"		"Скоростр."
 		"de"		"Feuerrate"
+		"pt"		"Cadência de tiro"
 	}
 	"reload"
 	{
 		"en"		"Reload"
 		"ru"		"Перезар."
 		"de"		"Nachladen"
+		"pt"		"Recarga"
 	}	
 	"clip"
 	{
 		"en"		"Clip"
 		"ru"		"Магазин"
 		"de"		"Klipp"
+		"pt"		"Cartucho"
 	}	
 	"chargespeed"
 	{
 		"en"		"Charge Speed"
 		"ru"		"Скорость рывка"
 		"de"		"Ladegeschwindigkeit"
+		"pt"		"Velocidade de Carga"
 	}
 	"chargedmg"
 	{
 		"en"		"Charge Damage"
 		"ru"		"Урон от рывка"
 		"de"		"Ladungsschaden"
+		"pt"		"Dano da Carga"
 	}
 	"healing"
 	{
 		"en"		"Healing"
 		"ru"		"Лечение"
 		"de"		"Heilen"
+		"pt"		"Cura"
 	}
 	"range"
 	{
 		"en"		"Range"
 		"ru"		"Радиус"
 		"de"		"Reichweite"
+		"pt"		"Distancia"
 	}
 	"Weapons"
 	{
 		"en" 		"Weapons"
 		"ru" 		"Оружие"
 		"de"		"Waffen"
+		"pt"		"Armas"
 	}
 	"Primary Weapons"//Primary path here
 	{
 		"en" 		"Primary Weapons"
 		"ru" 		"Основное оружие"
 		"de"		"Primare Waffen"
+		"pt"		"Armas Primárias"
 	}
 	"Syringe Gun"
 	{
@@ -239,6 +250,7 @@
 		"en"		"Secondary Weapons"
 		"ru"		"Доп. оружие"
 		"de"		"Sekundär Waffen"
+		"pt"		"Armas Secundárias"
 	}
 	"Wrangler"
 	{
@@ -371,6 +383,7 @@
 		"en"		"Melee Weapons"
 		"ru"		"Ближний бой"
 		"de"		"Nahkampfwaffen"
+		"pt"		"Armas Brancas"
 	}
 	"Mounter"
 	{
@@ -455,6 +468,7 @@
 		"en"		"Mage Weapons"
 		"ru"		"Оружие магов"
 		"de"		"Magie Waffen"
+		"pt"		"Cajados"
 	}
 	"Bad Wand"
 	{
@@ -503,6 +517,7 @@
 		"en"		"Buildings"
 		"ru"		"Постройки"
 		"de"		"Gebäude"
+		"pt"		"Construções"
 	}
 	"Buildable Elevation"
 	{
@@ -569,18 +584,21 @@
 		"en"		"Upgrades"
 		"ru"		"Улучшения"
 		"de"		"Upgrades"
+		"pt"		"Melhorias"
 	}
 	"Melee Upgrades"//Melee Upgrades HERE!!!
 	{
 		"en"		"Melee Upgrades"
 		"ru"		"Улучшения ближнего боя"
 		"de"		"Nahkampf Upgrades"
+		"pt"		"Melhorias de Corpo-a-Corpo"
 	}
 	"Cannibalism"
 	{
 		"en"		"Cannibalism"
 		"ru"		"Каннибализм"
 		"de"		"Kannibalismus"
+		"pt"		"Canibalismo"
 	}
 	"Copium"
 	{
@@ -593,12 +611,14 @@
 		"en"		"Cocain"
 		"ru"		"Кокаин"
 		"de"		"Cocaine"
+		"pt"		"Cocaina"
 	}
 	"Steroids"
 	{
 		"en"		"Steroids"
 		"ru"		"Стероиды"
 		"de"		"Steroide"
+		"pt"		"Esteróides"
 	}
 	"LSD"
 	{
@@ -611,24 +631,28 @@
 		"en"		"Crystal Meth"
 		"ru"		"Кристаллический мет"
 		"de"		"Kristallmeth"
+		"pt"		"Metanfetamina"
 	}
 	"God's Might"
 	{
 		"en"		"God's Might"
 		"ru"		"Божье могущество"
 		"de"		"Gottes Macht"
+		"pt"		"Coragem dos deuses"
 	}
 	"Bob's Enhancer"
 	{
 		"en"		"Bob's Enhancer"
 		"ru"		"Усилитель Боба"
 		"de"		"Bobs Verstärker"
+		"pt"		"Intensificador de Bob"
 	}
 	"Building Upgrades"//Building Upgrades HERE!!!
 	{
 		"en"		"Building Upgrades"
 		"ru"		"Улучшения построек"
 		"de"		"Gebäude Upgrades"
+		"pt"		"Melhorias de Construções"
 	}
 	"Repair Handling book for dummies"
 	{
@@ -701,6 +725,7 @@
 		"en"		"Ranged Upgrades"
 		"ru"		"Улучшения винтовки"
 		"de"		"Fernkampf-Upgrades"
+		"pt"		"Melhorias de Armas de fogo"
 	}
 	"Accurate Marksman"
 	{
@@ -737,6 +762,7 @@
 		"en"		"Mage Upgrades"
 		"ru"		"Улучшения мага"
 		"de"		"Magie Upgrades"
+		"pt"		"Melhorias de Mago"
 	}
 	"Magical Haste"
 	{
@@ -779,6 +805,7 @@
 		"en"		"Passive Upgrades"
 		"ru"		"Постоянные улучшения"
 		"de"		"Passive Upgrades"
+		"pt"		"Melhorias Passivas"
 	}
 	"Body armor"
 	{
@@ -827,6 +854,7 @@
 		"en"		"Medigun Upgrades"
 		"ru"		"Улучшения лечебной пушки"
 		"de"		"Medigun Upgrades"
+		"pt"		"Melhorias de Cura"
 	}
 	"Doctor Certificate"
 	{
@@ -857,12 +885,14 @@
 		"en"		"Level Perks"
 		"ru"		"Уровневые перки"
 		"de"		"Level Vorteil"
+		"pt"		"Habilidade de Níveis"
 	}
 	"Melee Perks"//Lvl Melee perks here
 	{
 		"en"		"Melee Perks"
 		"ru"		"Перки ближнего боя"
 		"de"		"Nahkampf Vorteil"
+		"pt"		"Habilidades de Arma Branca"
 	}
 	"Panic Attack"
 	{
@@ -881,6 +911,7 @@
 		"en"		"Building Perks"
 		"ru"		"Перки построек"
 		"de"		"Gebäude Vorteil"
+		"pt"		"Habilidade de Construções"
 	}
 	"Mechanic"
 	{
@@ -917,6 +948,7 @@
 		"en"		"Ranged Perk"
 		"ru"		"Перк винтовки"
 		"de"		"Fernkampf Vorteil"
+		"pt"		"Habilidades de Arma de fogo"
 	}
 	"Heavy Caliber"
 	{
@@ -941,6 +973,7 @@
 		"en"		"Mage Perks"
 		"ru"		"Перки мага"
 		"de"		"Magie Vorteil"
+		"pt"		"Habilidades de Mago"
 	}
 	"Mage Fragility"
 	{
@@ -953,6 +986,7 @@
 		"en"		"Passive Perks"
 		"ru"		"Постоянные перки"
 		"de"		"Passive Vorteil"
+		"pt"		"Habilidades Passivas"
 	}
 	"Heavy Fat"
 	{
@@ -1007,12 +1041,14 @@
 		"en"		"Inventory"
 		"ru"		"Инвентарь"
 		"de"		"Inventar"
+		"pt"		"Inventário"
 	}
 	"head"
 	{
 		"en"		"Head"
 		"ru"		"Голова"
 		"de"		"Kopf"
+		"pt"		"Cabeça"
 	}
 	"Scrap Helmet [Common]"
 	{
@@ -1031,6 +1067,7 @@
 		"en"		"Chest"
 		"ru"		"Грудь"
 		"de"		"Brust"
+		"pt"		"Peitoral"
 	}
 	"Villager Outfit [Common]"
 	{
@@ -1049,6 +1086,7 @@
 		"en"		"Leggings"
 		"ru"		"Поножи"
 		"de"		"Leggings"
+		"pt"		"Calças"
 	}
 	"Blue Jeans [Common]"
 	{
@@ -1061,6 +1099,7 @@
 		"en"		"Shoes"
 		"ru"		"Обувь"
 		"de"		"Schuhe"
+		"pt"		"Sapatos"
 	}
 	"Jordans [Common]"
 	{
@@ -1073,6 +1112,7 @@
 		"en"		"Monkey Knowledge"
 		"ru"		"Знание обезьян"
 		"de"		"Affen-Wissen"
+		"pt"		"Conhecimento"
 	}
 	"Fast Tack Attacks [Rare]"
 	{

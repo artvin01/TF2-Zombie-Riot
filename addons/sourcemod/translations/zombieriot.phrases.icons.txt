@@ -4,56 +4,67 @@
 	{
 		"en" 		"The True Fusion Warrior has arrived."
 		"ru" 		"Истинный воин фьюжна прибыл."
+		"pt"		"O Verdadeiro Guerreiro da Fusão chegou."
 	}
 	"Blitzkrieg Spawn"
 	{
 		"en" 		"Blitzkrieg has arrived."
 		"ru" 		"Блицкриг прибыл."
+		"pt"		"Blitzkreig chegou."
 	}
 	"You have alerted the horde..."
 	{
 		"en" 		"You have alerted the horde..."
 		"ru" 		"Вы привлекли орду..."
+		"pt"		"Você alertou a horda!..."
 	}
 	"Destruction echoes through a nearby space..."
 	{
 		"en" 		"Destruction echoes through a nearby space..."
 		"ru" 		"Эхо разрушений разносится по близлежащему пространству..."
+		"pt"		"Destruição ecoa através de um espaço próximo"
 	}
 	"A massive foe has entered this field..."
 	{
 		"en" 		"A massive foe has entered this field..."
 		"ru" 		"На это поле вышел огромный враг..."
+		"pt"		"Um enorme inimigo se aproxima..."
 	}
 	"You can discern faint metalic screams not like the others..."
 	{
 		"en" 		"You can discern faint metalic screams not like the others..."
 		"ru" 		"Вы различаете слабые металлические крики, не похожие на другие..."
+		"pt"		"Você pode discernir fracos gritos metálicos não como os outros..."
 	}
 	"Distant low rumbles fill the air space..."
 	{
 		"en" 		"Distant low rumbles fill the air space..."
 		"ru" 		"Отдалённый низкий гул наполняет воздушное пространство..."
+		"pt"		"Ruídos baixos distantes preenchem o espaço aéreo..."
 	}
 	"Die SS Division hat einer ihrer Infizierten soldaten Gesendet..."
 	{
 		"en" 		"Die SS Division hat einer ihrer Infizierten soldaten Gesendet..."
 		"ru" 		"Дивизия СС: Sie schickten einen ihrer Infizierten soldaten..."
+		"pt"		"Divisão de morte SS hat einer ihrer Infizierten soldaten Gesendet..."
 	}
 	"Faint rattling can be heard, and its approaching at a fast pace..."
 	{
 		"en" 		"Faint rattling can be heard, and its approaching at a fast pace..."
 		"ru" 		"Слышен слабый скрежет, и он приближается с большой скоростью..."
+		"pt"		"Barulho fraco pode ser ouvido, e sua aproximação em um ritmo rápido..."
 	}
 	"Something rapidly rams through hordes in your direction..."
 	{
 		"en" 		"Something rapidly rams through hordes in your direction..."
 		"ru" 		"Что-то стремительно проносится сквозь орды в вашем направлении..."
+		"pt"		"Algo rapidamente atravessa hordas em sua direção..."
 	}
 	"Common means might not stop this agile enemy..."
 	{
 		"en" 		"Common means might not stop this agile enemy..."
 		"ru" 		"Обычные средства могут не остановить этого проворного врага..."
+		"pt"		"Meios comuns podem não parar esse inimigo ágil..."
 	}
 
 }
