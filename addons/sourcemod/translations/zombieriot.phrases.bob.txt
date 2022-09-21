@@ -378,13 +378,6 @@
 		"pl"    "Staram się dobrze celować!"
 		"pt"	"Eu dou meu melhor pra mirar!"
 	}
-	"I'll attack once more!"
-	{
-		"en"	"I'll attack once more!"
-		"ru"	"Я атакую ещё раз!"
-		"de"	"Ich greife nochmal an!"
-		"pl"    "Znowy zaatakuje!"
-	}
 	"You are doing a good job aswell!"
 	{
 		"en"	"You are doing a good job aswell!"
