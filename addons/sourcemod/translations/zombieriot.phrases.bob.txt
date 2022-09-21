@@ -104,6 +104,7 @@
 		"ru"	"Я их достал!"
 		"de"	"Ich hab sie!"
 		"pl"    "Mam ich!"
+		"pt"	"Eu peguei eles!"
 	}
 	"Take This!"
 	{
@@ -111,6 +112,7 @@
 		"ru"	"Получай!"
 		"de"	"Nimm Das!"
 		"pl"    "A Masz!"
+		"pt"	"Toma essa!"
 	}
 	"I'll stand beside you, sir!"
 	{
@@ -118,6 +120,7 @@
 		"ru"	"Я буду рядом с вами, сэр!"
 		"de"	"Ich werde bei dir stehen, sir!"
 		"pl"    "Będę stał obok ciebie!"
+		"pt"	"Estarei bem ao seu lado, senhor!"
 	}
 	"I'll guard you, sir!"
 	{
@@ -125,6 +128,7 @@
 		"ru"	"Я буду вас охранять, сэр!"
 		"de"	"Ich werde sie bewachen, sir!"
 		"pl"    "Będę ciebie bronił!"
+		"pt"	"Eu irei protege-lo, senhor!"
 	}
 	"I'm pretty bored..."
 	{
@@ -132,6 +136,7 @@
 		"ru"	"Мне это уже начинает надоедать...."
 		"de"	"ich bin so gelangweilt..."
 		"pl"    "jestem dość znudzony..."
+		"pt"	"Tem nada pra fazer..."
 	}
 	"Reloading near you, sir!"
 	{
@@ -139,6 +144,7 @@
 		"ru"	"Перезаряжаю рядом с вами, сэр!"
 		"de"	"ich lade bei dir nach, sir!"
 		"pl"    "Przeładowuje obok ciebie!"
+		"pt"	"Recarregando próximo a você, senhor!"
 	}
 	"I hope your day is going well!"
 	{
@@ -146,20 +152,23 @@
 		"ru"	"Надеюсь, у вас всё хорошо!"
 		"de"	"Ich Hoffe dein tag geht gut!"
 		"pl"    "Mam nadzieje, że ci dobrze mija dzień!"
+		"pt"	"Eu espero que seu dia esteja indo bem!"
 	}
 	"Sometimes i wonder why this war exists."
 	{
 		"en"	"Sometimes i wonder why this war exists."
 		"ru"	"Иногда я задаюсь вопросом, почему существует эта война."
 		"de"	"Manchmal frage ich mich warum dieser krieg existiert."
-		"pl"    "Czasami się zastanawiam dlaczego ta wojna istnieje."
+		"pl"	"Czasami się zastanawiam dlaczego ta wojna istnieje."
+		"pt"	"As vezes me pergunto porque essa guerra existe."
 	}
 	"Just saying, never give up!"
 	{
 		"en"	"Just saying, never give up!"
 		"ru"	"Просто хочу сказать, никогда не сдавайтесь!"
 		"de"	"Ich sag nur, Gib niemals auf!"
-		"pl"   "Pamiętaj nigdy się nie poddawaj!"
+		"pl"	"Pamiętaj nigdy się nie poddawaj!"
+		"pt"	"So pra constar, nunca desista!"
 	}
 	"Could i borrow your gun perhaps?"
 	{
@@ -167,6 +176,7 @@
 		"ru"	"Могу я одолжить ваше оружие?"
 		"de"	"kann ich vielleicht deine waffe ausleihen?"
 		"pl"    "Czy mógłbym porzyczyć twoją broń?"
+		"pt"	"Poderia me emprestar sua arma talvez?"
 	}
 	"Im pretty confident in my abilities!"
 	{
@@ -174,6 +184,7 @@
 		"ru"	"Перезаряжаю рядом с вами, сэр!"
 		"de"	"Ich lade bei dir nach, sir!"
 		"pl"    "Jestem całkiem pewny swoich umiejętności!"
+		"pt"	"Não sei se isso é usado, ou não, parece repetido também (!)"
 	}
 	"Pick up that can."
 	{
@@ -181,6 +192,7 @@
 		"ru"	"Подними эту банку."
 		"de"	"heb die dose auf."
 		"pl"    "Podnieś tą puszkę."
+		"pt"	"Pegue aquela latinha."
 	}
 	"On my way, sir!"
 	{
@@ -188,6 +200,7 @@
 		"ru"	"Уже в пути, сэр!"
 		"de"	"Auf den weg, sir!"
 		"pl"    "Już jestem w drodze!"
+		"pt"	"Estou indo, senhor!"
 	}
 	"Im watching there, dont worry!"
 	{
@@ -195,6 +208,7 @@
 		"ru"	"Буду наблюдать тут, не волнуйтесь!"
 		"de"	"Ich gucke dort, keine sorge!" 
 		"pl"    "Patrzę tam, nie martw się!"
+		"pt"	"Eu estou olhando ali, não se preucupe!"
 	}
 	"Spy? I'm keeping my eye there."
 	{
@@ -202,6 +216,7 @@
 		"ru"	"Шпион? Я не спущу с него глаз."
 		"de"	"Spion? Ich halte mein auge dort." 
 		"pl"    "Szpieg? Będę trzymał tam oko."
+		"pt"	"Spy? Eu vou prestar atenção ali."
 	}
 	"Sentry here? Its better to wait for teammates to engage so i'll look."
 	{
@@ -209,6 +224,7 @@
 		"ru"	"Турель здесь? Лучше подождать, пока союзники вступят в бой, так что я понаблюдаю."
 		"de"	"Sentry hier? es ist besser auf das team zu warten um Anzugreifen, also werde ich gucken."
 		"pl"    "Działko tutaj? Lepiej poczekać aż koledzy z drużyny się zaangażują, więc popatrzę."
+		"pt"	"Sentinela Aqui? É melhor esperar o resto dos aliados antes de entrar em combate então ficarei de olho."
 	}
 	"I cant build a teleporter, sorry."
 	{
