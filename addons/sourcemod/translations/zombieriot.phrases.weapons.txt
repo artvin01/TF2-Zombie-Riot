@@ -82,84 +82,98 @@
 		"en" 		"Syringe Gun"
 		"ru" 		"Шприцемёт"
 		"de"		"Spritzenpistole"
+		"pt"		"Arma de Seringas"
 	}
 	"Sniper Rifle"
 	{
 		"en"		"Sniper Rifle"
 		"ru"		"Снайперская винтовка"
 		"de"		"Scharfschützengewehr"
+		"pt"		"Rifle de Sniper"
 	}
 	"Sawed off Shotgun"
 	{
 		"en"		"Sawed off Shotgun"
 		"ru"		"Обрез"
 		"de"		"Abgesägte Schrotflinte"
+		"pt"		"Escopeta de Cano-Serrado"
 	}
 	"Annabelle"
 	{
 		"en"		"Annabelle"
 		"ru"		"Аннабелль"
 		"de"		"Annabelle"
+		"pt"		"Annabelle"
 	}
 	"Huntsman"
 	{
 		"en"		"Huntsman"
 		"ru"		"Охотник"
 		"de"		"Huntsman"
+		"pt"		"Caçador"
 	}
 	"Flamethrower"
 	{
 		"en"		"Flamethrower"
 		"ru"		"Огнемёт"
 		"de"		"Flammenwerfer"
+		"pt"		"Lança-Chamas"
 	}
 	"Ranged Spike Layer"
 	{
 		"en"		"Ranged Spike Layer"
 		"ru"		"Дальнобойный шипоукладчик"
 		"de"		"Fernkampfstachelschicht"
+		"pt"		"Posicionador de Espinhos a distância"
 	}
 	"Crusader's Crossbow"
 	{
 		"en"		"Crusader's Crossbow"
 		"ru"		"Арбалет крестоносца"
 		"de"		"Armbrust des Kreuzritters"
+		"pt"		"Besta do Cruzado"
 	}
 	"Grenade Launcher"
 	{
 		"en"		"Grenade Launcher"
 		"ru"		"Гранатомёт"
 		"de"		"Granatwerfer"
+		"pt"		"Lança-Granadas"
 	}
 	"Tommygun"
 	{
 		"en"		"Tommygun"
 		"ru"		"Томми-ган"
 		"de"		"Tommygun"
+		"pt"		"Tommygun"
 	}
 	"Double Barrel Shotgun"
 	{
 		"en"		"Double Barrel Shotgun"
 		"ru"		"Двустволка"
 		"de"		"Doppelläufige Schrotflinte"
+		"pt"		"Escopeta de Cano Duplo"
 	}
 	"The Pompson 7000"
 	{
 		"en"		"The Pompson 7000"
 		"ru"		"Помсон 7000"
 		"de"		"The Pompson 7000"
+		"pt"		"A Pomson 7000"
 	}
 	"Dragon's Fury"
 	{
 		"en"		"Dragon's Fury"
 		"ru"		"Ярость дракона"
 		"de"		"Drachenzorn"
+		"pt"		"Fúria do Dragão"
 	}
 	"Marksman Rifle"
 	{
 		"en"		"Marksman Rifle"
 		"ru"		"Винтовка стрелка"
 		"de"		"Marksman-Gewehr"
+		"pt"		"Rifle de Atirador"
 	}
 	"Aresenal's Tripmine Layer"
 	{
@@ -178,12 +192,14 @@
 		"en"		"Railgun"
 		"ru"		"Рельсотрон"
 		"de"		"Railgun"
+		"pt"		"Arma laser"
 	}
 	"The Loch-N-Load"
 	{
 		"en"		"The Loch-N-Load"
 		"ru"		"Подкидыш"
 		"de"		"Der Lochnesser"
+		"pt"		"Lança Granadas do Lago Ness"
 	}
 	"Boomstick"
 	{
@@ -208,12 +224,14 @@
 		"en"		"Loose Cannon"
 		"ru"		"Пушка без лафета"
 		"de"		"Stimmungskanone"
+		"pt"		"Pavio Curto"
 	}
 	"RPG"
 	{
 		"en"		"RPG"
 		"ru"		"РПГ"
 		"de"		"Raketenwerfer"
+		"pt"		"Lança Mísseis
 	}
 	"Peacock's Screw Ball Cannon"
 	{
@@ -226,12 +244,14 @@
 		"en"		"The Cow Mangler 6000"
 		"ru"		"Линчеватель скота 6000"
 		"de"		"Der Kuhmetzler 6000"
+		"pt"		"Avacalahor 6000"
 	}
 	"Anti Material Rifle"
 	{
 		"en"		"Anti Material Rifle"
 		"ru"		"Крупнокалиберная снайперская винтовка"
 		"de"		"Anti-Material-Gewehr"
+		"pt"		"Rifle de Anti-Matéria"
 	}
 	"Infected Rampager Assult Rifle"
 	{
@@ -257,108 +277,126 @@
 		"en"		"Wrangler"
 		"ru"		"Поводырь"
 		"de"		"Sentry-Flüsterer"
+		"pt"		"Peão"
 	}
 	"USP tactical"
 	{
 		"en"		"USP tactical"
 		"ru"		"Тактический пистолет"
 		"de"		"USP taktisch"
+		"pt"		"USP tática"
 	}
 	"Nail Gun"
 	{
 		"en"		"Nail Gun"
 		"ru"		"Гвоздемёт"
 		"de"		"Nagelpistole"
+		"pt"		"Arma de Pregos"
 	}
 	"Deagle"
 	{
 		"en"		"Deagle"
 		"ru"		"Deagle"
 		"de"		"Deagle"
+		"pt"		"Deagle"
 	}
 	"Grenade"
 	{
 		"en"		"Grenade"
 		"ru"		"Граната"
 		"de"		"Granate"
+		"pt"		"Granada"
 	}
 	"Medikit"
 	{
 		"en"		"Medikit"
 		"ru"		"Аптечка"
 		"de"		"Medizinkit"
+		"pt"		"Kit Médico"
 	}
 	"Magic Potion"
 	{
 		"en"		"Mage Potion"
 		"ru"		"Зелье мага"
 		"de"		"Magie Trank"
+		"pt"		"Poção de Mago"
 	}
 	"Flaregun"
 	{
 		"en"		"Flaregun"
 		"ru"		"Ракетница"
 		"de"		"Leuchtpistole"
+		"pt"		"Arma sinalizadora"
 	}
 	"The Righteous Bison"
 	{
 		"en"		"The Righteous Bison"
 		"ru"		"Благочестивый бизон"
 		"de"		"Der Rechtschaffene Bison"
+		"pt"		"Bisão Justiceiro"
 	}
 	"SMG"
 	{
 		"en"		"SMG"
 		"ru"		"Пистолет-пулемёт"
 		"de"		"SMG"
+		"pt"		"Sub-Metralhadora"
 	}
 	"Battle Medigun"
 	{
 		"en"		"Battle Medigun"
 		"ru"		"Боевая лечебная пушка"
 		"de"		"Kampf Medigun"
+		"pt"		"Arma Médica de Combate"
 	}
 	"Charged Handgun"
 	{
 		"en"		"Charged Handgun"
 		"ru"		"Заряженный пистолет"
 		"de"		"Aufgeladene Pistole"
+		"pt"		"Pistola Carregada"
 	}
 	"Stickybomb Launcher"
 	{
 		"en"		"Stickybomb Launcher"
 		"ru"		"Липучкомёт"
 		"de"		"Haftbombenwerfer"
+		"pt"		"Lança Bombas-Adesivas"
 	}
 	"Mechanical Medigun"
 	{
 		"en"		"Mechanical Medigun"
 		"ru"		"Механическая лечебная пушка"
 		"de"		"Mechanische Medigun"
+		"pt"		"Arma Médica Mecanica"
 	}
 	"The Battalion's Backup"
 	{
 		"en"		"The Battalion's Backup"
 		"ru"		"Поддержка батальона"
 		"de"		"Der Bataillonsbeistand"
+		"pt"		"Reforço do Batalhão"
 	}
 	"Medigun"
 	{
 		"en"		"Medigun"
 		"ru"		"Лечебная пушка"
 		"de"		"Medigun"
+		"pt"		"Arma Médica"
 	}
 	"P15t0l"
 	{
 		"en"		"P15t0l"
 		"ru"		"Пи6т0л3т"
 		"de"		"P15t0l3"
+		"pt"		"P15T014"
 	}
 	"Heavy Desert Eagle"
 	{
 		"en"		"Heavy Desert Eagle"
 		"ru"		"Тяжёлый Desert Eagle"
 		"de"		"Schwerer Desert Eagle"
+		"pt"		"Desert Eagle Pesada"
 	}
 	"Infected Assult Rifle"
 	{
@@ -371,6 +409,7 @@
 		"en"		"Buff Banner"
 		"ru"		"Вдохновляющее знамя"
 		"de"		"Das Buff-Banner"
+		"pt"		"Estandarte do Encorajamento"
 	}
 	"PhlogStorms Detonator"
 	{
@@ -390,54 +429,63 @@
 		"en"		"Mounter"
 		"ru"		"Монтажник"
 		"de"		"Aufheber"
+		"pt"		"Montador"
 	}
 	"Wrench"
 	{
 		"en"		"Wrench"
 		"ru"		"Гаечный ключ"
 		"de"		"Schlüsselwerkzeug"
+		"pt"		"Chave Inglesa"
 	}
 	"Knife"
 	{
 		"en"		"Knife"
 		"ru"		"Нож"
 		"de"		"Messer"
+		"pt"		"Faca"
 	}
 	"Ubersaw"
 	{
 		"en"		"Ubersaw"
 		"ru"		"Убер-пила"
 		"de"		"Übersäge"
+		"pt"		"Uberserra"
 	}
 	"Hammer"
 	{
 		"en"		"Hammer"
 		"ru"		"Молот"
 		"de"		"Hammer"
+		"pt"		"Martelo"
 	}
 	"Fire Axe"
 	{
 		"en"		"Fire Axe"
 		"ru"		"Пожарный топор"
 		"de"		"Feuerwehraxt"
+		"pt"		"Machado de Incêndio"
 	}
 	"Survivalist Blade"
 	{
 		"en"		"Survivalist Blade"
 		"ru"		"Клинок выживальщика"
 		"de"		"Klinge des Überlebenskünstlers"
+		"pt"		"Faca de Sobrevivência"
 	}
 	"Kunai"
 	{
 		"en"		"Kunai"
 		"ru"		"Кунай"
 		"de"		"Kunai"
+		"pt"		"Kunai"
 	}
 	"Longsword"
 	{
 		"en"		"Longsword"
 		"ru"		"Длинный меч"
 		"de"		"Lang Schwert"
+		"pt"		"Espada Longa"
 	}
 	"Speed Fists Of Speed"
 	{
@@ -462,6 +510,7 @@
 		"en"		"Infinity Blade"
 		"ru"		"Клинок бесконечности"
 		"de"		"Infinity Blade"
+		"pt"		"Lâmina da Infinidade"
 	}
 	"Mage Weapons"//Mage here
 	{
@@ -475,42 +524,49 @@
 		"en"		"Bad Wand"
 		"ru"		"Жезл вреда"
 		"de"		"Schlechter Zauberstab"
+		"pt"		"Cajado Ruim"
 	}
 	"Fire Wand"
 	{
 		"en"		"Fire Wand"
 		"ru"		"Жезл огня"
 		"de"		"Feuer Zauberstab"
+		"pt"		"Cajado Incendiário"
 	}
 	"Lightning Staff"
 	{
 		"en"		"Lightning Staff"
 		"ru"		"Жезл молнии"
 		"de"		"Blitz Stab"
+		"pt"		"Cajado Elétrico"
 	}
 	"Necromancy Staff"
 	{
 		"en"		"Necromancy Staff"
 		"ru"		"Посох некромантии"
 		"de"		"Nekromantie Stab"
+		"pt"		"Cajado Necromante"
 	}
 	"Homing Staff"
 	{
 		"en"		"Homing Staff"
 		"ru"		"Посох самонаведения"
 		"de"		"Homing-Stab"
+		"pt"		"Cajado Teleguiado"
 	}
 	"Wind Staff"
 	{
 		"en"		"Wind Staff"
 		"ru"		"Посох воздуха"
 		"de"		"Wind Stab"
+		"pt"		"Cajado do Vento"
 	}
 	"Elemental Staff"
 	{
 		"en"		"Elemental Staff"
 		"ru"		"Посох стихий"
 		"de"		"Elementarstab"
+		"pt"		"Cajado Elemental"
 	}
 	"Buildings"//Buildings here
 	{
@@ -524,60 +580,70 @@
 		"en"		"Buildable Elevation"
 		"ru"		"Поднятие постройки"
 		"de"		"Baubare Erhebung"
+		"pt"		"Elevação Construível"
 	}
 	"Buildable Barricade"
 	{
 		"en"		"Buildable Barricade"
 		"ru"		"Возведение баррикады"
 		"de"		"Baubare Barrikade"
+		"pt"		"Barricada Construível"
 	}
 	"Buildable Armortable"
 	{
 		"en"		"Buildable Armortable"
 		"ru"		"Возвед. верстака брони"
 		"de"		"Baubare Rüstungstisch"
+		"pt"		"Mesa de Armadura Construível"
 	}
 	"Buildable AmmoBox"
 	{
 		"en"		"Buildable AmmoBox"
 		"ru"		"Возвед. ящика с боепр."
 		"de"		"Baubare Munitionsbox"
+		"pt"		"Caixa de Munição Construível"
 	}
 	"Buildable Perk Machine"
 	{
 		"en"		"Buildable Perk Machine"
 		"ru"		"Возвед. перк-машины"
 		"de"		"Baubare Perk Maschine"
+		"pt"		"Maquina de Habilidades Construível"
 	}
 	"Buildable Pack-a-Punch"
 	{
 		"en"		"Buildable Pack-a-Punch"
 		"ru"		"Возвед. улучшайзера"
 		"de"		"Baubare Pack-a-Punch"
+		"pt"		"Pack-a-Punch Construível"
 	}
 	"Buildable Sentry"
 	{
 		"en"		"Buildable Sentry"
 		"ru"		"Возвед. турели"
 		"de"		"Baubare Sentry"
+		"pt"		"Sentinela Construível"
 	}
 	"Buildable Mortar"
 	{
 		"en"		"Buildable Mortar"
 		"ru"		"Возвед. миномёта"
 		"de"		"Baubare Sentry"
+		"pt"		"Morteiro Construível"
 	}
 	"Buildable Railgun"
 	{
 		"en"		"Buildable Railgun"
 		"ru"		"Возвед. рельсотрона"
 		"de"		"Baubare Railgun"
+		"pt"		"Canhão Laser Construível"
 	}
 	"Buildable Healing Station"
 	{
 		"en"		"Buildable Healing Station"
 		"ru"		"Возвед. лечебной станции"
 		"de"		"Baubare Heilstation"
+		"pt"		"Estação de Cura Construível"
 	}
 	"Upgrades"//Upgrades here!!!!
 	{
@@ -732,30 +798,35 @@
 		"en"		"Accurate Marksman"
 		"ru"		"Меткий стрелок"
 		"de"		"Akkurater Schütze"
+		"pt"		"Atirador Preciso"
 	}
 	"Ammo Coat"
 	{
 		"en"		"Ammo Coat"
 		"ru"		"Патронное пальто"
 		"de"		"Munition Mantel"
+		"pt"		"Colete de Munição"
 	}
 	"Ammo Coat Elite"
 	{
 		"en"		"Ammo Coat Elite"
 		"ru"		"Элитное патронное пальто"
 		"de"		"Munition Mantel Elite"
+		"pt"		"Colete de Munição Aprimorado"
 	}
 	"Antidote Coated Bullets"
 	{
 		"en"		"Antidote Coated Bullets"
 		"ru"		"Пули с антидотным покрытием"
 		"de"		"Gegenmittelbeschichtete Kugeln"
+		"pt"		"Balas Especiais de Antídoto"
 	}
 	"Anti-Matter Bullets"
 	{
 		"en"		"Anti-Matter Bullets"
 		"ru"		"Пули из антиматерии"
 		"de"		"Anti-Materie-Kugeln"
+		"pt"		"Balas de Anti-Matéria"
 	}
 	"Mage Upgrades"//Mage Upgrades HERE!!!
 	{
@@ -769,18 +840,21 @@
 		"en"		"Magical Haste"
 		"ru"		"Магическая спешка"
 		"de"		"Magische Eile"
+		"pt"		"Velocidade Mágica"
 	}
 	"Hastening Potion"
 	{
 		"en"		"Hastening Potion"
 		"ru"		"Зелье ускорения"
 		"de"		"Beschleunigungstrank"
+		"pt"		"Poção de Pressa"
 	}
 	"The Bombinomicon"
 	{
 		"en"		"The Bombinomicon"
 		"ru"		"Бомбиномикон"
 		"de"		"Das Bombinomicon"
+		"pt"		"O Bombinomicon"
 	}
 	"Betweenlands Potion"
 	{
@@ -799,6 +873,7 @@
 		"en"		"Bob's Magic"
 		"ru"		"Магия Боба"
 		"de"		"Bobs Magie"
+		"pt"		"Mágicas do Bob"
 	}
 	"Passive Upgrades"//Passive Upgrades HERE!!!
 	{
