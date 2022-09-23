@@ -4,6 +4,7 @@
 	{
 		"en" 		"This text isnt supposed to apear! Please report this to the admins!"
 		"ru" 		"Этот текст не должен появляться! Пожалуйста, сообщите об этом администраторам!"
+		"pt"		"Esta linha de texto não deveria estar aqui, seria uma boa ideia mostrar isso para os administradores."
 	}
 	"Headcrab Zombie"
 	{
