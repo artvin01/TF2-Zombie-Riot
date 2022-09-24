@@ -974,12 +974,14 @@
 		"en"		"Panic Attack"
 		"ru"		"Паническая атака"
 		"de"		"Panik-Attacke"
+		"pt"		"Ataque de Panico"
 	}
 	"Barbarians Mind"
 	{
 		"en"		"Barbarians Mind"
 		"ru"		"Разум варвара"
 		"de"		"Barbaren Verstand"
+		"pt"		"Mente Barbará"
 	}
 	"Building Perks"//Lvl Building perks HERE!!
 	{
@@ -993,30 +995,35 @@
 		"en"		"Mechanic"
 		"ru"		"Механик"
 		"de"		"Mechaniker"
+		"pt"		"Mecânico"
 	}
 	"Wrenchy Hands"
 	{
 		"en"		"Wrenchy Hands"
 		"ru"		"Гаечные руки"
 		"de"		"Schnellere Hände"
+		"pt"		"Mãos engenhosas"
 	}
 	"Sniper Sentry"
 	{
 		"en"		"Sniper Sentry"
 		"ru"		"Снайперская турель"
 		"de"		"Scharfschützen Sentry"
+		"pt"		"Sentinela Sniper"
 	}
 	"Minigun Sentry"
 	{
 		"en"		"Minigun Sentry"
 		"ru"		"Пулемётная турель"
 		"de"		"Minigun Sentry"
+		"pt"		"Sentinela Minigun"
 	}
 	"Glass Cannon Blueprints"
 	{
 		"en"		"Glass Cannon Blueprints"
 		"ru"		"Чертежи стеклянной пушки"
 		"de"		"Glas Kanonen Baupläne"
+		"pt"		"Cópia Heliográficas de Canhões de Vidro"
 	}
 	"Ranged Perks"//Lvl Ranged perks HERE!!!
 	{
@@ -1030,18 +1037,21 @@
 		"en"		"Heavy Caliber"
 		"ru"		"Крупный калибр"
 		"de"		"Schwerer Kaliber"
+		"pt"		"Alto Calibre"
 	}
 	"Army Belt"
 	{
 		"en"		"Army Belt"
 		"ru"		"Армейский пояс"
 		"de"		"Armeegürtel"
+		"pt"		"Cinto do Exercito"
 	}
 	"Headshot Affinity"
 	{
 		"en"		"Headshot Affinity"
 		"ru"		"Близость к выстрелу в голову"
 		"de"		"Kopfschussaffinität"
+		"pt"		"Afinidade com Tiros na Cabeça"
 	}
 	"Mage Perks"//Lvl Mage perks HERE!!!
 	{
@@ -1055,6 +1065,7 @@
 		"en"		"Mage Fragility"
 		"ru"		"Хрупкость мага"
 		"de"		"Magier Zerbrechlichkeit"
+		"pt"		"Fragilidade de Mago"
 	}
 	"Passive Perks"
 	{
@@ -1068,18 +1079,21 @@
 		"en"		"Heavy Fat"
 		"ru"		"Тяжёлая жировая ткань"
 		"de"		"Schweres Fett"
+		"pt"		"Peso Pesado"
 	}
 	"Android"
 	{
 		"en"		"Android"
 		"ru"		"Андроид"
 		"de"		"Androide"
+		"pt"		"Android"
 	}
 	"Soft Shoes"
 	{
 		"en"		"Soft Shoes"
 		"ru"		"Мягкие ботинки"
 		"de"		"Sanfte Schuhe"
+		"pt"		"Sapatos Macios"
 	}
 	"Level Items"
 	{
@@ -1092,24 +1106,28 @@
 		"en"		"Level 15 Peashooter"
 		"ru"		"Горохострел 15-го уровня"
 		"de"		"Level 15 Erbsenkanone"
+		"pt"		"Atira Ervilhas nível 15 
 	}
 	"Rusty Wrench"
 	{
 		"en"		"Rusty Wrench"
 		"ru"		"Ржавый гаечный ключ"
 		"de"		"Rostiger Schraubenschlüssel"
+		"pt"		"Chave Inglesa Enferrujada"
 	}
 	"Cheap Barricade"
 	{
 		"en"		"Cheap Barricade"
 		"ru"		"Дешёвая баррикада"
 		"de"		"Billige Barrikade"
+		"pt"		"Barricada Barata"
 	}
 	"Sand Blocks"
 	{
 		"en"		"Sand Blocks"
 		"ru"		"Блоки из песка"
 		"de"		"Sand Blöcke"
+		"pt"		"Barricada de Areia"
 	}
 	"Inventory"//Inventory here
 	{
