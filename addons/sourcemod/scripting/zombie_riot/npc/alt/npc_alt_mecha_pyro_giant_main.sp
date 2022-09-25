@@ -137,7 +137,7 @@ methodmap Mecha_PyroGiant < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
+		npc.m_iStepNoiseType = STEPTYPE_ROBOT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, Mecha_PyroGiant_ClotDamaged);

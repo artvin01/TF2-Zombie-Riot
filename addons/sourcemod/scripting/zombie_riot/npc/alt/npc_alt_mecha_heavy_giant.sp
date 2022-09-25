@@ -140,7 +140,7 @@ methodmap Mecha_HeavyGiant < CClotBody
 		
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
-		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
+		npc.m_iStepNoiseType = STEPTYPE_ROBOT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, Mecha_HeavyGiant_ClotDamaged);
