@@ -256,6 +256,28 @@ char g_PanzerStepSound[][] = {
 	"mvm/giant_common/giant_common_step_08.wav",
 };
 
+char g_RobotStepSound[][] = {
+	"mvm/player/footsteps/robostep_01.wav",
+	"mvm/player/footsteps/robostep_02.wav",
+	"mvm/player/footsteps/robostep_03.wav",
+	"mvm/player/footsteps/robostep_04.wav",
+	"mvm/player/footsteps/robostep_05.wav",
+	"mvm/player/footsteps/robostep_06.wav",
+	"mvm/player/footsteps/robostep_07.wav",
+	"mvm/player/footsteps/robostep_08.wav",
+	"mvm/player/footsteps/robostep_09.wav",
+	"mvm/player/footsteps/robostep_10.wav",
+	"mvm/player/footsteps/robostep_11.wav",
+	"mvm/player/footsteps/robostep_12.wav",
+	"mvm/player/footsteps/robostep_13.wav",
+	"mvm/player/footsteps/robostep_14.wav",
+	"mvm/player/footsteps/robostep_15.wav",
+	"mvm/player/footsteps/robostep_16.wav",
+	"mvm/player/footsteps/robostep_17.wav",
+	"mvm/player/footsteps/robostep_18.wav",
+
+};
+
 char g_TankStepSound[][] = {
 	"infected_riot/tank/tank_walk_1.mp3",
 };
@@ -305,7 +327,8 @@ enum
 	STEPTYPE_COMBINE = 2,	
 	STEPTYPE_PANZER = 3,
 	STEPTYPE_COMBINE_METRO = 4,
-	STEPTYPE_TANK = 5
+	STEPTYPE_TANK = 5,
+	STEPTYPE_ROBOT = 6
 }
 
 enum
@@ -1458,7 +1481,7 @@ public void OnMapStart_NPC_Base()
 	for (int i = 0; i < (sizeof(g_ArrowHitSoundMiss));	   i++) { PrecacheSound(g_ArrowHitSoundMiss[i]);	   }
 	for (int i = 0; i < (sizeof(g_PanzerStepSound));   i++) { PrecacheSound(g_PanzerStepSound[i]);   }
 	for (int i = 0; i < (sizeof(g_TankStepSound));   i++) { PrecacheSound(g_TankStepSound[i]);   }
-	
+	for (int i = 0; i < (sizeof(g_RobotStepSound));   i++) { PrecacheSound(g_RobotStepSound[i]);   }
 	
 	EscapeModeMap = false;
 	
@@ -4551,6 +4574,16 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 				{
 					npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, npc.m_iStepNoiseType);
 					npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, npc.m_iStepNoiseType);
+				}
+			}
+		}
+		case STEPTYPE_ROBOT:
+		{
+			if(IsWalkEvent(event))
+			{
+				if(npc.m_flDoSpawnGesture < GetGameTime())
+				{
+					npc.PlayStepSound(g_RobotStepSound[GetRandomInt(0, sizeof(g_RobotStepSound) - 1)], 0.8, npc.m_iStepNoiseType);
 				}
 			}
 		}
