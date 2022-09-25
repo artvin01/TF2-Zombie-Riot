@@ -847,6 +847,26 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = Itstilives(client, vecPos, vecAng);
 		}
+		case ALT_MECHA_ENGINEER:
+		{
+			entity = Mecha_Engineer(client, vecPos, vecAng, ally);
+		}
+		case ALT_MECHA_HEAVY:
+		{
+			entity = Mecha_Heavy(client, vecPos, vecAng, ally);
+		}
+		case ALT_MECHA_HEAVYGIANT:
+		{
+			entity = Mecha_HeavyGiant(client, vecPos, vecAng, ally);
+		}
+		case ALT_MECHA_PYROGIANT:
+		{
+			entity = Mecha_PyroGiant(client, vecPos, vecAng, ally);
+		}
+		case ALT_MECHA_SCOUT:
+		{
+			entity = Mecha_Scout(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1364,6 +1384,26 @@ public void NPCDeath(int entity)
 		{
 			BasicBones_NPCDeath(entity);
 		}
+		case ALT_MECHA_ENGINEER:
+		{
+			Mecha_Engineer_NPCDeath(entity);
+		}
+		case ALT_MECHA_HEAVY:
+		{
+			Mecha_Heavy_NPCDeath(entity);
+		}
+		case ALT_MECHA_HEAVYGIANT:
+		{
+			Mecha_HeavyGiant_NPCDeath(entity);
+		}
+		case ALT_MECHA_PYROGIANT:
+		{
+			Mecha_PyroGiant_NPCDeath(entity);
+		}
+		case ALT_MECHA_SCOUT:
+		{
+			Mecha_Scout_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1589,6 +1629,12 @@ public void OnMapStart_NPC_Base()
 	
 	BasicBones_OnMapStart_NPC();
 	Itstilives_MapStart();
+	
+	Mecha_Engineer_OnMapStart_NPC();
+	Mecha_Heavy_OnMapStart_NPC();
+	Mecha_HeavyGiant_OnMapStart_NPC();
+	Mecha_PyroGiant_OnMapStart_NPC();
+	Mecha_Scout_OnMapStart_NPC();
 }
 
 
@@ -7833,11 +7879,10 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/ally/npc_cured_last_survivor.sp"
 #include "zombie_riot/npc/ally/npc_citizen.sp"
 
-#include "zombie_riot/npc/alt/npc_alt_combine_soldier_mage.sp"
-#include "zombie_riot/npc/alt/npc_alt_medic_apprentice_mage.sp"
-
 #include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_blitzkrieg.sp"
+
+//Alt
 
 #include "zombie_riot/npc/alt/npc_alt_medic_charger.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_berserker.sp"
@@ -7847,6 +7892,13 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/alt/npc_alt_sniper_railgunner.sp"
 #include "zombie_riot/npc/alt/npc_alt_soldier_barrager.sp"
 #include "zombie_riot/npc/alt/npc_alt_the_shit_slapper.sp"
+#include "zombie_riot/npc/alt/npc_alt_mecha_engineer.sp"
+#include "zombie_riot/npc/alt/npc_alt_mecha_heavy.sp"
+#include "zombie_riot/npc/alt/npc_alt_mecha_heavy_giant.sp"
+#include "zombie_riot/npc/alt/npc_alt_mecha_pyro_giant_main.sp"
+#include "zombie_riot/npc/alt/npc_alt_mecha_scout.sp"
+#include "zombie_riot/npc/alt/npc_alt_combine_soldier_mage.sp"
+#include "zombie_riot/npc/alt/npc_alt_medic_apprentice_mage.sp"
 
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
 #include "zombie_riot/npc/medival/npc_medival_archer.sp"

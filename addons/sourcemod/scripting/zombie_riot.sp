@@ -749,7 +749,13 @@ enum
 	ALT_The_Shit_Slapper = 128,
 	
 	BONEZONE_BASICBONES = 129,
-	ITSTILIVES	= 666
+	ITSTILIVES	= 666,
+	
+	ALT_MECHA_ENGINEER			= 130,
+	ALT_MECHA_HEAVY				= 131,
+	ALT_MECHA_HEAVYGIANT		= 132,
+	ALT_MECHA_PYROGIANT			= 133,
+	ALT_MECHA_SCOUT				= 134
 }
 
 
@@ -894,7 +900,13 @@ public const char NPC_Names[][] =
 	"Soldier Barrager",
 	"The Shit Slapper",
 	
-	"Basic Bones"
+	"Basic Bones",
+	
+	"Mecha Engineer",
+	"Mecha Heavy",
+	"Mecha Giant Heavy",
+	"Mecha Giant Pyro",
+	"Mecha Scout"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -1035,7 +1047,15 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_soldier_barrager",
 	"npc_alt_the_shit_slapper",
 	
-	"npc_basicbones"
+	"npc_basicbones",
+	
+	"",
+	
+	"npc_alt_mecha_engineer",
+	"npc_alt_mecha_heavy",
+	"npc_alt_mecha_heavy_giant",
+	"npc_alt_mecha_pyro_giant",
+	"npc_alt_mecha_scout"
 };
 
 #include "zombie_riot/stocks_override.sp"
