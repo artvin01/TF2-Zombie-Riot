@@ -783,7 +783,10 @@ public void FatherGrigori_OnTakeDamagePost(int victim, int attacker, int inflict
 		{
 			npc.m_flSpeed = 200.0;
 		}
-		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
+		if(npc.m_bThisNpcIsABoss)
+		{
+			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
+		}
 	}
 }
 

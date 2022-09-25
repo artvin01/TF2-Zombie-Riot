@@ -25,14 +25,6 @@ enum //hitgroup_t
 	NUM_HITGROUPS
 };
 
-int LastHitId[2048];
-int DamageBits[2048];
-float Damage[2048];
-int LastHitWeaponRef[2048];
-Handle IgniteTimer[2048];
-int IgniteFor[2048];
-int IgniteId[2048];
-int IgniteRef[2048];
 
 enum struct SpawnerData
 {
@@ -52,8 +44,6 @@ public void NPC_Spawn_ClearAll()
 {
 //	Zero(f_SpawnerCooldown);
 }
-
-static int g_particleCritText;
 
 public void Npc_Sp_Precache()
 {
@@ -637,14 +627,17 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					{
 						SetEntProp(entity_Spawner, Prop_Send, "m_bGlowEnabled", false);
 					}
-					CClotBody npc = view_as<CClotBody>(entity_Spawner);
-					
+			
 					b_npcspawnprotection[entity_Spawner] = true;
+					
+					/*
+					CClotBody npc = view_as<CClotBody>(entity_Spawner);
 					npc.m_iSpawnProtectionEntity = TF2_CreateGlow(npc.index);
 			
 					SetVariantColor(view_as<int>({0, 255, 0, 100}));
 					AcceptEntityInput(npc.m_iSpawnProtectionEntity, "SetGlowColor");
-		
+					*/
+					
 					CreateTimer(2.0, Remove_Spawn_Protection, EntIndexToEntRef(entity_Spawner), TIMER_FLAG_NO_MAPCHANGE);
 				}
 			}
@@ -717,6 +710,10 @@ public Action Timer_Delayed_BossSpawn(Handle timer, DataPack pack)
 	}
 	return Plugin_Handled;
 }
+
+
+float BurnDamage[MAXPLAYERS];
+
 void NPC_Ignite(int entity, int client, float duration, int weapon)
 {
 	IgniteFor[entity] += RoundToCeil(duration*2.0);
@@ -726,38 +723,31 @@ void NPC_Ignite(int entity, int client, float duration, int weapon)
 	if(!IgniteTimer[entity])
 		IgniteTimer[entity] = CreateTimer(0.5, NPC_TimerIgnite, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
-	IgniteId[entity] = GetClientUserId(client);
-	IgniteRef[entity] = EntIndexToEntRef(weapon);
-}
-
-/*
-int NPC_Extinguish(int entity)
-{
-	int index = NPCList.FindValue(EntIndexToEntRef(entity), NPCData::Ref);
-	if(index != -1)
+	
+	float value = 8.0;
+	if(weapon > MaxClients && IsValidEntity(weapon))
 	{
-		NPCData npc;
-		NPCList.GetArray(index, npc);
-		if(npc.IgniteFor && npc.IgniteTimer)
-		{
-			int ticks = npc.IgniteFor;
-			npc.IgniteFor = 0;
-			KillTimer(npc.IgniteTimer);
-			npc.IgniteTimer = null;
-			NPCList.SetArray(index, npc);
-			return ticks;
-		}
+		value *= Attributes_FindOnWeapon(client, weapon, 2, true, 1.0);	  //For normal weapons
+			
+		value *= Attributes_FindOnWeapon(client, weapon, 410, true, 1.0); //For wand
+					
+		value *= Attributes_FindOnWeapon(client, weapon, 71, true, 1.0); //For wand
 	}
-	return 0;
+			
+	if(value > BurnDamage[client]) //Dont override if damage is lower.
+	{
+		IgniteId[entity] = GetClientUserId(client);
+	
+		IgniteRef[entity] = EntIndexToEntRef(weapon);
+	}
 }
-*/
 
 public Action NPC_TimerIgnite(Handle timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);
 	if(entity > MaxClients)
 	{
-		if(IgniteFor[entity] > 0)
+		if(!b_NpcHasDied[entity])
 		{
 			int client = GetClientOfUserId(IgniteId[entity]);
 			if(client && IsClientInGame(client))
@@ -767,33 +757,46 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				float pos[3], ang[3];
 				GetClientEyeAngles(client, ang);
 				int weapon = EntRefToEntIndex(IgniteRef[entity]);
+				float value = 8.0;
 				if(weapon > MaxClients && IsValidEntity(weapon))
 				{
-					float value = 8.0;
-					
 					value *= Attributes_FindOnWeapon(client, weapon, 2, true, 1.0);	  //For normal weapons
 					
 					value *= Attributes_FindOnWeapon(client, weapon, 410, true, 1.0); //For wand
 					
 					value *= Attributes_FindOnWeapon(client, weapon, 71, true, 1.0); //For wand
-					
-					pos = WorldSpaceCenter(entity);
-					
-					SDKHooks_TakeDamage(entity, client, client, value, DMG_SLASH, weapon, ang, pos, false);
-					//Setting burn dmg to slash cus i want it to work with melee!!!
-					//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
-					//In this case ill buff it so its 2x as good as bleed! or more in the future
-					//Also now allows hp gain and other stuff for that reason. pretty cool.
 				}
 				else
 				{
+					weapon = -1;
+				}
+				
+				pos = WorldSpaceCenter(entity);
+				
+				if(value < BurnDamage[client])
+				{
+					value = BurnDamage[client];
+				}
+				else
+				{
+					BurnDamage[client] = value;
+				}
+				
+				SDKHooks_TakeDamage(entity, client, client, value, DMG_SLASH, weapon, ang, pos, false);
+				//Setting burn dmg to slash cus i want it to work with melee!!!
+				//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
+				//In this case ill buff it so its 2x as good as bleed! or more in the future
+				//Also now allows hp gain and other stuff for that reason. pretty cool.
+				if(IgniteFor[entity] == 0)
+				{
+					IgniteTimer[entity] = null;
+					IgniteFor[entity] = 0;
+					BurnDamage[client] = 0.0;
 					return Plugin_Stop;
 				}
 				return Plugin_Continue;
 			}
 		}
-		
-		IgniteTimer[entity] = null;
 	}
 	return Plugin_Stop;
 }
@@ -864,19 +867,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				else
 				{
-					float chargerPos[3];
-					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
-					if(b_BoundingBoxVariant[victim] == 1)
-					{
-						chargerPos[2] += 120.0;
-					}
-					else
-					{
-						chargerPos[2] += 82.0;
-					}
-					
-					TE_ParticleInt(g_particleCritText, chargerPos);
-					TE_SendToClient(attacker);
+					DisplayCritAboveNpc(victim, attacker, false);
 					played_headshotsound_already_Case[attacker] = random_case;
 					played_headshotsound_already_Pitch[attacker] = pitch;
 				}
@@ -1058,9 +1049,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		DMG_SHOCK = Bad vs purple and lead
 	*/
-	
-	damagetype |= DMG_NOCLOSEDISTANCEMOD; //Remove damage ramp up cus it makes camping like 9458349573483285734895x more efficient then walking to wallmart
-	damagetype &= ~DMG_USEDISTANCEMOD; //Remove damage falloff.
+	if(!(damagetype & DMG_NOCLOSEDISTANCEMOD))
+	{
+		damagetype |= DMG_NOCLOSEDISTANCEMOD; //Remove damage ramp up cus it makes camping like 9458349573483285734895x more efficient then walking to wallmart
+	}
+	if(damagetype & DMG_USEDISTANCEMOD)
+	{
+		damagetype &= ~DMG_USEDISTANCEMOD; //Remove damage falloff.
+	}
 	/*
 	if(i_CurrentEquippedPerk[attacker] == 3)
 	{
@@ -1357,6 +1353,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 								}
 								damage *= 0.75; //Nerf the dmg abit for the last knife as itsotheriwse ridicilous
 							}
+							else if(melee == 910)
+							{
+								damage *= 0.10;
+							}
 							else
 							{
 								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
@@ -1457,19 +1457,29 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 		int red = 255;
 		int green = 255;
 		int blue = 0;
-				
-		red = Health * 255  / MaxHealth;
-		//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-		green = Health * 255  / MaxHealth;
-				
-		red = 255 - red;
-			
-		if(Health <= 0)
+		
+		if(!b_npcspawnprotection[victim])
 		{
-			red = 255;
-			green = 0;
-			blue = 0;
+			red = Health * 255  / MaxHealth;
+			//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
+			green = Health * 255  / MaxHealth;
+					
+			red = 255 - red;
+				
+			if(Health <= 0)
+			{
+				red = 255;
+				green = 0;
+				blue = 0;
+			}
 		}
+		else
+		{
+			red = 0;
+			green = 0;
+			blue = 255;
+		}
+		
 		char Debuff_Adder[64];
 		
 		bool Debuff_added = false;
@@ -1485,20 +1495,32 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "⌁");
 		}
 		
+		if(BleedAmountCountStack[victim] > 0) //bleed
+		{
+			Debuff_added = true;
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❣%i", Debuff_Adder, BleedAmountCountStack[victim]);			
+		}
+		
+		if(IgniteFor[victim] > 0) //burn
+		{
+			Debuff_added = true;
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s♨", Debuff_Adder);			
+		}
+		
 		if(f_HighIceDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅", Debuff_Adder);
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅❅❅", Debuff_Adder);
 		}
 		else if(f_LowIceDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❃", Debuff_Adder);
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅❅", Debuff_Adder);
 		}
 		else if (f_VeryLowIceDebuff[victim] > GetGameTime())
 		{
 			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❆", Debuff_Adder);	
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅", Debuff_Adder);	
 		}
 		
 		if(f_WidowsWineDebuff[victim] > GetGameTime())

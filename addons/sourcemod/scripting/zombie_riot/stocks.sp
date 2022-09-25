@@ -959,9 +959,11 @@ public Action Timer_DisableMotion(Handle timer, any entid)
 
 void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon)
 {
+	BleedAmountCountStack[entity] += 1;
 	DataPack pack;
 	CreateDataTimer(0.5, Timer_Bleeding, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteCell(entity);
 	pack.WriteCell(EntIndexToEntRef(weapon));
 	pack.WriteCell(GetClientUserId(client));
 	pack.WriteFloat(damage);
@@ -972,16 +974,26 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
+	int OriginalIndex = pack.ReadCell();
 	if(entity<=MaxClients || !IsValidEntity(entity) || b_NpcHasDied[entity])
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
 		return Plugin_Stop;
+	}
 		
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	if(weapon<=MaxClients || !IsValidEntity(weapon))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
 		return Plugin_Stop;
+	}
 
 	int client = GetClientOfUserId(pack.ReadCell());
 	if(!client || !IsClientInGame(client) || !IsPlayerAlive(client))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
 		return Plugin_Stop;
+	}
 
 	float pos[3], ang[3];
 	
@@ -992,7 +1004,10 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 
 	entity = pack.ReadCell();
 	if(entity < 1)
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
 		return Plugin_Stop;
+	}
 
 	pack.Position--;
 	pack.WriteCell(entity-1, false);
@@ -1132,7 +1147,14 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 			int Building_Index = EntRefToEntIndex(Building_Mounted[entity]);
 			if(dieingstate[entity] > 0)
 			{
-				return entity!=data;
+				if(!b_LeftForDead[entity])
+				{
+					return entity!=data;
+				}
+				else
+				{
+					return false;	
+				}
 			}
 			else if(Building_Index == 0 || !IsValidEntity(Building_Index))
 			{
@@ -1153,6 +1175,10 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 		if(entity != data)
 		{
 			if(dieingstate[entity] <= 0)
+			{
+				return false;
+			}
+			if(b_LeftForDead[entity])
 			{
 				return false;
 			}
@@ -2407,14 +2433,27 @@ stock int HasNamedItem(int client, const char[] name)
 //TODO: Better detection that doesnt make large enemies have better suriveability
 //idea: Fire a trace to all nearby enemies, and use that distance different to dertermine falloff.
 
-stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon, float spawnLoc[3] = {0.0,0.0,0.0}, float explosionRadius = EXPLOSION_RADIUS, float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF, float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF, bool FromBlueNpc = false, int maxtargetshit = 10)
+stock void Explode_Logic_Custom(float damage,
+int client,
+int entity,
+int weapon,
+float spawnLoc[3] = {0.0,0.0,0.0},
+float explosionRadius = EXPLOSION_RADIUS,
+float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF,
+float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF,
+bool FromBlueNpc = false,
+int maxtargetshit = 10,
+bool ignite = false)
 {
 	float damage_reduction = 1.0;
 	int Closest_npc = 0;
-	int TargetsHit = 0; //This will not exeed 10 ever, beacuse at that point your damage is nothing.
+	int TargetsHit = 1; //This will not exeed 10 ever, beacuse at that point your damage is nothing.
+	//It also already hits 1 target!
 	//maxtargetshit
+	bool weapon_valid = false;
 	if(IsValidEntity(weapon))
 	{
+		weapon_valid = true;
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
 		explosionRadius *= value;
 	}
@@ -2453,6 +2492,10 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 	{
 		damage_flags |= DMG_SLASH;
 	}
+	else if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_CLUB_DAMAGE))
+	{
+		damage_flags |= DMG_CLUB;
+	}
 	else
 	{
 		damage_flags |= DMG_BLAST;
@@ -2462,7 +2505,7 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 	{
 		damage_flags |= DMG_PREVENT_PHYSICS_FORCE;
 	}
-			
+	
 	if(IsValidEntity(Closest_npc))
 	{
 		
@@ -2478,6 +2521,10 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 				damage_1 = damage;
 			}	
 			
+			if(weapon_valid && ignite)
+			{
+				NPC_Ignite(Closest_npc, client, 5.0, weapon);
+			}
 			SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 			
 			if(!FromBlueNpc) //Npcs do not have damage falloff, dodge.
@@ -2491,7 +2538,7 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 		{
 			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)  //Loop as often as there can be even be max NPC's.
 			{
-				if(TargetsHit > maxtargetshit)
+				if(TargetsHit >= maxtargetshit)
 				{
 					break;
 				}
@@ -2510,7 +2557,11 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 							if(damage_1 > damage)
 							{
 								damage_1 = damage;
-							}											
+							}	
+							if(weapon_valid && ignite)
+							{
+								NPC_Ignite(Closest_npc, client, 5.0, weapon);
+							}							
 							SDKHooks_TakeDamage(new_closest_npc, client, client, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 							
 							damage_reduction *= ExplosionDmgMultihitFalloff;
@@ -2525,7 +2576,7 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 		{
 			for( int i = 1; i <= MaxClients; i++ ) 
 			{
-				if(TargetsHit > maxtargetshit)
+				if(TargetsHit >= maxtargetshit)
 				{
 					break;
 				}
@@ -2643,7 +2694,49 @@ stock void Explode_Logic_Custom(float damage, int client, int entity, int weapon
 	}
 	
 }
+stock void DisplayCritAboveNpc(int victim, int client, bool sound)
+{
+	float chargerPos[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
+	if(b_BoundingBoxVariant[victim] == 1)
+	{
+		chargerPos[2] += 120.0;
+	}
+	else
+	{
+		chargerPos[2] += 82.0;
+	}
 
+	if(sound)
+	{
+		switch(GetRandomInt(1,5))
+		{
+			case 1:
+			{
+				EmitSoundToClient(client, "player/crit_hit.wav", _, _, 80, _, 0.8, 100);
+			}
+			case 2:
+			{
+				EmitSoundToClient(client, "player/crit_hit2.wav", _, _, 80, _, 0.8, 100);
+			}
+			case 3:
+			{
+				EmitSoundToClient(client, "player/crit_hit3.wav", _, _, 80, _, 0.8, 100);
+			}
+			case 4:
+			{
+				EmitSoundToClient(client, "player/crit_hit4.wav", _, _, 80, _, 0.8, 100);
+			}
+			case 5:
+			{
+				EmitSoundToClient(client, "player/crit_hit5.wav", _, _, 80, _, 0.8, 100);
+			}
+			
+		}
+	}
+	TE_ParticleInt(g_particleCritText, chargerPos);
+	TE_SendToClient(client);	
+}
 stock void UpdatePlayerPoints(int client)
 {
 	int Points;
@@ -2795,6 +2888,7 @@ public void ReviveAll()
 	{
 		if(IsClientInGame(client))
 		{
+			i_AmountDowned[client] = 0;
 			DoOverlay(client, "");
 			if(GetClientTeam(client)==2)
 			{

@@ -1505,7 +1505,6 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 	*/
 	if(IsValidEntity(entity))
 	{
-		bool bInteractedBuildingWasMounted = false;
 		if(entity <= MaxClients)
 		{
 			if(dieingstate[entity] > 0)
@@ -1517,7 +1516,6 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			{
 				return false;
 			}
-			bInteractedBuildingWasMounted = true;
 		}
 		
 		int buildingType;
@@ -1635,7 +1633,6 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 		}
 		else if(Is_Reload_Button && StrEqual(buffer, "base_boss"))
 		{
-			bInteractedBuildingWasMounted = true;
 			buildingType = Citizen_BuildingInteract(entity);
 		}
 		

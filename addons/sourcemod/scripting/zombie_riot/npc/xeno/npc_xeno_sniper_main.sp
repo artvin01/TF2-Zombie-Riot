@@ -130,7 +130,7 @@ methodmap XenoSniperMain < CClotBody
 	
 	public XenoSniperMain(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoSniperMain npc = view_as<XenoSniperMain>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "13500", ally));
+		XenoSniperMain npc = view_as<XenoSniperMain>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "22500", ally));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);

@@ -5,6 +5,7 @@
 		"en" 		"Artvin: NPC And Gamemode Development\nBatfoxkid: Gamemode Development\nPelipoika: Original NPC base and help\nAlex: Weapon Plugins and overall plugin Assistance\nSuza: Weapon and some Base stock help\nMikusch: Early Gamedata help\nKenzzer: NPC help and bug fix help\nAlex Turtle & Stranger & Syko: Map Assistance\nCrusty: Model/Animating\njDeivid: Alternative Waves\nGMOD Zombie Survival Devs: Music and base concept from them"
 		"ru" 		"Artvin: Разработка NPC и режима\nBatfoxkid: Разработка режима\nPelipoika: База оригинальных NPC и помощь\nAlex: Плагины оружия и помощь с плагинами\nSuza: Оружие и помощь с базой\nMikusch: Помощь с игровыми данными\nKenzzer: Помощь с NPC и исправление ошибок\nAlex Turtle и Stranger и Syko: Помощь с картами\nCrusty: Модели/анимация\njDeivid: Новые волны\nРазработчики ZS в GMOD: Музыка и концепция игры от них"
 		"de"		"Artvin: NPC und Spielmodus entwickler\nBatfoxkid: Spielmodus Entwickler\nPelipoika: Original NPC basis und hilfe\nAlex: Waffen Plugins und überall plugin hilfe\nSuza: Waffe und etwas Basismaterial geholfen\nMikusch früher spieldatei helfer\nKenzzer: NPC hilfe und bug fix hilfe\nAlex Turtle, Stranger, Syko: Map Hilfe\nCrusty Model/Animationen\njDeivid: Alternative Wellen\nGMOD Zombie überleben Entwickler: Musik und Basis konzept von ihnen"
+		"pt"		"Artvin: Desenvolvimento de NPCs e Gameplay\nBatfoxkid: Desenvolvimento de Gameplay\nPelipoika: Base original de NPCs e assistencia\nAlex: Plugin de armas e assistencia no geral\nSuza: Armas e algumas assistencias com a base de stock\nMikusch: Ajudou com a gamedata inicial\nKenzzer: ajudou com NPCs e correções de bugs\nAlex Turtle & Stranger & Syko: Ajudaram no mapa\nCrusty: Modelagem e Animação\nDeivid: Ondas alternativas\nGMOD Zombie Survival Devs: Música e conceito base"
 	}
 	"Open Store"
 	{
@@ -15,6 +16,7 @@
 		"es"		"Pulsa %%+showscores%% para abrir la tienda"
 		"fr"		"Appuyer sur %%+showscores%% pour ouvrir la boutique"
 		"de"		"Drücke %%+showscores%% um den Laden zu öffnen"
+		"pt"		"Pressione %%+showscores%% para abrir a loja"
 	}
 	"Last Alive"
 	{
@@ -25,6 +27,7 @@
 		"es"		"Eres el último humano con vida.\nGana la siguiente oleada de jefe para revivirlos a todos"
 		"fr"		"Vous êtes le dernier survivant.\nSurviver au prochain boss pour réanimeer vos coéquipier."
 		"de"		"Du bist der letzte mensch am Leben.\nGewinne Die nächste boss runde um alle wiederzubeleben"
+		"pt"		"Você é o ultimo humano vivo. \nVença o proximo chefe do round para reviver todos."
 	}
 	"Level Up"
 	{
@@ -36,6 +39,7 @@
 		"es"		"Has subido de nivel {1}\nHas desbloqueado:"
 		"fr"		"Vous avez atteint le niveau {1}\nVous débloquez :"
 		"de"		"Du bust ein level Aufgestiegen {1}\nDu hast freigeschalted:"
+		"pt"		"Você subiu de nivel! Level {1} \nVocê desbloqueou:
 	}
 	"None"
 	{
@@ -46,6 +50,7 @@
 		"es"		"Nada"
 		"fr"		"Vide"
 		"de"		"Nichts"
+		"pt"		"Nada"
 	}
 	"Credits"
 	{
@@ -57,6 +62,7 @@
 		"es"		"Dinero: {1}"
 		"fr"		"Argent: {1}"
 		"de"		"Kredit: {1}"
+		"pt"		"Créditos: {1}"
 	}
 	"Credits_Menu"
 	{
@@ -68,6 +74,7 @@
 		"es"		"Dinero: {1} (+{2})"
 		"fr"		"Argent: {1} (+{2})"
 		"de"		"Kredit: {1} (+{2})"
+		"pt"		"Créditos: {1} (+{2})"
 	}
 	"Armor Counter"
 	{
@@ -79,6 +86,7 @@
 		"es"		"Armadura: {1}"
 		"fr"		"Armure: {1}"
 		"de"		"Ausrüstung {1}"
+		"pt"		"Armadura: {1}"
 	}
 	"Wave"
 	{
@@ -90,6 +98,7 @@
 		"es"		"Oleada: {1}-{2}"
 		"fr"		"Vague : {1}-{2}"
 		"de" 		"Welle : {1}-{2}"
+		"pt"		"Onda: {1}-{2}"
 	}
 	"Zombies Left"
 	{
@@ -101,6 +110,7 @@
 		"es"		"Zombies restantes: {1}"
 		"fr"		"Zombies Restants: {1}"
 		"de"		"Verbleibene Untote: {1}"
+		"pt"		"Zumbis Vivos: {1}"
 	}
 	"Medi-Kit Cooldown"
 	{
@@ -112,6 +122,7 @@
 		"es"		"Tiempo de recarga del botiquin: {1}"
 		"fr"		"Recharge de la trousse de soin: {1}s"
 		"de"		"Medi-kit Abkühlung: {1}s"
+		"pt"		"Recarregando Kit Médico: {1}s"
 	}
 	"Ammo Crate Supplies"
 	{
@@ -123,6 +134,7 @@
 		"es"		"Suministros de municion: {1}"
 		"fr"		"Boite de Munitions: {1}"
 		"de"		"Munitionsvorräte : {1}"
+		"pt"		"Suprimento de munições: {1}"
 	}
 	"Damage Dealt"
 	{
@@ -133,6 +145,7 @@
 		"pl"		"Zadane obrażenia: {1}"
 		"es"		"Daño realizado: {1}"
 		"fr"		"Dégats Infligés: {1}"
+		"pt"		"Dano causado: {1}"
 	}
 	"Healing Done"
 	{
@@ -144,12 +157,14 @@
 		"es"		"Curación total: {1}"
 		"fr"		"Soin Prodigués: {1}"
 		"de"		"heilung gemacht: {1}"
+		"pt"		"Cura realizada: {1}"
 	}
 	"XP and Level"
 	{
 		"#format"	"{1:d},{2:d},{3:d}"
 		"en"		"Lv {1} ({2} / {3})"
 		"ru"		"Ур. {1} ({2} / {3})"
+		"pt"		"Nv. {1} ({2} / {3})"
 	}
 	"Store Discount"
 	{
@@ -160,6 +175,7 @@
 		"es"		"10% de descuento mientras no hay Zombies"
 		"fr"		"Réduction de 10% Sans les Zombies"
 		"de"		"-10% verkaufs angebot wenn keine untoten hier sind"
+		"pt"		"10% de desconto quando não há zumbis vivos"
 	}
 	"Equip"
 	{
@@ -170,6 +186,7 @@
 		"es"		"Equipar"
 		"fr"		"Equiper"
 		"de"		"Ausrüsten"
+		"pt"		"Equipar"
 	}
 	"Equipped"
 	{
@@ -180,6 +197,7 @@
  		"es"		"Equipado"
 		"fr"		"Equipé"
 		"de"		"Ausgerüsted"
+		"pt"		"Equipado"
 	}
 	"Purchased"
 	{
@@ -190,6 +208,7 @@
 		"es"		"Comprado"
 		"fr"		"Acheté"
 		"de"		"Gekauft"
+		"pt"		"Comprado"
 	}
 	"Buy"
 	{
@@ -200,6 +219,7 @@
 	 	"es"		"Comprar"
 		"fr"		"Acheter"
 		"de"		"Kaufen"
+		"pt"		"Comprar"
 	}
 	"Sell"
 	{
@@ -210,12 +230,19 @@
 		"es"		"Vender"
 		"fr"		"Vendre"
 		"de"		"Verkaufen"
+		"pt"		"Vender"
 	}
 	"Unequip"
 	{
 		"en"		"Unequip"
 		"ru"		"Снять"
 		"de"		"Ablegen"
+		"pt"		"Desquipar"
+	}
+	"Owned Items"
+	{
+		"en"		"Bought Items"
+		"pt"		"Itens Comprados"
 	}
 	"N/A"
 	{
@@ -226,6 +253,7 @@
 		"es"		"N/A"
 		"fr"		"N/A"
 		"de"		"N/A"
+		"pt"		"N/A"
 	}
 	"Primary"
 	{
@@ -236,6 +264,7 @@
 		"es"		"Primaria"
 		"fr"		"Primaire"
 		"de"		"Primär"
+		"pt"		"Primária"
 	}
 	"Secondary"
 	{
@@ -246,6 +275,7 @@
 		"es"		"Secundaria"
 		"fr"		"Secondaire"
 		"de"		"zweitrangig"
+		"pt"		"Secundária"
 	}
 	"Scrap Metal"
 	{
@@ -256,6 +286,7 @@
 		"es"		"Chatarra"
 		"fr"		"Feraille"
 		"de"		"Schrott"
+		"pt"		"Metal"
 	}
 	"Ball"
 	{
@@ -266,6 +297,7 @@
 		"es"		"Pelota"
 		"fr"		"Balle"
 		"de"		"Ball"
+		"pt"		"Bola"
 	}
 	"Food"
 	{
@@ -276,6 +308,7 @@
 		"es"		"Comida"
 		"fr"		"Nourriture"
 		"de"		"Essen"
+		"pt"		"Comida"
 	}
 	"Jar"
 	{
@@ -286,6 +319,7 @@
 		"es"		"Frasco"
 		"fr"		"Pot"
 		"de"		"Krug"
+		"pt"		"Jarro"
 	}
 	"Pistol Magazines"
 	{
@@ -296,6 +330,7 @@
 		"es"		"Cartuchos de Pistola"
 		"fr"		"Munitions de Pistolet"
 		"de"		"Pistolenmagazine"
+		"pt"		"Cartuchos de Pistola"
 	}
 	"Rockets"
 	{
@@ -306,6 +341,7 @@
 		"es"		"Cohetes"
 		"fr"		"Roquettes"
 		"de"		"Racketen"
+		"pt"		"Foguetes"
 	}
 	"Flamethrower Tank"
 	{
@@ -316,6 +352,7 @@
 		"es"		"Tanque de Propano"
 		"fr"		"Réservoir de Lance Flamme"
 		"de"		"Flammenwerfer-Tank"
+		"pt"		"Tanque de Proparo"
 	}
 	"Flares"
 	{
@@ -326,6 +363,7 @@
 		"es"		"Bengalas"
 		"fr"		"Fusées"
 		"de"		"Fackeln"
+		"pt"		"Sinalizadores"
 	}
 	"Grenades"
 	{
@@ -336,6 +374,7 @@
 		"es"		"Granadas"
 		"fr"		"Grenades"
 		"de"		"Granate"
+		"pt"		"Granadas"
 	}
 	"Stickybombs"
 	{
@@ -346,6 +385,7 @@
 		"es"		"Bombas lapa"
 		"fr"		"Bombe Collantes"
 		"de"		"Haftbomben"
+		"pt"		"Bombas adesivas"
 	}
 	"Minigun Barrel"
 	{
@@ -356,6 +396,7 @@
 		"es"		"Barril de Metralleta Pesada"
 		"fr"		"Baril de Minigun"
 		"de"		"Minigun-Lauf"
+		"pt"		"Tambor da Minigun"
 	}
 	"Custom Bolt"
 	{
@@ -366,6 +407,7 @@
 		"es"		"Tornillo personalizado"
 		"fr"		"boulon personnalisé"
 		"de"		"Benutzerdefinierte Schraube"
+		"pt"		"Flechas personalizadas"
 	}
 	"Medical Syringes"
 	{
@@ -376,6 +418,7 @@
 		"es"		"Jeringuillas medicas"
 		"fr"		"Serigues Médicale"
 		"de"		"Medizinische Spritzen"
+		"pt"		"Seringas Médicas"
 	}
 	"Sniper Rifle Rounds"
 	{
@@ -386,6 +429,7 @@
 		"es"		"Balas de Francotirador"
 		"fr"		"Balle de Sniper"
 		"de"		"Scharfschützengewehr-Runden"
+		"pt"		"Balas de Sniper"
 	}
 	"Arrows"
 	{
@@ -396,6 +440,7 @@
 		"es"		"Flechas"
 		"fr"		"Flèche"
 		"de"		"Pfeile"
+		"pt"		"Flechas"
 	}
 	"SMG Magazines"
 	{
@@ -406,6 +451,7 @@
 		"es"		"Balas de Subfusil"
 		"fr"		"Balles de mitraillette"
 		"de"		"SMG Magazin"
+		"pt"		"Cartuchos de Sub-Metralhadora"
 	}
 	"Revolver Rounds"
 	{
@@ -416,6 +462,7 @@
 		"es"		"Balas de Revolver"
 		"fr"		"Balle de Revolver"
 		"de"		"Revolver Runden"
+		"pt"		"Balas de Revolver"
 	}
 	"Shotgun Shells"
 	{
@@ -426,6 +473,7 @@
 		"es"		"Balas de Escopeta"
 		"fr"		"Balles de Fusils à Pompes"
 		"de"		"Schrotpatronen"
+		"pt"		"Balas de Espingarda"
 	}
 	"Healing Medicine"
 	{
@@ -436,6 +484,7 @@
 		"es"		"Medicamentos"
 		"fr"		"Médicaments"
 		"de"		"heilungs Medizin"
+		"pt"		"Medicamentos"
 	}
 	"Medigun Fluid"
 	{
@@ -446,6 +495,7 @@
 		"es"		"Fluido Médico"
 		"fr"		"Flux de Medigun"
 		"de"		"Medigun Flüßigkeit"
+		"pt"		"Fluido Médico"
 	}
 	"Laser Battery"
 	{
@@ -457,18 +507,21 @@
 		"es"		"Baterias Láser"
 		"fr"		"Batterie de laser"
 		"de"		"Laser-Batterie"
+		"pt"		"Baterias Laser"
 	}
 	"Out of Laser Battery"
 	{
 		"en"		"You ran out of Laser Battery!"
 		"ru"		"У вас закончилась лазерная батарея!"
 		"de"		"Sie haben keine Laser-batterie mehr!"
+		"pt"		"Você ficou sem Baterias Laser!"
 	}
 	"Potion Supply"
 	{
 		"en"		"Potion Supply"
 		"ru"		"Запас зелий"
 		"de"		"Trankversorgung"
+		"pt"		"Suplemento de Poções"
 	}
 	"Reload to Interact"
 	{
@@ -479,6 +532,7 @@
 		"pl"		"Przeładuj aby skorzystać"
 		"es"		"Pulsa el boton de Recargar para interactuar con esto"
 		"fr"		"Appuyez sur RECHARGER pour intéragir avec ceci"
+		"pt"		"Aperte o botão de RECARREGAR para interagir com isso."
 	}
 	"Ammo Box Used"
 	{
@@ -489,28 +543,32 @@
 		"pl"		"Ktoś użył twojego pudła z amunicją, otrzymujesz +20 Kredytów!"
 		"es"		"Alguién usó tu caja de munición, ganas 20 dolares"
 		"fr"		"Quelqu'un a utilisé votre boite de munitions, vous gagnez 20 dollars!"
+		"pt"		"Alguém usou sua caixa de munição, você ganhou +20 Créditos"
 	}
 	"Armor Table Used"
 	{
 		"en"		"Someone used your armor table, you gain +40 Credits!"
-	//	"it"		"Qualcuno ha usato la tua cassa di munizioni, hai ricevuto +40 Crediti!"
+		"it"		"Qualcuno ha usato la tua cassa di munizioni, hai ricevuto +40 Crediti!"
 		"ru"		"Кто-то воспользовался вашим верстаком брони, вы получили +40 кредитов!"
-	//	"pl"		"Ktoś użył twojego pudła z amunicją, otrzymujesz +40 Kredytów!"
-	//	"es"		"Alguién usó tu caja de munición, ganas 40 dolares"
-	//	"fr"		"Quelqu'un a utilisé votre boite de munitions, vous gagnez 40 dollars!"
+		"pl"		"Ktoś użył twojego pudła z amunicją, otrzymujesz +40 Kredytów!"
+		"es"		"Alguién usó tu caja de munición, ganas 40 dolares"
+		"fr"		"Quelqu'un a utilisé votre boite de munitions, vous gagnez 40 dollars!"
 		"de"		"Jemand hat deinen Rüstungstisch benutzt, Du bekommst +40 Kredits!"
+		"pt"		"Alguém usou sua mesa de armadura, você ganhou +40 Créditos!"
 	}
 	"Perk Machine Used"
 	{
 		"en"		"Someone used your perk machine, you gain +80 Credits!"
 		"ru"		"Кто-то воспользовался вашей перк-машиной, вы получили +80 кредитов!"
 		"de"		"Jemand hat deine perk Maschine benutzt, du bekommst +80 Kredit!"
+		"pt"		"Alguém usou sua maquina de habilidade, você ganhou +80 Créditos!"
 	}
 	"Pap Machine Used"
 	{
 		"en"		"Someone used your PackAPunch Machine, you gain +400 Credits!"
 		"ru"		"Кто-то воспользовался вашим улучшайзером, вы получили +400 кредитов!"
 		"de"		"Jemand hat ihre PackAPunch Maschine benutzt, du bekommst +400 Kredit!"
+		"pt"		"Alguém usou sua maquina de Pack-a-Punch, Você ganhou +400 Créditos!"
 	}
 	"Equip Melee To Use"
 	{
@@ -521,6 +579,7 @@
 		"pl"		"Wyposaż sią w broń z amunicją aby tego użyć!"
 		"es"		"Equipa un arma con munición para usar esto"
 		"fr"		"Equipez une arme avec des munitions pour utiliser cela!"
+		"pt"		"Equipe uma arma com munição para usar isso!"
 	}
 	"Armor Max Reached"
 	{
@@ -531,18 +590,21 @@
 		"pl"		"Maksymalna ilość zbroi została osiągnięta!"
 		"es"		"Tu armadura está al máximo"
 		"fr"		"Vôtre armure est au maximum!"
+		"pt"		"Você está o usando o máximo de armadura possivel!"
 	}
 	"Armor Max Reached Ammo Box"
 	{
 		"en"		"Your armor is maxed out for the ammo box! Please use an armor table to get more."
 		"ru"		"Уровень брони для ящика с боеприпасами максимален! Воспользуйтесь верстаком брони, чтобы получить больше."
 		"de"		"Deine Rüstung ist zu ausgereizt für die Munitions kiste, Bitte benutze einen Rüstungstisch um mehr zu bekommen."
+		"pt"		"Sua armadura está máximizada para caixa de munição! Por favor use uma mesa de armadura para pegar mais."
 	}
 	"Max Mana Reached"
 	{
 		"en"		"You reached your maximum amount of mana!"
 		"ru"		"Вы достигли максимального количества маны!"
 		"de"		"Sie haben ihre Maximalen Menge an Mana Erreicht!"
+		"pt"		"Você chegou na quantidade máxima de mana!"
 	}
 	"Object Cooldown"
 	{
@@ -554,6 +616,7 @@
 		"pl"		"Ten przedmiot jeszcze będzie się odświerzał przez {1} sekund przed następnym użyciem"
 		"es"		"Ten paciencia, aun quedan {1} segundos para volver a usar esto"
 		"fr"		"Temps de recharge de cette objet avant ré-utilisation: {1}"
+		"pt"		"Este objeto ainda está em recarga de {1} segundos antes de outro uso."
 	}
 	"Cash Gained This Wave"
 	{
@@ -565,12 +628,14 @@
 		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
 		"es"		"Encontraste {1} en esta oleada!"
 		"fr"		"Vous avez gagnez {1} Cette vague!"
+		"pt"		"Ganhou +{1} em Créditos nesta onda."
 	}
 	"Cash Gained This Wave Village"
 	{
 		"#format"	"{1:d}"
 		"en" 		"Gained an extra {1} cash this wave thanks to Villages!"
 		"ru" 		"Получено дополнительно +{1} кредитов за волну благодаря деревням!"
+		"pt"		"Ganhou {1} extra nesta onda graças aos Aldeões!"
 	}
 	"Picking Up Building"
 	{
@@ -581,6 +646,7 @@
 		"pl"		"Podnoszenie Konstrukcji..."
 		"es"		"Recogiendo..."
 		"fr"		"Ramassage du bâtiment..."
+		"pt"		"Pegando construção..."
 	}
 	"Spike Limit Reached"
 	{
@@ -589,6 +655,7 @@
 		"ru"		"У вас слишком много шипов! Поднимите шипы, нажав ПКМ или подождите, пока они будут использованы!"
 		"es"		"Ya dejaste sufientes bolas de puas en el suelo, recojelas con el click derecho o espera a que se gasten"
 		"fr"		"Vous avez atteint la limite de piques! Ramassez les piques avec M2 ou attendez jusqu'a ce qu'ils soient utilisés!"
+		"pt"		"Você chegou no seu limite de espinhos! pegue alguns espinhos com M2 ou espere ate que eles sejam destruidos!"
 	}
 	"Threw Grenade"
 	{
@@ -597,6 +664,7 @@
 		"ru"		"Вы кинули свою гранату, вы получите её обратно через 15 секунд!"
 		"es"		"Has tirado una granada. Obtendras otra granada en 15 segundos"
 		"fr"		"Vous avez jeté vôtre grenade, vous en aurez une autre dans 15 secondes!"
+		"pt"		"Você jogou uma granada, você vai ter outra em 15 segundos!"
 	}
 	"Grenade Is Back"
 	{

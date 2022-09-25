@@ -341,7 +341,7 @@ public void ZeroWrathRage(int client, int weapon, bool crit, int slot)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Ability_Apply_Cooldown(client, slot, 80.0);
+			Ability_Apply_Cooldown(client, slot, 65.0);
 			
 			weapon_id[client] = weapon;
 			
@@ -375,7 +375,7 @@ public void ZeroWrathRage(int client, int weapon, bool crit, int slot)
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Wrath Rage has striked.");
 			CreateTimer(17.0, Reset_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
-			CreateTimer(80.0, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(65.0, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
 		}
 		else
 		{

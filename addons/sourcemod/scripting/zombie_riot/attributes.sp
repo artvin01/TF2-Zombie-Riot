@@ -58,6 +58,19 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 				
 				NPC_Ignite(victim, client, value, weapon);
 			}
+			value = Attributes_FindOnWeapon(client, weapon, 638);	// Extinquisher
+			if(value)
+			{
+				if(value == 1.0)
+				{
+					if(IgniteFor[victim] > 0)
+					{
+						damage *= 1.5;
+						DisplayCritAboveNpc(victim, client, true);
+					}
+				}
+				//dont actually extinquish, just give them more damage.
+			}
 			if(!TF2_IsPlayerInCondition(client, TFCond_Ubercharged)) //No infinite uber chain.
 			{
 				value = Attributes_FindOnWeapon(client, weapon, 17);	// add uber charge on hit

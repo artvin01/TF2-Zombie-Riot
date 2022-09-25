@@ -37,7 +37,7 @@ public void Texan_business_attack(int client, int weapon, const char[] classname
 
 public void Texan_business_altattack(int client, int weapon, bool crit, int slot)
 {
-    if(MaxSupportBuildingsAllowed(client, true) >= 4)
+    if(MaxSupportBuildingsAllowed(client, true) > 4)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
@@ -46,7 +46,7 @@ public void Texan_business_altattack(int client, int weapon, bool crit, int slot
 
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", EntLoc);
 
-			SpawnSmallExplosion(EntLoc);
+			SpawnSmallExplosionNotRandom(EntLoc);
 
 			EmitSoundToAll(SOUND_DASH, client, _, 70, _, 1.0);
 

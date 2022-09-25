@@ -7,6 +7,9 @@ Handle Timer_Trip_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 
 float f_TerroriserAntiSpamCd[MAXPLAYERS+1] = {0.0, ...};
 
+#define SPRITE_SPRITE	"materials/sprites/laserbeam.vmt"
+
+static int LaserSprite;
 
 
 #define TRIP_MODEL			  "models/weapons/w_models/w_stickybomb_d.mdl"
@@ -31,6 +34,7 @@ void Aresenal_Weapons_Map_Precache()
 	PrecacheSound(TERRORIZER_BLAST1);
 	PrecacheSound(TERRORIZER_BLAST2);
 	PrecacheSound(TERRORIZER_BLAST3);
+	LaserSprite = PrecacheModel(SPRITE_SPRITE, false);
 }
 
 
@@ -92,13 +96,12 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 					color[2] = 255;
 					color[0] = 0;
 				}
-				int SPRITE_INT = PrecacheModel("materials/sprites/laserbeam.vmt", false);
 				float amp = 0.2;
 				float life = 0.1;
 				float GunPos[3];
 				float GunAng[3];
 				GetAttachment(client, "effect_hand_R", GunPos, GunAng);
-				TE_SetupBeamPoints(GunPos, spawnLoc, SPRITE_INT, 0, 0, 0, life, 2.0, 2.2, 1, amp, color, 0);
+				TE_SetupBeamPoints(GunPos, spawnLoc, LaserSprite, 0, 0, 0, life, 2.0, 2.2, 1, amp, color, 0);
 				TE_SendToAll();
 				SetEntPropEnt(TripMine, Prop_Send, "m_hOwnerEntity", client);
 				SetEntProp(TripMine, Prop_Send, "m_iTeamNum", TF2_GetClientTeam(client));

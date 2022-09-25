@@ -383,8 +383,9 @@ public MRESReturn DHook_FireballExplodePre(int entity)
 		Address address = TF2Attrib_GetByDefIndex(weapon, 410);
 		if(address != Address_Null)
 			damage *= TF2Attrib_GetValue(address);
-			
-		Explode_Logic_Custom(damage, owner, entity, weapon);
+		
+		Explode_Logic_Custom(damage, owner, entity, weapon, _, _, _, _, _, _, true)
+
 	}
 	return MRES_Ignored;
 }
@@ -1133,7 +1134,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 		return MRES_Supercede;
 	}
 	
-	bool started = Waves_Started();
+	bool started = !Waves_InSetup();
 	TeutonType[client] = (!IsRespawning && started) ? TEUTON_DEAD : TEUTON_NONE;
 	
 	CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));

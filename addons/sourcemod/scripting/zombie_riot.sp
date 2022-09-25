@@ -30,12 +30,12 @@
 
 #define NPC_HARD_LIMIT 42 
 #define ZR_MAX_NPCS (NPC_HARD_LIMIT*2)
-#define ZR_MAX_NPCS_ALLIED 32 //Never need more.
+#define ZR_MAX_NPCS_ALLIED 16 //Never need more.
 #define ZR_MAX_LAG_COMP 128 
-#define ZR_MAX_BUILDINGS 128
+#define ZR_MAX_BUILDINGS 64 //cant ever have more then 64 realisticly speaking
 #define ZR_MAX_TRAPS 64
 #define ZR_MAX_BREAKBLES 32
-#define ZR_MAX_SPAWNERS 64
+#define ZR_MAX_SPAWNERS 32 //cant ever have more then 32, if your map does, then what thed fuck are you doing ?
 
 
 //#pragma dynamic    131072
@@ -402,6 +402,16 @@ float f_TankGrabbedStandStill[MAXENTITIES];
 bool b_PernellBuff[MAXENTITIES];
 float f_MaimDebuff[MAXENTITIES];
 float f_CrippleDebuff[MAXENTITIES];
+int BleedAmountCountStack[MAXENTITIES];
+int g_particleCritText;
+int LastHitId[MAXENTITIES];
+int DamageBits[MAXENTITIES];
+float Damage[MAXENTITIES];
+int LastHitWeaponRef[MAXENTITIES];
+Handle IgniteTimer[MAXENTITIES];
+int IgniteFor[MAXENTITIES];
+int IgniteId[MAXENTITIES];
+int IgniteRef[MAXENTITIES];
 
 bool b_StickyIsSticking[MAXENTITIES];
 
@@ -466,6 +476,7 @@ int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
 bool b_FaceStabber[MAXTF2PLAYERS];
 bool b_IsCannibal[MAXTF2PLAYERS];
 bool b_HasGlassBuilder[MAXTF2PLAYERS];
+bool b_LeftForDead[MAXTF2PLAYERS];
 
 Function EntityFuncAttack[MAXENTITIES];
 Function EntityFuncAttack2[MAXENTITIES];
@@ -491,6 +502,7 @@ int h_NpcCollissionHookType[MAXENTITIES];
 #define EP_GENERIC                  		0          					// Nothing special.
 #define EP_NO_KNOCKBACK              		(1 << 0)   					// No knockback
 #define EP_DEALS_SLASH_DAMAGE              	(1 << 1)   					// Slash Damage (For no npc scaling, or ignoring resistances.)
+#define EP_DEALS_CLUB_DAMAGE              	(1 << 2)   					// To deal melee damage.
 
 
 
@@ -523,6 +535,7 @@ bool b_ThisEntityIgnored[MAXENTITIES];
 bool b_ThisEntityIsAProjectileForUpdateContraints[MAXENTITIES];
 
 bool b_IsPlayerABot[MAXPLAYERS+1];
+int i_AmountDowned[MAXPLAYERS+1];
 
 bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
 
@@ -735,7 +748,8 @@ enum
 	ALT_SOLDIER_BARRAGER = 127,
 	ALT_The_Shit_Slapper = 128,
 	
-	BONEZONE_BASICBONES = 129
+	BONEZONE_BASICBONES = 129,
+	ITSTILIVES	= 666
 }
 
 
@@ -1119,6 +1133,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_Texan_business.sp"
 #include "zombie_riot/custom/weapon_explosivebullets.sp"
 #include "zombie_riot/custom/weapon_sniper_monkey.sp"
+#include "zombie_riot/custom/weapon_cspyknife.sp"
 
 //FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
@@ -1196,8 +1211,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_store", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_shop", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
-	RegConsoleCmd("sm_give_cash", Command_GiveCash, "Give Cash to the Person",ADMFLAG_ROOT);
-	RegConsoleCmd("sm_give_dialog", Command_GiveDialogBox, "Give a dialog box",ADMFLAG_ROOT);
+	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
+	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");
 	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_GENERIC, "BRB GONNA MURDER MY MOM'S DISHES");
 	RegAdminCmd("sm_change_collision", Command_ChangeCollision, ADMFLAG_GENERIC, "change all npc's collisions");
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_GENERIC, "Forcefully summon grigori");
@@ -1374,7 +1389,11 @@ public void OnMapStart()
 	PrecacheSound("misc/halloween/clock_tick.wav");
 	PrecacheSound("mvm/mvm_bomb_warning.wav");
 	PrecacheSound("weapons/jar_explode.wav");
-	PrecacheSound("weapons/shotgun_empty.wav");
+	PrecacheSound("player/crit_hit5.wav");
+	PrecacheSound("player/crit_hit4.wav");
+	PrecacheSound("player/crit_hit3.wav");
+	PrecacheSound("player/crit_hit2.wav");
+	PrecacheSound("player/crit_hit.wav");
 	
 	MapStartResetAll();
 	EscapeMode = false;
@@ -1717,7 +1736,7 @@ public Action Command_ToggleReload(int client, int args)
 					
 public void OnClientPutInServer(int client)
 {
-	
+	i_AmountDowned[client] = 0;
 	b_IsPlayerABot[client] = false;
 	if(IsFakeClient(client))
 	{
@@ -1987,43 +2006,43 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			if(Wave_Count < 5)
 				damage = 0.25;
 				
-			if(Wave_Count <= 10)
+			if(Wave_Count < 10)
 				damage = 0.4;
 						
-			else if(Wave_Count <= 15)
+			else if(Wave_Count < 15)
 				damage = 1.0;
 					
-			else if(Wave_Count <= 20)
+			else if(Wave_Count < 20)
 				damage = 1.5;
 						
-			else if(Wave_Count <= 25)
+			else if(Wave_Count < 25)
 				damage = 2.5;
 						
-			else if(Wave_Count <= 30)
+			else if(Wave_Count < 30)
 				damage = 5.0;
 						
-			else if(Wave_Count <= 40)
+			else if(Wave_Count < 40)
 				damage = 7.0;
 						
-			else if(Wave_Count <= 45)
+			else if(Wave_Count < 45)
 				damage = 25.0;
 					
-			else if(Wave_Count <= 50)
+			else if(Wave_Count < 50)
 				damage = 35.0;
 				
-			else if(Wave_Count <= 55)
+			else if(Wave_Count < 55)
 				damage = 45.0;
 					
-			else if(Wave_Count <= 60)
+			else if(Wave_Count < 60)
 				damage = 50.0;
 				
-			else if(Wave_Count <= 70)
+			else if(Wave_Count < 70)
 				damage = 60.0;
 				
-			else if(Wave_Count <= 80)
+			else if(Wave_Count < 80)
 				damage = 80.0;
 				
-			else if(Wave_Count <= 90)
+			else if(Wave_Count < 90)
 				damage = 90.0;
 					
 			else
@@ -2120,6 +2139,58 @@ public Action Timer_Dieing(Handle timer, int client)
 {
 	if(IsClientInGame(client) && IsPlayerAlive(client) && dieingstate[client] > 0)
 	{
+		if(b_LeftForDead[client])
+		{
+			dieingstate[client] -= 3;
+			f_DelayLookingAtHud[client] = GetGameTime() + 0.2;
+			PrintCenterText(client, "%t", "Reviving", dieingstate[client]);
+			
+			if(dieingstate[client] <= 0)
+			{
+				SetEntityMoveType(client, MOVETYPE_WALK);
+				RequestFrame(Movetype_walk, client);
+				dieingstate[client] = 0;
+					
+				SetEntPropEnt(client, Prop_Send, "m_hObserverTarget", client);
+				f_WasRecentlyRevivedViaNonWave[client] = GetGameTime() + 1.0;
+				
+				float pos[3], ang[3];
+				GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
+				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
+				DHook_RespawnPlayer(client);
+				
+				TeleportEntity(client, pos, ang, NULL_VECTOR);
+				SetEntProp(client, Prop_Send, "m_bDucked", true);
+				SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
+				CClotBody npc = view_as<CClotBody>(client);
+				npc.m_bThisEntityIgnored = false;
+				SetEntityCollisionGroup(client, 5);
+				PrintCenterText(client, "");
+				DoOverlay(client, "");
+				if(!EscapeMode)
+				{
+					SetEntityHealth(client, 50);
+					RequestFrame(SetHealthAfterRevive, client);
+				}	
+				else
+				{
+					SetEntityHealth(client, 150);
+					RequestFrame(SetHealthAfterRevive, client);						
+				}
+				int entity, i;
+				while(TF2U_GetWearable(client, entity, i))
+				{
+					SetEntityRenderMode(entity, RENDER_NORMAL);
+					SetEntityRenderColor(entity, 255, 255, 255, 255);
+				}
+				SetEntityRenderMode(client, RENDER_NORMAL);
+				SetEntityRenderColor(client, 255, 255, 255, 255);
+				
+				return Plugin_Stop;
+			}
+			return Plugin_Continue;
+		}
+		
 		if(f_DisableDyingTimer[client] >= GetGameTime())
 		{
 			return Plugin_Continue;
@@ -2127,22 +2198,25 @@ public Action Timer_Dieing(Handle timer, int client)
 		SetEntityHealth(client, GetClientHealth(client) - 1);
 		SDKHooks_TakeDamage(client, client, client, 1.0);
 		
-		int particle = EntRefToEntIndex(i_DyingParticleIndication[client]);
-		if(IsValidEntity(particle))
+		if(!b_LeftForDead[client])
 		{
-			int color[4];
-			color[0] = 255;
-			color[1] = 255;
-			color[2] = 0;
-			color[3] = 255;
-			
-			color[0] = GetEntProp(client, Prop_Send, "m_iHealth") * 255  / 210; // red  200 is the max health you can have while dying.
-			color[1] = GetEntProp(client, Prop_Send, "m_iHealth") * 255  / 210;	// green
+			int particle = EntRefToEntIndex(i_DyingParticleIndication[client]);
+			if(IsValidEntity(particle))
+			{
+				int color[4];
+				color[0] = 255;
+				color[1] = 255;
+				color[2] = 0;
+				color[3] = 255;
 				
-			color[0] = 255 - color[0];
-			
-			SetVariantColor(color);
-			AcceptEntityInput(particle, "SetGlowColor");
+				color[0] = GetEntProp(client, Prop_Send, "m_iHealth") * 255  / 210; // red  200 is the max health you can have while dying.
+				color[1] = GetEntProp(client, Prop_Send, "m_iHealth") * 255  / 210;	// green
+					
+				color[0] = 255 - color[0];
+				
+				SetVariantColor(color);
+				AcceptEntityInput(particle, "SetGlowColor");
+			}
 		}
 			
 		return Plugin_Continue;
@@ -3924,4 +3998,5 @@ public void MapStartResetAll()
 	ZeroRage_ClearAll();
 	Zero2(i_StickyToNpcCount);
 	SniperMonkey_ClearAll();
+	Weapon_Cspyknife_ClearAll();
 }
