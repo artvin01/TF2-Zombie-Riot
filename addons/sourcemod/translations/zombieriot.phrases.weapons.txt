@@ -180,12 +180,14 @@
 		"en"		"Aresenal's Tripmine Layer"
 		"ru"		"Арсенальный миноукладчик"
 		"de"		"Aresenals Tripminschicht"
+		"pt"		"Camada de Minas do Aresenal"
 	}
 	"Heavy Charge Builder Laser"
 	{
 		"en"		"Heavy Charge Builder Laser"
 		"ru"		"Высокозарядный строительный лазер"
 		"de"		"Baulaser für schwere Ladungen"
+		"pt"		"Canhão Elétrico Pesado"
 	}
 	"Railgun"
 	{
@@ -206,18 +208,21 @@
 		"en"		"Boomstick"
 		"ru"		"Огнестрел"
 		"de"		"Kaboomstock"
+		"pt"		"Cano de Vassoura"
 	}
 	"Terroriser Bomb Implanter Sniperrifle"
 	{
 		"en"		"Terroriser Bomb Implanter Sniperrifle"
 		"ru"		"Снайперская винтовка террориста-бомбиста"
 		"de"		"Terrorisar Bomben Implantiertes Scharfschützengewehr"
+		"pt"		"Rifle Implantador de Bombas Aterrorizante"
 	}
 	"Rampager Automatic Rifle"
 	{
 		"en"		"Rampager Automatic Rifle"
 		"ru"		"Яростный автомат"
 		"de"		"Rampager-Automatikgewehr"
+		"pt"		"Rifle de Barragem Automática"
 	}
 	"Loose Cannon"
 	{
@@ -238,6 +243,7 @@
 		"en"		"Peacock's Screw Ball Cannon"
 		"ru"		"Шаровая пушка винта Павлина"
 		"de"		"Peacocks Schraubenkugelkanone"
+		"pt"		"Canhão de Bolas de Parafuso"
 	}
 	"The Cow Mangler 6000"
 	{
@@ -258,12 +264,14 @@
 		"en"		"Infected Rampager Assault Rifle"
 		"ru"		"Заражённая яростная штурмовая винтовка"
 		"de"		"Infizierte Rampager Sturmgewehr"
+		"pt"		"Rifle de Barragem Automática Infectado"
 	}
 	"Star Shooter"
 	{
 		"en"		"Star Shooter"
 		"ru"		"Звёздный стрелок"
 		"de"		"Sternen Schütze"
+		"pt"		"Estrela Cadente"
 	}
 	"Secondary Weapons"//Secondary here
 	{
@@ -403,6 +411,7 @@
 		"en"		"Infected Assault Rifle"
 		"ru"		"Заражённая штурмовая винтовка"
 		"de"		"Infizierte Sturmgewehr"
+		"pt"		"Riflé de Assalto Infectado"
 	}
 	"Buff Banner"
 	{
@@ -416,6 +425,7 @@
 		"en"		"PhlogStorms Detonator"
 		"ru"		"Детонатор ФлогШторм"
 		"de"		"PhlogStorms Zünder"
+		"pt"		"Detonador FlogisTade"
 	}
 	"Melee Weapons"//Melee Here
 	{
@@ -492,18 +502,21 @@
 		"en"		"Speed Fists Of Speed"
 		"ru"		"Кулаки скорости"
 		"de"		"Geschwindigkeits-Fäuste von Geschwindigkeit"
+		"pt"		"Punhos Velozes da Velocidade"
 	}
 	"Teslar Staff"
 	{
 		"en"		"Teslar Staff"
 		"ru"		"Посох Теслар"
 		"de"		"Teslar Stab"
+		"pt"		"Cajado Teslar"
 	}
 	"Fists Of Kahmlstein"
 	{
 		"en"		"Fists Of Kahmlstein"
 		"ru"		"Кулаки Кахмльштейна"
 		"de"		"Fäuste von Kahmlstein"
+		"pt"		"Punhos de Kahmlstein"
 	}
 	"Infinity Blade"
 	{
