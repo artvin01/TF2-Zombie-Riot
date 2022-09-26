@@ -344,7 +344,7 @@
 		"ru"	"Почему нет? Не о чем беспокоиться!"
 		"de"	"warum so negativ? nichts um sich sorgen zu machen!"
 		"pl"    "Dlaczego negatywność? Nie ma się o co martwić!"
-		"pt"	"Por que negatividez? Não há nada a se preucupar!"
+		"pt"	"Por que da negatividade? Não há nada a se preucupar!"
 	}
 	"Not Follow? Sure!"
 	{
