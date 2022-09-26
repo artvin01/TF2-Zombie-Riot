@@ -352,7 +352,7 @@
 		"es"		"Tanque de Propano"
 		"fr"		"Réservoir de Lance Flamme"
 		"de"		"Flammenwerfer-Tank"
-		"pt"		"Tanque de Proparo"
+		"pt"		"Tanque de Propano"
 	}
 	"Flares"
 	{
@@ -407,7 +407,7 @@
 		"es"		"Tornillo personalizado"
 		"fr"		"boulon personnalisé"
 		"de"		"Benutzerdefinierte Schraube"
-		"pt"		"Flechas personalizadas"
+		"pt"		"Flechas personalizadas" // need to check onto where this line shows up later
 	}
 	"Medical Syringes"
 	{
@@ -590,7 +590,7 @@
 		"pl"		"Maksymalna ilość zbroi została osiągnięta!"
 		"es"		"Tu armadura está al máximo"
 		"fr"		"Vôtre armure est au maximum!"
-		"pt"		"Você está o usando o máximo de armadura possivel!"
+		"pt"		"Você está o usando o máximo de armadura possível!"
 	}
 	"Armor Max Reached Ammo Box"
 	{
@@ -797,7 +797,7 @@
 		"en" 		"Perk: Quick Revive"
 		"ru" 		"Перк: Реаниматор"
 		"de"		"Vorteil: Schnelles Wiederbeleben"
-		"pt"		"Habilidade: Rapida ressureição"
+		"pt"		"Habilidade: Rápida ressureição"
 	}
 	"Juggernog"
 	{
@@ -913,7 +913,7 @@
 		"en" 		"Command Help?"
 		"ru" 		"Команды?"
 		"de"		"Befehl Hilfe?"
-		"pt"		"Ajdua com Comandos?"
+		"pt"		"Ajuda com Comandos?"
 	}
 	"Difficulty Help?"
 	{
@@ -1073,7 +1073,7 @@
 		"en" 		"Packed"
 		"ru" 		"Улучшено"
 		"de"		"Verpackt"
-		"pt"		"Carregado"
+		"pt"		"Carregada" // i could also use "Melhorada" here but i dunno, i think sounds cooler like that
 	}
 	"Not Enough Money To Pap"
 	{
@@ -1122,7 +1122,7 @@
 		"en" 		"Use this to heal yourself a tiny bit."
 		"ru" 		"Используйте это, чтобы хоть немного вылечить себя."
 		"de"		"Benutzt das, um dich etwas selber zu heilen."
-		"pt"		"Use insto para curar um pouco de seus ferimentos."
+		"pt"		"Use isto para curar um pouco de seus ferimentos."
 	}
 	"Healing Station Used"
 	{
@@ -1209,13 +1209,13 @@
 		"en" 		"You're spectating\nHelp your team by attacking the enemies.\nYou will be put into red team as a survivor when a slot is available."
 		"ru" 		"Вы наблюдатель\nПомогите своей команде, атакуя врагов.\nВы будете включены в команду красных в качестве выжившего, когда освободится место."
 		"de"		"Du bist am Zuschauen.\nHelfen sie ihren team durch das angreifen auf den gegnern.\nDu wirst im roten team als überlebender gehen wenn ein platz frei ist"
-		"pt"		"Você está espectando\nAjude  seu time ao atacar inimigos\nVocê será inserido no time vermelho como sobrevivente quando houver um slot disponivel."
+		"pt"		"Você está espectando\nAjude seu time ao atacar inimigos\nVocê será inserido no time vermelho como sobrevivente quando houver um slot disponivel."
 	}
 	"Raidboss"
 	{
 		"en" 		"Raidboss"
 		"ru" 		"Босс"
-		
+		"pt"		"Invasão Chefe" // i suppose is some sort of bossrush
 	}
 	"Power"
 	{
@@ -1299,7 +1299,7 @@
 		"en"		"Your last equipped level perks were restored"
 		"ru"		"Ваши последние имеющиеся уровневые перки были восстановлены."
 		"de"		"Ihre letzten level perks wurden wiederhergestellt."
-		"pt"		"Sua ultima habilidade de nivel foi restaurada"
+		"pt"		"Sua ultima habilidade de nível foi restaurada"
 	}
 	"Press TAB To open the store"
 	{
