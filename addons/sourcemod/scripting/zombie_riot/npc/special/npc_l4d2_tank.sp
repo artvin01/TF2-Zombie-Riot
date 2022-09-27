@@ -44,7 +44,7 @@ public void L4D2_Tank_OnMapStart_NPC()
 
 	PrecacheSound("player/flow.wav");
 	PrecacheSound("weapons/physcannon/energy_disintegrate5.wav");
-	PrecacheModel("models/infected/hulk.mdl");
+	PrecacheModel("models/infected/hulk_2.mdl");
 }
 
 
@@ -144,7 +144,7 @@ methodmap L4D2_Tank < CClotBody
 	
 	public L4D2_Tank(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		L4D2_Tank npc = view_as<L4D2_Tank>(CClotBody(vecPos, vecAng, "models/infected/hulk.mdl", "1.45", GetTankHealth(), ally, false, true));
+		L4D2_Tank npc = view_as<L4D2_Tank>(CClotBody(vecPos, vecAng, "models/infected/hulk_2.mdl", "1.45", GetTankHealth(), ally, false, true));
 		
 		i_NpcInternalId[npc.index] = L4D2_TANK;
 		
@@ -225,6 +225,19 @@ public void L4D2_Tank_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
+	
+	if(npc.m_bDoSpawnGesture)
+	{
+		npc.PlaySpawnSound();
+		npc.AddGesture("ACT_SPAWN");
+		npc.m_bDoSpawnGesture = false;
+	}
+	if(npc.m_bUseDefaultAnim)
+	{
+		int iActivity = npc.LookupActivity("ACT_RUN");
+		if(iActivity > 0) npc.StartActivity(iActivity);
+		npc.m_bUseDefaultAnim = false;
+	}
 	
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -686,7 +699,7 @@ public void L4D2_Tank_NPCDeath(int entity)
 		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
 		
 //		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
-		DispatchKeyValue(entity_death, "model", "models/infected/hulk.mdl");
+		DispatchKeyValue(entity_death, "model", "models/infected/hulk_2.mdl");
 
 		DispatchSpawn(entity_death);
 		

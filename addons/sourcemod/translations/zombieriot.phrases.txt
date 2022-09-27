@@ -927,9 +927,9 @@
 	}
 	"Command Help Explained"
 	{
-		"en" 		"''/flashlight'' To toggle your flashlight.\n''/tp'' To toggle thirdperson."
-		"ru" 		"''/flashlight'' для переключения фонарика.\n''/tp'' для переключения режима от 3-го лица."
-		"de"		"''/flashlight'' Umschaltung für ihre Taschenlampe.\n''/tp'' Umschaltung für Dritte Person."
+		"en" 		"''/tp'' To toggle thirdperson."
+		"ru" 		"''/tp'' для переключения режима от 3-го лица."
+		"de"		"''/tp'' Umschaltung für Dritte Person."
 	}
 	"Difficulty Help Explained"
 	{
