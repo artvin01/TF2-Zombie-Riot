@@ -749,13 +749,15 @@ enum
 	ALT_The_Shit_Slapper = 128,
 	
 	BONEZONE_BASICBONES = 129,
-	ITSTILIVES	= 666,
 	
 	ALT_MECHA_ENGINEER			= 130,
 	ALT_MECHA_HEAVY				= 131,
 	ALT_MECHA_HEAVYGIANT		= 132,
 	ALT_MECHA_PYROGIANT			= 133,
-	ALT_MECHA_SCOUT				= 134
+	ALT_MECHA_SCOUT				= 134,
+	
+	
+	ITSTILIVES	= 135,
 }
 
 
@@ -906,7 +908,8 @@ public const char NPC_Names[][] =
 	"Mecha Heavy",
 	"Mecha Giant Heavy",
 	"Mecha Giant Pyro",
-	"Mecha Scout"
+	"Mecha Scout",
+	"Bob the Overgod of gods and destroyer of multiverses"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -1049,12 +1052,11 @@ public const char NPC_Plugin_Names_Converted[][] =
 	
 	"npc_basicbones",
 	
-	"",
-	
 	"npc_alt_mecha_engineer",
 	"npc_alt_mecha_heavy",
 	"npc_alt_mecha_heavy_giant",
 	"npc_alt_mecha_pyro_giant",
+	"npc_alt_mecha_scout",
 	"npc_alt_mecha_scout"
 };
 

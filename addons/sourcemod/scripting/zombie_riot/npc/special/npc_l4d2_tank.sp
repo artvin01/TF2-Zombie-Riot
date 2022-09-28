@@ -14,7 +14,7 @@ static char g_SpawnSounds[][] = {
 };
 
 static char g_MeleeHitSounds[][] = {
-	"vo/null.mp3",
+	"plats/tram_hit4.wav",
 };
 
 static char g_MeleeAttackSounds[][] = {
@@ -28,7 +28,7 @@ static char g_MeleeMissSounds[][] = {
 };
 
 static const char g_IdleMusic[][] = {
-	"infected_riot/tank/onebadtank.mp3",
+	"#infected_riot/tank/onebadtank.mp3",
 };
 public void L4D2_Tank_OnMapStart_NPC()
 {
@@ -104,14 +104,18 @@ methodmap L4D2_Tank < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, 80, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, 80, BOSS_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
 	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, 80, BOSS_ZOMBIE_VOLUME);
+		
+		int Random_pitch = GetRandomInt(90, 110);
+		
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, Random_pitch);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, Random_pitch);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -134,11 +138,8 @@ methodmap L4D2_Tank < CClotBody
 		if(this.m_iPlayMusicSound > GetTime())
 			return;
 		
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		this.m_iPlayMusicSound = GetTime() + 53;
+		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_VOICE, SNDLEVEL_NONE, _, BOSS_ZOMBIE_VOLUME, 100);
+		this.m_iPlayMusicSound = GetTime() + 52;
 		
 	}
 	
@@ -751,11 +752,11 @@ static char[] GetTankHealth()
 
 void Music_Stop_All_Tank(int entity)
 {
-	StopSound(entity, SNDCHAN_STATIC, "infected_riot/tank/onebadtank.mp3");
-	StopSound(entity, SNDCHAN_STATIC, "infected_riot/tank/onebadtank.mp3");
-	StopSound(entity, SNDCHAN_STATIC, "infected_riot/tank/onebadtank.mp3");
-	StopSound(entity, SNDCHAN_STATIC, "infected_riot/tank/onebadtank.mp3");
-	StopSound(entity, SNDCHAN_STATIC, "infected_riot/tank/onebadtank.mp3");
+	StopSound(entity, SNDCHAN_VOICE, "#infected_riot/tank/onebadtank.mp3");
+	StopSound(entity, SNDCHAN_VOICE, "#infected_riot/tank/onebadtank.mp3");
+	StopSound(entity, SNDCHAN_VOICE, "#infected_riot/tank/onebadtank.mp3");
+	StopSound(entity, SNDCHAN_VOICE, "#infected_riot/tank/onebadtank.mp3");
+	StopSound(entity, SNDCHAN_VOICE, "#infected_riot/tank/onebadtank.mp3");
 }
 
 
