@@ -1134,6 +1134,9 @@ public MRESReturn DHook_ForceRespawn(int client)
 		return MRES_Supercede;
 	}
 	
+	
+	DoTutorialStep(client, false);
+	
 	bool started = !Waves_InSetup();
 	TeutonType[client] = (!IsRespawning && started) ? TEUTON_DEAD : TEUTON_NONE;
 	

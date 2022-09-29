@@ -1303,4 +1303,16 @@
 	{
 		"en"		"You do not have enough builder upgrades to use this skill."
 	}
+	"tutorial_1"
+	{
+		"en"		"This is the short Tutorial. Open chat and type /store to open the store!"
+	}
+	"tutorial_2"
+	{
+		"en"		"Good! You can also Open the store with %%+showscores%% when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want."
+	}
+	"tutorial_3"
+	{
+		"en"		"Now that you have a weapon you're prepared.\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
+	}
 }

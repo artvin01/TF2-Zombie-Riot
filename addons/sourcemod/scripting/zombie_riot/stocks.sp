@@ -3127,3 +3127,27 @@ stock void DHook_CreateDetour(GameData gamedata, const char[] name, DHookCallbac
 		LogError("[Gamedata] Could not find %s", name);
 	}
 }
+
+#define ANNOTATION_REFRESH_RATE 0.1
+#define ANNOTATION_OFFSET 8750
+
+public ShowAnnotationToPlayer(int client, float pos[3], const char[] Text, float lifetime, int follow_who)
+{
+	Handle event = CreateEvent("show_annotation");
+	if (event == INVALID_HANDLE) return;
+	
+	if(follow_who != -1)
+	{
+		SetEventInt(event, "follow_entindex", follow_who);
+	}
+	SetEventFloat(event, "worldPosX", pos[0]);
+	SetEventFloat(event, "worldPosY", pos[1]);
+	SetEventFloat(event, "worldPosZ", pos[2]);
+	SetEventFloat(event, "lifetime", lifetime);
+//	SetEventInt(event, "id", annotation_id*MAXPLAYERS + client + ANNOTATION_OFFSET);
+	SetEventString(event, "text", Text);
+	SetEventString(event, "play_sound", "vo/null.wav");
+	SetEventInt(event, "visibilityBitfield", (1 << client));
+	FireEvent(event);
+	
+}

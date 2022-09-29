@@ -5674,7 +5674,7 @@ public bool TraceRayHitPlayersOnly(int entity,int mask,any data)
 {
 	if (entity > 0 && entity <= MaxClients)
 	{
-		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0 && !b_DoNotUnStuck[entity])
+		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0 && !b_DoNotUnStuck[entity] && !b_ThisEntityIgnored[entity])
 		{
 			return true;
 		}
