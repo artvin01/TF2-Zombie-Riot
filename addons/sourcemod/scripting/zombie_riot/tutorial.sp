@@ -148,8 +148,11 @@ public Action TimerTutorial_End(Handle timer, int ref)
 		
 		SetEntProp(client, Prop_Send, "m_bDucked", true);
 		SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
-		CClotBody npc = view_as<CClotBody>(client);
-		npc.m_bThisEntityIgnored = false;
+		if (TeutonType[client] == TEUTON_NONE) 
+		{
+			CClotBody npc = view_as<CClotBody>(client);
+			npc.m_bThisEntityIgnored = false;
+		}
 		TeleportEntity(client, pos, ang, NULL_VECTOR);
 					
 		TF2_RemoveCondition(client, TFCond_FreezeInput); //make it 1 second long, incase anything breaks, that itll kill itself eventually.
