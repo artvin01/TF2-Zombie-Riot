@@ -540,10 +540,22 @@
 				"return" 		"void"
 				"this" 			"entity"
 			}
+			"CMultiplayRules::VoiceCommand" 
+			{
+				"offset" 		"CMultiplayRules::VoiceCommand" 
+				"hooktype" 		"entity"
+				"return" 		"void"
+				"this" 			"entity"
+			}
 
 		}
 		"Offsets"
 		{
+			"CMultiplayRules::VoiceCommand" // (CBaseMultiplayerPlayer*, int, int)
+			{
+				"linux" 	"143"
+				"windows" 	"142"
+			}
 			"CTFWrench::Smack()" 
 			{
 				"linux" 	"473"
