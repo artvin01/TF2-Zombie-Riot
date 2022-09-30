@@ -9,7 +9,6 @@ static bool IsRespawning;
 //static bool Disconnecting;
 
 static DynamicHook g_WrenchSmack;
-static DynamicHook g_MultiplayerRulesVoiceCommand;
 
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
@@ -94,7 +93,6 @@ void DHook_Setup()
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	
 	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
-	g_MultiplayerRulesVoiceCommand = DHook_CreateVirtual(gamedata, "CMultiplayRules::VoiceCommand");
 	
 	g_detour_CTFGrenadePipebombProjectile_PipebombTouch = CheckedDHookCreateFromConf(gamedata, "CTFGrenadePipebombProjectile::PipebombTouch");
 	
