@@ -1305,7 +1305,7 @@
 	}
 	"tutorial_1"
 	{
-		"en"		"This is the short Tutorial. Open chat and type /store to open the store!"
+		"en"		"This is the short Tutorial. Open chat and type ''/store'' to open the store!"
 	}
 	"tutorial_2"
 	{

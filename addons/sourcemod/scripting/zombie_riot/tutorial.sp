@@ -16,12 +16,15 @@ public void Tutorial_LoadCookies(int client)
 	char buffer[12];
 	TutorialCheck.Get(client, buffer, sizeof(buffer));
 	
+	f_TutorialUpdateStep[client] = 0.0;
+	
 	if(StringToInt(buffer) == 1 || StringToInt(buffer) == 0)
 	{
 	 	StartTutorial(client);
 	}
 	else
 	{
+		SetClientTutorialStep(client, 0);
 		b_IsInTutorialMode[client] = false;
 	}
 }
@@ -35,8 +38,13 @@ public void Tutorial_LoadCookies(int client)
 
 public void StartTutorial(int client)
 {
-	SetClientTutorialMode(client, true);
+	SetClientTutorialMode(client, false);
 	SetClientTutorialStep(client, 1);
+}
+
+public void SetTutorialUpdateTime(int client, float time)
+{
+	f_TutorialUpdateStep[client] = time;
 }
 
 public bool IsClientInTutorial(int client)
