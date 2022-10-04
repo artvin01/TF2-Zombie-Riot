@@ -18,7 +18,7 @@ public void Tutorial_LoadCookies(int client)
 	
 	f_TutorialUpdateStep[client] = 0.0;
 	
-	if(StringToInt(buffer) == 1 || StringToInt(buffer) == 0)
+	if(StringToInt(buffer) != 2)
 	{
 	 	StartTutorial(client);
 	}
@@ -38,7 +38,7 @@ public void Tutorial_LoadCookies(int client)
 
 public void StartTutorial(int client)
 {
-	SetClientTutorialMode(client, false);
+	SetClientTutorialMode(client, true);
 	SetClientTutorialStep(client, 1);
 }
 
