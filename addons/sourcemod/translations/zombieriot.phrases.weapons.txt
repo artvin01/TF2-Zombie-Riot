@@ -684,6 +684,7 @@
 		"en"		"Copium"
 		"ru"		"Копиум"
 		"de"		"Copium"
+		"pt"		"Copium"
 	}
 	"Cocain"
 	{
@@ -704,6 +705,7 @@
 		"en"		"LSD"
 		"ru"		"ЛСД"
 		"de"		"LSD"
+		"pt"		"LSD"
 	}
 	"Crystal Meth"
 	{
@@ -738,66 +740,77 @@
 		"en"		"Repair Handling book for dummies"
 		"ru"		"Книга по ремонту для чайников"
 		"de"		"Reparaturhandhaltungsbuch für Dummköpfe"
+		"pt"		"Repair Handling book for newbies"
 	}
 	"Construction Novice"
 	{
 		"en"		"Construction Novice"
 		"ru"		"Начинающий строитель"
 		"de"		"Bauanfänger"
+		"pt"		"Iniciante de construção"
 	}
 	"Ikea Repair Handling Book"
 	{
 		"en"		"Ikea Repair Handling Book"
 		"ru"		"Книга по ремонту из икеи"
 		"de"		"Ikea Reparaturhandhabungsbuch"
+		"pt"		"Livro de Manuseio de Reparos Ikea"
 	}
 	"Engineering Repair Handling book"
 	{
 		"en"		"Engineering Repair Handling book"
 		"ru"		"Инженерная книга по ремонту"
-		"de"		"Maschinenbau Reparaturhandhaltungsbuch"
+		"de"		"Maschinenbau Reparaturhandhaltungsbuch" 
+		"pt"		"Livro de Manuseio de Reparos de Engenharia"
 	}
 	"Construction Apprentice"
 	{
 		"en"		"Construction Apprentice"
 		"ru"		"Ученик строителя"
 		"de"		"Baulehrling"
+		"pt"		"Aprendiz de construção"
 	}
 	"Alien Repair Handling book"
 	{
 		"en"		"Alien Repair Handling book"
 		"ru"		"Книга по ремонту от пришельцев"
 		"de"		"Alien Reparaturhandhaltungsbuch"
+		"pt"		"Livro de Manuseio de Reparos Alienígenas"
 	}
 	"Construction Worker"
 	{
 		"en"		"Construction Worker"
 		"ru"		"Рабочий-строитель"
 		"de"		"Bauarbeiter"
+		"pt"		"Trabalhador da construção"
 	}
 	"Cosmic Repair Handling book"
 	{
 		"en"		"Cosmic Repair Handling book"
 		"ru"		"Книга по космическому ремонту"
 		"de"		"Kosmisches Reparaturhandhaltungsbuch"
+		"pt"		"Livro de Manuseio de Reparos Cósmicos"
 	}
 	"Construction Expert"
 	{
 		"en"		"Construction Expert"
 		"ru"		"Эксперт по строительству"
 		"de"		"Bauexperte"
+		"pt"		"Especialista em construção"
 	}
 	"Construction Master"
 	{
 		"en"		"Construction Master"
 		"ru"		"Мастер по строительству"
 		"de"		"Baumeister"
+		"pt"		"Mestre de construção"
 	}
 	"Construction Killer"
 	{
 		"en"		"Construction Killer"
 		"ru"		"Строительный убийца"
 		"de"		"Baukiller"
+		"pt"		"Assassino da construção"
 	}
 	"Ranged Upgrades"//Ranged Upgrades HERE!!!
 	{
@@ -874,12 +887,14 @@
 		"en"		"Betweenlands Potion"
 		"ru"		"Зелье межземелья"
 		"de"		"Zwischenlande-Trank"
+		"pt"		"Poção Entre Terras"
 	}
 	"Master Scorcerer"
 	{
-		"en"		"Master Scorcerer"
+		"en"		"Master Sorcerer" // it's supposed to be Sorcerer not Scorcerer, i think...
 		"ru"		"Мастер колдовства"
 		"de"		"Meister Zauberer"
+		"pt"		"Mestre Feiticeiro"
 	}
 	"Bob's Magic"
 	{
@@ -900,42 +915,49 @@
 		"en"		"Body armor"
 		"ru"		"Бронежилет"
 		"de"		"Körperpanzerung"
+		"pt"		"Armadura corporal"
 	}
 	"Adrenalin"
 	{
 		"en"		"Adrenalin"
 		"ru"		"Адреналин"
 		"de"		"Adrenaline"
+		"pt"		"Adrenalina"
 	}
 	"Kevlar"
 	{
 		"en"		"Kevlar"
 		"ru"		"Кевлар"
 		"de"		"Kevlar"
+		"pt"		"Kevlar"
 	}
 	"Heavy Vest"
 	{
 		"en"		"Heavy Vest"
 		"ru"		"Тяжёлый жилет"
 		"de"		"Schwere Weste"
+		"pt"		"Colete Pesado"
 	}
 	"Jesus's Blessing"
 	{
 		"en"		"Jesus's Blessing"
 		"ru"		"Благословение Иисуса"
 		"de"		"Jesu Segen"
+		"pt"		"Bênção de Jesus"
 	}
 	"Full Riot Gear Set"
 	{
 		"en"		"Full Riot Gear Set"
 		"ru"		"Полный комплект спецназа"
 		"de"		"Komplettes Riot-Ausrüstungsset"
+		"pt"		"Conjunto Completo de Equipamentos de Motim"
 	}
 	"Healthy Apple from Bob"
 	{
 		"en"		"Healthy Apple from Bob"
 		"ru"		"Вкусное яблоко от Боба"
 		"de"		"Gesunder Apfel von Bob"
+		"pt"		"Maçã Saudável de Bob"
 	}
 	"Medigun Upgrades"//Medigun Upgrades HERE!!!
 	{
@@ -949,24 +971,28 @@
 		"en"		"Doctor Certificate"
 		"ru"		"Сертификат доктора"
 		"de"		"Ärztliche Bescheinigung"
+		"pt"		"Certificado Médico"
 	}
 	"Professor Certificate"
 	{
 		"en"		"Professor Certificate"
 		"ru"		"Сертификат профессора"
 		"de"		"Professorenzertifikat"
+		"pt"		"Certificado de Professor"
 	}
 	"Hell's Certificate"
 	{
 		"en"		"Hell's Certificate"
 		"ru"		"Адский сертификат"
 		"de"		"Höllenzertifikat"
+		"pt"		"Certificado Infernal"
 	}
 	"Medic's Lost Medical Lisence"
 	{
 		"en"		"Medic's Lost Medical Lisences"
 		"ru"		"Потерянная медицинская лицензия"
 		"de"		"Medics verlorene medizinische Lizenz"
+		"pt"		"Licença médica perdida do Medic"
 	}
 	"Level Perks"//Lvl Perks here
 	{
