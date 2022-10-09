@@ -70,7 +70,7 @@ public void SetClientTutorialStep(int client, int stepcount)
 
 public void Tutorial_MakeClientNotMove(int client)
 {
-	if(IsClientInTutorial(client))
+	if(IsClientInTutorial(client) && TeutonType[client] != TEUTON_WAITING)
 	{
 		TF2_AddCondition(client, TFCond_FreezeInput, 1.0); //make it 1 second long, incase anything breaks, that itll kill itself eventually.
 		DoTutorialStep(client, true);
@@ -83,7 +83,7 @@ public void Tutorial_MakeClientNotMove(int client)
 
 public void DoTutorialStep(int client, bool obeycooldown)
 {
-	if(IsClientInTutorial(client) && ClientTutorialStep(client) != 0)
+	if(IsClientInTutorial(client) && ClientTutorialStep(client) != 0 && TeutonType[client] != TEUTON_WAITING)
 	{
 		if(f_TutorialUpdateStep[client] < GetGameTime() || !obeycooldown)
 		{
