@@ -7,7 +7,7 @@ static char g_DeathSounds[][] = {
 };
 
 static char g_GrappleSound[][] = {
-	"zombie_riot/panzer/grapple.mp3",
+	"zombie_riot/panzer/grapple_2.mp3",
 };
 static char g_FlameSounds[][] = {
 	"ambient/fire/mtov_flame2.wav",
@@ -75,7 +75,7 @@ public void NaziPanzer_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel(LASERBEAM_PANZER);
 	PrecacheModel(ENERGY_BALL_MODEL_PANZER);
-	PrecacheModel("models/zombie_riot/cod_zombies/panzer_soldat_13.mdl");
+	PrecacheModel("models/zombie_riot/cod_zombies/panzer_soldat_2.mdl");
 }
 
 static char[] GetPanzerHealth()
@@ -253,7 +253,7 @@ methodmap NaziPanzer < CClotBody
 	
 	public NaziPanzer(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		NaziPanzer npc = view_as<NaziPanzer>(CClotBody(vecPos, vecAng, "models/zombie_riot/cod_zombies/panzer_soldat_13.mdl", "1.15", GetPanzerHealth(), ally, false, true));
+		NaziPanzer npc = view_as<NaziPanzer>(CClotBody(vecPos, vecAng, "models/zombie_riot/cod_zombies/panzer_soldat_2.mdl", "1.15", GetPanzerHealth(), ally, false, true));
 		
 		i_NpcInternalId[npc.index] = NAZI_PANZER;
 		
@@ -445,7 +445,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 	else if (!npc.m_bLostHalfHealthAnim && npc.m_bLostHalfHealth)
 	{
 		npc.m_flNextThinkTime = npc.m_flDoSpawnGesture;
-		int iActivity = npc.LookupActivity("ACT_PANZER_STAGGER");
+		int iActivity = npc.LookupActivity("PANZER_STAGGER_2");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		npc.m_flSpeed = 0.0;
 		npc.m_bLostHalfHealthAnim = true;
@@ -881,13 +881,13 @@ public void NaziPanzer_NPCDeath(int entity)
 		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
 		
 //		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
-		DispatchKeyValue(entity_death, "model", "models/zombie_riot/cod_zombies/panzer_soldat_13.mdl");
+		DispatchKeyValue(entity_death, "model", "models/zombie_riot/cod_zombies/panzer_soldat_2.mdl");
 
 		DispatchSpawn(entity_death);
 		
 		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15); 
 		SetEntityCollisionGroup(entity_death, 2);
-		SetVariantString("panzer_death");
+		SetVariantString("panzer_death_2");
 		AcceptEntityInput(entity_death, "SetAnimation");
 		
 		pos[2] += 20.0;

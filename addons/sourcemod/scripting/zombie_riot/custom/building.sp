@@ -35,6 +35,8 @@
 
 #define VILLAGE_MODEL "models/props_rooftop/roof_dish001.mdl"
 
+#define BARRICADE_MODEL "models/props_c17/concrete_barrier001a.mdl"
+
 #define BUILDINGCOLLISIONNUMBER	27
 
 enum struct VillageBuff
@@ -117,6 +119,7 @@ void Building_MapStart()
 	PrecacheModel(PACKAPUNCH_MODEL);
 	PrecacheModel(HEALING_STATION_MODEL);
 	PrecacheModel(VILLAGE_MODEL);
+	PrecacheModel(BARRICADE_MODEL);
 	
 	PrecacheSound("items/powerup_pickup_uber.wav");
 	PrecacheSound("player/mannpower_invulnerable.wav");
@@ -277,7 +280,7 @@ public Action Building_PlaceElevator(int client, int weapon, const char[] classn
 }
 public Action Building_PlaceAmmoBox(int client, int weapon, const char[] classname, bool &result)
 {
-	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client))
+	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false))
 	{
 		PlaceBuilding(client, Building_AmmoBox, TFObject_Dispenser);
 		return Plugin_Continue;		
@@ -292,7 +295,7 @@ public Action Building_PlaceAmmoBox(int client, int weapon, const char[] classna
 
 public Action Building_PlaceArmorTable(int client, int weapon, const char[] classname, bool &result)
 {
-	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client))
+	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false))
 	{
 		PlaceBuilding(client, Building_ArmorTable, TFObject_Dispenser);
 		return Plugin_Continue;		
@@ -307,7 +310,7 @@ public Action Building_PlaceArmorTable(int client, int weapon, const char[] clas
 
 public Action Building_PlacePerkMachine(int client, int weapon, const char[] classname, bool &result)
 {
-	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client))
+	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false))
 	{
 		PlaceBuilding(client, Building_PerkMachine, TFObject_Dispenser);
 		return Plugin_Continue;		
@@ -322,7 +325,7 @@ public Action Building_PlacePerkMachine(int client, int weapon, const char[] cla
 
 public Action Building_PlacePackAPunch(int client, int weapon, const char[] classname, bool &result)
 {
-	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client))
+	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false))
 	{
 		PlaceBuilding(client, Building_PackAPunch, TFObject_Dispenser);
 		return Plugin_Continue;		
@@ -698,6 +701,7 @@ public bool Building_PackAPunch(int client, int entity)
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
 	i_SupportBuildingsBuild[client] += 1;
+	
 	DataPack pack;
 	CreateDataTimer(0.5, Timer_DroppedBuildingWaitPackAPunch, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
@@ -1394,7 +1398,7 @@ void Building_ShowInteractionHud(int client, int entity)
 					else
 					{
 						SetGlobalTransTarget(client);
-						PrintCenterText(client, "%t", "Ammobox Tooltip");						
+						PrintCenterText(client, "%t", "Armortable Tooltip");				
 					}
 				}
 				case 2:
@@ -1413,7 +1417,7 @@ void Building_ShowInteractionHud(int client, int entity)
 					else
 					{
 						SetGlobalTransTarget(client);
-						PrintCenterText(client, "%t", "Armortable Tooltip");						
+						PrintCenterText(client, "%t", "Ammobox Tooltip");						
 					}
 				}
 				case 5:
@@ -1505,7 +1509,6 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 	*/
 	if(IsValidEntity(entity))
 	{
-		bool bInteractedBuildingWasMounted = false;
 		if(entity <= MaxClients)
 		{
 			if(dieingstate[entity] > 0)
@@ -1517,7 +1520,6 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			{
 				return false;
 			}
-			bInteractedBuildingWasMounted = true;
 		}
 		
 		int buildingType;
@@ -1549,7 +1551,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					if(Is_Reload_Button)
 					{
 						GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-						if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client) && (StrEqual(buffer, "zr_ammobox") || StrEqual(buffer, "zr_armortable") || StrEqual(buffer, "zr_perkmachine") || StrEqual(buffer, "zr_packapunch")))
+						if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false) && (StrEqual(buffer, "zr_ammobox") || StrEqual(buffer, "zr_armortable") || StrEqual(buffer, "zr_perkmachine") || StrEqual(buffer, "zr_packapunch")))
 						{
 							DataPack pack;
 							CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
@@ -1635,7 +1637,6 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 		}
 		else if(Is_Reload_Button && StrEqual(buffer, "base_boss"))
 		{
-			bInteractedBuildingWasMounted = true;
 			buildingType = Citizen_BuildingInteract(entity);
 		}
 		
@@ -2506,6 +2507,7 @@ public Action Timer_DroppedBuildingWaitPackAPunch(Handle htimer, DataPack pack)
 	{
 		if(Building_Constructed[obj])
 			return Plugin_Continue;
+			
 		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
 			
@@ -2562,9 +2564,30 @@ public Action Timer_DroppedBuildingWaitWall(Handle htimer, DataPack pack)
 		if(Building_Constructed[obj])
 			return Plugin_Continue;
 			
+//		float eyePitch[3];
+//		GetEntPropVector(obj, Prop_Data, "m_angRotation", eyePitch);
+//		eyePitch[1] -= 90.0;
+												
+//		TeleportEntity(obj, NULL_VECTOR, NULL_VECTOR, NULL_VECTOR);	
+		SetEntityModel(obj, BARRICADE_MODEL);
+		
+		float pos[3] =  { 0.75, 1.5, 1.5 };
+		SetVariantVector3D(pos);
+		AcceptEntityInput(obj, "SetModelScale");	
+
+
+		static const float minbounds[3] = {-10.0, -30.0, 0.0};
+		static const float maxbounds[3] = {10.0, 30.0, -2.0};
+		SetEntPropVector(obj, Prop_Send, "m_vecMins", minbounds);
+		SetEntPropVector(obj, Prop_Send, "m_vecMaxs", maxbounds);
+		
 		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
 		Building_Constructed[obj] = true;
+	}
+	else
+	{
+		Building_Constructed[obj] = false;
 	}
 	return Plugin_Continue;
 }
@@ -3553,19 +3576,23 @@ static void GetBeamDrawStartPoint_Client(int client, float startPoint[3])
 }
 
 
-public int MaxSupportBuildingsAllowed(int client)
+public int MaxSupportBuildingsAllowed(int client, bool ingore_glass)
 {
 	int maxAllowed = 1;
 	
   	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayer(client, 762)); //762 is how many extra buildings are allowed on you.
 	
-	maxAllowed += Building_health_attribute;
+	maxAllowed += Building_health_attribute; 
 	
 	if(maxAllowed < 1)
 	{
 		maxAllowed = 1;
 	}
 	
+	if(!ingore_glass && b_HasGlassBuilder[client])
+	{
+		maxAllowed = 1;
+	}
 	return maxAllowed;
 }
 
@@ -4358,7 +4385,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	else if(paths < 2)
 	{
 		if(owner)
-			menu.AddItem("", "TIP: Only two paths can be choosen and one tier 3 path.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "TIP: Only one path can have a tier 3 upgrade.\n ", ITEMDRAW_DISABLED);
 		
 		FormatEx(buffer, sizeof(buffer), "%s [$400]%s", TranslateItemName(viewer, "Bigger Radius"), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : Village_TierExists[0] == 2 ? " [Tier 2 Exists]" : Village_TierExists[0] == 1 ? " [Tier 1 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_100), buffer, (!owner || cash < 400) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
@@ -4404,17 +4431,17 @@ static void VillageUpgradeMenu(int client, int viewer)
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s [$7500]%s", TranslateItemName(viewer, "Monkey Intelligence Bureau"), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : "");
-			menu.AddItem(VilN(VILLAGE_030), buffer, (!owner || cash < 7500) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			FormatEx(buffer, sizeof(buffer), "%s [$5000]%s", TranslateItemName(viewer, "Monkey Intelligence Bureau"), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : "");
+			menu.AddItem(VilN(VILLAGE_030), buffer, (!owner || cash < 5000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "The Bureau grants special Bloon popping knowledge, allowing", ITEMDRAW_DISABLED);
-			menu.AddItem("", "nearby players and allies to ignore non-boss resistances.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "nearby players and allies to ignore enemy resistances.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_010)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$2000]%s", TranslateItemName(viewer, "Radar Scanner"), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_020), buffer, (!owner || cash < 2000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Provides a stackable 50% to remove", ITEMDRAW_DISABLED);
+		FormatEx(buffer, sizeof(buffer), "%s [$750]%s", TranslateItemName(viewer, "Radar Scanner"), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : "");
+		menu.AddItem(VilN(VILLAGE_020), buffer, (!owner || cash < 750) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("", "Provides a stackable 20% to remove", ITEMDRAW_DISABLED);
 		menu.AddItem("", "Camo properties from spawning bloons.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(paths < 2)
@@ -4424,7 +4451,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 		menu.AddItem("", "Provides a stackable 20% to remove", ITEMDRAW_DISABLED);
 		menu.AddItem("", "Regrow properties from spawning bloons.\n ", ITEMDRAW_DISABLED);
 	}
-	
+	/*
 	if(Village_Flags[client] & VILLAGE_005)
 	{
 		menu.AddItem("", TranslateItemName(viewer, "Monkeyopolis"), ITEMDRAW_DISABLED);
@@ -4484,7 +4511,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 		menu.AddItem("", "Provides a global 2% discount", ITEMDRAW_DISABLED);
 		menu.AddItem("", "on items in the main store.\n ", ITEMDRAW_DISABLED);
 	}
-	
+	*/
 	menu.Pagination = 0;
 	menu.ExitButton = true;
 	menu.Display(viewer, MENU_TIME_FOREVER);
@@ -4560,13 +4587,13 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				case VILLAGE_030:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 3);
-					CashSpent[client] += 7500;
+					CashSpent[client] += 5000;
 					Village_TierExists[1] = 3;
 				}
 				case VILLAGE_020:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 2);
-					CashSpent[client] += 2000;
+					CashSpent[client] += 750;
 					Village_TierExists[1] = 2;
 				}
 				case VILLAGE_010:

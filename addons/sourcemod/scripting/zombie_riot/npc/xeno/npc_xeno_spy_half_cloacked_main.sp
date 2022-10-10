@@ -165,7 +165,7 @@ methodmap XenoSpyCloaked < CClotBody
 	
 	public XenoSpyCloaked(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoSpyCloaked npc = view_as<XenoSpyCloaked>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "16500", ally));
+		XenoSpyCloaked npc = view_as<XenoSpyCloaked>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "20000", ally));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);

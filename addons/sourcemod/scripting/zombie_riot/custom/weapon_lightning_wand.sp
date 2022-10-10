@@ -140,6 +140,8 @@ static void Wand_Launch(int client, int iRot, float speed, float time, float dam
 	float Angles[3];
 	GetClientEyeAngles(client, Angles);
 	TeleportEntity(particle, NULL_VECTOR, Angles, NULL_VECTOR);
+	TeleportEntity(iCarrier, NULL_VECTOR, Angles, NULL_VECTOR);
+	TeleportEntity(iRot, NULL_VECTOR, Angles, NULL_VECTOR);
 	SetParent(iCarrier, particle);	
 	
 	Projectile_To_Particle[iCarrier] = EntIndexToEntRef(particle);

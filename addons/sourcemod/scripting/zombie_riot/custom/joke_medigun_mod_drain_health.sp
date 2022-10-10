@@ -112,8 +112,15 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 	int owner = GetEntPropEnt(medigun, Prop_Send, "m_hOwnerEntity");
 	float What_type_Heal = Attributes_FindOnWeapon(owner, medigun, 2046);
 	
+	
 	if(owner > 0 && owner<=MaxClients && IsValidEntity(target) && GetAmmo(owner, 21) > 0)
 	{
+		if(dieingstate[owner] > 0)
+		{
+			DHookSetReturn(hReturn, false);
+			return MRES_Supercede;	
+		}
+	
 		if(What_type_Heal == 1.0)
 		{
 		//	bool is_uber_activated=view_as<bool>(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"));
@@ -196,6 +203,11 @@ public void Medigun_ClearAll()
 
 public MRESReturn OnMedigunPostFramePost(int medigun) {
 	int owner = GetEntPropEnt(medigun, Prop_Send, "m_hOwnerEntity");
+	if(dieingstate[owner] > 0)
+	{
+		return MRES_Ignored;	
+	}
+		
 	if(medigun_heal_delay[owner] < GetGameTime())
 	{
 		medigun_heal_delay[owner] = GetGameTime() + 0.1;

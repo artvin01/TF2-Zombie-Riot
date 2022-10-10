@@ -2,8 +2,29 @@
 static int how_many_times_fisted[MAXTF2PLAYERS];
 static int weapon_id[MAXPLAYERS+1]={0, ...};
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
-static float Original_Atackspeed[MAXPLAYERS+1]={0.0, ...};
+static float Original_Attackspeed[MAXPLAYERS+1]={0.0, ...};
 
+//First Knife
+#define FirstDefenceRageCooldown 80.0 //How Long you can reuse it again
+#define FirstDefenceRageTimer 10.0 //How Long the duration of battalions effect is
+
+//Second Pap
+#define MultiRageCooldown 60.0 //How long you can reuse it again
+#define MultiDefenceRageTimer 6.5 //How long the duration of battalions effect is
+
+#define MultiWrathStunTimer 2.5 //How long the stun duration is
+#define MultiWrathUberTimer 1.5 //How long Uber is
+#define MultiWrathRageSpeed 0.45 //Attack Speed Boost attribute 6
+#define MultiWrathResetSpeedTimer 10.0 //Back to normal Attack speed
+
+//Final Pap
+#define FinalWrathRageCooldown 65.0 //How Long you can reuse it again
+#define FinalWrathRageStunTimer 2.5 // How Long Stun is
+#define FinalWrathRageUberTimer 1.5 //How long uber is
+#define FinalWrathRagePapSpeed 0.30 //Attack Speed Boost attribute 6
+#define FinalWrathResetSpeedTimer 17.0 //Back to normal Attack speed
+
+//Don't touch these unless you know how to do it
 #define MAXANGLEPITCH	65.0
 #define MAXANGLEYAW		75.0
 
@@ -229,7 +250,7 @@ public void ZeroRage(int client, int weapon, bool crit, int slot)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Ability_Apply_Cooldown(client, slot, 60.0);
+			Ability_Apply_Cooldown(client, slot, MultiRageCooldown);
 			
 			weapon_id[client] = weapon;
 			switch(GetRandomInt(1,2))
@@ -240,10 +261,10 @@ public void ZeroRage(int client, int weapon, bool crit, int slot)
 					{
 						weapon_id[client] = weapon;
 					
-						TF2_AddCondition(client, TFCond_DefenseBuffed, 6.5, 0);
+						TF2_AddCondition(client, TFCond_DefenseBuffed, MultiDefenceRageTimer, 0);
 				
 						ClientCommand(client, "playgamesound items/powerup_pickup_resistance.wav")
-						CreateTimer(60.0, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
+						CreateTimer(MultiRageCooldown, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
 						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "Defence Rage has striked.");
@@ -255,17 +276,17 @@ public void ZeroRage(int client, int weapon, bool crit, int slot)
 					{
 						weapon_id[client] = weapon;
 				
-						Original_Atackspeed[client] = 1.0;
+						Original_Attackspeed[client] = 1.0;
 						Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 						if(address != Address_Null)
-						Original_Atackspeed[client] = TF2Attrib_GetValue(address);
-						TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] * 0.45);
+						Original_Attackspeed[client] = TF2Attrib_GetValue(address);
+						TF2Attrib_SetByDefIndex(weapon, 6, Original_Attackspeed[client] * MultiWrathRageSpeed);
 						
-						CreateTimer(60.0, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
+						CreateTimer(MultiRageCooldown, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
 			
-						TF2_StunPlayer(client, 2.5, _, TF_STUNFLAG_BONKSTUCK, 0);
-						TF2_AddCondition(client, TFCond_UberchargedHidden, 1.5, 0);
-						TF2_AddCondition(client, TFCond_UberBlastResist, 1.5, 0);
+						TF2_StunPlayer(client, MultiWrathStunTimer, _, TF_STUNFLAG_BONKSTUCK, 0);
+						TF2_AddCondition(client, TFCond_UberchargedHidden, MultiWrathUberTimer, 0);
+						TF2_AddCondition(client, TFCond_UberBlastResist, MultiWrathUberTimer, 0);
 			
 						switch(GetRandomInt(1, 3))
 						{
@@ -285,7 +306,7 @@ public void ZeroRage(int client, int weapon, bool crit, int slot)
 						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "Wrath Rage has striked.");
-						CreateTimer(10.0, Reset_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
+						CreateTimer(MultiWrathResetSpeedTimer, Reset_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
 					}
 				}
 			}
@@ -309,18 +330,18 @@ public void ZeroDefenceRage(int client, int weapon, bool crit, int slot)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Ability_Apply_Cooldown(client, slot, 80.0);
+			Ability_Apply_Cooldown(client, slot, FirstDefenceRageCooldown);
 			
 			weapon_id[client] = weapon;
 			
-			TF2_AddCondition(client, TFCond_DefenseBuffed, 10.0, 0);
+			TF2_AddCondition(client, TFCond_DefenseBuffed, FirstDefenceRageTimer, 0);
 			
 			ClientCommand(client, "playgamesound items/powerup_pickup_resistance.wav")
 			
 			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Defence Rage has striked.");
-			CreateTimer(80.0, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(FirstDefenceRageCooldown, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
 		}
 		else
 		{
@@ -341,20 +362,20 @@ public void ZeroWrathRage(int client, int weapon, bool crit, int slot)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Ability_Apply_Cooldown(client, slot, 80.0);
+			Ability_Apply_Cooldown(client, slot, FinalWrathRageCooldown);
 			
 			weapon_id[client] = weapon;
 			
-			Original_Atackspeed[client] = 1.0;
+			Original_Attackspeed[client] = 1.0;
 			
 			Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 			if(address != Address_Null)
-			Original_Atackspeed[client] = TF2Attrib_GetValue(address);
-			TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] * 0.30);
+			Original_Attackspeed[client] = TF2Attrib_GetValue(address);
+			TF2Attrib_SetByDefIndex(weapon, 6, Original_Attackspeed[client] * FinalWrathRagePapSpeed);
 			
-			TF2_StunPlayer(client, 2.5, _, TF_STUNFLAG_BONKSTUCK, 0);
-			TF2_AddCondition(client, TFCond_UberchargedHidden, 1.5, 0);
-			TF2_AddCondition(client, TFCond_UberBlastResist, 1.5, 0);
+			TF2_StunPlayer(client, FinalWrathRageStunTimer, _, TF_STUNFLAG_BONKSTUCK, 0);
+			TF2_AddCondition(client, TFCond_UberchargedHidden, FinalWrathRageUberTimer, 0);
+			TF2_AddCondition(client, TFCond_UberBlastResist, FinalWrathRageUberTimer, 0);
 			
 			switch(GetRandomInt(1, 3))
 			{
@@ -374,8 +395,8 @@ public void ZeroWrathRage(int client, int weapon, bool crit, int slot)
 			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Wrath Rage has striked.");
-			CreateTimer(17.0, Reset_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
-			CreateTimer(80.0, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(FinalWrathResetSpeedTimer, Reset_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(FinalWrathRageCooldown, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
 		}
 		else
 		{
@@ -409,7 +430,7 @@ public Action Reset_Attackspeed(Handle cut_timer, int client)
 		int weapon = GetPlayerWeaponSlot(client, 2);
 		if(weapon == weapon_id[client])
 		{
-			TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client]);
+			TF2Attrib_SetByDefIndex(weapon, 6, Original_Attackspeed[client]);
 		}
 	}
 	return Plugin_Handled;

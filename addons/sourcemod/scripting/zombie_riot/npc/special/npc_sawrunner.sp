@@ -24,7 +24,7 @@ static const char g_IdleChainsaw[][] = {
 };
 
 static const char g_IdleMusic[][] = {
-	"zombie_riot/sawrunner/near_loop.mp3",
+	"#zombie_riot/sawrunner/near_loop.mp3",
 };
 
 void SawRunner_OnMapStart_NPC()
@@ -64,9 +64,7 @@ static char[] GetSawRunnerHealth()
 		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
-	health /= 2;
-	
-	health = RoundToCeil(float(health) * 0.75);
+	health = health * 3 / 8;
 	
 	char buffer[16];
 	IntToString(health, buffer, sizeof(buffer));

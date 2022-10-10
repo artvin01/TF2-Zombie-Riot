@@ -131,7 +131,7 @@ methodmap SniperMain < CClotBody
 	
 	public SniperMain(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SniperMain npc = view_as<SniperMain>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "12500", ally));
+		SniperMain npc = view_as<SniperMain>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "20000", ally));
 		
 		i_NpcInternalId[npc.index] = SNIPER_MAIN;
 
@@ -458,7 +458,7 @@ public void SniperMain_ClotDamaged_Post(int victim, int attacker, int inflictor,
 {
 	SniperMain npc = view_as<SniperMain>(victim);
 
-	if(10000 >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)
+	if(15000 >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)
 	{
 		npc.Anger = true; //	>:(
 		npc.m_flSpeed = 330.0;

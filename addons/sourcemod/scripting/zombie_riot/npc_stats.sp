@@ -256,6 +256,28 @@ char g_PanzerStepSound[][] = {
 	"mvm/giant_common/giant_common_step_08.wav",
 };
 
+char g_RobotStepSound[][] = {
+	"mvm/player/footsteps/robostep_01.wav",
+	"mvm/player/footsteps/robostep_02.wav",
+	"mvm/player/footsteps/robostep_03.wav",
+	"mvm/player/footsteps/robostep_04.wav",
+	"mvm/player/footsteps/robostep_05.wav",
+	"mvm/player/footsteps/robostep_06.wav",
+	"mvm/player/footsteps/robostep_07.wav",
+	"mvm/player/footsteps/robostep_08.wav",
+	"mvm/player/footsteps/robostep_09.wav",
+	"mvm/player/footsteps/robostep_10.wav",
+	"mvm/player/footsteps/robostep_11.wav",
+	"mvm/player/footsteps/robostep_12.wav",
+	"mvm/player/footsteps/robostep_13.wav",
+	"mvm/player/footsteps/robostep_14.wav",
+	"mvm/player/footsteps/robostep_15.wav",
+	"mvm/player/footsteps/robostep_16.wav",
+	"mvm/player/footsteps/robostep_17.wav",
+	"mvm/player/footsteps/robostep_18.wav",
+
+};
+
 char g_TankStepSound[][] = {
 	"infected_riot/tank/tank_walk_1.mp3",
 };
@@ -305,7 +327,8 @@ enum
 	STEPTYPE_COMBINE = 2,	
 	STEPTYPE_PANZER = 3,
 	STEPTYPE_COMBINE_METRO = 4,
-	STEPTYPE_TANK = 5
+	STEPTYPE_TANK = 5,
+	STEPTYPE_ROBOT = 6
 }
 
 enum
@@ -320,6 +343,7 @@ enum
 	BLEEDTYPE_METAL = 2,	
 	BLEEDTYPE_RUBBER = 3,	
 	BLEEDTYPE_XENO = 4,
+	BLEEDTYPE_SKELETON = 5
 }
 
 int GetIndexByPluginName(const char[] name)
@@ -838,6 +862,34 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = The_Shit_Slapper(client, vecPos, vecAng, ally);
 		}
+		case BONEZONE_BASICBONES:
+		{
+			entity = BasicBones(client, vecPos, vecAng, ally);
+		}
+		case ITSTILIVES:
+		{
+			entity = Itstilives(client, vecPos, vecAng);
+		}
+		case ALT_MECHA_ENGINEER:
+		{
+			entity = Mecha_Engineer(client, vecPos, vecAng, ally);
+		}
+		case ALT_MECHA_HEAVY:
+		{
+			entity = Mecha_Heavy(client, vecPos, vecAng, ally);
+		}
+		case ALT_MECHA_HEAVYGIANT:
+		{
+			entity = Mecha_HeavyGiant(client, vecPos, vecAng, ally);
+		}
+		case ALT_MECHA_PYROGIANT:
+		{
+			entity = Mecha_PyroGiant(client, vecPos, vecAng, ally);
+		}
+		case ALT_MECHA_SCOUT:
+		{
+			entity = Mecha_Scout(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1351,6 +1403,30 @@ public void NPCDeath(int entity)
 		{
 			The_Shit_Slapper_NPCDeath(entity);
 		}
+		case BONEZONE_BASICBONES:
+		{
+			BasicBones_NPCDeath(entity);
+		}
+		case ALT_MECHA_ENGINEER:
+		{
+			Mecha_Engineer_NPCDeath(entity);
+		}
+		case ALT_MECHA_HEAVY:
+		{
+			Mecha_Heavy_NPCDeath(entity);
+		}
+		case ALT_MECHA_HEAVYGIANT:
+		{
+			Mecha_HeavyGiant_NPCDeath(entity);
+		}
+		case ALT_MECHA_PYROGIANT:
+		{
+			Mecha_PyroGiant_NPCDeath(entity);
+		}
+		case ALT_MECHA_SCOUT:
+		{
+			Mecha_Scout_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1405,7 +1481,7 @@ public void OnMapStart_NPC_Base()
 	for (int i = 0; i < (sizeof(g_ArrowHitSoundMiss));	   i++) { PrecacheSound(g_ArrowHitSoundMiss[i]);	   }
 	for (int i = 0; i < (sizeof(g_PanzerStepSound));   i++) { PrecacheSound(g_PanzerStepSound[i]);   }
 	for (int i = 0; i < (sizeof(g_TankStepSound));   i++) { PrecacheSound(g_TankStepSound[i]);   }
-	
+	for (int i = 0; i < (sizeof(g_RobotStepSound));   i++) { PrecacheSound(g_RobotStepSound[i]);   }
 	
 	EscapeModeMap = false;
 	
@@ -1573,6 +1649,15 @@ public void OnMapStart_NPC_Base()
 	
 	Soldier_Barrager_OnMapStart_NPC();
 	The_Shit_Slapper_OnMapStart_NPC();
+	
+	BasicBones_OnMapStart_NPC();
+	Itstilives_MapStart();
+	
+	Mecha_Engineer_OnMapStart_NPC();
+	Mecha_Heavy_OnMapStart_NPC();
+	Mecha_HeavyGiant_OnMapStart_NPC();
+	Mecha_PyroGiant_OnMapStart_NPC();
+	Mecha_Scout_OnMapStart_NPC();
 }
 
 
@@ -3223,6 +3308,7 @@ methodmap CClotBody
 		}
 		// See if we hit anything.
 		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, ingore_buildings ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, this.index );
+		/*
 		if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
 		{
 			delete trace;
@@ -3233,7 +3319,8 @@ methodmap CClotBody
 				TR_GetEndPosition(vecSwingEnd, trace);	
 			}
 		}
-		return ( TR_GetFraction(trace) < 1.0 );
+		*/
+		return (TR_GetFraction(trace) < 1.0);
 	}
 	public bool DoAimbotTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0)
 	{
@@ -3259,7 +3346,7 @@ methodmap CClotBody
 			
 		}
 		*/
-		return ( TR_GetFraction(trace) < 1.0 );
+		return (TR_GetFraction(trace) < 1.0);
 	}
 	public void FireRocket(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, int flags = 0) //No defaults, otherwise i cant even judge.
 	{
@@ -4252,7 +4339,47 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
 						}
 					}	
-				}				
+				}
+				else if(npc.m_iBleedType == 5)
+				{
+					npc.PlayGibSound();
+					if(npc.m_bIsGiant)
+					{
+						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+						startPosition[2] += 64;
+						Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);
+						startPosition[2] -= 15;
+						Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);
+						startPosition[2] += 44;
+						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						{
+							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+							Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, false, true);	
+						}
+						else
+						{
+							Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);		
+						}
+					}
+					else
+					{
+						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+						startPosition[2] += 42;
+						Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, true, _, _, _, _, false, true);
+						startPosition[2] -= 10;
+						Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl", startPosition, _, damageForce, _, _, _, _, _, false, true);
+						startPosition[2] += 34;
+						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						{
+							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, false, true);
+						}
+						else
+						{
+							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, false, true);
+						}
+					}	
+				}
 			//	#endif					
 				Do_Death_Frame_Later(EntIndexToEntRef(pThis));
 				//RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));						
@@ -4448,6 +4575,13 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 					npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, npc.m_iStepNoiseType);
 					npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, npc.m_iStepNoiseType);
 				}
+			}
+		}
+		case STEPTYPE_ROBOT:
+		{
+			if(IsWalkEvent(event))
+			{
+				npc.PlayStepSound(g_RobotStepSound[GetRandomInt(0, sizeof(g_RobotStepSound) - 1)], 0.8, npc.m_iStepNoiseType);
 			}
 		}
 	}
@@ -5540,7 +5674,7 @@ public bool TraceRayHitPlayersOnly(int entity,int mask,any data)
 {
 	if (entity > 0 && entity <= MaxClients)
 	{
-		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0 && !b_DoNotUnStuck[entity])
+		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0 && !b_DoNotUnStuck[entity] && !b_ThisEntityIgnored[entity])
 		{
 			return true;
 		}
@@ -6004,7 +6138,7 @@ public void RequestFramesCallback(DataPack pack)
 
 
 
-static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, bool xeno = false)
+static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, bool xeno = false, bool nobleed = false)
 {
 	int prop = CreateEntityByName("prop_physics_multiplayer");
 	if(!IsValidEntity(prop))
@@ -6075,26 +6209,29 @@ static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0
 	
 	b_IsAGib[prop] = true;
 	
-	if(!metal_colour)
+	if (!nobleed)
 	{
-		if(!xeno)
+		if(!metal_colour)
 		{
-			int particle = ParticleEffectAt(pos, "blood_trail_red_01_goop", Random_time); //This is a permanent particle, gotta delete it manually...
-			SetParent(prop, particle);
-			SetEntityRenderColor(prop, 255, 0, 0, 255);
+			if(!xeno)
+			{
+				int particle = ParticleEffectAt(pos, "blood_trail_red_01_goop", Random_time); //This is a permanent particle, gotta delete it manually...
+				SetParent(prop, particle);
+				SetEntityRenderColor(prop, 255, 0, 0, 255);
+			}
+			else
+			{
+				int particle = ParticleEffectAt(pos, "blood_impact_green_01", Random_time); //This is a permanent particle, gotta delete it manually...
+				SetParent(prop, particle);
+				SetEntityRenderColor(prop, 0, 255, 0, 255);
+			}
 		}
 		else
 		{
-			int particle = ParticleEffectAt(pos, "blood_impact_green_01", Random_time); //This is a permanent particle, gotta delete it manually...
+	//		pos[2] -= 40.0;
+			int particle = ParticleEffectAt(pos, "tpdamage_4", Random_time); //This is a permanent particle, gotta delete it manually...
 			SetParent(prop, particle);
-			SetEntityRenderColor(prop, 0, 255, 0, 255);
 		}
-	}
-	else
-	{
-//		pos[2] -= 40.0;
-		int particle = ParticleEffectAt(pos, "tpdamage_4", Random_time); //This is a permanent particle, gotta delete it manually...
-		SetParent(prop, particle);
 	}
 	CreateTimer(Random_time, Timer_RemoveEntity_Prop, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 //	CreateTimer(1.5, Timer_DisableMotion, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
@@ -7561,6 +7698,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_PickThisDirectionForabit[entity] = 0.0;
 	b_ScalesWithWaves[entity] = false;
 	b_PernellBuff[entity] = false;
+	IgniteFor[entity] = 0;
 	
 	FormatEx(c_HeadPlaceAttachmentGibName[entity], sizeof(c_HeadPlaceAttachmentGibName[]), "");
 }
@@ -7754,6 +7892,7 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/special/npc_panzer.sp"
 #include "zombie_riot/npc/special/npc_sawrunner.sp"
 #include "zombie_riot/npc/special/npc_l4d2_tank.sp"
+#include "zombie_riot/npc/special/npc_itstilives.sp"
 
 #include "zombie_riot/npc/btd/npc_bloon.sp"
 #include "zombie_riot/npc/btd/npc_moab.sp"
@@ -7770,11 +7909,10 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/ally/npc_cured_last_survivor.sp"
 #include "zombie_riot/npc/ally/npc_citizen.sp"
 
-#include "zombie_riot/npc/alt/npc_alt_combine_soldier_mage.sp"
-#include "zombie_riot/npc/alt/npc_alt_medic_apprentice_mage.sp"
-
 #include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_blitzkrieg.sp"
+
+//Alt
 
 #include "zombie_riot/npc/alt/npc_alt_medic_charger.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_berserker.sp"
@@ -7784,6 +7922,13 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/alt/npc_alt_sniper_railgunner.sp"
 #include "zombie_riot/npc/alt/npc_alt_soldier_barrager.sp"
 #include "zombie_riot/npc/alt/npc_alt_the_shit_slapper.sp"
+#include "zombie_riot/npc/alt/npc_alt_mecha_engineer.sp"
+#include "zombie_riot/npc/alt/npc_alt_mecha_heavy.sp"
+#include "zombie_riot/npc/alt/npc_alt_mecha_heavy_giant.sp"
+#include "zombie_riot/npc/alt/npc_alt_mecha_pyro_giant_main.sp"
+#include "zombie_riot/npc/alt/npc_alt_mecha_scout.sp"
+#include "zombie_riot/npc/alt/npc_alt_combine_soldier_mage.sp"
+#include "zombie_riot/npc/alt/npc_alt_medic_apprentice_mage.sp"
 
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
 #include "zombie_riot/npc/medival/npc_medival_archer.sp"
@@ -7803,6 +7948,8 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/cof/npc_addiction.sp"
 #include "zombie_riot/npc/cof/npc_doctor.sp"
 #include "zombie_riot/npc/cof/npc_simon.sp"
+
+#include "zombie_riot/npc/bonezone/npc_basicbones.sp"
 
 
 public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask, bool originalResult)

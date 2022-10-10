@@ -22,6 +22,7 @@ void SSS_Map_Precache()
 
 void Reset_stats_starshooter()
 {
+	Zero(Timer_Starshooter_Management);
 	Zero(starshooter_hud_delay);
 }
 /*
@@ -246,11 +247,16 @@ public void Enable_StarShooter(int client, int weapon) // Enable management, han
 
 public Action Timer_Management_StarShooter(Handle timer, int client)
 {
-	if (IsClientInGame(client))
+	if(IsValidClient(client))
 	{
-		if (IsPlayerAlive(client))
+		if (IsClientInGame(client))
 		{
-			Starshooter_Cooldown_Logic(client);
+			if (IsPlayerAlive(client))
+			{
+				Starshooter_Cooldown_Logic(client);
+			}
+			else
+				Kill_Timer_Starshooter(client);
 		}
 		else
 			Kill_Timer_Starshooter(client);

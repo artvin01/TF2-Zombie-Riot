@@ -66,14 +66,19 @@ void DHook_Setup()
 {
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
+	
 	DHook_CreateDetour(gamedata, "CTFPlayer::CanAirDash", DHook_CanAirDashPre);
-	DHook_CreateDetour(gamedata, "CTFPlayer::DropAmmoPack", DHook_DropAmmoPackPre);
+	
+//	DHook_CreateDetour(gamedata, "CTFPlayer::DropAmmoPack", DHook_DropAmmoPackPre);
+//dont use, causes crashes.
+
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
 	//DHook_CreateDetour(gamedata, "CTFPlayer::GetMaxAmmo", DHook_GetMaxAmmoPre);
 	
 	#if !defined NoSendProxyClass
 	DHook_CreateDetour(gamedata, "CTFPlayer::IsPlayerClass", DHook_IsPlayerClassPre);
 	#endif
+	
 	
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
@@ -378,8 +383,9 @@ public MRESReturn DHook_FireballExplodePre(int entity)
 		Address address = TF2Attrib_GetByDefIndex(weapon, 410);
 		if(address != Address_Null)
 			damage *= TF2Attrib_GetValue(address);
-			
-		Explode_Logic_Custom(damage, owner, entity, weapon);
+		
+		Explode_Logic_Custom(damage, owner, entity, weapon, _, _, _, _, _, _, true)
+
 	}
 	return MRES_Ignored;
 }
@@ -430,6 +436,7 @@ public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 }
 */
 
+
 public Action CH_PassFilter(int ent1, int ent2, bool &result)
 {
 	if(IsValidEntity(ent1) && IsValidEntity(ent2))
@@ -446,7 +453,6 @@ public Action CH_PassFilter(int ent1, int ent2, bool &result)
 	}
 	return Plugin_Continue;
 }
-
 
 public bool PassfilterGlobal(int ent1, int ent2, bool result)
 {
@@ -1040,6 +1046,7 @@ public MRESReturn DHook_SentryFire_Post(int sentry, Handle hReturn, Handle hPara
 
 void DHook_HookClient(int client)
 {
+	
 	if(ForceRespawn)
 	{
 		ForceRespawnHook[client] = ForceRespawn.HookEntity(Hook_Pre, client, DHook_ForceRespawn);
@@ -1127,7 +1134,10 @@ public MRESReturn DHook_ForceRespawn(int client)
 		return MRES_Supercede;
 	}
 	
-	bool started = Waves_Started();
+	DoTutorialStep(client, false);
+	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
+	
+	bool started = !Waves_InSetup();
 	TeutonType[client] = (!IsRespawning && started) ? TEUTON_DEAD : TEUTON_NONE;
 	
 	CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
@@ -1555,7 +1565,8 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 		if(Health_To_Max <= 0 || Health_To_Max > flMaxHealth)
 		{
 			ClientCommand(owner, "playgamesound items/medshotno1.wav");
-			PrintHintText(owner,"%N Is already at full hp.", target);
+			SetGlobalTransTarget(owner);
+			PrintHintText(owner,"%N %t", target, "Is already at full hp");
 		}
 		else
 		{
@@ -1570,7 +1581,9 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
 			ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
 			ClientCommand(target, "playgamesound items/smallmedkit1.wav");
-			PrintHintText(owner,"You Healed %N for %i HP!", target, ammo_amount_left, ammo_amount_left / 4);
+			SetGlobalTransTarget(owner);
+			
+			PrintHintText(owner, "%t", "You healed for", target, ammo_amount_left);
 			SetAmmo(owner, 21, new_ammo);
 			Increaced_Overall_damage_Low[owner] = GetGameTime() + 2.0;
 			Increaced_Overall_damage_Low[target] = GetGameTime() + 10.0;

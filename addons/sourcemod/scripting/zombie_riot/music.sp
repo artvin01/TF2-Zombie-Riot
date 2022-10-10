@@ -89,6 +89,9 @@ void Music_EndLastmann()
 				TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
 				TF2_RemoveCondition(client, TFCond_RuneHaste);
 				TF2_RemoveCondition(client, TFCond_CritCanteen);
+				Armor_Charge[client] = 0;
+				if(IsPlayerAlive(client))
+					SetEntProp(client, Prop_Send, "m_iHealth", 50);
 			}
 		}
 		LastMann = false;

@@ -376,7 +376,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 				{
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
 					npc.PlayMeleeSound();
-					npc.m_flAttackHappens = GetGameTime()+0.1;
+					npc.m_flAttackHappens = GetGameTime()+0.4;
 					npc.m_flAttackHappens_bullshit = GetGameTime()+0.54;
 					npc.m_flAttackHappenswillhappen = true;
 				}
@@ -396,7 +396,11 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 								
 						if(target > 0) 
 						{
-							float damage = 20.0 / (0.1 + (Health / MaxHealth));
+							float damage = 45.0 * (1.0+(1-(Health/MaxHealth))*2);
+							if(ZR_GetWaveCount()<=45)
+							{
+								damage=damage/1.75;
+							}
 							if(target <= MaxClients)
 								SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 							else
@@ -409,17 +413,13 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 						} 
 					}
 					delete swingTrace;
-					float speed = 0.2 * (Health / MaxHealth);
-					npc.m_flNextMeleeAttack = GetGameTime() + speed;
+					npc.m_flNextMeleeAttack = GetGameTime() + 0.8;
 					npc.m_flAttackHappenswillhappen = false;
 				}
 				else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
 				{
-					float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-					float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-					float speed = 0.2 * (Health / MaxHealth);
 					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GetGameTime() + speed;
+					npc.m_flNextMeleeAttack = GetGameTime() + 0.8;
 				}
 			}
 		}
@@ -427,11 +427,12 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 		{
 			float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 			float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-			float crocket = 10.0 * (Health / MaxHealth);
+			float crocket = 25.0 / (1.0+(1-(Health/MaxHealth))*2);
+			float dmg = 20.0*(1.0+(1-(Health/MaxHealth))*2);
 			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
 			npc.m_flAttackHappens_2 = GetGameTime() + crocket;
 			npc.PlayRangedSound();
-			npc.FireRocket(vecTarget, 20.0, 600.0);
+			npc.FireRocket(vecTarget, dmg, 600.0);
 		}
 		else
 		{
@@ -471,7 +472,7 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotDamaged(int victim, int &attacker
 		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if(((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) && ZR_GetWaveCount()>40 ) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:( <- He is  very angy, but who wouldn't be, they literally lost half of there blood, id say if they weren't angry it would be a real surprise.
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
@@ -525,7 +526,7 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability_Anger(int client)
 
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CanUse[client] = true;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseDPT[client] = 30.0;	//beam dmg 1, 50%<
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarDPT[client] = 20.0;
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarDPT[client] = 17.5;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_MaxDistance[client] = 2000;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BeamRadius[client] = 10;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ColorHex[client] = ParseColor("FFFFFF");
@@ -583,8 +584,8 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability(int client)
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TicksActive[client] = 0;
 
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CanUse[client] = true;
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseDPT[client] = 25.0;	//beam dmg 2, 50%>
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarDPT[client] = 14.0;
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseDPT[client] = 20.0;	//beam dmg 2, 50%>
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarDPT[client] = 10.0;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_MaxDistance[client] = 2000;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BeamRadius[client] = 10;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ColorHex[client] = ParseColor("0509FA");
