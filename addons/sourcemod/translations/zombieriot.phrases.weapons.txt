@@ -1187,12 +1187,14 @@
 		"en"		"Scrap Helmet [Common]"
 		"ru"		"Шлем из металлолома [Обычное]"
 		"de"		"Schrotthelm [Gewöhnlich]"
+		"pt"		"Capacete de Sucata [Comum]"
 	}
 	"Face Mask [Common]"
 	{
 		"en"		"Face Mask [Common]"
 		"ru"		"Лицевая маска [Обычное]"
 		"de"		"Gesichtsmaske [Gewöhnlich]"
+		"pt"		"Mascará Facial [Comum]"
 	}
 	"Chest"
 	{
@@ -1206,12 +1208,14 @@
 		"en"		"Villager Outfit [Common]"
 		"ru"		"Костюм деревенщины [Обычное]"
 		"de"		"Dorfbewohner-Outfit [Gewöhnlich]"
+		"pt"		"Vestimenta de Aldeão [Comum]"
 	}
 	"Smithed Scrap Chestplate [Uncommon]"
 	{
 		"en"		"Smithed Scrap Chestplate [Uncommon]"
 		"ru"		"Нагрудник из смятого металлолома [Необычное]"
 		"de"		"Brustplatte aus geschmiedetem Schrott [Ungewöhnlich]"
+		"pt"		"Peitoral de Sucata Forjada [Incomum"
 	}
 	"Leggings"
 	{
@@ -1225,6 +1229,7 @@
 		"en"		"Blue Jeans [Common]"
 		"ru"		"Синие джинсы [Обычное]"
 		"de"		"Blaue Jeans [Gewöhnlich]"
+		"pt"		"Jeans Azuis [Comum]"
 	}
 	"shoes"
 	{
@@ -1238,6 +1243,7 @@
 		"en"		"Jordans [Common]"
 		"ru"		"Джорданы [Обычное]"
 		"de"		"Jordans [Gewöhnlich]"
+		"pt"		"Sapatos Nike [Comum]" // your jordans are fake bro
 	}
 	"Monkey Knowledge"
 	{
@@ -1251,114 +1257,133 @@
 		"en"		"Fast Tack Attacks [Rare]"
 		"ru"		"Атаки быстрым приёмом [Редкое]"
 		"de"		"Schnelle Wendeangriffe [Selten]"
+		"pt"		"Ataques que são Rápidos [Raro]"
 	}
 	"Mega Mauler [Rare]"
 	{
 		"en"		"Mega Mauler [Rare]"
 		"ru"		"Мега-истязатель [Редкое]"
 		"de"		"Mega-Mauler [Selten]"
+		"pt"		"Mega Mastigador [Raro]"
 	}
 	"Big Cryo Blast [Uncommon]"
 	{
 		"en"		"Big Cryo Blast [Uncommon]"
 		"ru"		"Большой криовзрыв [Необычное]"
 		"de"		"Große Kryo-Explosion [Ungewöhnlich]"
+		"pt"		"Grande Explosão de Crio [Incomum]"
 	}
 	"Long Turbo [Uncommon]"
 	{
 		"en"		"Long Turbo [Uncommon]"
 		"ru"		"Длинное турбо [Необычное]"
 		"de"		"Langer Turbo [Ungewöhnlich]"
+		"pt"		"Turbo Longo [Incomum]"
 	}
 	"Bonus Monkey! [Rare]"
 	{
 		"en"		"Bonus Monkey! [Rare]"
 		"ru"		"Бонусная обезьянка! [Редкое]"
 		"de"		"Bonus-Affe! [Selten]"
+		"pt"		"Macaco Bonus! [Raro]"
 	}
 	"Big Bunch [Rare]"
 	{
 		"en"		"Big Bunch [Rare]"
 		"ru"		"Большая кучка [Редкое]"
 		"de"		"Große Menge [Selten]"
+		"pt"		"Punhado Grande [Raro]"
 	}
 	"Accelerated Aerodarts [Uncommon]"
 	{
 		"en"		"Accelerated Aerodarts [Uncommon]"
 		"ru"		"Разогнанный полёт [Необычное]"
 		"de"		"Beschleunigte Luftpfeile [Ungewöhnlich]"
+		"pt"		"Dardos Aereos Acelerados [Incomum]"
 	}
 	"Faster Takedowns [Common]"
 	{
 		"en"		"Faster Takedowns [Common]"
 		"ru"		"Быстрые приёмы [Обычное]"
 		"de"		"Schnellere Takedowns [Gewöhnlich]"
+		"pt"		"Derrubada Rápida [Comum]"
 	}
 	"Extra Burny Stuff [Uncommon]"
 	{
 		"en"		"Extra Burny Stuff [Uncommon]"
 		"ru"		"Очень жгучий материал [Необычное]"
 		"de"		"Extra Burny Stuff [Ungewöhnlich]"
+		"pt"		"Coisas Incendiárias Extras [Incomum]"
 	}
 	"Quad Burst [Legendary]"
 	{
 		"en"		"Quad Burst [Legendary]"
 		"ru"		"Четверной взрыв [Легендарное]"
 		"de"		"Quad Burst [Legendär]"
+		"pt"		"Rajada Quádrupla [Lendário]"
 	}
 	"Gun Coolant [Rare]"
 	{
 		"en"		"Gun Coolant [Rare]"
 		"ru"		"Охлаждающая жидкость пистолета [Редкое]"
 		"de"		"Waffenkühlmittel [Selten]"
+		"pt"		"Refrigerador de Armas [Raro]"
 	}
 	"Flanking Maneuvers [Rare]"
 	{
 		"en"		"Flanking Maneuvers [Rare]"
 		"ru"		"Фланговые манёвры [Редкое]"
 		"de"		"Flankenmanöver [Selten]"
+		"pt"		"Manuseios de Emboscada [Raro]"
 	}
 	"Charged Chinooks [Uncommon]"
 	{
 		"en"		"Charged Chinooks [Uncommon]"
 		"ru"		"Заряженные чинуки [Необычное]"
 		"de"		"Geladene Chinooks [Ungewöhnlich]"
+		"pt"		"Chinooks Carregado [Incomum]"
 	}
 	"Big Bloon Sabotage [Legendary]"
 	{
 		"en"		"Big Bloon Sabotage [Legendary]"
 		"ru"		"Саботаж большого Блуна [Легендарное]"
 		"de"		"Großer Bloon Sabotage [Legendär]"
+		"pt"		"Grande Sabotador de Bloons [Lendário]"
 	}
 	"SUPER Range [Rare]"
 	{
 		"en"		"SUPER Range [Rare]"
 		"ru"		"СУПЕРрадиус [Редкое]"
 		"de"		"SUPER Reichweite [Selten]"
+		"pt"		"SUPER Alcançe [Raro]"
 	}
 	"Heavy Knockback [Legendary]"
 	{
 		"en"		"Heavy Knockback [Legendary]"
 		"ru"		"Сильная отдача [Легендарное]"
 		"de"		"Starker Rückstoß [Legendär]"
+		"pt"		"Repulsão Pesada [Lendário]"
 	}
 	"Speedy Brewing [Uncommon]"
 	{
 		"en"		"Speedy Brewing [Uncommon]"
 		"ru"		"Скоростное пивоварение [Необычное]"
 	//	"de"		""
+		"pt"		"Fervura Veloz [Incomum]"
 	}
 	"Strike Down The False [Uncommon]"
 	{
 		"en"		"Strike Down The False [Uncommon]"
 		"ru"		"Поразить лжеца [Необычное]"
 		"de"		"Schnelles Brühen [Ungewöhnlich]"
+		"pt"		"Derrube o Falso [Incomum]"
 	}
 	"Flame Jet [Common]"
 	{
 		"en"		"Flame Jet [Common]"
 		"ru"		"Пламенная струя [Обычное]"
 		"de"		"Flammenstrahl [Gewöhnlich]"
+		"pt"		"Jato de Labaredas [Comum]"
 	}
 	"Strong Tonic [Rare]"
 	{
@@ -1371,59 +1396,69 @@
 		"en"		"Arcane Impale [Rare]"
 		"ru"		"Магическое пронзание [Редкое]"
 		"de"		"Arkanes Aufspießen [Selten]"
+		"pt"		"Impalamento Arcano [Raro]"
 	}
 	"Deadly Tranquility [Uncommon]"
 	{
 		"en"		"Deadly Tranquility [Uncommon]"
 		"ru"		"Смертельный покой [Необычное]"
 		"de"		"Tödliche Ruhe [Ungewöhnlich]"
+		"pt"		"Tranquilidade Mortal [Incomum]"
 	}
 	"There Can Be Only One [Mythic]"
 	{
 		"en"		"There Can Be Only One [Mythic]"
 		"ru"		"Может быть только один [Мифическое]"
 		"de"		"Es kann nur einen geben [Mythisch]"
+		"pt"		"So Pode Existir Um [Mítico]"
 	}
 	"Tiny Tornadoes [Rare]"
 	{
 		"en"		"Tiny Tornadoes [Rare]"
 		"ru"		"Крохотные торнадо [Редкое]"
 		"de"		"Kleines Tornados [Selten]"
+		"pt"		"Pequenos Tornados [Raro]"
 	}
 	"Mana Shield [Legendary]"
 	{
 		"en"		"Mana Shield [Legendary]"
 		"ru"		"Щит маны [Легендарное]"
 		"de"		"Manaschild [Legendär]"
+		"pt"		"Escudo de Mana [Lendário]"
 	}
 	"Vigilant Sentries [Common]"
 	{
 		"en"		"Vigilant Sentries [Common]"
 		"ru"		"Бдительные стражи [Обычное]"
 		"de"		"Wachsame Wachposten [Gewöhnlich]"
+		"pt"		"Vigilante Sentinela [Comum]"
 	}
 	"To ARMS! [Legendary]"
 	{
 		"en"		"To ARMS! [Legendary]"
 		"ru"		"К оружию! [Легендарное]"
 		"de"		"Zu den Waffen! [Legendär]"
+		"pt"		"Para os BRAÇOS! [Lendário]"
 	}
 	"Healthy Bananas [Legendary]"
 	{
 		"en"		"Healthy Bananas [Legendary]"
 		"ru"		"Полезные бананы [Легендарное]"
 		"de"		"Gesunde Bananen [Legendär]"
+		"pt"		"Bananas Saúdaveis [Lendário]"
 	}
 	"Veteran Monkey Training [Uncommon]"
 	{
 		"en"		"Veteran Monkey Training [Uncommon]"
 		"ru"		"Обучение обезьян-ветеранов [Необычное]"
 		"de"		"Veteranen-Affentraining [Ungewöhnlich]"
+		"pt"		"Treinamento Veterano de Primata [Incomum]"
 	}
 	"Pre-Game Prep [Legendary]"
 	{
 		"en"		"Pre-Game Prep [Legendary]"
 		"ru"		"Предварительная игра [Легендарное]"
 		"de"		"Spielvorbereitung [Legendär]"
+		"pt"		"Preparação antes Jogo [Lendário]"
 	}
 }
