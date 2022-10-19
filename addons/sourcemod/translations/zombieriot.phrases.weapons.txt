@@ -1243,7 +1243,7 @@
 		"en"		"Jordans [Common]"
 		"ru"		"Джорданы [Обычное]"
 		"de"		"Jordans [Gewöhnlich]"
-		"pt"		"Sapatos Nike [Comum]" // your jordans are fake bro
+		"pt"		"Nike [Comum]" // your jordans are fake bro, they don't seem to be selled at brazil
 	}
 	"Monkey Knowledge"
 	{
