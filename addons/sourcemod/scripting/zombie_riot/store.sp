@@ -1278,6 +1278,11 @@ public Action Access_StoreViaCommand(int client, int args)
 	
 	if(!IsVoteInProgress() && !Waves_CallVote(client))
 	{
+		if(ClientTutorialStep(client) == 1)
+		{
+			SetClientTutorialStep(client, 2);
+			DoTutorialStep(client, false);	
+		}
 		NPCOnly[client] = 0;
 		MenuPage(client, -1);
 	}
@@ -1288,6 +1293,11 @@ public void Store_Menu(int client)
 {
 	if(StoreItems && !IsVoteInProgress() && !Waves_CallVote(client))
 	{
+		if(ClientTutorialStep(client) == 1)
+		{
+			SetClientTutorialStep(client, 2);
+			DoTutorialStep(client, false);	
+		}
 		NPCOnly[client] = 0;
 		MenuPage(client, -1);
 	}
@@ -1323,6 +1333,22 @@ static void MenuPage(int client, int section)
 	{
 		CurrentCash = 999999;
 		CashSpent[client] = 0;
+	}
+	
+	if(ClientTutorialStep(client) == 2)
+	{
+		//This is here so the player doesnt just have no money to buy anything.
+		int cash = CurrentCash-CashSpent[client];
+		if(cash < 1000)
+		{
+			int give_Extra_JustIncase;
+			
+			
+			give_Extra_JustIncase = cash - 1000;
+			
+			CashSpent[client] += give_Extra_JustIncase;
+		}
+		
 	}
 	static Item item;
 	static ItemInfo info;
@@ -2161,6 +2187,12 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 			{
 				int cash = CurrentCash-CashSpent[client];
 				
+				if(ClientTutorialStep(client) == 2)
+				{
+					SetClientTutorialStep(client, 3);
+					DoTutorialStep(client, false);	
+				}
+		
 				if(NPCOnly[client] == 2)
 				{
 					ItemInfo info;
@@ -3294,14 +3326,14 @@ static void ItemCost(int client, Item item, int &cost)
 
 static int ItemSell(Item item, int level, int client)
 {
-	int sell;
+	int sell = (item.Scale * item.Scaled[client]) + (tem.CostPerWave * CurrentRound);
 	
 	ItemInfo info;
 	for(int i; i<level && item.GetItemInfo(i, info); i++)
 	{
 		sell += info.Cost;
-		sell += item.Scale * item.Scaled[client]; 
-		sell += item.CostPerWave * CurrentRound;
+		if(info.PackBranches > 1 || info.PackSkip)
+			break;
 	}
 	
 	return RoundToCeil(float(sell) * SELL_AMOUNT);

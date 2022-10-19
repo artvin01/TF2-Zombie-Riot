@@ -256,6 +256,28 @@ char g_PanzerStepSound[][] = {
 	"mvm/giant_common/giant_common_step_08.wav",
 };
 
+char g_RobotStepSound[][] = {
+	"mvm/player/footsteps/robostep_01.wav",
+	"mvm/player/footsteps/robostep_02.wav",
+	"mvm/player/footsteps/robostep_03.wav",
+	"mvm/player/footsteps/robostep_04.wav",
+	"mvm/player/footsteps/robostep_05.wav",
+	"mvm/player/footsteps/robostep_06.wav",
+	"mvm/player/footsteps/robostep_07.wav",
+	"mvm/player/footsteps/robostep_08.wav",
+	"mvm/player/footsteps/robostep_09.wav",
+	"mvm/player/footsteps/robostep_10.wav",
+	"mvm/player/footsteps/robostep_11.wav",
+	"mvm/player/footsteps/robostep_12.wav",
+	"mvm/player/footsteps/robostep_13.wav",
+	"mvm/player/footsteps/robostep_14.wav",
+	"mvm/player/footsteps/robostep_15.wav",
+	"mvm/player/footsteps/robostep_16.wav",
+	"mvm/player/footsteps/robostep_17.wav",
+	"mvm/player/footsteps/robostep_18.wav",
+
+};
+
 char g_TankStepSound[][] = {
 	"infected_riot/tank/tank_walk_1.mp3",
 };
@@ -305,7 +327,8 @@ enum
 	STEPTYPE_COMBINE = 2,	
 	STEPTYPE_PANZER = 3,
 	STEPTYPE_COMBINE_METRO = 4,
-	STEPTYPE_TANK = 5
+	STEPTYPE_TANK = 5,
+	STEPTYPE_ROBOT = 6
 }
 
 enum
@@ -847,6 +870,26 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = Itstilives(client, vecPos, vecAng);
 		}
+		case ALT_MECHA_ENGINEER:
+		{
+			entity = Mecha_Engineer(client, vecPos, vecAng, ally);
+		}
+		case ALT_MECHA_HEAVY:
+		{
+			entity = Mecha_Heavy(client, vecPos, vecAng, ally);
+		}
+		case ALT_MECHA_HEAVYGIANT:
+		{
+			entity = Mecha_HeavyGiant(client, vecPos, vecAng, ally);
+		}
+		case ALT_MECHA_PYROGIANT:
+		{
+			entity = Mecha_PyroGiant(client, vecPos, vecAng, ally);
+		}
+		case ALT_MECHA_SCOUT:
+		{
+			entity = Mecha_Scout(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1364,6 +1407,26 @@ public void NPCDeath(int entity)
 		{
 			BasicBones_NPCDeath(entity);
 		}
+		case ALT_MECHA_ENGINEER:
+		{
+			Mecha_Engineer_NPCDeath(entity);
+		}
+		case ALT_MECHA_HEAVY:
+		{
+			Mecha_Heavy_NPCDeath(entity);
+		}
+		case ALT_MECHA_HEAVYGIANT:
+		{
+			Mecha_HeavyGiant_NPCDeath(entity);
+		}
+		case ALT_MECHA_PYROGIANT:
+		{
+			Mecha_PyroGiant_NPCDeath(entity);
+		}
+		case ALT_MECHA_SCOUT:
+		{
+			Mecha_Scout_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1418,7 +1481,7 @@ public void OnMapStart_NPC_Base()
 	for (int i = 0; i < (sizeof(g_ArrowHitSoundMiss));	   i++) { PrecacheSound(g_ArrowHitSoundMiss[i]);	   }
 	for (int i = 0; i < (sizeof(g_PanzerStepSound));   i++) { PrecacheSound(g_PanzerStepSound[i]);   }
 	for (int i = 0; i < (sizeof(g_TankStepSound));   i++) { PrecacheSound(g_TankStepSound[i]);   }
-	
+	for (int i = 0; i < (sizeof(g_RobotStepSound));   i++) { PrecacheSound(g_RobotStepSound[i]);   }
 	
 	EscapeModeMap = false;
 	
@@ -1589,6 +1652,12 @@ public void OnMapStart_NPC_Base()
 	
 	BasicBones_OnMapStart_NPC();
 	Itstilives_MapStart();
+	
+	Mecha_Engineer_OnMapStart_NPC();
+	Mecha_Heavy_OnMapStart_NPC();
+	Mecha_HeavyGiant_OnMapStart_NPC();
+	Mecha_PyroGiant_OnMapStart_NPC();
+	Mecha_Scout_OnMapStart_NPC();
 }
 
 
@@ -4508,6 +4577,13 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 				}
 			}
 		}
+		case STEPTYPE_ROBOT:
+		{
+			if(IsWalkEvent(event))
+			{
+				npc.PlayStepSound(g_RobotStepSound[GetRandomInt(0, sizeof(g_RobotStepSound) - 1)], 0.8, npc.m_iStepNoiseType);
+			}
+		}
 	}
 	return MRES_Ignored;
 }
@@ -5598,7 +5674,7 @@ public bool TraceRayHitPlayersOnly(int entity,int mask,any data)
 {
 	if (entity > 0 && entity <= MaxClients)
 	{
-		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0 && !b_DoNotUnStuck[entity])
+		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0 && !b_DoNotUnStuck[entity] && !b_ThisEntityIgnored[entity])
 		{
 			return true;
 		}
@@ -7833,11 +7909,10 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/ally/npc_cured_last_survivor.sp"
 #include "zombie_riot/npc/ally/npc_citizen.sp"
 
-#include "zombie_riot/npc/alt/npc_alt_combine_soldier_mage.sp"
-#include "zombie_riot/npc/alt/npc_alt_medic_apprentice_mage.sp"
-
 #include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_blitzkrieg.sp"
+
+//Alt
 
 #include "zombie_riot/npc/alt/npc_alt_medic_charger.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_berserker.sp"
@@ -7847,6 +7922,13 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/alt/npc_alt_sniper_railgunner.sp"
 #include "zombie_riot/npc/alt/npc_alt_soldier_barrager.sp"
 #include "zombie_riot/npc/alt/npc_alt_the_shit_slapper.sp"
+#include "zombie_riot/npc/alt/npc_alt_mecha_engineer.sp"
+#include "zombie_riot/npc/alt/npc_alt_mecha_heavy.sp"
+#include "zombie_riot/npc/alt/npc_alt_mecha_heavy_giant.sp"
+#include "zombie_riot/npc/alt/npc_alt_mecha_pyro_giant_main.sp"
+#include "zombie_riot/npc/alt/npc_alt_mecha_scout.sp"
+#include "zombie_riot/npc/alt/npc_alt_combine_soldier_mage.sp"
+#include "zombie_riot/npc/alt/npc_alt_medic_apprentice_mage.sp"
 
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
 #include "zombie_riot/npc/medival/npc_medival_archer.sp"

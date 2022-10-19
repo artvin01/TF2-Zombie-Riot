@@ -1134,6 +1134,9 @@ public MRESReturn DHook_ForceRespawn(int client)
 		return MRES_Supercede;
 	}
 	
+	DoTutorialStep(client, false);
+	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
+	
 	bool started = !Waves_InSetup();
 	TeutonType[client] = (!IsRespawning && started) ? TEUTON_DEAD : TEUTON_NONE;
 	
@@ -1562,7 +1565,8 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 		if(Health_To_Max <= 0 || Health_To_Max > flMaxHealth)
 		{
 			ClientCommand(owner, "playgamesound items/medshotno1.wav");
-			PrintHintText(owner,"%N Is already at full hp.", target);
+			SetGlobalTransTarget(owner);
+			PrintHintText(owner,"%N %t", target, "Is already at full hp");
 		}
 		else
 		{
@@ -1577,7 +1581,9 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
 			ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
 			ClientCommand(target, "playgamesound items/smallmedkit1.wav");
-			PrintHintText(owner,"You Healed %N for %i HP!", target, ammo_amount_left, ammo_amount_left / 4);
+			SetGlobalTransTarget(owner);
+			
+			PrintHintText(owner, "%t", "You healed for", target, ammo_amount_left);
 			SetAmmo(owner, 21, new_ammo);
 			Increaced_Overall_damage_Low[owner] = GetGameTime() + 2.0;
 			Increaced_Overall_damage_Low[target] = GetGameTime() + 10.0;

@@ -35,6 +35,8 @@
 
 #define VILLAGE_MODEL "models/props_rooftop/roof_dish001.mdl"
 
+#define BARRICADE_MODEL "models/props_c17/concrete_barrier001a.mdl"
+
 #define BUILDINGCOLLISIONNUMBER	27
 
 enum struct VillageBuff
@@ -117,6 +119,7 @@ void Building_MapStart()
 	PrecacheModel(PACKAPUNCH_MODEL);
 	PrecacheModel(HEALING_STATION_MODEL);
 	PrecacheModel(VILLAGE_MODEL);
+	PrecacheModel(BARRICADE_MODEL);
 	
 	PrecacheSound("items/powerup_pickup_uber.wav");
 	PrecacheSound("player/mannpower_invulnerable.wav");
@@ -698,6 +701,7 @@ public bool Building_PackAPunch(int client, int entity)
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
 	i_SupportBuildingsBuild[client] += 1;
+	
 	DataPack pack;
 	CreateDataTimer(0.5, Timer_DroppedBuildingWaitPackAPunch, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
@@ -2503,6 +2507,7 @@ public Action Timer_DroppedBuildingWaitPackAPunch(Handle htimer, DataPack pack)
 	{
 		if(Building_Constructed[obj])
 			return Plugin_Continue;
+			
 		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
 			
@@ -2559,9 +2564,30 @@ public Action Timer_DroppedBuildingWaitWall(Handle htimer, DataPack pack)
 		if(Building_Constructed[obj])
 			return Plugin_Continue;
 			
+//		float eyePitch[3];
+//		GetEntPropVector(obj, Prop_Data, "m_angRotation", eyePitch);
+//		eyePitch[1] -= 90.0;
+												
+//		TeleportEntity(obj, NULL_VECTOR, NULL_VECTOR, NULL_VECTOR);	
+		SetEntityModel(obj, BARRICADE_MODEL);
+		
+		float pos[3] =  { 0.75, 1.5, 1.5 };
+		SetVariantVector3D(pos);
+		AcceptEntityInput(obj, "SetModelScale");	
+
+
+		static const float minbounds[3] = {-10.0, -30.0, 0.0};
+		static const float maxbounds[3] = {10.0, 30.0, -2.0};
+		SetEntPropVector(obj, Prop_Send, "m_vecMins", minbounds);
+		SetEntPropVector(obj, Prop_Send, "m_vecMaxs", maxbounds);
+		
 		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
 		Building_Constructed[obj] = true;
+	}
+	else
+	{
+		Building_Constructed[obj] = false;
 	}
 	return Plugin_Continue;
 }

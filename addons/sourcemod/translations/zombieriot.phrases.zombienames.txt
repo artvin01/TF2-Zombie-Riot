@@ -663,4 +663,24 @@
 	{
 		"en"		"Basic Bones"
 	}
+	"Mecha Engineer"
+	{
+		"en"		"Mecha Engineer"
+	}
+	"Mecha Heavy"
+	{
+		"en"		"Mecha Heavy"
+	}
+	"Mecha Giant Heavy"
+	{
+		"en"		"Mecha Giant Heavy"
+	}
+	"Mecha Giant Pyro"
+	{
+		"en"		"Mecha Giant Pyro"
+	}
+	"Mecha Scout"
+	{
+		"en"		"Mecha Scout"
+	}
 }

@@ -749,7 +749,15 @@ enum
 	ALT_The_Shit_Slapper = 128,
 	
 	BONEZONE_BASICBONES = 129,
-	ITSTILIVES	= 666
+	
+	ALT_MECHA_ENGINEER			= 130,
+	ALT_MECHA_HEAVY				= 131,
+	ALT_MECHA_HEAVYGIANT		= 132,
+	ALT_MECHA_PYROGIANT			= 133,
+	ALT_MECHA_SCOUT				= 134,
+	
+	
+	ITSTILIVES	= 135,
 }
 
 
@@ -894,7 +902,14 @@ public const char NPC_Names[][] =
 	"Soldier Barrager",
 	"The Shit Slapper",
 	
-	"Basic Bones"
+	"Basic Bones",
+	
+	"Mecha Engineer",
+	"Mecha Heavy",
+	"Mecha Giant Heavy",
+	"Mecha Giant Pyro",
+	"Mecha Scout",
+	"Bob the Overgod of gods and destroyer of multiverses"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -1035,7 +1050,14 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_soldier_barrager",
 	"npc_alt_the_shit_slapper",
 	
-	"npc_basicbones"
+	"npc_basicbones",
+	
+	"npc_alt_mecha_engineer",
+	"npc_alt_mecha_heavy",
+	"npc_alt_mecha_heavy_giant",
+	"npc_alt_mecha_pyro_giant",
+	"npc_alt_mecha_scout",
+	"npc_alt_mecha_scout"
 };
 
 #include "zombie_riot/stocks_override.sp"
@@ -1067,6 +1089,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/npc_death_showing.sp"
 #include "zombie_riot/queue.sp"
 #include "zombie_riot/item_gift_rpg.sp"
+#include "zombie_riot/tutorial.sp"
 
 
 #include "zombie_riot/custom/building.sp"
@@ -1212,6 +1235,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_shop", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
+	RegAdminCmd("sm_tutorial_test", Command_TestTutorial, ADMFLAG_ROOT, "Test The Tutorial");
 	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");
 	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_GENERIC, "BRB GONNA MURDER MY MOM'S DISHES");
 	RegAdminCmd("sm_change_collision", Command_ChangeCollision, ADMFLAG_GENERIC, "change all npc's collisions");
@@ -1267,6 +1291,7 @@ public void OnPluginStart()
 	SentryHat_OnPluginStart();
 	OnPluginStart_Build_on_Building();
 	OnPluginStart_Glitched_Weapon();
+	Tutorial_PluginStart();
 //	Building_PluginStart();
 #if defined LagCompensation
 	OnPluginStart_LagComp();
@@ -1558,6 +1583,34 @@ public Action Command_AFK(int client, int args)
 	return Plugin_Handled;
 }
 
+
+public Action Command_TestTutorial(int client, int args)
+{
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_tutorial_test <target>");
+        return Plugin_Handled;
+    }	
+       
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		StartTutorial(targets[target]);
+	}
+	return Plugin_Handled;
+}
 public Action Command_GiveCash(int client, int args)
 {
 	//What are you.
@@ -1796,6 +1849,7 @@ Kenzzer my beloved
 public void OnClientCookiesCached(int client)
 {
 	ThirdPerson_OnClientCookiesCached(client);
+	Tutorial_LoadCookies(client);
 	char buffer[12];
 	CookieXP.Get(client, buffer, sizeof(buffer));
 	XP[client] = StringToInt(buffer);
@@ -1805,6 +1859,8 @@ public void OnClientCookiesCached(int client)
 
 public void OnClientDisconnect(int client)
 {
+	SetClientTutorialMode(client, false);
+	SetClientTutorialStep(client, 0);
 	Pets_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
 //	DHook_ClientDisconnect();
@@ -2668,6 +2724,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	
 	Escape_PlayerRunCmd(client);
 	
+	//tutorial stuff.
+	Tutorial_MakeClientNotMove(client);
 	
 	if(buttons & IN_ATTACK)
 	{
@@ -3999,4 +4057,5 @@ public void MapStartResetAll()
 	Zero2(i_StickyToNpcCount);
 	SniperMonkey_ClearAll();
 	Weapon_Cspyknife_ClearAll();
+	Zero(f_TutorialUpdateStep);
 }

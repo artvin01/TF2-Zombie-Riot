@@ -966,10 +966,10 @@
 	}
 	"Command Help Explained"
 	{
-		"en" 		"''/flashlight'' To toggle your flashlight.\n''/tp'' To toggle thirdperson."
-		"ru" 		"''/flashlight'' для переключения фонарика.\n''/tp'' для переключения режима от 3-го лица."
-		"de"		"''/flashlight'' Umschaltung für ihre Taschenlampe.\n''/tp'' Umschaltung für Dritte Person."
-		"pt"		"''/flashlight'' Para ligar sua lanterna.\n''/tp'' Para ativar 3ª pessoa."
+		"en" 		"''/tp'' To toggle thirdperson."
+		"ru" 		"''/tp'' для переключения режима от 3-го лица."
+		"de"		"''/tp'' Umschaltung für Dritte Person."
+		"pt"		"''/tp'' Para ativar modo de 3ª pessoa"
 	}
 	"Difficulty Help Explained"
 	{
@@ -1406,5 +1406,31 @@
 	{
 		"en"		"You do not have enough builder upgrades to use this skill."
 		"pt"		"Você não tem melhorias de construtor suficiente para usar está habilidade.
+	}
+	"tutorial_1"
+	{
+		"en"		"This is the short Tutorial. Open chat and type ''/store'' to open the store!"
+		"pt"		"Isto é um tutorial curto. Abra o chat e digite ''/store'' para abrir a loja!"
+	}
+	"tutorial_2"
+	{
+		"en"		"Good! You can also Open the store with %%+showscores%% when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want."
+		"pt"		"Ótimo! você pode abrir a loja tbm com %%+showscores%% quando o tutorial acabar.\nAgora navegue ate a seção de armas e compre uma arma."
+	}
+	"tutorial_3"
+	{
+		"en"		"Now that you have a weapon you're prepared.\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
+		"pt"		"Agora que você tem uma arma, você está pronto(a).\nCompre armas melhores, e as aprimore em ondas posteriores e sobreviva ate o final!\nÉ possivel adquirir mais ajuda no menu na opção de ''ajuda?''\nTrabalho em equipe é a chava para a vitória!"
+	}
+	"Is already at full hp"
+	{
+		"en"		"is already at full hp."
+		"pt"		"ja está com a vida cheia"
+	}
+	"You healed for"
+	{
+		"#format"	"{1:N},{2:d}"
+		"en"		"You Healed [{1}] for [{2}] HP!"
+		"pt"		"Você curou [{1}] por [{2}] de vida!"
 	}
 }
