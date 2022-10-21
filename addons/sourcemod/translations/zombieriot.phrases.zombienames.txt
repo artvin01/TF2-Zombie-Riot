@@ -596,6 +596,7 @@
 	{
 		"en" 		"Militia"
 		"ru" 		"Ополченец"
+		"pt"		"Milícia"
 	}
 	"Archer"
 	{
@@ -607,11 +608,13 @@
 	{
 		"en" 		"Man-At-Arms"
 		"ru" 		"Гвардеец"
+		"pt"		"Homem de armas"
 	}
 	"Skirmisher"
 	{
 		"en" 		"Skirmisher"
 		"ru" 		"Разбойник"
+		"pt"		"Escaramuça"
 	}
 	"Long Swordsman"
 	{
@@ -635,26 +638,31 @@
 	{
 		"en" 		"Spearman"
 		"ru" 		"Копьеносец"
+		"pt"		"Lanceiro"
 	}
 	"Hand Cannoneer"
 	{
 		"en" 		"Hand Cannoneer"
 		"ru" 		"Пушечник"
+		"pt"		"Canhoneiro de mão"
 	}
 	"Elite Skirmisher"
 	{
 		"en" 		"Elite Skirmisher"
 		"ru" 		"Элитный разбойник"
+		"pt"		"Escaramuça de Elite"
 	}
 	"Blitzkrieg"
 	{
 		"en" 		"Blitzkrieg"
 		"ru" 		"Блицкриг"
+		"pt"		"Blitzkrieg"
 	}
 	"Pikeman"
 	{
 		"en" 		"Pikeman"
 		"ru" 		"Пикинёр"
+		"pt"		"Piqueiro"
 	}
 	"Medic Supperior Mage"
 	{
@@ -696,11 +704,13 @@
 	{
 		"en" 		"Book Simon"
 		"ru" 		"Книжный Саймон"
+		"pt"		"Simon do Livro"
 	}
 	"Kahmlstein"
 	{
 		"en"		"Kahmlstein"
 		"ru"		"Кахмльштайн"
+		"pt"		"Kahmlstein" 
 	}
 	"L4D2 Tank"
 	{
@@ -730,6 +740,7 @@
 	{
 		"en"		"Capped Ram"
 		"ru"		"Таран"
+		"pt"		"Aríete"
 	}
 	"The Shit Slapper"
 	{
@@ -759,11 +770,11 @@
 	"Mecha Giant Pyro"
 	{
 		"en"		"Mecha Giant Pyro"
-		"pt"		"Pyro Gigante Mecha
+		"pt"		"Pyro Gigante Mecha"
 	}
 	"Mecha Scout"
 	{
 		"en"		"Mecha Scout"
-		"pt"		"Scout Mecha
+		"pt"		"Scout Mecha"
 	}
 }
