@@ -22,7 +22,7 @@
 	{
 		"en" 		"Destruction echoes through a nearby space..."
 		"ru" 		"Эхо разрушений разносится по близлежащему пространству..."
-		"pt"		"Destruição ecoa através de um espaço próximo"
+		"pt"		"Destruição ecoa através de um espaço próximo..."
 	}
 	"A massive foe has entered this field..."
 	{
