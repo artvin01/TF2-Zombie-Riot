@@ -509,7 +509,7 @@
 		"en"		"Teslar Staff"
 		"ru"		"Посох Теслар"
 		"de"		"Teslar Stab"
-		"pt"		"Cajado de Tesla"
+		"pt"		"Cajado Teslar"
 	}
 	"Fists Of Kahmlstein"
 	{
@@ -530,7 +530,7 @@
 		"en"		"Mage Weapons"
 		"ru"		"Оружие магов"
 		"de"		"Magie Waffen"
-		"pt"		"Cajados"
+		"pt"		"Cajados Mágicos"
 	}
 	"Bad Wand"
 	{
