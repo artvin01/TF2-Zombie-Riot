@@ -105,7 +105,7 @@
 	"Ranged Spike Layer"
 	{
 		"en"		"Ranged Spike Layer"
-		"ru"		"Дальнобойный шипоукладчик"
+		"ru"		"Шипомёт"
 		"de"		"Fernkampfstachelschicht"
 	}
 	"Crusader's Crossbow"
@@ -123,7 +123,7 @@
 	"Tommygun"
 	{
 		"en"		"Tommygun"
-		"ru"		"Томми-ган"
+		"ru"		"Автомат Томми"
 		"de"		"Tommygun"
 	}
 	"Double Barrel Shotgun"
@@ -153,7 +153,7 @@
 	"Aresenal's Tripmine Layer"
 	{
 		"en"		"Aresenal's Tripmine Layer"
-		"ru"		"Арсенальный миноукладчик"
+		"ru"		"Арсенальный миномёт"
 		"de"		"Aresenals Tripminschicht"
 	}
 	"Heavy Charge Builder Laser"
@@ -795,13 +795,13 @@
 	"Kevlar"
 	{
 		"en"		"Kevlar"
-		"ru"		"Кевлар"
+		"ru"		"Бронежилет"
 		"de"		"Kevlar"
 	}
 	"Heavy Vest"
 	{
 		"en"		"Heavy Vest"
-		"ru"		"Тяжёлый жилет"
+		"ru"		"Тяжёлый бронежилет"
 		"de"		"Schwere Weste"
 	}
 	"Jesus's Blessing"
