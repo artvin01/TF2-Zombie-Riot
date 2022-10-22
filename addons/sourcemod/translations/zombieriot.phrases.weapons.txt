@@ -747,7 +747,7 @@
 		"en"		"Construction Novice"
 		"ru"		"Начинающий строитель"
 		"de"		"Bauanfänger"
-		"pt"		"Iniciante de construção"
+		"pt"		"Iniciante de Construção"
 	}
 	"Ikea Repair Handling Book"
 	{
@@ -768,7 +768,7 @@
 		"en"		"Construction Apprentice"
 		"ru"		"Ученик строителя"
 		"de"		"Baulehrling"
-		"pt"		"Aprendiz de construção"
+		"pt"		"Aprendiz de Construção"
 	}
 	"Alien Repair Handling book"
 	{
@@ -782,7 +782,7 @@
 		"en"		"Construction Worker"
 		"ru"		"Рабочий-строитель"
 		"de"		"Bauarbeiter"
-		"pt"		"Trabalhador da construção"
+		"pt"		"Trabalhador da Construção"
 	}
 	"Cosmic Repair Handling book"
 	{
@@ -796,7 +796,7 @@
 		"en"		"Construction Expert"
 		"ru"		"Эксперт по строительству"
 		"de"		"Bauexperte"
-		"pt"		"Especialista em construção"
+		"pt"		"Especialista em Construção"
 	}
 	"Construction Master"
 	{
@@ -810,7 +810,7 @@
 		"en"		"Construction Killer"
 		"ru"		"Строительный убийца"
 		"de"		"Baukiller"
-		"pt"		"Assassino da construção"
+		"pt"		"Assassino da Construção"
 	}
 	"Ranged Upgrades"//Ranged Upgrades HERE!!!
 	{
