@@ -1212,6 +1212,16 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		level = SNDLEVEL_NORMAL;
 		return Plugin_Changed;
 	}
+	if(StrContains(sample, "vo/", true) != -1)
+	{
+		if(IsValidClient(entity))
+		{
+			if(b_IsPlayerNiko[entity])
+			{
+				return Plugin_Handled;
+			}
+		}
+	}
 	return Plugin_Continue;
 }
 

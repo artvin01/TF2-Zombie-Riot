@@ -218,6 +218,7 @@ Handle sv_cheats;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie CookieXP;
 Cookie CookiePlayStreak;
+Cookie Niko_Cookies;
 
 //custom wave music.
 char char_MusicString1[256];
@@ -319,6 +320,7 @@ int i_PreviousPointAmount[MAXTF2PLAYERS];
 	
 int Animation_Setting[MAXTF2PLAYERS];
 int Animation_Index[MAXTF2PLAYERS];
+bool b_IsPlayerNiko[MAXTF2PLAYERS];
 
 float delay_hud[MAXTF2PLAYERS];
 
@@ -1237,6 +1239,8 @@ public void OnPluginStart()
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
 	RegAdminCmd("sm_tutorial_test", Command_TestTutorial, ADMFLAG_ROOT, "Test The Tutorial");
 	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");
+	RegConsoleCmd("sm_make_niko", Command_MakeNiko, "Turn This player into niko");
+	
 	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_GENERIC, "BRB GONNA MURDER MY MOM'S DISHES");
 	RegAdminCmd("sm_change_collision", Command_ChangeCollision, ADMFLAG_GENERIC, "change all npc's collisions");
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_GENERIC, "Forcefully summon grigori");
@@ -1264,6 +1268,7 @@ public void OnPluginStart()
 	cvarCheatsflags &= ~FCVAR_NOTIFY;
 	SetConVarFlags(sv_cheats, cvarCheatsflags);
 	
+	Niko_Cookies = new Cookie("zr_niko", "Are you a niko", CookieAccess_Protected);
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
 	
@@ -1654,6 +1659,21 @@ public Action Command_GiveCash(int client, int args)
 	return Plugin_Handled;
 }
 
+public Action Command_MakeNiko(int client, int args)
+{
+	if(b_IsPlayerNiko[client])
+	{
+		PrintToChat(client,"You are no longer niko, respawn to apply");
+		b_IsPlayerNiko[client] = false;
+	}
+	else
+	{
+		PrintToChat(client,"You are now niko, respawn to apply");
+		b_IsPlayerNiko[client] = true;
+	}
+	return Plugin_Handled;
+}
+
 public Action Command_GiveDialogBox(int client, int args)
 {
 	//What are you.
@@ -1854,6 +1874,18 @@ public void OnClientCookiesCached(int client)
 	CookieXP.Get(client, buffer, sizeof(buffer));
 	XP[client] = StringToInt(buffer);
 	Level[client] = XpToLevel(XP[client]);
+	
+	char buffer_niko[12];
+	Niko_Cookies.Get(client, buffer_niko, sizeof(buffer_niko));
+	if(StringToInt(buffer_niko) == 1)
+	{
+	 	b_IsPlayerNiko[client] = true;
+	}
+	else
+	{
+		b_IsPlayerNiko[client] = false;
+	}
+	
 	Store_ClientCookiesCached(client);
 }
 
@@ -1882,6 +1914,16 @@ public void OnClientDisconnect(int client)
 		char buffer[12];
 		IntToString(XP[client], buffer, sizeof(buffer));
 		CookieXP.Set(client, buffer);
+		
+		char buffer_niko[12];
+		
+		int niko_int = 0;
+		
+		if(b_IsPlayerNiko[client])
+			niko_int = 1;
+			
+		IntToString(niko_int, buffer_niko, sizeof(buffer_niko));
+		Niko_Cookies.Set(client, buffer_niko);
 	}
 	XP[client] = 0;
 }
