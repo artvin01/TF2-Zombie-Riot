@@ -176,7 +176,7 @@
 		"ru"	"Могу я одолжить ваше оружие?"
 		"de"	"kann ich vielleicht deine waffe ausleihen?"
 		"pl"    "Czy mógłbym porzyczyć twoją broń?"
-		"pt"	"Poderia me emprestar sua arma talvez?"
+		"pt"	"Talvez você poderia me emprestar sua arma?"
 	}
 	"Im pretty confident in my abilities!"
 	{
