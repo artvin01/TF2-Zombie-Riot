@@ -250,7 +250,7 @@
 		"en"		"The Cow Mangler 6000"
 		"ru"		"Линчеватель скота 6000"
 		"de"		"Der Kuhmetzler 6000"
-		"pt"		"Avacalahor 6000"
+		"pt"		"Avacalhador 6000"
 	}
 	"Anti Material Rifle"
 	{
@@ -509,7 +509,7 @@
 		"en"		"Teslar Staff"
 		"ru"		"Посох Теслар"
 		"de"		"Teslar Stab"
-		"pt"		"Cajado Teslar"
+		"pt"		"Cajado de Tesla"
 	}
 	"Fists Of Kahmlstein"
 	{
@@ -760,7 +760,7 @@
 	{
 		"en"		"Engineering Repair Handling book"
 		"ru"		"Инженерная книга по ремонту"
-		"de"		"Maschinenbau Reparaturhandhaltungsbuch" 
+		"de"		"Maschinenbau Reparaturhandhaltungsbuch"
 		"pt"		"Livro de Manuseio de Reparos de Engenharia"
 	}
 	"Construction Apprentice"
@@ -891,7 +891,7 @@
 	}
 	"Master Scorcerer"
 	{
-		"en"		"Master Sorcerer" // it's supposed to be Sorcerer not Scorcerer, i think...
+		"en"		"Master Sorcerer"
 		"ru"		"Мастер колдовства"
 		"de"		"Meister Zauberer"
 		"pt"		"Mestre Feiticeiro"
