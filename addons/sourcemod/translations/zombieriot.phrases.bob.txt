@@ -62,7 +62,7 @@
 		"ru"	"Боб Второй не атакует врагов и не следует за вами!"
 		"de"	"Bob Der Zweite ist freundlich und folgt dir nicht!"
 		"pl"    "Bob drugi jest przyjazny i nie podąża za tobą!"
-		"pt"	"Bob o 2° é amigável e nao te segue!"
+		"pt"	"Bob o 2° é amigável e não te segue!"
 	}
 	"Bob The Second is not friendly and follows you! BUT stands still."
 	{
