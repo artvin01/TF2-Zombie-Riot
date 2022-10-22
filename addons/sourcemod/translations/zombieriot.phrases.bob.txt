@@ -30,7 +30,7 @@
 		"ru"	"Боб Второй атакует врагов и следует за вами!"
 		"de"	"Bob Der Zweite ist nicht Freundlich und folgt dir!"
 		"pl"    "Bob drugi nie jest przyjazny i podąża za tobą!"
-		"pt"	"Bob o 2° não é amigável e segue você!"
+		"pt"	"Bob o 2° não é amigável e te segue!"
 	}
 	"Use voice Commands to command him!"
 	{
