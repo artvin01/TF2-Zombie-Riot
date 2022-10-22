@@ -106,7 +106,7 @@
 	{
 		"en" 		"Combine DDT"
 		"ru" 		"Комбайн DDT"
-		"pt"		"Combine DDT" // what the hell DDT stands for??
+		"pt"		"Combine DDT"
 	}
 	"Combine Golden Collos"
 	{
@@ -542,7 +542,7 @@
 	{
 		"en" 		"Brutal Floating Behemoth"
 		"ru" 		"Жесточайший летающий бегемот"
-		"pt"		"Brutamontes Flutuante" // i am confused on what this is
+		"pt"		"Brutamontes Flutuante"
 	}
 	"Zeppelin of Mighty Gargantuaness"
 	{
@@ -565,7 +565,7 @@
 	"Medic Apprentice Mage"
 	{
 		"en" 		"Medic Apprentice Mage"
-		"ru" 		"Ученик маг-медик"/
+		"ru" 		"Ученик маг-медик"
 		"pt"		"Medico Mago Aprendiz"
 	}
 	"Sawrunner"
