@@ -2065,6 +2065,15 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	  	AcceptEntityInput(client, "SetCustomModel");
 	  	//DEFAULTS
 	  	
+	  	if(b_IsPlayerNiko[client])
+		{
+		  	int entity = MaxClients+1;
+			while(TF2_GetWearable(client, entity))
+			{
+				SetEntProp(entity, Prop_Send, "m_fEffects", EF_NODRAW);
+			}
+		}
+	  	
 		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 		ViewChange_DeleteHands(client);
 		ViewChange_UpdateHands(client, CurrentClass[client]);

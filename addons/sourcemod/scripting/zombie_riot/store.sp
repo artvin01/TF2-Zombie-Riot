@@ -3326,7 +3326,7 @@ static void ItemCost(int client, Item item, int &cost)
 
 static int ItemSell(Item item, int level, int client)
 {
-	int sell = (item.Scale * item.Scaled[client]) + (tem.CostPerWave * CurrentRound);
+	int sell = (item.Scale * item.Scaled[client]) + (item.CostPerWave * CurrentRound);
 	
 	ItemInfo info;
 	for(int i; i<level && item.GetItemInfo(i, info); i++)
