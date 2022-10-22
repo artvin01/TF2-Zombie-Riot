@@ -3326,14 +3326,14 @@ static void ItemCost(int client, Item item, int &cost)
 
 static int ItemSell(Item item, int level, int client)
 {
-	int sell;
+	int sell = (item.Scale * item.Scaled[client]) + (tem.CostPerWave * CurrentRound);
 	
 	ItemInfo info;
 	for(int i; i<level && item.GetItemInfo(i, info); i++)
 	{
 		sell += info.Cost;
-		sell += item.Scale * item.Scaled[client]; 
-		sell += item.CostPerWave * CurrentRound;
+		if(info.PackBranches > 1 || info.PackSkip)
+			break;
 	}
 	
 	return RoundToCeil(float(sell) * SELL_AMOUNT);
