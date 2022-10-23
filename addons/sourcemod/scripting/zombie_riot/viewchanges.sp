@@ -1,4 +1,4 @@
-#define NIKO_PLAYERMODEL "models/sasamin/oneshot/zombie_riot_edit/niko_01.mdl"
+#define NIKO_PLAYERMODEL "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
 
 static const char HandModels[][] =
 {
