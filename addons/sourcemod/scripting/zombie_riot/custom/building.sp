@@ -2576,12 +2576,13 @@ public Action Timer_DroppedBuildingWaitWall(Handle htimer, DataPack pack)
 		AcceptEntityInput(obj, "SetModelScale");	
 
 
-		static const float minbounds[3] = {-10.0, -30.0, 0.0};
-		static const float maxbounds[3] = {10.0, 30.0, -2.0};
+		static const float minbounds[3] = {-20.0, -10.0, 0.0};
+		static const float maxbounds[3] = {20.0, 5.0, -2.0};
 		SetEntPropVector(obj, Prop_Send, "m_vecMins", minbounds);
 		SetEntPropVector(obj, Prop_Send, "m_vecMaxs", maxbounds);
 		
 		CClotBody npc = view_as<CClotBody>(obj);
+		npc.UpdateCollisionBox();
 		npc.bBuildingIsPlaced = true;
 		Building_Constructed[obj] = true;
 	}
