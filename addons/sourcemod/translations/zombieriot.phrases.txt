@@ -914,11 +914,9 @@
 		"ru" 		"Постройки?"
 		"de"		"Gebäude Hilfe?"
 	}
-	"Escape Help?"
+	"Extra Buttons Help?"
 	{
-		"en" 		"Escape Help?"
-		"ru" 		"Режим спасения?"
-		"de"		"Flucht Hilfe?"
+		"en" 		"Extra Buttons Help?"
 	}
 	"Gamemode Help Explained"
 	{
@@ -928,7 +926,7 @@
 	}
 	"Command Help Explained"
 	{
-		"en" 		"''/tp'' To toggle thirdperson."
+		"en" 		"''/tp'' To toggle thirdperson.\n''/make_niko'' To toggle niko (This is more of a silly thing the anything)."
 		"ru" 		"''/tp'' для переключения режима от 3-го лица."
 		"de"		"''/tp'' Umschaltung für Dritte Person."
 	}
@@ -962,11 +960,9 @@
 		"ru" 		"Для использования построек, нажмите R.\nЛюди могут поднимать свои постройки, и над их головой будет значок.\nЭто позволит вам нажать на них R для того же действия.\nЗначок реген.: Ящик с боеприпасами.\nБроня: Верстак брони.\nКороль: Перк-машина.\nКулак: Улучшайзер.\nВампир: Лечебная станция."
 		"de"		"Sie können Maschinen mit NACHLADEN benutzen.\nLeute können ihre Gebäude aufheben und haben ein Symbol auf deren Kopf.\nDies ermöglicht Ihnen mit NACHLADEN für denselben Effekt.\nRegen Symbol: Munitionsbox\nRüstung Symbol: Rüstungstisch\nKönig Symbol: Perkmachine\nFaust Symbol: Pack-A-Punch.\nVampire Symbol: Heilstation."
 	}
-	"Escape Explained"
+	"Extra Buttons Explained"
 	{
-		"en" 		"During Escape maps only level perks can be bought.\nYou can pickup items with R or M2.\nSome maps have special items, pick them up with R and drop them with the DROP INTEL button or ''dropitem'' in console if you dont have it bound.\nItem Rarity in order: Normal, Green, Blue, Yellow, Red, Purple.\n Higher colour means better, Black means that its a map specific/special item."
-		"ru" 		"На картах спасения можно купить только перки определённого уровня.\nПодобрать предмет - R или ПКМ.\nНекоторые карты имеют особые предметы. Подобрать - R. Бросить - БРОСИТЬ ДИПЛОМАТ или ''dropitem'' в консоли.\nРедкость предметов: Обычное, зелёное, синее, жёлтое, красное, фиолетовое.\n Выше цвет означает лучше, чёрный означает, что это особый предмет карты."
-		"de"		"Während der Flucht Karten können nur Level Perks gekauft werden.\nSie können Gegenstände aufheben mit NACHLADEN oder MAUS2.\nEin paar Karten haben Speziale Gegenstände, heben sie die auf mit NACHLADEN und lassen sie es fallen mit ihren L Key(dropitem).\n Gegenstände Seltenheit in reihe: Normal, Grüne, Blau, Gelb, Rot, Violett.\nHöhere Farbe ist besser, Schwarze ist Spezial."
+		"en" 		"Inspect Weapon: Allows you to instantly access your holding weapon in the store, to for example, buy ammo."
 	}
 	"Drank Mana Regen Potion"
 	{

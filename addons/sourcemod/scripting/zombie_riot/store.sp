@@ -1931,7 +1931,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 				FormatEx(buffer, sizeof(buffer), "%t", "Building Help?");
 				menu2.AddItem("-10", buffer);
 				
-				FormatEx(buffer, sizeof(buffer), "%t", "Escape Help?");
+				FormatEx(buffer, sizeof(buffer), "%t", "Extra Buttons Help?");
 				menu2.AddItem("-11", buffer);
 				
 				FormatEx(buffer, sizeof(buffer), "%t", "Back");
@@ -2012,7 +2012,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 			else if(id == -11)
 			{
 				Menu menu2 = new Menu(Store_MenuPage);
-				menu2.SetTitle("%t", "Escape Explained");
+				menu2.SetTitle("%t", "Extra Buttons Explained");
 				
 				FormatEx(buffer, sizeof(buffer), "%t", "Back");
 				menu2.AddItem("-1", buffer);
