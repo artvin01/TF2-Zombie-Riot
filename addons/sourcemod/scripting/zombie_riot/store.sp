@@ -336,6 +336,24 @@ int Store_GetEquipped(int client, int slot)
 	return Equipped[client][slot];
 }
 
+void Store_OpenItemPage(int client)
+{
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon != -1)
+	{
+		char buffer[36];
+		if(GetEntityClassname(weapon, buffer, sizeof(buffer)))
+		{
+			int slot = TF2_GetClassnameSlot(buffer);
+			if(slot >= 0 && slot < sizeof(Equipped[]))
+			{
+				NPCOnly[client] = 0;
+				MenuPage(client, Equipped[client][slot]);
+			}
+		}
+	}
+}
+
 int Store_GetSpecialOfSlot(int client, int slot)
 {
 	if(StoreItems)
@@ -1913,7 +1931,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 				FormatEx(buffer, sizeof(buffer), "%t", "Building Help?");
 				menu2.AddItem("-10", buffer);
 				
-				FormatEx(buffer, sizeof(buffer), "%t", "Escape Help?");
+				FormatEx(buffer, sizeof(buffer), "%t", "Extra Buttons Help?");
 				menu2.AddItem("-11", buffer);
 				
 				FormatEx(buffer, sizeof(buffer), "%t", "Back");
@@ -1994,7 +2012,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 			else if(id == -11)
 			{
 				Menu menu2 = new Menu(Store_MenuPage);
-				menu2.SetTitle("%t", "Escape Explained");
+				menu2.SetTitle("%t", "Extra Buttons Explained");
 				
 				FormatEx(buffer, sizeof(buffer), "%t", "Back");
 				menu2.AddItem("-1", buffer);
@@ -3326,7 +3344,7 @@ static void ItemCost(int client, Item item, int &cost)
 
 static int ItemSell(Item item, int level, int client)
 {
-	int sell = (item.Scale * item.Scaled[client]) + (tem.CostPerWave * CurrentRound);
+	int sell = (item.Scale * item.Scaled[client]) + (item.CostPerWave * CurrentRound);
 	
 	ItemInfo info;
 	for(int i; i<level && item.GetItemInfo(i, info); i++)

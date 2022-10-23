@@ -242,6 +242,7 @@
 	"Owned Items"
 	{
 		"en"		"Bought Items"
+		"ru"		"Приобретённое"
 		"pt"		"Itens Comprados"
 	}
 	"N/A"
@@ -950,12 +951,12 @@
 		"de"		"Gebäude Hilfe?"
 		"pt"		"Ajuda construindo?"
 	}
-	"Escape Help?"
+	"Extra Buttons Help?"
 	{
-		"en" 		"Escape Help?"
-		"ru" 		"Режим спасения?"
-		"de"		"Flucht Hilfe?"
-		"pt"		"Ajuda fugindo?"
+		"en" 		"Extra Buttons Help?"
+	//"ru" 		"Режим спасения?"
+	//"de"		"Flucht Hilfe?"
+		"pt"		"Botão Extra para Ajuda?"
 	}
 	"Gamemode Help Explained"
 	{
@@ -966,7 +967,7 @@
 	}
 	"Command Help Explained"
 	{
-		"en" 		"''/tp'' To toggle thirdperson."
+		"en" 		"''/tp'' To toggle thirdperson.\n''/make_niko'' To toggle niko (This is more of a silly thing the anything)."
 		"ru" 		"''/tp'' для переключения режима от 3-го лица."
 		"de"		"''/tp'' Umschaltung für Dritte Person."
 		"pt"		"''/tp'' Para ativar modo de 3ª pessoa"
@@ -1006,12 +1007,13 @@
 		"de"		"Sie können Maschinen mit NACHLADEN benutzen.\nLeute können ihre Gebäude aufheben und haben ein Symbol auf deren Kopf.\nDies ermöglicht Ihnen mit NACHLADEN für denselben Effekt.\nRegen Symbol: Munitionsbox\nRüstung Symbol: Rüstungstisch\nKönig Symbol: Perkmachine\nFaust Symbol: Pack-A-Punch.\nVampire Symbol: Heilstation."
 		"pt"		"Você pode utilizar maquinas apertando R nelas.\nPessoas podem montar construções e teram um icone sobre suas cabeças.\nIsto permite que você aperta R nelas para o mesmo efeito.\nÍcone de Regen: Caixa de Munição.\nÍcone de Escudo: Mesa de Armadura.\nÍcone de Coroa: Maquina de Habilidades.\nÍcone de luva: Pack-A-Punch.\nÍcone de Vampiro: Estação de Cura."
 	}
-	"Escape Explained"
+	"Extra Buttons Explained"
 	{
-		"en" 		"During Escape maps only level perks can be bought.\nYou can pickup items with R or M2.\nSome maps have special items, pick them up with R and drop them with the DROP INTEL button or ''dropitem'' in console if you dont have it bound.\nItem Rarity in order: Normal, Green, Blue, Yellow, Red, Purple.\n Higher colour means better, Black means that its a map specific/special item."
-		"ru" 		"На картах спасения можно купить только перки определённого уровня.\nПодобрать предмет - R или ПКМ.\nНекоторые карты имеют особые предметы. Подобрать - R. Бросить - БРОСИТЬ ДИПЛОМАТ или ''dropitem'' в консоли.\nРедкость предметов: Обычное, зелёное, синее, жёлтое, красное, фиолетовое.\n Выше цвет означает лучше, чёрный означает, что это особый предмет карты."
-		"de"		"Während der Flucht Karten können nur Level Perks gekauft werden.\nSie können Gegenstände aufheben mit NACHLADEN oder MAUS2.\nEin paar Karten haben Speziale Gegenstände, heben sie die auf mit NACHLADEN und lassen sie es fallen mit ihren L Key(dropitem).\n Gegenstände Seltenheit in reihe: Normal, Grüne, Blau, Gelb, Rot, Violett.\nHöhere Farbe ist besser, Schwarze ist Spezial."
-		"pt"		"Durante mapas de Fuga apenas habilidades de nível podem ser utilizadas.\nVocÊ pode pegar itens com R ou M2.\nAlguns mapas só tem itens especiais, pegue-os usando R e os solte usando o botão de soltar a inteligência ou ''dropitem'' no console se você não tiver uma que faça isso.\nRaridade dos itens em ordem:Normal, Verde, Azul, Amarelo, Vermelho, Roxo.\n Quanto maior a cor melhor, Preto significa que é um item específico do mapa ou especial."
+		"en" 		"Inspect Weapon: Allows you to instantly access your holding weapon in the store, to for example, buy ammo."
+	//"ru" 		"На картах спасения можно купить только перки определённого уровня.\nПодобрать предмет - R или ПКМ.\nНекоторые карты имеют особые предметы. Подобрать - R. Бросить - БРОСИТЬ ДИПЛОМАТ или ''dropitem'' в консоли.\nРедкость предметов: Обычное, зелёное, синее, жёлтое, красное, фиолетовое.\n Выше цвет означает лучше, чёрный означает, что это особый предмет карты."
+	//"de"		"Während der Flucht Karten können nur Level Perks gekauft werden.\nSie können Gegenstände aufheben mit NACHLADEN oder MAUS2.\nEin paar Karten haben Speziale Gegenstände, heben sie die auf mit NACHLADEN und lassen sie es fallen mit ihren L Key(dropitem).\n Gegenstände Seltenheit in reihe: Normal, Grüne, Blau, Gelb, Rot, Violett.\nHöhere Farbe ist besser, Schwarze ist Spezial."
+	//"pt"		"Durante mapas de Fuga apenas habilidades de nível podem ser utilizadas.\nVocÊ pode pegar itens com R ou M2.\nAlguns mapas só tem itens especiais, pegue-os usando R e os solte usando o botão de soltar a inteligência ou ''dropitem'' no console se você não tiver uma que faça isso.\nRaridade dos itens em ordem:Normal, Verde, Azul, Amarelo, Vermelho, Roxo.\n Quanto maior a cor melhor, Preto significa que é um item específico do mapa ou especial."
+    "pt"    "Inspecionar Arma: Permite você acesso rápido à arma que você está utilizando na loja, para por exemplo, comprar munição"
 	}
 	"Drank Mana Regen Potion"
 	{
@@ -1099,7 +1101,7 @@
 	"Bored or Dead"
 	{
 		"en" 		"Bored or Dead?"
-		"ru" 		"Скучно или вы мертвы?"
+		"ru" 		"Скучно или мертвы?"
 		"de"		"Tot oder gelangweilt?"
 		"pt"		"No tedio ou morto(a)?"
 	}
@@ -1406,6 +1408,7 @@
 	{
 		"en"		"You do not have enough builder upgrades to use this skill."
 		"pt"		"Você não tem melhorias de construtor suficiente para usar está habilidade.
+		"ru"		"У вас недостаточно улучшений строителя, чтобы использовать это умение."
 	}
 	"tutorial_1"
 	{
@@ -1414,23 +1417,27 @@
 	}
 	"tutorial_2"
 	{
-		"en"		"Good! You can also Open the store with %%+showscores%% when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want."
-		"pt"		"Ótimo! você pode abrir a loja tbm com %%+showscores%% quando o tutorial acabar.\nAgora navegue ate a seção de armas e compre uma arma."
+		"en"		"Good! You can also Open the store with %%+showscores%% when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want.\nOpen chat and type ''/store'' to open the store again if it got closed!"
+		"pt"		"Ótimo! você pode abrir a loja tbm com %%+showscores%% quando o tutorial acabar.\nAgora navegue ate a seção de armas e compre uma arma.n\Abra o chat e digite ''/store'' para abrir a loja de novo caso ela feche!"
+		"ru"		"Отлично! Вы также можете открыть магазин клавишей %%+showscores%%, когда закончите обучение.\nНу а теперь перейдите к оружию и купите любое оружие, какое захотите."
 	}
 	"tutorial_3"
 	{
 		"en"		"Now that you have a weapon you're prepared.\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
 		"pt"		"Agora que você tem uma arma, você está pronto(a).\nCompre armas melhores, e as aprimore em ondas posteriores e sobreviva ate o final!\nÉ possivel adquirir mais ajuda no menu na opção de ''ajuda?''\nTrabalho em equipe é a chava para a vitória!"
+		"ru"		"Теперь, когда у вас есть оружие, вы готовы.\nКупите лучшее оружие и улучшения в последующих волнах и выживите до конца!\nДополнительную помощь можно найти в магазине в разделе ''помощь?''\nКомандная работа - ключ к победе!"
 	}
 	"Is already at full hp"
 	{
 		"en"		"is already at full hp."
 		"pt"		"ja está com a vida cheia"
+		"ru"		"уже имеет полное здоровье."
 	}
 	"You healed for"
 	{
 		"#format"	"{1:N},{2:d}"
 		"en"		"You Healed [{1}] for [{2}] HP!"
 		"pt"		"Você curou [{1}] por [{2}] de vida!"
+		"ru"		"Вы вылечили [{1}] на [{2}] ед. здоровья!"
 	}
 }
