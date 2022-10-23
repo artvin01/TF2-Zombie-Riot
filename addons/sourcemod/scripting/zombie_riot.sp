@@ -2682,6 +2682,16 @@ public Action OnBuildCmd(int client, const char[] command, int args)
 	return Plugin_Continue;
 }
 
+public Action OnClientCommandKeyValues(int client, KeyValues kv)
+{
+	char buffer[64];
+	kv.GetSectionName(buffer, sizeof(buffer));
+	if(StrEqual(buffer, "+inspect_server", false))
+		Store_OpenItemPage(client);
+	
+	return Plugin_Continue;
+}
+
 public Action OnRelayTrigger(const char[] output, int entity, int caller, float delay)
 {
 	char name[32];
