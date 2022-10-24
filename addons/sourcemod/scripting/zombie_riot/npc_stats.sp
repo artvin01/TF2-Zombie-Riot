@@ -808,7 +808,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		}
 		case CITIZEN:
 		{
-			entity = Citizen(client, vecPos, vecAng);
+			entity = Citizen(client, vecPos, vecAng, data);
 		}
 		case MEDIVAL_EAGLE_SCOUT:
 		{

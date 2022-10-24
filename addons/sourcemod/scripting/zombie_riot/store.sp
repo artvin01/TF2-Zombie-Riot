@@ -323,8 +323,9 @@ static const int RenderColors[][] =
 
 static Cookie CookieCache;
 static Cookie CookieData;
-static Cookie CookieLoadoutLv;
-static Cookie CookieLoadoutInv;
+static Cookie CookieLoadoutLv[9]; // we want 10 loadouts in total to be saved.
+static Cookie CookieLoadoutInv[9];
+static Cookie CookieLoadoutItems[9];
 static ArrayList StoreItems;
 static int Equipped[MAXTF2PLAYERS][6];
 static int NPCOnly[MAXTF2PLAYERS];
@@ -374,8 +375,22 @@ void Store_PluginStart()
 {
 	CookieCache = new Cookie("zr_lastgame", "The last game saved data is from", CookieAccess_Protected);
 	CookieData = new Cookie("zr_gamedata", "The last game saved data is from", CookieAccess_Protected);
-	CookieLoadoutLv = new Cookie("zr_lastloadout_1", "The last loadout saved data is from", CookieAccess_Protected);
-	CookieLoadoutInv = new Cookie("zr_lastloadout_2", "The last loadout saved data is from", CookieAccess_Protected);
+	
+	char loadoutcookienameLv[64];
+	char loadoutcookienameInv[64];
+	char loadoutcookienameItems[64];
+	
+	// We will want to save upto 10 loadouts, which will be shown at the start of each game to the player.
+	for(int loadoutslot; loadoutslot<9; loadoutslot++)
+	{
+		Format(loadoutcookienameLv, sizeof(loadoutcookienameLv), "%s%i", "zr_lastloadout_lv_" ,loadoutslot); 
+		Format(loadoutcookienameInv, sizeof(loadoutcookienameInv), "%s%i", "zr_lastloadout_inv_" ,loadoutslot); 
+		Format(loadoutcookienameItems, sizeof(loadoutcookienameItems), "%s%i", "zr_lastloadout_items_" ,loadoutslot); 
+	
+		CookieLoadoutLv[loadoutslot] 	= new Cookie(loadoutcookienameLv, "The last loadout saved data is from via slots", CookieAccess_Protected);
+		CookieLoadoutInv[loadoutslot] 	= new Cookie(loadoutcookienameInv, "The last loadout saved data is from via slots", CookieAccess_Protected);
+		CookieLoadoutItems[loadoutslot] 	= new Cookie(loadoutcookienameItems, "The last loadout saved data is from via slots", CookieAccess_Protected);
+	}
 }
 
 void Store_ConfigSetup()
@@ -707,7 +722,7 @@ void Store_Reset()
 	for(int c=1; c<=MaxClients; c++)
 	{
 		if(IsClientInGame(c))
-			Store_SaveLevelPerks(c);
+			Store_SaveSlottedLoadout(c);
 		
 		CashSpent[c] = 0;
 		
@@ -852,10 +867,11 @@ void Store_ClientCookiesCached(int client)
 		Store_LoadLoadout(client);
 }
 
-void Store_LoadLevelPerks(int client, bool silent=false)
+void Store_LoadLevelPerks(int client, bool silent=false, int slot, bool loadboughtitems) //you must give what slot you want to load
 {
 //	PrintToChatAll("load level perks");
 	char buffer[512];
+	
 	
 	zr_tagblacklist.GetString(buffer, sizeof(buffer));
 	if(buffer[0])
@@ -865,12 +881,13 @@ void Store_LoadLevelPerks(int client, bool silent=false)
 	if(buffer[0])
 		return;
 	
+	
 	char buffers[16][64];
 	static Item item;
 	int items = StoreItems.Length;
 	
 	bool found;
-	CookieLoadoutLv.Get(client, buffer, sizeof(buffer));
+	CookieLoadoutLv[slot].Get(client, buffer, sizeof(buffer));
 	int length = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]));
 	for(int i; i<length; i++)
 	{
@@ -900,7 +917,7 @@ void Store_LoadLevelPerks(int client, bool silent=false)
 		}
 	}
 	
-	CookieLoadoutInv.Get(client, buffer, sizeof(buffer));
+	CookieLoadoutInv[slot].Get(client, buffer, sizeof(buffer));
 	length = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]));
 	for(int i; i<length; i++)
 	{
@@ -930,10 +947,65 @@ void Store_LoadLevelPerks(int client, bool silent=false)
 		}
 	}
 	
+	
+	if(loadboughtitems)
+	{
+		CookieLoadoutItems[slot].Get(client, buffer, sizeof(buffer));
+		length = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		
+		
+		int cash_spend_loadout = 0; // we check how much money they have, incase we change money amounts or something, then we do not want 
+		//them to just keep getting the same items.
+		
+		for(int i; i<length; i++)
+		{
+			for(int a; a<items; a++)
+			{
+				StoreItems.GetArray(a, item);
+				if(StrEqual(buffers[i], item.Name))
+				{
+					if(item.Scale == 0 && !item.Hidden)
+					{
+						ItemInfo info;
+						item.GetItemInfo(0, info);
+						
+						int price = ItemCost(client, item, info.Cost);
+						int cash = CurrentCash - CashSpent[client] - cash_spend_loadout;
+						
+						if(price > cash) // they tried to abuse the system, cancel this!
+						{
+							SetGlobalTransTarget(client);
+							PrintToChat(client, "%t","Couldnt buy all items needed");
+							break;
+						}
+						
+						//They had enough moneyyys, buy it for them if they had it in their loadout
+						//this will also allow loadouts in late game if they did such a thing, although thats really wierd to do...
+						//this mainly exists to allow loadouts in gamemodes with less or more cash then normal.
+						cash_spend_loadout += price;
+						
+						item.Scaled[client] = 0;
+						item.Owned[client] = 1;
+						StoreItems.SetArray(a, item);
+						found = true;
+						
+						
+						if(info.Classname[0])
+						{
+							int slot = TF2_GetClassnameSlot(info.Classname);
+							if(slot >= 0 && slot < sizeof(Equipped[]))
+								Equipped[client][slot] = a;
+						}
+					}
+					break;
+				}
+			}
+		}
+	}
 	if(!silent && found && IsClientInGame(client))
 	{
 		SetGlobalTransTarget(client);
-		PrintToChat(client, "%t","Your last equipped level perks were restored");
+		PrintToChat(client, "%t","Your loadout has been equipped!");
 		if(IsPlayerAlive(client))
 			TF2_RegeneratePlayer(client);
 	}
@@ -996,7 +1068,7 @@ void Store_ClientDisconnect(int client)
 		CookieCache.Set(client, buffer);
 	}
 	
-	Store_SaveLevelPerks(client);
+	Store_SaveSlottedLoadout(client);
 	Store_SaveLoadout(client);
 	
 	CashSpent[client] = 0;
@@ -1021,10 +1093,13 @@ void Store_ClientDisconnect(int client)
 	}
 }
 
-void Store_SaveLevelPerks(int client)
+void Store_SaveSlottedLoadout(int client, int slot)
 {
 //	PrintToChatAll("Saving LeveL Perks");
 	char level[512];
+	char items_save[512];
+	char inv[512];
+	/*
 	zr_tagblacklist.GetString(level, sizeof(level));
 	if(level[0])
 		return;
@@ -1032,8 +1107,8 @@ void Store_SaveLevelPerks(int client)
 	zr_tagwhitelist.GetString(level, sizeof(level));
 	if(level[0])
 		return;
+	*/
 	
-	char inv[512];
 	static Item item;
 	static ItemInfo info;
 	int length = StoreItems.Length - 1;
@@ -1047,45 +1122,61 @@ void Store_SaveLevelPerks(int client)
 				owned = 0;
 			
 			item.GetItemInfo(owned, info);
-			if(!info.Cost && !info.CannotBeSavedByCookies)
+			if(!info.CannotBeSavedByCookies)
 			{
-				if(item.TextStore[0])
+				if(!info.Cost)
 				{
-					if(inv[0])
+					if(item.TextStore[0])
 					{
-						Format(inv, sizeof(inv), "%s;%s", inv, item.Name);
+						if(inv[0])
+						{
+							Format(inv, sizeof(inv), "%s;%s", inv, item.Name);
+						}
+						else
+						{
+							strcopy(inv, sizeof(inv), item.Name);
+						}
+					}
+					else if(level[0])
+					{
+						Format(level, sizeof(level), "%s;%s", level, item.Name);
 					}
 					else
 					{
-						strcopy(inv, sizeof(inv), item.Name);
+						strcopy(level, sizeof(level), item.Name);
 					}
-				}
-				else if(level[0])
-				{
-					Format(level, sizeof(level), "%s;%s", level, item.Name);
 				}
 				else
 				{
-					strcopy(level, sizeof(level), item.Name);
+					/*
+					if(!item.GetItemInfo(item.Owned[client] + info.PackSkip, info))
+					{
+						//do nothing, idk how to inverse this lol
+						//prevents the item from being saved if it was papped before.
+						//so you have to repap those weapons. no smartassing here.
+					}
+					else
+					{
+					*/
+						if(items_save[0])
+						{
+							Format(items_save, sizeof(items_save), "%s;%s", items_save, item.Name);
+						}
+						else
+						{
+							strcopy(items_save, sizeof(items_save), item.Name);
+						}
+				//	}
 				}
 			}
 		}
 	}
 	
-	if(level[0])
-	{
-//		PrintToChatAll("%s",level);
-		CookieLoadoutLv.Set(client, level);
-	}
-//	else
-//	{
-//		PrintToChatAll("NO SAVE");	
-//	}
+	CookieLoadoutLv[slot].Set(client, level);
+	CookieLoadoutInv[slot].Set(client, inv);
+	CookieLoadoutItems[slot].Set(client, Items_save);
 	
-	if(inv[0])
-	{
-		CookieLoadoutInv.Set(client, inv);
-	}
+	//save all things seperataly for ease of coding.
 }
 
 void Store_SaveLoadout(int client)

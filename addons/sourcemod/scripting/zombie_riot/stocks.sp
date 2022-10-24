@@ -2926,7 +2926,44 @@ public void ReviveAll()
 				}
 			}
 		}
-	}	
+	}
+	
+	int entity = MaxClients + 1;
+	while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+	{
+		if(i_NpcInternalId[entity] == CITIZEN)
+		{
+			Citizen npc = view_as<Citizen>(entity);
+			if(npc.m_bDowned && npc.m_iWearable3 > 0)
+			{
+				npc.SetDowned(false);
+				if(!Waves_InSetup())
+				{
+					int target = 0;
+					for(int i=1; i<=MaxClients; i++)
+					{
+						if(IsClientInGame(i))
+						{
+							if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
+							{
+								target = i;
+								break;
+							}
+						}
+					}
+					
+					if(target)
+					{
+						float pos[3], ang[3];
+						GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+						GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+						TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
+					}
+				}
+			}
+		}
+	}
+	
 	Music_EndLastmann();
 	CheckAlivePlayers();
 }

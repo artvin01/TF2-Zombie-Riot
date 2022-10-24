@@ -25,7 +25,6 @@ Address g_hSDKStartLagCompAddress;
 Address g_hSDKEndLagCompAddress;
 bool g_GottenAddressesForLagComp;
 
-float f_TimeAfterSpawn[MAXTF2PLAYERS];
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
 
 
@@ -1275,7 +1274,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 						}
 					}
 				}
-				if(IsValidClient(target))
+				if(target)
 				{
 					float pos[3], ang[3];
 					GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);

@@ -130,7 +130,7 @@ static void TBB_Precahce_BeamWand()
 	BeamWand_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	PrecacheSound(SOUND_BEAMWAND_ATTACKSPEED_ABILITY);
 }
-public void Weapon_BeamWand_M2(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_BeamWand_M2(int client, int weapon, bool &result, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -143,10 +143,10 @@ public void Weapon_BeamWand_M2(int client, int weapon, const char[] classname, b
 		int mana_cost = attackmana;
 		if(mana_cost <= Current_Mana[client])
 		{
-			if (ability_cooldown[client] < GetGameTime())
+			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
 				float speedtime = Actualmana / 100.0 + 5.0;
-				ability_cooldown[client] = GetGameTime() + speedtime; //Cooldown based on how much mana the player currently has.
+				Ability_Apply_Cooldown(client, slot, speedtime);	//Cooldown based on how much mana the player currently has.
 				
 				weapon_id[client] = weapon;
 				
@@ -177,15 +177,15 @@ public void Weapon_BeamWand_M2(int client, int weapon, const char[] classname, b
 			}
 			else
 			{
-				float Ability_CD = ability_cooldown[client] - GetGameTime();
-		
+				float Ability_CD = Ability_Check_Cooldown(client, slot);
+				
 				if(Ability_CD <= 0.0)
 					Ability_CD = 0.0;
-			
+				
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);		
 			}
 		}
 		else
@@ -210,10 +210,10 @@ public void Weapon_BeamWand_M2_pap(int client, int weapon, const char[] classnam
 		int mana_cost = attackmana;
 		if(mana_cost <= Current_Mana[client])
 		{
-			if (ability_cooldown[client] < GetGameTime())
+			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
 				float speedtime = Actualmana / 100.0 + 5.0;
-				ability_cooldown[client] = GetGameTime() + speedtime; //Cooldown based on how much mana the player currently has.
+				Ability_Apply_Cooldown(client, slot, speedtime);	//Cooldown based on how much mana the player currently has.
 				
 				weapon_id[client] = weapon;
 				
@@ -240,15 +240,15 @@ public void Weapon_BeamWand_M2_pap(int client, int weapon, const char[] classnam
 			}
 			else
 			{
-				float Ability_CD = ability_cooldown[client] - GetGameTime();
-		
+				float Ability_CD = Ability_Check_Cooldown(client, slot);
+				
 				if(Ability_CD <= 0.0)
 					Ability_CD = 0.0;
-			
+				
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);		
 			}
 		}
 		else

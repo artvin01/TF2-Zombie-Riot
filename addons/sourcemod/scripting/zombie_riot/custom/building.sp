@@ -4173,8 +4173,6 @@ bool Building_DoesPierce(int client)
 
 int Building_GetCashOnWave(int current)
 {
-	static int freeRebel;
-	
 	int popCash;
 	int extras;
 	int farms;
@@ -4202,14 +4200,8 @@ int Building_GetCashOnWave(int current)
 		}
 	}
 	
-	if(!extras)
+	if(extras)
 	{
-		freeRebel = 0;
-	}
-	else if(freeRebel > 9)
-	{
-		freeRebel -= 10 - extras;
-		
 		int count;
 		
 		int i = MaxClients + 1;
@@ -4219,12 +4211,11 @@ int Building_GetCashOnWave(int current)
 				count++;
 		}
 		
-		if(count < 6)
+		for(i = 0; i < extras && count < 6; i++)
+		{
 			Citizen_SpawnAtPoint();
-	}
-	else
-	{
-		freeRebel += extras;
+			count++;
+		}
 	}
 	
 	if(popCash > 3)
@@ -4750,7 +4741,7 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						if(attrib != Address_Null)
 							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.06);
 					}
-					case VILLAGE_040, VILLAGE_050:
+					case VILLAGE_040, VILLAGE_050:	// 1.0 * 1.5 / 1.5
 					{
 						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
 						if(attrib != Address_Null)

@@ -1198,17 +1198,21 @@
 		"ru"		"Может быть улучшено"
 		"de"		"Kann man Pack-A-Punchen"
 	}
+	"Your loadout has been equipped!"
+	{
+		"en"		"Your loadout has been equipped!"
+	//	"ru"		"Ваше снаряжение было обновлено по сравнению с предыдущей игрой."
+	//	"de"		"Ihr Loadout wurde geupdated von ihren vorigen zustand."
+	}
 	"Your loadout was updated from your previous state."
 	{
 		"en"		"Your loadout was updated from your previous state."
 		"ru"		"Ваше снаряжение было обновлено по сравнению с предыдущей игрой."
 		"de"		"Ihr Loadout wurde geupdated von ihren vorigen zustand."
 	}
-	"Your last equipped level perks were restored"
+	"Couldnt buy all items needed"
 	{
-		"en"		"Your last equipped level perks were restored"
-		"ru"		"Ваши последние имеющиеся уровневые перки были восстановлены."
-		"de"		"Ihre letzten level perks wurden wiederhergestellt."
+		"en"		"Couldnt buy all items needed, you did not have enough cash./nMissing sale or wrong gamemode is usually the cause."
 	}
 	"Press TAB To open the store"
 	{
