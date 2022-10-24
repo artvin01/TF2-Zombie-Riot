@@ -322,7 +322,6 @@ static const int RenderColors[][] =
 };
 
 static Cookie CookieCache;
-static Cookie CookieData;
 static Cookie CookieLoadoutLv[9]; // we want 10 loadouts in total to be saved.
 static Cookie CookieLoadoutInv[9];
 static Cookie CookieLoadoutItems[9];
@@ -374,7 +373,6 @@ int Store_GetSpecialOfSlot(int client, int slot)
 void Store_PluginStart()
 {
 	CookieCache = new Cookie("zr_lastgame", "The last game saved data is from", CookieAccess_Protected);
-	CookieData = new Cookie("zr_gamedata", "The last game saved data is from", CookieAccess_Protected);
 	
 	char loadoutcookienameLv[64];
 	char loadoutcookienameInv[64];
@@ -1216,6 +1214,27 @@ void Store_SaveLoadout(int client)
 	}
 	
 	CookieData.Set(client, buffer);
+}
+
+bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped, char[] buffer="", int length=0)
+{
+	static Item item;
+	int length = StoreItems.Length;
+	for(; i < length; i++)
+	{
+		StoreItems.GetArray(i, item);
+		if(item.Owned[client] || item.Scaled[client])
+		{
+			owned = item.Owned[client];
+			scale = item.Scaled[client];
+			
+			if(length)
+				strcopy(buffer, length, item.Name);
+			
+			return true;
+		}
+	}
+	return false;
 }
 
 public void Store_RandomizeNPCStore(bool ResetStore)
