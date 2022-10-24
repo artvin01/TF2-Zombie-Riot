@@ -2794,7 +2794,14 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		if(entity > MaxClients)
 		{
 			f_Actualm_flNextPrimaryAttack[entity] = GetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack");
-			Attributes_Fire(client, entity);
+			bool cancel_attack = false;
+			cancel_attack = Attributes_Fire(client, entity);
+			
+			if(cancel_attack)
+			{
+				buttons &= ~IN_ATTACK;
+				return Plugin_Changed;
+			}
 		}
 	}
 	

@@ -1,16 +1,20 @@
-void Attributes_Fire(int client, int weapon)
+bool Attributes_Fire(int client, int weapon)
 {
 	int clip = GetEntProp(weapon, Prop_Data, "m_iClip1");
 	if(clip > 0)
 	{
-		float gameTime = GetGameTime()+0.2;
+		float gameTime = GetGameTime();
 		if(gameTime < GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack"))
 		{
 			float value = Attributes_FindOnWeapon(client, weapon, 298, true);	// mod ammo per shot
 			if(value && clip < RoundFloat(value))
-				SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", gameTime);
+			{
+				SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", gameTime+0.2);
+				return true;
+			}
 		}
 	}
+	return false;
 }
 
 /*int Attributes_Airdashes(int client)
