@@ -2277,6 +2277,9 @@ void Store_ApplyAttribs(int client)
 	{
 		TF2Attrib_SetByDefIndex(client, 489, 0.15);
 	}
+	Mana_Regen_Level[client] = Attributes_FindOnPlayer(client, 405, true, 0.0);
+	
+	
 	delete map;
 	delete snapshot;
 	TF2_AddCondition(client, TFCond_Dazed, 0.001);

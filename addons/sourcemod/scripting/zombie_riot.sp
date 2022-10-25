@@ -15,6 +15,7 @@
 #include <PathFollower_Nav>
 #include <morecolors>
 
+
 //#include <studio_hdr>
 #undef REQUIRE_PLUGIN
 #include <minecraft_tf2>
@@ -461,7 +462,7 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 int Armor_Level[MAXPLAYERS + 1]={0, ...}; 				//701
 int Jesus_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777
 float Panic_Attack[MAXENTITIES]={0.0, ...};				//651
-float Mana_Regen_Level[MAXENTITIES]={0.0, ...};				//405
+float Mana_Regen_Level[MAXPLAYERS]={0.0, ...};				//405
 int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 				//785
 int i_SurvivalKnifeCount[MAXENTITIES]={0, ...}; 				//33
 int i_BarbariansMind[MAXPLAYERS + 1]={0, ...}; 				//830

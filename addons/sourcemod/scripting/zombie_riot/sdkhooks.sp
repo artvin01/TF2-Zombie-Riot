@@ -166,8 +166,19 @@ public void OnPostThink(int client)
 		{
 			Mana_Regen_Delay[client] = gameTime + 0.4;
 			
-			int weapon = GetPlayerWeaponSlot(client, 2);
-			if(!EscapeMode && IsValidEntity(weapon))
+			has_mage_weapon[client] = false;
+
+			int i, entity;
+			while(TF2_GetItem(client, entity, i))
+			{
+				if(IsWandWeapon(entity))
+				{
+					has_mage_weapon[client] = true;
+					break;
+				}
+			}
+
+			if(!EscapeMode)
 			{
 				max_mana[client] = 600.0;
 				mana_regen[client] = 10.0;
@@ -179,17 +190,11 @@ public void OnPostThink(int client)
 				{
 					mana_regen[client] *= 1.35;
 				}
-				
-				if(Mana_Regen_Level[weapon])
-				{			
-					mana_regen[client] *= Mana_Regen_Level[weapon];
-					max_mana[client] *= Mana_Regen_Level[weapon];	
-					has_mage_weapon[client] = true;
-				}
-				else
-				{
-					has_mage_weapon[client] = false;
-				}
+					
+				mana_regen[client] *= Mana_Regen_Level[client];
+				max_mana[client] *= Mana_Regen_Level[client];	
+
+
 				/*
 				Current_Mana[client] += RoundToCeil(mana_regen[client]);
 					
@@ -207,7 +212,7 @@ public void OnPostThink(int client)
 					
 				Mana_Hud_Delay[client] = 0.0;
 			}
-			else if (IsValidEntity(weapon))
+			else
 			{
 			//	if(Mana_Regen_Level[weapon])
 			//	{				
