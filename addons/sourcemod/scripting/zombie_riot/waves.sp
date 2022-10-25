@@ -548,12 +548,7 @@ public Action Waves_RoundStartTimer(Handle timer)
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client) && IsPlayerAlive(client) && !IsFakeClient(client))
-			{
 				any_player_on = true;
-				
-				if(!Store_HasAnyItem(client))
-					Store_PutInServer(client);
-			}
 		}
 		if(any_player_on && !CvarNoRoundStart.BoolValue)
 		{
