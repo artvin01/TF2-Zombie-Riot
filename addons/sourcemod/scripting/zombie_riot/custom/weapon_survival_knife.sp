@@ -92,21 +92,26 @@ public void Enable_Management(int client, int weapon) // Enable management, hand
 		//		Knife_Count[client] = 7;	// Knife count
 			}
 		}
-		Timer_Knife_Management[client] = CreateTimer(0.1, Timer_Management_Survival, client, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+
+		DataPack pack;
+		Timer_Knife_Management[client] = CreateDataTimer(0.1, Timer_Management_Survival, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(client);
+		pack.WriteCell(weapon);
 	}
 }
 
 
-public Action Timer_Management_Survival(Handle timer, int client)
+public Action Timer_Management_Survival(Handle timer, DataPack pack)
 {
+	pack.Reset();
+	int client = pack.ReadCell();
 	if (IsClientInGame(client))
 	{
 		if (IsPlayerAlive(client))
 		{
 			if (CD_Knife[client]<=GetGameTime())
 			{
-				int weapon = GetPlayerWeaponSlot(client, 2);
-				if(i_SurvivalKnifeCount[weapon] == 0)
+				if(i_SurvivalKnifeCount[pack.ReadCell()] == 0)
 				{
 					Kill_Timer_Management(client);
 					return Plugin_Continue;
@@ -219,8 +224,12 @@ public void Survival_Knife_Tier2_Alt(int client, int weapon, bool crit, int slot
 			Knife_Count[client] -= 3;
 			CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
 			Throw_Knife(client, weapon, KNIFE_SPEED_2, 1);
-			CreateTimer(0.1, Timer_Throw_Extra_Knife, client, TIMER_FLAG_NO_MAPCHANGE);
-			CreateTimer(0.2, Timer_Throw_Extra_Knife, client, TIMER_FLAG_NO_MAPCHANGE);
+
+			DataPack pack = new DataPack();
+			CreateTimer(0.1, Timer_Throw_Extra_Knife, pack, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(0.2, Timer_Throw_Extra_Knife, pack, TIMER_FLAG_NO_MAPCHANGE | TIMER_DATA_HNDL_CLOSE);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
 			
 			SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
 			SetGlobalTransTarget(client);
@@ -266,18 +275,26 @@ public void Survival_Knife_Tier3_Reload(int client, int weapon, bool crit, int s
 		TF2_AddCondition(client, TFCond_RestrictToMelee, 6.0); // Madness duration (condition)
 		TF2_AddCondition(client, TFCond_DefenseBuffNoCritBlock, 6.0); // Madness duration (condition)
 		TF2_AddCondition(client, TFCond_CritHype, 6.0); // Madness duration (condition)
-		CreateTimer(5.0, Timer_Madness_Duration, client, TIMER_FLAG_NO_MAPCHANGE);// Madness duration
+
+		DataPack pack;
+		CreateDataTimer(5.0, Timer_Madness_Duration, pack, TIMER_FLAG_NO_MAPCHANGE);// Madness duration
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
 }
 
-public Action Timer_Madness_Duration(Handle timer, int client)
+public Action Timer_Madness_Duration(Handle timer, DataPack pack)
 {
+	pack.Reset();
+	int client = pack.ReadCell();
 	if (IsClientInGame(client))
 	{
 		if (IsPlayerAlive(client))
 		{
-			int weapon = GetPlayerWeaponSlot(client, 2);
-			TF2Attrib_SetByDefIndex(weapon, 396, 1.0);
+			int weapon = EntRefToEntIndex(pack.ReadCell());
+			if(weapon != INVALID_ENT_REFERENCE)
+				TF2Attrib_SetByDefIndex(weapon, 396, 1.0);
+			
 			InMadness[client] = false;
 			
 			CD_Madness[client] = 10.0 + GetGameTime();
@@ -342,14 +359,17 @@ public void Survival_Knife_Tier3_Alt(int client, int weapon, bool crit, int slot
 			Throw_Knife(client, weapon, KNIFE_SPEED_3, 2);
 	}
 }
-public Action Timer_Throw_Extra_Knife(Handle timer, int client)
+public Action Timer_Throw_Extra_Knife(Handle timer, DataPack pack)
 {
+	pack.Reset();
+	int client = pack.ReadCell();
 	if (IsClientInGame(client))
 	{
 		if (IsPlayerAlive(client))
 		{
-			int weapon = GetPlayerWeaponSlot(client, 2);
-			Throw_Knife(client, weapon, KNIFE_SPEED_2, 1);
+			int weapon = EntRefToEntIndex(pack.ReadCell());
+			if(weapon != INVALID_ENT_REFERENCE)
+				Throw_Knife(client, weapon, KNIFE_SPEED_2, 1);
 		}
 	}
 	return Plugin_Continue;

@@ -1,5 +1,4 @@
 #define GetPlayerWeaponSlot GetPlayerWeaponSlot__DontUse
-#define TF2_RemoveWeaponSlot TF2_RemoveWeaponSlot__DontUse
 
 void Stock_TakeDamage(int entity = 0, int inflictor = 0, int attacker = 0, float damage = 0.0, int damageType=DMG_GENERIC, int weapon=-1,const float damageForce[3]=NULL_VECTOR, const float damagePosition[3]=NULL_VECTOR, bool bypassHooks = false, int Zr_damage_custom = 0)
 {
@@ -220,7 +219,7 @@ stock void ResetToZero2(any[][] array, int length1, int length2)
 #define TF2_RemoveWeaponSlot RemoveSlotWeapons
 #define TF2_RemoveAllWeapons RemoveAllWeapons
 
-stock void RemoveSlotWeapons(int client, TFWeaponSlot slot)
+stock void RemoveSlotWeapons(int client, int slot)
 {
 	char buffer[36];
 
@@ -228,7 +227,7 @@ stock void RemoveSlotWeapons(int client, TFWeaponSlot slot)
 	while(TF2_GetItem(client, entity, i))
 	{
 		GetEntityClassname(entity, buffer, sizeof(buffer));
-		if(TF2_GetWeaponClass(buffer) == slot)
+		if(TF2_GetClassnameSlot(buffer) == slot)
 			TF2_RemoveItem(client, entity);
 	}
 }

@@ -234,8 +234,11 @@ public void Enable_StarShooter(int client, int weapon) // Enable management, han
 		return;
 		
 	if(i_CustomWeaponEquipLogic[weapon] == 2)
-	{	
-		Timer_Starshooter_Management[client] = CreateTimer(0.1, Timer_Management_StarShooter, client, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+	{
+		DataPack pack;
+		Timer_Starshooter_Management[client] = CreateDataTimer(0.1, Timer_Management_StarShooter, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
 	else
 	{
@@ -245,15 +248,17 @@ public void Enable_StarShooter(int client, int weapon) // Enable management, han
 
 
 
-public Action Timer_Management_StarShooter(Handle timer, int client)
+public Action Timer_Management_StarShooter(Handle timer, DataPack pack)
 {
+	pack.Reset();
+	int client = pack.ReadCell();
 	if(IsValidClient(client))
 	{
 		if (IsClientInGame(client))
 		{
 			if (IsPlayerAlive(client))
 			{
-				Starshooter_Cooldown_Logic(client);
+				Starshooter_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
 			}
 			else
 				Kill_Timer_Starshooter(client);
@@ -277,12 +282,11 @@ public void Kill_Timer_Starshooter(int client)
 }
 
 
-public void Starshooter_Cooldown_Logic(int client)
+public void Starshooter_Cooldown_Logic(int client, int weapon)
 {
 	if (!IsValidMulti(client))
 		return;
 		
-	int weapon = GetPlayerWeaponSlot(client, 0); //Primary, we presume this will only be applied on primary weapons.
 	if(IsValidEntity(weapon))
 	{
 		if(i_CustomWeaponEquipLogic[weapon] == 2) //Double check to see if its good or bad :(

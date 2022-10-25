@@ -14,10 +14,7 @@ public void SemiAutoWeapon(int client, int buttons)
 			{
 				if(i_SemiAutoWeapon[entity])
 				{
-					char classname[64];
-					GetEntityClassname(entity, classname, sizeof(classname));
-					int slot = TF2_GetClassnameSlot(classname);
-					if(i_SemiAutoWeapon_AmmoCount[client][slot] > 0)
+					if(i_SemiAutoWeapon_AmmoCount[entity] > 0)
 					{
 						if(f_Actualm_flNextPrimaryAttack[entity] <= GetGameTime())
 						{
@@ -85,12 +82,7 @@ public void SemiAutoWeapon(int client, int buttons)
 			{
 				if(i_SemiAutoWeapon[entity])
 				{
-					char classname[64];
-					GetEntityClassname(entity, classname, sizeof(classname));
-					int slot = TF2_GetClassnameSlot(classname);
-				
-					
-					if(i_SemiAutoWeapon_AmmoCount[client][slot] > 0)
+					if(i_SemiAutoWeapon_AmmoCount[entity] > 0)
 					{
 						TF2Attrib_SetByDefIndex(entity, 821, 0.0);
 					}
@@ -123,20 +115,16 @@ void Reload_Me(int client)
 		{
 			if(f_Actualm_flNextPrimaryAttack[entity] <= GetGameTime())
 			{
-				char classname[64];
-				GetEntityClassname(entity, classname, sizeof(classname));
-				int slot = TF2_GetClassnameSlot(classname);
-				
-				if(i_SemiAutoWeapon_AmmoCount[client][slot] < i_SemiAutoStats_MaxAmmo[entity])
+				if(i_SemiAutoWeapon_AmmoCount[entity] < i_SemiAutoStats_MaxAmmo[entity])
 				{
-					i_SemiAutoWeapon_AmmoCount[client][slot] = i_SemiAutoStats_MaxAmmo[entity];
+					i_SemiAutoWeapon_AmmoCount[entity] = i_SemiAutoStats_MaxAmmo[entity];
 					
 					if(LastMann) //It also gives 2x the ammo.
 					{
-						i_SemiAutoWeapon_AmmoCount[client][slot] = i_SemiAutoStats_MaxAmmo[entity] * 2;
+						i_SemiAutoWeapon_AmmoCount[entity] = i_SemiAutoStats_MaxAmmo[entity] * 2;
 					}
 					
-					DoReloadAnimation(client, slot);
+					DoReloadAnimation(client, entity);
 						
 					float Reload_Rate = f_SemiAutoStats_ReloadTime[entity];
 						
@@ -154,7 +142,7 @@ void Reload_Me(int client)
 							
 					TF2Attrib_SetByDefIndex(entity, 821, 0.0);
 					
-					PrintHintText(client, "[%i/%i]", i_SemiAutoStats_MaxAmmo[entity], i_SemiAutoWeapon_AmmoCount[client][slot]);
+					PrintHintText(client, "[%i/%i]", i_SemiAutoStats_MaxAmmo[entity], i_SemiAutoWeapon_AmmoCount[entity]);
 					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 				}
 			}
@@ -185,7 +173,7 @@ void ApplyPrimaryAttackDelay(DataPack pack)
 */
 //int animation_count_up;
 
-void DoReloadAnimation(int attacker, int slot)
+void DoReloadAnimation(int attacker, int entity)
 {
 	
 //	animation_count_up += 1;
@@ -193,7 +181,7 @@ void DoReloadAnimation(int attacker, int slot)
 	
 	
 	int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
-	int melee = GetIndexOfWeaponSlot(attacker, slot);
+	int melee = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
 	if(viewmodel>MaxClients && IsValidEntity(viewmodel))
 	{
 		int animation = 1;

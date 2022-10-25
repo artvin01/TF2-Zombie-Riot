@@ -1214,12 +1214,6 @@ stock bool IsValidClient( int client)
 	return true; 
 }
 
-stock int GetIndexOfWeaponSlot(int client, int slot)
-{
-	int weapon = GetPlayerWeaponSlot(client, slot);
-	return (weapon>MaxClients && IsValidEntity(weapon)) ? GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") : -1;
-}
-
 stock float[] GetWorldSpaceCenter(int client)
 {
 	float v[3]; v = GetAbsOrigin(client);
