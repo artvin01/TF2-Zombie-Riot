@@ -568,6 +568,7 @@ stock void UnequipDispenser(int client)
 				AcceptEntityInput(converted_ref, "Kill");
 			}
 			Building_Mounted[client] = 0;
+			SetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed", 0.1);
 			i_BeingCarried[entity] = false;
 			Player_Mounting_Building[client] = false;
 			float StandStill[3];
@@ -597,7 +598,7 @@ stock int ParticleEffectAt_Building_Custom(float position[3], char[] effectName,
 		Building_particle_Owner[particle] = iParent;
 
 		SetEdictFlags(particle, GetEdictFlags(particle) &~ FL_EDICT_ALWAYS);
-	//	SDKHook(particle, SDKHook_SetTransmit, ParticleTransmit);
+		SDKHook(particle, SDKHook_SetTransmit, ParticleTransmit);
 		
 		//CreateTimer(0.1, Activate_particle_late, particle, TIMER_FLAG_NO_MAPCHANGE);
 	}

@@ -197,7 +197,7 @@ public void Weapon_BeamWand_M2(int client, int weapon, bool &result, int slot)
 		}
 	}
 }
-public void Weapon_BeamWand_M2_pap(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_BeamWand_M2_pap(int client, int weapon, bool &result, int slot)
 {
 	if(weapon >= MaxClients)
 	{
