@@ -2595,7 +2595,6 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 	if(EntityIsAWeapon)
 	{
 		Panic_Attack[entity] = 0.0;
-		Mana_Regen_Level[entity] = 0.0;
 		i_GlitchedGun[entity] = 0;
 		i_SurvivalKnifeCount[entity] = 0;
 		i_AresenalTrap[entity] = 0;
@@ -2746,7 +2745,6 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 			Attributes to Arrays Here
 		*/
 		Panic_Attack[entity] = Attributes_FindOnWeapon(client, entity, 651);
-		Mana_Regen_Level[entity] = Attributes_FindOnWeapon(client, entity, 405);
 		i_SurvivalKnifeCount[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 33));
 		i_GlitchedGun[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 731));
 		i_AresenalTrap[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 719));
