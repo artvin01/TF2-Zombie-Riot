@@ -942,10 +942,10 @@ public MRESReturn DHook_SentryFind_Target(int sentry, Handle hReturn, Handle hPa
 	{
 		if(IsPlayerAlive(owner))
 		{
-			int weapon = GetPlayerWeaponSlot(owner, 1);
-			if(weapon >= MaxClients)
+			int i, entity;
+			while(TF2_GetItem(owner, entity, i))
 			{
-				int weaponindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+				int weaponindex = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
 				if(weaponindex == 140)
 					return MRES_Ignored;
 			}
@@ -1522,36 +1522,30 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 								
 	if(ammo_amount_left > 0)
 	{
-		int HealAmmount = 20;
-		int weapon = GetPlayerWeaponSlot(owner, 1);
-		if(weapon >= MaxClients)
+		float HealAmmount = 20.0;
+		Address address = TF2Attrib_GetByDefIndex(originalLauncher, 8);
+		if(address != Address_Null)
 		{
-			Address address = TF2Attrib_GetByDefIndex(weapon, 8);
-			if(address != Address_Null)
-			{
-				HealAmmount *= RoundToCeil(TF2Attrib_GetValue(address));
-			}
-			else
-			{
-				HealAmmount = 20;
-			}
+			HealAmmount *= TF2Attrib_GetValue(address);
 		}
 		else
 		{
-			HealAmmount = 20;
+			HealAmmount = 20.0;
 		}
+
+		HealAmmount *= Attributes_FindOnPlayer(owner, 8, true, 1.0);
 		
 		if(EscapeMode)
-			HealAmmount *= 2;
+			HealAmmount *= 2.0;
 			
 		if(f_TimeUntillNormalHeal[target] > GetGameTime())
 		{
-			HealAmmount /= 8; //make sure they dont get the full benifit if hurt recently.
+			HealAmmount /= 8.0; //make sure they dont get the full benifit if hurt recently.
 		}
 		
-		if(ammo_amount_left > HealAmmount)
+		if(ammo_amount_left > RoundToCeil(HealAmmount))
 		{
-			ammo_amount_left = HealAmmount;
+			ammo_amount_left = RoundToCeil(HealAmmount);
 		}
 		
 		int flHealth = GetEntProp(target, Prop_Send, "m_iHealth");
@@ -1569,7 +1563,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 		}
 		else
 		{
-			if(Health_To_Max < HealAmmount)
+			if(Health_To_Max < RoundToCeil(HealAmmount))
 			{
 				ammo_amount_left = Health_To_Max;
 			}

@@ -264,8 +264,8 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 									Armor_Charge[client_Hud] = Armor_Max;
 								}
 							}
-							int i, weapon;
-							while(TF2_GetItem(client, weapon, i))
+							int ie, weapon;
+							while(TF2_GetItem(client, weapon, ie))
 							{
 								if(IsValidEntity(weapon))
 								{

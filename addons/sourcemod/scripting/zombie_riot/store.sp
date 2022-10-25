@@ -2295,8 +2295,8 @@ void Store_GiveAll(int client, int health)
 	
 	//There is no easy way to preserve uber through with multiple mediguns
 	//solution: save via index
-	int i, entity;
-	while(TF2_GetItem(client, entity, i))
+	int ie, entity;
+	while(TF2_GetItem(client, entity, ie))
 	{
 		int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
 		switch(index)

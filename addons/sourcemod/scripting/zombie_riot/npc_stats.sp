@@ -6241,8 +6241,8 @@ public void GibCollidePlayerInteraction(int gib, int player)
 {
 	if(b_IsCannibal[player] && dieingstate[player] == 0)
 	{
-		int weapon = GetPlayerWeaponSlot(player, 2); //Check melee weapon healing.
-		if(IsValidEntity(weapon) && weapon == GetEntPropEnt(player, Prop_Send, "m_hActiveWeapon")) //Must also hold melee out 
+		int weapon = GetEntPropEnt(player, Prop_Send, "m_hActiveWeapon");
+		if(IsValidEntity(weapon)) //Must also hold melee out 
 		{
 			if(!IsWandWeapon(weapon)) //Make sure its not wand.
 			{

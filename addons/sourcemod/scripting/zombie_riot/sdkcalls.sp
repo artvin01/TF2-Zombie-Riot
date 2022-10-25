@@ -401,8 +401,8 @@ public void Sdkcall_Load_Lagcomp()
 
 public void Manual_Impulse_101(int client, int health)
 {
-	int i, entity;
-	while(TF2_GetItem(client, entity, i))
+	int ie, entity;
+	while(TF2_GetItem(client, entity, ie))
 	{
 		int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
 		switch(index)
@@ -479,33 +479,33 @@ public void Manual_Impulse_101(int client, int health)
 	OnWeaponSwitchPost(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
 	
 	
-	int i, entity;
-	while(TF2_GetItem(client, entity, i))
+	int iea, weapon;
+	while(TF2_GetItem(client, weapon, iea))
 	{
-		int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
+		int index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 		switch(index)
 		{
 			case 411:
 			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
 				{
-					SetEntPropFloat(entity, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][0]);
+					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][0]);
 					f_MedigunChargeSave[client][0] = 0.0;
 				}
 			}
 			case 211:
 			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
 				{
-					SetEntPropFloat(entity, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][0]);
+					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][0]);
 					f_MedigunChargeSave[client][1] = 0.0;
 				}
 			}
 			case 998:
 			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
 				{
-					SetEntPropFloat(entity, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][0]);
+					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][0]);
 					f_MedigunChargeSave[client][2] = 0.0;
 				}
 			}
