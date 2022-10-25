@@ -1268,7 +1268,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					if(IsBehindAndFacingTarget(attacker, victim) || b_FaceStabber[attacker])
 					{
 						int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
-						int melee = GetIndexOfWeaponSlot(attacker, TFWeaponSlot_Melee);
+						int melee = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 						if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
 						{
 							float attack_speed;
@@ -1276,7 +1276,12 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 							attack_speed = Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);
 							
 							EmitSoundToAll("weapons/knife_swing_crit.wav", attacker, _, _, _, 0.7);
-							RequestFrame(DoMeleeAnimationFrameLater, attacker);
+							
+							DataPack pack = new DataPack();
+							RequestFrame(DoMeleeAnimationFrameLater, pack);
+							pack.WriteCell(EntIndexToEntRef(viewmodel));
+							pack.WriteCell(melee);
+
 						//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
 							damage *= 5.25;
 							
@@ -1591,14 +1596,14 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 		}
 	}	
 }
-void DoMeleeAnimationFrameLater(int attacker)
+void DoMeleeAnimationFrameLater(DataPack pack)
 {
-	int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
-	int melee = GetIndexOfWeaponSlot(attacker, TFWeaponSlot_Melee);
-	if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
+	pack.Reset();
+	int viewmodel = EntRefToEntIndex(pack.ReadCell());
+	if(viewmodel != INVALID_ENT_REFERENCE)
 	{
 		int animation = 38;
-		switch(melee)
+		switch(pack.ReadCell())
 		{
 			case 225, 356, 423, 461, 574, 649, 1071, 30758:  //Your Eternal Reward, Conniver's Kunai, Saxxy, Wanga Prick, Big Earner, Spy-cicle, Golden Frying Pan, Prinny Machete
 				animation=12;
@@ -1608,7 +1613,7 @@ void DoMeleeAnimationFrameLater(int attacker)
 		}
 		SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);
 	}
-	
+	delete pack;
 }
 /*
 enum PlayerAnimEvent_t

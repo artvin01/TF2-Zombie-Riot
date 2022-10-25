@@ -181,6 +181,7 @@ void Database_SaveLoadout(int client, const char[] name)
 		{
 			Transaction tr = new Transaction();
 			
+			char buffer[256];
 			FormatEx(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_LOADOUT ... " WHERE steamid = %d AND loadout = '%s';", id, name);
 			tr.AddQuery(buffer);
 			
