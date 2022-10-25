@@ -219,6 +219,7 @@ bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie CookieXP;
 Cookie CookiePlayStreak;
 Cookie Niko_Cookies;
+Cookie CookieCache;
 
 //custom wave music.
 char char_MusicString1[256];
@@ -296,7 +297,7 @@ int Elevator_Owner[MAXENTITIES]={0, ...};
 bool Is_Elevator[MAXENTITIES]={false, ...};
 int Dont_Crouch[MAXENTITIES]={0, ...};
 
-
+int StoreWeapon[MAXENTITIES];
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 enum
 {
@@ -1847,7 +1848,7 @@ public void OnClientPutInServer(int client)
 	
 	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
 	
-	if(CurrentRound && Store_PutInServer(client))
+	if(CurrentRound)
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.40);
 	
 	if(AreClientCookiesCached(client)) //Ingore this. This only bugs it out, just force it, who cares.
@@ -1966,7 +1967,6 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	RoundStartTime = GetGameTime()+0.1;
 	
 	Escape_RoundStart();
-	Store_RoundStart();
 	Waves_RoundStart();
 }
 
@@ -2684,7 +2684,7 @@ public Action OnBuildCmd(int client, const char[] command, int args)
 	return Plugin_Continue;
 }
 
-public Action OnClientCommandKeyValues(int client, KeyValues kv)
+/*public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
 	char buffer[64];
 	kv.GetSectionName(buffer, sizeof(buffer));
@@ -2692,7 +2692,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 		Store_OpenItemPage(client);
 	
 	return Plugin_Continue;
-}
+}*/
 
 public Action OnRelayTrigger(const char[] output, int entity, int caller, float delay)
 {
@@ -3273,8 +3273,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	}
 	else if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
-		
-		
+		StoreWeapon[entity] = -1;
 		LastHitId[entity] = -1;
 		DamageBits[entity] = -1;
 		Damage[entity] = 0.0;
@@ -3967,8 +3966,8 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				if(Escape_Interact(client, entity))
 					return true;
 				
-				if(Store_Interact(client, entity, buffer))
-					return true;
+				//if(Store_Interact(client, entity, buffer))
+				//	return true;
 				
 				if(Citizen_Interact(client, entity))
 					return true;

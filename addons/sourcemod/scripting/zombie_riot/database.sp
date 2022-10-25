@@ -109,13 +109,14 @@ bool Database_SaveGameData(int client)
 		{
 			Transaction tr = new Transaction();
 			
+			char buffer[256];
 			FormatEx(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_GAMEDATA ... " WHERE steamid = %d;", id);
 			tr.AddQuery(buffer);
 			
 			int owned, scale, equip;
 			for(int i; Store_GetNextItem(client, i, owned, scale, equip); i++)
 			{
-				DataBase.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GAMEDATA ... " (steamid, item, owned, scale, equip) VALUES ('%d', '%d', '%d', '%d', '%d')", id, item, owned, scale, equip);
+				DataBase.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GAMEDATA ... " (steamid, item, owned, scale, equip) VALUES ('%d', '%d', '%d', '%d', '%d')", id, i, owned, scale, equip);
 				tr.AddQuery(buffer);
 			}
 			
@@ -155,7 +156,7 @@ public void Database_OnGameData(Database db, int userid, int numQueries, DBResul
 		
 		int buffers[2];
 		ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
-		CashSpent[client] += buffers[1];
+		CashSpent[client] = buffers[1];
 		
 		do
 		{
@@ -184,7 +185,7 @@ void Database_SaveLoadout(int client, const char[] name)
 			tr.AddQuery(buffer);
 			
 			int owned, scale, equip;
-			for(int i; Store_GetNextItem(client, i, owned, scale, equip); i++)
+			for(int i; Store_GetNextItem(client, i, owned, scale, equip, buffer, sizeof(buffer)); i++)
 			{
 				if(owned && equip)
 				{
@@ -254,8 +255,8 @@ public void Database_Fail(Database db, any data, int numQueries, const char[] er
 	LogError("[Database] %s", error);
 }
 
-/*public void Database_FailHandle(Database db, any data, int numQueries, const char[] error, int failIndex, any[] queryData)
+public void Database_FailHandle(Database db, any data, int numQueries, const char[] error, int failIndex, any[] queryData)
 {
 	LogError("[Database] %s", error);
 	CloseHandle(data);
-}*/
+}

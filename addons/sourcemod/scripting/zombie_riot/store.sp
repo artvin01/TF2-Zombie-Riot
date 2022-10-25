@@ -326,7 +326,6 @@ static const int RenderColors[][] =
 	{0, 0, 0, 255}
 };
 
-static Cookie CookieCache;
 static Cookie CookieLoadoutLv[9]; // we want 10 loadouts in total to be saved.
 static Cookie CookieLoadoutInv[9];
 static Cookie CookieLoadoutItems[9];
@@ -2421,6 +2420,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 				}*/
 				
 				entity = SpawnWeapon(client, info.Classname, info.Index, 5, 6, info.Attrib, info.Value, info.Attribs);
+				StoreWeapon[entity] = index;
 				
 				i_CustomWeaponEquipLogic[entity] = 0;
 				i_SemiAutoWeapon[entity] = false;
@@ -2925,18 +2925,14 @@ int Store_GiveSpecificItem(int client, const char[] name)
 	return false;
 }*/
 
-/*void Store_ConsumeItem(int client, int slot)
+void Store_ConsumeItem(int client, int index)
 {
-	if(Equipped[client][slot] > 0 && Equipped[client][slot] < StoreItems.Length)
-	{
-		Item item;
-		StoreItems.GetArray(Equipped[client][slot], item);
-		item.Owned[client] = 0;
-		StoreItems.SetArray(Equipped[client][slot], item);
-		Equipped[client][slot] = -1;
-		TF2_RemoveWeaponSlot(client, slot);
-	}
-}*/
+	static Item item;
+	StoreItems.GetArray(index, item);
+	item.Owned[client] = 0;
+	item.Equipped[client] = false;
+	StoreItems.SetArray(index, item);
+}
 
 bool Store_PrintLevelItems(int client, int level)
 {

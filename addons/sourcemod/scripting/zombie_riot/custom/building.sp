@@ -1451,22 +1451,18 @@ void Building_ShowInteractionHud(int client, int entity)
 				else if(!StrContains(buffer, "zr_packapunch"))
 				{
 					int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-					for(int i; i<6; i++)
+					if(weapon != -1 && StoreWeapon[weapon] > 0)
 					{
-						if(weapon == GetPlayerWeaponSlot(client, i))
+						if(Store_CanPapItem(client, StoreWeapon[weapon]))
 						{
-							int index = Store_GetEquipped(client, i);
-							if(Store_CanPapItem(client, index))
-							{
-								PrintCenterText(client, "%t", "PackAPunch Tooltip");
-							}
-							else
-							{
-								PrintCenterText(client, "%t", "Cannot Pap this");	
-							}
-							break;
+							PrintCenterText(client, "%t", "PackAPunch Tooltip");
+						}
+						else
+						{
+							PrintCenterText(client, "%t", "Cannot Pap this");	
 						}
 					}
+					
 					Hide_Hud = false;
 					//Unused for now, will have extra code saying how much it costs and stuff.
 				}
@@ -1540,22 +1536,18 @@ void Building_ShowInteractionHud(int client, int entity)
 				case 6:
 				{
 					int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-					for(int i; i<6; i++)
+					if(weapon != -1 && StoreWeapon[weapon] > 0)
 					{
-						if(weapon == GetPlayerWeaponSlot(client, i))
+						if(Store_CanPapItem(client, StoreWeapon[weapon]))
 						{
-							int index = Store_GetEquipped(client, i);
-							if(Store_CanPapItem(client, index))
-							{
-								PrintCenterText(client, "%t", "PackAPunch Tooltip");	
-							}
-							else
-							{
-								PrintCenterText(client, "%t", "Cannot Pap this");	
-							}
-							break;
+							PrintCenterText(client, "%t", "PackAPunch Tooltip");
+						}
+						else
+						{
+							PrintCenterText(client, "%t", "Cannot Pap this");	
 						}
 					}
+					
 					Hide_Hud = false;
 					//Unused for now, will have extra code saying how much it costs and stuff.
 				}
@@ -2145,26 +2137,20 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						if(Is_Reload_Button)
 						{
 							int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-							for(int i; i<6; i++)
+							if(weapon != -1 && StoreWeapon[weapon] > 0)
 							{
-								if(weapon == GetPlayerWeaponSlot(client, i))
+								if(Store_CanPapItem(client, StoreWeapon[weapon]))
 								{
-									int index = Store_GetEquipped(client, i);
-									if(Store_CanPapItem(client, index))
-									{
-										Store_PackMenu(client, index, entity, owner);
-									}
-									else
-									{
-										ClientCommand(client, "playgamesound items/medshotno1.wav");
-										SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-										SetGlobalTransTarget(client);
-										ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Pap this");	
-									}
-									break;
+									Store_PackMenu(client, StoreWeapon[weapon], weapon, owner);
+								}
+								else
+								{
+									ClientCommand(client, "playgamesound items/medshotno1.wav");
+									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetGlobalTransTarget(client);
+									ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Pap this");	
 								}
 							}
-							
 						}
 						else if(!b_IgnoreWarningForReloadBuidling[client])
 						{
@@ -2214,6 +2200,8 @@ public Action Building_CheckTimer(Handle timer, int ref)
 			
 			if(!result)
 			{
+				
+				
 				Store_ConsumeItem(client, TFWeaponSlot_Grenade);
 				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 				Building[client] = INVALID_FUNCTION;
