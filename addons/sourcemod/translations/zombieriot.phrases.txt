@@ -1356,4 +1356,13 @@
 	{
 		"en"		"Enter name in chatbox to create a new loadout"
 	}
+	"Invalid Name"
+	{
+		"en"		"Make sure your name is under 32 characters and does not contain special characters"
+	}
+	"Loadout Slots"
+	{
+		"#format"	"{1:d}"
+		"en"		"{1} Loadout Slot(s)"
+	}
 }

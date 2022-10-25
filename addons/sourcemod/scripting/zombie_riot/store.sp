@@ -1687,8 +1687,11 @@ static void MenuPage(int client, int section)
 	
 	if(section == -1 && !NPCOnly[client])
 	{
-		FormatEx(buffer, sizeof(buffer), "%t", "Loadouts");
-		menu.AddItem("-22", buffer);
+		if(Level[client] > 1)
+		{
+			FormatEx(buffer, sizeof(buffer), "%t", "Loadouts");
+			menu.AddItem("-22", buffer);
+		}
 		
 		FormatEx(buffer, sizeof(buffer), "%t", "Help?");
 		menu.AddItem("-3", buffer);
@@ -2192,12 +2195,11 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-static void LoadoutPage(int client)
+static void LoadoutPage(int client, bool last = false)
 {
 	SetGlobalTransTarget(client);
 	
 	Menu menu = new Menu(Store_LoadoutPage);
-	menu.SetTitle("%t\n%t\n \n%t", "TF2: Zombie Riot", "Loadouts", "Save New");
 	
 	char buffer[64];
 	
@@ -2207,7 +2209,7 @@ static void LoadoutPage(int client)
 		length = Loadouts[client].Length;
 		for(int i; i < length; i++)
 		{
-			Loadouts[client].GetString(buffer, sizeof(buffer));
+			Loadouts[client].GetString(i, buffer, sizeof(buffer));
 			menu.AddItem(buffer, buffer);
 		}
 	}
@@ -2218,8 +2220,18 @@ static void LoadoutPage(int client)
 		menu.AddItem("", buffer, ITEMDRAW_DISABLED);
 	}
 	
+	if(!InLoadoutMenu[client] && (Level[client] / 2) > length)
+	{
+		menu.SetTitle("%t\n%t\n \n%t", "TF2: Zombie Riot", "Loadouts", "Save New");
+		InLoadoutMenu[client] = true;
+	}
+	else
+	{
+		menu.SetTitle("%t\n%t\n \n ", "TF2: Zombie Riot", "Loadouts");
+	}
+	
 	menu.ExitBackButton = true;
-	InLoadoutMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
+	menu.DisplayAt(client, last ? (length / 7 * 7) : 0, MENU_TIME_FOREVER);
 }
 
 public int Store_LoadoutPage(Menu menu, MenuAction action, int client, int choice)
@@ -2294,14 +2306,14 @@ public int Store_LoadoutItem(Menu menu, MenuAction action, int client, int choic
 			{
 				case 0, 1:
 				{
-					Database_LoadLoadout(client, buffer, choice == 1);
-					
 					Menu menu2 = new Menu(Store_MenuPage);
 					menu2.SetTitle("%t", "Getting Your Items");
 					
 					menu2.AddItem(NULL_STRING, NULL_STRING, ITEMDRAW_SPACER);
 					
 					menu2.Display(client, 10);
+					
+					Database_LoadLoadout(client, buffer, choice == 1);
 				}
 				case 3:
 				{
@@ -2318,6 +2330,26 @@ public int Store_LoadoutItem(Menu menu, MenuAction action, int client, int choic
 		}
 	}
 	return 0;
+}
+
+public bool Store_SayCommand(int client)
+{
+	if(!InLoadoutMenu[client])
+		return false;
+	
+	char buffer[64];
+	GetCmdArgString(buffer, sizeof(buffer));
+	
+	if(Database_Escape(buffer, buffer, sizeof(buffer), length) && length < 31)
+	{
+		Database_SaveLoadout(client, buffer);
+		Loadouts[client].PushString(buffer);
+		LoadoutPage(client, true);
+	}
+	else
+	{
+		PrintToChat(client, "%T", "Invalid Name", client);
+	}
 }
 
 void Store_ApplyAttribs(int client)
@@ -3194,7 +3226,7 @@ bool Store_PrintLevelItems(int client, int level)
 		StoreItems.GetArray(i, item);
 		if(item.Level == level)
 		{
-			PrintToChat(client, item.Name);
+			PrintToChat(client, TranslateItemName(client, item.Name));
 			found = true;
 		}
 	}

@@ -1402,6 +1402,9 @@ public Action OnTaunt(int client, const char[] command, int args)
 
 public Action OnSayCommand(int client, const char[] command, int args)
 {
+	if(Store_SayCommand(client))
+		return Plugin_Handled;
+	
 	return NPC_SayCommand(client, command);
 }
 
@@ -3995,19 +3998,30 @@ void GiveXP(int client, int xp)
 	{
 		static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
 		ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
-//		SetEntityHealth(client, GetEntProp(client, Prop_Data, "m_iMaxHealth"));
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client) * 1.5);
 		SetGlobalTransTarget(client);
 		PrintToChat(client, "%t", "Level Up", nextLevel);
 		
 		bool found;
+		int slots;
+		
 		for(Level[client]++; Level[client]<=nextLevel; Level[client]++)
 		{
 			if(Store_PrintLevelItems(client, Level[client]))
 				found = true;
+			
+			if(!(Level[client] % 2))
+				slots++;
 		}
 		
-		if(!found)
+		if(slots)
+		{
+			PrintToChat(client, "%t", "Loadout Slots", slots);
+		}
+		else if(!found)
+		{
 			PrintToChat(client, "%t", "None");
+		}
 	}
 }
 

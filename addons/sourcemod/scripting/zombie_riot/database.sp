@@ -22,6 +22,14 @@ void Database_PluginStart()
 	}
 }
 
+bool Database_Escape(char[] buffer, int length, int &bytes)
+{
+	if(!DataBase)
+		return false;
+	
+	return DataBase.Escape(buffer, buffer, length, bytes);
+}
+
 public void Database_Connected(Database db, const char[] error, any data)
 {
 	if(db)
