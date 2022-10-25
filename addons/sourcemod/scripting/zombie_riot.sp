@@ -252,7 +252,7 @@ TFClassType CurrentClass[MAXTF2PLAYERS];
 TFClassType WeaponClass[MAXTF2PLAYERS];
 int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
 int i_SemiAutoWeapon[MAXENTITIES];
-int i_SemiAutoWeapon_AmmoCount[MAXTF2PLAYERS][10]; //idk like 10 slots lol
+int i_SemiAutoWeapon_AmmoCount[MAXENTITIES]; //idk like 10 slots lol
 bool i_WeaponCannotHeadshot[MAXENTITIES];
 
 #define MAXSTICKYCOUNTTONPC 12
@@ -3158,8 +3158,8 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	if(i_SemiAutoWeapon[weapon])
 	{
 		int slot = TF2_GetClassnameSlot(classname);
-		i_SemiAutoWeapon_AmmoCount[client][slot] -= 1;
-		PrintHintText(client, "[%i/%i]", i_SemiAutoStats_MaxAmmo[weapon],i_SemiAutoWeapon_AmmoCount[client][slot]);
+		i_SemiAutoWeapon_AmmoCount[weapon] -= 1;
+		PrintHintText(client, "[%i/%i]", i_SemiAutoStats_MaxAmmo[weapon],i_SemiAutoWeapon_AmmoCount[weapon]);
 		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 	}
 	
