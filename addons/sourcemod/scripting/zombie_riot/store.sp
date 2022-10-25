@@ -7,23 +7,23 @@
 
 static const int SlotLimits[] =
 {
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1
+	1,	// 0	Head
+	1,	// 1	Chest
+	1,	// 2	Leggings
+	1,	// 3	Shoes
+	1,	// 4	Monkey Knowledge
+	1,	// 5
+	1,	// 6	Extra Gear
+	1,	// 7	Grenade/Potion
+	1,	// 8
+	1,	// 9
+	1,	// 10
+	1,	// 11
+	1,	// 12
+	1,	// 13
+	1,	// 14
+	1,	// 15
+	1	// 16
 };
 
 enum struct ItemInfo
@@ -268,6 +268,9 @@ enum struct Item
 	int Owned[MAXTF2PLAYERS];
 	int Scaled[MAXTF2PLAYERS];
 	bool Equipped[MAXTF2PLAYERS];
+	float Cooldown1[MAXTF2PLAYERS];
+	float Cooldown2[MAXTF2PLAYERS];
+	float Cooldown3[MAXTF2PLAYERS];
 	
 	bool NPCSeller;
 	bool NPCSeller_First;
@@ -315,7 +318,7 @@ static const char AmmoNames[][] =
 	"Potion Supply"
 };
 //Rarity
-static const int RenderColors[][] =
+/*static const int RenderColors[][] =
 {
 	{255, 255, 255, 255}, 	// 0
 	{0, 255, 0, 255, 255},
@@ -324,33 +327,123 @@ static const int RenderColors[][] =
 	{ 178, 34, 34 , 255},
 	{ 138, 43, 226 , 255},
 	{0, 0, 0, 255}
-};
+};*/
 
-static Cookie CookieLoadoutLv[9]; // we want 10 loadouts in total to be saved.
-static Cookie CookieLoadoutInv[9];
-static Cookie CookieLoadoutItems[9];
 static ArrayList StoreItems;
 static int NPCOnly[MAXTF2PLAYERS];
 static int NPCCash[MAXTF2PLAYERS];
 static int NPCTarget[MAXTF2PLAYERS];
+static bool InLoadoutMenu[MAXTF2PLAYERS];
 
-/*void Store_OpenItemPage(int client)
+float Ability_Check_Cooldown(int client, int what_slot)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon != -1)
+	if(weapon != -1 && StoreWeapon[weapon] > 0)
+	{
+		static Item item;
+		StoreItems.GetArray(StoreWeapon[weapon], item);
+		
+		switch(what_slot)
+		{
+			case 1:
+				return item.Cooldown1[client] - GetGameTime();
+			
+			case 2:
+				return item.Cooldown2[client] - GetGameTime();
+			
+			case 3:
+				return item.Cooldown3[client] - GetGameTime();
+		}
+		
+		ThrowError("Invalid slot %d", what_slot);
+	}
+	return 0.0;
+}
+
+void Ability_Apply_Cooldown(int client, int what_slot, float cooldown)
+{
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon != -1 && StoreWeapon[weapon] > 0)
+	{
+		static Item item;
+		StoreItems.GetArray(StoreWeapon[weapon], item);
+		
+		switch(what_slot)
+		{
+			case 1:
+				item.Cooldown1[client] = cooldown + GetGameTime();
+			
+			case 2:
+				item.Cooldown2[client] = cooldown + GetGameTime();
+			
+			case 3:
+				item.Cooldown3[client] = cooldown + GetGameTime();
+			
+			default:
+				ThrowError("Invalid slot %d", what_slot);
+		}
+		
+		StoreItems.SetArray(StoreWeapon[weapon], item);
+	}
+}
+
+void Store_OpenItemPage(int client)
+{
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon != -1 && StoreWeapon[weapon] > 0)
+	{
+		NPCOnly[client] = 0;
+		MenuPage(client, StoreWeapon[weapon]);
+	}
+}
+
+void Store_SwapItems(int client)
+{
+	int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(active > MaxClients)
 	{
 		char buffer[36];
-		if(GetEntityClassname(weapon, buffer, sizeof(buffer)))
+		GetEntityClassname(active, buffer, sizeof(buffer));
+		
+		int slot = TF2_GetClassnameSlot(buffer);
+		
+		int length = GetMaxWeapons(client);
+		for(int i; i<length; i++)
 		{
-			int slot = TF2_GetClassnameSlot(buffer);
-			if(slot >= 0 && slot < sizeof(Equipped[]))
+			if(GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i) == active)
 			{
-				NPCOnly[client] = 0;
-				MenuPage(client, Equipped[client][slot]);
+				for(int a = i+1; a != i; a++)
+				{
+					if(a < length)
+					{
+						int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+						if(weapon > MaxClients)
+						{
+							GetEntityClassname(weapon, buffer, sizeof(buffer));
+							if(TF2_GetClassnameSlot(buffer) == slot)
+							{
+								SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", active, a);
+								SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, i);
+								SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
+								//SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + );
+								
+								float time = GetGameTime() + 0.7;
+								if(GetEntPropFloat(client, Prop_Send, "m_flNextAttack") < time)
+									SetEntPropFloat(client, Prop_Send, "m_flNextAttack", time);
+								
+								return;
+							}
+						}
+					}
+					else
+					{
+						a = -1;
+					}
+				}
 			}
 		}
 	}
-}*/
+}
 
 int Store_GetSpecialOfSlot(int client, int slot)
 {
@@ -366,27 +459,6 @@ int Store_GetSpecialOfSlot(int client, int slot)
 		}
 	}
 	return -1;
-}
-
-void Store_PluginStart()
-{
-	CookieCache = new Cookie("zr_lastgame", "The last game saved data is from", CookieAccess_Protected);
-	
-	char loadoutcookienameLv[64];
-	char loadoutcookienameInv[64];
-	char loadoutcookienameItems[64];
-	
-	// We will want to save upto 10 loadouts, which will be shown at the start of each game to the player.
-	for(int loadoutslot; loadoutslot<9; loadoutslot++)
-	{
-		Format(loadoutcookienameLv, sizeof(loadoutcookienameLv), "%s%i", "zr_lastloadout_lv_" ,loadoutslot); 
-		Format(loadoutcookienameInv, sizeof(loadoutcookienameInv), "%s%i", "zr_lastloadout_inv_" ,loadoutslot); 
-		Format(loadoutcookienameItems, sizeof(loadoutcookienameItems), "%s%i", "zr_lastloadout_items_" ,loadoutslot); 
-	
-		CookieLoadoutLv[loadoutslot] 	= new Cookie(loadoutcookienameLv, "The last loadout saved data is from via slots", CookieAccess_Protected);
-		CookieLoadoutInv[loadoutslot] 	= new Cookie(loadoutcookienameInv, "The last loadout saved data is from via slots", CookieAccess_Protected);
-		CookieLoadoutItems[loadoutslot] 	= new Cookie(loadoutcookienameItems, "The last loadout saved data is from via slots", CookieAccess_Protected);
-	}
 }
 
 void Store_ConfigSetup()
@@ -729,13 +801,16 @@ void Store_Reset()
 		{
 			item.Owned[c] = 0;
 			item.Scaled[c] = 0;
-			item.Equipped[c] = 0;
+			item.Equipped[c] = false;
+			item.Cooldown1[c] = 0.0;
+			item.Cooldown2[c] = 0.0;
+			item.Cooldown3[c] = 0.0;
 		}
 		StoreItems.SetArray(i, item);
 	}
 }
 
-bool Store_HasAnyItem(int client)
+/*bool Store_HasAnyItem(int client)
 {
 	static Item item;
 	static ItemInfo info;
@@ -752,7 +827,7 @@ bool Store_HasAnyItem(int client)
 	}
 	
 	return false;
-}
+}*/
 
 int Store_HasNamedItem(int client, const char[] name)
 {
@@ -805,12 +880,12 @@ void Store_SetClientItem(int client, int index, int owned, int scaled, int equip
 	
 	item.Owned[client] = owned;
 	item.Scaled[client] = scaled;
-	item.Equipped[client] = equipped;
+	item.Equipped[client] = view_as<bool>(equipped);
 	
 	StoreItems.SetArray(index, item);
 }
 
-void Store_BuyNamedItem(int client, const char[] name, bool free)
+void Store_BuyNamedItem(int client, const char name[64], bool free)
 {
 	static Item item;
 	int items = StoreItems.Length;
@@ -863,7 +938,7 @@ void Store_BuyClientItem(int client, Item item, ItemInfo info)
 
 void Store_ClientDisconnect(int client)
 {
-	if(Database_SaveGameData(client))
+	if(Waves_Started() && Database_SaveGameData(client))
 	{
 		char buffer[32];
 		FormatEx(buffer, sizeof(buffer), "%d;%d", CurrentGame, CashSpent[client]);
@@ -1031,7 +1106,7 @@ public void Store_RandomizeNPCStore(bool ResetStore)
 			lists[i] = null;
 		}
 	}
-}*/
+}
 
 public bool Do_Not_Collide(int client, int collisiongroup, int contentsmask, bool originalResult)
 {
@@ -1067,7 +1142,7 @@ static ArrayList GetAllWeaponsWithTier(int tier)
 	}
 	
 	return list;
-}
+}*/
 
 public Action Access_StoreViaCommand(int client, int args)
 {
@@ -1226,7 +1301,6 @@ static void MenuPage(int client, int section)
 				bool canSell;
 				bool canSellInsideMenu;
 				int style = ITEMDRAW_DEFAULT;
-				int slot = TF2_GetClassnameSlot(info.Classname);
 				if(item.Equipped[client])
 				{
 					if(!EscapeMode && info.Ammo && info.Ammo < Ammo_MAX)
@@ -1477,11 +1551,19 @@ static void MenuPage(int client, int section)
 			
 			if(count)
 			{
+				bool blocked;
 				if(item.Slot >= sizeof(SlotLimits))
-					continue;
+					blocked = true;
 				
 				if(count >= SlotLimits[item.Slot])
+					blocked = true;
+				
+				if(blocked)
+				{
+					menu.AddItem("-1", TranslateItemName(client, item.Name), ITEMDRAW_DISABLED);
+					found = true;
 					continue;
+				}
 			}
 		}
 		
@@ -1524,7 +1606,6 @@ static void MenuPage(int client, int section)
 			if(info.Cost <= CurrentCash)
 			{
 				int style = ITEMDRAW_DEFAULT;
-				int slot = TF2_GetClassnameSlot(info.Classname);
 				IntToString(i, info.Classname, sizeof(info.Classname));
 				
 				char BuildingExtraCounter[8];
@@ -1606,6 +1687,9 @@ static void MenuPage(int client, int section)
 	
 	if(section == -1 && !NPCOnly[client])
 	{
+		FormatEx(buffer, sizeof(buffer), "%t", "Loadouts");
+		menu.AddItem("-22", buffer);
+		
 		FormatEx(buffer, sizeof(buffer), "%t", "Help?");
 		menu.AddItem("-3", buffer);
 		
@@ -1677,189 +1761,196 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			int id = StringToInt(buffer);
-			if(id == -21)
+			switch(id)
 			{
-				Menu menu2 = new Menu(Store_MenuPage);
-				menu2.SetTitle("%t", "Credits Page");
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Back");
-				menu2.AddItem("-1", buffer);
-				
-				menu2.Display(client, MENU_TIME_FOREVER);
-			}
-			else if(id == -3)
-			{
-				Menu menu2 = new Menu(Store_MenuPage);
-				menu2.SetTitle("%t", "Help Title?");
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Gamemode Help?");
-				menu2.AddItem("-4", buffer);
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Command Help?");
-				menu2.AddItem("-5", buffer);
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Difficulty Help?");
-				menu2.AddItem("-6", buffer);
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Level Help?");
-				menu2.AddItem("-7", buffer);
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Special Zombies Help?");
-				menu2.AddItem("-8", buffer);
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Revival Help?");
-				menu2.AddItem("-9", buffer);
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Building Help?");
-				menu2.AddItem("-10", buffer);
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Extra Buttons Help?");
-				menu2.AddItem("-11", buffer);
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Back");
-				menu2.AddItem("-1", buffer);
-				
-				menu2.Display(client, MENU_TIME_FOREVER);
-			}
-			else if(id == -4)
-			{
-				Menu menu2 = new Menu(Store_MenuPage);
-				menu2.SetTitle("%t", "Gamemode Help Explained");
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Back");
-				menu2.AddItem("-1", buffer);
-				
-				menu2.Display(client, MENU_TIME_FOREVER);
-			}
-			else if(id == -5)
-			{
-				Menu menu2 = new Menu(Store_MenuPage);
-				menu2.SetTitle("%t", "Command Help Explained");
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Back");
-				menu2.AddItem("-1", buffer);
-				
-				menu2.Display(client, MENU_TIME_FOREVER);
-			}
-			else if(id == -6)
-			{
-				Menu menu2 = new Menu(Store_MenuPage);
-				menu2.SetTitle("%t", "Difficulty Help Explained");
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Back");
-				menu2.AddItem("-1", buffer);
-				
-				menu2.Display(client, MENU_TIME_FOREVER);
-			}
-			else if(id == -7)
-			{
-				Menu menu2 = new Menu(Store_MenuPage);
-				menu2.SetTitle("%t", "Level Help Explained");
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Back");
-				menu2.AddItem("-1", buffer);
-				
-				menu2.Display(client, MENU_TIME_FOREVER);
-			}
-			else if(id == -8)
-			{
-				Menu menu2 = new Menu(Store_MenuPage);
-				menu2.SetTitle("%t", "Special Zombies Explained");
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Back");
-				menu2.AddItem("-1", buffer);
-				
-				menu2.Display(client, MENU_TIME_FOREVER);
-			}
-			else if(id == -9)
-			{
-				Menu menu2 = new Menu(Store_MenuPage);
-				menu2.SetTitle("%t", "Revival Zombies Explained");
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Back");
-				menu2.AddItem("-1", buffer);
-				
-				menu2.Display(client, MENU_TIME_FOREVER);
-			}
-			else if(id == -10)
-			{
-				Menu menu2 = new Menu(Store_MenuPage);
-				menu2.SetTitle("%t", "Building Explained");
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Back");
-				menu2.AddItem("-1", buffer);
-				
-				menu2.Display(client, MENU_TIME_FOREVER);
-			}
-			else if(id == -11)
-			{
-				Menu menu2 = new Menu(Store_MenuPage);
-				menu2.SetTitle("%t", "Extra Buttons Explained");
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Back");
-				menu2.AddItem("-1", buffer);
-				
-				menu2.Display(client, MENU_TIME_FOREVER);
-			}
-			else if(id == -13)
-			{
-				FakeClientCommand(client, "sm_encyclopedia");
-			}
-			else if(id == -14)
-			{
-				Menu menu2 = new Menu(Store_MenuPage);
-				menu2.SetTitle("%t", "Bored or Dead Minigame");
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Idlemine");
-				menu2.AddItem("-15", buffer);
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Tetris");
-				menu2.AddItem("-16", buffer);
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Snake");
-				menu2.AddItem("-17", buffer);
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Solitaire");
-				menu2.AddItem("-18", buffer);
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Pong");
-				menu2.AddItem("-19", buffer);
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Connect 4");
-				menu2.AddItem("-20", buffer);
-				
-				FormatEx(buffer, sizeof(buffer), "%t", "Back");
-				menu2.AddItem("-1", buffer);
-				
-				menu2.Display(client, MENU_TIME_FOREVER);
-			}
-			else if(id == -15)
-			{
-				FakeClientCommand(client, "sm_idlemine");
-			}
-			else if(id == -16)
-			{
-				FakeClientCommand(client, "sm_tetris");
-			}
-			else if(id == -17)
-			{
-				FakeClientCommand(client, "sm_snake");
-			}
-			else if(id == -18)
-			{
-				FakeClientCommand(client, "sm_solitaire");
-			}
-			else if(id == -19)
-			{
-				FakeClientCommand(client, "sm_pong");
-			}
-			else if(id == -20)
-			{
-				FakeClientCommand(client, "sm_connect4");
-			}
-			else
-			{
-				MenuPage(client, id);
+				case -21:
+				{
+					Menu menu2 = new Menu(Store_MenuPage);
+					menu2.SetTitle("%t", "Credits Page");
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Back");
+					menu2.AddItem("-1", buffer);
+					
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
+				case -3:
+				{
+					Menu menu2 = new Menu(Store_MenuPage);
+					menu2.SetTitle("%t", "Help Title?");
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Gamemode Help?");
+					menu2.AddItem("-4", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Command Help?");
+					menu2.AddItem("-5", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Difficulty Help?");
+					menu2.AddItem("-6", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Level Help?");
+					menu2.AddItem("-7", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Special Zombies Help?");
+					menu2.AddItem("-8", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Revival Help?");
+					menu2.AddItem("-9", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Building Help?");
+					menu2.AddItem("-10", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Extra Buttons Help?");
+					menu2.AddItem("-11", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Back");
+					menu2.AddItem("-1", buffer);
+					
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
+				case -4:
+				{
+					Menu menu2 = new Menu(Store_MenuPage);
+					menu2.SetTitle("%t", "Gamemode Help Explained");
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Back");
+					menu2.AddItem("-1", buffer);
+					
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
+				case -5:
+				{
+					Menu menu2 = new Menu(Store_MenuPage);
+					menu2.SetTitle("%t", "Command Help Explained");
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Back");
+					menu2.AddItem("-1", buffer);
+					
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
+				case -6:
+				{
+					Menu menu2 = new Menu(Store_MenuPage);
+					menu2.SetTitle("%t", "Difficulty Help Explained");
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Back");
+					menu2.AddItem("-1", buffer);
+					
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
+				case -7:
+				{
+					Menu menu2 = new Menu(Store_MenuPage);
+					menu2.SetTitle("%t", "Level Help Explained");
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Back");
+					menu2.AddItem("-1", buffer);
+					
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
+				case -8:
+				{
+					Menu menu2 = new Menu(Store_MenuPage);
+					menu2.SetTitle("%t", "Special Zombies Explained");
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Back");
+					menu2.AddItem("-1", buffer);
+					
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
+				case -9:
+				{
+					Menu menu2 = new Menu(Store_MenuPage);
+					menu2.SetTitle("%t", "Revival Zombies Explained");
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Back");
+					menu2.AddItem("-1", buffer);
+					
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
+				case -10:
+				{
+					Menu menu2 = new Menu(Store_MenuPage);
+					menu2.SetTitle("%t", "Building Explained");
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Back");
+					menu2.AddItem("-1", buffer);
+					
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
+				case -11:
+				{
+					Menu menu2 = new Menu(Store_MenuPage);
+					menu2.SetTitle("%t", "Extra Buttons Explained");
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Back");
+					menu2.AddItem("-1", buffer);
+					
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
+				case -13:
+				{
+					FakeClientCommand(client, "sm_encyclopedia");
+				}
+				case -14:
+				{
+					Menu menu2 = new Menu(Store_MenuPage);
+					menu2.SetTitle("%t", "Bored or Dead Minigame");
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Idlemine");
+					menu2.AddItem("-15", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Tetris");
+					menu2.AddItem("-16", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Snake");
+					menu2.AddItem("-17", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Solitaire");
+					menu2.AddItem("-18", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Pong");
+					menu2.AddItem("-19", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Connect 4");
+					menu2.AddItem("-20", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Back");
+					menu2.AddItem("-1", buffer);
+					
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
+				case -15:
+				{
+					FakeClientCommand(client, "sm_idlemine");
+				}
+				case -16:
+				{
+					FakeClientCommand(client, "sm_tetris");
+				}
+				case -17:
+				{
+					FakeClientCommand(client, "sm_snake");
+				}
+				case -18:
+				{
+					FakeClientCommand(client, "sm_solitaire");
+				}
+				case -19:
+				{
+					FakeClientCommand(client, "sm_pong");
+				}
+				case -20:
+				{
+					FakeClientCommand(client, "sm_connect4");
+				}
+				case -22:
+				{
+					LoadoutPage(client);
+				}
+				default:
+				{
+					MenuPage(client, id);
+				}
 			}
 		}
 	}
@@ -1969,7 +2060,6 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							level = 0;
 						
 						item.GetItemInfo(level, info);
-						int slot = TF2_GetClassnameSlot(info.Classname);
 						if(item.Equipped[client])	// Buy Ammo
 						{
 							if(info.Ammo && info.Ammo < Ammo_MAX && AmmoData[info.Ammo][0] <= cash)
@@ -2097,6 +2187,134 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 			}
 			
 			MenuPage(client, index);
+		}
+	}
+	return 0;
+}
+
+static void LoadoutPage(int client)
+{
+	SetGlobalTransTarget(client);
+	
+	Menu menu = new Menu(Store_LoadoutPage);
+	menu.SetTitle("%t\n%t\n \n%t", "TF2: Zombie Riot", "Loadouts", "Save New");
+	
+	char buffer[64];
+	
+	int length;
+	if(Loadouts[client])
+	{
+		length = Loadouts[client].Length;
+		for(int i; i < length; i++)
+		{
+			Loadouts[client].GetString(buffer, sizeof(buffer));
+			menu.AddItem(buffer, buffer);
+		}
+	}
+	
+	if(!length)
+	{
+		FormatEx(buffer, sizeof(buffer), "%t", "None");
+		menu.AddItem("", buffer, ITEMDRAW_DISABLED);
+	}
+	
+	menu.ExitBackButton = true;
+	InLoadoutMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
+}
+
+public int Store_LoadoutPage(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			InLoadoutMenu[client] = false;
+			
+			if(choice == MenuCancel_ExitBack)
+				MenuPage(client, -1);
+		}
+		case MenuAction_Select:
+		{
+			InLoadoutMenu[client] = false;
+			
+			char buffer[32];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			LoadoutItem(client, buffer);
+		}
+	}
+	return 0;
+}
+
+static void LoadoutItem(int client, const char[] name)
+{
+	SetGlobalTransTarget(client);
+	
+	Menu menu = new Menu(Store_LoadoutItem);
+	menu.SetTitle("%t\n%t\n \n%s", "TF2: Zombie Riot", "Loadouts", name);
+	
+	char buffer[64];
+	
+	FormatEx(buffer, sizeof(buffer), "%t", "All Items");
+	menu.AddItem(name, buffer);
+	
+	FormatEx(buffer, sizeof(buffer), "%t", "Free Only");
+	menu.AddItem(name, buffer);
+	
+	menu.AddItem(name, buffer, ITEMDRAW_SPACER);
+	
+	FormatEx(buffer, sizeof(buffer), "%t", "Delete Loadout");
+	menu.AddItem(name, buffer);
+	
+	menu.ExitBackButton = true;
+	menu.Display(client, MENU_TIME_FOREVER);
+}
+
+public int Store_LoadoutItem(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+				LoadoutPage(client);
+		}
+		case MenuAction_Select:
+		{
+			char buffer[32];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			switch(choice)
+			{
+				case 0, 1:
+				{
+					Database_LoadLoadout(client, buffer, choice == 1);
+					
+					Menu menu2 = new Menu(Store_MenuPage);
+					menu2.SetTitle("%t", "Getting Your Items");
+					
+					menu2.AddItem(NULL_STRING, NULL_STRING, ITEMDRAW_SPACER);
+					
+					menu2.Display(client, 10);
+				}
+				case 3:
+				{
+					int index = Loadouts[client].FindString(buffer);
+					if(index != -1)
+					{
+						Loadouts[client].Erase(index);
+						Database_DeleteLoadout(client, buffer);
+					}
+					
+					LoadoutPage(client);
+				}
+			}
 		}
 	}
 	return 0;

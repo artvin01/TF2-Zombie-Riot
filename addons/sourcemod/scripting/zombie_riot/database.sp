@@ -6,7 +6,6 @@
 #define DATATABLE_GAMEDATA	"zr_gamedata"
 
 static Database DataBase;
-static ArrayList Loadouts[MAXTF2PLAYERS];
 
 void Database_PluginStart()
 {
@@ -92,7 +91,8 @@ public void Database_ClientSetup(Database db, int userid, int numQueries, DBResu
 			if(results[0].FetchRow())
 			{
 				results[0].FetchString(0, buffer, sizeof(buffer));
-				Loadouts[client].PushString(buffer);
+				if(Loadouts[client].FindString(buffer) == -1)
+					Loadouts[client].PushString(buffer);
 			}
 		}
 	}
@@ -182,7 +182,7 @@ void Database_SaveLoadout(int client, const char[] name)
 			Transaction tr = new Transaction();
 			
 			char buffer[256];
-			FormatEx(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_LOADOUT ... " WHERE steamid = %d AND loadout = '%s';", id, name);
+			DataBase.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_LOADOUT ... " WHERE steamid = %d AND loadout = '%s';", id, name);
 			tr.AddQuery(buffer);
 			
 			int owned, scale, equip;
@@ -194,6 +194,24 @@ void Database_SaveLoadout(int client, const char[] name)
 					tr.AddQuery(buffer);
 				}
 			}
+			
+			DataBase.Execute(tr, Database_Success, Database_Fail);
+		}
+	}
+}
+
+void Database_DeleteLoadout(int client, const char[] name)
+{
+	if(DataBase)
+	{
+		int id = GetSteamAccountID(client);
+		if(id)
+		{
+			Transaction tr = new Transaction();
+			
+			char buffer[256];
+			DataBase.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_LOADOUT ... " WHERE steamid = %d AND loadout = '%s';", id, name);
+			tr.AddQuery(buffer);
 			
 			DataBase.Execute(tr, Database_Success, Database_Fail);
 		}
@@ -224,16 +242,17 @@ void Database_LoadLoadout(int client, const char[] name, bool free)
 
 public void Database_OnLoadout(Database db, DataPack pack, int numQueries, DBResultSet[] results, any[] queryData)
 {
+	pack.Reset();
 	int client = GetClientOfUserId(pack.ReadCell());
 	if(client && results[0].MoreRows)
 	{
 		bool free = pack.ReadCell();
+		char buffer[64];
 		
 		do
 		{
 			if(results[0].FetchRow())
 			{
-				char buffer[64];
 				results[0].FetchString(0, buffer, sizeof(buffer));
 				Store_BuyNamedItem(client, buffer, free);
 			}
@@ -242,6 +261,7 @@ public void Database_OnLoadout(Database db, DataPack pack, int numQueries, DBRes
 		
 		Store_ApplyAttribs(client);
 		Store_GiveAll(client, GetClientHealth(client));
+		Store_Menu(client);
 	}
 	
 	delete pack;

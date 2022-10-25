@@ -2531,7 +2531,7 @@ public Action Timer_DroppedBuildingWaitHealingStation(Handle htimer, DataPack pa
 	pack.Reset();
 	int entref = pack.ReadCell();
 	int original_entity = pack.ReadCell();
-	int client_original_index = pack.ReadCell(); //Need original!
+	pack.ReadCell(); //Need original!
 	int obj=EntRefToEntIndex(entref);
 	if(!IsValidEntity(obj))
 	{
@@ -2665,7 +2665,7 @@ public Action Timer_DroppedBuildingWaitArmorTable(Handle htimer, DataPack pack)
 {
 	pack.Reset();
 	int entref = pack.ReadCell();
-	int original_entity = pack.ReadCell();
+	pack.ReadCell();
 	int client_original_index = pack.ReadCell(); //Need original!
 	
 	int obj=EntRefToEntIndex(entref);

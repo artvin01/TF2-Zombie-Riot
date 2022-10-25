@@ -374,16 +374,21 @@ public MRESReturn DHook_FireballExplodePre(int entity)
 	int owner = GetOwnerLoop(entity);
 	if (0 < owner <= MaxClients)
 	{
-		float damage = 700.0;
-		int weapon = GetPlayerWeaponSlot(owner, 2);
-		if(!IsValidEntity(weapon))
-			return MRES_Ignored;
-		 
-		Address address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
-		
-		Explode_Logic_Custom(damage, owner, entity, weapon, _, _, _, _, _, _, true)
+		int i, weapon;
+		while(TF2_GetItem(owner, weapon, i))
+		{
+			if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == 939)
+			{
+				float damage = 700.0;
+				
+				Address address = TF2Attrib_GetByDefIndex(weapon, 410);
+				if(address != Address_Null)
+					damage *= TF2Attrib_GetValue(address);
+				
+				Explode_Logic_Custom(damage, owner, entity, weapon, _, _, _, _, _, _, true);
+				break;
+			}
+		}
 
 	}
 	return MRES_Ignored;

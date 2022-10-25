@@ -1160,7 +1160,7 @@
 	{
 		"en"		"Grigori Has been cured!\nYou can talk to him during setup times to get a 20%% Discount on random items!"
 		"ru"		"Григорий был вылечен!\nВы можете поговорить с ним во время таймера подготовки, чтобы получить скидку 20%% на случайные предметы!"
-		"De"		"Grigori wurde geheilt!\nDu kannst mit ihm reden während der Setup zeit um einen 20%% Discount auf zufällige Gegenstände zu bekommen!"
+		"de"		"Grigori wurde geheilt!\nDu kannst mit ihm reden während der Setup zeit um einen 20%% Discount auf zufällige Gegenstände zu bekommen!"
 	}
 	"TF2: Zombie Riot"
 	{
@@ -1331,5 +1331,29 @@
 		"#format"	"{1:N},{2:d}"
 		"en"		"You Healed [{1}] for [{2}] HP!"
 		"ru"		"Вы вылечили [{1}] на [{2}] ед. здоровья!"
+	}
+	"Loadouts"
+	{
+		"en"		"Loadouts"
+	}
+	"All Items"
+	{
+		"en"		"Buy All Items"
+	}
+	"Free Only"
+	{
+		"en"		"Buy Only Free Items"
+	}
+	"Getting Your Items"
+	{
+		"en"		"Getting Your Items..."
+	}
+	"Delete Loadout"
+	{
+		"en"		"Delete Loadout"
+	}
+	"Save New"
+	{
+		"en"		"Enter name in chatbox to create a new loadout"
 	}
 }

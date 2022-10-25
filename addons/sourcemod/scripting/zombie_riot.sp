@@ -220,6 +220,7 @@ Cookie CookieXP;
 Cookie CookiePlayStreak;
 Cookie Niko_Cookies;
 Cookie CookieCache;
+ArrayList Loadouts[MAXTF2PLAYERS];
 
 //custom wave music.
 char char_MusicString1[256];
@@ -1271,6 +1272,7 @@ public void OnPluginStart()
 	cvarCheatsflags &= ~FCVAR_NOTIFY;
 	SetConVarFlags(sv_cheats, cvarCheatsflags);
 	
+	CookieCache = new Cookie("zr_lastgame", "The last game saved data is from", CookieAccess_Protected);
 	Niko_Cookies = new Cookie("zr_niko", "Are you a niko", CookieAccess_Protected);
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
@@ -1292,7 +1294,6 @@ public void OnPluginStart()
 	NPC_PluginStart();
 	SDKHook_PluginStart();
 	Thirdperson_PluginStart();
-	Store_PluginStart();
 	Waves_PluginStart();
 	Medigun_PluginStart();
 	OnPluginStartMangler();
@@ -1300,6 +1301,7 @@ public void OnPluginStart()
 	OnPluginStart_Build_on_Building();
 	OnPluginStart_Glitched_Weapon();
 	Tutorial_PluginStart();
+	Database_PluginStart();
 //	Building_PluginStart();
 #if defined LagCompensation
 	OnPluginStart_LagComp();
@@ -2684,15 +2686,23 @@ public Action OnBuildCmd(int client, const char[] command, int args)
 	return Plugin_Continue;
 }
 
-/*public Action OnClientCommandKeyValues(int client, KeyValues kv)
+public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
 	char buffer[64];
 	kv.GetSectionName(buffer, sizeof(buffer));
 	if(StrEqual(buffer, "+inspect_server", false))
-		Store_OpenItemPage(client);
-	
+	{
+		if(GetClientButtons(client) & IN_SCORE)
+		{
+			Store_OpenItemPage(client);
+		}
+		else if(!TF2_IsPlayerInCondition(client, TFCond_Slowed) && !TF2_IsPlayerInCondition(client, TFCond_Zoomed))
+		{
+			Store_SwapItems(client);
+		}
+	}
 	return Plugin_Continue;
-}*/
+}
 
 public Action OnRelayTrigger(const char[] output, int entity, int caller, float delay)
 {
@@ -3157,7 +3167,6 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	
 	if(i_SemiAutoWeapon[weapon])
 	{
-		int slot = TF2_GetClassnameSlot(classname);
 		i_SemiAutoWeapon_AmmoCount[weapon] -= 1;
 		PrintHintText(client, "[%i/%i]", i_SemiAutoStats_MaxAmmo[weapon],i_SemiAutoWeapon_AmmoCount[weapon]);
 		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
