@@ -401,17 +401,45 @@ public void Sdkcall_Load_Lagcomp()
 
 public void Manual_Impulse_101(int client, int health)
 {
-	if(f_MedigunChargeSave[client] == 0.0)
+	int i, entity;
+	while(TF2_GetItem(client, entity, i))
 	{
-		int weapon_before = GetPlayerWeaponSlot(client, 1); //Secondary
-		if(IsValidEntity(weapon_before))
+		int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
+		switch(index)
 		{
-			if(HasEntProp(weapon_before, Prop_Send, "m_flChargeLevel"))
+			case 411:
 			{
-				f_MedigunChargeSave[client] = GetEntPropFloat(weapon_before, Prop_Send, "m_flChargeLevel");
+				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				{
+					if(f_MedigunChargeSave[client][0] == 0.0)
+					{
+						f_MedigunChargeSave[client][0] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
+					}
+				}
+			}
+			case 211:
+			{
+				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				{
+					if(f_MedigunChargeSave[client][1] == 0.0)
+					{
+						f_MedigunChargeSave[client][1] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
+					}
+				}
+			}
+			case 998:
+			{
+				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				{
+					if(f_MedigunChargeSave[client][2] == 0.0)
+					{
+						f_MedigunChargeSave[client][2] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
+					}
+				}
 			}
 		}
 	}
+
 	SetConVarInt(sv_cheats, 1, false, false);
 	
 	SDKCall(g_hImpulse, client, 101);
@@ -451,13 +479,36 @@ public void Manual_Impulse_101(int client, int health)
 	OnWeaponSwitchPost(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
 	
 	
-	int weapon = GetPlayerWeaponSlot(client, 1); //Secondary
-	if(IsValidEntity(weapon))
+	int i, entity;
+	while(TF2_GetItem(client, entity, i))
 	{
-		if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
+		int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
+		switch(index)
 		{
-			SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client]);
-			f_MedigunChargeSave[client] = 0.0;
+			case 411:
+			{
+				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				{
+					SetEntPropFloat(entity, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][0]);
+					f_MedigunChargeSave[client][0] = 0.0;
+				}
+			}
+			case 211:
+			{
+				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				{
+					SetEntPropFloat(entity, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][0]);
+					f_MedigunChargeSave[client][1] = 0.0;
+				}
+			}
+			case 998:
+			{
+				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				{
+					SetEntPropFloat(entity, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][0]);
+					f_MedigunChargeSave[client][2] = 0.0;
+				}
+			}
 		}
 	}
 	

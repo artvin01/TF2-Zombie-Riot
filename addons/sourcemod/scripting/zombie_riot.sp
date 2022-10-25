@@ -263,7 +263,7 @@ float f_SemiAutoStats_FireRate[MAXENTITIES];
 int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
 float f_SemiAutoStats_ReloadTime[MAXENTITIES];
 
-float f_MedigunChargeSave[MAXTF2PLAYERS];
+float f_MedigunChargeSave[MAXTF2PLAYERS][4];
 
 	
 int CashSpent[MAXTF2PLAYERS];

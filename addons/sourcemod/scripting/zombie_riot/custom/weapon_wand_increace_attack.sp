@@ -1,6 +1,5 @@
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static int weapon_id[MAXPLAYERS+1]={0, ...};
-static float Original_Atackspeed[MAXPLAYERS+1]={0.0, ...};
 
 #define SOUND_WAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
 
@@ -26,17 +25,17 @@ public void Weapon_Wand_AttackSpeed(int client, int weapon, bool &result, int sl
 				
 				weapon_id[client] = weapon;
 				
-				Original_Atackspeed[client] = 1.0;
+				float Original_Atackspeed = 1.0;
 				
 				Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 				if(address != Address_Null)
-					Original_Atackspeed[client] = TF2Attrib_GetValue(address);
-		
-				TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] * 0.25);
+					Original_Atackspeed = TF2Attrib_GetValue(address);
+				
+				TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed * 0.25);
 				
 				EmitSoundToAll(SOUND_WAND_ATTACKSPEED_ABILITY, client, SNDCHAN_STATIC, 80, _, 0.9);
 				
-				CreateTimer(3.0, Reset_Wand_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(3.0, Reset_Wand_Attackspeed, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 				
 				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 				Mana_Hud_Delay[client] = 0.0;
@@ -70,16 +69,18 @@ public void Weapon_Wand_AttackSpeed(int client, int weapon, bool &result, int sl
 }
 
 
-public Action Reset_Wand_Attackspeed(Handle cut_timer, int client)
+public Action Reset_Wand_Attackspeed(Handle cut_timer, int ref)
 {
-	if (IsValidClient(client))
+	int weapon = EntRefToEntIndex(ref);
+	if (IsValidEntity(weapon))
 	{
-		
-		int weapon = GetPlayerWeaponSlot(client, 2);
-		if(weapon == weapon_id[client])
-		{
-			TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client]);
-		}
+		float Original_Atackspeed;
+
+		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
+		if(address != Address_Null)
+			Original_Atackspeed = TF2Attrib_GetValue(address);
+
+		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed / 0.25);
 	}
 	return Plugin_Handled;
 }

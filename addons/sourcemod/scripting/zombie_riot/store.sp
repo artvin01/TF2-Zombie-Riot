@@ -2293,6 +2293,38 @@ void Store_GiveAll(int client, int health)
 		return;
 	}
 	
+	//There is no easy way to preserve uber through with multiple mediguns
+	//solution: save via index
+	int i, entity;
+	while(TF2_GetItem(client, entity, i))
+	{
+		int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
+		switch(index)
+		{
+			case 411:
+			{
+				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				{
+					f_MedigunChargeSave[client][0] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
+				}
+			}
+			case 211:
+			{
+				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				{
+					f_MedigunChargeSave[client][1] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
+				}
+			}
+			case 998:
+			{
+				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				{
+					f_MedigunChargeSave[client][2] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
+				}
+			}
+		}
+	}
+	/*
 	int weapon = GetPlayerWeaponSlot(client, 1); //Secondary
 	if(IsValidEntity(weapon))
 	{
@@ -2301,7 +2333,7 @@ void Store_GiveAll(int client, int health)
 			f_MedigunChargeSave[client] = GetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel");
 		}
 	}
-	
+	*/
 	TF2_RemoveAllWeapons(client);
 	
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
