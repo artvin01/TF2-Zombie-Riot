@@ -1,4 +1,7 @@
-static int HighestTier;
+#pragma semicolon 1
+#pragma newdecls required
+
+//static int HighestTier;
 
 #define SELL_AMOUNT 0.7
 
@@ -70,12 +73,12 @@ enum struct ItemInfo
 	
 	int CustomWeaponOnEquip;
 	
-	bool SniperBugged;
+	//bool SniperBugged;
 	
 	char Model[128];
 	
-	int Tier;
-	int Rarity;
+	//int Tier;
+	//int Rarity;
 	int PackBranches;
 	int PackSkip;
 	
@@ -111,8 +114,8 @@ enum struct ItemInfo
 		FormatEx(buffer, sizeof(buffer), "%sreload_mode", prefix);
 		this.Reload_ModeForce = kv.GetNum(buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%ssniperfix", prefix);
-		this.SniperBugged = view_as<bool>(kv.GetNum(buffer));
+		//FormatEx(buffer, sizeof(buffer), "%ssniperfix", prefix);
+		//this.SniperBugged = view_as<bool>(kv.GetNum(buffer));
 		
 		/*
 		
@@ -174,33 +177,33 @@ enum struct ItemInfo
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncAttack = GetFunctionByName(null, buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sfunc_attack2", prefix)
+		FormatEx(buffer, sizeof(buffer), "%sfunc_attack2", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncAttack2 = GetFunctionByName(null, buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sfunc_attack3", prefix)
+		FormatEx(buffer, sizeof(buffer), "%sfunc_attack3", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncAttack3 = GetFunctionByName(null, buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sfunc_reload", prefix)
+		FormatEx(buffer, sizeof(buffer), "%sfunc_reload", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncReload4 = GetFunctionByName(null, buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sfunc_onbuy", prefix)
+		FormatEx(buffer, sizeof(buffer), "%sfunc_onbuy", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncOnBuy = GetFunctionByName(null, buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sint_ability_onequip", prefix)
+		FormatEx(buffer, sizeof(buffer), "%sint_ability_onequip", prefix);
 		this.CustomWeaponOnEquip 		= kv.GetNum(buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sattack_3_ability_slot", prefix)
+		FormatEx(buffer, sizeof(buffer), "%sattack_3_ability_slot", prefix);
 		this.Attack3AbilitySlot			= kv.GetNum(buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sspecial_attribute", prefix)
+		FormatEx(buffer, sizeof(buffer), "%sspecial_attribute", prefix);
 		this.SpecialAdditionViaNonAttribute			= kv.GetNum(buffer);
 		
 		char buffers[32][16];
-		FormatEx(buffer, sizeof(buffer), "%sattributes", prefix)
+		FormatEx(buffer, sizeof(buffer), "%sattributes", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.Attribs = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
 		for(int i; i<this.Attribs; i++)
@@ -216,13 +219,13 @@ enum struct ItemInfo
 			this.Value[i] = StringToFloat(buffers[i*2+1]);
 		}
 		
-		FormatEx(buffer, sizeof(buffer), "%stier", prefix);
+		/*FormatEx(buffer, sizeof(buffer), "%stier", prefix);
 		this.Tier = kv.GetNum(buffer, -1);
 		
 		FormatEx(buffer, sizeof(buffer), "%srarity", prefix);
 		this.Rarity = kv.GetNum(buffer);
 		if(this.Rarity > HighestTier)
-			HighestTier = this.Rarity;
+			HighestTier = this.Rarity;*/
 
 		FormatEx(buffer, sizeof(buffer), "%spappaths", prefix);
 		this.PackBranches = kv.GetNum(buffer, 1);
@@ -264,6 +267,8 @@ enum struct Item
 	
 	int Owned[MAXTF2PLAYERS];
 	int Scaled[MAXTF2PLAYERS];
+	bool Equipped[MAXTF2PLAYERS];
+	
 	bool NPCSeller;
 	bool NPCSeller_First;
 	int NPCWeapon;
@@ -326,17 +331,11 @@ static Cookie CookieLoadoutLv[9]; // we want 10 loadouts in total to be saved.
 static Cookie CookieLoadoutInv[9];
 static Cookie CookieLoadoutItems[9];
 static ArrayList StoreItems;
-static int Equipped[MAXTF2PLAYERS][6];
 static int NPCOnly[MAXTF2PLAYERS];
 static int NPCCash[MAXTF2PLAYERS];
 static int NPCTarget[MAXTF2PLAYERS];
 
-int Store_GetEquipped(int client, int slot)
-{
-	return Equipped[client][slot];
-}
-
-void Store_OpenItemPage(int client)
+/*void Store_OpenItemPage(int client)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon != -1)
@@ -352,7 +351,7 @@ void Store_OpenItemPage(int client)
 			}
 		}
 	}
-}
+}*/
 
 int Store_GetSpecialOfSlot(int client, int slot)
 {
@@ -719,15 +718,7 @@ void Store_Reset()
 {
 	for(int c=1; c<=MaxClients; c++)
 	{
-		if(IsClientInGame(c))
-			Store_SaveSlottedLoadout(c);
-		
 		CashSpent[c] = 0;
-		
-		for(int i; i<sizeof(Equipped[]); i++)
-		{
-			Equipped[c][i] = -1;
-		}
 	}
 	
 	static Item item;
@@ -739,14 +730,9 @@ void Store_Reset()
 		{
 			item.Owned[c] = 0;
 			item.Scaled[c] = 0;
+			item.Equipped[c] = 0;
 		}
 		StoreItems.SetArray(i, item);
-	}
-	
-	for(int c=1; c<=MaxClients; c++)
-	{
-		if(IsClientInGame(c))
-			Store_LoadLevelPerks(c, true);
 	}
 }
 
@@ -802,434 +788,121 @@ void Store_SetNamedItem(int client, const char[] name, int amount)
 	ThrowError("Unknown item name %s", name);
 }
 
-void Store_PutInServer(int client)
+void Store_ClientCookiesCached(int client)
 {
-	if(EscapeMode)
-		return;
+	char buffer[32];
+	CookieCache.Get(client, buffer, sizeof(buffer));
 	
+	int buffers[2];
+	ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
+	if(CurrentGame && buffers[0] == CurrentGame)
+		Database_LoadGameData(client);
+}
+
+void Store_SetClientItem(int client, int index, int owned, int scaled, int equipped)
+{
 	static Item item;
-	int length = StoreItems.Length;
-	for(int i; i<length; i++)
+	StoreItems.GetArray(index, item);
+	
+	item.Owned[client] = owned;
+	item.Scaled[client] = scaled;
+	item.Equipped[client] = equipped;
+	
+	StoreItems.SetArray(index, item);
+}
+
+void Store_BuyNamedItem(int client, const char[] name, bool free)
+{
+	static Item item;
+	int items = StoreItems.Length;
+	for(int a; a<items; a++)
 	{
-		StoreItems.GetArray(i, item);
-		if(item.Default)
+		StoreItems.GetArray(a, item);
+		if(StrEqual(name, item.Name))
 		{
-			ItemInfo info;
-			item.GetItemInfo(0, info);
-			
-			CashSpent[client] += info.Cost;
-			item.Owned[client] = 1;
-			item.Scaled[client]++;
-			
-			if(item.MaxScaled < item.Scaled[client])
+			if(!item.Hidden)
 			{
-				item.Scaled[client] = item.MaxScaled;
-			}
-			StoreItems.SetArray(i, item);
-			
-			int slot = TF2_GetClassnameSlot(info.Classname);
-			Equipped[client][slot] = i;
-			TF2_RemoveWeaponSlot(client, slot);
-			
-			if(info.Ammo && info.Ammo < Ammo_MAX)
-			{
-				i = GetAmmo(client, info.Ammo);
-				while(CashSpent[client]+AmmoData[info.Ammo][0] <= StartCash)
+				static ItemInfo info;
+				item.GetItemInfo(0, info);
+				
+				ItemCost(client, item, info.Cost);
+				if(info.Cost > 0 && free)
+					return;
+				
+				if((CurrentCash - CashSpent[client]) >= info.Cost)
 				{
-					CashSpent[client] += AmmoData[info.Ammo][0];
-					i += AmmoData[info.Ammo][1];
+					CashSpent[client] += info.Cost;
+					Store_BuyClientItem(client, item, info);
+					StoreItems.SetArray(a, item);
+					return;
 				}
-				CurrentAmmo[client][info.Ammo] = i;
-			}
-			
-			if(!TeutonType[client])
-			{
-				Store_GiveItem(client, slot);
-				Manual_Impulse_101(client, GetClientHealth(client));
 			}
 			break;
 		}
 	}
 	
-	if(IsPlayerAlive(client))
-		TF2_RegeneratePlayer(client);
+	SetGlobalTransTarget(client);
+	PrintToChat(client, "%t", "Could Not Buy Item", TranslateItemName(client, name));
 }
 
-void Store_ClientCookiesCached(int client)
+void Store_BuyClientItem(int client, Item item, ItemInfo info)
 {
-	Store_LoadLevelPerks(client);
+	item.Scaled[client]++;
+	item.Owned[client] = 1;
+	item.Equipped[client] = true;
 	
-	char buffer[16];
-	CookieCache.Get(client, buffer, sizeof(buffer));
-	if(CurrentGame && StringToInt(buffer) == CurrentGame)
-		Store_LoadLoadout(client);
-}
-
-void Store_LoadLevelPerks(int client, bool silent=false, int slot, bool loadboughtitems) //you must give what slot you want to load
-{
-//	PrintToChatAll("load level perks");
-	char buffer[512];
+	if(item.MaxScaled < item.Scaled[client])
+		item.Scaled[client] = item.MaxScaled;
 	
-	
-	zr_tagblacklist.GetString(buffer, sizeof(buffer));
-	if(buffer[0])
-		return;
-	
-	zr_tagwhitelist.GetString(buffer, sizeof(buffer));
-	if(buffer[0])
-		return;
-	
-	
-	char buffers[16][64];
-	static Item item;
-	int items = StoreItems.Length;
-	
-	bool found;
-	CookieLoadoutLv[slot].Get(client, buffer, sizeof(buffer));
-	int length = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]));
-	for(int i; i<length; i++)
+	if(info.FuncOnBuy != INVALID_FUNCTION)
 	{
-		for(int a; a<items; a++)
-		{
-			StoreItems.GetArray(a, item);
-			if(StrEqual(buffers[i], item.Name))
-			{
-				if(item.Scale == 0 && !item.Hidden)
-				{
-					item.Scaled[client] = 0;
-					item.Owned[client] = 1;
-					StoreItems.SetArray(a, item);
-					found = true;
-					
-					ItemInfo info;
-					item.GetItemInfo(0, info);
-					if(info.Classname[0])
-					{
-						int slot = TF2_GetClassnameSlot(info.Classname);
-						if(slot >= 0 && slot < sizeof(Equipped[]))
-							Equipped[client][slot] = a;
-					}
-				}
-				break;
-			}
-		}
+		Call_StartFunction(null, info.FuncOnBuy);
+		Call_PushCell(client);
+		Call_Finish();
 	}
-	
-	CookieLoadoutInv[slot].Get(client, buffer, sizeof(buffer));
-	length = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]));
-	for(int i; i<length; i++)
-	{
-		for(int a; a<items; a++)
-		{
-			StoreItems.GetArray(a, item);
-			if(StrEqual(buffers[i], item.Name))
-			{
-				if(item.Scale == 0 && !item.Hidden)
-				{
-					item.Scaled[client] = 0;
-					item.Owned[client] = 1;
-					StoreItems.SetArray(a, item);
-					found = true;
-					
-					ItemInfo info;
-					item.GetItemInfo(0, info);
-					if(info.Classname[0])
-					{
-						int slot = TF2_GetClassnameSlot(info.Classname);
-						if(slot >= 0 && slot < sizeof(Equipped[]))
-							Equipped[client][slot] = a;
-					}
-				}
-				break;
-			}
-		}
-	}
-	
-	
-	if(loadboughtitems)
-	{
-		CookieLoadoutItems[slot].Get(client, buffer, sizeof(buffer));
-		length = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]));
-		
-		
-		int cash_spend_loadout = 0; // we check how much money they have, incase we change money amounts or something, then we do not want 
-		//them to just keep getting the same items.
-		
-		for(int i; i<length; i++)
-		{
-			for(int a; a<items; a++)
-			{
-				StoreItems.GetArray(a, item);
-				if(StrEqual(buffers[i], item.Name))
-				{
-					if(item.Scale == 0 && !item.Hidden)
-					{
-						ItemInfo info;
-						item.GetItemInfo(0, info);
-						
-						int price = ItemCost(client, item, info.Cost);
-						int cash = CurrentCash - CashSpent[client] - cash_spend_loadout;
-						
-						if(price > cash) // they tried to abuse the system, cancel this!
-						{
-							SetGlobalTransTarget(client);
-							PrintToChat(client, "%t","Couldnt buy all items needed");
-							break;
-						}
-						
-						//They had enough moneyyys, buy it for them if they had it in their loadout
-						//this will also allow loadouts in late game if they did such a thing, although thats really wierd to do...
-						//this mainly exists to allow loadouts in gamemodes with less or more cash then normal.
-						cash_spend_loadout += price;
-						
-						item.Scaled[client] = 0;
-						item.Owned[client] = 1;
-						StoreItems.SetArray(a, item);
-						found = true;
-						
-						
-						if(info.Classname[0])
-						{
-							int slot = TF2_GetClassnameSlot(info.Classname);
-							if(slot >= 0 && slot < sizeof(Equipped[]))
-								Equipped[client][slot] = a;
-						}
-					}
-					break;
-				}
-			}
-		}
-	}
-	if(!silent && found && IsClientInGame(client))
-	{
-		SetGlobalTransTarget(client);
-		PrintToChat(client, "%t","Your loadout has been equipped!");
-		if(IsPlayerAlive(client))
-			TF2_RegeneratePlayer(client);
-	}
-}
-
-bool Store_LoadLoadout(int client)
-{
-	char buffer[512];
-	static int buffers[128];
-	CookieData.Get(client, buffer, sizeof(buffer));
-	if(!buffer[0])
-		return false;
-	
-	int length = ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
-	CashSpent[client] = buffers[0];
-	
-	int i = 1;
-	for(; i<=sizeof(Equipped[]); i++)
-	{
-		Equipped[client][i-1] = buffers[i];
-	}
-	
-	static Item item;
-	int items = StoreItems.Length;
-	for(i++; i<length; i+=2)
-	{
-		if(buffers[i-1] > 0 && buffers[i-1] < items)
-		{
-			StoreItems.GetArray(buffers[i-1], item);
-			if(item.Scale != 0)
-			{
-				item.Scaled[client] = buffers[i];
-				item.Owned[client] = 0;
-			}
-			else if(buffers[i] > 0)
-			{
-				item.Scaled[client] = 0;
-				item.Owned[client] = buffers[i];
-			}
-			StoreItems.SetArray(buffers[i-1], item);
-		}
-	}
-	
-	if(IsClientInGame(client))
-	{
-		SetGlobalTransTarget(client);
-		PrintToChat(client, "%t","Your loadout was updated from your previous state.");
-		if(IsPlayerAlive(client))
-			TF2_RegeneratePlayer(client);
-	}
-	return true;
 }
 
 void Store_ClientDisconnect(int client)
 {
-	if(AreClientCookiesCached(client))
+	if(Database_SaveGameData(client))
 	{
-		char buffer[16];
-		IntToString(CurrentGame, buffer, sizeof(buffer));
+		char buffer[32];
+		FormatEx(buffer, sizeof(buffer), "%d;%d", CurrentGame, CashSpent[client]);
 		CookieCache.Set(client, buffer);
 	}
 	
-	Store_SaveSlottedLoadout(client);
-	Store_SaveLoadout(client);
-	
 	CashSpent[client] = 0;
-	Equipped[client][0] = -1;
-	
-	for(int i=1; i<sizeof(Equipped[]); i++)
-	{
-		Equipped[client][i] = -1;
-	}
 	
 	static Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(item.Owned[client] || item.Scale != 0)
+		if(item.Owned[client] || item.Scaled[client] || item.Equipped[client])
 		{
 			item.Owned[client] = 0;
 			item.Scaled[client] = 0;
+			item.Equipped[client] = false;
 			StoreItems.SetArray(i, item);
 		}
 	}
 }
 
-void Store_SaveSlottedLoadout(int client, int slot)
-{
-//	PrintToChatAll("Saving LeveL Perks");
-	char level[512];
-	char items_save[512];
-	char inv[512];
-	/*
-	zr_tagblacklist.GetString(level, sizeof(level));
-	if(level[0])
-		return;
-	
-	zr_tagwhitelist.GetString(level, sizeof(level));
-	if(level[0])
-		return;
-	*/
-	
-	static Item item;
-	static ItemInfo info;
-	int length = StoreItems.Length - 1;
-	for(int i = length; i >= 0; i--)
-	{	
-		StoreItems.GetArray(i, item);
-		if(item.Scaled[client] > 0 || item.Owned[client])
-		{
-			int owned = item.Owned[client] - 1;
-			if(owned < 0)
-				owned = 0;
-			
-			item.GetItemInfo(owned, info);
-			if(!info.CannotBeSavedByCookies)
-			{
-				if(!info.Cost)
-				{
-					if(item.TextStore[0])
-					{
-						if(inv[0])
-						{
-							Format(inv, sizeof(inv), "%s;%s", inv, item.Name);
-						}
-						else
-						{
-							strcopy(inv, sizeof(inv), item.Name);
-						}
-					}
-					else if(level[0])
-					{
-						Format(level, sizeof(level), "%s;%s", level, item.Name);
-					}
-					else
-					{
-						strcopy(level, sizeof(level), item.Name);
-					}
-				}
-				else
-				{
-					/*
-					if(!item.GetItemInfo(item.Owned[client] + info.PackSkip, info))
-					{
-						//do nothing, idk how to inverse this lol
-						//prevents the item from being saved if it was papped before.
-						//so you have to repap those weapons. no smartassing here.
-					}
-					else
-					{
-					*/
-						if(items_save[0])
-						{
-							Format(items_save, sizeof(items_save), "%s;%s", items_save, item.Name);
-						}
-						else
-						{
-							strcopy(items_save, sizeof(items_save), item.Name);
-						}
-				//	}
-				}
-			}
-		}
-	}
-	
-	CookieLoadoutLv[slot].Set(client, level);
-	CookieLoadoutInv[slot].Set(client, inv);
-	CookieLoadoutItems[slot].Set(client, Items_save);
-	
-	//save all things seperataly for ease of coding.
-}
-
-void Store_SaveLoadout(int client)
-{
-//	PrintToChatAll("Save Loadout");
-	char buffer[512];
-	Format(buffer, sizeof(buffer), "%d;%d", CashSpent[client], Equipped[client][0]);
-	
-	for(int i=1; i<sizeof(Equipped[]); i++)
-	{
-		Format(buffer, sizeof(buffer), "%s;%d", buffer, Equipped[client][i]);
-	}
-	
-	static Item item;
-	static ItemInfo info;
-	int length = StoreItems.Length;
-	for(int i; i<length; i++)
-	{
-		StoreItems.GetArray(i, item);
-		
-		int owned = item.Owned[client] - 1;
-		if(owned < 0)
-			owned = 0;
-		
-		item.GetItemInfo(owned, info);
-		if(info.Cost)
-		{
-			if(item.Scaled[client])
-			{
-				Format(buffer, sizeof(buffer), "%s;%d;%d", buffer, i, item.Scaled[client]);
-			}
-			else if(item.Owned[client])
-			{
-				Format(buffer, sizeof(buffer), "%s;%d;%d", buffer, i, item.Owned[client]);
-			}
-		}
-	}
-	
-	CookieData.Set(client, buffer);
-}
-
-bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped, char[] buffer="", int length=0)
+bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped, char[] buffer="", int size=0)
 {
 	static Item item;
 	int length = StoreItems.Length;
 	for(; i < length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(item.Owned[client] || item.Scaled[client])
+		if(item.Owned[client] || item.Scaled[client] || item.Equipped[client])
 		{
 			owned = item.Owned[client];
 			scale = item.Scaled[client];
+			equipped = item.Equipped[client];
 			
-			if(length)
-				strcopy(buffer, length, item.Name);
+			if(size)
+				strcopy(buffer, size, item.Name);
 			
 			return true;
 		}
@@ -1280,7 +953,7 @@ public void Store_RandomizeNPCStore(bool ResetStore)
 	}
 }
 
-void Store_RoundStart()
+/*void Store_RoundStart()
 {
 	static Item item;
 	static ItemInfo info;
@@ -1289,7 +962,7 @@ void Store_RoundStart()
 	int entity = MaxClients+1;
 	while((entity=FindEntityByClassname(entity, "prop_dynamic")) != -1)
 	{
-		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer))
+		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 		if(!StrContains(buffer, "zr_weapon_", false))
 		{
 			int tier = ExplodeString(buffer, "_", buffers, sizeof(buffers), sizeof(buffers[])) - 1;
@@ -1359,7 +1032,7 @@ void Store_RoundStart()
 			lists[i] = null;
 		}
 	}
-}
+}*/
 
 public bool Do_Not_Collide(int client, int collisiongroup, int contentsmask, bool originalResult)
 {
@@ -1555,7 +1228,7 @@ static void MenuPage(int client, int section)
 				bool canSellInsideMenu;
 				int style = ITEMDRAW_DEFAULT;
 				int slot = TF2_GetClassnameSlot(info.Classname);
-				if(slot < sizeof(Equipped[]) && Equipped[client][slot] == section)
+				if(item.Equipped[client])
 				{
 					if(!EscapeMode && info.Ammo && info.Ammo < Ammo_MAX)
 					{
@@ -1630,7 +1303,7 @@ static void MenuPage(int client, int section)
 				IntToString(section, buffer2, sizeof(buffer2));
 				menu.AddItem(buffer2, buffer, style);
 				
-				if(!EscapeMode && slot < sizeof(Equipped[]) && Equipped[client][slot] == section)
+				if(!EscapeMode && item.Equipped[client])
 				{
 					if(info.Ammo && info.Ammo < Ammo_MAX)
 					{
@@ -1670,7 +1343,7 @@ static void MenuPage(int client, int section)
 						FormatEx(buffer, sizeof(buffer), "------");//my shitcoding, nooooo!!
 						menu.AddItem(buffer2, buffer, ITEMDRAW_DISABLED);
 					}
-					if(Equipped[client][slot] == section)
+					if(item.Equipped[client])
 					{
 						FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
 						menu.AddItem(buffer2, buffer);
@@ -1880,7 +1553,7 @@ static void MenuPage(int client, int section)
 					Format(BuildingExtraCounter, sizeof(BuildingExtraCounter), "{%i}", How_Many_Buildings_Exist);
 				}
 				
-				if(slot < sizeof(Equipped[]) && Equipped[client][slot] == i)
+				if(item.Equipped[client])
 				{
 					FormatEx(buffer, sizeof(buffer), "%s [%t] %s", TranslateItemName(client, item.Name), "Equipped", BuildingExtraCounter);
 				}
@@ -2220,274 +1893,206 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Select:
 		{
-			Item item;
+			static Item item;
 			menu.GetItem(0, item.Name, sizeof(item.Name));
 			int index = StringToInt(item.Name);
 			StoreItems.GetArray(index, item);
 			
-			if(choice == 3)	// Sell
+			static ItemInfo info;
+			switch(choice)
 			{
-				if(item.Owned[client])
+				case 0:
 				{
-					ItemInfo info;
-					item.GetItemInfo(item.Owned[client]-1, info);
-					if(info.Cost) //make sure it even can be sold.
+					int cash = CurrentCash - CashSpent[client];
+					
+					if(ClientTutorialStep(client) == 2)
 					{
-						CashSpent[client] -= ItemSell(item, item.Owned[client], client);
-						ClientCommand(client, "playgamesound \"mvm/mvm_money_pickup.wav\"");
+						SetClientTutorialStep(client, 3);
+						DoTutorialStep(client, false);	
 					}
-					
-					item.Owned[client] = 0;
-					if(item.Scaled[client] > 0)
-						item.Scaled[client]--;
-					
-					StoreItems.SetArray(index, item);
-					
-					int slot = TF2_GetClassnameSlot(info.Classname);
-					if(Equipped[client][slot] == index) //No bugging out >:(((((((((((((((((
+			
+					if(NPCOnly[client] == 2)	// Buy Rebel Weapon
 					{
-						Equipped[client][slot] = -1;
-						Store_ApplyAttribs(client);
-						Store_GiveAll(client, GetClientHealth(client));	
-					}
-				}
-			}
-			if(choice == 2) //
-			{
-				if(item.Owned[client]) //item.TextStore[0]
-				{
-					int active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon")
-					{
-						if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime())
+						item.GetItemInfo(0, info);
+						
+						int sell = RoundToCeil(float(info.Cost) * SELL_AMOUNT);
+						ItemCost(client, item, info.Cost);
+						if(!item.NPCWeaponAlways)
+							info.Cost -= NPCCash[client];
+						
+						if(info.Cost <= cash)
 						{
-							ItemInfo info;
-							item.GetItemInfo(item.Owned[client]-1, info);
-							int slot = TF2_GetClassnameSlot(info.Classname);
-							if(Equipped[client][slot] == index)
+							int entity = EntRefToEntIndex(NPCTarget[client]);
+							if(entity != INVALID_ENT_REFERENCE)
 							{
-								Equipped[client][slot] = -1;
-								StoreItems.SetArray(index, item);
+								if(Citizen_UpdateWeaponStats(entity, item.NPCWeapon, sell, info))
+								{
+									CashSpent[client] += info.Cost;
+									ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+									
+									if(!item.NPCWeaponAlways)
+									{
+										for(int i = 1; i <= MaxClients; i++)
+										{
+											if(GetClientMenu(i) && NPCOnly[i] == 2 && NPCTarget[client] == NPCTarget[i])
+											{
+												CancelClientMenu(i);
+												NPCTarget[i] = -1;
+											}
+										}
+										return 0;
+									}
+									else
+									{
+										int client_previously = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
+										if(IsValidClient(client_previously) && client_previously != client)
+										{
+											//Give them some their money back! Some other person just override theirs, i dont think they should be punished for that.......
+											//BUT ONLY IF ITS ACTUALLY A DIFFERENT CLIENT. :(
+											int money_back = RoundToCeil(float(i_ThisEntityHasAMachineThatBelongsToClientMoney[entity]) * 0.7);
+											SetGlobalTransTarget(client_previously);
+											PrintToChat(client_previously, "%t","You got your money back npc", money_back);
+											CashSpent[client_previously] -= money_back;
+											i_ThisEntityHasAMachineThatBelongsToClientMoney[entity] = 0;
+											
+										}
+										i_ThisEntityHasAMachineThatBelongsToClient[entity] = GetClientUserId(client);
+										i_ThisEntityHasAMachineThatBelongsToClientMoney[entity] = info.Cost;
+									}
+								}
 							}
-							else if(!info.Classname[0] && !info.Cost) //make sure it even can be sold.
-							{
-								item.Owned[client] = 0;
-								if(--item.Scaled[client] < 0)
-									item.Scaled[client] = 0;
-								
-								StoreItems.SetArray(index, item);
-							}
-							Store_ApplyAttribs(client);
-							Store_GiveAll(client, GetClientHealth(client));	
-						}
-						else
-						{
-							ClientCommand(client, "playgamesound items/medshotno1.wav");	
 						}
 					}
-				}
-			}
-			else if (choice == 1)
-			{
-				int cash = CurrentCash-CashSpent[client];
-				int level = item.Owned[client]-1;
-				if(level < 0)
-					level = 0;
-				
-				ItemInfo info;
-				item.GetItemInfo(level, info);
-				int slot = TF2_GetClassnameSlot(info.Classname);
-				if(slot < sizeof(Equipped[]) && Equipped[client][slot] == index)
-				{
-					int cost = AmmoData[info.Ammo][0];
-					cost *= 10;
-					if(!EscapeMode && info.Ammo && info.Ammo < Ammo_MAX && cost <= cash)
+					else
 					{
-						CashSpent[client] += cost;
-						ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
-						int ammo = GetAmmo(client, info.Ammo)+AmmoData[info.Ammo][1]*10;
-						SetAmmo(client, info.Ammo, ammo);
-						CurrentAmmo[client][info.Ammo] = ammo;
-					}
-				}
-				
-			}
-			else if (choice == 0)
-			{
-				int cash = CurrentCash-CashSpent[client];
-				
-				if(ClientTutorialStep(client) == 2)
-				{
-					SetClientTutorialStep(client, 3);
-					DoTutorialStep(client, false);	
-				}
-		
-				if(NPCOnly[client] == 2)
-				{
-					ItemInfo info;
-					item.GetItemInfo(0, info);
-					
-					int sell = RoundToCeil(float(info.Cost) * SELL_AMOUNT);
-					ItemCost(client, item, info.Cost);
-					if(!item.NPCWeaponAlways)
-						info.Cost -= NPCCash[client];
-					
-					if(info.Cost <= cash)
-					{
-						int entity = EntRefToEntIndex(NPCTarget[client]);
-						if(entity != INVALID_ENT_REFERENCE)
+						int level = item.Owned[client]-1;
+						if(level < 0)
+							level = 0;
+						
+						item.GetItemInfo(level, info);
+						int slot = TF2_GetClassnameSlot(info.Classname);
+						if(item.Equipped[client])	// Buy Ammo
 						{
-							if(Citizen_UpdateWeaponStats(entity, item.NPCWeapon, sell, info))
+							if(info.Ammo && info.Ammo < Ammo_MAX && AmmoData[info.Ammo][0] <= cash)
 							{
-								CashSpent[client] += info.Cost;
+								CashSpent[client] += AmmoData[info.Ammo][0];
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 								
-								if(!item.NPCWeaponAlways)
+								int ammo = GetAmmo(client, info.Ammo) + AmmoData[info.Ammo][1];
+								SetAmmo(client, info.Ammo, ammo);
+								CurrentAmmo[client][info.Ammo] = ammo;
+							}
+						}
+						else if(info.Classname[0])	// Weapon
+						{
+							if(!item.Owned[client])	// Buy Weapon
+							{
+								ItemCost(client, item, info.Cost);
+								if(info.Cost <= cash)
 								{
-									for(int i = 1; i <= MaxClients; i++)
-									{
-										if(GetClientMenu(i) && NPCOnly[i] == 2 && NPCTarget[client] == NPCTarget[i])
-										{
-											CancelClientMenu(i);
-											NPCTarget[i] = -1;
-										}
-									}
-									return 0;
+									CashSpent[client] += info.Cost;
+									Store_BuyClientItem(client, item, info);
+									item.Equipped[client] = false;
+									
+									ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 								}
-								else
+							}
+							
+							if(item.Owned[client] && !item.Equipped[client])	// Equip Weapon
+							{
+								item.Equipped[client] = true;
+								StoreItems.SetArray(index, item);
+								
+								if(!TeutonType[client])
 								{
-									int client_previously = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
-									if(IsValidClient(client_previously) && client_previously != client)
-									{
-										//Give them some their money back! Some other person just override theirs, i dont think they should be punished for that.......
-										//BUT ONLY IF ITS ACTUALLY A DIFFERENT CLIENT. :(
-										int money_back = RoundToCeil(float(i_ThisEntityHasAMachineThatBelongsToClientMoney[entity]) * 0.7);
-										SetGlobalTransTarget(client_previously);
-										PrintToChat(client_previously, "%t","You got your money back npc", money_back);
-										CashSpent[client_previously] -= money_back;
-										i_ThisEntityHasAMachineThatBelongsToClientMoney[entity] = 0;
-										
-									}
-									i_ThisEntityHasAMachineThatBelongsToClient[entity] = GetClientUserId(client);
-									i_ThisEntityHasAMachineThatBelongsToClientMoney[entity] = info.Cost;
+									Store_GiveItem(client, index, item.Equipped[client]);
+									Manual_Impulse_101(client, GetClientHealth(client));
 								}
 							}
 						}
-					}
-				}
-				else
-				{
-					int level = item.Owned[client]-1;
-					if(level < 0)
-						level = 0;
-					
-					ItemInfo info;
-					item.GetItemInfo(level, info);
-					int slot = TF2_GetClassnameSlot(info.Classname);
-					if(slot < sizeof(Equipped[]) && Equipped[client][slot] == index)
-					{
-						int cost = AmmoData[info.Ammo][0];
-						if(!EscapeMode && info.Ammo && info.Ammo < Ammo_MAX && cost <= cash)
-						{
-							CashSpent[client] += cost;
-							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
-							int ammo = GetAmmo(client, info.Ammo)+AmmoData[info.Ammo][1];
-							SetAmmo(client, info.Ammo, ammo);
-							CurrentAmmo[client][info.Ammo] = ammo;
-						}
-					}
-					
-					else if(info.Classname[0])
-					{
-						if(!item.Owned[client])
+						else if(!item.Owned[client])	// Buy Perk
 						{
 							ItemCost(client, item, info.Cost);
 							if(info.Cost <= cash)
 							{
 								CashSpent[client] += info.Cost;
-								item.Owned[client] = 1;
-								item.Scaled[client]++;
-								if(item.MaxScaled < item.Scaled[client])
-								{
-									item.Scaled[client] = item.MaxScaled;
-								}
+								Store_BuyClientItem(client, item, info);
 								StoreItems.SetArray(index, item);
 								
-								if(info.FuncOnBuy != INVALID_FUNCTION)
-								{
-									Call_StartFunction(null, info.FuncOnBuy);
-									Call_PushCell(client);
-									Call_Finish();
-								}
-								
-								if(info.Cost)
-									ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
-							}
-						}
-						
-						if(item.Owned[client])
-						{
-							Equipped[client][slot] = index;
-							if(!TeutonType[client])
-							{
-								TF2_RemoveWeaponSlot(client, slot);
-								Store_GiveItem(client, slot);
-								Manual_Impulse_101(client, GetClientHealth(client));
-							}
-						}
-					}
-					else if(!item.Owned[client])
-					{
-						ItemCost(client, item, info.Cost);
-						if(info.Cost <= cash)
-						{
-							CashSpent[client] += info.Cost;
-							item.Owned[client] = 1;
-							item.Scaled[client]++;
-							if(item.MaxScaled < item.Scaled[client])
-							{
-								item.Scaled[client] = item.MaxScaled;
-							}
-							StoreItems.SetArray(index, item);
-							if(info.Cost)
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
-							
-							if(info.FuncOnBuy != INVALID_FUNCTION)
-							{
-								Call_StartFunction(null, info.FuncOnBuy);
-								Call_PushCell(client);
-								Call_Finish();
-							}
-							
-							if((info.Index < 0 || info.Index > 2) && info.Index < 6)
-							{
-								Store_ApplyAttribs(client);
-						//		if(info.Index == 5)
-						//			Building_IncreaseSentryLevel(client);
 								
-								if(info.Index == 4 || info.Index == 5)
-								{
-									for(info.Cost=0; info.Cost<info.Attribs; info.Cost++)
-									{
-										if(info.Attrib[info.Cost] == 286)
-										{
-											cash = MaxClients+1;
-											while((cash=FindEntityByClassname(cash, "obj_*")) != -1)
-											{
-												if(GetEntPropEnt(cash, Prop_Send, "m_hBuilder") == client)
-												{
-													SetEntProp(cash, Prop_Data, "m_iMaxHealth", RoundFloat(GetEntProp(cash, Prop_Data, "m_iMaxHealth")*info.Value[info.Cost]));
-													SetEntProp(cash, Prop_Send, "m_iHealth", RoundFloat(GetEntProp(cash, Prop_Send, "m_iHealth")*info.Value[info.Cost]));
-												}
-											}
-										}
-									}
-								}
-							}
-							else
-							{
+								Store_ApplyAttribs(client);
 								Store_GiveAll(client, GetClientHealth(client));
 							}
 						}
+					}
+				}
+				case 1:	 // Ammo x10
+				{
+					if(item.Owned[client])
+					{
+						int cash = CurrentCash - CashSpent[client];
+						int level = item.Owned[client] - 1;
+						if(level < 0)
+							level = 0;
+						
+						item.GetItemInfo(level, info);
+						if(info.Ammo && info.Ammo < Ammo_MAX)
+						{
+							int cost = AmmoData[info.Ammo][0] * 10;
+							if(cost <= cash)
+							{
+								CashSpent[client] += cost;
+								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+								int ammo = GetAmmo(client, info.Ammo) + AmmoData[info.Ammo][1]*10;
+								SetAmmo(client, info.Ammo, ammo);
+								CurrentAmmo[client][info.Ammo] = ammo;
+							}
+						}
+					}
+				}
+				case 2:	// Unequip
+				{
+					if(item.Owned[client] && item.Equipped[client])
+					{
+						int active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+						if(active_weapon > MaxClients)
+						{
+							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime())
+							{
+								item.Equipped[client] = false;
+								StoreItems.SetArray(index, item);
+								
+								Store_ApplyAttribs(client);
+								Store_GiveAll(client, GetClientHealth(client));	
+							}
+							else
+							{
+								ClientCommand(client, "playgamesound items/medshotno1.wav");	
+							}
+						}
+					}
+				}
+				case 3:	// Sell
+				{
+					if(item.Owned[client])
+					{
+						item.GetItemInfo(item.Owned[client]-1, info);
+						if(info.Cost) //make sure it even can be sold.
+						{
+							CashSpent[client] -= ItemSell(item, item.Owned[client], client);
+							ClientCommand(client, "playgamesound \"mvm/mvm_money_pickup.wav\"");
+						}
+						
+						item.Owned[client] = 0;
+						if(item.Scaled[client] > 0)
+							item.Scaled[client]--;
+						
+						item.Equipped[client] = false;
+						StoreItems.SetArray(index, item);
+						
+						Store_ApplyAttribs(client);
+						Store_GiveAll(client, GetClientHealth(client));
 					}
 				}
 			}
@@ -2585,8 +2190,8 @@ void Store_ApplyAttribs(int client)
 		map.SetValue("287", 1.15);
 	}
 		
-	Item item;
-	ItemInfo info;
+	static Item item;
+	static ItemInfo info;
 	float value;
 	char buffer1[12], buffer2[32];
 	int length = StoreItems.Length;
@@ -2718,12 +2323,27 @@ void Store_GiveAll(int client, int health)
 		SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 		SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	}
-						
+	
+	bool found = false;
 	bool use = true;
-	for(int i; i<sizeof(Equipped[]); i++)
+	int length = StoreItems.Length;
+	for(int i; i<length; i++)
 	{
-		Store_GiveItem(client, i, use);
+		static Item item;
+		StoreItems.GetArray(i, item);
+		if(item.Owned[client])
+		{
+			static ItemInfo info;
+			item.GetItemInfo(item.Owned[client]-1, info);
+			if(info.Classname[0])
+			{
+				Store_GiveItem(client, i, use, found);
+			}
+		}
 	}
+	
+	if(!found)
+		Store_GiveItem(client, -1, use);
 	
 //	Spawn_Buildable(client);
 //	TF2_SetPlayerClass(client, TFClass_Engineer, true, false);
@@ -2767,31 +2387,35 @@ void Delete_Clip_again(int entity)
 	}
 }
 
-int Store_GiveItem(int client, int slot, bool &use=true)
+int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 {
 	if(!StoreItems)
 		return -1;
-		
-		
 	
-	Item item;
+	static Item item;
+	static ItemInfo info;
+	
+	int slot = -1;
 	int entity = -1;
 	int length = StoreItems.Length;
-	if(Equipped[client][slot] > 0 && Equipped[client][slot] < length)
+	if(index > 0 && index < length)
 	{
-		StoreItems.GetArray(Equipped[client][slot], item);
+		StoreItems.GetArray(index, item);
 		if(item.Owned[client] > 0)
 		{
-			ItemInfo info;
 			item.GetItemInfo(item.Owned[client]-1, info);
 			if(info.Classname[0])
 			{
-				if(info.SniperBugged && CurrentClass[client] == TFClass_Sniper)
+				slot = TF2_GetClassnameSlot(info.Classname);
+				if(slot == TFWeaponSlot_Melee)
+					found = true;
+				
+				/*if(info.SniperBugged && CurrentClass[client] == TFClass_Sniper)
 				{
 					CurrentClass[client] = TFClass_Soldier;
 					TF2_RegeneratePlayer(client);
 					return -1;
-				}
+				}*/
 				
 				entity = SpawnWeapon(client, info.Classname, info.Index, 5, 6, info.Attrib, info.Value, info.Attribs);
 				
@@ -2912,7 +2536,7 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 			}
 		}
 	}
-	else if(slot == TFWeaponSlot_Melee)
+	else
 	{
 		static char Classnames[][32] = {"tf_weapon_shovel", "tf_weapon_bat", "tf_weapon_club", "tf_weapon_shovel",
 		"tf_weapon_bottle", "tf_weapon_bonesaw", "tf_weapon_fists", "tf_weapon_fireaxe", "tf_weapon_knife", "tf_weapon_wrench"};
@@ -2981,7 +2605,6 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 	}
 	if(!TeutonType[client])
 	{
-		ItemInfo info;
 		for(int i; i<length; i++)
 		{
 			StoreItems.GetArray(i, item);
@@ -3146,41 +2769,29 @@ int Store_GiveItem(int client, int slot, bool &use=true)
 
 int Store_GiveSpecificItem(int client, const char[] name)
 {
-	Item item;
+	static Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
 		if(StrEqual(name, item.Name, false))
 		{
-			ItemInfo info;
+			static ItemInfo info;
 			item.GetItemInfo(0, info);
-			int entity = -1;
-			int slot = TF2_GetClassnameSlot(info.Classname);
-			if(slot < sizeof(Equipped[]))
-			{
-				int lastEquipped = Equipped[client][slot];
-				int lastOwned = item.Owned[client];
-				
-				Equipped[client][slot] = i;
-				item.Owned[client] = 1;
-				StoreItems.SetArray(i, item);
-				
-				entity = Store_GiveItem(client, slot);
-				
-				Equipped[client][slot] = lastEquipped;
-				item.Owned[client] = lastOwned;
-				StoreItems.SetArray(i, item);
-			}
-			return entity;
+			
+			item.Owned[client] = 1;
+			item.Equipped[client] = true;
+			StoreItems.SetArray(i, item);
+			
+			return Store_GiveItem(client, i, item.Equipped[client]);
 		}
 	}
 	
 	ThrowError("Unknown item name %s", name);
-	return 0;
+	return -1;
 }
 
-bool Store_Interact(int client, int entity, const char[] classname)
+/*bool Store_Interact(int client, int entity, const char[] classname)
 {
 	if(!TeutonType[client] && GameRules_GetRoundState() <= RoundState_RoundRunning && StrEqual(classname, "prop_dynamic"))
 	{
@@ -3311,9 +2922,9 @@ bool Store_Interact(int client, int entity, const char[] classname)
 		}
 	}
 	return false;
-}
+}*/
 
-void Store_ConsumeItem(int client, int slot)
+/*void Store_ConsumeItem(int client, int slot)
 {
 	if(Equipped[client][slot] > 0 && Equipped[client][slot] < StoreItems.Length)
 	{
@@ -3324,7 +2935,7 @@ void Store_ConsumeItem(int client, int slot)
 		Equipped[client][slot] = -1;
 		TF2_RemoveWeaponSlot(client, slot);
 	}
-}
+}*/
 
 bool Store_PrintLevelItems(int client, int level)
 {

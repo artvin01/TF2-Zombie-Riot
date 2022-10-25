@@ -1210,9 +1210,10 @@
 		"ru"		"Ваше снаряжение было обновлено по сравнению с предыдущей игрой."
 		"de"		"Ihr Loadout wurde geupdated von ihren vorigen zustand."
 	}
-	"Couldnt buy all items needed"
+	"Could Not Buy Item"
 	{
-		"en"		"Couldnt buy all items needed, you did not have enough cash./nMissing sale or wrong gamemode is usually the cause."
+		"#format"	"{1:s}"
+		"en"		"Could not buy {1}."
 	}
 	"Press TAB To open the store"
 	{

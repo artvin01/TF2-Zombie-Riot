@@ -98,16 +98,11 @@ public void Database_ClientSetup(Database db, int userid, int numQueries, DBResu
 	}
 }
 
-public void Database_ClientRetry(Database db, any data, int numQueries, const char[] error, int failIndex, any[] queryData)
+bool Database_SaveGameData(int client)
 {
-	int client = GetClientOfUserId(data);
-	if(client)
-		Database_ClientAuthorized(client);
-}
-
-void Database_SaveGameData(int client)
-{
-	if(DataBase && Loadouts[client])
+	delete Loadouts[client];
+	
+	if(DataBase && AreClientCookiesCached(client))
 	{
 		int id = GetSteamAccountID(client);
 		if(id)
@@ -125,10 +120,129 @@ void Database_SaveGameData(int client)
 			}
 			
 			DataBase.Execute(tr, Database_Success, Database_Fail);
+			return true;
 		}
 	}
 	
-	delete Loadouts[client];
+	return false;
+}
+
+void Database_LoadGameData(int client)
+{
+	if(DataBase)
+	{
+		int id = GetSteamAccountID(client);
+		if(id)
+		{
+			Transaction tr = new Transaction();
+			
+			char buffer[256];
+			FormatEx(buffer, sizeof(buffer), "SELECT * FROM " ... DATATABLE_GAMEDATA ... " WHERE steamid = %d;", id);
+			tr.AddQuery(buffer);
+			
+			DataBase.Execute(tr, Database_OnGameData, Database_Fail, GetClientUserId(client));
+		}
+	}
+}
+
+public void Database_OnGameData(Database db, int userid, int numQueries, DBResultSet[] results, any[] queryData)
+{
+	int client = GetClientOfUserId(userid);
+	if(client && AreClientCookiesCached(client) && results[0].MoreRows)
+	{
+		char buffer[32];
+		CookieCache.Get(client, buffer, sizeof(buffer));
+		
+		int buffers[2];
+		ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
+		CashSpent[client] += buffers[1];
+		
+		do
+		{
+			if(results[0].FetchRow())
+				Store_SetClientItem(client, results[0].FetchInt(1), results[0].FetchInt(2), results[0].FetchInt(3), results[0].FetchInt(4));
+		}
+		while(results[0].MoreRows);
+		
+		SetGlobalTransTarget(client);
+		PrintToChat(client, "%t", "Your loadout was updated from your previous state.");
+		if(IsPlayerAlive(client))
+			TF2_RegeneratePlayer(client);
+	}
+}
+
+void Database_SaveLoadout(int client, const char[] name)
+{
+	if(DataBase)
+	{
+		int id = GetSteamAccountID(client);
+		if(id)
+		{
+			Transaction tr = new Transaction();
+			
+			FormatEx(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_LOADOUT ... " WHERE steamid = %d AND loadout = '%s';", id, name);
+			tr.AddQuery(buffer);
+			
+			int owned, scale, equip;
+			for(int i; Store_GetNextItem(client, i, owned, scale, equip); i++)
+			{
+				if(owned && equip)
+				{
+					DataBase.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GAMEDATA ... " (steamid, item, loadout) VALUES ('%d', '%s', '%s')", id, buffer, name);
+					tr.AddQuery(buffer);
+				}
+			}
+			
+			DataBase.Execute(tr, Database_Success, Database_Fail);
+		}
+	}
+}
+
+void Database_LoadLoadout(int client, const char[] name, bool free)
+{
+	if(DataBase)
+	{
+		int id = GetSteamAccountID(client);
+		if(id)
+		{
+			Transaction tr = new Transaction();
+			
+			char buffer[256];
+			FormatEx(buffer, sizeof(buffer), "SELECT item FROM " ... DATATABLE_LOADOUT ... " WHERE steamid = %d AND loadout = '%s';", id, name);
+			tr.AddQuery(buffer);
+			
+			DataPack pack = new DataPack();
+			pack.WriteCell(GetClientUserId(client));
+			pack.WriteCell(free);
+			
+			DataBase.Execute(tr, Database_OnLoadout, Database_FailHandle, pack);
+		}
+	}
+}
+
+public void Database_OnLoadout(Database db, DataPack pack, int numQueries, DBResultSet[] results, any[] queryData)
+{
+	int client = GetClientOfUserId(pack.ReadCell());
+	if(client && results[0].MoreRows)
+	{
+		bool free = pack.ReadCell();
+		
+		do
+		{
+			if(results[0].FetchRow())
+			{
+				char buffer[64];
+				results[0].FetchString(0, buffer, sizeof(buffer));
+				Store_BuyNamedItem(client, buffer, free);
+			}
+		}
+		while(results[0].MoreRows);
+		
+		Store_ApplyAttribs(client);
+		Store_GiveAll(client, GetClientHealth(client));
+	}
+	
+	delete pack;
 }
 
 public void Database_Success(Database db, any data, int numQueries, DBResultSet[] results, any[] queryData)
@@ -140,8 +254,8 @@ public void Database_Fail(Database db, any data, int numQueries, const char[] er
 	LogError("[Database] %s", error);
 }
 
-public void Database_FailHandle(Database db, any data, int numQueries, const char[] error, int failIndex, any[] queryData)
+/*public void Database_FailHandle(Database db, any data, int numQueries, const char[] error, int failIndex, any[] queryData)
 {
 	LogError("[Database] %s", error);
 	CloseHandle(data);
-}
+}*/

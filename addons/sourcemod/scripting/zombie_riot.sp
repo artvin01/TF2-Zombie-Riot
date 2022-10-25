@@ -22,6 +22,7 @@
 	
 #tryinclude <menus-controller>
 
+#pragma newdecls required
 
 #define CHAR_FULL	"█"
 #define CHAR_PARTFULL	"▓"
@@ -115,8 +116,6 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 //ATTENTION PLEASE!!!!!!!!!
 //ATTENTION PLEASE!!!!!!!!!
 //ATTENTION PLEASE!!!!!!!!!
-
-#pragma newdecls required
 
 #define FAR_FUTURE	100000000.0
 #define MAXENTITIES	2048
@@ -1077,6 +1076,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/store.sp"
 #include "zombie_riot/viewchanges.sp"
 #include "zombie_riot/npc_stats.sp"
+#include "zombie_riot/database.sp"
 
 #include "zombie_riot/buildonbuilding.sp"
 #include "zombie_riot/custom_melee_logic.sp"
