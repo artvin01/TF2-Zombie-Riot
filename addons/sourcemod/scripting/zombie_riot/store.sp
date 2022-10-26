@@ -2340,7 +2340,8 @@ public bool Store_SayCommand(int client)
 	char buffer[64];
 	GetCmdArgString(buffer, sizeof(buffer));
 	
-	if(Database_Escape(buffer, buffer, sizeof(buffer), length) && length < 31)
+	int length = 33;
+	if(Database_Escape(buffer, sizeof(buffer), length) && length < 31)
 	{
 		Database_SaveLoadout(client, buffer);
 		Loadouts[client].PushString(buffer);
