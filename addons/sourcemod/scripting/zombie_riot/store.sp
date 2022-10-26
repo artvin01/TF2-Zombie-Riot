@@ -490,7 +490,7 @@ void Store_SwapItems(int client)
 					nextI = lowestI;
 				}
 
-				/*GetEntityClassname(active, buffer, sizeof(buffer));
+				GetEntityClassname(active, buffer, sizeof(buffer));
 				PrintToChatAll("Current: %d | %s | %d", i, buffer, active);
 				
 				GetEntityClassname(switchE, buffer, sizeof(buffer));
@@ -500,7 +500,7 @@ void Store_SwapItems(int client)
 				{
 					GetEntityClassname(nextE, buffer, sizeof(buffer));
 					PrintToChatAll("Swap: %d | %s | %d", nextI, buffer, nextE);
-				}*/
+				}
 
 				if(nextE != -1 && switchI != nextI)
 				{
