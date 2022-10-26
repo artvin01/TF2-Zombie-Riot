@@ -397,6 +397,41 @@ void Store_OpenItemPage(int client)
 	}
 }
 
+void Store_SwapToItem(int client, int swap)
+{
+	char classname[36], buffer[36];
+	GetEntityClassname(swap, classname, sizeof(classname));
+
+	int slot = TF2_GetClassnameSlot(classname);
+	
+	int length = GetMaxWeapons(client);
+	for(int i; i < length; i++)
+	{
+		if(GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i) == swap)
+		{
+			for(int a; a < length; a++)
+			{
+				if(a != i)
+				{
+					int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", a);
+					if(weapon > MaxClients)
+					{
+						GetEntityClassname(weapon, buffer, sizeof(buffer));
+						if(TF2_GetClassnameSlot(buffer) == slot)
+						{
+							SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", swap, a);
+							SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, i);
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	FakeClientCommand(client, "use %s", buffer);
+}
+
 void Store_SwapItems(int client)
 {
 	int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -454,8 +489,8 @@ void Store_SwapItems(int client)
 					nextE = lowestE;
 					nextI = lowestI;
 				}
-				
-				GetEntityClassname(active, buffer, sizeof(buffer));
+
+				/*GetEntityClassname(active, buffer, sizeof(buffer));
 				PrintToChatAll("Current: %d | %s | %d", i, buffer, active);
 				
 				GetEntityClassname(switchE, buffer, sizeof(buffer));
@@ -465,7 +500,7 @@ void Store_SwapItems(int client)
 				{
 					GetEntityClassname(nextE, buffer, sizeof(buffer));
 					PrintToChatAll("Swap: %d | %s | %d", nextI, buffer, nextE);
-				}
+				}*/
 
 				if(nextE != -1 && switchI != nextI)
 				{
@@ -2858,7 +2893,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 					}
 					if(use)
 					{
-						FakeClientCommand(client, "use %s", info.Classname);
+						Store_SwapToItem(client, entity);
 						use = false;
 					}
 				}
@@ -2910,7 +2945,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 			
 			if(use)
 			{
-				FakeClientCommand(client, "use %s", Classnames[CurrentClass[client]]);
+				Store_SwapToItem(client, entity);
 				use = false;
 			}
 		}
