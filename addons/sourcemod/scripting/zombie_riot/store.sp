@@ -2565,7 +2565,7 @@ void Store_ApplyAttribs(int client)
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(item.Owned[client])
+		if(item.Owned[client] && item.Equipped[client])
 		{
 			item.GetItemInfo(item.Owned[client]-1, info);
 			if(!info.Classname[0])
@@ -3070,7 +3070,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 		for(int i; i<length; i++)
 		{
 			StoreItems.GetArray(i, item);
-			if(item.Owned[client])
+			if(item.Owned[client] && item.Equipped[client])
 			{
 				item.GetItemInfo(item.Owned[client]-1, info);
 				if(!info.Classname[0])
