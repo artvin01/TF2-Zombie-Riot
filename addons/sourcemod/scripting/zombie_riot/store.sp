@@ -424,12 +424,14 @@ void Store_SwapItems(int client)
 							{
 								SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", active, a);
 								SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, i);
-								SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
+								
+								ClientCommand(client, "use %s", buffer);
+								//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
 								//SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + );
 								
-								float time = GetGameTime() + 0.7;
-								if(GetEntPropFloat(client, Prop_Send, "m_flNextAttack") < time)
-									SetEntPropFloat(client, Prop_Send, "m_flNextAttack", time);
+								//float time = GetGameTime() + 0.7;
+								//if(GetEntPropFloat(client, Prop_Send, "m_flNextAttack") < time)
+								//	SetEntPropFloat(client, Prop_Send, "m_flNextAttack", time);
 								
 								return;
 							}
