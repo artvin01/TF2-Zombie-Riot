@@ -198,7 +198,7 @@ void Database_SaveLoadout(int client, const char[] name)
 			{
 				if(owned && equip)
 				{
-					DataBase.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GAMEDATA ... " (steamid, item, loadout) VALUES ('%d', '%s', '%s')", id, buffer, name);
+					DataBase.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_LOADOUT ... " (steamid, item, loadout) VALUES ('%d', '%s', '%s')", id, buffer, name);
 					tr.AddQuery(buffer);
 				}
 			}
