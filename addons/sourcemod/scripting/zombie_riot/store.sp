@@ -408,13 +408,15 @@ void Store_SwapItems(int client)
 		int slot = TF2_GetClassnameSlot(buffer);
 		
 		int length = GetMaxWeapons(client);
-		for(int i; i<length; i++)
+		for(int i; i < length; i++)
 		{
 			if(GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i) == active)
 			{
 				int lowestI, nextI;
 				int lowestE = -1;
 				int nextE = -1;
+				int switchE = -1;
+				int switchI = length;
 				for(int a; a < length; a++)
 				{
 					if(a != i)
@@ -425,6 +427,12 @@ void Store_SwapItems(int client)
 							GetEntityClassname(weapon, buffer, sizeof(buffer));
 							if(TF2_GetClassnameSlot(buffer) == slot)
 							{
+								if(switchI < a)
+								{
+									switchE = weapon;
+									switchI = a;
+								}
+
 								if(lowestE == -1 || weapon < lowestE)
 								{
 									lowestE = weapon;
@@ -447,10 +455,10 @@ void Store_SwapItems(int client)
 					nextI = lowestI;
 				}
 				
-				if(nextE != -1)
+				if(nextE != -1 && switchE != -1)
 				{
-					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", active, lowestI);
-					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", lowestE, i);
+					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", active, switchI);
+					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", switchE, i);
 					
 					FakeClientCommand(client, "use %s", buffer);
 					//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
