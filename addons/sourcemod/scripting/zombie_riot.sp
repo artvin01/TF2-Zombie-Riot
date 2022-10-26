@@ -2703,6 +2703,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 		{
 			Store_SwapItems(client);
 		}
+		return Plugin_Handled;
 	}
 	return Plugin_Continue;
 }
