@@ -415,8 +415,8 @@ void Store_SwapItems(int client)
 				int lowestI, nextI;
 				int lowestE = -1;
 				int nextE = -1;
-				int switchE = -1;
-				int switchI = length;
+				int switchE = weapon;
+				int switchI = i;
 				for(int a; a < length; a++)
 				{
 					if(a != i)
@@ -461,7 +461,7 @@ void Store_SwapItems(int client)
 					nextI = lowestI;
 				}
 				
-				if(nextE != -1 && switchE != -1)
+				if(nextE != -1)
 				{
 					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", nextE, switchI);
 					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", switchE, nextI);
