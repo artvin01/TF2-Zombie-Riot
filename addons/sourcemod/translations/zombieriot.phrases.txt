@@ -962,7 +962,7 @@
 	}
 	"Extra Buttons Explained"
 	{
-		"en" 		"Inspect Weapon: Allows you to instantly access your holding weapon in the store, to for example, buy ammo."
+		"en" 		"Store Button + Inspect Weapon: Allows you to instantly access your holding weapon in the store, to for example, buy ammo."
 	}
 	"Drank Mana Regen Potion"
 	{
