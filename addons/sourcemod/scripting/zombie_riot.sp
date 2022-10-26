@@ -3998,7 +3998,7 @@ void GiveXP(int client, int xp)
 	{
 		static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
 		ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
-		SetEntityHealth(client, SDKCall_GetMaxHealth(client) * 1.5);
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client) * 3 / 2);
 		SetGlobalTransTarget(client);
 		PrintToChat(client, "%t", "Level Up", nextLevel);
 		
