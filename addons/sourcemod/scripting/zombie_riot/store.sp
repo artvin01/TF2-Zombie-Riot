@@ -427,8 +427,6 @@ void Store_SwapItems(int client)
 							GetEntityClassname(weapon, buffer, sizeof(buffer));
 							if(TF2_GetClassnameSlot(buffer) == slot)
 							{
-								PrintToChatAll("%d = %s", a, buffer);
-
 								if(a < switchI)
 								{
 									switchE = weapon;
@@ -449,10 +447,6 @@ void Store_SwapItems(int client)
 							}
 						}
 					}
-					else
-					{
-						PrintToChatAll("%d = CURRENT", a);
-					}
 				}
 
 				if(nextE == -1)
@@ -461,7 +455,19 @@ void Store_SwapItems(int client)
 					nextI = lowestI;
 				}
 				
+				GetEntityClassname(active, buffer, sizeof(buffer));
+				PrintToChatAll("Current: %d | %s | %d", i, buffer, active);
+				
+				GetEntityClassname(switchE, buffer, sizeof(buffer));
+				PrintToChatAll("Lowest: %d | %s | %d", switchI, buffer, switchE);
+				
 				if(nextE != -1)
+				{
+					GetEntityClassname(nextE, buffer, sizeof(buffer));
+					PrintToChatAll("Swap: %d | %s | %d", nextI, buffer, nextE);
+				}
+
+				if(nextE != -1 && switchI != nextI)
 				{
 					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", nextE, switchI);
 					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", switchE, nextI);
