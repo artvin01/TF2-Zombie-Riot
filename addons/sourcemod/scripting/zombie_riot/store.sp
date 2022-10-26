@@ -507,6 +507,7 @@ void Store_SwapItems(int client)
 					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", nextE, switchI);
 					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", switchE, nextI);
 					
+					GetEntityClassname(nextE, buffer, sizeof(buffer));
 					FakeClientCommand(client, "use %s", buffer);
 					//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
 					//SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + );
