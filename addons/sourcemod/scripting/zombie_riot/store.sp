@@ -463,7 +463,7 @@ void Store_SwapItems(int client)
 				
 				if(nextE != -1 && switchE != -1)
 				{
-					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", active, switchI);
+					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", nextE, switchI);
 					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", switchE, i);
 					
 					FakeClientCommand(client, "use %s", buffer);
