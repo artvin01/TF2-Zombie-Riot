@@ -473,6 +473,7 @@ void Store_SwapItems(int client)
 					//float time = GetGameTime() + 0.7;
 					//if(GetEntPropFloat(client, Prop_Send, "m_flNextAttack") < time)
 					//	SetEntPropFloat(client, Prop_Send, "m_flNextAttack", time);
+					break;
 				}
 			}
 		}
