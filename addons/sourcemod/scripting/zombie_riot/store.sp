@@ -115,6 +115,9 @@ enum struct ItemInfo
 		FormatEx(buffer, sizeof(buffer), "%sindex", prefix);
 		this.Index = kv.GetNum(buffer);
 		
+		FormatEx(buffer, sizeof(buffer), "%sindex_2", prefix);
+		this.Index2 = kv.GetNum(buffer);
+		
 		FormatEx(buffer, sizeof(buffer), "%sammo", prefix);
 		this.Ammo = kv.GetNum(buffer);
 		
