@@ -2200,9 +2200,12 @@ public Action Building_CheckTimer(Handle timer, int ref)
 			
 			if(!result)
 			{
+				int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Grenade);
+				if(weapon == -1)
+					return Plugin_Stop;
 				
-				
-				Store_ConsumeItem(client, TFWeaponSlot_Grenade);
+				Store_ConsumeItem(client, StoreWeapon[weapon]);
+				TF2_RemoveWeaponSlot(client, TFWeaponSlot_Grenade);
 				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 				Building[client] = INVALID_FUNCTION;
 			}
