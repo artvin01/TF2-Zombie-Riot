@@ -2351,6 +2351,7 @@ public bool Store_SayCommand(int client)
 	{
 		PrintToChat(client, "%T", "Invalid Name", client);
 	}
+	return true;
 }
 
 void Store_ApplyAttribs(int client)
