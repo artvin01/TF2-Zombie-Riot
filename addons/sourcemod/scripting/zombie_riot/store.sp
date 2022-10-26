@@ -2695,7 +2695,7 @@ void Store_GiveAll(int client, int health)
 	{
 		static Item item;
 		StoreItems.GetArray(i, item);
-		if(item.Owned[client])
+		if(item.Owned[client] && item.Equipped[client])
 		{
 			static ItemInfo info;
 			item.GetItemInfo(item.Owned[client]-1, info);
