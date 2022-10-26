@@ -25,7 +25,6 @@ enum
 	Cit_NewWeapon,
 	Cit_Question,
 	Cit_Reload,
-	Cit_ReloadCombat,
 	Cit_Staying,
 	Cit_MAX
 }
@@ -124,9 +123,17 @@ static void Citizen_GenerateSound(int type, int seed, bool female, char[] buffer
 		{
 			Format(buffer, length, "combine0%d", 1 + (seed % 2));
 		}
-		case Cit_ReloadCombat:
+		case Cit_Reload:
 		{
-			Format(buffer, length, "coverwhilereload0%d", 1 + (seed % 2));
+			int rand = seed % 3;
+			if(rand == 2)
+			{
+				strcopy(buffer, length, "gottareload01");
+			}
+			else
+			{
+				Format(buffer, length, "coverwhilereload0%d", 1 + (seed % 2));
+			}
 		}
 		case Cit_DoSomething:
 		{
@@ -234,10 +241,6 @@ static void Citizen_GenerateSound(int type, int seed, bool female, char[] buffer
 			{
 				Format(buffer, length, "gotone0%d", rand + 1);
 			}
-		}
-		case Cit_Reload:
-		{
-			strcopy(buffer, length, "gottareload01");
 		}
 		case Cit_Headcrab:
 		{
@@ -392,7 +395,314 @@ static void Citizen_GenerateSound(int type, int seed, bool female, char[] buffer
 	}
 	
 	Format(buffer, length, "vo/npc/%s/%s.wav", female ? "female01" : "male01", buffer);
-	PrecacheSound(buffer);
+}
+
+static void Barney_GenerateSound(int type, int seed, char[] buffer, int length)
+{
+	switch(type)
+	{
+		case Cit_Ammo:
+		{
+			Format(buffer, length, "ammo0%d", 3 + (seed % 3));
+		}
+		case Cit_Answer:
+		{
+			int rand = seed % 39;
+			if(rand > 4)
+			{
+				rand += 2;
+			}
+			else
+			{
+				rand++;
+			}
+			
+			Format(buffer, length, "answer%002d", rand);
+		}
+		case Cit_Behind:
+		{
+			Format(buffer, length, "behindyou0%d", 1 + (seed % 2));
+		}
+		case Cit_Busy:
+		{
+			strcopy(buffer, length, "busy02");
+		}
+		case Cit_Combine:
+		{
+			Format(buffer, length, "combine0%d", 1 + (seed % 2));
+		}
+		case Cit_Reload:
+		{
+			int rand = seed % 3;
+			if(rand == 2)
+			{
+				strcopy(buffer, length, "gottareload01");
+			}
+			else
+			{
+				Format(buffer, length, "coverwhilereload0%d", 1 + (seed % 2));
+			}
+		}
+		case Cit_DoSomething:
+		{
+			int rand = seed % 9;
+			if(rand == 8)
+			{
+				strcopy(buffer, length, "waitingsomebody");
+			}
+			else if(rand > 5)
+			{
+				Format(buffer, length, "readywhenyouare0%d", rand - 5);
+			}
+			else if(rand > 3)
+			{
+				Format(buffer, length, "letsgo0%d", rand - 3);
+			}
+			else if(rand > 1)
+			{
+				Format(buffer, length, "leadtheway0%d", rand - 1);
+			}
+			else if(rand == 1)
+			{
+				strcopy(buffer, length, "doingsomething");
+			}
+			else
+			{
+				strcopy(buffer, length, "getgoingsoon");
+			}
+		}
+		case Cit_NewWeapon:
+		{
+			int rand = seed % 3;
+			if(rand == 2)
+			{
+				strcopy(buffer, length, "yeah02");
+			}
+			else if(rand == 1)
+			{
+				strcopy(buffer, length, "thislldonicely01");
+			}
+			else
+			{
+				strcopy(buffer, length, "evenodds");
+			}
+		}
+		case Cit_CadeDeath:
+		{
+			int rand = seed % 5;
+			if(rand == 4)
+			{
+				strcopy(buffer, length, "strider_run");
+			}
+			else if(rand == 3)
+			{
+				strcopy(buffer, length, "gethellout");
+			}
+			else
+			{
+				Format(buffer, length, "runforyourlife0%d", rand + 1);
+			}
+		}
+		case Cit_AllyDeathQuestion:
+		{
+			int rand = seed % 8;
+			if(rand == 7)
+			{
+				// 7 -> 17
+				rand = 17;
+			}
+			else if(rand == 6)
+			{
+				// 6 -> 14
+				rand = 14;
+			}
+			else if(rand > 3)
+			{
+				// 4/5 -> 10/11
+				rand += 6;
+			}
+			else if(rand > 1)
+			{
+				// 2/3 -> 6/7
+				rand += 4;
+			}
+			else
+			{
+				// 0/1 -> 1/2
+				rand++;
+			}
+			
+			Format(buffer, length, "gordead_ques%002d", rand);
+		}
+		case Cit_AllyDeathAnswer:
+		{
+			Format(buffer, length, "gordead_ans%002d", 1 + (seed % 19));
+		}
+		case Cit_FirstBlood:
+		{
+			int rand = seed % 3;
+			if(rand == 2)
+			{
+				strcopy(buffer, length, "oneforme");
+			}
+			else
+			{
+				Format(buffer, length, "gotone0%d", rand + 1);
+			}
+		}
+		case Cit_Headcrab:
+		{
+			int rand = seed % 4;
+			if(rand > 1)
+			{
+				Format(buffer, length, "headcrabs0%d", rand - 1);
+			}
+			else
+			{
+				Format(buffer, length, "zombies0%d", rand + 1);
+			}
+		}
+		case Cit_MiniBoss:
+		{
+			int rand = seed % 5;
+			if(rand == 4)
+			{
+				strcopy(buffer, length, "uhoh");
+			}
+			else if(rand == 3)
+			{
+				strcopy(buffer, length, "ohno");
+			}
+			else if(rand == 2)
+			{
+				strcopy(buffer, length, "incoming02");
+			}
+			else
+			{
+				Format(buffer, length, "headsup0%d", 1 + (seed % 2));
+			}
+		}
+		case Cit_Healer:
+		{
+			Format(buffer, length, "health0%d", 1 + (seed % 5));
+		}
+		case Cit_Lost:
+		{
+			int rand = seed % 2;
+			if(rand == 1)
+			{
+				strcopy(buffer, length, "help01");
+			}
+			else
+			{
+				strcopy(buffer, length, "overhere01");
+			}
+		}
+		case Cit_Greet:
+		{
+			int rand = seed % 5;
+			if(rand == 4)
+			{
+				strcopy(buffer, length, "nice");
+			}
+			else if(rand > 1)
+			{
+				Format(buffer, length, "heydoc0%d", rand - 1);
+			}
+			else
+			{
+				Format(buffer, length, "hi0%d", rand + 1);
+			}
+		}
+		case Cit_MiniBossDead:
+		{
+			strcopy(buffer, length, "likethat");
+		}
+		case Cit_LowHealth:
+		{
+			int rand = seed % 9;
+			if(rand > 3)
+			{
+				Format(buffer, length, "moan0%d", rand - 3);
+			}
+			else if(rand > 1)
+			{
+				Format(buffer, length, "imhurt0%d", rand - 1);
+			}
+			else
+			{
+				Format(buffer, length, "hitingut0%d", rand + 1);
+			}
+		}
+		case Cit_Staying:
+		{
+			int rand = seed % 5;
+			if(rand == 4)
+			{
+				strcopy(buffer, length, "littlecorner01");
+			}
+			else if(rand == 3)
+			{
+				strcopy(buffer, length, "imstickinghere01");
+			}
+			else if(rand == 2)
+			{
+				strcopy(buffer, length, "illstayhere01");
+			}
+			else
+			{
+				Format(buffer, length, "holddownspot0%d", rand + 1);
+			}
+		}
+		case Cit_Found:
+		{
+			int rand = seed % 7;
+			if(rand == 6)
+			{
+				strcopy(buffer, length, "yougotit02");
+			}
+			else if(rand == 5)
+			{
+				strcopy(buffer, length, "squad_reinforce_single04");
+			}
+			else if(rand > 1)
+			{
+				Format(buffer, length, "okimready0%d", rand - 1);
+			}
+			else
+			{
+				Format(buffer, length, "ok0%d", rand + 1);
+			}
+		}
+		case Cit_Hurt:
+		{
+			int rand = seed % 11;
+			if(rand > 1)
+			{
+				Format(buffer, length, "pain0%d", rand - 1);
+			}
+			else
+			{
+				Format(buffer, length, "ow0%d", rand + 1);
+			}
+		}
+		case Cit_Question:
+		{
+			int rand = seed % 30;
+			if(rand > 23)
+			{
+				rand += 2;
+			}
+			else
+			{
+				rand++;
+			}
+			
+			Format(buffer, length, "question%002d", rand);
+		}
+	}
+	
+	Format(buffer, length, "vo/npc/male01/%s.wav", buffer);
 }
 
 static char g_RangedAttackSounds[][] =
@@ -465,7 +775,7 @@ methodmap Citizen < CClotBody
 		if(IsValidEntity(EntRefToEntIndex(ThereCanBeOnlyOne)))
 			return view_as<Citizen>(-1);
 		
-		int seed = data[0] ? -16092004 : GetURandomInt();
+		int seed = data[0] ? -160920040 : GetURandomInt();
 		bool female = !(seed % 2);
 		
 		char buffer[PLATFORM_MAX_PATH];
@@ -634,6 +944,9 @@ methodmap Citizen < CClotBody
 	}
 	public void UpdateModel()
 	{
+		if(this.m_bBarney)
+			return;
+		
 		int type = Cit_Unarmed;
 		
 		if(this.m_iBuildingType == 7)
@@ -705,6 +1018,9 @@ methodmap Citizen < CClotBody
 		}
 		else
 		{
+			if(this.m_bBarney && this.m_iGunType == Cit_None)
+				Store_FindBarneyAGun(client, RoundToFloor(CurrentCash / 3), false);
+			
 			this.m_bThisEntityIgnored = false;
 			this.SetActivity("ACT_BUSY_SIT_GROUND_EXIT");
 			this.m_flReloadDelay = GetGameTime() + 2.4;
@@ -743,7 +1059,14 @@ methodmap Citizen < CClotBody
 			this.m_fTalkTimeIn = gameTime + 3.0;
 			
 			char buffer[PLATFORM_MAX_PATH];
-			Citizen_GenerateSound(type, GetURandomInt(), this.m_bFemale, buffer, sizeof(buffer));
+			if(this.m_bBarney)
+			{
+				Barney_GenerateSound(type, GetURandomInt(), buffer, sizeof(buffer));
+			}
+			else
+			{
+				Citizen_GenerateSound(type, GetURandomInt(), this.m_bFemale, buffer, sizeof(buffer));
+			}
 			EmitSoundToAll(buffer, this.index, SNDCHAN_VOICE, 95, _, 1.0);
 		}
 	}
@@ -1065,6 +1388,84 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	return true;
 }
 
+void Citizen_SetupStart()
+{
+	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
+	{
+		if(i_NpcInternalId[i] == CITIZEN)
+		{
+			Citizen npc = view_as<Citizen>(i);
+			if(npc.m_bBarney && !npc.m_bDowned && IsValidEntity(i))
+			{
+				int found;
+				float distance = FAR_FUTURE;
+				float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+				float vecTarget[3];
+				int entity = MaxClients + 1;
+				while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+				{
+					if(i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_iBuildingType == 7)
+					{
+						vecTarget = WorldSpaceCenter(entity);
+						float dist = GetVectorDistance(vecTarget, vecMe, true);
+						if(!found || dist < distance)
+						{
+							distance = dist;
+							found = entity;
+						}
+					}
+				}
+				
+				static char buffer[32];
+				entity = MaxClients + 1;
+				while((entity = FindEntityByClassname(entity, "obj_sentrygun")) != -1)
+				{
+					GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+					if(!StrContains(buffer, "zr_packapunch"))
+					{
+						vecTarget = WorldSpaceCenter(entity);
+						float dist = GetVectorDistance(vecTarget, vecMe, true);
+						if(!found || dist < distance)
+						{
+							distance = dist;
+							found = entity;
+						}
+					}
+				}
+				
+				for(int client = 1; client <= MaxClients; client++)
+				{
+					if(IsClientInGame(client))
+					{
+						entity = EntRefToEntIndex(Building_Mounted[client]);
+						if(IsValidEntity(entity))
+						{
+							GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+							if(!StrContains(buffer, "zr_packapunch"))
+							{
+								vecTarget = WorldSpaceCenter(client);
+								float dist = GetVectorDistance(vecTarget, vecMe, true);
+								if(!found || dist < distance)
+								{
+									distance = dist;
+									found = entity;
+								}
+							}
+						}
+					}
+				}
+				
+				if(Store_FindBarneyAGun(npc.index, RoundToFloor(float(CurrentCash) * GetRandomFloat(0.35, 0.45)), found))
+				{
+					npc.m_iTargetAlly = found;
+					npc.m_bSeakingMedic = true;
+					npc.m_bGetClosestTargetTimeAlly = true;
+				}
+			}
+		}
+	}
+}
+
 public void Citizen_ClotThink(int iNPC)
 {
 	Citizen npc = view_as<Citizen>(iNPC);
@@ -1369,7 +1770,7 @@ public void Citizen_ClotThink(int iNPC)
 							}
 							else
 							{
-								npc.SetActivity((npc.m_iSeed % 4) ? "ACT_IDLE_ANGRY_SMG1" : "ACT_IDLE_AIM_RIFLE_STIMULATED");
+								npc.SetActivity((npc.m_iSeed % 5) ? "ACT_IDLE_ANGRY_SMG1" : "ACT_IDLE_AIM_RIFLE_STIMULATED");
 								npc.m_flSpeed = 0.0;
 							}
 							
@@ -1780,6 +2181,9 @@ public void Citizen_ClotThink(int iNPC)
 				if(npc.m_iWearable1 > 0)
 					AcceptEntityInput(npc.m_iWearable1, "Enable");
 				
+				if(npc.m_iTarget > 0)
+					npc.PlaySound(Cit_Reload);
+				
 				if(npc.m_bPathing)
 				{
 					PF_StopPathing(npc.index);
@@ -1794,6 +2198,9 @@ public void Citizen_ClotThink(int iNPC)
 				npc.m_iAttacksTillReload = npc.m_iGunClip;
 				npc.m_flReloadDelay = gameTime + (2.4 * npc.m_fGunReload);
 				npc.PlaySMGReloadSound();
+				
+				if(npc.m_iTarget > 0)
+					npc.PlaySound(Cit_Reload);
 				
 				if(npc.m_bPathing)
 				{
@@ -1810,6 +2217,9 @@ public void Citizen_ClotThink(int iNPC)
 				npc.m_flReloadDelay = gameTime + (1.6 * npc.m_fGunReload);
 				npc.PlayARReloadSound();
 				
+				if(npc.m_iTarget > 0)
+					npc.PlaySound(Cit_Reload);
+				
 				if(npc.m_bPathing)
 				{
 					PF_StopPathing(npc.index);
@@ -1824,6 +2234,9 @@ public void Citizen_ClotThink(int iNPC)
 				npc.m_iAttacksTillReload = npc.m_iGunClip;
 				npc.m_flReloadDelay = gameTime + (2.6 * npc.m_fGunReload);
 				npc.PlayShotgunReloadSound();
+				
+				if(npc.m_iTarget > 0)
+					npc.PlaySound(Cit_Reload);
 				
 				if(npc.m_bPathing)
 				{

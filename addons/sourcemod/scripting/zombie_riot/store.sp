@@ -361,6 +361,54 @@ static int NPCTarget[MAXTF2PLAYERS];
 static bool InLoadoutMenu[MAXTF2PLAYERS];
 static bool HasMultiInSlot[MAXTF2PLAYERS][6];
 
+bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
+{
+	if(StoreItems)
+	{
+		static Item item;
+		static ItemInfo info;
+		int choiceIndex, choiceInfo;
+		int choicePrice = value;
+		
+		int length = StoreItems.Length;
+		for(int i; i<length; i++)
+		{
+			StoreItems.GetArray(i, item);
+			if(item.NPCWeapon >= 0 && !item.NPCWeaponAlways)
+			{
+				int current;
+				for(int a; item.GetItemInfo(a, info); a++)
+				{
+					ItemCost(client, item, info.Cost);
+					current += info.Cost;
+					
+					if(current > budget)
+						break;
+					
+					if(current > choicePrice)
+					{
+						choiceIndex = i;
+						choiceInfo = a;
+						choicePrice = current;
+					}
+					
+					if(!packs || info.PackBranches != 1 || info.PackSkip)
+						break;
+				}
+			}
+		}
+		
+		if(choicePrice > value)
+		{
+			StoreItems.GetArray(choiceIndex, item);
+			item.GetItemInfo(choiceInfo, info);
+			Citizen_UpdateWeaponStats(entity, item.NPCWeapon, ItemSell(item, choiceInfo, 0), info);
+			return choiceInfo;
+		}
+	}
+	return false;
+}
+
 bool Store_ActiveCanMulti(int client)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
