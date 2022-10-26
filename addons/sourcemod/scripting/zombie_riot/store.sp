@@ -426,7 +426,7 @@ void Store_SwapToItem(int client, int swap)
 		}
 	}
 
-	FakeClientCommand(client, "use %s", buffer);
+	FakeClientCommand(client, "use %s", classname);
 }
 
 void Store_SwapItems(int client)
