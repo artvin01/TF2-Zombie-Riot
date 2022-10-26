@@ -416,7 +416,7 @@ void Store_SwapItems(int client)
 				{
 					if(a < length)
 					{
-						int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+						int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", a);
 						if(weapon > MaxClients)
 						{
 							GetEntityClassname(weapon, buffer, sizeof(buffer));
