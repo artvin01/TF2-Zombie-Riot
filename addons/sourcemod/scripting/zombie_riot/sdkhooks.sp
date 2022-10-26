@@ -348,12 +348,6 @@ public void OnPostThink(int client)
 		
 		if(IsValidEntity(weapon))
 		{
-			
-			char classname[32];
-			GetEntityClassname(weapon, classname, 32);
-			
-			int weapon_slot = TF2_GetClassnameSlot(classname);
-	
 			float cooldown_time;
 			bool had_An_ability = false;
 			bool IsReady = false;
@@ -362,7 +356,7 @@ public void OnPostThink(int client)
 			{
 				had_An_ability = true;
 				
-				cooldown_time = f_Ability_Cooldown_m1[client][weapon_slot] - gameTime;
+				cooldown_time = Ability_Check_Cooldown(client, 1);
 				
 				if(cooldown_time < 0.0)
 				{
@@ -382,7 +376,7 @@ public void OnPostThink(int client)
 			}
 			if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_M2)
 			{
-				cooldown_time = f_Ability_Cooldown_m2[client][weapon_slot] - gameTime;
+				cooldown_time = Ability_Check_Cooldown(client, 2);
 				
 				if(had_An_ability)
 				{
@@ -408,7 +402,7 @@ public void OnPostThink(int client)
 			}
 			if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_R)
 			{
-				cooldown_time = f_Ability_Cooldown_r[client][weapon_slot] - gameTime;
+				cooldown_time = Ability_Check_Cooldown(client, 3);
 				
 				if(had_An_ability)
 				{

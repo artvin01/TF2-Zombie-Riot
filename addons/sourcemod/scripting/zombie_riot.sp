@@ -433,10 +433,6 @@ int i_Wearable[MAXENTITIES][6];
 float f_WidowsWineDebuff[MAXENTITIES];
 float f_WidowsWineDebuffPlayerCooldown[MAXTF2PLAYERS];
 
-float f_Ability_Cooldown_m1[MAXTF2PLAYERS][10]; //Incase any ability uses m1 lol
-float f_Ability_Cooldown_m2[MAXTF2PLAYERS][10];
-float f_Ability_Cooldown_r[MAXTF2PLAYERS][10];
-
 int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
 
 #define ABILITY_NONE                 0          	//Nothing special.
@@ -4090,9 +4086,6 @@ public void MapStartResetAll()
 	Zero(i_ThisEntityHasAMachineThatBelongsToClientMoney);
 	Zero(f_WasRecentlyRevivedViaNonWave);
 	Zero(f_TimeAfterSpawn);
-	Zero2(f_Ability_Cooldown_m1);
-	Zero2(f_Ability_Cooldown_m2);
-	Zero2(f_Ability_Cooldown_r);
 	Zero(i_Hex_WeaponUsesTheseAbilities);
 	Zero(f_WidowsWineDebuffPlayerCooldown);
 	Zero(f_WidowsWineDebuff);
