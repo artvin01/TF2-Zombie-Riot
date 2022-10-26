@@ -409,20 +409,17 @@ void Store_SwapToItem(int client, int swap)
 	{
 		if(GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i) == swap)
 		{
-			for(int a; a < length; a++)
+			for(int a; a < length && a != i; a++)
 			{
-				if(a != i)
+				int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", a);
+				if(weapon > MaxClients)
 				{
-					int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", a);
-					if(weapon > MaxClients)
+					GetEntityClassname(weapon, buffer, sizeof(buffer));
+					if(TF2_GetClassnameSlot(buffer) == slot)
 					{
-						GetEntityClassname(weapon, buffer, sizeof(buffer));
-						if(TF2_GetClassnameSlot(buffer) == slot)
-						{
-							SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", swap, a);
-							SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, i);
-							break;
-						}
+						SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", swap, a);
+						SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, i);
+						break;
 					}
 				}
 			}
@@ -2176,6 +2173,9 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								if(!TeutonType[client])
 								{
 									Store_GiveItem(client, index, item.Equipped[client]);
+									if(TF2_GetClassnameSlot(info.Classname) == TFWeaponSlot_Melee)
+										Store_RemoveNullWeapons(client);
+									
 									Manual_Impulse_101(client, GetClientHealth(client));
 								}
 							}
@@ -2748,6 +2748,16 @@ void Delete_Clip_again(int entity)
 			SetEntData(entity, iAmmoTable, 0);
 		}
 		SetEntProp(entity, Prop_Send, "m_iClip1", 0); // weapon clip amount bullets
+	}
+}
+
+void Store_RemoveNullWeapons(int client)
+{
+	int i, entity;
+	while(TF2_GetItem(client, entity, i))
+	{
+		if(StoreWeapon[entity] < 1)
+			TF2_RemoveItem(client, entity);
 	}
 }
 
