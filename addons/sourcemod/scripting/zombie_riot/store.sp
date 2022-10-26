@@ -427,6 +427,8 @@ void Store_SwapItems(int client)
 							GetEntityClassname(weapon, buffer, sizeof(buffer));
 							if(TF2_GetClassnameSlot(buffer) == slot)
 							{
+								PrintToChatAll("%d = %s", a, buffer);
+
 								if(a < switchI)
 								{
 									switchE = weapon;
