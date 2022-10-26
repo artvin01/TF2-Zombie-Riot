@@ -412,6 +412,9 @@ void Store_SwapItems(int client)
 		{
 			if(GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i) == active)
 			{
+				int lowestI, nextI;
+				int lowestE = -1;
+				int nextE = -1;
 				for(int a = i+1; a != i; a++)
 				{
 					if(a < length)
@@ -422,18 +425,17 @@ void Store_SwapItems(int client)
 							GetEntityClassname(weapon, buffer, sizeof(buffer));
 							if(TF2_GetClassnameSlot(buffer) == slot)
 							{
-								SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", active, a);
-								SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, i);
-								
-								FakeClientCommand(client, "use %s", buffer);
-								//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
-								//SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + );
-								
-								//float time = GetGameTime() + 0.7;
-								//if(GetEntPropFloat(client, Prop_Send, "m_flNextAttack") < time)
-								//	SetEntPropFloat(client, Prop_Send, "m_flNextAttack", time);
-								
-								return;
+								if(lowestE == -1 || weapon < lowestE)
+								{
+									lowestE = weapon;
+									lowestI = a;
+								}
+
+								if(weapon > active && (nextE == -1 || weapon < nextE))
+								{
+									nextE = weapon;
+									nextI = a;
+								}
 							}
 						}
 					}
@@ -441,6 +443,26 @@ void Store_SwapItems(int client)
 					{
 						a = -1;
 					}
+				}
+
+				if(nextE == -1)
+				{
+					nextE = lowestE;
+					nextI = lowestI;
+				}
+				
+				if(nextE != -1)
+				{
+					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", active, nextI);
+					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", nextE, i);
+					
+					FakeClientCommand(client, "use %s", buffer);
+					//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
+					//SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + );
+					
+					//float time = GetGameTime() + 0.7;
+					//if(GetEntPropFloat(client, Prop_Send, "m_flNextAttack") < time)
+					//	SetEntPropFloat(client, Prop_Send, "m_flNextAttack", time);
 				}
 			}
 		}
