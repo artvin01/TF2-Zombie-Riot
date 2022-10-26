@@ -415,9 +415,9 @@ void Store_SwapItems(int client)
 				int lowestI, nextI;
 				int lowestE = -1;
 				int nextE = -1;
-				for(int a = i+1; a != i; a++)
+				for(int a; a < length; a++)
 				{
-					if(a < length)
+					if(a != i)
 					{
 						int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", a);
 						if(weapon > MaxClients)
@@ -439,10 +439,6 @@ void Store_SwapItems(int client)
 							}
 						}
 					}
-					else
-					{
-						a = -1;
-					}
 				}
 
 				if(nextE == -1)
@@ -453,8 +449,8 @@ void Store_SwapItems(int client)
 				
 				if(nextE != -1)
 				{
-					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", active, nextI);
-					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", nextE, i);
+					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", active, lowestI);
+					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", lowestE, i);
 					
 					FakeClientCommand(client, "use %s", buffer);
 					//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
