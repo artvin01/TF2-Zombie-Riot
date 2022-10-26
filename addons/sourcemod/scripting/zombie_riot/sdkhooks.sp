@@ -670,11 +670,11 @@ public void OnPostThink(int client)
 			
 			if(!TeutonType[client])
 			{
-				if(!EscapeMode)
+				if(Store_ActiveCanMulti(client))
 				{
 					if(Has_Wave_Showing)
 					{
-						PrintKeyHintText(client, "%t\n%t\n%t\n%t",
+						PrintKeyHintText(client, "%t\n%t\n%t\n%t\n \n%t",
 						"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
 					//	"Wave", CurrentRound+1, CurrentWave+1,
 				//		"Armor Counter", Armor_Charge[client],
@@ -682,11 +682,12 @@ public void OnPostThink(int client)
 				//		"Healing Done", Healing_done_in_total[client],
 				//		"Damage Dealt", Damage_dealt_in_total[client],
 						PerkNames[i_CurrentEquippedPerk[client]],
-						"Zombies Left", Zombies_Currently_Still_Ongoing);
+						"Zombies Left", Zombies_Currently_Still_Ongoing,
+						"Press Button To Switch");
 					}
 					else
 					{
-						PrintKeyHintText(client, "%t\n%s | %t\n%t\n%t\n%t",
+						PrintKeyHintText(client, "%t\n%s | %t\n%t\n%t\n%t\n \n%t",
 						"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
 						WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
 			//			"Armor Counter", Armor_Charge[client],
@@ -694,16 +695,33 @@ public void OnPostThink(int client)
 			//			"Healing Done", Healing_done_in_total[client],
 			//			"Damage Dealt", Damage_dealt_in_total[client],
 						PerkNames[i_CurrentEquippedPerk[client]],
-						"Zombies Left", Zombies_Currently_Still_Ongoing);	
+						"Zombies Left", Zombies_Currently_Still_Ongoing,
+						"Press Button To Switch");	
 					}
+				}
+				else if(Has_Wave_Showing)
+				{
+					PrintKeyHintText(client, "%t\n%t\n%t\n%t",
+					"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+				//	"Wave", CurrentRound+1, CurrentWave+1,
+			//		"Armor Counter", Armor_Charge[client],
+					"Ammo Crate Supplies", Ammo_Count_Ready[client], //This bugs in russian
+			//		"Healing Done", Healing_done_in_total[client],
+			//		"Damage Dealt", Damage_dealt_in_total[client],
+					PerkNames[i_CurrentEquippedPerk[client]],
+					"Zombies Left", Zombies_Currently_Still_Ongoing);
 				}
 				else
 				{
-					PrintKeyHintText(client, "%t\n%t",
-					"Armor Counter", Armor_Charge[client],
-					"Healing Done", Healing_done_in_total[client],
-			//		"Damage Dealt", Damage_dealt_in_total[client]);,
-					PerkNames[i_CurrentEquippedPerk[client]]);		
+					PrintKeyHintText(client, "%t\n%s | %t\n%t\n%t\n%t",
+					"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+					WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
+		//			"Armor Counter", Armor_Charge[client],
+					"Ammo Crate Supplies", Ammo_Count_Ready[client], 
+		//			"Healing Done", Healing_done_in_total[client],
+		//			"Damage Dealt", Damage_dealt_in_total[client],
+					PerkNames[i_CurrentEquippedPerk[client]],
+					"Zombies Left", Zombies_Currently_Still_Ongoing);	
 				}
 			}
 			else if (TeutonType[client] == TEUTON_DEAD)

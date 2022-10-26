@@ -1365,4 +1365,12 @@
 		"#format"	"{1:d}"
 		"en"		"{1} Loadout Slot(s)"
 	}
+	"At Weapon Limit"
+	{
+		"en"		"You reached the maximum amount of held weapons, some may not have been equipped."
+	}
+	"Press Button To Switch"
+	{
+		"en"		"Press %%+inspect%% to switch between similar weapons"
+	}
 }

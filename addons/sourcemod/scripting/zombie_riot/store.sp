@@ -334,6 +334,22 @@ static int NPCOnly[MAXTF2PLAYERS];
 static int NPCCash[MAXTF2PLAYERS];
 static int NPCTarget[MAXTF2PLAYERS];
 static bool InLoadoutMenu[MAXTF2PLAYERS];
+static bool HasMultiInSlot[MAXTF2PLAYERS][6];
+
+bool Store_ActiveCanMulti(int client)
+{
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon != -1)
+	{
+		char buffer[36];
+		GetEntityClassname(weapon, buffer, sizeof(buffer));
+		int slot = TF2_GetClassnameSlot(buffer);
+		if(slot >= 0 && slot < sizeof(HasMultiInSlot[]))
+			return HasMultiInSlot[client][slot];
+	}
+
+	return false;
+}
 
 float Ability_Check_Cooldown(int client, int what_slot)
 {
@@ -487,7 +503,7 @@ void Store_SwapItems(int client)
 					nextI = lowestI;
 				}
 
-				GetEntityClassname(active, buffer, sizeof(buffer));
+				/*GetEntityClassname(active, buffer, sizeof(buffer));
 				PrintToChatAll("Current: %d | %s | %d", i, buffer, active);
 				
 				GetEntityClassname(switchE, buffer, sizeof(buffer));
@@ -497,7 +513,7 @@ void Store_SwapItems(int client)
 				{
 					GetEntityClassname(nextE, buffer, sizeof(buffer));
 					PrintToChatAll("Swap: %d | %s | %d", nextI, buffer, nextE);
-				}
+				}*/
 
 				if(nextE != -1 && switchI != nextI)
 				{
@@ -2176,6 +2192,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									if(TF2_GetClassnameSlot(info.Classname) == TFWeaponSlot_Melee)
 										Store_RemoveNullWeapons(client);
 									
+									CheckMultiSlots(client);
 									Manual_Impulse_101(client, GetClientHealth(client));
 								}
 							}
@@ -2688,6 +2705,7 @@ void Store_GiveAll(int client, int health)
 		SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	}
 	
+	int count;
 	bool found = false;
 	bool use = true;
 	int length = StoreItems.Length;
@@ -2702,12 +2720,19 @@ void Store_GiveAll(int client, int health)
 			if(info.Classname[0])
 			{
 				Store_GiveItem(client, i, use, found);
+				if(++count > 9)
+				{
+					PrintToChat(client, "%T", "At Weapon Limit");
+					break;
+				}
 			}
 		}
 	}
 	
 	if(!found)
 		Store_GiveItem(client, -1, use);
+	
+	CheckMultiSlots(client);
 	
 //	Spawn_Buildable(client);
 //	TF2_SetPlayerClass(client, TFClass_Engineer, true, false);
@@ -2718,6 +2743,29 @@ void Store_GiveAll(int client, int health)
 	}
 	*/
 	Manual_Impulse_101(client, health);
+}
+
+static void CheckMultiSlots(int client)
+{
+	ResetToZero(HasMultiInSlot[client], sizeof(HasMultiInSlot[]));
+
+	bool exists[sizeof(HasMultiInSlot[])];
+	char buffer[36];
+
+	int i, entity;
+	while(TF2_GetItem(client, entity, i))
+	{
+		GetEntityClassname(entity, buffer, sizeof(buffer));
+		int slot = TF2_GetClassnameSlot(buffer);
+		if(exists[slot])
+		{
+			HasMultiInSlot[client][slot] = true;
+		}
+		else
+		{
+			exists[slot] = true;
+		}
+	}
 }
 
 void Delete_Clip(int entity)
@@ -3156,7 +3204,9 @@ int Store_GiveSpecificItem(int client, const char[] name)
 			item.Equipped[client] = true;
 			StoreItems.SetArray(i, item);
 			
-			return Store_GiveItem(client, i, item.Equipped[client]);
+			int entity = Store_GiveItem(client, i, item.Equipped[client]);
+			CheckMultiSlots(client);
+			return entity;
 		}
 	}
 	
