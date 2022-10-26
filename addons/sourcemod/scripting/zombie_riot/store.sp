@@ -415,7 +415,7 @@ void Store_SwapItems(int client)
 				int lowestI, nextI;
 				int lowestE = -1;
 				int nextE = -1;
-				int switchE = weapon;
+				int switchE = active;
 				int switchI = i;
 				for(int a; a < length; a++)
 				{
