@@ -1371,6 +1371,6 @@
 	}
 	"Press Button To Switch"
 	{
-		"en"		"Press %%+inspect%% to switch between similar weapons"
+		"en"		"Multiple Weapons: Press Inspect"
 	}
 }
