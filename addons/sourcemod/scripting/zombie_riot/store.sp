@@ -1503,6 +1503,7 @@ static void MenuPage(int client, int section)
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
+		item.GetItemInfo(0, info);
 		if(NPCOnly[client] == 1)
 		{
 			if(!item.NPCSeller || item.Level > ClientLevel)
@@ -1515,7 +1516,7 @@ static void MenuPage(int client, int section)
 		}
 		else if(section == -2)
 		{
-			if(item.Hidden || (!item.Owned[client] && !item.Scaled[client]))
+			if(item.Hidden || (!item.Owned[client] && !item.Scaled[client]) || item.Level || item.TextStore[0])
 				continue;
 		}
 		else if(item.Hidden || item.Section != section || item.Level > ClientLevel || (EscapeMode && item.NoEscape))
