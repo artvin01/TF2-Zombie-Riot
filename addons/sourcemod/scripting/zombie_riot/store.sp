@@ -449,6 +449,10 @@ void Store_SwapItems(int client)
 							}
 						}
 					}
+					else
+					{
+						PrintToChatAll("%d = CURRENT", a);
+					}
 				}
 
 				if(nextE == -1)
