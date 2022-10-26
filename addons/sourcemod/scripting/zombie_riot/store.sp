@@ -2332,10 +2332,9 @@ static void LoadoutPage(int client, bool last = false)
 		menu.AddItem("", buffer, ITEMDRAW_DISABLED);
 	}
 	
-	if(!InLoadoutMenu[client] && (Level[client] / 2) > length)
+	if((Level[client] / 2) > length)
 	{
 		menu.SetTitle("%t\n%t\n \n%t", "TF2: Zombie Riot", "Loadouts", "Save New");
-		InLoadoutMenu[client] = true;
 	}
 	else
 	{
@@ -2343,7 +2342,8 @@ static void LoadoutPage(int client, bool last = false)
 	}
 	
 	menu.ExitBackButton = true;
-	menu.DisplayAt(client, last ? (length / 7 * 7) : 0, MENU_TIME_FOREVER);
+	if(menu.DisplayAt(client, last ? (length / 7 * 7) : 0, MENU_TIME_FOREVER) && (Level[client] / 2) > length)
+		InLoadoutMenu[client] = true;
 }
 
 public int Store_LoadoutPage(Menu menu, MenuAction action, int client, int choice)
@@ -2456,6 +2456,10 @@ public bool Store_SayCommand(int client)
 	if(Database_Escape(buffer, sizeof(buffer), length) && length < 31)
 	{
 		Database_SaveLoadout(client, buffer);
+		
+		if(!Loadouts[client])
+			Loadouts[client] = new ArrayList(ByteCountToCells(32));
+		
 		Loadouts[client].PushString(buffer);
 		LoadoutPage(client, true);
 	}

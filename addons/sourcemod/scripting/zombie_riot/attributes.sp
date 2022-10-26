@@ -80,27 +80,52 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 				value = Attributes_FindOnWeapon(client, weapon, 17);	// add uber charge on hit
 				if(value)
 				{
+					ArrayList list = new ArrayList();
+					
 					int entity, i;
 					while(TF2_GetItem(client, entity, i))
 					{
 						if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+							list.Push(entity);
+					}
+					
+					int length = list.Length;
+					if(length)
+					{
+						value /= float(length);
+						float extra;
+						for(i = length - 1; i >= 0; i--)
 						{
-							float uber = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel") + value;
-							if (Attributes_FindOnWeapon(client, entity, 2046)==4.0)
-								uber = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel") - value;
-								
+							float uber = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
+							if(Attributes_FindOnWeapon(client, entity, 2046) == 4.0)
+							{
+								uber -= value + extra;
+							}
+							else
+							{
+								uber += value + extra;
+							}
+							
 							if(uber > 1.0)
 							{
+								extra = uber - 1.0;
 								uber = 1.0;
 							}
 							else if(uber < 0.0)
 							{
+								extra = -uber;
 								uber = 0.0;
+							}
+							else
+							{
+								extra = 0.0;
 							}
 							
 							SetEntPropFloat(entity, Prop_Send, "m_flChargeLevel", uber);
 						}
 					}
+					
+					delete list;
 				}
 			}
 			
