@@ -51,10 +51,17 @@ enum struct ItemInfo
 	bool BlockLagCompInternal;
 	
 	char Classname[36];
+
 	int Index;
 	int Attrib[16];
 	float Value[16];
 	int Attribs;
+
+	int Index2;
+	int Attrib2[16];
+	float Value2[16];
+	int Attribs2;
+
 	int Ammo;
 	
 	bool CannotBeSavedByCookies;
@@ -219,6 +226,22 @@ enum struct ItemInfo
 			this.Value[i] = StringToFloat(buffers[i*2+1]);
 		}
 		
+		FormatEx(buffer, sizeof(buffer), "%sattributes_2", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Attribs2 = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
+		for(int i; i<this.Attribs2; i++)
+		{
+			this.Attrib2[i] = StringToInt(buffers[i*2]);
+			if(!this.Attrib2[i])
+			{
+				LogError("Found invalid attribute_2 on '%s'", name);
+				this.Attribs2 = i;
+				break;
+			}
+			
+			this.Value2[i] = StringToFloat(buffers[i*2+1]);
+		}
+
 		/*FormatEx(buffer, sizeof(buffer), "%stier", prefix);
 		this.Tier = kv.GetNum(buffer, -1);
 		
@@ -237,7 +260,6 @@ enum struct ItemInfo
 		kv.GetString(buffer, this.Model, 128);
 		if(this.Model[0])
 			PrecacheModel(this.Model);
-
 		
 		return true;
 	}
@@ -1399,11 +1421,7 @@ static void MenuPage(int client, int section)
 						FormatEx(buffer, sizeof(buffer), "%t ($%d)", AmmoNames[info.Ammo], cost);
 						if(cost > cash)
 							style = ITEMDRAW_DISABLED;
-						
-						
 					}
-					
-					
 					else
 					{
 						canSellInsideMenu = true;
@@ -2547,31 +2565,50 @@ void Store_ApplyAttribs(int client)
 		if(item.Owned[client])
 		{
 			item.GetItemInfo(item.Owned[client]-1, info);
-			if(!info.Classname[0] && (info.Index<0 || info.Index>2) && info.Index<6)
+			if(!info.Classname[0])
 			{
-				for(int a; a<info.Attribs; a++)
+				if((info.Index<0 || info.Index>2) && info.Index<6)
 				{
-					IntToString(info.Attrib[a], buffer1, sizeof(buffer1));
-					if(!map.GetValue(buffer1, value))
+					for(int a; a<info.Attribs; a++)
 					{
-						map.SetValue(buffer1, info.Value[a]);
+						IntToString(info.Attrib[a], buffer1, sizeof(buffer1));
+						if(!map.GetValue(buffer1, value))
+						{
+							map.SetValue(buffer1, info.Value[a]);
+						}
+						else if(info.Attrib[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
+						{
+							map.SetValue(buffer1, value + info.Value[a]);
+						}
+						else
+						{
+							map.SetValue(buffer1, value * info.Value[a]);
+						}
 					}
-					else if(info.Attrib[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
+				}
+
+				if((info.Index2<0 || info.Index2>2) && info.Index2<6)
+				{
+					for(int a; a<info.Attribs2; a++)
 					{
-						map.SetValue(buffer1, value + info.Value[a]);
-					}
-					else
-					{
-						map.SetValue(buffer1, value * info.Value[a]);
+						IntToString(info.Attrib2[a], buffer1, sizeof(buffer1));
+						if(!map.GetValue(buffer1, value))
+						{
+							map.SetValue(buffer1, info.Value2[a]);
+						}
+						else if(info.Attrib2[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
+						{
+							map.SetValue(buffer1, value + info.Value2[a]);
+						}
+						else
+						{
+							map.SetValue(buffer1, value * info.Value2[a]);
+						}
 					}
 				}
 			}
 		}
 	}
-	
-	
-	
-	
 	
 	Armor_Level[client] = 0;
 	Jesus_Blessing[client] = 0;
@@ -3061,54 +3098,101 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 					}
 					if(EntityIsAWeapon)
 					{
+						bool apply;
 						switch(info.Index)
 						{
 							case 0, 1, 2:
 							{
-								if(info.Index != slot || (IsWandWeapon(entity) && !IsEngineerWeapon(entity)))
-									continue;
+								if(info.Index == slot && !IsWandWeapon(entity) && !IsEngineerWeapon(entity))
+									apply = true;
 							}
 							case 6:
 							{
-								if(slot != TFWeaponSlot_Melee && slot != TFWeaponSlot_Secondary || (IsWandWeapon(entity) && !IsEngineerWeapon(entity)))
-									continue;
+								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !IsWandWeapon(entity) && !IsEngineerWeapon(entity)))
+									apply = true;
 							}
 							case 7:
 							{
-								if(slot != TFWeaponSlot_Secondary && slot != TFWeaponSlot_Primary || (IsWandWeapon(entity) && !IsEngineerWeapon(entity)))
-									continue;
+								if(slot == TFWeaponSlot_Primary || slot == TFWeaponSlot_Secondary)
+									apply = true;
 							}
 							case 8:
 							{
-								if(slot != TFWeaponSlot_Melee || (!IsWandWeapon(entity) && !IsEngineerWeapon(entity)))
-								{
-									continue;
-								}
+								if(slot == TFWeaponSlot_Melee && IsWandWeapon(entity))
+									apply = true;
 							}
 							case 9:
 							{
-								
-							}
-							default:
-							{
-								continue;
+								apply = true;
 							}
 						}
 						
-						for(int a; a<info.Attribs; a++)
+						if(apply)
 						{
-							Address address = TF2Attrib_GetByDefIndex(entity, info.Attrib[a]);
-							if(address == Address_Null)
+							for(int a; a<info.Attribs; a++)
 							{
-								TF2Attrib_SetByDefIndex(entity, info.Attrib[a], info.Value[a]);
+								Address address = TF2Attrib_GetByDefIndex(entity, info.Attrib[a]);
+								if(address == Address_Null)
+								{
+									TF2Attrib_SetByDefIndex(entity, info.Attrib[a], info.Value[a]);
+								}
+								else if(TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
+								{
+									TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) + info.Value[a]);
+								}
+								else
+								{
+									TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * info.Value[a]);
+								}
 							}
-							else if(TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
+						}
+
+						apply = false;
+						switch(info.Index2)
+						{
+							case 0, 1, 2:
 							{
-								TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) + info.Value[a]);
+								if(info.Index2 == slot && !IsWandWeapon(entity) && !IsEngineerWeapon(entity))
+									apply = true;
 							}
-							else
+							case 6:
 							{
-								TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * info.Value[a]);
+								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !IsWandWeapon(entity) && !IsEngineerWeapon(entity)))
+									apply = true;
+							}
+							case 7:
+							{
+								if(slot == TFWeaponSlot_Primary || slot == TFWeaponSlot_Secondary)
+									apply = true;
+							}
+							case 8:
+							{
+								if(slot == TFWeaponSlot_Melee && IsWandWeapon(entity))
+									apply = true;
+							}
+							case 9:
+							{
+								apply = true;
+							}
+						}
+						
+						if(apply)
+						{
+							for(int a; a<info.Attribs2; a++)
+							{
+								Address address = TF2Attrib_GetByDefIndex(entity, info.Attrib2[a]);
+								if(address == Address_Null)
+								{
+									TF2Attrib_SetByDefIndex(entity, info.Attrib2[a], info.Value2[a]);
+								}
+								else if(TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
+								{
+									TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) + info.Value2[a]);
+								}
+								else
+								{
+									TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * info.Value2[a]);
+								}
 							}
 						}
 					}
