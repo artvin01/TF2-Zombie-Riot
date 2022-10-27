@@ -39,24 +39,17 @@ public void Is_Pipebomb(int entity)
 		{
 			return;
 		}
-		int weaponAtSlot = GetPlayerWeaponSlot(owner, 1);
-		if(weaponAtSlot != -1)
+		int weapon_active = GetEntPropEnt(owner, Prop_Send, "m_hActiveWeapon");
+		int weaponindex = GetEntProp(weapon_active, Prop_Send, "m_iItemDefinitionIndex");
+			
+		if(weaponindex == 1083)
 		{
-			int weapon_active = GetEntPropEnt(owner, Prop_Send, "m_hActiveWeapon");
-			if(weaponAtSlot == weapon_active)
+			for(int i; i<4; i++)
 			{
-				int weaponindex = GetEntProp(weaponAtSlot, Prop_Send, "m_iItemDefinitionIndex");
-				
-				if(weaponindex == 1083)
-				{
-					for(int i; i<4; i++)
-					{
-						SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
-					}
-					SetEntPropVector(entity, Prop_Send, "m_vecMins", nullVec);
-					SetEntPropVector(entity, Prop_Send, "m_vecMaxs", nullVec);
-				}
+				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
 			}
+			SetEntPropVector(entity, Prop_Send, "m_vecMins", nullVec);
+			SetEntPropVector(entity, Prop_Send, "m_vecMaxs", nullVec);
 		}
 	}	
 }

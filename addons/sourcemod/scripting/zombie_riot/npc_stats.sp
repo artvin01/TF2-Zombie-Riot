@@ -808,7 +808,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		}
 		case CITIZEN:
 		{
-			entity = Citizen(client, vecPos, vecAng);
+			entity = Citizen(client, vecPos, vecAng, data);
 		}
 		case MEDIVAL_EAGLE_SCOUT:
 		{
@@ -5674,7 +5674,7 @@ public bool TraceRayHitPlayersOnly(int entity,int mask,any data)
 {
 	if (entity > 0 && entity <= MaxClients)
 	{
-		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0 && !b_DoNotUnStuck[entity])
+		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0 && !b_DoNotUnStuck[entity] && !b_ThisEntityIgnored[entity])
 		{
 			return true;
 		}
@@ -6241,8 +6241,8 @@ public void GibCollidePlayerInteraction(int gib, int player)
 {
 	if(b_IsCannibal[player] && dieingstate[player] == 0)
 	{
-		int weapon = GetPlayerWeaponSlot(player, 2); //Check melee weapon healing.
-		if(IsValidEntity(weapon) && weapon == GetEntPropEnt(player, Prop_Send, "m_hActiveWeapon")) //Must also hold melee out 
+		int weapon = GetEntPropEnt(player, Prop_Send, "m_hActiveWeapon");
+		if(IsValidEntity(weapon)) //Must also hold melee out 
 		{
 			if(!IsWandWeapon(weapon)) //Make sure its not wand.
 			{

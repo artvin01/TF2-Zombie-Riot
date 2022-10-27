@@ -25,7 +25,6 @@ Address g_hSDKStartLagCompAddress;
 Address g_hSDKEndLagCompAddress;
 bool g_GottenAddressesForLagComp;
 
-float f_TimeAfterSpawn[MAXTF2PLAYERS];
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
 
 
@@ -375,16 +374,21 @@ public MRESReturn DHook_FireballExplodePre(int entity)
 	int owner = GetOwnerLoop(entity);
 	if (0 < owner <= MaxClients)
 	{
-		float damage = 700.0;
-		int weapon = GetPlayerWeaponSlot(owner, 2);
-		if(!IsValidEntity(weapon))
-			return MRES_Ignored;
-		 
-		Address address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
-		
-		Explode_Logic_Custom(damage, owner, entity, weapon, _, _, _, _, _, _, true)
+		int i, weapon;
+		while(TF2_GetItem(owner, weapon, i))
+		{
+			if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == 939)
+			{
+				float damage = 700.0;
+				
+				Address address = TF2Attrib_GetByDefIndex(weapon, 410);
+				if(address != Address_Null)
+					damage *= TF2Attrib_GetValue(address);
+				
+				Explode_Logic_Custom(damage, owner, entity, weapon, _, _, _, _, _, _, true);
+				break;
+			}
+		}
 
 	}
 	return MRES_Ignored;
@@ -943,10 +947,10 @@ public MRESReturn DHook_SentryFind_Target(int sentry, Handle hReturn, Handle hPa
 	{
 		if(IsPlayerAlive(owner))
 		{
-			int weapon = GetPlayerWeaponSlot(owner, 1);
-			if(weapon >= MaxClients)
+			int i, entity;
+			while(TF2_GetItem(owner, entity, i))
 			{
-				int weaponindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+				int weaponindex = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
 				if(weaponindex == 140)
 					return MRES_Ignored;
 			}
@@ -1134,6 +1138,9 @@ public MRESReturn DHook_ForceRespawn(int client)
 		return MRES_Supercede;
 	}
 	
+	DoTutorialStep(client, false);
+	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
+	
 	bool started = !Waves_InSetup();
 	TeutonType[client] = (!IsRespawning && started) ? TEUTON_DEAD : TEUTON_NONE;
 	
@@ -1272,7 +1279,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 						}
 					}
 				}
-				if(IsValidClient(target))
+				if(target)
 				{
 					float pos[3], ang[3];
 					GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
@@ -1520,36 +1527,30 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 								
 	if(ammo_amount_left > 0)
 	{
-		int HealAmmount = 20;
-		int weapon = GetPlayerWeaponSlot(owner, 1);
-		if(weapon >= MaxClients)
+		float HealAmmount = 20.0;
+		Address address = TF2Attrib_GetByDefIndex(originalLauncher, 8);
+		if(address != Address_Null)
 		{
-			Address address = TF2Attrib_GetByDefIndex(weapon, 8);
-			if(address != Address_Null)
-			{
-				HealAmmount *= RoundToCeil(TF2Attrib_GetValue(address));
-			}
-			else
-			{
-				HealAmmount = 20;
-			}
+			HealAmmount *= TF2Attrib_GetValue(address);
 		}
 		else
 		{
-			HealAmmount = 20;
+			HealAmmount = 20.0;
 		}
+
+		HealAmmount *= Attributes_FindOnPlayer(owner, 8, true, 1.0);
 		
 		if(EscapeMode)
-			HealAmmount *= 2;
+			HealAmmount *= 2.0;
 			
 		if(f_TimeUntillNormalHeal[target] > GetGameTime())
 		{
-			HealAmmount /= 8; //make sure they dont get the full benifit if hurt recently.
+			HealAmmount /= 8.0; //make sure they dont get the full benifit if hurt recently.
 		}
 		
-		if(ammo_amount_left > HealAmmount)
+		if(ammo_amount_left > RoundToCeil(HealAmmount))
 		{
-			ammo_amount_left = HealAmmount;
+			ammo_amount_left = RoundToCeil(HealAmmount);
 		}
 		
 		int flHealth = GetEntProp(target, Prop_Send, "m_iHealth");
@@ -1562,11 +1563,12 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 		if(Health_To_Max <= 0 || Health_To_Max > flMaxHealth)
 		{
 			ClientCommand(owner, "playgamesound items/medshotno1.wav");
-			PrintHintText(owner,"%N Is already at full hp.", target);
+			SetGlobalTransTarget(owner);
+			PrintHintText(owner,"%N %t", target, "Is already at full hp");
 		}
 		else
 		{
-			if(Health_To_Max < HealAmmount)
+			if(Health_To_Max < RoundToCeil(HealAmmount))
 			{
 				ammo_amount_left = Health_To_Max;
 			}
@@ -1577,7 +1579,9 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
 			ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
 			ClientCommand(target, "playgamesound items/smallmedkit1.wav");
-			PrintHintText(owner,"You Healed %N for %i HP!", target, ammo_amount_left, ammo_amount_left / 4);
+			SetGlobalTransTarget(owner);
+			
+			PrintHintText(owner, "%t", "You healed for", target, ammo_amount_left);
 			SetAmmo(owner, 21, new_ammo);
 			Increaced_Overall_damage_Low[owner] = GetGameTime() + 2.0;
 			Increaced_Overall_damage_Low[target] = GetGameTime() + 10.0;

@@ -456,11 +456,7 @@ stock bool TF2_GetWearable(int client, int &entity)
 
 stock int TF2_GetClassnameSlot(const char[] classname, bool econ=false)
 {
-	if(StrEqual(classname, "player"))
-	{
-		return -1;
-	}
-	else if(StrEqual(classname, "tf_weapon_scattergun") ||
+	if(StrEqual(classname, "tf_weapon_scattergun") ||
 	   StrEqual(classname, "tf_weapon_handgun_scout_primary") ||
 	   StrEqual(classname, "tf_weapon_soda_popper") ||
 	   StrEqual(classname, "tf_weapon_pep_brawler_blaster") ||
@@ -679,37 +675,6 @@ stock void NullifySpecificAttributes(int entity, int attribute)
 		}
 	}
 	
-}
-
-stock void SwapWeapons(int client, int wep1, int wep2)
-{
-	int slot1 = -1;
-	int slot2 = -1;
-	int length = GetMaxWeapons(client);
-	for(int i; i<length; i++)
-	{
-		int entity = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
-		if(entity == wep1)
-		{
-			slot1 = i;
-			if(slot2 == -1)
-				continue;
-		}
-		else if(entity == wep2)
-		{
-			slot2 = i;
-			if(slot1 == -1)
-				continue;
-		}
-		else
-		{
-			continue;
-		}
-
-		SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", wep1, slot2);
-		SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", wep2, slot1);
-		break;
-	}
 }
 
 stock void TF2_RemoveItem(int client, int weapon)
@@ -1212,12 +1177,6 @@ stock bool IsValidClient( int client)
 		return false; 
 		
 	return true; 
-}
-
-stock int GetIndexOfWeaponSlot(int client, int slot)
-{
-	int weapon = GetPlayerWeaponSlot(client, slot);
-	return (weapon>MaxClients && IsValidEntity(weapon)) ? GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") : -1;
 }
 
 stock float[] GetWorldSpaceCenter(int client)
@@ -2926,7 +2885,44 @@ public void ReviveAll()
 				}
 			}
 		}
-	}	
+	}
+	
+	int entity = MaxClients + 1;
+	while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+	{
+		if(i_NpcInternalId[entity] == CITIZEN)
+		{
+			Citizen npc = view_as<Citizen>(entity);
+			if(npc.m_bDowned && npc.m_iWearable3 > 0)
+			{
+				npc.SetDowned(false);
+				if(!Waves_InSetup())
+				{
+					int target = 0;
+					for(int i=1; i<=MaxClients; i++)
+					{
+						if(IsClientInGame(i))
+						{
+							if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
+							{
+								target = i;
+								break;
+							}
+						}
+					}
+					
+					if(target)
+					{
+						float pos[3], ang[3];
+						GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+						GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+						TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
+					}
+				}
+			}
+		}
+	}
+	
 	Music_EndLastmann();
 	CheckAlivePlayers();
 }
@@ -3011,61 +3007,6 @@ stock void ConstrainDistance(const float[] startPoint, float[] endPoint, float d
 		endPoint[2] = ((endPoint[2] - startPoint[2]) * constrainFactor) + startPoint[2];
 }
 
-public float Ability_Check_Cooldown(int client, int what_slot)
-{
-	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	
-	char classname[32];
-	GetEntityClassname(weapon, classname, 32);
-	
-	int weapon_slot = TF2_GetClassnameSlot(classname);
-	
-	switch(what_slot)
-	{
-		case 1:	
-		{
-			return (f_Ability_Cooldown_m1[client][weapon_slot] - GetGameTime());
-		}
-		case 2:	
-		{
-			return (f_Ability_Cooldown_m2[client][weapon_slot] - GetGameTime());
-		}
-		case 3:	
-		{
-			return (f_Ability_Cooldown_r[client][weapon_slot] - GetGameTime());
-		}
-	}
-	PrintToChatAll("Somehow something has no cooldown :( Please report!!!");
-	return 0.0;
-}
-
-public void Ability_Apply_Cooldown(int client, int what_slot, float cooldown)
-{
-	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	
-	char classname[32];
-	GetEntityClassname(weapon, classname, 32);
-	
-	int weapon_slot = TF2_GetClassnameSlot(classname);
-	
-	cooldown += GetGameTime(); //lol
-	switch(what_slot)
-	{
-		case 1:	
-		{
-			f_Ability_Cooldown_m1[client][weapon_slot] = cooldown;
-		}
-		case 2:	
-		{
-			f_Ability_Cooldown_m2[client][weapon_slot] = cooldown;
-		}
-		case 3:	
-		{
-			f_Ability_Cooldown_r[client][weapon_slot] = cooldown;
-		}
-	}
-}
-
 #define spirite "spirites/zerogxplode.spr"
 
 
@@ -3126,4 +3067,28 @@ stock void DHook_CreateDetour(GameData gamedata, const char[] name, DHookCallbac
 	{
 		LogError("[Gamedata] Could not find %s", name);
 	}
+}
+
+#define ANNOTATION_REFRESH_RATE 0.1
+#define ANNOTATION_OFFSET 8750
+
+public ShowAnnotationToPlayer(int client, float pos[3], const char[] Text, float lifetime, int follow_who)
+{
+	Handle event = CreateEvent("show_annotation");
+	if (event == INVALID_HANDLE) return;
+	
+	if(follow_who != -1)
+	{
+		SetEventInt(event, "follow_entindex", follow_who);
+	}
+	SetEventFloat(event, "worldPosX", pos[0]);
+	SetEventFloat(event, "worldPosY", pos[1]);
+	SetEventFloat(event, "worldPosZ", pos[2]);
+	SetEventFloat(event, "lifetime", lifetime);
+//	SetEventInt(event, "id", annotation_id*MAXPLAYERS + client + ANNOTATION_OFFSET);
+	SetEventString(event, "text", Text);
+	SetEventString(event, "play_sound", "vo/null.wav");
+	SetEventInt(event, "visibilityBitfield", (1 << client));
+	FireEvent(event);
+	
 }

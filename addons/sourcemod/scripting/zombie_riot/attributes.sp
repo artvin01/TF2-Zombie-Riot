@@ -1,16 +1,20 @@
-void Attributes_Fire(int client, int weapon)
+bool Attributes_Fire(int client, int weapon)
 {
 	int clip = GetEntProp(weapon, Prop_Data, "m_iClip1");
 	if(clip > 0)
 	{
-		float gameTime = GetGameTime()+0.2;
+		float gameTime = GetGameTime();
 		if(gameTime < GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack"))
 		{
 			float value = Attributes_FindOnWeapon(client, weapon, 298, true);	// mod ammo per shot
 			if(value && clip < RoundFloat(value))
-				SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", gameTime);
+			{
+				SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", gameTime+0.2);
+				return true;
+			}
 		}
 	}
+	return false;
 }
 
 /*int Attributes_Airdashes(int client)
@@ -76,27 +80,52 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 				value = Attributes_FindOnWeapon(client, weapon, 17);	// add uber charge on hit
 				if(value)
 				{
+					ArrayList list = new ArrayList();
+					
 					int entity, i;
 					while(TF2_GetItem(client, entity, i))
 					{
 						if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+							list.Push(entity);
+					}
+					
+					int length = list.Length;
+					if(length)
+					{
+						value /= float(length);
+						float extra;
+						for(i = length - 1; i >= 0; i--)
 						{
-							float uber = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel") + value;
-							if (Attributes_FindOnWeapon(client, entity, 2046)==4.0)
-								uber = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel") - value;
-								
+							float uber = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
+							if(Attributes_FindOnWeapon(client, entity, 2046) == 4.0)
+							{
+								uber -= value + extra;
+							}
+							else
+							{
+								uber += value + extra;
+							}
+							
 							if(uber > 1.0)
 							{
+								extra = uber - 1.0;
 								uber = 1.0;
 							}
 							else if(uber < 0.0)
 							{
+								extra = -uber;
 								uber = 0.0;
+							}
+							else
+							{
+								extra = 0.0;
 							}
 							
 							SetEntPropFloat(entity, Prop_Send, "m_flChargeLevel", uber);
 						}
 					}
+					
+					delete list;
 				}
 			}
 			

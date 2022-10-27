@@ -242,6 +242,7 @@
 	"Owned Items"
 	{
 		"en"		"Bought Items"
+		"ru"		"Приобретённое"
 		"pt"		"Itens Comprados"
 	}
 	"N/A"
@@ -913,11 +914,9 @@
 		"ru" 		"Постройки?"
 		"de"		"Gebäude Hilfe?"
 	}
-	"Escape Help?"
+	"Extra Buttons Help?"
 	{
-		"en" 		"Escape Help?"
-		"ru" 		"Режим спасения?"
-		"de"		"Flucht Hilfe?"
+		"en" 		"Extra Buttons Help?"
 	}
 	"Gamemode Help Explained"
 	{
@@ -927,9 +926,9 @@
 	}
 	"Command Help Explained"
 	{
-		"en" 		"''/flashlight'' To toggle your flashlight.\n''/tp'' To toggle thirdperson."
-		"ru" 		"''/flashlight'' для переключения фонарика.\n''/tp'' для переключения режима от 3-го лица."
-		"de"		"''/flashlight'' Umschaltung für ihre Taschenlampe.\n''/tp'' Umschaltung für Dritte Person."
+		"en" 		"''/tp'' To toggle thirdperson.\n''/make_niko'' To toggle niko (This is more of a silly thing the anything)."
+		"ru" 		"''/tp'' для переключения режима от 3-го лица."
+		"de"		"''/tp'' Umschaltung für Dritte Person."
 	}
 	"Difficulty Help Explained"
 	{
@@ -961,11 +960,9 @@
 		"ru" 		"Для использования построек, нажмите R.\nЛюди могут поднимать свои постройки, и над их головой будет значок.\nЭто позволит вам нажать на них R для того же действия.\nЗначок реген.: Ящик с боеприпасами.\nБроня: Верстак брони.\nКороль: Перк-машина.\nКулак: Улучшайзер.\nВампир: Лечебная станция."
 		"de"		"Sie können Maschinen mit NACHLADEN benutzen.\nLeute können ihre Gebäude aufheben und haben ein Symbol auf deren Kopf.\nDies ermöglicht Ihnen mit NACHLADEN für denselben Effekt.\nRegen Symbol: Munitionsbox\nRüstung Symbol: Rüstungstisch\nKönig Symbol: Perkmachine\nFaust Symbol: Pack-A-Punch.\nVampire Symbol: Heilstation."
 	}
-	"Escape Explained"
+	"Extra Buttons Explained"
 	{
-		"en" 		"During Escape maps only level perks can be bought.\nYou can pickup items with R or M2.\nSome maps have special items, pick them up with R and drop them with the DROP INTEL button or ''dropitem'' in console if you dont have it bound.\nItem Rarity in order: Normal, Green, Blue, Yellow, Red, Purple.\n Higher colour means better, Black means that its a map specific/special item."
-		"ru" 		"На картах спасения можно купить только перки определённого уровня.\nПодобрать предмет - R или ПКМ.\nНекоторые карты имеют особые предметы. Подобрать - R. Бросить - БРОСИТЬ ДИПЛОМАТ или ''dropitem'' в консоли.\nРедкость предметов: Обычное, зелёное, синее, жёлтое, красное, фиолетовое.\n Выше цвет означает лучше, чёрный означает, что это особый предмет карты."
-		"de"		"Während der Flucht Karten können nur Level Perks gekauft werden.\nSie können Gegenstände aufheben mit NACHLADEN oder MAUS2.\nEin paar Karten haben Speziale Gegenstände, heben sie die auf mit NACHLADEN und lassen sie es fallen mit ihren L Key(dropitem).\n Gegenstände Seltenheit in reihe: Normal, Grüne, Blau, Gelb, Rot, Violett.\nHöhere Farbe ist besser, Schwarze ist Spezial."
+		"en" 		"Store Button + Inspect Weapon: Allows you to instantly access your holding weapon in the store, to for example, buy ammo."
 	}
 	"Drank Mana Regen Potion"
 	{
@@ -1041,7 +1038,7 @@
 	"Bored or Dead"
 	{
 		"en" 		"Bored or Dead?"
-		"ru" 		"Скучно или вы мертвы?"
+		"ru" 		"Скучно или мертвы?"
 		"de"		"Tot oder gelangweilt?"
 	}
 	"Bored or Dead Minigame"
@@ -1163,7 +1160,7 @@
 	{
 		"en"		"Grigori Has been cured!\nYou can talk to him during setup times to get a 20%% Discount on random items!"
 		"ru"		"Григорий был вылечен!\nВы можете поговорить с ним во время таймера подготовки, чтобы получить скидку 20%% на случайные предметы!"
-		"De"		"Grigori wurde geheilt!\nDu kannst mit ihm reden während der Setup zeit um einen 20%% Discount auf zufällige Gegenstände zu bekommen!"
+		"de"		"Grigori wurde geheilt!\nDu kannst mit ihm reden während der Setup zeit um einen 20%% Discount auf zufällige Gegenstände zu bekommen!"
 	}
 	"TF2: Zombie Riot"
 	{
@@ -1201,17 +1198,22 @@
 		"ru"		"Может быть улучшено"
 		"de"		"Kann man Pack-A-Punchen"
 	}
+	"Your loadout has been equipped!"
+	{
+		"en"		"Your loadout has been equipped!"
+	//	"ru"		"Ваше снаряжение было обновлено по сравнению с предыдущей игрой."
+	//	"de"		"Ihr Loadout wurde geupdated von ihren vorigen zustand."
+	}
 	"Your loadout was updated from your previous state."
 	{
 		"en"		"Your loadout was updated from your previous state."
 		"ru"		"Ваше снаряжение было обновлено по сравнению с предыдущей игрой."
 		"de"		"Ihr Loadout wurde geupdated von ihren vorigen zustand."
 	}
-	"Your last equipped level perks were restored"
+	"Could Not Buy Item"
 	{
-		"en"		"Your last equipped level perks were restored"
-		"ru"		"Ваши последние имеющиеся уровневые перки были восстановлены."
-		"de"		"Ihre letzten level perks wurden wiederhergestellt."
+		"#format"	"{1:s}"
+		"en"		"Could not buy {1}."
 	}
 	"Press TAB To open the store"
 	{
@@ -1302,5 +1304,73 @@
 	"Not Enough Builder Upgrades"
 	{
 		"en"		"You do not have enough builder upgrades to use this skill."
+		"ru"		"У вас недостаточно улучшений строителя, чтобы использовать это умение."
+	}
+	"tutorial_1"
+	{
+		"en"		"This is the short Tutorial. Open chat and type ''/store'' to open the store!"
+		"ru"		"Это краткое руководство. Откройте чат и введите ''/store'', чтобы открыть магазин!"
+	}
+	"tutorial_2"
+	{
+		"en"		"Good! You can also Open the store with %%+showscores%% when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want.\nOpen chat and type ''/store'' to open the store again if it got closed!"
+		"ru"		"Отлично! Вы также можете открыть магазин клавишей %%+showscores%%, когда закончите обучение.\nНу а теперь перейдите к оружию и купите любое оружие, какое захотите."
+	}
+	"tutorial_3"
+	{
+		"en"		"Now that you have a weapon you're prepared.\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
+		"ru"		"Теперь, когда у вас есть оружие, вы готовы.\nКупите лучшее оружие и улучшения в последующих волнах и выживите до конца!\nДополнительную помощь можно найти в магазине в разделе ''помощь?''\nКомандная работа - ключ к победе!"
+	}
+	"Is already at full hp"
+	{
+		"en"		"is already at full hp."
+		"ru"		"уже имеет полное здоровье."
+	}
+	"You healed for"
+	{
+		"#format"	"{1:N},{2:d}"
+		"en"		"You Healed [{1}] for [{2}] HP!"
+		"ru"		"Вы вылечили [{1}] на [{2}] ед. здоровья!"
+	}
+	"Loadouts"
+	{
+		"en"		"Loadouts"
+	}
+	"All Items"
+	{
+		"en"		"Buy All Items"
+	}
+	"Free Only"
+	{
+		"en"		"Buy Only Free Items"
+	}
+	"Getting Your Items"
+	{
+		"en"		"Getting Your Items..."
+	}
+	"Delete Loadout"
+	{
+		"en"		"Delete Loadout"
+	}
+	"Save New"
+	{
+		"en"		"Enter name in chatbox to create a new loadout"
+	}
+	"Invalid Name"
+	{
+		"en"		"Make sure your name is under 32 characters and does not contain special characters"
+	}
+	"Loadout Slots"
+	{
+		"#format"	"{1:d}"
+		"en"		"{1} Loadout Slot(s)"
+	}
+	"At Weapon Limit"
+	{
+		"en"		"You reached the maximum amount of held weapons, some may not have been equipped."
+	}
+	"Press Button To Switch"
+	{
+		"en"		"Multiple Weapons: Press Inspect"
 	}
 }

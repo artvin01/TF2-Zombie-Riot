@@ -12,7 +12,6 @@ static float RWI_HomeAngle[MAXENTITIES];
 static float RWI_LockOnAngle[MAXENTITIES];
 static float RMR_RocketVelocity[MAXENTITIES];
 static int weapon_id[MAXPLAYERS+1]={0, ...};
-static float Original_Atackspeed[MAXPLAYERS+1]={0.0, ...};
 static int Ark_Hits[MAXPLAYERS+1]={0, ...};
 
 static int Ark_Level[MAXPLAYERS+1]={0, ...};
@@ -55,11 +54,12 @@ public void Ark_empower_ability(int client, int weapon, bool crit, int slot) // 
 
 		Ark_Hits[client] = 6;
 				
-		Original_Atackspeed[client] = 1.0;
+		float Original_Atackspeed = 1.0;
 				
 		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 		if(address != Address_Null)
-			Original_Atackspeed[client] = TF2Attrib_GetValue(address);
+			Original_Atackspeed = TF2Attrib_GetValue(address);
+
 		float flPos[3]; // original
 		float flAng[3]; // original	
 		GetAttachment(client, "effect_hand_r", flPos, flAng);
@@ -68,9 +68,9 @@ public void Ark_empower_ability(int client, int weapon, bool crit, int slot) // 
 				
 		SetParent(client, particler, "effect_hand_r");
 		
-		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] * 0.75);
+		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed* 0.75);
 				
-		CreateTimer(3.0, Reset_Ark_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(3.0, Reset_Ark_Attackspeed, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 
 		//PrintToChatAll("test empower");
 
@@ -102,13 +102,13 @@ public void Ark_empower_ability_2(int client, int weapon, bool crit, int slot) /
 
 		Ark_Hits[client] = 10;
 				
-		Original_Atackspeed[client] = 1.0;
+		float Original_Atackspeed = 1.0;
 				
 		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 		if(address != Address_Null)
-			Original_Atackspeed[client] = TF2Attrib_GetValue(address);
+			Original_Atackspeed = TF2Attrib_GetValue(address);
 		
-		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] * 0.75);
+		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed * 0.75);
 		
 		float flPos[3]; // original
 		float flAng[3]; // original
@@ -119,7 +119,7 @@ public void Ark_empower_ability_2(int client, int weapon, bool crit, int slot) /
 				
 		SetParent(client, particler, "effect_hand_r");
 				
-		CreateTimer(3.0, Reset_Ark_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(3.0, Reset_Ark_Attackspeed, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 
 		//PrintToChatAll("test empower");
 
@@ -151,13 +151,13 @@ public void Ark_empower_ability_3(int client, int weapon, bool crit, int slot) /
 
 		Ark_Hits[client] = 10;
 				
-		Original_Atackspeed[client] = 1.0;
+		float Original_Atackspeed = 1.0;
 				
 		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 		if(address != Address_Null)
-			Original_Atackspeed[client] = TF2Attrib_GetValue(address);
+			Original_Atackspeed = TF2Attrib_GetValue(address);
 		
-		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] * 0.75);
+		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed * 0.75);
 		float flPos[3]; // original
 		float flAng[3]; // original
 		GetAttachment(client, "effect_hand_r", flPos, flAng);
@@ -166,7 +166,7 @@ public void Ark_empower_ability_3(int client, int weapon, bool crit, int slot) /
 				
 		SetParent(client, particler, "effect_hand_r");
 				
-		CreateTimer(3.0, Reset_Ark_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(3.0, Reset_Ark_Attackspeed, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 
 		//PrintToChatAll("test empower");
 
@@ -686,15 +686,18 @@ public Action Event_Ark_OnHatTouch(int entity, int other)// code responsible for
 	return Plugin_Handled;
 }
 
-public Action Reset_Ark_Attackspeed(Handle cut_timer, int client)//code that resets the bonus attack speed from the empower ability
+public Action Reset_Ark_Attackspeed(Handle cut_timer, int ref)	//code that resets the bonus attack speed from the empower ability
 {
-	if (IsValidClient(client))
+	int weapon = EntRefToEntIndex(ref);
+	if (IsValidEntity(weapon))
 	{
-		int weapon = GetPlayerWeaponSlot(client, 2);
-		if(weapon == weapon_id[client])
-		{
-			TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client]);
-		}
+		float Original_Atackspeed;
+
+		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
+		if(address != Address_Null)
+			Original_Atackspeed = TF2Attrib_GetValue(address);
+
+		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed / 0.75);
 	}
 	return Plugin_Handled;
 }

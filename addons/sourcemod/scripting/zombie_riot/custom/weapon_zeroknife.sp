@@ -2,8 +2,6 @@
 static int how_many_times_fisted[MAXTF2PLAYERS];
 static int weapon_id[MAXPLAYERS+1]={0, ...};
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
-static float Original_Attackspeed[MAXPLAYERS+1]={0.0, ...};
-
 //First Knife
 #define FirstDefenceRageCooldown 80.0 //How Long you can reuse it again
 #define FirstDefenceRageTimer 10.0 //How Long the duration of battalions effect is
@@ -276,11 +274,12 @@ public void ZeroRage(int client, int weapon, bool crit, int slot)
 					{
 						weapon_id[client] = weapon;
 				
-						Original_Attackspeed[client] = 1.0;
+						float Original_Attackspeed = 1.0;
 						Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 						if(address != Address_Null)
-						Original_Attackspeed[client] = TF2Attrib_GetValue(address);
-						TF2Attrib_SetByDefIndex(weapon, 6, Original_Attackspeed[client] * MultiWrathRageSpeed);
+							Original_Attackspeed = TF2Attrib_GetValue(address);
+
+						TF2Attrib_SetByDefIndex(weapon, 6, Original_Attackspeed * MultiWrathRageSpeed);
 						
 						CreateTimer(MultiRageCooldown, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
 			
@@ -306,7 +305,7 @@ public void ZeroRage(int client, int weapon, bool crit, int slot)
 						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "Wrath Rage has striked.");
-						CreateTimer(MultiWrathResetSpeedTimer, Reset_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
+						CreateTimer(MultiWrathResetSpeedTimer, Reset_Attackspeed, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 					}
 				}
 			}
@@ -366,12 +365,13 @@ public void ZeroWrathRage(int client, int weapon, bool crit, int slot)
 			
 			weapon_id[client] = weapon;
 			
-			Original_Attackspeed[client] = 1.0;
+			float Original_Attackspeed = 1.0;
 			
 			Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 			if(address != Address_Null)
-			Original_Attackspeed[client] = TF2Attrib_GetValue(address);
-			TF2Attrib_SetByDefIndex(weapon, 6, Original_Attackspeed[client] * FinalWrathRagePapSpeed);
+				Original_Attackspeed= TF2Attrib_GetValue(address);
+
+			TF2Attrib_SetByDefIndex(weapon, 6, Original_Attackspeed * FinalWrathRagePapSpeed);
 			
 			TF2_StunPlayer(client, FinalWrathRageStunTimer, _, TF_STUNFLAG_BONKSTUCK, 0);
 			TF2_AddCondition(client, TFCond_UberchargedHidden, FinalWrathRageUberTimer, 0);
@@ -395,7 +395,7 @@ public void ZeroWrathRage(int client, int weapon, bool crit, int slot)
 			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Wrath Rage has striked.");
-			CreateTimer(FinalWrathResetSpeedTimer, Reset_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(FinalWrathResetSpeedTimer, Reset_Attackspeed_Final, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(FinalWrathRageCooldown, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
 		}
 		else
@@ -423,15 +423,34 @@ public Action Ability_charged(Handle cut_timer, int client)
 	return Plugin_Handled;
 }
 
-public Action Reset_Attackspeed(Handle cut_timer, int client)
+public Action Reset_Attackspeed(Handle cut_timer, int ref)
 {
-	if (IsValidClient(client))
+	int weapon = EntRefToEntIndex(ref);
+	if (IsValidEntity(weapon))
 	{
-		int weapon = GetPlayerWeaponSlot(client, 2);
-		if(weapon == weapon_id[client])
-		{
-			TF2Attrib_SetByDefIndex(weapon, 6, Original_Attackspeed[client]);
-		}
+		float Original_Atackspeed;
+
+		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
+		if(address != Address_Null)
+			Original_Atackspeed = TF2Attrib_GetValue(address);
+
+		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed / MultiWrathRageSpeed);
+	}
+	return Plugin_Handled;
+}
+
+public Action Reset_Attackspeed_Final(Handle cut_timer, int ref)
+{
+	int weapon = EntRefToEntIndex(ref);
+	if (IsValidEntity(weapon))
+	{
+		float Original_Atackspeed;
+
+		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
+		if(address != Address_Null)
+			Original_Atackspeed = TF2Attrib_GetValue(address);
+
+		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed / FinalWrathRagePapSpeed);
 	}
 	return Plugin_Handled;
 }

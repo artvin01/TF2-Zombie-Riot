@@ -24,7 +24,7 @@ static const char g_IdleChainsaw[][] = {
 };
 
 static const char g_IdleMusic[][] = {
-	"zombie_riot/sawrunner/near_loop.mp3",
+	"#zombie_riot/sawrunner/near_loop.mp3",
 };
 
 void SawRunner_OnMapStart_NPC()

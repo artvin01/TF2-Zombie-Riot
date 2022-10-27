@@ -28,7 +28,7 @@
 	"Torsoless Headcrab Zombie"
 	{
 		"en" 		"Torsoless Headcrab Zombie"
-		"ru" 		"Зомби без торса"
+		"ru" 		"Зомби без ног"
 	}
 	"Poison Zombie"
 	{
@@ -231,7 +231,7 @@
 	"Xeno Torsoless Headcrab Zombie"
 	{
 		"en" 		"Xeno Torsoless Headcrab Zombie"
-		"ru" 		"Ксенозомби без торса"
+		"ru" 		"Ксенозомби без ног"
 	}
 	"Xeno Poison Zombie"
 	{
@@ -622,29 +622,36 @@
 	"The Shit Slapper"
 	{
 		"en"		"The Shit Slapper"
+		"ru"		"Дерьмошлёп"
 	}
 	"Basic Bones"
 	{
 		"en"		"Basic Bones"
+		"ru"		"Кости"
 	}
 	"Mecha Engineer"
 	{
 		"en"		"Mecha Engineer"
+		"ru"		"Меха-инженер"
 	}
 	"Mecha Heavy"
 	{
 		"en"		"Mecha Heavy"
+		"ru"		"Меха-пулемётчик"
 	}
 	"Mecha Giant Heavy"
 	{
 		"en"		"Mecha Giant Heavy"
+		"ru"		"Гигантский меха-пулемётчик"
 	}
 	"Mecha Giant Pyro"
 	{
 		"en"		"Mecha Giant Pyro"
+		"ru"		"Гигантский меха-поджигатель"
 	}
 	"Mecha Scout"
 	{
 		"en"		"Mecha Scout"
+		"ru"		"Меха-разведчик"
 	}
 }

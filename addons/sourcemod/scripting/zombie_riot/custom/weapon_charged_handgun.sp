@@ -175,7 +175,11 @@ public void Weapon_Charged_Handgun(int client, int weapon, const char[] classnam
 			}
 		}
 		
-		Revert_Weapon_Back_Timer[client] = CreateTimer(0.4, Reset_weapon_charged_handgun, client, TIMER_FLAG_NO_MAPCHANGE);
+		DataPack pack;
+		Revert_Weapon_Back_Timer[client] = CreateDataTimer(0.4, Reset_weapon_charged_handgun, pack);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		
 		Handle_on[client] = true;
 		
 		Address address = TF2Attrib_GetByDefIndex(weapon, 670);
@@ -678,19 +682,23 @@ public Action Timer_Electric_Think(Handle timer, int iCarrier)
 }
 
 
-public Action Reset_weapon_charged_handgun(Handle cut_timer, int client)
+public Action Reset_weapon_charged_handgun(Handle cut_timer, DataPack pack)
 {
+	pack.Reset();
+	int client = pack.ReadCell();
 	if (IsValidClient(client))
 	{
-		int weapon = GetPlayerWeaponSlot(client, 1);
-		if(weapon == weapon_id[client])
+		int weapon = EntRefToEntIndex(pack.ReadCell());
+		if(weapon != INVALID_ENT_REFERENCE)
 		{
-			TF2Attrib_SetByDefIndex(weapon, 670, base_chargetime[client]);
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-		}
-		else 
-		{
-			if (weapon == GetPlayerWeaponSlot(client, 0))
+			char buffer[36];
+			GetEntityClassname(weapon, buffer, sizeof(buffer));
+			if(TF2_GetClassnameSlot(buffer) == TFWeaponSlot_Secondary)
+			{
+				TF2Attrib_SetByDefIndex(weapon, 670, base_chargetime[client]);
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+			}
+			else 
 			{
 				TF2Attrib_SetByDefIndex(weapon, 466, base_chargetime[client]);
 				ClientCommand(client, "playgamesound items/medshotno1.wav");

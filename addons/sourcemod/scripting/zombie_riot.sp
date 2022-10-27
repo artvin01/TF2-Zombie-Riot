@@ -15,6 +15,7 @@
 #include <PathFollower_Nav>
 #include <morecolors>
 
+
 //#include <studio_hdr>
 #undef REQUIRE_PLUGIN
 #include <minecraft_tf2>
@@ -22,6 +23,7 @@
 	
 #tryinclude <menus-controller>
 
+#pragma newdecls required
 
 #define CHAR_FULL	"█"
 #define CHAR_PARTFULL	"▓"
@@ -115,8 +117,6 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 //ATTENTION PLEASE!!!!!!!!!
 //ATTENTION PLEASE!!!!!!!!!
 //ATTENTION PLEASE!!!!!!!!!
-
-#pragma newdecls required
 
 #define FAR_FUTURE	100000000.0
 #define MAXENTITIES	2048
@@ -218,6 +218,9 @@ Handle sv_cheats;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie CookieXP;
 Cookie CookiePlayStreak;
+Cookie Niko_Cookies;
+Cookie CookieCache;
+ArrayList Loadouts[MAXTF2PLAYERS];
 
 //custom wave music.
 char char_MusicString1[256];
@@ -233,6 +236,7 @@ float RoundStartTime;
 char WhatDifficultySetting[64];
 float healing_cooldown[MAXTF2PLAYERS];
 float Damage_dealt_in_total[MAXTF2PLAYERS];
+float f_TimeAfterSpawn[MAXTF2PLAYERS];
 
 int Healing_done_in_total[MAXTF2PLAYERS];
 int i_BarricadeHasBeenDamaged[MAXTF2PLAYERS];
@@ -249,7 +253,7 @@ TFClassType CurrentClass[MAXTF2PLAYERS];
 TFClassType WeaponClass[MAXTF2PLAYERS];
 int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
 int i_SemiAutoWeapon[MAXENTITIES];
-int i_SemiAutoWeapon_AmmoCount[MAXTF2PLAYERS][10]; //idk like 10 slots lol
+int i_SemiAutoWeapon_AmmoCount[MAXENTITIES]; //idk like 10 slots lol
 bool i_WeaponCannotHeadshot[MAXENTITIES];
 
 #define MAXSTICKYCOUNTTONPC 12
@@ -260,7 +264,7 @@ float f_SemiAutoStats_FireRate[MAXENTITIES];
 int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
 float f_SemiAutoStats_ReloadTime[MAXENTITIES];
 
-float f_MedigunChargeSave[MAXTF2PLAYERS];
+float f_MedigunChargeSave[MAXTF2PLAYERS][4];
 
 	
 int CashSpent[MAXTF2PLAYERS];
@@ -294,7 +298,7 @@ int Elevator_Owner[MAXENTITIES]={0, ...};
 bool Is_Elevator[MAXENTITIES]={false, ...};
 int Dont_Crouch[MAXENTITIES]={0, ...};
 
-
+int StoreWeapon[MAXENTITIES];
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 enum
 {
@@ -319,6 +323,7 @@ int i_PreviousPointAmount[MAXTF2PLAYERS];
 	
 int Animation_Setting[MAXTF2PLAYERS];
 int Animation_Index[MAXTF2PLAYERS];
+bool b_IsPlayerNiko[MAXTF2PLAYERS];
 
 float delay_hud[MAXTF2PLAYERS];
 
@@ -428,10 +433,6 @@ int i_Wearable[MAXENTITIES][6];
 float f_WidowsWineDebuff[MAXENTITIES];
 float f_WidowsWineDebuffPlayerCooldown[MAXTF2PLAYERS];
 
-float f_Ability_Cooldown_m1[MAXTF2PLAYERS][10]; //Incase any ability uses m1 lol
-float f_Ability_Cooldown_m2[MAXTF2PLAYERS][10];
-float f_Ability_Cooldown_r[MAXTF2PLAYERS][10];
-
 int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
 
 #define ABILITY_NONE                 0          	//Nothing special.
@@ -458,7 +459,7 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 int Armor_Level[MAXPLAYERS + 1]={0, ...}; 				//701
 int Jesus_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777
 float Panic_Attack[MAXENTITIES]={0.0, ...};				//651
-float Mana_Regen_Level[MAXENTITIES]={0.0, ...};				//405
+float Mana_Regen_Level[MAXPLAYERS]={0.0, ...};				//405
 int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 				//785
 int i_SurvivalKnifeCount[MAXENTITIES]={0, ...}; 				//33
 int i_BarbariansMind[MAXPLAYERS + 1]={0, ...}; 				//830
@@ -749,13 +750,15 @@ enum
 	ALT_The_Shit_Slapper = 128,
 	
 	BONEZONE_BASICBONES = 129,
-	ITSTILIVES	= 666,
 	
 	ALT_MECHA_ENGINEER			= 130,
 	ALT_MECHA_HEAVY				= 131,
 	ALT_MECHA_HEAVYGIANT		= 132,
 	ALT_MECHA_PYROGIANT			= 133,
-	ALT_MECHA_SCOUT				= 134
+	ALT_MECHA_SCOUT				= 134,
+	
+	
+	ITSTILIVES	= 135,
 }
 
 
@@ -906,7 +909,8 @@ public const char NPC_Names[][] =
 	"Mecha Heavy",
 	"Mecha Giant Heavy",
 	"Mecha Giant Pyro",
-	"Mecha Scout"
+	"Mecha Scout",
+	"Bob the Overgod of gods and destroyer of multiverses"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -1049,12 +1053,11 @@ public const char NPC_Plugin_Names_Converted[][] =
 	
 	"npc_basicbones",
 	
-	"",
-	
 	"npc_alt_mecha_engineer",
 	"npc_alt_mecha_heavy",
 	"npc_alt_mecha_heavy_giant",
 	"npc_alt_mecha_pyro_giant",
+	"npc_alt_mecha_scout",
 	"npc_alt_mecha_scout"
 };
 
@@ -1072,6 +1075,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/store.sp"
 #include "zombie_riot/viewchanges.sp"
 #include "zombie_riot/npc_stats.sp"
+#include "zombie_riot/database.sp"
 
 #include "zombie_riot/buildonbuilding.sp"
 #include "zombie_riot/custom_melee_logic.sp"
@@ -1087,6 +1091,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/npc_death_showing.sp"
 #include "zombie_riot/queue.sp"
 #include "zombie_riot/item_gift_rpg.sp"
+#include "zombie_riot/tutorial.sp"
 
 
 #include "zombie_riot/custom/building.sp"
@@ -1232,7 +1237,10 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_shop", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
+	RegAdminCmd("sm_tutorial_test", Command_TestTutorial, ADMFLAG_ROOT, "Test The Tutorial");
 	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");
+	RegConsoleCmd("sm_make_niko", Command_MakeNiko, "Turn This player into niko");
+	
 	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_GENERIC, "BRB GONNA MURDER MY MOM'S DISHES");
 	RegAdminCmd("sm_change_collision", Command_ChangeCollision, ADMFLAG_GENERIC, "change all npc's collisions");
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_GENERIC, "Forcefully summon grigori");
@@ -1260,6 +1268,8 @@ public void OnPluginStart()
 	cvarCheatsflags &= ~FCVAR_NOTIFY;
 	SetConVarFlags(sv_cheats, cvarCheatsflags);
 	
+	CookieCache = new Cookie("zr_lastgame", "The last game saved data is from", CookieAccess_Protected);
+	Niko_Cookies = new Cookie("zr_niko", "Are you a niko", CookieAccess_Protected);
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
 	
@@ -1280,13 +1290,14 @@ public void OnPluginStart()
 	NPC_PluginStart();
 	SDKHook_PluginStart();
 	Thirdperson_PluginStart();
-	Store_PluginStart();
 	Waves_PluginStart();
 	Medigun_PluginStart();
 	OnPluginStartMangler();
 	SentryHat_OnPluginStart();
 	OnPluginStart_Build_on_Building();
 	OnPluginStart_Glitched_Weapon();
+	Tutorial_PluginStart();
+	Database_PluginStart();
 //	Building_PluginStart();
 #if defined LagCompensation
 	OnPluginStart_LagComp();
@@ -1387,6 +1398,9 @@ public Action OnTaunt(int client, const char[] command, int args)
 
 public Action OnSayCommand(int client, const char[] command, int args)
 {
+	if(Store_SayCommand(client))
+		return Plugin_Handled;
+	
 	return NPC_SayCommand(client, command);
 }
 
@@ -1578,6 +1592,34 @@ public Action Command_AFK(int client, int args)
 	return Plugin_Handled;
 }
 
+
+public Action Command_TestTutorial(int client, int args)
+{
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_tutorial_test <target>");
+        return Plugin_Handled;
+    }	
+       
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		StartTutorial(targets[target]);
+	}
+	return Plugin_Handled;
+}
 public Action Command_GiveCash(int client, int args)
 {
 	//What are you.
@@ -1618,6 +1660,21 @@ public Action Command_GiveCash(int client, int args)
 		}
 	}
 	
+	return Plugin_Handled;
+}
+
+public Action Command_MakeNiko(int client, int args)
+{
+	if(b_IsPlayerNiko[client])
+	{
+		PrintToChat(client,"You are no longer niko, respawn to apply");
+		b_IsPlayerNiko[client] = false;
+	}
+	else
+	{
+		PrintToChat(client,"You are now niko, respawn to apply");
+		b_IsPlayerNiko[client] = true;
+	}
 	return Plugin_Handled;
 }
 
@@ -1792,7 +1849,7 @@ public void OnClientPutInServer(int client)
 	
 	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
 	
-	if(CurrentRound && Store_PutInServer(client))
+	if(CurrentRound)
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.40);
 	
 	if(AreClientCookiesCached(client)) //Ingore this. This only bugs it out, just force it, who cares.
@@ -1816,15 +1873,30 @@ Kenzzer my beloved
 public void OnClientCookiesCached(int client)
 {
 	ThirdPerson_OnClientCookiesCached(client);
+	Tutorial_LoadCookies(client);
 	char buffer[12];
 	CookieXP.Get(client, buffer, sizeof(buffer));
 	XP[client] = StringToInt(buffer);
 	Level[client] = XpToLevel(XP[client]);
+	
+	char buffer_niko[12];
+	Niko_Cookies.Get(client, buffer_niko, sizeof(buffer_niko));
+	if(StringToInt(buffer_niko) == 1)
+	{
+	 	b_IsPlayerNiko[client] = true;
+	}
+	else
+	{
+		b_IsPlayerNiko[client] = false;
+	}
+	
 	Store_ClientCookiesCached(client);
 }
 
 public void OnClientDisconnect(int client)
 {
+	SetClientTutorialMode(client, false);
+	SetClientTutorialStep(client, 0);
 	Pets_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
 //	DHook_ClientDisconnect();
@@ -1846,6 +1918,16 @@ public void OnClientDisconnect(int client)
 		char buffer[12];
 		IntToString(XP[client], buffer, sizeof(buffer));
 		CookieXP.Set(client, buffer);
+		
+		char buffer_niko[12];
+		
+		int niko_int = 0;
+		
+		if(b_IsPlayerNiko[client])
+			niko_int = 1;
+			
+		IntToString(niko_int, buffer_niko, sizeof(buffer_niko));
+		Niko_Cookies.Set(client, buffer_niko);
 	}
 	XP[client] = 0;
 }
@@ -1886,7 +1968,6 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	RoundStartTime = GetGameTime()+0.1;
 	
 	Escape_RoundStart();
-	Store_RoundStart();
 	Waves_RoundStart();
 }
 
@@ -1986,6 +2067,15 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		SetVariantString("");
 	  	AcceptEntityInput(client, "SetCustomModel");
 	  	//DEFAULTS
+	  	
+	  	if(b_IsPlayerNiko[client])
+		{
+		  	int entity = MaxClients+1;
+			while(TF2_GetWearable(client, entity))
+			{
+				SetEntProp(entity, Prop_Send, "m_fEffects", EF_NODRAW);
+			}
+		}
 	  	
 		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 		ViewChange_DeleteHands(client);
@@ -2595,6 +2685,25 @@ public Action OnBuildCmd(int client, const char[] command, int args)
 	return Plugin_Continue;
 }
 
+public Action OnClientCommandKeyValues(int client, KeyValues kv)
+{
+	char buffer[64];
+	kv.GetSectionName(buffer, sizeof(buffer));
+	if(StrEqual(buffer, "+inspect_server", false))
+	{
+		if(GetClientButtons(client) & IN_SCORE)
+		{
+			Store_OpenItemPage(client);
+		}
+		else if(!TF2_IsPlayerInCondition(client, TFCond_Slowed) && !TF2_IsPlayerInCondition(client, TFCond_Zoomed))
+		{
+			Store_SwapItems(client);
+		}
+		return Plugin_Handled;
+	}
+	return Plugin_Continue;
+}
+
 public Action OnRelayTrigger(const char[] output, int entity, int caller, float delay)
 {
 	char name[32];
@@ -2688,6 +2797,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	
 	Escape_PlayerRunCmd(client);
 	
+	//tutorial stuff.
+	Tutorial_MakeClientNotMove(client);
 	
 	if(buttons & IN_ATTACK)
 	{
@@ -2695,7 +2806,14 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		if(entity > MaxClients)
 		{
 			f_Actualm_flNextPrimaryAttack[entity] = GetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack");
-			Attributes_Fire(client, entity);
+			bool cancel_attack = false;
+			cancel_attack = Attributes_Fire(client, entity);
+			
+			if(cancel_attack)
+			{
+				buttons &= ~IN_ATTACK;
+				return Plugin_Changed;
+			}
 		}
 	}
 	
@@ -3049,9 +3167,8 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	
 	if(i_SemiAutoWeapon[weapon])
 	{
-		int slot = TF2_GetClassnameSlot(classname);
-		i_SemiAutoWeapon_AmmoCount[client][slot] -= 1;
-		PrintHintText(client, "[%i/%i]", i_SemiAutoStats_MaxAmmo[weapon],i_SemiAutoWeapon_AmmoCount[client][slot]);
+		i_SemiAutoWeapon_AmmoCount[weapon] -= 1;
+		PrintHintText(client, "[%i/%i]", i_SemiAutoStats_MaxAmmo[weapon],i_SemiAutoWeapon_AmmoCount[weapon]);
 		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 	}
 	
@@ -3165,8 +3282,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	}
 	else if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
-		
-		
+		StoreWeapon[entity] = -1;
 		LastHitId[entity] = -1;
 		DamageBits[entity] = -1;
 		Damage[entity] = 0.0;
@@ -3859,8 +3975,8 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				if(Escape_Interact(client, entity))
 					return true;
 				
-				if(Store_Interact(client, entity, buffer))
-					return true;
+				//if(Store_Interact(client, entity, buffer))
+				//	return true;
 				
 				if(Citizen_Interact(client, entity))
 					return true;
@@ -3879,19 +3995,30 @@ void GiveXP(int client, int xp)
 	{
 		static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
 		ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
-//		SetEntityHealth(client, GetEntProp(client, Prop_Data, "m_iMaxHealth"));
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client) * 3 / 2);
 		SetGlobalTransTarget(client);
 		PrintToChat(client, "%t", "Level Up", nextLevel);
 		
 		bool found;
+		int slots;
+		
 		for(Level[client]++; Level[client]<=nextLevel; Level[client]++)
 		{
 			if(Store_PrintLevelItems(client, Level[client]))
 				found = true;
+			
+			if(!(Level[client] % 2))
+				slots++;
 		}
 		
-		if(!found)
+		if(slots)
+		{
+			PrintToChat(client, "%t", "Loadout Slots", slots);
+		}
+		else if(!found)
+		{
 			PrintToChat(client, "%t", "None");
+		}
 	}
 }
 
@@ -3959,9 +4086,6 @@ public void MapStartResetAll()
 	Zero(i_ThisEntityHasAMachineThatBelongsToClientMoney);
 	Zero(f_WasRecentlyRevivedViaNonWave);
 	Zero(f_TimeAfterSpawn);
-	Zero2(f_Ability_Cooldown_m1);
-	Zero2(f_Ability_Cooldown_m2);
-	Zero2(f_Ability_Cooldown_r);
 	Zero(i_Hex_WeaponUsesTheseAbilities);
 	Zero(f_WidowsWineDebuffPlayerCooldown);
 	Zero(f_WidowsWineDebuff);
@@ -4019,4 +4143,5 @@ public void MapStartResetAll()
 	Zero2(i_StickyToNpcCount);
 	SniperMonkey_ClearAll();
 	Weapon_Cspyknife_ClearAll();
+	Zero(f_TutorialUpdateStep);
 }
