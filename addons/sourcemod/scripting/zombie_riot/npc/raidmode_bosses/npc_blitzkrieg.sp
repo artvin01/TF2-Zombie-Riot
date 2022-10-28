@@ -398,6 +398,9 @@ methodmap Blitzkrieg < CClotBody
 		npc.PlayMusicSound();
 		npc.StartPathing();
 		Music_Stop_All_Beat(client);
+
+		Citizen_MiniBossSpawn(npc.index);
+
 		return npc;
 	}
 }
@@ -1054,6 +1057,8 @@ public void Blitzkrieg_NPCDeath(int entity)
 	}
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 //	npc.Anger = false;
+
+	Citizen_MiniBossDeath(entity);
 }
 // Ent_Create style position from Doomsday Nuke
 
