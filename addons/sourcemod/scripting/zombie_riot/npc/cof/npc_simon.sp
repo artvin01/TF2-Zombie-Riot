@@ -96,6 +96,8 @@ methodmap Simon < CClotBody
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		
 		npc.m_bLostHalfHealth = (!newSimon && view_as<bool>(data[0]));
+
+		Citizen_MiniBossSpawn(npc.index);
 		return npc;
 	}
 	
@@ -518,4 +520,6 @@ public void Simon_NPCDeath(int entity)
 			SimonRagdollRef = EntIndexToEntRef(entity_death);
 		}
 	}
+
+	Citizen_MiniBossDeath(entity);
 }

@@ -2668,15 +2668,15 @@ public Action Timer_DroppedBuildingWaitArmorTable(Handle htimer, DataPack pack)
 {
 	pack.Reset();
 	int entref = pack.ReadCell();
-	pack.ReadCell();
+	int original_entity = pack.ReadCell();
 	int client_original_index = pack.ReadCell(); //Need original!
 	
 	int obj=EntRefToEntIndex(entref);
 	
 	if(!IsValidEntity(obj))
 	{
-		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[obj][0]);
-		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[obj][1]);
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[original_entity][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[original_entity][1]);
 		
 		if(IsValidEntity(prop1))
 		{
@@ -5361,8 +5361,8 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						}
 						case VILLAGE_200:
 						{
-							npc.m_fGunFirerate *= 0.97;
-							npc.m_fGunReload *= 0.97;
+							npc.m_fGunFirerate *= 0.95;
+							npc.m_fGunReload *= 0.95;
 						}
 						case VILLAGE_300:
 						{
@@ -5414,8 +5414,8 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					}
 					case VILLAGE_200:
 					{
-						npc.m_fGunFirerate /= 0.97;
-						npc.m_fGunReload /= 0.97;
+						npc.m_fGunFirerate /= 0.95;
+						npc.m_fGunReload /= 0.95;
 					}
 					case VILLAGE_300:
 					{

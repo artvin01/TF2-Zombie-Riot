@@ -377,6 +377,8 @@ methodmap TrueFusionWarrior < CClotBody
 		npc.m_flNextPull = GetGameTime() + 5.0;
 		npc.m_bInKame = false;
 		
+		Citizen_MiniBossSpawn(npc.index);
+		
 		return npc;
 	}
 }
@@ -871,6 +873,8 @@ public void TrueFusionWarrior_NPCDeath(int entity)
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 //	npc.Anger = false;
+
+	Citizen_MiniBossDeath(entity);
 }
 
 // Ent_Create style position from Doomsday Nuke

@@ -361,6 +361,54 @@ static int NPCTarget[MAXTF2PLAYERS];
 static bool InLoadoutMenu[MAXTF2PLAYERS];
 static bool HasMultiInSlot[MAXTF2PLAYERS][6];
 
+bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
+{
+	if(StoreItems)
+	{
+		static Item item;
+		static ItemInfo info;
+		int choiceIndex, choiceInfo;
+		int choicePrice = value;
+		
+		int length = StoreItems.Length;
+		for(int i; i<length; i++)
+		{
+			StoreItems.GetArray(i, item);
+			if(item.NPCWeapon >= 0 && !item.NPCWeaponAlways && !item.Level)
+			{
+				int current;
+				for(int a; item.GetItemInfo(a, info); a++)
+				{
+					ItemCost(0, item, info.Cost);
+					current += info.Cost;
+					
+					if(current > budget)
+						break;
+					
+					if(current > choicePrice)
+					{
+						choiceIndex = i;
+						choiceInfo = a;
+						choicePrice = current;
+					}
+					
+					if(!packs || info.PackBranches != 1 || info.PackSkip)
+						break;
+				}
+			}
+		}
+		
+		if(choicePrice > value)
+		{
+			StoreItems.GetArray(choiceIndex, item);
+			item.GetItemInfo(choiceInfo, info);
+			Citizen_UpdateWeaponStats(entity, item.NPCWeapon, ItemSell(item, choiceInfo, 0), info);
+			return view_as<bool>(choiceInfo);
+		}
+	}
+	return false;
+}
+
 bool Store_ActiveCanMulti(int client)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -1302,11 +1350,11 @@ void Store_OpenNPCStore(int client)
 	}
 }
 
-void Store_OpenGiftStore(int client, int entity, int price)
+void Store_OpenGiftStore(int client, int entity, int price, bool barney)
 {
 	if(StoreItems && !IsVoteInProgress() && !Waves_CallVote(client))
 	{
-		NPCOnly[client] = 2;
+		NPCOnly[client] = barney ? 3 : 2;
 		NPCTarget[client] = EntIndexToEntRef(entity);
 		NPCCash[client] = price;
 		MenuPage(client, -1);
@@ -1352,13 +1400,13 @@ static void MenuPage(int client, int section)
 			char buffer[512];
 			
 			int level = item.Owned[client] - 1;
-			if(level < 0 || NPCOnly[client] == 2)
+			if(level < 0 || NPCOnly[client] == 2 || NPCOnly[client] == 3)
 				level = 0;
 			
 			item.GetItemInfo(level, info);
 			
 			level = item.Owned[client];
-			if(level < 1 || NPCOnly[client] == 2)
+			if(level < 1 || NPCOnly[client] == 2 || NPCOnly[client] == 3)
 				level = 1;
 			
 			SetGlobalTransTarget(client);
@@ -1399,7 +1447,7 @@ static void MenuPage(int client, int section)
 			Config_CreateDescription(info.Classname, info.Attrib, info.Value, info.Attribs, buffer, sizeof(buffer));
 			menu.SetTitle("%s\n%s\n ", buffer, info.Desc);
 			
-			if(NPCOnly[client] == 2)
+			if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
 			{
 				char buffer2[16];
 				IntToString(section, buffer2, sizeof(buffer2));
@@ -1616,7 +1664,7 @@ static void MenuPage(int client, int section)
 			if(!item.NPCSeller || item.Level > ClientLevel)
 				continue;
 		}
-		else if(NPCOnly[client] == 2)
+		else if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
 		{
 			if(item.Level > ClientLevel)
 				continue;
@@ -1631,7 +1679,12 @@ static void MenuPage(int client, int section)
 			continue;
 		}
 		
-		if(NPCOnly[client] == 2)
+		if(NPCOnly[client] == 3)
+		{
+			if(!item.NPCWeaponAlways)
+				continue;
+		}
+		else if(NPCOnly[client] == 2)
 		{
 			if(item.NPCWeapon < 0)
 				continue;
@@ -1644,7 +1697,7 @@ static void MenuPage(int client, int section)
 		if(item.TextStore[0] && !HasNamedItem(client, item.TextStore))
 			continue;
 		
-		if(NPCOnly[client] != 2 && !item.Owned[client] && item.Slot >= 0)
+		if(NPCOnly[client] != 2 && NPCOnly[client] != 3 && !item.Owned[client] && item.Slot >= 0)
 		{
 			int count;
 			for(int a; a<length; a++)
@@ -1675,7 +1728,7 @@ static void MenuPage(int client, int section)
 			}
 		}
 		
-		if(NPCOnly[client] == 2)
+		if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
 		{
 			if(item.ItemInfos)
 			{
@@ -2112,7 +2165,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						DoTutorialStep(client, false);	
 					}
 			
-					if(NPCOnly[client] == 2)	// Buy Rebel Weapon
+					if(NPCOnly[client] == 2 || NPCOnly[client] == 3)	// Buy Rebel Weapon
 					{
 						item.GetItemInfo(0, info);
 						
@@ -2135,7 +2188,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									{
 										for(int i = 1; i <= MaxClients; i++)
 										{
-											if(GetClientMenu(i) && NPCOnly[i] == 2 && NPCTarget[client] == NPCTarget[i])
+											if(GetClientMenu(i) && NPCOnly[i] == NPCOnly[client] && NPCTarget[client] == NPCTarget[i])
 											{
 												CancelClientMenu(i);
 												NPCTarget[i] = -1;
@@ -2332,10 +2385,9 @@ static void LoadoutPage(int client, bool last = false)
 		menu.AddItem("", buffer, ITEMDRAW_DISABLED);
 	}
 	
-	if(!InLoadoutMenu[client] && (Level[client] / 2) > length)
+	if((Level[client] / 2) > length)
 	{
 		menu.SetTitle("%t\n%t\n \n%t", "TF2: Zombie Riot", "Loadouts", "Save New");
-		InLoadoutMenu[client] = true;
 	}
 	else
 	{
@@ -2343,7 +2395,8 @@ static void LoadoutPage(int client, bool last = false)
 	}
 	
 	menu.ExitBackButton = true;
-	menu.DisplayAt(client, last ? (length / 7 * 7) : 0, MENU_TIME_FOREVER);
+	if(menu.DisplayAt(client, last ? (length / 7 * 7) : 0, MENU_TIME_FOREVER) && (Level[client] / 2) > length)
+		InLoadoutMenu[client] = true;
 }
 
 public int Store_LoadoutPage(Menu menu, MenuAction action, int client, int choice)
@@ -2456,6 +2509,10 @@ public bool Store_SayCommand(int client)
 	if(Database_Escape(buffer, sizeof(buffer), length) && length < 31)
 	{
 		Database_SaveLoadout(client, buffer);
+		
+		if(!Loadouts[client])
+			Loadouts[client] = new ArrayList(ByteCountToCells(32));
+		
 		Loadouts[client].PushString(buffer);
 		LoadoutPage(client, true);
 	}
