@@ -6,6 +6,7 @@
 		"ru"	"Боб Второй"
 		"de"	"Bob Der Zweite"
 		"pl"    "Bob drugi"
+		"pt"	"Bob o 2°"
 	}
 	"Bob The Second:"
 	{
@@ -13,6 +14,7 @@
 		"ru"	"Боб Второй:"
 		"de"	"Bob Der Zweite:"
 		"pl"    "Bob drugi:"
+		"pt"	"Bob o 2°:"
 	}
 	"Pistol Ammo"
 	{
@@ -20,6 +22,7 @@
 		"ru"	"Пистолет"
 		"de"	"Pistolen Munition"
 		"pl"    "Amunicja do pistoletu"
+		"pt"	"Munição da Pistola"
 	}
 	"Bob The Second is not friendly and follows you!"
 	{
@@ -27,6 +30,7 @@
 		"ru"	"Боб Второй атакует врагов и следует за вами!"
 		"de"	"Bob Der Zweite ist nicht Freundlich und folgt dir!"
 		"pl"    "Bob drugi nie jest przyjazny i podąża za tobą!"
+		"pt"	"Bob o 2° não é amigável e te segue!"
 	}
 	"Use voice Commands to command him!"
 	{
@@ -34,6 +38,7 @@
 		"ru"	"Голосовые команды - отдать команду!"
 		"de"	"Benutze Sprach Befehle um ihn zu befehlen!"
 		"pl"    "Używaj komend głowosych aby jemu rozkazywać!"
+		"pt"	"Use comandos de voz para o comandar!"
 	}
 	"Bob The Second is friendly and follows you!"
 	{
@@ -41,6 +46,7 @@
 		"ru"	"Боб Второй не атакует врагов и следует за вами!"
 		"de"	"Bob Der Zweite ist freundlich und folgt dir!"
 		"pl"    "Bob drugi jest przyjazny i podąża za tobą!"
+		"pt"	"Bob o 2° é amigável e te segue!"
 	}
 	"Bob The Second is not friendly and doesn't follow you!"
 	{
@@ -48,6 +54,7 @@
 		"ru"	"Боб Второй атакует врагов и не следует за вами!"
 		"de"	"Bob Der Zweite ist nicht Freundlich und folgt dir nicht!"
 		"pl"    "Bob drugi nie jest przyjazny i nie podąża za tobą!"
+		"pt"	"Bob o 2° não é amigável e não te segue!"
 	}
 	"Bob The Second is friendly and doesn't follow you!"
 	{
@@ -55,6 +62,7 @@
 		"ru"	"Боб Второй не атакует врагов и не следует за вами!"
 		"de"	"Bob Der Zweite ist freundlich und folgt dir nicht!"
 		"pl"    "Bob drugi jest przyjazny i nie podąża za tobą!"
+		"pt"	"Bob o 2° é amigável e não te segue!"
 	}
 	"Bob The Second is not friendly and follows you! BUT stands still."
 	{
@@ -62,6 +70,7 @@
 		"ru"	"Боб Второй атакует врагов и следует за вами! НО стоит на месте."
 		"de"	"Bob Der Zweite ist nicht freundlich und folgt dir! ABER bleibt stehen."
 		"pl"    "Bob drugi nie jest przyjazny i podąża za tobą! Ale stoi w miejscu."
+		"pt"	"Bob o 2° não é amigável e te segue! MAS está parado."
 	}
 	"Bob The Second is friendly and follows you! BUT stands still"
 	{
@@ -69,6 +78,7 @@
 		"ru"	"Боб Второй не атакует врагов и следует за вами! НО стоит на месте."
 		"de"	"Bob Der Zweite ist freundlich und folgt dir! ABER bleibt stehen."
 		"pl"    "Bob drugi jest przyjazny is podąża za tobą! Ale stoi w miejscu."
+		"pt"	"Bob o 2° é amigável e te segue! MAS está parado."
 	}
 	"Bob The Second is not friendly and doesn't follow you! BUT stands still"
 	{
@@ -76,6 +86,7 @@
 		"ru"	"Боб Второй атакует врагов и не следует за вами! НО стоит на месте."
 		"de"	"Bob Der Zweite ist nicht freundlich und folgt dir nicht! ABER bleibt stehen."
 		"pl"    "Bob drugi nie jest przyjazny i nie podąża za tobą! Ale stoi w miejscu."
+		"pt"	"Bob o 2° não é amigável e não te segue! MAS está parado."
 	}
 	"Bob The Second is friendly and doesn't follow you! BUT stands still"
 	{
@@ -83,6 +94,7 @@
 		"ru"	"Боб Второй не атакует врагов и не следует за вами! НО стоит на месте."
 		"de"	"Bob Der Zweite ist nicht freundlich und folgt dir nicht! ABER bleibt stehen."
 		"pl"    "Bob drugi jest przyjazny i nie podąża za tobą! Ale stoi w miejscu."
+		"pt"	"Bob o 2° é amigável e não te segue! MAS está parado."
 	}
 
 
@@ -92,6 +104,7 @@
 		"ru"	"Я их достал!"
 		"de"	"Ich hab sie!"
 		"pl"    "Mam ich!"
+		"pt"	"Eu peguei eles!"
 	}
 	"Take This!"
 	{
@@ -99,6 +112,7 @@
 		"ru"	"Получай!"
 		"de"	"Nimm Das!"
 		"pl"    "A Masz!"
+		"pt"	"Toma essa!"
 	}
 	"I'll stand beside you, sir!"
 	{
@@ -106,6 +120,7 @@
 		"ru"	"Я буду рядом с вами, сэр!"
 		"de"	"Ich werde bei dir stehen, sir!"
 		"pl"    "Będę stał obok ciebie!"
+		"pt"	"Estarei bem ao seu lado, senhor!"
 	}
 	"I'll guard you, sir!"
 	{
@@ -113,6 +128,7 @@
 		"ru"	"Я буду вас охранять, сэр!"
 		"de"	"Ich werde sie bewachen, sir!"
 		"pl"    "Będę ciebie bronił!"
+		"pt"	"Eu irei protege-lo, senhor!"
 	}
 	"I'm pretty bored..."
 	{
@@ -120,6 +136,7 @@
 		"ru"	"Мне это уже начинает надоедать...."
 		"de"	"ich bin so gelangweilt..."
 		"pl"    "jestem dość znudzony..."
+		"pt"	"Tem nada pra fazer..."
 	}
 	"Reloading near you, sir!"
 	{
@@ -127,6 +144,7 @@
 		"ru"	"Перезаряжаю рядом с вами, сэр!"
 		"de"	"ich lade bei dir nach, sir!"
 		"pl"    "Przeładowuje obok ciebie!"
+		"pt"	"Recarregando próximo a você, senhor!"
 	}
 	"I hope your day is going well!"
 	{
@@ -134,20 +152,23 @@
 		"ru"	"Надеюсь, у вас всё хорошо!"
 		"de"	"Ich Hoffe dein tag geht gut!"
 		"pl"    "Mam nadzieje, że ci dobrze mija dzień!"
+		"pt"	"Eu espero que seu dia esteja indo bem!"
 	}
 	"Sometimes i wonder why this war exists."
 	{
 		"en"	"Sometimes i wonder why this war exists."
 		"ru"	"Иногда я задаюсь вопросом, почему существует эта война."
 		"de"	"Manchmal frage ich mich warum dieser krieg existiert."
-		"pl"    "Czasami się zastanawiam dlaczego ta wojna istnieje."
+		"pl"	"Czasami się zastanawiam dlaczego ta wojna istnieje."
+		"pt"	"As vezes me pergunto porque essa guerra existe."
 	}
 	"Just saying, never give up!"
 	{
 		"en"	"Just saying, never give up!"
 		"ru"	"Просто хочу сказать, никогда не сдавайтесь!"
 		"de"	"Ich sag nur, Gib niemals auf!"
-		"pl"   "Pamiętaj nigdy się nie poddawaj!"
+		"pl"	"Pamiętaj nigdy się nie poddawaj!"
+		"pt"	"So pra constar, nunca desista!"
 	}
 	"Could i borrow your gun perhaps?"
 	{
@@ -155,13 +176,15 @@
 		"ru"	"Могу я одолжить ваше оружие?"
 		"de"	"kann ich vielleicht deine waffe ausleihen?"
 		"pl"    "Czy mógłbym porzyczyć twoją broń?"
+		"pt"	"Talvez você poderia me emprestar sua arma?"
 	}
 	"Im pretty confident in my abilities!"
 	{
-		"en"	"Reloading near you, sir!"
-		"ru"	"Перезаряжаю рядом с вами, сэр!"
-		"de"	"Ich lade bei dir nach, sir!"
-		"pl"    "Jestem całkiem pewny swoich umiejętności!"
+		"en"	"Im pretty confident in my abilities!"
+	//	"ru"	"Перезаряжаю рядом с вами, сэр!"
+	//	"de"	"Ich lade bei dir nach, sir!"
+	//	"pl"    "Jestem całkiem pewny swoich umiejętności!"
+		"pt"	"Estou bem confiante sobre minhas habilidades!"
 	}
 	"Pick up that can."
 	{
@@ -169,6 +192,7 @@
 		"ru"	"Подними эту банку."
 		"de"	"heb die dose auf."
 		"pl"    "Podnieś tą puszkę."
+		"pt"	"Pegue aquela latinha."
 	}
 	"On my way, sir!"
 	{
@@ -176,6 +200,7 @@
 		"ru"	"Уже в пути, сэр!"
 		"de"	"Auf den weg, sir!"
 		"pl"    "Już jestem w drodze!"
+		"pt"	"Estou indo, senhor!"
 	}
 	"Im watching there, dont worry!"
 	{
@@ -183,6 +208,7 @@
 		"ru"	"Буду наблюдать тут, не волнуйтесь!"
 		"de"	"Ich gucke dort, keine sorge!" 
 		"pl"    "Patrzę tam, nie martw się!"
+		"pt"	"Eu estou olhando ali, não se preucupe!"
 	}
 	"Spy? I'm keeping my eye there."
 	{
@@ -190,6 +216,7 @@
 		"ru"	"Шпион? Я не спущу с него глаз."
 		"de"	"Spion? Ich halte mein auge dort." 
 		"pl"    "Szpieg? Będę trzymał tam oko."
+		"pt"	"Spy? Eu vou prestar atenção ali."
 	}
 	"Sentry here? Its better to wait for teammates to engage so i'll look."
 	{
@@ -197,6 +224,7 @@
 		"ru"	"Турель здесь? Лучше подождать, пока союзники вступят в бой, так что я понаблюдаю."
 		"de"	"Sentry hier? es ist besser auf das team zu warten um Anzugreifen, also werde ich gucken."
 		"pl"    "Działko tutaj? Lepiej poczekać aż koledzy z drużyny się zaangażują, więc popatrzę."
+		"pt"	"Sentinela Aqui? É melhor esperar o resto dos aliados antes de entrar em combate então ficarei de olho."
 	}
 	"I cant build a teleporter, sorry."
 	{
@@ -204,6 +232,7 @@
 		"ru"	"Я не могу построить телепорт, извините."
 		"de"	"Ich kann kein teleporter bauen, entschuldigung."
 		"pl"    "Nie mogę zbudować teleportu, przepraszam."
+		"pt"	"Eu não consigo construir um teletransportador, desculpe."
 	}
 	"I cant build a dispenser, sorry."
 	{
@@ -211,6 +240,7 @@
 		"ru"	"Я не могу построить раздатчик, извините."
 		"de"	"Ich kann keinen spender bauen, entschuldigung."
 		"pl"    "Nie mogę zbudować dispensera, przepraszam."
+		"pt"	"Eu não consigo construir uma distribuidora, desculpe."
 	}
 	"I cant build a sentry, sorry."
 	{
@@ -218,6 +248,7 @@
 		"ru"	"Я не могу построить турель, извините."
 		"de"	"Ich kann keine sentry bauen, entschuldigung."
 		"pl"    "Nie mogę zbudować działka, przepraszam."
+		"pt"	"Eu não consigo construir uma sentinela, desculpe."
 	}
 	"I can't give you ubercharge..."
 	{
@@ -225,6 +256,7 @@
 		"ru"	"Я не могу дать вам убер-заряд..."
 		"de"	"Ich kann dir keine überladung geben..."
 		"pl"    "Nie mogę dać ci ubercharge..."
+		"pt"	"Eu não posso te ubercarregar..."
 	}
 	"Standing right here!"
 	{
@@ -232,6 +264,7 @@
 		"ru"	"Стою прямо здесь!"
 		"de"	"Stehe genau hier!"
 		"pl"    "Stoje właśnie tutaj!"
+		"pat"	"Ficarei bem aqui!"
 	}
 	"I'm on my move again!"
 	{
@@ -239,6 +272,7 @@
 		"ru"	"Я снова в пути!"
 		"de"	"Ich bewege mich wieder!"
 		"pl"    "Znowu jestem w ruchu!"
+		"pt"	"Estou a caminho de novo!"
 	}
 	"I am coming !"
 	{
@@ -246,6 +280,7 @@
 		"ru"	"Я иду!"
 		"de"	"Ich komme !"
 		"pl"    "nadchodzę !"
+		"pt"	"Estou indo!"
 	}
 	"I'm already here!"
 	{
@@ -253,6 +288,7 @@
 		"ru"	"Я уже здесь!"
 		"de"	"Ich bin schon hier!"
 		"pl"    "Już tutaj jestem!"
+		"pt"	"Eu já estou aqui!"
 	}
 	"Follow? Sure!"
 	{
@@ -260,6 +296,7 @@
 		"ru"	"За вами? Хорошо!"
 		"de"	"Folgen? Natürlich!"
 		"pl"    "Podążać? Pewnie!"
+		"pt"	"Seguir? claro!"
 	}
 	"My left or yours?"
 	{
@@ -267,6 +304,7 @@
 		"ru"	"Моё лево или ваше?"
 		"de"	"Mein links, oder deins?"
 		"pl"    "Moja lewa czy twoje ?"
+		"pt"	"Minha esquerda ou a sua?"
 	}
 	"My right or yours?"
 	{
@@ -274,6 +312,7 @@
 		"ru"	"Моё право или ваше?"
 		"de"	"Mein rechts, oder deins?"
 		"pl"    "Moja prawa czy twoja?"
+		"pt"	"Minha direita ou a sua?"
 	}
 	"Cheers to you too, like a drink, get it?"
 	{
@@ -281,6 +320,7 @@
 		"ru"	"Выпьем и за тебя, как за напиток, понял?"
 		"de"	"Prost auf dich auch, wie ein getränk, kapiert?"
 		"pl"    "Pozdrawiam też, jak drinka, rozumiesz?"
+		"pt"	"Saúde pra você tambem, como uma bebida, entendeu?"
 	}
 	"Ah come on, lighten your mood!"
 	{
@@ -288,6 +328,7 @@
 		"ru"	"Ну же, выше нос!"
 		"de"	"Ach komm schon, Verbessere deine stimmung!"
 		"pl"    "Ach daj spokój, rozjaśnij swój nastrój!"
+		"pt"	"Ah vamos lá, anime-se!"
 	}
 	"Positivity is the way to go!"
 	{
@@ -295,6 +336,7 @@
 		"ru"	"Позитив - это путь к успеху!"
 		"de"	"Positivität ist der richtige weg!"
 		"pl"    "Pozytywność to prawidłowa droga!"
+		"pt"	"Positividade, muito bem!"
 	}
 	"Why negative? Nothing to worry about!"
 	{
@@ -302,6 +344,7 @@
 		"ru"	"Почему нет? Не о чем беспокоиться!"
 		"de"	"warum so negativ? nichts um sich sorgen zu machen!"
 		"pl"    "Dlaczego negatywność? Nie ma się o co martwić!"
+		"pt"	"Por que da negatividade? Não há nada a se preucupar!"
 	}
 	"Not Follow? Sure!"
 	{
@@ -309,6 +352,7 @@
 		"ru"	"Не следовать? Хорошо!"
 		"de"	"Nicht folgen? Natürlich!"
 		"pl"    "Nie podążać? Jasne!"
+		"pt"	"Não seguir? claro!"
 	}
 	"I'll hurt no one!"
 	{
@@ -316,6 +360,7 @@
 		"ru"	"Я никого не трону!"
 		"de"	"Ich werde niemand verletzen!"
 		"pl"    "Nikogo nie skrzywdzę!"
+		"pt"	"Não machucarei ninguém!
 	}
 	"I'll attack once more!"
 	{
@@ -323,6 +368,7 @@
 		"ru"	"Я атакую ещё раз!"
 		"de"	"Ich greife nochmal an!"
 		"pl"    "Znowy zaatakuje!"
+		"pt"	"Atacarei mais uma vez!"
 	}
 	"I try my best to aim well!"
 	{
@@ -330,13 +376,7 @@
 		"ru"	"Я постараюсь изо всех сил, чтобы хорошо прицелиться!"
 		"de"	"Ich werde mein bestes versuchen um gut zu zielen!"
 		"pl"    "Staram się dobrze celować!"
-	}
-	"I'll attack once more!"
-	{
-		"en"	"I'll attack once more!"
-		"ru"	"Я атакую ещё раз!"
-		"de"	"Ich greife nochmal an!"
-		"pl"    "Znowy zaatakuje!"
+		"pt"	"Eu dou meu melhor pra mirar!"
 	}
 	"You are doing a good job aswell!"
 	{
@@ -351,6 +391,7 @@
 		"ru"	"Вот, возьмите аптечку!"
 		"de"	"hier, nimm das Medikit!"
 		"pl"    "Masz tę apteczkę!"
+		"pt"	"Aqui, pegue este kit médico!"
 	}
 	"Sorry, i dont have a medkit on me..."
 	{
@@ -358,6 +399,7 @@
 		"ru"	"Извините, у меня нет аптечки..."
 		"de"	"entschuldigung, ich habe kein medikit bei mir..."
 		"pl"    "Przepraszam, nie mam przy sobie apteczki..."
+		"pt"	"Desculpe, não tenho um kit médico..."
 	}
 	"Sorry, i dont have a medkit on me, please wait."
 	{
@@ -365,6 +407,7 @@
 		"ru"	"Извините, у меня нет аптечки, пожалуйста, подождите."
 		"de"	"entschuldigung, ich habe kein medikit bei mir, Bitte warte."
 		"pl"    "Przepraszam, nie mam przy sobie apteczki, proszę poczekaj."
+		"pt"	"Desculpe, não tenho um kit médico comigo, espere por favor."
 	}
 	"I do not have a medkit."
 	{
@@ -372,6 +415,7 @@
 		"ru"	"У меня нет аптечки."
 		"de"	"Ich habe kein medikit."
 		"pl"    "Nie mam apteczki."
+		"pt"	"Eu não contenho um kit médico."
 	}
 	"I dont have a medkit, have patience."
 	{
@@ -379,6 +423,7 @@
 		"ru"	"У меня нет аптечки, потерпите."
 		"de"	"Ich habe kein medikit, Habe gedult."
 		"pl"    "Nie mam apteczki, miej cierpliwość."
+		"pt"	"Eu não tenho um kit médico, tenha paciência."
 	}
 	"I told you i do not have a medikit!!!"
 	{
@@ -386,6 +431,7 @@
 		"ru"	"Я же сказал, что у меня нет аптечки!!!"
 		"de"	"Ich habe dir gesagt das ich kein medikit habe!!!"
 		"pl"    "Mówiłem ci, że nie mam apteczki!!!"
+		"pt"	"Eu ja disse que eu não tenho um kit médico!!!"
 	}
 	"Youre too far away!"
 	{
@@ -393,6 +439,7 @@
 		"ru"	"Вы слишком далеко!"
 		"de"	"Du bist zu weit weg!"
 		"pl"    "Jesteś za daleko!"
+		"pt"	"Você está muito longe!"
 	}
 	"This can't be..."
 	{
@@ -400,6 +447,7 @@
 		"ru"	"Это невозможно..."
 		"de"	"Das kann nicht sein..."
 		"pl"    "To nie może być..."
+		"pt"	"Não pode ser!..."
 	}
 	"I will protect you!"
 	{
@@ -407,6 +455,7 @@
 		"ru"	"Я буду защищать вас!"
 		"de"	"Ich werde dich verteidigen!"
 		"pl"    "Ochronię cię!"
+		"pt"	"Eu irei protege-lo!"
 	}
 	"You told me to be friendly."
 	{
@@ -414,10 +463,12 @@
 		"ru"	"Вы сказали мне быть дружелюбным. Поэтому я не буду атаковать их. Но я буду иметь их в виду..."
 		"de"	"Du hast mir gesagt freundlich zu sein. Also werde ich sie nicht angreiffen. Aber ich werde sie im gedanken behalten..."
 		"pl"    "Powiedziałeś mi, żebym był przyjacielski. Więc ich nie zaatakuję. Ale będę o nich pamiętał..."
+		"pt"	"Você me disse para ser amigável. Então não atacarei eles. Mas eu irei os manter em mente..."
 	}
 	"I'm glad to help!"
 	{
 		"en"	"I'm glad to help!"
 		"ru"	"Был рад помочь!"
+		"pt"	"Fico feliz em ajudar!"
 	}
 }

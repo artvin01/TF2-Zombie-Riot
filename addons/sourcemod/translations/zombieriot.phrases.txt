@@ -27,7 +27,7 @@
 		"es"		"Eres el último humano con vida.\nGana la siguiente oleada de jefe para revivirlos a todos"
 		"fr"		"Vous êtes le dernier survivant.\nSurviver au prochain boss pour réanimeer vos coéquipier."
 		"de"		"Du bist der letzte mensch am Leben.\nGewinne Die nächste boss runde um alle wiederzubeleben"
-		"pt"		"Você é o ultimo humano vivo. \nVença o proximo chefe do round para reviver todos."
+		"pt"		"Você é o ultimo humano vivo. \nVença o próximo chefe do round para reviver todos."
 	}
 	"Level Up"
 	{
@@ -353,7 +353,7 @@
 		"es"		"Tanque de Propano"
 		"fr"		"Réservoir de Lance Flamme"
 		"de"		"Flammenwerfer-Tank"
-		"pt"		"Tanque de Proparo"
+		"pt"		"Tanque de Propano"
 	}
 	"Flares"
 	{
@@ -408,7 +408,7 @@
 		"es"		"Tornillo personalizado"
 		"fr"		"boulon personnalisé"
 		"de"		"Benutzerdefinierte Schraube"
-		"pt"		"Flechas personalizadas"
+		"pt"		"Flechas personalizadas" // need to check onto where this line shows up later
 	}
 	"Medical Syringes"
 	{
@@ -485,7 +485,7 @@
 		"es"		"Medicamentos"
 		"fr"		"Médicaments"
 		"de"		"heilungs Medizin"
-		"pt"		"Medicamentos"
+		"pt"		"Maquina de Cura"
 	}
 	"Medigun Fluid"
 	{
@@ -591,7 +591,7 @@
 		"pl"		"Maksymalna ilość zbroi została osiągnięta!"
 		"es"		"Tu armadura está al máximo"
 		"fr"		"Vôtre armure est au maximum!"
-		"pt"		"Você está o usando o máximo de armadura possivel!"
+		"pt"		"Você está o usando o máximo de armadura possível!"
 	}
 	"Armor Max Reached Ammo Box"
 	{
@@ -665,7 +665,7 @@
 		"ru"		"Вы кинули свою гранату, вы получите её обратно через 15 секунд!"
 		"es"		"Has tirado una granada. Obtendras otra granada en 15 segundos"
 		"fr"		"Vous avez jeté vôtre grenade, vous en aurez une autre dans 15 secondes!"
-		"pt"		"Você jogou uma granada, você vai ter outra em 15 segundos!"
+		"pt"		"Você jogou uma granada, você terá outra em 15 segundos!"
 	}
 	"Grenade Is Back"
 	{
@@ -674,6 +674,7 @@
 		"ru"		"Ваша граната перезарядилась!"
 		"es"		"Has recuperado la granada"
 		"fr"		"Vous avez récuperez vôtre grenade!"
+		"pt"		"Sua granada regenerou-se!"
 	}
 	"Threw Pipebomb"
 	{
@@ -682,6 +683,7 @@
 		"ru"		"Вы кинули свою бомбу, вы получите её обратно через 15 секунд!"
 		"es"		"Obtendras otra granada en 15 segundos, no mueras"
 		"fr"		"Vous avez jeté vôtre grenade, vous en aurez une autre dans 15 secondes!"
+		"pt"		"Você jogou uma Bomba-de-Cano, você terá outra em 15 segundos!"
 	}
 	"Pipebomb Is Back"
 	{
@@ -690,6 +692,7 @@
 		"ru"		"Ваша бомба перезарядилась!"
 		"es"		"Ya tienes otra granada, que arda troya"
 		"fr"		"Vous avez récuperez vôtre grenade!"
+		"pt"		"Sua Bomba-de-Cano regenerou-se!"
 	}
 	"Hand Grenade"
 	{
@@ -700,6 +703,7 @@
 //		"pl"		"Ten przedmiot jeszcze będzie się odświerzał przez {1} sekund przed następnym użyciem"
 //		"es"		"Ten paciencia, aun quedan {1} segundos para volver a usar esto"
 //		"fr"		"Temps de recharge de cette objet avant ré-utilisation: {1}"
+		"pt"		"Granada de mão"
 	}
 	"Current Mana"
 	{
@@ -710,6 +714,7 @@
 //		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
 //		"es"		"Encontraste {1} en esta oleada!"
 //		"fr"		"Vous avez gagnez {1} Cette vague!"
+		"pt"		"Mana: [{1}/{2}] (+{3})"
 	}
 	"Not Enough Mana"
 	{
@@ -721,6 +726,7 @@
 //		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
 //		"es"		"Encontraste {1} en esta oleada!"
 //		"fr"		"Vous avez gagnez {1} Cette vague!"
+		"pt"		"Mana insuficiente! Você precisa de {1} Mana!"
 	}
 	"Ability has cooldown"
 	{
@@ -732,12 +738,14 @@
 //		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
 //		"es"		"Encontraste {1} en esta oleada!"
 //		"fr"		"Vous avez gagnez {1} Cette vague!"
+		"pt"		"Está habilidade ainda está em recarga de {1} segundos!"
 	}
 	"Gamemode Credits"
 	{
 		"en" 		"Gamemode Credits"
 		"ru" 		"Создатели режима"
 		"de"		"Spielmodus Kredite"
+		"pt"		"Creditos do Modo de Jogo"
 	}
 	"Gained a Knife"
 	{
@@ -745,6 +753,7 @@
 		"en" 		"You gained a knife, [{1}]"
 		"ru" 		"Вы получили нож, [{1}]"
 		"de"		"Sie haben ein Messer bekommen, [{1}]"
+		"pt"		"Você ganhou uma faca, [{1}]"
 	}
 	"Knife Amount"
 	{
@@ -752,6 +761,7 @@
 		"en" 		"Knifes: [{1}]"
 		"ru" 		"Ножей: [{1}]"
 		"de"		"Messer: [{1}]"
+		"pt"		"Facas: [{1}]"
 	}
 	"No Knifes left"
 	{
@@ -759,6 +769,7 @@
 		"en" 		"Not Enough Knifes, next one in [{1}] seconds"
 		"ru" 		"Недостаточно ножей, следующий через [{1}] сек."
 		"de"		"Nicht Genügend Messer, nächstes in [{1}] Sekunden"
+		"pt"		"Facas insuficientes, próxima faca em [{1}] segundos"
 	}
 	"No Knifes left ability"
 	{
@@ -766,53 +777,62 @@
 		"en" 		"Not Enough Knifes[{1}], next one in [{2}] seconds"
 		"ru" 		"Недостаточно ножей[{1}], следующий через [{2}] сек."
 		"de"		"Nicht Genügend Messer[{1}], nächste in [{2}] Sekunden"
+		"pt"		"Facas insuficientes[{1}], próxima faca em [{2}] segundos"
 	}
 	"Too Far Away"
 	{
-		"en" 		"You're too far away, get closer
+		"en" 		"You're too far away, get closer"
 		"ru" 		"Вы слишком далеко, подойдите ближе."
 		"de"		"Sie sind zu weit weg, kommen Sie näher."
+		"pt"		"Você está longe demais, aproxime-se"
 	}
 	"No Perk"
 	{
 		"en" 		"No Perk"
 		"ru" 		"Нет перка"
 		"de"		"Kein Perk"
+		"pt"		"Sem habilidade"
 	}
 	"Quick Revive"
 	{
 		"en" 		"Perk: Quick Revive"
 		"ru" 		"Перк: Реаниматор"
 		"de"		"Vorteil: Schnelles Wiederbeleben"
+		"pt"		"Habilidade: Rápida ressureição"
 	}
 	"Juggernog"
 	{
 		"en" 		"Perk: Juggernog"
 		"ru" 		"Перк: Джаггер-фанта"
+		"pt"		"Habilidade: Juggernog"
 	}
 	"Double Tap"
 	{
 		"en" 		"Perk: Double Tap"
 		"ru" 		"Перк: Пиф-паф"
 		"de"		"Vorteil: Doppeltippen"
+		"pt"		"Habilidade: Toque Duplo"
 	}	
 	"Speed Cola"
 	{
 		"en" 		"Perk: Speed Cola"
 		"ru" 		"Перк: Быстрокола"
 		"de"		"Vorteil: Geschwindigkeits Cola"
+		"pt"		"Habilidade: Refri-Veloz"
 	}
 	"Deadshot Daiquiri"
 	{
 		"en" 		"Perk: Deadshot Daiquiri"
 		"ru" 		"Перк: Снайпер-лайм"
 		"de"		"Vorteil: Todesschuss Daiquiri"
+		"pt"		"Habilidade: Tiro morto de Daiquiri"
 	}
 	
 	"Widows Wine"
 	{
 		"en" 		"Perk: Widows Wine"
 		"ru" 		"Перк: Вино вдовы"
+		"pt"		"Habilidade: Vinho Viúvo"
 	}
 
 	"Quick Revive Recieved"
@@ -820,148 +840,180 @@
 		"en" 		"QUICK REVIVE! 2x Revive speed"
 		"ru" 		"РЕАНИМАТОР! Вдвойне быстрее оживление"
 		"de"		"SCHNELLES WIEDERBELEBEN! 2-fache Wiederbelebungs-Geschwindigkeit"
+		"pt"		"RÁPIDA RESSUREIÇÃO! 2x Velocidade de Reanimação"
 	}
 	"Juggernog Recieved"
 	{
 		"en" 		"JUGGERNOG! 1.15x Damage resistance and +100HP"
 		"ru" 		"ДЖАГГЕР-ФАНТА! 1.15x сопротивления урону и +100 ед. здоровья"
 		"de"		"JUGGERNOG!	1.15-fache Schaden Resistenz und +100HP"
+		"pt"		"JUGGERNOG! 1.15x Resistência a danos e +100HP"
 	}
 	"Double Tap Recieved"
 	{
 		"en" 		"DOUBLE TAP! 1.15x Extra attack speed and Building Damage"
 		"ru" 		"ПИФ-ПАФ! 1.15x дополнительной скорости атаки и урон от построек"
+		"pt"		"TOQUE DUPLO! 1.15 Velocidade de Ataque extra e Dano com construções"
 	}	
 	"Speed Cola Recieved"
 	{
 		"en" 		"SPEED COLA! 1.35x Extra reload, switchspeed and Mana regen"
 		"ru" 		"БЫСТРОКОЛА! 1.35x доп. скорости перезарядки, скорости смены оружия и регенерации маны"
+		"pt"		"REFRI-VELOZ! 1.35x Velocidade de recarga, de troca e regeneração de mana"
 	}
 	"Deadshot Daiquiri Recieved"
 	{
 		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot and backstab damage"
 		"ru" 		"СНАЙПЕР-ЛАЙМ! 1.35x точность оружия и 1.25x дополнительного урона от выстрела в голову и удар в спину"
 		"de"		"TODESSCHUSS DAIQUIRI! 1.35-fache Waffengenauigkeit und 1.25-facher zusätzlicher Kopfschussschaden und Rücken messerstich schaden"
+		"pt"		TIRO MORTO DE DAIQUIRI! 1.35x Precisão com armas e 1.25x Dano extra com tiros na cabeça e facas nas costas"
 	}
 	"Widows Wine Recieved"
 	{
 		"en" 		"WIDOWS WINE! Rechargeable protection that debuffs zombies and blocks 75 Percent of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
 		"ru" 		"ВИНО ВДОВЫ! Перезаряжаемая защита, накладывающая негативный эффект на зомби и блокирующая 75% урона при активации.\nЭффект сильно замедляет врагов и наносит на 35% больше урона."
+		"pt"		"VINHO VIÚVO! Proteção recarregavel que afeta negativamente zumbis e bloqueia 75% do dano quando ativado.\nInimigos afetados negativamente tem a sua velocidade diminuida drasticamente e tomam 35% mais dano."
 	}
 	"Nuke Activated"
 	{
 		"en" 		"Nuke!"
 		"ru" 		"Бомба!"
 		"de"		"KERNWAFFENEXPLOSION!"
+		"pt"		"NUKE!"
 	}
 	"Max Ammo Activated"
 	{
 		"en" 		"Extra Ammo!"
 		"ru" 		"Дополнительные патроны!"
 		"de"		"Extra Munition!"
+		"pt"		"Munição extra!"
 	}
 	"Help?"
 	{
 		"en" 		"Help?"
 		"ru" 		"Помощь?"
 		"de"		"Hilfe?"
+		"pt"		"Ajuda?"
 	}
 	"Help Title?"
 	{
 		"en" 		"Select in what you need help for."
 		"ru" 		"Выберите, с чем вам нужна помощь."
 		"de"		"Wählen Sie aus wofür Sie Hilfe benötigen."
+		"pt"		"Selecione no que você precisa de ajuda."
 	}
 	"Gamemode Help?"
 	{
 		"en" 		"Gamemode Help?"
 		"ru" 		"Игровой режим?"
 		"de"		"Spielmodus Hilfe?"
+		"pt"		"Ajuda no Modo de Jogo?"
 	}
 	"Command Help?"
 	{
 		"en" 		"Command Help?"
 		"ru" 		"Команды?"
 		"de"		"Befehl Hilfe?"
+		"pt"		"Ajuda com Comandos?"
 	}
 	"Difficulty Help?"
 	{
 		"en" 		"Difficulty Help?"
 		"ru" 		"Уров. сложн.?"
 		"de"		"Schwierigkeitgrad Hilfe?"
+		"pt"		"Ajuda na Dificuldade?"
 	}
 	"Level Help?"
 	{
 		"en" 		"Level Help?"
 		"ru" 		"Уров. игрока?"
 		"de"		"Level Hilfe?"
+		"pt"		"Ajuda com níveis?"
 	}
 	"Special Zombies Help?"
 	{
 		"en" 		"Special Zombies Help?"
 		"ru" 		"Особые зомби?"
 		"de"		"Speziale Zombies Hilfe?"
+		"pt"		"Ajuda com zumbis especiais?"
 	}
 	"Revival Help?"
 	{
 		"en" 		"Revival Help?"
 		"ru" 		"Оживл. игрока?"
 		"de"		"Wiederbelebungshilfe?"
+		"pt"		"Ajuda com Ressureções?"
 	}
 	"Building Help?"
 	{
 		"en" 		"Building Help?"
 		"ru" 		"Постройки?"
 		"de"		"Gebäude Hilfe?"
+		"pt"		"Ajuda construindo?"
 	}
 	"Extra Buttons Help?"
 	{
 		"en" 		"Extra Buttons Help?"
+	//"ru" 		"Режим спасения?"
+	//"de"		"Flucht Hilfe?"
+		"pt"		"Botão Extra para Ajuda?"
 	}
 	"Gamemode Help Explained"
 	{
 		"en" 		"You survive against waves of zombies upto usually 60 waves.\nBuy guns and barricade yourself to survive.\nMake sure to play as a team and don't save up all the time.\nOr else you will be the downfall of your team.\n\n If you dont know what to buy, Then buy any high cost weapon of your choice and get upgrades for that weapon type in the upgrade tab.\nAlso buy passive upgrades to have more surviveability.\nThe rest will come to you naturally."
 		"ru" 		"Вам предстоит выжить против 60 волн зомби.\nПокупайте оружие и баррикады, чтобы выжить.\nУбедитесь, что вы играете в команде и не копили деньги понапрасну.\nИначе вы станете гибелью вашей команды.\n\n Если вы не знаете, что купить, купите любое дорогое оружие по своему выбору и получите улучшения для этого типа оружия на вкладке УЛУЧШЕНИЯ.\nТакже покупайте пассивные улучшения, чтобы повысить выживаемость.\nОстальное придёт само собой."
 	//	"de"		"Du überlebst gegen wellen von Zombies, bis zu 60 runde.\nKaufe Waffen und Barrikade für dich selber um zu überleben.\nSei sicher mit deinem Team zu spielen und Sparre nicht die ganze zeit!\nOder sie werden der Untergang für ihr Team sein."
+		"pt"		"Sobrevive contra ondas de zumbis até normalmente 60 ondas.\nComprar armas e barricar-se para sobreviver.\nNão se esqueça de jogar em equipa e não poupe o tempo todo.\n Senão será a queda da sua equipa.\n Se não souber o que comprar, então compre qualquer arma de alto custo à sua escolha e obtenha melhorias para esse tipo de arma no separador das melhorias.\nTambém compre melhorias passivas para ter mais capacidade de sobrevivência.\n O resto virá até si naturalmente."
 	}
 	"Command Help Explained"
 	{
 		"en" 		"''/tp'' To toggle thirdperson.\n''/make_niko'' To toggle niko (This is more of a silly thing the anything)."
 		"ru" 		"''/tp'' для переключения режима от 3-го лица."
 		"de"		"''/tp'' Umschaltung für Dritte Person."
+		"pt"		"''/tp'' Para ativar modo de 3ª pessoa"
 	}
 	"Difficulty Help Explained"
 	{
 		"en" 		"Each Higher Difficulty is harder and gives but no extra cash and different zombie types/mutations.\nThey are there as a challenge but reward almost upto 3x the EXP.\nMap difficulties are arbitrary and only state how hard the layout is."
 		"ru" 		"Более высокая сложность - сложнее и даёт доп. деньги и имеет новые типы зомби.\nЭто как испытание, но в нём вы получите почти в 3 раза больше опыта.\nСложности на картах случайны и только указывают, насколько сложны структуры врагов."
 		"de"		"Jeder höhere Schwierigkeitsgrad ist schwerer aber gibt dir kein extra Geld, aber Neue Zombie Typen/Mutationen.\nDie sind eine Herausforderung aber geben bis zu 3-mal mehr XP.\n Karten Schwierigkeitsgrade sind willkürlich und zustand wie hart das Layout ist."
+		"pt"		"Cada dificuldade mais elevada é mais difícil e não dá mas nenhum dinheiro extra e diferentes tipos/mutações de zumbis.\nEstão lá como um desafio, mas recompensam até 3x em Experiência.\nAs restrições do mapa são arbitrárias e apenas declaram quão difícil é o layout."
 	}
 	"Level Help Explained"
 	{
-		"en" 		"You gain EXP per survived wave.\nHigh levels unlock items and perks for you that are for free.\nSome have returns for upgrades, Some are just free buffs or items.\nYou keep levels when you leave
+		"en" 		"You gain EXP per survived wave.\nHigh levels unlock items and perks for you that are for free.\nSome have returns for upgrades, Some are just free buffs or items.\nYou keep levels when you leave"
 		"ru" 		"Вы получаете опыт за каждую пережитую волну.\nВысокие уровни открывают для вас предметы и перки - бесплатно.\nНекоторые из них это улучшения или просто бесплатные усиления и предметы.\nНабранный уровень сохраняется, когда вы уходите из игры."
 		"de"		"Sie bekommen XP per runde.\nHohe Levels freischalten Gegenstände und Perks für dich gratis.\nPaar haben Umgekährte Upgrades, Paar sind gratis Buffs oder Gegenstände.\nDu behältst die Levels, wenn du gehst."
+		"pt"		"Você ganha EXP pra cada onda sobrevivida.\nNiveis altos desbloqueiam itens e habilidades para você de graça.\nAlguns tem lados negativos, outros são simplesmente uteis ou itens.\nVocê mantém niveis após desconectar"
 	}
 	"Special Zombies Explained"
 	{
 		"en" 		"Panzer Soldat: Guaranteed spawn at wave 12 and then it has a low chance to come, increases every wave."
 		"ru" 		"Панцер-солдат: Гарантированно появляется на 12-й волне, а затем у него низкий шанс прийти снова, увеличивающийся с каждой волной."
 		"de"		"Panzer-Soldat: erscheint Garantiert an runde 12, dann hat es eine kleine Chance zu kommen, wird höher jede runde."
+		"pt"		"Panzer Soldat: Garantido aparecer na onda 12 e então ele tem uma pequena chance de aparecer, aumenta a cada onda."
 	}
 	"Revival Zombies Explained"
 	{
 		"en" 		"Instead of dying you get downed.\nWhen an ally is half invis, you can revive them by holding RELOAD."
 		"ru" 		"Вместо того, чтобы убить, вас выводят из строя.\nКогда союзник наполовину невидим, вы можете оживить его, удерживая кнопку ПЕРЕЗАРЯДКИ."
 		"de"		"Anstatt zu sterben, wirst du niedergeschlagen.\nWenn ein Kamerad halb unsichtbar ist, kannst du sie wiederbeleben mit NACHLADEN halten."
+		"pt"		"Em vez de morrer você é derrubado.\nQuando um aliado está transparente, você pode o reanimar apertando o botão de RECARREGAR."
 	}
 	"Building Explained"
 	{
 		"en" 		"You can use machines by pressing R on them.\nPeople can mount buildings and will have an icon above their head.\nThis allows you to press R on them for the same effect.\nRegen icon: Ammo box.\nArmour icon: Armour Table.\nKing icon: Perk Machine.\nPunch icon: Pack-A-Punch.\nVampire icon: Healing Station."
 		"ru" 		"Для использования построек, нажмите R.\nЛюди могут поднимать свои постройки, и над их головой будет значок.\nЭто позволит вам нажать на них R для того же действия.\nЗначок реген.: Ящик с боеприпасами.\nБроня: Верстак брони.\nКороль: Перк-машина.\nКулак: Улучшайзер.\nВампир: Лечебная станция."
 		"de"		"Sie können Maschinen mit NACHLADEN benutzen.\nLeute können ihre Gebäude aufheben und haben ein Symbol auf deren Kopf.\nDies ermöglicht Ihnen mit NACHLADEN für denselben Effekt.\nRegen Symbol: Munitionsbox\nRüstung Symbol: Rüstungstisch\nKönig Symbol: Perkmachine\nFaust Symbol: Pack-A-Punch.\nVampire Symbol: Heilstation."
+		"pt"		"Você pode utilizar maquinas apertando R nelas.\nPessoas podem montar construções e teram um icone sobre suas cabeças.\nIsto permite que você aperta R nelas para o mesmo efeito.\nÍcone de Regen: Caixa de Munição.\nÍcone de Escudo: Mesa de Armadura.\nÍcone de Coroa: Maquina de Habilidades.\nÍcone de luva: Pack-A-Punch.\nÍcone de Vampiro: Estação de Cura."
 	}
 	"Extra Buttons Explained"
 	{
+
+  //"ru" 		"На картах спасения можно купить только перки определённого уровня.\nПодобрать предмет - R или ПКМ.\nНекоторые карты имеют особые предметы. Подобрать - R. Бросить - БРОСИТЬ ДИПЛОМАТ или ''dropitem'' в консоли.\nРедкость предметов: Обычное, зелёное, синее, жёлтое, красное, фиолетовое.\n Выше цвет означает лучше, чёрный означает, что это особый предмет карты."
+	//"de"		"Während der Flucht Karten können nur Level Perks gekauft werden.\nSie können Gegenstände aufheben mit NACHLADEN oder MAUS2.\nEin paar Karten haben Speziale Gegenstände, heben sie die auf mit NACHLADEN und lassen sie es fallen mit ihren L Key(dropitem).\n Gegenstände Seltenheit in reihe: Normal, Grüne, Blau, Gelb, Rot, Violett.\nHöhere Farbe ist besser, Schwarze ist Spezial."
+	//"pt"		"Durante mapas de Fuga apenas habilidades de nível podem ser utilizadas.\nVocÊ pode pegar itens com R ou M2.\nAlguns mapas só tem itens especiais, pegue-os usando R e os solte usando o botão de soltar a inteligência ou ''dropitem'' no console se você não tiver uma que faça isso.\nRaridade dos itens em ordem:Normal, Verde, Azul, Amarelo, Vermelho, Roxo.\n Quanto maior a cor melhor, Preto significa que é um item específico do mapa ou especial."
+    "pt"    "Inspecionar Arma: Permite você acesso rápido à arma que você está utilizando na loja, para por exemplo, comprar munição"
 		"en" 		"Store Button + Inspect Weapon: Allows you to instantly access your holding weapon in the store, to for example, buy ammo."
 	}
 	"Drank Mana Regen Potion"
@@ -969,234 +1021,274 @@
 		"en" 		"You just drank your Mana regen potion, you gain back all your mana! You will have it back in 60 seconds."
 		"ru" 		"Вы только что выпили зелье регенерации маны и восстановили себе всю ману! Вы получите зелье обратно через 60 секунд."
 		"de"		"Sie haben ihren Mana trank getrunken, sie bekommen ihre ganze Mana zurück! Sie müssen 60 Sekunden warten, um es wiederzubekommen."
+		"pt"		"Você acabou de beber uma poção de regeneração de mana, você recuperou toda sua mana! Você terá outra em 60 segundos.
 	}
 	"Mana Regen Potion Back"
 	{
 		"en" 		"Your Mana regen potion is ready to be used again."
 		"ru" 		"Ваше зелье регенерации маны готово к повторному использованию."
 		"de"		"Dein Mana Regenerativen trank, ist wieder bereit für benutzung."
+		"pt"		"Sua poção de regeneração de mana está pronta pra ser utilizada."
 	}
 	"Encyclopedia"
 	{
 		"en"		"Encyclopedia"
 		"ru"		"Энциклопедия"
 		"de"		"Enzyklopädie"
+		"pt"		"Enciclopédia"
 	}
 	"Claim this building"
 	{
 		"en"		"Claim this building with RELOAD while holding a wrench."
 		"ru"		"Эта постройка может принадлежать вам - нажмите ПЕРЕЗАРЯДКА, держа в руках гаечный ключ."
 		"de"		"Beanspruchen Sie dieses Gebäude mit NACHLADEN mit einem Schlüsselwerkzeug."
+		"pt"		"Para reivindicar está construção aperte o botão re RECARREGAR enquando segurando sua chave inglesa."
 	}
 	"Ammobox Tooltip"
 	{
 		"en" 		"Press RELOAD on the Ammobox to gain Ammo for your current holding weapon."
 		"ru" 		"Нажмите ПЕРЕЗАРЯДКА на ящике с боеприпасами, чтобы получить боеприпасы для текущего оружия."
 		"de"		"Drücke NACHLADEN an der Munitionsbox um Munition für deine aktuelle Waffe zubekommen."
+		"pt"		"Pegue mais munição apertando o botão de RECARREGAR enquanto olha para caixa de munições."
 	}
 	"Armortable Tooltip"
 	{
 		"en" 		"Press RELOAD on the Armortable to gain Armor."
 		"ru" 		"Нажмите ПЕРЕЗАРЯДКА на верстаке брони, чтобы получить броню."
 		"de"		"Drücke NACHLADEN an dem Rüstungstisch um Rüstung zubekommen."
+		"pt"		"Pressione o botão de RECARREGAR para pegar mais armadura."
 	}
 	"Perkmachine Tooltip"
 	{
 		"en" 		"Press RELOAD on the Perkmachine to gain a strong temporary perk."
 		"ru" 		"Нажмите ПЕРЕЗАРЯДКА на перк-машине, чтобы получить мощный временный перк."
 //		"de"		"Drücke NACHLADEN an der Perkmachine um einen starken temporären zufälligen Perk zubekommen."
+		"pt"		"Pressione o botão de RECARREGAR para ganhar uma habilidade temporaria."
 	}
 	"PackAPunch Tooltip"
 	{
 		"en" 		"Press RELOAD To Pack-a-Punch your current holding weapon."
 		"ru" 		"Нажмите ПЕРЕЗАРЯДКА для улучшения оружия, которое вы держите."
+		"pt"		"Aperte o botão de RECARREGAR com sua arma atual para melhora-lá."
 	}
 	"Packed"
 	{
 		"en" 		"Packed"
 		"ru" 		"Улучшено"
 		"de"		"Verpackt"
+		"pt"		"Carregada" // i could also use "Melhorada" here but i dunno, i think sounds cooler like that
 	}
 	"Not Enough Money To Pap"
 	{
 		"en" 		"You do not have enough money to Pack-a-Punch your Weapon."
 		"ru" 		"У вас не хватает кредитов на улучшение вашего оружия."
 		"de"		"Sie haben nicht genügend Geld um ihre Waffe zu Pack-A-Punchen."
+		"pt"		"Você não tem dinheiro suficiente para dar um Pack-a-Punch em sua arma."
 	}
 	"Cannot Pap this"
 	{
 		"en" 		"Your weapon cannot be Pack-a-Punched."
 		"ru" 		"Ваше оружие не может быть улучшено."
 		"de"		"Ihre Waffe kann nicht Pack-A-Punched werden."
+		"pt"		"Está arma não pode ser melhorada."
 	}
 	"Revive Teammate tooltip"
 	{
 		"en" 		"Hold RELOAD to revive this dying teammate."
 		"ru" 		"Удерживайте ПЕРЕЗАРЯДКА, чтобы оживить умирающего союзника."
 		"de"		"Halten NACHLADEN, um ihren absterben Kameraden zu beleben."
+		"pt"		"Segure o botão de RECARREGAR para reanimar seu colega de equipe morrendo."
 	}
 	"Bored or Dead"
 	{
 		"en" 		"Bored or Dead?"
 		"ru" 		"Скучно или мертвы?"
 		"de"		"Tot oder gelangweilt?"
+		"pt"		"No tedio ou morto(a)?"
 	}
 	"Bored or Dead Minigame"
 	{
 		"en" 		"Youre dead or bored, try out some of these minigames to kill time."
 		"ru" 		"Если вы умерли или вам скучно, попробуйте сыграть в эти мини-игры, чтобы убить время."
 		"de"		"Du bist tot oder gelangweilt, versuch mal diese Mini-Spiele um Zeit zu töten."
+		"pt"		"Você está morto(a) ou entediado(a), tente alguns minigames para passar o tempo."
 	}
 	"Idlemine"
 	{
 		"en" 		"Idlemine"
 		"ru" 		"Ленивая шахта"
 		"de"		"Leerlauf meiner"
+		"pt"		"Farm afk"
 	}
 	"Healing Station Tooltip"
 	{
 		"en" 		"Use this to heal yourself a tiny bit."
 		"ru" 		"Используйте это, чтобы хоть немного вылечить себя."
 		"de"		"Benutzt das, um dich etwas selber zu heilen."
+		"pt"		"Use isto para curar um pouco de seus ferimentos."
 	}
 	"Healing Station Used"
 	{
 		"en" 		"Someone used your Healing Station, you gain +40 Credits!"
 		"ru" 		"Кто-то воспользовался вашей лечебной станцией, вы получили +40 кредитов!"
 		"de"		"Jemand hat deine Heilstation benutzt, du hast +40 Kredit bekommen!"
+		"pt"		"Alguem se curou em sua Estação de Cura, você ganhou +40 créditos!"
 	}
 	"Cant Mount This"
 	{
 		"en" 		"You can't mount this."
 		"ru" 		"Вы не можете установить это."
 		"de"		"Das kannst du nicht aufheben."
+		"pt"		"Você não pode montar isso"
 	}
 	"Village Upgrade Tooltip"
 	{
 		"en" 		"Press RELOAD to upgrade your village."
 		"ru" 		"Нажмите ПЕРЕЗАРЯДКА, чтобы улучшить свою деревню."
+		"pt"		"Aperte o botão de RECARREGAR para aprimorar sua vilá."
 	}
 	"Pong"
 	{
 		"en" 		"Pong"
 		"ru" 		"Понг"
+		"pt"		"Pong"
 	}
 	"Tetris"
 	{
 		"en" 		"Tetris"
 		"ru" 		"Тетрис"
+		"pt"		"Tetris"
 	}
 	"Snake"
 	{
 		"en" 		"Snake"
 		"ru" 		"Змейка"
 		"de"		"Schlange"
+		"pt"		"Jogo da Cobra"
 	}
 	"Solitaire"
 	{
 		"en" 		"Solitaire"
 		"ru" 		"Пасьянс"
+		"pt"		"Paciência"
 	}
 	"Connect 4"
 	{
 		"en" 		"Connect 4"
 		"ru" 		"Собери 4"
 		"de"		"Verbinden 4"
+		"pt"		"Conecte-4"
 	}
 	"No Ammo Supplies"
 	{
 		"en" 		"You don't have any Ammo Supplies!"
 		"ru" 		"У вас больше нет запасов боеприпасов!"
 		"de"		"Sie haben keine Munitionsvorräte!"
+		"pt"		"Você não tem suplemento de munições!"
 	}
 	"Grigori Store Refresh"
 	{
 		"en" 		"Grigori has refreshed his shop! Check it out!"
 		"ru" 		"Григорий обновил свой ассортимент! Зацените!"
 		"de"		"Grigori hat sein Shop aufgefrischt! Schauen Sie nach!"
+		"pt"		"Grigori alterou sua loja! vá dar uma olhada!"
 	}
 	"Pickup this weapon with RELOAD"
 	{
 		"en" 		"Pickup this weapon with RELOAD!"
 		"ru" 		"Подберите это оружие с помощью ПЕРЕЗАРЯДКИ!"
 		"de"		"Heben Sie diese Waffe mit NACHLADEN auf."
+		"pt"		"Pegue está arma usando o botão de RECARREGAR!"
 	}
 	"You Died Teuton"
 	{
 		"en" 		"You died!\nHelp your team by attacking the enemies.\nYou cant die in this state and will respawn next wave."
 		"ru" 		"Вы умерли!\nПомогите своей команде, атакуя врагов.\nВы не можете умереть в этом состоянии и возродитесь в следующей волне."
 		"de"		"Sie sind gestorben!\nHelfen sie ihr Team durch Angriffe auf die Gegnern.\nSie können nicht sterben in diesen zustand und werden wiederbelebt nächste runde."
+		"pt"		"Você morreu!\nAjude seu time ao atacar os inimigos.\nVocê não pode morrer neste estado e renascerá na próxima onda."
 	}
 	"You Wait Teuton"
 	{
 		"en" 		"You're spectating\nHelp your team by attacking the enemies.\nYou will be put into red team as a survivor when a slot is available."
 		"ru" 		"Вы наблюдатель\nПомогите своей команде, атакуя врагов.\nВы будете включены в команду красных в качестве выжившего, когда освободится место."
 		"de"		"Du bist am Zuschauen.\nHelfen sie ihren team durch das angreifen auf den gegnern.\nDu wirst im roten team als überlebender gehen wenn ein platz frei ist"
+		"pt"		"Você está espectando\nAjude seu time ao atacar inimigos\nVocê será inserido no time vermelho como sobrevivente quando houver um slot disponivel."
 	}
 	"Raidboss"
 	{
 		"en" 		"Raidboss"
 		"ru" 		"Босс"
+		"pt"		"Invasão Chefe" // i suppose is some sort of bossrush
 	}
 	"Power"
 	{
 		"en" 		"Power"
 		"ru" 		"Сила"
 		"de"		"Kraft"
+		"pt"		"Força"
 	}
 	"TIME LEFT"
 	{
 		"en" 		"TIME LEFT"
 		"ru" 		"ОСТАЛОСЬ"
 		"de"		"ZEIT VERBLEIBT"
+		"pt"		"TEMPO RESTANTE"
 	}	
 	"Father Grigori No Talk"
 	{
 		"en"		"Father Grigori: There is no time to trade my child. The zombies are invading!"
 		"ru"		"Отец Григорий: Нет времени торговаться, дитя. Зомби наступают!"
 		"de"		"Vater Grigor: Wir haben keine Zeit um zu handeln mein Kind. Die Untoten Dringen ein!"
+		"pt"		"Senhor Grigori: Não há tempo meu consagrado. Os zumbis estão invadindo!"
 	}
 	"Father Grigori Spawn"
 	{
 		"en"		"Grigori Has been cured!\nYou can talk to him during setup times to get a 20%% Discount on random items!"
 		"ru"		"Григорий был вылечен!\nВы можете поговорить с ним во время таймера подготовки, чтобы получить скидку 20%% на случайные предметы!"
 		"de"		"Grigori wurde geheilt!\nDu kannst mit ihm reden während der Setup zeit um einen 20%% Discount auf zufällige Gegenstände zu bekommen!"
+		"pt"		"Grigori foi curado!\nVocê pode falar com ele durante os intervalos para ter até 20%% de desconto em itens aleatorios!"
 	}
 	"TF2: Zombie Riot"
 	{
 		"en" 		"TF2: Zombie Riot"
 		"ru" 		"TF2: Восстание зомби"
 		"de"		"TF2: Zombie Aufstand"
+		"pt"		"TF2: Invasão Zumbi"
 	}
 	"Father Grigori's Store"
 	{
 		"en" 		"Father Grigori's Store"
 		"ru" 		"Магазин отца Григория"
 		"de"		"Vater Grigori's Shop"
+		"pt"		"Loja do Senhor Grigori"
 	}
 	"Credits After Selling"
 	{
 		"en" 		"Credits After Selling"
 		"ru" 		"Кредитов после продажи"
 		"de"		"Kredit nach verkauf"
+		"pt"		"Créditos após vender"
 	}
 	"MAX BARRICADES OUT CURRENTLY"
 	{
 		"en"		"MAX BARRICADES OUT CURRENTLY"
 		"ru"		"ДОСТИГНУТО МАКС. КОЛИЧЕСТВО БАРРИКАД"
 		"de"		"MAXIMALE BARRIKADE ERREICHT"
+		"pt"		"MÁXIMO DE BARRICAS POSTAS NO MOMENTO"
 	}
 	"All Items are 20%% off here!"
 	{
 		"en"		"All Items are 20%% off here! {$}\nOne Item is 30%% off! {$$}"
 		"ru"		"На все товары скидка 20%%! {$}\nНа один товар скидка 30%! {$$}"
 //		"de"		"All Gegenstände sind 20%% off hier!"
+		"pt"		"Todos os itens estão com 20%% de desconto aqui! {$}\n1 Item está a 30%% de desconto {$$}"
 	}	
 	"Can Be Pack-A-Punched"
 	{
 		"en"		"Can Be Pack-A-Punched"
 		"ru"		"Может быть улучшено"
 		"de"		"Kann man Pack-A-Punchen"
+		"pt"		"Compatível com Pack-A-Punch"
 	}
 	"Your loadout has been equipped!"
 	{
@@ -1209,9 +1301,16 @@
 		"en"		"Your loadout was updated from your previous state."
 		"ru"		"Ваше снаряжение было обновлено по сравнению с предыдущей игрой."
 		"de"		"Ihr Loadout wurde geupdated von ihren vorigen zustand."
+		"pt"		"Seu Inventário foi atualizado com seu estado anterior."
 	}
 	"Could Not Buy Item"
 	{
+
+	//	"en"		"Your last equipped level perks were restored"
+	//	"ru"		"Ваши последние имеющиеся уровневые перки были восстановлены."
+	//	"de"		"Ihre letzten level perks wurden wiederhergestellt."
+	//	"pt"		"Sua ultima habilidade de nível foi restaurada"
+
 		"#format"	"{1:s}"
 		"en"		"Could not buy {1}."
 	}
@@ -1220,116 +1319,136 @@
 		"en"		"Press TAB To open the store"
 		"ru"		"Нажмите TAB для открытия магазина"
 		"de"		"Drücke auf TAB, um den Shop zu öffnen."
+		"pt"		"Pressione TAB para abrir a loja"
 	}
 	"You have only gained 60%% due to not being in-game"
 	{
 		"en"		"You have only gained 60%% due to not being in-game."
 		"ru"		"Вы получили только 60%% из-за того, что не были в игре."
 		"de"		"Sie haben nur 60%% Verdient, weil sie nicht in spiel, sind."
+		"pt"		"Você ganhou apenas 60%% devido não estar jogando."
 	}
 	"You have only gained 70 %% due to being a non-player player, but still helping"
 	{
 		"en"		"You have only gained 70 %% due to being a non-player player, but still helping. (You are a Teutonic Knight!)"
 		"ru"		"Вы получили только 70%% из-за того, что не являетесь игроком, но всё равно помогали. (Вы - тевтонский рыцарь!)."
 		"de"		"Sie haben nur 70%% verdient, weil sie ein Nicht-Spieler waren, aber trotzdem geholfen haben. (Sie sind ein Teutonic Knight!)"
+		"pt"		"Você ganhou apenas 70%% devido não ser um jogador não-classe, mas ainda ajudou (Você é um Cavaleiro Teutônico)."
 	}
 	"Be sure to spend all your starting cash!"
 	{
 		"en"		"Be sure to spend all your starting cash!"
 		"ru"		"Не забудьте потратить все свои кредиты!"
 		"de"		"Sein sie sicher das sie ihr ganzes Startgeld verbrauchen!"
+		"pt"		"Certifique-se de gastar todo seu dinheiro inicial!"
 	}
 	"Difficulty set to"
 	{
 		"en"		"Difficulty set to"
 		"ru"		"Установлена сложность"
 		"de"		"Schwierigkeitgrad eingestellt auf"
+		"pt"		"Dificuldade definida para"
 	}
 	"Vote for the difficulty"
 	{
 		"en"		"Vote for the difficulty"
 		"ru"		"Проголосуйте за сложность"
 		"de"		"Stimmen sie für die Schwierigkeit ab"
+		"pt"		"Vote na dificuldade"
 	}
 	"Want to Pack a punch?"
 	{
 		"en"		"Do you want to pack-a-punch your current weapon?"
 		"ru"		"Хотите ли вы улучшить своё текущее оружие?"
+		"pt"		"Você quer melhorar sua arma atual?"
 	}
 	"Which perk do you desire?"
 	{
 		"en"		"Which Bottle do you wish to drink?"
 		"ru"		"Какую бутылку вы хотите выпить?"
+		"pt"		"Qual garrafa você quer beber?"
 	}	
 	"Reviving"
 	{
 		"#format"	"{1:d}"
 		"en"		"Reviving... [{1}]"
 		"ru"		"Оживление... [{1}]"
+		"pt"		"Reanimando... [{1}]"
 	}
 	"You're Being Revived."
 	{
 		"#format"	"{1:d}"
 		"en"		"You're Being Revived. [{1}]"
 		"ru"		"Вас оживляют. [{1}]"
+		"pt"		"Você foi reanimado. [{1}]"
 	}
 	"Medival_Difficulty"
 	{
 		"#format"	"{1:d}"
 		"en"		"The enemy has researched their equipment to lvl. {1}!!!"
 		"ru"		"Противник исследовал своё снаряжение до уров. {1}!!!"
+		"pt"		"O adversario pesquisou seu equipamento para duelar {1}!!!"
 	}
 	"Victory Menu"
 	{		
 		"en"		"The Zombies have been defeated!\nGo into Freeplay..?\nFreeplay will play infinitly.\nThe further you go, the harder it gets.\n"
 		"ru"		"Зомби побеждены!\nПерейти в режим свободной игры..?\nСвободный режим игры бесконечен.\nЧем дальше, тем сложнее.\n"
 		"chi"       "恭喜你击败了所有僵尸！\n是否进行自由模式？\n"
+		"pt"		"Os zumbis foram derrotados!\nAvançar para Modo Livre..?\nModo Livre irá continuar indefinidamente.\nO quão longe você for, mais dificil ficará.\n"
 	}
 	"M3 Ability Is Back"
 	{		
 		"en"		"Your MOUSE3 Ability is ready again to be used!"
 		"ru"		"Ваша способность MOUSE3 снова готова к использованию!"
+		"pt"		"Sua habilidade no MOUSE3 está pronta para ser utilizada!
 	}
 	"You got your money back npc"
 	{
 		"#format"	"{1:d}"
 		"en"		"Someone bought something else for the npc, You get [{1}] Cash back in return as a compesation."
 		"ru"		"Кто-то купил что-то другое для NPC, вы получили [{1}] кредитов взамен в качестве компенсации."
+		"pt"		"Alguém comprou algo para o npc, Você ganha [{1}] em retorno por compensação."
 	}
 	"A Miniboss has Spawned.."
 	{
 		"en"		"A Miniboss has Spawned.."
 		"ru"		"Мини-босс появился.."
+		"pt"		"Um Mini-Chefe surgiu.."
 	}
 	"Not Enough Builder Upgrades"
 	{
 		"en"		"You do not have enough builder upgrades to use this skill."
+		"pt"		"Você não tem melhorias de construtor suficiente para usar está habilidade.
 		"ru"		"У вас недостаточно улучшений строителя, чтобы использовать это умение."
 	}
 	"tutorial_1"
 	{
 		"en"		"This is the short Tutorial. Open chat and type ''/store'' to open the store!"
-		"ru"		"Это краткое руководство. Откройте чат и введите ''/store'', чтобы открыть магазин!"
+		"pt"		"Isto é um tutorial curto. Abra o chat e digite ''/store'' para abrir a loja!"
 	}
 	"tutorial_2"
 	{
 		"en"		"Good! You can also Open the store with %%+showscores%% when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want.\nOpen chat and type ''/store'' to open the store again if it got closed!"
+		"pt"		"Ótimo! você pode abrir a loja tbm com %%+showscores%% quando o tutorial acabar.\nAgora navegue ate a seção de armas e compre uma arma.n\Abra o chat e digite ''/store'' para abrir a loja de novo caso ela feche!"
 		"ru"		"Отлично! Вы также можете открыть магазин клавишей %%+showscores%%, когда закончите обучение.\nНу а теперь перейдите к оружию и купите любое оружие, какое захотите."
 	}
 	"tutorial_3"
 	{
 		"en"		"Now that you have a weapon you're prepared.\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
+		"pt"		"Agora que você tem uma arma, você está pronto(a).\nCompre armas melhores, e as aprimore em ondas posteriores e sobreviva ate o final!\nÉ possivel adquirir mais ajuda no menu na opção de ''ajuda?''\nTrabalho em equipe é a chava para a vitória!"
 		"ru"		"Теперь, когда у вас есть оружие, вы готовы.\nКупите лучшее оружие и улучшения в последующих волнах и выживите до конца!\nДополнительную помощь можно найти в магазине в разделе ''помощь?''\nКомандная работа - ключ к победе!"
 	}
 	"Is already at full hp"
 	{
 		"en"		"is already at full hp."
+		"pt"		"ja está com a vida cheia"
 		"ru"		"уже имеет полное здоровье."
 	}
 	"You healed for"
 	{
 		"#format"	"{1:N},{2:d}"
 		"en"		"You Healed [{1}] for [{2}] HP!"
+		"pt"		"Você curou [{1}] por [{2}] de vida!"
 		"ru"		"Вы вылечили [{1}] на [{2}] ед. здоровья!"
 	}
 	"Loadouts"

@@ -4,654 +4,785 @@
 	{
 		"en" 		"This text isnt supposed to apear! Please report this to the admins!"
 		"ru" 		"Этот текст не должен появляться! Пожалуйста, сообщите об этом администраторам!"
+		"pt"		"Esta linha de texto não deveria estar aqui, seria uma boa ideia mostrar isso para os administradores."
 	}
 	"Headcrab Zombie"
 	{
 		"en" 		"Headcrab Zombie"
 		"ru" 		"Зомби"
+		"pt"		"Zumbi de Headcrab"
 	}
 	"Fortified Headcrab Zombie"
 	{
 		"en" 		"Fortified Headcrab Zombie"
 		"ru" 		"Крепкий зомби"
+		"pt"		"Zumbi de Headcrab Fortificado"
 	}
 	"Fast Zombie"
 	{
 		"en" 		"Fast Zombie"
 		"ru" 		"Быстрый зомби"
+		"pt"		"Zumbi Rápido"
 	}
 	"Fortified Fast Zombie"
 	{
 		"en" 		"Fortified Fast Zombie"
 		"ru" 		"Крепкий быстрый зомби"
+		"pt"		"Zumbi Rápido Fortificado"
 	}
 	"Torsoless Headcrab Zombie"
 	{
 		"en" 		"Torsoless Headcrab Zombie"
+		"ru" 		"Зомби без ног"
+		"pt"		"Zumbi de Headcrab sem pernas"
 		"ru" 		"Зомби без ног"
 	}
 	"Poison Zombie"
 	{
 		"en" 		"Poison Zombie"
 		"ru" 		"Ядовитый зомби"
+		"pt"		"Zumbi Venenoso"
 	}
 	"Fortified Poison Zombie"
 	{
 		"en" 		"Fortified Poison Zombie"
 		"ru" 		"Крепкий ядовитый зомби"
+		"pt"		"Zumbi Venenoso Fortifiacdo"
 	}
 	"Fortified Giant Poison Zombie"
 	{
 		"en" 		"Fortified Giant Poison Zombie"
 		"ru" 		"Крепкий гигантский ядовитый зомби"
+		"pt"		"Zumbi Venenoso Gigante Fortificado"
 	}
 	"Father Grigori"
 	{
 		"en" 		"Father Grigori"
 		"ru" 		"Отец Григорий"
+		"pt"		"Senhor Grigori"
 	}
 	"Metro Cop"
 	{
 		"en" 		"Metro Cop"
 		"ru" 		"Метрокоп"
+		"pt"		"Policial"
 	}
 	"Metro Raider"
 	{
 		"en" 		"Metro Raider"
 		"ru" 		"Метрорейдер"
+		"pt"		"Policial Invasor"
 	}
 	"Combine Rifler"
 	{
 		"en" 		"Combine Rifler"
 		"ru" 		"Комбайн с винтовкой"
+		"pt"		"Fuzileiro da Combine"
 	}
 	"Combine Shotgunner"
 	{
 		"en" 		"Combine Shotgunner"
 		"ru" 		"Комбайн с дробовиком"
+		"pt"		"Artilheiro da Combine"
 	}
 	"Combine Swordsman"
 	{
 		"en" 		"Combine Swordsman"
 		"ru" 		"Комбайн мечник"
+		"pt"		"Espadachim da Combine"
 	}
 	"Combine Elite"
 	{
 		"en" 		"Combine Elite"
 		"ru" 		"Элитный комбайн"
+		"pt"		"Elite da Combine"
 	}
 	"Combine Giant Swordsman"
 	{
 		"en" 		"Combine Giant Swordsman"
 		"ru" 		"Гигантский комбайн мечник"
+		"pt"		"Espadachim Gigante da Combine"
 	}
 	"Combine DDT"
 	{
 		"en" 		"Combine DDT"
 		"ru" 		"Комбайн DDT"
+		"pt"		"Combine DDT"
 	}
 	"Combine Golden Collos"
 	{
 		"en" 		"Combine Golden Collos"
 		"ru" 		"Комбайн золотой коллос"
+		"pt"		"Soldado do Coliseu Doudado da Combine"
 	}
 	"Combine Overlord"
 	{
 		"en" 		"Combine Overlord"
 		"ru" 		"Комбайн владыка"
+		"pt"		"SobreLorde Combine"
 	}
 	"Scout Assulter"
 	{
 		"en" 		"Scout Assulter"
 		"ru" 		"Разведчик-нападающий"
+		"pt"		"Scout Atacante"
 	}
 	"Engineer Deconstructor"
 	{
 		"en" 		"Engineer Deconstructor"
 		"ru" 		"Инженер-разрушитель"
+		"pt"		"Engineer Desconstrutor"
 	}
 	"Heavy Brawler"
 	{
 		"en" 		"Heavy Brawler"
 		"ru" 		"Пулемётчик-дебошир"
+		"pt"		"Heavy Lutador"
 	}
 	"Flying Armor"
 	{
 		"en" 		"Flying Armor"
 		"ru" 		"Летающая броня"
+		"pt"		"Armadura Flutuante"
 	}
 	"Tiny Flying Armor"
 	{
 		"en" 		"Tiny Flying Armor"
 		"ru" 		"Крошечная летающая броня"
+		"pt"		"Pequena Armadura Flutuante"
 	}
 	"Kamikaze Demo"
 	{
 		"en" 		"Kamikaze Demo"
 		"ru" 		"Подрывник-камикадзе"
+		"pt"		"Demoman Suicidá"
 	}
 	"Medic Supporter"
 	{
 		"en" 		"Medic Supporter"
 		"ru" 		"Медик поддержки"
+		"pt"		"Médico Ajudante"
 	}
 	"Giant Heavy Brawler"
 	{
 		"en" 		"Giant Heavy Brawler"
 		"ru" 		"Гигантский пулемётчик-дебошир"
+		"pt"		"Heavy Gigante Lutador"
 	}
 	"Spy Facestabber"
 	{
 		"en" 		"Spy Facestabber"
 		"ru" 		"Шпион-лицезакалыватель"
+		"pt"		"Spy Facestabber"
 	}
 	"Soldier Rocketeer"
 	{
 		"en" 		"Soldier Rocketeer"
 		"ru" 		"Солдат-ракетчик"
+		"pt"		"Soldado Bombardeiro"
 	}
 	"Soldier Minion"
 	{
 		"en" 		"Soldier Minion"
 		"ru" 		"Солдат-приспешник"
+		"pt"		"Soldado Lacaio"
 	}
 	"Soldier Giant Summoner"
 	{
 		"en" 		"Soldier Giant Summoner"
 		"ru" 		"Гигантский солдат-призыватель"
+		"pt"		"Soldado Gigante Invocador"
 	}
 	"Spy Thief"
 	{
 		"en" 		"Spy Thief"
 		"ru" 		"Вор-шпион"
+		"pt"		"Spy Ladrão"
 	}
 	"Spy Trickstabber"
 	{
 		"en" 		"Spy Trickstabber"
 		"ru" 		"Шпион-трюкач"
+		"pt"		"Spy Trickstabber"
 	}
 	"Half Cloaked Spy"
 	{
 		"en" 		"Half Cloaked Spy"
 		"ru" 		"Полуневидимый шпион"
+		"pt"		"Espião Parcialmente Invisível"
 	}
 	"Sniper Main"
 	{
 		"en" 		"Sniper Main"
 		"ru" 		"Снайпер-классасин"
+		"pt"		"Sniper Main"
 	}
 	"Demoknight Main"
 	{
 		"en" 		"Demoknight Main"
 		"ru" 		"Рыцарь-подрывник-классасин"
+		"pt"		"Demoknight Main"
 	}
 	"Battle Medic Main"
 	{
 		"en" 		"Battle Medic Main"
 		"ru" 		"Боевой медик-классасин"
+		"pt"		"Medic Main de Combate"
 	}	
 	"Giant Pyro Main"
 	{
 		"en" 		"Giant Pyro Main"
 		"ru" 		"Гигантский поджигатель-классасин"
+		"pt"		"Pyro Main Gigante"
 	}
 	"Combine Deutsch Ritter"
 	{
 		"en" 		"Combine Deutsch Ritter"
 		"ru" 		"Немецкий комбайн-рыцарь"
+		"pt"		"Deutch Ritter da Combine"
 	}
 	"X10 Spy Main"
 	{
 		"en" 		"X10 Spy Main"
 		"ru" 		"Шпион-классасин сервера X10"
+		"pt"		"Spy Main do X10"
 	}
 		
 	//XENO
-	
+
 	"Xeno Headcrab Zombie"
 	{
 		"en" 		"Xeno Headcrab Zombie"
 		"ru" 		"Ксенозомби"
+		"pt"		"Xeno Zumbi de Headcrab"
 	}
 	"Xeno Fortified Headcrab Zombie"
 	{
 		"en" 		"Xeno Fortified Headcrab Zombie"
 		"ru" 		"Крепкий ксенозомби"
+		"pt"		"Xeno Zumbi de Headcrab Fortificado"
 	}
 	"Xeno Fast Zombie"
 	{
 		"en" 		"Xeno Fast Zombie"
 		"ru" 		"Быстрый ксенозомби"
+		"pt"		"Xeno Zumbi Rápido"
 	}
 	"Xeno Fortified Fast Zombie"
 	{
 		"en" 		"Xeno Fortified Fast Zombie"
 		"ru" 		"Крепкий быстрый ксенозомби"
+		"pt"		"Xeno Zumbi Rápido Fortificado"
 	}
 	"Xeno Torsoless Headcrab Zombie"
 	{
 		"en" 		"Xeno Torsoless Headcrab Zombie"
+		"pt"		"Xeno Zumbi Headcrab Sem Pernas"
 		"ru" 		"Ксенозомби без ног"
 	}
 	"Xeno Poison Zombie"
 	{
 		"en" 		"Xeno Poison Zombie"
 		"ru" 		"Ядовитый ксенозомби"
+		"pt"		"Xeno Zumbi Venenoso"
 	}
 	"Xeno Fortified Poison Zombie"
 	{
 	    "en" 		"Xeno Fortified Poison Zombie"
 		"ru" 		"Крепкий ядовитый ксенозомби"
+		"pt"		"Xeno Zumbi Venenoso Fortificado"
 	}
 	"Xeno Fortified Giant Poison Zombie"
 	{
 		"en" 		"Xeno Fortified Giant Poison Zombie"
 		"ru" 		"Крепкий гигантский ядовитый ксенозомби"
+		"pt"		"Xeno Zumbi Venenoso Gigante Fortificado"
 	}
 	"Xeno Father Grigori"
 	{
 		"en" 		"Xeno Father Grigori"
 		"ru" 		"Ксеноотец Григорий"
+		"pt"		"Xeno Senhor Grigori"
 	}
 	"Xeno Metro Cop"
 	{
 		"en" 		"Xeno Metro Cop"
 		"ru" 		"Ксенометрокоп"
+		"pt"		"Xeno Policial"
 	}
 	"Xeno Metro Raider"
 	{
 		"en" 		"Xeno Metro Raider"
 		"ru" 		"Ксенометрорейдер"
+		"pt"		"Xeno Policial Invasor"
 	}
 	"Xeno Combine Rifler"
 	{
 		"en" 		"Xeno Combine Rifler"
 		"ru" 		"Ксенокомбайн с винтовкой"
+		"pt"		"Xeno Fuzileiro da Combine"
 	}
 	"Xeno Combine Shotgunner"
 	{
 		"en" 		"Xeno Combine Shotgunner"
 		"ru" 		"Ксенокомбайн с дробовиком"
+		"pt"		"Xeno Artilheiro da Combine"
 	}
 	"Xeno Combine Swordsman"
 	{
 		"en" 		"Xeno Combine Swordsman"
 		"ru" 		"Ксенокомбайн мечник"
+		"pt"		"Xeno Espadachim da Combine"
 	}
 	"Xeno Combine Elite"
 	{
 		"en" 		"Xeno Combine Elite"
 		"ru" 		"Элитный ксенокомбайн"
+		"pt"		"Xeno Combine Elite"
 	}
 	"Xeno Combine Giant Swordsman"
 	{
 		"en" 		"Xeno Combine Giant Swordsman"
 		"ru" 		"Гигантский ксенокомбайн мечник"
+		"pt"		"Xeno Combine Gigante Espadachim"
 	}
 	"Xeno Combine DDT"
 	{
 		"en" 		"Xeno Combine DDT"
 		"ru" 		"Ксенокомбайн DDT"
+		"pt"		"Xeno Combine DDT"
 	}
 	"Xeno Combine Golden Collos"
 	{
 		"en" 		"Xeno Combine Golden Collos"
 		"ru" 		"Ксенокомбайн золотой коллос"
+		"pt"		"Xeno Combine Colossus Dourado"
 	}
 	"Xeno Combine Overlord"
 	{
 		"en" 		"Xeno Combine Overlord"
 		"ru" 		"Ксенокомбайн владыка"
+		"pt"		"Xeno Combine Senhor Supremo"
 	}
 	"Xeno Scout Assulter"
 	{
 		"en" 		"Xeno Scout Assulter"
 		"ru" 		"Ксеноразведчик-нападающий"
+		"pt"		"Xeno Scout Atacante"
 	}
 	"Xeno Engineer Deconstructor"
 	{
 		"en" 		"Xeno Engineer Deconstructor"
 		"ru" 		"Ксеноинженер-разрушитель"
+		"pt"		"Xeno Engineer Desconstrutor"
 	}
 	"Xeno Heavy Brawler"
 	{
 		"en" 		"Xeno Heavy Brawler"
 		"ru" 		"Ксенопулемётчик-дебошир"
+		"pt"		"Xeno Heavy Lutador"
 	}
 	"Xeno Flying Armor"
 	{
 		"en" 		"Xeno Flying Armor"
 		"ru" 		"Летающая ксеноброня"
+		"pt"		"Xeno Armadura Voadora"
 	}
 	"Xeno Tiny Flying Armor"
 	{
 		"en" 		"Xeno Tiny Flying Armor"
 		"ru" 		"Крошечная летающая ксеноброня"
+		"pt"		"Xeno Armadura Voadora Pequena"
 	}
 	"Xeno Kamikaze Demo"
 	{
 		"en" 		"Xeno Kamikaze Demo"
 		"ru" 		"Ксеноподрывник-камикадзе"
+		"pt"		"Xeno Demoman Suicida"
 	}
 	"Xeno Medic Supporter"
 	{
 		"en" 		"Xeno Medic Supporter"
 		"ru" 		"Ксеномедик поддержки"
+		"pt"		"Xeno Médico Ajudante"
 	}
 	"Xeno Giant Heavy Brawler"
 	{
 		"en" 		"Xeno Giant Heavy Brawler"
 		"ru" 		"Гигантский ксенопулемётчик-дебошир"
+		"pt"		"Xeno Heavy Gigante Lutador"
 	}
 	"Xeno Spy Facestabber"
 	{
 		"en" 		"Xeno Spy Facestabber"
 		"ru" 		"Ксеношпион-лицезакалыватель"
+		"pt"		"Xeno Spy Facestabber"
 	}
 	"Xeno Soldier Rocketeer"
 	{
 		"en" 		"Xeno Soldier Rocketeer"
 		"ru" 		"Ксеносолдат-ракетчик"
+		"pt"		"Xeno Soldado Bombardeiro"
 	}
 	"Xeno Soldier Minion"
 	{
 		"en" 		"Xeno Soldier Minion"
 		"ru" 		"Ксеносолдат-приспешник"
+		"pt"		"Xeno Soldado Lacaio"
 	}
 	"Xeno Soldier Giant Summoner"
 	{
 		"en" 		"Xeno Soldier Giant Summoner"
 		"ru" 		"Гигантский ксеносолдат-призыватель"
+		"pt"		"Xeno Soldado Gigante Invocador"
 	}
 	"Xeno Spy Thief"
 	{
 		"en" 		"Xeno Spy Thief"
 		"ru" 		"Вор-ксеношпион"
+		"pt"		"Xeno Spy Ladrão"
 	}
 	"Xeno Spy Trickstabber"
 	{
 		"en" 		"Xeno Spy Trickstabber"
 		"ru" 		"Ксеношпион-трюкач"
+		"pt"		"Xeno Spy Trickstabber"
 	}
 	"Xeno Half Cloaked Spy"
 	{
 		"en" 		"Xeno Half Cloaked Spy"
 		"ru" 		"Полуневидимый ксеношпион"
+		"pt"		"Xeno Spy Parcialmente Invisivel"
 	}
 	"Xeno Sniper Main"
 	{
 		"en" 		"Xeno Sniper Main"
 		"ru" 		"Ксеноснайпер-классасин"
+		"pt"		"Xeno Sniper Main"
 	}
 	"Xeno Demoknight Main"
 	{
 		"en" 		"Xeno Demoknight Main"
 		"ru" 		"Рыцарь-ксеноподрывник-классасин"
+		"pt"		"Xeno Demoknight Main"
 	}
 	"Xeno Battle Medic Main"
 	{
 		"en" 		"Xeno Battle Medic Main"
 		"ru" 		"Боевой ксеномедик-классасин"
-	}	
+		"pt"		"Xeno Medic Main de Combate"
+	}
 	"Xeno Giant Pyro Main"
 	{
 		"en" 		"Xeno Giant Pyro Main"
 		"ru" 		"Гигантский ксеноподжигатель-классасин"
+		"pt"		"Xeno Pyro Main Gigante"
 	}
 	"Xeno Combine Deutsch Ritter"
 	{
 		"en" 		"Xeno Combine Deutsch Ritter"
 		"ru" 		"Немецкий ксенокомбайн-рыцарь"
+		"pt"		"Xeno Deutsch Ritter da Combine"
 	}
 	"Xeno X10 Spy Main"
 	{
 		"en" 		"Xeno X10 Spy Main"
 		"ru" 		"Ксеношпион-классасин сервера X10"
+		"pt"		"Xeno Spy Main do X10"
 	}
 
 	"Nazi Panzer"
 	{
 		"en" 		"Nazi Panzer"
 		"ru" 		"Нацистский панцер"
+		"pt"		"Tanque Nazista"
 	}
 	"Bob the Overgod of gods and destroyer of multiverses"
 	{
 		"en" 		"Bob the Overgod of gods and destroyer of multiverses"
 		"ru" 		"Боб верховный бог богов и разрушитель мультивселенных"
+		"pt"		"Bob o Poderoso e destruir de multiversos"
 	}
 	"Revived Combine DDT"
 	{
 		"en" 		"Revived Combine DDT"
 		"ru" 		"Оживлённый комбайн DDT"
+		"pt"		"Combine DDT Revivido"
 	}
 	"Spookmaster Boner"
 	{
 		"en" 		"Spookmaster Boner"
 		"ru" 		"Костяной мастер-призрак"
+		"pt"		"Esqueleto Mestre dos Sustos"
 	}
 	"Cured Father Grigori"
 	{
 		"en" 		"Cured Father Grigori"
 		"ru" 		"Исцелённый отец Григорий"
+		"pt"		"Senhor Grigori Curado"
 	}
 	"Combine Mage"
 	{
 		"en" 		"Combine Mage"
 		"ru" 		"Комбайн маг"
+		"pt"		"Mago da Combine"
 	}
 	"Bloon"
 	{
 		"en" 		"Bloon"
 		"ru" 		"Шар"
+		"pt"		"Balão"
 	}
 	"Massive Ornery Air Blimp"
 	{
 		"en" 		"Massive Ornery Air Blimp"
 		"ru" 		"Массивный злобный дирижабль"
+		"pt"		"Dirigível Massivamente Grande"
 	}
 	"Brutal Floating Behemoth"
 	{
 		"en" 		"Brutal Floating Behemoth"
 		"ru" 		"Жесточайший летающий бегемот"
+		"pt"		"Brutamontes Flutuante"
 	}
 	"Zeppelin of Mighty Gargantuaness"
 	{
 		"en" 		"Zeppelin of Mighty Gargantuaness"
 		"ru" 		"Цеппелин могучей громадины"
+		"pt"		"Corajoso Gigante de Zeppelin"
 	}
 	"Dark Dirigible Titan"
 	{
 		"en" 		"Dark Dirigible Titan"
 		"ru" 		"Тёмный дирижабль «Титан»"
+		"pt"		"Dirigivel Titan Escuro"
 	}
 	"Big Airship of Doom"
 	{
 		"en" 		"Big Airship of Doom"
 		"ru" 		"Большой дирижабль гибели"
+		"pt"		"Grande Aeronave do Fim
 	}
 	"Medic Apprentice Mage"
 	{
 		"en" 		"Medic Apprentice Mage"
 		"ru" 		"Ученик маг-медик"
+		"pt"		"Medico Mago Aprendiz"
 	}
 	"Sawrunner"
 	{
 		"en" 		"Sawrunner"
 		"ru" 		"Бегун с бензопилой"
+		"pt"		"Corredor de Serras"
 	}
 	"True Fusion Warrior"
 	{
 		"en" 		"True Fusion Warrior"
 		"ru" 		"Истинный воин фьюжна"
+		"pt"		"Verdadeiro Guerreiro de Fusão"
 	}
 	"Medic Charger"
 	{
 		"en" 		"Medic Charger"
 		"ru" 		"Медик-громила"
+		"pt"		"Médico Investidor"
 	}
 	"Medic Berserker"
 	{
 		"en" 		"Medic Berserker"
 		"ru" 		"Медик-берсерк"
+		"pt"		"Médico Insano"
 	}
 	"Militia"
 	{
 		"en" 		"Militia"
 		"ru" 		"Ополченец"
+		"pt"		"Milícia"
 	}
 	"Archer"
 	{
 		"en" 		"Archer"
 		"ru" 		"Лучник"
+		"pt"		"Arqueiro"
 	}
 	"Man-At-Arms"
 	{
 		"en" 		"Man-At-Arms"
 		"ru" 		"Гвардеец"
+		"pt"		"Homem de armas"
 	}
 	"Skirmisher"
 	{
 		"en" 		"Skirmisher"
 		"ru" 		"Разбойник"
+		"pt"		"Escaramuça"
 	}
 	"Long Swordsman"
 	{
 		"en" 		"Long Swordsman"
 		"ru" 		"Длинномечник"
+		"pt"		"Espadachim com Espada longa"
 	}
 	"Twohanded Swordsman"
 	{
 		"en" 		"Twohanded Swordsman"
 		"ru" 		"Двуручный мечник"
+		"pt"		"Espadachim de 2 espadas"
 	}
 	"Crossbow Man"
 	{
 		"en" 		"Crossbow Man"
 		"ru" 		"Арбалетчик"
+		"pt"		"Cara da Besta"
 	}
 	"Spearman"
 	{
 		"en" 		"Spearman"
 		"ru" 		"Копьеносец"
+		"pt"		"Lanceiro"
 	}
 	"Hand Cannoneer"
 	{
 		"en" 		"Hand Cannoneer"
 		"ru" 		"Пушечник"
+		"pt"		"Canhoneiro de mão"
 	}
 	"Elite Skirmisher"
 	{
 		"en" 		"Elite Skirmisher"
 		"ru" 		"Элитный разбойник"
+		"pt"		"Escaramuça de Elite"
 	}
 	"Blitzkrieg"
 	{
 		"en" 		"Blitzkrieg"
 		"ru" 		"Блицкриг"
+		"pt"		"Blitzkrieg"
 	}
 	"Pikeman"
 	{
 		"en" 		"Pikeman"
 		"ru" 		"Пикинёр"
+		"pt"		"Piqueiro"
 	}
 	"Medic Supperior Mage"
 	{
 		"en" 		"Medic Supperior Mage"
 		"ru" 		"Высший маг-медик"
+		"pt"		"Médico Mago Superior"
 	}
 	"Rebel"
 	{
 		"en" 		"Rebel"
 		"ru" 		"Повстанец"
+		"pt"		"Rebelde"
 	}
 	"Eagle Scout"
 	{
 		"en" 		"Eagle Scout"
 		"ru" 		"Орлиный разведчик"
+		"pt"		"Scout Aguia"
 	}
 	"Samurai"
 	{
 		"en" 		"Samurai"
 		"ru" 		"Самурай"
+		"pt"		"Samurai"
 	}
 	"The Addiction"
 	{
 		"en" 		"The Addiction"
 		"ru" 		"Зависимость"
+		"pt"		"O Viciado"
 	}
 	"The Doctor"
 	{
 		"en" 		"The Doctor"
 		"ru" 		"Доктор"
+		"pt"		"O Doutor"
 	}
 	"Book Simon"
 	{
 		"en" 		"Book Simon"
 		"ru" 		"Книжный Саймон"
+		"pt"		"Simon do Livro"
 	}
 	"Kahmlstein"
 	{
 		"en"		"Kahmlstein"
 		"ru"		"Кахмльштайн"
+		"pt"		"Kahmlstein" 
 	}
 	"L4D2 Tank"
 	{
 		"en"		"Tank"
 		"ru"		"Танк"
+		"pt"		"Tanque"
 	}
 	"Holy Knight"
 	{
 		"en"		"Holy Knight"
 		"ru"		"Священный рыцарь"
+		"pt"		"Cavaleiro Santo"
 	}
 	"Sniper Railgunner"
 	{
 		"en"		"Sniper Railgunner"
 		"ru"		"Снайпер с рельсотроном"
+		"pt"		"Sniper com Rifle Laser"
 	}
 	"Soldier Barrager"
 	{
 		"en"		"Soldier Barrager"
 		"ru"		"Солдат-бомбардир"
+		"pt"		"Soldado de Barragem"
 	}
 	"Capped Ram"
 	{
 		"en"		"Capped Ram"
 		"ru"		"Таран"
+		"pt"		"Aríete"
 	}
 	"The Shit Slapper"
 	{
 		"en"		"The Shit Slapper"
+		"pt"		"Batedor de Merda"
 		"ru"		"Дерьмошлёп"
 	}
 	"Basic Bones"
 	{
 		"en"		"Basic Bones"
+		"pt"		"Ossos Basicos"
 		"ru"		"Кости"
 	}
 	"Mecha Engineer"
 	{
 		"en"		"Mecha Engineer"
+		"pt"		"Engineer Mecha"
 		"ru"		"Меха-инженер"
 	}
 	"Mecha Heavy"
 	{
 		"en"		"Mecha Heavy"
+		"pt"		"Heavy Mecha"
 		"ru"		"Меха-пулемётчик"
 	}
 	"Mecha Giant Heavy"
 	{
 		"en"		"Mecha Giant Heavy"
+		"pt"		"Heavy Gigante Mecha"
 		"ru"		"Гигантский меха-пулемётчик"
 	}
 	"Mecha Giant Pyro"
 	{
 		"en"		"Mecha Giant Pyro"
+		"pt"		"Pyro Gigante Mecha"
 		"ru"		"Гигантский меха-поджигатель"
 	}
 	"Mecha Scout"
 	{
 		"en"		"Mecha Scout"
+		"pt"		"Scout Mecha"
 		"ru"		"Меха-разведчик"
 	}
 	"Donnerkrieg"
