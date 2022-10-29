@@ -654,4 +654,8 @@
 		"en"		"Mecha Scout"
 		"ru"		"Меха-разведчик"
 	}
+	"Donnerkrieg"
+	{
+		"en"		"Donnerkrieg"
+	}
 }
