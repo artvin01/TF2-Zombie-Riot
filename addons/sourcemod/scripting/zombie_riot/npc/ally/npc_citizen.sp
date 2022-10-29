@@ -529,7 +529,7 @@ static void Barney_GenerateSound(int type, int seed, char[] buffer, int length)
 					strcopy(buffer, length, "vo/npc/barney/ba_gotone.wav");
 				
 				default:
-					Format(buffer, length, "vo/npc/barney/ba_wounded0%d.wav", rand - 1);
+					Format(buffer, length, "vo/npc/barney/ba_laugh0%d.wav", rand - 1);
 			}
 		}
 		case Cit_Headcrab:
@@ -1119,7 +1119,7 @@ void Citizen_SpawnAtPoint(const char[] data = "")
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		
-		Npc_Create(CITIZEN, 0, pos, ang, true, data);
+		entity = Npc_Create(CITIZEN, 0, pos, ang, true, data);
 		
 		Citizen npc = view_as<Citizen>(entity);
 		
