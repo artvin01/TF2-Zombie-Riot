@@ -808,7 +808,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		}
 		case CITIZEN:
 		{
-			entity = Citizen(client, vecPos, vecAng);
+			entity = Citizen(client, vecPos, vecAng, data);
 		}
 		case MEDIVAL_EAGLE_SCOUT:
 		{
@@ -889,6 +889,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case ALT_MECHA_SCOUT:
 		{
 			entity = Mecha_Scout(client, vecPos, vecAng, ally);
+		}
+		case ALT_DONNERKRIEG:
+		{
+			entity = Donnerkrieg(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -1427,6 +1431,10 @@ public void NPCDeath(int entity)
 		{
 			Mecha_Scout_NPCDeath(entity);
 		}
+		case ALT_DONNERKRIEG:
+		{
+			Donnerkrieg_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1554,6 +1562,7 @@ public void OnMapStart_NPC_Base()
 	SniperMain_OnMapStart_NPC();
 	DemoMain_OnMapStart_NPC();
 	MedicMain_OnMapStart_NPC();
+	Donnerkrieg_OnMapStart_NPC();
 	PyroGiant_OnMapStart_NPC();
 	CombineDeutsch_OnMapStart_NPC();
 	Alt_CombineDeutsch_OnMapStart_NPC();
@@ -6241,8 +6250,8 @@ public void GibCollidePlayerInteraction(int gib, int player)
 {
 	if(b_IsCannibal[player] && dieingstate[player] == 0)
 	{
-		int weapon = GetPlayerWeaponSlot(player, 2); //Check melee weapon healing.
-		if(IsValidEntity(weapon) && weapon == GetEntPropEnt(player, Prop_Send, "m_hActiveWeapon")) //Must also hold melee out 
+		int weapon = GetEntPropEnt(player, Prop_Send, "m_hActiveWeapon");
+		if(IsValidEntity(weapon)) //Must also hold melee out 
 		{
 			if(!IsWandWeapon(weapon)) //Make sure its not wand.
 			{
@@ -7929,6 +7938,7 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/alt/npc_alt_mecha_scout.sp"
 #include "zombie_riot/npc/alt/npc_alt_combine_soldier_mage.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_apprentice_mage.sp"
+#include "zombie_riot/npc/alt/npc_alt_donnerkrieg.sp"
 
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
 #include "zombie_riot/npc/medival/npc_medival_archer.sp"

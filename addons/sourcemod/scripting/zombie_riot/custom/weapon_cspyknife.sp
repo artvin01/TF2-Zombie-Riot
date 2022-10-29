@@ -47,7 +47,7 @@ public void Weapon_CspyKnife(int client, int weapon, bool crit, int slot)
 		if(Ability_Check_Cooldown(client, slot) < 0.0)
 		{
 			Ability_Apply_Cooldown(client, slot, TheTimerForCoolDown);
-			weapon_id[client] = weapon;
+			weapon_id[client] = EntIndexToEntRef(weapon);
 			
 			switch(GetRandomInt(1,8))
 			{
@@ -118,7 +118,7 @@ public void Weapon_CspyKnife_Pap(int client, int weapon, bool crit, int slot)
 		if(Ability_Check_Cooldown(client, slot) < 0.0)
 		{
 			Ability_Apply_Cooldown(client, slot, CooldownTimer_Pap);
-			weapon_id[client] = weapon;
+			weapon_id[client] = EntIndexToEntRef(weapon);
 			
 			switch(GetRandomInt(1, 13))
 			{
@@ -200,7 +200,7 @@ public Action LessAttackSpeed(Handle cut_timer, int client)
 {
 	if(IsValidClient(client))
 	{
-		int weapon = GetPlayerWeaponSlot(client, 2);
+		int weapon = EntRefToEntIndex(weapon_id[client]);
 		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 		fl_IncreaseAttackSpeed[client] = 1.0;
 		if(address != Address_Null)
@@ -216,7 +216,7 @@ public Action MoreAttackSpeed(Handle cut_timer, int client)
 {
 	if(IsValidClient(client))
 	{
-		int weapon = GetPlayerWeaponSlot(client, 2);
+		int weapon = EntRefToEntIndex(weapon_id[client]);
 		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 		fl_IncreaseAttackSpeed[client] = 1.0;
 		if(address != Address_Null)
@@ -232,7 +232,7 @@ public Action DealMoreDmg(Handle cut_timer, int client)
 {
 	if(IsValidClient(client))
 	{
-		int weapon = GetPlayerWeaponSlot(client, 2);
+		int weapon = EntRefToEntIndex(weapon_id[client]);
 		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
 		fl_IncreaseDamage[client] = 1.0;
 		if(address != Address_Null)
@@ -248,7 +248,7 @@ public Action DealLessDmg(Handle cut_timer, int client)
 {
 	if(IsValidClient(client))
 	{
-		int weapon = GetPlayerWeaponSlot(client, 2);
+		int weapon = EntRefToEntIndex(weapon_id[client]);
 		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
 		fl_IncreaseDamage[client] = 1.0;
 		if(address != Address_Null)
@@ -264,7 +264,7 @@ public Action TakeMoreDmg(Handle cut_timer, int client)
 {
 	if(IsValidClient(client))
 	{
-		int weapon = GetPlayerWeaponSlot(client, 2);
+		int weapon = EntRefToEntIndex(weapon_id[client]);
 		fl_IncreaseDamageTaken[client] = 1.0;
 		Address address = TF2Attrib_GetByDefIndex(weapon, 412);
 		if(address != Address_Null)
@@ -281,8 +281,8 @@ public Action Reset_ToNormalAttackSpeed(Handle cut_timer, int client)
 {
 	if(IsValidClient(client))
 	{
-		int weapon = GetPlayerWeaponSlot(client, 2);
-		if(weapon == weapon_id[client])
+		int weapon = EntRefToEntIndex(weapon_id[client]);
+		if(weapon != INVALID_ENT_REFERENCE)
 		{
 			TF2Attrib_SetByDefIndex(weapon, 6, fl_IncreaseAttackSpeed[client]);
 		}
@@ -295,8 +295,8 @@ public Action Reset_fl_IncreaseDamage(Handle cut_timer, int client)
 {
 	if(IsValidClient(client))
 	{
-		int weapon = GetPlayerWeaponSlot(client, 2);
-		if(weapon == weapon_id[client])
+		int weapon = EntRefToEntIndex(weapon_id[client]);
+		if(weapon != INVALID_ENT_REFERENCE)
 		{
 			TF2Attrib_SetByDefIndex(weapon, 2, fl_IncreaseDamage[client]);
 		}
@@ -309,8 +309,8 @@ public Action Reset_TakeMoreDmg(Handle cut_timer, int client)
 {
 	if(IsValidClient(client))
 	{
-		int weapon = GetPlayerWeaponSlot(client, 2);
-		if(weapon == weapon_id[client])
+		int weapon = EntRefToEntIndex(weapon_id[client]);
+		if(weapon != INVALID_ENT_REFERENCE)
 		{
 			TF2Attrib_SetByDefIndex(weapon, 412, fl_IncreaseDamageTaken[client]);
 		}

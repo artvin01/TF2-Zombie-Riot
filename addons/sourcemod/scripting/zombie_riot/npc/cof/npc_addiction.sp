@@ -119,6 +119,8 @@ methodmap Addicition < CClotBody
 		
 		if(data[0])
 			npc.SetHalfLifeStats();
+
+		Citizen_MiniBossSpawn(npc.index);
 		
 		return npc;
 	}
@@ -528,6 +530,8 @@ public void Addicition_NPCDeath(int entity)
 		
 		CreateTimer(1.0, Timer_RemoveEntityOverlord, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
 	}
+
+	Citizen_MiniBossDeath(entity);
 }
 
 

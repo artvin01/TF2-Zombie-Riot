@@ -239,7 +239,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				
 				if (!team)
 				{
-					flDrainRate *= RoundToCeil(Attributes_FindOnWeapon(owner, medigun, 8));
+					flDrainRate *= Attributes_FindOnWeapon(owner, medigun, 8, true, 1.0);
+
+					flDrainRate *= Attributes_FindOnPlayer(owner, 8, true, 1.0);
 					
 					if(EscapeMode)
 						flDrainRate *= 2.0;
@@ -546,7 +548,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						Is_Allied_Npc = true;
 					}
 					
-					float Healing_Value = Attributes_FindOnWeapon(owner, medigun, 8);
+					float Healing_Value = Attributes_FindOnWeapon(owner, medigun, 8, true, 1.0);
+
+					Healing_Value *= Attributes_FindOnPlayer(owner, 8, true, 1.0);
 					
 					float healing_Amount = Healing_Value;
 					float healing_Amount_Self = Healing_Value;
@@ -764,7 +768,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if (!team)
 				{
 					
-					flDrainRate *= RoundToCeil(Attributes_FindOnWeapon(owner, medigun, 8));
+					flDrainRate *= Attributes_FindOnWeapon(owner, medigun, 8, true, 1.0);
+
+					flDrainRate *= Attributes_FindOnPlayer(owner, 8, true, 1.0);
+				
 					
 					if(EscapeMode)
 						flDrainRate *= 2.0;

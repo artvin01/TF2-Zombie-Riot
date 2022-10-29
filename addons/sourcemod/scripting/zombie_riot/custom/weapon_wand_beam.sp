@@ -3,7 +3,6 @@ static float Strength[MAXTF2PLAYERS];
 #define MAXENTITIES 2048
 //the R
 static int weapon_id[MAXPLAYERS+1]={0, ...};
-static float Original_Atackspeed[MAXPLAYERS+1]={0.0, ...};
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 
 #define SOUND_BEAMWAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
@@ -130,7 +129,7 @@ static void TBB_Precahce_BeamWand()
 	BeamWand_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	PrecacheSound(SOUND_BEAMWAND_ATTACKSPEED_ABILITY);
 }
-public void Weapon_BeamWand_M2(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_BeamWand_M2(int client, int weapon, bool &result, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -143,29 +142,24 @@ public void Weapon_BeamWand_M2(int client, int weapon, const char[] classname, b
 		int mana_cost = attackmana;
 		if(mana_cost <= Current_Mana[client])
 		{
-			if (ability_cooldown[client] < GetGameTime())
+			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
 				float speedtime = Actualmana / 100.0 + 5.0;
-				ability_cooldown[client] = GetGameTime() + speedtime; //Cooldown based on how much mana the player currently has.
+				Ability_Apply_Cooldown(client, slot, speedtime);	//Cooldown based on how much mana the player currently has.
 				
 				weapon_id[client] = weapon;
 				
-				Original_Atackspeed[client] = 1.0;
+				float Original_Atackspeed = 1.0;
 				
 				Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 				if(address != Address_Null)
-					Original_Atackspeed[client] = TF2Attrib_GetValue(address);
+					Original_Atackspeed = TF2Attrib_GetValue(address);
 				
-				float Attackmanaspeed = Actualmana / 1000.0;
-				if(Attackmanaspeed<=1.25)
-				{
-					Attackmanaspeed = 1.25;
-				}
-				TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] / Attackmanaspeed);
+				TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed * 0.25);
 				
 				EmitSoundToAll(SOUND_BEAMWAND_ATTACKSPEED_ABILITY, client, SNDCHAN_STATIC, 80, _, 0.9);
 				
-				CreateTimer(3.0, Reset_BeamWand_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(3.0, Reset_BeamWand_Attackspeed, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 				
 				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 				Mana_Hud_Delay[client] = 0.0;
@@ -177,15 +171,15 @@ public void Weapon_BeamWand_M2(int client, int weapon, const char[] classname, b
 			}
 			else
 			{
-				float Ability_CD = ability_cooldown[client] - GetGameTime();
-		
+				float Ability_CD = Ability_Check_Cooldown(client, slot);
+				
 				if(Ability_CD <= 0.0)
 					Ability_CD = 0.0;
-			
+				
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);		
 			}
 		}
 		else
@@ -197,7 +191,7 @@ public void Weapon_BeamWand_M2(int client, int weapon, const char[] classname, b
 		}
 	}
 }
-public void Weapon_BeamWand_M2_pap(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_BeamWand_M2_pap(int client, int weapon, bool &result, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -210,25 +204,24 @@ public void Weapon_BeamWand_M2_pap(int client, int weapon, const char[] classnam
 		int mana_cost = attackmana;
 		if(mana_cost <= Current_Mana[client])
 		{
-			if (ability_cooldown[client] < GetGameTime())
+			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
 				float speedtime = Actualmana / 100.0 + 5.0;
-				ability_cooldown[client] = GetGameTime() + speedtime; //Cooldown based on how much mana the player currently has.
+				Ability_Apply_Cooldown(client, slot, speedtime);	//Cooldown based on how much mana the player currently has.
 				
 				weapon_id[client] = weapon;
 				
-				Original_Atackspeed[client] = 1.0;
+				float Original_Atackspeed = 1.0;
 				
 				Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 				if(address != Address_Null)
-					Original_Atackspeed[client] = TF2Attrib_GetValue(address);
+					Original_Atackspeed = TF2Attrib_GetValue(address);
 				
-				float Attackmanaspeed = Actualmana / 1000.0 + 1.25;
-				TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client] / Attackmanaspeed);
+				TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed * 0.25);
 				
 				EmitSoundToAll(SOUND_BEAMWAND_ATTACKSPEED_ABILITY, client, SNDCHAN_STATIC, 80, _, 0.9);
 				
-				CreateTimer(3.0, Reset_BeamWand_Attackspeed, client, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(3.0, Reset_BeamWand_Attackspeed, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 				
 				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 				Mana_Hud_Delay[client] = 0.0;
@@ -240,15 +233,15 @@ public void Weapon_BeamWand_M2_pap(int client, int weapon, const char[] classnam
 			}
 			else
 			{
-				float Ability_CD = ability_cooldown[client] - GetGameTime();
-		
+				float Ability_CD = Ability_Check_Cooldown(client, slot);
+				
 				if(Ability_CD <= 0.0)
 					Ability_CD = 0.0;
-			
+				
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);		
 			}
 		}
 		else
@@ -262,19 +255,22 @@ public void Weapon_BeamWand_M2_pap(int client, int weapon, const char[] classnam
 }
 
 
-public Action Reset_BeamWand_Attackspeed(Handle cut_timer, int client)
+public Action Reset_BeamWand_Attackspeed(Handle cut_timer, int ref)
 {
-	if (IsValidClient(client))
+	int weapon = EntRefToEntIndex(ref);
+	if (IsValidEntity(weapon))
 	{
-		
-		int weapon = GetPlayerWeaponSlot(client, 2);
-		if(weapon == weapon_id[client])
-		{
-			TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed[client]);
-		}
+		float Original_Atackspeed;
+
+		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
+		if(address != Address_Null)
+			Original_Atackspeed = TF2Attrib_GetValue(address);
+
+		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed / 0.25);
 	}
 	return Plugin_Handled;
 }
+
 static void TBB_Ability_BeamWand(int client)
 {
 	for (int building = 1; building < MAX_TARGETS_HIT; building++)

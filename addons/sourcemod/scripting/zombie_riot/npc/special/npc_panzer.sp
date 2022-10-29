@@ -897,6 +897,8 @@ public void NaziPanzer_NPCDeath(int entity)
 	}
 			
 //	AcceptEntityInput(npc.index, "KillHierarchy");
+
+	Citizen_MiniBossDeath(entity);
 }
 
 #define HookRadius 54.0

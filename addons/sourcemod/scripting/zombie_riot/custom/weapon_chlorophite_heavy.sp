@@ -47,7 +47,7 @@ public void Weapon_Chlorophite_Heavy(int client, int weapon, bool crit)
 {
 	if(weapon >= MaxClients)
 	{
-		weapon_id[client] = weapon;
+		weapon_id[client] = EntIndexToEntRef(weapon);
 		attacks_made[client] += -1;
 				
 		if (attacks_made[client] <= 2)
@@ -571,11 +571,10 @@ public Action Reset_weapon_rampager_Heavy(Handle cut_timer, int client)
 {
 	if (IsValidClient(client))
 	{
-		int weapon = GetPlayerWeaponSlot(client, 0);
 		attacks_made[client] = 8;
-		if(weapon == weapon_id[client])
+		if(IsValidEntity(EntRefToEntIndex(weapon_id[client])))
 		{
-			TF2Attrib_SetByDefIndex(weapon, 396, (Pow((attacks_made[client] * 1.0), 1.04) / 20.0));
+			TF2Attrib_SetByDefIndex((EntRefToEntIndex(weapon_id[client])), 396, (Pow((attacks_made[client] * 1.0), 1.04) / 20.0));
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 		}
 	}

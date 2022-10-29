@@ -126,6 +126,8 @@ void Building_MapStart()
 }
 
 static int Building_Repair_Health[MAXENTITIES]={0, ...};
+static int Building_Hidden_Prop[MAXENTITIES][2];
+static int Building_Hidden_Prop_To_Building[MAXENTITIES]={-1, ...};
 static int Building_Max_Health[MAXENTITIES]={0, ...};
 
 static int i_HasSentryGunAlive[MAXTF2PLAYERS]={-1, ...};
@@ -456,7 +458,13 @@ public bool Building_HealingStation(int client, int entity)
 //	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 	Building_Constructed[entity] = false;
 	CreateTimer(0.2, Building_Set_HP_Colour_Sentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-	CreateTimer(0.1, Timer_DroppedBuildingWaitHealingStation, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT); //No custom anims
+	DataPack pack;
+	CreateDataTimer(0.1, Timer_DroppedBuildingWaitHealingStation, pack, TIMER_REPEAT);
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteCell(entity);
+	pack.WriteCell(client); //Need original client index id please.
+//	SDKHook(entity, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmit);
+	
 	//This is so low because it has to update the animation very often, this is needed.
 	//i dont want to use an sdkhook for this as i already have this here, and i dont think buildings have think, and it wouldnt be needed here
 	//anyways as i have to reuse whats in there anyways.
@@ -595,10 +603,13 @@ public bool Building_AmmoBox(int client, int entity)
 	b_SentryIsCustom[entity] = false;
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
+//	SDKHook(entity, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmit);
+	
 	i_SupportBuildingsBuild[client] += 1;
 	DataPack pack;
-	CreateDataTimer(0.5, Timer_DroppedBuildingWaitAmmobox, pack, TIMER_REPEAT);
+	CreateDataTimer(0.1, Timer_DroppedBuildingWaitAmmobox, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteCell(entity);
 	pack.WriteCell(client); //Need original client index id please.
 	
 	CreateTimer(0.2, Building_Set_HP_Colour, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -628,10 +639,14 @@ public bool Building_ArmorTable(int client, int entity)
 	b_SentryIsCustom[entity] = false;
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
+	
+	
+//	SDKHook(entity, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmit);
 	i_SupportBuildingsBuild[client] += 1;
 	DataPack pack;
-	CreateDataTimer(0.5, Timer_DroppedBuildingWaitArmorTable, pack, TIMER_REPEAT);
+	CreateDataTimer(0.1, Timer_DroppedBuildingWaitArmorTable, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteCell(entity);
 	pack.WriteCell(client); //Need original client index id please.
 	
 	CreateTimer(0.2, Building_Set_HP_Colour, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -664,10 +679,14 @@ public bool Building_PerkMachine(int client, int entity)
 	b_SentryIsCustom[entity] = false;
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
+	
+//	SDKHook(entity, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmit);
+	
 	i_SupportBuildingsBuild[client] += 1;
 	DataPack pack;
-	CreateDataTimer(0.5, Timer_DroppedBuildingWaitPerkMachine, pack, TIMER_REPEAT);
+	CreateDataTimer(0.1, Timer_DroppedBuildingWaitPerkMachine, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteCell(entity);
 	pack.WriteCell(client); //Need original client index id please.
 	
 	CreateTimer(0.2, Building_Set_HP_Colour, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -702,9 +721,12 @@ public bool Building_PackAPunch(int client, int entity)
 	
 	i_SupportBuildingsBuild[client] += 1;
 	
+//	SDKHook(entity, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmit);
+	
 	DataPack pack;
-	CreateDataTimer(0.5, Timer_DroppedBuildingWaitPackAPunch, pack, TIMER_REPEAT);
+	CreateDataTimer(0.1, Timer_DroppedBuildingWaitPackAPunch, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteCell(entity);
 	pack.WriteCell(client); //Need original client index id please.
 	
 	CreateTimer(0.2, Building_Set_HP_Colour, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -818,11 +840,50 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 	return Plugin_Changed;
 }
 
+public Action BuildingSetAlphaClientSideReady_SetTransmitProp_1(int entity, int client)
+{
+	float Gametime = GetGameTime();
+	
+	int building = EntRefToEntIndex(Building_Hidden_Prop_To_Building[entity]);
+	
+	if(i_BeingCarried[building])
+	{
+		return Plugin_Handled;
+	}
+	if(Building_Collect_Cooldown[building][client] > Gametime)
+	{
+		return Plugin_Continue;
+	}
+	
+	return Plugin_Handled;
+}
+
+public Action BuildingSetAlphaClientSideReady_SetTransmitProp_2(int entity, int client)
+{
+	float Gametime = GetGameTime();
+	
+	int building = EntRefToEntIndex(Building_Hidden_Prop_To_Building[entity]);
+	
+	if(i_BeingCarried[building])
+	{
+		return Plugin_Handled;
+	}
+	if(Building_Collect_Cooldown[building][client] > Gametime)
+	{
+		return Plugin_Handled;
+	}
+	
+	return Plugin_Continue;
+}
+
 public Action Building_Set_HP_Colour(Handle dashHud, int ref)
 {
 	int entity = EntRefToEntIndex(ref);
 	if (IsValidEntity(entity))
 	{
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[entity][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[entity][1]);
+			
 		if(IsValidClient(GetEntPropEnt(entity, Prop_Send, "m_hBuilder")))
 		{
 			int red = 255;
@@ -837,6 +898,18 @@ public Action Building_Set_HP_Colour(Handle dashHud, int ref)
 			SetEntityCollisionGroup(entity, BUILDINGCOLLISIONNUMBER);
 		//	SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(entity, red, green, blue, 255);
+			
+			
+			if(IsValidEntity(prop1))
+			{
+			//	SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(prop1, red, green, blue, 100);
+			}
+			if(IsValidEntity(prop2))
+			{
+			//	SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(prop2, red, green, blue, 255);
+			}
 		}
 		else
 		{
@@ -845,7 +918,17 @@ public Action Building_Set_HP_Colour(Handle dashHud, int ref)
 			int green = 0;
 			int blue = 0;
 			
-			SetEntityRenderColor(entity, red, green, blue, 255);
+		//	SetEntityRenderColor(entity, red, green, blue, 255);
+			if(IsValidEntity(prop1))
+			{
+			//	SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(prop1, red, green, blue, 100);
+			}
+			if(IsValidEntity(prop2))
+			{
+			//	SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(prop2, red, green, blue, 255);
+			}
 		}
 	}
 	else
@@ -859,6 +942,9 @@ public Action Building_Set_HP_Colour_Sentry(Handle dashHud, int ref)
 	int entity = EntRefToEntIndex(ref);
 	if (IsValidEntity(entity))
 	{
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[entity][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[entity][1]);
+		
 		if(IsValidClient(GetEntPropEnt(entity, Prop_Send, "m_hBuilder")))
 		{
 			int red = 255;
@@ -873,6 +959,17 @@ public Action Building_Set_HP_Colour_Sentry(Handle dashHud, int ref)
 			SetEntityCollisionGroup(entity, BUILDINGCOLLISIONNUMBER);
 		//	SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(entity, red, green, blue, 255);
+			
+			if(IsValidEntity(prop1))
+			{
+			//	SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(prop1, red, green, blue, 100);
+			}
+			if(IsValidEntity(prop2))
+			{
+			//	SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(prop2, red, green, blue, 255);
+			}
 		}
 		else
 		{
@@ -1165,6 +1262,7 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 				static char buffer[64];
 				if(GetEntityClassname(entity, buffer, sizeof(buffer)) && !StrContains(buffer, "obj_") && GetEntPropEnt(entity, Prop_Send, "m_hBuilder")==client)
 				{
+					SetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed", 0.1);
 					CClotBody npc = view_as<CClotBody>(entity);
 					npc.bBuildingIsPlaced = false;
 					if(!StrContains(buffer, "obj_dispenser"))
@@ -1353,22 +1451,18 @@ void Building_ShowInteractionHud(int client, int entity)
 				else if(!StrContains(buffer, "zr_packapunch"))
 				{
 					int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-					for(int i; i<6; i++)
+					if(weapon != -1 && StoreWeapon[weapon] > 0)
 					{
-						if(weapon == GetPlayerWeaponSlot(client, i))
+						if(Store_CanPapItem(client, StoreWeapon[weapon]))
 						{
-							int index = Store_GetEquipped(client, i);
-							if(Store_CanPapItem(client, index))
-							{
-								PrintCenterText(client, "%t", "PackAPunch Tooltip");
-							}
-							else
-							{
-								PrintCenterText(client, "%t", "Cannot Pap this");	
-							}
-							break;
+							PrintCenterText(client, "%t", "PackAPunch Tooltip");
+						}
+						else
+						{
+							PrintCenterText(client, "%t", "Cannot Pap this");	
 						}
 					}
+					
 					Hide_Hud = false;
 					//Unused for now, will have extra code saying how much it costs and stuff.
 				}
@@ -1442,22 +1536,18 @@ void Building_ShowInteractionHud(int client, int entity)
 				case 6:
 				{
 					int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-					for(int i; i<6; i++)
+					if(weapon != -1 && StoreWeapon[weapon] > 0)
 					{
-						if(weapon == GetPlayerWeaponSlot(client, i))
+						if(Store_CanPapItem(client, StoreWeapon[weapon]))
 						{
-							int index = Store_GetEquipped(client, i);
-							if(Store_CanPapItem(client, index))
-							{
-								PrintCenterText(client, "%t", "PackAPunch Tooltip");	
-							}
-							else
-							{
-								PrintCenterText(client, "%t", "Cannot Pap this");	
-							}
-							break;
+							PrintCenterText(client, "%t", "PackAPunch Tooltip");
+						}
+						else
+						{
+							PrintCenterText(client, "%t", "Cannot Pap this");	
 						}
 					}
+					
 					Hide_Hud = false;
 					//Unused for now, will have extra code saying how much it costs and stuff.
 				}
@@ -2047,26 +2137,20 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						if(Is_Reload_Button)
 						{
 							int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-							for(int i; i<6; i++)
+							if(weapon != -1 && StoreWeapon[weapon] > 0)
 							{
-								if(weapon == GetPlayerWeaponSlot(client, i))
+								if(Store_CanPapItem(client, StoreWeapon[weapon]))
 								{
-									int index = Store_GetEquipped(client, i);
-									if(Store_CanPapItem(client, index))
-									{
-										Store_PackMenu(client, index, entity, owner);
-									}
-									else
-									{
-										ClientCommand(client, "playgamesound items/medshotno1.wav");
-										SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-										SetGlobalTransTarget(client);
-										ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Pap this");	
-									}
-									break;
+									Store_PackMenu(client, StoreWeapon[weapon], weapon, owner);
+								}
+								else
+								{
+									ClientCommand(client, "playgamesound items/medshotno1.wav");
+									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetGlobalTransTarget(client);
+									ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Pap this");	
 								}
 							}
-							
 						}
 						else if(!b_IgnoreWarningForReloadBuidling[client])
 						{
@@ -2116,7 +2200,12 @@ public Action Building_CheckTimer(Handle timer, int ref)
 			
 			if(!result)
 			{
-				Store_ConsumeItem(client, TFWeaponSlot_Grenade);
+				int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Grenade);
+				if(weapon == -1)
+					return Plugin_Stop;
+				
+				Store_ConsumeItem(client, StoreWeapon[weapon]);
+				TF2_RemoveWeaponSlot(client, TFWeaponSlot_Grenade);
 				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 				Building[client] = INVALID_FUNCTION;
 			}
@@ -2203,12 +2292,24 @@ public Action Timer_DroppedBuildingWaitAmmobox(Handle htimer,  DataPack pack)
 {
 	pack.Reset();
 	int entref = pack.ReadCell();
+	int original_entity = pack.ReadCell();
 	int client_original_index = pack.ReadCell(); //Need original!
 	
 	int obj=EntRefToEntIndex(entref);
 	
 	if(!IsValidEntity(obj))
 	{
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[original_entity][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[original_entity][1]);
+		
+		if(IsValidEntity(prop1))
+		{
+			RemoveEntity(prop1);
+		}
+		if(IsValidEntity(prop2))
+		{
+			RemoveEntity(prop2);
+		}
 		i_SupportBuildingsBuild[client_original_index] -= 1;
 		return Plugin_Stop;
 	}
@@ -2216,7 +2317,10 @@ public Action Timer_DroppedBuildingWaitAmmobox(Handle htimer,  DataPack pack)
 	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
 	{
 		if(Building_Constructed[obj])
+		{
+			SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") | EF_NODRAW);
 			return Plugin_Continue;
+		}
 			
 		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
@@ -2231,12 +2335,84 @@ public Action Timer_DroppedBuildingWaitAmmobox(Handle htimer,  DataPack pack)
 			}
 		}
 		*/
+		float vOrigin[3];
+		float vAngles[3];
+		
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[obj][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[obj][1]);
+		
+		if(IsValidEntity(prop1))
+		{
+			GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+			vOrigin[2] += 15.0;
+			GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+			TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+		}
+		else
+		{
+			prop1 = CreateEntityByName("prop_dynamic_override");
+			if(IsValidEntity(prop1))
+			{
+				DispatchKeyValue(prop1, "model", "models/items/ammocrate_rockets.mdl");
+				DispatchKeyValue(prop1, "modelscale", "1.00");
+				DispatchKeyValue(prop1, "StartDisabled", "false");
+				DispatchKeyValue(prop1, "Solid", "0");
+				SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
+				DispatchSpawn(prop1);
+				SetEntityCollisionGroup(prop1, 1);
+				AcceptEntityInput(prop1, "DisableShadow");
+				AcceptEntityInput(prop1, "DisableCollision");
+				Building_Hidden_Prop[obj][0] = EntIndexToEntRef(prop1);
+				Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(obj);
+				SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
+
+				GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+				GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+				vOrigin[2] += 15.0;
+				TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+				SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
+			}
+		}
+		
+		if(IsValidEntity(prop2))
+		{
+			GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+			vOrigin[2] += 15.0;
+			GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+			TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+		}
+		else
+		{
+			prop2 = CreateEntityByName("prop_dynamic_override");
+			if(IsValidEntity(prop2))
+			{
+				DispatchKeyValue(prop2, "model", "models/items/ammocrate_rockets.mdl");
+				DispatchKeyValue(prop2, "modelscale", "1.00");
+				DispatchKeyValue(prop2, "StartDisabled", "false");
+				DispatchKeyValue(prop2, "Solid", "0");
+				SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
+				DispatchSpawn(prop2);
+				SetEntityCollisionGroup(prop2, 1);
+				AcceptEntityInput(prop2, "DisableShadow");
+				AcceptEntityInput(prop2, "DisableCollision");
+				Building_Hidden_Prop[obj][1] = EntIndexToEntRef(prop2);
+				Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(obj);
+				SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
+
+				GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+				GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+				vOrigin[2] += 15.0;
+				TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+				SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
+			}
+		}
+		
+		
 		static const float minbounds[3] = {-10.0, -20.0, 0.0};
 		static const float maxbounds[3] = {10.0, 20.0, -2.0};
 		SetEntPropVector(obj, Prop_Send, "m_vecMins", minbounds);
 		SetEntPropVector(obj, Prop_Send, "m_vecMaxs", maxbounds);
 		
-		float vOrigin[3];
 									
 		GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
 
@@ -2249,6 +2425,18 @@ public Action Timer_DroppedBuildingWaitAmmobox(Handle htimer,  DataPack pack)
 	}
 	else
 	{
+		SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[obj][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[obj][1]);
+		
+		if(IsValidEntity(prop1))
+		{
+			RemoveEntity(prop1);
+		}
+		if(IsValidEntity(prop2))
+		{
+			RemoveEntity(prop2);
+		}
 		Building_Constructed[obj] = false;
 	}
 	return Plugin_Continue;
@@ -2341,11 +2529,26 @@ public Action Timer_DroppedBuildingWaitMortar(Handle htimer, int entref)
 	return Plugin_Continue;
 }
 
-public Action Timer_DroppedBuildingWaitHealingStation(Handle htimer, int entref)
+public Action Timer_DroppedBuildingWaitHealingStation(Handle htimer, DataPack pack)
 {
+	pack.Reset();
+	int entref = pack.ReadCell();
+	int original_entity = pack.ReadCell();
+	pack.ReadCell(); //Need original!
 	int obj=EntRefToEntIndex(entref);
 	if(!IsValidEntity(obj))
 	{
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[original_entity][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[original_entity][1]);
+		
+		if(IsValidEntity(prop1))
+		{
+			RemoveEntity(prop1);
+		}
+		if(IsValidEntity(prop2))
+		{
+			RemoveEntity(prop2);
+		}
 		return Plugin_Stop;
 	}
 	//Wait until full complete
@@ -2354,10 +2557,78 @@ public Action Timer_DroppedBuildingWaitHealingStation(Handle htimer, int entref)
 		CClotBody npc = view_as<CClotBody>(obj);
 		if(Building_Constructed[obj])
 		{
+			SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") | EF_NODRAW);
 //			int iActivity = npc.LookupActivity("MORTAR_IDLE");
 //			if(iActivity > 0) npc.StartActivity(iActivity);
 //			npc.Update(); //SO THE ANIMATION PROPERLY LOOPS! CHECK THIS VERY OFTEN!
 			return Plugin_Continue;
+		}
+		
+		float vOrigin[3];
+		float vAngles[3];
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[obj][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[obj][1]);
+		
+		if(IsValidEntity(prop1))
+		{
+			GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+			GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+			TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+		}
+		else
+		{
+			prop1 = CreateEntityByName("prop_dynamic_override");
+			if(IsValidEntity(prop1))
+			{
+				DispatchKeyValue(prop1, "model", HEALING_STATION_MODEL);
+				DispatchKeyValue(prop1, "modelscale", "0.70");
+				DispatchKeyValue(prop1, "StartDisabled", "false");
+				DispatchKeyValue(prop1, "Solid", "0");
+				SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
+				DispatchSpawn(prop1);
+				SetEntityCollisionGroup(prop1, 1);
+				AcceptEntityInput(prop1, "DisableShadow");
+				AcceptEntityInput(prop1, "DisableCollision");
+				Building_Hidden_Prop[obj][0] = EntIndexToEntRef(prop1);
+				Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(obj);
+				SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
+
+				GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+				GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+				TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+				SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
+			}
+		}
+		
+		if(IsValidEntity(prop2))
+		{
+			GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+			GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+			TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+		}
+		else
+		{
+			prop2 = CreateEntityByName("prop_dynamic_override");
+			if(IsValidEntity(prop2))
+			{
+				DispatchKeyValue(prop2, "model", HEALING_STATION_MODEL);
+				DispatchKeyValue(prop2, "modelscale", "0.70");
+				DispatchKeyValue(prop2, "StartDisabled", "false");
+				DispatchKeyValue(prop2, "Solid", "0");
+				SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
+				DispatchSpawn(prop2);
+				SetEntityCollisionGroup(prop2, 1);
+				AcceptEntityInput(prop2, "DisableShadow");
+				AcceptEntityInput(prop2, "DisableCollision");
+				Building_Hidden_Prop[obj][1] = EntIndexToEntRef(prop2);
+				Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(obj);
+				SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
+
+				GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+				GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+				TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+				SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
+			}
 		}
 		
 		//BELOW IS SET ONCE!
@@ -2375,6 +2646,19 @@ public Action Timer_DroppedBuildingWaitHealingStation(Handle htimer, int entref)
 	}
 	else
 	{
+		SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") & ~EF_NODRAW);
+		
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[obj][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[obj][1]);
+		
+		if(IsValidEntity(prop1))
+		{
+			RemoveEntity(prop1);
+		}
+		if(IsValidEntity(prop2))
+		{
+			RemoveEntity(prop2);
+		}
 		Building_Constructed[obj] = false;
 	}
 	return Plugin_Continue;
@@ -2384,12 +2668,25 @@ public Action Timer_DroppedBuildingWaitArmorTable(Handle htimer, DataPack pack)
 {
 	pack.Reset();
 	int entref = pack.ReadCell();
+	int original_entity = pack.ReadCell();
 	int client_original_index = pack.ReadCell(); //Need original!
 	
 	int obj=EntRefToEntIndex(entref);
 	
 	if(!IsValidEntity(obj))
 	{
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[original_entity][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[original_entity][1]);
+		
+		if(IsValidEntity(prop1))
+		{
+			RemoveEntity(prop1);
+		}
+		if(IsValidEntity(prop2))
+		{
+			RemoveEntity(prop2);
+		}
+		
 		i_SupportBuildingsBuild[client_original_index] -= 1;
 		return Plugin_Stop;
 	}
@@ -2397,11 +2694,17 @@ public Action Timer_DroppedBuildingWaitArmorTable(Handle htimer, DataPack pack)
 	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
 	{
 		if(Building_Constructed[obj])
+		{
+			SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") | EF_NODRAW);
+		//	SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") & ~EF_NODRAW);
 			return Plugin_Continue;
+		}
 		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
 			
 		Building_Constructed[obj] = true;
+	
+		
 		/*
 		int ent=-1;
 		while((ent=FindEntityByClassname2(ent, "vgui_screen"))!=-1)
@@ -2412,6 +2715,75 @@ public Action Timer_DroppedBuildingWaitArmorTable(Handle htimer, DataPack pack)
 			}
 		}
 		*/
+		
+		float vOrigin[3];
+		float vAngles[3];
+		
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[obj][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[obj][1]);
+		
+		if(IsValidEntity(prop1))
+		{
+			GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+			GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+			TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+		}
+		else
+		{
+			prop1 = CreateEntityByName("prop_dynamic_override");
+			if(IsValidEntity(prop1))
+			{
+				DispatchKeyValue(prop1, "model", "models/props_manor/table_01.mdl");
+				DispatchKeyValue(prop1, "modelscale", "1.0");
+				DispatchKeyValue(prop1, "StartDisabled", "false");
+				DispatchKeyValue(prop1, "Solid", "0");
+				SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
+				DispatchSpawn(prop1);
+				SetEntityCollisionGroup(prop1, 1);
+				AcceptEntityInput(prop1, "DisableShadow");
+				AcceptEntityInput(prop1, "DisableCollision");
+				Building_Hidden_Prop[obj][0] = EntIndexToEntRef(prop1);
+				Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(obj);
+				SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
+
+				GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+				GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+				TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+				SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
+			}
+		}
+		
+		if(IsValidEntity(prop2))
+		{
+			GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+			GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+			TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+		}
+		else
+		{
+			prop2 = CreateEntityByName("prop_dynamic_override");
+			if(IsValidEntity(prop2))
+			{
+				DispatchKeyValue(prop2, "model", "models/props_manor/table_01.mdl");
+				DispatchKeyValue(prop2, "modelscale", "1.0");
+				DispatchKeyValue(prop2, "StartDisabled", "false");
+				DispatchKeyValue(prop2, "Solid", "0");
+				SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
+				DispatchSpawn(prop2);
+				SetEntityCollisionGroup(prop2, 1);
+				AcceptEntityInput(prop2, "DisableShadow");
+				AcceptEntityInput(prop2, "DisableCollision");
+				Building_Hidden_Prop[obj][1] = EntIndexToEntRef(prop2);
+				Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(obj);
+				SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
+
+				GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+				GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+				TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+				SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
+			}
+		}
+		
 		static const float minbounds[3] = {-10.0, -20.0, 0.0};
 		static const float maxbounds[3] = {10.0, 20.0, -2.0};
 		SetEntPropVector(obj, Prop_Send, "m_vecMins", minbounds);
@@ -2430,6 +2802,19 @@ public Action Timer_DroppedBuildingWaitArmorTable(Handle htimer, DataPack pack)
 	}
 	else
 	{
+		SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") & ~EF_NODRAW);
+		
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[obj][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[obj][1]);
+		
+		if(IsValidEntity(prop1))
+		{
+			RemoveEntity(prop1);
+		}
+		if(IsValidEntity(prop2))
+		{
+			RemoveEntity(prop2);
+		}
 		Building_Constructed[obj] = false;
 	}
 	return Plugin_Continue;
@@ -2439,12 +2824,24 @@ public Action Timer_DroppedBuildingWaitPerkMachine(Handle htimer, DataPack pack)
 {
 	pack.Reset();
 	int entref = pack.ReadCell();
+	int original_entity = pack.ReadCell();
 	int client_original_index = pack.ReadCell(); //Need original!
 	
 	int obj=EntRefToEntIndex(entref);
 	
 	if(!IsValidEntity(obj))
 	{
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[original_entity][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[original_entity][1]);
+		
+		if(IsValidEntity(prop1))
+		{
+			RemoveEntity(prop1);
+		}
+		if(IsValidEntity(prop2))
+		{
+			RemoveEntity(prop2);
+		}
 		i_SupportBuildingsBuild[client_original_index] -= 1;
 		return Plugin_Stop;
 	}
@@ -2452,7 +2849,10 @@ public Action Timer_DroppedBuildingWaitPerkMachine(Handle htimer, DataPack pack)
 	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
 	{
 		if(Building_Constructed[obj])
+		{
+			SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") | EF_NODRAW);
 			return Plugin_Continue;
+		}
 		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
 			
@@ -2467,6 +2867,77 @@ public Action Timer_DroppedBuildingWaitPerkMachine(Handle htimer, DataPack pack)
 			}
 		}
 		*/
+		
+		float vOrigin[3];
+		float vAngles[3];
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[obj][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[obj][1]);
+		
+		if(IsValidEntity(prop1))
+		{
+			GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+			GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+			vAngles[1] -= 90.0;
+			TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+		}
+		else
+		{
+			prop1 = CreateEntityByName("prop_dynamic_override");
+			if(IsValidEntity(prop1))
+			{
+				DispatchKeyValue(prop1, "model", PERKMACHINE_MODEL);
+				DispatchKeyValue(prop1, "modelscale", "1.0");
+				DispatchKeyValue(prop1, "StartDisabled", "false");
+				DispatchKeyValue(prop1, "Solid", "0");
+				SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
+				DispatchSpawn(prop1);
+				SetEntityCollisionGroup(prop1, 1);
+				AcceptEntityInput(prop1, "DisableShadow");
+				AcceptEntityInput(prop1, "DisableCollision");
+				Building_Hidden_Prop[obj][0] = EntIndexToEntRef(prop1);
+				Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(obj);
+				SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
+
+				GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+				GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+				vAngles[1] -= 90.0;
+				TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+				SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
+			}
+		}
+		
+		if(IsValidEntity(prop2))
+		{
+			GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+			GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+			vAngles[1] -= 90.0;
+			TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+		}
+		else
+		{
+			prop2 = CreateEntityByName("prop_dynamic_override");
+			if(IsValidEntity(prop2))
+			{
+				DispatchKeyValue(prop2, "model", PERKMACHINE_MODEL);
+				DispatchKeyValue(prop2, "modelscale", "1.0");
+				DispatchKeyValue(prop2, "StartDisabled", "false");
+				DispatchKeyValue(prop2, "Solid", "0");
+				SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
+				DispatchSpawn(prop2);
+				SetEntityCollisionGroup(prop2, 1);
+				AcceptEntityInput(prop2, "DisableShadow");
+				AcceptEntityInput(prop2, "DisableCollision");
+				Building_Hidden_Prop[obj][1] = EntIndexToEntRef(prop2);
+				Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(obj);
+				SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
+
+				GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+				GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+				vAngles[1] -= 90.0;
+				TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+				SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
+			}
+		}
 		static const float minbounds[3] = {-10.0, -20.0, 0.0};
 		static const float maxbounds[3] = {10.0, 20.0, -2.0};
 		SetEntPropVector(obj, Prop_Send, "m_vecMins", minbounds);
@@ -2485,6 +2956,19 @@ public Action Timer_DroppedBuildingWaitPerkMachine(Handle htimer, DataPack pack)
 	}
 	else
 	{
+		SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") & ~EF_NODRAW);
+		
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[obj][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[obj][1]);
+		
+		if(IsValidEntity(prop1))
+		{
+			RemoveEntity(prop1);
+		}
+		if(IsValidEntity(prop2))
+		{
+			RemoveEntity(prop2);
+		}
 		Building_Constructed[obj] = false;
 	}
 	return Plugin_Continue;
@@ -2493,12 +2977,24 @@ public Action Timer_DroppedBuildingWaitPackAPunch(Handle htimer, DataPack pack)
 {
 	pack.Reset();
 	int entref = pack.ReadCell();
+	int original_entity = pack.ReadCell();
 	int client_original_index = pack.ReadCell(); //Need original!
 	
 	int obj=EntRefToEntIndex(entref);
 	
 	if(!IsValidEntity(obj))
 	{
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[original_entity][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[original_entity][1]);
+		
+		if(IsValidEntity(prop1))
+		{
+			RemoveEntity(prop1);
+		}
+		if(IsValidEntity(prop2))
+		{
+			RemoveEntity(prop2);
+		}
 		i_SupportBuildingsBuild[client_original_index] -= 1;
 		return Plugin_Stop;
 	}
@@ -2506,8 +3002,12 @@ public Action Timer_DroppedBuildingWaitPackAPunch(Handle htimer, DataPack pack)
 	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
 	{
 		if(Building_Constructed[obj])
+		{
+			SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") | EF_NODRAW);
+		//	SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") & ~EF_NODRAW);
 			return Plugin_Continue;
-			
+		}
+		
 		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
 			
@@ -2522,6 +3022,74 @@ public Action Timer_DroppedBuildingWaitPackAPunch(Handle htimer, DataPack pack)
 			}
 		}
 		*/
+		float vOrigin[3];
+		float vAngles[3];
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[obj][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[obj][1]);
+		
+		if(IsValidEntity(prop1))
+		{
+			GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+			GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+			vAngles[1] -= 90.0;
+			TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+		}
+		else
+		{
+			prop1 = CreateEntityByName("prop_dynamic_override");
+			if(IsValidEntity(prop1))
+			{
+				DispatchKeyValue(prop1, "model", PACKAPUNCH_MODEL);
+				DispatchKeyValue(prop1, "modelscale", "1.0");
+				DispatchKeyValue(prop1, "StartDisabled", "false");
+				DispatchKeyValue(prop1, "Solid", "0");
+				SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
+				DispatchSpawn(prop1);
+				SetEntityCollisionGroup(prop1, 1);
+				AcceptEntityInput(prop1, "DisableShadow");
+				AcceptEntityInput(prop1, "DisableCollision");
+				Building_Hidden_Prop[obj][0] = EntIndexToEntRef(prop1);
+				Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(obj);
+				SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
+
+				GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+				GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+				TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+				SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
+			}
+		}
+		
+		if(IsValidEntity(prop2))
+		{
+			GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+			GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+			vAngles[1] -= 90.0;
+			TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+		}
+		else
+		{
+			prop2 = CreateEntityByName("prop_dynamic_override");
+			if(IsValidEntity(prop2))
+			{
+				DispatchKeyValue(prop2, "model", PACKAPUNCH_MODEL);
+				DispatchKeyValue(prop2, "modelscale", "1.0");
+				DispatchKeyValue(prop2, "StartDisabled", "false");
+				DispatchKeyValue(prop2, "Solid", "0");
+				SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
+				DispatchSpawn(prop2);
+				SetEntityCollisionGroup(prop2, 1);
+				AcceptEntityInput(prop2, "DisableShadow");
+				AcceptEntityInput(prop2, "DisableCollision");
+				Building_Hidden_Prop[obj][1] = EntIndexToEntRef(prop2);
+				Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(obj);
+				SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
+
+				GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", vOrigin);
+				GetEntPropVector(obj, Prop_Data, "m_angRotation", vAngles);
+				TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
+				SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
+			}
+		}
 		static const float minbounds[3] = {-10.0, -20.0, 0.0};
 		static const float maxbounds[3] = {10.0, 20.0, -2.0};
 		SetEntPropVector(obj, Prop_Send, "m_vecMins", minbounds);
@@ -2540,6 +3108,19 @@ public Action Timer_DroppedBuildingWaitPackAPunch(Handle htimer, DataPack pack)
 	}
 	else
 	{
+		SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") & ~EF_NODRAW);
+		
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[obj][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[obj][1]);
+		
+		if(IsValidEntity(prop1))
+		{
+			RemoveEntity(prop1);
+		}
+		if(IsValidEntity(prop2))
+		{
+			RemoveEntity(prop2);
+		}
 		Building_Constructed[obj] = false;
 	}
 	return Plugin_Continue;
@@ -4173,8 +4754,6 @@ bool Building_DoesPierce(int client)
 
 int Building_GetCashOnWave(int current)
 {
-	static int freeRebel;
-	
 	int popCash;
 	int extras;
 	int farms;
@@ -4202,14 +4781,8 @@ int Building_GetCashOnWave(int current)
 		}
 	}
 	
-	if(!extras)
+	if(extras)
 	{
-		freeRebel = 0;
-	}
-	else if(freeRebel > 9)
-	{
-		freeRebel -= 10 - extras;
-		
 		int count;
 		
 		int i = MaxClients + 1;
@@ -4219,12 +4792,11 @@ int Building_GetCashOnWave(int current)
 				count++;
 		}
 		
-		if(count < 6)
+		for(i = 0; i < extras && count < 6; i++)
+		{
 			Citizen_SpawnAtPoint();
-	}
-	else
-	{
-		freeRebel += extras;
+			count++;
+		}
 	}
 	
 	if(popCash > 3)
@@ -4750,7 +5322,7 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						if(attrib != Address_Null)
 							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.06);
 					}
-					case VILLAGE_040, VILLAGE_050:
+					case VILLAGE_040, VILLAGE_050:	// 1.0 * 1.5 / 1.5
 					{
 						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
 						if(attrib != Address_Null)
@@ -4789,8 +5361,8 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						}
 						case VILLAGE_200:
 						{
-							npc.m_fGunFirerate *= 0.97;
-							npc.m_fGunReload *= 0.97;
+							npc.m_fGunFirerate *= 0.95;
+							npc.m_fGunReload *= 0.95;
 						}
 						case VILLAGE_300:
 						{
@@ -4842,8 +5414,8 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					}
 					case VILLAGE_200:
 					{
-						npc.m_fGunFirerate /= 0.97;
-						npc.m_fGunReload /= 0.97;
+						npc.m_fGunFirerate /= 0.95;
+						npc.m_fGunReload /= 0.95;
 					}
 					case VILLAGE_300:
 					{

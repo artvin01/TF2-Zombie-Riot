@@ -785,4 +785,8 @@
 		"pt"		"Scout Mecha"
 		"ru"		"Меха-разведчик"
 	}
+	"Donnerkrieg"
+	{
+		"en"		"Donnerkrieg"
+	}
 }

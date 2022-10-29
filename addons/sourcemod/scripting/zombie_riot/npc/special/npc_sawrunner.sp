@@ -466,6 +466,8 @@ public void SawRunner_NPCDeath(int entity)
 		CreateTimer(0.7, Timer_RemoveEntitySawrunner_Tantrum, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
 
 	}
+
+	Citizen_MiniBossDeath(entity);
 }
 
 public Action Timer_RemoveEntitySawrunner(Handle timer, any entid)

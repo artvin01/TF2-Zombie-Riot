@@ -22,12 +22,8 @@ public void Weapon_Magic_Restore(int client, int weapon, const char[] classname,
 			float max_mana_temp = 600.0;
 			f_TempCooldownForVisualManaPotions[client] = GetGameTime() + 60.0;
 			
-			int weapon_wand = GetPlayerWeaponSlot(client, 2);
-			
-			if(Mana_Regen_Level[weapon_wand])
-			{			
-				max_mana_temp *= Mana_Regen_Level[weapon_wand];	
-			}
+
+			max_mana_temp *= Mana_Regen_Level[client];	
 				
 			if(Current_Mana[client] < RoundToCeil(max_mana_temp))
 			{

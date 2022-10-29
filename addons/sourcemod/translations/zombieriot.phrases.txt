@@ -1009,11 +1009,12 @@
 	}
 	"Extra Buttons Explained"
 	{
-		"en" 		"Inspect Weapon: Allows you to instantly access your holding weapon in the store, to for example, buy ammo."
-	//"ru" 		"На картах спасения можно купить только перки определённого уровня.\nПодобрать предмет - R или ПКМ.\nНекоторые карты имеют особые предметы. Подобрать - R. Бросить - БРОСИТЬ ДИПЛОМАТ или ''dropitem'' в консоли.\nРедкость предметов: Обычное, зелёное, синее, жёлтое, красное, фиолетовое.\n Выше цвет означает лучше, чёрный означает, что это особый предмет карты."
+
+  //"ru" 		"На картах спасения можно купить только перки определённого уровня.\nПодобрать предмет - R или ПКМ.\nНекоторые карты имеют особые предметы. Подобрать - R. Бросить - БРОСИТЬ ДИПЛОМАТ или ''dropitem'' в консоли.\nРедкость предметов: Обычное, зелёное, синее, жёлтое, красное, фиолетовое.\n Выше цвет означает лучше, чёрный означает, что это особый предмет карты."
 	//"de"		"Während der Flucht Karten können nur Level Perks gekauft werden.\nSie können Gegenstände aufheben mit NACHLADEN oder MAUS2.\nEin paar Karten haben Speziale Gegenstände, heben sie die auf mit NACHLADEN und lassen sie es fallen mit ihren L Key(dropitem).\n Gegenstände Seltenheit in reihe: Normal, Grüne, Blau, Gelb, Rot, Violett.\nHöhere Farbe ist besser, Schwarze ist Spezial."
 	//"pt"		"Durante mapas de Fuga apenas habilidades de nível podem ser utilizadas.\nVocÊ pode pegar itens com R ou M2.\nAlguns mapas só tem itens especiais, pegue-os usando R e os solte usando o botão de soltar a inteligência ou ''dropitem'' no console se você não tiver uma que faça isso.\nRaridade dos itens em ordem:Normal, Verde, Azul, Amarelo, Vermelho, Roxo.\n Quanto maior a cor melhor, Preto significa que é um item específico do mapa ou especial."
     "pt"    "Inspecionar Arma: Permite você acesso rápido à arma que você está utilizando na loja, para por exemplo, comprar munição"
+		"en" 		"Store Button + Inspect Weapon: Allows you to instantly access your holding weapon in the store, to for example, buy ammo."
 	}
 	"Drank Mana Regen Potion"
 	{
@@ -1289,6 +1290,12 @@
 		"de"		"Kann man Pack-A-Punchen"
 		"pt"		"Compatível com Pack-A-Punch"
 	}
+	"Your loadout has been equipped!"
+	{
+		"en"		"Your loadout has been equipped!"
+	//	"ru"		"Ваше снаряжение было обновлено по сравнению с предыдущей игрой."
+	//	"de"		"Ihr Loadout wurde geupdated von ihren vorigen zustand."
+	}
 	"Your loadout was updated from your previous state."
 	{
 		"en"		"Your loadout was updated from your previous state."
@@ -1296,12 +1303,16 @@
 		"de"		"Ihr Loadout wurde geupdated von ihren vorigen zustand."
 		"pt"		"Seu Inventário foi atualizado com seu estado anterior."
 	}
-	"Your last equipped level perks were restored"
+	"Could Not Buy Item"
 	{
-		"en"		"Your last equipped level perks were restored"
-		"ru"		"Ваши последние имеющиеся уровневые перки были восстановлены."
-		"de"		"Ihre letzten level perks wurden wiederhergestellt."
-		"pt"		"Sua ultima habilidade de nível foi restaurada"
+
+	//	"en"		"Your last equipped level perks were restored"
+	//	"ru"		"Ваши последние имеющиеся уровневые перки были восстановлены."
+	//	"de"		"Ihre letzten level perks wurden wiederhergestellt."
+	//	"pt"		"Sua ultima habilidade de nível foi restaurada"
+
+		"#format"	"{1:s}"
+		"en"		"Could not buy {1}."
 	}
 	"Press TAB To open the store"
 	{
@@ -1439,5 +1450,46 @@
 		"en"		"You Healed [{1}] for [{2}] HP!"
 		"pt"		"Você curou [{1}] por [{2}] de vida!"
 		"ru"		"Вы вылечили [{1}] на [{2}] ед. здоровья!"
+	}
+	"Loadouts"
+	{
+		"en"		"Loadouts"
+	}
+	"All Items"
+	{
+		"en"		"Buy All Items"
+	}
+	"Free Only"
+	{
+		"en"		"Buy Only Free Items"
+	}
+	"Getting Your Items"
+	{
+		"en"		"Getting Your Items..."
+	}
+	"Delete Loadout"
+	{
+		"en"		"Delete Loadout"
+	}
+	"Save New"
+	{
+		"en"		"Enter name in chatbox to create a new loadout"
+	}
+	"Invalid Name"
+	{
+		"en"		"Make sure your name is under 32 characters and does not contain special characters"
+	}
+	"Loadout Slots"
+	{
+		"#format"	"{1:d}"
+		"en"		"{1} Loadout Slot(s)"
+	}
+	"At Weapon Limit"
+	{
+		"en"		"You reached the maximum amount of held weapons, some may not have been equipped."
+	}
+	"Press Button To Switch"
+	{
+		"en"		"Multiple Weapons: Press Inspect"
 	}
 }

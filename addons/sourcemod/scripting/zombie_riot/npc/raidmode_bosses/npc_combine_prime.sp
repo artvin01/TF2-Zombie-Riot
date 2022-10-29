@@ -203,6 +203,8 @@ methodmap CombinePrime < CClotBody
 		Raidboss_Clean_Everyone();
 		
 		//Raid logic
+
+		Citizen_MiniBossSpawn(npc.index);
 		
 		return npc;
 	}
@@ -414,4 +416,5 @@ public void CombinePrime_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, CombinePrime_ClotDamaged);
 	SDKUnhook(npc.index, SDKHook_Think, CombinePrime_ClotThink);
 	
+	Citizen_MiniBossDeath(entity);
 }

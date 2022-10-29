@@ -264,9 +264,9 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 									Armor_Charge[client_Hud] = Armor_Max;
 								}
 							}
-							for (int weapon_slot = 0; weapon_slot <= 3; weapon_slot++)
+							int ie, weapon;
+							while(TF2_GetItem(client, weapon, ie))
 							{
-								int weapon = GetPlayerWeaponSlot(client_Hud, weapon_slot);
 								if(IsValidEntity(weapon))
 								{
 									if(IsWandWeapon(weapon))
@@ -279,10 +279,10 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 											mana_regen_temp *= 1.35;
 										}
 										
-										if(Mana_Regen_Level[weapon])
+										if(Mana_Regen_Level[client])
 										{			
-											mana_regen_temp *= Mana_Regen_Level[weapon];
-											max_mana_temp *= Mana_Regen_Level[weapon];	
+											mana_regen_temp *= Mana_Regen_Level[client];
+											max_mana_temp *= Mana_Regen_Level[client];	
 										}
 										/*
 										Current_Mana[client] += RoundToCeil(mana_regen[client]);
