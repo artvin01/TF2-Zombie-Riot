@@ -15,7 +15,7 @@ static const int SlotLimits[] =
 	1,	// 5
 	1,	// 6	Extra Gear
 	1,	// 7	Grenade/Potion
-	1,	// 8
+	1,	// 8	Buildings
 	1,	// 9
 	1,	// 10
 	1,	// 11
