@@ -2062,7 +2062,6 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	if(client)
 	{
-		Store_RemoveSpecificItem(client, "Teutonic Longsword");
 		//DEFAULTS
 		if(dieingstate[client] == 0)
 		{

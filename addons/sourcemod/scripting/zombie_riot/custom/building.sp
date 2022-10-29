@@ -852,12 +852,13 @@ public Action BuildingSetAlphaClientSideReady_SetTransmitProp_1(int entity, int 
 		{
 			return Plugin_Handled;
 		}
+		if(Building_Collect_Cooldown[building][client] > Gametime)
+		{
+			return Plugin_Continue;
+		}
+		return Plugin_Handled;
 	}
-	if(Building_Collect_Cooldown[building][client] > Gametime)
-	{
-		return Plugin_Continue;
-	}
-	
+	RemoveEntity(entity);
 	return Plugin_Handled;
 }
 
@@ -873,13 +874,14 @@ public Action BuildingSetAlphaClientSideReady_SetTransmitProp_2(int entity, int 
 		{
 			return Plugin_Handled;
 		}
+		if(Building_Collect_Cooldown[building][client] > Gametime)
+		{
+			return Plugin_Handled;
+		}
+		return Plugin_Continue;
 	}
-	if(Building_Collect_Cooldown[building][client] > Gametime)
-	{
-		return Plugin_Handled;
-	}
-	
-	return Plugin_Continue;
+	RemoveEntity(entity);
+	return Plugin_Handled;
 }
 
 public Action Building_Set_HP_Colour(Handle dashHud, int ref)

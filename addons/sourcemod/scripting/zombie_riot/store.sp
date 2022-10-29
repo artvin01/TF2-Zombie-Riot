@@ -77,6 +77,9 @@ enum struct ItemInfo
 	int Attack3AbilitySlot;
 	
 	int SpecialAdditionViaNonAttribute; //better then spamming attribs.
+
+	int SpecialAttribRules;
+	int SpecialAttribRules_2;
 	
 	int CustomWeaponOnEquip;
 	
@@ -228,6 +231,10 @@ enum struct ItemInfo
 			
 			this.Value[i] = StringToFloat(buffers[i*2+1]);
 		}
+
+		
+		FormatEx(buffer, sizeof(buffer), "%sattributes_check", prefix);
+		this.SpecialAttribRules			= kv.GetNum(buffer);
 		
 		FormatEx(buffer, sizeof(buffer), "%sattributes_2", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
@@ -244,6 +251,10 @@ enum struct ItemInfo
 			
 			this.Value2[i] = StringToFloat(buffers[i*2+1]);
 		}
+
+		
+		FormatEx(buffer, sizeof(buffer), "%sattributes_check_2", prefix);
+		this.SpecialAttribRules_2			= kv.GetNum(buffer);
 
 		/*FormatEx(buffer, sizeof(buffer), "%stier", prefix);
 		this.Tier = kv.GetNum(buffer, -1);
@@ -2733,6 +2744,10 @@ void Store_GiveAll(int client, int health)
 		TF2_RegeneratePlayer(client);
 		return;
 	}
+	else
+	{
+		Store_RemoveSpecificItem(client, "Teutonic Longsword");
+	}
 	
 	//There is no easy way to preserve uber through with multiple mediguns
 	//solution: save via index
@@ -3166,7 +3181,9 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 							case 6:
 							{
 								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !IsWandWeapon(entity) && !IsEngineerWeapon(entity)))
+								{
 									apply = true;
+								}
 							}
 							case 7:
 							{
@@ -3180,6 +3197,11 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 							}
 							case 9:
 							{
+								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !IsWandWeapon(entity)))
+									apply = true;
+							}
+							case 10:
+							{
 								apply = true;
 							}
 						}
@@ -3189,7 +3211,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 							for(int a; a<info.Attribs; a++)
 							{
 								Address address = TF2Attrib_GetByDefIndex(entity, info.Attrib[a]);
-								if(address == Address_Null)
+								if(address == Address_Null && info.SpecialAttribRules == 0)
 								{
 									TF2Attrib_SetByDefIndex(entity, info.Attrib[a], info.Value[a]);
 								}
@@ -3229,6 +3251,11 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 							}
 							case 9:
 							{
+								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !IsWandWeapon(entity)))
+									apply = true;
+							}
+							case 10:
+							{
 								apply = true;
 							}
 						}
@@ -3238,7 +3265,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 							for(int a; a<info.Attribs2; a++)
 							{
 								Address address = TF2Attrib_GetByDefIndex(entity, info.Attrib2[a]);
-								if(address == Address_Null)
+								if(address == Address_Null && info.SpecialAttribRules_2 == 0)
 								{
 									TF2Attrib_SetByDefIndex(entity, info.Attrib2[a], info.Value2[a]);
 								}
