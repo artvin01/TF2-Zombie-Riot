@@ -1504,7 +1504,7 @@ public void Citizen_ClotThink(int iNPC)
 						//Did we kill them?
 						if(GetEntProp(target, Prop_Data, "m_iHealth") < 1)
 						{
-							if(!npc.m_bFirstBlood && npc.CanTalk())
+							if((npc.m_bBarney || !npc.m_bFirstBlood) && npc.CanTalk())
 							{
 								npc.m_bFirstBlood = true;
 								npc.PlaySound(Cit_FirstBlood);
@@ -1558,6 +1558,7 @@ public void Citizen_ClotThink(int iNPC)
 	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 	bool low = (health < 60) || (health < (maxhealth / 5));
+	bool high = (health > maxhealth * 3 / 5);
 	
 	if(!standing)
 	{
@@ -1584,6 +1585,7 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				backOff = true;
 				low = false;
+				high = false;
 				
 				npc.SetActivity("ACT_RUN_PANICKED");
 				npc.m_flSpeed = 260.0;
@@ -1704,7 +1706,7 @@ public void Citizen_ClotThink(int iNPC)
 								FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_SLASH, "bullet_tracer01_red", npc.index, _ , "muzzle");
 								npc.PlayPistolSound();
 								
-								if(!npc.m_bFirstBlood && npc.CanTalk() && npc.m_iTarget > 0 && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
+								if((npc.m_bBarney || !npc.m_bFirstBlood) && npc.CanTalk() && npc.m_iTarget > 0 && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
 								{
 									npc.m_bFirstBlood = true;
 									npc.PlaySound(Cit_FirstBlood);
@@ -1715,7 +1717,7 @@ public void Citizen_ClotThink(int iNPC)
 								moveBack = true;
 							}
 						}
-						else if(npc.m_iAttacksTillReload == 0 && (npc.m_bCamo || distance > 150000.0))	// 400 HU
+						else if(npc.m_iAttacksTillReload == 0 && (npc.m_bCamo || high || distance > 150000.0))	// 400 HU
 						{
 							wantReload = true;
 						}
@@ -1792,7 +1794,7 @@ public void Citizen_ClotThink(int iNPC)
 									FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_SLASH, "bullet_tracer01_red", npc.index, _ , "muzzle");
 									npc.PlaySMGSound();
 									
-									if(!npc.m_bFirstBlood && npc.CanTalk() && npc.m_iTarget > 0 && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
+									if((npc.m_bBarney || !npc.m_bFirstBlood) && npc.CanTalk() && npc.m_iTarget > 0 && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
 									{
 										npc.m_bFirstBlood = true;
 										npc.PlaySound(Cit_FirstBlood);
@@ -1808,7 +1810,7 @@ public void Citizen_ClotThink(int iNPC)
 								npc.FaceTowards(vecTarget, 500.0);
 							}
 						}
-						else if(npc.m_iAttacksTillReload == 0 && (npc.m_bCamo || distance > 150000.0))	// 400 HU
+						else if(npc.m_iAttacksTillReload == 0 && (npc.m_bCamo || high || distance > 150000.0))	// 400 HU
 						{
 							wantReload = true;
 						}
@@ -1883,7 +1885,7 @@ public void Citizen_ClotThink(int iNPC)
 									FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_SLASH, "bullet_tracer01_red", npc.index, _ , "muzzle");
 									npc.PlayARSound();
 									
-									if(!npc.m_bFirstBlood && npc.CanTalk() && npc.m_iTarget > 0 && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
+									if((npc.m_bBarney || !npc.m_bFirstBlood) && npc.CanTalk() && npc.m_iTarget > 0 && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
 									{
 										npc.m_bFirstBlood = true;
 										npc.PlaySound(Cit_FirstBlood);
@@ -1899,7 +1901,7 @@ public void Citizen_ClotThink(int iNPC)
 								npc.FaceTowards(vecTarget, 500.0);
 							}
 						}
-						else if(npc.m_iAttacksTillReload == 0 && (npc.m_bCamo || distance > 150000.0))	// 400 HU
+						else if(npc.m_iAttacksTillReload == 0 && (npc.m_bCamo || high || distance > 150000.0))	// 400 HU
 						{
 							wantReload = true;
 						}
@@ -1964,7 +1966,7 @@ public void Citizen_ClotThink(int iNPC)
 									FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_SLASH, "bullet_tracer01_red", npc.index, _ , "muzzle");
 									npc.PlayShotgunSound();
 									
-									if(!npc.m_bFirstBlood && npc.CanTalk() && npc.m_iTarget > 0 && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
+									if((npc.m_bBarney || !npc.m_bFirstBlood) && npc.CanTalk() && npc.m_iTarget > 0 && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
 									{
 										npc.m_bFirstBlood = true;
 										npc.PlaySound(Cit_FirstBlood);
@@ -1980,7 +1982,7 @@ public void Citizen_ClotThink(int iNPC)
 								npc.FaceTowards(vecTarget, 500.0);
 							}
 						}
-						else if(npc.m_iAttacksTillReload == 0 && (npc.m_bCamo || distance > 150000.0))	// 400 HU
+						else if(npc.m_iAttacksTillReload == 0 && (npc.m_bCamo || high || distance > 150000.0))	// 400 HU
 						{
 							wantReload = true;
 						}
@@ -2032,7 +2034,7 @@ public void Citizen_ClotThink(int iNPC)
 								moveBack = true;
 							}
 						}
-						else if(npc.m_iAttacksTillReload == 0 && (npc.m_bCamo || distance > 150000.0))	// 400 HU
+						else if(npc.m_iAttacksTillReload == 0 && (npc.m_bCamo || high || distance > 150000.0))	// 400 HU
 						{
 							wantReload = true;
 						}
@@ -2189,7 +2191,7 @@ public void Citizen_ClotThink(int iNPC)
 	{
 		if(!npc.m_bSeakingMedic && !npc.m_bSeakingGeneric)
 		{
-			if(low || (!combat && health < maxhealth))
+			if(low || (npc.m_iTarget < 1 && health < maxhealth))
 			{
 				npc.m_bGetClosestTargetTimeAlly = false;
 				
@@ -2262,7 +2264,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 
-			if(!npc.m_bSeakingMedic && !combat && npc.m_iGunType != Cit_None && npc.m_iHasPerk != npc.m_iGunType)
+			if(!npc.m_bSeakingMedic && npc.m_iGunType != Cit_None && npc.m_iHasPerk != npc.m_iGunType)
 			{
 				float distance;
 				float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
@@ -2759,7 +2761,7 @@ void Citizen_PlayerDeath(int client)
 
 public Action Citizen_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(damage > 999999.0)
+	if(damage > 9999999.0)
 		return Plugin_Continue;
 	
 	Citizen npc = view_as<Citizen>(victim);
