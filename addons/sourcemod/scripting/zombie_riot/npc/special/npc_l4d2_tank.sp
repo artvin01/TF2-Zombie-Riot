@@ -716,6 +716,8 @@ public void L4D2_Tank_NPCDeath(int entity)
 	}
 			
 //	AcceptEntityInput(npc.index, "KillHierarchy");
+
+	Citizen_MiniBossDeath(entity);
 }
 
 

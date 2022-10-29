@@ -1,4 +1,5 @@
 #pragma semicolon 1
+#pragma newdecls required
 
 static const char SoundMoabHit[][] =
 {

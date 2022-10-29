@@ -374,12 +374,12 @@ bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 		for(int i; i<length; i++)
 		{
 			StoreItems.GetArray(i, item);
-			if(item.NPCWeapon >= 0 && !item.NPCWeaponAlways)
+			if(item.NPCWeapon >= 0 && !item.NPCWeaponAlways && !item.Level)
 			{
 				int current;
 				for(int a; item.GetItemInfo(a, info); a++)
 				{
-					ItemCost(client, item, info.Cost);
+					ItemCost(0, item, info.Cost);
 					current += info.Cost;
 					
 					if(current > budget)
@@ -403,7 +403,7 @@ bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 			StoreItems.GetArray(choiceIndex, item);
 			item.GetItemInfo(choiceInfo, info);
 			Citizen_UpdateWeaponStats(entity, item.NPCWeapon, ItemSell(item, choiceInfo, 0), info);
-			return choiceInfo;
+			return view_as<bool>(choiceInfo);
 		}
 	}
 	return false;
@@ -1350,11 +1350,11 @@ void Store_OpenNPCStore(int client)
 	}
 }
 
-void Store_OpenGiftStore(int client, int entity, int price)
+void Store_OpenGiftStore(int client, int entity, int price, bool barney)
 {
 	if(StoreItems && !IsVoteInProgress() && !Waves_CallVote(client))
 	{
-		NPCOnly[client] = 2;
+		NPCOnly[client] = barney ? 3 : 2;
 		NPCTarget[client] = EntIndexToEntRef(entity);
 		NPCCash[client] = price;
 		MenuPage(client, -1);
@@ -1400,13 +1400,13 @@ static void MenuPage(int client, int section)
 			char buffer[512];
 			
 			int level = item.Owned[client] - 1;
-			if(level < 0 || NPCOnly[client] == 2)
+			if(level < 0 || NPCOnly[client] == 2 || NPCOnly[client] == 3)
 				level = 0;
 			
 			item.GetItemInfo(level, info);
 			
 			level = item.Owned[client];
-			if(level < 1 || NPCOnly[client] == 2)
+			if(level < 1 || NPCOnly[client] == 2 || NPCOnly[client] == 3)
 				level = 1;
 			
 			SetGlobalTransTarget(client);
@@ -1447,7 +1447,7 @@ static void MenuPage(int client, int section)
 			Config_CreateDescription(info.Classname, info.Attrib, info.Value, info.Attribs, buffer, sizeof(buffer));
 			menu.SetTitle("%s\n%s\n ", buffer, info.Desc);
 			
-			if(NPCOnly[client] == 2)
+			if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
 			{
 				char buffer2[16];
 				IntToString(section, buffer2, sizeof(buffer2));
@@ -1664,7 +1664,7 @@ static void MenuPage(int client, int section)
 			if(!item.NPCSeller || item.Level > ClientLevel)
 				continue;
 		}
-		else if(NPCOnly[client] == 2)
+		else if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
 		{
 			if(item.Level > ClientLevel)
 				continue;
@@ -1679,7 +1679,12 @@ static void MenuPage(int client, int section)
 			continue;
 		}
 		
-		if(NPCOnly[client] == 2)
+		if(NPCOnly[client] == 3)
+		{
+			if(!item.NPCWeaponAlways)
+				continue;
+		}
+		else if(NPCOnly[client] == 2)
 		{
 			if(item.NPCWeapon < 0)
 				continue;
@@ -1692,7 +1697,7 @@ static void MenuPage(int client, int section)
 		if(item.TextStore[0] && !HasNamedItem(client, item.TextStore))
 			continue;
 		
-		if(NPCOnly[client] != 2 && !item.Owned[client] && item.Slot >= 0)
+		if(NPCOnly[client] != 2 && NPCOnly[client] != 3 && !item.Owned[client] && item.Slot >= 0)
 		{
 			int count;
 			for(int a; a<length; a++)
@@ -1723,7 +1728,7 @@ static void MenuPage(int client, int section)
 			}
 		}
 		
-		if(NPCOnly[client] == 2)
+		if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
 		{
 			if(item.ItemInfos)
 			{
@@ -2160,7 +2165,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						DoTutorialStep(client, false);	
 					}
 			
-					if(NPCOnly[client] == 2)	// Buy Rebel Weapon
+					if(NPCOnly[client] == 2 || NPCOnly[client] == 3)	// Buy Rebel Weapon
 					{
 						item.GetItemInfo(0, info);
 						
@@ -2183,7 +2188,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									{
 										for(int i = 1; i <= MaxClients; i++)
 										{
-											if(GetClientMenu(i) && NPCOnly[i] == 2 && NPCTarget[client] == NPCTarget[i])
+											if(GetClientMenu(i) && NPCOnly[i] == NPCOnly[client] && NPCTarget[client] == NPCTarget[i])
 											{
 												CancelClientMenu(i);
 												NPCTarget[i] = -1;

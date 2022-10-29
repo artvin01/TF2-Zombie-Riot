@@ -5361,8 +5361,8 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						}
 						case VILLAGE_200:
 						{
-							npc.m_fGunFirerate *= 0.97;
-							npc.m_fGunReload *= 0.97;
+							npc.m_fGunFirerate *= 0.95;
+							npc.m_fGunReload *= 0.95;
 						}
 						case VILLAGE_300:
 						{
@@ -5414,8 +5414,8 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					}
 					case VILLAGE_200:
 					{
-						npc.m_fGunFirerate /= 0.97;
-						npc.m_fGunReload /= 0.97;
+						npc.m_fGunFirerate /= 0.95;
+						npc.m_fGunReload /= 0.95;
 					}
 					case VILLAGE_300:
 					{

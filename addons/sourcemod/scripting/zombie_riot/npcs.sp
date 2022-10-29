@@ -541,6 +541,8 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 							EmitSoundToClient(panzer_warning_client, boss.Sound, panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
 						}
 					}
+
+					Citizen_MiniBossSpawn(entity_Spawner);
 				}
 				isBoss = true;
 			}
