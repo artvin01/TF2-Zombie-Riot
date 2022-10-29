@@ -3210,16 +3210,24 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 						{
 							for(int a; a<info.Attribs; a++)
 							{
+								bool ignore_rest = false;
 								Address address = TF2Attrib_GetByDefIndex(entity, info.Attrib[a]);
-								if(address == Address_Null && info.SpecialAttribRules == 0)
+								if(address == Address_Null)
 								{
-									TF2Attrib_SetByDefIndex(entity, info.Attrib[a], info.Value[a]);
+									if(info.SpecialAttribRules == 1)
+									{
+										ignore_rest = true;
+									}
+									else
+									{
+										TF2Attrib_SetByDefIndex(entity, info.Attrib[a], info.Value[a]);
+									}
 								}
-								else if(TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
+								else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
 								{
 									TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) + info.Value[a]);
 								}
-								else
+								else if(!ignore_rest)
 								{
 									TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * info.Value[a]);
 								}
@@ -3264,16 +3272,24 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 						{
 							for(int a; a<info.Attribs2; a++)
 							{
+								bool ignore_rest = false;
 								Address address = TF2Attrib_GetByDefIndex(entity, info.Attrib2[a]);
-								if(address == Address_Null && info.SpecialAttribRules_2 == 0)
+								if(address == Address_Null)
 								{
-									TF2Attrib_SetByDefIndex(entity, info.Attrib2[a], info.Value2[a]);
+									if(info.SpecialAttribRules_2 == 1)
+									{
+										ignore_rest = true;
+									}
+									else
+									{
+										TF2Attrib_SetByDefIndex(entity, info.Attrib2[a], info.Value2[a]);
+									}
 								}
-								else if(TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
+								else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
 								{
 									TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) + info.Value2[a]);
 								}
-								else
+								else if(!ignore_rest)
 								{
 									TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * info.Value2[a]);
 								}
