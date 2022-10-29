@@ -890,6 +890,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = Mecha_Scout(client, vecPos, vecAng, ally);
 		}
+		case ALT_DONNERKRIEG:
+		{
+			entity = Donnerkrieg(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1427,6 +1431,10 @@ public void NPCDeath(int entity)
 		{
 			Mecha_Scout_NPCDeath(entity);
 		}
+		case ALT_DONNERKRIEG:
+		{
+			Donnerkrieg_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1554,6 +1562,7 @@ public void OnMapStart_NPC_Base()
 	SniperMain_OnMapStart_NPC();
 	DemoMain_OnMapStart_NPC();
 	MedicMain_OnMapStart_NPC();
+	Donnerkrieg_OnMapStart_NPC();
 	PyroGiant_OnMapStart_NPC();
 	CombineDeutsch_OnMapStart_NPC();
 	Alt_CombineDeutsch_OnMapStart_NPC();
@@ -7929,6 +7938,7 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/alt/npc_alt_mecha_scout.sp"
 #include "zombie_riot/npc/alt/npc_alt_combine_soldier_mage.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_apprentice_mage.sp"
+#include "zombie_riot/npc/alt/npc_alt_donnerkrieg.sp"
 
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
 #include "zombie_riot/npc/medival/npc_medival_archer.sp"
