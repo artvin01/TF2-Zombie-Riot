@@ -108,6 +108,8 @@ methodmap Doctor < CClotBody
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		
 		npc.m_bLostHalfHealth = view_as<bool>(data[0]);
+
+		Citizen_MiniBossSpawn(npc.index);
 		return npc;
 	}
 	
@@ -406,4 +408,6 @@ public void Doctor_NPCDeath(int entity)
 	npc.m_bPathing = false;
 	
 	npc.PlayDeathSound();
+
+	Citizen_MiniBossDeath(entity);
 }

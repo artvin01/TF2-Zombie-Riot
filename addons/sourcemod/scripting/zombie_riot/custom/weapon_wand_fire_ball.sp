@@ -42,7 +42,7 @@ public void Weapon_Wand_FireBallSpell(int client, int weapon, bool &result, int 
 				FakeClientCommand(client, "use tf_weapon_spellbook");
 				TF2Attrib_SetByDefIndex(client, 698, 1.0);
 				
-				SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
+				SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 999);
 				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
 				
 				CreateTimer(0.5, Fireball_Remove_Spell, client, TIMER_FLAG_NO_MAPCHANGE);

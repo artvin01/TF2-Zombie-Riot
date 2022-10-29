@@ -3,11 +3,13 @@ int i_TutorialStep[MAXTF2PLAYERS];
 float f_TutorialUpdateStep[MAXTF2PLAYERS];
 
 static Cookie TutorialCheck;
+static Handle SyncHud;
 
 
 public void Tutorial_PluginStart()
 {
 	TutorialCheck = new Cookie("zr_tutorial_check", "Has the player done the tutorial?", CookieAccess_Protected);
+	SyncHud = CreateHudSynchronizer();
 }
 
 
@@ -72,11 +74,7 @@ public void Tutorial_MakeClientNotMove(int client)
 {
 	if(IsClientInTutorial(client) && TeutonType[client] != TEUTON_WAITING)
 	{
-		TF2_AddCondition(client, TFCond_FreezeInput, 1.0); //make it 1 second long, incase anything breaks, that itll kill itself eventually.
 		DoTutorialStep(client, true);
-		b_ThisEntityIgnored[client] = true;
-		SetEntityCollisionGroup(client, 1);
-		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0); //Give uber so they cannot die.
 	}
 }
 
@@ -87,9 +85,9 @@ public void DoTutorialStep(int client, bool obeycooldown)
 	{
 		if(f_TutorialUpdateStep[client] < GetGameTime() || !obeycooldown)
 		{
-			f_TutorialUpdateStep[client] = GetGameTime() + 5.0;
+			f_TutorialUpdateStep[client] = GetGameTime() + 1.0;
 			
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
+			/*TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
 			
 			float vecSwingStart[3];
 			float ang[3];
@@ -104,30 +102,33 @@ public void DoTutorialStep(int client, bool obeycooldown)
 			vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * 30.0;
 			vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * 30.0;
 			
-			char TutorialText[256];
+			char TutorialText[256];*/
 			switch(i_TutorialStep[client])
 			{
 				case 1:
 				{
 					SetGlobalTransTarget(client);
-					Format(TutorialText, sizeof(TutorialText), "%t", "tutorial_1"); 
+					SetHudTextParams(-1.0, -1.0, 1.5, 255, 0, 0, 255);
+					ShowSyncHudText(client, SyncHud, "%t", "tutorial_1");
 					//"This is the short Tutorial. Open chat and type /store to open the store!"
 					
-					ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 5.0, -1);
+					//ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 5.0, -1);
 				}
 				case 2:
 				{
 					SetGlobalTransTarget(client);
-					Format(TutorialText, sizeof(TutorialText), "%t", "tutorial_2"); 
-					ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 5.0, -1);
+					SetHudTextParams(-1.0, -1.0, 1.5, 255, 0, 0, 255);
+					ShowSyncHudText(client, SyncHud, "%t", "tutorial_2");
+					//ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 5.0, -1);
 					//"Good! You can also Open the store with TAB when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want."
 				}
 				case 3:
 				{
 					SetGlobalTransTarget(client);
-					Format(TutorialText, sizeof(TutorialText), "%t", "tutorial_3"); 
+					SetHudTextParams(-1.0, -1.0, 8.0, 255, 0, 0, 255);
+					ShowSyncHudText(client, SyncHud, "%t", "tutorial_3");
 					f_TutorialUpdateStep[client] = GetGameTime() + 8.0;
-					ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 8.0, -1);
+					//ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 8.0, -1);
 					//"Now that you have a weapon you're prepared.\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
 				
 					//two means done.
@@ -149,7 +150,7 @@ public Action TimerTutorial_End(Handle timer, int ref)
 		SetClientTutorialMode(client, false);
 		SetClientTutorialStep(client, 0);
 		
-		float pos[3], ang[3];
+		/*float pos[3], ang[3];
 		GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
 		GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 		DHook_RespawnPlayer(client);
@@ -164,7 +165,7 @@ public Action TimerTutorial_End(Handle timer, int ref)
 		TeleportEntity(client, pos, ang, NULL_VECTOR);
 					
 		TF2_RemoveCondition(client, TFCond_FreezeInput); //make it 1 second long, incase anything breaks, that itll kill itself eventually.
-		TF2_AddCondition(client, TFCond_UberchargedCanteen, 5.0); //Give 5 seconds of uber so they dont get instamurdered.
+		TF2_AddCondition(client, TFCond_UberchargedCanteen, 5.0); //Give 5 seconds of uber so they dont get instamurdered.*/
 	}
 	return Plugin_Handled;
 }

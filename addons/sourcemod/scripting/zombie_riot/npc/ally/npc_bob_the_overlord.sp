@@ -568,11 +568,11 @@ public void BobTheGod_ClotThink(int iNPC)
 					NormalizeVector(vecDir, vecDir);
 					if(CurrentPlayers == 1)
 					{
-						FireBullet(npc.index, npc.m_iWearable2, npc_pos, vecDir, 30.0, 9000.0, DMG_BULLET, "bullet_tracer01_red", _, _ , "muzzle");
+						FireBullet(npc.index, npc.m_iWearable2, npc_pos, vecDir, 21.0, 9000.0, DMG_BULLET, "bullet_tracer01_red", _, _ , "muzzle");
 					}
 					else
 					{
-						FireBullet(npc.index, npc.m_iWearable2, npc_pos, vecDir, 21.0, 9000.0, DMG_BULLET, "bullet_tracer01_red", _, _ , "muzzle");
+						FireBullet(npc.index, npc.m_iWearable2, npc_pos, vecDir, 12.0, 9000.0, DMG_BULLET, "bullet_tracer01_red", _, _ , "muzzle");
 					}
 					npc.PlayRangedSound();
 					npc.m_bReloaded = false;
@@ -644,11 +644,11 @@ public void BobTheGod_ClotThink(int iNPC)
 						npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 						if(CurrentPlayers == 1)
 						{
-							FireBullet(npc.index, npc.index, npc_pos, vecDir, 400.0, 9999.0, DMG_BULLET, "bullet_tracer02_blue", _);
+							FireBullet(npc.index, npc.index, npc_pos, vecDir, 250.0, 9999.0, DMG_BULLET, "bullet_tracer02_blue", _);
 						}
 						else
 						{
-							FireBullet(npc.index, npc.index, npc_pos, vecDir, 250.0, 9999.0, DMG_BULLET, "bullet_tracer02_blue", _);
+							FireBullet(npc.index, npc.index, npc_pos, vecDir, 125.0, 9999.0, DMG_BULLET, "bullet_tracer02_blue", _);
 						}
 					}
 				}
@@ -686,11 +686,11 @@ public void BobTheGod_ClotThink(int iNPC)
 								{
 									if(CurrentPlayers == 1)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 110.0, DMG_CLUB, -1, _, vecHit);
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
 									}
 									// Hit particle
 									

@@ -548,12 +548,7 @@ public Action Waves_RoundStartTimer(Handle timer)
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client) && IsPlayerAlive(client) && !IsFakeClient(client))
-			{
 				any_player_on = true;
-				
-				if(!Store_HasAnyItem(client))
-					Store_PutInServer(client);
-			}
 		}
 		if(any_player_on && !CvarNoRoundStart.BoolValue)
 		{
@@ -800,7 +795,7 @@ void Waves_Progress()
 			
 			if(CurrentRound == 4)
 			{
-				Citizen_SpawnAtPoint();
+				Citizen_SpawnAtPoint("b");
 			}
 			else if(CurrentRound == 15) //He should spawn at wave 16.
 			{
@@ -923,8 +918,6 @@ void Waves_Progress()
 				}
 			}
 			
-			
-			
 			//MUSIC LOGIC
 			if(CurrentRound == length)
 			{
@@ -963,6 +956,7 @@ void Waves_Progress()
 						players[total++] = i;
 					}
 				}
+
 				cvarTimeScale.SetFloat(0.1);
 				CreateTimer(0.5, SetTimeBack);
 				
@@ -970,14 +964,14 @@ void Waves_Progress()
 				EmitSoundToAll("#zombiesurvival/music_win.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				
 				FormatEx(char_MusicString1, sizeof(char_MusicString1), "");
-			
+
 				FormatEx(char_MusicString2, sizeof(char_MusicString2), "");
-		
+
 				i_MusicLength1 = 1;
-					
 				i_MusicLength2 = 1;
-			
-			
+
+				Citizen_SetupStart();
+
 				Menu menu = new Menu(Waves_FreeplayVote);
 				menu.SetTitle("%t","Victory Menu");
 				menu.AddItem("", "Yes");
@@ -1011,6 +1005,8 @@ void Waves_Progress()
 				event.Fire();
 				
 				CreateTimer(round.Setup, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+
+				Citizen_SetupStart();
 			}
 			else if(wasLastMann)
 			{
@@ -1211,7 +1207,7 @@ void Waves_Progress()
 			}
 		}
 	}
-	if(CurrentRound == 0)
+	/*if(CurrentRound == 0)
 	{
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -1222,7 +1218,7 @@ void Waves_Progress()
 					CashSpent[client] = StartCash;
 			}
 		}
-	}
+	}*/
 	if(CurrentWave == 0)
 	{
 		Renable_Powerups();

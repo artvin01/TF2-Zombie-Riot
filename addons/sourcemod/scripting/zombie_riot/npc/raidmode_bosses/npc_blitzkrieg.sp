@@ -398,6 +398,9 @@ methodmap Blitzkrieg < CClotBody
 		npc.PlayMusicSound();
 		npc.StartPathing();
 		Music_Stop_All_Beat(client);
+
+		Citizen_MiniBossSpawn(npc.index);
+
 		return npc;
 	}
 }
@@ -869,6 +872,42 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		fl_move_speed[npc.index] = 275.0;
 		
+		if(ZR_GetWaveCount()>=45)
+		{
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			CPrintToChatAll("{crimson}Blitzkrieg{default}: The brothers have joined the battle.");
+			int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+			int heck;
+			int spawn_index;
+			heck= maxhealth;
+			maxhealth=heck/20;
+			spawn_index = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			if(spawn_index > MaxClients)
+			{
+			
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			}
+			spawn_index = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			if(spawn_index > MaxClients)
+			{
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			}
+			if(ZR_GetWaveCount()>=60)
+			{
+				maxhealth=heck/10;
+				spawn_index = Npc_Create(ALT_DONNERKRIEG, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+				if(spawn_index > MaxClients)
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: Ay, Donnerkrieg, how ya doin?");
+					SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+				}
+			}
+		}
+		
 		npc.PlayAngerSound();
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 		Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
@@ -901,7 +940,6 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		i_NpcCurrentLives[npc.index]=3;
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
-		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_atom_launcher/c_atom_launcher.mdl");	//The thing everyone fears, the airstrike.
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -1054,6 +1092,8 @@ public void Blitzkrieg_NPCDeath(int entity)
 	}
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 //	npc.Anger = false;
+
+	Citizen_MiniBossDeath(entity);
 }
 // Ent_Create style position from Doomsday Nuke
 

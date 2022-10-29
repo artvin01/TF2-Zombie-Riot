@@ -166,8 +166,19 @@ public void OnPostThink(int client)
 		{
 			Mana_Regen_Delay[client] = gameTime + 0.4;
 			
-			int weapon = GetPlayerWeaponSlot(client, 2);
-			if(!EscapeMode && IsValidEntity(weapon))
+			has_mage_weapon[client] = false;
+
+			int i, entity;
+			while(TF2_GetItem(client, entity, i))
+			{
+				if(IsWandWeapon(entity))
+				{
+					has_mage_weapon[client] = true;
+					break;
+				}
+			}
+
+			if(!EscapeMode)
 			{
 				max_mana[client] = 600.0;
 				mana_regen[client] = 10.0;
@@ -179,17 +190,11 @@ public void OnPostThink(int client)
 				{
 					mana_regen[client] *= 1.35;
 				}
-				
-				if(Mana_Regen_Level[weapon])
-				{			
-					mana_regen[client] *= Mana_Regen_Level[weapon];
-					max_mana[client] *= Mana_Regen_Level[weapon];	
-					has_mage_weapon[client] = true;
-				}
-				else
-				{
-					has_mage_weapon[client] = false;
-				}
+					
+				mana_regen[client] *= Mana_Regen_Level[client];
+				max_mana[client] *= Mana_Regen_Level[client];	
+
+
 				/*
 				Current_Mana[client] += RoundToCeil(mana_regen[client]);
 					
@@ -207,7 +212,7 @@ public void OnPostThink(int client)
 					
 				Mana_Hud_Delay[client] = 0.0;
 			}
-			else if (IsValidEntity(weapon))
+			else
 			{
 			//	if(Mana_Regen_Level[weapon])
 			//	{				
@@ -343,12 +348,6 @@ public void OnPostThink(int client)
 		
 		if(IsValidEntity(weapon))
 		{
-			
-			char classname[32];
-			GetEntityClassname(weapon, classname, 32);
-			
-			int weapon_slot = TF2_GetClassnameSlot(classname);
-	
 			float cooldown_time;
 			bool had_An_ability = false;
 			bool IsReady = false;
@@ -357,7 +356,7 @@ public void OnPostThink(int client)
 			{
 				had_An_ability = true;
 				
-				cooldown_time = f_Ability_Cooldown_m1[client][weapon_slot] - gameTime;
+				cooldown_time = Ability_Check_Cooldown(client, 1);
 				
 				if(cooldown_time < 0.0)
 				{
@@ -377,7 +376,7 @@ public void OnPostThink(int client)
 			}
 			if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_M2)
 			{
-				cooldown_time = f_Ability_Cooldown_m2[client][weapon_slot] - gameTime;
+				cooldown_time = Ability_Check_Cooldown(client, 2);
 				
 				if(had_An_ability)
 				{
@@ -403,7 +402,7 @@ public void OnPostThink(int client)
 			}
 			if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_R)
 			{
-				cooldown_time = f_Ability_Cooldown_r[client][weapon_slot] - gameTime;
+				cooldown_time = Ability_Check_Cooldown(client, 3);
 				
 				if(had_An_ability)
 				{
@@ -665,11 +664,11 @@ public void OnPostThink(int client)
 			
 			if(!TeutonType[client])
 			{
-				if(!EscapeMode)
+				if(Store_ActiveCanMulti(client))
 				{
 					if(Has_Wave_Showing)
 					{
-						PrintKeyHintText(client, "%t\n%t\n%t\n%t",
+						PrintKeyHintText(client, "%t\n%t\n%t\n%t\n \n%t",
 						"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
 					//	"Wave", CurrentRound+1, CurrentWave+1,
 				//		"Armor Counter", Armor_Charge[client],
@@ -677,11 +676,12 @@ public void OnPostThink(int client)
 				//		"Healing Done", Healing_done_in_total[client],
 				//		"Damage Dealt", Damage_dealt_in_total[client],
 						PerkNames[i_CurrentEquippedPerk[client]],
-						"Zombies Left", Zombies_Currently_Still_Ongoing);
+						"Zombies Left", Zombies_Currently_Still_Ongoing,
+						"Press Button To Switch");
 					}
 					else
 					{
-						PrintKeyHintText(client, "%t\n%s | %t\n%t\n%t\n%t",
+						PrintKeyHintText(client, "%t\n%s | %t\n%t\n%t\n%t\n \n%t",
 						"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
 						WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
 			//			"Armor Counter", Armor_Charge[client],
@@ -689,16 +689,33 @@ public void OnPostThink(int client)
 			//			"Healing Done", Healing_done_in_total[client],
 			//			"Damage Dealt", Damage_dealt_in_total[client],
 						PerkNames[i_CurrentEquippedPerk[client]],
-						"Zombies Left", Zombies_Currently_Still_Ongoing);	
+						"Zombies Left", Zombies_Currently_Still_Ongoing,
+						"Press Button To Switch");	
 					}
+				}
+				else if(Has_Wave_Showing)
+				{
+					PrintKeyHintText(client, "%t\n%t\n%t\n%t",
+					"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+				//	"Wave", CurrentRound+1, CurrentWave+1,
+			//		"Armor Counter", Armor_Charge[client],
+					"Ammo Crate Supplies", Ammo_Count_Ready[client], //This bugs in russian
+			//		"Healing Done", Healing_done_in_total[client],
+			//		"Damage Dealt", Damage_dealt_in_total[client],
+					PerkNames[i_CurrentEquippedPerk[client]],
+					"Zombies Left", Zombies_Currently_Still_Ongoing);
 				}
 				else
 				{
-					PrintKeyHintText(client, "%t\n%t",
-					"Armor Counter", Armor_Charge[client],
-					"Healing Done", Healing_done_in_total[client],
-			//		"Damage Dealt", Damage_dealt_in_total[client]);,
-					PerkNames[i_CurrentEquippedPerk[client]]);		
+					PrintKeyHintText(client, "%t\n%s | %t\n%t\n%t\n%t",
+					"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+					WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
+		//			"Armor Counter", Armor_Charge[client],
+					"Ammo Crate Supplies", Ammo_Count_Ready[client], 
+		//			"Healing Done", Healing_done_in_total[client],
+		//			"Damage Dealt", Damage_dealt_in_total[client],
+					PerkNames[i_CurrentEquippedPerk[client]],
+					"Zombies Left", Zombies_Currently_Still_Ongoing);	
 				}
 			}
 			else if (TeutonType[client] == TEUTON_DEAD)
@@ -1211,6 +1228,16 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		volume *= 0.75;
 		level = SNDLEVEL_NORMAL;
 		return Plugin_Changed;
+	}
+	if(StrContains(sample, "vo/", true) != -1)
+	{
+		if(IsValidClient(entity))
+		{
+			if(b_IsPlayerNiko[entity])
+			{
+				return Plugin_Handled;
+			}
+		}
 	}
 	return Plugin_Continue;
 }
