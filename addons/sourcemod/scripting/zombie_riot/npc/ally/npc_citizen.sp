@@ -529,7 +529,7 @@ static void Barney_GenerateSound(int type, int seed, char[] buffer, int length)
 					strcopy(buffer, length, "vo/npc/barney/ba_gotone.wav");
 				
 				default:
-					Format(buffer, length, "vo/npc/barney/ba_wounded0%d.wav", rand - 1);
+					Format(buffer, length, "vo/npc/barney/ba_laugh0%d.wav", rand - 1);
 			}
 		}
 		case Cit_Headcrab:
