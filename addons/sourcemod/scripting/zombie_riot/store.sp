@@ -3355,6 +3355,29 @@ int Store_GiveSpecificItem(int client, const char[] name)
 	return -1;
 }
 
+void Store_RemoveSpecificItem(int client, const char[] name)
+{
+	static Item item;
+	int length = StoreItems.Length;
+	for(int i; i<length; i++)
+	{
+		StoreItems.GetArray(i, item);
+		if(StrEqual(name, item.Name, false))
+		{
+			static ItemInfo info;
+			item.GetItemInfo(0, info);
+			
+			item.Owned[client] = 0;
+			item.Equipped[client] = false;
+			StoreItems.SetArray(i, item);
+			
+		//	int entity = Store_GiveItem(client, i, item.Equipped[client]);
+			CheckMultiSlots(client);
+			return;
+		}
+	}
+}
+
 /*bool Store_Interact(int client, int entity, const char[] classname)
 {
 	if(!TeutonType[client] && GameRules_GetRoundState() <= RoundState_RoundRunning && StrEqual(classname, "prop_dynamic"))

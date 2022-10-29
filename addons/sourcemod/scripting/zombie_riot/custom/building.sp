@@ -846,9 +846,12 @@ public Action BuildingSetAlphaClientSideReady_SetTransmitProp_1(int entity, int 
 	
 	int building = EntRefToEntIndex(Building_Hidden_Prop_To_Building[entity]);
 	
-	if(i_BeingCarried[building])
+	if(IsValidEntity(building))
 	{
-		return Plugin_Handled;
+		if(i_BeingCarried[building])
+		{
+			return Plugin_Handled;
+		}
 	}
 	if(Building_Collect_Cooldown[building][client] > Gametime)
 	{
@@ -864,9 +867,12 @@ public Action BuildingSetAlphaClientSideReady_SetTransmitProp_2(int entity, int 
 	
 	int building = EntRefToEntIndex(Building_Hidden_Prop_To_Building[entity]);
 	
-	if(i_BeingCarried[building])
+	if(IsValidEntity(building))
 	{
-		return Plugin_Handled;
+		if(i_BeingCarried[building])
+		{
+			return Plugin_Handled;
+		}
 	}
 	if(Building_Collect_Cooldown[building][client] > Gametime)
 	{
