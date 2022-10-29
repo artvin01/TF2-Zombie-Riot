@@ -39,7 +39,7 @@
 		"es"		"Has subido de nivel {1}\nHas desbloqueado:"
 		"fr"		"Vous avez atteint le niveau {1}\nVous débloquez :"
 		"de"		"Du bust ein level Aufgestiegen {1}\nDu hast freigeschalted:"
-		"pt"		"Você subiu de nivel! Level {1} \nVocê desbloqueou:
+		"pt"		"Você subiu de nivel! Level {1} \nVocê desbloqueou:"
 	}
 	"None"
 	{
@@ -866,7 +866,7 @@
 		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot and backstab damage"
 		"ru" 		"СНАЙПЕР-ЛАЙМ! 1.35x точность оружия и 1.25x дополнительного урона от выстрела в голову и удар в спину"
 		"de"		"TODESSCHUSS DAIQUIRI! 1.35-fache Waffengenauigkeit und 1.25-facher zusätzlicher Kopfschussschaden und Rücken messerstich schaden"
-		"pt"		TIRO MORTO DE DAIQUIRI! 1.35x Precisão com armas e 1.25x Dano extra com tiros na cabeça e facas nas costas"
+		"pt"		"TIRO MORTO DE DAIQUIRI! 1.35x Precisão com armas e 1.25x Dano extra com tiros na cabeça e facas nas costas"
 	}
 	"Widows Wine Recieved"
 	{
