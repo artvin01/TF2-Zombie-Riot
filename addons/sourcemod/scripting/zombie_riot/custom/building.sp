@@ -1792,7 +1792,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										mana_regen_temp *= 1.35;
 									}
 									
-									if(Mana_Regen_Level[weapon])
+									if(Mana_Regen_Level[client])
 									{			
 										mana_regen_temp *= Mana_Regen_Level[weapon];
 										max_mana_temp *= Mana_Regen_Level[weapon];	
