@@ -236,7 +236,7 @@
 		"en"		"RPG"
 		"ru"		"РПГ"
 		"de"		"Raketenwerfer"
-		"pt"		"Lança Mísseis
+		"pt"		"Lança Mísseis"
 	}
 	"Peacock's Screw Ball Cannon"
 	{
@@ -304,7 +304,7 @@
 	"Deagle"
 	{
 		"en"		"Deagle"
-		"ru"		"Deagle"
+		"ru"		"Пустынный орёл"
 		"de"		"Deagle"
 		"pt"		"Deagle"
 	}
@@ -402,7 +402,7 @@
 	"Heavy Desert Eagle"
 	{
 		"en"		"Heavy Desert Eagle"
-		"ru"		"Тяжёлый Desert Eagle"
+		"ru"		"Тяжёлый пустынный орёл"
 		"de"		"Schwerer Desert Eagle"
 		"pt"		"Desert Eagle Pesada"
 	}
@@ -1145,7 +1145,7 @@
 		"en"		"Level 15 Peashooter"
 		"ru"		"Горохострел 15-го уровня"
 		"de"		"Level 15 Erbsenkanone"
-		"pt"		"Atira Ervilhas nível 15 
+		"pt"		"Atira Ervilhas nível 15"
 	}
 	"Rusty Wrench"
 	{
