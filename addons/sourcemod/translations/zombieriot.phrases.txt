@@ -1308,13 +1308,13 @@
 	}
 	"tutorial_1"
 	{
-		"en"		"This is the short Tutorial. Open chat and type ''/store'' to open the store!"
+		"en"		"This is the short Tutorial. Open the scoreboard (TAB) to open the store."
 		"ru"		"Это краткое руководство. Откройте чат и введите ''/store'', чтобы открыть магазин!"
 	}
 	"tutorial_2"
 	{
-		"en"		"Good! You can also Open the store with %%+showscores%% when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want.\nOpen chat and type ''/store'' to open the store again if it got closed!"
-		"ru"		"Отлично! Вы также можете открыть магазин клавишей %%+showscores%%, когда закончите обучение.\nНу а теперь перейдите к оружию и купите любое оружие, какое захотите."
+		"en"		"Good! Now Navigate to weapons and buy any weapon you want.\nOpen the scoreboard (TAB) to open the store again if it got closed."
+	//	"ru"		"Отлично! Вы также можете открыть магазин клавишей %%+showscores%%, когда закончите обучение.\nНу а теперь перейдите к оружию и купите любое оружие, какое захотите."
 	}
 	"tutorial_3"
 	{
