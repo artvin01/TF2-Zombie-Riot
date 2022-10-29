@@ -1119,7 +1119,7 @@ void Citizen_SpawnAtPoint(const char[] data = "")
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		
-		Npc_Create(CITIZEN, 0, pos, ang, true, data);
+		entity = Npc_Create(CITIZEN, 0, pos, ang, true, data);
 		
 		Citizen npc = view_as<Citizen>(entity);
 		
