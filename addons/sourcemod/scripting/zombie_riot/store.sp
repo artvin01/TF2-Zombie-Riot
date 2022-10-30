@@ -1960,9 +1960,9 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 				static Item item;
 				menu.GetItem(0, item.Name, sizeof(item.Name));
 				int index = StringToInt(item.Name);
-				if(index == -1)
+				if(index < 0)
 				{
-					item.Section = index;
+					item.Section = -1;
 				}
 				else
 				{
