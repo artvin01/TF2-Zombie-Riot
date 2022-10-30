@@ -886,6 +886,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 				if(item.GetItemInfo(values[1], info) && info.Cost && (CurrentCash-CashSpent[client]) >= info.Cost)
 				{
 					CashSpent[client] += info.Cost;
+					CashSpentTotal[client] += info.Cost;
 					item.Owned[client] = values[1] + 1;
 					StoreItems.SetArray(values[0], item);
 					
@@ -964,6 +965,7 @@ void Store_Reset()
 	for(int c=1; c<=MaxClients; c++)
 	{
 		CashSpent[c] = 0;
+		CashSpentTotal[c] = 0;
 	}
 	
 	static Item item;
@@ -1081,6 +1083,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 				if((CurrentCash - CashSpent[client]) >= info.Cost)
 				{
 					CashSpent[client] += info.Cost;
+					CashSpentTotal[client] += info.Cost;
 					Store_BuyClientItem(client, item, info);
 					StoreItems.SetArray(a, item);
 					return;
@@ -1161,6 +1164,7 @@ void Store_ClientDisconnect(int client)
 	}
 	
 	CashSpent[client] = 0;
+	CashSpentTotal[client] = 0;
 	
 	static Item item;
 	int length = StoreItems.Length;
@@ -1534,7 +1538,7 @@ static void MenuPage(int client, int section)
 					FormatEx(buffer, sizeof(buffer), "%t", "Equip");
 					if(!info.Classname[0])
 					{
-						if(item.Owned[client])
+						if(item.Owned[client] && info.Attack3AbilitySlot == 0)
 							style = ITEMDRAW_DISABLED;
 					}
 				}
@@ -1731,7 +1735,7 @@ static void MenuPage(int client, int section)
 				
 				if(blocked)
 				{
-					menu.AddItem("-1", TranslateItemName(client, item.Name), ITEMDRAW_DISABLED);
+					menu.AddItem("-1", TranslateItemName(client, item.Name, 1), ITEMDRAW_DISABLED);
 					found = true;
 					continue;
 				}
@@ -2200,6 +2204,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								if(Citizen_UpdateWeaponStats(entity, item.NPCWeapon, sell, info))
 								{
 									CashSpent[client] += info.Cost;
+									CashSpentTotal[client] += info.Cost;
 									ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 									
 									if(!item.NPCWeaponAlways)
@@ -2225,6 +2230,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 											SetGlobalTransTarget(client_previously);
 											PrintToChat(client_previously, "%t","You got your money back npc", money_back);
 											CashSpent[client_previously] -= money_back;
+											CashSpentTotal[client_previously] -= money_back;
 											i_ThisEntityHasAMachineThatBelongsToClientMoney[entity] = 0;
 											
 										}
@@ -2247,6 +2253,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							if(info.Ammo && info.Ammo < Ammo_MAX && AmmoData[info.Ammo][0] <= cash)
 							{
 								CashSpent[client] += AmmoData[info.Ammo][0];
+								CashSpentTotal[client] += AmmoData[info.Ammo][0];
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 								
 								int ammo = GetAmmo(client, info.Ammo) + AmmoData[info.Ammo][1];
@@ -2262,6 +2269,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								if(info.Cost <= cash)
 								{
 									CashSpent[client] += info.Cost;
+									CashSpentTotal[client] += info.Cost;
 									Store_BuyClientItem(client, item, info);
 									item.Equipped[client] = false;
 									
@@ -2274,7 +2282,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.Equipped[client] = true;
 								StoreItems.SetArray(index, item);
 								
-								if(!TeutonType[client])
+								if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
 								{
 									Store_GiveItem(client, index, item.Equipped[client]);
 									if(TF2_GetClassnameSlot(info.Classname) == TFWeaponSlot_Melee)
@@ -2291,14 +2299,33 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							if(info.Cost <= cash)
 							{
 								CashSpent[client] += info.Cost;
+								CashSpentTotal[client] += info.Cost;
 								Store_BuyClientItem(client, item, info);
 								StoreItems.SetArray(index, item);
 								
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
-								
+
 								Store_ApplyAttribs(client);
 								Store_GiveAll(client, GetClientHealth(client));
 							}
+						}
+						else if (info.Attack3AbilitySlot != 0) //equip back special ability slot item
+						{
+							item.Equipped[client] = true;
+							StoreItems.SetArray(index, item);
+								
+							if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
+							{
+							//	Store_GiveItem(client, index, item.Equipped[client]);
+							//	if(TF2_GetClassnameSlot(info.Classname) == TFWeaponSlot_Melee)
+							//		Store_RemoveNullWeapons(client);
+								
+								CheckMultiSlots(client);
+								Manual_Impulse_101(client, GetClientHealth(client));
+								Store_ApplyAttribs(client);
+								Store_GiveAll(client, GetClientHealth(client));
+							}
+							
 						}
 					}
 				}
@@ -2318,6 +2345,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							if(cost <= cash)
 							{
 								CashSpent[client] += cost;
+								CashSpentTotal[client] += cost;
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 								int ammo = GetAmmo(client, info.Ammo) + AmmoData[info.Ammo][1]*10;
 								SetAmmo(client, info.Ammo, ammo);
@@ -2337,7 +2365,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							{
 								item.Equipped[client] = false;
 								StoreItems.SetArray(index, item);
-								
+
 								Store_ApplyAttribs(client);
 								Store_GiveAll(client, GetClientHealth(client));	
 							}
@@ -2356,6 +2384,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						if(info.Cost) //make sure it even can be sold.
 						{
 							CashSpent[client] -= ItemSell(item, item.Owned[client], client);
+							CashSpentTotal[client] -= ItemSell(item, item.Owned[client], client);
 							ClientCommand(client, "playgamesound \"mvm/mvm_money_pickup.wav\"");
 						}
 						
@@ -2365,7 +2394,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						
 						item.Equipped[client] = false;
 						StoreItems.SetArray(index, item);
-						
+							
 						Store_ApplyAttribs(client);
 						Store_GiveAll(client, GetClientHealth(client));
 					}
@@ -2560,11 +2589,20 @@ void Store_ApplyAttribs(int client)
 	{
 		Extra_Juggernog_Hp = 100;
 	}
-	if(!EscapeMode)
-		map.SetValue("26", -RemoveExtraHealth(ClassForStats) + Extra_Juggernog_Hp);		// Health
+
+	if(i_HealthBeforeSuit[client] == 0)
+	{
+		if(!EscapeMode)
+			map.SetValue("26", -RemoveExtraHealth(ClassForStats) + Extra_Juggernog_Hp);		// Health
+		else
+			map.SetValue("26", -RemoveExtraHealth(ClassForStats) + 100 + Extra_Juggernog_Hp);		// Health
+	}
 	else
-		map.SetValue("26", -RemoveExtraHealth(ClassForStats) + 100 + Extra_Juggernog_Hp);		// Health
+	{
+		map.SetValue("26", -(RemoveExtraHealth(ClassForStats) + 199));		// Health
+	}
 		
+	
 	map.SetValue("107", (RemoveExtraSpeed(ClassForStats) * 1.1));		// Move Speed and abit of extra
 	map.SetValue("353", 1.0);											// No manual building pickup.
 	map.SetValue("465", 10.0);											// x10 faster diepsner build
@@ -2639,7 +2677,7 @@ void Store_ApplyAttribs(int client)
 		if(item.Owned[client] && item.Equipped[client])
 		{
 			item.GetItemInfo(item.Owned[client]-1, info);
-			if(!info.Classname[0])
+			if(!info.Classname[0] && !i_ClientHasCustomGearEquipped[client])
 			{
 				if((info.Index<0 || info.Index>2) && info.Index<6)
 				{
@@ -2744,8 +2782,15 @@ void Store_ApplyAttribs(int client)
 	TF2_AddCondition(client, TFCond_Dazed, 0.001);
 }
 
-void Store_GiveAll(int client, int health)
+void Store_GiveAll(int client, int health, int removeWeapons = false)
 {
+	if(removeWeapons)
+	{
+		Manual_Impulse_101(client, health);
+		TF2_RegeneratePlayer(client);
+		return;
+	}
+
 	if(TeutonType[client])
 	{
 		TF2_RegeneratePlayer(client);
@@ -2797,8 +2842,10 @@ void Store_GiveAll(int client, int health)
 		}
 	}
 	*/
-	TF2_RemoveAllWeapons(client);
-	
+	if(!i_ClientHasCustomGearEquipped[client])
+	{
+		TF2_RemoveAllWeapons(client);
+	}
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
 	SetAbilitySlotCount(client, 0);
 	
@@ -2821,34 +2868,37 @@ void Store_GiveAll(int client, int health)
 		SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	}
 	
-	int count;
-	bool found = false;
-	bool use = true;
-	int length = StoreItems.Length;
-	for(int i; i<length; i++)
+	if(!i_ClientHasCustomGearEquipped[client])
 	{
-		static Item item;
-		StoreItems.GetArray(i, item);
-		if(item.Owned[client] && item.Equipped[client])
+		int count;
+		bool found = false;
+		bool use = true;
+		int length = StoreItems.Length;
+		for(int i; i<length; i++)
 		{
-			static ItemInfo info;
-			item.GetItemInfo(item.Owned[client]-1, info);
-			if(info.Classname[0])
+			static Item item;
+			StoreItems.GetArray(i, item);
+			if(item.Owned[client] && item.Equipped[client])
 			{
-				Store_GiveItem(client, i, use, found);
-				if(++count > 9)
+				static ItemInfo info;
+				item.GetItemInfo(item.Owned[client]-1, info);
+				if(info.Classname[0])
 				{
-					PrintToChat(client, "%T", "At Weapon Limit");
-					break;
+					Store_GiveItem(client, i, use, found);
+					if(++count > 9)
+					{
+						PrintToChat(client, "%T", "At Weapon Limit");
+						break;
+					}
 				}
 			}
 		}
+	
+		if(!found)
+			Store_GiveItem(client, -1, use);
+		
+		CheckMultiSlots(client);
 	}
-	
-	if(!found)
-		Store_GiveItem(client, -1, use);
-	
-	CheckMultiSlots(client);
 	
 //	Spawn_Buildable(client);
 //	TF2_SetPlayerClass(client, TFClass_Engineer, true, false);
@@ -3005,6 +3055,8 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 									
 									if(!EscapeMode || info.Ammo < 3) //my man broke my shit.
 									{
+									//	PrintToChatAll("test");
+									//	PrintToChatAll("%s",info.Classname);
 										SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", info.Ammo);
 									}
 									else if(info.Ammo == 24 || info.Ammo == 6)
@@ -3141,7 +3193,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 		i_NoBonusRange[entity] = 0;
 		i_BuffBannerPassively[entity] = 0;
 	}
-	if(!TeutonType[client])
+	if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
 	{
 		for(int i; i<length; i++)
 		{
@@ -3587,22 +3639,37 @@ bool Store_PrintLevelItems(int client, int level)
 	return found;
 }
 
-char[] TranslateItemName(int client, const char name[64])
+char[] TranslateItemName(int client, const char name[64], int extrainfo = 0)
 {
 	static int ServerLang = -1;
 	if(ServerLang == -1)
 		ServerLang = GetServerLanguage();
 	
+	char buffer[64];
+
 	if(GetClientLanguage(client) != ServerLang)
 	{
 		if(TranslationPhraseExists(name))
 		{
-			char buffer[64];
 			FormatEx(buffer, sizeof(buffer), "%T", name, client);
-			return buffer;
+		}
+		else
+		{
+			FormatEx(buffer, sizeof(buffer), "%s", name, client);
 		}
 	}
-	return name;
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s", name, client);
+	}
+	switch(extrainfo)
+	{
+		case 1:
+		{
+			FormatEx(buffer, sizeof(buffer), "%s (Slot Locked)", buffer);
+		}
+	}
+	return buffer;
 }
 
 static void ItemCost(int client, Item item, int &cost)

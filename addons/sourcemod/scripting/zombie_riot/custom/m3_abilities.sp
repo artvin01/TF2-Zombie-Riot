@@ -7,6 +7,10 @@ static int g_ProjectileModel;
 static int g_ProjectileModelArmor;
 static int g_BeamIndex_heal = -1;
 
+static char gExplosive1;
+static char gLaser1;
+
+
 //#define ARROW_TRAIL_GRENADE "effects/arrowtrail_blu.vmt"
 
 //int trail = Trail_Attach(entity, ARROW_TRAIL_GRENADE, 255, 0.3, 3.0, 3.0, 5);
@@ -19,6 +23,8 @@ static int g_BeamIndex_heal = -1;
 
 public void M3_Abilities_Precache()
 {
+	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
+	gExplosive1 = PrecacheModel("materials/sprites/sprite_fire01.vmt");
 //	PrecacheModel(ARROW_TRAIL_GRENADE);
 //	PrecacheDecal(ARROW_TRAIL_GRENADE, true);
 	static char model[PLATFORM_MAX_PATH];
@@ -30,6 +36,7 @@ public void M3_Abilities_Precache()
 	PrecacheSound(SOUND_HEAL_BEAM);
 	PrecacheSound(SOUND_ARMOR_BEAM);
 	PrecacheSound(SOUND_DASH);
+	PrecacheSound("mvm/mvm_tank_start.wav");
 	
 }
 public void M3_ClearAll()
@@ -56,6 +63,10 @@ public void M3_Abilities(int client)
 		case 3:
 		{
 			PlaceableTempomaryArmorGrenade(client);
+		}
+		case 4:
+		{
+			GearTesting(client);
 		}
 	}
 }
@@ -502,8 +513,144 @@ public Action M3_Ability_Is_Back(Handle cut_timer, int ref)
 	return Plugin_Handled;
 }
 
+public void GearTesting(int client)
+{
+	if(dieingstate[client] > 0)
+	{
+		if (ability_cooldown_2[client] < GetGameTime())
+		{
+	//		PrintToChatAll("User is dead");
+		}
+		else
+		{
+			float Ability_CD = ability_cooldown_2[client] - GetGameTime();
+			
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+				
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+		}		
+	}
+	else
+	{
+		if (ability_cooldown[client] < GetGameTime())
+		{
+			ability_cooldown[client] = GetGameTime() + 500.0;
 
 
+			CreateTimer(500.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+
+			SetEntityMoveType(client, MOVETYPE_NONE);
+
+			i_ClientHasCustomGearEquipped[client] = true;
+			
+			CreateTimer(3.0, QuantumActivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+		//	ClientCommand(client, "playgamesound mvm/mvm_tank_start.wav");
+
+			EmitSoundToAll("mvm/mvm_tank_start.wav", client, SNDCHAN_STATIC, 70, _, 0.9);
+
+			float startPosition[3];
+			float position[3];
+			GetClientAbsOrigin(client, startPosition);
+
+			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
+			TE_SendToAll();
+			position[0] = startPosition[0];
+			position[1] = startPosition[1];
+			position[2] += startPosition[2] + 500.0;
+			startPosition[2] += -500;
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 3.0, 30.0, 30.0, 0, 0.9, {255, 255, 255, 255}, 3);
+			TE_SendToAll();
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.8, 50.0, 50.0, 0, 0.9, {200, 255, 200, 255}, 3);
+			TE_SendToAll();
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.5, 80.0, 80.0, 0, 0.9, {180, 255, 180, 255}, 3);
+			TE_SendToAll();
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.4, 100.0, 100.0, 0, 0.8, {120, 255, 120, 255}, 3);
+			TE_SendToAll();
+		}
+		else
+		{
+			float Ability_CD = ability_cooldown[client] - GetGameTime();
+			
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+				
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+		}
+	}
+}
+
+public Action QuantumActivate(Handle cut_timer, int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	float startPosition[3];
+	GetClientAbsOrigin(client, startPosition);
+
+	if(IsValidClient(client) && TeutonType[client] == TEUTON_NONE)
+	{
+		i_HealthBeforeSuit[client] = GetClientHealth(client);
+
+		i_ClientHasCustomGearEquipped[client] = true;
+		
+
+		Store_GiveAll(client, 50, true);
+		ViewChange_PlayerModel(client);
+		
+		float HealthMulti = float(CashSpentTotal[client]);
+		HealthMulti = Pow(HealthMulti, 1.25);
+		HealthMulti *= 0.025;
+
+		SetEntityHealth(client, RoundToCeil(HealthMulti));
+
+		SetEntityMoveType(client, MOVETYPE_WALK);
+
+		Store_GiveSpecificItem(client, "Quantum Repeater");
+		Store_GiveSpecificItem(client, "Quantum Nanosaber");
+		
+		SetAmmo(client, 1, 9999);
+		SetAmmo(client, 2, 9999);
+	
+		startPosition[2] += 25.0;
+		makeexplosion(client, client, startPosition, "", 0, 0);
+
+		CreateTimer(30.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+	}
+	return Plugin_Handled;
+}
+
+public Action QuantumDeactivate(Handle cut_timer, int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(IsValidClient(client) && i_HealthBeforeSuit[client] > 0)
+	{
+		i_ClientHasCustomGearEquipped[client] = false;
+		int health = i_HealthBeforeSuit[client];
+
+		i_HealthBeforeSuit[client] = 0;
+	//	SetEntityMoveType(client, MOVETYPE_WALK);
+
+		Store_RemoveSpecificItem(client, "Quantum Repeater");
+		Store_RemoveSpecificItem(client, "Quantum Nanosaber");
+		//Remove both just in case.
+		
+		TF2_RegeneratePlayer(client);
+	
+		ViewChange_PlayerModel(client);
+		Store_ApplyAttribs(client);
+		Store_GiveAll(client, health);
+
+		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
+		ViewChange_DeleteHands(client);
+		ViewChange_UpdateHands(client, CurrentClass[client]);
+	}
+	return Plugin_Handled;
+}
 
 
 public float GetAbilityCooldownM3(int client)
