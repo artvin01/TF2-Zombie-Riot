@@ -1278,10 +1278,27 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const color[4])
 		
 		if (Iondistance > -30)
 		CreateTimer(0.1, Blitzkrieg_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
-		else
+		else	//Normal Ioc Damge on wave
 		{
+			float alpha=1.0;
+			if(ZR_GetWaveCount()==15)
+			{
+				alpha=1.0;
+			}
+			else if(ZR_GetWaveCount()==30)
+			{
+				alpha=1.75;
+			}
+			else if(ZR_GetWaveCount()==45)
+			{
+				alpha=2.25;
+			}
+			else if(ZR_GetWaveCount()==60)
+			{
+				alpha=2.75;
+			}
 			
-			makeexplosion(client, client, startPosition, "", RoundToCeil(35.0 * RaidModeScaling), 100);
+			makeexplosion(client, client, startPosition, "", RoundToCeil(150*alpha), 350);
 				
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
@@ -1539,9 +1556,15 @@ public void Blitzkrieg_Final_IonAttack(Handle &data)
 		if (Iondistance > -30)
 		CreateTimer(0.1, Blitzkrieg_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
 		else
-		{
-			
-			makeexplosion(client, client, startPosition, "", RoundToCeil(35.0 * RaidModeScaling), 100);
+		{	//final ioc dmg
+			float beta=1.0;
+			if(ZR_GetWaveCount()==60)
+			{
+				beta=2.0;
+			}
+
+
+			makeexplosion(client, client, startPosition, "", RoundToCeil(3000.0*beta), 500);
 			
 			
 				
