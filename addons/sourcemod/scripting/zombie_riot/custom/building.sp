@@ -846,15 +846,19 @@ public Action BuildingSetAlphaClientSideReady_SetTransmitProp_1(int entity, int 
 	
 	int building = EntRefToEntIndex(Building_Hidden_Prop_To_Building[entity]);
 	
-	if(i_BeingCarried[building])
+	if(IsValidEntity(building))
 	{
+		if(i_BeingCarried[building])
+		{
+			return Plugin_Handled;
+		}
+		if(Building_Collect_Cooldown[building][client] > Gametime)
+		{
+			return Plugin_Continue;
+		}
 		return Plugin_Handled;
 	}
-	if(Building_Collect_Cooldown[building][client] > Gametime)
-	{
-		return Plugin_Continue;
-	}
-	
+	RemoveEntity(entity);
 	return Plugin_Handled;
 }
 
@@ -864,16 +868,20 @@ public Action BuildingSetAlphaClientSideReady_SetTransmitProp_2(int entity, int 
 	
 	int building = EntRefToEntIndex(Building_Hidden_Prop_To_Building[entity]);
 	
-	if(i_BeingCarried[building])
+	if(IsValidEntity(building))
 	{
-		return Plugin_Handled;
+		if(i_BeingCarried[building])
+		{
+			return Plugin_Handled;
+		}
+		if(Building_Collect_Cooldown[building][client] > Gametime)
+		{
+			return Plugin_Handled;
+		}
+		return Plugin_Continue;
 	}
-	if(Building_Collect_Cooldown[building][client] > Gametime)
-	{
-		return Plugin_Handled;
-	}
-	
-	return Plugin_Continue;
+	RemoveEntity(entity);
+	return Plugin_Handled;
 }
 
 public Action Building_Set_HP_Colour(Handle dashHud, int ref)
@@ -1792,7 +1800,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										mana_regen_temp *= 1.35;
 									}
 									
-									if(Mana_Regen_Level[weapon])
+									if(Mana_Regen_Level[client])
 									{			
 										mana_regen_temp *= Mana_Regen_Level[weapon];
 										max_mana_temp *= Mana_Regen_Level[weapon];	

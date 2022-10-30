@@ -839,7 +839,7 @@ void Waves_Progress()
 				panzer_sound = false;
 			}
 			
-			bool wasLastMann = (LastMann && EntRefToEntIndex(RaidBossActive) != -1);
+			bool wasLastMann = (LastMann && EntRefToEntIndex(RaidBossActive) == -1);
 		//	if( 1 == 1)//	if(!LastMann || round.Setup > 0.0)
 			{
 				for(int client=1; client<=MaxClients; client++)

@@ -327,7 +327,7 @@ void Attributes_OnKill(int client, int weapon)
 	}*/
 }
 
-float Attributes_FindOnPlayer(int client, int index, bool multi=false, float defaul=0.0)
+float Attributes_FindOnPlayer(int client, int index, bool multi=false, float defaul=0.0, bool IgnoreWeaponsEquipped = false, bool DoNotIngoreEquippedWeapon = false)
 {
 	bool found;
 	float value = defaul;
@@ -359,31 +359,61 @@ float Attributes_FindOnPlayer(int client, int index, bool multi=false, float def
 		}
 	}
 	
-	int i;
-	while(TF2_GetItem(client, entity, i))
+	if(!IgnoreWeaponsEquipped)
 	{
-		if(index != 128)
+		int i;
+		while(TF2_GetItem(client, entity, i))
 		{
-			attrib = TF2Attrib_GetByDefIndex(entity, 128);
-			if(attrib!=Address_Null && TF2Attrib_GetValue(attrib) && entity!=GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
-				continue;
+			if(index != 128)
+			{
+				attrib = TF2Attrib_GetByDefIndex(entity, 128);
+				if(attrib!=Address_Null && TF2Attrib_GetValue(attrib) && entity!=GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
+					continue;
+			}
+			
+			attrib = TF2Attrib_GetByDefIndex(entity, index);
+			if(attrib != Address_Null)
+			{
+				if(!found)
+				{
+					value = TF2Attrib_GetValue(attrib);
+					found = true;
+				}
+				else if(multi)
+				{
+					value *= TF2Attrib_GetValue(attrib);
+				}
+				else
+				{
+					value += TF2Attrib_GetValue(attrib);
+				}
+			}
 		}
-		
-		attrib = TF2Attrib_GetByDefIndex(entity, index);
-		if(attrib != Address_Null)
+	}
+	else if(DoNotIngoreEquippedWeapon)
+	{
+		int i;
+		while(TF2_GetItem(client, entity, i))
 		{
-			if(!found)
+			if(entity!=GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon")) //Must be same weapon.
+				continue;
+
+			attrib = TF2Attrib_GetByDefIndex(entity, index);
+			if(attrib != Address_Null)
 			{
-				value = TF2Attrib_GetValue(attrib);
-				found = true;
-			}
-			else if(multi)
-			{
-				value *= TF2Attrib_GetValue(attrib);
-			}
-			else
-			{
-				value += TF2Attrib_GetValue(attrib);
+				if(!found)
+				{
+					value = TF2Attrib_GetValue(attrib);
+					found = true;
+				}
+				else if(multi)
+				{
+					value *= TF2Attrib_GetValue(attrib);
+				}
+				else
+				{
+					value += TF2Attrib_GetValue(attrib);
+				}
 			}
 		}
 	}

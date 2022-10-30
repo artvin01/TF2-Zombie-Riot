@@ -2401,13 +2401,13 @@ public void Citizen_ClotThink(int iNPC)
 			
 			if((npc.m_bSeakingMedic || npc.m_bSeakingGeneric) && distance < 5000.0)
 			{
+				HealingCooldown[npc.m_iTargetAlly] = gameTime + 60.0;
+
 				npc.m_bGetClosestTargetTimeAlly = false;
 				npc.m_bSeakingGeneric = false;
 				PF_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_flGetClosestTargetTime = 0.0;
-				
-				HealingCooldown[npc.m_iTargetAlly] = gameTime + 60.0;
 				npc.m_flReloadDelay = gameTime + 1.5;
 				
 				npc.SetActivity("ACT_CIT_HEAL");
