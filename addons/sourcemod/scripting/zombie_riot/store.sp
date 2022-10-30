@@ -1957,12 +1957,20 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 		{
 			if(choice == MenuCancel_ExitBack)
 			{
-				Item item;
+				static Item item;
 				menu.GetItem(0, item.Name, sizeof(item.Name));
-				StoreItems.GetArray(StringToInt(item.Name), item);
-				if(item.Section != -1)
-					StoreItems.GetArray(item.Section, item);
-				
+				int index = StringToInt(item.Name);
+				if(index == -1)
+				{
+					item.Section = index;
+				}
+				else
+				{
+					StoreItems.GetArray(index, item);
+					if(item.Section != -1)
+						StoreItems.GetArray(item.Section, item);
+				}
+
 				MenuPage(client, item.Section);
 			}
 			/*
