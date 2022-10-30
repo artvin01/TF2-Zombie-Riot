@@ -1074,6 +1074,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 				item.GetItemInfo(0, info);
 				
 				ItemCost(client, item, info.Cost);
+
 				if(info.Cost > 0 && free)
 					return;
 				
@@ -1097,7 +1098,47 @@ void Store_BuyClientItem(int client, Item item, ItemInfo info)
 {
 	item.Scaled[client]++;
 	item.Owned[client] = 1;
-	item.Equipped[client] = true;
+
+	int length = StoreItems.Length;
+	static Item item2;
+	//Prevent a rare case of us changing slots, thus them being able to equip multiple weapons of the same type at once when we dont want them.
+	if(item.Slot >= 0)
+	{
+		int count;
+		for(int a; a<length; a++)
+		{
+			StoreItems.GetArray(a, item2);
+			if((item2.Equipped[client]/* || item2.Scaled[client]*/) && item2.Slot == item.Slot)
+				count++;
+		}
+
+		if(count)
+		{
+			bool blocked = false;
+			if(item.Slot >= sizeof(SlotLimits))
+				blocked = true;
+			
+			if(count >= SlotLimits[item.Slot])
+				blocked = true;
+			
+			if(blocked)
+			{
+				item.Equipped[client] = false;
+			}
+			else
+			{
+				item.Equipped[client] = true;
+			}
+		}
+		else
+		{
+			item.Equipped[client] = true;
+		}
+	}
+	else
+	{
+		item.Equipped[client] = true;
+	}
 	
 	if(item.MaxScaled < item.Scaled[client])
 		item.Scaled[client] = item.MaxScaled;
@@ -1717,7 +1758,7 @@ static void MenuPage(int client, int section)
 					continue;
 				
 				StoreItems.GetArray(a, item2);
-				if((item2.Owned[client] || item2.Scaled[client]) && item2.Slot == item.Slot)
+				if((item2.Equipped[client]/* || item2.Scaled[client]*/) && item2.Slot == item.Slot)
 					count++;
 			}
 			
