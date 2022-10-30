@@ -1439,19 +1439,6 @@ public void OnMapStart()
 	
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
-	char buffer[16];
-	int entity = -1;
-	while((entity=FindEntityByClassname(entity, "info_target")) != -1)
-	{
-		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-		if(StrContains(buffer, "zr_escapemode", false))
-			continue;
-		
-		EscapeMode = true;
-		EscapeModeForNpc = true;
-		break;
-	}
-	
 	RoundStartTime = 0.0;
 	cvarTimeScale.SetFloat(1.0);
 	Waves_MapStart();

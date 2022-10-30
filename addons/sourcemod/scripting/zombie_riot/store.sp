@@ -413,7 +413,7 @@ bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 		{
 			StoreItems.GetArray(choiceIndex, item);
 			item.GetItemInfo(choiceInfo, info);
-			Citizen_UpdateWeaponStats(entity, item.NPCWeapon, ItemSell(item, choiceInfo, 0), info);
+			Citizen_UpdateWeaponStats(entity, item.NPCWeapon, ItemSell(item, choiceInfo + 1, 0), info);
 			return view_as<bool>(choiceInfo);
 		}
 	}
@@ -1513,26 +1513,23 @@ static void MenuPage(int client, int section)
 			}
 			else
 			{
-				bool canSell;
-				bool canSellInsideMenu;
 				int style = ITEMDRAW_DEFAULT;
 				if(item.Equipped[client])
 				{
-					if(!EscapeMode && info.Ammo && info.Ammo < Ammo_MAX)
+					if(info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
 					{
 						int cost = AmmoData[info.Ammo][0];
 						FormatEx(buffer, sizeof(buffer), "%t ($%d)", AmmoNames[info.Ammo], cost);
 						if(cost > cash)
 							style = ITEMDRAW_DISABLED;
 					}
-					else
+					else	// No Ammo
 					{
-						canSellInsideMenu = true;
 						FormatEx(buffer, sizeof(buffer), "%t", "Equip");
 						style = ITEMDRAW_DISABLED;
 					}
 				}
-				else if(item.Owned[client] || !info.Cost)
+				else if(item.Owned[client] || !info.Cost)	// Owned already or free
 				{
 					FormatEx(buffer, sizeof(buffer), "%t", "Equip");
 					if(!info.Classname[0])
@@ -1540,18 +1537,12 @@ static void MenuPage(int client, int section)
 						if(item.Owned[client])
 							style = ITEMDRAW_DISABLED;
 					}
-					/*
-					else if(info.Cost)
-					{
-						canSell = true;
-					}
-					*/
 				}
-				else
+				else	// Buy it
 				{
 					ItemCost(client, item, info.Cost);
+
 					bool Maxed_Building = false;
-					
 					if(item.MaxBarricadesBuild)
 					{
 						if(i_BarricadesBuild[client] >= MaxBarricadesAllowed(client))
@@ -1560,6 +1551,7 @@ static void MenuPage(int client, int section)
 							style = ITEMDRAW_DISABLED;
 						}
 					}
+
 					if(Maxed_Building)
 					{
 						FormatEx(buffer, sizeof(buffer), "%t ($%d) [%t] [%i/%i]", "Buy", info.Cost,"MAX BARRICADES OUT CURRENTLY", i_BarricadesBuild[client], MaxBarricadesAllowed(client));
@@ -1568,82 +1560,48 @@ static void MenuPage(int client, int section)
 					{
 						FormatEx(buffer, sizeof(buffer), "%t ($%d)", "Buy", info.Cost);
 					}
+
 					if(info.Cost > cash)
 						style = ITEMDRAW_DISABLED;
-				}
-			//	if(info.Cost)// Just allow selling for items that cost 0, like it doesnt matter in the end, does it ?
-				{
-					if(item.Owned[client])
-					{
-						if(info.Attack3AbilitySlot != 0 || info.Classname[0] || (!info.Cost && Waves_InSetup())) //make sure they cant sell or unqeuip perks though.
-						{
-							canSellInsideMenu = true;
-							canSell = true;
-						}
-					}
 				}
 				
 				char buffer2[16];
 				IntToString(section, buffer2, sizeof(buffer2));
-				menu.AddItem(buffer2, buffer, style);
+				menu.AddItem(buffer2, buffer, style);	// 0
 				
-				if(!EscapeMode && item.Equipped[client])
+				bool canSell = (item.Owned[client] && info.Cost);
+
+				if(item.Equipped[client] && info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
 				{
-					if(info.Ammo && info.Ammo < Ammo_MAX)
-					{
-						canSellInsideMenu = false;
-						int cost = AmmoData[info.Ammo][0];
-						cost *= 10;
-						FormatEx(buffer, sizeof(buffer), "%t x10 ($%d)", AmmoNames[info.Ammo], cost);
-						if(cost > cash)
-							style = ITEMDRAW_DISABLED;
-							
-						menu.AddItem(buffer2, buffer, style);
-					}
+					int cost = AmmoData[info.Ammo][0] * 10;
+					FormatEx(buffer, sizeof(buffer), "%t x10 ($%d)", AmmoNames[info.Ammo], cost);
+					if(cost > cash)
+						style = ITEMDRAW_DISABLED;
+						
+					menu.AddItem(buffer2, buffer, style);	// 1
+				}
+				else if(item.Equipped[client] || canSell)
+				{
+					menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 1
 				}
 
-				//ima just make it so it sells for now since you fucked it up WITHOUT TESTING BATFOXKID
-				if(/*item.FuncOnBuy != INVALID_FUNCTION && */(canSell && (!EscapeMode || Waves_InSetup())) || item.TextStore[0] || item.Level && Waves_InSetup())
+				bool levelPerk = (!info.Classname[0] && !info.Cost && !Waves_InSetup());
+
+				if(item.Equipped[client])
 				{
-					if(item.TextStore[0] || item.Level && Waves_InSetup() || (!info.Cost && !info.Classname[0]))
-					{
-						int style_unequip = ITEMDRAW_DEFAULT;
-						
-						FormatEx(buffer, sizeof(buffer), "------");//my shitcoding, nooooo!!
-						menu.AddItem(buffer2, buffer, ITEMDRAW_DISABLED);
-						
-						FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
-						if(!item.Owned[client])
-						{
-							style_unequip = ITEMDRAW_DISABLED;
-						}
-						menu.AddItem(buffer2, buffer, style_unequip);
-						menu.ExitBackButton = true;
-						menu.Display(client, MENU_TIME_FOREVER);
-						return;
-					}
-					if(canSellInsideMenu)
-					{
-						FormatEx(buffer, sizeof(buffer), "------");//my shitcoding, nooooo!!
-						menu.AddItem(buffer2, buffer, ITEMDRAW_DISABLED);
-					}
-					if(item.Equipped[client])
-					{
-						FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
-						menu.AddItem(buffer2, buffer);
-					}
-					else
-					{
-						FormatEx(buffer, sizeof(buffer), "------");//my shitcoding, nooooo!!
-						menu.AddItem(buffer2, buffer, ITEMDRAW_DISABLED);
-					}
-					
-					if(info.Cost)
-					{
-						int sell = ItemSell(item, level, client);
-						FormatEx(buffer, sizeof(buffer), "%t ($%d) | (%t: $%d)", "Sell", sell, "Credits After Selling",sell + (CurrentCash-CashSpent[client]));
-						menu.AddItem(buffer2, buffer);
-					}
+					FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
+					menu.AddItem(buffer2, buffer, levelPerk ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);	// 2
+				}
+				else if(canSell)
+				{
+					menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 2
+				}
+
+				if(canSell)
+				{
+					int sell = ItemSell(item, level, client);
+					FormatEx(buffer, sizeof(buffer), "%t ($%d) | (%t: $%d)", "Sell", sell, "Credits After Selling",sell + (CurrentCash-CashSpent[client]));	// 3
+					menu.AddItem(buffer2, buffer);
 				}
 			}
 			
