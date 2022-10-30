@@ -1287,15 +1287,15 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const color[4])
 			}
 			else if(ZR_GetWaveCount()==30)
 			{
-				alpha=2.25;
+				alpha=1.75;
 			}
 			else if(ZR_GetWaveCount()==45)
 			{
-				alpha=3.75;
+				alpha=2.25;
 			}
 			else if(ZR_GetWaveCount()==60)
 			{
-				alpha=6.0;
+				alpha=2.75;
 			}
 			
 			makeexplosion(client, client, startPosition, "", RoundToCeil(150*alpha), 350);
