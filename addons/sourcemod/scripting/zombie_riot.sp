@@ -1439,19 +1439,6 @@ public void OnMapStart()
 	
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
-	char buffer[16];
-	int entity = -1;
-	while((entity=FindEntityByClassname(entity, "info_target")) != -1)
-	{
-		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-		if(StrContains(buffer, "zr_escapemode", false))
-			continue;
-		
-		EscapeMode = true;
-		EscapeModeForNpc = true;
-		break;
-	}
-	
 	RoundStartTime = 0.0;
 	cvarTimeScale.SetFloat(1.0);
 	Waves_MapStart();
@@ -2109,6 +2096,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		
 	   		b_ThisEntityIgnored[client] = true;
 	   		
+
 	   		int weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword");
 	   		
 	   		TF2Attrib_RemoveAll(weapon_index);

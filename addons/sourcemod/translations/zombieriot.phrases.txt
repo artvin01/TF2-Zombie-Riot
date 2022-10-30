@@ -39,7 +39,7 @@
 		"es"		"Has subido de nivel {1}\nHas desbloqueado:"
 		"fr"		"Vous avez atteint le niveau {1}\nVous débloquez :"
 		"de"		"Du bust ein level Aufgestiegen {1}\nDu hast freigeschalted:"
-		"pt"		"Você subiu de nivel! Level {1} \nVocê desbloqueou:
+		"pt"		"Você subiu de nivel! Level {1} \nVocê desbloqueou:"
 	}
 	"None"
 	{
@@ -507,7 +507,6 @@
 		"pl"		"Bateria do lasera"
 		"es"		"Baterias Láser"
 		"fr"		"Batterie de laser"
-		"de"		"Laser-Batterie"
 		"pt"		"Baterias Laser"
 	}
 	"Out of Laser Battery"
@@ -866,7 +865,7 @@
 		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot and backstab damage"
 		"ru" 		"СНАЙПЕР-ЛАЙМ! 1.35x точность оружия и 1.25x дополнительного урона от выстрела в голову и удар в спину"
 		"de"		"TODESSCHUSS DAIQUIRI! 1.35-fache Waffengenauigkeit und 1.25-facher zusätzlicher Kopfschussschaden und Rücken messerstich schaden"
-		"pt"		TIRO MORTO DE DAIQUIRI! 1.35x Precisão com armas e 1.25x Dano extra com tiros na cabeça e facas nas costas"
+		"pt"		"TIRO MORTO DE DAIQUIRI! 1.35x Precisão com armas e 1.25x Dano extra com tiros na cabeça e facas nas costas"
 	}
 	"Widows Wine Recieved"
 	{
@@ -1009,11 +1008,7 @@
 	}
 	"Extra Buttons Explained"
 	{
-
-  //"ru" 		"На картах спасения можно купить только перки определённого уровня.\nПодобрать предмет - R или ПКМ.\nНекоторые карты имеют особые предметы. Подобрать - R. Бросить - БРОСИТЬ ДИПЛОМАТ или ''dropitem'' в консоли.\nРедкость предметов: Обычное, зелёное, синее, жёлтое, красное, фиолетовое.\n Выше цвет означает лучше, чёрный означает, что это особый предмет карты."
-	//"de"		"Während der Flucht Karten können nur Level Perks gekauft werden.\nSie können Gegenstände aufheben mit NACHLADEN oder MAUS2.\nEin paar Karten haben Speziale Gegenstände, heben sie die auf mit NACHLADEN und lassen sie es fallen mit ihren L Key(dropitem).\n Gegenstände Seltenheit in reihe: Normal, Grüne, Blau, Gelb, Rot, Violett.\nHöhere Farbe ist besser, Schwarze ist Spezial."
-	//"pt"		"Durante mapas de Fuga apenas habilidades de nível podem ser utilizadas.\nVocÊ pode pegar itens com R ou M2.\nAlguns mapas só tem itens especiais, pegue-os usando R e os solte usando o botão de soltar a inteligência ou ''dropitem'' no console se você não tiver uma que faça isso.\nRaridade dos itens em ordem:Normal, Verde, Azul, Amarelo, Vermelho, Roxo.\n Quanto maior a cor melhor, Preto significa que é um item específico do mapa ou especial."
-    "pt"    "Inspecionar Arma: Permite você acesso rápido à arma que você está utilizando na loja, para por exemplo, comprar munição"
+		"pt"    	"Botão da Loja + Inspecionar Arma: Permite você acesso rápido à arma que você está utilizando na loja, para por exemplo, comprar munição"
 		"en" 		"Store Button + Inspect Weapon: Allows you to instantly access your holding weapon in the store, to for example, buy ammo."
 	}
 	"Drank Mana Regen Potion"
@@ -1021,7 +1016,7 @@
 		"en" 		"You just drank your Mana regen potion, you gain back all your mana! You will have it back in 60 seconds."
 		"ru" 		"Вы только что выпили зелье регенерации маны и восстановили себе всю ману! Вы получите зелье обратно через 60 секунд."
 		"de"		"Sie haben ihren Mana trank getrunken, sie bekommen ihre ganze Mana zurück! Sie müssen 60 Sekunden warten, um es wiederzubekommen."
-		"pt"		"Você acabou de beber uma poção de regeneração de mana, você recuperou toda sua mana! Você terá outra em 60 segundos.
+		"pt"		"Você acabou de beber uma poção de regeneração de mana, você recuperou toda sua mana! Você terá outra em 60 segundos."
 	}
 	"Mana Regen Potion Back"
 	{
@@ -1400,7 +1395,7 @@
 	{		
 		"en"		"Your MOUSE3 Ability is ready again to be used!"
 		"ru"		"Ваша способность MOUSE3 снова готова к использованию!"
-		"pt"		"Sua habilidade no MOUSE3 está pronta para ser utilizada!
+		"pt"		"Sua habilidade no MOUSE3 está pronta para ser utilizada!"
 	}
 	"You got your money back npc"
 	{
@@ -1418,19 +1413,19 @@
 	"Not Enough Builder Upgrades"
 	{
 		"en"		"You do not have enough builder upgrades to use this skill."
-		"pt"		"Você não tem melhorias de construtor suficiente para usar está habilidade.
+		"pt"		"Você não tem melhorias de construtor suficiente para usar está habilidade."
 		"ru"		"У вас недостаточно улучшений строителя, чтобы использовать это умение."
 	}
 	"tutorial_1"
 	{
-		"en"		"This is the short Tutorial. Open chat and type ''/store'' to open the store!"
-		"pt"		"Isto é um tutorial curto. Abra o chat e digite ''/store'' para abrir a loja!"
+		"en"		"This is the short Tutorial. Open the scoreboard (TAB) to open the store."
+		"pt"		"Isto é um tutorial curto. Pressione o botão do placar (TAB) para abrir a loja."
+		"ru"		"Это краткое руководство. Откройте чат и введите ''/store'', чтобы открыть магазин!"
 	}
 	"tutorial_2"
 	{
-		"en"		"Good! You can also Open the store with %%+showscores%% when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want.\nOpen chat and type ''/store'' to open the store again if it got closed!"
-		"pt"		"Ótimo! você pode abrir a loja tbm com %%+showscores%% quando o tutorial acabar.\nAgora navegue ate a seção de armas e compre uma arma.n\Abra o chat e digite ''/store'' para abrir a loja de novo caso ela feche!"
-		"ru"		"Отлично! Вы также можете открыть магазин клавишей %%+showscores%%, когда закончите обучение.\nНу а теперь перейдите к оружию и купите любое оружие, какое захотите."
+		"en"		"Good! Now Navigate to weapons and buy any weapon you want.\nOpen the scoreboard (TAB) to open the store again if it got closed."
+		"pt"		"Otimo! Agora navegue até a seção de armas e compre uma arma que você goste.\nAbra o placar (TAB) para abrir a loja novamente caso ela feche."
 	}
 	"tutorial_3"
 	{
@@ -1454,42 +1449,52 @@
 	"Loadouts"
 	{
 		"en"		"Loadouts"
+		"pt"		"Loadouts"
 	}
 	"All Items"
 	{
 		"en"		"Buy All Items"
+		"pt"		"Comprar tudo"
 	}
 	"Free Only"
 	{
 		"en"		"Buy Only Free Items"
+		"pt"		"Comprar apenas os itens grátis"
 	}
 	"Getting Your Items"
 	{
 		"en"		"Getting Your Items..."
+		"pt"		"Adquirindo seus itens..."
 	}
 	"Delete Loadout"
 	{
 		"en"		"Delete Loadout"
+		"pt"		"Deletar Loadout"
 	}
 	"Save New"
 	{
 		"en"		"Enter name in chatbox to create a new loadout"
+		"pt"		"Digite no chat o nome do Loadout que você quer criar"
 	}
 	"Invalid Name"
 	{
 		"en"		"Make sure your name is under 32 characters and does not contain special characters"
+		"pt"		"Assegure-se de não passar de 32 caracteres e não inserir caracteres especiais no nome"
 	}
 	"Loadout Slots"
 	{
 		"#format"	"{1:d}"
 		"en"		"{1} Loadout Slot(s)"
+		"pt"		"Vagas para Loadout: {1}"
 	}
 	"At Weapon Limit"
 	{
 		"en"		"You reached the maximum amount of held weapons, some may not have been equipped."
+		"pt"		"Você alcançou o numero maximo de armas que você pode segurar, algumas podem não ter sido equipadas."
 	}
 	"Press Button To Switch"
 	{
 		"en"		"Multiple Weapons: Press Inspect"
+		"pt"		"Multiplas Armas: Pressione o Botão de inspecionar"
 	}
 }

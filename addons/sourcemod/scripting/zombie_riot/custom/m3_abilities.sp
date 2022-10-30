@@ -347,7 +347,7 @@ public void PlaceableTempomaryHealingGrenade(int client)
 			
 			float Healing_Amount = 10.0;
 			
-			Healing_Amount *= Attributes_FindOnPlayer(client, 8, true, 1.0);
+			Healing_Amount *= Attributes_FindOnPlayer(client, 8, true, 1.0, true);
 			
 			f_HealDelay[entity] = GetGameTime() + 1.0;
 			f_Duration[entity] = GetGameTime() + 10.0;

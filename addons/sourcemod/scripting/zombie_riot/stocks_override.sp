@@ -39,6 +39,12 @@ TODO:
 */
 
 //Override normal one to add our own logic for our own needs so we dont need to make a whole new thing.
+
+/*
+Always check if any of the wearables has this netprop. HasEntProp(WearableEntityIndex, Prop_Send, "m_nRenderMode"), this is needed cus what if
+an npc uses a particle effect for example? (fusion warrior)
+*/
+
 stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntityColour = true, int SetOverride = 0, bool ingore_wearables = true, bool dontchangewearablecolour = true)
 {
 	if(TrueEntityColour || SetOverride != 0)
@@ -49,7 +55,7 @@ stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntit
 			for(int WearableSlot=0; WearableSlot<=5; WearableSlot++)
 			{
 				int WearableEntityIndex = EntRefToEntIndex(i_Wearable[entity][WearableSlot]);
-				if(IsValidEntity(WearableEntityIndex))
+				if(IsValidEntity(WearableEntityIndex) && HasEntProp(WearableEntityIndex, Prop_Send, "m_nRenderMode"))
 				{	
 					if(i_EntityRenderColour4[WearableEntityIndex] != 0)
 					{
@@ -88,7 +94,7 @@ stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntit
 			for(int WearableSlot=0; WearableSlot<=5; WearableSlot++)
 			{
 				int WearableEntityIndex = EntRefToEntIndex(i_Wearable[entity][WearableSlot]);
-				if(IsValidEntity(WearableEntityIndex))
+				if(IsValidEntity(WearableEntityIndex) && HasEntProp(WearableEntityIndex, Prop_Send, "m_nRenderMode"))
 				{	
 					if(i_EntityRenderColour4[WearableEntityIndex] != 0)
 					{					
@@ -126,7 +132,7 @@ stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=25
 			for(int WearableSlot=0; WearableSlot<=5; WearableSlot++)
 			{
 				int WearableEntityIndex = EntRefToEntIndex(i_Wearable[entity][WearableSlot]);
-				if(IsValidEntity(WearableEntityIndex))
+				if(IsValidEntity(WearableEntityIndex) && HasEntProp(WearableEntityIndex, Prop_Send, "m_nRenderMode"))
 				{	
 					if(i_EntityRenderColour4[WearableEntityIndex] != 0)
 					{
@@ -156,7 +162,7 @@ stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=25
 			for(int WearableSlot=0; WearableSlot<=5; WearableSlot++)
 			{
 				int WearableEntityIndex = EntRefToEntIndex(i_Wearable[entity][WearableSlot]);
-				if(IsValidEntity(WearableEntityIndex))
+				if(IsValidEntity(WearableEntityIndex) && HasEntProp(WearableEntityIndex, Prop_Send, "m_nRenderMode"))
 				{	
 					if(i_EntityRenderColour4[WearableEntityIndex] != 0)
 					{
