@@ -67,6 +67,8 @@ enum struct ItemInfo
 	bool CannotBeSavedByCookies;
 	
 	int Reload_ModeForce;
+
+	float DamageFallOffForWeapon; //Can this accept reversed?
 	
 	Function FuncAttack;
 	Function FuncAttack2;
@@ -126,6 +128,9 @@ enum struct ItemInfo
 		
 		FormatEx(buffer, sizeof(buffer), "%sreload_mode", prefix);
 		this.Reload_ModeForce = kv.GetNum(buffer);
+
+		FormatEx(buffer, sizeof(buffer), "%sdamage_falloff", prefix);
+		this.DamageFallOffForWeapon		= kv.GetFloat(buffer, 0.9);
 		
 		//FormatEx(buffer, sizeof(buffer), "%ssniperfix", prefix);
 		//this.SniperBugged = view_as<bool>(kv.GetNum(buffer));
@@ -3011,6 +3016,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 				i_CustomWeaponEquipLogic[entity] = 0;
 				i_SemiAutoWeapon[entity] = false;
 				i_WeaponCannotHeadshot[entity] = false;
+				i_WeaponDamageFalloff[entity] = 1.0;
 				
 				if(entity > MaxClients)
 				{
@@ -3109,6 +3115,10 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 					b_BlockLagCompInternal[entity] 				= info.BlockLagCompInternal;
 					
 				//	EntityFuncReloadSingular5[entity]  = info.FuncReloadSingular5;
+					if(info.DamageFallOffForWeapon != 0.0)
+					{
+						i_WeaponDamageFalloff[entity] 			= info.DamageFallOffForWeapon;
+					}
 					if (info.Reload_ModeForce == 1)
 					{
 					//	SetWeaponViewPunch(entity, 100.0); unused.

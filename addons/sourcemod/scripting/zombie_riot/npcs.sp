@@ -840,21 +840,44 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 	int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
 	if(IsValidEntity(weapon))
 	{
+		if(damagetype & DMG_BULLET)
+		{
+			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
+			{
+				float AttackerPos[3];
+				float VictimPos[3];
+				
+				AttackerPos = WorldSpaceCenter(attacker);
+				VictimPos = WorldSpaceCenter(victim);
+
+				float distance = GetVectorDistance(AttackerPos, VictimPos, true);
+				
+				distance -= 1600.0// Give 60 units of range cus its not going from their hurt pos
+
+				if(distance < 0.1)
+				{
+					distance = 0.1;
+				}
+
+				damage *= Pow(i_WeaponDamageFalloff[weapon], (distance/250000.0)); //this is 500, we use squared for optimisations sake
+			}
+		}
 		if(!i_WeaponCannotHeadshot[weapon])
 		{
 			if(hitgroup == HITGROUP_HEAD)
 			{
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
-					damage *= 1.65;
+					damage *= 2.0;
 				}
 				else
 				{
-					damage *= 1.4;
+					damage *= 1.65;
 				}
+
 				if(i_CurrentEquippedPerk[attacker] == 5)
 				{
-					damage *= 1.25;
+					damage *= 1.35;
 				}
 				
 				int pitch = GetRandomInt(90, 110);
@@ -920,14 +943,14 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			{
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
-					damage *= 0.75;
+					damage *= 0.65;
 					return Plugin_Changed;
 				}
-				return Plugin_Continue;		
+				return Plugin_Changed;
 			}
 		}
 	}
-	return Plugin_Continue;
+	return Plugin_Changed;
 }
 		
 float f_CooldownForHurtHud[MAXPLAYERS];	
@@ -1232,7 +1255,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		
 			damage = modified_damage;
-			
+
 			if(i_ArsenalBombImplanter[weapon] > 0)
 			{
 				if(f_ChargeTerroriserSniper[weapon] > 149.0)
@@ -1301,7 +1324,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 							
 							if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
 							{
-								damage *= 1.25;
+								damage *= 1.35;
 							}
 							
 							if(EscapeMode)
