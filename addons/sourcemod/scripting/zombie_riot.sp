@@ -1808,6 +1808,11 @@ public Action Command_ToggleReload(int client, int args)
 	}
 	return Plugin_Handled;
 }
+
+public void OnClientAuthorized(int client)
+{
+	Database_ClientAuthorized(client);
+}
 					
 public void OnClientPutInServer(int client)
 {

@@ -94,8 +94,6 @@ public void Database_ClientSetup(Database db, int userid, int numQueries, DBResu
 		delete Loadouts[client];
 		Loadouts[client] = new ArrayList(ByteCountToCells(sizeof(buffer)));
 		
-		PrintToChatAll("Start");
-		PrintToServer("Start");
 		while(results[0].MoreRows)
 		{
 			if(results[0].FetchRow())
