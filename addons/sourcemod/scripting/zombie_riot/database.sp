@@ -94,11 +94,15 @@ public void Database_ClientSetup(Database db, int userid, int numQueries, DBResu
 		delete Loadouts[client];
 		Loadouts[client] = new ArrayList(ByteCountToCells(sizeof(buffer)));
 		
+		PrintToChatAll("Start");
+		PrintToServer("Start");
 		while(results[0].MoreRows)
 		{
 			if(results[0].FetchRow())
 			{
 				results[0].FetchString(0, buffer, sizeof(buffer));
+				PrintToChatAll(buffer);
+				PrintToServer(buffer);
 				if(Loadouts[client].FindString(buffer) == -1)
 					Loadouts[client].PushString(buffer);
 			}
