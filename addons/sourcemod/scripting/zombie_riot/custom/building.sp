@@ -2225,7 +2225,10 @@ public Action Building_CheckTimer(Handle timer, int ref)
 					return Plugin_Stop;
 			
 				Store_Unequip(client, StoreWeapon[weapon]);
+				TF2_RemoveWeaponSlot(client, TFWeaponSlot_Grenade);
+				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 				MenuPage(client, StoreWeapon[weapon]);
+				Building[client] = INVALID_FUNCTION;
 			}
 		}
 	}
