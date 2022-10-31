@@ -603,7 +603,7 @@ public Action QuantumActivate(Handle cut_timer, int ref)
 		ViewChange_PlayerModel(client);
 		
 		float HealthMulti = float(CashSpentTotal[client]);
-		HealthMulti = Pow(HealthMulti, 1.25);
+		HealthMulti = Pow(HealthMulti, 1.15);
 		HealthMulti *= 0.025;
 
 		SetEntityHealth(client, RoundToCeil(HealthMulti));
