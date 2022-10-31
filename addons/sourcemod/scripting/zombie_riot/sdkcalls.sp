@@ -497,7 +497,7 @@ public void Manual_Impulse_101(int client, int health)
 			{
 				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
 				{
-					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][0]);
+					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][1]);
 					f_MedigunChargeSave[client][1] = 0.0;
 				}
 			}
@@ -505,7 +505,7 @@ public void Manual_Impulse_101(int client, int health)
 			{
 				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
 				{
-					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][0]);
+					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][2]);
 					f_MedigunChargeSave[client][2] = 0.0;
 				}
 			}

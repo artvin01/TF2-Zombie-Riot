@@ -1375,7 +1375,8 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 
 void Citizen_SetupStart()
 {
-	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
+	int i = -1;
+	while((i = FindEntityByClassname(i, "base_boss")) != -1)
 	{
 		if(i_NpcInternalId[i] == CITIZEN)
 		{
