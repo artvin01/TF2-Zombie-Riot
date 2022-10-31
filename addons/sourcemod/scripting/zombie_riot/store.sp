@@ -2882,7 +2882,7 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 		SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	}
 	
-	if(!i_ClientHasCustomGearEquipped[client] && StoreItems)
+	if(!i_ClientHasCustomGearEquipped[client])
 	{
 		int count;
 		bool found = false;
@@ -3481,6 +3481,9 @@ int Store_GiveSpecificItem(int client, const char[] name)
 
 void Store_RemoveSpecificItem(int client, const char[] name)
 {
+	if(!StoreItems)
+		return;
+	
 	static Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
