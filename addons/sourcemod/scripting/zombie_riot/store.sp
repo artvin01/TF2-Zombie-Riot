@@ -2810,7 +2810,7 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 		TF2_RegeneratePlayer(client);
 		return;
 	}
-	else
+	else if(StoreItems)
 	{
 		Store_RemoveSpecificItem(client, "Teutonic Longsword");
 	}
