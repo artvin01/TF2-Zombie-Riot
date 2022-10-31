@@ -3481,6 +3481,9 @@ int Store_GiveSpecificItem(int client, const char[] name)
 
 void Store_RemoveSpecificItem(int client, const char[] name)
 {
+	if(!StoreItems)
+		return;
+	
 	static Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
