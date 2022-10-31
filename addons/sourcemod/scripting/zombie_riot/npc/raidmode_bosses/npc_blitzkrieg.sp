@@ -828,22 +828,24 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		CPrintToChatAll("{crimson}Blitzkrieg{default}: {yellow}Life: %i!",i_NpcCurrentLives[npc.index]);
 		
-		switch(GetRandomInt(1, 3))
+		if(IsValidClient(closest))
 		{
-			case 1:
+			switch(GetRandomInt(1, 3))
 			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: This is only just the beggining {yellow}%N {default}!", closest);
-			}
-			case 2:
-			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: You think this is the end {yellow}%N {default}?", closest);
-			}
-			case 3:
-			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: You fool {yellow}%N {default}!", closest);
+				case 1:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: This is only just the beggining {yellow}%N {default}!", closest);
+				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: You think this is the end {yellow}%N {default}?", closest);
+				}
+				case 3:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: You fool {yellow}%N {default}!", closest);
+				}
 			}
 		}
-			
 		
 		EmitSoundToAll("mvm/mvm_tank_end.wav");	
 		
@@ -913,20 +915,23 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 		
 		CPrintToChatAll("{crimson}Blitzkrieg{default}: {yellow}Life: %i!",i_NpcCurrentLives[npc.index]);
-		
-		switch(GetRandomInt(1, 3))
+
+		if(IsValidClient(closest))
 		{
-			case 1:
+			switch(GetRandomInt(1, 3))
 			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: Don't get too cocky {yellow}%N {default}!", closest);
-			}
-			case 2:
-			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: The end is near {yellow}%N {default} are you sure you want to proceed?", closest);
-			}
-			case 3:
-			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: You Imbecil {yellow}%N {default}!", closest);
+				case 1:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: Don't get too cocky {yellow}%N {default}!", closest);
+				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: The end is near {yellow}%N {default} are you sure you want to proceed?", closest);
+				}
+				case 3:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: You Imbecil {yellow}%N {default}!", closest);
+				}
 			}
 		}
 		
@@ -958,19 +963,22 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		CPrintToChatAll("{crimson}Blitzkrieg{default}: {yellow}Life: %i!",i_NpcCurrentLives[npc.index]);
 		
-		switch(GetRandomInt(1, 3))
+		if(IsValidClient(closest))
 		{
-			case 1:
+			switch(GetRandomInt(1, 3))
 			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: Your own foolishness lead you to this {yellow}%N {default} prepare for complete {red} BLITZKRIEG", closest);
-			}
-			case 2:
-			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: The end is {red} here {yellow}%N {default} time for you to learn what {red} BLITZKRIEG {default} means", closest);
-			}
-			case 3:
-			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: You've gone and done it {red} ITS TIME TO DIE {yellow}%N {red} PREPARE FOR FULL BLITZKRIEG", closest);
+				case 1:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: Your own foolishness lead you to this {yellow}%N {default} prepare for complete {red} BLITZKRIEG", closest);
+				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: The end is {red} here {yellow}%N {default} time for you to learn what {red} BLITZKRIEG {default} means", closest);
+				}
+				case 3:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: You've gone and done it {red} ITS TIME TO DIE {yellow}%N {red} PREPARE FOR FULL BLITZKRIEG", closest);
+				}
 			}
 		}
 		
@@ -1107,7 +1115,7 @@ public void Blitzkrieg_IOC_Invoke(int ref, int enemy)	//Ion cannon from above
 		static float IOCdamage=100.0;
 		
 		float vecTarget[3];
-		GetClientEyePosition(enemy, vecTarget);
+		vecTarget = WorldSpaceCenter(enemy);
 		vecTarget[2] -= 54.0;
 		
 		Handle data = CreateDataPack();
