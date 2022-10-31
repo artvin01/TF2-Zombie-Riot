@@ -2611,7 +2611,9 @@ void Citizen_MiniBossSpawn(int spawner)
 	int talkingTo;
 	float distance;
 	
-	float vecMe[3]; vecMe = WorldSpaceCenter(spawner);
+//	float vecMe[3]; vecMe = WorldSpaceCenter(spawner);
+	float vecMe[3];
+	GetEntPropVector(spawner, Prop_Data, "m_vecAbsOrigin", vecMe); 
 	float vecTarget[3];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 	{
