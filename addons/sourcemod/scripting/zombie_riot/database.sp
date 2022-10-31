@@ -124,7 +124,7 @@ bool Database_SaveGameData(int client)
 			int owned, scale, equip;
 			for(int i; Store_GetNextItem(client, i, owned, scale, equip); i++)
 			{
-				DataBase.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GAMEDATA ... " (steamid, item, owned, scale, equip) VALUES ('%d', '%d', '%d', '%d', '%d')", id, i, owned, scale, equip);
+				DataBase.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GAMEDATA ... " (steamid, item, level, scale, equip) VALUES ('%d', '%d', '%d', '%d', '%d')", id, i, owned, scale, equip);
 				tr.AddQuery(buffer);
 			}
 			

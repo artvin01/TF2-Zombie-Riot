@@ -2928,13 +2928,16 @@ static void CheckMultiSlots(int client)
 	{
 		GetEntityClassname(entity, buffer, sizeof(buffer));
 		int slot = TF2_GetClassnameSlot(buffer);
-		if(exists[slot])
+		if(slot >= 0 && slot < sizeof(exists))
 		{
-			HasMultiInSlot[client][slot] = true;
-		}
-		else
-		{
-			exists[slot] = true;
+			if(exists[slot])
+			{
+				HasMultiInSlot[client][slot] = true;
+			}
+			else
+			{
+				exists[slot] = true;
+			}
 		}
 	}
 }
