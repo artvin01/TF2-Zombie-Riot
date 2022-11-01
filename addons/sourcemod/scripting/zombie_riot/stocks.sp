@@ -294,15 +294,27 @@ stock bool KvJumpToKeySymbol2(KeyValues kv, int id)
 	}
 	return false;
 }
-stock int GetClientPointVisible(int iClient, float flDistance = 100.0)
+stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool ignore_allied_npc = false)
 {
 	float vecOrigin[3], vecAngles[3], vecEndOrigin[3];
 	GetClientEyePosition(iClient, vecOrigin);
 	GetClientEyeAngles(iClient, vecAngles);
 	
-	Handle hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_DontHitEntityOrPlayer, iClient);
-	TR_GetEndPosition(vecEndOrigin, hTrace);
-	
+	Handle hTrace;
+
+	//Mask shot here, reasoning being that it should be easiser to interact with buildings and npcs if they are very close to eachother or inside (This wont fully fix it, but i see not other way.)
+	//This is client compensated anyways, and reviving is still via hull and not hitboxes.
+	if(!ignore_allied_npc)
+	{
+		hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SHOT | CONTENTS_SOLID ), RayType_Infinite, Trace_DontHitEntityOrPlayer, iClient);
+		TR_GetEndPosition(vecEndOrigin, hTrace);
+	}
+	else
+	{
+		hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SHOT | CONTENTS_SOLID ), RayType_Infinite, Trace_DontHitEntityOrPlayerOrAlliedNpc, iClient);
+		TR_GetEndPosition(vecEndOrigin, hTrace);		
+	}
+
 	int iReturn = -1;
 	int iHit = TR_GetEntityIndex(hTrace);
 	
@@ -338,6 +350,7 @@ stock int GetClientPointVisibleOnlyClient(int iClient, float flDistance = 100.0)
 	GetClientEyePosition(iClient, vecOrigin);
 	GetClientEyeAngles(iClient, vecAngles);
 	
+
 	Handle hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_OnlyPlayer, iClient);
 	TR_GetEndPosition(vecEndOrigin, hTrace);
 	
@@ -1100,6 +1113,39 @@ public bool Trace_OnlyPlayer(int entity, int mask, any data)
 		if(TeutonType[entity] != TEUTON_NONE)
 			return false;
 	}
+	return entity!=data;
+}
+
+public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any data)
+{
+	if(entity <= MaxClients)
+	{
+		if(entity != data) //make sure that they are not dead, if they are then just ignore them/give special shit
+		{
+			int Building_Index = EntRefToEntIndex(Building_Mounted[entity]);
+			if(dieingstate[entity] > 0)
+			{
+				if(!b_LeftForDead[entity])
+				{
+					return entity!=data;
+				}
+				else
+				{
+					return false;	
+				}
+			}
+			else if(Building_Index == 0 || !IsValidEntity(Building_Index))
+			{
+				return false;
+			}
+			return Building_Index!=data;
+		}
+	}
+	if(entity > MaxClients && b_IsAlliedNpc[entity])
+	{
+		return false;
+	}
+	
 	return entity!=data;
 }
 

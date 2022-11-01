@@ -6069,10 +6069,10 @@ stock Custom_Knockback(int attacker, int enemy, float knockback, bool ignore_att
 public int Can_I_See_Enemy(int attacker, int enemy)
 {
 	Handle trace; 
-	float pos_npc[3]; GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", pos_npc);
-	float pos_enemy[3]; GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", pos_enemy);
-	pos_npc[2] += 45.0;
-	pos_enemy[2] += 35.0;
+	float pos_npc[3];
+	float pos_enemy[3];
+	pos_npc = WorldSpaceCenter(attacker);
+	pos_enemy = WorldSpaceCenter(enemy);
 	
 	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_NPCSOLID, RayType_EndPoint, BulletAndMeleeTrace, attacker);
 	int Traced_Target;
@@ -6089,11 +6089,12 @@ public int Can_I_See_Enemy(int attacker, int enemy)
 
 public bool Can_I_See_Enemy_Only(int attacker, int enemy)
 {
-	Handle trace; 
-	float pos_npc[3]; GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", pos_npc);
-	float pos_enemy[3]; GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", pos_enemy);
-	pos_npc[2] += 45.0;
-	pos_enemy[2] += 35.0;
+	Handle trace;
+	float pos_npc[3];
+	float pos_enemy[3];
+	pos_npc = WorldSpaceCenter(attacker);
+	pos_enemy = WorldSpaceCenter(enemy);
+
 	
 	AddEntityToTraceStuckCheck(enemy);
 	
