@@ -194,6 +194,17 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 	{
 		if(iBuildingDependency[buildingHit])
 		{
+			if(IsValidClient(client))
+			{
+				if(f_DelayBuildNotif[client] < GetGameTime())
+				{
+					f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
+				}
+			}
 			DHookSetReturn(hReturn, false);
 			return MRES_ChangedOverride;
 		}
@@ -239,6 +250,17 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		}
 		if(FloatAbs(endPos2[2]-endPos[2])<Delta)
 		{
+			if(IsValidClient(client))
+			{
+				if(f_DelayBuildNotif[client] < GetGameTime())
+				{
+					f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
+				}
+			}
 			DHookSetReturn(hReturn, false);
 			return MRES_ChangedOverride;
 		}
@@ -269,6 +291,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		if(f_DelayBuildNotif[client] < GetGameTime())
 		{
 			f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
