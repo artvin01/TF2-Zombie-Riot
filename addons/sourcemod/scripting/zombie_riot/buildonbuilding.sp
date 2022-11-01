@@ -133,7 +133,8 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 	{
 		return MRES_Ignored;
 	}
-	if(GetEntPropEnt(pThis, Prop_Send, "m_hBuilder")==-1)
+	int client = GetEntPropEnt(pThis, Prop_Send, "m_hBuilder")
+	if(client==-1)
 	{
 		DHookSetReturn(hReturn, false);
 		return MRES_ChangedOverride;
@@ -147,11 +148,11 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 			SDKCall_SetLocalOrigin(baseboss_index_allied, Get_old_pos_back[baseboss_index_allied]);
 		}
 	}
-	for(int client=1; client<=MaxClients; client++)
+	for(int clientLoop=1; clientLoop<=MaxClients; clientLoop++)
 	{
-		if(IsClientInGame(client) && client != i_DoNotTeleportThisPlayer)
+		if(IsClientInGame(clientLoop) && clientLoop != i_DoNotTeleportThisPlayer)
 		{
-			SetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[client]);
+			SetEntPropVector(clientLoop, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[clientLoop]);
 		}
 	}
 
@@ -170,6 +171,16 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 			if(iBuildingDependency[i]==pThis)
 			{
 				iBuildingDependency[i]=0;
+			}
+		}
+		if(IsValidClient(client))
+		{
+			if(f_DelayBuildNotif[client] < GetGameTime())
+			{
+				f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+				SetHudTextParams(-1.0, 0.90, 0.5, 34, 139, 34, 255);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
 			}
 		}
 		return MRES_Ignored;
@@ -240,8 +251,28 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		datapack.Reset();
 		DHookSetReturn(hReturn, true);
 		RequestFrame(Frame_TeleportBuilding, datapack);
+		if(IsValidClient(client))
+		{
+			if(f_DelayBuildNotif[client] < GetGameTime())
+			{
+				f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+				SetHudTextParams(-1.0, 0.90, 0.5, 34, 139, 34, 255);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
+			}
+		}
 		npc.bBuildingIsStacked = true;
 		return MRES_ChangedOverride;
+	}
+	if(IsValidClient(client))
+	{
+		if(f_DelayBuildNotif[client] < GetGameTime())
+		{
+			f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+			SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
+		}
 	}
 	DHookSetReturn(hReturn, false);
 	return MRES_ChangedOverride;

@@ -332,6 +332,7 @@ int Animation_Index[MAXTF2PLAYERS];
 bool b_IsPlayerNiko[MAXTF2PLAYERS];
 
 float delay_hud[MAXTF2PLAYERS];
+float f_DelayBuildNotif[MAXTF2PLAYERS];
 
 int Current_Mana[MAXTF2PLAYERS];
 float Mana_Regen_Delay[MAXTF2PLAYERS];
@@ -4176,4 +4177,5 @@ public void MapStartResetAll()
 	SniperMonkey_ClearAll();
 	Weapon_Cspyknife_ClearAll();
 	Zero(f_TutorialUpdateStep);
+	Zero(f_DelayBuildNotif);
 }

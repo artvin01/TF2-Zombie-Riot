@@ -1492,4 +1492,12 @@
 	{
 		"en"		"Multiple Weapons: Press Inspect"
 	}
+	"Cannot Build Here"
+	{
+		"en"		"Something is blocking your building from being placed."
+	}
+	"Can Build Here"
+	{
+		"en"		"You can build your building here!"
+	}
 }
