@@ -507,7 +507,6 @@
 		"pl"		"Bateria do lasera"
 		"es"		"Baterias Láser"
 		"fr"		"Batterie de laser"
-		"de"		"Laser-Batterie"
 		"pt"		"Baterias Laser"
 	}
 	"Out of Laser Battery"
@@ -1009,8 +1008,7 @@
 	}
 	"Extra Buttons Explained"
 	{
-
-	//  "pt"    "Inspecionar Arma: Permite você acesso rápido à arma que você está utilizando na loja, para por exemplo, comprar munição"
+		"pt"    	"Botão da Loja + Inspecionar Arma: Permite você acesso rápido à arma que você está utilizando na loja, para por exemplo, comprar munição"
 		"en" 		"Store Button + Inspect Weapon: Allows you to instantly access your holding weapon in the store, to for example, buy ammo."
 	}
 	"Drank Mana Regen Potion"
@@ -1421,16 +1419,13 @@
 	"tutorial_1"
 	{
 		"en"		"This is the short Tutorial. Open the scoreboard (TAB) to open the store."
+		"pt"		"Isto é um tutorial curto. Pressione o botão do placar (TAB) para abrir a loja."
 		"ru"		"Это краткое руководство. Откройте чат и введите ''/store'', чтобы открыть магазин!"
 	}
 	"tutorial_2"
 	{
 		"en"		"Good! Now Navigate to weapons and buy any weapon you want.\nOpen the scoreboard (TAB) to open the store again if it got closed."
-	}
-	"tutorial_2"
-	{
-		"en"		"Good! You can also Open the store with %%+showscores%% when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want.\nOpen chat and type ''/store'' to open the store again if it got closed!"
-		"pt"		"Ótimo! você pode abrir a loja tbm com %%+showscores%% quando o tutorial acabar.\nAgora navegue ate a seção de armas e compre uma arma.n\Abra o chat e digite ''/store'' para abrir a loja de novo caso ela feche!"
+		"pt"		"Otimo! Agora navegue até a seção de armas e compre uma arma que você goste.\nAbra o placar (TAB) para abrir a loja novamente caso ela feche."
 	}
 	"tutorial_3"
 	{
@@ -1454,42 +1449,52 @@
 	"Loadouts"
 	{
 		"en"		"Loadouts"
+		"pt"		"Loadouts"
 	}
 	"All Items"
 	{
 		"en"		"Buy All Items"
+		"pt"		"Comprar tudo"
 	}
 	"Free Only"
 	{
 		"en"		"Buy Only Free Items"
+		"pt"		"Comprar apenas os itens grátis"
 	}
 	"Getting Your Items"
 	{
 		"en"		"Getting Your Items..."
+		"pt"		"Adquirindo seus itens..."
 	}
 	"Delete Loadout"
 	{
 		"en"		"Delete Loadout"
+		"pt"		"Deletar Loadout"
 	}
 	"Save New"
 	{
 		"en"		"Enter name in chatbox to create a new loadout"
+		"pt"		"Digite no chat o nome do Loadout que você quer criar"
 	}
 	"Invalid Name"
 	{
 		"en"		"Make sure your name is under 32 characters and does not contain special characters"
+		"pt"		"Assegure-se de não passar de 32 caracteres e não inserir caracteres especiais no nome"
 	}
 	"Loadout Slots"
 	{
 		"#format"	"{1:d}"
 		"en"		"{1} Loadout Slot(s)"
+		"pt"		"Vagas para Loadout: {1}"
 	}
 	"At Weapon Limit"
 	{
 		"en"		"You reached the maximum amount of held weapons, some may not have been equipped."
+		"pt"		"Você alcançou o numero maximo de armas que você pode segurar, algumas podem não ter sido equipadas."
 	}
 	"Press Button To Switch"
 	{
 		"en"		"Multiple Weapons: Press Inspect"
+		"pt"		"Multiplas Armas: Pressione o Botão de inspecionar"
 	}
 }
