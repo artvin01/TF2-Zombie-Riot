@@ -823,7 +823,7 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 				if(count > 0)
 				{
 					Menu menu = new Menu(Store_PackMenuH);
-					
+
 					SetGlobalTransTarget(client);
 					int cash = CurrentCash-CashSpent[client];
 					menu.SetTitle("%t\n \n%t\n \n%s%s\n ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(item.Owned[client]-1));
@@ -1422,7 +1422,7 @@ void Store_OpenGiftStore(int client, int entity, int price, bool barney)
 	}
 }
 
-static void MenuPage(int client, int section)
+public void MenuPage(int client, int section)
 {
 	SetGlobalTransTarget(client);
 	
@@ -1538,7 +1538,7 @@ static void MenuPage(int client, int section)
 						style = ITEMDRAW_DISABLED;
 					}
 				}
-				else if(item.Owned[client] || !info.Cost)	// Owned already or free
+				else if(item.Owned[client] || (info.Cost <= 0 && (item.Scale*item.Scaled[client]) <= 0))	// Owned already or free
 				{
 					FormatEx(buffer, sizeof(buffer), "%t", "Equip");
 					if(!info.Classname[0])
@@ -2368,6 +2368,15 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime())
 							{
+								item.GetItemInfo(item.Owned[client]-1, info);
+								if(info.Cost <= 0) //make sure it even can be sold.
+								{
+									item.Owned[client] = false;
+									if((item.Scale*item.Scaled[client]) > 0)
+									{
+										item.Scaled[client]--;
+									}
+								}
 								item.Equipped[client] = false;
 								StoreItems.SetArray(index, item);
 
@@ -2801,7 +2810,7 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 		TF2_RegeneratePlayer(client);
 		return;
 	}
-	else
+	else if(StoreItems)
 	{
 		Store_RemoveSpecificItem(client, "Teutonic Longsword");
 	}
@@ -3472,6 +3481,9 @@ int Store_GiveSpecificItem(int client, const char[] name)
 
 void Store_RemoveSpecificItem(int client, const char[] name)
 {
+	if(!StoreItems)
+		return;
+	
 	static Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
@@ -3631,6 +3643,14 @@ void Store_ConsumeItem(int client, int index)
 	static Item item;
 	StoreItems.GetArray(index, item);
 	item.Owned[client] = 0;
+	item.Equipped[client] = false;
+	StoreItems.SetArray(index, item);
+}
+
+void Store_Unequip(int client, int index)
+{
+	static Item item;
+	StoreItems.GetArray(index, item);
 	item.Equipped[client] = false;
 	StoreItems.SetArray(index, item);
 }
