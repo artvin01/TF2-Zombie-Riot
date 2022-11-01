@@ -170,7 +170,7 @@
 	{
 		"en"		"-10% Off Shipping With No Zombies"
 		"it"		"-10% meno dal negozio quando non ci sono Zombie"
-		"ru"		"Скидка 10% на покупки при отсутствии зомби"
+		"ru"		"Скидка -10% на покупки при отсутствии зомби"
 		"pl"		"-10% przeceny na zakupy podczas przerwy pomiędzy rundami"
 		"es"		"10% de descuento mientras no hay Zombies"
 		"fr"		"Réduction de 10% Sans les Zombies"
@@ -507,7 +507,6 @@
 		"pl"		"Bateria do lasera"
 		"es"		"Baterias Láser"
 		"fr"		"Batterie de laser"
-		"de"		"Laser-Batterie"
 		"pt"		"Baterias Laser"
 	}
 	"Out of Laser Battery"
@@ -613,7 +612,7 @@
 		"en" 		"This Object still has a cooldown of {1} seconds before another usage."
 		"de"		"Dieses Objekt hat noch eine Abkühlung von {1} Sekunden bevor man sie wieder benutzen kann."
 		"it"		"Questo Oggetto ha ancora un cooldown di {1} secondi prima di poterlo usare."
-		"ru"		"Этот объект всё ещё перезаряжается. {1} сек. до следующего использования."
+		"ru"		"Этот объект перезаряжается. {1} сек. до следующего использования."
 		"pl"		"Ten przedmiot jeszcze będzie się odświerzał przez {1} sekund przed następnym użyciem"
 		"es"		"Ten paciencia, aun quedan {1} segundos para volver a usar esto"
 		"fr"		"Temps de recharge de cette objet avant ré-utilisation: {1}"
@@ -721,7 +720,7 @@
 		"#format"	"{1:d}"
 		"en" 		"Not Enough Mana! You need {1} Mana!"
 		"de"		"Nicht Genügend Mana! Du brauchst {1} Mana!"
-//		"it"		"Ricevuto {1} in questa ondata!
+//		"it"		"Ricevuto {1} in questa ondata!"
 		"ru"		"Недостаточно маны! Вам нужно {1} маны!"
 //		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
 //		"es"		"Encontraste {1} en esta oleada!"
@@ -733,8 +732,8 @@
 		"#format"	"{1:.1f}"
 		"en" 		"This ability still has a cooldown of {1} seconds!"
 		"de"		"Diese Fähigkeit hat noch eine Abkühlung von {1} Sekunden!"
-//		"it"		"Ricevuto {1} in questa ondata!
-		"ru"		"Время восстановления этой способности всё ещё {1} сек.!"
+//		"it"		"Ricevuto {1} in questa ondata!"
+		"ru"		"Время восстановления этой способности ещё {1} сек.!"
 //		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
 //		"es"		"Encontraste {1} en esta oleada!"
 //		"fr"		"Vous avez gagnez {1} Cette vague!"
@@ -954,7 +953,7 @@
 	"Extra Buttons Help?"
 	{
 		"en" 		"Extra Buttons Help?"
-	//"ru" 		"Режим спасения?"
+	    "ru" 		"Дополнительные кнопки?"
 	//"de"		"Flucht Hilfe?"
 		"pt"		"Botão Extra para Ajuda?"
 	}
@@ -968,7 +967,7 @@
 	"Command Help Explained"
 	{
 		"en" 		"''/tp'' To toggle thirdperson.\n''/make_niko'' To toggle niko (This is more of a silly thing the anything)."
-		"ru" 		"''/tp'' для переключения режима от 3-го лица."
+		"ru" 		"''/tp'' для переключения режима от 3-го лица.\n''/make_niko'' для переключения Нико (это скорее глупая вещь, чем что-либо ещё)."
 		"de"		"''/tp'' Umschaltung für Dritte Person."
 		"pt"		"''/tp'' Para ativar modo de 3ª pessoa"
 	}
@@ -1003,15 +1002,15 @@
 	"Building Explained"
 	{
 		"en" 		"You can use machines by pressing R on them.\nPeople can mount buildings and will have an icon above their head.\nThis allows you to press R on them for the same effect.\nRegen icon: Ammo box.\nArmour icon: Armour Table.\nKing icon: Perk Machine.\nPunch icon: Pack-A-Punch.\nVampire icon: Healing Station."
-		"ru" 		"Для использования построек, нажмите R.\nЛюди могут поднимать свои постройки, и над их головой будет значок.\nЭто позволит вам нажать на них R для того же действия.\nЗначок реген.: Ящик с боеприпасами.\nБроня: Верстак брони.\nКороль: Перк-машина.\nКулак: Улучшайзер.\nВампир: Лечебная станция."
+		"ru" 		"R - использование построек.\nНад головой игроков с постройкой будет значок.\nR - для того же действия.\nЗначок реген.: Ящик с боеприпасами.\nБроня: Верстак брони.\nКороль: Перк-машина.\nКулак: Улучшайзер.\nВампир: Лечебная станция."
 		"de"		"Sie können Maschinen mit NACHLADEN benutzen.\nLeute können ihre Gebäude aufheben und haben ein Symbol auf deren Kopf.\nDies ermöglicht Ihnen mit NACHLADEN für denselben Effekt.\nRegen Symbol: Munitionsbox\nRüstung Symbol: Rüstungstisch\nKönig Symbol: Perkmachine\nFaust Symbol: Pack-A-Punch.\nVampire Symbol: Heilstation."
 		"pt"		"Você pode utilizar maquinas apertando R nelas.\nPessoas podem montar construções e teram um icone sobre suas cabeças.\nIsto permite que você aperta R nelas para o mesmo efeito.\nÍcone de Regen: Caixa de Munição.\nÍcone de Escudo: Mesa de Armadura.\nÍcone de Coroa: Maquina de Habilidades.\nÍcone de luva: Pack-A-Punch.\nÍcone de Vampiro: Estação de Cura."
 	}
 	"Extra Buttons Explained"
 	{
-
-	//  "pt"    "Inspecionar Arma: Permite você acesso rápido à arma que você está utilizando na loja, para por exemplo, comprar munição"
+		"pt"    	"Botão da Loja + Inspecionar Arma: Permite você acesso rápido à arma que você está utilizando na loja, para por exemplo, comprar munição"
 		"en" 		"Store Button + Inspect Weapon: Allows you to instantly access your holding weapon in the store, to for example, buy ammo."
+		"ru" 		"Кнопка открытия магазина + осмотра оружия: Позволяет мгновенно получить доступ к удерживаемому оружию в магазине, чтобы, например, купить патроны."
 	}
 	"Drank Mana Regen Potion"
 	{
@@ -1290,7 +1289,7 @@
 	"Your loadout has been equipped!"
 	{
 		"en"		"Your loadout has been equipped!"
-	//	"ru"		"Ваше снаряжение было обновлено по сравнению с предыдущей игрой."
+		"ru"		"Ваше снаряжение было снаряжено!"
 	//	"de"		"Ihr Loadout wurde geupdated von ihren vorigen zustand."
 	}
 	"Your loadout was updated from your previous state."
@@ -1304,12 +1303,12 @@
 	{
 
 	//	"en"		"Your last equipped level perks were restored"
-	//	"ru"		"Ваши последние имеющиеся уровневые перки были восстановлены."
 	//	"de"		"Ihre letzten level perks wurden wiederhergestellt."
 	//	"pt"		"Sua ultima habilidade de nível foi restaurada"
 
 		"#format"	"{1:s}"
 		"en"		"Could not buy {1}."
+		"ru"		"Не удалось купить {1}."
 	}
 	"Press TAB To open the store"
 	{
@@ -1415,82 +1414,101 @@
 	"Not Enough Builder Upgrades"
 	{
 		"en"		"You do not have enough builder upgrades to use this skill."
-		"pt"		"Você não tem melhorias de construtor suficiente para usar está habilidade."
 		"ru"		"У вас недостаточно улучшений строителя, чтобы использовать это умение."
+		"pt"		"Você não tem melhorias de construtor suficiente para usar está habilidade."
 	}
 	"tutorial_1"
 	{
 		"en"		"This is the short Tutorial. Open the scoreboard (TAB) to open the store."
-		"ru"		"Это краткое руководство. Откройте чат и введите ''/store'', чтобы открыть магазин!"
+		"ru"		"Это краткое руководство. Откройте таблицу очков (TAB), чтобы открыть магазин."
+		"pt"		"Isto é um tutorial curto. Pressione o botão do placar (TAB) para abrir a loja."
 	}
 	"tutorial_2"
 	{
 		"en"		"Good! Now Navigate to weapons and buy any weapon you want.\nOpen the scoreboard (TAB) to open the store again if it got closed."
-	}
-	"tutorial_2"
-	{
+		"ru"		"Отлично! Теперь перейдите к оружию и купите любое оружие.\nОткройте таблицу очков (TAB), чтобы снова открыть магазин, если он был закрыт."
 		"en"		"Good! You can also Open the store with %%+showscores%% when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want.\nOpen chat and type ''/store'' to open the store again if it got closed!"
-		"pt"		"Ótimo! você pode abrir a loja tbm com %%+showscores%% quando o tutorial acabar.\nAgora navegue ate a seção de armas e compre uma arma.n\Abra o chat e digite ''/store'' para abrir a loja de novo caso ela feche!"
+		"pt"		"Otimo! Agora navegue até a seção de armas e compre uma arma que você goste.\nAbra o placar (TAB) para abrir a loja novamente caso ela feche."
 	}
 	"tutorial_3"
 	{
 		"en"		"Now that you have a weapon you're prepared.\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
-		"pt"		"Agora que você tem uma arma, você está pronto(a).\nCompre armas melhores, e as aprimore em ondas posteriores e sobreviva ate o final!\nÉ possivel adquirir mais ajuda no menu na opção de ''ajuda?''\nTrabalho em equipe é a chava para a vitória!"
 		"ru"		"Теперь, когда у вас есть оружие, вы готовы.\nКупите лучшее оружие и улучшения в последующих волнах и выживите до конца!\nДополнительную помощь можно найти в магазине в разделе ''помощь?''\nКомандная работа - ключ к победе!"
+		"pt"		"Agora que você tem uma arma, você está pronto(a).\nCompre armas melhores, e as aprimore em ondas posteriores e sobreviva ate o final!\nÉ possivel adquirir mais ajuda no menu na opção de ''ajuda?''\nTrabalho em equipe é a chava para a vitória!"
 	}
 	"Is already at full hp"
 	{
 		"en"		"is already at full hp."
-		"pt"		"ja está com a vida cheia"
 		"ru"		"уже имеет полное здоровье."
+		"pt"		"ja está com a vida cheia"
 	}
 	"You healed for"
 	{
 		"#format"	"{1:N},{2:d}"
 		"en"		"You Healed [{1}] for [{2}] HP!"
-		"pt"		"Você curou [{1}] por [{2}] de vida!"
 		"ru"		"Вы вылечили [{1}] на [{2}] ед. здоровья!"
+		"pt"		"Você curou [{1}] por [{2}] de vida!"
 	}
 	"Loadouts"
 	{
 		"en"		"Loadouts"
+		"ru"		"Снаряжения"
+		"pt"		"Loadouts"
 	}
 	"All Items"
 	{
 		"en"		"Buy All Items"
+		"ru"		"Купить все"
+		"pt"		"Comprar tudo"
 	}
 	"Free Only"
 	{
 		"en"		"Buy Only Free Items"
+		"ru"		"Купить бесплатные"
+		"pt"		"Comprar apenas os itens grátis"
 	}
 	"Getting Your Items"
 	{
 		"en"		"Getting Your Items..."
+		"ru"		"Получение ваших предметов..."
+		"pt"		"Adquirindo seus itens..."
 	}
 	"Delete Loadout"
 	{
 		"en"		"Delete Loadout"
+		"ru"		"Удалить снаряжение"
+		"pt"		"Deletar Loadout"
 	}
 	"Save New"
 	{
 		"en"		"Enter name in chatbox to create a new loadout"
+		"ru"		"Введите имя в поле чата, чтобы создать новое снаряжение"
+		"pt"		"Digite no chat o nome do Loadout que você quer criar"
 	}
 	"Invalid Name"
 	{
 		"en"		"Make sure your name is under 32 characters and does not contain special characters"
+		"ru"		"Убедитесь, что ваше имя не превышает 32 символов и не содержит специальных символов"
+		"pt"		"Assegure-se de não passar de 32 caracteres e não inserir caracteres especiais no nome"
 	}
 	"Loadout Slots"
 	{
 		"#format"	"{1:d}"
 		"en"		"{1} Loadout Slot(s)"
+		"ru"		"{1} ячеек снаряжения(-ий)"
+		"pt"		"Vagas para Loadout: {1}"
 	}
 	"At Weapon Limit"
 	{
 		"en"		"You reached the maximum amount of held weapons, some may not have been equipped."
+		"ru"		"Вы достигли максимального количества удерживаемого оружия, некоторые из них могли быть не выданы."
+		"pt"		"Você alcançou o numero maximo de armas que você pode segurar, algumas podem não ter sido equipadas."
 	}
 	"Press Button To Switch"
 	{
 		"en"		"Multiple Weapons: Press Inspect"
+		"ru"		"Много оружия: Нажмите клавишу осмотра оружия"
+		"pt"		"Multiplas Armas: Pressione o Botão de inspecionar"
 	}
 	"Cannot Build Here"
 	{

@@ -133,7 +133,7 @@
 	"I'm pretty bored..."
 	{
 		"en"	"I'm pretty bored..."
-		"ru"	"Мне это уже начинает надоедать...."
+		"ru"	"Мне это уже начинает надоедать..."
 		"de"	"ich bin so gelangweilt..."
 		"pl"    "jestem dość znudzony..."
 		"pt"	"Tem nada pra fazer..."
@@ -181,7 +181,7 @@
 	"Im pretty confident in my abilities!"
 	{
 		"en"	"Im pretty confident in my abilities!"
-	//	"ru"	"Перезаряжаю рядом с вами, сэр!"
+		"ru"	"Я вполне уверен в своих силах!"
 	//	"de"	"Ich lade bei dir nach, sir!"
 	//	"pl"    "Jestem całkiem pewny swoich umiejętności!"
 		"pt"	"Estou bem confiante sobre minhas habilidades!"
@@ -360,7 +360,7 @@
 		"ru"	"Я никого не трону!"
 		"de"	"Ich werde niemand verletzen!"
 		"pl"    "Nikogo nie skrzywdzę!"
-		"pt"	"Não machucarei ninguém!
+		"pt"	"Não machucarei ninguém!"
 	}
 	"I'll attack once more!"
 	{
