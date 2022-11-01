@@ -499,6 +499,35 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			npc.StartPathing();
+			
+			if(fl_TheFinalCountdown2[npc.index] <= GetGameTime() && i_final_nr[npc.index] == 1)	//moved the reset due to the funny clot damaged only being called when damaged
+			{	//reset
+				i_final_nr[npc.index]=5;
+				
+				b_Are_we_reloading[npc.index]=false;
+				
+				npc.m_flReloadIn = GetGameTime();
+				
+				EmitSoundToAll("mvm/mvm_tank_explode.wav");
+				
+				CPrintToChatAll("{crimson}Blitzkrieg{default}: You lived? {crimson}no matter.");
+				
+				npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
+				
+				fl_move_speed[npc.index] = 275.0;	//Less speed since blitz just becomes death
+				
+					
+				npc.m_flNextTeleport = GetGameTime() + 1.0;
+				
+				i_maxfirerockets[npc.index] = 100;
+				
+				fl_LifelossReload[npc.index] = 0.3;
+				
+				npc.m_flRangedArmor = 1.0;
+				
+				int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+				if(iActivity > 0) npc.StartActivity(iActivity);
+			}
 			if(npc.m_flNextRangedBarrage_Spam < GetGameTime() && npc.m_flNextRangedBarrage_Singular < GetGameTime() && flDistanceToTarget > Pow(110.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && i_NpcCurrentLives[npc.index]>4 && !b_Are_we_reloading[npc.index])
 			{	
 				EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
@@ -682,7 +711,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 								}
 								else
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg * 2, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg * 5, DMG_CLUB, -1, _, vecHit);
 								}
 								
 								npc.PlayMeleeHitSound();		
@@ -878,7 +907,10 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		{
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			CPrintToChatAll("{crimson}Blitzkrieg{default}: The brothers have joined the battle.");
+			if(ZR_GetWaveCount()==45)
+			{
+				CPrintToChatAll("{crimson}Blitzkrieg{default}: The brothers have joined the battle.");
+			}
 			int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 			int heck;
 			int spawn_index;
@@ -891,19 +923,30 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}
-			spawn_index = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
-			if(spawn_index > MaxClients)
+			if(ZR_GetWaveCount()==45)
 			{
-				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+				spawn_index = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+				if(spawn_index > MaxClients)
+				{
+					SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+				}
 			}
 			if(ZR_GetWaveCount()>=60)
 			{
-				maxhealth=heck/10;
+				CPrintToChatAll("{crimson}Blitzkrieg{default}: The brothers have been reborn.");
+				maxhealth=heck/12;
 				spawn_index = Npc_Create(ALT_DONNERKRIEG, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 				if(spawn_index > MaxClients)
 				{
 					CPrintToChatAll("{crimson}Blitzkrieg{default}: Ay, Donnerkrieg, how ya doin?");
+					SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+				}
+				maxhealth=heck/7;
+				spawn_index = Npc_Create(ALT_SCHWERTKRIEG, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+				if(spawn_index > MaxClients)
+				{
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 				}
@@ -1024,32 +1067,6 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		npc.PlayAngerSound();
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 					
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
-		if(iActivity > 0) npc.StartActivity(iActivity);
-	}
-	else if(fl_TheFinalCountdown2[npc.index] <= GetGameTime() && i_final_nr[npc.index] == 1)
-	{	//reset
-		i_final_nr[npc.index]=5;
-		
-		b_Are_we_reloading[npc.index]=false;
-		
-		npc.m_flReloadIn = GetGameTime();
-		
-		EmitSoundToAll("mvm/mvm_tank_explode.wav");
-		
-		CPrintToChatAll("{crimson}Blitzkrieg{default}: You lived? {crimson}no matter");
-		
-		fl_move_speed[npc.index] = 275.0;	//Less speed since blitz just becomes death
-		
-			
-		npc.m_flNextTeleport = GetGameTime() + 1.0;
-		
-		i_maxfirerockets[npc.index] = 100;
-		
-		fl_LifelossReload[npc.index] = 0.3;
-		
-		npc.m_flRangedArmor = 1.0;
-		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	}
