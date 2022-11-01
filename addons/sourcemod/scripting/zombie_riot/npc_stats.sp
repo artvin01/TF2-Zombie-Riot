@@ -894,6 +894,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = Donnerkrieg(client, vecPos, vecAng, ally);
 		}
+		case ALT_SCHWERTKRIEG:
+		{
+			entity = Schwertkrieg(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1435,6 +1439,10 @@ public void NPCDeath(int entity)
 		{
 			Donnerkrieg_NPCDeath(entity);
 		}
+		case ALT_SCHWERTKRIEG:
+		{
+			Schwertkrieg_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1563,6 +1571,7 @@ public void OnMapStart_NPC_Base()
 	DemoMain_OnMapStart_NPC();
 	MedicMain_OnMapStart_NPC();
 	Donnerkrieg_OnMapStart_NPC();
+	Schwertkrieg_OnMapStart_NPC();
 	PyroGiant_OnMapStart_NPC();
 	CombineDeutsch_OnMapStart_NPC();
 	Alt_CombineDeutsch_OnMapStart_NPC();
@@ -6069,10 +6078,10 @@ stock Custom_Knockback(int attacker, int enemy, float knockback, bool ignore_att
 public int Can_I_See_Enemy(int attacker, int enemy)
 {
 	Handle trace; 
-	float pos_npc[3]; GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", pos_npc);
-	float pos_enemy[3]; GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", pos_enemy);
-	pos_npc[2] += 45.0;
-	pos_enemy[2] += 35.0;
+	float pos_npc[3];
+	float pos_enemy[3];
+	pos_npc = WorldSpaceCenter(attacker);
+	pos_enemy = WorldSpaceCenter(enemy);
 	
 	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_NPCSOLID, RayType_EndPoint, BulletAndMeleeTrace, attacker);
 	int Traced_Target;
@@ -6089,11 +6098,12 @@ public int Can_I_See_Enemy(int attacker, int enemy)
 
 public bool Can_I_See_Enemy_Only(int attacker, int enemy)
 {
-	Handle trace; 
-	float pos_npc[3]; GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", pos_npc);
-	float pos_enemy[3]; GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", pos_enemy);
-	pos_npc[2] += 45.0;
-	pos_enemy[2] += 35.0;
+	Handle trace;
+	float pos_npc[3];
+	float pos_enemy[3];
+	pos_npc = WorldSpaceCenter(attacker);
+	pos_enemy = WorldSpaceCenter(enemy);
+
 	
 	AddEntityToTraceStuckCheck(enemy);
 	
@@ -6651,7 +6661,7 @@ float[] CalculateBulletDamageForce( const float vecBulletDir[3], float flScale )
 	return vecForce;
 }
 
-stock bool makeexplosion(int attacker = 0, int inflictor = -1, float attackposition[3],  char[] weaponname = "", int magnitude = 200, int radiusoverride = 200, float damageforce = 200.0, int flags = 0, bool FromNpcForced = false)
+stock bool makeexplosion(int attacker = 0, int inflictor = -1, float attackposition[3],  char[] weaponname = "", int Damage_for_boom = 200, int Range_for_boom = 200, float Knockback = 200.0, int flags = 0, bool FromNpcForced = false)
 {
 	if(IsValidEntity(attacker)) //Is this just for effect?
 	{
@@ -6662,11 +6672,11 @@ stock bool makeexplosion(int attacker = 0, int inflictor = -1, float attackposit
 			{
 				FromBlueNpc = true;
 				
-				radiusoverride = RoundToCeil(float(radiusoverride) * 1.65);
+				Range_for_boom = RoundToCeil(float(Range_for_boom) * 1.65);
 			}
 		}
-		radiusoverride = RoundToCeil(float(radiusoverride) * 1.1); //Overall abit more range due to how our checks work.
-		Explode_Logic_Custom(float(magnitude), attacker, attacker, -1, attackposition, float(radiusoverride), _, _, FromBlueNpc, _);
+		Range_for_boom = RoundToCeil(float(Range_for_boom) * 1.1); //Overall abit more range due to how our checks work.
+		Explode_Logic_Custom(float(Damage_for_boom), attacker, attacker, -1, attackposition, float(Range_for_boom), _, _, FromBlueNpc, _);
 
 	}
 	
@@ -7939,6 +7949,7 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/alt/npc_alt_combine_soldier_mage.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_apprentice_mage.sp"
 #include "zombie_riot/npc/alt/npc_alt_donnerkrieg.sp"
+#include "zombie_riot/npc/alt/npc_alt_schwertkrieg.sp"
 
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
 #include "zombie_riot/npc/medival/npc_medival_archer.sp"

@@ -789,4 +789,8 @@
 		"en"		"Donnerkrieg"
 		"ru"		"Доннеркриг"
 	}
+	"Schwertkrieg"
+	{
+		"en"		"Schwertkrieg"
+	}
 }

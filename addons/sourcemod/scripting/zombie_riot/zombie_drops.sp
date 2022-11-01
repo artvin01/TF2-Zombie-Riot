@@ -265,7 +265,7 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 								}
 							}
 							int ie, weapon;
-							while(TF2_GetItem(client, weapon, ie))
+							while(TF2_GetItem(client_Hud, weapon, ie))
 							{
 								if(IsValidEntity(weapon))
 								{
@@ -274,15 +274,15 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 										float max_mana_temp = 1200.0;
 										float mana_regen_temp = 200.0; //abit extra :)
 												
-										if(i_CurrentEquippedPerk[client] == 4)
+										if(i_CurrentEquippedPerk[client_Hud] == 4)
 										{
 											mana_regen_temp *= 1.35;
 										}
 										
-										if(Mana_Regen_Level[client])
+										if(Mana_Regen_Level[client_Hud])
 										{			
-											mana_regen_temp *= Mana_Regen_Level[client];
-											max_mana_temp *= Mana_Regen_Level[client];	
+											mana_regen_temp *= Mana_Regen_Level[client_Hud];
+											max_mana_temp *= Mana_Regen_Level[client_Hud];	
 										}
 										/*
 										Current_Mana[client] += RoundToCeil(mana_regen[client]);
@@ -291,16 +291,16 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 											Current_Mana[client] = RoundToCeil(max_mana[client]);
 										*/
 										
-										if(Current_Mana[client] < RoundToCeil(max_mana_temp))
+										if(Current_Mana[client_Hud] < RoundToCeil(max_mana_temp))
 										{
-											if(Current_Mana[client] < RoundToCeil(max_mana_temp))
+											if(Current_Mana[client_Hud] < RoundToCeil(max_mana_temp))
 											{
-												Current_Mana[client] += RoundToCeil(mana_regen_temp);
+												Current_Mana[client_Hud] += RoundToCeil(mana_regen_temp);
 												
-												if(Current_Mana[client] > RoundToCeil(max_mana_temp)) //Should only apply during actual regen
-													Current_Mana[client] = RoundToCeil(max_mana_temp);
+												if(Current_Mana[client_Hud] > RoundToCeil(max_mana_temp)) //Should only apply during actual regen
+													Current_Mana[client_Hud] = RoundToCeil(max_mana_temp);
 											}
-											Mana_Hud_Delay[client] = 0.0;
+											Mana_Hud_Delay[client_Hud] = 0.0;
 										}
 										
 									}

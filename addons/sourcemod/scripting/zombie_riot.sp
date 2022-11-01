@@ -255,6 +255,7 @@ int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
 int i_SemiAutoWeapon[MAXENTITIES];
 int i_SemiAutoWeapon_AmmoCount[MAXENTITIES]; //idk like 10 slots lol
 bool i_WeaponCannotHeadshot[MAXENTITIES];
+float i_WeaponDamageFalloff[MAXENTITIES];
 
 #define MAXSTICKYCOUNTTONPC 12
 const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
@@ -268,6 +269,7 @@ float f_MedigunChargeSave[MAXTF2PLAYERS][4];
 
 	
 int CashSpent[MAXTF2PLAYERS];
+int CashSpentTotal[MAXTF2PLAYERS];
 int CashRecievedNonWave[MAXTF2PLAYERS];
 int Level[MAXTF2PLAYERS];
 int XP[MAXTF2PLAYERS];
@@ -293,6 +295,7 @@ int Zombies_Currently_Still_Ongoing;
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
 int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
 int i_BarricadesBuild[MAXTF2PLAYERS]={0, ...};
+int i_WhatBuilding[MAXENTITIES]={0, ...};
 
 int Elevator_Owner[MAXENTITIES]={0, ...};
 bool Is_Elevator[MAXENTITIES]={false, ...};
@@ -300,6 +303,9 @@ int Dont_Crouch[MAXENTITIES]={0, ...};
 
 int StoreWeapon[MAXENTITIES];
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
+int i_HealthBeforeSuit[MAXTF2PLAYERS]={0, ...};
+bool i_ClientHasCustomGearEquipped[MAXTF2PLAYERS]={false, ...};
+
 enum
 {
 	WEAPON_ARK = 1,
@@ -757,9 +763,10 @@ enum
 	ALT_MECHA_PYROGIANT			= 133,
 	ALT_MECHA_SCOUT				= 134,
 	ALT_DONNERKRIEG				= 135,
+	ALT_SCHWERTKRIEG			= 136,
 	
 	
-	ITSTILIVES	= 136,
+	ITSTILIVES	= 137,
 }
 
 
@@ -912,6 +919,7 @@ public const char NPC_Names[][] =
 	"Mecha Giant Pyro",
 	"Mecha Scout",
 	"Donnerkrieg",
+	"Schwertkrieg",
 	"Bob the Overgod of gods and destroyer of multiverses",
 };
 
@@ -1062,6 +1070,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_mecha_scout",
 	"npc_alt_mecha_scout",
 	"npc_alt_donnerkrieg",
+	"npc_alt_schwertkrieg",
 	""
 };
 
@@ -1163,6 +1172,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_explosivebullets.sp"
 #include "zombie_riot/custom/weapon_sniper_monkey.sp"
 #include "zombie_riot/custom/weapon_cspyknife.sp"
+#include "zombie_riot/custom/weapon_quantum_weaponry.sp"
 
 //FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
@@ -1439,19 +1449,6 @@ public void OnMapStart()
 	
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
-	char buffer[16];
-	int entity = -1;
-	while((entity=FindEntityByClassname(entity, "info_target")) != -1)
-	{
-		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-		if(StrContains(buffer, "zr_escapemode", false))
-			continue;
-		
-		EscapeMode = true;
-		EscapeModeForNpc = true;
-		break;
-	}
-	
 	RoundStartTime = 0.0;
 	cvarTimeScale.SetFloat(1.0);
 	Waves_MapStart();
@@ -1515,6 +1512,7 @@ public void OnMapStart()
 	Atomic_MapStart();
 	SSS_Map_Precache();
 	ExplosiveBullets_Precache();
+	Quantum_Gear_Map_Precache();
 	
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
@@ -1814,6 +1812,11 @@ public Action Command_ToggleReload(int client, int args)
 	}
 	return Plugin_Handled;
 }
+
+public void OnClientAuthorized(int client)
+{
+	Database_ClientAuthorized(client);
+}
 					
 public void OnClientPutInServer(int client)
 {
@@ -1850,6 +1853,9 @@ public void OnClientPutInServer(int client)
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_bThisEntityIgnored = false;
 	f_ShowHudDelayForServerMessage[client] = GetGameTime() + 50.0;
+
+	i_HealthBeforeSuit[client] = 0;
+	i_ClientHasCustomGearEquipped[client] = false;
 	
 	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
 	
@@ -2087,7 +2093,21 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		
 		if(WaitingInQueue[client])
 			TeutonType[client] = TEUTON_WAITING;
-		
+
+		if(i_ClientHasCustomGearEquipped[client])
+		{
+			SetAmmo(client, 1, 9999);
+			SetAmmo(client, 2, 9999);
+			SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
+			SetAmmo(client, Ammo_Jar, 1);
+			for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
+			{
+				SetAmmo(client, i, CurrentAmmo[client][i]);
+			}
+
+			ViewChange_PlayerModel(client);
+			return;
+		}
 		if(TeutonType[client] != TEUTON_NONE)
 		{
 			FakeClientCommand(client, "menuselect 0");
@@ -2189,6 +2209,8 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		SetEntPropFloat(weapon_index, Prop_Send, "m_flModelScale", -0.8);
 	   		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 0.7);
 	   		
+			SetAmmo(client, 1, 9999);
+			SetAmmo(client, 2, 9999);
 	   		SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
 			SetAmmo(client, Ammo_Jar, 1);
 			for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
@@ -2221,6 +2243,8 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 				Store_GiveAll(client, Waves_GetRound()>1 ? 50 : 300); //give 300 hp instead of 200 in escape.
 			}
 			
+			SetAmmo(client, 1, 9999);
+			SetAmmo(client, 2, 9999);
 			SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
 			SetAmmo(client, Ammo_Jar, 1);
 			for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
@@ -2244,7 +2268,12 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 			DestroyDispenser(client);
 		}
 	}
-	
+
+	//Incase they die, do suit!
+	i_HealthBeforeSuit[client] = 0;
+	CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
+	//
+
 	Citizen_PlayerDeath(client);
 	Bob_player_killed(event, name, dontBroadcast);
 	RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
@@ -3287,6 +3316,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	}
 	else if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		i_WhatBuilding[entity] = 0;
 		StoreWeapon[entity] = -1;
 		LastHitId[entity] = -1;
 		DamageBits[entity] = -1;

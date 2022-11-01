@@ -1375,7 +1375,8 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 
 void Citizen_SetupStart()
 {
-	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
+	int i = -1;
+	while((i = FindEntityByClassname(i, "base_boss")) != -1)
 	{
 		if(i_NpcInternalId[i] == CITIZEN)
 		{
@@ -2401,13 +2402,13 @@ public void Citizen_ClotThink(int iNPC)
 			
 			if((npc.m_bSeakingMedic || npc.m_bSeakingGeneric) && distance < 5000.0)
 			{
+				HealingCooldown[npc.m_iTargetAlly] = gameTime + 60.0;
+
 				npc.m_bGetClosestTargetTimeAlly = false;
 				npc.m_bSeakingGeneric = false;
 				PF_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_flGetClosestTargetTime = 0.0;
-				
-				HealingCooldown[npc.m_iTargetAlly] = gameTime + 60.0;
 				npc.m_flReloadDelay = gameTime + 1.5;
 				
 				npc.SetActivity("ACT_CIT_HEAL");
@@ -2610,7 +2611,9 @@ void Citizen_MiniBossSpawn(int spawner)
 	int talkingTo;
 	float distance;
 	
-	float vecMe[3]; vecMe = WorldSpaceCenter(spawner);
+//	float vecMe[3]; vecMe = WorldSpaceCenter(spawner);
+	float vecMe[3];
+	GetEntPropVector(spawner, Prop_Data, "m_vecAbsOrigin", vecMe); 
 	float vecTarget[3];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 	{

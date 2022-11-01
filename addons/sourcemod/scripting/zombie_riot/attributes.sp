@@ -88,7 +88,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 						if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
 							list.Push(entity);
 					}
-					
+
 					int length = list.Length;
 					if(length)
 					{
@@ -96,6 +96,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 						float extra;
 						for(i = length - 1; i >= 0; i--)
 						{
+							entity = list.Get(i);
 							float uber = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
 							if(Attributes_FindOnWeapon(client, entity, 2046) == 4.0)
 							{
@@ -105,7 +106,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 							{
 								uber += value + extra;
 							}
-							
+								
 							if(uber > 1.0)
 							{
 								extra = uber - 1.0;
@@ -120,7 +121,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 							{
 								extra = 0.0;
 							}
-							
+								
 							SetEntPropFloat(entity, Prop_Send, "m_flChargeLevel", uber);
 						}
 					}

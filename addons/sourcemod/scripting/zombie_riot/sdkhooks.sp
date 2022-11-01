@@ -931,6 +931,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 	if(!b_ThisNpcIsSawrunner[attacker])
 	{
+		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)) && i_HealthBeforeSuit[victim] > 0)
+		{
+			Replicated_Damage *= 2.0; //when a raid is alive, make quantum armor 2x as bad at tanking.
+			damage *= 2.0;			
+		}
 		if(EscapeMode)
 		{
 			if(IsValidEntity(Victim_weapon))
@@ -1021,163 +1026,181 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				Replicated_Damage *= 0.85;
 				damage *= 0.85;
 			}
-				
-			if(Armor_Charge[victim] > 0)
-			{
-				int dmg_through_armour = RoundToCeil(Replicated_Damage * 0.1);
-				
-				if(RoundToCeil(Replicated_Damage * 0.9) >= Armor_Charge[victim])
-				{
-					int damage_recieved_after_calc;
-					damage_recieved_after_calc = RoundToCeil(Replicated_Damage) - Armor_Charge[victim];
-					Armor_Charge[victim] = 0;
-					damage = float(damage_recieved_after_calc);
-					Replicated_Damage  = float(damage_recieved_after_calc);
-					EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.25);
-				}
-				else
-				{
-					Armor_Charge[victim] -= RoundToCeil(Replicated_Damage * 0.9);
-					damage = 0.0;
-					damage += float(dmg_through_armour);
-					Replicated_Damage = 0.0;
-					Replicated_Damage += float(dmg_through_armour);
-			//		Though_Armor = true;
-				}
-			}
-			switch(Armour_Level_Current[victim])
-			{
-				case 1:
-				{
-					damage *= 0.9;
-					Replicated_Damage *= 0.9;
-				//	if(Though_Armor)
-				//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
-				}
-				case 2:
-				{
-					damage *= 0.85;
-					Replicated_Damage *= 0.85;
-				//	if(Though_Armor)
-				//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
-				}
-				case 3:
-				{
-					damage *= 0.8;
-					Replicated_Damage *= 0.80;
-				//	if(Though_Armor)
-				//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
-				}
-				case 4:
-				{
-					damage *= 0.75;
-					Replicated_Damage *= 0.75;
-				//	if(Though_Armor)
-				//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
-				}
-				default:
-				{
-					damage *= 1.0;
-					Replicated_Damage *= 1.0;
-				}
-			}
-		}
-	}
-	if((RoundToCeil(Replicated_Damage) >= flHealth || RoundToCeil(damage) >= flHealth) && (LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GetGameTime())
-	{
-		damage = float(flHealth - 1); //survive with 1 hp!
-		TF2_AddCondition(victim, TFCond_UberchargedCanteen, 1.0);
-		TF2_AddCondition(victim, TFCond_MegaHeal, 1.0);
-		EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
-		f_OneShotProtectionTimer[victim] = gameTime + 60.0; // 60 second cooldown
-		return Plugin_Changed;
-	}
-	else if((RoundToCeil(Replicated_Damage) >= flHealth || RoundToCeil(damage) >= flHealth) && !LastMann && !b_IsAloneOnServer)
-	{
-		bool Any_Left = false;
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
-			{
-				if(victim != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
-				{
-					Any_Left = true;
-				}
-			}
-		}
-		
-		if(!Any_Left)
-		{
-			CheckAlivePlayers(_, victim);
-			return Plugin_Handled;
-		}
-		
-		i_AmountDowned[victim] += 1;
-		if((i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
-		{
-			i_CurrentEquippedPerk[victim] = 0;
-			SetEntityHealth(victim, 200);
-			if(!b_LeftForDead[victim])
-			{
-				dieingstate[victim] = 250;
-			}
-			else
-			{
-				dieingstate[victim] = 500;
-			}
-			SetEntityCollisionGroup(victim, 1);
-			CClotBody player = view_as<CClotBody>(victim);
-			player.m_bThisEntityIgnored = true;
-			TF2Attrib_SetByDefIndex(victim, 489, 0.15);
-			TF2Attrib_SetByDefIndex(victim, 820, 1.0);
-			TF2Attrib_SetByDefIndex(victim, 819, 1.0);	
-			TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 0.00001);
-			int entity;
-			if(!b_LeftForDead[victim])
-			{
-				entity = EntRefToEntIndex(i_DyingParticleIndication[victim]);
-				if(entity > MaxClients)
-					RemoveEntity(entity);
-				
-				entity = TF2_CreateGlow(victim);
-				i_DyingParticleIndication[victim] = EntIndexToEntRef(entity);
-				
-				SetVariantColor(view_as<int>({0, 255, 0, 255}));
-				AcceptEntityInput(entity, "SetGlowColor");
-			}
-			CreateTimer(0.1, Timer_Dieing, victim, TIMER_REPEAT);
 			
-			int i;
-			while(TF2U_GetWearable(victim, entity, i))
+			if(i_HealthBeforeSuit[victim] == 0)
 			{
+				if(Armor_Charge[victim] > 0)
+				{
+					int dmg_through_armour = RoundToCeil(Replicated_Damage * 0.1);
+					
+					if(RoundToCeil(Replicated_Damage * 0.9) >= Armor_Charge[victim])
+					{
+						int damage_recieved_after_calc;
+						damage_recieved_after_calc = RoundToCeil(Replicated_Damage) - Armor_Charge[victim];
+						Armor_Charge[victim] = 0;
+						damage = float(damage_recieved_after_calc);
+						Replicated_Damage  = float(damage_recieved_after_calc);
+						EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.25);
+					}
+					else
+					{
+						Armor_Charge[victim] -= RoundToCeil(Replicated_Damage * 0.9);
+						damage = 0.0;
+						damage += float(dmg_through_armour);
+						Replicated_Damage = 0.0;
+						Replicated_Damage += float(dmg_through_armour);
+				//		Though_Armor = true;
+					}
+				}
+				switch(Armour_Level_Current[victim])
+				{
+					case 1:
+					{
+						damage *= 0.9;
+						Replicated_Damage *= 0.9;
+					//	if(Though_Armor)
+					//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
+					}
+					case 2:
+					{
+						damage *= 0.85;
+						Replicated_Damage *= 0.85;
+					//	if(Though_Armor)
+					//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
+					}
+					case 3:
+					{
+						damage *= 0.8;
+						Replicated_Damage *= 0.80;
+					//	if(Though_Armor)
+					//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
+					}
+					case 4:
+					{
+						damage *= 0.75;
+						Replicated_Damage *= 0.75;
+					//	if(Though_Armor)
+					//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
+					}
+					default:
+					{
+						damage *= 1.0;
+						Replicated_Damage *= 1.0;
+					}
+				}
+			}
+		}
+	}
+	if(RoundToCeil(Replicated_Damage) >= flHealth || RoundToCeil(damage) >= flHealth)
+	{
+		if(i_HealthBeforeSuit[victim] > 0)
+		{
+			damage = float(flHealth - 1); //survive with 1 hp!, and return their hp later
+			TF2_AddCondition(victim, TFCond_UberchargedCanteen, 1.0);
+			TF2_AddCondition(victim, TFCond_MegaHeal, 1.0);
+			float startPosition[3];
+			GetClientAbsOrigin(victim, startPosition);
+			startPosition[2] += 25.0;
+			makeexplosion(victim, victim, startPosition, "", 0, 0);
+			CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
+			return Plugin_Changed;
+		}
+		else if((LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GetGameTime())
+		{
+			damage = float(flHealth - 1); //survive with 1 hp!
+			TF2_AddCondition(victim, TFCond_UberchargedCanteen, 1.0);
+			TF2_AddCondition(victim, TFCond_MegaHeal, 1.0);
+			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
+			f_OneShotProtectionTimer[victim] = gameTime + 60.0; // 60 second cooldown
+			return Plugin_Changed;
+		}
+		else if(!LastMann && !b_IsAloneOnServer)
+		{
+			bool Any_Left = false;
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
+				{
+					if(victim != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+					{
+						Any_Left = true;
+					}
+				}
+			}
+			
+			if(!Any_Left)
+			{
+				CheckAlivePlayers(_, victim);
+				return Plugin_Handled;
+			}
+			
+			i_AmountDowned[victim] += 1;
+			if((i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
+			{
+				i_CurrentEquippedPerk[victim] = 0;
+				SetEntityHealth(victim, 200);
 				if(!b_LeftForDead[victim])
 				{
-					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(entity, 255, 255, 255, 125);
+					dieingstate[victim] = 250;
 				}
 				else
 				{
-					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(entity, 255, 255, 255, 10);
+					dieingstate[victim] = 500;
 				}
-			}
-			if(!b_LeftForDead[victim])
-			{
-				SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
-				SetEntityRenderColor(victim, 255, 255, 255, 125);
+				SetEntityCollisionGroup(victim, 1);
+				CClotBody player = view_as<CClotBody>(victim);
+				player.m_bThisEntityIgnored = true;
+				TF2Attrib_SetByDefIndex(victim, 489, 0.15);
+				TF2Attrib_SetByDefIndex(victim, 820, 1.0);
+				TF2Attrib_SetByDefIndex(victim, 819, 1.0);	
+				TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 0.00001);
+				int entity;
+				if(!b_LeftForDead[victim])
+				{
+					entity = EntRefToEntIndex(i_DyingParticleIndication[victim]);
+					if(entity > MaxClients)
+						RemoveEntity(entity);
+					
+					entity = TF2_CreateGlow(victim);
+					i_DyingParticleIndication[victim] = EntIndexToEntRef(entity);
+					
+					SetVariantColor(view_as<int>({0, 255, 0, 255}));
+					AcceptEntityInput(entity, "SetGlowColor");
+				}
+				CreateTimer(0.1, Timer_Dieing, victim, TIMER_REPEAT);
+				
+				int i;
+				while(TF2U_GetWearable(victim, entity, i))
+				{
+					if(!b_LeftForDead[victim])
+					{
+						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+						SetEntityRenderColor(entity, 255, 255, 255, 125);
+					}
+					else
+					{
+						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+						SetEntityRenderColor(entity, 255, 255, 255, 10);
+					}
+				}
+				if(!b_LeftForDead[victim])
+				{
+					SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
+					SetEntityRenderColor(victim, 255, 255, 255, 125);
+				}
+				else
+				{
+					SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
+					SetEntityRenderColor(victim, 255, 255, 255, 10);
+				}
+				return Plugin_Handled;
 			}
 			else
 			{
-				SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
-				SetEntityRenderColor(victim, 255, 255, 255, 10);
+				damage = 99999.9;
+				i_AmountDowned[victim] = 0;
+				return Plugin_Changed;
 			}
-			return Plugin_Handled;
-		}
-		else
-		{
-			damage = 99999.9;
-			i_AmountDowned[victim] = 0;
-			return Plugin_Changed;
 		}
 	}
 	return Plugin_Changed;

@@ -507,7 +507,6 @@
 		"pl"		"Bateria do lasera"
 		"es"		"Baterias Láser"
 		"fr"		"Batterie de laser"
-		"de"		"Laser-Batterie"
 		"pt"		"Baterias Laser"
 	}
 	"Out of Laser Battery"
@@ -863,10 +862,10 @@
 	}
 	"Deadshot Daiquiri Recieved"
 	{
-		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot and backstab damage"
-		"ru" 		"СНАЙПЕР-ЛАЙМ! 1.35x точность оружия и 1.25x дополнительного урона от выстрела в голову и удар в спину"
-		"de"		"TODESSCHUSS DAIQUIRI! 1.35-fache Waffengenauigkeit und 1.25-facher zusätzlicher Kopfschussschaden und Rücken messerstich schaden"
-		"pt"		"TIRO MORTO DE DAIQUIRI! 1.35x Precisão com armas e 1.25x Dano extra com tiros na cabeça e facas nas costas"
+		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.35x Extra Headshot and backstab damage"
+		"ru" 		"СНАЙПЕР-ЛАЙМ! 1.35x точность оружия и 1.35x дополнительного урона от выстрела в голову и удар в спину"
+		"de"		"TODESSCHUSS DAIQUIRI! 1.35-fache Waffengenauigkeit und 1.35-facher zusätzlicher Kopfschussschaden und Rücken messerstich schaden"
+		"pt"		"TIRO MORTO DE DAIQUIRI! 1.35x Precisão com armas e 1.35x Dano extra com tiros na cabeça e facas nas costas"
 	}
 	"Widows Wine Recieved"
 	{
@@ -1009,7 +1008,7 @@
 	}
 	"Extra Buttons Explained"
 	{
-	//  "pt"    "Inspecionar Arma: Permite você acesso rápido à arma que você está utilizando na loja, para por exemplo, comprar munição"
+		"pt"    	"Botão da Loja + Inspecionar Arma: Permite você acesso rápido à arma que você está utilizando na loja, para por exemplo, comprar munição"
 		"en" 		"Store Button + Inspect Weapon: Allows you to instantly access your holding weapon in the store, to for example, buy ammo."
 		"ru" 		"Кнопка открытия магазина + осмотра оружия: Позволяет мгновенно получить доступ к удерживаемому оружию в магазине, чтобы, например, купить патроны."
 	}
@@ -1422,17 +1421,14 @@
 	{
 		"en"		"This is the short Tutorial. Open the scoreboard (TAB) to open the store."
 		"ru"		"Это краткое руководство. Откройте таблицу очков (TAB), чтобы открыть магазин."
+		"pt"		"Isto é um tutorial curto. Pressione o botão do placar (TAB) para abrir a loja."
 	}
 	"tutorial_2"
 	{
 		"en"		"Good! Now Navigate to weapons and buy any weapon you want.\nOpen the scoreboard (TAB) to open the store again if it got closed."
 		"ru"		"Отлично! Теперь перейдите к оружию и купите любое оружие.\nОткройте таблицу очков (TAB), чтобы снова открыть магазин, если он был закрыт."
-	}
-	"tutorial_2"
-	{
 		"en"		"Good! You can also Open the store with %%+showscores%% when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want.\nOpen chat and type ''/store'' to open the store again if it got closed!"
-		"ru"		"Отлично! Вы также можете открыть магазин с помощью %%+showscores%%, когда закончите обучение.\nТеперь перейдите к оружию и купите любое оружие, какое захотите.\nОткройте чат и введите ''/store'', чтобы снова открыть магазин, если он был закрыт!"
-		"pt"		"Ótimo! você pode abrir a loja tbm com %%+showscores%% quando o tutorial acabar.\nAgora navegue ate a seção de armas e compre uma arma.n\Abra o chat e digite ''/store'' para abrir a loja de novo caso ela feche!"
+		"pt"		"Otimo! Agora navegue até a seção de armas e compre uma arma que você goste.\nAbra o placar (TAB) para abrir a loja novamente caso ela feche."
 	}
 	"tutorial_3"
 	{
@@ -1457,51 +1453,61 @@
 	{
 		"en"		"Loadouts"
 		"ru"		"Снаряжения"
+		"pt"		"Loadouts"
 	}
 	"All Items"
 	{
 		"en"		"Buy All Items"
 		"ru"		"Купить все"
+		"pt"		"Comprar tudo"
 	}
 	"Free Only"
 	{
 		"en"		"Buy Only Free Items"
 		"ru"		"Купить бесплатные"
+		"pt"		"Comprar apenas os itens grátis"
 	}
 	"Getting Your Items"
 	{
 		"en"		"Getting Your Items..."
 		"ru"		"Получение ваших предметов..."
+		"pt"		"Adquirindo seus itens..."
 	}
 	"Delete Loadout"
 	{
 		"en"		"Delete Loadout"
 		"ru"		"Удалить снаряжение"
+		"pt"		"Deletar Loadout"
 	}
 	"Save New"
 	{
 		"en"		"Enter name in chatbox to create a new loadout"
 		"ru"		"Введите имя в поле чата, чтобы создать новое снаряжение"
+		"pt"		"Digite no chat o nome do Loadout que você quer criar"
 	}
 	"Invalid Name"
 	{
 		"en"		"Make sure your name is under 32 characters and does not contain special characters"
 		"ru"		"Убедитесь, что ваше имя не превышает 32 символов и не содержит специальных символов"
+		"pt"		"Assegure-se de não passar de 32 caracteres e não inserir caracteres especiais no nome"
 	}
 	"Loadout Slots"
 	{
 		"#format"	"{1:d}"
 		"en"		"{1} Loadout Slot(s)"
 		"ru"		"{1} ячеек снаряжения(-ий)"
+		"pt"		"Vagas para Loadout: {1}"
 	}
 	"At Weapon Limit"
 	{
 		"en"		"You reached the maximum amount of held weapons, some may not have been equipped."
 		"ru"		"Вы достигли максимального количества удерживаемого оружия, некоторые из них могли быть не выданы."
+		"pt"		"Você alcançou o numero maximo de armas que você pode segurar, algumas podem não ter sido equipadas."
 	}
 	"Press Button To Switch"
 	{
 		"en"		"Multiple Weapons: Press Inspect"
 		"ru"		"Много оружия: Нажмите клавишу осмотра оружия"
+		"pt"		"Multiplas Armas: Pressione o Botão de inspecionar"
 	}
 }
