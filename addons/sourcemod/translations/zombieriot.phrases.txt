@@ -221,6 +221,10 @@
 		"de"		"Kaufen"
 		"pt"		"Comprar"
 	}
+	"Buy Scrap" //Its a currency
+	{
+		"en"		"Buy with scrap"
+	}
 	"Sell"
 	{
 		"en"		"Sell"

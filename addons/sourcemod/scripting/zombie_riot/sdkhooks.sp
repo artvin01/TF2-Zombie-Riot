@@ -28,7 +28,9 @@ float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
 float max_mana[MAXTF2PLAYERS];
 float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
-	
+
+int i_SvRollAngle[MAXTF2PLAYERS];
+
 Handle SyncHud_ArmorCounter;
 
 static int i_WhatLevelForHudIsThisClientAt[MAXTF2PLAYERS];
@@ -41,6 +43,7 @@ public void SDKHooks_ClearAll()
 		i_WhatLevelForHudIsThisClientAt[client] = 2000000000; //two billion
 	}
 }
+
 void SDKHook_PluginStart()
 {
 	/*
@@ -98,6 +101,10 @@ public void OnPreThinkPost(int client)
 			CvarMpSolidObjects.IntValue = 0;
 		}
 	}
+	if(CvarSvRollagle)
+	{
+		CvarSvRollagle.IntValue = i_SvRollAngle[client];
+	}
 }
 
 public void OnPostThink(int client)
@@ -129,39 +136,45 @@ public void OnPostThink(int client)
 				CvarMpSolidObjects.ReplicateToClient(client, "1"); //set replicate back to normal.
 			}
 		}
-		/*
-		if(Check_Standstill_Delay[client] < gameTime)
+		if(CvarSvRollagle)
 		{
-			float vec[3];
-			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vec);
-			if(vec[0] == 0 && vec[1] == 0)
+			int flHealth = GetEntProp(client, Prop_Send, "m_iHealth");
+			int flMaxHealth = SDKCall_GetMaxHealth(client);
+
+			float PercentageHealth = float(flHealth) / float(flMaxHealth);
+
+			if(TeutonType[client] == TEUTON_NONE)
 			{
-				if(!Check_Standstill_Applied[client])
+				if(PercentageHealth > 0.25)
 				{
-					int weapon = GetPlayerWeaponSlot(client, 2);
-					if(weapon >= MaxClients && !i_NoBonusRange[weapon])
-					{
-						TF2Attrib_SetByDefIndex(weapon, 264, 2.25);
-					}
-					Check_Standstill_Applied[client] = true;
+					i_SvRollAngle[client] = 0;
 				}
-				Check_Standstill_Delay[client] = gameTime + 0.1;
+				else
+				{
+					PercentageHealth *= 4.0;
+
+					PercentageHealth = PercentageHealth - 1.0;
+
+					PercentageHealth *= -1.0; //convert to positive
+
+					PercentageHealth *= 100.0; // we want the full number! this only works in big ones. also divitde by 4
+
+					i_SvRollAngle[client] = RoundToCeil(PercentageHealth);
+				}
 			}
 			else
 			{
-				if(Check_Standstill_Applied[client])
-				{
-					Check_Standstill_Applied[client] = false;
-					int weapon = GetPlayerWeaponSlot(client, 2);
-					if(weapon >= MaxClients && !i_NoBonusRange[weapon])
-					{
-						TF2Attrib_SetByDefIndex(weapon, 264, 1.25);
-					}
-				}
-				Check_Standstill_Delay[client] = gameTime + 1.0;				
+				i_SvRollAngle[client] = 0;
 			}
+
+			char RollAngleValue[4];
+
+			IntToString(i_SvRollAngle[client], RollAngleValue, sizeof(RollAngleValue));
+
+		//	PrintToChatAll("%s",RollAngleValue);
+
+			CvarSvRollagle.ReplicateToClient(client, RollAngleValue); //set replicate back to normal.
 		}
-		*/
 		if(Mana_Regen_Delay[client] < gameTime)	
 		{
 			Mana_Regen_Delay[client] = gameTime + 0.4;
@@ -238,7 +251,6 @@ public void OnPostThink(int client)
 			Armour_Level_Current[client] = 0;
 			int flHealth = GetEntProp(client, Prop_Send, "m_iHealth");
 			int flMaxHealth = SDKCall_GetMaxHealth(client);
-				
 			if (Jesus_Blessing[client] == 1)
 			{
 				

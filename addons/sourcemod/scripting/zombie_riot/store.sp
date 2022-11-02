@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define GIFT_MODEL "models/items/tf_gift.mdl"
 //static int HighestTier;
 
 #define SELL_AMOUNT 0.7
@@ -29,6 +30,8 @@ static const int SlotLimits[] =
 enum struct ItemInfo
 {
 	int Cost;
+	int ScrapCost;
+	int UnboxRarity;
 	char Desc[256];
 	
 	bool HasNoClip;
@@ -107,6 +110,12 @@ enum struct ItemInfo
 		this.Cost = kv.GetNum(buffer, -1);
 		if(this.Cost < 0)
 			return false;
+
+		FormatEx(buffer, sizeof(buffer), "%sscrap_cost", prefix);
+		this.ScrapCost = kv.GetNum(buffer, -1);
+
+		FormatEx(buffer, sizeof(buffer), "%sunbox_rarity", prefix);
+		this.UnboxRarity = kv.GetNum(buffer, -1);
 		
 		FormatEx(buffer, sizeof(buffer), "%sdesc", prefix);
 		kv.GetString(buffer, this.Desc, 256);
@@ -1524,94 +1533,115 @@ public void MenuPage(int client, int section)
 			else
 			{
 				int style = ITEMDRAW_DEFAULT;
-				if(item.Equipped[client])
+				if(info.ScrapCost > 0) //Make scrap cost preffered, dont bother with anything else.
 				{
-					if(info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
+					if(info.ScrapCost > Scrap[client])
 					{
-						int cost = AmmoData[info.Ammo][0];
-						FormatEx(buffer, sizeof(buffer), "%t ($%d)", AmmoNames[info.Ammo], cost);
-						if(cost > cash)
-							style = ITEMDRAW_DISABLED;
-					}
-					else	// No Ammo
-					{
-						FormatEx(buffer, sizeof(buffer), "%t", "Equip");
 						style = ITEMDRAW_DISABLED;
 					}
-				}
-				else if(item.Owned[client] || (info.Cost <= 0 && (item.Scale*item.Scaled[client]) <= 0))	// Owned already or free
-				{
-					FormatEx(buffer, sizeof(buffer), "%t", "Equip");
-					if(!info.Classname[0])
-					{
-						if(item.Owned[client] && info.Attack3AbilitySlot == 0)
-							style = ITEMDRAW_DISABLED;
-					}
-				}
-				else	// Buy it
-				{
-					ItemCost(client, item, info.Cost);
+					FormatEx(buffer, sizeof(buffer), "%t ($%d) [%d]", "Buy Scrap", info.ScrapCost , Scrap[client]);
 
-					bool Maxed_Building = false;
-					if(item.MaxBarricadesBuild)
+					char buffer2[16];
+					IntToString(section, buffer2, sizeof(buffer2));
+					menu.AddItem(buffer2, buffer, style);
+
+					//SCRAP LOGIC ABOVE!
+					//BELOW IS NORMAL STORE STUFF!
+				}
+				else
+				{
+
+
+					if(item.Equipped[client])
 					{
-						if(i_BarricadesBuild[client] >= MaxBarricadesAllowed(client))
+						if(info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
 						{
-							Maxed_Building = true;
+							int cost = AmmoData[info.Ammo][0];
+							FormatEx(buffer, sizeof(buffer), "%t ($%d)", AmmoNames[info.Ammo], cost);
+							if(cost > cash)
+								style = ITEMDRAW_DISABLED;
+						}
+						else	// No Ammo
+						{
+							FormatEx(buffer, sizeof(buffer), "%t", "Equip");
 							style = ITEMDRAW_DISABLED;
 						}
 					}
-
-					if(Maxed_Building)
+					else if(item.Owned[client] || (info.Cost <= 0 && (item.Scale*item.Scaled[client]) <= 0))	// Owned already or free
 					{
-						FormatEx(buffer, sizeof(buffer), "%t ($%d) [%t] [%i/%i]", "Buy", info.Cost,"MAX BARRICADES OUT CURRENTLY", i_BarricadesBuild[client], MaxBarricadesAllowed(client));
+						FormatEx(buffer, sizeof(buffer), "%t", "Equip");
+						if(!info.Classname[0])
+						{
+							if(item.Owned[client] && info.Attack3AbilitySlot == 0)
+								style = ITEMDRAW_DISABLED;
+						}
 					}
-					else
+					else	// Buy it
 					{
-						FormatEx(buffer, sizeof(buffer), "%t ($%d)", "Buy", info.Cost);
+						ItemCost(client, item, info.Cost);
+
+						bool Maxed_Building = false;
+						if(item.MaxBarricadesBuild)
+						{
+							if(i_BarricadesBuild[client] >= MaxBarricadesAllowed(client))
+							{
+								Maxed_Building = true;
+								style = ITEMDRAW_DISABLED;
+							}
+						}
+
+						if(Maxed_Building)
+						{
+							FormatEx(buffer, sizeof(buffer), "%t ($%d) [%t] [%i/%i]", "Buy", info.Cost,"MAX BARRICADES OUT CURRENTLY", i_BarricadesBuild[client], MaxBarricadesAllowed(client));
+						}
+						else
+						{
+							FormatEx(buffer, sizeof(buffer), "%t ($%d)", "Buy", info.Cost);
+						}
+
+						if(info.Cost > cash)
+							style = ITEMDRAW_DISABLED;
+					}
+					
+					char buffer2[16];
+					IntToString(section, buffer2, sizeof(buffer2));
+					menu.AddItem(buffer2, buffer, style);	// 0
+					
+					bool canSell = (item.Owned[client] && info.Cost);
+
+					if(item.Equipped[client] && info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
+					{
+						int cost = AmmoData[info.Ammo][0] * 10;
+						FormatEx(buffer, sizeof(buffer), "%t x10 ($%d)", AmmoNames[info.Ammo], cost);
+						if(cost > cash)
+							style = ITEMDRAW_DISABLED;
+							
+						menu.AddItem(buffer2, buffer, style);	// 1
+					}
+					else if(item.Equipped[client] || canSell)
+					{
+						menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 1
 					}
 
-					if(info.Cost > cash)
-						style = ITEMDRAW_DISABLED;
-				}
-				
-				char buffer2[16];
-				IntToString(section, buffer2, sizeof(buffer2));
-				menu.AddItem(buffer2, buffer, style);	// 0
-				
-				bool canSell = (item.Owned[client] && info.Cost);
+					bool levelPerk = (!info.Classname[0] && !info.Cost && !Waves_InSetup());
 
-				if(item.Equipped[client] && info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
-				{
-					int cost = AmmoData[info.Ammo][0] * 10;
-					FormatEx(buffer, sizeof(buffer), "%t x10 ($%d)", AmmoNames[info.Ammo], cost);
-					if(cost > cash)
-						style = ITEMDRAW_DISABLED;
-						
-					menu.AddItem(buffer2, buffer, style);	// 1
-				}
-				else if(item.Equipped[client] || canSell)
-				{
-					menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 1
-				}
+					if(item.Equipped[client])
+					{
+						FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
+						menu.AddItem(buffer2, buffer, levelPerk ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);	// 2
+					}
+					else if(canSell)
+					{
+						menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 2
+					}
 
-				bool levelPerk = (!info.Classname[0] && !info.Cost && !Waves_InSetup());
-
-				if(item.Equipped[client])
-				{
-					FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
-					menu.AddItem(buffer2, buffer, levelPerk ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);	// 2
-				}
-				else if(canSell)
-				{
-					menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 2
-				}
-
-				if(canSell)
-				{
-					int sell = ItemSell(item, level, client);
-					FormatEx(buffer, sizeof(buffer), "%t ($%d) | (%t: $%d)", "Sell", sell, "Credits After Selling",sell + (CurrentCash-CashSpent[client]));	// 3
-					menu.AddItem(buffer2, buffer);
+					if(canSell)
+					{
+						int sell = ItemSell(item, level, client);
+						FormatEx(buffer, sizeof(buffer), "%t ($%d) | (%t: $%d)", "Sell", sell, "Credits After Selling",sell + (CurrentCash-CashSpent[client]));	// 3
+						menu.AddItem(buffer2, buffer);
+					}
+									
 				}
 			}
 			
@@ -1813,8 +1843,11 @@ public void MenuPage(int client, int section)
 					}
 					Format(BuildingExtraCounter, sizeof(BuildingExtraCounter), "{%i}", How_Many_Buildings_Exist);
 				}
-				
-				if(item.Equipped[client])
+				if(info.ScrapCost > 0)
+				{
+					FormatEx(buffer, sizeof(buffer), "%s ($%d) [$%d]", TranslateItemName(client, item.Name), info.ScrapCost, Scrap[client]);
+				}
+				else if(item.Equipped[client])
 				{
 					FormatEx(buffer, sizeof(buffer), "%s [%t] %s", TranslateItemName(client, item.Name), "Equipped", BuildingExtraCounter);
 				}
@@ -2252,8 +2285,28 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						int level = item.Owned[client]-1;
 						if(level < 0)
 							level = 0;
-						
+
 						item.GetItemInfo(level, info);
+						if(info.ScrapCost > 0) //Make scrap cost preffered, dont bother with anything else.
+						{
+							if(info.ScrapCost > Scrap[client])
+							{
+								return 0; //HOW THEY DO THIS? FUCK U
+							}
+							//just spawn it inside them LOL
+							float VecOrigin[3];
+							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", VecOrigin);
+							VecOrigin[2] += 45.0;
+
+							Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, client, info.UnboxRarity -1); //since they are one lower
+
+							Scrap[client] -= info.ScrapCost;
+							
+							MenuPage(client, index);
+
+							return 0;
+						}
+						
 						if(item.Equipped[client])	// Buy Ammo
 						{
 							if(info.Ammo && info.Ammo < Ammo_MAX && AmmoData[info.Ammo][0] <= cash)
