@@ -1849,7 +1849,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										}
 										
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
-										i_State[obj] = -1;
+										i_State[entity] = -1;
 
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 
@@ -1887,7 +1887,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}	
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
-										i_State[obj] = -1;
+										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 										if(owner != -1 && owner != client)
 										{
@@ -1912,7 +1912,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}	
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
-										i_State[obj] = -1;
+										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 										if(owner != -1 && owner != client)
 										{
@@ -1934,7 +1934,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}	
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
-										i_State[obj] = -1;
+										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 										if(owner != -1 && owner != client)
 										{
@@ -1956,7 +1956,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}		
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
-										i_State[obj] = -1;
+										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 										if(owner != -1 && owner != client)
 										{
@@ -1978,7 +1978,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}	
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
-										i_State[obj] = -1;
+										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 										if(owner != -1 && owner != client)
 										{
@@ -2000,7 +2000,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
-										i_State[obj] = -1;
+										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 										if(owner != -1 && owner != client)
 										{
@@ -2044,7 +2044,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											
 									//		float Shave_Seconds_off = 5.0 * Extra;
 											fl_NextThinkTime[entity] = GetGameTime() + 2.0;
-											i_State[obj] = -1;
+											i_State[entity] = -1;
 											Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 											if(owner != -1 && owner != client)
 											{
