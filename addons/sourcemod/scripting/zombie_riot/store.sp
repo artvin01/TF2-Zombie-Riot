@@ -1431,6 +1431,7 @@ public void MenuPage(int client, int section)
 	if(CvarInfiniteCash.BoolValue)
 	{
 		CurrentCash = 999999;
+		Ammo_Count_Ready[client] = 999999;
 		CashSpent[client] = 0;
 	}
 	

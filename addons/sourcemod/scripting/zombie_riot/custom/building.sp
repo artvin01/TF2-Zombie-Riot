@@ -130,7 +130,7 @@ void Building_MapStart()
 	Beam_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
 	Beam_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	
-	PrecacheModel("models/items/ammocrate_rockets.mdl");
+	PrecacheModel("models/items/ammocrate_smg1.mdl");
 	PrecacheModel("models/props_manor/table_01.mdl");
 	PrecacheModel(PERKMACHINE_MODEL);
 	
@@ -1847,7 +1847,12 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											if(Current_Mana[client] > RoundToCeil(max_mana_temp)) //Should only apply during actual regen
 												Current_Mana[client] = RoundToCeil(max_mana_temp);
 										}
+										
+										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
+										i_State[obj] = -1;
+
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
+
 										if(owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
@@ -1881,6 +1886,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}	
+										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
+										i_State[obj] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 										if(owner != -1 && owner != client)
 										{
@@ -1904,6 +1911,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}	
+										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
+										i_State[obj] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 										if(owner != -1 && owner != client)
 										{
@@ -1924,6 +1933,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}	
+										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
+										i_State[obj] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 										if(owner != -1 && owner != client)
 										{
@@ -1944,6 +1955,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}		
+										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
+										i_State[obj] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 										if(owner != -1 && owner != client)
 										{
@@ -1964,6 +1977,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}	
+										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
+										i_State[obj] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 										if(owner != -1 && owner != client)
 										{
@@ -1984,6 +1999,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}
+										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
+										i_State[obj] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 										if(owner != -1 && owner != client)
 										{
@@ -2026,6 +2043,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											}
 											
 									//		float Shave_Seconds_off = 5.0 * Extra;
+											fl_NextThinkTime[entity] = GetGameTime() + 2.0;
+											i_State[obj] = -1;
 											Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 											if(owner != -1 && owner != client)
 											{
@@ -2097,6 +2116,14 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							
 						//	Armor_Ready[client] = GetGameTime() + 10.0; //ehhhhhhhh make it rlly small
 							Building_Collect_Cooldown[entity][client] = GetGameTime() + 45.0; //small also
+
+							float pos[3];
+							GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+
+							pos[2] += 45.0;
+
+							ParticleEffectAt(pos, "halloween_boss_axe_hit_sparks", 1.0);
+
 						//	CashSpent[owner] -= 20;
 							if(owner != -1 && owner != client)
 							{
@@ -2363,6 +2390,77 @@ public Action Timer_DroppedBuildingWaitAmmobox(Handle htimer,  DataPack pack)
 		if(Building_Constructed[obj])
 		{
 			SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") | EF_NODRAW);
+			
+			int prop1 = EntRefToEntIndex(Building_Hidden_Prop[obj][0]);
+			int prop2 = EntRefToEntIndex(Building_Hidden_Prop[obj][1]);
+		//	i_State[obj] = 
+			if(IsValidEntity(prop1) && IsValidEntity(prop2))
+			{
+				if(fl_NextThinkTime[obj] + 0.4 < GetGameTime())
+				{
+					if(i_State[obj] != 0)
+					{
+						i_State[obj] = 0;
+						SetVariantString("Idle");
+						AcceptEntityInput(prop1, "SetAnimation");
+						SetVariantString("Idle");
+						AcceptEntityInput(prop2, "SetAnimation");
+						SetVariantInt(1);
+						AcceptEntityInput(prop1, "SetBodyGroup");
+						SetVariantInt(1);
+						AcceptEntityInput(prop2, "SetBodyGroup");
+					}
+				}
+				else if(fl_NextThinkTime[obj] - 0.5 < GetGameTime())
+				{
+					if(i_State[obj] != 1)
+					{
+						i_State[obj] = 1;
+						SetVariantString("Close");
+						AcceptEntityInput(prop1, "SetAnimation");
+						SetVariantString("Close");
+						AcceptEntityInput(prop2, "SetAnimation");
+					}
+				}
+				else if(fl_NextThinkTime[obj] - 1.3 < GetGameTime())
+				{
+					if(i_State[obj] != 2)
+					{
+						i_State[obj] = 2;
+						SetVariantInt(0);
+						AcceptEntityInput(prop1, "SetBodyGroup");
+						SetVariantInt(0);
+						AcceptEntityInput(prop2, "SetBodyGroup");
+					//	SetVariantString("Close");
+					//	AcceptEntityInput(obj, "SetAnimation");
+					}
+				}
+				else if(fl_NextThinkTime[obj] - 2.1 < GetGameTime() )
+				{
+					if(i_State[obj] != 3)
+					{
+						i_State[obj] = 3;
+						SetVariantString("0.5");
+						AcceptEntityInput(prop1, "SetPlayBackRate");
+						SetVariantString("0.5");
+						AcceptEntityInput(prop2, "SetPlayBackRate");
+
+						SetVariantString("Open");
+						AcceptEntityInput(prop1, "SetAnimation");
+						SetVariantString("Open");
+						AcceptEntityInput(prop2, "SetAnimation");
+
+						SetVariantInt(1);
+						AcceptEntityInput(prop1, "SetBodyGroup");
+						SetVariantInt(1);
+						AcceptEntityInput(prop2, "SetBodyGroup");
+					}
+				}
+			}
+			
+
+		//	fl_NextThinkTime[entity] = GetGameTime() + 2.0;
+
 			return Plugin_Continue;
 		}
 	}
@@ -3903,6 +4001,17 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 			ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Perk Machine Used");
 		}
 	}
+	float pos[3];
+	float angles[3];
+	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+	GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
+
+	pos[2] += 45.0;
+	angles[1] -= 90.0;
+
+	int particle = ParticleEffectAt(pos, "flamethrower_underwater", 1.0);
+	SetEntPropVector(particle, Prop_Send, "m_angRotation", angles);
+
 	SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 	SetGlobalTransTarget(client);
 	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
@@ -5373,6 +5482,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 				vOrigin[2] += 15.0;
 				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+				vAngles[1] -= 180.0;
 				TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
 			}
 			else
@@ -5380,7 +5490,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 				prop1 = CreateEntityByName("prop_dynamic_override");
 				if(IsValidEntity(prop1))
 				{
-					DispatchKeyValue(prop1, "model", "models/items/ammocrate_rockets.mdl");
+					DispatchKeyValue(prop1, "model", "models/items/ammocrate_smg1.mdl");
 					DispatchKeyValue(prop1, "modelscale", "1.00");
 					DispatchKeyValue(prop1, "StartDisabled", "false");
 					DispatchKeyValue(prop1, "Solid", "0");
@@ -5395,6 +5505,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 
 					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] -= 180.0;
 					vOrigin[2] += 15.0;
 					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
 					SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
@@ -5406,6 +5517,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 				vOrigin[2] += 15.0;
 				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+				vAngles[1] -= 180.0;
 				TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
 			}
 			else
@@ -5413,7 +5525,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 				prop2 = CreateEntityByName("prop_dynamic_override");
 				if(IsValidEntity(prop2))
 				{
-					DispatchKeyValue(prop2, "model", "models/items/ammocrate_rockets.mdl");
+					DispatchKeyValue(prop2, "model", "models/items/ammocrate_smg1.mdl");
 					DispatchKeyValue(prop2, "modelscale", "1.00");
 					DispatchKeyValue(prop2, "StartDisabled", "false");
 					DispatchKeyValue(prop2, "Solid", "0");
@@ -5428,13 +5540,14 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 
 					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] -= 180.0;
 					vOrigin[2] += 15.0;
 					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
 					SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
 				}
 			}
 
-			SetEntityModel(Building_Index, "models/items/ammocrate_rockets.mdl");
+			SetEntityModel(Building_Index, "models/items/ammocrate_smg1.mdl");
 
 			static const float minbounds[3] = {-20.0, -20.0, -18.0};
 			static const float maxbounds[3] = {20.0, 20.0, 18.0};
@@ -5447,10 +5560,12 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 			npc.UpdateCollisionBox();			
 										
 			GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+			GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vAngles);
 
 			vOrigin[2] += 15.0;
+			vAngles[1] -= 180.0;
 																
-			TeleportEntity(Building_Index, vOrigin, NULL_VECTOR, NULL_VECTOR);
+			TeleportEntity(Building_Index, vOrigin, vAngles, NULL_VECTOR);
 						
 		}
 	}
