@@ -916,21 +916,21 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 	
-	//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
-	
-	if(IsValidEntity(Victim_weapon))
-	{
-		float modified_damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon);
-		
-		damage = modified_damage;
-		Replicated_Damage = modified_damage;
-	}
-	
-	//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
-	//It will just return the same damage if nothing is done.
-	
 	if(!b_ThisNpcIsSawrunner[attacker])
 	{
+		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
+	
+		if(IsValidEntity(Victim_weapon))
+		{
+			float modified_damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon);
+			
+			damage = modified_damage;
+			Replicated_Damage = modified_damage;
+		}
+		
+		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
+		//It will just return the same damage if nothing is done.
+	
 		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)) && i_HealthBeforeSuit[victim] > 0)
 		{
 			Replicated_Damage *= 2.0; //when a raid is alive, make quantum armor 2x as bad at tanking.

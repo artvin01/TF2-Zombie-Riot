@@ -344,22 +344,30 @@ public void SawRunner_ClotThink(int iNPC)
 								{
 									if(target <= MaxClients)
 									{
-										float flMaxHealth = float(SDKCall_GetMaxHealth(target));
-										
-										flMaxHealth *= 0.5; //Because drown damage is 2x in anycase
-										
-										if(IsInvuln(target))	
+										if(i_HealthBeforeSuit[target] > 0)
 										{
-											flMaxHealth *= 0.5; //If under uber, give em more resistance so uber isnt completly useless
-											Custom_Knockback(npc.index, target, 5000.0);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 999999.9, DMG_DROWN); //Make him oneshot the enemy if they have the quantum armor
+											Custom_Knockback(npc.index, target, 5000.0); //Kick them away.
 										}
 										else
 										{
-											Custom_Knockback(npc.index, target, 1000.0); //Give them massive knockback so they can get away/dont make this boy stuck.
+											float flMaxHealth = float(SDKCall_GetMaxHealth(target));
+											
+											flMaxHealth *= 0.75; //Because drown damage is 2x in anycase
+											
+											if(IsInvuln(target))	
+											{
+												flMaxHealth *= 0.5; //If under uber, give em more resistance so uber isnt completly useless
+												Custom_Knockback(npc.index, target, 5000.0);
+											}
+											else
+											{
+												Custom_Knockback(npc.index, target, 1000.0); //Give them massive knockback so they can get away/dont make this boy stuck.
+											}
+											
+											
+											SDKHooks_TakeDamage(target, npc.index, npc.index, flMaxHealth + 50.0, DMG_DROWN); //adding 100 damage so they cant cheese this with healing and very low hp people
 										}
-										
-										
-										SDKHooks_TakeDamage(target, npc.index, npc.index, flMaxHealth + 50.0, DMG_DROWN); //adding 100 damage so they cant cheese this with healing and very low hp people
 									}
 									else
 									{
