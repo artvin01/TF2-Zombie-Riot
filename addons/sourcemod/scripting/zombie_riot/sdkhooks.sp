@@ -76,11 +76,13 @@ void SDKHook_HookClient(int client)
 	SDKUnhook(client, SDKHook_PreThinkPost, OnPreThinkPost);
 	SDKUnhook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost)
 	SDKUnhook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
+	SDKUnhook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
 	
 	SDKHook(client, SDKHook_PostThink, OnPostThink);
 	SDKHook(client, SDKHook_PreThinkPost, OnPreThinkPost);
 	SDKHook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost)
 	SDKHook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
+	SDKHook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
 	
 	#if !defined NoSendProxyClass
 	SDKUnhook(client, SDKHook_PostThinkPost, OnPostThinkPost);
@@ -859,21 +861,41 @@ public void OnPreThink(int client)
 */
 
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
+bool i_WasInUber;
+public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	if(i_WasInUber)
+	{
+		TF2_AddCondition(victim, TFCond_Ubercharged, -1.0);
+	}
+	i_WasInUber = false;
+	return Plugin_Continue;
+}
 
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(TeutonType[victim])
 		return Plugin_Handled;
 		
+	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+	{
+		if(TF2_IsPlayerInCondition(victim,TFCond_Ubercharged))
+		{
+			i_WasInUber = true;
+			TF2_RemoveCondition(victim, TFCond_Ubercharged);
+			damage *= 0.5;
+		}
+	}
 		
 	float gameTime = GetGameTime();
 	if(damagetype & DMG_CRIT)
 	{
 		damagetype &= ~DMG_CRIT; //Remove Crit Damage at all times, it breaks calculations for no good reason.
 	}
+	
 	if(!(damagetype & DMG_DROWN))
 	{
-		if(IsInvuln(victim))	
+		if(IsInvuln(victim))
 		{
 			f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
 			return Plugin_Continue;	
