@@ -793,8 +793,4 @@
 	{
 		"en"		"Schwertkrieg"
 	}
-	"Schwertkrieg"
-	{
-		"en"		"Schwertkrieg"
-	}
 }
