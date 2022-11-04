@@ -214,9 +214,12 @@ int PlayersAliveScaling;
 int GlobalIntencity;
 ConVar cvarTimeScale;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
+//ConVar CvarSvRollspeed; // sv_rollspeed 
+ConVar CvarSvRollagle; // sv_rollangle
 Handle sv_cheats;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie CookieXP;
+Cookie CookieScrap;
 Cookie CookiePlayStreak;
 Cookie Niko_Cookies;
 Cookie CookieCache;
@@ -273,6 +276,7 @@ int CashSpentTotal[MAXTF2PLAYERS];
 int CashRecievedNonWave[MAXTF2PLAYERS];
 int Level[MAXTF2PLAYERS];
 int XP[MAXTF2PLAYERS];
+int Scrap[MAXTF2PLAYERS];
 int Ammo_Count_Ready[MAXTF2PLAYERS];
 //float Armor_Ready[MAXTF2PLAYERS];
 float Increaced_Sentry_damage_Low[MAXENTITIES];
@@ -295,6 +299,7 @@ int Zombies_Currently_Still_Ongoing;
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
 int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
 int i_BarricadesBuild[MAXTF2PLAYERS]={0, ...};
+int i_WhatBuilding[MAXENTITIES]={0, ...};
 
 int Elevator_Owner[MAXENTITIES]={0, ...};
 bool Is_Elevator[MAXENTITIES]={false, ...};
@@ -331,6 +336,7 @@ int Animation_Index[MAXTF2PLAYERS];
 bool b_IsPlayerNiko[MAXTF2PLAYERS];
 
 float delay_hud[MAXTF2PLAYERS];
+float f_DelayBuildNotif[MAXTF2PLAYERS];
 
 int Current_Mana[MAXTF2PLAYERS];
 float Mana_Regen_Delay[MAXTF2PLAYERS];
@@ -1273,6 +1279,11 @@ public void OnPluginStart()
 	CvarMpSolidObjects = FindConVar("tf_solidobjects");
 	if(CvarMpSolidObjects)
 		CvarMpSolidObjects.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+
+	CvarSvRollagle = FindConVar("sv_rollangle");
+	if(CvarSvRollagle)
+		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+
 	
 	ConVar cvar = FindConVar("tf_bot_count");
 	cvar.Flags &= ~FCVAR_NOTIFY;
@@ -1284,6 +1295,7 @@ public void OnPluginStart()
 	CookieCache = new Cookie("zr_lastgame", "The last game saved data is from", CookieAccess_Protected);
 	Niko_Cookies = new Cookie("zr_niko", "Are you a niko", CookieAccess_Protected);
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
+	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
 	
 	HookEntityOutput("logic_relay", "OnTrigger", OnRelayTrigger);
@@ -1887,6 +1899,14 @@ public void OnClientCookiesCached(int client)
 	CookieXP.Get(client, buffer, sizeof(buffer));
 	XP[client] = StringToInt(buffer);
 	Level[client] = XpToLevel(XP[client]);
+
+	CookieScrap.Get(client, buffer, sizeof(buffer));
+	Scrap[client] = StringToInt(buffer);
+	
+	if(Scrap[client] < 0)
+	{
+		Scrap[client] = 0;
+	}
 	
 	char buffer_niko[12];
 	Niko_Cookies.Get(client, buffer_niko, sizeof(buffer_niko));
@@ -1938,6 +1958,15 @@ public void OnClientDisconnect(int client)
 		IntToString(niko_int, buffer_niko, sizeof(buffer_niko));
 		Niko_Cookies.Set(client, buffer_niko);
 	}
+	if(Scrap[client] > -1)
+	{
+		char buffer[12];
+		IntToString(Scrap[client], buffer, sizeof(buffer));
+		CookieScrap.Set(client, buffer);
+
+
+	}
+	Scrap[client] = -1;
 	XP[client] = 0;
 }
 
@@ -2504,7 +2533,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	CheckIfAloneOnServer();
 	
 	bool alive;
-	LastMann = true;
+	LastMann = !Waves_InSetup();
 	int players = CurrentPlayers;
 	CurrentPlayers = 0;
 	GlobalIntencity = Waves_GetIntencity();
@@ -3315,6 +3344,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	}
 	else if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		i_WhatBuilding[entity] = 0;
 		StoreWeapon[entity] = -1;
 		LastHitId[entity] = -1;
 		DamageBits[entity] = -1;
@@ -4177,4 +4207,5 @@ public void MapStartResetAll()
 	SniperMonkey_ClearAll();
 	Weapon_Cspyknife_ClearAll();
 	Zero(f_TutorialUpdateStep);
+	Zero(f_DelayBuildNotif);
 }

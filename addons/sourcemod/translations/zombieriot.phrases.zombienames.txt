@@ -35,7 +35,6 @@
 		"en" 		"Torsoless Headcrab Zombie"
 		"ru" 		"Зомби без ног"
 		"pt"		"Zumbi de Headcrab sem pernas"
-		"ru" 		"Зомби без ног"
 	}
 	"Poison Zombie"
 	{
@@ -561,7 +560,7 @@
 	{
 		"en" 		"Big Airship of Doom"
 		"ru" 		"Большой дирижабль гибели"
-		"pt"		"Grande Aeronave do Fim
+		"pt"		"Grande Aeronave do Fim"
 	}
 	"Medic Apprentice Mage"
 	{
@@ -788,6 +787,11 @@
 	"Donnerkrieg"
 	{
 		"en"		"Donnerkrieg"
+		"ru"		"Доннеркриг"
+	}
+	"Schwertkrieg"
+	{
+		"en"		"Schwertkrieg"
 	}
 	"Schwertkrieg"
 	{

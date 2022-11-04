@@ -196,12 +196,37 @@
 				"linux"		""
 				"windows"	"\x55\x8B\xEC\x56\x8B\x75\x08\x85\xF6\x75\x2A\x33\xC0\x5E\x5D\xC3\x8B\x56\x38"
 			}
-
-
+			"CBaseObject::FirstSpawn" //CBaseObject::FirstSpawn(CBaseObject *__hidden this)
+			{
+				//offset aBaseobjectthin ; "BaseObjectThink"
+				"linux"		""
+				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x57\x83\xBE\xF4\x01\x00\x00\x00"
+			}
+			"CBaseObject::FinishedBuilding" //CBaseObject::FinishedBuilding(CBaseObject *__hidden this)
+			{
+				//aObjectPoints string, then check XREF from that function, only one exists, thats the one.
+				// It should have no strings at all
+				"linux"		""
+				"windows"	"\x55\x8B\xEC\x83\xEC\x6C\x56\x57\x6A\x01"
+			}
 
 		}
 		"Functions"
 		{
+			"CBaseObject::FirstSpawn"
+           		{
+              		 	"signature"    	"CBaseObject::FirstSpawn"
+             	   		"callconv"	"thiscall"
+             	  		"return"    	"void"
+             	 		"this"        	"entity"
+           		}
+			"CBaseObject::FinishedBuilding"
+           		{
+              		 	"signature"    	"CBaseObject::FinishedBuilding"
+             	   		"callconv"	"thiscall"
+             	  		"return"    	"void"
+             	 		"this"        	"entity"
+           		}
 			"CBaseGrenade::Explode"
 			{
 				"offset"	"CBaseGrenade::Explode"

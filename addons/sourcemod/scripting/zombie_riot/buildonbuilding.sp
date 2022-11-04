@@ -89,8 +89,41 @@ public void OnMapStart_Build_on_Build()
 	}
 }
 
+static float Get_old_pos_back[MAXENTITIES][3];
+static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
+static int i_DoNotTeleportThisPlayer;
+
 public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hParams)
 {
+	if(pThis==-1)
+	{
+		return MRES_Ignored;
+	}
+	if(GetEntPropEnt(pThis, Prop_Send, "m_hBuilder")==-1)
+	{
+		return MRES_Ignored;
+	}
+	i_DoNotTeleportThisPlayer = GetEntPropEnt(pThis, Prop_Send, "m_hBuilder");
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && client != i_DoNotTeleportThisPlayer)
+		{
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[client]);
+			SetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", OFF_THE_MAP);
+		}
+	}
+	float vec_origin[3] = { 16383.0, 16383.0, -16383.0 };
+
+	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	{
+		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+		if (IsValidEntity(baseboss_index_allied) && baseboss_index_allied != 0)
+		{
+			GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[baseboss_index_allied]);
+			SDKCall_SetLocalOrigin(baseboss_index_allied, vec_origin);
+		}
+	}
+	//UGLY ASS FIX! Teleport away all entites we wanna ignore, i have no other idea on how...
 	return MRES_Ignored;
 }
 
@@ -100,6 +133,31 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 	{
 		return MRES_Ignored;
 	}
+	int client = GetEntPropEnt(pThis, Prop_Send, "m_hBuilder")
+	if(client==-1)
+	{
+		DHookSetReturn(hReturn, false);
+		return MRES_ChangedOverride;
+	}
+	
+	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	{
+		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+		if (IsValidEntity(baseboss_index_allied) && baseboss_index_allied != 0)
+		{
+			SDKCall_SetLocalOrigin(baseboss_index_allied, Get_old_pos_back[baseboss_index_allied]);
+		}
+	}
+	for(int clientLoop=1; clientLoop<=MaxClients; clientLoop++)
+	{
+		if(IsClientInGame(clientLoop) && clientLoop != i_DoNotTeleportThisPlayer)
+		{
+			SetEntPropVector(clientLoop, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[clientLoop]);
+		}
+	}
+
+	i_DoNotTeleportThisPlayer = 0;
+
 	CClotBody npc = view_as<CClotBody>(pThis);
 	
 	npc.bBuildingIsStacked = false;
@@ -115,12 +173,17 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 				iBuildingDependency[i]=0;
 			}
 		}
+		if(IsValidClient(client))
+		{
+			if(f_DelayBuildNotif[client] < GetGameTime())
+			{
+				f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+				SetHudTextParams(-1.0, 0.90, 0.5, 34, 139, 34, 255);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
+			}
+		}
 		return MRES_Ignored;
-	}
-	if(GetEntPropEnt(pThis, Prop_Send, "m_hBuilder")==-1)
-	{
-		DHookSetReturn(hReturn, false);
-		return MRES_ChangedOverride;
 	}
 	float position[3];
 	GetEntPropVector(pThis, Prop_Send, "m_vecOrigin", position);
@@ -131,6 +194,17 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 	{
 		if(iBuildingDependency[buildingHit])
 		{
+			if(IsValidClient(client))
+			{
+				if(f_DelayBuildNotif[client] < GetGameTime())
+				{
+					f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
+				}
+			}
 			DHookSetReturn(hReturn, false);
 			return MRES_ChangedOverride;
 		}
@@ -139,9 +213,54 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		//And here is my hack
 		float endPos2[3];
 		GetEntPropVector(buildingHit, Prop_Send, "m_vecOrigin", endPos2);
-		const float Delta=50.0;
+		//We use custom offets for buildings, so we do our own magic here
+		float Delta = 50.0; //default is 50
+
+		switch(i_WhatBuilding[buildingHit])
+		{
+			case BuildingAmmobox:
+			{
+				Delta = (32.0 * 0.5); //half it, the buidling is half in the sky!
+			}
+			case BuildingArmorTable:
+			{
+				Delta = 35.0;
+			}
+			case BuildingPerkMachine:
+			{
+				Delta = 65.0;
+			}
+			case BuildingPackAPunch:
+			{
+				Delta = 65.0;
+			}
+			case BuildingHealingStation:
+			{
+				Delta = 45.0;
+			}
+			case BuildingMortar:
+			{
+				Delta = 80.0;
+			}
+			case BuildingRailgun:
+			{
+				Delta = 40.0;
+			}
+
+		}
 		if(FloatAbs(endPos2[2]-endPos[2])<Delta)
 		{
+			if(IsValidClient(client))
+			{
+				if(f_DelayBuildNotif[client] < GetGameTime())
+				{
+					f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
+				}
+			}
 			DHookSetReturn(hReturn, false);
 			return MRES_ChangedOverride;
 		}
@@ -151,12 +270,32 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		datapack.WriteFloat(endPos[0]);
 		datapack.WriteFloat(endPos[1]);
 		datapack.WriteFloat(endPos[2]);
-		datapack.WriteCell(GetEntProp(GetEntPropEnt(pThis, Prop_Send, "m_hBuilder"), Prop_Data, "m_iAmmo", 4, 3));
 		datapack.Reset();
 		DHookSetReturn(hReturn, true);
 		RequestFrame(Frame_TeleportBuilding, datapack);
+		if(IsValidClient(client))
+		{
+			if(f_DelayBuildNotif[client] < GetGameTime())
+			{
+				f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+				SetHudTextParams(-1.0, 0.90, 0.5, 34, 139, 34, 255);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
+			}
+		}
 		npc.bBuildingIsStacked = true;
 		return MRES_ChangedOverride;
+	}
+	if(IsValidClient(client))
+	{
+		if(f_DelayBuildNotif[client] < GetGameTime())
+		{
+			f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
+		}
 	}
 	DHookSetReturn(hReturn, false);
 	return MRES_ChangedOverride;
@@ -205,6 +344,12 @@ public void Frame_TeleportBuilding(DataPack datapack)
 {
 	int building=EntRefToEntIndex(datapack.ReadCell());
 	int dependenton=EntRefToEntIndex(datapack.ReadCell());
+	bool NoBuildOnBuild = false;
+	if(dependenton == 0)
+	{
+		NoBuildOnBuild = true;
+	}
+
 	if(!IsValidEntity(building))
 	{   
 		delete datapack;
@@ -219,28 +364,29 @@ public void Frame_TeleportBuilding(DataPack datapack)
 	vecPos[0]=datapack.ReadFloat();
 	vecPos[1]=datapack.ReadFloat();
 	vecPos[2]=datapack.ReadFloat();
-	if(IsValidEntity(dependenton))
+	if(!NoBuildOnBuild)
 	{
-		iBuildingDependency[dependenton]=building;
+		if(IsValidEntity(dependenton))
+		{
+			iBuildingDependency[dependenton]=building;
+		}
 	}
-	
 	iBuildingDependency[building]=0; //Nothing depends on us
-	int metal_to_restore=datapack.ReadCell();
 	delete datapack;
 	TeleportEntity(building, vecPos, NULL_VECTOR, NULL_VECTOR);
+	
 	for(int i=1; i<MaxClients; i++) //Prevent stuck
 	{
 		if(IsValidClient(i) && IsPlayerAlive(i)) //To-do: Do it the correct way using UTIL_TraceEntity (unfortunately, it requires signature and memory allocations...)
 		{
-			if(IsPlayerStuckInEnt(i, building))
+			if(IsPlayerStuckInEnt(i, building)) //Prevent  stuck but dont kill it.
 			{
-				int owner=GetEntPropEnt(building, Prop_Send, "m_hBuilder");
-				AcceptEntityInput(building, "Kill"); //Destroy the building "quietly"
-				SetEntProp(owner, Prop_Data, "m_iAmmo", metal_to_restore, 4, 3);
-				break;
+				SDKUnhook(i, SDKHook_PostThink, PhaseThroughOwnBuildings);
+				SDKHook(i, SDKHook_PostThink, PhaseThroughOwnBuildings);
 			}
 		}
 	}
+	
 	//We're done here
 }
 

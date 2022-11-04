@@ -28,7 +28,9 @@ float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
 float max_mana[MAXTF2PLAYERS];
 float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
-	
+
+int i_SvRollAngle[MAXTF2PLAYERS];
+
 Handle SyncHud_ArmorCounter;
 
 static int i_WhatLevelForHudIsThisClientAt[MAXTF2PLAYERS];
@@ -41,6 +43,7 @@ public void SDKHooks_ClearAll()
 		i_WhatLevelForHudIsThisClientAt[client] = 2000000000; //two billion
 	}
 }
+
 void SDKHook_PluginStart()
 {
 	/*
@@ -73,11 +76,13 @@ void SDKHook_HookClient(int client)
 	SDKUnhook(client, SDKHook_PreThinkPost, OnPreThinkPost);
 	SDKUnhook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost)
 	SDKUnhook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
+	SDKUnhook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
 	
 	SDKHook(client, SDKHook_PostThink, OnPostThink);
 	SDKHook(client, SDKHook_PreThinkPost, OnPreThinkPost);
 	SDKHook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost)
 	SDKHook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
+	SDKHook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
 	
 	#if !defined NoSendProxyClass
 	SDKUnhook(client, SDKHook_PostThinkPost, OnPostThinkPost);
@@ -97,6 +102,10 @@ public void OnPreThinkPost(int client)
 		{
 			CvarMpSolidObjects.IntValue = 0;
 		}
+	}
+	if(CvarSvRollagle)
+	{
+		CvarSvRollagle.IntValue = i_SvRollAngle[client];
 	}
 }
 
@@ -129,39 +138,45 @@ public void OnPostThink(int client)
 				CvarMpSolidObjects.ReplicateToClient(client, "1"); //set replicate back to normal.
 			}
 		}
-		/*
-		if(Check_Standstill_Delay[client] < gameTime)
+		if(CvarSvRollagle)
 		{
-			float vec[3];
-			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vec);
-			if(vec[0] == 0 && vec[1] == 0)
+			int flHealth = GetEntProp(client, Prop_Send, "m_iHealth");
+			int flMaxHealth = SDKCall_GetMaxHealth(client);
+
+			float PercentageHealth = float(flHealth) / float(flMaxHealth);
+
+			if(TeutonType[client] == TEUTON_NONE)
 			{
-				if(!Check_Standstill_Applied[client])
+				if(PercentageHealth > 0.25)
 				{
-					int weapon = GetPlayerWeaponSlot(client, 2);
-					if(weapon >= MaxClients && !i_NoBonusRange[weapon])
-					{
-						TF2Attrib_SetByDefIndex(weapon, 264, 2.25);
-					}
-					Check_Standstill_Applied[client] = true;
+					i_SvRollAngle[client] = 0;
 				}
-				Check_Standstill_Delay[client] = gameTime + 0.1;
+				else
+				{
+					PercentageHealth *= 4.0;
+
+					PercentageHealth = PercentageHealth - 1.0;
+
+					PercentageHealth *= -1.0; //convert to positive
+
+					PercentageHealth *= 100.0; // we want the full number! this only works in big ones. also divitde by 4
+
+					i_SvRollAngle[client] = RoundToCeil(PercentageHealth);
+				}
 			}
 			else
 			{
-				if(Check_Standstill_Applied[client])
-				{
-					Check_Standstill_Applied[client] = false;
-					int weapon = GetPlayerWeaponSlot(client, 2);
-					if(weapon >= MaxClients && !i_NoBonusRange[weapon])
-					{
-						TF2Attrib_SetByDefIndex(weapon, 264, 1.25);
-					}
-				}
-				Check_Standstill_Delay[client] = gameTime + 1.0;				
+				i_SvRollAngle[client] = 0;
 			}
+
+			char RollAngleValue[4];
+
+			IntToString(i_SvRollAngle[client], RollAngleValue, sizeof(RollAngleValue));
+
+		//	PrintToChatAll("%s",RollAngleValue);
+
+			CvarSvRollagle.ReplicateToClient(client, RollAngleValue); //set replicate back to normal.
 		}
-		*/
 		if(Mana_Regen_Delay[client] < gameTime)	
 		{
 			Mana_Regen_Delay[client] = gameTime + 0.4;
@@ -238,7 +253,6 @@ public void OnPostThink(int client)
 			Armour_Level_Current[client] = 0;
 			int flHealth = GetEntProp(client, Prop_Send, "m_iHealth");
 			int flMaxHealth = SDKCall_GetMaxHealth(client);
-				
 			if (Jesus_Blessing[client] == 1)
 			{
 				
@@ -847,21 +861,41 @@ public void OnPreThink(int client)
 */
 
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
+bool i_WasInUber;
+public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	if(i_WasInUber)
+	{
+		TF2_AddCondition(victim, TFCond_Ubercharged, -1.0);
+	}
+	i_WasInUber = false;
+	return Plugin_Continue;
+}
 
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(TeutonType[victim])
 		return Plugin_Handled;
 		
+	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+	{
+		if(TF2_IsPlayerInCondition(victim,TFCond_Ubercharged))
+		{
+			i_WasInUber = true;
+			TF2_RemoveCondition(victim, TFCond_Ubercharged);
+			damage *= 0.5;
+		}
+	}
 		
 	float gameTime = GetGameTime();
 	if(damagetype & DMG_CRIT)
 	{
 		damagetype &= ~DMG_CRIT; //Remove Crit Damage at all times, it breaks calculations for no good reason.
 	}
+	
 	if(!(damagetype & DMG_DROWN))
 	{
-		if(IsInvuln(victim))	
+		if(IsInvuln(victim))
 		{
 			f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
 			return Plugin_Continue;	
@@ -916,21 +950,21 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 	
-	//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
-	
-	if(IsValidEntity(Victim_weapon))
-	{
-		float modified_damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon);
-		
-		damage = modified_damage;
-		Replicated_Damage = modified_damage;
-	}
-	
-	//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
-	//It will just return the same damage if nothing is done.
-	
 	if(!b_ThisNpcIsSawrunner[attacker])
 	{
+		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
+	
+		if(IsValidEntity(Victim_weapon))
+		{
+			float modified_damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon);
+			
+			damage = modified_damage;
+			Replicated_Damage = modified_damage;
+		}
+		
+		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
+		//It will just return the same damage if nothing is done.
+	
 		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)) && i_HealthBeforeSuit[victim] > 0)
 		{
 			Replicated_Damage *= 2.0; //when a raid is alive, make quantum armor 2x as bad at tanking.

@@ -88,6 +88,11 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::FindTarget", DHook_SentryFind_Target, _);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::Fire", DHook_SentryFire_Pre, DHook_SentryFire_Post);
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
+
+
+	DHook_CreateDetour(gamedata, "CBaseObject::FinishedBuilding", Dhook_FinishedBuilding_Pre, Dhook_FinishedBuilding_Post);
+	DHook_CreateDetour(gamedata, "CBaseObject::FirstSpawn", Dhook_FirstSpawn_Pre, Dhook_FirstSpawn_Post);
+
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	
@@ -1188,6 +1193,7 @@ public void PhaseThroughOwnBuildings(int client)
 	float otherLoc[3];
 	bool Collides_with_atleast_one_building = false;
 	GetClientAbsOrigin(client, PlayerLoc);
+	
 	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
@@ -1196,7 +1202,7 @@ public void PhaseThroughOwnBuildings(int client)
 			if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
 			{
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", otherLoc);
-				if (GetVectorDistance(PlayerLoc, otherLoc, true) <= 8100.0)// 90.0 distance
+				if (GetVectorDistance(PlayerLoc, otherLoc, true) <= 11000.0)// 110.0 distance
 				{	 
 					Collides_with_atleast_one_building = true;
 				}
@@ -1499,7 +1505,6 @@ public MRESReturn DHook_HandleRageGainPost(DHookParam param)
 	}
 	return MRES_Ignored;
 }
-
 
 public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams) {
 	int originalLauncher = GetEntPropEnt(healingBolt, Prop_Send, "m_hOriginalLauncher");
