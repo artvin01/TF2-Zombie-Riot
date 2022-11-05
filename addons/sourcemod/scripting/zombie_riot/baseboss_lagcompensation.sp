@@ -364,7 +364,7 @@ public void BacktrackEntity(int entity, float currentTime) //Make sure that alli
 	*/
 	// If the master state changes, all layers will be invalid too, so don't interp (ya know, interp barely ever happens anyway)
 //	if(!b_LagCompAlliedPlayers)
-	{
+//	{
 		if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
 		{
 			bool interpolationAllowed = (multi && frac > 0.0 && record.m_masterSequence == prevRecord.m_masterSequence);
@@ -405,7 +405,6 @@ public void BacktrackEntity(int entity, float currentTime) //Make sure that alli
 			}
 		////////////////////////
 		// Now do all the layers
-#if defined HaveLayersForLagCompensation
 			if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 			{
 				CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
@@ -457,12 +456,11 @@ public void BacktrackEntity(int entity, float currentTime) //Make sure that alli
 						currentLayer.Set(m_flWeight, layer.m_weight);
 					}
 				}
-#endif
 			}
 	//		Test_Hitbox(entity);
 		}
-		SDKCall_InvalidateBoneCache(entity); //Do at all times, yes, ew but i have to,
-	}
+//	}
+	SDKCall_InvalidateBoneCache(entity); //Do at all times, yes, ew but i have to,
 	EntityRestore.SetArray(refchar, restore, sizeof(restore));
 }
 
