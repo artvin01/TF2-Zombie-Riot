@@ -31,75 +31,60 @@ void Nailgun_Map_Precache()
 
 public void Weapon_Nailgun(int client, int weapon, bool crit)
 {
-	int mana_cost;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if(address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
-
-	if(mana_cost <= Current_Mana[client])
-	{
-		float damage = 7.5;
+	float damage = 7.5;
 		
-		float attack_speed;
+	float attack_speed;
 		
-		attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
+	attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
 				
-		damage = attack_speed * damage * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
+	damage = attack_speed * damage * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
 		
-		float sentry_range;
+	float sentry_range;
 			
-		sentry_range = Attributes_FindOnPlayer(client, 344, true, 1.0);			//Sentry Range bonus
+	sentry_range = Attributes_FindOnPlayer(client, 344, true, 1.0);			//Sentry Range bonus
 			
-		float speed = 1100.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+	float speed = 1100.0;
+	Address address = TF2Attrib_GetByDefIndex(weapon, 103);
+	if(address != Address_Null)
+		speed *= TF2Attrib_GetValue(address);
 	
-		address = TF2Attrib_GetByDefIndex(weapon, 104);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+	address = TF2Attrib_GetByDefIndex(weapon, 104);
+	if(address != Address_Null)
+		speed *= TF2Attrib_GetValue(address);
 	
-		address = TF2Attrib_GetByDefIndex(weapon, 475);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+	address = TF2Attrib_GetByDefIndex(weapon, 475);
+	if(address != Address_Null)
+		speed *= TF2Attrib_GetValue(address);
 	
-		speed *= sentry_range
+	speed *= sentry_range
 		
-		float time = 500.0/speed;
-		address = TF2Attrib_GetByDefIndex(weapon, 101);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
+	float time = 500.0/speed;
+	address = TF2Attrib_GetByDefIndex(weapon, 101);
+	if(address != Address_Null)
+		time *= TF2Attrib_GetValue(address);
 	
-		address = TF2Attrib_GetByDefIndex(weapon, 102);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
-		
-		int iRot = CreateEntityByName("func_door_rotating");
-		if(iRot == -1) return;
+	address = TF2Attrib_GetByDefIndex(weapon, 102);
+	if(address != Address_Null)
+		time *= TF2Attrib_GetValue(address);
 	
-		float fPos[3];
-		GetClientEyePosition(client, fPos);
+	int iRot = CreateEntityByName("func_door_rotating");
+	if(iRot == -1) return;
 	
-		DispatchKeyValueVector(iRot, "origin", fPos);
-		DispatchKeyValue(iRot, "distance", "99999");
-		DispatchKeyValueFloat(iRot, "speed", speed);
-		DispatchKeyValue(iRot, "spawnflags", "12288"); // passable|silent
-		DispatchSpawn(iRot);
-		SetEntityCollisionGroup(iRot, 27);
+	float fPos[3];
+	GetClientEyePosition(client, fPos);
 	
-		SetVariantString("!activator");
-		AcceptEntityInput(iRot, "Open");
-	//	EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
-	//	CreateTimer(0.1, Timer_HatThrow_Woosh, EntIndexToEntRef(iRot), TIMER_REPEAT);
-		Wand_Nailgun_Launch(client, iRot, speed, time, damage);
-	}
-	else
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-	}
+	DispatchKeyValueVector(iRot, "origin", fPos);
+	DispatchKeyValue(iRot, "distance", "99999");
+	DispatchKeyValueFloat(iRot, "speed", speed);
+	DispatchKeyValue(iRot, "spawnflags", "12288"); // passable|silent
+	DispatchSpawn(iRot);
+	SetEntityCollisionGroup(iRot, 27);
+	
+	SetVariantString("!activator");
+	AcceptEntityInput(iRot, "Open");
+//	EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
+//	CreateTimer(0.1, Timer_HatThrow_Woosh, EntIndexToEntRef(iRot), TIMER_REPEAT);
+	Wand_Nailgun_Launch(client, iRot, speed, time, damage);
 }
 
 static void Wand_Nailgun_Launch(int client, int iRot, float speed, float time, float damage)

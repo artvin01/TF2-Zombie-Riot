@@ -157,7 +157,7 @@ void Database_LoadGameData(int client)
 public void Database_OnGameData(Database db, int userid, int numQueries, DBResultSet[] results, any[] queryData)
 {
 	int client = GetClientOfUserId(userid);
-	if(client && AreClientCookiesCached(client) && results[0].MoreRows)
+	if(client && AreClientCookiesCached(client) && results[0].MoreRows && IsClientInGame(client))
 	{
 		char buffer[32];
 		CookieCache.Get(client, buffer, sizeof(buffer));

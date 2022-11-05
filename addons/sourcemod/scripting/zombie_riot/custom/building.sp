@@ -373,6 +373,7 @@ public bool Building_Sentry(int client, int entity)
 	Building_Constructed[entity] = false;
 	CreateTimer(0.2, Building_Set_HP_Colour_Sentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	CreateTimer(0.5, Timer_DroppedBuildingWaitSentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+
 	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -558,14 +559,20 @@ public bool Building_DispenserWall(int client, int entity)
 {
 	i_WhatBuilding[entity] = BuildingBarricade;
 	b_SentryIsCustom[entity] = false;
+
+	DataPack pack;
+	CreateDataTimer(0.5, Timer_ClaimedBuildingremoveBarricadeCounterOnDeath, pack, TIMER_REPEAT);
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteCell(EntIndexToEntRef(client)); 
+	pack.WriteCell(client); //Need original client index id please.
 	i_BarricadesBuild[client] += 1;
+
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	CreateTimer(0.2, Building_Set_HP_Colour, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
-	DataPack pack;
-	CreateDataTimer(0.5, Timer_DroppedBuildingWaitWall, pack, TIMER_REPEAT);
-	pack.WriteCell(EntIndexToEntRef(entity));
-	pack.WriteCell(client); //Need original client index id please.
+	DataPack pack_2;
+	CreateDataTimer(0.5, Timer_DroppedBuildingWaitWall, pack_2, TIMER_REPEAT);
+	pack_2.WriteCell(EntIndexToEntRef(entity));
 	
 	Building_Repair_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 	Building_Max_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
@@ -626,14 +633,17 @@ public bool Building_AmmoBox(int client, int entity)
 	b_SentryIsCustom[entity] = false;
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
-//	SDKHook(entity, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmit);
-	
-	i_SupportBuildingsBuild[client] += 1;
 	DataPack pack;
-	CreateDataTimer(0.1, Timer_DroppedBuildingWaitAmmobox, pack, TIMER_REPEAT);
+	CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
-	pack.WriteCell(entity);
+	pack.WriteCell(EntIndexToEntRef(client)); 
 	pack.WriteCell(client); //Need original client index id please.
+	i_SupportBuildingsBuild[client] += 1;
+
+	DataPack pack_2;
+	CreateDataTimer(0.1, Timer_DroppedBuildingWaitAmmobox, pack_2, TIMER_REPEAT);
+	pack_2.WriteCell(EntIndexToEntRef(entity));
+	pack_2.WriteCell(entity);
 	
 	CreateTimer(0.2, Building_Set_HP_Colour, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	Building_Repair_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
@@ -663,12 +673,17 @@ public bool Building_ArmorTable(int client, int entity)
 	b_SentryIsCustom[entity] = false;
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
-	i_SupportBuildingsBuild[client] += 1;
 	DataPack pack;
-	CreateDataTimer(0.1, Timer_DroppedBuildingWaitArmorTable, pack, TIMER_REPEAT);
+	CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
-	pack.WriteCell(entity);
+	pack.WriteCell(EntIndexToEntRef(client)); 
 	pack.WriteCell(client); //Need original client index id please.
+	i_SupportBuildingsBuild[client] += 1;
+
+	DataPack pack_2;
+	CreateDataTimer(0.1, Timer_DroppedBuildingWaitArmorTable, pack_2, TIMER_REPEAT);
+	pack_2.WriteCell(EntIndexToEntRef(entity));
+	pack_2.WriteCell(entity);
 	
 	CreateTimer(0.2, Building_Set_HP_Colour, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	Building_Repair_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
@@ -704,12 +719,17 @@ public bool Building_PerkMachine(int client, int entity)
 	
 //	SDKHook(entity, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmit);
 	
-	i_SupportBuildingsBuild[client] += 1;
 	DataPack pack;
-	CreateDataTimer(0.1, Timer_DroppedBuildingWaitPerkMachine, pack, TIMER_REPEAT);
+	CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
-	pack.WriteCell(entity);
+	pack.WriteCell(EntIndexToEntRef(client)); 
 	pack.WriteCell(client); //Need original client index id please.
+	i_SupportBuildingsBuild[client] += 1;
+
+	DataPack pack_2;
+	CreateDataTimer(0.1, Timer_DroppedBuildingWaitPerkMachine, pack_2, TIMER_REPEAT);
+	pack_2.WriteCell(EntIndexToEntRef(entity));
+	pack_2.WriteCell(entity);
 	
 	CreateTimer(0.2, Building_Set_HP_Colour, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	Building_Repair_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
@@ -742,15 +762,17 @@ public bool Building_PackAPunch(int client, int entity)
 	b_SentryIsCustom[entity] = false;
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
+	DataPack pack;
+	CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteCell(EntIndexToEntRef(client)); 
+	pack.WriteCell(client); //Need original client index id please.
 	i_SupportBuildingsBuild[client] += 1;
 	
-//	SDKHook(entity, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmit);
-	
-	DataPack pack;
-	CreateDataTimer(0.1, Timer_DroppedBuildingWaitPackAPunch, pack, TIMER_REPEAT);
-	pack.WriteCell(EntIndexToEntRef(entity));
-	pack.WriteCell(entity);
-	pack.WriteCell(client); //Need original client index id please.
+	DataPack pack_2;
+	CreateDataTimer(0.1, Timer_DroppedBuildingWaitPackAPunch, pack_2, TIMER_REPEAT);
+	pack_2.WriteCell(EntIndexToEntRef(entity));
+	pack_2.WriteCell(entity);
 	
 	CreateTimer(0.2, Building_Set_HP_Colour, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	Building_Repair_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
@@ -1677,6 +1699,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							DataPack pack;
 							CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 							pack.WriteCell(EntIndexToEntRef(entity));
+							pack.WriteCell(EntIndexToEntRef(client)); 
 							pack.WriteCell(client); //Need original client index id please.
 							i_SupportBuildingsBuild[client] += 1;
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
@@ -1689,6 +1712,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							DataPack pack;
 							CreateDataTimer(0.5, Timer_ClaimedBuildingremoveBarricadeCounterOnDeath, pack, TIMER_REPEAT);
 							pack.WriteCell(EntIndexToEntRef(entity));
+							pack.WriteCell(EntIndexToEntRef(client)); 
 							pack.WriteCell(client); //Need original client index id please.
 							i_BarricadesBuild[client] += 1;
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
@@ -1701,6 +1725,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							DataPack pack;
 							CreateDataTimer(0.5, Timer_ClaimedBuildingremoveElevatorCounterOnDeath, pack, TIMER_REPEAT);
 							pack.WriteCell(EntIndexToEntRef(entity));
+							pack.WriteCell(EntIndexToEntRef(client)); 
 							pack.WriteCell(client); //Need original client index id please.
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
 							AcceptEntityInput(entity, "SetBuilder", client);
@@ -1815,9 +1840,9 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							{
 								if(IsWandWeapon(weapon))
 								{
-									float max_mana_temp = 1200.0;
+									float max_mana_temp = 800.0;
 									float mana_regen_temp = 100.0;
-											
+									
 									if(i_CurrentEquippedPerk[client] == 4)
 									{
 										mana_regen_temp *= 1.35;
@@ -2314,12 +2339,16 @@ public void Disallow_Building(int client)
 public Action Timer_ClaimedBuildingremoveSupportCounterOnDeath(Handle htimer,  DataPack pack)
 {
 	pack.Reset();
-	int entref = pack.ReadCell();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int client = EntRefToEntIndex(pack.ReadCell()); 
 	int client_original_index = pack.ReadCell(); //Need original!
 	
-	int obj=EntRefToEntIndex(entref);
-	
-	if(!IsValidEntity(obj))
+	if(!IsValidEntity(entity))
+	{
+		i_SupportBuildingsBuild[client_original_index] -= 1;
+		return Plugin_Stop;
+	}
+	if(!IsValidClient(client)) //Are they valid ? no ? DIE!
 	{
 		i_SupportBuildingsBuild[client_original_index] -= 1;
 		return Plugin_Stop;
@@ -2330,12 +2359,16 @@ public Action Timer_ClaimedBuildingremoveSupportCounterOnDeath(Handle htimer,  D
 public Action Timer_ClaimedBuildingremoveBarricadeCounterOnDeath(Handle htimer,  DataPack pack)
 {
 	pack.Reset();
-	int entref = pack.ReadCell();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int client = EntRefToEntIndex(pack.ReadCell()); 
 	int client_original_index = pack.ReadCell(); //Need original!
 	
-	int obj=EntRefToEntIndex(entref);
-	
-	if(!IsValidEntity(obj))
+	if(!IsValidEntity(entity))
+	{
+		i_BarricadesBuild[client_original_index] -= 1;
+		return Plugin_Stop;
+	}
+	if(!IsValidClient(client)) //Are they valid ? no ? DIE!
 	{
 		i_BarricadesBuild[client_original_index] -= 1;
 		return Plugin_Stop;
@@ -2346,12 +2379,16 @@ public Action Timer_ClaimedBuildingremoveBarricadeCounterOnDeath(Handle htimer, 
 public Action Timer_ClaimedBuildingremoveElevatorCounterOnDeath(Handle htimer,  DataPack pack)
 {
 	pack.Reset();
-	int entref = pack.ReadCell();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int client = EntRefToEntIndex(pack.ReadCell()); 
 	int client_original_index = pack.ReadCell(); //Need original!
 	
-	int obj=EntRefToEntIndex(entref);
-	
-	if(!IsValidEntity(obj))
+	if(!IsValidEntity(entity))
+	{
+		Elevators_Currently_Build[client_original_index] -= 1;
+		return Plugin_Stop;
+	}
+	if(!IsValidClient(client)) //Are they valid ? no ? DIE!
 	{
 		Elevators_Currently_Build[client_original_index] -= 1;
 		return Plugin_Stop;
@@ -2364,7 +2401,6 @@ public Action Timer_DroppedBuildingWaitAmmobox(Handle htimer,  DataPack pack)
 	pack.Reset();
 	int entref = pack.ReadCell();
 	int original_entity = pack.ReadCell();
-	int client_original_index = pack.ReadCell(); //Need original!
 	
 	int obj=EntRefToEntIndex(entref);
 	
@@ -2381,7 +2417,6 @@ public Action Timer_DroppedBuildingWaitAmmobox(Handle htimer,  DataPack pack)
 		{
 			RemoveEntity(prop2);
 		}
-		i_SupportBuildingsBuild[client_original_index] -= 1;
 		return Plugin_Stop;
 	}
 	//Wait until full complete
@@ -2460,7 +2495,7 @@ public Action Timer_DroppedBuildingWaitAmmobox(Handle htimer,  DataPack pack)
 			
 
 		//	fl_NextThinkTime[entity] = GetGameTime() + 2.0;
-
+		
 			return Plugin_Continue;
 		}
 		CClotBody npc = view_as<CClotBody>(obj);
@@ -2614,7 +2649,6 @@ public Action Timer_DroppedBuildingWaitArmorTable(Handle htimer, DataPack pack)
 	pack.Reset();
 	int entref = pack.ReadCell();
 	int original_entity = pack.ReadCell();
-	int client_original_index = pack.ReadCell(); //Need original!
 	
 	int obj=EntRefToEntIndex(entref);
 	
@@ -2632,7 +2666,7 @@ public Action Timer_DroppedBuildingWaitArmorTable(Handle htimer, DataPack pack)
 			RemoveEntity(prop2);
 		}
 		
-		i_SupportBuildingsBuild[client_original_index] -= 1;
+	//	i_SupportBuildingsBuild[client_original_index] -= 1;
 		return Plugin_Stop;
 	}
 	//Wait until full complete
@@ -2673,7 +2707,6 @@ public Action Timer_DroppedBuildingWaitPerkMachine(Handle htimer, DataPack pack)
 	pack.Reset();
 	int entref = pack.ReadCell();
 	int original_entity = pack.ReadCell();
-	int client_original_index = pack.ReadCell(); //Need original!
 	
 	int obj=EntRefToEntIndex(entref);
 	
@@ -2690,7 +2723,6 @@ public Action Timer_DroppedBuildingWaitPerkMachine(Handle htimer, DataPack pack)
 		{
 			RemoveEntity(prop2);
 		}
-		i_SupportBuildingsBuild[client_original_index] -= 1;
 		return Plugin_Stop;
 	}
 	//Wait until full complete
@@ -2729,7 +2761,6 @@ public Action Timer_DroppedBuildingWaitPackAPunch(Handle htimer, DataPack pack)
 	pack.Reset();
 	int entref = pack.ReadCell();
 	int original_entity = pack.ReadCell();
-	int client_original_index = pack.ReadCell(); //Need original!
 	
 	int obj=EntRefToEntIndex(entref);
 	
@@ -2746,7 +2777,6 @@ public Action Timer_DroppedBuildingWaitPackAPunch(Handle htimer, DataPack pack)
 		{
 			RemoveEntity(prop2);
 		}
-		i_SupportBuildingsBuild[client_original_index] -= 1;
 		return Plugin_Stop;
 	}
 	//Wait until full complete
@@ -2786,13 +2816,12 @@ public Action Timer_DroppedBuildingWaitWall(Handle htimer, DataPack pack)
 {
 	pack.Reset();
 	int entref = pack.ReadCell();
-	int client_original_index = pack.ReadCell(); //Need original!
 	
 	int obj=EntRefToEntIndex(entref);
 	
 	if(!IsValidEntity(obj))
 	{
-		i_BarricadesBuild[client_original_index] -= 1;
+	//	i_BarricadesBuild[client_original_index] -= 1;
 		return Plugin_Stop;
 	}
 	//Wait until full complete

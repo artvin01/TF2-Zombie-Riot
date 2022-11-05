@@ -365,101 +365,100 @@ public void BacktrackEntity(int entity, float currentTime) //Make sure that alli
 	// If the master state changes, all layers will be invalid too, so don't interp (ya know, interp barely ever happens anyway)
 //	if(!b_LagCompAlliedPlayers)
 //	{
-		if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
+	if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
+	{
+		bool interpolationAllowed = (multi && frac > 0.0 && record.m_masterSequence == prevRecord.m_masterSequence);
+		
+		if(interpolationAllowed)
 		{
-			bool interpolationAllowed = (multi && frac > 0.0 && record.m_masterSequence == prevRecord.m_masterSequence);
-			
-			if(interpolationAllowed)
-			{
-				SetEntProp(entity, Prop_Data, "m_nSequence", Lerpint(frac, record.m_masterSequence, prevRecord.m_masterSequence));
+			SetEntProp(entity, Prop_Data, "m_nSequence", Lerpint(frac, record.m_masterSequence, prevRecord.m_masterSequence));
 				
-				if(record.m_masterCycle > prevRecord.m_masterCycle)
-				{
-					// the older record is higher in frame than the newer, it must have wrapped around from 1 back to 0
-					// add one to the newer so it is lerping from .9 to 1.1 instead of .9 to .1, for example.
-					float newCycle = Lerpfloat(frac, record.m_masterCycle, prevRecord.m_masterCycle + 1.0);
+			if(record.m_masterCycle > prevRecord.m_masterCycle)
+			{
+				// the older record is higher in frame than the newer, it must have wrapped around from 1 back to 0
+				// add one to the newer so it is lerping from .9 to 1.1 instead of .9 to .1, for example.
+				float newCycle = Lerpfloat(frac, record.m_masterCycle, prevRecord.m_masterCycle + 1.0);
 					
-					if (newCycle<0.01)
-						newCycle = 0.01;
-					else if (newCycle>1.0)
-						newCycle = 1.0;
-						
-					SetEntPropFloat(entity, Prop_Data, "m_flCycle", newCycle < 1.0 ? newCycle : newCycle - 1.0);// and make sure .9 to 1.2 does not end up 1.05
-				}
-				else
-				{
-					float newCycle = Lerpfloat(frac, record.m_masterCycle, prevRecord.m_masterCycle);
+				if (newCycle<0.01)
+					newCycle = 0.01;
+				else if (newCycle>1.0)
+					newCycle = 1.0;
 					
-					if (newCycle<0.01)
-						newCycle = 0.01;
-					else if (newCycle>1.0)
-						newCycle = 1.0;
-						
-					SetEntPropFloat(entity, Prop_Data, "m_flCycle", newCycle);
-				}
+				SetEntPropFloat(entity, Prop_Data, "m_flCycle", newCycle < 1.0 ? newCycle : newCycle - 1.0);// and make sure .9 to 1.2 does not end up 1.05
 			}
 			else
 			{
-				SetEntProp(entity, Prop_Data, "m_nSequence", record.m_masterSequence);
-				SetEntPropFloat(entity, Prop_Data, "m_flCycle", record.m_masterCycle);
+				float newCycle = Lerpfloat(frac, record.m_masterCycle, prevRecord.m_masterCycle);
+					
+				if (newCycle<0.01)
+					newCycle = 0.01;
+				else if (newCycle>1.0)
+					newCycle = 1.0;
+					
+				SetEntPropFloat(entity, Prop_Data, "m_flCycle", newCycle);
 			}
+		}
+		else
+			{
+			SetEntProp(entity, Prop_Data, "m_nSequence", record.m_masterSequence);
+			SetEntPropFloat(entity, Prop_Data, "m_flCycle", record.m_masterCycle);
+		}
 		////////////////////////
 		// Now do all the layers
-			if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
-			{
-				CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
+		if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
+		{
+			CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
 				
-				int layerCount = GetEntPropArraySize(entity, Prop_Data, "m_AnimOverlay");
-				LayerRecord layer, recordsLayerRecord, prevRecordsLayerRecord;
-				restore.m_layerRecords = new ArrayList(sizeof(LayerRecord));
-				for(int i; i<layerCount; i++)
+			int layerCount = GetEntPropArraySize(entity, Prop_Data, "m_AnimOverlay");
+			LayerRecord layer, recordsLayerRecord, prevRecordsLayerRecord;
+			restore.m_layerRecords = new ArrayList(sizeof(LayerRecord));
+			for(int i; i<layerCount; i++)
+			{
+				CAnimationLayer currentLayer = overlay.GetLayer(i); 
+				layer.m_cycle = currentLayer.Get(m_flCycle);
+				layer.m_order = currentLayer.Get(m_nOrder);
+				layer.m_sequence = currentLayer.Get(m_nSequence);
+				layer.m_weight = currentLayer.Get(m_flWeight);
+				restore.m_layerRecords.PushArray(layer);
+				bool interpolated = false;
+				if(interpolationAllowed)
 				{
-					CAnimationLayer currentLayer = overlay.GetLayer(i); 
-					layer.m_cycle = currentLayer.Get(m_flCycle);
-					layer.m_order = currentLayer.Get(m_nOrder);
-					layer.m_sequence = currentLayer.Get(m_nSequence);
-					layer.m_weight = currentLayer.Get(m_flWeight);
-					restore.m_layerRecords.PushArray(layer);
-					bool interpolated = false;
-					if(interpolationAllowed)
+					record.m_layerRecords.GetArray(i, recordsLayerRecord);
+					prevRecord.m_layerRecords.GetArray(i, prevRecordsLayerRecord);
+					if(recordsLayerRecord.m_order == prevRecordsLayerRecord.m_order && recordsLayerRecord.m_sequence == prevRecordsLayerRecord.m_sequence)
 					{
-						record.m_layerRecords.GetArray(i, recordsLayerRecord);
-						prevRecord.m_layerRecords.GetArray(i, prevRecordsLayerRecord);
-						if(recordsLayerRecord.m_order == prevRecordsLayerRecord.m_order && recordsLayerRecord.m_sequence == prevRecordsLayerRecord.m_sequence)
+						// We can't interpolate across a sequence or order change
+						interpolated = true;
+						if(recordsLayerRecord.m_cycle > prevRecordsLayerRecord.m_cycle)
 						{
-							// We can't interpolate across a sequence or order change
-							interpolated = true;
-							if(recordsLayerRecord.m_cycle > prevRecordsLayerRecord.m_cycle)
-							{
-								// the older record is higher in frame than the newer, it must have wrapped around from 1 back to 0
-								// add one to the newer so it is lerping from .9 to 1.1 instead of .9 to .1, for example.
-								float newCycle = Lerpfloat(frac, recordsLayerRecord.m_cycle, prevRecordsLayerRecord.m_cycle + 1.0);
-								currentLayer.Set(m_flCycle, newCycle < 1.0 ? newCycle : newCycle - 1.0);// and make sure .9 to 1.2 does not end up 1.05
-							}
-							else
-							{
-								currentLayer.Set(m_flCycle, Lerpfloat(frac, recordsLayerRecord.m_cycle, prevRecordsLayerRecord.m_cycle));
-							}
-							
-							currentLayer.Set(m_nOrder, recordsLayerRecord.m_order);
-							currentLayer.Set(m_nSequence, recordsLayerRecord.m_sequence);
-							currentLayer.Set(m_flWeight, Lerpfloat(frac, recordsLayerRecord.m_weight, prevRecordsLayerRecord.m_weight));
+							// the older record is higher in frame than the newer, it must have wrapped around from 1 back to 0
+							// add one to the newer so it is lerping from .9 to 1.1 instead of .9 to .1, for example.
+							float newCycle = Lerpfloat(frac, recordsLayerRecord.m_cycle, prevRecordsLayerRecord.m_cycle + 1.0);
+							currentLayer.Set(m_flCycle, newCycle < 1.0 ? newCycle : newCycle - 1.0);// and make sure .9 to 1.2 does not end up 1.05
 						}
-					}
-					
-					if(!interpolated)
-					{
-						//Either no interp, or interp failed.  Just use record.
-						currentLayer.Set(m_flCycle, layer.m_cycle);
-						currentLayer.Set(m_nOrder, layer.m_order);
-						currentLayer.Set(m_nSequence, layer.m_sequence);
-						currentLayer.Set(m_flWeight, layer.m_weight);
+						else
+						{
+							currentLayer.Set(m_flCycle, Lerpfloat(frac, recordsLayerRecord.m_cycle, prevRecordsLayerRecord.m_cycle));
+						}
+							
+						currentLayer.Set(m_nOrder, recordsLayerRecord.m_order);
+						currentLayer.Set(m_nSequence, recordsLayerRecord.m_sequence);
+						currentLayer.Set(m_flWeight, Lerpfloat(frac, recordsLayerRecord.m_weight, prevRecordsLayerRecord.m_weight));
 					}
 				}
+					
+				if(!interpolated)
+				{
+					//Either no interp, or interp failed.  Just use record.
+					currentLayer.Set(m_flCycle, layer.m_cycle);
+					currentLayer.Set(m_nOrder, layer.m_order);
+					currentLayer.Set(m_nSequence, layer.m_sequence);
+					currentLayer.Set(m_flWeight, layer.m_weight);
+				}
 			}
-	//		Test_Hitbox(entity);
 		}
-//	}
+	//	Test_Hitbox(entity);
+	}
 	SDKCall_InvalidateBoneCache(entity); //Do at all times, yes, ew but i have to,
 	EntityRestore.SetArray(refchar, restore, sizeof(restore));
 }

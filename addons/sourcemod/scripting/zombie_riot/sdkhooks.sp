@@ -195,7 +195,7 @@ public void OnPostThink(int client)
 
 			if(!EscapeMode)
 			{
-				max_mana[client] = 600.0;
+				max_mana[client] = 400.0;
 				mana_regen[client] = 10.0;
 				
 				if(LastMann)
