@@ -2463,6 +2463,8 @@ public Action Timer_DroppedBuildingWaitAmmobox(Handle htimer,  DataPack pack)
 
 			return Plugin_Continue;
 		}
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[Building_Index] = true;
 	}
 	else
 	{
@@ -2510,6 +2512,8 @@ public Action Timer_DroppedBuildingWaitRailgun(Handle htimer, int entref)
 		//	npc.Update(); //SO THE ANIMATION PROPERLY LOOPS! CHECK THIS VERY OFTEN!
 			return Plugin_Continue;
 		}
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[Building_Index] = true;
 		
 	}
 	else
@@ -2537,6 +2541,8 @@ public Action Timer_DroppedBuildingWaitMortar(Handle htimer, int entref)
 		//	npc.Update(); //SO THE ANIMATION PROPERLY LOOPS! CHECK THIS VERY OFTEN!
 			return Plugin_Continue;
 		}
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[Building_Index] = true;
 	}
 	else
 	{
@@ -2578,7 +2584,8 @@ public Action Timer_DroppedBuildingWaitHealingStation(Handle htimer, DataPack pa
 //			npc.Update(); //SO THE ANIMATION PROPERLY LOOPS! CHECK THIS VERY OFTEN!
 			return Plugin_Continue;
 		}
-		
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[Building_Index] = true;
 	}
 	else
 	{
@@ -2636,7 +2643,8 @@ public Action Timer_DroppedBuildingWaitArmorTable(Handle htimer, DataPack pack)
 			return Plugin_Continue;
 		}
 		
-
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[Building_Index] = true;
 	}
 	else
 	{
@@ -2691,7 +2699,8 @@ public Action Timer_DroppedBuildingWaitPerkMachine(Handle htimer, DataPack pack)
 			SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") | EF_NODRAW);
 			return Plugin_Continue;
 		}
-
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[Building_Index] = true;
 	}
 	else
 	{
@@ -2746,6 +2755,8 @@ public Action Timer_DroppedBuildingWaitPackAPunch(Handle htimer, DataPack pack)
 		//	SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") & ~EF_NODRAW);
 			return Plugin_Continue;
 		}
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[Building_Index] = true;
 	}
 	else
 	{
@@ -2785,6 +2796,9 @@ public Action Timer_DroppedBuildingWaitWall(Handle htimer, DataPack pack)
 	{
 		if(Building_Constructed[obj])
 			return Plugin_Continue;
+
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[Building_Index] = true;
 	}
 	else
 	{
@@ -2811,6 +2825,9 @@ public Action Timer_DroppedBuildingWaitSentry(Handle htimer, int entref)
 		}
 		if(Building_Constructed[obj])
 			return Plugin_Continue;
+
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[Building_Index] = true;
 	}
 	return Plugin_Continue;
 }
@@ -5095,16 +5112,18 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 	CClotBody npc = view_as<CClotBody>(Building_Index);
 
 
-	npc.bBuildingIsPlaced = true;
-	Building_Constructed[Building_Index] = true;
 	switch(i_WhatBuilding[Building_Index])
 	{
 		case BuildingBarricade:
 		{
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[Building_Index] = true;
 			SetEntityModel(Building_Index, BARRICADE_MODEL);
 		}
 		case BuildingRailgun:
 		{
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[Building_Index] = true;
 			SetEntityModel(Building_Index, CUSTOM_SENTRYGUN_MODEL);
 		
 			static const float minbounds[3] = {-15.0, -15.0, 0.0};
@@ -5118,6 +5137,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 		}
 		case BuildingMortar:
 		{
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[Building_Index] = true;
 			SetEntityModel(Building_Index, CUSTOM_SENTRYGUN_MODEL);
 		
 			static const float minbounds[3] = {-15.0, -15.0, 0.0};
@@ -5132,6 +5153,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 		}
 		case BuildingHealingStation:
 		{	
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[Building_Index] = true;
 			float vOrigin[3];
 			float vAngles[3];
 			int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
@@ -5211,6 +5234,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 		}
 		case BuildingPackAPunch:
 		{
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[Building_Index] = true;
 			float vOrigin[3];
 			float vAngles[3];
 			int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
@@ -5300,6 +5325,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 		}
 		case BuildingPerkMachine:
 		{
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[Building_Index] = true;
 			float vOrigin[3];
 			float vAngles[3];
 			int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
@@ -5390,6 +5417,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 		}
 		case BuildingArmorTable:
 		{
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[Building_Index] = true;
 			float vOrigin[3];
 			float vAngles[3];
 			
@@ -5471,6 +5500,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 		}
 		case BuildingAmmobox:
 		{
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[Building_Index] = true;
 			float vOrigin[3];
 			float vAngles[3];
 			
