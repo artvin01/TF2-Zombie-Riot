@@ -1042,18 +1042,7 @@ void Waves_Progress()
 		
 		if(!EscapeMode)
 		{
-			int botscalculaton;
-			
-			if((CurrentWave + 2) > CvarMaxBotsForKillfeed.IntValue)
-			{
-				botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-			}
-			else
-			{
-				botscalculaton = CurrentWave + 2;
-			}
-				
-			tf_bot_quota.IntValue = botscalculaton;
+			AdjustBotCount(CurrentWave + 2);
 		}
 	}
 	else
@@ -1089,18 +1078,7 @@ void Waves_Progress()
 				
 				if(!EscapeMode)
 				{
-					int botscalculaton;
-					
-					if((CurrentWave + 2) > CvarMaxBotsForKillfeed.IntValue)
-					{
-						botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-					}
-					else
-					{
-						botscalculaton = CurrentWave + 2;
-					}
-						
-					tf_bot_quota.IntValue = botscalculaton;
+					AdjustBotCount(CurrentWave + 2);
 				}
 			}
 			else
@@ -1110,18 +1088,7 @@ void Waves_Progress()
 				
 				if(!EscapeMode)
 				{
-					int botscalculaton;
-					
-					if((CurrentWave + 2) > CvarMaxBotsForKillfeed.IntValue)
-					{
-						botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-					}
-					else
-					{
-						botscalculaton = CurrentWave + 2;
-					}
-					
-					tf_bot_quota.IntValue = botscalculaton;
+					AdjustBotCount(CurrentWave + 2);
 				}
 			}
 			

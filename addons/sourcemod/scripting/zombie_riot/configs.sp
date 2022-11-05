@@ -90,38 +90,8 @@ public void Configs_ConfigsExecuted()
 	
 	ConVar_Enable();
 	
-	
-	if(EscapeMode)
-	{
-		int botscalculaton;
-		
-		if(12 > CvarMaxBotsForKillfeed.IntValue)
-		{
-			botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-		}
-		else
-		{
-			botscalculaton = 12;
-		}
-			
-		tf_bot_quota.IntValue = botscalculaton;
-	}
-	else
-	{
-		int botscalculaton;
-		
-		if(1 > CvarMaxBotsForKillfeed.IntValue)
-		{
-			botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-		}
-		else
-		{
-			botscalculaton = 1;
-		}
-			
-		tf_bot_quota.IntValue = botscalculaton;
-	}
-	
+	AdjustBotCount();
+
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))

@@ -39,6 +39,10 @@
 #define ZR_MAX_BREAKBLES 32
 #define ZR_MAX_SPAWNERS 32 //cant ever have more then 32, if your map does, then what thed fuck are you doing ?
 
+#define MAX_PLAYER_COUNT			13
+#define MAX_PLAYER_COUNT_STRING		"13"
+//cant do more then 12, more then 12 cause memory isssues because that many npcs can just cause that much lag
+
 
 //#pragma dynamic    131072
 //Allah This plugin has so much we need to do this.
@@ -188,7 +192,7 @@ ConVar zr_tagblacklist;
 ConVar zr_tagwhitelist;
 ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
-ConVar tf_bot_quota;
+//ConVar tf_bot_quota;
 
 int CurrentGame;
 bool b_GameOnGoing = true;
@@ -216,6 +220,7 @@ ConVar cvarTimeScale;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
 //ConVar CvarSvRollspeed; // sv_rollspeed 
 ConVar CvarSvRollagle; // sv_rollangle
+ConVar CvarTfMMMode; // tf_mm_servermode
 Handle sv_cheats;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie CookieXP;
@@ -1274,7 +1279,7 @@ public void OnPluginStart()
 		
 	sv_cheats = FindConVar("sv_cheats");
 	cvarTimeScale = FindConVar("host_timescale");
-	tf_bot_quota = FindConVar("tf_bot_quota");
+//	tf_bot_quota = FindConVar("tf_bot_quota");
 
 	CvarMpSolidObjects = FindConVar("tf_solidobjects");
 	if(CvarMpSolidObjects)
@@ -1283,6 +1288,10 @@ public void OnPluginStart()
 	CvarSvRollagle = FindConVar("sv_rollangle");
 	if(CvarSvRollagle)
 		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+
+	CvarTfMMMode = FindConVar("tf_mm_servermode");
+	if(CvarTfMMMode)
+		CvarTfMMMode.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
 	
 	ConVar cvar = FindConVar("tf_bot_count");

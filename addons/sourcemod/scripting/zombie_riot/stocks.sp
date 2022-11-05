@@ -3138,3 +3138,69 @@ public ShowAnnotationToPlayer(int client, float pos[3], const char[] Text, float
 	FireEvent(event);
 	
 }
+
+
+void AdjustBotCount(int ExtraData = 1) //1 is the default
+{
+	int botscalculaton;
+	int botsonserver = 0;
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsFakeClient(client))
+		{
+			botsonserver++;
+		}
+	}
+
+	if(EscapeMode)
+	{
+		if(12 > CvarMaxBotsForKillfeed.IntValue) //12 is always for escape
+		{
+			botscalculaton = CvarMaxBotsForKillfeed.IntValue;
+		}
+		else
+		{
+			botscalculaton = 12;
+		}
+
+	}
+	else
+	{
+		if(ExtraData > CvarMaxBotsForKillfeed.IntValue)
+		{
+			botscalculaton = CvarMaxBotsForKillfeed.IntValue;
+		}
+		else
+		{
+			botscalculaton = 1;
+		}
+
+	}
+
+	int bots_to_spawn_or_despawn;
+	int bots_to_spawn_or_despawn_Invert;
+
+	bots_to_spawn_or_despawn = botscalculaton - botsonserver;
+	bots_to_spawn_or_despawn_Invert = botsonserver - botscalculaton;
+
+	//dont do anything if the amount is the same.
+	if(bots_to_spawn_or_despawn > 0)
+	{
+		for(int i=0; i<botscalculaton; i++)
+		{
+			SpawnBotCustom("Unnamed Bot", false);
+		}
+	}
+	else if (bots_to_spawn_or_despawn < 0) //Kick bots that are not used.
+	{
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client) && IsFakeClient(client) && bots_to_spawn_or_despawn_Invert > 0)
+			{
+				KickClient(client);
+				bots_to_spawn_or_despawn_Invert--;
+			}
+		}
+	}
+
+}
