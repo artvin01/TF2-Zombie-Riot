@@ -1570,8 +1570,6 @@ public void OnMapStart_NPC_Base()
 	SniperMain_OnMapStart_NPC();
 	DemoMain_OnMapStart_NPC();
 	MedicMain_OnMapStart_NPC();
-	Donnerkrieg_OnMapStart_NPC();
-	Schwertkrieg_OnMapStart_NPC();
 	PyroGiant_OnMapStart_NPC();
 	CombineDeutsch_OnMapStart_NPC();
 	Alt_CombineDeutsch_OnMapStart_NPC();
@@ -1676,6 +1674,9 @@ public void OnMapStart_NPC_Base()
 	Mecha_HeavyGiant_OnMapStart_NPC();
 	Mecha_PyroGiant_OnMapStart_NPC();
 	Mecha_Scout_OnMapStart_NPC();
+	
+	Donnerkrieg_OnMapStart_NPC();
+	Schwertkrieg_OnMapStart_NPC();
 }
 
 
