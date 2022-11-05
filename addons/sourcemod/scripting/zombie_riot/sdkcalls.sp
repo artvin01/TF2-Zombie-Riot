@@ -396,11 +396,11 @@ public int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 	false // bReportFakeClient
 	);
 
-	if (IsValidClient(bot))
-	{
-		PrintToChatAll("party!");
-		SetFakeClientConVar(bot, "name", Name);
-	}
+//	if (IsValidClient(bot))
+//	{
+//		PrintToChatAll("party!");
+//		SetFakeClientConVar(bot, "name", Name);
+//	}
 
 	return bot;
 }

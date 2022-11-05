@@ -3172,9 +3172,14 @@ void AdjustBotCount(int ExtraData = 1) //1 is the default
 		}
 		else
 		{
-			botscalculaton = 1;
+			botscalculaton = ExtraData;
 		}
 
+	}
+	
+	if(botscalculaton < 1)
+	{
+		botscalculaton = 1; //MUST BE 1 ATLEAST!
 	}
 
 	int bots_to_spawn_or_despawn;
@@ -3188,7 +3193,7 @@ void AdjustBotCount(int ExtraData = 1) //1 is the default
 	{
 		for(int i=0; i<botscalculaton; i++)
 		{
-			SpawnBotCustom("Unnamed Bot", false);
+			SpawnBotCustom("Zombie", false);
 		}
 	}
 	else if (bots_to_spawn_or_despawn < 0) //Kick bots that are not used.
