@@ -209,10 +209,35 @@
 				"linux"		""
 				"windows"	"\x55\x8B\xEC\x83\xEC\x6C\x56\x57\x6A\x01"
 			}
+			"CTFGCServerSystem::PreClientUpdate"
+			{
+				//aSettingSvVisib string, there is only one, easy check
+				"linux"		""
+				"windows"	"\x55\x8B\xEC\x83\xEC\x20\x53\x56\x8B\xD9\x57\x89\x5D\xF4\xE8\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A"
+			}	
+			// search string: "CreatePlayerBot: Unable to create bot"
+			"NextBotCreatePlayerBot<CTFBot>"
+			{
+				"windows"   "\x55\x8B\xEC\x56\x57\x68\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A"
+				"linux"     "@_Z22NextBotCreatePlayerBotI6CTFBotEPT_PKcb"
+			}		
+			// search string: "match"
+			"BotManager::MaintainBotQuota"
+			{
+				"windows"   "\x55\x8B\xEC\x81\xEC\x14\x01\x00\x00\xA1"
+				"linux"     "@_ZN13CTFBotManager16MaintainBotQuotaEv"
+			}
 
 		}
 		"Functions"
 		{
+			"CTFGCServerSystem::PreClientUpdate"
+			{
+				"signature"    	"CTFGCServerSystem::PreClientUpdate"
+             	   		"callconv"	"thiscall"
+             	  		"return"    	"void"
+             	 		"this"		"ignore"
+			}
 			"CBaseObject::FirstSpawn"
            		{
               		 	"signature"    	"CBaseObject::FirstSpawn"

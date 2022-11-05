@@ -10,6 +10,7 @@ static bool IsRespawning;
 
 static DynamicHook g_WrenchSmack;
 
+DynamicDetour gH_MaintainBotQuota = null;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
 DynamicHook g_DHookFireballExplode; //from mikusch but edited
@@ -77,6 +78,20 @@ void DHook_Setup()
 	#if !defined NoSendProxyClass
 	DHook_CreateDetour(gamedata, "CTFPlayer::IsPlayerClass", DHook_IsPlayerClassPre);
 	#endif
+
+	//https://github.com/Wilzzu/testing/blob/18a3680a9a1c8bdabc30c504bbf9467ac6e7d7b4/samu/addons/sourcemod/scripting/shavit-replay.sp
+	
+	if (!(gH_MaintainBotQuota = DHookCreateDetour(Address_Null, CallConv_THISCALL, ReturnType_Void, ThisPointer_Address)))
+	{
+		SetFailState("Failed to create detour for BotManager::MaintainBotQuota");
+	}
+
+	if (!DHookSetFromConf(gH_MaintainBotQuota, gamedata, SDKConf_Signature, "BotManager::MaintainBotQuota"))
+	{
+		SetFailState("Failed to get address for BotManager::MaintainBotQuota");
+	}
+
+	gH_MaintainBotQuota.Enable(Hook_Pre, Detour_MaintainBotQuota);
 	
 	
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
@@ -88,6 +103,8 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::FindTarget", DHook_SentryFind_Target, _);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::Fire", DHook_SentryFire_Pre, DHook_SentryFire_Post);
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
+
+//	DHook_CreateDetour(gamedata, "CTFGCServerSystem::PreClientUpdate", PreClientUpdatePre, PreClientUpdatePost);
 
 
 	DHook_CreateDetour(gamedata, "CBaseObject::FinishedBuilding", Dhook_FinishedBuilding_Pre, Dhook_FinishedBuilding_Post);
@@ -1506,6 +1523,22 @@ public MRESReturn DHook_HandleRageGainPost(DHookParam param)
 	return MRES_Ignored;
 }
 
+// g_bWarnedAboutMaxplayersInMVM
+/*
+public MRESReturn PreClientUpdatePre(Handle hParams)
+{
+//	CvarTfMMMode.IntValue = 1;
+	GameRules_SetProp("m_bPlayingMannVsMachine", true);
+	return MRES_Ignored;
+}
+
+public MRESReturn PreClientUpdatePost(Handle hParams)
+{
+//	CvarTfMMMode.IntValue = 0;
+	GameRules_SetProp("m_bPlayingMannVsMachine", false);
+	return MRES_Ignored;
+}
+*/
 public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams) {
 	int originalLauncher = GetEntPropEnt(healingBolt, Prop_Send, "m_hOriginalLauncher");
 	if (!IsValidEntity(originalLauncher)) {
@@ -1632,4 +1665,10 @@ void ScatterGun_Prevent_M2_OnEntityCreated(int entity)
 public MRESReturn DHook_ScoutSecondaryFire(int entity) //BLOCK!!
 {
 	return MRES_Supercede;	//NEVER APPLY. Causes you to not fire if accidentally pressing m2
+}
+
+
+public MRESReturn Detour_MaintainBotQuota(int pThis)
+{
+	return MRES_Supercede;
 }
