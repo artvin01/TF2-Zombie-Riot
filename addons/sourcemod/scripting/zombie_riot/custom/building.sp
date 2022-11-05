@@ -2463,8 +2463,9 @@ public Action Timer_DroppedBuildingWaitAmmobox(Handle htimer,  DataPack pack)
 
 			return Plugin_Continue;
 		}
+		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
-		Building_Constructed[Building_Index] = true;
+		Building_Constructed[obj] = true;
 	}
 	else
 	{
@@ -2513,7 +2514,7 @@ public Action Timer_DroppedBuildingWaitRailgun(Handle htimer, int entref)
 			return Plugin_Continue;
 		}
 		npc.bBuildingIsPlaced = true;
-		Building_Constructed[Building_Index] = true;
+		Building_Constructed[obj] = true;
 		
 	}
 	else
@@ -2542,7 +2543,7 @@ public Action Timer_DroppedBuildingWaitMortar(Handle htimer, int entref)
 			return Plugin_Continue;
 		}
 		npc.bBuildingIsPlaced = true;
-		Building_Constructed[Building_Index] = true;
+		Building_Constructed[obj] = true;
 	}
 	else
 	{
@@ -2584,8 +2585,9 @@ public Action Timer_DroppedBuildingWaitHealingStation(Handle htimer, DataPack pa
 //			npc.Update(); //SO THE ANIMATION PROPERLY LOOPS! CHECK THIS VERY OFTEN!
 			return Plugin_Continue;
 		}
+		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
-		Building_Constructed[Building_Index] = true;
+		Building_Constructed[obj] = true;
 	}
 	else
 	{
@@ -2642,9 +2644,9 @@ public Action Timer_DroppedBuildingWaitArmorTable(Handle htimer, DataPack pack)
 		//	SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") & ~EF_NODRAW);
 			return Plugin_Continue;
 		}
-		
+		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
-		Building_Constructed[Building_Index] = true;
+		Building_Constructed[obj] = true;
 	}
 	else
 	{
@@ -2699,8 +2701,9 @@ public Action Timer_DroppedBuildingWaitPerkMachine(Handle htimer, DataPack pack)
 			SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") | EF_NODRAW);
 			return Plugin_Continue;
 		}
+		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
-		Building_Constructed[Building_Index] = true;
+		Building_Constructed[obj] = true;
 	}
 	else
 	{
@@ -2755,8 +2758,9 @@ public Action Timer_DroppedBuildingWaitPackAPunch(Handle htimer, DataPack pack)
 		//	SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") & ~EF_NODRAW);
 			return Plugin_Continue;
 		}
+		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
-		Building_Constructed[Building_Index] = true;
+		Building_Constructed[obj] = true;
 	}
 	else
 	{
@@ -2797,8 +2801,9 @@ public Action Timer_DroppedBuildingWaitWall(Handle htimer, DataPack pack)
 		if(Building_Constructed[obj])
 			return Plugin_Continue;
 
+		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
-		Building_Constructed[Building_Index] = true;
+		Building_Constructed[obj] = true;
 	}
 	else
 	{
@@ -2826,8 +2831,9 @@ public Action Timer_DroppedBuildingWaitSentry(Handle htimer, int entref)
 		if(Building_Constructed[obj])
 			return Plugin_Continue;
 
+		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
-		Building_Constructed[Building_Index] = true;
+		Building_Constructed[obj] = true;
 	}
 	return Plugin_Continue;
 }
