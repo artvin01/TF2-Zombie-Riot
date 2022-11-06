@@ -1707,7 +1707,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", client);
 							SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 						}
-						else if(StrEqual(buffer, "zr_barricade")) // do not check for if too many barricades, doesnt make sense to do this anyways.
+						else if(StrEqual(buffer, "zr_barricade") && i_BarricadesBuild[client] < MaxBarricadesAllowed(client)) // do not check for if too many barricades, doesnt make sense to do this anyways.
 						{
 							DataPack pack;
 							CreateDataTimer(0.5, Timer_ClaimedBuildingremoveBarricadeCounterOnDeath, pack, TIMER_REPEAT);
@@ -1739,8 +1739,22 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						}
 						else
 						{
-							ClientCommand(client, "playgamesound items/medshotno1.wav");
-							PrintToChat(client,"You cannot build anymore Support buildings, you have reached the max amount.\nBuy Builder Upgrades to build more.");
+							if(StrEqual(buffer, "zr_barricade"))
+							{
+								ClientCommand(client, "playgamesound items/medshotno1.wav");
+								PrintToChat(client,"You can only own 2 barricades at once.");
+							}
+							else if(StrEqual(buffer, "zr_elevator")) // bruh why.
+							{
+								ClientCommand(client, "playgamesound items/medshotno1.wav");
+								PrintToChat(client,"You can only own 3 Elevators at once.");
+							}
+							else
+							{
+								ClientCommand(client, "playgamesound items/medshotno1.wav");
+								PrintToChat(client,"You cannot build anymore Support buildings, you have reached the max amount.\nBuy Builder Upgrades to build more.");
+							}
+
 						}
 						return true;
 					}
