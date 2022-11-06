@@ -905,7 +905,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 	}
 	if(i_currentwave[npc.index]==45)
 	{
-		RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.75);
+		RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.5);
 		i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*1.8;
 		fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.4;
 		if(fl_rocket_firerate[npc.index]<=0.2)
@@ -915,12 +915,12 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 	}
 	if(i_currentwave[npc.index]>=60)
 	{
-		RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*2.25);
+		RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*2.0);
 		i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*2.55;
 		fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.55;	//No limit to the firerate, probably a bad idea
-		if(fl_rocket_firerate[npc.index]<=0.001)	//just incase it goes negative...
+		if(fl_rocket_firerate[npc.index]<=0.01)	//just incase it goes negative...
 		{
-			fl_rocket_firerate[npc.index]=0.001;	//so infinite fire rate is not a good idea since it probably can crash the server, probably.
+			fl_rocket_firerate[npc.index]=0.01;	//so infinite fire rate is not a good idea since it probably can crash the server, probably.
 		}
 	}
 	
