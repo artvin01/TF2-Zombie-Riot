@@ -982,6 +982,7 @@ public Action Building_Set_HP_Colour(Handle dashHud, int ref)
 			//	SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(prop2, red, green, blue, 255);
 			}
+
 		}
 	}
 	else
@@ -1439,7 +1440,6 @@ void Building_ShowInteractionHud(int client, int entity)
 				Hide_Hud = false;
 				SetGlobalTransTarget(client);
 				PrintCenterText(client, "%t", "Claim this building");
-			
 			}
 			else
 			{
@@ -1753,6 +1753,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						return true;			
 					}
 				}
+				return false; //Dont let them interact with it if it has no owner!
 			}
 			
 			GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
@@ -2824,11 +2825,25 @@ public Action Timer_DroppedBuildingWaitWall(Handle htimer, DataPack pack)
 	//	i_BarricadesBuild[client_original_index] -= 1;
 		return Plugin_Stop;
 	}
+
+	if(GetEntPropEnt(obj, Prop_Send, "m_hBuilder") == -1)
+	{
+		SetEntityCollisionGroup(obj, 1);
+		b_ThisEntityIgnored[obj] = true; //Hey! Be ignored! you have no owner!
+	}
+	else
+	{
+		SetEntityCollisionGroup(obj, BUILDINGCOLLISIONNUMBER);
+		b_ThisEntityIgnored[obj] = false;
+	}
+
 	//Wait until full complete
 	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
 	{
 		if(Building_Constructed[obj])
+		{
 			return Plugin_Continue;
+		}
 
 		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
@@ -5626,7 +5641,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 			npc.UpdateCollisionBox();			
 										
 			GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-			GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vAngles);
+			GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
 
 			vOrigin[2] += 15.0;
 			vAngles[1] -= 180.0;

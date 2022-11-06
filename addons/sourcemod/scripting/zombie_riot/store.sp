@@ -1557,7 +1557,7 @@ public void MenuPage(int client, int section)
 						if(info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
 						{
 							int cost = AmmoData[info.Ammo][0];
-							FormatEx(buffer, sizeof(buffer), "%t ($%d)", AmmoNames[info.Ammo], cost);
+							FormatEx(buffer, sizeof(buffer), "%t [%d] ($%d)", AmmoNames[info.Ammo], AmmoData[info.Ammo][1], cost);
 							if(cost > cash)
 								style = ITEMDRAW_DISABLED;
 						}
@@ -1612,7 +1612,7 @@ public void MenuPage(int client, int section)
 					if(item.Equipped[client] && info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
 					{
 						int cost = AmmoData[info.Ammo][0] * 10;
-						FormatEx(buffer, sizeof(buffer), "%t x10 ($%d)", AmmoNames[info.Ammo], cost);
+						FormatEx(buffer, sizeof(buffer), "%t x10 [%d] ($%d)", AmmoNames[info.Ammo], AmmoData[info.Ammo][1] * 10, cost);
 						if(cost > cash)
 							style = ITEMDRAW_DISABLED;
 							

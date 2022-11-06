@@ -147,25 +147,43 @@ public void OnPostThink(int client)
 
 			if(TeutonType[client] == TEUTON_NONE)
 			{
-				if(PercentageHealth > 0.25)
+				if(PercentageHealth > 0.35)
 				{
+					if(i_SvRollAngle[client] != 0)
+					{
+						float vAngles[3];
+						GetClientEyeAngles(client, vAngles);
+						vAngles[2] = 0.0;
+					
+						TeleportEntity(client, NULL_VECTOR, vAngles, NULL_VECTOR);
+					}
+
 					i_SvRollAngle[client] = 0;
 				}
 				else
 				{
-					PercentageHealth *= 4.0;
+					PercentageHealth *= 2.857142858142857; // 1 / 0.35
 
 					PercentageHealth = PercentageHealth - 1.0;
 
 					PercentageHealth *= -1.0; //convert to positive
 
-					PercentageHealth *= 100.0; // we want the full number! this only works in big ones. also divitde by 4
+					PercentageHealth *= 125.0; // we want the full number! this only works in big ones. also divitde by 4
 
 					i_SvRollAngle[client] = RoundToCeil(PercentageHealth);
 				}
 			}
 			else
 			{
+				if(i_SvRollAngle[client] != 0)
+				{
+					float vAngles[3];
+					GetClientEyeAngles(client, vAngles);
+					vAngles[2] = 0.0;
+				
+					TeleportEntity(client, NULL_VECTOR, vAngles, NULL_VECTOR);
+				}
+
 				i_SvRollAngle[client] = 0;
 			}
 
