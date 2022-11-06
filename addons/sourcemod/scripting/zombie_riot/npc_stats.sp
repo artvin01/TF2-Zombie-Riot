@@ -5471,7 +5471,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			if(searcher_team != 2)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+				if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 				{	
 					if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)) && !IgnoreBuildings)
 					{
