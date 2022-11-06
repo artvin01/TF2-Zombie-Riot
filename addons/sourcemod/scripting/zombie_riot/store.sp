@@ -2959,7 +2959,8 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 					Store_GiveItem(client, i, use, found);
 					if(++count > 9)
 					{
-						PrintToChat(client, "%T", "At Weapon Limit");
+						SetGlobalTransTarget(client);
+						PrintToChat(client, "%t", "At Weapon Limit");
 						break;
 					}
 				}
