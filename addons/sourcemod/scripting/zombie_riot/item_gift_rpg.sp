@@ -1,7 +1,7 @@
 
 #define GIFT_MODEL "models/items/tf_gift.mdl"
 
-#define GIFT_CHANCE 0.0035 //Extra rare cus alot of zobies
+#define GIFT_CHANCE 0.35 //Extra rare cus alot of zobies
 
 #define SOUND_BEEP			"buttons/button17.wav"
 
@@ -106,7 +106,7 @@ public void Gift_DropChance(int entity)
 	{
 		if(IsValidEntity(entity))
 		{
-			if(GetRandomFloat(0.0, 2.0) < ((GIFT_CHANCE / (MultiGlobal + 0.000001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually)) //Never let it divide by 0
+			if(GetRandomFloat(0.0, 200.0) < ((GIFT_CHANCE / (MultiGlobal + 0.0001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually)) //Never let it divide by 0
 			{
 				f_IncreaceChanceManually = 1.0;
 				float VecOrigin[3];
@@ -122,7 +122,7 @@ public void Gift_DropChance(int entity)
 			}	
 			else
 			{
-				f_IncreaceChanceManually += 0.00015;
+				f_IncreaceChanceManually += 0.0015;
 			}
 		}
 	}
