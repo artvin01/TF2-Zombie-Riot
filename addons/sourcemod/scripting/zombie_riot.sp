@@ -39,8 +39,8 @@
 #define ZR_MAX_BREAKBLES 32
 #define ZR_MAX_SPAWNERS 32 //cant ever have more then 32, if your map does, then what thed fuck are you doing ?
 
-#define MAX_PLAYER_COUNT			13
-#define MAX_PLAYER_COUNT_STRING		"13"
+#define MAX_PLAYER_COUNT			12
+#define MAX_PLAYER_COUNT_STRING		"12"
 //cant do more then 12, more then 12 cause memory isssues because that many npcs can just cause that much lag
 
 

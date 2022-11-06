@@ -859,7 +859,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					distance = 0.1;
 				}
 
-				damage *= Pow(i_WeaponDamageFalloff[weapon], (distance/250000.0)); //this is 500, we use squared for optimisations sake
+				damage *= Pow(i_WeaponDamageFalloff[weapon], (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
 			}
 		}
 		if(!i_WeaponCannotHeadshot[weapon])

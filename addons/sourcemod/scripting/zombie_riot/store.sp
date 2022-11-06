@@ -2852,6 +2852,10 @@ void Store_ApplyAttribs(int client)
 
 void Store_GiveAll(int client, int health, int removeWeapons = false)
 {
+	if(!StoreItems)
+	{
+		return; //STOP. BAD!
+	}
 	if(removeWeapons)
 	{
 		Manual_Impulse_101(client, health);

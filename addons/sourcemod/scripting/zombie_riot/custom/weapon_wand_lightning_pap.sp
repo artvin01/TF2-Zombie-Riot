@@ -80,7 +80,7 @@ public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int s
 					WritePackFloat(pack, vEnd[1]);
 					WritePackFloat(pack, vEnd[2]);
 					WritePackFloat(pack, damage);
-					WritePackCell(pack, weapon);
+					WritePackCell(pack, EntIndexToEntRef(weapon));
 					
 					EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);
 					EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);
@@ -130,54 +130,57 @@ public Action Smite_Timer(Handle Smite_Logic, DataPack pack)
 	}
 	
 	float damage = ReadPackFloat(pack);
-	int weapon = ReadPackCell(pack);
+	int weapon = EntRefToEntIndex(ReadPackCell(pack));
 	
-	if (NumLoops >= Smite_ChargeTime)
+	if(IsValidEntity)
 	{
-		float secondLoc[3];
-		for (int replace = 0; replace < 3; replace++)
+		if (NumLoops >= Smite_ChargeTime)
 		{
-			secondLoc[replace] = spawnLoc[replace];
+			float secondLoc[3];
+			for (int replace = 0; replace < 3; replace++)
+			{
+				secondLoc[replace] = spawnLoc[replace];
+			}
+			
+			for (int sequential = 1; sequential <= 5; sequential++)
+			{
+				spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 120, 1, 0.33, 6.0, 0.4, 1, (Smite_Radius * 5.0)/float(sequential));
+				secondLoc[2] += 150.0 + (float(sequential) * 20.0);
+			}
+			
+			secondLoc[2] = 9999.0;
+			
+			spawnBeam(0.8, 255, 255, 0, 255, "materials/sprites/laserbeam.vmt", 16.0, 16.2, _, 5.0, secondLoc, spawnLoc);	
+			spawnBeam(0.8, 255, 255, 0, 200, "materials/sprites/lgtning.vmt", 10.0, 10.2, _, 5.0, secondLoc, spawnLoc);	
+			spawnBeam(0.8, 255, 255, 0, 200, "materials/sprites/lgtning.vmt", 10.0, 10.2, _, 5.0, secondLoc, spawnLoc);	
+			
+			EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, spawnLoc, _, 120);
+			
+			DataPack pack_boom = new DataPack();
+			pack_boom.WriteFloat(spawnLoc[0]);
+			pack_boom.WriteFloat(spawnLoc[1]);
+			pack_boom.WriteFloat(spawnLoc[2]);
+			pack_boom.WriteCell(1);
+			RequestFrame(MakeExplosionFrameLater, pack_boom);
+			
+			Explode_Logic_Custom(damage, client, client, weapon, spawnLoc, Smite_Radius,_,_,false);
+			
+			return Plugin_Stop;
 		}
-		
-		for (int sequential = 1; sequential <= 5; sequential++)
+		else
 		{
-			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 120, 1, 0.33, 6.0, 0.4, 1, (Smite_Radius * 5.0)/float(sequential));
-			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
+			spawnRing_Vectors(spawnLoc, Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
+			EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, spawnLoc, _, 60, _, _, GetRandomInt(80, 110));
+			
+			ResetPack(pack);
+			WritePackCell(pack, GetClientUserId(client));
+			WritePackFloat(pack, NumLoops + Smite_ChargeSpan);
+			WritePackFloat(pack, spawnLoc[0]);
+			WritePackFloat(pack, spawnLoc[1]);
+			WritePackFloat(pack, spawnLoc[2]);
+			WritePackFloat(pack, damage);
+			WritePackCell(pack, EntIndexToEntRef(weapon));
 		}
-		
-		secondLoc[2] = 9999.0;
-		
-		spawnBeam(0.8, 255, 255, 0, 255, "materials/sprites/laserbeam.vmt", 16.0, 16.2, _, 5.0, secondLoc, spawnLoc);	
-		spawnBeam(0.8, 255, 255, 0, 200, "materials/sprites/lgtning.vmt", 10.0, 10.2, _, 5.0, secondLoc, spawnLoc);	
-		spawnBeam(0.8, 255, 255, 0, 200, "materials/sprites/lgtning.vmt", 10.0, 10.2, _, 5.0, secondLoc, spawnLoc);	
-		
-		EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, spawnLoc, _, 120);
-		
-		DataPack pack_boom = new DataPack();
-		pack_boom.WriteFloat(spawnLoc[0]);
-		pack_boom.WriteFloat(spawnLoc[1]);
-		pack_boom.WriteFloat(spawnLoc[2]);
-		pack_boom.WriteCell(1);
-		RequestFrame(MakeExplosionFrameLater, pack_boom);
-		
-		Explode_Logic_Custom(damage, client, client, weapon, spawnLoc, Smite_Radius,_,_,false);
-		
-		return Plugin_Stop;
-	}
-	else
-	{
-		spawnRing_Vectors(spawnLoc, Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
-		EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, spawnLoc, _, 60, _, _, GetRandomInt(80, 110));
-		
-		ResetPack(pack);
-		WritePackCell(pack, GetClientUserId(client));
-		WritePackFloat(pack, NumLoops + Smite_ChargeSpan);
-		WritePackFloat(pack, spawnLoc[0]);
-		WritePackFloat(pack, spawnLoc[1]);
-		WritePackFloat(pack, spawnLoc[2]);
-		WritePackFloat(pack, damage);
-		WritePackCell(pack, weapon);
 	}
 	
 	return Plugin_Continue;
