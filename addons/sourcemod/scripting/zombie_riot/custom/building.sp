@@ -5626,7 +5626,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 			npc.UpdateCollisionBox();			
 										
 			GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
-			GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vAngles);
+			GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
 
 			vOrigin[2] += 15.0;
 			vAngles[1] -= 180.0;
