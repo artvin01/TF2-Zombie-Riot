@@ -32,7 +32,14 @@ enum struct SpawnerData
 	bool	b_SpawnIsCloseEnough;
 	float	f_ClosestSpawnerLessCooldown;
 	float	f_SpawnerCooldown;
+	float	f_PointScore;
 }
+
+//todo: code a way to include 2 or more groups of players splitting up, so the enemies dont spawn in the middle of nowhere
+//Easy temp solution: Map should handle it. via triggers, and such, and dont make huge maps with a billion corridors.
+
+
+
 //ArrayList NPCList; Make this global, i need it globally.
 ArrayList SpawnerList;
 static Handle SyncHud;
@@ -116,9 +123,9 @@ public void NPC_EntitySpawned(int entity)
 
 public Action GetClosestSpawners(Handle timer)
 {
-	float f3_PositionOfAll[3];
+	float f3_PositionTemp_2[3];
 	float f3_PositionTemp[3];
-	int i_Diviveby = 0;
+
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))
@@ -157,21 +164,55 @@ public Action GetClosestSpawners(Handle timer)
 				
 				if(GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0 && IsPlayerAlive(client))
 				{
-					i_Diviveby += 1;
 					
 					GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
-					
-					f3_PositionOfAll[0] += f3_PositionTemp[0];
-					f3_PositionOfAll[1] += f3_PositionTemp[1];
-					f3_PositionOfAll[2] += f3_PositionTemp[2];
+
+					for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
+					{
+						int entity = i_ObjectsSpawners[entitycount];
+						if(IsValidEntity(entity))
+						{
+							GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp_2);
+
+							float distance = GetVectorDistance( f3_PositionTemp, f3_PositionTemp_2, true); 
+
+							//leave it all squared for optimsation sake!
+							//max distance is 10,000 anymore and wtf u doin
+
+							if( distance < 100000000.0) 
+							{
+								int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
+								if(index != -1)
+								{
+									SpawnerData Spawner;
+									SpawnerList.GetArray(index, Spawner);
+									
+									float inverting_score_calc;
+
+									inverting_score_calc = ( distance / 100000000.0);
+
+									inverting_score_calc -= 1;
+
+									inverting_score_calc *= -1.0;
+
+									//
+									//	(n*n)^4.0
+									//	So further away spawnpoints gain way less points.
+									//	This should solve the problem of 2 groups of people far away triggering spawnpoints that arent even near them.
+
+									Pow(inverting_score_calc * inverting_score_calc, 5.0);
+
+									Spawner.f_PointScore += inverting_score_calc;
+
+									SpawnerList.SetArray(index, Spawner);
+								}
+							}
+						}
+					}
 				}
 			}
 		}
 	}
-	
-	f3_PositionOfAll[0] /= float(i_Diviveby) + 0.00001;
-	f3_PositionOfAll[1] /= float(i_Diviveby) + 0.00001;
-	f3_PositionOfAll[2] /= float(i_Diviveby) + 0.00001;
 	/*
 	float PositonBeam[3];
 	PositonBeam = f3_PositionOfAll;
@@ -182,7 +223,6 @@ public Action GetClosestSpawners(Handle timer)
 	*/
 	int i_Spawner_Indexes[MAXSPAWNERSACTIVE + 1];
 	float TargetDistance = 0.0; 
-	float TargetLocation[3];
 	int ClosestTarget = -1; 
 
 	for(int Repeats=1; Repeats<=MAXSPAWNERSACTIVE; Repeats++)
@@ -190,7 +230,7 @@ public Action GetClosestSpawners(Handle timer)
 		for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
 		{
 			int entity = i_ObjectsSpawners[entitycount];
-			if(IsValidEntity(entity) && entity != 0)
+			if(IsValidEntity(entity))
 			{
 				int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
 				if(index != -1)
@@ -200,7 +240,6 @@ public Action GetClosestSpawners(Handle timer)
 					bool Found = false;
 					if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
 					{
-						
 						for(int Repeats_anti=1; Repeats_anti<=Repeats; Repeats_anti++)
 						{
 							if(i_Spawner_Indexes[Repeats_anti] == entity)
@@ -215,7 +254,6 @@ public Action GetClosestSpawners(Handle timer)
 							continue;
 						}
 						Spawner.b_SpawnIsCloseEnough = false;
-						GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 						/*
 						PositonBeam = TargetLocation;
 						TargetLocation[2] += 50;
@@ -223,20 +261,20 @@ public Action GetClosestSpawners(Handle timer)
 						TE_SetupBeamPoints(TargetLocation, PositonBeam, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 2.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 0, 255}), 30);
 						TE_SendToAll();
 						*/
-						float distance = GetVectorDistance( f3_PositionOfAll, TargetLocation, true); 
+						//i_PointScore[entity]
 						if (TargetDistance) 
 						{
-							if( distance < TargetDistance ) 
+							if( Spawner.f_PointScore > TargetDistance ) 
 							{
 								ClosestTarget = entity; 
-								TargetDistance = distance;		  
+								TargetDistance = Spawner.f_PointScore;		  
 							}
 						} 
 						else 
 						{
 							ClosestTarget = entity; 
-							TargetDistance = distance;
-						}								
+							TargetDistance = Spawner.f_PointScore;
+						}						
 					}
 					SpawnerList.SetArray(index, Spawner);
 				}
@@ -249,7 +287,14 @@ public Action GetClosestSpawners(Handle timer)
 			{
 				SpawnerData Spawner;
 				SpawnerList.GetArray(index, Spawner);
-				Spawner.f_ClosestSpawnerLessCooldown = float(Repeats) / 2.0;
+				if(Repeats < 3) // first two have less cooldown
+				{
+					Spawner.f_ClosestSpawnerLessCooldown = 1.5;
+				}
+				else
+				{
+					Spawner.f_ClosestSpawnerLessCooldown = float(Repeats - 1) / 2.0;
+				}
 				Spawner.b_SpawnIsCloseEnough = true;
 				SpawnerList.SetArray(index, Spawner);
 			}
@@ -264,6 +309,22 @@ public Action GetClosestSpawners(Handle timer)
 		}
 		ClosestTarget = -1;
 		TargetDistance = 0.0;
+	}
+
+	for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
+	{
+		int entity = i_ObjectsSpawners[entitycount];
+		if(IsValidEntity(entity))
+		{
+			int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
+			if(index != -1)
+			{
+				SpawnerData Spawner;
+				SpawnerList.GetArray(index, Spawner);
+				Spawner.f_PointScore = 0.0; //Set it to 0 again, as we wanna keep it for future calcs !	
+				SpawnerList.SetArray(index, Spawner);
+			}
+		}
 	}
 	
 	return Plugin_Continue;
@@ -406,7 +467,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			}
 		}
 	}
-	float Active_Spawners_Calculate = 0.0;
+	float Active_Spawners_Calculate = 1.0;
 	switch (Active_Spawners)
 	{
 		case 1:
@@ -1213,34 +1274,34 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					if(!EscapeMode) //Buff in escapemode overall!
 					{
 						if(Wave_Count <= 10)
-							damage *= 0.5;
+							damage *= 0.35;
 							
 						else if(Wave_Count <= 15)
-							damage *= 1.25;
+							damage *= 1.0;
 						
 						else if(Wave_Count <= 20)
-							damage *= 2.0;
+							damage *= 1.35;
 							
 						else if(Wave_Count <= 25)
-							damage *= 3.0;
+							damage *= 2.5;
 							
 						else if(Wave_Count <= 30)
-							damage *= 7.0;
+							damage *= 5.0;
 							
 						else if(Wave_Count <= 40)
-							damage *= 10.0;
+							damage *= 7.0;
 							
 						else if(Wave_Count <= 45)
-							damage *= 30.0;
+							damage *= 20.0;
 						
 						else if(Wave_Count <= 50)
-							damage *= 45.0;
+							damage *= 30.0;
 						
 						else if(Wave_Count <= 60)
-							damage *= 60.0;
+							damage *= 40.0;
 						
 						else
-							damage *= 100.0;
+							damage *= 60.0;
 					}
 					else
 					{

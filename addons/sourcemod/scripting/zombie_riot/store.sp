@@ -399,7 +399,7 @@ bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 		for(int i; i<length; i++)
 		{
 			StoreItems.GetArray(i, item);
-			if(item.NPCWeapon >= 0 && !item.NPCWeaponAlways && !item.Level)
+			if(item.NPCWeapon >= 0 && !item.Hidden && !item.NPCWeaponAlways && !item.Level)
 			{
 				int current;
 				for(int a; item.GetItemInfo(a, info); a++)
@@ -2959,7 +2959,8 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 					Store_GiveItem(client, i, use, found);
 					if(++count > 9)
 					{
-						PrintToChat(client, "%T", "At Weapon Limit");
+						SetGlobalTransTarget(client);
+						PrintToChat(client, "%t", "At Weapon Limit");
 						break;
 					}
 				}
