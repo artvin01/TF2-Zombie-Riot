@@ -151,11 +151,7 @@ public void OnPostThink(int client)
 				{
 					if(i_SvRollAngle[client] != 0)
 					{
-						float vAngles[3];
-						GetClientEyeAngles(client, vAngles);
-						vAngles[2] = 0.0;
-					
-						TeleportEntity(client, NULL_VECTOR, vAngles, NULL_VECTOR);
+						RequestFrame(SetEyeAngleCorrect,client);
 					}
 
 					i_SvRollAngle[client] = 0;
@@ -177,11 +173,7 @@ public void OnPostThink(int client)
 			{
 				if(i_SvRollAngle[client] != 0)
 				{
-					float vAngles[3];
-					GetClientEyeAngles(client, vAngles);
-					vAngles[2] = 0.0;
-				
-					TeleportEntity(client, NULL_VECTOR, vAngles, NULL_VECTOR);
+					RequestFrame(SetEyeAngleCorrect,client);
 				}
 
 				i_SvRollAngle[client] = 0;
@@ -1423,4 +1415,17 @@ float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &
 		}
 	}
 	return damage;
+}
+
+
+public void SetEyeAngleCorrect(int client)
+{
+	if(IsValidClient(client))
+	{
+		float vAngles[3];
+		GetClientEyeAngles(client, vAngles);
+		vAngles[2] = 0.0;
+					
+		TeleportEntity(client, NULL_VECTOR, vAngles, NULL_VECTOR);
+	}
 }
