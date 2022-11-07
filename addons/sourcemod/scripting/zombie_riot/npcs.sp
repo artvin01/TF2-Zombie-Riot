@@ -195,6 +195,13 @@ public Action GetClosestSpawners(Handle timer)
 
 									inverting_score_calc *= -1.0;
 
+									//
+									//	(n*n)^4.0
+									//	So further away spawnpoints gain way less points.
+									//	This should solve the problem of 2 groups of people far away triggering spawnpoints that arent even near them.
+
+									Pow(inverting_score_calc * inverting_score_calc, 5.0);
+
 									Spawner.f_PointScore += inverting_score_calc;
 
 									SpawnerList.SetArray(index, Spawner);
@@ -280,7 +287,14 @@ public Action GetClosestSpawners(Handle timer)
 			{
 				SpawnerData Spawner;
 				SpawnerList.GetArray(index, Spawner);
-				Spawner.f_ClosestSpawnerLessCooldown = float(Repeats) / 2.0;
+				if(Repeats < 3) // first two have less cooldown
+				{
+					Spawner.f_ClosestSpawnerLessCooldown = 1.5;
+				}
+				else
+				{
+					Spawner.f_ClosestSpawnerLessCooldown = float(Repeats - 1) / 2.0;
+				}
 				Spawner.b_SpawnIsCloseEnough = true;
 				SpawnerList.SetArray(index, Spawner);
 			}
@@ -453,7 +467,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			}
 		}
 	}
-	float Active_Spawners_Calculate = 0.0;
+	float Active_Spawners_Calculate = 1.0;
 	switch (Active_Spawners)
 	{
 		case 1:
