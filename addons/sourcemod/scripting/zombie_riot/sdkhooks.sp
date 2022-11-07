@@ -151,7 +151,7 @@ public void OnPostThink(int client)
 				{
 					if(i_SvRollAngle[client] != 0)
 					{
-						RequestFrame(SetEyeAngleCorrect,client);
+						RequestFrame(SetEyeAngleCorrect, client);
 					}
 
 					i_SvRollAngle[client] = 0;
@@ -1425,7 +1425,6 @@ public void SetEyeAngleCorrect(int client)
 		float vAngles[3];
 		GetClientEyeAngles(client, vAngles);
 		vAngles[2] = 0.0;
-					
-		TeleportEntity(client, NULL_VECTOR, vAngles, NULL_VECTOR);
+		SnapEyeAngles(client, vAngles);
 	}
 }
