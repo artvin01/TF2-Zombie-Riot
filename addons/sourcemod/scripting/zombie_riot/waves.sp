@@ -40,6 +40,7 @@ enum struct Round
 {
 	int Xp;
 	int Cash;
+	bool MapSetupRelay;
 	bool Custom_Refresh_Npc_Store;
 	int medival_difficulty;
 	
@@ -373,6 +374,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		round.Cash = kv.GetNum("cash");
 		round.Custom_Refresh_Npc_Store = view_as<bool>(kv.GetNum("grigori_refresh_store"));
 		round.medival_difficulty = kv.GetNum("medival_research_level");
+		round.MapSetupRelay = view_as<bool>(kv.GetNum("map_setup_fake"));
 		round.Xp = kv.GetNum("xp");
 		round.Setup = kv.GetFloat("setup");
 	
@@ -760,6 +762,8 @@ void Waves_Progress()
 			}
 			
 			Rounds.GetArray(CurrentRound, round);
+			if(round.MapSetupRelay)
+				ExcuteRelay("zr_setuptime");
 			
 			//Loop through all the still alive enemies that are indexed!
 			int Zombies_alive_still = 0;
