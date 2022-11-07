@@ -1667,7 +1667,6 @@ public MRESReturn DHook_ScoutSecondaryFire(int entity) //BLOCK!!
 	return MRES_Supercede;	//NEVER APPLY. Causes you to not fire if accidentally pressing m2
 }
 
-
 public MRESReturn Detour_MaintainBotQuota(int pThis)
 {
 	return MRES_Supercede;

@@ -1274,34 +1274,34 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					if(!EscapeMode) //Buff in escapemode overall!
 					{
 						if(Wave_Count <= 10)
-							damage *= 0.5;
+							damage *= 0.35;
 							
 						else if(Wave_Count <= 15)
-							damage *= 1.25;
+							damage *= 1.0;
 						
 						else if(Wave_Count <= 20)
-							damage *= 2.0;
+							damage *= 1.35;
 							
 						else if(Wave_Count <= 25)
-							damage *= 3.0;
+							damage *= 2.5;
 							
 						else if(Wave_Count <= 30)
-							damage *= 7.0;
+							damage *= 5.0;
 							
 						else if(Wave_Count <= 40)
-							damage *= 10.0;
+							damage *= 7.0;
 							
 						else if(Wave_Count <= 45)
-							damage *= 30.0;
+							damage *= 20.0;
 						
 						else if(Wave_Count <= 50)
-							damage *= 45.0;
+							damage *= 30.0;
 						
 						else if(Wave_Count <= 60)
-							damage *= 60.0;
+							damage *= 40.0;
 						
 						else
-							damage *= 100.0;
+							damage *= 60.0;
 					}
 					else
 					{
