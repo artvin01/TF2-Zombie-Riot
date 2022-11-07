@@ -553,6 +553,7 @@ public void Manual_Impulse_101(int client, int health)
 	SetEntityHealth(client, health);
 }
 
+//thanks to pelipoika for gamedata that he had avaiable.
 stock void SnapEyeAngles(int client, float viewAngles[3])
 {
 	SDKCall(g_hSnapEyeAngles, client, viewAngles);
