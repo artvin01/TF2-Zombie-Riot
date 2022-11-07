@@ -2901,8 +2901,7 @@ public void ReviveAll()
 				{
 					applied_lastmann_buffs_once = false;
 					DHook_RespawnPlayer(client);
-					TF2_AddCondition(client, TFCond_UberchargedCanteen, 2.0);
-					TF2_AddCondition(client, TFCond_MegaHeal, 2.0);
+					GiveCompleteInvul(client, 2.0);
 				}
 				else if(dieingstate[client] > 0)
 				{
@@ -3208,4 +3207,11 @@ void AdjustBotCount(int ExtraData = 1) //1 is the default
 		}
 	}
 
+}
+
+public void GiveCompleteInvul(int client, float time)
+{
+	f_ClientInvul[client] = GetGameTime() + time;
+	TF2_AddCondition(client, TFCond_UberchargedCanteen, time);
+	TF2_AddCondition(client, TFCond_MegaHeal, time);
 }

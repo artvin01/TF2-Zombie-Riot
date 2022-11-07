@@ -887,6 +887,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if(TeutonType[victim])
 		return Plugin_Handled;
 		
+	float gameTime = GetGameTime();
+
+	if(f_ClientInvul[victim] < gameTime) //Treat this as if they were a teuton, complete and utter immunity to everything in existance.
+	{
+		return Plugin_Handled;
+	}
+
 	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
 		if(TF2_IsPlayerInCondition(victim,TFCond_Ubercharged))
@@ -897,7 +904,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 		
-	float gameTime = GetGameTime();
 	if(damagetype & DMG_CRIT)
 	{
 		damagetype &= ~DMG_CRIT; //Remove Crit Damage at all times, it breaks calculations for no good reason.
@@ -1152,8 +1158,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		else if((LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GetGameTime())
 		{
 			damage = float(flHealth - 1); //survive with 1 hp!
-			TF2_AddCondition(victim, TFCond_UberchargedCanteen, 1.0);
-			TF2_AddCondition(victim, TFCond_MegaHeal, 1.0);
+			GiveCompleteInvul(victim, 2.0);
 			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
 			f_OneShotProtectionTimer[victim] = gameTime + 60.0; // 60 second cooldown
 			return Plugin_Changed;

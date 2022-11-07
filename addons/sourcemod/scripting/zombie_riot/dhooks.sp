@@ -1181,8 +1181,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	
-	TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
-	TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
+	GiveCompleteInvul(client, 2.0);
 			
 	if(started && TeutonType[client] == TEUTON_NONE)
 	{
@@ -1245,8 +1244,7 @@ public void DHook_TeleportToObserver(DataPack pack)
 	int client = GetClientOfUserId(pack.ReadCell());
 	if(client)
 	{
-		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
-		TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
+		GiveCompleteInvul(client, 2.0);
 		int target = pack.ReadCell();
 		if(target == client || target < 1 || target > MaxClients || !IsClientInGame(target) || !IsPlayerAlive(target) || TeutonType[target] != TEUTON_NONE)
 		{
@@ -1284,8 +1282,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 	int client = GetClientOfUserId(userid);
 	if(IsValidClient(client))
 	{
-		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
-		TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
+		GiveCompleteInvul(client, 2.0);
 		if(f_WasRecentlyRevivedViaNonWave[client] < GetGameTime())
 		{	
 			if(!Waves_InSetup())

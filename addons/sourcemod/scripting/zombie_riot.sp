@@ -342,6 +342,7 @@ bool b_IsPlayerNiko[MAXTF2PLAYERS];
 
 float delay_hud[MAXTF2PLAYERS];
 float f_DelayBuildNotif[MAXTF2PLAYERS];
+float f_ClientInvul[MAXTF2PLAYERS]; //Extra ontop of uber if they somehow lose it to some god damn reason.
 
 int Current_Mana[MAXTF2PLAYERS];
 float Mana_Regen_Delay[MAXTF2PLAYERS];
@@ -3962,11 +3963,7 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {
-	if(condition == TFCond_UberchargedCanteen)
-	{
-		TF2_AddCondition(client, TFCond_UberchargedCanteen, 3.0);
-	}
-	else if(condition == TFCond_Zoomed && thirdperson[client] && IsPlayerAlive(client))
+	if(condition == TFCond_Zoomed && thirdperson[client] && IsPlayerAlive(client))
 	{
 		SetVariantInt(0);
 		AcceptEntityInput(client, "SetForcedTauntCam");
@@ -4217,4 +4214,5 @@ public void MapStartResetAll()
 	Weapon_Cspyknife_ClearAll();
 	Zero(f_TutorialUpdateStep);
 	Zero(f_DelayBuildNotif);
+	Zero(f_ClientInvul);
 }
