@@ -889,7 +889,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		
 	float gameTime = GetGameTime();
 
-	if(f_ClientInvul[victim] < gameTime) //Treat this as if they were a teuton, complete and utter immunity to everything in existance.
+	if(f_ClientInvul[victim] > gameTime) //Treat this as if they were a teuton, complete and utter immunity to everything in existance.
 	{
 		return Plugin_Handled;
 	}
