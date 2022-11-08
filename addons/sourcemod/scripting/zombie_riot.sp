@@ -237,6 +237,7 @@ char char_MusicString2[256];
 int i_MusicLength2;
 //custom wave music.
 
+float f_DelaySpawnsForVariousReasons;
 int CurrentRound;
 int CurrentWave = -1;
 int StartCash;
@@ -4215,4 +4216,5 @@ public void MapStartResetAll()
 	Zero(f_TutorialUpdateStep);
 	Zero(f_DelayBuildNotif);
 	Zero(f_ClientInvul);
+	f_DelaySpawnsForVariousReasons = 0.0;
 }

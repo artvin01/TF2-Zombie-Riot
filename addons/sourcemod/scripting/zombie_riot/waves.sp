@@ -763,7 +763,10 @@ void Waves_Progress()
 			
 			Rounds.GetArray(CurrentRound, round);
 			if(round.MapSetupRelay)
+			{
 				ExcuteRelay("zr_setuptime");
+				f_DelaySpawnsForVariousReasons = GetGameTime() + 1.5; //Delay spawns for 1.5 seconds, so maps can do their thing.
+			}
 			
 			//Loop through all the still alive enemies that are indexed!
 			int Zombies_alive_still = 0;
