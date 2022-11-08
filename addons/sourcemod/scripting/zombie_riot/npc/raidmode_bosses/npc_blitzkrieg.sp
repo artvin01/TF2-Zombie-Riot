@@ -126,8 +126,12 @@ float BlitzLight_ChargeTime[MAXENTITIES];
 float BlitzLight_RemainingChargeTime[MAXENTITIES];
 float BlitzLight_Scale1[MAXENTITIES];
 float BlitzLight_Scale2[MAXENTITIES];
+float BlitzLight_Scale2_timer[MAXENTITIES];
 float BlitzLight_Scale3[MAXENTITIES];
+float BlitzLight_Scale3_timer[MAXENTITIES];
 float BlitzLight_DMG[MAXENTITIES];
+float BlitzLight_DMG_Base[MAXENTITIES];
+float BlitzLight_DMG_Radius[MAXENTITIES];
 float BlitzLight_Radius[MAXENTITIES];
 float BlitzLight_Angle[MAXENTITIES];
 
@@ -581,7 +585,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				
 				b_Are_we_reloading[npc.index]=false;
 				
-				npc.m_flReloadIn = GetGameTime();
+				npc.m_flReloadIn = GetGameTime() + 1.0;
 				
 				
 				fl_move_speed[npc.index] = 300.0;	//Less speed since blitz just becomes death
@@ -603,7 +607,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 			 	npc.FaceTowards(vecTarget);
 				npc.FaceTowards(vecTarget);
-				npc.FireRocket(vPredictedPos, 12.5 * RaidModeScaling, (300.0*i_HealthScale[npc.index]), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
+				npc.FireRocket(vPredictedPos, 12.5 * i_HealthScale[npc.index], (300.0*i_HealthScale[npc.index]), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
 				npc.m_iAmountProjectiles += 1;
 				npc.PlayRangedSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
@@ -612,7 +616,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				{
 					npc.m_iAmountProjectiles = 0;
 					npc.m_flNextRangedBarrage_Spam = GetGameTime() + 45.0 / i_HealthScale[npc.index];
-					if(i_NpcCurrentLives[npc.index]==3)
+					if(i_NpcCurrentLives[npc.index]==2)
 					{
 						Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 					}
@@ -657,7 +661,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 						//Target close enough to hit
 						if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
 						{
-							npc.m_flCharge_delay = GetGameTime() + 5.0;
+							npc.m_flCharge_delay = GetGameTime() + 7.5;
 							npc.m_flCharge_Duration = GetGameTime() + 1.0;
 							PluginBot_Jump(npc.index, vecTarget);
 						}
@@ -741,7 +745,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 						float projectile_speed = 500.0*i_HealthScale[npc.index];
 						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
 						npc.PlayMeleeSound();
-						npc.FireRocket(vecTarget, fl_rocket_base_dmg[npc.index] * RaidModeScaling, projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0, EP_NO_KNOCKBACK); //remove the no kb if people cant escape, or just lower the dmg
+						npc.FireRocket(vecTarget, fl_rocket_base_dmg[npc.index] * i_HealthScale[npc.index], projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0, EP_NO_KNOCKBACK); //remove the no kb if people cant escape, or just lower the dmg
 						npc.m_flNextMeleeAttack = GetGameTime() + fl_rocket_firerate[npc.index];
 						i_PrimaryRocketsFired[npc.index]++;
 						npc.m_flAttackHappens = 0.0;
@@ -792,7 +796,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float meleedmg;
-								meleedmg = 11.5 * RaidModeScaling;
+								meleedmg = 11.5 * i_HealthScale[npc.index];
 								if(target <= MaxClients)
 								{
 									float Bonus_damage = 1.0;
@@ -883,47 +887,49 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 	
-	if(i_currentwave[npc.index]<=15)
+	if(!b_BlitzLight[npc.index])
 	{
-		RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth)));	//now blitz becomes more powerfull the less hp he has rather than via lifelosses
-		i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth));
-		fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.25;
-		if(fl_rocket_firerate[npc.index]<=0.35)
+		if(i_currentwave[npc.index]<=15)
 		{
-			fl_rocket_firerate[npc.index]=0.35;
+			RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth)));	//now blitz becomes more powerfull the less hp he has rather than via lifelosses
+			i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth));
+			fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.3;
+			if(fl_rocket_firerate[npc.index]<=0.35)
+			{
+				fl_rocket_firerate[npc.index]=0.35;
+			}
+		}
+		if(i_currentwave[npc.index]==30)
+		{
+			RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.25);
+			i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*1.25;
+			fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.4;
+			if(fl_rocket_firerate[npc.index]<=0.3)
+			{
+				fl_rocket_firerate[npc.index]=0.3;
+			}
+		}
+		if(i_currentwave[npc.index]==45)
+		{
+			RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.5);
+			i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*1.5;
+			fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.5;
+			if(fl_rocket_firerate[npc.index]<=0.2)
+			{
+				fl_rocket_firerate[npc.index]=0.2;
+			}
+		}
+		if(i_currentwave[npc.index]>=60)
+		{
+			RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*2.0);
+			i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*2.0;
+			fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.6;	//No limit to the firerate, probably a bad idea
+			if(fl_rocket_firerate[npc.index]<=0.01)	//just incase it goes negative...
+			{
+				fl_rocket_firerate[npc.index]=0.01;	//so infinite fire rate is not a good idea since it probably can crash the server, probably.
+			}
 		}
 	}
-	if(i_currentwave[npc.index]==30)
-	{
-		RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.25);
-		i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*1.3;
-		fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.30;
-		if(fl_rocket_firerate[npc.index]<=0.3)
-		{
-			fl_rocket_firerate[npc.index]=0.3;
-		}
-	}
-	if(i_currentwave[npc.index]==45)
-	{
-		RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.5);
-		i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*1.8;
-		fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.4;
-		if(fl_rocket_firerate[npc.index]<=0.2)
-		{
-			fl_rocket_firerate[npc.index]=0.2;
-		}
-	}
-	if(i_currentwave[npc.index]>=60)
-	{
-		RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*2.0);
-		i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*2.55;
-		fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.55;	//No limit to the firerate, probably a bad idea
-		if(fl_rocket_firerate[npc.index]<=0.01)	//just incase it goes negative...
-		{
-			fl_rocket_firerate[npc.index]=0.01;	//so infinite fire rate is not a good idea since it probably can crash the server, probably.
-		}
-	}
-	
 	if(Health/MaxHealth>0.5 && Health/MaxHealth<0.75 && !b_life1[npc.index] && i_currentwave[npc.index]>=i_wave_life1[npc.index])	//Lifelosses
 	{	//75%-50%
 		i_NpcCurrentLives[npc.index]=1;
@@ -940,7 +946,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		fl_move_speed[npc.index] = 270.0;
 		
-		fl_rocket_firerate[npc.index] = 0.3;
+		//fl_rocket_firerate[npc.index] = 0.3;
 		
 		npc.m_flReloadIn = GetGameTime();
 		
@@ -995,7 +1001,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		fl_LifelossReload[npc.index] = 0.75
 		
-		fl_rocket_firerate[npc.index] = 0.25;
+		//fl_rocket_firerate[npc.index] = 0.25;
 		
 		fl_move_speed[npc.index] = 275.0;
 		
@@ -1047,7 +1053,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		i_maxfirerockets[npc.index] = 65;
 		
-		fl_rocket_firerate[npc.index] = 0.2;
+		//fl_rocket_firerate[npc.index] = 0.2;
 		
 		fl_move_speed[npc.index] = 280.0;
 		
@@ -1100,23 +1106,22 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		CPrintToChatAll("{crimson}Blitzkrieg{default}: {crimson}I AM A GOD");
 		
-		b_Are_we_reloading[npc.index]=false;
+		b_Are_we_reloading[npc.index]=true;
 		
 		npc.m_flReloadIn = GetGameTime();
 
 		fl_TheFinalCountdown2[npc.index] = GetGameTime()+20.0;
-		BlitzLight_Invoke(npc.index, closest, 20.0);	//final invoke
+		BlitzLight_Invoke(npc.index, closest, 20.0, 6.0);	//final invoke
 		b_BlitzLight[npc.index]=true;
 		b_BlitzLight_used[npc.index]=true;
-		fl_BlitzLight_Timer[npc.index] = GetGameTime() + 8.0;
+		fl_BlitzLight_Timer[npc.index] = GetGameTime() + 10.0;
 		
 			
 		npc.m_flNextTeleport = GetGameTime() + 10.0;
-		i_maxfirerockets[npc.index] = 0;
 		
-		fl_rocket_firerate[npc.index] = 100.0;
+		fl_LifelossReload[npc.index] = 1.0;
 		
-		fl_LifelossReload[npc.index] = 10000.0;
+		npc.m_flReloadIn = GetGameTime() + 28.0;
 		
 		npc.m_flRangedArmor = 0.1;
 		
@@ -1232,7 +1237,7 @@ public void Blitzkrieg_IOC_Invoke(int ref, int enemy)	//Ion cannon from above
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity))
 	{
-		static float distance=87.0; // /29 for duartion till boom
+		static float distance=125.0; // /29 for duartion till boom
 		static float IOCDist=250.0;
 		static float IOCdamage=100.0;
 		
@@ -1403,7 +1408,7 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const color[4])
 				alpha=2.75;
 			}
 			
-			makeexplosion(client, client, startPosition, "", RoundToCeil(150*alpha), 350);
+			makeexplosion(client, client, startPosition, "", RoundToCeil(225*alpha), 350);
 				
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
@@ -1491,7 +1496,9 @@ public Action BlitzLight_TBB_Tick(int client)
 			SDKUnhook(client, SDKHook_Think, BlitzLight_TBB_Tick);
 			b_BlitzLight[npc.index] = false;
 		}
-
+		
+		BlitzLight_DMG[npc.index]=BlitzLight_DMG_Base[npc.index]*(1.0+(tickCountClient[npc.index]/BlitzLight_Duration[npc.index]));
+		BlitzLight_DMG_Radius[npc.index]=BlitzLight_Radius[npc.index]*(1.0+(tickCountClient[npc.index]/BlitzLight_Duration[npc.index])*2.5);
 		int entity = EntRefToEntIndex(npc.index);
 		if(IsValidEntity(entity))
 		{
@@ -1510,7 +1517,7 @@ public Action BlitzLight_TBB_Tick(int client)
 	return Plugin_Continue;
 
 }
-public void BlitzLight_Invoke(int ref, int enemy, float timer)
+public void BlitzLight_Invoke(int ref, int enemy, float timer, float charge)
 {
 	Blitzkrieg npc = view_as<Blitzkrieg>(ref);
 	int entity = EntRefToEntIndex(ref);
@@ -1520,16 +1527,20 @@ public void BlitzLight_Invoke(int ref, int enemy, float timer)
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", vecTarget);
 		
 		BlitzLight_Duration[npc.index] = timer;
-		BlitzLight_ChargeTime[npc.index] = 4.0;
+		BlitzLight_ChargeTime[npc.index] = charge;
 		BlitzLight_Scale1[npc.index] = 200.0;
 		BlitzLight_Scale2[npc.index] = 400.0;
 		BlitzLight_Scale3[npc.index] = 600.0;
-		BlitzLight_DMG[npc.index] = 100.0;
+		BlitzLight_DMG_Base[npc.index] = 40.0;	//dmg is multiplied by duration, half duration is 1.5, near end of duration its almost 2x. it also does dmg 2 times a second.
 		BlitzLight_Radius[npc.index] = 200.0;
+		timer+=charge;
 
 		float time=BlitzLight_Duration[npc.index]
 		BlitzLight_Duration[npc.index]*=66.0;
 		BlitzLight_RemainingDuration[npc.index] = 0.0;
+		
+		BlitzLight_Scale2_timer[npc.index]=GetGameTime()+(timer/3);	//makes it so the 3 beam rings spawn in 3 seperate times.
+		BlitzLight_Scale3_timer[npc.index]=GetGameTime()+((timer/3)*2)-charge;
 		
 		BlitzLight_RemainingChargeTime[npc.index] = BlitzLight_ChargeTime[npc.index];
 		EmitSoundToAll(BLITZLIGHT_ACTIVATE);
@@ -1596,13 +1607,19 @@ void BlitzLight_Beams(int entity, bool charging = true)
 			}
 			case 1:
 			{
-				distance = BlitzLight_Scale2[npc.index];
-				angMult = -1.0;
+				if(BlitzLight_Scale2_timer[npc.index]<GetGameTime())
+				{
+					distance = BlitzLight_Scale2[npc.index];
+					angMult = -1.0;
+				}
 			}
 			case 2:
 			{
-				distance = BlitzLight_Scale3[npc.index];
-				angMult = 1.0;
+				if(BlitzLight_Scale3_timer[npc.index]<GetGameTime())
+				{
+					distance = BlitzLight_Scale3[npc.index];
+					angMult = 1.0;
+				}
 			}
 		}
 		
@@ -1704,6 +1721,9 @@ public void BlitzLight_DealDamage(int entity)
 		float beamLoc[3];
 		beamLoc = GetAbsOrigin(entity);
 		fl_BlitzLight_dmg_throttle[npc.index] = GetGameTime() + 0.5;	//funny throttle due to me being dumb and not knowing to how do damage any other way.
-		Explode_Logic_Custom(BlitzLight_DMG[npc.index], entity, entity, -1, beamLoc, 1000.0 , _ , _ , true);
+		Explode_Logic_Custom(BlitzLight_DMG[npc.index], entity, entity, -1, beamLoc, BlitzLight_DMG_Radius[npc.index] , _ , _ , true);
+		//CPrintToChatAll("dmg: %fl", BlitzLight_DMG[npc.index]);
+		//CPrintToChatAll("radius: %fl", BlitzLight_DMG_Radius[npc.index]);
+		
 	}
 }
