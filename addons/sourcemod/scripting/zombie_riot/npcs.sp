@@ -338,6 +338,10 @@ int LimitNpcs;
 
 public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 {
+	if(f_DelaySpawnsForVariousReasons > GetGameTime())
+	{
+		return;
+	}
 	bool found;
 	/*
 	*/

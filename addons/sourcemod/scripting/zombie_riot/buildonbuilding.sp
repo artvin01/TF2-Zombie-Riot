@@ -90,6 +90,7 @@ public void OnMapStart_Build_on_Build()
 }
 
 static float Get_old_pos_back[MAXENTITIES][3];
+static bool b_WasTeleported[MAXENTITIES];
 static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 static int i_DoNotTeleportThisPlayer;
 
@@ -108,6 +109,7 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 	{
 		if(IsClientInGame(client) && client != i_DoNotTeleportThisPlayer)
 		{
+			b_WasTeleported[client] = true;
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[client]);
 			SetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", OFF_THE_MAP);
 		}
@@ -119,6 +121,7 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
 		if (IsValidEntity(baseboss_index_allied) && baseboss_index_allied != 0)
 		{
+			b_WasTeleported[baseboss_index_allied] = true;
 			GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[baseboss_index_allied]);
 			SDKCall_SetLocalOrigin(baseboss_index_allied, vec_origin);
 		}
@@ -129,6 +132,25 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 
 public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hParams)
 {
+	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	{
+		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+		if (IsValidEntity(baseboss_index_allied) && b_WasTeleported[baseboss_index_allied])
+		{
+			b_WasTeleported[baseboss_index_allied] = false;
+			SDKCall_SetLocalOrigin(baseboss_index_allied, Get_old_pos_back[baseboss_index_allied]);
+		}
+	}
+	for(int clientLoop=1; clientLoop<=MaxClients; clientLoop++)
+	{
+		if(IsClientInGame(clientLoop) && clientLoop != i_DoNotTeleportThisPlayer && b_WasTeleported[clientLoop])
+		{
+			b_WasTeleported[clientLoop] = false;
+			SetEntPropVector(clientLoop, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[clientLoop]);
+		}
+	}
+	i_DoNotTeleportThisPlayer = 0;
+
 	if(pThis==-1)
 	{
 		return MRES_Ignored;
@@ -139,24 +161,6 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		DHookSetReturn(hReturn, false);
 		return MRES_ChangedOverride;
 	}
-	
-	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
-	{
-		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied) && baseboss_index_allied != 0)
-		{
-			SDKCall_SetLocalOrigin(baseboss_index_allied, Get_old_pos_back[baseboss_index_allied]);
-		}
-	}
-	for(int clientLoop=1; clientLoop<=MaxClients; clientLoop++)
-	{
-		if(IsClientInGame(clientLoop) && clientLoop != i_DoNotTeleportThisPlayer)
-		{
-			SetEntPropVector(clientLoop, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[clientLoop]);
-		}
-	}
-
-	i_DoNotTeleportThisPlayer = 0;
 
 	CClotBody npc = view_as<CClotBody>(pThis);
 	
