@@ -618,7 +618,7 @@ void Waves_Progress()
 			if(Is_a_boss == 2)
 			{
 				Raidboss_Clean_Everyone();
-				ReviveAll();
+				ReviveAll(true);
 				Music_EndLastmann();
 				CheckAlivePlayers();
 			}

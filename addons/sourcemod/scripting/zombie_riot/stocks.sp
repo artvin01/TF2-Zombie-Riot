@@ -2887,7 +2887,7 @@ public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 }
 
 
-public void ReviveAll()
+void ReviveAll(bool raidspawned = false)
 {
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -2917,16 +2917,24 @@ public void ReviveAll()
 					SetEntityRenderMode(client, RENDER_NORMAL);
 					SetEntityRenderColor(client, 255, 255, 255, 255);
 					SetEntityCollisionGroup(client, 5);
-					if(!EscapeMode)
+					if(!raidspawned)
 					{
-						SetEntityHealth(client, 50);
-						RequestFrame(SetHealthAfterRevive, client);
-					}	
-					else
-					{
-						SetEntityHealth(client, 150);
-						RequestFrame(SetHealthAfterRevive, client);						
+						if(!EscapeMode)
+						{
+							SetEntityHealth(client, 50);
+							RequestFrame(SetHealthAfterRevive, client);
+						}	
+						else
+						{
+							SetEntityHealth(client, 150);
+							RequestFrame(SetHealthAfterRevive, client);						
+						}
 					}
+				}
+				if(raidspawned)
+				{
+					SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+					RequestFrame(SetHealthAfterReviveRaid, client);	
 				}
 			}
 		}

@@ -104,7 +104,7 @@ public Action Check_If_Owner_Dead(Handle sentryHud, int ref)
 	}
 }
 
-static bool Player_Mounting_Building[MAXPLAYERS + 1];
+bool Player_Mounting_Building[MAXPLAYERS + 1];
 
 public void MountBuildingToBack(int client, int weapon, bool crit)
 {
@@ -464,6 +464,11 @@ stock void DestroyDispenser(int client)
 			g_CarriedDispenser[client] = INVALID_ENT_REFERENCE;
 		}
 	}
+	{
+		Building_Mounted[client] = 0;
+		Player_Mounting_Building[client] = false;
+		g_CarriedDispenser[client] = INVALID_ENT_REFERENCE; //Just remove entirely, just make sure.
+	}
 }
 
 stock bool IsValidBuilding(int iBuilding)
@@ -575,6 +580,12 @@ stock void UnequipDispenser(int client)
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, StandStill);
 		}
 		g_CarriedDispenser[client] = INVALID_ENT_REFERENCE;
+	}
+	else
+	{
+		Building_Mounted[client] = 0;
+		Player_Mounting_Building[client] = false;
+		g_CarriedDispenser[client] = INVALID_ENT_REFERENCE; //Just remove entirely, just make sure.
 	}
 }
 

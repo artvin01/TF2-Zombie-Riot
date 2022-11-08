@@ -2306,6 +2306,12 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 		{
 			DestroyDispenser(client);
 		}
+		else
+		{
+			Building_Mounted[client] = 0;
+			Player_Mounting_Building[client] = false;
+			g_CarriedDispenser[client] = INVALID_ENT_REFERENCE; //Just remove entirely, just make sure.
+		}
 	}
 
 	//Incase they die, do suit!
@@ -3172,6 +3178,36 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 	Medikit_healing(client, buttons);
 }
 
+
+//Revival raid spam
+public void SetHealthAfterReviveRaid(int client)
+{
+	if(IsValidClient(client))
+	{	
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+		RequestFrame(SetHealthAfterReviveRaidAgain, client);	
+	}
+}
+
+public void SetHealthAfterReviveRaidAgain(int client)
+{
+	if(IsValidClient(client))
+	{	
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+		RequestFrame(SetHealthAfterReviveRaidAgainAgain, client);	
+	}
+}
+
+public void SetHealthAfterReviveRaidAgainAgain(int client)
+{
+	if(IsValidClient(client))
+	{	
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+	}
+}
+//Revival raid spam
+
+//Set hp spam after normal revive
 public void SetHealthAfterRevive(int client)
 {
 	if(IsValidClient(client))
@@ -3179,7 +3215,6 @@ public void SetHealthAfterRevive(int client)
 		RequestFrame(SetHealthAfterReviveAgain, client);	
 	}
 }
-
 
 public void SetHealthAfterReviveAgain(int client)
 {
@@ -3212,6 +3247,9 @@ public void SetHealthAfterReviveAgainAgain(int client) //For some reason i have 
 		}
 	}
 }
+
+//Set hp spam after normal revive
+
 
 public void Update_Ammo(int  client)
 {
