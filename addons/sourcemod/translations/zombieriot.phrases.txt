@@ -1099,7 +1099,7 @@
 		"ru" 		"Панцер-солдат: Гарантированно появляется на 12-й волне, а затем у него низкий шанс прийти снова, увеличивающийся с каждой волной."
 		"de"		"Panzer-Soldat: erscheint Garantiert an runde 12, dann hat es eine kleine Chance zu kommen, wird höher jede runde."
 		"pt"		"Panzer Soldat: Garantido aparecer na onda 12 e então ele tem uma pequena chance de aparecer, aumenta a cada onda."
-		"nl"		"Panzer Soldaat: "Gegarandeert om op golf 12 te spawnen en kan verder nog met een kleine kans terugkomen, kans verhoogt elke volgende golf!"
+		"nl"		"Panzer Soldaat: Gegarandeert om op golf 12 te spawnen en kan verder nog met een kleine kans terugkomen, kans verhoogt elke volgende golf!"
 	}
 	"Revival Zombies Explained"
 	{
