@@ -64,10 +64,37 @@ void SDKHook_MapStart()
 public void SDKHook_ScoreThink(int entity)
 {
 	static int offset = -1;
+	static int offset_Damage = -1;
+//	static int offset_Healing = -1;
+//	static int offset_Kills = -1;
+
 	if(offset == -1) 
 		offset = FindSendPropInfo("CTFPlayerResource", "m_iTotalScore");
-	
+
+	if(offset_Damage == -1) 
+		offset_Damage = FindSendPropInfo("CTFPlayerResource", "m_iDamage");
+
+//	if(offset_Healing == -1) 
+//		offset_Healing = FindSendPropInfo("CTFPlayerResource", "m_iHealing"); //This is support
+
+
+//	if(offset_Kills == -1) 
+//		offset_Kills = FindSendPropInfo("CTFPlayer", "m_iKills");
+
 	SetEntDataArray(entity, offset, PlayerPoints, MaxClients + 1);
+	SetEntDataArray(entity, offset_Damage, i_Damage_dealt_in_total, MaxClients + 1);
+//	SetEntDataArray(entity, offset_Healing, Healing_done_in_total, MaxClients + 1);
+//	SetEntDataArray(entity, offset_damageboss, Healing_done_in_total, MaxClients + 1);
+/*	
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && !b_IsPlayerABot[client])
+		{
+			PrintToConsole(client, "%i",Healing_done_in_total[client]);
+			SetEntData(client, offset_Kills, i_KillsMade[client]);
+		}
+	}	
+	*/
 }
 
 void SDKHook_HookClient(int client)

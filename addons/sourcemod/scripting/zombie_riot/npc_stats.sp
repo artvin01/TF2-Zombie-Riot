@@ -4176,6 +4176,7 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		
 		if(client && IsClientInGame(client))
 		{
+			i_KillsMade[client] += 1;
 			Calculate_And_Display_hp(client, pThis, Damage[pThis], true, overkill);
 		}
 		

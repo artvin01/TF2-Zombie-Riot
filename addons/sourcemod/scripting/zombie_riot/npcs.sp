@@ -1541,7 +1541,8 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 	{
 		Damage_dealt_in_total[attacker] += overkill; //dont award for overkilling.
 	}
-	
+
+
 	if(f_CooldownForHurtHud[attacker] < GetGameTime() || ignore)
 	{
 		if(!ignore)

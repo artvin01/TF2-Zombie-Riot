@@ -110,6 +110,9 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CBaseObject::FinishedBuilding", Dhook_FinishedBuilding_Pre, Dhook_FinishedBuilding_Post);
 	DHook_CreateDetour(gamedata, "CBaseObject::FirstSpawn", Dhook_FirstSpawn_Pre, Dhook_FirstSpawn_Post);
 
+	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
+	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
+
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	
@@ -1697,4 +1700,28 @@ public MRESReturn DHook_ScoutSecondaryFire(int entity) //BLOCK!!
 public MRESReturn Detour_MaintainBotQuota(int pThis)
 {
 	return MRES_Supercede;
+}
+
+
+//We want to disable them auto switching weapons during this, the reason being is that it messes with out custom equip logic, bad!
+
+public MRESReturn Dhook_BlowHorn_Post(int entity)
+{
+	TF2Attrib_SetByDefIndex(entity, 698, 1.0); // disable weapon switch
+	return MRES_Ignored;
+}
+public MRESReturn Dhook_RaiseFlag_Post(int entity)
+{
+	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	int viewmodel = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
+	if(viewmodel>MaxClients && IsValidEntity(viewmodel)) //For some reason it plays the horn anim again, just set it to idle!
+	{
+		int animation = 21; //should be default idle, modded viewmodels are fucked ig lol
+		SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);
+	}
+	
+	//They successfully blew the horn! give them abit of credit for that! they helpinnnnnnn... yay
+	i_ExtraPlayerPoints[client] += 1500;
+	TF2Attrib_SetByDefIndex(entity, 698, 0.0); // disable weapon switch
+	return MRES_Ignored;
 }
