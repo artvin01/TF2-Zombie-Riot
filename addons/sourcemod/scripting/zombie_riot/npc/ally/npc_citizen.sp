@@ -871,9 +871,14 @@ methodmap Citizen < CClotBody
 		}
 		public set(float value)
 		{
-			fl_Speed[this.index] = value;
 			if(!this.m_bSeakingGeneric && (this.m_iHasPerk == Cit_Pistol || this.m_iHasPerk == Cit_Shotgun || this.m_iHasPerk == Cit_RPG))
-				fl_Speed[this.index] *= 1.1;
+			{
+				fl_Speed[this.index] = value * 1.1;
+			}
+			else
+			{
+				fl_Speed[this.index] = value;
+			}
 		}
 	}
 	property float m_flReloadDelay

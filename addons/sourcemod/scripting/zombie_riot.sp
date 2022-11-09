@@ -620,6 +620,8 @@ public const char PerkNames_Recieved[][] =
 	"Widows Wine Recieved",
 };
 
+#define ITSTILIVES 666
+
 enum
 {
 	NOTHING 						= 0,	
@@ -773,10 +775,7 @@ enum
 	ALT_MECHA_PYROGIANT			= 133,
 	ALT_MECHA_SCOUT				= 134,
 	ALT_DONNERKRIEG				= 135,
-	ALT_SCHWERTKRIEG			= 136,
-	
-	
-	ITSTILIVES	= 137,
+	ALT_SCHWERTKRIEG			= 136
 }
 
 
@@ -929,8 +928,7 @@ public const char NPC_Names[][] =
 	"Mecha Giant Pyro",
 	"Mecha Scout",
 	"Donnerkrieg",
-	"Schwertkrieg",
-	"Bob the Overgod of gods and destroyer of multiverses",
+	"Schwertkrieg"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -1080,8 +1078,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_mecha_scout",
 	"npc_alt_mecha_scout",
 	"npc_alt_donnerkrieg",
-	"npc_alt_schwertkrieg",
-	""
+	"npc_alt_schwertkrieg"
 };
 
 #include "zombie_riot/stocks_override.sp"
