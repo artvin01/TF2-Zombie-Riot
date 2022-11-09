@@ -1267,7 +1267,7 @@ void Building_PlayerRunCmd(int client, int buttons)
 
 public void Pickup_Building_M2(int client, int weapon, bool crit)
 {
-		int entity = GetClientPointVisible(client, _ , true);
+		int entity = GetClientPointVisible(client, _ , true, true);
 		if(entity > MaxClients)
 		{
 			if (IsValidEntity(entity))
@@ -1310,7 +1310,7 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 		PrintCenterText(client, " ");
 		if (IsValidEntity(entity))
 		{
-			int looking_at = GetClientPointVisible(client, _ , true);
+			int looking_at = GetClientPointVisible(client, _ , true, true);
 			if (looking_at == entity)
 			{
 				static char buffer[64];

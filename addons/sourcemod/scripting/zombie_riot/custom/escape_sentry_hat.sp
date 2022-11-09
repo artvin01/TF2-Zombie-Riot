@@ -110,7 +110,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 {
 	if(!Player_Mounting_Building[client])
 	{
-		int entity = GetClientPointVisible(client, _ , true);
+		int entity = GetClientPointVisible(client, _ , true, true);
 		if(entity > MaxClients)
 		{
 			if (IsValidEntity(entity))
@@ -275,7 +275,7 @@ public Action Mount_Building_Timer(Handle sentryHud, DataPack pack)
 		PrintCenterText(client, " ");
 		if (IsValidEntity(entity))
 		{
-			int looking_at = GetClientPointVisible(client, _ , true);
+			int looking_at = GetClientPointVisible(client, _ , true, true);
 			if (looking_at == entity)
 			{
 				static char buffer[64];
