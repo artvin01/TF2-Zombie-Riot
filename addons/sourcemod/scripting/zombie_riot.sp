@@ -237,6 +237,7 @@ char char_MusicString2[256];
 int i_MusicLength2;
 //custom wave music.
 
+float f_DelaySpawnsForVariousReasons;
 int CurrentRound;
 int CurrentWave = -1;
 int StartCash;
@@ -342,6 +343,7 @@ bool b_IsPlayerNiko[MAXTF2PLAYERS];
 
 float delay_hud[MAXTF2PLAYERS];
 float f_DelayBuildNotif[MAXTF2PLAYERS];
+float f_ClientInvul[MAXTF2PLAYERS]; //Extra ontop of uber if they somehow lose it to some god damn reason.
 
 int Current_Mana[MAXTF2PLAYERS];
 float Mana_Regen_Delay[MAXTF2PLAYERS];
@@ -2301,6 +2303,12 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 		{
 			DestroyDispenser(client);
 		}
+		else
+		{
+			Building_Mounted[client] = 0;
+			Player_Mounting_Building[client] = false;
+			g_CarriedDispenser[client] = INVALID_ENT_REFERENCE; //Just remove entirely, just make sure.
+		}
 	}
 
 	//Incase they die, do suit!
@@ -3167,6 +3175,36 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 	Medikit_healing(client, buttons);
 }
 
+
+//Revival raid spam
+public void SetHealthAfterReviveRaid(int client)
+{
+	if(IsValidClient(client))
+	{	
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+		RequestFrame(SetHealthAfterReviveRaidAgain, client);	
+	}
+}
+
+public void SetHealthAfterReviveRaidAgain(int client)
+{
+	if(IsValidClient(client))
+	{	
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+		RequestFrame(SetHealthAfterReviveRaidAgainAgain, client);	
+	}
+}
+
+public void SetHealthAfterReviveRaidAgainAgain(int client)
+{
+	if(IsValidClient(client))
+	{	
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+	}
+}
+//Revival raid spam
+
+//Set hp spam after normal revive
 public void SetHealthAfterRevive(int client)
 {
 	if(IsValidClient(client))
@@ -3174,7 +3212,6 @@ public void SetHealthAfterRevive(int client)
 		RequestFrame(SetHealthAfterReviveAgain, client);	
 	}
 }
-
 
 public void SetHealthAfterReviveAgain(int client)
 {
@@ -3207,6 +3244,9 @@ public void SetHealthAfterReviveAgainAgain(int client) //For some reason i have 
 		}
 	}
 }
+
+//Set hp spam after normal revive
+
 
 public void Update_Ammo(int  client)
 {
@@ -3959,11 +3999,7 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {
-	if(condition == TFCond_UberchargedCanteen)
-	{
-		TF2_AddCondition(client, TFCond_UberchargedCanteen, 3.0);
-	}
-	else if(condition == TFCond_Zoomed && thirdperson[client] && IsPlayerAlive(client))
+	if(condition == TFCond_Zoomed && thirdperson[client] && IsPlayerAlive(client))
 	{
 		SetVariantInt(0);
 		AcceptEntityInput(client, "SetForcedTauntCam");
@@ -4214,4 +4250,6 @@ public void MapStartResetAll()
 	Weapon_Cspyknife_ClearAll();
 	Zero(f_TutorialUpdateStep);
 	Zero(f_DelayBuildNotif);
+	Zero(f_ClientInvul);
+	f_DelaySpawnsForVariousReasons = 0.0;
 }

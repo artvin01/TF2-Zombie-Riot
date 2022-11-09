@@ -195,6 +195,13 @@ public Action GetClosestSpawners(Handle timer)
 
 									inverting_score_calc *= -1.0;
 
+									//
+									//	(n*n)^4.0
+									//	So further away spawnpoints gain way less points.
+									//	This should solve the problem of 2 groups of people far away triggering spawnpoints that arent even near them.
+
+									Pow(inverting_score_calc * inverting_score_calc, 5.0);
+
 									Spawner.f_PointScore += inverting_score_calc;
 
 									SpawnerList.SetArray(index, Spawner);
@@ -280,7 +287,14 @@ public Action GetClosestSpawners(Handle timer)
 			{
 				SpawnerData Spawner;
 				SpawnerList.GetArray(index, Spawner);
-				Spawner.f_ClosestSpawnerLessCooldown = float(Repeats) / 2.0;
+				if(Repeats < 3) // first two have less cooldown
+				{
+					Spawner.f_ClosestSpawnerLessCooldown = 1.5;
+				}
+				else
+				{
+					Spawner.f_ClosestSpawnerLessCooldown = float(Repeats - 1) / 2.0;
+				}
 				Spawner.b_SpawnIsCloseEnough = true;
 				SpawnerList.SetArray(index, Spawner);
 			}
@@ -324,6 +338,10 @@ int LimitNpcs;
 
 public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 {
+	if(f_DelaySpawnsForVariousReasons > GetGameTime())
+	{
+		return;
+	}
 	bool found;
 	/*
 	*/
@@ -453,7 +471,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			}
 		}
 	}
-	float Active_Spawners_Calculate = 0.0;
+	float Active_Spawners_Calculate = 1.0;
 	switch (Active_Spawners)
 	{
 		case 1:
@@ -1260,34 +1278,34 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					if(!EscapeMode) //Buff in escapemode overall!
 					{
 						if(Wave_Count <= 10)
-							damage *= 0.5;
+							damage *= 0.35;
 							
 						else if(Wave_Count <= 15)
-							damage *= 1.25;
+							damage *= 1.0;
 						
 						else if(Wave_Count <= 20)
-							damage *= 2.0;
+							damage *= 1.35;
 							
 						else if(Wave_Count <= 25)
-							damage *= 3.0;
+							damage *= 2.5;
 							
 						else if(Wave_Count <= 30)
-							damage *= 7.0;
+							damage *= 5.0;
 							
 						else if(Wave_Count <= 40)
-							damage *= 10.0;
+							damage *= 7.0;
 							
 						else if(Wave_Count <= 45)
-							damage *= 30.0;
+							damage *= 20.0;
 						
 						else if(Wave_Count <= 50)
-							damage *= 45.0;
+							damage *= 30.0;
 						
 						else if(Wave_Count <= 60)
-							damage *= 60.0;
+							damage *= 40.0;
 						
 						else
-							damage *= 100.0;
+							damage *= 60.0;
 					}
 					else
 					{

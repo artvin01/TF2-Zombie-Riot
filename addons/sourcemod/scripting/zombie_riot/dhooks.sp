@@ -282,14 +282,42 @@ public Action SdkHook_StickStickybombToBaseBoss(int entity, int other)
 	return Plugin_Continue;
 }
 
+static float Velocity_Rocket[MAXENTITIES][3];
+
 public void ApplyExplosionDhook_Rocket(int entity)
 {
 	if(!b_EntityIsArrow[entity]) //No!
 	{
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, DHook_RocketExplodePre);
 	}
-	//I have to do it twice, if its a custom spawn i have to do it insantly, if its a tf2 spawn then i have to do it seperatly.
+	CreateTimer(0.1, FixVelocityStandStillRocket, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 }
+
+public Action FixVelocityStandStillRocket(Handle Timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if (IsValidEntity(entity))
+	{
+		float Velocity_Temp[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecVelocity", Velocity_Temp); 
+		if(Velocity_Temp[0] == 0.0 && Velocity_Temp[1] == 0.0 && Velocity_Temp[2] == 0.0)
+		{
+			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, Velocity_Rocket[entity]);
+		}
+		else
+		{
+			Velocity_Rocket[entity][0] = Velocity_Temp[0];
+			Velocity_Rocket[entity][1] = Velocity_Temp[1];
+			Velocity_Rocket[entity][2] = Velocity_Temp[2];
+		}
+		return Plugin_Continue;
+	}
+	else
+	{
+		return Plugin_Stop;
+	}
+}
+
 
 public void ApplyExplosionDhook_Fireball(int entity)
 {
@@ -1153,6 +1181,8 @@ public MRESReturn DHook_ForceRespawn(int client)
 		
 		return MRES_Supercede;
 	}
+
+	RequestFrame(SetEyeAngleCorrect, client);
 	
 	if(GetClientTeam(client) != 2)
 	{
@@ -1181,8 +1211,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	
-	TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
-	TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
+	GiveCompleteInvul(client, 2.0);
 			
 	if(started && TeutonType[client] == TEUTON_NONE)
 	{
@@ -1245,8 +1274,7 @@ public void DHook_TeleportToObserver(DataPack pack)
 	int client = GetClientOfUserId(pack.ReadCell());
 	if(client)
 	{
-		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
-		TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
+		GiveCompleteInvul(client, 2.0);
 		int target = pack.ReadCell();
 		if(target == client || target < 1 || target > MaxClients || !IsClientInGame(target) || !IsPlayerAlive(target) || TeutonType[target] != TEUTON_NONE)
 		{
@@ -1284,8 +1312,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 	int client = GetClientOfUserId(userid);
 	if(IsValidClient(client))
 	{
-		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
-		TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
+		GiveCompleteInvul(client, 2.0);
 		if(f_WasRecentlyRevivedViaNonWave[client] < GetGameTime())
 		{	
 			if(!Waves_InSetup())
@@ -1666,7 +1693,6 @@ public MRESReturn DHook_ScoutSecondaryFire(int entity) //BLOCK!!
 {
 	return MRES_Supercede;	//NEVER APPLY. Causes you to not fire if accidentally pressing m2
 }
-
 
 public MRESReturn Detour_MaintainBotQuota(int pThis)
 {

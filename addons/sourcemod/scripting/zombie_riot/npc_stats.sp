@@ -7746,22 +7746,33 @@ public void ArrowStartTouch(int arrow, int entity)
 {
 	if(entity > 0 && entity < MAXENTITIES)
 	{
+		int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
 		SDKHooks_TakeDamage(entity, arrow, arrow, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
 		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
-		if(IsValidEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow])))
+		if(IsValidEntity(arrow_particle))
 		{
-			RemoveEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow]));
+			DispatchKeyValue(arrow_particle, "parentname", "none");
+			AcceptEntityInput(arrow_particle, "ClearParent");
+			float f3_PositionTemp[3];
+			GetEntPropVector(arrow_particle, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+			TeleportEntity(arrow_particle, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
 	else
 	{
+		int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
 		EmitSoundToAll(g_ArrowHitSoundMiss[GetRandomInt(0, sizeof(g_ArrowHitSoundMiss) - 1)], arrow, _, 80, _, 0.8, 100);
-		if(IsValidEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow])))
+		if(IsValidEntity(arrow_particle))
 		{
-			RemoveEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow]));
+			DispatchKeyValue(arrow_particle, "parentname", "none");
+			AcceptEntityInput(arrow_particle, "ClearParent");
+			float f3_PositionTemp[3];
+			GetEntPropVector(arrow_particle, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+			TeleportEntity(arrow_particle, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
-//	PrintToChatAll("touched");
 	RemoveEntity(arrow);
 }
 
@@ -7769,9 +7780,15 @@ public MRESReturn Arrow_DHook_RocketExplodePre(int arrow)
 {
 //	PrintToChatAll("boom!");
 	RemoveEntity(arrow);
-	if(IsValidEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow])))
+	int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
+	if(IsValidEntity(arrow_particle))
 	{
-		RemoveEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow]));
+		DispatchKeyValue(arrow_particle, "parentname", "none");
+		AcceptEntityInput(arrow_particle, "ClearParent");
+		float f3_PositionTemp[3];
+		GetEntPropVector(arrow_particle, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+		TeleportEntity(arrow_particle, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
 	}
 	return MRES_Supercede;
 }

@@ -592,7 +592,7 @@ public Action QuantumActivate(Handle cut_timer, int ref)
 	float startPosition[3];
 	GetClientAbsOrigin(client, startPosition);
 
-	if(IsValidClient(client) && TeutonType[client] == TEUTON_NONE)
+	if(IsValidClient(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
 	{
 		i_HealthBeforeSuit[client] = GetClientHealth(client);
 

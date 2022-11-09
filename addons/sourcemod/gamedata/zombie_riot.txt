@@ -4,6 +4,11 @@
 	{
 		"Signatures"
 		{
+			"CBasePlayer::SnapEyeAngles"
+			{
+				"windows"	"\x55\x8B\xEC\x8B\x45\x08\xD9\x00\xD9\x99\x58\x0A\x00\x00"
+				"linux"		"@_ZN11CBasePlayer13SnapEyeAnglesERK6QAngle"
+			}
 			"CTFNavMesh::ComputeBlockedArea"
 			{
 				"library"	"server"

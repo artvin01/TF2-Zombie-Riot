@@ -2887,7 +2887,7 @@ public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 }
 
 
-public void ReviveAll()
+void ReviveAll(bool raidspawned = false)
 {
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -2901,8 +2901,7 @@ public void ReviveAll()
 				{
 					applied_lastmann_buffs_once = false;
 					DHook_RespawnPlayer(client);
-					TF2_AddCondition(client, TFCond_UberchargedCanteen, 2.0);
-					TF2_AddCondition(client, TFCond_MegaHeal, 2.0);
+					GiveCompleteInvul(client, 2.0);
 				}
 				else if(dieingstate[client] > 0)
 				{
@@ -2918,16 +2917,24 @@ public void ReviveAll()
 					SetEntityRenderMode(client, RENDER_NORMAL);
 					SetEntityRenderColor(client, 255, 255, 255, 255);
 					SetEntityCollisionGroup(client, 5);
-					if(!EscapeMode)
+					if(!raidspawned)
 					{
-						SetEntityHealth(client, 50);
-						RequestFrame(SetHealthAfterRevive, client);
-					}	
-					else
-					{
-						SetEntityHealth(client, 150);
-						RequestFrame(SetHealthAfterRevive, client);						
+						if(!EscapeMode)
+						{
+							SetEntityHealth(client, 50);
+							RequestFrame(SetHealthAfterRevive, client);
+						}	
+						else
+						{
+							SetEntityHealth(client, 150);
+							RequestFrame(SetHealthAfterRevive, client);						
+						}
 					}
+				}
+				if(raidspawned)
+				{
+					SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+					RequestFrame(SetHealthAfterReviveRaid, client);	
 				}
 			}
 		}
@@ -3208,4 +3215,11 @@ void AdjustBotCount(int ExtraData = 1) //1 is the default
 		}
 	}
 
+}
+
+public void GiveCompleteInvul(int client, float time)
+{
+	f_ClientInvul[client] = GetGameTime() + time;
+	TF2_AddCondition(client, TFCond_UberchargedCanteen, time);
+	TF2_AddCondition(client, TFCond_MegaHeal, time);
 }
