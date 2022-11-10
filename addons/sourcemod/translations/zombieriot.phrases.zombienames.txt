@@ -82,7 +82,7 @@
 		"en" 		"Metro Raider"
 		"ru" 		"Метрорейдер"
 		"pt"		"Policial Invasor"
-		"nl"é		"Metro Aanvaller"
+		"nl"		"Metro Aanvaller"
 	}
 	"Combine Rifler"
 	{
