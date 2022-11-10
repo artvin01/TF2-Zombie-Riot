@@ -183,12 +183,12 @@ public void OnPostThink(int client)
 			{
 				if(PercentageHealth > 0.35)
 				{
-					if(i_SvRollAngle[client] != 0)
-					{
-						RequestFrame(SetEyeAngleCorrect, client);
-					}
+				//	if(i_SvRollAngle[client] != 1)
+				//	{
+				//		RequestFrame(SetEyeAngleCorrect, client);
+				//	}
 
-					i_SvRollAngle[client] = 0;
+					i_SvRollAngle[client] = 1;
 				}
 				else
 				{
@@ -201,16 +201,21 @@ public void OnPostThink(int client)
 					PercentageHealth *= 125.0; // we want the full number! this only works in big ones. also divitde by 4
 
 					i_SvRollAngle[client] = RoundToCeil(PercentageHealth);
+
+					if(i_SvRollAngle[client] < 1)
+					{
+						i_SvRollAngle[client] = 1;
+					}
 				}
 			}
 			else
 			{
-				if(i_SvRollAngle[client] != 0)
-				{
-					RequestFrame(SetEyeAngleCorrect,client);
-				}
+			//	if(i_SvRollAngle[client] != 1)
+			//	{
+			//		RequestFrame(SetEyeAngleCorrect,client);
+			//	}
 
-				i_SvRollAngle[client] = 0;
+				i_SvRollAngle[client] = 1;
 			}
 
 			char RollAngleValue[4];
