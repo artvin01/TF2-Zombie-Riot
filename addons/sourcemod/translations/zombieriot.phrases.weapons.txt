@@ -174,7 +174,7 @@
 		"ru"		"Двустволка"
 		"de"		"Doppelläufige Schrotflinte"
 		"pt"		"Escopeta de Cano Duplo"
-		"nl"		"Dubbele loop's jachtgeweer
+		"nl"		"Dubbele loop's jachtgeweer"
 	}
 	"The Pompson 7000"
 	{
@@ -894,7 +894,7 @@
 		"ru"		"Рабочий-строитель"
 		"de"		"Bauarbeiter"
 		"pt"		"Trabalhador da Construção"
-		"nl"		"Bouwvakker""
+		"nl"		"Bouwvakker"
 	}
 	"Cosmic Repair Handling book"
 	{
