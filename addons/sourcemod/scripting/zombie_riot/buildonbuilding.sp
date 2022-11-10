@@ -107,7 +107,7 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 	i_DoNotTeleportThisPlayer = GetEntPropEnt(pThis, Prop_Send, "m_hBuilder");
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsClientInGame(client) && client != i_DoNotTeleportThisPlayer)
+		if(IsClientInGame(client) && client != i_DoNotTeleportThisPlayer && !b_WasTeleported[client])
 		{
 			b_WasTeleported[client] = true;
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[client]);
@@ -119,7 +119,7 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
 	{
 		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied) && baseboss_index_allied != 0)
+		if (IsValidEntity(baseboss_index_allied) && !b_WasTeleported[baseboss_index_allied])
 		{
 			b_WasTeleported[baseboss_index_allied] = true;
 			GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[baseboss_index_allied]);
