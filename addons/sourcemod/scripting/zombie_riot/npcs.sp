@@ -957,6 +957,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				else
 				{
+					i_Headshots[attacker] += 1; //Award 1 headshot point, only once.
 					DisplayCritAboveNpc(victim, attacker, false);
 					played_headshotsound_already_Case[attacker] = random_case;
 					played_headshotsound_already_Pitch[attacker] = pitch;
@@ -1361,6 +1362,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						int melee = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 						if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
 						{
+							i_Backstabs[attacker] += 1; //Give a backstab count!
 							float attack_speed;
 			
 							attack_speed = Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);

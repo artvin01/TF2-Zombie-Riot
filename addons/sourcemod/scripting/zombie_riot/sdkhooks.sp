@@ -65,8 +65,7 @@ public void SDKHook_ScoreThink(int entity)
 {
 	static int offset = -1;
 	static int offset_Damage = -1;
-//	static int offset_Healing = -1;
-//	static int offset_Kills = -1;
+	static int offset_damageblocked = -1;
 
 	if(offset == -1) 
 		offset = FindSendPropInfo("CTFPlayerResource", "m_iTotalScore");
@@ -74,27 +73,35 @@ public void SDKHook_ScoreThink(int entity)
 	if(offset_Damage == -1) 
 		offset_Damage = FindSendPropInfo("CTFPlayerResource", "m_iDamage");
 
-//	if(offset_Healing == -1) 
-//		offset_Healing = FindSendPropInfo("CTFPlayerResource", "m_iHealing"); //This is support
-
-
-//	if(offset_Kills == -1) 
-//		offset_Kills = FindSendPropInfo("CTFPlayer", "m_iKills");
+	if(offset_damageblocked == -1) 
+		offset_damageblocked = FindSendPropInfo("CTFPlayerResource", "m_iDamageBlocked");
 
 	SetEntDataArray(entity, offset, PlayerPoints, MaxClients + 1);
 	SetEntDataArray(entity, offset_Damage, i_Damage_dealt_in_total, MaxClients + 1);
-//	SetEntDataArray(entity, offset_Healing, Healing_done_in_total, MaxClients + 1);
-//	SetEntDataArray(entity, offset_damageboss, Healing_done_in_total, MaxClients + 1);
-/*	
+
+
+	int Conversion_ExtraPoints[MAXTF2PLAYERS];
+	for(int client=1; client<=MaxClients; client++)
+	{
+		Conversion_ExtraPoints[client] = i_ExtraPlayerPoints[client] / 50;
+	}
+	SetEntDataArray(entity, offset_damageblocked, Conversion_ExtraPoints, MaxClients + 1);
+
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && !b_IsPlayerABot[client])
 		{
-			PrintToConsole(client, "%i",Healing_done_in_total[client]);
-			SetEntData(client, offset_Kills, i_KillsMade[client]);
+			SetEntProp(client, Prop_Data, "m_iFrags", i_KillsMade[client]);
+			SetEntProp(client, Prop_Send, "m_iHealPoints", Healing_done_in_total[client]);
+			SetEntProp(client, Prop_Send, "m_iBackstabs", i_Backstabs[client]);
+			SetEntProp(client, Prop_Send, "m_iHeadshots", i_Headshots[client]);
+			SetEntProp(client, Prop_Send, "m_iDefenses", i_BarricadeHasBeenDamaged[client]);
+
+
+		//	m_iHealPoints
 		}
 	}	
-	*/
+	
 }
 
 void SDKHook_HookClient(int client)

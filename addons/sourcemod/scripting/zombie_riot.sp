@@ -247,6 +247,8 @@ float healing_cooldown[MAXTF2PLAYERS];
 float Damage_dealt_in_total[MAXTF2PLAYERS];
 int i_Damage_dealt_in_total[MAXTF2PLAYERS];
 int i_KillsMade[MAXTF2PLAYERS];
+int i_Backstabs[MAXTF2PLAYERS];
+int i_Headshots[MAXTF2PLAYERS];
 float f_TimeAfterSpawn[MAXTF2PLAYERS];
 
 int Healing_done_in_total[MAXTF2PLAYERS];
@@ -1902,6 +1904,8 @@ public void OnClientPutInServer(int client)
 	Healing_done_in_total[client] = 0;
 	i_BarricadeHasBeenDamaged[client] = 0;
 	i_KillsMade[client] = 0;
+	i_Backstabs[client] = 0;
+	i_Headshots[client] = 0;
 	Ammo_Count_Ready[client] = 0;
 	Armor_Charge[client] = 0;
 	Doing_Handle_Mount[client] = false;
@@ -4294,4 +4298,6 @@ public void MapStartResetAll()
 	Zero(f_ClientInvul);
 	f_DelaySpawnsForVariousReasons = 0.0;
 	Zero(i_KillsMade);
+	Zero(i_Backstabs);
+	Zero(i_Headshots);
 }
