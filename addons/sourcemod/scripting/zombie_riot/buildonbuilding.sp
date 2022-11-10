@@ -89,8 +89,6 @@ public void OnMapStart_Build_on_Build()
 	}
 }
 
-static float Get_old_pos_back[MAXENTITIES][3];
-static bool b_WasTeleported[MAXENTITIES];
 static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 static int i_DoNotTeleportThisPlayer;
 
@@ -107,9 +105,9 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 	i_DoNotTeleportThisPlayer = GetEntPropEnt(pThis, Prop_Send, "m_hBuilder");
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsClientInGame(client) && client != i_DoNotTeleportThisPlayer && !b_WasTeleported[client])
+		if(IsClientInGame(client) && client != i_DoNotTeleportThisPlayer && !Moved_Building[client])
 		{
-			b_WasTeleported[client] = true;
+			Moved_Building[client] = true;
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[client]);
 			SetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", OFF_THE_MAP);
 		}
@@ -119,9 +117,9 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
 	{
 		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied) && !b_WasTeleported[baseboss_index_allied])
+		if (IsValidEntity(baseboss_index_allied) && !Moved_Building[baseboss_index_allied])
 		{
-			b_WasTeleported[baseboss_index_allied] = true;
+			Moved_Building[baseboss_index_allied] = true;
 			GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[baseboss_index_allied]);
 			SDKCall_SetLocalOrigin(baseboss_index_allied, vec_origin);
 		}
@@ -135,17 +133,17 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
 	{
 		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied) && b_WasTeleported[baseboss_index_allied])
+		if (IsValidEntity(baseboss_index_allied) && Moved_Building[baseboss_index_allied])
 		{
-			b_WasTeleported[baseboss_index_allied] = false;
+			Moved_Building[baseboss_index_allied] = false;
 			SDKCall_SetLocalOrigin(baseboss_index_allied, Get_old_pos_back[baseboss_index_allied]);
 		}
 	}
 	for(int clientLoop=1; clientLoop<=MaxClients; clientLoop++)
 	{
-		if(IsClientInGame(clientLoop) && clientLoop != i_DoNotTeleportThisPlayer && b_WasTeleported[clientLoop])
+		if(IsClientInGame(clientLoop) && clientLoop != i_DoNotTeleportThisPlayer && Moved_Building[clientLoop])
 		{
-			b_WasTeleported[clientLoop] = false;
+			Moved_Building[clientLoop] = false;
 			SetEntPropVector(clientLoop, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[clientLoop]);
 		}
 	}

@@ -29,7 +29,6 @@ bool g_GottenAddressesForLagComp;
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
 
 
-static float Get_old_pos_back[MAXENTITIES][3];
 static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 static bool Dont_Move_Building;											//dont move buildings
 static bool Dont_Move_Allied_Npc;											//dont move buildings

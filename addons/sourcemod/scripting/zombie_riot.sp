@@ -300,6 +300,8 @@ float Increaced_Overall_damage_Low[MAXENTITIES];
 float Resistance_Overall_Low[MAXENTITIES];
 
 bool Moved_Building[MAXENTITIES] = {false,... };
+float Get_old_pos_back[MAXENTITIES][3];
+//This is for going through things via lag comp or other reasons to teleport things away.
 //bool Do_Not_Regen_Mana[MAXTF2PLAYERS];
 
 //float Resistance_for_building_High[MAXENTITIES];

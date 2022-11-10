@@ -971,7 +971,7 @@ public Action Building_Set_HP_Colour(Handle dashHud, int ref)
 			int green = 0;
 			int blue = 0;
 			
-		//	SetEntityRenderColor(entity, red, green, blue, 255);
+			SetEntityRenderColor(entity, red, green, blue, 255);
 			if(IsValidEntity(prop1))
 			{
 			//	SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
