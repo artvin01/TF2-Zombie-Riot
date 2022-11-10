@@ -582,7 +582,7 @@
 	{
 		"en" 		"Bob the Overgod of gods and destroyer of multiverses"
 		"ru" 		"Боб верховный бог богов и разрушитель мультивселенных"
-		"pt"		"Bob o Poderoso e destruir de multiversos"
+		"pt"		"Bob o todo poderoso destruidor de multiversos"
 		"nl"		"Bob the Oppergod van Goden en vernietigaar van Multiversums"
 	}
 	"Revived Combine DDT"
