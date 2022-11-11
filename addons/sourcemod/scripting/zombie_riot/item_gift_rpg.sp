@@ -203,7 +203,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 								int a = start;
 								do
 								{
-									if(StrEqual(buffer, MythicDrops[start], false))
+									if(StrEqual(buffer, MythicDrops[a], false))
 									{
 										int amount;
 										TextStore_GetInv(client, i, amount);
@@ -232,7 +232,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 								int a = start;
 								do
 								{
-									if(StrEqual(buffer, LegendDrops[start], false))
+									if(StrEqual(buffer, LegendDrops[a], false))
 									{
 										int amount;
 										TextStore_GetInv(client, i, amount);
@@ -261,7 +261,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 								int a = start;
 								do
 								{
-									if(StrEqual(buffer, RareDrops[start], false))
+									if(StrEqual(buffer, RareDrops[a], false))
 									{
 										int amount;
 										TextStore_GetInv(client, i, amount);
