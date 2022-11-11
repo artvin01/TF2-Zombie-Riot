@@ -66,7 +66,7 @@ public void SDKHook_ScoreThink(int entity)
 	static int offset = -1;
 	static int offset_Damage = -1;
 	static int offset_damageblocked = -1;
-	static int offset_bonus = -1;
+//	static int offset_bonus = -1;
 
 	if(offset == -1) 
 		offset = FindSendPropInfo("CTFPlayerResource", "m_iTotalScore");
@@ -77,13 +77,13 @@ public void SDKHook_ScoreThink(int entity)
 	if(offset_damageblocked == -1) 
 		offset_damageblocked = FindSendPropInfo("CTFPlayerResource", "m_iDamageBlocked");
 
-	if(offset_bonus == -1) 
-		offset_bonus = FindSendPropInfo("CTFPlayerResource", "m_iCurrencyCollected");
+//	if(offset_bonus == -1) 
+//		offset_bonus = FindSendPropInfo("CTFPlayerResource", "m_iCurrencyCollected");
 
 
 	SetEntDataArray(entity, offset, PlayerPoints, MaxClients + 1);
 	SetEntDataArray(entity, offset_Damage, i_Damage_dealt_in_total, MaxClients + 1);
-	SetEntDataArray(entity, offset_bonus, i_BarricadeHasBeenDamaged, MaxClients + 1);
+//	SetEntDataArray(entity, offset_bonus, i_BarricadeHasBeenDamaged, MaxClients + 1);
 
 
 	int Conversion_ExtraPoints[MAXTF2PLAYERS];
@@ -102,7 +102,7 @@ public void SDKHook_ScoreThink(int entity)
 			SetEntProp(client, Prop_Send, "m_iHealPoints", Healing_done_in_total[client]);
 			SetEntProp(client, Prop_Send, "m_iBackstabs", i_Backstabs[client]);
 			SetEntProp(client, Prop_Send, "m_iHeadshots", i_Headshots[client]);
-		//	SetEntProp(client, Prop_Send, "m_iDefenses", i_BarricadeHasBeenDamaged[client]);
+			SetEntProp(client, Prop_Send, "m_iDefenses", i_BarricadeHasBeenDamaged[client] / 1000);
 
 
 		//	m_iHealPoints

@@ -248,7 +248,9 @@ float Damage_dealt_in_total[MAXTF2PLAYERS];
 int i_Damage_dealt_in_total[MAXTF2PLAYERS];
 int i_KillsMade[MAXTF2PLAYERS];
 int i_Backstabs[MAXTF2PLAYERS];
+bool i_HasBeenBackstabbed[MAXENTITIES];
 int i_Headshots[MAXTF2PLAYERS];
+bool i_HasBeenHeadShotted[MAXENTITIES];
 float f_TimeAfterSpawn[MAXTF2PLAYERS];
 
 int Healing_done_in_total[MAXTF2PLAYERS];
@@ -4301,5 +4303,7 @@ public void MapStartResetAll()
 	f_DelaySpawnsForVariousReasons = 0.0;
 	Zero(i_KillsMade);
 	Zero(i_Backstabs);
+	Zero(i_HasBeenBackstabbed);
 	Zero(i_Headshots);
+	Zero(i_HasBeenHeadShotted);
 }

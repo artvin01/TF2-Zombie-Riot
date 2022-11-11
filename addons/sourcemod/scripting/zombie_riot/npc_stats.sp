@@ -4176,6 +4176,12 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		
 		if(client && IsClientInGame(client))
 		{
+			if(i_HasBeenHeadShotted[pThis])
+				i_Headshots[client] += 1; //Award 1 headshot point, only once.
+
+			if(i_HasBeenBackstabbed[pThis])
+				i_Backstabs[client] += 1; //Give a backstab count!
+
 			i_KillsMade[client] += 1;
 			Calculate_And_Display_hp(client, pThis, Damage[pThis], true, overkill);
 		}
