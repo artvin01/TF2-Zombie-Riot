@@ -3039,11 +3039,11 @@ public bool BuildingCustomCommand(int client)
 			}
 			else if((Village_Flags[client] & VILLAGE_040) && StrEqual(buffer, "zr_village"))
 			{
-				if(Ammo_Count_Ready[client] > 0)
+				//if(Ammo_Count_Ready[client] > 0)
 				{
 					if(f_BuildingIsNotReady[client] < GetGameTime())
 					{
-						Ammo_Count_Ready[client]--;
+						//Ammo_Count_Ready[client]--;
 						f_BuildingIsNotReady[client] = GetGameTime() + 60.0;
 						
 						if(Village_Flags[client] & VILLAGE_050)
@@ -3074,13 +3074,13 @@ public bool BuildingCustomCommand(int client)
 						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 					}
 				}
-				else
+				/*else
 				{
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
 					SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 					SetGlobalTransTarget(client);
 					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "No Ammo Supplies");
-				}
+				}*/
 			}
 		}
 		return true;
