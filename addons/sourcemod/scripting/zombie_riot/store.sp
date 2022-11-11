@@ -1535,7 +1535,7 @@ public void MenuPage(int client, int section)
 				int style = ITEMDRAW_DEFAULT;
 				if(info.ScrapCost > 0) //Make scrap cost preffered, dont bother with anything else.
 				{
-					if(info.ScrapCost > Scrap[client])
+					if((info.ScrapCost > (Scrap[client])) && !CvarInfiniteCash.BoolValue)
 					{
 						style = ITEMDRAW_DISABLED;
 					}
@@ -2289,7 +2289,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						item.GetItemInfo(level, info);
 						if(info.ScrapCost > 0) //Make scrap cost preffered, dont bother with anything else.
 						{
-							if(info.ScrapCost > Scrap[client])
+							if((info.ScrapCost > (Scrap[client])) && !CvarInfiniteCash.BoolValue)
 							{
 								return 0; //HOW THEY DO THIS? FUCK U
 							}
@@ -2300,7 +2300,10 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 
 							Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, client, info.UnboxRarity -1); //since they are one lower
 
-							Scrap[client] -= info.ScrapCost;
+							if(!CvarInfiniteCash.BoolValue)
+							{
+								Scrap[client] -= info.ScrapCost;
+							}
 							
 							MenuPage(client, index);
 
