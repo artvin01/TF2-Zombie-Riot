@@ -1286,6 +1286,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 							b_Doing_Buildingpickup_Handle[client] = true;
 							DataPack pack;
 							h_Pickup_Building[client] = CreateDataTimer(1.0, Building_Pickup_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+							pack.WriteCell(client);
 							pack.WriteCell(EntIndexToEntRef(entity));
 							pack.WriteCell(GetClientUserId(client));
 							f_DelayLookingAtHud[client] = GetGameTime() + 1.0;	
@@ -1301,12 +1302,14 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 {
 	pack.Reset();
+	int original_index = pack.ReadCell();
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	int client = GetClientOfUserId(pack.ReadCell());
 	
+	b_Doing_Buildingpickup_Handle[original_index] = false;
+
 	if(IsValidClient(client))
 	{
-		b_Doing_Buildingpickup_Handle[client] = false;
 		PrintCenterText(client, " ");
 		if (IsValidEntity(entity))
 		{

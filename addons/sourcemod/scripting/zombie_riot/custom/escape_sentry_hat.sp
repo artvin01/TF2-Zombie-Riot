@@ -133,6 +133,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
 								Mount_Building[client] = CreateDataTimer(1.0, Mount_Building_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+								pack.WriteCell(client);
 								pack.WriteCell(EntIndexToEntRef(entity));
 								pack.WriteCell(GetClientUserId(client));
 								SetGlobalTransTarget(client);
@@ -148,6 +149,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
 								Mount_Building[client] = CreateDataTimer(1.0, Mount_Building_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+								pack.WriteCell(client);
 								pack.WriteCell(EntIndexToEntRef(entity));
 								pack.WriteCell(GetClientUserId(client));
 								SetGlobalTransTarget(client);
@@ -163,6 +165,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
 								Mount_Building[client] = CreateDataTimer(1.0, Mount_Building_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+								pack.WriteCell(client);
 								pack.WriteCell(EntIndexToEntRef(entity));
 								pack.WriteCell(GetClientUserId(client));
 								SetGlobalTransTarget(client);
@@ -178,6 +181,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
 								Mount_Building[client] = CreateDataTimer(1.0, Mount_Building_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+								pack.WriteCell(client);
 								pack.WriteCell(EntIndexToEntRef(entity));
 								pack.WriteCell(GetClientUserId(client));
 								SetGlobalTransTarget(client);
@@ -193,6 +197,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
 								Mount_Building[client] = CreateDataTimer(1.0, Mount_Building_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+								pack.WriteCell(client);
 								pack.WriteCell(EntIndexToEntRef(entity));
 								pack.WriteCell(GetClientUserId(client));
 								SetGlobalTransTarget(client);
@@ -208,6 +213,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
 								Mount_Building[client] = CreateDataTimer(1.0, Mount_Building_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+								pack.WriteCell(client);
 								pack.WriteCell(EntIndexToEntRef(entity));
 								pack.WriteCell(GetClientUserId(client));
 								SetGlobalTransTarget(client);
@@ -223,6 +229,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
 								Mount_Building[client] = CreateDataTimer(1.0, Mount_Building_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+								pack.WriteCell(client);
 								pack.WriteCell(EntIndexToEntRef(entity));
 								pack.WriteCell(GetClientUserId(client));
 								SetGlobalTransTarget(client);
@@ -238,6 +245,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
 								Mount_Building[client] = CreateDataTimer(1.0, Mount_Building_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+								pack.WriteCell(client);
 								pack.WriteCell(EntIndexToEntRef(entity));
 								pack.WriteCell(GetClientUserId(client));
 								SetGlobalTransTarget(client);
@@ -266,12 +274,14 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 public Action Mount_Building_Timer(Handle sentryHud, DataPack pack)
 {
 	pack.Reset();
+	int original_index = pack.ReadCell();
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	int client = GetClientOfUserId(pack.ReadCell());
 	
+	Doing_Handle_Mount[original_index] = false;
+
 	if(IsValidClient(client))
 	{
-		Doing_Handle_Mount[client] = false;
 		PrintCenterText(client, " ");
 		if (IsValidEntity(entity))
 		{

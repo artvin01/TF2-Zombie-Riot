@@ -6005,6 +6005,7 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 			if (f_CooldownForHurtParticle[victim] < GetGameTime())
 			{
 				f_CooldownForHurtParticle[victim] = GetGameTime() + 0.1;
+
 				if(npc.m_iBleedType == 1)
 				{
 					TE_ParticleInt(g_particleImpactFlesh, damagePosition);
@@ -7428,7 +7429,6 @@ void TE_BloodSprite(float Origin[3],float Direction[3], int red, int green, int 
 	
 //	TE_SendToAll();
 }
-
 
 stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
 							float fStartWidth=NORMAL_ZOMBIE_VOLUME, float fEndWidth=NORMAL_ZOMBIE_VOLUME, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt")
