@@ -19,7 +19,7 @@ public void Weapon_Magic_Restore(int client, int weapon, const char[] classname,
 			CurrentAmmo[client][Ammo_Potion_Supply] = GetAmmo(client, Ammo_Potion_Supply);
 			Handle_on[client] = true;
 			
-			float max_mana_temp = 600.0;
+			float max_mana_temp = 400.0;
 			f_TempCooldownForVisualManaPotions[client] = GetGameTime() + 60.0;
 			
 

@@ -40,7 +40,6 @@ void ConVar_PluginStart()
 	ConVar_Add("sv_parallel_sendsnapshot", "0.0");
 	ConVar_Add("sv_maxunlag", "1.0");	
 	ConVar_Add("tf_scout_air_dash_count", "0");
-//	ConVar_Add("sv_cheats", "1.0"); //just enable it at all times!
 	
 	ConVar_Add("nb_blind", "1.0"); //for bot
 	ConVar_Add("tf_bot_quota_mode", "normal"); //for bot
@@ -53,12 +52,16 @@ void ConVar_PluginStart()
 	ConVar_Add("nb_update_framelimit", "30"); // default:15
 	ConVar_Add("nb_update_frequency", "0.1"); // default:0
 	ConVar_Add("nb_last_area_update_tolerance", "2.0"); // default:4
+	ConVar_Add("sv_rollspeed", "2400.0"); // default: idk
+	ConVar_Add("tf_clamp_back_speed", "0.7"); // default: 0.9 Ty to miku for showing me
+	ConVar_Add("sv_visiblemaxplayers", MAX_PLAYER_COUNT_STRING);
+//	ConVar_Add("tf_bot_quota", ); dooesnt do anything anyways.
 	
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
 	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
 	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "1", "No Panzer will spawn or anything alike", FCVAR_DONTRECORD);
-	CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "6", "The maximum amount of blue bots allowed for the killfeed");
+	CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "14", "The maximum amount of blue bots allowed for the killfeed and more");
 	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
 	zr_voteconfig = CreateConVar("zr_voteconfig", "vote", "Vote config zr/ .cfg already included");
 	zr_tagblacklist = CreateConVar("zr_tagblacklist", "private", "Tags to blacklist from weapons config");

@@ -566,14 +566,7 @@ public void BobTheGod_ClotThink(int iNPC)
 					vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
-					if(CurrentPlayers == 1)
-					{
-						FireBullet(npc.index, npc.m_iWearable2, npc_pos, vecDir, 21.0, 9000.0, DMG_BULLET, "bullet_tracer01_red", _, _ , "muzzle");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.m_iWearable2, npc_pos, vecDir, 12.0, 9000.0, DMG_BULLET, "bullet_tracer01_red", _, _ , "muzzle");
-					}
+					FireBullet(npc.index, npc.m_iWearable2, npc_pos, vecDir, 12.0, 9000.0, DMG_BULLET, "bullet_tracer01_red", _, _ , "muzzle");
 					npc.PlayRangedSound();
 					npc.m_bReloaded = false;
 				}
@@ -642,14 +635,7 @@ public void BobTheGod_ClotThink(int iNPC)
 						NormalizeVector(vecDir, vecDir);
 						
 						npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-						if(CurrentPlayers == 1)
-						{
-							FireBullet(npc.index, npc.index, npc_pos, vecDir, 250.0, 9999.0, DMG_BULLET, "bullet_tracer02_blue", _);
-						}
-						else
-						{
-							FireBullet(npc.index, npc.index, npc_pos, vecDir, 125.0, 9999.0, DMG_BULLET, "bullet_tracer02_blue", _);
-						}
+						FireBullet(npc.index, npc.index, npc_pos, vecDir, 125.0, 9999.0, DMG_BULLET, "bullet_tracer02_blue", _);
 					}
 				}
 				if(npc.m_flNextMeleeAttack < GetGameTime() && flDistanceToTarget < 100 && !npc.m_fbRangedSpecialOn || (npc.m_flAttackHappenswillhappen && !npc.m_fbRangedSpecialOn))
@@ -684,14 +670,8 @@ public void BobTheGod_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									if(CurrentPlayers == 1)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 110.0, DMG_CLUB, -1, _, vecHit);
-									}
-									else
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
-									}
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
+
 									// Hit particle
 									
 									
@@ -1794,10 +1774,6 @@ public Action Bob_player_killed(Event hEvent, const char[] sEvName, bool bDontBr
 
 public Action BobTheGod_Owner_Hurt(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	//Friendly fire
-	if(view_as<CClotBody>(attacker).GetTeam() == view_as<CClotBody>(victim).GetTeam())
-		return Plugin_Continue;
-		
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;

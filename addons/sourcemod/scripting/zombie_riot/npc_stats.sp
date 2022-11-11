@@ -1570,8 +1570,6 @@ public void OnMapStart_NPC_Base()
 	SniperMain_OnMapStart_NPC();
 	DemoMain_OnMapStart_NPC();
 	MedicMain_OnMapStart_NPC();
-	Donnerkrieg_OnMapStart_NPC();
-	Schwertkrieg_OnMapStart_NPC();
 	PyroGiant_OnMapStart_NPC();
 	CombineDeutsch_OnMapStart_NPC();
 	Alt_CombineDeutsch_OnMapStart_NPC();
@@ -1676,6 +1674,9 @@ public void OnMapStart_NPC_Base()
 	Mecha_HeavyGiant_OnMapStart_NPC();
 	Mecha_PyroGiant_OnMapStart_NPC();
 	Mecha_Scout_OnMapStart_NPC();
+	
+	Donnerkrieg_OnMapStart_NPC();
+	Schwertkrieg_OnMapStart_NPC();
 }
 
 
@@ -4175,6 +4176,7 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		
 		if(client && IsClientInGame(client))
 		{
+			i_KillsMade[client] += 1;
 			Calculate_And_Display_hp(client, pThis, Damage[pThis], true, overkill);
 		}
 		
@@ -5470,7 +5472,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			if(searcher_team != 2)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+				if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 				{	
 					if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)) && !IgnoreBuildings)
 					{
@@ -6003,6 +6005,7 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 			if (f_CooldownForHurtParticle[victim] < GetGameTime())
 			{
 				f_CooldownForHurtParticle[victim] = GetGameTime() + 0.1;
+
 				if(npc.m_iBleedType == 1)
 				{
 					TE_ParticleInt(g_particleImpactFlesh, damagePosition);
@@ -7427,7 +7430,6 @@ void TE_BloodSprite(float Origin[3],float Direction[3], int red, int green, int 
 //	TE_SendToAll();
 }
 
-
 stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
 							float fStartWidth=NORMAL_ZOMBIE_VOLUME, float fEndWidth=NORMAL_ZOMBIE_VOLUME, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt")
 {
@@ -7745,22 +7747,33 @@ public void ArrowStartTouch(int arrow, int entity)
 {
 	if(entity > 0 && entity < MAXENTITIES)
 	{
+		int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
 		SDKHooks_TakeDamage(entity, arrow, arrow, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
 		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
-		if(IsValidEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow])))
+		if(IsValidEntity(arrow_particle))
 		{
-			RemoveEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow]));
+			DispatchKeyValue(arrow_particle, "parentname", "none");
+			AcceptEntityInput(arrow_particle, "ClearParent");
+			float f3_PositionTemp[3];
+			GetEntPropVector(arrow_particle, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+			TeleportEntity(arrow_particle, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
 	else
 	{
+		int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
 		EmitSoundToAll(g_ArrowHitSoundMiss[GetRandomInt(0, sizeof(g_ArrowHitSoundMiss) - 1)], arrow, _, 80, _, 0.8, 100);
-		if(IsValidEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow])))
+		if(IsValidEntity(arrow_particle))
 		{
-			RemoveEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow]));
+			DispatchKeyValue(arrow_particle, "parentname", "none");
+			AcceptEntityInput(arrow_particle, "ClearParent");
+			float f3_PositionTemp[3];
+			GetEntPropVector(arrow_particle, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+			TeleportEntity(arrow_particle, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
-//	PrintToChatAll("touched");
 	RemoveEntity(arrow);
 }
 
@@ -7768,9 +7781,15 @@ public MRESReturn Arrow_DHook_RocketExplodePre(int arrow)
 {
 //	PrintToChatAll("boom!");
 	RemoveEntity(arrow);
-	if(IsValidEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow])))
+	int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
+	if(IsValidEntity(arrow_particle))
 	{
-		RemoveEntity(EntRefToEntIndex(f_ArrowTrailParticle[arrow]));
+		DispatchKeyValue(arrow_particle, "parentname", "none");
+		AcceptEntityInput(arrow_particle, "ClearParent");
+		float f3_PositionTemp[3];
+		GetEntPropVector(arrow_particle, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+		TeleportEntity(arrow_particle, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
 	}
 	return MRES_Supercede;
 }

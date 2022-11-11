@@ -39,6 +39,10 @@
 #define ZR_MAX_BREAKBLES 32
 #define ZR_MAX_SPAWNERS 32 //cant ever have more then 32, if your map does, then what thed fuck are you doing ?
 
+#define MAX_PLAYER_COUNT			12
+#define MAX_PLAYER_COUNT_STRING		"12"
+//cant do more then 12, more then 12 cause memory isssues because that many npcs can just cause that much lag
+
 
 //#pragma dynamic    131072
 //Allah This plugin has so much we need to do this.
@@ -188,7 +192,7 @@ ConVar zr_tagblacklist;
 ConVar zr_tagwhitelist;
 ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
-ConVar tf_bot_quota;
+//ConVar tf_bot_quota;
 
 int CurrentGame;
 bool b_GameOnGoing = true;
@@ -214,9 +218,13 @@ int PlayersAliveScaling;
 int GlobalIntencity;
 ConVar cvarTimeScale;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
+//ConVar CvarSvRollspeed; // sv_rollspeed 
+ConVar CvarSvRollagle; // sv_rollangle
+ConVar CvarTfMMMode; // tf_mm_servermode
 Handle sv_cheats;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie CookieXP;
+Cookie CookieScrap;
 Cookie CookiePlayStreak;
 Cookie Niko_Cookies;
 Cookie CookieCache;
@@ -229,6 +237,7 @@ char char_MusicString2[256];
 int i_MusicLength2;
 //custom wave music.
 
+float f_DelaySpawnsForVariousReasons;
 int CurrentRound;
 int CurrentWave = -1;
 int StartCash;
@@ -236,6 +245,10 @@ float RoundStartTime;
 char WhatDifficultySetting[64];
 float healing_cooldown[MAXTF2PLAYERS];
 float Damage_dealt_in_total[MAXTF2PLAYERS];
+int i_Damage_dealt_in_total[MAXTF2PLAYERS];
+int i_KillsMade[MAXTF2PLAYERS];
+int i_Backstabs[MAXTF2PLAYERS];
+int i_Headshots[MAXTF2PLAYERS];
 float f_TimeAfterSpawn[MAXTF2PLAYERS];
 
 int Healing_done_in_total[MAXTF2PLAYERS];
@@ -273,6 +286,7 @@ int CashSpentTotal[MAXTF2PLAYERS];
 int CashRecievedNonWave[MAXTF2PLAYERS];
 int Level[MAXTF2PLAYERS];
 int XP[MAXTF2PLAYERS];
+int Scrap[MAXTF2PLAYERS];
 int Ammo_Count_Ready[MAXTF2PLAYERS];
 //float Armor_Ready[MAXTF2PLAYERS];
 float Increaced_Sentry_damage_Low[MAXENTITIES];
@@ -286,6 +300,8 @@ float Increaced_Overall_damage_Low[MAXENTITIES];
 float Resistance_Overall_Low[MAXENTITIES];
 
 bool Moved_Building[MAXENTITIES] = {false,... };
+float Get_old_pos_back[MAXENTITIES][3];
+//This is for going through things via lag comp or other reasons to teleport things away.
 //bool Do_Not_Regen_Mana[MAXTF2PLAYERS];
 
 //float Resistance_for_building_High[MAXENTITIES];
@@ -332,6 +348,8 @@ int Animation_Index[MAXTF2PLAYERS];
 bool b_IsPlayerNiko[MAXTF2PLAYERS];
 
 float delay_hud[MAXTF2PLAYERS];
+float f_DelayBuildNotif[MAXTF2PLAYERS];
+float f_ClientInvul[MAXTF2PLAYERS]; //Extra ontop of uber if they somehow lose it to some god damn reason.
 
 int Current_Mana[MAXTF2PLAYERS];
 float Mana_Regen_Delay[MAXTF2PLAYERS];
@@ -610,6 +628,8 @@ public const char PerkNames_Recieved[][] =
 	"Widows Wine Recieved",
 };
 
+#define ITSTILIVES 666
+
 enum
 {
 	NOTHING 						= 0,	
@@ -763,10 +783,7 @@ enum
 	ALT_MECHA_PYROGIANT			= 133,
 	ALT_MECHA_SCOUT				= 134,
 	ALT_DONNERKRIEG				= 135,
-	ALT_SCHWERTKRIEG			= 136,
-	
-	
-	ITSTILIVES	= 137,
+	ALT_SCHWERTKRIEG			= 136
 }
 
 
@@ -919,8 +936,7 @@ public const char NPC_Names[][] =
 	"Mecha Giant Pyro",
 	"Mecha Scout",
 	"Donnerkrieg",
-	"Schwertkrieg",
-	"Bob the Overgod of gods and destroyer of multiverses",
+	"Schwertkrieg"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -1070,8 +1086,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_mecha_scout",
 	"npc_alt_mecha_scout",
 	"npc_alt_donnerkrieg",
-	"npc_alt_schwertkrieg",
-	""
+	"npc_alt_schwertkrieg"
 };
 
 #include "zombie_riot/stocks_override.sp"
@@ -1253,6 +1268,7 @@ public void OnPluginStart()
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
 	RegAdminCmd("sm_tutorial_test", Command_TestTutorial, ADMFLAG_ROOT, "Test The Tutorial");
 	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");
+	RegAdminCmd("sm_play_viewmodel_anim", Command_PlayViewmodelAnim, ADMFLAG_ROOT, "Testing viewmodel animation manually");
 	RegConsoleCmd("sm_make_niko", Command_MakeNiko, "Turn This player into niko");
 	
 	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_GENERIC, "BRB GONNA MURDER MY MOM'S DISHES");
@@ -1269,11 +1285,20 @@ public void OnPluginStart()
 		
 	sv_cheats = FindConVar("sv_cheats");
 	cvarTimeScale = FindConVar("host_timescale");
-	tf_bot_quota = FindConVar("tf_bot_quota");
+//	tf_bot_quota = FindConVar("tf_bot_quota");
 
 	CvarMpSolidObjects = FindConVar("tf_solidobjects");
 	if(CvarMpSolidObjects)
 		CvarMpSolidObjects.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+
+	CvarSvRollagle = FindConVar("sv_rollangle");
+	if(CvarSvRollagle)
+		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+
+	CvarTfMMMode = FindConVar("tf_mm_servermode");
+	if(CvarTfMMMode)
+		CvarTfMMMode.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+
 	
 	ConVar cvar = FindConVar("tf_bot_count");
 	cvar.Flags &= ~FCVAR_NOTIFY;
@@ -1285,6 +1310,7 @@ public void OnPluginStart()
 	CookieCache = new Cookie("zr_lastgame", "The last game saved data is from", CookieAccess_Protected);
 	Niko_Cookies = new Cookie("zr_niko", "Are you a niko", CookieAccess_Protected);
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
+	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
 	
 	HookEntityOutput("logic_relay", "OnTrigger", OnRelayTrigger);
@@ -1679,7 +1705,44 @@ public Action Command_MakeNiko(int client, int args)
 	}
 	return Plugin_Handled;
 }
+public Action Command_PlayViewmodelAnim(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_play_viewmodel_anim <target> <index>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[12];
+	GetCmdArg(2, buf, sizeof(buf));
+	int anim_index = StringToInt(buf); 
 
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		int viewmodel = GetEntPropEnt(targets[target], Prop_Send, "m_hViewModel");
+		if(viewmodel>MaxClients && IsValidEntity(viewmodel)) //For some reason it plays the horn anim again, just set it to idle!
+		{
+			int animation = anim_index;
+			SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);
+		}
+	}
+	
+	return Plugin_Handled;
+}
 public Action Command_GiveDialogBox(int client, int args)
 {
 	//What are you.
@@ -1842,6 +1905,9 @@ public void OnClientPutInServer(int client)
 	CashRecievedNonWave[client] = 0;
 	Healing_done_in_total[client] = 0;
 	i_BarricadeHasBeenDamaged[client] = 0;
+	i_KillsMade[client] = 0;
+	i_Backstabs[client] = 0;
+	i_Headshots[client] = 0;
 	Ammo_Count_Ready[client] = 0;
 	Armor_Charge[client] = 0;
 	Doing_Handle_Mount[client] = false;
@@ -1888,6 +1954,14 @@ public void OnClientCookiesCached(int client)
 	CookieXP.Get(client, buffer, sizeof(buffer));
 	XP[client] = StringToInt(buffer);
 	Level[client] = XpToLevel(XP[client]);
+
+	CookieScrap.Get(client, buffer, sizeof(buffer));
+	Scrap[client] = StringToInt(buffer);
+	
+	if(Scrap[client] < 0)
+	{
+		Scrap[client] = 0;
+	}
 	
 	char buffer_niko[12];
 	Niko_Cookies.Get(client, buffer_niko, sizeof(buffer_niko));
@@ -1939,6 +2013,15 @@ public void OnClientDisconnect(int client)
 		IntToString(niko_int, buffer_niko, sizeof(buffer_niko));
 		Niko_Cookies.Set(client, buffer_niko);
 	}
+	if(Scrap[client] > -1)
+	{
+		char buffer[12];
+		IntToString(Scrap[client], buffer, sizeof(buffer));
+		CookieScrap.Set(client, buffer);
+
+
+	}
+	Scrap[client] = -1;
 	XP[client] = 0;
 }
 
@@ -2267,6 +2350,12 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 		{
 			DestroyDispenser(client);
 		}
+		else
+		{
+			Building_Mounted[client] = 0;
+			Player_Mounting_Building[client] = false;
+			g_CarriedDispenser[client] = INVALID_ENT_REFERENCE; //Just remove entirely, just make sure.
+		}
 	}
 
 	//Incase they die, do suit!
@@ -2505,7 +2594,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	CheckIfAloneOnServer();
 	
 	bool alive;
-	LastMann = true;
+	LastMann = !Waves_InSetup();
 	int players = CurrentPlayers;
 	CurrentPlayers = 0;
 	GlobalIntencity = Waves_GetIntencity();
@@ -3133,6 +3222,36 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 	Medikit_healing(client, buttons);
 }
 
+
+//Revival raid spam
+public void SetHealthAfterReviveRaid(int client)
+{
+	if(IsValidClient(client))
+	{	
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+		RequestFrame(SetHealthAfterReviveRaidAgain, client);	
+	}
+}
+
+public void SetHealthAfterReviveRaidAgain(int client)
+{
+	if(IsValidClient(client))
+	{	
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+		RequestFrame(SetHealthAfterReviveRaidAgainAgain, client);	
+	}
+}
+
+public void SetHealthAfterReviveRaidAgainAgain(int client)
+{
+	if(IsValidClient(client))
+	{	
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+	}
+}
+//Revival raid spam
+
+//Set hp spam after normal revive
 public void SetHealthAfterRevive(int client)
 {
 	if(IsValidClient(client))
@@ -3140,7 +3259,6 @@ public void SetHealthAfterRevive(int client)
 		RequestFrame(SetHealthAfterReviveAgain, client);	
 	}
 }
-
 
 public void SetHealthAfterReviveAgain(int client)
 {
@@ -3173,6 +3291,9 @@ public void SetHealthAfterReviveAgainAgain(int client) //For some reason i have 
 		}
 	}
 }
+
+//Set hp spam after normal revive
+
 
 public void Update_Ammo(int  client)
 {
@@ -3925,11 +4046,7 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {
-	if(condition == TFCond_UberchargedCanteen)
-	{
-		TF2_AddCondition(client, TFCond_UberchargedCanteen, 3.0);
-	}
-	else if(condition == TFCond_Zoomed && thirdperson[client] && IsPlayerAlive(client))
+	if(condition == TFCond_Zoomed && thirdperson[client] && IsPlayerAlive(client))
 	{
 		SetVariantInt(0);
 		AcceptEntityInput(client, "SetForcedTauntCam");
@@ -4179,4 +4296,10 @@ public void MapStartResetAll()
 	SniperMonkey_ClearAll();
 	Weapon_Cspyknife_ClearAll();
 	Zero(f_TutorialUpdateStep);
+	Zero(f_DelayBuildNotif);
+	Zero(f_ClientInvul);
+	f_DelaySpawnsForVariousReasons = 0.0;
+	Zero(i_KillsMade);
+	Zero(i_Backstabs);
+	Zero(i_Headshots);
 }

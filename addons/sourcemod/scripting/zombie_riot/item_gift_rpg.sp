@@ -1,7 +1,7 @@
 
 #define GIFT_MODEL "models/items/tf_gift.mdl"
 
-#define GIFT_CHANCE 0.0025 //Extra rare cus alot of zobies
+#define GIFT_CHANCE 0.35 //Extra rare cus alot of zobies
 
 #define SOUND_BEEP			"buttons/button17.wav"
 
@@ -106,7 +106,7 @@ public void Gift_DropChance(int entity)
 	{
 		if(IsValidEntity(entity))
 		{
-			if(GetRandomFloat(0.0, 2.0) < ((GIFT_CHANCE / (MultiGlobal + 0.000001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually)) //Never let it divide by 0
+			if(GetRandomFloat(0.0, 200.0) < ((GIFT_CHANCE / (MultiGlobal + 0.0001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually)) //Never let it divide by 0
 			{
 				f_IncreaceChanceManually = 1.0;
 				float VecOrigin[3];
@@ -122,7 +122,7 @@ public void Gift_DropChance(int entity)
 			}	
 			else
 			{
-				f_IncreaceChanceManually += 0.00015;
+				f_IncreaceChanceManually += 0.0015;
 			}
 		}
 	}
@@ -130,16 +130,16 @@ public void Gift_DropChance(int entity)
 
 static int RollRandom()
 {
-	if(!(GetURandomInt() % 250))
+	if(!(GetURandomInt() % 150))
 		return Rarity_Mythic;
 	
-	if(!(GetURandomInt() % 75))
+	if(!(GetURandomInt() % 35))
 		return Rarity_Legend;
 	
-	if(!(GetURandomInt() % 20))
+	if(!(GetURandomInt() % 15))
 		return Rarity_Rare;
 	
-	if(!(GetURandomInt() % 5))
+	if(!(GetURandomInt() % 3))
 		return Rarity_Uncommon;
 	
 	return Rarity_Common;
@@ -153,6 +153,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	int glow = EntRefToEntIndex(pack.ReadCell());
 	int client = GetClientOfUserId(pack.ReadCell());
+	int ScrapToGive = 0;
 	if(IsValidEntity(entity) && entity>MaxClients)
 	{
 		if(IsValidClient(client))
@@ -194,6 +195,10 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 							
 							if(length && i_RarityType[entity] >= Rarity_Mythic)
 							{
+								if(ScrapToGive == 0)
+								{
+									ScrapToGive = 6;
+								}
 								int start = (rand % sizeof(MythicDrops));
 								int a = start;
 								do
@@ -219,6 +224,10 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 							
 							if(length && i_RarityType[entity] >= Rarity_Legend)
 							{
+								if(ScrapToGive == 0)
+								{
+									ScrapToGive = 5;
+								}
 								int start = (rand % sizeof(LegendDrops));
 								int a = start;
 								do
@@ -244,6 +253,10 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 							
 							if(length && i_RarityType[entity] >= Rarity_Rare)
 							{
+								if(ScrapToGive == 0)
+								{
+									ScrapToGive = 4;
+								}
 								int start = (rand % sizeof(RareDrops));
 								int a = start;
 								do
@@ -269,6 +282,10 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 							
 							if(length && i_RarityType[entity] >= Rarity_Uncommon)
 							{
+								if(ScrapToGive == 0)
+								{
+									ScrapToGive = 2;
+								}
 								int start = (rand % sizeof(UncommonDrops));
 								int a = start;
 								do
@@ -294,6 +311,10 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 							
 							if(length && i_RarityType[entity] >= Rarity_Common)
 							{
+								if(ScrapToGive == 0)
+								{
+									ScrapToGive = 1;
+								}
 								int start = (rand % sizeof(CommonDrops));
 								int a = start;
 								do
@@ -319,7 +340,10 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 						}
 						
 						if(length)
-							PrintToChat(client, "You already have everything in this rarity");
+						{
+							PrintToChat(client, "You already have everything in this rarity, but where given %i Scrap as a compensation.", ScrapToGive);
+							Scrap[client] += ScrapToGive;
+						}
 					}
 					RemoveEntity(entity);
 					return Plugin_Stop;

@@ -5,66 +5,77 @@
 		"en" 		"The True Fusion Warrior has arrived."
 		"ru" 		"Истинный воин фьюжна прибыл."
 		"pt"		"O Verdadeiro Guerreiro da Fusão chegou."
+		"nl"		"De Ware Fuziekrijger is gearriveerd"
 	}
 	"Blitzkrieg Spawn"
 	{
 		"en" 		"Blitzkrieg has arrived."
 		"ru" 		"Блицкриг прибыл."
 		"pt"		"Blitzkreig chegou."
+		"nl"		"Blitzkrieg is gearriveerd"
 	}
 	"You have alerted the horde..."
 	{
 		"en" 		"You have alerted the horde..."
 		"ru" 		"Вы привлекли орду..."
 		"pt"		"Você alertou a horda!..."
+		"nl"		"De horde heeft je gehoord..."
 	}
 	"Destruction echoes through a nearby space..."
 	{
 		"en" 		"Destruction echoes through a nearby space..."
 		"ru" 		"Эхо разрушений разносится по близлежащему пространству..."
 		"pt"		"Destruição ecoa através de um espaço próximo..."
+		"nl"		"Vernietiging echo's door een diepe ruimte..."
 	}
 	"A massive foe has entered this field..."
 	{
 		"en" 		"A massive foe has entered this field..."
 		"ru" 		"На это поле вышел огромный враг..."
 		"pt"		"Um enorme inimigo se aproxima..."
+		"nl"		"Een gigantische tegenstander heeft zich tot het veld begeven..."
 	}
 	"You can discern faint metalic screams not like the others..."
 	{
 		"en" 		"You can discern faint metalic screams not like the others..."
 		"ru" 		"Вы различаете слабые металлические крики, не похожие на другие..."
 		"pt"		"Você pode discernir fracos gritos metálicos não como os outros..."
+		"nl"		"Je kunt doffe metalen schreeuwen horen ongelijk de anderen..."
 	}
 	"Distant low rumbles fill the air space..."
 	{
 		"en" 		"Distant low rumbles fill the air space..."
 		"ru" 		"Отдалённый низкий гул наполняет воздушное пространство..."
 		"pt"		"Ruídos baixos distantes preenchem o espaço aéreo..."
+		"nl"		"Lage, afstandelijke rommelingen vullen het luchtruimte..."
 	}
 	"Die SS Division hat einer ihrer Infizierten soldaten Gesendet..."
 	{
 		"en" 		"Die SS Division hat einer ihrer Infizierten soldaten Gesendet..."
 		"ru" 		"Дивизия СС: Sie schickten einen ihrer Infizierten soldaten..."
 		"pt"		"Divisão de morte SS hat einer ihrer Infizierten soldaten Gesendet..."
+		"nl"		"De SS Divisie heeft besmette soldaten gestuurd..."
 	}
 	"Faint rattling can be heard, and its approaching at a fast pace..."
 	{
 		"en" 		"Faint rattling can be heard, and its approaching at a fast pace..."
 		"ru" 		"Слышен слабый скрежет, и он приближается с большой скоростью..."
 		"pt"		"Barulho fraco pode ser ouvido, e sua aproximação em um ritmo rápido..."
+		"nl"		"Doffe ratelingen kunnen gehoord worden, en ze komen snel naar je toe..."
 	}
 	"Something rapidly rams through hordes in your direction..."
 	{
 		"en" 		"Something rapidly rams through hordes in your direction..."
 		"ru" 		"Что-то стремительно проносится сквозь орды в вашем направлении..."
 		"pt"		"Algo rapidamente atravessa hordas em sua direção..."
+		"nl"		"Er is iets snel door de hordes aan het rammen in uw richting..."
 	}
 	"Common means might not stop this agile enemy..."
 	{
 		"en" 		"Common means might not stop this agile enemy..."
 		"ru" 		"Обычные средства могут не остановить этого проворного врага..."
 		"pt"		"Meios comuns podem não parar esse inimigo ágil..."
+		"nl"		"Gewoon betekend niet dat macht deze lenige vijand gaat stoppen..."
 	}
 
 }

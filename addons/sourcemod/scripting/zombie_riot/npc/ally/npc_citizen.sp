@@ -871,9 +871,14 @@ methodmap Citizen < CClotBody
 		}
 		public set(float value)
 		{
-			fl_Speed[this.index] = value;
 			if(!this.m_bSeakingGeneric && (this.m_iHasPerk == Cit_Pistol || this.m_iHasPerk == Cit_Shotgun || this.m_iHasPerk == Cit_RPG))
-				fl_Speed[this.index] *= 1.1;
+			{
+				fl_Speed[this.index] = value * 1.1;
+			}
+			else
+			{
+				fl_Speed[this.index] = value;
+			}
 		}
 	}
 	property float m_flReloadDelay
@@ -1441,7 +1446,7 @@ void Citizen_SetupStart()
 					}
 				}
 				
-				if(Store_FindBarneyAGun(npc.index, npc.m_iGunValue, RoundToFloor(float(CurrentCash) * GetRandomFloat(0.35, 0.45)), view_as<bool>(found)))
+				if(Store_FindBarneyAGun(npc.index, npc.m_iGunValue, RoundToFloor(float(CurrentCash) * GetRandomFloat(0.26, 0.34)), view_as<bool>(found)))
 				{
 					npc.m_iTargetAlly = found;
 					npc.m_bSeakingGeneric = true;
@@ -2771,7 +2776,7 @@ public Action Citizen_ClotDamaged(int victim, int &attacker, int &inflictor, flo
 	if(npc.m_bDowned || (attacker > 0 && GetEntProp(victim, Prop_Send, "m_iTeamNum") == GetEntProp(attacker, Prop_Send, "m_iTeamNum")))
 		return Plugin_Handled;
 	
-	damage /= (3.0 + float((Waves_GetRound() + 1) / 15 * 2));
+	damage /= (2.0 + float((Waves_GetRound() + 1) / 15 * 2));
 	if(npc.m_iHasPerk == Cit_Melee)
 		damage *= 0.9;
 	

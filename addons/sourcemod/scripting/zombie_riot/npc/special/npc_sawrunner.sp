@@ -39,8 +39,8 @@ void SawRunner_OnMapStart_NPC()
 	PrecacheModel("models/zombie_riot/cof/sawrunner_2.mdl");
 }
 
-static float fl_PlayIdleAlertSound[MAXENTITIES];
-static float fl_PlayMusicSound[MAXENTITIES];
+static int i_PlayIdleAlertSound[MAXENTITIES];
+static int i_PlayMusicSound[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 
 static char[] GetSawRunnerHealth()
@@ -74,15 +74,15 @@ static char[] GetSawRunnerHealth()
 methodmap SawRunner < CClotBody
 {
 	
-	property float m_flPlayIdleAlertSound
+	property int m_iPlayIdleAlertSound
 	{
-		public get()							{ return fl_PlayIdleAlertSound[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_PlayIdleAlertSound[this.index] = TempValueForProperty; }
+		public get()							{ return i_PlayIdleAlertSound[this.index]; }
+		public set(int TempValueForProperty) 	{ i_PlayIdleAlertSound[this.index] = TempValueForProperty; }
 	}
-	property float m_flPlayMusicSound
+	property int m_iPlayMusicSound
 	{
-		public get()							{ return fl_PlayMusicSound[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_PlayMusicSound[this.index] = TempValueForProperty; }
+		public get()							{ return i_PlayMusicSound[this.index]; }
+		public set(int TempValueForProperty) 	{ i_PlayMusicSound[this.index] = TempValueForProperty; }
 	}
 	
 	public void PlayIdleSound() {
@@ -97,24 +97,21 @@ methodmap SawRunner < CClotBody
 	}
 	
 	public void PlayIdleAlertSound() {
-		if(this.m_flPlayIdleAlertSound > GetGameTime())
+		if(this.m_iPlayIdleAlertSound > GetTime())
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-		this.m_flPlayIdleAlertSound = GetGameTime() + GetRandomFloat(12.0, 17.0);
+		this.m_iPlayIdleAlertSound = GetTime() + GetRandomInt(12, 17);
 		
 	}
 	
 	public void PlayMusicSound() {
-		if(this.m_flPlayMusicSound > GetEngineTime())
+		if(this.m_iPlayMusicSound > GetTime())
 			return;
 		
 		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-		this.m_flPlayMusicSound = GetEngineTime() + 44.0;
+		this.m_iPlayMusicSound = GetTime() + 45;
 		
 	}
 	
@@ -149,7 +146,7 @@ methodmap SawRunner < CClotBody
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		npc.m_flPlayMusicSound = 0.0;
+		npc.m_iPlayMusicSound = 0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bisGiantWalkCycle = 1.5;
 		
@@ -347,22 +344,30 @@ public void SawRunner_ClotThink(int iNPC)
 								{
 									if(target <= MaxClients)
 									{
-										float flMaxHealth = float(SDKCall_GetMaxHealth(target));
-										
-										flMaxHealth *= 0.5; //Because drown damage is 2x in anycase
-										
-										if(IsInvuln(target))	
+										if(i_HealthBeforeSuit[target] > 0)
 										{
-											flMaxHealth *= 0.5; //If under uber, give em more resistance so uber isnt completly useless
-											Custom_Knockback(npc.index, target, 5000.0);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 999999.9, DMG_DROWN); //Make him oneshot the enemy if they have the quantum armor
+											Custom_Knockback(npc.index, target, 5000.0); //Kick them away.
 										}
 										else
 										{
-											Custom_Knockback(npc.index, target, 1000.0); //Give them massive knockback so they can get away/dont make this boy stuck.
+											float flMaxHealth = float(SDKCall_GetMaxHealth(target));
+											
+											flMaxHealth *= 0.75; //Because drown damage is 2x in anycase
+											
+											if(IsInvuln(target))	
+											{
+												flMaxHealth *= 0.5; //If under uber, give em more resistance so uber isnt completly useless
+												Custom_Knockback(npc.index, target, 5000.0);
+											}
+											else
+											{
+												Custom_Knockback(npc.index, target, 1000.0); //Give them massive knockback so they can get away/dont make this boy stuck.
+											}
+											
+											
+											SDKHooks_TakeDamage(target, npc.index, npc.index, flMaxHealth + 50.0, DMG_DROWN); //adding 100 damage so they cant cheese this with healing and very low hp people
 										}
-										
-										
-										SDKHooks_TakeDamage(target, npc.index, npc.index, flMaxHealth + 50.0, DMG_DROWN); //adding 100 damage so they cant cheese this with healing and very low hp people
 									}
 									else
 									{
@@ -498,13 +503,13 @@ public Action Timer_RemoveEntitySawrunner_Tantrum(Handle timer, any entid)
 
 void Music_Stop_All_Sawrunner(int entity)
 {
-	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "zombie_riot/sawrunner/near_loop.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
 }

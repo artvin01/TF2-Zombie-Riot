@@ -53,12 +53,15 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 			value = Attributes_FindOnWeapon(client, weapon, 149);	// bleeding duration
 			if(value)
 				StartBleedingTimer(victim, client, Attributes_FindOnWeapon(client, weapon, 2, true, 1.0)*4.0, RoundFloat(value*2.0), weapon);
-				
+			
 			value = Attributes_FindOnWeapon(client, weapon, 208);	// Set DamageType Ignite
-			if(value)
+			if(value || (damagetype & DMG_BURN)) //Either this attribute, or burn damamage!
 			{
 				if(value == 1.0)
 					value = 7.5;
+
+				if(value < 1.0)
+					value = 2.0;
 				
 				NPC_Ignite(victim, client, value, weapon);
 			}

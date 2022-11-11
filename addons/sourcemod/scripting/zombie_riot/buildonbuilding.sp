@@ -89,7 +89,6 @@ public void OnMapStart_Build_on_Build()
 	}
 }
 
-static float Get_old_pos_back[MAXENTITIES][3];
 static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 static int i_DoNotTeleportThisPlayer;
 
@@ -106,8 +105,9 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 	i_DoNotTeleportThisPlayer = GetEntPropEnt(pThis, Prop_Send, "m_hBuilder");
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsClientInGame(client) && client != i_DoNotTeleportThisPlayer)
+		if(IsClientInGame(client) && client != i_DoNotTeleportThisPlayer && !Moved_Building[client])
 		{
+			Moved_Building[client] = true;
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[client]);
 			SetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", OFF_THE_MAP);
 		}
@@ -117,8 +117,9 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
 	{
 		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied) && baseboss_index_allied != 0)
+		if (IsValidEntity(baseboss_index_allied) && !Moved_Building[baseboss_index_allied])
 		{
+			Moved_Building[baseboss_index_allied] = true;
 			GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[baseboss_index_allied]);
 			SDKCall_SetLocalOrigin(baseboss_index_allied, vec_origin);
 		}
@@ -129,33 +130,35 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 
 public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hParams)
 {
+	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	{
+		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+		if (IsValidEntity(baseboss_index_allied) && Moved_Building[baseboss_index_allied])
+		{
+			Moved_Building[baseboss_index_allied] = false;
+			SDKCall_SetLocalOrigin(baseboss_index_allied, Get_old_pos_back[baseboss_index_allied]);
+		}
+	}
+	for(int clientLoop=1; clientLoop<=MaxClients; clientLoop++)
+	{
+		if(IsClientInGame(clientLoop) && clientLoop != i_DoNotTeleportThisPlayer && Moved_Building[clientLoop])
+		{
+			Moved_Building[clientLoop] = false;
+			SetEntPropVector(clientLoop, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[clientLoop]);
+		}
+	}
+	i_DoNotTeleportThisPlayer = 0;
+
 	if(pThis==-1)
 	{
 		return MRES_Ignored;
 	}
-	if(GetEntPropEnt(pThis, Prop_Send, "m_hBuilder")==-1)
+	int client = GetEntPropEnt(pThis, Prop_Send, "m_hBuilder")
+	if(client==-1)
 	{
 		DHookSetReturn(hReturn, false);
 		return MRES_ChangedOverride;
 	}
-	
-	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
-	{
-		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied) && baseboss_index_allied != 0)
-		{
-			SDKCall_SetLocalOrigin(baseboss_index_allied, Get_old_pos_back[baseboss_index_allied]);
-		}
-	}
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client) && client != i_DoNotTeleportThisPlayer)
-		{
-			SetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[client]);
-		}
-	}
-
-	i_DoNotTeleportThisPlayer = 0;
 
 	CClotBody npc = view_as<CClotBody>(pThis);
 	
@@ -172,6 +175,16 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 				iBuildingDependency[i]=0;
 			}
 		}
+		if(IsValidClient(client))
+		{
+			if(f_DelayBuildNotif[client] < GetGameTime())
+			{
+				f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+				SetHudTextParams(-1.0, 0.90, 0.5, 34, 139, 34, 255);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
+			}
+		}
 		return MRES_Ignored;
 	}
 	float position[3];
@@ -183,6 +196,17 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 	{
 		if(iBuildingDependency[buildingHit])
 		{
+			if(IsValidClient(client))
+			{
+				if(f_DelayBuildNotif[client] < GetGameTime())
+				{
+					f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
+				}
+			}
 			DHookSetReturn(hReturn, false);
 			return MRES_ChangedOverride;
 		}
@@ -228,6 +252,17 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		}
 		if(FloatAbs(endPos2[2]-endPos[2])<Delta)
 		{
+			if(IsValidClient(client))
+			{
+				if(f_DelayBuildNotif[client] < GetGameTime())
+				{
+					f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
+				}
+			}
 			DHookSetReturn(hReturn, false);
 			return MRES_ChangedOverride;
 		}
@@ -240,8 +275,29 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		datapack.Reset();
 		DHookSetReturn(hReturn, true);
 		RequestFrame(Frame_TeleportBuilding, datapack);
+		if(IsValidClient(client))
+		{
+			if(f_DelayBuildNotif[client] < GetGameTime())
+			{
+				f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+				SetHudTextParams(-1.0, 0.90, 0.5, 34, 139, 34, 255);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
+			}
+		}
 		npc.bBuildingIsStacked = true;
 		return MRES_ChangedOverride;
+	}
+	if(IsValidClient(client))
+	{
+		if(f_DelayBuildNotif[client] < GetGameTime())
+		{
+			f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
+		}
 	}
 	DHookSetReturn(hReturn, false);
 	return MRES_ChangedOverride;

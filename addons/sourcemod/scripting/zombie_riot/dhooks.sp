@@ -10,6 +10,7 @@ static bool IsRespawning;
 
 static DynamicHook g_WrenchSmack;
 
+DynamicDetour gH_MaintainBotQuota = null;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
 DynamicHook g_DHookFireballExplode; //from mikusch but edited
@@ -28,7 +29,6 @@ bool g_GottenAddressesForLagComp;
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
 
 
-static float Get_old_pos_back[MAXENTITIES][3];
 static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 static bool Dont_Move_Building;											//dont move buildings
 static bool Dont_Move_Allied_Npc;											//dont move buildings
@@ -77,6 +77,20 @@ void DHook_Setup()
 	#if !defined NoSendProxyClass
 	DHook_CreateDetour(gamedata, "CTFPlayer::IsPlayerClass", DHook_IsPlayerClassPre);
 	#endif
+
+	//https://github.com/Wilzzu/testing/blob/18a3680a9a1c8bdabc30c504bbf9467ac6e7d7b4/samu/addons/sourcemod/scripting/shavit-replay.sp
+	
+	if (!(gH_MaintainBotQuota = DHookCreateDetour(Address_Null, CallConv_THISCALL, ReturnType_Void, ThisPointer_Address)))
+	{
+		SetFailState("Failed to create detour for BotManager::MaintainBotQuota");
+	}
+
+	if (!DHookSetFromConf(gH_MaintainBotQuota, gamedata, SDKConf_Signature, "BotManager::MaintainBotQuota"))
+	{
+		SetFailState("Failed to get address for BotManager::MaintainBotQuota");
+	}
+
+	gH_MaintainBotQuota.Enable(Hook_Pre, Detour_MaintainBotQuota);
 	
 	
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
@@ -89,9 +103,14 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::Fire", DHook_SentryFire_Pre, DHook_SentryFire_Post);
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
 
+//	DHook_CreateDetour(gamedata, "CTFGCServerSystem::PreClientUpdate", PreClientUpdatePre, PreClientUpdatePost);
+
 
 	DHook_CreateDetour(gamedata, "CBaseObject::FinishedBuilding", Dhook_FinishedBuilding_Pre, Dhook_FinishedBuilding_Post);
 	DHook_CreateDetour(gamedata, "CBaseObject::FirstSpawn", Dhook_FirstSpawn_Pre, Dhook_FirstSpawn_Post);
+
+	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
+	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
 
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
@@ -265,14 +284,42 @@ public Action SdkHook_StickStickybombToBaseBoss(int entity, int other)
 	return Plugin_Continue;
 }
 
+static float Velocity_Rocket[MAXENTITIES][3];
+
 public void ApplyExplosionDhook_Rocket(int entity)
 {
 	if(!b_EntityIsArrow[entity]) //No!
 	{
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, DHook_RocketExplodePre);
 	}
-	//I have to do it twice, if its a custom spawn i have to do it insantly, if its a tf2 spawn then i have to do it seperatly.
+	CreateTimer(0.1, FixVelocityStandStillRocket, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 }
+
+public Action FixVelocityStandStillRocket(Handle Timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if (IsValidEntity(entity))
+	{
+		float Velocity_Temp[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecVelocity", Velocity_Temp); 
+		if(Velocity_Temp[0] == 0.0 && Velocity_Temp[1] == 0.0 && Velocity_Temp[2] == 0.0)
+		{
+			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, Velocity_Rocket[entity]);
+		}
+		else
+		{
+			Velocity_Rocket[entity][0] = Velocity_Temp[0];
+			Velocity_Rocket[entity][1] = Velocity_Temp[1];
+			Velocity_Rocket[entity][2] = Velocity_Temp[2];
+		}
+		return Plugin_Continue;
+	}
+	else
+	{
+		return Plugin_Stop;
+	}
+}
+
 
 public void ApplyExplosionDhook_Fireball(int entity)
 {
@@ -1136,6 +1183,8 @@ public MRESReturn DHook_ForceRespawn(int client)
 		
 		return MRES_Supercede;
 	}
+
+	RequestFrame(SetEyeAngleCorrect, client);
 	
 	if(GetClientTeam(client) != 2)
 	{
@@ -1164,8 +1213,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	
-	TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
-	TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
+	GiveCompleteInvul(client, 2.0);
 			
 	if(started && TeutonType[client] == TEUTON_NONE)
 	{
@@ -1228,8 +1276,7 @@ public void DHook_TeleportToObserver(DataPack pack)
 	int client = GetClientOfUserId(pack.ReadCell());
 	if(client)
 	{
-		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
-		TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
+		GiveCompleteInvul(client, 2.0);
 		int target = pack.ReadCell();
 		if(target == client || target < 1 || target > MaxClients || !IsClientInGame(target) || !IsPlayerAlive(target) || TeutonType[target] != TEUTON_NONE)
 		{
@@ -1267,8 +1314,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 	int client = GetClientOfUserId(userid);
 	if(IsValidClient(client))
 	{
-		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
-		TF2_AddCondition(client, TFCond_MegaHeal, 1.0);
+		GiveCompleteInvul(client, 2.0);
 		if(f_WasRecentlyRevivedViaNonWave[client] < GetGameTime())
 		{	
 			if(!Waves_InSetup())
@@ -1506,6 +1552,22 @@ public MRESReturn DHook_HandleRageGainPost(DHookParam param)
 	return MRES_Ignored;
 }
 
+// g_bWarnedAboutMaxplayersInMVM
+/*
+public MRESReturn PreClientUpdatePre(Handle hParams)
+{
+//	CvarTfMMMode.IntValue = 1;
+	GameRules_SetProp("m_bPlayingMannVsMachine", true);
+	return MRES_Ignored;
+}
+
+public MRESReturn PreClientUpdatePost(Handle hParams)
+{
+//	CvarTfMMMode.IntValue = 0;
+	GameRules_SetProp("m_bPlayingMannVsMachine", false);
+	return MRES_Ignored;
+}
+*/
 public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams) {
 	int originalLauncher = GetEntPropEnt(healingBolt, Prop_Send, "m_hOriginalLauncher");
 	if (!IsValidEntity(originalLauncher)) {
@@ -1632,4 +1694,33 @@ void ScatterGun_Prevent_M2_OnEntityCreated(int entity)
 public MRESReturn DHook_ScoutSecondaryFire(int entity) //BLOCK!!
 {
 	return MRES_Supercede;	//NEVER APPLY. Causes you to not fire if accidentally pressing m2
+}
+
+public MRESReturn Detour_MaintainBotQuota(int pThis)
+{
+	return MRES_Supercede;
+}
+
+
+//We want to disable them auto switching weapons during this, the reason being is that it messes with out custom equip logic, bad!
+
+public MRESReturn Dhook_BlowHorn_Post(int entity)
+{
+	TF2Attrib_SetByDefIndex(entity, 698, 1.0); // disable weapon switch
+	return MRES_Ignored;
+}
+public MRESReturn Dhook_RaiseFlag_Post(int entity)
+{
+	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	int viewmodel = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
+	if(viewmodel>MaxClients && IsValidEntity(viewmodel)) //For some reason it plays the horn anim again, just set it to idle!
+	{
+		int animation = 21; //should be default idle, modded viewmodels are fucked ig lol
+		SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);
+	}
+	
+	//They successfully blew the horn! give them abit of credit for that! they helpinnnnnnn... yay
+	i_ExtraPlayerPoints[client] += 15;
+	TF2Attrib_SetByDefIndex(entity, 698, 0.0); // disable weapon switch
+	return MRES_Ignored;
 }

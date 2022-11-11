@@ -130,7 +130,7 @@ void Building_MapStart()
 	Beam_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
 	Beam_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	
-	PrecacheModel("models/items/ammocrate_rockets.mdl");
+	PrecacheModel("models/items/ammocrate_smg1.mdl");
 	PrecacheModel("models/props_manor/table_01.mdl");
 	PrecacheModel(PERKMACHINE_MODEL);
 	
@@ -373,6 +373,7 @@ public bool Building_Sentry(int client, int entity)
 	Building_Constructed[entity] = false;
 	CreateTimer(0.2, Building_Set_HP_Colour_Sentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	CreateTimer(0.5, Timer_DroppedBuildingWaitSentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+
 	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -558,14 +559,20 @@ public bool Building_DispenserWall(int client, int entity)
 {
 	i_WhatBuilding[entity] = BuildingBarricade;
 	b_SentryIsCustom[entity] = false;
+
+	DataPack pack;
+	CreateDataTimer(0.5, Timer_ClaimedBuildingremoveBarricadeCounterOnDeath, pack, TIMER_REPEAT);
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteCell(EntIndexToEntRef(client)); 
+	pack.WriteCell(client); //Need original client index id please.
 	i_BarricadesBuild[client] += 1;
+
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	CreateTimer(0.2, Building_Set_HP_Colour, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
-	DataPack pack;
-	CreateDataTimer(0.5, Timer_DroppedBuildingWaitWall, pack, TIMER_REPEAT);
-	pack.WriteCell(EntIndexToEntRef(entity));
-	pack.WriteCell(client); //Need original client index id please.
+	DataPack pack_2;
+	CreateDataTimer(0.5, Timer_DroppedBuildingWaitWall, pack_2, TIMER_REPEAT);
+	pack_2.WriteCell(EntIndexToEntRef(entity));
 	
 	Building_Repair_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 	Building_Max_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
@@ -626,14 +633,17 @@ public bool Building_AmmoBox(int client, int entity)
 	b_SentryIsCustom[entity] = false;
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
-//	SDKHook(entity, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmit);
-	
-	i_SupportBuildingsBuild[client] += 1;
 	DataPack pack;
-	CreateDataTimer(0.1, Timer_DroppedBuildingWaitAmmobox, pack, TIMER_REPEAT);
+	CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
-	pack.WriteCell(entity);
+	pack.WriteCell(EntIndexToEntRef(client)); 
 	pack.WriteCell(client); //Need original client index id please.
+	i_SupportBuildingsBuild[client] += 1;
+
+	DataPack pack_2;
+	CreateDataTimer(0.1, Timer_DroppedBuildingWaitAmmobox, pack_2, TIMER_REPEAT);
+	pack_2.WriteCell(EntIndexToEntRef(entity));
+	pack_2.WriteCell(entity);
 	
 	CreateTimer(0.2, Building_Set_HP_Colour, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	Building_Repair_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
@@ -663,12 +673,17 @@ public bool Building_ArmorTable(int client, int entity)
 	b_SentryIsCustom[entity] = false;
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
-	i_SupportBuildingsBuild[client] += 1;
 	DataPack pack;
-	CreateDataTimer(0.1, Timer_DroppedBuildingWaitArmorTable, pack, TIMER_REPEAT);
+	CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
-	pack.WriteCell(entity);
+	pack.WriteCell(EntIndexToEntRef(client)); 
 	pack.WriteCell(client); //Need original client index id please.
+	i_SupportBuildingsBuild[client] += 1;
+
+	DataPack pack_2;
+	CreateDataTimer(0.1, Timer_DroppedBuildingWaitArmorTable, pack_2, TIMER_REPEAT);
+	pack_2.WriteCell(EntIndexToEntRef(entity));
+	pack_2.WriteCell(entity);
 	
 	CreateTimer(0.2, Building_Set_HP_Colour, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	Building_Repair_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
@@ -704,12 +719,17 @@ public bool Building_PerkMachine(int client, int entity)
 	
 //	SDKHook(entity, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmit);
 	
-	i_SupportBuildingsBuild[client] += 1;
 	DataPack pack;
-	CreateDataTimer(0.1, Timer_DroppedBuildingWaitPerkMachine, pack, TIMER_REPEAT);
+	CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
-	pack.WriteCell(entity);
+	pack.WriteCell(EntIndexToEntRef(client)); 
 	pack.WriteCell(client); //Need original client index id please.
+	i_SupportBuildingsBuild[client] += 1;
+
+	DataPack pack_2;
+	CreateDataTimer(0.1, Timer_DroppedBuildingWaitPerkMachine, pack_2, TIMER_REPEAT);
+	pack_2.WriteCell(EntIndexToEntRef(entity));
+	pack_2.WriteCell(entity);
 	
 	CreateTimer(0.2, Building_Set_HP_Colour, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	Building_Repair_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
@@ -742,15 +762,17 @@ public bool Building_PackAPunch(int client, int entity)
 	b_SentryIsCustom[entity] = false;
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
+	DataPack pack;
+	CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteCell(EntIndexToEntRef(client)); 
+	pack.WriteCell(client); //Need original client index id please.
 	i_SupportBuildingsBuild[client] += 1;
 	
-//	SDKHook(entity, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmit);
-	
-	DataPack pack;
-	CreateDataTimer(0.1, Timer_DroppedBuildingWaitPackAPunch, pack, TIMER_REPEAT);
-	pack.WriteCell(EntIndexToEntRef(entity));
-	pack.WriteCell(entity);
-	pack.WriteCell(client); //Need original client index id please.
+	DataPack pack_2;
+	CreateDataTimer(0.1, Timer_DroppedBuildingWaitPackAPunch, pack_2, TIMER_REPEAT);
+	pack_2.WriteCell(EntIndexToEntRef(entity));
+	pack_2.WriteCell(entity);
 	
 	CreateTimer(0.2, Building_Set_HP_Colour, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	Building_Repair_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
@@ -949,7 +971,7 @@ public Action Building_Set_HP_Colour(Handle dashHud, int ref)
 			int green = 0;
 			int blue = 0;
 			
-		//	SetEntityRenderColor(entity, red, green, blue, 255);
+			SetEntityRenderColor(entity, red, green, blue, 255);
 			if(IsValidEntity(prop1))
 			{
 			//	SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
@@ -960,6 +982,7 @@ public Action Building_Set_HP_Colour(Handle dashHud, int ref)
 			//	SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(prop2, red, green, blue, 255);
 			}
+
 		}
 	}
 	else
@@ -1244,7 +1267,7 @@ void Building_PlayerRunCmd(int client, int buttons)
 
 public void Pickup_Building_M2(int client, int weapon, bool crit)
 {
-		int entity = GetClientPointVisible(client, _ , true);
+		int entity = GetClientPointVisible(client, _ , true, true);
 		if(entity > MaxClients)
 		{
 			if (IsValidEntity(entity))
@@ -1263,6 +1286,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 							b_Doing_Buildingpickup_Handle[client] = true;
 							DataPack pack;
 							h_Pickup_Building[client] = CreateDataTimer(1.0, Building_Pickup_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+							pack.WriteCell(client);
 							pack.WriteCell(EntIndexToEntRef(entity));
 							pack.WriteCell(GetClientUserId(client));
 							f_DelayLookingAtHud[client] = GetGameTime() + 1.0;	
@@ -1278,16 +1302,18 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 {
 	pack.Reset();
+	int original_index = pack.ReadCell();
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	int client = GetClientOfUserId(pack.ReadCell());
 	
+	b_Doing_Buildingpickup_Handle[original_index] = false;
+
 	if(IsValidClient(client))
 	{
-		b_Doing_Buildingpickup_Handle[client] = false;
 		PrintCenterText(client, " ");
 		if (IsValidEntity(entity))
 		{
-			int looking_at = GetClientPointVisible(client, _ , true);
+			int looking_at = GetClientPointVisible(client, _ , true, true);
 			if (looking_at == entity)
 			{
 				static char buffer[64];
@@ -1417,7 +1443,6 @@ void Building_ShowInteractionHud(int client, int entity)
 				Hide_Hud = false;
 				SetGlobalTransTarget(client);
 				PrintCenterText(client, "%t", "Claim this building");
-			
 			}
 			else
 			{
@@ -1677,6 +1702,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							DataPack pack;
 							CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 							pack.WriteCell(EntIndexToEntRef(entity));
+							pack.WriteCell(EntIndexToEntRef(client)); 
 							pack.WriteCell(client); //Need original client index id please.
 							i_SupportBuildingsBuild[client] += 1;
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
@@ -1684,11 +1710,12 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", client);
 							SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 						}
-						else if(StrEqual(buffer, "zr_barricade")) // do not check for if too many barricades, doesnt make sense to do this anyways.
+						else if(StrEqual(buffer, "zr_barricade") && i_BarricadesBuild[client] < MaxBarricadesAllowed(client)) // do not check for if too many barricades, doesnt make sense to do this anyways.
 						{
 							DataPack pack;
 							CreateDataTimer(0.5, Timer_ClaimedBuildingremoveBarricadeCounterOnDeath, pack, TIMER_REPEAT);
 							pack.WriteCell(EntIndexToEntRef(entity));
+							pack.WriteCell(EntIndexToEntRef(client)); 
 							pack.WriteCell(client); //Need original client index id please.
 							i_BarricadesBuild[client] += 1;
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
@@ -1701,6 +1728,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							DataPack pack;
 							CreateDataTimer(0.5, Timer_ClaimedBuildingremoveElevatorCounterOnDeath, pack, TIMER_REPEAT);
 							pack.WriteCell(EntIndexToEntRef(entity));
+							pack.WriteCell(EntIndexToEntRef(client)); 
 							pack.WriteCell(client); //Need original client index id please.
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
 							AcceptEntityInput(entity, "SetBuilder", client);
@@ -1714,8 +1742,22 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						}
 						else
 						{
-							ClientCommand(client, "playgamesound items/medshotno1.wav");
-							PrintToChat(client,"You cannot build anymore Support buildings, you have reached the max amount.\nBuy Builder Upgrades to build more.");
+							if(StrEqual(buffer, "zr_barricade"))
+							{
+								ClientCommand(client, "playgamesound items/medshotno1.wav");
+								PrintToChat(client,"You can only own 2 barricades at once.");
+							}
+							else if(StrEqual(buffer, "zr_elevator")) // bruh why.
+							{
+								ClientCommand(client, "playgamesound items/medshotno1.wav");
+								PrintToChat(client,"You can only own 3 Elevators at once.");
+							}
+							else
+							{
+								ClientCommand(client, "playgamesound items/medshotno1.wav");
+								PrintToChat(client,"You cannot build anymore Support buildings, you have reached the max amount.\nBuy Builder Upgrades to build more.");
+							}
+
 						}
 						return true;
 					}
@@ -1728,6 +1770,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						return true;			
 					}
 				}
+				return false; //Dont let them interact with it if it has no owner!
 			}
 			
 			GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
@@ -1815,9 +1858,9 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							{
 								if(IsWandWeapon(weapon))
 								{
-									float max_mana_temp = 1200.0;
+									float max_mana_temp = 800.0;
 									float mana_regen_temp = 100.0;
-											
+									
 									if(i_CurrentEquippedPerk[client] == 4)
 									{
 										mana_regen_temp *= 1.35;
@@ -1847,7 +1890,12 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											if(Current_Mana[client] > RoundToCeil(max_mana_temp)) //Should only apply during actual regen
 												Current_Mana[client] = RoundToCeil(max_mana_temp);
 										}
+										
+										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
+										i_State[entity] = -1;
+
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
+
 										if(owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
@@ -1881,6 +1929,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}	
+										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
+										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 										if(owner != -1 && owner != client)
 										{
@@ -1904,6 +1954,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}	
+										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
+										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 										if(owner != -1 && owner != client)
 										{
@@ -1924,6 +1976,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}	
+										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
+										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 										if(owner != -1 && owner != client)
 										{
@@ -1944,6 +1998,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}		
+										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
+										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 										if(owner != -1 && owner != client)
 										{
@@ -1964,6 +2020,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}	
+										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
+										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 										if(owner != -1 && owner != client)
 										{
@@ -1984,6 +2042,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
 										}
+										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
+										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 										if(owner != -1 && owner != client)
 										{
@@ -2026,6 +2086,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											}
 											
 									//		float Shave_Seconds_off = 5.0 * Extra;
+											fl_NextThinkTime[entity] = GetGameTime() + 2.0;
+											i_State[entity] = -1;
 											Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 											if(owner != -1 && owner != client)
 											{
@@ -2097,6 +2159,14 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							
 						//	Armor_Ready[client] = GetGameTime() + 10.0; //ehhhhhhhh make it rlly small
 							Building_Collect_Cooldown[entity][client] = GetGameTime() + 45.0; //small also
+
+							float pos[3];
+							GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+
+							pos[2] += 45.0;
+
+							ParticleEffectAt(pos, "halloween_boss_axe_hit_sparks", 1.0);
+
 						//	CashSpent[owner] -= 20;
 							if(owner != -1 && owner != client)
 							{
@@ -2287,12 +2357,16 @@ public void Disallow_Building(int client)
 public Action Timer_ClaimedBuildingremoveSupportCounterOnDeath(Handle htimer,  DataPack pack)
 {
 	pack.Reset();
-	int entref = pack.ReadCell();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int client = EntRefToEntIndex(pack.ReadCell()); 
 	int client_original_index = pack.ReadCell(); //Need original!
 	
-	int obj=EntRefToEntIndex(entref);
-	
-	if(!IsValidEntity(obj))
+	if(!IsValidEntity(entity))
+	{
+		i_SupportBuildingsBuild[client_original_index] -= 1;
+		return Plugin_Stop;
+	}
+	if(!IsValidClient(client)) //Are they valid ? no ? DIE!
 	{
 		i_SupportBuildingsBuild[client_original_index] -= 1;
 		return Plugin_Stop;
@@ -2303,12 +2377,16 @@ public Action Timer_ClaimedBuildingremoveSupportCounterOnDeath(Handle htimer,  D
 public Action Timer_ClaimedBuildingremoveBarricadeCounterOnDeath(Handle htimer,  DataPack pack)
 {
 	pack.Reset();
-	int entref = pack.ReadCell();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int client = EntRefToEntIndex(pack.ReadCell()); 
 	int client_original_index = pack.ReadCell(); //Need original!
 	
-	int obj=EntRefToEntIndex(entref);
-	
-	if(!IsValidEntity(obj))
+	if(!IsValidEntity(entity))
+	{
+		i_BarricadesBuild[client_original_index] -= 1;
+		return Plugin_Stop;
+	}
+	if(!IsValidClient(client)) //Are they valid ? no ? DIE!
 	{
 		i_BarricadesBuild[client_original_index] -= 1;
 		return Plugin_Stop;
@@ -2319,12 +2397,16 @@ public Action Timer_ClaimedBuildingremoveBarricadeCounterOnDeath(Handle htimer, 
 public Action Timer_ClaimedBuildingremoveElevatorCounterOnDeath(Handle htimer,  DataPack pack)
 {
 	pack.Reset();
-	int entref = pack.ReadCell();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int client = EntRefToEntIndex(pack.ReadCell()); 
 	int client_original_index = pack.ReadCell(); //Need original!
 	
-	int obj=EntRefToEntIndex(entref);
-	
-	if(!IsValidEntity(obj))
+	if(!IsValidEntity(entity))
+	{
+		Elevators_Currently_Build[client_original_index] -= 1;
+		return Plugin_Stop;
+	}
+	if(!IsValidClient(client)) //Are they valid ? no ? DIE!
 	{
 		Elevators_Currently_Build[client_original_index] -= 1;
 		return Plugin_Stop;
@@ -2337,7 +2419,6 @@ public Action Timer_DroppedBuildingWaitAmmobox(Handle htimer,  DataPack pack)
 	pack.Reset();
 	int entref = pack.ReadCell();
 	int original_entity = pack.ReadCell();
-	int client_original_index = pack.ReadCell(); //Need original!
 	
 	int obj=EntRefToEntIndex(entref);
 	
@@ -2354,7 +2435,6 @@ public Action Timer_DroppedBuildingWaitAmmobox(Handle htimer,  DataPack pack)
 		{
 			RemoveEntity(prop2);
 		}
-		i_SupportBuildingsBuild[client_original_index] -= 1;
 		return Plugin_Stop;
 	}
 	//Wait until full complete
@@ -2363,8 +2443,82 @@ public Action Timer_DroppedBuildingWaitAmmobox(Handle htimer,  DataPack pack)
 		if(Building_Constructed[obj])
 		{
 			SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") | EF_NODRAW);
+			
+			int prop1 = EntRefToEntIndex(Building_Hidden_Prop[obj][0]);
+			int prop2 = EntRefToEntIndex(Building_Hidden_Prop[obj][1]);
+		//	i_State[obj] = 
+			if(IsValidEntity(prop1) && IsValidEntity(prop2))
+			{
+				if(fl_NextThinkTime[obj] + 0.4 < GetGameTime())
+				{
+					if(i_State[obj] != 0)
+					{
+						i_State[obj] = 0;
+						SetVariantString("Idle");
+						AcceptEntityInput(prop1, "SetAnimation");
+						SetVariantString("Idle");
+						AcceptEntityInput(prop2, "SetAnimation");
+						SetVariantInt(1);
+						AcceptEntityInput(prop1, "SetBodyGroup");
+						SetVariantInt(1);
+						AcceptEntityInput(prop2, "SetBodyGroup");
+					}
+				}
+				else if(fl_NextThinkTime[obj] - 0.5 < GetGameTime())
+				{
+					if(i_State[obj] != 1)
+					{
+						i_State[obj] = 1;
+						SetVariantString("Close");
+						AcceptEntityInput(prop1, "SetAnimation");
+						SetVariantString("Close");
+						AcceptEntityInput(prop2, "SetAnimation");
+					}
+				}
+				else if(fl_NextThinkTime[obj] - 1.3 < GetGameTime())
+				{
+					if(i_State[obj] != 2)
+					{
+						i_State[obj] = 2;
+						SetVariantInt(0);
+						AcceptEntityInput(prop1, "SetBodyGroup");
+						SetVariantInt(0);
+						AcceptEntityInput(prop2, "SetBodyGroup");
+					//	SetVariantString("Close");
+					//	AcceptEntityInput(obj, "SetAnimation");
+					}
+				}
+				else if(fl_NextThinkTime[obj] - 2.1 < GetGameTime() )
+				{
+					if(i_State[obj] != 3)
+					{
+						i_State[obj] = 3;
+						SetVariantString("0.5");
+						AcceptEntityInput(prop1, "SetPlayBackRate");
+						SetVariantString("0.5");
+						AcceptEntityInput(prop2, "SetPlayBackRate");
+
+						SetVariantString("Open");
+						AcceptEntityInput(prop1, "SetAnimation");
+						SetVariantString("Open");
+						AcceptEntityInput(prop2, "SetAnimation");
+
+						SetVariantInt(1);
+						AcceptEntityInput(prop1, "SetBodyGroup");
+						SetVariantInt(1);
+						AcceptEntityInput(prop2, "SetBodyGroup");
+					}
+				}
+			}
+			
+
+		//	fl_NextThinkTime[entity] = GetGameTime() + 2.0;
+		
 			return Plugin_Continue;
 		}
+		CClotBody npc = view_as<CClotBody>(obj);
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[obj] = true;
 	}
 	else
 	{
@@ -2412,6 +2566,8 @@ public Action Timer_DroppedBuildingWaitRailgun(Handle htimer, int entref)
 		//	npc.Update(); //SO THE ANIMATION PROPERLY LOOPS! CHECK THIS VERY OFTEN!
 			return Plugin_Continue;
 		}
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[obj] = true;
 		
 	}
 	else
@@ -2439,6 +2595,8 @@ public Action Timer_DroppedBuildingWaitMortar(Handle htimer, int entref)
 		//	npc.Update(); //SO THE ANIMATION PROPERLY LOOPS! CHECK THIS VERY OFTEN!
 			return Plugin_Continue;
 		}
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[obj] = true;
 	}
 	else
 	{
@@ -2480,7 +2638,9 @@ public Action Timer_DroppedBuildingWaitHealingStation(Handle htimer, DataPack pa
 //			npc.Update(); //SO THE ANIMATION PROPERLY LOOPS! CHECK THIS VERY OFTEN!
 			return Plugin_Continue;
 		}
-		
+		CClotBody npc = view_as<CClotBody>(obj);
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[obj] = true;
 	}
 	else
 	{
@@ -2507,7 +2667,6 @@ public Action Timer_DroppedBuildingWaitArmorTable(Handle htimer, DataPack pack)
 	pack.Reset();
 	int entref = pack.ReadCell();
 	int original_entity = pack.ReadCell();
-	int client_original_index = pack.ReadCell(); //Need original!
 	
 	int obj=EntRefToEntIndex(entref);
 	
@@ -2525,7 +2684,7 @@ public Action Timer_DroppedBuildingWaitArmorTable(Handle htimer, DataPack pack)
 			RemoveEntity(prop2);
 		}
 		
-		i_SupportBuildingsBuild[client_original_index] -= 1;
+	//	i_SupportBuildingsBuild[client_original_index] -= 1;
 		return Plugin_Stop;
 	}
 	//Wait until full complete
@@ -2537,8 +2696,9 @@ public Action Timer_DroppedBuildingWaitArmorTable(Handle htimer, DataPack pack)
 		//	SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") & ~EF_NODRAW);
 			return Plugin_Continue;
 		}
-		
-
+		CClotBody npc = view_as<CClotBody>(obj);
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[obj] = true;
 	}
 	else
 	{
@@ -2565,7 +2725,6 @@ public Action Timer_DroppedBuildingWaitPerkMachine(Handle htimer, DataPack pack)
 	pack.Reset();
 	int entref = pack.ReadCell();
 	int original_entity = pack.ReadCell();
-	int client_original_index = pack.ReadCell(); //Need original!
 	
 	int obj=EntRefToEntIndex(entref);
 	
@@ -2582,7 +2741,6 @@ public Action Timer_DroppedBuildingWaitPerkMachine(Handle htimer, DataPack pack)
 		{
 			RemoveEntity(prop2);
 		}
-		i_SupportBuildingsBuild[client_original_index] -= 1;
 		return Plugin_Stop;
 	}
 	//Wait until full complete
@@ -2593,7 +2751,9 @@ public Action Timer_DroppedBuildingWaitPerkMachine(Handle htimer, DataPack pack)
 			SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") | EF_NODRAW);
 			return Plugin_Continue;
 		}
-
+		CClotBody npc = view_as<CClotBody>(obj);
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[obj] = true;
 	}
 	else
 	{
@@ -2619,7 +2779,6 @@ public Action Timer_DroppedBuildingWaitPackAPunch(Handle htimer, DataPack pack)
 	pack.Reset();
 	int entref = pack.ReadCell();
 	int original_entity = pack.ReadCell();
-	int client_original_index = pack.ReadCell(); //Need original!
 	
 	int obj=EntRefToEntIndex(entref);
 	
@@ -2636,7 +2795,6 @@ public Action Timer_DroppedBuildingWaitPackAPunch(Handle htimer, DataPack pack)
 		{
 			RemoveEntity(prop2);
 		}
-		i_SupportBuildingsBuild[client_original_index] -= 1;
 		return Plugin_Stop;
 	}
 	//Wait until full complete
@@ -2648,6 +2806,9 @@ public Action Timer_DroppedBuildingWaitPackAPunch(Handle htimer, DataPack pack)
 		//	SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") & ~EF_NODRAW);
 			return Plugin_Continue;
 		}
+		CClotBody npc = view_as<CClotBody>(obj);
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[obj] = true;
 	}
 	else
 	{
@@ -2673,20 +2834,37 @@ public Action Timer_DroppedBuildingWaitWall(Handle htimer, DataPack pack)
 {
 	pack.Reset();
 	int entref = pack.ReadCell();
-	int client_original_index = pack.ReadCell(); //Need original!
 	
 	int obj=EntRefToEntIndex(entref);
 	
 	if(!IsValidEntity(obj))
 	{
-		i_BarricadesBuild[client_original_index] -= 1;
+	//	i_BarricadesBuild[client_original_index] -= 1;
 		return Plugin_Stop;
 	}
+
+	if(GetEntPropEnt(obj, Prop_Send, "m_hBuilder") == -1)
+	{
+		SetEntityCollisionGroup(obj, 1);
+		b_ThisEntityIgnored[obj] = true; //Hey! Be ignored! you have no owner!
+	}
+	else
+	{
+		SetEntityCollisionGroup(obj, BUILDINGCOLLISIONNUMBER);
+		b_ThisEntityIgnored[obj] = false;
+	}
+
 	//Wait until full complete
 	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
 	{
 		if(Building_Constructed[obj])
+		{
 			return Plugin_Continue;
+		}
+
+		CClotBody npc = view_as<CClotBody>(obj);
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[obj] = true;
 	}
 	else
 	{
@@ -2713,6 +2891,10 @@ public Action Timer_DroppedBuildingWaitSentry(Handle htimer, int entref)
 		}
 		if(Building_Constructed[obj])
 			return Plugin_Continue;
+
+		CClotBody npc = view_as<CClotBody>(obj);
+		npc.bBuildingIsPlaced = true;
+		Building_Constructed[obj] = true;
 	}
 	return Plugin_Continue;
 }
@@ -2866,14 +3048,14 @@ public bool BuildingCustomCommand(int client)
 						
 						if(Village_Flags[client] & VILLAGE_050)
 						{
-							i_ExtraPlayerPoints[client] += 10000; //Static point increace.
+							i_ExtraPlayerPoints[client] += 100; //Static point increace.
 							Village_ReloadBuffFor[client] = GetGameTime() + 20.0;
 							EmitSoundToAll("items/powerup_pickup_uber.wav");
 							EmitSoundToAll("items/powerup_pickup_uber.wav");
 						}
 						else
 						{
-							i_ExtraPlayerPoints[client] += 5000; //Static point increace.
+							i_ExtraPlayerPoints[client] += 50; //Static point increace.
 							Village_ReloadBuffFor[client] = GetGameTime() + 15.0;
 							EmitSoundToAll("player/mannpower_invulnerable.wav", client);
 							EmitSoundToAll("player/mannpower_invulnerable.wav", client);
@@ -3903,6 +4085,17 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 			ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Perk Machine Used");
 		}
 	}
+	float pos[3];
+	float angles[3];
+	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+	GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
+
+	pos[2] += 45.0;
+	angles[1] -= 90.0;
+
+	int particle = ParticleEffectAt(pos, "flamethrower_underwater", 1.0);
+	SetEntPropVector(particle, Prop_Send, "m_angRotation", angles);
+
 	SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 	SetGlobalTransTarget(client);
 	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
@@ -4020,7 +4213,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 	}
 	
 	
-	i_ExtraPlayerPoints[owner] += 25; //Static low point increace.
+	i_ExtraPlayerPoints[owner] += 2; //Static low point increace.
 	
 	int effects = Village_Flags[owner];
 	
@@ -4261,19 +4454,19 @@ int Building_GetCashOnWave(int current)
 		{
 			if(Village_Flags[client] & VILLAGE_003)
 			{
-				i_ExtraPlayerPoints[client] += 5000;
+				i_ExtraPlayerPoints[client] += 50;
 				popCash++;
 			}
 			
 			if(Village_Flags[client] & VILLAGE_004)
 			{
-				i_ExtraPlayerPoints[client] += 10000;
+				i_ExtraPlayerPoints[client] += 100;
 				extras++;
 			}
 			
 			if(Village_Flags[client] & VILLAGE_005)
 			{
-				i_ExtraPlayerPoints[client] += 20000; //Alot of free points.
+				i_ExtraPlayerPoints[client] += 200; //Alot of free points.
 				farms++;
 			}
 		}
@@ -4986,16 +5179,18 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 	CClotBody npc = view_as<CClotBody>(Building_Index);
 
 
-	npc.bBuildingIsPlaced = true;
-	Building_Constructed[Building_Index] = true;
 	switch(i_WhatBuilding[Building_Index])
 	{
 		case BuildingBarricade:
 		{
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[Building_Index] = true;
 			SetEntityModel(Building_Index, BARRICADE_MODEL);
 		}
 		case BuildingRailgun:
 		{
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[Building_Index] = true;
 			SetEntityModel(Building_Index, CUSTOM_SENTRYGUN_MODEL);
 		
 			static const float minbounds[3] = {-15.0, -15.0, 0.0};
@@ -5009,6 +5204,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 		}
 		case BuildingMortar:
 		{
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[Building_Index] = true;
 			SetEntityModel(Building_Index, CUSTOM_SENTRYGUN_MODEL);
 		
 			static const float minbounds[3] = {-15.0, -15.0, 0.0};
@@ -5023,6 +5220,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 		}
 		case BuildingHealingStation:
 		{	
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[Building_Index] = true;
 			float vOrigin[3];
 			float vAngles[3];
 			int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
@@ -5102,6 +5301,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 		}
 		case BuildingPackAPunch:
 		{
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[Building_Index] = true;
 			float vOrigin[3];
 			float vAngles[3];
 			int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
@@ -5191,6 +5392,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 		}
 		case BuildingPerkMachine:
 		{
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[Building_Index] = true;
 			float vOrigin[3];
 			float vAngles[3];
 			int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][0]);
@@ -5281,6 +5484,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 		}
 		case BuildingArmorTable:
 		{
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[Building_Index] = true;
 			float vOrigin[3];
 			float vAngles[3];
 			
@@ -5362,6 +5567,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 		}
 		case BuildingAmmobox:
 		{
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[Building_Index] = true;
 			float vOrigin[3];
 			float vAngles[3];
 			
@@ -5373,6 +5580,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 				vOrigin[2] += 15.0;
 				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+				vAngles[1] -= 180.0;
 				TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
 			}
 			else
@@ -5380,7 +5588,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 				prop1 = CreateEntityByName("prop_dynamic_override");
 				if(IsValidEntity(prop1))
 				{
-					DispatchKeyValue(prop1, "model", "models/items/ammocrate_rockets.mdl");
+					DispatchKeyValue(prop1, "model", "models/items/ammocrate_smg1.mdl");
 					DispatchKeyValue(prop1, "modelscale", "1.00");
 					DispatchKeyValue(prop1, "StartDisabled", "false");
 					DispatchKeyValue(prop1, "Solid", "0");
@@ -5395,6 +5603,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 
 					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] -= 180.0;
 					vOrigin[2] += 15.0;
 					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
 					SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
@@ -5406,6 +5615,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 				vOrigin[2] += 15.0;
 				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+				vAngles[1] -= 180.0;
 				TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
 			}
 			else
@@ -5413,7 +5623,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 				prop2 = CreateEntityByName("prop_dynamic_override");
 				if(IsValidEntity(prop2))
 				{
-					DispatchKeyValue(prop2, "model", "models/items/ammocrate_rockets.mdl");
+					DispatchKeyValue(prop2, "model", "models/items/ammocrate_smg1.mdl");
 					DispatchKeyValue(prop2, "modelscale", "1.00");
 					DispatchKeyValue(prop2, "StartDisabled", "false");
 					DispatchKeyValue(prop2, "Solid", "0");
@@ -5428,13 +5638,14 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 
 					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] -= 180.0;
 					vOrigin[2] += 15.0;
 					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
 					SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
 				}
 			}
 
-			SetEntityModel(Building_Index, "models/items/ammocrate_rockets.mdl");
+			SetEntityModel(Building_Index, "models/items/ammocrate_smg1.mdl");
 
 			static const float minbounds[3] = {-20.0, -20.0, -18.0};
 			static const float maxbounds[3] = {20.0, 20.0, 18.0};
@@ -5447,10 +5658,12 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 			npc.UpdateCollisionBox();			
 										
 			GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+			GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
 
 			vOrigin[2] += 15.0;
+			vAngles[1] -= 180.0;
 																
-			TeleportEntity(Building_Index, vOrigin, NULL_VECTOR, NULL_VECTOR);
+			TeleportEntity(Building_Index, vOrigin, vAngles, NULL_VECTOR);
 						
 		}
 	}

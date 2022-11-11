@@ -40,6 +40,7 @@ enum struct Round
 {
 	int Xp;
 	int Cash;
+	bool MapSetupRelay;
 	bool Custom_Refresh_Npc_Store;
 	int medival_difficulty;
 	
@@ -373,6 +374,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		round.Cash = kv.GetNum("cash");
 		round.Custom_Refresh_Npc_Store = view_as<bool>(kv.GetNum("grigori_refresh_store"));
 		round.medival_difficulty = kv.GetNum("medival_research_level");
+		round.MapSetupRelay = view_as<bool>(kv.GetNum("map_setup_fake"));
 		round.Xp = kv.GetNum("xp");
 		round.Setup = kv.GetFloat("setup");
 	
@@ -616,7 +618,7 @@ void Waves_Progress()
 			if(Is_a_boss == 2)
 			{
 				Raidboss_Clean_Everyone();
-				ReviveAll();
+				ReviveAll(true);
 				Music_EndLastmann();
 				CheckAlivePlayers();
 			}
@@ -760,6 +762,11 @@ void Waves_Progress()
 			}
 			
 			Rounds.GetArray(CurrentRound, round);
+			if(round.MapSetupRelay)
+			{
+				ExcuteRelay("zr_setuptime");
+				f_DelaySpawnsForVariousReasons = GetGameTime() + 1.5; //Delay spawns for 1.5 seconds, so maps can do their thing.
+			}
 			
 			//Loop through all the still alive enemies that are indexed!
 			int Zombies_alive_still = 0;
@@ -1042,18 +1049,7 @@ void Waves_Progress()
 		
 		if(!EscapeMode)
 		{
-			int botscalculaton;
-			
-			if((CurrentWave + 2) > CvarMaxBotsForKillfeed.IntValue)
-			{
-				botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-			}
-			else
-			{
-				botscalculaton = CurrentWave + 2;
-			}
-				
-			tf_bot_quota.IntValue = botscalculaton;
+			AdjustBotCount(CurrentWave + 2);
 		}
 	}
 	else
@@ -1089,18 +1085,7 @@ void Waves_Progress()
 				
 				if(!EscapeMode)
 				{
-					int botscalculaton;
-					
-					if((CurrentWave + 2) > CvarMaxBotsForKillfeed.IntValue)
-					{
-						botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-					}
-					else
-					{
-						botscalculaton = CurrentWave + 2;
-					}
-						
-					tf_bot_quota.IntValue = botscalculaton;
+					AdjustBotCount(CurrentWave + 2);
 				}
 			}
 			else
@@ -1110,18 +1095,7 @@ void Waves_Progress()
 				
 				if(!EscapeMode)
 				{
-					int botscalculaton;
-					
-					if((CurrentWave + 2) > CvarMaxBotsForKillfeed.IntValue)
-					{
-						botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-					}
-					else
-					{
-						botscalculaton = CurrentWave + 2;
-					}
-					
-					tf_bot_quota.IntValue = botscalculaton;
+					AdjustBotCount(CurrentWave + 2);
 				}
 			}
 			
