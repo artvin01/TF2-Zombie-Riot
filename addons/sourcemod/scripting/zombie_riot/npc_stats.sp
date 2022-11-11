@@ -5787,6 +5787,14 @@ public void Check_If_Stuck(int iNPC)
 	GetEntPropVector(iNPC, Prop_Data, "m_vecOrigin", flMyPos);
 	if(!b_IsAlliedNpc[iNPC])
 	{
+		//If NPCs some how get out of bounds
+		if(TR_PointOutsideWorld(flMyPos))
+		{
+			LogError("Enemy NPC somehow got out of the map...");
+			SDKHooks_TakeDamage(iNPC, 0, 0, 99999999.9);
+			return;
+		}
+
 		//This is a tempomary fix. find a better one for players getting stuck.
 		static float hullcheckmaxs_Player[3];
 		static float hullcheckmins_Player[3];
@@ -5901,7 +5909,39 @@ public void Check_If_Stuck(int iNPC)
 		}
 		//This is a tempomary fix. find a better one for players getting stuck.
 	}
-
+	else
+	{
+		//If NPCs some how get out of bounds
+		if(TR_PointOutsideWorld(flMyPos))
+		{
+			LogError("Allied NPC somehow got out of the map...");
+			
+			int target = 0;
+			for(int i=1; i<=MaxClients; i++)
+			{
+				if(IsClientInGame(i))
+				{
+					if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE)
+					{
+						target = i;
+						break;
+					}
+				}
+			}
+			
+			if(target)
+			{
+				float pos[3], ang[3];
+				GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+				GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+				TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
+			}
+			else
+			{
+				SDKHooks_TakeDamage(iNPC, 0, 0, 99999999.9);
+			}
+		}
+	}
 
 	if (!npc.IsOnGround())
 	{
