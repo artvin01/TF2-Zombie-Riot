@@ -138,6 +138,7 @@ float fl_RangedArmor[MAXENTITIES];
 
 bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
+float f_StuckOutOfBoundsCheck[MAXENTITIES];
 
 
 
@@ -5788,11 +5789,15 @@ public void Check_If_Stuck(int iNPC)
 	if(!b_IsAlliedNpc[iNPC])
 	{
 		//If NPCs some how get out of bounds
-		if(TR_PointOutsideWorld(flMyPos))
+		if(f_StuckOutOfBoundsCheck[iNPC] < GetGameTime())
 		{
-			LogError("Enemy NPC somehow got out of the map...");
-			SDKHooks_TakeDamage(iNPC, 0, 0, 99999999.9);
-			return;
+			f_StuckOutOfBoundsCheck[iNPC] = GetGameTime() + 10.0;
+			if(TR_PointOutsideWorld(flMyPos))
+			{
+				LogError("Enemy NPC somehow got out of the map...");
+				SDKHooks_TakeDamage(iNPC, 0, 0, 99999999.9);
+				return;
+			}
 		}
 
 		//This is a tempomary fix. find a better one for players getting stuck.
@@ -5911,34 +5916,38 @@ public void Check_If_Stuck(int iNPC)
 	}
 	else
 	{
-		//If NPCs some how get out of bounds
-		if(TR_PointOutsideWorld(flMyPos))
+		if(f_StuckOutOfBoundsCheck[iNPC] < GetGameTime())
 		{
-			LogError("Allied NPC somehow got out of the map...");
-			
-			int target = 0;
-			for(int i=1; i<=MaxClients; i++)
+			f_StuckOutOfBoundsCheck[iNPC] = GetGameTime() + 10.0;
+			//If NPCs some how get out of bounds
+			if(TR_PointOutsideWorld(flMyPos))
 			{
-				if(IsClientInGame(i))
+				LogError("Allied NPC somehow got out of the map...");
+				
+				int target = 0;
+				for(int i=1; i<=MaxClients; i++)
 				{
-					if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE)
+					if(IsClientInGame(i))
 					{
-						target = i;
-						break;
+						if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE)
+						{
+							target = i;
+							break;
+						}
 					}
 				}
-			}
-			
-			if(target)
-			{
-				float pos[3], ang[3];
-				GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
-				GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-				TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
-			}
-			else
-			{
-				SDKHooks_TakeDamage(iNPC, 0, 0, 99999999.9);
+				
+				if(target)
+				{
+					float pos[3], ang[3];
+					GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+					GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+					TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
+				}
+				else
+				{
+					SDKHooks_TakeDamage(iNPC, 0, 0, 99999999.9);
+				}
 			}
 		}
 	}
@@ -7766,6 +7775,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ScalesWithWaves[entity] = false;
 	b_PernellBuff[entity] = false;
 	IgniteFor[entity] = 0;
+	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	
 	FormatEx(c_HeadPlaceAttachmentGibName[entity], sizeof(c_HeadPlaceAttachmentGibName[]), "");
 }

@@ -4320,4 +4320,5 @@ public void MapStartResetAll()
 	Zero(i_HasBeenBackstabbed);
 	Zero(i_Headshots);
 	Zero(i_HasBeenHeadShotted);
+	Zero(f_StuckTextChatNotif);
 }
