@@ -14,6 +14,8 @@ enum
 	Rarity_Mythic = 4
 }
 
+float f_RingDelayGift[MAXENTITIES];
+
 static int RenderColors_RPG[][] =
 {
 	{255, 255, 255, 255}, 	// 0
@@ -46,7 +48,6 @@ static const char UncommonDrops[][] =
 	"Extra Burny Stuff [Uncommon]",
 	"Charged Chinooks [Uncommon]",
 	"Speedy Brewing [Uncommon]",
-	"Strike Down The False [Uncommon]",
 	"Deadly Tranquility [Uncommon]",
 	"Veteran Monkey Training [Uncommon]",
 	"Aztec Warrior Paint [Uncommon]",
@@ -65,7 +66,6 @@ static const char RareDrops[][] =
 	"SUPER Range [Rare]",
 	"Strong Tonic [Rare]",
 	"Arcane Impale [Rare]",
-	"Combine Soldier [Rare]",
 	"Tiny Tornadoes [Rare]"
 };
 
@@ -74,10 +74,8 @@ static const char LegendDrops[][] =
 	"Quad Burst [Legendary]",
 	"Big Bloon Sabotage [Legendary]",
 	"Heavy Knockback [Legendary]",
-	"Mana Shield [Legendary]",
 	"To ARMS! [Legendary]",
-	"Healthy Bananas [Legendary]",
-	"Pre-Game Prep [Legendary]"
+	"Healthy Bananas [Legendary]"
 };
 
 static const char MythicDrops[][] =
@@ -145,7 +143,6 @@ static int RollRandom()
 	return Rarity_Common;
 }
 
-float f_RingDelayGift[MAXENTITIES];
 
 public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 {
@@ -163,7 +160,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", powerup_pos);
 			if(f_RingDelayGift[entity] < GetGameTime())
 			{
-				f_RingDelayGift[entity] = GetGameTime() + 1.0;
+				f_RingDelayGift[entity] = GetGameTime() + 2.0;
 				EmitSoundToClient(client, SOUND_BEEP, entity, _, 90, _, 1.0);
 				int color[4];
 				
@@ -174,6 +171,8 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 		
 				TE_SetupBeamRingPoint(powerup_pos, 10.0, 300.0, g_BeamIndex, -1, 0, 30, 1.0, 10.0, 1.0, color, 0, 0);
 	   			TE_SendToClient(client);
+
+				GiftJumpTowardsYou(entity, client); //Terror.
    			}
 			if (IsPlayerAlive(client) && GetClientTeam(client) == view_as<int>(TFTeam_Red))
 			{
@@ -406,6 +405,8 @@ stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime
 			
 	//	i_DyingParticleIndication[victim] = EntIndexToEntRef(entity);
 		
+		f_RingDelayGift[m_iGift] = GetGameTime() + 2.0;
+
 		DataPack pack;
 		CreateDataTimer(0.1, Timer_Detect_Player_Near_Gift, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		pack.WriteCell(EntIndexToEntRef(m_iGift));
@@ -446,4 +447,62 @@ public Action GiftTransmit(int entity, int target)
 		return Plugin_Continue;
 
 	return Plugin_Handled;
+}
+
+//This is probably the silliest thing ever.
+public void GiftJumpTowardsYou(int Gift, int client)
+{
+	float Jump_1_frame[3];
+	GetEntPropVector(Gift, Prop_Data, "m_vecOrigin", Jump_1_frame);
+	float Jump_1_frame_Client[3];
+	GetEntPropVector(client, Prop_Data, "m_vecOrigin", Jump_1_frame_Client);
+	
+	float vecNPC[3], vecJumpVel[3];
+	GetEntPropVector(Gift, Prop_Data, "m_vecOrigin", vecNPC);
+		
+	float gravity = GetEntPropFloat(Gift, Prop_Data, "m_flGravity");
+	if(gravity <= 0.0)
+		gravity = FindConVar("sv_gravity").FloatValue;
+		
+	// How fast does the headcrab need to travel to reach the position given gravity?
+	float flActualHeight = Jump_1_frame_Client[2] - vecNPC[2];
+	float height = flActualHeight;
+	if ( height < 72 )
+	{
+		height = 72.0;
+	}
+
+	float additionalHeight = 0.0;
+		
+	if ( height < 35 )
+	{
+		additionalHeight = 50.0;
+	}
+		
+	height += additionalHeight;
+	
+	float speed = SquareRoot( 2 * gravity * height );
+	float time = speed / gravity;
+	
+	time += SquareRoot( (2 * additionalHeight) / gravity );
+		
+	// Scale the sideways velocity to get there at the right time
+	SubtractVectors( Jump_1_frame_Client, vecNPC, vecJumpVel );
+	vecJumpVel[0] /= time;
+	vecJumpVel[1] /= time;
+	vecJumpVel[2] /= time;
+	
+	// Speed to offset gravity at the desired height.
+	vecJumpVel[2] = speed;
+		
+	// Don't jump too far/fast.
+	float flJumpSpeed = GetVectorLength(vecJumpVel);
+	float flMaxSpeed = 350.0;
+	if ( flJumpSpeed > flMaxSpeed )
+	{
+		vecJumpVel[0] *= flMaxSpeed / flJumpSpeed;
+		vecJumpVel[1] *= flMaxSpeed / flJumpSpeed;
+		vecJumpVel[2] *= flMaxSpeed / flJumpSpeed;
+	}
+	TeleportEntity(Gift, NULL_VECTOR, NULL_VECTOR, vecJumpVel);
 }

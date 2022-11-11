@@ -3713,13 +3713,17 @@ public void OnEntityCreated(int entity, const char[] classname)
 public void SDKHook_SafeSpot_StartTouch(int entity, int target)
 {
 	if(target > 0 && target < sizeof(i_InSafeZone))
+	{
 		i_InSafeZone[target]++;
+	}
 }
 
 public void SDKHook_SafeSpot_EndTouch(int entity, int target)
 {
 	if(target > 0 && target < sizeof(i_InSafeZone))
+	{
 		i_InSafeZone[target]--;
+	}
 }
 
 public void SDKHook_RespawnRoom_StartTouch(int entity, int target)
