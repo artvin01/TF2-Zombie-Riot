@@ -188,154 +188,157 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 					{
 						int rand = GetURandomInt();
 						int length = TextStore_GetItems();
-						for(int i; i<length; i++)
+						for(int r = i_RarityType[entity]; r >= 0; r--)
 						{
-							static char buffer[128];
-							TextStore_GetItemName(i, buffer, sizeof(buffer));
-							
-							if(length && i_RarityType[entity] >= Rarity_Mythic)
+							for(int i; i<length; i++)
 							{
-								if(ScrapToGive == 0)
+								static char buffer[128];
+								TextStore_GetItemName(i, buffer, sizeof(buffer));
+								
+								if(length && r == Rarity_Mythic)
 								{
-									ScrapToGive = 6;
-								}
-								int start = (rand % sizeof(MythicDrops));
-								int a = start;
-								do
-								{
-									if(StrEqual(buffer, MythicDrops[a], false))
+									if(ScrapToGive == 0)
 									{
-										int amount;
-										TextStore_GetInv(client, i, amount);
-										if(!amount)
+										ScrapToGive = 6;
+									}
+									int start = (rand % sizeof(MythicDrops));
+									int a = start;
+									do
+									{
+										if(StrEqual(buffer, MythicDrops[a], false))
 										{
-											CPrintToChat(client,"{default}You have found {darkred}%s{default}!", MythicDrops[a]);
-											TextStore_SetInv(client, i, amount + 1);
-											length = 0;
+											int amount;
+											TextStore_GetInv(client, i, amount);
+											if(!amount)
+											{
+												CPrintToChat(client,"{default}You have found {darkred}%s{default}!", MythicDrops[a]);
+												TextStore_SetInv(client, i, amount + 1);
+												length = 0;
+											}
+											
+											break;
 										}
 										
-										break;
-									}
-									
-									if(++a >= sizeof(MythicDrops))
-										a = 0;
-								} while(a != start);
-							}
-							
-							if(length && i_RarityType[entity] >= Rarity_Legend)
-							{
-								if(ScrapToGive == 0)
-								{
-									ScrapToGive = 5;
+										if(++a >= sizeof(MythicDrops))
+											a = 0;
+									} while(a != start);
 								}
-								int start = (rand % sizeof(LegendDrops));
-								int a = start;
-								do
+								
+								if(length && r == Rarity_Legend)
 								{
-									if(StrEqual(buffer, LegendDrops[a], false))
+									if(ScrapToGive == 0)
 									{
-										int amount;
-										TextStore_GetInv(client, i, amount);
-										if(!amount)
+										ScrapToGive = 5;
+									}
+									int start = (rand % sizeof(LegendDrops));
+									int a = start;
+									do
+									{
+										if(StrEqual(buffer, LegendDrops[a], false))
 										{
-											CPrintToChat(client,"{default}You have found {yellow}%s{default}!", LegendDrops[a]);
-											TextStore_SetInv(client, i, amount + 1);
-											length = 0;
+											int amount;
+											TextStore_GetInv(client, i, amount);
+											if(!amount)
+											{
+												CPrintToChat(client,"{default}You have found {yellow}%s{default}!", LegendDrops[a]);
+												TextStore_SetInv(client, i, amount + 1);
+												length = 0;
+											}
+											
+											break;
 										}
 										
-										break;
-									}
-									
-									if(++a >= sizeof(LegendDrops))
-										a = 0;
-								} while(a != start);
-							}
-							
-							if(length && i_RarityType[entity] >= Rarity_Rare)
-							{
-								if(ScrapToGive == 0)
-								{
-									ScrapToGive = 4;
+										if(++a >= sizeof(LegendDrops))
+											a = 0;
+									} while(a != start);
 								}
-								int start = (rand % sizeof(RareDrops));
-								int a = start;
-								do
+								
+								if(length && r == Rarity_Rare)
 								{
-									if(StrEqual(buffer, RareDrops[a], false))
+									if(ScrapToGive == 0)
 									{
-										int amount;
-										TextStore_GetInv(client, i, amount);
-										if(!amount)
+										ScrapToGive = 4;
+									}
+									int start = (rand % sizeof(RareDrops));
+									int a = start;
+									do
+									{
+										if(StrEqual(buffer, RareDrops[a], false))
 										{
-											CPrintToChat(client,"{default}You have found {blue}%s{default}!", RareDrops[a]);
-											TextStore_SetInv(client, i, amount + 1);
-											length = 0;
+											int amount;
+											TextStore_GetInv(client, i, amount);
+											if(!amount)
+											{
+												CPrintToChat(client,"{default}You have found {blue}%s{default}!", RareDrops[a]);
+												TextStore_SetInv(client, i, amount + 1);
+												length = 0;
+											}
+											
+											break;
 										}
 										
-										break;
-									}
-									
-									if(++a >= sizeof(RareDrops))
-										a = 0;
-								} while(a != start);
-							}
-							
-							if(length && i_RarityType[entity] >= Rarity_Uncommon)
-							{
-								if(ScrapToGive == 0)
-								{
-									ScrapToGive = 2;
+										if(++a >= sizeof(RareDrops))
+											a = 0;
+									} while(a != start);
 								}
-								int start = (rand % sizeof(UncommonDrops));
-								int a = start;
-								do
+								
+								if(length && r == Rarity_Uncommon)
 								{
-									if(StrEqual(buffer, UncommonDrops[a], false))
+									if(ScrapToGive == 0)
 									{
-										int amount;
-										TextStore_GetInv(client, i, amount);
-										if(!amount)
+										ScrapToGive = 2;
+									}
+									int start = (rand % sizeof(UncommonDrops));
+									int a = start;
+									do
+									{
+										if(StrEqual(buffer, UncommonDrops[a], false))
 										{
-											CPrintToChat(client,"{default}You have found {green}%s{default}!", UncommonDrops[a]);
-											TextStore_SetInv(client, i, amount + 1);
-											length = 0;
+											int amount;
+											TextStore_GetInv(client, i, amount);
+											if(!amount)
+											{
+												CPrintToChat(client,"{default}You have found {green}%s{default}!", UncommonDrops[a]);
+												TextStore_SetInv(client, i, amount + 1);
+												length = 0;
+											}
+											
+											break;
 										}
 										
-										break;
-									}
-									
-									if(++a >= sizeof(UncommonDrops))
-										a = 0;
-								} while(a != start);
-							}
-							
-							if(length && i_RarityType[entity] >= Rarity_Common)
-							{
-								if(ScrapToGive == 0)
-								{
-									ScrapToGive = 1;
+										if(++a >= sizeof(UncommonDrops))
+											a = 0;
+									} while(a != start);
 								}
-								int start = (rand % sizeof(CommonDrops));
-								int a = start;
-								do
+								
+								if(length && r == Rarity_Common)
 								{
-									if(StrEqual(buffer, CommonDrops[a], false))
+									if(ScrapToGive == 0)
 									{
-										int amount;
-										TextStore_GetInv(client, i, amount);
-										if(!amount)
+										ScrapToGive = 1;
+									}
+									int start = (rand % sizeof(CommonDrops));
+									int a = start;
+									do
+									{
+										if(StrEqual(buffer, CommonDrops[a], false))
 										{
-											CPrintToChat(client,"{default}You have found %s!", CommonDrops[a]);
-											TextStore_SetInv(client, i, amount + 1);
-											length = 0;
+											int amount;
+											TextStore_GetInv(client, i, amount);
+											if(!amount)
+											{
+												CPrintToChat(client,"{default}You have found %s!", CommonDrops[a]);
+												TextStore_SetInv(client, i, amount + 1);
+												length = 0;
+											}
+											
+											break;
 										}
 										
-										break;
-									}
-									
-									if(++a >= sizeof(CommonDrops))
-										a = 0;
-								} while(a != start);
+										if(++a >= sizeof(CommonDrops))
+											a = 0;
+									} while(a != start);
+								}
 							}
 						}
 						
