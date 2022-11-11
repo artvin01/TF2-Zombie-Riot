@@ -2768,7 +2768,7 @@ stock void UpdatePlayerPoints(int client)
 	
 	Points += i_BarricadeHasBeenDamaged[client] / 65;
 	
-	Points += i_ExtraPlayerPoints[client] / 50;
+	Points += i_ExtraPlayerPoints[client] / 2;
 	
 	Points /= 10;
 	

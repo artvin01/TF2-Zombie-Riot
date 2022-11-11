@@ -3048,14 +3048,14 @@ public bool BuildingCustomCommand(int client)
 						
 						if(Village_Flags[client] & VILLAGE_050)
 						{
-							i_ExtraPlayerPoints[client] += 10000; //Static point increace.
+							i_ExtraPlayerPoints[client] += 100; //Static point increace.
 							Village_ReloadBuffFor[client] = GetGameTime() + 20.0;
 							EmitSoundToAll("items/powerup_pickup_uber.wav");
 							EmitSoundToAll("items/powerup_pickup_uber.wav");
 						}
 						else
 						{
-							i_ExtraPlayerPoints[client] += 5000; //Static point increace.
+							i_ExtraPlayerPoints[client] += 50; //Static point increace.
 							Village_ReloadBuffFor[client] = GetGameTime() + 15.0;
 							EmitSoundToAll("player/mannpower_invulnerable.wav", client);
 							EmitSoundToAll("player/mannpower_invulnerable.wav", client);
@@ -4213,7 +4213,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 	}
 	
 	
-	i_ExtraPlayerPoints[owner] += 25; //Static low point increace.
+	i_ExtraPlayerPoints[owner] += 2; //Static low point increace.
 	
 	int effects = Village_Flags[owner];
 	
@@ -4454,19 +4454,19 @@ int Building_GetCashOnWave(int current)
 		{
 			if(Village_Flags[client] & VILLAGE_003)
 			{
-				i_ExtraPlayerPoints[client] += 5000;
+				i_ExtraPlayerPoints[client] += 50;
 				popCash++;
 			}
 			
 			if(Village_Flags[client] & VILLAGE_004)
 			{
-				i_ExtraPlayerPoints[client] += 10000;
+				i_ExtraPlayerPoints[client] += 100;
 				extras++;
 			}
 			
 			if(Village_Flags[client] & VILLAGE_005)
 			{
-				i_ExtraPlayerPoints[client] += 20000; //Alot of free points.
+				i_ExtraPlayerPoints[client] += 200; //Alot of free points.
 				farms++;
 			}
 		}

@@ -1720,7 +1720,7 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 	}
 	
 	//They successfully blew the horn! give them abit of credit for that! they helpinnnnnnn... yay
-	i_ExtraPlayerPoints[client] += 1500;
+	i_ExtraPlayerPoints[client] += 15;
 	TF2Attrib_SetByDefIndex(entity, 698, 0.0); // disable weapon switch
 	return MRES_Ignored;
 }
