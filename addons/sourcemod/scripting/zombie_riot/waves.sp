@@ -618,7 +618,7 @@ void Waves_Progress()
 			if(Is_a_boss == 2)
 			{
 				Raidboss_Clean_Everyone();
-				ReviveAll();
+				ReviveAll(true);
 				Music_EndLastmann();
 				CheckAlivePlayers();
 			}
@@ -637,7 +637,10 @@ void Waves_Progress()
 			if(count > 150)
 				count = 150;
 			
-			Zombies_Currently_Still_Ongoing += count;
+			if(!wave.EnemyData.Friendly)
+			{
+				Zombies_Currently_Still_Ongoing += count;
+			}
 			
 			
 			int Is_Health_Scaling;

@@ -294,7 +294,8 @@ stock bool KvJumpToKeySymbol2(KeyValues kv, int id)
 	}
 	return false;
 }
-stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool ignore_allied_npc = false)
+
+stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool ignore_allied_npc = false, bool mask_shot = false)
 {
 	float vecOrigin[3], vecAngles[3], vecEndOrigin[3];
 	GetClientEyePosition(iClient, vecOrigin);
@@ -304,14 +305,25 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 
 	//Mask shot here, reasoning being that it should be easiser to interact with buildings and npcs if they are very close to eachother or inside (This wont fully fix it, but i see not other way.)
 	//This is client compensated anyways, and reviving is still via hull and not hitboxes.
+	int flags = CONTENTS_SOLID;
+
+	if(!mask_shot)
+	{
+		flags |= MASK_SOLID;
+	}
+	else
+	{
+		flags |= MASK_SHOT;
+	}
+
 	if(!ignore_allied_npc)
 	{
-		hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SHOT | CONTENTS_SOLID ), RayType_Infinite, Trace_DontHitEntityOrPlayer, iClient);
+		hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( flags ), RayType_Infinite, Trace_DontHitEntityOrPlayer, iClient);
 		TR_GetEndPosition(vecEndOrigin, hTrace);
 	}
 	else
 	{
-		hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SHOT | CONTENTS_SOLID ), RayType_Infinite, Trace_DontHitEntityOrPlayerOrAlliedNpc, iClient);
+		hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( flags ), RayType_Infinite, Trace_DontHitEntityOrPlayerOrAlliedNpc, iClient);
 		TR_GetEndPosition(vecEndOrigin, hTrace);		
 	}
 
@@ -2749,12 +2761,14 @@ stock void UpdatePlayerPoints(int client)
 	Points += Healing_done_in_total[client] / 5;
 	
 	Points += RoundToCeil(Damage_dealt_in_total[client]) / 200;
+
+	i_Damage_dealt_in_total[client] = RoundToCeil(Damage_dealt_in_total[client]);
 	
 	Points += Resupplies_Supplied[client] * 2;
 	
 	Points += i_BarricadeHasBeenDamaged[client] / 65;
 	
-	Points += i_ExtraPlayerPoints[client] / 50;
+	Points += i_ExtraPlayerPoints[client] / 2;
 	
 	Points /= 10;
 	
@@ -2887,7 +2901,7 @@ public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 }
 
 
-public void ReviveAll()
+void ReviveAll(bool raidspawned = false)
 {
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -2917,16 +2931,24 @@ public void ReviveAll()
 					SetEntityRenderMode(client, RENDER_NORMAL);
 					SetEntityRenderColor(client, 255, 255, 255, 255);
 					SetEntityCollisionGroup(client, 5);
-					if(!EscapeMode)
+					if(!raidspawned)
 					{
-						SetEntityHealth(client, 50);
-						RequestFrame(SetHealthAfterRevive, client);
-					}	
-					else
-					{
-						SetEntityHealth(client, 150);
-						RequestFrame(SetHealthAfterRevive, client);						
+						if(!EscapeMode)
+						{
+							SetEntityHealth(client, 50);
+							RequestFrame(SetHealthAfterRevive, client);
+						}	
+						else
+						{
+							SetEntityHealth(client, 150);
+							RequestFrame(SetHealthAfterRevive, client);						
+						}
 					}
+				}
+				if(raidspawned)
+				{
+					SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+					RequestFrame(SetHealthAfterReviveRaid, client);	
 				}
 			}
 		}

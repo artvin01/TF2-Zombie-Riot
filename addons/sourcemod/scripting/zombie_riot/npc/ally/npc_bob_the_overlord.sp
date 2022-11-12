@@ -1774,10 +1774,6 @@ public Action Bob_player_killed(Event hEvent, const char[] sEvName, bool bDontBr
 
 public Action BobTheGod_Owner_Hurt(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	//Friendly fire
-	if(view_as<CClotBody>(attacker).GetTeam() == view_as<CClotBody>(victim).GetTeam())
-		return Plugin_Continue;
-		
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;

@@ -64,10 +64,51 @@ void SDKHook_MapStart()
 public void SDKHook_ScoreThink(int entity)
 {
 	static int offset = -1;
+	static int offset_Damage = -1;
+	static int offset_damageblocked = -1;
+//	static int offset_bonus = -1;
+
 	if(offset == -1) 
 		offset = FindSendPropInfo("CTFPlayerResource", "m_iTotalScore");
-	
+
+	if(offset_Damage == -1) 
+		offset_Damage = FindSendPropInfo("CTFPlayerResource", "m_iDamage");
+
+	if(offset_damageblocked == -1) 
+		offset_damageblocked = FindSendPropInfo("CTFPlayerResource", "m_iDamageBlocked");
+
+//	if(offset_bonus == -1) 
+//		offset_bonus = FindSendPropInfo("CTFPlayerResource", "m_iCurrencyCollected");
+
+
 	SetEntDataArray(entity, offset, PlayerPoints, MaxClients + 1);
+	SetEntDataArray(entity, offset_Damage, i_Damage_dealt_in_total, MaxClients + 1);
+//	SetEntDataArray(entity, offset_bonus, i_BarricadeHasBeenDamaged, MaxClients + 1);
+
+
+	int Conversion_ExtraPoints[MAXTF2PLAYERS];
+	for(int client=1; client<=MaxClients; client++)
+	{
+		Conversion_ExtraPoints[client] = i_ExtraPlayerPoints[client] / 2;
+	}
+
+	SetEntDataArray(entity, offset_damageblocked, Conversion_ExtraPoints, MaxClients + 1);
+
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && !b_IsPlayerABot[client])
+		{
+			SetEntProp(client, Prop_Data, "m_iFrags", i_KillsMade[client]);
+			SetEntProp(client, Prop_Send, "m_iHealPoints", Healing_done_in_total[client]);
+			SetEntProp(client, Prop_Send, "m_iBackstabs", i_Backstabs[client]);
+			SetEntProp(client, Prop_Send, "m_iHeadshots", i_Headshots[client]);
+			SetEntProp(client, Prop_Send, "m_iDefenses", i_BarricadeHasBeenDamaged[client] / 1000);
+
+
+		//	m_iHealPoints
+		}
+	}	
+	
 }
 
 void SDKHook_HookClient(int client)
@@ -149,12 +190,12 @@ public void OnPostThink(int client)
 			{
 				if(PercentageHealth > 0.35)
 				{
-					if(i_SvRollAngle[client] != 0)
-					{
-						RequestFrame(SetEyeAngleCorrect, client);
-					}
+				//	if(i_SvRollAngle[client] != 1)
+				//	{
+				//		RequestFrame(SetEyeAngleCorrect, client);
+				//	}
 
-					i_SvRollAngle[client] = 0;
+					i_SvRollAngle[client] = 1;
 				}
 				else
 				{
@@ -167,16 +208,21 @@ public void OnPostThink(int client)
 					PercentageHealth *= 125.0; // we want the full number! this only works in big ones. also divitde by 4
 
 					i_SvRollAngle[client] = RoundToCeil(PercentageHealth);
+
+					if(i_SvRollAngle[client] < 1)
+					{
+						i_SvRollAngle[client] = 1;
+					}
 				}
 			}
 			else
 			{
-				if(i_SvRollAngle[client] != 0)
-				{
-					RequestFrame(SetEyeAngleCorrect,client);
-				}
+			//	if(i_SvRollAngle[client] != 1)
+			//	{
+			//		RequestFrame(SetEyeAngleCorrect,client);
+			//	}
 
-				i_SvRollAngle[client] = 0;
+				i_SvRollAngle[client] = 1;
 			}
 
 			char RollAngleValue[4];

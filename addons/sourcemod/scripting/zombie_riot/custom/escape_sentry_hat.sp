@@ -104,13 +104,13 @@ public Action Check_If_Owner_Dead(Handle sentryHud, int ref)
 	}
 }
 
-static bool Player_Mounting_Building[MAXPLAYERS + 1];
+bool Player_Mounting_Building[MAXPLAYERS + 1];
 
 public void MountBuildingToBack(int client, int weapon, bool crit)
 {
 	if(!Player_Mounting_Building[client])
 	{
-		int entity = GetClientPointVisible(client, _ , true);
+		int entity = GetClientPointVisible(client, _ , true, true);
 		if(entity > MaxClients)
 		{
 			if (IsValidEntity(entity))
@@ -133,6 +133,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
 								Mount_Building[client] = CreateDataTimer(1.0, Mount_Building_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+								pack.WriteCell(client);
 								pack.WriteCell(EntIndexToEntRef(entity));
 								pack.WriteCell(GetClientUserId(client));
 								SetGlobalTransTarget(client);
@@ -148,6 +149,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
 								Mount_Building[client] = CreateDataTimer(1.0, Mount_Building_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+								pack.WriteCell(client);
 								pack.WriteCell(EntIndexToEntRef(entity));
 								pack.WriteCell(GetClientUserId(client));
 								SetGlobalTransTarget(client);
@@ -163,6 +165,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
 								Mount_Building[client] = CreateDataTimer(1.0, Mount_Building_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+								pack.WriteCell(client);
 								pack.WriteCell(EntIndexToEntRef(entity));
 								pack.WriteCell(GetClientUserId(client));
 								SetGlobalTransTarget(client);
@@ -178,6 +181,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
 								Mount_Building[client] = CreateDataTimer(1.0, Mount_Building_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+								pack.WriteCell(client);
 								pack.WriteCell(EntIndexToEntRef(entity));
 								pack.WriteCell(GetClientUserId(client));
 								SetGlobalTransTarget(client);
@@ -193,6 +197,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
 								Mount_Building[client] = CreateDataTimer(1.0, Mount_Building_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+								pack.WriteCell(client);
 								pack.WriteCell(EntIndexToEntRef(entity));
 								pack.WriteCell(GetClientUserId(client));
 								SetGlobalTransTarget(client);
@@ -208,6 +213,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
 								Mount_Building[client] = CreateDataTimer(1.0, Mount_Building_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+								pack.WriteCell(client);
 								pack.WriteCell(EntIndexToEntRef(entity));
 								pack.WriteCell(GetClientUserId(client));
 								SetGlobalTransTarget(client);
@@ -223,6 +229,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
 								Mount_Building[client] = CreateDataTimer(1.0, Mount_Building_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+								pack.WriteCell(client);
 								pack.WriteCell(EntIndexToEntRef(entity));
 								pack.WriteCell(GetClientUserId(client));
 								SetGlobalTransTarget(client);
@@ -238,6 +245,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
 								Mount_Building[client] = CreateDataTimer(1.0, Mount_Building_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+								pack.WriteCell(client);
 								pack.WriteCell(EntIndexToEntRef(entity));
 								pack.WriteCell(GetClientUserId(client));
 								SetGlobalTransTarget(client);
@@ -266,16 +274,18 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 public Action Mount_Building_Timer(Handle sentryHud, DataPack pack)
 {
 	pack.Reset();
+	int original_index = pack.ReadCell();
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	int client = GetClientOfUserId(pack.ReadCell());
 	
+	Doing_Handle_Mount[original_index] = false;
+
 	if(IsValidClient(client))
 	{
-		Doing_Handle_Mount[client] = false;
 		PrintCenterText(client, " ");
 		if (IsValidEntity(entity))
 		{
-			int looking_at = GetClientPointVisible(client, _ , true);
+			int looking_at = GetClientPointVisible(client, _ , true, true);
 			if (looking_at == entity)
 			{
 				static char buffer[64];
@@ -464,6 +474,11 @@ stock void DestroyDispenser(int client)
 			g_CarriedDispenser[client] = INVALID_ENT_REFERENCE;
 		}
 	}
+	{
+		Building_Mounted[client] = 0;
+		Player_Mounting_Building[client] = false;
+		g_CarriedDispenser[client] = INVALID_ENT_REFERENCE; //Just remove entirely, just make sure.
+	}
 }
 
 stock bool IsValidBuilding(int iBuilding)
@@ -575,6 +590,12 @@ stock void UnequipDispenser(int client)
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, StandStill);
 		}
 		g_CarriedDispenser[client] = INVALID_ENT_REFERENCE;
+	}
+	else
+	{
+		Building_Mounted[client] = 0;
+		Player_Mounting_Building[client] = false;
+		g_CarriedDispenser[client] = INVALID_ENT_REFERENCE; //Just remove entirely, just make sure.
 	}
 }
 

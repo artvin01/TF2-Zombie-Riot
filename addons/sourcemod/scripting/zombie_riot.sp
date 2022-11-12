@@ -32,7 +32,7 @@
 
 #define NPC_HARD_LIMIT 42 
 #define ZR_MAX_NPCS (NPC_HARD_LIMIT*2)
-#define ZR_MAX_NPCS_ALLIED 16 //Never need more.
+#define ZR_MAX_NPCS_ALLIED 42 //Never need more.
 #define ZR_MAX_LAG_COMP 128 
 #define ZR_MAX_BUILDINGS 64 //cant ever have more then 64 realisticly speaking
 #define ZR_MAX_TRAPS 64
@@ -245,6 +245,12 @@ float RoundStartTime;
 char WhatDifficultySetting[64];
 float healing_cooldown[MAXTF2PLAYERS];
 float Damage_dealt_in_total[MAXTF2PLAYERS];
+int i_Damage_dealt_in_total[MAXTF2PLAYERS];
+int i_KillsMade[MAXTF2PLAYERS];
+int i_Backstabs[MAXTF2PLAYERS];
+bool i_HasBeenBackstabbed[MAXENTITIES];
+int i_Headshots[MAXTF2PLAYERS];
+bool i_HasBeenHeadShotted[MAXENTITIES];
 float f_TimeAfterSpawn[MAXTF2PLAYERS];
 
 int Healing_done_in_total[MAXTF2PLAYERS];
@@ -296,6 +302,8 @@ float Increaced_Overall_damage_Low[MAXENTITIES];
 float Resistance_Overall_Low[MAXENTITIES];
 
 bool Moved_Building[MAXENTITIES] = {false,... };
+float Get_old_pos_back[MAXENTITIES][3];
+//This is for going through things via lag comp or other reasons to teleport things away.
 //bool Do_Not_Regen_Mana[MAXTF2PLAYERS];
 
 //float Resistance_for_building_High[MAXENTITIES];
@@ -622,6 +630,8 @@ public const char PerkNames_Recieved[][] =
 	"Widows Wine Recieved",
 };
 
+#define ITSTILIVES 666
+
 enum
 {
 	NOTHING 						= 0,	
@@ -775,10 +785,7 @@ enum
 	ALT_MECHA_PYROGIANT			= 133,
 	ALT_MECHA_SCOUT				= 134,
 	ALT_DONNERKRIEG				= 135,
-	ALT_SCHWERTKRIEG			= 136,
-	
-	
-	ITSTILIVES	= 137,
+	ALT_SCHWERTKRIEG			= 136
 }
 
 
@@ -931,8 +938,7 @@ public const char NPC_Names[][] =
 	"Mecha Giant Pyro",
 	"Mecha Scout",
 	"Donnerkrieg",
-	"Schwertkrieg",
-	"Bob the Overgod of gods and destroyer of multiverses",
+	"Schwertkrieg"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -1082,8 +1088,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_mecha_scout",
 	"npc_alt_mecha_scout",
 	"npc_alt_donnerkrieg",
-	"npc_alt_schwertkrieg",
-	""
+	"npc_alt_schwertkrieg"
 };
 
 #include "zombie_riot/stocks_override.sp"
@@ -1265,6 +1270,7 @@ public void OnPluginStart()
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
 	RegAdminCmd("sm_tutorial_test", Command_TestTutorial, ADMFLAG_ROOT, "Test The Tutorial");
 	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");
+	RegAdminCmd("sm_play_viewmodel_anim", Command_PlayViewmodelAnim, ADMFLAG_ROOT, "Testing viewmodel animation manually");
 	RegConsoleCmd("sm_make_niko", Command_MakeNiko, "Turn This player into niko");
 	
 	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_GENERIC, "BRB GONNA MURDER MY MOM'S DISHES");
@@ -1701,7 +1707,44 @@ public Action Command_MakeNiko(int client, int args)
 	}
 	return Plugin_Handled;
 }
+public Action Command_PlayViewmodelAnim(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_play_viewmodel_anim <target> <index>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[12];
+	GetCmdArg(2, buf, sizeof(buf));
+	int anim_index = StringToInt(buf); 
 
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		int viewmodel = GetEntPropEnt(targets[target], Prop_Send, "m_hViewModel");
+		if(viewmodel>MaxClients && IsValidEntity(viewmodel)) //For some reason it plays the horn anim again, just set it to idle!
+		{
+			int animation = anim_index;
+			SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);
+		}
+	}
+	
+	return Plugin_Handled;
+}
 public Action Command_GiveDialogBox(int client, int args)
 {
 	//What are you.
@@ -1864,6 +1907,9 @@ public void OnClientPutInServer(int client)
 	CashRecievedNonWave[client] = 0;
 	Healing_done_in_total[client] = 0;
 	i_BarricadeHasBeenDamaged[client] = 0;
+	i_KillsMade[client] = 0;
+	i_Backstabs[client] = 0;
+	i_Headshots[client] = 0;
 	Ammo_Count_Ready[client] = 0;
 	Armor_Charge[client] = 0;
 	Doing_Handle_Mount[client] = false;
@@ -2305,6 +2351,12 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 		if(g_CarriedDispenser[client] != INVALID_ENT_REFERENCE)
 		{
 			DestroyDispenser(client);
+		}
+		else
+		{
+			Building_Mounted[client] = 0;
+			Player_Mounting_Building[client] = false;
+			g_CarriedDispenser[client] = INVALID_ENT_REFERENCE; //Just remove entirely, just make sure.
 		}
 	}
 
@@ -2909,18 +2961,24 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	}
 	else if(buttons & IN_ATTACK2)
 	{
+		PrintToConsole(client,"In_attack2 Happend");
 		holding[client] = IN_ATTACK2;
 		
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		
+		PrintToConsole(client,"Weapon Is %i", weapon_holding);
 		b_IgnoreWarningForReloadBuidling[client] = false;
 		if(IsValidEntity(weapon_holding))
 		{
+			PrintToConsole(client,"Weapon Is Valid.");
 			char classname[32];
 			GetEntityClassname(weapon_holding, classname, 32);
 			Action action = Plugin_Continue;
+
+		//	PrintToConsole(client,"Weapon Is %s", EntityFuncAttack2[weapon_holding]);
+
 			if(EntityFuncAttack2[weapon_holding] && EntityFuncAttack2[weapon_holding]!=INVALID_FUNCTION)
 			{
+				PrintToConsole(client,"Weapon has an valid function.");
 				bool result = false; //ignore crit.
 				int slot = 2;
 				Call_StartFunction(null, EntityFuncAttack2[weapon_holding]);
@@ -2932,16 +2990,20 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 			if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
 			{
+				PrintToConsole(client,"Weapon is melee.");
 				if(EntityFuncAttack2[weapon_holding] != MountBuildingToBack && TeutonType[client] == TEUTON_NONE)
 				{
+					PrintToConsole(client,"Weapon is not MountBuildingToBack.");
 					b_IgnoreWarningForReloadBuidling[client] = true;
 					Pickup_Building_M2(client, weapon, false);
 				}
 			}
 		}
 		StartPlayerOnlyLagComp(client, true);
+		PrintToConsole(client,"Mouse2 interact");
 		if(InteractKey(client, weapon_holding, false)) //doesnt matter which one
 		{
+			PrintToConsole(client,"Mouse2 interacted");
 			buttons &= ~IN_ATTACK2;
 			EndPlayerOnlyLagComp(client);
 			return Plugin_Changed;
@@ -3172,6 +3234,36 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 	Medikit_healing(client, buttons);
 }
 
+
+//Revival raid spam
+public void SetHealthAfterReviveRaid(int client)
+{
+	if(IsValidClient(client))
+	{	
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+		RequestFrame(SetHealthAfterReviveRaidAgain, client);	
+	}
+}
+
+public void SetHealthAfterReviveRaidAgain(int client)
+{
+	if(IsValidClient(client))
+	{	
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+		RequestFrame(SetHealthAfterReviveRaidAgainAgain, client);	
+	}
+}
+
+public void SetHealthAfterReviveRaidAgainAgain(int client)
+{
+	if(IsValidClient(client))
+	{	
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+	}
+}
+//Revival raid spam
+
+//Set hp spam after normal revive
 public void SetHealthAfterRevive(int client)
 {
 	if(IsValidClient(client))
@@ -3179,7 +3271,6 @@ public void SetHealthAfterRevive(int client)
 		RequestFrame(SetHealthAfterReviveAgain, client);	
 	}
 }
-
 
 public void SetHealthAfterReviveAgain(int client)
 {
@@ -3212,6 +3303,9 @@ public void SetHealthAfterReviveAgainAgain(int client) //For some reason i have 
 		}
 	}
 }
+
+//Set hp spam after normal revive
+
 
 public void Update_Ammo(int  client)
 {
@@ -3619,13 +3713,17 @@ public void OnEntityCreated(int entity, const char[] classname)
 public void SDKHook_SafeSpot_StartTouch(int entity, int target)
 {
 	if(target > 0 && target < sizeof(i_InSafeZone))
+	{
 		i_InSafeZone[target]++;
+	}
 }
 
 public void SDKHook_SafeSpot_EndTouch(int entity, int target)
 {
 	if(target > 0 && target < sizeof(i_InSafeZone))
+	{
 		i_InSafeZone[target]--;
+	}
 }
 
 public void SDKHook_RespawnRoom_StartTouch(int entity, int target)
@@ -4217,4 +4315,10 @@ public void MapStartResetAll()
 	Zero(f_DelayBuildNotif);
 	Zero(f_ClientInvul);
 	f_DelaySpawnsForVariousReasons = 0.0;
+	Zero(i_KillsMade);
+	Zero(i_Backstabs);
+	Zero(i_HasBeenBackstabbed);
+	Zero(i_Headshots);
+	Zero(i_HasBeenHeadShotted);
+	Zero(f_StuckTextChatNotif);
 }

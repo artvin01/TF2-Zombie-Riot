@@ -7,6 +7,7 @@
 		"de"	"Bob Der Zweite"
 		"pl"    "Bob drugi"
 		"pt"	"Bob o 2°"
+		"nl"	"Bob De Tweede"
 	}
 	"Bob The Second:"
 	{
@@ -15,6 +16,7 @@
 		"de"	"Bob Der Zweite:"
 		"pl"    "Bob drugi:"
 		"pt"	"Bob o 2°:"
+		"nl"	"Bob De Tweede:"
 	}
 	"Pistol Ammo"
 	{
@@ -23,6 +25,7 @@
 		"de"	"Pistolen Munition"
 		"pl"    "Amunicja do pistoletu"
 		"pt"	"Munição da Pistola"
+		"nl"	"Pistool Ammunitie"
 	}
 	"Bob The Second is not friendly and follows you!"
 	{
@@ -31,6 +34,7 @@
 		"de"	"Bob Der Zweite ist nicht Freundlich und folgt dir!"
 		"pl"    "Bob drugi nie jest przyjazny i podąża za tobą!"
 		"pt"	"Bob o 2° não é amigável e te segue!"
+		"nl"	"Bob De Tweede is niet vriendelijk en volgt je!"
 	}
 	"Use voice Commands to command him!"
 	{
@@ -39,6 +43,7 @@
 		"de"	"Benutze Sprach Befehle um ihn zu befehlen!"
 		"pl"    "Używaj komend głowosych aby jemu rozkazywać!"
 		"pt"	"Use comandos de voz para o comandar!"
+		"nl"	"Gebruik Stemcommando's om commando's te geven aan hem!"
 	}
 	"Bob The Second is friendly and follows you!"
 	{
@@ -47,6 +52,7 @@
 		"de"	"Bob Der Zweite ist freundlich und folgt dir!"
 		"pl"    "Bob drugi jest przyjazny i podąża za tobą!"
 		"pt"	"Bob o 2° é amigável e te segue!"
+		"nl"	"Bob De Tweede is vriendelijk en volgt je!"
 	}
 	"Bob The Second is not friendly and doesn't follow you!"
 	{
@@ -55,6 +61,7 @@
 		"de"	"Bob Der Zweite ist nicht Freundlich und folgt dir nicht!"
 		"pl"    "Bob drugi nie jest przyjazny i nie podąża za tobą!"
 		"pt"	"Bob o 2° não é amigável e não te segue!"
+		"nl"	"Bob De Tweede is niet vriendelijk en volgt je niet!"
 	}
 	"Bob The Second is friendly and doesn't follow you!"
 	{
@@ -63,6 +70,7 @@
 		"de"	"Bob Der Zweite ist freundlich und folgt dir nicht!"
 		"pl"    "Bob drugi jest przyjazny i nie podąża za tobą!"
 		"pt"	"Bob o 2° é amigável e não te segue!"
+		"nl"	"Bob De Tweede is vriendelijk en volgt je niet!"
 	}
 	"Bob The Second is not friendly and follows you! BUT stands still."
 	{
@@ -71,6 +79,7 @@
 		"de"	"Bob Der Zweite ist nicht freundlich und folgt dir! ABER bleibt stehen."
 		"pl"    "Bob drugi nie jest przyjazny i podąża za tobą! Ale stoi w miejscu."
 		"pt"	"Bob o 2° não é amigável e te segue! MAS está parado."
+		"nl"	"Bob De Tweede is niet vriendelijk en volgt je! MAAR staat stil."
 	}
 	"Bob The Second is friendly and follows you! BUT stands still"
 	{
@@ -79,6 +88,7 @@
 		"de"	"Bob Der Zweite ist freundlich und folgt dir! ABER bleibt stehen."
 		"pl"    "Bob drugi jest przyjazny is podąża za tobą! Ale stoi w miejscu."
 		"pt"	"Bob o 2° é amigável e te segue! MAS está parado."
+		"nl"	"Bob De Tweede is vriendelijk en volgt je! MAAR staat stil."
 	}
 	"Bob The Second is not friendly and doesn't follow you! BUT stands still"
 	{
@@ -87,6 +97,7 @@
 		"de"	"Bob Der Zweite ist nicht freundlich und folgt dir nicht! ABER bleibt stehen."
 		"pl"    "Bob drugi nie jest przyjazny i nie podąża za tobą! Ale stoi w miejscu."
 		"pt"	"Bob o 2° não é amigável e não te segue! MAS está parado."
+		"nl"	"Bob De Tweede is niet vriendelijk en volgt je niet! MAAR staat stil."
 	}
 	"Bob The Second is friendly and doesn't follow you! BUT stands still"
 	{
@@ -95,6 +106,7 @@
 		"de"	"Bob Der Zweite ist nicht freundlich und folgt dir nicht! ABER bleibt stehen."
 		"pl"    "Bob drugi jest przyjazny i nie podąża za tobą! Ale stoi w miejscu."
 		"pt"	"Bob o 2° é amigável e não te segue! MAS está parado."
+		"nl"	"Bob De Tweede is vriendelijk en volgt je niet! MAAR staat stil."
 	}
 
 
@@ -105,6 +117,7 @@
 		"de"	"Ich hab sie!"
 		"pl"    "Mam ich!"
 		"pt"	"Eu peguei eles!"
+		"nl"	"Ik heb ze!"
 	}
 	"Take This!"
 	{
@@ -113,6 +126,7 @@
 		"de"	"Nimm Das!"
 		"pl"    "A Masz!"
 		"pt"	"Toma essa!"
+		"nl"	"Pak aan!"
 	}
 	"I'll stand beside you, sir!"
 	{
@@ -121,6 +135,7 @@
 		"de"	"Ich werde bei dir stehen, sir!"
 		"pl"    "Będę stał obok ciebie!"
 		"pt"	"Estarei bem ao seu lado, senhor!"
+		"nl"	"Ik sta naast je, heer!"
 	}
 	"I'll guard you, sir!"
 	{
@@ -129,6 +144,7 @@
 		"de"	"Ich werde sie bewachen, sir!"
 		"pl"    "Będę ciebie bronił!"
 		"pt"	"Eu irei protege-lo, senhor!"
+		"nl"	"Ik bescherm je, heer!"
 	}
 	"I'm pretty bored..."
 	{
@@ -137,6 +153,7 @@
 		"de"	"ich bin so gelangweilt..."
 		"pl"    "jestem dość znudzony..."
 		"pt"	"Tem nada pra fazer..."
+		"nl"	"Ik verveel me..."
 	}
 	"Reloading near you, sir!"
 	{
@@ -145,6 +162,7 @@
 		"de"	"ich lade bei dir nach, sir!"
 		"pl"    "Przeładowuje obok ciebie!"
 		"pt"	"Recarregando próximo a você, senhor!"
+		"nl"	"Ik herlaad dicht bij je, heer!"
 	}
 	"I hope your day is going well!"
 	{
@@ -153,6 +171,7 @@
 		"de"	"Ich Hoffe dein tag geht gut!"
 		"pl"    "Mam nadzieje, że ci dobrze mija dzień!"
 		"pt"	"Eu espero que seu dia esteja indo bem!"
+		"nl"	"Ik hoop dat uw dag goed aan het verlopen is!"
 	}
 	"Sometimes i wonder why this war exists."
 	{
@@ -161,6 +180,7 @@
 		"de"	"Manchmal frage ich mich warum dieser krieg existiert."
 		"pl"	"Czasami się zastanawiam dlaczego ta wojna istnieje."
 		"pt"	"As vezes me pergunto porque essa guerra existe."
+		"nl"	"Soms vraag ik me af waarom deze oorlog bestaat."
 	}
 	"Just saying, never give up!"
 	{
@@ -169,6 +189,7 @@
 		"de"	"Ich sag nur, Gib niemals auf!"
 		"pl"	"Pamiętaj nigdy się nie poddawaj!"
 		"pt"	"So pra constar, nunca desista!"
+		"nl"	"Ik zeg maar, geef niet op!"
 	}
 	"Could i borrow your gun perhaps?"
 	{
@@ -177,6 +198,7 @@
 		"de"	"kann ich vielleicht deine waffe ausleihen?"
 		"pl"    "Czy mógłbym porzyczyć twoją broń?"
 		"pt"	"Talvez você poderia me emprestar sua arma?"
+		"nl"	"Mag ik je wapen lenen misschien?"
 	}
 	"Im pretty confident in my abilities!"
 	{
@@ -185,6 +207,7 @@
 	//	"de"	"Ich lade bei dir nach, sir!"
 	//	"pl"    "Jestem całkiem pewny swoich umiejętności!"
 		"pt"	"Estou bem confiante sobre minhas habilidades!"
+		"nl"	"Ik ben redelijk zelfzeker van mijn vaardigheden!"
 	}
 	"Pick up that can."
 	{
@@ -193,6 +216,7 @@
 		"de"	"heb die dose auf."
 		"pl"    "Podnieś tą puszkę."
 		"pt"	"Pegue aquela latinha."
+		"nl"	"Pak dat blik op."
 	}
 	"On my way, sir!"
 	{
@@ -201,6 +225,7 @@
 		"de"	"Auf den weg, sir!"
 		"pl"    "Już jestem w drodze!"
 		"pt"	"Estou indo, senhor!"
+		"nl"	"Ik kom eraan, heer!"
 	}
 	"Im watching there, dont worry!"
 	{
@@ -209,6 +234,7 @@
 		"de"	"Ich gucke dort, keine sorge!" 
 		"pl"    "Patrzę tam, nie martw się!"
 		"pt"	"Eu estou olhando ali, não se preucupe!"
+		"nl"	"Ik wacht hier, geen zorgen!"
 	}
 	"Spy? I'm keeping my eye there."
 	{
@@ -217,6 +243,7 @@
 		"de"	"Spion? Ich halte mein auge dort." 
 		"pl"    "Szpieg? Będę trzymał tam oko."
 		"pt"	"Spy? Eu vou prestar atenção ali."
+		"nl"	"Spion? Ik hou mijn ogen daar wel op."
 	}
 	"Sentry here? Its better to wait for teammates to engage so i'll look."
 	{
@@ -225,6 +252,7 @@
 		"de"	"Sentry hier? es ist besser auf das team zu warten um Anzugreifen, also werde ich gucken."
 		"pl"    "Działko tutaj? Lepiej poczekać aż koledzy z drużyny się zaangażują, więc popatrzę."
 		"pt"	"Sentinela Aqui? É melhor esperar o resto dos aliados antes de entrar em combate então ficarei de olho."
+		"nl"	"Schildwacht hier? Het is beter om te wachten tot teamgenoten aanvallen, dus ik kijk wel."
 	}
 	"I cant build a teleporter, sorry."
 	{
@@ -233,6 +261,7 @@
 		"de"	"Ich kann kein teleporter bauen, entschuldigung."
 		"pl"    "Nie mogę zbudować teleportu, przepraszam."
 		"pt"	"Eu não consigo construir um teletransportador, desculpe."
+		"nl"	"Ik kan geen teleporter plaatsen, sorry."
 	}
 	"I cant build a dispenser, sorry."
 	{
@@ -241,6 +270,7 @@
 		"de"	"Ich kann keinen spender bauen, entschuldigung."
 		"pl"    "Nie mogę zbudować dispensera, przepraszam."
 		"pt"	"Eu não consigo construir uma distribuidora, desculpe."
+		"nl"	"Ik kan geen dispenser plaatsen, sorry."
 	}
 	"I cant build a sentry, sorry."
 	{
@@ -249,6 +279,7 @@
 		"de"	"Ich kann keine sentry bauen, entschuldigung."
 		"pl"    "Nie mogę zbudować działka, przepraszam."
 		"pt"	"Eu não consigo construir uma sentinela, desculpe."
+		"nl"	"Ik kan geen schildwacht plaatsen, sorry."
 	}
 	"I can't give you ubercharge..."
 	{
@@ -257,6 +288,7 @@
 		"de"	"Ich kann dir keine überladung geben..."
 		"pl"    "Nie mogę dać ci ubercharge..."
 		"pt"	"Eu não posso te ubercarregar..."
+		"nl"	"Ik kan geen Uberlading aan je geven..."
 	}
 	"Standing right here!"
 	{
@@ -265,6 +297,7 @@
 		"de"	"Stehe genau hier!"
 		"pl"    "Stoje właśnie tutaj!"
 		"pat"	"Ficarei bem aqui!"
+		"nl"	"Ik sta hier wel!"
 	}
 	"I'm on my move again!"
 	{
@@ -273,6 +306,7 @@
 		"de"	"Ich bewege mich wieder!"
 		"pl"    "Znowu jestem w ruchu!"
 		"pt"	"Estou a caminho de novo!"
+		"nl"	"Ik ga weer bewegen!"
 	}
 	"I am coming !"
 	{
@@ -281,6 +315,7 @@
 		"de"	"Ich komme !"
 		"pl"    "nadchodzę !"
 		"pt"	"Estou indo!"
+		"nl"	"Ik kom!"
 	}
 	"I'm already here!"
 	{
@@ -289,6 +324,7 @@
 		"de"	"Ich bin schon hier!"
 		"pl"    "Już tutaj jestem!"
 		"pt"	"Eu já estou aqui!"
+		"nl"	"Ik ben hier al!"
 	}
 	"Follow? Sure!"
 	{
@@ -297,6 +333,7 @@
 		"de"	"Folgen? Natürlich!"
 		"pl"    "Podążać? Pewnie!"
 		"pt"	"Seguir? claro!"
+		"nl"	"Volgen? Zeker!"
 	}
 	"My left or yours?"
 	{
@@ -305,6 +342,7 @@
 		"de"	"Mein links, oder deins?"
 		"pl"    "Moja lewa czy twoje ?"
 		"pt"	"Minha esquerda ou a sua?"
+		"nl"	"Mijn linkse of de jouwe?"
 	}
 	"My right or yours?"
 	{
@@ -313,6 +351,7 @@
 		"de"	"Mein rechts, oder deins?"
 		"pl"    "Moja prawa czy twoja?"
 		"pt"	"Minha direita ou a sua?"
+		"nl"	"Mijn rechtse of de jouwe?"
 	}
 	"Cheers to you too, like a drink, get it?"
 	{
@@ -321,6 +360,7 @@
 		"de"	"Prost auf dich auch, wie ein getränk, kapiert?"
 		"pl"    "Pozdrawiam też, jak drinka, rozumiesz?"
 		"pt"	"Saúde pra você tambem, como uma bebida, entendeu?"
+		"nl"	"Proost voor je ook, zoals een drankje, snap je het?"
 	}
 	"Ah come on, lighten your mood!"
 	{
@@ -329,6 +369,7 @@
 		"de"	"Ach komm schon, Verbessere deine stimmung!"
 		"pl"    "Ach daj spokój, rozjaśnij swój nastrój!"
 		"pt"	"Ah vamos lá, anime-se!"
+		"nl"	"Oh kom aan dan, licht wat op!"
 	}
 	"Positivity is the way to go!"
 	{
@@ -337,6 +378,7 @@
 		"de"	"Positivität ist der richtige weg!"
 		"pl"    "Pozytywność to prawidłowa droga!"
 		"pt"	"Positividade, muito bem!"
+		"nl"	"Positief denken is de manier om voort te gaan!"
 	}
 	"Why negative? Nothing to worry about!"
 	{
@@ -345,6 +387,7 @@
 		"de"	"warum so negativ? nichts um sich sorgen zu machen!"
 		"pl"    "Dlaczego negatywność? Nie ma się o co martwić!"
 		"pt"	"Por que da negatividade? Não há nada a se preucupar!"
+		"nl"	"Waarom negatief? Er is niets om je zorgen over te maken!"
 	}
 	"Not Follow? Sure!"
 	{
@@ -353,6 +396,7 @@
 		"de"	"Nicht folgen? Natürlich!"
 		"pl"    "Nie podążać? Jasne!"
 		"pt"	"Não seguir? claro!"
+		"nl"	"Niet volgen? Zeker!"
 	}
 	"I'll hurt no one!"
 	{
@@ -361,6 +405,7 @@
 		"de"	"Ich werde niemand verletzen!"
 		"pl"    "Nikogo nie skrzywdzę!"
 		"pt"	"Não machucarei ninguém!"
+		"nl"	"Ik doe niemand pijn!"
 	}
 	"I'll attack once more!"
 	{
@@ -369,6 +414,7 @@
 		"de"	"Ich greife nochmal an!"
 		"pl"    "Znowy zaatakuje!"
 		"pt"	"Atacarei mais uma vez!"
+		"nl"	"Ik val nogmaals aan!"
 	}
 	"I try my best to aim well!"
 	{
@@ -377,6 +423,7 @@
 		"de"	"Ich werde mein bestes versuchen um gut zu zielen!"
 		"pl"    "Staram się dobrze celować!"
 		"pt"	"Eu dou meu melhor pra mirar!"
+		"nl"	"Ik probeer mijn best om te mikken!"
 	}
 	"You are doing a good job aswell!"
 	{
@@ -384,6 +431,7 @@
 		"ru"	"Вы тоже отлично справляетесь!"
 		"de"	"Sie machen auch eine gute arbeit!"
 		"pl"    "Ty też dobrze sobie radzisz!"
+		"nl"	"Je doet ook uw best!"
 	}
 	"Here, have this medkit!"
 	{
@@ -392,6 +440,7 @@
 		"de"	"hier, nimm das Medikit!"
 		"pl"    "Masz tę apteczkę!"
 		"pt"	"Aqui, pegue este kit médico!"
+		"nl"	"Hier, een Medikit!"
 	}
 	"Sorry, i dont have a medkit on me..."
 	{
@@ -400,6 +449,7 @@
 		"de"	"entschuldigung, ich habe kein medikit bei mir..."
 		"pl"    "Przepraszam, nie mam przy sobie apteczki..."
 		"pt"	"Desculpe, não tenho um kit médico..."
+		"nl"	"Sorry, ik heb geen medikit bij me..."
 	}
 	"Sorry, i dont have a medkit on me, please wait."
 	{
@@ -408,6 +458,7 @@
 		"de"	"entschuldigung, ich habe kein medikit bei mir, Bitte warte."
 		"pl"    "Przepraszam, nie mam przy sobie apteczki, proszę poczekaj."
 		"pt"	"Desculpe, não tenho um kit médico comigo, espere por favor."
+		"nl"	"Sorry, ik heb geen medikit bij me, wacht alstublieft."
 	}
 	"I do not have a medkit."
 	{
@@ -416,6 +467,7 @@
 		"de"	"Ich habe kein medikit."
 		"pl"    "Nie mam apteczki."
 		"pt"	"Eu não contenho um kit médico."
+		"nl"	"Ik heb geen medikit."
 	}
 	"I dont have a medkit, have patience."
 	{
@@ -424,6 +476,7 @@
 		"de"	"Ich habe kein medikit, Habe gedult."
 		"pl"    "Nie mam apteczki, miej cierpliwość."
 		"pt"	"Eu não tenho um kit médico, tenha paciência."
+		"nl"	"Ik heb geen medikit, heb geduld."
 	}
 	"I told you i do not have a medikit!!!"
 	{
@@ -432,6 +485,7 @@
 		"de"	"Ich habe dir gesagt das ich kein medikit habe!!!"
 		"pl"    "Mówiłem ci, że nie mam apteczki!!!"
 		"pt"	"Eu ja disse que eu não tenho um kit médico!!!"
+		"nl"	"Ik zeg je toch dat ik geen medikit heb!!!"
 	}
 	"Youre too far away!"
 	{
@@ -440,6 +494,7 @@
 		"de"	"Du bist zu weit weg!"
 		"pl"    "Jesteś za daleko!"
 		"pt"	"Você está muito longe!"
+		"nl"	"Je bent te ver weg!"
 	}
 	"This can't be..."
 	{
@@ -448,6 +503,7 @@
 		"de"	"Das kann nicht sein..."
 		"pl"    "To nie może być..."
 		"pt"	"Não pode ser!..."
+		"nl"	"Dit kan niet waar zijn..."
 	}
 	"I will protect you!"
 	{
@@ -456,6 +512,7 @@
 		"de"	"Ich werde dich verteidigen!"
 		"pl"    "Ochronię cię!"
 		"pt"	"Eu irei protege-lo!"
+		"nl"	"Ik bescherm je!"
 	}
 	"You told me to be friendly."
 	{
@@ -464,11 +521,13 @@
 		"de"	"Du hast mir gesagt freundlich zu sein. Also werde ich sie nicht angreiffen. Aber ich werde sie im gedanken behalten..."
 		"pl"    "Powiedziałeś mi, żebym był przyjacielski. Więc ich nie zaatakuję. Ale będę o nich pamiętał..."
 		"pt"	"Você me disse para ser amigável. Então não atacarei eles. Mas eu irei os manter em mente..."
+		"nl"	"Je vertelde mij om vriendelijk te zijn. Ik val ze niet aan maar ik hou ze wel in mijn achterhoofd..."
 	}
 	"I'm glad to help!"
 	{
 		"en"	"I'm glad to help!"
 		"ru"	"Был рад помочь!"
 		"pt"	"Fico feliz em ajudar!"
+		"nl"	"Ik ben blij om te helpen!"
 	}
 }

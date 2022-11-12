@@ -971,7 +971,7 @@ public Action Building_Set_HP_Colour(Handle dashHud, int ref)
 			int green = 0;
 			int blue = 0;
 			
-		//	SetEntityRenderColor(entity, red, green, blue, 255);
+			SetEntityRenderColor(entity, red, green, blue, 255);
 			if(IsValidEntity(prop1))
 			{
 			//	SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
@@ -1267,7 +1267,7 @@ void Building_PlayerRunCmd(int client, int buttons)
 
 public void Pickup_Building_M2(int client, int weapon, bool crit)
 {
-		int entity = GetClientPointVisible(client, _ , true);
+		int entity = GetClientPointVisible(client, _ , true, true);
 		if(entity > MaxClients)
 		{
 			if (IsValidEntity(entity))
@@ -1286,6 +1286,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 							b_Doing_Buildingpickup_Handle[client] = true;
 							DataPack pack;
 							h_Pickup_Building[client] = CreateDataTimer(1.0, Building_Pickup_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+							pack.WriteCell(client);
 							pack.WriteCell(EntIndexToEntRef(entity));
 							pack.WriteCell(GetClientUserId(client));
 							f_DelayLookingAtHud[client] = GetGameTime() + 1.0;	
@@ -1301,16 +1302,18 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 {
 	pack.Reset();
+	int original_index = pack.ReadCell();
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	int client = GetClientOfUserId(pack.ReadCell());
 	
+	b_Doing_Buildingpickup_Handle[original_index] = false;
+
 	if(IsValidClient(client))
 	{
-		b_Doing_Buildingpickup_Handle[client] = false;
 		PrintCenterText(client, " ");
 		if (IsValidEntity(entity))
 		{
-			int looking_at = GetClientPointVisible(client, _ , true);
+			int looking_at = GetClientPointVisible(client, _ , true, true);
 			if (looking_at == entity)
 			{
 				static char buffer[64];
@@ -3036,23 +3039,23 @@ public bool BuildingCustomCommand(int client)
 			}
 			else if((Village_Flags[client] & VILLAGE_040) && StrEqual(buffer, "zr_village"))
 			{
-				if(Ammo_Count_Ready[client] > 0)
+				//if(Ammo_Count_Ready[client] > 0)
 				{
 					if(f_BuildingIsNotReady[client] < GetGameTime())
 					{
-						Ammo_Count_Ready[client]--;
+						//Ammo_Count_Ready[client]--;
 						f_BuildingIsNotReady[client] = GetGameTime() + 60.0;
 						
 						if(Village_Flags[client] & VILLAGE_050)
 						{
-							i_ExtraPlayerPoints[client] += 10000; //Static point increace.
+							i_ExtraPlayerPoints[client] += 100; //Static point increace.
 							Village_ReloadBuffFor[client] = GetGameTime() + 20.0;
 							EmitSoundToAll("items/powerup_pickup_uber.wav");
 							EmitSoundToAll("items/powerup_pickup_uber.wav");
 						}
 						else
 						{
-							i_ExtraPlayerPoints[client] += 5000; //Static point increace.
+							i_ExtraPlayerPoints[client] += 50; //Static point increace.
 							Village_ReloadBuffFor[client] = GetGameTime() + 15.0;
 							EmitSoundToAll("player/mannpower_invulnerable.wav", client);
 							EmitSoundToAll("player/mannpower_invulnerable.wav", client);
@@ -3071,13 +3074,13 @@ public bool BuildingCustomCommand(int client)
 						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 					}
 				}
-				else
+				/*else
 				{
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
 					SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 					SetGlobalTransTarget(client);
 					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "No Ammo Supplies");
-				}
+				}*/
 			}
 		}
 		return true;
@@ -4210,7 +4213,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 	}
 	
 	
-	i_ExtraPlayerPoints[owner] += 25; //Static low point increace.
+	i_ExtraPlayerPoints[owner] += 2; //Static low point increace.
 	
 	int effects = Village_Flags[owner];
 	
@@ -4451,19 +4454,19 @@ int Building_GetCashOnWave(int current)
 		{
 			if(Village_Flags[client] & VILLAGE_003)
 			{
-				i_ExtraPlayerPoints[client] += 5000;
+				i_ExtraPlayerPoints[client] += 50;
 				popCash++;
 			}
 			
 			if(Village_Flags[client] & VILLAGE_004)
 			{
-				i_ExtraPlayerPoints[client] += 10000;
+				i_ExtraPlayerPoints[client] += 100;
 				extras++;
 			}
 			
 			if(Village_Flags[client] & VILLAGE_005)
 			{
-				i_ExtraPlayerPoints[client] += 20000; //Alot of free points.
+				i_ExtraPlayerPoints[client] += 200; //Alot of free points.
 				farms++;
 			}
 		}
@@ -5309,7 +5312,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 			{
 				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-				vAngles[1] -= 180.0;
+				vAngles[1] -= 90.0;
 				TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
 			}
 			else
@@ -5332,6 +5335,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 
 					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] -= 90.0;
 					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
 					SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
 				}
@@ -5341,7 +5345,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 			{
 				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-				vAngles[1] -= 180.0;
+				vAngles[1] -= 90.0;
 				TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
 			}
 			else
@@ -5365,6 +5369,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 
 					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] -= 90.0;
 					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
 					SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
 				}
@@ -5383,7 +5388,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 
 			float eyePitch[3];
 			GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", eyePitch);
-			eyePitch[1] -= 180.0;
+			eyePitch[1] -= 90.0;
 													
 			TeleportEntity(Building_Index, NULL_VECTOR, eyePitch, NULL_VECTOR);
 		}

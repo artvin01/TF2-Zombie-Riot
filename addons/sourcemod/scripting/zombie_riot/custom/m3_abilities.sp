@@ -592,34 +592,43 @@ public Action QuantumActivate(Handle cut_timer, int ref)
 	float startPosition[3];
 	GetClientAbsOrigin(client, startPosition);
 
-	if(IsValidClient(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+	if(IsValidClient(client))
 	{
-		i_HealthBeforeSuit[client] = GetClientHealth(client);
+		if(TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0 && IsPlayerAlive(client))
+		{
+			i_HealthBeforeSuit[client] = GetClientHealth(client);
 
-		i_ClientHasCustomGearEquipped[client] = true;
+			i_ClientHasCustomGearEquipped[client] = true;
+			
+
+			Store_GiveAll(client, 50, true);
+			ViewChange_PlayerModel(client);
+			
+			float HealthMulti = float(CashSpentTotal[client]);
+			HealthMulti = Pow(HealthMulti, 1.2);
+			HealthMulti *= 0.025;
+
+			SetEntityHealth(client, RoundToCeil(HealthMulti));
+
+			SetEntityMoveType(client, MOVETYPE_WALK);
+
+			Store_GiveSpecificItem(client, "Quantum Repeater");
+			Store_GiveSpecificItem(client, "Quantum Nanosaber");
+			
+			SetAmmo(client, 1, 9999);
+			SetAmmo(client, 2, 9999);
 		
+			startPosition[2] += 25.0;
+			makeexplosion(client, client, startPosition, "", 0, 0);
 
-		Store_GiveAll(client, 50, true);
-		ViewChange_PlayerModel(client);
-		
-		float HealthMulti = float(CashSpentTotal[client]);
-		HealthMulti = Pow(HealthMulti, 1.2);
-		HealthMulti *= 0.025;
+			CreateTimer(30.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		else
+		{
+			SetEntityMoveType(client, MOVETYPE_WALK);
 
-		SetEntityHealth(client, RoundToCeil(HealthMulti));
-
-		SetEntityMoveType(client, MOVETYPE_WALK);
-
-		Store_GiveSpecificItem(client, "Quantum Repeater");
-		Store_GiveSpecificItem(client, "Quantum Nanosaber");
-		
-		SetAmmo(client, 1, 9999);
-		SetAmmo(client, 2, 9999);
-	
-		startPosition[2] += 25.0;
-		makeexplosion(client, client, startPosition, "", 0, 0);
-
-		CreateTimer(30.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			i_ClientHasCustomGearEquipped[client] = false;
+		}
 	}
 	return Plugin_Handled;
 }

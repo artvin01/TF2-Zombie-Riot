@@ -875,6 +875,8 @@ int played_headshotsound_already_Pitch [MAXTF2PLAYERS];
 
 float f_IsThisExplosiveHitscan[MAXENTITIES];
 
+float f_TraceAttackWasTriggeredSameFrame[MAXENTITIES];
+
 public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
 {
 	if(attacker < 1 || attacker > MaxClients || victim == attacker)
@@ -905,6 +907,8 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 	int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
 	if(IsValidEntity(weapon))
 	{
+		f_TraceAttackWasTriggeredSameFrame[victim] = GetGameTime();
+		i_HasBeenHeadShotted[victim] = false;
 		if(damagetype & DMG_BULLET)
 		{
 			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
@@ -931,6 +935,8 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		{
 			if(hitgroup == HITGROUP_HEAD)
 			{
+				
+				i_HasBeenHeadShotted[victim] = true;
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
 					damage *= 2.0;
@@ -1120,7 +1126,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	
 	f_TimeUntillNormalHeal[victim] = GetGameTime() + 4.0;
-	
+	i_HasBeenBackstabbed[victim] = false;
+
+	if(f_TraceAttackWasTriggeredSameFrame[victim] != GetGameTime())
+	{
+		i_HasBeenHeadShotted[victim] = false;
+	}
+
+	//Reset all things here.
 	if(b_npcspawnprotection[victim]) //make them resistant on spawn or else itll just be spawncamping fest
 	{
 		damage *= 0.25;
@@ -1361,6 +1374,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						int melee = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 						if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
 						{
+							i_HasBeenBackstabbed[victim] = true;
+							
 							float attack_speed;
 			
 							attack_speed = Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);
@@ -1541,7 +1556,8 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 	{
 		Damage_dealt_in_total[attacker] += overkill; //dont award for overkilling.
 	}
-	
+
+
 	if(f_CooldownForHurtHud[attacker] < GetGameTime() || ignore)
 	{
 		if(!ignore)

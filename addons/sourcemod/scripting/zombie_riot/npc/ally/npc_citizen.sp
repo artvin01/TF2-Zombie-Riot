@@ -871,9 +871,14 @@ methodmap Citizen < CClotBody
 		}
 		public set(float value)
 		{
-			fl_Speed[this.index] = value;
 			if(!this.m_bSeakingGeneric && (this.m_iHasPerk == Cit_Pistol || this.m_iHasPerk == Cit_Shotgun || this.m_iHasPerk == Cit_RPG))
-				fl_Speed[this.index] *= 1.1;
+			{
+				fl_Speed[this.index] = value * 1.1;
+			}
+			else
+			{
+				fl_Speed[this.index] = value;
+			}
 		}
 	}
 	property float m_flReloadDelay
@@ -1543,7 +1548,7 @@ public void Citizen_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_flGetClosestTargetTime = gameTime + 0.5;
-		if(npc.m_iGunType != Cit_None)
+		if(npc.m_iGunType > Cit_None)
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index, _, BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus, npc.m_bCamo);
 			if(npc.m_iTarget > 0 && view_as<CClotBody>(npc.m_iTarget).m_bCamo)

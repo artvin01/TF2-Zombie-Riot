@@ -138,6 +138,7 @@ float fl_RangedArmor[MAXENTITIES];
 
 bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
+float f_StuckOutOfBoundsCheck[MAXENTITIES];
 
 
 
@@ -4176,6 +4177,13 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		
 		if(client && IsClientInGame(client))
 		{
+			if(i_HasBeenHeadShotted[pThis])
+				i_Headshots[client] += 1; //Award 1 headshot point, only once.
+
+			if(i_HasBeenBackstabbed[pThis])
+				i_Backstabs[client] += 1; //Give a backstab count!
+
+			i_KillsMade[client] += 1;
 			Calculate_And_Display_hp(client, pThis, Damage[pThis], true, overkill);
 		}
 		
@@ -5780,6 +5788,18 @@ public void Check_If_Stuck(int iNPC)
 	GetEntPropVector(iNPC, Prop_Data, "m_vecOrigin", flMyPos);
 	if(!b_IsAlliedNpc[iNPC])
 	{
+		//If NPCs some how get out of bounds
+		if(f_StuckOutOfBoundsCheck[iNPC] < GetGameTime())
+		{
+			f_StuckOutOfBoundsCheck[iNPC] = GetGameTime() + 10.0;
+			if(TR_PointOutsideWorld(flMyPos))
+			{
+				LogError("Enemy NPC somehow got out of the map...");
+				SDKHooks_TakeDamage(iNPC, 0, 0, 99999999.9);
+				return;
+			}
+		}
+
 		//This is a tempomary fix. find a better one for players getting stuck.
 		static float hullcheckmaxs_Player[3];
 		static float hullcheckmins_Player[3];
@@ -5894,7 +5914,43 @@ public void Check_If_Stuck(int iNPC)
 		}
 		//This is a tempomary fix. find a better one for players getting stuck.
 	}
-
+	else
+	{
+		if(f_StuckOutOfBoundsCheck[iNPC] < GetGameTime())
+		{
+			f_StuckOutOfBoundsCheck[iNPC] = GetGameTime() + 10.0;
+			//If NPCs some how get out of bounds
+			if(TR_PointOutsideWorld(flMyPos))
+			{
+				LogError("Allied NPC somehow got out of the map...");
+				
+				int target = 0;
+				for(int i=1; i<=MaxClients; i++)
+				{
+					if(IsClientInGame(i))
+					{
+						if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE)
+						{
+							target = i;
+							break;
+						}
+					}
+				}
+				
+				if(target)
+				{
+					float pos[3], ang[3];
+					GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+					GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+					TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
+				}
+				else
+				{
+					SDKHooks_TakeDamage(iNPC, 0, 0, 99999999.9);
+				}
+			}
+		}
+	}
 
 	if (!npc.IsOnGround())
 	{
@@ -6004,6 +6060,7 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 			if (f_CooldownForHurtParticle[victim] < GetGameTime())
 			{
 				f_CooldownForHurtParticle[victim] = GetGameTime() + 0.1;
+
 				if(npc.m_iBleedType == 1)
 				{
 					TE_ParticleInt(g_particleImpactFlesh, damagePosition);
@@ -7428,7 +7485,6 @@ void TE_BloodSprite(float Origin[3],float Direction[3], int red, int green, int 
 //	TE_SendToAll();
 }
 
-
 stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
 							float fStartWidth=NORMAL_ZOMBIE_VOLUME, float fEndWidth=NORMAL_ZOMBIE_VOLUME, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt")
 {
@@ -7719,6 +7775,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ScalesWithWaves[entity] = false;
 	b_PernellBuff[entity] = false;
 	IgniteFor[entity] = 0;
+	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	
 	FormatEx(c_HeadPlaceAttachmentGibName[entity], sizeof(c_HeadPlaceAttachmentGibName[]), "");
 }
