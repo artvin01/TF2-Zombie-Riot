@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static const char g_DeathSounds[][] = {
 	"npc/combine_soldier/die1.wav",
 	"npc/combine_soldier/die2.wav",
@@ -28,8 +31,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/samurai/tf_katana_slice_01.wav",
 	"weapons/samurai/tf_katana_slice_02.wav",
 	"weapons/samurai/tf_katana_slice_03.wav",
-}
-
+};
 
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/samurai/tf_katana_01.wav",

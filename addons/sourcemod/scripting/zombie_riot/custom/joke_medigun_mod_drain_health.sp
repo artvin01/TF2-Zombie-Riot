@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 /**
  * Monolith plugin for Karma Charger's Medick-Gun.
  * 

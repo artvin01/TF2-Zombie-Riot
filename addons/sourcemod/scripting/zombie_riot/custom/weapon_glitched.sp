@@ -1,8 +1,11 @@
-static float glitchBaseDMG[MAXTF2PLAYERS] = {1.0, ...}
-static float glitchBaseFireRate[MAXTF2PLAYERS] = {1.0, ...}
-static float glitchBaseClip[MAXTF2PLAYERS] = {1.0, ...}
-static float glitchBaseSpread[MAXTF2PLAYERS] = {1.0, ...}
-static float glitchBaseReloadRate[MAXTF2PLAYERS] = {1.0, ...}
+#pragma semicolon 1
+#pragma newdecls required
+
+static float glitchBaseDMG[MAXTF2PLAYERS] = {1.0, ...};
+static float glitchBaseFireRate[MAXTF2PLAYERS] = {1.0, ...};
+static float glitchBaseClip[MAXTF2PLAYERS] = {1.0, ...};
+static float glitchBaseSpread[MAXTF2PLAYERS] = {1.0, ...};
+static float glitchBaseReloadRate[MAXTF2PLAYERS] = {1.0, ...};
 
 public void OnPluginStart_Glitched_Weapon() 
 {
@@ -266,9 +269,9 @@ public void Glitched_Attack2(int client, int weapon, bool crit)
 		
 		switch(typeProjectile)
 		{
-			case 2.0: projectile = CreateEntityByName("tf_projectile_rocket")
-			case 6.0: projectile = CreateEntityByName("tf_projectile_flare")
-			case 5.0: projectile = CreateEntityByName("tf_projectile_syringe")
+			case 2.0: projectile = CreateEntityByName("tf_projectile_rocket");
+			case 6.0: projectile = CreateEntityByName("tf_projectile_flare");
+			case 5.0: projectile = CreateEntityByName("tf_projectile_syringe");
 		}
 		
 			

@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 
 static char g_DeathSounds[][] = {
 	"npc/dog/dog_straining1.wav",

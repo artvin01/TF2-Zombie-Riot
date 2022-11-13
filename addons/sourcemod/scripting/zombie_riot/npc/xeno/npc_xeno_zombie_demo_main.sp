@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 
 static char g_HurtSounds[][] = {
 	"vo/demoman_painsharp01.mp3",

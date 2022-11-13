@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static float Damage_Projectile[MAXENTITIES]={0.0, ...};
 static int Projectile_To_Client[MAXENTITIES]={0, ...};
 
@@ -56,7 +59,7 @@ public void Weapon_Nailgun(int client, int weapon, bool crit)
 	if(address != Address_Null)
 		speed *= TF2Attrib_GetValue(address);
 	
-	speed *= sentry_range
+	speed *= sentry_range;
 		
 	float time = 500.0/speed;
 	address = TF2Attrib_GetByDefIndex(weapon, 101);

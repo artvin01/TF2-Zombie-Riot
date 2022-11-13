@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static int GlobalHealth;
 static int LeadStealer;
 static ArrayList CollectedBodies;

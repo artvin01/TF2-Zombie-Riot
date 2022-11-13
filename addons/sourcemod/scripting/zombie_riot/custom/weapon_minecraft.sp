@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 public void Minecraft_BuyFiveSand(int client)
 {
 	MC_SetBlockInv("sand", client, MC_GetBlockInv("sand", client) + 5);

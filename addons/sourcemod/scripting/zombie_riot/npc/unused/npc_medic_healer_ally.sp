@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 #include <sdkhooks>
 #include <tf2_stocks>
 #include <PathFollower>

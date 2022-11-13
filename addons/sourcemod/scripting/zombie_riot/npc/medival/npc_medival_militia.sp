@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static const char g_DeathSounds[][] = {
 	"npc/metropolice/die1.wav",
 	"npc/metropolice/die2.wav",
@@ -67,7 +70,7 @@ static const char g_MeleeHitSounds[][] = {
 	"mvm/melee_impacts/bottle_hit_robo01.wav",
 	"mvm/melee_impacts/bottle_hit_robo02.wav",
 	"mvm/melee_impacts/bottle_hit_robo03.wav",
-}
+};
 
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/shovel_swing.wav",
@@ -193,7 +196,7 @@ methodmap MedivalMilitia < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		npc.m_flMeleeArmor = 1.0
+		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
 		
 		if(EscapeModeForNpc)

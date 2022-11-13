@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static const char NPCModel[] = "models/combine_apc.mdl";
 
 static const char g_DeathSounds[][] = {
@@ -69,7 +72,7 @@ static const char g_MeleeHitSounds[][] = {
 	"mvm/melee_impacts/bottle_hit_robo01.wav",
 	"mvm/melee_impacts/bottle_hit_robo02.wav",
 	"mvm/melee_impacts/bottle_hit_robo03.wav",
-}
+};
 
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/shovel_swing.wav",

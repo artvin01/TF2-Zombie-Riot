@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 //Use ZeroAoeKnife For func_attack and ZeroRage func_attack2
 static int how_many_times_fisted[MAXTF2PLAYERS];
 static int weapon_id[MAXPLAYERS+1]={0, ...};
@@ -261,7 +264,7 @@ public void ZeroRage(int client, int weapon, bool crit, int slot)
 					
 						TF2_AddCondition(client, TFCond_DefenseBuffed, MultiDefenceRageTimer, 0);
 				
-						ClientCommand(client, "playgamesound items/powerup_pickup_resistance.wav")
+						ClientCommand(client, "playgamesound items/powerup_pickup_resistance.wav");
 						CreateTimer(MultiRageCooldown, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
 						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 						SetGlobalTransTarget(client);
@@ -335,7 +338,7 @@ public void ZeroDefenceRage(int client, int weapon, bool crit, int slot)
 			
 			TF2_AddCondition(client, TFCond_DefenseBuffed, FirstDefenceRageTimer, 0);
 			
-			ClientCommand(client, "playgamesound items/powerup_pickup_resistance.wav")
+			ClientCommand(client, "playgamesound items/powerup_pickup_resistance.wav");
 			
 			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 			SetGlobalTransTarget(client);

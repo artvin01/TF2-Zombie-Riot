@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 /*
 	Placement Type
 	static Handle SyncHud_Notifaction;
@@ -1805,7 +1808,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 		else if(Is_Reload_Button && StrEqual(buffer, "base_boss"))
 		{
 			buildingType = Citizen_BuildingInteract(entity);
-			int temp_owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity])
+			int temp_owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
 			if(IsValidClient(temp_owner)) //Fix not getting the owner correctly when interacting with barney or citicens!
 			{
 				owner = temp_owner;
@@ -2896,7 +2899,7 @@ public Action Timer_DroppedBuildingWaitSentry(Handle htimer, int entref)
 	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
 	{
 		char buffer[32];
-		GetEntityClassname(obj, buffer, sizeof(buffer))
+		GetEntityClassname(obj, buffer, sizeof(buffer));
 		if(!StrContains(buffer, "obj_sentrygun"))
 		{
 			SetEntProp(obj, Prop_Send, "m_iAmmoShells", 150);

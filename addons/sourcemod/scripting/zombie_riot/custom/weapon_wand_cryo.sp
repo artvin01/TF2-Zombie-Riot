@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static float Cryo_M1_Damage = 14.0; //M1 base damage per particle
 static int Cryo_M1_Particles = 2;	//Number of particles fired by each M1 attack
 static float Cryo_M1_Damage_Pap = 28.0; //M1 base damage per particle (Pack-a-Punch)
