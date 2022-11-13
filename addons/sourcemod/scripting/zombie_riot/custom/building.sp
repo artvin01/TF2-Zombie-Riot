@@ -1810,6 +1810,10 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			{
 				owner = temp_owner;
 			}
+			else
+			{
+				owner = -1;
+			}
 		}
 		
 		if(buildingType)
