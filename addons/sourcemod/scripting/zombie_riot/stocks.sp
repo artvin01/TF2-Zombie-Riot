@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 
 enum ParticleAttachment_t {
@@ -1051,7 +1054,7 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	int health = pack.ReadCell();
 	if(pack.ReadCell())
 	{
-		int maxhealth
+		int maxhealth;
 		if(!IsAnEntity)
 		{
 			maxhealth = SDKCall_GetMaxHealth(client);
@@ -3158,7 +3161,7 @@ stock void DHook_CreateDetour(GameData gamedata, const char[] name, DHookCallbac
 #define ANNOTATION_REFRESH_RATE 0.1
 #define ANNOTATION_OFFSET 8750
 
-public ShowAnnotationToPlayer(int client, float pos[3], const char[] Text, float lifetime, int follow_who)
+public void ShowAnnotationToPlayer(int client, float pos[3], const char[] Text, float lifetime, int follow_who)
 {
 	Handle event = CreateEvent("show_annotation");
 	if (event == INVALID_HANDLE) return;

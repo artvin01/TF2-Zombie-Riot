@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static float CD_Knife[MAXPLAYERS+1]={0.0, ...};
 static float CD_KnifeSet[MAXPLAYERS+1]={0.0, ...};
 static float CD_Throw[MAXPLAYERS+1]={0.0, ...};

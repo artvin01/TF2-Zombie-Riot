@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 
 static float Damage_Projectile[MAXENTITIES]={0.0, ...};
 static int Projectile_To_Client[MAXENTITIES]={0, ...};

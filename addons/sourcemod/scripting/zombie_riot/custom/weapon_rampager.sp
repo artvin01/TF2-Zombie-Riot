@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 
 static Handle Revert_Weapon_Back_Timer[MAXPLAYERS+1];
 static int attacks_made[MAXPLAYERS+1]={12, ...};

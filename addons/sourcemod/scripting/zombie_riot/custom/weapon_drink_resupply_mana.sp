@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static Handle Give_bomb_back[MAXPLAYERS+1];
 static bool Handle_on[MAXPLAYERS+1]={false, ...};
 

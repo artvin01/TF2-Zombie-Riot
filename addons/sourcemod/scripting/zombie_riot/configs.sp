@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 enum struct WeaponData
 {
 	char Classname[36];

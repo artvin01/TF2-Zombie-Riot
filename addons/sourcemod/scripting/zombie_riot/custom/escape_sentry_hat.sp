@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static Handle Mount_Building[MAXPLAYERS + 1];
 
 static int Building_particle[MAXENTITIES];

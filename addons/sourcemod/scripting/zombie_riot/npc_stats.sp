@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 //#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_59.mdl"
 
 #define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_173.mdl"
@@ -1712,7 +1715,7 @@ Handle g_hGetBodyInterface;
 //Handle g_hUpdateVisibilityStatus;
 Handle g_hRun;
 Handle g_hApproach;
-Handle g_hFaceTowards
+Handle g_hFaceTowards;
 Handle g_hGetVelocity;
 Handle g_hSetVelocity;
 Handle g_hStudioFrameAdvance;
@@ -4575,13 +4578,13 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		{
 			if(IsWalkEvent(event))
 			{
-				char strSound[64];
-				float vSoundPos[3];
+				static char strSound[64];
+				static float vSoundPos[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vSoundPos);
 				vSoundPos[2] += 1.0;
 				
 				TR_TraceRayFilter(vSoundPos, view_as<float>( { 90.0, 0.0, 0.0 } ), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
-				char material[PLATFORM_MAX_PATH]; TR_GetSurfaceName(null, material, PLATFORM_MAX_PATH);
+				static char material[PLATFORM_MAX_PATH]; TR_GetSurfaceName(null, material, PLATFORM_MAX_PATH);
 				
 				Format(strSound, sizeof(strSound), "player/footsteps/%s%i.wav", GetStepSoundForMaterial(material), GetRandomInt(1,4));
 				
@@ -4835,7 +4838,7 @@ public bool FilterBaseActorsAndData(int entity, int contentsMask, any data)
 	static char class[12];
 	GetEntityClassname(entity, class, sizeof(class));
 	
-	if(StrEqual(class, "base_boss")) return true;
+	if(!StrContains(class, "base_boss")) return true;
 	
 	return !(entity == data);
 }
@@ -5032,8 +5035,8 @@ public float PluginBot_PathCost(int bot_entidx, NavArea area, NavArea from_area,
 		area.GetCenter(vecCenter);
 		from_area.GetCenter(vecFromCenter);
 		
-		float vecSubtracted[3]
-		SubtractVectors(vecCenter, vecFromCenter, vecSubtracted)
+		float vecSubtracted[3];
+		SubtractVectors(vecCenter, vecFromCenter, vecSubtracted);
 		
 		dist = GetVectorLength(vecSubtracted);
 	}
@@ -5744,13 +5747,18 @@ public bool TraceRayHitPlayers(int entity,int mask,any data)
 //This is mainly to see if you THE PLAYER!!!!! is stuck inside the WORLD OR BRUSHES OR STUFF LIKE THAT. Not stuck inside an npc, because this code is not made for that.
 public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 {
-	char class[64];
-	GetEntityClassname(entity, class, sizeof(class));
-	
+	if(entity == 0)
+	{
+		return true;
+	}
+
 	if(entity > 0 && entity <= MaxClients) 
 	{
 		return false;
 	}
+
+	static char class[64];
+	GetEntityClassname(entity, class, sizeof(class));
 	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
 	{
 		return false;
@@ -5780,16 +5788,11 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 	else if(StrEqual(class, "func_respawnroomvisualizer"))
 	{
 		return true;//They blockin me and not on same team, otherwsie top filter
-	}	
+	}
 	
 	if(npc.m_bThisEntityIgnored)
 	{
 		return false;
-	}
-	
-	if(entity == 0)
-	{
-		return true;
 	}
 	
 	if(entity == Entity_to_Respect)
@@ -5806,7 +5809,7 @@ public void Check_If_Stuck(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	
-	float flMyPos[3];
+	static float flMyPos[3];
 	GetEntPropVector(iNPC, Prop_Data, "m_vecOrigin", flMyPos);
 	if(!b_IsAlliedNpc[iNPC])
 	{
@@ -5840,9 +5843,9 @@ public void Check_If_Stuck(int iNPC)
 			
 		if (Hit_player) //The boss will start to merge with player, STOP!
 		{
-			float flPlayerPos[3];
+			static float flPlayerPos[3];
 			GetEntPropVector(Hit_player, Prop_Data, "m_vecOrigin", flPlayerPos);
-			float flMyPos_2[3];
+			static float flMyPos_2[3];
 			flMyPos_2[0] = flPlayerPos[0];
 			flMyPos_2[1] = flPlayerPos[1];
 			flMyPos_2[2] = flMyPos[2];
@@ -6113,7 +6116,7 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 	//return CClotBodyDamaged_flare(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 }
 
-stock Custom_Knockback(int attacker, int enemy, float knockback, bool ignore_attribute = false, bool override = false, bool work_on_entity = false)
+stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignore_attribute = false, bool override = false, bool work_on_entity = false)
 {
 	if(enemy <= MaxClients || work_on_entity)
 	{							
@@ -6147,7 +6150,7 @@ stock Custom_Knockback(int attacker, int enemy, float knockback, bool ignore_att
 			newVel[1] = GetEntPropFloat(enemy, Prop_Send, "m_vecVelocity[1]");
 			newVel[2] = GetEntPropFloat(enemy, Prop_Send, "m_vecVelocity[2]");
 							
-			for (new i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++)
 			{
 				vDirection[i] += newVel[i];
 			}
@@ -8006,7 +8009,7 @@ public bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*
 
 				// before we test this position, ensure it has line of sight from the point our player looked from
 				// this ensures the player can't teleport through walls
-				static float tmpPos[3]
+				static float tmpPos[3];
 				TR_TraceRayFilter(endPos, testPos, MASK_NPCSOLID, RayType_EndPoint, TraceFilterClients);
 				TR_GetEndPosition(tmpPos);
 				if (testPos[0] != tmpPos[0] || testPos[1] != tmpPos[1] || testPos[2] != tmpPos[2])

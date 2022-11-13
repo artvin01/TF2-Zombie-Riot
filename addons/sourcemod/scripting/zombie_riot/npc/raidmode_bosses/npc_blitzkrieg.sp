@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static char g_DeathSounds[][] = {
 	"mvm/mvm_robo_stun.wav",
 	"mvm/mvm_bomb_explode.wav",
@@ -330,7 +333,7 @@ methodmap Blitzkrieg < CClotBody
 		fl_rocket_base_dmg[npc.index] = 5.5;	//fuck you *water fills your house*
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		
-		i_currentwave[npc.index]=(ZR_GetWaveCount()+1)
+		i_currentwave[npc.index]=(ZR_GetWaveCount()+1);
 		
 		//wave control	| at which wave or beyond will the life activate | Now that I think about it, this one might just be useless
 		i_wave_life1[npc.index] = 15;
@@ -386,7 +389,7 @@ methodmap Blitzkrieg < CClotBody
 			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
 		
-		npc.m_flNextRangedBarrage_Spam = GetGameTime() + 15.0
+		npc.m_flNextRangedBarrage_Spam = GetGameTime() + 15.0;
 		
 		SDKHook(npc.index, SDKHook_Think, Blitzkrieg_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamage, Blitzkrieg_ClotDamaged);
@@ -651,7 +654,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 			}
 			else
 			{
-				npc.m_flSpeed=fl_move_speed[npc.index]
+				npc.m_flSpeed=fl_move_speed[npc.index];
 				if(npc.m_flCharge_Duration < GetGameTime())
 				{
 					if(npc.m_flCharge_delay < GetGameTime())
@@ -776,7 +779,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 					{
 						npc.m_flSpeed = fl_move_speed[npc.index];
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-						npc.PlayPullSound()
+						npc.PlayPullSound();
 						npc.m_flAttackHappens = GetGameTime()+0.3;
 						npc.m_flAttackHappens_bullshit = GetGameTime()+0.43;
 						npc.m_flAttackHappenswillhappen = true;
@@ -838,7 +841,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 								
 							
 								// Hit sound
-								npc.PlayPullSound()
+								npc.PlayPullSound();
 							
 							} 
 						}
@@ -999,7 +1002,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		
 		i_maxfirerockets[npc.index] =40;
 		
-		fl_LifelossReload[npc.index] = 0.75
+		fl_LifelossReload[npc.index] = 0.75;
 		
 		//fl_rocket_firerate[npc.index] = 0.25;
 		
@@ -1132,7 +1135,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 	}
 	if(i_currentwave[npc.index]>=45 && !b_allies[npc.index] && (b_life2[npc.index] || b_life3[npc.index]))
 	{
-		b_allies[npc.index]=true
+		b_allies[npc.index]=true;
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		if(i_currentwave[npc.index]==45)
@@ -1265,7 +1268,7 @@ public Action Blitzkrieg_DrawIon(Handle Timer, any data)
 	return (Plugin_Stop);
 }
 	
-public void Blitzkrieg_DrawIonBeam(float startPosition[3], const color[4])
+public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 {
 	float position[3];
 	position[0] = startPosition[0];
@@ -1389,7 +1392,7 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const color[4])
 		CreateTimer(0.1, Blitzkrieg_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
 		else	//Normal Ioc Damge on wave
 		{
-			int gama=ZR_GetWaveCount()+1
+			int gama=ZR_GetWaveCount()+1;
 			float alpha=1.0;
 			if(gama==15)
 			{
@@ -1535,7 +1538,7 @@ public void BlitzLight_Invoke(int ref, int enemy, float timer, float charge)
 		BlitzLight_Radius[npc.index] = 200.0;
 		timer+=charge;
 
-		float time=BlitzLight_Duration[npc.index]
+		float time=BlitzLight_Duration[npc.index];
 		BlitzLight_Duration[npc.index]*=66.0;
 		BlitzLight_RemainingDuration[npc.index] = 0.0;
 		
@@ -1649,7 +1652,7 @@ void BlitzLight_Beams(int entity, bool charging = true)
 public void BlitzLight_Spawn8(float startLoc[3], float space, int entity)
 {
 	Blitzkrieg npc = view_as<Blitzkrieg>(entity);
-	float ticks = (tickCountClient[npc.index] / BlitzLight_Duration[npc.index])
+	float ticks = (tickCountClient[npc.index] / BlitzLight_Duration[npc.index]);
 	for (int i = 0; i < 8; i++)
 	{
 		float tempAngles[3], endLoc[3], Direction[3];

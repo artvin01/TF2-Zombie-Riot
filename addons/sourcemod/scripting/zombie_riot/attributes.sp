@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 bool Attributes_Fire(int client, int weapon)
 {
 	int clip = GetEntProp(weapon, Prop_Data, "m_iClip1");

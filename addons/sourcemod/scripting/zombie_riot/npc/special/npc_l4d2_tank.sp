@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static char g_DeathSounds[][] = {
 	"infected_riot/tank/tank_dead.mp3",
 };
@@ -813,7 +816,7 @@ public Action contact_throw_tank(int client)
 								newVel[1] = GetEntPropFloat(entity, Prop_Send, "m_vecVelocity[1]") * 2.0;
 								newVel[2] = 500.0;
 												
-								for (new i = 0; i < 3; i++)
+								for (int i = 0; i < 3; i++)
 								{
 									flVel[i] += newVel[i];
 								}				
@@ -881,7 +884,7 @@ public Action contact_throw_tank_entity(int client)
 								newVel[1] = GetEntPropFloat(entity, Prop_Send, "m_vecVelocity[1]") * 2.0;
 								newVel[2] = 500.0;
 												
-								for (new i = 0; i < 3; i++)
+								for (int i = 0; i < 3; i++)
 								{
 									flVel[i] += newVel[i];
 								}				

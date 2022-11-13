@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static char g_DeathSounds[][] = {
 	"vo/ravenholm/monk_death07.wav",
 };
@@ -725,9 +728,9 @@ public void FatherGrigori_IOC_Invoke(int ref, int enemy)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity))
 	{
-		static float distance=87.0 // /29 for duartion till boom
-		static float IOCDist=250.0
-		static float IOCdamage=10.0
+		static float distance=87.0; // /29 for duartion till boom
+		static float IOCDist=250.0;
+		static float IOCdamage=10.0;
 		
 		float vecTarget[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", vecTarget);	

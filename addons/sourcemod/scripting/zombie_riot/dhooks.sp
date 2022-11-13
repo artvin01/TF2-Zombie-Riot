@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static DynamicHook ForceRespawn;
 static int ForceRespawnHook[MAXTF2PLAYERS];
 static int GetChargeEffectBeingProvided;
@@ -202,7 +205,7 @@ MRESReturn Detour_CalcPlayerScore(DHookReturn hReturn, DHookParam hParams)
 public void ApplyExplosionDhook_Pipe(int entity, bool Sticky)
 {
 	g_DHookGrenadeExplode.HookEntity(Hook_Pre, entity, DHook_GrenadeExplodePre);
-	DHookEntity(g_detour_CTFGrenadePipebombProjectile_PipebombTouch, false, entity, _, GrenadePipebombProjectile_PipebombTouch)
+	DHookEntity(g_detour_CTFGrenadePipebombProjectile_PipebombTouch, false, entity, _, GrenadePipebombProjectile_PipebombTouch);
 	
 	if(Sticky)
 	{
@@ -681,7 +684,7 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 	
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
-		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Spectator)) //Hardcode to red as there will be no blue players.
+		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Spectator)); //Hardcode to red as there will be no blue players.
 		return MRES_Ignored;
 	}
 	
@@ -755,7 +758,7 @@ public MRESReturn StartLagCompensationPost(Address manager, DHookParam param)
 	}
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
-		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Red)) //Hardcode to red as there will be no blue players.
+		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Red)); //Hardcode to red as there will be no blue players.
 		b_LagCompAlliedPlayers = false;
 		return MRES_Ignored;
 	} 
@@ -1106,7 +1109,7 @@ void DHook_HookClient(int client)
 	if(ForceRespawn)
 	{
 		ForceRespawnHook[client] = ForceRespawn.HookEntity(Hook_Pre, client, DHook_ForceRespawn);
-		dieingstate[client] = 0
+		dieingstate[client] = 0;
 		CClotBody player = view_as<CClotBody>(client);
 		player.m_bThisEntityIgnored = false;
 	}
