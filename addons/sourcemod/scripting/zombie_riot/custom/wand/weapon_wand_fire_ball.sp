@@ -43,6 +43,7 @@ public void Weapon_Wand_FireBallSpell(int client, int weapon, bool &result, int 
 				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
 				
 				CreateTimer(0.4, Fireball_Remove_Spell, client, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(0.4, Fireball_Remove_Spell_Entity, EntIndexToEntRef(spellbook), TIMER_FLAG_NO_MAPCHANGE);
 					
 				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 				Mana_Hud_Delay[client] = 0.0;
@@ -79,7 +80,7 @@ public void Weapon_Wand_FireBallSpell2(int client, int weapon, bool &result, int
 {
 	if(weapon >= MaxClients)
 	{
-		int mana_cost = 35;
+		int mana_cost = 50;
 		if(mana_cost <= Current_Mana[client])
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
@@ -99,6 +100,7 @@ public void Weapon_Wand_FireBallSpell2(int client, int weapon, bool &result, int
 				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
 				
 				CreateTimer(0.4, Fireball_Remove_Spell, client, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(0.4, Fireball_Remove_Spell_Entity, EntIndexToEntRef(spellbook), TIMER_FLAG_NO_MAPCHANGE);
 					
 				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 				Mana_Hud_Delay[client] = 0.0;
@@ -142,7 +144,17 @@ public Action Fireball_Remove_Spell(Handle Fireball_Remove_SpellHandle, int clie
 		TF2Attrib_SetByDefIndex(client, 698, 0.0);
 		FakeClientCommand(client, "use tf_weapon_bonesaw");
 		TF2Attrib_SetByDefIndex(client, 178, 1.0);
-		TF2_RemoveWeaponSlot(client, 5);
+	}	
+	return Plugin_Handled;
+}
+
+
+public Action Fireball_Remove_Spell_Entity(Handle Fireball_Remove_SpellHandle, int ref)
+{
+	int index = EntRefToEntIndex(ref);
+	if (IsValidEntity(index))
+	{
+		RemoveEntity(index);
 	}	
 	return Plugin_Handled;
 }
@@ -154,43 +166,60 @@ public Action FireMultipleFireBalls(Handle Timer, int ref)
 	{
 		if(i_FireBallsToThrow[client] > 0)
 		{
-			int i, weapon;
-			while(TF2_GetItem(client, weapon, i))
+			int mana_cost = 50;
+			if(mana_cost <= Current_Mana[client])
 			{
-				if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == 939)
+
+				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				Mana_Hud_Delay[client] = 0.0;
+				
+				Current_Mana[client] -= mana_cost;
+					
+				delay_hud[client] = 0.0;
+
+
+				int i, weapon;
+				while(TF2_GetItem(client, weapon, i))
 				{
-					break;
+					if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == 939)
+					{
+						break;
+					}
 				}
+
+
+
+				float fAng[3], fPos[3];
+				GetClientEyeAngles(client, fAng);
+				GetClientEyePosition(client, fPos);
+
+				static float speed = 1000.0;
+
+				float fVel[3], fBuf[3];
+				GetAngleVectors(fAng, fBuf, NULL_VECTOR, NULL_VECTOR);
+				fVel[0] = fBuf[0]*speed;
+				fVel[1] = fBuf[1]*speed;
+				fVel[2] = fBuf[2]*speed;
+
+				int entity = CreateEntityByName("tf_projectile_spellfireball");
+				if(IsValidEntity(entity))
+				{
+					SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
+					SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
+					SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
+					TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
+					DispatchSpawn(entity);
+					TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
+				}
+				EmitSoundToAll(WAND_FIREBALL_SOUND, client, SNDCHAN_AUTO, 80, _, 0.7);
+				i_FireBallsToThrow[client] -= 1;
+							
+				return Plugin_Continue;
 			}
-
-
-
-			float fAng[3], fPos[3];
-			GetClientEyeAngles(client, fAng);
-			GetClientEyePosition(client, fPos);
-
-			static float speed = 1000.0;
-
-			float fVel[3], fBuf[3];
-			GetAngleVectors(fAng, fBuf, NULL_VECTOR, NULL_VECTOR);
-			fVel[0] = fBuf[0]*speed;
-			fVel[1] = fBuf[1]*speed;
-			fVel[2] = fBuf[2]*speed;
-
-			int entity = CreateEntityByName("tf_projectile_spellfireball");
-			if(IsValidEntity(entity))
+			else
 			{
-				SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
-				SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
-				SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
-				TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
-				DispatchSpawn(entity);
-				TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
+				return Plugin_Stop;
 			}
-			EmitSoundToAll(WAND_FIREBALL_SOUND, client, SNDCHAN_AUTO, 80, _, 0.9);
-			i_FireBallsToThrow[client] -= 1;
-						
-			return Plugin_Continue;
 		}
 		else
 		{
