@@ -542,6 +542,10 @@ public void PhantomKnight_ClotThink(int iNPC)
 						int fake_spawned = view_as<int>(PhantomKnight(1, vecPos_Npc, vecAng_Npc, b_IsAlliedNpc[npc.index]));
 						if(IsValidEntity(view_as<int>(fake_spawned)))
 						{
+							if(b_thisNpcIsABoss[npc.index]) //If he is a boss, make his clones a boss.
+							{
+								b_thisNpcIsABoss[view_as<int>(fake_spawned)] = true;
+							}
 							b_IsPhantomFake[view_as<int>(fake_spawned)] = true;
 
 							int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
