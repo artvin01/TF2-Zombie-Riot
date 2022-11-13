@@ -545,12 +545,13 @@ public void PhantomKnight_ClotThink(int iNPC)
 							if(b_thisNpcIsABoss[npc.index]) //If he is a boss, make his clones a boss.
 							{
 								b_thisNpcIsABoss[view_as<int>(fake_spawned)] = true;
+								SetEntProp(view_as<int>(fake_spawned), Prop_Send, "m_bGlowEnabled", true);
 							}
 							b_IsPhantomFake[view_as<int>(fake_spawned)] = true;
 
 							int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 
-							maxhealth /= 8;
+							maxhealth /= 6;
 
 							SetEntProp(view_as<int>(fake_spawned), Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(view_as<int>(fake_spawned), Prop_Data, "m_iMaxHealth", maxhealth);
@@ -635,7 +636,7 @@ public void PhantomKnight_NPCDeath(int entity)
 
 static char[] GetLucianHealth()
 {
-	int health = 160;
+	int health = 180;
 	
 	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
 	
