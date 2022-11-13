@@ -291,7 +291,7 @@ static float Velocity_Rocket[MAXENTITIES][3];
 
 public void ApplyExplosionDhook_Rocket(int entity)
 {
-	if(!b_EntityIsArrow[entity]) //No!
+	if(!b_EntityIsArrow[entity] && !b_EntityIsWandProjectile[entity]) //No!
 	{
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, DHook_RocketExplodePre);
 	}
@@ -434,7 +434,7 @@ public MRESReturn DHook_FireballExplodePre(int entity)
 		{
 			if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == 939)
 			{
-				float damage = 700.0;
+				float damage = 200.0;
 				
 				Address address = TF2Attrib_GetByDefIndex(weapon, 410);
 				if(address != Address_Null)

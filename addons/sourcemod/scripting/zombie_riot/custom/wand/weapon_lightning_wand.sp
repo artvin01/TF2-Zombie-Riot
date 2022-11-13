@@ -1,16 +1,16 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define SOUND_WAND_SHOT_CALCIUM	"misc/halloween/strongman_fast_whoosh_01.wav"
-#define SOUND_CALCIUM_IMPACT "misc/halloween/skeleton_break.wav"
+#define SOUND_WAND_SHOT_LIGHTNING	"weapons/dragons_fury_shoot.wav"
+#define SOUND_LIGHTNING_IMPACT "misc/halloween/spell_lightning_ball_impact.wav"
 
-void Wand_Calcium_Map_Precache()
+void Wand_Lightning_Map_Precache()
 {
-	PrecacheSound(SOUND_WAND_SHOT_CALCIUM);
-	PrecacheSound(SOUND_CALCIUM_IMPACT);
+	PrecacheSound(SOUND_WAND_SHOT_LIGHTNING);
+	PrecacheSound(SOUND_LIGHTNING_IMPACT);
 }
 
-public void Weapon_Calcium_Wand(int client, int weapon, bool crit, int slot)
+public void Weapon_Lightning_Wand(int client, int weapon, bool crit)
 {
 	int mana_cost;
 	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
@@ -31,7 +31,7 @@ public void Weapon_Calcium_Wand(int client, int weapon, bool crit, int slot)
 		
 		delay_hud[client] = 0.0;
 			
-		float speed = 1250.0;
+		float speed = 1100.0;
 		address = TF2Attrib_GetByDefIndex(weapon, 103);
 		if(address != Address_Null)
 			speed *= TF2Attrib_GetValue(address);
@@ -53,9 +53,10 @@ public void Weapon_Calcium_Wand(int client, int weapon, bool crit, int slot)
 		address = TF2Attrib_GetByDefIndex(weapon, 102);
 		if(address != Address_Null)
 			time *= TF2Attrib_GetValue(address);
-
-		EmitSoundToAll(SOUND_WAND_SHOT_CALCIUM, client, SNDCHAN_WEAPON, 65, _, 0.45, 100);
-		Wand_Projectile_Spawn(client, speed, time, damage, 10/*Default wand*/, weapon, "unusual_breaker_purple_parent");
+			
+		EmitSoundToAll(SOUND_WAND_SHOT_LIGHTNING, client, SNDCHAN_AUTO, 65, _, 0.45, 100);
+		//This spawns the projectile, this is a return int, if you want, you can do extra stuff with it, otherwise, it can be used as a void.
+		Wand_Projectile_Spawn(client, speed, time, damage, 2/*Default wand*/, weapon, "unusual_zap_yellow");
 	}
 	else
 	{
@@ -66,7 +67,7 @@ public void Weapon_Calcium_Wand(int client, int weapon, bool crit, int slot)
 	}
 }
 
-public void Want_CalciumWandTouch(int entity, int target)
+public void Want_LightningTouch(int entity, int target)
 {
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if (target > 0)	
@@ -78,16 +79,21 @@ public void Want_CalciumWandTouch(int entity, int target)
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
 		Entity_Position = WorldSpaceCenter(target);
-
+		//Code to do damage position and ragdolls
+		
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
 		}
-		EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
+		float position[3];
+	
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+		ParticleEffectAt(position, "utaunt_lightning_bolt", 1.0);
+		EmitSoundToAll(SOUND_LIGHTNING_IMPACT, entity, SNDCHAN_STATIC, 80, _, 1.0);
 		RemoveEntity(entity);
 	}
 	else if(target == 0)
@@ -96,7 +102,10 @@ public void Want_CalciumWandTouch(int entity, int target)
 		{
 			RemoveEntity(particle);
 		}
-		EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
+		float position[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+		ParticleEffectAt(position, "utaunt_lightning_bolt", 1.0);
+		EmitSoundToAll(SOUND_LIGHTNING_IMPACT, entity, SNDCHAN_STATIC, 80, _, 1.0);
 		RemoveEntity(entity);
 	}
 }

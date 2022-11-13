@@ -4276,8 +4276,6 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 				if(CurrentGibCount > ZR_MAX_GIBCOUNT)
 				{
 					Limit_Gibs = true;
-					b_LimitedGibGiveMoreHealth
-
 				}
 
 				static int Main_Gib;
@@ -4308,7 +4306,10 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						}
 						else
 						{
-							b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+							if(IsValidEntity(Main_Gib))
+							{
+								b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+							}
 						}
 					}
 					else
@@ -4333,7 +4334,10 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						}
 						else
 						{
-							b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+							if(IsValidEntity(Main_Gib))
+							{
+								b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+							}
 						}
 					}	
 				}	
@@ -4362,7 +4366,10 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						}
 						else
 						{
-							b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+							if(IsValidEntity(Main_Gib))
+							{
+								b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+							}
 						}
 					}
 					else
@@ -4387,7 +4394,10 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						}
 						else
 						{
-							b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+							if(IsValidEntity(Main_Gib))
+							{
+								b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+							}
 						}
 					}		
 				}
@@ -4416,7 +4426,10 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						}
 						else
 						{
-							b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+							if(IsValidEntity(Main_Gib))
+							{
+								b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+							}
 						}
 					}
 					else
@@ -4441,7 +4454,10 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						}
 						else
 						{
-							b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+							if(IsValidEntity(Main_Gib))
+							{
+								b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+							}
 						}
 					}	
 				}
@@ -6294,11 +6310,11 @@ public void RequestFramesCallback(DataPack pack)
 
 
 
-static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, bool xeno = false, bool nobleed = false)
+static int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, bool xeno = false, bool nobleed = false)
 {
 	int prop = CreateEntityByName("prop_physics_multiplayer");
 	if(!IsValidEntity(prop))
-		return;
+		return -1;
 	DispatchKeyValue(prop, "model", model);
 	DispatchKeyValue(prop, "physicsmode", "2");
 	DispatchKeyValue(prop, "massScale", "1.0");
@@ -6393,6 +6409,7 @@ static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0
 	}
 	CreateTimer(Random_time, Timer_RemoveEntity_Prop_Gib, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 //	CreateTimer(1.5, Timer_DisableMotion, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+	return prop;
 }
 
 public void GibCollidePlayerInteraction(int gib, int player)
