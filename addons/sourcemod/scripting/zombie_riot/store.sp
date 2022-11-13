@@ -3495,7 +3495,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 			Attributes to Arrays Here
 		*/
 		Panic_Attack[entity] = Attributes_FindOnWeapon(client, entity, 651);
-		i_SurvivalKnifeCount[client] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 33));
+		i_SurvivalKnifeCount[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 33));
 		i_GlitchedGun[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 731));
 		i_AresenalTrap[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 719));
 		i_ArsenalBombImplanter[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 544));

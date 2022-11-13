@@ -1,6 +1,6 @@
 //#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_59.mdl"
 
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_164.mdl"
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_173.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
 
@@ -899,6 +899,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = Schwertkrieg(client, vecPos, vecAng, ally);
 		}
+		case PHANTOM_KNIGHT:
+		{
+			entity = PhantomKnight(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1444,6 +1448,10 @@ public void NPCDeath(int entity)
 		{
 			Schwertkrieg_NPCDeath(entity);
 		}
+		case PHANTOM_KNIGHT:
+		{
+			PhantomKnight_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1678,6 +1686,7 @@ public void OnMapStart_NPC_Base()
 	
 	Donnerkrieg_OnMapStart_NPC();
 	Schwertkrieg_OnMapStart_NPC();
+	PhantomKnight_OnMapStart_NPC();
 }
 
 
@@ -3247,14 +3256,27 @@ methodmap CClotBody
 	public void StudioFrameAdvance() { SDKCall(g_hStudioFrameAdvance, this.index); }
 	public void DispatchAnimEvents() { SDKCall(g_hDispatchAnimEvents, this.index, this.index); }
 	
-	public int EquipItem(const char[] attachment, const char[] model, const char[] anim = "", int skin = 0)
+	public int EquipItem(
+	const char[] attachment,
+	const char[] model,
+	const char[] anim = "",
+	int skin = 0,
+	float model_size = 1.0)
 	{
 		int item = CreateEntityByName("prop_dynamic");
 		DispatchKeyValue(item, "model", model);
-		DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
+
+		if(model_size == 1.0)
+		{
+			DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
+		}
+		else
+		{
+			DispatchKeyValueFloat(item, "modelscale", model_size);
+		}
+
 		DispatchSpawn(item);
 		
-		SetEntProp(item, Prop_Send, "m_nSkin", skin);
 		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES);
 	
 		if(!StrEqual(anim, ""))
@@ -3262,12 +3284,12 @@ methodmap CClotBody
 			SetVariantString(anim);
 			AcceptEntityInput(item, "SetAnimation");
 		}
-	
+
 		SetVariantString("!activator");
 		AcceptEntityInput(item, "SetParent", this.index);
-		
+
 		SetVariantString(attachment);
-		AcceptEntityInput(item, "SetParentAttachmentMaintainOffset"); 
+		AcceptEntityInput(item, "SetParentAttachmentMaintainOffset"); 			
 		
 		SetEntityCollisionGroup(item, 1);
 		/*
@@ -5795,7 +5817,7 @@ public void Check_If_Stuck(int iNPC)
 			if(TR_PointOutsideWorld(flMyPos))
 			{
 				LogError("Enemy NPC somehow got out of the map...");
-				SDKHooks_TakeDamage(iNPC, 0, 0, 99999999.9);
+				RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
 				return;
 			}
 		}
@@ -5946,7 +5968,7 @@ public void Check_If_Stuck(int iNPC)
 				}
 				else
 				{
-					SDKHooks_TakeDamage(iNPC, 0, 0, 99999999.9);
+					RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
 				}
 			}
 		}
@@ -6719,7 +6741,7 @@ float[] CalculateBulletDamageForce( const float vecBulletDir[3], float flScale )
 	return vecForce;
 }
 
-stock bool makeexplosion(int attacker = 0, int inflictor = -1, float attackposition[3],  char[] weaponname = "", int Damage_for_boom = 200, int Range_for_boom = 200, float Knockback = 200.0, int flags = 0, bool FromNpcForced = false)
+stock bool makeexplosion(int attacker = 0, int inflictor = -1, float attackposition[3],  char[] weaponname = "", int Damage_for_boom = 200, int Range_for_boom = 200, float Knockback = 200.0, int flags = 0, bool FromNpcForced = false, bool do_explosion_effect = true)
 {
 	if(IsValidEntity(attacker)) //Is this just for effect?
 	{
@@ -6737,13 +6759,15 @@ stock bool makeexplosion(int attacker = 0, int inflictor = -1, float attackposit
 		Explode_Logic_Custom(float(Damage_for_boom), attacker, attacker, -1, attackposition, float(Range_for_boom), _, _, FromBlueNpc, _);
 
 	}
-	
-	DataPack pack_boom = new DataPack();
-	pack_boom.WriteFloat(attackposition[0]);
-	pack_boom.WriteFloat(attackposition[1]);
-	pack_boom.WriteFloat(attackposition[2]);
-	pack_boom.WriteCell(1);
-	RequestFrame(MakeExplosionFrameLater, pack_boom);
+	if(do_explosion_effect)
+	{
+		DataPack pack_boom = new DataPack();
+		pack_boom.WriteFloat(attackposition[0]);
+		pack_boom.WriteFloat(attackposition[1]);
+		pack_boom.WriteFloat(attackposition[2]);
+		pack_boom.WriteCell(1);
+		RequestFrame(MakeExplosionFrameLater, pack_boom);
+	}
 	
 	return true;
 }	
@@ -7897,6 +7921,337 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 	b_IsInUpdateGroundConstraintLogic = false;
 	return MRES_Ignored;
 }
+
+
+
+public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask, bool originalResult)
+{
+	return false;
+} 
+
+//TELEPORT IS SAFE? FROM SARYSA BUT EDITED FOR NPCS!
+
+public bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/)
+{
+	float sizeMultiplier = 1.0; //We do not want to teleport giants, yet.
+	
+	static float startPos[3];
+	startPos = GetAbsOrigin(npc);
+
+	startPos[2] += 25.0;
+
+	static float testPos[3];
+	bool found = false;
+
+	for (int x = 0; x < 3; x++)
+	{
+		if (found)
+			break;
+		
+		float xOffset;
+		if (x == 0)
+			xOffset = 0.0;
+		else if (x == 1)
+			xOffset = 12.5 * sizeMultiplier;
+		else
+			xOffset = 25.0 * sizeMultiplier;
+			
+		if (endPos[0] < startPos[0])
+			testPos[0] = endPos[0] + xOffset;
+		else if (endPos[0] > startPos[0])
+			testPos[0] = endPos[0] - xOffset;
+		else if (xOffset != 0.0)
+			break; // super rare but not impossible, no sense wasting on unnecessary tests
+		
+		for (int y = 0; y < 3; y++)
+		{
+			if (found)
+				break;
+
+			float yOffset;
+			if (y == 0)
+				yOffset = 0.0;
+			else if (y == 1)
+				yOffset = 12.5 * sizeMultiplier;
+			else
+				yOffset = 25.0 * sizeMultiplier;
+
+			if (endPos[1] < startPos[1])
+				testPos[1] = endPos[1] + yOffset;
+			else if (endPos[1] > startPos[1])
+				testPos[1] = endPos[1] - yOffset;
+			else if (yOffset != 0.0)
+				break; // super rare but not impossible, no sense wasting on unnecessary tests
+			
+			for (int z = 0; z < 3; z++)
+			{
+				if (found)
+					break;
+					
+				float zOffset;
+				if (z == 0)
+					zOffset = 0.0;
+				else if (z == 1)
+					zOffset = 41.5 * sizeMultiplier;
+				else
+					zOffset = 83.0 * sizeMultiplier;
+
+				if (endPos[2] < startPos[2])
+					testPos[2] = endPos[2] + zOffset;
+				else if (endPos[2] > startPos[2])
+					testPos[2] = endPos[2] - zOffset;
+				else if (zOffset != 0.0)
+					break; // super rare but not impossible, no sense wasting on unnecessary tests
+
+				// before we test this position, ensure it has line of sight from the point our player looked from
+				// this ensures the player can't teleport through walls
+				static float tmpPos[3]
+				TR_TraceRayFilter(endPos, testPos, MASK_NPCSOLID, RayType_EndPoint, TraceFilterClients);
+				TR_GetEndPosition(tmpPos);
+				if (testPos[0] != tmpPos[0] || testPos[1] != tmpPos[1] || testPos[2] != tmpPos[2])
+					continue;
+			}
+		}
+	}
+	
+	if (!IsSpotSafe(npc, testPos, sizeMultiplier))
+		return false;
+
+	TeleportEntity(npc, testPos, NULL_VECTOR, NULL_VECTOR);
+	return true;
+}
+
+bool TraceFilterClients(int entity, int mask, any data)
+{    
+    if (entity > 0 && entity <= MAXENTITIES) 
+    { 
+        return false; 
+    }
+    else 
+    { 
+        return true; 
+    } 
+} 
+
+
+static bool ResizeTraceFailed;
+static int ResizeMyTeam;
+
+
+bool IsSpotSafe(int npc, float playerPos[3], float sizeMultiplier)
+{
+	ResizeTraceFailed = false;
+	ResizeMyTeam = GetEntProp(npc, Prop_Data, "m_iTeamNum");
+	static float mins[3];
+	static float maxs[3];
+	mins[0] = -24.0 * sizeMultiplier;
+	mins[1] = -24.0 * sizeMultiplier;
+	mins[2] = 0.0;
+	maxs[0] = 24.0 * sizeMultiplier;
+	maxs[1] = 24.0 * sizeMultiplier;
+	maxs[2] = 82.0 * sizeMultiplier;
+
+	// the eight 45 degree angles and center, which only checks the z offset
+	if (!Resize_TestResizeOffset(playerPos, mins[0], mins[1], maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, mins[0], 0.0, maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, mins[0], maxs[1], maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, 0.0, mins[1], maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, 0.0, 0.0, maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, 0.0, maxs[1], maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, maxs[0], mins[1], maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, maxs[0], 0.0, maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, maxs[0], maxs[1], maxs[2])) return false;
+
+	// 22.5 angles as well, for paranoia sake
+	if (!Resize_TestResizeOffset(playerPos, mins[0], mins[1] * 0.5, maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, mins[0], maxs[1] * 0.5, maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, maxs[0], mins[1] * 0.5, maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, maxs[0], maxs[1] * 0.5, maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, mins[0] * 0.5, mins[1], maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, maxs[0] * 0.5, mins[1], maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, mins[0] * 0.5, maxs[1], maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, maxs[0] * 0.5, maxs[1], maxs[2])) return false;
+
+	// four square tests
+	if (!Resize_TestSquare(playerPos, mins[0], maxs[0], mins[1], maxs[1], maxs[2])) return false;
+	if (!Resize_TestSquare(playerPos, mins[0] * 0.75, maxs[0] * 0.75, mins[1] * 0.75, maxs[1] * 0.75, maxs[2])) return false;
+	if (!Resize_TestSquare(playerPos, mins[0] * 0.5, maxs[0] * 0.5, mins[1] * 0.5, maxs[1] * 0.5, maxs[2])) return false;
+	if (!Resize_TestSquare(playerPos, mins[0] * 0.25, maxs[0] * 0.25, mins[1] * 0.25, maxs[1] * 0.25, maxs[2])) return false;
+	
+	return true;
+}
+
+
+bool Resize_TestSquare(const float bossOrigin[3], float xmin, float xmax, float ymin, float ymax, float zOffset)
+{
+	static float pointA[3];
+	static float pointB[3];
+	for (int phase = 0; phase <= 7; phase++)
+	{
+		// going counterclockwise
+		if (phase == 0)
+		{
+			pointA[0] = bossOrigin[0] + 0.0;
+			pointA[1] = bossOrigin[1] + ymax;
+			pointB[0] = bossOrigin[0] + xmax;
+			pointB[1] = bossOrigin[1] + ymax;
+		}
+		else if (phase == 1)
+		{
+			pointA[0] = bossOrigin[0] + xmax;
+			pointA[1] = bossOrigin[1] + ymax;
+			pointB[0] = bossOrigin[0] + xmax;
+			pointB[1] = bossOrigin[1] + 0.0;
+		}
+		else if (phase == 2)
+		{
+			pointA[0] = bossOrigin[0] + xmax;
+			pointA[1] = bossOrigin[1] + 0.0;
+			pointB[0] = bossOrigin[0] + xmax;
+			pointB[1] = bossOrigin[1] + ymin;
+		}
+		else if (phase == 3)
+		{
+			pointA[0] = bossOrigin[0] + xmax;
+			pointA[1] = bossOrigin[1] + ymin;
+			pointB[0] = bossOrigin[0] + 0.0;
+			pointB[1] = bossOrigin[1] + ymin;
+		}
+		else if (phase == 4)
+		{
+			pointA[0] = bossOrigin[0] + 0.0;
+			pointA[1] = bossOrigin[1] + ymin;
+			pointB[0] = bossOrigin[0] + xmin;
+			pointB[1] = bossOrigin[1] + ymin;
+		}
+		else if (phase == 5)
+		{
+			pointA[0] = bossOrigin[0] + xmin;
+			pointA[1] = bossOrigin[1] + ymin;
+			pointB[0] = bossOrigin[0] + xmin;
+			pointB[1] = bossOrigin[1] + 0.0;
+		}
+		else if (phase == 6)
+		{
+			pointA[0] = bossOrigin[0] + xmin;
+			pointA[1] = bossOrigin[1] + 0.0;
+			pointB[0] = bossOrigin[0] + xmin;
+			pointB[1] = bossOrigin[1] + ymax;
+		}
+		else if (phase == 7)
+		{
+			pointA[0] = bossOrigin[0] + xmin;
+			pointA[1] = bossOrigin[1] + ymax;
+			pointB[0] = bossOrigin[0] + 0.0;
+			pointB[1] = bossOrigin[1] + ymax;
+		}
+
+		for (int shouldZ = 0; shouldZ <= 1; shouldZ++)
+		{
+			pointA[2] = pointB[2] = shouldZ == 0 ? bossOrigin[2] : (bossOrigin[2] + zOffset);
+			if (!Resize_OneTrace(pointA, pointB))
+				return false;
+		}
+	}
+		
+	return true;
+}
+
+bool Resize_TestResizeOffset(const float bossOrigin[3], float xOffset, float yOffset, float zOffset)
+{
+	static float tmpOrigin[3];
+	tmpOrigin[0] = bossOrigin[0];
+	tmpOrigin[1] = bossOrigin[1];
+	tmpOrigin[2] = bossOrigin[2];
+	static float targetOrigin[3];
+	targetOrigin[0] = bossOrigin[0] + xOffset;
+	targetOrigin[1] = bossOrigin[1] + yOffset;
+	targetOrigin[2] = bossOrigin[2];
+	
+	if (!(xOffset == 0.0 && yOffset == 0.0))
+		if (!Resize_OneTrace(tmpOrigin, targetOrigin))
+			return false;
+		
+	tmpOrigin[0] = targetOrigin[0];
+	tmpOrigin[1] = targetOrigin[1];
+	tmpOrigin[2] = targetOrigin[2] + zOffset;
+
+	if (!Resize_OneTrace(targetOrigin, tmpOrigin))
+		return false;
+		
+	targetOrigin[0] = bossOrigin[0];
+	targetOrigin[1] = bossOrigin[1];
+	targetOrigin[2] = bossOrigin[2] + zOffset;
+		
+	if (!(xOffset == 0.0 && yOffset == 0.0))
+		if (!Resize_OneTrace(tmpOrigin, targetOrigin))
+			return false;
+		
+	return true;
+}
+
+
+bool Resize_OneTrace(const float startPos[3], const float endPos[3])
+{
+	static float result[3];
+
+//	MASK_NPCSOLID, TraceRayHitPlayersOnly
+
+	TR_TraceRayFilter(startPos, endPos, MASK_NPCSOLID, RayType_EndPoint, Resize_TracePlayersAndBuildings);
+	if (ResizeTraceFailed)
+	{
+		return false;
+	}
+	TR_GetEndPosition(result);
+	if (endPos[0] != result[0] || endPos[1] != result[1] || endPos[2] != result[2])
+	{
+		return false;
+	}
+	
+	return true;
+}
+
+#define MAX_ENTITY_CLASSNAME_LENGTH 48
+#define MAX_PLAYERS (MAX_PLAYERS_ARRAY < (MaxClients + 1) ? MAX_PLAYERS_ARRAY : (MaxClients + 1))
+#define MAX_PLAYERS_ARRAY 36
+
+bool Resize_TracePlayersAndBuildings(int entity, int contentsMask)
+{
+	if(IsValidClient(entity) && TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0 && !b_DoNotUnStuck[entity] && !b_ThisEntityIgnored[entity])
+	{
+		if (GetClientTeam(entity) != ResizeMyTeam)
+		{
+			ResizeTraceFailed = true;
+		}
+	}
+	else if (IsValidEntity(entity))
+	{
+		static char classname[MAX_ENTITY_CLASSNAME_LENGTH];
+		GetEntityClassname(entity, classname, sizeof(classname));
+		if ((strcmp(classname, "obj_sentrygun") == 0) || (strcmp(classname, "obj_dispenser") == 0) || (strcmp(classname, "obj_teleporter") == 0)
+			|| (strcmp(classname, "prop_dynamic") == 0) || (strcmp(classname, "func_door") == 0) || (strcmp(classname, "func_physbox") == 0) || (strcmp(classname, "base_boss") == 0) || (strcmp(classname, "func_breakable") == 0))
+		{
+			if(!b_ThisEntityIgnored[entity] && ResizeMyTeam != GetEntProp(entity, Prop_Data, "m_iTeamNum"))
+			{
+				ResizeTraceFailed = true;
+			}
+		}
+	}
+
+	return false;
+}
+
+//TELEPORT LOGIC END.
+
+public void KillNpc(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity)) //Dont do this in a think pls.
+	{
+		SDKHooks_TakeDamage(entity, 0, 0, 99999999.9);
+	}
+}
+
 //NORMAL
 
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"
@@ -7987,6 +8342,7 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/special/npc_sawrunner.sp"
 #include "zombie_riot/npc/special/npc_l4d2_tank.sp"
 #include "zombie_riot/npc/special/npc_itstilives.sp"
+#include "zombie_riot/npc/special/npc_phantom_knight.sp"
 
 #include "zombie_riot/npc/btd/npc_bloon.sp"
 #include "zombie_riot/npc/btd/npc_moab.sp"
@@ -8046,9 +8402,3 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/cof/npc_simon.sp"
 
 #include "zombie_riot/npc/bonezone/npc_basicbones.sp"
-
-
-public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask, bool originalResult)
-{
-	return false;
-} 

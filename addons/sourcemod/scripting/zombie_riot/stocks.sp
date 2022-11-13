@@ -2478,7 +2478,7 @@ bool ignite = false)
 	{
 		b_WasAlreadyCalculatedToBeClosest[i] = false;
 	}
-		
+
 	if(!FromBlueNpc) //make sure that there even is any valid npc before we do these huge calcs.
 	{ 
 		if(spawnLoc[0] == 0.0)
@@ -2542,6 +2542,11 @@ bool ignite = false)
 			{
 				NPC_Ignite(Closest_npc, client, 5.0, weapon);
 			}
+
+			if(FromBlueNpc && !IsValidClient(Closest_npc))
+			{
+				damage_1 *= 3.0; //enemy is an npc, and i am an npc.
+			}
 			SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 			
 			if(!FromBlueNpc) //Npcs do not have damage falloff, dodge.
@@ -2578,7 +2583,11 @@ bool ignite = false)
 							if(weapon_valid && ignite)
 							{
 								NPC_Ignite(Closest_npc, client, 5.0, weapon);
-							}							
+							}	
+							if(FromBlueNpc)
+							{
+								damage_1 *= 3.0; //enemy is an npc, and i am an npc.
+							}						
 							SDKHooks_TakeDamage(new_closest_npc, client, client, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 							
 							damage_reduction *= ExplosionDmgMultihitFalloff;
@@ -2621,6 +2630,7 @@ bool ignite = false)
 								{
 									damage_1 = damage;
 								}
+								//Dont give 3x dmg to players lmao
 								SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 								TargetsHit += 1;
 							}
@@ -2656,6 +2666,10 @@ bool ignite = false)
 									if(damage_1 > damage)
 									{
 										damage_1 = damage;
+									}
+									if(FromBlueNpc)
+									{
+										damage_1 *= 3.0; //enemy is an npc, and i am an npc.
 									}
 							
 									SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
@@ -2697,7 +2711,11 @@ bool ignite = false)
 										{
 											damage_1 = damage;
 										}
-								
+										if(FromBlueNpc)
+										{
+											damage_1 *= 3.0; //enemy is an npc, and i am an npc.
+										}
+
 										SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 										TargetsHit += 1;
 									}

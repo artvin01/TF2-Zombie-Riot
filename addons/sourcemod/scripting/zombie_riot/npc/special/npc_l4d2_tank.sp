@@ -255,7 +255,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 	}
 	else
 	{
-		npc.m_flSpeed = 340.0;	
+		npc.m_flSpeed = 320.0;	
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime())
@@ -723,7 +723,7 @@ public void L4D2_Tank_NPCDeath(int entity)
 
 static char[] GetTankHealth()
 {
-	int health = 90;
+	int health = 85;
 	
 	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
 	

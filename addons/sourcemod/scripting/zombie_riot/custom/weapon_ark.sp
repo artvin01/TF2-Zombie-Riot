@@ -216,7 +216,7 @@ public void Ark_attack1(int client, int weapon, bool crit, int slot) //first pap
 			speed *= TF2Attrib_GetValue(address);
 	
 	
-		float time = 1000.0/speed;
+		float time = 1500.0/speed;
 		address = TF2Attrib_GetByDefIndex(weapon, 101);
 		if(address != Address_Null)
 			time *= TF2Attrib_GetValue(address);
@@ -273,7 +273,7 @@ public void Ark_attack2(int client, int weapon, bool crit, int slot) //second pa
 			speed *= TF2Attrib_GetValue(address);
 	
 	
-		float time = 500.0/speed;
+		float time = 1000.0/speed;
 		address = TF2Attrib_GetByDefIndex(weapon, 101);
 		if(address != Address_Null)
 			time *= TF2Attrib_GetValue(address);
@@ -369,20 +369,20 @@ static void Wand_Launch2(int client, int iRot, float speed, float time, float da
 	switch(GetClientTeam(client))
 	{
 		case 2:
-			particle = ParticleEffectAt(position, "unusual_tesla_flash", 5.0);
+			particle = ParticleEffectAt(position, "unusual_robot_radioactive", 5.0);
 
 		default:
-			particle = ParticleEffectAt(position, "unusual_tesla_flash", 5.0);
+			particle = ParticleEffectAt(position, "unusual_robot_radioactive", 5.0);
 	}
 		
 	float Angles[3];
 	GetClientEyeAngles(client, Angles);
 	
-	Angles[0] += GetRandomFloat(-5.0, 5.0);
+	Angles[0] += GetRandomFloat(-10.0, 10.0);
 	
-	Angles[1] += GetRandomFloat(-5.0, 5.0);
+	Angles[1] += GetRandomFloat(-10.0, 10.0);
 	
-	Angles[2] += GetRandomFloat(-5.0, 5.0);
+	Angles[2] += GetRandomFloat(-10.0, 10.0);
 	
 	TeleportEntity(particle, NULL_VECTOR, Angles, NULL_VECTOR);
 	TeleportEntity(iCarrier, NULL_VECTOR, Angles, NULL_VECTOR);
@@ -464,10 +464,10 @@ static void Wand_Launch1(int client, int iRot, float speed, float time, float da
 	switch(GetClientTeam(client))
 	{
 		case 2:
-			particle = ParticleEffectAt(position, "drg_cow_rockettrail_normal", 5.0);
+			particle = ParticleEffectAt(position, "unusual_robot_radioactive2", 5.0);
 	
 		default:
-			particle = ParticleEffectAt(position, "drg_cow_rockettrail_normal_blue", 5.0);
+			particle = ParticleEffectAt(position, "unusual_robot_radioactive2", 5.0);
 	}
 	
 	float Angles[3];
