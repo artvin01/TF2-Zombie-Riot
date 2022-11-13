@@ -894,36 +894,36 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 			RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth)));	//now blitz becomes more powerfull the less hp he has rather than via lifelosses
 			i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth));
 			fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.3;
-			if(fl_rocket_firerate[npc.index]<=0.35)
+			if(fl_rocket_firerate[npc.index]<=0.3)
 			{
-				fl_rocket_firerate[npc.index]=0.35;
+				fl_rocket_firerate[npc.index]=0.3;
 			}
 		}
 		if(i_currentwave[npc.index]==30)
 		{
 			RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.25);
 			i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*1.25;
-			fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.4;
-			if(fl_rocket_firerate[npc.index]<=0.3)
-			{
-				fl_rocket_firerate[npc.index]=0.3;
-			}
-		}
-		if(i_currentwave[npc.index]==45)
-		{
-			RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.5);
-			i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*1.5;
 			fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.5;
 			if(fl_rocket_firerate[npc.index]<=0.2)
 			{
 				fl_rocket_firerate[npc.index]=0.2;
 			}
 		}
+		if(i_currentwave[npc.index]==45)
+		{
+			RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.75);
+			i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*1.75;
+			fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.65;
+			if(fl_rocket_firerate[npc.index]<=0.075)
+			{
+				fl_rocket_firerate[npc.index]=0.075;
+			}
+		}
 		if(i_currentwave[npc.index]>=60)
 		{
-			RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*2.0);
-			i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*2.0;
-			fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.6;	//No limit to the firerate, probably a bad idea
+			RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*2.25);
+			i_HealthScale[npc.index]=1.0+(1-(Health/MaxHealth))*2.25;
+			fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.75;	//No limit to the firerate, probably a bad idea
 			if(fl_rocket_firerate[npc.index]<=0.01)	//just incase it goes negative...
 			{
 				fl_rocket_firerate[npc.index]=0.01;	//so infinite fire rate is not a good idea since it probably can crash the server, probably.
