@@ -1131,7 +1131,7 @@
 	"Medic's Lost Medical Lisence"
 	{
 		"en"		"Medic's Lost Medical License"
-		"ru"		"Потерянная медицинская лицензия"
+		"ru"		"Потерянная лицензия медика"
 		"de"		"Medics verlorene medizinische Lizenz"
 		"pt"		"Licença médica perdida do Medic"
 		"nl"		"Medicus's verloren Medische Licentie"
