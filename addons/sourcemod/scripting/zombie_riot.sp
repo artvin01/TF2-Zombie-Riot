@@ -4340,4 +4340,5 @@ public void MapStartResetAll()
 	Zero(i_HasBeenHeadShotted);
 	Zero(f_StuckTextChatNotif);
 	Zero(b_LimitedGibGiveMoreHealth);
+	CurrentGibCount = 0;
 }

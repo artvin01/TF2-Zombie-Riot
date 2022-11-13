@@ -51,6 +51,7 @@ public void Weapon_Calcium_FireBallSpell(int client, int weapon, bool &result, i
 				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
 				Delete_Flame[client] = true;
 				CreateTimer(0.5, Calcium_Remove_Spell, client, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(0.4, Fireball_Remove_Spell_Entity, EntIndexToEntRef(spellbook), TIMER_FLAG_NO_MAPCHANGE);
 					
 				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 				Mana_Hud_Delay[client] = 0.0;
