@@ -4267,6 +4267,17 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 				
 				float damageForce[3];
 				npc.m_vecpunchforce(damageForce, false);
+
+				bool Limit_Gibs = false;
+
+				if(CurrentGibCount > ZR_MAX_GIBCOUNT)
+				{
+					Limit_Gibs = true;
+					b_LimitedGibGiveMoreHealth
+
+				}
+
+				static int Main_Gib;
 				
 				
 				if(npc.m_iBleedType == 1)
@@ -4276,36 +4287,50 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 						startPosition[2] += 64;
-						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true);
-						startPosition[2] -= 15;
-						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true);
-						startPosition[2] += 44;
-						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true);
+						if(!Limit_Gibs)
 						{
-							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true);	
+							startPosition[2] -= 15;
+							Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true);
+							startPosition[2] += 44;
+							if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+							{
+								npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+								Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true);	
+							}
+							else
+							{
+								Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true);	
+							}
 						}
 						else
 						{
-							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true);	
+							b_LimitedGibGiveMoreHealth[Main_Gib] = true;
 						}
 					}
 					else
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 						startPosition[2] += 42;
-						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true);
-						startPosition[2] -= 10;
-						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce);
-						startPosition[2] += 34;
-						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true);
+						if(!Limit_Gibs)
 						{
-							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce);	
+							startPosition[2] -= 10;
+							Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce);
+							startPosition[2] += 34;
+							if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+							{
+								npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+								Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce);	
+							}
+							else
+							{
+								Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce);	
+							}
 						}
 						else
 						{
-							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce);	
+							b_LimitedGibGiveMoreHealth[Main_Gib] = true;
 						}
 					}	
 				}	
@@ -4316,36 +4341,50 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 						startPosition[2] += 64;
-						Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, _, damageForce, true, false, true, true); //dont gigantify this one.
-						startPosition[2] -= 15;
-						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, _, damageForce, false, true, true);
-						startPosition[2] += 44;
-						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						Main_Gib = Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, _, damageForce, true, false, true, true); //dont gigantify this one.
+						if(!Limit_Gibs)
 						{
-							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-							Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, accurateAngle, damageForce, false, true, true);	
+							startPosition[2] -= 15;
+							Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, _, damageForce, false, true, true);
+							startPosition[2] += 44;
+							if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+							{
+								npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+								Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, accurateAngle, damageForce, false, true, true);	
+							}
+							else
+							{
+								Place_Gib("models/gibs/metal_gib2.mdl", startPosition, _, damageForce, false, true, true);		
+							}
 						}
 						else
 						{
-							Place_Gib("models/gibs/metal_gib2.mdl", startPosition, _, damageForce, false, true, true);		
+							b_LimitedGibGiveMoreHealth[Main_Gib] = true;
 						}
 					}
 					else
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 						startPosition[2] += 42;
-						Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, _, damageForce, true, false, true, true, true);
-						startPosition[2] -= 10;
-						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, _, damageForce, false, false, true);
-						startPosition[2] += 34;
-						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						Main_Gib = Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, _, damageForce, true, false, true, true, true);
+						if(!Limit_Gibs)
 						{
-							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-							Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, accurateAngle, damageForce, false, false, true);
+							startPosition[2] -= 10;
+							Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, _, damageForce, false, false, true);
+							startPosition[2] += 34;
+							if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+							{
+								npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+								Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, accurateAngle, damageForce, false, false, true);
+							}
+							else
+							{
+								Place_Gib("models/gibs/metal_gib2.mdl", startPosition, _, damageForce, false, false, true);		
+							}
 						}
 						else
 						{
-							Place_Gib("models/gibs/metal_gib2.mdl", startPosition, _, damageForce, false, false, true);		
+							b_LimitedGibGiveMoreHealth[Main_Gib] = true;
 						}
 					}		
 				}
@@ -4356,36 +4395,50 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 						startPosition[2] += 64;
-						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true, _, _, _, true);
-						startPosition[2] -= 15;
-						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true, _, _, _, true);
-						startPosition[2] += 44;
-						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true, _, _, _, true);
+						if(!Limit_Gibs)
 						{
-							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, true);	
+							startPosition[2] -= 15;
+							Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true, _, _, _, true);
+							startPosition[2] += 44;
+							if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+							{
+								npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+								Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, true);	
+							}
+							else
+							{
+								Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true, _, _, _, true);		
+							}
 						}
 						else
 						{
-							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true, _, _, _, true);		
+							b_LimitedGibGiveMoreHealth[Main_Gib] = true;
 						}
 					}
 					else
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 						startPosition[2] += 42;
-						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, _, _, _, _, true);
-						startPosition[2] -= 10;
-						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
-						startPosition[2] += 34;
-						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, _, _, _, _, true);
+						if(!Limit_Gibs)
 						{
-							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, true);
+							startPosition[2] -= 10;
+							Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
+							startPosition[2] += 34;
+							if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+							{
+								npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+								Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, true);
+							}
+							else
+							{
+								Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
+							}
 						}
 						else
 						{
-							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
+							b_LimitedGibGiveMoreHealth[Main_Gib] = true;
 						}
 					}	
 				}
@@ -6265,6 +6318,8 @@ static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0
 	Pow(vel[1], 0.5);
 	Pow(vel[2], 0.5);
 	*/
+	b_LimitedGibGiveMoreHealth[prop] = false; //Set it to false by default first.
+	CurrentGibCount += 1;
 	if(big_gibs)
 	{
 		DispatchKeyValue(prop, "modelscale", "1.6");
@@ -6333,7 +6388,7 @@ static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0
 			SetParent(prop, particle);
 		}
 	}
-	CreateTimer(Random_time, Timer_RemoveEntity_Prop, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(Random_time, Timer_RemoveEntity_Prop_Gib, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 //	CreateTimer(1.5, Timer_DisableMotion, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 }
 
@@ -6361,15 +6416,32 @@ public void GibCollidePlayerInteraction(int gib, int player)
 					
 					if(Heal_Amount_calc > 0)
 					{
+						if(b_LimitedGibGiveMoreHealth[gib])
+						{
+							Heal_Amount_calc *= 3;
+						}
 						StartHealingTimer(player, 0.1, 1, Heal_Amount_calc);
 						int sound = GetRandomInt(0, sizeof(g_GibEating) - 1);
 						EmitSoundToAll(g_GibEating[sound], player, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 						RemoveEntity(gib);
+						CurrentGibCount -= 1;
 					}
 				}
 			}
 		}
 	}
+}
+
+public Action Timer_RemoveEntity_Prop_Gib(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		CurrentGibCount -= 1;
+//		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
+		RemoveEntity(entity);
+	}
+	return Plugin_Handled;
 }
 
 public Action Timer_RemoveEntity_Prop(Handle timer, any entid)

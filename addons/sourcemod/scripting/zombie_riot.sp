@@ -38,6 +38,7 @@
 #define ZR_MAX_TRAPS 64
 #define ZR_MAX_BREAKBLES 32
 #define ZR_MAX_SPAWNERS 32 //cant ever have more then 32, if your map does, then what thed fuck are you doing ?
+#define ZR_MAX_GIBCOUNT 20 //Anymore then this, and it will only summon 1 gib per zombie instead.
 
 #define MAX_PLAYER_COUNT			12
 #define MAX_PLAYER_COUNT_STRING		"12"
@@ -569,7 +570,8 @@ bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
 bool b_SpecialGrigoriStore;
 float f_ExtraDropChanceRarity = 1.0;
 
-
+int CurrentGibCount = 0;
+bool b_LimitedGibGiveMoreHealth[MAXENTITIES];
 //GLOBAL npc things
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
@@ -4328,4 +4330,5 @@ public void MapStartResetAll()
 	Zero(i_Headshots);
 	Zero(i_HasBeenHeadShotted);
 	Zero(f_StuckTextChatNotif);
+	Zero(b_LimitedGibGiveMoreHealth);
 }
