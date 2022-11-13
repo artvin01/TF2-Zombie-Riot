@@ -1805,6 +1805,11 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 		else if(Is_Reload_Button && StrEqual(buffer, "base_boss"))
 		{
 			buildingType = Citizen_BuildingInteract(entity);
+			int temp_owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity])
+			if(IsValidClient(temp_owner)) //Fix not getting the owner correctly when interacting with barney or citicens!
+			{
+				owner = temp_owner;
+			}
 		}
 		
 		if(buildingType)

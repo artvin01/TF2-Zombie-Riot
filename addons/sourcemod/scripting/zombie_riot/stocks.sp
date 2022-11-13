@@ -3001,6 +3001,7 @@ void ReviveAll(bool raidspawned = false)
 						float pos[3], ang[3];
 						GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
 						GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+						ang[2] = 0.0;
 						TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
 					}
 				}

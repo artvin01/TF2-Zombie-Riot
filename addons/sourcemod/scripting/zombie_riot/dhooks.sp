@@ -1183,7 +1183,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 		
 		return MRES_Supercede;
 	}
-
+	
 	RequestFrame(SetEyeAngleCorrect, client);
 	
 	if(GetClientTeam(client) != 2)

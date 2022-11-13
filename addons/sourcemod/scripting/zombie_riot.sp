@@ -2349,6 +2349,7 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	if(client)
 	{
+		RequestFrame(SetEyeAngleCorrect, client);
 		Escape_DropItem(client);
 		if(g_CarriedDispenser[client] != INVALID_ENT_REFERENCE)
 		{
@@ -2394,6 +2395,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				float pos[3], ang[3];
 				GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
+				ang[2] = 0.0;
 				DHook_RespawnPlayer(client);
 				
 				TeleportEntity(client, pos, ang, NULL_VECTOR);
@@ -2523,6 +2525,7 @@ public void Spawn_Bob_Combine(int client)
 	float flPos[3], flAng[3];
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
+	flAng[2] = 0.0;
 	int bob = Npc_Create(BOB_THE_GOD_OF_GODS, client, flPos, flAng, true);
 	Bob_Exists = true;
 	Bob_Exists_Index = EntIndexToEntRef(bob);
@@ -2551,6 +2554,7 @@ public void Spawn_Cured_Grigori()
 	float flPos[3], flAng[3];
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
+	flAng[2] = 0.0;
 	int entity = Npc_Create(CURED_FATHER_GRIGORI, client, flPos, flAng, true);
 	SalesmanAlive = EntIndexToEntRef(entity);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_grigori");
@@ -3119,6 +3123,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					float pos[3], ang[3];
 					GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
 					GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
+					ang[2] = 0.0;
 					SetEntProp(target, Prop_Send, "m_bDucked", true);
 					SetEntityFlags(target, GetEntityFlags(target)|FL_DUCKING);
 					CClotBody npc = view_as<CClotBody>(client);
