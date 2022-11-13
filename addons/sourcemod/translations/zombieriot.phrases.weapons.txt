@@ -7,6 +7,7 @@
 		"de"		"Schaden"
 		"pt"		"Dano"
 		"nl"		"Schade"
+		"chi"       "沙鹰"
 	}
 	"pellets"
 	{
@@ -15,6 +16,7 @@
 		"de"		"Pellets"
 		"pt"		"Balas"
 		"nl"		"Korrels"
+		"chi"       "弹药"
 	}
 	"firerate"
 	{
@@ -23,6 +25,7 @@
 		"de"		"Feuerrate"
 		"pt"		"Cadência de tiro"
 		"nl"		"Vuursnelheid"
+		"chi"       "射速"
 	}
 	"reload"
 	{
@@ -31,6 +34,7 @@
 		"de"		"Nachladen"
 		"pt"		"Recarga"
 		"nl"		"Herlaad"
+		"chi"       "换弹时间"
 	}	
 	"clip"
 	{
@@ -39,6 +43,7 @@
 		"de"		"Klipp"
 		"pt"		"Cartucho"
 		"nl"		"Clip"
+		"chi"       "子弹"
 	}	
 	"chargespeed"
 	{
@@ -79,6 +84,7 @@
 		"de"		"Waffen"
 		"pt"		"Armas"
 		"nl"		"Wapens"
+		"chi"       "武器"
 	}
 	"Primary Weapons"//Primary path here
 	{
@@ -87,6 +93,7 @@
 		"de"		"Primare Waffen"
 		"pt"		"Armas Primárias"
 		"nl"		"Primaire Wapens"
+		"chi"       "主武器"
 	}
 	"Syringe Gun"
 	{
@@ -95,6 +102,7 @@
 		"de"		"Spritzenpistole"
 		"pt"		"Arma de Seringas"
 		"nl"		"Spuitgeweer"
+		//"chi"       "副武器"
 	}
 	"Sniper Rifle"
 	{
@@ -127,6 +135,7 @@
 		"de"		"Huntsman"
 		"pt"		"Caçador"
 		"nl"		"jager"
+		"chi"       "弓箭"
 	}
 	"Flamethrower"
 	{
@@ -1131,7 +1140,7 @@
 	"Medic's Lost Medical Lisence"
 	{
 		"en"		"Medic's Lost Medical License"
-		"ru"		"Потерянная лицензия медика"
+		"ru"		"Потерянная медицинская лицензия"
 		"de"		"Medics verlorene medizinische Lizenz"
 		"pt"		"Licença médica perdida do Medic"
 		"nl"		"Medicus's verloren Medische Licentie"

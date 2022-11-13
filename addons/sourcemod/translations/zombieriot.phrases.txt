@@ -19,18 +19,20 @@
 		"de"		"Drücke %%+showscores%% um den Laden zu öffnen"
 		"pt"		"Pressione %%+showscores%% para abrir a loja"
 		"nl"		"Druk %%+showscores%% om de winkel te openen"
+		"chi"		"按下 %%+showscores%% 来打开商店"
 	}
 	"Last Alive"
 	{
 		"en"		"You are the Last Human Alive.\nSurvive the current wave to revive all your allies."
 		"it"		"Sei L'ultimo Umano In Vita.\nVinci il prossimo boss round per resuscitare tutti."
-		"ru"		"Вы последний выживший.\nВыживите в текущей волне, чтобы возродить всех своих товарищей."
+		"ru"		"Вы последний выживший.\nВыйграйте следующую битву с боссом, чтобы воскресить всех"
 		"pl"		"Jesteś ostatnim człowiekiem.\nPrzeżyj następną rundę z bossem aby wskrzeszyć resztę drużyny."  
 		"es"		"Eres el último humano con vida.\nGana la siguiente oleada de jefe para revivirlos a todos"
 		"fr"		"Vous êtes le dernier survivant.\nSurviver au prochain boss pour réanimeer vos coéquipier."
 		"de"		"Du bist der letzte mensch am Leben.\nGewinne Die nächste boss runde um alle wiederzubeleben"
 		"pt"		"Você é o ultimo humano vivo. \nVença o próximo chefe do round para reviver todos."
 		"nl"		"Jij bent de laatste overelevende.\nOverleef de huidige golf om all uw bondgenoten tot leven te brengen" 
+		"chi"		"你是最后一名玩家！\n请坚持住！"
 	}
 	"Level Up"
 	{
@@ -44,6 +46,7 @@
 		"de"		"Du bust ein level Aufgestiegen {1}\nDu hast freigeschalted:"
 		"pt"		"Você subiu de nivel! Level {1} \nVocê desbloqueou:"
 		"nl"		"Uw level is omhoog gegaan {1} \nJij hebt gekregen:"
+		"en"		"恭喜你升级了！当前等级为 {1} 级\n已获得:"
 	}
 	"None"
 	{
@@ -56,6 +59,7 @@
 		"de"		"Nichts"
 		"pt"		"Nada"
 		"nl"		"Geen"
+		"chi"       "无"
 	}
 	"Credits"
 	{
@@ -69,6 +73,7 @@
 		"de"		"Kredit: {1}"
 		"pt"		"Créditos: {1}"
 		"nl"		"Krediet: {1}"
+		"chi"		"现金: {1}"
 	}
 	"Credits_Menu"
 	{
@@ -82,6 +87,7 @@
 		"de"		"Kredit: {1} (+{2})"
 		"pt"		"Créditos: {1} (+{2})"
 		"nl"		"Krediet: {1} (+{2})"
+		"chi"		"现金: {1} (+{2})"
 	}
 	"Armor Counter"
 	{
@@ -95,6 +101,7 @@
 		"de"		"Ausrüstung {1}"
 		"pt"		"Armadura: {1}"
 		"nl"		"Schild: {1}"
+		"chi"		"护甲: {1}"
 	}
 	"Wave"
 	{
@@ -108,6 +115,7 @@
 		"de" 		"Welle : {1}-{2}"
 		"pt"		"Onda: {1}-{2}"
 		"nl"		"Golf: {1}-{2}"
+		"chi"		"波数: {1}-{2}"
 	}
 	"Zombies Left"
 	{
@@ -121,6 +129,7 @@
 		"de"		"Verbleibene Untote: {1}"
 		"pt"		"Zumbis Vivos: {1}"
 		"nl"		"Zombies over: {1}"
+		"chi"		"剩余僵尸: {1}"
 	}
 	"Medi-Kit Cooldown"
 	{
@@ -134,6 +143,7 @@
 		"de"		"Medi-kit Abkühlung: {1}s"
 		"pt"		"Recarregando Kit Médico: {1}s"
 		"nl"		"EHBO-Kit Afkoeling: {1}s"
+		"chi"       "Medi-Kit 剩余时间：{1}秒"
 	}
 	"Ammo Crate Supplies"
 	{
@@ -147,6 +157,7 @@
 		"de"		"Munitionsvorräte : {1}"
 		"pt"		"Suprimento de munições: {1}"
 		"nl"		"Munitievoorraden: {1}"
+		"chi"		"弹药补给箱: {1}"
 	}
 	"Damage Dealt"
 	{
@@ -159,6 +170,7 @@
 		"fr"		"Dégats Infligés: {1}"
 		"pt"		"Dano causado: {1}"
 		"nl"		"Schade gedaan: {1}"
+		"chi"       "伤害：{1}"
 	}
 	"Healing Done"
 	{
@@ -172,6 +184,7 @@
 		"de"		"heilung gemacht: {1}"
 		"pt"		"Cura realizada: {1}"
 		"nl"		"Genezing gedaan: {1}"
+		"chi"		"治疗效果: {1}"
 	}
 	"XP and Level"
 	{
@@ -191,6 +204,7 @@
 		"de"		"-10% verkaufs angebot wenn keine untoten hier sind"
 		"pt"		"10% de desconto quando não há zumbis vivos"
 		"nl"		"-10% korting op winkelvoorraden als er geen zombies aanwezig zijn"
+		"chi"       "休息回合商城折扣10%~"
 	}
 	"Equip"
 	{
@@ -203,6 +217,7 @@
 		"de"		"Ausrüsten"
 		"pt"		"Equipar"
 		"nl"		"Uitrusting"
+		"chi"       "装备"
 	}
 	"Equipped"
 	{
@@ -215,6 +230,7 @@
 		"de"		"Ausgerüsted"
 		"pt"		"Equipado"
 		"nl"		"Uitgerust"
+		"chi"       "已装备"
 	}
 	"Purchased"
 	{
@@ -227,6 +243,7 @@
 		"de"		"Gekauft"
 		"pt"		"Comprado"
 		"nl"		"Gekocht"
+		"chi"       "已购买"
 	}
 	"Buy"
 	{
@@ -239,11 +256,13 @@
 		"de"		"Kaufen"
 		"pt"		"Comprar"
 		"nl"		"Koop"
+		"chi"       "购买"
 	}
 	"Buy Scrap" //Its a currency
 	{
 		"en"		"Buy with scrap"
 		"nl"		"Koop met scrap"
+		"chi"       "使用废料购买"
 	}
 	"Sell"
 	{
@@ -256,6 +275,7 @@
 		"de"		"Verkaufen"
 		"pt"		"Vender"
 		"nl"		"Verkoop"
+		"chi"       "出售"
 	}
 	"Unequip"
 	{
@@ -264,6 +284,7 @@
 		"de"		"Ablegen"
 		"pt"		"Desquipar"
 		"nl"		"Uit doen"
+		"chi"       "卸下"
 	}
 	"Owned Items"
 	{
@@ -271,6 +292,7 @@
 		"ru"		"Приобретённое"
 		"pt"		"Itens Comprados"
 		"nl"		"Gekochte Artikelen"
+		"chi"       "已购买物品"
 	}
 	"N/A"
 	{
@@ -295,6 +317,7 @@
 		"de"		"Primär"
 		"pt"		"Primária"
 		"nl"		"Primaire"
+		"chi"       "主武器"
 	}
 	"Secondary"
 	{
@@ -307,6 +330,7 @@
 		"de"		"zweitrangig"
 		"pt"		"Secundária"
 		"nl"		"Secondaire"
+		"chi"       "副武器"
 	}
 	"Scrap Metal"
 	{
@@ -319,6 +343,7 @@
 		"de"		"Schrott"
 		"pt"		"Metal"
 		"nl"		"Metaal"
+		"chi"       "废金属"
 	}
 	"Ball"
 	{
@@ -331,6 +356,7 @@
 		"de"		"Ball"
 		"pt"		"Bola"
 		"nl"		"Bal"
+		"chi"       "球"
 	}
 	"Food"
 	{
@@ -343,6 +369,7 @@
 		"de"		"Essen"
 		"pt"		"Comida"
 		"nl"		"Eten"
+		"chi"       "养料"
 	}
 	"Jar"
 	{
@@ -355,6 +382,7 @@
 		"de"		"Krug"
 		"pt"		"Jarro"
 		"nl"		"Pot"
+		"chi"       "瓶"
 	}
 	"Pistol Magazines"
 	{
@@ -367,6 +395,7 @@
 		"de"		"Pistolenmagazine"
 		"pt"		"Cartuchos de Pistola"
 		"nl"		"Pistool Magazijn"
+		"chi"       "手枪弹匣"
 	}
 	"Rockets"
 	{
@@ -379,6 +408,7 @@
 		"de"		"Racketen"
 		"pt"		"Foguetes"
 		"nl"		"Raketten"
+		"chi"       "火箭弹"
 	}
 	"Flamethrower Tank"
 	{
@@ -391,6 +421,7 @@
 		"de"		"Flammenwerfer-Tank"
 		"pt"		"Tanque de Propano"
 		"nl"		"Vlammenwerper Tank"
+		"chi"       "燃料"
 	}
 	"Flares"
 	{
@@ -403,6 +434,7 @@
 		"de"		"Fackeln"
 		"pt"		"Sinalizadores"
 		"nl"		"Fakkels"
+		"chi"       "信号弹"
 	}
 	"Grenades"
 	{
@@ -415,6 +447,7 @@
 		"de"		"Granate"
 		"pt"		"Granadas"
 		"nl"		"Granaten"
+		"chi"       "手榴弹"
 	}
 	"Stickybombs"
 	{
@@ -427,6 +460,7 @@
 		"de"		"Haftbomben"
 		"pt"		"Bombas adesivas"
 		"nl"		"Klevende bommen"
+		"chi"       "黏弹"
 	}
 	"Minigun Barrel"
 	{
@@ -439,6 +473,7 @@
 		"de"		"Minigun-Lauf"
 		"pt"		"Tambor da Minigun"
 		"nl"		"Minigun Loop"
+		"chi"       "重型弹药"
 	}
 	"Custom Bolt"
 	{
@@ -451,6 +486,7 @@
 		"de"		"Benutzerdefinierte Schraube"
 		"pt"		"Flechas personalizadas" // need to check onto where this line shows up later
 		"nl"		"Op maat gemaakte Kogel"
+		"chi"       "钉子"
 	}
 	"Medical Syringes"
 	{
@@ -463,6 +499,7 @@
 		"de"		"Medizinische Spritzen"
 		"pt"		"Seringas Médicas"
 		"nl"		"Medische Spuiten"
+		"chi"       "注射器"
 	}
 	"Sniper Rifle Rounds"
 	{
@@ -475,6 +512,7 @@
 		"de"		"Scharfschützengewehr-Runden"
 		"pt"		"Balas de Sniper"
 		"nl"		"Scherpshuttergeweer Kogels"
+		"chi"       "狙击枪子弹"
 	}
 	"Arrows"
 	{
@@ -487,6 +525,7 @@
 		"de"		"Pfeile"
 		"pt"		"Flechas"
 		"nl"		"Pijlen"
+		"chi"       "箭"
 	}
 	"SMG Magazines"
 	{
@@ -499,6 +538,7 @@
 		"de"		"SMG Magazin"
 		"pt"		"Cartuchos de Sub-Metralhadora"
 		"nl"		"SMG Wapenmagazijnes"
+		"chi"       "小型弹药"
 	}
 	"Revolver Rounds"
 	{
@@ -511,6 +551,7 @@
 		"de"		"Revolver Runden"
 		"pt"		"Balas de Revolver"
 		"nl"		"Revolver Kogels"
+		"chi"       "左轮弹药"
 	}
 	"Shotgun Shells"
 	{
@@ -523,6 +564,7 @@
 		"de"		"Schrotpatronen"
 		"pt"		"Balas de Espingarda"
 		"nl"		"Jachtgeweer Rondes" 
+		"chi"       "猎枪弹药"
 	}
 	"Healing Medicine"
 	{
@@ -535,6 +577,7 @@
 		"de"		"heilungs Medizin"
 		"pt"		"Maquina de Cura"
 		"nl"		"Genezende Medicijnen"
+		"chi"       "医疗能量"
 	}
 	"Medigun Fluid"
 	{
@@ -547,6 +590,7 @@
 		"de"		"Medigun Flüßigkeit"
 		"pt"		"Fluido Médico"
 		"nl"		"Medigun Vloeistof"
+		"chi"       "医疗能量"
 	}
 	"Laser Battery"
 	{
@@ -559,6 +603,7 @@
 		"fr"		"Batterie de laser"
 		"pt"		"Baterias Laser"
 		"nl"		"Lazer Batterij"
+		"chi"       "激光弹药"
 	}
 	"Out of Laser Battery"
 	{
@@ -567,6 +612,7 @@
 		"de"		"Sie haben keine Laser-batterie mehr!"
 		"pt"		"Você ficou sem Baterias Laser!"
 		"nl"		"Uw Lazer Batterij is op!"
+		"chi"       "你的弹药已耗尽"
 	}
 	"Potion Supply"
 	{
@@ -575,6 +621,7 @@
 		"de"		"Trankversorgung"
 		"pt"		"Suplemento de Poções"
 		"nl"		"Toverdrank provisie"
+		"chi"       "药剂供给"
 	}
 	"Reload to Interact"
 	{
@@ -587,6 +634,7 @@
 		"fr"		"Appuyez sur RECHARGER pour intéragir avec ceci"
 		"pt"		"Aperte o botão de RECARREGAR para interagir com isso."
 		"nl"		"Druk het HERLADEN toets om hiermee interactie te hebben" 
+		"chi"       "按下 R 键与物品交互"
 	}
 	"Ammo Box Used"
 	{
@@ -599,6 +647,7 @@
 		"fr"		"Quelqu'un a utilisé votre boite de munitions, vous gagnez 20 dollars!"
 		"pt"		"Alguém usou sua caixa de munição, você ganhou +20 Créditos"
 		"nl"		"Iemand gebruikte net uw munitiekist, je krijgt hiervoor +20 krediet!"
+		"chi"       "队友使用了你的弹药箱，你获得 20 的现金奖励"
 	}
 	"Armor Table Used"
 	{
@@ -611,6 +660,7 @@
 		"de"		"Jemand hat deinen Rüstungstisch benutzt, Du bekommst +40 Kredits!"
 		"pt"		"Alguém usou sua mesa de armadura, você ganhou +40 Créditos!"
 		"nl"		"Iemand gebruikte net uw SchildTafel, je krijgt hiervoor +40 krediet!"
+		"chi"       "队友使用了你的护甲柜，你获得 40 的现金奖励"
 	}
 	"Perk Machine Used"
 	{
@@ -619,6 +669,7 @@
 		"de"		"Jemand hat deine perk Maschine benutzt, du bekommst +80 Kredit!"
 		"pt"		"Alguém usou sua maquina de habilidade, você ganhou +80 Créditos!"
 		"nl"		"Iemand gebruikte net uw perk machine, je krijgt hiervoor +80 krediet"
+		"chi"       "队友使用了你的buff盒，你获得 80 的现金奖励"
 	}
 	"Pap Machine Used"
 	{
@@ -627,6 +678,7 @@
 		"de"		"Jemand hat ihre PackAPunch Maschine benutzt, du bekommst +400 Kredit!"
 		"pt"		"Alguém usou sua maquina de Pack-a-Punch, Você ganhou +400 Créditos!"
 		"nl"		"Iemand gebruikte net uw Pack-A-Punch, je krijgt hiervoor +400 krediet!" 
+		"chi"       "队友使用了你的***，你获得 400 的现金奖励"
 	}
 	"Equip Melee To Use"
 	{
@@ -639,6 +691,7 @@
 		"fr"		"Equipez une arme avec des munitions pour utiliser cela!"
 		"pt"		"Equipe uma arma com munição para usar isso!"
 		"nl"		"Draag een wapen met ammunitie om dit te gebruiken!"
+		"chi"       "请拿着武器再使用！"
 	}
 	"Armor Max Reached"
 	{
@@ -651,6 +704,7 @@
 		"fr"		"Vôtre armure est au maximum!"
 		"pt"		"Você está o usando o máximo de armadura possível!"
 		"nl"		"Je hebt uw maximale schild berijkt!"
+		"chi"       "你的护甲已达到最大值"
 	}
 	"Armor Max Reached Ammo Box"
 	{
@@ -659,6 +713,7 @@
 		"de"		"Deine Rüstung ist zu ausgereizt für die Munitions kiste, Bitte benutze einen Rüstungstisch um mehr zu bekommen."
 		"pt"		"Sua armadura está máximizada para caixa de munição! Por favor use uma mesa de armadura para pegar mais."
 		"nl"		"Het hoeveelheid schild dat u van een amunitiekist kunt krijgen heeft zijn maximum berijkt! Gebruikt alstublieft een schild tafel om meer te bekrijgen."
+		//"chi"       "你的护甲柜已达到最大摆放数"
 	}
 	"Max Mana Reached"
 	{
@@ -667,6 +722,7 @@
 		"de"		"Sie haben ihre Maximalen Menge an Mana Erreicht!"
 		"pt"		"Você chegou na quantidade máxima de mana!"
 		"nl"		"U hebt uw maximale mana berijkt!"
+		"chi"       "你的法力值已达到最大值"
 	}
 	"Object Cooldown"
 	{
@@ -680,6 +736,7 @@
 		"fr"		"Temps de recharge de cette objet avant ré-utilisation: {1}"
 		"pt"		"Este objeto ainda está em recarga de {1} segundos antes de outro uso."
 		"nl"		"Dit object heeft nog steeds {1} seconden over voor het volgend gebruik!"
+		"chi"       "物品使用已进入冷却时间，你将在 {1} 后可以再次使用。"
 	}
 	"Cash Gained This Wave"
 	{
@@ -693,6 +750,7 @@
 		"fr"		"Vous avez gagnez {1} Cette vague!"
 		"pt"		"Ganhou +{1} em Créditos nesta onda."
 		"nl"		"Je hebt {1} geld gekregen van deze golf!"
+		"chi"       "回合结束现金奖励：{1}"
 	}
 	"Cash Gained This Wave Village"
 	{
@@ -701,6 +759,7 @@
 		"ru" 		"Получено дополнительно +{1} кредитов за волну благодаря деревням!"
 		"pt"		"Ganhou {1} extra nesta onda graças aos Aldeões!"
 		"nl"		"Je krijgt een extra {1} geld dankzij uw dorp!"
+		"chi"       "得益于村庄，回合结束额外获得 {1} 的现金奖励"
 	}
 	"Picking Up Building"
 	{
@@ -713,6 +772,7 @@
 		"fr"		"Ramassage du bâtiment..."
 		"pt"		"Pegando construção..."
 		"nl"		"Gebouw wordt opgepakt..."
+		"chi"       "回收建筑中..."
 	}
 	"Spike Limit Reached"
 	{
@@ -723,6 +783,7 @@
 		"fr"		"Vous avez atteint la limite de piques! Ramassez les piques avec M2 ou attendez jusqu'a ce qu'ils soient utilisés!"
 		"pt"		"Você chegou no seu limite de espinhos! pegue alguns espinhos com M2 ou espere ate que eles sejam destruidos!"
 		"nl"		"U hebt het maximale spijkers berijkt! Pak spijkers op met M2 of wacht tot ze worden opgebruikt!"
+		"chi"       "你已达到钉刺的最大使用次数，按下鼠标右键将它回收或等待它消耗殆尽。"
 	}
 	"Threw Grenade"
 	{
@@ -733,6 +794,7 @@
 		"fr"		"Vous avez jeté vôtre grenade, vous en aurez une autre dans 15 secondes!"
 		"pt"		"Você jogou uma granada, você terá outra em 15 segundos!"
 		"nl"		"Je gooide net een granaat, u krijgt een nieuwe binnen 15 seconden!"
+		"chi"       "你的手榴弹将在 15 秒后可以再次使用"
 	}
 	"Grenade Is Back"
 	{
@@ -743,6 +805,7 @@
 		"fr"		"Vous avez récuperez vôtre grenade!"
 		"pt"		"Sua granada regenerou-se!"
 		"nl"		"U kreeg net een nieuwe granaat!"
+		"chi"       "你的手榴弹已可以使用！"
 	}
 	"Threw Pipebomb"
 	{
@@ -753,6 +816,7 @@
 		"fr"		"Vous avez jeté vôtre grenade, vous en aurez une autre dans 15 secondes!"
 		"pt"		"Você jogou uma Bomba-de-Cano, você terá outra em 15 segundos!"
 		"nl"		"Je gooide net een pijpbomb, u krijgt een nieuwe binnen 15 seconden!"
+		"chi"       "你的Pipebomb将在 15 秒后可以再次使用"
 	}
 	"Pipebomb Is Back"
 	{
@@ -763,6 +827,7 @@
 		"fr"		"Vous avez récuperez vôtre grenade!"
 		"pt"		"Sua Bomba-de-Cano regenerou-se!"
 		"nl"		"U kreeg net een nieuwe pijpbomb!"
+		"chi"       "你的Pipebomb已可以使用！"
 	}
 	"Hand Grenade"
 	{
@@ -786,6 +851,7 @@
 //		"es"		"Encontraste {1} en esta oleada!"
 //		"fr"		"Vous avez gagnez {1} Cette vague!"
 		"pt"		"Mana: [{1}/{2}] (+{3})"
+		"chi" 		"魔法: [{1}/{2}] (+{3})"
 	}
 	"Not Enough Mana"
 	{
@@ -799,6 +865,7 @@
 //		"fr"		"Vous avez gagnez {1} Cette vague!"
 		"pt"		"Mana insuficiente! Você precisa de {1} Mana!"
 		"nl"		"Niet genoeg Mana! U hebt maar {1} Mana!"
+		"chi"       "法力不足！需要 {1} 法力发动"
 	}
 	"Ability has cooldown"
 	{
@@ -812,6 +879,7 @@
 //		"fr"		"Vous avez gagnez {1} Cette vague!"
 		"pt"		"Está habilidade ainda está em recarga de {1} segundos!"
 		"nl"		"Deze kracht heeft nog een afkoelingsperiode van {1} seconden!"
+		"chi"       "技能冷却还有 {1} 的时间!"
 	}
 	"Gamemode Credits"
 	{
@@ -820,6 +888,7 @@
 		"de"		"Spielmodus Kredite"
 		"pt"		"Creditos do Modo de Jogo"
 		"nl"		"Krediet Spelmodus"
+		"chi"       "游戏贡献"
 	}
 	"Gained a Knife"
 	{
@@ -829,6 +898,7 @@
 		"de"		"Sie haben ein Messer bekommen, [{1}]"
 		"pt"		"Você ganhou uma faca, [{1}]"
 		"nl"		"Je kreeg een mes, [{1}]"
+		"chi"       "你获得了一把刀，[{1}]"
 	}
 	"Knife Amount"
 	{
@@ -838,6 +908,7 @@
 		"de"		"Messer: [{1}]"
 		"pt"		"Facas: [{1}]"
 		"nl"		"Messen: [{1}]"
+		"chi"       "刀：[{1}]"
 	}
 	"No Knifes left"
 	{
