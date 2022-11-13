@@ -1088,7 +1088,6 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_mecha_heavy_giant",
 	"npc_alt_mecha_pyro_giant",
 	"npc_alt_mecha_scout",
-	"npc_alt_mecha_scout",
 	"npc_alt_donnerkrieg",
 	"npc_alt_schwertkrieg",
 	"npc_phantom_knight"
