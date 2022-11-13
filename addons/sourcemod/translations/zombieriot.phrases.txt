@@ -46,7 +46,7 @@
 		"de"		"Du bust ein level Aufgestiegen {1}\nDu hast freigeschalted:"
 		"pt"		"Você subiu de nivel! Level {1} \nVocê desbloqueou:"
 		"nl"		"Uw level is omhoog gegaan {1} \nJij hebt gekregen:"
-		"en"		"恭喜你升级了！当前等级为 {1} 级\n已获得:"
+		"chi"		"恭喜你升级了！当前等级为 {1} 级\n已获得:"
 	}
 	"None"
 	{
