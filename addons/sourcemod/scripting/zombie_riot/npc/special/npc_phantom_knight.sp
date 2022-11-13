@@ -290,10 +290,10 @@ public void PhantomKnight_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 40.0;
+					float damage = 55.0;
 					if(b_IsPhantomFake[npc.index]) //Make sure that he wont do damage if its a fake 
 					{
-						damage = 20.0;
+						damage = 33.0;
 					}
 
 					npc.PlayMeleeHitSound();
@@ -318,10 +318,10 @@ public void PhantomKnight_ClotThink(int iNPC)
 	{
 		if(f_AttackHappensAoe[npc.index] < gameTime)
 		{
-			float damage = 80.0;
+			float damage = 400.0;
 			if(b_IsPhantomFake[npc.index]) //Make sure that he wont do damage if its a fake 
 			{
-				damage = 35.0;
+				damage = 190.0;
 			}
 			npc.PlayRangedReloadSound();
 			i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_CLUB_DAMAGE;
