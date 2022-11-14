@@ -1111,6 +1111,29 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 	PrintToChat(client, "%t", "Could Not Buy Item", TranslateItemName(client, name));
 }
 
+void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int length)
+{
+	if(slot >= 0)
+	{
+		int count;
+		int length = StoreItems.Length;
+		static Item item;
+		for(int i; i<length; i++)
+		{
+			StoreItems.GetArray(i, item);
+			if(item.Equipped[client] && item.Slot == slot)
+			{
+				count++;
+				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
+				{
+					Format(buffer, length, "%s {%s}", buffer, TranslateItemName(client, item.Name));
+					break;
+				}
+			}
+		}
+	}
+}
+
 void Store_EquipSlotCheck(int client, int slot)
 {
 	if(slot >= 0)
@@ -1784,6 +1807,7 @@ public void MenuPage(int client, int section)
 						FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$}");
 					}
 					
+					Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 					IntToString(i, info.Classname, sizeof(info.Classname));
 					menu.AddItem(info.Classname, buffer);
 					found = true;
@@ -1792,6 +1816,7 @@ public void MenuPage(int client, int section)
 		}
 		else if(!item.ItemInfos)
 		{
+			Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 			IntToString(i, info.Classname, sizeof(info.Classname));
 			menu.AddItem(info.Classname, TranslateItemName(client, item.Name));
 			found = true;
@@ -1869,6 +1894,9 @@ public void MenuPage(int client, int section)
 					}
 				}
 				
+				//if(!item.BuildingExistName[0] && !item.ShouldThisCountSupportBuildings)
+				Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
+
 				if(item.NPCSeller_First)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$$}");
