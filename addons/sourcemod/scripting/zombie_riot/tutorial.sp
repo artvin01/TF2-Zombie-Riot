@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 bool b_IsInTutorialMode[MAXTF2PLAYERS];
 int i_TutorialStep[MAXTF2PLAYERS];
 float f_TutorialUpdateStep[MAXTF2PLAYERS];

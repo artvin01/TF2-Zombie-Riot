@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 #define MODEL_GORDON_PROP "models/roller_spikes.mdl"
 #define SOUND_GORDON_MINE_TOSS "weapons/grenade_throw.wav"
 #define SOUND_GORDON_MINE_DET	"npc/roller/mine/rmine_explode_shock1.wav"
@@ -282,7 +285,7 @@ public Action flip_extra(Handle timer, int client)
 			newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
 			newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
 							
-			for (new i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++)
 			{
 				fThrowingVector[i] += newVel[i];
 			}

@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static int how_many_times_fisted[MAXTF2PLAYERS];
 #define SOUND_DASH "npc/roller/mine/rmine_explode_shock1.wav"
 

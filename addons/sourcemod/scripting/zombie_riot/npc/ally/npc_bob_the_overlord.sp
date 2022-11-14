@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static Handle syncdashhud;
 static int Has_a_bob[MAXPLAYERS+1]={0, ...};
 static int bob_owner_id[MAXPLAYERS+1]={0, ...};

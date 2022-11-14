@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 int iBuildingDependency[2049] = {0, ...};
 
 DynamicHook dtIsPlacementPosValid;
@@ -153,7 +156,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 	{
 		return MRES_Ignored;
 	}
-	int client = GetEntPropEnt(pThis, Prop_Send, "m_hBuilder")
+	int client = GetEntPropEnt(pThis, Prop_Send, "m_hBuilder");
 	if(client==-1)
 	{
 		DHookSetReturn(hReturn, false);

@@ -38,6 +38,7 @@
 #define ZR_MAX_TRAPS 64
 #define ZR_MAX_BREAKBLES 32
 #define ZR_MAX_SPAWNERS 32 //cant ever have more then 32, if your map does, then what thed fuck are you doing ?
+#define ZR_MAX_GIBCOUNT 20 //Anymore then this, and it will only summon 1 gib per zombie instead.
 
 #define MAX_PLAYER_COUNT			12
 #define MAX_PLAYER_COUNT_STRING		"12"
@@ -538,6 +539,12 @@ int b_NpcForcepowerupspawn[MAXENTITIES]={0, ...};
 float f_TempCooldownForVisualManaPotions[MAXPLAYERS+1];
 float f_DelayLookingAtHud[MAXPLAYERS+1];
 bool b_EntityIsArrow[MAXENTITIES];
+bool b_EntityIsWandProjectile[MAXENTITIES];
+int i_WandIdNumber[MAXENTITIES]; //This is to see what wand is even used. so it does its own logic and so on.
+float f_WandDamage[MAXENTITIES]; //
+int i_WandOwner[MAXENTITIES]; //
+int i_WandWeapon[MAXENTITIES]; //
+int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever ever. lag max otherwise.
 
 //int g_iLaserMaterial, g_iHaloMaterial;
 
@@ -569,7 +576,8 @@ bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
 bool b_SpecialGrigoriStore;
 float f_ExtraDropChanceRarity = 1.0;
 
-
+int CurrentGibCount = 0;
+bool b_LimitedGibGiveMoreHealth[MAXENTITIES];
 //GLOBAL npc things
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
@@ -1124,6 +1132,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/queue.sp"
 #include "zombie_riot/item_gift_rpg.sp"
 #include "zombie_riot/tutorial.sp"
+#include "zombie_riot/wand_projectile.sp"
 
 
 #include "zombie_riot/custom/building.sp"
@@ -1146,15 +1155,15 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/spike_layer.sp"
 #include "zombie_riot/custom/weapon_grenade.sp"
 #include "zombie_riot/custom/weapon_pipebomb.sp"
-#include "zombie_riot/custom/weapon_default_wand.sp"
-#include "zombie_riot/custom/weapon_wand_increace_attack.sp"
-#include "zombie_riot/custom/weapon_fire_wand.sp"
-#include "zombie_riot/custom/weapon_wand_fire_ball.sp"
-#include "zombie_riot/custom/weapon_lightning_wand.sp"
-#include "zombie_riot/custom/weapon_wand_cryo.sp"
-#include "zombie_riot/custom/weapon_wand_lightning_spell.sp"
-#include "zombie_riot/custom/weapon_necromancy_wand.sp"
-#include "zombie_riot/custom/weapon_wand_necro_spell.sp"
+#include "zombie_riot/custom/wand/weapon_default_wand.sp"
+#include "zombie_riot/custom/wand/weapon_wand_increace_attack.sp"
+#include "zombie_riot/custom/wand/weapon_fire_wand.sp"
+#include "zombie_riot/custom/wand/weapon_wand_fire_ball.sp"
+#include "zombie_riot/custom/wand/weapon_lightning_wand.sp"
+#include "zombie_riot/custom/wand/weapon_wand_cryo.sp"
+#include "zombie_riot/custom/wand/weapon_wand_lightning_spell.sp"
+#include "zombie_riot/custom/wand/weapon_necromancy_wand.sp"
+#include "zombie_riot/custom/wand/weapon_wand_necro_spell.sp"
 #include "zombie_riot/custom/weapon_autoaim_wand.sp"
 #include "zombie_riot/custom/weapon_arrow_shot.sp"
 //#include "zombie_riot/custom/weapon_pipe_shot.sp"
@@ -1163,22 +1172,22 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_minecraft.sp"
 #include "zombie_riot/custom/arse_enal_layer_tripmine.sp"
 #include "zombie_riot/custom/weapon_serioussam2_shooter.sp"
-#include "zombie_riot/custom/weapon_elemental_staff.sp"
-#include "zombie_riot/custom/weapon_elemental_staff_2.sp"
+#include "zombie_riot/custom/wand/weapon_elemental_staff.sp"
+#include "zombie_riot/custom/wand/weapon_elemental_staff_2.sp"
 #include "zombie_riot/custom/weapon_infinity_blade.sp"
 //#include "zombie_riot/custom/weapon_black_fire_wand.sp"
-#include "zombie_riot/custom/weapon_chlorophite.sp"
-#include "zombie_riot/custom/weapon_chlorophite_heavy.sp"
+#include "zombie_riot/custom/wand/weapon_chlorophite.sp"
+#include "zombie_riot/custom/wand/weapon_chlorophite_heavy.sp"
 #include "zombie_riot/custom/weapon_drink_resupply_mana.sp"
 #include "zombie_riot/custom/weapon_wind_staff.sp"
-#include "zombie_riot/custom/weapon_nailgun.sp"
+#include "zombie_riot/custom/wand/weapon_nailgun.sp"
 #include "zombie_riot/custom/weapon_five_seven.sp"
 #include "zombie_riot/custom/weapon_gb_medigun.sp"
 #include "zombie_riot/custom/weapon_charged_handgun.sp"
-#include "zombie_riot/custom/weapon_wand_beam.sp"
-#include "zombie_riot/custom/weapon_wand_lightning_pap.sp"
+#include "zombie_riot/custom/wand/weapon_wand_beam.sp"
+#include "zombie_riot/custom/wand/weapon_wand_lightning_pap.sp"
 #include "zombie_riot/custom/weapon_calcium_wand.sp"
-#include "zombie_riot/custom/weapon_wand_calcium_spell.sp"
+#include "zombie_riot/custom/wand/weapon_wand_calcium_spell.sp"
 #include "zombie_riot/custom/weapon_passive_banner.sp"
 #include "zombie_riot/custom/weapon_zeroknife.sp"
 #include "zombie_riot/custom/weapon_ark.sp"
@@ -1191,11 +1200,11 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_explosivebullets.sp"
 #include "zombie_riot/custom/weapon_sniper_monkey.sp"
 #include "zombie_riot/custom/weapon_cspyknife.sp"
-#include "zombie_riot/custom/weapon_quantum_weaponry.sp"
+#include "zombie_riot/custom/wand/weapon_quantum_weaponry.sp"
 
-//FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
 #include "zombie_riot/custom/m3_abilities.sp"
+
 
 public Plugin myinfo =
 {
@@ -1543,6 +1552,7 @@ public void OnMapStart()
 	SSS_Map_Precache();
 	ExplosiveBullets_Precache();
 	Quantum_Gear_Map_Precache();
+	WandStocks_Map_Precache();
 	
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
@@ -3479,6 +3489,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 		b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
 		b_EntityIsArrow[entity] = false;
+		b_EntityIsWandProjectile[entity] = false;
 		CClotBody npc = view_as<CClotBody>(entity);
 		b_SentryIsCustom[entity] = false;
 		b_Is_Npc_Projectile[entity] = false;
@@ -4328,4 +4339,6 @@ public void MapStartResetAll()
 	Zero(i_Headshots);
 	Zero(i_HasBeenHeadShotted);
 	Zero(f_StuckTextChatNotif);
+	Zero(b_LimitedGibGiveMoreHealth);
+	CurrentGibCount = 0;
 }

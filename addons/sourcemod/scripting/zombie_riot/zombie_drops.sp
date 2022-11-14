@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 #define NUKE_MODEL "models/props_trainyard/cart_bomb_separate.mdl"
 #define NUKE_SOUND "ambient/explosions/explode_5.wav"
 

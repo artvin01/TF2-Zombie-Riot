@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 Handle clientcookie = INVALID_HANDLE;
 
 bool hooked;

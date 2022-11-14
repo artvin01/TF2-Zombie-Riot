@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 
 static char g_DeathSounds[][] = {
 	"vo/medic_paincrticialdeath01.mp3",
@@ -350,7 +353,7 @@ methodmap TrueFusionWarrior < CClotBody
 	
 		npc.GetAttachment("head", flPos, flAng);
 		
-		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_lightning", npc.index, "head", {0.0,0.0,15.0})
+		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_lightning", npc.index, "head", {0.0,0.0,15.0});
 		
 		
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
@@ -545,7 +548,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 						{
 							float vAngles[3], vDirection[3];
 							
-							float entity_angles[3]
+							float entity_angles[3];
 									
 							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vAngles); 
 							
@@ -593,7 +596,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 						{
 							float vAngles[3], vDirection[3];
 							
-							float entity_angles[3]
+							float entity_angles[3];
 									
 							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vAngles); 
 							
@@ -1269,7 +1272,7 @@ public Action TrueFusionwarrior_DrawIon(Handle Timer, any data)
 	return (Plugin_Stop);
 }
 	
-public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const color[4])
+public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int color[4])
 {
 	float position[3];
 	position[0] = startPosition[0];

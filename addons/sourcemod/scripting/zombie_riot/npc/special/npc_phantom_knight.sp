@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static const char g_DeathSounds[][] = {
 	"npc/combine_soldier/die1.wav",
 	"npc/combine_soldier/die2.wav",
@@ -28,8 +31,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/samurai/tf_katana_slice_01.wav",
 	"weapons/samurai/tf_katana_slice_02.wav",
 	"weapons/samurai/tf_katana_slice_03.wav",
-}
-
+};
 
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/samurai/tf_katana_01.wav",
@@ -290,10 +292,10 @@ public void PhantomKnight_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 40.0;
+					float damage = 55.0;
 					if(b_IsPhantomFake[npc.index]) //Make sure that he wont do damage if its a fake 
 					{
-						damage = 20.0;
+						damage = 33.0;
 					}
 
 					npc.PlayMeleeHitSound();
@@ -318,10 +320,10 @@ public void PhantomKnight_ClotThink(int iNPC)
 	{
 		if(f_AttackHappensAoe[npc.index] < gameTime)
 		{
-			float damage = 80.0;
+			float damage = 400.0;
 			if(b_IsPhantomFake[npc.index]) //Make sure that he wont do damage if its a fake 
 			{
-				damage = 35.0;
+				damage = 190.0;
 			}
 			npc.PlayRangedReloadSound();
 			i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_CLUB_DAMAGE;
@@ -545,12 +547,14 @@ public void PhantomKnight_ClotThink(int iNPC)
 							if(b_thisNpcIsABoss[npc.index]) //If he is a boss, make his clones a boss.
 							{
 								b_thisNpcIsABoss[view_as<int>(fake_spawned)] = true;
+								SetEntProp(view_as<int>(fake_spawned), Prop_Send, "m_bGlowEnabled", true);
 							}
+							Zombies_Currently_Still_Ongoing += 1;
 							b_IsPhantomFake[view_as<int>(fake_spawned)] = true;
 
 							int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 
-							maxhealth /= 8;
+							maxhealth /= 6;
 
 							SetEntProp(view_as<int>(fake_spawned), Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(view_as<int>(fake_spawned), Prop_Data, "m_iMaxHealth", maxhealth);
@@ -635,7 +639,7 @@ public void PhantomKnight_NPCDeath(int entity)
 
 static char[] GetLucianHealth()
 {
-	int health = 160;
+	int health = 180;
 	
 	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
 	

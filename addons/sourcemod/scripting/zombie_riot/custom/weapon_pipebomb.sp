@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static int weapon_id[MAXPLAYERS+1]={8, ...};
 static const float nullVec[] = {0.0,0.0,0.0};
 static int g_ProjectileModel;

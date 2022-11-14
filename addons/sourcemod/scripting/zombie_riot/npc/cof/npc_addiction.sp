@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 #define ADDICTION_LIGHTNING_RANGE 150.0
 
 #define ADDICTION_CHARGE_TIME 4.1
@@ -313,7 +316,7 @@ public void Addicition_ClotThink(int iNPC)
 	
 	if(npc.m_bLostHalfHealth)
 	{
-		float Armor_Stats = 1.0 * Pow(0.98, float(Zombies_Currently_Still_Ongoing))
+		float Armor_Stats = 1.0 * Pow(0.98, float(Zombies_Currently_Still_Ongoing));
 		
 		if(Armor_Stats > 1.0)
 		{

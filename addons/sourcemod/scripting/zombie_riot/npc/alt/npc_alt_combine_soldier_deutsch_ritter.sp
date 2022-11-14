@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static const char g_DeathSounds[][] = {
 	"npc/combine_soldier/die1.wav",
 	"npc/combine_soldier/die2.wav",
@@ -213,7 +216,7 @@ methodmap Alt_CombineDeutsch < CClotBody
 		
 		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/soldier/dec17_brass_bucket/dec17_brass_bucket.mdl");
 		SetVariantString("1.25");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale")
+		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
 		
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
@@ -229,7 +232,7 @@ methodmap Alt_CombineDeutsch < CClotBody
 		
 		i_barrage[npc.index] = 0;
 		fl_barragetimer[npc.index] = GetGameTime() + 20.0;
-		fl_singularbarrage[npc.index] = GetGameTime() + 1.0
+		fl_singularbarrage[npc.index] = GetGameTime() + 1.0;
 		b_barrage[npc.index] = false;
 		return npc;
 	}

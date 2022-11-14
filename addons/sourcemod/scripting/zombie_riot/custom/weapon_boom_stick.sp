@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 #define HITSCAN_BOOM	  "ambient/explosions/explode_4.wav"
 #define LASER_BOOMSTICK	  "npc/scanner/cbot_energyexplosion1.wav"
 
@@ -69,7 +72,7 @@ public void Weapon_Boom_Stick(int client, int weapon, const char[] classname, bo
 		newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
 		newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
 						
-		for (new i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			velocity[i] += newVel[i];
 		}
@@ -104,7 +107,7 @@ public void Weapon_Boom_Stick_Louder(int client, int weapon, const char[] classn
 		newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
 		newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
 						
-		for (new i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			velocity[i] += newVel[i];
 		}
@@ -172,7 +175,7 @@ public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, const char[] 
 		newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
 		newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
 						
-		for (new i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			velocity[i] += newVel[i];
 		}

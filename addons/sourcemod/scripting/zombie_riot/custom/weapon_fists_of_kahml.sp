@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static int how_many_times_fisted[MAXTF2PLAYERS];
 
 

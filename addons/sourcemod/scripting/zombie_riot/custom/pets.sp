@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 #define PET_ITEM_SLOT	5
 
 enum

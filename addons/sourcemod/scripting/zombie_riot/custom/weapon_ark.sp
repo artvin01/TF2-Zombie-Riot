@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 //no idea how those work but they are needed from what i see
 static float Damage_Projectile[MAXENTITIES]={0.0, ...};
 static int Projectile_To_Client[MAXENTITIES]={0, ...};
@@ -282,7 +285,7 @@ public void Ark_attack2(int client, int weapon, bool crit, int slot) //second pa
 		if(address != Address_Null)
 			time *= TF2Attrib_GetValue(address);
 		
-		for (new i = 1; i <= 4; i++)
+		for (int i = 1; i <= 4; i++)
 		{
 			int iRot = CreateEntityByName("func_door_rotating");
 			if(iRot == -1) return;

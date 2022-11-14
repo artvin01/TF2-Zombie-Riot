@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 #define SPLIT_ANGLE_OFFSET 2.0
 
 #define SOUND_PIPE_SHOOT		"weapons/bow_shoot.wav"
