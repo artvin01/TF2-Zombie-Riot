@@ -1111,51 +1111,37 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 	PrintToChat(client, "%t", "Could Not Buy Item", TranslateItemName(client, name));
 }
 
-void Store_BuyClientItem(int client, Item item, ItemInfo info)
+void Store_EquipSlotCheck(int client, int slot)
 {
-	item.Scaled[client]++;
-	item.Owned[client] = 1;
-
-	int length = StoreItems.Length;
-	static Item item2;
-	//Prevent a rare case of us changing slots, thus them being able to equip multiple weapons of the same type at once when we dont want them.
-	if(item.Slot >= 0)
+	if(slot >= 0)
 	{
 		int count;
-		for(int a; a<length; a++)
+		int length = StoreItems.Length;
+		static Item item;
+		for(int i; i<length; i++)
 		{
-			StoreItems.GetArray(a, item2);
-			if((item2.Equipped[client]/* || item2.Scaled[client]*/) && item2.Slot == item.Slot)
+			StoreItems.GetArray(i, item);
+			if(item.Equipped[client] && item.Slot == slot)
+			{
 				count++;
+				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
+				{
+					item.Equipped[client] = false;
+					StoreItems.SetArray(i, item);
+					break;
+				}
+			}
 		}
+	}
+}
 
-		if(count)
-		{
-			bool blocked = false;
-			if(item.Slot >= sizeof(SlotLimits))
-				blocked = true;
-			
-			if(count >= SlotLimits[item.Slot])
-				blocked = true;
-			
-			if(blocked)
-			{
-				item.Equipped[client] = false;
-			}
-			else
-			{
-				item.Equipped[client] = true;
-			}
-		}
-		else
-		{
-			item.Equipped[client] = true;
-		}
-	}
-	else
-	{
-		item.Equipped[client] = true;
-	}
+void Store_BuyClientItem(int client, Item item, ItemInfo info)
+{
+	Store_EquipSlotCheck(client, item.Slot);
+
+	item.Scaled[client]++;
+	item.Owned[client] = 1;
+	item.Equipped[client] = true;
 	
 	if(item.MaxScaled < item.Scaled[client])
 		item.Scaled[client] = item.MaxScaled;
@@ -1696,7 +1682,6 @@ public void MenuPage(int client, int section)
 	bool found;
 	char buffer[96];
 	int length = StoreItems.Length;
-	static Item item2;
 	
 	int ClientLevel = Level[client];
 	
@@ -1747,7 +1732,7 @@ public void MenuPage(int client, int section)
 		if(item.TextStore[0] && !HasNamedItem(client, item.TextStore))
 			continue;
 		
-		if(NPCOnly[client] != 2 && NPCOnly[client] != 3 && !item.Owned[client] && item.Slot >= 0)
+		/*if(NPCOnly[client] != 2 && NPCOnly[client] != 3 && item.Slot >= 0)
 		{
 			int count;
 			for(int a; a<length; a++)
@@ -1756,7 +1741,7 @@ public void MenuPage(int client, int section)
 					continue;
 				
 				StoreItems.GetArray(a, item2);
-				if((item2.Equipped[client]/* || item2.Scaled[client]*/) && item2.Slot == item.Slot)
+				if(item2.Equipped[client] && item2.Slot == item.Slot)
 					count++;
 			}
 			
@@ -1776,7 +1761,7 @@ public void MenuPage(int client, int section)
 					continue;
 				}
 			}
-		}
+		}*/
 		
 		if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
 		{
@@ -2341,6 +2326,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							
 							if(item.Owned[client] && !item.Equipped[client])	// Equip Weapon
 							{
+								Store_EquipSlotCheck(client, item.Slot);
+
 								item.Equipped[client] = true;
 								StoreItems.SetArray(index, item);
 								
@@ -2373,6 +2360,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						}
 						else if (info.Attack3AbilitySlot != 0) //equip back special ability slot item
 						{
+							Store_EquipSlotCheck(client, item.Slot);
+
 							item.Equipped[client] = true;
 							StoreItems.SetArray(index, item);
 								
@@ -3524,6 +3513,8 @@ int Store_GiveSpecificItem(int client, const char[] name)
 		StoreItems.GetArray(i, item);
 		if(StrEqual(name, item.Name, false))
 		{
+			Store_EquipSlotCheck(client, item.Slot);
+
 			static ItemInfo info;
 			item.GetItemInfo(0, info);
 			
