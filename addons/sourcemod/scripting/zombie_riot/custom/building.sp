@@ -2332,7 +2332,7 @@ public Action Building_CheckTimer(Handle timer, int ref)
 				if(weapon == -1)
 					return Plugin_Stop;
 			
-				Store_Unequip(client, StoreWeapon[weapon]);
+			//	Store_Unequip(client, StoreWeapon[weapon]);
 				TF2_RemoveWeaponSlot(client, TFWeaponSlot_Grenade);
 				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 				MenuPage(client, StoreWeapon[weapon]);
