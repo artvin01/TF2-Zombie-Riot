@@ -26,7 +26,7 @@
 	{
 		"en"		"You are the Last Human Alive.\nSurvive the current wave to revive all your allies."
 		"it"		"Sei L'ultimo Umano In Vita.\nVinci il prossimo boss round per resuscitare tutti."
-        "ru"		"Вы последний выживший.\nВыживите в текущей волне, чтобы возродить всех своих товарищей."
+		"ru"		"Вы последний выживший.\nВыживите в текущей волне, чтобы возродить всех своих товарищей."
 		"pl"		"Jesteś ostatnim człowiekiem.\nPrzeżyj następną rundę z bossem aby wskrzeszyć resztę drużyny."  
 		"es"		"Eres el último humano con vida.\nGana la siguiente oleada de jefe para revivirlos a todos"
 		"fr"		"Vous êtes le dernier survivant.\nSurviver au prochain boss pour réanimeer vos coéquipier."
