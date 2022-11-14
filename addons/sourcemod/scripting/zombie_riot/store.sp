@@ -1111,7 +1111,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 	PrintToChat(client, "%t", "Could Not Buy Item", TranslateItemName(client, name));
 }
 
-void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int length)
+void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int blength)
 {
 	if(slot >= 0)
 	{
@@ -1126,7 +1126,7 @@ void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int length)
 				count++;
 				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
 				{
-					Format(buffer, length, "%s {%s}", buffer, TranslateItemName(client, item.Name));
+					Format(buffer, blength, "%s {%s}", buffer, TranslateItemName(client, item.Name));
 					break;
 				}
 			}
