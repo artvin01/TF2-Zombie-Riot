@@ -852,7 +852,7 @@
 //		"es"		"Encontraste {1} en esta oleada!"
 //		"fr"		"Vous avez gagnez {1} Cette vague!"
 		"pt"		"Mana: [{1}/{2}] (+{3})"
-		"chi" 		"魔法: [{1}/{2}] (+{3})"
+		"chi" 		"法力值: [{1}/{2}] (+{3})"
 	}
 	"Not Enough Mana"
 	{
@@ -1369,7 +1369,7 @@
 		"de"		"Benutzt das, um dich etwas selber zu heilen."
 		"pt"		"Use isto para curar um pouco de seus ferimentos."
 		"nl"		"Gebruik dit om jezelf een beetje te genezen."
-		"chi"       "使用它来恢复少量生命"
+		"chi"       "按下R键来恢复少量生命"
 	}
 	"Healing Station Used"
 	{
@@ -1858,7 +1858,7 @@
 		"ru"		"Много оружия: Нажмите клавишу осмотра оружия"
 		"pt"		"Multiplas Armas: Pressione o Botão de inspecionar"
 		"nl"		"Verschillende wapens: Druk op Inspectie"
-		"chi"       "切换第二把主武器:请按F"
+		"chi"       "该类型有多个武器:请按F切换"
 	}
 	"Cannot Build Here"
 	{
