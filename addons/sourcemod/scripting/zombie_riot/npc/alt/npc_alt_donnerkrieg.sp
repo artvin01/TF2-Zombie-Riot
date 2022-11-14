@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static const char g_DeathSounds[][] = {
 	"vo/medic_paincrticialdeath01.mp3",
 	"vo/medic_paincrticialdeath02.mp3",
@@ -218,7 +221,7 @@ methodmap Donnerkrieg < CClotBody
 		float flAng[3]; // original
 					
 		npc.GetAttachment("effect_hand_l", flPos, flAng);
-		npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,15.0})
+		npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,15.0});
 		npc.GetAttachment("root", flPos, flAng);
 		
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
@@ -343,9 +346,9 @@ public void Donnerkrieg_ClotThink(int iNPC)
 					float flAng[3]; // original
 					
 					npc.GetAttachment("root", flPos, flAng);
-					npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "utaunt_portalswirl_purple_parent", npc.index, "root", {0.0,0.0,15.0})
+					npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "utaunt_portalswirl_purple_parent", npc.index, "root", {0.0,0.0,15.0});
 					npc.GetAttachment("root", flPos, flAng);
-					npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_runeprison_yellow_parent", npc.index, "root", {0.0,0.0,15.0})
+					npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_runeprison_yellow_parent", npc.index, "root", {0.0,0.0,15.0});
 					
 					npc.FaceTowards(vecTarget, 20000.0);	//TURN DAMMIT
 					

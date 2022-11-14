@@ -1,29 +1,32 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float Necro_Damage[MAXPLAYERS+1]={0.0, ...};
 static bool Delete_Flame[MAXPLAYERS+1]={false, ...};
 
-public void Wand_Calcium_Spell_ClearAll()
+#define SOUND_WAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
+
+public void Wand_Necro_Spell_ClearAll()
 {
 	Zero(ability_cooldown);
 }
 
-#define SOUND_WAND_CALCIUM_ABILITY "misc/halloween/spell_skeleton_horde_rise.wav"
-
-void Wand_CalciumSpell_Map_Precache()
+void Wand_NerosSpell_Map_Precache()
 {
-	PrecacheSound(SOUND_WAND_CALCIUM_ABILITY);
+	PrecacheSound(SOUND_WAND_ATTACKSPEED_ABILITY);
 }
 
-public void Weapon_Calcium_FireBallSpell(int client, int weapon, bool &result, int slot)
+public void Weapon_Necro_FireBallSpell(int client, int weapon, bool &result, int slot)
 {
 	if(weapon >= MaxClients)
 	{
-		int mana_cost = 250;
+		int mana_cost = 200;
 		if(mana_cost <= Current_Mana[client])
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				Ability_Apply_Cooldown(client, slot, 19.0);
+				Ability_Apply_Cooldown(client, slot, 14.0);
 				
 				Necro_Damage[client] = 1.0;
 				
@@ -31,7 +34,7 @@ public void Weapon_Calcium_FireBallSpell(int client, int weapon, bool &result, i
 				if(address != Address_Null)
 					Necro_Damage[client] = TF2Attrib_GetValue(address);
 				
-				Necro_Damage[client] *= 1.6;
+				Necro_Damage[client] *= 1.15;
 				
 				Necro_Damage[client] *= 2.0; //Two times so i can half minions.
 				
@@ -47,7 +50,8 @@ public void Weapon_Calcium_FireBallSpell(int client, int weapon, bool &result, i
 				SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
 				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
 				Delete_Flame[client] = true;
-				CreateTimer(0.5, Calcium_Remove_Spell, client, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(0.5, Necro_Remove_Spell, client, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(0.4, Fireball_Remove_Spell_Entity, EntIndexToEntRef(spellbook), TIMER_FLAG_NO_MAPCHANGE);
 					
 				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 				Mana_Hud_Delay[client] = 0.0;
@@ -80,7 +84,7 @@ public void Weapon_Calcium_FireBallSpell(int client, int weapon, bool &result, i
 	}
 }
 
-public Action Wand_Calcium_Spell(int entity)
+public Action Wand_Necro_Spell(int entity)
 {
 	if (IsValidEntity(entity))
 	{
@@ -99,14 +103,14 @@ public Action Wand_Calcium_Spell(int entity)
 	return Plugin_Handled;
 }
 
-public Action Calcium_Remove_Spell(Handle Calcium_Remove_SpellHandle, int client)
+public Action Necro_Remove_Spell(Handle Necro_Remove_SpellHandle, int client)
 {
 	if (IsValidClient(client))
 	{
-		Spawn_Calcium(client);
+		Spawn_Necromancy(client);
 		if(LastMann)
 		{
-			Spawn_Calcium(client);			
+			Spawn_Necromancy(client);			
 		}
 		TF2Attrib_SetByDefIndex(client, 698, 0.0);
 		FakeClientCommand(client, "use tf_weapon_bonesaw");
@@ -116,7 +120,7 @@ public Action Calcium_Remove_Spell(Handle Calcium_Remove_SpellHandle, int client
 	return Plugin_Handled;
 }
 
-public void Spawn_Calcium(int client)
+public void Spawn_Necromancy(int client)
 {
 	float flPos[3], flAng[3];
 	GetClientAbsOrigin(client, flPos);
@@ -124,6 +128,6 @@ public void Spawn_Calcium(int client)
 	
 	char buffer[16];
 	FloatToString(Necro_Damage[client], buffer, sizeof(buffer));
-	Npc_Create(NECRO_CALCIUM, client, flPos, flAng, true, buffer);
-	GiveNamedItem(client, "Spookmaster Boner");
+	Npc_Create(NECRO_COMBINE, client, flPos, flAng, true, buffer);
+	GiveNamedItem(client, "Revived Combine DDT");
 }

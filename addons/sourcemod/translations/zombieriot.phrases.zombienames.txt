@@ -926,4 +926,8 @@
 		"ru"		"Шверткриг"
 		"nl"		"Schwertkrieg"
 	}
+	"Phantom Knight"
+	{
+		"en"		"Lucian, ''Blood Diamond''"
+	}
 }

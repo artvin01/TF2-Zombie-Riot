@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float ability_cooldown_2[MAXPLAYERS+1]={0.0, ...};
 static int Attack3AbilitySlotArray[MAXPLAYERS+1]={0, ...};

@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static const char g_DeathSounds[][] = {
 	"fish/lose_vader.mp3",
 };

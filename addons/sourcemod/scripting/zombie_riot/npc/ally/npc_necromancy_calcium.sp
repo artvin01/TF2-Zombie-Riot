@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
 };

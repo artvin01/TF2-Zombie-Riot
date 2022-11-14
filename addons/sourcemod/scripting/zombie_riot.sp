@@ -32,12 +32,13 @@
 
 #define NPC_HARD_LIMIT 42 
 #define ZR_MAX_NPCS (NPC_HARD_LIMIT*2)
-#define ZR_MAX_NPCS_ALLIED 16 //Never need more.
+#define ZR_MAX_NPCS_ALLIED 42 //Never need more.
 #define ZR_MAX_LAG_COMP 128 
 #define ZR_MAX_BUILDINGS 64 //cant ever have more then 64 realisticly speaking
 #define ZR_MAX_TRAPS 64
 #define ZR_MAX_BREAKBLES 32
 #define ZR_MAX_SPAWNERS 32 //cant ever have more then 32, if your map does, then what thed fuck are you doing ?
+#define ZR_MAX_GIBCOUNT 20 //Anymore then this, and it will only summon 1 gib per zombie instead.
 
 #define MAX_PLAYER_COUNT			12
 #define MAX_PLAYER_COUNT_STRING		"12"
@@ -248,7 +249,9 @@ float Damage_dealt_in_total[MAXTF2PLAYERS];
 int i_Damage_dealt_in_total[MAXTF2PLAYERS];
 int i_KillsMade[MAXTF2PLAYERS];
 int i_Backstabs[MAXTF2PLAYERS];
+bool i_HasBeenBackstabbed[MAXENTITIES];
 int i_Headshots[MAXTF2PLAYERS];
+bool i_HasBeenHeadShotted[MAXENTITIES];
 float f_TimeAfterSpawn[MAXTF2PLAYERS];
 
 int Healing_done_in_total[MAXTF2PLAYERS];
@@ -536,6 +539,12 @@ int b_NpcForcepowerupspawn[MAXENTITIES]={0, ...};
 float f_TempCooldownForVisualManaPotions[MAXPLAYERS+1];
 float f_DelayLookingAtHud[MAXPLAYERS+1];
 bool b_EntityIsArrow[MAXENTITIES];
+bool b_EntityIsWandProjectile[MAXENTITIES];
+int i_WandIdNumber[MAXENTITIES]; //This is to see what wand is even used. so it does its own logic and so on.
+float f_WandDamage[MAXENTITIES]; //
+int i_WandOwner[MAXENTITIES]; //
+int i_WandWeapon[MAXENTITIES]; //
+int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever ever. lag max otherwise.
 
 //int g_iLaserMaterial, g_iHaloMaterial;
 
@@ -567,7 +576,8 @@ bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
 bool b_SpecialGrigoriStore;
 float f_ExtraDropChanceRarity = 1.0;
 
-
+int CurrentGibCount = 0;
+bool b_LimitedGibGiveMoreHealth[MAXENTITIES];
 //GLOBAL npc things
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
@@ -783,7 +793,8 @@ enum
 	ALT_MECHA_PYROGIANT			= 133,
 	ALT_MECHA_SCOUT				= 134,
 	ALT_DONNERKRIEG				= 135,
-	ALT_SCHWERTKRIEG			= 136
+	ALT_SCHWERTKRIEG			= 136,
+	PHANTOM_KNIGHT				= 137, //Lucian "Blood diamond"
 }
 
 
@@ -936,7 +947,8 @@ public const char NPC_Names[][] =
 	"Mecha Giant Pyro",
 	"Mecha Scout",
 	"Donnerkrieg",
-	"Schwertkrieg"
+	"Schwertkrieg",
+	"Phantom Knight"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -1084,9 +1096,9 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_mecha_heavy_giant",
 	"npc_alt_mecha_pyro_giant",
 	"npc_alt_mecha_scout",
-	"npc_alt_mecha_scout",
 	"npc_alt_donnerkrieg",
-	"npc_alt_schwertkrieg"
+	"npc_alt_schwertkrieg",
+	"npc_phantom_knight"
 };
 
 #include "zombie_riot/stocks_override.sp"
@@ -1120,6 +1132,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/queue.sp"
 #include "zombie_riot/item_gift_rpg.sp"
 #include "zombie_riot/tutorial.sp"
+#include "zombie_riot/wand_projectile.sp"
 
 
 #include "zombie_riot/custom/building.sp"
@@ -1142,15 +1155,15 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/spike_layer.sp"
 #include "zombie_riot/custom/weapon_grenade.sp"
 #include "zombie_riot/custom/weapon_pipebomb.sp"
-#include "zombie_riot/custom/weapon_default_wand.sp"
-#include "zombie_riot/custom/weapon_wand_increace_attack.sp"
-#include "zombie_riot/custom/weapon_fire_wand.sp"
-#include "zombie_riot/custom/weapon_wand_fire_ball.sp"
-#include "zombie_riot/custom/weapon_lightning_wand.sp"
-#include "zombie_riot/custom/weapon_wand_cryo.sp"
-#include "zombie_riot/custom/weapon_wand_lightning_spell.sp"
-#include "zombie_riot/custom/weapon_necromancy_wand.sp"
-#include "zombie_riot/custom/weapon_wand_necro_spell.sp"
+#include "zombie_riot/custom/wand/weapon_default_wand.sp"
+#include "zombie_riot/custom/wand/weapon_wand_increace_attack.sp"
+#include "zombie_riot/custom/wand/weapon_fire_wand.sp"
+#include "zombie_riot/custom/wand/weapon_wand_fire_ball.sp"
+#include "zombie_riot/custom/wand/weapon_lightning_wand.sp"
+#include "zombie_riot/custom/wand/weapon_wand_cryo.sp"
+#include "zombie_riot/custom/wand/weapon_wand_lightning_spell.sp"
+#include "zombie_riot/custom/wand/weapon_necromancy_wand.sp"
+#include "zombie_riot/custom/wand/weapon_wand_necro_spell.sp"
 #include "zombie_riot/custom/weapon_autoaim_wand.sp"
 #include "zombie_riot/custom/weapon_arrow_shot.sp"
 //#include "zombie_riot/custom/weapon_pipe_shot.sp"
@@ -1159,22 +1172,22 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_minecraft.sp"
 #include "zombie_riot/custom/arse_enal_layer_tripmine.sp"
 #include "zombie_riot/custom/weapon_serioussam2_shooter.sp"
-#include "zombie_riot/custom/weapon_elemental_staff.sp"
-#include "zombie_riot/custom/weapon_elemental_staff_2.sp"
+#include "zombie_riot/custom/wand/weapon_elemental_staff.sp"
+#include "zombie_riot/custom/wand/weapon_elemental_staff_2.sp"
 #include "zombie_riot/custom/weapon_infinity_blade.sp"
 //#include "zombie_riot/custom/weapon_black_fire_wand.sp"
-#include "zombie_riot/custom/weapon_chlorophite.sp"
-#include "zombie_riot/custom/weapon_chlorophite_heavy.sp"
+#include "zombie_riot/custom/wand/weapon_chlorophite.sp"
+#include "zombie_riot/custom/wand/weapon_chlorophite_heavy.sp"
 #include "zombie_riot/custom/weapon_drink_resupply_mana.sp"
 #include "zombie_riot/custom/weapon_wind_staff.sp"
-#include "zombie_riot/custom/weapon_nailgun.sp"
+#include "zombie_riot/custom/wand/weapon_nailgun.sp"
 #include "zombie_riot/custom/weapon_five_seven.sp"
 #include "zombie_riot/custom/weapon_gb_medigun.sp"
 #include "zombie_riot/custom/weapon_charged_handgun.sp"
-#include "zombie_riot/custom/weapon_wand_beam.sp"
-#include "zombie_riot/custom/weapon_wand_lightning_pap.sp"
+#include "zombie_riot/custom/wand/weapon_wand_beam.sp"
+#include "zombie_riot/custom/wand/weapon_wand_lightning_pap.sp"
 #include "zombie_riot/custom/weapon_calcium_wand.sp"
-#include "zombie_riot/custom/weapon_wand_calcium_spell.sp"
+#include "zombie_riot/custom/wand/weapon_wand_calcium_spell.sp"
 #include "zombie_riot/custom/weapon_passive_banner.sp"
 #include "zombie_riot/custom/weapon_zeroknife.sp"
 #include "zombie_riot/custom/weapon_ark.sp"
@@ -1187,11 +1200,11 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_explosivebullets.sp"
 #include "zombie_riot/custom/weapon_sniper_monkey.sp"
 #include "zombie_riot/custom/weapon_cspyknife.sp"
-#include "zombie_riot/custom/weapon_quantum_weaponry.sp"
+#include "zombie_riot/custom/wand/weapon_quantum_weaponry.sp"
 
-//FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
 #include "zombie_riot/custom/m3_abilities.sp"
+
 
 public Plugin myinfo =
 {
@@ -1539,6 +1552,7 @@ public void OnMapStart()
 	SSS_Map_Precache();
 	ExplosiveBullets_Precache();
 	Quantum_Gear_Map_Precache();
+	WandStocks_Map_Precache();
 	
 //	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
 //	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
@@ -2345,6 +2359,7 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	if(client)
 	{
+		RequestFrame(SetEyeAngleCorrect, client);
 		Escape_DropItem(client);
 		if(g_CarriedDispenser[client] != INVALID_ENT_REFERENCE)
 		{
@@ -2390,6 +2405,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				float pos[3], ang[3];
 				GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
+				ang[2] = 0.0;
 				DHook_RespawnPlayer(client);
 				
 				TeleportEntity(client, pos, ang, NULL_VECTOR);
@@ -2519,6 +2535,7 @@ public void Spawn_Bob_Combine(int client)
 	float flPos[3], flAng[3];
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
+	flAng[2] = 0.0;
 	int bob = Npc_Create(BOB_THE_GOD_OF_GODS, client, flPos, flAng, true);
 	Bob_Exists = true;
 	Bob_Exists_Index = EntIndexToEntRef(bob);
@@ -2547,6 +2564,7 @@ public void Spawn_Cured_Grigori()
 	float flPos[3], flAng[3];
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
+	flAng[2] = 0.0;
 	int entity = Npc_Create(CURED_FATHER_GRIGORI, client, flPos, flAng, true);
 	SalesmanAlive = EntIndexToEntRef(entity);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_grigori");
@@ -2959,18 +2977,24 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	}
 	else if(buttons & IN_ATTACK2)
 	{
+		PrintToConsole(client,"In_attack2 Happend");
 		holding[client] = IN_ATTACK2;
 		
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		
+		PrintToConsole(client,"Weapon Is %i", weapon_holding);
 		b_IgnoreWarningForReloadBuidling[client] = false;
 		if(IsValidEntity(weapon_holding))
 		{
+			PrintToConsole(client,"Weapon Is Valid.");
 			char classname[32];
 			GetEntityClassname(weapon_holding, classname, 32);
 			Action action = Plugin_Continue;
+
+		//	PrintToConsole(client,"Weapon Is %s", EntityFuncAttack2[weapon_holding]);
+
 			if(EntityFuncAttack2[weapon_holding] && EntityFuncAttack2[weapon_holding]!=INVALID_FUNCTION)
 			{
+				PrintToConsole(client,"Weapon has an valid function.");
 				bool result = false; //ignore crit.
 				int slot = 2;
 				Call_StartFunction(null, EntityFuncAttack2[weapon_holding]);
@@ -2982,16 +3006,20 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 			if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
 			{
+				PrintToConsole(client,"Weapon is melee.");
 				if(EntityFuncAttack2[weapon_holding] != MountBuildingToBack && TeutonType[client] == TEUTON_NONE)
 				{
+					PrintToConsole(client,"Weapon is not MountBuildingToBack.");
 					b_IgnoreWarningForReloadBuidling[client] = true;
 					Pickup_Building_M2(client, weapon, false);
 				}
 			}
 		}
 		StartPlayerOnlyLagComp(client, true);
+		PrintToConsole(client,"Mouse2 interact");
 		if(InteractKey(client, weapon_holding, false)) //doesnt matter which one
 		{
+			PrintToConsole(client,"Mouse2 interacted");
 			buttons &= ~IN_ATTACK2;
 			EndPlayerOnlyLagComp(client);
 			return Plugin_Changed;
@@ -3105,6 +3133,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					float pos[3], ang[3];
 					GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
 					GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
+					ang[2] = 0.0;
 					SetEntProp(target, Prop_Send, "m_bDucked", true);
 					SetEntityFlags(target, GetEntityFlags(target)|FL_DUCKING);
 					CClotBody npc = view_as<CClotBody>(client);
@@ -3460,6 +3489,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 		b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
 		b_EntityIsArrow[entity] = false;
+		b_EntityIsWandProjectile[entity] = false;
 		CClotBody npc = view_as<CClotBody>(entity);
 		b_SentryIsCustom[entity] = false;
 		b_Is_Npc_Projectile[entity] = false;
@@ -3701,13 +3731,17 @@ public void OnEntityCreated(int entity, const char[] classname)
 public void SDKHook_SafeSpot_StartTouch(int entity, int target)
 {
 	if(target > 0 && target < sizeof(i_InSafeZone))
+	{
 		i_InSafeZone[target]++;
+	}
 }
 
 public void SDKHook_SafeSpot_EndTouch(int entity, int target)
 {
 	if(target > 0 && target < sizeof(i_InSafeZone))
+	{
 		i_InSafeZone[target]--;
+	}
 }
 
 public void SDKHook_RespawnRoom_StartTouch(int entity, int target)
@@ -4301,5 +4335,10 @@ public void MapStartResetAll()
 	f_DelaySpawnsForVariousReasons = 0.0;
 	Zero(i_KillsMade);
 	Zero(i_Backstabs);
+	Zero(i_HasBeenBackstabbed);
 	Zero(i_Headshots);
+	Zero(i_HasBeenHeadShotted);
+	Zero(f_StuckTextChatNotif);
+	Zero(b_LimitedGibGiveMoreHealth);
+	CurrentGibCount = 0;
 }

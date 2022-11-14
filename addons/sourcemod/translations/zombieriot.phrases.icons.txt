@@ -78,4 +78,16 @@
 		"nl"		"Gewoon betekend niet dat macht deze lenige vijand gaat stoppen..."
 	}
 
+	"Calamity of the Crimson Troupe, codename Phantom."
+	{
+		"en" 		"Calamity of the Crimson Troupe, codename Phantom."
+	}
+	"A caped Crimson warrior with Ominous Apparitions is appearing..."
+	{
+		"en" 		"An caped Crimson warrior with Ominous Apparitions is apearing..."
+	}
+	"A patch of shadow. It has never once left, nor has it ever truly existed."
+	{
+		"en" 		"A patch of shadow. It has never once left, nor has it ever truly existed."
+	}
 }

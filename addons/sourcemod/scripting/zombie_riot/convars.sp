@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 enum struct CvarInfo
 {
 	ConVar cvar;

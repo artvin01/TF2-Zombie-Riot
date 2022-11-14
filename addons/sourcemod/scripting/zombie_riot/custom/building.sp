@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 /*
 	Placement Type
 	static Handle SyncHud_Notifaction;
@@ -865,11 +868,14 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 	{
 		damage *= 1.5;
 	}
-	
+	//This is no longer needed, this logic has been added to the base explosive plugin, this also means that it allows
+	//npc vs npc interaction (mainly from blu to red) to deal 3x the explosive damage, so its not so weak.
+	/*
 	if(damagetype & DMG_BLAST)
 	{
 		damage *= 3.0; //OTHERWISE EXPLOSIVES ARE EXTREAMLY WEAK!!
 	}
+	*/
 	/*
 	if(Resistance_for_building_High[entity] > GetGameTime())
 	{
@@ -1802,6 +1808,15 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 		else if(Is_Reload_Button && StrEqual(buffer, "base_boss"))
 		{
 			buildingType = Citizen_BuildingInteract(entity);
+			int temp_owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
+			if(IsValidClient(temp_owner)) //Fix not getting the owner correctly when interacting with barney or citicens!
+			{
+				owner = temp_owner;
+			}
+			else
+			{
+				owner = -1;
+			}
 		}
 		
 		if(buildingType)
@@ -2884,7 +2899,7 @@ public Action Timer_DroppedBuildingWaitSentry(Handle htimer, int entref)
 	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
 	{
 		char buffer[32];
-		GetEntityClassname(obj, buffer, sizeof(buffer))
+		GetEntityClassname(obj, buffer, sizeof(buffer));
 		if(!StrContains(buffer, "obj_sentrygun"))
 		{
 			SetEntProp(obj, Prop_Send, "m_iAmmoShells", 150);
@@ -3039,11 +3054,11 @@ public bool BuildingCustomCommand(int client)
 			}
 			else if((Village_Flags[client] & VILLAGE_040) && StrEqual(buffer, "zr_village"))
 			{
-				if(Ammo_Count_Ready[client] > 0)
+				//if(Ammo_Count_Ready[client] > 0)
 				{
 					if(f_BuildingIsNotReady[client] < GetGameTime())
 					{
-						Ammo_Count_Ready[client]--;
+						//Ammo_Count_Ready[client]--;
 						f_BuildingIsNotReady[client] = GetGameTime() + 60.0;
 						
 						if(Village_Flags[client] & VILLAGE_050)
@@ -3074,13 +3089,13 @@ public bool BuildingCustomCommand(int client)
 						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 					}
 				}
-				else
+				/*else
 				{
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
 					SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
 					SetGlobalTransTarget(client);
 					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "No Ammo Supplies");
-				}
+				}*/
 			}
 		}
 		return true;
@@ -5312,7 +5327,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 			{
 				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-				vAngles[1] -= 180.0;
+				vAngles[1] -= 90.0;
 				TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
 			}
 			else
@@ -5335,6 +5350,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 
 					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] -= 90.0;
 					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
 					SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
 				}
@@ -5344,7 +5360,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 			{
 				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
-				vAngles[1] -= 180.0;
+				vAngles[1] -= 90.0;
 				TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
 			}
 			else
@@ -5368,6 +5384,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 
 					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] -= 90.0;
 					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
 					SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
 				}
@@ -5386,7 +5403,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 
 			float eyePitch[3];
 			GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", eyePitch);
-			eyePitch[1] -= 180.0;
+			eyePitch[1] -= 90.0;
 													
 			TeleportEntity(Building_Index, NULL_VECTOR, eyePitch, NULL_VECTOR);
 		}

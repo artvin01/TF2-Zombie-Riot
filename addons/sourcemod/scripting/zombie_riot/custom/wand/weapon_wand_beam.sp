@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static float Strength[MAXTF2PLAYERS];
 
 #define MAXENTITIES 2048

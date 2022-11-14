@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static const char g_DeathSounds[][] = {
 	"npc/combine_soldier/die1.wav",
 	"npc/combine_soldier/die2.wav",

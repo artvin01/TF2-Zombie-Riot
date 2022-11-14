@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static const char g_KnifeHitFlesh[][] = {
 	"weapons/blade_hit1.wav",
 	"weapons/blade_hit2.wav",

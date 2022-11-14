@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 #define NIKO_PLAYERMODEL "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
 
 static const char HandModels[][] =

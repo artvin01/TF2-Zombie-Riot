@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static int weapon_id[MAXPLAYERS+1]={0, ...};
 

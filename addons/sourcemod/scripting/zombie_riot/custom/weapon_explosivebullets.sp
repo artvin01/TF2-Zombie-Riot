@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 #define EXPLOSIVEBULLETS_BLAST_1	  "weapons/airstrike_small_explosion_01.wav"
 #define EXPLOSIVEBULLETS_BLAST_2	  "weapons/airstrike_small_explosion_02.wav"
 #define EXPLOSIVEBULLETS_BLAST_3	  "weapons/airstrike_small_explosion_03.wav"

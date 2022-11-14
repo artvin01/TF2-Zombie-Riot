@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static int Music_Timer[MAXTF2PLAYERS];
 static int Music_Timer_2[MAXTF2PLAYERS];
 static float Give_Cond_Timer[MAXTF2PLAYERS];

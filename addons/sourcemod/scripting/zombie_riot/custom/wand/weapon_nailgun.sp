@@ -1,5 +1,5 @@
-static float Damage_Projectile[MAXENTITIES]={0.0, ...};
-static int Projectile_To_Client[MAXENTITIES]={0, ...};
+#pragma semicolon 1
+#pragma newdecls required
 
 #define SYRINGE_MODEL	"models/weapons/w_models/w_nail.mdl"
 
@@ -56,7 +56,7 @@ public void Weapon_Nailgun(int client, int weapon, bool crit)
 	if(address != Address_Null)
 		speed *= TF2Attrib_GetValue(address);
 	
-	speed *= sentry_range
+	speed *= sentry_range;
 		
 	float time = 500.0/speed;
 	address = TF2Attrib_GetByDefIndex(weapon, 101);
@@ -67,87 +67,16 @@ public void Weapon_Nailgun(int client, int weapon, bool crit)
 	if(address != Address_Null)
 		time *= TF2Attrib_GetValue(address);
 	
-	int iRot = CreateEntityByName("func_door_rotating");
-	if(iRot == -1) return;
-	
-	float fPos[3];
-	GetClientEyePosition(client, fPos);
-	
-	DispatchKeyValueVector(iRot, "origin", fPos);
-	DispatchKeyValue(iRot, "distance", "99999");
-	DispatchKeyValueFloat(iRot, "speed", speed);
-	DispatchKeyValue(iRot, "spawnflags", "12288"); // passable|silent
-	DispatchSpawn(iRot);
-	SetEntityCollisionGroup(iRot, 27);
-	
-	SetVariantString("!activator");
-	AcceptEntityInput(iRot, "Open");
-//	EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
-//	CreateTimer(0.1, Timer_HatThrow_Woosh, EntIndexToEntRef(iRot), TIMER_REPEAT);
-	Wand_Nailgun_Launch(client, iRot, speed, time, damage);
+
+
+	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 1/*Default wand*/, weapon, "",_,false);
+
+	SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
 }
 
-static void Wand_Nailgun_Launch(int client, int iRot, float speed, float time, float damage)
+
+public void Gun_NailgunTouch(int entity, int target)
 {
-	float fAng[3], fPos[3];
-	GetClientEyeAngles(client, fAng);
-	GetClientEyePosition(client, fPos);
-
-	int iCarrier = CreateEntityByName("prop_physics_override");
-	if(iCarrier == -1) return;
-
-	float fVel[3], fBuf[3];
-	GetAngleVectors(fAng, fBuf, NULL_VECTOR, NULL_VECTOR);
-	fVel[0] = fBuf[0]*speed;
-	fVel[1] = fBuf[1]*speed;
-	fVel[2] = fBuf[2]*speed;
-
-	SetEntPropEnt(iCarrier, Prop_Send, "m_hOwnerEntity", client);
-	DispatchKeyValue(iRot, "model", SYRINGE_MODEL);
-	DispatchKeyValue(iCarrier, "model", ENERGY_BALL_MODEL);
-	DispatchKeyValue(iCarrier, "modelscale", "1");
-	DispatchSpawn(iCarrier);
-
-	TeleportEntity(iCarrier, fPos, fAng, fVel);
-	SetEntityMoveType(iCarrier, MOVETYPE_FLYGRAVITY);
-	
-	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", GetClientTeam(client));
-	SetEntProp(iRot, Prop_Send, "m_iTeamNum", GetClientTeam(client));
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iCarrier));
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iRot));
-	
-	SetVariantString("!activator");
-	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);
-	SetEntityCollisionGroup(iCarrier, 27);
-	
-	Projectile_To_Client[iCarrier] = client;
-	Damage_Projectile[iCarrier] = damage;
-	
-	float position[3];
-	
-	GetEntPropVector(iCarrier, Prop_Data, "m_vecAbsOrigin", position);
-	
-//	int particle = -1;
-		
-//	SetParent(iCarrier, particle);	
-	
-//	Projectile_To_Particle[iCarrier] = EntIndexToEntRef(particle);
-	
-//	SetEntityRenderMode(iCarrier, RENDER_TRANSCOLOR);
-//	SetEntityRenderColor(iCarrier, 255, 255, 255, 0);
-	
-	DataPack pack;
-	CreateDataTimer(time, Timer_RemoveEntity_CustomProjectile, pack, TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(iCarrier));
-	pack.WriteCell(EntIndexToEntRef(iCarrier));
-	pack.WriteCell(EntIndexToEntRef(iRot));
-		
-	SDKHook(iCarrier, SDKHook_StartTouch, Event_Wand_OnHatTouch_Nailgun);
-}
-
-public Action Event_Wand_OnHatTouch_Nailgun(int entity, int other)
-{
-	int target = Target_Hit_Wand_Detection(entity, other);
 	if (target > 0)	
 	{
 		//Code to do damage position and ragdolls
@@ -157,9 +86,11 @@ public Action Event_Wand_OnHatTouch_Nailgun(int entity, int other)
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
 		Entity_Position = WorldSpaceCenter(target);
-		//Code to do damage position and ragdolls
-		
-		SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_BULLET, -1, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
 		switch(GetRandomInt(1,5)) 
 		{
 			case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
@@ -172,15 +103,7 @@ public Action Event_Wand_OnHatTouch_Nailgun(int entity, int other)
 			
 			case 5:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_5, entity, SNDCHAN_STATIC, 80, _, 0.9);
 				
-	   }
-		/*
-		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
-		if(IsValidEntity(particle) && particle != 0)
-		{
-			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
-			RemoveEntity(particle);
-		}
-		*/
+	   	}
 		RemoveEntity(entity);
 	}
 	else if(target == 0)
@@ -195,15 +118,6 @@ public Action Event_Wand_OnHatTouch_Nailgun(int entity, int other)
 			
 			case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
 		}
-		/*
-		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
-		if(IsValidEntity(particle) && particle != 0)
-		{
-			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.9);
-			RemoveEntity(particle);
-		}
-		*/
 		RemoveEntity(entity);
 	}
-	return Plugin_Handled;
 }

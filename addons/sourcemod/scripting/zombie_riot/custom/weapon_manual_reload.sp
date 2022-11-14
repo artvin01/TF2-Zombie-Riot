@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 float f_Actualm_flNextPrimaryAttack[MAXENTITIES];
 
 int i_EmptyBulletboop[MAXTF2PLAYERS];

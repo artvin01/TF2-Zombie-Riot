@@ -1548,7 +1548,7 @@ public void Citizen_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_flGetClosestTargetTime = gameTime + 0.5;
-		if(npc.m_iGunType != Cit_None)
+		if(npc.m_iGunType > Cit_None)
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index, _, BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus, npc.m_bCamo);
 			if(npc.m_iTarget > 0 && view_as<CClotBody>(npc.m_iTarget).m_bCamo)

@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 Handle Timer_Banner_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 
 public void Enable_Management_Banner(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon

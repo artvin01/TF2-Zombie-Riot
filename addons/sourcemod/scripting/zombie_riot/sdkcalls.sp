@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static Handle SDKEquipWearable;
 static Handle SDKGetMaxHealth;
 static Handle g_hGetAttachment;

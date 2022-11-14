@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 
 static int client_slammed_how_many_times[MAXTF2PLAYERS];
