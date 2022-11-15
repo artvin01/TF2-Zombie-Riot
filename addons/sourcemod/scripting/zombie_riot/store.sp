@@ -1224,7 +1224,9 @@ bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped
 			equipped = item.Equipped[client];
 			
 			if(size)
+			{
 				strcopy(buffer, size, item.Name);
+			}
 			
 			return true;
 		}
@@ -1501,26 +1503,26 @@ public void MenuPage(int client, int section)
 			{
 				if(NPCOnly[client] == 1)
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
+					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
 				}
 				else if(!Waves_InSetup())
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
+					FormatEx(buffer, sizeof(buffer), "%t\n \n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
 				}
 				else
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n%t\n%s  \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, "Store Discount", TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
+					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n%t\n%s  \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, "Store Discount", TranslateItemName(client, item.Name, info2.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
 				}
 			}
 			else
 			{
 				if(NPCOnly[client] == 1)
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name));
+					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name));
 				}
 				else if(!Waves_InSetup())
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name));
+					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name));
 				}
 				else
 				{
@@ -1664,7 +1666,7 @@ public void MenuPage(int client, int section)
 			menu.Display(client, MENU_TIME_FOREVER);
 			return;
 		}
-		
+		item.GetItemInfo(0, info);
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
 		{
@@ -1685,7 +1687,6 @@ public void MenuPage(int client, int section)
 		int xpNext = LevelToXp(Level[client]+1);
 		
 		int nextAt = xpNext-xpLevel;
-		
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
 		{
@@ -1822,6 +1823,7 @@ public void MenuPage(int client, int section)
 		}
 		else if(!item.ItemInfos)
 		{
+			item.GetItemInfo(0, info);
 			Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 			IntToString(i, info.Classname, sizeof(info.Classname));
 			menu.AddItem(info.Classname, TranslateItemName(client, item.Name, info.Custom_Name));
@@ -1899,7 +1901,6 @@ public void MenuPage(int client, int section)
 						FormatEx(buffer, sizeof(buffer), "%s [$%d] %s", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost, BuildingExtraCounter);
 					}
 				}
-				
 				//if(!item.BuildingExistName[0] && !item.ShouldThisCountSupportBuildings)
 				Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 
@@ -3772,6 +3773,7 @@ char[] TranslateItemName(int client, const char name[64], const char Custom_Name
 	if(ServerLang == -1)
 		ServerLang = GetServerLanguage();
 	
+	PrintToChatAll("%s",Custom_Name);
 	char buffer[64];
 
 	if(GetClientLanguage(client) != ServerLang)
@@ -3821,21 +3823,15 @@ char[] TranslateItemDescription(int client, const char Desc[256])
 	
 	char buffer[256]; 
 
-	if(GetClientLanguage(client) != ServerLang)
+	if(TranslationPhraseExists(Desc))
 	{
-		if(TranslationPhraseExists(Desc))
-		{
-			FormatEx(buffer, sizeof(buffer), "%T", Desc, client);
-		}
-		else
-		{
-			FormatEx(buffer, sizeof(buffer), "%s", Desc, client);
-		}
+		FormatEx(buffer, sizeof(buffer), "%T", Desc, client);
 	}
 	else
 	{
 		FormatEx(buffer, sizeof(buffer), "%s", Desc, client);
 	}
+
 	return buffer;
 }
 
