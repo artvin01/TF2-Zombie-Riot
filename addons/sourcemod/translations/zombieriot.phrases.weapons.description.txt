@@ -835,7 +835,7 @@
 	
 	"Engineering Repair Handling book Desc"
 	{
-		"en"	2x Repair Rate"
+		"en"	"2x Repair Rate"
 	}
 	
 	"Construction Apprentice Desc"
