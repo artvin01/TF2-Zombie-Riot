@@ -3111,7 +3111,6 @@ methodmap CClotBody
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[0]", flEndPos[0]);
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[1]", flEndPos[1]);
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[2]", flEndPos[2]);
-
 		TE_SendToAll();
 	}
 	public int LookupPoseParameter(const char[] szName)
@@ -3242,7 +3241,7 @@ methodmap CClotBody
 	
 	public void SetOrigin(const float vec[3])											
 	{
-		SetEntPropVector(this.index, Prop_Data, "m_vecOrigin",vec);
+		SetEntPropVector(this.index, Prop_Data, "m_vecAbsOrigin",vec);
 	
 	}	
 	
@@ -5132,7 +5131,7 @@ public float PluginBot_PathCost(int bot_entidx, NavArea area, NavArea from_area,
 public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 {
 	float Jump_1_frame[3];
-	GetEntPropVector(bot_entidx, Prop_Data, "m_vecOrigin", Jump_1_frame);
+	GetEntPropVector(bot_entidx, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
 	Jump_1_frame[2] += 20.0;
 	
 	static float hullcheckmaxs[3];
@@ -5151,7 +5150,7 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 	if (!IsSpaceOccupiedDontIgnorePlayers(Jump_1_frame, hullcheckmins, hullcheckmaxs, bot_entidx))//The boss will start to merge with shits, cancel out velocity.
 	{
 		float vecNPC[3], vecJumpVel[3];
-		GetEntPropVector(bot_entidx, Prop_Data, "m_vecOrigin", vecNPC);
+		GetEntPropVector(bot_entidx, Prop_Data, "m_vecAbsOrigin", vecNPC);
 		
 		vecNPC[2] -= 20.0;
 		float gravity = GetEntPropFloat(bot_entidx, Prop_Data, "m_flGravity");
@@ -5879,7 +5878,7 @@ public void Check_If_Stuck(int iNPC)
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	
 	static float flMyPos[3];
-	GetEntPropVector(iNPC, Prop_Data, "m_vecOrigin", flMyPos);
+	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 	if(!b_IsAlliedNpc[iNPC])
 	{
 		//If NPCs some how get out of bounds
@@ -5888,7 +5887,7 @@ public void Check_If_Stuck(int iNPC)
 			f_StuckOutOfBoundsCheck[iNPC] = GetGameTime() + 10.0;
 			if(TR_PointOutsideWorld(flMyPos))
 			{
-				LogError("Enemy NPC somehow got out of the map...");
+				LogError("Enemy NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos[0],flMyPos[1],flMyPos[2]);
 				RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
 				return;
 			}
@@ -5913,7 +5912,7 @@ public void Check_If_Stuck(int iNPC)
 		if (Hit_player) //The boss will start to merge with player, STOP!
 		{
 			static float flPlayerPos[3];
-			GetEntPropVector(Hit_player, Prop_Data, "m_vecOrigin", flPlayerPos);
+			GetEntPropVector(Hit_player, Prop_Data, "m_vecAbsOrigin", flPlayerPos);
 			static float flMyPos_2[3];
 			flMyPos_2[0] = flPlayerPos[0];
 			flMyPos_2[1] = flPlayerPos[1];
@@ -6016,7 +6015,7 @@ public void Check_If_Stuck(int iNPC)
 			//If NPCs some how get out of bounds
 			if(TR_PointOutsideWorld(flMyPos))
 			{
-				LogError("Allied NPC somehow got out of the map...");
+				LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos[0],flMyPos[1],flMyPos[2]);
 				
 				int target = 0;
 				for(int i=1; i<=MaxClients; i++)
@@ -6034,7 +6033,7 @@ public void Check_If_Stuck(int iNPC)
 				if(target)
 				{
 					float pos[3], ang[3];
-					GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+					GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
 					GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
 					ang[2] = 0.0;
 					TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
@@ -6678,9 +6677,9 @@ stock void TE_Particle(const char[] Name, float origin[3]=NULL_VECTOR, float sta
 	}
 	
 	TE_Start("TFParticleEffect");
-	TE_WriteFloat("m_vecOrigin[0]", origin[0]);
-	TE_WriteFloat("m_vecOrigin[1]", origin[1]);
-	TE_WriteFloat("m_vecOrigin[2]", origin[2]);
+	TE_WriteFloat("m_vecAbsOrigin[0]", origin[0]);
+	TE_WriteFloat("m_vecAbsOrigin[1]", origin[1]);
+	TE_WriteFloat("m_vecAbsOrigin[2]", origin[2]);
 	TE_WriteFloat("m_vecStart[0]", start[0]);
 	TE_WriteFloat("m_vecStart[1]", start[1]);
 	TE_WriteFloat("m_vecStart[2]", start[2]);
@@ -6884,9 +6883,9 @@ stock void CreateParticle(char[] particle, float pos[3], float ang[3])
 	}
 	
 	TE_Start("TFParticleEffect");
-	TE_WriteFloat("m_vecOrigin[0]", pos[0]);
-	TE_WriteFloat("m_vecOrigin[1]", pos[1]);
-	TE_WriteFloat("m_vecOrigin[2]", pos[2]);
+	TE_WriteFloat("m_vecAbsOrigin[0]", pos[0]);
+	TE_WriteFloat("m_vecAbsOrigin[1]", pos[1]);
+	TE_WriteFloat("m_vecAbsOrigin[2]", pos[2]);
 	TE_WriteVector("m_vecAngles", ang);
 	TE_WriteNum("m_iParticleSystemIndex", stridx);
 	TE_WriteNum("entindex", -1);
@@ -6921,9 +6920,9 @@ stock void ShootLaser(int weapon, const char[] strParticle, float flStartPos[3],
 	}
 
 	TE_Start("TFParticleEffect");
-	TE_WriteFloat("m_vecOrigin[0]", flStartPos[0]);
-	TE_WriteFloat("m_vecOrigin[1]", flStartPos[1]);
-	TE_WriteFloat("m_vecOrigin[2]", flStartPos[2]);
+	TE_WriteFloat("m_vecAbsOrigin[0]", flStartPos[0]);
+	TE_WriteFloat("m_vecAbsOrigin[1]", flStartPos[1]);
+	TE_WriteFloat("m_vecAbsOrigin[2]", flStartPos[2]);
 	TE_WriteNum("m_iParticleSystemIndex", stridx);
 	TE_WriteNum("entindex", weapon);
 	TE_WriteNum("m_iAttachType", 2);
