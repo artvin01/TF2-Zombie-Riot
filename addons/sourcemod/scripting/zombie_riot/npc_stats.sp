@@ -6748,43 +6748,11 @@ stock int FireBullet(int m_pAttacker, int iWeapon, float m_vecSrc[3], float m_ve
 			static char class[12];
 			GetEntityClassname(TR_GetEntityIndex(trace), class, sizeof(class));
 			
-			if(StrEqual(class, "base_boss"))
-			{
-				if (f_CooldownForHurtParticle[TR_GetEntityIndex(trace)] < GetGameTime())
-				{
-					f_CooldownForHurtParticle[TR_GetEntityIndex(trace)] = GetGameTime() + 0.1;
-					switch(view_as<CClotBody>(TR_GetEntityIndex(trace)).m_iBleedType)
-					{
-						case 1:
-						{
-							TE_ParticleInt(g_particleImpactFlesh, endpos);
-							TE_SendToAll();
-						}
-						case 2:
-						{
-							endpos[2] -= 40.0;
-							TE_ParticleInt(g_particleImpactMetal, endpos);
-							TE_SendToAll();
-							endpos[2] += 40.0;
-						}
-						case 3:
-						{
-							TE_ParticleInt(g_particleImpactRubber, endpos);
-							TE_SendToAll();
-						}
-						case 4:
-						{
-							//If you cant find any good blood effect, use this one and just recolour it.
-							TE_BloodSprite(endpos, { 0.0, 0.0, 0.0 }, 125, 255, 125, 255, 32);
-							TE_SendToAll();
-						}
-					}
-				}
-			}
-			else
+			if(StrContains(class, "base_boss") && StrContains(class, "obj_")) //if its the world, then do this.
 			{
 				CreateParticle("impact_concrete", endpos, vecNormal);
 			}
+			
 		}
 		
 		// Regular impact effects.
@@ -6883,9 +6851,9 @@ stock void CreateParticle(char[] particle, float pos[3], float ang[3])
 	}
 	
 	TE_Start("TFParticleEffect");
-	TE_WriteFloat("m_vecAbsOrigin[0]", pos[0]);
-	TE_WriteFloat("m_vecAbsOrigin[1]", pos[1]);
-	TE_WriteFloat("m_vecAbsOrigin[2]", pos[2]);
+	TE_WriteFloat("m_vecOrigin[0]", pos[0]);
+	TE_WriteFloat("m_vecOrigin[1]", pos[1]);
+	TE_WriteFloat("m_vecOrigin[2]", pos[2]);
 	TE_WriteVector("m_vecAngles", ang);
 	TE_WriteNum("m_iParticleSystemIndex", stridx);
 	TE_WriteNum("entindex", -1);
