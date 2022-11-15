@@ -172,7 +172,7 @@ float f_StuckOutOfBoundsCheck[MAXENTITIES];
 #define MAXENTITIES	2048
 static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 bool EscapeModeMap;
-static int g_particleImpactMetal;
+int g_particleImpactMetal;
 static int g_particleImpactFlesh;
 static int g_particleImpactRubber;
 static int g_modelArrow;
@@ -1531,7 +1531,7 @@ public void OnMapStart_NPC_Base()
 	PrecacheDecal("sprites/blood.vmt", true);
 	PrecacheDecal("sprites/bloodspray.vmt", true);
 	
-	g_particleImpactMetal = PrecacheParticleSystem("bot_impact_heavy");
+	g_particleImpactMetal = PrecacheParticleSystem("bot_impact_light");
 	g_particleImpactFlesh = PrecacheParticleSystem("blood_impact_red_01");
 	g_particleImpactRubber = PrecacheParticleSystem("halloween_explosion_bits");
 	g_modelArrow = PrecacheModel("models/weapons/w_models/w_arrow.mdl");

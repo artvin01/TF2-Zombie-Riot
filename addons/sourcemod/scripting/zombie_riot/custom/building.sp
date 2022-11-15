@@ -888,6 +888,11 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 		return Plugin_Changed;
 	}
 	*/
+	damagePosition[2] -= 40.0;
+	TE_ParticleInt(g_particleImpactMetal, damagePosition);
+	TE_SendToAll();
+	damagePosition[2] += 40.0;
+
 	return Plugin_Changed;
 }
 
