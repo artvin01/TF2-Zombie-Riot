@@ -3876,7 +3876,7 @@ public int MaxSupportBuildingsAllowed(int client, bool ingore_glass)
 
 public int MaxBarricadesAllowed(int client)
 {
-	int maxAllowed = 2;
+	int maxAllowed = 3;
 	
  //	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayer(client, 762)); //762 is how many extra buildings are allowed on you.
 	
