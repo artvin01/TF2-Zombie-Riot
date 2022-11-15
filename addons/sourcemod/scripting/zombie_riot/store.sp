@@ -54,6 +54,7 @@ enum struct ItemInfo
 	bool BlockLagCompInternal;
 	
 	char Classname[36];
+	char Custom_Name[64];
 
 	int Index;
 	int Attrib[16];
@@ -122,6 +123,9 @@ enum struct ItemInfo
 		
 		FormatEx(buffer, sizeof(buffer), "%sclassname", prefix);
 		kv.GetString(buffer, this.Classname, 36);
+
+		FormatEx(buffer, sizeof(buffer), "%scustom_name", prefix);
+		kv.GetString(buffer, this.Custom_Name, 64);
 		
 		FormatEx(buffer, sizeof(buffer), "%scannotbesaved", prefix);
 		this.CannotBeSavedByCookies = view_as<bool>(kv.GetNum(buffer));
@@ -835,7 +839,7 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 
 					SetGlobalTransTarget(client);
 					int cash = CurrentCash-CashSpent[client];
-					menu.SetTitle("%t\n \n%t\n \n%s%s\n ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(item.Owned[client]-1));
+					menu.SetTitle("%t\n \n%t\n \n%s\n ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name));
 					
 					int skip = info.PackSkip;
 					count += skip;
@@ -848,13 +852,13 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 						if(item.GetItemInfo(item.Owned[client] + i, info) && info.Cost)
 						{
 							FormatEx(data, sizeof(data), "%d;%d;%d;%d", index, item.Owned[client] + i, entity, userid);
-							FormatEx(buffer, sizeof(buffer), "%s%s [$%d]", TranslateItemName(client, item.Name), AddPluses(item.Owned[client] + i), info.Cost);
+							FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost);
 							menu.AddItem(data, buffer, cash < info.Cost ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-							
+
 							if(info.Desc[0])
 							{
-								StrCat(info.Desc, sizeof(info.Desc), "\n ");
-								menu.AddItem("", info.Desc, ITEMDRAW_DISABLED);
+								StrCat(TranslateItemDescription(client, info.Desc), sizeof(info.Desc), "\n ");
+								menu.AddItem("", TranslateItemDescription(client, info.Desc), ITEMDRAW_DISABLED);
 							}
 						}
 					}
@@ -1108,7 +1112,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 	}
 	
 	SetGlobalTransTarget(client);
-	PrintToChat(client, "%t", "Could Not Buy Item", TranslateItemName(client, name));
+	PrintToChat(client, "%t", "Could Not Buy Item", TranslateItemName(client, name, ""));
 }
 
 void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int blength)
@@ -1126,7 +1130,9 @@ void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int blength)
 				count++;
 				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
 				{
-					Format(buffer, blength, "%s {%s}", buffer, TranslateItemName(client, item.Name));
+					static ItemInfo info;
+					item.GetItemInfo(0, info);
+					Format(buffer, blength, "%s {%s}", buffer, TranslateItemName(client, item.Name, info.Custom_Name));
 					break;
 				}
 			}
@@ -1495,37 +1501,37 @@ public void MenuPage(int client, int section)
 			{
 				if(NPCOnly[client] == 1)
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s%s \n<%t> [%i] ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1),"Can Be Pack-A-Punched", info2.Cost);
+					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
 				}
 				else if(!Waves_InSetup())
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n \n%t\n \n%s%s \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1),"Can Be Pack-A-Punched", info2.Cost);
+					FormatEx(buffer, sizeof(buffer), "%t\n \n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
 				}
 				else
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n%t\n%s%s  \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, "Store Discount", TranslateItemName(client, item.Name), AddPluses(level-1),"Can Be Pack-A-Punched", info2.Cost);
+					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n%t\n%s  \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, "Store Discount", TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
 				}
 			}
 			else
 			{
 				if(NPCOnly[client] == 1)
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1));
+					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name));
 				}
 				else if(!Waves_InSetup())
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1));
+					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name));
 				}
 				else
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n%t\n%s%s ", "TF2: Zombie Riot", "Credits", cash, "Store Discount", TranslateItemName(client, item.Name), AddPluses(level-1));
+					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n%t\n%s ", "TF2: Zombie Riot", "Credits", cash, "Store Discount", TranslateItemName(client, item.Name, info.Custom_Name));
 				}				
 			}
 			
 
 			//		, TranslateItemName(client, item.Name) , item.PackCost > 0 ? "<Packable>" : ""
 			Config_CreateDescription(info.Classname, info.Attrib, info.Value, info.Attribs, buffer, sizeof(buffer));
-			menu.SetTitle("%s\n%s\n ", buffer, info.Desc);
+			menu.SetTitle("%s\n%s\n ", buffer, TranslateItemDescription(client, info.Desc));
 			
 			if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
 			{
@@ -1662,15 +1668,15 @@ public void MenuPage(int client, int section)
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
 		{
-			menu.SetTitle("%t\n%t\n%t\n \n%t\n \n%s", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name));
+			menu.SetTitle("%t\n%t\n%t\n \n%t\n \n%s", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name, info.Custom_Name));
 		}
 		else if(!Waves_InSetup())
 		{
-			menu.SetTitle("%t\n \n%t\n \n%s", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name));
+			menu.SetTitle("%t\n \n%t\n \n%s", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name, info.Custom_Name));
 		}
 		else
 		{
-			menu.SetTitle("%t\n \n%t\n%t\n%s", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], "Store Discount", TranslateItemName(client, item.Name));
+			menu.SetTitle("%t\n \n%t\n%t\n%s", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], "Store Discount", TranslateItemName(client, item.Name, info.Custom_Name));
 		}
 	}
 	else
@@ -1796,7 +1802,7 @@ public void MenuPage(int client, int section)
 				if(info.Cost <= CurrentCash && RoundToCeil(float(info.Cost) * SELL_AMOUNT) > npcwallet)
 				{
 					ItemCost(client, item, info.Cost);
-					FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name), info.Cost - npcwallet);
+					FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost - npcwallet);
 					
 					if(item.NPCSeller_First)
 					{
@@ -1818,7 +1824,7 @@ public void MenuPage(int client, int section)
 		{
 			Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 			IntToString(i, info.Classname, sizeof(info.Classname));
-			menu.AddItem(info.Classname, TranslateItemName(client, item.Name));
+			menu.AddItem(info.Classname, TranslateItemName(client, item.Name, info.Custom_Name));
 			found = true;
 		}
 		else
@@ -1855,23 +1861,23 @@ public void MenuPage(int client, int section)
 				}
 				if(info.ScrapCost > 0)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s ($%d) [$%d]", TranslateItemName(client, item.Name), info.ScrapCost, Scrap[client]);
+					FormatEx(buffer, sizeof(buffer), "%s ($%d) [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.ScrapCost, Scrap[client]);
 				}
 				else if(item.Equipped[client])
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [%t] %s", TranslateItemName(client, item.Name), "Equipped", BuildingExtraCounter);
+					FormatEx(buffer, sizeof(buffer), "%s [%t] %s", TranslateItemName(client, item.Name, info.Custom_Name), "Equipped", BuildingExtraCounter);
 				}
 				else if(item.Owned[client] == 2)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [%t] %s", TranslateItemName(client, item.Name), "Packed", BuildingExtraCounter);
+					FormatEx(buffer, sizeof(buffer), "%s [%t] %s", TranslateItemName(client, item.Name, info.Custom_Name), "Packed", BuildingExtraCounter);
 				}
 				else if(item.Owned[client])
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [%t] %s", TranslateItemName(client, item.Name), "Purchased", BuildingExtraCounter);
+					FormatEx(buffer, sizeof(buffer), "%s [%t] %s", TranslateItemName(client, item.Name, info.Custom_Name), "Purchased", BuildingExtraCounter);
 				}
 				else if(!info.Cost && item.Level)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [Lv %d] %s", TranslateItemName(client, item.Name), item.Level, BuildingExtraCounter);
+					FormatEx(buffer, sizeof(buffer), "%s [Lv %d] %s", TranslateItemName(client, item.Name, info.Custom_Name), item.Level, BuildingExtraCounter);
 				}
 				else
 				{
@@ -1880,17 +1886,17 @@ public void MenuPage(int client, int section)
 					{
 						if(item.ShouldThisCountSupportBuildings)
 						{
-							FormatEx(buffer, sizeof(buffer), "%s[%d/%d]", TranslateItemName(client, item.Name), i_SupportBuildingsBuild[client], MaxSupportBuildingsAllowed(client, false));
+							FormatEx(buffer, sizeof(buffer), "%s[%d/%d]", TranslateItemName(client, item.Name, info.Custom_Name), i_SupportBuildingsBuild[client], MaxSupportBuildingsAllowed(client, false));
 						}
 						else
 						{
-							FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name));
+							FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
 						}
 						style = ITEMDRAW_DISABLED;
 					}
 					else
 					{
-						FormatEx(buffer, sizeof(buffer), "%s [$%d] %s", TranslateItemName(client, item.Name), info.Cost, BuildingExtraCounter);
+						FormatEx(buffer, sizeof(buffer), "%s [$%d] %s", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost, BuildingExtraCounter);
 					}
 				}
 				
@@ -1944,7 +1950,7 @@ public void MenuPage(int client, int section)
 	menu.ExitBackButton = section != -1;
 	menu.Display(client, MENU_TIME_FOREVER);
 }
-
+/*
 static char[] AddPluses(int amount)
 {
 	char buffer[16];
@@ -1958,7 +1964,7 @@ static char[] AddPluses(int amount)
 	}
 	return buffer;
 }
-
+*/
 public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
@@ -3751,14 +3757,16 @@ bool Store_PrintLevelItems(int client, int level)
 		StoreItems.GetArray(i, item);
 		if(item.Level == level)
 		{
-			PrintToChat(client, TranslateItemName(client, item.Name));
+			static ItemInfo info;
+			item.GetItemInfo(0, info);
+			PrintToChat(client, TranslateItemName(client, item.Name, info.Custom_Name));
 			found = true;
 		}
 	}
 	return found;
 }
 
-char[] TranslateItemName(int client, const char name[64], int extrainfo = 0)
+char[] TranslateItemName(int client, const char name[64], const char Custom_Name[64]) //Just make it 0 as a default so if its not used, fuck it
 {
 	static int ServerLang = -1;
 	if(ServerLang == -1)
@@ -3768,25 +3776,65 @@ char[] TranslateItemName(int client, const char name[64], int extrainfo = 0)
 
 	if(GetClientLanguage(client) != ServerLang)
 	{
-		if(TranslationPhraseExists(name))
+		if(Custom_Name[0])
 		{
-			FormatEx(buffer, sizeof(buffer), "%T", name, client);
+			if(TranslationPhraseExists(Custom_Name))
+			{
+				FormatEx(buffer, sizeof(buffer), "%T", Custom_Name, client);
+			}
+			else
+			{
+				FormatEx(buffer, sizeof(buffer), "%s", Custom_Name, client);
+			}
+		}
+		else
+		{
+			if(TranslationPhraseExists(name))
+			{
+				FormatEx(buffer, sizeof(buffer), "%T", name, client);
+			}
+			else
+			{
+				FormatEx(buffer, sizeof(buffer), "%s", name, client);
+			}
+		}
+	}
+	else
+	{	
+		if(Custom_Name[0])
+		{
+			FormatEx(buffer, sizeof(buffer), "%s", Custom_Name, client);
 		}
 		else
 		{
 			FormatEx(buffer, sizeof(buffer), "%s", name, client);
 		}
 	}
+	return buffer;
+}
+
+char[] TranslateItemDescription(int client, const char Desc[256])
+{
+	static int ServerLang = -1;
+	if(ServerLang == -1)
+		ServerLang = GetServerLanguage();
+	
+	char buffer[256]; 
+
+	if(GetClientLanguage(client) != ServerLang)
+	{
+		if(TranslationPhraseExists(Desc))
+		{
+			FormatEx(buffer, sizeof(buffer), "%T", Desc, client);
+		}
+		else
+		{
+			FormatEx(buffer, sizeof(buffer), "%s", Desc, client);
+		}
+	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%s", name, client);
-	}
-	switch(extrainfo)
-	{
-		case 1:
-		{
-			FormatEx(buffer, sizeof(buffer), "%s (Slot Locked)", buffer);
-		}
+		FormatEx(buffer, sizeof(buffer), "%s", Desc, client);
 	}
 	return buffer;
 }
