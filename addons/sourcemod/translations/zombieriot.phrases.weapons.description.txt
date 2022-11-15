@@ -1038,7 +1038,7 @@
 		"en"	"Allows you to move through your own buildings."
 	}
 	
-	"Heavy Caliber" Desc"
+	"Heavy Caliber Desc"
 	{
 		"en"	"15% more Weapon damage, but 10% less firerate"
 	}

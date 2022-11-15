@@ -6677,9 +6677,9 @@ stock void TE_Particle(const char[] Name, float origin[3]=NULL_VECTOR, float sta
 	}
 	
 	TE_Start("TFParticleEffect");
-	TE_WriteFloat("m_vecAbsOrigin[0]", origin[0]);
-	TE_WriteFloat("m_vecAbsOrigin[1]", origin[1]);
-	TE_WriteFloat("m_vecAbsOrigin[2]", origin[2]);
+	TE_WriteFloat("m_vecOrigin[0]", origin[0]);
+	TE_WriteFloat("m_vecOrigin[1]", origin[1]);
+	TE_WriteFloat("m_vecOrigin[2]", origin[2]);
 	TE_WriteFloat("m_vecStart[0]", start[0]);
 	TE_WriteFloat("m_vecStart[1]", start[1]);
 	TE_WriteFloat("m_vecStart[2]", start[2]);
