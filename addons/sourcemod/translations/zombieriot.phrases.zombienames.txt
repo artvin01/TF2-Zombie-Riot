@@ -101,7 +101,7 @@
 	"Combine Swordsman"
 	{
 		"en" 		"Combine Swordsman"
-		"ru" 		"Комбайн мечник"
+		"ru" 		"Комбайн-мечник"
 		"pt"		"Espadachim da Combine"
 		"nl"		"Combine Zwaardvechter"
 	}
@@ -115,7 +115,7 @@
 	"Combine Giant Swordsman"
 	{
 		"en" 		"Combine Giant Swordsman"
-		"ru" 		"Гигантский комбайн мечник"
+		"ru" 		"Гигантский комбайн-мечник"
 		"pt"		"Espadachim Gigante da Combine"
 		"nl"		"Combine Gigantische Zwaardvechter"
 	}
@@ -129,14 +129,14 @@
 	"Combine Golden Collos"
 	{
 		"en" 		"Combine Golden Collos"
-		"ru" 		"Комбайн золотой коллос"
+		"ru" 		"Золотой коллос комбайнов"
 		"pt"		"Soldado do Coliseu Doudado da Combine"
 		"nl"		"Combine Gouden Colossus"
 	}
 	"Combine Overlord"
 	{
 		"en" 		"Combine Overlord"
-		"ru" 		"Комбайн владыка"
+		"ru" 		"Комбайн-владыка"
 		"pt"		"SobreLorde Combine"
 		"nl"		"Combine Opperheer"
 	}
@@ -923,6 +923,11 @@
 	"Schwertkrieg"
 	{
 		"en"		"Schwertkrieg"
+		"ru"		"Шверткриг"
 		"nl"		"Schwertkrieg"
+	}
+	"Phantom Knight"
+	{
+		"en"		"Lucian, ''Blood Diamond''"
 	}
 }

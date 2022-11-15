@@ -1,6 +1,9 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 //#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_59.mdl"
 
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_164.mdl"
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_173.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
 
@@ -899,6 +902,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = Schwertkrieg(client, vecPos, vecAng, ally);
 		}
+		case PHANTOM_KNIGHT:
+		{
+			entity = PhantomKnight(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -1444,6 +1451,10 @@ public void NPCDeath(int entity)
 		{
 			Schwertkrieg_NPCDeath(entity);
 		}
+		case PHANTOM_KNIGHT:
+		{
+			PhantomKnight_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1678,6 +1689,7 @@ public void OnMapStart_NPC_Base()
 	
 	Donnerkrieg_OnMapStart_NPC();
 	Schwertkrieg_OnMapStart_NPC();
+	PhantomKnight_OnMapStart_NPC();
 }
 
 
@@ -1703,7 +1715,7 @@ Handle g_hGetBodyInterface;
 //Handle g_hUpdateVisibilityStatus;
 Handle g_hRun;
 Handle g_hApproach;
-Handle g_hFaceTowards
+Handle g_hFaceTowards;
 Handle g_hGetVelocity;
 Handle g_hSetVelocity;
 Handle g_hStudioFrameAdvance;
@@ -3099,7 +3111,6 @@ methodmap CClotBody
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[0]", flEndPos[0]);
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[1]", flEndPos[1]);
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[2]", flEndPos[2]);
-
 		TE_SendToAll();
 	}
 	public int LookupPoseParameter(const char[] szName)
@@ -3230,7 +3241,7 @@ methodmap CClotBody
 	
 	public void SetOrigin(const float vec[3])											
 	{
-		SetEntPropVector(this.index, Prop_Data, "m_vecOrigin",vec);
+		SetEntPropVector(this.index, Prop_Data, "m_vecAbsOrigin",vec);
 	
 	}	
 	
@@ -3247,14 +3258,27 @@ methodmap CClotBody
 	public void StudioFrameAdvance() { SDKCall(g_hStudioFrameAdvance, this.index); }
 	public void DispatchAnimEvents() { SDKCall(g_hDispatchAnimEvents, this.index, this.index); }
 	
-	public int EquipItem(const char[] attachment, const char[] model, const char[] anim = "", int skin = 0)
+	public int EquipItem(
+	const char[] attachment,
+	const char[] model,
+	const char[] anim = "",
+	int skin = 0,
+	float model_size = 1.0)
 	{
 		int item = CreateEntityByName("prop_dynamic");
 		DispatchKeyValue(item, "model", model);
-		DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
+
+		if(model_size == 1.0)
+		{
+			DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
+		}
+		else
+		{
+			DispatchKeyValueFloat(item, "modelscale", model_size);
+		}
+
 		DispatchSpawn(item);
 		
-		SetEntProp(item, Prop_Send, "m_nSkin", skin);
 		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES);
 	
 		if(!StrEqual(anim, ""))
@@ -3262,12 +3286,12 @@ methodmap CClotBody
 			SetVariantString(anim);
 			AcceptEntityInput(item, "SetAnimation");
 		}
-	
+
 		SetVariantString("!activator");
 		AcceptEntityInput(item, "SetParent", this.index);
-		
+
 		SetVariantString(attachment);
-		AcceptEntityInput(item, "SetParentAttachmentMaintainOffset"); 
+		AcceptEntityInput(item, "SetParentAttachmentMaintainOffset"); 			
 		
 		SetEntityCollisionGroup(item, 1);
 		/*
@@ -4245,6 +4269,15 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 				
 				float damageForce[3];
 				npc.m_vecpunchforce(damageForce, false);
+
+				bool Limit_Gibs = false;
+
+				if(CurrentGibCount > ZR_MAX_GIBCOUNT)
+				{
+					Limit_Gibs = true;
+				}
+
+				static int Main_Gib;
 				
 				
 				if(npc.m_iBleedType == 1)
@@ -4254,36 +4287,56 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 						startPosition[2] += 64;
-						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true);
-						startPosition[2] -= 15;
-						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true);
-						startPosition[2] += 44;
-						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true);
+						if(!Limit_Gibs)
 						{
-							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true);	
+							startPosition[2] -= 15;
+							Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true);
+							startPosition[2] += 44;
+							if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+							{
+								npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+								Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true);	
+							}
+							else
+							{
+								Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true);	
+							}
 						}
 						else
 						{
-							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true);	
+							if(IsValidEntity(Main_Gib))
+							{
+								b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+							}
 						}
 					}
 					else
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 						startPosition[2] += 42;
-						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true);
-						startPosition[2] -= 10;
-						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce);
-						startPosition[2] += 34;
-						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true);
+						if(!Limit_Gibs)
 						{
-							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce);	
+							startPosition[2] -= 10;
+							Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce);
+							startPosition[2] += 34;
+							if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+							{
+								npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+								Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce);	
+							}
+							else
+							{
+								Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce);	
+							}
 						}
 						else
 						{
-							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce);	
+							if(IsValidEntity(Main_Gib))
+							{
+								b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+							}
 						}
 					}	
 				}	
@@ -4294,36 +4347,56 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 						startPosition[2] += 64;
-						Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, _, damageForce, true, false, true, true); //dont gigantify this one.
-						startPosition[2] -= 15;
-						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, _, damageForce, false, true, true);
-						startPosition[2] += 44;
-						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						Main_Gib = Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, _, damageForce, true, false, true, true); //dont gigantify this one.
+						if(!Limit_Gibs)
 						{
-							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-							Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, accurateAngle, damageForce, false, true, true);	
+							startPosition[2] -= 15;
+							Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, _, damageForce, false, true, true);
+							startPosition[2] += 44;
+							if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+							{
+								npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+								Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, accurateAngle, damageForce, false, true, true);	
+							}
+							else
+							{
+								Place_Gib("models/gibs/metal_gib2.mdl", startPosition, _, damageForce, false, true, true);		
+							}
 						}
 						else
 						{
-							Place_Gib("models/gibs/metal_gib2.mdl", startPosition, _, damageForce, false, true, true);		
+							if(IsValidEntity(Main_Gib))
+							{
+								b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+							}
 						}
 					}
 					else
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 						startPosition[2] += 42;
-						Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, _, damageForce, true, false, true, true, true);
-						startPosition[2] -= 10;
-						Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, _, damageForce, false, false, true);
-						startPosition[2] += 34;
-						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						Main_Gib = Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, _, damageForce, true, false, true, true, true);
+						if(!Limit_Gibs)
 						{
-							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-							Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, accurateAngle, damageForce, false, false, true);
+							startPosition[2] -= 10;
+							Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, _, damageForce, false, false, true);
+							startPosition[2] += 34;
+							if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+							{
+								npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+								Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, accurateAngle, damageForce, false, false, true);
+							}
+							else
+							{
+								Place_Gib("models/gibs/metal_gib2.mdl", startPosition, _, damageForce, false, false, true);		
+							}
 						}
 						else
 						{
-							Place_Gib("models/gibs/metal_gib2.mdl", startPosition, _, damageForce, false, false, true);		
+							if(IsValidEntity(Main_Gib))
+							{
+								b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+							}
 						}
 					}		
 				}
@@ -4334,36 +4407,56 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 						startPosition[2] += 64;
-						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true, _, _, _, true);
-						startPosition[2] -= 15;
-						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true, _, _, _, true);
-						startPosition[2] += 44;
-						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true, _, _, _, true);
+						if(!Limit_Gibs)
 						{
-							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, true);	
+							startPosition[2] -= 15;
+							Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true, _, _, _, true);
+							startPosition[2] += 44;
+							if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+							{
+								npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+								Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, true);	
+							}
+							else
+							{
+								Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true, _, _, _, true);		
+							}
 						}
 						else
 						{
-							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true, _, _, _, true);		
+							if(IsValidEntity(Main_Gib))
+							{
+								b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+							}
 						}
 					}
 					else
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 						startPosition[2] += 42;
-						Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, _, _, _, _, true);
-						startPosition[2] -= 10;
-						Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
-						startPosition[2] += 34;
-						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+						Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, _, _, _, _, true);
+						if(!Limit_Gibs)
 						{
-							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, true);
+							startPosition[2] -= 10;
+							Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
+							startPosition[2] += 34;
+							if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+							{
+								npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+								Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, true);
+							}
+							else
+							{
+								Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
+							}
 						}
 						else
 						{
-							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
+							if(IsValidEntity(Main_Gib))
+							{
+								b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+							}
 						}
 					}	
 				}
@@ -4553,13 +4646,13 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		{
 			if(IsWalkEvent(event))
 			{
-				char strSound[64];
-				float vSoundPos[3];
+				static char strSound[64];
+				static float vSoundPos[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vSoundPos);
 				vSoundPos[2] += 1.0;
 				
 				TR_TraceRayFilter(vSoundPos, view_as<float>( { 90.0, 0.0, 0.0 } ), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
-				char material[PLATFORM_MAX_PATH]; TR_GetSurfaceName(null, material, PLATFORM_MAX_PATH);
+				static char material[PLATFORM_MAX_PATH]; TR_GetSurfaceName(null, material, PLATFORM_MAX_PATH);
 				
 				Format(strSound, sizeof(strSound), "player/footsteps/%s%i.wav", GetStepSoundForMaterial(material), GetRandomInt(1,4));
 				
@@ -4813,7 +4906,7 @@ public bool FilterBaseActorsAndData(int entity, int contentsMask, any data)
 	static char class[12];
 	GetEntityClassname(entity, class, sizeof(class));
 	
-	if(StrEqual(class, "base_boss")) return true;
+	if(!StrContains(class, "base_boss")) return true;
 	
 	return !(entity == data);
 }
@@ -5010,8 +5103,8 @@ public float PluginBot_PathCost(int bot_entidx, NavArea area, NavArea from_area,
 		area.GetCenter(vecCenter);
 		from_area.GetCenter(vecFromCenter);
 		
-		float vecSubtracted[3]
-		SubtractVectors(vecCenter, vecFromCenter, vecSubtracted)
+		float vecSubtracted[3];
+		SubtractVectors(vecCenter, vecFromCenter, vecSubtracted);
 		
 		dist = GetVectorLength(vecSubtracted);
 	}
@@ -5038,7 +5131,7 @@ public float PluginBot_PathCost(int bot_entidx, NavArea area, NavArea from_area,
 public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 {
 	float Jump_1_frame[3];
-	GetEntPropVector(bot_entidx, Prop_Data, "m_vecOrigin", Jump_1_frame);
+	GetEntPropVector(bot_entidx, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
 	Jump_1_frame[2] += 20.0;
 	
 	static float hullcheckmaxs[3];
@@ -5057,7 +5150,7 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 	if (!IsSpaceOccupiedDontIgnorePlayers(Jump_1_frame, hullcheckmins, hullcheckmaxs, bot_entidx))//The boss will start to merge with shits, cancel out velocity.
 	{
 		float vecNPC[3], vecJumpVel[3];
-		GetEntPropVector(bot_entidx, Prop_Data, "m_vecOrigin", vecNPC);
+		GetEntPropVector(bot_entidx, Prop_Data, "m_vecAbsOrigin", vecNPC);
 		
 		vecNPC[2] -= 20.0;
 		float gravity = GetEntPropFloat(bot_entidx, Prop_Data, "m_flGravity");
@@ -5722,13 +5815,18 @@ public bool TraceRayHitPlayers(int entity,int mask,any data)
 //This is mainly to see if you THE PLAYER!!!!! is stuck inside the WORLD OR BRUSHES OR STUFF LIKE THAT. Not stuck inside an npc, because this code is not made for that.
 public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 {
-	char class[64];
-	GetEntityClassname(entity, class, sizeof(class));
-	
+	if(entity == 0)
+	{
+		return true;
+	}
+
 	if(entity > 0 && entity <= MaxClients) 
 	{
 		return false;
 	}
+
+	static char class[64];
+	GetEntityClassname(entity, class, sizeof(class));
 	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
 	{
 		return false;
@@ -5758,16 +5856,11 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 	else if(StrEqual(class, "func_respawnroomvisualizer"))
 	{
 		return true;//They blockin me and not on same team, otherwsie top filter
-	}	
+	}
 	
 	if(npc.m_bThisEntityIgnored)
 	{
 		return false;
-	}
-	
-	if(entity == 0)
-	{
-		return true;
 	}
 	
 	if(entity == Entity_to_Respect)
@@ -5784,8 +5877,8 @@ public void Check_If_Stuck(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	
-	float flMyPos[3];
-	GetEntPropVector(iNPC, Prop_Data, "m_vecOrigin", flMyPos);
+	static float flMyPos[3];
+	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 	if(!b_IsAlliedNpc[iNPC])
 	{
 		//If NPCs some how get out of bounds
@@ -5794,8 +5887,8 @@ public void Check_If_Stuck(int iNPC)
 			f_StuckOutOfBoundsCheck[iNPC] = GetGameTime() + 10.0;
 			if(TR_PointOutsideWorld(flMyPos))
 			{
-				LogError("Enemy NPC somehow got out of the map...");
-				SDKHooks_TakeDamage(iNPC, 0, 0, 99999999.9);
+				LogError("Enemy NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos[0],flMyPos[1],flMyPos[2]);
+				RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
 				return;
 			}
 		}
@@ -5818,9 +5911,9 @@ public void Check_If_Stuck(int iNPC)
 			
 		if (Hit_player) //The boss will start to merge with player, STOP!
 		{
-			float flPlayerPos[3];
-			GetEntPropVector(Hit_player, Prop_Data, "m_vecOrigin", flPlayerPos);
-			float flMyPos_2[3];
+			static float flPlayerPos[3];
+			GetEntPropVector(Hit_player, Prop_Data, "m_vecAbsOrigin", flPlayerPos);
+			static float flMyPos_2[3];
 			flMyPos_2[0] = flPlayerPos[0];
 			flMyPos_2[1] = flPlayerPos[1];
 			flMyPos_2[2] = flMyPos[2];
@@ -5922,7 +6015,7 @@ public void Check_If_Stuck(int iNPC)
 			//If NPCs some how get out of bounds
 			if(TR_PointOutsideWorld(flMyPos))
 			{
-				LogError("Allied NPC somehow got out of the map...");
+				LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos[0],flMyPos[1],flMyPos[2]);
 				
 				int target = 0;
 				for(int i=1; i<=MaxClients; i++)
@@ -5940,13 +6033,14 @@ public void Check_If_Stuck(int iNPC)
 				if(target)
 				{
 					float pos[3], ang[3];
-					GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+					GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
 					GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+					ang[2] = 0.0;
 					TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
 				}
 				else
 				{
-					SDKHooks_TakeDamage(iNPC, 0, 0, 99999999.9);
+					RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
 				}
 			}
 		}
@@ -6090,7 +6184,7 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 	//return CClotBodyDamaged_flare(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 }
 
-stock Custom_Knockback(int attacker, int enemy, float knockback, bool ignore_attribute = false, bool override = false, bool work_on_entity = false)
+stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignore_attribute = false, bool override = false, bool work_on_entity = false)
 {
 	if(enemy <= MaxClients || work_on_entity)
 	{							
@@ -6124,7 +6218,7 @@ stock Custom_Knockback(int attacker, int enemy, float knockback, bool ignore_att
 			newVel[1] = GetEntPropFloat(enemy, Prop_Send, "m_vecVelocity[1]");
 			newVel[2] = GetEntPropFloat(enemy, Prop_Send, "m_vecVelocity[2]");
 							
-			for (new i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++)
 			{
 				vDirection[i] += newVel[i];
 			}
@@ -6215,11 +6309,11 @@ public void RequestFramesCallback(DataPack pack)
 
 
 
-static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, bool xeno = false, bool nobleed = false)
+static int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, bool xeno = false, bool nobleed = false)
 {
 	int prop = CreateEntityByName("prop_physics_multiplayer");
 	if(!IsValidEntity(prop))
-		return;
+		return -1;
 	DispatchKeyValue(prop, "model", model);
 	DispatchKeyValue(prop, "physicsmode", "2");
 	DispatchKeyValue(prop, "massScale", "1.0");
@@ -6242,6 +6336,8 @@ static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0
 	Pow(vel[1], 0.5);
 	Pow(vel[2], 0.5);
 	*/
+	b_LimitedGibGiveMoreHealth[prop] = false; //Set it to false by default first.
+	CurrentGibCount += 1;
 	if(big_gibs)
 	{
 		DispatchKeyValue(prop, "modelscale", "1.6");
@@ -6310,8 +6406,9 @@ static void Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0
 			SetParent(prop, particle);
 		}
 	}
-	CreateTimer(Random_time, Timer_RemoveEntity_Prop, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(Random_time, Timer_RemoveEntity_Prop_Gib, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 //	CreateTimer(1.5, Timer_DisableMotion, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+	return prop;
 }
 
 public void GibCollidePlayerInteraction(int gib, int player)
@@ -6338,15 +6435,32 @@ public void GibCollidePlayerInteraction(int gib, int player)
 					
 					if(Heal_Amount_calc > 0)
 					{
+						if(b_LimitedGibGiveMoreHealth[gib])
+						{
+							Heal_Amount_calc *= 3;
+						}
 						StartHealingTimer(player, 0.1, 1, Heal_Amount_calc);
 						int sound = GetRandomInt(0, sizeof(g_GibEating) - 1);
 						EmitSoundToAll(g_GibEating[sound], player, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 						RemoveEntity(gib);
+						CurrentGibCount -= 1;
 					}
 				}
 			}
 		}
 	}
+}
+
+public Action Timer_RemoveEntity_Prop_Gib(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		CurrentGibCount -= 1;
+//		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
+		RemoveEntity(entity);
+	}
+	return Plugin_Handled;
 }
 
 public Action Timer_RemoveEntity_Prop(Handle timer, any entid)
@@ -6563,9 +6677,9 @@ stock void TE_Particle(const char[] Name, float origin[3]=NULL_VECTOR, float sta
 	}
 	
 	TE_Start("TFParticleEffect");
-	TE_WriteFloat("m_vecOrigin[0]", origin[0]);
-	TE_WriteFloat("m_vecOrigin[1]", origin[1]);
-	TE_WriteFloat("m_vecOrigin[2]", origin[2]);
+	TE_WriteFloat("m_vecAbsOrigin[0]", origin[0]);
+	TE_WriteFloat("m_vecAbsOrigin[1]", origin[1]);
+	TE_WriteFloat("m_vecAbsOrigin[2]", origin[2]);
 	TE_WriteFloat("m_vecStart[0]", start[0]);
 	TE_WriteFloat("m_vecStart[1]", start[1]);
 	TE_WriteFloat("m_vecStart[2]", start[2]);
@@ -6719,7 +6833,7 @@ float[] CalculateBulletDamageForce( const float vecBulletDir[3], float flScale )
 	return vecForce;
 }
 
-stock bool makeexplosion(int attacker = 0, int inflictor = -1, float attackposition[3],  char[] weaponname = "", int Damage_for_boom = 200, int Range_for_boom = 200, float Knockback = 200.0, int flags = 0, bool FromNpcForced = false)
+stock bool makeexplosion(int attacker = 0, int inflictor = -1, float attackposition[3],  char[] weaponname = "", int Damage_for_boom = 200, int Range_for_boom = 200, float Knockback = 200.0, int flags = 0, bool FromNpcForced = false, bool do_explosion_effect = true)
 {
 	if(IsValidEntity(attacker)) //Is this just for effect?
 	{
@@ -6737,13 +6851,15 @@ stock bool makeexplosion(int attacker = 0, int inflictor = -1, float attackposit
 		Explode_Logic_Custom(float(Damage_for_boom), attacker, attacker, -1, attackposition, float(Range_for_boom), _, _, FromBlueNpc, _);
 
 	}
-	
-	DataPack pack_boom = new DataPack();
-	pack_boom.WriteFloat(attackposition[0]);
-	pack_boom.WriteFloat(attackposition[1]);
-	pack_boom.WriteFloat(attackposition[2]);
-	pack_boom.WriteCell(1);
-	RequestFrame(MakeExplosionFrameLater, pack_boom);
+	if(do_explosion_effect)
+	{
+		DataPack pack_boom = new DataPack();
+		pack_boom.WriteFloat(attackposition[0]);
+		pack_boom.WriteFloat(attackposition[1]);
+		pack_boom.WriteFloat(attackposition[2]);
+		pack_boom.WriteCell(1);
+		RequestFrame(MakeExplosionFrameLater, pack_boom);
+	}
 	
 	return true;
 }	
@@ -6767,9 +6883,9 @@ stock void CreateParticle(char[] particle, float pos[3], float ang[3])
 	}
 	
 	TE_Start("TFParticleEffect");
-	TE_WriteFloat("m_vecOrigin[0]", pos[0]);
-	TE_WriteFloat("m_vecOrigin[1]", pos[1]);
-	TE_WriteFloat("m_vecOrigin[2]", pos[2]);
+	TE_WriteFloat("m_vecAbsOrigin[0]", pos[0]);
+	TE_WriteFloat("m_vecAbsOrigin[1]", pos[1]);
+	TE_WriteFloat("m_vecAbsOrigin[2]", pos[2]);
 	TE_WriteVector("m_vecAngles", ang);
 	TE_WriteNum("m_iParticleSystemIndex", stridx);
 	TE_WriteNum("entindex", -1);
@@ -6804,9 +6920,9 @@ stock void ShootLaser(int weapon, const char[] strParticle, float flStartPos[3],
 	}
 
 	TE_Start("TFParticleEffect");
-	TE_WriteFloat("m_vecOrigin[0]", flStartPos[0]);
-	TE_WriteFloat("m_vecOrigin[1]", flStartPos[1]);
-	TE_WriteFloat("m_vecOrigin[2]", flStartPos[2]);
+	TE_WriteFloat("m_vecAbsOrigin[0]", flStartPos[0]);
+	TE_WriteFloat("m_vecAbsOrigin[1]", flStartPos[1]);
+	TE_WriteFloat("m_vecAbsOrigin[2]", flStartPos[2]);
 	TE_WriteNum("m_iParticleSystemIndex", stridx);
 	TE_WriteNum("entindex", weapon);
 	TE_WriteNum("m_iAttachType", 2);
@@ -7897,6 +8013,337 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 	b_IsInUpdateGroundConstraintLogic = false;
 	return MRES_Ignored;
 }
+
+
+
+public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask, bool originalResult)
+{
+	return false;
+} 
+
+//TELEPORT IS SAFE? FROM SARYSA BUT EDITED FOR NPCS!
+
+public bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/)
+{
+	float sizeMultiplier = 1.0; //We do not want to teleport giants, yet.
+	
+	static float startPos[3];
+	startPos = GetAbsOrigin(npc);
+
+	startPos[2] += 25.0;
+
+	static float testPos[3];
+	bool found = false;
+
+	for (int x = 0; x < 3; x++)
+	{
+		if (found)
+			break;
+		
+		float xOffset;
+		if (x == 0)
+			xOffset = 0.0;
+		else if (x == 1)
+			xOffset = 12.5 * sizeMultiplier;
+		else
+			xOffset = 25.0 * sizeMultiplier;
+			
+		if (endPos[0] < startPos[0])
+			testPos[0] = endPos[0] + xOffset;
+		else if (endPos[0] > startPos[0])
+			testPos[0] = endPos[0] - xOffset;
+		else if (xOffset != 0.0)
+			break; // super rare but not impossible, no sense wasting on unnecessary tests
+		
+		for (int y = 0; y < 3; y++)
+		{
+			if (found)
+				break;
+
+			float yOffset;
+			if (y == 0)
+				yOffset = 0.0;
+			else if (y == 1)
+				yOffset = 12.5 * sizeMultiplier;
+			else
+				yOffset = 25.0 * sizeMultiplier;
+
+			if (endPos[1] < startPos[1])
+				testPos[1] = endPos[1] + yOffset;
+			else if (endPos[1] > startPos[1])
+				testPos[1] = endPos[1] - yOffset;
+			else if (yOffset != 0.0)
+				break; // super rare but not impossible, no sense wasting on unnecessary tests
+			
+			for (int z = 0; z < 3; z++)
+			{
+				if (found)
+					break;
+					
+				float zOffset;
+				if (z == 0)
+					zOffset = 0.0;
+				else if (z == 1)
+					zOffset = 41.5 * sizeMultiplier;
+				else
+					zOffset = 83.0 * sizeMultiplier;
+
+				if (endPos[2] < startPos[2])
+					testPos[2] = endPos[2] + zOffset;
+				else if (endPos[2] > startPos[2])
+					testPos[2] = endPos[2] - zOffset;
+				else if (zOffset != 0.0)
+					break; // super rare but not impossible, no sense wasting on unnecessary tests
+
+				// before we test this position, ensure it has line of sight from the point our player looked from
+				// this ensures the player can't teleport through walls
+				static float tmpPos[3];
+				TR_TraceRayFilter(endPos, testPos, MASK_NPCSOLID, RayType_EndPoint, TraceFilterClients);
+				TR_GetEndPosition(tmpPos);
+				if (testPos[0] != tmpPos[0] || testPos[1] != tmpPos[1] || testPos[2] != tmpPos[2])
+					continue;
+			}
+		}
+	}
+	
+	if (!IsSpotSafe(npc, testPos, sizeMultiplier))
+		return false;
+
+	TeleportEntity(npc, testPos, NULL_VECTOR, NULL_VECTOR);
+	return true;
+}
+
+bool TraceFilterClients(int entity, int mask, any data)
+{    
+    if (entity > 0 && entity <= MAXENTITIES) 
+    { 
+        return false; 
+    }
+    else 
+    { 
+        return true; 
+    } 
+} 
+
+
+static bool ResizeTraceFailed;
+static int ResizeMyTeam;
+
+
+bool IsSpotSafe(int npc, float playerPos[3], float sizeMultiplier)
+{
+	ResizeTraceFailed = false;
+	ResizeMyTeam = GetEntProp(npc, Prop_Data, "m_iTeamNum");
+	static float mins[3];
+	static float maxs[3];
+	mins[0] = -24.0 * sizeMultiplier;
+	mins[1] = -24.0 * sizeMultiplier;
+	mins[2] = 0.0;
+	maxs[0] = 24.0 * sizeMultiplier;
+	maxs[1] = 24.0 * sizeMultiplier;
+	maxs[2] = 82.0 * sizeMultiplier;
+
+	// the eight 45 degree angles and center, which only checks the z offset
+	if (!Resize_TestResizeOffset(playerPos, mins[0], mins[1], maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, mins[0], 0.0, maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, mins[0], maxs[1], maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, 0.0, mins[1], maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, 0.0, 0.0, maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, 0.0, maxs[1], maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, maxs[0], mins[1], maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, maxs[0], 0.0, maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, maxs[0], maxs[1], maxs[2])) return false;
+
+	// 22.5 angles as well, for paranoia sake
+	if (!Resize_TestResizeOffset(playerPos, mins[0], mins[1] * 0.5, maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, mins[0], maxs[1] * 0.5, maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, maxs[0], mins[1] * 0.5, maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, maxs[0], maxs[1] * 0.5, maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, mins[0] * 0.5, mins[1], maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, maxs[0] * 0.5, mins[1], maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, mins[0] * 0.5, maxs[1], maxs[2])) return false;
+	if (!Resize_TestResizeOffset(playerPos, maxs[0] * 0.5, maxs[1], maxs[2])) return false;
+
+	// four square tests
+	if (!Resize_TestSquare(playerPos, mins[0], maxs[0], mins[1], maxs[1], maxs[2])) return false;
+	if (!Resize_TestSquare(playerPos, mins[0] * 0.75, maxs[0] * 0.75, mins[1] * 0.75, maxs[1] * 0.75, maxs[2])) return false;
+	if (!Resize_TestSquare(playerPos, mins[0] * 0.5, maxs[0] * 0.5, mins[1] * 0.5, maxs[1] * 0.5, maxs[2])) return false;
+	if (!Resize_TestSquare(playerPos, mins[0] * 0.25, maxs[0] * 0.25, mins[1] * 0.25, maxs[1] * 0.25, maxs[2])) return false;
+	
+	return true;
+}
+
+
+bool Resize_TestSquare(const float bossOrigin[3], float xmin, float xmax, float ymin, float ymax, float zOffset)
+{
+	static float pointA[3];
+	static float pointB[3];
+	for (int phase = 0; phase <= 7; phase++)
+	{
+		// going counterclockwise
+		if (phase == 0)
+		{
+			pointA[0] = bossOrigin[0] + 0.0;
+			pointA[1] = bossOrigin[1] + ymax;
+			pointB[0] = bossOrigin[0] + xmax;
+			pointB[1] = bossOrigin[1] + ymax;
+		}
+		else if (phase == 1)
+		{
+			pointA[0] = bossOrigin[0] + xmax;
+			pointA[1] = bossOrigin[1] + ymax;
+			pointB[0] = bossOrigin[0] + xmax;
+			pointB[1] = bossOrigin[1] + 0.0;
+		}
+		else if (phase == 2)
+		{
+			pointA[0] = bossOrigin[0] + xmax;
+			pointA[1] = bossOrigin[1] + 0.0;
+			pointB[0] = bossOrigin[0] + xmax;
+			pointB[1] = bossOrigin[1] + ymin;
+		}
+		else if (phase == 3)
+		{
+			pointA[0] = bossOrigin[0] + xmax;
+			pointA[1] = bossOrigin[1] + ymin;
+			pointB[0] = bossOrigin[0] + 0.0;
+			pointB[1] = bossOrigin[1] + ymin;
+		}
+		else if (phase == 4)
+		{
+			pointA[0] = bossOrigin[0] + 0.0;
+			pointA[1] = bossOrigin[1] + ymin;
+			pointB[0] = bossOrigin[0] + xmin;
+			pointB[1] = bossOrigin[1] + ymin;
+		}
+		else if (phase == 5)
+		{
+			pointA[0] = bossOrigin[0] + xmin;
+			pointA[1] = bossOrigin[1] + ymin;
+			pointB[0] = bossOrigin[0] + xmin;
+			pointB[1] = bossOrigin[1] + 0.0;
+		}
+		else if (phase == 6)
+		{
+			pointA[0] = bossOrigin[0] + xmin;
+			pointA[1] = bossOrigin[1] + 0.0;
+			pointB[0] = bossOrigin[0] + xmin;
+			pointB[1] = bossOrigin[1] + ymax;
+		}
+		else if (phase == 7)
+		{
+			pointA[0] = bossOrigin[0] + xmin;
+			pointA[1] = bossOrigin[1] + ymax;
+			pointB[0] = bossOrigin[0] + 0.0;
+			pointB[1] = bossOrigin[1] + ymax;
+		}
+
+		for (int shouldZ = 0; shouldZ <= 1; shouldZ++)
+		{
+			pointA[2] = pointB[2] = shouldZ == 0 ? bossOrigin[2] : (bossOrigin[2] + zOffset);
+			if (!Resize_OneTrace(pointA, pointB))
+				return false;
+		}
+	}
+		
+	return true;
+}
+
+bool Resize_TestResizeOffset(const float bossOrigin[3], float xOffset, float yOffset, float zOffset)
+{
+	static float tmpOrigin[3];
+	tmpOrigin[0] = bossOrigin[0];
+	tmpOrigin[1] = bossOrigin[1];
+	tmpOrigin[2] = bossOrigin[2];
+	static float targetOrigin[3];
+	targetOrigin[0] = bossOrigin[0] + xOffset;
+	targetOrigin[1] = bossOrigin[1] + yOffset;
+	targetOrigin[2] = bossOrigin[2];
+	
+	if (!(xOffset == 0.0 && yOffset == 0.0))
+		if (!Resize_OneTrace(tmpOrigin, targetOrigin))
+			return false;
+		
+	tmpOrigin[0] = targetOrigin[0];
+	tmpOrigin[1] = targetOrigin[1];
+	tmpOrigin[2] = targetOrigin[2] + zOffset;
+
+	if (!Resize_OneTrace(targetOrigin, tmpOrigin))
+		return false;
+		
+	targetOrigin[0] = bossOrigin[0];
+	targetOrigin[1] = bossOrigin[1];
+	targetOrigin[2] = bossOrigin[2] + zOffset;
+		
+	if (!(xOffset == 0.0 && yOffset == 0.0))
+		if (!Resize_OneTrace(tmpOrigin, targetOrigin))
+			return false;
+		
+	return true;
+}
+
+
+bool Resize_OneTrace(const float startPos[3], const float endPos[3])
+{
+	static float result[3];
+
+//	MASK_NPCSOLID, TraceRayHitPlayersOnly
+
+	TR_TraceRayFilter(startPos, endPos, MASK_NPCSOLID, RayType_EndPoint, Resize_TracePlayersAndBuildings);
+	if (ResizeTraceFailed)
+	{
+		return false;
+	}
+	TR_GetEndPosition(result);
+	if (endPos[0] != result[0] || endPos[1] != result[1] || endPos[2] != result[2])
+	{
+		return false;
+	}
+	
+	return true;
+}
+
+#define MAX_ENTITY_CLASSNAME_LENGTH 48
+#define MAX_PLAYERS (MAX_PLAYERS_ARRAY < (MaxClients + 1) ? MAX_PLAYERS_ARRAY : (MaxClients + 1))
+#define MAX_PLAYERS_ARRAY 36
+
+bool Resize_TracePlayersAndBuildings(int entity, int contentsMask)
+{
+	if(IsValidClient(entity) && TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0 && !b_DoNotUnStuck[entity] && !b_ThisEntityIgnored[entity])
+	{
+		if (GetClientTeam(entity) != ResizeMyTeam)
+		{
+			ResizeTraceFailed = true;
+		}
+	}
+	else if (IsValidEntity(entity))
+	{
+		static char classname[MAX_ENTITY_CLASSNAME_LENGTH];
+		GetEntityClassname(entity, classname, sizeof(classname));
+		if ((strcmp(classname, "obj_sentrygun") == 0) || (strcmp(classname, "obj_dispenser") == 0) || (strcmp(classname, "obj_teleporter") == 0)
+			|| (strcmp(classname, "prop_dynamic") == 0) || (strcmp(classname, "func_door") == 0) || (strcmp(classname, "func_physbox") == 0) || (strcmp(classname, "base_boss") == 0) || (strcmp(classname, "func_breakable") == 0))
+		{
+			if(!b_ThisEntityIgnored[entity] && ResizeMyTeam != GetEntProp(entity, Prop_Data, "m_iTeamNum"))
+			{
+				ResizeTraceFailed = true;
+			}
+		}
+	}
+
+	return false;
+}
+
+//TELEPORT LOGIC END.
+
+public void KillNpc(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity)) //Dont do this in a think pls.
+	{
+		SDKHooks_TakeDamage(entity, 0, 0, 99999999.9);
+	}
+}
+
 //NORMAL
 
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"
@@ -7987,6 +8434,7 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/special/npc_sawrunner.sp"
 #include "zombie_riot/npc/special/npc_l4d2_tank.sp"
 #include "zombie_riot/npc/special/npc_itstilives.sp"
+#include "zombie_riot/npc/special/npc_phantom_knight.sp"
 
 #include "zombie_riot/npc/btd/npc_bloon.sp"
 #include "zombie_riot/npc/btd/npc_moab.sp"
@@ -8046,9 +8494,3 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 #include "zombie_riot/npc/cof/npc_simon.sp"
 
 #include "zombie_riot/npc/bonezone/npc_basicbones.sp"
-
-
-public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask, bool originalResult)
-{
-	return false;
-} 

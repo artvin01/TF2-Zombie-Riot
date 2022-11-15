@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 
 int Trip_NumMines[MAXPLAYERS+1] = {0, ...};
 int Trip_Owner[MAXENTITIES+1] = {-1, ...};

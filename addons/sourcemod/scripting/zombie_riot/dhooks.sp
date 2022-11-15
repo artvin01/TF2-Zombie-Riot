@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static DynamicHook ForceRespawn;
 static int ForceRespawnHook[MAXTF2PLAYERS];
 static int GetChargeEffectBeingProvided;
@@ -202,7 +205,7 @@ MRESReturn Detour_CalcPlayerScore(DHookReturn hReturn, DHookParam hParams)
 public void ApplyExplosionDhook_Pipe(int entity, bool Sticky)
 {
 	g_DHookGrenadeExplode.HookEntity(Hook_Pre, entity, DHook_GrenadeExplodePre);
-	DHookEntity(g_detour_CTFGrenadePipebombProjectile_PipebombTouch, false, entity, _, GrenadePipebombProjectile_PipebombTouch)
+	DHookEntity(g_detour_CTFGrenadePipebombProjectile_PipebombTouch, false, entity, _, GrenadePipebombProjectile_PipebombTouch);
 	
 	if(Sticky)
 	{
@@ -288,7 +291,7 @@ static float Velocity_Rocket[MAXENTITIES][3];
 
 public void ApplyExplosionDhook_Rocket(int entity)
 {
-	if(!b_EntityIsArrow[entity]) //No!
+	if(!b_EntityIsArrow[entity] && !b_EntityIsWandProjectile[entity]) //No!
 	{
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, DHook_RocketExplodePre);
 	}
@@ -431,7 +434,7 @@ public MRESReturn DHook_FireballExplodePre(int entity)
 		{
 			if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == 939)
 			{
-				float damage = 700.0;
+				float damage = 200.0;
 				
 				Address address = TF2Attrib_GetByDefIndex(weapon, 410);
 				if(address != Address_Null)
@@ -681,7 +684,7 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 	
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
-		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Spectator)) //Hardcode to red as there will be no blue players.
+		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Spectator)); //Hardcode to red as there will be no blue players.
 		return MRES_Ignored;
 	}
 	
@@ -755,7 +758,7 @@ public MRESReturn StartLagCompensationPost(Address manager, DHookParam param)
 	}
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
-		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Red)) //Hardcode to red as there will be no blue players.
+		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Red)); //Hardcode to red as there will be no blue players.
 		b_LagCompAlliedPlayers = false;
 		return MRES_Ignored;
 	} 
@@ -1106,7 +1109,7 @@ void DHook_HookClient(int client)
 	if(ForceRespawn)
 	{
 		ForceRespawnHook[client] = ForceRespawn.HookEntity(Hook_Pre, client, DHook_ForceRespawn);
-		dieingstate[client] = 0
+		dieingstate[client] = 0;
 		CClotBody player = view_as<CClotBody>(client);
 		player.m_bThisEntityIgnored = false;
 	}
@@ -1183,7 +1186,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 		
 		return MRES_Supercede;
 	}
-
+	
 	RequestFrame(SetEyeAngleCorrect, client);
 	
 	if(GetClientTeam(client) != 2)
@@ -1299,6 +1302,7 @@ public void DHook_TeleportToObserver(DataPack pack)
 			float pos[3], ang[3];
 			GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
 			GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+			ang[2] = 0.0;
 			SetEntProp(client, Prop_Send, "m_bDucked", true);
 			SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
 			TeleportEntity(client, pos, ang, NULL_VECTOR);
@@ -1336,6 +1340,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 					float pos[3], ang[3];
 					GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
 					GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+					ang[2] = 0.0;
 					SetEntProp(client, Prop_Send, "m_bDucked", true);
 					SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
 					TeleportEntity(client, pos, ang, NULL_VECTOR);

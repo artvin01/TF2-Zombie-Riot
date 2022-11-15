@@ -1111,51 +1111,60 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 	PrintToChat(client, "%t", "Could Not Buy Item", TranslateItemName(client, name));
 }
 
-void Store_BuyClientItem(int client, Item item, ItemInfo info)
+void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int blength)
 {
-	item.Scaled[client]++;
-	item.Owned[client] = 1;
-
-	int length = StoreItems.Length;
-	static Item item2;
-	//Prevent a rare case of us changing slots, thus them being able to equip multiple weapons of the same type at once when we dont want them.
-	if(item.Slot >= 0)
+	if(slot >= 0)
 	{
 		int count;
-		for(int a; a<length; a++)
+		int length = StoreItems.Length;
+		static Item item;
+		for(int i; i<length; i++)
 		{
-			StoreItems.GetArray(a, item2);
-			if((item2.Equipped[client]/* || item2.Scaled[client]*/) && item2.Slot == item.Slot)
+			StoreItems.GetArray(i, item);
+			if(item.Equipped[client] && item.Slot == slot)
+			{
 				count++;
+				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
+				{
+					Format(buffer, blength, "%s {%s}", buffer, TranslateItemName(client, item.Name));
+					break;
+				}
+			}
 		}
+	}
+}
 
-		if(count)
-		{
-			bool blocked = false;
-			if(item.Slot >= sizeof(SlotLimits))
-				blocked = true;
-			
-			if(count >= SlotLimits[item.Slot])
-				blocked = true;
-			
-			if(blocked)
-			{
-				item.Equipped[client] = false;
-			}
-			else
-			{
-				item.Equipped[client] = true;
-			}
-		}
-		else
-		{
-			item.Equipped[client] = true;
-		}
-	}
-	else
+void Store_EquipSlotCheck(int client, int slot)
+{
+	if(slot >= 0)
 	{
-		item.Equipped[client] = true;
+		int count;
+		int length = StoreItems.Length;
+		static Item item;
+		for(int i; i<length; i++)
+		{
+			StoreItems.GetArray(i, item);
+			if(item.Equipped[client] && item.Slot == slot)
+			{
+				count++;
+				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
+				{
+					item.Equipped[client] = false;
+					StoreItems.SetArray(i, item);
+					break;
+				}
+			}
+		}
 	}
+}
+
+void Store_BuyClientItem(int client, Item item, ItemInfo info)
+{
+	Store_EquipSlotCheck(client, item.Slot);
+
+	item.Scaled[client]++;
+	item.Owned[client] = 1;
+	item.Equipped[client] = true;
 	
 	if(item.MaxScaled < item.Scaled[client])
 		item.Scaled[client] = item.MaxScaled;
@@ -1696,7 +1705,6 @@ public void MenuPage(int client, int section)
 	bool found;
 	char buffer[96];
 	int length = StoreItems.Length;
-	static Item item2;
 	
 	int ClientLevel = Level[client];
 	
@@ -1747,7 +1755,7 @@ public void MenuPage(int client, int section)
 		if(item.TextStore[0] && !HasNamedItem(client, item.TextStore))
 			continue;
 		
-		if(NPCOnly[client] != 2 && NPCOnly[client] != 3 && !item.Owned[client] && item.Slot >= 0)
+		/*if(NPCOnly[client] != 2 && NPCOnly[client] != 3 && item.Slot >= 0)
 		{
 			int count;
 			for(int a; a<length; a++)
@@ -1756,7 +1764,7 @@ public void MenuPage(int client, int section)
 					continue;
 				
 				StoreItems.GetArray(a, item2);
-				if((item2.Equipped[client]/* || item2.Scaled[client]*/) && item2.Slot == item.Slot)
+				if(item2.Equipped[client] && item2.Slot == item.Slot)
 					count++;
 			}
 			
@@ -1776,7 +1784,7 @@ public void MenuPage(int client, int section)
 					continue;
 				}
 			}
-		}
+		}*/
 		
 		if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
 		{
@@ -1799,6 +1807,7 @@ public void MenuPage(int client, int section)
 						FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$}");
 					}
 					
+					Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 					IntToString(i, info.Classname, sizeof(info.Classname));
 					menu.AddItem(info.Classname, buffer);
 					found = true;
@@ -1807,6 +1816,7 @@ public void MenuPage(int client, int section)
 		}
 		else if(!item.ItemInfos)
 		{
+			Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 			IntToString(i, info.Classname, sizeof(info.Classname));
 			menu.AddItem(info.Classname, TranslateItemName(client, item.Name));
 			found = true;
@@ -1884,6 +1894,9 @@ public void MenuPage(int client, int section)
 					}
 				}
 				
+				//if(!item.BuildingExistName[0] && !item.ShouldThisCountSupportBuildings)
+				Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
+
 				if(item.NPCSeller_First)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$$}");
@@ -2341,6 +2354,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							
 							if(item.Owned[client] && !item.Equipped[client])	// Equip Weapon
 							{
+								Store_EquipSlotCheck(client, item.Slot);
+
 								item.Equipped[client] = true;
 								StoreItems.SetArray(index, item);
 								
@@ -2373,6 +2388,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						}
 						else if (info.Attack3AbilitySlot != 0) //equip back special ability slot item
 						{
+							Store_EquipSlotCheck(client, item.Slot);
+
 							item.Equipped[client] = true;
 							StoreItems.SetArray(index, item);
 								
@@ -2921,6 +2938,11 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 	{
 		TF2_RemoveAllWeapons(client);
 	}
+	/*
+	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(SpawnWeapon_Special(client, "tf_weapon_pda_engineer_destroy", 26, 100, 5, "671 ; 1"));
+	*/
+	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(SpawnWeapon_Special(client, "tf_weapon_invis", 26, 100, 5, "35 ; 0 ; 816 ; 1 ; 671 ; 1 ; 34 ; 999"));
+	
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
 	SetAbilitySlotCount(client, 0);
 	
@@ -3495,7 +3517,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 			Attributes to Arrays Here
 		*/
 		Panic_Attack[entity] = Attributes_FindOnWeapon(client, entity, 651);
-		i_SurvivalKnifeCount[client] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 33));
+		i_SurvivalKnifeCount[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 33));
 		i_GlitchedGun[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 731));
 		i_AresenalTrap[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 719));
 		i_ArsenalBombImplanter[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 544));
@@ -3524,6 +3546,8 @@ int Store_GiveSpecificItem(int client, const char[] name)
 		StoreItems.GetArray(i, item);
 		if(StrEqual(name, item.Name, false))
 		{
+			Store_EquipSlotCheck(client, item.Slot);
+
 			static ItemInfo info;
 			item.GetItemInfo(0, info);
 			

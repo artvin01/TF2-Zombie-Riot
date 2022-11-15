@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float ability_cooldown_2[MAXPLAYERS+1]={0.0, ...};
 static int Attack3AbilitySlotArray[MAXPLAYERS+1]={0, ...};
@@ -181,7 +184,8 @@ public void PlaceableTempomaryArmorGrenade(int client)
 			SetVariantInt(team);
 			AcceptEntityInput(entity, "SetTeam", -1, -1, 0); 
 			
-			SetEntPropEnt(entity, Prop_Send, "m_hLauncher", 0);
+			SetEntPropEnt(entity, Prop_Send, "m_hLauncher", EntRefToEntIndex(i_StickyAccessoryLogicItem[client]));
+			//Make them barely bounce at all.
 			DispatchSpawn(entity);
 			TeleportEntity(entity, pos, ang, vel_2);
 			
@@ -348,7 +352,8 @@ public void PlaceableTempomaryHealingGrenade(int client)
 			SetVariantInt(team);	
 			AcceptEntityInput(entity, "SetTeam", -1, -1, 0); 
 			
-			SetEntPropEnt(entity, Prop_Send, "m_hLauncher", 0);
+			SetEntPropEnt(entity, Prop_Send, "m_hLauncher", EntRefToEntIndex(i_StickyAccessoryLogicItem[client]));
+			//Make them barely bounce at all.
 			DispatchSpawn(entity);
 			TeleportEntity(entity, pos, ang, vel_2);
 			

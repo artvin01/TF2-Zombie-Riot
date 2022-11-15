@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static const char g_DeathSounds[][] = {
 	"vo/medic_paincrticialdeath01.mp3",
 	"vo/medic_paincrticialdeath02.mp3",
@@ -75,7 +78,7 @@ void Schwertkrieg_OnMapStart_NPC()
 	
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("passtime/tv2.wav");
-	PrecacheSound("misc/halloween/spell_mirv_explode_primary.wav")
+	PrecacheSound("misc/halloween/spell_mirv_explode_primary.wav");
 }
 
 methodmap Schwertkrieg < CClotBody
@@ -183,7 +186,7 @@ methodmap Schwertkrieg < CClotBody
 		float flAng[3]; // original
 					
 		npc.GetAttachment("eyeglow_L", flPos, flAng);
-		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "eyeglow_L", {0.0,0.0,15.0})
+		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "eyeglow_L", {0.0,0.0,15.0});
 		
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_das_blutliebhaber/hw2013_das_blutliebhaber.mdl");
 		SetVariantString("1.0");
@@ -323,8 +326,8 @@ public void Schwertkrieg_ClotThink(int iNPC)
 					color[2] = 120;
 					color[3] = 255;
 			
-					new SPRITE_INT = PrecacheModel("materials/sprites/laserbeam.vmt", false);
-					new SPRITE_INT_2 = PrecacheModel("materials/sprites/lgtning.vmt", false);
+					int SPRITE_INT = PrecacheModel("materials/sprites/laserbeam.vmt", false);
+					int SPRITE_INT_2 = PrecacheModel("materials/sprites/lgtning.vmt", false);
 					
 					float pos[3], angles[3];
 					GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_angRotation", angles);

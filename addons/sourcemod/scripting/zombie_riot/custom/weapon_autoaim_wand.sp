@@ -1,7 +1,7 @@
-static float Damage_Projectile[MAXENTITIES]={0.0, ...};
-static int Projectile_To_Client[MAXENTITIES]={0, ...};
-static int Projectile_To_Particle[MAXENTITIES]={0, ...};
-static int Projectile_To_Weapon[MAXENTITIES]={0, ...};
+#pragma semicolon 1
+#pragma newdecls required
+
+static bool Projectile_Is_Silent[MAXENTITIES]={false, ...};
 
 static float RMR_HomingPerSecond[MAXENTITIES];
 static int RMR_CurrentHomingTarget[MAXENTITIES];
@@ -79,28 +79,24 @@ public void Weapon_autoaim_Wand_Shotgun(int client, int weapon, bool crit, int s
 					
 				EmitSoundToAll(SOUND_WAND_SHOT_AUTOAIM_ABILITY, client, _, 75, _, 0.8, 135);
 				
+				float Angles[3];
 				for(int HowOften=0; HowOften<=10; HowOften++)
 				{
-					
-					int iRot = CreateEntityByName("func_door_rotating");
-					if(iRot == -1) return;
-					CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(iRot), TIMER_FLAG_NO_MAPCHANGE);
-				
-					float fPos[3];
-					GetClientEyePosition(client, fPos);
-				
-					DispatchKeyValueVector(iRot, "origin", fPos);
-					DispatchKeyValue(iRot, "distance", "99999");
-					DispatchKeyValueFloat(iRot, "speed", speed);
-					DispatchKeyValue(iRot, "spawnflags", "12288"); // passable|silent
-					DispatchSpawn(iRot);
-					SetEntityCollisionGroup(iRot, 27);
-					
-				
-					SetVariantString("!activator");
-					AcceptEntityInput(iRot, "Open");
-				//	CreateTimer(0.1, Timer_HatThrow_Woosh, EntIndexToEntRef(iRot), TIMER_REPEAT);
-					Wand_Launch(client, iRot, speed, time, damage, weapon, true);
+					GetClientEyeAngles(client, Angles);
+					for (int spread = 0; spread < 3; spread++)
+					{
+						Angles[spread] += GetRandomFloat(-5.0, 5.0);
+					}
+					int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 5/*Default wand*/, weapon, "unusual_tesla_flash", Angles);
+					CreateTimer(0.1, Homing_Shots_Repeat_Timer, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+					Projectile_Is_Silent[projectile] = true;
+					RMR_HomingPerSecond[projectile] = 150.0;
+					RMR_RocketOwner[projectile] = client;
+					RMR_HasTargeted[projectile] = false;
+					RWI_HomeAngle[projectile] = 180.0;
+					RWI_LockOnAngle[projectile] = 180.0;
+					RMR_RocketVelocity[projectile] = speed;
+					RMR_CurrentHomingTarget[projectile] = -1;
 				}
 			}
 			else
@@ -168,27 +164,23 @@ public void Weapon_autoaim_Wand(int client, int weapon, bool crit, int slot)
 		address = TF2Attrib_GetByDefIndex(weapon, 102);
 		if(address != Address_Null)
 			time *= TF2Attrib_GetValue(address);
-		
-		int iRot = CreateEntityByName("func_door_rotating");
-		if(iRot == -1) return;
-	
-		float fPos[3];
-		GetClientEyePosition(client, fPos);
-	
-		DispatchKeyValueVector(iRot, "origin", fPos);
-		DispatchKeyValue(iRot, "distance", "99999");
-		DispatchKeyValueFloat(iRot, "speed", speed);
-		DispatchKeyValue(iRot, "spawnflags", "12288"); // passable|silent
-		DispatchSpawn(iRot);
-		SetEntityCollisionGroup(iRot, 27);
-	
-		SetVariantString("!activator");
-		AcceptEntityInput(iRot, "Open");
+		float Angles[3];
+		GetClientEyeAngles(client, Angles);
+		for (int spread = 0; spread < 3; spread++)
+		{
+			Angles[spread] += GetRandomFloat(-5.0, 5.0);
+		}
 		EmitSoundToAll(SOUND_WAND_SHOT_AUTOAIM, client, _, 75, _, 0.7, 135);
-	//	CreateTimer(0.1, Timer_HatThrow_Woosh, EntIndexToEntRef(iRot), TIMER_REPEAT);
-		Wand_Launch(client, iRot, speed, time, damage, weapon, false);
-	
-	
+		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 5/*Default wand*/, weapon, "unusual_tesla_flash", Angles);
+		CreateTimer(0.1, Homing_Shots_Repeat_Timer, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		Projectile_Is_Silent[projectile] = false;
+		RMR_HomingPerSecond[projectile] = 150.0;
+		RMR_RocketOwner[projectile] = client;
+		RMR_HasTargeted[projectile] = false;
+		RWI_HomeAngle[projectile] = 180.0;
+		RWI_LockOnAngle[projectile] = 180.0;
+		RMR_RocketVelocity[projectile] = speed;
+		RMR_CurrentHomingTarget[projectile] = -1;
 	}
 	else
 	{
@@ -198,107 +190,6 @@ public void Weapon_autoaim_Wand(int client, int weapon, bool crit, int slot)
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 	}
 }
-
-static void Wand_Launch(int client, int iRot, float speed, float time, float damage, int weapon, bool silent = false)
-{
-	float fAng[3], fPos[3];
-	GetClientEyeAngles(client, fAng);
-	GetClientEyePosition(client, fPos);
-
-	int iCarrier = CreateEntityByName("prop_physics_override");
-	if(iCarrier == -1) return;
-
-	float fVel[3], fBuf[3];
-	GetAngleVectors(fAng, fBuf, NULL_VECTOR, NULL_VECTOR);
-	fVel[0] = fBuf[0]*speed;
-	fVel[1] = fBuf[1]*speed;
-	fVel[2] = fBuf[2]*speed;
-
-	SetEntPropEnt(iCarrier, Prop_Send, "m_hOwnerEntity", client);
-	DispatchKeyValue(iCarrier, "model", ENERGY_BALL_MODEL);
-	DispatchKeyValue(iCarrier, "modelscale", "0");
-	DispatchSpawn(iCarrier);
-
-	TeleportEntity(iCarrier, fPos, NULL_VECTOR, fVel);
-	SetEntityMoveType(iCarrier, MOVETYPE_FLY);
-	
-	
-	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", GetClientTeam(client));
-	SetEntProp(iRot, Prop_Send, "m_iTeamNum", GetClientTeam(client));
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iCarrier));
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iRot));
-	
-	SetVariantString("!activator");
-	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);
-	SetEntityCollisionGroup(iCarrier, 27);
-	
-	Projectile_To_Client[iCarrier] = client;
-	Damage_Projectile[iCarrier] = damage;
-	Projectile_To_Weapon[iCarrier] = weapon;
-	float position[3];
-	
-	GetEntPropVector(iCarrier, Prop_Data, "m_vecAbsOrigin", position);
-	
-	int particle = 0;
-	
-	switch(GetClientTeam(client))
-	{
-		case 2:
-			particle = ParticleEffectAt(position, "unusual_tesla_flash", 5.0);
-
-		default:
-			particle = ParticleEffectAt(position, "unusual_tesla_flash", 5.0);
-	}
-		
-	float Angles[3];
-	GetClientEyeAngles(client, Angles);
-	
-	Angles[0] += GetRandomFloat(-5.0, 5.0);
-	
-	Angles[1] += GetRandomFloat(-5.0, 5.0);
-	
-	Angles[2] += GetRandomFloat(-5.0, 5.0);
-	
-	TeleportEntity(particle, NULL_VECTOR, Angles, NULL_VECTOR);
-	TeleportEntity(iCarrier, NULL_VECTOR, Angles, NULL_VECTOR);
-	TeleportEntity(iRot, NULL_VECTOR, Angles, NULL_VECTOR);
-	SetParent(iCarrier, particle);	
-	
-	CreateTimer(0.1, Homing_Shots_Repeat_Timer, EntIndexToEntRef(iCarrier), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-//	RMR_NextDeviationAt[iCarrier] = GetGameTime() + 0.4;
-	RMR_HomingPerSecond[iCarrier] = 150.0;
-	RMR_RocketOwner[iCarrier] = client;
-	RMR_HasTargeted[iCarrier] = false;
-	RWI_HomeAngle[iCarrier] = 180.0;
-	RWI_LockOnAngle[iCarrier] = 180.0;
-	RMR_RocketVelocity[iCarrier] = speed;
-	RMR_CurrentHomingTarget[iCarrier] = -1;
-	
-	SetEntityRenderMode(iCarrier, RENDER_TRANSCOLOR);
-	SetEntityRenderColor(iCarrier, 0, 0, 0, 0);
-		
-		
-	
-	Projectile_To_Particle[iCarrier] = EntIndexToEntRef(particle);
-	
-	DataPack pack;
-	CreateDataTimer(time, Timer_RemoveEntity_CustomProjectile, pack, TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(iCarrier));
-	pack.WriteCell(EntIndexToEntRef(particle));
-	pack.WriteCell(EntIndexToEntRef(iRot));
-	
-	if(silent)
-	{
-		SDKHook(iCarrier, SDKHook_StartTouch, Event_Wand_autoaim_OnHatTouchSilent);
-	}
-	else
-	{
-		SDKHook(iCarrier, SDKHook_StartTouch, Event_Wand_autoaim_OnHatTouch);
-	}
-		
-	
-}
-
 //Sarysapub1 code but fixed and altered to make it work for our base bosses
 #define TARGET_Z_OFFSET 40.0
 
@@ -625,46 +516,10 @@ void Wand_Homing()
 	}		
 }
 */
-public Action Event_Wand_autoaim_OnHatTouch(int entity, int other)
-{
-	int target = Target_Hit_Wand_Detection(entity, other);
-	if (target > 0)	
-	{
-		//Code to do damage position and ragdolls
-		static float angles[3];
-		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
-		float vecForward[3];
-		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenter(target);
-		//Code to do damage position and ragdolls
-		
-		SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST); // 2048 is DMG_NOGIB?
-		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
-		NPC_Ignite(target, Projectile_To_Client[entity], 3.0, Projectile_To_Weapon[entity]);
-		if(IsValidEntity(particle) && particle != 0)
-		{
-			EmitSoundToAll(SOUND_AUTOAIM_IMPACT, entity, SNDCHAN_STATIC, 80, _, 0.9);
-			RemoveEntity(particle);
-		}
-		RemoveEntity(entity);
-	}
-	else if(target == 0)
-	{
-		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
-		if(IsValidEntity(particle) && particle != 0)
-		{
-			EmitSoundToAll(SOUND_AUTOAIM_IMPACT, entity, SNDCHAN_STATIC, 80, _, 0.9);
-			RemoveEntity(particle);
-		}
-		RemoveEntity(entity);
-	}
-	return Plugin_Handled;
-}
 
-public Action Event_Wand_autoaim_OnHatTouchSilent(int entity, int other)
+public void Want_HomingWandTouch(int entity, int target)
 {
-	int target = Target_Hit_Wand_Detection(entity, other);
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if (target > 0)	
 	{
 		//Code to do damage position and ragdolls
@@ -674,27 +529,42 @@ public Action Event_Wand_autoaim_OnHatTouchSilent(int entity, int other)
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
 		Entity_Position = WorldSpaceCenter(target);
-		//Code to do damage position and ragdolls
-		
-		SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST); // 2048 is DMG_NOGIB?
-		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
-		NPC_Ignite(target, Projectile_To_Client[entity], 3.0, Projectile_To_Weapon[entity]);
-		if(IsValidEntity(particle) && particle != 0)
+
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST); // 2048 is DMG_NOGIB?
+		if(IsValidEntity(particle))
 		{
-			EmitSoundToAll(SOUND_AUTOAIM_IMPACT, entity, SNDCHAN_STATIC, 80, _, 0.1);
 			RemoveEntity(particle);
 		}
+
+		if(Projectile_Is_Silent[entity])
+		{
+			EmitSoundToAll(SOUND_AUTOAIM_IMPACT, entity, SNDCHAN_STATIC, 80, _, 0.1);
+		}
+		else
+		{
+			EmitSoundToAll(SOUND_AUTOAIM_IMPACT, entity, SNDCHAN_STATIC, 80, _, 0.9);
+		}
+		
 		RemoveEntity(entity);
 	}
 	else if(target == 0)
 	{
-		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
-		if(IsValidEntity(particle) && particle != 0)
+		if(IsValidEntity(particle))
 		{
-			EmitSoundToAll(SOUND_AUTOAIM_IMPACT, entity, SNDCHAN_STATIC, 80, _, 0.1);
 			RemoveEntity(particle);
 		}
+		if(Projectile_Is_Silent[entity])
+		{
+			EmitSoundToAll(SOUND_AUTOAIM_IMPACT, entity, SNDCHAN_STATIC, 80, _, 0.1);
+		}
+		else
+		{
+			EmitSoundToAll(SOUND_AUTOAIM_IMPACT, entity, SNDCHAN_STATIC, 80, _, 0.9);
+		}
+		
 		RemoveEntity(entity);
 	}
-	return Plugin_Handled;
 }

@@ -1,7 +1,7 @@
-static float Damage_Projectile[MAXENTITIES]={0.0, ...};
-static int Projectile_To_Client[MAXENTITIES]={0, ...};
-static int Projectile_To_Particle[MAXENTITIES]={0, ...};
-static int Projectile_To_Weapon[MAXENTITIES]={0, ...};
+#pragma semicolon 1
+#pragma newdecls required
+
+static bool Projectile_Is_Silent[MAXENTITIES]={false, ...};
 
 static float RMR_HomingPerSecond[MAXENTITIES];
 static int RMR_CurrentHomingTarget[MAXENTITIES];
@@ -12,181 +12,188 @@ static float RWI_HomeAngle[MAXENTITIES];
 static float RWI_LockOnAngle[MAXENTITIES];
 static float RMR_RocketVelocity[MAXENTITIES];
 
-static Handle Revert_Weapon_Back_Timer[MAXPLAYERS+1];
-static int attacks_made[MAXPLAYERS+1]={12, ...};
-static int weapon_id[MAXPLAYERS+1]={0, ...};
-static bool Handle_on[MAXPLAYERS+1]={false, ...};
+static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 
-/*
-#define SOUND_AUTOAIM_IMPACT_FLESH_1 		"physics/flesh/flesh_impact_bullet1.wav"
-#define SOUND_AUTOAIM_IMPACT_FLESH_2 		"physics/flesh/flesh_impact_bullet2.wav"
-#define SOUND_AUTOAIM_IMPACT_FLESH_3 		"physics/flesh/flesh_impact_bullet3.wav"
-#define SOUND_AUTOAIM_IMPACT_FLESH_4 		"physics/flesh/flesh_impact_bullet4.wav"
-#define SOUND_AUTOAIM_IMPACT_FLESH_5 		"physics/flesh/flesh_impact_bullet5.wav"
-
-#define SOUND_AUTOAIM_IMPACT_CONCRETE_1 		"physics/concrete/concrete_impact_bullet1.wav"
-#define SOUND_AUTOAIM_IMPACT_CONCRETE_2 		"physics/concrete/concrete_impact_bullet2.wav"
-#define SOUND_AUTOAIM_IMPACT_CONCRETE_3 		"physics/concrete/concrete_impact_bullet3.wav"
-#define SOUND_AUTOAIM_IMPACT_CONCRETE_4 		"physics/concrete/concrete_impact_bullet4.wav"
-
-void Wand_Chlorophite_Map_Precache()
+public void Wand_autoaim_ClearAll()
 {
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_FLESH_1);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_FLESH_2);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_FLESH_3);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_FLESH_4);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_FLESH_5);
-	
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_CONCRETE_1);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_CONCRETE_2);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_CONCRETE_3);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_CONCRETE_4);
+	Zero(ability_cooldown);
 }
-*/
-public void Weapon_Chlorophite_Heavy(int client, int weapon, bool crit)
+//#define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
+#define SOUND_WAND_SHOT_AUTOAIM 	"weapons/man_melter_fire.wav"
+#define SOUND_WAND_SHOT_AUTOAIM_ABILITY	"weapons/man_melter_fire_crit.wav"
+#define SOUND_AUTOAIM_IMPACT 		"misc/halloween/spell_lightning_ball_impact.wav"
+
+void Wand_autoaim_Map_Precache()
+{
+	PrecacheSound(SOUND_WAND_SHOT_AUTOAIM);
+	PrecacheSound(SOUND_WAND_SHOT_AUTOAIM_ABILITY);
+	PrecacheSound(SOUND_AUTOAIM_IMPACT);
+//	PrecacheModel(ENERGY_BALL_MODEL);
+}
+
+public void Weapon_autoaim_Wand_Shotgun(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
-		weapon_id[client] = EntIndexToEntRef(weapon);
-		attacks_made[client] += -1;
+		int mana_cost = 120;
+		if(mana_cost <= Current_Mana[client])
+		{
+			if (Ability_Check_Cooldown(client, slot) < 0.0)
+			{
+				Ability_Apply_Cooldown(client, slot, 5.0);
 				
-		if (attacks_made[client] <= 2)
-		{
-			attacks_made[client] = 2;
+				float damage = 65.0;
+				Address address = TF2Attrib_GetByDefIndex(weapon, 410);
+				if(address != Address_Null)
+					damage *= TF2Attrib_GetValue(address);
+				
+				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				Mana_Hud_Delay[client] = 0.0;
+				
+				Current_Mana[client] -= mana_cost;
+				
+				delay_hud[client] = 0.0;
+					
+				float speed = 1100.0;
+				address = TF2Attrib_GetByDefIndex(weapon, 103);
+				if(address != Address_Null)
+					speed *= TF2Attrib_GetValue(address);
+			
+				address = TF2Attrib_GetByDefIndex(weapon, 104);
+				if(address != Address_Null)
+					speed *= TF2Attrib_GetValue(address);
+			
+				address = TF2Attrib_GetByDefIndex(weapon, 475);
+				if(address != Address_Null)
+					speed *= TF2Attrib_GetValue(address);
+			
+			
+				float time = 500.0/speed;
+				address = TF2Attrib_GetByDefIndex(weapon, 101);
+				if(address != Address_Null)
+					time *= TF2Attrib_GetValue(address);
+			
+				address = TF2Attrib_GetByDefIndex(weapon, 102);
+				if(address != Address_Null)
+					time *= TF2Attrib_GetValue(address);
+					
+				EmitSoundToAll(SOUND_WAND_SHOT_AUTOAIM_ABILITY, client, _, 75, _, 0.8, 135);
+				
+				float Angles[3];
+				for(int HowOften=0; HowOften<=10; HowOften++)
+				{
+					GetClientEyeAngles(client, Angles);
+					for (int spread = 0; spread < 3; spread++)
+					{
+						Angles[spread] += GetRandomFloat(-5.0, 5.0);
+					}
+					int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 5/*Default wand*/, weapon, "unusual_tesla_flash", Angles);
+					CreateTimer(0.1, Homing_Shots_Repeat_Timer, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+					Projectile_Is_Silent[projectile] = true;
+					RMR_HomingPerSecond[projectile] = 150.0;
+					RMR_RocketOwner[projectile] = client;
+					RMR_HasTargeted[projectile] = false;
+					RWI_HomeAngle[projectile] = 180.0;
+					RWI_LockOnAngle[projectile] = 180.0;
+					RMR_RocketVelocity[projectile] = speed;
+					RMR_CurrentHomingTarget[projectile] = -1;
+				}
+			}
+			else
+			{
+				float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+				if(Ability_CD <= 0.0)
+					Ability_CD = 0.0;
+			
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+			}
 		}
-		TF2Attrib_SetByDefIndex(weapon, 396, (Pow((attacks_made[client] * 1.0), 1.04) / 20.0));
-		if(Handle_on[client])
+		else
 		{
-			KillTimer(Revert_Weapon_Back_Timer[client]);
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 		}
-		Revert_Weapon_Back_Timer[client] = CreateTimer(3.0, Reset_weapon_rampager_Heavy, client, TIMER_FLAG_NO_MAPCHANGE);
-		Handle_on[client] = true;
 	}
-	
-	float damage = 6.0;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
-		
-	float speed = 2000.0;
-	
-	address = TF2Attrib_GetByDefIndex(weapon, 103);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
-		
-	float time = 500.0/speed;
-	
-	time = 10.0;
-	
-	int iRot = CreateEntityByName("func_door_rotating");
-	if(iRot == -1) return;
-
-	float fPos[3];
-	GetClientEyePosition(client, fPos);
-
-	DispatchKeyValueVector(iRot, "origin", fPos);
-	DispatchKeyValue(iRot, "distance", "99999");
-	DispatchKeyValueFloat(iRot, "speed", speed);
-	DispatchKeyValue(iRot, "spawnflags", "12288"); // passable|silent
-	DispatchSpawn(iRot);
-	SetEntityCollisionGroup(iRot, 27);
-
-	SetVariantString("!activator");
-	AcceptEntityInput(iRot, "Open");
-//	EmitSoundToAll(SOUND_WAND_SHOT_AUTOAIM, client, SNDCHAN_WEAPON, 75, _, 0.7, 135);
-	//	CreateTimer(0.1, Timer_HatThrow_Woosh, EntIndexToEntRef(iRot), TIMER_REPEAT);
-	Wand_Launch(client, iRot, speed, time, damage, weapon);
 }
-
-static void Wand_Launch(int client, int iRot, float speed, float time, float damage, int weapon)
+public void Weapon_autoaim_Wand(int client, int weapon, bool crit, int slot)
 {
-	float fAng[3], fPos[3];
-	GetClientEyeAngles(client, fAng);
-	GetClientEyePosition(client, fPos);
+	int mana_cost;
+	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
+	if(address != Address_Null)
+		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
 
-	int iCarrier = CreateEntityByName("prop_physics_override");
-	if(iCarrier == -1) return;
-
-	float fVel[3], fBuf[3];
-	GetAngleVectors(fAng, fBuf, NULL_VECTOR, NULL_VECTOR);
-	fVel[0] = fBuf[0]*speed;
-	fVel[1] = fBuf[1]*speed;
-	fVel[2] = fBuf[2]*speed;
-
-	SetEntPropEnt(iCarrier, Prop_Send, "m_hOwnerEntity", client);
-	DispatchKeyValue(iCarrier, "model", ENERGY_BALL_MODEL);
-	DispatchKeyValue(iCarrier, "modelscale", "0");
-	DispatchSpawn(iCarrier);
-
-	TeleportEntity(iCarrier, fPos, NULL_VECTOR, fVel);
-	SetEntityMoveType(iCarrier, MOVETYPE_FLY);
-	
-	
-	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", GetClientTeam(client));
-	SetEntProp(iRot, Prop_Send, "m_iTeamNum", GetClientTeam(client));
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iCarrier));
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iRot));
-	SetVariantString("!activator");
-	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);
-	SetEntityCollisionGroup(iCarrier, 27);
-	
-	Projectile_To_Client[iCarrier] = client;
-	Damage_Projectile[iCarrier] = damage;
-	Projectile_To_Weapon[iCarrier] = weapon;
-	float position[3];
-	
-	GetEntPropVector(iCarrier, Prop_Data, "m_vecAbsOrigin", position);
-	
-	int particle = 0;
-	
-	switch(GetClientTeam(client))
+	if(mana_cost <= Current_Mana[client])
 	{
-		case 2:
-			particle = ParticleEffectAt(position, "raygun_projectile_red_trail", 5.0);
-
-		default:
-			particle = ParticleEffectAt(position, "raygun_projectile_red_trail", 5.0);
+		float damage = 65.0;
+		address = TF2Attrib_GetByDefIndex(weapon, 410);
+		if(address != Address_Null)
+			damage *= TF2Attrib_GetValue(address);
+		
+		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		Mana_Hud_Delay[client] = 0.0;
+		
+		Current_Mana[client] -= mana_cost;
+		
+		delay_hud[client] = 0.0;
+			
+		float speed = 1100.0;
+		address = TF2Attrib_GetByDefIndex(weapon, 103);
+		if(address != Address_Null)
+			speed *= TF2Attrib_GetValue(address);
+	
+		address = TF2Attrib_GetByDefIndex(weapon, 104);
+		if(address != Address_Null)
+			speed *= TF2Attrib_GetValue(address);
+	
+		address = TF2Attrib_GetByDefIndex(weapon, 475);
+		if(address != Address_Null)
+			speed *= TF2Attrib_GetValue(address);
+	
+	
+		float time = 500.0/speed;
+		address = TF2Attrib_GetByDefIndex(weapon, 101);
+		if(address != Address_Null)
+			time *= TF2Attrib_GetValue(address);
+	
+		address = TF2Attrib_GetByDefIndex(weapon, 102);
+		if(address != Address_Null)
+			time *= TF2Attrib_GetValue(address);
+		float Angles[3];
+		GetClientEyeAngles(client, Angles);
+		for (int spread = 0; spread < 3; spread++)
+		{
+			Angles[spread] += GetRandomFloat(-5.0, 5.0);
+		}
+		EmitSoundToAll(SOUND_WAND_SHOT_AUTOAIM, client, _, 75, _, 0.7, 135);
+		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 5/*Default wand*/, weapon, "unusual_tesla_flash", Angles);
+		CreateTimer(0.1, Homing_Shots_Repeat_Timer, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		Projectile_Is_Silent[projectile] = true;
+		RMR_HomingPerSecond[projectile] = 150.0;
+		RMR_RocketOwner[projectile] = client;
+		RMR_HasTargeted[projectile] = false;
+		RWI_HomeAngle[projectile] = 180.0;
+		RWI_LockOnAngle[projectile] = 180.0;
+		RMR_RocketVelocity[projectile] = speed;
+		RMR_CurrentHomingTarget[projectile] = -1;
 	}
-		
-	float Angles[3];
-	GetClientEyeAngles(client, Angles);
-	TeleportEntity(particle, NULL_VECTOR, Angles, NULL_VECTOR);
-	TeleportEntity(iCarrier, NULL_VECTOR, Angles, NULL_VECTOR);
-	TeleportEntity(iRot, NULL_VECTOR, Angles, NULL_VECTOR);
-	SetParent(iCarrier, particle);	
-	
-	CreateTimer(0.1, Homing_Shots_Repeat_Timer_Chlorophite_Heavy, EntIndexToEntRef(iCarrier), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-//	RMR_NextDeviationAt[iCarrier] = GetGameTime() + 0.4;
-	RMR_HomingPerSecond[iCarrier] = 359.0;
-	RMR_RocketOwner[iCarrier] = client;
-	RMR_HasTargeted[iCarrier] = false;
-	RWI_HomeAngle[iCarrier] = 180.0;
-	RWI_LockOnAngle[iCarrier] = 180.0;
-	RMR_RocketVelocity[iCarrier] = speed;
-	RMR_CurrentHomingTarget[iCarrier] = -1;
-	
-	SetEntityRenderMode(iCarrier, RENDER_TRANSCOLOR);
-	SetEntityRenderColor(iCarrier, 0, 0, 0, 0);
-		
-		
-	
-	Projectile_To_Particle[iCarrier] = EntIndexToEntRef(particle);
-	
-	DataPack pack;
-	CreateDataTimer(time, Timer_RemoveEntity_CustomProjectile, pack, TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(iCarrier));
-	pack.WriteCell(EntIndexToEntRef(particle));
-	pack.WriteCell(EntIndexToEntRef(iRot));
-	
-	SDKHook(iCarrier, SDKHook_StartTouch, Event_Wand_Chlorophite_OnHatTouch_Heavy);
-		
-	
+	else
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+	}
 }
-
 //Sarysapub1 code but fixed and altered to make it work for our base bosses
 #define TARGET_Z_OFFSET 40.0
 
-public Action Homing_Shots_Repeat_Timer_Chlorophite_Heavy(Handle timer, int ref)
+public Action Homing_Shots_Repeat_Timer(Handle timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity))
@@ -509,9 +516,10 @@ void Wand_Homing()
 	}		
 }
 */
-public Action Event_Wand_Chlorophite_OnHatTouch_Heavy(int entity, int other)
+
+public void Want_HomingWandTouch(int entity, int target)
 {
-	int target = Target_Hit_Wand_Detection(entity, other);
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if (target > 0)	
 	{
 		//Code to do damage position and ragdolls
@@ -521,63 +529,42 @@ public Action Event_Wand_Chlorophite_OnHatTouch_Heavy(int entity, int other)
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
 		Entity_Position = WorldSpaceCenter(target);
-		//Code to do damage position and ragdolls
-		
-		SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_BULLET, -1, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
-		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
-		if(IsValidEntity(particle) && particle != 0)
+
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST); // 2048 is DMG_NOGIB?
+		if(IsValidEntity(particle))
 		{
-			switch(GetRandomInt(1,5)) 
-			{
-				case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
-					
-				case 2:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
-					
-				case 3:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-				case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-				case 5:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_5, entity, SNDCHAN_STATIC, 80, _, 0.9);
-					
-			}
 			RemoveEntity(particle);
 		}
+
+		if(Projectile_Is_Silent[entity])
+		{
+			EmitSoundToAll(SOUND_AUTOAIM_IMPACT, entity, SNDCHAN_STATIC, 80, _, 0.1);
+		}
+		else
+		{
+			EmitSoundToAll(SOUND_AUTOAIM_IMPACT, entity, SNDCHAN_STATIC, 80, _, 0.9);
+		}
+		
 		RemoveEntity(entity);
 	}
 	else if(target == 0)
 	{
-		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
-		if(IsValidEntity(particle) && particle != 0)
+		if(IsValidEntity(particle))
 		{
-			switch(GetRandomInt(1,4)) 
-			{
-				case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
-					
-				case 2:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
-					
-				case 3:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-				case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
-			}
 			RemoveEntity(particle);
 		}
+		if(Projectile_Is_Silent[entity])
+		{
+			EmitSoundToAll(SOUND_AUTOAIM_IMPACT, entity, SNDCHAN_STATIC, 80, _, 0.1);
+		}
+		else
+		{
+			EmitSoundToAll(SOUND_AUTOAIM_IMPACT, entity, SNDCHAN_STATIC, 80, _, 0.9);
+		}
+		
 		RemoveEntity(entity);
 	}
-	return Plugin_Handled;
-}
-
-
-public Action Reset_weapon_rampager_Heavy(Handle cut_timer, int client)
-{
-	if (IsValidClient(client))
-	{
-		attacks_made[client] = 8;
-		if(IsValidEntity(EntRefToEntIndex(weapon_id[client])))
-		{
-			TF2Attrib_SetByDefIndex((EntRefToEntIndex(weapon_id[client])), 396, (Pow((attacks_made[client] * 1.0), 1.04) / 20.0));
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-		}
-	}
-	Handle_on[client] = false;
-	return Plugin_Handled;
 }

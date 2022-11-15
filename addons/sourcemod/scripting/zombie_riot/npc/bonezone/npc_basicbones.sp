@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
 };
@@ -199,7 +202,7 @@ public void BasicBones_ClotThink(int iNPC)
 	
 	if(WakeTheFUCKUp[npc.index])//this is only there so he can actually move
 	{
-		WakeTheFUCKUp[npc.index] = false
+		WakeTheFUCKUp[npc.index] = false;
 		npc.m_flSpeed = 300.0;
 	}
 	

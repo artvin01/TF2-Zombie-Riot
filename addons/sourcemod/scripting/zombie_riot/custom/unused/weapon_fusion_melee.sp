@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static int how_many_times_fisted[MAXTF2PLAYERS];
 
 public void Weapon_Fusion(int client, int weapon, const char[] classname, bool &result)

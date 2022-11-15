@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 
 public void Heavy_Deagle_shot(int client, int weapon, const char[] classname, bool &result)
 {

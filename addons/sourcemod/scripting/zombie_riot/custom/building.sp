@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 /*
 	Placement Type
 	static Handle SyncHud_Notifaction;
@@ -865,11 +868,14 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 	{
 		damage *= 1.5;
 	}
-	
+	//This is no longer needed, this logic has been added to the base explosive plugin, this also means that it allows
+	//npc vs npc interaction (mainly from blu to red) to deal 3x the explosive damage, so its not so weak.
+	/*
 	if(damagetype & DMG_BLAST)
 	{
 		damage *= 3.0; //OTHERWISE EXPLOSIVES ARE EXTREAMLY WEAK!!
 	}
+	*/
 	/*
 	if(Resistance_for_building_High[entity] > GetGameTime())
 	{
@@ -1802,6 +1808,15 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 		else if(Is_Reload_Button && StrEqual(buffer, "base_boss"))
 		{
 			buildingType = Citizen_BuildingInteract(entity);
+			int temp_owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
+			if(IsValidClient(temp_owner)) //Fix not getting the owner correctly when interacting with barney or citicens!
+			{
+				owner = temp_owner;
+			}
+			else
+			{
+				owner = -1;
+			}
 		}
 		
 		if(buildingType)
@@ -2317,7 +2332,7 @@ public Action Building_CheckTimer(Handle timer, int ref)
 				if(weapon == -1)
 					return Plugin_Stop;
 			
-				Store_Unequip(client, StoreWeapon[weapon]);
+			//	Store_Unequip(client, StoreWeapon[weapon]);
 				TF2_RemoveWeaponSlot(client, TFWeaponSlot_Grenade);
 				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 				MenuPage(client, StoreWeapon[weapon]);
@@ -2884,7 +2899,7 @@ public Action Timer_DroppedBuildingWaitSentry(Handle htimer, int entref)
 	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
 	{
 		char buffer[32];
-		GetEntityClassname(obj, buffer, sizeof(buffer))
+		GetEntityClassname(obj, buffer, sizeof(buffer));
 		if(!StrContains(buffer, "obj_sentrygun"))
 		{
 			SetEntProp(obj, Prop_Send, "m_iAmmoShells", 150);
@@ -3861,7 +3876,7 @@ public int MaxSupportBuildingsAllowed(int client, bool ingore_glass)
 
 public int MaxBarricadesAllowed(int client)
 {
-	int maxAllowed = 2;
+	int maxAllowed = 3;
 	
  //	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayer(client, 762)); //762 is how many extra buildings are allowed on you.
 	

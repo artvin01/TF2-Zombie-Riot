@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 /*
 public Action Do_Spike_Stuff(Handle dashHud, int ref)
 {

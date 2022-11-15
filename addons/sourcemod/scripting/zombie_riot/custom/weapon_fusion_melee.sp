@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 public void Fusion_Melee_OnMapStart()
 {
 	

@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 bool Attributes_Fire(int client, int weapon)
 {
 	int clip = GetEntProp(weapon, Prop_Data, "m_iClip1");
@@ -55,8 +58,16 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 				StartBleedingTimer(victim, client, Attributes_FindOnWeapon(client, weapon, 2, true, 1.0)*4.0, RoundFloat(value*2.0), weapon);
 			
 			value = Attributes_FindOnWeapon(client, weapon, 208);	// Set DamageType Ignite
-			if(value || (damagetype & DMG_BURN)) //Either this attribute, or burn damamage!
+
+			int itemdefindex = 0;
+			if(IsValidEntity(weapon))
 			{
+				itemdefindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+			}
+			
+			if(value || (itemdefindex ==  594 || itemdefindex == 208)) //Either this attribute, or burn damamage!
+			{
+
 				if(value == 1.0)
 					value = 7.5;
 

@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 enum struct Enemy
 {
 	int Health;
@@ -219,7 +222,7 @@ void Waves_SetupVote(KeyValues map)
 	StartCash = kv.GetNum("cash");
 	if(!kv.JumpToKey("Waves"))
 	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "waves")
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "waves");
 		kv = new KeyValues("Waves");
 		kv.ImportFromFile(buffer);
 		Waves_SetupWaves(kv, true);

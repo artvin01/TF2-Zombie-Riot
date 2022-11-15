@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static const char g_DeathSounds[][] = {
 	"freak_fortress_2/god_king_infinity_blade/death1.mp3",
 	"freak_fortress_2/god_king_infinity_blade/death2.mp3",

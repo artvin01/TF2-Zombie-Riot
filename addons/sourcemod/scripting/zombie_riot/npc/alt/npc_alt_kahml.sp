@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 //There are like 3 warnings i'm sorry i have no idea to fix them
 static const char g_DeathSounds[][] = {
 	"vo/heavy_paincrticialdeath01.mp3",
@@ -278,10 +281,10 @@ methodmap Kahmlstein < CClotBody
 		float flAng[3]; // original
 	
 		npc.GetAttachment("effect_hand_r", flPos, flAng);	
-		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,15.0})
+		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,15.0});
 		
 		npc.GetAttachment("effect_hand_l", flPos, flAng);
-		npc.m_iWearable3 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,15.0})
+		npc.m_iWearable3 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,15.0});
 		
 		//IDLE
 		npc.m_flSpeed = 300.0;
@@ -708,7 +711,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		if(npc.m_flNextTeleport < GetGameTime() && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && i_kahml_teleport_charge[npc.index] > 0)
 		{
 			static float flVel[3];
-			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel)
+			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
 		
 			if (flVel[0] >= 190.0)
 			{
@@ -843,7 +846,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 					{
 						//Play attack anim
 						npc.AddGesture("ACT_MP_DEPLOYED_PRIMARY");
-						npc.PlayRangedSound()
+						npc.PlayRangedSound();
 						npc.FireRocket(vecTarget, fl_kahml_main_melee_damage[npc.index], 2500.0, "models/effects/combineball.mdl", 1.0, EP_NO_KNOCKBACK);
 						npc.m_flNextMeleeAttack = GetGameTime() + 0.075 / fl_kahml_galactic_strenght[npc.index];
 					}

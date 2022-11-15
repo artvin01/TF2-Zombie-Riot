@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 #define GORE_ABDOMEN	  (1 << 0)
 #define GORE_FOREARMLEFT  (1 << 1)
 #define GORE_HANDRIGHT	(1 << 2)
@@ -921,7 +924,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 
 				float distance = GetVectorDistance(AttackerPos, VictimPos, true);
 				
-				distance -= 1600.0// Give 60 units of range cus its not going from their hurt pos
+				distance -= 1600.0;// Give 60 units of range cus its not going from their hurt pos
 
 				if(distance < 0.1)
 				{
@@ -1482,7 +1485,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				{		
 					if(i_CurrentEquippedPerk[attacker] == 5) //Just give them 25% more damage if they do crits with the huntsman, includes buffbanner i guess
 					{
-						damage *= 1.25;
+						damage *= 1.35;
 					}
 				}
 			}
@@ -1543,7 +1546,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	*/
 }
 
-stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)
+stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)
 {
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
