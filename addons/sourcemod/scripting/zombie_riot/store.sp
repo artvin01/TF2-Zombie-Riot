@@ -3773,7 +3773,7 @@ char[] TranslateItemName(int client, const char name[64], const char Custom_Name
 	if(ServerLang == -1)
 		ServerLang = GetServerLanguage();
 	
-	PrintToChatAll("%s",Custom_Name);
+//	PrintToChatAll("%s",Custom_Name);
 	char buffer[64];
 
 	if(GetClientLanguage(client) != ServerLang)
