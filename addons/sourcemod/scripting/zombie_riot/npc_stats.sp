@@ -6920,9 +6920,9 @@ stock void ShootLaser(int weapon, const char[] strParticle, float flStartPos[3],
 	}
 
 	TE_Start("TFParticleEffect");
-	TE_WriteFloat("m_vecAbsOrigin[0]", flStartPos[0]);
-	TE_WriteFloat("m_vecAbsOrigin[1]", flStartPos[1]);
-	TE_WriteFloat("m_vecAbsOrigin[2]", flStartPos[2]);
+	TE_WriteFloat("m_vecOrigin[0]", flStartPos[0]);
+	TE_WriteFloat("m_vecOrigin[1]", flStartPos[1]);
+	TE_WriteFloat("m_vecOrigin[2]", flStartPos[2]);
 	TE_WriteNum("m_iParticleSystemIndex", stridx);
 	TE_WriteNum("entindex", weapon);
 	TE_WriteNum("m_iAttachType", 2);
