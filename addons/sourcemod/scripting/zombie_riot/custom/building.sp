@@ -4478,7 +4478,7 @@ int Building_GetCashOnWave(int current)
 				popCash++;
 			}
 			
-			if(Village_Flags[client] & VILLAGE_004)
+			if(Village_Flags[client] & VILLAGE_500)//VILLAGE_004)
 			{
 				i_ExtraPlayerPoints[client] += 100;
 				extras++;
