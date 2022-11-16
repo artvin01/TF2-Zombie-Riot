@@ -172,7 +172,7 @@ float f_StuckOutOfBoundsCheck[MAXENTITIES];
 #define MAXENTITIES	2048
 static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 bool EscapeModeMap;
-static int g_particleImpactMetal;
+int g_particleImpactMetal;
 static int g_particleImpactFlesh;
 static int g_particleImpactRubber;
 static int g_modelArrow;
@@ -1531,7 +1531,7 @@ public void OnMapStart_NPC_Base()
 	PrecacheDecal("sprites/blood.vmt", true);
 	PrecacheDecal("sprites/bloodspray.vmt", true);
 	
-	g_particleImpactMetal = PrecacheParticleSystem("bot_impact_heavy");
+	g_particleImpactMetal = PrecacheParticleSystem("bot_impact_light");
 	g_particleImpactFlesh = PrecacheParticleSystem("blood_impact_red_01");
 	g_particleImpactRubber = PrecacheParticleSystem("halloween_explosion_bits");
 	g_modelArrow = PrecacheModel("models/weapons/w_models/w_arrow.mdl");
@@ -3111,7 +3111,6 @@ methodmap CClotBody
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[0]", flEndPos[0]);
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[1]", flEndPos[1]);
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[2]", flEndPos[2]);
-
 		TE_SendToAll();
 	}
 	public int LookupPoseParameter(const char[] szName)
@@ -3242,7 +3241,7 @@ methodmap CClotBody
 	
 	public void SetOrigin(const float vec[3])											
 	{
-		SetEntPropVector(this.index, Prop_Data, "m_vecOrigin",vec);
+		SetEntPropVector(this.index, Prop_Data, "m_vecAbsOrigin",vec);
 	
 	}	
 	
@@ -5132,7 +5131,7 @@ public float PluginBot_PathCost(int bot_entidx, NavArea area, NavArea from_area,
 public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 {
 	float Jump_1_frame[3];
-	GetEntPropVector(bot_entidx, Prop_Data, "m_vecOrigin", Jump_1_frame);
+	GetEntPropVector(bot_entidx, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
 	Jump_1_frame[2] += 20.0;
 	
 	static float hullcheckmaxs[3];
@@ -5151,7 +5150,7 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 	if (!IsSpaceOccupiedDontIgnorePlayers(Jump_1_frame, hullcheckmins, hullcheckmaxs, bot_entidx))//The boss will start to merge with shits, cancel out velocity.
 	{
 		float vecNPC[3], vecJumpVel[3];
-		GetEntPropVector(bot_entidx, Prop_Data, "m_vecOrigin", vecNPC);
+		GetEntPropVector(bot_entidx, Prop_Data, "m_vecAbsOrigin", vecNPC);
 		
 		vecNPC[2] -= 20.0;
 		float gravity = GetEntPropFloat(bot_entidx, Prop_Data, "m_flGravity");
@@ -5879,7 +5878,7 @@ public void Check_If_Stuck(int iNPC)
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	
 	static float flMyPos[3];
-	GetEntPropVector(iNPC, Prop_Data, "m_vecOrigin", flMyPos);
+	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 	if(!b_IsAlliedNpc[iNPC])
 	{
 		//If NPCs some how get out of bounds
@@ -5888,7 +5887,7 @@ public void Check_If_Stuck(int iNPC)
 			f_StuckOutOfBoundsCheck[iNPC] = GetGameTime() + 10.0;
 			if(TR_PointOutsideWorld(flMyPos))
 			{
-				LogError("Enemy NPC somehow got out of the map...");
+				LogError("Enemy NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos[0],flMyPos[1],flMyPos[2]);
 				RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
 				return;
 			}
@@ -5913,7 +5912,7 @@ public void Check_If_Stuck(int iNPC)
 		if (Hit_player) //The boss will start to merge with player, STOP!
 		{
 			static float flPlayerPos[3];
-			GetEntPropVector(Hit_player, Prop_Data, "m_vecOrigin", flPlayerPos);
+			GetEntPropVector(Hit_player, Prop_Data, "m_vecAbsOrigin", flPlayerPos);
 			static float flMyPos_2[3];
 			flMyPos_2[0] = flPlayerPos[0];
 			flMyPos_2[1] = flPlayerPos[1];
@@ -6016,7 +6015,7 @@ public void Check_If_Stuck(int iNPC)
 			//If NPCs some how get out of bounds
 			if(TR_PointOutsideWorld(flMyPos))
 			{
-				LogError("Allied NPC somehow got out of the map...");
+				LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos[0],flMyPos[1],flMyPos[2]);
 				
 				int target = 0;
 				for(int i=1; i<=MaxClients; i++)
@@ -6034,7 +6033,7 @@ public void Check_If_Stuck(int iNPC)
 				if(target)
 				{
 					float pos[3], ang[3];
-					GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+					GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
 					GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
 					ang[2] = 0.0;
 					TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
@@ -6749,43 +6748,11 @@ stock int FireBullet(int m_pAttacker, int iWeapon, float m_vecSrc[3], float m_ve
 			static char class[12];
 			GetEntityClassname(TR_GetEntityIndex(trace), class, sizeof(class));
 			
-			if(StrEqual(class, "base_boss"))
-			{
-				if (f_CooldownForHurtParticle[TR_GetEntityIndex(trace)] < GetGameTime())
-				{
-					f_CooldownForHurtParticle[TR_GetEntityIndex(trace)] = GetGameTime() + 0.1;
-					switch(view_as<CClotBody>(TR_GetEntityIndex(trace)).m_iBleedType)
-					{
-						case 1:
-						{
-							TE_ParticleInt(g_particleImpactFlesh, endpos);
-							TE_SendToAll();
-						}
-						case 2:
-						{
-							endpos[2] -= 40.0;
-							TE_ParticleInt(g_particleImpactMetal, endpos);
-							TE_SendToAll();
-							endpos[2] += 40.0;
-						}
-						case 3:
-						{
-							TE_ParticleInt(g_particleImpactRubber, endpos);
-							TE_SendToAll();
-						}
-						case 4:
-						{
-							//If you cant find any good blood effect, use this one and just recolour it.
-							TE_BloodSprite(endpos, { 0.0, 0.0, 0.0 }, 125, 255, 125, 255, 32);
-							TE_SendToAll();
-						}
-					}
-				}
-			}
-			else
+			if(StrContains(class, "base_boss") && StrContains(class, "obj_")) //if its the world, then do this.
 			{
 				CreateParticle("impact_concrete", endpos, vecNormal);
 			}
+			
 		}
 		
 		// Regular impact effects.

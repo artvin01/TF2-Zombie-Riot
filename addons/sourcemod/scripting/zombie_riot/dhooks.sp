@@ -1148,6 +1148,7 @@ void DHook_RespawnPlayer(int client)
 {
 	IsRespawning = true;
 	TF2_RespawnPlayer(client);
+	SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", 0.0); //No cloak regen at all. Very important to set here!
 	IsRespawning = false;
 }
 
@@ -1302,6 +1303,7 @@ public void DHook_TeleportToObserver(DataPack pack)
 			float pos[3], ang[3];
 			GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
 			GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+			ang[2] = 0.0;
 			SetEntProp(client, Prop_Send, "m_bDucked", true);
 			SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
 			TeleportEntity(client, pos, ang, NULL_VECTOR);
@@ -1339,6 +1341,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 					float pos[3], ang[3];
 					GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
 					GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+					ang[2] = 0.0;
 					SetEntProp(client, Prop_Send, "m_bDucked", true);
 					SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
 					TeleportEntity(client, pos, ang, NULL_VECTOR);
