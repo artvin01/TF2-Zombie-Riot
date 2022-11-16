@@ -318,6 +318,8 @@ enum struct Item
 	int Owned[MAXTF2PLAYERS];
 	int Scaled[MAXTF2PLAYERS];
 	bool Equipped[MAXTF2PLAYERS];
+	int Sell[MAXTF2PLAYERS];
+	int BuyWave[MAXTF2PLAYERS];
 	float Cooldown1[MAXTF2PLAYERS];
 	float Cooldown2[MAXTF2PLAYERS];
 	float Cooldown3[MAXTF2PLAYERS];
@@ -386,6 +388,21 @@ static int NPCTarget[MAXTF2PLAYERS];
 static bool InLoadoutMenu[MAXTF2PLAYERS];
 static bool HasMultiInSlot[MAXTF2PLAYERS][6];
 
+void Store_RemoveSellValue()
+{
+	static Item item;
+	int length = StoreItems.Length;
+	for(int i; i<length; i++)
+	{
+		StoreItems.GetArray(i, item);
+		for(int a; a < MAXTF2PLAYERS; a++)
+		{
+			item.Sell[a] = 0;
+		}
+		StoreItems.SetArray(i, item);
+	}
+}
+
 bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 {
 	if(StoreItems)
@@ -427,7 +444,7 @@ bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 		{
 			StoreItems.GetArray(choiceIndex, item);
 			item.GetItemInfo(choiceInfo, info);
-			Citizen_UpdateWeaponStats(entity, item.NPCWeapon, ItemSell(item, choiceInfo + 1, 0), info);
+			Citizen_UpdateWeaponStats(entity, item.NPCWeapon, RoundToCeil(float(choicePrice) * SELL_AMOUNT), info);
 			return view_as<bool>(choiceInfo);
 		}
 	}
@@ -902,6 +919,8 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 					CashSpent[client] += info.Cost;
 					CashSpentTotal[client] += info.Cost;
 					item.Owned[client] = values[1] + 1;
+					item.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
+					item.BuyWave[client] = -1;
 					StoreItems.SetArray(values[0], item);
 					
 					TF2_StunPlayer(client, 2.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
@@ -1044,6 +1063,8 @@ void Store_SetNamedItem(int client, const char[] name, int amount)
 		if(StrEqual(name, item.Name, false))
 		{
 			item.Owned[client] = amount;
+			item.Sell[client] = 0;
+			item.BuyWave[client] = -1;
 			StoreItems.SetArray(i, item);
 			return;
 		}
@@ -1071,6 +1092,8 @@ void Store_SetClientItem(int client, int index, int owned, int scaled, int equip
 	item.Owned[client] = owned;
 	item.Scaled[client] = scaled;
 	item.Equipped[client] = view_as<bool>(equipped);
+	item.Sell[client] = 0;
+	item.BuyWave[client] = -1;
 	
 	StoreItems.SetArray(index, item);
 }
@@ -1089,6 +1112,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 				static ItemInfo info;
 				item.GetItemInfo(0, info);
 				
+				int base = info.Cost;
 				ItemCost(client, item, info.Cost);
 
 				if(info.Cost > 0 && free)
@@ -1099,6 +1123,8 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 					CashSpent[client] += info.Cost;
 					CashSpentTotal[client] += info.Cost;
 					Store_BuyClientItem(client, item, info);
+					item.Sell[client] = ItemSell(base, info.Cost);
+					item.BuyWave[client] = Waves_GetRound();
 					StoreItems.SetArray(a, item);
 					return;
 				}
@@ -1165,6 +1191,8 @@ void Store_BuyClientItem(int client, Item item, ItemInfo info)
 	item.Scaled[client]++;
 	item.Owned[client] = 1;
 	item.Equipped[client] = true;
+	item.Sell[client] = 0;
+	item.BuyWave[client] = -1;
 	
 	if(item.MaxScaled < item.Scaled[client])
 		item.Scaled[client] = item.MaxScaled;
@@ -1468,6 +1496,7 @@ public void MenuPage(int client, int section)
 		}
 		
 	}
+	
 	static Item item;
 	static ItemInfo info;
 	if(section > -1)
@@ -1559,8 +1588,6 @@ public void MenuPage(int client, int section)
 				}
 				else
 				{
-
-
 					if(item.Equipped[client])
 					{
 						if(info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
@@ -1588,7 +1615,7 @@ public void MenuPage(int client, int section)
 					else	// Buy it
 					{
 						ItemCost(client, item, info.Cost);
-
+						
 						bool Maxed_Building = false;
 						if(item.MaxBarricadesBuild)
 						{
@@ -1616,7 +1643,8 @@ public void MenuPage(int client, int section)
 					IntToString(section, buffer2, sizeof(buffer2));
 					menu.AddItem(buffer2, buffer, style);	// 0
 					
-					bool canSell = (item.Owned[client] && info.Cost);
+					bool fullSell = (item.BuyWave[client] == Waves_GetRound());
+					bool canSell = (item.Owned[client] && ((info.Cost && fullSell) || item.Sell[client]));
 
 					if(item.Equipped[client] && info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
 					{
@@ -1646,8 +1674,14 @@ public void MenuPage(int client, int section)
 
 					if(canSell)
 					{
-						int sell = ItemSell(item, level, client);
-						FormatEx(buffer, sizeof(buffer), "%t ($%d) | (%t: $%d)", "Sell", sell, "Credits After Selling",sell + (CurrentCash-CashSpent[client]));	// 3
+						if(fullSell)
+						{
+							item.Scaled[client]--;
+							ItemCost(client, item, info.Cost);
+							item.Scaled[client]++;
+						}
+
+						FormatEx(buffer, sizeof(buffer), "%t ($%d) | (%t: $%d)", "Sell", fullSell ? info.Cost : item.Sell[client], "Credits After Selling", (fullSell ? info.Cost : item.Sell[client]) + (CurrentCash-CashSpent[client]));	// 3
 						menu.AddItem(buffer2, buffer);
 					}
 									
@@ -1703,7 +1737,7 @@ public void MenuPage(int client, int section)
 	}
 	
 	bool found;
-	char buffer[96];
+	char buffer[64];
 	int length = StoreItems.Length;
 	
 	int ClientLevel = Level[client];
@@ -2278,7 +2312,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 										{
 											//Give them some their money back! Some other person just override theirs, i dont think they should be punished for that.......
 											//BUT ONLY IF ITS ACTUALLY A DIFFERENT CLIENT. :(
-											int money_back = RoundToCeil(float(i_ThisEntityHasAMachineThatBelongsToClientMoney[entity]) * 0.7);
+											int money_back = RoundToCeil(float(i_ThisEntityHasAMachineThatBelongsToClientMoney[entity]) * SELL_AMOUNT);
 											SetGlobalTransTarget(client_previously);
 											PrintToChat(client_previously, "%t","You got your money back npc", money_back);
 											CashSpent[client_previously] -= money_back;
@@ -2340,12 +2374,15 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							if(!item.Owned[client])	// Buy Weapon
 							{
+								int base = info.Cost;
 								ItemCost(client, item, info.Cost);
 								if(info.Cost <= cash)
 								{
 									CashSpent[client] += info.Cost;
 									CashSpentTotal[client] += info.Cost;
 									Store_BuyClientItem(client, item, info);
+									item.Sell[client] = ItemSell(base, info.Cost);
+									item.BuyWave[client] = Waves_GetRound();
 									item.Equipped[client] = false;
 									
 									ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
@@ -2372,12 +2409,15 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						}
 						else if(!item.Owned[client])	// Buy Perk
 						{
+							int base = info.Cost;
 							ItemCost(client, item, info.Cost);
 							if(info.Cost <= cash)
 							{
 								CashSpent[client] += info.Cost;
 								CashSpentTotal[client] += info.Cost;
 								Store_BuyClientItem(client, item, info);
+								item.Sell[client] = ItemSell(base, info.Cost);
+								item.BuyWave[client] = Waves_GetRound();
 								StoreItems.SetArray(index, item);
 								
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
@@ -2469,10 +2509,22 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					if(item.Owned[client])
 					{
 						item.GetItemInfo(item.Owned[client]-1, info);
-						if(info.Cost) //make sure it even can be sold.
+
+						int sell = item.Sell[client];
+						bool fullSell = item.BuyWave[client] == Waves_GetRound();
+						if(fullSell)
 						{
-							CashSpent[client] -= ItemSell(item, item.Owned[client], client);
-							CashSpentTotal[client] -= ItemSell(item, item.Owned[client], client);
+							item.Scaled[client]--;
+							ItemCost(client, item, info.Cost);
+							item.Scaled[client]++;
+							
+							sell = info.Cost;
+						}
+						
+						if(sell) //make sure it even can be sold.
+						{
+							CashSpent[client] -= sell;
+							CashSpentTotal[client] -= sell;
 							ClientCommand(client, "playgamesound \"mvm/mvm_money_pickup.wav\"");
 						}
 						
@@ -3548,6 +3600,8 @@ int Store_GiveSpecificItem(int client, const char[] name)
 			
 			item.Owned[client] = 1;
 			item.Equipped[client] = true;
+			item.Sell[client] = 0;
+			item.BuyWave[client] = 0;
 			StoreItems.SetArray(i, item);
 			
 			int entity = Store_GiveItem(client, i, item.Equipped[client]);
@@ -3795,7 +3849,7 @@ static void ItemCost(int client, Item item, int &cost)
 	cost += item.Scale*item.Scaled[client]; 
 	cost += item.CostPerWave * CurrentRound;
 	
-	int original_cost_With_Sell = RoundToCeil(float(cost) * SELL_AMOUNT);
+	//int original_cost_With_Sell = RoundToCeil(float(cost) * SELL_AMOUNT);
 	
 	//make sure anything thats additive is on the top, so sales actually help!!
 	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
@@ -3871,25 +3925,26 @@ static void ItemCost(int client, Item item, int &cost)
 	{
 		cost = item.MaxCost;
 	}
-	if(cost < original_cost_With_Sell)
-	{
-		cost = original_cost_With_Sell;
-	}
+	//if(cost < original_cost_With_Sell)
+	//{
+	//	cost = original_cost_With_Sell;
+	//}
 }
 
-static int ItemSell(Item item, int level, int client)
+static int ItemSell(int base, int discount)
 {
-	int sell = (item.Scale * item.Scaled[client]) + (item.CostPerWave * CurrentRound);
-	
-	ItemInfo info;
-	for(int i; i<level && item.GetItemInfo(i, info); i++)
+	float cost = float(base);
+	float ratio = (float(discount) / cost);
+	if(ratio > SELL_AMOUNT)
 	{
-		sell += info.Cost;
-		if(info.PackBranches > 1 || info.PackSkip)
-			break;
+		ratio = SELL_AMOUNT;
 	}
-	
-	return RoundToCeil(float(sell) * SELL_AMOUNT);
+	else if(ratio < 0.0)
+	{
+		return 0;
+	}
+
+	return RoundToCeil(cost * ratio);
 }
 
 bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool Is_Reload_Button = false)
