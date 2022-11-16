@@ -1177,7 +1177,7 @@
 		"de"		"''/tp'' Umschaltung für Dritte Person."
 		"pt"		"''/tp'' Para ativar modo de 3ª pessoa"
 		"nl"		"''/tp'' Schakelt derde persoon in.\n''/make_niko'' Transformeerd je naar niko (Dit is meer voor genot dan iets anders)."
-		"chi"       "''/tp'' 来切换第三人称 \n''/make_niko'' 来切换成niko(一般人不会这么做)"
+		"chi"       "''/tp'' 来切换第三人称 \n''/make_niko'' 来切换成niko模型(重生后生效)"
 	}
 	"Difficulty Help Explained"
 	{
@@ -1229,7 +1229,7 @@
 		"en" 		"Store Button + Inspect Weapon: Allows you to instantly access your holding weapon in the store, to for example, buy ammo."
 		"ru" 		"Кнопка открытия магазина + осмотра оружия: Позволяет мгновенно получить доступ к удерживаемому оружию в магазине, чтобы, например, купить патроны."
 		"nl"		"Winkel knop + Wapeninspectie: Zorgt dat je onmiddelijk de winkelpagina van uw momenteel gebruikte wapen ziet om bijvoorbeeld snel ammunitie te kopen."
-		"chi"       "TAB+F(R)|商城按钮+检查(装填)武器:允许你立即访问你手持武器的购买界面，在此界面中，你可以购买弹药、取消装备、卖出武器"
+		"chi"       "TAB + F ：允许你立即访问你手持武器的购买界面，在此界面中，你可以购买弹药、取消装备、卖出武器"
 	}
 	"Drank Mana Regen Potion"
 	{
