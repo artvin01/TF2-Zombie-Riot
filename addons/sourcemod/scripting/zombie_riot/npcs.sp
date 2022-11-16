@@ -1382,6 +1382,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 							float attack_speed;
 			
 							attack_speed = Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);
+							attack_speed = Attributes_FindOnWeapon(attacker, weapon, 396, true, 1.0);
 							
 							EmitSoundToAll("weapons/knife_swing_crit.wav", attacker, _, _, _, 0.7);
 							
@@ -1395,7 +1396,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 							
 							if(b_FaceStabber[attacker])
 							{
-								damage *= 0.4; //cut damage in half and then some.
+								damage *= 0.35; //cut damage in half and then some.
 							}
 							
 							CClotBody npc = view_as<CClotBody>(victim);
@@ -1432,7 +1433,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 								heal_amount = 10;
 								if(b_FaceStabber[attacker])
 								{
-									heal_amount = 2;
+									heal_amount = 1;
 								}
 								StartHealingTimer(attacker, 0.1, 1, heal_amount);
 								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
@@ -1443,7 +1444,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 								heal_amount = 25;
 								if(b_FaceStabber[attacker])
 								{
-									heal_amount = 5;
+									heal_amount = 4;
 								}
 								StartHealingTimer(attacker, 0.1, 2, heal_amount);
 								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.0 * attack_speed));
