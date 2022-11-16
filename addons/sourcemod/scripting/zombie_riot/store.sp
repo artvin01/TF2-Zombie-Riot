@@ -402,6 +402,7 @@ void Store_RemoveSellValue()
 		for(int a; a < MAXTF2PLAYERS; a++)
 		{
 			item.Sell[a] = 0;
+			item.BuyWave[a] = -1;
 		}
 		StoreItems.SetArray(i, item);
 	}
