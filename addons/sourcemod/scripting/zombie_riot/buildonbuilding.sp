@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 int iBuildingDependency[2049] = {0, ...};
-
+/*
 static const float ViewHeights[] =
 {
 	75.0,
@@ -16,7 +16,7 @@ static const float ViewHeights[] =
 	75.0,
 	68.0
 };
-
+*/
 DynamicHook dtIsPlacementPosValid;
 
 public void OnPluginStart_Build_on_Building()
@@ -179,8 +179,11 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 
 	float fAng[3], fPos[3];
 	GetClientEyeAngles(client, fAng);
-	GetClientEyePosition(client, fPos);
-	fAng[2] = 0.0;
+//	GetClientEyePosition(client, fPos);
+	GetClientAbsOrigin(client, fPos);
+	fPos[2] += 70.0; //Default is on average 70. so lets keep it like that.
+	fAng[0] = 0.0; //We dont care about them looking down or up
+	fAng[2] = 0.0; //This shoulddnt be accounted for!
 
 	float tmp[3];
 	float actualBeamOffset[3];
@@ -226,7 +229,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		}
 		if(IsValidClient(client))
 		{
-			fPos[2] -= (ViewHeights[WeaponClass[client]] + 3); //This just goes to the ground entirely. and three higher so you can see the bottom of the box.
+			fPos[2] -= 69.0; //This just goes to the ground entirely. and three higher so you can see the bottom of the box.
 			TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({0, 255, 0, 255}));
 				
 			if(f_DelayBuildNotif[client] < GetGameTime())
