@@ -433,6 +433,33 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	
 	int closest = npc.m_iTarget;
 	
+	if(npc.m_bInKame)
+	{
+		if(npc.Anger)
+		{
+			npc.m_flRangedArmor = 0.4;
+			npc.m_flMeleeArmor = 0.4;
+		}	
+		else
+		{
+			npc.m_flRangedArmor = 0.5;
+			npc.m_flMeleeArmor = 0.5;			
+		}
+	}
+	else
+	{
+		if(npc.Anger)
+		{
+			npc.m_flRangedArmor = 0.8;
+			npc.m_flMeleeArmor = 0.8;
+		}	
+		else
+		{
+			npc.m_flRangedArmor = 1.0;
+			npc.m_flMeleeArmor = 1.0;			
+		}	
+	}
+
 	if(IsValidEnemy(npc.index, closest, true))
 	{
 		
@@ -497,7 +524,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			}
 			if(npc.m_bInKame)
 			{
-				npc.FaceTowards(vecTarget, 700.0);
+				npc.FaceTowards(vecTarget, 800.0);
 				PF_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_flSpeed = 0.0;
@@ -756,10 +783,10 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 									else
 									{
 										if(!npc.Anger)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 12.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 24.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 											
 										if(npc.Anger)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 14.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 28.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
 										
 									}
 									
@@ -773,13 +800,13 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 									{
 										if (IsInvuln(target))
 										{
-											Custom_Knockback(npc.index, target, 900.0);
+											Custom_Knockback(npc.index, target, 900.0, true);
 											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 										}
 										else
 										{
-											Custom_Knockback(npc.index, target, 450.0);
+											Custom_Knockback(npc.index, target, 650.0); 
 											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 										}

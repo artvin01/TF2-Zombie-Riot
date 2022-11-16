@@ -1485,7 +1485,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				{		
 					if(i_CurrentEquippedPerk[attacker] == 5) //Just give them 25% more damage if they do crits with the huntsman, includes buffbanner i guess
 					{
-						damage *= 1.25;
+						damage *= 1.35;
 					}
 				}
 			}

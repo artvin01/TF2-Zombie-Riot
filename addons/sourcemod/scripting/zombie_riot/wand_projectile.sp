@@ -18,7 +18,7 @@ int WandId,
 int weapon,
 char[] WandParticle,
 float CustomAng[3] = {0.0,0.0,0.0},
-bool hideprojectile = false) //This will handle just the spawning, the rest like particle effects should be handled within the plugins themselves. hopefully.
+bool hideprojectile = true) //This will handle just the spawning, the rest like particle effects should be handled within the plugins themselves. hopefully.
 {
 	float fAng[3], fPos[3];
 	GetClientEyeAngles(client, fAng);
@@ -30,6 +30,24 @@ bool hideprojectile = false) //This will handle just the spawning, the rest like
 		fAng[1] = CustomAng[1];
 		fAng[2] = CustomAng[2];
 	}
+
+
+	float tmp[3];
+	float actualBeamOffset[3];
+	float BEAM_BeamOffset[3];
+	BEAM_BeamOffset[0] = 0.0;
+	BEAM_BeamOffset[1] = -8.0;
+	BEAM_BeamOffset[2] = -10.0;
+
+	tmp[0] = BEAM_BeamOffset[0];
+	tmp[1] = BEAM_BeamOffset[1];
+	tmp[2] = 0.0;
+	VectorRotate(tmp, fAng, actualBeamOffset);
+	actualBeamOffset[2] = BEAM_BeamOffset[2];
+	fPos[0] += actualBeamOffset[0];
+	fPos[1] += actualBeamOffset[1];
+	fPos[2] += actualBeamOffset[2];
+
 
 	float fVel[3], fBuf[3];
 	GetAngleVectors(fAng, fBuf, NULL_VECTOR, NULL_VECTOR);
@@ -45,7 +63,7 @@ bool hideprojectile = false) //This will handle just the spawning, the rest like
 		f_WandDamage[entity] = damage;
 		i_WandIdNumber[entity] = WandId;
 		b_EntityIsArrow[entity] = true;
-		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
+		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", -1); //No owner entity! woo hoo
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage should be nothing. if it somehow goes boom.
 		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
 		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
@@ -56,6 +74,7 @@ bool hideprojectile = false) //This will handle just the spawning, the rest like
 		{
 			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", i_ProjectileIndex, _, i);
 		}
+		SetEntityModel(entity, ENERGY_BALL_MODEL);
 
 		//Make it entirely invis. Shouldnt even render these 8 polygons.
 		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);

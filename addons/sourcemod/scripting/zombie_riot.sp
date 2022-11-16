@@ -276,6 +276,7 @@ float i_WeaponDamageFalloff[MAXENTITIES];
 #define MAXSTICKYCOUNTTONPC 12
 const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
 int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max amount of stickies.
+int i_StickyAccessoryLogicItem[MAXTF2PLAYERS]; //Item for stickies like "no bounce"
 
 float f_SemiAutoStats_FireRate[MAXENTITIES];
 int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
@@ -1331,10 +1332,12 @@ public void OnPluginStart()
 	
 	LoadTranslations("zombieriot.phrases");
 	LoadTranslations("zombieriot.phrases.zombienames");
+	LoadTranslations("zombieriot.phrases.weapons.description");
 	LoadTranslations("zombieriot.phrases.weapons");
 	LoadTranslations("zombieriot.phrases.bob");
 	LoadTranslations("zombieriot.phrases.icons"); 
 	LoadTranslations("common.phrases");
+
 	
 	DHook_Setup();
 	SDKCall_Setup();

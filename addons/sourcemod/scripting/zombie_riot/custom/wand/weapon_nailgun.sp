@@ -58,18 +58,11 @@ public void Weapon_Nailgun(int client, int weapon, bool crit)
 	
 	speed *= sentry_range;
 		
-	float time = 500.0/speed;
-	address = TF2Attrib_GetByDefIndex(weapon, 101);
-	if(address != Address_Null)
-		time *= TF2Attrib_GetValue(address);
-	
-	address = TF2Attrib_GetByDefIndex(weapon, 102);
-	if(address != Address_Null)
-		time *= TF2Attrib_GetValue(address);
+	float time = 10.0; //Pretty much inf.
 	
 
 
-	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 1/*Default wand*/, weapon, "",_,false);
+	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "furious_flyer_activated",_,false);
 
 	SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
 }
@@ -77,6 +70,7 @@ public void Weapon_Nailgun(int client, int weapon, bool crit)
 
 public void Gun_NailgunTouch(int entity, int target)
 {
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if (target > 0)	
 	{
 		//Code to do damage position and ragdolls
@@ -104,6 +98,10 @@ public void Gun_NailgunTouch(int entity, int target)
 			case 5:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_5, entity, SNDCHAN_STATIC, 80, _, 0.9);
 				
 	   	}
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
 		RemoveEntity(entity);
 	}
 	else if(target == 0)
@@ -117,6 +115,10 @@ public void Gun_NailgunTouch(int entity, int target)
 			case 3:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
 			
 			case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
+		}
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
 		}
 		RemoveEntity(entity);
 	}
