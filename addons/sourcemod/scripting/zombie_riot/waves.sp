@@ -1187,7 +1187,7 @@ void Waves_Progress()
 			}
 		}
 	}
-	if(CurrentRound == 0 && CurrentWave == 1)
+	if(CurrentRound == 0)
 	{
 		if(StartCash < 10000)
 			Store_RemoveSellValue();
