@@ -3,6 +3,20 @@
 
 int iBuildingDependency[2049] = {0, ...};
 
+static const float ViewHeights[] =
+{
+	75.0,
+	65.0,
+	75.0,
+	68.0,
+	68.0,
+	75.0,
+	75.0,
+	68.0,
+	75.0,
+	68.0
+};
+
 DynamicHook dtIsPlacementPosValid;
 
 public void OnPluginStart_Build_on_Building()
@@ -163,37 +177,6 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		return MRES_ChangedOverride;
 	}
 
-	CClotBody npc = view_as<CClotBody>(pThis);
-	
-	npc.bBuildingIsStacked = false;
-	//Filter the permissible returns - the game is right about building there
-	if(DHookGetReturn(hReturn))
-	{
-		//We are built on "legal" ground, clear the dependency tree
-		iBuildingDependency[pThis]=0;
-		for(int i=0; i<2048; i++)
-		{
-			if(iBuildingDependency[i]==pThis)
-			{
-				iBuildingDependency[i]=0;
-			}
-		}
-		if(IsValidClient(client))
-		{
-			if(f_DelayBuildNotif[client] < GetGameTime())
-			{
-				f_DelayBuildNotif[client] = GetGameTime() + 0.25;
-				SetHudTextParams(-1.0, 0.90, 0.5, 34, 139, 34, 255);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
-			}
-		}
-		return MRES_Ignored;
-	}
-	
-	float endPos[3];
-	int buildingHit=0;
-
 	float fAng[3], fPos[3];
 	GetClientEyeAngles(client, fAng);
 	GetClientEyePosition(client, fPos);
@@ -215,11 +198,6 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 	fPos[1] += actualBeamOffset[1];
 	fPos[2] += actualBeamOffset[2];
 
-	
-	float vectest[3];
-	vectest[0] = fPos[0];
-	vectest[1] = fPos[1];
-	vectest[2] = fPos[2] + 54;
 	/*
 	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 	TE_SetupBeamPoints(fPos, vectest, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
@@ -230,6 +208,40 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 	static float m_vecMins[3];
 	m_vecMaxs = view_as<float>( { 20.0, 20.0, 50.0 } );
 	m_vecMins = view_as<float>( { -20.0, -20.0, 0.0 } );	
+
+	CClotBody npc = view_as<CClotBody>(pThis);
+	
+	npc.bBuildingIsStacked = false;
+	//Filter the permissible returns - the game is right about building there
+	if(DHookGetReturn(hReturn))
+	{
+		//We are built on "legal" ground, clear the dependency tree
+		iBuildingDependency[pThis]=0;
+		for(int i=0; i<2048; i++)
+		{
+			if(iBuildingDependency[i]==pThis)
+			{
+				iBuildingDependency[i]=0;
+			}
+		}
+		if(IsValidClient(client))
+		{
+			fPos[2] -= (ViewHeights[WeaponClass[client]] + 3); //This just goes to the ground entirely. and three higher so you can see the bottom of the box.
+			TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({0, 255, 0, 255}));
+				
+			if(f_DelayBuildNotif[client] < GetGameTime())
+			{
+				f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+				SetHudTextParams(-1.0, 0.90, 0.5, 34, 139, 34, 255);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
+			}
+		}
+		return MRES_Ignored;
+	}
+	
+	float endPos[3];
+	int buildingHit=0;
 
 	if(IsValidGroundBuilding(fPos , 130.0, endPos, buildingHit, pThis)) //130.0
 	{

@@ -2980,15 +2980,12 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	}
 	else if(buttons & IN_ATTACK2)
 	{
-		PrintToConsole(client,"In_attack2 Happend");
 		holding[client] = IN_ATTACK2;
 		
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		PrintToConsole(client,"Weapon Is %i", weapon_holding);
 		b_IgnoreWarningForReloadBuidling[client] = false;
 		if(IsValidEntity(weapon_holding))
 		{
-			PrintToConsole(client,"Weapon Is Valid.");
 			char classname[32];
 			GetEntityClassname(weapon_holding, classname, 32);
 			Action action = Plugin_Continue;
@@ -2997,7 +2994,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 
 			if(EntityFuncAttack2[weapon_holding] && EntityFuncAttack2[weapon_holding]!=INVALID_FUNCTION)
 			{
-				PrintToConsole(client,"Weapon has an valid function.");
 				bool result = false; //ignore crit.
 				int slot = 2;
 				Call_StartFunction(null, EntityFuncAttack2[weapon_holding]);
@@ -3009,20 +3005,16 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 			if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
 			{
-				PrintToConsole(client,"Weapon is melee.");
 				if(EntityFuncAttack2[weapon_holding] != MountBuildingToBack && TeutonType[client] == TEUTON_NONE)
 				{
-					PrintToConsole(client,"Weapon is not MountBuildingToBack.");
 					b_IgnoreWarningForReloadBuidling[client] = true;
 					Pickup_Building_M2(client, weapon, false);
 				}
 			}
 		}
 		StartPlayerOnlyLagComp(client, true);
-		PrintToConsole(client,"Mouse2 interact");
 		if(InteractKey(client, weapon_holding, false)) //doesnt matter which one
 		{
-			PrintToConsole(client,"Mouse2 interacted");
 			buttons &= ~IN_ATTACK2;
 			EndPlayerOnlyLagComp(client);
 			return Plugin_Changed;

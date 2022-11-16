@@ -3795,7 +3795,7 @@ void Store_ConsumeItem(int client, int index)
 	StoreItems.SetArray(index, item);
 }
 
-void Store_Unequip(int client, int index)
+stock void Store_Unequip(int client, int index)
 {
 	static Item item;
 	StoreItems.GetArray(index, item);

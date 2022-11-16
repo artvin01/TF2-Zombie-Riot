@@ -1,7 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
-
-#if !defined NoSendProxyClass
+/*
 static const float ViewHeights[] =
 {
 	75.0,
@@ -15,8 +14,7 @@ static const float ViewHeights[] =
 	75.0,
 	68.0
 };
-#endif
-
+*/
 //static int g_offsPlayerPunchAngleVel = -1;
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
