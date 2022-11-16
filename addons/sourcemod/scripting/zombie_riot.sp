@@ -547,7 +547,7 @@ int i_WandOwner[MAXENTITIES]; //
 int i_WandWeapon[MAXENTITIES]; //
 int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever ever. lag max otherwise.
 
-//int g_iLaserMaterial, g_iHaloMaterial;
+int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
 
 
 #define EXPLOSION_AOE_DAMAGE_FALLOFF 1.7
@@ -1165,7 +1165,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/wand/weapon_wand_lightning_spell.sp"
 #include "zombie_riot/custom/wand/weapon_necromancy_wand.sp"
 #include "zombie_riot/custom/wand/weapon_wand_necro_spell.sp"
-#include "zombie_riot/custom/weapon_autoaim_wand.sp"
+#include "zombie_riot/custom/wand/weapon_autoaim_wand.sp"
 #include "zombie_riot/custom/weapon_arrow_shot.sp"
 //#include "zombie_riot/custom/weapon_pipe_shot.sp"
 #include "zombie_riot/custom/weapon_survival_knife.sp"
@@ -1187,7 +1187,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_charged_handgun.sp"
 #include "zombie_riot/custom/wand/weapon_wand_beam.sp"
 #include "zombie_riot/custom/wand/weapon_wand_lightning_pap.sp"
-#include "zombie_riot/custom/weapon_calcium_wand.sp"
+#include "zombie_riot/custom/wand/weapon_calcium_wand.sp"
 #include "zombie_riot/custom/wand/weapon_wand_calcium_spell.sp"
 #include "zombie_riot/custom/weapon_passive_banner.sp"
 #include "zombie_riot/custom/weapon_zeroknife.sp"
@@ -1557,8 +1557,8 @@ public void OnMapStart()
 	Quantum_Gear_Map_Precache();
 	WandStocks_Map_Precache();
 	
-//	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
-//	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
+	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
+	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
 //	CreateEntityByName("info_populator");
@@ -4083,7 +4083,11 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {
-	if(condition == TFCond_Zoomed && thirdperson[client] && IsPlayerAlive(client))
+	if(condition == TFCond_Cloaked)
+	{
+		TF2_RemoveCondition(client, TFCond_Cloaked);
+	}
+	else if(condition == TFCond_Zoomed && thirdperson[client] && IsPlayerAlive(client))
 	{
 		SetVariantInt(0);
 		AcceptEntityInput(client, "SetForcedTauntCam");

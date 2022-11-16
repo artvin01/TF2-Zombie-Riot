@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 /*
 	Placement Type
 	static Handle SyncHud_Notifaction;
@@ -1330,6 +1331,7 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 				static char buffer[64];
 				if(GetEntityClassname(entity, buffer, sizeof(buffer)) && !StrContains(buffer, "obj_") && GetEntPropEnt(entity, Prop_Send, "m_hBuilder")==client)
 				{
+					TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); //They stay invis in that pos, move away.
 					SetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed", 0.1);
 					CClotBody npc = view_as<CClotBody>(entity);
 					npc.bBuildingIsPlaced = false;
