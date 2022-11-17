@@ -6,6 +6,7 @@
 		"ru" 		"Истинный воин фьюжна прибыл."
 		"pt"		"O Verdadeiro Guerreiro da Fusão chegou."
 		"nl"		"De Ware Fuziekrijger is gearriveerd"
+		"chi"       "真正的融合战士已经到来。"
 	}
 	"Blitzkrieg Spawn"
 	{
@@ -13,6 +14,7 @@
 		"ru" 		"Блицкриг прибыл."
 		"pt"		"Blitzkreig chegou."
 		"nl"		"Blitzkrieg is gearriveerd"
+		"chi"       "闪电战已经到来"
 	}
 	"You have alerted the horde..."
 	{
@@ -20,6 +22,7 @@
 		"ru" 		"Вы привлекли орду..."
 		"pt"		"Você alertou a horda!..."
 		"nl"		"De horde heeft je gehoord..."
+		"chi"       "你惊动了尸群...."
 	}
 	"Destruction echoes through a nearby space..."
 	{
@@ -27,6 +30,7 @@
 		"ru" 		"Эхо разрушений разносится по близлежащему пространству..."
 		"pt"		"Destruição ecoa através de um espaço próximo..."
 		"nl"		"Vernietiging echo's door een diepe ruimte..."
+		"chi"       "毁灭的回声在附近的空间回荡……"
 	}
 	"A massive foe has entered this field..."
 	{
@@ -34,6 +38,7 @@
 		"ru" 		"На это поле вышел огромный враг..."
 		"pt"		"Um enorme inimigo se aproxima..."
 		"nl"		"Een gigantische tegenstander heeft zich tot het veld begeven..."
+		"chi"       "一个强大的敌人进入了这个领域…"
 	}
 	"You can discern faint metalic screams not like the others..."
 	{
@@ -41,6 +46,7 @@
 		"ru" 		"Вы различаете слабые металлические крики, не похожие на другие..."
 		"pt"		"Você pode discernir fracos gritos metálicos não como os outros..."
 		"nl"		"Je kunt doffe metalen schreeuwen horen ongelijk de anderen..."
+		"chi"       "你可以分辨出微弱的金属尖叫声，不像其他的……"
 	}
 	"Distant low rumbles fill the air space..."
 	{
@@ -48,6 +54,7 @@
 		"ru" 		"Отдалённый низкий гул наполняет воздушное пространство..."
 		"pt"		"Ruídos baixos distantes preenchem o espaço aéreo..."
 		"nl"		"Lage, afstandelijke rommelingen vullen het luchtruimte..."
+		"chi"       "远处低沉的隆隆声充斥着空中……"
 	}
 	"Die SS Division hat einer ihrer Infizierten soldaten Gesendet..."
 	{
@@ -55,6 +62,7 @@
 		"ru" 		"Дивизия СС: Sie schickten einen ihrer Infizierten soldaten..."
 		"pt"		"Divisão de morte SS hat einer ihrer Infizierten soldaten Gesendet..."
 		"nl"		"De SS Divisie heeft besmette soldaten gestuurd..."
+		"chi"       "'组织'派出了一名被感染的士兵"
 	}
 	"Faint rattling can be heard, and its approaching at a fast pace..."
 	{
@@ -62,6 +70,7 @@
 		"ru" 		"Слышен слабый скрежет, и он приближается с большой скоростью..."
 		"pt"		"Barulho fraco pode ser ouvido, e sua aproximação em um ritmo rápido..."
 		"nl"		"Doffe ratelingen kunnen gehoord worden, en ze komen snel naar je toe..."
+		"chi"       "隐约可以听到咔哒咔哒的声音，它正以飞快的速度靠近……"
 	}
 	"Something rapidly rams through hordes in your direction..."
 	{
@@ -69,6 +78,7 @@
 		"ru" 		"Что-то стремительно проносится сквозь орды в вашем направлении..."
 		"pt"		"Algo rapidamente atravessa hordas em sua direção..."
 		"nl"		"Er is iets snel door de hordes aan het rammen in uw richting..."
+		"chi"       "有东西迅速穿过人群朝你的方向冲过来。"
 	}
 	"Common means might not stop this agile enemy..."
 	{
@@ -76,18 +86,22 @@
 		"ru" 		"Обычные средства могут не остановить этого проворного врага..."
 		"pt"		"Meios comuns podem não parar esse inimigo ágil..."
 		"nl"		"Gewoon betekend niet dat macht deze lenige vijand gaat stoppen..."
+		"chi"       "普通手段可能无法阻止这个敏捷的敌人……"
 	}
 
 	"Calamity of the Crimson Troupe, codename Phantom."
 	{
 		"en" 		"Calamity of the Crimson Troupe, codename Phantom."
+		"chi"       "深红剧团的灾难，代号幽灵"
 	}
 	"A caped Crimson warrior with Ominous Apparitions is appearing..."
 	{
 		"en" 		"An caped Crimson warrior with Ominous Apparitions is apearing..."
+		"chi"       "一个披着斗篷、带着不祥幻影的深红战士出现了……"
 	}
 	"A patch of shadow. It has never once left, nor has it ever truly existed."
 	{
 		"en" 		"A patch of shadow. It has never once left, nor has it ever truly existed."
+		"chi"       "一片阴影。它从未离开过，也从未真正存在过。"
 	}
 }

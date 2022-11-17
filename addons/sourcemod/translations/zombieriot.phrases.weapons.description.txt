@@ -1,0 +1,1100 @@
+"Phrases"
+{
+
+	"Syringe Gun Desc"
+	{
+		"en"		"Low Damage but very high bleed duration"
+	}
+	"Syringe Gun Pap 1 Desc"
+	{
+		"en"		"Increased damage and attackspeed"
+	}
+	"Syringe Gun Pap 2 Desc"
+	{
+		"en"		"Increased damage and attackspeed"
+	}
+	
+	
+	"Sniper Rifle Pap 1"
+	{
+		"en"		"Increased damage and attackspeed, consumes 2 bullets per shot."
+	}
+	"Sniper Rifle Pap 2"
+	{
+		"en"		"Increased damage and attackspeed, Scoping isnt needed anymore but attacks are delayed."
+	}
+	"Sniper Rifle Pap 3"
+	{
+		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage"
+	}
+	"Sniper Rifle Pap 4"
+	{
+		"en"		"Heavily increased damage and attackspeed"
+	}
+	"Sniper Rifle Pap 5"
+	{
+		"en"		"Increased damage and attackspeed"
+	}
+	
+	"Annabelle Pap 1"
+	{
+		"en"		"Increased damage and attackspeed and extra ammo."
+	}
+	"Annabelle Pap 2"
+	{
+		"en"		"Increased damage and attackspeed and extra ammo."
+	}
+	"Annabelle Pap 3"
+	{
+		"en"		"Increased damage and attackspeed and extra ammo."
+	}
+	"Annabelle Pap 4"
+	{
+		"en"		"Increased damage and attackspeed and extra ammo."
+	}
+	
+	"Huntsman Desc"
+	{
+		"en"		"Can headshot. Press R To fire a barrage"
+	}
+	"Huntsman Pap 1"
+	{
+		"en"		"Increased damage and attackspeed, m2 ability buffed."
+	}
+	"Huntsman Pap 2"
+	{
+		"en"		"Increased damage and attackspeed, m2 ability buffed.\nBase attack now shoots 3 arrows."
+	}
+	
+	"Deagle Desc"
+	{
+		"en"		"Deagle that throws objects with m2, shoot them to deal even more damage.\nTime correctly after a blue flash, and throw multiple for even more damage.\nThis projectile always counts as a HEADSHOT."
+	}
+	"Deagle Pap 1"
+	{
+		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable."
+	}
+	"Deagle Pap 2"
+	{
+		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
+	}
+	"Deagle Pap 3"
+	{
+		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n3 bullets per shot consumed."
+	}
+	
+	"Flamethrower Pap 1"
+	{
+		"en"		"Increased damage. M2 ability gives minicrits and uber for a short time."
+	}
+	
+	"Leone 12 Gauge Super Desc"
+	{
+		"en"		"Semi automatic shotgun, you cannot hold down to shoot.\nMore powerfull but harder to use since its single fire nature and poor accuracy"
+	}
+	"Leone 12 Gauge Super Pap 1"
+	{
+		"en"		"Increased damage and attackspeed, much tighter spread."
+	}
+	
+	"Grenade Launcher Pap 1"
+	{
+		"en"		"Increased damage and attackspeed."
+	}
+	"Grenade Launcher Pap 2"
+	{
+		"en"		"Increased damage and attackspeed."
+	}
+	"Grenade Launcher Pap 3"
+	{
+		"en"		"Increased damage and massively increased attackspeed and reload speed."
+	}
+	
+	"Tommygun Pap 1"
+	{
+		"en"		"Increased damage and attackspeed"
+	}
+	"Tommygun Pap 2"
+	{
+		"en"		"Increased damage and attackspeed"
+	}
+	"Tommygun Pap 3"
+	{
+		"en"		"Increased damage and attackspeed"
+	}
+	
+	"Shrapnel Shredder Desc"
+	{
+		"en"		"A slow shotgun that fires explosive pellets. Can be Pack-a-Punched twice to increase damage, clip size, and number of pellets."
+	}
+	"Shrapnel Shredder Pap 1"
+	{
+		"en"		"Increased damage and attackspeed, extra bullet per shot."
+	}
+	"Shrapnel Shredder Pap 2"
+	{
+		"en"		"Increased damage and attackspeed, extra bullet per shot."
+	}
+	
+	"Double Barrel Shotgun Pap 1"
+	{
+		"en"		"Increased damage and slightly faster attackspeed and reload speed"
+	}
+	"Double Barrel Shotgun Pap 2"
+	{
+		"en"		"Increased damage and attackspeed, reload speed and 4 clip, meaning you can shoot twice."
+	}
+	
+	"RPG Pap 1"
+	{
+		"en"		"Increased damage and reload speed"
+	}
+	"RPG Pap 2"
+	{
+		"en"		"Increased damage, gain an extra rocket, faster reload"
+	}
+	"RPG Pap 3"
+	{
+		"en"		"Massively Increased damage and REDUCED reload speed."
+	}
+	
+	"The Pomson 7000 Desc"
+	{
+		"en"		"Rapid fire laser gun!"
+	}
+	"The Pomson 7000 Pap 1"
+	{
+		"en"		"Increased damage and attackspeed"
+	}
+	
+	"IEM Launcher Desc"
+	{
+		"en"		"Engi says to not touch his stuff, but you don't care"
+	}
+	"IEM Launcher Pap 1"
+	{
+		"en"		"Increased damage and range and less falloff"
+	}
+	
+	"Marksman Rifle Pap 1"
+	{
+		"en"		"Increased damage and attackspeed, Bullets turn into explosive hitscan."
+	}
+	
+	"Quad Launcher Desc"
+	{
+		"en"		"4 shots into 1 spam.." 
+	}
+	"Quad Launcher Pap 1"
+	{
+		"en"		"Increased damage and attackspeed"
+	}
+	
+	"The Loch-n-Load Pap 1"
+	{
+		"en"		"Increased damage and attackspeed"
+	}
+	
+	"Boomstick Desc"
+	{
+		"en"		"Load 4 bullets and shoot all at once"
+	}
+	"Boomstick Pap 1"
+	{
+		"en"		"Increased damage and attackspeed, loads upto 6 shells."
+	}
+	"Boomstick Pap 2"
+	{
+		"en"		"Less Damage but bullets turn into piercing lasers with damage falloff."
+	}
+	
+	"Terroriser Bomb Implanter Sniperrifle Desc"
+	{
+		"en"	"Implant a bomb onto the target you hit, press R to detonate them.\nImplant multiple for more dmg. More charge = more bombs, headshot = more bombs"
+	}
+	
+	"Rampager Automatic Rifle Desc"
+	{
+		"en"	"Rapid Fire LMG with no reload, the more you shoot, the faster it shoots."
+	}
+	
+	"Star Shooter Desc"
+	{
+		"en"	"Sure, Brain, but where are you going to get enough stars for this?"
+	}
+	
+	"Loose Cannon Pap 1"
+	{
+		"en"		"Increased damage and attackspeed"
+	}
+	
+	"Elite Sniper Desc"
+	{
+		"en"	"Trained monkeys master the skills of bouncing bullets, which will go from target to target, killing them."
+	}
+	"Elite Sniper Pap 1"
+	{
+		"en"		"Deals more damage and causes targets to slow and take more damage."
+	}
+	"Elite Sniper Pap 2"
+	{
+		"en"		"Calls in supply drops that gives extra ammo to\nall players and weapon consumes much less ammo."
+	}
+	"Elite Sniper Pap 3"
+	{
+		"en"		"Removes charging but deals twice the damage."
+	}
+	"Elite Sniper Pap 4"
+	{
+		"en"		"Cripples targets heavily, making them slower and take 35% more damage."
+	}
+	"Elite Sniper Pap 5"
+	{
+		"en"		"Decreased cooldown on supply drops, increased attack speed, and bouncing\nbullets for all players is now smart and will target high health targets."
+	}
+	"Elite Sniper Pap 6"
+	{
+		"en"		"Attack speed increases depending on how dire things become."
+	}
+	
+	"The Cow Mangler 6000 Desc"
+	{
+		"en"	"Recharge your weapon slowly before every shot."
+	}
+	"The Cow Mangler 6000 Pap 1"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
+	
+	"Infected Rampager Assult Rifle Desc"
+	{
+		"en"	"Rapid Fire LMG with no reload, the more you shoot, the faster it shoots. Its shot home onto enemies."
+	}
+	
+	"Neutronstar Burst Cannon Desc"
+	{
+		"en"	"Strong for both single and multi target, more targets hit = less damage though.\nDoes more dmg the farther you are, cannot charge."
+	}
+	
+	"USP tactical Desc"
+	{
+		"en"	"Semi automatic pistol PROBLEM: AT HIGH PINGS THIS WEAPON CAN BE BUGGY."
+	}
+	"USP tactical Pap 1"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
+	
+	"Grenade Desc"
+	{
+		"en"	"1000 Dmg Grenade"
+	}
+	"Grenade Pap 1"
+	{
+		"en"	"Massively increased damage"
+	}
+	"Grenade Pap 2"
+	{
+		"en"	"Massively increased damage"
+	}
+	
+	"Medikit Desc"
+	{
+		"en"	"Heals teammates with m1 and yourself with m2"
+	}
+	
+	"Magic Potion Desc"
+	{
+		"en"	"Magic potion to restore your mana fully"
+	}
+	
+	"Flaregun Pap 1"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
+	"Flaregun Pap 2"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
+	"Flaregun Pap 3"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
+	
+	"The Righteous Bison Desc"
+	{
+		"en"	"Basic Laser Pistol. Pierces enemies."
+	}
+	
+	"SMG Pap 1"
+	{
+		"en"	"Increased damage and attackspeed but lower clipsize"
+	}
+	"SMG Pap 2"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
+	"SMG Pap 3"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
+	"SMG Pap 4"
+	{
+		"en"	"Increased damage and attackspeed, Removes clip, infinite clip size."
+	}
+	
+	"People Popper Desc"
+	{
+		"en"	"A fast but inaccurate SMG that fires explosive rounds. Can be Pack-a-Punched twice to increase damage and clip size."
+	}
+	"People Popper Pap 1"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
+	"People Popper Pap 2"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
+	
+	"Medigun Desc"
+	{
+		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing target 25% dmg and resistance during heal."
+	}
+	
+	"Battle Medigun Desc"
+	{
+		"en"	"Deals damage to enemies, uber allows for 3x the dmg. The longer you target one enemy, the more damage you will deal."
+	}
+	"Battle Medigun Pap 1"
+	{
+		"en"	"Increased damage"
+	}
+	"Battle Medigun Pap 2"
+	{
+		"en"	"Uber removed but 2x damage ontop of it.\nM2 shoots projectiles that scale with m1 scaling.\nCan overheat and must cool down.\nGaining uber removed cooldown slowly aswell.\nPress R to cooldown early and at an increased rate.\nAuto cooldown is also faster then normal."
+	}
+	
+	"Charged Handgun Desc"
+	{
+		"en"	"Needs to be charged to do attack."
+	}
+	"Charged Handgun Pap 1"
+	{
+		"en"	"Becomes a machinegun with extreamly high damage but worse ammo efficency for more damage."
+	}
+	
+	"Stickybomb Launcher Pap 1"
+	{
+		"en"	"Increased damage and attackspeed, allows 6 more stickies."
+	}
+	"Stickybomb Launcher Pap 2"
+	{
+		"en"	"Increased damage and massively increased attackspeed and reload speed."
+	}
+	
+	"The Battalion's Backup Desc"
+	{
+		"en"	"Give Resistance to everyone after dealing enough damage, Recieve +50 Extra HP"
+	}
+	
+	"P15t0l Desc"
+	{
+		"en"	"V4lv3 15 n0T duMb, TF2 Ju5t w0rKs"
+	}
+	"P15t0l Pap 1" 
+	{
+		"en"	"Weapon does whatever the fuck it wants now."
+	}
+	
+	"Buff Banner Desc"
+	{
+		"en"	"Give minicrits to everyone after dealing enough damage"
+	}
+	"Buff Banner Pap 1"
+	{
+		"en"	"Buff becomes permanent without having to trigger it."
+	}
+	
+	"PhlogStorms Detonator Desc"
+	{
+		"en"	"I don't think you want to ask much about this one and where the shopkeep got it....."
+	}
+	"PhlogStorms Detonator Pap 1"
+	{
+		"en"	"Increased damage and attack speed"
+	}
+	
+	"Knife Desc"
+	{
+		"en"	"Can backstab and inflicts bleed for a LONG time"
+	}
+	"Knife Pap 1"
+	{
+		"en"	"Increased damage, bleed time and attack speed."
+	}
+	"Knife Pap 2"
+	{
+		"en"	"Tiny Backstab dmg, Increased damage, gain additional Short Effects via [M1]."
+	}
+	"Knife Pap 3"
+	{
+		"en"	"Increased damage, more Short Effects on [M1]."
+	}
+	
+	"Ubersaw Desc"
+	{
+		"en"	"Get 10% uber per melee hit"
+	}
+	
+	"Hammer Pap 1"
+	{
+		"en"	"Increased damage and bleedtime"
+	}
+	"Hammer Pap 2"
+	{
+		"en"	"Increased damage and bleedtime and lower attackspeed.\nYour attacks are so strong that they cause explosions and cause aoe bleed for upto 5 targets."
+	}
+	"Hammer Pap 3"
+	{
+		"en"	"Increased damage and bleedtime"
+	}
+	
+	"Fire Axe Desc"
+	{
+		"en"	"You deal 50% more damage to burning enemies."
+	}
+	"Fire Axe Pap 1"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
+	"Fire Axe Pap 2"
+	{
+		"en"	"Increased damage and attackspeed and bleedtime"
+	}
+	
+	"Survivalist Blade Desc"
+	{
+		"en"	"Can throw knifes with m2"
+	}
+	"Survivalist Blade Pap 1"
+	{
+		"en"	"Increased damage and attackspeed, R changes between modes of throwing 3 knives or only 1"
+	}
+	"Survivalist Blade Pap 2"
+	{
+		"en"	"Increased damage and attackspeed, R Gives you rage which boosts all of your stats for a short time"
+	}
+	
+	"Kunai Desc"
+	{
+		"en"	"Can backstab and bleed, backstab gives health, no matter if it kills or not."
+	}
+	"Kunai Pap 1"
+	{
+		"en"	"Increased damage and attackspeed, backstabbing gives more health"
+	}
+	"Kunai Pap 2"
+	{
+		"en"	"Increased damage and attackspeed, backstabbing gives more health, backstabs have no cooldown and make you laugh."
+	}
+	
+	"Fractured Ark Desc"
+	{
+		"en"	"A legendary blade with magical properties, can parry with m2"
+	}
+	"Fractured Ark Pap 1"
+	{
+		"en"	"Increased damage and attackspeed, M2 Gives Projectiles, parrying something successfully gives more projectiles.\nParry reflect power increased"
+	}
+	"Fractured Ark Pap 2"
+	{
+		"en"	"Increased damage and attackspeed, Even more projectiles, parry reflect power increased"
+	}
+	
+	"Longsword Desc"
+	{
+		"en"	"Causes bleed and 5% extra melee resistance"
+	}
+	"Longsword Pap 1"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
+	"Longsword Pap 2"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
+	"Longsword Pap 3"
+	{
+		"en"	"Increased damage and attackspeed, but you move 10% slower."
+	}
+	
+	"Speed Fists Of Speed Desc"
+	{
+		"en"	"Insert Metal Gear Revengeance Reference."
+	}
+	"Speed Fists Of Speed Pap 1"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
+	
+	"Zerofuse's Knife Desc"
+	{
+		"en"	"Can backstab, Aoe Damage and Has a Rage ability with a Cooldown 1-2mins"
+	}
+	"Zerofuse's Knife Pap 1"
+	{
+		"en"	"Increased damage and attackspeed, You can rage into wrath or defensive form."
+	}
+	"Zerofuse's Knife Pap 2"
+	{
+		"en"	"Increased damage, You can now only rage into wrath."
+	}
+	
+	"Medusa Teslar Stick Desc"
+	{
+		"en"	"Causes bleed, 5% extra melee resistance. Causes debuff on enemy which slows them down and makes them take more damage"
+	}
+	"Medusa Teslar Stick Pap 1"
+	{
+		"en"	"Increased damage and attackspeed, Debuff is massively stronger."
+	}
+	
+	"Fists Of Kahmlstein Desc"
+	{
+		"en"	"Fists sent from the gods forged by the destroyer of galaxies."
+	}
+	"Fists Of Kahmlstein Pap 1"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
+	
+	"Bad Wand Desc"
+	{
+		"en"	"Consumes mana with each shot. M2 Gives extra attackspeed for a short time."
+	}
+	"Bad Wand Pap 1"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
+	"Bad Wand Pap 2"
+	{
+		"en"	"Increased damage and attackspeed and projectile becomes blue"
+	}
+	
+	"Fire Wand Desc"
+	{
+		"en"	"Consumes mana with each shot. M2 Shoots a more powerful Fireball."
+	}
+	"Fire Wand Pap 1"
+	{
+		"en"	"Increaced damage, fires 5 fireballs in quick succesion"
+	}
+	
+	"Cryo Staff Desc"
+	{
+		"en"	"M1 sprays an icy mist like a flamethrower, and will freeze enemies at a certain damage threshold. M2 triggers a small shockwave at your location, which deals massively increased damage to frozen zombies."
+	}
+	"Cryo Staff Pap 1"
+	{
+		"en"	"Increased damage and attackspeed, Debuff is stronger"
+	}
+	"Cryo Staff Pap 2"
+	{
+		"en"	"Increased damage and attackspeed, Debuff is stronger"
+	}
+	
+	"Lightning Staff Desc"
+	{
+		"en"	"Consumes mana with each shot. M2 Summons a very powerful lighting strike."
+	}
+	"Lightning Staff Pap 1"
+	{
+		"en"	"Massively Increased damage and attackspeed, M2 Gains a delay but is way more potent."
+	}
+	
+	"Beam Wand Desc"
+	{
+		"en"	"Hold M1 for a constant beam to evicerate your enemies. M2: Magic overdrive, more mana=stronger but higher CD."
+	}
+	"Beam Wand Pap 1"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
+	"Beam Wand Pap 2"
+	{
+		"en"	"Increased damage and attackspeed"
+	}
+	
+	"Atomic Reconstructor Desc"
+	{
+		"en"	"Consumes mana with each shot, has 2 main attack, Use both in turns for maximum damage."
+	}
+	
+	"Necromancy Staff Desc"
+	{
+		"en"	"Consumes mana with each shot. M2 Summons 1 Combine DDT on your side."
+	}
+	"Necromancy Staff Pap 1"
+	{
+		"en"	"Increased damage and attackspeed, loses camo detection"
+	}
+	
+	"Homing Staff Desc"
+	{
+		"en"	"Consumes mana with each shot. M2 Summons a shotgun of shots. These shots home onto enemies."
+	}
+	
+	"Wind Staff Desc"
+	{
+		"en"	"Causes Aoe Wind Storms that damage over time."
+	}
+	
+	"Elemental Staff Desc"
+	{
+		"en"	"Consumes mana with each shot. M2 Summons a Earth Shattering Aimed Quake."
+	}
+	
+	"Throwable Armor Grenade Desc"
+	{
+		"en"	"Throw a grenade that gives armor over time. Upgraded if the target just has better armor upgrades."
+	}
+	
+	"Experimental Burst Pack Desc"
+	{
+		"en"	"A weak dash. When downed, use emergency dash with its own cooldown!"
+	}
+	
+	"Throwable Survival Grenade Desc"
+	{
+		"en"	"Throw a grenade that heals over time and slowly revivies teammates, must still manually revive.\nUpgraded with certificaes with a medigun equipped."
+	}
+	
+	"Deployable Quantum Suit Desc"
+	{
+		"en"	"Deploy a suit of armor from the sky to assist you in combat.\nIts Strength scales with your money you have spend in total.\nDying with the suit on will break the suit and save you.\nPerks do not work, but perk-a-colas do."
+	}
+	
+	"Ranged Spike Layer Desc"
+	{
+		"en"	"The more senty damage you have, the more damage this weapon does.\nWeapon upgrades such as damage will not affect this." 
+	}
+	
+	"Aresenal's Tripmine Layer Desc"
+	{
+		"en"	"The more senty damage you have, the more damage this weapon does.\nWeapon upgrades such as damage will not affect this." 
+	}
+	
+	"Heavy Charge Builder Laser Desc"
+	{
+		"en"	"Shoot a powerfull laser that scales with building damage."
+	}
+	
+	"Wrangler Desc"
+	{
+		"en"	"While out, sentry will attack 10% faster and deal 35% more damage, but you have to controll it yourself."
+	}
+	"Wrangler Pap 1"
+	{
+		"en"	"buffed sentry attackspeed and damage when out."
+	}
+	
+	"Nail Gun Desc"
+	{
+		"en"	"Builder starter weapon so they can actually deal damage."
+	}
+	
+	"Mechanical Medigun Desc"
+	{
+		"en"	"Buffs and heals buildings. Uber amplifies the Buffs by alot. Requires Handling books."
+	}
+	
+	"Mounter Desc"
+	{
+		"en"	"Mount a building to your back by pressing m2 on a building, demount by pressing m2 again with this.\nPress R in the sky to use your mounted building."
+	}
+	
+	"Wrench Desc"
+	{
+		"en"	"Repairs buildings and sentrys, have in hand to pickup buildings, works with any wrench."
+	}
+	
+	"Texan business Desc"
+	{
+		"en"	"A melee Wrench that scales with builder damage.\nM2 to Lunge and for the next attack to deal 2x the damage.\nYou need to have enough upgrades for this to work."
+	}
+	
+	"Buildable Elevation Desc"
+	{
+		"en"	"Each time you buy it, its cost Increases by 100, cant go above 5000 cost.\nThis is primarily there to lift up your sentry to it can attack better, use with caution.\nHas VERY low health."
+	}
+	
+	"Buildable Barricade Desc"
+	{
+		"en"	"Each wave increaces its cost, you may only have 2 barricades built at once."
+	}
+	
+	"Buildable Armortable Desc"
+	{
+		"en"	"usage of this machine will give you Armor.\nFirst buy is double the price."
+	}
+	
+	"Buildable Armortable Desc"
+	{
+		"en"	"usage of this machine will give you Ammo for your current holding weapon.\nFirst buy is double the price."
+	}
+	
+	"Buildable Perk Machine Desc"
+	{
+		"en"	"usage of this machine will give you an extra perk that vanishes on death/downed.\nFirst buy is double the price."
+	}
+	
+	"Buildable Pack-a-Punch Desc"
+	{
+		"en"	"usage of this machine will give you a boost to your holding weapon with a credit requirement.\nFirst buy is double the price."
+	}
+	
+	"Buildable Sentry Desc"
+	{
+		"en"	"Infinite uses with cooldown."
+	}
+	
+	"Buildable Mortar Desc"
+	{
+		"en"	"Press MEDIC to select a place for the morter to unleash a shell onto. Infinite uses with cooldown."
+	}
+	
+	"Buildable Railgun Desc"
+	{
+		"en"	"Use it with MEDIC to make it shoot a giant laser. Infinite uses with cooldown."
+	}
+	
+	"Buildable Healing Station Desc"
+	{
+		"en"	"Heals for 30 Health, its rather weak but good if you need tiny heals early on and cant affort a secondary slot for the medikit."
+	}
+	
+	"Buildable Village Desc"
+	{
+		"en"	"Provides various buffs to teammates and can be upgraded for more buffs.\nBuffs bought stay regardless if broken and rebuild."
+	}
+	
+	"Cannibalism Desc"
+	{
+		"en"	"+7 HP on melee kill, You can now eat metal and flesh gibs to regain health.\nHealth Regained depends on your health on kill attribute."
+	}
+	
+	"Copium Desc"
+	{
+		"en"	"25% melee resistance with melee equiped"
+	}
+	
+	"Cocain Desc"
+	{
+		"en"	"15% more melee attack speed"
+	}
+	
+	"Steroids Desc"
+	{
+		"en"	"30% more melee damage, +4 HP on kill and +50 HP, +5% melee resistance with melee equiped"
+	}
+	
+	"LSD Desc"
+	{
+		"en"	"1.5x increased Melee Damage, +5 HP on kill and +100 HP, +5% melee resistance with melee equiped"
+	}
+	
+	"Crystal Meth Desc"
+	{
+		"en"	"1.5x increased Melee Damage, +8 HP on kill and +200 HP, +5% melee resistance with melee equiped"
+	}
+	
+	"God's Might Desc"
+	{
+		"en"	"1.5x increased Melee Damage, +12 HP on kill and +300 HP, +7% melee resistance with melee equiped"
+	}
+	
+	"Bob's Enhancer Desc"
+	{
+		"en"	"2x increased Melee Damage, +22 HP on kill and +600 HP, +7% melee resistance with melee equiped"
+	}
+	
+	"Repair Handling book for dummies Desc"
+	{
+		"en"	"50% more mepair Rate"
+	}
+	
+	"Construction Novice Desc"
+	{
+		"en"	"50% more building health and 2.0x sentry damage, 1 more support building added"
+	}
+	
+	"Ikea Repair Handling book Desc"
+	{
+		"en"	"2x Repair Rate"
+	}
+	
+	"Engineering Repair Handling book Desc"
+	{
+		"en"	"2x Repair Rate"
+	}
+	
+	"Construction Apprentice Desc"
+	{
+		"en"	"65% more building health and 2.0x Sentry damage, 2 more support buildings added"
+	}
+	
+	"Alien Repair Handling book Desc"
+	{
+		"en"	"2.5x Repair Rate"
+	}
+	
+	"Construction Worker Desc"
+	{
+		"en"	"65% more building health, increased sentry dmg by 1.75x and increased attack speed by 1.5x, 3 more support buildings added"
+	}
+	
+	"Cosmic Repair Handling book Desc"
+	{
+		"en"	"3x Repair Rate"
+	}
+	
+	"Construction Expert Desc"
+	{
+		"en"	"1.7x more building health and 2.5x Sentry damage and increased attack speed by 1.5x, 4 more support buildings added"
+	}
+	
+	"Construction Master Desc"
+	{
+		"en"	"1.4x more building health and 3.3x Sentry damage, 5 more support buildings added"
+	}
+	
+	"Construction Killer Desc"
+	{
+		"en"	"1.9x Sentry damage"
+	}
+	
+	"Accurate Marksman Desc"
+	{
+		"en"	"20% more accuracy and 20% faster projectile speed"
+	}
+	
+	"Ammo Coat Desc"
+	{
+		"en"	"40% increased Weapon Damage"
+	}
+	
+	"Ammo Coat Elite Desc"
+	{
+		"en"	"60% increased Weapon Damage"
+	}
+	
+	"Antidote Coated Bullets Desc"
+	{
+		"en"	"60% increased Weapon Damage"
+	}
+	
+	"Anti-Matter Bullets Desc"
+	{
+		"en"	"65% increased Weapon Damage"
+	}
+	
+	"Magical Haste Desc"
+	{
+		"en"	"25% Faster Mage Fire Speed and 50% Mana Regen and Max Mana"
+	}
+	
+	"Magical Book Desc"
+	{
+		"en"	"60% More Mage Damage"
+	}
+	
+	"Hastening Potion Desc"
+	{
+		"en"	"15% Faster Mage Fire Speed and 50% Mana Regen and Max Mana, 50+ HP and 5% melee resistance"
+	}
+	
+	"The Bombinomicon Desc"
+	{
+		"en"	"65% More Mage Damage"
+	}
+	
+	"Betweenlands Potion Desc"
+	{
+		"en"	"20% Faster Mage Fire Speed and 100% Mana Regen and Max Mana, 100+ HP and 5% melee resistance"
+	}
+	
+	"Master Sorcerer Desc"
+	{
+		"en"	"70% More Mage Damage"
+	}
+	
+	"Bob's Magic Desc"
+	{
+		"en"	"75% More Mage Damage"
+	}
+	
+	"Body armor Desc"
+	{
+		"en"	"Increace How much armor you get per use and max cap. +25 HP"
+	}
+	
+	"Kevlar Desc"
+	{
+		"en"	"Increace How much armor you get per use and max cap. +100 HP"
+	}
+	
+	"Heavy Vest Desc"
+	{
+		"en"	"Increace How much armor you get per use and max cap. +150 HP"
+	}
+	
+	"Jesus's Blessing Desc"
+	{
+		"en"	"+300 Health and life regen 1% of your max hp per second upto half your HP, during bleedout, you also will survive for longer."
+	}
+	
+	"Full Riot Gear Desc"
+	{
+		"en"	"Increace How much armor you get per use and max cap. +150 HP"
+	}
+	
+	"Healthy Apple from Bob Desc"
+	{
+		"en"	"+1500 HP"
+	}
+	
+	"Doctor Certificate Desc"
+	{
+		"en"	"2x Medigun Hurt and Heal and 5% melee resistance with Secondary/Medigun out"
+	}
+	
+	"Professor Certificate Desc"
+	{
+		"en"	"1.65x Medigun Hurt and Heal and 5% melee resistance with Secondary/Medigun out"
+	}
+	
+	"Death Certificate Desc"
+	{
+		"en"	"1.5x Medigun Hurt and Heal and +2 seconds of uber and 5% melee resistance with Secondary/Medigun out"
+	}
+	
+	"Reaper's Certificate Desc"
+	{
+		"en"	"1.5x Medigun Hurt and Heal and +1 seconds of uber and 5% melee resistance with Secondary/Medigun out"
+	}
+	
+	"Hell's Certificate Desc"
+	{
+		"en"	"1.5x Medigun Hurt and Heal and +1 seconds of uber and 5% melee resistance with Secondary/Medigun out"
+	}
+	
+	"Medic's Lost Medical Lisence Desc"
+	{
+		"en"	"1.5x Medigun Hurt and Heal and 5% melee resistance with Secondary/Medigun out"
+	}
+	
+	"Panic Attack Desc"
+	{
+		"en"	"You attack 15% slower but the lower your health is, the faster you attack, upto 25% faster, doesnt work with last man alive."
+	}
+	
+	"Barbarians Mind Desc"
+	{
+		"en"	"Your melee will deal 10% more damage, and you will take 5% less damage overall, but all your other weapons will be completly useless and deal NO damage."
+	}
+	
+	"Face Stabber Desc"
+	{
+		"en"	"Allows you to backstab anywhere on the enemy.\nAlthough your backstab damage is reduced by 60%\nRemoving 2x dmg if the npc focuses on you if you backstab.\nHealing attributes upon backstab are reduced by 65%..."
+	}
+	
+	"Mechanic Desc"
+	{
+		"en"	"15% more health to buildings, but 15 less health and 5% less movement speed"
+	}
+	
+	"Wrenchy Hands Desc"
+	{
+		"en"	"35% less melee and secondary damage (doesnt include builder weapons), but 25% Faster Repair for both melee and secondary"
+	}
+	
+	"Sniper Sentry Desc"
+	{
+		"en"	"Double damage, 2.3x slower attack speed, 2x range for sentryguns and alike"
+	}
+	
+	"Minigun Sentry Desc"
+	{
+		"en"	"10% less damage, 1.15x Attack speed, 0.5x range for sentryguns and alike"
+	}
+	
+	"Glass Cannon Blueprints Desc"
+	{
+		"en"	"30% more building damage, 75% less building HP, can only have 1 support buidling/cant build more/claim more."
+	}
+	
+	"Build Collider Disabler Desc"
+	{
+		"en"	"Allows you to move through your own buildings."
+	}
+	
+	"Heavy Caliber Desc"
+	{
+		"en"	"15% more Weapon damage, but 10% less firerate"
+	}
+	
+	"Army Belt Desc"
+	{
+		"en"	"15% Faster reload but have a 2x longer weapon switch"
+	}
+	
+	"Headshot Affinity Desc"
+	{
+		"en"	"Headshots deal 2.0x the dmg instead of 1.65x, but deal 35% less bodyshot damage"
+	}
+	
+	"Mage Fragility Desc"
+	{
+		"en"	"25% more max mana and mana regen but you will have 100 less HP"
+	}
+	
+	"Heavy Fat Desc"
+	{
+		"en"	"10% slower movementspeed, but +200 health"
+	}
+	
+	"Android Desc"
+	{
+		"en"	"You take 5% less damage overall but have -50 health."
+	}
+	
+	"Soft Shoes Desc"
+	{
+		"en"	"Take 35% less fall damage!"
+	}
+	
+	"Hardened Stance Desc"
+	{
+		"en"	"Take half the Knockback, can be an upside OR downside..."
+	}
+	
+	"Left For Dead Desc"
+	{
+		"en"	"You slowly revive yourself ONCE a wave.\nDying again when the cooldown is off will just instnatly kill you.\nNobody can revive you faster during this."
+	}
+	
+	"Level 15 Peashooter Desc"
+	{
+		"en"	"You went far enough to deserve this gun for free at the start. It's abit worse than the others, but it'll do. (lol)"
+	}
+	
+	"Rusty Wrench Desc"
+	{
+		"en"	"Repairs buildings and sentrys, the worst of the worst. But free."
+	}
+
+	"Cheap Barricade Desc"
+	{
+		"en"	"One use Cheap Free Barricade"
+	}
+}

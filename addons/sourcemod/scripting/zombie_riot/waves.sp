@@ -1187,18 +1187,23 @@ void Waves_Progress()
 			}
 		}
 	}
-	/*if(CurrentRound == 0)
+	if(CurrentRound == 0)
 	{
+		if(StartCash < 10000)
+			Store_RemoveSellValue();
+
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client)==2)
 			{
 				Ammo_Count_Ready[client] = 8;
 				if(StartCash < 10000)
+				{
 					CashSpent[client] = StartCash;
+				}
 			}
 		}
-	}*/
+	}
 	if(CurrentWave == 0)
 	{
 		Renable_Powerups();
