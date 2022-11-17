@@ -2,7 +2,21 @@
 #pragma newdecls required
 
 int iBuildingDependency[2049] = {0, ...};
-
+/*
+static const float ViewHeights[] =
+{
+	75.0,
+	65.0,
+	75.0,
+	68.0,
+	68.0,
+	75.0,
+	75.0,
+	68.0,
+	75.0,
+	68.0
+};
+*/
 DynamicHook dtIsPlacementPosValid;
 
 public void OnPluginStart_Build_on_Building()
@@ -163,6 +177,41 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		return MRES_ChangedOverride;
 	}
 
+	float fAng[3], fPos[3];
+	GetClientEyeAngles(client, fAng);
+//	GetClientEyePosition(client, fPos);
+	GetClientAbsOrigin(client, fPos);
+	fPos[2] += 70.0; //Default is on average 70. so lets keep it like that.
+	fAng[0] = 0.0; //We dont care about them looking down or up
+	fAng[2] = 0.0; //This shoulddnt be accounted for!
+
+	float tmp[3];
+	float actualBeamOffset[3];
+	float BEAM_BeamOffset[3];
+	BEAM_BeamOffset[0] = 70.0;
+	BEAM_BeamOffset[1] = 0.0;
+	BEAM_BeamOffset[2] = 0.0;
+
+	tmp[0] = BEAM_BeamOffset[0];
+	tmp[1] = BEAM_BeamOffset[1];
+	tmp[2] = 0.0;
+	VectorRotate(tmp, fAng, actualBeamOffset);
+	actualBeamOffset[2] = BEAM_BeamOffset[2];
+	fPos[0] += actualBeamOffset[0];
+	fPos[1] += actualBeamOffset[1];
+	fPos[2] += actualBeamOffset[2];
+
+	/*
+	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+	TE_SetupBeamPoints(fPos, vectest, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+	TE_SendToAll();
+	*/
+	//Visualise the box for the player!
+	static float m_vecMaxs[3];
+	static float m_vecMins[3];
+	m_vecMaxs = view_as<float>( { 20.0, 20.0, 50.0 } );
+	m_vecMins = view_as<float>( { -20.0, -20.0, 0.0 } );	
+
 	CClotBody npc = view_as<CClotBody>(pThis);
 	
 	npc.bBuildingIsStacked = false;
@@ -180,6 +229,9 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		}
 		if(IsValidClient(client))
 		{
+			fPos[2] -= 69.0; //This just goes to the ground entirely. and three higher so you can see the bottom of the box.
+			TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({0, 255, 0, 255}));
+				
 			if(f_DelayBuildNotif[client] < GetGameTime())
 			{
 				f_DelayBuildNotif[client] = GetGameTime() + 0.25;
@@ -190,17 +242,17 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		}
 		return MRES_Ignored;
 	}
-	float position[3];
-	GetEntPropVector(pThis, Prop_Send, "m_vecOrigin", position);
 	
 	float endPos[3];
 	int buildingHit=0;
-	if(IsValidGroundBuilding(position , 130.0, endPos, buildingHit, pThis)) //130.0
+
+	if(IsValidGroundBuilding(fPos , 130.0, endPos, buildingHit, pThis)) //130.0
 	{
 		if(iBuildingDependency[buildingHit])
 		{
 			if(IsValidClient(client))
 			{
+				TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({255, 0, 0, 255}));
 				if(f_DelayBuildNotif[client] < GetGameTime())
 				{
 					f_DelayBuildNotif[client] = GetGameTime() + 0.25;
@@ -257,6 +309,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		{
 			if(IsValidClient(client))
 			{
+				TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({255, 0, 0, 255}));
 				if(f_DelayBuildNotif[client] < GetGameTime())
 				{
 					f_DelayBuildNotif[client] = GetGameTime() + 0.25;
@@ -280,6 +333,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		RequestFrame(Frame_TeleportBuilding, datapack);
 		if(IsValidClient(client))
 		{
+			TE_DrawBox(client, endPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({0, 255, 0, 255}));
 			if(f_DelayBuildNotif[client] < GetGameTime())
 			{
 				f_DelayBuildNotif[client] = GetGameTime() + 0.25;
@@ -293,6 +347,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 	}
 	if(IsValidClient(client))
 	{
+		TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({255, 0, 0, 255}));
 		if(f_DelayBuildNotif[client] < GetGameTime())
 		{
 			f_DelayBuildNotif[client] = GetGameTime() + 0.25;

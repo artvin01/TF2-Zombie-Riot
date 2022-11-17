@@ -547,7 +547,7 @@ int i_WandOwner[MAXENTITIES]; //
 int i_WandWeapon[MAXENTITIES]; //
 int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever ever. lag max otherwise.
 
-//int g_iLaserMaterial, g_iHaloMaterial;
+int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
 
 
 #define EXPLOSION_AOE_DAMAGE_FALLOFF 1.7
@@ -1165,7 +1165,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/wand/weapon_wand_lightning_spell.sp"
 #include "zombie_riot/custom/wand/weapon_necromancy_wand.sp"
 #include "zombie_riot/custom/wand/weapon_wand_necro_spell.sp"
-#include "zombie_riot/custom/weapon_autoaim_wand.sp"
+#include "zombie_riot/custom/wand/weapon_autoaim_wand.sp"
 #include "zombie_riot/custom/weapon_arrow_shot.sp"
 //#include "zombie_riot/custom/weapon_pipe_shot.sp"
 #include "zombie_riot/custom/weapon_survival_knife.sp"
@@ -1187,7 +1187,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_charged_handgun.sp"
 #include "zombie_riot/custom/wand/weapon_wand_beam.sp"
 #include "zombie_riot/custom/wand/weapon_wand_lightning_pap.sp"
-#include "zombie_riot/custom/weapon_calcium_wand.sp"
+#include "zombie_riot/custom/wand/weapon_calcium_wand.sp"
 #include "zombie_riot/custom/wand/weapon_wand_calcium_spell.sp"
 #include "zombie_riot/custom/weapon_passive_banner.sp"
 #include "zombie_riot/custom/weapon_zeroknife.sp"
@@ -1557,8 +1557,8 @@ public void OnMapStart()
 	Quantum_Gear_Map_Precache();
 	WandStocks_Map_Precache();
 	
-//	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
-//	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
+	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
+	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
 //	CreateEntityByName("info_populator");
@@ -2980,15 +2980,12 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	}
 	else if(buttons & IN_ATTACK2)
 	{
-		PrintToConsole(client,"In_attack2 Happend");
 		holding[client] = IN_ATTACK2;
 		
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		PrintToConsole(client,"Weapon Is %i", weapon_holding);
 		b_IgnoreWarningForReloadBuidling[client] = false;
 		if(IsValidEntity(weapon_holding))
 		{
-			PrintToConsole(client,"Weapon Is Valid.");
 			char classname[32];
 			GetEntityClassname(weapon_holding, classname, 32);
 			Action action = Plugin_Continue;
@@ -2997,7 +2994,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 
 			if(EntityFuncAttack2[weapon_holding] && EntityFuncAttack2[weapon_holding]!=INVALID_FUNCTION)
 			{
-				PrintToConsole(client,"Weapon has an valid function.");
 				bool result = false; //ignore crit.
 				int slot = 2;
 				Call_StartFunction(null, EntityFuncAttack2[weapon_holding]);
@@ -3009,20 +3005,16 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 			if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
 			{
-				PrintToConsole(client,"Weapon is melee.");
 				if(EntityFuncAttack2[weapon_holding] != MountBuildingToBack && TeutonType[client] == TEUTON_NONE)
 				{
-					PrintToConsole(client,"Weapon is not MountBuildingToBack.");
 					b_IgnoreWarningForReloadBuidling[client] = true;
 					Pickup_Building_M2(client, weapon, false);
 				}
 			}
 		}
 		StartPlayerOnlyLagComp(client, true);
-		PrintToConsole(client,"Mouse2 interact");
 		if(InteractKey(client, weapon_holding, false)) //doesnt matter which one
 		{
-			PrintToConsole(client,"Mouse2 interacted");
 			buttons &= ~IN_ATTACK2;
 			EndPlayerOnlyLagComp(client);
 			return Plugin_Changed;
@@ -4083,7 +4075,11 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {
-	if(condition == TFCond_Zoomed && thirdperson[client] && IsPlayerAlive(client))
+	if(condition == TFCond_Cloaked)
+	{
+		TF2_RemoveCondition(client, TFCond_Cloaked);
+	}
+	else if(condition == TFCond_Zoomed && thirdperson[client] && IsPlayerAlive(client))
 	{
 		SetVariantInt(0);
 		AcceptEntityInput(client, "SetForcedTauntCam");
