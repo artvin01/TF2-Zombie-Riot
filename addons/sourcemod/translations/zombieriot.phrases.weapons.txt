@@ -255,7 +255,7 @@
 		"de"		"Der Lochnesser"
 		"pt"		"Lança Granadas do Lago Ness"
 		"nl"		"De Loch-N-Load"
-		//"chi"       "弓箭"
+		"chi"       "复合枪"
 	}
 	"Boomstick"
 	{
@@ -264,7 +264,7 @@
 		"de"		"Kaboomstock"
 		"pt"		"Cano de Vassoura"
 		"nl"		"Boomstick"
-		//"chi"       "弓箭"
+		"chi"       "炸裂散弹枪"
 	}
 	"Terroriser Bomb Implanter Sniperrifle"
 	{
@@ -317,6 +317,7 @@
 		"de"		"Der Kuhmetzler 6000"
 		"pt"		"Avacalhador 6000"
 		"nl"		"De Koeienmangeler 6000"
+		"chi"       "猛牛6000"
 	}
 	"Anti Material Rifle"
 	{
@@ -584,6 +585,7 @@
 		"de"		"Übersäge"
 		"pt"		"Uberserra"
 		"nl"		"Uberzaag"
+		"chi"       "充能锯"
 	}
 	"Hammer"
 	{
@@ -717,7 +719,7 @@
 		"de"		"Homing-Stab"
 		"pt"		"Cajado Teleguiado"
 		"nl"		"geleidend staf"
-		//"chi"       "腐败神杖"
+		"chi"       "归属神杖"
 	}
 	"Wind Staff"
 	{
@@ -753,7 +755,7 @@
 		"de"		"Baubare Erhebung"
 		"pt"		"Elevação Construível"
 		"nl"		"Bouwbare verhoging"
-		"chi"       "卫星"
+		"chi"       "豆腐渣工程路障"
 	}
 	"Buildable Barricade"
 	{
@@ -807,7 +809,7 @@
 		"de"		"Baubare Sentry"
 		"pt"		"Sentinela Construível"
 		"nl"		"Bouwbare schildwacht"
-		"chi"       "炮台"
+		"chi"       "自动哨兵"
 	}
 	"Buildable Mortar"
 	{
@@ -836,6 +838,16 @@
 		"nl"		"Bouwbare genezingsstation"
 		"chi"       "治疗站"
 	}
+	"Buildable Village"
+	{
+		"en"        "Buildable Village"
+		"chi"       "建筑升级器"
+	}
+	"Chooseable Buildings (Only one)"
+	{
+		"en"        "Chooseable Buildings (Only one)"
+		"chi"       "该列表只允许放置一个建筑物"
+	}
 	"Upgrades"//Upgrades here!!!!
 	{
 		"en"		"Upgrades"
@@ -861,7 +873,7 @@
 		"de"		"Kannibalismus"
 		"pt"		"Canibalismo"
 		"nl"		"Kannibalisme"
-		"chi"       "食人"
+		"chi"       "嗜血强化剂"
 	}
 	"Copium"
 	{
@@ -870,6 +882,7 @@
 		"de"		"Copium"
 		"pt"		"Copium"
 		"nl"		"Kopium"
+		"chi"       "摇头丸"
 	}
 	"Cocain"
 	{
@@ -1829,5 +1842,160 @@
 		"de"		"Spielvorbereitung [Legendär]"
 		"pt"		"Preparação antes Jogo [Lendário]"
 		"nl"		"Voorspel Voorbereiding [Legendarisch]"
+	}
+	"Builder Gear"
+	{
+	     "en"       "Builder Gear"
+	     "chi"       "建筑"
+	}
+	"Shrapnel Shredder"
+	{
+	     "en"       "Shrapnel Shredder"
+	     "chi"       "弹片碎纸机"
+	}
+	"The Pomson 7000"
+	{
+	     "en"       "The Pomson 7000"
+	     "chi"       "破神7000"
+	}
+	"Leone 12 Gauge Super"
+	{
+	     "en"       "Leone 12 Gauge Super"
+	     "chi"       "超大口径雷诺"
+	}
+	"IEM Launcher"
+	{
+	     "en"       "IEM Launcher"
+	     "chi"       "超电磁炮"
+	}
+	"Quad Launcher"
+	{
+	     "en"       "Quad Launche"
+	     "chi"       "四管发射炮"
+	}
+	"Terroriser Bomb lmplanter Sniperrifle"
+	{
+	     "en"       "Terroriser Bomb lmplanter Sniperrifle"
+	     "chi"       "恐怖分子炸弹植入者狙击步枪"
+	}
+	"Neutronstar Burst Cannon"
+	{
+	     "en"       "Neutronstar Burst Cannon"
+	     "chi"       "中子星爆炸炮"
+	}
+	"People Popper"
+	{
+	     "en"       "People Popper"
+	     "chi"       "人·波普尔"
+	}
+	"Fusions Blade"
+	{
+	     "en"       "Fusions Blade"
+	     "chi"       "熔岩刀"
+	}
+	"Fractured Ark"
+	{
+	     "en"       "Fractured Ark"
+	     "chi"       "断裂方舟"
+	}
+	"Zerofuse's Knife"
+	{
+	     "en"       "Zerofuse's Knife"
+	     "chi"       "零度刃"
+	}
+	"Medusa Teslar Stick"
+	{
+	     "en"       "Medusa Teslar Stick"
+	     "chi"       "美杜莎·特斯拉手杖"
+	}
+	"Beam Wand"
+	{
+	     "en"       "Beam Wand"
+	     "chi"       "寒冰法杖"
+	}
+	"Cryo Staff"
+	{
+	     "en"       "Beam Wand"
+	     "chi"       "约束神杖"
+	}
+	"Atomic Reconstructor"
+	{
+	     "en"       "Atomic Reconstructor"
+	     "chi"       "原子重构器"
+	}
+	"Only one allowed, sell to see and buy others."
+	{
+	     "en"       "Only one allowed, sell to see and buy others."
+	     "chi"       "只允许装备一个"
+	}
+	"Throwable Armor Grenade"
+	{
+	     "en"       "Throwable Armor Grenade"
+	     "chi"       "可投掷装甲掷弹机"
+	}
+	"Experimental Burst Pack"
+	{
+	     "en"       "Experimental Burst Pack"
+	     "chi"       "试验性爆破装置"
+	}
+	"Throwable Survival Grenade"
+	{
+	     "en"       "Throwable Survival Grenade"
+	     "chi"       "投掷式救生手榴弹"
+	}
+	"Deployable Quantum Suit"
+	{
+	     "en"       "Deployable Quantum Suit"
+	     "chi"       "可部署量子套装"
+	}
+	"Primary Builder Weapons"
+	{
+	     "en"       "Primary Builder Weapons"
+	     "chi"       "建筑性主武器"
+	}
+	"Secondary Builder Weapons"
+	{
+	     "en"       "Secondary Builder Weapons"
+	     "chi"       "建筑性副武器"
+	}
+	"Melee Builder Weapons"
+	{
+	     "en"       "Melee Builder Weapons"
+	     "chi"       "建筑性近战武器"
+	}
+	"Extra Gear"
+	{
+	     "en"       "Extra Gear"
+	     "chi"       "科技装置"
+	}
+	"Elite Sniper"
+	{
+	     "en"       "Elite Sniper"
+	     "chi"       "精英狙击手"
+	}
+	"All ltems here are affected by Building Upgrades."
+	{
+	     "en"       "All ltems here are affected by Building Upgrades."
+	     "chi"       "所有有关建筑的物品已被归类到此列表"
+	}
+	"TIP: Only one path can have a tier 3 upgrade" //卫星列表
+	{
+	     "en"       "TIP: Only one path can have a tier 3 upgrade"
+	     "chi"       "提示:只有一个项目可以进行三级升级"
+	}
+	"Bigger Radius"
+	{
+	     "en"       "Bigger Radius"
+	     "chi"       "更大的范围"
+	}
+	"Jungle Drums"
+	{
+	     "en"       "Jungle Drums"
+	     "chi"       "更快的速度"
+	}
+	"Grow Blocker"
+	{
+	     "en"       "Grow Blocker"
+	    // "chi"       "重置"
 	}
 }

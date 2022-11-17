@@ -4,123 +4,151 @@
 	"Syringe Gun Desc"
 	{
 		"en"		"Low Damage but very high bleed duration"
+		"chi"       "低伤害，但流血持续时间非常高"
 	}
 	"Syringe Gun Pap 1 Desc"
 	{
 		"en"		"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度"
 	}
 	"Syringe Gun Pap 2 Desc"
 	{
 		"en"		"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度"
 	}
 	
 	
 	"Sniper Rifle Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, consumes 2 bullets per shot."
+		"chi"       "增加伤害和攻击速度，每次射击消耗2发子弹。"
 	}
 	"Sniper Rifle Pap 2"
 	{
 		"en"		"Increased damage and attackspeed, Scoping isnt needed anymore but attacks are delayed."
+		"chi"       "增加伤害和攻击速度，增大攻击范围，但换弹速度加长"
 	}
 	"Sniper Rifle Pap 3"
 	{
 		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage"
+		"chi"       "昂贵的超级升级，每5颗子弹将造成大量伤害"
 	}
 	"Sniper Rifle Pap 4"
 	{
 		"en"		"Heavily increased damage and attackspeed"
+		"chi"       "大幅增加伤害和攻击速度"
 	}
 	"Sniper Rifle Pap 5"
 	{
 		"en"		"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度"
 	}
 	
 	"Annabelle Pap 1"
 	{
 		"en"		"Increased damage and attackspeed and extra ammo."
+		"chi"       "增加伤害和攻击速度和额外的弹药。"
 	}
 	"Annabelle Pap 2"
 	{
 		"en"		"Increased damage and attackspeed and extra ammo."
+		"chi"       "增加伤害和攻击速度和额外的弹药。"
 	}
 	"Annabelle Pap 3"
 	{
 		"en"		"Increased damage and attackspeed and extra ammo."
+		"chi"       "增加伤害和攻击速度和额外的弹药。"
 	}
 	"Annabelle Pap 4"
 	{
 		"en"		"Increased damage and attackspeed and extra ammo."
+		"chi"       "增加伤害和攻击速度和额外的弹药。"
 	}
 	
 	"Huntsman Desc"
 	{
 		"en"		"Can headshot. Press R To fire a barrage"
+		"chi"       "可以造成爆头伤害！按下R键发射多个弓箭"
 	}
 	"Huntsman Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed."
+		"chi"       "增加伤害和攻击速度，鼠标右键可以激活技能。"
 	}
 	"Huntsman Pap 2"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed.\nBase attack now shoots 3 arrows."
+		"chi"       "增加伤害和攻击速度，鼠标右键可以激活技能。普通攻击现在发射3支箭。"
 	}
 	
 	"Deagle Desc"
 	{
 		"en"		"Deagle that throws objects with m2, shoot them to deal even more damage.\nTime correctly after a blue flash, and throw multiple for even more damage.\nThis projectile always counts as a HEADSHOT."
+		"chi"       "用鼠标右键发射光球，射击它们可以造成更多伤害。在闪光后，可以扔多个造成更多的伤害。这个弹丸永远算作爆头。"
 	}
 	"Deagle Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable."
+		"chi"       "增加伤害和攻击速度，鼠标右键的投掷物+1。"
 	}
 	"Deagle Pap 2"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
+		"chi"       "增加伤害和攻击速度，鼠标右键的投掷物+1。\n每发子弹消耗2颗子弹"
 	}
 	"Deagle Pap 3"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n3 bullets per shot consumed."
+		"chi"       "增加伤害和攻击速度，鼠标右键的投掷物+1。\n每发子弹消耗3颗子弹"
 	}
 	
 	"Flamethrower Pap 1"
 	{
 		"en"		"Increased damage. M2 ability gives minicrits and uber for a short time."
+		"chi"       "增加伤害。鼠标右键技能在短时间内给予迷你暴击和无敌。"
 	}
 	
 	"Leone 12 Gauge Super Desc"
 	{
 		"en"		"Semi automatic shotgun, you cannot hold down to shoot.\nMore powerfull but harder to use since its single fire nature and poor accuracy"
+		"chi"       "半自动霰弹枪，你不能按住射击。虽然强大，但因为它的单一火力性质和较差的准确性，使它更难使用"
 	}
 	"Leone 12 Gauge Super Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, much tighter spread."
+		"chi"       "增加伤害和攻击速度，子弹扩散减少。"
 	}
 	
 	"Grenade Launcher Pap 1"
 	{
 		"en"		"Increased damage and attackspeed."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Grenade Launcher Pap 2"
 	{
 		"en"		"Increased damage and attackspeed."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Grenade Launcher Pap 3"
 	{
 		"en"		"Increased damage and massively increased attackspeed and reload speed."
+		"chi"       "增加伤害,大幅度增加攻击速度和装弹速度。"
 	}
 	
 	"Tommygun Pap 1"
 	{
 		"en"		"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Tommygun Pap 2"
 	{
 		"en"		"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Tommygun Pap 3"
 	{
 		"en"		"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Shrapnel Shredder Desc"
@@ -165,6 +193,7 @@
 	"The Pomson 7000 Pap 1"
 	{
 		"en"		"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"IEM Launcher Desc"
@@ -188,11 +217,13 @@
 	"Quad Launcher Pap 1"
 	{
 		"en"		"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"The Loch-n-Load Pap 1"
 	{
 		"en"		"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Boomstick Desc"
@@ -226,6 +257,7 @@
 	"Loose Cannon Pap 1"
 	{
 		"en"		"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Elite Sniper Desc"
@@ -264,6 +296,7 @@
 	"The Cow Mangler 6000 Pap 1"
 	{
 		"en"	"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Infected Rampager Assult Rifle Desc"
@@ -283,6 +316,7 @@
 	"USP tactical Pap 1"
 	{
 		"en"	"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Grenade Desc"
@@ -292,6 +326,7 @@
 	"Grenade Pap 1"
 	{
 		"en"	"Massively increased damage"
+		
 	}
 	"Grenade Pap 2"
 	{
@@ -311,14 +346,17 @@
 	"Flaregun Pap 1"
 	{
 		"en"	"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Flaregun Pap 2"
 	{
 		"en"	"Increased damage and attackspeed"
+		"chi"    "增加伤害和攻击速度。"
 	}
 	"Flaregun Pap 3"
 	{
 		"en"	"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"The Righteous Bison Desc"
@@ -333,10 +371,12 @@
 	"SMG Pap 2"
 	{
 		"en"	"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"SMG Pap 3"
 	{
 		"en"	"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"SMG Pap 4"
 	{
@@ -350,10 +390,12 @@
 	"People Popper Pap 1"
 	{
 		"en"	"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"People Popper Pap 2"
 	{
 		"en"	"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Medigun Desc"
@@ -422,6 +464,7 @@
 	"PhlogStorms Detonator Pap 1"
 	{
 		"en"	"Increased damage and attack speed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Knife Desc"
@@ -466,6 +509,7 @@
 	"Fire Axe Pap 1"
 	{
 		"en"	"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Fire Axe Pap 2"
 	{
@@ -518,10 +562,12 @@
 	"Longsword Pap 1"
 	{
 		"en"	"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Longsword Pap 2"
 	{
 		"en"	"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Longsword Pap 3"
 	{
@@ -535,6 +581,7 @@
 	"Speed Fists Of Speed Pap 1"
 	{
 		"en"	"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Zerofuse's Knife Desc"
@@ -566,6 +613,7 @@
 	"Fists Of Kahmlstein Pap 1"
 	{
 		"en"	"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Bad Wand Desc"
@@ -575,6 +623,7 @@
 	"Bad Wand Pap 1"
 	{
 		"en"	"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Bad Wand Pap 2"
 	{
@@ -619,10 +668,12 @@
 	"Beam Wand Pap 1"
 	{
 		"en"	"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Beam Wand Pap 2"
 	{
 		"en"	"Increased damage and attackspeed"
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Atomic Reconstructor Desc"
@@ -776,6 +827,7 @@
 	"Buildable Village Desc"
 	{
 		"en"	"Provides various buffs to teammates and can be upgraded for more buffs.\nBuffs bought stay regardless if broken and rebuild."
+		"chi"   "为队友提供各种Buff，可以升级获得更多的buff"
 	}
 	
 	"Cannibalism Desc"
@@ -1093,6 +1145,10 @@
 		"en"	"Repairs buildings and sentrys, the worst of the worst. But free."
 	}
 
+	"Cheap Barricade Desc"
+	{
+		"en"	"One use Cheap Free Barricade"
+	}
 	"Cheap Barricade Desc"
 	{
 		"en"	"One use Cheap Free Barricade"
