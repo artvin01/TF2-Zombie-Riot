@@ -262,6 +262,7 @@
 	"Buy Scrap" //Its a currency
 	{
 		"en"		"Buy with scrap"
+		"ru"		"Купить за металл"
 		"nl"		"Koop met scrap"
 		"chi"       "使用废料购买"
 	}
@@ -1693,7 +1694,7 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"The enemy has researched their equipment to lvl. {1}!!!"
-		"ru"		"Противник исследовал своё снаряжение до уров. {1}!!!"
+		"ru"		"Враг исследовал своё снаряжение до уров. {1}!!!"
 		"pt"		"O adversario pesquisou seu equipamento para duelar {1}!!!"
 		"nl"		"De vijand heeft hun uitrusting naar level {1} gebracht!!!"
 		"chi"       "僵尸的装备已升级!!!{1}"
@@ -1863,12 +1864,14 @@
 	"Cannot Build Here"
 	{
 		"en"		"Something is blocking your building from being placed."
+		"ru"		"Что-то препятствует размещению постройки."
 		"nl"		"Iets blokeerd je van uw gebouw te plaatsen."
 		"chi"       "有东西挡住了你的建筑。"
 	}
 	"Can Build Here"
 	{
 		"en"		"You can build your building here!"
+		"ru"		"Вы можете построить свою постройку здесь!"
 		"nl"		"Hier kan je bouwen!"
 		"chi"       "你可以在此摆放你的建筑"
 	}

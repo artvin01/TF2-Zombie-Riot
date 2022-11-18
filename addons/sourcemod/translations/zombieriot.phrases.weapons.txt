@@ -260,7 +260,7 @@
 	"Boomstick"
 	{
 		"en"		"Boomstick"
-		"ru"		"Огнестрел"
+		"ru"		"Громовая палка"
 		"de"		"Kaboomstock"
 		"pt"		"Cano de Vassoura"
 		"nl"		"Boomstick"
