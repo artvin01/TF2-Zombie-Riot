@@ -260,7 +260,7 @@
 	"Boomstick"
 	{
 		"en"		"Boomstick"
-		"ru"		"Огнестрел"
+		"ru"		"Громовая палка"
 		"de"		"Kaboomstock"
 		"pt"		"Cano de Vassoura"
 		"nl"		"Boomstick"
@@ -1846,156 +1846,187 @@
 	"Builder Gear"
 	{
 	     "en"       "Builder Gear"
+		 "ru"       "Снаряж. строителя"
 	     "chi"       "建筑"
 	}
 	"Shrapnel Shredder"
 	{
 	     "en"       "Shrapnel Shredder"
+		 "ru"       "Шрапнельный измельчитель"
 	     "chi"       "弹片碎纸机"
 	}
 	"The Pomson 7000"
 	{
 	     "en"       "The Pomson 7000"
+		 "ru"       "Помсон 7000"
 	     "chi"       "破神7000"
 	}
 	"Leone 12 Gauge Super"
 	{
 	     "en"       "Leone 12 Gauge Super"
+		 "ru"       "Итальянский крупный дробовик"
 	     "chi"       "超大口径雷诺"
 	}
 	"IEM Launcher"
 	{
 	     "en"       "IEM Launcher"
+		 "ru"       "Пусковая установка ИЭМ"
 	     "chi"       "超电磁炮"
 	}
 	"Quad Launcher"
 	{
-	     "en"       "Quad Launche"
+	     "en"       "Quad Launcher"
+		 "ru"       "Счетверённая ракетница"
 	     "chi"       "四管发射炮"
 	}
 	"Terroriser Bomb lmplanter Sniperrifle"
 	{
-	     "en"       "Terroriser Bomb lmplanter Sniperrifle"
+	     "en"       "Terroriser Bomb lmplanter Sniper rifle"
+		 "ru"       "Снайперская винтовка террориста-закладчика"
 	     "chi"       "恐怖分子炸弹植入者狙击步枪"
 	}
 	"Neutronstar Burst Cannon"
 	{
 	     "en"       "Neutronstar Burst Cannon"
+		 "ru"       "Нейтронно-звёздная пушка"
 	     "chi"       "中子星爆炸炮"
 	}
 	"People Popper"
 	{
 	     "en"       "People Popper"
+		 "ru"       "Лопатель"
 	     "chi"       "人·波普尔"
 	}
 	"Fusions Blade"
 	{
 	     "en"       "Fusions Blade"
+		 "ru"       "Лезвие фьюжена"
 	     "chi"       "熔岩刀"
 	}
 	"Fractured Ark"
 	{
 	     "en"       "Fractured Ark"
+		 "ru"       "Расколотый ковчег"
 	     "chi"       "断裂方舟"
 	}
 	"Zerofuse's Knife"
 	{
 	     "en"       "Zerofuse's Knife"
+		 "ru"       "Нож Зерофуза"
 	     "chi"       "零度刃"
 	}
 	"Medusa Teslar Stick"
 	{
 	     "en"       "Medusa Teslar Stick"
+		 "ru"       "Палочка медузы Теслар"
 	     "chi"       "美杜莎·特斯拉手杖"
 	}
 	"Beam Wand"
 	{
 	     "en"       "Beam Wand"
+		 "ru"       "Жезл луча"
 	     "chi"       "寒冰法杖"
 	}
 	"Cryo Staff"
 	{
 	     "en"       "Beam Wand"
+		 "ru"       "Жезл луча"
 	     "chi"       "约束神杖"
 	}
 	"Atomic Reconstructor"
 	{
 	     "en"       "Atomic Reconstructor"
+		 "ru"       "Атомный реконструктор"
 	     "chi"       "原子重构器"
 	}
 	"Only one allowed, sell to see and buy others."
 	{
 	     "en"       "Only one allowed, sell to see and buy others."
+		 "ru"       "Можно только один, продавайте, чтобы увидеть и купить другие."
 	     "chi"       "只允许装备一个"
 	}
 	"Throwable Armor Grenade"
 	{
 	     "en"       "Throwable Armor Grenade"
+		 "ru"       "Метательная бронебойная граната"
 	     "chi"       "可投掷装甲掷弹机"
 	}
 	"Experimental Burst Pack"
 	{
 	     "en"       "Experimental Burst Pack"
+		 "ru"       "Экспериментальная разрывная установка"
 	     "chi"       "试验性爆破装置"
 	}
 	"Throwable Survival Grenade"
 	{
 	     "en"       "Throwable Survival Grenade"
+		 "ru"       "Метательная граната выживания"
 	     "chi"       "投掷式救生手榴弹"
 	}
 	"Deployable Quantum Suit"
 	{
 	     "en"       "Deployable Quantum Suit"
+		 "ru"       "Развёртываемый квантовый костюм"
 	     "chi"       "可部署量子套装"
 	}
 	"Primary Builder Weapons"
 	{
 	     "en"       "Primary Builder Weapons"
+		 "ru"       "Осн. оружие строителя"
 	     "chi"       "建筑性主武器"
 	}
 	"Secondary Builder Weapons"
 	{
 	     "en"       "Secondary Builder Weapons"
+		 "ru"       "Доп. оружие строителя"
 	     "chi"       "建筑性副武器"
 	}
 	"Melee Builder Weapons"
 	{
 	     "en"       "Melee Builder Weapons"
+		 "ru"       "Оружие ближн. боя строителя"
 	     "chi"       "建筑性近战武器"
 	}
 	"Extra Gear"
 	{
 	     "en"       "Extra Gear"
+		 "ru"       "Доп. снаряжение"
 	     "chi"       "科技装置"
 	}
 	"Elite Sniper"
 	{
 	     "en"       "Elite Sniper"
+		 "ru"       "Элитный снайпер"
 	     "chi"       "精英狙击手"
 	}
 	"All ltems here are affected by Building Upgrades."
 	{
 	     "en"       "All ltems here are affected by Building Upgrades."
+		 "ru"       "Все предметы здесь влияют на улучшение построек."
 	     "chi"       "所有有关建筑的物品已被归类到此列表"
 	}
 	"TIP: Only one path can have a tier 3 upgrade" //卫星列表
 	{
 	     "en"       "TIP: Only one path can have a tier 3 upgrade"
+		 "ru"       "СОВЕТ: Только один путь может иметь улучшение уровня 3"
 	     "chi"       "提示:只有一个项目可以进行三级升级"
 	}
 	"Bigger Radius"
 	{
 	     "en"       "Bigger Radius"
+		 "ru"       "Увеличенный радиус"
 	     "chi"       "更大的范围"
 	}
 	"Jungle Drums"
 	{
 	     "en"       "Jungle Drums"
+		 "ru"       "Барабаны джунглей"
 	     "chi"       "更快的速度"
 	}
 	"Grow Blocker"
 	{
 	     "en"       "Grow Blocker"
+		 "ru"       "Блокировщик роста"
 	    // "chi"       "重置"
 	}
 }
