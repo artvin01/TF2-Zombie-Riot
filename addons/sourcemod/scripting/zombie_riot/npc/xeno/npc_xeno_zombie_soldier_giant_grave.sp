@@ -175,7 +175,7 @@ methodmap XenoSoldierGiant < CClotBody
 		
 		
 		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 200.0;
 		npc.g_TimesSummoned = 0;
 		npc.m_bThisNpcIsABoss = true;
 		int skin = 5;

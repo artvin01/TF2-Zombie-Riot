@@ -5,16 +5,19 @@
 	{
 		"en"		"Low Damage but very high bleed duration"
 		"ru"		"Низкий урон, но очень высокая длительность кровотечения."
+		"chi"       "低伤害，但流血持续时间非常高"
 	}
 	"Syringe Gun Pap 1 Desc"
 	{
 		"en"		"Increased damage and attackspeed"
 		"ru"		"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度"
 	}
 	"Syringe Gun Pap 2 Desc"
 	{
 		"en"		"Increased damage and attackspeed"
 		"ru"		"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度"
 	}
 	
 	
@@ -22,133 +25,158 @@
 	{
 		"en"		"Increased damage and attackspeed, consumes 2 bullets per shot."
 		"ru"		"Увеличенный урон и скорость атаки, расходует 2 пули за выстрел."
+		"chi"       "增加伤害和攻击速度，每次射击消耗2发子弹。"
 	}
 	"Sniper Rifle Pap 2"
 	{
-		"en"		"Increased damage and attackspeed, Scoping isnt needed anymore but attacks are delayed."
+		"en"		"Increased damage and attackspeed, Scoping isn't needed anymore but attacks are delayed."
 		"ru"		"Увеличенный урон и скорость атаки, прицеливание больше не нужно, но атаки имеют задержку."
+		"chi"       "增加伤害和攻击速度，增大攻击范围，但换弹速度加长"
 	}
 	"Sniper Rifle Pap 3"
 	{
 		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage"
 		"ru"		"Дорогое суперулучшение, 5 пуль одновременно для нанесения огромного урона."
+		"chi"       "昂贵的超级升级，每5颗子弹将造成大量伤害"
 	}
 	"Sniper Rifle Pap 4"
 	{
 		"en"		"Heavily increased damage and attackspeed"
 		"ru"		"Сильное Увеличенный урон и скорость атаки."
+		"chi"       "大幅增加伤害和攻击速度"
 	}
 	"Sniper Rifle Pap 5"
 	{
 		"en"		"Increased damage and attackspeed"
 		"ru"		"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度"
 	}
 	
 	"Annabelle Pap 1"
 	{
 		"en"		"Increased damage and attackspeed and extra ammo."
 		"ru"		"Увеличенный урон и скорость атаки, а также дополнительные патроны."
+		"chi"       "增加伤害和攻击速度和额外的弹药。"
 	}
 	"Annabelle Pap 2"
 	{
 		"en"		"Increased damage and attackspeed and extra ammo."
 		"ru"		"Увеличенный урон и скорость атаки, а также дополнительные патроны."
+		"chi"       "增加伤害和攻击速度和额外的弹药。"
 	}
 	"Annabelle Pap 3"
 	{
 		"en"		"Increased damage and attackspeed and extra ammo."
 		"ru"		"Увеличенный урон и скорость атаки, а также дополнительные патроны."
+		"chi"       "增加伤害和攻击速度和额外的弹药。"
 	}
 	"Annabelle Pap 4"
 	{
 		"en"		"Increased damage and attackspeed and extra ammo."
 		"ru"		"Увеличенный урон и скорость атаки, а также дополнительные патроны."
+		"chi"       "增加伤害和攻击速度和额外的弹药。"
 	}
 	
 	"Huntsman Desc"
 	{
 		"en"		"Can headshot. Press R To fire a barrage"
 		"ru"		"Может стрелять в голову. Нажмите R, чтобы открыть шквальный огонь."
+		"chi"       "可以造成爆头伤害！按下R键发射多个弓箭"
 	}
 	"Huntsman Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed."
 		"ru"		"Увеличенный урон и скорость атаки, усиление способности М2."
+		"chi"       "增加伤害和攻击速度，鼠标右键可以激活技能。"
 	}
 	"Huntsman Pap 2"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed.\nBase attack now shoots 3 arrows."
 		"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2.\nСтреляет 3-я стрелами (обычная)."
+		"chi"       "增加伤害和攻击速度，鼠标右键可以激活技能。普通攻击现在发射3支箭。"
 	}
 	
 	"Deagle Desc"
 	{
 		"en"		"Deagle that throws objects with m2, shoot them to deal even more damage.\nTime correctly after a blue flash, and throw multiple for even more damage.\nThis projectile always counts as a HEADSHOT."
 		"ru"		"Орёл, который бросает предметы клавишей М2, стреляйте ими, чтобы нанести ещё больше урона.\nПравильно рассчитайте время после синей вспышки и бросайте несколько раз, чтобы нанести ещё больше урона.\nЭти снаряды всегда засчитываются как ВЫСТРЕЛ В ГОЛОВУ."
+		"chi"       "用鼠标右键发射光球，射击它们可以造成更多伤害。在闪光后，可以扔多个造成更多的伤害。这个弹丸永远算作爆头。"
 	}
 	"Deagle Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable."
 		"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2 получает один дополнительный бросок."
+		"chi"       "增加伤害和攻击速度，鼠标右键的投掷物+1。"
 	}
 	"Deagle Pap 2"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
 		"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2 получает один дополнительный бросок.\n2 пули за выстрел."
+		"chi"       "增加伤害和攻击速度，鼠标右键的投掷物+1。\n每发子弹消耗2颗子弹"
 	}
 	"Deagle Pap 3"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n3 bullets per shot consumed."
 		"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2 получает один дополнительный бросок.\n3 пули за выстрел."
+		"chi"       "增加伤害和攻击速度，鼠标右键的投掷物+1。\n每发子弹消耗3颗子弹"
 	}
 	
 	"Flamethrower Pap 1"
 	{
 		"en"		"Increased damage. M2 ability gives minicrits and uber for a short time."
 		"ru"		"Увеличенный урон. Способность на М2 даёт мини-криты и убер на короткое время."
+		"chi"       "增加伤害。鼠标右键技能在短时间内给予迷你暴击和无敌。"
 	}
 	
 	"Leone 12 Gauge Super Desc"
 	{
-		"en"		"Semi automatic shotgun, you cannot hold down to shoot.\nMore powerfull but harder to use since its single fire nature and poor accuracy"
+		"en"		"Semi automatic shotgun, you cannot hold down to shoot.\nMore powerful but harder to use since its single fire nature and poor accuracy"
 		"ru"		"Полуавтоматический дробовик, для стрельбы из которого нельзя удерживать нажатой клавишу.\nМощнее, но сложнее в использовании, так как стреляет одиночными выстрелами и имеет низкую точность."
+		"chi"       "半自动霰弹枪，你不能按住射击。虽然强大，但因为它的单一火力性质和较差的准确性，使它更难使用"
 	}
 	"Leone 12 Gauge Super Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, much tighter spread."
 		"ru"		"Увеличенный урон и скорость атаки, гораздо более плотный разброс."
+		"chi"       "增加伤害和攻击速度，子弹扩散减少。"
 	}
 	
 	"Grenade Launcher Pap 1"
 	{
 		"en"		"Increased damage and attackspeed."
 		"ru"		"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Grenade Launcher Pap 2"
 	{
 		"en"		"Increased damage and attackspeed."
 		"ru"		"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Grenade Launcher Pap 3"
 	{
 		"en"		"Increased damage and massively increased attackspeed and reload speed."
 		"ru"		"Увеличенный урон и крупно увеличенная скорости атаки и скорости перезарядки."
+		"chi"       "增加伤害,大幅度增加攻击速度和装弹速度。"
 	}
 	
 	"Tommygun Pap 1"
 	{
 		"en"		"Increased damage and attackspeed"
 		"ru"		"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Tommygun Pap 2"
 	{
 		"en"		"Increased damage and attackspeed"
 		"ru"		"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Tommygun Pap 3"
 	{
 		"en"		"Increased damage and attackspeed"
 		"ru"		"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Shrapnel Shredder Desc"
@@ -203,6 +231,7 @@
 	{
 		"en"		"Increased damage and attackspeed"
 		"ru"		"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"IEM Launcher Desc"
@@ -231,12 +260,14 @@
 	{
 		"en"		"Increased damage and attackspeed"
 		"ru"		"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"The Loch-n-Load Pap 1"
 	{
 		"en"		"Increased damage and attackspeed"
 		"ru"		"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Boomstick Desc"
@@ -246,7 +277,7 @@
 	}
 	"Boomstick Pap 1"
 	{
-		"en"		"Increased damage and attackspeed, loads upto 6 shells."
+		"en"		"Increased damage and attackspeed, loads up to 6 shells."
 		"ru"		"Увеличенный урон и скорость атаки, заряжает до 6 патронов."
 	}
 	"Boomstick Pap 2"
@@ -277,6 +308,7 @@
 	{
 		"en"		"Increased damage and attackspeed"
 		"ru"		"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Elite Sniper Desc"
@@ -324,6 +356,7 @@
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Infected Rampager Assult Rifle Desc"
@@ -347,6 +380,7 @@
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Grenade Desc"
@@ -381,16 +415,19 @@
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Flaregun Pap 2"
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"    "增加伤害和攻击速度。"
 	}
 	"Flaregun Pap 3"
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"The Righteous Bison Desc"
@@ -408,11 +445,13 @@
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"SMG Pap 3"
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"SMG Pap 4"
 	{
@@ -429,11 +468,13 @@
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"People Popper Pap 2"
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Medigun Desc"
@@ -454,7 +495,7 @@
 	}
 	"Battle Medigun Pap 2"
 	{
-		"en"	"Uber removed but 2x damage ontop of it.\nM2 shoots projectiles that scale with m1 scaling.\nCan overheat and must cool down.\nGaining uber removed cooldown slowly aswell.\nPress R to cooldown early and at an increased rate.\nAuto cooldown is also faster then normal."
+		"en"	"Uber removed but 2x damage on top of it.\nM2 shoots projectiles that scale with m1 scaling.\nCan overheat and must cool down.\nGaining uber removed cooldown slowly as well.\nPress R to cooldown early and at an increased rate.\nAuto cooldown is also faster then normal."
 		"ru"	"Нет убера, но урон в 2 раза выше.\nМ2 стреляет снарядами, масштаб которых зависит от масштаба М1.\nМожет перегреваться и должен остыть.\nНакопление убера также медленно снимает восстановление.\nПри нажатии клавиши R время восстановления увеличивается.\nАвтовосстановление также происходит быстрее обычного."
 	}
 	
@@ -465,7 +506,7 @@
 	}
 	"Charged Handgun Pap 1"
 	{
-		"en"	"Becomes a machinegun with extreamly high damage but worse ammo efficency for more damage."
+		"en"	"Becomes a machinegun with extreamly high damage but worse ammo efficiency for more damage."
 		"ru"	"Становится пулемётом с чрезвычайно высоким уроном, но худшей эффективностью боеприпасов при большем уроне."
 	}
 	
@@ -482,7 +523,7 @@
 	
 	"The Battalion's Backup Desc"
 	{
-		"en"	"Give Resistance to everyone after dealing enough damage, Recieve +50 Extra HP"
+		"en"	"Give Resistance to everyone after dealing enough damage, Receive +50 Extra HP"
 		"ru"	"Даёт сопротивление всем после нанесения достаточного урона, получает +50 дополнительных ед. здоровья."
 	}
 	
@@ -517,6 +558,7 @@
 	{
 		"en"	"Increased damage and attack speed"
 		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Knife Desc"
@@ -571,6 +613,7 @@
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Fire Axe Pap 2"
 	{
@@ -635,11 +678,13 @@
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Longsword Pap 2"
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Longsword Pap 3"
 	{
@@ -656,6 +701,7 @@
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Zerofuse's Knife Desc"
@@ -694,6 +740,7 @@
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Bad Wand Desc"
@@ -705,6 +752,7 @@
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Bad Wand Pap 2"
 	{
@@ -719,7 +767,7 @@
 	}
 	"Fire Wand Pap 1"
 	{
-		"en"	"Increaced damage, fires 5 fireballs in quick succesion"
+		"en"	"Increased damage, fires 5 fireballs in quick succession"
 		"ru"	"Увеличенный урон, выпускает 5 огненных шаров в быстрой последовательности."
 	}
 	
@@ -752,18 +800,20 @@
 	
 	"Beam Wand Desc"
 	{
-		"en"	"Hold M1 for a constant beam to evicerate your enemies. M2: Magic overdrive, more mana=stronger but higher CD."
-		"ru"	"Удерживайте М1 для получения постоянного луча для уклонения от врагов. М2 - усиление магии, больше маны = сильнее, но выше восстановление."
+		"en"	"Hold M1 for a constant beam to eviscerate your enemies. M2: Magic overdrive, more mana=stronger but higher CD."
+		"ru"	"Удерживайте М1 для постоянного луча уничтожения. М2 - усиление магии, больше маны = сильнее, но выше восстановление."
 	}
 	"Beam Wand Pap 1"
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	"Beam Wand Pap 2"
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度。"
 	}
 	
 	"Atomic Reconstructor Desc"
@@ -803,7 +853,7 @@
 	
 	"Throwable Armor Grenade Desc"
 	{
-		"en"	"Throw a grenade that gives armor over time. Upgraded if the target just has better armor upgrades."
+		"en"	"Throw a grenade that gives armour over time. Upgraded if the target just has better armour upgrades."
 		"ru"	"Бросает гранату, которая со временем даёт броню. Улучшенная, если у цели просто улучшена броня."
 	}
 	
@@ -815,7 +865,7 @@
 	
 	"Throwable Survival Grenade Desc"
 	{
-		"en"	"Throw a grenade that heals over time and slowly revivies teammates, must still manually revive.\nUpgraded with certificaes with a medigun equipped."
+		"en"	"Throw a grenade that heals over time and slowly revives teammates, must still manually revive.\nUpgraded with certificates with a medigun equipped."
 		"ru"	"Бросает гранату, которая лечит со временем и медленно оживляет союзников.\nУлучшается с помощью сертификатов при наличии медицинской пушки."
 	}
 	
@@ -845,7 +895,7 @@
 	
 	"Wrangler Desc"
 	{
-		"en"	"While out, sentry will attack 10% faster and deal 35% more damage, but you have to controll it yourself."
+		"en"	"While out, sentry will attack 10% faster and deal 35% more damage, but you have to control it yourself."
 		"ru"	"В состоянии ручного управления турель будет атаковать на 10% быстрее и наносить на 35% больше урона, но вам придётся контролировать её самостоятельно."
 	}
 	"Wrangler Pap 1"
@@ -862,7 +912,7 @@
 	
 	"Mechanical Medigun Desc"
 	{
-		"en"	"Buffs and heals buildings. Uber amplifies the Buffs by alot. Requires Handling books."
+		"en"	"Buffs and heals buildings. Uber amplifies the Buffs by a lot. Requires Handling books."
 		"ru"	"Усиливает и лечит постройки. Убер увеличивает эффекты от усиления на много. Требуются книги по ремонту."
 	}
 	
@@ -892,13 +942,13 @@
 	
 	"Buildable Barricade Desc"
 	{
-		"en"	"Each wave increaces its cost, you may only have 2 barricades built at once."
+		"en"	"Each wave increases its cost, you may only have 2 barricades built at once."
 		"ru"	"Каждая волна увеличивает её стоимость, одновременно можно построить только 2 баррикады."
 	}
 	
 	"Buildable Armortable Desc"
 	{
-		"en"	"usage of this machine will give you Armor.\nFirst buy is double the price."
+		"en"	"usage of this machine will give you Armour.\nFirst buy is double the price."
 		"ru"	"Использование этой машины даст вам броню.\nПервая покупка стоит вдвое дороже."
 	}
 	
@@ -928,7 +978,7 @@
 	
 	"Buildable Mortar Desc"
 	{
-		"en"	"Press MEDIC to select a place for the morter to unleash a shell onto. Infinite uses with cooldown."
+		"en"	"Press MEDIC to select a place for the mortar to unleash a shell onto. Infinite uses with cooldown."
 		"ru"	"Нажмите «МЕДИК!», чтобы выбрать место, на которое мортира выпустит снаряд. Используется бесконечно с перезарядкой."
 	}
 	
@@ -948,6 +998,7 @@
 	{
 		"en"	"Provides various buffs to teammates and can be upgraded for more buffs.\nBuffs bought stay regardless if broken and rebuild."
 		"ru"	"Даёт различные усиления союзникам и может быть улучшена для получения дополнительных усилений.\nКупленные усиления сохраняются, если её сломать и восстановить."
+		"chi"   "为队友提供各种Buff，可以升级获得更多的buff"
 	}
 	
 	"Cannibalism Desc"
@@ -958,7 +1009,7 @@
 	
 	"Copium Desc"
 	{
-		"en"	"25% melee resistance with melee equiped"
+		"en"	"25% melee resistance with melee equipped"
 		"ru"	"25% сопр. ближнему бою при использ. оружия ближнего боя."
 	}
 	
@@ -970,37 +1021,37 @@
 	
 	"Steroids Desc"
 	{
-		"en"	"30% more melee damage, +4 HP on kill and +50 HP, +5% melee resistance with melee equiped"
+		"en"	"30% more melee damage, +4 HP on kill and +50 HP, +5% melee resistance with melee equipped"
 		"ru"	"На 30% больше урона в ближнем бою, +4 ед. здоровья при убийстве и +50 ед. здоровья, +5% сопр. ближнему бою при использ. оружия ближнего боя"
 	}
 	
 	"LSD Desc"
 	{
-		"en"	"1.5x increased Melee Damage, +5 HP on kill and +100 HP, +5% melee resistance with melee equiped"
+		"en"	"1.5x increased Melee Damage, +5 HP on kill and +100 HP, +5% melee resistance with melee equipped"
 		"ru"	"1,5-кратное увеличение урона в ближнем бою, +5 ед. здоровья при убийстве и +100 ед. здоровья, +5% сопр. ближнему бою при использ. оружия ближнего боя"
 	}
 	
 	"Crystal Meth Desc"
 	{
-		"en"	"1.5x increased Melee Damage, +8 HP on kill and +200 HP, +5% melee resistance with melee equiped"
+		"en"	"1.5x increased Melee Damage, +8 HP on kill and +200 HP, +5% melee resistance with melee equipped"
 		"ru"	"1,5-кратное увеличение урона в ближнем бою, +8 ед. здоровья при убийстве и +200 ед. здоровья, +5% сопр. ближнему бою при использ. оружия ближнего боя"
 	}
 	
 	"God's Might Desc"
 	{
-		"en"	"1.5x increased Melee Damage, +12 HP on kill and +300 HP, +7% melee resistance with melee equiped"
+		"en"	"1.5x increased Melee Damage, +12 HP on kill and +300 HP, +7% melee resistance with melee equipped"
 		"ru"	"1,5-кратное увеличение урона в ближнем бою, +12 ед. здоровья при убийстве и +300 ед. здоровья, +7% сопр. ближнему бою при использ. оружия ближнего боя"
 	}
 	
 	"Bob's Enhancer Desc"
 	{
-		"en"	"2x increased Melee Damage, +22 HP on kill and +600 HP, +7% melee resistance with melee equiped"
+		"en"	"2x increased Melee Damage, +22 HP on kill and +600 HP, +7% melee resistance with melee equipped"
 		"ru"	"Двукратное увеличение урона в ближнем бою, +22 ед. здоровья при убийстве и +600 ед. здоровья, +7% сопр. ближнему бою при использ. оружия ближнего боя"
 	}
 	
 	"Repair Handling book for dummies Desc"
 	{
-		"en"	"50% more mepair Rate"
+		"en"	"50% more repair Rate"
 		"ru"	"На 50% выше скорость починки."
 	}
 	
@@ -1138,31 +1189,31 @@
 	
 	"Body armor Desc"
 	{
-		"en"	"Increace How much armor you get per use and max cap. +25 HP"
+		"en"	"Increased How much armour you get per use and max cap. +25 HP"
 		"ru"	"Увеличение количества получаемой брони за одно использование и максимальный предел. +25 ед. здоровья"
 	}
 	
 	"Kevlar Desc"
 	{
-		"en"	"Increace How much armor you get per use and max cap. +100 HP"
+		"en"	"Increased How much armour you get per use and max cap. +100 HP"
 		"ru"	"Увеличение количества получаемой брони за одно использование и максимальный предел. +100 ед. здоровья"
 	}
 	
 	"Heavy Vest Desc"
 	{
-		"en"	"Increace How much armor you get per use and max cap. +150 HP"
+		"en"	"Increased How much armour you get per use and max cap. +150 HP"
 		"ru"	"Увеличение количества получаемой брони за одно использование и максимальный предел. +150 ед. здоровья"
 	}
 	
 	"Jesus's Blessing Desc"
 	{
-		"en"	"+300 Health and life regen 1% of your max hp per second upto half your HP, during bleedout, you also will survive for longer."
+		"en"	"+300 Health and life regen 1% of your max hp per second up to half your HP, during bleedout, you also will survive for longer."
 		"ru"	"+300 здоровья и регенерации здоровья 1% от вашего макс. здоровья в секунду до половины вашего здоровья, во время кровотечения вы также будете выживать дольше."
 	}
 	
 	"Full Riot Gear Desc"
 	{
-		"en"	"Increace How much armor you get per use and max cap. +150 HP"
+		"en"	"Increased How much armour you get per use and max cap. +150 HP"
 		"ru"	"Увеличение количества получаемой брони за одно использование и максимальный предел. +150 ед. здоровья"
 	}
 	
@@ -1210,19 +1261,19 @@
 	
 	"Panic Attack Desc"
 	{
-		"en"	"You attack 15% slower but the lower your health is, the faster you attack, upto 25% faster, doesnt work with last man alive."
+		"en"	"You attack 15% slower but the lower your health is, the faster you attack, up to 25% faster, doesn't work with last man alive."
 		"ru"	"Вы атакуете на 15% медленнее, но чем меньше у вас здоровья, тем быстрее вы атакуете, до 25% быстрее, не работает, если вы последний выживший."
 	}
 	
 	"Barbarians Mind Desc"
 	{
-		"en"	"Your melee will deal 10% more damage, and you will take 5% less damage overall, but all your other weapons will be completly useless and deal NO damage."
+		"en"	"Your melee will deal 10% more damage, and you will take 5% less damage overall, but all your other weapons will be completely useless and deal NO damage."
 		"ru"	"Ваше оружие ближнего боя будет наносить на 10% больше урона, и вы будете получать на 5% меньше урона в целом, но всё остальное оружие будет совершенно бесполезным и не будет наносить НИКАКОГО урона."
 	}
 	
 	"Face Stabber Desc"
 	{
-		"en"	"Allows you to backstab anywhere on the enemy.\nAlthough your backstab damage is reduced by 60%\nRemoving 2x dmg if the npc focuses on you if you backstab.\nHealing attributes upon backstab are reduced by 65%..."
+		"en"	"Allows you to backstab anywhere on the enemy.\nAlthough your backstab damage is reduced by 60%\nRemoving 2x dmg if the NPC focuses on you if you backstab.\nHealing attributes upon backstab are reduced by 65%..."
 		"ru"	"Позволяет нанести удар в спину в любое место врага.\nХотя урон от удара в спину уменьшается на 60%.\nПропадает двойной урон, если NPC фокусируется на вас и вы нанесли удар в спину.\nАтрибуты лечения при ударе в спину уменьшаются на 65% ..."
 	}
 	
@@ -1234,19 +1285,19 @@
 	
 	"Wrenchy Hands Desc"
 	{
-		"en"	"35% less melee and secondary damage (doesnt include builder weapons), but 25% Faster Repair for both melee and secondary"
+		"en"	"35% less melee and secondary damage (doesn't include builder weapons), but 25% Faster Repair for both melee and secondary"
 		"ru"	"На 35% меньше урона от оружия ближнего боя и дополнительного оружия (не включает оружие строителей), но на 25% быстрее починка как для ближнего боя, так и для дополнительного оружия"
 	}
 	
 	"Sniper Sentry Desc"
 	{
-		"en"	"Double damage, 2.3x slower attack speed, 2x range for sentryguns and alike"
+		"en"	"Double damage, 2.3x slower attack speed, 2x range for sentry guns and alike"
 		"ru"	"Двойной урон, 2,3-кратное замедление скорости атаки, двукратная дальность для всех турелей"
 	}
 	
 	"Minigun Sentry Desc"
 	{
-		"en"	"10% less damage, 1.15x Attack speed, 0.5x range for sentryguns and alike"
+		"en"	"10% less damage, 1.15x Attack speed, 0.5x range for sentry guns and alike"
 		"ru"	"На 10% меньше урона, 1,15-кратная скорость атаки, 0,5-кратная дальность стрельбы для всех турелей"
 	}
 	
@@ -1312,7 +1363,7 @@
 	
 	"Left For Dead Desc"
 	{
-		"en"	"You slowly revive yourself ONCE a wave.\nDying again when the cooldown is off will just instnatly kill you.\nNobody can revive you faster during this."
+		"en"	"You slowly revive yourself ONCE a wave.\nDying again when the cooldown is off will just instantly kill you.\nNobody can revive you faster during this."
 		"ru"	"Вы медленно реанимируете себя ОДИН раз за волну.\nЕсли вы умрёте снова, когда время перезарядки закончится, это просто мгновенно убьёт вас.\nНикто не сможет возродить вас быстрее во время этого."
 	}
 	
@@ -1332,5 +1383,9 @@
 	{
 		"en"	"One use Cheap Free Barricade"
 		"ru"	"Одноразовая дешёвая бесплатная баррикада"
+	}
+	"Cheap Barricade Desc"
+	{
+		"en"	"One use Cheap Free Barricade"
 	}
 }

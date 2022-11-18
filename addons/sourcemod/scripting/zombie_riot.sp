@@ -316,6 +316,7 @@ int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
 int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
 int i_BarricadesBuild[MAXTF2PLAYERS]={0, ...};
 int i_WhatBuilding[MAXENTITIES]={0, ...};
+bool Building_Constructed[MAXENTITIES]={false, ...};
 
 int Elevator_Owner[MAXENTITIES]={0, ...};
 bool Is_Elevator[MAXENTITIES]={false, ...};

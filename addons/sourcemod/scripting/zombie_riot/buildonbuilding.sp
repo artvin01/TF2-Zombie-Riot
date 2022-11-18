@@ -229,7 +229,14 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		}
 		if(IsValidClient(client))
 		{
-			fPos[2] -= 69.0; //This just goes to the ground entirely. and three higher so you can see the bottom of the box.
+		//	fPos[2] -= 69.0; //This just goes to the ground entirely. and three higher so you can see the bottom of the box.
+			Handle hTrace;
+			static float m_vecLookdown[3];
+			m_vecLookdown = view_as<float>( { 90.0, 0.0, 0.0 } );
+			hTrace = TR_TraceRayFilterEx(fPos, m_vecLookdown, ( MASK_SHOT ), RayType_Infinite, HitOnlyWorld, client);	
+			TR_GetEndPosition(fPos, hTrace);
+			delete hTrace;
+			fPos[2] += 4.0;
 			TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({0, 255, 0, 255}));
 				
 			if(f_DelayBuildNotif[client] < GetGameTime())
@@ -508,6 +515,10 @@ public bool TraceRayFilterBuildOnBuildings(int entity, int contentsMask)
 		return false;
 	}
 	if(b_BuildingIsStacked[entity])
+	{
+		return false;
+	}
+	if(!Building_Constructed[entity]) //Make sure they are actually build.
 	{
 		return false;
 	}
