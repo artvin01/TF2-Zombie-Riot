@@ -954,7 +954,7 @@
 	{
 		"en"	"Deploy a suit of armor from the sky to assist you in combat.\nIts Strength scales with your money you have spend in total.\nDying with the suit on will break the suit and save you.\nPerks do not work, but perk-a-colas do."
 		"ru"	"С небес спускается броня, которая поможет вам в бою.\nПрочность брони зависит от потраченных вами денег.\nУмереть в броне - сломает броню и спасёт вас.\nПерки не работают, но работают напитки в виде перков."
-		//"chi"   "从空中部署一套盔甲来帮助你战斗。\n它的强度与你花的钱总数成正比。\n当装备着盔甲死亡后会把装备弄坏，你将获得重生(复活甲)。\nBuff对其不起作用，但急速可乐可以。"
+		"chi"   "从空中部署一套盔甲来帮助你战斗。\n它的强度与你花的钱总数成正比。\n当装备着盔甲死亡后会把装备弄坏，你将获得重生(复活甲)。\nBuff对其不起作用，但急速可乐可以。"
 	}
 	
 	"Ranged Spike Layer Desc"
