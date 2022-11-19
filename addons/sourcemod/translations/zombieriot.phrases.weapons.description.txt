@@ -267,7 +267,7 @@
 	{
 		"en"		"4 shots into 1 spam.." 
 		"ru"		"4 выстрела за один выстрел."
-		"chi"       "4次射击后将发射垃圾....
+		"chi"       "4次射击后将发射垃圾...."
 	}
 	"Quad Launcher Pap 1"
 	{
@@ -417,14 +417,13 @@
 	{
 		"en"	"1000 Dmg Grenade"
 		"ru"	"Граната с уроном в 1000 единиц."
-		"chi"   "造成1000伤害的手榴弹
+		"chi"   "造成1000伤害的手榴弹"
 	}
 	"Grenade Pap 1"
 	{
 		"en"	"Massively increased damage"
 		"ru"	"Сильно увеличенный урон"
 		"chi"   "大幅增加伤害"
-		
 	}
 	"Grenade Pap 2"
 	{
@@ -483,7 +482,7 @@
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
-		"chi"    增加伤害和攻击速度。"
+		"chi"    "增加伤害和攻击速度。"
 	}
 	"SMG Pap 3"
 	{
@@ -538,7 +537,7 @@
 	}
 	"Battle Medigun Pap 2"
 	{
-		"en"	"Uber removed but 2x damage ontop of it.\nM2 shoots projectiles that scale with m1 scaling.\nCan overheat and must cool down.\nGaining uber removed cooldown slowly aswell.\nPress R to cooldown early and at an increased rate.\nAuto cooldown is also faster then normal."
+		"en"	"Uber removed but 2x damage on top of it.\nM2 shoots projectiles that scale with m1 scaling.\nCan overheat and must cool down.\nGaining uber removed cooldown slowly as well.\nPress R to cooldown early and at an increased rate.\nAuto cooldown is also faster then normal."
 		"ru"	"Нет убера, но урон в 2 раза выше.\nМ2 стреляет снарядами, масштаб которых зависит от масштаба М1.\nМожет перегреваться и должен остыть.\nНакопление убера также медленно снимает восстановление.\nПри нажатии клавиши R время восстановления увеличивается.\nАвтовосстановление также происходит быстрее обычного."
 		"chi"   "超能无法使用，但伤害增加2倍。\n右键发射的球按左键的伤害比例缩放。\n长时间使用会过热，需要冷却。积攒超能的量会加快。\n按R可以提前冷却，并以更高的速度冷却。\n自动冷却也比正常速度快。"
 	}
@@ -955,7 +954,7 @@
 	{
 		"en"	"Deploy a suit of armor from the sky to assist you in combat.\nIts Strength scales with your money you have spend in total.\nDying with the suit on will break the suit and save you.\nPerks do not work, but perk-a-colas do."
 		"ru"	"С небес спускается броня, которая поможет вам в бою.\nПрочность брони зависит от потраченных вами денег.\nУмереть в броне - сломает броню и спасёт вас.\nПерки не работают, но работают напитки в виде перков."
-		"chi"   "从空中部署一套盔甲来帮助你战斗。\n它的强度与你花的钱总数成正比。\n当装备着盔甲死亡后会把装备弄坏，你将获得重生(复活甲)。\nBuff对其不起作用，但急速可乐可以。"
+		//"chi"   "从空中部署一套盔甲来帮助你战斗。\n它的强度与你花的钱总数成正比。\n当装备着盔甲死亡后会把装备弄坏，你将获得重生(复活甲)。\nBuff对其不起作用，但急速可乐可以。"
 	}
 	
 	"Ranged Spike Layer Desc"
@@ -1466,9 +1465,5 @@
 	{
 		"en"	"One use Cheap Free Barricade"
 		"ru"	"Одноразовая дешёвая бесплатная баррикада"
-	}
-	"Cheap Barricade Desc"
-	{
-		"en"	"One use Cheap Free Barricade"
 	}
 }
