@@ -173,6 +173,7 @@ stock bool FindInfoTarget(const char[] name)
 
 stock bool ExcuteRelay(const char[] name, const char[] input="Trigger")
 {
+	bool found;
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "logic_relay")) != -1)
 	{
@@ -180,11 +181,11 @@ stock bool ExcuteRelay(const char[] name, const char[] input="Trigger")
 		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 		if(StrEqual(buffer, name, false))
 		{
-			AcceptEntityInput(entity, input);
-			return true;
+			AcceptEntityInput(entity, input, entity, entity);
+			found = true;
 		}
 	}
-	return false;
+	return found;
 }
 
 stock void CreateAttachedAnnotation(int client, int entity, float time, const char[] buffer)

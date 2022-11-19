@@ -736,6 +736,7 @@ void Waves_Progress()
 				CPrintToChatAll("{green}%t","Cash Gained This Wave Village", extra);
 			}
 			
+			ExcuteRelay("zr_wavedone");
 			CurrentRound++;
 			CurrentWave = -1;
 			
@@ -939,6 +940,7 @@ void Waves_Progress()
 				Store_RandomizeNPCStore(false);
 				InSetup = true;
 				ExcuteRelay("zr_setuptime");
+				ExcuteRelay("zr_victory");
 				
 				int timer = CreateEntityByName("team_round_timer");
 				DispatchKeyValue(timer, "show_in_hud", "1");
