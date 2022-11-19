@@ -92,16 +92,19 @@
 	"Calamity of the Crimson Troupe, codename Phantom."
 	{
 		"en" 		"Calamity of the Crimson Troupe, codename Phantom."
+		"ru" 		"Надвигается бедствие из Багровой Труппы, кодовое имя «Фантом»."
 		"chi"       "深红剧团的灾难，代号幽灵"
 	}
 	"A caped Crimson warrior with Ominous Apparitions is appearing..."
 	{
 		"en" 		"An caped Crimson warrior with Ominous Apparitions is apearing..."
+		"ru" 		"Появляется багровый воин в плаще со зловещими духами..."
 		"chi"       "一个披着斗篷、带着不祥幻影的深红战士出现了……"
 	}
 	"A patch of shadow. It has never once left, nor has it ever truly existed."
 	{
 		"en" 		"A patch of shadow. It has never once left, nor has it ever truly existed."
+		"ru" 		"Тень. Оно ни разу не покидало нас и никогда по-настоящему не существовало."
 		"chi"       "一片阴影。它从未离开过，也从未真正存在过。"
 	}
 }

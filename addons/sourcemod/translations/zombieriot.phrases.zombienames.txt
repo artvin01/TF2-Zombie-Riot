@@ -929,5 +929,6 @@
 	"Phantom Knight"
 	{
 		"en"		"Lucian, ''Blood Diamond''"
+		"ru"		"Люциан, «Кровавый алмаз»"
 	}
 }

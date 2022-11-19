@@ -2212,21 +2212,22 @@ stock int TracePlayerHulls(const float pos[3], const float mins[3], const float 
 	delete hTrace;
 	return bHit;
 }
-/*
-bool TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, int color[4])
+
+void TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, int color[4])
 {
 	//Trace top down
+	/*
 	float tStart[3]; tStart = m_vecOrigin;
-	float tEnd[3];   tEnd = m_vecOrigin;
 	
 	tStart[2] = (tStart[2] + m_vecMaxs[2]);
-	
+	*/
 //	TE_ShowPole(tStart, view_as<int>( { 255, 0, 255, 255 } ));
 //	TE_ShowPole(tEnd, view_as<int>( { 0, 255, 255, 255 } ));
-	
+	/*
 	Handle trace = TR_TraceHullFilterEx(tStart, tEnd, m_vecMins, m_vecMaxs, MASK_SHOT|CONTENTS_GRATE, IngorePlayersAndBuildingsHull, client);
 	bool bDidHit = TR_DidHit(trace);
-	
+	*/
+	/*
 	if( m_vecMins[0] == m_vecMaxs[0] && m_vecMins[1] == m_vecMaxs[1] && m_vecMins[2] == m_vecMaxs[2] )
 	{
 		m_vecMins = view_as<float>({-15.0, -15.0, -15.0});
@@ -2234,9 +2235,10 @@ bool TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_ve
 	}
 	else
 	{
-		AddVectors(m_vecOrigin, m_vecMaxs, m_vecMaxs);
-		AddVectors(m_vecOrigin, m_vecMins, m_vecMins);
-	}
+		*/
+	AddVectors(m_vecOrigin, m_vecMaxs, m_vecMaxs);
+	AddVectors(m_vecOrigin, m_vecMins, m_vecMins);
+//	}
 	
 	float vPos1[3], vPos2[3], vPos3[3], vPos4[3], vPos5[3], vPos6[3];
 	vPos1 = m_vecMaxs;
@@ -2264,18 +2266,31 @@ bool TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_ve
 	TE_SendBeam(client, vPos5, vPos3, flDur, color);
 	TE_SendBeam(client, vPos4, vPos3, flDur, color);
 	TE_SendBeam(client, vPos4, vPos2, flDur, color);
+	/*
+	for( int i = 0; i < 3; i++ ) 
+	{
+	//	tStart[i] = 0.0;
+		vPos1[i] = 0.0;
+		vPos2[i] = 0.0;
+		vPos3[i] = 0.0;
+		vPos4[i] = 0.0;
+		vPos5[i] = 0.0;
+		vPos6[i] = 0.0;
+		m_vecMaxs[i] = 0.0;
+		m_vecMins[i] = 0.0;
+	}
+	*/
+//	delete trace;
 	
-	delete trace;
-	
-	return bDidHit;
+//	return true;
 }
 
 void TE_SendBeam(int client, float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, int color[4])
 {
-	TE_SetupBeamPoints(m_vecMins, m_vecMaxs, g_iLaserMaterial, g_iHaloMaterial, 0, 0, flDur, 1.0, 1.0, 1, 0.0, color, 0);
+	TE_SetupBeamPoints(m_vecMins, m_vecMaxs, g_iLaserMaterial_Trace, g_iHaloMaterial_Trace, 0, 0, flDur, 1.0, 1.0, 1, 0.0, color, 0);
 	TE_SendToClient(client);
 }
-*/
+
 /*
 float[] CalculateBulletDamageForce( const float vecBulletDir[3], float flScale )
 {
