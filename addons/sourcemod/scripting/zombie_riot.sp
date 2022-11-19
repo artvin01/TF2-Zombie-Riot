@@ -1222,6 +1222,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("TPC_Get", Native_Get);
 	CreateNative("ZR_ApplyKillEffects", Native_ApplyKillEffects);
 	CreateNative("ZR_GetWaveCount", Native_GetWaveCounts);
+	CreateNative("ZR_GetLevelCount", Native_GetLevelCount);
 	return APLRes_Success;
 }
 
@@ -4246,6 +4247,11 @@ public any Native_ApplyKillEffects(Handle plugin, int numParams)
 public any Native_GetWaveCounts(Handle plugin, int numParams)
 {
 	return CurrentRound;
+}
+
+public any Native_GetLevelCount(Handle plugin, int numParams)
+{
+	return Level[GetNativeCell(1)];
 }
 
 //#file "Zombie Riot" broke in sm 1.11
