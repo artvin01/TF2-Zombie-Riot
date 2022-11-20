@@ -194,15 +194,6 @@
 		"nl"		"Dubbele loop's jachtgeweer"
 		"chi"       "双管散弹枪"
 	}
-	"The Pompson 7000"
-	{
-		"en"		"The Pompson 7000"
-		"ru"		"Помсон 7000"
-		"de"		"The Pompson 7000"
-		"pt"		"A Pomson 7000"
-		"nl"		"De Pompson 7000"
-		"chi"       "破神7000"
-	}
 	"Dragon's Fury"
 	{
 		"en"		"Dragon's Fury"
@@ -1863,6 +1854,7 @@
 	{
 	     "en"       "The Pomson 7000"
 		 "ru"       "Помсон 7000"
+		 "pt"		"A Pomson 7000"
 	     "chi"       "破神7000"
 	}
 	"Leone 12 Gauge Super"
@@ -1885,12 +1877,6 @@
 		 "ru"       "Счетверённая ракетница"
 		 "pt"		"Lançador Quádruplo"
 	     "chi"       "四管发射炮"
-	}
-	"Terroriser Bomb lmplanter Sniperrifle"
-	{
-	     "en"       "Terroriser Bomb lmplanter Sniper rifle"
-		 "ru"       "Снайперская винтовка террориста-закладчика"
-	     "chi"       "恐怖分子炸弹植入者狙击步枪"
 	}
 	"Neutronstar Burst Cannon"
 	{
@@ -1941,12 +1927,12 @@
 		 "pt"		"Cajado de Feixe"
 	     "chi"       "寒冰法杖"
 	}
-	"Cryo Staff"
+	"Cryo Staff" 
 	{
-	     "en"       "Beam Wand"
-		 "ru"       "Жезл луча"
+	     //"en"       "Beam Wand"
+		 //"ru"       "Жезл луча"
 		 "pt"		"Cajado da Criogênica"
-	     "chi"       "约束神杖"
+	     //"chi"       "约束神杖"
 	}
 	"Atomic Reconstructor"
 	{
