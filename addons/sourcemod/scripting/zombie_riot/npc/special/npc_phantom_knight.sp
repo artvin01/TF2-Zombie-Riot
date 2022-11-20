@@ -639,7 +639,7 @@ public void PhantomKnight_NPCDeath(int entity)
 
 static char[] GetLucianHealth()
 {
-	int health = 180;
+	int health = 135;
 	
 	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
 	
