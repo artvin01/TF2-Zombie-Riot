@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 #define NIKO_PLAYERMODEL "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
 
 static const char HandModels[][] =
@@ -31,8 +34,23 @@ static const char PlayerModels[][] =
 	"models/player/engineer.mdl"
 };
 
+static const char PlayerModelsSuit[][] =
+{
+	"models/bots/scout/bot_scout.mdl",
+	"models/bots/scout/bot_scout.mdl",
+	"models/bots/sniper/bot_sniper.mdl",
+	"models/bots/soldier/bot_soldier.mdl",
+	"models/bots/demo/bot_demo.mdl",
+	"models/bots/medic/bot_medic.mdl",
+	"models/bots/heavy/bot_heavy.mdl",
+	"models/bots/pyro/bot_pyro.mdl",
+	"models/bots/spy/bot_spy.mdl",
+	"models/bots/engineer/bot_engineer.mdl"
+};
+
 static int HandIndex[11];
 static int PlayerIndex[10];
+static int PlayerIndexSuit[10];
 static int HandRef[MAXTF2PLAYERS];
 static int WeaponRef[MAXTF2PLAYERS];
 
@@ -47,6 +65,11 @@ void ViewChange_MapStart()
 	{
 		PlayerIndex[i] = PrecacheModel(PlayerModels[i], true);
 	}
+
+	for(int i; i<10; i++)
+	{
+		PlayerIndexSuit[i] = PrecacheModel(PlayerModelsSuit[i], true);
+	}
 	
 	PrecacheModel(NIKO_PLAYERMODEL);
 }
@@ -59,7 +82,14 @@ void ViewChange_PlayerModel(int client)
 		int entity = CreateEntityByName("tf_wearable");
 		if(entity > MaxClients)	// Weapon viewmodel
 		{
-			SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
+			if(i_HealthBeforeSuit[client] == 0)
+			{
+				SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
+			}
+			else
+			{
+				SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndexSuit[CurrentClass[client]]);
+			}
 			SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
 			SetEntProp(entity, Prop_Send, "m_nSkin", team-2);

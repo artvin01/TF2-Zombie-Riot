@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static const char g_KnifeHitFlesh[][] = {
 	"weapons/blade_hit1.wav",
 	"weapons/blade_hit2.wav",
@@ -511,11 +514,14 @@ public void PlayCustomWeaponSoundFromPlayerCorrectly(int target, int client, int
 
 stock bool IsValidCurrentWeapon(int client, int weapon)
 {
-	int Active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon == Active_weapon)
+	if(IsValidEntity(weapon))
 	{
-		return true;
-		
+		int Active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon == Active_weapon)
+		{
+			return true;
+			
+		}
 	}
 	return false;
 }

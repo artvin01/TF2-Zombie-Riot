@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 enum struct Enemy
 {
 	int Health;
@@ -40,6 +43,7 @@ enum struct Round
 {
 	int Xp;
 	int Cash;
+	bool MapSetupRelay;
 	bool Custom_Refresh_Npc_Store;
 	int medival_difficulty;
 	
@@ -218,7 +222,7 @@ void Waves_SetupVote(KeyValues map)
 	StartCash = kv.GetNum("cash");
 	if(!kv.JumpToKey("Waves"))
 	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "waves")
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "waves");
 		kv = new KeyValues("Waves");
 		kv.ImportFromFile(buffer);
 		Waves_SetupWaves(kv, true);
@@ -373,6 +377,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		round.Cash = kv.GetNum("cash");
 		round.Custom_Refresh_Npc_Store = view_as<bool>(kv.GetNum("grigori_refresh_store"));
 		round.medival_difficulty = kv.GetNum("medival_research_level");
+		round.MapSetupRelay = view_as<bool>(kv.GetNum("map_setup_fake"));
 		round.Xp = kv.GetNum("xp");
 		round.Setup = kv.GetFloat("setup");
 	
@@ -616,7 +621,7 @@ void Waves_Progress()
 			if(Is_a_boss == 2)
 			{
 				Raidboss_Clean_Everyone();
-				ReviveAll();
+				ReviveAll(true);
 				Music_EndLastmann();
 				CheckAlivePlayers();
 			}
@@ -635,7 +640,10 @@ void Waves_Progress()
 			if(count > 150)
 				count = 150;
 			
-			Zombies_Currently_Still_Ongoing += count;
+			if(!wave.EnemyData.Friendly)
+			{
+				Zombies_Currently_Still_Ongoing += count;
+			}
 			
 			
 			int Is_Health_Scaling;
@@ -728,6 +736,7 @@ void Waves_Progress()
 				CPrintToChatAll("{green}%t","Cash Gained This Wave Village", extra);
 			}
 			
+			ExcuteRelay("zr_wavedone");
 			CurrentRound++;
 			CurrentWave = -1;
 			
@@ -760,6 +769,11 @@ void Waves_Progress()
 			}
 			
 			Rounds.GetArray(CurrentRound, round);
+			if(round.MapSetupRelay)
+			{
+				ExcuteRelay("zr_setuptime");
+				f_DelaySpawnsForVariousReasons = GetGameTime() + 1.5; //Delay spawns for 1.5 seconds, so maps can do their thing.
+			}
 			
 			//Loop through all the still alive enemies that are indexed!
 			int Zombies_alive_still = 0;
@@ -926,6 +940,7 @@ void Waves_Progress()
 				Store_RandomizeNPCStore(false);
 				InSetup = true;
 				ExcuteRelay("zr_setuptime");
+				ExcuteRelay("zr_victory");
 				
 				int timer = CreateEntityByName("team_round_timer");
 				DispatchKeyValue(timer, "show_in_hud", "1");
@@ -1042,18 +1057,7 @@ void Waves_Progress()
 		
 		if(!EscapeMode)
 		{
-			int botscalculaton;
-			
-			if((CurrentWave + 2) > CvarMaxBotsForKillfeed.IntValue)
-			{
-				botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-			}
-			else
-			{
-				botscalculaton = CurrentWave + 2;
-			}
-				
-			tf_bot_quota.IntValue = botscalculaton;
+			AdjustBotCount(CurrentWave + 2);
 		}
 	}
 	else
@@ -1089,18 +1093,7 @@ void Waves_Progress()
 				
 				if(!EscapeMode)
 				{
-					int botscalculaton;
-					
-					if((CurrentWave + 2) > CvarMaxBotsForKillfeed.IntValue)
-					{
-						botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-					}
-					else
-					{
-						botscalculaton = CurrentWave + 2;
-					}
-						
-					tf_bot_quota.IntValue = botscalculaton;
+					AdjustBotCount(CurrentWave + 2);
 				}
 			}
 			else
@@ -1110,18 +1103,7 @@ void Waves_Progress()
 				
 				if(!EscapeMode)
 				{
-					int botscalculaton;
-					
-					if((CurrentWave + 2) > CvarMaxBotsForKillfeed.IntValue)
-					{
-						botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-					}
-					else
-					{
-						botscalculaton = CurrentWave + 2;
-					}
-					
-					tf_bot_quota.IntValue = botscalculaton;
+					AdjustBotCount(CurrentWave + 2);
 				}
 			}
 			
@@ -1207,18 +1189,23 @@ void Waves_Progress()
 			}
 		}
 	}
-	/*if(CurrentRound == 0)
+	if(CurrentRound == 0)
 	{
+		if(StartCash < 10000)
+			Store_RemoveSellValue();
+
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client)==2)
 			{
 				Ammo_Count_Ready[client] = 8;
 				if(StartCash < 10000)
+				{
 					CashSpent[client] = StartCash;
+				}
 			}
 		}
-	}*/
+	}
 	if(CurrentWave == 0)
 	{
 		Renable_Powerups();

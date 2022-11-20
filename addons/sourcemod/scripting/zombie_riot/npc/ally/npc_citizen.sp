@@ -871,9 +871,14 @@ methodmap Citizen < CClotBody
 		}
 		public set(float value)
 		{
-			fl_Speed[this.index] = value;
 			if(!this.m_bSeakingGeneric && (this.m_iHasPerk == Cit_Pistol || this.m_iHasPerk == Cit_Shotgun || this.m_iHasPerk == Cit_RPG))
-				fl_Speed[this.index] *= 1.1;
+			{
+				fl_Speed[this.index] = value * 1.1;
+			}
+			else
+			{
+				fl_Speed[this.index] = value;
+			}
 		}
 	}
 	property float m_flReloadDelay
@@ -1375,7 +1380,8 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 
 void Citizen_SetupStart()
 {
-	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
+	int i = -1;
+	while((i = FindEntityByClassname(i, "base_boss")) != -1)
 	{
 		if(i_NpcInternalId[i] == CITIZEN)
 		{
@@ -1440,7 +1446,7 @@ void Citizen_SetupStart()
 					}
 				}
 				
-				if(Store_FindBarneyAGun(npc.index, npc.m_iGunValue, RoundToFloor(float(CurrentCash) * GetRandomFloat(0.35, 0.45)), view_as<bool>(found)))
+				if(Store_FindBarneyAGun(npc.index, npc.m_iGunValue, RoundToFloor(float(CurrentCash) * GetRandomFloat(0.26, 0.34)), view_as<bool>(found)))
 				{
 					npc.m_iTargetAlly = found;
 					npc.m_bSeakingGeneric = true;
@@ -1542,7 +1548,7 @@ public void Citizen_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_flGetClosestTargetTime = gameTime + 0.5;
-		if(npc.m_iGunType != Cit_None)
+		if(npc.m_iGunType > Cit_None)
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index, _, BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus, npc.m_bCamo);
 			if(npc.m_iTarget > 0 && view_as<CClotBody>(npc.m_iTarget).m_bCamo)
@@ -2610,7 +2616,9 @@ void Citizen_MiniBossSpawn(int spawner)
 	int talkingTo;
 	float distance;
 	
-	float vecMe[3]; vecMe = WorldSpaceCenter(spawner);
+//	float vecMe[3]; vecMe = WorldSpaceCenter(spawner);
+	float vecMe[3];
+	GetEntPropVector(spawner, Prop_Data, "m_vecAbsOrigin", vecMe); 
 	float vecTarget[3];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 	{
@@ -2768,7 +2776,7 @@ public Action Citizen_ClotDamaged(int victim, int &attacker, int &inflictor, flo
 	if(npc.m_bDowned || (attacker > 0 && GetEntProp(victim, Prop_Send, "m_iTeamNum") == GetEntProp(attacker, Prop_Send, "m_iTeamNum")))
 		return Plugin_Handled;
 	
-	damage /= (3.0 + float((Waves_GetRound() + 1) / 15 * 2));
+	damage /= (2.0 + float((Waves_GetRound() + 1) / 15 * 2));
 	if(npc.m_iHasPerk == Cit_Melee)
 		damage *= 0.9;
 	

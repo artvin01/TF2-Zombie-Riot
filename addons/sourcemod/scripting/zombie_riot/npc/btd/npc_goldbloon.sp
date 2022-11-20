@@ -26,6 +26,7 @@ static const char SoundPurple[][] =
 };
 
 static int LastGoldBloon;
+static int LastGoldRound;
 static int Sprite[MAXENTITIES];
 
 static int SpriteNumber()
@@ -85,7 +86,7 @@ methodmap GoldBloon < CClotBody
 	}
 	public GoldBloon(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		int range = CurrentRound / 10;
+		/*int range = CurrentRound / 10;
 		
 		if(data[0])
 		{
@@ -95,9 +96,25 @@ methodmap GoldBloon < CClotBody
 		{
 			if(CurrentRound > 89 || CurrentRound < 20 || range == LastGoldBloon || CountPlayersOnRed() < (range - 1))
 				return view_as<GoldBloon>(INVALID_ENT_REFERENCE);
+		}*/
+		
+		int range = 2;
+		
+		if(data[0])
+		{
+			range = StringToInt(data);
+		}
+		else if(LastGoldRound > CurrentRound || CurrentRound < 12)
+		{
+			range = 2;
+		}
+		else
+		{
+			range = LastGoldBloon + 1;
 		}
 		
 		LastGoldBloon = range;
+		LastGoldRound = CurrentRound;
 		
 		char buffer[128];
 		if(range < 6)

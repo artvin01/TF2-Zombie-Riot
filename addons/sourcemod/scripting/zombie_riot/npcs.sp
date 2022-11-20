@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 #define GORE_ABDOMEN	  (1 << 0)
 #define GORE_FOREARMLEFT  (1 << 1)
 #define GORE_HANDRIGHT	(1 << 2)
@@ -32,7 +35,14 @@ enum struct SpawnerData
 	bool	b_SpawnIsCloseEnough;
 	float	f_ClosestSpawnerLessCooldown;
 	float	f_SpawnerCooldown;
+	float	f_PointScore;
 }
+
+//todo: code a way to include 2 or more groups of players splitting up, so the enemies dont spawn in the middle of nowhere
+//Easy temp solution: Map should handle it. via triggers, and such, and dont make huge maps with a billion corridors.
+
+
+
 //ArrayList NPCList; Make this global, i need it globally.
 ArrayList SpawnerList;
 static Handle SyncHud;
@@ -116,9 +126,9 @@ public void NPC_EntitySpawned(int entity)
 
 public Action GetClosestSpawners(Handle timer)
 {
-	float f3_PositionOfAll[3];
+	float f3_PositionTemp_2[3];
 	float f3_PositionTemp[3];
-	int i_Diviveby = 0;
+
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))
@@ -157,21 +167,55 @@ public Action GetClosestSpawners(Handle timer)
 				
 				if(GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0 && IsPlayerAlive(client))
 				{
-					i_Diviveby += 1;
 					
 					GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
-					
-					f3_PositionOfAll[0] += f3_PositionTemp[0];
-					f3_PositionOfAll[1] += f3_PositionTemp[1];
-					f3_PositionOfAll[2] += f3_PositionTemp[2];
+
+					for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
+					{
+						int entity = i_ObjectsSpawners[entitycount];
+						if(IsValidEntity(entity))
+						{
+							GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp_2);
+
+							float distance = GetVectorDistance( f3_PositionTemp, f3_PositionTemp_2, true); 
+
+							//leave it all squared for optimsation sake!
+							//max distance is 10,000 anymore and wtf u doin
+
+							if( distance < 100000000.0) 
+							{
+								int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
+								if(index != -1)
+								{
+									SpawnerData Spawner;
+									SpawnerList.GetArray(index, Spawner);
+									
+									float inverting_score_calc;
+
+									inverting_score_calc = ( distance / 100000000.0);
+
+									inverting_score_calc -= 1;
+
+									inverting_score_calc *= -1.0;
+
+									//
+									//	(n*n)^4.0
+									//	So further away spawnpoints gain way less points.
+									//	This should solve the problem of 2 groups of people far away triggering spawnpoints that arent even near them.
+
+									Pow(inverting_score_calc * inverting_score_calc, 5.0);
+
+									Spawner.f_PointScore += inverting_score_calc;
+
+									SpawnerList.SetArray(index, Spawner);
+								}
+							}
+						}
+					}
 				}
 			}
 		}
 	}
-	
-	f3_PositionOfAll[0] /= float(i_Diviveby) + 0.00001;
-	f3_PositionOfAll[1] /= float(i_Diviveby) + 0.00001;
-	f3_PositionOfAll[2] /= float(i_Diviveby) + 0.00001;
 	/*
 	float PositonBeam[3];
 	PositonBeam = f3_PositionOfAll;
@@ -182,7 +226,6 @@ public Action GetClosestSpawners(Handle timer)
 	*/
 	int i_Spawner_Indexes[MAXSPAWNERSACTIVE + 1];
 	float TargetDistance = 0.0; 
-	float TargetLocation[3];
 	int ClosestTarget = -1; 
 
 	for(int Repeats=1; Repeats<=MAXSPAWNERSACTIVE; Repeats++)
@@ -190,7 +233,7 @@ public Action GetClosestSpawners(Handle timer)
 		for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
 		{
 			int entity = i_ObjectsSpawners[entitycount];
-			if(IsValidEntity(entity) && entity != 0)
+			if(IsValidEntity(entity))
 			{
 				int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
 				if(index != -1)
@@ -200,7 +243,6 @@ public Action GetClosestSpawners(Handle timer)
 					bool Found = false;
 					if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
 					{
-						
 						for(int Repeats_anti=1; Repeats_anti<=Repeats; Repeats_anti++)
 						{
 							if(i_Spawner_Indexes[Repeats_anti] == entity)
@@ -215,7 +257,6 @@ public Action GetClosestSpawners(Handle timer)
 							continue;
 						}
 						Spawner.b_SpawnIsCloseEnough = false;
-						GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 						/*
 						PositonBeam = TargetLocation;
 						TargetLocation[2] += 50;
@@ -223,20 +264,20 @@ public Action GetClosestSpawners(Handle timer)
 						TE_SetupBeamPoints(TargetLocation, PositonBeam, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 2.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 0, 255}), 30);
 						TE_SendToAll();
 						*/
-						float distance = GetVectorDistance( f3_PositionOfAll, TargetLocation, true); 
+						//i_PointScore[entity]
 						if (TargetDistance) 
 						{
-							if( distance < TargetDistance ) 
+							if( Spawner.f_PointScore > TargetDistance ) 
 							{
 								ClosestTarget = entity; 
-								TargetDistance = distance;		  
+								TargetDistance = Spawner.f_PointScore;		  
 							}
 						} 
 						else 
 						{
 							ClosestTarget = entity; 
-							TargetDistance = distance;
-						}								
+							TargetDistance = Spawner.f_PointScore;
+						}						
 					}
 					SpawnerList.SetArray(index, Spawner);
 				}
@@ -249,7 +290,14 @@ public Action GetClosestSpawners(Handle timer)
 			{
 				SpawnerData Spawner;
 				SpawnerList.GetArray(index, Spawner);
-				Spawner.f_ClosestSpawnerLessCooldown = float(Repeats) / 2.0;
+				if(Repeats < 3) // first two have less cooldown
+				{
+					Spawner.f_ClosestSpawnerLessCooldown = 1.5;
+				}
+				else
+				{
+					Spawner.f_ClosestSpawnerLessCooldown = float(Repeats - 1) / 2.0;
+				}
 				Spawner.b_SpawnIsCloseEnough = true;
 				SpawnerList.SetArray(index, Spawner);
 			}
@@ -265,6 +313,22 @@ public Action GetClosestSpawners(Handle timer)
 		ClosestTarget = -1;
 		TargetDistance = 0.0;
 	}
+
+	for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
+	{
+		int entity = i_ObjectsSpawners[entitycount];
+		if(IsValidEntity(entity))
+		{
+			int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
+			if(index != -1)
+			{
+				SpawnerData Spawner;
+				SpawnerList.GetArray(index, Spawner);
+				Spawner.f_PointScore = 0.0; //Set it to 0 again, as we wanna keep it for future calcs !	
+				SpawnerList.SetArray(index, Spawner);
+			}
+		}
+	}
 	
 	return Plugin_Continue;
 }
@@ -277,6 +341,10 @@ int LimitNpcs;
 
 public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 {
+	if(f_DelaySpawnsForVariousReasons > GetGameTime())
+	{
+		return;
+	}
 	bool found;
 	/*
 	*/
@@ -406,7 +474,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			}
 		}
 	}
-	float Active_Spawners_Calculate = 0.0;
+	float Active_Spawners_Calculate = 1.0;
 	switch (Active_Spawners)
 	{
 		case 1:
@@ -810,6 +878,8 @@ int played_headshotsound_already_Pitch [MAXTF2PLAYERS];
 
 float f_IsThisExplosiveHitscan[MAXENTITIES];
 
+float f_TraceAttackWasTriggeredSameFrame[MAXENTITIES];
+
 public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
 {
 	if(attacker < 1 || attacker > MaxClients || victim == attacker)
@@ -840,21 +910,48 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 	int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
 	if(IsValidEntity(weapon))
 	{
+		f_TraceAttackWasTriggeredSameFrame[victim] = GetGameTime();
+		i_HasBeenHeadShotted[victim] = false;
+		if(damagetype & DMG_BULLET)
+		{
+			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
+			{
+				float AttackerPos[3];
+				float VictimPos[3];
+				
+				AttackerPos = WorldSpaceCenter(attacker);
+				VictimPos = WorldSpaceCenter(victim);
+
+				float distance = GetVectorDistance(AttackerPos, VictimPos, true);
+				
+				distance -= 1600.0;// Give 60 units of range cus its not going from their hurt pos
+
+				if(distance < 0.1)
+				{
+					distance = 0.1;
+				}
+
+				damage *= Pow(i_WeaponDamageFalloff[weapon], (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
+			}
+		}
 		if(!i_WeaponCannotHeadshot[weapon])
 		{
 			if(hitgroup == HITGROUP_HEAD)
 			{
+				
+				i_HasBeenHeadShotted[victim] = true;
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
-					damage *= 1.65;
+					damage *= 2.0;
 				}
 				else
 				{
-					damage *= 1.4;
+					damage *= 1.65;
 				}
+
 				if(i_CurrentEquippedPerk[attacker] == 5)
 				{
-					damage *= 1.25;
+					damage *= 1.35;
 				}
 				
 				int pitch = GetRandomInt(90, 110);
@@ -920,14 +1017,14 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			{
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
-					damage *= 0.75;
+					damage *= 0.65;
 					return Plugin_Changed;
 				}
-				return Plugin_Continue;		
+				return Plugin_Changed;
 			}
 		}
 	}
-	return Plugin_Continue;
+	return Plugin_Changed;
 }
 		
 float f_CooldownForHurtHud[MAXPLAYERS];	
@@ -1032,7 +1129,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	
 	f_TimeUntillNormalHeal[victim] = GetGameTime() + 4.0;
-	
+	i_HasBeenBackstabbed[victim] = false;
+
+	if(f_TraceAttackWasTriggeredSameFrame[victim] != GetGameTime())
+	{
+		i_HasBeenHeadShotted[victim] = false;
+	}
+
+	//Reset all things here.
 	if(b_npcspawnprotection[victim]) //make them resistant on spawn or else itll just be spawncamping fest
 	{
 		damage *= 0.25;
@@ -1190,34 +1294,34 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					if(!EscapeMode) //Buff in escapemode overall!
 					{
 						if(Wave_Count <= 10)
-							damage *= 0.5;
+							damage *= 0.35;
 							
 						else if(Wave_Count <= 15)
-							damage *= 1.25;
+							damage *= 1.0;
 						
 						else if(Wave_Count <= 20)
-							damage *= 2.0;
+							damage *= 1.35;
 							
 						else if(Wave_Count <= 25)
-							damage *= 3.0;
+							damage *= 2.5;
 							
 						else if(Wave_Count <= 30)
-							damage *= 7.0;
+							damage *= 5.0;
 							
 						else if(Wave_Count <= 40)
-							damage *= 10.0;
+							damage *= 7.0;
 							
 						else if(Wave_Count <= 45)
-							damage *= 30.0;
+							damage *= 20.0;
 						
 						else if(Wave_Count <= 50)
-							damage *= 45.0;
+							damage *= 30.0;
 						
 						else if(Wave_Count <= 60)
-							damage *= 60.0;
+							damage *= 40.0;
 						
 						else
-							damage *= 100.0;
+							damage *= 60.0;
 					}
 					else
 					{
@@ -1232,7 +1336,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		
 			damage = modified_damage;
-			
+
 			if(i_ArsenalBombImplanter[weapon] > 0)
 			{
 				if(f_ChargeTerroriserSniper[weapon] > 149.0)
@@ -1273,9 +1377,12 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						int melee = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 						if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
 						{
+							i_HasBeenBackstabbed[victim] = true;
+							
 							float attack_speed;
 			
 							attack_speed = Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);
+							attack_speed = Attributes_FindOnWeapon(attacker, weapon, 396, true, 1.0);
 							
 							EmitSoundToAll("weapons/knife_swing_crit.wav", attacker, _, _, _, 0.7);
 							
@@ -1289,7 +1396,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 							
 							if(b_FaceStabber[attacker])
 							{
-								damage *= 0.4; //cut damage in half and then some.
+								damage *= 0.35; //cut damage in half and then some.
 							}
 							
 							CClotBody npc = view_as<CClotBody>(victim);
@@ -1301,7 +1408,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 							
 							if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
 							{
-								damage *= 1.25;
+								damage *= 1.35;
 							}
 							
 							if(EscapeMode)
@@ -1326,7 +1433,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 								heal_amount = 10;
 								if(b_FaceStabber[attacker])
 								{
-									heal_amount = 2;
+									heal_amount = 1;
 								}
 								StartHealingTimer(attacker, 0.1, 1, heal_amount);
 								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
@@ -1337,7 +1444,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 								heal_amount = 25;
 								if(b_FaceStabber[attacker])
 								{
-									heal_amount = 5;
+									heal_amount = 4;
 								}
 								StartHealingTimer(attacker, 0.1, 2, heal_amount);
 								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.0 * attack_speed));
@@ -1379,7 +1486,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				{		
 					if(i_CurrentEquippedPerk[attacker] == 5) //Just give them 25% more damage if they do crits with the huntsman, includes buffbanner i guess
 					{
-						damage *= 1.25;
+						damage *= 1.35;
 					}
 				}
 			}
@@ -1440,7 +1547,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	*/
 }
 
-stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)
+stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)
 {
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
@@ -1453,7 +1560,8 @@ stock Calculate_And_Display_hp(int attacker, int victim, float damage, bool igno
 	{
 		Damage_dealt_in_total[attacker] += overkill; //dont award for overkilling.
 	}
-	
+
+
 	if(f_CooldownForHurtHud[attacker] < GetGameTime() || ignore)
 	{
 		if(!ignore)

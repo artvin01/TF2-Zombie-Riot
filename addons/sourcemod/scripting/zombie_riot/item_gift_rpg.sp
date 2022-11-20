@@ -1,7 +1,7 @@
 
 #define GIFT_MODEL "models/items/tf_gift.mdl"
 
-#define GIFT_CHANCE 0.0025 //Extra rare cus alot of zobies
+#define GIFT_CHANCE 0.35 //Extra rare cus alot of zobies
 
 #define SOUND_BEEP			"buttons/button17.wav"
 
@@ -14,15 +14,17 @@ enum
 	Rarity_Mythic = 4
 }
 
+float f_RingDelayGift[MAXENTITIES];
+
 static int RenderColors_RPG[][] =
 {
 	{255, 255, 255, 255}, 	// 0
-	{0, 255, 0, 255, 255},
-	{ 65, 105, 225 , 255},
-	{ 255, 255, 0 , 255},
-	{ 178, 34, 34 , 255},
-	{ 138, 43, 226 , 255},
-	{0, 0, 0, 255}
+	{0, 255, 0, 255, 255}, 	//Green
+	{ 65, 105, 225 , 255},	//Blue
+	{ 255, 255, 0 , 255},	//yellow
+	{ 178, 34, 34 , 255},	//Red
+	{ 138, 43, 226 , 255},	//wat
+	{0, 0, 0, 255}			//none, black.
 };
 
 static const char CommonDrops[][] =
@@ -46,7 +48,6 @@ static const char UncommonDrops[][] =
 	"Extra Burny Stuff [Uncommon]",
 	"Charged Chinooks [Uncommon]",
 	"Speedy Brewing [Uncommon]",
-	"Strike Down The False [Uncommon]",
 	"Deadly Tranquility [Uncommon]",
 	"Veteran Monkey Training [Uncommon]",
 	"Aztec Warrior Paint [Uncommon]",
@@ -65,7 +66,6 @@ static const char RareDrops[][] =
 	"SUPER Range [Rare]",
 	"Strong Tonic [Rare]",
 	"Arcane Impale [Rare]",
-	"Combine Soldier [Rare]",
 	"Tiny Tornadoes [Rare]"
 };
 
@@ -74,10 +74,8 @@ static const char LegendDrops[][] =
 	"Quad Burst [Legendary]",
 	"Big Bloon Sabotage [Legendary]",
 	"Heavy Knockback [Legendary]",
-	"Mana Shield [Legendary]",
 	"To ARMS! [Legendary]",
-	"Healthy Bananas [Legendary]",
-	"Pre-Game Prep [Legendary]"
+	"Healthy Bananas [Legendary]"
 };
 
 static const char MythicDrops[][] =
@@ -106,7 +104,7 @@ public void Gift_DropChance(int entity)
 	{
 		if(IsValidEntity(entity))
 		{
-			if(GetRandomFloat(0.0, 2.0) < ((GIFT_CHANCE / (MultiGlobal + 0.000001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually)) //Never let it divide by 0
+			if(GetRandomFloat(0.0, 200.0) < ((GIFT_CHANCE / (MultiGlobal + 0.0001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually)) //Never let it divide by 0
 			{
 				f_IncreaceChanceManually = 1.0;
 				float VecOrigin[3];
@@ -122,7 +120,7 @@ public void Gift_DropChance(int entity)
 			}	
 			else
 			{
-				f_IncreaceChanceManually += 0.00015;
+				f_IncreaceChanceManually += 0.0015;
 			}
 		}
 	}
@@ -130,22 +128,21 @@ public void Gift_DropChance(int entity)
 
 static int RollRandom()
 {
-	if(!(GetURandomInt() % 250))
+	if(!(GetURandomInt() % 150))
 		return Rarity_Mythic;
 	
-	if(!(GetURandomInt() % 75))
+	if(!(GetURandomInt() % 35))
 		return Rarity_Legend;
 	
-	if(!(GetURandomInt() % 20))
+	if(!(GetURandomInt() % 15))
 		return Rarity_Rare;
 	
-	if(!(GetURandomInt() % 5))
+	if(!(GetURandomInt() % 3))
 		return Rarity_Uncommon;
 	
 	return Rarity_Common;
 }
 
-float f_RingDelayGift[MAXENTITIES];
 
 public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 {
@@ -153,6 +150,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	int glow = EntRefToEntIndex(pack.ReadCell());
 	int client = GetClientOfUserId(pack.ReadCell());
+	int ScrapToGive = 0;
 	if(IsValidEntity(entity) && entity>MaxClients)
 	{
 		if(IsValidClient(client))
@@ -162,7 +160,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", powerup_pos);
 			if(f_RingDelayGift[entity] < GetGameTime())
 			{
-				f_RingDelayGift[entity] = GetGameTime() + 1.0;
+				f_RingDelayGift[entity] = GetGameTime() + 2.0;
 				EmitSoundToClient(client, SOUND_BEEP, entity, _, 90, _, 1.0);
 				int color[4];
 				
@@ -173,6 +171,8 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 		
 				TE_SetupBeamRingPoint(powerup_pos, 10.0, 300.0, g_BeamIndex, -1, 0, 30, 1.0, 10.0, 1.0, color, 0, 0);
 	   			TE_SendToClient(client);
+
+				GiftJumpTowardsYou(entity, client); //Terror.
    			}
 			if (IsPlayerAlive(client) && GetClientTeam(client) == view_as<int>(TFTeam_Red))
 			{
@@ -187,139 +187,165 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 					{
 						int rand = GetURandomInt();
 						int length = TextStore_GetItems();
-						for(int i; i<length; i++)
+						for(int r = i_RarityType[entity]; r >= 0; r--)
 						{
-							static char buffer[128];
-							TextStore_GetItemName(i, buffer, sizeof(buffer));
-							
-							if(length && i_RarityType[entity] >= Rarity_Mythic)
+							for(int i; i<length; i++)
 							{
-								int start = (rand % sizeof(MythicDrops));
-								int a = start;
-								do
+								static char buffer[128];
+								TextStore_GetItemName(i, buffer, sizeof(buffer));
+								
+								if(length && r == Rarity_Mythic)
 								{
-									if(StrEqual(buffer, MythicDrops[start], false))
+									if(ScrapToGive == 0)
 									{
-										int amount;
-										TextStore_GetInv(client, i, amount);
-										if(!amount)
+										ScrapToGive = 6;
+									}
+									int start = (rand % sizeof(MythicDrops));
+									int a = start;
+									do
+									{
+										if(StrEqual(buffer, MythicDrops[a], false))
 										{
-											CPrintToChat(client,"{default}You have found {darkred}%s{default}!", MythicDrops[a]);
-											TextStore_SetInv(client, i, amount + 1);
-											length = 0;
+											int amount;
+											TextStore_GetInv(client, i, amount);
+											if(!amount)
+											{
+												CPrintToChat(client,"{default}You have found {darkred}%s{default}!", MythicDrops[a]);
+												TextStore_SetInv(client, i, amount + 1);
+												length = 0;
+											}
+											
+											break;
 										}
 										
-										break;
-									}
-									
-									if(++a >= sizeof(MythicDrops))
-										a = 0;
-								} while(a != start);
-							}
-							
-							if(length && i_RarityType[entity] >= Rarity_Legend)
-							{
-								int start = (rand % sizeof(LegendDrops));
-								int a = start;
-								do
+										if(++a >= sizeof(MythicDrops))
+											a = 0;
+									} while(a != start);
+								}
+								
+								if(length && r == Rarity_Legend)
 								{
-									if(StrEqual(buffer, LegendDrops[start], false))
+									if(ScrapToGive == 0)
 									{
-										int amount;
-										TextStore_GetInv(client, i, amount);
-										if(!amount)
+										ScrapToGive = 5;
+									}
+									int start = (rand % sizeof(LegendDrops));
+									int a = start;
+									do
+									{
+										if(StrEqual(buffer, LegendDrops[a], false))
 										{
-											CPrintToChat(client,"{default}You have found {yellow}%s{default}!", LegendDrops[a]);
-											TextStore_SetInv(client, i, amount + 1);
-											length = 0;
+											int amount;
+											TextStore_GetInv(client, i, amount);
+											if(!amount)
+											{
+												CPrintToChat(client,"{default}You have found {yellow}%s{default}!", LegendDrops[a]);
+												TextStore_SetInv(client, i, amount + 1);
+												length = 0;
+											}
+											
+											break;
 										}
 										
-										break;
-									}
-									
-									if(++a >= sizeof(LegendDrops))
-										a = 0;
-								} while(a != start);
-							}
-							
-							if(length && i_RarityType[entity] >= Rarity_Rare)
-							{
-								int start = (rand % sizeof(RareDrops));
-								int a = start;
-								do
+										if(++a >= sizeof(LegendDrops))
+											a = 0;
+									} while(a != start);
+								}
+								
+								if(length && r == Rarity_Rare)
 								{
-									if(StrEqual(buffer, RareDrops[start], false))
+									if(ScrapToGive == 0)
 									{
-										int amount;
-										TextStore_GetInv(client, i, amount);
-										if(!amount)
+										ScrapToGive = 4;
+									}
+									int start = (rand % sizeof(RareDrops));
+									int a = start;
+									do
+									{
+										if(StrEqual(buffer, RareDrops[a], false))
 										{
-											CPrintToChat(client,"{default}You have found {blue}%s{default}!", RareDrops[a]);
-											TextStore_SetInv(client, i, amount + 1);
-											length = 0;
+											int amount;
+											TextStore_GetInv(client, i, amount);
+											if(!amount)
+											{
+												CPrintToChat(client,"{default}You have found {blue}%s{default}!", RareDrops[a]);
+												TextStore_SetInv(client, i, amount + 1);
+												length = 0;
+											}
+											
+											break;
 										}
 										
-										break;
-									}
-									
-									if(++a >= sizeof(RareDrops))
-										a = 0;
-								} while(a != start);
-							}
-							
-							if(length && i_RarityType[entity] >= Rarity_Uncommon)
-							{
-								int start = (rand % sizeof(UncommonDrops));
-								int a = start;
-								do
+										if(++a >= sizeof(RareDrops))
+											a = 0;
+									} while(a != start);
+								}
+								
+								if(length && r == Rarity_Uncommon)
 								{
-									if(StrEqual(buffer, UncommonDrops[a], false))
+									if(ScrapToGive == 0)
 									{
-										int amount;
-										TextStore_GetInv(client, i, amount);
-										if(!amount)
+										ScrapToGive = 2;
+									}
+									int start = (rand % sizeof(UncommonDrops));
+									int a = start;
+									do
+									{
+										if(StrEqual(buffer, UncommonDrops[a], false))
 										{
-											CPrintToChat(client,"{default}You have found {green}%s{default}!", UncommonDrops[a]);
-											TextStore_SetInv(client, i, amount + 1);
-											length = 0;
+											int amount;
+											TextStore_GetInv(client, i, amount);
+											if(!amount)
+											{
+												CPrintToChat(client,"{default}You have found {green}%s{default}!", UncommonDrops[a]);
+												TextStore_SetInv(client, i, amount + 1);
+												length = 0;
+											}
+											
+											break;
 										}
 										
-										break;
-									}
-									
-									if(++a >= sizeof(UncommonDrops))
-										a = 0;
-								} while(a != start);
-							}
-							
-							if(length && i_RarityType[entity] >= Rarity_Common)
-							{
-								int start = (rand % sizeof(CommonDrops));
-								int a = start;
-								do
+										if(++a >= sizeof(UncommonDrops))
+											a = 0;
+									} while(a != start);
+								}
+								
+								if(length && r == Rarity_Common)
 								{
-									if(StrEqual(buffer, CommonDrops[a], false))
+									if(ScrapToGive == 0)
 									{
-										int amount;
-										TextStore_GetInv(client, i, amount);
-										if(!amount)
+										ScrapToGive = 1;
+									}
+									int start = (rand % sizeof(CommonDrops));
+									int a = start;
+									do
+									{
+										if(StrEqual(buffer, CommonDrops[a], false))
 										{
-											CPrintToChat(client,"{default}You have found %s!", CommonDrops[a]);
-											TextStore_SetInv(client, i, amount + 1);
-											length = 0;
+											int amount;
+											TextStore_GetInv(client, i, amount);
+											if(!amount)
+											{
+												CPrintToChat(client,"{default}You have found %s!", CommonDrops[a]);
+												TextStore_SetInv(client, i, amount + 1);
+												length = 0;
+											}
+											
+											break;
 										}
 										
-										break;
-									}
-									
-									if(++a >= sizeof(CommonDrops))
-										a = 0;
-								} while(a != start);
+										if(++a >= sizeof(CommonDrops))
+											a = 0;
+									} while(a != start);
+								}
 							}
 						}
 						
 						if(length)
-							PrintToChat(client, "You already have everything in this rarity");
+						{
+							PrintToChat(client, "You already have everything in this rarity, but where given %i Scrap as a compensation.", ScrapToGive);
+							Scrap[client] += ScrapToGive;
+						}
 					}
 					RemoveEntity(entity);
 					return Plugin_Stop;
@@ -382,6 +408,8 @@ stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime
 			
 	//	i_DyingParticleIndication[victim] = EntIndexToEntRef(entity);
 		
+		f_RingDelayGift[m_iGift] = GetGameTime() + 2.0;
+
 		DataPack pack;
 		CreateDataTimer(0.1, Timer_Detect_Player_Near_Gift, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		pack.WriteCell(EntIndexToEntRef(m_iGift));
@@ -422,4 +450,62 @@ public Action GiftTransmit(int entity, int target)
 		return Plugin_Continue;
 
 	return Plugin_Handled;
+}
+
+//This is probably the silliest thing ever.
+public void GiftJumpTowardsYou(int Gift, int client)
+{
+	float Jump_1_frame[3];
+	GetEntPropVector(Gift, Prop_Data, "m_vecOrigin", Jump_1_frame);
+	float Jump_1_frame_Client[3];
+	GetEntPropVector(client, Prop_Data, "m_vecOrigin", Jump_1_frame_Client);
+	
+	float vecNPC[3], vecJumpVel[3];
+	GetEntPropVector(Gift, Prop_Data, "m_vecOrigin", vecNPC);
+		
+	float gravity = GetEntPropFloat(Gift, Prop_Data, "m_flGravity");
+	if(gravity <= 0.0)
+		gravity = FindConVar("sv_gravity").FloatValue;
+		
+	// How fast does the headcrab need to travel to reach the position given gravity?
+	float flActualHeight = Jump_1_frame_Client[2] - vecNPC[2];
+	float height = flActualHeight;
+	if ( height < 72 )
+	{
+		height = 72.0;
+	}
+
+	float additionalHeight = 0.0;
+		
+	if ( height < 35 )
+	{
+		additionalHeight = 50.0;
+	}
+		
+	height += additionalHeight;
+	
+	float speed = SquareRoot( 2 * gravity * height );
+	float time = speed / gravity;
+	
+	time += SquareRoot( (2 * additionalHeight) / gravity );
+		
+	// Scale the sideways velocity to get there at the right time
+	SubtractVectors( Jump_1_frame_Client, vecNPC, vecJumpVel );
+	vecJumpVel[0] /= time;
+	vecJumpVel[1] /= time;
+	vecJumpVel[2] /= time;
+	
+	// Speed to offset gravity at the desired height.
+	vecJumpVel[2] = speed;
+		
+	// Don't jump too far/fast.
+	float flJumpSpeed = GetVectorLength(vecJumpVel);
+	float flMaxSpeed = 350.0;
+	if ( flJumpSpeed > flMaxSpeed )
+	{
+		vecJumpVel[0] *= flMaxSpeed / flJumpSpeed;
+		vecJumpVel[1] *= flMaxSpeed / flJumpSpeed;
+		vecJumpVel[2] *= flMaxSpeed / flJumpSpeed;
+	}
+	TeleportEntity(Gift, NULL_VECTOR, NULL_VECTOR, vecJumpVel);
 }

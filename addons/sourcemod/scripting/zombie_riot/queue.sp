@@ -1,4 +1,5 @@
-#define MAX_PLAYER_COUNT	12 //cant do more then 12, more then 12 cause memory isssues because that many npcs can just cause that much lag
+#pragma semicolon 1
+#pragma newdecls required
 
 static bool AddedPoint[MAXTF2PLAYERS];
 

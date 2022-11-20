@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static int weapon_id[MAXPLAYERS+1]={0, ...};
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float fl_IncreaseAttackSpeed[MAXPLAYERS+1]={0.0, ...};
@@ -63,12 +66,12 @@ public void Weapon_CspyKnife(int client, int weapon, bool crit, int slot)
 				}
 				case 2:
 				{
-					TF2_AddCondition(client, TFCond_CritCola, MinicritTimer, 0)
+					TF2_AddCondition(client, TFCond_CritCola, MinicritTimer, 0);
 					//PrintToChat(client, "Minicrits")
 				}
 				case 3:
 				{
-					TF2_AddCondition(client, TFCond_SpeedBuffAlly, SpeedBuffTimer, 0)
+					TF2_AddCondition(client, TFCond_SpeedBuffAlly, SpeedBuffTimer, 0);
 					//PrintToChat(client, "Speedbuff")
 				}
 				case 4:
@@ -129,12 +132,12 @@ public void Weapon_CspyKnife_Pap(int client, int weapon, bool crit, int slot)
 				}
 				case 2:
 				{
-					TF2_AddCondition(client, TFCond_CritCola, MinicritTimer_Pap, 0)
+					TF2_AddCondition(client, TFCond_CritCola, MinicritTimer_Pap, 0);
 					//PrintToChat(client, "Minicrits")
 				}
 				case 3:
 				{
-					TF2_AddCondition(client, TFCond_SpeedBuffAlly, SpeedBuffTimer_Pap, 0)
+					TF2_AddCondition(client, TFCond_SpeedBuffAlly, SpeedBuffTimer_Pap, 0);
 					//PrintToChat(client, "Speedbuff")
 				}
 				case 4:

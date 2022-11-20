@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 
 #define LASERBEAM_PANZER "cable/rope.vmt"
 #define ENERGY_BALL_MODEL_PANZER 	"models/weapons/w_models/w_drg_ball.mdl"

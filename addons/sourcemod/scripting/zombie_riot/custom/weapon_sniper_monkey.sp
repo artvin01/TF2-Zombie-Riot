@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static bool SmartBounce;
 static int LastHitTarget;
 

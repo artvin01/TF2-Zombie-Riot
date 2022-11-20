@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 #define LASERBEAM "sprites/laserbeam.vmt"
 
 
@@ -316,7 +319,7 @@ public void XenoMedicHealer_ClotThink(int iNPC)
 			npc.StopHealing();
 			npc.Healing = false;
 			npc.m_bnew_target = false;
-			npc.m_flGetClosestTargetTime = 0.0
+			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_bFUCKYOU = true;
 			npc.m_iTarget = GetClosestAlly(npc.index);
 		}

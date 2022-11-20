@@ -124,7 +124,7 @@ bool Database_SaveGameData(int client)
 			int owned, scale, equip;
 			for(int i; Store_GetNextItem(client, i, owned, scale, equip); i++)
 			{
-				DataBase.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GAMEDATA ... " (steamid, item, owned, scale, equip) VALUES ('%d', '%d', '%d', '%d', '%d')", id, i, owned, scale, equip);
+				DataBase.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GAMEDATA ... " (steamid, item, level, scale, equip) VALUES ('%d', '%d', '%d', '%d', '%d')", id, i, owned, scale, equip);
 				tr.AddQuery(buffer);
 			}
 			
@@ -157,7 +157,7 @@ void Database_LoadGameData(int client)
 public void Database_OnGameData(Database db, int userid, int numQueries, DBResultSet[] results, any[] queryData)
 {
 	int client = GetClientOfUserId(userid);
-	if(client && AreClientCookiesCached(client) && results[0].MoreRows)
+	if(client && AreClientCookiesCached(client) && results[0].MoreRows && IsClientInGame(client))
 	{
 		char buffer[32];
 		CookieCache.Get(client, buffer, sizeof(buffer));

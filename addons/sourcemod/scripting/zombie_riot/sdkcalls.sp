@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static Handle SDKEquipWearable;
 static Handle SDKGetMaxHealth;
 static Handle g_hGetAttachment;
@@ -15,6 +18,7 @@ Handle g_hSDKMakeCarriedObjectDispenser;
 Handle g_hSDKMakeCarriedObjectSentry;
 //Handle g_hSDKMakeCarriedObject;
 static Handle g_hGetVectors;
+Handle gH_BotAddCommand = INVALID_HANDLE;
 //static Handle g_hWeaponSound;
 //static Handle g_hSDKPlaySpecificSequence;
 //static Handle g_hDoAnimationEvent;
@@ -22,6 +26,7 @@ static Handle g_hGetVectors;
 Handle g_hSDKStartLagComp;
 Handle g_hSDKEndLagComp;
 Handle g_hSDKUpdateBlocked;
+Handle g_hSnapEyeAngles;
 
 static Handle g_hImpulse;
 
@@ -58,6 +63,21 @@ void SDKCall_Setup()
 	g_hSetLocalOrigin = EndPrepSDKCall();
 	if(!g_hSetLocalOrigin)
 		LogError("[Gamedata] Could not find CBaseEntity::SetLocalOrigin");
+
+
+	//	https://github.com/Wilzzu/testing/blob/18a3680a9a1c8bdabc30c504bbf9467ac6e7d7b4/samu/addons/sourcemod/scripting/shavit-replay.sp
+
+	//	Thanks to nosoop for pointing soemthing like this out to me
+	//	https://discord.com/channels/335290997317697536/335290997317697536/1038513919695802488  in the allied modders discord
+	StartPrepSDKCall(SDKCall_Static);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "NextBotCreatePlayerBot<CTFBot>");
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);       // const char *name
+	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);   // bool bReportFakeClient
+	PrepSDKCall_SetReturnInfo(SDKType_CBasePlayer, SDKPass_Pointer); // CTFBot*
+	gH_BotAddCommand = EndPrepSDKCall();
+
+	if(!gH_BotAddCommand)
+		SetFailState("[Gamedata] Unable to prepare SDKCall for NextBotCreatePlayerBot<CTFBot>");
 		
 		/*
 	StartPrepSDKCall(SDKCall_Entity);
@@ -83,6 +103,12 @@ void SDKCall_Setup()
 		LogError("[Gamedata] Could not find CBaseEntity::SetAbsAngles");
 		*/
 		
+		
+	StartPrepSDKCall(SDKCall_Player);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBasePlayer::SnapEyeAngles");
+	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef);
+	if ((g_hSnapEyeAngles = EndPrepSDKCall()) == null) SetFailState("Failed to create SDKCall for CBasePlayer::SnapEyeAngles!");
+
 	StartPrepSDKCall(SDKCall_Player);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBasePlayer::CheatImpulseCommands");
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain); //Player
@@ -372,7 +398,22 @@ public void TF2Items_OnGiveNamedItem_Post_SDK(int iClient, char[] sClassname, in
 	g_hDHookItemIterateAttribute.HookRaw(Hook_Pre, pCEconItemView, CEconItemView_IterateAttributes);
 	g_hDHookItemIterateAttribute.HookRaw(Hook_Post, pCEconItemView, CEconItemView_IterateAttributes_Post);
 }
+public int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
+{
+	int bot = SDKCall(
+	gH_BotAddCommand,
+	Name, // name
+	false // bReportFakeClient
+	);
 
+//	if (IsValidClient(bot))
+//	{
+//		PrintToChatAll("party!");
+//		SetFakeClientConVar(bot, "name", Name);
+//	}
+
+	return bot;
+}
 
 //BIG thanks to backwards#8236 on discord for helping me out, YOU ARE MY HERO.
 
@@ -476,6 +517,7 @@ public void Manual_Impulse_101(int client, int health)
 	}
 	SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 0.0);
 	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
+	SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", 0.0); //No cloak regen at all.
 	OnWeaponSwitchPost(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
 	
 	
@@ -497,7 +539,7 @@ public void Manual_Impulse_101(int client, int health)
 			{
 				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
 				{
-					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][0]);
+					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][1]);
 					f_MedigunChargeSave[client][1] = 0.0;
 				}
 			}
@@ -505,7 +547,7 @@ public void Manual_Impulse_101(int client, int health)
 			{
 				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
 				{
-					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][0]);
+					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][2]);
 					f_MedigunChargeSave[client][2] = 0.0;
 				}
 			}
@@ -513,4 +555,10 @@ public void Manual_Impulse_101(int client, int health)
 	}
 	
 	SetEntityHealth(client, health);
+}
+
+//thanks to pelipoika for gamedata that he had avaiable.
+stock void SnapEyeAngles(int client, float viewAngles[3])
+{
+	SDKCall(g_hSnapEyeAngles, client, viewAngles);
 }

@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static int Arrows_Ability_Shot[MAXPLAYERS+1]={0, ...};
 
 #define SPLIT_ANGLE_OFFSET 2.0

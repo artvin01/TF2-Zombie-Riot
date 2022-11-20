@@ -1,5 +1,22 @@
-int iBuildingDependency[2049] = {0, ...};
+#pragma semicolon 1
+#pragma newdecls required
 
+int iBuildingDependency[2049] = {0, ...};
+/*
+static const float ViewHeights[] =
+{
+	75.0,
+	65.0,
+	75.0,
+	68.0,
+	68.0,
+	75.0,
+	75.0,
+	68.0,
+	75.0,
+	68.0
+};
+*/
 DynamicHook dtIsPlacementPosValid;
 
 public void OnPluginStart_Build_on_Building()
@@ -89,17 +106,112 @@ public void OnMapStart_Build_on_Build()
 	}
 }
 
-public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hParams)
-{
-	return MRES_Ignored;
-}
+static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
+static int i_DoNotTeleportThisPlayer;
 
-public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hParams)
+public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hParams)
 {
 	if(pThis==-1)
 	{
 		return MRES_Ignored;
 	}
+	if(GetEntPropEnt(pThis, Prop_Send, "m_hBuilder")==-1)
+	{
+		return MRES_Ignored;
+	}
+	i_DoNotTeleportThisPlayer = GetEntPropEnt(pThis, Prop_Send, "m_hBuilder");
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && client != i_DoNotTeleportThisPlayer && !Moved_Building[client])
+		{
+			Moved_Building[client] = true;
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[client]);
+			SetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", OFF_THE_MAP);
+		}
+	}
+	float vec_origin[3] = { 16383.0, 16383.0, -16383.0 };
+
+	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	{
+		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+		if (IsValidEntity(baseboss_index_allied) && !Moved_Building[baseboss_index_allied])
+		{
+			Moved_Building[baseboss_index_allied] = true;
+			GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[baseboss_index_allied]);
+			SDKCall_SetLocalOrigin(baseboss_index_allied, vec_origin);
+		}
+	}
+	//UGLY ASS FIX! Teleport away all entites we wanna ignore, i have no other idea on how...
+	return MRES_Ignored;
+}
+
+public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hParams)
+{
+	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	{
+		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+		if (IsValidEntity(baseboss_index_allied) && Moved_Building[baseboss_index_allied])
+		{
+			Moved_Building[baseboss_index_allied] = false;
+			SDKCall_SetLocalOrigin(baseboss_index_allied, Get_old_pos_back[baseboss_index_allied]);
+		}
+	}
+	for(int clientLoop=1; clientLoop<=MaxClients; clientLoop++)
+	{
+		if(IsClientInGame(clientLoop) && clientLoop != i_DoNotTeleportThisPlayer && Moved_Building[clientLoop])
+		{
+			Moved_Building[clientLoop] = false;
+			SetEntPropVector(clientLoop, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[clientLoop]);
+		}
+	}
+	i_DoNotTeleportThisPlayer = 0;
+
+	if(pThis==-1)
+	{
+		return MRES_Ignored;
+	}
+	int client = GetEntPropEnt(pThis, Prop_Send, "m_hBuilder");
+	if(client==-1)
+	{
+		DHookSetReturn(hReturn, false);
+		return MRES_ChangedOverride;
+	}
+
+	float fAng[3], fPos[3];
+	GetClientEyeAngles(client, fAng);
+//	GetClientEyePosition(client, fPos);
+	GetClientAbsOrigin(client, fPos);
+	fPos[2] += 70.0; //Default is on average 70. so lets keep it like that.
+	fAng[0] = 0.0; //We dont care about them looking down or up
+	fAng[2] = 0.0; //This shoulddnt be accounted for!
+
+	float tmp[3];
+	float actualBeamOffset[3];
+	float BEAM_BeamOffset[3];
+	BEAM_BeamOffset[0] = 70.0;
+	BEAM_BeamOffset[1] = 0.0;
+	BEAM_BeamOffset[2] = 0.0;
+
+	tmp[0] = BEAM_BeamOffset[0];
+	tmp[1] = BEAM_BeamOffset[1];
+	tmp[2] = 0.0;
+	VectorRotate(tmp, fAng, actualBeamOffset);
+	actualBeamOffset[2] = BEAM_BeamOffset[2];
+	fPos[0] += actualBeamOffset[0];
+	fPos[1] += actualBeamOffset[1];
+	fPos[2] += actualBeamOffset[2];
+
+	/*
+	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+	TE_SetupBeamPoints(fPos, vectest, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+	TE_SendToAll();
+	*/
+	//Visualise the box for the player!
+	static float m_vecMaxs[3];
+	static float m_vecMins[3];
+	m_vecMaxs = view_as<float>( { 20.0, 20.0, 50.0 } );
+	m_vecMins = view_as<float>( { -20.0, -20.0, 0.0 } );	
+
 	CClotBody npc = view_as<CClotBody>(pThis);
 	
 	npc.bBuildingIsStacked = false;
@@ -115,22 +227,48 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 				iBuildingDependency[i]=0;
 			}
 		}
+		if(IsValidClient(client))
+		{
+		//	fPos[2] -= 69.0; //This just goes to the ground entirely. and three higher so you can see the bottom of the box.
+			Handle hTrace;
+			static float m_vecLookdown[3];
+			m_vecLookdown = view_as<float>( { 90.0, 0.0, 0.0 } );
+			hTrace = TR_TraceRayFilterEx(fPos, m_vecLookdown, ( MASK_SHOT ), RayType_Infinite, HitOnlyWorld, client);	
+			TR_GetEndPosition(fPos, hTrace);
+			delete hTrace;
+			fPos[2] += 4.0;
+			TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({0, 255, 0, 255}));
+				
+			if(f_DelayBuildNotif[client] < GetGameTime())
+			{
+				f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+				SetHudTextParams(-1.0, 0.90, 0.5, 34, 139, 34, 255);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
+			}
+		}
 		return MRES_Ignored;
 	}
-	if(GetEntPropEnt(pThis, Prop_Send, "m_hBuilder")==-1)
-	{
-		DHookSetReturn(hReturn, false);
-		return MRES_ChangedOverride;
-	}
-	float position[3];
-	GetEntPropVector(pThis, Prop_Send, "m_vecOrigin", position);
 	
 	float endPos[3];
 	int buildingHit=0;
-	if(IsValidGroundBuilding(position , 130.0, endPos, buildingHit, pThis)) //130.0
+
+	if(IsValidGroundBuilding(fPos , 130.0, endPos, buildingHit, pThis)) //130.0
 	{
 		if(iBuildingDependency[buildingHit])
 		{
+			if(IsValidClient(client))
+			{
+				TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({255, 0, 0, 255}));
+				if(f_DelayBuildNotif[client] < GetGameTime())
+				{
+					f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
+				}
+			}
 			DHookSetReturn(hReturn, false);
 			return MRES_ChangedOverride;
 		}
@@ -139,9 +277,55 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		//And here is my hack
 		float endPos2[3];
 		GetEntPropVector(buildingHit, Prop_Send, "m_vecOrigin", endPos2);
-		const float Delta=50.0;
+		//We use custom offets for buildings, so we do our own magic here
+		float Delta = 50.0; //default is 50
+
+		switch(i_WhatBuilding[buildingHit])
+		{
+			case BuildingAmmobox:
+			{
+				Delta = (32.0 * 0.5); //half it, the buidling is half in the sky!
+			}
+			case BuildingArmorTable:
+			{
+				Delta = 35.0;
+			}
+			case BuildingPerkMachine:
+			{
+				Delta = 65.0;
+			}
+			case BuildingPackAPunch:
+			{
+				Delta = 65.0;
+			}
+			case BuildingHealingStation:
+			{
+				Delta = 45.0;
+			}
+			case BuildingMortar:
+			{
+				Delta = 80.0;
+			}
+			case BuildingRailgun:
+			{
+				Delta = 40.0;
+			}
+
+		}
 		if(FloatAbs(endPos2[2]-endPos[2])<Delta)
 		{
+			if(IsValidClient(client))
+			{
+				TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({255, 0, 0, 255}));
+				if(f_DelayBuildNotif[client] < GetGameTime())
+				{
+					f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
+				}
+			}
 			DHookSetReturn(hReturn, false);
 			return MRES_ChangedOverride;
 		}
@@ -151,12 +335,34 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		datapack.WriteFloat(endPos[0]);
 		datapack.WriteFloat(endPos[1]);
 		datapack.WriteFloat(endPos[2]);
-		datapack.WriteCell(GetEntProp(GetEntPropEnt(pThis, Prop_Send, "m_hBuilder"), Prop_Data, "m_iAmmo", 4, 3));
 		datapack.Reset();
 		DHookSetReturn(hReturn, true);
 		RequestFrame(Frame_TeleportBuilding, datapack);
+		if(IsValidClient(client))
+		{
+			TE_DrawBox(client, endPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({0, 255, 0, 255}));
+			if(f_DelayBuildNotif[client] < GetGameTime())
+			{
+				f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+				SetHudTextParams(-1.0, 0.90, 0.5, 34, 139, 34, 255);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
+			}
+		}
 		npc.bBuildingIsStacked = true;
 		return MRES_ChangedOverride;
+	}
+	if(IsValidClient(client))
+	{
+		TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({255, 0, 0, 255}));
+		if(f_DelayBuildNotif[client] < GetGameTime())
+		{
+			f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
+		}
 	}
 	DHookSetReturn(hReturn, false);
 	return MRES_ChangedOverride;
@@ -205,6 +411,12 @@ public void Frame_TeleportBuilding(DataPack datapack)
 {
 	int building=EntRefToEntIndex(datapack.ReadCell());
 	int dependenton=EntRefToEntIndex(datapack.ReadCell());
+	bool NoBuildOnBuild = false;
+	if(dependenton == 0)
+	{
+		NoBuildOnBuild = true;
+	}
+
 	if(!IsValidEntity(building))
 	{   
 		delete datapack;
@@ -219,28 +431,29 @@ public void Frame_TeleportBuilding(DataPack datapack)
 	vecPos[0]=datapack.ReadFloat();
 	vecPos[1]=datapack.ReadFloat();
 	vecPos[2]=datapack.ReadFloat();
-	if(IsValidEntity(dependenton))
+	if(!NoBuildOnBuild)
 	{
-		iBuildingDependency[dependenton]=building;
+		if(IsValidEntity(dependenton))
+		{
+			iBuildingDependency[dependenton]=building;
+		}
 	}
-	
 	iBuildingDependency[building]=0; //Nothing depends on us
-	int metal_to_restore=datapack.ReadCell();
 	delete datapack;
 	TeleportEntity(building, vecPos, NULL_VECTOR, NULL_VECTOR);
+	
 	for(int i=1; i<MaxClients; i++) //Prevent stuck
 	{
 		if(IsValidClient(i) && IsPlayerAlive(i)) //To-do: Do it the correct way using UTIL_TraceEntity (unfortunately, it requires signature and memory allocations...)
 		{
-			if(IsPlayerStuckInEnt(i, building))
+			if(IsPlayerStuckInEnt(i, building)) //Prevent  stuck but dont kill it.
 			{
-				int owner=GetEntPropEnt(building, Prop_Send, "m_hBuilder");
-				AcceptEntityInput(building, "Kill"); //Destroy the building "quietly"
-				SetEntProp(owner, Prop_Data, "m_iAmmo", metal_to_restore, 4, 3);
-				break;
+				SDKUnhook(i, SDKHook_PostThink, PhaseThroughOwnBuildings);
+				SDKHook(i, SDKHook_PostThink, PhaseThroughOwnBuildings);
 			}
 		}
 	}
+	
 	//We're done here
 }
 
@@ -302,6 +515,10 @@ public bool TraceRayFilterBuildOnBuildings(int entity, int contentsMask)
 		return false;
 	}
 	if(b_BuildingIsStacked[entity])
+	{
+		return false;
+	}
+	if(!Building_Constructed[entity]) //Make sure they are actually build.
 	{
 		return false;
 	}

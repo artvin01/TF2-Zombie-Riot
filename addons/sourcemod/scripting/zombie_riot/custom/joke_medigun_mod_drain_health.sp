@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 /**
  * Monolith plugin for Karma Charger's Medick-Gun.
  * 
@@ -113,7 +116,7 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 	float What_type_Heal = Attributes_FindOnWeapon(owner, medigun, 2046);
 	
 	
-	if(owner > 0 && owner<=MaxClients && IsValidEntity(target) && GetAmmo(owner, 21) > 0)
+	if(owner > 0 && owner<=MaxClients && IsValidEntity(target))
 	{
 		if(dieingstate[owner] > 0)
 		{

@@ -3,6 +3,8 @@
 #include <sourcemod>
 #include <dhooks>
 
+#pragma newdecls required
+
 Handle g_hSDKStartLagComp;
 Handle g_hSDKEndLagComp;
 

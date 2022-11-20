@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static const char g_DeathSounds[][] = {
 	"vo/medic_paincrticialdeath01.mp3",
 	"vo/medic_paincrticialdeath02.mp3",
@@ -867,7 +870,7 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIon(Handle Timer, any data)
 	return (Plugin_Stop);
 }
 	
-public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIonBeam(float startPosition[3], const color[4])
+public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIonBeam(float startPosition[3], const int color[4])
 {
 	float position[3];
 	position[0] = startPosition[0];
@@ -992,10 +995,10 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIonBeam(float startPosition[3], con
 		else
 		{
 			if(!b_Anger[client])
-				makeexplosion(client, client, startPosition, "", RoundToCeil(35.0 * RaidModeScaling), 100);
+				makeexplosion(client, client, startPosition, "", RoundToCeil(75.0), 150);
 				
 			else if(b_Anger[client])
-				makeexplosion(client, client, startPosition, "", RoundToCeil(50.0 * RaidModeScaling), 120);
+				makeexplosion(client, client, startPosition, "", RoundToCeil(150.0), 225);
 				
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();

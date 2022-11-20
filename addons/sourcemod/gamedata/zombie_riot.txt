@@ -4,6 +4,11 @@
 	{
 		"Signatures"
 		{
+			"CBasePlayer::SnapEyeAngles"
+			{
+				"windows"	"\x55\x8B\xEC\x8B\x45\x08\xD9\x00\xD9\x99\x58\x0A\x00\x00"
+				"linux"		"@_ZN11CBasePlayer13SnapEyeAnglesERK6QAngle"
+			}
 			"CTFNavMesh::ComputeBlockedArea"
 			{
 				"library"	"server"
@@ -196,12 +201,88 @@
 				"linux"		""
 				"windows"	"\x55\x8B\xEC\x56\x8B\x75\x08\x85\xF6\x75\x2A\x33\xC0\x5E\x5D\xC3\x8B\x56\x38"
 			}
-
-
+			"CBaseObject::FirstSpawn" //CBaseObject::FirstSpawn(CBaseObject *__hidden this)
+			{
+				//offset aBaseobjectthin ; "BaseObjectThink"
+				"linux"		""
+				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x57\x83\xBE\xF4\x01\x00\x00\x00"
+			}
+			"CBaseObject::FinishedBuilding" //CBaseObject::FinishedBuilding(CBaseObject *__hidden this)
+			{
+				//aObjectPoints string, then check XREF from that function, only one exists, thats the one.
+				// It should have no strings at all
+				"linux"		""
+				"windows"	"\x55\x8B\xEC\x83\xEC\x6C\x56\x57\x6A\x01"
+			}
+			"CTFGCServerSystem::PreClientUpdate"
+			{
+				//aSettingSvVisib string, there is only one, easy check
+				"linux"		""
+				"windows"	"\x55\x8B\xEC\x83\xEC\x20\x53\x56\x8B\xD9\x57\x89\x5D\xF4\xE8\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A"
+			}	
+			// search string: "CreatePlayerBot: Unable to create bot"
+			"NextBotCreatePlayerBot<CTFBot>"
+			{
+				"windows"   "\x55\x8B\xEC\x56\x57\x68\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A"
+				"linux"     "@_Z22NextBotCreatePlayerBotI6CTFBotEPT_PKcb"
+			}		
+			// search string: "match"
+			"BotManager::MaintainBotQuota"
+			{
+				"windows"   "\x55\x8B\xEC\x81\xEC\x14\x01\x00\x00\xA1"
+				"linux"     "@_ZN13CTFBotManager16MaintainBotQuotaEv"
+			}
+			// String "aDeployBuffBann" only one exists
+			"CTFBuffItem::RaiseFlag" 
+			{
+				"linux" 	""
+				"windows" 	"\x55\x8B\xEC\x51\x56\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x8B\xF0\x85\xF6\x0F\x84\x2A\x2A\x2A\x2A\x8B\x16\x8B\xCE\x8B\x92\x40\x01\x00\x00\xFF\xD2\x84\xC0\x0F\x84\x2A\x2A\x2A\x2A\x8B\x06\x8B\xCE\x8B\x80\x04\x01\x00\x00\xFF\xD0\x84\xC0\x0F\x84\x2A\x2A\x2A\x2A\x53"
+			}
+			// string "aWeaponBuffbann_0" with "aSetBuffType" in the same function.
+			"CTFBuffItem::BlowHorn" 
+			{
+				"linux" 	""
+				"windows" 	"\x56\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x8B\xF0\x85\xF6\x0F\x84\x2A\x2A\x2A\x2A\x8B\x16\x8B\xCE\x8B\x92\x40\x01\x00\x00\xFF\xD2\x84\xC0\x0F\x84\x2A\x2A\x2A\x2A\x8B\x06\x8B\xCE\x8B\x80\x04\x01\x00\x00\xFF\xD0\x84\xC0\x0F\x84\x2A\x2A\x2A\x2A\x6A\x01"
+			}
 
 		}
 		"Functions"
 		{
+			"CTFBuffItem::RaiseFlag"
+			{
+				"signature"    	"CTFBuffItem::RaiseFlag"
+				"callconv"		"thiscall"
+				"return"		"void"
+				"this"			"entity"
+			}
+			"CTFBuffItem::BlowHorn"
+			{
+				"signature"    	"CTFBuffItem::BlowHorn"
+				"callconv"		"thiscall"
+				"return"		"void"
+				"this"			"entity"
+			}
+			"CTFGCServerSystem::PreClientUpdate"
+			{
+				"signature"    	"CTFGCServerSystem::PreClientUpdate"
+				"callconv"	"thiscall"
+				"return"    	"void"
+				"this"		"ignore"
+			}
+			"CBaseObject::FirstSpawn"
+           	{
+				"signature"    	"CBaseObject::FirstSpawn"
+				"callconv"	"thiscall"
+  				"return"    	"void"
+ 				"this"        	"entity"
+           	}
+			"CBaseObject::FinishedBuilding"
+           	{
+				"signature"    	"CBaseObject::FinishedBuilding"
+				"callconv"	"thiscall"
+				"return"    	"void"
+  				"this"        	"entity"
+           	}
 			"CBaseGrenade::Explode"
 			{
 				"offset"	"CBaseGrenade::Explode"

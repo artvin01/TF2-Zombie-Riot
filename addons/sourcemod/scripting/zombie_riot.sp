@@ -32,12 +32,17 @@
 
 #define NPC_HARD_LIMIT 42 
 #define ZR_MAX_NPCS (NPC_HARD_LIMIT*2)
-#define ZR_MAX_NPCS_ALLIED 16 //Never need more.
+#define ZR_MAX_NPCS_ALLIED 42 //Never need more.
 #define ZR_MAX_LAG_COMP 128 
 #define ZR_MAX_BUILDINGS 64 //cant ever have more then 64 realisticly speaking
 #define ZR_MAX_TRAPS 64
 #define ZR_MAX_BREAKBLES 32
 #define ZR_MAX_SPAWNERS 32 //cant ever have more then 32, if your map does, then what thed fuck are you doing ?
+#define ZR_MAX_GIBCOUNT 20 //Anymore then this, and it will only summon 1 gib per zombie instead.
+
+#define MAX_PLAYER_COUNT			12
+#define MAX_PLAYER_COUNT_STRING		"12"
+//cant do more then 12, more then 12 cause memory isssues because that many npcs can just cause that much lag
 
 
 //#pragma dynamic    131072
@@ -188,7 +193,7 @@ ConVar zr_tagblacklist;
 ConVar zr_tagwhitelist;
 ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
-ConVar tf_bot_quota;
+//ConVar tf_bot_quota;
 
 int CurrentGame;
 bool b_GameOnGoing = true;
@@ -214,9 +219,13 @@ int PlayersAliveScaling;
 int GlobalIntencity;
 ConVar cvarTimeScale;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
+//ConVar CvarSvRollspeed; // sv_rollspeed 
+ConVar CvarSvRollagle; // sv_rollangle
+ConVar CvarTfMMMode; // tf_mm_servermode
 Handle sv_cheats;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie CookieXP;
+Cookie CookieScrap;
 Cookie CookiePlayStreak;
 Cookie Niko_Cookies;
 Cookie CookieCache;
@@ -229,6 +238,7 @@ char char_MusicString2[256];
 int i_MusicLength2;
 //custom wave music.
 
+float f_DelaySpawnsForVariousReasons;
 int CurrentRound;
 int CurrentWave = -1;
 int StartCash;
@@ -236,6 +246,12 @@ float RoundStartTime;
 char WhatDifficultySetting[64];
 float healing_cooldown[MAXTF2PLAYERS];
 float Damage_dealt_in_total[MAXTF2PLAYERS];
+int i_Damage_dealt_in_total[MAXTF2PLAYERS];
+int i_KillsMade[MAXTF2PLAYERS];
+int i_Backstabs[MAXTF2PLAYERS];
+bool i_HasBeenBackstabbed[MAXENTITIES];
+int i_Headshots[MAXTF2PLAYERS];
+bool i_HasBeenHeadShotted[MAXENTITIES];
 float f_TimeAfterSpawn[MAXTF2PLAYERS];
 
 int Healing_done_in_total[MAXTF2PLAYERS];
@@ -255,10 +271,12 @@ int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
 int i_SemiAutoWeapon[MAXENTITIES];
 int i_SemiAutoWeapon_AmmoCount[MAXENTITIES]; //idk like 10 slots lol
 bool i_WeaponCannotHeadshot[MAXENTITIES];
+float i_WeaponDamageFalloff[MAXENTITIES];
 
 #define MAXSTICKYCOUNTTONPC 12
 const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
 int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max amount of stickies.
+int i_StickyAccessoryLogicItem[MAXTF2PLAYERS]; //Item for stickies like "no bounce"
 
 float f_SemiAutoStats_FireRate[MAXENTITIES];
 int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
@@ -268,9 +286,11 @@ float f_MedigunChargeSave[MAXTF2PLAYERS][4];
 
 	
 int CashSpent[MAXTF2PLAYERS];
+int CashSpentTotal[MAXTF2PLAYERS];
 int CashRecievedNonWave[MAXTF2PLAYERS];
 int Level[MAXTF2PLAYERS];
 int XP[MAXTF2PLAYERS];
+int Scrap[MAXTF2PLAYERS];
 int Ammo_Count_Ready[MAXTF2PLAYERS];
 //float Armor_Ready[MAXTF2PLAYERS];
 float Increaced_Sentry_damage_Low[MAXENTITIES];
@@ -284,6 +304,8 @@ float Increaced_Overall_damage_Low[MAXENTITIES];
 float Resistance_Overall_Low[MAXENTITIES];
 
 bool Moved_Building[MAXENTITIES] = {false,... };
+float Get_old_pos_back[MAXENTITIES][3];
+//This is for going through things via lag comp or other reasons to teleport things away.
 //bool Do_Not_Regen_Mana[MAXTF2PLAYERS];
 
 //float Resistance_for_building_High[MAXENTITIES];
@@ -293,6 +315,8 @@ int Zombies_Currently_Still_Ongoing;
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
 int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
 int i_BarricadesBuild[MAXTF2PLAYERS]={0, ...};
+int i_WhatBuilding[MAXENTITIES]={0, ...};
+bool Building_Constructed[MAXENTITIES]={false, ...};
 
 int Elevator_Owner[MAXENTITIES]={0, ...};
 bool Is_Elevator[MAXENTITIES]={false, ...};
@@ -300,6 +324,9 @@ int Dont_Crouch[MAXENTITIES]={0, ...};
 
 int StoreWeapon[MAXENTITIES];
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
+int i_HealthBeforeSuit[MAXTF2PLAYERS]={0, ...};
+bool i_ClientHasCustomGearEquipped[MAXTF2PLAYERS]={false, ...};
+
 enum
 {
 	WEAPON_ARK = 1,
@@ -326,6 +353,8 @@ int Animation_Index[MAXTF2PLAYERS];
 bool b_IsPlayerNiko[MAXTF2PLAYERS];
 
 float delay_hud[MAXTF2PLAYERS];
+float f_DelayBuildNotif[MAXTF2PLAYERS];
+float f_ClientInvul[MAXTF2PLAYERS]; //Extra ontop of uber if they somehow lose it to some god damn reason.
 
 int Current_Mana[MAXTF2PLAYERS];
 float Mana_Regen_Delay[MAXTF2PLAYERS];
@@ -512,8 +541,14 @@ int b_NpcForcepowerupspawn[MAXENTITIES]={0, ...};
 float f_TempCooldownForVisualManaPotions[MAXPLAYERS+1];
 float f_DelayLookingAtHud[MAXPLAYERS+1];
 bool b_EntityIsArrow[MAXENTITIES];
+bool b_EntityIsWandProjectile[MAXENTITIES];
+int i_WandIdNumber[MAXENTITIES]; //This is to see what wand is even used. so it does its own logic and so on.
+float f_WandDamage[MAXENTITIES]; //
+int i_WandOwner[MAXENTITIES]; //
+int i_WandWeapon[MAXENTITIES]; //
+int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever ever. lag max otherwise.
 
-//int g_iLaserMaterial, g_iHaloMaterial;
+int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
 
 
 #define EXPLOSION_AOE_DAMAGE_FALLOFF 1.7
@@ -543,7 +578,8 @@ bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
 bool b_SpecialGrigoriStore;
 float f_ExtraDropChanceRarity = 1.0;
 
-
+int CurrentGibCount = 0;
+bool b_LimitedGibGiveMoreHealth[MAXENTITIES];
 //GLOBAL npc things
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
@@ -603,6 +639,8 @@ public const char PerkNames_Recieved[][] =
 	"Deadshot Daiquiri Recieved",
 	"Widows Wine Recieved",
 };
+
+#define ITSTILIVES 666
 
 enum
 {
@@ -757,9 +795,8 @@ enum
 	ALT_MECHA_PYROGIANT			= 133,
 	ALT_MECHA_SCOUT				= 134,
 	ALT_DONNERKRIEG				= 135,
-	
-	
-	ITSTILIVES	= 136,
+	ALT_SCHWERTKRIEG			= 136,
+	PHANTOM_KNIGHT				= 137, //Lucian "Blood diamond"
 }
 
 
@@ -912,7 +949,8 @@ public const char NPC_Names[][] =
 	"Mecha Giant Pyro",
 	"Mecha Scout",
 	"Donnerkrieg",
-	"Bob the Overgod of gods and destroyer of multiverses",
+	"Schwertkrieg",
+	"Phantom Knight"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -1060,9 +1098,9 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_mecha_heavy_giant",
 	"npc_alt_mecha_pyro_giant",
 	"npc_alt_mecha_scout",
-	"npc_alt_mecha_scout",
 	"npc_alt_donnerkrieg",
-	""
+	"npc_alt_schwertkrieg",
+	"npc_phantom_knight"
 };
 
 #include "zombie_riot/stocks_override.sp"
@@ -1096,6 +1134,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/queue.sp"
 #include "zombie_riot/item_gift_rpg.sp"
 #include "zombie_riot/tutorial.sp"
+#include "zombie_riot/wand_projectile.sp"
 
 
 #include "zombie_riot/custom/building.sp"
@@ -1118,16 +1157,16 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/spike_layer.sp"
 #include "zombie_riot/custom/weapon_grenade.sp"
 #include "zombie_riot/custom/weapon_pipebomb.sp"
-#include "zombie_riot/custom/weapon_default_wand.sp"
-#include "zombie_riot/custom/weapon_wand_increace_attack.sp"
-#include "zombie_riot/custom/weapon_fire_wand.sp"
-#include "zombie_riot/custom/weapon_wand_fire_ball.sp"
-#include "zombie_riot/custom/weapon_lightning_wand.sp"
-#include "zombie_riot/custom/weapon_wand_cryo.sp"
-#include "zombie_riot/custom/weapon_wand_lightning_spell.sp"
-#include "zombie_riot/custom/weapon_necromancy_wand.sp"
-#include "zombie_riot/custom/weapon_wand_necro_spell.sp"
-#include "zombie_riot/custom/weapon_autoaim_wand.sp"
+#include "zombie_riot/custom/wand/weapon_default_wand.sp"
+#include "zombie_riot/custom/wand/weapon_wand_increace_attack.sp"
+#include "zombie_riot/custom/wand/weapon_fire_wand.sp"
+#include "zombie_riot/custom/wand/weapon_wand_fire_ball.sp"
+#include "zombie_riot/custom/wand/weapon_lightning_wand.sp"
+#include "zombie_riot/custom/wand/weapon_wand_cryo.sp"
+#include "zombie_riot/custom/wand/weapon_wand_lightning_spell.sp"
+#include "zombie_riot/custom/wand/weapon_necromancy_wand.sp"
+#include "zombie_riot/custom/wand/weapon_wand_necro_spell.sp"
+#include "zombie_riot/custom/wand/weapon_autoaim_wand.sp"
 #include "zombie_riot/custom/weapon_arrow_shot.sp"
 //#include "zombie_riot/custom/weapon_pipe_shot.sp"
 #include "zombie_riot/custom/weapon_survival_knife.sp"
@@ -1135,22 +1174,22 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_minecraft.sp"
 #include "zombie_riot/custom/arse_enal_layer_tripmine.sp"
 #include "zombie_riot/custom/weapon_serioussam2_shooter.sp"
-#include "zombie_riot/custom/weapon_elemental_staff.sp"
-#include "zombie_riot/custom/weapon_elemental_staff_2.sp"
+#include "zombie_riot/custom/wand/weapon_elemental_staff.sp"
+#include "zombie_riot/custom/wand/weapon_elemental_staff_2.sp"
 #include "zombie_riot/custom/weapon_infinity_blade.sp"
 //#include "zombie_riot/custom/weapon_black_fire_wand.sp"
-#include "zombie_riot/custom/weapon_chlorophite.sp"
-#include "zombie_riot/custom/weapon_chlorophite_heavy.sp"
+#include "zombie_riot/custom/wand/weapon_chlorophite.sp"
+#include "zombie_riot/custom/wand/weapon_chlorophite_heavy.sp"
 #include "zombie_riot/custom/weapon_drink_resupply_mana.sp"
 #include "zombie_riot/custom/weapon_wind_staff.sp"
-#include "zombie_riot/custom/weapon_nailgun.sp"
+#include "zombie_riot/custom/wand/weapon_nailgun.sp"
 #include "zombie_riot/custom/weapon_five_seven.sp"
 #include "zombie_riot/custom/weapon_gb_medigun.sp"
 #include "zombie_riot/custom/weapon_charged_handgun.sp"
-#include "zombie_riot/custom/weapon_wand_beam.sp"
-#include "zombie_riot/custom/weapon_wand_lightning_pap.sp"
-#include "zombie_riot/custom/weapon_calcium_wand.sp"
-#include "zombie_riot/custom/weapon_wand_calcium_spell.sp"
+#include "zombie_riot/custom/wand/weapon_wand_beam.sp"
+#include "zombie_riot/custom/wand/weapon_wand_lightning_pap.sp"
+#include "zombie_riot/custom/wand/weapon_calcium_wand.sp"
+#include "zombie_riot/custom/wand/weapon_wand_calcium_spell.sp"
 #include "zombie_riot/custom/weapon_passive_banner.sp"
 #include "zombie_riot/custom/weapon_zeroknife.sp"
 #include "zombie_riot/custom/weapon_ark.sp"
@@ -1163,10 +1202,11 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_explosivebullets.sp"
 #include "zombie_riot/custom/weapon_sniper_monkey.sp"
 #include "zombie_riot/custom/weapon_cspyknife.sp"
+#include "zombie_riot/custom/wand/weapon_quantum_weaponry.sp"
 
-//FOR ESCAPE MAP ONLY!
 #include "zombie_riot/custom/escape_sentry_hat.sp"
 #include "zombie_riot/custom/m3_abilities.sp"
+
 
 public Plugin myinfo =
 {
@@ -1183,6 +1223,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("TPC_Get", Native_Get);
 	CreateNative("ZR_ApplyKillEffects", Native_ApplyKillEffects);
 	CreateNative("ZR_GetWaveCount", Native_GetWaveCounts);
+	CreateNative("ZR_GetLevelCount", Native_GetLevelCount);
 	return APLRes_Success;
 }
 
@@ -1243,6 +1284,7 @@ public void OnPluginStart()
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
 	RegAdminCmd("sm_tutorial_test", Command_TestTutorial, ADMFLAG_ROOT, "Test The Tutorial");
 	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");
+	RegAdminCmd("sm_play_viewmodel_anim", Command_PlayViewmodelAnim, ADMFLAG_ROOT, "Testing viewmodel animation manually");
 	RegConsoleCmd("sm_make_niko", Command_MakeNiko, "Turn This player into niko");
 	
 	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_GENERIC, "BRB GONNA MURDER MY MOM'S DISHES");
@@ -1259,11 +1301,20 @@ public void OnPluginStart()
 		
 	sv_cheats = FindConVar("sv_cheats");
 	cvarTimeScale = FindConVar("host_timescale");
-	tf_bot_quota = FindConVar("tf_bot_quota");
+//	tf_bot_quota = FindConVar("tf_bot_quota");
 
 	CvarMpSolidObjects = FindConVar("tf_solidobjects");
 	if(CvarMpSolidObjects)
 		CvarMpSolidObjects.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+
+	CvarSvRollagle = FindConVar("sv_rollangle");
+	if(CvarSvRollagle)
+		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+
+	CvarTfMMMode = FindConVar("tf_mm_servermode");
+	if(CvarTfMMMode)
+		CvarTfMMMode.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+
 	
 	ConVar cvar = FindConVar("tf_bot_count");
 	cvar.Flags &= ~FCVAR_NOTIFY;
@@ -1275,6 +1326,7 @@ public void OnPluginStart()
 	CookieCache = new Cookie("zr_lastgame", "The last game saved data is from", CookieAccess_Protected);
 	Niko_Cookies = new Cookie("zr_niko", "Are you a niko", CookieAccess_Protected);
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
+	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
 	
 	HookEntityOutput("logic_relay", "OnTrigger", OnRelayTrigger);
@@ -1282,10 +1334,12 @@ public void OnPluginStart()
 	
 	LoadTranslations("zombieriot.phrases");
 	LoadTranslations("zombieriot.phrases.zombienames");
+	LoadTranslations("zombieriot.phrases.weapons.description");
 	LoadTranslations("zombieriot.phrases.weapons");
 	LoadTranslations("zombieriot.phrases.bob");
 	LoadTranslations("zombieriot.phrases.icons"); 
 	LoadTranslations("common.phrases");
+
 	
 	DHook_Setup();
 	SDKCall_Setup();
@@ -1502,9 +1556,11 @@ public void OnMapStart()
 	Atomic_MapStart();
 	SSS_Map_Precache();
 	ExplosiveBullets_Precache();
+	Quantum_Gear_Map_Precache();
+	WandStocks_Map_Precache();
 	
-//	g_iHaloMaterial = PrecacheModel("materials/sprites/halo01.vmt");
-//	g_iLaserMaterial = PrecacheModel("materials/sprites/laserbeam.vmt");
+	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
+	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
 //	CreateEntityByName("info_populator");
@@ -1668,7 +1724,44 @@ public Action Command_MakeNiko(int client, int args)
 	}
 	return Plugin_Handled;
 }
+public Action Command_PlayViewmodelAnim(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_play_viewmodel_anim <target> <index>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[12];
+	GetCmdArg(2, buf, sizeof(buf));
+	int anim_index = StringToInt(buf); 
 
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		int viewmodel = GetEntPropEnt(targets[target], Prop_Send, "m_hViewModel");
+		if(viewmodel>MaxClients && IsValidEntity(viewmodel)) //For some reason it plays the horn anim again, just set it to idle!
+		{
+			int animation = anim_index;
+			SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);
+		}
+	}
+	
+	return Plugin_Handled;
+}
 public Action Command_GiveDialogBox(int client, int args)
 {
 	//What are you.
@@ -1801,6 +1894,11 @@ public Action Command_ToggleReload(int client, int args)
 	}
 	return Plugin_Handled;
 }
+
+public void OnClientAuthorized(int client)
+{
+	Database_ClientAuthorized(client);
+}
 					
 public void OnClientPutInServer(int client)
 {
@@ -1826,6 +1924,9 @@ public void OnClientPutInServer(int client)
 	CashRecievedNonWave[client] = 0;
 	Healing_done_in_total[client] = 0;
 	i_BarricadeHasBeenDamaged[client] = 0;
+	i_KillsMade[client] = 0;
+	i_Backstabs[client] = 0;
+	i_Headshots[client] = 0;
 	Ammo_Count_Ready[client] = 0;
 	Armor_Charge[client] = 0;
 	Doing_Handle_Mount[client] = false;
@@ -1837,6 +1938,9 @@ public void OnClientPutInServer(int client)
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_bThisEntityIgnored = false;
 	f_ShowHudDelayForServerMessage[client] = GetGameTime() + 50.0;
+
+	i_HealthBeforeSuit[client] = 0;
+	i_ClientHasCustomGearEquipped[client] = false;
 	
 	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
 	
@@ -1869,6 +1973,14 @@ public void OnClientCookiesCached(int client)
 	CookieXP.Get(client, buffer, sizeof(buffer));
 	XP[client] = StringToInt(buffer);
 	Level[client] = XpToLevel(XP[client]);
+
+	CookieScrap.Get(client, buffer, sizeof(buffer));
+	Scrap[client] = StringToInt(buffer);
+	
+	if(Scrap[client] < 0)
+	{
+		Scrap[client] = 0;
+	}
 	
 	char buffer_niko[12];
 	Niko_Cookies.Get(client, buffer_niko, sizeof(buffer_niko));
@@ -1920,6 +2032,15 @@ public void OnClientDisconnect(int client)
 		IntToString(niko_int, buffer_niko, sizeof(buffer_niko));
 		Niko_Cookies.Set(client, buffer_niko);
 	}
+	if(Scrap[client] > -1)
+	{
+		char buffer[12];
+		IntToString(Scrap[client], buffer, sizeof(buffer));
+		CookieScrap.Set(client, buffer);
+
+
+	}
+	Scrap[client] = -1;
 	XP[client] = 0;
 }
 
@@ -2074,7 +2195,21 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		
 		if(WaitingInQueue[client])
 			TeutonType[client] = TEUTON_WAITING;
-		
+
+		if(i_ClientHasCustomGearEquipped[client])
+		{
+			SetAmmo(client, 1, 9999);
+			SetAmmo(client, 2, 9999);
+			SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
+			SetAmmo(client, Ammo_Jar, 1);
+			for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
+			{
+				SetAmmo(client, i, CurrentAmmo[client][i]);
+			}
+
+			ViewChange_PlayerModel(client);
+			return;
+		}
 		if(TeutonType[client] != TEUTON_NONE)
 		{
 			FakeClientCommand(client, "menuselect 0");
@@ -2176,6 +2311,8 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		SetEntPropFloat(weapon_index, Prop_Send, "m_flModelScale", -0.8);
 	   		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 0.7);
 	   		
+			SetAmmo(client, 1, 9999);
+			SetAmmo(client, 2, 9999);
 	   		SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
 			SetAmmo(client, Ammo_Jar, 1);
 			for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
@@ -2208,6 +2345,8 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 				Store_GiveAll(client, Waves_GetRound()>1 ? 50 : 300); //give 300 hp instead of 200 in escape.
 			}
 			
+			SetAmmo(client, 1, 9999);
+			SetAmmo(client, 2, 9999);
 			SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
 			SetAmmo(client, Ammo_Jar, 1);
 			for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
@@ -2225,13 +2364,25 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	if(client)
 	{
+		RequestFrame(SetEyeAngleCorrect, client);
 		Escape_DropItem(client);
 		if(g_CarriedDispenser[client] != INVALID_ENT_REFERENCE)
 		{
 			DestroyDispenser(client);
 		}
+		else
+		{
+			Building_Mounted[client] = 0;
+			Player_Mounting_Building[client] = false;
+			g_CarriedDispenser[client] = INVALID_ENT_REFERENCE; //Just remove entirely, just make sure.
+		}
 	}
-	
+
+	//Incase they die, do suit!
+	i_HealthBeforeSuit[client] = 0;
+	CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
+	//
+
 	Citizen_PlayerDeath(client);
 	Bob_player_killed(event, name, dontBroadcast);
 	RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
@@ -2259,6 +2410,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				float pos[3], ang[3];
 				GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
+				ang[2] = 0.0;
 				DHook_RespawnPlayer(client);
 				
 				TeleportEntity(client, pos, ang, NULL_VECTOR);
@@ -2388,6 +2540,7 @@ public void Spawn_Bob_Combine(int client)
 	float flPos[3], flAng[3];
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
+	flAng[2] = 0.0;
 	int bob = Npc_Create(BOB_THE_GOD_OF_GODS, client, flPos, flAng, true);
 	Bob_Exists = true;
 	Bob_Exists_Index = EntIndexToEntRef(bob);
@@ -2416,6 +2569,7 @@ public void Spawn_Cured_Grigori()
 	float flPos[3], flAng[3];
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
+	flAng[2] = 0.0;
 	int entity = Npc_Create(CURED_FATHER_GRIGORI, client, flPos, flAng, true);
 	SalesmanAlive = EntIndexToEntRef(entity);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_grigori");
@@ -2463,7 +2617,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	CheckIfAloneOnServer();
 	
 	bool alive;
-	LastMann = true;
+	LastMann = !Waves_InSetup();
 	int players = CurrentPlayers;
 	CurrentPlayers = 0;
 	GlobalIntencity = Waves_GetIntencity();
@@ -2831,13 +2985,15 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		holding[client] = IN_ATTACK2;
 		
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		
 		b_IgnoreWarningForReloadBuidling[client] = false;
 		if(IsValidEntity(weapon_holding))
 		{
 			char classname[32];
 			GetEntityClassname(weapon_holding, classname, 32);
 			Action action = Plugin_Continue;
+
+		//	PrintToConsole(client,"Weapon Is %s", EntityFuncAttack2[weapon_holding]);
+
 			if(EntityFuncAttack2[weapon_holding] && EntityFuncAttack2[weapon_holding]!=INVALID_FUNCTION)
 			{
 				bool result = false; //ignore crit.
@@ -2974,6 +3130,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					float pos[3], ang[3];
 					GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
 					GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
+					ang[2] = 0.0;
 					SetEntProp(target, Prop_Send, "m_bDucked", true);
 					SetEntityFlags(target, GetEntityFlags(target)|FL_DUCKING);
 					CClotBody npc = view_as<CClotBody>(client);
@@ -3091,6 +3248,36 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 	Medikit_healing(client, buttons);
 }
 
+
+//Revival raid spam
+public void SetHealthAfterReviveRaid(int client)
+{
+	if(IsValidClient(client))
+	{	
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+		RequestFrame(SetHealthAfterReviveRaidAgain, client);	
+	}
+}
+
+public void SetHealthAfterReviveRaidAgain(int client)
+{
+	if(IsValidClient(client))
+	{	
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+		RequestFrame(SetHealthAfterReviveRaidAgainAgain, client);	
+	}
+}
+
+public void SetHealthAfterReviveRaidAgainAgain(int client)
+{
+	if(IsValidClient(client))
+	{	
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+	}
+}
+//Revival raid spam
+
+//Set hp spam after normal revive
 public void SetHealthAfterRevive(int client)
 {
 	if(IsValidClient(client))
@@ -3098,7 +3285,6 @@ public void SetHealthAfterRevive(int client)
 		RequestFrame(SetHealthAfterReviveAgain, client);	
 	}
 }
-
 
 public void SetHealthAfterReviveAgain(int client)
 {
@@ -3131,6 +3317,9 @@ public void SetHealthAfterReviveAgainAgain(int client) //For some reason i have 
 		}
 	}
 }
+
+//Set hp spam after normal revive
+
 
 public void Update_Ammo(int  client)
 {
@@ -3274,6 +3463,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	}
 	else if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		i_WhatBuilding[entity] = 0;
 		StoreWeapon[entity] = -1;
 		LastHitId[entity] = -1;
 		DamageBits[entity] = -1;
@@ -3296,6 +3486,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 		b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
 		b_EntityIsArrow[entity] = false;
+		b_EntityIsWandProjectile[entity] = false;
 		CClotBody npc = view_as<CClotBody>(entity);
 		b_SentryIsCustom[entity] = false;
 		b_Is_Npc_Projectile[entity] = false;
@@ -3537,13 +3728,17 @@ public void OnEntityCreated(int entity, const char[] classname)
 public void SDKHook_SafeSpot_StartTouch(int entity, int target)
 {
 	if(target > 0 && target < sizeof(i_InSafeZone))
+	{
 		i_InSafeZone[target]++;
+	}
 }
 
 public void SDKHook_SafeSpot_EndTouch(int entity, int target)
 {
 	if(target > 0 && target < sizeof(i_InSafeZone))
+	{
 		i_InSafeZone[target]--;
+	}
 }
 
 public void SDKHook_RespawnRoom_StartTouch(int entity, int target)
@@ -3882,9 +4077,9 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {
-	if(condition == TFCond_UberchargedCanteen)
+	if(condition == TFCond_Cloaked)
 	{
-		TF2_AddCondition(client, TFCond_UberchargedCanteen, 3.0);
+		TF2_RemoveCondition(client, TFCond_Cloaked);
 	}
 	else if(condition == TFCond_Zoomed && thirdperson[client] && IsPlayerAlive(client))
 	{
@@ -4051,6 +4246,11 @@ public any Native_GetWaveCounts(Handle plugin, int numParams)
 	return CurrentRound;
 }
 
+public any Native_GetLevelCount(Handle plugin, int numParams)
+{
+	return Level[GetNativeCell(1)];
+}
+
 //#file "Zombie Riot" broke in sm 1.11
 
 public Action Hook_BlockUserMessageEx(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
@@ -4136,4 +4336,15 @@ public void MapStartResetAll()
 	SniperMonkey_ClearAll();
 	Weapon_Cspyknife_ClearAll();
 	Zero(f_TutorialUpdateStep);
+	Zero(f_DelayBuildNotif);
+	Zero(f_ClientInvul);
+	f_DelaySpawnsForVariousReasons = 0.0;
+	Zero(i_KillsMade);
+	Zero(i_Backstabs);
+	Zero(i_HasBeenBackstabbed);
+	Zero(i_Headshots);
+	Zero(i_HasBeenHeadShotted);
+	Zero(f_StuckTextChatNotif);
+	Zero(b_LimitedGibGiveMoreHealth);
+	CurrentGibCount = 0;
 }

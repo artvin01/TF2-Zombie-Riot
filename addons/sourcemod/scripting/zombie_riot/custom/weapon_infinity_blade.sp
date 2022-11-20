@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 public void Weapon_InfinityBlade(int client, int weapon, const char[] classname, bool &result)
 {
 	CreateTimer(0.15, ASX_Timer3, client, TIMER_FLAG_NO_MAPCHANGE);

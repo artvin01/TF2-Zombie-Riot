@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 
 enum ParticleAttachment_t {
@@ -170,6 +173,7 @@ stock bool FindInfoTarget(const char[] name)
 
 stock bool ExcuteRelay(const char[] name, const char[] input="Trigger")
 {
+	bool found;
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "logic_relay")) != -1)
 	{
@@ -177,11 +181,11 @@ stock bool ExcuteRelay(const char[] name, const char[] input="Trigger")
 		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 		if(StrEqual(buffer, name, false))
 		{
-			AcceptEntityInput(entity, input);
-			return true;
+			AcceptEntityInput(entity, input, entity, entity);
+			found = true;
 		}
 	}
-	return false;
+	return found;
 }
 
 stock void CreateAttachedAnnotation(int client, int entity, float time, const char[] buffer)
@@ -294,15 +298,39 @@ stock bool KvJumpToKeySymbol2(KeyValues kv, int id)
 	}
 	return false;
 }
-stock int GetClientPointVisible(int iClient, float flDistance = 100.0)
+
+stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool ignore_allied_npc = false, bool mask_shot = false)
 {
 	float vecOrigin[3], vecAngles[3], vecEndOrigin[3];
 	GetClientEyePosition(iClient, vecOrigin);
 	GetClientEyeAngles(iClient, vecAngles);
 	
-	Handle hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_DontHitEntityOrPlayer, iClient);
-	TR_GetEndPosition(vecEndOrigin, hTrace);
-	
+	Handle hTrace;
+
+	//Mask shot here, reasoning being that it should be easiser to interact with buildings and npcs if they are very close to eachother or inside (This wont fully fix it, but i see not other way.)
+	//This is client compensated anyways, and reviving is still via hull and not hitboxes.
+	int flags = CONTENTS_SOLID;
+
+	if(!mask_shot)
+	{
+		flags |= MASK_SOLID;
+	}
+	else
+	{
+		flags |= MASK_SHOT;
+	}
+
+	if(!ignore_allied_npc)
+	{
+		hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( flags ), RayType_Infinite, Trace_DontHitEntityOrPlayer, iClient);
+		TR_GetEndPosition(vecEndOrigin, hTrace);
+	}
+	else
+	{
+		hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( flags ), RayType_Infinite, Trace_DontHitEntityOrPlayerOrAlliedNpc, iClient);
+		TR_GetEndPosition(vecEndOrigin, hTrace);		
+	}
+
 	int iReturn = -1;
 	int iHit = TR_GetEntityIndex(hTrace);
 	
@@ -338,6 +366,7 @@ stock int GetClientPointVisibleOnlyClient(int iClient, float flDistance = 100.0)
 	GetClientEyePosition(iClient, vecOrigin);
 	GetClientEyeAngles(iClient, vecAngles);
 	
+
 	Handle hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_OnlyPlayer, iClient);
 	TR_GetEndPosition(vecEndOrigin, hTrace);
 	
@@ -1026,7 +1055,7 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	int health = pack.ReadCell();
 	if(pack.ReadCell())
 	{
-		int maxhealth
+		int maxhealth;
 		if(!IsAnEntity)
 		{
 			maxhealth = SDKCall_GetMaxHealth(client);
@@ -1100,6 +1129,39 @@ public bool Trace_OnlyPlayer(int entity, int mask, any data)
 		if(TeutonType[entity] != TEUTON_NONE)
 			return false;
 	}
+	return entity!=data;
+}
+
+public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any data)
+{
+	if(entity <= MaxClients)
+	{
+		if(entity != data) //make sure that they are not dead, if they are then just ignore them/give special shit
+		{
+			int Building_Index = EntRefToEntIndex(Building_Mounted[entity]);
+			if(dieingstate[entity] > 0)
+			{
+				if(!b_LeftForDead[entity])
+				{
+					return entity!=data;
+				}
+				else
+				{
+					return false;	
+				}
+			}
+			else if(Building_Index == 0 || !IsValidEntity(Building_Index))
+			{
+				return false;
+			}
+			return Building_Index!=data;
+		}
+	}
+	if(entity > MaxClients && b_IsAlliedNpc[entity])
+	{
+		return false;
+	}
+	
 	return entity!=data;
 }
 
@@ -2150,21 +2212,22 @@ stock int TracePlayerHulls(const float pos[3], const float mins[3], const float 
 	delete hTrace;
 	return bHit;
 }
-/*
-bool TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, int color[4])
+
+void TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, int color[4])
 {
 	//Trace top down
+	/*
 	float tStart[3]; tStart = m_vecOrigin;
-	float tEnd[3];   tEnd = m_vecOrigin;
 	
 	tStart[2] = (tStart[2] + m_vecMaxs[2]);
-	
+	*/
 //	TE_ShowPole(tStart, view_as<int>( { 255, 0, 255, 255 } ));
 //	TE_ShowPole(tEnd, view_as<int>( { 0, 255, 255, 255 } ));
-	
+	/*
 	Handle trace = TR_TraceHullFilterEx(tStart, tEnd, m_vecMins, m_vecMaxs, MASK_SHOT|CONTENTS_GRATE, IngorePlayersAndBuildingsHull, client);
 	bool bDidHit = TR_DidHit(trace);
-	
+	*/
+	/*
 	if( m_vecMins[0] == m_vecMaxs[0] && m_vecMins[1] == m_vecMaxs[1] && m_vecMins[2] == m_vecMaxs[2] )
 	{
 		m_vecMins = view_as<float>({-15.0, -15.0, -15.0});
@@ -2172,9 +2235,10 @@ bool TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_ve
 	}
 	else
 	{
-		AddVectors(m_vecOrigin, m_vecMaxs, m_vecMaxs);
-		AddVectors(m_vecOrigin, m_vecMins, m_vecMins);
-	}
+		*/
+	AddVectors(m_vecOrigin, m_vecMaxs, m_vecMaxs);
+	AddVectors(m_vecOrigin, m_vecMins, m_vecMins);
+//	}
 	
 	float vPos1[3], vPos2[3], vPos3[3], vPos4[3], vPos5[3], vPos6[3];
 	vPos1 = m_vecMaxs;
@@ -2202,18 +2266,31 @@ bool TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_ve
 	TE_SendBeam(client, vPos5, vPos3, flDur, color);
 	TE_SendBeam(client, vPos4, vPos3, flDur, color);
 	TE_SendBeam(client, vPos4, vPos2, flDur, color);
+	/*
+	for( int i = 0; i < 3; i++ ) 
+	{
+	//	tStart[i] = 0.0;
+		vPos1[i] = 0.0;
+		vPos2[i] = 0.0;
+		vPos3[i] = 0.0;
+		vPos4[i] = 0.0;
+		vPos5[i] = 0.0;
+		vPos6[i] = 0.0;
+		m_vecMaxs[i] = 0.0;
+		m_vecMins[i] = 0.0;
+	}
+	*/
+//	delete trace;
 	
-	delete trace;
-	
-	return bDidHit;
+//	return true;
 }
 
 void TE_SendBeam(int client, float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, int color[4])
 {
-	TE_SetupBeamPoints(m_vecMins, m_vecMaxs, g_iLaserMaterial, g_iHaloMaterial, 0, 0, flDur, 1.0, 1.0, 1, 0.0, color, 0);
+	TE_SetupBeamPoints(m_vecMins, m_vecMaxs, g_iLaserMaterial_Trace, g_iHaloMaterial_Trace, 0, 0, flDur, 1.0, 1.0, 1, 0.0, color, 0);
 	TE_SendToClient(client);
 }
-*/
+
 /*
 float[] CalculateBulletDamageForce( const float vecBulletDir[3], float flScale )
 {
@@ -2420,7 +2497,7 @@ bool ignite = false)
 	{
 		b_WasAlreadyCalculatedToBeClosest[i] = false;
 	}
-		
+
 	if(!FromBlueNpc) //make sure that there even is any valid npc before we do these huge calcs.
 	{ 
 		if(spawnLoc[0] == 0.0)
@@ -2484,6 +2561,11 @@ bool ignite = false)
 			{
 				NPC_Ignite(Closest_npc, client, 5.0, weapon);
 			}
+
+			if(FromBlueNpc && !IsValidClient(Closest_npc))
+			{
+				damage_1 *= 3.0; //enemy is an npc, and i am an npc.
+			}
 			SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 			
 			if(!FromBlueNpc) //Npcs do not have damage falloff, dodge.
@@ -2520,7 +2602,11 @@ bool ignite = false)
 							if(weapon_valid && ignite)
 							{
 								NPC_Ignite(Closest_npc, client, 5.0, weapon);
-							}							
+							}	
+							if(FromBlueNpc)
+							{
+								damage_1 *= 3.0; //enemy is an npc, and i am an npc.
+							}						
 							SDKHooks_TakeDamage(new_closest_npc, client, client, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 							
 							damage_reduction *= ExplosionDmgMultihitFalloff;
@@ -2563,6 +2649,7 @@ bool ignite = false)
 								{
 									damage_1 = damage;
 								}
+								//Dont give 3x dmg to players lmao
 								SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 								TargetsHit += 1;
 							}
@@ -2598,6 +2685,10 @@ bool ignite = false)
 									if(damage_1 > damage)
 									{
 										damage_1 = damage;
+									}
+									if(FromBlueNpc)
+									{
+										damage_1 *= 3.0; //enemy is an npc, and i am an npc.
 									}
 							
 									SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
@@ -2639,7 +2730,11 @@ bool ignite = false)
 										{
 											damage_1 = damage;
 										}
-								
+										if(FromBlueNpc)
+										{
+											damage_1 *= 3.0; //enemy is an npc, and i am an npc.
+										}
+
 										SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 										TargetsHit += 1;
 									}
@@ -2703,12 +2798,14 @@ stock void UpdatePlayerPoints(int client)
 	Points += Healing_done_in_total[client] / 5;
 	
 	Points += RoundToCeil(Damage_dealt_in_total[client]) / 200;
+
+	i_Damage_dealt_in_total[client] = RoundToCeil(Damage_dealt_in_total[client]);
 	
 	Points += Resupplies_Supplied[client] * 2;
 	
 	Points += i_BarricadeHasBeenDamaged[client] / 65;
 	
-	Points += i_ExtraPlayerPoints[client] / 50;
+	Points += i_ExtraPlayerPoints[client] / 2;
 	
 	Points /= 10;
 	
@@ -2841,7 +2938,7 @@ public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 }
 
 
-public void ReviveAll()
+void ReviveAll(bool raidspawned = false)
 {
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -2855,8 +2952,7 @@ public void ReviveAll()
 				{
 					applied_lastmann_buffs_once = false;
 					DHook_RespawnPlayer(client);
-					TF2_AddCondition(client, TFCond_UberchargedCanteen, 2.0);
-					TF2_AddCondition(client, TFCond_MegaHeal, 2.0);
+					GiveCompleteInvul(client, 2.0);
 				}
 				else if(dieingstate[client] > 0)
 				{
@@ -2872,16 +2968,24 @@ public void ReviveAll()
 					SetEntityRenderMode(client, RENDER_NORMAL);
 					SetEntityRenderColor(client, 255, 255, 255, 255);
 					SetEntityCollisionGroup(client, 5);
-					if(!EscapeMode)
+					if(!raidspawned)
 					{
-						SetEntityHealth(client, 50);
-						RequestFrame(SetHealthAfterRevive, client);
-					}	
-					else
-					{
-						SetEntityHealth(client, 150);
-						RequestFrame(SetHealthAfterRevive, client);						
+						if(!EscapeMode)
+						{
+							SetEntityHealth(client, 50);
+							RequestFrame(SetHealthAfterRevive, client);
+						}	
+						else
+						{
+							SetEntityHealth(client, 150);
+							RequestFrame(SetHealthAfterRevive, client);						
+						}
 					}
+				}
+				if(raidspawned)
+				{
+					SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+					RequestFrame(SetHealthAfterReviveRaid, client);	
 				}
 			}
 		}
@@ -2916,6 +3020,7 @@ public void ReviveAll()
 						float pos[3], ang[3];
 						GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
 						GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+						ang[2] = 0.0;
 						TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
 					}
 				}
@@ -3072,7 +3177,7 @@ stock void DHook_CreateDetour(GameData gamedata, const char[] name, DHookCallbac
 #define ANNOTATION_REFRESH_RATE 0.1
 #define ANNOTATION_OFFSET 8750
 
-public ShowAnnotationToPlayer(int client, float pos[3], const char[] Text, float lifetime, int follow_who)
+public void ShowAnnotationToPlayer(int client, float pos[3], const char[] Text, float lifetime, int follow_who)
 {
 	Handle event = CreateEvent("show_annotation");
 	if (event == INVALID_HANDLE) return;
@@ -3091,4 +3196,82 @@ public ShowAnnotationToPlayer(int client, float pos[3], const char[] Text, float
 	SetEventInt(event, "visibilityBitfield", (1 << client));
 	FireEvent(event);
 	
+}
+
+
+void AdjustBotCount(int ExtraData = 1) //1 is the default
+{
+	int botscalculaton;
+	int botsonserver = 0;
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsFakeClient(client))
+		{
+			botsonserver++;
+		}
+	}
+
+	if(EscapeMode)
+	{
+		if(12 > CvarMaxBotsForKillfeed.IntValue) //12 is always for escape
+		{
+			botscalculaton = CvarMaxBotsForKillfeed.IntValue;
+		}
+		else
+		{
+			botscalculaton = 12;
+		}
+
+	}
+	else
+	{
+		if(ExtraData > CvarMaxBotsForKillfeed.IntValue)
+		{
+			botscalculaton = CvarMaxBotsForKillfeed.IntValue;
+		}
+		else
+		{
+			botscalculaton = ExtraData;
+		}
+
+	}
+	
+	if(botscalculaton < 1)
+	{
+		botscalculaton = 1; //MUST BE 1 ATLEAST!
+	}
+
+	int bots_to_spawn_or_despawn;
+	int bots_to_spawn_or_despawn_Invert;
+
+	bots_to_spawn_or_despawn = botscalculaton - botsonserver;
+	bots_to_spawn_or_despawn_Invert = botsonserver - botscalculaton;
+
+	//dont do anything if the amount is the same.
+	if(bots_to_spawn_or_despawn > 0)
+	{
+		for(int i=0; i<botscalculaton; i++)
+		{
+			SpawnBotCustom("Zombie", false);
+		}
+	}
+	else if (bots_to_spawn_or_despawn < 0) //Kick bots that are not used.
+	{
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client) && IsFakeClient(client) && bots_to_spawn_or_despawn_Invert > 0)
+			{
+				KickClient(client);
+				bots_to_spawn_or_despawn_Invert--;
+			}
+		}
+	}
+
+}
+
+public void GiveCompleteInvul(int client, float time)
+{
+	f_ClientInvul[client] = GetGameTime() + time;
+	TF2_AddCondition(client, TFCond_UberchargedCanteen, time);
+	TF2_AddCondition(client, TFCond_MegaHeal, time);
 }

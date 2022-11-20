@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static const char g_DeathSounds[][] = {
 	"vo/soldier_paincrticialdeath01.mp3",
 	"vo/soldier_paincrticialdeath02.mp3",
@@ -173,7 +176,7 @@ methodmap SoldierGiant < CClotBody
 		
 		
 		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 200.0;
 		npc.g_TimesSummoned = 0;
 		
 		if(EscapeModeForNpc)
@@ -379,6 +382,7 @@ public void SoldierGiant_ClotDamaged_Post(int victim, int attacker, int inflicto
 {
 	SoldierGiant npc = view_as<SoldierGiant>(victim);
 	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	
 	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
 	if(0.9-(npc.g_TimesSummoned*0.2) > ratio)
 	{

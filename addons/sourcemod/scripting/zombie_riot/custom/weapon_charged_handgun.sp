@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static Handle Revert_Weapon_Back_Timer[MAXPLAYERS+1];
 static float base_chargetime[MAXPLAYERS+1]={-1.0, ...};
 static int weapon_id[MAXPLAYERS+1]={0, ...};
