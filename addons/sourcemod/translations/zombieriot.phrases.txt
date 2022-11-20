@@ -1481,7 +1481,7 @@
 	{
 		"en" 		"Raidboss"
 		"ru" 		"Босс"
-		"pt"		"Invasão Chefe" // i suppose is some sort of bossrush
+		"pt"		"Invasão Chefe"
 		"nl"		"Invalsbaas"
 	}
 	"Power"
@@ -1594,12 +1594,12 @@
 
 	//	"en"		"Your last equipped level perks were restored"
 	//	"de"		"Ihre letzten level perks wurden wiederhergestellt."
-	//	"pt"		"Sua ultima habilidade de nível foi restaurada"
 	//	"nl"		"Uw laatste gebruike level perks werden herstelt
 
 		"#format"	"{1:s}"
 		"en"		"Could not buy {1}."
 		"ru"		"Не удалось купить {1}."
+		"pt"		"Não é possível comprar {1}."
 		"nl"		"Kon niet worden gekocht {1}."
 		"chi"       "无法购买 {1}."
 	}
@@ -1865,6 +1865,7 @@
 	{
 		"en"		"Something is blocking your building from being placed."
 		"ru"		"Что-то препятствует размещению постройки."
+		"pt"		"Tem algo bloqueando você de construir aqui."
 		"nl"		"Iets blokeerd je van uw gebouw te plaatsen."
 		"chi"       "有东西挡住了你的建筑。"
 	}
@@ -1872,6 +1873,7 @@
 	{
 		"en"		"You can build your building here!"
 		"ru"		"Вы можете построить свою постройку здесь!"
+		"pt"		"Você pode construir sua construção aqui!"
 		"nl"		"Hier kan je bouwen!"
 		"chi"       "你可以在此摆放你的建筑"
 	}

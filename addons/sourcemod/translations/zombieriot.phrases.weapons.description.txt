@@ -6,50 +6,57 @@
 		"en"		"Low Damage but very high bleed duration"
 		"ru"		"Низкий урон, но очень высокая длительность кровотечения."
 		"chi"       "低伤害，但流血持续时间非常高"
+		"pt"		"Pouco dano mas alta duração de sangramento"
 	}
 	"Syringe Gun Pap 1 Desc"
 	{
 		"en"		"Increased damage and attackspeed"
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度"
+		"pt"		"Aumento no dano e velocidade de disparo"
 	}
 	"Syringe Gun Pap 2 Desc"
 	{
 		"en"		"Increased damage and attackspeed"
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度"
+		"pt"		"Aumento no dano e velocidade de disparo"
 	}
-	
-	
 	"Sniper Rifle Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, consumes 2 bullets per shot."
 		"ru"		"Увеличенный урон и скорость атаки, расходует 2 пули за выстрел."
 		"chi"       "增加伤害和攻击速度，每次射击消耗2发子弹。"
+		"pt"		"Aumento no dano e velocidade de disparo, consume 2 balas por disparo."
 	}
+	
 	"Sniper Rifle Pap 2"
 	{
 		"en"		"Increased damage and attackspeed, Scoping isn't needed anymore but attacks are delayed."
 		"ru"		"Увеличенный урон и скорость атаки, прицеливание больше не нужно, но атаки имеют задержку."
 		"chi"       "增加伤害和攻击速度，增大攻击范围，但换弹速度加长"
+		"pt"		"Aumento no dano e velocidade de disparo, Não é necessario mirar mas disparos são mais lentos."
 	}
 	"Sniper Rifle Pap 3"
 	{
 		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage"
 		"ru"		"Дорогое суперулучшение, 5 пуль одновременно для нанесения огромного урона."
 		"chi"       "昂贵的超级升级，每5颗子弹将造成大量伤害"
+		"pt"		"Melhoria bem cara, atira 5 balas de 1 vez aumentando drasticamente o dano."
 	}
 	"Sniper Rifle Pap 4"
 	{
 		"en"		"Heavily increased damage and attackspeed"
 		"ru"		"Сильное Увеличенный урон и скорость атаки."
 		"chi"       "大幅增加伤害和攻击速度"
+		"pt"		"Grande aumento no dano e velocidade de disparo"
 	}
 	"Sniper Rifle Pap 5"
 	{
 		"en"		"Increased damage and attackspeed"
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度"
+		"pt"		"Aumento no dano e velocidade de disparo"
 	}
 	
 	"Annabelle Pap 1"
@@ -57,24 +64,28 @@
 		"en"		"Increased damage and attackspeed and extra ammo."
 		"ru"		"Увеличенный урон и скорость атаки, а также дополнительные патроны."
 		"chi"       "增加伤害和攻击速度和额外的弹药。"
+		"pt"		"Aumento no dano, velocidade de disparo e munição extra."
 	}
 	"Annabelle Pap 2"
 	{
 		"en"		"Increased damage and attackspeed and extra ammo."
 		"ru"		"Увеличенный урон и скорость атаки, а также дополнительные патроны."
 		"chi"       "增加伤害和攻击速度和额外的弹药。"
+		"pt"		"Aumento no dano, velocidade de disparo e munição extra."
 	}
 	"Annabelle Pap 3"
 	{
 		"en"		"Increased damage and attackspeed and extra ammo."
 		"ru"		"Увеличенный урон и скорость атаки, а также дополнительные патроны."
 		"chi"       "增加伤害和攻击速度和额外的弹药。"
+		"pt"		"Aumento no dano, velocidade de disparo e munição extra."
 	}
 	"Annabelle Pap 4"
 	{
 		"en"		"Increased damage and attackspeed and extra ammo."
 		"ru"		"Увеличенный урон и скорость атаки, а также дополнительные патроны."
 		"chi"       "增加伤害和攻击速度和额外的弹药。"
+		"pt"		"Aumento no dano, velocidade de disparo e munição extra."
 	}
 	
 	"Huntsman Desc"
@@ -82,18 +93,21 @@
 		"en"		"Can headshot. Press R To fire a barrage"
 		"ru"		"Может стрелять в голову. Нажмите R, чтобы открыть шквальный огонь."
 		"chi"       "可以造成爆头伤害！按下R键发射多个弓箭"
+		"pt"		"Pode dar tiros na cabeça. Aperte R para atirar uma barragem."
 	}
 	"Huntsman Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed."
 		"ru"		"Увеличенный урон и скорость атаки, усиление способности М2."
 		"chi"       "增加伤害和攻击速度，鼠标右键可以激活技能。"
+		"pt"		"Aumento no dano e velocidade de disparo. \nM2 para ativar habilidade."
 	}
 	"Huntsman Pap 2"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed.\nBase attack now shoots 3 arrows."
 		"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2.\nСтреляет 3-я стрелами (обычная)."
 		"chi"       "增加伤害和攻击速度，鼠标右键可以激活技能。普通攻击现在发射3支箭。"
+		"pt"		"Aumento no dano e velocidade de disparo, habilidade do M2 melhorada. \nAtaque basico atira 3 flechas."
 	}
 	
 	"Deagle Desc"
@@ -101,24 +115,28 @@
 		"en"		"Deagle that throws objects with m2, shoot them to deal even more damage.\nTime correctly after a blue flash, and throw multiple for even more damage.\nThis projectile always counts as a HEADSHOT."
 		"ru"		"Орёл, который бросает предметы клавишей М2, стреляйте ими, чтобы нанести ещё больше урона.\nПравильно рассчитайте время после синей вспышки и бросайте несколько раз, чтобы нанести ещё больше урона.\nЭти снаряды всегда засчитываются как ВЫСТРЕЛ В ГОЛОВУ."
 		"chi"       "用鼠标右键发射光球，射击它们可以造成更多伤害。在闪光后，可以扔多个造成更多的伤害。这个弹丸永远算作爆头。"
+		"pt"		"Deague que arremessa um objeto com M2, atire neles para causar ainda mais dano.\nAcerte na hora certa apos um brilho azul, e jogue múltiplas vezes para ainda mais dano.\nEsse projetil sempre conta como um tiro na cabeça."
 	}
 	"Deagle Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable."
 		"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2 получает один дополнительный бросок."
 		"chi"       "增加伤害和攻击速度，鼠标右键的投掷物+1。"
+		"pt"		"Aumento no dano e velocidade de disparo, habilidade do M2 melhorada, +1 arremessável."
 	}
 	"Deagle Pap 2"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
 		"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2 получает один дополнительный бросок.\n2 пули за выстрел."
 		"chi"       "增加伤害和攻击速度，鼠标右键的投掷物+1。\n每发子弹消耗2颗子弹"
+		"pt"		"Aumento no dano e velocidade de disparo, habilidade do M2 melhorada, +1 arremessável.\n2 balas consumidas por disparo."
 	}
 	"Deagle Pap 3"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n3 bullets per shot consumed."
 		"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2 получает один дополнительный бросок.\n3 пули за выстрел."
 		"chi"       "增加伤害和攻击速度，鼠标右键的投掷物+1。\n每发子弹消耗3颗子弹"
+		"pt"		"Aumento no dano e velocidade de disparo, habilidade do M2 melhorada, +1 arremessável.\n3 balas consumidas por disparo."
 	}
 	
 	"Flamethrower Pap 1"
@@ -126,6 +144,7 @@
 		"en"		"Increased damage. M2 ability gives minicrits and uber for a short time."
 		"ru"		"Увеличенный урон. Способность на М2 даёт мини-криты и убер на короткое время."
 		"chi"       "增加伤害。鼠标右键技能在短时间内给予迷你暴击和无敌。"
+		"pt"		"Aumento no Dano. habilidade do M2 fornece minicrits e über por um curto periodo de tempo."
 	}
 	
 	"Leone 12 Gauge Super Desc"
@@ -133,12 +152,14 @@
 		"en"		"Semi automatic shotgun, you cannot hold down to shoot.\nMore powerful but harder to use since its single fire nature and poor accuracy"
 		"ru"		"Полуавтоматический дробовик, для стрельбы из которого нельзя удерживать нажатой клавишу.\nМощнее, но сложнее в использовании, так как стреляет одиночными выстрелами и имеет низкую точность."
 		"chi"       "半自动霰弹枪，你不能按住射击。虽然强大，但因为它的单一火力性质和较差的准确性，使它更难使用"
+		"pt"		"Escopeta semi automática, você não pode segurar os disparos.\nMais poderosa mas dificil de usar pela sua natureza de disparo unico e terrível precisão."
 	}
 	"Leone 12 Gauge Super Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, much tighter spread."
 		"ru"		"Увеличенный урон и скорость атаки, гораздо более плотный разброс."
 		"chi"       "增加伤害和攻击速度，子弹扩散减少。"
+		"pt"		"Aumento no dano e velocidade de disparo, precisão aprimorada."
 	}
 	
 	"Grenade Launcher Pap 1"
@@ -146,18 +167,21 @@
 		"en"		"Increased damage and attackspeed."
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
+		"pt"		"Aumento no dano e velocidade de disparo."
 	}
 	"Grenade Launcher Pap 2"
 	{
 		"en"		"Increased damage and attackspeed."
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
+		"pt"		"Aumento no dano e velocidade de disparo."
 	}
 	"Grenade Launcher Pap 3"
 	{
 		"en"		"Increased damage and massively increased attackspeed and reload speed."
 		"ru"		"Увеличенный урон и крупно увеличенная скорости атаки и скорости перезарядки."
 		"chi"       "增加伤害,大幅度增加攻击速度和装弹速度。"
+		"pt"		"Aumento no dano e velocidade de disparo drasticamente aumentada velocidade de recarga também."
 	}
 	
 	"Tommygun Pap 1"
@@ -165,73 +189,87 @@
 		"en"		"Increased damage and attackspeed"
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
+		"pt"		"Aumento no dano e velocidade de disparo."
 	}
 	"Tommygun Pap 2"
 	{
 		"en"		"Increased damage and attackspeed"
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
+		"pt"		"Aumento no dano e velocidade de disparo."
 	}
 	"Tommygun Pap 3"
 	{
 		"en"		"Increased damage and attackspeed"
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
+		"pt"		"Aumento no dano e velocidade de disparo."
 	}
 	
 	"Shrapnel Shredder Desc"
 	{
 		"en"		"A slow shotgun that fires explosive pellets. Can be Pack-a-Punched twice to increase damage, clip size, and number of pellets."
 		"ru"		"Медленный дробовик, стреляющий взрывными дробинками. Может быть дважды улучшен, чтобы увеличить урон, размер обоймы и количество дробинок."
+		"pt"		"Uma escopeta lenta que atira balas explosivas. Pode ser melhorada 2 vezes para aumentar o dano, velocidade de disparo, cartucho e numero de balas."
 	}
 	"Shrapnel Shredder Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, extra bullet per shot."
 		"ru"		"Увеличенный урон и скорость атаки, дополнительная пуля за выстрел."
+		"pt"		"Aumento no dano e velocidade de disparo, +1 bala por disparo."
 	}
 	"Shrapnel Shredder Pap 2"
 	{
 		"en"		"Increased damage and attackspeed, extra bullet per shot."
 		"ru"		"Увеличенный урон и скорость атаки, дополнительная пуля за выстрел."
+		"pt"		"Aumento no dano e velocidade de disparo, +1 bala por disparo."
 	}
 	
 	"Double Barrel Shotgun Pap 1"
 	{
 		"en"		"Increased damage and slightly faster attackspeed and reload speed"
 		"ru"		"Увеличенный урон и немного более высокая скорости атаки и скорость перезарядки."
+		"pt"		"Aumento no dano e velocidade de disparo significativamente aumentada e velocidade de recarga."
 	}
 	"Double Barrel Shotgun Pap 2"
 	{
 		"en"		"Increased damage and attackspeed, reload speed and 4 clip, meaning you can shoot twice."
 		"ru"		"Увеличенный урон и скорость атаки, скорости перезарядки и обойма на 4-е патрона, что означает, что вы можете стрелять дважды."
+		"pt"		"Aumento no dano, velocidade de disparo, velocidade de recarga e 4 balas no cartucho, que permite atirar 2 vezes."
 	}
 	
 	"RPG Pap 1"
 	{
 		"en"		"Increased damage and reload speed"
 		"ru"		"Увеличенный урон и скорости перезарядки."
+		"pt"		"Aumento no dano e velocidade de disparo."
+		
 	}
 	"RPG Pap 2"
 	{
 		"en"		"Increased damage, gain an extra rocket, faster reload"
 		"ru"		"Увеличенный урон, дополнительная ракета, более быстрая перезарядка."
+		"pt"		"Aumento no dano, ganhe um foguete extra e recarga mais rápida"
 	}
 	"RPG Pap 3"
 	{
 		"en"		"Massively Increased damage and REDUCED reload speed."
 		"ru"		"Значительно увеличен урон и СНИЖЕНА скорость перезарядки."
+		"pt"		"Aumento no dano
 	}
 	
 	"The Pomson 7000 Desc"
 	{
 		"en"		"Rapid fire laser gun!"
 		"ru"		"Скорострельная лазерная пушка!"
+		"pt"		"Arma laser de rápido disparo!"
 	}
 	"The Pomson 7000 Pap 1"
 	{
 		"en"		"Increased damage and attackspeed"
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
+		"pt"		"Aumento no dano e velocidade de disparo."
 	}
 	
 	"IEM Launcher Desc"

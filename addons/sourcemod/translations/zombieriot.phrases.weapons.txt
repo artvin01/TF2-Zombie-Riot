@@ -841,11 +841,13 @@
 	"Buildable Village"
 	{
 		"en"        "Buildable Village"
+		"pt"		"Vila Construível"
 		"chi"       "建筑升级器"
 	}
 	"Chooseable Buildings (Only one)"
 	{
 		"en"        "Chooseable Buildings (Only one)"
+		"pt"		"Construção escolhivel (apenas uma)"
 		"chi"       "该列表只允许放置一个建筑物"
 	}
 	"Upgrades"//Upgrades here!!!!
@@ -1592,7 +1594,7 @@
 		"en"		"Jordans [Common]"
 		"ru"		"Джорданы [Обычное]"
 		"de"		"Jordans [Gewöhnlich]"
-		"pt"		"Nike [Comum]" // your jordans are fake bro, they don't seem to be selled at brazil
+		"pt"		"Nike [Comum]"
 		"nl"		"Jordans [Gewoon]"
 	}
 	"Monkey Knowledge"
@@ -1847,12 +1849,14 @@
 	{
 	     "en"       "Builder Gear"
 		 "ru"       "Снаряж. строителя"
+		 "pt"		"Equipamento de Construção"
 	     "chi"       "建筑"
 	}
 	"Shrapnel Shredder"
 	{
 	     "en"       "Shrapnel Shredder"
 		 "ru"       "Шрапнельный измельчитель"
+		 "pt"		"Trituradora de estilhaços"
 	     "chi"       "弹片碎纸机"
 	}
 	"The Pomson 7000"
@@ -1865,18 +1869,21 @@
 	{
 	     "en"       "Leone 12 Gauge Super"
 		 "ru"       "Итальянский крупный дробовик"
+		 "pt"		"Leone Calibre 12 Super"
 	     "chi"       "超大口径雷诺"
 	}
 	"IEM Launcher"
 	{
 	     "en"       "IEM Launcher"
 		 "ru"       "Пусковая установка ИЭМ"
+		 "pt"		"Lançador de IEM"
 	     "chi"       "超电磁炮"
 	}
 	"Quad Launcher"
 	{
 	     "en"       "Quad Launcher"
 		 "ru"       "Счетверённая ракетница"
+		 "pt"		"Lançador Quádruplo"
 	     "chi"       "四管发射炮"
 	}
 	"Terroriser Bomb lmplanter Sniperrifle"
@@ -1889,144 +1896,168 @@
 	{
 	     "en"       "Neutronstar Burst Cannon"
 		 "ru"       "Нейтронно-звёздная пушка"
+		 "pt"		"Canhão de ruptura da estrela do nêutron"
 	     "chi"       "中子星爆炸炮"
 	}
 	"People Popper"
 	{
 	     "en"       "People Popper"
 		 "ru"       "Лопатель"
+		 "pt"		"Estourador de Pessoas"
 	     "chi"       "人·波普尔"
 	}
 	"Fusions Blade"
 	{
 	     "en"       "Fusions Blade"
 		 "ru"       "Лезвие фьюжена"
+		 "pt"		"Laminâs de Fusão"
 	     "chi"       "熔岩刀"
 	}
 	"Fractured Ark"
 	{
 	     "en"       "Fractured Ark"
 		 "ru"       "Расколотый ковчег"
+		 "pt"		"Arca fraturada"
 	     "chi"       "断裂方舟"
 	}
 	"Zerofuse's Knife"
 	{
 	     "en"       "Zerofuse's Knife"
 		 "ru"       "Нож Зерофуза"
+		 "pt"		"Faca do Zerofuse"
 	     "chi"       "零度刃"
 	}
 	"Medusa Teslar Stick"
 	{
 	     "en"       "Medusa Teslar Stick"
 		 "ru"       "Палочка медузы Теслар"
+		 "pt"		"Bastão de Tesla Medusa"
 	     "chi"       "美杜莎·特斯拉手杖"
 	}
 	"Beam Wand"
 	{
 	     "en"       "Beam Wand"
 		 "ru"       "Жезл луча"
+		 "pt"		"Cajado de Feixe"
 	     "chi"       "寒冰法杖"
 	}
 	"Cryo Staff"
 	{
 	     "en"       "Beam Wand"
 		 "ru"       "Жезл луча"
+		 "pt"		"Cajado da Criogênica"
 	     "chi"       "约束神杖"
 	}
 	"Atomic Reconstructor"
 	{
 	     "en"       "Atomic Reconstructor"
 		 "ru"       "Атомный реконструктор"
+		 "pt"		"Reconstrutor Atômico"
 	     "chi"       "原子重构器"
 	}
 	"Only one allowed, sell to see and buy others."
 	{
 	     "en"       "Only one allowed, sell to see and buy others."
 		 "ru"       "Можно только один, продавайте, чтобы увидеть и купить другие."
+		 "pt"		"Apenas 1 permitido, venda para poder ver e comprar outros."
 	     "chi"       "只允许装备一个"
 	}
 	"Throwable Armor Grenade"
 	{
 	     "en"       "Throwable Armor Grenade"
 		 "ru"       "Метательная бронебойная граната"
+		 "pt"		"Granada de Armadura Arremessável"
 	     "chi"       "可投掷装甲掷弹机"
 	}
 	"Experimental Burst Pack"
 	{
 	     "en"       "Experimental Burst Pack"
 		 "ru"       "Экспериментальная разрывная установка"
+		 "pt"		"Pacote experimental de explosão"
 	     "chi"       "试验性爆破装置"
 	}
 	"Throwable Survival Grenade"
 	{
 	     "en"       "Throwable Survival Grenade"
 		 "ru"       "Метательная граната выживания"
+		 "pt"		"Granada de Sobrevivência Arremessável"
 	     "chi"       "投掷式救生手榴弹"
 	}
 	"Deployable Quantum Suit"
 	{
 	     "en"       "Deployable Quantum Suit"
 		 "ru"       "Развёртываемый квантовый костюм"
+		 "pt"		"Traje Quântico Expansível"
 	     "chi"       "可部署量子套装"
 	}
 	"Primary Builder Weapons"
 	{
 	     "en"       "Primary Builder Weapons"
 		 "ru"       "Осн. оружие строителя"
+		 "pt"		"Armas Primárias de Construtor"
 	     "chi"       "建筑性主武器"
 	}
 	"Secondary Builder Weapons"
 	{
 	     "en"       "Secondary Builder Weapons"
 		 "ru"       "Доп. оружие строителя"
+		 "pt"		"Armas Secundárias de Construtor"
 	     "chi"       "建筑性副武器"
 	}
 	"Melee Builder Weapons"
 	{
 	     "en"       "Melee Builder Weapons"
 		 "ru"       "Оружие ближн. боя строителя"
+		 "pt"		"Armas Corpo-a-Corpo de Construtor"
 	     "chi"       "建筑性近战武器"
 	}
 	"Extra Gear"
 	{
 	     "en"       "Extra Gear"
 		 "ru"       "Доп. снаряжение"
+		 "pt"		"Equipamento Extra"
 	     "chi"       "科技装置"
 	}
 	"Elite Sniper"
 	{
 	     "en"       "Elite Sniper"
 		 "ru"       "Элитный снайпер"
+		 "pt"		"Sniper de Elite" 
 	     "chi"       "精英狙击手"
 	}
 	"All ltems here are affected by Building Upgrades."
 	{
 	     "en"       "All ltems here are affected by Building Upgrades."
 		 "ru"       "Все предметы здесь влияют на улучшение построек."
+		 "pt"		"Todos os itens aqui são afetados pelas Melhorias de Construções"
 	     "chi"       "所有有关建筑的物品已被归类到此列表"
 	}
 	"TIP: Only one path can have a tier 3 upgrade" //卫星列表
 	{
 	     "en"       "TIP: Only one path can have a tier 3 upgrade"
 		 "ru"       "СОВЕТ: Только один путь может иметь улучшение уровня 3"
+		 "pt"		"DICA: Apenas 1 caminho pode ser atualizado até o nível 3"
 	     "chi"       "提示:只有一个项目可以进行三级升级"
 	}
 	"Bigger Radius"
 	{
 	     "en"       "Bigger Radius"
 		 "ru"       "Увеличенный радиус"
+		 "pt"		"Raio Maior"
 	     "chi"       "更大的范围"
 	}
 	"Jungle Drums"
 	{
 	     "en"       "Jungle Drums"
 		 "ru"       "Барабаны джунглей"
+		 "pt"		"Tambores da selva"
 	     "chi"       "更快的速度"
 	}
 	"Grow Blocker"
 	{
 	     "en"       "Grow Blocker"
 		 "ru"       "Блокировщик роста"
+		 "pt"		"Bloqueador de Crescimento"
 	    // "chi"       "重置"
 	}
 }

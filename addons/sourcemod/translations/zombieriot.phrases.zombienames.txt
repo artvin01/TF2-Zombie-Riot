@@ -918,17 +918,20 @@
 	{
 		"en"		"Donnerkrieg"
 		"ru"		"Доннеркриг"
+		"pt"		"Donnerkrieg"
 		"nl"		"Donnerkrieg"
 	}
 	"Schwertkrieg"
 	{
 		"en"		"Schwertkrieg"
 		"ru"		"Шверткриг"
+		"pt"		"Schwertkrieg"
 		"nl"		"Schwertkrieg"
 	}
 	"Phantom Knight"
 	{
 		"en"		"Lucian, ''Blood Diamond''"
 		"ru"		"Люциан, «Кровавый алмаз»"
+		"pt"		"Lucian, ''Sangue de Diamante''"
 	}
 }
