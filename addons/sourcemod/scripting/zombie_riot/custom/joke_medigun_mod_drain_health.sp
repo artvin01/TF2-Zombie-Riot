@@ -202,6 +202,10 @@ public void Medigun_ClearAll()
 	Zero(f_MedigunDelayAttackThink);
 	Zero(medigun_heal_delay);
 	Zero(medigun_hud_delay);
+	for(int entity; entity<MAXENTITIES; entity++)
+    {
+		target_sucked_long[entity] = 0.85;
+	}
 }
 
 public MRESReturn OnMedigunPostFramePost(int medigun) {
@@ -274,7 +278,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 						SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime() * 3.0, DMG_PLASMA, medigun, _, Entity_Position);
 					}
-					
 					else
 					{
 						target_sucked_long[healTarget] += 0.07;
@@ -770,36 +773,32 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 
 					flDrainRate *= Attributes_FindOnPlayer(owner, 8, true, 1.0, true);
 
-				
-					
 					if(EscapeMode)
 						flDrainRate *= 2.0;
 						
 					if(LastMann)	
 						flDrainRate *= 2.0;
-					else
-					{
-						target_sucked_long[healTarget] += 0.07;
 					
-						if(target_sucked_long[healTarget] >= 4.0)
-						{
-							target_sucked_long[healTarget] = 4.0;
-						}
-						
-						if(Handle_on_target_sucked_long[healTarget])
-						{
-							KillTimer(Revert_target_sucked_long_timer[healTarget]);
-						}
-						Revert_target_sucked_long_timer[healTarget] = CreateTimer(1.0, Reset_suck_bonus, healTarget, TIMER_FLAG_NO_MAPCHANGE);
-						Handle_on_target_sucked_long[healTarget] = true;
-						
-						flDrainRate *= target_sucked_long[healTarget];
-						
-						static float Entity_Position[3];
-						Entity_Position = WorldSpaceCenter(healTarget);
-						
-						SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
+					target_sucked_long[healTarget] += 0.07;
+					
+					if(target_sucked_long[healTarget] >= 4.0)
+					{
+						target_sucked_long[healTarget] = 4.0;
 					}
+						
+					if(Handle_on_target_sucked_long[healTarget])
+					{
+						KillTimer(Revert_target_sucked_long_timer[healTarget]);
+					}
+					Revert_target_sucked_long_timer[healTarget] = CreateTimer(1.0, Reset_suck_bonus, healTarget, TIMER_FLAG_NO_MAPCHANGE);
+					Handle_on_target_sucked_long[healTarget] = true;
+						
+					flDrainRate *= target_sucked_long[healTarget];
+						
+					static float Entity_Position[3];
+					Entity_Position = WorldSpaceCenter(healTarget);
+						
+					SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
 					if(!EscapeMode)
 					{
 						new_ammo -= 6;
