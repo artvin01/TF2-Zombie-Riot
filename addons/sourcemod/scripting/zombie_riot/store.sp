@@ -54,6 +54,7 @@ enum struct ItemInfo
 	bool BlockLagCompInternal;
 	
 	char Classname[36];
+	char Custom_Name[64];
 
 	int Index;
 	int Attrib[16];
@@ -122,6 +123,9 @@ enum struct ItemInfo
 		
 		FormatEx(buffer, sizeof(buffer), "%sclassname", prefix);
 		kv.GetString(buffer, this.Classname, 36);
+
+		FormatEx(buffer, sizeof(buffer), "%scustom_name", prefix);
+		kv.GetString(buffer, this.Custom_Name, 64);
 		
 		FormatEx(buffer, sizeof(buffer), "%scannotbesaved", prefix);
 		this.CannotBeSavedByCookies = view_as<bool>(kv.GetNum(buffer));
@@ -318,6 +322,8 @@ enum struct Item
 	int Owned[MAXTF2PLAYERS];
 	int Scaled[MAXTF2PLAYERS];
 	bool Equipped[MAXTF2PLAYERS];
+	int Sell[MAXTF2PLAYERS];
+	int BuyWave[MAXTF2PLAYERS];
 	float Cooldown1[MAXTF2PLAYERS];
 	float Cooldown2[MAXTF2PLAYERS];
 	float Cooldown3[MAXTF2PLAYERS];
@@ -386,6 +392,22 @@ static int NPCTarget[MAXTF2PLAYERS];
 static bool InLoadoutMenu[MAXTF2PLAYERS];
 static bool HasMultiInSlot[MAXTF2PLAYERS][6];
 
+void Store_RemoveSellValue()
+{
+	static Item item;
+	int length = StoreItems.Length;
+	for(int i; i<length; i++)
+	{
+		StoreItems.GetArray(i, item);
+		for(int a; a < MAXTF2PLAYERS; a++)
+		{
+			item.Sell[a] = 0;
+			item.BuyWave[a] = -1;
+		}
+		StoreItems.SetArray(i, item);
+	}
+}
+
 bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 {
 	if(StoreItems)
@@ -427,7 +449,7 @@ bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 		{
 			StoreItems.GetArray(choiceIndex, item);
 			item.GetItemInfo(choiceInfo, info);
-			Citizen_UpdateWeaponStats(entity, item.NPCWeapon, ItemSell(item, choiceInfo + 1, 0), info);
+			Citizen_UpdateWeaponStats(entity, item.NPCWeapon, RoundToCeil(float(choicePrice) * SELL_AMOUNT), info);
 			return view_as<bool>(choiceInfo);
 		}
 	}
@@ -835,7 +857,7 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 
 					SetGlobalTransTarget(client);
 					int cash = CurrentCash-CashSpent[client];
-					menu.SetTitle("%t\n \n%t\n \n%s%s\n ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(item.Owned[client]-1));
+					menu.SetTitle("%t\n \n%t\n \n%s\n ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name));
 					
 					int skip = info.PackSkip;
 					count += skip;
@@ -848,13 +870,13 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 						if(item.GetItemInfo(item.Owned[client] + i, info) && info.Cost)
 						{
 							FormatEx(data, sizeof(data), "%d;%d;%d;%d", index, item.Owned[client] + i, entity, userid);
-							FormatEx(buffer, sizeof(buffer), "%s%s [$%d]", TranslateItemName(client, item.Name), AddPluses(item.Owned[client] + i), info.Cost);
+							FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost);
 							menu.AddItem(data, buffer, cash < info.Cost ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-							
+
 							if(info.Desc[0])
 							{
-								StrCat(info.Desc, sizeof(info.Desc), "\n ");
-								menu.AddItem("", info.Desc, ITEMDRAW_DISABLED);
+								StrCat(TranslateItemDescription(client, info.Desc), sizeof(info.Desc), "\n ");
+								menu.AddItem("", TranslateItemDescription(client, info.Desc), ITEMDRAW_DISABLED);
 							}
 						}
 					}
@@ -902,6 +924,8 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 					CashSpent[client] += info.Cost;
 					CashSpentTotal[client] += info.Cost;
 					item.Owned[client] = values[1] + 1;
+					item.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
+					item.BuyWave[client] = -1;
 					StoreItems.SetArray(values[0], item);
 					
 					TF2_StunPlayer(client, 2.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
@@ -1044,6 +1068,8 @@ void Store_SetNamedItem(int client, const char[] name, int amount)
 		if(StrEqual(name, item.Name, false))
 		{
 			item.Owned[client] = amount;
+			item.Sell[client] = 0;
+			item.BuyWave[client] = -1;
 			StoreItems.SetArray(i, item);
 			return;
 		}
@@ -1071,6 +1097,8 @@ void Store_SetClientItem(int client, int index, int owned, int scaled, int equip
 	item.Owned[client] = owned;
 	item.Scaled[client] = scaled;
 	item.Equipped[client] = view_as<bool>(equipped);
+	item.Sell[client] = 0;
+	item.BuyWave[client] = -1;
 	
 	StoreItems.SetArray(index, item);
 }
@@ -1089,6 +1117,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 				static ItemInfo info;
 				item.GetItemInfo(0, info);
 				
+				int base = info.Cost;
 				ItemCost(client, item, info.Cost);
 
 				if(info.Cost > 0 && free)
@@ -1099,6 +1128,8 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 					CashSpent[client] += info.Cost;
 					CashSpentTotal[client] += info.Cost;
 					Store_BuyClientItem(client, item, info);
+					item.Sell[client] = ItemSell(base, info.Cost);
+					item.BuyWave[client] = Waves_GetRound();
 					StoreItems.SetArray(a, item);
 					return;
 				}
@@ -1108,7 +1139,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 	}
 	
 	SetGlobalTransTarget(client);
-	PrintToChat(client, "%t", "Could Not Buy Item", TranslateItemName(client, name));
+	PrintToChat(client, "%t", "Could Not Buy Item", TranslateItemName(client, name, ""));
 }
 
 void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int blength)
@@ -1126,7 +1157,9 @@ void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int blength)
 				count++;
 				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
 				{
-					Format(buffer, blength, "%s {%s}", buffer, TranslateItemName(client, item.Name));
+					static ItemInfo info;
+					item.GetItemInfo(0, info);
+					Format(buffer, blength, "%s {%s}", buffer, TranslateItemName(client, item.Name, info.Custom_Name));
 					break;
 				}
 			}
@@ -1165,6 +1198,8 @@ void Store_BuyClientItem(int client, Item item, ItemInfo info)
 	item.Scaled[client]++;
 	item.Owned[client] = 1;
 	item.Equipped[client] = true;
+	item.Sell[client] = 0;
+	item.BuyWave[client] = -1;
 	
 	if(item.MaxScaled < item.Scaled[client])
 		item.Scaled[client] = item.MaxScaled;
@@ -1218,7 +1253,9 @@ bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped
 			equipped = item.Equipped[client];
 			
 			if(size)
+			{
 				strcopy(buffer, size, item.Name);
+			}
 			
 			return true;
 		}
@@ -1468,6 +1505,7 @@ public void MenuPage(int client, int section)
 		}
 		
 	}
+	
 	static Item item;
 	static ItemInfo info;
 	if(section > -1)
@@ -1495,37 +1533,37 @@ public void MenuPage(int client, int section)
 			{
 				if(NPCOnly[client] == 1)
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s%s \n<%t> [%i] ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1),"Can Be Pack-A-Punched", info2.Cost);
+					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
 				}
 				else if(!Waves_InSetup())
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n \n%t\n \n%s%s \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1),"Can Be Pack-A-Punched", info2.Cost);
+					FormatEx(buffer, sizeof(buffer), "%t\n \n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
 				}
 				else
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n%t\n%s%s  \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, "Store Discount", TranslateItemName(client, item.Name), AddPluses(level-1),"Can Be Pack-A-Punched", info2.Cost);
+					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n%t\n%s  \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, "Store Discount", TranslateItemName(client, item.Name, info2.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
 				}
 			}
 			else
 			{
 				if(NPCOnly[client] == 1)
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1));
+					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name));
 				}
 				else if(!Waves_InSetup())
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name), AddPluses(level-1));
+					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name));
 				}
 				else
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n%t\n%s%s ", "TF2: Zombie Riot", "Credits", cash, "Store Discount", TranslateItemName(client, item.Name), AddPluses(level-1));
+					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n%t\n%s ", "TF2: Zombie Riot", "Credits", cash, "Store Discount", TranslateItemName(client, item.Name, info.Custom_Name));
 				}				
 			}
 			
 
 			//		, TranslateItemName(client, item.Name) , item.PackCost > 0 ? "<Packable>" : ""
 			Config_CreateDescription(info.Classname, info.Attrib, info.Value, info.Attribs, buffer, sizeof(buffer));
-			menu.SetTitle("%s\n%s\n ", buffer, info.Desc);
+			menu.SetTitle("%s\n%s\n ", buffer, TranslateItemDescription(client, info.Desc));
 			
 			if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
 			{
@@ -1559,8 +1597,6 @@ public void MenuPage(int client, int section)
 				}
 				else
 				{
-
-
 					if(item.Equipped[client])
 					{
 						if(info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
@@ -1588,7 +1624,7 @@ public void MenuPage(int client, int section)
 					else	// Buy it
 					{
 						ItemCost(client, item, info.Cost);
-
+						
 						bool Maxed_Building = false;
 						if(item.MaxBarricadesBuild)
 						{
@@ -1616,7 +1652,8 @@ public void MenuPage(int client, int section)
 					IntToString(section, buffer2, sizeof(buffer2));
 					menu.AddItem(buffer2, buffer, style);	// 0
 					
-					bool canSell = (item.Owned[client] && info.Cost);
+					bool fullSell = (item.BuyWave[client] == Waves_GetRound());
+					bool canSell = (item.Owned[client] && ((info.Cost && fullSell) || item.Sell[client]));
 
 					if(item.Equipped[client] && info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
 					{
@@ -1646,8 +1683,14 @@ public void MenuPage(int client, int section)
 
 					if(canSell)
 					{
-						int sell = ItemSell(item, level, client);
-						FormatEx(buffer, sizeof(buffer), "%t ($%d) | (%t: $%d)", "Sell", sell, "Credits After Selling",sell + (CurrentCash-CashSpent[client]));	// 3
+						if(fullSell)
+						{
+							item.Scaled[client]--;
+							ItemCost(client, item, info.Cost);
+							item.Scaled[client]++;
+						}
+
+						FormatEx(buffer, sizeof(buffer), "%t ($%d) | (%t: $%d)", "Sell", fullSell ? info.Cost : item.Sell[client], "Credits After Selling", (fullSell ? info.Cost : item.Sell[client]) + (CurrentCash-CashSpent[client]));	// 3
 						menu.AddItem(buffer2, buffer);
 					}
 									
@@ -1658,19 +1701,19 @@ public void MenuPage(int client, int section)
 			menu.Display(client, MENU_TIME_FOREVER);
 			return;
 		}
-		
+		item.GetItemInfo(0, info);
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
 		{
-			menu.SetTitle("%t\n%t\n%t\n \n%t\n \n%s", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name));
+			menu.SetTitle("%t\n%t\n%t\n \n%t\n \n%s", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name, info.Custom_Name));
 		}
 		else if(!Waves_InSetup())
 		{
-			menu.SetTitle("%t\n \n%t\n \n%s", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name));
+			menu.SetTitle("%t\n \n%t\n \n%s", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name, info.Custom_Name));
 		}
 		else
 		{
-			menu.SetTitle("%t\n \n%t\n%t\n%s", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], "Store Discount", TranslateItemName(client, item.Name));
+			menu.SetTitle("%t\n \n%t\n%t\n%s", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], "Store Discount", TranslateItemName(client, item.Name, info.Custom_Name));
 		}
 	}
 	else
@@ -1679,7 +1722,6 @@ public void MenuPage(int client, int section)
 		int xpNext = LevelToXp(Level[client]+1);
 		
 		int nextAt = xpNext-xpLevel;
-		
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
 		{
@@ -1703,7 +1745,7 @@ public void MenuPage(int client, int section)
 	}
 	
 	bool found;
-	char buffer[96];
+	char buffer[64];
 	int length = StoreItems.Length;
 	
 	int ClientLevel = Level[client];
@@ -1796,7 +1838,7 @@ public void MenuPage(int client, int section)
 				if(info.Cost <= CurrentCash && RoundToCeil(float(info.Cost) * SELL_AMOUNT) > npcwallet)
 				{
 					ItemCost(client, item, info.Cost);
-					FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name), info.Cost - npcwallet);
+					FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost - npcwallet);
 					
 					if(item.NPCSeller_First)
 					{
@@ -1816,9 +1858,10 @@ public void MenuPage(int client, int section)
 		}
 		else if(!item.ItemInfos)
 		{
+			item.GetItemInfo(0, info);
 			Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 			IntToString(i, info.Classname, sizeof(info.Classname));
-			menu.AddItem(info.Classname, TranslateItemName(client, item.Name));
+			menu.AddItem(info.Classname, TranslateItemName(client, item.Name, info.Custom_Name));
 			found = true;
 		}
 		else
@@ -1855,23 +1898,23 @@ public void MenuPage(int client, int section)
 				}
 				if(info.ScrapCost > 0)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s ($%d) [$%d]", TranslateItemName(client, item.Name), info.ScrapCost, Scrap[client]);
+					FormatEx(buffer, sizeof(buffer), "%s ($%d) [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.ScrapCost, Scrap[client]);
 				}
 				else if(item.Equipped[client])
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [%t] %s", TranslateItemName(client, item.Name), "Equipped", BuildingExtraCounter);
+					FormatEx(buffer, sizeof(buffer), "%s [%t] %s", TranslateItemName(client, item.Name, info.Custom_Name), "Equipped", BuildingExtraCounter);
 				}
 				else if(item.Owned[client] == 2)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [%t] %s", TranslateItemName(client, item.Name), "Packed", BuildingExtraCounter);
+					FormatEx(buffer, sizeof(buffer), "%s [%t] %s", TranslateItemName(client, item.Name, info.Custom_Name), "Packed", BuildingExtraCounter);
 				}
 				else if(item.Owned[client])
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [%t] %s", TranslateItemName(client, item.Name), "Purchased", BuildingExtraCounter);
+					FormatEx(buffer, sizeof(buffer), "%s [%t] %s", TranslateItemName(client, item.Name, info.Custom_Name), "Purchased", BuildingExtraCounter);
 				}
 				else if(!info.Cost && item.Level)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [Lv %d] %s", TranslateItemName(client, item.Name), item.Level, BuildingExtraCounter);
+					FormatEx(buffer, sizeof(buffer), "%s [Lv %d] %s", TranslateItemName(client, item.Name, info.Custom_Name), item.Level, BuildingExtraCounter);
 				}
 				else
 				{
@@ -1880,20 +1923,19 @@ public void MenuPage(int client, int section)
 					{
 						if(item.ShouldThisCountSupportBuildings)
 						{
-							FormatEx(buffer, sizeof(buffer), "%s[%d/%d]", TranslateItemName(client, item.Name), i_SupportBuildingsBuild[client], MaxSupportBuildingsAllowed(client, false));
+							FormatEx(buffer, sizeof(buffer), "%s[%d/%d]", TranslateItemName(client, item.Name, info.Custom_Name), i_SupportBuildingsBuild[client], MaxSupportBuildingsAllowed(client, false));
 						}
 						else
 						{
-							FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name));
+							FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
 						}
 						style = ITEMDRAW_DISABLED;
 					}
 					else
 					{
-						FormatEx(buffer, sizeof(buffer), "%s [$%d] %s", TranslateItemName(client, item.Name), info.Cost, BuildingExtraCounter);
+						FormatEx(buffer, sizeof(buffer), "%s [$%d] %s", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost, BuildingExtraCounter);
 					}
 				}
-				
 				//if(!item.BuildingExistName[0] && !item.ShouldThisCountSupportBuildings)
 				Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 
@@ -1944,7 +1986,7 @@ public void MenuPage(int client, int section)
 	menu.ExitBackButton = section != -1;
 	menu.Display(client, MENU_TIME_FOREVER);
 }
-
+/*
 static char[] AddPluses(int amount)
 {
 	char buffer[16];
@@ -1958,7 +2000,7 @@ static char[] AddPluses(int amount)
 	}
 	return buffer;
 }
-
+*/
 public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
@@ -2278,7 +2320,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 										{
 											//Give them some their money back! Some other person just override theirs, i dont think they should be punished for that.......
 											//BUT ONLY IF ITS ACTUALLY A DIFFERENT CLIENT. :(
-											int money_back = RoundToCeil(float(i_ThisEntityHasAMachineThatBelongsToClientMoney[entity]) * 0.7);
+											int money_back = RoundToCeil(float(i_ThisEntityHasAMachineThatBelongsToClientMoney[entity]) * SELL_AMOUNT);
 											SetGlobalTransTarget(client_previously);
 											PrintToChat(client_previously, "%t","You got your money back npc", money_back);
 											CashSpent[client_previously] -= money_back;
@@ -2340,12 +2382,15 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							if(!item.Owned[client])	// Buy Weapon
 							{
+								int base = info.Cost;
 								ItemCost(client, item, info.Cost);
 								if(info.Cost <= cash)
 								{
 									CashSpent[client] += info.Cost;
 									CashSpentTotal[client] += info.Cost;
 									Store_BuyClientItem(client, item, info);
+									item.Sell[client] = ItemSell(base, info.Cost);
+									item.BuyWave[client] = Waves_GetRound();
 									item.Equipped[client] = false;
 									
 									ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
@@ -2372,12 +2417,15 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						}
 						else if(!item.Owned[client])	// Buy Perk
 						{
+							int base = info.Cost;
 							ItemCost(client, item, info.Cost);
 							if(info.Cost <= cash)
 							{
 								CashSpent[client] += info.Cost;
 								CashSpentTotal[client] += info.Cost;
 								Store_BuyClientItem(client, item, info);
+								item.Sell[client] = ItemSell(base, info.Cost);
+								item.BuyWave[client] = Waves_GetRound();
 								StoreItems.SetArray(index, item);
 								
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
@@ -2469,10 +2517,22 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					if(item.Owned[client])
 					{
 						item.GetItemInfo(item.Owned[client]-1, info);
-						if(info.Cost) //make sure it even can be sold.
+
+						int sell = item.Sell[client];
+						bool fullSell = item.BuyWave[client] == Waves_GetRound();
+						if(fullSell)
 						{
-							CashSpent[client] -= ItemSell(item, item.Owned[client], client);
-							CashSpentTotal[client] -= ItemSell(item, item.Owned[client], client);
+							item.Scaled[client]--;
+							ItemCost(client, item, info.Cost);
+							item.Scaled[client]++;
+							
+							sell = info.Cost;
+						}
+						
+						if(sell) //make sure it even can be sold.
+						{
+							CashSpent[client] -= sell;
+							CashSpentTotal[client] -= sell;
 							ClientCommand(client, "playgamesound \"mvm/mvm_money_pickup.wav\"");
 						}
 						
@@ -2941,7 +3001,7 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 	/*
 	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(SpawnWeapon_Special(client, "tf_weapon_pda_engineer_destroy", 26, 100, 5, "671 ; 1"));
 	*/
-	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(SpawnWeapon_Special(client, "tf_weapon_invis", 26, 100, 5, "35 ; 0 ; 816 ; 1 ; 671 ; 1 ; 34 ; 999"));
+	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(SpawnWeapon_Special(client, "tf_weapon_invis", 26, 100, 5, "221 ; -99 ; 160 ; 1 ; 35 ; 0 ; 816 ; 1 ; 671 ; 1 ; 34 ; 999"));
 	
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
 	SetAbilitySlotCount(client, 0);
@@ -3553,6 +3613,8 @@ int Store_GiveSpecificItem(int client, const char[] name)
 			
 			item.Owned[client] = 1;
 			item.Equipped[client] = true;
+			item.Sell[client] = 0;
+			item.BuyWave[client] = 0;
 			StoreItems.SetArray(i, item);
 			
 			int entity = Store_GiveItem(client, i, item.Equipped[client]);
@@ -3733,7 +3795,7 @@ void Store_ConsumeItem(int client, int index)
 	StoreItems.SetArray(index, item);
 }
 
-void Store_Unequip(int client, int index)
+stock void Store_Unequip(int client, int index)
 {
 	static Item item;
 	StoreItems.GetArray(index, item);
@@ -3751,43 +3813,80 @@ bool Store_PrintLevelItems(int client, int level)
 		StoreItems.GetArray(i, item);
 		if(item.Level == level)
 		{
-			PrintToChat(client, TranslateItemName(client, item.Name));
+			static ItemInfo info;
+			item.GetItemInfo(0, info);
+			PrintToChat(client, TranslateItemName(client, item.Name, info.Custom_Name));
 			found = true;
 		}
 	}
 	return found;
 }
 
-char[] TranslateItemName(int client, const char name[64], int extrainfo = 0)
+char[] TranslateItemName(int client, const char name[64], const char Custom_Name[64]) //Just make it 0 as a default so if its not used, fuck it
 {
 	static int ServerLang = -1;
 	if(ServerLang == -1)
 		ServerLang = GetServerLanguage();
 	
+//	PrintToChatAll("%s",Custom_Name);
 	char buffer[64];
 
 	if(GetClientLanguage(client) != ServerLang)
 	{
-		if(TranslationPhraseExists(name))
+		if(Custom_Name[0])
 		{
-			FormatEx(buffer, sizeof(buffer), "%T", name, client);
+			if(TranslationPhraseExists(Custom_Name))
+			{
+				FormatEx(buffer, sizeof(buffer), "%T", Custom_Name, client);
+			}
+			else
+			{
+				FormatEx(buffer, sizeof(buffer), "%s", Custom_Name, client);
+			}
+		}
+		else
+		{
+			if(TranslationPhraseExists(name))
+			{
+				FormatEx(buffer, sizeof(buffer), "%T", name, client);
+			}
+			else
+			{
+				FormatEx(buffer, sizeof(buffer), "%s", name, client);
+			}
+		}
+	}
+	else
+	{	
+		if(Custom_Name[0])
+		{
+			FormatEx(buffer, sizeof(buffer), "%s", Custom_Name, client);
 		}
 		else
 		{
 			FormatEx(buffer, sizeof(buffer), "%s", name, client);
 		}
 	}
+	return buffer;
+}
+
+char[] TranslateItemDescription(int client, const char Desc[256])
+{
+	static int ServerLang = -1;
+	if(ServerLang == -1)
+		ServerLang = GetServerLanguage();
+	
+	char buffer[256]; 
+
+	if(TranslationPhraseExists(Desc))
+	{
+		FormatEx(buffer, sizeof(buffer), "%T", Desc, client);
+	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%s", name, client);
+		FormatEx(buffer, sizeof(buffer), "%s", Desc, client);
 	}
-	switch(extrainfo)
-	{
-		case 1:
-		{
-			FormatEx(buffer, sizeof(buffer), "%s (Slot Locked)", buffer);
-		}
-	}
+
 	return buffer;
 }
 
@@ -3800,7 +3899,7 @@ static void ItemCost(int client, Item item, int &cost)
 	cost += item.Scale*item.Scaled[client]; 
 	cost += item.CostPerWave * CurrentRound;
 	
-	int original_cost_With_Sell = RoundToCeil(float(cost) * SELL_AMOUNT);
+	//int original_cost_With_Sell = RoundToCeil(float(cost) * SELL_AMOUNT);
 	
 	//make sure anything thats additive is on the top, so sales actually help!!
 	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
@@ -3876,25 +3975,26 @@ static void ItemCost(int client, Item item, int &cost)
 	{
 		cost = item.MaxCost;
 	}
-	if(cost < original_cost_With_Sell)
-	{
-		cost = original_cost_With_Sell;
-	}
+	//if(cost < original_cost_With_Sell)
+	//{
+	//	cost = original_cost_With_Sell;
+	//}
 }
 
-static int ItemSell(Item item, int level, int client)
+static int ItemSell(int base, int discount)
 {
-	int sell = (item.Scale * item.Scaled[client]) + (item.CostPerWave * CurrentRound);
-	
-	ItemInfo info;
-	for(int i; i<level && item.GetItemInfo(i, info); i++)
+	float cost = float(base);
+	float ratio = (float(discount) / cost);
+	if(ratio > SELL_AMOUNT)
 	{
-		sell += info.Cost;
-		if(info.PackBranches > 1 || info.PackSkip)
-			break;
+		ratio = SELL_AMOUNT;
 	}
-	
-	return RoundToCeil(float(sell) * SELL_AMOUNT);
+	else if(ratio < 0.0)
+	{
+		return 0;
+	}
+
+	return RoundToCeil(cost * ratio);
 }
 
 bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool Is_Reload_Button = false)

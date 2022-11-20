@@ -270,6 +270,7 @@
 		"pl"    "Szpieg? Będę trzymał tam oko."
 		"pt"	"Spy? Eu vou prestar atenção ali."
 		"nl"	"Spion? Ik hou mijn ogen daar wel op."
+		"chi"   "间谍?我会一直盯着那里的!"
 	}
 	"Sentry here? Its better to wait for teammates to engage so i'll look."
 	{
@@ -279,7 +280,7 @@
 		"pl"    "Działko tutaj? Lepiej poczekać aż koledzy z drużyny się zaangażują, więc popatrzę."
 		"pt"	"Sentinela Aqui? É melhor esperar o resto dos aliados antes de entrar em combate então ficarei de olho."
 		"nl"	"Schildwacht hier? Het is beter om te wachten tot teamgenoten aanvallen, dus ik kijk wel."
-		"chi"   "间谍?我会一直盯着那里的!"
+		
 	}
 	"I cant build a teleporter, sorry."
 	{

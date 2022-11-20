@@ -27,25 +27,30 @@ static const char SoundMoabPop[][] =
 
 static float MoabSpeed()
 {
-	if(CurrentRound < 80)
+	/*if(CurrentRound < 80)
 		return 305.0;
 	
 	if(CurrentRound < 100)
 		return 305.0 * (1.0 + (CurrentRound - 79) * 0.02);
 	
-	return 305.0 * (1.0 + (CurrentRound - 70) * 0.02);
+	return 305.0 * (1.0 + (CurrentRound - 70) * 0.02);*/
+	
+	if(CurrentRound < 60)
+		return 305.0;
+	
+	return 305.0 * (1.0 + (CurrentRound - 50) * 0.02);
 }
 
 static int MoabHealth(bool fortified)
 {
 	float value = 40000.0;	// 400 RGB
-	if(CurrentRound != 89 && CurrentRound != 99)
-		value *= 0.25;
+	//if(CurrentRound != 89 && CurrentRound != 99)
+	//	value *= 0.25;
 	
 	if(fortified)
 		value *= 2.0;
 	
-	if(CurrentRound > 123)
+	/*if(CurrentRound > 123)
 	{
 		value *= 1.05 + (CurrentRound - 106) * 0.15;
 	}
@@ -56,6 +61,15 @@ static int MoabHealth(bool fortified)
 	else if(CurrentRound > 79)
 	{
 		value *= 1.0 + (CurrentRound - 79) * 0.02;
+	}*/
+	
+	if(CurrentRound > 83)
+	{
+		value *= 1.05 + (CurrentRound - 66) * 0.15;
+	}
+	else if(CurrentRound > 59)
+	{
+		value *= 1.0 + (CurrentRound - 31) * 0.05;
 	}
 	
 	return RoundFloat(value) + (Bloon_Health(fortified, Bloon_Ceramic) * 3);	// 104x3 RGB

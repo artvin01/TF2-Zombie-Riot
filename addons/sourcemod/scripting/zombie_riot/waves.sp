@@ -736,6 +736,7 @@ void Waves_Progress()
 				CPrintToChatAll("{green}%t","Cash Gained This Wave Village", extra);
 			}
 			
+			ExcuteRelay("zr_wavedone");
 			CurrentRound++;
 			CurrentWave = -1;
 			
@@ -939,6 +940,7 @@ void Waves_Progress()
 				Store_RandomizeNPCStore(false);
 				InSetup = true;
 				ExcuteRelay("zr_setuptime");
+				ExcuteRelay("zr_victory");
 				
 				int timer = CreateEntityByName("team_round_timer");
 				DispatchKeyValue(timer, "show_in_hud", "1");
@@ -1187,18 +1189,23 @@ void Waves_Progress()
 			}
 		}
 	}
-	/*if(CurrentRound == 0)
+	if(CurrentRound == 0)
 	{
+		if(StartCash < 10000)
+			Store_RemoveSellValue();
+
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client)==2)
 			{
 				Ammo_Count_Ready[client] = 8;
 				if(StartCash < 10000)
+				{
 					CashSpent[client] = StartCash;
+				}
 			}
 		}
-	}*/
+	}
 	if(CurrentWave == 0)
 	{
 		Renable_Powerups();
