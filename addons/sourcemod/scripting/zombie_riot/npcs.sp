@@ -12,7 +12,7 @@
 #define GORE_UPARMRIGHT   (1 << 8)
 #define GORE_HANDLEFT	 (1 << 9)
 
-#define MAXSPAWNERSACTIVE 5 //ok
+#define MAXSPAWNERSACTIVE 4 //ok
 
 enum //hitgroup_t
 {
@@ -366,43 +366,36 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		GlobalCheckDelayAntiLagPlayerScale = GetGameTime() + 5.0;//only check every 5 seconds.
 		PlayersAliveScaling = 0;
 		
-		limit = 4 + RoundToCeil(float(Waves_GetRound())/2.65);
-		if(limit > 8) //Make sure to not allow more then this amount so the default max zombie count is 20 at almost all times if player scaling isnt accounted for.
-		{
-			limit = 8;
-		}
+		limit = 8; //Minimum should be 8! Do not scale with waves, makes it boring early on.
+
+		float f_limit = Pow(1.16, float(CountPlayersOnRed()));
+		float f_limit_alive = Pow(1.16, float(CountPlayersOnRed(true)));
+
+		f_limit *= float(limit);
+		f_limit_alive *= float(limit);
 		
-		float f_limit = 0.0;
-		float f_limit_music = 0.0;
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 			{
-				f_limit += 2.2;
-				
 				if(Level[client] > 7)
 					AllowSpecialSpawns = true;
-				
-				if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
-				{
-					f_limit_music += 2.2;
-				}
 			}
 		}
 		
+		PlayersAliveScaling = RoundToNearest(f_limit);
 		
-		PlayersAliveScaling = limit;
-		
-		PlayersAliveScaling += RoundToNearest(f_limit_music);
-		limit += RoundToNearest(f_limit);
-		
-		if(limit >= NPC_HARD_LIMIT)
-			limit = NPC_HARD_LIMIT;
+		if(RoundToNearest(f_limit) >= NPC_HARD_LIMIT)
+			f_limit = float(NPC_HARD_LIMIT);
+
+		if(RoundToNearest(f_limit_alive) >= NPC_HARD_LIMIT)
+			f_limit_alive = float(NPC_HARD_LIMIT);
 			
-		LimitNpcs = limit;
 		
 		if(PlayersAliveScaling >= NPC_HARD_LIMIT)
 			PlayersAliveScaling = NPC_HARD_LIMIT;
+
+		LimitNpcs = RoundToNearest(f_limit);
 		
 	}
 	
