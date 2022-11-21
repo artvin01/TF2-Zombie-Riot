@@ -244,7 +244,7 @@
 				"signature"	"NextBotGroundLocomotion::ResolveCollision"
 				"callconv"	"thiscall"
 				"return"	"vector"
-				"this"		"address"
+				"this"		"entity"
 				"arguments"
 				{
 					"from"
@@ -264,7 +264,7 @@
 			"CTFBaseBoss::OnTakeDamage_Alive_SIGNATURE"
 			{
 				"signature"	"CTFBaseBoss::OnTakeDamage_Alive_SIGNATURE"
-				"hooktype"	"entity"
+				"callconv"	"thiscall"
 				"return"	"int"
 				"this"		"entity"
 			}

@@ -1065,7 +1065,7 @@
 		"chi"   "使用这台机器会给你护甲。\n第一次购买时价格提升双倍"
 	}
 	
-	"Buildable Armortable Desc" //It doesn't seem to work
+	"Buildable Ammobox Desc"
 	{
 		"en"	"usage of this machine will give you Ammo for your current holding weapon.\nFirst buy is double the price."
 		"ru"	"Использование этой машины даст вам патроны для вашего текущего оружия.\nПервая покупка стоит вдвое дороже."
