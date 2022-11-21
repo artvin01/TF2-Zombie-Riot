@@ -421,7 +421,7 @@ bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 		for(int i; i<length; i++)
 		{
 			StoreItems.GetArray(i, item);
-			if(item.NPCWeapon >= 0 && !item.Hidden && !item.NPCWeaponAlways && !item.Level)
+			if(item.NPCWeapon >= 0 && !item.TextStore[0] && !item.Hidden && !item.NPCWeaponAlways && !item.Level)
 			{
 				int current;
 				for(int a; item.GetItemInfo(a, info); a++)
@@ -1182,6 +1182,7 @@ void Store_EquipSlotCheck(int client, int slot)
 				count++;
 				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
 				{
+					PrintToChat(client, "%s was unequipped", TranslateItemName(client, item.Name, ""));
 					item.Equipped[client] = false;
 					StoreItems.SetArray(i, item);
 					break;
@@ -1653,7 +1654,7 @@ public void MenuPage(int client, int section)
 					menu.AddItem(buffer2, buffer, style);	// 0
 					
 					bool fullSell = (item.BuyWave[client] == Waves_GetRound());
-					bool canSell = (item.Owned[client] && ((info.Cost && fullSell) || item.Sell[client]));
+					bool canSell = (item.Owned[client] && ((info.Cost && fullSell) || item.Sell[client] > 0));
 
 					if(item.Equipped[client] && info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
 					{
