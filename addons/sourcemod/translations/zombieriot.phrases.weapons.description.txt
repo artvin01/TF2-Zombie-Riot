@@ -1048,7 +1048,7 @@
 	{
 		"en"	"This is primarily there to lift up your sentry to it can attack better, use with caution.\nHas VERY low health."
 	//	"ru"	"Каждый раз, когда вы покупаете его, его стоимость увеличивается на 100, и не может превышать 5000.\nЭто в основном для того, чтобы поднять вашу турель, чтобы она могла лучше атаковать, используйте с осторожностью.\nОЧЕНЬ мало здоровья."
-	    "chi"   "这主要是为了提升你的哨兵，让它可以更好地攻击，慎用。这会降低你哨兵的生命值。"
+	    "chi"   "这主要是为了提升你的哨兵，让它可以更好地攻击，慎用。这个路障的生命值极低。"
 	}
 	
 	"Buildable Barricade Desc"
@@ -1065,7 +1065,7 @@
 		"chi"   "使用这台机器会给你护甲。\n第一次购买时价格提升双倍"
 	}
 	
-	"Buildable AmmoBox Desc"
+	"Buildable AmmoBox Desc" //It doesn't seem to work
 	{
 		"en"	"usage of this machine will give you Ammo for your current holding weapon.\nFirst buy is double the price."
 		"ru"	"Использование этой машины даст вам патроны для вашего текущего оружия.\nПервая покупка стоит вдвое дороже."
