@@ -43,6 +43,8 @@ static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 //#define BARRICADE_MODEL "models/props_c17/concrete_barrier001a.mdl"
 #define BARRICADE_MODEL "models/props_gameplay/sign_barricade001a.mdl"
 
+#define ELEVATOR_MODEL "models/props_mvm/mvm_museum_pedestal.mdl"
+
 
 #define BUILDINGCOLLISIONNUMBER	27
 
@@ -143,6 +145,7 @@ void Building_MapStart()
 	PrecacheModel(HEALING_STATION_MODEL);
 	PrecacheModel(VILLAGE_MODEL);
 	PrecacheModel(BARRICADE_MODEL);
+	PrecacheModel(ELEVATOR_MODEL);
 	
 	PrecacheSound("items/powerup_pickup_uber.wav");
 	PrecacheSound("player/mannpower_invulnerable.wav");
@@ -624,7 +627,7 @@ public bool Building_DispenserElevator(int client, int entity)
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_elevator");
 	SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-	SetEntityRenderColor(entity, 255, 255, 255, 60);
+	SetEntityRenderColor(entity, 255, 255, 255, 150);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
@@ -1063,7 +1066,7 @@ public Action Building_Is_Elevator_There(Handle dashHud, DataPack pack)
 		if(IsValidClient(GetEntPropEnt(entity, Prop_Send, "m_hBuilder")))
 		{
 			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(entity, 255, 255, 255, 60);
+			SetEntityRenderColor(entity, 255, 255, 255, 150);
 			SetEntityCollisionGroup(entity, BUILDINGCOLLISIONNUMBER);
 		}
 		else
@@ -1072,7 +1075,7 @@ public Action Building_Is_Elevator_There(Handle dashHud, DataPack pack)
 			int red = 0;
 			int green = 0;
 			int blue = 0;
-			SetEntityRenderColor(entity, red, green, blue, 60);
+			SetEntityRenderColor(entity, red, green, blue, 150);
 		}
 	}
 	else
@@ -5206,6 +5209,13 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 
 	switch(i_WhatBuilding[Building_Index])
 	{
+		case BuildingElevator:
+		{
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[Building_Index] = true;	
+			SetEntityModel(Building_Index, ELEVATOR_MODEL);
+			SetEntPropFloat(Building_Index, Prop_Send, "m_flModelScale", 1.15); //Abit bigger!
+		}
 		case BuildingBarricade:
 		{
 			npc.bBuildingIsPlaced = true;
@@ -5217,7 +5227,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 			npc.bBuildingIsPlaced = true;
 			Building_Constructed[Building_Index] = true;
 			SetEntityModel(Building_Index, CUSTOM_SENTRYGUN_MODEL);
-		
+			/*
 			static const float minbounds[3] = {-15.0, -15.0, 0.0};
 			static const float maxbounds[3] = {15.0, 15.0, 40.0};
 			SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
@@ -5225,12 +5235,14 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 			SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
 			SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 			npc.UpdateCollisionBox();	
+			*/
 
 		}
 		case BuildingMortar:
 		{
 			npc.bBuildingIsPlaced = true;
 			Building_Constructed[Building_Index] = true;
+			/*
 			SetEntityModel(Building_Index, CUSTOM_SENTRYGUN_MODEL);
 		
 			static const float minbounds[3] = {-15.0, -15.0, 0.0};
@@ -5241,6 +5253,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 			SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 			
 			npc.UpdateCollisionBox();	
+			*/
 
 		}
 		case BuildingHealingStation:
