@@ -1018,8 +1018,8 @@
 	
 	"Buildable Elevation Desc"
 	{
-		"en"	"Each time you buy it, its cost Increases by 100, cant go above 5000 cost.\nThis is primarily there to lift up your sentry to it can attack better, use with caution.\nHas VERY low health."
-		"ru"	"Каждый раз, когда вы покупаете его, его стоимость увеличивается на 100, и не может превышать 5000.\nЭто в основном для того, чтобы поднять вашу турель, чтобы она могла лучше атаковать, используйте с осторожностью.\nОЧЕНЬ мало здоровья."
+		"en"	"This is primarily there to lift up your sentry to it can attack better, use with caution.\nHas VERY low health."
+	//	"ru"	"Каждый раз, когда вы покупаете его, его стоимость увеличивается на 100, и не может превышать 5000.\nЭто в основном для того, чтобы поднять вашу турель, чтобы она могла лучше атаковать, используйте с осторожностью.\nОЧЕНЬ мало здоровья."
 	}
 	
 	"Buildable Barricade Desc"

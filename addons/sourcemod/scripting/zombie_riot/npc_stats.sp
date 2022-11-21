@@ -7991,7 +7991,7 @@ public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask
 
 //TELEPORT IS SAFE? FROM SARYSA BUT EDITED FOR NPCS!
 
-public bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/)
+bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/)
 {
 	float sizeMultiplier = 1.0; //We do not want to teleport giants, yet.
 	
@@ -8076,6 +8076,25 @@ public bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*
 	
 	if (!IsSpotSafe(npc, testPos, sizeMultiplier))
 		return false;
+
+	Handle trace; 
+
+	int Traced_Target;
+			
+	trace = TR_TraceRayFilterEx(startPos, testPos, MASK_NPCSOLID, RayType_EndPoint, TraceRayDontHitPlayersOrEntityCombat, npc);
+
+	Traced_Target = TR_GetEntityIndex(trace);
+
+	delete trace;
+					
+	//Can i see This enemy, is something in the way of us?
+	//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+
+	if(Traced_Target != -1) //We wanna make sure that whever we teleport, nothing has collided with us. (Mainly world)
+	{	
+		return false; //We are unable to perfom this task. Abort mission
+	}
+	//Trace found nothing has collided! Horray! Perform our teleport.
 
 	TeleportEntity(npc, testPos, NULL_VECTOR, NULL_VECTOR);
 	return true;
