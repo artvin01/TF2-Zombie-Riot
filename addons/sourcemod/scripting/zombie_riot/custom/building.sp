@@ -5242,9 +5242,9 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 		{
 			npc.bBuildingIsPlaced = true;
 			Building_Constructed[Building_Index] = true;
-			/*
+			
 			SetEntityModel(Building_Index, CUSTOM_SENTRYGUN_MODEL);
-		
+			/*
 			static const float minbounds[3] = {-15.0, -15.0, 0.0};
 			static const float maxbounds[3] = {15.0, 15.0, 80.0};
 			SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
