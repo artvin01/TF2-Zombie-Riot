@@ -303,8 +303,6 @@ int Armour_Level_Current[MAXTF2PLAYERS];
 float Increaced_Overall_damage_Low[MAXENTITIES];
 float Resistance_Overall_Low[MAXENTITIES];
 
-bool Moved_Building[MAXENTITIES] = {false,... };
-float Get_old_pos_back[MAXENTITIES][3];
 //This is for going through things via lag comp or other reasons to teleport things away.
 //bool Do_Not_Regen_Mana[MAXTF2PLAYERS];
 
@@ -568,6 +566,7 @@ bool b_Dont_Move_Allied_Npc[MAXENTITIES];
 int b_BoundingBoxVariant[MAXENTITIES];
 bool b_IsAloneOnServer = false;
 bool b_ThisEntityIgnored[MAXENTITIES];
+bool b_ThisEntityIgnoredEntirelyFromAllCollisions[MAXENTITIES];
 bool b_ThisEntityIsAProjectileForUpdateContraints[MAXENTITIES];
 
 bool b_IsPlayerABot[MAXPLAYERS+1];
@@ -3491,7 +3490,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_SentryIsCustom[entity] = false;
 		b_Is_Npc_Projectile[entity] = false;
 		b_Is_Player_Projectile[entity] = false;
-		Moved_Building[entity] = false;
 		b_Is_Blue_Npc[entity] = false;
 		EntityFuncAttack[entity] = INVALID_FUNCTION;
 		EntityFuncAttack2[entity] = INVALID_FUNCTION;
@@ -3693,7 +3691,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "obj_"))
 		{
 			npc.bCantCollidieAlly = true;
-			
 			i_IsABuilding[entity] = true;
 			for (int i = 0; i < ZR_MAX_BUILDINGS; i++)
 			{

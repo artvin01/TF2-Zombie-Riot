@@ -875,11 +875,13 @@ float f_TraceAttackWasTriggeredSameFrame[MAXENTITIES];
 
 public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
 {
+	PrintToChatAll("ow NPC_TraceAttack");
 	if(attacker < 1 || attacker > MaxClients || victim == attacker)
 		return Plugin_Continue;
 		
 	if(inflictor < 1 || inflictor > MaxClients)
 		return Plugin_Continue;
+
 	/*
 	if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 	{
