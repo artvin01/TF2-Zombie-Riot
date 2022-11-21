@@ -229,9 +229,38 @@
 				"linux"		"@_ZN23NextBotGroundLocomotion22UpdateGroundConstraintEv"
 			}
 			
+			// string "aNextbotgroundl_3" 'NextBotGroundLocomotion::ResolveCollision'
+			"NextBotGroundLocomotion::ResolveCollision" 
+			{
+				"linux" 	""
+				"windows" 	"\x53\x8B\xDC\x83\xEC\x08\x83\xE4\xF0\x83\xC4\x04\x55\x8B\x6B\x04\x89\x6C\x24\x04\x8B\xEC\x81\xEC\x98\x01\x00\x00\xA1\x2A\x2A\x2A\x2A"
+			}
+			
 		}
 		"Functions"
 		{
+			"NextBotGroundLocomotion::ResolveCollision"
+			{
+				"signature"	"NextBotGroundLocomotion::ResolveCollision"
+				"callconv"	"thiscall"
+				"return"	"vector"
+				"this"		"address"
+				"arguments"
+				{
+					"from"
+					{
+						"type"	"vectorptr"
+					}
+					"to"
+					{
+						"type"	"vectorptr"
+					}
+					"recursionLimit"
+					{
+						"type"	"int"
+					}
+				}
+			}
 			"CTFBaseBoss::OnTakeDamage_Alive_SIGNATURE"
 			{
 				"signature"	"CTFBaseBoss::OnTakeDamage_Alive_SIGNATURE"

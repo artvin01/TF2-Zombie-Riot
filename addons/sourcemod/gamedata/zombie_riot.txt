@@ -302,12 +302,12 @@
 				}
 			}
 			"CTFBaseBoss::BossThink"
-           		{
-              		 	"signature"    	"CTFBaseBoss::BossThink"
-             	   		"callconv"    	"thiscall"
-             	  		"return"    	"void"
-             	 		"this"        	"entity"
-           		}
+           	{
+              	 	"signature"    	"CTFBaseBoss::BossThink"
+               		"callconv"    	"thiscall"
+               		"return"    	"void"
+              		"this"        	"entity"
+           	}
 			"CObjectSentrygun::Fire"
 			{
 				"signature"	"CObjectSentrygun::Fire"
