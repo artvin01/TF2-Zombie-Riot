@@ -587,7 +587,18 @@
 		"ru"	"Оружие теперь делает, чёрт возьми всё, что ему вздумается."
 		"chi"   "武器现在可以发射更多类型"
 	}
-	
+	"Riot Gun Desc"
+	{
+		"en"	"A gun that comes with a riot shield for major anti-range damage."
+	}
+	"Riot Gun Pap 1"
+	{
+		"en"	"Boosts resistance, including melee. Weapon fires 3 bullets at once."
+	}
+	"Riot Gun Pap 2"
+	{
+		"en"	"Boosts resistance even further but heavily weakens your switch speed."
+	}
 	"Buff Banner Desc"
 	{
 		"en"	"Give minicrits to everyone after dealing enough damage"
