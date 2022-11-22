@@ -627,7 +627,7 @@ void Waves_Progress()
 			if(wave.EnemyData.Does_Not_Scale == 0)
 			{
 				//
-				if(Is_a_boss > 0)
+				if(Is_a_boss == 0)
 				{
 					count = RoundToNearest(float(count)*multi);
 				}
