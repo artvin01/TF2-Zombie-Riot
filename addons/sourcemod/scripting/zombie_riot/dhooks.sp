@@ -522,7 +522,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		{
 			return false;
 		}
-		else if(b_ThisEntityIsAProjectileForUpdateContraints[ent1])
+		else if(b_ThisEntityIsAProjectileForUpdateContraints[ent2])
 		{
 			return false;
 		}
@@ -677,7 +677,6 @@ public void StartLagCompResetValues()
 	b_LagCompNPC_AwayEnemies = false;
 	b_LagCompNPC_ExtendBoundingBox = false;
 	b_LagCompNPC_BlockInteral = false;
-	
 }
 //if you find a way thats better to ignore fellow dispensers then tell me..!
 public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
@@ -703,7 +702,7 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		}
 		if(b_Dont_Move_Allied_Npc[active_weapon])
 		{
-			Dont_Move_Allied_Npc = true;
+			Dont_Move_Allied_Npc = true; //We presume this includes players too.
 		}
 		if(b_Only_Compensate_CollisionBox[active_weapon]) //This is mostly unused, but keep it for mediguns if needed. Otherwise kinda useless.
 		{
@@ -741,9 +740,12 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		StartLagCompensation_Base_Boss(Compensator, false);
 	#endif
 	
-	if(b_LagCompNPC_BlockInteral)
+	if(b_LagCompNPC_BlockInteral || !Dont_Move_Allied_Npc)
 	{
-		TF2_SetPlayerClass(Compensator, TFClass_Scout, false, false); //Make sure they arent a medic during this! Reason: Mediguns lag comping, need both to be a medic and have a medigun
+		if(Dont_Move_Allied_Npc)
+		{
+			TF2_SetPlayerClass(Compensator, TFClass_Scout, false, false); //Make sure they arent a medic during this! Reason: Mediguns lag comping, need both to be a medic and have a medigun
+		}
 		LagCompMovePlayersExceptYou(Compensator);
 		
 	//	return MRES_Supercede;
@@ -764,7 +766,6 @@ public MRESReturn StartLagCompensationPost(Address manager, DHookParam param)
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
 		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Red)); //Hardcode to red as there will be no blue players.
-		b_LagCompAlliedPlayers = false;
 		return MRES_Ignored;
 	} 
 	return MRES_Ignored;
@@ -887,7 +888,6 @@ public void FinishLagCompMoveBack()
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
 		if (IsValidEntity(entity) && entity != 0)
 		{
-			SetEntityCollisionGroup(entity, 27); //BUILDINGCOLLISIONNUMBER
 			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
 		}
 	}
@@ -941,7 +941,7 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 //	FinishLagCompensationResetValues();
 	
 	Move_Players_Teutons = 0;
-	if(b_LagCompNPC_BlockInteral)
+	if(b_LagCompNPC_BlockInteral || !Dont_Move_Allied_Npc)
 	{
 		LagCompMovePlayersExceptYouBack();
 		Move_Players = 0;
@@ -1707,9 +1707,9 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 */
 public MRESReturn FX_FireBullets_Pre(DHookParam hParams)
 {
-	PrintToChatAll("shot");
-    int Weapon = DHookGetParam(hParams, 1); // I'm sorry methodmap Gods, but the server I uploaded it on doesn't like it so i have to do this :pepega:
-    int Client = DHookGetParam(hParams, 2);
+//	PrintToChatAll("shot");
+ //   int Weapon = DHookGetParam(hParams, 1); // I'm sorry methodmap Gods, but the server I uploaded it on doesn't like it so i have to do this :pepega:
+ //   int Client = DHookGetParam(hParams, 2);
 
 	//Future use for special guns ?
 
