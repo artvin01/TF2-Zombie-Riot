@@ -2757,7 +2757,7 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("465", 10.0);											// x10 faster diepsner build
 	map.SetValue("464", 10.0);											// x10 faster sentry build
 	map.SetValue("740", 0.0);											// No Healing from mediguns, allow healing from pickups
-	map.SetValue("397", 50.0);											// Ignore ally with shooting
+//	map.SetValue("397", 50.0);											// Ignore ally with shooting
 	map.SetValue("169", 0.0);											// Complete sentrygun Immunity
 //	map.SetValue("49", 0.0);											// Completly disable double jump as we dont even use this, client prediction babyyyy!!!
 																		//... doesnt work on player, must be on weapon...

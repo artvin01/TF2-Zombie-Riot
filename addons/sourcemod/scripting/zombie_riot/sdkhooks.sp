@@ -507,7 +507,7 @@ public void OnPostThink(int client)
 				}	
 				
 				if(cooldown_time < 0.0)
-				{
+				{	
 					IsReady = true;
 					cooldown_time = 0.0;
 				}
