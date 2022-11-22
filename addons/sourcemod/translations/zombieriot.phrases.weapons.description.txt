@@ -358,7 +358,7 @@
 	{
 		"en"		"Cripples targets heavily, making them slower and take 35% more damage."
 		"ru"		"Сильно калечит цели, делая их медленнее и нанося на 35% больше урона."
-		"chi"       "严重致残目标，使他们变慢并受到35%的伤害。"
+		"chi"       "严重致残目标，使他们变慢并受到35%%的伤害。"
 	}
 	"Elite Sniper Pap 5"
 	{
@@ -520,7 +520,7 @@
 	{
 		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing target 25% dmg and resistance during heal."
 		"ru"	"Сверхлечение постоянное, лечит союзников и может использовать убер-заряд на них. Лечение союзников лечит и вас. Даёт и вам, и пациенту 25% доп. урона и сопротивления во время лечения."
-		"chi"   "可以过度治疗，治疗队友可以让他们血量超过额定值。治疗队友的同时也会治疗你。在治疗过程中增加你和治疗目标25%的伤害和抗性。"
+		"chi"   "可以过度治疗，治疗队友可以让他们血量超过额定值。治疗队友的同时也会治疗你。在治疗过程中增加你和治疗目标25%%的伤害和抗性。"
 	}
 	
 	"Battle Medigun Desc"
@@ -587,7 +587,18 @@
 		"ru"	"Оружие теперь делает, чёрт возьми всё, что ему вздумается."
 		"chi"   "武器现在可以发射更多类型"
 	}
-	
+	"Riot Gun Desc"
+	{
+		"en"	"A gun that comes with a riot shield for major anti-range damage."
+	}
+	"Riot Gun Pap 1"
+	{
+		"en"	"Boosts resistance, including melee. Weapon fires 3 bullets at once."
+	}
+	"Riot Gun Pap 2"
+	{
+		"en"	"Boosts resistance even further but heavily weakens your switch speed."
+	}
 	"Buff Banner Desc"
 	{
 		"en"	"Give minicrits to everyone after dealing enough damage"
@@ -643,7 +654,7 @@
 	{
 		"en"	"Get 10% uber per melee hit"
 		"ru"	"Получайте 10% убер-заряда за каждый удар в ближнем бою."
-		"chi"   "每次近战攻击将获得10%的超能力"
+		"chi"   "每次近战攻击将获得10%%的超能力"
 	}
 	
 	"Hammer Pap 1"
@@ -669,7 +680,7 @@
 	{
 		"en"	"You deal 50% more damage to burning enemies."
 		"ru"	"Вы наносите на 50% больше урона горящим врагам."
-		"chi"   "你对燃烧的敌人造成的伤害提高50%。"
+		"chi"   "你对燃烧的敌人造成的伤害提高50%%。"
 	}
 	"Fire Axe Pap 1"
 	{
@@ -745,7 +756,7 @@
 	{
 		"en"	"Causes bleed and 5% extra melee resistance"
 		"ru"	"Вызывает кровотечение и 5% дополнительного сопротивления ближнему бою."
-		"chi"   "造成流血和5%额外近战抗性"
+		"chi"   "造成流血和5%%额外近战抗性"
 	}
 	"Longsword Pap 1"
 	{
@@ -763,6 +774,7 @@
 	{
 		"en"	"Increased damage and attackspeed, but you move 10% slower."
 		"ru"	"Увеличенный урон и скорость атаки, но вы двигаетесь на 10% медленнее."
+		"chi"   "增加伤害和攻击速度，但移动速度降低10%%。"
 	}
 	
 	"Speed Fists Of Speed Desc"
@@ -781,118 +793,135 @@
 	{
 		"en"	"Can backstab, Aoe Damage and Has a Rage ability with a Cooldown 1-2mins"
 		"ru"	"Может нанести удар в спину, наносит урон по области и обладает способностью ярости с временем восстановления 1-2 мин."
+		"chi"   "背刺可以造成Aoe伤害，有一个愤怒技能，冷却1-2分钟"
 	}
 	"Zerofuse's Knife Pap 1"
 	{
 		"en"	"Increased damage and attackspeed, You can rage into wrath or defensive form."
 		"ru"	"Увеличенный урон и скорость атаки, вы можете впасть в ярость или защитную форму."
+		"chi"   "增加伤害和攻击速度，你可以暴怒为愤怒或防御形态。"
 	}
 	"Zerofuse's Knife Pap 2"
 	{
 		"en"	"Increased damage, You can now only rage into wrath."
 		"ru"	"Увеличенный урон, Теперь вы можете бушевать только в состоянии ярости."
+		"chi"   "增加伤害，你现在只能拥有愤怒技能"
 	}
 	
 	"Medusa Teslar Stick Desc"
 	{
 		"en"	"Causes bleed, 5% extra melee resistance. Causes debuff on enemy which slows them down and makes them take more damage"
 		"ru"	"Вызывает кровотечение, 5% дополнительного сопротивления в ближнем бою. Накладывает на врага эффект, который замедляет его и заставляет получать больше урона."
+		"chi"   "对敌人造成流血，额外获得5%%近战抗性。对敌人造成负面效果，使敌人减速并受到更多伤害"
 	}
 	"Medusa Teslar Stick Pap 1"
 	{
 		"en"	"Increased damage and attackspeed, Debuff is massively stronger."
 		"ru"	"Увеличенный урон и скорость атаки, эффект значительно сильнее."
+		"chi"   "增加伤害和攻击速度，负面效果大大增强。"
 	}
 	
 	"Fists Of Kahmlstein Desc"
 	{
 		"en"	"Fists sent from the gods forged by the destroyer of galaxies."
 		"ru"	"Кулаки, посланные богами, выкованные разрушителем галактик."
+		"chi"   "众神送来的拳头由星系的毁灭者锻造而成。"
 	}
 	"Fists Of Kahmlstein Pap 1"
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度。"
+		"chi"   "增加伤害和攻击速度。"
 	}
 	
 	"Bad Wand Desc"
 	{
 		"en"	"Consumes mana with each shot. M2 Gives extra attackspeed for a short time."
 		"ru"	"Расходует ману с каждым выстрелом. М2 - даёт дополнительную скорость атаки на короткое время."
+		"chi"   "每次射击消耗法力值。在短时间内增加额外的攻击速度。"
 	}
 	"Bad Wand Pap 1"
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度。"
+		"chi"   "增加伤害和攻击速度。"
 	}
 	"Bad Wand Pap 2"
 	{
 		"en"	"Increased damage and attackspeed and projectile becomes blue"
 		"ru"	"Увеличенный урон и скорость атаки, а снаряд становится синим."
+		"chi"   "增加伤害和攻击速度，炮弹变成蓝色"
 	}
 	
 	"Fire Wand Desc"
 	{
 		"en"	"Consumes mana with each shot. M2 Shoots a more powerful Fireball."
 		"ru"	"Расходует ману при каждом выстреле. М2 - стреляет более мощным огненным шаром."
+		"chi"   "每次射击消耗法力值。M2发射更强大的火球。"
 	}
 	"Fire Wand Pap 1"
 	{
 		"en"	"Increased damage, fires 5 fireballs in quick succession"
 		"ru"	"Увеличенный урон, выпускает 5 огненных шаров в быстрой последовательности."
+		"chi"   "增加伤害，快速连续发射5个火球"
 	}
 	
 	"Cryo Staff Desc"
 	{
 		"en"	"M1 sprays an icy mist like a flamethrower, and will freeze enemies at a certain damage threshold. M2 triggers a small shockwave at your location, which deals massively increased damage to frozen zombies."
 		"ru"	"M1 - распыляет ледяной туман, подобно огнемёту, и замораживает врагов при определённом пороге урона. M2 - вызывает небольшую ударную волну в месте вашего нахождения, которая наносит замороженным зомби значительно больший урон."
+		"chi"   "M1喷射像火焰喷射器一样的冰雾，并将冻结敌人在一定的伤害阈值。M2在你的位置触发一个小冲击波，对冰冻僵尸造成大量的伤害。"
 	}
 	"Cryo Staff Pap 1"
 	{
 		"en"	"Increased damage and attackspeed, Debuff is stronger"
 		"ru"	"Увеличенный урон и скорость атаки, эффект сильнее."
+		"chi"   "增加伤害和攻击速度，负面效果大大增强。"
 	}
 	"Cryo Staff Pap 2"
 	{
 		"en"	"Increased damage and attackspeed, Debuff is stronger"
 		"ru"	"Увеличенный урон и скорость атаки, эффект сильнее."
+		"chi"   "增加伤害和攻击速度，负面效果大大增强。"
 	}
 	
 	"Lightning Staff Desc"
 	{
 		"en"	"Consumes mana with each shot. M2 Summons a very powerful lighting strike."
 		"ru"	"Потребляет ману с каждым выстрелом. M2 - вызывает очень мощный молниевый удар."
+		"chi"   "每次射击消耗法力值。M2召唤一个非常强大的闪电打击"
 	}
 	"Lightning Staff Pap 1"
 	{
 		"en"	"Massively Increased damage and attackspeed, M2 Gains a delay but is way more potent."
 		"ru"	"Значительно увеличенный урон и скорость атаки, M2 имеет задержку, но гораздо мощнее."
+		"chi"   "大量增加伤害和攻击速度，M2冷却变长，但伤害更高。"
 	}
 	
 	"Beam Wand Desc"
 	{
 		"en"	"Hold M1 for a constant beam to eviscerate your enemies. M2: Magic overdrive, more mana=stronger but higher CD."
 		"ru"	"Удерживайте М1 для постоянного луча уничтожения. М2 - усиление магии, больше маны = сильнее, но выше восстановление."
+		"chi"   "按住M1发出一个恒定的光束来清除你的敌人。M2:魔法超速。更多的法力值=更强更快的CD"
 	}
 	"Beam Wand Pap 1"
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度。"
+		"chi"   "增加伤害和攻击速度。"
 	}
 	"Beam Wand Pap 2"
 	{
 		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度。"
+		"chi"   "增加伤害和攻击速度。"
 	}
 	
 	"Atomic Reconstructor Desc"
 	{
 		"en"	"Consumes mana with each shot, has 2 main attack, Use both in turns for maximum damage."
 		"ru"	"Потребляет ману с каждым выстрелом, имеет 2 основные атаки, используйте обе по очереди для максимального урона."
+		"chi"   "每次射击消耗法力值，有2种攻击模式，轮流使用两种攻击获得最大伤害。"
 	}
 	
 	"Necromancy Staff Desc"
@@ -961,509 +990,593 @@
 	{
 		"en"	"The more senty damage you have, the more damage this weapon does.\nWeapon upgrades such as damage will not affect this." 
 		"ru"	"Чем больше у вашей турели урона, тем больше урона наносит это оружие.\nУлучшения оружия, такие как урон, не влияют на это."
+		"chi"   "你的自动哨兵伤害越大，这个武器的伤害就越大。武器升级不会带来改变"
 	}
 	
 	"Aresenal's Tripmine Layer Desc"
 	{
 		"en"	"The more senty damage you have, the more damage this weapon does.\nWeapon upgrades such as damage will not affect this." 
 		"ru"	"Чем больше у вашей турели урона, тем больше урона наносит это оружие.\nУлучшения оружия, такие как урон, не влияют на это." 
+		"chi"   "你的自动哨兵伤害越大，这个武器的伤害就越大。武器升级不会带来改变"
 	}
 	
 	"Heavy Charge Builder Laser Desc"
 	{
 		"en"	"Shoot a powerfull laser that scales with building damage."
 		"ru"	"Стреляйте мощным лазером, у которого увеличивается урон вместе с уроном по постройкам."
+		"chi"   "发射威力强大的激光，但小心会破坏建筑物。"
 	}
 	
 	"Wrangler Desc"
 	{
 		"en"	"While out, sentry will attack 10% faster and deal 35% more damage, but you have to control it yourself."
 		"ru"	"В состоянии ручного управления турель будет атаковать на 10% быстрее и наносить на 35% больше урона, но вам придётся контролировать её самостоятельно."
+		"chi"   "在使用期间，哨兵攻击速度提高10%%，造成的伤害提高35%%"
 	}
 	"Wrangler Pap 1"
 	{
 		"en"	"buffed sentry attackspeed and damage when out."
 		"ru"	"Увеличены скорость атаки и урон турели во время ручного управления."
+		"chi"   "增强了哨兵的攻击速度和伤害。"
 	}
 	
 	"Nail Gun Desc"
 	{
 		"en"	"Builder starter weapon so they can actually deal damage."
 		"ru"	"Стартовое оружие строителя, чтобы они могли наносить урон."
+		"chi"   "工程师的初始武器"
 	}
 	
 	"Mechanical Medigun Desc"
 	{
 		"en"	"Buffs and heals buildings. Uber amplifies the Buffs by a lot. Requires Handling books."
 		"ru"	"Усиливает и лечит постройки. Убер увеличивает эффекты от усиления на много. Требуются книги по ремонту."
+		"chi"   "可以给建筑添加Buff和治疗。Uber将可以提升建筑属性"
 	}
 	
 	"Mounter Desc"
 	{
 		"en"	"Mount a building to your back by pressing m2 on a building, demount by pressing m2 again with this.\nPress R in the sky to use your mounted building."
 		"ru"	"Закрепите постройку на спине, нажав М2 на постройке, снимите, нажав М2 ещё раз.\nНажмите R в небе, чтобы использовать закреплённую постройку."
+		"chi"   "通过对建筑按m2将建筑安装在你的背上，再次按下m2将建筑放下。\n可以对背起建筑的玩家按下R使用"
 	}
 	
 	"Wrench Desc"
 	{
 		"en"	"Repairs buildings and sentrys, have in hand to pickup buildings, works with any wrench."
 		"ru"	"Ремонтирует постройки и турели, имеет возможность поднятия построек, работает с любым гаечным ключом."
+		"chi"   "修理建筑物和步哨，可以用扳手搬运任何建筑物"
 	}
 	
 	"Texan business Desc"
 	{
 		"en"	"A melee Wrench that scales with builder damage.\nM2 to Lunge and for the next attack to deal 2x the damage.\nYou need to have enough upgrades for this to work."
 		"ru"	"Гаечный ключ ближнего боя, у которого увеличивается урон с уроном строителя.\nM2 для броска и следующей атаки, наносящей в два раза больше урона.\nВам нужно иметь достаточно улучшений, чтобы это сработало."
+		"chi"   "一个近战扳手，随建造者伤害缩放。\nM2为突刺，下一次攻击将造成2倍伤害。你需要足够的金属才能让它工作。"
 	}
 	
 	"Buildable Elevation Desc"
 	{
 		"en"	"This is primarily there to lift up your sentry to it can attack better, use with caution.\nHas VERY low health."
 	//	"ru"	"Каждый раз, когда вы покупаете его, его стоимость увеличивается на 100, и не может превышать 5000.\nЭто в основном для того, чтобы поднять вашу турель, чтобы она могла лучше атаковать, используйте с осторожностью.\nОЧЕНЬ мало здоровья."
+	    "chi"   "这主要是为了提升你的哨兵，让它可以更好地攻击，慎用。这个路障的生命值极低。"
 	}
 	
 	"Buildable Barricade Desc"
 	{
 		"en"	"Each wave increases its cost, you may only have 2 barricades built at once."
 		"ru"	"Каждая волна увеличивает её стоимость, одновременно можно построить только 2 баррикады."
+		"chi"   "每一波都会增加它的价格，你最多只能建造2个路障。"
 	}
 	
 	"Buildable Armortable Desc"
 	{
 		"en"	"usage of this machine will give you Armour.\nFirst buy is double the price."
 		"ru"	"Использование этой машины даст вам броню.\nПервая покупка стоит вдвое дороже."
+		"chi"   "使用这台机器会给你护甲。\n第一次购买时价格提升双倍"
 	}
 	
-	"Buildable Armortable Desc"
+	"Buildable Ammobox Desc"
 	{
 		"en"	"usage of this machine will give you Ammo for your current holding weapon.\nFirst buy is double the price."
 		"ru"	"Использование этой машины даст вам патроны для вашего текущего оружия.\nПервая покупка стоит вдвое дороже."
+		"chi"   "使用这台机器会给你目前所持的武器补充弹药。\n第一次购买时价格提升双倍"
 	}
 	
 	"Buildable Perk Machine Desc"
 	{
 		"en"	"usage of this machine will give you an extra perk that vanishes on death/downed.\nFirst buy is double the price."
 		"ru"	"Использование этой машины даст вам дополнительный перк, который исчезает при смерти/выведении из строя.\nПервая покупка стоит вдвое дороже."
+		"chi"   "使用这台机器可以选择一个Buff,但这会在你死亡后失效。\n第一次购买时价格提升双倍"
 	}
 	
 	"Buildable Pack-a-Punch Desc"
 	{
 		"en"	"usage of this machine will give you a boost to your holding weapon with a credit requirement.\nFirst buy is double the price."
 		"ru"	"Использование этой машины даст вам усиление вашему оружию за кредиты.\nПервая покупка стоит вдвое дороже."
+		"chi"   "使用这台机器可以升级你的武器\n第一次购买时价格提升双倍"
 	}
 	
 	"Buildable Sentry Desc"
 	{
 		"en"	"Infinite uses with cooldown."
 		"ru"	"Бесконечное использование с перезарядкой."
+		"chi"   "无限次使用。"
 	}
 	
 	"Buildable Mortar Desc"
 	{
 		"en"	"Press MEDIC to select a place for the mortar to unleash a shell onto. Infinite uses with cooldown."
 		"ru"	"Нажмите «МЕДИК!», чтобы выбрать место, на которое мортира выпустит снаряд. Используется бесконечно с перезарядкой."
+		"chi"   "按E选择迫击炮发射炮弹的地点。无限次使用。"
 	}
 	
 	"Buildable Railgun Desc"
 	{
 		"en"	"Use it with MEDIC to make it shoot a giant laser. Infinite uses with cooldown."
 		"ru"	"Нажмите «МЕДИК!», чтобы она стреляла гигантским лазером. Используется бесконечно с перезарядкой."
+		"chi"   "按E发射一个强力的激光炮。无限次使用。"
 	}
 	
 	"Buildable Healing Station Desc"
 	{
 		"en"	"Heals for 30 Health, its rather weak but good if you need tiny heals early on and cant affort a secondary slot for the medikit."
 		"ru"	"Лечит 30 ед. здоровья, довольно слабо, но хорошо, если вам нужны крошечные лечения на ранних стадиях и вы не можете позволить себе второй слот для аптечки."
+		"chi"   "治疗30点生命值，这是相当少的，但如果你需要早期的小治疗和买不起副武器的医疗包就很好。"
 	}
 	
 	"Buildable Village Desc"
 	{
 		"en"	"Provides various buffs to teammates and can be upgraded for more buffs.\nBuffs bought stay regardless if broken and rebuild."
 		"ru"	"Даёт различные усиления союзникам и может быть улучшена для получения дополнительных усилений.\nКупленные усиления сохраняются, если её сломать и восстановить."
-		"chi"   "为队友提供各种Buff，可以升级获得更多的buff"
+		"chi"   "为队友提供各种Buff，可以升级获得更多的buff\n建筑坏了后Buff将消失"
 	}
 	
 	"Cannibalism Desc"
 	{
 		"en"	"+7 HP on melee kill, You can now eat metal and flesh gibs to regain health.\nHealth Regained depends on your health on kill attribute."
 		"ru"	"+7 ед. здоровья при убийстве в ближнем бою, теперь вы можете есть металлические и мясные останки от врагов для восстановления здоровья.\nВосстановление здоровья зависит от вашего атрибута здоровья при убийстве."
+		"chi"   "近战击杀+7 HP，你现在可以吃金属和肉来恢复生命。恢复的生命值取决于击杀目标上的生命值"
 	}
 	
 	"Copium Desc"
 	{
 		"en"	"25% melee resistance with melee equipped"
 		"ru"	"25% сопр. ближнему бою при использ. оружия ближнего боя."
+		"chi"   "使用近战武器时+25%%的近战抵抗"
 	}
 	
 	"Cocain Desc"
 	{
 		"en"	"15% more melee attack speed"
 		"ru"	"На 15% больше скорость атаки в ближнем бою."
+		"chi"   "近战攻击速度提高15%%"
 	}
 	
 	"Steroids Desc"
 	{
 		"en"	"30% more melee damage, +4 HP on kill and +50 HP, +5% melee resistance with melee equipped"
 		"ru"	"На 30% больше урона в ближнем бою, +4 ед. здоровья при убийстве и +50 ед. здоровья, +5% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加30%%的近战伤害，杀敌后+4点生命，生命值提升50点，使用近战武器时+5%%的近战抗性"
 	}
 	
 	"LSD Desc"
 	{
 		"en"	"1.5x increased Melee Damage, +5 HP on kill and +100 HP, +5% melee resistance with melee equipped"
 		"ru"	"1,5-кратное увеличение урона в ближнем бою, +5 ед. здоровья при убийстве и +100 ед. здоровья, +5% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加1.5倍的近战伤害，杀敌后+5点生命，生命值提升100点，使用近战武器时+5%%的近战抗性"
 	}
 	
 	"Crystal Meth Desc"
 	{
 		"en"	"1.5x increased Melee Damage, +8 HP on kill and +200 HP, +5% melee resistance with melee equipped"
 		"ru"	"1,5-кратное увеличение урона в ближнем бою, +8 ед. здоровья при убийстве и +200 ед. здоровья, +5% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加30%%的近战伤害，杀敌后+8点生命，生命值提升200点，使用近战武器时+5%%的近战抗性"
 	}
 	
 	"God's Might Desc"
 	{
 		"en"	"1.5x increased Melee Damage, +12 HP on kill and +300 HP, +7% melee resistance with melee equipped"
 		"ru"	"1,5-кратное увеличение урона в ближнем бою, +12 ед. здоровья при убийстве и +300 ед. здоровья, +7% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加1.5倍的近战伤害，杀敌后+12点生命，生命值提升300点，使用近战武器时+7%%的近战抗性"
 	}
 	
 	"Bob's Enhancer Desc"
 	{
 		"en"	"2x increased Melee Damage, +22 HP on kill and +600 HP, +7% melee resistance with melee equipped"
 		"ru"	"Двукратное увеличение урона в ближнем бою, +22 ед. здоровья при убийстве и +600 ед. здоровья, +7% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加2倍的近战伤害，杀敌后+22点生命，生命值提升600点，使用近战武器时+7%%的近战抗性"
 	}
 	
 	"Repair Handling book for dummies Desc"
 	{
 		"en"	"50% more repair Rate"
 		"ru"	"На 50% выше скорость починки."
+		"chi"   "修复建筑生命值提高50%%"
 	}
 	
 	"Construction Novice Desc"
 	{
 		"en"	"50% more building health and 2.0x sentry damage, 1 more support building added"
 		"ru"	"На 50% больше здоровья построек и двукратный урон турели, получена ещё 1 постройка поддержки."
+		"chi"   "增加50%%的建筑血量和2.0倍的哨兵伤害，增加1个可建筑数"
 	}
 	
 	"Ikea Repair Handling book Desc"
 	{
 		"en"	"2x Repair Rate"
 		"ru"	"Двукратная скорость починки."
+		"chi"   "修复建筑生命值提高2倍"
 	}
 	
 	"Engineering Repair Handling book Desc"
 	{
 		"en"	"2x Repair Rate"
 		"ru"	"Двукратная скорость починки."
+		"chi"   "修复建筑生命值提高2倍"
 	}
 	
 	"Construction Apprentice Desc"
 	{
 		"en"	"65% more building health and 2.0x Sentry damage, 2 more support buildings added"
 		"ru"	"На 65% больше здоровья построек и двукратный урон турели, получено ещё 2 постройки поддержки."
+		"chi"   "增加65%%的建筑血量和2.0倍的哨兵伤害，增加2个可建筑数"
 	}
 	
 	"Alien Repair Handling book Desc"
 	{
 		"en"	"2.5x Repair Rate"
 		"ru"	"2,5-кратная скорость починки."
+		"chi"   "修复建筑生命值提高2.5倍"
 	}
 	
 	"Construction Worker Desc"
 	{
 		"en"	"65% more building health, increased sentry dmg by 1.75x and increased attack speed by 1.5x, 3 more support buildings added"
 		"ru"	"На 65% больше здоровья построек, 1,75-кратное увеличение урона турели и 1,5-кратное увеличение скорости атаки, получено ещё 3 постройки поддержки."
+		"chi"   "增加65%%的建筑血量和1.75倍的哨兵伤害1.5倍攻击速度，增加3个可建筑数"
 	}
 	
 	"Cosmic Repair Handling book Desc"
 	{
 		"en"	"3x Repair Rate"
 		"ru"	"Трёхкратная скорость починки."
+		"chi"   "修复建筑生命值提高2倍"
 	}
 	
 	"Construction Expert Desc"
 	{
 		"en"	"1.7x more building health and 2.5x Sentry damage and increased attack speed by 1.5x, 4 more support buildings added"
 		"ru"	"1,7x-кратное увеличение здоровья построек и 2,5-кратное урона турели, а также 1,5-кратное увеличение скорости атаки, получено ещё 4 постройки поддержки."
+		"chi"   "增加1.7倍的建筑血量和2.5倍的哨兵伤害1.5倍攻击速度，增加4个可建筑数"
 	}
 	
 	"Construction Master Desc"
 	{
 		"en"	"1.4x more building health and 3.3x Sentry damage, 5 more support buildings added"
 		"ru"	"1,4-кратное увеличение здоровья построек и 3,3-кратное урона турели, получено ещё 5 построек поддержки."
+		"chi"   "增加1.4倍的建筑血量和3.3倍的哨兵伤害，增加5个可建筑数"
 	}
 	
 	"Construction Killer Desc"
 	{
 		"en"	"1.9x Sentry damage"
 		"ru"	"1,9-кратный урон турели."
+		"chi"   "增加1.9倍哨兵伤害"
 	}
 	
 	"Accurate Marksman Desc"
 	{
 		"en"	"20% more accuracy and 20% faster projectile speed"
 		"ru"	"На 20% выше точность и на 20% выше скорость снаряда."
+		"chi"   "射击精度提高20%%、射速提高20%%"
 	}
 	
 	"Ammo Coat Desc"
 	{
 		"en"	"40% increased Weapon Damage"
 		"ru"	"Увеличение урона от оружия на 40%"
+		"chi"   "提升40%%武器伤害"
 	}
 	
 	"Ammo Coat Elite Desc"
 	{
 		"en"	"60% increased Weapon Damage"
 		"ru"	"Увеличение урона от оружия на 60%"
+		"chi"   "提升60%%武器伤害"
 	}
 	
 	"Antidote Coated Bullets Desc"
 	{
 		"en"	"60% increased Weapon Damage"
 		"ru"	"Увеличение урона от оружия на 60%"
+		"chi"   "提升60%%武器伤害"
 	}
 	
 	"Anti-Matter Bullets Desc"
 	{
 		"en"	"65% increased Weapon Damage"
 		"ru"	"Увеличение урона от оружия на 65%"
+		"chi"   "提升65%%武器伤害"
 	}
 	
 	"Magical Haste Desc"
 	{
 		"en"	"25% Faster Mage Fire Speed and 50% Mana Regen and Max Mana"
 		"ru"	"На 25% быстрее скорость огненной магии и на 50% восстановления маны и максимальной маны"
+		"chi"   "提升25%%法杖攻速，50%%的法力回复和最大法力值"
 	}
 	
 	"Magical Book Desc"
 	{
 		"en"	"60% More Mage Damage"
 		"ru"	"На 60% больше урона от магии."
+		"chi"   "提升60%%法术伤害"
 	}
 	
 	"Hastening Potion Desc"
 	{
 		"en"	"15% Faster Mage Fire Speed and 50% Mana Regen and Max Mana, 50+ HP and 5% melee resistance"
 		"ru"	"На 15% быстрее скорость огненной магии и на 50% восстановления маны и максимальной маны, 50+ ед. здоровья и 5% сопр. ближнему бою"
+		"chi"   "提升15%%法杖攻速和50%%的法力回复、最大法力值，提高50生命值和获得5%%近战抗性"
 	}
 	
 	"The Bombinomicon Desc"
 	{
 		"en"	"65% More Mage Damage"
 		"ru"	"На 65% больше урона от магии."
+		"chi"   "提升60%%法术伤害"
 	}
 	
 	"Betweenlands Potion Desc"
 	{
 		"en"	"20% Faster Mage Fire Speed and 100% Mana Regen and Max Mana, 100+ HP and 5% melee resistance"
 		"ru"	"На 20% быстрее скорость огненной магии и на 100% восстановления маны и максимальной маны, 100+ ед. здоровья и 5% сопр. ближнему бою"
+		"chi"   "提升20%%法杖攻速和100%%的法力回复、最大法力值，提高100生命值和获得5%%近战抗性"
 	}
 	
 	"Master Sorcerer Desc"
 	{
 		"en"	"70% More Mage Damage"
 		"ru"	"На 70% больше урона от магии."
+		"chi"   "提升70%%法术伤害"
 	}
 	
 	"Bob's Magic Desc"
 	{
 		"en"	"75% More Mage Damage"
 		"ru"	"На 75% больше урона от магии."
+		"chi"   "提升75%%法术伤害"
 	}
 	
 	"Body armor Desc"
 	{
 		"en"	"Increased How much armour you get per use and max cap. +25 HP"
 		"ru"	"Увеличение количества получаемой брони за одно использование и максимальный предел. +25 ед. здоровья"
+		"chi"   "提高护甲值,+25生命值"
 	}
 	
 	"Kevlar Desc"
 	{
 		"en"	"Increased How much armour you get per use and max cap. +100 HP"
 		"ru"	"Увеличение количества получаемой брони за одно использование и максимальный предел. +100 ед. здоровья"
+		"chi"   "提高护甲值,+100生命值"
 	}
 	
 	"Heavy Vest Desc"
 	{
 		"en"	"Increased How much armour you get per use and max cap. +150 HP"
 		"ru"	"Увеличение количества получаемой брони за одно использование и максимальный предел. +150 ед. здоровья"
+		"chi"   "提高护甲值,+150生命值"
 	}
 	
 	"Jesus's Blessing Desc"
 	{
 		"en"	"+300 Health and life regen 1% of your max hp per second up to half your HP, during bleedout, you also will survive for longer."
 		"ru"	"+300 здоровья и регенерации здоровья 1% от вашего макс. здоровья в секунду до половины вашего здоровья, во время кровотечения вы также будете выживать дольше."
+		"chi"   "+300生命值和获得每秒1%%的生命回复，最多恢复一半的生命值。在倒地期间，你也会活得更长。"
 	}
 	
 	"Full Riot Gear Desc"
 	{
 		"en"	"Increased How much armour you get per use and max cap. +150 HP"
 		"ru"	"Увеличение количества получаемой брони за одно использование и максимальный предел. +150 ед. здоровья"
+		"chi"   "提高护甲值,+150生命值"
 	}
 	
 	"Healthy Apple from Bob Desc"
 	{
 		"en"	"+1500 HP"
 		"ru"	"+1500 ед. здоровья."
+
 	}
 	
 	"Doctor Certificate Desc"
 	{
 		"en"	"2x Medigun Hurt and Heal and 5% melee resistance with Secondary/Medigun out"
 		"ru"	"Двукратный урон и лечение у лечебной пушки, а также 5% сопр. ближнему бою при использовании дополнительного/лечебной пушки"
+		"chi"   "+2倍的医枪伤害和治疗效果，当拿起医疗枪时获得5%%的近战抗性."
 	}
 	
 	"Professor Certificate Desc"
 	{
 		"en"	"1.65x Medigun Hurt and Heal and 5% melee resistance with Secondary/Medigun out"
 		"ru"	"1,65-кратный урон и лечение у лечебной пушки, а также 5% сопр. ближнему бою при использовании дополнительного/лечебной пушки"
+		"chi"   "+1.65倍的医枪伤害和治疗效果，当拿起医疗枪时获得5%%的近战抗性."
 	}
 	
 	"Death Certificate Desc"
 	{
 		"en"	"1.5x Medigun Hurt and Heal and +2 seconds of uber and 5% melee resistance with Secondary/Medigun out"
 		"ru"	"1,5-кратный урон и лечение у лечебной пушки и +2 секунды убера, а также 5% сопр. ближнему бою при использовании дополнительного/лечебной пушки"
+		"chi"   "+1.65倍的医枪伤害和治疗效果，每秒恢复2的超量。当拿起医疗枪时获得5%%的近战抗性."
 	}
 	
 	"Reaper's Certificate Desc"
 	{
 		"en"	"1.5x Medigun Hurt and Heal and +1 seconds of uber and 5% melee resistance with Secondary/Medigun out"
 		"ru"	"1,5-кратный урон и лечение у лечебной пушки и +1 секунда убера, а также 5% сопр. ближнему бою при использовании дополнительного/лечебной пушки"
+		"chi"   "+1.5倍的医枪伤害和治疗效果，每秒恢复1的超量。当拿起医疗枪时获得5%%的近战抗性."
 	}
 	
 	"Hell's Certificate Desc"
 	{
 		"en"	"1.5x Medigun Hurt and Heal and +1 seconds of uber and 5% melee resistance with Secondary/Medigun out"
 		"ru"	"1,5-кратный урон и лечение у лечебной пушки и +1 секунда убера, а также 5% сопр. ближнему бою при использовании дополнительного/лечебной пушки"
+		"chi"   "+1.5倍的医枪伤害和治疗效果，每秒恢复的超量。当拿起医疗枪时获得5%%的近战抗性."
 	}
 	
 	"Medic's Lost Medical Lisence Desc"
 	{
 		"en"	"1.5x Medigun Hurt and Heal and 5% melee resistance with Secondary/Medigun out"
 		"ru"	"1,5-кратный урон и лечение у лечебной пушки и 5% сопр. ближнему бою при использовании дополнительного/лечебной пушки"
+		"chi"   "+1.5倍的医枪伤害和治疗效果，当拿起医疗枪时获得5%%的近战抗性."
 	}
 	
 	"Panic Attack Desc"
 	{
 		"en"	"You attack 15% slower but the lower your health is, the faster you attack, up to 25% faster, doesn't work with last man alive."
 		"ru"	"Вы атакуете на 15% медленнее, но чем меньше у вас здоровья, тем быстрее вы атакуете, до 25% быстрее, не работает, если вы последний выживший."
+		"chi"   "攻击速度降低15%%，但你的血量越低，你的攻击速度就越快，最高可达25%%，当你是最后一名玩家时不起作用。"
 	}
 	
 	"Barbarians Mind Desc"
 	{
 		"en"	"Your melee will deal 10% more damage, and you will take 5% less damage overall, but all your other weapons will be completely useless and deal NO damage."
 		"ru"	"Ваше оружие ближнего боя будет наносить на 10% больше урона, и вы будете получать на 5% меньше урона в целом, но всё остальное оружие будет совершенно бесполезным и не будет наносить НИКАКОГО урона."
+		"chi"   "你的近战伤害将增加10%%，但你的其他伤害将减少5%%，你的所有非近战武器将完全无用，不会造成伤害。"
 	}
 	
 	"Face Stabber Desc"
 	{
 		"en"	"Allows you to backstab anywhere on the enemy.\nAlthough your backstab damage is reduced by 60%\nRemoving 2x dmg if the NPC focuses on you if you backstab.\nHealing attributes upon backstab are reduced by 65%..."
 		"ru"	"Позволяет нанести удар в спину в любое место врага.\nХотя урон от удара в спину уменьшается на 60%.\nПропадает двойной урон, если NPC фокусируется на вас и вы нанесли удар в спину.\nАтрибуты лечения при ударе в спину уменьшаются на 65% ..."
+		"chi"   "允许你在敌人的任何部位背刺。\n但你的背刺伤害降低60%%\n如果敌人在攻击你，你的伤害将会降低2倍。\n背刺的吸血效果减少65%%...."
 	}
 	
 	"Mechanic Desc"
 	{
 		"en"	"15% more health to buildings, but 15 less health and 5% less movement speed"
 		"ru"	"На 15% больше здоровья постройкам, но на 15 меньше здоровья себе и на 5% меньше скорости передвижения"
+		"chi"   "建筑血量增加15%%，但你的生命值减少15，移动速度减少5%%"
 	}
 	
 	"Wrenchy Hands Desc"
 	{
 		"en"	"35% less melee and secondary damage (doesn't include builder weapons), but 25% Faster Repair for both melee and secondary"
 		"ru"	"На 35% меньше урона от оружия ближнего боя и дополнительного оружия (не включает оружие строителей), но на 25% быстрее починка как для ближнего боя, так и для дополнительного оружия"
+		"chi"   "降低35%%的近战和副武器伤害(不包括工程师的武器)，但提高25%%的近战和副武器的修复速度"
 	}
 	
 	"Sniper Sentry Desc"
 	{
 		"en"	"Double damage, 2.3x slower attack speed, 2x range for sentry guns and alike"
 		"ru"	"Двойной урон, 2,3-кратное замедление скорости атаки, двукратная дальность для всех турелей"
+		"chi"   "伤害加倍，但攻击速度降低2.3倍，哨兵的射程增加2倍"
 	}
 	
 	"Minigun Sentry Desc"
 	{
 		"en"	"10% less damage, 1.15x Attack speed, 0.5x range for sentry guns and alike"
 		"ru"	"На 10% меньше урона, 1,15-кратная скорость атаки, 0,5-кратная дальность стрельбы для всех турелей"
+		"chi"   "伤害减少10%%，但攻击速度提高1.15倍，哨兵的射程增加0.5倍"
 	}
 	
 	"Glass Cannon Blueprints Desc"
 	{
 		"en"	"30% more building damage, 75% less building HP, can only have 1 support buidling/cant build more/claim more."
 		"ru"	"На 30% больше урона у построек, на 75% меньше здоровья у построек, можно иметь только 1 постройку поддержки при строительстве."
+		"chi"   "增加30%%的建筑伤害，建筑生命值提高75%%，但仅能建筑一个建筑...."
 	}
 	
 	"Build Collider Disabler Desc"
 	{
 		"en"	"Allows you to move through your own buildings."
 		"ru"	"Позволяет перемещаться через собственные постройки."
+		"chi"   "允许你透过你的建筑物"
 	}
 	
 	"Heavy Caliber Desc"
 	{
 		"en"	"15% more Weapon damage, but 10% less firerate"
 		"ru"	"На 15% больше урон от оружия, но на 10% меньше скорострельность"
+		"chi"   "武器伤害提高15%%，但射速降低10%%"
 	}
 	
 	"Army Belt Desc"
 	{
 		"en"	"15% Faster reload but have a 2x longer weapon switch"
 		"ru"	"На 15% быстрая перезарядка, но в два раза более длительная смена оружия"
+		"chi"   "增加15%%的装填速度，但武器切换时间延长了2倍"
 	}
 	
 	"Headshot Affinity Desc"
 	{
 		"en"	"Headshots deal 2.0x the dmg instead of 1.65x, but deal 35% less bodyshot damage"
 		"ru"	"Выстрелы в голову наносят двукратно больше урона вместо 1,65-кратного, но наносят на 35% меньше урона от выстрелов в тело"
+		"chi"   "爆头造成的伤害增加2.0倍，但造成的身体伤害减少35%%"
 	}
 	
 	"Mage Fragility Desc"
 	{
 		"en"	"25% more max mana and mana regen but you will have 100 less HP"
 		"ru"	"На 25% больше максимальной маны и регенерации маны, но у вас на 100 меньше ед. здоровья"
+		"chi"   "增加25%%的最大法力值和法力回复，生命值-100 "
 	}
 	
 	"Heavy Fat Desc"
 	{
 		"en"	"10% slower movementspeed, but +200 health"
 		"ru"	"Скорость передвижения на 10% ниже, но +200 здоровья"
+		"chi"   "移动速度降低10%%，但生命值增加200"
 	}
 	
 	"Android Desc"
 	{
 		"en"	"You take 5% less damage overall but have -50 health."
 		"ru"	"Вы получаете на 5% меньше общего урона, но имеете -50 здоровья."
+		"chi"   "你受到的伤害减少5%%，但生命值-50。"
 	}
 	
 	"Soft Shoes Desc"
 	{
 		"en"	"Take 35% less fall damage!"
 		"ru"	"Получайте на 35% меньше урона при падении!"
+		"chi"   "减少35%%的掉落伤害!"
 	}
 	
 	"Hardened Stance Desc"
 	{
 		"en"	"Take half the Knockback, can be an upside OR downside..."
 		"ru"	"Получение половины от силы отбрасывания может быть как плюсом, так И минусом..."
+		"chi"   "受到的击退效果-50%%"
 	}
 	
 	"Left For Dead Desc"
 	{
 		"en"	"You slowly revive yourself ONCE a wave.\nDying again when the cooldown is off will just instantly kill you.\nNobody can revive you faster during this."
 		"ru"	"Вы медленно реанимируете себя ОДИН раз за волну.\nЕсли вы умрёте снова, когда время перезарядки закончится, это просто мгновенно убьёт вас.\nНикто не сможет возродить вас быстрее во время этого."
+		"chi"   "你在倒地后可以缓慢的站起。\n在冷却时间结束前再次倒地会直接死亡。"
 	}
 	
 	"Level 15 Peashooter Desc"
 	{
 		"en"	"You went far enough to deserve this gun for free at the start. It's abit worse than the others, but it'll do. (lol)"
 		"ru"	"Вы зашли достаточно далеко, чтобы заслужить этот пистолет бесплатно в самом начале. Он немного хуже, чем остальные, но сойдёт. (лол)"
+		"chi"   "你从一开始就值得免费拿这把枪。它比其他的要差一点，但也够了。(lol)"
 	}
 	
 	"Rusty Wrench Desc"
 	{
 		"en"	"Repairs buildings and sentrys, the worst of the worst. But free."
 		"ru"	"Ремонтирует постройки и турели, худший из худших. Но бесплатный."
+		"chi"   "修复建筑，是最坏的工作。但，是免费的，不消耗金属。"
 	}
 
 	"Cheap Barricade Desc"
 	{
 		"en"	"One use Cheap Free Barricade"
 		"ru"	"Одноразовая дешёвая бесплатная баррикада"
+		"chi"   "一个使用廉价免费路障"
 	}
 }

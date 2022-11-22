@@ -32,7 +32,6 @@ bool g_GottenAddressesForLagComp;
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
 
 
-static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 static bool Dont_Move_Building;											//dont move buildings
 static bool Dont_Move_Allied_Npc;											//dont move buildings
 static int Move_Players = 0;		
@@ -111,6 +110,7 @@ void DHook_Setup()
 
 	DHook_CreateDetour(gamedata, "CBaseObject::FinishedBuilding", Dhook_FinishedBuilding_Pre, Dhook_FinishedBuilding_Post);
 	DHook_CreateDetour(gamedata, "CBaseObject::FirstSpawn", Dhook_FirstSpawn_Pre, Dhook_FirstSpawn_Post);
+	DHook_CreateDetour(gamedata, "FX_FireBullets()", FX_FireBullets_Pre, FX_FireBullets_Post);
 
 	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
@@ -127,7 +127,7 @@ void DHook_Setup()
 	g_DHookFireballExplode = DHook_CreateVirtual(gamedata, "CTFProjectile_SpellFireball::Explode");
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
 	g_DHookScoutSecondaryFire = DHook_CreateVirtual(gamedata, "CTFPistol_ScoutPrimary::SecondaryAttack()");
-	
+	 
 	ForceRespawn = DynamicHook.FromConf(gamedata, "CBasePlayer::ForceRespawn");
 	if(!ForceRespawn)
 		LogError("[Gamedata] Could not find CBasePlayer::ForceRespawn");
@@ -186,6 +186,7 @@ public MRESReturn Wrench_SmackPre(int entity, DHookReturn ret, DHookParam param)
 	LagCompEntitiesThatAreIntheWay(Compensator);
 	return MRES_Ignored;
 }
+
 public MRESReturn Wrench_SmackPost(int entity, DHookReturn ret, DHookParam param)
 {	
 	FinishLagCompMoveBack();
@@ -498,7 +499,8 @@ public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 
 public Action CH_PassFilter(int ent1, int ent2, bool &result)
 {
-	if(IsValidEntity(ent1) && IsValidEntity(ent2))
+	//if(IsValidEntity(ent1) && IsValidEntity(ent2))
+	if(ent1 > 0 && ent1 <= MAXENTITIES && ent2 > 0 && ent2 <= MAXENTITIES)
 	{
 		result = PassfilterGlobal(ent1, ent2, true);
 		if(result)
@@ -521,7 +523,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		{
 			return false;
 		}
-		else if(b_ThisEntityIsAProjectileForUpdateContraints[ent1])
+		else if(b_ThisEntityIsAProjectileForUpdateContraints[ent2])
 		{
 			return false;
 		}
@@ -541,8 +543,12 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			entity1 = ent2;
 			entity2 = ent1;			
 		}
-		
-		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
+		if(b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
+		{
+		//	PrintToChatAll("ingore");
+			return false;
+		}
+		else if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
 		{
 			if(entity2 <= MaxClients && entity2 > 0)
 			{
@@ -672,7 +678,6 @@ public void StartLagCompResetValues()
 	b_LagCompNPC_AwayEnemies = false;
 	b_LagCompNPC_ExtendBoundingBox = false;
 	b_LagCompNPC_BlockInteral = false;
-	
 }
 //if you find a way thats better to ignore fellow dispensers then tell me..!
 public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
@@ -698,7 +703,7 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		}
 		if(b_Dont_Move_Allied_Npc[active_weapon])
 		{
-			Dont_Move_Allied_Npc = true;
+			Dont_Move_Allied_Npc = true; //We presume this includes players too.
 		}
 		if(b_Only_Compensate_CollisionBox[active_weapon]) //This is mostly unused, but keep it for mediguns if needed. Otherwise kinda useless.
 		{
@@ -736,9 +741,12 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		StartLagCompensation_Base_Boss(Compensator, false);
 	#endif
 	
-	if(b_LagCompNPC_BlockInteral)
+	if(b_LagCompNPC_BlockInteral || !Dont_Move_Allied_Npc)
 	{
-		TF2_SetPlayerClass(Compensator, TFClass_Scout, false, false); //Make sure they arent a medic during this! Reason: Mediguns lag comping, need both to be a medic and have a medigun
+		if(Dont_Move_Allied_Npc)
+		{
+			TF2_SetPlayerClass(Compensator, TFClass_Scout, false, false); //Make sure they arent a medic during this! Reason: Mediguns lag comping, need both to be a medic and have a medigun
+		}
 		LagCompMovePlayersExceptYou(Compensator);
 		
 	//	return MRES_Supercede;
@@ -759,7 +767,6 @@ public MRESReturn StartLagCompensationPost(Address manager, DHookParam param)
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
 		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Red)); //Hardcode to red as there will be no blue players.
-		b_LagCompAlliedPlayers = false;
 		return MRES_Ignored;
 	} 
 	return MRES_Ignored;
@@ -786,7 +793,7 @@ public void LagCompMovePlayersExceptYouBack()
 				{
 					//Building_MiniSentrygun.Fire
 					//TeleportEntity(client, Get_old_pos_back[client], NULL_VECTOR, NULL_VECTOR);
-					SetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[client]);
+					b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = false;
 				}
 			}
 		}
@@ -802,8 +809,7 @@ public void LagCompMovePlayersExceptYou(int player)
 		{
 			if (TeutonType[client] == TEUTON_NONE) 
 			{
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[client]);
-				SetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", OFF_THE_MAP);
+				b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = true;
 			}
 		}
 	}
@@ -811,7 +817,6 @@ public void LagCompMovePlayersExceptYou(int player)
 
 public void LagCompEntitiesThatAreIntheWay(int Compensator)
 {
-	float vec_origin[3] = { 16383.0, 16383.0, -16383.0 };
 	Move_Players_Teutons = Compensator;
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -819,8 +824,7 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 		{
 			if (TeutonType[client] != TEUTON_NONE) 
 			{
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[client]);
-				SetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", OFF_THE_MAP);
+				b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = true;
 			}
 		}
 	}
@@ -831,17 +835,11 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 			int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
 			if (IsValidEntity(entity) && entity != 0)
 			{
-				if(!Moved_Building[entity]) 
+				CClotBody npc = view_as<CClotBody>(entity);
+				if(npc.bBuildingIsPlaced) //making sure.
 				{
-					CClotBody npc = view_as<CClotBody>(entity);
-					if(npc.bBuildingIsPlaced) //making sure.
-					{
-						Moved_Building[entity] = true;
-						//PrintToChatAll("test1");
-						GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[entity]);
-						//TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
-						SDKCall_SetLocalOrigin(entity, vec_origin);
-					}
+					SetEntityCollisionGroup(entity, 0);
+					b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
 				}
 			}
 		}
@@ -851,15 +849,9 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
 		if (IsValidEntity(baseboss_index_allied) && baseboss_index_allied != 0)
 		{
-			if(!Moved_Building[baseboss_index_allied]) 
+			if(!Dont_Move_Allied_Npc || b_ThisEntityIgnored[baseboss_index_allied])
 			{
-				if(!Dont_Move_Allied_Npc || b_ThisEntityIgnored[baseboss_index_allied])
-				{
-					Moved_Building[baseboss_index_allied] = true;
-					GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[baseboss_index_allied]);
-					//TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
-					SDKCall_SetLocalOrigin(baseboss_index_allied, vec_origin);
-				}
+				b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss_index_allied] = true;
 			}
 		}
 	}
@@ -870,13 +862,7 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 			int baseboss = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
 			if (IsValidEntity(baseboss) && baseboss != 0)
 			{
-				if(!Moved_Building[baseboss]) 
-				{
-					Moved_Building[baseboss] = true;
-					GetEntPropVector(baseboss, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[baseboss]);
-					//TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
-					SDKCall_SetLocalOrigin(baseboss, vec_origin);
-				}
+				b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss] = true;
 			}
 		}	
 	}
@@ -903,12 +889,7 @@ public void FinishLagCompMoveBack()
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
 		if (IsValidEntity(entity) && entity != 0)
 		{
-			if(Moved_Building[entity]) 
-			{
-				Moved_Building[entity] = false;
-				SDKCall_SetLocalOrigin(entity, Get_old_pos_back[entity]);
-			}
-			Moved_Building[entity] = false;
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
 		}
 	}
 	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
@@ -916,12 +897,7 @@ public void FinishLagCompMoveBack()
 		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
 		if (IsValidEntity(baseboss_index_allied) && baseboss_index_allied != 0)
 		{
-			if(Moved_Building[baseboss_index_allied]) 
-			{
-				Moved_Building[baseboss_index_allied] = false;
-				SDKCall_SetLocalOrigin(baseboss_index_allied, Get_old_pos_back[baseboss_index_allied]);
-			}
-			Moved_Building[baseboss_index_allied] = false;
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss_index_allied] = false;
 		}
 	}
 	if(Move_Players_Teutons != 0)
@@ -932,7 +908,7 @@ public void FinishLagCompMoveBack()
 			{
 				if (TeutonType[client] != TEUTON_NONE) 
 				{
-					SetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[client]);
+					b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = false;
 				}
 			}
 		}
@@ -944,11 +920,7 @@ public void FinishLagCompMoveBack()
 			int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again]);
 			if (IsValidEntity(baseboss_index_allied) && baseboss_index_allied != 0)
 			{
-				if(Moved_Building[baseboss_index_allied]) 
-				{
-					Moved_Building[baseboss_index_allied] = false;
-					SDKCall_SetLocalOrigin(baseboss_index_allied, Get_old_pos_back[baseboss_index_allied]);
-				}
+				b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss_index_allied] = false;
 			}
 		}
 	}	
@@ -970,7 +942,7 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 //	FinishLagCompensationResetValues();
 	
 	Move_Players_Teutons = 0;
-	if(b_LagCompNPC_BlockInteral)
+	if(b_LagCompNPC_BlockInteral || !Dont_Move_Allied_Npc)
 	{
 		LagCompMovePlayersExceptYouBack();
 		Move_Players = 0;
@@ -1049,9 +1021,7 @@ public MRESReturn DHook_SentryFire_Pre(int sentry, Handle hReturn, Handle hParam
 		{
 			if(IsClientInGame(client))
 			{
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[client]);
-		//		TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
-				SetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", OFF_THE_MAP);
+				b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = true;
 			}
 		}
 	}
@@ -1062,9 +1032,7 @@ public MRESReturn DHook_SentryFire_Pre(int sentry, Handle hReturn, Handle hParam
 		{
 			if(IsClientInGame(client) && owner != client)
 			{
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[client]);
-		//		TeleportEntity(client, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
-				SetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", OFF_THE_MAP);
+				b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = true;
 			}
 		}	
 	}
@@ -1079,12 +1047,10 @@ public MRESReturn DHook_SentryFire_Post(int sentry, Handle hReturn, Handle hPara
 		{
 			if(IsClientInGame(client))
 			{
-				//Building_MiniSentrygun.Fire
-				//TeleportEntity(client, Get_old_pos_back[client], NULL_VECTOR, NULL_VECTOR);
-				SetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[client]);
+				b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = false;
 			}
 		}
-		EmitGameSoundToAll("Building_MiniSentrygun.Fire", sentry);
+	//	EmitGameSoundToAll("Building_MiniSentrygun.Fire", sentry);
 	}
 	else
 	{
@@ -1093,12 +1059,10 @@ public MRESReturn DHook_SentryFire_Post(int sentry, Handle hReturn, Handle hPara
 		{
 			if(IsClientInGame(client) && owner != client)
 			{
-				//Building_MiniSentrygun.Fire
-				//TeleportEntity(client, Get_old_pos_back[client], NULL_VECTOR, NULL_VECTOR);
-				SetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Get_old_pos_back[client]);
+				b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = false;
 			}
 		}
-		EmitGameSoundToAll("Building_MiniSentrygun.Fire", sentry);		
+	//	EmitGameSoundToAll("Building_MiniSentrygun.Fire", sentry);		
 	}
 	return MRES_Ignored;
 }
@@ -1729,4 +1693,32 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 	i_ExtraPlayerPoints[client] += 15;
 	TF2Attrib_SetByDefIndex(entity, 698, 0.0); // disable weapon switch
 	return MRES_Ignored;
+}
+/*
+ void FX_FireBullets( CTFWeaponBase *pWpn,
+ int iPlayer,
+  const Vector &vecOrigin,
+    const QAngle &vecAngles,
+	  int iWeapon,
+	   int iMode,
+	    int iSeed,
+		 float flSpread,
+		  float flDamage  = -1.0f ,
+		   bool bCritical  = false )
+*/
+public MRESReturn FX_FireBullets_Pre(DHookParam hParams)
+{
+//	PrintToChatAll("shot");
+ //   int Weapon = DHookGetParam(hParams, 1); // I'm sorry methodmap Gods, but the server I uploaded it on doesn't like it so i have to do this :pepega:
+ //   int Client = DHookGetParam(hParams, 2);
+
+	//Future use for special guns ?
+
+    return MRES_Ignored;
+}
+
+public MRESReturn FX_FireBullets_Post(DHookParam hParams)
+{
+
+    return MRES_Ignored;
 }

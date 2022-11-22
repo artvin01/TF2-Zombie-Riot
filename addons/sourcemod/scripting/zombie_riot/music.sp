@@ -333,31 +333,45 @@ void Music_PostThink(int client)
 			}
 			return;
 		}
-		int intencity;
+		float f_intencity;
+		float targPos[3];
+		float chargerPos[3];
 		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
 			if(IsValidEntity(entity) && !b_NpcHasDied[entity])
 			{
-				float targPos[3];
-				float chargerPos[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);
 				GetClientAbsOrigin(client, chargerPos);
-				if (GetVectorDistance(chargerPos, targPos, true) <= Pow(1750.0, 2.0))
+				float distance = GetVectorDistance(chargerPos, targPos, true);
+				CClotBody npcstats = view_as<CClotBody>(entity);
+				if (distance <= Pow(2500.0, 2.0)) //Give way bigger range.
 				{
-					CClotBody npcstats = view_as<CClotBody>(entity);
 					if(!npcstats.m_bThisNpcIsABoss)
 					{
-						intencity += 1;
+						f_intencity += 0.5;
 					}
 					else
 					{
-						intencity += 10;
+						f_intencity += 6.0;
+					}
+				}
+				if (distance <= Pow(1000.0, 2.0))// If they are very close, cause more havok! more epic music!
+				{
+					if(!npcstats.m_bThisNpcIsABoss)
+					{
+						f_intencity += 0.9;
+					}
+					else
+					{
+						f_intencity += 8.0;
 					}
 				}
 			}
 		}
-		
+
+		int intencity = RoundToNearest(f_intencity);
+
 		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 		{
 			intencity += 9999; //absolute max.

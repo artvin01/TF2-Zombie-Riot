@@ -506,6 +506,10 @@
 		"pt"		"P15T014"
 		"nl"		"P15T001"
 	}
+	"Riot Gun"
+	{
+		"en"		"Riot Gun"
+	}
 	"Heavy Desert Eagle"
 	{
 		"en"		"Heavy Desert Eagle"

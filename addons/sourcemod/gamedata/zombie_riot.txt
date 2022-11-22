@@ -244,10 +244,66 @@
 				"linux" 	""
 				"windows" 	"\x56\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x8B\xF0\x85\xF6\x0F\x84\x2A\x2A\x2A\x2A\x8B\x16\x8B\xCE\x8B\x92\x40\x01\x00\x00\xFF\xD2\x84\xC0\x0F\x84\x2A\x2A\x2A\x2A\x8B\x06\x8B\xCE\x8B\x80\x04\x01\x00\x00\xFF\xD0\x84\xC0\x0F\x84\x2A\x2A\x2A\x2A\x6A\x01"
 			}
-
+			"FX_FireBullets()"
+			{
+				"library"		"server"
+				"linux"			"@_Z14FX_FireBulletsP13CTFWeaponBaseiRK6VectorRK6QAngleiiiffb"
+				"windows"		"\x55\x8B\xEC\x81\xEC\x9C\x00\x00\x00\x53\x8B\x5D\x18"				
+			}
 		}
 		"Functions"
 		{
+			"FX_FireBullets()"
+			{
+				"signature"		"FX_FireBullets()"
+				"callconv"		"cdecl"
+				"return"		"void"
+				"this"			"ignore"
+				
+				"arguments"
+				{
+					"pWpn"
+					{
+						"type"	"cbaseentity"
+					}
+					"iPlayer"
+					{
+						"type"	"int"
+					}
+					"vecOrigin"
+					{
+						"type"	"vectorptr"
+					}
+					"vecAngles"
+					{
+						"type"	"vectorptr"
+					}
+					"iWeapon"
+					{
+						"type"	"int"
+					}
+					"iMode"
+					{
+						"type"	"int"
+					}
+					"iSeed"
+					{
+						"type"	"int"
+					}
+					"flSpread"
+					{
+						"type"	"float"
+					}
+					"flDamage"
+					{
+						"type"	"float"
+					}
+					"bCritical"
+					{
+						"type"	"bool"
+					}
+				}
+			}
 			"CTFBuffItem::RaiseFlag"
 			{
 				"signature"    	"CTFBuffItem::RaiseFlag"
@@ -302,12 +358,12 @@
 				}
 			}
 			"CTFBaseBoss::BossThink"
-           		{
-              		 	"signature"    	"CTFBaseBoss::BossThink"
-             	   		"callconv"    	"thiscall"
-             	  		"return"    	"void"
-             	 		"this"        	"entity"
-           		}
+           	{
+              	 	"signature"    	"CTFBaseBoss::BossThink"
+               		"callconv"    	"thiscall"
+               		"return"    	"void"
+              		"this"        	"entity"
+           	}
 			"CObjectSentrygun::Fire"
 			{
 				"signature"	"CObjectSentrygun::Fire"
