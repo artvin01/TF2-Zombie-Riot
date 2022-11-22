@@ -545,7 +545,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 		if(b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
 		{
-			PrintToChatAll("ingore");
+		//	PrintToChatAll("ingore");
 			return false;
 		}
 		else if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
