@@ -686,7 +686,7 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 //	PrintToChatAll("called %i",Compensator);
 	StartLagCompResetValues();
 	
-	
+	bool already_moved = false;
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
 		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Spectator)); //Hardcode to red as there will be no blue players.
@@ -710,6 +710,7 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 			if(b_Only_Compensate_AwayPlayers[active_weapon])
 			{
 				b_LagCompNPC_AwayEnemies = true; //why was it not on true. I am really smart!
+				already_moved = true;
 				LagCompEntitiesThatAreIntheWay(Compensator); //Include this.
 			}
 			else
@@ -733,7 +734,10 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		else 	//This gets called less then the above unironically, so ill make it an else. some guns fire REALLY fast on the top, thats why. also lasers are excluded from this as they ahve their own logic
 				//And its REALLY hard to misswith those, and its server side too. so people will predict in their mind anyways. hopefully.
 		{
-			LagCompEntitiesThatAreIntheWay(Compensator);
+			if(!already_moved)
+			{
+				LagCompEntitiesThatAreIntheWay(Compensator);
+			}
 		}
 	}
 	#if defined LagCompensation
@@ -741,15 +745,10 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		StartLagCompensation_Base_Boss(Compensator, false);
 	#endif
 	
-	if(b_LagCompNPC_BlockInteral || !Dont_Move_Allied_Npc)
+	if(b_LagCompNPC_BlockInteral)
 	{
-		if(Dont_Move_Allied_Npc)
-		{
-			TF2_SetPlayerClass(Compensator, TFClass_Scout, false, false); //Make sure they arent a medic during this! Reason: Mediguns lag comping, need both to be a medic and have a medigun
-		}
+		TF2_SetPlayerClass(Compensator, TFClass_Scout, false, false); //Make sure they arent a medic during this! Reason: Mediguns lag comping, need both to be a medic and have a medigun
 		LagCompMovePlayersExceptYou(Compensator);
-		
-	//	return MRES_Supercede;
 	}
 	
 	g_hSDKStartLagCompAddress = manager;
