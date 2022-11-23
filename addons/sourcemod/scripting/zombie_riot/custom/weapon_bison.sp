@@ -241,21 +241,7 @@ static void TBB_Tick(int client)
 		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 		CloseHandle(trace);
 		FinishLagCompensation_Base_boss();
-//		int weapon = BEAM_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
-		/*
-		for (int victim = 1; victim < MaxClients; victim++)
-		{
-			if (BEAM_HitDetected[victim] && BossTeam != GetClientTeam(victim))
-			{
-				GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-				float distance = GetVectorDistance(startPoint, playerPos, false);
-				float damage = BEAM_CloseDPT[client] + (BEAM_FarDPT[client]-BEAM_CloseDPT[client]) * (distance/BEAM_MaxDistance[client]);
-				if (damage < 0)
-					damage *= -1.0;
-				TakeDamage(victim, client, client, damage/6, 2048, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
-			}
-		}
-		*/
+		
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		BEAM_Targets_Hit[client] = 1.0;

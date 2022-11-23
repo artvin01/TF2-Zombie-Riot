@@ -79,6 +79,8 @@ enum struct ItemInfo
 	Function FuncAttack3;
 	Function FuncReload4;
 	Function FuncOnBuy;
+	Function FuncOnDeploy;
+	Function FuncOnHolster;
 	
 	int Attack3AbilitySlot;
 	
@@ -223,6 +225,14 @@ enum struct ItemInfo
 		FormatEx(buffer, sizeof(buffer), "%sfunc_onbuy", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncOnBuy = GetFunctionByName(null, buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%sfunc_ondeploy", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.FuncOnDeploy = GetFunctionByName(null, buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%sfunc_onholster", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.FuncOnHolster = GetFunctionByName(null, buffer);
 		
 		FormatEx(buffer, sizeof(buffer), "%sint_ability_onequip", prefix);
 		this.CustomWeaponOnEquip 		= kv.GetNum(buffer);
@@ -391,6 +401,42 @@ static int NPCCash[MAXTF2PLAYERS];
 static int NPCTarget[MAXTF2PLAYERS];
 static bool InLoadoutMenu[MAXTF2PLAYERS];
 static bool HasMultiInSlot[MAXTF2PLAYERS][6];
+static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
+
+void Store_PlayerRunCmd(int client, int weapon)
+{
+	if(weapon)
+	{
+		if(HolsterFunc[client] != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, HolsterFunc[client]);
+			Call_PushCell(client);
+			Call_Finish();
+
+			HolsterFunc[client] = INVALID_FUNCTION;
+		}
+
+		if(weapon > 0 && StoreWeapon[weapon] > 0)
+		{
+			static Item item;
+			StoreItems.GetArray(StoreWeapon[weapon], item);
+
+			static ItemInfo info;
+			if(item.Owned[client] > 0 && item.GetItemInfo(item.Owned[client] - 1, info))
+			{
+				if(info.FuncOnDeploy != INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, info.FuncOnDeploy);
+					Call_PushCell(client);
+					Call_PushCell(weapon);
+					Call_Finish();
+				}
+
+				HolsterFunc[client] = info.FuncOnHolster;
+			}
+		}
+	}
+}
 
 void Store_RemoveSellValue()
 {
@@ -1221,6 +1267,8 @@ void Store_ClientDisconnect(int client)
 		FormatEx(buffer, sizeof(buffer), "%d;%d", CurrentGame, CashSpent[client]);
 		CookieCache.Set(client, buffer);
 	}
+	
+	Store_PlayerRunCmd(client, -1);
 	
 	CashSpent[client] = 0;
 	CashSpentTotal[client] = 0;

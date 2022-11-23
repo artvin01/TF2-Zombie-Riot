@@ -421,6 +421,7 @@ int i_DyingParticleIndication[MAXPLAYERS + 1]={-1, ...};
 
 //Needs to be global.
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
+float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
 float f_ChargeTerroriserSniper[MAXENTITIES];
 bool b_npcspawnprotection[MAXENTITIES];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
@@ -1202,6 +1203,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_sniper_monkey.sp"
 #include "zombie_riot/custom/weapon_cspyknife.sp"
 #include "zombie_riot/custom/wand/weapon_quantum_weaponry.sp"
+#include "zombie_riot/custom/weapon_riotshield.sp"
 
 #include "zombie_riot/custom/escape_sentry_hat.sp"
 #include "zombie_riot/custom/m3_abilities.sp"
@@ -1557,6 +1559,7 @@ public void OnMapStart()
 	ExplosiveBullets_Precache();
 	Quantum_Gear_Map_Precache();
 	WandStocks_Map_Precache();
+	Weapon_RiotShield_Map_Precache();
 	
 	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
 	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");
@@ -2944,6 +2947,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	
 	//tutorial stuff.
 	Tutorial_MakeClientNotMove(client);
+	
+	Store_PlayerRunCmd(client, weapon);
 	
 	if(buttons & IN_ATTACK)
 	{
@@ -4343,5 +4348,6 @@ public void MapStartResetAll()
 	Zero(i_HasBeenHeadShotted);
 	Zero(f_StuckTextChatNotif);
 	Zero(b_LimitedGibGiveMoreHealth);
+	Zero2(f_TargetWasBlitzedByRiotShield);
 	CurrentGibCount = 0;
 }

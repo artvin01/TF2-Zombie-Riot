@@ -993,10 +993,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		
 		
 	f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
-	
+
 	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
 	{
-		f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
 		Replicated_Damage *= 2.0;
 		damage *= 2.0;
 		return Plugin_Changed;	
