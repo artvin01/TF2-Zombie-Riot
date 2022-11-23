@@ -66,7 +66,7 @@ public void Weapon_RiotShield_M2(int client, int weapon, bool crit, int slot)
 				{
 					find = true;
 					f_TargetWasBlitzedByRiotShield[enemy_hit][weapon] = GetGameTime() + 2.0;
-					PrintToChatAll("boom! %i",RIOT_EnemiesHit[enemy_hit]);
+					//PrintToChatAll("boom! %i",RIOT_EnemiesHit[enemy_hit]);
 				}
 			}
 		}

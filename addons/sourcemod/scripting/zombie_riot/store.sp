@@ -403,37 +403,34 @@ static bool InLoadoutMenu[MAXTF2PLAYERS];
 static bool HasMultiInSlot[MAXTF2PLAYERS][6];
 static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 
-void Store_PlayerRunCmd(int client, int weapon)
+void Store_WeaponSwitch(int client, int weapon)
 {
-	if(weapon)
+	if(HolsterFunc[client] != INVALID_FUNCTION)
 	{
-		if(HolsterFunc[client] != INVALID_FUNCTION)
+		Call_StartFunction(null, HolsterFunc[client]);
+		Call_PushCell(client);
+		Call_Finish();
+
+		HolsterFunc[client] = INVALID_FUNCTION;
+	}
+
+	if(weapon != -1 && StoreWeapon[weapon] > 0)
+	{
+		static Item item;
+		StoreItems.GetArray(StoreWeapon[weapon], item);
+
+		static ItemInfo info;
+		if(item.Owned[client] > 0 && item.GetItemInfo(item.Owned[client] - 1, info))
 		{
-			Call_StartFunction(null, HolsterFunc[client]);
-			Call_PushCell(client);
-			Call_Finish();
-
-			HolsterFunc[client] = INVALID_FUNCTION;
-		}
-
-		if(weapon > 0 && StoreWeapon[weapon] > 0)
-		{
-			static Item item;
-			StoreItems.GetArray(StoreWeapon[weapon], item);
-
-			static ItemInfo info;
-			if(item.Owned[client] > 0 && item.GetItemInfo(item.Owned[client] - 1, info))
+			if(info.FuncOnDeploy != INVALID_FUNCTION)
 			{
-				if(info.FuncOnDeploy != INVALID_FUNCTION)
-				{
-					Call_StartFunction(null, info.FuncOnDeploy);
-					Call_PushCell(client);
-					Call_PushCell(weapon);
-					Call_Finish();
-				}
-
-				HolsterFunc[client] = info.FuncOnHolster;
+				Call_StartFunction(null, info.FuncOnDeploy);
+				Call_PushCell(client);
+				Call_PushCell(weapon);
+				Call_Finish();
 			}
+
+			HolsterFunc[client] = info.FuncOnHolster;
 		}
 	}
 }
@@ -1268,7 +1265,7 @@ void Store_ClientDisconnect(int client)
 		CookieCache.Set(client, buffer);
 	}
 	
-	Store_PlayerRunCmd(client, -1);
+	Store_WeaponSwitch(client, -1);
 	
 	CashSpent[client] = 0;
 	CashSpentTotal[client] = 0;

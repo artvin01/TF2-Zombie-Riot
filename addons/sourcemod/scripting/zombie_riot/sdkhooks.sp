@@ -1374,17 +1374,15 @@ public void OnWeaponSwitchPost(int client, int weapon)
 {
 	if(weapon != -1)
 	{
-		int weapon2 = weapon;
-		
 		if(EntRefToEntIndex(i_PreviousWeapon[client]) != weapon)
 			OnWeaponSwitchPre(client, EntRefToEntIndex(i_PreviousWeapon[client]));
 		
 		i_PreviousWeapon[client] = EntIndexToEntRef(weapon);
 		
 		char buffer[36];
-		GetEntityClassname(weapon2, buffer, sizeof(buffer));
-		Building_WeaponSwitchPost(client, weapon2, buffer);
-		ViewChange_Switch(client, weapon2, buffer);
+		GetEntityClassname(weapon, buffer, sizeof(buffer));
+		Building_WeaponSwitchPost(client, weapon, buffer);
+		ViewChange_Switch(client, weapon, buffer);
 		
 		if(i_SemiAutoWeapon[weapon])
 		{
@@ -1397,6 +1395,8 @@ public void OnWeaponSwitchPost(int client, int weapon)
 			}
 		}
 	}
+
+	Store_WeaponSwitch(client, weapon);
 }
 
 public void OnWeaponSwitchPre(int client, int weapon)

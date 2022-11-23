@@ -2386,6 +2386,7 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	//
 
 	Citizen_PlayerDeath(client);
+	Store_WeaponSwitch(client, -1);
 	Bob_player_killed(event, name, dontBroadcast);
 	RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
 }
@@ -2947,8 +2948,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	
 	//tutorial stuff.
 	Tutorial_MakeClientNotMove(client);
-	
-	Store_PlayerRunCmd(client, weapon);
 	
 	if(buttons & IN_ATTACK)
 	{
