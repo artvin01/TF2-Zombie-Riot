@@ -30,11 +30,11 @@ public void Weapon_RiotShield_M2(int client, int weapon, bool crit, int slot)
 		static float hullMin[3]; hullMin = view_as<float>({-RIOT_MAX_BOUNDS, -RIOT_MAX_BOUNDS, -RIOT_MAX_BOUNDS});
 		static float hullMax[3]; hullMax = view_as<float>({RIOT_MAX_BOUNDS, RIOT_MAX_BOUNDS, RIOT_MAX_BOUNDS});
 
-    	float fPos[3];
-    	float fAng[3];
-    	float endPoint[3];
-    	float fPosForward[3];
-        GetClientEyeAngles(client, fAng);
+		float fPos[3];
+		float fAng[3];
+		float endPoint[3];
+		float fPosForward[3];
+		GetClientEyeAngles(client, fAng);
 		GetClientEyePosition(client, fPos);
 		
 		GetAngleVectors(fAng, fPosForward, NULL_VECTOR, NULL_VECTOR);
@@ -43,7 +43,7 @@ public void Weapon_RiotShield_M2(int client, int weapon, bool crit, int slot)
 		endPoint[1] = fPos[1] + fPosForward[1] * RIOT_MAX_RANGE;
 		endPoint[2] = fPos[2] + fPosForward[2] * RIOT_MAX_RANGE;
 
-        bool find = false;
+		bool find = false;
 		
 		for (int enemy_reset = 1; enemy_reset < MAX_TARGETS_HIT_RIOT; enemy_reset++)
 		{
@@ -91,8 +91,8 @@ public void Weapon_RiotShield_M2(int client, int weapon, bool crit, int slot)
 		}	
 		*/
 
-        if(find)
-        {
+		if(find)
+		{
 			//Boom! Do effects and buff weapon!
 
 			float Original_Atackspeed = 1.0;
@@ -113,13 +113,13 @@ public void Weapon_RiotShield_M2(int client, int weapon, bool crit, int slot)
 			SetParent(client, particle, "effect_hand_l");
 
 			CreateTimer(3.0, RiotShieldAbilityEnd_M2, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
-            Ability_Apply_Cooldown(client, slot, 10.0);
-        }
-        else
-        {
-            //There was no-one to Kapow :(
-            ClientCommand(client, "playgamesound items/medshotno1.wav");
-        }
+			Ability_Apply_Cooldown(client, slot, 10.0);
+		}
+		else
+		{
+			//There was no-one to Kapow :(
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+		}
 	}
 	else
 	{
@@ -160,8 +160,8 @@ public void Weapon_RiotShield_Deploy(int client, int weapon)
 			offset = -180.0 - offset;
 		}
 		
-		pos[0] += 15.0 * offset / 90.0;
-		pos[1] -= 15.0 * (90.0 - fabs(ang[1])) / 90.0;
+		pos[0] -= 15.0 * offset / 90.0;
+		pos[1] += 15.0 * (90.0 - fabs(ang[1])) / 90.0;
 		pos[2] -= 72.5;
 		ang[1] += 180.0;
 		
@@ -191,8 +191,8 @@ public void Weapon_RiotShield_Deploy(int client, int weapon)
 			SetVariantString("!activator");
 			AcceptEntityInput(entity, "SetParent", weapon);
 			
-			pos[0] = 5.0;
-			pos[1] = -7.5;
+			pos[0] = -5.0;
+			pos[1] = 7.5;
 			pos[2] = -60.0;
 			ang[1] = 180.0;
 			TeleportEntity(entity, pos, ang, NULL_VECTOR);

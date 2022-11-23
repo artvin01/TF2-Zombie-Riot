@@ -589,7 +589,7 @@
 	}
 	"Riot Gun Desc"
 	{
-		"en"	"A gun that comes with a riot shield for major anti-range damage."
+		"en"	"A gun that comes with a riot shield for anti-range damage."
 	}
 	"Riot Gun Pap 1"
 	{
