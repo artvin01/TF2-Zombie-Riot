@@ -106,10 +106,10 @@ methodmap BobTheGod < CClotBody
 {
 	
 	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, 80, _, 1.0);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(24.0, 48.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
@@ -117,11 +117,11 @@ methodmap BobTheGod < CClotBody
 	}
 	
 	public void PlayIdleAlertSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, 80, _, 1.0);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
@@ -131,7 +131,7 @@ methodmap BobTheGod < CClotBody
 	public void PlayHurtSound() {
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, 80, _, 1.0);
-		this.m_flNextHurtSound = GetGameTime() + GetRandomFloat(0.6, 1.6);
+		this.m_flNextHurtSound = GetGameTime(this.index) + GetRandomFloat(0.6, 1.6);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayHurtSound()");
@@ -313,7 +313,7 @@ public void BobTheGod_ClotThink(int iNPC)
 		return;
 	}
 	
-	if(npc.m_flNextThinkTime < GetGameTime())
+	if(npc.m_flNextThinkTime < GetGameTime(npc.index))
 	{
 		if (IsValidClient(client))
 		{
@@ -358,12 +358,12 @@ public void BobTheGod_ClotThink(int iNPC)
 				SetHudTextParams(0.9, 0.72, 0.15, 180, 180, 180, 180);
 				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is friendly and doesn't follow you! BUT stands still", "Use voice Commands to command him!");
 			}
-			npc.m_flNextThinkTime = GetGameTime() + 0.04;
+			npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.04;
 			npc.Update();
 		}
 		else
 		{
-			npc.m_flNextThinkTime = GetGameTime() + 0.04;
+			npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.04;
 			npc.Update();
 		}
 	}
@@ -389,7 +389,7 @@ public void BobTheGod_ClotThink(int iNPC)
 		return;
 	}
 	
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		int attacker;
 		if(IsPlayerAlive(client))
@@ -425,7 +425,7 @@ public void BobTheGod_ClotThink(int iNPC)
 	}
 	
 	
-	if(npc.m_iTarget != 0 && npc.m_flComeToMe < GetGameTime() && npc.m_flDoingSpecial < GetGameTime() && !npc.m_bIsFriendly && (flDistanceToOwner < 1000 || !npc.m_b_stand_still))
+	if(npc.m_iTarget != 0 && npc.m_flComeToMe < GetGameTime(npc.index) && npc.m_flDoingSpecial < GetGameTime(npc.index) && !npc.m_bIsFriendly && (flDistanceToOwner < 1000 || !npc.m_b_stand_still))
 	{
 		npc.m_iState = 1;
 		
@@ -443,7 +443,7 @@ public void BobTheGod_ClotThink(int iNPC)
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 					
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index));
-			if (npc.m_fbGunout == false && npc.m_flReloadDelay < GetGameTime())
+			if (npc.m_fbGunout == false && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				if (!npc.m_bmovedelay)
 				{
@@ -458,7 +458,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget);
 				
 			}
-			else if (npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime())
+			else if (npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				int iActivity_melee = npc.LookupActivity("ACT_IDLE_ANGRY_PISTOL");
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
@@ -481,7 +481,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				PF_SetGoalVector(npc.index, vPredictedPos);
 			}
 			
-			if((!npc.m_b_stand_still && npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 200 && flDistanceToTarget < 1000 && npc.m_flReloadDelay < GetGameTime()) || (npc.m_b_stand_still && npc.m_flNextRangedAttack < GetGameTime() && npc.m_flReloadDelay < GetGameTime() && flDistanceToTarget > 100))
+			if((!npc.m_b_stand_still && npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 200 && flDistanceToTarget < 1000 && npc.m_flReloadDelay < GetGameTime(npc.index)) || (npc.m_b_stand_still && npc.m_flNextRangedAttack < GetGameTime(npc.index) && npc.m_flReloadDelay < GetGameTime(npc.index) && flDistanceToTarget > 100))
 			{
 	
 				float vecSpread = 0.1;
@@ -549,13 +549,13 @@ public void BobTheGod_ClotThink(int iNPC)
 					npc.m_bmovedelay = false;
 					
 					npc.FaceTowards(vecTarget, 1000.0);
-					npc.m_flNextRangedAttack = GetGameTime() + 0.1;
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.1;
 					npc.m_iAttacksTillReload -= 1;
 					
 					if (npc.m_iAttacksTillReload == 0)
 					{
 						npc.AddGesture("ACT_RELOAD_PISTOL");
-						npc.m_flReloadDelay = GetGameTime() + 1.4;
+						npc.m_flReloadDelay = GetGameTime(npc.index) + 1.4;
 						npc.m_iAttacksTillReload = 24;
 						npc.PlayRangedReloadSound();
 						npc.m_bReloaded = true;
@@ -574,7 +574,7 @@ public void BobTheGod_ClotThink(int iNPC)
 					npc.m_bReloaded = false;
 				}
 			}
-			else if((!npc.m_b_stand_still && (flDistanceToTarget < 200 || flDistanceToTarget > 1000) && npc.m_flReloadDelay < GetGameTime()) || (npc.m_b_stand_still && flDistanceToTarget < 100 && npc.m_flReloadDelay < GetGameTime()))
+			else if((!npc.m_b_stand_still && (flDistanceToTarget < 200 || flDistanceToTarget > 1000) && npc.m_flReloadDelay < GetGameTime(npc.index)) || (npc.m_b_stand_still && flDistanceToTarget < 100 && npc.m_flReloadDelay < GetGameTime(npc.index)))
 			{
 				if(!npc.m_b_stand_still && flDistanceToTarget > 100)
 				{
@@ -584,7 +584,7 @@ public void BobTheGod_ClotThink(int iNPC)
 					//Look at target so we hit.
 					npc.FaceTowards(vecTarget, 1500.0);
 				}
-				if(npc.m_flNextRangedSpecialAttack < GetGameTime() && flDistanceToTarget < 150 || (!npc.m_flAttackHappenswillhappen && npc.m_fbRangedSpecialOn))
+				if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index) && flDistanceToTarget < 150 || (!npc.m_flAttackHappenswillhappen && npc.m_fbRangedSpecialOn))
 				{
 					npc.FaceTowards(vecTarget, 2000.0);
 					if(!npc.m_fbRangedSpecialOn)
@@ -592,15 +592,15 @@ public void BobTheGod_ClotThink(int iNPC)
 						PF_StopPathing(npc.index);
 						npc.m_bPathing = false;
 						npc.AddGesture("ACT_PUSH_PLAYER");
-						npc.m_flRangedSpecialDelay = GetGameTime() + 0.3;
+						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 0.3;
 						npc.m_fbRangedSpecialOn = true;
-						npc.m_flReloadDelay = GetGameTime() + 0.3;
+						npc.m_flReloadDelay = GetGameTime(npc.index) + 0.3;
 						npc.m_flNextMeleeAttack += 0.5;
 					}
-					if(npc.m_flRangedSpecialDelay < GetGameTime())
+					if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 					{
 						npc.m_fbRangedSpecialOn = false;
-						npc.m_flNextRangedSpecialAttack = GetGameTime() + 3.0;
+						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 3.0;
 						npc.PlayRangedAttackSecondarySound();
 	
 						float vecSpread = 0.1;
@@ -641,7 +641,7 @@ public void BobTheGod_ClotThink(int iNPC)
 						FireBullet(npc.index, npc.index, npc_pos, vecDir, 125.0, 9999.0, DMG_BULLET, "bullet_tracer02_blue", _);
 					}
 				}
-				if(npc.m_flNextMeleeAttack < GetGameTime() && flDistanceToTarget < 100 && !npc.m_fbRangedSpecialOn || (npc.m_flAttackHappenswillhappen && !npc.m_fbRangedSpecialOn))
+				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) && flDistanceToTarget < 100 && !npc.m_fbRangedSpecialOn || (npc.m_flAttackHappenswillhappen && !npc.m_fbRangedSpecialOn))
 				{
 					PF_StopPathing(npc.index);
 					npc.m_bPathing = false;
@@ -653,13 +653,13 @@ public void BobTheGod_ClotThink(int iNPC)
 					{
 						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
 						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime()+0.4;
-						npc.m_flAttackHappens_bullshit = GetGameTime()+0.51;
+						npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
+						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.51;
 						npc.m_flAttackHappenswillhappen = true;
 						npc.m_flNextRangedSpecialAttack += 0.5;
 					}
 						
-					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 15000.0);
@@ -718,13 +718,13 @@ public void BobTheGod_ClotThink(int iNPC)
 								}
 							}
 						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime() + 0.65;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.65;
 						npc.m_flAttackHappenswillhappen = false;
 					}
-					else if (npc.m_flNextMeleeAttack < GetGameTime() && npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+					else if (npc.m_flNextMeleeAttack < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime() + 0.65;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.65;
 					}
 				}
 			}
@@ -733,25 +733,25 @@ public void BobTheGod_ClotThink(int iNPC)
 	
 	else if (!npc.m_b_stand_still && npc.m_b_follow && IsValidClient(client) && IsPlayerAlive(client))
 	{
-		if (npc.m_flDoingSpecial < GetGameTime() && npc.m_iState == 1)
+		if (npc.m_flDoingSpecial < GetGameTime(npc.index) && npc.m_iState == 1)
 		{
 			PF_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_iState = 0;
 			int iActivity = npc.LookupActivity("ACT_RUN");
 			if(iActivity > 0) npc.StartActivity(iActivity);
-			npc.m_flFollowing_Master_Now = GetGameTime() + 1.0;
+			npc.m_flFollowing_Master_Now = GetGameTime(npc.index) + 1.0;
 			AcceptEntityInput(npc.m_iWearable2, "Disable");
 			AcceptEntityInput(npc.m_iWearable1, "Enable");
 		}
-		else if ((npc.m_iState == 0 || npc.m_iState == 2) && npc.m_flFollowing_Master_Now < GetGameTime())
+		else if ((npc.m_iState == 0 || npc.m_iState == 2) && npc.m_flFollowing_Master_Now < GetGameTime(npc.index))
 		{
 			
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(client);
 			
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index));
 			
-			if (flDistanceToTarget > 300 && npc.m_flReloadDelay < GetGameTime())
+			if (flDistanceToTarget > 300 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				npc.StartPathing();
 				
@@ -771,7 +771,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				}
 				npc.m_iState = 0;
 			}
-			else if (flDistanceToTarget > 140 && flDistanceToTarget < 300 && npc.m_flReloadDelay < GetGameTime())
+			else if (flDistanceToTarget > 140 && flDistanceToTarget < 300 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				npc.StartPathing();
 				
@@ -788,11 +788,11 @@ public void BobTheGod_ClotThink(int iNPC)
 					npc.m_bmovedelay_run = false;
 					npc.m_bmovedelay = false;
 				//	PrintHintText(client, "Bob The Second: Hello, sir!");
-					npc.m_flidle_talk = GetGameTime() + GetRandomFloat(10.0, 20.0);
+					npc.m_flidle_talk = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
 				}
 				npc.m_iState = 0;
 			}
-			else if (npc.m_flReloadDelay > GetGameTime())
+			else if (npc.m_flReloadDelay > GetGameTime(npc.index))
 			{
 				npc.m_bmovedelay_walk = false;
 				npc.m_bmovedelay = false;
@@ -824,13 +824,13 @@ public void BobTheGod_ClotThink(int iNPC)
 					PrintHintText(client, "%t %t","Bob The Second:", "I'll guard you, sir!");
 					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 				}
-				npc.m_flidle_talk = GetGameTime() + GetRandomFloat(10.0, 20.0);
+				npc.m_flidle_talk = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
 			}
 			
 			if (flDistanceToTarget < 250 && npc.m_iAttacksTillReload != 24)
 			{
 				npc.AddGesture("ACT_RELOAD_PISTOL");
-				npc.m_flReloadDelay = GetGameTime() + 1.4;
+				npc.m_flReloadDelay = GetGameTime(npc.index) + 1.4;
 				npc.m_iAttacksTillReload = 24;
 				npc.PlayRangedReloadSound();
 				AcceptEntityInput(npc.m_iWearable2, "Enable");
@@ -842,7 +842,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				PrintHintText(client, "%t %t","Bob The Second:", "Reloading near you, sir!");
 				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 			}
-			else if(flDistanceToTarget < 250 && npc.m_flReloadDelay < GetGameTime() && npc.m_iAttacksTillReload == 24)
+			else if(flDistanceToTarget < 250 && npc.m_flReloadDelay < GetGameTime(npc.index) && npc.m_iAttacksTillReload == 24)
 			{
 				if (!npc.m_bReloaded)
 				{
@@ -852,9 +852,9 @@ public void BobTheGod_ClotThink(int iNPC)
 				npc.m_bReloaded = true;
 				npc.m_bPathing = false;
 				npc.m_fbGunout = false;
-				if (npc.m_flidle_talk < GetGameTime()/* && GetEntProp(npc.index, Prop_Data, "m_iHealth") >= 500*/)
+				if (npc.m_flidle_talk < GetGameTime(npc.index)/* && GetEntProp(npc.index, Prop_Data, "m_iHealth") >= 500*/)
 				{
-					npc.m_flidle_talk = GetGameTime() + GetRandomFloat(10.0, 20.0);
+					npc.m_flidle_talk = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
 					SetGlobalTransTarget(client);
 					switch(GetRandomInt(1, 8))
 					{
@@ -895,9 +895,9 @@ public void BobTheGod_ClotThink(int iNPC)
 					Citizen_LiveCitizenReaction(npc.index);			
 				}
 				/*
-				else if (npc.m_flidle_talk < GetGameTime() && GetEntProp(npc.index, Prop_Data, "m_iHealth") < 500)
+				else if (npc.m_flidle_talk < GetGameTime(npc.index) && GetEntProp(npc.index, Prop_Data, "m_iHealth") < 500)
 				{
-					npc.m_flidle_talk = GetGameTime() + GetRandomFloat(10.0, 20.0);
+					npc.m_flidle_talk = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
 					switch(GetRandomInt(1, 7))
 					{
 						case 1:
@@ -988,7 +988,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		
 		
 		npc.FaceTowards(vecPos, 500.0);
-		npc.m_flDoingSpecial = GetGameTime() + 3.5;
+		npc.m_flDoingSpecial = GetGameTime(npc.index) + 3.5;
 		
 		npc.m_iState = 1;
 		
@@ -1267,7 +1267,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			
 			npc.m_bIsFriendly = false;
 			
-			npc.m_flComeToMe = GetGameTime() + 3.0; 
+			npc.m_flComeToMe = GetGameTime(npc.index) + 3.0; 
 			
 		}
 		else
@@ -1619,10 +1619,10 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		
 		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenter(npc.index));	
 		
-		if(flDistanceToTarget < 100 && npc.m_flheal_cooldown < GetGameTime())
+		if(flDistanceToTarget < 100 && npc.m_flheal_cooldown < GetGameTime(npc.index))
 		{
 			npc.m_iMedkitAnnoyance = 0;
-			npc.m_flheal_cooldown = GetGameTime() + GetRandomFloat(20.0, 30.0);
+			npc.m_flheal_cooldown = GetGameTime(npc.index) + GetRandomFloat(20.0, 30.0);
 			npc.FaceTowards(pos, 10000.0);
 			npc.AddGesture("ACT_PUSH_PLAYER");
 			SetGlobalTransTarget(client);
@@ -1631,7 +1631,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			npc.m_flidle_talk += 2.0;
 			CreateTimer(0.3, BobTheGod_showHud, client, TIMER_FLAG_NO_MAPCHANGE);
 		}
-		else if (npc.m_iMedkitAnnoyance == 0 && flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime())
+		else if (npc.m_iMedkitAnnoyance == 0 && flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime(npc.index))
 		{
 			npc.m_iMedkitAnnoyance += 1;
 			SetGlobalTransTarget(client);
@@ -1639,7 +1639,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 			npc.m_flidle_talk += 2.0;
 		}
-		else if (npc.m_iMedkitAnnoyance == 1 && flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime())
+		else if (npc.m_iMedkitAnnoyance == 1 && flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime(npc.index))
 		{
 			npc.m_iMedkitAnnoyance += 1;
 			SetGlobalTransTarget(client);
@@ -1647,7 +1647,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 			npc.m_flidle_talk += 2.0;
 		}
-		else if (npc.m_iMedkitAnnoyance == 2 && flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime())
+		else if (npc.m_iMedkitAnnoyance == 2 && flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime(npc.index))
 		{
 			npc.m_iMedkitAnnoyance += 1;
 			SetGlobalTransTarget(client);
@@ -1655,7 +1655,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 			npc.m_flidle_talk += 2.0;
 		}
-		else if (npc.m_iMedkitAnnoyance == 3 && flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime())
+		else if (npc.m_iMedkitAnnoyance == 3 && flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime(npc.index))
 		{
 			npc.m_iMedkitAnnoyance += 1;
 			SetGlobalTransTarget(client);
@@ -1663,7 +1663,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 			npc.m_flidle_talk += 2.0;
 		}
-		else if (flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime())
+		else if (flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime(npc.index))
 		{
 			npc.m_iMedkitAnnoyance = 0;
 			SetGlobalTransTarget(client);
@@ -1794,16 +1794,16 @@ public Action BobTheGod_Owner_Hurt(int victim, int &attacker, int &inflictor, fl
 	
 	npc.m_iTarget = attacker;
 	
-	if(npc.m_flHurtie < GetGameTime() && !npc.m_bIsFriendly)
+	if(npc.m_flHurtie < GetGameTime(npc.index) && !npc.m_bIsFriendly)
 	{
-		npc.m_flHurtie = GetGameTime() + 0.50;
+		npc.m_flHurtie = GetGameTime(npc.index) + 0.50;
 		SetGlobalTransTarget(victim);
 		PrintHintText(victim, "%t %t","Bob The Second:", "I will protect you!");
 		StopSound(victim, SNDCHAN_STATIC, "UI/hint.wav");
 	}
-	else if(npc.m_flHurtie < GetGameTime() && npc.m_bIsFriendly)
+	else if(npc.m_flHurtie < GetGameTime(npc.index) && npc.m_bIsFriendly)
 	{
-		npc.m_flHurtie = GetGameTime() + 0.50;
+		npc.m_flHurtie = GetGameTime(npc.index) + 0.50;
 		SetGlobalTransTarget(victim);
 		PrintHintText(victim, "%t %t","Bob The Second:", "You told me to be friendly.");
 		StopSound(victim, SNDCHAN_STATIC, "UI/hint.wav");

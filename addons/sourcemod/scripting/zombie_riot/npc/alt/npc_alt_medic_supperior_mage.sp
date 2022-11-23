@@ -106,11 +106,11 @@ methodmap NPC_ALT_MEDIC_SUPPERIOR_MAGE < CClotBody
 	}
 	
 	public void PlayIdleAlertSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
@@ -242,8 +242,8 @@ methodmap NPC_ALT_MEDIC_SUPPERIOR_MAGE < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "Enable");
 		
 		npc.StartPathing();
-		fl_TimebeforeIOC[npc.index] = GetGameTime() + 10.0;
-		npc.m_flTimebeforekamehameha = GetGameTime() + 15.0;
+		fl_TimebeforeIOC[npc.index] = GetGameTime(npc.index) + 10.0;
+		npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 15.0;
 		npc.m_bInKame = false;
 		npc.Anger = false;
 		
@@ -257,12 +257,12 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 {
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE npc = view_as<NPC_ALT_MEDIC_SUPPERIOR_MAGE>(iNPC);
 	
-	if(npc.m_flNextDelayTime > GetGameTime())
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 	
@@ -273,18 +273,18 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime())
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime() + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 	
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -292,13 +292,13 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-		if (npc.m_flReloadDelay < GetGameTime())
+		if (npc.m_flReloadDelay < GetGameTime(npc.index))
 		{
-			if (npc.m_flmovedelay < GetGameTime())
+			if (npc.m_flmovedelay < GetGameTime(npc.index))
 			{
 				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-				npc.m_flmovedelay = GetGameTime() + 1.5;
+				npc.m_flmovedelay = GetGameTime(npc.index) + 1.5;
 				npc.m_flSpeed = 300.0;					
 			}
 			AcceptEntityInput(npc.m_iWearable1, "Enable");
@@ -330,15 +330,15 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 		}
 		if(flDistanceToTarget < 30000)	//Do laser of hopefully not doom within a 100 hu's, might be too close but who knows.
 		{
-			if(npc.m_flTimebeforekamehameha < GetGameTime() && !npc.Anger)
+			if(npc.m_flTimebeforekamehameha < GetGameTime(npc.index) && !npc.Anger)
 			{
-				npc.m_flTimebeforekamehameha = GetGameTime() + 60.0;
+				npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 60.0;
 				npc.m_bInKame = true;
 				NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability(npc.index);
 			}
-			else if(npc.m_flTimebeforekamehameha < GetGameTime() && npc.Anger)
+			else if(npc.m_flTimebeforekamehameha < GetGameTime(npc.index) && npc.Anger)
 			{
-				npc.m_flTimebeforekamehameha = GetGameTime() + 45.0;
+				npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 45.0;
 				npc.m_bInKame = true;
 				NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability_Anger(npc.index);
 			}
@@ -352,17 +352,17 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 		{
 			npc.m_flSpeed = 300.0;
 		}
-		if(flDistanceToTarget > 30000 && flDistanceToTarget < 90000 && !npc.m_bInKame && fl_TimebeforeIOC[npc.index] < GetGameTime())
+		if(flDistanceToTarget > 30000 && flDistanceToTarget < 90000 && !npc.m_bInKame && fl_TimebeforeIOC[npc.index] < GetGameTime(npc.index))
 		{
 			if(!npc.Anger)
 			{
 				NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(EntIndexToEntRef(npc.index), PrimaryThreatIndex);
-				fl_TimebeforeIOC[npc.index] = GetGameTime() + 60.0;
+				fl_TimebeforeIOC[npc.index] = GetGameTime(npc.index) + 60.0;
 			}
 			if(npc.Anger)
 			{
 				NPC_ALT_MEDIC_SUPPERIOR_MAGE_IOC_Invoke(EntIndexToEntRef(npc.index), PrimaryThreatIndex);
-				fl_TimebeforeIOC[npc.index] = GetGameTime() + 45.0;
+				fl_TimebeforeIOC[npc.index] = GetGameTime(npc.index) + 45.0;
 			}
 		}
 		//Target close enough to hit
@@ -372,19 +372,19 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 		//	npc.FaceTowards(vecTarget, 2000.0);
 			
 			//Can we attack right now?
-			if(npc.m_flNextMeleeAttack < GetGameTime())
+			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 			{
 					//Play attack ani
 				if (!npc.m_flAttackHappenswillhappen)
 				{
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
 					npc.PlayMeleeSound();
-					npc.m_flAttackHappens = GetGameTime()+0.4;
-					npc.m_flAttackHappens_bullshit = GetGameTime()+0.54;
+					npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
+					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
 					npc.m_flAttackHappenswillhappen = true;
 				}
 						
-				if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+				if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 					float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
@@ -416,24 +416,24 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 						} 
 					}
 					delete swingTrace;
-					npc.m_flNextMeleeAttack = GetGameTime() + 0.8;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.8;
 					npc.m_flAttackHappenswillhappen = false;
 				}
-				else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GetGameTime() + 0.8;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.8;
 				}
 			}
 		}
-		else if(flDistanceToTarget > 22500 && npc.m_flAttackHappens_2 < GetGameTime())
+		else if(flDistanceToTarget > 22500 && npc.m_flAttackHappens_2 < GetGameTime(npc.index))
 		{
 			float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 			float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 			float crocket = 25.0 / (1.0+(1-(Health/MaxHealth))*2);
 			float dmg = 20.0*(1.0+(1-(Health/MaxHealth))*2);
 			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
-			npc.m_flAttackHappens_2 = GetGameTime() + crocket;
+			npc.m_flAttackHappens_2 = GetGameTime(npc.index) + crocket;
 			npc.PlayRangedSound();
 			npc.FireRocket(vecTarget, dmg, 600.0);
 		}
@@ -442,7 +442,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 			npc.StartPathing();
 			
 		}
-		if (npc.m_flReloadDelay < GetGameTime())
+		if (npc.m_flReloadDelay < GetGameTime(npc.index))
 		{
 			npc.StartPathing();
 			
@@ -470,9 +470,9 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotDamaged(int victim, int &attacker
 		return Plugin_Continue;
 	*/
 	
-	if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
 	if(((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) && ZR_GetWaveCount()>40 ) //npc.Anger after half hp/400 hp

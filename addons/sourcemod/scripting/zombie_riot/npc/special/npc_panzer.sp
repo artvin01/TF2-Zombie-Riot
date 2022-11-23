@@ -112,10 +112,10 @@ static char[] GetPanzerHealth()
 methodmap NaziPanzer < CClotBody
 {
 	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(7.0, 10.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(7.0, 10.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
@@ -123,10 +123,10 @@ methodmap NaziPanzer < CClotBody
 	}
 	
 	public void PlayHurtSound() {
-		if(this.m_flNextHurtSound > GetGameTime())
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
-		this.m_flNextHurtSound = GetGameTime() + 0.25;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.25;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
@@ -135,10 +135,10 @@ methodmap NaziPanzer < CClotBody
 		#endif
 	}
 	public void PlayFlameSound() {
-		if(this.m_flNextFlameSound > GetGameTime())
+		if(this.m_flNextFlameSound > GetGameTime(this.index))
 			return;
 			
-		this.m_flNextFlameSound = GetGameTime() + 0.25;
+		this.m_flNextFlameSound = GetGameTime(this.index) + 0.25;
 		
 		EmitSoundToAll(g_FlameSounds[GetRandomInt(0, sizeof(g_FlameSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
@@ -264,7 +264,7 @@ methodmap NaziPanzer < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flNextDelayTime = GetGameTime() + 0.2;
+		npc.m_flNextDelayTime = GetGameTime(npc.index) + 0.2;
 		//IDLE
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
@@ -277,8 +277,8 @@ methodmap NaziPanzer < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, NaziPanzer_ClotDamagedPost);
 		
 		npc.m_flSpeed = 0.0;
-		npc.m_flNextThinkTime = GetGameTime() + 3.0;
-		npc.m_flDoSpawnGesture = GetGameTime() + 3.0;
+		npc.m_flNextThinkTime = GetGameTime(npc.index) + 3.0;
+		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 3.0;
 		npc.m_flNextFlameSound = 0.0;
 		npc.m_flFlamerActive = 0.0;
 		npc.m_bDoSpawnGesture = true;
@@ -402,12 +402,12 @@ public void NaziPanzer_ClotThink(int iNPC)
 	}
 //	PrintToChatAll("%.f",GetEntPropFloat(view_as<int>(iNPC), Prop_Data, "m_speed"));
 	
-	if(npc.m_flNextDelayTime > GetGameTime())
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
 	
@@ -424,7 +424,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 		npc.m_bUseDefaultAnim = false;
 	}
 	
-	if(npc.m_flDoSpawnGesture < GetGameTime())
+	if(npc.m_flDoSpawnGesture < GetGameTime(npc.index))
 	{
 		if(npc.m_bDuringHighFlight)
 			npc.m_flSpeed = 600.0;
@@ -455,7 +455,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 		PF_StopPathing(npc.index);
 		npc.m_bPathing = false;
 	}
-	if(npc.m_flStandStill > GetGameTime())
+	if(npc.m_flStandStill > GetGameTime(npc.index))
 	{
 		npc.m_flSpeed = 0.0;
 		PF_StopPathing(npc.index);
@@ -470,18 +470,18 @@ public void NaziPanzer_ClotThink(int iNPC)
 			npc.m_bDuringHook = false;
 		}
 	}
-	if(npc.m_flNextThinkTime > GetGameTime())
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime() + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
 	
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 		//PluginBot_NormalJump(npc.index);
 	}
 	
@@ -540,13 +540,13 @@ public void NaziPanzer_ClotThink(int iNPC)
 			if(IsValidEntity(npc.m_iWearable2))
 				RemoveEntity(npc.m_iWearable2);
 				
-			if(npc.m_flGrappleCooldown > GetGameTime())
+			if(npc.m_flGrappleCooldown > GetGameTime(npc.index))
 			{
 				npc.m_flGrappleCooldown += 4.0;
 			}
 			else
 			{
-				npc.m_flGrappleCooldown = GetGameTime() + 4.0;
+				npc.m_flGrappleCooldown = GetGameTime(npc.index) + 4.0;
 			}
 			
 			
@@ -554,11 +554,11 @@ public void NaziPanzer_ClotThink(int iNPC)
 			if(iActivity > 0) npc.StartActivity(iActivity);
 			npc.AddGesture("ACT_FLY_LAND");
 			npc.m_bDuringHighFlight = false;
-			npc.m_flStandStill = GetGameTime() + 1.0;
+			npc.m_flStandStill = GetGameTime(npc.index) + 1.0;
 		}
 		else if (flDistanceToTarget < 20000 && npc.m_bFlamerToggled)
 		{
-			if(npc.m_flFlamerActive > GetGameTime())
+			if(npc.m_flFlamerActive > GetGameTime(npc.index))
 			{
 				Handle swingTrace;
 				npc.FaceTowards(vecTarget, 20000.0);
@@ -597,19 +597,19 @@ public void NaziPanzer_ClotThink(int iNPC)
 			//Look at target so we hit.
 		//	npc.FaceTowards(vecTarget, 20000.0);
 			
-			if(npc.m_flNextMeleeAttack < GetGameTime())
+			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 			{
 				//Play attack ani
 				if (!npc.m_flAttackHappenswillhappen)
 				{
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 					npc.PlayMeleeSound();
-					npc.m_flAttackHappens = GetGameTime()+0.2;
-					npc.m_flAttackHappens_bullshit = GetGameTime()+0.33;
+					npc.m_flAttackHappens = GetGameTime(npc.index)+0.2;
+					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.33;
 					npc.m_flAttackHappenswillhappen = true;
 				}
 				//Can we attack right now?
-				if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+				if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					Handle swingTrace;
 					npc.FaceTowards(vecTarget, 20000.0);
@@ -638,13 +638,13 @@ public void NaziPanzer_ClotThink(int iNPC)
 						}
 					}
 					delete swingTrace;
-					npc.m_flNextMeleeAttack = GetGameTime() + 1.2;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.2;
 					npc.m_flAttackHappenswillhappen = false;
 				}
-				else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GetGameTime() + 1.2;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.2;
 				}
 			}
 			
@@ -654,19 +654,19 @@ public void NaziPanzer_ClotThink(int iNPC)
 			//Look at target so we hit.
 		//	npc.FaceTowards(vecTarget, 20000.0);
 			
-			if(npc.m_flNextMeleeAttack < GetGameTime())
+			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 			{
 				//Play attack ani
 				if (!npc.m_flAttackHappenswillhappen)
 				{
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 					npc.PlayMeleeSound();
-					npc.m_flAttackHappens = GetGameTime()+0.2;
-					npc.m_flAttackHappens_bullshit = GetGameTime()+0.33;
+					npc.m_flAttackHappens = GetGameTime(npc.index)+0.2;
+					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.33;
 					npc.m_flAttackHappenswillhappen = true;
 				}
 				//Can we attack right now?
-				if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+				if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					Handle swingTrace;
 					npc.FaceTowards(vecTarget, 20000.0);
@@ -695,18 +695,18 @@ public void NaziPanzer_ClotThink(int iNPC)
 						}
 					}
 					delete swingTrace;
-					npc.m_flNextMeleeAttack = GetGameTime() + 1.2;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.2;
 					npc.m_flAttackHappenswillhappen = false;
 				}
-				else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GetGameTime() + 1.2;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.2;
 				}
 			}
 			
 		}
-		else if(flDistanceToTarget > 12500 && flDistanceToTarget < 1000000 && !npc.m_bDuringHighFlight && npc.m_flGrappleCooldown < GetGameTime() && !npc.m_bDuringHook)
+		else if(flDistanceToTarget > 12500 && flDistanceToTarget < 1000000 && !npc.m_bDuringHighFlight && npc.m_flGrappleCooldown < GetGameTime(npc.index) && !npc.m_bDuringHook)
 		{
 			
 			int HumanTarget = GetClosestTarget(npc.index, true);	//So he only tries to grab humans
@@ -719,17 +719,17 @@ public void NaziPanzer_ClotThink(int iNPC)
 				npc.FaceTowards(vecTargetHook, 20000.0);
 				float vPredictedPosHuman[3]; vPredictedPosHuman = PredictSubjectPositionForProjectiles(npc, HumanTarget, 1200.0);
 				npc.FireHook(vPredictedPosHuman);
-				npc.m_flGrappleCooldown = GetGameTime() + 30.0;
+				npc.m_flGrappleCooldown = GetGameTime(npc.index) + 30.0;
 				
 				int iActivity = npc.LookupActivity("ACT_HOOK_SHOOT");
 				if(iActivity > 0) npc.StartActivity(iActivity);
-				npc.m_flStandStill = GetGameTime() + 5.0;
+				npc.m_flStandStill = GetGameTime(npc.index) + 5.0;
 				npc.m_bDuringHook = true;
 				npc.PlayGrappleSound();
 			}
 			else
 			{
-				npc.m_flGrappleCooldown = GetGameTime() + 0.2;	
+				npc.m_flGrappleCooldown = GetGameTime(npc.index) + 0.2;	
 				
 			}
 		}
@@ -760,7 +760,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 			if(iActivity > 0) npc.StartActivity(iActivity);
 			npc.AddGesture("ACT_FLY_START");
 			npc.m_bDuringHighFlight = true;
-			npc.m_flStandStill = GetGameTime() + 1.0;
+			npc.m_flStandStill = GetGameTime(npc.index) + 1.0;
 		}
 		//Target close enough to hit
 	}
@@ -784,14 +784,14 @@ public Action NaziPanzer_ClotDamaged(int victim, int &attacker, int &inflictor, 
 	NaziPanzer npc = view_as<NaziPanzer>(victim);
 	
 	
-	if(npc.m_flDoSpawnGesture > GetGameTime())
+	if(npc.m_flDoSpawnGesture > GetGameTime(npc.index))
 	{
 		return Plugin_Handled;
 	}
 	
-	if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.PlayHurtSound();
 	}
 //	
@@ -803,7 +803,7 @@ public void NaziPanzer_ClotDamagedPost(int victim, int attacker, int inflictor, 
 	NaziPanzer npc = view_as<NaziPanzer>(victim);
 	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) //Anger after half hp/400 hp
 	{
-		npc.m_flDoSpawnGesture = GetGameTime() + 1.5;
+		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 1.5;
 	//	npc.AddGesture("ACT_PANZER_STAGGER");
 		npc.PlayAngerSound();
 		npc.m_bLostHalfHealth = true;
@@ -836,7 +836,7 @@ public void NaziPanzer_ClotDamagedPost(int victim, int attacker, int inflictor, 
 			if(IsValidEntity(npc.m_iWearable3))
 				RemoveEntity(npc.m_iWearable3);
 				
-			npc.m_flGrappleCooldown = GetGameTime() + 25.0;
+			npc.m_flGrappleCooldown = GetGameTime(npc.index) + 25.0;
 			
 			npc.m_flFlamerActive = 0.0;
 			npc.m_bFlamerToggled = false;
@@ -960,7 +960,7 @@ public MRESReturn Panzer_DHook_RocketExplodePre(int entity)
 				npc.m_bDuringHook = false;
 				npc.m_flHookDamageTaken = 0.0;
 				npc.m_flStandStill = 0.0;	
-				npc.m_flFlamerActive = GetGameTime() + 10.0;
+				npc.m_flFlamerActive = GetGameTime(npc.index) + 10.0;
 				npc.m_bFlamerToggled = true;
 				
 				float flPos[3]; // original

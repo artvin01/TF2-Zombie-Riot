@@ -432,6 +432,7 @@ float f_LowIceDebuff[MAXENTITIES];
 float f_HighIceDebuff[MAXENTITIES];
 bool b_Frozen[MAXENTITIES];
 float f_TankGrabbedStandStill[MAXENTITIES];
+float f_StunExtraGametimeDuration[MAXENTITIES];
 bool b_PernellBuff[MAXENTITIES];
 float f_MaimDebuff[MAXENTITIES];
 float f_CrippleDebuff[MAXENTITIES];
@@ -4348,5 +4349,6 @@ public void MapStartResetAll()
 	Zero(f_StuckTextChatNotif);
 	Zero(b_LimitedGibGiveMoreHealth);
 	Zero2(f_TargetWasBlitzedByRiotShield);
+	Zero(f_StunExtraGametimeDuration);
 	CurrentGibCount = 0;
 }

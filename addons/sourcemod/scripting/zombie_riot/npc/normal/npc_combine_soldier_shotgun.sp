@@ -85,10 +85,10 @@ methodmap CombineSoldierShotgun < CClotBody
 		
 	
 	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(24.0, 48.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
@@ -96,11 +96,11 @@ methodmap CombineSoldierShotgun < CClotBody
 	}
 	
 	public void PlayIdleAlertSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
@@ -108,10 +108,10 @@ methodmap CombineSoldierShotgun < CClotBody
 	}
 	
 	public void PlayHurtSound() {
-		if(this.m_flNextHurtSound > GetGameTime())
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
-		this.m_flNextHurtSound = GetGameTime() + 0.4;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
@@ -220,12 +220,12 @@ public void CombineSoldierShotgun_ClotThink(int iNPC)
 {
 	CombineSoldierShotgun npc = view_as<CombineSoldierShotgun>(iNPC);
 	
-	if(npc.m_flNextDelayTime > GetGameTime())
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 	
@@ -236,17 +236,17 @@ public void CombineSoldierShotgun_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime())
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime() + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 		npc.StartPathing();
 		
 	}
@@ -281,17 +281,17 @@ public void CombineSoldierShotgun_ClotThink(int iNPC)
 			{
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime())
+			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				npc.m_fbGunout = true;
 				
-				npc.m_flNextRangedAttack = GetGameTime() + 1.5;
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.5;
 				npc.m_iAttacksTillReload += 1;
 				
 				if (npc.m_iAttacksTillReload == 6)
 				{
 					npc.AddGesture("ACT_RELOAD");
-					npc.m_flReloadDelay = GetGameTime() + 2.2;
+					npc.m_flReloadDelay = GetGameTime(npc.index) + 2.2;
 					npc.m_iAttacksTillReload = 0;
 					npc.PlayRangedReloadSound();
 				}
@@ -359,9 +359,9 @@ public Action CombineSoldierShotgun_OnTakeDamage(int victim, int &attacker, int 
 		
 	CombineSoldierShotgun npc = view_as<CombineSoldierShotgun>(victim);
 	
-	if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
 	return Plugin_Changed;

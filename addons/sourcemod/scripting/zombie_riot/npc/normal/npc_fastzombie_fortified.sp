@@ -70,11 +70,11 @@ public void FortifiedFastZombie_OnMapStart_NPC()
 methodmap FortifiedFastZombie < CClotBody
 {
 	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(3.0, 6.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
@@ -82,11 +82,11 @@ methodmap FortifiedFastZombie < CClotBody
 	}
 	
 	public void PlayIdleAlertSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(3.0, 6.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
@@ -112,7 +112,7 @@ methodmap FortifiedFastZombie < CClotBody
 		#endif
 	}
 	public void PlayMeleeJumpPrepare() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_PlayMeleeJumpPrepare[GetRandomInt(0, sizeof(g_PlayMeleeJumpPrepare) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -123,7 +123,7 @@ methodmap FortifiedFastZombie < CClotBody
 	}
 	
 	public void PlayMeleeJumpSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_PlayMeleeJumpSound[GetRandomInt(0, sizeof(g_PlayMeleeJumpSound) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -133,10 +133,10 @@ methodmap FortifiedFastZombie < CClotBody
 		#endif
 	}
 	public void PlayHurtSound() {
-		if(this.m_flNextHurtSound > GetGameTime())
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
-		this.m_flNextHurtSound = GetGameTime() + 0.4;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
@@ -203,7 +203,7 @@ methodmap FortifiedFastZombie < CClotBody
 		//IDLE
 		npc.m_flSpeed = 400.0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_flJumpCooldown = GetGameTime() + 5.0;
+		npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.0;
 		npc.m_flInJump = 0.0;
 		
 		npc.StartPathing();
@@ -223,26 +223,26 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 	SetVariantInt(1);
 	AcceptEntityInput(iNPC, "SetBodyGroup");
 	
-	if(npc.m_flNextDelayTime > GetGameTime())
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 	
-	if(npc.m_flNextThinkTime > GetGameTime())
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime() + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -253,27 +253,27 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 		
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);		
 		
-		if(npc.m_flJumpCooldown < GetGameTime() && npc.m_flInJump < GetGameTime() && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
+		if(npc.m_flJumpCooldown < GetGameTime(npc.index) && npc.m_flInJump < GetGameTime(npc.index) && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
 		{
 			int Enemy_I_See;
 			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 			//Target close enough to hit
 			if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex)
 			{
-				npc.m_flInJump = GetGameTime() + 0.65;
+				npc.m_flInJump = GetGameTime(npc.index) + 0.65;
 				
-				npc.m_flJumpCooldown = GetGameTime() + 0.5;
+				npc.m_flJumpCooldown = GetGameTime(npc.index) + 0.5;
 				npc.PlayLeapPrepare();
 			}
 		}
-		if(npc.m_flJumpCooldown < GetGameTime() && npc.m_flInJump > GetGameTime())
+		if(npc.m_flJumpCooldown < GetGameTime(npc.index) && npc.m_flInJump > GetGameTime(npc.index))
 		{
 			PluginBot_Jump(npc.index, vecTarget);
 			npc.PlayLeapDone();
-			npc.m_flJumpCooldown = GetGameTime() + 5.0;
+			npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.0;
 			
 		}
-		if(npc.m_flInJump > GetGameTime())
+		if(npc.m_flInJump > GetGameTime(npc.index))
 		{
 			PF_StopPathing(npc.index);
 			npc.m_bPathing = false;
@@ -300,7 +300,7 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 	//		npc.FaceTowards(vecTarget, 1000.0)
 			
 				//Can we attack right now?
-			if(npc.m_flNextMeleeAttack < GetGameTime())
+			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 			{
 				//Play attack anim
 				npc.AddGesture("ACT_MELEE_ATTACK1");
@@ -343,7 +343,7 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 					} 
 				}
 				delete swingTrace;
-				npc.m_flNextMeleeAttack = GetGameTime() + 0.6;
+				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
 			}
 			PF_StopPathing(npc.index);
 			npc.m_bPathing = false;
@@ -378,9 +378,9 @@ public Action FortifiedFastZombie_OnTakeDamage(int victim, int &attacker, int &i
 		return Plugin_Continue;
 	*/
 	
-	if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.PlayHurtSound();
 		
 	}

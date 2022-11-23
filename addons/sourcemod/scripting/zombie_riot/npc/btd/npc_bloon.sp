@@ -509,7 +509,7 @@ public void Bloon_ClotThink(int iNPC)
 {
 	Bloon npc = view_as<Bloon>(iNPC);
 	
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 	{
 		return;
@@ -650,7 +650,7 @@ public Action Bloon_ClotDamaged(int victim, int &attacker, int &inflictor, float
 	}
 	else
 	{
-		if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime())
+		if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime(npc.index))
 		{
 			hot = true;
 			pierce = true;

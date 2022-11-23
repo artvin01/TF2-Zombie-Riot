@@ -249,3 +249,20 @@ stock void RemoveAllWeapons(int client)
 		TF2_RemoveItem(client, entity);
 	}
 }
+
+
+stock float ZR_GetGameTime(int entity = 0)
+{
+	if(entity == 0)
+	{
+		return GetGameTime();
+	}
+	else
+	{
+		return (GetGameTime() - f_StunExtraGametimeDuration[entity]);
+		//This will allow for stuns and other stuff like that. Mainly used for tank and other stuns.
+		//We will treat the tank stun as such.
+	}
+}
+
+#define GetGameTime ZR_GetGameTime

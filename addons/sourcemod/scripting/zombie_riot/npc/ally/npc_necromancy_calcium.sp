@@ -81,10 +81,10 @@ public void NecroCalcium_OnMapStart_NPC()
 methodmap NecroCalcium < CClotBody
 {
 	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0, 80);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(24.0, 48.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
@@ -92,11 +92,11 @@ methodmap NecroCalcium < CClotBody
 	}
 	
 	public void PlayIdleAlertSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0, 80);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
@@ -182,7 +182,7 @@ methodmap NecroCalcium < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		npc.m_flDuration = GetGameTime() + 20.0; //They should last this long for now.
+		npc.m_flDuration = GetGameTime(npc.index) + 20.0; //They should last this long for now.
 		
 		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TFTeam_Red);
 		
@@ -201,7 +201,7 @@ methodmap NecroCalcium < CClotBody
 		SDKHook(npc.index, SDKHook_Think, NecroCalcium_ClotThink);
 		
 		npc.m_bThisEntityIgnored = true;
-	//	npc.m_flNextThinkTime = GetGameTime() + GetRandomFloat(0.2, 0.5);
+	//	npc.m_flNextThinkTime = GetGameTime(npc.index) + GetRandomFloat(0.2, 0.5);
 		npc.m_iState = 0;
 		npc.m_flSpeed = 400.0;
 		npc.m_flNextRangedAttack = 0.0;
@@ -243,32 +243,32 @@ public void NecroCalcium_ClotThink(int iNPC)
 {
 	NecroCalcium npc = view_as<NecroCalcium>(iNPC);
 	
-	if(npc.m_flNextDelayTime > GetGameTime())
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 	
-	if(npc.m_flNextThinkTime > GetGameTime())
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime() + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 	
 		npc.m_iTarget = GetClosestTarget(npc.index, _, _, false);
-		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	int owner;
 	owner = GetEntPropEnt(npc.index,   Prop_Send, "m_hOwnerEntity");
 	
-	if(IsValidClient(owner) && npc.m_flDuration > GetGameTime())
+	if(IsValidClient(owner) && npc.m_flDuration > GetGameTime(npc.index))
 	{
 		int PrimaryThreatIndex = npc.m_iTarget;
 		
@@ -302,23 +302,23 @@ public void NecroCalcium_ClotThink(int iNPC)
 				}
 				
 				//Target close enough to hit
-				if((flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime()) || npc.m_flAttackHappenswillhappen)
+				if((flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
 				{
 				//	npc.FaceTowards(vecTarget, 1000.0);
 					
-					if(npc.m_flNextMeleeAttack < GetGameTime())
+					if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 					{
 						if (!npc.m_flAttackHappenswillhappen)
 						{
-							npc.m_flNextRangedSpecialAttack = GetGameTime() + 2.0;
+							npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
 							npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 							npc.PlayMeleeSound();
-							npc.m_flAttackHappens = GetGameTime()+0.4;
-							npc.m_flAttackHappens_bullshit = GetGameTime()+0.54;
+							npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
+							npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
 							npc.m_flAttackHappenswillhappen = true;
 						}
 							
-						if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+						if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 						{
 							Handle swingTrace;
 							npc.FaceTowards(vecTarget, 40000.0);
@@ -343,17 +343,17 @@ public void NecroCalcium_ClotThink(int iNPC)
 									} 
 								}
 							delete swingTrace;
-							npc.m_flNextMeleeAttack = GetGameTime() + 0.6;
+							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
 							npc.m_flAttackHappenswillhappen = false;
 						}
-						else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+						else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 						{
 							npc.m_flAttackHappenswillhappen = false;
-							npc.m_flNextMeleeAttack = GetGameTime() + 0.6;
+							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
 						}
 					}
 				}
-				if (npc.m_flReloadDelay < GetGameTime())
+				if (npc.m_flReloadDelay < GetGameTime(npc.index))
 				{
 					npc.StartPathing();
 					
