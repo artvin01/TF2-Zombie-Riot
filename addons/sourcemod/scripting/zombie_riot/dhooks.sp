@@ -33,9 +33,7 @@ float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
 
 
 static bool Dont_Move_Building;											//dont move buildings
-static bool Dont_Move_Allied_Npc;											//dont move buildings
-static int Move_Players = 0;		
-static int Move_Players_Teutons = 0;		
+static bool Dont_Move_Allied_Npc;											//dont move buildings	
 
 static bool b_LagCompNPC;
 bool b_LagCompNPC_No_Layers;
@@ -543,7 +541,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			entity1 = ent2;
 			entity2 = ent1;			
 		}
-		if(b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
+		if(b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1])
 		{
 		//	PrintToChatAll("ingore");
 			return false;
@@ -705,6 +703,18 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		{
 			Dont_Move_Allied_Npc = true; //We presume this includes players too.
 		}
+		if(b_ExtendBoundingBox[active_weapon]) //Fat collision for hitting guranteed
+		{
+			b_LagCompNPC_ExtendBoundingBox = true;
+		}
+		if(b_BlockLagCompInternal[active_weapon]) //Fat collision for hitting guranteed
+		{
+			b_LagCompNPC_BlockInteral = true;
+		}
+		if(!b_Do_Not_Compensate[active_weapon])
+		{
+			b_LagCompNPC = false; //For guns that rapid fire or are melee as i do my own logic regarding that.
+		}
 		if(b_Only_Compensate_CollisionBox[active_weapon]) //This is mostly unused, but keep it for mediguns if needed. Otherwise kinda useless.
 		{
 			if(b_Only_Compensate_AwayPlayers[active_weapon])
@@ -718,26 +728,10 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 				b_LagCompNPC_No_Layers = true; //why was it not on true. I am really smart!
 			}
 		}
-		
-		if(b_ExtendBoundingBox[active_weapon]) //Fat collision for hitting guranteed
+
+		if(!already_moved)
 		{
-			b_LagCompNPC_ExtendBoundingBox = true;
-		}
-		if(b_BlockLagCompInternal[active_weapon]) //Fat collision for hitting guranteed
-		{
-			b_LagCompNPC_BlockInteral = true;
-		}
-		if(!b_Do_Not_Compensate[active_weapon])
-		{
-			b_LagCompNPC = false; //For guns that rapid fire or are melee as i do my own logic regarding that.
-		}
-		else 	//This gets called less then the above unironically, so ill make it an else. some guns fire REALLY fast on the top, thats why. also lasers are excluded from this as they ahve their own logic
-				//And its REALLY hard to misswith those, and its server side too. so people will predict in their mind anyways. hopefully.
-		{
-			if(!already_moved)
-			{
-				LagCompEntitiesThatAreIntheWay(Compensator);
-			}
+			LagCompEntitiesThatAreIntheWay(Compensator);
 		}
 	}
 	#if defined LagCompensation
@@ -780,28 +774,8 @@ Trying to pass through them via passfilter, it works but stops. probably cus the
 
 */
 
-public void LagCompMovePlayersExceptYouBack()
-{
-	if(Move_Players != 0)
-	{
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client) && Move_Players != client)
-			{
-				if (TeutonType[client] == TEUTON_NONE) 
-				{
-					//Building_MiniSentrygun.Fire
-					//TeleportEntity(client, Get_old_pos_back[client], NULL_VECTOR, NULL_VECTOR);
-					b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = false;
-				}
-			}
-		}
-	}
-}
-	
 public void LagCompMovePlayersExceptYou(int player)
 {
-	Move_Players = player;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && client != player)
@@ -816,12 +790,11 @@ public void LagCompMovePlayersExceptYou(int player)
 
 public void LagCompEntitiesThatAreIntheWay(int Compensator)
 {
-	Move_Players_Teutons = Compensator;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && client != Compensator)
 		{
-			if (TeutonType[client] != TEUTON_NONE) 
+			if (TeutonType[client] != TEUTON_NONE || (!Dont_Move_Allied_Npc)) 
 			{
 				b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = true;
 			}
@@ -832,14 +805,9 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-			if (IsValidEntity(entity) && entity != 0)
+			if (IsValidEntity(entity))
 			{
-				CClotBody npc = view_as<CClotBody>(entity);
-				if(npc.bBuildingIsPlaced) //making sure.
-				{
-					SetEntityCollisionGroup(entity, 0);
-					b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
-				}
+				b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
 			}
 		}
 	}
@@ -881,49 +849,13 @@ public void FinishLagCompensationResetValues()
 	b_LagCompAlliedPlayers = false; //Do it here.
 }
 */
+
 public void FinishLagCompMoveBack()
 {
-	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-		if (IsValidEntity(entity) && entity != 0)
-		{
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
-		}
-	}
-	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
-	{
-		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied) && baseboss_index_allied != 0)
-		{
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss_index_allied] = false;
-		}
-	}
-	if(Move_Players_Teutons != 0)
-	{
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client) && client != Move_Players_Teutons)
-			{
-				if (TeutonType[client] != TEUTON_NONE) 
-				{
-					b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = false;
-				}
-			}
-		}
-	}
-	if(b_LagCompNPC_AwayEnemies)
-	{
-		for(int entitycount_again; entitycount_again<i_MaxcountNpc; entitycount_again++)
-		{
-			int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again]);
-			if (IsValidEntity(baseboss_index_allied) && baseboss_index_allied != 0)
-			{
-				b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss_index_allied] = false;
-			}
-		}
-	}	
+	Zero(b_ThisEntityIgnoredEntirelyFromAllCollisions);
+	//Ultimate lazy
 }
+
 public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //This code does not need to be touched. mostly.
 {
 //	PrintToChatAll("finish lag comp");
@@ -939,14 +871,6 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 	#endif
 	
 //	FinishLagCompensationResetValues();
-	
-	Move_Players_Teutons = 0;
-	if(b_LagCompNPC_BlockInteral || !Dont_Move_Allied_Npc)
-	{
-		LagCompMovePlayersExceptYouBack();
-		Move_Players = 0;
-//		return MRES_Supercede;
-	}
 	
 	g_hSDKEndLagCompAddress = manager;
 	Sdkcall_Load_Lagcomp();
