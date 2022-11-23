@@ -1329,6 +1329,13 @@ public float Replicate_Damage_Medications(int victim, float damage, int damagety
 		if(value)
 			damage *= value;
 	}
+	else
+	{
+		value = Attributes_FindOnPlayer(victim, 205);	// RANGED damage resistance
+		if(value)
+			damage *= value;
+			//Everything else should be counted as ranged reistance probably.
+	}
 		
 	value = Attributes_FindOnPlayer(victim, 412);	// Overall damage resistance
 	if(value)

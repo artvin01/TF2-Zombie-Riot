@@ -3,7 +3,7 @@
 
 //Do you think i have time to use the bathroom?
 //If you need to sneeze, do it now
-#define MAX_TARGETS_HIT_RIOT 64
+#define MAX_TARGETS_HIT_RIOT 10 //Dont hit more then 5.
 
 //same as melee for now. but abit more fat
 #define RIOT_MAX_RANGE 100
@@ -65,7 +65,17 @@ public void Weapon_RiotShield_M2(int client, int weapon, bool crit, int slot)
 				if(IsValidEntity(RIOT_EnemiesHit[enemy_hit]))
 				{
 					find = true;
-					f_TargetWasBlitzedByRiotShield[enemy_hit][weapon] = GetGameTime() + 2.0;
+					f_TargetWasBlitzedByRiotShield[RIOT_EnemiesHit[enemy_hit]][weapon] = GetGameTime() + 2.0;
+					if(!b_thisNpcIsABoss[RIOT_EnemiesHit[enemy_hit]])
+					{
+						fl_NextDelayTime[RIOT_EnemiesHit[enemy_hit]] = GetGameTime () + 1.0;
+						f_TankGrabbedStandStill[RIOT_EnemiesHit[enemy_hit]] = GetGameTime () + 1.0;
+					}
+					else
+					{
+						fl_NextDelayTime[RIOT_EnemiesHit[enemy_hit]] = GetGameTime () + 0.2;
+						f_TankGrabbedStandStill[RIOT_EnemiesHit[enemy_hit]] = GetGameTime () + 0.2;
+					}
 					//PrintToChatAll("boom! %i",RIOT_EnemiesHit[enemy_hit]);
 				}
 			}
@@ -108,12 +118,13 @@ public void Weapon_RiotShield_M2(int client, int weapon, bool crit, int slot)
 			float ClientPos[3];
 			GetAttachment(client, "effect_hand_l", ClientPos, ClientAng);
 				
-			int particle = ParticleEffectAt(ClientPos, "ExplosionCore_MidAir", 0.5);
+			int particle = ParticleEffectAt(ClientPos, "mvm_loot_dustup2", 0.5);
 					
 			SetParent(client, particle, "effect_hand_l");
+			TeleportEntity(particle, NULL_VECTOR,fAng,NULL_VECTOR);
 
 			CreateTimer(3.0, RiotShieldAbilityEnd_M2, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
-			Ability_Apply_Cooldown(client, slot, 10.0);
+			Ability_Apply_Cooldown(client, slot, 20.0);
 		}
 		else
 		{
@@ -191,7 +202,7 @@ public void Weapon_RiotShield_Deploy(int client, int weapon)
 			SetVariantString("!activator");
 			AcceptEntityInput(entity, "SetParent", weapon);
 			
-			pos[0] = -5.0;
+			pos[0] = 5.0;
 			pos[1] = 7.5;
 			pos[2] = -60.0;
 			ang[1] = 180.0;
