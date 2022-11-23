@@ -680,7 +680,7 @@
 		"de"		"Jemand hat ihre PackAPunch Maschine benutzt, du bekommst +400 Kredit!"
 		"pt"		"Alguém usou sua maquina de Pack-a-Punch, Você ganhou +400 Créditos!"
 		"nl"		"Iemand gebruikte net uw Pack-A-Punch, je krijgt hiervoor +400 krediet!" 
-		"chi"       "队友使用了你的***，你获得 400 的现金奖励"
+		"chi"       "队友使用了你的武器工作台，你获得 400 的现金奖励"
 	}
 	"Equip Melee To Use"
 	{
@@ -715,7 +715,7 @@
 		"de"		"Deine Rüstung ist zu ausgereizt für die Munitions kiste, Bitte benutze einen Rüstungstisch um mehr zu bekommen."
 		"pt"		"Sua armadura está máximizada para caixa de munição! Por favor use uma mesa de armadura para pegar mais."
 		"nl"		"Het hoeveelheid schild dat u van een amunitiekist kunt krijgen heeft zijn maximum berijkt! Gebruikt alstublieft een schild tafel om meer te bekrijgen."
-		//"chi"       "你的护甲柜已达到最大摆放数"
+		"chi"       "你的护甲柜已达到最大摆放数，请升级建筑属性来放置更多的护甲柜"
 	}
 	"Max Mana Reached"
 	{
@@ -761,7 +761,7 @@
 		"ru" 		"Получено дополнительно +{1} кредитов за волну благодаря деревням!"
 		"pt"		"Ganhou {1} extra nesta onda graças aos Aldeões!"
 		"nl"		"Je krijgt een extra {1} geld dankzij uw dorp!"
-		"chi"       "得益于村庄，回合结束额外获得 {1} 的现金奖励"
+		"chi"       "得益于卫星，回合结束额外获得 {1} 的现金奖励"
 	}
 	"Picking Up Building"
 	{
@@ -1396,7 +1396,7 @@
 		"ru" 		"Нажмите ПЕРЕЗАРЯДКА, чтобы улучшить свою деревню."
 		"pt"		"Aperte o botão de RECARREGAR para aprimorar sua vilá."
 		"nl"		"Druk op de HERLAAD toets om uw dorp te upgraden."
-		"chi"       "按下R键升级你的村庄"
+		"chi"       "按下R键升级你的卫星"
 	}
 	"Pong"
 	{
@@ -1518,6 +1518,7 @@
 		"de"		"Grigori wurde geheilt!\nDu kannst mit ihm reden während der Setup zeit um einen 20%% Discount auf zufällige Gegenstände zu bekommen!"
 		"pt"		"Grigori foi curado!\nVocê pode falar com ele durante os intervalos para ter até 20%% de desconto em itens aleatorios!"
 		"nl"		"Grigori werd genezen!\nJe kunt met hem praten tijdens de opstellingstijd om een 20%% korting te krijgen op verschillende items!"
+		"chi"       "格里神父已被救出！\n你可以在休息回合中与他交易，与他交易的商品都会折扣20%%"
 	}
 	"TF2: Zombie Riot"
 	{
@@ -1619,7 +1620,7 @@
 		"de"		"Sie haben nur 60%% Verdient, weil sie nicht in spiel, sind."
 		"pt"		"Você ganhou apenas 60%% devido não estar jogando."
 		"nl"		"Je hebt maar 60%% gekregen omdat je niet aan het spelen was."
-		"chi"       "因为你不在游戏中，你只获得了60%的收益。"
+		"chi"       "因为你不在游戏中，你只获得了60%%的收益。"
 	}
 	"You have only gained 70 %% due to being a non-player player, but still helping"
 	{
@@ -1628,7 +1629,7 @@
 		"de"		"Sie haben nur 70%% verdient, weil sie ein Nicht-Spieler waren, aber trotzdem geholfen haben. (Sie sind ein Teutonic Knight!)"
 		"pt"		"Você ganhou apenas 70%% devido não ser um jogador não-classe, mas ainda ajudou (Você é um Cavaleiro Teutônico)."
 		"nl"		"Je hebt maar 70%% gekregen ommdat je een niet-spelende speler bent maar nogsteeds aan het helpen bent (Je bent een Teutonische Ridder!)"
-		"chi"       "作为一个非玩家，你只获得了70%的收益，但仍然有帮助。(你是一个日耳曼骑士!)"
+		"chi"       "作为一个非玩家，你只获得了70%%的收益，但仍然有帮助。(你是一个日耳曼骑士!)"
 	}
 	"Be sure to spend all your starting cash!"
 	{
@@ -1722,7 +1723,7 @@
 		"ru"		"Кто-то купил что-то другое для NPC, вы получили [{1}] кредитов взамен в качестве компенсации."
 		"pt"		"Alguém comprou algo para o npc, Você ganha [{1}] em retorno por compensação."
 		"nl"		"Iemand heeft iets anders voor de npc gekocht. U krijgt [{1}] geld terug als compensatie."
-		"chi"       "有人给NPC买了别的东西，你会得到现金作为补偿。"
+		"chi"       "有人给NPC买了别的东西，你会得到 [{1}] 的现金作为补偿。"
 	}
 	"A Miniboss has Spawned.."
 	{
@@ -1746,7 +1747,7 @@
 		"ru"		"Это краткое руководство. Откройте таблицу очков (TAB), чтобы открыть магазин."
 		"pt"		"Isto é um tutorial curto. Pressione o botão do placar (TAB) para abrir a loja."
 		"nl"		"Dit is een korte tutorial. Open het scorebord (TAB) om de winkel te openen"
-		"chi"       "这是一个简单的教程。按下TAB键来打开商店。"
+		"chi"       "这是一个简单的新手教程。按下TAB键来打开商店。"
 	}
 	"tutorial_2"
 	{
@@ -1755,7 +1756,7 @@
 		"en"		"Good! You can also Open the store with %%+showscores%% when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want.\nOpen chat and type ''/store'' to open the store again if it got closed!"
 		"pt"		"Otimo! Agora navegue até a seção de armas e compre uma arma que você goste.\nAbra o placar (TAB) para abrir a loja novamente caso ela feche."
 		"nl"		"Goed! Navigeer nu naar wapens en koop een wapen naar keuze.\nOpen het scorebord (TAB) om de winkel nogmaals te open als het wordt gesloten."
-		"chi"       "好!现在导航到武器和购买任何你想要的武器。\n如果商店被关闭，你可以再次按下TAB键来打开它!"
+		"chi"       "好!现在导航到武器并购买任何你想要的武器。\n如果商店被关闭，你可以再次按下TAB键来打开它!"
 	}
 	"tutorial_3"
 	{

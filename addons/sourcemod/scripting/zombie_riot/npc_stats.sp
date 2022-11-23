@@ -21,6 +21,7 @@ bool b_AllowBackWalking[MAXENTITIES];
 float fl_JumpStartTime[MAXENTITIES];
 float fl_JumpCooldown[MAXENTITIES];
 float fl_NextThinkTime[MAXENTITIES];
+float fl_NextRunTime[MAXENTITIES];
 float fl_NextMeleeAttack[MAXENTITIES];
 float fl_Speed[MAXENTITIES];
 int i_Target[MAXENTITIES];
@@ -2484,6 +2485,11 @@ methodmap CClotBody
 		public get()							{ return fl_NextThinkTime[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextThinkTime[this.index] = TempValueForProperty; }
 	}
+	property float m_flNextRunTime
+	{
+		public get()							{ return fl_NextRunTime[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_NextRunTime[this.index] = TempValueForProperty; }
+	}
 	property float m_flNextDelayTime
 	{
 		public get()							{ return fl_NextDelayTime[this.index]; }
@@ -3663,7 +3669,11 @@ methodmap CClotBody
 		this.DispatchAnimEvents();
 		
 		//Run and StuckMonitor
-		SDKCall(g_hRun,          this.GetLocomotionInterface());	
+		if(this.m_flNextRunTime < GetGameTime())
+		{
+			this.m_flNextRunTime = GetGameTime() + 0.1; //Only update every 0.1 seconds, we really dont need more, 
+			SDKCall(g_hRun,          this.GetLocomotionInterface());	
+		}
 		
 		/*
 		
@@ -3797,6 +3807,8 @@ public void NPC_Base_InitGamedata()
 	
 	// thanks to Dysphie#4094 on discord for help
 	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::UpdateGroundConstraint", Dhook_UpdateGroundConstraint_Pre, Dhook_UpdateGroundConstraint_Post);
+
+//	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::ResolveCollision", Dhook_ResolveCollision_Pre, Dhook_ResolveCollision_Post);
 	
 	delete gamedata;
 	
@@ -7754,6 +7766,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_JumpCooldown[entity] = 0.0;
 	fl_NextDelayTime[entity] = 0.0;
 	fl_NextThinkTime[entity] = 0.0;
+	fl_NextRunTime[entity] = 0.0;
 	fl_NextMeleeAttack[entity] = 0.0;
 	fl_Speed[entity] = 0.0;
 	i_Target[entity] = -1;
@@ -7982,6 +7995,20 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 	return MRES_Ignored;
 }
 
+
+public MRESReturn Dhook_ResolveCollision_Pre()
+{
+	PrintToChatAll("-----");
+	PrintToChatAll("1");
+	return MRES_Ignored;
+}
+
+public MRESReturn Dhook_ResolveCollision_Post()
+{
+	PrintToChatAll("2");
+	PrintToChatAll("-----");
+	return MRES_Ignored;
+}
 
 
 public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask, bool originalResult)

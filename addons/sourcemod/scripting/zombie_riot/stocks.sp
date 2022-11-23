@@ -2431,12 +2431,12 @@ public void Give_Assist_Points(int target, int assister)
 	f_assist_heal_player_time[target] = GetGameTime() + 10.0;	
 }
 
-public int CountPlayersOnRed()
+int CountPlayersOnRed(bool alive = false)
 {
 	int amount;
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
+		if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && (!alive || (TeutonType[client] != TEUTON_NONE && dieingstate[client] > 0)))
 			amount++;
 	}
 	

@@ -497,6 +497,10 @@
 		"pt"		"P15T014"
 		"nl"		"P15T001"
 	}
+	"Riot Gun"
+	{
+		"en"		"Riot Gun"
+	}
 	"Heavy Desert Eagle"
 	{
 		"en"		"Heavy Desert Eagle"
@@ -1595,7 +1599,7 @@
 		"de"		"Affen-Wissen"
 		"pt"		"Conhecimento"
 		"nl"		"Apen Kennis"
-		"chi"       "猴子知识"
+		"chi"       "幸存者技能"
 	}
 	"Fast Tack Attacks [Rare]"
 	{
@@ -1897,7 +1901,7 @@
 	     "en"       "Fusions Blade"
 		 "ru"       "Лезвие фьюжена"
 		 "pt"		"Laminâs de Fusão"
-	     "chi"       "熔岩刀"
+	     "chi"       "熔岩刃"
 	}
 	"Fractured Ark"
 	{

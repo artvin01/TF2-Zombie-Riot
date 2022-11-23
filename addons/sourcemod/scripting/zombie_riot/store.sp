@@ -79,6 +79,8 @@ enum struct ItemInfo
 	Function FuncAttack3;
 	Function FuncReload4;
 	Function FuncOnBuy;
+	Function FuncOnDeploy;
+	Function FuncOnHolster;
 	
 	int Attack3AbilitySlot;
 	
@@ -223,6 +225,14 @@ enum struct ItemInfo
 		FormatEx(buffer, sizeof(buffer), "%sfunc_onbuy", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncOnBuy = GetFunctionByName(null, buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%sfunc_ondeploy", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.FuncOnDeploy = GetFunctionByName(null, buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%sfunc_onholster", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.FuncOnHolster = GetFunctionByName(null, buffer);
 		
 		FormatEx(buffer, sizeof(buffer), "%sint_ability_onequip", prefix);
 		this.CustomWeaponOnEquip 		= kv.GetNum(buffer);
@@ -391,6 +401,39 @@ static int NPCCash[MAXTF2PLAYERS];
 static int NPCTarget[MAXTF2PLAYERS];
 static bool InLoadoutMenu[MAXTF2PLAYERS];
 static bool HasMultiInSlot[MAXTF2PLAYERS][6];
+static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
+
+void Store_WeaponSwitch(int client, int weapon)
+{
+	if(HolsterFunc[client] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, HolsterFunc[client]);
+		Call_PushCell(client);
+		Call_Finish();
+
+		HolsterFunc[client] = INVALID_FUNCTION;
+	}
+
+	if(weapon != -1 && StoreWeapon[weapon] > 0)
+	{
+		static Item item;
+		StoreItems.GetArray(StoreWeapon[weapon], item);
+
+		static ItemInfo info;
+		if(item.Owned[client] > 0 && item.GetItemInfo(item.Owned[client] - 1, info))
+		{
+			if(info.FuncOnDeploy != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, info.FuncOnDeploy);
+				Call_PushCell(client);
+				Call_PushCell(weapon);
+				Call_Finish();
+			}
+
+			HolsterFunc[client] = info.FuncOnHolster;
+		}
+	}
+}
 
 void Store_RemoveSellValue()
 {
@@ -421,7 +464,7 @@ bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 		for(int i; i<length; i++)
 		{
 			StoreItems.GetArray(i, item);
-			if(item.NPCWeapon >= 0 && !item.Hidden && !item.NPCWeaponAlways && !item.Level)
+			if(item.NPCWeapon >= 0 && !item.TextStore[0] && !item.Hidden && !item.NPCWeaponAlways && !item.Level)
 			{
 				int current;
 				for(int a; item.GetItemInfo(a, info); a++)
@@ -1182,6 +1225,7 @@ void Store_EquipSlotCheck(int client, int slot)
 				count++;
 				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
 				{
+					PrintToChat(client, "%s was unequipped", TranslateItemName(client, item.Name, ""));
 					item.Equipped[client] = false;
 					StoreItems.SetArray(i, item);
 					break;
@@ -1220,6 +1264,8 @@ void Store_ClientDisconnect(int client)
 		FormatEx(buffer, sizeof(buffer), "%d;%d", CurrentGame, CashSpent[client]);
 		CookieCache.Set(client, buffer);
 	}
+	
+	Store_WeaponSwitch(client, -1);
 	
 	CashSpent[client] = 0;
 	CashSpentTotal[client] = 0;
@@ -1653,7 +1699,7 @@ public void MenuPage(int client, int section)
 					menu.AddItem(buffer2, buffer, style);	// 0
 					
 					bool fullSell = (item.BuyWave[client] == Waves_GetRound());
-					bool canSell = (item.Owned[client] && ((info.Cost && fullSell) || item.Sell[client]));
+					bool canSell = (item.Owned[client] && ((info.Cost && fullSell) || item.Sell[client] > 0));
 
 					if(item.Equipped[client] && info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
 					{
@@ -2756,7 +2802,7 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("465", 10.0);											// x10 faster diepsner build
 	map.SetValue("464", 10.0);											// x10 faster sentry build
 	map.SetValue("740", 0.0);											// No Healing from mediguns, allow healing from pickups
-	map.SetValue("397", 50.0);											// Ignore ally with shooting
+//	map.SetValue("397", 50.0);											// Ignore ally with shooting
 	map.SetValue("169", 0.0);											// Complete sentrygun Immunity
 //	map.SetValue("49", 0.0);											// Completly disable double jump as we dont even use this, client prediction babyyyy!!!
 																		//... doesnt work on player, must be on weapon...

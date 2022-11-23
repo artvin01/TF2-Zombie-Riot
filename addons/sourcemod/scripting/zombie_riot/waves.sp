@@ -603,15 +603,11 @@ void Waves_Progress()
 			round.Waves.GetArray(CurrentWave, wave);
 			WaveIntencity = wave.Intencity;
 			
-			float multi = 0.05;
-			for(int client=1; client<=MaxClients; client++)
-			{
-				if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
-					multi += 0.25;
-			}
+			float playercount = float(CountPlayersOnRed());
 			
-			if(multi < 0.5)
-				multi = 0.5;
+			float multi = Pow(1.07, playercount);
+
+			multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%
 			
 			MultiGlobal = multi;
 			
@@ -630,14 +626,23 @@ void Waves_Progress()
 			
 			if(wave.EnemyData.Does_Not_Scale == 0)
 			{
-				count = RoundToNearest(float(count)*multi);
+				if(Is_a_boss == 0)
+				{
+					count = RoundToNearest(float(count)*multi);
+				}
+				else
+				{
+					float multiBoss = playercount * 0.25;
+					//If its any boss, then make it scale like old.
+					count = RoundToNearest(float(count)*multiBoss);
+				}
 			}
 			
-			if(count < 1)
+			if(count < 1) //So its always 1
 				count = 1;
 				
 			
-			if(count > 150)
+			if(count > 150) //So its always less then 150.
 				count = 150;
 			
 			if(!wave.EnemyData.Friendly)
@@ -661,56 +666,22 @@ void Waves_Progress()
 				
 				if(ScaleWithHpMore)
 				{
-					multi_health = 0.01;
+					multi_health = 1.12;
 				}
 				else
 				{
-					multi_health = 0.25;
+					multi_health = 1.07;
 				}
-							
-				for(int client=1; client<=MaxClients; client++)
-				{
-					if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
-					{
-						if(ScaleWithHpMore)
-						{
-							multi_health += 0.20;
-						}
-						else
-						{
-							multi_health += 0.15;
-						}
-					}
-				}
-				
-				if(!ScaleWithHpMore)
-				{
-					if(multi_health < 0.5)
-						multi_health = 0.5;	
-				}
-				
-				float amount_of_people = float(CountPlayersOnRed());
-				
+
+				multi = Pow(multi_health, playercount);
+
+				//Do not downscale boss hp! Makes bosses a joke on low player counts, unless its a raid, then do that!
 				if(ScaleWithHpMore)
 				{
-					amount_of_people *= 0.14;
-					
-					if(amount_of_people < 1.0)
-						amount_of_people = 1.0;
+					multi -= 0.2544; //So if its 2 players, it defaults to 1.0 or less if alone.
 				}
-				else
-				{
-					amount_of_people *= 0.1;
 				
-					if(amount_of_people < 1.0)
-						amount_of_people = 1.0;				
-					
-				}
-					
-				multi_health *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
-		
-					
-				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multi_health);
+				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multi);
 				wave.EnemyData.Health = Tempomary_Health;
 			}
 		
