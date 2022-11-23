@@ -852,7 +852,11 @@ public void FinishLagCompensationResetValues()
 
 public void FinishLagCompMoveBack()
 {
-	Zero(b_ThisEntityIgnoredEntirelyFromAllCollisions);
+	b_LagCompAlliedPlayers = false;
+	for (int entity = 0; entity < MAXENTITIES; entity++)
+	{
+		b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
+	}
 	//Ultimate lazy
 }
 
@@ -865,6 +869,7 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 //	int Compensator = param.Get(1);
 	
 	FinishLagCompMoveBack();
+	
 	#if defined LagCompensation
 	if(b_LagCompNPC)
 		FinishLagCompensation_Base_boss();
