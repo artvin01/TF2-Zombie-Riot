@@ -3107,7 +3107,7 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 					}
 					else
 					{
-						PrintToChatAll("nope");
+						PrintToChatAll(info.Classname);
 					}
 
 					Store_GiveItem(client, i, use, found);
