@@ -70,6 +70,11 @@ public void Weapon_RiotShield_M2_Base(int client, int weapon, bool crit, int slo
 		CloseHandle(trace);
 		FinishLagCompensation_Base_boss();
 
+		bool RaidActive = false;
+
+		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			RaidActive = true;
+
 		for (int enemy_hit = 0; enemy_hit < MAX_TARGETS_HIT; enemy_hit++)
 		{
 			if (RIOT_EnemiesHit[enemy_hit])
@@ -86,21 +91,20 @@ public void Weapon_RiotShield_M2_Base(int client, int weapon, bool crit, int slo
 					}
 
 					float Duration_ExtraDamage = 2.0;
-
 					float Duration_Stun = 1.0;
-					float Duration_Stun_Boss = 0.2;
+					float Duration_Stun_Boss = 0.5;
 
 					if(pap == 1)
 					{
 						Duration_ExtraDamage = 3.0;
 						Duration_Stun = 1.5;
-						Duration_Stun_Boss = 0.4;
+						Duration_Stun_Boss = 0.75;
 					}
 
 					f_TargetWasBlitzedByRiotShield[RIOT_EnemiesHit[enemy_hit]][weapon] = GetGameTime() + Duration_ExtraDamage;
 
-					if(!b_thisNpcIsABoss[RIOT_EnemiesHit[enemy_hit]])
-					{ 
+					if(!b_thisNpcIsABoss[RIOT_EnemiesHit[enemy_hit]] && !RaidActive)
+					{
 						f_StunExtraGametimeDuration[RIOT_EnemiesHit[enemy_hit]] += (Duration_Stun - TimeSinceLastStunSubtract);
 						fl_NextDelayTime[RIOT_EnemiesHit[enemy_hit]] = GetGameTime() + Duration_Stun - f_StunExtraGametimeDuration[RIOT_EnemiesHit[enemy_hit]];
 						f_TankGrabbedStandStill[RIOT_EnemiesHit[enemy_hit]] = GetGameTime() + Duration_Stun - f_StunExtraGametimeDuration[RIOT_EnemiesHit[enemy_hit]];
