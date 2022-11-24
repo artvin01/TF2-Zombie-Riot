@@ -3048,7 +3048,7 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(SpawnWeapon_Special(client, "tf_weapon_pda_engineer_destroy", 26, 100, 5, "671 ; 1"));
 	*/
 
-	entity = GiveWearable(client, 26);
+	entity = GiveWearable(client, 0);
 	TF2Attrib_SetByDefIndex(entity, 221, -99.0);
 	TF2Attrib_SetByDefIndex(entity, 160, 1.0);
 	TF2Attrib_SetByDefIndex(entity, 35, 0.0);

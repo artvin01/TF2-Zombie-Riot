@@ -891,8 +891,11 @@ stock int GiveWearable(int client, int index)
 	int entity = CreateEntityByName("tf_wearable");
 	if(entity > MaxClients)	// Weapon viewmodel
 	{
-		SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", index);
-		SetEntProp(entity, Prop_Send, "m_bInitialized", true);
+		if(index != 0)
+		{
+			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", index);
+			SetEntProp(entity, Prop_Send, "m_bInitialized", true);
+		}
 		SetEntProp(entity, Prop_Send, "m_iEntityQuality", 1);
 		SetEntProp(entity, Prop_Send, "m_iEntityLevel", 1);
 		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);

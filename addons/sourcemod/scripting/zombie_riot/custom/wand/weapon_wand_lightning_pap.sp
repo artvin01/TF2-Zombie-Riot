@@ -135,7 +135,7 @@ public Action Smite_Timer(Handle Smite_Logic, DataPack pack)
 	float damage = ReadPackFloat(pack);
 	int weapon = EntRefToEntIndex(ReadPackCell(pack));
 	
-	if(IsValidEntity())
+	if(IsValidEntity(weapon))
 	{
 		if (NumLoops >= Smite_ChargeTime)
 		{
