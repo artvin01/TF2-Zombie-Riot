@@ -3237,7 +3237,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 					if(entity != -1)
 					{
 						TF2_RemoveItem(client, entity);
-						PrintToChatAll("Removed old")
+						PrintToChatAll("Removed old");
 					}
 				}
 
