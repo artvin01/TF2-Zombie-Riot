@@ -63,13 +63,15 @@ bool hideprojectile = true) //This will handle just the spawning, the rest like 
 		f_WandDamage[entity] = damage;
 		i_WandIdNumber[entity] = WandId;
 		b_EntityIsArrow[entity] = true;
-		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", -1); //No owner entity! woo hoo
+		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
+		//Edit: Need owner entity, otheriwse you can actuall hit your own god damn rocket and make a ding sound. (Really annoying.)
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage should be nothing. if it somehow goes boom.
 		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
 		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
 		DispatchSpawn(entity);
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
 
+		SetEntityCollisionGroup(entity, 27);
 		for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
 		{
 			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", i_ProjectileIndex, _, i);
@@ -91,7 +93,7 @@ bool hideprojectile = true) //This will handle just the spawning, the rest like 
 			particle = ParticleEffectAt(fPos, WandParticle, 0.0); //Inf duartion
 			TeleportEntity(particle, NULL_VECTOR, fAng, NULL_VECTOR);
 			SetParent(entity, particle);	
-			SetEntityCollisionGroup(particle, 1);
+			SetEntityCollisionGroup(particle, 27);
 		}
 		i_WandParticle[entity] = EntIndexToEntRef(particle);
 
