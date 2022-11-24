@@ -3047,7 +3047,15 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 	/*
 	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(SpawnWeapon_Special(client, "tf_weapon_pda_engineer_destroy", 26, 100, 5, "671 ; 1"));
 	*/
-	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(SpawnWeapon_Special(client, "tf_weapon_invis", 26, 100, 5, "221 ; -99 ; 160 ; 1 ; 35 ; 0 ; 816 ; 1 ; 671 ; 1 ; 34 ; 999"));
+
+	int entity = GiveWearable(client, 26);
+	TF2Attrib_SetByDefIndex(entity, 221, -99.0);
+	TF2Attrib_SetByDefIndex(entity, 160, 1.0);
+	TF2Attrib_SetByDefIndex(entity, 35, 0.0);
+	TF2Attrib_SetByDefIndex(entity, 816, 1.0);
+	TF2Attrib_SetByDefIndex(entity, 671, 1.0);
+	TF2Attrib_SetByDefIndex(entity, 34, 999.0);
+	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(entity);
 	
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
 	SetAbilitySlotCount(client, 0);
