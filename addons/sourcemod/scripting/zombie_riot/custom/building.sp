@@ -1148,6 +1148,7 @@ public void Building_TakeDamagePost(int entity, int attacker, int inflictor, flo
 */
 
 static Function Building[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
+static int BuildingWeapon[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 //static float GrabAt[MAXTF2PLAYERS];
 //static int GrabRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 
@@ -1344,6 +1345,7 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 					if(!StrContains(buffer, "obj_dispenser"))
 					{
 						Building[client] = INVALID_FUNCTION;
+						BuildingWeapon[client] = INVALID_ENT_REFERENCE;
 						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
 						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 						int iBuilder = Spawn_Buildable(client);

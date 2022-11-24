@@ -2482,7 +2482,8 @@ float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF,
 float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF,
 bool FromBlueNpc = false,
 int maxtargetshit = 10,
-bool ignite = false)
+bool ignite = false,
+float dmg_against_entity_multiplier = 3.0)
 {
 	float damage_reduction = 1.0;
 	int Closest_npc = 0;
@@ -2567,7 +2568,7 @@ bool ignite = false)
 
 			if(FromBlueNpc && !IsValidClient(Closest_npc))
 			{
-				damage_1 *= 3.0; //enemy is an npc, and i am an npc.
+				damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
 			}
 			SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 			
@@ -2608,7 +2609,7 @@ bool ignite = false)
 							}	
 							if(FromBlueNpc)
 							{
-								damage_1 *= 3.0; //enemy is an npc, and i am an npc.
+								damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
 							}						
 							SDKHooks_TakeDamage(new_closest_npc, client, client, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 							
@@ -2691,7 +2692,7 @@ bool ignite = false)
 									}
 									if(FromBlueNpc)
 									{
-										damage_1 *= 3.0; //enemy is an npc, and i am an npc.
+										damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
 									}
 							
 									SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
@@ -2735,7 +2736,7 @@ bool ignite = false)
 										}
 										if(FromBlueNpc)
 										{
-											damage_1 *= 3.0; //enemy is an npc, and i am an npc.
+											damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
 										}
 
 										SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
