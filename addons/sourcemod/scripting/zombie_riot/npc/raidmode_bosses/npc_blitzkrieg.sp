@@ -391,7 +391,7 @@ methodmap Blitzkrieg < CClotBody
 			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
 		
-		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index)) + 15.0;	// used for extra rocket spam along side blitz's current rockets
+		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;	// used for extra rocket spam along side blitz's current rockets
 		
 		SDKHook(npc.index, SDKHook_Think, Blitzkrieg_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamage, Blitzkrieg_ClotDamaged);
