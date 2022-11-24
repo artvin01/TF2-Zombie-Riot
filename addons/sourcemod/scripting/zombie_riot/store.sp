@@ -2809,7 +2809,7 @@ void Store_ApplyAttribs(int client)
 //	map.SetValue("124", 1.0);											// Make sentries minisentries (only works on melee's that are wrenches...)
 //	map.SetValue("345", 0.0);											// No dispenser range
 //	map.SetValue("732", 0.0);											// No dispenser metal gain
-
+	map.SetValue("314", -2.0);											//Medigun uber duration, it has to be a body attribute
 
 	int wave_count = Waves_GetRound() + 1;
 	
