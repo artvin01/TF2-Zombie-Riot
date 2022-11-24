@@ -3082,6 +3082,7 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
 		int count;
+		bool hasPDA = false;
 		bool found = false;
 		bool use = true;
 		int length = StoreItems.Length;
@@ -3095,6 +3096,14 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 				item.GetItemInfo(item.Owned[client]-1, info);
 				if(info.Classname[0])
 				{
+					if(!StrContains(info.Classname, "tf_weapon_pda_engineer_build"))
+					{
+						if(hasPDA)
+							continue;
+						
+						hasPDA = true;
+					}
+
 					Store_GiveItem(client, i, use, found);
 					if(++count > 9)
 					{
