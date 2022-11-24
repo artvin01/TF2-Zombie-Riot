@@ -3105,10 +3105,6 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 						
 						hasPDA = true;
 					}
-					else
-					{
-						PrintToChatAll(info.Classname);
-					}
 
 					Store_GiveItem(client, i, use, found);
 					if(++count > 9)
@@ -3239,9 +3235,12 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 				{
 					entity = GetPlayerWeaponSlot(client, TFWeaponSlot_Grenade);
 					if(entity != -1)
+					{
 						TF2_RemoveItem(client, entity);
+						PrintToChatAll("Removed old")
+					}
 				}
-				
+
 				entity = SpawnWeapon(client, info.Classname, info.Index, 5, 6, info.Attrib, info.Value, info.Attribs);
 				StoreWeapon[entity] = index;
 				

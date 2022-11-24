@@ -2340,11 +2340,14 @@ public Action Building_CheckTimer(Handle timer, int ref)
 				Store_ConsumeItem(client, StoreWeapon[weapon]);
 				MenuPage(client, StoreWeapon[weapon]);
 
-				TF2_RemoveItem(client, weapon);
-				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
+				//TF2_RemoveItem(client, weapon);
+				//TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 
 				Building[client] = INVALID_FUNCTION;
 				BuildingWeapon[client] = INVALID_ENT_REFERENCE;
+
+				Store_GiveAll(client, GetClientHealth(client));
+				PrintToChatAll("Regened");
 			}
 			else
 			{
