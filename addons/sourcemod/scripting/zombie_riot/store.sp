@@ -3099,11 +3099,15 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 					if(!StrContains(info.Classname, "tf_weapon_pda_engineer_build"))
 					{
 						PrintToChatAll("Found: %d", hasPDA ? 1 : 0);
-						
+
 						if(hasPDA)
 							continue;
 						
 						hasPDA = true;
+					}
+					else
+					{
+						PrintToChatAll("nope");
 					}
 
 					Store_GiveItem(client, i, use, found);
