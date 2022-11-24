@@ -75,10 +75,10 @@ static float f3_LastValidPosition[MAXENTITIES][3]; //Before grab to be exact
 methodmap L4D2_Tank < CClotBody
 {
 	public void PlayHurtSound() {
-		if(this.m_flNextHurtSound > GetGameTime())
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
-		this.m_flNextHurtSound = GetGameTime() + 0.25;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.25;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
@@ -156,7 +156,7 @@ methodmap L4D2_Tank < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flNextDelayTime = GetGameTime() + 0.2;
+		npc.m_flNextDelayTime = GetGameTime(npc.index) + 0.2;
 		//IDLE
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -174,8 +174,8 @@ methodmap L4D2_Tank < CClotBody
 		}
 		
 		npc.m_flSpeed = 0.0;
-		npc.m_flNextThinkTime = GetGameTime() + 3.0;
-		npc.m_flDoSpawnGesture = GetGameTime() + 3.0;
+		npc.m_flNextThinkTime = GetGameTime(npc.index) + 3.0;
+		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 3.0;
 		npc.m_flNextFlameSound = 0.0;
 		npc.m_flFlamerActive = 0.0;
 		npc.m_bDoSpawnGesture = true;
@@ -190,12 +190,12 @@ methodmap L4D2_Tank < CClotBody
 		npc.m_iPlayMusicSound = 0;
 		
 		i_GrabbedThis[npc.index] = 0;
-		fl_ThrowPlayerCooldown[npc.index] = GetGameTime() + 3.0;
-		fl_ThrowPlayerImmenent[npc.index] = GetGameTime() + 3.0;
+		fl_ThrowPlayerCooldown[npc.index] = GetGameTime(npc.index) + 3.0;
+		fl_ThrowPlayerImmenent[npc.index] = GetGameTime(npc.index) + 3.0;
 		b_ThrowPlayerImmenent[npc.index] = false;
 		i_ThrowAlly[npc.index] = false;
 		i_IWantToThrowHim[npc.index] = -1;
-		fl_ThrowDelay[npc.index] = GetGameTime() + 3.0;
+		fl_ThrowDelay[npc.index] = GetGameTime(npc.index) + 3.0;
 
 		
 		float wave = float(ZR_GetWaveCount()+1);
@@ -221,12 +221,12 @@ public void L4D2_Tank_ClotThink(int iNPC)
 	
 //	PrintToChatAll("%.f",GetEntPropFloat(view_as<int>(iNPC), Prop_Data, "m_speed"));
 	
-	if(npc.m_flNextDelayTime > GetGameTime())
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
 	
@@ -250,7 +250,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flStandStill > GetGameTime())
+	if(npc.m_flStandStill > GetGameTime(npc.index))
 	{
 		npc.m_flSpeed = 0.0;
 		PF_StopPathing(npc.index);
@@ -261,18 +261,18 @@ public void L4D2_Tank_ClotThink(int iNPC)
 		npc.m_flSpeed = 320.0;	
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime())
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime() + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
 	
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 		
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -331,7 +331,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 		}
 		if(b_ThrowPlayerImmenent[npc.index])
 		{
-			if(fl_ThrowPlayerImmenent[npc.index] < GetGameTime())
+			if(fl_ThrowPlayerImmenent[npc.index] < GetGameTime(npc.index))
 			{
 				int client = EntRefToEntIndex(i_GrabbedThis[npc.index]);
 				if(IsValidEntity(client))
@@ -435,27 +435,27 @@ public void L4D2_Tank_ClotThink(int iNPC)
 				}
 				b_ThrowPlayerImmenent[npc.index] = false;
 				i_GrabbedThis[npc.index] = -1;
-				fl_ThrowPlayerCooldown[npc.index] = GetGameTime() + 13.0;
+				fl_ThrowPlayerCooldown[npc.index] = GetGameTime(npc.index) + 13.0;
 			}
 		}
 		else
 		{
-			if((flDistanceToTarget < 12500 && npc.m_flNextMeleeAttack < GetGameTime() && !I_Wanna_Throw_ally) || (flDistanceToTarget_OnRun < 12500 && npc.m_flNextMeleeAttack < GetGameTime()) || npc.m_flAttackHappenswillhappen)
+			if((flDistanceToTarget < 12500 && npc.m_flNextMeleeAttack < GetGameTime(npc.index) && !I_Wanna_Throw_ally) || (flDistanceToTarget_OnRun < 12500 && npc.m_flNextMeleeAttack < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
 			{
-				if(npc.m_flNextMeleeAttack < GetGameTime() || npc.m_flAttackHappenswillhappen)
+				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) || npc.m_flAttackHappenswillhappen)
 				{
 					//Play attack ani
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.AddGesture("ACT_TERROR_ATTACK_MOVING");
 						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime()+0.3;
-						npc.m_flAttackHappens_bullshit = GetGameTime()+0.43;
-						npc.m_flNextMeleeAttack = GetGameTime() + 1.5;
+						npc.m_flAttackHappens = GetGameTime(npc.index)+0.3;
+						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.43;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.5;
 						npc.m_flAttackHappenswillhappen = true;
 					}
 					//Can we attack right now?
-					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget_OnRun, 20000.0);
@@ -486,13 +486,13 @@ public void L4D2_Tank_ClotThink(int iNPC)
 						delete swingTrace;
 						npc.m_flAttackHappenswillhappen = false;
 					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flAttackHappenswillhappen = false;
 					}
 				}
 			}
-			else if(!I_Wanna_Throw_ally && (flDistanceToTarget < 12500 && fl_ThrowPlayerCooldown[iNPC] < GetGameTime() && !npc.m_bLostHalfHealth && (!b_NpcHasDied[closest] || closest < MaxClients) && !i_IsABuilding[closest]))
+			else if(!I_Wanna_Throw_ally && (flDistanceToTarget < 12500 && fl_ThrowPlayerCooldown[iNPC] < GetGameTime(npc.index) && !npc.m_bLostHalfHealth && (!b_NpcHasDied[closest] || closest < MaxClients) && !i_IsABuilding[closest]))
 			{
 				int Enemy_I_See;
 					
@@ -503,7 +503,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 					
 					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", f3_LastValidPosition[Enemy_I_See]);
 					
-					f_TankGrabbedStandStill[Enemy_I_See] = GetGameTime() + 1.2;
+					f_TankGrabbedStandStill[Enemy_I_See] = GetGameTime(npc.index) + 1.2;
 					//Ok just grab this mf
 					float flPos[3]; // original
 					float flAng[3]; // original
@@ -529,13 +529,13 @@ public void L4D2_Tank_ClotThink(int iNPC)
 					npc.AddGesture("ACT_HULK_THROW");
 					
 					i_GrabbedThis[npc.index] = EntIndexToEntRef(Enemy_I_See);
-				//	fl_ThrowPlayerCooldown[npc.index] = GetGameTime() + 10.0;
-					fl_ThrowPlayerImmenent[npc.index] = GetGameTime() + 1.0;
+				//	fl_ThrowPlayerCooldown[npc.index] = GetGameTime(npc.index) + 10.0;
+					fl_ThrowPlayerImmenent[npc.index] = GetGameTime(npc.index) + 1.0;
 					b_ThrowPlayerImmenent[npc.index] = true;
-					npc.m_flStandStill = GetGameTime() + 1.5;
+					npc.m_flStandStill = GetGameTime(npc.index) + 1.5;
 				}
 			}
-			else if (npc.m_bLostHalfHealth && fl_ThrowPlayerCooldown[iNPC] < GetGameTime())
+			else if (npc.m_bLostHalfHealth && fl_ThrowPlayerCooldown[iNPC] < GetGameTime(npc.index))
 			{
 				int ally = GetClosestAlly(npc.index);
 				if(IsValidEntity(EntRefToEntIndex(i_IWantToThrowHim[npc.index])))
@@ -558,7 +558,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 					{
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", f3_LastValidPosition[ally]);
 						
-						f_TankGrabbedStandStill[ally] = GetGameTime() + 1.2;
+						f_TankGrabbedStandStill[ally] = GetGameTime(npc.index) + 1.2;
 						i_ThrowAlly[npc.index] = true;
 						
 						//Ok just grab this mf
@@ -576,10 +576,10 @@ public void L4D2_Tank_ClotThink(int iNPC)
 						npc.AddGesture("ACT_HULK_THROW");
 						
 						i_GrabbedThis[npc.index] = EntIndexToEntRef(ally);
-					//	fl_ThrowPlayerCooldown[npc.index] = GetGameTime() + 10.0;
-						fl_ThrowPlayerImmenent[npc.index] = GetGameTime() + 1.0;
+					//	fl_ThrowPlayerCooldown[npc.index] = GetGameTime(npc.index) + 10.0;
+						fl_ThrowPlayerImmenent[npc.index] = GetGameTime(npc.index) + 1.0;
 						b_ThrowPlayerImmenent[npc.index] = true;
-						npc.m_flStandStill = GetGameTime() + 1.5;
+						npc.m_flStandStill = GetGameTime(npc.index) + 1.5;
 						i_IWantToThrowHim[npc.index] = -1;
 					}
 				}
@@ -612,14 +612,14 @@ public Action L4D2_Tank_ClotDamaged(int victim, int &attacker, int &inflictor, f
 	L4D2_Tank npc = view_as<L4D2_Tank>(victim);
 	
 	
-	if(npc.m_flDoSpawnGesture > GetGameTime())
+	if(npc.m_flDoSpawnGesture > GetGameTime(npc.index))
 	{
 		return Plugin_Handled;
 	}
 	
-	if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.PlayHurtSound();
 	}
 //	
@@ -631,7 +631,7 @@ public void L4D2_Tank_ClotDamagedPost(int victim, int attacker, int inflictor, f
 	L4D2_Tank npc = view_as<L4D2_Tank>(victim);
 	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) //Anger after half hp/400 hp
 	{
-//		npc.m_flDoSpawnGesture = GetGameTime() + 1.5;
+//		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 1.5;
 	//	npc.AddGesture("ACT_PANZER_STAGGER");
 		npc.m_bLostHalfHealth = true;
 		npc.m_flFlamerActive = 0.0;
@@ -839,7 +839,7 @@ public Action contact_throw_tank_entity(int client)
 	float chargerPos[3];
 	float flVel[3];
 	GetEntPropVector(client, Prop_Data, "m_vecVelocity", flVel);
-	if (npc.IsOnGround() && fl_ThrowDelay[client] < GetGameTime())
+	if (npc.IsOnGround() && fl_ThrowDelay[client] < GetGameTime(npc.index))
 	{
 		Zero(b_AlreadyHitTankThrow);
 		SDKUnhook(client, SDKHook_Think, contact_throw_tank_entity);	
@@ -905,7 +905,7 @@ void ApplySdkHookTankThrow(int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity))
 	{
-		fl_ThrowDelay[entity] = GetGameTime() + 0.1;
+		fl_ThrowDelay[entity] = GetGameTime(entity) + 0.1;
 		SDKHook(entity, SDKHook_Think, contact_throw_tank_entity);		
 	}
 	

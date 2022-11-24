@@ -993,10 +993,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		
 		
 	f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
-	
+
 	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
 	{
-		f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
 		Replicated_Damage *= 2.0;
 		damage *= 2.0;
 		return Plugin_Changed;	
@@ -1330,6 +1329,13 @@ public float Replicate_Damage_Medications(int victim, float damage, int damagety
 		if(value)
 			damage *= value;
 	}
+	else
+	{
+		value = Attributes_FindOnPlayer(victim, 205);	// RANGED damage resistance
+		if(value)
+			damage *= value;
+			//Everything else should be counted as ranged reistance probably.
+	}
 		
 	value = Attributes_FindOnPlayer(victim, 412);	// Overall damage resistance
 	if(value)
@@ -1375,17 +1381,15 @@ public void OnWeaponSwitchPost(int client, int weapon)
 {
 	if(weapon != -1)
 	{
-		int weapon2 = weapon;
-		
 		if(EntRefToEntIndex(i_PreviousWeapon[client]) != weapon)
 			OnWeaponSwitchPre(client, EntRefToEntIndex(i_PreviousWeapon[client]));
 		
 		i_PreviousWeapon[client] = EntIndexToEntRef(weapon);
 		
 		char buffer[36];
-		GetEntityClassname(weapon2, buffer, sizeof(buffer));
-		Building_WeaponSwitchPost(client, weapon2, buffer);
-		ViewChange_Switch(client, weapon2, buffer);
+		GetEntityClassname(weapon, buffer, sizeof(buffer));
+		Building_WeaponSwitchPost(client, weapon, buffer);
+		ViewChange_Switch(client, weapon, buffer);
 		
 		if(i_SemiAutoWeapon[weapon])
 		{
@@ -1398,6 +1402,8 @@ public void OnWeaponSwitchPost(int client, int weapon)
 			}
 		}
 	}
+
+	Store_WeaponSwitch(client, weapon);
 }
 
 public void OnWeaponSwitchPre(int client, int weapon)

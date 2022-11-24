@@ -2702,7 +2702,7 @@ methodmap CClotBody
 			Is_Boss = false;
 		}
 		
-		if(f_TankGrabbedStandStill[this.index] > Gametime)
+		if(f_TankGrabbedStandStill[this.index] > GetGameTime(this.index))
 		{
 			speed_for_return = 0.0;
 		}
@@ -7873,6 +7873,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_PernellBuff[entity] = false;
 	IgniteFor[entity] = 0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
+	f_StunExtraGametimeDuration[entity] = 0.0;
 	
 	FormatEx(c_HeadPlaceAttachmentGibName[entity], sizeof(c_HeadPlaceAttachmentGibName[]), "");
 }

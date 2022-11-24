@@ -123,10 +123,10 @@ public void FatherGrigori_OnMapStart_NPC()
 methodmap FatherGrigori < CClotBody
 {
 	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(24.0, 48.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
@@ -134,11 +134,11 @@ methodmap FatherGrigori < CClotBody
 	}
 	
 	public void PlayIdleAlertSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 14.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 14.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
@@ -146,10 +146,10 @@ methodmap FatherGrigori < CClotBody
 	}
 	
 	public void PlayHurtSound() {
-		if(this.m_flNextHurtSound > GetGameTime())
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
-		this.m_flNextHurtSound = GetGameTime() + 0.4;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
@@ -258,7 +258,7 @@ methodmap FatherGrigori < CClotBody
 		npc.m_flNextRangedBarrage_Singular = 0.0;
 		npc.m_bNextRangedBarrage_OnGoing = false;
 		npc.m_flAttackHappenswillhappen = false;
-		npc.m_flNextTeleport = GetGameTime() + 5.0;
+		npc.m_flNextTeleport = GetGameTime(npc.index) + 5.0;
 		npc.m_flDoingAnimation = 0.0;
 		npc.Anger = false;
 		npc.StartPathing();
@@ -320,12 +320,12 @@ public void FatherGrigori_ClotThink(int iNPC)
 {
 	FatherGrigori npc = view_as<FatherGrigori>(iNPC);
 	
-	if(npc.m_flNextDelayTime > GetGameTime())
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
 			
@@ -337,16 +337,16 @@ public void FatherGrigori_ClotThink(int iNPC)
 	}
 	
 	//Think throttling
-	if(npc.m_flNextThinkTime > GetGameTime()) {
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index)) {
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime() + 0.10;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	
 	int closest = npc.m_iTarget;
@@ -372,14 +372,14 @@ public void FatherGrigori_ClotThink(int iNPC)
 		
 		//Target close enough to hit
 		
-		if(npc.m_flNextRangedAttack < GetGameTime() && npc.m_flDoingAnimation < GetGameTime() && flDistanceToTarget < 202500)
+		if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && npc.m_flDoingAnimation < GetGameTime(npc.index) && flDistanceToTarget < 202500)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
 			if (!npc.Anger)
 			{
 				npc.FaceTowards(vecTarget, 1000.0);
-				npc.m_flNextRangedAttack = GetGameTime() + 3.5;
-				npc.m_flDoingAnimation = GetGameTime() + 1.0;
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.5;
+				npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.0;
 				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");
 				npc.FireRocket(vPredictedPos, 20.0, 800.0, "models/weapons/w_bullet.mdl", 2.0);	
 				npc.PlayRangedSound();
@@ -387,58 +387,58 @@ public void FatherGrigori_ClotThink(int iNPC)
 			else if (npc.Anger)
 			{
 				npc.FaceTowards(vecTarget, 1000.0);
-				npc.m_flNextRangedAttack = GetGameTime() + 2.0;
-				npc.m_flDoingAnimation = GetGameTime() + 1.0;
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 2.0;
+				npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.0;
 				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");
 				npc.FireRocket(vPredictedPos, 20.0, 800.0, "models/weapons/w_bullet.mdl", 2.0);	
 				npc.PlayRangedSound();
 			}
 		}
 											
-		if(npc.m_flNextRangedBarrage_Spam < GetGameTime() && flDistanceToTarget < 202500)
+		if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && flDistanceToTarget < 202500)
 		{
 			if (!npc.Anger)
 			{
 				npc.FaceTowards(vecTarget, 500.0);
-				npc.m_flDoingAnimation = GetGameTime() + 1.0;
+				npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.0;
 				if (!npc.m_bNextRangedBarrage_OnGoing)
 				{	
-					npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.45;
+					npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 0.45;
 					npc.m_bNextRangedBarrage_OnGoing = true;
 					npc.AddGesture("ACT_RANGE_ATTACK_THROW");
 				}
-				if (npc.m_flNextRangedBarrage_Singular < GetGameTime() && npc.m_bNextRangedBarrage_OnGoing)
+				if (npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && npc.m_bNextRangedBarrage_OnGoing)
 				{
 					npc.FireGrenade(vecTarget);
-					npc.m_flNextRangedBarrage_Spam = GetGameTime() + 8.0;
+					npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 8.0;
 					npc.m_bNextRangedBarrage_OnGoing = false;
 				}
 			}
 			else if (npc.Anger)
 			{
 				npc.FaceTowards(vecTarget, 500.0);
-				npc.m_flDoingAnimation = GetGameTime() + 1.0;
+				npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.0;
 				if (!npc.m_bNextRangedBarrage_OnGoing)
 				{	
-					npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.45;
+					npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 0.45;
 					npc.m_bNextRangedBarrage_OnGoing = true;
 					npc.AddGesture("ACT_RANGE_ATTACK_THROW");
 				}
-				if (npc.m_flNextRangedBarrage_Singular < GetGameTime() && npc.m_bNextRangedBarrage_OnGoing)
+				if (npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && npc.m_bNextRangedBarrage_OnGoing)
 				{
 					npc.FireGrenade(vecTarget);
-					npc.m_flNextRangedBarrage_Spam = GetGameTime() + 7.0;
+					npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 7.0;
 					npc.m_bNextRangedBarrage_OnGoing = false;
 				}
 			}
 		}
-		if(npc.m_flNextTeleport < GetGameTime() && npc.m_flDoingAnimation < GetGameTime() && flDistanceToTarget < 202500)
+		if(npc.m_flNextTeleport < GetGameTime(npc.index) && npc.m_flDoingAnimation < GetGameTime(npc.index) && flDistanceToTarget < 202500)
 		{
 			if (!npc.Anger)
 			{
 				npc.FaceTowards(vecTarget, 500.0);
-				npc.m_flNextTeleport = GetGameTime() + 10.0;
-				npc.m_flDoingAnimation = GetGameTime() + 1.5;
+				npc.m_flNextTeleport = GetGameTime(npc.index) + 10.0;
+				npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.5;
 	//			npc.AddGesture("ACT_SIGNAL1");
 				npc.PlayPullSound();
 				FatherGrigori_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
@@ -447,8 +447,8 @@ public void FatherGrigori_ClotThink(int iNPC)
 			{
 				npc.FaceTowards(vecTarget, 500.0);
 	//			npc.AddGesture("ACT_SIGNAL1");
-				npc.m_flNextTeleport = GetGameTime() + 7.0;
-				npc.m_flDoingAnimation = GetGameTime() + 1.5;
+				npc.m_flNextTeleport = GetGameTime(npc.index) + 7.0;
+				npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.5;
 				npc.PlayPullSound();
 				FatherGrigori_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 			}
@@ -459,19 +459,19 @@ public void FatherGrigori_ClotThink(int iNPC)
 			//Look at target so we hit.
 	//		npc.FaceTowards(vecTarget, 1000.0);
 				
-			if(npc.m_flNextMeleeAttack < GetGameTime())
+			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 			{
 				if (!npc.m_flAttackHappenswillhappen)
 				{
 					npc.AddGesture("ACT_MELEE_ATTACK");
 					npc.PlayMeleeSound();
-					npc.m_flAttackHappens = GetGameTime()+0.6;
-					npc.m_flAttackHappens_bullshit = GetGameTime()+1.0;
+					npc.m_flAttackHappens = GetGameTime(npc.index)+0.6;
+					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+1.0;
 					npc.m_flAttackHappenswillhappen = true;
-					npc.m_flDoingAnimation = GetGameTime() + 1.0;
+					npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.0;
 				}
 					
-				if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+				if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					Handle swingTrace;
 					npc.FaceTowards(vecTarget, 20000.0);
@@ -511,13 +511,13 @@ public void FatherGrigori_ClotThink(int iNPC)
 						} 
 					}
 					delete swingTrace;
-					npc.m_flNextMeleeAttack = GetGameTime() + 1.3;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.3;
 					npc.m_flAttackHappenswillhappen = false;
 				}
-				else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GetGameTime() + 1.3;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.3;
 				}
 			}
 		}
@@ -762,9 +762,9 @@ public Action FatherGrigori_OnTakeDamage(int victim, int &attacker, int &inflict
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker, true))
 		return Plugin_Continue;
 	*/
-	if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
 	

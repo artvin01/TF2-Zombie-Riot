@@ -85,11 +85,11 @@ methodmap Schwertkrieg < CClotBody
 {
 	
 	public void PlayIdleAlertSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
@@ -97,10 +97,10 @@ methodmap Schwertkrieg < CClotBody
 	}
 	
 	public void PlayHurtSound() {
-		if(this.m_flNextHurtSound > GetGameTime())
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
-		this.m_flNextHurtSound = GetGameTime() + 0.4;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
@@ -202,8 +202,8 @@ methodmap Schwertkrieg < CClotBody
 		
 		npc.StartPathing();
 		
-		animation_timer[npc.index] = GetGameTime() + 2.0;
-		TELEPORT_STRIKE_Usage[npc.index] = GetGameTime() + 10.0;
+		animation_timer[npc.index] = GetGameTime(npc.index) + 2.0;
+		TELEPORT_STRIKE_Usage[npc.index] = GetGameTime(npc.index) + 10.0;
 		TELEPORT_STRIKEActive[npc.index] = false;
 		TempOpener[npc.index] = false;
 		
@@ -224,12 +224,12 @@ public void Schwertkrieg_ClotThink(int iNPC)
 {
 	Schwertkrieg npc = view_as<Schwertkrieg>(iNPC);
 	
-	if(npc.m_flNextDelayTime > GetGameTime())
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
 			
@@ -240,24 +240,24 @@ public void Schwertkrieg_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime())
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	npc.m_flRangedArmor = 1.5;
-	npc.m_flNextThinkTime = GetGameTime() + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
-	if(TELEPORT_STRIKE_Usage[npc.index] <= GetGameTime() && !TELEPORT_STRIKEActive[npc.index] && !TempOpener[npc.index])
+	if(TELEPORT_STRIKE_Usage[npc.index] <= GetGameTime(npc.index) && !TELEPORT_STRIKEActive[npc.index] && !TempOpener[npc.index])
 	{
 		npc.m_flSpeed = 0.0;
 		float vEnd[3];
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", vEnd);
-		TELEPORT_STRIKE_Usage[npc.index] = GetGameTime() + TELEPORT_STRIKE_Timer;
+		TELEPORT_STRIKE_Usage[npc.index] = GetGameTime(npc.index) + TELEPORT_STRIKE_Timer;
 		TempOpener[npc.index] = true;
 		//if(IsValidAlly)
 		//{
@@ -273,9 +273,9 @@ public void Schwertkrieg_ClotThink(int iNPC)
 		TELEPORT_STRIKE_spawnRing_Vectors(vEnd, 320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
 		TELEPORT_STRIKE_spawnRing_Vectors(vEnd, 320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
 	}
-	if(TELEPORT_STRIKE_Usage[npc.index] <= GetGameTime() && !TELEPORT_STRIKEActive[npc.index] && TempOpener[npc.index])
+	if(TELEPORT_STRIKE_Usage[npc.index] <= GetGameTime(npc.index) && !TELEPORT_STRIKEActive[npc.index] && TempOpener[npc.index])
 	{
-		//TELEPORT_STRIKE_Usage[npc.index] = GetGameTime() + TELEPORT_STRIKE_Reuseable;
+		//TELEPORT_STRIKE_Usage[npc.index] = GetGameTime(npc.index) + TELEPORT_STRIKE_Reuseable;
 		TELEPORT_STRIKE_TeleportUsage[npc.index] = true;
 		TELEPORT_STRIKEActive[npc.index] = true;
 		TempOpener[npc.index] = false;
@@ -316,7 +316,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 			{
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex, 0.3);
 				static float flVel[3];
-				TELEPORT_STRIKE_Usage[npc.index] = GetGameTime() + TELEPORT_STRIKE_Reuseable;
+				TELEPORT_STRIKE_Usage[npc.index] = GetGameTime(npc.index) + TELEPORT_STRIKE_Reuseable;
 				
 				if(TELEPORT_STRIKE_TeleportUsage[npc.index])
 				{
@@ -378,7 +378,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 					//TELEPORT_STRIKE_spawnBeam(320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
 					TELEPORT_STRIKE_spawnRing_Vectors(vEnd, TELEPORT_STRIKE_Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 200, 1, TELEPORT_STRIKE_Smite_ChargeTime, 6.0, 0.1, 1, 1.0);
 					
-					//npc.m_flNextRangedSpecialAttack = GetGameTime() + 9.0;
+					//npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 9.0;
 					TELEPORT_STRIKEActive[npc.index] = false;
 				}
 			}
@@ -395,19 +395,19 @@ public void Schwertkrieg_ClotThink(int iNPC)
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
 				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GetGameTime())
+				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 				{
 					//Play attack ani
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
 						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime()+0.2;
-						npc.m_flAttackHappens_bullshit = GetGameTime()+0.35;
+						npc.m_flAttackHappens = GetGameTime(npc.index)+0.2;
+						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.35;
 						npc.m_flAttackHappenswillhappen = true;
 					}
 						
-					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
@@ -448,13 +448,13 @@ public void Schwertkrieg_ClotThink(int iNPC)
 							} 
 						}
 						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime() + 0.3;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.3;
 						npc.m_flAttackHappenswillhappen = false;
 					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime() + 0.3;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.3;
 					}
 				}
 			}
@@ -481,9 +481,9 @@ public Action Schwertkrieg_ClotDamaged(int victim, int &attacker, int &inflictor
 	if(attacker <= 0)
 		return Plugin_Continue;
 	
-	if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
 	

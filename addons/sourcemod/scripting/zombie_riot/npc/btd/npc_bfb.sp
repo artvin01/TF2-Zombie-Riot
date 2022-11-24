@@ -174,7 +174,7 @@ public void Bfb_ClotThink(int iNPC)
 		AcceptEntityInput(iNPC, "SetBodyGroup");
 	}
 	
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 	{
 		return;

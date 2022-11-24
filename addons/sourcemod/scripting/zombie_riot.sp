@@ -421,6 +421,7 @@ int i_DyingParticleIndication[MAXPLAYERS + 1]={-1, ...};
 
 //Needs to be global.
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
+float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
 float f_ChargeTerroriserSniper[MAXENTITIES];
 bool b_npcspawnprotection[MAXENTITIES];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
@@ -431,6 +432,7 @@ float f_LowIceDebuff[MAXENTITIES];
 float f_HighIceDebuff[MAXENTITIES];
 bool b_Frozen[MAXENTITIES];
 float f_TankGrabbedStandStill[MAXENTITIES];
+float f_StunExtraGametimeDuration[MAXENTITIES];
 bool b_PernellBuff[MAXENTITIES];
 float f_MaimDebuff[MAXENTITIES];
 float f_CrippleDebuff[MAXENTITIES];
@@ -1202,6 +1204,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 #include "zombie_riot/custom/weapon_sniper_monkey.sp"
 #include "zombie_riot/custom/weapon_cspyknife.sp"
 #include "zombie_riot/custom/wand/weapon_quantum_weaponry.sp"
+#include "zombie_riot/custom/weapon_riotshield.sp"
 
 #include "zombie_riot/custom/escape_sentry_hat.sp"
 #include "zombie_riot/custom/m3_abilities.sp"
@@ -1557,6 +1560,7 @@ public void OnMapStart()
 	ExplosiveBullets_Precache();
 	Quantum_Gear_Map_Precache();
 	WandStocks_Map_Precache();
+	Weapon_RiotShield_Map_Precache();
 	
 	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
 	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");
@@ -2383,6 +2387,7 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	//
 
 	Citizen_PlayerDeath(client);
+	Store_WeaponSwitch(client, -1);
 	Bob_player_killed(event, name, dontBroadcast);
 	RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
 }
@@ -4343,5 +4348,7 @@ public void MapStartResetAll()
 	Zero(i_HasBeenHeadShotted);
 	Zero(f_StuckTextChatNotif);
 	Zero(b_LimitedGibGiveMoreHealth);
+	Zero2(f_TargetWasBlitzedByRiotShield);
+	Zero(f_StunExtraGametimeDuration);
 	CurrentGibCount = 0;
 }

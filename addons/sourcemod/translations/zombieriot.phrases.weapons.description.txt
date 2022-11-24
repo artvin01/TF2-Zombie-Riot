@@ -589,15 +589,11 @@
 	}
 	"Riot Gun Desc"
 	{
-		"en"	"A gun that comes with a riot shield for major anti-range damage."
+		"en"	"A gun that comes with a riot shield for anti-range damage.\nPress M2 Nearby enemies to stun them and gain massively increaced attackspeed and damage for upto 10 hit targets."
 	}
 	"Riot Gun Pap 1"
 	{
-		"en"	"Boosts resistance, including melee. Weapon fires 3 bullets at once."
-	}
-	"Riot Gun Pap 2"
-	{
-		"en"	"Boosts resistance even further but heavily weakens your switch speed."
+		"en"	"Boosts resistance, including melee. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nPress M2 Nearby enemies to stun them and gain massively increaced attackspeed and damage for upto 10 hit targets"
 	}
 	"Buff Banner Desc"
 	{

@@ -931,10 +931,14 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		}
 		if(!i_WeaponCannotHeadshot[weapon])
 		{
-			if(hitgroup == HITGROUP_HEAD)
+			bool Blitzed_By_Riot = false;
+			if(f_TargetWasBlitzedByRiotShield[victim][weapon] > GetGameTime())
 			{
-				
-				i_HasBeenHeadShotted[victim] = true;
+				Blitzed_By_Riot = true;
+			}
+
+			if(hitgroup == HITGROUP_HEAD || Blitzed_By_Riot)
+			{
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
 					damage *= 2.0;
@@ -944,7 +948,16 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					damage *= 1.65;
 				}
 
-				if(i_CurrentEquippedPerk[attacker] == 5)
+				if(Blitzed_By_Riot) //Extra damage.
+				{
+					damage *= 2.0;
+				}
+				else
+				{
+					i_HasBeenHeadShotted[victim] = true; //shouldnt count as an actual headshot!
+				}
+
+				if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
 				{
 					damage *= 1.35;
 				}
@@ -961,7 +974,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				else
 				{
-					DisplayCritAboveNpc(victim, attacker, false);
+					DisplayCritAboveNpc(victim, attacker, Blitzed_By_Riot);
 					played_headshotsound_already_Case[attacker] = random_case;
 					played_headshotsound_already_Pitch[attacker] = pitch;
 				}
@@ -979,31 +992,33 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					Apply_Particle_Teroriser_Indicator(victim);
 					damage = 0.0;
 				}
-				
 				played_headshotsound_already[attacker] = GetGameTime();
-				switch(random_case)
+				if(!Blitzed_By_Riot) //dont play headshot sound if blized.
 				{
-					case 1:
+					switch(random_case)
 					{
-						for(int client=1; client<=MaxClients; client++)
+						case 1:
 						{
-							if(IsClientInGame(client) && client != attacker)
+							for(int client=1; client<=MaxClients; client++)
 							{
-								EmitSoundToClient(client, "zombiesurvival/headshot1.wav", victim, _, 80, _, volume, pitch);
+								if(IsClientInGame(client) && client != attacker)
+								{
+									EmitSoundToClient(client, "zombiesurvival/headshot1.wav", victim, _, 80, _, volume, pitch);
+								}
 							}
+							EmitSoundToClient(attacker, "zombiesurvival/headshot1.wav", _, _, 90, _, volume, pitch);
 						}
-						EmitSoundToClient(attacker, "zombiesurvival/headshot1.wav", _, _, 90, _, volume, pitch);
-					}
-					case 2:
-					{
-						for(int client=1; client<=MaxClients; client++)
+						case 2:
 						{
-							if(IsClientInGame(client) && client != attacker)
+							for(int client=1; client<=MaxClients; client++)
 							{
-								EmitSoundToClient(client, "zombiesurvival/headshot2.wav", victim, _, 80, _, volume, pitch);
+								if(IsClientInGame(client) && client != attacker)
+								{
+									EmitSoundToClient(client, "zombiesurvival/headshot2.wav", victim, _, 80, _, volume, pitch);
+								}
 							}
+							EmitSoundToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, volume, pitch);
 						}
-						EmitSoundToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, volume, pitch);
 					}
 				}
 				return Plugin_Changed;

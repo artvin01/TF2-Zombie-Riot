@@ -273,7 +273,7 @@ methodmap Bloonarius < CClotBody
 				LookAtTarget(client, npc.index);
 		}
 		
-		RaidModeTime = GetGameTime() + 300.0;
+		RaidModeTime = GetGameTime(npc.index) + 300.0;
 		
 		Raidboss_Clean_Everyone();
 		
@@ -292,7 +292,7 @@ public void Bloonarius_ClotThink(int iNPC)
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 	}
 	
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	

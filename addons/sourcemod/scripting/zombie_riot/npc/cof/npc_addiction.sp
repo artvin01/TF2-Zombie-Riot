@@ -44,18 +44,18 @@ methodmap Addicition < CClotBody
 {
 	public void PlayIdleSound()
 	{
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		this.m_flNextIdleSound = GetGameTime() + 3.5;
+		this.m_flNextIdleSound = GetGameTime(this.index) + 3.5;
 		EmitSoundToAll(g_PassiveSounds[GetRandomInt(0, sizeof(g_PassiveSounds) - 1)], this.index);
 	}
 	public void PlayHurtSound()
 	{
-		if(this.m_flNextHurtSound > GetGameTime())
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 		
-		this.m_flNextHurtSound = GetGameTime() + 2.0;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 2.0;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
@@ -80,7 +80,7 @@ methodmap Addicition < CClotBody
 	}
 	public void PlayAttackSound()
 	{
-		this.m_flNextHurtSound = GetGameTime() + 2.0;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 2.0;
 		EmitSoundToAll("cof/simon/attack.mp3", this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayLightningSound()
@@ -113,12 +113,12 @@ methodmap Addicition < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flRangedSpecialDelay = 1.0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_flReloadDelay = GetGameTime() + 2.0;
+		npc.m_flReloadDelay = GetGameTime(npc.index) + 2.0;
 		npc.m_flNextRangedSpecialAttack = npc.m_flReloadDelay + 0.0;
 		npc.m_bLostHalfHealth = false;
 		npc.m_bDissapearOnDeath = true;
 		npc.m_iChanged_WalkCycle = 0;
-		npc.m_flNextThinkTime = GetGameTime() + 2.5;
+		npc.m_flNextThinkTime = GetGameTime(npc.index) + 2.5;
 		
 		if(data[0])
 			npc.SetHalfLifeStats();
@@ -139,7 +139,7 @@ public void Addicition_ClotThink(int iNPC)
 {
 	Addicition npc = view_as<Addicition>(iNPC);
 	
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
@@ -304,12 +304,12 @@ public void Addicition_ClotThink(int iNPC)
 {
 	Addicition npc = view_as<Addicition>(iNPC);
 	/*
-	if(npc.m_flNextDelayTime > GetGameTime())
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	*/
 	npc.Update();
 	
@@ -341,18 +341,18 @@ public void Addicition_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime())
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime() + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
 	
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index, true);
-		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -373,7 +373,7 @@ public void Addicition_ClotThink(int iNPC)
 		
 		if(npc.m_bLostHalfHealth)
 		{
-			if(npc.m_iChanged_WalkCycle != 2 && npc.m_flReloadDelay < GetGameTime()) 	
+			if(npc.m_iChanged_WalkCycle != 2 && npc.m_flReloadDelay < GetGameTime(npc.index)) 	
 			{
 				npc.SetActivity("ACT_RUN_HALFLIFE");
 				npc.m_iChanged_WalkCycle = 2;
@@ -383,7 +383,7 @@ public void Addicition_ClotThink(int iNPC)
 		}
 		else
 		{
-			if(npc.m_iChanged_WalkCycle != 1 && npc.m_flReloadDelay < GetGameTime()) 	
+			if(npc.m_iChanged_WalkCycle != 1 && npc.m_flReloadDelay < GetGameTime(npc.index)) 	
 			{
 				npc.SetActivity("ACT_RUN");
 				npc.m_iChanged_WalkCycle = 1;
@@ -394,7 +394,7 @@ public void Addicition_ClotThink(int iNPC)
 		
 		if(npc.m_bLostHalfHealth)
 		{
-			if(flDistanceToTarget < 200000.0 && npc.m_flNextRangedSpecialAttack < GetGameTime())
+			if(flDistanceToTarget < 200000.0 && npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
 			{
 				int Enemy_I_See;
 				
@@ -425,28 +425,28 @@ public void Addicition_ClotThink(int iNPC)
 					WritePackFloat(pack, 1000.0);
 						
 					spawnRing_Vectors(vEnd, ADDICTION_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, ADDICTION_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
-					npc.m_flRangedSpecialDelay = GetGameTime() + 3.0;
-					npc.m_flReloadDelay = GetGameTime() + 5.0;
-					npc.m_flNextRangedSpecialAttack = GetGameTime() + 15.0;
-					npc.m_flNextMeleeAttack = GetGameTime() + 5.0;
+					npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 3.0;
+					npc.m_flReloadDelay = GetGameTime(npc.index) + 5.0;
+					npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 15.0;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 5.0;
 				}
 			}
 		}
 		if(flDistanceToTarget < 10000.0 || npc.m_flAttackHappenswillhappen)
 		{
-			if(npc.m_flNextMeleeAttack < GetGameTime() || npc.m_flAttackHappenswillhappen)
+			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) || npc.m_flAttackHappenswillhappen)
 			{
 				if (!npc.m_flAttackHappenswillhappen)
 				{
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 					npc.PlayAttackSound();
-					npc.m_flAttackHappens = GetGameTime()+0.3;
-					npc.m_flAttackHappens_bullshit = GetGameTime()+0.43;
+					npc.m_flAttackHappens = GetGameTime(npc.index)+0.3;
+					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.43;
 					npc.m_flAttackHappenswillhappen = true;
-					npc.m_flNextMeleeAttack = GetGameTime() + 1.2;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.2;
 				}
 				
-				if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+				if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					Handle swingTrace;
 					npc.FaceTowards(vecTarget, 20000.0);
@@ -472,7 +472,7 @@ public void Addicition_ClotThink(int iNPC)
 					delete swingTrace;
 					npc.m_flAttackHappenswillhappen = false;
 				}
-				else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					npc.m_flAttackHappenswillhappen = false;
 				}

@@ -186,7 +186,7 @@ public void GoldBloon_ClotThink(int iNPC)
 {
 	GoldBloon npc = view_as<GoldBloon>(iNPC);
 	
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
@@ -285,7 +285,7 @@ public Action GoldBloon_ClotDamaged(int victim, int &attacker, int &inflictor, f
 		return Plugin_Continue;
 	}
 	
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextRangedAttack > gameTime)
 		return Plugin_Handled;
 	
@@ -300,7 +300,7 @@ public Action GoldBloon_ClotDamaged(int victim, int &attacker, int &inflictor, f
 	}
 	else
 	{
-		if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime())
+		if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime(npc.index))
 		{
 			hot = true;
 			pierce = true;
