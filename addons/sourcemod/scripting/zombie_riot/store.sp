@@ -3235,6 +3235,13 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 					return -1;
 				}*/
 				
+				if(slot == TFWeaponSlot_Grenade)
+				{
+					entity = GetPlayerWeaponSlot(client, TFWeaponSlot_Grenade);
+					if(entity != -1)
+						TF2_RemoveItem(client, entity);
+				}
+				
 				entity = SpawnWeapon(client, info.Classname, info.Index, 5, 6, info.Attrib, info.Value, info.Attribs);
 				StoreWeapon[entity] = index;
 				
