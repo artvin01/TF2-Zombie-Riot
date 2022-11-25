@@ -26,6 +26,7 @@ static const char SoundPurple[][] =
 };
 
 static int LastGoldBloon;
+static int LastGoldRound;
 static int Sprite[MAXENTITIES];
 
 static int SpriteNumber()
@@ -85,7 +86,7 @@ methodmap GoldBloon < CClotBody
 	}
 	public GoldBloon(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		int range = CurrentRound / 10;
+		/*int range = CurrentRound / 10;
 		
 		if(data[0])
 		{
@@ -95,9 +96,25 @@ methodmap GoldBloon < CClotBody
 		{
 			if(CurrentRound > 89 || CurrentRound < 20 || range == LastGoldBloon || CountPlayersOnRed() < (range - 1))
 				return view_as<GoldBloon>(INVALID_ENT_REFERENCE);
+		}*/
+		
+		int range = 2;
+		
+		if(data[0])
+		{
+			range = StringToInt(data);
+		}
+		else if(LastGoldRound > CurrentRound || CurrentRound < 12)
+		{
+			range = 2;
+		}
+		else
+		{
+			range = LastGoldBloon + 1;
 		}
 		
 		LastGoldBloon = range;
+		LastGoldRound = CurrentRound;
 		
 		char buffer[128];
 		if(range < 6)
@@ -169,7 +186,7 @@ public void GoldBloon_ClotThink(int iNPC)
 {
 	GoldBloon npc = view_as<GoldBloon>(iNPC);
 	
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
@@ -268,7 +285,7 @@ public Action GoldBloon_ClotDamaged(int victim, int &attacker, int &inflictor, f
 		return Plugin_Continue;
 	}
 	
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextRangedAttack > gameTime)
 		return Plugin_Handled;
 	
@@ -283,7 +300,7 @@ public Action GoldBloon_ClotDamaged(int victim, int &attacker, int &inflictor, f
 	}
 	else
 	{
-		if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime())
+		if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime(npc.index))
 		{
 			hot = true;
 			pierce = true;

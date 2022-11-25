@@ -79,6 +79,8 @@ enum struct ItemInfo
 	Function FuncAttack3;
 	Function FuncReload4;
 	Function FuncOnBuy;
+	Function FuncOnDeploy;
+	Function FuncOnHolster;
 	
 	int Attack3AbilitySlot;
 	
@@ -223,6 +225,14 @@ enum struct ItemInfo
 		FormatEx(buffer, sizeof(buffer), "%sfunc_onbuy", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncOnBuy = GetFunctionByName(null, buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%sfunc_ondeploy", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.FuncOnDeploy = GetFunctionByName(null, buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%sfunc_onholster", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.FuncOnHolster = GetFunctionByName(null, buffer);
 		
 		FormatEx(buffer, sizeof(buffer), "%sint_ability_onequip", prefix);
 		this.CustomWeaponOnEquip 		= kv.GetNum(buffer);
@@ -391,6 +401,39 @@ static int NPCCash[MAXTF2PLAYERS];
 static int NPCTarget[MAXTF2PLAYERS];
 static bool InLoadoutMenu[MAXTF2PLAYERS];
 static bool HasMultiInSlot[MAXTF2PLAYERS][6];
+static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
+
+void Store_WeaponSwitch(int client, int weapon)
+{
+	if(HolsterFunc[client] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, HolsterFunc[client]);
+		Call_PushCell(client);
+		Call_Finish();
+
+		HolsterFunc[client] = INVALID_FUNCTION;
+	}
+
+	if(weapon != -1 && StoreWeapon[weapon] > 0)
+	{
+		static Item item;
+		StoreItems.GetArray(StoreWeapon[weapon], item);
+
+		static ItemInfo info;
+		if(item.Owned[client] > 0 && item.GetItemInfo(item.Owned[client] - 1, info))
+		{
+			if(info.FuncOnDeploy != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, info.FuncOnDeploy);
+				Call_PushCell(client);
+				Call_PushCell(weapon);
+				Call_Finish();
+			}
+
+			HolsterFunc[client] = info.FuncOnHolster;
+		}
+	}
+}
 
 void Store_RemoveSellValue()
 {
@@ -421,7 +464,7 @@ bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 		for(int i; i<length; i++)
 		{
 			StoreItems.GetArray(i, item);
-			if(item.NPCWeapon >= 0 && !item.Hidden && !item.NPCWeaponAlways && !item.Level)
+			if(item.NPCWeapon >= 0 && !item.TextStore[0] && !item.Hidden && !item.NPCWeaponAlways && !item.Level)
 			{
 				int current;
 				for(int a; item.GetItemInfo(a, info); a++)
@@ -624,15 +667,12 @@ void Store_SwapItems(int client)
 				}
 
 				/*GetEntityClassname(active, buffer, sizeof(buffer));
-				PrintToChatAll("Current: %d | %s | %d", i, buffer, active);
 				
 				GetEntityClassname(switchE, buffer, sizeof(buffer));
-				PrintToChatAll("Lowest: %d | %s | %d", switchI, buffer, switchE);
 				
 				if(nextE != -1)
 				{
 					GetEntityClassname(nextE, buffer, sizeof(buffer));
-					PrintToChatAll("Swap: %d | %s | %d", nextI, buffer, nextE);
 				}*/
 
 				if(nextE != -1 && switchI != nextI)
@@ -1182,6 +1222,7 @@ void Store_EquipSlotCheck(int client, int slot)
 				count++;
 				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
 				{
+					PrintToChat(client, "%s was unequipped", TranslateItemName(client, item.Name, ""));
 					item.Equipped[client] = false;
 					StoreItems.SetArray(i, item);
 					break;
@@ -1220,6 +1261,8 @@ void Store_ClientDisconnect(int client)
 		FormatEx(buffer, sizeof(buffer), "%d;%d", CurrentGame, CashSpent[client]);
 		CookieCache.Set(client, buffer);
 	}
+	
+	Store_WeaponSwitch(client, -1);
 	
 	CashSpent[client] = 0;
 	CashSpentTotal[client] = 0;
@@ -1653,7 +1696,7 @@ public void MenuPage(int client, int section)
 					menu.AddItem(buffer2, buffer, style);	// 0
 					
 					bool fullSell = (item.BuyWave[client] == Waves_GetRound());
-					bool canSell = (item.Owned[client] && ((info.Cost && fullSell) || item.Sell[client]));
+					bool canSell = (item.Owned[client] && ((info.Cost && fullSell) || item.Sell[client] > 0));
 
 					if(item.Equipped[client] && info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
 					{
@@ -2756,14 +2799,14 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("465", 10.0);											// x10 faster diepsner build
 	map.SetValue("464", 10.0);											// x10 faster sentry build
 	map.SetValue("740", 0.0);											// No Healing from mediguns, allow healing from pickups
-	map.SetValue("397", 50.0);											// Ignore ally with shooting
+//	map.SetValue("397", 50.0);											// Ignore ally with shooting
 	map.SetValue("169", 0.0);											// Complete sentrygun Immunity
 //	map.SetValue("49", 0.0);											// Completly disable double jump as we dont even use this, client prediction babyyyy!!!
 																		//... doesnt work on player, must be on weapon...
 //	map.SetValue("124", 1.0);											// Make sentries minisentries (only works on melee's that are wrenches...)
 //	map.SetValue("345", 0.0);											// No dispenser range
 //	map.SetValue("732", 0.0);											// No dispenser metal gain
-
+	map.SetValue("314", -2.0);											//Medigun uber duration, it has to be a body attribute
 
 	int wave_count = Waves_GetRound() + 1;
 	
@@ -3001,7 +3044,15 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 	/*
 	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(SpawnWeapon_Special(client, "tf_weapon_pda_engineer_destroy", 26, 100, 5, "671 ; 1"));
 	*/
-	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(SpawnWeapon_Special(client, "tf_weapon_invis", 26, 100, 5, "221 ; -99 ; 160 ; 1 ; 35 ; 0 ; 816 ; 1 ; 671 ; 1 ; 34 ; 999"));
+
+	entity = GiveWearable(client, 0);
+	TF2Attrib_SetByDefIndex(entity, 221, -99.0);
+	TF2Attrib_SetByDefIndex(entity, 160, 1.0);
+	TF2Attrib_SetByDefIndex(entity, 35, 0.0);
+	TF2Attrib_SetByDefIndex(entity, 816, 1.0);
+	TF2Attrib_SetByDefIndex(entity, 671, 1.0);
+	TF2Attrib_SetByDefIndex(entity, 34, 999.0);
+	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(entity);
 	
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
 	SetAbilitySlotCount(client, 0);
@@ -3028,6 +3079,7 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
 		int count;
+		bool hasPDA = false;
 		bool found = false;
 		bool use = true;
 		int length = StoreItems.Length;
@@ -3041,6 +3093,14 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 				item.GetItemInfo(item.Owned[client]-1, info);
 				if(info.Classname[0])
 				{
+					if(!StrContains(info.Classname, "tf_weapon_pda_engineer_build"))
+					{
+						if(hasPDA)
+							continue;
+						
+						hasPDA = true;
+					}
+
 					Store_GiveItem(client, i, use, found);
 					if(++count > 9)
 					{
@@ -3166,6 +3226,13 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 					return -1;
 				}*/
 				
+				if(slot == TFWeaponSlot_Grenade)
+				{
+					entity = GetPlayerWeaponSlot(client, TFWeaponSlot_Grenade);
+					if(entity != -1)
+						TF2_RemoveItem(client, entity);
+				}
+
 				entity = SpawnWeapon(client, info.Classname, info.Index, 5, 6, info.Attrib, info.Value, info.Attribs);
 				StoreWeapon[entity] = index;
 				
@@ -3217,8 +3284,6 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 									
 									if(!EscapeMode || info.Ammo < 3) //my man broke my shit.
 									{
-									//	PrintToChatAll("test");
-									//	PrintToChatAll("%s",info.Classname);
 										SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", info.Ammo);
 									}
 									else if(info.Ammo == 24 || info.Ammo == 6)
@@ -3828,7 +3893,6 @@ char[] TranslateItemName(int client, const char name[64], const char Custom_Name
 	if(ServerLang == -1)
 		ServerLang = GetServerLanguage();
 	
-//	PrintToChatAll("%s",Custom_Name);
 	char buffer[64];
 
 	if(GetClientLanguage(client) != ServerLang)

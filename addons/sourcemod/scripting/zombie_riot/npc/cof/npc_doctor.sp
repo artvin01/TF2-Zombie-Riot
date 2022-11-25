@@ -21,10 +21,10 @@ methodmap Doctor < CClotBody
 {
 	public void PlayHurtSound()
 	{
-		if(this.m_flNextHurtSound > GetGameTime())
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 		
-		this.m_flNextHurtSound = GetGameTime() + 1.0;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE);
 	}
 	public void PlayDeathSound()
@@ -53,7 +53,7 @@ methodmap Doctor < CClotBody
 	}
 	public void PlayMeleeSound()
 	{
-		this.m_flNextHurtSound = GetGameTime() + 1.0;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
 		EmitSoundToAll("cof/purnell/shove.mp3", this.index, SNDCHAN_VOICE);
 	}
 	public void PlayHitSound()
@@ -62,7 +62,7 @@ methodmap Doctor < CClotBody
 	}
 	public void PlayKillSound()
 	{
-		this.m_flNextHurtSound = GetGameTime() + 2.0;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 2.0;
 		EmitSoundToAll(g_KillSounds[GetRandomInt(0, sizeof(g_KillSounds) - 1)], this.index, SNDCHAN_VOICE);
 	}
 	public void PlayBuffSound(int entity)
@@ -106,7 +106,7 @@ methodmap Doctor < CClotBody
 		
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iAttacksTillReload = 5;
-		npc.m_flReloadDelay = GetGameTime() + 0.8;
+		npc.m_flReloadDelay = GetGameTime(npc.index) + 0.8;
 		
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		
@@ -140,7 +140,7 @@ public void Doctor_ClotThink(int iNPC)
 	SetVariantInt(npc.m_iInjuredLevel);
 	AcceptEntityInput(npc.index, "SetBodyGroup");
 	
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	

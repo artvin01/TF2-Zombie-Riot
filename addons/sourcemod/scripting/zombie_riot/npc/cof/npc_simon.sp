@@ -15,18 +15,18 @@ methodmap Simon < CClotBody
 {
 	public void PlayIdleSound()
 	{
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		this.m_flNextIdleSound = GetGameTime() + 18.0;
+		this.m_flNextIdleSound = GetGameTime(this.index) + 18.0;
 		EmitSoundToAll("cof/simon/passive.mp3", this.index);
 	}
 	public void PlayHurtSound()
 	{
-		if(this.m_flNextHurtSound > GetGameTime())
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 		
-		this.m_flNextHurtSound = GetGameTime() + 0.4;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE);
 	}
 	public void PlayDeathSound()
@@ -94,7 +94,7 @@ methodmap Simon < CClotBody
 		
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iAttacksTillReload = 7;
-		npc.m_flReloadDelay = GetGameTime() + 1.4;
+		npc.m_flReloadDelay = GetGameTime(npc.index) + 1.4;
 		
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		
@@ -140,7 +140,7 @@ public void Simon_ClotThink(int iNPC)
 {
 	Simon npc = view_as<Simon>(iNPC);
 	
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	

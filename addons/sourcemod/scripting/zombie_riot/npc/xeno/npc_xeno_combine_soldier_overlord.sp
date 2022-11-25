@@ -91,11 +91,11 @@ public void XenoCombineOverlord_OnMapStart_NPC()
 methodmap XenoCombineOverlord < CClotBody
 {
 	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 			
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(24.0, 48.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
@@ -103,11 +103,11 @@ methodmap XenoCombineOverlord < CClotBody
 	}
 	
 	public void PlayIdleAlertSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
@@ -115,10 +115,10 @@ methodmap XenoCombineOverlord < CClotBody
 	}
 	
 	public void PlayHurtSound() {
-		if(this.m_flNextHurtSound > GetGameTime())
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
-		this.m_flNextHurtSound = GetGameTime() + 0.4;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
@@ -222,7 +222,7 @@ methodmap XenoCombineOverlord < CClotBody
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
-		npc.m_flNextChargeSpecialAttack = GetGameTime() + 5.0;
+		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 5.0;
 	//	npc.m_iOverlordComboAttack = 0;
 		
 		if(EscapeModeForNpc)
@@ -273,12 +273,12 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 	SetVariantInt(1);
 	AcceptEntityInput(iNPC, "SetBodyGroup");
 	
-	if(npc.m_flNextDelayTime > GetGameTime())
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
 				
@@ -289,16 +289,16 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 	}
 	
 	//Think throttling
-	if(npc.m_flNextThinkTime > GetGameTime()) {
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index)) {
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime() + 0.10;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -306,26 +306,26 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			if (npc.m_flReloadDelay < GetGameTime())
+			if (npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
-				if (npc.m_flmovedelay < GetGameTime() && npc.m_flAngerDelay < GetGameTime())
+				if (npc.m_flmovedelay < GetGameTime(npc.index) && npc.m_flAngerDelay < GetGameTime(npc.index))
 				{
 					int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-					npc.m_flmovedelay = GetGameTime() + 1.0;
+					npc.m_flmovedelay = GetGameTime(npc.index) + 1.0;
 					npc.m_flSpeed = 330.0;
 				}
-				if (npc.m_flmovedelay < GetGameTime() && npc.m_flAngerDelay > GetGameTime())
+				if (npc.m_flmovedelay < GetGameTime(npc.index) && npc.m_flAngerDelay > GetGameTime(npc.index))
 				{
 					int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
 					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-					npc.m_flmovedelay = GetGameTime() + 1.0;
+					npc.m_flmovedelay = GetGameTime(npc.index) + 1.0;
 					npc.m_flSpeed = 380.0;
 				}
 			//	npc.FaceTowards(vecTarget);
 			}
 			
-			if(npc.m_flJumpStartTime > GetGameTime())
+			if(npc.m_flJumpStartTime > GetGameTime(npc.index))
 			{
 				npc.m_flSpeed = 0.0;
 			}
@@ -355,12 +355,12 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
-			if(npc.m_flNextChargeSpecialAttack < GetGameTime() && npc.m_flReloadDelay < GetGameTime() && !npc.m_fbRangedSpecialOn && flDistanceToTarget < 160000)
+			if(npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index) && npc.m_flReloadDelay < GetGameTime(npc.index) && !npc.m_fbRangedSpecialOn && flDistanceToTarget < 160000)
 			{
-				npc.m_flNextChargeSpecialAttack = GetGameTime() + 20.0;
-				npc.m_flReloadDelay = GetGameTime() + 1.0;
-				npc.m_flRangedSpecialDelay += GetGameTime() + 1.0;
-				npc.m_flAngerDelay = GetGameTime() + 5.0;
+				npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 20.0;
+				npc.m_flReloadDelay = GetGameTime(npc.index) + 1.0;
+				npc.m_flRangedSpecialDelay += GetGameTime(npc.index) + 1.0;
+				npc.m_flAngerDelay = GetGameTime(npc.index) + 5.0;
 				if(npc.m_bThisNpcIsABoss)
 				{
 					npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
@@ -368,26 +368,26 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 				npc.PlaySpecialChargeSound();
 				int iActivity_melee = npc.LookupActivity("OVERLORD_RAGE");
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-				npc.m_flmovedelay = GetGameTime() + 0.5;
-				npc.m_flJumpStartTime = GetGameTime() + 1.0;
+				npc.m_flmovedelay = GetGameTime(npc.index) + 0.5;
+				npc.m_flJumpStartTime = GetGameTime(npc.index) + 1.0;
 				PF_StopPathing(npc.index);
 				npc.m_bPathing = false;
 			}
 	
-			if(npc.m_flNextRangedSpecialAttack < GetGameTime() && flDistanceToTarget < 22500 && npc.m_flAngerDelay < GetGameTime() || npc.m_fbRangedSpecialOn)
+			if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index) && flDistanceToTarget < 22500 && npc.m_flAngerDelay < GetGameTime(npc.index) || npc.m_fbRangedSpecialOn)
 			{
 			//	npc.FaceTowards(vecTarget, 2000.0);
 				if(!npc.m_fbRangedSpecialOn)
 				{
 					npc.AddGesture("ACT_ATTACK_HAND");
-					npc.m_flRangedSpecialDelay = GetGameTime() + 0.3;
+					npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 0.3;
 					npc.m_fbRangedSpecialOn = true;
-					npc.m_flReloadDelay = GetGameTime() + 0.3;
+					npc.m_flReloadDelay = GetGameTime(npc.index) + 0.3;
 				}
-				if(npc.m_flRangedSpecialDelay < GetGameTime())
+				if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 				{
 					npc.m_fbRangedSpecialOn = false;
-					npc.m_flNextRangedSpecialAttack = GetGameTime() + 8.0;
+					npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 8.0;
 					npc.PlayRangedAttackSecondarySound();
 
 					float vecSpread = 0.1;
@@ -436,14 +436,14 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 			}
 			
 			//Target close enough to hit
-			if(flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime() || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime(npc.index) || npc.m_flAttackHappenswillhappen)
 			{
 				npc.StartPathing();
 				
 				
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
-				if(npc.m_flAngerDelay > GetGameTime() && npc.m_flReloadDelay < GetGameTime())
+				if(npc.m_flAngerDelay > GetGameTime(npc.index) && npc.m_flReloadDelay < GetGameTime(npc.index))
 				{
 					
 					npc.FaceTowards(vecTarget, 20000.0);
@@ -475,30 +475,30 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 				}
 				else
 				{
-					if(npc.m_flNextMeleeAttack < GetGameTime())
+					if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 					{
 						if (!npc.m_flAttackHappenswillhappen)
 						{
-							if(npc.m_flAngerDelay < GetGameTime())
+							if(npc.m_flAngerDelay < GetGameTime(npc.index))
 							{
-								npc.m_flNextRangedSpecialAttack = GetGameTime() + 2.0;
+								npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
 								npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 								npc.PlayMeleeSound();
-								npc.m_flAttackHappens = GetGameTime()+0.4;
-								npc.m_flAttackHappens_bullshit = GetGameTime()+0.54;
+								npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
+								npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
 								npc.m_flAttackHappenswillhappen = true;
 							}
 							else
 							{
-								npc.m_flNextRangedSpecialAttack = GetGameTime() + 2.0;
-								npc.m_flAttackHappens = GetGameTime()+0.0;
-								npc.m_flAttackHappens_bullshit = GetGameTime()+0.14;
+								npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
+								npc.m_flAttackHappens = GetGameTime(npc.index)+0.0;
+								npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.14;
 								npc.m_flAttackHappenswillhappen = true;		
 								
 							}
 						}
 							
-						if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+						if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 						{
 							npc.FaceTowards(vecTarget, 20000.0);
 							Handle swingTrace;
@@ -527,18 +527,18 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 									} 
 								}
 							delete swingTrace;
-							npc.m_flNextMeleeAttack = GetGameTime() + 0.4;
+							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.4;
 							npc.m_flAttackHappenswillhappen = false;
 						}
-						else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+						else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 						{
 							npc.m_flAttackHappenswillhappen = false;
-							npc.m_flNextMeleeAttack = GetGameTime() + 0.4;
+							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.4;
 						}
 					}
 				}
 			}
-			if (npc.m_flReloadDelay < GetGameTime())
+			if (npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				npc.StartPathing();
 				
@@ -593,13 +593,13 @@ public Action XenoCombineOverlord_ClotDamaged(int victim, int &attacker, int &in
 	XenoCombineOverlord npc = view_as<XenoCombineOverlord>(victim);
 	
 	
-	if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
-	if(npc.m_flAngerDelay > GetGameTime() && !Building_DoesPierce(attacker))
+	if(npc.m_flAngerDelay > GetGameTime(npc.index) && !Building_DoesPierce(attacker))
 		damage *= 0.25;
 	
 	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))

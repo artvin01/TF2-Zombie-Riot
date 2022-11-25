@@ -97,10 +97,10 @@ void SpyMainBoss_OnMapStart_NPC()
 methodmap SpyMainBoss < CClotBody
 {
 	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(24.0, 48.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
@@ -108,11 +108,11 @@ methodmap SpyMainBoss < CClotBody
 	}
 	
 	public void PlayIdleAlertSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
@@ -120,10 +120,10 @@ methodmap SpyMainBoss < CClotBody
 	}
 	
 	public void PlayHurtSound() {
-		if(this.m_flNextHurtSound > GetGameTime())
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
-		this.m_flNextHurtSound = GetGameTime() + 0.4;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
@@ -290,12 +290,12 @@ public void SpyMainBoss_ClotThink(int iNPC)
 {
 	SpyMainBoss npc = view_as<SpyMainBoss>(iNPC);
 	
-	if(npc.m_flNextDelayTime > GetGameTime())
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 			
@@ -306,24 +306,24 @@ public void SpyMainBoss_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime())
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime() + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 	{
-		if(npc.m_flDead_Ringer_Invis < GetGameTime() && npc.m_flDead_Ringer_Invis_bool)
+		if(npc.m_flDead_Ringer_Invis < GetGameTime(npc.index) && npc.m_flDead_Ringer_Invis_bool)
 		{
 			npc.m_flDead_Ringer_Invis_bool = false;
 			
@@ -351,7 +351,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 	
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-		if (npc.m_flReloadDelay < GetGameTime() && flDistanceToTarget < 40000 || flDistanceToTarget > 90000 && npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime())
+		if (npc.m_flReloadDelay < GetGameTime(npc.index) && flDistanceToTarget < 40000 || flDistanceToTarget > 90000 && npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime(npc.index))
 		{
 			if (!npc.m_bmovedelay)
 			{
@@ -372,7 +372,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 			
 			
 		}
-		else if (npc.m_flReloadDelay < GetGameTime() && flDistanceToTarget > 40000 && flDistanceToTarget < 90000)
+		else if (npc.m_flReloadDelay < GetGameTime(npc.index) && flDistanceToTarget > 40000 && flDistanceToTarget < 90000)
 		{
 			if (!npc.m_bmovedelay_gun)
 			{
@@ -414,7 +414,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 		} else {
 			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
-		if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 40000 && flDistanceToTarget < 90000 && npc.m_flReloadDelay < GetGameTime() && !npc.Anger)
+		if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 40000 && flDistanceToTarget < 90000 && npc.m_flReloadDelay < GetGameTime(npc.index) && !npc.Anger)
 		{
 			float vecSpread = 0.1;
 			
@@ -454,13 +454,13 @@ public void SpyMainBoss_ClotThink(int iNPC)
 			
 			npc.m_bmovedelay = false;
 			
-			npc.m_flNextRangedAttack = GetGameTime() + 0.7;
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.7;
 			npc.m_iAttacksTillReload -= 1;
 			
 			if (npc.m_iAttacksTillReload == 0)
 			{
 				npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY");
-				npc.m_flReloadDelay = GetGameTime() + 1.4;
+				npc.m_flReloadDelay = GetGameTime(npc.index) + 1.4;
 				npc.m_iAttacksTillReload = 6;
 				npc.PlayRangedReloadSound();
 			}
@@ -476,19 +476,19 @@ public void SpyMainBoss_ClotThink(int iNPC)
 			
 			npc.PlayRangedSound();
 		}
-		else if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 40000 && flDistanceToTarget < 90000 && npc.m_flReloadDelay < GetGameTime() && npc.Anger)
+		else if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 40000 && flDistanceToTarget < 90000 && npc.m_flReloadDelay < GetGameTime(npc.index) && npc.Anger)
 		{		
 			npc.FaceTowards(vecTarget, 20000.0);
 			
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 			
-			npc.m_flNextRangedAttack = GetGameTime() + 0.3;
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.3;
 			npc.m_iAttacksTillReload -= 1;
 			
 			if (npc.m_iAttacksTillReload == 0)
 			{
 				npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY");
-				npc.m_flReloadDelay = GetGameTime() + 1.4;
+				npc.m_flReloadDelay = GetGameTime(npc.index) + 1.4;
 				npc.m_iAttacksTillReload = 6;
 				npc.PlayRangedReloadSound();
 			}
@@ -496,7 +496,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 			npc.FireRocket(vPredictedPos, 75.0, 900.0);
 			npc.PlayRangedSound();
 		}
-		if(flDistanceToTarget < 90000 && npc.m_flReloadDelay < GetGameTime() || flDistanceToTarget > 90000 && npc.m_flReloadDelay < GetGameTime() )
+		if(flDistanceToTarget < 90000 && npc.m_flReloadDelay < GetGameTime(npc.index) || flDistanceToTarget > 90000 && npc.m_flReloadDelay < GetGameTime(npc.index) )
 		{
 			npc.StartPathing();
 			
@@ -504,18 +504,18 @@ public void SpyMainBoss_ClotThink(int iNPC)
 			//Look at target so we hit.
 		//	npc.FaceTowards(vecTarget, 2000.0);
 			
-			if(npc.m_flNextMeleeAttack < GetGameTime() && flDistanceToTarget < 40000)
+			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) && flDistanceToTarget < 40000)
 			{
 				if (!npc.m_flAttackHappenswillhappen)
 				{
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
 					npc.PlayMeleeSound();
-					npc.m_flAttackHappens = GetGameTime()+0.1;
-					npc.m_flAttackHappens_bullshit = GetGameTime()+0.21;
+					npc.m_flAttackHappens = GetGameTime(npc.index)+0.1;
+					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.21;
 					npc.m_flAttackHappenswillhappen = true;
 				}
 					
-				if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+				if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					Handle swingTrace;
 					npc.FaceTowards(vecTarget, 20000.0);
@@ -563,13 +563,13 @@ public void SpyMainBoss_ClotThink(int iNPC)
 						} 
 					}
 					delete swingTrace;
-					npc.m_flNextMeleeAttack = GetGameTime() + 0.65;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.65;
 					npc.m_flAttackHappenswillhappen = false;
 				}
-				else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GetGameTime() + 0.65;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.65;
 				}
 			}
 		}
@@ -593,7 +593,7 @@ public Action SpyMainBoss_ClotDamaged(int victim, int &attacker, int &inflictor,
 		
 	SpyMainBoss npc = view_as<SpyMainBoss>(victim);
 	
-	if(npc.m_flDead_Ringer < GetGameTime())
+	if(npc.m_flDead_Ringer < GetGameTime(npc.index))
 	{
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
@@ -613,17 +613,17 @@ public Action SpyMainBoss_ClotDamaged(int victim, int &attacker, int &inflictor,
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 1);
 		
-		npc.m_flDead_Ringer_Invis = GetGameTime() + 2.0;
-		npc.m_flDead_Ringer = GetGameTime() + 13.0;
+		npc.m_flDead_Ringer_Invis = GetGameTime(npc.index) + 2.0;
+		npc.m_flDead_Ringer = GetGameTime(npc.index) + 13.0;
 		npc.m_flDead_Ringer_Invis_bool = true;
 		npc.PlayDeathSound();	
 	}
 	
 	if(!npc.m_flDead_Ringer_Invis_bool)
 	{
-		if (npc.m_flHeadshotCooldown < GetGameTime())
+		if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 		{
-			npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 			npc.m_blPlayHurtAnimation = true;
 		}
 	}

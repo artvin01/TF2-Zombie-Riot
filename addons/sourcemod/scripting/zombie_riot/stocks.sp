@@ -173,6 +173,7 @@ stock bool FindInfoTarget(const char[] name)
 
 stock bool ExcuteRelay(const char[] name, const char[] input="Trigger")
 {
+	bool found;
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "logic_relay")) != -1)
 	{
@@ -180,11 +181,11 @@ stock bool ExcuteRelay(const char[] name, const char[] input="Trigger")
 		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 		if(StrEqual(buffer, name, false))
 		{
-			AcceptEntityInput(entity, input);
-			return true;
+			AcceptEntityInput(entity, input, entity, entity);
+			found = true;
 		}
 	}
-	return false;
+	return found;
 }
 
 stock void CreateAttachedAnnotation(int client, int entity, float time, const char[] buffer)
@@ -890,8 +891,11 @@ stock int GiveWearable(int client, int index)
 	int entity = CreateEntityByName("tf_wearable");
 	if(entity > MaxClients)	// Weapon viewmodel
 	{
-		SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", index);
-		SetEntProp(entity, Prop_Send, "m_bInitialized", true);
+		if(index != 0)
+		{
+			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", index);
+			SetEntProp(entity, Prop_Send, "m_bInitialized", true);
+		}
 		SetEntProp(entity, Prop_Send, "m_iEntityQuality", 1);
 		SetEntProp(entity, Prop_Send, "m_iEntityLevel", 1);
 		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
@@ -2430,12 +2434,12 @@ public void Give_Assist_Points(int target, int assister)
 	f_assist_heal_player_time[target] = GetGameTime() + 10.0;	
 }
 
-public int CountPlayersOnRed()
+int CountPlayersOnRed(bool alive = false)
 {
 	int amount;
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
+		if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && (!alive || (TeutonType[client] != TEUTON_NONE && dieingstate[client] > 0)))
 			amount++;
 	}
 	
@@ -2478,7 +2482,8 @@ float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF,
 float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF,
 bool FromBlueNpc = false,
 int maxtargetshit = 10,
-bool ignite = false)
+bool ignite = false,
+float dmg_against_entity_multiplier = 3.0)
 {
 	float damage_reduction = 1.0;
 	int Closest_npc = 0;
@@ -2563,7 +2568,7 @@ bool ignite = false)
 
 			if(FromBlueNpc && !IsValidClient(Closest_npc))
 			{
-				damage_1 *= 3.0; //enemy is an npc, and i am an npc.
+				damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
 			}
 			SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 			
@@ -2604,7 +2609,7 @@ bool ignite = false)
 							}	
 							if(FromBlueNpc)
 							{
-								damage_1 *= 3.0; //enemy is an npc, and i am an npc.
+								damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
 							}						
 							SDKHooks_TakeDamage(new_closest_npc, client, client, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 							
@@ -2687,7 +2692,7 @@ bool ignite = false)
 									}
 									if(FromBlueNpc)
 									{
-										damage_1 *= 3.0; //enemy is an npc, and i am an npc.
+										damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
 									}
 							
 									SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
@@ -2731,7 +2736,7 @@ bool ignite = false)
 										}
 										if(FromBlueNpc)
 										{
-											damage_1 *= 3.0; //enemy is an npc, and i am an npc.
+											damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
 										}
 
 										SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);

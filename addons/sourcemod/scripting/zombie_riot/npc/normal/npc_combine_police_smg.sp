@@ -80,10 +80,10 @@ public void CombinePoliceSmg_OnMapStart_NPC()
 methodmap CombinePoliceSmg < CClotBody
 {
 	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(24.0, 48.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
@@ -91,11 +91,11 @@ methodmap CombinePoliceSmg < CClotBody
 	}
 	
 	public void PlayIdleAlertSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
@@ -103,10 +103,10 @@ methodmap CombinePoliceSmg < CClotBody
 	}
 	
 	public void PlayHurtSound() {
-		if(this.m_flNextHurtSound > GetGameTime())
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
-		this.m_flNextHurtSound = GetGameTime() + 0.4;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
@@ -219,12 +219,12 @@ public void CombinePoliceSmg_ClotThink(int iNPC)
 {
 	CombinePoliceSmg npc = view_as<CombinePoliceSmg>(iNPC);
 	
-	if(npc.m_flNextDelayTime > GetGameTime())
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
 	
@@ -235,17 +235,17 @@ public void CombinePoliceSmg_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime())
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime() + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -253,7 +253,7 @@ public void CombinePoliceSmg_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			if (npc.m_fbGunout == false && npc.m_flReloadDelay < GetGameTime())
+			if (npc.m_fbGunout == false && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				if (!npc.m_bmovedelay)
 				{
@@ -265,7 +265,7 @@ public void CombinePoliceSmg_ClotThink(int iNPC)
 			//	npc.FaceTowards(vecTarget);
 				
 			}
-			else if (npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime())
+			else if (npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				int iActivity_melee = npc.LookupActivity("ACT_IDLE_ANGRY_SMG1");
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
@@ -298,7 +298,7 @@ public void CombinePoliceSmg_ClotThink(int iNPC)
 			} else {
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget < 32400 && npc.m_flReloadDelay < GetGameTime())
+			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < 32400 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				int target;
 			
@@ -343,14 +343,14 @@ public void CombinePoliceSmg_ClotThink(int iNPC)
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 				
-					npc.m_flNextRangedAttack = GetGameTime() + 0.2;
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.2;
 					
 					npc.m_iAttacksTillReload -= 1;
 					
 					if (npc.m_iAttacksTillReload == 0)
 					{
 						npc.AddGesture("ACT_RELOAD_SMG1");
-						npc.m_flReloadDelay = GetGameTime() + 1.75;
+						npc.m_flReloadDelay = GetGameTime(npc.index) + 1.75;
 						npc.m_iAttacksTillReload = 45;
 						npc.PlayRangedReloadSound();
 					}
@@ -374,7 +374,7 @@ public void CombinePoliceSmg_ClotThink(int iNPC)
 				}
 			}
 			//Target close enough to hit
-			if(flDistanceToTarget > 10000 && npc.m_flReloadDelay < GetGameTime())
+			if(flDistanceToTarget > 10000 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				npc.StartPathing();
 				
@@ -403,9 +403,9 @@ public Action CombinePoliceSmg_OnTakeDamage(int victim, int &attacker, int &infl
 		
 	CombinePoliceSmg npc = view_as<CombinePoliceSmg>(victim);
 	
-	if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
 	return Plugin_Changed;

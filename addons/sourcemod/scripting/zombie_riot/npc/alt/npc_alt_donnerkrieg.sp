@@ -114,11 +114,11 @@ methodmap Donnerkrieg < CClotBody
 		public set(bool TempValueForProperty) 	{ b_InKame[this.index] = TempValueForProperty; }
 	}
 	public void PlayIdleAlertSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
@@ -126,10 +126,10 @@ methodmap Donnerkrieg < CClotBody
 	}
 	
 	public void PlayHurtSound() {
-		if(this.m_flNextHurtSound > GetGameTime())
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
-		this.m_flNextHurtSound = GetGameTime() + 0.4;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
@@ -232,11 +232,11 @@ methodmap Donnerkrieg < CClotBody
 		bl_nightmare_stage3[npc.index]=false;
 		bl_nightmare_stage4[npc.index]=false;
 		
-		fl_nightmare_end_timer[npc.index]= GetGameTime() + 10.0;	//time from spawn for nightmare cannon trigger, can be configured with data
-		fl_nightmare_offset_timer[npc.index]= GetGameTime() + 5.0;	//offset used for animation.
-		fl_nightmare_anim_timer[npc.index]= GetGameTime() + 5.0;
+		fl_nightmare_end_timer[npc.index]= GetGameTime(npc.index) + 10.0;	//time from spawn for nightmare cannon trigger, can be configured with data
+		fl_nightmare_offset_timer[npc.index]= GetGameTime(npc.index) + 5.0;	//offset used for animation.
+		fl_nightmare_anim_timer[npc.index]= GetGameTime(npc.index) + 5.0;
 		
-		npc.m_flNextRangedBarrage_Spam = GetGameTime() + 15.0;
+		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 		
@@ -254,12 +254,12 @@ public void Donnerkrieg_ClotThink(int iNPC)
 {
 	Donnerkrieg npc = view_as<Donnerkrieg>(iNPC);
 	
-	if(npc.m_flNextDelayTime > GetGameTime())
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
 			
@@ -270,24 +270,24 @@ public void Donnerkrieg_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime())
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime() + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 	
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 			npc.m_iTarget = GetClosestTarget(npc.index);
-			npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
-	if(bl_nightmare_stage2[npc.index] && bl_nightmare_stage1[npc.index] && bl_nightmare_stage3[npc.index] && fl_nightmare_anim_timer[npc.index] <GetGameTime())
+	if(bl_nightmare_stage2[npc.index] && bl_nightmare_stage1[npc.index] && bl_nightmare_stage3[npc.index] && fl_nightmare_anim_timer[npc.index] <GetGameTime(npc.index))
 	{
 		npc.AddGesture("ACT_GRAPPLE_PULL_IDLE");
-		fl_nightmare_anim_timer[npc.index]= GetGameTime() + 2.0;
+		fl_nightmare_anim_timer[npc.index]= GetGameTime(npc.index) + 2.0;
 	}
-	if(fl_nightmare_reset_timer[npc.index] < GetGameTime() && !bl_nightmare_reset[npc.index])
+	if(fl_nightmare_reset_timer[npc.index] < GetGameTime(npc.index) && !bl_nightmare_reset[npc.index])
 	{
 		bl_nightmare_stage1[npc.index]=false;
 		bl_nightmare_stage2[npc.index]=false;
@@ -336,7 +336,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 				if(bl_nightmare_stage2[npc.index] && bl_nightmare_stage1[npc.index] && !bl_nightmare_stage3[npc.index])
 				{
 					bl_nightmare_stage3[npc.index]=true;
-					fl_nightmare_offset_timer[npc.index]= GetGameTime() + 1.0;
+					fl_nightmare_offset_timer[npc.index]= GetGameTime(npc.index) + 1.0;
 					CPrintToChatAll("{crimson}Donnerkrieg: NIGHTMARE, CANNNON!");
 					//CPrintToChatAll("stage 3");
 					
@@ -358,7 +358,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 				if(!bl_nightmare_stage1[npc.index])
 				{
 					
-					if(npc.m_flNextRangedBarrage_Spam < GetGameTime() && npc.m_flNextRangedBarrage_Singular < GetGameTime() && flDistanceToTarget > Pow(110.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0))
+					if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget > Pow(110.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0))
 					{	
 
 						npc.FaceTowards(vecTarget);
@@ -368,11 +368,11 @@ public void Donnerkrieg_ClotThink(int iNPC)
 						npc.m_iAmountProjectiles += 1;
 						npc.PlayRangedSound();
 						npc.AddGesture("ACT_MP_THROW");
-						npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.15;
+						npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 0.15;
 						if (npc.m_iAmountProjectiles >= 15.0)
 						{
 							npc.m_iAmountProjectiles = 0;
-							npc.m_flNextRangedBarrage_Spam = GetGameTime() + 45.0;
+							npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 45.0;
 						}
 					}
 					
@@ -383,23 +383,23 @@ public void Donnerkrieg_ClotThink(int iNPC)
 					//	npc.FaceTowards(vecTarget, 1000.0);
 						
 						//Can we attack right now?
-						if(npc.m_flNextMeleeAttack < GetGameTime())
+						if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 						{
 							//Play attack ani
 							if (!npc.m_flAttackHappenswillhappen)
 							{
 								npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 								npc.PlayMeleeSound();
-								npc.m_flAttackHappens = GetGameTime()+0.4;
-								npc.m_flAttackHappens_bullshit = GetGameTime()+0.54;
+								npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
+								npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
 								npc.m_flAttackHappenswillhappen = true;
 								npc.FaceTowards(vecTarget);
 								Normal_Attack_BEAM_TBB_Ability(npc.index);
 							}
-							if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+							if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 							{
 								npc.m_flAttackHappenswillhappen = false;
-								npc.m_flNextMeleeAttack = GetGameTime() + 0.6;
+								npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
 							}
 						}
 					}
@@ -419,7 +419,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 					if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 					{
 						float vBackoffPos[3];
-						if(fl_nightmare_intial_timer[npc.index] < GetGameTime())
+						if(fl_nightmare_intial_timer[npc.index] < GetGameTime(npc.index))
 						{
 							bl_nightmare_stage2[npc.index]=true;
 							CPrintToChatAll("{crimson}Donnerkrieg:{default} Prepare thyself");
@@ -432,16 +432,16 @@ public void Donnerkrieg_ClotThink(int iNPC)
 						}
 					}	
 				}
-				if(fl_nightmare_end_timer[npc.index] < GetGameTime() && !bl_nightmare_stage1[npc.index])	//Initializer for the cannon
+				if(fl_nightmare_end_timer[npc.index] < GetGameTime(npc.index) && !bl_nightmare_stage1[npc.index])	//Initializer for the cannon
 				{
 					bl_nightmare_stage1[npc.index]=true;	//it begins
-					fl_nightmare_offset_timer[npc.index]= GetGameTime() + 10.0;
+					fl_nightmare_offset_timer[npc.index]= GetGameTime(npc.index) + 10.0;
 					CPrintToChatAll("{crimson}Donnerkrieg: Thats it {default}i'm going to kill you");
 					//CPrintToChatAll("stage 1");
 					//npc.FaceTowards(vecTarget);
-					fl_nightmare_intial_timer[npc.index]= GetGameTime() + 10.0;
+					fl_nightmare_intial_timer[npc.index]= GetGameTime(npc.index) + 10.0;
 					bl_nightmare_reset[npc.index]=false;
-					fl_nightmare_reset_timer[npc.index] = GetGameTime() + 100.0;
+					fl_nightmare_reset_timer[npc.index] = GetGameTime(npc.index) + 100.0;
 					
 					EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 				}
@@ -468,13 +468,13 @@ public void Donnerkrieg_ClotThink(int iNPC)
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		if(bl_nightmare_stage1[npc.index] && bl_nightmare_stage2[npc.index] && bl_nightmare_stage3[npc.index] && !bl_nightmare_stage4[npc.index] && fl_nightmare_offset_timer[npc.index] < GetGameTime())
+		if(bl_nightmare_stage1[npc.index] && bl_nightmare_stage2[npc.index] && bl_nightmare_stage3[npc.index] && !bl_nightmare_stage4[npc.index] && fl_nightmare_offset_timer[npc.index] < GetGameTime(npc.index))
 		{
 			NightmareCannon_TBB_Ability(npc.index);
 			bl_nightmare_stage4[npc.index]=true;
 			CPrintToChatAll("{crimson}Donnerkrieg: {default} JUDGEMENT");
-			fl_nightmare_end_timer[npc.index]= GetGameTime() + 90.0;	//1.5 minute cooldown.
-			fl_nightmare_reset_timer[npc.index] = GetGameTime() + 15.0;
+			fl_nightmare_end_timer[npc.index]= GetGameTime(npc.index) + 90.0;	//1.5 minute cooldown.
+			fl_nightmare_reset_timer[npc.index] = GetGameTime(npc.index) + 15.0;
 			
 			EmitSoundToAll("mvm/mvm_tank_ping.wav");
 			
@@ -494,9 +494,9 @@ public Action Donnerkrieg_ClotDamaged(int victim, int &attacker, int &inflictor,
 	if(attacker <= 0)
 		return Plugin_Continue;
 	
-	if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
 	

@@ -12,7 +12,7 @@
 #define GORE_UPARMRIGHT   (1 << 8)
 #define GORE_HANDLEFT	 (1 << 9)
 
-#define MAXSPAWNERSACTIVE 5 //ok
+#define MAXSPAWNERSACTIVE 4 //ok
 
 enum //hitgroup_t
 {
@@ -363,46 +363,47 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	if(GlobalCheckDelayAntiLagPlayerScale < GetGameTime())
 	{
 		AllowSpecialSpawns = false;
-		GlobalCheckDelayAntiLagPlayerScale = GetGameTime() + 5.0;//only check every 5 seconds.
+		GlobalCheckDelayAntiLagPlayerScale = GetGameTime() + 3.0;//only check every 5 seconds.
 		PlayersAliveScaling = 0;
+		GlobalIntencity = 0;
+		PlayersInGame = 0;
 		
-		limit = 4 + RoundToCeil(float(Waves_GetRound())/2.65);
-		if(limit > 8) //Make sure to not allow more then this amount so the default max zombie count is 20 at almost all times if player scaling isnt accounted for.
-		{
-			limit = 8;
-		}
+		limit = 8; //Minimum should be 8! Do not scale with waves, makes it boring early on.
+
+		float f_limit = Pow(1.16, float(CountPlayersOnRed()));
+		float f_limit_alive = Pow(1.16, float(CountPlayersOnRed(true)));
+
+		f_limit *= float(limit);
+		f_limit_alive *= float(limit);
 		
-		float f_limit = 0.0;
-		float f_limit_music = 0.0;
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 			{
-				f_limit += 2.2;
-				
+				if(TeutonType[client] == TEUTON_DEAD || dieingstate[client] > 0)
+				{
+					GlobalIntencity += 1;
+				}
+				PlayersInGame += 1;
+
 				if(Level[client] > 7)
 					AllowSpecialSpawns = true;
-				
-				if(IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
-				{
-					f_limit_music += 2.2;
-				}
 			}
 		}
+
+		PlayersAliveScaling = RoundToNearest(f_limit);
 		
-		
-		PlayersAliveScaling = limit;
-		
-		PlayersAliveScaling += RoundToNearest(f_limit_music);
-		limit += RoundToNearest(f_limit);
-		
-		if(limit >= NPC_HARD_LIMIT)
-			limit = NPC_HARD_LIMIT;
+		if(RoundToNearest(f_limit) >= NPC_HARD_LIMIT)
+			f_limit = float(NPC_HARD_LIMIT);
+
+		if(RoundToNearest(f_limit_alive) >= NPC_HARD_LIMIT)
+			f_limit_alive = float(NPC_HARD_LIMIT);
 			
-		LimitNpcs = limit;
 		
 		if(PlayersAliveScaling >= NPC_HARD_LIMIT)
 			PlayersAliveScaling = NPC_HARD_LIMIT;
+
+		LimitNpcs = RoundToNearest(f_limit);
 		
 	}
 	
@@ -882,11 +883,13 @@ float f_TraceAttackWasTriggeredSameFrame[MAXENTITIES];
 
 public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
 {
+//	PrintToChatAll("ow NPC_TraceAttack");
 	if(attacker < 1 || attacker > MaxClients || victim == attacker)
 		return Plugin_Continue;
 		
 	if(inflictor < 1 || inflictor > MaxClients)
 		return Plugin_Continue;
+
 	/*
 	if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 	{
@@ -936,10 +939,14 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		}
 		if(!i_WeaponCannotHeadshot[weapon])
 		{
-			if(hitgroup == HITGROUP_HEAD)
+			bool Blitzed_By_Riot = false;
+			if(f_TargetWasBlitzedByRiotShield[victim][weapon] > GetGameTime())
 			{
-				
-				i_HasBeenHeadShotted[victim] = true;
+				Blitzed_By_Riot = true;
+			}
+
+			if(hitgroup == HITGROUP_HEAD || Blitzed_By_Riot)
+			{
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
 					damage *= 2.0;
@@ -949,7 +956,16 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					damage *= 1.65;
 				}
 
-				if(i_CurrentEquippedPerk[attacker] == 5)
+				if(Blitzed_By_Riot) //Extra damage.
+				{
+					damage *= 2.0;
+				}
+				else
+				{
+					i_HasBeenHeadShotted[victim] = true; //shouldnt count as an actual headshot!
+				}
+
+				if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
 				{
 					damage *= 1.35;
 				}
@@ -966,7 +982,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				else
 				{
-					DisplayCritAboveNpc(victim, attacker, false);
+					DisplayCritAboveNpc(victim, attacker, Blitzed_By_Riot);
 					played_headshotsound_already_Case[attacker] = random_case;
 					played_headshotsound_already_Pitch[attacker] = pitch;
 				}
@@ -984,31 +1000,33 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					Apply_Particle_Teroriser_Indicator(victim);
 					damage = 0.0;
 				}
-				
 				played_headshotsound_already[attacker] = GetGameTime();
-				switch(random_case)
+				if(!Blitzed_By_Riot) //dont play headshot sound if blized.
 				{
-					case 1:
+					switch(random_case)
 					{
-						for(int client=1; client<=MaxClients; client++)
+						case 1:
 						{
-							if(IsClientInGame(client) && client != attacker)
+							for(int client=1; client<=MaxClients; client++)
 							{
-								EmitSoundToClient(client, "zombiesurvival/headshot1.wav", victim, _, 80, _, volume, pitch);
+								if(IsClientInGame(client) && client != attacker)
+								{
+									EmitSoundToClient(client, "zombiesurvival/headshot1.wav", victim, _, 80, _, volume, pitch);
+								}
 							}
+							EmitSoundToClient(attacker, "zombiesurvival/headshot1.wav", _, _, 90, _, volume, pitch);
 						}
-						EmitSoundToClient(attacker, "zombiesurvival/headshot1.wav", _, _, 90, _, volume, pitch);
-					}
-					case 2:
-					{
-						for(int client=1; client<=MaxClients; client++)
+						case 2:
 						{
-							if(IsClientInGame(client) && client != attacker)
+							for(int client=1; client<=MaxClients; client++)
 							{
-								EmitSoundToClient(client, "zombiesurvival/headshot2.wav", victim, _, 80, _, volume, pitch);
+								if(IsClientInGame(client) && client != attacker)
+								{
+									EmitSoundToClient(client, "zombiesurvival/headshot2.wav", victim, _, 80, _, volume, pitch);
+								}
 							}
+							EmitSoundToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, volume, pitch);
 						}
-						EmitSoundToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, volume, pitch);
 					}
 				}
 				return Plugin_Changed;

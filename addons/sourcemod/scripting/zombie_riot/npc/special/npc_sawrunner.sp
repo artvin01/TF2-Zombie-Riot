@@ -167,7 +167,7 @@ methodmap SawRunner < CClotBody
 			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
 		
-		npc.m_flDoSpawnGesture = GetGameTime() + 2.0;
+		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
 		b_ThisNpcIsSawrunner[npc.index] = true;
 		
@@ -196,12 +196,12 @@ public void SawRunner_ClotThink(int iNPC)
 {
 	SawRunner npc = view_as<SawRunner>(iNPC);
 	
-//	if(npc.m_flNextDelayTime > GetGameTime())
+//	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 	//	return;
 	}
 	
-//	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
+//	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 	
@@ -211,7 +211,7 @@ public void SawRunner_ClotThink(int iNPC)
 		npc.m_bDoSpawnGesture = false;
 	}
 	
-	if(npc.m_flDoSpawnGesture > GetGameTime())
+	if(npc.m_flDoSpawnGesture > GetGameTime(npc.index))
 	{
 		npc.m_flSpeed = 0.0;
 		return;
@@ -224,7 +224,7 @@ public void SawRunner_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 	}
 	
-	if(npc.m_flAttackHappens_bullshit >= GetGameTime())
+	if(npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index))
 	{
 		npc.m_flSpeed = 0.0;
 	}
@@ -233,15 +233,15 @@ public void SawRunner_ClotThink(int iNPC)
 		npc.m_flSpeed = 450.0;
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime())
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
 			
-	npc.m_flNextThinkTime = GetGameTime() + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		float targPos[3];
 		float chargerPos[3];
@@ -263,7 +263,7 @@ public void SawRunner_ClotThink(int iNPC)
 			}
 		}
 		npc.m_iTarget = GetClosestTarget(npc.index, true);
-		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -299,15 +299,15 @@ public void SawRunner_ClotThink(int iNPC)
 			}
 			
 			//Target close enough to hit
-			if((flDistanceToTarget < 12500 && npc.m_flReloadDelay < GetGameTime()) || npc.m_flAttackHappenswillhappen)
+			if((flDistanceToTarget < 12500 && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
 			{
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
-				if(npc.m_flNextMeleeAttack < GetGameTime() || npc.m_flAttackHappenswillhappen)
+				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) || npc.m_flAttackHappenswillhappen)
 				{
 					if (!npc.m_flAttackHappenswillhappen)
 					{
-						npc.m_flNextRangedSpecialAttack = GetGameTime() + 2.0;
+						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
 						
 						switch(GetRandomInt(1,3))
 						{
@@ -325,13 +325,13 @@ public void SawRunner_ClotThink(int iNPC)
 							}
 						}
 						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime()+0.5;
-						npc.m_flAttackHappens_bullshit = GetGameTime()+0.64;
+						npc.m_flAttackHappens = GetGameTime(npc.index)+0.5;
+						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.64;
 						npc.m_flAttackHappenswillhappen = true;
-						npc.m_flNextMeleeAttack = GetGameTime() + 1.5;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.5;
 					}
 						
-					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
@@ -387,13 +387,13 @@ public void SawRunner_ClotThink(int iNPC)
 						delete swingTrace;
 						npc.m_flAttackHappenswillhappen = false;
 					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flAttackHappenswillhappen = false;
 					}
 				}
 			}
-			if (npc.m_flReloadDelay < GetGameTime())
+			if (npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				npc.StartPathing();
 				
@@ -421,14 +421,14 @@ public Action SawRunner_ClotDamaged(int victim, int &attacker, int &inflictor, f
 		
 	SawRunner npc = view_as<SawRunner>(victim);
 	
-	if(npc.m_flDoSpawnGesture > GetGameTime())
+	if(npc.m_flDoSpawnGesture > GetGameTime(npc.index))
 	{
 		return Plugin_Handled;
 	}
 	
-	if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
 	

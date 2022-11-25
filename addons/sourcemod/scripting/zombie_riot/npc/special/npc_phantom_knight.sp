@@ -82,19 +82,19 @@ methodmap PhantomKnight < CClotBody
 {
 	public void PlayIdleSound() 
 	{
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(24.0, 48.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
 	
 	public void PlayIdleAlertSound() 
 	{
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 	
 	public void PlayHurtSound() 
@@ -168,8 +168,8 @@ methodmap PhantomKnight < CClotBody
 		
 		npc.m_iState = 0;
 		npc.m_flSpeed = 150.0;
-		npc.m_flNextRangedAttack = GetGameTime() + 5.0;
-		npc.m_flNextRangedSpecialAttack = GetGameTime() + 10.0;
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
+		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 10.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flDoingAnimation = 0.0;
 		npc.m_fbRangedSpecialOn = false;
@@ -233,8 +233,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 {
 	PhantomKnight npc = view_as<PhantomKnight>(iNPC);
 	
-	float gameTime = GetGameTime();
-/*
+	float gameTime = GetGameTime(npc.index);
+
 	//some npcs deservere full update time!
 	if(npc.m_flNextDelayTime > gameTime)
 	{
@@ -242,8 +242,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 	}
 	
 
-	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
-	*/
+	npc.m_flNextDelayTime = gameTime;// + DEFAULT_UPDATE_DELAY_FLOAT;
+	
 	static int NoEnemyFound;
 	npc.Update();	
 	/*
@@ -320,16 +320,16 @@ public void PhantomKnight_ClotThink(int iNPC)
 	{
 		if(f_AttackHappensAoe[npc.index] < gameTime)
 		{
-			float damage = 400.0;
+			float damage = 200.0;
 			if(b_IsPhantomFake[npc.index]) //Make sure that he wont do damage if its a fake 
 			{
-				damage = 190.0;
+				damage = 100.0;
 			}
 			npc.PlayRangedReloadSound();
 			i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_CLUB_DAMAGE;
-			makeexplosion(npc.index, npc.index, WorldSpaceCenter(npc.index), "", RoundToCeil(damage * npc.m_flWaveScale), 110,_,_,_, false);
+			makeexplosion(npc.index, npc.index, WorldSpaceCenter(npc.index), "", RoundToCeil(damage * npc.m_flWaveScale), 110,_,_,_, false, 4.0);
 
-			f_StareAtEnemy[npc.index] = GetGameTime() + 2.0;
+			f_StareAtEnemy[npc.index] = GetGameTime(npc.index) + 2.0;
 			f_AttackHappensAoe[npc.index] = 0.0;
 			//Do aoe logic!
 		}
@@ -608,9 +608,9 @@ public Action PhantomKnight_ClotDamaged(int victim, int &attacker, int &inflicto
 		return Plugin_Continue;
 	*/
 	
-	if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
 		
@@ -639,7 +639,7 @@ public void PhantomKnight_NPCDeath(int entity)
 
 static char[] GetLucianHealth()
 {
-	int health = 180;
+	int health = 135;
 	
 	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
 	

@@ -21,6 +21,7 @@ bool b_AllowBackWalking[MAXENTITIES];
 float fl_JumpStartTime[MAXENTITIES];
 float fl_JumpCooldown[MAXENTITIES];
 float fl_NextThinkTime[MAXENTITIES];
+float fl_NextRunTime[MAXENTITIES];
 float fl_NextMeleeAttack[MAXENTITIES];
 float fl_Speed[MAXENTITIES];
 int i_Target[MAXENTITIES];
@@ -2484,6 +2485,11 @@ methodmap CClotBody
 		public get()							{ return fl_NextThinkTime[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextThinkTime[this.index] = TempValueForProperty; }
 	}
+	property float m_flNextRunTime
+	{
+		public get()							{ return fl_NextRunTime[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_NextRunTime[this.index] = TempValueForProperty; }
+	}
 	property float m_flNextDelayTime
 	{
 		public get()							{ return fl_NextDelayTime[this.index]; }
@@ -2696,7 +2702,7 @@ methodmap CClotBody
 			Is_Boss = false;
 		}
 		
-		if(f_TankGrabbedStandStill[this.index] > Gametime)
+		if(f_TankGrabbedStandStill[this.index] > GetGameTime(this.index))
 		{
 			speed_for_return = 0.0;
 		}
@@ -3663,7 +3669,11 @@ methodmap CClotBody
 		this.DispatchAnimEvents();
 		
 		//Run and StuckMonitor
-		SDKCall(g_hRun,          this.GetLocomotionInterface());	
+		if(this.m_flNextRunTime < GetGameTime())
+		{
+			this.m_flNextRunTime = GetGameTime() + 0.1; //Only update every 0.1 seconds, we really dont need more, 
+			SDKCall(g_hRun,          this.GetLocomotionInterface());	
+		}
 		
 		/*
 		
@@ -3797,6 +3807,8 @@ public void NPC_Base_InitGamedata()
 	
 	// thanks to Dysphie#4094 on discord for help
 	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::UpdateGroundConstraint", Dhook_UpdateGroundConstraint_Pre, Dhook_UpdateGroundConstraint_Post);
+
+//	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::ResolveCollision", Dhook_ResolveCollision_Pre, Dhook_ResolveCollision_Post);
 	
 	delete gamedata;
 	
@@ -6801,7 +6813,18 @@ float[] CalculateBulletDamageForce( const float vecBulletDir[3], float flScale )
 	return vecForce;
 }
 
-stock bool makeexplosion(int attacker = 0, int inflictor = -1, float attackposition[3],  char[] weaponname = "", int Damage_for_boom = 200, int Range_for_boom = 200, float Knockback = 200.0, int flags = 0, bool FromNpcForced = false, bool do_explosion_effect = true)
+stock bool makeexplosion(
+	int attacker = 0,
+	 int inflictor = -1,
+	  float attackposition[3],
+	    char[] weaponname = "",
+		 int Damage_for_boom = 200,
+		  int Range_for_boom = 200,
+		   float Knockback = 200.0,
+		    int flags = 0,
+			 bool FromNpcForced = false,
+			  bool do_explosion_effect = true,
+			  float dmg_against_entity_multiplier = 3.0)
 {
 	if(IsValidEntity(attacker)) //Is this just for effect?
 	{
@@ -6816,7 +6839,7 @@ stock bool makeexplosion(int attacker = 0, int inflictor = -1, float attackposit
 			}
 		}
 		Range_for_boom = RoundToCeil(float(Range_for_boom) * 1.1); //Overall abit more range due to how our checks work.
-		Explode_Logic_Custom(float(Damage_for_boom), attacker, attacker, -1, attackposition, float(Range_for_boom), _, _, FromBlueNpc, _);
+		Explode_Logic_Custom(float(Damage_for_boom), attacker, attacker, -1, attackposition, float(Range_for_boom), _, _, FromBlueNpc, _, _, dmg_against_entity_multiplier);
 
 	}
 	if(do_explosion_effect)
@@ -7754,6 +7777,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_JumpCooldown[entity] = 0.0;
 	fl_NextDelayTime[entity] = 0.0;
 	fl_NextThinkTime[entity] = 0.0;
+	fl_NextRunTime[entity] = 0.0;
 	fl_NextMeleeAttack[entity] = 0.0;
 	fl_Speed[entity] = 0.0;
 	i_Target[entity] = -1;
@@ -7860,6 +7884,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_PernellBuff[entity] = false;
 	IgniteFor[entity] = 0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
+	f_StunExtraGametimeDuration[entity] = 0.0;
 	
 	FormatEx(c_HeadPlaceAttachmentGibName[entity], sizeof(c_HeadPlaceAttachmentGibName[]), "");
 }
@@ -7983,6 +8008,20 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 }
 
 
+public MRESReturn Dhook_ResolveCollision_Pre()
+{
+	PrintToChatAll("-----");
+	PrintToChatAll("1");
+	return MRES_Ignored;
+}
+
+public MRESReturn Dhook_ResolveCollision_Post()
+{
+	PrintToChatAll("2");
+	PrintToChatAll("-----");
+	return MRES_Ignored;
+}
+
 
 public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask, bool originalResult)
 {
@@ -7991,7 +8030,7 @@ public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask
 
 //TELEPORT IS SAFE? FROM SARYSA BUT EDITED FOR NPCS!
 
-public bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/)
+bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/)
 {
 	float sizeMultiplier = 1.0; //We do not want to teleport giants, yet.
 	
@@ -8076,6 +8115,25 @@ public bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*
 	
 	if (!IsSpotSafe(npc, testPos, sizeMultiplier))
 		return false;
+
+	Handle trace; 
+
+	int Traced_Target;
+			
+	trace = TR_TraceRayFilterEx(startPos, testPos, MASK_NPCSOLID, RayType_EndPoint, TraceRayDontHitPlayersOrEntityCombat, npc);
+
+	Traced_Target = TR_GetEntityIndex(trace);
+
+	delete trace;
+					
+	//Can i see This enemy, is something in the way of us?
+	//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+
+	if(Traced_Target != -1) //We wanna make sure that whever we teleport, nothing has collided with us. (Mainly world)
+	{	
+		return false; //We are unable to perfom this task. Abort mission
+	}
+	//Trace found nothing has collided! Horray! Perform our teleport.
 
 	TeleportEntity(npc, testPos, NULL_VECTOR, NULL_VECTOR);
 	return true;

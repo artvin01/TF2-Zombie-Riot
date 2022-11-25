@@ -897,7 +897,7 @@ methodmap Citizen < CClotBody
 	
 	public void SlowTurn(const float pos[3])
 	{
-		TalkTurningFor[this.index] = GetGameTime() + 1.25;
+		TalkTurningFor[this.index] = GetGameTime(this.index) + 1.25;
 		TalkTurnPos[this.index][0] = pos[0];
 		TalkTurnPos[this.index][1] = pos[1];
 		TalkTurnPos[this.index][2] = pos[2];
@@ -1007,7 +1007,7 @@ methodmap Citizen < CClotBody
 			
 			this.m_bThisEntityIgnored = false;
 			this.SetActivity("ACT_BUSY_SIT_GROUND_EXIT");
-			this.m_flReloadDelay = GetGameTime() + 2.4;
+			this.m_flReloadDelay = GetGameTime(this.index) + 2.4;
 			
 			int glow = this.m_iTeamGlow;
 			if(glow > 0)
@@ -1039,11 +1039,11 @@ methodmap Citizen < CClotBody
 	}
 	public bool CanTalk()
 	{
-		return this.m_fTalkTimeIn < GetGameTime();
+		return this.m_fTalkTimeIn < GetGameTime(this.index);
 	}
 	public void PlaySound(int type)
 	{
-		float gameTime = GetGameTime();
+		float gameTime = GetGameTime(this.index);
 		if(this.m_fTalkTimeIn < gameTime)
 		{
 			this.m_fTalkTimeIn = gameTime + 3.0;
@@ -1212,7 +1212,7 @@ bool Citizen_GivePerk(int entity, int type)
 	npc.m_bCamo = npc.m_iBuildingType == 0;
 	npc.UpdateCollision(npc.m_bCamo);
 	
-	npc.m_flReloadDelay = GetGameTime() + 1.0;
+	npc.m_flReloadDelay = GetGameTime(npc.index) + 1.0;
 	npc.UpdateModel();
 	
 	npc.SetActivity("ACT_PICKUP_RACK");
@@ -1323,7 +1323,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	npc.m_fGunRangeBonus = 1.0;
 	npc.m_iAttacksTillReload = npc.m_iGunClip;
 	npc.m_bFirstBlood = false;
-	npc.m_flReloadDelay = GetGameTime() + 1.0;
+	npc.m_flReloadDelay = GetGameTime(npc.index) + 1.0;
 	npc.m_fGunDamage *= 1.0 + float(wave / 15);
 	
 	npc.UpdateModel();
@@ -1461,7 +1461,7 @@ public void Citizen_ClotThink(int iNPC)
 {
 	Citizen npc = view_as<Citizen>(iNPC);
 	
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
