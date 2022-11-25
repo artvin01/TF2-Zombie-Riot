@@ -2342,11 +2342,6 @@ public Action Building_CheckTimer(Handle timer, int ref)
 
 				//TF2_RemoveItem(client, weapon);
 				//TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
-
-				Building[client] = INVALID_FUNCTION;
-				BuildingWeapon[client] = INVALID_ENT_REFERENCE;
-
-				Store_GiveAll(client, GetClientHealth(client));
 			}
 			else
 			{
@@ -2359,6 +2354,11 @@ public Action Building_CheckTimer(Handle timer, int ref)
 				Building[client] = INVALID_FUNCTION;
 				BuildingWeapon[client] = INVALID_ENT_REFERENCE;
 			}
+
+			Building[client] = INVALID_FUNCTION;
+			BuildingWeapon[client] = INVALID_ENT_REFERENCE;
+
+			Store_GiveAll(client, GetClientHealth(client));
 		}
 	}
 	return Plugin_Stop;
