@@ -378,7 +378,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		
 		for(int client=1; client<=MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
+			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && b_HasBeenHereSinceStartOfWave[client])
 			{
 				if(TeutonType[client] == TEUTON_DEAD || dieingstate[client] > 0)
 				{
