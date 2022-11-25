@@ -205,7 +205,7 @@
 		"de"		"-10% verkaufs angebot wenn keine untoten hier sind"
 		"pt"		"10% de desconto quando não há zumbis vivos"
 		"nl"		"-10% korting op winkelvoorraden als er geen zombies aanwezig zijn"
-		"chi"       "休息回合商城折扣10%~"
+		"chi"       "休息回合商城折扣10%%~"
 	}
 	"Equip"
 	{
@@ -752,7 +752,7 @@
 		"fr"		"Vous avez gagnez {1} Cette vague!"
 		"pt"		"Ganhou +{1} em Créditos nesta onda."
 		"nl"		"Je hebt {1} geld gekregen van deze golf!"
-		"chi"       "回合结束现金奖励：{1}"
+		"chi"       "回合胜利!你获得了 {1} 的现金奖励!"
 	}
 	"Cash Gained This Wave Village"
 	{
@@ -1266,7 +1266,7 @@
 		"de"		"Beanspruchen Sie dieses Gebäude mit NACHLADEN mit einem Schlüsselwerkzeug."
 		"pt"		"Para reivindicar está construção aperte o botão re RECARREGAR enquando segurando sua chave inglesa."
 		"nl"		"Beweer dit gebouw door, tijdens het dragen van een moersleutel, op de HERLAAD toets te drukken."
-		"chi"       "拿着扳手的同时按下R键背起这个建筑"
+		"chi"       "断开连接建筑：拿着建筑扳手的同时按下R键占有建筑"
 	}
 	"Ammobox Tooltip"
 	{
@@ -1638,7 +1638,7 @@
 		"de"		"Sein sie sicher das sie ihr ganzes Startgeld verbrauchen!"
 		"pt"		"Certifique-se de gastar todo seu dinheiro inicial!"
 		"nl"		"Wees zeker dat je al het geld waar je mee gestart bent gebruikt!"
-		"chi"       "请花光你所有的初始现金!"
+		"chi"       "请花光你所有的初始现金，否则回合开始时会被清空！！!"
 	}
 	"Difficulty set to"
 	{
