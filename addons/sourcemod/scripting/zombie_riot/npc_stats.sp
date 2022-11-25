@@ -6813,7 +6813,18 @@ float[] CalculateBulletDamageForce( const float vecBulletDir[3], float flScale )
 	return vecForce;
 }
 
-stock bool makeexplosion(int attacker = 0, int inflictor = -1, float attackposition[3],  char[] weaponname = "", int Damage_for_boom = 200, int Range_for_boom = 200, float Knockback = 200.0, int flags = 0, bool FromNpcForced = false, bool do_explosion_effect = true)
+stock bool makeexplosion(
+	int attacker = 0,
+	 int inflictor = -1,
+	  float attackposition[3],
+	    char[] weaponname = "",
+		 int Damage_for_boom = 200,
+		  int Range_for_boom = 200,
+		   float Knockback = 200.0,
+		    int flags = 0,
+			 bool FromNpcForced = false,
+			  bool do_explosion_effect = true,
+			  float dmg_against_entity_multiplier = 3.0)
 {
 	if(IsValidEntity(attacker)) //Is this just for effect?
 	{
@@ -6828,7 +6839,7 @@ stock bool makeexplosion(int attacker = 0, int inflictor = -1, float attackposit
 			}
 		}
 		Range_for_boom = RoundToCeil(float(Range_for_boom) * 1.1); //Overall abit more range due to how our checks work.
-		Explode_Logic_Custom(float(Damage_for_boom), attacker, attacker, -1, attackposition, float(Range_for_boom), _, _, FromBlueNpc, _);
+		Explode_Logic_Custom(float(Damage_for_boom), attacker, attacker, -1, attackposition, float(Range_for_boom), _, _, FromBlueNpc, _, _, dmg_against_entity_multiplier);
 
 	}
 	if(do_explosion_effect)

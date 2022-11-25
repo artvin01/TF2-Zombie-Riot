@@ -96,7 +96,7 @@ public MRESReturn DHook_MedigunPrimaryAttack(int entity)
 	{
 		if(f_MedigunDelayAttackThink[owner] < GetGameTime())
 		{
-			f_MedigunDelayAttackThink[owner] = GetGameTime() + 0.1;
+			f_MedigunDelayAttackThink[owner] = GetGameTime() + 0.05;
 		 	return MRES_Ignored;
 		}
 		else
@@ -367,7 +367,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 				if(What_Uber_Type == -1)
 				{
-					flChargeLevel += 0.03*GetGameFrameTime();
+					flChargeLevel += 0.05*GetGameFrameTime();
 					
 					if (flChargeLevel > 1.0)
 					{
@@ -375,10 +375,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					}
 					
 					SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
-				}
-				else
-				{
-					
 				}
 				
 				if(team)

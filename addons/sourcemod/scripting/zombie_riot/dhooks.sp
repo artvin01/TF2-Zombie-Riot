@@ -433,7 +433,7 @@ public MRESReturn DHook_FireballExplodePre(int entity)
 		{
 			if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == 939)
 			{
-				float damage = 200.0;
+				float damage = 300.0;
 				
 				Address address = TF2Attrib_GetByDefIndex(weapon, 410);
 				if(address != Address_Null)

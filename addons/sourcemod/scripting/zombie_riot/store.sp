@@ -667,15 +667,12 @@ void Store_SwapItems(int client)
 				}
 
 				/*GetEntityClassname(active, buffer, sizeof(buffer));
-				PrintToChatAll("Current: %d | %s | %d", i, buffer, active);
 				
 				GetEntityClassname(switchE, buffer, sizeof(buffer));
-				PrintToChatAll("Lowest: %d | %s | %d", switchI, buffer, switchE);
 				
 				if(nextE != -1)
 				{
 					GetEntityClassname(nextE, buffer, sizeof(buffer));
-					PrintToChatAll("Swap: %d | %s | %d", nextI, buffer, nextE);
 				}*/
 
 				if(nextE != -1 && switchI != nextI)
@@ -1534,6 +1531,11 @@ public void MenuPage(int client, int section)
 		CurrentCash = 999999;
 		Ammo_Count_Ready[client] = 999999;
 		CashSpent[client] = 0;
+	}
+
+	if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
+	{
+		return;
 	}
 	
 	if(ClientTutorialStep(client) == 2)
@@ -2809,7 +2811,7 @@ void Store_ApplyAttribs(int client)
 //	map.SetValue("124", 1.0);											// Make sentries minisentries (only works on melee's that are wrenches...)
 //	map.SetValue("345", 0.0);											// No dispenser range
 //	map.SetValue("732", 0.0);											// No dispenser metal gain
-
+	map.SetValue("314", -2.0);											//Medigun uber duration, it has to be a body attribute
 
 	int wave_count = Waves_GetRound() + 1;
 	
@@ -2998,6 +3000,7 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 	{
 		Store_RemoveSpecificItem(client, "Teutonic Longsword");
 	}
+	b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
 	
 	//There is no easy way to preserve uber through with multiple mediguns
 	//solution: save via index
@@ -3047,7 +3050,15 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 	/*
 	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(SpawnWeapon_Special(client, "tf_weapon_pda_engineer_destroy", 26, 100, 5, "671 ; 1"));
 	*/
-	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(SpawnWeapon_Special(client, "tf_weapon_invis", 26, 100, 5, "221 ; -99 ; 160 ; 1 ; 35 ; 0 ; 816 ; 1 ; 671 ; 1 ; 34 ; 999"));
+
+	entity = GiveWearable(client, 0);
+	TF2Attrib_SetByDefIndex(entity, 221, -99.0);
+	TF2Attrib_SetByDefIndex(entity, 160, 1.0);
+	TF2Attrib_SetByDefIndex(entity, 35, 0.0);
+	TF2Attrib_SetByDefIndex(entity, 816, 1.0);
+	TF2Attrib_SetByDefIndex(entity, 671, 1.0);
+	TF2Attrib_SetByDefIndex(entity, 34, 999.0);
+	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(entity);
 	
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
 	SetAbilitySlotCount(client, 0);
@@ -3074,6 +3085,7 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
 		int count;
+		bool hasPDA = false;
 		bool found = false;
 		bool use = true;
 		int length = StoreItems.Length;
@@ -3087,6 +3099,14 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 				item.GetItemInfo(item.Owned[client]-1, info);
 				if(info.Classname[0])
 				{
+					if(!StrContains(info.Classname, "tf_weapon_pda_engineer_build"))
+					{
+						if(hasPDA)
+							continue;
+						
+						hasPDA = true;
+					}
+
 					Store_GiveItem(client, i, use, found);
 					if(++count > 9)
 					{
@@ -3212,6 +3232,13 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 					return -1;
 				}*/
 				
+				if(slot == TFWeaponSlot_Grenade)
+				{
+					entity = GetPlayerWeaponSlot(client, TFWeaponSlot_Grenade);
+					if(entity != -1)
+						TF2_RemoveItem(client, entity);
+				}
+
 				entity = SpawnWeapon(client, info.Classname, info.Index, 5, 6, info.Attrib, info.Value, info.Attribs);
 				StoreWeapon[entity] = index;
 				
@@ -3263,8 +3290,6 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 									
 									if(!EscapeMode || info.Ammo < 3) //my man broke my shit.
 									{
-									//	PrintToChatAll("test");
-									//	PrintToChatAll("%s",info.Classname);
 										SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", info.Ammo);
 									}
 									else if(info.Ammo == 24 || info.Ammo == 6)
@@ -3874,7 +3899,6 @@ char[] TranslateItemName(int client, const char name[64], const char Custom_Name
 	if(ServerLang == -1)
 		ServerLang = GetServerLanguage();
 	
-//	PrintToChatAll("%s",Custom_Name);
 	char buffer[64];
 
 	if(GetClientLanguage(client) != ServerLang)

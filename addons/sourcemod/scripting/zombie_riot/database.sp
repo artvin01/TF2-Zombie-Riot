@@ -196,7 +196,7 @@ void Database_SaveLoadout(int client, const char[] name)
 			int owned, scale, equip;
 			for(int i; Store_GetNextItem(client, i, owned, scale, equip, buffer, sizeof(buffer)); i++)
 			{
-				if(owned && equip)
+				if(owned/* && equip*/)
 				{
 					DataBase.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_LOADOUT ... " (steamid, item, loadout) VALUES ('%d', '%s', '%s')", id, buffer, name);
 					tr.AddQuery(buffer);

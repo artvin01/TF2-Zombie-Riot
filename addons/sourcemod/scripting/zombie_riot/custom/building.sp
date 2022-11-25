@@ -193,7 +193,7 @@ public Action Building_PlaceSentry(int client, int weapon, const char[] classnam
 		}
 		else
 		{
-			PlaceBuilding(client, Building_Sentry, TFObject_Sentry);
+			PlaceBuilding(client, weapon, Building_Sentry, TFObject_Sentry);
 		}
 	}
 	return Plugin_Continue;
@@ -219,7 +219,7 @@ public Action Building_PlaceMortar(int client, int weapon, const char[] classnam
 		}
 		else
 		{
-			PlaceBuilding(client, Building_Mortar, TFObject_Sentry);
+			PlaceBuilding(client, weapon, Building_Mortar, TFObject_Sentry);
 		}
 	}
 	return Plugin_Continue;
@@ -245,7 +245,7 @@ public Action Building_PlaceHealingStation(int client, int weapon, const char[] 
 		}
 		else
 		{
-			PlaceBuilding(client, Building_HealingStation, TFObject_Sentry);
+			PlaceBuilding(client, weapon, Building_HealingStation, TFObject_Sentry);
 		}
 	}
 	return Plugin_Continue;
@@ -271,7 +271,7 @@ public Action Building_PlaceRailgun(int client, int weapon, const char[] classna
 		}
 		else
 		{
-			PlaceBuilding(client, Building_Railgun, TFObject_Sentry);
+			PlaceBuilding(client, weapon, Building_Railgun, TFObject_Sentry);
 		}
 	}
 	return Plugin_Continue;
@@ -281,7 +281,7 @@ public Action Building_PlaceDispenser(int client, int weapon, const char[] class
 {
 	if(i_BarricadesBuild[client] < MaxBarricadesAllowed(client))
 	{
-		PlaceBuilding(client, Building_DispenserWall, TFObject_Dispenser);
+		PlaceBuilding(client, weapon, Building_DispenserWall, TFObject_Dispenser);
 		return Plugin_Continue;		
 	}
 	else
@@ -296,7 +296,7 @@ public Action Building_PlaceElevator(int client, int weapon, const char[] classn
 {
 	if(Elevators_Currently_Build[client] < 3)
 	{
-		PlaceBuilding(client, Building_DispenserElevator, TFObject_Dispenser);
+		PlaceBuilding(client, weapon, Building_DispenserElevator, TFObject_Dispenser);
 		return Plugin_Continue;		
 	}
 	else
@@ -310,7 +310,7 @@ public Action Building_PlaceAmmoBox(int client, int weapon, const char[] classna
 {
 	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false))
 	{
-		PlaceBuilding(client, Building_AmmoBox, TFObject_Dispenser);
+		PlaceBuilding(client, weapon, Building_AmmoBox, TFObject_Dispenser);
 		return Plugin_Continue;		
 	}
 	else
@@ -325,7 +325,7 @@ public Action Building_PlaceArmorTable(int client, int weapon, const char[] clas
 {
 	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false))
 	{
-		PlaceBuilding(client, Building_ArmorTable, TFObject_Dispenser);
+		PlaceBuilding(client, weapon, Building_ArmorTable, TFObject_Dispenser);
 		return Plugin_Continue;		
 	}
 	else
@@ -340,7 +340,7 @@ public Action Building_PlacePerkMachine(int client, int weapon, const char[] cla
 {
 	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false))
 	{
-		PlaceBuilding(client, Building_PerkMachine, TFObject_Dispenser);
+		PlaceBuilding(client, weapon, Building_PerkMachine, TFObject_Dispenser);
 		return Plugin_Continue;		
 	}
 	else
@@ -355,7 +355,7 @@ public Action Building_PlacePackAPunch(int client, int weapon, const char[] clas
 {
 	if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false))
 	{
-		PlaceBuilding(client, Building_PackAPunch, TFObject_Dispenser);
+		PlaceBuilding(client, weapon, Building_PackAPunch, TFObject_Dispenser);
 		return Plugin_Continue;		
 	}
 	else
@@ -1148,6 +1148,7 @@ public void Building_TakeDamagePost(int entity, int attacker, int inflictor, flo
 */
 
 static Function Building[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
+static int BuildingWeapon[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 //static float GrabAt[MAXTF2PLAYERS];
 //static int GrabRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 
@@ -1161,6 +1162,7 @@ void Building_WeaponSwitchPost(int client, int &weapon, const char[] buffer)
 			if(Building[client] != INVALID_FUNCTION)
 			{
 				Building[client] = INVALID_FUNCTION;
+				BuildingWeapon[client] = INVALID_ENT_REFERENCE;
 				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 			}
 			
@@ -1344,6 +1346,7 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 					if(!StrContains(buffer, "obj_dispenser"))
 					{
 						Building[client] = INVALID_FUNCTION;
+						BuildingWeapon[client] = INVALID_ENT_REFERENCE;
 						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
 						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 						int iBuilder = Spawn_Buildable(client);
@@ -1362,6 +1365,7 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 					else if(!StrContains(buffer, "obj_sentrygun"))
 					{
 						Building[client] = INVALID_FUNCTION;
+						BuildingWeapon[client] = INVALID_ENT_REFERENCE;
 						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
 						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 						int iBuilder = Spawn_Buildable(client);
@@ -2329,33 +2333,37 @@ public Action Building_CheckTimer(Handle timer, int ref)
 			
 			if(!result)
 			{
-				int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Grenade);
+				int weapon = EntRefToEntIndex(BuildingWeapon[client]);
 				if(weapon == -1)
 					return Plugin_Stop;
 				
 				Store_ConsumeItem(client, StoreWeapon[weapon]);
-				TF2_RemoveWeaponSlot(client, TFWeaponSlot_Grenade);
-				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 				MenuPage(client, StoreWeapon[weapon]);
-				Building[client] = INVALID_FUNCTION;
+
+				//TF2_RemoveItem(client, weapon);
+				//TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 			}
 			else
 			{
-				int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Grenade);
+				int weapon = EntRefToEntIndex(BuildingWeapon[client]);
 				if(weapon == -1)
 					return Plugin_Stop;
-			
-			//	Store_Unequip(client, StoreWeapon[weapon]);
-				TF2_RemoveWeaponSlot(client, TFWeaponSlot_Grenade);
+				
 				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
-				MenuPage(client, StoreWeapon[weapon]);
+				
 				Building[client] = INVALID_FUNCTION;
+				BuildingWeapon[client] = INVALID_ENT_REFERENCE;
 			}
+
+			Building[client] = INVALID_FUNCTION;
+			BuildingWeapon[client] = INVALID_ENT_REFERENCE;
+
+			Store_GiveAll(client, GetClientHealth(client));
 		}
 	}
 	return Plugin_Stop;
 }
-static void PlaceBuilding(int client, Function callback, TFObjectType type, TFObjectMode mode=TFObjectMode_None)
+static void PlaceBuilding(int client, int weapon, Function callback, TFObjectType type, TFObjectMode mode=TFObjectMode_None)
 {
 	TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
 	int iBuilder = Spawn_Buildable(client, view_as<int>(type));
@@ -2373,6 +2381,7 @@ static void PlaceBuilding(int client, Function callback, TFObjectType type, TFOb
 				ClientCommand(client, "build 2");
 		}
 		Building[client] = callback;
+		BuildingWeapon[client] = EntIndexToEntRef(weapon);
 	}
 }
 /*
@@ -3163,8 +3172,6 @@ public Action RailgunFire(Handle timer, int client)
 		GetEntPropVector(obj, Prop_Data, "m_vecOrigin", flPos);
 		flPos[2] += 50.0;
 	//	flAng[1] += 33.0;
-	//	PrintToChatAll("%f",flAng[0]);
-	//	PrintToChatAll("%f",flAng[1]);
 		ParticleEffectAt(flPos, "halloween_boss_axe_hit_sparks", 1.0);
 		ParticleEffectAt(flPos, "eotl_pyro_pool_explosion_streaks", 1.0);
 		CreateTimer(1.5, RailgunFire_ReloadStart, client, TIMER_FLAG_NO_MAPCHANGE);
@@ -4151,7 +4158,7 @@ public Action Building_PlaceVillage(int client, int weapon, const char[] classna
 		}
 		else
 		{
-			PlaceBuilding(client, Building_Village, TFObject_Sentry);
+			PlaceBuilding(client, weapon, Building_Village, TFObject_Sentry);
 		}
 	}
 	return Plugin_Continue;
@@ -5197,7 +5204,6 @@ public MRESReturn Dhook_FinishedBuilding_Pre(int Building_Index, Handle hParams)
 
 	SetEntityModel(Building_Index, BARRICADE_MODEL);
 
-	PrintToChatAll("Dhook_FinishedBuilding_Pre");
 	*/
 	return MRES_Ignored;
 }

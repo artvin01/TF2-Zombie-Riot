@@ -891,8 +891,11 @@ stock int GiveWearable(int client, int index)
 	int entity = CreateEntityByName("tf_wearable");
 	if(entity > MaxClients)	// Weapon viewmodel
 	{
-		SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", index);
-		SetEntProp(entity, Prop_Send, "m_bInitialized", true);
+		if(index != 0)
+		{
+			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", index);
+			SetEntProp(entity, Prop_Send, "m_bInitialized", true);
+		}
 		SetEntProp(entity, Prop_Send, "m_iEntityQuality", 1);
 		SetEntProp(entity, Prop_Send, "m_iEntityLevel", 1);
 		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
@@ -2436,7 +2439,7 @@ int CountPlayersOnRed(bool alive = false)
 	int amount;
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && (!alive || (TeutonType[client] != TEUTON_NONE && dieingstate[client] > 0)))
+		if(b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && (!alive || (TeutonType[client] != TEUTON_NONE && dieingstate[client] > 0)))
 			amount++;
 	}
 	
@@ -2479,7 +2482,8 @@ float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF,
 float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF,
 bool FromBlueNpc = false,
 int maxtargetshit = 10,
-bool ignite = false)
+bool ignite = false,
+float dmg_against_entity_multiplier = 3.0)
 {
 	float damage_reduction = 1.0;
 	int Closest_npc = 0;
@@ -2564,7 +2568,7 @@ bool ignite = false)
 
 			if(FromBlueNpc && !IsValidClient(Closest_npc))
 			{
-				damage_1 *= 3.0; //enemy is an npc, and i am an npc.
+				damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
 			}
 			SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 			
@@ -2605,7 +2609,7 @@ bool ignite = false)
 							}	
 							if(FromBlueNpc)
 							{
-								damage_1 *= 3.0; //enemy is an npc, and i am an npc.
+								damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
 							}						
 							SDKHooks_TakeDamage(new_closest_npc, client, client, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 							
@@ -2688,7 +2692,7 @@ bool ignite = false)
 									}
 									if(FromBlueNpc)
 									{
-										damage_1 *= 3.0; //enemy is an npc, and i am an npc.
+										damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
 									}
 							
 									SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
@@ -2732,7 +2736,7 @@ bool ignite = false)
 										}
 										if(FromBlueNpc)
 										{
-											damage_1 *= 3.0; //enemy is an npc, and i am an npc.
+											damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
 										}
 
 										SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
@@ -2948,6 +2952,10 @@ void ReviveAll(bool raidspawned = false)
 			DoOverlay(client, "");
 			if(GetClientTeam(client)==2)
 			{
+				if(TeutonType[client] != TEUTON_WAITING)
+				{
+					b_HasBeenHereSinceStartOfWave[client] = true;
+				}
 				if((!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD)/* && !IsValidEntity(EntRefToEntIndex(RaidBossActive))*/)
 				{
 					applied_lastmann_buffs_once = false;
