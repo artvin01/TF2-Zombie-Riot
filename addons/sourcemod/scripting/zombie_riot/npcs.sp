@@ -394,7 +394,9 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		{
 			PlayersInGame = 3;
 		}
-		//This is here to fix the issue of it always playing the music when 2 people are in.
+		
+		//This is here to fix the issue of it always playing the zombie instead of human music when 2 people are in.
+		//even if both are alive.
 
 		PlayersAliveScaling = RoundToNearest(f_limit);
 		
