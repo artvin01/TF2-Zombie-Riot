@@ -363,8 +363,10 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	if(GlobalCheckDelayAntiLagPlayerScale < GetGameTime())
 	{
 		AllowSpecialSpawns = false;
-		GlobalCheckDelayAntiLagPlayerScale = GetGameTime() + 5.0;//only check every 5 seconds.
+		GlobalCheckDelayAntiLagPlayerScale = GetGameTime() + 3.0;//only check every 5 seconds.
 		PlayersAliveScaling = 0;
+		GlobalIntencity = 0;
+		PlayersInGame = 0;
 		
 		limit = 8; //Minimum should be 8! Do not scale with waves, makes it boring early on.
 
@@ -378,11 +380,17 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 			{
+				if(TeutonType[client] == TEUTON_DEAD || dieingstate[client] > 0)
+				{
+					GlobalIntencity += 1;
+				}
+				PlayersInGame += 1;
+
 				if(Level[client] > 7)
 					AllowSpecialSpawns = true;
 			}
 		}
-		
+
 		PlayersAliveScaling = RoundToNearest(f_limit);
 		
 		if(RoundToNearest(f_limit) >= NPC_HARD_LIMIT)

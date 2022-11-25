@@ -216,6 +216,7 @@ int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, 
 
 int CurrentPlayers;
 int PlayersAliveScaling;
+int PlayersInGame;
 int GlobalIntencity;
 ConVar cvarTimeScale;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
@@ -2606,7 +2607,6 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	if(!Waves_Started() || GameRules_GetRoundState() != RoundState_RoundRunning)
 	{
 		LastMann = false;
-		GlobalIntencity = 0;
 		CurrentPlayers = 0;
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -2624,7 +2624,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	LastMann = !Waves_InSetup();
 	int players = CurrentPlayers;
 	CurrentPlayers = 0;
-	GlobalIntencity = Waves_GetIntencity();
+	int GlobalIntencity_Reduntant = Waves_GetIntencity();
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
@@ -2634,7 +2634,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 			{
 				if(dieingstate[client] > 0)
 				{
-					GlobalIntencity++;	
+					GlobalIntencity_Reduntant++;	
 				}
 				if(!alive)
 				{
@@ -2648,7 +2648,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 			}
 			else
 			{
-				GlobalIntencity++;
+				GlobalIntencity_Reduntant++;
 			}
 			
 			if(Hurtviasdkhook != 0)
@@ -2661,7 +2661,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	if(CurrentPlayers < players)
 		CurrentPlayers = players;
 	
-	if(LastMann && !GlobalIntencity) //Make sure if they are alone, it wont play last man music.
+	if(LastMann && !GlobalIntencity_Reduntant) //Make sure if they are alone, it wont play last man music.
 		LastMann = false;
 	
 	if(LastMann)
