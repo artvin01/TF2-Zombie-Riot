@@ -2439,7 +2439,7 @@ int CountPlayersOnRed(bool alive = false)
 	int amount;
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && (!alive || (TeutonType[client] != TEUTON_NONE && dieingstate[client] > 0)))
+		if(b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && (!alive || (TeutonType[client] != TEUTON_NONE && dieingstate[client] > 0)))
 			amount++;
 	}
 	
@@ -2952,6 +2952,10 @@ void ReviveAll(bool raidspawned = false)
 			DoOverlay(client, "");
 			if(GetClientTeam(client)==2)
 			{
+				if(TeutonType[client] != TEUTON_WAITING)
+				{
+					b_HasBeenHereSinceStartOfWave[client] = true;
+				}
 				if((!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD)/* && !IsValidEntity(EntRefToEntIndex(RaidBossActive))*/)
 				{
 					applied_lastmann_buffs_once = false;

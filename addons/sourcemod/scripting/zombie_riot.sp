@@ -218,6 +218,7 @@ int CurrentPlayers;
 int PlayersAliveScaling;
 int PlayersInGame;
 int GlobalIntencity;
+bool b_HasBeenHereSinceStartOfWave[MAXTF2PLAYERS];
 ConVar cvarTimeScale;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
 //ConVar CvarSvRollspeed; // sv_rollspeed 
@@ -1637,6 +1638,7 @@ public Action Command_AFK(int client, int args)
 {
 	if(client)
 	{
+		b_HasBeenHereSinceStartOfWave[client] = false;
 		WaitingInQueue[client] = true;
 		ChangeClientTeam(client, 1);
 	}
@@ -2008,6 +2010,7 @@ public void OnClientDisconnect(int client)
 	Queue_ClientDisconnect(client);
 //	DHook_ClientDisconnect();
 	Store_ClientDisconnect(client);
+	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
 	CashRecievedNonWave[client] = 0;
@@ -4351,4 +4354,5 @@ public void MapStartResetAll()
 	Zero2(f_TargetWasBlitzedByRiotShield);
 	Zero(f_StunExtraGametimeDuration);
 	CurrentGibCount = 0;
+	Zero(b_HasBeenHereSinceStartOfWave);
 }
