@@ -571,7 +571,7 @@
 		"de"		"Schlüsselwerkzeug"
 		"pt"		"Chave Inglesa"
 		"nl"		"Moersleutel"
-		"chi"       "扳手"
+		"chi"       "建筑扳手"
 	}
 	"Knife"
 	{
