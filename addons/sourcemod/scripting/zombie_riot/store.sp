@@ -667,15 +667,12 @@ void Store_SwapItems(int client)
 				}
 
 				/*GetEntityClassname(active, buffer, sizeof(buffer));
-				PrintToChatAll("Current: %d | %s | %d", i, buffer, active);
 				
 				GetEntityClassname(switchE, buffer, sizeof(buffer));
-				PrintToChatAll("Lowest: %d | %s | %d", switchI, buffer, switchE);
 				
 				if(nextE != -1)
 				{
 					GetEntityClassname(nextE, buffer, sizeof(buffer));
-					PrintToChatAll("Swap: %d | %s | %d", nextI, buffer, nextE);
 				}*/
 
 				if(nextE != -1 && switchI != nextI)
@@ -3098,8 +3095,6 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 				{
 					if(!StrContains(info.Classname, "tf_weapon_pda_engineer_build"))
 					{
-						PrintToChatAll("Found: %d", hasPDA ? 1 : 0);
-
 						if(hasPDA)
 							continue;
 						
@@ -3235,10 +3230,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 				{
 					entity = GetPlayerWeaponSlot(client, TFWeaponSlot_Grenade);
 					if(entity != -1)
-					{
 						TF2_RemoveItem(client, entity);
-						PrintToChatAll("Removed old");
-					}
 				}
 
 				entity = SpawnWeapon(client, info.Classname, info.Index, 5, 6, info.Attrib, info.Value, info.Attribs);
@@ -3292,8 +3284,6 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 									
 									if(!EscapeMode || info.Ammo < 3) //my man broke my shit.
 									{
-									//	PrintToChatAll("test");
-									//	PrintToChatAll("%s",info.Classname);
 										SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", info.Ammo);
 									}
 									else if(info.Ammo == 24 || info.Ammo == 6)
@@ -3903,7 +3893,6 @@ char[] TranslateItemName(int client, const char name[64], const char Custom_Name
 	if(ServerLang == -1)
 		ServerLang = GetServerLanguage();
 	
-//	PrintToChatAll("%s",Custom_Name);
 	char buffer[64];
 
 	if(GetClientLanguage(client) != ServerLang)

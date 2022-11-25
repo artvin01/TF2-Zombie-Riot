@@ -2347,7 +2347,6 @@ public Action Building_CheckTimer(Handle timer, int ref)
 				BuildingWeapon[client] = INVALID_ENT_REFERENCE;
 
 				Store_GiveAll(client, GetClientHealth(client));
-				PrintToChatAll("Regened");
 			}
 			else
 			{
@@ -3173,8 +3172,6 @@ public Action RailgunFire(Handle timer, int client)
 		GetEntPropVector(obj, Prop_Data, "m_vecOrigin", flPos);
 		flPos[2] += 50.0;
 	//	flAng[1] += 33.0;
-	//	PrintToChatAll("%f",flAng[0]);
-	//	PrintToChatAll("%f",flAng[1]);
 		ParticleEffectAt(flPos, "halloween_boss_axe_hit_sparks", 1.0);
 		ParticleEffectAt(flPos, "eotl_pyro_pool_explosion_streaks", 1.0);
 		CreateTimer(1.5, RailgunFire_ReloadStart, client, TIMER_FLAG_NO_MAPCHANGE);
@@ -5207,7 +5204,6 @@ public MRESReturn Dhook_FinishedBuilding_Pre(int Building_Index, Handle hParams)
 
 	SetEntityModel(Building_Index, BARRICADE_MODEL);
 
-	PrintToChatAll("Dhook_FinishedBuilding_Pre");
 	*/
 	return MRES_Ignored;
 }
