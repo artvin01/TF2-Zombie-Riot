@@ -390,6 +390,11 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					AllowSpecialSpawns = true;
 			}
 		}
+		if(PlayersInGame < 2)
+		{
+			PlayersInGame = 3;
+		}
+		//This is here to fix the issue of it always playing the music when 2 people are in.
 
 		PlayersAliveScaling = RoundToNearest(f_limit);
 		
