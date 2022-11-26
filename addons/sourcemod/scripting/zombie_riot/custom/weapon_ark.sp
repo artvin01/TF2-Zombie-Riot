@@ -707,7 +707,7 @@ public Action Reset_Ark_Attackspeed(Handle cut_timer, int ref)	//code that reset
 
 
 //stuff that gets activated upon taking damage
-float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, int weapon)
+float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
 {
 	if (Ability_Check_Cooldown(victim, 2) >= 14.0 && Ability_Check_Cooldown(victim, 2) < 16.0)
 	{
@@ -750,8 +750,10 @@ float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, int weapo
 		
 		GetAttachment(victim, "effect_hand_r", flPos, flAng);
 		
-		int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.1);
-		
+		int particler = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.15);
+
+
+	//	TE_Particle("mvm_soldier_shockwave", damagePosition, NULL_VECTOR, flAng, -1, _, _, _, _, _, _, _, _, _, 0.0);
 		
 		DataPack pack = new DataPack();
 		pack.WriteCell(EntIndexToEntRef(particler));
