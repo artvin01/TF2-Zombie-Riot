@@ -2986,8 +2986,8 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 	}
 	if(removeWeapons)
 	{
-		Manual_Impulse_101(client, health);
 		TF2_RegeneratePlayer(client);
+		Manual_Impulse_101(client, health);
 		return;
 	}
 
