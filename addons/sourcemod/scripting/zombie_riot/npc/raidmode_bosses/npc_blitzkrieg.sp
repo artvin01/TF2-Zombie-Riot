@@ -118,6 +118,7 @@ static bool b_life2[MAXENTITIES];
 static bool b_life3[MAXENTITIES];
 static bool b_allies[MAXENTITIES];
 static bool b_lowplayercount[MAXENTITIES];
+static bool b_isspecialmap[MAXENTITIES];
 static int i_currentwave[MAXENTITIES];
 
   ///////////////////////
@@ -435,7 +436,15 @@ methodmap Blitzkrieg < CClotBody
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 125, 100, 100, 255);
 		
-		
+		b_isspecialmap[npc.index]=false;
+		/*
+		if(mapthing)	//Needs the thing, then needs to be tested. Support for blitzlight half dmg/range/duration has allready been added, scaling is half.
+		{
+			b_isspecialmap[npc.index]=true;
+		}
+		else
+			b_isspecialmap[npc.index]=false;
+		*/
 		//IDLE
 		npc.m_flSpeed = fl_move_speed[npc.index];
 		
@@ -448,7 +457,19 @@ methodmap Blitzkrieg < CClotBody
 		i_maxfirerockets[npc.index] = 20;	//blitz's max ammo, this number changes on lifeloss.
 		i_final_nr[npc.index] = 0;	//used for logic in blitzlight, basicaly locks out stuff so it doesn't repeat the ability.
 		
-		fl_blitzscale[npc.index] = RaidModeScaling;	//Storage for current raidmode scaling to use for calculating blitz's health scaling.
+		//adjust the "/4.0" to adjust how hard raid scaling happens. however be warned that on high player counts/waves blitz's scaling can scale extremely highly. 
+		fl_blitzscale[npc.index] = RaidModeScaling/4.0;	//Storage for current raidmode scaling to use for calculating blitz's health scaling.
+		if(b_isspecialmap[npc.index])
+			fl_blitzscale[npc.index] = RaidModeScaling/2.0;	//if special map, reduce damage by another 2;
+		fl_blitzscale[npc.index] *= 60/i_currentwave[npc.index]; //and now we do extra math to make sure blitz's scaling doesn't go to the moon on later waves.
+		
+		/*
+		Original scaling is divided by 4, the multiplied by the numbers bellow.
+		4x	Wave 15, origami scaling x4.
+		3x	wave 30, original scaling x3.
+		2x  wave 45, original scaling x2. | Asuming wave 45, 6 players. scaling=((7.2/4)*60/45)*(1.0+(1-(Health/MaxHealth))*1.22) | The entire scaling.
+		1x	wave 60, orginial.
+		*/
 		
 		b_BlitzLight[npc.index]=false;			//First stage of blitzlight, blocks health scaling.
 		b_BlitzLight_used[npc.index]=false;		//Tell's the npc that blitzlight has been used, and blocks it from being used again.
@@ -625,7 +646,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				{
 					npc.m_iAmountProjectiles = 0;
 					npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 45.0 / i_HealthScale[npc.index];
-					if(i_NpcCurrentLives[npc.index]==2)
+					if((i_NpcCurrentLives[npc.index]==2 && !b_isspecialmap[npc.index]) || (b_isspecialmap[npc.index] && i_NpcCurrentLives[npc.index]==3))
 					{
 						Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 					}
@@ -1555,6 +1576,11 @@ public void BlitzLight_Invoke(int ref, int enemy, float timer, float charge)
 		float vecTarget[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", vecTarget);
 		
+		if(b_isspecialmap[npc.index])
+		{	//if special map, reduce time of blitzlight by half.
+			timer/=2.0;
+			charge/=2.0;		
+		}
 		BlitzLight_Duration[npc.index] = timer;
 		BlitzLight_ChargeTime[npc.index] = charge;
 		BlitzLight_Scale1[npc.index] = 200.0;	//Best to do the scales in sets of numbers.
@@ -1564,6 +1590,14 @@ public void BlitzLight_Invoke(int ref, int enemy, float timer, float charge)
 		BlitzLight_Radius[npc.index] = 200.0;	//Best to set radius as the same different of numbers when going up from scale 1, to 2. in this case scale goes up by 200 each time, so radius is 200.
 		BlitzLight_Duration_notick[npc.index] = GetGameTime(npc.index) + charge;	//Charge time.
 		
+		if(b_isspecialmap[npc.index])
+		{	//if special map, reduce range by half and dmg.
+			BlitzLight_Scale1[npc.index]/=2.0;
+			BlitzLight_Scale2[npc.index]/=2.0;
+			BlitzLight_Scale3[npc.index]/=2.0;
+			BlitzLight_Radius[npc.index]/=2.0;
+			BlitzLight_DMG_Base[npc.index]/=2.0;
+		}
 		float time=BlitzLight_Duration[npc.index]+charge;	//Another value in a temp timer.
 		BlitzLight_Duration[npc.index]*=66.0;	//Converts the duration into ticks
 		

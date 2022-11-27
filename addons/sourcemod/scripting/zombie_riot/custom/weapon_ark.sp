@@ -707,7 +707,7 @@ public Action Reset_Ark_Attackspeed(Handle cut_timer, int ref)	//code that reset
 
 
 //stuff that gets activated upon taking damage
-float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
+public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
 {
 	if (Ability_Check_Cooldown(victim, 2) >= 14.0 && Ability_Check_Cooldown(victim, 2) < 16.0)
 	{
