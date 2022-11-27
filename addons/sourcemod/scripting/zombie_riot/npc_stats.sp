@@ -3,7 +3,8 @@
 
 //#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_59.mdl"
 
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_173.mdl"
+//This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_175.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
 
@@ -1737,6 +1738,7 @@ Handle g_hSDKWorldSpaceCenter;
 Handle g_hStudio_FindAttachment;
 Handle g_hGetAttachment;
 Handle g_hAddGesture;
+Handle g_hRemoveGesture;
 Handle g_hRestartGesture;
 Handle g_hIsPlayingGesture;
 Handle g_hFindBodygroupByName;
@@ -3150,6 +3152,14 @@ methodmap CClotBody
 			SDKCall(g_hAddGesture, this.index, iSequence, true);
 		}
 	}
+	public void RemoveGesture(const char[] anim)
+	{
+		int iSequence = this.LookupActivity(anim);
+		if(iSequence < 0)
+			return;
+			
+		SDKCall(g_hRemoveGesture, this.index, iSequence);
+	}
 	public void SetActivity(const char[] animation)
 	{
 		int activity = this.LookupActivity(animation);
@@ -4018,6 +4028,14 @@ public void NPC_Base_InitGamedata()
 	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain); 
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
 	if((g_hAddGesture = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimatingOverlay::AddGesture");
+
+	//CBaseAnimatingOverlay::RemoveGesture( Activity activity )
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimatingOverlay::RemoveGesture");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_Plain);
+	if((g_hRemoveGesture = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimatingOverlay::RemoveGesture");
+
 	
 	//( Activity activity, bool addifmissing /*=true*/, bool autokill /*=true*/ )
 	StartPrepSDKCall(SDKCall_Entity);

@@ -1018,7 +1018,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 		if(IsValidEntity(Victim_weapon))
 		{
-			float modified_damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon);
+			float modified_damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon, damagePosition);
 			
 			damage = modified_damage;
 			Replicated_Damage = modified_damage;
@@ -1469,7 +1469,7 @@ public Action Command_Voicemenu(int client, const char[] command, int args)
 	return Plugin_Continue;
 }
 
-float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon)
+float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon, float damagePosition[3])
 {
 	
 	
@@ -1477,7 +1477,7 @@ float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &
 	{
 		case WEAPON_ARK: // weapon_ark
 		{
-			return Player_OnTakeDamage_Ark(victim, damage, attacker, equipped_weapon);
+			return Player_OnTakeDamage_Ark(victim, damage, attacker, equipped_weapon, damagePosition);
 		}
 	}
 	return damage;

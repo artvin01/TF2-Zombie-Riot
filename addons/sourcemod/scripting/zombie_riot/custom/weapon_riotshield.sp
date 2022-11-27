@@ -162,6 +162,9 @@ public void Weapon_RiotShield_M2_Base(int client, int weapon, bool crit, int slo
 			int particle = ParticleEffectAt(ClientPos, "mvm_loot_dustup2", 0.5);
 					
 			SetParent(client, particle, "effect_hand_l");
+
+			TE_Particle("mvm_soldier_shockwave", ClientPos, NULL_VECTOR, ClientAng, -1, _, _, _, _, _, _, _, _, _, 0.0);
+
 			TeleportEntity(particle, NULL_VECTOR,fAng,NULL_VECTOR);
 
 			CreateTimer(3.0, RiotShieldAbilityEnd_M2, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
