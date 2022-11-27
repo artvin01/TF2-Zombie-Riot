@@ -193,6 +193,7 @@ ConVar zr_tagblacklist;
 ConVar zr_tagwhitelist;
 ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
+ConVar zr_smallmapbalancemulti;
 //ConVar tf_bot_quota;
 
 int CurrentGame;
