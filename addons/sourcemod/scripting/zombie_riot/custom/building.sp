@@ -162,7 +162,7 @@ static int i_HasSentryGunAlive[MAXTF2PLAYERS]={-1, ...};
 static bool Building_cannot_be_repaired[MAXENTITIES]={false, ...};
 
 
-static float Building_Collect_Cooldown[MAXENTITIES][MAXTF2PLAYERS];
+float Building_Collect_Cooldown[MAXENTITIES][MAXTF2PLAYERS];
 static float Building_Sentry_Cooldown[MAXTF2PLAYERS];
 
 static int i_MachineJustClickedOn[MAXTF2PLAYERS];
