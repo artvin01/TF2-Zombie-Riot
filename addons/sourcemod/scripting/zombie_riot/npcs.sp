@@ -706,19 +706,22 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					else
 					{
 						SetEntProp(entity_Spawner, Prop_Send, "m_bGlowEnabled", false);
+					}	
+					if(zr_spawnprotectiontime.FloatValue > 0.0)
+					{
+				
+						b_npcspawnprotection[entity_Spawner] = true;
+						
+						/*
+						CClotBody npc = view_as<CClotBody>(entity_Spawner);
+						npc.m_iSpawnProtectionEntity = TF2_CreateGlow(npc.index);
+				
+						SetVariantColor(view_as<int>({0, 255, 0, 100}));
+						AcceptEntityInput(npc.m_iSpawnProtectionEntity, "SetGlowColor");
+						*/
+						
+						CreateTimer(zr_spawnprotectiontime.FloatValue, Remove_Spawn_Protection, EntIndexToEntRef(entity_Spawner), TIMER_FLAG_NO_MAPCHANGE);
 					}
-			
-					b_npcspawnprotection[entity_Spawner] = true;
-					
-					/*
-					CClotBody npc = view_as<CClotBody>(entity_Spawner);
-					npc.m_iSpawnProtectionEntity = TF2_CreateGlow(npc.index);
-			
-					SetVariantColor(view_as<int>({0, 255, 0, 100}));
-					AcceptEntityInput(npc.m_iSpawnProtectionEntity, "SetGlowColor");
-					*/
-					
-					CreateTimer(zr_spawnprotectiontime.FloatValue, Remove_Spawn_Protection, EntIndexToEntRef(entity_Spawner), TIMER_FLAG_NO_MAPCHANGE);
 				}
 			}
 			else if(!found)
