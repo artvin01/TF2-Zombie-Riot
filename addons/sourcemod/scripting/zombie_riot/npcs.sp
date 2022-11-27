@@ -718,7 +718,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					AcceptEntityInput(npc.m_iSpawnProtectionEntity, "SetGlowColor");
 					*/
 					
-					CreateTimer(2.0, Remove_Spawn_Protection, EntIndexToEntRef(entity_Spawner), TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(zr_spawnprotectiontime.FloatValue, Remove_Spawn_Protection, EntIndexToEntRef(entity_Spawner), TIMER_FLAG_NO_MAPCHANGE);
 				}
 			}
 			else if(!found)
