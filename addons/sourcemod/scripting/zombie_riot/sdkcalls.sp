@@ -510,6 +510,7 @@ public void Manual_Impulse_101(int client, int health)
 	{
 		SetAmmo(client, i, CurrentAmmo[client][i]);
 	}
+	
 	if(EscapeMode)
 	{
 		SetAmmo(client, Ammo_Metal, 99099); //just give infinite metal. There is no reason not to. (in Escape.)

@@ -71,7 +71,10 @@ void ConVar_PluginStart()
 	zr_tagwhitelist = CreateConVar("zr_tagwhitelist", "", "Tags to whitelist from weapons config");
 	zr_minibossconfig = CreateConVar("zr_minibossconfig", "miniboss", "Mini Boss config zr/ .cfg already included");
 	zr_ignoremapconfig = CreateConVar("zr_ignoremapconfig", "0", "If to ignore map-specific configs");
-	
+	zr_smallmapbalancemulti = CreateConVar("zr_smallmapmulti", "1.0", "For small maps, so harder difficulities with alot of aoe can still be played.");
+	// MapSpawnersActive = CreateConVar("zr_spawnersactive", "4", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
+	//CHECK npcs.sp FOR THIS ONE!
+
 	AutoExecConfig(true, "zombie_riot");
 	
 }

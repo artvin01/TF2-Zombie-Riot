@@ -12,7 +12,8 @@
 #define GORE_UPARMRIGHT   (1 << 8)
 #define GORE_HANDLEFT	 (1 << 9)
 
-#define MAXSPAWNERSACTIVE 4 //ok
+
+ConVar MapSpawnersActive;
 
 enum //hitgroup_t
 {
@@ -62,6 +63,7 @@ public void Npc_Sp_Precache()
 
 void NPC_PluginStart()
 {
+	MapSpawnersActive = CreateConVar("zr_spawnersactive", "4", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
 	SpawnerList = new ArrayList(sizeof(SpawnerData));
 	SyncHud = CreateHudSynchronizer();
 	SyncHudRaid = CreateHudSynchronizer();
@@ -224,11 +226,11 @@ public Action GetClosestSpawners(Handle timer)
 	TE_SetupBeamPoints(f3_PositionOfAll, PositonBeam, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 2.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
 	TE_SendToAll();
 	*/
-	int i_Spawner_Indexes[MAXSPAWNERSACTIVE + 1];
+	int i_Spawner_Indexes[32 + 1];
 	float TargetDistance = 0.0; 
 	int ClosestTarget = -1; 
 
-	for(int Repeats=1; Repeats<=MAXSPAWNERSACTIVE; Repeats++)
+	for(int Repeats=1; Repeats<=(MapSpawnersActive.IntValue); Repeats++)
 	{
 		for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
 		{
@@ -370,8 +372,8 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		
 		limit = 8; //Minimum should be 8! Do not scale with waves, makes it boring early on.
 
-		float f_limit = Pow(1.16, float(CountPlayersOnRed()));
-		float f_limit_alive = Pow(1.16, float(CountPlayersOnRed(true)));
+		float f_limit = Pow(1.14, float(CountPlayersOnRed()));
+		float f_limit_alive = Pow(1.14, float(CountPlayersOnRed(true)));
 
 		f_limit *= float(limit);
 		f_limit_alive *= float(limit);
