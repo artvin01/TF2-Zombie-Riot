@@ -1836,9 +1836,9 @@ public Action Command_ChangeCollision(int client, int args)
 	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 	{
 		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-		if (IsValidEntity(baseboss_index))
+		if (IsValidEntity(baseboss_index) && baseboss_index != 0)
 		{
-			Change_Npc_Collision(baseboss_index, 1); //Gives raid collision logic
+			Change_Npc_Collision(baseboss_index, Collision);
 		}
 	}
 	return Plugin_Handled;
@@ -1953,7 +1953,7 @@ public void OnClientPutInServer(int client)
 	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
 	
 	if(CurrentRound)
-		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.40);
+		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.20);
 	
 	if(AreClientCookiesCached(client)) //Ingore this. This only bugs it out, just force it, who cares.
 		OnClientCookiesCached(client);	

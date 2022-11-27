@@ -7912,13 +7912,13 @@ public void Raidboss_Clean_Everyone()
 	int base_boss;
 	while((base_boss=FindEntityByClassname(base_boss, "base_boss")) != -1)
 	{
-		if(IsValidEntity(base_boss) && base_boss > 0)
+		if(IsValidEntity(base_boss))
 		{
 			if(GetEntProp(base_boss, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 			{
 				if(!b_Map_BaseBoss_No_Layers[base_boss]) //Make sure it doesnt actually kill map base_bosses
 				{
-					Change_Npc_Collision(base_boss, Collision);
+					Change_Npc_Collision(base_boss, 1); //Gives raid collision
 				}
 			}
 		}

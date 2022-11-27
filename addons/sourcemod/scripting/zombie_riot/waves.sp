@@ -727,14 +727,14 @@ void Waves_Progress()
 					if(GetClientTeam(client_Penalise)!=2)
 					{
 						SetGlobalTransTarget(client_Penalise);
-						PrintToChat(client_Penalise, "%t", "You have only gained 60%% due to not being in-game");
-						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.40);
+						PrintToChat(client_Penalise, "%t", "You have only gained 80%% due to not being in-game");
+						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.20);
 					}
 					else if (TeutonType[client_Penalise] == TEUTON_WAITING)
 					{
 						SetGlobalTransTarget(client_Penalise);
-						PrintToChat(client_Penalise, "%t", "You have only gained 70 %% due to being a non-player player, but still helping");
-						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.30);
+						PrintToChat(client_Penalise, "%t", "You have only gained 90 %% due to being a non-player player, but still helping");
+						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.10);
 					}
 				}
 			}
