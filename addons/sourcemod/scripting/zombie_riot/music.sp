@@ -275,6 +275,9 @@ void Music_PostThink(int client)
 	
 	if(MusicDisabled)
 		return;
+
+	if(!b_GameOnGoing)
+		return;
 	
 	if(f_ClientMusicVolume[client] < 0.05)
 		return;
@@ -380,7 +383,7 @@ void Music_PostThink(int client)
 			EmitSoundToClient(client, "#zombiesurvival/lasthuman.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 			SetMusicTimer(client, GetTime() + 120);		
 		}
-		else if(intencity < 1.0)
+		else if(f_intencity < 1.0)
 		{
 			SetMusicTimer(client, GetTime() + 8);
 		}
