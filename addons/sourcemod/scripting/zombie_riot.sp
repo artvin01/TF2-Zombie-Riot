@@ -1836,9 +1836,9 @@ public Action Command_ChangeCollision(int client, int args)
 	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 	{
 		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-		if (IsValidEntity(baseboss_index) && baseboss_index != 0)
+		if (IsValidEntity(baseboss_index))
 		{
-			Change_Npc_Collision(baseboss_index, Collision);
+			Change_Npc_Collision(baseboss_index, 1); //Gives raid collision logic
 		}
 	}
 	return Plugin_Handled;

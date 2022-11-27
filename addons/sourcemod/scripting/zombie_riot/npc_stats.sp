@@ -7916,10 +7916,9 @@ public void Raidboss_Clean_Everyone()
 		{
 			if(GetEntProp(base_boss, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 			{
-				if(!b_Map_BaseBoss_No_Layers[base_boss] && EntRefToEntIndex(RaidBossActive) != base_boss) //Make sure it doesnt actually kill map base_bosses
+				if(!b_Map_BaseBoss_No_Layers[base_boss]) //Make sure it doesnt actually kill map base_bosses
 				{
-					SDKHooks_TakeDamage(base_boss, 0, 0, 99999999.0, DMG_BLAST); //Kill it so it triggers the neccecary shit.
-					SDKHooks_TakeDamage(base_boss, 0, 0, 99999999.0, DMG_BLAST); //Kill it so it triggers the neccecary shit.
+					Change_Npc_Collision(base_boss, Collision);
 				}
 			}
 		}
