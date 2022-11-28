@@ -1201,6 +1201,15 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	*/
 	
+	if(f_EmpowerStateOther[attacker] > GetGameTime()) //Allow stacking.
+	{
+		damage *= 1.1;
+	}
+	if(f_EmpowerStateSelf[attacker] > GetGameTime()) //Allow stacking.
+	{
+		damage *= 1.15;
+	}
+
 	if(f_HighTeslarDebuff[victim] > GetGameTime())
 	{
 		damage *= 1.25;

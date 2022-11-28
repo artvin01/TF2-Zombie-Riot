@@ -1577,4 +1577,14 @@
 		"ru"	"Одноразовая дешёвая бесплатная баррикада"
 		"chi"   "一个使用廉价免费路障"
 	}
+	
+	"Fusion Blade Desc"
+	{
+		"en"	"Weak but gets more powerfull the more you upgrade it."
+	}
+	
+	"Fusion Blade Pap 1"
+	{
+		"en"	"Active a long cooldown m2 ability.\nWhich buffs your damage and abit less resistance by 15%%, and allies by 10%% this stacks with 2 on eachother.\nThis works with allied npcs aswell."
+	}
 }

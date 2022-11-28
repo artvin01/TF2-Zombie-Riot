@@ -1057,7 +1057,18 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				}
 			}
 		}
-		
+
+		if(f_EmpowerStateOther[victim] > gameTime) //Allow stacking.
+		{
+			Replicated_Damage *= 0.93;
+			damage *= 0.93;
+		}
+		if(f_EmpowerStateSelf[victim] > gameTime) //Allow stacking.
+		{
+			Replicated_Damage *= 0.9;
+			damage *= 0.9;
+		}
+
 		if(i_CurrentEquippedPerk[victim] == 2)
 		{
 			Replicated_Damage *= 0.85;

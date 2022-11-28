@@ -306,6 +306,8 @@ int Armour_Level_Current[MAXTF2PLAYERS];
 
 float Increaced_Overall_damage_Low[MAXENTITIES];
 float Resistance_Overall_Low[MAXENTITIES];
+float f_EmpowerStateSelf[MAXENTITIES];
+float f_EmpowerStateOther[MAXENTITIES];
 
 //This is for going through things via lag comp or other reasons to teleport things away.
 //bool Do_Not_Regen_Mana[MAXTF2PLAYERS];
@@ -4357,4 +4359,6 @@ public void MapStartResetAll()
 	Zero(f_StunExtraGametimeDuration);
 	CurrentGibCount = 0;
 	Zero(b_HasBeenHereSinceStartOfWave);
+	Zero(f_EmpowerStateSelf);
+	Zero(f_EmpowerStateOther);
 }
