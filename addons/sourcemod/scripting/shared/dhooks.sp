@@ -4,10 +4,6 @@
 static DynamicHook ForceRespawn;
 static int ForceRespawnHook[MAXTF2PLAYERS];
 static int GetChargeEffectBeingProvided;
-#if !defined NoSendProxyClass
-static bool IsPlayerClass;
-static DynamicHook FrameUpdatePostEntityThink;
-#endif
 static bool IsRespawning;
 //static bool Disconnecting;
 
@@ -74,10 +70,6 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
 	//DHook_CreateDetour(gamedata, "CTFPlayer::GetMaxAmmo", DHook_GetMaxAmmoPre);
 	
-	#if !defined NoSendProxyClass
-	DHook_CreateDetour(gamedata, "CTFPlayer::IsPlayerClass", DHook_IsPlayerClassPre);
-	#endif
-
 	//https://github.com/Wilzzu/testing/blob/18a3680a9a1c8bdabc30c504bbf9467ac6e7d7b4/samu/addons/sourcemod/scripting/shavit-replay.sp
 	
 	if (!(gH_MaintainBotQuota = DHookCreateDetour(Address_Null, CallConv_THISCALL, ReturnType_Void, ThisPointer_Address)))
@@ -95,9 +87,6 @@ void DHook_Setup()
 	
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
-	#if !defined NoSendProxyClass
-	DHook_CreateDetour(gamedata, "CTFPlayer::Taunt", DHook_TauntPre, DHook_TauntPost);
-	#endif
 	DHook_CreateDetour(gamedata, "HandleRageGain", DHook_HandleRageGainPre, DHook_HandleRageGainPost);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::FindTarget", DHook_SentryFind_Target, _);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::Fire", DHook_SentryFire_Pre, DHook_SentryFire_Post);
@@ -135,14 +124,6 @@ void DHook_Setup()
 		SetFailState("Failed to create detour %s", "CBaseCombatWeapon::FinishReload()");
 	}
 	DHookEnableDetour(dtWeaponFinishReload, false, OnWeaponReplenishClipPre);
-		
-		
-	#if !defined NoSendProxyClass
-	FrameUpdatePostEntityThink = DynamicHook.FromConf(gamedata, "CGameRules::FrameUpdatePostEntityThink");
-	if(!FrameUpdatePostEntityThink)
-		LogError("[Gamedata] Could not find CGameRules::FrameUpdatePostEntityThink");
-	#endif
-	
 	
 	// from https://github.com/shavitush/bhoptimer/blob/b78ae36a0ef72d15620d2b18017bbff18d41b9fc/addons/sourcemod/scripting/shavit-misc.sp
 	
@@ -1015,16 +996,6 @@ void DHook_UnhookClient(int client)
 		RequestFrame(CheckIfAloneOnServer);
 	}
 }
-#if !defined NoSendProxyClass
-void DHook_MapStart()
-{
-	if(FrameUpdatePostEntityThink)
-	{
-		FrameUpdatePostEntityThink.HookGamerules(Hook_Pre, DHook_FrameUpdatePostEntityThinkPre);
-		FrameUpdatePostEntityThink.HookGamerules(Hook_Post, DHook_FrameUpdatePostEntityThinkPost);
-	}
-}
-#endif
 /*
 void DHook_ClientDisconnect()
 {
@@ -1245,19 +1216,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 	}
 	return Plugin_Handled;
 }
-#if !defined NoSendProxyClass
-public MRESReturn DHook_FrameUpdatePostEntityThinkPre()
-{
-	IsPlayerClass = true;
-	return MRES_Ignored;
-}
 
-public MRESReturn DHook_FrameUpdatePostEntityThinkPost()
-{
-	IsPlayerClass = false;
-	return MRES_Ignored;
-}
-#endif
 public MRESReturn DHook_GetChargeEffectBeingProvidedPre(int client, DHookReturn ret)
 {
 	if(IsClientInGame(client))

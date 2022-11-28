@@ -20,6 +20,9 @@ void Events_PluginStart()
 #endif
 	
 	HookUserMessage(GetUserMessageId("SayText2"), Hook_BlockUserMessageEx, true);
+	
+	HookEntityOutput("logic_relay", "OnTrigger", OnRelayTrigger);
+	//HookEntityOutput("logic_relay", "OnUser1", OnRelayFireUser1);
 }
 
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
@@ -433,3 +436,87 @@ public Action Hook_BlockUserMessageEx(UserMsg msg_id, BfRead msg, const int[] pl
 	
 	return Plugin_Continue;
 }
+
+public Action OnRelayTrigger(const char[] output, int entity, int caller, float delay)
+{
+	char name[32];
+	GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
+	if(!StrContains(name, "nav_reloader", false)) //Sometimes blocking shit doesnt work.
+	{
+		UpdateBlockedNavmesh();
+	}
+#if defined ZR
+	else if(!StrContains(name, "zr_respawn", false))
+	{
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				DoOverlay(client, "");
+				if(GetClientTeam(client)==2)
+				{
+					if(!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD)
+					{
+						DHook_RespawnPlayer(client);
+					}
+					else if(dieingstate[client] > 0)
+					{
+						dieingstate[client] = 0;
+						Store_ApplyAttribs(client);
+						TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+						int entity_wearable, i;
+						while(TF2U_GetWearable(client, entity_wearable, i))
+						{
+							SetEntityRenderMode(entity_wearable, RENDER_NORMAL);
+							SetEntityRenderColor(entity_wearable, 255, 255, 255, 255);
+						}
+						SetEntityRenderMode(client, RENDER_NORMAL);
+						SetEntityRenderColor(client, 255, 255, 255, 255);
+						SetEntityCollisionGroup(client, 5);
+						SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+					}
+				}
+			}
+		}
+		
+		CheckAlivePlayers();
+	}
+	else if(!StrContains(name, "zr_cash_", false))
+	{
+		char buffers[4][12];
+		ExplodeString(name, "_", buffers, sizeof(buffers), sizeof(buffers[]));
+		
+		int cash = StringToInt(buffers[2]);
+		CurrentCash += cash;
+		PrintToChatAll("Gained %d cash!", cash);
+	}
+#endif
+
+	// DO NOT DO 
+	// return Plugin_Handled;!!!!!!
+	//This breaks maps.
+	return Plugin_Continue;
+}
+
+/*public Action OnRelayFireUser1(const char[] output, int entity, int caller, float delay)
+{
+	if(caller > 0 && caller <= MaxClients)
+	{
+		char name[32];
+		GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
+
+		if(!StrContains(name, "zr_cash_", false))
+		{
+			char buffers[4][12];
+			ExplodeString(name, "_", buffers, sizeof(buffers), sizeof(buffers[]));
+			
+			int cash = StringToInt(buffers[2]);
+			CashSpent[caller] -= cash;
+			PrintToChat(caller, "Gained %d cash!", cash);
+		}
+	}
+	// DO NOT DO 
+	// return Plugin_Handled;!!!!!!
+	//This breaks maps.
+	return Plugin_Continue;
+}*/

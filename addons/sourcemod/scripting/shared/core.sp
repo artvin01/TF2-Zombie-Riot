@@ -593,27 +593,27 @@ bool applied_lastmann_buffs_once = false;
 #endif
 
 #include "shared/attributes.sp"
+#include "shared/buildonbuilding.sp"
+#include "shared/commands.sp"
 #include "shared/configs.sp"
 #include "shared/convars.sp"
+#include "shared/custom_melee_logic.sp"
+#include "shared/database.sp"
 #include "shared/dhooks.sp"
+#include "shared/events.sp"
+#include "shared/npcs.sp"
+#include "shared/npc_death_showing.sp"
+#include "shared/npc_stats.sp"
 #include "shared/sdkcalls.sp"
 #include "shared/sdkhooks.sp"
-#include "shared/npcs.sp"
 #include "shared/store.sp"
-#include "shared/viewchanges.sp"
-#include "shared/npc_stats.sp"
-#include "shared/database.sp"
 #include "shared/thirdperson.sp"
-
-#include "shared/buildonbuilding.sp"
-#include "shared/custom_melee_logic.sp"
+#include "shared/viewchanges.sp"
+#include "shared/wand_projectile.sp"
 
 #if defined LagCompensation
 #include "shared/baseboss_lagcompensation.sp"
 #endif
-
-#include "shared/npc_death_showing.sp"
-#include "shared/wand_projectile.sp"
 
 public Plugin myinfo =
 {
@@ -629,7 +629,11 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("FuncToVal", Native_FuncToVal);
 	
 	Thirdperson_PluginLoad();
-	_AskPluginLoad2();
+	
+#if defined ZR
+	ZR_PluginLoad();
+#endif
+	
 	return APLRes_Success;
 }
 
@@ -659,7 +663,9 @@ public void OnPluginStart()
 	Commands_PluginStart();
 	Events_PluginStart();
 	
-	OnPluginStart_();
+#if defined ZR
+	ZR_PluginStart();
+#endif
 	
 	RegServerCmd("zr_update_blocked_nav", OnReloadBlockNav, "Reload Nav Blocks");
 	RegAdminCmd("sm_play_viewmodel_anim", Command_PlayViewmodelAnim, ADMFLAG_ROOT, "Testing viewmodel animation manually");
@@ -693,14 +699,9 @@ public void OnPluginStart()
 	ConVar cvar = FindConVar("tf_bot_count");
 	cvar.Flags &= ~FCVAR_NOTIFY;
 	
-	int cvarCheatsflags = GetConVarFlags(sv_cheats);
-	cvarCheatsflags &= ~FCVAR_NOTIFY;
-	SetConVarFlags(sv_cheats, cvarCheatsflags);
+	sv_cheats &= ~FCVAR_NOTIFY;
 	
 	Niko_Cookies = new Cookie("zr_niko", "Are you a niko", CookieAccess_Protected);
-	
-	HookEntityOutput("logic_relay", "OnTrigger", OnRelayTrigger);
-	//HookEntityOutput("logic_relay", "OnUser1", OnRelayFireUser1);
 	
 	LoadTranslations("zombieriot.phrases");
 	LoadTranslations("zombieriot.phrases.zombienames");
@@ -747,6 +748,7 @@ public Action Timer_Temp(Handle timer)
 		}
 	}
 	
+#if defined ZR
 	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
 		if (RaidModeTime > GetGameTime() && RaidModeTime < GetGameTime() + 60.0)
@@ -766,15 +768,14 @@ public Action Timer_Temp(Handle timer)
 		PlayTickSound(false, true);
 	}
 	NPC_SpawnNext(false, false, false);
+#endif
+	
 	return Plugin_Continue;
 }
 
 public void OnPluginEnd()
 {
-//	OnPluginEnd_LagComp();
 	ConVar_Disable();
-	
-	// Remove the populator on plugin end
 	
 	for(int i=1; i<=MaxClients; i++)
 	{
@@ -796,8 +797,6 @@ public void OnPluginEnd()
 	}
 	
 }
-
-//bool Reload_Plugin_Temp_Fix = false;
 
 public void OnMapStart()
 {
@@ -825,117 +824,40 @@ public void OnMapStart()
 	PrecacheSound("player/crit_hit.wav");
 	
 	MapStartResetAll();
-	EscapeMode = false;
-	EscapeModeForNpc = false;
 	
-	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
-	
-	RoundStartTime = 0.0;
-	cvarTimeScale.SetFloat(1.0);
-	Waves_MapStart();
-	Music_MapStart();
-#if !defined NoSendProxyClass
-	DHook_MapStart();
+#if defined ZR
+	ZR_MapStart();
 #endif
+	
 	SDKHook_MapStart();
 	ViewChange_MapStart();
-	Remove_Healthcooldown();
-	Third_PersonOnMapStart();
-	Medigun_PersonOnMapStart();
-	Star_Shooter_MapStart();
-	Bison_MapStart();
-	Pomson_MapStart();
-	Mangler_MapStart();
-	Pipebomb_MapStart();
-	Wand_Map_Precache();
-	Wand_Attackspeed_Map_Precache();
-	Wand_Fire_Map_Precache();
-	Wand_FireBall_Map_Precache();
-	Wand_Lightning_Map_Precache();
-	Wand_LightningAbility_Map_Precache();
-	Wand_Necro_Map_Precache();
-	Wand_NerosSpell_Map_Precache();
-	Wand_autoaim_Map_Precache();
-	Weapon_Arrow_Shoot_Map_Precache();
-//	Weapon_Pipe_Shoot_Map_Precache();
-	OnMapStart_Build_on_Build();
-	Building_MapStart();
-	Survival_Knife_Map_Precache();
-	Aresenal_Weapons_Map_Precache();
-	SS2_Map_Precache();
-	Wand_Elemental_Map_Precache();
-	Wand_Elemental_2_Map_Precache();
-	Map_Precache_Zombie_Drops();
-	Wand_CalciumSpell_Map_Precache();
-	Wand_Calcium_Map_Precache();
-//	Wand_Black_Fire_Map_Precache();
-	Wand_Chlorophite_Map_Precache();
-	MapStart_CustomMeleePrecache();
-	MagicRestore_MapStart();
-	Wind_Staff_MapStart();
-	Nailgun_Map_Precache();
-	OnMapStart_NPC_Base();
-	Gb_Ball_Map_Precache();
-	Map_Precache_Zombie_Drops_Gift();
-	Grenade_Custom_Precache();
-	BoomStick_MapPrecache();
-	Charged_Handgun_Map_Precache();
-	TBB_Precahce_Mangler_2();
-	BeamWand_MapStart();
-	M3_Abilities_Precache();
-	Ark_autoaim_Map_Precache();
-	Wand_LightningPap_Map_Precache();
-	Wand_Cryo_Precache();
-	Abiltity_Coin_Flip_Map_Change();
-	Wand_Cryo_Precache();
-	Npc_Sp_Precache();
-	Fusion_Melee_OnMapStart();
-	Atomic_MapStart();
-	SSS_Map_Precache();
-	ExplosiveBullets_Precache();
-	Quantum_Gear_Map_Precache();
-	WandStocks_Map_Precache();
-	Weapon_RiotShield_Map_Precache();
 	
 	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
 	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");
-	Zombies_Currently_Still_Ongoing = 0;
-	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
-//	CreateEntityByName("info_populator");
-	RaidBossActive = INVALID_ENT_REFERENCE;
 	
 	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	CreateTimer(2.0, GetClosestSpawners, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	
-	
-	FormatEx(char_MusicString1, sizeof(char_MusicString1), "");
-			
-	FormatEx(char_MusicString2, sizeof(char_MusicString2), "");
-			
-	i_MusicLength1 = 0;
-	i_MusicLength2 = 0;
-	
-	//Store_RandomizeNPCStore(true);
 }
 
 public void OnMapEnd()
 {
+#if defined ZR
 	Store_RandomizeNPCStore(true);
 	OnRoundEnd(null, NULL_STRING, false);
-//	OnMapEnd_LagComp();
 	OnMapEndWaves();
+#endif
 	ConVar_Disable();
 }
 
 public void OnConfigsExecuted()
 {
-	RequestFrame(Configs_ConfigsExecuted);
 	if(b_MarkForReload)
 	{
 		ServerCommand("sm plugins reload zombie_riot");
 		return;
 	}
+	RequestFrame(Configs_ConfigsExecuted);
 }
+
 public Action OnReloadBlockNav(int args)
 {
 	UpdateBlockedNavmesh();
@@ -1068,10 +990,9 @@ public void OnClientAuthorized(int client)
 {
 	Database_ClientAuthorized(client);
 }
-					
+				
 public void OnClientPutInServer(int client)
 {
-	i_AmountDowned[client] = 0;
 	b_IsPlayerABot[client] = false;
 	if(IsFakeClient(client))
 	{
@@ -1080,69 +1001,32 @@ public void OnClientPutInServer(int client)
 		b_IsPlayerABot[client] = true;
 		return;
 	}
-	else
-	{
-		Queue_PutInServer(client);
-	}
 	
 	DHook_HookClient(client);
 	SDKHook_HookClient(client);
-	dieingstate[client] = 0;
-	TeutonType[client] = 0;
-	Damage_dealt_in_total[client] = 0.0;
-	Resupplies_Supplied[client] = 0;
-	CashRecievedNonWave[client] = 0;
-	Healing_done_in_total[client] = 0;
-	i_BarricadeHasBeenDamaged[client] = 0;
-	i_KillsMade[client] = 0;
-	i_Backstabs[client] = 0;
-	i_Headshots[client] = 0;
-	Ammo_Count_Ready[client] = 0;
-	Armor_Charge[client] = 0;
-	Doing_Handle_Mount[client] = false;
-	b_Doing_Buildingpickup_Handle[client] = false;
-	g_CarriedDispenser[client] = INVALID_ENT_REFERENCE;
 	WeaponClass[client] = TFClass_Unknown;
-	Timer_Knife_Management[client] = INVALID_HANDLE;
-	i_CurrentEquippedPerk[client] = 0;
+	
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_bThisEntityIgnored = false;
 	f_ShowHudDelayForServerMessage[client] = GetGameTime() + 50.0;
-
-	i_HealthBeforeSuit[client] = 0;
-	i_ClientHasCustomGearEquipped[client] = false;
+	
+#if defined ZR
+	ZR_ClientPutInServer(client);
+#endif
 	
 	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
-	
-	if(CurrentRound)
-		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.20);
 	
 	if(AreClientCookiesCached(client)) //Ingore this. This only bugs it out, just force it, who cares.
 		OnClientCookiesCached(client);	
 	
 }
 
-//Maybe Delay it by 1 frame?
-/*
-public void SendProxyActivate(int client)
-{
-	SendProxy_Hook(client, "m_iClass", Prop_Int, SendProp_OnClientClass);
-}
-
-USE THIS INSTEAD
-
-https://github.com/Kenzzer/classproxy/blob/master/scripting/include/classproxy.inc
-
-Kenzzer my beloved
-*/
 public void OnClientCookiesCached(int client)
 {
-	ThirdPerson_OnClientCookiesCached(client);
-	Tutorial_LoadCookies(client);
 	char buffer[12];
-	CookieXP.Get(client, buffer, sizeof(buffer));
-	XP[client] = StringToInt(buffer);
-	Level[client] = XpToLevel(XP[client]);
+	
+#if defined ZR
+	Tutorial_LoadCookies(client);
 
 	CookieScrap.Get(client, buffer, sizeof(buffer));
 	Scrap[client] = StringToInt(buffer);
@@ -1151,6 +1035,12 @@ public void OnClientCookiesCached(int client)
 	{
 		Scrap[client] = 0;
 	}
+#endif
+	
+	ThirdPerson_OnClientCookiesCached(client);
+	CookieXP.Get(client, buffer, sizeof(buffer));
+	XP[client] = StringToInt(buffer);
+	Level[client] = XpToLevel(XP[client]);
 	
 	char buffer_niko[12];
 	Niko_Cookies.Get(client, buffer_niko, sizeof(buffer_niko));
@@ -1168,556 +1058,55 @@ public void OnClientCookiesCached(int client)
 
 public void OnClientDisconnect(int client)
 {
-	SetClientTutorialMode(client, false);
-	SetClientTutorialStep(client, 0);
-	Pets_ClientDisconnect(client);
-	Queue_ClientDisconnect(client);
-//	DHook_ClientDisconnect();
 	Store_ClientDisconnect(client);
-	b_HasBeenHereSinceStartOfWave[client] = false;
-	Damage_dealt_in_total[client] = 0.0;
-	Resupplies_Supplied[client] = 0;
-	CashRecievedNonWave[client] = 0;
-	Healing_done_in_total[client] = 0;
-	Ammo_Count_Ready[client] = 0;
-	Armor_Charge[client] = 0;
-	PlayerPoints[client] = 0;
-	i_PreviousPointAmount[client] = 0;
-	i_ExtraPlayerPoints[client] = 0;
+	
+#if defined ZR
+	ZR_ClientDisconnect(client);
+	
+	if(Scrap[client] > -1)
+	{
+		char buffer[12];
+		IntToString(Scrap[client], buffer, sizeof(buffer));
+		CookieScrap.Set(client, buffer);
+	}
+	Scrap[client] = -1;
+#endif
+	
 	WeaponClass[client] = TFClass_Unknown;
-	Timer_Knife_Management[client] = INVALID_HANDLE;
-	Escape_DropItem(client, false);
+	
 	if(XP[client] > 0)
 	{
 		char buffer[12];
 		IntToString(XP[client], buffer, sizeof(buffer));
 		CookieXP.Set(client, buffer);
 		
-		char buffer_niko[12];
-		
 		int niko_int = 0;
 		
 		if(b_IsPlayerNiko[client])
 			niko_int = 1;
 			
-		IntToString(niko_int, buffer_niko, sizeof(buffer_niko));
-		Niko_Cookies.Set(client, buffer_niko);
+		IntToString(niko_int, buffer, sizeof(buffer));
+		Niko_Cookies.Set(client, buffer);
 	}
-	if(Scrap[client] > -1)
-	{
-		char buffer[12];
-		IntToString(Scrap[client], buffer, sizeof(buffer));
-		CookieScrap.Set(client, buffer);
-
-
-	}
-	Scrap[client] = -1;
 	XP[client] = 0;
-}
-
-public void OnClientDisconnect_Post(int client)
-{
-//	DHook_ClientDisconnectPost();
-	int Players_left;
-	for(int client_check=1; client_check<=MaxClients; client_check++)
-	{
-		if(IsClientInGame(client_check) && !IsFakeClient(client_check))
-			Players_left++;
-	}
-	CheckAlivePlayers(_);
-}
-
-/*public void OnGameFrame()
-{
-	//Wand_Homing();
-	Cryo_SearchDamage();
-}*/
-
-public Action Timer_Dieing(Handle timer, int client)
-{
-	if(IsClientInGame(client) && IsPlayerAlive(client) && dieingstate[client] > 0)
-	{
-		if(b_LeftForDead[client])
-		{
-			dieingstate[client] -= 3;
-			f_DelayLookingAtHud[client] = GetGameTime() + 0.2;
-			PrintCenterText(client, "%t", "Reviving", dieingstate[client]);
-			
-			if(dieingstate[client] <= 0)
-			{
-				SetEntityMoveType(client, MOVETYPE_WALK);
-				RequestFrame(Movetype_walk, client);
-				dieingstate[client] = 0;
-					
-				SetEntPropEnt(client, Prop_Send, "m_hObserverTarget", client);
-				f_WasRecentlyRevivedViaNonWave[client] = GetGameTime() + 1.0;
-				
-				float pos[3], ang[3];
-				GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
-				GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-				ang[2] = 0.0;
-				DHook_RespawnPlayer(client);
-				
-				TeleportEntity(client, pos, ang, NULL_VECTOR);
-				SetEntProp(client, Prop_Send, "m_bDucked", true);
-				SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
-				CClotBody npc = view_as<CClotBody>(client);
-				npc.m_bThisEntityIgnored = false;
-				SetEntityCollisionGroup(client, 5);
-				PrintCenterText(client, "");
-				DoOverlay(client, "");
-				if(!EscapeMode)
-				{
-					SetEntityHealth(client, 50);
-					RequestFrame(SetHealthAfterRevive, client);
-				}	
-				else
-				{
-					SetEntityHealth(client, 150);
-					RequestFrame(SetHealthAfterRevive, client);						
-				}
-				int entity, i;
-				while(TF2U_GetWearable(client, entity, i))
-				{
-					SetEntityRenderMode(entity, RENDER_NORMAL);
-					SetEntityRenderColor(entity, 255, 255, 255, 255);
-				}
-				SetEntityRenderMode(client, RENDER_NORMAL);
-				SetEntityRenderColor(client, 255, 255, 255, 255);
-				
-				return Plugin_Stop;
-			}
-			return Plugin_Continue;
-		}
-		
-		if(f_DisableDyingTimer[client] >= GetGameTime())
-		{
-			return Plugin_Continue;
-		}
-		SetEntityHealth(client, GetClientHealth(client) - 1);
-		SDKHooks_TakeDamage(client, client, client, 1.0);
-		
-		if(!b_LeftForDead[client])
-		{
-			int particle = EntRefToEntIndex(i_DyingParticleIndication[client]);
-			if(IsValidEntity(particle))
-			{
-				int color[4];
-				color[0] = 255;
-				color[1] = 255;
-				color[2] = 0;
-				color[3] = 255;
-				
-				color[0] = GetEntProp(client, Prop_Send, "m_iHealth") * 255  / 210; // red  200 is the max health you can have while dying.
-				color[1] = GetEntProp(client, Prop_Send, "m_iHealth") * 255  / 210;	// green
-					
-				color[0] = 255 - color[0];
-				
-				SetVariantColor(color);
-				AcceptEntityInput(particle, "SetGlowColor");
-			}
-		}
-			
-		return Plugin_Continue;
-	}
-	int particle = EntRefToEntIndex(i_DyingParticleIndication[client]);
-	if(IsValidEntity(particle))
-	{
-		RemoveEntity(particle);
-	}
-	dieingstate[client] = 0;
-	CClotBody npc = view_as<CClotBody>(client);
-	npc.m_bThisEntityIgnored = false;
-	
-	return Plugin_Stop;
-}
-
-
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-
-
-
-
-
-//int Bob_To_Player[MAXENTITIES];
-bool Bob_Exists = false;
-int Bob_Exists_Index = -1;
-
-public void CheckIfAloneOnServer()
-{
-	b_IsAloneOnServer = false;
-	int players;
-	int player_alone;
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
-		{
-			players += 1;
-			player_alone = client;
-		}
-	}
-	if(players == 1)
-	{
-		b_IsAloneOnServer = true;	
-	}
-	if (players < 4 && players > 0)
-	{
-		if (Bob_Exists)
-			return;
-		
-		Spawn_Bob_Combine(player_alone);
-		
-	}
-	else if (Bob_Exists)
-	{
-		Bob_Exists = false;
-		NPC_Despawn_bob(EntRefToEntIndex(Bob_Exists_Index));
-		Bob_Exists_Index = -1;
-	}
-}
-
-public void Spawn_Bob_Combine(int client)
-{
-	float flPos[3], flAng[3];
-	GetClientAbsOrigin(client, flPos);
-	GetClientAbsAngles(client, flAng);
-	flAng[2] = 0.0;
-	int bob = Npc_Create(BOB_THE_GOD_OF_GODS, client, flPos, flAng, true);
-	Bob_Exists = true;
-	Bob_Exists_Index = EntIndexToEntRef(bob);
-	GiveNamedItem(client, "Bob the Overgod of gods and destroyer of multiverses");
-}
-
-public void NPC_Despawn_bob(int entity)
-{
-	if(IsValidEntity(entity) && entity != 0)
-	{
-		BobTheGod_NPCDeath(entity);
-	}
-	Bob_Exists_Index = -1;
-}
-
-public void Spawn_Cured_Grigori()
-{
-	int client = -1;
-	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
-	{
-		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
-		{
-			client = client_summon;
-		}
-	}
-	float flPos[3], flAng[3];
-	GetClientAbsOrigin(client, flPos);
-	GetClientAbsAngles(client, flAng);
-	flAng[2] = 0.0;
-	int entity = Npc_Create(CURED_FATHER_GRIGORI, client, flPos, flAng, true);
-	SalesmanAlive = EntIndexToEntRef(entity);
-	SetEntPropString(entity, Prop_Data, "m_iName", "zr_grigori");
-	
-	for(int client_Give_item=1; client_Give_item<=MaxClients; client_Give_item++)
-	{
-		if(IsClientInGame(client_Give_item) && GetClientTeam(client_Give_item)==2)
-		{
-			GiveNamedItem(client_Give_item, "Cured Grigori");
-		}
-	}
-}
-
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-//	BOB ALONE PLAYER STUFF!
-
-
-
-
-
-void CheckAlivePlayersforward(int killed=0)
-{
-	CheckAlivePlayers(killed, _);
-}
-void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
-{
-	if(!Waves_Started() || GameRules_GetRoundState() != RoundState_RoundRunning)
-	{
-		LastMann = false;
-		CurrentPlayers = 0;
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
-			{
-				CurrentPlayers++;
-			}
-		}
-		return;
-	}
-	
-	CheckIfAloneOnServer();
-	
-	bool alive;
-	LastMann = !Waves_InSetup();
-	int players = CurrentPlayers;
-	CurrentPlayers = 0;
-	int GlobalIntencity_Reduntant = Waves_GetIntencity();
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
-		{
-			CurrentPlayers++;
-			if(killed != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE/* && dieingstate[client] == 0*/)
-			{
-				if(dieingstate[client] > 0)
-				{
-					GlobalIntencity_Reduntant++;	
-				}
-				if(!alive)
-				{
-					alive = true;
-				}
-				else if(LastMann)
-				{
-					LastMann = false;
-				}
-				
-			}
-			else
-			{
-				GlobalIntencity_Reduntant++;
-			}
-			
-			if(Hurtviasdkhook != 0)
-			{
-				LastMann = true;
-			}
-		}
-	}
-	
-	if(CurrentPlayers < players)
-		CurrentPlayers = players;
-	
-	if(LastMann && !GlobalIntencity_Reduntant) //Make sure if they are alone, it wont play last man music.
-		LastMann = false;
-	
-	if(LastMann)
-	{
-		static bool Died[MAXTF2PLAYERS];
-		for(int client=1; client<=MaxClients; client++)
-		{
-			Died[client] = false;
-			if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
-			{
-				if((killed != client || Hurtviasdkhook != client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] > 0)
-				{
-					Died[client] = true;
-					SDKHooks_TakeDamage(client, client, client, 99999.0, DMG_DROWN, _, _, _, true);
-				}
-			}
-		}
-		ExcuteRelay("zr_lasthuman");
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE)
-			{
-				if(IsPlayerAlive(client) && !applied_lastmann_buffs_once && !Died[client])
-				{
-					if(dieingstate[client] > 0)
-					{
-						dieingstate[client] = 0;
-						Store_ApplyAttribs(client);
-						TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
-						int entity, i;
-						while(TF2U_GetWearable(client, entity, i))
-						{
-							SetEntityRenderMode(entity, RENDER_NORMAL);
-							SetEntityRenderColor(entity, 255, 255, 255, 255);
-						}
-						SetEntityRenderMode(client, RENDER_NORMAL);
-						SetEntityRenderColor(client, 255, 255, 255, 255);
-						SetEntityCollisionGroup(client, 5);
-					}
-					
-					for(int i=1; i<=MaxClients; i++)
-					{
-						if(IsClientInGame(i) && !IsFakeClient(i))
-						{
-							Music_Stop_All(i);
-							SetMusicTimer(i, GetTime() + 5); //give them 5 seconds to react to full on panic.
-							SetEntPropEnt(i, Prop_Send, "m_hObserverTarget", client);
-						}
-					}
-					
-					for(int i=1; i<=MaxClients; i++)
-					{
-						if(IsClientInGame(i) && !IsFakeClient(i))
-						{
-							SendConVarValue(i, sv_cheats, "1");
-						}
-					}
-					cvarTimeScale.SetFloat(0.1);
-					CreateTimer(0.3, SetTimeBack);
-				
-					applied_lastmann_buffs_once = true;
-					
-					SetHudTextParams(-1.0, -1.0, 3.0, 255, 0, 0, 255);
-					ShowHudText(client, -1, "%T", "Last Alive", client);
-					int MaxHealth;
-					MaxHealth = SDKCall_GetMaxHealth(client) * 2;
-					
-					SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
-					
-					int Extra = 0;
-						
-					Extra = RoundToNearest(Attributes_FindOnPlayer(client, 701));
-
-					if(Extra == 50)
-						Armor_Charge[client] = 200;
-						
-					else if(Extra == 100)
-						Armor_Charge[client] = 350;
-						
-					else if(Extra == 150)
-						Armor_Charge[client] = 700;
-						
-					else if(Extra == 200)
-						Armor_Charge[client] = 1500;
-						
-					else
-						Armor_Charge[client] = 150;
-									
-				}
-			}
-		}
-	}
-	else
-		applied_lastmann_buffs_once = false;
-	
-	if(!alive)
-	{
-		if (Bob_Exists)
-		{
-			Bob_Exists = false;
-			int bob_index = EntRefToEntIndex(Bob_Exists_Index);
-			NPC_Despawn_bob(bob_index);
-			Bob_Exists_Index = 0;
-		}
-	
-		int entity = CreateEntityByName("game_round_win"); 
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		
-		if(killed)
-		{
-			Music_RoundEnd(killed);
-			CreateTimer(5.0, Remove_All, _, TIMER_FLAG_NO_MAPCHANGE);
-		//	RequestFrames(Remove_All, 300);
-		}
-	}
-}
-
-public Action OnRelayTrigger(const char[] output, int entity, int caller, float delay)
-{
-	char name[32];
-	GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
-	if(!StrContains(name, "nav_reloader", false)) //Sometimes blocking shit doesnt work.
-	{
-		UpdateBlockedNavmesh();
-	}
-	else if(!StrContains(name, "zr_respawn", false))
-	{
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client))
-			{
-				DoOverlay(client, "");
-				if(GetClientTeam(client)==2)
-				{
-					if(!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD)
-					{
-						DHook_RespawnPlayer(client);
-					}
-					else if(dieingstate[client] > 0)
-					{
-						dieingstate[client] = 0;
-						Store_ApplyAttribs(client);
-						TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
-						int entity_wearable, i;
-						while(TF2U_GetWearable(client, entity_wearable, i))
-						{
-							SetEntityRenderMode(entity_wearable, RENDER_NORMAL);
-							SetEntityRenderColor(entity_wearable, 255, 255, 255, 255);
-						}
-						SetEntityRenderMode(client, RENDER_NORMAL);
-						SetEntityRenderColor(client, 255, 255, 255, 255);
-						SetEntityCollisionGroup(client, 5);
-						SetEntityHealth(client, SDKCall_GetMaxHealth(client));
-					}
-				}
-			}
-		}
-		
-		CheckAlivePlayers();
-	}
-	else if(!StrContains(name, "zr_cash_", false))
-	{
-		char buffers[4][12];
-		ExplodeString(name, "_", buffers, sizeof(buffers), sizeof(buffers[]));
-		
-		int cash = StringToInt(buffers[2]);
-		CurrentCash += cash;
-		PrintToChatAll("Gained %d cash!", cash);
-	}
-	// DO NOT DO 
-	// return Plugin_Handled;!!!!!!
-	//This breaks maps.
-	return Plugin_Continue;
-}
-
-public Action OnRelayFireUser1(const char[] output, int entity, int caller, float delay)
-{
-	if(caller > 0 && caller <= MaxClients)
-	{
-		char name[32];
-		GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
-
-		if(!StrContains(name, "zr_cash_", false))
-		{
-			char buffers[4][12];
-			ExplodeString(name, "_", buffers, sizeof(buffers), sizeof(buffers[]));
-			
-			int cash = StringToInt(buffers[2]);
-			CashSpent[caller] -= cash;
-			PrintToChat(caller, "Gained %d cash!", cash);
-		}
-	}
-	// DO NOT DO 
-	// return Plugin_Handled;!!!!!!
-	//This breaks maps.
-	return Plugin_Continue;
 }
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
 {
 	if(b_IsPlayerABot[client])
-	{
 		return Plugin_Continue;
-	}
-	#if defined LagCompensation
-	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
-	#endif
 	
+#if defined LagCompensation
+	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
+#endif
+
+#if defined ZR
 	Escape_PlayerRunCmd(client);
 	
 	//tutorial stuff.
 	Tutorial_MakeClientNotMove(client);
-	
+#endif
+
 	if(buttons & IN_ATTACK)
 	{
 		int entity = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -1735,18 +1124,12 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 	}
 	
-	/*
-	if(dieingstate[client] > 0)
-	{
-		Dont_Crouch[client] -= 1;
-		buttons |= IN_DUCK;
-		SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
-		Return_Changed = true;
-	}	
-	*/
-	static int holding[MAXTF2PLAYERS];
+#if defined ZR
 	static bool was_reviving[MAXTF2PLAYERS];
 	static int was_reviving_this[MAXTF2PLAYERS];
+#endif
+
+	static int holding[MAXTF2PLAYERS];
 	if(holding[client])
 	{
 		if(!(buttons & holding[client]))
@@ -1756,20 +1139,18 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		holding[client] = IN_ATTACK2;
 		
-		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		#if defined ZR
 		b_IgnoreWarningForReloadBuidling[client] = false;
-		if(IsValidEntity(weapon_holding))
+		#endif
+		
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding != -1)
 		{
-			char classname[32];
-			GetEntityClassname(weapon_holding, classname, 32);
-			Action action = Plugin_Continue;
-
-		//	PrintToConsole(client,"Weapon Is %s", EntityFuncAttack2[weapon_holding]);
-
 			if(EntityFuncAttack2[weapon_holding] && EntityFuncAttack2[weapon_holding]!=INVALID_FUNCTION)
 			{
 				bool result = false; //ignore crit.
 				int slot = 2;
+				Action action;
 				Call_StartFunction(null, EntityFuncAttack2[weapon_holding]);
 				Call_PushCell(client);
 				Call_PushCell(weapon_holding);
@@ -1777,6 +1158,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				Call_PushCell(slot); //This is attack 2 :)
 				Call_Finish(action);
 			}
+			
+			#if defined ZR
+			char classname[36];
+			GetEntityClassname(weapon_holding, classname, sizeof(classname));
+			
 			if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
 			{
 				if(EntityFuncAttack2[weapon_holding] != MountBuildingToBack && TeutonType[client] == TEUTON_NONE)
@@ -1785,7 +1171,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					Pickup_Building_M2(client, weapon, false);
 				}
 			}
+			#endif
 		}
+		
 		StartPlayerOnlyLagComp(client, true);
 		if(InteractKey(client, weapon_holding, false)) //doesnt matter which one
 		{
@@ -1798,6 +1186,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	else if(buttons & IN_RELOAD)
 	{
 		holding[client] = IN_RELOAD;
+		
+		#if defined ZR
 		if(angles[0] < -70.0)
 		{
 			int entity = EntRefToEntIndex(Building_Mounted[client]);
@@ -1807,6 +1197,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 		}
 		else
+		#endif
 		{
 			int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			
@@ -1818,15 +1209,14 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				return Plugin_Changed;
 			}
 			EndPlayerOnlyLagComp(client);
-			if(IsValidEntity(weapon_holding))
+			
+			if(weapon_holding != -1))
 			{
-				Action action = Plugin_Continue;
 				if(EntityFuncAttack3[weapon_holding] && EntityFuncAttack3[weapon_holding]!=INVALID_FUNCTION)
 				{
 					bool result = false; //ignore crit.
 					int slot = 3;
-					char classname[32];
-					GetEntityClassname(weapon_holding, classname, 32);
+					Action action;
 					Call_StartFunction(null, EntityFuncAttack3[weapon_holding]);
 					Call_PushCell(client);
 					Call_PushCell(weapon_holding);
@@ -1837,28 +1227,42 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 		}
 	}
-	else if(buttons & IN_SCORE && dieingstate[client] == 0)
+	else if(buttons & IN_SCORE)
 	{
 		holding[client] = IN_SCORE;
-		if(WaitingInQueue[client])
+		
+#if defined ZR
+		if(dieingstate[client] == 0)
+#endif
 		{
-			Queue_Menu(client);
-		}
-		else
-		{
-			Store_Menu(client);
+#if defined ZR
+			if(WaitingInQueue[client])
+			{
+				Queue_Menu(client);
+			}
+			else
+#endif
+			{
+				Store_Menu(client);
+			}
 		}
 	}
 	else if(buttons & IN_ATTACK3)
 	{
 		holding[client] = IN_ATTACK3;
 		
-		if (IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+#if define ZR
+		if(TeutonType[client] == TEUTON_NONE)
+#endif
 		{
-			M3_Abilities(client);
+			if(IsPlayerAlive(client))
+			{
+				M3_Abilities(client);
+			}
 		}
 	}
 
+#if defined ZR
 	if(holding[client] == IN_RELOAD && dieingstate[client] <= 0 && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 	{
 		int target = GetClientPointVisibleRevive(client);
@@ -2001,6 +1405,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	}
 	
 //	Building_PlayerRunCmd(client, buttons);
+#endif	// ZR
+
 	return Plugin_Continue;
 }
 
@@ -2019,79 +1425,6 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 	Pets_PlayerRunCmdPost(client, buttons, angles);
 	Medikit_healing(client, buttons);
 }
-
-
-//Revival raid spam
-public void SetHealthAfterReviveRaid(int client)
-{
-	if(IsValidClient(client))
-	{	
-		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
-		RequestFrame(SetHealthAfterReviveRaidAgain, client);	
-	}
-}
-
-public void SetHealthAfterReviveRaidAgain(int client)
-{
-	if(IsValidClient(client))
-	{	
-		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
-		RequestFrame(SetHealthAfterReviveRaidAgainAgain, client);	
-	}
-}
-
-public void SetHealthAfterReviveRaidAgainAgain(int client)
-{
-	if(IsValidClient(client))
-	{	
-		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
-	}
-}
-//Revival raid spam
-
-//Set hp spam after normal revive
-public void SetHealthAfterRevive(int client)
-{
-	if(IsValidClient(client))
-	{	
-		RequestFrame(SetHealthAfterReviveAgain, client);	
-	}
-}
-
-public void SetHealthAfterReviveAgain(int client)
-{
-	if(IsValidClient(client))
-	{	
-		RequestFrame(SetHealthAfterReviveAgainAgain, client);	
-		if(EscapeMode)
-		{
-			SetEntityHealth(client, 150);
-		}
-		else
-		{
-			SetEntityHealth(client, 50);
-		}
-	}
-	
-}
-
-public void SetHealthAfterReviveAgainAgain(int client) //For some reason i have to do it more then once for escape.
-{
-	if(IsValidClient(client))
-	{	
-		if(EscapeMode)
-		{
-			SetEntityHealth(client, 150);
-		}
-		else
-		{
-			SetEntityHealth(client, 50);
-		}
-	}
-}
-
-//Set hp spam after normal revive
-
 
 public void Update_Ammo(int  client)
 {
@@ -2221,6 +1554,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
+#if defined ZR
 	if (!StrContains(classname, "info_player_teamspawn")) 
 	{
 		for (int i = 0; i < ZR_MAX_SPAWNERS; i++)
@@ -2232,8 +1566,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 				i = ZR_MAX_SPAWNERS;
 			}
 		}
+		return;
 	}
-	else if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
+#endif
+	
+	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
 		i_WhatBuilding[entity] = 0;
 		StoreWeapon[entity] = -1;
@@ -2309,8 +1646,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "tf_projectile_spellfireball"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, ApplyExplosionDhook_Fireball);
+			#if defined ZR
 			SDKHook(entity, SDKHook_SpawnPost, Wand_Necro_Spell);
 			SDKHook(entity, SDKHook_SpawnPost, Wand_Calcium_Spell);
+			#endif
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
@@ -2766,11 +2105,6 @@ public void OnEntityDestroyed(int entity)
 	NPC_Base_OnEntityDestroyed(entity);
 }
 
-public void NPC_SpawnNextRequestFrame(bool force)
-{
-	NPC_SpawnNext(false, false, false);
-}
-
 public void RemoveNpcThingsAgain(int entity)
 {
 	//Dont have to check for if its an npc or not, really doesnt matter in this case, just be sure to delete it cus why not
@@ -2804,46 +2138,6 @@ for(int entitycount; entitycount<i_MaxcountHomingMagicShot; entitycount++)
 	int entity = EntRefToEntIndex(i_ObjectsHomingMagicShot[entitycount]);
 }
 */
-
-
-public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, Handle &item)
-{
-	if(!StrContains(classname, "tf_wear"))
-	{
-		switch(index)
-		{	
-			case 57, 131, 133, 231, 405, 406, 444, 608, 642, 1099, 1144:
-			{
-				if(!item)
-					return Plugin_Stop;
-				
-				TF2Items_SetFlags(item, OVERRIDE_ATTRIBUTES);
-				TF2Items_SetNumAttributes(item, 0);
-				return Plugin_Changed;
-			}
-		}
-	}
-	/*else if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
-	{
-		if(!item)
-			return Plugin_Stop;
-		
-		TF2Items_SetFlags(item, OVERRIDE_ATTRIBUTES);
-		TF2Items_SetNumAttributes(item, 5);
-		TF2Items_SetAttribute(item, 0, 1, 0.623);
-		TF2Items_SetAttribute(item, 1, 15, 0.0);
-		TF2Items_SetAttribute(item, 2, 93, 0.0);
-		TF2Items_SetAttribute(item, 3, 95, 0.0);
-		TF2Items_SetAttribute(item, 4, 2043, 0.0);
-		return Plugin_Changed;
-	}*/
-	else
-	{
-		return Plugin_Stop;
-	}
-	return Plugin_Continue;
-}
-
 
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {
@@ -2888,31 +2182,6 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 	}
 }
 
-public void TF2_OnWaitingForPlayersEnd()
-{
-	Queue_WaitingForPlayersEnd();
-}
-
-public Action SendProp_OnClientClass(int client, const char[] name, int &value, int element)
-{
-	if(WeaponClass[client] == TFClass_Unknown)
-		return Plugin_Handled;
-
-	value = view_as<int>(WeaponClass[client]);
-
-	/*if(target == client)
-	{
-		static int LastClass[MAXTF2PLAYERS];
-		if(LastClass[client] != value)
-		{
-			CreateTimer(0.1, Timer_ShowHudToClient, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
-			LastClass[client] = value;
-		}
-	}*/
-
-	return Plugin_Changed;
-}
-
 bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 {
 	if(weapon!=-1) //Just allow. || GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack")<GetGameTime())
@@ -2923,6 +2192,7 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 			static char buffer[64];
 			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 			{
+#if defined ZR
 				if(Building_Interact(client, entity, Is_Reload_Button))
 					return true;
 					
@@ -2937,6 +2207,7 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				
 				if(Citizen_Interact(client, entity))
 					return true;
+#endif
 				
 			}
 		}
