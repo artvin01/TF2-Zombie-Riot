@@ -34,7 +34,7 @@ static const char PlayerModels[][] =
 	"models/player/engineer.mdl"
 };
 
-static const char PlayerModelsSuit[][] =
+static const char RobotModels[][] =
 {
 	"models/bots/scout/bot_scout.mdl",
 	"models/bots/scout/bot_scout.mdl",
@@ -50,7 +50,7 @@ static const char PlayerModelsSuit[][] =
 
 static int HandIndex[11];
 static int PlayerIndex[10];
-static int PlayerIndexSuit[10];
+static int RobotIndex[10];
 static int HandRef[MAXTF2PLAYERS];
 static int WeaponRef[MAXTF2PLAYERS];
 
@@ -68,7 +68,7 @@ void ViewChange_MapStart()
 
 	for(int i; i<10; i++)
 	{
-		PlayerIndexSuit[i] = PrecacheModel(PlayerModelsSuit[i], true);
+		RobotIndex[i] = PrecacheModel(RobotModels[i], true);
 	}
 	
 	PrecacheModel(NIKO_PLAYERMODEL);
@@ -76,39 +76,49 @@ void ViewChange_MapStart()
 
 void ViewChange_PlayerModel(int client)
 {
-	if(TeutonType[client] == TEUTON_NONE && !b_IsPlayerNiko[client])
+	#if defined ZR
+	if(TeutonType[client] == TEUTON_NONE)
+	#endif
 	{
-		int team = GetClientTeam(client);
-		int entity = CreateEntityByName("tf_wearable");
-		if(entity > MaxClients)	// Weapon viewmodel
+		if(b_IsPlayerNiko[client])
 		{
-			if(i_HealthBeforeSuit[client] == 0)
-			{
-				SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
-			}
-			else
-			{
-				SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndexSuit[CurrentClass[client]]);
-			}
-			SetEntProp(entity, Prop_Send, "m_fEffects", 129);
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
-			SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
-			SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
-			SetEntityCollisionGroup(entity, 11);
-			SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
-			DispatchSpawn(entity);
-			SetVariantString("!activator");
-			ActivateEntity(entity);
-	
-			SDKCall_EquipWearable(client, entity);
-			SetEntProp(client, Prop_Send, "m_nRenderFX", 6);
+			SetVariantString(NIKO_PLAYERMODEL);
+			AcceptEntityInput(client, "SetCustomModel");
+			SetEntProp(client, Prop_Send, "m_bUseClassAnimations", true);
 		}
-	}
-	else if(TeutonType[client] == TEUTON_NONE && b_IsPlayerNiko[client])
-	{
-		SetVariantString(NIKO_PLAYERMODEL);
-	  	AcceptEntityInput(client, "SetCustomModel");
-	   	SetEntProp(client, Prop_Send, "m_bUseClassAnimations", true);
+		else
+		{
+			int team = GetClientTeam(client);
+			int entity = CreateEntityByName("tf_wearable");
+			if(entity > MaxClients)	// Weapon viewmodel
+			{
+				#if defined ZR
+				if(i_HealthBeforeSuit[client] == 0)
+				{
+					SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
+				}
+				else
+				{
+					SetEntProp(entity, Prop_Send, "m_nModelIndex", RobotIndex[CurrentClass[client]]);
+				}
+				#else
+				SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
+				#endif
+				
+				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+				SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
+				SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
+				SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
+				SetEntityCollisionGroup(entity, 11);
+				SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
+				DispatchSpawn(entity);
+				SetVariantString("!activator");
+				ActivateEntity(entity);
+		
+				SDKCall_EquipWearable(client, entity);
+				SetEntProp(client, Prop_Send, "m_nRenderFX", 6);
+			}
+		}
 	}
 }
 
@@ -153,23 +163,16 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 					SDKCall_EquipWearable(client, entity);
 					WeaponRef[client] = EntIndexToEntRef(entity);
 				}
-				WeaponClass[client] = class;
-				/*
-				if(GetEntProp(active, Prop_Send, "m_iItemDefinitionIndex") == 357)
+				
+				if(WeaponClass[client] != class)
 				{
+					WeaponClass[client] = class;
 					
-					WeaponClass[client] = TFClass_Spy;
-					//katanais always spy.
+					TF2_SetPlayerClass(client, WeaponClass[client], _, false);
+					Store_ApplyAttribs(client);
 					
+					ViewChange_UpdateHands(client, CurrentClass[client]);
 				}
-				*/
-				#if defined NoSendProxyClass
-				TF2_SetPlayerClass(client, WeaponClass[client], _, false);
-				Store_ApplyAttribs(client);
-				#else
-				ClassProxy_m_iClass_Set(client, WeaponClass[client]);
-				#endif
-				ViewChange_UpdateHands(client, CurrentClass[client]);
 				return;
 			}
 		}
@@ -179,6 +182,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 	WeaponClass[client] = TFClass_Unknown;
 	WeaponRef[client] = INVALID_ENT_REFERENCE;
 }
+
 void ViewChange_DeleteHands(int client)
 {
 	int entity = EntRefToEntIndex(HandRef[client]);
@@ -197,13 +201,10 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 		if(entity > MaxClients)
 		{
 			int hand_index = view_as<int>(class);
-				
 			if(b_IsPlayerNiko[client])
-			{
 				hand_index = 10;
-			}
-				
-			SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[view_as<TFClassType>(hand_index)]);
+			
+			SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[hand_index]);
 			SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", GetClientTeam(client));
 			SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);

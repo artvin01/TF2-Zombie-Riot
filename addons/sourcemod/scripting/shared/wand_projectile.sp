@@ -147,6 +147,8 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			return; //This was has its own entire logic, dont do anything.
 		}
+		
+		#if defined ZR
 		case 1:
 		{
 			Want_DefaultWandTouch(entity, target);
@@ -187,6 +189,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Want_CalciumWandTouch(entity, target);
 		}
+		#endif
+		
+		#if defined RPG
+		#endif
 	}
 // Dont delete it here, the wands might have pierce or something. who knows.
 //	RemoveEntity(arrow);

@@ -1,15 +1,15 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-Handle clientcookie = INVALID_HANDLE;
+static Cookie clientcookie;
 
-bool hooked;
+void Thirdperson_PluginLoad()
+{
+	CreateNative("TPC_Get", Native_Get);
+}
 
 void Thirdperson_PluginStart()
 {
-//	AddCommandListener(OnSay, "say");
-//	AddCommandListener(OnSay, "say_team");
-
 	RegConsoleCmd("sm_thirdperson", Command_TpOn, "Usage: sm_thirdperson");
 	RegConsoleCmd("sm_tp", Command_TpOn, "Usage: sm_thirdperson");
 	RegConsoleCmd("sm_3", Command_TpOn, "Usage: sm_thirdperson");
@@ -21,57 +21,6 @@ void Thirdperson_PluginStart()
 	LoadTranslations("common.phrases");
 	LoadTranslations("core.phrases");
 }
-public Action OnSay(int client, const char[] command, int args)
-{
-	if(!IsValidClient(client))
-		return Plugin_Continue;
-
-	char chat[150];
-	bool handleChat=false;
-
-	GetCmdArgString(chat, sizeof(chat));
-
-	if(strlen(chat)>=2 ){
-		if(chat[1]=='!') handleChat=false;
-		else if(chat[1]=='/') handleChat=true;
-		else return Plugin_Continue;
-		}  // start++; && (chat[1]=='!' || chat[1]=='/')
-	else{
-		return Plugin_Continue;
-	}
-	chat[strlen(chat)-1]='\0';
-
-	if(StrEqual("tp", chat[2], true) ||
-	StrEqual("thirdperson", chat[2], true))
-	{
-		Command_TpOn(client, 0);
-	}
-
-	else if(StrEqual("fp", chat[2], true) ||
-	StrEqual("firstperson", chat[2], true))
-	{
-		Command_TpOn(client, 0);
-	}
-	
-	else if(StrEqual("3", chat[2], true) ||
-	StrEqual("3", chat[2], true))
-	{
-		Command_TpOn(client, 0);
-	}
-	
-	return handleChat ? Plugin_Handled : Plugin_Continue;
-}
-
-void Third_PersonOnMapStart()
-{
-	if (!hooked)
-	{
-		PrintToServer("[Tf2] Third Person Cookies! Enabled");
-		HookEvent("player_spawn", player_spawn);
-		HookEvent("player_class", player_spawn);
-		hooked = true;
-	}
-}
 
 void ThirdPerson_OnClientCookiesCached(int client)
 {
@@ -81,7 +30,7 @@ void ThirdPerson_OnClientCookiesCached(int client)
 	}
 }
 
-void retrieveClientCookies(int client)									   // gets the client's cookie, or creates a new one
+static void retrieveClientCookies(int client)									   // gets the client's cookie, or creates a new one
 {
 	char cookie[2];
 
@@ -98,7 +47,7 @@ void retrieveClientCookies(int client)									   // gets the client's cookie, o
 	}
 }
 
-void storeClientCookies(int client)															   // stores client's cookie
+static void storeClientCookies(int client)															   // stores client's cookie
 {
 	if(AreClientCookiesCached(client))											   // make sure DB isn't being slow
 	{
@@ -109,11 +58,9 @@ void storeClientCookies(int client)															   // stores client's cookie
 	}
 }
 
-public Action player_spawn(Handle event, const char[] name, bool dontBroadcast)
+void Thirdperson_PlayerSpawn(int client)
 {
-	int client = GetClientOfUserId(GetEventInt(event, "userid"));
-
-	if(!IsFakeClient(client))												// ignore bots, they don't need client pref entries
+	//if(!IsFakeClient(client))												// ignore bots, they don't need client pref entries
 	{
 		if (thirdperson[client])
 		{

@@ -1,7 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#include <sourcemod>
 #include <tf2_stocks>
 #include <sdkhooks>
 #include <collisionhook>
@@ -582,78 +581,15 @@ bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 bool applied_lastmann_buffs_once = false;
 
-public const int AmmoData[][] =
-{
-	// Price, Ammo
-	{ 0, 0 },			//N/A
-	{ 0, 0 },			//Primary
-	{ 0, 99999 },		//Secondary
-	{ 10, 500 },		//Metal
-	{ 0, 0 },			//Ball
-	{ 0, 0 },			//Food
-	{ 0, 0 },			//Jar
-	{ 10, 72 },			//Pistol Magazines
-	{ 10, 12 },			//Rockets
-	{ 10, 100 },		//Flamethrower Tank
-	{ 10, 12 },			//Flares
-	{ 10, 10 },			//Grenades
-	{ 10, 10 },			//Stickybombs
-	{ 10, 100 },		//Minigun Barrel
-	{ 10, 10 },			//Custom Bolt
-	{ 10, 100 },		//Meedical Syringes
-	{ 10, 12 },			//Sniper Rifle Rounds
-	{ 10, 12 },			//Arrows
-	{ 10, 60 },			//SMG Magazines
-	{ 10, 14 },			//REvolver Rounds
-	{ 10, 12 },			//Shotgun Shells
-	{ 10, 400 },		//Healing Medicine
-	{ 10, 500 },		//Medigun Fluid
-	{ 10, 80 },			//Laser Battery
-	{ 0, 0 },			//Hand Grenade
-	{ 0, 0 }			//Drinks like potions
-};
-
-int i_CurrentEquippedPerk[MAXTF2PLAYERS];
-//FOR PERK MACHINE!
-public const char PerkNames[][] =
-{
-	"No Perk",
-	"Quick Revive",
-	"Juggernog",
-	"Double Tap",
-	"Speed Cola",
-	"Deadshot Daiquiri",
-	"Widows Wine",
-};
-
-public const char PerkNames_Recieved[][] =
-{
-	"No Perk",
-	"Quick Revive Recieved",
-	"Juggernog Recieved",
-	"Double Tap Recieved",
-	"Speed Cola Recieved",
-	"Deadshot Daiquiri Recieved",
-	"Widows Wine Recieved",
-};
-
 #include "shared/stocks_override.sp"
 #include "shared/stocks.sp"
 
 #if defined ZR
 #include "zombie_riot/zr_core.sp"
-#include "zombie_riot/npc.sp"
-#include "zombie_riot/music.sp"
-#include "zombie_riot/waves.sp"
-#include "zombie_riot/escape.sp"
-#include "zombie_riot/zombie_drops.sp"
-#include "zombie_riot/queue.sp"
-#include "zombie_riot/item_gift_rpg.sp"
-#include "zombie_riot/tutorial.sp"
 #endif
 
 #if defined RPG
-#include "rpg_fortress/npc.sp"
+#include "rpg_fortress/rpg_core.sp"
 #endif
 
 #include "shared/attributes.sp"
@@ -679,78 +615,6 @@ public const char PerkNames_Recieved[][] =
 #include "shared/npc_death_showing.sp"
 #include "shared/wand_projectile.sp"
 
-#if define ZR
-#include "zombie_riot/custom/building.sp"
-#include "zombie_riot/custom/healing_medkit.sp"
-#include "zombie_riot/custom/weapon_slug_rifle.sp"
-#include "zombie_riot/custom/weapon_boom_stick.sp"
-#include "zombie_riot/custom/weapon_heavy_eagle.sp"
-#include "zombie_riot/custom/weapon_annabelle.sp"
-#include "zombie_riot/custom/weapon_rampager.sp"
-#include "zombie_riot/custom/joke_medigun_mod_drain_health.sp"
-#include "zombie_riot/custom/weapon_heaven_eagle.sp"
-#include "zombie_riot/custom/weapon_star_shooter.sp"
-#include "zombie_riot/custom/weapon_bison.sp"
-#include "zombie_riot/custom/weapon_pomson.sp"
-#include "zombie_riot/custom/weapon_cowmangler.sp"
-#include "zombie_riot/custom/weapon_cowmangler_2.sp"
-#include "zombie_riot/custom/weapon_auto_shotgun.sp"
-#include "zombie_riot/custom/weapon_fists_of_kahml.sp"
-#include "zombie_riot/custom/weapon_fusion_melee.sp"
-#include "zombie_riot/custom/spike_layer.sp"
-#include "zombie_riot/custom/weapon_grenade.sp"
-#include "zombie_riot/custom/weapon_pipebomb.sp"
-#include "zombie_riot/custom/wand/weapon_default_wand.sp"
-#include "zombie_riot/custom/wand/weapon_wand_increace_attack.sp"
-#include "zombie_riot/custom/wand/weapon_fire_wand.sp"
-#include "zombie_riot/custom/wand/weapon_wand_fire_ball.sp"
-#include "zombie_riot/custom/wand/weapon_lightning_wand.sp"
-#include "zombie_riot/custom/wand/weapon_wand_cryo.sp"
-#include "zombie_riot/custom/wand/weapon_wand_lightning_spell.sp"
-#include "zombie_riot/custom/wand/weapon_necromancy_wand.sp"
-#include "zombie_riot/custom/wand/weapon_wand_necro_spell.sp"
-#include "zombie_riot/custom/wand/weapon_autoaim_wand.sp"
-#include "zombie_riot/custom/weapon_arrow_shot.sp"
-//#include "zombie_riot/custom/weapon_pipe_shot.sp"
-#include "zombie_riot/custom/weapon_survival_knife.sp"
-#include "zombie_riot/custom/weapon_glitched.sp"
-#include "zombie_riot/custom/weapon_minecraft.sp"
-#include "zombie_riot/custom/arse_enal_layer_tripmine.sp"
-#include "zombie_riot/custom/weapon_serioussam2_shooter.sp"
-#include "zombie_riot/custom/wand/weapon_elemental_staff.sp"
-#include "zombie_riot/custom/wand/weapon_elemental_staff_2.sp"
-#include "zombie_riot/custom/weapon_infinity_blade.sp"
-//#include "zombie_riot/custom/weapon_black_fire_wand.sp"
-#include "zombie_riot/custom/wand/weapon_chlorophite.sp"
-#include "zombie_riot/custom/wand/weapon_chlorophite_heavy.sp"
-#include "zombie_riot/custom/weapon_drink_resupply_mana.sp"
-#include "zombie_riot/custom/weapon_wind_staff.sp"
-#include "zombie_riot/custom/wand/weapon_nailgun.sp"
-#include "zombie_riot/custom/weapon_five_seven.sp"
-#include "zombie_riot/custom/weapon_gb_medigun.sp"
-#include "zombie_riot/custom/weapon_charged_handgun.sp"
-#include "zombie_riot/custom/wand/weapon_wand_beam.sp"
-#include "zombie_riot/custom/wand/weapon_wand_lightning_pap.sp"
-#include "zombie_riot/custom/wand/weapon_calcium_wand.sp"
-#include "zombie_riot/custom/wand/weapon_wand_calcium_spell.sp"
-#include "zombie_riot/custom/weapon_passive_banner.sp"
-#include "zombie_riot/custom/weapon_zeroknife.sp"
-#include "zombie_riot/custom/weapon_ark.sp"
-#include "zombie_riot/custom/pets.sp"
-#include "zombie_riot/custom/coin_flip.sp"
-#include "zombie_riot/custom/weapon_manual_reload.sp"
-#include "zombie_riot/custom/weapon_atomic.sp"
-#include "zombie_riot/custom/weapon_super_star_shooter.sp"
-#include "zombie_riot/custom/weapon_Texan_business.sp"
-#include "zombie_riot/custom/weapon_explosivebullets.sp"
-#include "zombie_riot/custom/weapon_sniper_monkey.sp"
-#include "zombie_riot/custom/weapon_cspyknife.sp"
-#include "zombie_riot/custom/wand/weapon_quantum_weaponry.sp"
-#include "zombie_riot/custom/weapon_riotshield.sp"
-#include "zombie_riot/custom/escape_sentry_hat.sp"
-#include "zombie_riot/custom/m3_abilities.sp"
-#endif
-
 public Plugin myinfo =
 {
 	name		=	"NPC Gamemode Core",
@@ -763,8 +627,8 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 {
 	MarkNativeAsOptional("FuncToVal");
 	CreateNative("FuncToVal", Native_FuncToVal);
-	CreateNative("TPC_Get", Native_Get);
 	
+	Thirdperson_PluginLoad();
 	_AskPluginLoad2();
 	return APLRes_Success;
 }
@@ -791,31 +655,9 @@ public void OnPluginStart()
 	100,
 	1,
 	1};
-
-	HookEvent("teamplay_round_start", OnRoundStart, EventHookMode_PostNoCopy);
-	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_PostNoCopy);
-	HookEvent("post_inventory_application", OnPlayerResupply, EventHookMode_Post);
-	HookEvent("player_death", OnPlayerDeath, EventHookMode_Post);
-	HookEvent("teamplay_broadcast_audio", OnBroadcast, EventHookMode_Pre);
-	HookEvent("teamplay_win_panel", OnWinPanel, EventHookMode_Pre);
-	HookEvent("teamplay_setup_finished", OnSetupFinished, EventHookMode_PostNoCopy);
-	HookEvent("player_team", OnPlayerTeam, EventHookMode_Pre);
-	HookEvent("player_connect_client", OnPlayerConnect, EventHookMode_Pre);
-	HookEvent("player_disconnect", OnPlayerConnect, EventHookMode_Pre);
-//	HookEvent("nav_blocked", NavBlocked, EventHookMode_Pre);
 	
-	HookUserMessage(GetUserMessageId("SayText2"), Hook_BlockUserMessageEx, true);
-	
-	AddCommandListener(OnAutoTeam, "autoteam");
-	AddCommandListener(OnAutoTeam, "jointeam");
-	AddCommandListener(OnBuildCmd, "build");
-	AddCommandListener(OnDropItem, "dropitem");
-	AddCommandListener(OnTaunt, "taunt");
-	AddCommandListener(OnTaunt, "+taunt");
-	AddCommandListener(OnSayCommand, "say");
-	AddCommandListener(OnSayCommand, "say_team");
-	AddCommandListener(Command_Voicemenu, "voicemenu");
-//	AddCommandListener(OnTaunt, "taunt");
+	Commands_PluginStart();
+	Events_PluginStart();
 	
 	OnPluginStart_();
 	
@@ -956,25 +798,6 @@ public void OnPluginEnd()
 }
 
 //bool Reload_Plugin_Temp_Fix = false;
-
-public Action OnTaunt(int client, const char[] command, int args)
-{
-	if(dieingstate[client] != 0)
-	{
-		return Plugin_Handled;
-	}
-	
-	Pets_OnTaunt(client);
-	return Plugin_Continue;
-}
-
-public Action OnSayCommand(int client, const char[] command, int args)
-{
-	if(Store_SayCommand(client))
-		return Plugin_Handled;
-	
-	return NPC_SayCommand(client, command);
-}
 
 public void OnMapStart()
 {
@@ -1118,113 +941,6 @@ public Action OnReloadBlockNav(int args)
 	UpdateBlockedNavmesh();
 	return Plugin_Handled;
 }
-public Action OnReloadCommand(int args)
-{
-	char path[PLATFORM_MAX_PATH], filename[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, path, sizeof(path), "plugins/npc");
-	FileType filetype;
-	Handle directory = OpenDirectory(path);
-	if(directory)
-	{
-		while(ReadDirEntry(directory, filename, sizeof(filename), filetype))
-		{
-			if(filetype==FileType_File && StrContains(filename, ".smx", false)!=-1)
-				ServerCommand("sm plugins reload npc/%s", filename);
-		}
-	}
-	
-	for(int i=MAXENTITIES; i>MaxClients; i--)
-	{
-		if(IsValidEntity(i) && GetEntityClassname(i, path, sizeof(path)))
-		{
-			if(!StrContains(path, "base_boss"))
-				RemoveEntity(i);
-		}
-	}
-	return Plugin_Handled;
-}
-
-public Action Command_AFK(int client, int args)
-{
-	if(client)
-	{
-		b_HasBeenHereSinceStartOfWave[client] = false;
-		WaitingInQueue[client] = true;
-		ChangeClientTeam(client, 1);
-	}
-	return Plugin_Handled;
-}
-
-
-public Action Command_TestTutorial(int client, int args)
-{
-	if(args < 1)
-    {
-        ReplyToCommand(client, "[SM] Usage: sm_tutorial_test <target>");
-        return Plugin_Handled;
-    }	
-       
-	static char targetName[MAX_TARGET_LENGTH];
-    
-	static char pattern[PLATFORM_MAX_PATH];
-	GetCmdArg(1, pattern, sizeof(pattern));
-
-	int targets[MAXPLAYERS], matches;
-	bool targetNounIsMultiLanguage;
-	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
-	{
-		ReplyToTargetError(client, matches);
-		return Plugin_Handled;
-	}
-	
-	for(int target; target<matches; target++)
-	{
-		StartTutorial(targets[target]);
-	}
-	return Plugin_Handled;
-}
-public Action Command_GiveCash(int client, int args)
-{
-	//What are you.
-	if(args < 1)
-    {
-        ReplyToCommand(client, "[SM] Usage: sm_give_cash <target> <cash>");
-        return Plugin_Handled;
-    }
-    
-	static char targetName[MAX_TARGET_LENGTH];
-    
-	static char pattern[PLATFORM_MAX_PATH];
-	GetCmdArg(1, pattern, sizeof(pattern));
-	
-	char buf[12];
-	GetCmdArg(2, buf, sizeof(buf));
-	int money = StringToInt(buf); 
-
-	int targets[MAXPLAYERS], matches;
-	bool targetNounIsMultiLanguage;
-	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
-	{
-		ReplyToTargetError(client, matches);
-		return Plugin_Handled;
-	}
-	
-	for(int target; target<matches; target++)
-	{
-		if(money > 0)
-		{
-			PrintToChat(targets[target], "You got %i cash from the admin %N!", money, client);
-			CashSpent[targets[target]] -= money;
-		}
-		else
-		{
-			PrintToChat(targets[target], "You lost %i cash due to the admin %N!", money, client);
-			CashSpent[targets[target]] -= money;			
-		}
-	}
-	
-	return Plugin_Handled;
-}
 
 public Action Command_MakeNiko(int client, int args)
 {
@@ -1278,62 +994,6 @@ public Action Command_PlayViewmodelAnim(int client, int args)
 	
 	return Plugin_Handled;
 }
-public Action Command_GiveDialogBox(int client, int args)
-{
-	//What are you.
-	if(args < 1)
-    {
-        ReplyToCommand(client, "[SM] Usage: sm_give_dialog <target> <Question>");
-        return Plugin_Handled;
-    }
-    
-	static char targetName[MAX_TARGET_LENGTH];
-    
-	static char pattern[PLATFORM_MAX_PATH];
-	GetCmdArg(1, pattern, sizeof(pattern));
-	
-	char buf[64];
-	GetCmdArg(2, buf, sizeof(buf));
-	
-	char buf2[64];
-	GetCmdArg(3, buf2, sizeof(buf2));
-
-	int targets[MAXPLAYERS], matches;
-	bool targetNounIsMultiLanguage;
-	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
-	{
-		ReplyToTargetError(client, matches);
-		return Plugin_Handled;
-	}
-	
-	for(int target; target<matches; target++)
-	{
-		SetGlobalTransTarget(client);
-		char yourPoints[64];
-		Format(yourPoints, sizeof(yourPoints), buf); 
-				
-		Handle hKv = CreateKeyValues("Stuff", "title", yourPoints);
-		KvSetColor(hKv, "color", 0, 255, 0, 255); //green
-		KvSetNum(hKv,   "level", 1); //im not sure..
-		KvSetNum(hKv,   "time",  10); // how long? 
-		KvSetString(hKv,   "command", "say /tp"); //command when selected
-		KvSetString(hKv,   "msg",  buf2); // how long? 
-		CreateDialog(client, hKv, DialogType_Menu);
-		CloseHandle(hKv);
-	}
-	
-	return Plugin_Handled;
-}
-
-public Action Command_AFKKnight(int client, int args)
-{
-	if(client)
-	{
-		WaitingInQueue[client] = true;
-		ChangeClientTeam(client, 2);
-	}
-	return Plugin_Handled;
-}
 
 public Action Command_ChangeCollision(int client, int args)
 {
@@ -1349,13 +1009,6 @@ public Action Command_ChangeCollision(int client, int args)
 			Change_Npc_Collision(baseboss_index, Collision);
 		}
 	}
-	return Plugin_Handled;
-}
-
-public Action Command_SpawnGrigori(int client, int args)
-{
-	Spawn_Cured_Grigori();
-	Store_RandomizeNPCStore(false);
 	return Plugin_Handled;
 }
 
@@ -1431,6 +1084,7 @@ public void OnClientPutInServer(int client)
 	{
 		Queue_PutInServer(client);
 	}
+	
 	DHook_HookClient(client);
 	SDKHook_HookClient(client);
 	dieingstate[client] = 0;
@@ -1573,338 +1227,11 @@ public void OnClientDisconnect_Post(int client)
 	CheckAlivePlayers(_);
 }
 
-public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
-{
-	b_GameOnGoing = true;
-	/*
-	if(FindEntityByClassname(-1, "env_sun") == -1)
-	{
-		int entity_1 = CreateEntityByName("env_sun");
-		if(IsValidEntity(entity_1))
-		{
-			DispatchSpawn(entity_1);
-		}
-	}
-	maybe fixes 0x2f23f7 and 0x2f2388
-	
-	Edit: Does not.
-	*/
-	LastMann = false;
-	
-	if(RoundStartTime > GetGameTime())
-		return;
-	
-	RoundStartTime = GetGameTime()+0.1;
-	
-	Escape_RoundStart();
-	Waves_RoundStart();
-}
-
-public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
-{
-	Escape_SetupEnd();
-}
-
-public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
-{
-	if(event.GetBool("autoteam"))
-	{
-		int client = GetClientOfUserId(event.GetInt("userid"));
-		if(client)
-		{
-			ChangeClientTeam(client, 3);
-			OnAutoTeam(client, name, 0);
-		}
-	}
-	
-	if(event.GetBool("silent"))
-		return Plugin_Continue;
-	
-	event.BroadcastDisabled = true;
-	return Plugin_Changed;
-}
-
-public Action OnPlayerConnect(Event event, const char[] name, bool dontBroadcast)
-{
-	if(!event.GetBool("bot"))
-		return Plugin_Continue;
-	
-	event.BroadcastDisabled = true;
-	return Plugin_Changed;
-}
-
-public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
-{
-	Store_RandomizeNPCStore(true);
-	
-	b_GameOnGoing = false;
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			Escape_DropItem(client);
-			Damage_dealt_in_total[client] = 0.0;
-			Resupplies_Supplied[client] = 0;
-			CashRecievedNonWave[client] = 0;
-			Healing_done_in_total[client] = 0;
-			Ammo_Count_Ready[client] = 0;
-			Armor_Charge[client] = 0;
-		}
-	}
-	for(int client_check=1; client_check<=MaxClients; client_check++)
-	{
-		if(IsClientInGame(client_check) && TeutonType[client_check] != TEUTON_WAITING)
-			TeutonType[client_check] = 0;
-	}
-	NPC_RoundEnd();
-	Store_Reset();
-	Waves_RoundEnd();
-	Escape_RoundEnd();
-	CurrentGame = 0;
-}
-
 /*public void OnGameFrame()
 {
 	//Wand_Homing();
 	Cryo_SearchDamage();
 }*/
-
-
-public Action OnTeutonHealth(int client, int &health)
-{
-	if(TeutonType[client])
-	{
-		SetEntityHealth(client, 0);
-		return Plugin_Continue;
-	}
-	
-	SDKUnhook(client, SDKHook_GetMaxHealth, OnTeutonHealth);
-	return Plugin_Continue;
-}
-
-public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
-{
-	int client = GetClientOfUserId(event.GetInt("userid"));
-	if(client)
-	{
-		//DEFAULTS
-		if(dieingstate[client] == 0)
-		{
-			b_ThisEntityIgnored[client] = false;
-		}
-		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.0);
-		SetVariantString("");
-	  	AcceptEntityInput(client, "SetCustomModel");
-	  	//DEFAULTS
-	  	
-	  	if(b_IsPlayerNiko[client])
-		{
-		  	int entity = MaxClients+1;
-			while(TF2_GetWearable(client, entity))
-			{
-				SetEntProp(entity, Prop_Send, "m_fEffects", EF_NODRAW);
-			}
-		}
-	  	
-		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
-		ViewChange_DeleteHands(client);
-		ViewChange_UpdateHands(client, CurrentClass[client]);
-		
-		if(WaitingInQueue[client])
-			TeutonType[client] = TEUTON_WAITING;
-
-		if(i_ClientHasCustomGearEquipped[client])
-		{
-			SetAmmo(client, 1, 9999);
-			SetAmmo(client, 2, 9999);
-			SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
-			SetAmmo(client, Ammo_Jar, 1);
-			for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
-			{
-				SetAmmo(client, i, CurrentAmmo[client][i]);
-			}
-
-			ViewChange_PlayerModel(client);
-			return;
-		}
-		if(TeutonType[client] != TEUTON_NONE)
-		{
-			FakeClientCommand(client, "menuselect 0");
-			SDKHook(client, SDKHook_GetMaxHealth, OnTeutonHealth);
-			SetEntityRenderMode(client, RENDER_NORMAL);
-			SetEntityRenderColor(client, 255, 255, 255, 255);
-			
-			int entity = MaxClients+1;
-			while(TF2_GetWearable(client, entity))
-			{
-				TF2_RemoveWearable(client, entity);
-			}
-			
-			TF2Attrib_RemoveAll(client);
-			TF2Attrib_SetByDefIndex(client, 68, -1.0);
-			SetVariantString(COMBINE_CUSTOM_MODEL);
-	  		AcceptEntityInput(client, "SetCustomModel");
-	   		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", true);
-	   		
-	   		b_ThisEntityIgnored[client] = true;
-	   		
-
-	   		int weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword");
-	   		
-	   		TF2Attrib_RemoveAll(weapon_index);
-	   		
-	   		float damage;
-	   		
-	   		int Wave_Count = Waves_GetRound() + 1;
-			
-			if(Wave_Count < 5)
-				damage = 0.25;
-				
-			if(Wave_Count < 10)
-				damage = 0.4;
-						
-			else if(Wave_Count < 15)
-				damage = 1.0;
-					
-			else if(Wave_Count < 20)
-				damage = 1.5;
-						
-			else if(Wave_Count < 25)
-				damage = 2.5;
-						
-			else if(Wave_Count < 30)
-				damage = 5.0;
-						
-			else if(Wave_Count < 40)
-				damage = 7.0;
-						
-			else if(Wave_Count < 45)
-				damage = 25.0;
-					
-			else if(Wave_Count < 50)
-				damage = 35.0;
-				
-			else if(Wave_Count < 55)
-				damage = 45.0;
-					
-			else if(Wave_Count < 60)
-				damage = 50.0;
-				
-			else if(Wave_Count < 70)
-				damage = 60.0;
-				
-			else if(Wave_Count < 80)
-				damage = 80.0;
-				
-			else if(Wave_Count < 90)
-				damage = 90.0;
-					
-			else
-				damage = 100.0;
-			
-	   		TF2Attrib_SetByDefIndex(weapon_index, 2, damage);
-	   		TF2Attrib_SetByDefIndex(weapon_index, 264, 0.0);
-	   		TF2Attrib_SetByDefIndex(weapon_index, 263, 0.0);
-	   		TF2Attrib_SetByDefIndex(weapon_index, 6, 1.2);
-	   		TF2Attrib_SetByDefIndex(weapon_index, 412, 0.0);
-	   		TF2Attrib_SetByDefIndex(weapon_index, 442, 1.1);
-	   		TFClassType ClassForStats = WeaponClass[client];
-	   		
-	   		TF2Attrib_SetByDefIndex(weapon_index, 107, RemoveExtraSpeed(ClassForStats));
-	   		TF2Attrib_SetByDefIndex(weapon_index, 476, 0.0);
-	   		SetEntityCollisionGroup(client, 1);
-	   		SetEntityCollisionGroup(weapon_index, 1);
-	   		
-	   		int wearable;
-	   		
-	   		wearable = GiveWearable(client, 30727);
-	   		
-	   		SetEntPropFloat(wearable, Prop_Send, "m_flModelScale", 0.9);
-	   		
-	   		wearable = GiveWearable(client, 30969);
-	   		
-	   		SetEntPropFloat(wearable, Prop_Send, "m_flModelScale", 1.25);
-	   		
-	   		SetEntPropFloat(weapon_index, Prop_Send, "m_flModelScale", -0.8);
-	   		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 0.7);
-	   		
-			SetAmmo(client, 1, 9999);
-			SetAmmo(client, 2, 9999);
-	   		SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
-			SetAmmo(client, Ammo_Jar, 1);
-			for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
-			{
-				SetAmmo(client, i, CurrentAmmo[client][i]);
-			}
-	   		
-		}
-		else
-		{
-			int entity = MaxClients+1;
-			while(TF2_GetWearable(client, entity))
-			{
-				switch(GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex"))
-				{
-					case 57, 131, 133, 231, 405, 406, 444, 608, 642, 1099, 1144:
-						TF2_RemoveWearable(client, entity);
-				}
-			}
-			
-			ViewChange_PlayerModel(client);
-			Store_ApplyAttribs(client);
-			Pets_PlayerResupply(client);
-			
-			if(dieingstate[client])
-			{
-			}
-			else
-			{
-				Store_GiveAll(client, Waves_GetRound()>1 ? 50 : 300); //give 300 hp instead of 200 in escape.
-			}
-			
-			SetAmmo(client, 1, 9999);
-			SetAmmo(client, 2, 9999);
-			SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
-			SetAmmo(client, Ammo_Jar, 1);
-			for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
-			{
-				SetAmmo(client, i, CurrentAmmo[client][i]);
-			}
-			
-			PrintHintText(client, "%T", "Open Store", client);
-		}
-	}
-}
-
-public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
-{
-	int client = GetClientOfUserId(event.GetInt("userid"));
-	if(client)
-	{
-		RequestFrame(SetEyeAngleCorrect, client);
-		Escape_DropItem(client);
-		if(g_CarriedDispenser[client] != INVALID_ENT_REFERENCE)
-		{
-			DestroyDispenser(client);
-		}
-		else
-		{
-			Building_Mounted[client] = 0;
-			Player_Mounting_Building[client] = false;
-			g_CarriedDispenser[client] = INVALID_ENT_REFERENCE; //Just remove entirely, just make sure.
-		}
-	}
-
-	//Incase they die, do suit!
-	i_HealthBeforeSuit[client] = 0;
-	CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
-	//
-
-	Citizen_PlayerDeath(client);
-	Store_WeaponSwitch(client, -1);
-	Bob_player_killed(event, name, dontBroadcast);
-	RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
-}
 
 public Action Timer_Dieing(Handle timer, int client)
 {
@@ -2293,78 +1620,6 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 		//	RequestFrames(Remove_All, 300);
 		}
 	}
-}
-public Action OnBroadcast(Event event, const char[] name, bool dontBroadcast)
-{
-	static char sound[PLATFORM_MAX_PATH];
-	event.GetString("sound", sound, sizeof(sound));
-	if(!StrContains(sound, "Game.Your", false) || !StrContains(sound, "Game.Stalemate", false) || !StrContains(sound, "Announcer.", false))
-		return Plugin_Handled;
-
-	return Plugin_Continue;
-}
-
-public Action OnWinPanel(Event event, const char[] name, bool dontBroadcast)
-{
-	return Plugin_Handled;
-}
-/*
-public Action NavBlocked(Event event, const char[] name, bool dontBroadcast)
-{
-	PrintHintText(1, "t");
-	
-	int area = event.GetInt("area");
-	bool blocked = event.GetBool("blocked");
-	if(blocked)
-	{
-		PrintToChatAll("%i", area);
-	}
-	
-	return Plugin_Stop;
-}
-*/
-public Action OnAutoTeam(int client, const char[] command, int args)
-{
-	if(client)
-	{
-		if(IsFakeClient(client))
-		{
-			ChangeClientTeam(client, view_as<int>(TFTeam_Blue));
-		}
-		else if(Queue_JoinTeam(client))
-		{
-			ChangeClientTeam(client, view_as<int>(TFTeam_Red));
-			ShowVGUIPanel(client, "class_red");
-		}
-	}
-	return Plugin_Handled;
-}
-
-public Action OnBuildCmd(int client, const char[] command, int args)
-{
-	if(client && GameRules_GetProp("m_bInWaitingForPlayers"))
-		return Plugin_Handled;
-		
-	return Plugin_Continue;
-}
-
-public Action OnClientCommandKeyValues(int client, KeyValues kv)
-{
-	char buffer[64];
-	kv.GetSectionName(buffer, sizeof(buffer));
-	if(StrEqual(buffer, "+inspect_server", false))
-	{
-		if(GetClientButtons(client) & IN_SCORE)
-		{
-			Store_OpenItemPage(client);
-		}
-		else if(!TF2_IsPlayerInCondition(client, TFCond_Slowed) && !TF2_IsPlayerInCondition(client, TFCond_Zoomed))
-		{
-			Store_SwapItems(client);
-		}
-		return Plugin_Handled;
-	}
-	return Plugin_Continue;
 }
 
 public Action OnRelayTrigger(const char[] output, int entity, int caller, float delay)
@@ -3724,12 +2979,6 @@ void GiveXP(int client, int xp)
 	}
 }
 
-public Action OnDropItem(int client, const char[] command, int args)
-{
-	Escape_DropItem(client);
-	return Plugin_Handled;
-}
-
 int XpToLevel(int xp)
 {
 	return RoundToFloor(Pow(xp/200.0, 0.5));
@@ -3767,21 +3016,6 @@ public any Native_GetLevelCount(Handle plugin, int numParams)
 }
 
 //#file "Zombie Riot" broke in sm 1.11
-
-public Action Hook_BlockUserMessageEx(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
-{
-	char message[32];
-	msg.ReadByte();
-	msg.ReadByte();
-	msg.ReadString(message, sizeof(message));
-	
-	if(strcmp(message, "#TF_Name_Change") == 0)
-	{
-		return Plugin_Handled;
-	}
-	
-	return Plugin_Continue;
-}
 
 
 public void MapStartResetAll()
