@@ -2334,25 +2334,22 @@ public Action Building_CheckTimer(Handle timer, int ref)
 			if(!result)
 			{
 				int weapon = EntRefToEntIndex(BuildingWeapon[client]);
-				if(weapon == -1)
-					return Plugin_Stop;
-				
-				Store_ConsumeItem(client, StoreWeapon[weapon]);
-				MenuPage(client, StoreWeapon[weapon]);
+				if(weapon != -1)
+				{
+					Store_ConsumeItem(client, StoreWeapon[weapon]);
+					MenuPage(client, StoreWeapon[weapon]);
 
-				//TF2_RemoveItem(client, weapon);
-				//TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
+					//TF2_RemoveItem(client, weapon);
+					//TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
+				}
 			}
 			else
 			{
-				int weapon = EntRefToEntIndex(BuildingWeapon[client]);
-				if(weapon == -1)
-					return Plugin_Stop;
+				//int weapon = EntRefToEntIndex(BuildingWeapon[client]);
+				//if(weapon == -1)
+				//	return Plugin_Stop;
 				
-				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
-				
-				Building[client] = INVALID_FUNCTION;
-				BuildingWeapon[client] = INVALID_ENT_REFERENCE;
+				//TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 			}
 
 			Building[client] = INVALID_FUNCTION;
