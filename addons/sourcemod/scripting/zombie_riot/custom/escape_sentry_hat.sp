@@ -636,7 +636,16 @@ public Action ParticleTransmit(int entity, int client)
 	
 	if(client == Building_particle_Owner[entity])
 		return Plugin_Handled;
-	
+
+	static int building_attached;
+
+	building_attached = EntRefToEntIndex(Building_Mounted[Building_particle_Owner[entity]]);
+
+	if(IsValidEntity(building_attached))
+	{
+		if(Building_Collect_Cooldown[building_attached][client] > GetGameTime())
+			return Plugin_Handled;
+	}
 	return Plugin_Continue;
 }
 

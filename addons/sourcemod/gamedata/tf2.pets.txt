@@ -138,6 +138,13 @@
 				"windows"	"\x55\x8B\xEC\x53\x8B\x5D\x08\x57\x53\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x8B\xCF"
 				"linux"		"@_ZN21CBaseAnimatingOverlay10AddGestureE8Activityb"
 			}
+			"CBaseAnimatingOverlay::RemoveGesture"
+			//String aBuildingSentry_13, A call needs to exist twice that doesnt link to itself in anyway. that call when entered, is short and has no strings.
+			//It sometimes has an 'L' string, but dont count on that.
+			{
+				"windows"	"\x55\x8B\xEC\x56\xFF\x75\x08\x8B\xF1\xE8\x2A\x2A\x2A\x2A\x83\xF8\xFF"
+				"linux"		"@_ZN21CBaseAnimatingOverlay13RemoveGestureE8Activity"
+			}
 			"CBaseAnimatingOverlay::RestartGesture" //( Activity activity, bool addifmissing /*=true*/, bool autokill /*=true*/ ) //there is some wierd 'L' thing in there, and L to be specific. you get there by using this string "aItemNoLongerAv" and then just hoping.
 			{
 				"windows"	"\x55\x8B\xEC\x56\x8B\x75\x08\x57\x56\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x83\xF8\xFF"

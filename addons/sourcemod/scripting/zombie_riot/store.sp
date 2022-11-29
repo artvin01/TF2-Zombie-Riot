@@ -1532,6 +1532,11 @@ public void MenuPage(int client, int section)
 		Ammo_Count_Ready[client] = 999999;
 		CashSpent[client] = 0;
 	}
+
+	if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
+	{
+		return;
+	}
 	
 	if(ClientTutorialStep(client) == 2)
 	{
@@ -2981,8 +2986,8 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 	}
 	if(removeWeapons)
 	{
-		Manual_Impulse_101(client, health);
 		TF2_RegeneratePlayer(client);
+		Manual_Impulse_101(client, health);
 		return;
 	}
 
@@ -2995,6 +3000,7 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 	{
 		Store_RemoveSpecificItem(client, "Teutonic Longsword");
 	}
+	b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
 	
 	//There is no easy way to preserve uber through with multiple mediguns
 	//solution: save via index

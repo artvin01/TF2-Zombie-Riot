@@ -193,6 +193,8 @@ ConVar zr_tagblacklist;
 ConVar zr_tagwhitelist;
 ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
+ConVar zr_smallmapbalancemulti;
+ConVar zr_spawnprotectiontime;
 //ConVar tf_bot_quota;
 
 int CurrentGame;
@@ -216,7 +218,9 @@ int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, 
 
 int CurrentPlayers;
 int PlayersAliveScaling;
+int PlayersInGame;
 int GlobalIntencity;
+bool b_HasBeenHereSinceStartOfWave[MAXTF2PLAYERS];
 ConVar cvarTimeScale;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
 //ConVar CvarSvRollspeed; // sv_rollspeed 
@@ -302,6 +306,8 @@ int Armour_Level_Current[MAXTF2PLAYERS];
 
 float Increaced_Overall_damage_Low[MAXENTITIES];
 float Resistance_Overall_Low[MAXENTITIES];
+float f_EmpowerStateSelf[MAXENTITIES];
+float f_EmpowerStateOther[MAXENTITIES];
 
 //This is for going through things via lag comp or other reasons to teleport things away.
 //bool Do_Not_Regen_Mana[MAXTF2PLAYERS];
@@ -1636,6 +1642,7 @@ public Action Command_AFK(int client, int args)
 {
 	if(client)
 	{
+		b_HasBeenHereSinceStartOfWave[client] = false;
 		WaitingInQueue[client] = true;
 		ChangeClientTeam(client, 1);
 	}
@@ -1948,7 +1955,7 @@ public void OnClientPutInServer(int client)
 	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
 	
 	if(CurrentRound)
-		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.40);
+		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.20);
 	
 	if(AreClientCookiesCached(client)) //Ingore this. This only bugs it out, just force it, who cares.
 		OnClientCookiesCached(client);	
@@ -2007,6 +2014,7 @@ public void OnClientDisconnect(int client)
 	Queue_ClientDisconnect(client);
 //	DHook_ClientDisconnect();
 	Store_ClientDisconnect(client);
+	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
 	CashRecievedNonWave[client] = 0;
@@ -2606,7 +2614,6 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	if(!Waves_Started() || GameRules_GetRoundState() != RoundState_RoundRunning)
 	{
 		LastMann = false;
-		GlobalIntencity = 0;
 		CurrentPlayers = 0;
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -2624,7 +2631,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	LastMann = !Waves_InSetup();
 	int players = CurrentPlayers;
 	CurrentPlayers = 0;
-	GlobalIntencity = Waves_GetIntencity();
+	int GlobalIntencity_Reduntant = Waves_GetIntencity();
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
@@ -2634,7 +2641,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 			{
 				if(dieingstate[client] > 0)
 				{
-					GlobalIntencity++;	
+					GlobalIntencity_Reduntant++;	
 				}
 				if(!alive)
 				{
@@ -2648,7 +2655,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 			}
 			else
 			{
-				GlobalIntencity++;
+				GlobalIntencity_Reduntant++;
 			}
 			
 			if(Hurtviasdkhook != 0)
@@ -2661,7 +2668,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	if(CurrentPlayers < players)
 		CurrentPlayers = players;
 	
-	if(LastMann && !GlobalIntencity) //Make sure if they are alone, it wont play last man music.
+	if(LastMann && !GlobalIntencity_Reduntant) //Make sure if they are alone, it wont play last man music.
 		LastMann = false;
 	
 	if(LastMann)
@@ -4351,4 +4358,7 @@ public void MapStartResetAll()
 	Zero2(f_TargetWasBlitzedByRiotShield);
 	Zero(f_StunExtraGametimeDuration);
 	CurrentGibCount = 0;
+	Zero(b_HasBeenHereSinceStartOfWave);
+	Zero(f_EmpowerStateSelf);
+	Zero(f_EmpowerStateOther);
 }

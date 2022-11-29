@@ -605,7 +605,7 @@ void Waves_Progress()
 			
 			float playercount = float(CountPlayersOnRed());
 			
-			float multi = Pow(1.07, playercount);
+			float multi = Pow(1.08, playercount);
 
 			multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%
 			
@@ -727,14 +727,14 @@ void Waves_Progress()
 					if(GetClientTeam(client_Penalise)!=2)
 					{
 						SetGlobalTransTarget(client_Penalise);
-						PrintToChat(client_Penalise, "%t", "You have only gained 60%% due to not being in-game");
-						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.40);
+						PrintToChat(client_Penalise, "%t", "You have only gained 80%% due to not being in-game");
+						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.20);
 					}
 					else if (TeutonType[client_Penalise] == TEUTON_WAITING)
 					{
 						SetGlobalTransTarget(client_Penalise);
-						PrintToChat(client_Penalise, "%t", "You have only gained 70 %% due to being a non-player player, but still helping");
-						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.30);
+						PrintToChat(client_Penalise, "%t", "You have only gained 90 %% due to being a non-player player, but still helping");
+						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.10);
 					}
 				}
 			}
@@ -1162,7 +1162,7 @@ void Waves_Progress()
 	}
 	if(CurrentRound == 0)
 	{
-		if(StartCash < 10000)
+		if(StartCash < 1500)
 			Store_RemoveSellValue();
 
 		for(int client=1; client<=MaxClients; client++)
@@ -1170,7 +1170,7 @@ void Waves_Progress()
 			if(IsClientInGame(client) && GetClientTeam(client)==2)
 			{
 				Ammo_Count_Ready[client] = 8;
-				if(StartCash < 10000)
+				if(StartCash < 1500)
 				{
 					CashSpent[client] = StartCash;
 				}

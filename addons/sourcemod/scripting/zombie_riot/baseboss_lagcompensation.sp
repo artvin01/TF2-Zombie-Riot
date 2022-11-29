@@ -487,9 +487,12 @@ public void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 		
 		char refchar[12];
 		LagRecord restore;
+//------------------------------------------------------------------------------------------
 #if defined HaveLayersForLagCompensation
 		LayerRecord layer;
+//------------------------------------------------------------------------------------------		
 #endif
+//------------------------------------------------------------------------------------------	
 		for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
 		{
 			int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);

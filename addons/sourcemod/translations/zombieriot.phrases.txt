@@ -205,7 +205,7 @@
 		"de"		"-10% verkaufs angebot wenn keine untoten hier sind"
 		"pt"		"10% de desconto quando não há zumbis vivos"
 		"nl"		"-10% korting op winkelvoorraden als er geen zombies aanwezig zijn"
-		"chi"       "休息回合商城折扣10%~"
+		"chi"       "休息回合商城折扣10%%~"
 	}
 	"Equip"
 	{
@@ -752,7 +752,7 @@
 		"fr"		"Vous avez gagnez {1} Cette vague!"
 		"pt"		"Ganhou +{1} em Créditos nesta onda."
 		"nl"		"Je hebt {1} geld gekregen van deze golf!"
-		"chi"       "回合结束现金奖励：{1}"
+		"chi"       "回合胜利!你获得了 {1} 的现金奖励!"
 	}
 	"Cash Gained This Wave Village"
 	{
@@ -1266,7 +1266,7 @@
 		"de"		"Beanspruchen Sie dieses Gebäude mit NACHLADEN mit einem Schlüsselwerkzeug."
 		"pt"		"Para reivindicar está construção aperte o botão re RECARREGAR enquando segurando sua chave inglesa."
 		"nl"		"Beweer dit gebouw door, tijdens het dragen van een moersleutel, op de HERLAAD toets te drukken."
-		"chi"       "拿着扳手的同时按下R键背起这个建筑"
+		"chi"       "断开连接建筑：拿着建筑扳手的同时按下R键占有建筑"
 	}
 	"Ammobox Tooltip"
 	{
@@ -1613,23 +1613,23 @@
 		"nl"		"Druk op TAB om de winkel te openen"
 		"chi"       "请按下TAB键打开商城"
 	}
-	"You have only gained 60%% due to not being in-game"
+	"You have only gained 80%% due to not being in-game"
 	{
-		"en"		"You have only gained 60%% due to not being in-game."
-		"ru"		"Вы получили только 60%% из-за того, что не были в игре."
-		"de"		"Sie haben nur 60%% Verdient, weil sie nicht in spiel, sind."
-		"pt"		"Você ganhou apenas 60%% devido não estar jogando."
-		"nl"		"Je hebt maar 60%% gekregen omdat je niet aan het spelen was."
-		"chi"       "因为你不在游戏中，你只获得了60%%的收益。"
+		"en"		"You have only gained 80%% due to not being in-game."
+		"ru"		"Вы получили только 80%% из-за того, что не были в игре."
+		"de"		"Sie haben nur 80%% Verdient, weil sie nicht in spiel, sind."
+		"pt"		"Você ganhou apenas 80%% devido não estar jogando."
+		"nl"		"Je hebt maar 80%% gekregen omdat je niet aan het spelen was."
+		"chi"       "因为你不在游戏中，你只获得了80%%的收益。"
 	}
-	"You have only gained 70 %% due to being a non-player player, but still helping"
+	"You have only gained 90 %% due to being a non-player player, but still helping"
 	{
-		"en"		"You have only gained 70 %% due to being a non-player player, but still helping. (You are a Teutonic Knight!)"
-		"ru"		"Вы получили только 70%% из-за того, что не являетесь игроком, но всё равно помогали. (Вы - тевтонский рыцарь!)."
-		"de"		"Sie haben nur 70%% verdient, weil sie ein Nicht-Spieler waren, aber trotzdem geholfen haben. (Sie sind ein Teutonic Knight!)"
-		"pt"		"Você ganhou apenas 70%% devido não ser um jogador não-classe, mas ainda ajudou (Você é um Cavaleiro Teutônico)."
-		"nl"		"Je hebt maar 70%% gekregen ommdat je een niet-spelende speler bent maar nogsteeds aan het helpen bent (Je bent een Teutonische Ridder!)"
-		"chi"       "作为一个非玩家，你只获得了70%%的收益，但仍然有帮助。(你是一个日耳曼骑士!)"
+		"en"		"You have only gained 90 %% due to being a non-player player, but still helping. (You are a Teutonic Knight!)"
+		"ru"		"Вы получили только 90%% из-за того, что не являетесь игроком, но всё равно помогали. (Вы - тевтонский рыцарь!)."
+		"de"		"Sie haben nur 90%% verdient, weil sie ein Nicht-Spieler waren, aber trotzdem geholfen haben. (Sie sind ein Teutonic Knight!)"
+		"pt"		"Você ganhou apenas 90%% devido não ser um jogador não-classe, mas ainda ajudou (Você é um Cavaleiro Teutônico)."
+		"nl"		"Je hebt maar 90%% gekregen ommdat je een niet-spelende speler bent maar nogsteeds aan het helpen bent (Je bent een Teutonische Ridder!)"
+		"chi"       "作为一个非玩家，你只获得了90%%的收益，但仍然有帮助。(你是一个日耳曼骑士!)"
 	}
 	"Be sure to spend all your starting cash!"
 	{
@@ -1638,7 +1638,7 @@
 		"de"		"Sein sie sicher das sie ihr ganzes Startgeld verbrauchen!"
 		"pt"		"Certifique-se de gastar todo seu dinheiro inicial!"
 		"nl"		"Wees zeker dat je al het geld waar je mee gestart bent gebruikt!"
-		"chi"       "请花光你所有的初始现金!"
+		"chi"       "请花光你所有的初始现金，否则回合开始时会被清空！！!"
 	}
 	"Difficulty set to"
 	{

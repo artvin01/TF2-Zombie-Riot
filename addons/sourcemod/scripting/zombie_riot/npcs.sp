@@ -12,7 +12,8 @@
 #define GORE_UPARMRIGHT   (1 << 8)
 #define GORE_HANDLEFT	 (1 << 9)
 
-#define MAXSPAWNERSACTIVE 4 //ok
+
+ConVar MapSpawnersActive;
 
 enum //hitgroup_t
 {
@@ -62,6 +63,7 @@ public void Npc_Sp_Precache()
 
 void NPC_PluginStart()
 {
+	MapSpawnersActive = CreateConVar("zr_spawnersactive", "4", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
 	SpawnerList = new ArrayList(sizeof(SpawnerData));
 	SyncHud = CreateHudSynchronizer();
 	SyncHudRaid = CreateHudSynchronizer();
@@ -224,11 +226,11 @@ public Action GetClosestSpawners(Handle timer)
 	TE_SetupBeamPoints(f3_PositionOfAll, PositonBeam, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 2.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
 	TE_SendToAll();
 	*/
-	int i_Spawner_Indexes[MAXSPAWNERSACTIVE + 1];
+	int i_Spawner_Indexes[32 + 1];
 	float TargetDistance = 0.0; 
 	int ClosestTarget = -1; 
 
-	for(int Repeats=1; Repeats<=MAXSPAWNERSACTIVE; Repeats++)
+	for(int Repeats=1; Repeats<=(MapSpawnersActive.IntValue); Repeats++)
 	{
 		for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
 		{
@@ -363,26 +365,41 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	if(GlobalCheckDelayAntiLagPlayerScale < GetGameTime())
 	{
 		AllowSpecialSpawns = false;
-		GlobalCheckDelayAntiLagPlayerScale = GetGameTime() + 5.0;//only check every 5 seconds.
+		GlobalCheckDelayAntiLagPlayerScale = GetGameTime() + 3.0;//only check every 5 seconds.
 		PlayersAliveScaling = 0;
+		GlobalIntencity = 0;
+		PlayersInGame = 0;
 		
 		limit = 8; //Minimum should be 8! Do not scale with waves, makes it boring early on.
 
-		float f_limit = Pow(1.16, float(CountPlayersOnRed()));
-		float f_limit_alive = Pow(1.16, float(CountPlayersOnRed(true)));
+		float f_limit = Pow(1.14, float(CountPlayersOnRed()));
+		float f_limit_alive = Pow(1.14, float(CountPlayersOnRed(true)));
 
 		f_limit *= float(limit);
 		f_limit_alive *= float(limit);
 		
 		for(int client=1; client<=MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
+			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && b_HasBeenHereSinceStartOfWave[client])
 			{
+				if(TeutonType[client] == TEUTON_DEAD || dieingstate[client] > 0)
+				{
+					GlobalIntencity += 1;
+				}
+				PlayersInGame += 1;
+
 				if(Level[client] > 7)
 					AllowSpecialSpawns = true;
 			}
 		}
+		if(PlayersInGame < 2)
+		{
+			PlayersInGame = 3;
+		}
 		
+		//This is here to fix the issue of it always playing the zombie instead of human music when 2 people are in.
+		//even if both are alive.
+
 		PlayersAliveScaling = RoundToNearest(f_limit);
 		
 		if(RoundToNearest(f_limit) >= NPC_HARD_LIMIT)
@@ -689,19 +706,22 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					else
 					{
 						SetEntProp(entity_Spawner, Prop_Send, "m_bGlowEnabled", false);
+					}	
+					if(zr_spawnprotectiontime.FloatValue > 0.0)
+					{
+				
+						b_npcspawnprotection[entity_Spawner] = true;
+						
+						/*
+						CClotBody npc = view_as<CClotBody>(entity_Spawner);
+						npc.m_iSpawnProtectionEntity = TF2_CreateGlow(npc.index);
+				
+						SetVariantColor(view_as<int>({0, 255, 0, 100}));
+						AcceptEntityInput(npc.m_iSpawnProtectionEntity, "SetGlowColor");
+						*/
+						
+						CreateTimer(zr_spawnprotectiontime.FloatValue, Remove_Spawn_Protection, EntIndexToEntRef(entity_Spawner), TIMER_FLAG_NO_MAPCHANGE);
 					}
-			
-					b_npcspawnprotection[entity_Spawner] = true;
-					
-					/*
-					CClotBody npc = view_as<CClotBody>(entity_Spawner);
-					npc.m_iSpawnProtectionEntity = TF2_CreateGlow(npc.index);
-			
-					SetVariantColor(view_as<int>({0, 255, 0, 100}));
-					AcceptEntityInput(npc.m_iSpawnProtectionEntity, "SetGlowColor");
-					*/
-					
-					CreateTimer(2.0, Remove_Spawn_Protection, EntIndexToEntRef(entity_Spawner), TIMER_FLAG_NO_MAPCHANGE);
 				}
 			}
 			else if(!found)
@@ -1181,6 +1201,15 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	*/
 	
+	if(f_EmpowerStateOther[attacker] > GetGameTime()) //Allow stacking.
+	{
+		damage *= 1.1;
+	}
+	if(f_EmpowerStateSelf[attacker] > GetGameTime()) //Allow stacking.
+	{
+		damage *= 1.15;
+	}
+
 	if(f_HighTeslarDebuff[victim] > GetGameTime())
 	{
 		damage *= 1.25;

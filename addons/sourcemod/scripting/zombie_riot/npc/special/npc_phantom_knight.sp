@@ -77,6 +77,7 @@ static bool b_IsPhantomFake[MAXENTITIES];
 static float f_AttackHappensAoe[MAXENTITIES];
 static float f_StareAtEnemy[MAXENTITIES];
 static int i_PhantomsSpawned[MAXENTITIES];
+static bool b_WasAHeadShot[MAXENTITIES];
 
 methodmap PhantomKnight < CClotBody
 {
@@ -173,6 +174,7 @@ methodmap PhantomKnight < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flDoingAnimation = 0.0;
 		npc.m_fbRangedSpecialOn = false;
+		npc.m_bDissapearOnDeath = true;
 
 		f_AttackHappensAoe[npc.index] = 0.0;
 		b_IsPhantomFake[npc.index] = false;
@@ -180,9 +182,11 @@ methodmap PhantomKnight < CClotBody
 		i_PhantomsSpawned[npc.index] = 0; 
 
 		npc.m_flMeleeArmor = 1.25; 		//Melee should be rewarded for trying to face this monster
-		npc.m_flRangedArmor = 0.75;		//Due to his speed, ranged will deal less
+	//	npc.m_flRangedArmor = 0.75;		//Due to his speed, ranged will deal less
+	//Ranged can now be dodged slightly, which is cooler then this lame reduction.
 		
 		
+		SDKHook(npc.index, SDKHook_TraceAttack, PhantomKnight_TraceAttack);
 		SDKHook(npc.index, SDKHook_OnTakeDamage, PhantomKnight_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, PhantomKnight_ClotThink);
 		
@@ -246,14 +250,22 @@ public void PhantomKnight_ClotThink(int iNPC)
 	
 	static int NoEnemyFound;
 	npc.Update();	
-	/*
-	if(npc.m_blPlayHurtAnimation)
+
+	if(npc.m_blPlayHurtAnimation && npc.m_flDoingAnimation < gameTime) //Dont play dodge anim if we are in an animation.
 	{
-		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
+		if(b_WasAHeadShot[npc.index])
+		{
+			npc.RemoveGesture("ACT_CUSTOM_DODGE_LUCIAN");
+			npc.AddGesture("ACT_CUSTOM_DODGE_HEADSHOT_LUCIAN", false);
+		}
+		else
+		{
+			npc.RemoveGesture("ACT_CUSTOM_DODGE_HEADSHOT_LUCIAN");
+			npc.AddGesture("ACT_CUSTOM_DODGE_LUCIAN", false);
+		}
 		npc.m_blPlayHurtAnimation = false;
-//		npc.PlayHurtSound();
 	}
-	*/
+
 	if(npc.m_flNextThinkTime > gameTime)
 	{
 		return;
@@ -266,7 +278,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
-	
+
 	
 	if(!npc.m_bisWalking) //Dont move, or path. so that he doesnt rotate randomly.
 	{
@@ -425,6 +437,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 					if(npc.m_iChanged_WalkCycle != 3) 	
 					{
 						npc.m_iChanged_WalkCycle = 3;
+						npc.RemoveGesture("ACT_CUSTOM_DODGE_HEADSHOT_LUCIAN");
+						npc.RemoveGesture("ACT_CUSTOM_DODGE_LUCIAN");
 						npc.SetActivity("ACT_CUSTOM_ATTACK_LUCIAN");
 					}
 
@@ -461,6 +475,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 					if(npc.m_iChanged_WalkCycle != 2) 	
 					{
 						npc.m_iChanged_WalkCycle = 2;
+						npc.RemoveGesture("ACT_CUSTOM_DODGE_HEADSHOT_LUCIAN");
+						npc.RemoveGesture("ACT_CUSTOM_DODGE_LUCIAN");
 						npc.SetActivity("ACT_CUSTOM_AOE_LUCIAN");
 					}
 					
@@ -533,6 +549,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 					if(npc.m_iChanged_WalkCycle != 1) 	
 					{
 						npc.m_iChanged_WalkCycle = 1;
+						npc.RemoveGesture("ACT_CUSTOM_DODGE_HEADSHOT_LUCIAN");
+						npc.RemoveGesture("ACT_CUSTOM_DODGE_LUCIAN");
 						npc.SetActivity("ACT_CUSTOM_TELEPORT_LUCIAN");
 					}
 					npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
@@ -602,21 +620,42 @@ public Action PhantomKnight_ClotDamaged(int victim, int &attacker, int &inflicto
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	PhantomKnight npc = view_as<PhantomKnight>(victim);
+//	PhantomKnight npc = view_as<PhantomKnight>(victim);
 	/*
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker, true))
 		return Plugin_Continue;
 	*/
-	
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
-	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
-	}
 		
-	return Plugin_Changed;
+	return Plugin_Continue;
 }
 
+public Action PhantomKnight_TraceAttack(int victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
+{
+	PhantomKnight npc = view_as<PhantomKnight>(victim);
+
+	if(npc.m_flDoingAnimation < GetGameTime(npc.index))
+	{
+		if(hitgroup == HITGROUP_HEAD)
+		{
+			if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+			{
+				b_WasAHeadShot[victim] = true;
+				npc.m_flHeadshotCooldown = GetGameTime(npc.index) + 1.0;
+				npc.m_blPlayHurtAnimation = true;
+			}
+		}
+		else
+		{
+			if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+			{
+				b_WasAHeadShot[victim] = false;
+				npc.m_flHeadshotCooldown = GetGameTime(npc.index) + 1.0;
+				npc.m_blPlayHurtAnimation = true;
+			}	
+		}
+	}
+	return Plugin_Continue;
+}
 public void PhantomKnight_NPCDeath(int entity)
 {
 	PhantomKnight npc = view_as<PhantomKnight>(entity);
@@ -635,7 +674,107 @@ public void PhantomKnight_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
+
+
+	int entity_death = CreateEntityByName("prop_dynamic_override");
+	if(IsValidEntity(entity_death))
+	{
+		PhantomKnight prop = view_as<PhantomKnight>(entity_death);
+		float pos[3];
+		float Angles[3];
+		GetEntPropVector(entity, Prop_Data, "m_angRotation", Angles);
+
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
+		
+//		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
+		DispatchKeyValue(entity_death, "model", COMBINE_CUSTOM_MODEL);
+
+		DispatchSpawn(entity_death);
+		
+
+		SetEntityRenderMode(prop.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(prop.index, 200, 200, 200, 255);
+
+		prop.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
+		SetVariantString("0.7");
+		AcceptEntityInput(prop.m_iWearable1, "SetModelScale");
+		//sword
+
+		prop.m_iWearable3 = prop.EquipItem("partyhat", "models/workshop/player/items/medic/hw2013_shamans_skull/hw2013_shamans_skull.mdl"
+		,_,_, 2.0);
+		//face
+
+	//	SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+	//	SetEntityRenderColor(npc.m_iWearable3, 130, 130, 130, 255);
+
+		prop.m_iWearable2 = prop.EquipItem("forward", "models/workshop/player/items/soldier/sf14_hellhunters_headpiece/sf14_hellhunters_headpiece.mdl",_,_, 1.2);
+		//Hat
+
+		SetEntityRenderMode(prop.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(prop.m_iWearable2, 255, 200, 200, 255);
+
+
+		prop.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/soldier/bak_caped_crusader/bak_caped_crusader.mdl");
+		SetVariantString("1.2");
+		AcceptEntityInput(prop.m_iWearable4, "SetModelScale");
+
+		SetEntityRenderMode(prop.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(prop.m_iWearable4, 255, 150, 150, 255);
+		//Cape
+
+		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15); 
+		SetEntityCollisionGroup(entity_death, 2);
+		b_IsPhantomFake[entity_death] = b_IsPhantomFake[entity];
+
+		if(b_IsPhantomFake[entity_death])
+		{
+			CreateTimer(0.7, Timer_RemoveEntity, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(0.4, Timer_PhantomParticle, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(0.7, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable1), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(0.7, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable2), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(0.7, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(0.7, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable4), TIMER_FLAG_NO_MAPCHANGE);
+			SetVariantString("Lucian_Death_Fake");
+		}	
+		else
+		{
+			CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(2.9, Timer_PhantomParticle, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable1), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable2), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable4), TIMER_FLAG_NO_MAPCHANGE);
+			SetVariantString("Lucian_Death_Real");
+		}
+		AcceptEntityInput(entity_death, "SetAnimation");
+
+	}
+
+	Citizen_MiniBossDeath(entity);
 }
+
+public Action Timer_PhantomParticle(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		float pos[3];
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+	//	pos[2] = 30.0;
+		if(b_IsPhantomFake[entity])
+		{
+			TE_Particle("mvm_cash_explosion_smoke", pos, NULL_VECTOR, NULL_VECTOR, entity, _, _, _, _, _, _, _, _, _, 0.0);
+		}
+		else
+		{
+			pos[2] += 30.0;
+			TE_Particle("drg_cow_explosioncore_normal", pos, NULL_VECTOR, NULL_VECTOR, entity, _, _, _, _, _, _, _, _, _, 0.0);
+		}
+	}
+	return Plugin_Handled;
+}
+
 
 static char[] GetLucianHealth()
 {
