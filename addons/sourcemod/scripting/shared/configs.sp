@@ -19,6 +19,8 @@ static ArrayList WeaponList;
 public void Configs_ConfigsExecuted()
 {
 	char buffer[PLATFORM_MAX_PATH];
+
+#if defined ZR
 	KeyValues kv;
 
 	if(!zr_ignoremapconfig.BoolValue)
@@ -56,13 +58,17 @@ public void Configs_ConfigsExecuted()
 			LogError("[Config] Directory '%s' does not exist", buffer);
 		}
 	}
+#endif
 	
 	Store_ConfigSetup();
+
+#if defined ZR
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
 	if(kv)
 		delete kv;
-	
+#endif
+
 	if(WeaponList)
 		delete WeaponList;
 	
@@ -355,6 +361,7 @@ void Config_CreateDescription(const char[] classname, const int[] attrib, const 
 	}
 }
 
+#if defined ZR
 bool Config_CreateNPCStats(const char[] classname, const int[] attrib, const float[] value, int attribs, WeaponData data)
 {
 	int i;
@@ -537,3 +544,4 @@ bool Config_CreateNPCStats(const char[] classname, const int[] attrib, const flo
 	}
 	return true;
 }
+#endif	// ZR

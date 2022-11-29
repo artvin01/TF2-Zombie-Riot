@@ -55,6 +55,7 @@
 
 //Comment this out, and reload the plugin once ingame if you wish to have infinite cash.
 
+public const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 
 ConVar CvarNoRoundStart;
 ConVar CvarDisableThink;
@@ -195,6 +196,8 @@ bool EscapeMode;
 bool EscapeModeForNpc;
 bool DoingLagCompensation;
 
+float f_BotDelayShow[MAXTF2PLAYERS];
+
 //bool RaidMode; 							//Is this raidmode?
 float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
 float RaidModeTime = 0.0;
@@ -204,6 +207,7 @@ int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes,
 float Medival_Difficulty_Level = 0.0;	
 int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 
+float f_OneShotProtectionTimer[MAXTF2PLAYERS];
 
 int CurrentPlayers;
 int PlayersAliveScaling;
@@ -215,7 +219,7 @@ ConVar CvarMpSolidObjects; //mp_solidobjects
 //ConVar CvarSvRollspeed; // sv_rollspeed 
 ConVar CvarSvRollagle; // sv_rollangle
 ConVar CvarTfMMMode; // tf_mm_servermode
-Handle sv_cheats;
+ConVar sv_cheats;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie CookieXP;
 Cookie CookieScrap;
@@ -224,12 +228,21 @@ Cookie Niko_Cookies;
 Cookie CookieCache;
 ArrayList Loadouts[MAXTF2PLAYERS];
 
+float f_RingDelayGift[MAXENTITIES];
+
 //custom wave music.
 char char_MusicString1[256];
 int i_MusicLength1;
 char char_MusicString2[256];
 int i_MusicLength2;
 //custom wave music.
+
+bool b_LagCompNPC_No_Layers;
+bool b_LagCompNPC_AwayEnemies;
+bool b_LagCompNPC_ExtendBoundingBox;
+bool b_LagCompNPC_BlockInteral;
+
+bool b_LagCompAlliedPlayers; //Make sure this actually compensates allies.
 
 float f_DelaySpawnsForVariousReasons;
 int CurrentRound;
@@ -255,6 +268,26 @@ bool thirdperson[MAXTF2PLAYERS];
 bool WaitingInQueue[MAXTF2PLAYERS];
 int dieingstate[MAXTF2PLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
+
+#define SF2_PLAYER_VIEWBOB_TIMER 10.0
+#define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
+#define SF2_PLAYER_VIEWBOB_SCALE_Y 0.0
+#define SF2_PLAYER_VIEWBOB_SCALE_Z 0.0
+
+float Armor_regen_delay[MAXTF2PLAYERS];
+float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
+//float Check_Standstill_Delay[MAXTF2PLAYERS];
+//bool Check_Standstill_Applied[MAXTF2PLAYERS];
+
+float max_mana[MAXTF2PLAYERS];
+float mana_regen[MAXTF2PLAYERS];
+bool has_mage_weapon[MAXTF2PLAYERS];
+
+int i_SvRollAngle[MAXTF2PLAYERS];
+
+Handle SyncHud_ArmorCounter;
+
+int i_WhatLevelForHudIsThisClientAt[MAXTF2PLAYERS];
 
 //bool Wand_Fired;
 
@@ -512,6 +545,10 @@ Function EntityFuncReload4[MAXENTITIES];
 int i_assist_heal_player[MAXTF2PLAYERS];
 float f_assist_heal_player_time[MAXTF2PLAYERS];
 
+float GlobalCheckDelayAntiLagPlayerScale;
+bool AllowSpecialSpawns;
+int LimitNpcs;
+
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -571,6 +608,110 @@ int i_AmountDowned[MAXPLAYERS+1];
 
 bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
 
+float Building_Collect_Cooldown[MAXENTITIES][MAXTF2PLAYERS];
+
+float f_CooldownForHurtHud[MAXPLAYERS];	
+//Otherwise we get kicks if there is too much hurting going on.
+
+Address g_hSDKStartLagCompAddress;
+Address g_hSDKEndLagCompAddress;
+bool g_GottenAddressesForLagComp;
+
+#define ZR_ApplyKillEffects NPC_DeadEffects
+#define ZR_GetWaveCount Waves_GetRound
+
+StringMap HookIdMap;
+StringMap HookListMap;
+
+//Handle g_hSDKIsClimbingOrJumping;
+//SDKCalls
+Handle g_hUpdateCollisionBox;
+Handle g_hMyNextBotPointer;
+Handle g_hGetLocomotionInterface;
+Handle g_hGetIntentionInterface;
+Handle g_hGetBodyInterface;
+//Handle g_hGetVisionInterface;
+//Handle g_hGetPrimaryKnownThreat;
+//Handle g_hAddKnownEntity;
+//Handle g_hGetKnownEntity;
+//Handle g_hGetKnown;
+//Handle g_hUpdatePosition;
+//Handle g_hUpdateVisibilityStatus;
+Handle g_hRun;
+Handle g_hApproach;
+Handle g_hFaceTowards;
+Handle g_hGetVelocity;
+Handle g_hSetVelocity;
+Handle g_hStudioFrameAdvance;
+Handle g_hJump;
+Handle g_hSDKIsOnGround;
+//DynamicHook g_hAlwaysTransmit;
+// Handle g_hJumpAcrossGap;
+Handle g_hDispatchAnimEvents;
+Handle g_hGetMaxAcceleration;
+Handle g_hGetGroundSpeed;
+Handle g_hGetVectors;
+Handle g_hGetGroundMotionVector;
+Handle g_hLookupPoseParameter;
+Handle g_hSetPoseParameter;
+Handle g_hGetPoseParameter;
+Handle g_hLookupActivity;
+Handle g_hSDKWorldSpaceCenter;
+Handle g_hStudio_FindAttachment;
+Handle g_hGetAttachment;
+Handle g_hAddGesture;
+Handle g_hRemoveGesture;
+Handle g_hRestartGesture;
+Handle g_hIsPlayingGesture;
+Handle g_hFindBodygroupByName;
+Handle g_hSetBodyGroup;
+Handle g_hSelectWeightedSequence;
+Handle g_hResetSequenceInfo;
+
+//Death
+Handle g_hNextBotCombatCharacter_Event_Killed;
+Handle g_hCBaseCombatCharacter_Event_Killed;
+
+//PluginBot SDKCalls
+Handle g_hGetEntity;
+Handle g_hGetBot;
+
+//DHooks
+//Handle g_hGetCurrencyValue;
+Handle g_hEvent_Killed;
+Handle g_hEvent_Ragdoll;
+Handle g_hHandleAnimEvent;
+Handle g_hGetFrictionSideways;
+Handle g_hGetStepHeight;
+Handle g_hGetGravity;
+Handle g_hGetRunSpeed;
+Handle g_hGetGroundNormal;
+Handle g_hShouldCollideWithAlly;
+Handle g_hShouldCollideWithAllyInvince;
+Handle g_hShouldCollideWithAllyEnemy;
+Handle g_hShouldCollideWithAllyEnemyIngoreBuilding;
+Handle g_hGetSolidMask;
+Handle g_hStartActivity;
+Handle g_hGetActivity;
+Handle g_hIsActivity;
+Handle g_hGetHullWidth;
+Handle g_hGetHullHeight;
+Handle g_hGetStandHullHeight;
+Handle g_hGetHullWidthGiant;
+Handle g_hGetHullHeightGiant;
+Handle g_hGetStandHullHeightGiant;
+
+//NavAreas
+Address TheNavAreas;
+Address navarea_count;
+
+DynamicHook g_DHookRocketExplode; //from mikusch but edited
+DynamicHook g_DHookMedigunPrimary; 
+
+Handle g_hSDKMakeCarriedObjectDispenser;
+Handle g_hSDKMakeCarriedObjectSentry;
+Handle gH_BotAddCommand = INVALID_HANDLE;
+
 bool b_SpecialGrigoriStore;
 float f_ExtraDropChanceRarity = 1.0;
 
@@ -581,8 +722,333 @@ bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 bool applied_lastmann_buffs_once = false;
 
+float played_headshotsound_already [MAXTF2PLAYERS];
+
+int played_headshotsound_already_Case [MAXTF2PLAYERS];
+int played_headshotsound_already_Pitch [MAXTF2PLAYERS];
+
+float f_IsThisExplosiveHitscan[MAXENTITIES];
+float f_CustomGrenadeDamage[MAXENTITIES];
+
+float f_TraceAttackWasTriggeredSameFrame[MAXENTITIES];
+
+enum
+{
+	STEPTYPE_NORMAL = 1,	
+	STEPTYPE_COMBINE = 2,	
+	STEPTYPE_PANZER = 3,
+	STEPTYPE_COMBINE_METRO = 4,
+	STEPTYPE_TANK = 5,
+	STEPTYPE_ROBOT = 6
+}
+
+enum
+{
+	STEPSOUND_NORMAL = 1,	
+	STEPSOUND_GIANT = 2,	
+}
+
+enum
+{
+	BLEEDTYPE_NORMAL = 1,	
+	BLEEDTYPE_METAL = 2,	
+	BLEEDTYPE_RUBBER = 3,	
+	BLEEDTYPE_XENO = 4,
+	BLEEDTYPE_SKELETON = 5
+}
+
+//#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_59.mdl"
+
+//This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_175.mdl"
+
+#define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
+
+#define DEFAULT_HURTDELAY 0.35 //Make it 0 for now
+
+
+#define RAD2DEG(%1) ((%1) * (180.0 / FLOAT_PI))
+#define DEG2RAD(%1) ((%1) * FLOAT_PI / 180.0)
+
+#define EF_BONEMERGE		(1 << 0)
+#define EF_PARENT_ANIMATES	(1 << 9)
+
+#define	SHAKE_START					0			// Starts the screen shake for all players within the radius.
+#define	SHAKE_STOP					1			// Stops the screen shake for all players within the radius.
+#define	SHAKE_AMPLITUDE				2			// Modifies the amplitude of an active screen shake for all players within the radius.
+#define	SHAKE_FREQUENCY				3			// Modifies the frequency of an active screen shake for all players within the radius.
+#define	SHAKE_START_RUMBLEONLY		4			// Starts a shake effect that only rumbles the controller, no screen effect.
+#define	SHAKE_START_NORUMBLE		5			// Starts a shake that does NOT rumble the controller.
+
+#define GORE_ABDOMEN	  (1 << 0)
+#define GORE_FOREARMLEFT  (1 << 1)
+#define GORE_HANDRIGHT	(1 << 2)
+#define GORE_FOREARMRIGHT (1 << 3)
+#define GORE_HEAD		 (1 << 4)
+#define GORE_HEADLEFT	 (1 << 5)
+#define GORE_HEADRIGHT	(1 << 6)
+#define GORE_UPARMLEFT	(1 << 7)
+#define GORE_UPARMRIGHT   (1 << 8)
+#define GORE_HANDLEFT	 (1 << 9)
+
+#define MAXENTITIES	2048
+
+//I put these here so we can change them on fly if we need to, cus zombies can be really loud, or quiet.
+
+#define NORMAL_ZOMBIE_SOUNDLEVEL	 80
+#define NORMAL_ZOMBIE_VOLUME	 0.9
+
+#define BOSS_ZOMBIE_SOUNDLEVEL	 90
+#define BOSS_ZOMBIE_VOLUME	 1.0
+
+#define RAIDBOSS_ZOMBIE_SOUNDLEVEL	 95
+#define RAIDBOSSBOSS_ZOMBIE_VOLUME	 1.0
+
+#define ARROW_TRAIL "effects/arrowtrail_blu.vmt"
+#define ARROW_TRAIL_RED "effects/arrowtrail_red.vmt"
+
+char g_ArrowHitSoundSuccess[][] = {
+	"weapons/fx/rics/arrow_impact_flesh.wav",
+	"weapons/fx/rics/arrow_impact_flesh2.wav",
+	"weapons/fx/rics/arrow_impact_flesh3.wav",
+	"weapons/fx/rics/arrow_impact_flesh4.wav",
+};
+
+char g_ArrowHitSoundMiss[][] = {
+	"weapons/fx/rics/arrow_impact_concrete.wav",
+	"weapons/fx/rics/arrow_impact_concrete2.wav",
+	"weapons/fx/rics/arrow_impact_concrete4.wav",
+};
+
+char g_GibSound[][] = {
+	"physics/flesh/flesh_squishy_impact_hard1.wav",
+	"physics/flesh/flesh_squishy_impact_hard2.wav",
+	"physics/flesh/flesh_squishy_impact_hard3.wav",
+	"physics/flesh/flesh_squishy_impact_hard4.wav",
+	"physics/flesh/flesh_bloody_break.wav",
+};
+char g_GibEating[][] = {
+	"physics/flesh/flesh_squishy_impact_hard1.wav",
+	"physics/flesh/flesh_squishy_impact_hard2.wav",
+	"physics/flesh/flesh_squishy_impact_hard3.wav",
+	"physics/flesh/flesh_squishy_impact_hard4.wav",
+};
+
+char g_GibSoundMetal[][] = {
+	"ui/item_metal_pot_drop.wav",
+	"ui/item_metal_scrap_drop.wav",
+	"ui/item_metal_scrap_pickup.wav",
+	"ui/item_metal_scrap_pickup.wav",
+	"ui/item_metal_weapon_drop.wav",
+};
+
+char g_CombineSoldierStepSound[][] = {
+	"npc/combine_soldier/gear1.wav",
+	"npc/combine_soldier/gear2.wav",
+	"npc/combine_soldier/gear3.wav",
+	"npc/combine_soldier/gear4.wav",
+	"npc/combine_soldier/gear5.wav",
+	"npc/combine_soldier/gear6.wav",
+};
+
+char g_CombineMetroStepSound[][] = {
+	"npc/metropolice/gear1.wav",
+	"npc/metropolice/gear2.wav",
+	"npc/metropolice/gear3.wav",
+	"npc/metropolice/gear4.wav",
+	"npc/metropolice/gear5.wav",
+	"npc/metropolice/gear6.wav",
+};
+
+char g_PanzerStepSound[][] = {
+	"mvm/giant_common/giant_common_step_01.wav",
+	"mvm/giant_common/giant_common_step_02.wav",
+	"mvm/giant_common/giant_common_step_03.wav",
+	"mvm/giant_common/giant_common_step_04.wav",
+	"mvm/giant_common/giant_common_step_05.wav",
+	"mvm/giant_common/giant_common_step_06.wav",
+	"mvm/giant_common/giant_common_step_07.wav",
+	"mvm/giant_common/giant_common_step_08.wav",
+};
+
+char g_RobotStepSound[][] = {
+	"mvm/player/footsteps/robostep_01.wav",
+	"mvm/player/footsteps/robostep_02.wav",
+	"mvm/player/footsteps/robostep_03.wav",
+	"mvm/player/footsteps/robostep_04.wav",
+	"mvm/player/footsteps/robostep_05.wav",
+	"mvm/player/footsteps/robostep_06.wav",
+	"mvm/player/footsteps/robostep_07.wav",
+	"mvm/player/footsteps/robostep_08.wav",
+	"mvm/player/footsteps/robostep_09.wav",
+	"mvm/player/footsteps/robostep_10.wav",
+	"mvm/player/footsteps/robostep_11.wav",
+	"mvm/player/footsteps/robostep_12.wav",
+	"mvm/player/footsteps/robostep_13.wav",
+	"mvm/player/footsteps/robostep_14.wav",
+	"mvm/player/footsteps/robostep_15.wav",
+	"mvm/player/footsteps/robostep_16.wav",
+	"mvm/player/footsteps/robostep_17.wav",
+	"mvm/player/footsteps/robostep_18.wav",
+
+};
+
+char g_TankStepSound[][] = {
+	"infected_riot/tank/tank_walk_1.mp3",
+};
+
+float f_ArrowDamage[MAXENTITIES];
+int f_ArrowTrailParticle[MAXENTITIES]={INVALID_ENT_REFERENCE, ...};
+
+//Arrays for npcs!
+bool b_DissapearOnDeath[MAXENTITIES];
+bool b_IsGiant[MAXENTITIES];
+bool b_Pathing[MAXENTITIES];
+bool b_Jumping[MAXENTITIES];
+bool b_AllowBackWalking[MAXENTITIES];
+float fl_JumpStartTime[MAXENTITIES];
+float fl_JumpCooldown[MAXENTITIES];
+float fl_NextThinkTime[MAXENTITIES];
+float fl_NextRunTime[MAXENTITIES];
+float fl_NextMeleeAttack[MAXENTITIES];
+float fl_Speed[MAXENTITIES];
+int i_Target[MAXENTITIES];
+float fl_GetClosestTargetTime[MAXENTITIES];
+float fl_NextHurtSound[MAXENTITIES];
+float fl_HeadshotCooldown[MAXENTITIES];
+bool b_CantCollidie[MAXENTITIES];
+bool b_CantCollidieAlly[MAXENTITIES];
+bool b_BuildingIsStacked[MAXENTITIES];
+bool b_bBuildingIsPlaced[MAXENTITIES];
+bool b_XenoInfectedSpecialHurt[MAXENTITIES];
+float fl_XenoInfectedSpecialHurtTime[MAXENTITIES];
+bool b_DoGibThisNpc[MAXENTITIES];
+int i_TeamGlow[MAXENTITIES]={-1, ...};
+
+int i_SpawnProtectionEntity[MAXENTITIES]={-1, ...};
+float f3_VecPunchForce[MAXENTITIES][3];
+float fl_NextDelayTime[MAXENTITIES];
+float fl_NextIdleSound[MAXENTITIES];
+float fl_AttackHappensMinimum[MAXENTITIES];
+float fl_AttackHappensMaximum[MAXENTITIES];
+bool b_AttackHappenswillhappen[MAXENTITIES];
+bool b_thisNpcIsABoss[MAXENTITIES];
+bool b_StaticNPC[MAXENTITIES];
+float f3_VecTeleportBackSave[MAXENTITIES][3];
+float f3_VecTeleportBackSaveJump[MAXENTITIES][3];
+bool b_NPCVelocityCancel[MAXENTITIES];
+float fl_DoSpawnGesture[MAXENTITIES];
+bool b_isWalking[MAXENTITIES];
+int i_StepNoiseType[MAXENTITIES];
+int i_NpcStepVariation[MAXENTITIES];
+int i_BleedType[MAXENTITIES];
+int i_State[MAXENTITIES];
+bool b_movedelay[MAXENTITIES];
+float fl_NextRangedAttack[MAXENTITIES];
+int i_AttacksTillReload[MAXENTITIES];
+bool b_Gunout[MAXENTITIES];
+float fl_ReloadDelay[MAXENTITIES];
+float fl_InJump[MAXENTITIES];
+float fl_DoingAnimation[MAXENTITIES];
+float fl_NextRangedBarrage_Spam[MAXENTITIES];
+float fl_NextRangedBarrage_Singular[MAXENTITIES];
+bool b_NextRangedBarrage_OnGoing[MAXENTITIES];
+float fl_NextTeleport[MAXENTITIES];
+bool b_Anger[MAXENTITIES];
+float fl_NextRangedSpecialAttack[MAXENTITIES];
+bool b_RangedSpecialOn[MAXENTITIES];
+float fl_RangedSpecialDelay[MAXENTITIES];
+float fl_movedelay[MAXENTITIES];
+float fl_NextChargeSpecialAttack[MAXENTITIES];
+float fl_AngerDelay[MAXENTITIES];
+bool b_FUCKYOU[MAXENTITIES];
+bool b_FUCKYOU_move_anim[MAXENTITIES];
+bool b_healing[MAXENTITIES];
+bool b_new_target[MAXENTITIES];
+float fl_ReloadIn[MAXENTITIES];
+int i_TimesSummoned[MAXENTITIES];
+float fl_AttackHappens_2[MAXENTITIES];
+float fl_Charge_delay[MAXENTITIES];
+float fl_Charge_Duration[MAXENTITIES];
+bool b_movedelay_gun[MAXENTITIES];
+bool b_Half_Life_Regen[MAXENTITIES];
+float fl_Dead_Ringer_Invis[MAXENTITIES];
+float fl_Dead_Ringer[MAXENTITIES];
+bool b_Dead_Ringer_Invis_bool[MAXENTITIES];
+int i_AttacksTillMegahit[MAXENTITIES];
+
+float fl_NextFlameSound[MAXENTITIES];
+float fl_FlamerActive[MAXENTITIES];
+bool b_DoSpawnGesture[MAXENTITIES];
+bool b_LostHalfHealth[MAXENTITIES];
+bool b_LostHalfHealthAnim[MAXENTITIES];
+bool b_DuringHighFlight[MAXENTITIES];
+bool b_DuringHook[MAXENTITIES];
+bool b_GrabbedSomeone[MAXENTITIES];
+bool b_UseDefaultAnim[MAXENTITIES];
+bool b_FlamerToggled[MAXENTITIES];
+float fl_WaveScale[MAXENTITIES];
+float fl_StandStill[MAXENTITIES];
+float fl_GrappleCooldown[MAXENTITIES];
+float fl_HookDamageTaken[MAXENTITIES];
+
+bool b_PlayHurtAnimation[MAXENTITIES];
+bool b_follow[MAXENTITIES];
+bool b_movedelay_walk[MAXENTITIES];
+bool b_movedelay_run[MAXENTITIES];
+bool b_IsFriendly[MAXENTITIES];
+bool b_stand_still[MAXENTITIES];
+bool b_Reloaded[MAXENTITIES];
+float fl_Following_Master_Now[MAXENTITIES];
+float fl_DoingSpecial[MAXENTITIES];
+float fl_ComeToMe[MAXENTITIES];
+int i_MedkitAnnoyance[MAXENTITIES];
+float fl_idle_talk[MAXENTITIES];
+float fl_heal_cooldown[MAXENTITIES];
+float fl_Hurtie[MAXENTITIES];
+float fl_ExtraDamage[MAXENTITIES];
+int i_Changed_WalkCycle[MAXENTITIES];
+bool b_WasSadAlready[MAXENTITIES];
+int i_TargetAlly[MAXENTITIES];
+bool b_GetClosestTargetTimeAlly[MAXENTITIES];
+float fl_Duration[MAXENTITIES];
+int i_OverlordComboAttack[MAXENTITIES];
+
+int i_Activity[MAXENTITIES];
+int i_PoseMoveX[MAXENTITIES];
+int i_PoseMoveY[MAXENTITIES];
+//Arrays for npcs!
+bool b_bThisNpcGotDefaultStats_INVERTED[MAXENTITIES];
+float b_isGiantWalkCycle[MAXENTITIES];
+
+bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
+int i_CreditsOnKill[MAXENTITIES];
+
+int i_InSafeZone[MAXENTITIES];
+float fl_MeleeArmor[MAXENTITIES];
+float fl_RangedArmor[MAXENTITIES];
+
+bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
+
+float f_StuckOutOfBoundsCheck[MAXENTITIES];
+
+bool EscapeModeMap;
+int g_particleImpactMetal;
+
+char c_HeadPlaceAttachmentGibName[MAXENTITIES][64];
+
+/*
+	Above Are Variables/Defines That Are Shared
+
+	Below Are Shared Overrides
+*/
+
 #include "shared/stocks_override.sp"
-#include "shared/stocks.sp"
+#include "shared/npc_stats.sp"	// NPC Stats is required here due to important methodmap
+
+/*
+	Below Are Variables/Defines That Are Per Gamemode
+*/
 
 #if defined ZR
 #include "zombie_riot/zr_core.sp"
@@ -592,20 +1058,23 @@ bool applied_lastmann_buffs_once = false;
 #include "rpg_fortress/rpg_core.sp"
 #endif
 
+/*
+	Below Are Non-Shared Variables/Defines
+*/
+
 #include "shared/attributes.sp"
 #include "shared/buildonbuilding.sp"
 #include "shared/commands.sp"
 #include "shared/configs.sp"
 #include "shared/convars.sp"
 #include "shared/custom_melee_logic.sp"
-#include "shared/database.sp"
 #include "shared/dhooks.sp"
 #include "shared/events.sp"
 #include "shared/npcs.sp"
 #include "shared/npc_death_showing.sp"
-#include "shared/npc_stats.sp"
 #include "shared/sdkcalls.sp"
 #include "shared/sdkhooks.sp"
+#include "shared/stocks.sp"
 #include "shared/store.sp"
 #include "shared/thirdperson.sp"
 #include "shared/viewchanges.sp"
@@ -627,6 +1096,8 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 {
 	MarkNativeAsOptional("FuncToVal");
 	CreateNative("FuncToVal", Native_FuncToVal);
+	CreateNative("ZR_ApplyKillEffects", Native_ApplyKillEffects);
+	CreateNative("ZR_GetLevelCount", Native_GetLevelCount);
 	
 	Thirdperson_PluginLoad();
 	
@@ -696,10 +1167,10 @@ public void OnPluginStart()
 		CvarTfMMMode.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
 	
-	ConVar cvar = FindConVar("tf_bot_count");
-	cvar.Flags &= ~FCVAR_NOTIFY;
-	
-	sv_cheats &= ~FCVAR_NOTIFY;
+	FindConVar("tf_bot_count").Flags &= ~FCVAR_NOTIFY;
+	FindConVar("sv_tags").Flags &= ~FCVAR_NOTIFY;
+
+	sv_cheats.Flags &= ~FCVAR_NOTIFY;
 	
 	Niko_Cookies = new Cookie("zr_niko", "Are you a niko", CookieAccess_Protected);
 	
@@ -717,7 +1188,6 @@ public void OnPluginStart()
 	NPC_PluginStart();
 	SDKHook_PluginStart();
 	Thirdperson_PluginStart();
-	Database_PluginStart();
 //	Building_PluginStart();
 #if defined LagCompensation
 	OnPluginStart_LagComp();
@@ -985,11 +1455,6 @@ public Action Command_ToggleReload(int client, int args)
 	}
 	return Plugin_Handled;
 }
-
-public void OnClientAuthorized(int client)
-{
-	Database_ClientAuthorized(client);
-}
 				
 public void OnClientPutInServer(int client)
 {
@@ -1210,7 +1675,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 			EndPlayerOnlyLagComp(client);
 			
-			if(weapon_holding != -1))
+			if(weapon_holding != -1)
 			{
 				if(EntityFuncAttack3[weapon_holding] && EntityFuncAttack3[weapon_holding]!=INVALID_FUNCTION)
 				{
@@ -1251,7 +1716,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		holding[client] = IN_ATTACK3;
 		
-#if define ZR
+#if defined ZR
 		if(TeutonType[client] == TEUTON_NONE)
 #endif
 		{
@@ -2274,11 +2739,6 @@ public any Native_ApplyKillEffects(Handle plugin, int numParams)
 {
 	NPC_DeadEffects(GetNativeCell(1));
 	return Plugin_Handled;
-}
-
-public any Native_GetWaveCounts(Handle plugin, int numParams)
-{
-	return CurrentRound;
 }
 
 public any Native_GetLevelCount(Handle plugin, int numParams)

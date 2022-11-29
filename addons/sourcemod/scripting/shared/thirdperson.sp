@@ -67,7 +67,6 @@ void Thirdperson_PlayerSpawn(int client)
 			CreateTimer(0.1, Timer_EnableFp, GetClientUserId(client));			// Fixes a bug where sometimes you get stuck in first person, by forcing this mode.
 		}
 	}
-	return Plugin_Handled;
 }
 
 public Action Timer_EnableFp(Handle timer, any userid)

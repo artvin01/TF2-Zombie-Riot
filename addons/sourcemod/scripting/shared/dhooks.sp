@@ -9,42 +9,25 @@ static bool IsRespawning;
 
 static DynamicHook g_WrenchSmack;
 
-DynamicDetour gH_MaintainBotQuota = null;
+static DynamicDetour gH_MaintainBotQuota = null;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
-DynamicHook g_DHookRocketExplode; //from mikusch but edited
-DynamicHook g_DHookFireballExplode; //from mikusch but edited
-DynamicHook g_DHookMedigunPrimary; 
-DynamicHook g_DHookScoutSecondaryFire; 
+static DynamicHook g_DHookFireballExplode; //from mikusch but edited
+static DynamicHook g_DHookScoutSecondaryFire; 
 
-DynamicDetour g_CalcPlayerScore;
+static DynamicDetour g_CalcPlayerScore;
 
-Handle g_detour_CTFGrenadePipebombProjectile_PipebombTouch;
-
-
-Address g_hSDKStartLagCompAddress;
-Address g_hSDKEndLagCompAddress;
-bool g_GottenAddressesForLagComp;
-
-float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
-
+static Handle g_detour_CTFGrenadePipebombProjectile_PipebombTouch;
 
 static bool Dont_Move_Building;											//dont move buildings
 static bool Dont_Move_Allied_Npc;											//dont move buildings	
 
 static bool b_LagCompNPC;
-bool b_LagCompNPC_No_Layers;
-bool b_LagCompNPC_AwayEnemies;
-bool b_LagCompNPC_ExtendBoundingBox;
-bool b_LagCompNPC_BlockInteral;
-
-bool b_LagCompAlliedPlayers; //Make sure this actually compensates allies.
-
 
 /*
 // Offsets from mikusch but edited
-int g_OffsetWeaponMode;
-int g_OffsetWeaponInfo;
-int g_OffsetWeaponPunchAngle;
+static int g_OffsetWeaponMode;
+static int g_OffsetWeaponInfo;
+static int g_OffsetWeaponPunchAngle;
 */
 
 stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
@@ -309,7 +292,6 @@ public void ApplyExplosionDhook_Fireball(int entity)
 	g_DHookFireballExplode.HookEntity(Hook_Pre, entity, DHook_FireballExplodePre);
 // g_DHookFireballExplode
 }
-float f_CustomGrenadeDamage[MAXENTITIES];
 
 public void IsCustomTfGrenadeProjectile(int entity, float damage) //I cant make custom grenades work, so ill just use this logic, works just as good.
 {

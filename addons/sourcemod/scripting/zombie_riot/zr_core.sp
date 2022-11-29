@@ -1,10 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define AskPluginLoad2_ ZR_PluginLoad
-#define OnPluginStart_ ZR_PluginStart
-#define OnClientDisconnect_ ZR_ClientDisconnect
-
 public const int AmmoData[][] =
 {
 	// Price, Ammo
@@ -61,14 +57,19 @@ public const char PerkNames_Recieved[][] =
 	"Widows Wine Recieved",
 };
 
-#include "zombie_riot/npc.sp"
-#include "zombie_riot/music.sp"
-#include "zombie_riot/waves.sp"
+float MultiGlobal = 0.25;
+float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
+
+#include "zombie_riot/npc.sp"	// Global NPC List
+
+#include "zombie_riot/database.sp"
 #include "zombie_riot/escape.sp"
-#include "zombie_riot/zombie_drops.sp"
-#include "zombie_riot/queue.sp"
 #include "zombie_riot/item_gift_rpg.sp"
+#include "zombie_riot/music.sp"
+#include "zombie_riot/queue.sp"
 #include "zombie_riot/tutorial.sp"
+#include "zombie_riot/waves.sp"
+#include "zombie_riot/zombie_drops.sp"
 #include "zombie_riot/custom/building.sp"
 #include "zombie_riot/custom/healing_medkit.sp"
 #include "zombie_riot/custom/weapon_slug_rifle.sp"
@@ -103,7 +104,7 @@ public const char PerkNames_Recieved[][] =
 //#include "zombie_riot/custom/weapon_pipe_shot.sp"
 #include "zombie_riot/custom/weapon_survival_knife.sp"
 #include "zombie_riot/custom/weapon_glitched.sp"
-#include "zombie_riot/custom/weapon_minecraft.sp"
+//#include "zombie_riot/custom/weapon_minecraft.sp"
 #include "zombie_riot/custom/arse_enal_layer_tripmine.sp"
 #include "zombie_riot/custom/weapon_serioussam2_shooter.sp"
 #include "zombie_riot/custom/wand/weapon_elemental_staff.sp"
@@ -141,9 +142,7 @@ public const char PerkNames_Recieved[][] =
 
 void ZR_PluginLoad()
 {
-	CreateNative("ZR_ApplyKillEffects", Native_ApplyKillEffects);
 	CreateNative("ZR_GetWaveCount", Native_GetWaveCounts);
-	CreateNative("ZR_GetLevelCount", Native_GetLevelCount);
 }
 
 void ZR_PluginStart()
@@ -164,6 +163,7 @@ void ZR_PluginStart()
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
 	
+	Database_PluginStart();
 	Medigun_PluginStart();
 	OnPluginStartMangler();
 	SentryHat_OnPluginStart();
@@ -191,7 +191,6 @@ void ZR_MapStart()
 	Waves_MapStart();
 	Music_MapStart();
 	Remove_Healthcooldown();
-	Third_PersonOnMapStart();
 	Medigun_PersonOnMapStart();
 	Star_Shooter_MapStart();
 	Bison_MapStart();
@@ -312,6 +311,11 @@ void ZR_ClientDisconnect(int client)
 	i_ExtraPlayerPoints[client] = 0;
 	Timer_Knife_Management[client] = INVALID_HANDLE;
 	Escape_DropItem(client, false);
+}
+
+public any Native_GetWaveCounts(Handle plugin, int numParams)
+{
+	return CurrentRound;
 }
 
 public Action OnReloadCommand(int args)
@@ -487,6 +491,11 @@ public Action Command_SpawnGrigori(int client, int args)
 	Spawn_Cured_Grigori();
 	Store_RandomizeNPCStore(false);
 	return Plugin_Handled;
+}
+
+public void OnClientAuthorized(int client)
+{
+	Database_ClientAuthorized(client);
 }
 
 public void OnClientDisconnect_Post(int client)

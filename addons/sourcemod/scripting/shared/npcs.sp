@@ -45,7 +45,7 @@ enum struct SpawnerData
 
 
 //ArrayList NPCList; Make this global, i need it globally.
-ArrayList SpawnerList;
+static ArrayList SpawnerList;
 static Handle SyncHud;
 static Handle SyncHudRaid;
 static char LastClassname[2049][64];
@@ -334,12 +334,6 @@ public Action GetClosestSpawners(Handle timer)
 	
 	return Plugin_Continue;
 }
-
-
-
-float GlobalCheckDelayAntiLagPlayerScale;
-bool AllowSpecialSpawns;
-int LimitNpcs;
 
 public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 {
@@ -795,7 +789,7 @@ public Action Timer_Delayed_BossSpawn(Handle timer, DataPack pack)
 }
 
 
-float BurnDamage[MAXPLAYERS];
+static float BurnDamage[MAXPLAYERS];
 
 void NPC_Ignite(int entity, int client, float duration, int weapon)
 {
@@ -884,14 +878,15 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 	return Plugin_Stop;
 }
 
-float played_headshotsound_already [MAXTF2PLAYERS];
-
-int played_headshotsound_already_Case [MAXTF2PLAYERS];
-int played_headshotsound_already_Pitch [MAXTF2PLAYERS];
-
-float f_IsThisExplosiveHitscan[MAXENTITIES];
-
-float f_TraceAttackWasTriggeredSameFrame[MAXENTITIES];
+int GetIndexByPluginName(const char[] name)
+{
+	for(int i; i<sizeof(NPC_Plugin_Names_Converted); i++)
+	{
+		if(StrEqual(name, NPC_Plugin_Names_Converted[i], false))
+			return i;
+	}
+	return 0;
+}
 
 public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
 {
@@ -1057,7 +1052,6 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 	return Plugin_Changed;
 }
 		
-float f_CooldownForHurtHud[MAXPLAYERS];	
 //Otherwise we get kicks if there is too much hurting going on.
 
 public void Func_Breakable_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 

@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
-
 enum ParticleAttachment_t {
 	PATTACH_ABSORIGIN = 0,
 	PATTACH_ABSORIGIN_FOLLOW,
@@ -735,46 +733,47 @@ stock int GetMaxWeapons(int client)
 	return maxweps;
 }
 
-stock float RemoveExtraHealth(TFClassType class)
+stock float RemoveExtraHealth(TFClassType class, float value)
 {
 	switch(class)
 	{
 		case TFClass_Soldier:
-			return 0.0;
+			return value - 200.0;
 
 		case TFClass_Pyro, TFClass_DemoMan:
-			return -25.0;
+			return value - 175.0;
 
 		case TFClass_Heavy:
-			return 100.0;
+			return value - 300.0;
 
 		case TFClass_Medic:
-			return -50.0;
+			return value - 150.0;
 	}
-	return -75.0;
+	
+	return value - 125.0;
 }
 
-stock float RemoveExtraSpeed(TFClassType class)
+stock float RemoveExtraSpeed(TFClassType class, float value)
 {
 	switch(class)
 	{
 		case TFClass_Scout:
-			return 300.0/400.0;
+			return value / 400.0;
 
 		case TFClass_Soldier:
-			return 300.0/240.0;
+			return value / 240.0;
 
 		case TFClass_DemoMan:
-			return 300.0/280.0;
+			return value / 280.0;
 
 		case TFClass_Heavy:
-			return 300.0/230.0;
+			return value / 230.0;
 
 		case TFClass_Medic, TFClass_Spy:
-			return 300.0/320.0;
+			return value / 320.0;
 
 		default:
-			return 300.0/300.0;
+			return value / 300.0;
 	}
 }
 /*
@@ -1493,10 +1492,10 @@ stock void SetColorRGBA(int color[4], int r, int g, int b, int a)
 }
 
 
-stock float DEG2RAD(float n)
+/*stock float DEG2RAD(float n)
 {
 	return n * 0.017453;
-}
+}*/
 
 stock float DotProduct(float v1[3], float v2[4])
 {
@@ -1786,8 +1785,7 @@ bool IsEntityStuck(int entity)
 
 stock bool IsWandWeapon(int entity)
 {
-	int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-	return (index == 450 || index == 423 || index == 880 || index == 939 || index == 264 || index == 474 || index == 954 || index == 1123 || index == 1127 || index == 30758 || index == 1013 || index == 173 || index == 648);
+	return IsWandWeaponStore(GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex"));
 }
 
 stock bool IsEngineerWeapon(int entity)

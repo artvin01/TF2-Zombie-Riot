@@ -7,17 +7,17 @@
 #define AMMO_MODEL "models/items/ammopack_large.mdl"
 #define AMMO_SOUND "items/powerup_pickup_regeneration.wav"
 
-int i_KilledThisMany_Nuke = 0;
-bool i_AllowNuke = true;
-float f_KillTheseManyMorePowerup_base_Nuke = 110.0;
-int i_KillTheseManyMorePowerup_Nuke = 110;
+static int i_KilledThisMany_Nuke = 0;
+static bool i_AllowNuke = true;
+static float f_KillTheseManyMorePowerup_base_Nuke = 110.0;
+static int i_KillTheseManyMorePowerup_Nuke = 110;
 
-int i_KilledThisMany_Maxammo = 0;
-bool i_AllowMaxammo = true;
-float f_KillTheseManyMorePowerup_base_Maxammo = 90.0;
-int i_KillTheseManyMorePowerup_Maxammo = 90;
+static int i_KilledThisMany_Maxammo = 0;
+static bool i_AllowMaxammo = true;
+static float f_KillTheseManyMorePowerup_base_Maxammo = 90.0;
+static int i_KillTheseManyMorePowerup_Maxammo = 90;
 
-public void Map_Precache_Zombie_Drops()
+void Map_Precache_Zombie_Drops()
 {
 	PrecacheModel(NUKE_MODEL, true);
 	PrecacheSound(NUKE_SOUND, true);

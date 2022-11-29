@@ -570,8 +570,6 @@ public Action Waves_RoundStartTimer(Handle timer)
 	return Plugin_Continue;
 }
 
-float MultiGlobal = 0.25;
-
 /*void Waves_ClearWaves()
 {
 	delete Enemies;

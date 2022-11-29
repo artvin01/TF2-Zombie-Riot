@@ -16,25 +16,6 @@ static const float ViewHeights[] =
 };
 */
 //static int g_offsPlayerPunchAngleVel = -1;
-#define SF2_PLAYER_VIEWBOB_TIMER 10.0
-#define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
-#define SF2_PLAYER_VIEWBOB_SCALE_Y 0.0
-#define SF2_PLAYER_VIEWBOB_SCALE_Z 0.0
-
-static float Armor_regen_delay[MAXTF2PLAYERS];
-float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
-//static float Check_Standstill_Delay[MAXTF2PLAYERS];
-//static bool Check_Standstill_Applied[MAXTF2PLAYERS];
-
-float max_mana[MAXTF2PLAYERS];
-float mana_regen[MAXTF2PLAYERS];
-bool has_mage_weapon[MAXTF2PLAYERS];
-
-int i_SvRollAngle[MAXTF2PLAYERS];
-
-Handle SyncHud_ArmorCounter;
-
-static int i_WhatLevelForHudIsThisClientAt[MAXTF2PLAYERS];
 
 public void SDKHooks_ClearAll()
 {
@@ -917,8 +898,7 @@ public void OnPreThink(int client)
 }
 */
 
-float f_OneShotProtectionTimer[MAXTF2PLAYERS];
-bool i_WasInUber;
+static bool i_WasInUber;
 public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(i_WasInUber)
@@ -1454,31 +1434,6 @@ static void ClientViewPunch(int client, const float angleOffset[3])
 	SetEntDataVector(client, g_offsPlayerPunchAngleVel, flOffset, true);
 }
 */
-
-public Action Command_Voicemenu(int client, const char[] command, int args)
-{
-	if(client && args == 2 && IsPlayerAlive(client) && TeutonType[client] == 0)
-	{
-		char arg[4];
-		GetCmdArg(1, arg, sizeof(arg));
-		if(arg[0] == '0')
-		{
-			GetCmdArg(2, arg, sizeof(arg));
-			if(arg[0] == '0')
-			{
-				if(TeutonType[client] == TEUTON_NONE)
-				{
-					bool has_been_done = BuildingCustomCommand(client);
-					if(has_been_done)
-					{
-						return Plugin_Handled;
-					}
-				}
-			}
-		}
-	}
-	return Plugin_Continue;
-}
 
 float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon, float damagePosition[3])
 {

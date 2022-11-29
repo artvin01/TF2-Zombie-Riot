@@ -11,7 +11,10 @@ void Commands_PluginStart()
 	AddCommandListener(OnTaunt, "+taunt");
 	AddCommandListener(OnSayCommand, "say");
 	AddCommandListener(OnSayCommand, "say_team");
+
+#if defined ZR
 	AddCommandListener(Command_Voicemenu, "voicemenu");
+#endif
 }
 
 public Action OnClientCommandKeyValues(int client, KeyValues kv)
@@ -95,7 +98,26 @@ public Action OnSayCommand(int client, const char[] command, int args)
 #endif
 }
 
+#if defined ZR
 public Action Command_Voicemenu(int client, const char[] command, int args)
 {
+	if(client && args == 2 && TeutonType[client] == TEUTON_NONE && IsPlayerAlive(client))
+	{
+		char arg[4];
+		GetCmdArg(1, arg, sizeof(arg));
+		if(arg[0] == '0')
+		{
+			GetCmdArg(2, arg, sizeof(arg));
+			if(arg[0] == '0')
+			{
+				bool has_been_done = BuildingCustomCommand(client);
+				if(has_been_done)
+				{
+					return Plugin_Handled;
+				}
+			}
+		}
+	}
 	return Plugin_Continue;
 }
+#endif

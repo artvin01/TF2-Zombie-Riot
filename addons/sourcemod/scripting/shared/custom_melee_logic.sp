@@ -128,7 +128,7 @@ static const char g_KatanaHitWorld[][] = {
 };
 
 
-public void MapStart_CustomMeleePrecache()
+void MapStart_CustomMeleePrecache()
 {
 	for (int i = 0; i < (sizeof(g_KnifeHitFlesh));	   i++) { PrecacheSound(g_KnifeHitFlesh[i]);	   }
 	for (int i = 0; i < (sizeof(g_KnifeHitWorld));	   i++) { PrecacheSound(g_KnifeHitWorld[i]);	   }

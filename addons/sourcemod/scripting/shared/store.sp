@@ -30,8 +30,6 @@ static const int SlotLimits[] =
 enum struct ItemInfo
 {
 	int Cost;
-	int ScrapCost;
-	int UnboxRarity;
 	char Desc[256];
 	
 	bool HasNoClip;
@@ -68,8 +66,6 @@ enum struct ItemInfo
 
 	int Ammo;
 	
-	bool CannotBeSavedByCookies;
-	
 	int Reload_ModeForce;
 
 	float DamageFallOffForWeapon; //Can this accept reversed?
@@ -78,7 +74,6 @@ enum struct ItemInfo
 	Function FuncAttack2;
 	Function FuncAttack3;
 	Function FuncReload4;
-	Function FuncOnBuy;
 	Function FuncOnDeploy;
 	Function FuncOnHolster;
 	
@@ -91,15 +86,23 @@ enum struct ItemInfo
 	
 	int CustomWeaponOnEquip;
 	
-	//bool SniperBugged;
-	
-	char Model[128];
-	
-	//int Tier;
-	//int Rarity;
+#if defined ZR
+	int ScrapCost;
+	int UnboxRarity;
+	bool CannotBeSavedByCookies;
+	Function FuncOnBuy;
 	int PackBranches;
 	int PackSkip;
-	
+#endif
+
+#if defined RPG
+	int EntRef;
+	int Slot;
+	int Store;
+	int Owner;
+	float Cooldown[3];
+#endif
+
 	void Self(ItemInfo info)
 	{
 		info = this;
@@ -113,24 +116,12 @@ enum struct ItemInfo
 		this.Cost = kv.GetNum(buffer, -1);
 		if(this.Cost < 0)
 			return false;
-
-		FormatEx(buffer, sizeof(buffer), "%sscrap_cost", prefix);
-		this.ScrapCost = kv.GetNum(buffer, -1);
-
-		FormatEx(buffer, sizeof(buffer), "%sunbox_rarity", prefix);
-		this.UnboxRarity = kv.GetNum(buffer, -1);
 		
 		FormatEx(buffer, sizeof(buffer), "%sdesc", prefix);
 		kv.GetString(buffer, this.Desc, 256);
 		
 		FormatEx(buffer, sizeof(buffer), "%sclassname", prefix);
 		kv.GetString(buffer, this.Classname, 36);
-
-		FormatEx(buffer, sizeof(buffer), "%scustom_name", prefix);
-		kv.GetString(buffer, this.Custom_Name, 64);
-		
-		FormatEx(buffer, sizeof(buffer), "%scannotbesaved", prefix);
-		this.CannotBeSavedByCookies = view_as<bool>(kv.GetNum(buffer));
 		
 		FormatEx(buffer, sizeof(buffer), "%sindex", prefix);
 		this.Index = kv.GetNum(buffer);
@@ -222,10 +213,6 @@ enum struct ItemInfo
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncReload4 = GetFunctionByName(null, buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sfunc_onbuy", prefix);
-		kv.GetString(buffer, buffer, sizeof(buffer));
-		this.FuncOnBuy = GetFunctionByName(null, buffer);
-		
 		FormatEx(buffer, sizeof(buffer), "%sfunc_ondeploy", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncOnDeploy = GetFunctionByName(null, buffer);
@@ -284,6 +271,11 @@ enum struct ItemInfo
 		FormatEx(buffer, sizeof(buffer), "%sattributes_check_2", prefix);
 		this.SpecialAttribRules_2			= kv.GetNum(buffer);
 
+#if defined ZR
+		FormatEx(buffer, sizeof(buffer), "%sfunc_onbuy", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.FuncOnBuy = GetFunctionByName(null, buffer);
+
 		/*FormatEx(buffer, sizeof(buffer), "%stier", prefix);
 		this.Tier = kv.GetNum(buffer, -1);
 		
@@ -291,22 +283,39 @@ enum struct ItemInfo
 		this.Rarity = kv.GetNum(buffer);
 		if(this.Rarity > HighestTier)
 			HighestTier = this.Rarity;*/
+		
+		FormatEx(buffer, sizeof(buffer), "%sscrap_cost", prefix);
+		this.ScrapCost = kv.GetNum(buffer, -1);
+
+		FormatEx(buffer, sizeof(buffer), "%sunbox_rarity", prefix);
+		this.UnboxRarity = kv.GetNum(buffer, -1);
+		
+		FormatEx(buffer, sizeof(buffer), "%scannotbesaved", prefix);
+		this.CannotBeSavedByCookies = view_as<bool>(kv.GetNum(buffer));
 
 		FormatEx(buffer, sizeof(buffer), "%spappaths", prefix);
 		this.PackBranches = kv.GetNum(buffer, 1);
 		
 		FormatEx(buffer, sizeof(buffer), "%spapskip", prefix);
 		this.PackSkip = kv.GetNum(buffer);
-		
-		FormatEx(buffer, sizeof(buffer), "%smodel", prefix);
-		kv.GetString(buffer, this.Model, 128);
-		if(this.Model[0])
-			PrecacheModel(this.Model);
-		
+
+		FormatEx(buffer, sizeof(buffer), "%scustom_name", prefix);
+		kv.GetString(buffer, this.Custom_Name, 64);
+#endif
+
+#if defined RPG
+		FormatEx(buffer, sizeof(buffer), "%sslot", prefix);
+		this.Slot = kv.GetNum(buffer, -1);
+
+		this.EntRef = INVALID_ENT_REFERENCE;
+		this.Store = 0;
+#endif
+
 		return true;
 	}
 }
 
+#if defined ZR
 enum struct Item
 {
 	char Name[64];
@@ -353,6 +362,7 @@ enum struct Item
 		return true;
 	}
 }
+#endif
 
 static const char AmmoNames[][] =
 {
@@ -383,23 +393,19 @@ static const char AmmoNames[][] =
 	"Hand Grenade",
 	"Potion Supply"
 };
-//Rarity
-/*static const int RenderColors[][] =
-{
-	{255, 255, 255, 255}, 	// 0
-	{0, 255, 0, 255, 255},
-	{ 65, 105, 225 , 255},
-	{ 255, 255, 0 , 255},
-	{ 178, 34, 34 , 255},
-	{ 138, 43, 226 , 255},
-	{0, 0, 0, 255}
-};*/
 
+#if defined ZR
 static ArrayList StoreItems;
 static int NPCOnly[MAXTF2PLAYERS];
 static int NPCCash[MAXTF2PLAYERS];
 static int NPCTarget[MAXTF2PLAYERS];
 static bool InLoadoutMenu[MAXTF2PLAYERS];
+#endif
+
+#if defined RPG
+static ArrayList EquippedItems;
+#endif
+
 static bool HasMultiInSlot[MAXTF2PLAYERS][6];
 static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 
@@ -414,27 +420,47 @@ void Store_WeaponSwitch(int client, int weapon)
 		HolsterFunc[client] = INVALID_FUNCTION;
 	}
 
-	if(weapon != -1 && StoreWeapon[weapon] > 0)
+	if(weapon != -1)
 	{
-		static Item item;
-		StoreItems.GetArray(StoreWeapon[weapon], item);
+#if defined ZR
+		if(StoreWeapon[weapon] > 0)
+#endif
 
-		static ItemInfo info;
-		if(item.Owned[client] > 0 && item.GetItemInfo(item.Owned[client] - 1, info))
+#if defined RPG
+		int pos = EquippedItems.FindValue(EntIndexToEntRef(weapon), ItemInfo::EntRef);
+		if(pos != -1)
+#endif
+
 		{
-			if(info.FuncOnDeploy != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, info.FuncOnDeploy);
-				Call_PushCell(client);
-				Call_PushCell(weapon);
-				Call_Finish();
-			}
+			static ItemInfo info;
 
-			HolsterFunc[client] = info.FuncOnHolster;
+#if defined ZR
+			static Item item;
+			StoreItems.GetArray(StoreWeapon[weapon], item);
+
+			if(item.Owned[client] > 0 && item.GetItemInfo(item.Owned[client] - 1, info))
+#endif
+
+#if defined RPG
+			EquippedItems.GetArray(pos, info);
+#endif
+
+			{
+				if(info.FuncOnDeploy != INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, info.FuncOnDeploy);
+					Call_PushCell(client);
+					Call_PushCell(weapon);
+					Call_Finish();
+				}
+
+				HolsterFunc[client] = info.FuncOnHolster;
+			}
 		}
 	}
 }
 
+#if defined ZR
 void Store_RemoveSellValue()
 {
 	static Item item;
@@ -450,7 +476,9 @@ void Store_RemoveSellValue()
 		StoreItems.SetArray(i, item);
 	}
 }
+#endif
 
+#if defined ZR
 bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 {
 	if(StoreItems)
@@ -498,6 +526,7 @@ bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 	}
 	return false;
 }
+#endif
 
 bool Store_ActiveCanMulti(int client)
 {
@@ -517,24 +546,47 @@ bool Store_ActiveCanMulti(int client)
 float Ability_Check_Cooldown(int client, int what_slot)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon != -1 && StoreWeapon[weapon] > 0)
+	if(weapon != -1)
 	{
-		static Item item;
-		StoreItems.GetArray(StoreWeapon[weapon], item);
-		
-		switch(what_slot)
+
+#if defined ZR
+		if(StoreWeapon[weapon] > 0)
+#endif
+
+#if defined RPG
+		int pos = EquippedItems.FindValue(EntIndexToEntRef(weapon), ItemInfo::EntRef);
+		if(pos != -1)
+#endif
+
 		{
-			case 1:
-				return item.Cooldown1[client] - GetGameTime();
+
+#if defined ZR
+			static Item item;
+			StoreItems.GetArray(StoreWeapon[weapon], item);
 			
-			case 2:
-				return item.Cooldown2[client] - GetGameTime();
+			switch(what_slot)
+			{
+				case 1:
+					return item.Cooldown1[client] - GetGameTime();
+				
+				case 2:
+					return item.Cooldown2[client] - GetGameTime();
+				
+				case 3:
+					return item.Cooldown3[client] - GetGameTime();
+			}
+
+			ThrowError("Invalid slot %d", what_slot);
+#endif
 			
-			case 3:
-				return item.Cooldown3[client] - GetGameTime();
+#if defined RPG
+			static ItemInfo info;
+			EquippedItems.GetArray(pos, info);
+			
+			return info.Cooldown[what_slot - 1] - GetGameTime();
+#endif
+
 		}
-		
-		ThrowError("Invalid slot %d", what_slot);
 	}
 	return 0.0;
 }
@@ -542,38 +594,67 @@ float Ability_Check_Cooldown(int client, int what_slot)
 void Ability_Apply_Cooldown(int client, int what_slot, float cooldown)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon != -1 && StoreWeapon[weapon] > 0)
+	if(weapon != -1)
 	{
-		static Item item;
-		StoreItems.GetArray(StoreWeapon[weapon], item);
 		
-		switch(what_slot)
+#if defined ZR
+		if(StoreWeapon[weapon] > 0)
+#endif
+
+#if defined RPG
+		int pos = EquippedItems.FindValue(EntIndexToEntRef(weapon), ItemInfo::EntRef);
+		if(pos != -1)
+#endif
+
 		{
-			case 1:
-				item.Cooldown1[client] = cooldown + GetGameTime();
 			
-			case 2:
-				item.Cooldown2[client] = cooldown + GetGameTime();
+#if defined ZR
+			static Item item;
+			StoreItems.GetArray(StoreWeapon[weapon], item);
 			
-			case 3:
-				item.Cooldown3[client] = cooldown + GetGameTime();
+			switch(what_slot)
+			{
+				case 1:
+					item.Cooldown1[client] = cooldown + GetGameTime();
+				
+				case 2:
+					item.Cooldown2[client] = cooldown + GetGameTime();
+				
+				case 3:
+					item.Cooldown3[client] = cooldown + GetGameTime();
+				
+				default:
+					ThrowError("Invalid slot %d", what_slot);
+			}
 			
-			default:
-				ThrowError("Invalid slot %d", what_slot);
+			StoreItems.SetArray(StoreWeapon[weapon], item);
+#endif
+
+#if defined RPG
+			static ItemInfo info;
+			EquippedItems.GetArray(pos, info);
+			
+			info.Cooldown[what_slot - 1] = cooldown + GetGameTime();
+
+			EquippedItems.SetArray(pos, info);
+#endif
+
 		}
-		
-		StoreItems.SetArray(StoreWeapon[weapon], item);
 	}
 }
 
 void Store_OpenItemPage(int client)
 {
+#if defined ZR
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon != -1 && StoreWeapon[weapon] > 0)
 	{
 		NPCOnly[client] = 0;
 		MenuPage(client, StoreWeapon[weapon]);
 	}
+#endif
+
+	// RPG TODO: Yell at me for TextStore native
 }
 
 void Store_SwapToItem(int client, int swap)
@@ -695,6 +776,7 @@ void Store_SwapItems(int client)
 	}
 }
 
+#if defined ZR
 int Store_GetSpecialOfSlot(int client, int slot)
 {
 	if(StoreItems)
@@ -837,8 +919,8 @@ static void ConfigSetup(int section, KeyValues kv, bool hidden, const char[][] w
 		
 		for(int i=1; ; i++)
 		{
-			Format(info.Model, sizeof(info.Model), "pap_%d_", i);
-			if(!info.SetupKV(kv, item.Name, info.Model))
+			Format(info.Custom_Name, sizeof(info.Custom_Name), "pap_%d_", i);
+			if(!info.SetupKV(kv, item.Name, info.Custom_Name))
 				break;
 			
 			item.ItemInfos.PushArray(info);
@@ -1037,9 +1119,11 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 	}
 	return 0; //you dont own the item.
 }*/
+#endif	// ZR
 
 void Store_Reset()
 {
+#if defined ZR
 	for(int c=1; c<=MaxClients; c++)
 	{
 		CashSpent[c] = 0;
@@ -1062,6 +1146,12 @@ void Store_Reset()
 		}
 		StoreItems.SetArray(i, item);
 	}
+#endif
+
+#if defined RPG
+	delete EquippedItems;
+	EquippedItems = new ArrayList(sizeof(ItemInfo));
+#endif
 }
 
 /*bool Store_HasAnyItem(int client)
@@ -1083,6 +1173,7 @@ void Store_Reset()
 	return false;
 }*/
 
+#if defined ZR
 int Store_HasNamedItem(int client, const char[] name)
 {
 	static Item item;
@@ -1206,12 +1297,15 @@ void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int blength)
 		}
 	}
 }
+#endif	// ZR
 
 void Store_EquipSlotCheck(int client, int slot)
 {
 	if(slot >= 0)
 	{
 		int count;
+
+#if defined ZR
 		int length = StoreItems.Length;
 		static Item item;
 		for(int i; i<length; i++)
@@ -1229,9 +1323,31 @@ void Store_EquipSlotCheck(int client, int slot)
 				}
 			}
 		}
+#endif
+
+#if defined RPG
+		int length = EquippedItems.Length;
+		static ItemInfo info;
+		for(int i; i < length; i++)
+		{
+			EquippedItems.GetArray(i, info);
+			if(info.Owner == client && info.Slot == slot)
+			{
+				count++;
+				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
+				{
+					PrintToChat(client, "%s was unequipped", info.Custom_Name);
+					TextStore_SetInv(client, info.Store, _, false);
+					break;
+				}
+			}
+		}
+#endif
+
 	}
 }
 
+#if defined ZR
 void Store_BuyClientItem(int client, Item item, ItemInfo info)
 {
 	Store_EquipSlotCheck(client, item.Slot);
@@ -1252,18 +1368,20 @@ void Store_BuyClientItem(int client, Item item, ItemInfo info)
 		Call_Finish();
 	}
 }
+#endif
 
 void Store_ClientDisconnect(int client)
 {
+	Store_WeaponSwitch(client, -1);
+	
+#if defined ZR
 	if(Waves_Started() && Database_SaveGameData(client))
 	{
 		char buffer[32];
 		FormatEx(buffer, sizeof(buffer), "%d;%d", CurrentGame, CashSpent[client]);
 		CookieCache.Set(client, buffer);
 	}
-	
-	Store_WeaponSwitch(client, -1);
-	
+
 	CashSpent[client] = 0;
 	CashSpentTotal[client] = 0;
 	
@@ -1280,8 +1398,24 @@ void Store_ClientDisconnect(int client)
 			StoreItems.SetArray(i, item);
 		}
 	}
+#endif
+
+#if defined RPG
+	static ItemInfo info;
+	int length = EquippedItems.Length;
+	for(int i; i < length; i++)
+	{
+		EquippedItems.GetArray(i, info);
+		if(info.Owner == client)
+		{
+			EquippedItems.Erase(i--);
+			length--;
+		}
+	}
+#endif
 }
 
+#if defined ZR
 bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped, char[] buffer="", int size=0)
 {
 	static Item item;
@@ -2765,21 +2899,27 @@ public bool Store_SayCommand(int client)
 	}
 	return true;
 }
+#endif	// ZR
 
 void Store_ApplyAttribs(int client)
 {
+#if defined ZR
 	if(TeutonType[client] || !StoreItems)
 		return;
-	
+#endif
+
+#if defined RPG
+	if(!EquippedItems)
+		return;
+#endif
+
 	TF2Attrib_RemoveAll(client);
 	
-	#if defined NoSendProxyClass
 	TFClassType ClassForStats = WeaponClass[client];
-	#else
-	TFClassType ClassForStats = CurrentClass[client];
-	#endif
 	
 	StringMap map = new StringMap();
+
+#if defined ZR
 	int Extra_Juggernog_Hp = 0;
 	if(i_CurrentEquippedPerk[client] == 2)
 	{
@@ -2788,31 +2928,40 @@ void Store_ApplyAttribs(int client)
 
 	if(i_HealthBeforeSuit[client] == 0)
 	{
-		if(!EscapeMode)
-			map.SetValue("26", -RemoveExtraHealth(ClassForStats) + Extra_Juggernog_Hp);		// Health
-		else
-			map.SetValue("26", -RemoveExtraHealth(ClassForStats) + 100 + Extra_Juggernog_Hp);		// Health
+		map.SetValue("26", RemoveExtraHealth(ClassForStats, 200.0) + Extra_Juggernog_Hp);		// Health
 	}
 	else
 	{
-		map.SetValue("26", -(RemoveExtraHealth(ClassForStats) + 199));		// Health
+		map.SetValue("26", RemoveExtraHealth(ClassForStats, 1.0));		// Health
 	}
-		
+#endif
 	
-	map.SetValue("107", (RemoveExtraSpeed(ClassForStats) * 1.1));		// Move Speed and abit of extra
-	map.SetValue("353", 1.0);											// No manual building pickup.
-	map.SetValue("465", 10.0);											// x10 faster diepsner build
-	map.SetValue("464", 10.0);											// x10 faster sentry build
-	map.SetValue("740", 0.0);											// No Healing from mediguns, allow healing from pickups
-//	map.SetValue("397", 50.0);											// Ignore ally with shooting
-	map.SetValue("169", 0.0);											// Complete sentrygun Immunity
-//	map.SetValue("49", 0.0);											// Completly disable double jump as we dont even use this, client prediction babyyyy!!!
-																		//... doesnt work on player, must be on weapon...
-//	map.SetValue("124", 1.0);											// Make sentries minisentries (only works on melee's that are wrenches...)
-//	map.SetValue("345", 0.0);											// No dispenser range
-//	map.SetValue("732", 0.0);											// No dispenser metal gain
-	map.SetValue("314", -2.0);											//Medigun uber duration, it has to be a body attribute
+#if defined RPG
+	map.SetValue("26", RemoveExtraHealth(ClassForStats, 50.0));
+#endif
 
+#if defined ZR
+	map.SetValue("107", RemoveExtraSpeed(ClassForStats, 330.0));		// Move Speed
+#endif
+
+#if defined RPG
+	map.SetValue("107", RemoveExtraSpeed(ClassForStats, 200.0));
+#endif
+
+	map.SetValue("353", 1.0);	// No manual building pickup.
+	map.SetValue("465", 10.0);	// x10 faster diepsner build
+	map.SetValue("464", 10.0);	// x10 faster sentry build
+	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
+//	map.SetValue("397", 50.0);	// Ignore ally with shooting
+	map.SetValue("169", 0.0);	// Complete sentrygun Immunity
+//	map.SetValue("49", 0.0);	// Completly disable double jump as we dont even use this, client prediction babyyyy!!!
+					//... doesnt work on player, must be on weapon...
+//	map.SetValue("124", 1.0);	// Make sentries minisentries (only works on melee's that are wrenches...)
+//	map.SetValue("345", 0.0);	// No dispenser range
+//	map.SetValue("732", 0.0);	// No dispenser metal gain
+	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
+
+#if defined ZR
 	int wave_count = Waves_GetRound() + 1;
 	
 	if(wave_count > 15 && wave_count < 30)
@@ -2861,74 +3010,113 @@ void Store_ApplyAttribs(int client)
 	{		
 		map.SetValue("287", 1.15);
 	}
-		
-	static Item item;
-	static ItemInfo info;
-	float value;
-	char buffer1[12], buffer2[32];
-	int length = StoreItems.Length;
-	for(int i; i<length; i++)
-	{
-		StoreItems.GetArray(i, item);
-		if(item.Owned[client] && item.Equipped[client])
-		{
-			item.GetItemInfo(item.Owned[client]-1, info);
-			if(!info.Classname[0] && !i_ClientHasCustomGearEquipped[client])
-			{
-				if((info.Index<0 || info.Index>2) && info.Index<6)
-				{
-					for(int a; a<info.Attribs; a++)
-					{
-						IntToString(info.Attrib[a], buffer1, sizeof(buffer1));
-						if(!map.GetValue(buffer1, value))
-						{
-							map.SetValue(buffer1, info.Value[a]);
-						}
-						else if(info.Attrib[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
-						{
-							map.SetValue(buffer1, value + info.Value[a]);
-						}
-						else
-						{
-							map.SetValue(buffer1, value * info.Value[a]);
-						}
-					}
-				}
+#endif	// ZR
 
-				if((info.Index2<0 || info.Index2>2) && info.Index2<6)
+	float value;
+	char buffer1[12];
+	if(!i_ClientHasCustomGearEquipped[client])
+	{
+		static ItemInfo info;
+		char buffer2[32];
+
+#if defined ZR
+		static Item item;
+		int length = StoreItems.Length;
+#endif
+
+#if defined RPG
+		int length = EquippedItems.Length;
+#endif
+
+		for(int i; i < length; i++)
+		{
+
+#if defined ZR
+			StoreItems.GetArray(i, item);
+			if(item.Owned[client] && item.Equipped[client])
+#endif
+
+#if defined RPG
+			EquippedItems.GetArray(i, info);
+			if(info.Owned == client && !info.Classname[0])
+#endif
+
+			{
+				
+#if defined ZR
+				item.GetItemInfo(item.Owned[client]-1, info);
+				if(!info.Classname[0])
+#endif
+
+#if defined RPG
+				if(TextStore_GetInv(client, info.Store))
+#endif
+
 				{
-					for(int a; a<info.Attribs2; a++)
+					if((info.Index<0 || info.Index>2) && info.Index<6)
 					{
-						IntToString(info.Attrib2[a], buffer1, sizeof(buffer1));
-						if(!map.GetValue(buffer1, value))
+						for(int a; a<info.Attribs; a++)
 						{
-							map.SetValue(buffer1, info.Value2[a]);
+							IntToString(info.Attrib[a], buffer1, sizeof(buffer1));
+							if(!map.GetValue(buffer1, value))
+							{
+								map.SetValue(buffer1, info.Value[a]);
+							}
+							else if(info.Attrib[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
+							{
+								map.SetValue(buffer1, value + info.Value[a]);
+							}
+							else
+							{
+								map.SetValue(buffer1, value * info.Value[a]);
+							}
 						}
-						else if(info.Attrib2[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
+					}
+
+					if((info.Index2<0 || info.Index2>2) && info.Index2<6)
+					{
+						for(int a; a<info.Attribs2; a++)
 						{
-							map.SetValue(buffer1, value + info.Value2[a]);
-						}
-						else
-						{
-							map.SetValue(buffer1, value * info.Value2[a]);
+							IntToString(info.Attrib2[a], buffer1, sizeof(buffer1));
+							if(!map.GetValue(buffer1, value))
+							{
+								map.SetValue(buffer1, info.Value2[a]);
+							}
+							else if(info.Attrib2[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
+							{
+								map.SetValue(buffer1, value + info.Value2[a]);
+							}
+							else
+							{
+								map.SetValue(buffer1, value * info.Value2[a]);
+							}
 						}
 					}
 				}
+#if defined RPG
+				else
+				{
+					EquippedItems.Erase(i--);
+					length--;
+				}
+#endif
 			}
 		}
 	}
 	
+#if defined ZR
 	Armor_Level[client] = 0;
 	Jesus_Blessing[client] = 0;
 	i_HeadshotAffinity[client] = 0;
 	i_BarbariansMind[client] = 0;
 	i_SoftShoes[client] = 0;
 	i_BadHealthRegen[client] = 0;
-	
+#endif
+
 	StringMapSnapshot snapshot = map.Snapshot();
 	int entity = client;
-	length = snapshot.Length;
-	for(int i; i<length; i++)
+	int length = snapshot.Length;
+	for(int i; i < length; i++)
 	{
 		if(i && !(i % 16))
 		{
@@ -2945,7 +3133,7 @@ void Store_ApplyAttribs(int client)
 			int index = StringToInt(buffer1);
 			TF2Attrib_SetByDefIndex(entity, index, value);
 			
-			
+#if defined ZR
 			if(index == 701)
 				Armor_Level[client] = RoundToCeil(value);
 				
@@ -2963,27 +3151,41 @@ void Store_ApplyAttribs(int client)
 				
 			if(index == 805)
 				i_BadHealthRegen[client] = RoundToCeil(value);
+#endif
+
 		}
 	}
+
+#if defined ZR
 	if(dieingstate[client] > 0)
 	{
 		TF2Attrib_SetByDefIndex(client, 489, 0.15);
 	}
+#endif
 	
 	Mana_Regen_Level[client] = Attributes_FindOnPlayer(client, 405, true, 1.0);
 	
-	
 	delete map;
 	delete snapshot;
+
 	TF2_AddCondition(client, TFCond_Dazed, 0.001);
 }
 
-void Store_GiveAll(int client, int health, int removeWeapons = false)
+void Store_GiveAll(int client, int health, bool removeWeapons = false)
 {
+
+#if defined ZR
 	if(!StoreItems)
+#endif
+
+#if defined RPG
+	if(!EquippedItems)
+#endif
+
 	{
 		return; //STOP. BAD!
 	}
+
 	if(removeWeapons)
 	{
 		TF2_RegeneratePlayer(client);
@@ -2991,6 +3193,7 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 		return;
 	}
 
+#if defined ZR
 	if(TeutonType[client])
 	{
 		TF2_RegeneratePlayer(client);
@@ -3000,8 +3203,10 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 	{
 		Store_RemoveSpecificItem(client, "Teutonic Longsword");
 	}
+
 	b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
-	
+#endif
+
 	//There is no easy way to preserve uber through with multiple mediguns
 	//solution: save via index
 	int ie, entity;
@@ -3063,6 +3268,7 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
 	SetAbilitySlotCount(client, 0);
 	
+#if defined ZR
 	bool Was_phasing = false;
 	
 	if(b_PhaseThroughBuildingsPerma[client] == 2)
@@ -3081,22 +3287,44 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 		SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 		SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	}
-	
+#endif
+
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
 		int count;
 		bool hasPDA = false;
 		bool found = false;
 		bool use = true;
+
+#if defined ZR
 		int length = StoreItems.Length;
-		for(int i; i<length; i++)
+#endif
+
+#if defined RPG
+		int length = EquippedItems.Length;
+#endif
+
+		for(int i; i < length; i++)
 		{
+			static ItemInfo info;
+
+#if defined ZR
 			static Item item;
 			StoreItems.GetArray(i, item);
 			if(item.Owned[client] && item.Equipped[client])
+#endif
+
+#if defined RPG
+			EquippedItems.GetArray(i, info);
+			if(info.Owned == client)
+#endif
+
 			{
-				static ItemInfo info;
+
+#if defined ZR
 				item.GetItemInfo(item.Owned[client]-1, info);
+#endif
+
 				if(info.Classname[0])
 				{
 					if(!StrContains(info.Classname, "tf_weapon_pda_engineer_build"))
@@ -3114,6 +3342,11 @@ void Store_GiveAll(int client, int health, int removeWeapons = false)
 						PrintToChat(client, "%t", "At Weapon Limit");
 						break;
 					}
+
+#if defined RPG
+					length = EquippedItems.Length;
+#endif
+
 				}
 			}
 		}
@@ -3197,28 +3430,66 @@ void Store_RemoveNullWeapons(int client)
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
+#if defined ZR
 		if(StoreWeapon[entity] < 1)
+#endif
+
+#if defined RPG
+		if(EquippedItems.FindValue(EntIndexToEntRef(entity), ItemInfo::EntRef) == -1)
+#endif
+		{
 			TF2_RemoveItem(client, entity);
+		}
 	}
 }
 
 int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 {
+
+#if defined ZR
 	if(!StoreItems)
+#endif
+
+#if defined RPG
+	if(!EquippedItems)
+#endif
+
+	{
 		return -1;
-	
-	static Item item;
-	static ItemInfo info;
-	
+	}
+
 	int slot = -1;
 	int entity = -1;
+	static ItemInfo info;
+
+#if defined ZR
+	static Item item;
 	int length = StoreItems.Length;
+#endif
+
+#if defined RPG
+	int length = EquippedItems.Length;
+#endif
+	
 	if(index > 0 && index < length)
 	{
+
+#if defined ZR
 		StoreItems.GetArray(index, item);
 		if(item.Owned[client] > 0)
+#endif
+
+#if defined RPG
+		EquippedItems.GetArray(index, info);
+		if(info.Owned == client && TextStore_GetInv(client, info.Store))
+#endif
+		
 		{
+
+#if defined ZR
 			item.GetItemInfo(item.Owned[client]-1, info);
+#endif
+
 			if(info.Classname[0])
 			{
 				slot = TF2_GetClassnameSlot(info.Classname);
@@ -3363,17 +3634,43 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 				}
 			}
 		}
+
+#if defined RPG
+		else
+		{
+			EquippedItems.Erase(index);
+			length--;
+			return entity;
+		}
+#endif
+
 	}
 	else
 	{
+		
+#if defined ZR
 		static char Classnames[][32] = {"tf_weapon_shovel", "tf_weapon_bat", "tf_weapon_club", "tf_weapon_shovel",
 		"tf_weapon_bottle", "tf_weapon_bonesaw", "tf_weapon_fists", "tf_weapon_fireaxe", "tf_weapon_knife", "tf_weapon_wrench"};
 		
 		entity = CreateEntityByName(Classnames[CurrentClass[client]]);
+#endif
+
+#if defined RPG
+		entity = CreateEntityByName("tf_weapon_fists");
+#endif
+
 		if(entity > MaxClients)
 		{
+
+#if defined ZR
 			static const int Indexes[] = { 6, 0, 3, 6, 1, 8, 5, 2, 4, 7 };
 			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", Indexes[CurrentClass[client]]);
+#endif
+
+#if defined RPG
+			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", 5);
+#endif
+
 			SetEntProp(entity, Prop_Send, "m_bInitialized", 1);
 			
 			SetEntProp(entity, Prop_Send, "m_iEntityQuality", 0);
@@ -3391,6 +3688,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 			SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
 			SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 			
+#if defined ZR
 			TF2Attrib_SetByDefIndex(entity, 1, 0.623);
 		//	TF2Attrib_SetByDefIndex(entity, 124, 1.0); //Mini sentry
 			
@@ -3403,6 +3701,13 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 				TF2Attrib_SetByDefIndex(entity, 95, 0.0);
 				TF2Attrib_SetByDefIndex(entity, 2043, 0.0);
 			}
+#endif
+
+#if defined RPG
+			TF2Attrib_SetByDefIndex(entity, 1, 0.02);
+			TF2Attrib_SetByDefIndex(entity, 5, 1.34);
+#endif
+
 			TF2Attrib_SetByDefIndex(entity, 263, 0.0);
 			TF2Attrib_SetByDefIndex(entity, 264, 0.0);
 			EquipPlayerWeapon(client, entity);
@@ -3444,6 +3749,8 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 					{
 						SetAbilitySlotCount(client, info.Attack3AbilitySlot);
 					}
+
+#if defined ZR
 					if(info.SpecialAdditionViaNonAttribute == 1)
 					{
 						b_PhaseThroughBuildingsPerma[client] = 2; //Set to true if its 1, other attribs will use other things!
@@ -3464,6 +3771,8 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 					{
 						b_LeftForDead[client] = true;
 					}
+#endif
+					
 					if(EntityIsAWeapon)
 					{
 						bool apply;
@@ -3596,8 +3905,11 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 			}
 		}
 	}
+
 	if(EntityIsAWeapon)
 	{
+	
+#if defined ZR
 		//SPEED COLA!
 		if(i_CurrentEquippedPerk[client] == 4)
 		{
@@ -3637,13 +3949,13 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 0.65);
 			}
 		}
-		
+
 		int itemdefindex = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
 		if(itemdefindex == 772 || itemdefindex == 349 || itemdefindex == 30667 || itemdefindex == 200 || itemdefindex == 45 || itemdefindex == 449 || itemdefindex == 773 || itemdefindex == 973 || itemdefindex == 1103 || itemdefindex == 669 || IsWandWeapon(entity))
 		{		
 			TF2Attrib_SetByDefIndex(entity, 49, 1.0);
 		}
-		
+#endif
 		/*
 			Attributes to Arrays Here
 		*/
@@ -3658,16 +3970,20 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 		i_LowTeslarStaff[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 3002));
 		i_HighTeslarStaff[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 3000));
 		
+#if defined ZR
 		Enable_Management(client, entity);
 		Enable_Arsenal(client, entity);
 		On_Glitched_Give(client, entity);
 		Enable_Management_Banner(client, entity);
 		
 		Enable_StarShooter(client, entity);
+#endif
+		
 	}
 	return entity;
 }
 
+#if defined ZR
 int Store_GiveSpecificItem(int client, const char[] name)
 {
 	static Item item;
@@ -3892,6 +4208,7 @@ bool Store_PrintLevelItems(int client, int level)
 	}
 	return found;
 }
+#endif	// ZR
 
 char[] TranslateItemName(int client, const char name[64], const char Custom_Name[64]) //Just make it 0 as a default so if its not used, fuck it
 {
@@ -3960,6 +4277,7 @@ char[] TranslateItemDescription(int client, const char Desc[256])
 	return buffer;
 }
 
+#if defined ZR
 static void ItemCost(int client, Item item, int &cost)
 {
 	bool started = !Waves_InSetup();
@@ -4095,3 +4413,4 @@ bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool 
 	return false;
 	
 }
+#endif	// ZR

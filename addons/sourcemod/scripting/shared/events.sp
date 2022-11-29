@@ -241,7 +241,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		TF2Attrib_SetByDefIndex(weapon_index, 442, 1.1);
 	   		TFClassType ClassForStats = WeaponClass[client];
 	   		
-	   		TF2Attrib_SetByDefIndex(weapon_index, 107, RemoveExtraSpeed(ClassForStats));
+	   		TF2Attrib_SetByDefIndex(weapon_index, 107, RemoveExtraSpeed(ClassForStats, 300.0));
 	   		TF2Attrib_SetByDefIndex(weapon_index, 476, 0.0);
 	   		SetEntityCollisionGroup(client, 1);
 	   		SetEntityCollisionGroup(weapon_index, 1);

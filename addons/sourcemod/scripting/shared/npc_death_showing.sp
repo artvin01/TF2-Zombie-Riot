@@ -1,9 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-
-float f_BotDelayShow[MAXTF2PLAYERS];
-
 void NPC_Killed_Show_Hud(int player, int entity, int weapon, char[] npcname, int damagetype)
 {
 	if(entity>MaxClients && IsValidEntity(entity))

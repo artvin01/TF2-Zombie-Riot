@@ -14,25 +14,22 @@ static Handle g_hInvalidateBoneCache;
 
 static Handle g_hCTFCreateArrow;
 //static Handle g_hCTFCreatePipe;
-Handle g_hSDKMakeCarriedObjectDispenser;
-Handle g_hSDKMakeCarriedObjectSentry;
 //Handle g_hSDKMakeCarriedObject;
 static Handle g_hGetVectors;
-Handle gH_BotAddCommand = INVALID_HANDLE;
 //static Handle g_hWeaponSound;
 //static Handle g_hSDKPlaySpecificSequence;
 //static Handle g_hDoAnimationEvent;
 
-Handle g_hSDKStartLagComp;
-Handle g_hSDKEndLagComp;
-Handle g_hSDKUpdateBlocked;
-Handle g_hSnapEyeAngles;
+static Handle g_hSDKStartLagComp;
+static Handle g_hSDKEndLagComp;
+static Handle g_hSDKUpdateBlocked;
+static Handle g_hSnapEyeAngles;
 
 static Handle g_hImpulse;
 
-DynamicHook g_hDHookItemIterateAttribute;
-int g_iCEconItem_m_Item;
-int g_iCEconItemView_m_bOnlyIterateItemViewAttributes;
+static DynamicHook g_hDHookItemIterateAttribute;
+static int g_iCEconItem_m_Item;
+static int g_iCEconItemView_m_bOnlyIterateItemViewAttributes;
 
 void SDKCall_Setup()
 {

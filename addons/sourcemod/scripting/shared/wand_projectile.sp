@@ -3,7 +3,7 @@
 
 #define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
-int i_ProjectileIndex;
+static int i_ProjectileIndex;
 
 void WandStocks_Map_Precache()
 {
