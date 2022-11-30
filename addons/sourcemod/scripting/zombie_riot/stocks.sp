@@ -2944,6 +2944,7 @@ public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 
 void ReviveAll(bool raidspawned = false)
 {
+	GlobalIntencity_Highest = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))

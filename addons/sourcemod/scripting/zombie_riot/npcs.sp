@@ -382,7 +382,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && b_HasBeenHereSinceStartOfWave[client])
 			{
-				if(TeutonType[client] == TEUTON_DEAD || dieingstate[client] > 0)
+				if(!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD || dieingstate[client] > 0)
 				{
 					GlobalIntencity += 1;
 				}
@@ -392,6 +392,17 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					AllowSpecialSpawns = true;
 			}
 		}
+
+		if(GlobalIntencity < GlobalIntencity_Highest)
+		{
+			GlobalIntencity = GlobalIntencity_Highest;
+		}
+		else
+		{
+			GlobalIntencity_Highest = GlobalIntencity;
+			//its bigger!
+		}
+		
 		if(PlayersInGame < 2)
 		{
 			PlayersInGame = 3;

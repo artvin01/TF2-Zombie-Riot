@@ -220,6 +220,7 @@ int CurrentPlayers;
 int PlayersAliveScaling;
 int PlayersInGame;
 int GlobalIntencity;
+int GlobalIntencity_Highest;
 bool b_HasBeenHereSinceStartOfWave[MAXTF2PLAYERS];
 ConVar cvarTimeScale;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
@@ -1498,6 +1499,7 @@ public void OnMapStart()
 	MapStartResetAll();
 	EscapeMode = false;
 	EscapeModeForNpc = false;
+	GlobalIntencity_Highest = false;
 	
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
