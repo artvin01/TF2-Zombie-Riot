@@ -260,13 +260,7 @@ int i_Headshots[MAXTF2PLAYERS];
 bool i_HasBeenHeadShotted[MAXENTITIES];
 float f_TimeAfterSpawn[MAXTF2PLAYERS];
 
-int Healing_done_in_total[MAXTF2PLAYERS];
-int i_BarricadeHasBeenDamaged[MAXTF2PLAYERS];
-int Resupplies_Supplied[MAXTF2PLAYERS];
-
 bool thirdperson[MAXTF2PLAYERS];
-bool WaitingInQueue[MAXTF2PLAYERS];
-int dieingstate[MAXTF2PLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
@@ -352,27 +346,6 @@ int StoreWeapon[MAXENTITIES];
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 int i_HealthBeforeSuit[MAXTF2PLAYERS]={0, ...};
 bool i_ClientHasCustomGearEquipped[MAXTF2PLAYERS]={false, ...};
-
-enum
-{
-	WEAPON_ARK = 1,
-	WEAPON_FUSION = 2,
-	WEAPON_BOUNCING = 3,
-	WEAPON_MAIMMOAB = 4,
-	WEAPON_CRIPPLEMOAB = 5
-}
-
-enum
-{
-	TEUTON_NONE,
-	TEUTON_DEAD,
-	TEUTON_WAITING
-}
-
-int TeutonType[MAXTF2PLAYERS];
-int PlayerPoints[MAXTF2PLAYERS];
-int i_ExtraPlayerPoints[MAXTF2PLAYERS];
-int i_PreviousPointAmount[MAXTF2PLAYERS];
 	
 int Animation_Setting[MAXTF2PLAYERS];
 int Animation_Index[MAXTF2PLAYERS];
@@ -616,9 +589,6 @@ float f_CooldownForHurtHud[MAXPLAYERS];
 Address g_hSDKStartLagCompAddress;
 Address g_hSDKEndLagCompAddress;
 bool g_GottenAddressesForLagComp;
-
-#define ZR_ApplyKillEffects NPC_DeadEffects
-#define ZR_GetWaveCount Waves_GetRound
 
 StringMap HookIdMap;
 StringMap HookListMap;
@@ -923,7 +893,6 @@ bool b_bBuildingIsPlaced[MAXENTITIES];
 bool b_XenoInfectedSpecialHurt[MAXENTITIES];
 float fl_XenoInfectedSpecialHurtTime[MAXENTITIES];
 bool b_DoGibThisNpc[MAXENTITIES];
-int i_TeamGlow[MAXENTITIES]={-1, ...};
 
 int i_SpawnProtectionEntity[MAXENTITIES]={-1, ...};
 float f3_VecPunchForce[MAXENTITIES][3];
@@ -2567,7 +2536,7 @@ public void OnEntityDestroyed(int entity)
 	
 	OnEntityDestroyed_Build_On_Build(entity);
 	
-	NPC_Base_OnEntityDestroyed(entity);
+	NPC_Base_OnEntityDestroyed();
 }
 
 public void RemoveNpcThingsAgain(int entity)
@@ -2688,10 +2657,19 @@ void GiveXP(int client, int xp)
 	{
 		static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
 		ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
-		SetEntityHealth(client, SDKCall_GetMaxHealth(client) * 3 / 2);
+		
+		int maxhealth = SDKCall_GetMaxHealth(client);
+		if(GetClientHealth(client) < maxhealth)
+			SetEntityHealth(client, maxhealth);
+		
+#if defined RPG
+		SPrintToChat(client, "%t", "Level Up", nextLevel);
+#else
 		SetGlobalTransTarget(client);
 		PrintToChat(client, "%t", "Level Up", nextLevel);
+#endif
 		
+#if defined ZR
 		bool found;
 		int slots;
 		
@@ -2712,17 +2690,30 @@ void GiveXP(int client, int xp)
 		{
 			PrintToChat(client, "%t", "None");
 		}
+#endif
+
+#if defined RPG
+		Level[client] = nextLevel;
+#endif
 	}
 }
 
 int XpToLevel(int xp)
 {
+#if defined ZR
 	return RoundToFloor(Pow(xp/200.0, 0.5));
+#else
+	return RoundToFloor(Pow(xp/100.0, 0.5));
+#endif
 }
 
 int LevelToXp(int lv)
 {
+#if defined ZR
 	return RoundToCeil(Pow(float(lv), 2.0)*200.0);
+#else
+	return RoundToCeil(Pow(float(lv), 2.0)*100.0);
+#endif
 }
 /*
 public void Frame_OffCheats()

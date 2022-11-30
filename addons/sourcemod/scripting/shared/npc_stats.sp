@@ -1,10 +1,24 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#if defined ZR
+enum
+{
+	TEUTON_NONE,
+	TEUTON_DEAD,
+	TEUTON_WAITING
+}
+
+int dieingstate[MAXTF2PLAYERS];
+int TeutonType[MAXTF2PLAYERS];
+int i_TeamGlow[MAXENTITIES]={-1, ...};
+#endif
+
 static int g_particleImpactFlesh;
 static int g_particleImpactRubber;
 static int g_modelArrow;
 
+static ConVar flTurnRate;
 
 static int g_sModelIndexBloodDrop;
 static int g_sModelIndexBloodSpray;
@@ -36,6 +50,7 @@ public Action Command_PetMenu(int client, int argc)
 	if(argc > 2)
 		ally = view_as<bool>(GetCmdArgInt(3));
 	
+#if defined ZR
 	int entity = Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer);
 	if(IsValidEntity(entity))
 	{
@@ -44,10 +59,14 @@ public Action Command_PetMenu(int client, int argc)
 			Zombies_Currently_Still_Ongoing += 1;
 		}
 	}
+#else
+	Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer);
+#endif
+
 	return Plugin_Handled;
 }
 
-public void OnMapStart_NPC_Base()
+void OnMapStart_NPC_Base()
 {
 	for (int i = 0; i < (sizeof(g_GibSound));   i++) { PrecacheSound(g_GibSound[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSoundMetal));   i++) { PrecacheSound(g_GibSoundMetal[i]);   }
@@ -59,6 +78,7 @@ public void OnMapStart_NPC_Base()
 	for (int i = 0; i < (sizeof(g_TankStepSound));   i++) { PrecacheSound(g_TankStepSound[i]);   }
 	for (int i = 0; i < (sizeof(g_RobotStepSound));   i++) { PrecacheSound(g_RobotStepSound[i]);   }
 	
+#if defined ZR
 	EscapeModeMap = false;
 	
 	char buffer[16];
@@ -72,7 +92,8 @@ public void OnMapStart_NPC_Base()
 		EscapeModeMap = true;
 		break;
 	}
-	
+#endif
+
 	g_sModelIndexBloodDrop = PrecacheModel("sprites/bloodspray.vmt");
 	g_sModelIndexBloodSpray = PrecacheModel("sprites/blood.vmt");
 	
@@ -90,157 +111,10 @@ public void OnMapStart_NPC_Base()
 	
 	InitNavGamedata();
 	
-	HeadcrabZombie_OnMapStart_NPC();
-	Fortified_HeadcrabZombie_OnMapStart_NPC();
-	FastZombie_OnMapStart_NPC();
-	FortifiedFastZombie_OnMapStart_NPC();
-	TorsolessHeadcrabZombie_OnMapStart_NPC();
-	FortifiedGiantPoisonZombie_OnMapStart_NPC();
-	PoisonZombie_OnMapStart_NPC();
-	FortifiedPoisonZombie_OnMapStart_NPC();
-	FatherGrigori_OnMapStart_NPC();
-	
-	Combine_Police_Pistol_OnMapStart_NPC();
-	CombinePoliceSmg_OnMapStart_NPC();
-	CombineSoldierAr2_OnMapStart_NPC();
-	CombineSoldierShotgun_OnMapStart_NPC();
-	CombineSwordsman_OnMapStart_NPC();
-	CombineElite_OnMapStart_NPC();
-	CombineGaint_OnMapStart_NPC();
-	CombineDDT_OnMapStart_NPC();
-	CombineCollos_OnMapStart_NPC();
-	CombineOverlord_OnMapStart_NPC();
-	
-	Scout_OnMapStart_NPC();
-	Engineer_OnMapStart_NPC();
-	Heavy_OnMapStart_NPC();
-	FlyingArmor_OnMapStart_NPC();
-	FlyingArmorTiny_OnMapStart_NPC();
-	Kamikaze_OnMapStart_NPC();
-	MedicHealer_OnMapStart_NPC();
-	HeavyGiant_OnMapStart_NPC();
-	Spy_OnMapStart_NPC();
-	Soldier_OnMapStart_NPC();
-	SoldierMinion_OnMapStart_NPC();
-	SoldierGiant_OnMapStart_NPC();
-	
-	SpyThief_OnMapStart_NPC();
-	SpyTrickstabber_OnMapStart_NPC();
-	SpyCloaked_OnMapStart_NPC();
-	SniperMain_OnMapStart_NPC();
-	DemoMain_OnMapStart_NPC();
-	MedicMain_OnMapStart_NPC();
-	PyroGiant_OnMapStart_NPC();
-	CombineDeutsch_OnMapStart_NPC();
-	Alt_CombineDeutsch_OnMapStart_NPC();
-	SpyMainBoss_OnMapStart_NPC();
-	/*
-	XenoHeadcrabZombie_OnMapStart_NPC();
-	XenoFortified_HeadcrabZombie_OnMapStart_NPC();
-	XenoFastZombie_OnMapStart_NPC();
-	XenoFortifiedFastZombie_OnMapStart_NPC();
-	XenoTorsolessHeadcrabZombie_OnMapStart_NPC();
-	XenoFortifiedGiantPoisonZombie_OnMapStart_NPC();
-	XenoPoisonZombie_OnMapStart_NPC();
-	XenoFortifiedPoisonZombie_OnMapStart_NPC();
-	*/
-	XenoFatherGrigori_OnMapStart_NPC();
-	/*
-	XenoCombine_Police_Pistol_OnMapStart_NPC();
-	XenoCombinePoliceSmg_OnMapStart_NPC();
-	XenoCombineSoldierAr2_OnMapStart_NPC();
-	XenoCombineSoldierShotgun_OnMapStart_NPC();
-	XenoCombineSwordsman_OnMapStart_NPC();
-	XenoCombineElite_OnMapStart_NPC();
-	XenoCombineGaint_OnMapStart_NPC();
-	XenoCombineDDT_OnMapStart_NPC();
-	XenoCombineCollos_OnMapStart_NPC();
-	XenoCombineOverlord_OnMapStart_NPC();
-	
-	XenoScout_OnMapStart_NPC();
-	XenoEngineer_OnMapStart_NPC();
-	XenoHeavy_OnMapStart_NPC();
-	XenoFlyingArmor_OnMapStart_NPC();
-	XenoFlyingArmorTiny_OnMapStart_NPC();
-	XenoKamikaze_OnMapStart_NPC();
-	MedicHealer_OnMapStart_NPC();
-	XenoHeavyGiant_OnMapStart_NPC();
-	XenoSpy_OnMapStart_NPC();
-	XenoSoldier_OnMapStart_NPC();
-	XenoSoldierMinion_OnMapStart_NPC();
-	XenoSoldierGiant_OnMapStart_NPC();
-	*/
-	
-	/*
-	XenoSpyThief_OnMapStart_NPC();
-	XenoSpyTrickstabber_OnMapStart_NPC();
-	XenoSpyCloaked_OnMapStart_NPC();
-	XenoSniperMain_OnMapStart_NPC();
-	XenoDemoMain_OnMapStart_NPC();
-	XenoMedicMain_OnMapStart_NPC();
-	XenoPyroGiant_OnMapStart_NPC();
-	XenoCombineDeutsch_OnMapStart_NPC();
-	XenoSpyMainBoss_OnMapStart_NPC();
-	*/
-	NaziPanzer_OnMapStart_NPC();
-	BobTheGod_OnMapStart_NPC();
-	NecroCombine_OnMapStart_NPC();
-	NecroCalcium_OnMapStart_NPC();
-	CuredFatherGrigori_OnMapStart_NPC();
-	
-	Bloon_MapStart();
-	Moab_MapStart();
-	Bfb_MapStart();
-	Zomg_MapStart();
-	DDT_MapStart();
-	Bad_MapStart();
-	AltMedicApprenticeMage_OnMapStart_NPC();
-	SawRunner_OnMapStart_NPC();
-	TrueFusionWarrior_OnMapStart();
-	AltMedicCharger_OnMapStart_NPC();
-	AltMedicBerseker_OnMapStart_NPC();
-	
-	MedivalMilitia_OnMapStart_NPC();
-	MedivalArcher_OnMapStart_NPC();
-	MedivalManAtArms_OnMapStart_NPC();
-	MedivalSkirmisher_OnMapStart_NPC();
-	MedivalSwordsman_OnMapStart_NPC();
-	MedivalTwoHandedSwordsman_OnMapStart_NPC();
-	MedivalCrossbowMan_OnMapStart_NPC();
-	MedivalSpearMan_OnMapStart_NPC();
-	MedivalHandCannoneer_OnMapStart_NPC();
-	MedivalEliteSkirmisher_OnMapStart_NPC();
-	Blitzkrieg_OnMapStart();
-	MedivalPikeman_OnMapStart_NPC();
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_OnMapStart_NPC();
-	Citizen_OnMapStart();
-	MedivalEagleScout_OnMapStart_NPC();
-	MedivalSamurai_OnMapStart_NPC();
-	Kahmlstein_OnMapStart_NPC();
-	Sniper_railgunner_OnMapStart_NPC();
-	
-	L4D2_Tank_OnMapStart_NPC();
-	Addiction_OnMapStart_NPC();
-	MedivalRam_OnMapStart();
-	
-	Soldier_Barrager_OnMapStart_NPC();
-	The_Shit_Slapper_OnMapStart_NPC();
-	
-	BasicBones_OnMapStart_NPC();
-	Itstilives_MapStart();
-	
-	Mecha_Engineer_OnMapStart_NPC();
-	Mecha_Heavy_OnMapStart_NPC();
-	Mecha_HeavyGiant_OnMapStart_NPC();
-	Mecha_PyroGiant_OnMapStart_NPC();
-	Mecha_Scout_OnMapStart_NPC();
-	
-	Donnerkrieg_OnMapStart_NPC();
-	Schwertkrieg_OnMapStart_NPC();
-	PhantomKnight_OnMapStart_NPC();
+	NPC_MapStart();
 }
 
-public void NPC_Base_OnEntityDestroyed(int entity)
+void NPC_Base_OnEntityDestroyed()
 {
 	//	OnEntityDestroyed_NPC(entity);
 	RequestFrame(DHookCleanIds);
@@ -358,9 +232,7 @@ methodmap CClotBody
 			SetEntityCollisionGroup(npc, 24);
 		}
 		
-		
-		
-		
+#if defined ZR
 		//Enable Harder zombies once in freeplay.
 		if(!EscapeModeForNpc)
 		{
@@ -369,7 +241,8 @@ methodmap CClotBody
 				EscapeModeForNpc = true;
 			}
 		}
-		
+#endif
+
 		Address pNB =		 SDKCall(g_hMyNextBotPointer,	   npc);
 		Address pLocomotion = SDKCall(g_hGetLocomotionInterface, pNB);
 		if(pLocomotion < view_as<Address>(0x10000))
@@ -384,7 +257,11 @@ methodmap CClotBody
 		
 		if(!Ally)
 		{
+#if defined ZR
 			if(IgnoreBuildings || IsValidEntity(EntRefToEntIndex(RaidBossActive))) //During an active raidboss, make sure that they ignore barricades
+#else
+			if(IgnoreBuildings)
+#endif
 			{
 				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyEnemyIngoreBuilding,   false, pLocomotion);
 			}
@@ -517,7 +394,8 @@ methodmap CClotBody
 		SetEntPropVector(npc, Prop_Data, "m_vecMaxsPreScaled", m_vecMaxsNothing);
 		SetEntPropVector(npc, Prop_Send, "m_vecMinsPreScaled", m_vecMinsNothing);
 		SetEntPropVector(npc, Prop_Data, "m_vecMinsPreScaled", m_vecMinsNothing);
-		
+
+#if defined ZR
 		if(Ally)
 		{
 			CClotBody npcstats = view_as<CClotBody>(npc);
@@ -526,12 +404,13 @@ methodmap CClotBody
 			SetVariantColor(view_as<int>({184, 56, 59, 200}));
 			AcceptEntityInput(npcstats.m_iTeamGlow, "SetGlowColor");
 		}
-		
+#endif
+
 		SDKHook(npc, SDKHook_OnTakeDamage, NPC_OnTakeDamage_Base);
 		SDKHook(npc, SDKHook_Think, Check_If_Stuck);
 		SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
 		
-		HeadcrabZombie CreatePathfinderIndex = view_as<HeadcrabZombie>(npc);
+		CClotBody CreatePathfinderIndex = view_as<CClotBody>(npc);
 		
 		if(IsRaidBoss)
 			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.1, 1.75); //Global.
@@ -1156,9 +1035,16 @@ methodmap CClotBody
 		float Gametime = GetGameTime();
 		
 		bool Is_Boss = true;
-		if(!this.m_bThisNpcIsABoss && EntRefToEntIndex(RaidBossActive) != this.index)
+		if(!this.m_bThisNpcIsABoss)
 		{
-			Is_Boss = false;
+			
+#if defined ZR
+			if(EntRefToEntIndex(RaidBossActive) != this.index)
+#endif
+			
+			{
+				Is_Boss = false;
+			}
 		}
 		
 		if(f_TankGrabbedStandStill[this.index] > GetGameTime(this.index))
@@ -1371,6 +1257,7 @@ methodmap CClotBody
 			}
 		}
 	}
+#if defined ZR
 	property int m_iTeamGlow
 	{
 		public get()		 
@@ -1389,6 +1276,7 @@ methodmap CClotBody
 			}
 		}
 	}
+#endif
 	property int m_iWearable1
 	{
 		public get()		 
@@ -1659,9 +1547,9 @@ methodmap CClotBody
 		PF_EnableCallback(this.index, PFCB_GetPathCost,		 PluginBot_PathCost);
 	//	PF_EnableCallback(this.index, PFCB_ClimbUpToLedge, 		PluginBot_NormalJump);
 	//	PF_EnableCallback(this.index, PFCB_PathSuccess,			PluginBot_PathSuccess);
-		PF_EnableCallback(this.index, PFCB_OnMoveToSuccess,	 PluginBot_MoveToSuccess);
-		PF_EnableCallback(this.index, PFCB_PathFailed,		  PluginBot_MoveToFailure);
-		PF_EnableCallback(this.index, PFCB_OnMoveToFailure,	 PluginBot_MoveToFailure);
+		//PF_EnableCallback(this.index, PFCB_OnMoveToSuccess,	 PluginBot_MoveToSuccess);
+		//PF_EnableCallback(this.index, PFCB_PathFailed,		  PluginBot_MoveToFailure);
+		//PF_EnableCallback(this.index, PFCB_OnMoveToFailure,	 PluginBot_MoveToFailure);
 		
 		PF_EnableCallback(this.index, PFCB_OnActorEmoted, PluginBot_OnActorEmoted);
 		
@@ -1691,7 +1579,6 @@ methodmap CClotBody
 	{
 		
 		//Sad!
-		ConVar flTurnRate = FindConVar("tf_base_boss_max_turn_rate");
 		float flPrevValue = flTurnRate.FloatValue;
 		
 		flTurnRate.FloatValue = turnrate;
@@ -1818,11 +1705,15 @@ methodmap CClotBody
 	//	TE_SetupBeamPoints(vecSwingStart, vecSwingEnd, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
 	//	TE_SendToAll();
 		
+#if defined ZR
 		bool ingore_buildings = false;
 		if(Ignore_Buildings || IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 		{
 			ingore_buildings = true;
 		}
+#else
+		bool ingore_buildings = Ignore_Buildings;
+#endif
 		// See if we hit anything.
 		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, ingore_buildings ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, this.index );
 		/*
@@ -2266,7 +2157,7 @@ enum ActivityType
 
 public void NPC_Base_InitGamedata()
 {
-	
+	flTurnRate = FindConVar("tf_base_boss_max_turn_rate");
 	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_ROOT);
 	
 	
@@ -2654,8 +2545,6 @@ public void NPC_Base_InitGamedata()
 	
 	HookIdMap = new StringMap();
 	HookListMap = new StringMap();
-	
-	BobTheGod_OnPluginStart();
 }
 
 Handle DHookCreateEx(Handle gc, const char[] key, HookType hooktype, ReturnType returntype, ThisPointerType thistype, DHookCallback callback)
@@ -2718,19 +2607,21 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		CClotBody npc = view_as<CClotBody>(pThis);
 		SDKUnhook(pThis, SDKHook_OnTakeDamage, NPC_OnTakeDamage_Base);
 		SDKUnhook(pThis, SDKHook_Think, Check_If_Stuck);
+#if defined ZR
 		if(IsValidEntity(npc.m_iTeamGlow))
 			RemoveEntity(npc.m_iTeamGlow);
-		
+#endif
 		if(IsValidEntity(npc.m_iSpawnProtectionEntity))
 			RemoveEntity(npc.m_iSpawnProtectionEntity);
-			
-			
-			
+		
+#if defined ZR
 		if (EntRefToEntIndex(RaidBossActive) == pThis)
 		{
 			Raidboss_Clean_Everyone();
 		}
-		ZR_ApplyKillEffects(pThis); //Do kill attribute stuff
+#endif
+		
+		NPC_DeadEffects(pThis); //Do kill attribute stuff
 		b_NpcHasDied[pThis] = true;
 		NPCDeath(pThis);
 		
@@ -2757,13 +2648,16 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 				float damageForce[3];
 				npc.m_vecpunchforce(damageForce, false);
 
+#if defined RPG
+				bool Limit_Gibs = true;
+#else
 				bool Limit_Gibs = false;
 
 				if(CurrentGibCount > ZR_MAX_GIBCOUNT)
 				{
 					Limit_Gibs = true;
 				}
-
+#endif
 				static int Main_Gib;
 				
 				
@@ -3507,7 +3401,8 @@ public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMas
 {
 	char class[64];
 	GetEntityClassname(entity, class, sizeof(class));
-	
+
+#if defined ZR
 	if(entity > 0 && entity <= MaxClients) 
 	{
 		if(TeutonType[entity])
@@ -3515,6 +3410,8 @@ public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMas
 			return false;
 		}
 	}
+#endif
+
 	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
 	{
 		return false;
@@ -3704,34 +3601,31 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 	}
 	return false;
 }
-
+/*
 public void PluginBot_PathSuccess(int bot_entidx, Address path)
 {
-	/*
 	PF_StopPathing(bot_entidx);
 	view_as<CClotBody>(bot_entidx).m_bPathing = true;
-	*/
+	
 	//view_as<CClotBody>(bot_entidx).m_flNextTargetTime = GetGameTime() + GetRandomFloat(1.0, 4.0);
 }
 
 public void PluginBot_MoveToSuccess(int bot_entidx, Address path)
 {
-	/*
 	PF_StopPathing(bot_entidx);
 	view_as<CClotBody>(bot_entidx).m_bPathing = false;
-	*/
+	
 	//view_as<CClotBody>(bot_entidx).m_flNextTargetTime = GetGameTime() + GetRandomFloat(1.0, 4.0);
 }
 
 public void PluginBot_MoveToFailure(int bot_entidx, Address path, MoveToFailureType type)
 {
-	/*
 	PF_StopPathing(bot_entidx);
 	view_as<CClotBody>(bot_entidx).m_bPathing = false;
-	*/
+	
 	//view_as<CClotBody>(bot_entidx).m_flNextTargetTime = GetGameTime() + GetRandomFloat(1.0, 4.0);
 }
-
+*/
 stock bool IsEntityAlive(int index)
 {
 	if(IsValidEntity(index) && index > 0)
@@ -4281,9 +4175,12 @@ public bool TraceRayHitPlayersOnly(int entity,int mask,any data)
 {
 	if (entity > 0 && entity <= MaxClients)
 	{
-		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0 && !b_DoNotUnStuck[entity] && !b_ThisEntityIgnored[entity])
+#if defined ZR
+		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0)
+#endif
 		{
-			return true;
+			if(!b_DoNotUnStuck[entity] && !b_ThisEntityIgnored[entity])
+				return true;
 		}
 	}
 	
@@ -4601,23 +4498,35 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 	
 	if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
 	{
+		
+#if defined ZR
 		if(Medival_Difficulty_Level != 0.0)
 		{
 			damage *= Medival_Difficulty_Level;
 		}
 		
 		if(fl_MeleeArmor[victim] >= 1.0 || !Building_DoesPierce(attacker))
+#endif
+		
+		{
 			damage *= fl_MeleeArmor[victim];
+		}
 	}
 	else if(!(damagetype & DMG_SLASH))
 	{
+		
+#if defined ZR
 		if(Medival_Difficulty_Level != 0.0)
 		{
 			damage *= Medival_Difficulty_Level;
 		}
 		
 		if(fl_RangedArmor[victim] >= 1.0 || !Building_DoesPierce(attacker))
+#endif
+		
+		{
 			damage *= fl_RangedArmor[victim];
+		}
 	}
 	//No resistances towards slash as its internal.
 	
@@ -4693,8 +4602,10 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 			knockback *= Attribute_Knockback;
 		}
 		
+#if defined ZR
 		knockback *= 0.75; //oops, too much knockback now!
-						
+#endif
+		
 		ScaleVector(vDirection, knockback);
 		
 		if(!override)
@@ -4900,37 +4811,44 @@ static int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.
 
 public void GibCollidePlayerInteraction(int gib, int player)
 {
-	if(b_IsCannibal[player] && dieingstate[player] == 0)
+	if(b_IsCannibal[player])
 	{
-		int weapon = GetEntPropEnt(player, Prop_Send, "m_hActiveWeapon");
-		if(IsValidEntity(weapon)) //Must also hold melee out 
+		
+#if defined ZR
+		if(dieingstate[player] == 0)
+#endif
+		
 		{
-			if(!IsWandWeapon(weapon)) //Make sure its not wand.
+			int weapon = GetEntPropEnt(player, Prop_Send, "m_hActiveWeapon");
+			if(IsValidEntity(weapon)) //Must also hold melee out 
 			{
-				if(SDKCall_GetMaxHealth(player) > GetEntProp(player, Prop_Send, "m_iHealth"))
+				if(!IsWandWeapon(weapon)) //Make sure its not wand.
 				{
-					float Heal_Amount = 0.0;
-					
-					Address address = TF2Attrib_GetByDefIndex(weapon, 180);
-					if(address != Address_Null)
-						Heal_Amount = TF2Attrib_GetValue(address);
-			
-					
-					int Heal_Amount_calc;
-					
-					Heal_Amount_calc = RoundToNearest(Heal_Amount * 0.75);
-					
-					if(Heal_Amount_calc > 0)
+					if(SDKCall_GetMaxHealth(player) > GetEntProp(player, Prop_Send, "m_iHealth"))
 					{
-						if(b_LimitedGibGiveMoreHealth[gib])
+						float Heal_Amount = 0.0;
+						
+						Address address = TF2Attrib_GetByDefIndex(weapon, 180);
+						if(address != Address_Null)
+							Heal_Amount = TF2Attrib_GetValue(address);
+				
+						
+						int Heal_Amount_calc;
+						
+						Heal_Amount_calc = RoundToNearest(Heal_Amount * 0.75);
+						
+						if(Heal_Amount_calc > 0)
 						{
-							Heal_Amount_calc *= 3;
+							if(b_LimitedGibGiveMoreHealth[gib])
+							{
+								Heal_Amount_calc *= 3;
+							}
+							StartHealingTimer(player, 0.1, 1, Heal_Amount_calc);
+							int sound = GetRandomInt(0, sizeof(g_GibEating) - 1);
+							EmitSoundToAll(g_GibEating[sound], player, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+							RemoveEntity(gib);
+							CurrentGibCount -= 1;
 						}
-						StartHealingTimer(player, 0.1, 1, Heal_Amount_calc);
-						int sound = GetRandomInt(0, sizeof(g_GibEating) - 1);
-						EmitSoundToAll(g_GibEating[sound], player, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-						RemoveEntity(gib);
-						CurrentGibCount -= 1;
 					}
 				}
 			}
@@ -5041,7 +4959,6 @@ public bool PluginBot_NormalJump(int bot_entidx, float vecPos[3], const float di
 {
 	return view_as<CClotBody>(bot_entidx).PluginBot_Jump_Now(vecPos, dir);
 }
-*/
 
 public bool PluginBot_Jump_Now(int bot_index)
 {
@@ -5083,7 +5000,7 @@ public bool PluginBot_Jump_Now(int bot_index)
 		
 	}
 	return true;
-}
+}*/
 
 public Action Did_They_Get_Suck(Handle cut_timer, int ref)
 {
@@ -5617,8 +5534,8 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 	return pathTarget;
 }
 
-float f_PickThisDirectionForabit[MAXENTITIES];
-int i_PickThisDirectionForabit[MAXENTITIES];
+static float f_PickThisDirectionForabit[MAXENTITIES];
+static int i_PickThisDirectionForabit[MAXENTITIES];
 
 stock float[] BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject, float extra_backoff = 64.0)
 {
@@ -5774,6 +5691,8 @@ stock float[] BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject,
 
 public Action SDKHook_Settransmit_Baseboss(int entity, int client)
 {
+	
+#if defined ZR
 	if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
 	{
 		if(b_thisNpcIsABoss[entity] || b_thisNpcHasAnOutline[entity] || EntRefToEntIndex(RaidBossActive) == entity)
@@ -5783,6 +5702,8 @@ public Action SDKHook_Settransmit_Baseboss(int entity, int client)
 		return Plugin_Continue;
 	}
 	else
+#endif
+	
 	{
 		SetEdictFlags(entity, (GetEdictFlags(entity) & ~FL_EDICT_ALWAYS));
 	}
@@ -6179,6 +6100,7 @@ stock bool IsValidAlly(int index, int ally)
 
 public void PluginBot_OnActorEmoted(int bot_entidx, int who, int concept)
 {
+#if defined ZR
 	switch(i_NpcInternalId[bot_entidx])
 	{
 		case BOB_THE_GOD_OF_GODS:
@@ -6186,6 +6108,7 @@ public void PluginBot_OnActorEmoted(int bot_entidx, int who, int concept)
 			BobTheGod_PluginBot_OnActorEmoted(bot_entidx, who, concept);
 		}
 	}
+#endif
 }
 
 stock float ApproachAngle( float target, float value, float speed )
@@ -6235,6 +6158,10 @@ stock float fmodf(float num, float denom)
 
 public void SetDefaultValuesToZeroNPC(int entity)
 {
+#if defined ZR
+	i_SpawnProtectionEntity[entity] = -1;
+#endif
+
 	i_Wearable[entity][0] = -1;
 	i_Wearable[entity][1] = -1;
 	i_Wearable[entity][2] = -1;
@@ -6242,7 +6169,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Wearable[entity][4] = -1;
 	i_Wearable[entity][5] = -1;
 	i_TeamGlow[entity] = -1;
-	i_SpawnProtectionEntity[entity] = -1;
 	b_DissapearOnDeath[entity] = false;
 	b_IsGiant[entity] = false;
 	b_Pathing[entity] = false;
@@ -6364,6 +6290,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	FormatEx(c_HeadPlaceAttachmentGibName[entity], sizeof(c_HeadPlaceAttachmentGibName[]), "");
 }
 
+#if defined ZR
 public void Raidboss_Clean_Everyone()
 {
 	int base_boss;
@@ -6381,6 +6308,7 @@ public void Raidboss_Clean_Everyone()
 		}
 	}
 }
+#endif
 
 public void ArrowStartTouch(int arrow, int entity)
 {
@@ -6481,7 +6409,7 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 	return MRES_Ignored;
 }
 
-
+/*
 public MRESReturn Dhook_ResolveCollision_Pre()
 {
 	PrintToChatAll("-----");
@@ -6495,7 +6423,7 @@ public MRESReturn Dhook_ResolveCollision_Post()
 	PrintToChatAll("-----");
 	return MRES_Ignored;
 }
-
+*/
 
 public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask, bool originalResult)
 {
@@ -6809,19 +6737,25 @@ bool Resize_OneTrace(const float startPos[3], const float endPos[3])
 
 bool Resize_TracePlayersAndBuildings(int entity, int contentsMask)
 {
-	if(IsValidClient(entity) && TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0 && !b_DoNotUnStuck[entity] && !b_ThisEntityIgnored[entity])
+	if(entity > 0 && entity <= MaxClients)
 	{
-		if (GetClientTeam(entity) != ResizeMyTeam)
+		
+#if defined ZR
+		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0)
+#endif
+		
 		{
-			ResizeTraceFailed = true;
+			if (!b_DoNotUnStuck[entity] && !b_ThisEntityIgnored[entity] && GetClientTeam(entity) != ResizeMyTeam)
+			{
+				ResizeTraceFailed = true;
+			}
 		}
 	}
 	else if (IsValidEntity(entity))
 	{
 		static char classname[MAX_ENTITY_CLASSNAME_LENGTH];
 		GetEntityClassname(entity, classname, sizeof(classname));
-		if ((strcmp(classname, "obj_sentrygun") == 0) || (strcmp(classname, "obj_dispenser") == 0) || (strcmp(classname, "obj_teleporter") == 0)
-			|| (strcmp(classname, "prop_dynamic") == 0) || (strcmp(classname, "func_door") == 0) || (strcmp(classname, "func_physbox") == 0) || (strcmp(classname, "base_boss") == 0) || (strcmp(classname, "func_breakable") == 0))
+		if ((StrContains(classname, "obj_") == 0) || (strcmp(classname, "prop_dynamic") == 0) || (strcmp(classname, "func_door") == 0) || (strcmp(classname, "func_physbox") == 0) || (strcmp(classname, "base_boss") == 0) || (strcmp(classname, "func_breakable") == 0))
 		{
 			if(!b_ThisEntityIgnored[entity] && ResizeMyTeam != GetEntProp(entity, Prop_Data, "m_iTeamNum"))
 			{

@@ -1,6 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+//#define ZR_ApplyKillEffects NPC_DeadEffects
+#define ZR_GetWaveCount Waves_GetRound
+
 public const int AmmoData[][] =
 {
 	// Price, Ammo
@@ -56,6 +59,24 @@ public const char PerkNames_Recieved[][] =
 	"Deadshot Daiquiri Recieved",
 	"Widows Wine Recieved",
 };
+
+enum
+{
+	WEAPON_ARK = 1,
+	WEAPON_FUSION = 2,
+	WEAPON_BOUNCING = 3,
+	WEAPON_MAIMMOAB = 4,
+	WEAPON_CRIPPLEMOAB = 5
+}
+
+int PlayerPoints[MAXTF2PLAYERS];
+int i_ExtraPlayerPoints[MAXTF2PLAYERS];
+int i_PreviousPointAmount[MAXTF2PLAYERS];
+
+int Healing_done_in_total[MAXTF2PLAYERS];
+int i_BarricadeHasBeenDamaged[MAXTF2PLAYERS];
+int Resupplies_Supplied[MAXTF2PLAYERS];
+bool WaitingInQueue[MAXTF2PLAYERS];
 
 float MultiGlobal = 0.25;
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
@@ -177,6 +198,8 @@ void ZR_PluginStart()
 	{
 		OnEntityCreated(ent, "info_player_teamspawn");	
 	}
+	
+	BobTheGod_OnPluginStart();
 }
 
 void ZR_MapStart()
