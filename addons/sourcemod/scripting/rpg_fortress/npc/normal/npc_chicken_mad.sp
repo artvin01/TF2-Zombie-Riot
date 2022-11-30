@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-
-static float f_DefaultAggroRange = 200;
 // this should vary from npc to npc as some are in a really small area.
 
 public void MadChicken_OnMapStart_NPC()
@@ -101,8 +99,8 @@ methodmap MadChicken < CClotBody
 //Rewrite
 public void MadChicken_ClotThink(int iNPC)
 {
-	MadChicken npc = view_as<MadChicken>(iNPC);
-	
+	CClotBody npc = view_as<CClotBody>(iNPC);
+
 	float gameTime = GetGameTime(npc.index);
 
 	static int NoNewEnemy;
@@ -131,39 +129,8 @@ public void MadChicken_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < gameTime) //Find a new victim to destroy.
-	{
-		int entity_found = GetClosestTarget(npc.index, false, f_DefaultAggroRange);
-		if(npc.fl_GetClosestTargetNoResetTime > gameTime) //We want to make sure that their aggro doesnt get reset instantly!
-		{
-			if(entity_found != -1) //Dont reset it, but if its someone else, allow it.
-			{
-				npc.m_iTarget = entity_found;
-			}
-		}
-		else //Allow the reset of aggro.
-		{
-			npc.m_iTarget = entity_found;
-		}
-		npc.m_flGetClosestTargetTime = gameTime + 1.0;
-	}
-
-	
-	if(!npc.m_bisWalking) //Dont move, or path. so that he doesnt rotate randomly, also happens when they stop follwing.
-	{
-		npc.m_flSpeed = 0.0;
-		if(npc.m_bPathing)
-		{
-			PF_StopPathing(npc.index);
-			npc.m_bPathing = false;	
-		}
-	}
-	else
-	{
-		npc.m_flSpeed = 150.0;
-		if(!npc.m_bPathing)
-			npc.StartPathing();
-	}
+	// npc.m_iTarget comes from here.
+	Npc_Base_Thinking(iNPC, 200.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 150.0, gameTime);
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -270,53 +237,6 @@ public void MadChicken_ClotThink(int iNPC)
 			}
 		}
 	}
-	else
-	{
-		NoNewEnemy += 1; //no enemy found, increment a few times.
-		if(NoNewEnemy > 11) //There was no enemies found after like 11 tries, which is a second. go back to our spawn position.
-		{	
-			float vecTarget[3];
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecTarget);
-
-			float fl_DistanceToOriginalSpawn = GetVectorDistance(vecTarget, f3_SpawnPosition, true);
-			if(fl_DistanceToOriginalSpawn > Pow(80.0, 2.0)) //We are too far away from our home! return!
-			{
-				if(npc.m_iChanged_WalkCycle != 4) 	
-				{
-					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_MP_RUN_MELEE");
-				}
-
-			}
-			else
-			{
-				//We now afk and are back in our spawnpoint heal back up, but not instantly incase they quickly can attack again.
-
-				int HealthToHealPerIncrement = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 100;
-
-				if(HealthToHealPerIncrement < 1) //should never be 0
-				{
-					HealthToHealPerIncrement = 1;
-				}
-
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealthToHealPerIncrement);
-
-				if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
-				{
-					SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-				}
-				//Slowly heal when we are standing still.
-
-				npc.m_bisWalking = false;
-				if(npc.m_iChanged_WalkCycle != 5) 	//Stand still.
-				{
-					npc.m_iChanged_WalkCycle = 5;
-					npc.SetActivity("ACT_MP_STAND_MELEE");
-				}
-			}
-		}
-		npc.m_flGetClosestTargetTime = 0.0;
-	}
 	npc.PlayIdleAlertSound();
 }
 
@@ -329,15 +249,15 @@ public Action MadChicken_OnTakeDamage(int victim, int &attacker, int &inflictor,
 
 	MadChicken npc = view_as<MadChicken>(victim);
 
-	float gametime = GetGameTime(npc.index);
+	float gameTime = GetGameTime(npc.index);
 
-	if (npc.m_flHeadshotCooldown < gametime)
+	if (npc.m_flHeadshotCooldown < gameTime)
 	{
-		npc.m_flHeadshotCooldown = gametime + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
 
-	npc.m_flGetClosestTargetNoResetTime = gametime + 5.0; //make them angry for 5 seconds if they are too far away.
+	npc.m_flGetClosestTargetNoResetTime = gameTime + 5.0; //make them angry for 5 seconds if they are too far away.
 
 	if(npc.m_iTarget == -1) //Only set it if they actaully have no target.
 	{
@@ -356,12 +276,12 @@ public void MadChicken_NPCDeath(int entity)
 	SDKUnhook(entity, SDKHook_OnTakeDamage, MadChicken_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, MadChicken_ClotThink);
 
-	if(IsValidEntity(npc.m_iWearable1))
-		RemoveEntity(npc.m_iWearable1);
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
+		if(IsValidEntity(npc.m_iWearable1))
+			RemoveEntity(npc.m_iWearable1);
+		if(IsValidEntity(npc.m_iWearable2))
+			RemoveEntity(npc.m_iWearable2);
+		if(IsValidEntity(npc.m_iWearable3))
+			RemoveEntity(npc.m_iWearable3);
 }
 
 

@@ -105,4 +105,120 @@ public void NPCDeath(int entity)
 	}*/
 }
 
+public void NPC_Despawn(int entity)
+{
+	if(IsValidEntity(entity))
+	{
+		CClotBody npc = view_as<CClotBody>(iNPC);
+		RemoveEntity(entity);
+
+		if(IsValidEntity(npc.m_iWearable1))
+			RemoveEntity(npc.m_iWearable1);
+		if(IsValidEntity(npc.m_iWearable2))
+			RemoveEntity(npc.m_iWearable2);
+		if(IsValidEntity(npc.m_iWearable3))
+			RemoveEntity(npc.m_iWearable3);
+		if(IsValidEntity(npc.m_iWearable4))
+			RemoveEntity(npc.m_iWearable4);
+		if(IsValidEntity(npc.m_iWearable5))
+			RemoveEntity(npc.m_iWearable5);
+		if(IsValidEntity(npc.m_iWearable6))
+			RemoveEntity(npc.m_iWearable6);
+	}
+
+
+}
+
+public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] StandStill, float walkspeedback, float gameTime)
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
+
+	if(npc.m_flGetClosestTargetTime < gameTime) //Find a new victim to destroy.
+	{
+		int entity_found = GetClosestTarget(npc.index, false, f_DefaultAggroRange);
+		if(npc.m_flGetClosestTargetNoResetTime > gameTime) //We want to make sure that their aggro doesnt get reset instantly!
+		{
+			if(entity_found != -1) //Dont reset it, but if its someone else, allow it.
+			{
+				npc.m_iTarget = entity_found;
+			}
+		}
+		else //Allow the reset of aggro.
+		{
+			npc.m_iTarget = entity_found;
+		}
+		npc.m_flGetClosestTargetTime = gameTime + 1.0;
+	}
+
+	if(!IsValidEnemy(npc.index, npc.m_iTarget))
+	{
+		NoNewEnemy += 1; //no enemy found, increment a few times.
+		if(NoNewEnemy > 11) //There was no enemies found after like 11 tries, which is a second. go back to our spawn position.
+		{	
+			float vecTarget[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecTarget);
+
+			float fl_DistanceToOriginalSpawn = GetVectorDistance(vecTarget, f3_SpawnPosition, true);
+			if(fl_DistanceToOriginalSpawn > Pow(80.0, 2.0)) //We are too far away from our home! return!
+			{
+				if(npc.m_iChanged_WalkCycle != 4) 	
+				{
+					npc.m_iChanged_WalkCycle = 4;
+					npc.SetActivity(WalkBack);
+				}
+
+			}
+			else
+			{
+				//We now afk and are back in our spawnpoint heal back up, but not instantly incase they quickly can attack again.
+
+				int HealthToHealPerIncrement = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 100;
+
+				if(HealthToHealPerIncrement < 1) //should never be 0
+				{
+					HealthToHealPerIncrement = 1;
+				}
+
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealthToHealPerIncrement);
+
+				if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+				{
+					SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+				}
+				//Slowly heal when we are standing still.
+
+				npc.m_bisWalking = false;
+				if(npc.m_iChanged_WalkCycle != 5) 	//Stand still.
+				{
+					npc.m_iChanged_WalkCycle = 5;
+					npc.SetActivity(StandStill);
+				}
+			}
+		}
+		npc.m_flGetClosestTargetTime = 0.0;
+	}
+
+	if(!npc.m_bisWalking) //Dont move, or path. so that he doesnt rotate randomly, also happens when they stop follwing.
+	{
+		if(walkspeedback != 0.0)
+		{
+			npc.m_flSpeed = 0.0;
+		}
+		if(npc.m_bPathing)
+		{
+			PF_StopPathing(npc.index);
+			npc.m_bPathing = false;	
+		}
+	}
+	else
+	{
+		if(walkspeedback != 0.0)
+		{
+			npc.m_flSpeed = walkspeedback;
+		}
+		if(!npc.m_bPathing)
+			npc.StartPathing();
+	}
+}
+
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"
