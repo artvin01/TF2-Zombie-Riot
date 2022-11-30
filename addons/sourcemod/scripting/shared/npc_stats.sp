@@ -2,6 +2,8 @@
 #pragma newdecls required
 
 #if defined ZR
+// Stuff that's used only for ZR but npc_stats
+// needs so it can't go into the zr_core.sp
 enum
 {
 	TEUTON_NONE,
@@ -12,6 +14,16 @@ enum
 int dieingstate[MAXTF2PLAYERS];
 int TeutonType[MAXTF2PLAYERS];
 int i_TeamGlow[MAXENTITIES]={-1, ...};
+bool EscapeModeForNpc;
+int Zombies_Currently_Still_Ongoing;
+int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
+float Medival_Difficulty_Level = 0.0;
+int i_KillsMade[MAXTF2PLAYERS];
+int i_Backstabs[MAXTF2PLAYERS];
+int i_Headshots[MAXTF2PLAYERS];	
+bool b_ThisNpcIsSawrunner[MAXENTITIES];
+bool b_thisNpcHasAnOutline[MAXENTITIES];
+bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 #endif
 
 static int g_particleImpactFlesh;
@@ -382,9 +394,9 @@ methodmap CClotBody
 
 		if(CustomThreeDimensions[1] != 0.0)
 		{
-			f3_CustomMinMaxBoundingBox[entity][0] = CustomThreeDimensions[0];
-			f3_CustomMinMaxBoundingBox[entity][1] = CustomThreeDimensions[1];
-			f3_CustomMinMaxBoundingBox[entity][2] = CustomThreeDimensions[2];
+			f3_CustomMinMaxBoundingBox[npc][0] = CustomThreeDimensions[0];
+			f3_CustomMinMaxBoundingBox[npc][1] = CustomThreeDimensions[1];
+			f3_CustomMinMaxBoundingBox[npc][2] = CustomThreeDimensions[2];
 			m_vecMaxs = view_as<float>( { CustomThreeDimensions[0], CustomThreeDimensions[1], CustomThreeDimensions[2] } );
 			m_vecMins = view_as<float>( { -CustomThreeDimensions[0], -CustomThreeDimensions[1], 0.0 } );	
 		}

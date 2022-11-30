@@ -69,6 +69,93 @@ enum
 	WEAPON_CRIPPLEMOAB = 5
 }
 
+ConVar zr_voteconfig;
+ConVar zr_tagblacklist;
+ConVar zr_tagwhitelist;
+ConVar zr_minibossconfig;
+ConVar zr_ignoremapconfig;
+ConVar zr_smallmapbalancemulti;
+int CurrentGame;
+bool b_GameOnGoing = true;
+//bool b_StoreGotReset = false;
+int CurrentCash;
+bool LastMann;
+bool EscapeMode;
+
+//bool RaidMode; 							//Is this raidmode?
+float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
+float RaidModeTime = 0.0;
+float f_TimerTickCooldownRaid = 0.0;
+float f_TimerTickCooldownShop = 0.0;
+int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
+
+int PlayersAliveScaling;
+int PlayersInGame;
+int GlobalIntencity;
+bool b_HasBeenHereSinceStartOfWave[MAXTF2PLAYERS];
+Cookie CookieScrap;
+Cookie CookiePlayStreak;
+Cookie CookieCache;
+ArrayList Loadouts[MAXTF2PLAYERS];
+
+float f_RingDelayGift[MAXENTITIES];
+
+//custom wave music.
+char char_MusicString1[256];
+int i_MusicLength1;
+char char_MusicString2[256];
+int i_MusicLength2;
+//custom wave music.
+float f_DelaySpawnsForVariousReasons;
+int CurrentRound;
+int CurrentWave = -1;
+int StartCash;
+float RoundStartTime;
+char WhatDifficultySetting[64];
+float healing_cooldown[MAXTF2PLAYERS];
+float Damage_dealt_in_total[MAXTF2PLAYERS];
+int i_Damage_dealt_in_total[MAXTF2PLAYERS];
+float f_TimeAfterSpawn[MAXTF2PLAYERS];
+
+#define SF2_PLAYER_VIEWBOB_TIMER 10.0
+#define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
+#define SF2_PLAYER_VIEWBOB_SCALE_Y 0.0
+#define SF2_PLAYER_VIEWBOB_SCALE_Z 0.0
+
+float Armor_regen_delay[MAXTF2PLAYERS];
+
+int i_SvRollAngle[MAXTF2PLAYERS];
+
+Handle SyncHud_ArmorCounter;
+	
+int CashSpent[MAXTF2PLAYERS];
+int CashSpentTotal[MAXTF2PLAYERS];
+int CashRecievedNonWave[MAXTF2PLAYERS];
+int Scrap[MAXTF2PLAYERS];
+int Ammo_Count_Ready[MAXTF2PLAYERS];
+//float Armor_Ready[MAXTF2PLAYERS];
+
+int Armour_Level_Current[MAXTF2PLAYERS];
+int Armor_Charge[MAXTF2PLAYERS];
+
+int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
+int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
+int i_BarricadesBuild[MAXTF2PLAYERS]={0, ...};
+
+//float Resistance_for_building_High[MAXENTITIES];
+int i_WhatBuilding[MAXENTITIES]={0, ...};
+bool Building_Constructed[MAXENTITIES]={false, ...};
+
+int Elevator_Owner[MAXENTITIES]={0, ...};
+bool Is_Elevator[MAXENTITIES]={false, ...};
+int Dont_Crouch[MAXENTITIES]={0, ...};
+
+int StoreWeapon[MAXENTITIES];
+int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
+int i_HealthBeforeSuit[MAXTF2PLAYERS]={0, ...};
+
+int Level[MAXTF2PLAYERS];
+int XP[MAXTF2PLAYERS];
 int PlayerPoints[MAXTF2PLAYERS];
 int i_ExtraPlayerPoints[MAXTF2PLAYERS];
 int i_PreviousPointAmount[MAXTF2PLAYERS];
@@ -78,8 +165,46 @@ int i_BarricadeHasBeenDamaged[MAXTF2PLAYERS];
 int Resupplies_Supplied[MAXTF2PLAYERS];
 bool WaitingInQueue[MAXTF2PLAYERS];
 
+int Armor_table_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
+int i_Healing_station_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
+int Perk_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
+int Pack_A_Punch_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
+
+int i_ThisEntityHasAMachineThatBelongsToClient[MAXENTITIES];
+int i_ThisEntityHasAMachineThatBelongsToClientMoney[MAXENTITIES];
+
 float MultiGlobal = 0.25;
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
+			
+int g_CarriedDispenser[MAXPLAYERS+1];
+int i_BeingCarried[MAXENTITIES];
+float f_BuildingIsNotReady[MAXTF2PLAYERS];
+
+float GlobalAntiSameFrameCheck_NPC_SpawnNext;
+//bool b_AllowBuildCommand[MAXPLAYERS + 1];
+
+int Building_Mounted[MAXENTITIES];
+bool b_SentryIsCustom[MAXENTITIES];
+
+bool Doing_Handle_Mount[MAXPLAYERS + 1]={false, ...};
+bool b_Doing_Buildingpickup_Handle[MAXPLAYERS + 1]={false, ...};
+
+int i_PlayerToCustomBuilding[MAXPLAYERS + 1]={0, ...};
+
+float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
+int i_DyingParticleIndication[MAXPLAYERS + 1]={-1, ...};
+
+float GlobalCheckDelayAntiLagPlayerScale;
+bool AllowSpecialSpawns;
+int i_AmountDowned[MAXPLAYERS+1];
+
+bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
+
+float Building_Collect_Cooldown[MAXENTITIES][MAXTF2PLAYERS];
+
+bool b_SpecialGrigoriStore;
+float f_ExtraDropChanceRarity = 1.0;
+bool applied_lastmann_buffs_once = false;
 
 #include "zombie_riot/npc.sp"	// Global NPC List
 
@@ -206,11 +331,42 @@ void ZR_MapStart()
 {
 	EscapeMode = false;
 	EscapeModeForNpc = false;
-	
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
-	
 	RoundStartTime = 0.0;
 	cvarTimeScale.SetFloat(1.0);
+	GlobalCheckDelayAntiLagPlayerScale = 0.0;
+	Reset_stats_starshooter();
+	Zero(f_RingDelayGift);
+	Music_ClearAll();
+	Building_ClearAll();
+	Medigun_ClearAll();
+	WindStaff_ClearAll();
+	Lighting_Wand_Spell_ClearAll();
+	Wand_Cryo_Burst_ClearAll();
+	Arrow_Spell_ClearAll();
+	Survival_Knife_ClearAll();
+	MedKit_ClearAll();
+	Wand_autoaim_ClearAll();
+	Wand_Elemental_2_ClearAll();
+	Wand_Calcium_Spell_ClearAll();
+	Wand_Fire_Spell_ClearAll();
+	Wand_Default_Spell_ClearAll();
+	Wand_Necro_Spell_ClearAll();
+	RaidModeTime = 0.0;
+	f_TimerTickCooldownRaid = 0.0;
+	f_TimerTickCooldownShop = 0.0;
+	Zero2(Armor_table_money_limit);
+	Zero2(i_Healing_station_money_limit);
+	Zero2(Perk_Machine_money_limit);
+	Zero2(Pack_A_Punch_Machine_money_limit);
+	CleanAllBuildingEscape();
+	M3_ClearAll();
+	ZeroRage_ClearAll();
+	SniperMonkey_ClearAll();
+	Weapon_Cspyknife_ClearAll();
+	f_DelaySpawnsForVariousReasons = 0.0;
+	Zero(Damage_dealt_in_total);
+	
 	Waves_MapStart();
 	Music_MapStart();
 	Remove_Healthcooldown();

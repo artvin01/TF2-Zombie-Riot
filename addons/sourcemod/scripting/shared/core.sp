@@ -178,42 +178,16 @@ enum
 Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;
 
-ConVar zr_voteconfig;
-ConVar zr_tagblacklist;
-ConVar zr_tagwhitelist;
-ConVar zr_minibossconfig;
-ConVar zr_ignoremapconfig;
-ConVar zr_smallmapbalancemulti;
 ConVar zr_spawnprotectiontime;
 //ConVar tf_bot_quota;
 
-int CurrentGame;
-bool b_GameOnGoing = true;
-//bool b_StoreGotReset = false;
-int CurrentCash;
-bool LastMann;
-bool EscapeMode;
-bool EscapeModeForNpc;
 bool DoingLagCompensation;
 
 float f_BotDelayShow[MAXTF2PLAYERS];
-
-//bool RaidMode; 							//Is this raidmode?
-float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
-float RaidModeTime = 0.0;
-float f_TimerTickCooldownRaid = 0.0;
-float f_TimerTickCooldownShop = 0.0;
-int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
-float Medival_Difficulty_Level = 0.0;	
-int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
-
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
 
 int CurrentPlayers;
-int PlayersAliveScaling;
-int PlayersInGame;
-int GlobalIntencity;
-bool b_HasBeenHereSinceStartOfWave[MAXTF2PLAYERS];
+
 ConVar cvarTimeScale;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
 //ConVar CvarSvRollspeed; // sv_rollspeed 
@@ -222,20 +196,7 @@ ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar sv_cheats;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie CookieXP;
-Cookie CookieScrap;
-Cookie CookiePlayStreak;
 Cookie Niko_Cookies;
-Cookie CookieCache;
-ArrayList Loadouts[MAXTF2PLAYERS];
-
-float f_RingDelayGift[MAXENTITIES];
-
-//custom wave music.
-char char_MusicString1[256];
-int i_MusicLength1;
-char char_MusicString2[256];
-int i_MusicLength2;
-//custom wave music.
 
 bool b_LagCompNPC_No_Layers;
 bool b_LagCompNPC_AwayEnemies;
@@ -244,31 +205,12 @@ bool b_LagCompNPC_BlockInteral;
 
 bool b_LagCompAlliedPlayers; //Make sure this actually compensates allies.
 
-float f_DelaySpawnsForVariousReasons;
-int CurrentRound;
-int CurrentWave = -1;
-int StartCash;
-float RoundStartTime;
-char WhatDifficultySetting[64];
-float healing_cooldown[MAXTF2PLAYERS];
-float Damage_dealt_in_total[MAXTF2PLAYERS];
-int i_Damage_dealt_in_total[MAXTF2PLAYERS];
-int i_KillsMade[MAXTF2PLAYERS];
-int i_Backstabs[MAXTF2PLAYERS];
 bool i_HasBeenBackstabbed[MAXENTITIES];
-int i_Headshots[MAXTF2PLAYERS];
 bool i_HasBeenHeadShotted[MAXENTITIES];
-float f_TimeAfterSpawn[MAXTF2PLAYERS];
 
 bool thirdperson[MAXTF2PLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
 
-#define SF2_PLAYER_VIEWBOB_TIMER 10.0
-#define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
-#define SF2_PLAYER_VIEWBOB_SCALE_Y 0.0
-#define SF2_PLAYER_VIEWBOB_SCALE_Z 0.0
-
-float Armor_regen_delay[MAXTF2PLAYERS];
 float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
 //float Check_Standstill_Delay[MAXTF2PLAYERS];
 //bool Check_Standstill_Applied[MAXTF2PLAYERS];
@@ -276,10 +218,6 @@ float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
 float max_mana[MAXTF2PLAYERS];
 float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
-
-int i_SvRollAngle[MAXTF2PLAYERS];
-
-Handle SyncHud_ArmorCounter;
 
 int i_WhatLevelForHudIsThisClientAt[MAXTF2PLAYERS];
 
@@ -304,20 +242,9 @@ float f_SemiAutoStats_ReloadTime[MAXENTITIES];
 
 float f_MedigunChargeSave[MAXTF2PLAYERS][4];
 
-	
-int CashSpent[MAXTF2PLAYERS];
-int CashSpentTotal[MAXTF2PLAYERS];
-int CashRecievedNonWave[MAXTF2PLAYERS];
-int Level[MAXTF2PLAYERS];
-int XP[MAXTF2PLAYERS];
-int Scrap[MAXTF2PLAYERS];
-int Ammo_Count_Ready[MAXTF2PLAYERS];
-//float Armor_Ready[MAXTF2PLAYERS];
 float Increaced_Sentry_damage_Low[MAXENTITIES];
 float Increaced_Sentry_damage_High[MAXENTITIES];
 float Resistance_for_building_Low[MAXENTITIES];
-
-int Armour_Level_Current[MAXTF2PLAYERS];
 
 
 float Increaced_Overall_damage_Low[MAXENTITIES];
@@ -326,25 +253,7 @@ float f_EmpowerStateSelf[MAXENTITIES];
 float f_EmpowerStateOther[MAXENTITIES];
 
 //This is for going through things via lag comp or other reasons to teleport things away.
-//bool Do_Not_Regen_Mana[MAXTF2PLAYERS];
-
-//float Resistance_for_building_High[MAXENTITIES];
-int Armor_Charge[MAXTF2PLAYERS];
-int Zombies_Currently_Still_Ongoing;
-
-int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
-int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
-int i_BarricadesBuild[MAXTF2PLAYERS]={0, ...};
-int i_WhatBuilding[MAXENTITIES]={0, ...};
-bool Building_Constructed[MAXENTITIES]={false, ...};
-
-int Elevator_Owner[MAXENTITIES]={0, ...};
-bool Is_Elevator[MAXENTITIES]={false, ...};
-int Dont_Crouch[MAXENTITIES]={0, ...};
-
-int StoreWeapon[MAXENTITIES];
-int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
-int i_HealthBeforeSuit[MAXTF2PLAYERS]={0, ...};
+//bool Do_Not_Regen_Mana[MAXTF2PLAYERS];;
 bool i_ClientHasCustomGearEquipped[MAXTF2PLAYERS]={false, ...};
 	
 int Animation_Setting[MAXTF2PLAYERS];
@@ -358,14 +267,6 @@ float f_ClientInvul[MAXTF2PLAYERS]; //Extra ontop of uber if they somehow lose i
 int Current_Mana[MAXTF2PLAYERS];
 float Mana_Regen_Delay[MAXTF2PLAYERS];
 float Mana_Hud_Delay[MAXTF2PLAYERS];
-
-int Armor_table_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
-int i_Healing_station_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
-int Perk_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
-int Pack_A_Punch_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
-
-int i_ThisEntityHasAMachineThatBelongsToClient[MAXENTITIES];
-int i_ThisEntityHasAMachineThatBelongsToClientMoney[MAXENTITIES];
 
 bool b_NpcHasDied[MAXENTITIES]={true, ...};
 const int i_MaxcountNpc = ZR_MAX_NPCS;
@@ -396,36 +297,17 @@ int i_ObjectsSpawners[ZR_MAX_SPAWNERS];
 
 
 bool b_IsAGib[MAXENTITIES];
-			
-int g_CarriedDispenser[MAXPLAYERS+1];
-int i_BeingCarried[MAXENTITIES];
-float f_BuildingIsNotReady[MAXTF2PLAYERS];
-
-float GlobalAntiSameFrameCheck_NPC_SpawnNext;
-//bool b_AllowBuildCommand[MAXPLAYERS + 1];
-
-int Building_Mounted[MAXENTITIES];
-bool b_SentryIsCustom[MAXENTITIES];
 int i_NpcInternalId[MAXENTITIES];
 bool b_IsCamoNPC[MAXENTITIES];
 
-bool Doing_Handle_Mount[MAXPLAYERS + 1]={false, ...};
-bool b_Doing_Buildingpickup_Handle[MAXPLAYERS + 1]={false, ...};
-
-int i_PlayerToCustomBuilding[MAXPLAYERS + 1]={0, ...};
-
 float f_TimeUntillNormalHeal[MAXENTITIES]={0.0, ...};
 bool f_ClientServerShowMessages[MAXTF2PLAYERS];
-
-float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
-int i_DyingParticleIndication[MAXPLAYERS + 1]={-1, ...};
 
 //Needs to be global.
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
 float f_ChargeTerroriserSniper[MAXENTITIES];
 bool b_npcspawnprotection[MAXENTITIES];
-bool b_ThisNpcIsSawrunner[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
 float f_HighTeslarDebuff[MAXENTITIES];
 float f_VeryLowIceDebuff[MAXENTITIES];
@@ -517,9 +399,6 @@ Function EntityFuncReload4[MAXENTITIES];
 
 int i_assist_heal_player[MAXTF2PLAYERS];
 float f_assist_heal_player_time[MAXTF2PLAYERS];
-
-float GlobalCheckDelayAntiLagPlayerScale;
-bool AllowSpecialSpawns;
 int LimitNpcs;
 
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -577,12 +456,6 @@ bool b_ThisEntityIgnoredEntirelyFromAllCollisions[MAXENTITIES];
 bool b_ThisEntityIsAProjectileForUpdateContraints[MAXENTITIES];
 
 bool b_IsPlayerABot[MAXPLAYERS+1];
-int i_AmountDowned[MAXPLAYERS+1];
-
-bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
-
-float Building_Collect_Cooldown[MAXENTITIES][MAXTF2PLAYERS];
-
 float f_CooldownForHurtHud[MAXPLAYERS];	
 //Otherwise we get kicks if there is too much hurting going on.
 
@@ -682,15 +555,9 @@ Handle g_hSDKMakeCarriedObjectDispenser;
 Handle g_hSDKMakeCarriedObjectSentry;
 Handle gH_BotAddCommand = INVALID_HANDLE;
 
-bool b_SpecialGrigoriStore;
-float f_ExtraDropChanceRarity = 1.0;
-
 int CurrentGibCount = 0;
 bool b_LimitedGibGiveMoreHealth[MAXENTITIES];
 //GLOBAL npc things
-bool b_thisNpcHasAnOutline[MAXENTITIES];
-bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
-bool applied_lastmann_buffs_once = false;
 
 float played_headshotsound_already [MAXTF2PLAYERS];
 
@@ -866,12 +733,6 @@ char g_RobotStepSound[][] = {
 char g_TankStepSound[][] = {
 	"infected_riot/tank/tank_walk_1.mp3",
 };
-
-#if defined RPG
-float f3_SpawnPosition[MAXENTITIES][3];
-#endif
-
-
 
 float f_ArrowDamage[MAXENTITIES];
 int f_ArrowTrailParticle[MAXENTITIES]={INVALID_ENT_REFERENCE, ...};
@@ -2747,12 +2608,9 @@ public any Native_GetLevelCount(Handle plugin, int numParams)
 
 //#file "Zombie Riot" broke in sm 1.11
 
-
-public void MapStartResetAll()
+static void MapStartResetAll()
 {
-	GlobalCheckDelayAntiLagPlayerScale = 0.0;
 	Zero(b_IsAGib);
-	Reset_stats_starshooter();
 	Zero(f_StuckTextChatNotif);
 	Zero(i_ThisEntityHasAMachineThatBelongsToClientMoney);
 	Zero(f_WasRecentlyRevivedViaNonWave);
@@ -2768,56 +2626,25 @@ public void MapStartResetAll()
 	Zero(Mana_Hud_Delay);
 	Zero(delay_hud);
 	Zero(healing_cooldown);
-	Zero(Damage_dealt_in_total);
 	Zero(Increaced_Overall_damage_Low);
 	Zero(Resistance_Overall_Low);
 	Zero(f_DisableDyingTimer);
 	Zero(Increaced_Sentry_damage_Low);
 	Zero(Increaced_Sentry_damage_High);
 	Zero(Resistance_for_building_Low);
-	Zero(f_RingDelayGift);
-	Music_ClearAll();
 	Zero(f_BotDelayShow);
-	NPC_Spawn_ClearAll();
 	SDKHooks_ClearAll();
 	Zero(f_OneShotProtectionTimer);
 	Zero(f_BuildingIsNotReady);
-	Building_ClearAll();
 	Zero(f_TerroriserAntiSpamCd);
-	Medigun_ClearAll();
-	WindStaff_ClearAll();
-	Lighting_Wand_Spell_ClearAll();
-	Wand_Cryo_Burst_ClearAll();
-	Arrow_Spell_ClearAll();
-	Survival_Knife_ClearAll();
 	Zero(healing_cooldown);
-	MedKit_ClearAll();
-	Wand_autoaim_ClearAll();
-	Wand_Elemental_2_ClearAll();
-	Wand_Calcium_Spell_ClearAll();
-	Wand_Fire_Spell_ClearAll();
-	Wand_Default_Spell_ClearAll();
-	Wand_Necro_Spell_ClearAll();
-	RaidModeTime = 0.0;
-	f_TimerTickCooldownRaid = 0.0;
-	f_TimerTickCooldownShop = 0.0;
 	CleanAllNpcArray();
-	Zero2(Armor_table_money_limit);
-	Zero2(i_Healing_station_money_limit);
-	Zero2(Perk_Machine_money_limit);
-	Zero2(Pack_A_Punch_Machine_money_limit);
-	CleanAllBuildingEscape();
 	Zero(f_ClientServerShowMessages);
 	Zero(h_NpcCollissionHookType);
-	M3_ClearAll();
-	ZeroRage_ClearAll();
 	Zero2(i_StickyToNpcCount);
-	SniperMonkey_ClearAll();
-	Weapon_Cspyknife_ClearAll();
 	Zero(f_TutorialUpdateStep);
 	Zero(f_DelayBuildNotif);
 	Zero(f_ClientInvul);
-	f_DelaySpawnsForVariousReasons = 0.0;
 	Zero(i_KillsMade);
 	Zero(i_Backstabs);
 	Zero(i_HasBeenBackstabbed);
