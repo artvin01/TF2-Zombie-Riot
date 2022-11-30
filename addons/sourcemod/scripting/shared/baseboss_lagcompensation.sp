@@ -523,6 +523,13 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 								m_vecMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
 								m_vecMins = view_as<float>( { -24.0, -24.0, 0.0 } );		
 							}
+
+							if(f3_CustomMinMaxBoundingBox[entity][1] != 0.0)
+							{
+								m_vecMaxs = view_as<float>( { f3_CustomMinMaxBoundingBox[entity][0], f3_CustomMinMaxBoundingBox[entity][1], f3_CustomMinMaxBoundingBox[entity][2] } );
+								m_vecMins = view_as<float>( { -f3_CustomMinMaxBoundingBox[entity][0], -f3_CustomMinMaxBoundingBox[entity][1], 0.0 } );									
+							}
+
 							SetEntPropVector(entity, Prop_Data, "m_vecMaxs", m_vecMaxs);
 							
 							SetEntPropVector(entity, Prop_Data, "m_vecMins", m_vecMins);

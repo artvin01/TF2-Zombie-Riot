@@ -867,10 +867,17 @@ char g_TankStepSound[][] = {
 	"infected_riot/tank/tank_walk_1.mp3",
 };
 
+#if defined RPG
+float f3_SpawnPosition[MAXENTITIES][3];
+#endif
+
+
+
 float f_ArrowDamage[MAXENTITIES];
 int f_ArrowTrailParticle[MAXENTITIES]={INVALID_ENT_REFERENCE, ...};
 
 //Arrays for npcs!
+float f3_CustomMinMaxBoundingBox[MAXENTITIES][3];
 bool b_DissapearOnDeath[MAXENTITIES];
 bool b_IsGiant[MAXENTITIES];
 bool b_Pathing[MAXENTITIES];
@@ -884,6 +891,7 @@ float fl_NextMeleeAttack[MAXENTITIES];
 float fl_Speed[MAXENTITIES];
 int i_Target[MAXENTITIES];
 float fl_GetClosestTargetTime[MAXENTITIES];
+float fl_GetClosestTargetNoResetTime[MAXENTITIES];
 float fl_NextHurtSound[MAXENTITIES];
 float fl_HeadshotCooldown[MAXENTITIES];
 bool b_CantCollidie[MAXENTITIES];

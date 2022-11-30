@@ -202,7 +202,8 @@ methodmap CClotBody
 						bool Ally_Invince = false,
 						bool isGiant = false,
 						bool IgnoreBuildings = false,
-						bool IsRaidBoss = false)
+						bool IsRaidBoss = false,
+						float CustomThreeDimensions[3] = {0.0,0.0,0.0})
 	{
 		int npc = CreateEntityByName("base_boss");
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
@@ -300,6 +301,7 @@ methodmap CClotBody
 		//if(pBody < view_as<Address>(0x10000))
 		//	ThrowError("Invalid pBody %x", pBody); //what the fuck. This shit gets called 90% of the time.......................
 		
+		//cant use custom bounding boxes here, just use the normal ones!
 		if(!isGiant)
 		{
 			list.Push(DHookRaw(g_hGetHullWidth,		true, pBody));
@@ -376,6 +378,15 @@ methodmap CClotBody
 		{
 			m_vecMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
 			m_vecMins = view_as<float>( { -24.0, -24.0, 0.0 } );		
+		}
+
+		if(CustomThreeDimensions[1] != 0.0)
+		{
+			f3_CustomMinMaxBoundingBox[entity][0] = CustomThreeDimensions[0];
+			f3_CustomMinMaxBoundingBox[entity][1] = CustomThreeDimensions[1];
+			f3_CustomMinMaxBoundingBox[entity][2] = CustomThreeDimensions[2];
+			m_vecMaxs = view_as<float>( { CustomThreeDimensions[0], CustomThreeDimensions[1], CustomThreeDimensions[2] } );
+			m_vecMins = view_as<float>( { -CustomThreeDimensions[0], -CustomThreeDimensions[1], 0.0 } );	
 		}
 		
 		//Fix collisions
@@ -917,6 +928,11 @@ methodmap CClotBody
 	{
 		public get()							{ return fl_GetClosestTargetTime[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_GetClosestTargetTime[this.index] = TempValueForProperty; }
+	}
+	property float m_flGetClosestTargetNoResetTime
+	{
+		public get()							{ return fl_GetClosestTargetNoResetTime[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_GetClosestTargetNoResetTime[this.index] = TempValueForProperty; }
 	}
 	property float m_flNextRangedAttack
 	{
@@ -4285,6 +4301,11 @@ public void Check_If_Stuck(int iNPC)
 		 	hullcheckmaxs_Player = view_as<float>( { 30.0, 30.0, 120.0 } );
 			hullcheckmins_Player = view_as<float>( { -30.0, -30.0, 0.0 } );	
 		}
+		else if(f3_CustomMinMaxBoundingBox[iNPC][1] != 0.0)
+		{
+			hullcheckmaxs_Player = view_as<float>( { f3_CustomMinMaxBoundingBox[iNPC][0], f3_CustomMinMaxBoundingBox[iNPC][1], f3_CustomMinMaxBoundingBox[iNPC][2] } );
+			hullcheckmins_Player = view_as<float>( { -f3_CustomMinMaxBoundingBox[iNPC][0], -f3_CustomMinMaxBoundingBox[iNPC][1], 0.0 } );	
+		}
 		else
 		{
 			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
@@ -4311,17 +4332,6 @@ public void Check_If_Stuck(int iNPC)
 					
 					static float hullcheckmaxs_Player_Again[3];
 					static float hullcheckmins_Player_Again[3];
-					if(b_IsGiant[Hit_player])
-					{
-					 	hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 120.0 } );
-						hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
-					}
-					else
-					{	
-						hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
-						hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );			
-					}
-					
 					if(IsValidClient(Hit_player)) //Player size
 					{
 						hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
@@ -4355,17 +4365,6 @@ public void Check_If_Stuck(int iNPC)
 				{
 					static float hullcheckmaxs_Player_Again[3];
 					static float hullcheckmins_Player_Again[3];
-					if(b_IsGiant[Hit_player])
-					{
-					 	hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 120.0 } );
-						hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
-					}
-					else
-					{	
-						hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
-						hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );			
-					}
-					
 					if(IsValidClient(Hit_player)) //Player size
 					{
 						hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
@@ -4439,9 +4438,13 @@ public void Check_If_Stuck(int iNPC)
 		 	hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
 			hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
 		}
+		else if(f3_CustomMinMaxBoundingBox[iNPC][1] != 0.0)
+		{
+			hullcheckmaxs = view_as<float>( { f3_CustomMinMaxBoundingBox[iNPC][0], f3_CustomMinMaxBoundingBox[iNPC][1], f3_CustomMinMaxBoundingBox[iNPC][2] } );
+			hullcheckmins = view_as<float>( { -f3_CustomMinMaxBoundingBox[iNPC][0], -f3_CustomMinMaxBoundingBox[iNPC][1], 0.0 } );	
+		}
 		else
 		{
-			
 			hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
 			hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );			
 		}
@@ -6162,12 +6165,21 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_SpawnProtectionEntity[entity] = -1;
 #endif
 
+#if defined RPG
+	f3_SpawnPosition[entity][0] = 0.0;
+	f3_SpawnPosition[entity][1] = 0.0;
+	f3_SpawnPosition[entity][2] = 0.0;
+#endif
+	f3_CustomMinMaxBoundingBox[entity][0] = 0.0;
+	f3_CustomMinMaxBoundingBox[entity][1] = 0.0;
+	f3_CustomMinMaxBoundingBox[entity][2] = 0.0;
 	i_Wearable[entity][0] = -1;
 	i_Wearable[entity][1] = -1;
 	i_Wearable[entity][2] = -1;
 	i_Wearable[entity][3] = -1;
 	i_Wearable[entity][4] = -1;
 	i_Wearable[entity][5] = -1;
+
 	i_TeamGlow[entity] = -1;
 	b_DissapearOnDeath[entity] = false;
 	b_IsGiant[entity] = false;
@@ -6183,6 +6195,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_Speed[entity] = 0.0;
 	i_Target[entity] = -1;
 	fl_GetClosestTargetTime[entity] = 0.0;
+	fl_GetClosestTargetNoResetTime[entity] = 0.0;
 	fl_NextHurtSound[entity] = 0.0;
 	fl_HeadshotCooldown[entity] = 0.0;
 	b_CantCollidie[entity] = false;
@@ -6286,6 +6299,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	IgniteFor[entity] = 0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	f_StunExtraGametimeDuration[entity] = 0.0;
+
 	
 	FormatEx(c_HeadPlaceAttachmentGibName[entity], sizeof(c_HeadPlaceAttachmentGibName[]), "");
 }

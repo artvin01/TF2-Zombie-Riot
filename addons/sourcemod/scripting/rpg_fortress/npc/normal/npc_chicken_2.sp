@@ -42,7 +42,7 @@ methodmap StartChicken < CClotBody
 	
 	public StartChicken(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		StartChicken npc = view_as<StartChicken>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.5", "300", ally, false));
+		StartChicken npc = view_as<StartChicken>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.5", "300", ally, false,_,_,_,{8.0,8.0,16.0}));
 		
 		i_NpcInternalId[npc.index] = HEADCRAB_ZOMBIE;
 		
@@ -113,6 +113,7 @@ public void StartChicken_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 		npc.m_flNextTargetTime = 0.0; //Run!!
 	}
+	npc.PlayIdleSound();
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
@@ -120,8 +121,6 @@ public void StartChicken_ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
-	npc.PlayIdleSound();
 		
 	//Roam while idle
 		
@@ -173,6 +172,9 @@ public void StartChicken_NPCDeath(int entity)
 	}
 	SDKUnhook(entity, SDKHook_OnTakeDamage, StartChicken_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, StartChicken_ClotThink);
+
+
+	npc.m_iWearable3
 }
 
 
