@@ -105,7 +105,7 @@ public void StartChicken_ClotThink(int iNPC)
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
-		npc.m_flNextTargetTime = 0.0; //Run!!
+		npc.m_flNextMeleeAttack = 0.0; //Run!!
 	}
 	npc.PlayIdleSound();
 	
@@ -119,7 +119,7 @@ public void StartChicken_ClotThink(int iNPC)
 	//Roam while idle
 		
 	//Is it time to pick a new place to go?
-	if(npc.m_flNextTargetTime < GetGameTime(npc.index))
+	if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 	{
 		//Pick a random goal area
 		NavArea RandomArea = PickRandomArea();	
@@ -136,7 +136,7 @@ public void StartChicken_ClotThink(int iNPC)
 		PF_StartPathing(iNPC);
 			
 		//Timeout
-		npc.m_flNextTargetTime = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
+		npc.m_flNextMeleeAttack = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
 	}
 }
 
@@ -159,7 +159,7 @@ public Action StartChicken_OnTakeDamage(int victim, int &attacker, int &inflicto
 
 public void StartChicken_NPCDeath(int entity)
 {
-	StartChicken npc = view_as<StartChicken>(entity);
+//	StartChicken npc = view_as<StartChicken>(entity);
 
 	SDKUnhook(entity, SDKHook_OnTakeDamage, StartChicken_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, StartChicken_ClotThink);

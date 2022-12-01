@@ -3,8 +3,8 @@
 
 static Handle SDKEquipWearable;
 static Handle SDKGetMaxHealth;
-static Handle g_hGetAttachment;
-static Handle g_hStudio_FindAttachment;
+//static Handle g_hGetAttachment;
+//static Handle g_hStudio_FindAttachment;
 
 static Handle g_hSetLocalOrigin;
 //static Handle g_hSetLocalAngle;
@@ -15,7 +15,7 @@ static Handle g_hInvalidateBoneCache;
 static Handle g_hCTFCreateArrow;
 //static Handle g_hCTFCreatePipe;
 //Handle g_hSDKMakeCarriedObject;
-static Handle g_hGetVectors;
+//static Handle g_hGetVectors;
 //static Handle g_hWeaponSound;
 //static Handle g_hSDKPlaySpecificSequence;
 //static Handle g_hDoAnimationEvent;

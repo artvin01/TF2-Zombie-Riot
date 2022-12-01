@@ -1750,7 +1750,7 @@ methodmap CClotBody
 			ingore_buildings = true;
 		}
 #else
-		bool ingore_buildings = Ignore_Buildings;
+		bool ingore_buildings = view_as<bool>(Ignore_Buildings);
 #endif
 		// See if we hit anything.
 		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, ingore_buildings ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, this.index );

@@ -7,9 +7,18 @@ static const char g_DeathSounds[][] = {
 	"vo/scout_painsharp01.mp3",
 };
 
+static const char g_MeleeAttackSounds[][] = {
+	"weapons/machete_swing.wav",
+};
+static const char g_MeleeHitSounds[][] = {
+	"weapons/bat_hit.wav",
+};
+
 public void MadChicken_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	PrecacheModel("models/player/scout.mdl");
 }
 
@@ -40,10 +49,17 @@ methodmap MadChicken < CClotBody
 		
 	}
 	
-	public void PlayDeathSound() {
-	
+	public void PlayDeathSound() 
+	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+	}
+	public void PlayMeleeSound()
+ 	{
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+	}
+	public void PlayMeleeHitSound()
+	{
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);	
 	}
 	
 	
@@ -64,9 +80,9 @@ methodmap MadChicken < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		f3_SpawnPosition[0] = vecPos[0];
-		f3_SpawnPosition[1] = vecPos[1];
-		f3_SpawnPosition[2] = vecPos[2];
+		f3_SpawnPosition[npc.index][0] = vecPos[0];
+		f3_SpawnPosition[npc.index][1] = vecPos[1];
+		f3_SpawnPosition[npc.index][2] = vecPos[2];
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, MadChicken_OnTakeDamage);
 		SDKHook(npc.index, SDKHook_Think, MadChicken_ClotThink);
@@ -104,11 +120,10 @@ methodmap MadChicken < CClotBody
 //Rewrite
 public void MadChicken_ClotThink(int iNPC)
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	MadChicken npc = view_as<MadChicken>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 
-	static int NoNewEnemy;
 	//some npcs deservere full update time!
 	if(npc.m_flNextDelayTime > gameTime)
 	{
@@ -168,7 +183,6 @@ public void MadChicken_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		NoNewEnemy = 0; //We were able to find an enemy, set it to 0.
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
@@ -242,7 +256,7 @@ public void MadChicken_ClotThink(int iNPC)
 			}
 		}
 	}
-	npc.PlayIdleAlertSound();
+	npc.PlayIdleSound();
 }
 
 
