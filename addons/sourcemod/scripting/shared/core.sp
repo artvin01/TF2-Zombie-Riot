@@ -2444,7 +2444,11 @@ public void CheckIfAloneOnServer()
 {
 	b_IsAloneOnServer = false;
 	int players;
+
+#if defined ZR
 	int player_alone;
+#endif
+
 	for(int client=1; client<=MaxClients; client++)
 	{
 		
@@ -2456,7 +2460,11 @@ public void CheckIfAloneOnServer()
 		
 		{
 			players += 1;
+
+#if defined ZR
 			player_alone = client;
+#endif
+
 		}
 	}
 	if(players == 1)

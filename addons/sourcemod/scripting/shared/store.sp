@@ -3042,7 +3042,7 @@ void Store_ApplyAttribs(int client)
 
 #if defined RPG
 			EquippedItems.GetArray(i, info);
-			if(info.Owned == client && !info.Classname[0])
+			if(info.Owner == client && !info.Classname[0])
 #endif
 
 			{
@@ -3320,7 +3320,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 
 #if defined RPG
 			EquippedItems.GetArray(i, info);
-			if(info.Owned == client)
+			if(info.Owner == client)
 #endif
 
 			{
@@ -3485,7 +3485,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 
 #if defined RPG
 		EquippedItems.GetArray(index, info);
-		if(info.Owned == client && TextStore_GetInv(client, info.Store))
+		if(info.Owner == client && TextStore_GetInv(client, info.Store))
 #endif
 		
 		{
@@ -3780,7 +3780,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 
 #if defined RPG
 			EquippedItems.GetArray(i, info);
-			if(info.Owned == client)
+			if(info.Owner == client)
 #endif
 			
 			{
