@@ -9,7 +9,7 @@ static const char g_DeathSounds[][] = {
 
 public void MadChicken_OnMapStart_NPC()
 {
-	or (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	PrecacheModel("models/player/scout.mdl");
 }
 
