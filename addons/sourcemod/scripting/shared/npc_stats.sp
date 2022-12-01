@@ -401,8 +401,14 @@ methodmap CClotBody
 			f3_CustomMinMaxBoundingBox[npc][0] = CustomThreeDimensions[0];
 			f3_CustomMinMaxBoundingBox[npc][1] = CustomThreeDimensions[1];
 			f3_CustomMinMaxBoundingBox[npc][2] = CustomThreeDimensions[2];
-			m_vecMaxs = view_as<float>( { CustomThreeDimensions[0], CustomThreeDimensions[1], CustomThreeDimensions[2] } );
-			m_vecMins = view_as<float>( { -CustomThreeDimensions[0], -CustomThreeDimensions[1], 0.0 } );	
+
+			m_vecMaxs[0] = f3_CustomMinMaxBoundingBox[npc][0];
+			m_vecMaxs[1] = f3_CustomMinMaxBoundingBox[npc][1];
+			m_vecMaxs[2] = f3_CustomMinMaxBoundingBox[npc][2];
+
+			m_vecMins[0] = -f3_CustomMinMaxBoundingBox[npc][0];
+			m_vecMins[1] = -f3_CustomMinMaxBoundingBox[npc][1];
+			m_vecMins[2] = 0.0;
 		}
 		
 		//Fix collisions
@@ -4330,8 +4336,13 @@ public void Check_If_Stuck(int iNPC)
 		}
 		else if(f3_CustomMinMaxBoundingBox[iNPC][1] != 0.0)
 		{
-			hullcheckmaxs_Player = view_as<float>( { f3_CustomMinMaxBoundingBox[iNPC][0], f3_CustomMinMaxBoundingBox[iNPC][1], f3_CustomMinMaxBoundingBox[iNPC][2] } );
-			hullcheckmins_Player = view_as<float>( { -f3_CustomMinMaxBoundingBox[iNPC][0], -f3_CustomMinMaxBoundingBox[iNPC][1], 0.0 } );	
+			hullcheckmaxs_Player[0] = f3_CustomMinMaxBoundingBox[iNPC][0];
+			hullcheckmaxs_Player[1] = f3_CustomMinMaxBoundingBox[iNPC][1];
+			hullcheckmaxs_Player[2] = f3_CustomMinMaxBoundingBox[iNPC][2];
+
+			hullcheckmins_Player[0] = -f3_CustomMinMaxBoundingBox[iNPC][0];
+			hullcheckmins_Player[1] = -f3_CustomMinMaxBoundingBox[iNPC][1];
+			hullcheckmins_Player[2] = 0.0;
 		}
 		else
 		{
@@ -4470,9 +4481,13 @@ public void Check_If_Stuck(int iNPC)
 		}
 		else if(f3_CustomMinMaxBoundingBox[iNPC][1] != 0.0)
 		{
-			hullcheckmaxs = view_as<float>( { f3_CustomMinMaxBoundingBox[iNPC][0], f3_CustomMinMaxBoundingBox[iNPC][1], f3_CustomMinMaxBoundingBox[iNPC][2] } );
-			hullcheckmins = view_as<float>( { -f3_CustomMinMaxBoundingBox[iNPC][0], -f3_CustomMinMaxBoundingBox[iNPC][1], 0.0 } );	
-		}
+			hullcheckmaxs[0] = f3_CustomMinMaxBoundingBox[iNPC][0];
+			hullcheckmaxs[1] = f3_CustomMinMaxBoundingBox[iNPC][1];
+			hullcheckmaxs[2] = f3_CustomMinMaxBoundingBox[iNPC][2];
+
+			hullcheckmins[0] = -f3_CustomMinMaxBoundingBox[iNPC][0];
+			hullcheckmins[1] = -f3_CustomMinMaxBoundingBox[iNPC][1];
+			hullcheckmins[2] = 0.0;	}
 		else
 		{
 			hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
@@ -6205,6 +6220,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f3_SpawnPosition[entity][2] = 0.0;
 #endif
 	
+	i_NoEntityFoundCount[entity] = 0;
 	f3_CustomMinMaxBoundingBox[entity][0] = 0.0;
 	f3_CustomMinMaxBoundingBox[entity][1] = 0.0;
 	f3_CustomMinMaxBoundingBox[entity][2] = 0.0;

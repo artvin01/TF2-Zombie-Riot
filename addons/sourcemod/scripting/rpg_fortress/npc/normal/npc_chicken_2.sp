@@ -33,18 +33,12 @@ methodmap StartChicken < CClotBody
 		
 	}
 	
-	public void PlayDeathSound() {
-	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-	}
-	
 	
 	public StartChicken(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		StartChicken npc = view_as<StartChicken>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.5", "300", ally, false,_,_,_,{8.0,8.0,16.0}));
 		
-		i_NpcInternalId[npc.index] = HEADCRAB_ZOMBIE;
+		i_NpcInternalId[npc.index] = START_CHICKEN;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -166,15 +160,9 @@ public Action StartChicken_OnTakeDamage(int victim, int &attacker, int &inflicto
 public void StartChicken_NPCDeath(int entity)
 {
 	StartChicken npc = view_as<StartChicken>(entity);
-	if(!npc.m_bGib)
-	{
-		npc.PlayDeathSound();	
-	}
+
 	SDKUnhook(entity, SDKHook_OnTakeDamage, StartChicken_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, StartChicken_ClotThink);
-
-
-	int entity = npc.m_iWearable3;
 }
 
 

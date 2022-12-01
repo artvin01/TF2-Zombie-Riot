@@ -3,8 +3,13 @@
 
 // this should vary from npc to npc as some are in a really small area.
 
+static const char g_DeathSounds[][] = {
+	"vo/scout_painsharp01.mp3",
+};
+
 public void MadChicken_OnMapStart_NPC()
 {
+	or (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	PrecacheModel("models/player/scout.mdl");
 }
 
