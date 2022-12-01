@@ -19,10 +19,9 @@ static ArrayList WeaponList;
 public void Configs_ConfigsExecuted()
 {
 	char buffer[PLATFORM_MAX_PATH];
-
-#if defined ZR
 	KeyValues kv;
-
+	
+#if defined ZR
 	if(!zr_ignoremapconfig.BoolValue)
 	{
 		char mapname[64];
@@ -58,20 +57,15 @@ public void Configs_ConfigsExecuted()
 			LogError("[Config] Directory '%s' does not exist", buffer);
 		}
 	}
-#endif
 	
 	Store_ConfigSetup();
-
-#if defined ZR
+	
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
-	if(kv)
-		delete kv;
+	delete kv;
 #endif
 
-	if(WeaponList)
-		delete WeaponList;
-	
+	delete WeaponList;
 	WeaponList = new ArrayList(sizeof(WeaponData));
 	
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapondata");
@@ -100,7 +94,7 @@ public void Configs_ConfigsExecuted()
 	ConVar_Enable();
 	
 	AdjustBotCount();
-
+	
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))

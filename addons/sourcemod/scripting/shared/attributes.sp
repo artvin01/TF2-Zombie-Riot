@@ -278,6 +278,7 @@ void Attributes_OnKill(int client, int weapon)
 		if(value)
 			StartHealingTimer(client, 0.1, value > 0 ? 1 : -1, value > 0 ? RoundFloat(value) : RoundFloat(-value));
 		
+#if defined ZR
 		if(EscapeMode)
 		{
 			if(!IsWandWeapon(weapon))
@@ -289,6 +290,8 @@ void Attributes_OnKill(int client, int weapon)
 					StartHealingTimer(client, 0.1, 1, 5, true);
 			}
 		}
+#endif
+		
 	}
 	/*
 	value = Attributes_FindOnWeapon(client, weapon, 220, true);	// restore health on kill

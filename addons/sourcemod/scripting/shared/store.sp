@@ -1208,9 +1208,11 @@ void Store_SetNamedItem(int client, const char[] name, int amount)
 	
 	ThrowError("Unknown item name %s", name);
 }
+#endif	// ZR
 
 void Store_ClientCookiesCached(int client)
 {
+#if defined ZR
 	char buffer[32];
 	CookieCache.Get(client, buffer, sizeof(buffer));
 	
@@ -1218,8 +1220,10 @@ void Store_ClientCookiesCached(int client)
 	ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
 	if(CurrentGame && buffers[0] == CurrentGame)
 		Database_LoadGameData(client);
+#endif
 }
 
+#if defined ZR
 void Store_SetClientItem(int client, int index, int owned, int scaled, int equipped)
 {
 	static Item item;
@@ -3265,10 +3269,10 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	TF2Attrib_SetByDefIndex(entity, 34, 999.0);
 	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(entity);
 	
+#if defined ZR
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
 	SetAbilitySlotCount(client, 0);
 	
-#if defined ZR
 	bool Was_phasing = false;
 	
 	if(b_PhaseThroughBuildingsPerma[client] == 2)
@@ -3511,9 +3515,12 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 				}
 
 				entity = SpawnWeapon(client, info.Classname, info.Index, 5, 6, info.Attrib, info.Value, info.Attribs);
-				StoreWeapon[entity] = index;
 				
+#if defined ZR
+				StoreWeapon[entity] = index;
 				i_CustomWeaponEquipLogic[entity] = 0;
+#endif
+				
 				i_SemiAutoWeapon[entity] = false;
 				i_WeaponCannotHeadshot[entity] = false;
 				i_WeaponDamageFalloff[entity] = 1.0;
@@ -3521,10 +3528,13 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 				if(entity > MaxClients)
 				{
 					
+#if defined ZR
 					if(info.CustomWeaponOnEquip != 0)
 					{
 						i_CustomWeaponEquipLogic[entity] = info.CustomWeaponOnEquip;
 					}
+#endif
+					
 					if(info.Ammo > 0)
 					{
 						if(!StrEqual(info.Classname[0], "tf_weapon_medigun"))
@@ -3559,14 +3569,21 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 	
 									}
 									
+#if defined ZR
 									if(!EscapeMode || info.Ammo < 3) //my man broke my shit.
+#endif
+									
 									{
 										SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", info.Ammo);
 									}
+									
+#if defined ZR
 									else if(info.Ammo == 24 || info.Ammo == 6)
 									{
 										SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", info.Ammo);	
 									}
+#endif
+									
 								}
 							}
 						}
@@ -3676,8 +3693,20 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 			SetEntProp(entity, Prop_Send, "m_iEntityQuality", 0);
 			SetEntProp(entity, Prop_Send, "m_iEntityLevel", 1);
 			
+#if defined ZR
 			GetEntityNetClass(entity, Classnames[0], sizeof(Classnames[]));
 			int offset = FindSendPropInfo(Classnames[0], "m_iItemIDHigh");
+#endif
+			
+#if defined RPG
+			static int offset;
+			if(!offset)
+			{
+				char netclass[64];
+				GetEntityNetClass(entity, netclass, sizeof(netclass));
+				offset = FindSendPropInfo(netclass, "m_iItemIDHigh");
+			}
+#endif
 			
 			SetEntData(entity, offset - 8, 0);	// m_iItemID
 			SetEntData(entity, offset - 4, 0);	// m_iItemID
@@ -3735,22 +3764,39 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 		i_NoBonusRange[entity] = 0;
 		i_BuffBannerPassively[entity] = 0;
 	}
+	
+#if defined ZR
 	if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
+#endif
+	
 	{
 		for(int i; i<length; i++)
 		{
+			
+#if defined ZR
 			StoreItems.GetArray(i, item);
 			if(item.Owned[client] && item.Equipped[client])
+#endif
+
+#if defined RPG
+			EquippedItems.GetArray(i, info);
+			if(info.Owned == client)
+#endif
+			
 			{
+				
+#if defined ZR
 				item.GetItemInfo(item.Owned[client]-1, info);
+#endif
+				
 				if(!info.Classname[0])
 				{
+					
+#if defined ZR
 					if(info.Attack3AbilitySlot != 0)
 					{
 						SetAbilitySlotCount(client, info.Attack3AbilitySlot);
 					}
-
-#if defined ZR
 					if(info.SpecialAdditionViaNonAttribute == 1)
 					{
 						b_PhaseThroughBuildingsPerma[client] = 2; //Set to true if its 1, other attribs will use other things!

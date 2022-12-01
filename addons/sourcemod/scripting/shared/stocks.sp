@@ -1041,8 +1041,16 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	
 	if(!IsAnEntity)
 	{
+		
+#if defined ZR
 		if(!client || !IsClientInGame(client) || !IsPlayerAlive(client) || dieingstate[client] > 0)
+#else
+		if(!client || !IsClientInGame(client) || !IsPlayerAlive(client))
+#endif
+		
+		{
 			return Plugin_Stop;
+		}
 	}
 	int current;
 	if(!IsAnEntity)
@@ -1126,11 +1134,14 @@ public bool Trace_OnlyPlayer(int entity, int mask, any data)
 	{
 		return false;
 	}
-	else
+	
+#if defined ZR
+	else if(TeutonType[entity] != TEUTON_NONE)
 	{
-		if(TeutonType[entity] != TEUTON_NONE)
-			return false;
+		return false;
 	}
+#endif
+	
 	return entity!=data;
 }
 
@@ -1138,6 +1149,8 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 {
 	if(entity <= MaxClients)
 	{
+		
+#if defined ZR
 		if(entity != data) //make sure that they are not dead, if they are then just ignore them/give special shit
 		{
 			int Building_Index = EntRefToEntIndex(Building_Mounted[entity]);
@@ -1158,6 +1171,10 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 			}
 			return Building_Index!=data;
 		}
+#else
+		return false;
+#endif
+		
 	}
 	if(entity > MaxClients && b_IsAlliedNpc[entity])
 	{
@@ -1171,6 +1188,8 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 {
 	if(entity <= MaxClients)
 	{
+		
+#if defined ZR
 		if(entity != data) //make sure that they are not dead, if they are then just ignore them/give special shit
 		{
 			int Building_Index = EntRefToEntIndex(Building_Mounted[entity]);
@@ -1191,6 +1210,10 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 			}
 			return Building_Index!=data;
 		}
+#else
+		return false;
+#endif
+		
 	}
 	
 	return entity!=data;
@@ -1203,17 +1226,25 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 	{
 		if(entity != data)
 		{
+#if defined ZR
 			if(dieingstate[entity] <= 0)
 			{
 				return false;
 			}
 			if(b_LeftForDead[entity])
+#endif
 			{
 				return false;
 			}
 		}
 	}
+	
+#if defined ZR
 	else if(!Citizen_ThatIsDowned(entity))
+#else
+	else
+#endif
+	
 	{
 		return false;
 	}
@@ -2437,7 +2468,11 @@ int CountPlayersOnRed(bool alive = false)
 	int amount;
 	for(int client=1; client<=MaxClients; client++)
 	{
+#if defined ZR
 		if(b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && (!alive || (TeutonType[client] != TEUTON_NONE && dieingstate[client] > 0)))
+#else
+		if(IsClientInGame(client) && GetClientTeam(client) == 2 && (!alive || IsPlayerAlive(client)))
+#endif
 			amount++;
 	}
 	
@@ -2701,6 +2736,8 @@ float dmg_against_entity_multiplier = 3.0)
 					}
 				}
 			}
+			
+#if defined ZR
 			for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 			{
 				int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
@@ -2746,6 +2783,8 @@ float dmg_against_entity_multiplier = 3.0)
 					}
 				}
 			}
+#endif	// ZR
+			
 		}
 	}
 	
@@ -2792,99 +2831,6 @@ stock void DisplayCritAboveNpc(int victim, int client, bool sound)
 	}
 	TE_ParticleInt(g_particleCritText, chargerPos);
 	TE_SendToClient(client);	
-}
-stock void UpdatePlayerPoints(int client)
-{
-	int Points;
-	
-	Points += Healing_done_in_total[client] / 5;
-	
-	Points += RoundToCeil(Damage_dealt_in_total[client]) / 200;
-
-	i_Damage_dealt_in_total[client] = RoundToCeil(Damage_dealt_in_total[client]);
-	
-	Points += Resupplies_Supplied[client] * 2;
-	
-	Points += i_BarricadeHasBeenDamaged[client] / 65;
-	
-	Points += i_ExtraPlayerPoints[client] / 2;
-	
-	Points /= 10;
-	
-	PlayerPoints[client] = Points;	// Do stuff here :)
-}
-
-stock int MaxArmorCalculation(int value, int client, float multiplyier)
-{
-	int Armor_Max;
-	
-	if(value == 50)
-		Armor_Max = 300;
-											
-	else if(value == 100)
-		Armor_Max = 450;
-											
-	else if(value == 150)
-		Armor_Max = 1000;
-										
-	else if(value == 200)
-		Armor_Max = 2000;	
-		
-	else
-		Armor_Max = 200;
-		
-	return (RoundToCeil(float(Armor_Max) * multiplyier));
-	
-}
-
-//	f_TimerTickCooldownRaid = 0.0;
-//	f_TimerTickCooldownShop = 0.0;
-stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
-{
-	if(NormalTimer)
-	{
-		if(f_TimerTickCooldownShop < GetGameTime())
-		{
-			f_TimerTickCooldownShop = GetGameTime() + 0.9;
-			EmitSoundToAll("misc/halloween/clock_tick.wav", _, SNDCHAN_AUTO, _, _, 1.0);
-		}
-	}
-	if(RaidTimer)
-	{
-		if(f_TimerTickCooldownRaid < GetGameTime())
-		{
-			float Timer_Show = RaidModeTime - GetGameTime();
-		
-			if(Timer_Show < 0.0)
-				Timer_Show = 0.0;
-				
-			
-			if(Timer_Show < 10.0)
-			{
-				if(Timer_Show < 5.0)
-				{
-					f_TimerTickCooldownRaid = GetGameTime() + 0.9;
-				}
-				else
-				{
-					f_TimerTickCooldownRaid = GetGameTime() + 1.9;
-				}
-			}
-			else
-				f_TimerTickCooldownRaid = GetGameTime() + 10.0;
-				
-			EmitSoundToAll("mvm/mvm_bomb_warning.wav", _, SNDCHAN_AUTO, _, _, 1.0);
-			for(int client=1; client<=MaxClients; client++)
-			{
-				if(IsClientInGame(client))
-				{
-					SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
-					SetGlobalTransTarget(client);
-					ShowSyncHudText(client,  SyncHud_Notifaction, "You have %.1f Seconds left to kill the Raid!", Timer_Show);	
-				}
-			}
-		}
-	}
 }
 
 public bool HitOnlyTargetOrWorld(int entity, int contentsMask, any iExclude)
@@ -2938,107 +2884,6 @@ public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 	
 	delete pack;
 }
-
-
-void ReviveAll(bool raidspawned = false)
-{
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			i_AmountDowned[client] = 0;
-			DoOverlay(client, "");
-			if(GetClientTeam(client)==2)
-			{
-				if(TeutonType[client] != TEUTON_WAITING)
-				{
-					b_HasBeenHereSinceStartOfWave[client] = true;
-				}
-				if((!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD)/* && !IsValidEntity(EntRefToEntIndex(RaidBossActive))*/)
-				{
-					applied_lastmann_buffs_once = false;
-					DHook_RespawnPlayer(client);
-					GiveCompleteInvul(client, 2.0);
-				}
-				else if(dieingstate[client] > 0)
-				{
-					dieingstate[client] = 0;
-					Store_ApplyAttribs(client);
-					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
-					int entity, i;
-					while(TF2U_GetWearable(client, entity, i))
-					{
-						SetEntityRenderMode(entity, RENDER_NORMAL);
-						SetEntityRenderColor(entity, 255, 255, 255, 255);
-					}
-					SetEntityRenderMode(client, RENDER_NORMAL);
-					SetEntityRenderColor(client, 255, 255, 255, 255);
-					SetEntityCollisionGroup(client, 5);
-					if(!raidspawned)
-					{
-						if(!EscapeMode)
-						{
-							SetEntityHealth(client, 50);
-							RequestFrame(SetHealthAfterRevive, client);
-						}	
-						else
-						{
-							SetEntityHealth(client, 150);
-							RequestFrame(SetHealthAfterRevive, client);						
-						}
-					}
-				}
-				if(raidspawned)
-				{
-					SetEntityHealth(client, SDKCall_GetMaxHealth(client));
-					RequestFrame(SetHealthAfterReviveRaid, client);	
-				}
-			}
-		}
-	}
-	
-	int entity = MaxClients + 1;
-	while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
-	{
-		if(i_NpcInternalId[entity] == CITIZEN)
-		{
-			Citizen npc = view_as<Citizen>(entity);
-			if(npc.m_bDowned && npc.m_iWearable3 > 0)
-			{
-				npc.SetDowned(false);
-				if(!Waves_InSetup())
-				{
-					int target = 0;
-					for(int i=1; i<=MaxClients; i++)
-					{
-						if(IsClientInGame(i))
-						{
-							if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
-							{
-								target = i;
-								break;
-							}
-						}
-					}
-					
-					if(target)
-					{
-						float pos[3], ang[3];
-						GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
-						GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-						ang[2] = 0.0;
-						TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
-					}
-				}
-			}
-		}
-	}
-	
-	Music_EndLastmann();
-	CheckAlivePlayers();
-}
-
-
 
 stock void LookAtTarget(int client, int target)
 {
@@ -3183,7 +3028,7 @@ stock void DHook_CreateDetour(GameData gamedata, const char[] name, DHookCallbac
 #define ANNOTATION_REFRESH_RATE 0.1
 #define ANNOTATION_OFFSET 8750
 
-public void ShowAnnotationToPlayer(int client, float pos[3], const char[] Text, float lifetime, int follow_who)
+stock void ShowAnnotationToPlayer(int client, float pos[3], const char[] Text, float lifetime, int follow_who)
 {
 	Handle event = CreateEvent("show_annotation");
 	if (event == INVALID_HANDLE) return;
@@ -3207,7 +3052,7 @@ public void ShowAnnotationToPlayer(int client, float pos[3], const char[] Text, 
 
 void AdjustBotCount(int ExtraData = 1) //1 is the default
 {
-	int botscalculaton;
+	int botscalculaton = 1;
 	int botsonserver = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -3217,6 +3062,7 @@ void AdjustBotCount(int ExtraData = 1) //1 is the default
 		}
 	}
 
+#if defined ZR
 	if(EscapeMode)
 	{
 		if(12 > CvarMaxBotsForKillfeed.IntValue) //12 is always for escape
@@ -3246,6 +3092,11 @@ void AdjustBotCount(int ExtraData = 1) //1 is the default
 	{
 		botscalculaton = 1; //MUST BE 1 ATLEAST!
 	}
+#endif
+
+#if defined RPG
+	botscalculaton = CvarMaxBotsForKillfeed.IntValue;
+#endif
 
 	int bots_to_spawn_or_despawn;
 	int bots_to_spawn_or_despawn_Invert;

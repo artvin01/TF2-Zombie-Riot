@@ -972,10 +972,12 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					i_HasBeenHeadShotted[victim] = true; //shouldnt count as an actual headshot!
 				}
 
+#if defined ZR
 				if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
 				{
 					damage *= 1.35;
 				}
+#endif
 				
 				int pitch = GetRandomInt(90, 110);
 				int random_case = GetRandomInt(1, 2);
@@ -994,6 +996,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					played_headshotsound_already_Pitch[attacker] = pitch;
 				}
 				
+#if defined ZR
 				if(i_ArsenalBombImplanter[weapon] > 0)
 				{
 					if(f_ChargeTerroriserSniper[weapon] > 149.0)
@@ -1007,6 +1010,8 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					Apply_Particle_Teroriser_Indicator(victim);
 					damage = 0.0;
 				}
+#endif
+				
 				played_headshotsound_already[attacker] = GetGameTime();
 				if(!Blitzed_By_Riot) //dont play headshot sound if blized.
 				{
@@ -1251,10 +1256,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	
 	if(attacker <= MaxClients)
 	{
+		
+#if defined ZR
 		if(dieingstate[attacker] > 0)
 		{
 			damage *= 0.25;
 		}
+#endif
+		
 		if(damagecustom>=TF_CUSTOM_SPELL_TELEPORT && damagecustom<=TF_CUSTOM_SPELL_BATS)
 		{
 			//nope, no fireball damage. or any mage damage.
@@ -1379,10 +1388,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		if(attacker <= MaxClients && IsValidEntity(weapon))
 		{
 			
+#if defined ZR
 			float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
-		
+			
 			damage = modified_damage;
-
+			
 			if(i_ArsenalBombImplanter[weapon] > 0)
 			{
 				if(f_ChargeTerroriserSniper[weapon] > 149.0)
@@ -1396,6 +1406,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				Apply_Particle_Teroriser_Indicator(victim);
 				damage = 0.0;
 			}
+#endif
 			
 			if(i_HighTeslarStaff[weapon] == 1)
 			{
@@ -1452,6 +1463,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 								damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER! But not for facestabbers.
 							}
 							
+#if defined ZR
 							if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
 							{
 								damage *= 1.35;
@@ -1459,8 +1471,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 							
 							if(EscapeMode)
 								damage *= 1.35;
+#endif
 							
-					
 							if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
 							{
 								
@@ -1715,25 +1727,40 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		
 		CClotBody npc = view_as<CClotBody>(victim);
 		
+#if defined ZR
 		if(npc.m_flMeleeArmor != 1.0 || Medival_Difficulty_Level != 0)
+#else
+		if(npc.m_flMeleeArmor != 1.0)
+#endif
+		
 		{
 			float percentage = npc.m_flMeleeArmor * 100.0;
+			
+#if defined ZR
 			if(Medival_Difficulty_Level != 0.0)
 			{
 				percentage *= Medival_Difficulty_Level;
 			}
+#endif
 			
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder, percentage);
 		}
 		
+#if defined ZR
 		if(npc.m_flRangedArmor != 1.0 || Medival_Difficulty_Level != 0)
+#else
+		if(npc.m_flRangedArmor != 1.0)
+#endif
+		
 		{
 			float percentage = npc.m_flRangedArmor * 100.0;
 			
+#if defined ZR
 			if(Medival_Difficulty_Level != 0.0)
 			{
 				percentage *= Medival_Difficulty_Level;
 			}
+#endif
 			
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
 		}

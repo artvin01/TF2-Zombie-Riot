@@ -69,6 +69,9 @@ enum
 	WEAPON_CRIPPLEMOAB = 5
 }
 
+//int Bob_To_Player[MAXENTITIES];
+bool Bob_Exists = false;
+int Bob_Exists_Index = -1;
 ConVar zr_voteconfig;
 ConVar zr_tagblacklist;
 ConVar zr_tagwhitelist;
@@ -124,6 +127,8 @@ float f_TimeAfterSpawn[MAXTF2PLAYERS];
 
 float Armor_regen_delay[MAXTF2PLAYERS];
 
+//ConVar CvarSvRollspeed; // sv_rollspeed 
+ConVar CvarSvRollagle; // sv_rollangle
 int i_SvRollAngle[MAXTF2PLAYERS];
 
 Handle SyncHud_ArmorCounter;
@@ -134,6 +139,7 @@ int CashRecievedNonWave[MAXTF2PLAYERS];
 int Scrap[MAXTF2PLAYERS];
 int Ammo_Count_Ready[MAXTF2PLAYERS];
 //float Armor_Ready[MAXTF2PLAYERS];
+int b_NpcForcepowerupspawn[MAXENTITIES]={0, ...}; 
 
 int Armour_Level_Current[MAXTF2PLAYERS];
 int Armor_Charge[MAXTF2PLAYERS];
@@ -148,7 +154,6 @@ bool Building_Constructed[MAXENTITIES]={false, ...};
 
 int Elevator_Owner[MAXENTITIES]={0, ...};
 bool Is_Elevator[MAXENTITIES]={false, ...};
-int Dont_Crouch[MAXENTITIES]={0, ...};
 
 int StoreWeapon[MAXENTITIES];
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
@@ -309,6 +314,10 @@ void ZR_PluginStart()
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
 	
+	CvarSvRollagle = FindConVar("sv_rollangle");
+	if(CvarSvRollagle)
+		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+
 	Database_PluginStart();
 	Medigun_PluginStart();
 	OnPluginStartMangler();
@@ -366,6 +375,19 @@ void ZR_MapStart()
 	Weapon_Cspyknife_ClearAll();
 	f_DelaySpawnsForVariousReasons = 0.0;
 	Zero(Damage_dealt_in_total);
+	Zero(b_HasBeenHereSinceStartOfWave);
+	Zero(i_KillsMade);
+	Zero(i_Backstabs);
+	Zero(i_Headshots);
+	Zero(f_TutorialUpdateStep);
+	Zero(healing_cooldown);
+	Zero(f_BuildingIsNotReady);
+	Zero(f_TerroriserAntiSpamCd);
+	Zero(f_DisableDyingTimer);
+	Zero(healing_cooldown);
+	Zero(i_ThisEntityHasAMachineThatBelongsToClientMoney);
+	Zero(f_WasRecentlyRevivedViaNonWave);
+	Zero(f_TimeAfterSpawn);
 	
 	Waves_MapStart();
 	Music_MapStart();
@@ -470,6 +492,8 @@ void ZR_ClientPutInServer(int client)
 	
 	if(CurrentRound)
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.20);
+	
+	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
 }
 
 void ZR_ClientDisconnect(int client)
@@ -795,46 +819,6 @@ public Action Timer_Dieing(Handle timer, int client)
 //	BOB ALONE PLAYER STUFF!
 
 
-
-
-
-//int Bob_To_Player[MAXENTITIES];
-bool Bob_Exists = false;
-int Bob_Exists_Index = -1;
-
-public void CheckIfAloneOnServer()
-{
-	b_IsAloneOnServer = false;
-	int players;
-	int player_alone;
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
-		{
-			players += 1;
-			player_alone = client;
-		}
-	}
-	if(players == 1)
-	{
-		b_IsAloneOnServer = true;	
-	}
-	if (players < 4 && players > 0)
-	{
-		if (Bob_Exists)
-			return;
-		
-		Spawn_Bob_Combine(player_alone);
-		
-	}
-	else if (Bob_Exists)
-	{
-		Bob_Exists = false;
-		NPC_Despawn_bob(EntRefToEntIndex(Bob_Exists_Index));
-		Bob_Exists_Index = -1;
-	}
-}
-
 public void Spawn_Bob_Combine(int client)
 {
 	float flPos[3], flAng[3];
@@ -1156,4 +1140,198 @@ public void NPC_SpawnNextRequestFrame(bool force)
 public void TF2_OnWaitingForPlayersEnd()
 {
 	Queue_WaitingForPlayersEnd();
+}
+
+
+stock void UpdatePlayerPoints(int client)
+{
+	int Points;
+	
+	Points += Healing_done_in_total[client] / 5;
+	
+	Points += RoundToCeil(Damage_dealt_in_total[client]) / 200;
+
+	i_Damage_dealt_in_total[client] = RoundToCeil(Damage_dealt_in_total[client]);
+	
+	Points += Resupplies_Supplied[client] * 2;
+	
+	Points += i_BarricadeHasBeenDamaged[client] / 65;
+	
+	Points += i_ExtraPlayerPoints[client] / 2;
+	
+	Points /= 10;
+	
+	PlayerPoints[client] = Points;	// Do stuff here :)
+}
+
+stock int MaxArmorCalculation(int value, int client, float multiplyier)
+{
+	int Armor_Max;
+	
+	if(value == 50)
+		Armor_Max = 300;
+											
+	else if(value == 100)
+		Armor_Max = 450;
+											
+	else if(value == 150)
+		Armor_Max = 1000;
+										
+	else if(value == 200)
+		Armor_Max = 2000;	
+		
+	else
+		Armor_Max = 200;
+		
+	return (RoundToCeil(float(Armor_Max) * multiplyier));
+	
+}
+
+//	f_TimerTickCooldownRaid = 0.0;
+//	f_TimerTickCooldownShop = 0.0;
+stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
+{
+	if(NormalTimer)
+	{
+		if(f_TimerTickCooldownShop < GetGameTime())
+		{
+			f_TimerTickCooldownShop = GetGameTime() + 0.9;
+			EmitSoundToAll("misc/halloween/clock_tick.wav", _, SNDCHAN_AUTO, _, _, 1.0);
+		}
+	}
+	if(RaidTimer)
+	{
+		if(f_TimerTickCooldownRaid < GetGameTime())
+		{
+			float Timer_Show = RaidModeTime - GetGameTime();
+		
+			if(Timer_Show < 0.0)
+				Timer_Show = 0.0;
+				
+			
+			if(Timer_Show < 10.0)
+			{
+				if(Timer_Show < 5.0)
+				{
+					f_TimerTickCooldownRaid = GetGameTime() + 0.9;
+				}
+				else
+				{
+					f_TimerTickCooldownRaid = GetGameTime() + 1.9;
+				}
+			}
+			else
+				f_TimerTickCooldownRaid = GetGameTime() + 10.0;
+				
+			EmitSoundToAll("mvm/mvm_bomb_warning.wav", _, SNDCHAN_AUTO, _, _, 1.0);
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+				{
+					SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "You have %.1f Seconds left to kill the Raid!", Timer_Show);	
+				}
+			}
+		}
+	}
+}
+
+
+void ReviveAll(bool raidspawned = false)
+{
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			i_AmountDowned[client] = 0;
+			DoOverlay(client, "");
+			if(GetClientTeam(client)==2)
+			{
+				if(TeutonType[client] != TEUTON_WAITING)
+				{
+					b_HasBeenHereSinceStartOfWave[client] = true;
+				}
+				if((!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD)/* && !IsValidEntity(EntRefToEntIndex(RaidBossActive))*/)
+				{
+					applied_lastmann_buffs_once = false;
+					DHook_RespawnPlayer(client);
+					GiveCompleteInvul(client, 2.0);
+				}
+				else if(dieingstate[client] > 0)
+				{
+					dieingstate[client] = 0;
+					Store_ApplyAttribs(client);
+					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+					int entity, i;
+					while(TF2U_GetWearable(client, entity, i))
+					{
+						SetEntityRenderMode(entity, RENDER_NORMAL);
+						SetEntityRenderColor(entity, 255, 255, 255, 255);
+					}
+					SetEntityRenderMode(client, RENDER_NORMAL);
+					SetEntityRenderColor(client, 255, 255, 255, 255);
+					SetEntityCollisionGroup(client, 5);
+					if(!raidspawned)
+					{
+						if(!EscapeMode)
+						{
+							SetEntityHealth(client, 50);
+							RequestFrame(SetHealthAfterRevive, client);
+						}	
+						else
+						{
+							SetEntityHealth(client, 150);
+							RequestFrame(SetHealthAfterRevive, client);						
+						}
+					}
+				}
+				if(raidspawned)
+				{
+					SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+					RequestFrame(SetHealthAfterReviveRaid, client);	
+				}
+			}
+		}
+	}
+	
+	int entity = MaxClients + 1;
+	while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+	{
+		if(i_NpcInternalId[entity] == CITIZEN)
+		{
+			Citizen npc = view_as<Citizen>(entity);
+			if(npc.m_bDowned && npc.m_iWearable3 > 0)
+			{
+				npc.SetDowned(false);
+				if(!Waves_InSetup())
+				{
+					int target = 0;
+					for(int i=1; i<=MaxClients; i++)
+					{
+						if(IsClientInGame(i))
+						{
+							if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
+							{
+								target = i;
+								break;
+							}
+						}
+					}
+					
+					if(target)
+					{
+						float pos[3], ang[3];
+						GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+						GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+						ang[2] = 0.0;
+						TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
+					}
+				}
+			}
+		}
+	}
+	
+	Music_EndLastmann();
+	CheckAlivePlayers();
 }

@@ -109,7 +109,7 @@ public void NPC_Despawn(int entity)
 {
 	if(IsValidEntity(entity))
 	{
-		CClotBody npc = view_as<CClotBody>(iNPC);
+		CClotBody npc = view_as<CClotBody>(entity);
 		RemoveEntity(entity);
 
 		if(IsValidEntity(npc.m_iWearable1))
@@ -131,7 +131,7 @@ public void NPC_Despawn(int entity)
 
 public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] StandStill, float walkspeedback, float gameTime)
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	CClotBody npc = view_as<CClotBody>(entity);
 
 	if(npc.m_flGetClosestTargetTime < gameTime) //Find a new victim to destroy.
 	{
@@ -221,4 +221,5 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 	}
 }
 
-#include "zombie_riot/npc/normal/npc_headcrabzombie.sp"
+#include "rpg_fortress/npc/normal/npc_chicken_2.sp"
+#include "rpg_fortress/npc/normal/npc_chicken_mad.sp"

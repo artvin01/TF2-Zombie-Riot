@@ -414,7 +414,7 @@ public int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 
 //BIG thanks to backwards#8236 on discord for helping me out, YOU ARE MY HERO.
 
-public void Sdkcall_Load_Lagcomp()
+void Sdkcall_Load_Lagcomp()
 {
 	if(!g_GottenAddressesForLagComp)
 	{
@@ -437,7 +437,7 @@ public void Sdkcall_Load_Lagcomp()
 	}
 }
 
-public void Manual_Impulse_101(int client, int health)
+void Manual_Impulse_101(int client, int health)
 {
 	int ie, entity;
 	while(TF2_GetItem(client, entity, ie))
@@ -508,11 +508,14 @@ public void Manual_Impulse_101(int client, int health)
 		SetAmmo(client, i, CurrentAmmo[client][i]);
 	}
 	
+#if defined ZR
 	if(EscapeMode)
 	{
 		SetAmmo(client, Ammo_Metal, 99099); //just give infinite metal. There is no reason not to. (in Escape.)
 		SetAmmo(client, 21, 99999);
 	}
+#endif
+	
 	SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 0.0);
 	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
 //	SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", 0.0); //No cloak regen at all.
@@ -552,7 +555,8 @@ public void Manual_Impulse_101(int client, int health)
 		}
 	}
 	
-	SetEntityHealth(client, health);
+	if(health > 0)
+		SetEntityHealth(client, health);
 }
 
 //thanks to pelipoika for gamedata that he had avaiable.

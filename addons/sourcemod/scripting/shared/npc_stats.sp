@@ -26,6 +26,10 @@ bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 #endif
 
+#if defined RPG
+float f3_SpawnPosition[MAXENTITIES][3];
+#endif
+
 static int g_particleImpactFlesh;
 static int g_particleImpactRubber;
 static int g_modelArrow;
@@ -2605,6 +2609,8 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		
 		if(client && IsClientInGame(client))
 		{
+			
+#if defined ZR
 			if(i_HasBeenHeadShotted[pThis])
 				i_Headshots[client] += 1; //Award 1 headshot point, only once.
 
@@ -2612,6 +2618,8 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 				i_Backstabs[client] += 1; //Give a backstab count!
 
 			i_KillsMade[client] += 1;
+#endif
+			
 			Calculate_And_Display_hp(client, pThis, Damage[pThis], true, overkill);
 		}
 		
@@ -3024,7 +3032,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 //	PrintToChatAll("CBaseAnimating_HandleAnimEvent(%i, %i)", pThis, event);
 	CClotBody npc = view_as<CClotBody>(pThis);
 	
-	
+#if defined ZR
 	switch(i_NpcInternalId[pThis])
 	{
 		case MEDIVAL_ARCHER:
@@ -3048,6 +3056,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 			HandleAnimEvent_MedivalEliteSkirmisher(pThis, event);
 		}
 	}
+#endif
 	
 	switch(npc.m_iNpcStepVariation)
 	{
@@ -3369,7 +3378,11 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 	
 	if(entity > 0 && entity <= MaxClients) 
 	{
+		
+#if defined ZR
 		if(TeutonType[entity])
+#endif
+		
 		{
 			return false;
 		}
@@ -3973,17 +3986,20 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			}
 		}
 	}
-	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
+	
+#if defined ZR
+	if(searcher_team != 2 && !IsValidEntity(EntRefToEntIndex(RaidBossActive)) && !IgnoreBuildings)
+#else
+	if(!IgnoreBuildings && searcher_team != 2)
+#endif
 	{
-		int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-		if(IsValidEntity(entity_close) && entity_close != ingore_client)
+		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 		{
-			if(searcher_team != 2)
+			int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+			if(IsValidEntity(entity_close) && entity_close != ingore_client)
 			{
-				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
-				{	
-					if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)) && !IgnoreBuildings)
+					CClotBody npc = view_as<CClotBody>(entity_close);
+					if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 					{
 						float TargetLocation[3]; 
 						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
@@ -4007,7 +4023,6 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 							}	
 						}
 					}
-				}
 			}
 		}
 	}
@@ -4412,6 +4427,7 @@ public void Check_If_Stuck(int iNPC)
 			{
 				LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos[0],flMyPos[1],flMyPos[2]);
 				
+#if defined ZR
 				int target = 0;
 				for(int i=1; i<=MaxClients; i++)
 				{
@@ -4434,6 +4450,8 @@ public void Check_If_Stuck(int iNPC)
 					TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
 				}
 				else
+#endif
+				
 				{
 					RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
 				}
@@ -6175,13 +6193,18 @@ public void SetDefaultValuesToZeroNPC(int entity)
 {
 #if defined ZR
 	i_SpawnProtectionEntity[entity] = -1;
+	i_TeamGlow[entity] = -1;
+	b_thisNpcHasAnOutline[entity] = false;
+	b_ThisNpcIsImmuneToNuke[entity] = false;
+	b_ThisNpcIsSawrunner[entity] = false;
 #endif
-
+	
 #if defined RPG
 	f3_SpawnPosition[entity][0] = 0.0;
 	f3_SpawnPosition[entity][1] = 0.0;
 	f3_SpawnPosition[entity][2] = 0.0;
 #endif
+	
 	f3_CustomMinMaxBoundingBox[entity][0] = 0.0;
 	f3_CustomMinMaxBoundingBox[entity][1] = 0.0;
 	f3_CustomMinMaxBoundingBox[entity][2] = 0.0;
@@ -6192,7 +6215,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Wearable[entity][4] = -1;
 	i_Wearable[entity][5] = -1;
 
-	i_TeamGlow[entity] = -1;
 	b_DissapearOnDeath[entity] = false;
 	b_IsGiant[entity] = false;
 	b_Pathing[entity] = false;
@@ -6224,8 +6246,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_AttackHappenswillhappen[entity] = false;
 	b_thisNpcIsABoss[entity] = false;
 	b_StaticNPC[entity] = false;
-	b_thisNpcHasAnOutline[entity] = false;
-	b_ThisNpcIsImmuneToNuke[entity] = false;
 	b_NPCVelocityCancel[entity] = false;
 	fl_DoSpawnGesture[entity] = 0.0;
 	b_isWalking[entity] = true;
@@ -6291,7 +6311,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_CreditsOnKill[entity] = 0;
 	b_npcspawnprotection[entity] = false;
 	f_CooldownForHurtParticle[entity] = 0.0;
-	b_ThisNpcIsSawrunner[entity] = false;
 	f_LowTeslarDebuff[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
 	f_WidowsWineDebuff[entity] = 0.0;

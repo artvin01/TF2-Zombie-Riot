@@ -174,7 +174,7 @@ public void StartChicken_NPCDeath(int entity)
 	SDKUnhook(entity, SDKHook_Think, StartChicken_ClotThink);
 
 
-	npc.m_iWearable3
+	int entity = npc.m_iWearable3;
 }
 
 

@@ -77,9 +77,11 @@ void DHook_Setup()
 
 //	DHook_CreateDetour(gamedata, "CTFGCServerSystem::PreClientUpdate", PreClientUpdatePre, PreClientUpdatePost);
 
-
+#if defined ZR
 	DHook_CreateDetour(gamedata, "CBaseObject::FinishedBuilding", Dhook_FinishedBuilding_Pre, Dhook_FinishedBuilding_Post);
 	DHook_CreateDetour(gamedata, "CBaseObject::FirstSpawn", Dhook_FirstSpawn_Pre, Dhook_FirstSpawn_Post);
+#endif
+
 	DHook_CreateDetour(gamedata, "FX_FireBullets()", FX_FireBullets_Pre, FX_FireBullets_Post);
 
 	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
@@ -159,8 +161,15 @@ public MRESReturn Wrench_SmackPost(int entity, DHookReturn ret, DHookParam param
 MRESReturn Detour_CalcPlayerScore(DHookReturn hReturn, DHookParam hParams)
 {
 	int client = hParams.Get(2);
+	
+#if defined ZR
 	int iScore = PlayerPoints[client];
+#endif
 
+#if defined RPG
+	int iScore = Level[client];
+#endif
+	
 	hReturn.Value = iScore;
 	return MRES_Supercede;
 }
@@ -743,7 +752,11 @@ public void LagCompMovePlayersExceptYou(int player)
 	{
 		if(IsClientInGame(client) && client != player)
 		{
+			
+#if defined ZR
 			if (TeutonType[client] == TEUTON_NONE) 
+#endif
+			
 			{
 				b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = true;
 			}
@@ -753,13 +766,23 @@ public void LagCompMovePlayersExceptYou(int player)
 
 public void LagCompEntitiesThatAreIntheWay(int Compensator)
 {
-	for(int client=1; client<=MaxClients; client++)
+#if !defined ZR
+	if(!Dont_Move_Allied_Npc)
+#endif
+	
 	{
-		if(IsClientInGame(client) && client != Compensator)
+		for(int client=1; client<=MaxClients; client++)
 		{
-			if (TeutonType[client] != TEUTON_NONE || (!Dont_Move_Allied_Npc)) 
+			if(IsClientInGame(client) && client != Compensator)
 			{
-				b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = true;
+				
+#if defined ZR
+				if (TeutonType[client] != TEUTON_NONE || (!Dont_Move_Allied_Npc)) 
+#endif
+				
+				{
+					b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = true;
+				}
 			}
 		}
 	}
@@ -855,11 +878,14 @@ public MRESReturn DHook_BlockThink(int Base_Boss)
 */
 public MRESReturn DHook_SentryFind_Target(int sentry, Handle hReturn, Handle hParams)
 {
+#if defined ZR
 	if(b_SentryIsCustom[sentry])
 	{
 		DHookSetReturn(hReturn, false); 
 		return MRES_Supercede;		
 	}
+#endif
+	
 	int owner = GetEntPropEnt(sentry, Prop_Send, "m_hBuilder");
 	if(owner > 0)
 	{
@@ -906,6 +932,7 @@ public MRESReturn DHook_SentryFind_Target(int sentry, Handle hReturn, Handle hPa
 
 public MRESReturn DHook_SentryFire_Pre(int sentry, Handle hReturn, Handle hParams)
 {
+#if defined ZR
 	if(!EscapeMode)
 	{
 		for(int client=1; client<=MaxClients; client++)
@@ -917,6 +944,8 @@ public MRESReturn DHook_SentryFire_Pre(int sentry, Handle hReturn, Handle hParam
 		}
 	}
 	else
+#endif
+	
 	{
 		int owner = GetEntPropEnt(sentry, Prop_Send, "m_hBuilder");
 		for(int client=1; client<=MaxClients; client++)
@@ -932,6 +961,7 @@ public MRESReturn DHook_SentryFire_Pre(int sentry, Handle hReturn, Handle hParam
 
 public MRESReturn DHook_SentryFire_Post(int sentry, Handle hReturn, Handle hParams)
 {
+#if defined ZR
 	if(!EscapeMode)
 	{
 		for(int client=1; client<=MaxClients; client++)
@@ -944,6 +974,8 @@ public MRESReturn DHook_SentryFire_Post(int sentry, Handle hReturn, Handle hPara
 	//	EmitGameSoundToAll("Building_MiniSentrygun.Fire", sentry);
 	}
 	else
+#endif
+	
 	{
 		int owner = GetEntPropEnt(sentry, Prop_Send, "m_hBuilder");
 		for(int client=1; client<=MaxClients; client++)
@@ -960,11 +992,14 @@ public MRESReturn DHook_SentryFire_Post(int sentry, Handle hReturn, Handle hPara
 
 void DHook_HookClient(int client)
 {
-	
 	if(ForceRespawn)
 	{
 		ForceRespawnHook[client] = ForceRespawn.HookEntity(Hook_Pre, client, DHook_ForceRespawn);
+		
+#if defined ZR
 		dieingstate[client] = 0;
+#endif
+		
 		CClotBody player = view_as<CClotBody>(client);
 		player.m_bThisEntityIgnored = false;
 	}
@@ -999,7 +1034,8 @@ void DHook_RespawnPlayer(int client)
 
 public MRESReturn DHook_CanAirDashPre(int client, DHookReturn ret)
 {
-	/*int current = GetEntProp(client, Prop_Send, "m_iAirDash");
+#if defined RPG
+	int current = GetEntProp(client, Prop_Send, "m_iAirDash");
 	int max_Value = Attributes_Airdashes(client);
 
 	if(TF2_IsPlayerInCondition(client, TFCond_CritHype))
@@ -1010,7 +1046,9 @@ public MRESReturn DHook_CanAirDashPre(int client, DHookReturn ret)
 		ret.Value = true;
 		SetEntProp(client, Prop_Send, "m_iAirDash", current+1);
 	}
-	else*/
+	else
+#endif
+	
 	{
 		ret.Value = false;
 	}
@@ -1022,7 +1060,6 @@ public MRESReturn DHook_DropAmmoPackPre(int client, DHookParam param)
 	return MRES_Supercede;
 }
 
-
 public MRESReturn DHook_ForceRespawn(int client)
 {
 	if(IsFakeClient(client))
@@ -1033,19 +1070,21 @@ public MRESReturn DHook_ForceRespawn(int client)
 		return MRES_Supercede;
 	}
 	
-	RequestFrame(SetEyeAngleCorrect, client);
-	
 	if(GetClientTeam(client) != 2)
 	{
 		ChangeClientTeam(client, 2);
 		return MRES_Supercede;
 	}
 	
+	RequestFrame(SetEyeAngleCorrect, client);
+	
+#if defined ZR
 	DoTutorialStep(client, false);
 	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
 	
 	bool started = !Waves_InSetup();
 	TeutonType[client] = (!IsRespawning && started) ? TEUTON_DEAD : TEUTON_NONE;
+#endif
 	
 	CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 	if(!CurrentClass[client])
@@ -1053,27 +1092,31 @@ public MRESReturn DHook_ForceRespawn(int client)
 		CurrentClass[client] = TFClass_Scout;
 		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Scout);
 	}
+	
 	DoOverlay(client, "");
 	WeaponClass[client] = TFClass_Unknown;
 	
+#if defined ZR
 	if(!WaitingInQueue[client] && !GameRules_GetProp("m_bInWaitingForPlayers"))
 		Queue_AddPoint(client);
+#endif
 	
 	SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	
+#if defined ZR
 	GiveCompleteInvul(client, 2.0);
-			
+	
 	if(started && TeutonType[client] == TEUTON_NONE)
 	{
 		SetEntityHealth(client, 50);
 		RequestFrame(SetHealthAfterRevive, client);
 	}
 	
-	CreateTimer(0.1, DHook_TeleportToAlly, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
-		
 	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;
+#endif
 	
+	CreateTimer(0.1, DHook_TeleportToAlly, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 	return MRES_Ignored;
 }
 		
@@ -1118,7 +1161,7 @@ public void PhaseThroughOwnBuildings(int client)
 	}
 }
 
-		
+/*
 public void DHook_TeleportToObserver(DataPack pack)
 {
 	pack.Reset();
@@ -1157,13 +1200,14 @@ public void DHook_TeleportToObserver(DataPack pack)
 		}
 	}
 	delete pack;
-}
+}*/
 
 public Action DHook_TeleportToAlly(Handle timer, int userid)
 {
 	int client = GetClientOfUserId(userid);
 	if(IsValidClient(client))
 	{
+#if defined ZR
 		GiveCompleteInvul(client, 2.0);
 		if(f_WasRecentlyRevivedViaNonWave[client] < GetGameTime())
 		{	
@@ -1195,6 +1239,19 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 				}
 			}
 		}
+#endif
+		
+#if defined RPG
+		if(f3_SpawnPosition[client][0])
+		{
+			TeleportEntity(client, f3_SpawnPosition[client], NULL_VECTOR, NULL_VECTOR);
+			f3_SpawnPosition[client][0] = 0.0;
+		}
+		else
+		{
+			TeleportEntity(client, view_as<float>({1904.0, -12436.0, 9395.0}), view_as<float>({0.0, 180.0, 0.0}), NULL_VECTOR);
+		}
+#endif
 	}
 	return Plugin_Handled;
 }
@@ -1426,10 +1483,13 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	
 	int target = DHookGetParam(hParams, 1);
 	
+#if defined ZR
 	int ammo_amount_left = 9999;
-	
 	if(!EscapeMode)
 		ammo_amount_left = GetAmmo(owner, 21);
+#else
+	int ammo_amount_left = GetAmmo(owner, 21);
+#endif
 								
 	if(ammo_amount_left > 0)
 	{
@@ -1446,9 +1506,11 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 
 		HealAmmount *= Attributes_FindOnPlayer(owner, 8, true, 1.0);
 		
+#if defined ZR
 		if(EscapeMode)
 			HealAmmount *= 2.0;
-			
+#endif
+		
 		if(f_TimeUntillNormalHeal[target] > GetGameTime())
 		{
 			HealAmmount /= 8.0; //make sure they dont get the full benifit if hurt recently.
@@ -1481,7 +1543,11 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			Give_Assist_Points(target, owner);
 			
 			StartHealingTimer(target, 0.1, ammo_amount_left/10, 10, true);
+			
+#if defined ZR
 			Healing_done_in_total[owner] += ammo_amount_left;
+#endif
+			
 			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
 			ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
 			ClientCommand(target, "playgamesound items/smallmedkit1.wav");
@@ -1558,8 +1624,11 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 		SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);
 	}
 	
+#if defined ZR
 	//They successfully blew the horn! give them abit of credit for that! they helpinnnnnnn... yay
 	i_ExtraPlayerPoints[client] += 15;
+#endif
+	
 	TF2Attrib_SetByDefIndex(entity, 698, 0.0); // disable weapon switch
 	return MRES_Ignored;
 }

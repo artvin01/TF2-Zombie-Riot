@@ -1,10 +1,12 @@
-#define STORE_PREFIX	"{purple}[RPG]{snow} "
-#define STORE_PREFIX2	"{purple}[RPG] "
-#define STORE_COLOR	"{snow}"
-#define STORE_COLOR2	"{purple}"
+#pragma semicolon 1
+#pragma newdecls required
 
 int Level[MAXENTITIES];
 int XP[MAXENTITIES];
-float f3_SpawnPosition[MAXENTITIES][3];
 
 #include "rpg_fortress/npc.sp"	// Global NPC List
+
+void RPG_MapStart()
+{
+	Zero2(f3_SpawnPosition);
+}
