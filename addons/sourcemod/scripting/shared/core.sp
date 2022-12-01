@@ -1013,6 +1013,8 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.bob");
 	LoadTranslations("zombieriot.phrases.icons"); 
 	LoadTranslations("common.phrases");
+
+	LoadTranslations("rpgfortress.phrases.enemynames");
 	
 	DHook_Setup();
 	SDKCall_Setup();
@@ -1130,7 +1132,7 @@ public void OnMapStart()
 #if defined ZR
 	ZR_MapStart();
 #endif
-	
+	OnMapStart_NPC_Base();
 	SDKHook_MapStart();
 	ViewChange_MapStart();
 	

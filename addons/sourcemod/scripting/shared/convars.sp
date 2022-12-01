@@ -65,7 +65,6 @@ void ConVar_PluginStart()
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
 	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
 	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "1", "No Panzer will spawn or anything alike", FCVAR_DONTRECORD);
-	CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "14", "The maximum amount of blue bots allowed for the killfeed and more");
 	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
 	zr_voteconfig = CreateConVar("zr_voteconfig", "vote", "Vote config zr/ .cfg already included");
 	zr_tagblacklist = CreateConVar("zr_tagblacklist", "private", "Tags to blacklist from weapons config");
@@ -76,6 +75,8 @@ void ConVar_PluginStart()
 	// MapSpawnersActive = CreateConVar("zr_spawnersactive", "4", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
 	//CHECK npcs.sp FOR THIS ONE!
 	#endif
+	
+	CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "14", "The maximum amount of blue bots allowed for the killfeed and more");
 	
 	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "2.0", "How long zombie spawn protection lasts for.");

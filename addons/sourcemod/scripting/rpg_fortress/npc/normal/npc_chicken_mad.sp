@@ -14,39 +14,50 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/bat_hit.wav",
 };
 
+static const char g_IdleSound[][] = {
+	"vo/taunts/scout_taunts19.mp3",
+	"vo/taunts/scout_taunts20.mp3",
+	"vo/taunts/scout_taunts21.mp3",
+	"vo/taunts/scout_taunts22.mp3",
+};
+
+static const char g_HurtSound[][] = {
+	"vo/scout_painsharp01.mp3",
+	"vo/scout_painsharp02.mp3",
+	"vo/scout_painsharp03.mp3",
+	"vo/scout_painsharp04.mp3",
+	"vo/scout_painsharp05.mp3",
+	"vo/scout_painsharp06.mp3",
+	"vo/scout_painsharp07.mp3",
+	"vo/scout_painsharp08.mp3",
+};
+
 public void MadChicken_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
+	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
 	PrecacheModel("models/player/scout.mdl");
 }
 
 methodmap MadChicken < CClotBody
 {
-	public void PlayIdleSound() {
+	public void PlayIdleSound()
+	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 
-		char buffer[PLATFORM_MAX_PATH];
-		Format(buffer, sizeof(buffer), "vo/taunts/scout_taunts%d.mp3", GetRandomInt(19, 22));
-		EmitSoundToAll(buffer, this.index, SNDCHAN_VOICE, 75, _, 1.0, GetRandomInt(125, 135));
+		EmitSoundToAll(g_IdleSound[GetRandomInt(0, sizeof(g_IdleSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, GetRandomInt(125, 135), NORMAL_ZOMBIE_VOLUME);
 
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
 	
-	public void PlayHurtSound() {
-		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
+	public void PlayHurtSound()
+	 {
 		
-		char buffer[PLATFORM_MAX_PATH];
-		Format(buffer, sizeof(buffer), "vo/scout_painsharp0%d.mp3", GetRandomInt(1, 8));
-		EmitSoundToAll(buffer, this.index, SNDCHAN_VOICE, 75, _, 1.0, GetRandomInt(125, 135));
-
-		this.m_flNextHurtSound = GetGameTime() + GetRandomFloat(0.6, 1.6);
-		
+		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, GetRandomInt(125, 135), NORMAL_ZOMBIE_VOLUME);
 	}
 	
 	public void PlayDeathSound() 
@@ -55,17 +66,17 @@ methodmap MadChicken < CClotBody
 	}
 	public void PlayMeleeSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 	public void PlayMeleeHitSound()
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);	
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);	
 	}
 	
 	
 	public MadChicken(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MadChicken npc = view_as<MadChicken>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.5", "300", ally, false,_,_,_,{8.0,8.0,16.0}));
+		MadChicken npc = view_as<MadChicken>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.5", "300", ally, false,_,_,_,{8.0,8.0,36.0}));
 		
 		i_NpcInternalId[npc.index] = MAD_CHICKEN;
 		
@@ -203,7 +214,7 @@ public void MadChicken_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(100.0, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < Pow(70.0, 2.0) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
@@ -236,7 +247,6 @@ public void MadChicken_ClotThink(int iNPC)
 				int Enemy_I_See;
 							
 				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-				
 				//Can i see This enemy, is something in the way of us?
 				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
@@ -274,13 +284,6 @@ public Action MadChicken_OnTakeDamage(int victim, int &attacker, int &inflictor,
 	{
 		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
-	}
-
-	npc.m_flGetClosestTargetNoResetTime = gameTime + 5.0; //make them angry for 5 seconds if they are too far away.
-
-	if(npc.m_iTarget == -1) //Only set it if they actaully have no target.
-	{
-		npc.m_iTarget = attacker;
 	}
 	return Plugin_Changed;
 }

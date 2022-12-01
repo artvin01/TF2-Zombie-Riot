@@ -84,6 +84,7 @@ public Action Command_PetMenu(int client, int argc)
 
 void OnMapStart_NPC_Base()
 {
+	PrintToChatAll("test");
 	for (int i = 0; i < (sizeof(g_GibSound));   i++) { PrecacheSound(g_GibSound[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSoundMetal));   i++) { PrecacheSound(g_GibSoundMetal[i]);   }
 	for (int i = 0; i < (sizeof(g_CombineSoldierStepSound));   i++) { PrecacheSound(g_CombineSoldierStepSound[i]);   }
@@ -3381,18 +3382,16 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 {
 	char class[64];
 	GetEntityClassname(entity, class, sizeof(class));
-	
+
+#if defined ZR
 	if(entity > 0 && entity <= MaxClients) 
 	{
-		
-#if defined ZR
 		if(TeutonType[entity])
-#endif
-		
 		{
 			return false;
 		}
 	}
+#endif
 	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
 	{
 		return false;
@@ -4533,10 +4532,28 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 		return Plugin_Handled;
 	}
 	*/
+	
 	CClotBody npc = view_as<CClotBody>(victim);
 	npc.m_vecpunchforce(damageForce, true);
 	npc.m_bGib = false;
-	
+
+//This exists for rpg so that attacking the target will trigger it for hte next 5 seconds.
+//ZR does not need this.
+#if defined RPG
+	if(IsValidEntity(attacker))
+	{
+		if(GetEntProp(attacker, Prop_Send, "m_iTeamNum")!=GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+		{
+			npc.m_flGetClosestTargetNoResetTime = GetGameTime(npc.index) + 5.0; //make them angry for 5 seconds if they are too far away.
+
+			if(npc.m_iTarget == -1) //Only set it if they actaully have no target.
+			{
+				npc.m_iTarget = attacker;
+			}
+		}
+	}
+
+#endif
 	if(f_IsThisExplosiveHitscan[attacker] == GetGameTime())
 	{
 		npc.m_vecpunchforce(CalculateDamageForceSelfCalculated(attacker, 10000.0), true);

@@ -3177,7 +3177,7 @@ void Store_ApplyAttribs(int client)
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
 {
-
+	return;
 #if defined ZR
 	if(!StoreItems)
 #endif
