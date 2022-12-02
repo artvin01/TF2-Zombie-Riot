@@ -51,12 +51,6 @@
 				"linux"		"@_ZN9CTFPlayer20PlaySpecificSequenceEPKc"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x30\x53\x56\x8B\x75\x08\x57\x56\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x8B\xD8\x83\xFB\xFF\x74\x2A\x8B\x35\x2A\x2A\x2A\x2A\x8B\xCE\x8B\x16\xFF\x52\x2A\x8B\x8F\x2A\x2A\x2A\x2A\x53\x6A\x13\x8B\x01\xFF\x50"
 			}
-			"CTFGameMovement::ProcessMovement"
-			{
-				"library"	"server"
-				"linux"		"@_ZN15CTFGameMovement15ProcessMovementEP11CBasePlayerP9CMoveData"
-				"windows"	"\x55\x8B\xEC\x56\x57\x8B\x7D\x08\x8B\xF1\x85\xFF\x74\x2A\x53"
-			}
 			"CTFPlayer::CanAirDash"
 			{
 				"library"	"server"
@@ -392,24 +386,6 @@
 				"return"	"void"
 				"this"		"ignore"
 			}
-			"CTFGameMovement::ProcessMovement"
-			{
-				"signature"	"CTFGameMovement::ProcessMovement"
-				"callconv"	"thiscall"
-				"return"	"void"
-				"this"		"ignore"
-				"arguments"
-				{
-					"player"
-					{
-						"type"	"cbaseentity" // CBasePlayer *
-					}
-					"mv"
-					{
-						"type"	"objectptr" // CMoveData *
-					}
-				}
-			}
 			"CTFPlayerShared::Disguise"
 			{
 				"signature"	"CTFPlayerShared::Disguise"
@@ -683,13 +659,13 @@
 		{
 			"CTFWrench::Smack()" 
 			{
-				"linux" 	"473"
-				"windows" 	"466"
+				"windows" 	"469"
+				"linux" 	"476"
 			}
 			"CTFGrenadePipebombProjectile::PipebombTouch" 
 			{
-				"linux" 	"258"
-				"windows" 	"257"
+				"windows" 	"260"
+				"linux" 	"261"
 			}
 			"CEconItemView::IterateAttributes"
 			{
@@ -698,38 +674,38 @@
 			}
 			"CTFBot::Event_Killed()"
 			{
-				"windows"	"66"
-				"linux"		"67"
+				"windows"	"68"
+				"linux"		"69"
 			}
 			"CWeaponMedigun::PrimaryAttack()"
+			{
+				"windows"	"286"
+				"linux"		"292"
+			}
+			"CTFPistol_ScoutPrimary::SecondaryAttack()"
+			{
+				"windows"	"287"
+				"linux"		"293"
+			}
+			"CTFWeaponBase::FinishReload()"
+			{
+				"windows"	"281"
+				"linux"		"287"
+			}
+			"CBaseCombatWeapon::Reload()"
 			{
 				"windows"	"283"
 				"linux"		"289"
 			}
-			"CTFPistol_ScoutPrimary::SecondaryAttack()"
-			{
-				"windows"	"284"
-				"linux"		"290"
-			}
-			"CTFWeaponBase::FinishReload()"
-			{
-				"windows"	"278"
-				"linux"		"284"
-			}
-			"CBaseCombatWeapon::Reload()"
-			{
-				"windows"	"280"
-				"linux"		"286"
-			}
 			"CBaseObject::MakeCarriedObject"	//CBaseObject::MakeCarriedObject(CTFPlayer *)
 			{
-				"windows"	"384"
-				"linux"		"386"
+				"windows"	"387"
+				"linux"		"389"
 			}
 			"CBasePlayer::EquipWearable"
 			{
-				"linux"		"436"
-				"windows"	"435"
+				"linux"		"439"
+				"windows"	"438"
 			}
 			"CTFPlayerAnimState::DoAnimationEvent" //(PlayerAnimEvent_t, int)
 			{
@@ -753,8 +729,8 @@
 			}
 			"CBasePlayer::ForceRespawn"
 			{
-				"linux"		"334"
-				"windows"	"333"
+				"linux"		"337"
+				"windows"	"336"
 			}
 			"CGameRules::FrameUpdatePostEntityThink"
 			{
@@ -763,74 +739,38 @@
 			}
 			"CBaseEntity::GetVectors"
 			{
-				"windows"	"139"
-				"linux"		"140"
+				"windows"	"142"
+				"linux"		"143"
 			}
 			"CTFParticleCannon::FireChargedShot"
 			{
-				"windows"	"487"
-				"linux"		"494"
+				"windows"	"490"
+				"linux"		"497"
 			}
 			"CBaseGrenade::Explode"
-			{
-				"linux"		"233"
-				"windows"	"232"
-			}
-			"CTFBaseRocket::Explode"
-			{
-				"linux"		"237"
-				"windows"	"236"
-			}
-			"CTFProjectile_SpellFireball::Explode"
-			{
-				"linux"		"247"
-				"windows"	"244"
-			}
-			"CTFProjectile_Rocket::RocketTouch"
 			{
 				"linux"		"236"
 				"windows"	"235"
 			}
-			"WeaponData_t::m_nDamage"
+			"CTFBaseRocket::Explode"
 			{
-				"linux"		"1784"
-				"windows"	"1784"
+				"linux"		"240"
+				"windows"	"239"
 			}
-			"WeaponData_t::m_flPunchAngle"
+			"CTFProjectile_SpellFireball::Explode"
 			{
-				"linux"		"1800"
-				"windows"	"1800"
+				"linux"		"250"
+				"windows"	"247"
 			}
-			"CTFWeaponBase::m_iWeaponMode"
+			"CTFProjectile_Rocket::RocketTouch"
 			{
-				"linux"		"1704"
-				"windows"	"1700"
-			}
-			"CTFWeaponBase::m_pWeaponInfo"
-			{
-				"linux"		"1716"
-				"windows"	"1712"
+				"linux"		"239"
+				"windows"	"238"
 			}
 			"CBasePlayer::CheatImpulseCommands"
 			{
-				"linux"		"376"
-				"windows"	"375"
-			}
-		}
-		"Addresses"
-		{
-			"ProcessMovement"
-			{
-				"linux"
-				{
-					"signature"	"CTFGameMovement::ProcessMovement"
-					"offset"	"84"
-				}
-				"windows"
-				{
-					"signature"	"CTFGameMovement::ProcessMovement"
-					"offset"	"70"
-				}
+				"linux"		"379"
+				"windows"	"378"
 			}
 		}
 	}
