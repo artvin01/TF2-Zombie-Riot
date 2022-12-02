@@ -55,7 +55,7 @@ stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
     Handle res = DHookCreateFromConf(game_config, name);
 
     if (res == INVALID_HANDLE) {
-        SetFailState("Failed to create detour for %s", name);
+        LogError("Failed to create detour for %s", name);
     }
 
     return res;
@@ -82,12 +82,12 @@ void DHook_Setup()
 	
 	if (!(gH_MaintainBotQuota = DHookCreateDetour(Address_Null, CallConv_THISCALL, ReturnType_Void, ThisPointer_Address)))
 	{
-		SetFailState("Failed to create detour for BotManager::MaintainBotQuota");
+		LogError("Failed to create detour for BotManager::MaintainBotQuota");
 	}
 
 	if (!DHookSetFromConf(gH_MaintainBotQuota, gamedata, SDKConf_Signature, "BotManager::MaintainBotQuota"))
 	{
-		SetFailState("Failed to get address for BotManager::MaintainBotQuota");
+		LogError("Failed to get address for BotManager::MaintainBotQuota");
 	}
 
 	gH_MaintainBotQuota.Enable(Hook_Pre, Detour_MaintainBotQuota);
@@ -132,10 +132,11 @@ void DHook_Setup()
 	
 	Handle dtWeaponFinishReload = DHookCreateFromConf(gamedata, "CBaseCombatWeapon::FinishReload()");
 	if (!dtWeaponFinishReload) {
-		SetFailState("Failed to create detour %s", "CBaseCombatWeapon::FinishReload()");
+		LogError("Failed to create detour %s", "CBaseCombatWeapon::FinishReload()");
 	}
-	DHookEnableDetour(dtWeaponFinishReload, false, OnWeaponReplenishClipPre);
-		
+	else {
+		DHookEnableDetour(dtWeaponFinishReload, false, OnWeaponReplenishClipPre);
+	}
 		
 	#if !defined NoSendProxyClass
 	FrameUpdatePostEntityThink = DynamicHook.FromConf(gamedata, "CGameRules::FrameUpdatePostEntityThink");
@@ -148,9 +149,9 @@ void DHook_Setup()
 	
 	if (!(g_CalcPlayerScore = DHookCreateDetour(Address_Null, CallConv_CDECL, ReturnType_Int, ThisPointer_Ignore)))
 	{
-		SetFailState("Failed to create detour for CTFGameRules::CalcPlayerScore");
+		LogError("Failed to create detour for CTFGameRules::CalcPlayerScore");
 	}
-	if (DHookSetFromConf(g_CalcPlayerScore, gamedata, SDKConf_Signature, "CTFGameRules::CalcPlayerScore"))
+	else if (DHookSetFromConf(g_CalcPlayerScore, gamedata, SDKConf_Signature, "CTFGameRules::CalcPlayerScore"))
 	{
 		g_CalcPlayerScore.AddParam(HookParamType_Int);
 		g_CalcPlayerScore.AddParam(HookParamType_CBaseEntity);

@@ -47,8 +47,10 @@
 			
 			"GetAnimationEvent_"
 			{
+				// Good as of 12/1
 				"library"	"server"
-				"windows"	"\x55\x8B\xEC\x53\x56\x8B\x75\x08\x85\xF6\x0F\x84\x2A\x2A\x2A\x2A"
+				"windows"	"\x55\x8B\xEC\x53\x56\x8B\x75\x08\x85\xF6\x0F\x84\x2A\x2A\x2A\x2A\x8B\xCE\xE8\x2A\x2A\x2A\x2A"
+				"linux"		"@_Z17GetAnimationEventP10CStudioHdriP11animevent_tffi"
 			}
 			
 			"CBasePlayer::SnapEyeAngles"
@@ -59,6 +61,7 @@
 			
 			"CBaseAnimating::ResetSequence"		//(int nSequence) "ResetSequence : %s: %s -> %s\n"
 			{
+				// Good as of 12/1
 				"windows"	"\x55\x8B\xEC\xA1\x2A\x2A\x2A\x2A\x53\x56\x57\x83\x78\x30\x00\x8B\xD9\x8B\x7D\x08"
 				"linux"		"@_ZN14CBaseAnimating13ResetSequenceEi"
 			}
@@ -69,17 +72,20 @@
 			}
 			"CBaseAnimating::SetPoseParameter" //( CStudioHdr *pStudioHdr, int iParameter, float flValue )
 			{
+				// Good as of 12/1
 				"windows"	"\x55\x8B\xEC\x8B\x45\x08\xD9\x45\x10"
 				"linux"		"@_ZN14CBaseAnimating16SetPoseParameterEP10CStudioHdrif"
 			}
 			"CBaseAnimating::LookupPoseParameter" //( CStudioHdr *pStudioHdr, const char *szName )
 			{
+				// Good as of 12/1
 				"windows"	"\x55\x8B\xEC\x57\x8B\x7D\x08\x85\xFF\x75\x2A\x33\xC0\x5F\x5D\xC2\x08\x00"
 				"linux"		"@_ZN14CBaseAnimating19LookupPoseParameterEP10CStudioHdrPKc"
 			}
 			"CBaseAnimating::GetPoseParameter" //( int iParameter ) "aim_pitch" 2nd in xrefs
 			{
-				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x57\x80\xBE\x41\x03\x00\x00\x00\x75\x2A\x83\xBE\x6C\x04\x00\x00\x00\x75\x2A\xE8\x2A\x2A\x2A\x2A\x85\xC0\x74\x2A\x8B\xCE\xE8\x2A\x2A\x2A\x2A\x8B\xBE\x6C\x04\x00\x00"
+				// Good as of 12/1
+				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x57\x80\xBE\x69\x03\x00\x00\x00\x75\x2A\x83\xBE\x98\x04\x00\x00\x00\x75\x2A\xE8\x2A\x2A\x2A\x2A\x85\xC0\x74\x2A\x8B\xCE\xE8\x2A\x2A\x2A\x2A\x8B\xBE\x98\x04\x00\x00"
 				"linux"		"@_ZN14CBaseAnimating16GetPoseParameterEi"
 			}
 			"CBaseAnimating::GetIntervalMovement" //( float flIntervalUsed, bool &bMoveSeqFinished, Vector &newPosition, QAngle &newAngles )
@@ -94,6 +100,7 @@
 			}
 			"LookupSequence" //int ( CStudioHdr *pstudiohdr, const char *label ) "spew_bars_context" NOTE: NOT CBaseAnimating::LookupSequence
 			{
+				// Good as of 12/1
 				"windows"	"\x55\x8B\xEC\x56\x8B\x75\x08\x85\xF6\x75\x2A\x33\xC0\x5E\x5D\xC3\x8B\xCE\xE8\x2A\x2A\x2A\x2A\x84\xC0\x74\x2A\x53"
 				"linux"		"@_Z14LookupSequenceP10CStudioHdrPKc"
 			}
@@ -109,13 +116,20 @@
 			}
 			"Studio_FindAttachment" //int ( const CStudioHdr *pStudioHdr, const char *pAttachmentName ) <- "alt-origin"
 			{
-				"windows"	"\x55\x8B\xEC\x53\x56\x57\x8B\x7D\x08\x85\xFF"
+				// Good as of 12/1
+				"windows"	"\x55\x8B\xEC\x53\x56\x57\x8B\x7D\x08\x85\xFF\x74\x2A\x8B\xCF"
 				"linux"		"@_Z21Studio_FindAttachmentPK10CStudioHdrPKc"
 			}
-			"CBaseAnimating::GetAttachment" //bool ( int iAttachment, Vector &absOrigin, QAngle &absAngles ) <- "alt-origin"
+			"CBaseAnimating::GetAttachment"
+			//bool ( int iAttachment, Vector &absOrigin, QAngle &absAngles )
+			// string  aErrorMapmakerT
+			// has "%d" string in it
+			// short call with no strings.
+			// Has 2 calls inside itself.
+			// "ERROR: Mapmaker tried to spawn Dispatch"
 			{
-				"windows"	"\x55\x8B\xEC\x8B\x01\x8D\x55\xD0\x83\xEC\x30\x8B\x80\x50\x03\x00\x00\x53\x52\xFF\x75\x08\xFF\xD0\xFF\x75\x10"
-				"linux"		"@_ZN14CBaseAnimating13GetAttachmentEPKcR6VectorR6QAngle"
+				"windows"	"\x55\x8B\xEC\x8D\x45\x10\x50\x6A\x00\xFF\x75\x0C\x6A\xFF\xFF\x75\x08\xE8\x2A\x2A\x2A\x2A\xFF\x70\x04"
+				"linux"		"@_ZN14CBaseAnimating13GetAttachmentEiR6VectorR6QAngle"
 			}
 			"CBaseAnimating::FindBodygroupByName" //CBaseAnimating::FindBodygroupByName(this, "mini_sentry_light");
 			{
@@ -162,7 +176,7 @@
 				"linux"		"@_ZN11CBaseEntity12GetNextThinkEPKc"
 			}
 			
-			"SelectWeightedSequence"
+			"SelectWeightedSequence"	// Good as of 12/1
 			{
 				"windows"	"\x55\x8B\xEC\x56\x8B\x75\x08\x85\xF6\x75\x2A\x33\xC0\x5E\x5D\xC3\x8B\xCE\xE8\x2A\x2A\x2A\x2A\x84\xC0\x74\x2A\x8B\xCE"
 				"linux"		"@_Z22SelectWeightedSequenceP10CStudioHdrii"
@@ -297,73 +311,73 @@
 			
 			"CTFPlayer::GetAmmoCount" //(int)
 			{		
-				"windows"	"262"		
-				"linux"		"263"
+				"windows"	"265"		
+				"linux"		"266"
 			}	
 			
 			"CTFWeaponBaseGun::GetWeaponID" //(int)
 			{		
-				"windows"	"376"		
-				"linux"		"382"
+				"windows"	"379"		
+				"linux"		"385"
 			}
 			"CTFWeaponBaseGun::HasAmmo" //()
 			{
-				"windows"	"236"
-				"linux"		"242"
+				"windows"	"239"
+				"linux"		"245"
 			}
 			
 			"CTFWeaponBaseGun::GetProjectileSpeed" //(float)
 			{		
-				"windows"	"477"		
-				"linux"		"484"
+				"windows"	"480"		
+				"linux"		"487"
 			}
 			"CTFWeaponBaseGun::GetProjectileGravity" //(float)
 			{		
-				"windows"	"478"		
-				"linux"		"485"
+				"windows"	"481"		
+				"linux"		"488"
 			}
 			
 			"CTFBaseBoss::GetCurrencyValue"
 			{
-				"windows"	"332" //Windows always +1 off
-				"linux"		"338"
+				"windows"	"335" //Windows always +1 off
+				"linux"		"341"
 			}
 			
 			"CBaseEntity::WorldSpaceCenter"		
 			{		
-				"windows"	"152"		
-				"linux"		"153"
+				"windows"	"155"		
+				"linux"		"156"
 			}
 			"CBaseEntity::GetSmoothedVelocity"
+			{
+				"windows"	"145"
+				"linux"		"146"
+			}
+			"CBaseEntity::MyNextBotPointer"
+			{
+				"windows"	"74"
+				"linux"		"75"
+			}
+			"CBaseEntity::GetVectors"
 			{
 				"windows"	"142"
 				"linux"		"143"
 			}
-			"CBaseEntity::MyNextBotPointer"
-			{
-				"windows"	"72"
-				"linux"		"73"
-			}
-			"CBaseEntity::GetVectors"
-			{
-				"windows"	"139"
-				"linux"		"140"
-			}
 			
 			"CBaseAnimating::StudioFrameAdvance"
 			{
-				"windows"	"197"
-				"linux"		"198"
+				"windows"	"200"
+				"linux"		"201"
 			}
 			"CBaseAnimating::DispatchAnimEvents"
 			{
-				"windows"	"209"
-				"linux"		"210"
+				"windows"	"212"
+				"linux"		"213"
 			}
 			"CBaseAnimating::HandleAnimEvent" //(animevent_t*)
 			{
-				"windows"	"210"
-				"linux"		"211"
+				"windows"	"213"
+				"linux"		"214"
 			}
 			"INextBotEventResponder::OnContact" //(CBaseEntity*, CGameTrace*)
 			{
@@ -409,163 +423,163 @@
 			
 			"ILocomotion::Approach"
 			{
-				"windows"	"46"
-				"linux"		"47"
-			}
-			"ILocomotion::DriveTo"
-			{
 				"windows"	"47"
 				"linux"		"48"
 			}
-			"ILocomotion::Run"
-			{
-				"windows"	"55"
-				"linux"		"56"
-			}
-			"ILocomotion::IsRunning"
-			{
-				"windows"	"58"
-				"linux"		"59"
-			}
-			"ILocomotion::GetDesiredSpeed"
-			{
-				"windows"	"60"
-				"linux"		"61"
-			}
-			"ILocomotion::FaceTowards"
-			{
-				"windows"	"73"
-				"linux"		"74"
-			}
-			"ILocomotion::IsAttemptingToMove"
-			{
-				"windows"	"98"
-				"linux"		"99"
-			}
-			"ILocomotion::StuckMonitor"
-			{
-				"windows"	"101"
-				"linux"		"102"
-			}
-			"ILocomotion::ShouldCollideWith"
-			{
-				"windows"	"99"
-				"linux"		"100"
-			}
-			"ILocomotion::GetVelocity"
-			{
-				"windows"	"86"
-				"linux"		"87"
-			}
-			"ILocomotion::GetMotionVector"
-			{
-				"windows"	"88"
-				"linux"		"89"
-			}
-			"ILocomotion::GetGravity"
-			{
-				"windows"	"105"
-				"linux"		"106"
-			}
-			"ILocomotion::GetGroundNormal"
-			{
-				"windows"	"65"
-				"linux"		"66"
-			}
-			"ILocomotion::Jump"
-			{
-				"windows"	"50"
-				"linux"		"51"
-			}
-			"ILocomotion::IsClimbingUpToLedge"
-			{
-				"windows"	"52"
-				"linux"		"53"
-			}
-			"ILocomotion::GetMaxYawRate"
-			{
-				"windows"	"108"
-				"linux"		"109"
-			}
-			"ILocomotion::GetFrictionForward"
-			{
-				"windows"	"106"
-				"linux"		"107"
-			}
-			"ILocomotion::GetFrictionSideways"
-			{
-				"windows"	"107"
-				"linux"		"108"
-			}
-			"ILocomotion::IsOnGround"
-			{
-				"windows"	"63"
-				"linux"		"64"
-			}
-			"ILocomotion::IsStuck"
-			{
-				"windows"	"95"
-				"linux"		"96"
-			}
-			"ILocomotion::StuckMonitor"
-			{
-				"windows"	"101"
-				"linux"		"102"
-			}
-			"ILocomotion::ClearStuckStatus"
-			{
-				"windows"	"97"
-				"linux"		"98"
-			}
-			"ILocomotion::SetVelocity"
-			{
-				"windows"	"104"
-				"linux"		"105"
-			}
-			"ILocomotion::GetMaxDeceleration"
-			{
-				"windows"	"85"
-				"linux"		"86"
-			}
-			"ILocomotion::ClimbUpToLedge" //(Vector const&, Vector const&, CBaseEntity const*)
+			"ILocomotion::DriveTo"
 			{
 				"windows"	"48"
 				"linux"		"49"
 			}
-			"ILocomotion::JumpAcrossGap" //(Vector const&, Vector const&)
+			"ILocomotion::Run"
 			{
-				"windows"	"49"
-				"linux"		"50"
+				"windows"	"56"
+				"linux"		"57"
 			}
-			"ILocomotion::IsGap" //(Vector const&, Vector const&)
+			"ILocomotion::IsRunning"
 			{
-				"windows"	"93"
-				"linux"		"94"
+				"windows"	"59"
+				"linux"		"60"
 			}
-			"ILocomotion::GetRunSpeed"
+			"ILocomotion::GetDesiredSpeed"
 			{
-				"windows"	"82"
-				"linux"		"83"
+				"windows"	"61"
+				"linux"		"62"
 			}
-			"ILocomotion::GetStepHeight"
+			"ILocomotion::FaceTowards"
 			{
-				"windows"	"79"
-				"linux"		"80"
-			}			
-			"ILocomotion::GetGroundSpeed"
+				"windows"	"74"
+				"linux"		"75"
+			}
+			"ILocomotion::IsAttemptingToMove"
+			{
+				"windows"	"99"
+				"linux"		"100"
+			}
+			"ILocomotion::StuckMonitor"
+			{
+				"windows"	"102"
+				"linux"		"103"
+			}
+			"ILocomotion::ShouldCollideWith"
+			{
+				"windows"	"100"
+				"linux"		"101"
+			}
+			"ILocomotion::GetVelocity"
+			{
+				"windows"	"87"
+				"linux"		"88"
+			}
+			"ILocomotion::GetMotionVector"
+			{
+				"windows"	"89"
+				"linux"		"90"
+			}
+			"ILocomotion::GetGravity"
+			{
+				"windows"	"106"
+				"linux"		"107"
+			}
+			"ILocomotion::GetGroundNormal"
 			{
 				"windows"	"66"
 				"linux"		"67"
 			}
-			"ILocomotion::GetGroundMotionVector"
+			"ILocomotion::Jump"
+			{
+				"windows"	"51"
+				"linux"		"52"
+			}
+			"ILocomotion::IsClimbingUpToLedge"
+			{
+				"windows"	"53"
+				"linux"		"54"
+			}
+			"ILocomotion::GetMaxYawRate"
+			{
+				"windows"	"109"
+				"linux"		"110"
+			}
+			"ILocomotion::GetFrictionForward"
+			{
+				"windows"	"107"
+				"linux"		"108"
+			}
+			"ILocomotion::GetFrictionSideways"
+			{
+				"windows"	"108"
+				"linux"		"109"
+			}
+			"ILocomotion::IsOnGround"
+			{
+				"windows"	"64"
+				"linux"		"65"
+			}
+			"ILocomotion::IsStuck"
+			{
+				"windows"	"96"
+				"linux"		"97"
+			}
+			"ILocomotion::StuckMonitor"
+			{
+				"windows"	"102"
+				"linux"		"103"
+			}
+			"ILocomotion::ClearStuckStatus"
+			{
+				"windows"	"98"
+				"linux"		"99"
+			}
+			"ILocomotion::SetVelocity"
+			{
+				"windows"	"105"
+				"linux"		"106"
+			}
+			"ILocomotion::GetMaxDeceleration"
+			{
+				"windows"	"86"
+				"linux"		"87"
+			}
+			"ILocomotion::ClimbUpToLedge" //(Vector const&, Vector const&, CBaseEntity const*)
+			{
+				"windows"	"49"
+				"linux"		"50"
+			}
+			"ILocomotion::JumpAcrossGap" //(Vector const&, Vector const&)
+			{
+				"windows"	"50"
+				"linux"		"51"
+			}
+			"ILocomotion::IsGap" //(Vector const&, Vector const&)
+			{
+				"windows"	"94"
+				"linux"		"95"
+			}
+			"ILocomotion::GetRunSpeed"
+			{
+				"windows"	"83"
+				"linux"		"84"
+			}
+			"ILocomotion::GetStepHeight"
+			{
+				"windows"	"80"
+				"linux"		"81"
+			}			
+			"ILocomotion::GetGroundSpeed"
 			{
 				"windows"	"67"
 				"linux"		"68"
 			}
+			"ILocomotion::GetGroundMotionVector"
+			{
+				"windows"	"68"
+				"linux"		"69"
+			}
 			"ILocomotion::GetMaxAcceleration"
 			{
-				"windows"	"84"
-				"linux"		"85"
+				"windows"	"85"
+				"linux"		"86"
 			}
 			
 			"INextBotEventResponder::OnAnimationActivityComplete"
@@ -576,18 +590,18 @@
 			
 			"IVision::GetPrimaryKnownThreat"
 			{
-				"windows"	"48"
-				"linux"		"49"
+				"windows"	"49"
+				"linux"		"50"
 			}
 			"IVision::AddKnownEntity"//(CBaseEntity*)
 			{
-				"windows"	"54"
-				"linux"		"55"
+				"windows"	"55"
+				"linux"		"56"
 			}
 			"IVision::GetKnown"//(CBaseEntity const*)
 			{
-				"windows"	"53"
-				"linux"		"54"
+				"windows"	"54"
+				"linux"		"55"
 			}
 			
 			"CKnownEntity::GetEntity"
@@ -608,119 +622,119 @@
 			
 			"IBody::GetSolidMask"
 			{
-				"windows"	"80"
-				"linux"		"81"
+				"windows"	"81"
+				"linux"		"82"
 			}
 			"IBody::StartActivity"
 			{
-				"windows"	"58"
-				"linux"		"59"
+				"windows"	"59"
+				"linux"		"60"
 			}
 			"IBody::GetHullWidth"
-			{
-				"windows"	"74"
-				"linux"		"75"
-			}
-			"IBody::GetHullHeight"
 			{
 				"windows"	"75"
 				"linux"		"76"
 			}
-			"IBody::GetStandHullHeight"
+			"IBody::GetHullHeight"
 			{
 				"windows"	"76"
 				"linux"		"77"
 			}
-			"IBody::GetCrouchHullHeight"
+			"IBody::GetStandHullHeight"
 			{
 				"windows"	"77"
 				"linux"		"78"
 			}
-			"IBody::GetHullMins"
+			"IBody::GetCrouchHullHeight"
 			{
 				"windows"	"78"
 				"linux"		"79"
 			}
-			"IBody::GetHullMaxs"
+			"IBody::GetHullMins"
 			{
 				"windows"	"79"
 				"linux"		"80"
 			}
-			"IBody::GetActivity"
+			"IBody::GetHullMaxs"
 			{
-				"windows"	"60"
-				"linux"		"61"
+				"windows"	"80"
+				"linux"		"81"
 			}
-			"IBody::IsActivity"
+			"IBody::GetActivity"
 			{
 				"windows"	"61"
 				"linux"		"62"
 			}
-			"IBody::HasActivityType"
+			"IBody::IsActivity"
 			{
 				"windows"	"62"
 				"linux"		"63"
 			}
-			"IBody::SetDesiredPosture"	//(IBody::PostureType)
+			"IBody::HasActivityType"
 			{
 				"windows"	"63"
 				"linux"		"64"
 			}
-			"IBody::GetDesiredPosture"
+			"IBody::SetDesiredPosture"	//(IBody::PostureType)
 			{
 				"windows"	"64"
 				"linux"		"65"
 			}
-			"IBody::IsDesiredPosture"	//(IBody::PostureType)
+			"IBody::GetDesiredPosture"
 			{
 				"windows"	"65"
 				"linux"		"66"
 			}
-			"IBody::IsInDesiredPosture"
+			"IBody::IsDesiredPosture"	//(IBody::PostureType)
 			{
 				"windows"	"66"
 				"linux"		"67"
 			}
-			"IBody::GetActualPosture"
+			"IBody::IsInDesiredPosture"
 			{
 				"windows"	"67"
 				"linux"		"68"
 			}
-			"IBody::IsActualPosture"	//(IBody::PostureType)
+			"IBody::GetActualPosture"
 			{
 				"windows"	"68"
 				"linux"		"69"
 			}
-			"IBody::IsPostureMobile"
+			"IBody::IsActualPosture"	//(IBody::PostureType)
 			{
 				"windows"	"69"
 				"linux"		"70"
 			}
+			"IBody::IsPostureMobile"
+			{
+				"windows"	"70"
+				"linux"		"71"
+			}
 			
 			"CBaseCombatCharacter::ShouldGib"
 			{
-				"windows"	"293"
-				"linux"		"294"
+				"windows"	"296"
+				"linux"		"297"
 			}
 			"CBaseCombatCharacter::GetTimeSinceLastInjury" //(int team)
 			{
-				"windows"	"286"
-				"linux"		"287"
+				"windows"	"289"
+				"linux"		"290"
 			}
 			"CTFBaseBoss::Event_Killed" //(CTakeDamageInfo const&)
 			{
-				"windows"	"66"
-				"linux"		"67"
+				"windows"	"68"
+				"linux"		"69"
 			}
 			"CBaseCombatCharacter::BecomeRagdoll" //(CTakeDamageInfo const&, Vector const&)
 			{
-				"windows"	"298"
-				"linux"		"299"
+				"windows"	"301"
+				"linux"		"302"
 			}
 			"CBaseAnimating::RefreshCollisionBounds"
 			{
-				"windows"	"215"
-				"linux"		"216"
+				"windows"	"218"
+				"linux"		"219"
 			}
 		}
 	}
