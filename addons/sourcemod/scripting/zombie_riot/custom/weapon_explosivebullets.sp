@@ -58,7 +58,7 @@ public void Weapon_ExplosiveBullets(int client, int weapon, const char[] classna
 	
 	bool Made_sound = true;
 	b_LagCompNPC_ExtendBoundingBox = true;
-	StartLagCompensation_Base_Boss(client, false);
+	StartLagCompensation_Base_Boss(client);
 	float amp = 0.5;
 	float life = 0.1;
 	float GunPos[3];
