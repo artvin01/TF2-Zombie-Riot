@@ -320,7 +320,7 @@ public Address GetStudioHdr(int index)
 {
 	if(IsValidEntity(index))
 	{
-		return view_as<Address>(GetEntData(index, 283 * 4));
+		return view_as<Address>(GetEntData(index, FindDataMapInfo(index, "m_flFadeScale") + 28));
 	}
 		
 	return Address_Null;
