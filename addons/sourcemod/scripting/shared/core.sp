@@ -10,8 +10,7 @@
 #include <tf_econ_data>
 #include <tf2attributes>
 #include <lambda>
-#include <PathFollower>
-#include <PathFollower_Nav>
+#include <cbasenpc>
 #include <morecolors>
 #tryinclude <menus-controller>
 
