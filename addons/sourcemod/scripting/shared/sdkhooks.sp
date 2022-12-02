@@ -196,11 +196,6 @@ public void OnPostThink(int client)
 			{
 				if(PercentageHealth > 0.35)
 				{
-				//	if(i_SvRollAngle[client] != 1)
-				//	{
-				//		RequestFrame(SetEyeAngleCorrect, client);
-				//	}
-
 					i_SvRollAngle[client] = 1;
 				}
 				else
@@ -223,11 +218,6 @@ public void OnPostThink(int client)
 			}
 			else
 			{
-			//	if(i_SvRollAngle[client] != 1)
-			//	{
-			//		RequestFrame(SetEyeAngleCorrect,client);
-			//	}
-
 				i_SvRollAngle[client] = 1;
 			}
 
@@ -1577,14 +1567,3 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 	return damage;
 }
 #endif
-
-public void SetEyeAngleCorrect(int client)
-{
-	if(IsValidClient(client))
-	{
-		float vAngles[3];
-		GetClientEyeAngles(client, vAngles);
-		vAngles[2] = 0.0;
-		SnapEyeAngles(client, vAngles);
-	}
-}

@@ -23,7 +23,6 @@ static Handle g_hCTFCreateArrow;
 static Handle g_hSDKStartLagComp;
 static Handle g_hSDKEndLagComp;
 static Handle g_hSDKUpdateBlocked;
-static Handle g_hSnapEyeAngles;
 
 static Handle g_hImpulse;
 
@@ -100,12 +99,7 @@ void SDKCall_Setup()
 		LogError("[Gamedata] Could not find CBaseEntity::SetAbsAngles");
 		*/
 		
-		
-	StartPrepSDKCall(SDKCall_Player);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBasePlayer::SnapEyeAngles");
-	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef);
-	if ((g_hSnapEyeAngles = EndPrepSDKCall()) == null) SetFailState("Failed to create SDKCall for CBasePlayer::SnapEyeAngles!");
-
+	
 	StartPrepSDKCall(SDKCall_Player);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBasePlayer::CheatImpulseCommands");
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain); //Player
@@ -557,10 +551,4 @@ void Manual_Impulse_101(int client, int health)
 	
 	if(health > 0)
 		SetEntityHealth(client, health);
-}
-
-//thanks to pelipoika for gamedata that he had avaiable.
-stock void SnapEyeAngles(int client, float viewAngles[3])
-{
-	SDKCall(g_hSnapEyeAngles, client, viewAngles);
 }

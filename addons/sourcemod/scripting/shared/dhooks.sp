@@ -1075,9 +1075,6 @@ public MRESReturn DHook_ForceRespawn(int client)
 		ChangeClientTeam(client, 2);
 		return MRES_Supercede;
 	}
-	
-	RequestFrame(SetEyeAngleCorrect, client);
-	
 #if defined ZR
 	DoTutorialStep(client, false);
 	SetTutorialUpdateTime(client, GetGameTime() + 1.0);

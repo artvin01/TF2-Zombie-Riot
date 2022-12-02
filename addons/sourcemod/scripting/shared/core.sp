@@ -969,10 +969,7 @@ public void OnPluginStart()
 	
 	Commands_PluginStart();
 	Events_PluginStart();
-	
-#if defined ZR
-	ZR_PluginStart();
-#endif
+
 	
 	RegServerCmd("zr_update_blocked_nav", OnReloadBlockNav, "Reload Nav Blocks");
 	RegAdminCmd("sm_play_viewmodel_anim", Command_PlayViewmodelAnim, ADMFLAG_ROOT, "Testing viewmodel animation manually");
@@ -1028,6 +1025,9 @@ public void OnPluginStart()
 #endif
 	NPC_Base_InitGamedata();
 	
+#if defined ZR
+	ZR_PluginStart();
+#endif
 	//Global Hud for huds.
 	SyncHud_Notifaction = CreateHudSynchronizer();
 	SyncHud_WandMana = CreateHudSynchronizer();
