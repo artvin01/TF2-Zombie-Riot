@@ -47,7 +47,6 @@
 			
 			"GetAnimationEvent_"
 			{
-				// Good as of 12/1
 				"library"	"server"
 				"windows"	"\x55\x8B\xEC\x53\x56\x8B\x75\x08\x85\xF6\x0F\x84\x2A\x2A\x2A\x2A\x8B\xCE\xE8\x2A\x2A\x2A\x2A"
 				"linux"		"@_Z17GetAnimationEventP10CStudioHdriP11animevent_tffi"
@@ -61,30 +60,26 @@
 			
 			"CBaseAnimating::ResetSequence"		//(int nSequence) "ResetSequence : %s: %s -> %s\n"
 			{
-				// Good as of 12/1
 				"windows"	"\x55\x8B\xEC\xA1\x2A\x2A\x2A\x2A\x53\x56\x57\x83\x78\x30\x00\x8B\xD9\x8B\x7D\x08"
 				"linux"		"@_ZN14CBaseAnimating13ResetSequenceEi"
 			}
 			"CBaseAnimating::ResetSequenceInfo" //( )
 			{
-				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x83\xBE\xAC\x03\x00\x00\xFF"
+				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x8B\x06\xA9\x00\x01\x00\x00"
 				"linux"		"@_ZN14CBaseAnimating17ResetSequenceInfoEv"
 			}
 			"CBaseAnimating::SetPoseParameter" //( CStudioHdr *pStudioHdr, int iParameter, float flValue )
 			{
-				// Good as of 12/1
 				"windows"	"\x55\x8B\xEC\x8B\x45\x08\xD9\x45\x10"
 				"linux"		"@_ZN14CBaseAnimating16SetPoseParameterEP10CStudioHdrif"
 			}
 			"CBaseAnimating::LookupPoseParameter" //( CStudioHdr *pStudioHdr, const char *szName )
 			{
-				// Good as of 12/1
 				"windows"	"\x55\x8B\xEC\x57\x8B\x7D\x08\x85\xFF\x75\x2A\x33\xC0\x5F\x5D\xC2\x08\x00"
 				"linux"		"@_ZN14CBaseAnimating19LookupPoseParameterEP10CStudioHdrPKc"
 			}
 			"CBaseAnimating::GetPoseParameter" //( int iParameter ) "aim_pitch" 2nd in xrefs
 			{
-				// Good as of 12/1
 				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x57\x80\xBE\x69\x03\x00\x00\x00\x75\x2A\x83\xBE\x98\x04\x00\x00\x00\x75\x2A\xE8\x2A\x2A\x2A\x2A\x85\xC0\x74\x2A\x8B\xCE\xE8\x2A\x2A\x2A\x2A\x8B\xBE\x98\x04\x00\x00"
 				"linux"		"@_ZN14CBaseAnimating16GetPoseParameterEi"
 			}
@@ -100,7 +95,6 @@
 			}
 			"LookupSequence" //int ( CStudioHdr *pstudiohdr, const char *label ) "spew_bars_context" NOTE: NOT CBaseAnimating::LookupSequence
 			{
-				// Good as of 12/1
 				"windows"	"\x55\x8B\xEC\x56\x8B\x75\x08\x85\xF6\x75\x2A\x33\xC0\x5E\x5D\xC3\x8B\xCE\xE8\x2A\x2A\x2A\x2A\x84\xC0\x74\x2A\x53"
 				"linux"		"@_Z14LookupSequenceP10CStudioHdrPKc"
 			}
@@ -116,7 +110,6 @@
 			}
 			"Studio_FindAttachment" //int ( const CStudioHdr *pStudioHdr, const char *pAttachmentName ) <- "alt-origin"
 			{
-				// Good as of 12/1
 				"windows"	"\x55\x8B\xEC\x53\x56\x57\x8B\x7D\x08\x85\xFF\x74\x2A\x8B\xCF"
 				"linux"		"@_Z21Studio_FindAttachmentPK10CStudioHdrPKc"
 			}
@@ -133,12 +126,12 @@
 			}
 			"CBaseAnimating::FindBodygroupByName" //CBaseAnimating::FindBodygroupByName(this, "mini_sentry_light");
 			{
-				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x80\xBE\x41\x03\x00\x00\x00\x74\x2A\x83\xC8\xFF"
+				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x80\xBE\x69\x03\x00\x00\x00\x74\x2A\x83\xC8\xFF"
 				"linux"		"@_ZN14CBaseAnimating19FindBodygroupByNameEPKc"
 			}
 			"CBaseAnimating::SetBodygroup" //Right below ^
 			{
-				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x57\x80\xBE\x41\x03\x00\x00\x00\x8B\x86\x74\x03\x00\x00"
+				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x57\x80\xBE\x69\x03\x00\x00\x00\x8B\x86\xA0\x03\x00\x00"
 				"linux"		"@_ZN14CBaseAnimating12SetBodygroupEii"
 			}
 			"CBaseAnimatingOverlay::AddGestureSequence" //( int sequence, bool autokill )
@@ -229,14 +222,14 @@
 			//Inside "CTFBaseBoss::Event_Killed" found with string "item_currencypack_custom"
 			"NextBotCombatCharacter::Event_Killed" //(NextBotCombatCharacter *this, const CTakeDamageInfo *a2)
 			{
-				"windows"	"\x55\x8B\xEC\x53\x8B\x5D\x08\x56\x8B\xF1\x8B\x4B\x28"
+				"windows"	"\x55\x8B\xEC\x53\x8B\x5D\x08\x56\x8B\xF1\x8B\x43\x28"
 				"linux"		"@_ZN22NextBotCombatCharacter12Event_KilledERK15CTakeDamageInfo"
 			}
 			
 			// STR: "BaseCombatCharacter.StopWeaponSounds", "KilledNPC", "item_healthvial"
 			"CBaseCombatCharacter::Event_Killed" //(CBaseCombatCharacter *this, const CTakeDamageInfo *a2)
 			{
-				"windows"	"\x55\x8B\xEC\x83\xEC\x20\x53\x56\x8B\xF1\xC6\x45\xFF\x01"
+				"windows"	"\x55\x8B\xEC\x53\x8B\x5D\x08\x56\x8B\xF1\x8B\x43\x28"
 			}
 
 			"CTFBaseBoss::OnTakeDamage_Alive_SIGNATURE" //NPC hurt and below are alot of empty spaces, about 10
