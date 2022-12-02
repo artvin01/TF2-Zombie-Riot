@@ -29,9 +29,11 @@
 			}
 			"CBaseCombatWeapon::FinishReload()"
 			{
+				// string aLastShotCrits
+				// not extreamly small function, and no other strings, and has multiple calls
 				"library"	"server"
 				"linux"		"@_ZN17CBaseCombatWeapon12FinishReloadEv"
-				"windows"	"\x55\x8B\xEC\x51\x57\x8B\xF9\x8B\x8F\x90\x05\x00\x00"	// OUTDATED
+				"windows"	"\x55\x8B\xEC\x51\x57\x8B\xF9\x8B\x8F\xB8\x05\x00\x00"
 			}
 			"CObjectSentrygun::Fire"
 			{
@@ -162,17 +164,17 @@
 				"linux"		"@_ZN28CTFGrenadePipebombProjectile6CreateERK6VectorRK6QAngleS2_S2_P20CBaseCombatCharacterRK13CTFWeaponInfoif"
 				"windows"	"\x55\x8B\xEC\x8B\x45\x20\x53"
 			}
-			"CObjectDispenser::MakeCarriedObject" //offset aBuildingDispen ; "Building_Dispenser.Idle"  one with 5 calls, most bottom one should have "player_carryobject" and "userid"
+			"CObjectDispenser::MakeCarriedObject" //offset aBuildingDispen ; "Building_Dispenser.Idle"  one with 5 calls
 			{
 				"library"	"server"
 				"linux"		"@_ZN11CBaseObject17MakeCarriedObjectEP9CTFPlayer"
-				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x8B\x8E\xE0\x0A\x00\x00"	// OUTDATED
+				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x8B\x86\x0C\x0B\x00\x00"
 			}
 			"CObjectSentrygun::MakeCarriedObject" // offset aPlayerCarryobj , with "userid" and "object" go up and find Xref, find the one with only 2 calls and no strings.
 			{
 				"library"	"server"
 				"linux"		"@_ZN16CObjectSentrygun17MakeCarriedObjectEP9CTFPlayer"
-				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x80\xBE\xD8\x0A\x00\x00\x00"	// OUTDATED
+				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x80\xBE\x04\x0B\x00\x00\x00"
 			}
 			"CTFPlayerShared::Disguise" // offset aModDisguiseCon
 			{
@@ -675,6 +677,13 @@
 						"type"	"cbaseentity"
 					}
 				}
+			}
+			"CBaseCombatWeapon::ItemPostFrame()"
+			{
+				"offset"		"CBaseCombatWeapon::ItemPostFrame()"
+				"hooktype"		"entity"
+				"return"		"void"
+				"this"			"entity"
 			}
 		}
 		"Offsets"
