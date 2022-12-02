@@ -58,7 +58,7 @@ public void Weapon_Wand_LightningSpell(int client, int weapon, bool &result, int
 				GetClientEyePosition(client, vOrigin);
 				GetClientEyeAngles(client, vAngles);
 				b_LagCompNPC_ExtendBoundingBox = true;
-				StartLagCompensation_Base_Boss(client, false);
+				StartLagCompensation_Base_Boss(client);
 				Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
 				
 				if(TR_DidHit(trace))

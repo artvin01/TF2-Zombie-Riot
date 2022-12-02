@@ -21,9 +21,9 @@ char g_MedicScripts[][] = {
 };
 
 void Medigun_PluginStart() {
-	Handle hGameConf_med = LoadGameConfigFile("zombie_riot");
+	Handle hGameConf_med = LoadGameConfigFile("tf2.custattr.sample");
 	if (!hGameConf_med) {
-		SetFailState("Failed to load gamedata (zombie_riot).");
+		SetFailState("Failed to load gamedata (tf2.custattr.sample).");
 	}
 /*
 	StartPrepSDKCall(SDKCall_EntityList);
@@ -44,22 +44,21 @@ void Medigun_PluginStart() {
 	*/
 	Handle dtMedigunAllowedToHealTarget = DHookCreateFromConf(hGameConf_med,
 			"CWeaponMedigun::AllowedToHealTarget()");
-	
-	if(dtMedigunAllowedToHealTarget)
-		DHookEnableDetour(dtMedigunAllowedToHealTarget, false, OnAllowedToHealTargetPre);
+			
+	DHookEnableDetour(dtMedigunAllowedToHealTarget, false, OnAllowedToHealTargetPre);
 	
 	
 	g_DHookWeaponPostFrame = DHookCreateFromConf(hGameConf_med,
 			"CBaseCombatWeapon::ItemPostFrame()");
 
 	if (!g_DHookWeaponPostFrame) {
-		LogError("Failed to setup detour for CBaseCombatWeapon::ItemPostFrame()");
+		SetFailState("Failed to setup detour for CBaseCombatWeapon::ItemPostFrame()");
 	}
 
 	
 	int offslastDamage = FindSendPropInfo("CTFPlayer", "m_flMvMLastDamageTime");
 	if (offslastDamage < 0) {
-		LogError("Could not get offset for CTFPlayer::m_flMvMLastDamageTime");
+		SetFailState("Could not get offset for CTFPlayer::m_flMvMLastDamageTime");
 	}
 	
 //	offs_CTFPlayer_LastDamageType = offslastDamage + 0x14;

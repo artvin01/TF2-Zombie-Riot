@@ -65,7 +65,7 @@ public void Weapon_RiotShield_M2_Base(int client, int weapon, bool crit, int slo
 		Handle trace;
 
 		b_LagCompNPC_No_Layers = true;
-		StartLagCompensation_Base_Boss(client, false);
+		StartLagCompensation_Base_Boss(client);
 		trace = TR_TraceHullFilterEx(fPos, endPoint, hullMin, hullMax, 1073741824, Shield_TraceTargets, client);	// 1073741824 is CONTENTS_LADDER?
 		CloseHandle(trace);
 		FinishLagCompensation_Base_boss();

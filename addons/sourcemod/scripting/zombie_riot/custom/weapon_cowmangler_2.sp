@@ -8,9 +8,9 @@ static DynamicHook g_Particle_cannon_2nd_fire;
 
 public void OnPluginStartMangler()
 {
-	GameData gamedata = new GameData("zombie_riot");
+	GameData gamedata = new GameData("rpg_fortress");
 	if (gamedata == null)
-		SetFailState("Could not find zombie_riot gamedata");
+		SetFailState("Could not find rpg_fortress gamedata");
 	
 	g_Particle_cannon_2nd_fire = DynamicHook.FromConf(gamedata, "CTFParticleCannon::FireChargedShot");
 	

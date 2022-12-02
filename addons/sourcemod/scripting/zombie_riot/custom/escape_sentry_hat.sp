@@ -6,8 +6,6 @@ static Handle Mount_Building[MAXPLAYERS + 1];
 static int Building_particle[MAXENTITIES];
 static int Building_particle_Owner[MAXENTITIES];
 
-static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
-
 public void SentryHat_OnPluginStart()
 {
 	HookEvent("player_builtobject", Event_player_builtobject);

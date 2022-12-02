@@ -21,7 +21,6 @@ void ConVar_PluginStart()
 
 	ConVar_Add("mp_forcecamera", "0.0");
 	ConVar_Add("mp_autoteambalance", "0.0");
-	ConVar_Add("mp_disable_respawn_times", "1.0");
 	ConVar_Add("mp_forceautoteam", "1.0");
 	ConVar_Add("tf_bot_reevaluate_class_in_spawnroom", "1.0");
 	ConVar_Add("tf_bot_keep_class_after_death", "1.0");
@@ -41,7 +40,7 @@ void ConVar_PluginStart()
 	
 	ConVar_Add("sv_parallel_packentities", "1.0");
 	ConVar_Add("sv_parallel_sendsnapshot", "0.0");
-	ConVar_Add("sv_maxunlag", "1.0");	
+	ConVar_Add("sv_maxunlag", "1.0");
 	ConVar_Add("tf_scout_air_dash_count", "0");
 	
 	ConVar_Add("nb_blind", "1.0"); //for bot
@@ -60,11 +59,12 @@ void ConVar_PluginStart()
 	ConVar_Add("sv_visiblemaxplayers", MAX_PLAYER_COUNT_STRING);
 //	ConVar_Add("tf_bot_quota", ); dooesnt do anything anyways.
 	
+	#if defined ZR
+	ConVar_Add("mp_disable_respawn_times", "1.0");
+	
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
 	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
-	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "1", "No Panzer will spawn or anything alike", FCVAR_DONTRECORD);
-	CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "14", "The maximum amount of blue bots allowed for the killfeed and more");
 	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
 	zr_voteconfig = CreateConVar("zr_voteconfig", "vote", "Vote config zr/ .cfg already included");
 	zr_tagblacklist = CreateConVar("zr_tagblacklist", "private", "Tags to blacklist from weapons config");
@@ -72,10 +72,15 @@ void ConVar_PluginStart()
 	zr_minibossconfig = CreateConVar("zr_minibossconfig", "miniboss", "Mini Boss config zr/ .cfg already included");
 	zr_ignoremapconfig = CreateConVar("zr_ignoremapconfig", "0", "If to ignore map-specific configs");
 	zr_smallmapbalancemulti = CreateConVar("zr_smallmapmulti", "1.0", "For small maps, so harder difficulities with alot of aoe can still be played.");
-	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "2.0", "How long zombie spawn protection lasts for.");
 	// MapSpawnersActive = CreateConVar("zr_spawnersactive", "4", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
 	//CHECK npcs.sp FOR THIS ONE!
-
+	#endif
+	
+	CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "14", "The maximum amount of blue bots allowed for the killfeed and more");
+	
+	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
+	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "2.0", "How long zombie spawn protection lasts for.");
+	
 	AutoExecConfig(true, "zombie_riot");
 	
 }

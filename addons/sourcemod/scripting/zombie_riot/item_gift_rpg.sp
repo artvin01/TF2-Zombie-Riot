@@ -14,8 +14,6 @@ enum
 	Rarity_Mythic = 4
 }
 
-float f_RingDelayGift[MAXENTITIES];
-
 static int RenderColors_RPG[][] =
 {
 	{255, 255, 255, 255}, 	// 0
@@ -83,11 +81,11 @@ static const char MythicDrops[][] =
 	"There Can Be Only One [Mythic]"
 };
 
-int g_BeamIndex = -1;
+static int g_BeamIndex = -1;
 
-int i_RarityType[MAXENTITIES];
+static int i_RarityType[MAXENTITIES];
 
-float f_IncreaceChanceManually = 1.0;
+static float f_IncreaceChanceManually = 1.0;
 
 public void Map_Precache_Zombie_Drops_Gift()
 {

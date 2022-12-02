@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+// NOTE: This may be used for RPG in the future but not done now because lets invest in core features before the extras
+
 #define DATABASE			"zr"
 #define DATATABLE_LOADOUT		"zr_loadout"
 #define DATATABLE_GAMEDATA	"zr_gamedata"

@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-
-static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 /*
 	Placement Type
 	static Handle SyncHud_Notifaction;
@@ -100,9 +98,9 @@ static int Village_TierExists[3];
 static int Beam_Laser;
 static int Beam_Glow;
 
-int i_HasMarker[MAXTF2PLAYERS];
+static int i_HasMarker[MAXTF2PLAYERS];
 
-float f_MarkerPosition[MAXTF2PLAYERS][3];
+static float f_MarkerPosition[MAXTF2PLAYERS][3];
 
 static Handle h_Pickup_Building[MAXPLAYERS + 1];
 
@@ -161,8 +159,6 @@ static int i_HasSentryGunAlive[MAXTF2PLAYERS]={-1, ...};
 
 static bool Building_cannot_be_repaired[MAXENTITIES]={false, ...};
 
-
-float Building_Collect_Cooldown[MAXENTITIES][MAXTF2PLAYERS];
 static float Building_Sentry_Cooldown[MAXTF2PLAYERS];
 
 static int i_MachineJustClickedOn[MAXTF2PLAYERS];
@@ -2334,22 +2330,25 @@ public Action Building_CheckTimer(Handle timer, int ref)
 			if(!result)
 			{
 				int weapon = EntRefToEntIndex(BuildingWeapon[client]);
-				if(weapon != -1)
-				{
-					Store_ConsumeItem(client, StoreWeapon[weapon]);
-					MenuPage(client, StoreWeapon[weapon]);
+				if(weapon == -1)
+					return Plugin_Stop;
+				
+				Store_ConsumeItem(client, StoreWeapon[weapon]);
+				MenuPage(client, StoreWeapon[weapon]);
 
-					//TF2_RemoveItem(client, weapon);
-					//TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
-				}
+				//TF2_RemoveItem(client, weapon);
+				//TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 			}
 			else
 			{
-				//int weapon = EntRefToEntIndex(BuildingWeapon[client]);
-				//if(weapon == -1)
-				//	return Plugin_Stop;
+				int weapon = EntRefToEntIndex(BuildingWeapon[client]);
+				if(weapon == -1)
+					return Plugin_Stop;
 				
-				//TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
+				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
+				
+				Building[client] = INVALID_FUNCTION;
+				BuildingWeapon[client] = INVALID_ENT_REFERENCE;
 			}
 
 			Building[client] = INVALID_FUNCTION;

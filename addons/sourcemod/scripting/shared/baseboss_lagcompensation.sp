@@ -44,16 +44,16 @@ enum struct LagRecord
 	float					m_masterCycle;
 }
 
-//ConVar sv_unlag;
-ConVar sv_maxunlag;
-//ConVar mp_friendlyfire;
+//static ConVar sv_unlag;
+static ConVar sv_maxunlag;
+//static ConVar mp_friendlyfire;
 
-StringMap EntityTrack;
-StringMap EntityRestore;
-int TickCount[MAXTF2PLAYERS];
-float ViewAngles[MAXTF2PLAYERS][3];
+static StringMap EntityTrack;
+static StringMap EntityRestore;
+static int TickCount[MAXTF2PLAYERS];
+static float ViewAngles[MAXTF2PLAYERS][3];
 
-public void OnPluginStart_LagComp()
+void OnPluginStart_LagComp()
 {
 //	sv_unlag = FindConVar("sv_unlag");
 	sv_maxunlag = FindConVar("sv_maxunlag");
@@ -75,7 +75,7 @@ public void OnPluginStart_LagComp()
 //	delete gamedata;	   
 }
 
-public Action OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcount)
+Action OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcount)
 {
 //	i_CmdNumber[client] = cmdnum;
 	TickCount[client] = tickcount;
@@ -84,7 +84,7 @@ public Action OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcoun
 }
 
 /* Manually remove no longer in use entites */
-public void OnEntityDestroyed_LagComp(int entity)
+void OnEntityDestroyed_LagComp(int entity)
 {
 	if(entity > 0)
 	{
@@ -122,7 +122,7 @@ public void OnEntityDestroyed_LagComp(int entity)
 
 /* game/server/player_lagcompensation.cpp#L328 */
 //public MRESReturn StartLagCompensation(Address manager, DHookParam param)
-public void StartLagCompensation_Base_Boss(int client, bool compensate_players)
+void StartLagCompensation_Base_Boss(int client)
 {
 	if(!DoingLagCompensation) //dont  check for && sv_unlag.BoolValue, this function wont even call if you dont have this cvar enabled.
 	{
@@ -184,7 +184,7 @@ public void StartLagCompensation_Base_Boss(int client, bool compensate_players)
 }
 
 /* game/server/player.cpp#L732 */
-public bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles[3]/*, const CBitVec<MAX_EDICTS> *pEntityTransmitBits */)
+bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles[3]/*, const CBitVec<MAX_EDICTS> *pEntityTransmitBits */)
 {
 	// Team members shouldn't be adjusted unless friendly fire is on.
 	/*
@@ -231,7 +231,7 @@ public bool WantsLagCompensationOnEntity(int entity, int player, const float vie
 }
 
 /* game/server/player_lagcompensation.cpp#L423 */
-public void BacktrackEntity(int entity, float currentTime) //Make sure that allies only get compensated for their bounding box.
+void BacktrackEntity(int entity, float currentTime) //Make sure that allies only get compensated for their bounding box.
 {
 	int ref = EntIndexToEntRef(entity);
 	
@@ -457,27 +457,12 @@ public void BacktrackEntity(int entity, float currentTime) //Make sure that alli
 				}
 			}
 		}
-	//	Test_Hitbox(entity);
 	}
 	SDKCall_InvalidateBoneCache(entity); //Do at all times, yes, ew but i have to,
 	EntityRestore.SetArray(refchar, restore, sizeof(restore));
 }
 
-
-
-public void Test_Hitbox(int entity)
-{
-	float flPos[3]; // original
-	float flAng[3]; // original
-	
-	GetAttachment(entity, "partyhat", flPos, flAng);
-				
-	ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.25);	
-}
-
-
-
-public void FinishLagCompensation_Base_boss(/*DHookParam param*/)
+void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 //public MRESReturn FinishLagCompensation(Address manager, DHookParam param)
 {
 	if(DoingLagCompensation)
@@ -527,6 +512,18 @@ public void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 								m_vecMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
 								m_vecMins = view_as<float>( { -24.0, -24.0, 0.0 } );		
 							}
+
+							if(f3_CustomMinMaxBoundingBox[entity][1] != 0.0)
+							{
+								m_vecMaxs[0] = f3_CustomMinMaxBoundingBox[entity][0];
+								m_vecMaxs[1] = f3_CustomMinMaxBoundingBox[entity][1];
+								m_vecMaxs[2] = f3_CustomMinMaxBoundingBox[entity][2];
+
+								m_vecMins[0] = -f3_CustomMinMaxBoundingBox[entity][0];
+								m_vecMins[1] = -f3_CustomMinMaxBoundingBox[entity][1];
+								m_vecMins[2] = 0.0;
+							}
+
 							SetEntPropVector(entity, Prop_Data, "m_vecMaxs", m_vecMaxs);
 							
 							SetEntPropVector(entity, Prop_Data, "m_vecMins", m_vecMins);
@@ -568,7 +565,7 @@ public void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 //-----------------------------------------------------------------------------
 // Purpose: Called once per frame after all entities have had a chance to think
 //-----------------------------------------------------------------------------
-public void LagCompensationThink_Forward()
+void LagCompensationThink_Forward()
 {
 //	if(sv_unlag.BoolValue) //This isnt needed as itsa utomatic
 	{
@@ -659,7 +656,7 @@ public void LagCompensationThink_Forward()
 }
 
 /* public/mathlib/vector.h#L1153 */
-public void VectorLerp(const float src1[3], const float src2[3], float t, float dest[3])
+void VectorLerp(const float src1[3], const float src2[3], float t, float dest[3])
 {
 	dest[0] = src1[0] + (src2[0] - src1[0]) * t;
 	dest[1] = src1[1] + (src2[1] - src1[1]) * t;
@@ -667,12 +664,12 @@ public void VectorLerp(const float src1[3], const float src2[3], float t, float 
 }
 
 /* game/client/particle_util.h#L19 */
-public float Lerpfloat(float t, float minVal, float maxVal)
+float Lerpfloat(float t, float minVal, float maxVal)
 {
 	return minVal + (maxVal - minVal) * t;
 }
 
-public int Lerpint(float t, int minVal, int maxVal)
+int Lerpint(float t, int minVal, int maxVal)
 {
 	return RoundToNearest(minVal + float((maxVal - minVal)) * t);
 }

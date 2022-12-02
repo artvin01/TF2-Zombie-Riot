@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-int iBuildingDependency[2049] = {0, ...};
+static int iBuildingDependency[2049] = {0, ...};
 /*
 static const float ViewHeights[] =
 {
@@ -17,9 +17,9 @@ static const float ViewHeights[] =
 	68.0
 };
 */
-DynamicHook dtIsPlacementPosValid;
+static DynamicHook dtIsPlacementPosValid;
 
-public void OnPluginStart_Build_on_Building()
+void OnPluginStart_Build_on_Building()
 {
 
 	GameData hGameConf = new GameData("buildonbuildings_defs.games");
@@ -98,7 +98,7 @@ public void Event_ObjectMoved_Custom(int building)
 	}
 }
 
-public void OnMapStart_Build_on_Build()
+void OnMapStart_Build_on_Build()
 {
 	for(int i=0; i<2048; i++)
 	{
@@ -272,6 +272,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		//We use custom offets for buildings, so we do our own magic here
 		float Delta = 50.0; //default is 50
 
+#if defined ZR
 		switch(i_WhatBuilding[buildingHit])
 		{
 			case BuildingAmmobox:
@@ -304,6 +305,8 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 			}
 
 		}
+#endif
+		
 		if(FloatAbs(endPos2[2]-endPos[2])<Delta)
 		{
 			if(IsValidClient(client))
@@ -360,7 +363,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 	return MRES_ChangedOverride;
 }
 
-public void OnEntityDestroyed_Build_On_Build(int entity)
+void OnEntityDestroyed_Build_On_Build(int entity)
 {
 	if(entity>-1 && entity<=2048 && iBuildingDependency[entity])
 	{
@@ -379,7 +382,7 @@ public void OnEntityDestroyed_Build_On_Build(int entity)
 	}
 }
 
-public void OnEntityCreated_Build_On_Build(int entity, const char[] classname)
+void OnEntityCreated_Build_On_Build(int entity, const char[] classname)
 {
 	if(StrEqual(classname, "obj_dispenser") || StrEqual(classname, "obj_sentrygun"))
 	{
@@ -510,10 +513,14 @@ public bool TraceRayFilterBuildOnBuildings(int entity, int contentsMask)
 	{
 		return false;
 	}
+	
+#if defined ZR
 	if(!Building_Constructed[entity]) //Make sure they are actually build.
 	{
 		return false;
 	}
+#endif
+	
 	char str[32];
 	GetEntityClassname(entity, str, sizeof(str));
 	if(StrContains(str, "obj_", false)>-1 && !StrEqual(str, "obj_teleporter", false)) // We don't want to build on teleporters(exploits, stuck, ...) You know what i mean.

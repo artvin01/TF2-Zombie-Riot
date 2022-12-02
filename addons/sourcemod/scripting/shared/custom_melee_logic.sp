@@ -128,7 +128,7 @@ static const char g_KatanaHitWorld[][] = {
 };
 
 
-public void MapStart_CustomMeleePrecache()
+void MapStart_CustomMeleePrecache()
 {
 	for (int i = 0; i < (sizeof(g_KnifeHitFlesh));	   i++) { PrecacheSound(g_KnifeHitFlesh[i]);	   }
 	for (int i = 0; i < (sizeof(g_KnifeHitWorld));	   i++) { PrecacheSound(g_KnifeHitWorld[i]);	   }
@@ -539,7 +539,7 @@ public Action Timer_Do_Melee_Attack(Handle timer, DataPack pack)
 		Handle swingTrace;
 		b_LagCompNPC_No_Layers = true;
 		float vecSwingForward[3];
-		StartLagCompensation_Base_Boss(client, false);
+		StartLagCompensation_Base_Boss(client);
 		DoSwingTrace_Custom(swingTrace, client, vecSwingForward);
 				
 		int target = TR_GetEntityIndex(swingTrace);	

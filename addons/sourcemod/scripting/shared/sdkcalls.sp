@@ -3,8 +3,8 @@
 
 static Handle SDKEquipWearable;
 static Handle SDKGetMaxHealth;
-static Handle g_hGetAttachment;
-static Handle g_hStudio_FindAttachment;
+//static Handle g_hGetAttachment;
+//static Handle g_hStudio_FindAttachment;
 
 static Handle g_hSetLocalOrigin;
 //static Handle g_hSetLocalAngle;
@@ -14,25 +14,22 @@ static Handle g_hInvalidateBoneCache;
 
 static Handle g_hCTFCreateArrow;
 //static Handle g_hCTFCreatePipe;
-Handle g_hSDKMakeCarriedObjectDispenser;
-Handle g_hSDKMakeCarriedObjectSentry;
 //Handle g_hSDKMakeCarriedObject;
-static Handle g_hGetVectors;
-Handle gH_BotAddCommand = INVALID_HANDLE;
+//static Handle g_hGetVectors;
 //static Handle g_hWeaponSound;
 //static Handle g_hSDKPlaySpecificSequence;
 //static Handle g_hDoAnimationEvent;
 
-Handle g_hSDKStartLagComp;
-Handle g_hSDKEndLagComp;
-Handle g_hSDKUpdateBlocked;
-Handle g_hSnapEyeAngles;
+static Handle g_hSDKStartLagComp;
+static Handle g_hSDKEndLagComp;
+static Handle g_hSDKUpdateBlocked;
+static Handle g_hSnapEyeAngles;
 
 static Handle g_hImpulse;
 
-DynamicHook g_hDHookItemIterateAttribute;
-int g_iCEconItem_m_Item;
-int g_iCEconItemView_m_bOnlyIterateItemViewAttributes;
+static DynamicHook g_hDHookItemIterateAttribute;
+static int g_iCEconItem_m_Item;
+static int g_iCEconItemView_m_bOnlyIterateItemViewAttributes;
 
 void SDKCall_Setup()
 {
@@ -77,7 +74,7 @@ void SDKCall_Setup()
 	gH_BotAddCommand = EndPrepSDKCall();
 
 	if(!gH_BotAddCommand)
-		LogError("[Gamedata] Unable to prepare SDKCall for NextBotCreatePlayerBot<CTFBot>");
+		SetFailState("[Gamedata] Unable to prepare SDKCall for NextBotCreatePlayerBot<CTFBot>");
 		
 		/*
 	StartPrepSDKCall(SDKCall_Entity);
@@ -107,7 +104,7 @@ void SDKCall_Setup()
 	StartPrepSDKCall(SDKCall_Player);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBasePlayer::SnapEyeAngles");
 	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef);
-	if ((g_hSnapEyeAngles = EndPrepSDKCall()) == null) LogError("Failed to create SDKCall for CBasePlayer::SnapEyeAngles!");
+	if ((g_hSnapEyeAngles = EndPrepSDKCall()) == null) SetFailState("Failed to create SDKCall for CBasePlayer::SnapEyeAngles!");
 
 	StartPrepSDKCall(SDKCall_Player);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBasePlayer::CheatImpulseCommands");
@@ -118,7 +115,7 @@ void SDKCall_Setup()
 		
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseAnimating::InvalidateBoneCache");
-	if((g_hInvalidateBoneCache = EndPrepSDKCall()) == INVALID_HANDLE) LogError("Failed to create Call for CBaseAnimating::InvalidateBoneCache");
+	if((g_hInvalidateBoneCache = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::InvalidateBoneCache");
 	
 	
 	//( const Vector &vecOrigin, const QAngle &vecAngles, const float fSpeed, const float fGravity, ProjectileType_t projectileType, CBaseEntity *pOwner, CBaseEntity *pScorer )
@@ -154,12 +151,12 @@ void SDKCall_Setup()
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CObjectDispenser::MakeCarriedObject");
 	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
-	if ((g_hSDKMakeCarriedObjectDispenser = EndPrepSDKCall()) == INVALID_HANDLE) LogError("Failed To create SDKCall for CObjectDispenser::MakeCarriedObject");
+	if ((g_hSDKMakeCarriedObjectDispenser = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CObjectDispenser::MakeCarriedObject");
 	
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CObjectSentrygun::MakeCarriedObject");
 	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
-	if ((g_hSDKMakeCarriedObjectSentry = EndPrepSDKCall()) == INVALID_HANDLE) LogError("Failed To create SDKCall for CObjectSentrygun::MakeCarriedObject");
+	if ((g_hSDKMakeCarriedObjectSentry = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CObjectSentrygun::MakeCarriedObject");
 	
 	
 	//from kenzzer
@@ -168,7 +165,7 @@ void SDKCall_Setup()
 	g_hDHookItemIterateAttribute = new DynamicHook(iOffset, HookType_Raw, ReturnType_Void, ThisPointer_Address);
 	if (g_hDHookItemIterateAttribute == null)
 	{
-		 LogError("Failed to create hook CEconItemView::IterateAttributes offset from SF2 gamedata!");
+		 SetFailState("Failed to create hook CEconItemView::IterateAttributes offset from SF2 gamedata!");
 	}
 	g_hDHookItemIterateAttribute.AddParam(HookParamType_ObjectPtr);
 
@@ -184,21 +181,21 @@ void SDKCall_Setup()
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//iAttachment
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK); //absOrigin
 	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK); //absAngles
-	if((g_hGetAttachment = EndPrepSDKCall()) == INVALID_HANDLE) LogError("Failed to create Call for CBaseAnimating::GetAttachment");
+	if((g_hGetAttachment = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::GetAttachment");
 	
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "Studio_FindAttachment");
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);		//pAttachmentName
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return index
-	if((g_hStudio_FindAttachment = EndPrepSDKCall()) == INVALID_HANDLE) LogError("Failed to create Call for Studio_FindAttachment");
+	if((g_hStudio_FindAttachment = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for Studio_FindAttachment");
 	
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseEntity::GetVectors");
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
-	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) LogError("Failed to create Virtual Call for CBaseEntity::GetVectors!");
+	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
 	
 	delete hConf;
 	/*
@@ -417,7 +414,7 @@ public int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 
 //BIG thanks to backwards#8236 on discord for helping me out, YOU ARE MY HERO.
 
-public void Sdkcall_Load_Lagcomp()
+void Sdkcall_Load_Lagcomp()
 {
 	if(!g_GottenAddressesForLagComp)
 	{
@@ -428,19 +425,19 @@ public void Sdkcall_Load_Lagcomp()
 		PrepSDKCall_SetFromConf(gamedata_lag_comp, SDKConf_Signature, "CLagCompensationManager::StartLagCompensation");
 		PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
 		PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_ByValue); //cmd? I dont know.
-		if ((g_hSDKStartLagComp = EndPrepSDKCall()) == INVALID_HANDLE) LogError("Failed To create SDKCall for CLagCompensationManager::StartLagCompensation");
+		if ((g_hSDKStartLagComp = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CLagCompensationManager::StartLagCompensation");
 		
 		
 		StartPrepSDKCall(SDKCall_Raw);
 		PrepSDKCall_SetFromConf(gamedata_lag_comp, SDKConf_Signature, "CLagCompensationManager::FinishLagCompensation");
 		PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
-		if ((g_hSDKEndLagComp = EndPrepSDKCall()) == INVALID_HANDLE) LogError("Failed To create SDKCall for CLagCompensationManager::FinishLagCompensation");	
+		if ((g_hSDKEndLagComp = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CLagCompensationManager::FinishLagCompensation");	
 		
 		delete gamedata_lag_comp;	
 	}
 }
 
-public void Manual_Impulse_101(int client, int health)
+void Manual_Impulse_101(int client, int health)
 {
 	int ie, entity;
 	while(TF2_GetItem(client, entity, ie))
@@ -511,11 +508,14 @@ public void Manual_Impulse_101(int client, int health)
 		SetAmmo(client, i, CurrentAmmo[client][i]);
 	}
 	
+#if defined ZR
 	if(EscapeMode)
 	{
 		SetAmmo(client, Ammo_Metal, 99099); //just give infinite metal. There is no reason not to. (in Escape.)
 		SetAmmo(client, 21, 99999);
 	}
+#endif
+	
 	SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 0.0);
 	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
 //	SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", 0.0); //No cloak regen at all.
@@ -555,7 +555,8 @@ public void Manual_Impulse_101(int client, int health)
 		}
 	}
 	
-	SetEntityHealth(client, health);
+	if(health > 0)
+		SetEntityHealth(client, health);
 }
 
 //thanks to pelipoika for gamedata that he had avaiable.

@@ -3,7 +3,7 @@
 
 #define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
-int i_ProjectileIndex;
+static int i_ProjectileIndex;
 
 void WandStocks_Map_Precache()
 {
@@ -140,6 +140,7 @@ public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pac
 
 public void Wand_Base_StartTouch(int entity, int other)
 {
+#if defined ZR
 	int target = Target_Hit_Wand_Detection(entity, other);
 	switch(i_WandIdNumber[entity])
 	{
@@ -190,4 +191,5 @@ public void Wand_Base_StartTouch(int entity, int other)
 	}
 // Dont delete it here, the wands might have pierce or something. who knows.
 //	RemoveEntity(arrow);
+#endif
 }

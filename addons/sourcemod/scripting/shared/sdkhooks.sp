@@ -16,29 +16,13 @@ static const float ViewHeights[] =
 };
 */
 //static int g_offsPlayerPunchAngleVel = -1;
-#define SF2_PLAYER_VIEWBOB_TIMER 10.0
-#define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
-#define SF2_PLAYER_VIEWBOB_SCALE_Y 0.0
-#define SF2_PLAYER_VIEWBOB_SCALE_Z 0.0
 
-static float Armor_regen_delay[MAXTF2PLAYERS];
-float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
-//static float Check_Standstill_Delay[MAXTF2PLAYERS];
-//static bool Check_Standstill_Applied[MAXTF2PLAYERS];
-
-float max_mana[MAXTF2PLAYERS];
-float mana_regen[MAXTF2PLAYERS];
-bool has_mage_weapon[MAXTF2PLAYERS];
-
-int i_SvRollAngle[MAXTF2PLAYERS];
-
-Handle SyncHud_ArmorCounter;
-
-static int i_WhatLevelForHudIsThisClientAt[MAXTF2PLAYERS];
-
-public void SDKHooks_ClearAll()
+void SDKHooks_ClearAll()
 {
+#if defined ZR
 	Zero(Armor_regen_delay);
+#endif
+	
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		i_WhatLevelForHudIsThisClientAt[client] = 2000000000; //two billion
@@ -47,11 +31,14 @@ public void SDKHooks_ClearAll()
 
 void SDKHook_PluginStart()
 {
+#if defined ZR
 	/*
 	g_offsPlayerPunchAngleVel = FindSendPropInfo("CBasePlayer", "m_vecPunchAngleVel");
 	if (g_offsPlayerPunchAngleVel == -1) LogError("Couldn't find CBasePlayer offset for m_vecPunchAngleVel!");
 	*/
 	SyncHud_ArmorCounter = CreateHudSynchronizer();
+#endif
+	
 	AddNormalSoundHook(SDKHook_NormalSHook);
 }
 
@@ -65,13 +52,17 @@ void SDKHook_MapStart()
 public void SDKHook_ScoreThink(int entity)
 {
 	static int offset = -1;
+	
+#if defined ZR
 	static int offset_Damage = -1;
 	static int offset_damageblocked = -1;
 //	static int offset_bonus = -1;
-
+#endif
+	
 	if(offset == -1) 
 		offset = FindSendPropInfo("CTFPlayerResource", "m_iTotalScore");
 
+#if defined ZR
 	if(offset_Damage == -1) 
 		offset_Damage = FindSendPropInfo("CTFPlayerResource", "m_iDamage");
 
@@ -80,13 +71,19 @@ public void SDKHook_ScoreThink(int entity)
 
 //	if(offset_bonus == -1) 
 //		offset_bonus = FindSendPropInfo("CTFPlayerResource", "m_iCurrencyCollected");
-
-
+#endif
+	
+#if defined ZR
 	SetEntDataArray(entity, offset, PlayerPoints, MaxClients + 1);
 	SetEntDataArray(entity, offset_Damage, i_Damage_dealt_in_total, MaxClients + 1);
 //	SetEntDataArray(entity, offset_bonus, i_BarricadeHasBeenDamaged, MaxClients + 1);
-
-
+#endif
+	
+#if defined RPG
+	SetEntDataArray(entity, offset, Level, MaxClients + 1);
+#endif
+	
+#if defined ZR
 	int Conversion_ExtraPoints[MAXTF2PLAYERS];
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -109,7 +106,7 @@ public void SDKHook_ScoreThink(int entity)
 		//	m_iHealPoints
 		}
 	}	
-	
+#endif
 }
 
 void SDKHook_HookClient(int client)
@@ -118,13 +115,16 @@ void SDKHook_HookClient(int client)
 	SDKUnhook(client, SDKHook_PreThinkPost, OnPreThinkPost);
 	SDKUnhook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost);
 	SDKUnhook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
-	SDKUnhook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
 	
 	SDKHook(client, SDKHook_PostThink, OnPostThink);
 	SDKHook(client, SDKHook_PreThinkPost, OnPreThinkPost);
 	SDKHook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost);
 	SDKHook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
+	
+	#if defined ZR
+	SDKUnhook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
 	SDKHook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
+	#endif
 	
 	#if !defined NoSendProxyClass
 	SDKUnhook(client, SDKHook_PostThinkPost, OnPostThinkPost);
@@ -145,10 +145,13 @@ public void OnPreThinkPost(int client)
 			CvarMpSolidObjects.IntValue = 0;
 		}
 	}
+	
+#if defined ZR
 	if(CvarSvRollagle)
 	{
 		CvarSvRollagle.IntValue = i_SvRollAngle[client];
 	}
+#endif
 }
 
 public void OnPostThink(int client)
@@ -180,6 +183,8 @@ public void OnPostThink(int client)
 				CvarMpSolidObjects.ReplicateToClient(client, "1"); //set replicate back to normal.
 			}
 		}
+		
+#if defined ZR
 		if(CvarSvRollagle)
 		{
 			int flHealth = GetEntProp(client, Prop_Send, "m_iHealth");
@@ -234,6 +239,8 @@ public void OnPostThink(int client)
 
 			CvarSvRollagle.ReplicateToClient(client, RollAngleValue); //set replicate back to normal.
 		}
+#endif	// ZR
+		
 		if(Mana_Regen_Delay[client] < gameTime)	
 		{
 			Mana_Regen_Delay[client] = gameTime + 0.4;
@@ -250,8 +257,12 @@ public void OnPostThink(int client)
 				}
 			}
 
+#if defined ZR
 			if(!EscapeMode)
+#endif
+			
 			{
+#if defined ZR
 				max_mana[client] = 400.0;
 				mana_regen[client] = 10.0;
 				
@@ -262,6 +273,12 @@ public void OnPostThink(int client)
 				{
 					mana_regen[client] *= 1.35;
 				}
+#endif
+				
+#if defined RPG
+				max_mana[client] = 20.0;
+				mana_regen[client] = 0.5;
+#endif
 					
 				mana_regen[client] *= Mana_Regen_Level[client];
 				max_mana[client] *= Mana_Regen_Level[client];	
@@ -284,6 +301,8 @@ public void OnPostThink(int client)
 					
 				Mana_Hud_Delay[client] = 0.0;
 			}
+			
+#if defined ZR
 			else
 			{
 			//	if(Mana_Regen_Level[weapon])
@@ -304,7 +323,11 @@ public void OnPostThink(int client)
 				
 				Mana_Hud_Delay[client] = 0.0;
 			}
+#endif
+			
 		}
+
+#if defined ZR
 		if(Armor_regen_delay[client] < gameTime)
 		{
 			Armour_Level_Current[client] = 0;
@@ -410,7 +433,10 @@ public void OnPostThink(int client)
 			}
 			Armor_regen_delay[client] = gameTime + 1.0;
 		}
+#endif	// ZR
+		
 	}
+	
 	if(Mana_Hud_Delay[client] < gameTime)	
 	{
 		Mana_Hud_Delay[client] = gameTime + 0.4;
@@ -497,6 +523,7 @@ public void OnPostThink(int client)
 				IsReady = false;
 			}
 			
+#if defined ZR
 			if(GetAbilitySlotCount(client) > 0)
 			{
 				cooldown_time = GetAbilityCooldownM3(client);
@@ -525,6 +552,7 @@ public void OnPostThink(int client)
 				IsReady = false;
 					
 			}
+			
 			int obj=EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
 			if(IsValidEntity(obj) && obj>MaxClients)
 			{
@@ -551,6 +579,8 @@ public void OnPostThink(int client)
 				IsReady = false;
 				had_An_ability = true;
 			}
+#endif	// ZR
+			
 			if(had_An_ability)
 			{
 				Format(buffer, sizeof(buffer), "%s\n", buffer);
@@ -615,8 +645,10 @@ public void OnPostThink(int client)
 	}
 	if(delay_hud[client] < gameTime)	
 	{
-		UpdatePlayerPoints(client);
 		delay_hud[client] = gameTime + 0.4;
+		
+#if defined ZR
+		UpdatePlayerPoints(client);
 		
 		if(LastMann || dieingstate[client] > 0)
 		{
@@ -820,7 +852,14 @@ public void OnPostThink(int client)
 				}
 			}
 		}
+#endif	// ZR
+		
+#if defined RPG
+		// RPG Level Stuff Here
+#endif	// RPG
 	}
+	
+#if defined ZR
 	if(f_DelayLookingAtHud[client] < GetGameTime())
 	{
 		if (IsPlayerAlive(client))
@@ -838,6 +877,7 @@ public void OnPostThink(int client)
 	}
 	
 	Music_PostThink(client);
+#endif
 }
 
 #if !defined NoSendProxyClass
@@ -917,8 +957,8 @@ public void OnPreThink(int client)
 }
 */
 
-float f_OneShotProtectionTimer[MAXTF2PLAYERS];
-bool i_WasInUber;
+#if defined ZR
+static bool i_WasInUber;
 public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(i_WasInUber)
@@ -928,19 +968,23 @@ public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &infli
 	i_WasInUber = false;
 	return Plugin_Continue;
 }
+#endif
 
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+#if defined ZR
 	if(TeutonType[victim])
 		return Plugin_Handled;
-		
+#endif
+	
 	float gameTime = GetGameTime();
 
 	if(f_ClientInvul[victim] > gameTime) //Treat this as if they were a teuton, complete and utter immunity to everything in existance.
 	{
 		return Plugin_Handled;
 	}
-
+	
+#if defined ZR
 	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
 		if(TF2_IsPlayerInCondition(victim,TFCond_Ubercharged))
@@ -950,11 +994,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			damage *= 0.5;
 		}
 	}
-		
+	
 	if(damagetype & DMG_CRIT)
 	{
 		damagetype &= ~DMG_CRIT; //Remove Crit Damage at all times, it breaks calculations for no good reason.
 	}
+#endif
 	
 	if(!(damagetype & DMG_DROWN))
 	{
@@ -965,6 +1010,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 		
+#if defined ZR
 	float Replicated_Damage;
 	Replicated_Damage = Replicate_Damage_Medications(victim, damage, damagetype);
 	
@@ -987,20 +1033,37 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		if(victim == attacker)
 			return Plugin_Handled;
 	}
+#endif
 	
 	if(attacker <= MaxClients && attacker > 0)	
 		return Plugin_Handled;	
 		
 		
 	f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
-
+	
+#if defined ZR
 	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
+#endif
+	
+#if defined RPG
+	if(damagetype & (DMG_DROWN|DMG_DROWNRECOVER))
+#endif
+	
 	{
+		
+#if defined ZR
 		Replicated_Damage *= 2.0;
 		damage *= 2.0;
+#endif
+		
+#if defined RPG
+		damage *= 5.0;
+#endif
+		
 		return Plugin_Changed;	
 	}
 	
+#if defined ZR
 	if(Medival_Difficulty_Level != 0.0)
 	{
 		float difficulty_math = Medival_Difficulty_Level;
@@ -1011,9 +1074,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}
 	
 	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
-	
 	if(!b_ThisNpcIsSawrunner[attacker])
+#endif
+	
 	{
+		
+#if defined ZR
 		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
 	
 		if(IsValidEntity(Victim_weapon))
@@ -1040,6 +1106,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				damage *= 2.0;	
 			}
 		}
+		
 		if(EscapeMode)
 		{
 			if(IsValidEntity(Victim_weapon))
@@ -1057,26 +1124,43 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				}
 			}
 		}
-
+#endif
+		
 		if(f_EmpowerStateOther[victim] > gameTime) //Allow stacking.
 		{
+			
+#if defined ZR
 			Replicated_Damage *= 0.93;
+#endif
+			
 			damage *= 0.93;
 		}
 		if(f_EmpowerStateSelf[victim] > gameTime) //Allow stacking.
 		{
+			
+#if defined ZR
 			Replicated_Damage *= 0.9;
+#endif
+			
 			damage *= 0.9;
 		}
 
+#if defined ZR
 		if(i_CurrentEquippedPerk[victim] == 2)
 		{
 			Replicated_Damage *= 0.85;
 			damage *= 0.85;
 		}
+#endif
 		
 		if(damagetype & DMG_FALL)
 		{
+			
+#if defined RPG
+			damage *= 400.0 / float(SDKCall_GetMaxHealth(victim));
+#endif
+			
+#if defined ZR
 			Replicated_Damage *= 0.65; //Reduce falldmg by passive overall
 			damage *= 0.65;
 			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
@@ -1085,13 +1169,22 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				damage *= 0.2;			
 			}
 			else if(i_SoftShoes[victim] == 1)
+#endif
+			
+			if(i_SoftShoes[victim] == 1)
 			{
+				
+#if defined ZR
 				Replicated_Damage *= 0.65;
+#endif
+				
 				damage *= 0.65;
 			}
 		}
 		else
 		{
+			
+#if defined ZR
 		//	bool Though_Armor = false;
 		
 			if(i_CurrentEquippedPerk[victim] == 6)
@@ -1135,13 +1228,19 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					}
 				}
 			}
+#endif	// ZR
 			
 			if(Resistance_Overall_Low[victim] > gameTime)
 			{
+				
+#if defined ZR
 				Replicated_Damage *= 0.85;
+#endif
+				
 				damage *= 0.85;
 			}
 			
+#if defined ZR
 			if(i_HealthBeforeSuit[victim] == 0)
 			{
 				if(Armor_Charge[victim] > 0)
@@ -1204,8 +1303,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					}
 				}
 			}
+#endif	// ZR
+			
 		}
 	}
+	
+#if defined ZR
 	if(RoundToCeil(Replicated_Damage) >= flHealth || RoundToCeil(damage) >= flHealth)
 	{
 		if(i_HealthBeforeSuit[victim] > 0)
@@ -1317,12 +1420,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 		}
 	}
+#endif	// ZR
+	
 	return Plugin_Changed;
 }
 
-
-
-public float Replicate_Damage_Medications(int victim, float damage, int damagetype)
+#if defined ZR
+float Replicate_Damage_Medications(int victim, float damage, int damagetype)
 {
 	if(TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
 	{
@@ -1354,6 +1458,7 @@ public float Replicate_Damage_Medications(int victim, float damage, int damagety
 		
 	return damage;
 }
+#endif	// ZR
 
 public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
@@ -1375,7 +1480,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	}
 	if(StrContains(sample, "vo/", true) != -1)
 	{
-		if(IsValidClient(entity))
+		if(entity > 0 && entity <= MaxClients)
 		{
 			if(b_IsPlayerNiko[entity])
 			{
@@ -1386,7 +1491,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	return Plugin_Continue;
 }
 
-int i_PreviousWeapon[MAXTF2PLAYERS];
+static int i_PreviousWeapon[MAXTF2PLAYERS];
 
 public void OnWeaponSwitchPost(int client, int weapon)
 {
@@ -1399,7 +1504,11 @@ public void OnWeaponSwitchPost(int client, int weapon)
 		
 		char buffer[36];
 		GetEntityClassname(weapon, buffer, sizeof(buffer));
+		
+#if defined ZR
 		Building_WeaponSwitchPost(client, weapon, buffer);
+#endif
+		
 		ViewChange_Switch(client, weapon, buffer);
 		
 		if(i_SemiAutoWeapon[weapon])
@@ -1455,35 +1564,9 @@ static void ClientViewPunch(int client, const float angleOffset[3])
 }
 */
 
-public Action Command_Voicemenu(int client, const char[] command, int args)
+#if defined ZR
+static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon, float damagePosition[3])
 {
-	if(client && args == 2 && IsPlayerAlive(client) && TeutonType[client] == 0)
-	{
-		char arg[4];
-		GetCmdArg(1, arg, sizeof(arg));
-		if(arg[0] == '0')
-		{
-			GetCmdArg(2, arg, sizeof(arg));
-			if(arg[0] == '0')
-			{
-				if(TeutonType[client] == TEUTON_NONE)
-				{
-					bool has_been_done = BuildingCustomCommand(client);
-					if(has_been_done)
-					{
-						return Plugin_Handled;
-					}
-				}
-			}
-		}
-	}
-	return Plugin_Continue;
-}
-
-float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon, float damagePosition[3])
-{
-	
-	
 	switch(i_CustomWeaponEquipLogic[equipped_weapon])
 	{
 		case WEAPON_ARK: // weapon_ark
@@ -1493,7 +1576,7 @@ float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &
 	}
 	return damage;
 }
-
+#endif
 
 public void SetEyeAngleCorrect(int client)
 {
