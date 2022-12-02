@@ -133,7 +133,7 @@ public void Marksman_boom_rifle(int client, int weapon, const char[] classname, 
 	GetClientEyeAngles(client, eyeAng);
 			   
 	b_LagCompNPC_ExtendBoundingBox = true;
-	StartLagCompensation_Base_Boss(client, false);
+	StartLagCompensation_Base_Boss(client);
 	Handle trace = TR_TraceRayFilterEx(eyePos, eyeAng, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
 	
 	SpawnSmallExplosionNotRandom(spawnLoc);
@@ -351,7 +351,7 @@ static void TBB_Tick(int client)
 	
 	GetClientEyePosition(client, startPoint);
 	b_LagCompNPC_No_Layers = true;
-	StartLagCompensation_Base_Boss(client, false);
+	StartLagCompensation_Base_Boss(client);
 	float Damage_dealt[MAX_TARGETS_HIT];
 	
 	for (int building = 0; building < MAX_TARGETS_HIT; building++)

@@ -21,9 +21,9 @@ char g_MedicScripts[][] = {
 };
 
 void Medigun_PluginStart() {
-	Handle hGameConf_med = LoadGameConfigFile("tf2.custattr.sample");
+	Handle hGameConf_med = LoadGameConfigFile("zombie_riot");
 	if (!hGameConf_med) {
-		SetFailState("Failed to load gamedata (tf2.custattr.sample).");
+		SetFailState("Failed to load gamedata (zombie_riot).");
 	}
 /*
 	StartPrepSDKCall(SDKCall_EntityList);
