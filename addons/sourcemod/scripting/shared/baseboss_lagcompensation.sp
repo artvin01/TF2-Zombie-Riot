@@ -122,7 +122,7 @@ void OnEntityDestroyed_LagComp(int entity)
 
 /* game/server/player_lagcompensation.cpp#L328 */
 //public MRESReturn StartLagCompensation(Address manager, DHookParam param)
-void StartLagCompensation_Base_Boss(int client, bool compensate_players)
+void StartLagCompensation_Base_Boss(int client)
 {
 	if(!DoingLagCompensation) //dont  check for && sv_unlag.BoolValue, this function wont even call if you dont have this cvar enabled.
 	{
@@ -457,20 +457,9 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 				}
 			}
 		}
-	//	Test_Hitbox(entity);
 	}
 	SDKCall_InvalidateBoneCache(entity); //Do at all times, yes, ew but i have to,
 	EntityRestore.SetArray(refchar, restore, sizeof(restore));
-}
-
-void Test_Hitbox(int entity)
-{
-	float flPos[3]; // original
-	float flAng[3]; // original
-	
-	GetAttachment(entity, "partyhat", flPos, flAng);
-				
-	ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.25);	
 }
 
 void FinishLagCompensation_Base_boss(/*DHookParam param*/)

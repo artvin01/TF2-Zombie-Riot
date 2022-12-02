@@ -100,7 +100,7 @@ methodmap MadChicken < CClotBody
 		
 		int skin = GetRandomInt(0, 1);
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-
+	
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/scout/sf14_nugget_noggin/sf14_nugget_noggin.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");

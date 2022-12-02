@@ -708,7 +708,7 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 	}
 	#if defined LagCompensation
 	if(b_LagCompNPC)
-		StartLagCompensation_Base_Boss(Compensator, false);
+		StartLagCompensation_Base_Boss(Compensator);
 	#endif
 	
 	if(b_LagCompNPC_BlockInteral)

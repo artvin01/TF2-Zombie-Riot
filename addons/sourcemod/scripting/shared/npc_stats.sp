@@ -84,7 +84,6 @@ public Action Command_PetMenu(int client, int argc)
 
 void OnMapStart_NPC_Base()
 {
-	PrintToChatAll("test");
 	for (int i = 0; i < (sizeof(g_GibSound));   i++) { PrecacheSound(g_GibSound[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSoundMetal));   i++) { PrecacheSound(g_GibSoundMetal[i]);   }
 	for (int i = 0; i < (sizeof(g_CombineSoldierStepSound));   i++) { PrecacheSound(g_CombineSoldierStepSound[i]);   }
