@@ -1013,6 +1013,8 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.bob");
 	LoadTranslations("zombieriot.phrases.icons"); 
 	LoadTranslations("common.phrases");
+
+	LoadTranslations("rpgfortress.phrases.enemynames");
 	
 	DHook_Setup();
 	SDKCall_Setup();
@@ -1130,9 +1132,11 @@ public void OnMapStart()
 #if defined ZR
 	ZR_MapStart();
 #endif
-	
+	OnMapStart_NPC_Base();
 	SDKHook_MapStart();
 	ViewChange_MapStart();
+	MapStart_CustomMeleePrecache();
+	WandStocks_Map_Precache();
 	
 	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
 	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");
@@ -1805,7 +1809,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 				Handle swingTrace;
 				b_LagCompNPC_No_Layers = true;
 				float vecSwingForward[3];
-				StartLagCompensation_Base_Boss(client, false);
+				StartLagCompensation_Base_Boss(client);
 				DoSwingTrace_Custom(swingTrace, client, vecSwingForward);
 				FinishLagCompensation_Base_boss();
 				int target = TR_GetEntityIndex(swingTrace);	
@@ -1929,10 +1933,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
+#if defined ZR
 		else if(!StrContains(classname, "item_currencypack_custom"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
+#endif
 		else if(!StrContains(classname, "tf_projectile_energy_ring"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
