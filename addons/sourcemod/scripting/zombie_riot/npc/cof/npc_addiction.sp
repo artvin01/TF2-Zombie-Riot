@@ -46,7 +46,7 @@ methodmap Addicition < CClotBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
+
 		this.m_flNextIdleSound = GetGameTime(this.index) + 3.5;
 		EmitSoundToAll(g_PassiveSounds[GetRandomInt(0, sizeof(g_PassiveSounds) - 1)], this.index);
 	}
@@ -54,12 +54,12 @@ methodmap Addicition < CClotBody
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-		
+
 		this.m_flNextHurtSound = GetGameTime(this.index) + 2.0;
-		
+
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayMeleeHitSound() 
+	public void PlayMeleeHitSound()
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
@@ -89,22 +89,22 @@ methodmap Addicition < CClotBody
 		EmitSoundToAll(g_ThunderSounds[GetRandomInt(0, sizeof(g_ThunderSounds) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_ThunderSounds[GetRandomInt(0, sizeof(g_ThunderSounds) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
-	
+
 	public Addicition(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		Addicition npc = view_as<Addicition>(CClotBody(vecPos, vecAng, "models/zombie_riot/aom/david_monster.mdl", "1.15", data[0] == 'f' ? "250000" : "10000", ally, false, false, true));
 		i_NpcInternalId[npc.index] = THEADDICTION;
-		
+
 		npc.m_iState = -1;
 		npc.SetActivity("ACT_SPAWN");
-		
+
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
+
 		SDKHook(npc.index, SDKHook_OnTakeDamage, Addicition_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, Addicition_ClotThink);
-		
+
 		npc.m_bisWalking = false;
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_flSpeed = 100.0;
@@ -119,15 +119,15 @@ methodmap Addicition < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		npc.m_iChanged_WalkCycle = 0;
 		npc.m_flNextThinkTime = GetGameTime(npc.index) + 2.5;
-		
+
 		if(data[0])
 			npc.SetHalfLifeStats();
 
 		Citizen_MiniBossSpawn(npc.index);
-		
+
 		return npc;
 	}
-	
+
 	public void SetHalfLifeStats()
 	{
 		this.m_bLostHalfHealth = true;
@@ -138,15 +138,15 @@ methodmap Addicition < CClotBody
 public void Addicition_ClotThink(int iNPC)
 {
 	Addicition npc = view_as<Addicition>(iNPC);
-	
+
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
-	
+
 	npc.m_flNextThinkTime = gameTime + 0.04;
 	npc.Update();
 	npc.PlayIdleSound();
-	
+
 	if(npc.m_bLostHalfHealth)
 	{
 		npc.m_flMeleeArmor = 1.0 - Pow(0.98, float(Zombies_Currently_Still_Ongoing));
@@ -156,44 +156,44 @@ public void Addicition_ClotThink(int iNPC)
 	{
 		npc.SetHalfLifeStats();
 	}
-	
+
 	if(npc.m_flRangedSpecialDelay > 1.0)
 	{
 		if(npc.m_flRangedSpecialDelay < gameTime)
 		{
 			npc.m_flRangedSpecialDelay = 1.0;
-			
+
 			float vecMe[3];
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecMe); 
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecMe);
 			vecMe[2] += 45;
-			
+
 			makeexplosion(npc.index, npc.index, vecMe, "", 2000, 1000, 1000.0);
-			
+
 			npc.m_flRangedSpecialDelay = 0.0;
 			npc.PlayLightningSound();
 		}
-		
+
 		return;
 	}
-	
+
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
-			
+
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
 				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 				{
-					int target = TR_GetEntityIndex(swingTrace);	
-					
+					int target = TR_GetEntityIndex(swingTrace);
+
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					
-					if(target > 0) 
+
+					if(target > 0)
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 600.0, DMG_CLUB);
 					}
@@ -201,29 +201,29 @@ public void Addicition_ClotThink(int iNPC)
 				delete swingTrace;
 			}
 		}
-		
+
 		return;
 	}
-	
+
 	if(npc.m_flReloadDelay > gameTime)
 	{
 		if(npc.m_bPathing)
 		{
-			PF_StopPathing(npc.index);
+			path.Invalidate();
 			npc.m_bPathing = false;
 		}
 		return;
 	}
-	
+
 	if(npc.m_flRangedSpecialDelay == 1.0)
 		npc.m_flRangedSpecialDelay = 0.0;
-	
+
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_flGetClosestTargetTime = gameTime + 0.5;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-	
+
 	if(npc.m_iTarget > 0)
 	{
 		if(!IsValidEnemy(npc.index, npc.m_iTarget))
@@ -235,66 +235,66 @@ public void Addicition_ClotThink(int iNPC)
 		else
 		{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-			
+
 			float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			if(distance < 40000.0 && npc.m_flNextMeleeAttack < gameTime)
 			{
 				npc.FaceTowards(vecTarget, 15000.0);
-				
+
 				npc.SetActivity("ACT_IDLE");
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 				npc.PlayAttackSound();
-				
+
 				npc.m_flAttackHappens = gameTime + 0.4;
 				npc.m_flReloadDelay = gameTime + 0.6;
 				npc.m_flNextMeleeAttack = gameTime + 1.3;
-				
+
 				if(npc.m_bPathing)
 				{
-					PF_StopPathing(npc.index);
+					path.Invalidate();
 					npc.m_bPathing = false;
 				}
 			}
 			else if(distance < 200000.0 && npc.m_flNextRangedSpecialAttack < gameTime)
 			{
 				npc.SetActivity("ACT_LIGHTNING");
-				
+
 				npc.m_flRangedSpecialDelay = gameTime + 3.0;
 				npc.m_flReloadDelay = gameTime + 5.0;
 				npc.m_flNextRangedSpecialAttack = gameTime + 30.0;
-				
+
 				if(npc.m_bPathing)
 				{
-					PF_StopPathing(npc.index);
+					path.Invalidate();
 					npc.m_bPathing = false;
 				}
 			}
 			else
 			{
 				npc.SetActivity(npc.m_bLostHalfHealth ? "ACT_RUN_HALFLIFE" : "ACT_RUN");
-				
+
 				if(distance > 29000.0)
 				{
-					PF_SetGoalEntity(npc.index, npc.m_iTarget);
+					path.ComputeToTarget(bot, npc.m_iTarget);
 				}
 				else
 				{
 					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-					PF_SetGoalVector(npc.index, vPredictedPos);
+					path.ComputeToPos(bot, vPredictedPos);
 				}
 				npc.StartPathing();
 			}
-			
+
 			return;
 		}
 	}
-	
+
 	if(npc.m_bPathing)
 	{
-		PF_StopPathing(npc.index);
+		path.Invalidate();
 		npc.m_bPathing = false;
 	}
-	
+
 	npc.m_flGetClosestTargetTime = 0.0;
 	npc.SetActivity("ACT_IDLE");
 }
@@ -303,21 +303,23 @@ public void Addicition_ClotThink(int iNPC)
 public void Addicition_ClotThink(int iNPC)
 {
 	Addicition npc = view_as<Addicition>(iNPC);
+	INextBot bot = npc.GetBot();
+	PathFollower path = npc.GetPathFollower();
 	/*
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	
+
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	*/
 	npc.Update();
-	
-	
+
+
 	if(npc.m_bLostHalfHealth)
 	{
 		float Armor_Stats = 1.0 * Pow(0.98, float(Zombies_Currently_Still_Ongoing));
-		
+
 		if(Armor_Stats > 1.0)
 		{
 			Armor_Stats = 1.0;
@@ -326,7 +328,7 @@ public void Addicition_ClotThink(int iNPC)
 		{
 			Armor_Stats = 0.4;
 		}
-		
+
 		npc.m_flMeleeArmor = Armor_Stats;
 		npc.m_flRangedArmor = Armor_Stats;
 	}
@@ -334,56 +336,56 @@ public void Addicition_ClotThink(int iNPC)
 	{
 		npc.SetHalfLifeStats();
 	}
-	
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
-	
+
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	
+
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	
+
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index, true);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
-	
+
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-			
+
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-				
+
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			path.ComputeToPos(bot, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			path.ComputeToTarget(bot, npc.m_iTarget);
 		}
-		
+
 		if(npc.m_bLostHalfHealth)
 		{
-			if(npc.m_iChanged_WalkCycle != 2 && npc.m_flReloadDelay < GetGameTime(npc.index)) 	
+			if(npc.m_iChanged_WalkCycle != 2 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				npc.SetActivity("ACT_RUN_HALFLIFE");
 				npc.m_iChanged_WalkCycle = 2;
 				npc.StartPathing();
 				npc.m_bisWalking = true;
-			}		
+			}
 		}
 		else
 		{
-			if(npc.m_iChanged_WalkCycle != 1 && npc.m_flReloadDelay < GetGameTime(npc.index)) 	
+			if(npc.m_iChanged_WalkCycle != 1 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				npc.SetActivity("ACT_RUN");
 				npc.m_iChanged_WalkCycle = 1;
@@ -391,29 +393,29 @@ public void Addicition_ClotThink(int iNPC)
 				npc.m_bisWalking = true;
 			}
 		}
-		
+
 		if(npc.m_bLostHalfHealth)
 		{
 			if(flDistanceToTarget < 200000.0 && npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
 			{
 				int Enemy_I_See;
-				
+
 				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Target close enough to hit
 				if(IsValidEnemy(npc.index, npc.m_iTarget) && npc.m_iTarget == Enemy_I_See)
 				{
-					if(npc.m_iChanged_WalkCycle != 3) 	
+					if(npc.m_iChanged_WalkCycle != 3)
 					{
 						npc.SetActivity("ACT_LIGHTNING");
 						npc.m_bisWalking = false;
 						npc.m_iChanged_WalkCycle = 3;
-						PF_StopPathing(npc.index);
+						path.Invalidate();
 						npc.m_bPathing = false;
 					}
 					npc.PlayLightningSound();
-					
+
 					float vEnd[3];
-					
+
 					vEnd = GetAbsOrigin(npc.m_iTarget);
 					Handle pack;
 					CreateDataTimer(ADDICTION_CHARGE_SPAN, Smite_Timer_Addiction, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -423,7 +425,7 @@ public void Addicition_ClotThink(int iNPC)
 					WritePackFloat(pack, vEnd[1]);
 					WritePackFloat(pack, vEnd[2]);
 					WritePackFloat(pack, 1000.0);
-						
+
 					spawnRing_Vectors(vEnd, ADDICTION_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, ADDICTION_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
 					npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 3.0;
 					npc.m_flReloadDelay = GetGameTime(npc.index) + 5.0;
@@ -445,23 +447,23 @@ public void Addicition_ClotThink(int iNPC)
 					npc.m_flAttackHappenswillhappen = true;
 					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.2;
 				}
-				
+
 				if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					Handle swingTrace;
 					npc.FaceTowards(vecTarget, 20000.0);
 					if(npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,_, 1))
 					{
-						int target = TR_GetEntityIndex(swingTrace);	
+						int target = TR_GetEntityIndex(swingTrace);
 						float vecHit[3];
 						TR_GetEndPosition(vecHit, swingTrace);
-						if(target > 0) 
+						if(target > 0)
 						{
 							if(target <= MaxClients)
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_CLUB, -1, _, vecHit);
 							else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_CLUB, -1, _, vecHit);					
-							
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_CLUB, -1, _, vecHit);
+
 							npc.PlayMeleeHitSound();
 						}
 						else
@@ -477,24 +479,24 @@ public void Addicition_ClotThink(int iNPC)
 					npc.m_flAttackHappenswillhappen = false;
 				}
 			}
-			
+
 		}
 	}
 	else
 	{
-//		PF_StopPathing(npc.index);
+//		path.Invalidate();
 //		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index, true);
 	}
 	npc.PlayIdleSound();
 }
-	
+
 public Action Addicition_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 //	if(damage < 9999999.0 && view_as<Addicition>(victim).m_flRangedSpecialDelay == 1.0)
 //		return Plugin_Handled;
-	
+
 	view_as<Addicition>(victim).PlayHurtSound();
 	return Plugin_Continue;
 }
@@ -502,35 +504,35 @@ public Action Addicition_ClotDamaged(int victim, int &attacker, int &inflictor, 
 public void Addicition_NPCDeath(int entity)
 {
 	Addicition npc = view_as<Addicition>(entity);
-	
+
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Addicition_ClotDamaged);
 	SDKUnhook(npc.index, SDKHook_Think, Addicition_ClotThink);
-	
-	PF_StopPathing(npc.index);
+
+	npc.GetPathFollower().Invalidate();
 	npc.m_bPathing = false;
-	
+
 	npc.PlayDeathSound();
-	
+
 	int entity_death = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity_death))
 	{
 		float pos[3], angles[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
-		
+
 		TeleportEntity(entity_death, pos, angles, NULL_VECTOR);
-		
+
 //		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
 		DispatchKeyValue(entity_death, "model", "models/zombie_riot/aom/david_monster.mdl");
 		DispatchKeyValue(entity_death, "skin", "0");
-		
+
 		DispatchSpawn(entity_death);
-		
-		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15); 
+
+		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15);
 		SetEntityCollisionGroup(entity_death, 2);
 		SetVariantString("death");
 		AcceptEntityInput(entity_death, "SetAnimation");
-		
+
 		CreateTimer(1.0, Timer_RemoveEntityOverlord, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
 	}
 
@@ -542,21 +544,21 @@ public Action Smite_Timer_Addiction(Handle Smite_Logic, DataPack pack)
 {
 	ResetPack(pack);
 	int entity = EntRefToEntIndex(ReadPackCell(pack));
-	
+
 	if (!IsValidEntity(entity))
 	{
 		return Plugin_Stop;
 	}
-		
+
 	float NumLoops = ReadPackFloat(pack);
 	float spawnLoc[3];
 	for (int GetVector = 0; GetVector < 3; GetVector++)
 	{
 		spawnLoc[GetVector] = ReadPackFloat(pack);
 	}
-	
+
 	float damage = ReadPackFloat(pack);
-	
+
 	if (NumLoops >= ADDICTION_CHARGE_TIME)
 	{
 		float secondLoc[3];
@@ -564,41 +566,41 @@ public Action Smite_Timer_Addiction(Handle Smite_Logic, DataPack pack)
 		{
 			secondLoc[replace] = spawnLoc[replace];
 		}
-		
+
 		for (int sequential = 1; sequential <= 5; sequential++)
 		{
 			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 120, 1, 0.33, 6.0, 0.4, 1, (ADDICTION_LIGHTNING_RANGE * 5.0)/float(sequential));
 			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
 		}
-		
+
 		secondLoc[2] = 1500.0;
-		
-		spawnBeam(0.8, 255, 50, 50, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, secondLoc, spawnLoc);	
-		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, secondLoc, spawnLoc);	
-		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, secondLoc, spawnLoc);	
-		
+
+		spawnBeam(0.8, 255, 50, 50, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, secondLoc, spawnLoc);
+		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, secondLoc, spawnLoc);
+		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, secondLoc, spawnLoc);
+
 		EmitAmbientSound("cof/addiction/lightning_hit.mp3", spawnLoc, _, 120);
 		EmitAmbientSound("cof/addiction/lightning_hit.mp3", spawnLoc, _, 120);
 		EmitAmbientSound("cof/addiction/lightning_hit.mp3", spawnLoc, _, 120);
 		EmitAmbientSound("cof/addiction/lightning_hit.mp3", spawnLoc, _, 120);
-		
+
 		DataPack pack_boom = new DataPack();
 		pack_boom.WriteFloat(spawnLoc[0]);
 		pack_boom.WriteFloat(spawnLoc[1]);
 		pack_boom.WriteFloat(spawnLoc[2]);
 		pack_boom.WriteCell(0);
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
-		
+
 		CreateEarthquake(spawnLoc, 1.0, ADDICTION_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
 		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, ADDICTION_LIGHTNING_RANGE * 1.4,_,0.8, true);  //Explosion range increace
-	
+
 		return Plugin_Stop;
 	}
 	else
 	{
 		spawnRing_Vectors(spawnLoc, ADDICTION_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
 	//	EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, spawnLoc, _, 60, _, _, GetRandomInt(80, 110));
-		
+
 		ResetPack(pack);
 		WritePackCell(pack, EntIndexToEntRef(entity));
 		WritePackFloat(pack, NumLoops + ADDICTION_CHARGE_TIME);
@@ -607,7 +609,7 @@ public Action Smite_Timer_Addiction(Handle Smite_Logic, DataPack pack)
 		WritePackFloat(pack, spawnLoc[2]);
 		WritePackFloat(pack, damage);
 	}
-	
+
 	return Plugin_Continue;
 }
 
@@ -618,11 +620,11 @@ static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[
 	color[1] = g;
 	color[2] = b;
 	color[3] = a;
-		
+
 	int SPRITE_INT = PrecacheModel(sprite, false);
 
 	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
-	
+
 	TE_SendToAll();
 }
 
@@ -631,20 +633,20 @@ static void spawnRing_Vectors(float center[3], float range, float modif_X, float
 	center[0] += modif_X;
 	center[1] += modif_Y;
 	center[2] += modif_Z;
-			
+
 	int ICE_INT = PrecacheModel(sprite);
-		
+
 	int color[4];
 	color[0] = r;
 	color[1] = g;
 	color[2] = b;
 	color[3] = alpha;
-		
+
 	if (endRange == -69.0)
 	{
 		endRange = range + 0.5;
 	}
-	
+
 	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
 	TE_SendToAll();
 }

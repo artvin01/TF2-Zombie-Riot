@@ -394,7 +394,7 @@ public void ClotThink(int iNPC)
 		int PrimaryThreatIndex = npc.m_iTarget;
 		if(IsValidAllyNotFullHealth(npc.index, PrimaryThreatIndex))
 		{
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				path.ComputeToTarget(bot, PrimaryThreatIndex);
 				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			
 				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -403,7 +403,7 @@ public void ClotThink(int iNPC)
 				{
 					if(flDistanceToTarget < 62500)
 					{
-						PF_StopPathing(npc.index);
+						path.Invalidate();
 						npc.m_bPathing = false;	
 					}
 					else
@@ -469,7 +469,7 @@ public void ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StopPathing(npc.index);
+				path.Invalidate();
 				npc.m_bPathing = false;
 				npc.m_flGetClosestTargetTime = 0.0;
 				npc.m_iTarget = GetClosestAlly(npc.index);	
@@ -479,7 +479,7 @@ public void ClotThink(int iNPC)
 		else
 		{
 			npc.m_bGetClosestTargetTimeAlly = false;
-			PF_StopPathing(npc.index);
+			path.Invalidate();
 			npc.m_bPathing = false;
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestAlly(npc.index);	
@@ -525,9 +525,9 @@ public void ClotThink(int iNPC)
 					TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 					TE_SendToAllInRange(vecTarget, RangeType_Visibility);
 					
-					PF_SetGoalVector(npc.index, vPredictedPos);
+					path.ComputeToPos(bot, vPredictedPos);
 				} else {
-					PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+					path.ComputeToTarget(bot, PrimaryThreatIndex);
 				}
 				
 				//Target close enough to hit
@@ -595,7 +595,7 @@ public void ClotThink(int iNPC)
 		}
 		else
 		{
-			PF_StopPathing(npc.index);
+			path.Invalidate();
 			npc.m_bPathing = false;
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);

@@ -58,67 +58,67 @@ static int i_overcharge[MAXENTITIES];
 
 methodmap Sniper_railgunner < CClotBody
 {
-	
+
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
+
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
 		#endif
 	}
-	
+
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
+
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
+
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-		
+
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayHurtSound()");
 		#endif
 	}
-	
+
 	public void PlayDeathSound() {
-	
+
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
 		#endif
 	}
-	
+
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL - 20, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-		
+
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL - 20, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayRangedSound()");
 		#endif
@@ -126,110 +126,112 @@ methodmap Sniper_railgunner < CClotBody
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	
-	
-	
+
+
+
 	public Sniper_railgunner(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		Sniper_railgunner npc = view_as<Sniper_railgunner>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "12500", ally));
-		
+
 		i_NpcInternalId[npc.index] = ALT_SNIPER_RAILGUNNER;
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		
-		
+
+
+
 		npc.m_flNextMeleeAttack = 0.0;
-		
+
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
+
 		SDKHook(npc.index, SDKHook_OnTakeDamage, Sniper_railgunner_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, Sniper_railgunner_ClotThink);
-		
+
 		//IDLE
 		npc.m_flSpeed = 250.0;
-		
+
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		
+
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		
+
 		npc.Anger = false;
-		
+
 		i_overcharge[npc.index] = 0;
-		
+
 		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/sniper/sniper_zombie.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
+
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
-		
+
 		npc.m_iWearable4 = npc.EquipItem("head", "models/weapons/c_models/c_dex_sniperrifle/c_dex_sniperrifle.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		
+
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/Jul13_Se_Headset/Jul13_Se_Headset_sniper.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
+
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/sbox2014_toowoomba_tunic/sbox2014_toowoomba_tunic_sniper.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		
+
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		return npc;
 	}
-	
-	
+
+
 }
 
-//TODO 
+//TODO
 //Rewrite
 public void Sniper_railgunner_ClotThink(int iNPC)
 {
 	Sniper_railgunner npc = view_as<Sniper_railgunner>(iNPC);
-	
+	INextBot bot = npc.GetBot();
+	PathFollower path = npc.GetPathFollower();
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	
+
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
-	
+
 	npc.Update();
-			
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
-	
+
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	
+
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	
+
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
-	
+
 	int PrimaryThreatIndex = npc.m_iTarget;
-	
+
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 			if(npc.m_flJumpStartTime < GetGameTime(npc.index))
@@ -237,12 +239,12 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 				npc.m_flSpeed = 170.0;
 			}
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-		
+
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			
+
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
-				
+
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 				/*
 				int color[4];
@@ -250,49 +252,51 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 				color[1] = 255;
 				color[2] = 0;
 				color[3] = 255;
-			
+
 				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
-			
+
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);
 				*/
-				
-				
-				
-				PF_SetGoalVector(npc.index, vPredictedPos);
-			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+
+
+
+				path.ComputeToPos(bot, vPredictedPos);
 			}
-			
+			else
+			{
+				path.ComputeToTarget(bot, PrimaryThreatIndex);
+			}
+
 			if(flDistanceToTarget < 1562500)	//1250 range
 			{
-				
+
 				if(flDistanceToTarget < 100000) //too close, back off!! Now! /uhhh something range
 				{
 					npc.StartPathing();
-					
+
 					int Enemy_I_See;
-				
+
 					Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 					//Target close enough to hit
 					if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see. oh shit, I don't have eyes (how do I see? *googles how to see*)
 					{
 						float vBackoffPos[3];
-						
+
 						vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
-						
-						PF_SetGoalVector(npc.index, vBackoffPos);
+
+						path.ComputeToPos(bot, vBackoffPos);
 					}
 				}
 				else
 				{
 					int Enemy_I_See;
-				
+
 					Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 					//Target close enough to hit
 					if(IsValidEnemy(npc.index, Enemy_I_See))
 					{
-						
+
 						//Can we attack right now?
 						if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 						{
@@ -304,7 +308,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 							float speed;
 							speed = 1250.0;
 							damage = 50.0;
-							if(i_overcharge[npc.index] > 5)	//tl;dr, 6th shot is super pew pew. quad pew for 400 dmg 
+							if(i_overcharge[npc.index] > 5)	//tl;dr, 6th shot is super pew pew. quad pew for 400 dmg
 							{
 								speed = 2000.0;
 								damage = 50.0;
@@ -338,11 +342,11 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 								npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.75;
 								i_overcharge[npc.index]++;
 								npc.PlayRangedSound();
-							}	
+							}
 							npc.m_flJumpStartTime = GetGameTime(npc.index) + 0.9;
 							npc.PlayRangedReloadSound();
 						}
-						PF_StopPathing(npc.index);
+						path.Invalidate();
 						npc.m_bPathing = false;
 					}
 					else
@@ -358,7 +362,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		path.Invalidate();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -369,7 +373,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 public Action Sniper_railgunner_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Sniper_railgunner npc = view_as<Sniper_railgunner>(victim);
-		
+
 	if(attacker <= 0)
 		return Plugin_Continue;
 
@@ -378,11 +382,11 @@ public Action Sniper_railgunner_ClotDamaged(int victim, int &attacker, int &infl
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
+
 	return Plugin_Changed;
 }
 
-public void Sniper_railgunner_ClotDamaged_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
+public void Sniper_railgunner_ClotDamaged_Post(int victim, int attacker, int inflictor, float damage, int damagetype)
 {
 	Sniper_railgunner npc = view_as<Sniper_railgunner>(victim);
 
@@ -398,13 +402,13 @@ public void Sniper_railgunner_NPCDeath(int entity)
 	Sniper_railgunner npc = view_as<Sniper_railgunner>(entity);
 	if(!npc.m_bGib)
 	{
-		npc.PlayDeathSound();	
+		npc.PlayDeathSound();
 	}
-	
+
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Sniper_railgunner_ClotDamaged);
 	SDKUnhook(npc.index, SDKHook_Think, Sniper_railgunner_ClotThink);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Sniper_railgunner_ClotDamaged_Post);	
-	
+	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Sniper_railgunner_ClotDamaged_Post);
+
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

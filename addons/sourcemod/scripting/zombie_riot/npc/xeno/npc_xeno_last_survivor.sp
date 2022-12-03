@@ -32,7 +32,7 @@ static char g_IdleSounds[][] = {
 	"vo/ravenholm/monk_kill09.wav",
 	"vo/ravenholm/monk_kill10.wav",
 	"vo/ravenholm/monk_kill11.wav",
-	
+
 };
 
 static char g_IdleAlertedSounds[][] = {
@@ -108,18 +108,18 @@ public void XenoFatherGrigori_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
-	
+
 	gLaser1_Xeno = PrecacheModel("materials/sprites/laser.vmt");
 	gGlow1_Xeno = PrecacheModel("sprites/blueglow2.vmt", true);
 	gExplosive1_Xeno = PrecacheModel("materials/sprites/sprite_fire01.vmt");
 	PrecacheModel("models/props_wasteland/rockgranite03b.mdl");
 	PrecacheModel("models/weapons/w_bullet.mdl");
 	PrecacheModel("models/weapons/w_grenade.mdl");
-	
+
 	PrecacheSound("ambient/explosions/explode_9.wav",true);
 	PrecacheSound("ambient/energy/weld1.wav",true);
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
-	
+
 	PrecacheSound("player/flow.wav");
 }
 
@@ -130,92 +130,92 @@ methodmap XenoFatherGrigori < CClotBody
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
 		#endif
 	}
-	
+
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
+
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
 		#endif
 	}
-	
+
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
+
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
+
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		
-		
+
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayHurtSound()");
 		#endif
 	}
-	
+
 	public void PlayDeathSound() {
-	
+
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
 		#endif
 	}
-	
+
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-	
+
 	public void PlayAngerSound() {
-	
+
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::Playnpc.AngerSound()");
 		#endif
 	}
-	
+
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
-	
+
 	public void PlayPullSound() {
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayPullSound()");
 		#endif
 	}
-	
-	
+
+
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayTeleportSound()");
 		#endif
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
@@ -223,52 +223,52 @@ methodmap XenoFatherGrigori < CClotBody
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	
+
 	public XenoFatherGrigori(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		XenoFatherGrigori npc = view_as<XenoFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
-		
+
 		i_NpcInternalId[npc.index] = XENO_FATHER_GRIGORI;
-		
+
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+
 		int iActivity = npc.LookupActivity("ACT_WALK_AIM_RIFLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		
+
+
 		npc.m_iBleedType = BLEEDTYPE_XENO;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
-		
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
+		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+
 		npc.m_flNextMeleeAttack = 0.0;
-		
-		
+
+
 		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoFatherGrigori_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, XenoFatherGrigori_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, XenoFatherGrigori_ClotDamagedPost);
-		
+
 		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
-					
-					
+
+
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
-		
+
 		if(EscapeModeForNpc)
 		{
 			int amount_of_people = CountPlayersOnRed();
 			int health = 10000;
-			
+
 			health *= amount_of_people;
-			
+
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
-			
+
 		//IDLE
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_iState = 0;
@@ -283,7 +283,7 @@ methodmap XenoFatherGrigori < CClotBody
 		npc.m_flDoingAnimation = 0.0;
 		npc.Anger = false;
 		npc.StartPathing();
-		
+
 		if(EscapeModeForNpc)
 		{
 			npc.m_flSpeed = 250.0;
@@ -291,9 +291,9 @@ methodmap XenoFatherGrigori < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_annabelle.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
+
 		npc.m_flAttackHappenswillhappen = false;
-		
+
 		return npc;
 	}
 
@@ -304,24 +304,24 @@ methodmap XenoFatherGrigori < CClotBody
 		{
 			float vecForward[3], vecSwingStart[3], vecAngles[3];
 			this.GetVectors(vecForward, vecSwingStart, vecAngles);
-	
+
 			vecSwingStart = GetAbsOrigin(this.index);
 			vecSwingStart[2] += 90.0;
-	
+
 			MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
 			GetVectorAngles(vecAngles, vecAngles);
-	
+
 			vecSwingStart[0] += vecForward[0] * 64;
 			vecSwingStart[1] += vecForward[1] * 64;
 			vecSwingStart[2] += vecForward[2] * 64;
-	
+
 			vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*800.0;
 			vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*800.0;
 			vecForward[2] = Sine(DegToRad(vecAngles[0]))*-800.0;
-		
+
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 75.0);
-			f_CustomGrenadeDamage[entity] = 75.0;			
+			f_CustomGrenadeDamage[entity] = 75.0;
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
 			DispatchSpawn(entity);
 			SetEntityModel(entity, "models/weapons/w_grenade.mdl");
@@ -330,33 +330,35 @@ methodmap XenoFatherGrigori < CClotBody
 	}
 }
 
-//TODO 
+//TODO
 //Rewrite
 public void XenoFatherGrigori_ClotThink(int iNPC)
 {
 	XenoFatherGrigori npc = view_as<XenoFatherGrigori>(iNPC);
-	
+	INextBot bot = npc.GetBot();
+	PathFollower path = npc.GetPathFollower();
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	
+
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
-	
+
 	npc.Update();
-					
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
-	
+
 	//Think throttling
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index)) {
 		return;
 	}
-	
+
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
@@ -364,30 +366,30 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
-	
+
 	int closest = npc.m_iTarget;
-	
+
 	if(IsValidEnemy(npc.index, closest))
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
-			
+
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-				
+
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
-			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+
+			path.ComputeToPos(bot, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, closest);
+			path.ComputeToTarget(bot, closest);
 		}
 		npc.StartPathing();
-		
+
 		//Target close enough to hit
-		
+
 		if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && npc.m_flDoingAnimation < GetGameTime(npc.index))
 		{
 			if (!npc.Anger)
@@ -396,14 +398,14 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.5;
 				npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.0;
 				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");
-				
+
 				float projectile_speed = 800.0;
-				
+
 				vecTarget = PredictSubjectPositionForProjectiles(npc, closest, projectile_speed);
-							
+
 				npc.PlayMeleeSound();
-				
-				npc.FireRocket(vecTarget, 20.0, projectile_speed, "models/weapons/w_bullet.mdl", 2.0);	
+
+				npc.FireRocket(vecTarget, 20.0, projectile_speed, "models/weapons/w_bullet.mdl", 2.0);
 				npc.PlayRangedSound();
 			}
 			else if (npc.Anger)
@@ -411,18 +413,18 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 1000.0);
 				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.5;
 				npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.0;
-				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");		
+				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");
 				float projectile_speed = 800.0;
-				
+
 				vecTarget = PredictSubjectPositionForProjectiles(npc, closest, projectile_speed);
-							
+
 				npc.PlayMeleeSound();
-				
-				npc.FireRocket(vecTarget, 20.0, projectile_speed, "models/weapons/w_bullet.mdl", 2.0);	
+
+				npc.FireRocket(vecTarget, 20.0, projectile_speed, "models/weapons/w_bullet.mdl", 2.0);
 				npc.PlayRangedSound();
 			}
 		}
-			/*							
+			/*
 			if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && flDistanceToTarget < 562500)
 			{
 				if (!npc.Anger)
@@ -430,7 +432,7 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 					npc.FaceTowards(vecTarget, 500.0);
 					npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.0;
 					if (!npc.m_bNextRangedBarrage_OnGoing)
-					{	
+					{
 						npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 0.45;
 						npc.m_bNextRangedBarrage_OnGoing = true;
 						npc.AddGesture("ACT_RANGE_ATTACK_THROW");
@@ -447,7 +449,7 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 					npc.FaceTowards(vecTarget, 500.0);
 					npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.0;
 					if (!npc.m_bNextRangedBarrage_OnGoing)
-					{	
+					{
 						npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 0.45;
 						npc.m_bNextRangedBarrage_OnGoing = true;
 						npc.AddGesture("ACT_RANGE_ATTACK_THROW");
@@ -493,7 +495,7 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 		{
 			//Look at target so we hit.
 	//		npc.FaceTowards(vecTarget, 1000.0);
-			
+
 			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 			{
 				if (!npc.m_flAttackHappenswillhappen)
@@ -505,22 +507,22 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 					npc.m_flAttackHappenswillhappen = true;
 					npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.0;
 				}
-					
+
 				if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					Handle swingTrace;
 					npc.FaceTowards(vecTarget, 20000.0);
 					if(npc.DoSwingTrace(swingTrace, closest))
 					{
-								
-						int target = TR_GetEntityIndex(swingTrace);	
-								
+
+						int target = TR_GetEntityIndex(swingTrace);
+
 						float vecHit[3];
 						TR_GetEndPosition(vecHit, swingTrace);
-						
-						if(target > 0) 
+
+						if(target > 0)
 						{
-							
+
 							if(EscapeModeForNpc)
 							{
 								if(target <= MaxClients)
@@ -535,15 +537,15 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 								else
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_CLUB, -1, _, vecHit);
 							}
-							
+
 							Custom_Knockback(npc.index, target, 500.0);
-							
+
 							// Hit particle
-							
-									
+
+
 							// Hit sound
 							npc.PlayMeleeHitSound();
-						} 
+						}
 					}
 					delete swingTrace;
 					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
@@ -559,12 +561,12 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 		else
 		{
 			npc.StartPathing();
-			
+
 		}
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		path.Invalidate();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -575,17 +577,17 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 public Action XenoFatherGrigori_DrawIon(Handle Timer, any data)
 {
 	XenoFatherGrigori_IonAttack(data);
-		
+
 	return (Plugin_Stop);
 }
-	
+
 public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int color[4])
 {
 	float position[3];
 	position[0] = startPosition[0];
 	position[1] = startPosition[1];
-	position[2] = startPosition[2] + 3000.0;	
-	
+	position[2] = startPosition[2] + 3000.0;
+
 	TE_SetupBeamPoints(startPosition, position, gLaser1_Xeno, 0, 0, 0, 0.15, 25.0, 25.0, 0, NORMAL_ZOMBIE_VOLUME, color, 3 );
 	TE_SendToAll();
 	position[2] -= 1490.0;
@@ -609,84 +611,84 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 		{
 			return;
 		}
-		
+
 		if (Iondistance > 0)
 		{
 			EmitSoundToAll("ambient/energy/weld1.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
-			
+
 			// Stage 1
 			float s=Sine(nphi/360*6.28)*Iondistance;
 			float c=Cosine(nphi/360*6.28)*Iondistance;
-			
+
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[2] = startPosition[2];
-			
+
 			position[0] += s;
 			position[1] += c;
 			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
-	
+
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
 			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
-			
+
 			// Stage 2
 			s=Sine((nphi+45.0)/360*6.28)*Iondistance;
 			c=Cosine((nphi+45.0)/360*6.28)*Iondistance;
-			
+
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[0] += s;
 			position[1] += c;
 			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
-			
+
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
 			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
-			
+
 			// Stage 3
 			s=Sine((nphi+90.0)/360*6.28)*Iondistance;
 			c=Cosine((nphi+90.0)/360*6.28)*Iondistance;
-			
+
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[0] += s;
 			position[1] += c;
 			XenoFatherGrigori_DrawIonBeam(position,{150, 255, 150, 255});
-			
+
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
 			XenoFatherGrigori_DrawIonBeam(position,{150, 255, 150, 255});
-			
+
 			// Stage 3
 			s=Sine((nphi+135.0)/360*6.28)*Iondistance;
 			c=Cosine((nphi+135.0)/360*6.28)*Iondistance;
-			
+
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[0] += s;
 			position[1] += c;
 			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
-			
+
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
 			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
-	
+
 			if (nphi >= 360)
 				nphi = 0.0;
 			else
 				nphi += 5.0;
 		}
 		Iondistance -= 5;
-		
+
 		Handle nData = CreateDataPack();
 		WritePackFloat(nData, startPosition[0]);
 		WritePackFloat(nData, startPosition[1]);
@@ -697,7 +699,7 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 		WritePackCell(nData, Iondamage);
 		WritePackCell(nData, EntIndexToEntRef(client));
 		ResetPack(nData);
-		
+
 		if (Iondistance > -50)
 		CreateTimer(0.1, XenoFatherGrigori_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
 		else
@@ -719,19 +721,19 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			TE_SendToAll();
 			TE_SetupBeamPoints(startPosition, position, gLaser1_Xeno, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {150, 255, 150, 255}, 3);
 			TE_SendToAll();
-	
+
 			position[2] = startPosition[2] + 50.0;
 			//new Float:fDirection[3] = {-90.0,0.0,0.0};
 			//env_shooter(fDirection, 25.0, 0.1, fDirection, 800.0, 120.0, 120.0, position, "models/props_wasteland/rockgranite03b.mdl");
-	
+
 			//env_shake(startPosition, 120.0, 10000.0, 15.0, 250.0);
-			
+
 			// Sound
 			EmitSoundToAll("ambient/explosions/explode_9.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
-	
+
 			// Blend
 			//sendfademsg(0, 10, 200, FFADE_OUT, 255, 255, 255, 150);
-			
+
 			// Knockback
 	/*		float vReturn[3];
 			float vClientPosition[3];
@@ -739,16 +741,16 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			for (int i = 1; i <= MaxClients; i++)
 			{
 				if (IsClientConnected(i) && IsClientInGame(i) && IsPlayerAlive(i))
-				{	
+				{
 					GetClientEyePosition(i, vClientPosition);
-	
+
 					dist = GetVectorDistance(vClientPosition, position, false);
 					if (dist < Ionrange)
 					{
 						MakeVectorFromPoints(position, vClientPosition, vReturn);
 						NormalizeVector(vReturn, vReturn);
 						ScaleVector(vReturn, 10000.0 - dist*10);
-	
+
 						TeleportEntity(i, NULL_VECTOR, NULL_VECTOR, vReturn);
 					}
 				}
@@ -765,10 +767,10 @@ public void XenoFatherGrigori_IOC_Invoke(int ref, int enemy)
 		static float distance=87.0; // /29 for duartion till boom
 		static float IOCDist=250.0;
 		static float IOCdamage=10.0;
-		
+
 		float vecTarget[3];
-		GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecTarget);	
-		
+		GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecTarget);
+
 		Handle data = CreateDataPack();
 		WritePackFloat(data, vecTarget[0]);
 		WritePackFloat(data, vecTarget[1]);
@@ -788,9 +790,9 @@ public Action XenoFatherGrigori_ClotDamaged(int victim, int &attacker, int &infl
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
+
 	XenoFatherGrigori npc = view_as<XenoFatherGrigori>(victim);
-	
+
 	/*
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
 		return Plugin_Continue;
@@ -800,11 +802,11 @@ public Action XenoFatherGrigori_ClotDamaged(int victim, int &attacker, int &infl
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
+
 	return Plugin_Changed;
 }
 
-public void XenoFatherGrigori_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype) 
+public void XenoFatherGrigori_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype)
 {
 	XenoFatherGrigori npc = view_as<XenoFatherGrigori>(victim);
 	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //Anger after half hp/400 hp
@@ -830,23 +832,23 @@ public void XenoFatherGrigori_NPCDeath(int entity)
 	XenoFatherGrigori npc = view_as<XenoFatherGrigori>(entity);
 	if(!npc.m_bGib)
 	{
-		npc.PlayDeathSound();	
+		npc.PlayDeathSound();
 	}
-	
+
 	SDKUnhook(npc.index, SDKHook_Think, XenoFatherGrigori_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoFatherGrigori_ClotDamaged);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, XenoFatherGrigori_ClotDamagedPost);
-	
+
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 }
 
 
 
-	
-	
 
-	
-	
+
+
+
+
 
 

@@ -74,50 +74,50 @@ static int i_slap[MAXENTITIES];
 
 methodmap The_Shit_Slapper < CClotBody
 {
-	
+
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
 		#endif
 	}
-	
+
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
+
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
+
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayHurtSound()");
 		#endif
 	}
-	
+
 	public void PlayDeathSound() {
-	
+
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
 		#endif
 	}
-	
+
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
@@ -125,95 +125,97 @@ methodmap The_Shit_Slapper < CClotBody
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	
-	
-	
+
+
+
 	public The_Shit_Slapper(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		The_Shit_Slapper npc = view_as<The_Shit_Slapper>(CClotBody(vecPos, vecAng, "models/zombie/classic_torso.mdl", "7.5", "500", ally, false));
-		
+
 		i_NpcInternalId[npc.index] = ALT_The_Shit_Slapper;
-		
+
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
+
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
+
 		SDKHook(npc.index, SDKHook_OnTakeDamage, The_Shit_Slapper_OnTakeDamage);
-		SDKHook(npc.index, SDKHook_Think, The_Shit_Slapper_ClotThink);		
-		
+		SDKHook(npc.index, SDKHook_Think, The_Shit_Slapper_ClotThink);
+
 		i_slap[npc.index]=0;
-		
+
 		//IDLE
 		npc.m_flSpeed = 150.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.StartPathing();
-		
+
 		return npc;
 	}
-	
+
 }
 
-//TODO 
+//TODO
 //Rewrite
 public void The_Shit_Slapper_ClotThink(int iNPC)
 {
 	The_Shit_Slapper npc = view_as<The_Shit_Slapper>(iNPC);
-	
+	INextBot bot = npc.GetBot();
+	PathFollower path = npc.GetPathFollower();
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	
+
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
-	
+
 	npc.Update();
-	
+
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	
+
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	
+
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
-	
+
 	int closest = npc.m_iTarget;
 	int PrimaryThreatIndex = npc.m_iTarget;
-	
+
 	if(IsValidEnemy(npc.index, closest))
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
-			
+
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-				
+
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
-			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+
+			path.ComputeToPos(bot, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, closest);
+			path.ComputeToTarget(bot, closest);
 		}
 		npc.StartPathing();
-		
+
 		//Target close enough to hit
 		if(i_slap[npc.index]==6)
 		{
@@ -234,22 +236,22 @@ public void The_Shit_Slapper_ClotThink(int iNPC)
 						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.21;
 						npc.m_flAttackHappenswillhappen = true;
 					}
-						
+
 					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 128.0, 128.0, 128.0 }, { -128.0, -128.0, -128.0 }))
 							{
-								
-								int target = TR_GetEntityIndex(swingTrace);	
-								
+
+								int target = TR_GetEntityIndex(swingTrace);
+
 								float vecHit[3];
 								TR_GetEndPosition(vecHit, swingTrace);
-								
-								if(target > 0) 
+
+								if(target > 0)
 								{
-									
+
 									float damage = 30.0;
 									if(ZR_GetWaveCount()>30)	//the shit slapper will become the most feard thing on the planet
 									{
@@ -274,8 +276,8 @@ public void The_Shit_Slapper_ClotThink(int iNPC)
 											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 										}
-									}	
-								} 
+									}
+								}
 							}
 						delete swingTrace;
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
@@ -290,12 +292,12 @@ public void The_Shit_Slapper_ClotThink(int iNPC)
 			else
 			{
 				npc.StartPathing();
-				
+
 			}
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		path.Invalidate();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -309,15 +311,15 @@ public Action The_Shit_Slapper_OnTakeDamage(int victim, int &attacker, int &infl
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
+
 	The_Shit_Slapper npc = view_as<The_Shit_Slapper>(victim);
-	
+
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.PlayHurtSound();
 	}
-	
+
 	return Plugin_Changed;
 }
 
@@ -326,11 +328,11 @@ public void The_Shit_Slapper_NPCDeath(int entity)
 	The_Shit_Slapper npc = view_as<The_Shit_Slapper>(entity);
 	if(!npc.m_bGib)
 	{
-		npc.PlayDeathSound();	
+		npc.PlayDeathSound();
 	}
-		
+
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, The_Shit_Slapper_OnTakeDamage);
-	SDKUnhook(npc.index, SDKHook_Think, The_Shit_Slapper_ClotThink);	
+	SDKUnhook(npc.index, SDKHook_Think, The_Shit_Slapper_ClotThink);
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
 

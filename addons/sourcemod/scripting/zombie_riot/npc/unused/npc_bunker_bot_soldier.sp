@@ -215,11 +215,11 @@ public void BunkerBotSoldier_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			path.ComputeToPos(bot, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			path.ComputeToTarget(bot, PrimaryThreatIndex);
 		}
 		if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget < 302500 && npc.m_flReloadDelay < GetGameTime())
 		{
@@ -280,7 +280,7 @@ public void BunkerBotSoldier_ClotThink(int iNPC)
 	else
 	{
 		//npc.StartPathing();
-		PF_StopPathing(npc.index);
+		path.Invalidate();
 		npc.m_bPathing = true;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

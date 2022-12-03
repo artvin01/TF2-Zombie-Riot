@@ -63,16 +63,16 @@ public void NecroCalcium_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
-	
+
 	PrecacheModel("models/props_wasteland/rockgranite03b.mdl");
 	PrecacheModel("models/weapons/w_bullet.mdl");
 	PrecacheModel("models/weapons/w_grenade.mdl");
-	
+
 	PrecacheSound("ambient/explosions/citadel_end_explosion2.wav",true);
 	PrecacheSound("ambient/explosions/citadel_end_explosion1.wav",true);
 	PrecacheSound("ambient/energy/weld1.wav",true);
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
-	
+
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
 	PrecacheModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
@@ -85,76 +85,76 @@ methodmap NecroCalcium < CClotBody
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
 		#endif
 	}
-	
+
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
+
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
 		#endif
 	}
-	
+
 	public void PlayHurtSound() {
-		
+
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, _, 90, _, 1.0, 80);
-		
-		
+
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayHurtSound()");
 		#endif
 	}
-	
+
 	public void PlayDeathSound() {
-	
+
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
 		#endif
 	}
-	
+
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, 90, _, 1.0, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-	
+
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, 90, _, 1.0, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, 90, _, 1.0, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
 	public void PlayRangedAttackSecondarySound() {
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, 90, _, 1.0, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
-	
+
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, 90, _, 1.0, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
@@ -162,44 +162,44 @@ methodmap NecroCalcium < CClotBody
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, 90, _, 1.0, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	
-	
+
+
 	public NecroCalcium(int client, float vecPos[3], float vecAng[3], float damage_multiplier = 1.0)
 	{
 		NecroCalcium npc = view_as<NecroCalcium>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", "0.8", "1250", true, true));
-		
+
 		i_NpcInternalId[npc.index] = NECRO_CALCIUM;
-		
+
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
+
 		npc.m_flNextMeleeAttack = 0.0;
-		
+
 		npc.m_flDuration = GetGameTime(npc.index) + 20.0; //They should last this long for now.
-		
+
 		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TFTeam_Red);
-		
+
 		SetEntPropEnt(npc.index,   Prop_Send, "m_hOwnerEntity", client);
-		
+
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", 50000001);
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", 50000001);
-		
+
 		if(EscapeModeForNpc)
 		{
 			damage_multiplier *= 2.0;
 		}
 		npc.m_flExtraDamage = damage_multiplier;
-		
+
 		SDKHook(npc.index, SDKHook_OnTakeDamage, NecroCalcium_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, NecroCalcium_ClotThink);
-		
+
 		npc.m_bThisEntityIgnored = true;
 	//	npc.m_flNextThinkTime = GetGameTime(npc.index) + GetRandomFloat(0.2, 0.5);
 		npc.m_iState = 0;
@@ -209,79 +209,81 @@ methodmap NecroCalcium < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_bDissapearOnDeath = true;
-		
-		
+
+
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/engineer/jul13_king_hair/jul13_king_hair.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
+
 		npc.m_iWearable2 = npc.EquipItem("flag", "models/workshop/weapons/c_models/c_battalion_bugle/c_battalion_bugle.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
+
 		SetEntityCollisionGroup(npc.m_iWearable2, 27);
-		
+
 		SetEntityCollisionGroup(npc.m_iWearable1, 27);
-		
+
 		SetEntityCollisionGroup(npc.index, 27);
-		
+
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 192, 192, 192, 255);
-		
+
 		npc.StartPathing();
-		
-		
+
+
 		return npc;
 	}
-	
-	
+
+
 }
 
-//TODO 
+//TODO
 //Rewrite
 public void NecroCalcium_ClotThink(int iNPC)
 {
 	NecroCalcium npc = view_as<NecroCalcium>(iNPC);
-	
+	INextBot bot = npc.GetBot();
+	PathFollower path = npc.GetPathFollower();
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	
+
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
-	
-	npc.Update();	
-	
+
+	npc.Update();
+
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	
+
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-	
+
 		npc.m_iTarget = GetClosestTarget(npc.index, _, _, false);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	int owner;
 	owner = GetEntPropEnt(npc.index,   Prop_Send, "m_hOwnerEntity");
-	
+
 	if(IsValidClient(owner) && npc.m_flDuration > GetGameTime(npc.index))
 	{
 		int PrimaryThreatIndex = npc.m_iTarget;
-		
+
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 		{
 				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-				
-			
+
+
 				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-				
+
 				//Predict their pos.
 				if(flDistanceToTarget < npc.GetLeadRadius()) {
-					
+
 					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 					/*
 					int color[4];
@@ -289,23 +291,24 @@ public void NecroCalcium_ClotThink(int iNPC)
 					color[1] = 255;
 					color[2] = 0;
 					color[3] = 255;
-				
+
 					int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
-				
+
 					TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 					TE_SendToAllInRange(vecTarget, RangeType_Visibility);
 					*/
-					PF_SetGoalVector(npc.index, vPredictedPos);
-				} else {
-					
-					PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+					path.ComputeToPos(bot, vPredictedPos);
 				}
-				
+				else
+				{
+					path.ComputeToTarget(bot, PrimaryThreatIndex);
+				}
+
 				//Target close enough to hit
 				if((flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
 				{
 				//	npc.FaceTowards(vecTarget, 1000.0);
-					
+
 					if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 					{
 						if (!npc.m_flAttackHappenswillhappen)
@@ -317,30 +320,30 @@ public void NecroCalcium_ClotThink(int iNPC)
 							npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
 							npc.m_flAttackHappenswillhappen = true;
 						}
-							
+
 						if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 						{
 							Handle swingTrace;
 							npc.FaceTowards(vecTarget, 40000.0);
 							if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex,_,_,_,2))
 								{
-									
-									int target = TR_GetEntityIndex(swingTrace);	
-									
+
+									int target = TR_GetEntityIndex(swingTrace);
+
 									float vecHit[3];
 									TR_GetEndPosition(vecHit, swingTrace);
-									
-									if(target > 0) 
+
+									if(target > 0)
 									{
-										
+
 										SDKHooks_TakeDamage(target, owner, owner, (65.0 * npc.m_flExtraDamage), DMG_SLASH, -1, _, vecHit); //Do acid so i can filter it well.
-										
+
 										// Hit particle
-										
-										
+
+
 										// Hit sound
 										npc.PlayMeleeHitSound();
-									} 
+									}
 								}
 							delete swingTrace;
 							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
@@ -356,12 +359,12 @@ public void NecroCalcium_ClotThink(int iNPC)
 				if (npc.m_flReloadDelay < GetGameTime(npc.index))
 				{
 					npc.StartPathing();
-					
+
 				}
 		}
 		else
 		{
-			PF_StopPathing(npc.index);
+			path.Invalidate();
 			npc.m_bPathing = false;
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index, _, _, false);
@@ -378,7 +381,7 @@ public Action NecroCalcium_ClotDamaged(int victim, int &attacker, int &inflictor
 {
 	if (damage < 9999999.0)	//So they can be slayed.
 		return Plugin_Handled;
-		
+
 	else
 		return Plugin_Continue;
 }

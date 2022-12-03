@@ -81,43 +81,43 @@ static bool b_WasAHeadShot[MAXENTITIES];
 
 methodmap PhantomKnight < CClotBody
 {
-	public void PlayIdleSound() 
+	public void PlayIdleSound()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
-	
-	public void PlayIdleAlertSound() 
+
+	public void PlayIdleAlertSound()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
+
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
-	
-	public void PlayHurtSound() 
+
+	public void PlayHurtSound()
 	{
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	
-	public void PlayDeathSound() 
+
+	public void PlayDeathSound()
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	
-	public void PlayMeleeSound() 
+
+	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	
-	public void PlayRangedSound() 
+
+	public void PlayRangedSound()
 	{
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayRangedReloadSound() 
+	public void PlayRangedReloadSound()
 	{
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
@@ -128,45 +128,45 @@ methodmap PhantomKnight < CClotBody
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	
+
 	public void PlayMeleeHitSound()
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public void PlayMeleeMissSound() 
+	public void PlayMeleeMissSound()
 	{
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	
-	
+
+
 	public PhantomKnight(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		PhantomKnight npc = view_as<PhantomKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetLucianHealth(), ally));
-		
+
 		//Normal sized Miniboss!
 		i_NpcInternalId[npc.index] = PHANTOM_KNIGHT;
-		
+
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+
 		int iActivity = npc.LookupActivity("ACT_CUSTOM_IDLE_LUCIAN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_iChanged_WalkCycle = -1;
-		
-		
+
+
 		npc.m_flNextMeleeAttack = 0.0;
-		
+
 		float wave = float(ZR_GetWaveCount()+1); //Wave scaling
-		
+
 		wave *= 0.1;
 
 		npc.m_flWaveScale = wave;
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
-		
+
 		npc.m_iState = 0;
 		npc.m_flSpeed = 150.0;
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
@@ -178,18 +178,18 @@ methodmap PhantomKnight < CClotBody
 
 		f_AttackHappensAoe[npc.index] = 0.0;
 		b_IsPhantomFake[npc.index] = false;
-		f_StareAtEnemy[npc.index] = 0.0; 
-		i_PhantomsSpawned[npc.index] = 0; 
+		f_StareAtEnemy[npc.index] = 0.0;
+		i_PhantomsSpawned[npc.index] = 0;
 
 		npc.m_flMeleeArmor = 1.25; 		//Melee should be rewarded for trying to face this monster
 	//	npc.m_flRangedArmor = 0.75;		//Due to his speed, ranged will deal less
 	//Ranged can now be dodged slightly, which is cooler then this lame reduction.
-		
-		
+
+
 		SDKHook(npc.index, SDKHook_TraceAttack, PhantomKnight_TraceAttack);
 		SDKHook(npc.index, SDKHook_OnTakeDamage, PhantomKnight_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, PhantomKnight_ClotThink);
-		
+
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 200, 200, 255);
 
@@ -221,22 +221,24 @@ methodmap PhantomKnight < CClotBody
 		//Cape
 
 
-		
+
 		npc.StartPathing();
-		
-		
+
+
 		return npc;
 	}
-	
-	
+
+
 }
 
-//TODO 
+//TODO
 //Rewrite
 public void PhantomKnight_ClotThink(int iNPC)
 {
 	PhantomKnight npc = view_as<PhantomKnight>(iNPC);
-	
+	INextBot bot = npc.GetBot();
+	PathFollower path = npc.GetPathFollower();
+
 	float gameTime = GetGameTime(npc.index);
 
 	//some npcs deservere full update time!
@@ -244,12 +246,12 @@ public void PhantomKnight_ClotThink(int iNPC)
 	{
 		return;
 	}
-	
+
 
 	npc.m_flNextDelayTime = gameTime;// + DEFAULT_UPDATE_DELAY_FLOAT;
-	
+
 	static int NoEnemyFound;
-	npc.Update();	
+	npc.Update();
 
 	if(npc.m_blPlayHurtAnimation && npc.m_flDoingAnimation < gameTime) //Dont play dodge anim if we are in an animation.
 	{
@@ -270,7 +272,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 	{
 		return;
 	}
-	
+
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	if(npc.m_flGetClosestTargetTime < gameTime) //Find a new victim to destroy.
@@ -279,39 +281,39 @@ public void PhantomKnight_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 
-	
+
 	if(!npc.m_bisWalking) //Dont move, or path. so that he doesnt rotate randomly.
 	{
 		npc.m_flSpeed = 0.0;
-		PF_StopPathing(npc.index);
-		npc.m_bPathing = false;	
+		path.Invalidate();
+		npc.m_bPathing = false;
 	}
 	//No else, We will set the speed and pathing ourselves down below.
-	
+
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
-			
+
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
 				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
-					int target = TR_GetEntityIndex(swingTrace);	
-					
+					int target = TR_GetEntityIndex(swingTrace);
+
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 55.0;
-					if(b_IsPhantomFake[npc.index]) //Make sure that he wont do damage if its a fake 
+					if(b_IsPhantomFake[npc.index]) //Make sure that he wont do damage if its a fake
 					{
 						damage = 33.0;
 					}
 
 					npc.PlayMeleeHitSound();
-					if(target > 0) 
+					if(target > 0)
 					{
 						if(target <= MaxClients)
 						{
@@ -319,7 +321,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 						}
 						else
 						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 4.0 * npc.m_flWaveScale, DMG_CLUB);	
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 4.0 * npc.m_flWaveScale, DMG_CLUB);
 						}
 					}
 				}
@@ -333,7 +335,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 		if(f_AttackHappensAoe[npc.index] < gameTime)
 		{
 			float damage = 200.0;
-			if(b_IsPhantomFake[npc.index]) //Make sure that he wont do damage if its a fake 
+			if(b_IsPhantomFake[npc.index]) //Make sure that he wont do damage if its a fake
 			{
 				damage = 100.0;
 			}
@@ -346,26 +348,26 @@ public void PhantomKnight_ClotThink(int iNPC)
 			//Do aoe logic!
 		}
 	}
-	
+
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		NoEnemyFound = 0;
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			
+
 		//Predict their pos.
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+
+			path.ComputeToPos(bot, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			path.ComputeToTarget(bot, npc.m_iTarget);
 		}
 		//Get position for just travel here.
-		
+
 		//BEHAVIORS:
 		//We do not attack normally by default, we are cool and only dash and attack like that normally,
 		//just do SUPER cool melee swings if MUST be. Ignoring Barricades helps alot here to simplify this.
@@ -398,11 +400,11 @@ public void PhantomKnight_ClotThink(int iNPC)
 		{
 			npc.m_iState = 0; //Walk to target
 		}
-		else 
+		else
 		{
 			npc.m_iState = 3; //stand and look if close enough.
 		}
-		
+
 		switch(npc.m_iState)
 		{
 			case -1:
@@ -414,27 +416,27 @@ public void PhantomKnight_ClotThink(int iNPC)
 				//Walk to target
 				if(!npc.m_bPathing)
 					npc.StartPathing();
-					
+
 				npc.m_bisWalking = true;
 				npc.m_flSpeed = 150.0; //Walk slowly cus we cool
-				if(npc.m_iChanged_WalkCycle != 4) 	
+				if(npc.m_iChanged_WalkCycle != 4)
 				{
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_CUSTOM_WALK_LUCIAN");
 				}
 			}
 			case 1:
-			{			
+			{
 				int Enemy_I_See;
-							
+
 				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-				
+
 				//Can i see This enemy, is something in the way of us?
 				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;
-					if(npc.m_iChanged_WalkCycle != 3) 	
+					if(npc.m_iChanged_WalkCycle != 3)
 					{
 						npc.m_iChanged_WalkCycle = 3;
 						npc.RemoveGesture("ACT_CUSTOM_DODGE_HEADSHOT_LUCIAN");
@@ -446,49 +448,49 @@ public void PhantomKnight_ClotThink(int iNPC)
 					float flPos[3];
 					float flAng[3];
 					GetAttachment(npc.index, "special_weapon_effect", flPos, flAng);
-				
+
 					int particle = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.75);
-							
+
 					SetParent(npc.index, particle, "special_weapon_effect");
 					//SPAWN COOL EFFECT
 
 					npc.PlayMeleeSound();
-					
+
 					npc.m_flAttackHappens = gameTime + 0.4;
 
 					npc.m_flDoingAnimation = gameTime + 0.6;
 					npc.m_flNextMeleeAttack = gameTime + 2.5; //make him attack very slowly
 					npc.m_bisWalking = false;
 				}
-			}	
+			}
 			case 2:
 			{
 				int Enemy_I_See;
-							
+
 				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-				
+
 				//Can i see This enemy, is something in the way of us?
 				//Dont want to do the aoe burst if i cant even see the enemy!
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.PlayRangedSound();
-					if(npc.m_iChanged_WalkCycle != 2) 	
+					if(npc.m_iChanged_WalkCycle != 2)
 					{
 						npc.m_iChanged_WalkCycle = 2;
 						npc.RemoveGesture("ACT_CUSTOM_DODGE_HEADSHOT_LUCIAN");
 						npc.RemoveGesture("ACT_CUSTOM_DODGE_LUCIAN");
 						npc.SetActivity("ACT_CUSTOM_AOE_LUCIAN");
 					}
-					
+
 					f_AttackHappensAoe[npc.index] = gameTime + 0.7; //One second time to dodge this explosive attack!
 
 					//SPAWN COOL EFFECT
 					float flPos[3];
 					float flAng[3];
 					GetAttachment(npc.index, "special_weapon_effect", flPos, flAng);
-				
+
 					int particle = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 1.5);
-							
+
 					SetParent(npc.index, particle, "special_weapon_effect");
 					//SPAWN COOL EFFECT
 
@@ -496,15 +498,15 @@ public void PhantomKnight_ClotThink(int iNPC)
 					npc.m_flNextRangedAttack = gameTime + 8.0; //make him attack very slowly
 					npc.m_bisWalking = false;
 				}
-			}	
+			}
 			case 3:
 			{
-				if(npc.m_iChanged_WalkCycle != 5) 	
+				if(npc.m_iChanged_WalkCycle != 5)
 				{
 					npc.m_iChanged_WalkCycle = 5;
 					npc.SetActivity("ACT_CUSTOM_IDLE_LUCIAN");
 				}
-				
+
 				//Stare. Dont even attack. Dont do anything. Just look. This should also be impossible to backstab.
 				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
 				npc.m_bisWalking = false;
@@ -515,11 +517,11 @@ public void PhantomKnight_ClotThink(int iNPC)
 				float vecRight[3];
 				float vecUp[3];
 				float vecPos[3];
-				
+
 				GetVectors(npc.m_iTarget, VecForward, vecRight, vecUp); //Sorry i dont know any other way with this :(
 				vecPos = GetAbsOrigin(npc.m_iTarget);
 				vecPos[2] += 5.0;
-				
+
 				float vecSwingEnd[3];
 				vecSwingEnd[0] = vecPos[0] - VecForward[0] * (100);
 				vecSwingEnd[1] = vecPos[1] - VecForward[1] * (100);
@@ -546,7 +548,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 				if(Succeed)
 				{
 					npc.PlayRangedAttackSecondarySound();
-					if(npc.m_iChanged_WalkCycle != 1) 	
+					if(npc.m_iChanged_WalkCycle != 1)
 					{
 						npc.m_iChanged_WalkCycle = 1;
 						npc.RemoveGesture("ACT_CUSTOM_DODGE_HEADSHOT_LUCIAN");
@@ -619,13 +621,13 @@ public Action PhantomKnight_ClotDamaged(int victim, int &attacker, int &inflicto
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
+
 //	PhantomKnight npc = view_as<PhantomKnight>(victim);
 	/*
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker, true))
 		return Plugin_Continue;
 	*/
-		
+
 	return Plugin_Continue;
 }
 
@@ -651,7 +653,7 @@ public Action PhantomKnight_TraceAttack(int victim, int& attacker, int& inflicto
 				b_WasAHeadShot[victim] = false;
 				npc.m_flHeadshotCooldown = GetGameTime(npc.index) + 1.0;
 				npc.m_blPlayHurtAnimation = true;
-			}	
+			}
 		}
 	}
 	return Plugin_Continue;
@@ -661,11 +663,11 @@ public void PhantomKnight_NPCDeath(int entity)
 	PhantomKnight npc = view_as<PhantomKnight>(entity);
 	if(!npc.m_bGib)
 	{
-		npc.PlayDeathSound();	
+		npc.PlayDeathSound();
 	}
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, PhantomKnight_ClotDamaged);
 	SDKUnhook(npc.index, SDKHook_Think, PhantomKnight_ClotThink);
-		
+
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -686,12 +688,12 @@ public void PhantomKnight_NPCDeath(int entity)
 
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
-		
+
 //		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
 		DispatchKeyValue(entity_death, "model", COMBINE_CUSTOM_MODEL);
 
 		DispatchSpawn(entity_death);
-		
+
 
 		SetEntityRenderMode(prop.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(prop.index, 200, 200, 200, 255);
@@ -723,7 +725,7 @@ public void PhantomKnight_NPCDeath(int entity)
 		SetEntityRenderColor(prop.m_iWearable4, 255, 150, 150, 255);
 		//Cape
 
-		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15); 
+		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15);
 		SetEntityCollisionGroup(entity_death, 2);
 		b_IsPhantomFake[entity_death] = b_IsPhantomFake[entity];
 
@@ -736,7 +738,7 @@ public void PhantomKnight_NPCDeath(int entity)
 			CreateTimer(0.7, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(0.7, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable4), TIMER_FLAG_NO_MAPCHANGE);
 			SetVariantString("Lucian_Death_Fake");
-		}	
+		}
 		else
 		{
 			CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
@@ -779,11 +781,11 @@ public Action Timer_PhantomParticle(Handle timer, any entid)
 static char[] GetLucianHealth()
 {
 	int health = 135;
-	
+
 	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
-	
+
 	float temp_float_hp = float(health);
-	
+
 	if(CurrentRound+1 < 30)
 	{
 		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.20));
@@ -796,9 +798,9 @@ static char[] GetLucianHealth()
 	{
 		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
-	
+
 	health /= 2;
-	
+
 	char buffer[16];
 	IntToString(health, buffer, sizeof(buffer));
 	return buffer;

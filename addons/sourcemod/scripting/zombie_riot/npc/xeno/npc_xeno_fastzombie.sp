@@ -69,45 +69,45 @@ public void XenoFastZombie_OnMapStart_NPC()
 
 methodmap XenoFastZombie < CClotBody
 {
-	
+
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
+
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
 		#endif
 	}
-	
+
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
+
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
 		#endif
 	}
-	
-	
+
+
 	public void PlayLeapPrepare() {
-		
+
 		EmitSoundToAll(g_leap_prepare[GetRandomInt(0, sizeof(g_leap_prepare) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeJumpPrepare()");
 		#endif
 	}
-	
+
 	public void PlayLeapDone() {
-		
+
 		EmitSoundToAll(g_leap_scream[GetRandomInt(0, sizeof(g_leap_scream) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeJumpPrepare()");
 		#endif
@@ -115,20 +115,20 @@ methodmap XenoFastZombie < CClotBody
 	public void PlayMeleeJumpPrepare() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
+
 		EmitSoundToAll(g_PlayMeleeJumpPrepare[GetRandomInt(0, sizeof(g_PlayMeleeJumpPrepare) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeJumpPrepare()");
 		#endif
 	}
-	
+
 	public void PlayMeleeJumpSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
+
 		EmitSoundToAll(g_PlayMeleeJumpSound[GetRandomInt(0, sizeof(g_PlayMeleeJumpSound) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeJumpSound()");
 		#endif
@@ -136,35 +136,35 @@ methodmap XenoFastZombie < CClotBody
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
+
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
+
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayHurtSound()");
 		#endif
 	}
-	
+
 	public void PlayDeathSound() {
-	
+
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
 		#endif
 	}
-	
+
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
@@ -172,75 +172,77 @@ methodmap XenoFastZombie < CClotBody
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	
-	
+
+
 	public XenoFastZombie(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		XenoFastZombie npc = view_as<XenoFastZombie>(CClotBody(vecPos, vecAng, "models/zombie/fast.mdl", "1.15", "200", ally));
-		
+
 		i_NpcInternalId[npc.index] = XENO_FASTZOMBIE;
-		
+
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		
-		
+
+
+
 		npc.m_flNextMeleeAttack = 0.0;
-		
+
 		npc.m_iBleedType = BLEEDTYPE_XENO;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
-		
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
+		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+
 		npc.m_flNextMeleeAttack = 0.0;
-		
-		
+
+
 		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoFastZombie_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, XenoFastZombie_ClotThink);
-		
+
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 180);
-		
+
 		//IDLE
 		npc.m_flSpeed = 400.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.0;
 		npc.m_flInJump = 0.0;
-		
+
 		npc.StartPathing();
-		
+
 		return npc;
 	}
-	
-	
+
+
 }
 
-//TODO 
+//TODO
 //Rewrite
 public void XenoFastZombie_ClotThink(int iNPC)
 {
 	XenoFastZombie npc = view_as<XenoFastZombie>(iNPC);
-	
+	INextBot bot = npc.GetBot();
+	PathFollower path = npc.GetPathFollower();
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	
+
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
-	
-	npc.Update();	
-	
+
+	npc.Update();
+
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	
+
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
@@ -248,15 +250,15 @@ public void XenoFastZombie_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
-	
+
 	int PrimaryThreatIndex = npc.m_iTarget;
-	
+
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);		
-		
+
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+
 		if(npc.m_flJumpCooldown < GetGameTime(npc.index) && npc.m_flInJump < GetGameTime(npc.index) && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
 		{
 			int Enemy_I_See;
@@ -265,66 +267,66 @@ public void XenoFastZombie_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex)
 			{
 				npc.m_flInJump = GetGameTime(npc.index) + 0.65;
-				
+
 				npc.m_flJumpCooldown = GetGameTime(npc.index) + 0.5;
 				npc.PlayLeapPrepare();
 			}
-			
+
 		}
 		if(npc.m_flJumpCooldown < GetGameTime(npc.index) && npc.m_flInJump > GetGameTime(npc.index))
 		{
 			PluginBot_Jump(npc.index, vecTarget);
 			npc.PlayLeapDone();
 			npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.0;
-			
+
 		}
 		if(npc.m_flInJump > GetGameTime(npc.index))
 		{
-			PF_StopPathing(npc.index);
+			path.Invalidate();
 			npc.m_bPathing = false;
 			npc.FaceTowards(vecTarget, 1000.0);
-			
+
 			return;
-			
+
 		}
-			
+
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			
+
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+
+			path.ComputeToPos(bot, vPredictedPos);
 		}
-		else 
+		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			path.ComputeToTarget(bot, PrimaryThreatIndex);
 		}
 		//Target close enough to hit
 		if(flDistanceToTarget < 10000)
 		{
 			//Look at target so we hit.
 		//	npc.FaceTowards(vecTarget, 1000.0);
-			
+
 			//Can we attack right now?
 			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 			{
 				//Play attack anim
 				npc.AddGesture("ACT_MELEE_ATTACK1");
-				
+
 				Handle swingTrace;
 				npc.FaceTowards(vecTarget, 20000.0);
 				if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
 				{
-						
-					int target = TR_GetEntityIndex(swingTrace);	
-				
+
+					int target = TR_GetEntityIndex(swingTrace);
+
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					
-					if(target > 0) 
+
+					if(target > 0)
 					{
-						
+
 						if(EscapeModeForNpc)
 						{
 							if(target <= MaxClients)
@@ -339,31 +341,31 @@ public void XenoFastZombie_ClotThink(int iNPC)
 							else
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0, DMG_CLUB, -1, _, vecHit);
 						}
-								
-						
+
+
 						// Hit particle
-						
-						
+
+
 						// Hit sound
 						npc.PlayMeleeSound();
 						npc.PlayMeleeHitSound();
-					} 
+					}
 				}
 				delete swingTrace;
 				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
 			}
-			PF_StopPathing(npc.index);
+			path.Invalidate();
 			npc.m_bPathing = false;
 		}
 		else
 		{
 			npc.StartPathing();
-			
+
 		}
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		path.Invalidate();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -376,9 +378,9 @@ public Action XenoFastZombie_ClotDamaged(int victim, int &attacker, int &inflict
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
+
 	XenoFastZombie npc = view_as<XenoFastZombie>(victim);
-	
+
 	if(!npc.bXenoInfectedSpecialHurt && !Building_DoesPierce(attacker))
 	{
 		npc.bXenoInfectedSpecialHurt = true;
@@ -392,14 +394,14 @@ public Action XenoFastZombie_ClotDamaged(int victim, int &attacker, int &inflict
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
 		return Plugin_Continue;
 	*/
-	
+
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.PlayHurtSound();
-		
+
 	}
-	
+
 	return Plugin_Changed;
 }
 
@@ -408,11 +410,11 @@ public void XenoFastZombie_NPCDeath(int entity)
 	XenoFastZombie npc = view_as<XenoFastZombie>(entity);
 	if(!npc.m_bGib)
 	{
-		npc.PlayDeathSound();	
+		npc.PlayDeathSound();
 	}
-	
+
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoFastZombie_ClotDamaged);
 	SDKUnhook(npc.index, SDKHook_Think, XenoFastZombie_ClotThink);
-		
+
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

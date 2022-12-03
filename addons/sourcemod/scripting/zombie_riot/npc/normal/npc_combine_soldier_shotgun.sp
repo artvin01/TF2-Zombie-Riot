@@ -67,95 +67,95 @@ public void CombineSoldierShotgun_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
-	
+
 	PrecacheModel("models/props_wasteland/rockgranite03b.mdl");
 	PrecacheModel("models/weapons/w_bullet.mdl");
 	PrecacheModel("models/weapons/w_grenade.mdl");
-	
+
 	PrecacheSound("ambient/explosions/citadel_end_explosion2.wav",true);
 	PrecacheSound("ambient/explosions/citadel_end_explosion1.wav",true);
 	PrecacheSound("ambient/energy/weld1.wav",true);
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
-	
+
 	PrecacheSound("player/flow.wav");
 }
 
 methodmap CombineSoldierShotgun < CClotBody
 {
-		
-	
+
+
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
 		#endif
 	}
-	
+
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
+
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
 		#endif
 	}
-	
+
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
+
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
+
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-		
+
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayHurtSound()");
 		#endif
 	}
-	
+
 	public void PlayDeathSound() {
-	
+
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
 		#endif
 	}
-	
+
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-	
+
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
-	
+
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
@@ -163,38 +163,38 @@ methodmap CombineSoldierShotgun < CClotBody
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	
-	
+
+
 	public CombineSoldierShotgun(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		CombineSoldierShotgun npc = view_as<CombineSoldierShotgun>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "650", ally));
-		
+
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_SHOTGUN;
-		
+
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+
 		int iActivity = npc.LookupActivity("ACT_RUN_AIM_SHOTGUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		
-		
+
+
+
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
-		
+
 
 		npc.m_fbGunout = false;
 
 		SDKHook(npc.index, SDKHook_OnTakeDamage, CombineSoldierShotgun_OnTakeDamage);
 		SDKHook(npc.index, SDKHook_Think, CombineSoldierShotgun_ClotThink);
-		
+
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
-		
+
 		npc.m_iState = 0;
 		npc.m_flSpeed = 330.0;
 		npc.m_flNextRangedAttack = 0.0;
@@ -203,44 +203,46 @@ methodmap CombineSoldierShotgun < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_shotgun.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
+
 		npc.StartPathing();
-		
-		
+
+
 		return npc;
 	}
-	
-	
-	
+
+
+
 }
 
-//TODO 
+//TODO
 //Rewrite
 public void CombineSoldierShotgun_ClotThink(int iNPC)
 {
 	CombineSoldierShotgun npc = view_as<CombineSoldierShotgun>(iNPC);
-	
+	INextBot bot = npc.GetBot();
+	PathFollower path = npc.GetPathFollower();
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	
+
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
-	
-	npc.Update();	
-	
+
+	npc.Update();
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_GESTURE_FLINCH_STOMACH", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
-	
+
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	
+
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
@@ -248,46 +250,46 @@ public void CombineSoldierShotgun_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 		npc.StartPathing();
-		
+
 	}
-	
+
 	int PrimaryThreatIndex = npc.m_iTarget;
-	
+
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			
+
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			
+
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
-				
+
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				
+
 			/*	int color[4];
 				color[0] = 255;
 				color[1] = 255;
 				color[2] = 0;
 				color[3] = 255;
-			
+
 				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
-			
+
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
-				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+
+				path.ComputeToPos(bot, vPredictedPos);
 			}
-			else 
+			else
 			{
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				path.ComputeToTarget(bot, PrimaryThreatIndex);
 			}
 			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				npc.m_fbGunout = true;
-				
+
 				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.5;
 				npc.m_iAttacksTillReload += 1;
-				
+
 				if (npc.m_iAttacksTillReload == 6)
 				{
 					npc.AddGesture("ACT_RELOAD");
@@ -295,14 +297,14 @@ public void CombineSoldierShotgun_ClotThink(int iNPC)
 					npc.m_iAttacksTillReload = 0;
 					npc.PlayRangedReloadSound();
 				}
-				
+
 				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");
-				
+
 				npc.FaceTowards(vecTarget, 20000.0);
-				
+
 				float vecSpread = 0.1;
 				vecTarget[2] += 15.0;
-				
+
 				for (int i = 0; i < 3; i++)
 				{
 					float eyePitch[3];
@@ -310,25 +312,25 @@ public void CombineSoldierShotgun_ClotThink(int iNPC)
 					float x, y;
 					x = GetRandomFloat( -0.75, 0.75 ) + GetRandomFloat( -0.75, 0.75 );
 					y = GetRandomFloat( -0.75, 0.75 ) + GetRandomFloat( -0.75, 0.75 );
-					
+
 //					PrintToChatAll("%f", y);
-					
+
 					float vecDirShooting[3], vecRight[3], vecUp[3];
 					//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
-					
+
 
 					MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-					
+
 					//add the spray
 					float vecDir[3];
-					vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0]; 
-					vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
-					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
+					vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0];
+					vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1];
+					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2];
 					NormalizeVector(vecDir, vecDir);
-					
+
 					if(EscapeModeForNpc)
 					{
 						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 15.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
@@ -338,12 +340,12 @@ public void CombineSoldierShotgun_ClotThink(int iNPC)
 						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 10.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 				}
-				npc.PlayRangedSound();				
+				npc.PlayRangedSound();
 			}
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		path.Invalidate();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -356,9 +358,9 @@ public Action CombineSoldierShotgun_OnTakeDamage(int victim, int &attacker, int 
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
+
 	CombineSoldierShotgun npc = view_as<CombineSoldierShotgun>(victim);
-	
+
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -372,12 +374,12 @@ public void CombineSoldierShotgun_NPCDeath(int entity)
 	CombineSoldierShotgun npc = view_as<CombineSoldierShotgun>(entity);
 	if(!npc.m_bGib)
 	{
-		npc.PlayDeathSound();	
+		npc.PlayDeathSound();
 	}
-	
+
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, CombineSoldierShotgun_OnTakeDamage);
 	SDKUnhook(npc.index, SDKHook_Think, CombineSoldierShotgun_ClotThink);
-		
+
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 }

@@ -74,16 +74,16 @@ public void XenoCombineOverlord_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
 	for (int i = 0; i < (sizeof(g_ChargeSounds));   i++) { PrecacheSound(g_ChargeSounds[i]);   }
-	
+
 	PrecacheModel("models/props_wasteland/rockgranite03b.mdl");
 	PrecacheModel("models/weapons/w_bullet.mdl");
 	PrecacheModel("models/weapons/w_grenade.mdl");
-	
+
 	PrecacheSound("ambient/explosions/citadel_end_explosion2.wav",true);
 	PrecacheSound("ambient/explosions/citadel_end_explosion1.wav",true);
 	PrecacheSound("ambient/energy/weld1.wav",true);
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
-	
+
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
 }
@@ -93,91 +93,91 @@ methodmap XenoCombineOverlord < CClotBody
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-			
+
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
 		#endif
 	}
-	
+
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
+
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
 		#endif
 	}
-	
+
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
+
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
+
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		
-		
+
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayHurtSound()");
 		#endif
 	}
-	
+
 	public void PlayDeathSound() {
-	
+
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
 		#endif
 	}
-	
+
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-	
+
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
 	public void PlayRangedAttackSecondarySound() {
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
-	
+
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-	
+
 	public void PlaySpecialChargeSound() {
 		EmitSoundToAll(g_ChargeSounds[GetRandomInt(0, sizeof(g_ChargeSounds) - 1)], this.index, _, 110, _, BOSS_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
@@ -185,36 +185,36 @@ methodmap XenoCombineOverlord < CClotBody
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	
+
 	public XenoCombineOverlord(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		XenoCombineOverlord npc = view_as<XenoCombineOverlord>(CClotBody(vecPos, vecAng, "models/zombie_riot/bosses/overlord_1.mdl", "1.0", "35000", ally));
-		
+
 		i_NpcInternalId[npc.index] = XENO_COMBINE_OVERLORD;
-		
+
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		
-		npc.m_iBleedType = BLEEDTYPE_XENO;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;		
 
-		
+
+		npc.m_iBleedType = BLEEDTYPE_XENO;
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
+		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
+
+
 		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoCombineOverlord_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, XenoCombineOverlord_ClotThink);
-		
+
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flNextMeleeAttack = 0.0;
-		
-		
+
+
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_iState = 0;
 		npc.m_flSpeed = 250.0;
@@ -224,14 +224,14 @@ methodmap XenoCombineOverlord < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 5.0;
 	//	npc.m_iOverlordComboAttack = 0;
-		
+
 		if(EscapeModeForNpc)
 		{
 			int amount_of_people = CountPlayersOnRed();
 			int health = 20000;
-			
+
 			health *= amount_of_people;
-			
+
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
@@ -241,58 +241,60 @@ methodmap XenoCombineOverlord < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.7");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
+
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 2);
-		
+
 		npc.m_iWearable1 = npc.EquipItem("partyhat", "models/player/items/demo/crown.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
+
 		*/
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		/*
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 255);
-		
+
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
 		*/
 		return npc;
 	}
-	
-	
+
+
 }
 
-//TODO 
+//TODO
 //Rewrite
 public void XenoCombineOverlord_ClotThink(int iNPC)
 {
 	XenoCombineOverlord npc = view_as<XenoCombineOverlord>(iNPC);
-	
+	INextBot bot = npc.GetBot();
+	PathFollower path = npc.GetPathFollower();
+
 	SetVariantInt(1);
 	AcceptEntityInput(iNPC, "SetBodyGroup");
-	
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	
+
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
-	
+
 	npc.Update();
-				
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
-	
+
 	//Think throttling
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index)) {
 		return;
 	}
-	
+
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
@@ -300,9 +302,9 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
-	
+
 	int PrimaryThreatIndex = npc.m_iTarget;
-	
+
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
@@ -324,37 +326,39 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 				}
 			//	npc.FaceTowards(vecTarget);
 			}
-			
+
 			if(npc.m_flJumpStartTime > GetGameTime(npc.index))
 			{
 				npc.m_flSpeed = 0.0;
 			}
-			
+
 		//	npc.FaceTowards(vecTarget, 1000.0);
-			
+
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			
+
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
-				
+
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				
+
 			/*	int color[4];
 				color[0] = 255;
 				color[1] = 255;
 				color[2] = 0;
 				color[3] = 255;
-			
+
 				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
-			
+
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
-				
-				PF_SetGoalVector(npc.index, vPredictedPos);
-			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+
+				path.ComputeToPos(bot, vPredictedPos);
 			}
-			
+			else
+			{
+				path.ComputeToTarget(bot, PrimaryThreatIndex);
+			}
+
 			if(npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index) && npc.m_flReloadDelay < GetGameTime(npc.index) && !npc.m_fbRangedSpecialOn && flDistanceToTarget < 160000)
 			{
 				npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 20.0;
@@ -370,10 +374,10 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 				npc.m_flmovedelay = GetGameTime(npc.index) + 0.5;
 				npc.m_flJumpStartTime = GetGameTime(npc.index) + 1.0;
-				PF_StopPathing(npc.index);
+				path.Invalidate();
 				npc.m_bPathing = false;
 			}
-	
+
 			if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index) && flDistanceToTarget < 22500 && npc.m_flAngerDelay < GetGameTime(npc.index) || npc.m_fbRangedSpecialOn)
 			{
 			//	npc.FaceTowards(vecTarget, 2000.0);
@@ -391,85 +395,85 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 					npc.PlayRangedAttackSecondarySound();
 
 					float vecSpread = 0.1;
-					
+
 					npc.FaceTowards(vecTarget, 20000.0);
-					
+
 					float eyePitch[3];
 					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
-							
+
 					//
 					//
-					
-					
+
+
 					float x, y;
 					x = GetRandomFloat( -0.01, 0.01 ) + GetRandomFloat( -0.01, 0.01 );
 					y = GetRandomFloat( -0.01, 0.01 ) + GetRandomFloat( -0.01, 0.01 );
-					
+
 					float vecDirShooting[3], vecRight[3], vecUp[3];
 					//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
-					
+
 					vecTarget[2] += 15.0;
 					MakeVectorFromPoints(WorldSpaceCenter(npc.index), vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-					
+
 					//add the spray
 					float vecDir[3];
-					vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0]; 
-					vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
-					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
+					vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0];
+					vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1];
+					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2];
 					NormalizeVector(vecDir, vecDir);
-					
+
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-					
+
 					int player_hurt = FireBullet(npc.index, npc.index, WorldSpaceCenter(npc.index), vecDir, 75.0, 150.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
-					
+
 					if(IsValidClient(player_hurt))
 					{
 						DataPack pack;
 						CreateDataTimer(0.2, XenoCombineOverlord_Timer_Combo_Attack, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 						pack.WriteCell(GetClientUserId(player_hurt));
-						pack.WriteCell(EntIndexToEntRef(npc.index));	
+						pack.WriteCell(EntIndexToEntRef(npc.index));
 					}
 				}
 			}
-			
+
 			//Target close enough to hit
 			if(flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime(npc.index) || npc.m_flAttackHappenswillhappen)
 			{
 				npc.StartPathing();
-				
-				
+
+
 			//	npc.FaceTowards(vecTarget, 1000.0);
-				
+
 				if(npc.m_flAngerDelay > GetGameTime(npc.index) && npc.m_flReloadDelay < GetGameTime(npc.index))
 				{
-					
+
 					npc.FaceTowards(vecTarget, 20000.0);
 					Handle swingTrace;
 					if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
 					{
-						
-						int target = TR_GetEntityIndex(swingTrace);	
-						
+
+						int target = TR_GetEntityIndex(swingTrace);
+
 						float vecHit[3];
 						TR_GetEndPosition(vecHit, swingTrace);
-						
-						if(target > 0) 
+
+						if(target > 0)
 						{
 							if(target <= MaxClients)
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, vecHit);
 							else
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 120.0, DMG_CLUB, -1, _, vecHit);
-								
+
 							Custom_Knockback(npc.index, target, 200.0);
 							// Hit particle
-							
-							
+
+
 							// Hit sound
 							npc.PlayMeleeHitSound();
-						} 
+						}
 					}
 					delete swingTrace;
 				}
@@ -493,38 +497,38 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 								npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
 								npc.m_flAttackHappens = GetGameTime(npc.index)+0.0;
 								npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.14;
-								npc.m_flAttackHappenswillhappen = true;		
-								
+								npc.m_flAttackHappenswillhappen = true;
+
 							}
 						}
-							
+
 						if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 						{
 							npc.FaceTowards(vecTarget, 20000.0);
 							Handle swingTrace;
 							if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
 								{
-									
-									int target = TR_GetEntityIndex(swingTrace);	
-									
+
+									int target = TR_GetEntityIndex(swingTrace);
+
 									float vecHit[3];
 									TR_GetEndPosition(vecHit, swingTrace);
-									
-									if(target > 0) 
+
+									if(target > 0)
 									{
 										if(target <= MaxClients)
 											SDKHooks_TakeDamage(target, npc.index, npc.index, 110.0, DMG_CLUB, -1, _, vecHit);
 										else
 											SDKHooks_TakeDamage(target, npc.index, npc.index, 450.0, DMG_CLUB, -1, _, vecHit);
-												
+
 										Custom_Knockback(npc.index, target, 450.0);
-										
+
 										// Hit particle
-										
-										
+
+
 										// Hit sound
 										npc.PlayMeleeHitSound();
-									} 
+									}
 								}
 							delete swingTrace;
 							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.4;
@@ -541,12 +545,12 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 			if (npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				npc.StartPathing();
-				
+
 			}
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		path.Invalidate();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -559,7 +563,7 @@ public Action XenoCombineOverlord_Timer_Combo_Attack(Handle Debuff_lightning_hud
 	pack.Reset();
 	int target = GetClientOfUserId(pack.ReadCell());
 	int npczombie = EntRefToEntIndex(pack.ReadCell());
-	
+
 	if (IsValidClient(target) && IsValidEntity(npczombie))
 	{
 		XenoCombineOverlord npc = view_as<XenoCombineOverlord>(npczombie);
@@ -589,22 +593,22 @@ public Action XenoCombineOverlord_ClotDamaged(int victim, int &attacker, int &in
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
+
 	XenoCombineOverlord npc = view_as<XenoCombineOverlord>(victim);
-	
-	
+
+
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
+
 	if(npc.m_flAngerDelay > GetGameTime(npc.index) && !Building_DoesPierce(attacker))
 		damage *= 0.25;
-	
+
 	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
 		damage *= 0.15;
-	
+
 	return Plugin_Changed;
 }
 
@@ -613,9 +617,9 @@ public void XenoCombineOverlord_NPCDeath(int entity)
 	XenoCombineOverlord npc = view_as<XenoCombineOverlord>(entity);
 	if(!npc.m_bGib)
 	{
-		npc.PlayDeathSound();	
+		npc.PlayDeathSound();
 	}
-	
+
 	int entity_death = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity_death))
 	{
@@ -625,17 +629,17 @@ public void XenoCombineOverlord_NPCDeath(int entity)
 
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
-		
+
 //		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
 		DispatchKeyValue(entity_death, "model", "models/zombie_riot/bosses/overlord_1.mdl");
 
 		DispatchSpawn(entity_death);
-		
-		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.0); 
+
+		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.0);
 		SetEntityCollisionGroup(entity_death, 2);
 		SetVariantString("OVERLORD_DEATH");
 		AcceptEntityInput(entity_death, "SetAnimation");
-		
+
 		pos[2] += 20.0;
 		if(npc.m_bThisNpcIsABoss)
 		{
@@ -647,7 +651,7 @@ public void XenoCombineOverlord_NPCDeath(int entity)
 		}
 
 	}
-	
+
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoCombineOverlord_ClotDamaged);
 	SDKUnhook(npc.index, SDKHook_Think, XenoCombineOverlord_ClotThink);
 	if(IsValidEntity(npc.m_iWearable1))

@@ -17,7 +17,7 @@ methodmap Simon < CClotBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
+
 		this.m_flNextIdleSound = GetGameTime(this.index) + 18.0;
 		EmitSoundToAll("cof/simon/passive.mp3", this.index);
 	}
@@ -25,7 +25,7 @@ methodmap Simon < CClotBody
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-		
+
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE);
 	}
@@ -52,58 +52,58 @@ methodmap Simon < CClotBody
 	{
 		EmitSoundToAll("cof/purnell/buff.mp3", entity);
 	}
-	
+
 	public Simon(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		bool newSimon = data[0] == 's';
-		
+
 		if(data[0])
 			SimonHasDied = false;
-		
+
 		if(SimonHasDied)
 			return view_as<Simon>(INVALID_ENT_REFERENCE);
-		
+
 		Simon npc = view_as<Simon>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/booksimon.mdl", "1.15", data[0] == 'f' ? "300000" : "200000", ally, false, false, true));
 		i_NpcInternalId[npc.index] = BOOKSIMON;
-		
+
 		int body = EntRefToEntIndex(SimonRagdollRef);
 		if(body > MaxClients)
 			RemoveEntity(body);
-		
+
 		npc.m_iState = -1;
 		npc.SetActivity("ACT_SPAWN");
 		npc.PlayIntroSound();
 		ExcuteRelay("zr_simonspawn");
-		
+
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
+
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Simon_ClotDamagedPost);
 		SDKHook(npc.index, SDKHook_Think, Simon_ClotThink);
-		
+
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bInjured = false;
 		npc.m_iOverlordComboAttack = 0;
-		
+
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		
+
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iAttacksTillReload = 7;
 		npc.m_flReloadDelay = GetGameTime(npc.index) + 1.4;
-		
+
 		npc.m_flNextRangedSpecialAttack = 0.0;
-		
+
 		npc.m_bLostHalfHealth = (!newSimon && view_as<bool>(data[0]));
 
 		Citizen_MiniBossSpawn(npc.index);
 		return npc;
 	}
-	
+
 	public void SetActivity(const char[] animation)
 	{
 		int activity = this.LookupActivity(animation);
@@ -139,26 +139,28 @@ methodmap Simon < CClotBody
 public void Simon_ClotThink(int iNPC)
 {
 	Simon npc = view_as<Simon>(iNPC);
-	
+	INextBot bot = npc.GetBot();
+	PathFollower path = npc.GetPathFollower();
+
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
-	
+
 	npc.m_flNextThinkTime = gameTime + 0.04;
 	npc.Update();
 	npc.PlayIdleSound();
-	
+
 	if(!npc.m_bRetreating && npc.m_flNextRangedSpecialAttack < gameTime)
 	{
 		npc.m_flNextRangedSpecialAttack = gameTime + 0.25;
-		
+
 		int target = GetClosestAlly(npc.index, 40000.0);
 		if(target)
 		{
 			CClotBody ally = view_as<CClotBody>(target);
-			
+
 			ally.m_flRangedArmor = 0.7;
-			
+
 			if(npc.m_bLostHalfHealth)
 			{
 				if(!ally.m_bLostHalfHealth)
@@ -170,16 +172,16 @@ public void Simon_ClotThink(int iNPC)
 			}
 		}
 	}
-	
+
 	if(npc.m_iTarget > 0 && !IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		if(npc.m_iTarget <= MaxClients)
 			npc.m_bHasKilled = true;
-		
+
 		npc.m_iTarget = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 	}
-	
+
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
@@ -189,39 +191,39 @@ public void Simon_ClotThink(int iNPC)
 			if(Waves_GetRound() != (npc.m_bLostHalfHealth ? 59 : 54))
 				npc.m_bRetreating = true;
 		}
-		
+
 		if(!npc.m_bInjured && health < (maxhealth / 5))
 			npc.m_bInjured = true;
-		
+
 		npc.m_flGetClosestTargetTime = gameTime + 0.5;
 		npc.m_iTarget = GetClosestTarget(npc.index, true);
 	}
-	
+
 	int behavior = npc.m_bRetreating ? 5 : -1;
-	
+
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
-			
+
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
 				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _, 1))
 				{
-					int target = TR_GetEntityIndex(swingTrace);	
-					
+					int target = TR_GetEntityIndex(swingTrace);
+
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					
-					if(target > 0) 
+
+					if(target > 0)
 					{
 						if(target <= MaxClients)
 							SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
 						else
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 1500.0, DMG_CLUB, -1, _, vecHit);	
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 1500.0, DMG_CLUB, -1, _, vecHit);
 						Custom_Knockback(npc.index, target, 500.0);
 						npc.m_iAttacksTillReload++;
 					}
@@ -229,27 +231,27 @@ public void Simon_ClotThink(int iNPC)
 				delete swingTrace;
 			}
 		}
-		
+
 		behavior = 0;
 	}
-	
+
 	if(behavior == -1 || behavior == 5)
 	{
 		if(npc.m_iTarget > 0)	// We have a target
 		{
 			float vecPos[3]; vecPos = WorldSpaceCenter(npc.index);
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-			
+
 			float distance = GetVectorDistance(vecTarget, vecPos, true);
 			if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)	// Close at any time: Melee
 			{
 				npc.FaceTowards(vecTarget, 15000.0);
-				
+
 				npc.AddGesture("ACT_MELEE");
 				npc.m_flAttackHappens = gameTime + 0.35;
 				npc.m_flReloadDelay = gameTime + 0.6;
 				npc.m_flNextMeleeAttack = gameTime + (behavior == 5 ? 2.0 : 1.0);
-				
+
 				behavior = 0;
 			}
 			else if(npc.m_flReloadDelay > gameTime)	// Reloading
@@ -266,25 +268,25 @@ public void Simon_ClotThink(int iNPC)
 					if(npc.m_iAttacksTillReload > 0)	// Has ammo
 					{
 						int Enemy_I_See;
-				
+
 						Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 						//Target close enough to hit
 						if(IsValidEnemy(npc.index, npc.m_iTarget) && npc.m_iTarget == Enemy_I_See)
 						{
 							behavior = 0;
 							npc.SetActivity("ACT_IDLE");
-							
+
 							npc.FaceTowards(vecTarget, 15000.0);
-							
+
 							npc.AddGesture("ACT_SHOOT");
-							
+
 							npc.m_flNextRangedAttack = gameTime + 0.8;
-							
+
 							npc.m_iAttacksTillReload--;
-							
+
 							vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1000.0);
 							npc.FireRocket(vecTarget, 140.0, 1000.0, "models/weapons/w_bullet.mdl", 2.0);
-							
+
 							npc.PlayShootSound();
 						}
 						else	// Something in the way, move closer
@@ -329,21 +331,21 @@ public void Simon_ClotThink(int iNPC)
 			behavior = 5;
 		}
 	}
-	
+
 	// Reload anyways if we can't run
 	if(npc.m_flRangedSpecialDelay && behavior == 3 && npc.m_flRangedSpecialDelay > gameTime)
 		behavior = 4;
-	
+
 	switch(behavior)
 	{
 		case 0:	// Stand
 		{
 			// Activity handled above
 			npc.m_flSpeed = 0.0;
-			
+
 			if(npc.m_bPathing)
 			{
-				PF_StopPathing(npc.index);
+				path.Invalidate();
 				npc.m_bPathing = false;
 			}
 		}
@@ -352,8 +354,8 @@ public void Simon_ClotThink(int iNPC)
 			npc.SetActivity(npc.m_bInjured ? "ACT_RUNHURT" : "ACT_RUN");
 			npc.m_flSpeed = npc.m_bInjured ? 200.0 : 220.0;
 			npc.m_flRangedSpecialDelay = 0.0;
-			
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+
+			path.ComputeToTarget(bot, npc.m_iTarget);
 			if(!npc.m_bPathing)
 				npc.StartPathing();
 		}
@@ -362,8 +364,8 @@ public void Simon_ClotThink(int iNPC)
 			npc.SetActivity(npc.m_bInjured ? "ACT_RUNHURT" : "ACT_RUNFASTER");
 			npc.m_flSpeed = npc.m_bInjured ? 220.0 : 240.0;
 			npc.m_flRangedSpecialDelay = 0.0;
-			
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+
+			path.ComputeToTarget(bot, npc.m_iTarget);
 			if(!npc.m_bPathing)
 				npc.StartPathing();
 		}
@@ -371,13 +373,13 @@ public void Simon_ClotThink(int iNPC)
 		{
 			npc.SetActivity(npc.m_bInjured ? "ACT_RUNHIDE" : "ACT_RUNFASTER");
 			npc.m_flSpeed = npc.m_bInjured ? 400.0 : 450.0;
-			
+
 			if(!npc.m_flRangedSpecialDelay)	// Reload anyways timer
 				npc.m_flRangedSpecialDelay = gameTime + 3.0;
-			
+
 			float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-			PF_SetGoalVector(npc.index, vBackoffPos);
-			
+			path.ComputeToPos(bot, vBackoffPos);
+
 			if(!npc.m_bPathing)
 				npc.StartPathing();
 		}
@@ -388,20 +390,20 @@ public void Simon_ClotThink(int iNPC)
 			npc.m_flRangedSpecialDelay = 0.0;
 			npc.m_flReloadDelay = gameTime + 3.6;
 			npc.m_iAttacksTillReload = 7;
-			
+
 			if(npc.m_bPathing)
 			{
-				PF_StopPathing(npc.index);
+				path.Invalidate();
 				npc.m_bPathing = false;
 			}
-			
+
 			npc.PlayReloadSound();
 		}
 		case 5:	// Escape
 		{
 			npc.SetActivity(npc.m_bInjured ? "ACT_RUNHIDE" : "ACT_RUNFASTER");
 			npc.m_flSpeed = npc.m_bInjured ? 275.0 : 375.0;
-			
+
 			int ClosestTarget;
 			float TargetLocation[3];
 			float TargetDistance;
@@ -413,25 +415,25 @@ public void Simon_ClotThink(int iNPC)
 				{
 					if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
 					{
-						GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-						float distance = GetVectorDistance( vecPos, TargetLocation, true); 
-						if (TargetDistance) 
+						GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", TargetLocation );
+						float distance = GetVectorDistance( vecPos, TargetLocation, true);
+						if (TargetDistance)
 						{
-							if( distance < TargetDistance ) 
+							if( distance < TargetDistance )
 							{
-								ClosestTarget = entity; 
-								TargetDistance = distance;		  
+								ClosestTarget = entity;
+								TargetDistance = distance;
 							}
-						} 
-						else 
+						}
+						else
 						{
-							ClosestTarget = entity; 
+							ClosestTarget = entity;
 							TargetDistance = distance;
 						}
 					}
 				}
 			}
-			
+
 			if(ClosestTarget)
 			{
 				if(TargetDistance < 5000.0)
@@ -441,10 +443,10 @@ public void Simon_ClotThink(int iNPC)
 					SDKHooks_TakeDamage(npc.index, 0, 0, 99999999.9);
 					return;
 				}
-				
-				GetEntPropVector( ClosestTarget, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-				PF_SetGoalVector(npc.index, TargetLocation);
-				
+
+				GetEntPropVector( ClosestTarget, Prop_Data, "m_vecAbsOrigin", TargetLocation );
+				path.ComputeToPos(bot, TargetLocation);
+
 				if(!npc.m_bPathing)
 					npc.StartPathing();
 			}
@@ -462,12 +464,12 @@ public void Simon_ClotThink(int iNPC)
 					ExcuteRelay("zr_simonescaped");
 					return;
 				}
-				
+
 				if(npc.m_iTarget)
 				{
 					float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-					PF_SetGoalVector(npc.index, vBackoffPos);
-					
+					path.ComputeToPos(bot, vBackoffPos);
+
 					if(!npc.m_bPathing)
 						npc.StartPathing();
 				}
@@ -488,38 +490,38 @@ public void Simon_ClotDamagedPost(int victim, int attacker, int inflictor, float
 public void Simon_NPCDeath(int entity)
 {
 	Simon npc = view_as<Simon>(entity);
-	
+
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Simon_ClotDamagedPost);
 	SDKUnhook(npc.index, SDKHook_Think, Simon_ClotThink);
-	
-	PF_StopPathing(npc.index);
+
+	npc.GetPathFollower().Invalidate();
 	npc.m_bPathing = false;
-	
+
 	if(!npc.m_bRanAway)
 	{
 		npc.PlayDeathSound();
 		SimonHasDied = true;
-		
+
 		int entity_death = CreateEntityByName("prop_dynamic_override");
 		if(IsValidEntity(entity_death))
 		{
 			float pos[3], angles[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
 			GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
-			
+
 			TeleportEntity(entity_death, pos, angles, NULL_VECTOR);
-			
+
 	//		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
 			DispatchKeyValue(entity_death, "model", "models/zombie_riot/cof/booksimon.mdl");
 			DispatchKeyValue(entity_death, "skin", "0");
-			
+
 			DispatchSpawn(entity_death);
-			
-			SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15); 
+
+			SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15);
 			SetEntityCollisionGroup(entity_death, 2);
 			SetVariantString("death");
 			AcceptEntityInput(entity_death, "SetAnimation");
-			
+
 			SimonRagdollRef = EntIndexToEntRef(entity_death);
 		}
 	}

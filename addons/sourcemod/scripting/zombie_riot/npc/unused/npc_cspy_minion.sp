@@ -232,9 +232,9 @@ public void CorruptedSpyMinion_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				path.ComputeToPos(bot, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				path.ComputeToTarget(bot, PrimaryThreatIndex);
 			}
 			
 			//Target close enough to hit
@@ -300,7 +300,7 @@ public void CorruptedSpyMinion_ClotThink(int iNPC)
 						npc.m_flNextMeleeAttack = GetGameTime() + 0.44;
 					}
 				}
-				PF_StopPathing(npc.index);
+				path.Invalidate();
 				npc.m_bPathing = false;
 			}
 			else
@@ -311,7 +311,7 @@ public void CorruptedSpyMinion_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		path.Invalidate();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

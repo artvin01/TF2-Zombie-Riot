@@ -47,7 +47,7 @@ public void FortifiedPoisonZombie_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	
+
 	PrecacheModel("models/zombie/poison.mdl");
 }
 
@@ -56,58 +56,58 @@ methodmap FortifiedPoisonZombie < CClotBody
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
+
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
 		#endif
 	}
-	
+
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
+
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
 		#endif
 	}
-	
+
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
+
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
+
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayHurtSound()");
 		#endif
 	}
-	
+
 	public void PlayDeathSound() {
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
 		#endif
 	}
-	
+
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
@@ -115,34 +115,34 @@ methodmap FortifiedPoisonZombie < CClotBody
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	
-	
-	
-	
+
+
+
+
 	public FortifiedPoisonZombie(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		FortifiedPoisonZombie npc = view_as<FortifiedPoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.15", "1250", ally));
-		
+
 		i_NpcInternalId[npc.index] = FORTIFIED_POISON_ZOMBIE;
-		
+
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		
-		
+
+
+
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
+
 		SDKHook(npc.index, SDKHook_OnTakeDamage, FortifiedPoisonZombie_OnTakeDamage);
-		SDKHook(npc.index, SDKHook_Think, FortifiedPoisonZombie_ClotThink);		
-		
-		
+		SDKHook(npc.index, SDKHook_Think, FortifiedPoisonZombie_ClotThink);
+
+
 		//IDLE
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flSpeed = 120.0;
@@ -151,31 +151,33 @@ methodmap FortifiedPoisonZombie < CClotBody
 			npc.m_flSpeed = 190.0;
 		}
 		npc.StartPathing();
-		
+
 		return npc;
 	}
-	
-	
+
+
 }
 
-//TODO 
+//TODO
 //Rewrite
 public void FortifiedPoisonZombie_ClotThink(int iNPC)
 {
 	FortifiedPoisonZombie npc = view_as<FortifiedPoisonZombie>(iNPC);
-	
+	INextBot bot = npc.GetBot();
+	PathFollower path = npc.GetPathFollower();
+
 	SetVariantInt(1);
 	AcceptEntityInput(iNPC, "SetBodyGroup");
-	
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	
+
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
-	
+
 	npc.Update();
-	
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.m_blPlayHurtAnimation = false;
@@ -183,12 +185,12 @@ public void FortifiedPoisonZombie_ClotThink(int iNPC)
 		if(!npc.m_flAttackHappenswillhappen)
 			npc.AddGesture("ACT_SMALL_FLINCH", false);
 	}
-	
+
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	
+
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
@@ -196,42 +198,44 @@ public void FortifiedPoisonZombie_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
-	
+
 	int PrimaryThreatIndex = npc.m_iTarget;
-	
+
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-		
+
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			
+
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
-				
+
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				
+
 			/*	int color[4];
 				color[0] = 255;
 				color[1] = 255;
 				color[2] = 0;
 				color[3] = 255;
-			
+
 				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
-			
+
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
-				
-				PF_SetGoalVector(npc.index, vPredictedPos);
-			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+
+				path.ComputeToPos(bot, vPredictedPos);
 			}
-			
+			else
+			{
+				path.ComputeToTarget(bot, PrimaryThreatIndex);
+			}
+
 			//Target close enough to hit
 			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 20000.0);
-				
+
 				//Can we attack right now?
 				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 				{
@@ -244,26 +248,26 @@ public void FortifiedPoisonZombie_ClotThink(int iNPC)
 					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+1.0;
 					npc.m_flAttackHappenswillhappen = true;
 				}
-						
+
 				if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
 							{
-								int target = TR_GetEntityIndex(swingTrace);	
-								
+								int target = TR_GetEntityIndex(swingTrace);
+
 								float vecHit[3];
 								TR_GetEndPosition(vecHit, swingTrace);
-								
-								if(target > 0) 
+
+								if(target > 0)
 								{
-									
+
 									if(EscapeModeForNpc)
 									{
 										if(target <= MaxClients)
 											SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
-									
+
 										else
 											SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_CLUB, -1, _, vecHit);
 									}
@@ -271,25 +275,25 @@ public void FortifiedPoisonZombie_ClotThink(int iNPC)
 									{
 										if(target <= MaxClients)
 											SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
-									
+
 										else
 											SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 									}
-									
+
 									// Hit particle
-									
-									
+
+
 									// Hit sound
 									npc.PlayMeleeHitSound();
-									
+
 									//Did we kill them?
 									int iHealthPost = GetEntProp(target, Prop_Data, "m_iHealth");
-									if(iHealthPost <= 0) 
+									if(iHealthPost <= 0)
 									{
 										//Yup, time to celebrate
 										npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST");
 									}
-								} 
+								}
 							}
 						delete swingTrace;
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
@@ -305,12 +309,12 @@ public void FortifiedPoisonZombie_ClotThink(int iNPC)
 			else
 			{
 				npc.StartPathing();
-				
+
 			}
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		path.Invalidate();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -323,20 +327,20 @@ public Action FortifiedPoisonZombie_OnTakeDamage(int victim, int &attacker, int 
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
+
 	FortifiedPoisonZombie npc = view_as<FortifiedPoisonZombie>(victim);
-	
+
 	/*
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
 		return Plugin_Continue;
 	*/
-	
+
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
+
 	return Plugin_Changed;
 }
 
@@ -345,10 +349,10 @@ public void FortifiedPoisonZombie_NPCDeath(int entity)
 	FortifiedPoisonZombie npc = view_as<FortifiedPoisonZombie>(entity);
 	if(!npc.m_bGib)
 	{
-		npc.PlayDeathSound();	
+		npc.PlayDeathSound();
 	}
-	
+
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, FortifiedPoisonZombie_OnTakeDamage);
-	SDKUnhook(npc.index, SDKHook_Think, FortifiedPoisonZombie_ClotThink);	
+	SDKUnhook(npc.index, SDKHook_Think, FortifiedPoisonZombie_ClotThink);
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

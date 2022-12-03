@@ -420,9 +420,9 @@ public void ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				path.ComputeToPos(bot, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				path.ComputeToTarget(bot, PrimaryThreatIndex);
 			}
 	
 			if(npc.m_flNextRangedSpecialAttack < GetGameTime() && flDistanceToTarget < 22500 || npc.m_fbRangedSpecialOn)
@@ -434,7 +434,7 @@ public void ClotThink(int iNPC)
 					npc.m_flRangedSpecialDelay = GetGameTime() + 0.4;
 					npc.m_fbRangedSpecialOn = true;
 					npc.m_flReloadDelay = GetGameTime() + 1.0;
-					PF_StopPathing(npc.index);
+					path.Invalidate();
 					npc.m_bPathing = false;
 				}
 				if(npc.m_flRangedSpecialDelay < GetGameTime())
@@ -566,7 +566,7 @@ public void ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StopPathing(npc.index);
+				path.Invalidate();
 				npc.m_bPathing = false;
 				npc.m_flGetClosestTargetTime = 0.0;
 				npc.m_iTarget = GetClosestTarget(npc.index, _ , 1000.0);	
@@ -576,7 +576,7 @@ public void ClotThink(int iNPC)
 		else
 		{
 			npc.m_bGetClosestTargetTimeAlly = false;
-			PF_StopPathing(npc.index);
+			path.Invalidate();
 			npc.m_bPathing = false;
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index, _ , 1000.0);	
