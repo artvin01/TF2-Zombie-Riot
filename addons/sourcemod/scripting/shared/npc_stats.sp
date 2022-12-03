@@ -201,7 +201,6 @@ methodmap CClotBody
 		baseNPC.flJumpHeight = 250.0;
 		baseNPC.flRunSpeed = 300.0;
 		baseNPC.flFrictionSideways = 3.0;
-		baseNPC.flMaxYawRate = flTurnRate.FloatValue;
 
 		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
 
@@ -1530,6 +1529,7 @@ methodmap CClotBody
 		float flPrevValue = flTurnRate.FloatValue;
 
 		flTurnRate.FloatValue = turnrate;
+		baseNPC.flMaxYawRate = turnrate;
 		this.GetLocomotionInterface().FaceTowards(vecGoal);
 		flTurnRate.FloatValue = flPrevValue;
 	}
