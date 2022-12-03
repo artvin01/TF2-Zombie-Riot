@@ -1480,7 +1480,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 								TE_Start("PlayerAnimEvent");
 								Animation_Setting[attacker] = 1;
 								Animation_Index[attacker] = 33;
-								TE_WriteNum("m_iPlayerIndex", attacker);
+								TE_WriteEncodedEnt("m_hPlayer", attacker);
 								TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
 								TE_WriteNum("m_nData", Animation_Index[attacker]);
 								TE_SendToAll();
@@ -1870,7 +1870,7 @@ public void Try_Backstab_Anim_Again(int attacker)
 {
 	RequestFrame(Try_Backstab_Anim_Again2, attacker);
 	TE_Start("PlayerAnimEvent");
-	TE_WriteNum("m_iPlayerIndex", attacker);
+	TE_WriteEncodedEnt("m_hPlayer", attacker);
 	TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
 	TE_WriteNum("m_nData", Animation_Index[attacker]);
 	TE_SendToAll();
@@ -1879,7 +1879,7 @@ public void Try_Backstab_Anim_Again(int attacker)
 public void Try_Backstab_Anim_Again2(int attacker)
 {
 	TE_Start("PlayerAnimEvent");
-	TE_WriteNum("m_iPlayerIndex", attacker);
+	TE_WriteEncodedEnt("m_hPlayer", attacker);
 	TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
 	TE_WriteNum("m_nData", Animation_Index[attacker]);
 	TE_SendToAll();
@@ -1890,7 +1890,7 @@ public void Try_Backstab_Anim_Again2(int attacker)
 public void Try_Backstab_Anim_Again3(int attacker)
 {
 	TE_Start("PlayerAnimEvent");
-	TE_WriteNum("m_iPlayerIndex", attacker);
+	TE_WriteEncodedEnt("m_hPlayer", attacker);
 	TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
 	TE_WriteNum("m_nData", Animation_Index[attacker]);
 	TE_SendToAll();

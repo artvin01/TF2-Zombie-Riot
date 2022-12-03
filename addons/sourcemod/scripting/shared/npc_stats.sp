@@ -34,8 +34,6 @@ static int g_particleImpactFlesh;
 static int g_particleImpactRubber;
 static int g_modelArrow;
 
-static ConVar flTurnRate;
-
 static int g_sModelIndexBloodDrop;
 static int g_sModelIndexBloodSpray;
 
@@ -201,9 +199,10 @@ methodmap CClotBody
 		baseNPC.flJumpHeight = 250.0;
 		baseNPC.flRunSpeed = 300.0;
 		baseNPC.flFrictionSideways = 3.0;
+		baseNPC.flMaxYawRate = 750.0; //this is the default.
 
 		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
-
+		
 		if(!Ally)
 		{
 #if defined ZR
@@ -230,7 +229,7 @@ methodmap CClotBody
 				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAlly);
 			}
 		}
-
+		
 		locomotion.SetCallback(LocomotionCallback_IsEntityTraversable, IsEntityTraversable);
 		combatChar.Hook_HandleAnimEvent(CBaseAnimating_HandleAnimEvent);
 
@@ -244,6 +243,21 @@ methodmap CClotBody
 
 		//Don't bleed.
 		SetEntProp(npc, Prop_Data, "m_bloodColor", -1); //Don't bleed
+
+		//Fixed wierd clientside issue or something
+		static float m_vecMaxsNothing[3];
+		static float m_vecMinsNothing[3];
+		m_vecMaxsNothing = view_as<float>( { 1.0, 1.0, 2.0 } );
+		m_vecMinsNothing = view_as<float>( { -1.0, -1.0, 0.0 } );
+		SetEntPropVector(npc, Prop_Send, "m_vecMaxsPreScaled", m_vecMaxsNothing);
+		SetEntPropVector(npc, Prop_Data, "m_vecMaxsPreScaled", m_vecMaxsNothing);
+		SetEntPropVector(npc, Prop_Send, "m_vecMinsPreScaled", m_vecMinsNothing);
+		SetEntPropVector(npc, Prop_Data, "m_vecMinsPreScaled", m_vecMinsNothing);
+		
+		//THIS MUST BE DONE AFTER SET MINS AND MAX PRESCALED!!!!!
+		CClotBody npc_inside = view_as<CClotBody>(npc);
+		npc_inside.UpdateCollisionBox();
+
 
 		b_BoundingBoxVariant[npc] = 0; //This will tell lag compensation what to revert to once the calculations are done.
 		static float m_vecMaxs[3];
@@ -274,20 +288,11 @@ methodmap CClotBody
 			m_vecMins[1] = -f3_CustomMinMaxBoundingBox[npc][1];
 			m_vecMins[2] = 0.0;
 		}
-
+		SetEntPropVector(npc, Prop_Data, "m_vecMaxs", m_vecMaxs);
+		SetEntPropVector(npc, Prop_Data, "m_vecMins", m_vecMins);
 		//Fix collisions
 		baseNPC.SetBodyMaxs(m_vecMaxs);
 		baseNPC.SetBodyMins(m_vecMins);
-
-		//Fixed wierd clientside issue or something
-		/*static float m_vecMaxsNothing[3];
-		static float m_vecMinsNothing[3];
-		m_vecMaxsNothing = view_as<float>( { 1.0, 1.0, 2.0 } );
-		m_vecMinsNothing = view_as<float>( { -1.0, -1.0, 0.0 } );
-		SetEntPropVector(npc, Prop_Send, "m_vecMaxsPreScaled", m_vecMaxsNothing);
-		SetEntPropVector(npc, Prop_Data, "m_vecMaxsPreScaled", m_vecMaxsNothing);
-		SetEntPropVector(npc, Prop_Send, "m_vecMinsPreScaled", m_vecMinsNothing);
-		SetEntPropVector(npc, Prop_Data, "m_vecMinsPreScaled", m_vecMinsNothing);*/
 
 #if defined ZR
 		if(Ally)
@@ -303,7 +308,7 @@ methodmap CClotBody
 		SDKHook(npc, SDKHook_OnTakeDamage, NPC_OnTakeDamage_Base);
 		SDKHook(npc, SDKHook_Think, Check_If_Stuck);
 		SDKHook(npc, SDKHook_ThinkPost, Hook_NPCSetNextThink);
-		SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
+//		SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
 
 		/*CClotBody CreatePathfinderIndex = view_as<CClotBody>(npc);
 
@@ -1523,16 +1528,14 @@ methodmap CClotBody
 		CBaseNPC npc = this.GetBaseNPC();
 		g_PathFollower[npc.Index].ComputeToPos(npc.GetBot(), vec);
 	}
-	public void FaceTowards(const float vecGoal[3] , const float turnrate = 250.0)
+	public void FaceTowards(const float vecGoal[3] , float turnrate = 25.0, float defaultturn = 750.0)
 	{
-		//Sad!
-		float flPrevValue = flTurnRate.FloatValue;
 		CBaseNPC npc = this.GetBaseNPC();
 
-		flTurnRate.FloatValue = turnrate;
+		PrintToChatAll("%f",turnrate);
 		npc.flMaxYawRate = turnrate;
-		npc.GetLocomotionInterface().FaceTowards(vecGoal);
-		flTurnRate.FloatValue = flPrevValue;
+		npc.GetLocomotion().FaceTowards(vecGoal);
+		npc.flMaxYawRate = defaultturn; //this is the default.
 	}
 
 	public float GetMaxJumpHeight()	{ return this.GetLocomotionInterface().GetMaxJumpHeight(); }
@@ -1948,10 +1951,6 @@ methodmap CClotBody
 	//Begin an animation activity, return false if we cant do that right now.
 	public bool StartActivity(any iActivity, int flags = 0)
 	{
-		//Translate jump anim
-		if(iActivity == 29)
-			iActivity = ACT_MP_JUMP_START_MELEE;
-
 		int nSequence = CBaseAnimating(this.index).SelectWeightedSequence(iActivity);
 		if (nSequence == -1)
 			return false;
@@ -1969,6 +1968,9 @@ methodmap CClotBody
 
 	public void Update()
 	{
+		CBaseNPC npc = this.GetBaseNPC();
+
+		npc.flRunSpeed = this.GetRunSpeed();
 
 		if (this.m_iPoseMoveX < 0) {
 			this.m_iPoseMoveX = this.LookupPoseParameter("move_x");
@@ -2156,7 +2158,7 @@ void Hook_NPCSetNextThink(int npc)
 
 public void NPC_Base_InitGamedata()
 {
-	flTurnRate = FindConVar("tf_base_boss_max_turn_rate");
+//	flTurnRate = FindConVar("tf_base_boss_max_turn_rate");
 	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_ROOT);
 
 
@@ -2884,10 +2886,18 @@ public MRESReturn IBody_GetStandHullHeight(Address pThis, Handle hReturn, Handle
 public bool ShouldCollideEnemy(CBaseNPC_Locomotion loco, int otherindex)
 {
 	if(otherindex > 0 && otherindex <= MaxClients)
-		return !b_ThisEntityIgnored[otherindex];
+	{
+		if(b_ThisEntityIgnored[otherindex])
+		{
+			return false;
+		}
+		return true;
+	}
 
-	if(b_CantCollidie[otherindex])
+	if(b_CantCollidie[otherindex]) //no change in performance..., almost.
+	{
 		return false;
+	}
 
 	return true;
 }
