@@ -21,6 +21,10 @@ wget "https://raw.githubusercontent.com/DoctorMcKay/sourcemod-plugins/master/scr
 wget "https://raw.githubusercontent.com/Batfoxkid/Text-Store/master/addons/sourcemod/scripting/include/textstore.inc" -O include/textstore.inc
 #wget "https://raw.githubusercontent.com/Batfoxkid/Batfoxkid/main/addons/sourcemod/scripting/include/menus-controller.inc" -O include/menus-controller.inc
 
+# The Big CBaseNPC Family
+mkdir include/cbasenpc
+mkdir include/cbasenpc/tf
+mkdir include/cbasenpc/nextbot
 wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc.inc" -O include/cbasenpc.inc
 wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/activity.inc" -O include/cbasenpc/activity.inc
 wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/baseanimating.inc" -O include/cbasenpc/baseanimating.inc
