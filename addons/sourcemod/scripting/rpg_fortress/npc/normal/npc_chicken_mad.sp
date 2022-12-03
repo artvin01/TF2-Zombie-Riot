@@ -119,7 +119,7 @@ methodmap MadChicken < CClotBody
 
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		
-		PF_StopPathing(npc.index);
+		npc.GetPathFollower().Invalidate();
 		npc.m_bPathing = false;	
 		
 		return npc;
@@ -132,6 +132,8 @@ methodmap MadChicken < CClotBody
 public void MadChicken_ClotThink(int iNPC)
 {
 	MadChicken npc = view_as<MadChicken>(iNPC);
+	INextBot bot = npc.GetBot();
+	PathFollower path = npc.GetPathFollower();
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -202,11 +204,11 @@ public void MadChicken_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			path.ComputeToPos(bot, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			path.ComputeToTarget(bot, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 

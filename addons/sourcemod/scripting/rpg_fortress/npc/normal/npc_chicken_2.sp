@@ -38,31 +38,31 @@ methodmap StartChicken < CClotBody
 
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
-	
+
 	public void PlayHurtSound() {
-		
+
 		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, GetRandomInt(125, 135), NORMAL_ZOMBIE_VOLUME);
-		
+
 	}
-	
-	
+
+
 	public StartChicken(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		StartChicken npc = view_as<StartChicken>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.5", "300", ally, false,_,_,_,{8.0,8.0,36.0}));
-		
+
 		i_NpcInternalId[npc.index] = START_CHICKEN;
-		
+
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_flNextMeleeAttack = 0.0;
-		
+
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
+
 		//IDLE
 		npc.m_flSpeed = 120.0;
 
@@ -70,7 +70,7 @@ methodmap StartChicken < CClotBody
 
 		SDKHook(npc.index, SDKHook_OnTakeDamage, StartChicken_OnTakeDamage);
 		SDKHook(npc.index, SDKHook_Think, StartChicken_ClotThink);
-		
+
 		int skin = GetRandomInt(0, 1);
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
@@ -91,30 +91,32 @@ methodmap StartChicken < CClotBody
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		
+
 		npc.StartPathing();
-		
+
 		return npc;
 	}
-	
+
 }
 
-//TODO 
+//TODO
 //Rewrite
 static float f3_PositionArrival[MAXENTITIES][3];
 public void StartChicken_ClotThink(int iNPC)
 {
 	StartChicken npc = view_as<StartChicken>(iNPC);
-	
+	INextBot bot = npc.GetBot();
+	PathFollower path = npc.GetPathFollower();
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	
+
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
-	
+
 	npc.Update();
-	
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
@@ -123,7 +125,7 @@ public void StartChicken_ClotThink(int iNPC)
 		npc.m_flNextMeleeAttack = 0.0; //Run!!
 	}
 	npc.PlayIdleSound();
-	
+
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
@@ -137,8 +139,8 @@ public void StartChicken_ClotThink(int iNPC)
 
 		if(npc.m_bPathing)
 		{
-			PF_StopPathing(npc.index);
-			npc.m_bPathing = false;	
+			path.Invalidate();
+			npc.m_bPathing = false;
 		}
 	}
 	else
@@ -158,24 +160,24 @@ public void StartChicken_ClotThink(int iNPC)
 		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_MP_STAND_MELEE");
 	}
-	
-		
+
+
 	//Roam while idle
-		
+
 	//Is it time to pick a new place to go?
 	if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 	{
 		//Pick a random goal area
-		CNavArea RandomArea = PickRandomArea();	
-			
-		if(RandomArea == NULL_AREA) 
+		CNavArea RandomArea = PickRandomArea();
+
+		if(RandomArea == NULL_AREA)
 			return;
-			
+
 		float vecGoal[3]; RandomArea.GetCenter(vecGoal);
-		
+
 		//if(!PF_IsPathToVectorPossible(iNPC, vecGoal))
 		//	return;
-			
+
 		f3_PositionArrival[iNPC][0] = vecGoal[0];
 		f3_PositionArrival[iNPC][1] = vecGoal[1];
 		f3_PositionArrival[iNPC][2] = vecGoal[2];
@@ -184,9 +186,8 @@ public void StartChicken_ClotThink(int iNPC)
 
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 
-		PF_SetGoalVector(iNPC, vecGoal);
-		PF_StartPathing(iNPC);
-			
+		path.ComputeToPos(bot, vecGoal);
+
 		//Timeout
 		npc.m_flNextMeleeAttack = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
 	}
@@ -199,13 +200,13 @@ public Action StartChicken_OnTakeDamage(int victim, int &attacker, int &inflicto
 		return Plugin_Continue;
 
 	StartChicken npc = view_as<StartChicken>(victim);
-	
+
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-//	
+//
 	return Plugin_Changed;
 }
 

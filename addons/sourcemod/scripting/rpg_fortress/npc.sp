@@ -132,6 +132,8 @@ public void NPC_Despawn(int entity)
 public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] StandStill, float walkspeedback, float gameTime)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
+	INextBot bot = npc.GetBot();
+	PathFollower path = npc.GetPathFollower();
 
 	if(npc.m_flGetClosestTargetTime < gameTime) //Find a new victim to destroy.
 	{
@@ -161,7 +163,7 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 			float fl_DistanceToOriginalSpawn = GetVectorDistance(vecTarget, f3_SpawnPosition[npc.index], true);
 			if(fl_DistanceToOriginalSpawn > Pow(80.0, 2.0)) //We are too far away from our home! return!
 			{
-				PF_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
+				path.ComputeToPos(bot, f3_SpawnPosition[npc.index]);
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
@@ -211,7 +213,7 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 		}
 		if(npc.m_bPathing)
 		{
-			PF_StopPathing(npc.index);
+			path.Invalidate();
 			npc.m_bPathing = false;	
 		}
 	}
