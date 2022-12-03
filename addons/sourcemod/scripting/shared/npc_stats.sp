@@ -178,6 +178,7 @@ methodmap CClotBody
 		combatChar.Activate();
 
 		combatChar.SetProp(Prop_Data, "m_iHealth", StringToInt(health));
+		combatChar.SetProp(Prop_Data, "m_iMaxHealth", StringToInt(health));
 
 		if(Ally)
 		{
@@ -348,7 +349,6 @@ methodmap CClotBody
 			}
 
 		}
-	//	PrintToServer("%i PlayStepSound(\"%s\")", this.index, sound);
 	}
 
 	property int m_iOverlordComboAttack
@@ -1330,7 +1330,6 @@ methodmap CClotBody
 		if(id == INVALID_NPC)
 			ThrowError("Invalid NPC ID");
 		
-		PrintToServer("CBaseNPC == %d | Entity == %d", id, this);
 		return id;
 	}
 	public CBaseNPC_Locomotion GetLocomotionInterface()
