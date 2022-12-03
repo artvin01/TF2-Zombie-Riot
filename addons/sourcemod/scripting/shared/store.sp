@@ -4436,7 +4436,7 @@ bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool 
 	{
 		if(IsValidEntity(entity))
 		{
-			if(StrEqual(classname, "base_boss"))
+			if(StrEqual(classname, "base_npc"))
 			{
 				static char buffer[36];
 				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));

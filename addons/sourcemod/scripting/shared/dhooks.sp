@@ -620,7 +620,7 @@ static void CreateDynamicDetour(GameData gamedata, const char[] name, DHookCallb
 */
 /*
 hopefully fixes 0x2f2388
-I suspect that somehow someone got disgusied and thus the sendproxy regarding classes broke as there is no blue player, and maybe it bugs out with base_boss
+I suspect that somehow someone got disgusied and thus the sendproxy regarding classes broke as there is no blue player, and maybe it bugs out with base_npc
 i will keep it updated incase this didnt work.
 
 */

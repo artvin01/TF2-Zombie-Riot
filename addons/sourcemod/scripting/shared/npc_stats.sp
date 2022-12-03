@@ -887,7 +887,7 @@ methodmap CClotBody
 		public set(bool TempValueForProperty) 	{ b_StaticNPC[this.index] = TempValueForProperty; }
 	}
 
-	property bool m_bThisNpcGotDefaultStats_INVERTED //This is the only one, reasoning is that is that i kinda need to check globablly if any base_boss spawned outside of this plugin and apply stuff accordingly.
+	property bool m_bThisNpcGotDefaultStats_INVERTED //This is the only one, reasoning is that is that i kinda need to check globablly if any base_npc spawned outside of this plugin and apply stuff accordingly.
 	{
 		public get()							{ return b_bThisNpcGotDefaultStats_INVERTED[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_bThisNpcGotDefaultStats_INVERTED[this.index] = TempValueForProperty; }
@@ -2576,7 +2576,7 @@ public Action Check_Emergency_Reload(Handle Timer_Handle, int ref)
 		{
 			if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
 			{
-				if(StrEqual(buffer, "base_boss"))
+				if(StrEqual(buffer, "base_npc"))
 				{
 					GetEntPropString(i, Prop_Data, "m_iName", buffer, sizeof(buffer))
 					if(!StrContains(this_plugin_name, buffer))
@@ -2995,7 +2995,7 @@ public bool FilterBaseActorsAndData(int entity, int contentsMask, any data)
 	static char class[12];
 	GetEntityClassname(entity, class, sizeof(class));
 
-	if(!StrContains(class, "base_boss")) return true;
+	if(!StrContains(class, "base_npc")) return true;
 
 	return !(entity == data);
 }
@@ -3045,7 +3045,7 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 	{
 		return false;
 	}
-	else if(StrEqual(class, "base_boss"))
+	else if(StrEqual(class, "base_npc"))
 	{
 			//Yes its double but i need it here too for npc vs npc, sorry.
 		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
@@ -3129,7 +3129,7 @@ public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMas
 	{
 		return false;
 	}
-	if(StrEqual(class, "base_boss"))
+	if(StrEqual(class, "base_npc"))
 	{
 		return true;
 	}
@@ -3355,7 +3355,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false)
 	{
 		static char strClassname[16];
 		GetEntityClassname(enemy, strClassname, sizeof(strClassname));
-		if(StrEqual(strClassname, "player") || StrEqual(strClassname, "base_boss"))
+		if(StrEqual(strClassname, "player") || StrEqual(strClassname, "base_npc"))
 		{
 			CClotBody npc = view_as<CClotBody>(enemy);
 			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(enemy, Prop_Send, "m_iTeamNum"))
@@ -3685,7 +3685,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			if (pass == 0) classname = "obj_sentrygun";
 			else if (pass == 1) classname = "obj_dispenser";
 		//	else if (pass == 2) classname = "obj_teleporter";
-			else if (pass == 2) classname = "base_boss";
+			else if (pass == 2) classname = "base_npc";
 
 			int i = MaxClients + 1;
 			while ((i = FindEntityByClassname(i, classname)) != -1)
@@ -3911,7 +3911,7 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 
 	CClotBody npc = view_as<CClotBody>(entity);
 
-	if(StrEqual(class, "base_boss"))
+	if(StrEqual(class, "base_npc"))
 	{
 		return false;
 	}
@@ -4860,7 +4860,7 @@ stock int FireBullet(int m_pAttacker, int iWeapon, float m_vecSrc[3], float m_ve
 			static char class[12];
 			GetEntityClassname(TR_GetEntityIndex(trace), class, sizeof(class));
 
-			if(StrContains(class, "base_boss") && StrContains(class, "obj_")) //if its the world, then do this.
+			if(StrContains(class, "base_npc") && StrContains(class, "obj_")) //if its the world, then do this.
 			{
 				CreateParticle("impact_concrete", endpos, vecNormal);
 			}
@@ -5754,7 +5754,7 @@ stock int GetClosestAlly(int entity, float limitsquared = 99999999.9)
 	int ClosestTarget = 0;
 
 	int i = MaxClients + 1;
-	while ((i = FindEntityByClassname(i, "base_boss")) != -1)
+	while ((i = FindEntityByClassname(i, "base_npc")) != -1)
 	{
 		if (i != entity && GetEntProp(entity, Prop_Send, "m_iTeamNum")==GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && GetEntProp(i, Prop_Data, "m_iHealth") > 0)  //The is a medic thing is really needed
 		{
@@ -5791,7 +5791,7 @@ stock bool IsValidAlly(int index, int ally)
 	{
 		static char strClassname[16];
 		GetEntityClassname(ally, strClassname, sizeof(strClassname));
-		if(StrEqual(strClassname, "base_boss"))
+		if(StrEqual(strClassname, "base_npc"))
 		{
 			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(ally, Prop_Send, "m_iTeamNum") && GetEntProp(ally, Prop_Data, "m_iHealth") > 0)
 			{
@@ -6011,16 +6011,16 @@ public void SetDefaultValuesToZeroNPC(int entity)
 #if defined ZR
 public void Raidboss_Clean_Everyone()
 {
-	int base_boss;
-	while((base_boss=FindEntityByClassname(base_boss, "base_boss")) != -1)
+	int base_npc;
+	while((base_npc=FindEntityByClassname(base_npc, "base_npc")) != -1)
 	{
-		if(IsValidEntity(base_boss))
+		if(IsValidEntity(base_npc))
 		{
-			if(GetEntProp(base_boss, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			if(GetEntProp(base_npc, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 			{
-				if(!b_Map_BaseBoss_No_Layers[base_boss]) //Make sure it doesnt actually kill map base_bosses
+				if(!b_Map_BaseBoss_No_Layers[base_npc]) //Make sure it doesnt actually kill map base_bosses
 				{
-					Change_Npc_Collision(base_boss, 1); //Gives raid collision
+					Change_Npc_Collision(base_npc, 1); //Gives raid collision
 				}
 			}
 		}
@@ -6464,7 +6464,7 @@ bool Resize_TracePlayersAndBuildings(int entity, int contentsMask)
 	{
 		static char classname[MAX_ENTITY_CLASSNAME_LENGTH];
 		GetEntityClassname(entity, classname, sizeof(classname));
-		if ((StrContains(classname, "obj_") == 0) || (strcmp(classname, "prop_dynamic") == 0) || (strcmp(classname, "func_door") == 0) || (strcmp(classname, "func_physbox") == 0) || (strcmp(classname, "base_boss") == 0) || (strcmp(classname, "func_breakable") == 0))
+		if ((StrContains(classname, "obj_") == 0) || (strcmp(classname, "prop_dynamic") == 0) || (strcmp(classname, "func_door") == 0) || (strcmp(classname, "func_physbox") == 0) || (strcmp(classname, "base_npc") == 0) || (strcmp(classname, "func_breakable") == 0))
 		{
 			if(!b_ThisEntityIgnored[entity] && ResizeMyTeam != GetEntProp(entity, Prop_Data, "m_iTeamNum"))
 			{

@@ -138,22 +138,22 @@ public Action Timer_Detect_Player_Near_Nuke(Handle timer, any entid)
 				client_pos[2] += 35.0;
 				if (GetVectorDistance(powerup_pos, client_pos, true) <= Pow(64.0, 2.0))
 				{
-					int base_boss = -1;
+					int base_npc = -1;
 					ParticleEffectAt(powerup_pos, "hightower_explosion", 1.0);
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
 					EmitSoundToAll(NUKE_SOUND, _, SNDCHAN_STATIC, 100, _);
 					EmitSoundToAll(NUKE_SOUND, _, SNDCHAN_STATIC, 100, _);
-					while((base_boss=FindEntityByClassname(base_boss, "base_boss")) != -1)
+					while((base_npc=FindEntityByClassname(base_npc, "base_npc")) != -1)
 					{
-						if(IsValidEntity(base_boss) && base_boss > 0)
+						if(IsValidEntity(base_npc) && base_npc > 0)
 						{
-							if(GetEntProp(base_boss, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+							if(GetEntProp(base_npc, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 							{
-								CClotBody npcstats = view_as<CClotBody>(base_boss);
-								if(!npcstats.m_bThisNpcIsABoss && !b_Map_BaseBoss_No_Layers[base_boss] && !b_ThisNpcIsImmuneToNuke[base_boss] && RaidBossActive != base_boss) //Make sure it doesnt actually kill map base_bosses
+								CClotBody npcstats = view_as<CClotBody>(base_npc);
+								if(!npcstats.m_bThisNpcIsABoss && !b_Map_BaseBoss_No_Layers[base_npc] && !b_ThisNpcIsImmuneToNuke[base_npc] && RaidBossActive != base_npc) //Make sure it doesnt actually kill map base_bosses
 								{
-									SDKHooks_TakeDamage(base_boss, 0, 0, 99999999.0, DMG_BLAST); //Kill it so it triggers the neccecary shit.
-									SDKHooks_TakeDamage(base_boss, 0, 0, 99999999.0, DMG_BLAST); //Kill it so it triggers the neccecary shit.
+									SDKHooks_TakeDamage(base_npc, 0, 0, 99999999.0, DMG_BLAST); //Kill it so it triggers the neccecary shit.
+									SDKHooks_TakeDamage(base_npc, 0, 0, 99999999.0, DMG_BLAST); //Kill it so it triggers the neccecary shit.
 								}
 							}
 						}

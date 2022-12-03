@@ -1543,7 +1543,7 @@ void Building_ShowInteractionHud(int client, int entity)
 				}
 			}
 		}
-		else if(StrEqual(buffer, "base_boss"))
+		else if(StrEqual(buffer, "base_npc"))
 		{
 			switch(Citizen_ShowInteractionHud(entity, client))
 			{
@@ -1818,7 +1818,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 				buildingType = 6;
 			}
 		}
-		else if(Is_Reload_Button && StrEqual(buffer, "base_boss"))
+		else if(Is_Reload_Button && StrEqual(buffer, "base_npc"))
 		{
 			buildingType = Citizen_BuildingInteract(entity);
 			int temp_owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
@@ -3846,7 +3846,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 		{
 			GetEntityClassname(entity, classname, sizeof(classname));
 			
-			if (((!StrContains(classname, "base_boss", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
+			if (((!StrContains(classname, "base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
 			{
 				for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
 				{
@@ -4305,7 +4305,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 	}
 	
 	int i = MaxClients + 1;
-	while((i = FindEntityByClassname(i, "base_boss")) != -1)
+	while((i = FindEntityByClassname(i, "base_npc")) != -1)
 	{
 		if(GetEntProp(i, Prop_Send, "m_iTeamNum") == 2)
 		{
@@ -4508,7 +4508,7 @@ int Building_GetCashOnWave(int current)
 		int count;
 		
 		int i = MaxClients + 1;
-		while((i = FindEntityByClassname(i, "base_boss")) != -1)
+		while((i = FindEntityByClassname(i, "base_npc")) != -1)
 		{
 			if(i_NpcInternalId[i] == CITIZEN)
 				count++;

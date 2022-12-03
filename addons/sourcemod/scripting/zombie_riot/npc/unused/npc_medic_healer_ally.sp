@@ -754,7 +754,7 @@ stock int GetClosestAlly(int entity)
 	int ClosestTarget = 0; 
 
 		int i = MaxClients + 1;
-		while ((i = FindEntityByClassname(i, "base_boss")) != -1)
+		while ((i = FindEntityByClassname(i, "base_npc")) != -1)
 		{
 			if (GetEntProp(entity, Prop_Send, "m_iTeamNum")==GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && GetEntProp(i, Prop_Data, "m_iHealth") < GetEntProp(i, Prop_Data, "m_iMaxHealth"))
 			{
@@ -788,7 +788,7 @@ stock bool IsValidAllyNotFullHealth(int index, int ally)
 	{
 		static char strClassname[16];
 		GetEntityClassname(ally, strClassname, sizeof(strClassname));
-		if(StrEqual(strClassname, "base_boss"))
+		if(StrEqual(strClassname, "base_npc"))
 		{
 			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(ally, Prop_Send, "m_iTeamNum") && GetEntProp(ally, Prop_Data, "m_iHealth") > 0 && GetEntProp(ally, Prop_Data, "m_iHealth") < GetEntProp(ally, Prop_Data, "m_iMaxHealth")) 
 			{

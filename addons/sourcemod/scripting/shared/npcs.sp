@@ -94,7 +94,7 @@ public Action NPC_OnCreatePre(char[] classname)
 {
 	if(!StrContains(classname, "npc_") && !StrEqual(classname, "npc_maker"))
 	{
-		strcopy(classname, 64, "base_boss");
+		strcopy(classname, 64, "base_npc");
 		return Plugin_Changed;
 	}
 	return Plugin_Continue;
@@ -1338,7 +1338,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 			
 #if defined ZR
-			else if(StrEqual(classname, "base_boss") && b_IsAlliedNpc[inflictor]) //add a filter so it only does it for allied base_bosses
+			else if(StrEqual(classname, "base_npc") && b_IsAlliedNpc[inflictor]) //add a filter so it only does it for allied base_bosses
 			{
 				CClotBody npc = view_as<CClotBody>(inflictor);
 				if(npc.m_bScalesWithWaves)

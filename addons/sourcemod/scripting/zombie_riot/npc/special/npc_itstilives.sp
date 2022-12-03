@@ -133,7 +133,7 @@ public Action Itstilives_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		if(!npc.m_bTargetBlue && !(GetURandomInt() % (LeadStealer ? 49 : 139)))
 		{
 			int i = MaxClients + 1;
-			while((i = FindEntityByClassname(i, "base_boss")) != -1)
+			while((i = FindEntityByClassname(i, "base_npc")) != -1)
 			{
 				if(!CollectedSounds[i] && GetEntProp(i, Prop_Send, "m_iTeamNum") == 3)
 				{
@@ -268,7 +268,7 @@ static void CleanNPCs()
 	GlobalHealth = 0;
 	
 	int entity = MaxClients + 1;
-	while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+	while((entity = FindEntityByClassname(entity, "base_npc")) != -1)
 	{
 		SetEntityRenderMode(entity, RENDER_NORMAL);
 		SDKUnhook(entity, SDKHook_OnTakeDamage, Itstilives_ClotDamaged);

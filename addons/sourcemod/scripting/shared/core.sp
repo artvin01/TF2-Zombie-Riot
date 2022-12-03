@@ -1013,7 +1013,7 @@ public void OnPluginEnd()
 	{
 		if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
 		{
-			if(!StrContains(buffer, "base_boss"))
+			if(!StrContains(buffer, "base_npc"))
 				RemoveEntity(i);
 		}
 	}
@@ -1897,7 +1897,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			OnWrenchCreated(entity);
 		}
-		else if(!StrContains(classname, "base_boss"))
+		else if(!StrContains(classname, "base_npc"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Check_For_Team_Npc);
 		//	Check_For_Team_Npc(EntIndexToEntRef(entity)); //Dont delay ?
@@ -2158,9 +2158,9 @@ public void Check_For_Team_Npc(int entity)
 		}
 		else
 		{
-			//This code only exists if a base_boss that gets summoned isnt a boss, and also isnt applied by the plugin, so it will default to a non boss
+			//This code only exists if a base_npc that gets summoned isnt a boss, and also isnt applied by the plugin, so it will default to a non boss
 			//As a safety measure.
-			//Todo: If any map has any base_boss, detect and apply.
+			//Todo: If any map has any base_npc, detect and apply.
 			//Idea: detect if team 0, if yes, move to zombie team and apply boss status!
 		//	PrintToChatAll("%i",GetCustomKeyValue(entity,"m_bThisEntityIgnored", "1", 2));
 		//	SetCustomKeyValue(client, "m_bThisEntityIgnored", "0");
@@ -2244,9 +2244,9 @@ public void Check_For_Team_Npc_Delayed(int ref)
 		}
 		else
 		{
-			//This code only exists if a base_boss that gets summoned isnt a boss, and also isnt applied by the plugin, so it will default to a non boss
+			//This code only exists if a base_npc that gets summoned isnt a boss, and also isnt applied by the plugin, so it will default to a non boss
 			//As a safety measure.
-			//Todo: If any map has any base_boss, detect and apply.
+			//Todo: If any map has any base_npc, detect and apply.
 			//Idea: detect if team 0, if yes, move to zombie team and apply boss status!
 		//	PrintToChatAll("%i",GetCustomKeyValue(entity,"m_bThisEntityIgnored", "1", 2));
 		//	SetCustomKeyValue(client, "m_bThisEntityIgnored", "0");

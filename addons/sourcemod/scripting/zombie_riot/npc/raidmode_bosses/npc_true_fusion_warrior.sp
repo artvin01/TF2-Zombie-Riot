@@ -1095,7 +1095,7 @@ public bool FusionWarrior_BEAM_TraceUsers(int entity, int contentsMask, int clie
 		{
 			GetEntityClassname(entity, classname, sizeof(classname));
 
-			if (!StrContains(classname, "base_boss", true) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
+			if (!StrContains(classname, "base_npc", true) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
 			{
 				for(int i=1; i <= MAXENTITIES; i++)
 				{

@@ -513,12 +513,12 @@ void Waves_RoundStart()
 	{
 		if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
 		{
-			if(StrEqual(buffer, "base_boss"))
+			if(StrEqual(buffer, "base_npc"))
 				RemoveEntity(i);
 		}
 	}
 	*/
-	//DONT. Breaks map base_boss.
+	//DONT. Breaks map base_npc.
 	if(CurrentCash != StartCash)
 	{
 		Store_Reset();
