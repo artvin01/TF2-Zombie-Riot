@@ -146,14 +146,14 @@ methodmap CClotBody
 						float CustomThreeDimensions[3] = {0.0,0.0,0.0})
 	{
 		CBaseNPC baseNPC = CBaseNPC();
-		PrintToConsole("CBaseNPC == %d", baseNPC);
+		PrintToServer("CBaseNPC == %d", baseNPC);
 		if(baseNPC == INVALID_NPC)
 		{
 			return view_as<CClotBody>(-1);
 		}
 
 		int npc = baseNPC.GetEntity();
-		PrintToConsole("Entity == %d", npc);
+		PrintToServer("Entity == %d", npc);
 		CBaseCombatCharacter combatChar = CBaseCombatCharacter(npc);
 		
 		combatChar.Teleport(vecPos, vecAng);
@@ -1330,7 +1330,7 @@ methodmap CClotBody
 		if(id == INVALID_NPC)
 			ThrowError("Invalid NPC ID");
 		
-		PrintToConsole("CBaseNPC == %d | Entity == %d", id, this);
+		PrintToServer("CBaseNPC == %d | Entity == %d", id, this);
 		return id;
 	}
 	public CBaseNPC_Locomotion GetLocomotionInterface()
