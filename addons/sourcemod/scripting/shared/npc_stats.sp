@@ -1527,10 +1527,11 @@ methodmap CClotBody
 	{
 		//Sad!
 		float flPrevValue = flTurnRate.FloatValue;
+		CBaseNPC npc = this.GetBaseNPC();
 
 		flTurnRate.FloatValue = turnrate;
-		baseNPC.flMaxYawRate = turnrate;
-		this.GetLocomotionInterface().FaceTowards(vecGoal);
+		npc.flMaxYawRate = turnrate;
+		npc.GetLocomotionInterface().FaceTowards(vecGoal);
 		flTurnRate.FloatValue = flPrevValue;
 	}
 
