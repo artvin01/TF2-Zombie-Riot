@@ -1326,7 +1326,7 @@ methodmap CClotBody
 
 	public CBaseNPC GetBaseNPC()
 	{
-		int id = TheNPCs.FindNPCByEntIndex(this.index);
+		CBaseNPC id = TheNPCs.FindNPCByEntIndex(this.index);
 		if(id == INVALID_NPC)
 			ThrowError("Invalid NPC ID");
 		
@@ -1592,7 +1592,8 @@ methodmap CClotBody
 	public void GetGroundMotionVector(float vecMotion[3])					{ this.GetLocomotionInterface().GetGroundMotionVector(vecMotion); }
 	public float GetLeadRadius()
 	{
-		return view_as<ChasePath>(this.GetPathFollower()).GetLeadRadius();
+		return 90000.0;
+		//return view_as<ChasePath>(this.GetPathFollower()).GetLeadRadius();
 	}
 	public void UpdateCollisionBox() { SDKCall(g_hUpdateCollisionBox,  this.index); }
 	public void ResetSequenceInfo()  { SDKCall(g_hResetSequenceInfo,  this.index); }
