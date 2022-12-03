@@ -1439,8 +1439,11 @@ methodmap CClotBody
 	public void AddGesture(const char[] anim, bool cancel_animation = true)
 	{
 		Activity iSequence = this.LookupActivity(anim);
+		PrintToChatAll("test1 %i",iSequence);
 		if(iSequence < ACT_RESET)
 			return;
+
+		PrintToChatAll("test2");
 
 		CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(this.index);
 		if(cancel_animation)
