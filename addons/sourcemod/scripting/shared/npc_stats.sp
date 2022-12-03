@@ -1365,8 +1365,8 @@ methodmap CClotBody
 
 	public Address GetModelPtr()
 	{
-		return view_as<Address>(GetEntData(this.index, FindDataMapInfo(this.index, "m_flFadeScale") + 28));
-		//return CBaseAnimating(this.index).GetModelPtr();
+		//return view_as<Address>(GetEntData(this.index, FindDataMapInfo(this.index, "m_flFadeScale") + 28));
+		return CBaseAnimating(this.index).GetModelPtr();
 	}
 	public void SetPoseParameter(int iParameter, float value)
 	{
