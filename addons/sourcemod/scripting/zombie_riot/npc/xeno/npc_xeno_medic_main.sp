@@ -46,7 +46,6 @@ public void XenoMedicMain_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 
 	PrecacheSound("player/flow.wav");
-	InitNavGamedata();
 }
 
 methodmap XenoMedicMain < CClotBody

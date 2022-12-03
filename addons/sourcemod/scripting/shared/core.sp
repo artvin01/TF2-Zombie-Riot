@@ -128,7 +128,7 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 #define SENTRY_BLUEPRINT	"models/buildables/sentry1_blueprint.mdl"
 
 native any FuncToVal(Function bruh);
-
+/*
 enum
 {
 	EF_BONEMERGE			= 0x001,	// Performs bone merge on client side
@@ -146,7 +146,7 @@ enum
 	EF_ITEM_BLINK			= 0x100,	// blink an item so that the user notices it.
 	EF_PARENT_ANIMATES		= 0x200,	// always assume that the parent entity is animating
 	EF_MAX_BITS = 10
-};
+};*/
 
 enum
 {
@@ -212,6 +212,8 @@ bool b_DoNotUnStuck[MAXENTITIES];
 float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
 //float Check_Standstill_Delay[MAXTF2PLAYERS];
 //bool Check_Standstill_Applied[MAXTF2PLAYERS];
+
+float f_StuckTextChatNotif[MAXTF2PLAYERS];
 
 float max_mana[MAXTF2PLAYERS];
 float mana_regen[MAXTF2PLAYERS];
@@ -459,16 +461,13 @@ Address g_hSDKStartLagCompAddress;
 Address g_hSDKEndLagCompAddress;
 bool g_GottenAddressesForLagComp;
 
-StringMap HookIdMap;
-StringMap HookListMap;
-
 //Handle g_hSDKIsClimbingOrJumping;
 //SDKCalls
 Handle g_hUpdateCollisionBox;
-Handle g_hMyNextBotPointer;
-Handle g_hGetLocomotionInterface;
-Handle g_hGetIntentionInterface;
-Handle g_hGetBodyInterface;
+//Handle g_hMyNextBotPointer;
+//Handle g_hGetLocomotionInterface;
+//Handle g_hGetIntentionInterface;
+//Handle g_hGetBodyInterface;
 //Handle g_hGetVisionInterface;
 //Handle g_hGetPrimaryKnownThreat;
 //Handle g_hAddKnownEntity;
@@ -476,73 +475,69 @@ Handle g_hGetBodyInterface;
 //Handle g_hGetKnown;
 //Handle g_hUpdatePosition;
 //Handle g_hUpdateVisibilityStatus;
-Handle g_hRun;
-Handle g_hApproach;
-Handle g_hFaceTowards;
-Handle g_hGetVelocity;
-Handle g_hSetVelocity;
-Handle g_hStudioFrameAdvance;
-Handle g_hJump;
-Handle g_hSDKIsOnGround;
+//Handle g_hRun;
+//Handle g_hApproach;
+//Handle g_hFaceTowards;
+//Handle g_hGetVelocity;
+//Handle g_hSetVelocity;
+//Handle g_hStudioFrameAdvance;
+//Handle g_hJump;
+//Handle g_hSDKIsOnGround;
 //DynamicHook g_hAlwaysTransmit;
 // Handle g_hJumpAcrossGap;
-Handle g_hDispatchAnimEvents;
-Handle g_hGetMaxAcceleration;
-Handle g_hGetGroundSpeed;
-Handle g_hGetVectors;
-Handle g_hGetGroundMotionVector;
-Handle g_hLookupPoseParameter;
-Handle g_hSetPoseParameter;
-Handle g_hGetPoseParameter;
+//Handle g_hDispatchAnimEvents;
+//Handle g_hGetMaxAcceleration;
+//Handle g_hGetGroundSpeed;
+//Handle g_hGetVectors;
+//Handle g_hGetGroundMotionVector;
+//Handle g_hLookupPoseParameter;
+//Handle g_hSetPoseParameter;
+//Handle g_hGetPoseParameter;
 Handle g_hLookupActivity;
 Handle g_hSDKWorldSpaceCenter;
-Handle g_hStudio_FindAttachment;
-Handle g_hGetAttachment;
-Handle g_hAddGesture;
-Handle g_hRemoveGesture;
-Handle g_hRestartGesture;
-Handle g_hIsPlayingGesture;
-Handle g_hFindBodygroupByName;
-Handle g_hSetBodyGroup;
-Handle g_hSelectWeightedSequence;
+//Handle g_hStudio_FindAttachment;
+//Handle g_hGetAttachment;
+//Handle g_hAddGesture;
+//Handle g_hRemoveGesture;
+//Handle g_hRestartGesture;
+//Handle g_hIsPlayingGesture;
+//Handle g_hFindBodygroupByName;
+//Handle g_hSetBodyGroup;
+//Handle g_hSelectWeightedSequence;
 Handle g_hResetSequenceInfo;
 
 //Death
-Handle g_hNextBotCombatCharacter_Event_Killed;
-Handle g_hCBaseCombatCharacter_Event_Killed;
+//Handle g_hNextBotCombatCharacter_Event_Killed;
+//Handle g_hCBaseCombatCharacter_Event_Killed;
 
 //PluginBot SDKCalls
-Handle g_hGetEntity;
-Handle g_hGetBot;
+//Handle g_hGetEntity;
+//Handle g_hGetBot;
 
 //DHooks
 //Handle g_hGetCurrencyValue;
-Handle g_hEvent_Killed;
-Handle g_hEvent_Ragdoll;
-Handle g_hHandleAnimEvent;
-Handle g_hGetFrictionSideways;
-Handle g_hGetStepHeight;
-Handle g_hGetGravity;
-Handle g_hGetRunSpeed;
-Handle g_hGetGroundNormal;
-Handle g_hShouldCollideWithAlly;
-Handle g_hShouldCollideWithAllyInvince;
-Handle g_hShouldCollideWithAllyEnemy;
-Handle g_hShouldCollideWithAllyEnemyIngoreBuilding;
-Handle g_hGetSolidMask;
-Handle g_hStartActivity;
-Handle g_hGetActivity;
-Handle g_hIsActivity;
-Handle g_hGetHullWidth;
-Handle g_hGetHullHeight;
-Handle g_hGetStandHullHeight;
-Handle g_hGetHullWidthGiant;
-Handle g_hGetHullHeightGiant;
-Handle g_hGetStandHullHeightGiant;
-
-//NavAreas
-Address TheNavAreas;
-Address navarea_count;
+//Handle g_hEvent_Killed;
+//Handle g_hEvent_Ragdoll;
+//Handle g_hHandleAnimEvent;
+//Handle g_hGetFrictionSideways;
+//Handle g_hGetStepHeight;
+//Handle g_hGetGravity;
+//Handle g_hGetRunSpeed;
+//Handle g_hGetGroundNormal;
+//Handle g_hShouldCollideWithAlly;
+//Handle g_hShouldCollideWithAllyInvince;
+//Handle g_hShouldCollideWithAllyEnemy;
+//Handle g_hShouldCollideWithAllyEnemyIngoreBuilding;
+//Handle g_hGetSolidMask;
+//Handle g_hStartActivity;
+//Handle g_hGetActivity;
+//Handle g_hIsActivity;
+//Handle g_hGetHullWidth;
+//Handle g_hGetHullHeight;
+//Handle g_hGetStandHullHeight;
+//Handle g_hGetHullWidthGiant;
+//Handle g_hGetHullHeightGiant;
+//Handle g_hGetStandHullHeightGiant;
 
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
 DynamicHook g_DHookMedigunPrimary; 
@@ -602,9 +597,6 @@ enum
 
 #define RAD2DEG(%1) ((%1) * (180.0 / FLOAT_PI))
 #define DEG2RAD(%1) ((%1) * FLOAT_PI / 180.0)
-
-#define EF_BONEMERGE		(1 << 0)
-#define EF_PARENT_ANIMATES	(1 << 9)
 
 #define	SHAKE_START					0			// Starts the screen shake for all players within the radius.
 #define	SHAKE_STOP					1			// Stops the screen shake for all players within the radius.
@@ -2426,8 +2418,6 @@ public void OnEntityDestroyed(int entity)
 	}
 	
 	OnEntityDestroyed_Build_On_Build(entity);
-	
-	NPC_Base_OnEntityDestroyed();
 }
 
 public void RemoveNpcThingsAgain(int entity)

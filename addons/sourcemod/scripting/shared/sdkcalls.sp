@@ -168,7 +168,7 @@ void SDKCall_Setup()
 	
 	delete gamedata;
 	
-	Handle hConf = LoadGameConfigFile("tf2.pets");
+	/*Handle hConf = LoadGameConfigFile("tf2.pets");
 
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::GetAttachment");
@@ -192,7 +192,7 @@ void SDKCall_Setup()
 	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
 	
 	delete hConf;
-	/*
+	
 	Handle ZConf = LoadGameConfigFile("zombie_riot");
 	
 	StartPrepSDKCall(SDKCall_Player);
@@ -303,26 +303,30 @@ int SDKCall_GetMaxHealth(int client)
 
 public int FindAttachment(int index, const char[] pAttachmentName)
 {
-	Address pStudioHdr = GetStudioHdr(index);
-	if(pStudioHdr == Address_Null)
-		return -1;
-			
-	return SDKCall(g_hStudio_FindAttachment, pStudioHdr, pAttachmentName) + 1;
+	//Address pStudioHdr = GetStudioHdr(index);
+	//if(pStudioHdr == Address_Null)
+	//	return -1;
+	//		
+	//return SDKCall(g_hStudio_FindAttachment, pStudioHdr, pAttachmentName) + 1;
+	return view_as<CBaseAnimating>(index).LookupAttachment(pAttachmentName);
 }	
 
 public Address GetStudioHdr(int index)
 {
-	if(IsValidEntity(index))
-	{
-		return view_as<Address>(GetEntData(index, FindDataMapInfo(index, "m_flFadeScale") + 28));
-	}
-		
-	return Address_Null;
+	//if(IsValidEntity(index))
+	//{
+	//	return view_as<Address>(GetEntData(index, FindDataMapInfo(index, "m_flFadeScale") + 28));
+	//}
+	//	
+	//return Address_Null;
+	return view_as<CBaseAnimating>(index).GetModelPtr();
 }	
 
-void GetAttachment(int index, const char[] szName, float absOrigin[3], float absAngles[3])
+bool GetAttachment(int index, const char[] szName, float absOrigin[3], float absAngles[3])
 {
-	SDKCall(g_hGetAttachment, index, FindAttachment(index, szName), absOrigin, absAngles);
+	//SDKCall(g_hGetAttachment, index, FindAttachment(index, szName), absOrigin, absAngles);
+	CBaseAnimating animate = CBaseAnimating(index);
+	return animate.GetAttachment(animate.LookupAttachment(szName), absOrigin, absAngles);
 }	
 /*
 bool SDKCall_PlaySpecificSequence(int iClient, const char[] sAnimationName)
@@ -338,7 +342,8 @@ void SDKCall_DoAnimationEvent(int iClient, int event_int, int extra_data = 0)
 
 public void GetVectors(int client, float pForward[3], float pRight[3], float pUp[3])
 {
-	SDKCall(g_hGetVectors, client, pForward, pRight, pUp);
+	//SDKCall(g_hGetVectors, client, pForward, pRight, pUp);
+	view_as<CBaseEntity>(client).GetVectors(pForward, pRight, pUp);
 }
 
 public void StartPlayerOnlyLagComp(int client, bool Compensate_allies)

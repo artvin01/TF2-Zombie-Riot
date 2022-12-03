@@ -166,15 +166,15 @@ public void StartChicken_ClotThink(int iNPC)
 	if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 	{
 		//Pick a random goal area
-		NavArea RandomArea = PickRandomArea();	
+		CNavArea RandomArea = PickRandomArea();	
 			
-		if(RandomArea == NavArea_Null) 
+		if(RandomArea == NULL_AREA) 
 			return;
 			
 		float vecGoal[3]; RandomArea.GetCenter(vecGoal);
 		
-		if(!PF_IsPathToVectorPossible(iNPC, vecGoal))
-			return;
+		//if(!PF_IsPathToVectorPossible(iNPC, vecGoal))
+		//	return;
 			
 		f3_PositionArrival[iNPC][0] = vecGoal[0];
 		f3_PositionArrival[iNPC][1] = vecGoal[1];

@@ -2,7 +2,6 @@
 
 #include <sourcemod>
 #include <dhooks>
-#include <CBaseAnimatingOverlay>
 
 #pragma newdecls required
 
@@ -414,11 +413,11 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 			restore.m_layerRecords = new ArrayList(sizeof(LayerRecord));
 			for(int i; i<layerCount; i++)
 			{
-				CAnimationLayer currentLayer = overlay.GetLayer(i); 
-				layer.m_cycle = currentLayer.Get(m_flCycle);
-				layer.m_order = currentLayer.Get(m_nOrder);
-				layer.m_sequence = currentLayer.Get(m_nSequence);
-				layer.m_weight = currentLayer.Get(m_flWeight);
+				CAnimationLayer currentLayer = overlay.GetAnimOverlay(i); 
+				layer.m_cycle = currentLayer.m_flCycle;
+				layer.m_order = currentLayer.m_nOrder;
+				layer.m_sequence = currentLayer.m_nSequence;
+				layer.m_weight = currentLayer.m_flWeight;
 				restore.m_layerRecords.PushArray(layer);
 				bool interpolated = false;
 				if(interpolationAllowed)
@@ -434,30 +433,31 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 							// the older record is higher in frame than the newer, it must have wrapped around from 1 back to 0
 							// add one to the newer so it is lerping from .9 to 1.1 instead of .9 to .1, for example.
 							float newCycle = Lerpfloat(frac, recordsLayerRecord.m_cycle, prevRecordsLayerRecord.m_cycle + 1.0);
-							currentLayer.Set(m_flCycle, newCycle < 1.0 ? newCycle : newCycle - 1.0);// and make sure .9 to 1.2 does not end up 1.05
+							currentLayer.m_flCycle = newCycle < 1.0 ? newCycle : newCycle - 1.0;// and make sure .9 to 1.2 does not end up 1.05
 						}
 						else
 						{
-							currentLayer.Set(m_flCycle, Lerpfloat(frac, recordsLayerRecord.m_cycle, prevRecordsLayerRecord.m_cycle));
+							currentLayer.m_flCycle = Lerpfloat(frac, recordsLayerRecord.m_cycle, prevRecordsLayerRecord.m_cycle);
 						}
 							
-						currentLayer.Set(m_nOrder, recordsLayerRecord.m_order);
-						currentLayer.Set(m_nSequence, recordsLayerRecord.m_sequence);
-						currentLayer.Set(m_flWeight, Lerpfloat(frac, recordsLayerRecord.m_weight, prevRecordsLayerRecord.m_weight));
+						currentLayer.m_nOrder = recordsLayerRecord.m_order;
+						currentLayer.m_nSequence = recordsLayerRecord.m_sequence;
+						currentLayer.m_flWeight = Lerpfloat(frac, recordsLayerRecord.m_weight, prevRecordsLayerRecord.m_weight);
 					}
 				}
 					
 				if(!interpolated)
 				{
 					//Either no interp, or interp failed.  Just use record.
-					currentLayer.Set(m_flCycle, layer.m_cycle);
-					currentLayer.Set(m_nOrder, layer.m_order);
-					currentLayer.Set(m_nSequence, layer.m_sequence);
-					currentLayer.Set(m_flWeight, layer.m_weight);
+					currentLayer.m_flCycle = layer.m_cycle;
+					currentLayer.m_nOrder = layer.m_order;
+					currentLayer.m_nSequence = layer.m_sequence;
+					currentLayer.m_flWeight = layer.m_weight;
 				}
 			}
 		}
 	}
+
 	SDKCall_InvalidateBoneCache(entity); //Do at all times, yes, ew but i have to,
 	EntityRestore.SetArray(refchar, restore, sizeof(restore));
 }
@@ -544,11 +544,11 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 							for(int i; i<layerCount; i++)
 							{
 								restore.m_layerRecords.GetArray(i, layer);
-								CAnimationLayer currentLayer = overlay.GetLayer(i); 
-								currentLayer.Set(m_flCycle, layer.m_cycle);
-								currentLayer.Set(m_nOrder, layer.m_order);
-								currentLayer.Set(m_nSequence, layer.m_sequence);
-								currentLayer.Set(m_flWeight, layer.m_weight);
+								CAnimationLayer currentLayer = overlay.GetAnimOverlay(i); 
+								currentLayer.m_flCycle = layer.m_cycle;
+								currentLayer.m_nOrder = layer.m_order;
+								currentLayer.m_nSequence = layer.m_sequence;
+								currentLayer.m_flWeight = layer.m_weight;
 							}
 	#endif
 						}
@@ -631,18 +631,18 @@ void LagCompensationThink_Forward()
 				if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity]) //If its an allied baseboss, make sure to not get layers.
 				{
 					CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
-					if(overlay.Address == Address_Null)
-						continue;
+					//if(overlay.Address == Address_Null)
+					//	continue;
 					
 					int layerCount = GetEntPropArraySize(entity, Prop_Data, "m_AnimOverlay");
 					record.m_layerRecords = new ArrayList(sizeof(LayerRecord));
 					for(int i; i<layerCount; i++)
 					{
-						CAnimationLayer currentLayer = overlay.GetLayer(i); 
-						layer.m_cycle = currentLayer.Get(m_flCycle);
-						layer.m_order = currentLayer.Get(m_nOrder);
-						layer.m_sequence = currentLayer.Get(m_nSequence);
-						layer.m_weight = currentLayer.Get(m_flWeight);
+						CAnimationLayer currentLayer = overlay.GetAnimOverlay(i); 
+						layer.m_cycle = currentLayer.m_flCycle;
+						layer.m_order = currentLayer.m_nOrder;
+						layer.m_sequence = currentLayer.m_nSequence;
+						layer.m_weight = currentLayer.m_flWeight;
 						record.m_layerRecords.PushArray(layer);
 					}
 					record.m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
