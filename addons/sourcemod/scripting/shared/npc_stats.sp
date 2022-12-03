@@ -153,12 +153,16 @@ methodmap CClotBody
 
 		int npc = baseNPC.GetEntity();
 		CBaseCombatCharacter combatChar = CBaseCombatCharacter(npc);
-		DispatchKeyValueVector(npc, "origin",	 vecPos);
+		/*DispatchKeyValueVector(npc, "origin",	 vecPos);
 		DispatchKeyValueVector(npc, "angles",	 vecAng);
 		DispatchKeyValue(npc,	   "model",	  model);
 		DispatchKeyValue(npc,	   "modelscale", modelscale);
-		DispatchKeyValue(npc,	   "health",	 health);
+		DispatchKeyValue(npc,	   "health",	 health);*/
 
+		combatChar.Teleport(vecPos, vecAng);
+		combatChar.SetModel(model);
+		combatChar.SetPropFloat(Prop_Send, "m_flModelScale", StringToFloat(modelscale));
+		
 		if(Ally)
 		{
 			if(Ally_Invince)
@@ -173,7 +177,10 @@ methodmap CClotBody
 		}
 		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
 
-		DispatchSpawn(npc); //Do this at the end :)
+		combatChar.Spawn();
+		combatChar.Activate();
+
+		combatChar.SetProp(Prop_Data, "m_iHealth", StringToInt(health));
 
 		if(Ally)
 		{
