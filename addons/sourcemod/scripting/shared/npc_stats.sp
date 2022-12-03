@@ -146,19 +146,16 @@ methodmap CClotBody
 						float CustomThreeDimensions[3] = {0.0,0.0,0.0})
 	{
 		CBaseNPC baseNPC = CBaseNPC();
+		PrintToConsole("CBaseNPC == %d", baseNPC);
 		if(baseNPC == INVALID_NPC)
 		{
 			return view_as<CClotBody>(-1);
 		}
 
 		int npc = baseNPC.GetEntity();
+		PrintToConsole("Entity == %d", npc);
 		CBaseCombatCharacter combatChar = CBaseCombatCharacter(npc);
-		/*DispatchKeyValueVector(npc, "origin",	 vecPos);
-		DispatchKeyValueVector(npc, "angles",	 vecAng);
-		DispatchKeyValue(npc,	   "model",	  model);
-		DispatchKeyValue(npc,	   "modelscale", modelscale);
-		DispatchKeyValue(npc,	   "health",	 health);*/
-
+		
 		combatChar.Teleport(vecPos, vecAng);
 		combatChar.SetModel(model);
 		combatChar.SetPropFloat(Prop_Send, "m_flModelScale", StringToFloat(modelscale));
@@ -1329,7 +1326,12 @@ methodmap CClotBody
 
 	public CBaseNPC GetBaseNPC()
 	{
-		return TheNPCs.FindNPCByEntIndex(this.index);
+		int id = TheNPCs.FindNPCByEntIndex(this.index);
+		if(id == INVALID_NPC)
+			ThrowError("Invalid NPC ID");
+		
+		PrintToConsole("CBaseNPC == %d | Entity == %d", id, this);
+		return id;
 	}
 	public CBaseNPC_Locomotion GetLocomotionInterface()
 	{
@@ -1505,7 +1507,7 @@ methodmap CClotBody
 		if(!CvarDisableThink.BoolValue)
 			this.m_bPathing = true;
 	}
-	public void Stog_PathFollowering()
+	public void StopPathing()
 	{
 		CBaseNPC npc = this.GetBaseNPC();
 		g_PathFollower[npc.Index].Invalidate();
