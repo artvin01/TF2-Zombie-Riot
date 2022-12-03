@@ -141,7 +141,8 @@
 			{
 				"library"	"server"
 				"linux"		"@_ZN14CBaseAnimating19InvalidateBoneCacheEv"
-				"windows"	"\x55\x8B\xEC\x56\x57\x8B\x7D\x08\x8B\xF1\x8B\x06\x3B\x07\x74\x2A\x80\xBE\x40\xFA\xFF\xFF\x00"
+				"windows"	"\xFF\xB1\x6C\x04\x00\x00"
+				//i will slap you batfox >:(
 				// If this crashes, I probably grabbed the wrong thing. This is what was previously here:
 				//"\xFF\xB1\x40\x04\x00\x00" //Suspiciously small.
 			}
