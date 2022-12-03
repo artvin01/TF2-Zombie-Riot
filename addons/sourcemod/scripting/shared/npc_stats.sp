@@ -1428,11 +1428,11 @@ methodmap CClotBody
 	{
 		Address pStudioHdr = this.GetModelPtr();
 		if(pStudioHdr == Address_Null)
-		{
 			return -1;
-		}
 
-		return SDKCall(g_hLookupActivity, pStudioHdr, activity);
+		int pos = SDKCall(g_hLookupActivity, pStudioHdr, activity);
+		PrintToChatAll("%d", pos);
+		return pos;
 	}
 	// TODO: Replace the gesture functions with layer functions
 	// These works the same as gestures but give you more control
