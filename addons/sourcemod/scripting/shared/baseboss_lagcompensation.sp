@@ -35,8 +35,8 @@ enum struct LagRecord
 //	float					m_vecMinsPreScaled[3];
 //	float					m_vecMaxsPreScaled[3];
 
-	float					m_flSimulationTime;	
-	
+	float					m_flSimulationTime;
+
 	// Player animation details, so we can get the legs in the right spot.
 	ArrayList				m_layerRecords;
 	int						m_masterSequence;
@@ -57,21 +57,21 @@ void OnPluginStart_LagComp()
 //	sv_unlag = FindConVar("sv_unlag");
 	sv_maxunlag = FindConVar("sv_maxunlag");
 //	mp_friendlyfire = FindConVar("mp_friendlyfire");
-	
+
 	EntityTrack = new StringMap();
 	EntityRestore = new StringMap();
 	/*
 	GameData gamedata = LoadGameConfigFile("lagcompensation");
-	
+
 	DynamicDetour detour = DynamicDetour.FromConf(gamedata, "CLagCompensationManager::StartLagCompensation");
 	DHookEnableDetour(detour, false, StartLagCompensation);
 	delete detour;
-	
+
 	detour = DynamicDetour.FromConf(gamedata, "CLagCompensationManager::FinishLagCompensation");
 	DHookEnableDetour(detour, false, FinishLagCompensation);
 	delete detour;
 	*/
-//	delete gamedata;	   
+//	delete gamedata;
 }
 
 Action OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcount)
@@ -90,7 +90,7 @@ void OnEntityDestroyed_LagComp(int entity)
 		int ref = EntIndexToEntRef(entity);
 		char key[13];
 		IntToString(ref, key, sizeof(key));
-		
+
 		ArrayList list;
 		EntityTrack.GetValue(key, list);
 		EntityTrack.Remove(key);
@@ -108,7 +108,7 @@ void OnEntityDestroyed_LagComp(int entity)
 			}
 			delete list;
 		}
-	
+
 		LagRecord record;
 		EntityRestore.GetArray(key, record, sizeof(record));
 		if(entity > MaxClients && !b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
@@ -129,29 +129,29 @@ void StartLagCompensation_Base_Boss(int client)
 		{
 		//	CurrentPlayer = client;
 		//	SetEntProp(client, Prop_Data, "m_bLagCompensation", false, 1);
-			
+
 			DoingLagCompensation = true;
-			
+
 			// Get true latency
-			
+
 			// correct is the amout of time we have to correct game time
 			float correct = GetClientLatency(client, NetFlow_Outgoing);
-			
+
 			// calc number of view interpolation ticks - 1
 			int lerpTicks = TIME_TO_TICKS(GetEntPropFloat(client, Prop_Data, "m_fLerpTime"));
-			
+
 			// add view interpolation latency see C_BaseEntity::GetInterpolationAmount()
 			correct += TICKS_TO_TIME(lerpTicks);
-			
+
 			// check bouns [0,sv_maxunlag]
 			correct = clamp(correct, 0.0, sv_maxunlag.FloatValue);
-			
-			// correct tick send by player 
+
+			// correct tick send by player
 			int targettick = TickCount[client] - lerpTicks;
-			
+
 			// calc difference between tick send by player and our latency based tick
 			float deltaTime = correct - TICKS_TO_TIME(GetGameTickCount() - targettick);
-			
+
 			if(fabs(deltaTime) > 0.2)
 			{
 				// difference between cmd time and latency is too big > 200ms, use time correction based on latency
@@ -159,7 +159,7 @@ void StartLagCompensation_Base_Boss(int client)
 				targettick = GetGameTickCount() - TIME_TO_TICKS(correct);
 			}
 
-			
+
 			// Iterate all active NPCs
 			//const CBitVec<MAX_EDICTS> *pEntityTransmitBits = engine.GetEntityTransmitBitsForClient( player.entindex() - 1 );
 		//	if(!compensate_players)
@@ -197,25 +197,25 @@ bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos1);
 	float pos2[3];
 	GetClientAbsOrigin(player, pos2);
-	
-	// get max distance player could have moved within max lag compensation time, 
+
+	// get max distance player could have moved within max lag compensation time,
 	// multiply by 1.5 to to avoid "dead zones"  (sqrt(2) would be the exact value)
 	float maxDistance = 1.5 * GetEntPropFloat(player, Prop_Data, "m_flMaxspeed") * sv_maxunlag.FloatValue;
-	
+
 	// If the player is within this distance, lag compensate them in case they're running past us.
 	if(GetVectorDistance(pos2, pos1) < maxDistance)
 		return true;
-	
+
 //	if(!b_LagCompNPC_No_Layers)
 //	{
 	// If their origin is not within a 45 degree cone in front of us, no need to lag compensate.
 	float forwar[3];
 	GetAngleVectors(viewangles, forwar, NULL_VECTOR, NULL_VECTOR );
-	
+
 	float diff[3];
 	SubtractVectors(pos2, pos1, diff);
 	NormalizeVector(diff, diff);
-	
+
 	static const float flCosAngle = 0.707107;	// 45 degree angle
 	if(GetVectorDotProduct(forwar, diff) > flCosAngle)
 	{
@@ -224,7 +224,7 @@ bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles
 //	}
 //	else
 //	{
-//		return false;	
+//		return false;
 //	}
 	return true;
 }
@@ -233,62 +233,62 @@ bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles
 void BacktrackEntity(int entity, float currentTime) //Make sure that allies only get compensated for their bounding box.
 {
 	int ref = EntIndexToEntRef(entity);
-	
+
 	char refchar[12];
 	IntToString(ref, refchar, sizeof(refchar));
-	
+
 	ArrayList list;
 	if(!EntityTrack.GetValue(refchar, list))
 		return;
-	
+
 	int length = list.Length;
 	if(length < 1)
 		return;
-	
+
 	LagRecord prevRecord;
 	LagRecord record;
 
 	float prevOrg[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", prevOrg);
-	
+
 	bool multi;
 	for(int i=length-1; i>=0; i--)
 	{
 		// remember last record
 		prevRecord = record;
-		
+
 		// get next record
 		list.GetArray(i, record);
-		
+
 		/*float delta[3]
 		SubtractVectors(record.m_vecOrigin, prevOrg, delta);
 		if(Length2DSqr(delta) > m_flTeleportDistanceSqr)
 		{
 			// lost track, too much difference
-			return; 
+			return;
 		}*/
-		
+
 		// did we find a context smaller than target time ?
 		if(record.m_flSimulationTime <= currentTime)
 			break; // hurra, stop
-		
+
 		prevOrg = record.m_vecOrigin;
 		multi = true;
 	}
-	
+
 	float frac = 0.0;
 	float ang[3], org[3]; // minsPreScaled[3], maxsPreScaled[3];
-	
+
 	if(multi && record.m_flSimulationTime < currentTime && record.m_flSimulationTime < prevRecord.m_flSimulationTime)
 	{
 		// we didn't find the exact time but have a valid previous record
 		// so interpolate between these two records;
-		
+
 		// calc fraction between both records
 		frac = (currentTime - record.m_flSimulationTime) / (prevRecord.m_flSimulationTime - record.m_flSimulationTime);
-		
+
 		frac = clamp(frac, 0.000001, 0.999999); // should never extrapolate							LIT
-		
+
 		VectorLerp(record.m_vecAngles, prevRecord.m_vecAngles, frac, ang);
 		VectorLerp(record.m_vecOrigin, prevRecord.m_vecOrigin, frac, org);
 	//	VectorLerp(record.m_vecMinsPreScaled, prevRecord.m_vecMinsPreScaled, frac, minsPreScaled);
@@ -304,7 +304,7 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 	//	maxsPreScaled = record.m_vecMaxsPreScaled;
 	}
 	LagRecord restore;
-				
+
 //	GetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", restore.m_vecMinsPreScaled);
 //	GetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", restore.m_vecMaxsPreScaled);
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", restore.m_vecOrigin);
@@ -323,16 +323,16 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 			{
 				SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", { 100.0, 100.0, 200.0 });
 				SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", { -100.0, -100.0, 0.0 });
-				
-				
+
+
 				CClotBody npc = view_as<CClotBody>(entity);
 				npc.UpdateCollisionBox();
 			}
 		}
 		SetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 	}
-	SDKCall_SetLocalOrigin(entity, org);
-	
+	CBaseEntity(entity).SetLocalOrigin(org);
+
 	/*
 	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 	float tempRestore_1[3];
@@ -340,24 +340,24 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 	tempRestore[2] += 54.0;
 	TE_SetupBeamPoints(tempRestore, tempRestore_1, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({0, 0, 255, 255}), 30);
 	TE_SendToAll();
-	
+
 	//	SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime",record.m_flSimulationTime);
 	float tempRestore[3];
 	tempRestore[0] = 4676.0;
 	tempRestore[1] = -3309.0;
 	tempRestore[2] = 146.0;
-	
+
 	float tempRestore[3];
 	tempRestore = restore.m_vecOrigin;
 	tempRestore[2] += 54;
-	
+
 	float temporg[3];
 	temporg = org;
 	temporg[2] += 54;
-	
+
 	TE_SetupBeamPoints(restore.m_vecOrigin, tempRestore, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 0, 255}), 30);
 	TE_SendToAll();
-	
+
 	TE_SetupBeamPoints(temporg, org, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({0, 0, 255, 255}), 30);
 	TE_SendToAll();
 	*/
@@ -367,33 +367,33 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 	if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
 	{
 		bool interpolationAllowed = (multi && frac > 0.0 && record.m_masterSequence == prevRecord.m_masterSequence);
-		
+
 		if(interpolationAllowed)
 		{
 			SetEntProp(entity, Prop_Data, "m_nSequence", Lerpint(frac, record.m_masterSequence, prevRecord.m_masterSequence));
-				
+
 			if(record.m_masterCycle > prevRecord.m_masterCycle)
 			{
 				// the older record is higher in frame than the newer, it must have wrapped around from 1 back to 0
 				// add one to the newer so it is lerping from .9 to 1.1 instead of .9 to .1, for example.
 				float newCycle = Lerpfloat(frac, record.m_masterCycle, prevRecord.m_masterCycle + 1.0);
-					
+
 				if (newCycle<0.01)
 					newCycle = 0.01;
 				else if (newCycle>1.0)
 					newCycle = 1.0;
-					
+
 				SetEntPropFloat(entity, Prop_Data, "m_flCycle", newCycle < 1.0 ? newCycle : newCycle - 1.0);// and make sure .9 to 1.2 does not end up 1.05
 			}
 			else
 			{
 				float newCycle = Lerpfloat(frac, record.m_masterCycle, prevRecord.m_masterCycle);
-					
+
 				if (newCycle<0.01)
 					newCycle = 0.01;
 				else if (newCycle>1.0)
 					newCycle = 1.0;
-					
+
 				SetEntPropFloat(entity, Prop_Data, "m_flCycle", newCycle);
 			}
 		}
@@ -407,13 +407,13 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 		if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 		{
 			CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
-				
+
 			int layerCount = GetEntPropArraySize(entity, Prop_Data, "m_AnimOverlay");
 			LayerRecord layer, recordsLayerRecord, prevRecordsLayerRecord;
 			restore.m_layerRecords = new ArrayList(sizeof(LayerRecord));
 			for(int i; i<layerCount; i++)
 			{
-				CAnimationLayer currentLayer = overlay.GetAnimOverlay(i); 
+				CAnimationLayer currentLayer = overlay.GetAnimOverlay(i);
 				layer.m_cycle = currentLayer.m_flCycle;
 				layer.m_order = currentLayer.m_nOrder;
 				layer.m_sequence = currentLayer.m_nSequence;
@@ -439,13 +439,13 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 						{
 							currentLayer.m_flCycle = Lerpfloat(frac, recordsLayerRecord.m_cycle, prevRecordsLayerRecord.m_cycle);
 						}
-							
+
 						currentLayer.m_nOrder = recordsLayerRecord.m_order;
 						currentLayer.m_nSequence = recordsLayerRecord.m_sequence;
 						currentLayer.m_flWeight = Lerpfloat(frac, recordsLayerRecord.m_weight, prevRecordsLayerRecord.m_weight);
 					}
 				}
-					
+
 				if(!interpolated)
 				{
 					//Either no interp, or interp failed.  Just use record.
@@ -469,15 +469,15 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 	{
 		DoingLagCompensation = false;
 	//	SetEntProp(CurrentPlayer, Prop_Data, "m_bLagCompensation", true, 1);
-		
+
 		char refchar[12];
 		LagRecord restore;
 //------------------------------------------------------------------------------------------
 #if defined HaveLayersForLagCompensation
 		LayerRecord layer;
-//------------------------------------------------------------------------------------------		
+//------------------------------------------------------------------------------------------
 #endif
-//------------------------------------------------------------------------------------------	
+//------------------------------------------------------------------------------------------
 		for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
 		{
 			int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
@@ -493,24 +493,24 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 							static float m_vecMaxs[3];
 							static float m_vecMins[3];
 							m_vecMaxs = view_as<float>( { 1.0, 1.0, 2.0 } );
-							m_vecMins = view_as<float>( { -1.0, -1.0, 0.0 } );		
-							
+							m_vecMins = view_as<float>( { -1.0, -1.0, 0.0 } );
+
 							SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", m_vecMins);
-							
+
 							SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", m_vecMaxs);
-							
+
 							CClotBody npc = view_as<CClotBody>(entity);
 							npc.UpdateCollisionBox();
-							
+
 							if(b_BoundingBoxVariant[entity] == 1)
 							{
 								m_vecMaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
-								m_vecMins = view_as<float>( { -30.0, -30.0, 0.0 } );	
-							}			
+								m_vecMins = view_as<float>( { -30.0, -30.0, 0.0 } );
+							}
 							else
 							{
 								m_vecMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
-								m_vecMins = view_as<float>( { -24.0, -24.0, 0.0 } );		
+								m_vecMins = view_as<float>( { -24.0, -24.0, 0.0 } );
 							}
 
 							if(f3_CustomMinMaxBoundingBox[entity][1] != 0.0)
@@ -525,12 +525,12 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 							}
 
 							SetEntPropVector(entity, Prop_Data, "m_vecMaxs", m_vecMaxs);
-							
+
 							SetEntPropVector(entity, Prop_Data, "m_vecMins", m_vecMins);
 						}
 					}
 					SetEntPropVector(entity, Prop_Data, "m_angRotation", restore.m_vecAngles); //See start pos on why we use this instead of the SDKCall
-					SDKCall_SetLocalOrigin(entity, restore.m_vecOrigin);
+					CBaseEntity(entity).SetLocalOrigin(restore.m_vecOrigin);
 					if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 					{
 						if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
@@ -544,7 +544,7 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 							for(int i; i<layerCount; i++)
 							{
 								restore.m_layerRecords.GetArray(i, layer);
-								CAnimationLayer currentLayer = overlay.GetAnimOverlay(i); 
+								CAnimationLayer currentLayer = overlay.GetAnimOverlay(i);
 								currentLayer.m_flCycle = layer.m_cycle;
 								currentLayer.m_nOrder = layer.m_order;
 								currentLayer.m_nSequence = layer.m_sequence;
@@ -590,17 +590,17 @@ void LagCompensationThink_Forward()
 					EntityTrack.SetValue(refchar, list);
 					continue; // give a frame to spawn in before we do anything
 				}
-				
+
 				// remove tail records that are too old
 				int length = list.Length;
 				while(length)
 				{
 					list.GetArray(0, record);
-					
+
 					// if tail is within limits, stop
 					if(record.m_flSimulationTime >= deadTime)
 						break;
-					
+
 					// remove tail, get new tail
 					if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 					{
@@ -609,36 +609,36 @@ void LagCompensationThink_Forward()
 					list.Erase(0);
 					length--;
 				}
-				
+
 				// check if head has same simulation time
 				if(length)
 				{
 					list.GetArray(length-1, record);
-					
+
 					// check if player changed simulation time since last time updated
 					if(record.m_flSimulationTime >= GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime"))
 						continue; // don't add new entry for same or older time
 				}
-				
+
 				// add new record to player track
 				record.m_flSimulationTime	= GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
 				GetEntPropVector(entity, Prop_Data, "m_angRotation", record.m_vecAngles);
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", record.m_vecOrigin);
 			//	GetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", record.m_vecMinsPreScaled);
 			//	GetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", record.m_vecMaxsPreScaled);
-			
+
 #if defined HaveLayersForLagCompensation
 				if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity]) //If its an allied baseboss, make sure to not get layers.
 				{
 					CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
 					//if(overlay.Address == Address_Null)
 					//	continue;
-					
+
 					int layerCount = GetEntPropArraySize(entity, Prop_Data, "m_AnimOverlay");
 					record.m_layerRecords = new ArrayList(sizeof(LayerRecord));
 					for(int i; i<layerCount; i++)
 					{
-						CAnimationLayer currentLayer = overlay.GetAnimOverlay(i); 
+						CAnimationLayer currentLayer = overlay.GetAnimOverlay(i);
 						layer.m_cycle = currentLayer.m_flCycle;
 						layer.m_order = currentLayer.m_nOrder;
 						layer.m_sequence = currentLayer.m_nSequence;

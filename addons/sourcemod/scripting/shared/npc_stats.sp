@@ -39,6 +39,7 @@ static ConVar flTurnRate;
 static int g_sModelIndexBloodDrop;
 static int g_sModelIndexBloodSpray;
 
+// TODO: Switch to ChasePath
 static PathFollower g_PathFollower[MAX_NPCS];
 
 public Action Command_PetMenu(int client, int argc)
@@ -151,6 +152,7 @@ methodmap CClotBody
 		}
 
 		int npc = baseNPC.GetEntity();
+		CBaseCombatCharacter combatChar = CBaseCombatCharacter(npc);
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
 		DispatchKeyValueVector(npc, "angles",	 vecAng);
 		DispatchKeyValue(npc,	   "model",	  model);
@@ -226,7 +228,7 @@ methodmap CClotBody
 		}
 
 		locomotion.SetCallback(LocomotionCallback_IsEntityTraversable, IsEntityTraversable);
-		view_as<CBaseAnimating>(npc).Hook_HandleAnimEvent(CBaseAnimating_HandleAnimEvent);
+		combatChar.Hook_HandleAnimEvent(CBaseAnimating_HandleAnimEvent);
 
 		//so map makers can choose between NPCs and Clients
 		SetEntityFlags(npc, FL_NPC);
@@ -1338,7 +1340,7 @@ methodmap CClotBody
 
 	public PathFollower GetPathFollower()
 	{
-		return g_PathFollower[view_as<int>(this.GetBaseNPC())];
+		return g_PathFollower[this.GetBaseNPC().Index];
 	}
 	public INextBot GetBot()
 	{
@@ -1351,15 +1353,15 @@ methodmap CClotBody
 
 	public Address GetModelPtr()
 	{
-		return view_as<CBaseAnimating>(view_as<int>(this)).GetModelPtr();
+		return CBaseAnimating(this.index).GetModelPtr();
 	}
 	public void SetPoseParameter(int iParameter, float value)
 	{
-		view_as<CBaseAnimating>(view_as<int>(this)).SetPoseParameter(iParameter, value);
+		CBaseAnimating(this.index).SetPoseParameter(iParameter, value);
 	}
 	public int FindAttachment(const char[] pAttachmentName)
 	{
-		return view_as<CBaseAnimating>(view_as<int>(this)).LookupAttachment(pAttachmentName);
+		return CBaseAnimating(this.index).LookupAttachment(pAttachmentName);
 	}
 	public void DispatchParticleEffect(int entity, const char[] strParticle, float flStartPos[3], float vecAngles[3], float flEndPos[3],
 									   int iAttachmentPointIndex = 0, ParticleAttachment_t iAttachType = PATTACH_CUSTOMORIGIN, bool bResetAllParticlesOnEntity = false, float colour[3] = {0.0,0.0,0.0})
@@ -1407,7 +1409,7 @@ methodmap CClotBody
 	}
 	public int LookupPoseParameter(const char[] szName)
 	{
-		return view_as<CBaseAnimating>(view_as<int>(this)).LookupPoseParameter(szName);
+		return CBaseAnimating(this.index).LookupPoseParameter(szName);
 	}
 	public any LookupActivity(const char[] activity)
 	{
@@ -1417,13 +1419,15 @@ methodmap CClotBody
 
 		return SDKCall(g_hLookupActivity, pStudioHdr, activity);
 	}
+	// TODO: Replace the gesture functions with layer functions
+	// These works the same as gestures but give you more control
 	public void AddGesture(const char[] anim, bool cancel_animation = true)
 	{
 		Activity iSequence = this.LookupActivity(anim);
 		if(iSequence < ACT_RESET)
 			return;
 
-		CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(view_as<int>(this));
+		CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(this.index);
 		if(cancel_animation)
 		{
 			overlay.RestartGesture(iSequence, true, true); //This is better, it just restarts the sequence instead, if its there or already playing, basically like below but better
@@ -1439,8 +1443,7 @@ methodmap CClotBody
 		if(iSequence < 0)
 			return;
 
-		//SDKCall(g_hRemoveGesture, this.index, iSequence);
-		LogError("CClotBody.RemoveGesture not added yet!!");
+		LogError("CClotBody.RemoveGesture not added yet!! This requires the use of CBaseAnimatingOverlay layers!!!");
 	}
 	public void SetActivity(const char[] animation)
 	{
@@ -1457,7 +1460,7 @@ methodmap CClotBody
 		if(iSequence < ACT_RESET)
 			return false;
 
-		return view_as<CBaseAnimatingOverlay>(this).IsPlayingGesture(iSequence);
+		CBaseAnimatingOverlay(this.index).IsPlayingGesture(iSequence);
 	}
 	public bool IsOnGround()
 	{
@@ -1469,13 +1472,6 @@ methodmap CClotBody
 		this.m_bThisNpcGotDefaultStats_INVERTED = true;
 	}
 	/*
-	public bool IsClimbingOrJumping()
-	{
-		if (g_hSDKIsClimbingOrJumping != null)
-			return SDKCall(g_hSDKIsClimbingOrJumping, this.GetLocomotionInterface());
-		return false;
-	}
-
 	public void CreatePather(float flStep, float flJump, float flDrop, int iSolid, float flAhead, float flRePath, float flHull)
 	{
 		PF_Create(this.index, flStep, flJump, flDrop, 0.6, iSolid, flAhead, flRePath, flHull);
@@ -1494,7 +1490,7 @@ methodmap CClotBody
 	}	*/
 	public void RemovePather(int entity)
 	{
-		g_PathFollower[view_as<int>(this.GetBaseNPC())].Invalidate();
+		g_PathFollower[this.GetBaseNPC().Index].Invalidate();
 		this.m_bPathing = false;
 	}
 	public void StartPathing()
@@ -1505,7 +1501,7 @@ methodmap CClotBody
 	public void Stog_PathFollowering()
 	{
 		CBaseNPC npc = this.GetBaseNPC();
-		g_PathFollower[view_as<int>(this.GetBaseNPC())].Invalidate();
+		g_PathFollower[npc.Index].Invalidate();
 		npc.GetLocomotion().Stop();
 
 		this.m_bPathing = false;
@@ -1513,12 +1509,12 @@ methodmap CClotBody
 	public void SetGoalEntity(int target)
 	{
 		CBaseNPC npc = this.GetBaseNPC();
-		g_PathFollower[view_as<int>(this.GetBaseNPC())].ComputeToTarget(npc.GetBot(), target);
+		g_PathFollower[npc.Index].ComputeToTarget(npc.GetBot(), target);
 	}
 	public void SetGoalVector(const float vec[3])
 	{
 		CBaseNPC npc = this.GetBaseNPC();
-		g_PathFollower[view_as<int>(this.GetBaseNPC())].ComputeToPos(npc.GetBot(), vec);
+		g_PathFollower[npc.Index].ComputeToPos(npc.GetBot(), vec);
 	}
 	public void FaceTowards(const float vecGoal[3] , const float turnrate = 250.0)
 	{
@@ -1527,21 +1523,45 @@ methodmap CClotBody
 
 		flTurnRate.FloatValue = turnrate;
 		this.GetLocomotionInterface().FaceTowards(vecGoal);
-		//SDKCall(g_hFaceTowards, this.GetLocomotionInterface(), vecGoal);
 		flTurnRate.FloatValue = flPrevValue;
 	}
 
 	public float GetMaxJumpHeight()	{ return this.GetLocomotionInterface().GetMaxJumpHeight(); }
 	public float GetGroundSpeed()	{ return this.GetLocomotionInterface().GetGroundSpeed(); }
-	public float GetPoseParameter(int iParameter)	{ return view_as<CBaseAnimating>(view_as<int>(this)).GetPoseParameter(iParameter);	}
-	//public int FindBodygroupByName(const char[] name)	{ return SDKCall(g_hFindBodygroupByName, this.index, name);										  }
-	public int SelectWeightedSequence(any activity, int curSequence) { return view_as<CBaseAnimating>(view_as<int>(this)).SelectWeightedSequence(activity); }
+	public float GetPoseParameter(int iParameter)
+	{
+		return CBaseAnimating(this.index).GetPoseParameter(iParameter);
+	}
+	// I have a way to implement this for SF2, but I forgot how to do it
+	// Remind me (Mentrillum) to find a way
+	/*public int FindBodygroupByName(const char[] name)
+	{
+		return 0;
+	}*/
+	public int SelectWeightedSequence(any activity, int curSequence)
+	{
+		return CBaseAnimating(this.index).SelectWeightedSequence(activity);
+	}
 
-	public bool GetAttachment(const char[] szName, float absOrigin[3], float absAngles[3]) { return view_as<CBaseAnimating>(view_as<int>(this)).GetAttachment(view_as<CBaseAnimating>(view_as<int>(this)).LookupAttachment(szName), absOrigin, absAngles); }
-	//public void SetBodygroup(int iGroup, int iValue)									   { SDKCall(g_hSetBodyGroup, this.index, iGroup, iValue);									 }
+	public bool GetAttachment(const char[] szName, float absOrigin[3], float absAngles[3])
+	{
+		CBaseAnimating animating = CBaseAnimating(this.index);
+		return animating.GetAttachment(animating.LookupAttachment(szName), absOrigin, absAngles);
+	}
+	// Same as FindBodygroupByName(), remind me
+	/*public void SetBodygroup(int iGroup, int iValue)
+	{
+		// Do something
+	}*/
 	public void Approach(const float vecGoal[3])										   { this.GetLocomotionInterface().Approach(vecGoal, 0.1);						}
-	public void Jump()																	 { this.GetLocomotionInterface().Jump();										  }
-	// public void JumpAcrossGap(const float landingGoal[3], const float landingForward[3])   { SDKCall(g_hJumpAcrossGap, this.GetLocomotionInterface(), landingGoal, landingForward);	}
+	public void Jump()
+	{
+		this.GetLocomotionInterface().Jump();
+	}
+	public void JumpAcrossGap(const float landingGoal[3], const float landingForward[3])
+	{
+		this.GetLocomotionInterface().JumpAcrossGap(landingGoal, landingForward);
+	}
 	public void GetVelocity(float vecOut[3])											   { this.GetLocomotionInterface().GetVelocity(vecOut);						   }
 	public void SetVelocity(const float vec[3])											{ this.GetLocomotionInterface().SetVelocity(vec);							  }
 
@@ -1555,14 +1575,27 @@ methodmap CClotBody
 	public void SetPlaybackRate(float flRate) { SetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate", flRate); }
 	public void SetCycle(float flCycle)	   { SetEntPropFloat(this.index, Prop_Send, "m_flCycle", flCycle); }
 
-	public void GetVectors(float pForward[3], float pRight[3], float pUp[3]) { view_as<CBaseEntity>(this).GetVectors(pForward, pRight, pUp); }
+	public void GetVectors(float pForward[3], float pRight[3], float pUp[3])
+	{
+		CBaseEntity(this.index).GetVectors(pForward, pRight, pUp);
+	}
 
 	public void GetGroundMotionVector(float vecMotion[3])					{ this.GetLocomotionInterface().GetGroundMotionVector(vecMotion); }
-	public float GetLeadRadius()	{ return view_as<ChasePath>(this.GetPathFollower()).GetLeadRadius(); }
+	public float GetLeadRadius()
+	{
+		return view_as<ChasePath>(this.GetPathFollower()).GetLeadRadius();
+	}
 	public void UpdateCollisionBox() { SDKCall(g_hUpdateCollisionBox,  this.index); }
 	public void ResetSequenceInfo()  { SDKCall(g_hResetSequenceInfo,  this.index); }
-	public void StudioFrameAdvance() { view_as<CBaseAnimating>(view_as<int>(this)).StudioFrameAdvance(); }
-	public void DispatchAnimEvents() { view_as<CBaseAnimating>(view_as<int>(this)).DispatchAnimEvents(view_as<CBaseAnimating>(view_as<int>(this))); }
+	public void StudioFrameAdvance()
+	{
+		CBaseAnimating(this.index).StudioFrameAdvance();
+	}
+	public void DispatchAnimEvents()
+	{
+		CBaseAnimating animating = CBaseAnimating(this.index);
+		animating.DispatchAnimEvents(animating);
+	}
 
 	public int EquipItem(
 	const char[] attachment,
@@ -1909,7 +1942,7 @@ methodmap CClotBody
 		if(iActivity == 29)
 			iActivity = ACT_MP_JUMP_START_MELEE;
 
-		int nSequence = view_as<CBaseAnimating>(this).SelectWeightedSequence(iActivity);
+		int nSequence = CBaseAnimating(this.index).SelectWeightedSequence(iActivity);
 		if (nSequence == -1)
 			return false;
 
@@ -2129,31 +2162,11 @@ public void NPC_Base_InitGamedata()
 	Handle hConf = LoadGameConfigFile("tf2.pets");
 
 	//SDKCalls
-	//This call is used to get an entitys center position
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseEntity::WorldSpaceCenter");
-	PrepSDKCall_SetReturnInfo(SDKType_Vector, SDKPass_ByRef);
-	if ((g_hSDKWorldSpaceCenter = EndPrepSDKCall()) == null) SetFailState("Failed to create SDKCall for CBaseEntity::WorldSpaceCenter offset!");
-
-	//=========================================================
-	// StudioFrameAdvance - advance the animation frame up some interval (default 0.1) into the future
-	//=========================================================
-	//StartPrepSDKCall(SDKCall_Entity);
-	//PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseAnimating::StudioFrameAdvance");
-	//if ((g_hStudioFrameAdvance = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::StudioFrameAdvance offset!");
-
-//	CBaseAnimatingOverlay::StudioFrameAdvance()
 
 //	CBaseAnimating::ResetSequenceInfo( );
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::ResetSequenceInfo");
 	if ((g_hResetSequenceInfo = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::ResetSequenceInfo signature!");
-
-
-	//StartPrepSDKCall(SDKCall_Entity);
-	//PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseEntity::MyNextBotPointer");
-	//PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	//if ((g_hMyNextBotPointer = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseEntity::MyNextBotPointer offset!");
 
 	/*
 	void CBaseAnimating::RefreshCollisionBounds( void )
@@ -2166,206 +2179,6 @@ public void NPC_Base_InitGamedata()
 	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseAnimating::RefreshCollisionBounds");
 	if ((g_hUpdateCollisionBox = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::RefreshCollisionBounds offset!");
 
-	//StartPrepSDKCall(SDKCall_Raw);
-	//PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "INextBot::GetLocomotionInterface");
-	//PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	//if((g_hGetLocomotionInterface = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for INextBot::GetLocomotionInterface!");
-
-	//StartPrepSDKCall(SDKCall_Raw);
-	//PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "INextBot::GetIntentionInterface");
-	//PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	//if((g_hGetIntentionInterface = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for INextBot::GetIntentionInterface!");
-
-	//StartPrepSDKCall(SDKCall_Raw);
-	//PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "INextBot::GetBodyInterface");
-	//PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	//if((g_hGetBodyInterface = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for INextBot::GetBodyInterface!");
-/*
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "INextBot::GetVisionInterface");
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	if((g_hGetVisionInterface = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for INextBot::GetVisionInterface!");
-
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "IVision::GetPrimaryKnownThreat");
-	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	if((g_hGetPrimaryKnownThreat = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for IVision::GetPrimaryKnownThreat!");
-
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "IVision::GetKnown");
-	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer);	//CBaseEntity - Entity to check for
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//CKnownEntity
-	if((g_hGetKnown = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for IVision::GetKnown!");
-
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "IVision::AddKnownEntity");
-	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer);
-	if((g_hAddKnownEntity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for IVision::AddKnownEntity!");
-
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CKnownEntity::GetEntity");
-	PrepSDKCall_SetReturnInfo(SDKType_CBaseEntity, SDKPass_Pointer);
-	if((g_hGetKnownEntity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CKnownEntity::GetEntity!");
-
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CKnownEntity::UpdatePosition");
-	if((g_hUpdatePosition = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CKnownEntity::UpdatePosition!");
-
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CKnownEntity::UpdateVisibilityStatus");
-	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);	//bool visible now
-	if((g_hUpdateVisibilityStatus = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CKnownEntity::UpdateVisibilityStatus!");
-
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::Run");
-	if((g_hRun = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for ILocomotion::Run!");
-
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::Approach");
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
-	PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain);
-	if((g_hApproach = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for ILocomotion::Approach!");
-
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::FaceTowards");
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
-	if((g_hFaceTowards = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for ILocomotion::FaceTowards!");
-
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::Jump");
-	if((g_hJump = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for ILocomotion::Jump!");
-
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::JumpAcrossGap");
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
-	if((g_hJumpAcrossGap = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for ILocomotion::JumpAcrossGap!");
-
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::GetVelocity");
-	PrepSDKCall_SetReturnInfo(SDKType_Vector, SDKPass_ByRef);
-	if((g_hGetVelocity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for ILocomotion::GetVelocity!");
-
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::SetVelocity");
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
-	if((g_hSetVelocity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for ILocomotion::SetVelocity!");
-
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseAnimating::DispatchAnimEvents");
-	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer);
-	if ((g_hDispatchAnimEvents = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::DispatchAnimEvents offset!");
-
-	//ILocomotion::GetGroundSpeed()
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::GetGroundSpeed");
-	PrepSDKCall_SetReturnInfo(SDKType_Float, SDKPass_Plain);
-	if((g_hGetGroundSpeed = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for ILocomotion::GetGroundSpeed!");
-
-	//ILocomotion::GetGroundMotionVector()
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::GetGroundMotionVector");
-	PrepSDKCall_SetReturnInfo(SDKType_Vector, SDKPass_ByRef);
-	if((g_hGetGroundMotionVector = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for ILocomotion::GetGroundMotionVector!");
-
-	//CBaseEntity::GetVectors(Vector*, Vector*, Vector*)
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseEntity::GetVectors");
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
-	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
-
-	//CBaseAnimating::GetPoseParameter(int iParameter)
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::GetPoseParameter");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_SetReturnInfo(SDKType_Float, SDKPass_Plain);
-	if((g_hGetPoseParameter = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::GetPoseParameter");
-
-	//CBaseAnimating::FindBodygroupByName(const char* name)
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::FindBodygroupByName");
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	if((g_hFindBodygroupByName = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::FindBodygroupByName");
-
-	//CBaseAnimating::SetBodygroup( int iGroup, int iValue )
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::SetBodygroup");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	if((g_hSetBodyGroup = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::SetBodygroup");
-
-	//int SelectWeightedSequence( CStudioHdr *pstudiohdr, int activity, int curSequence );
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "SelectWeightedSequence");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pstudiohdr
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//activity
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//curSequence
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return sequence
-	if((g_hSelectWeightedSequence = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for SelectWeightedSequence");
-
-	//SetPoseParameter( CStudioHdr *pStudioHdr, int iParameter, float flValue );
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::SetPoseParameter");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain);
-	PrepSDKCall_SetReturnInfo(SDKType_Float, SDKPass_Plain);
-	if((g_hSetPoseParameter = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::SetPoseParameter");
-
-	//LookupPoseParameter( CStudioHdr *pStudioHdr, const char *szName );
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::LookupPoseParameter");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	if((g_hLookupPoseParameter = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::LookupPoseParameter");
-
-	//CBaseAnimatingOverlay::AddGesture( Activity activity, bool autokill )
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimatingOverlay::AddGesture");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	if((g_hAddGesture = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimatingOverlay::AddGesture");
-
-	//CBaseAnimatingOverlay::RemoveGesture( Activity activity )
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimatingOverlay::RemoveGesture");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_Plain);
-	if((g_hRemoveGesture = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimatingOverlay::RemoveGesture");
-
-	*/
-	//( Activity activity, bool addifmissing /*=true*/, bool autokill /*=true*/ )
-	/*StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimatingOverlay::RestartGesture");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	if((g_hRestartGesture = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimatingOverlay::RestartGesture");
-
-
-	//CBaseAnimatingOverlay::IsPlayingGesture( Activity activity )
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimatingOverlay::IsPlayingGesture");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_Plain);
-	if((g_hIsPlayingGesture = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimatingOverlay::IsPlayingGesture");
-
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::IsClimbingOrJumping");
-	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_ByValue);
-	g_hSDKIsClimbingOrJumping = EndPrepSDKCall();
-	if (g_hSDKIsClimbingOrJumping == null)
-	{
-		PrintToServer("Failed to retrieve ILocomotion::IsClimbingOrJumping offset from SF2 gamedata!");
-	}
-	*/
 	//-----------------------------------------------------------------------------
 
 	//-----------------------------------------------------------------------------
@@ -2381,127 +2194,12 @@ public void NPC_Base_InitGamedata()
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return index
 	if((g_hLookupActivity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for LookupActivity");
 
-
-	//-----------------------------------------------------------------------------
-	// Purpose: lookup attachment by name
-	//-----------------------------------------------------------------------------
-	/*StartPrepSDKCall(SDKCall_Static);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "Studio_FindAttachment");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);		//pAttachmentName
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return index
-	if((g_hStudio_FindAttachment = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for Studio_FindAttachment");
-
-	//-----------------------------------------------------------------------------
-	// Purpose: Returns the world location and world angles of an attachment
-	// Input  : attachment name
-	// Output :	location and angles
-	//-----------------------------------------------------------------------------
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::GetAttachment");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//iAttachment
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK); //absOrigin
-	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK); //absAngles
-	if((g_hGetAttachment = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::GetAttachment");
-
-	//PluginBot SDKCalls
-	//Get NextBot pointer
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "INextBotComponent::GetBot");
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	if((g_hGetBot = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for INextBotComponent::GetBot!");
-
-	//Get NextBot entity index
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "INextBotComponent::GetEntity");
-	PrepSDKCall_SetReturnInfo(SDKType_CBaseEntity, SDKPass_Pointer);
-	if((g_hGetEntity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for INextBotComponent::GetEntity!");
-
-	//
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "NextBotCombatCharacter::Event_Killed");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Pointer);
-	if((g_hNextBotCombatCharacter_Event_Killed = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for NextBotCombatCharacter::Event_Killed!");
-
-	//Get NextBot entity index
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseCombatCharacter::Event_Killed");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Pointer);
-	if((g_hCBaseCombatCharacter_Event_Killed = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseCombatCharacter::Event_Killed!");
-
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::IsOnGround");
-	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_ByValue);
-	g_hSDKIsOnGround = EndPrepSDKCall();
-	if (g_hSDKIsOnGround == null)
-	{
-		PrintToServer("Failed to retrieve ILocomotion::IsOnGround offset from SF2 gamedata!");
-	}
-
-	//DHooks
-	g_hHandleAnimEvent = DHookCreateEx(hConf, "CBaseAnimating::HandleAnimEvent",  HookType_Entity, ReturnType_Void,   ThisPointer_CBaseEntity, CBaseAnimating_HandleAnimEvent);
-	DHookAddParam(g_hHandleAnimEvent, HookParamType_ObjectPtr);
-
-	g_hGetFrictionSideways = DHookCreateEx(hConf, "ILocomotion::GetFrictionSideways",HookType_Raw, ReturnType_Float,	 ThisPointer_Address, ILocomotion_GetFrictionSideways);
-	g_hGetStepHeight	   = DHookCreateEx(hConf, "ILocomotion::GetStepHeight",	  HookType_Raw, ReturnType_Float,	 ThisPointer_Address, ILocomotion_GetStepHeight);
-	g_hGetGravity		  = DHookCreateEx(hConf, "ILocomotion::GetGravity",		 HookType_Raw, ReturnType_Float,	 ThisPointer_Address, ILocomotion_GetGravity);
-	g_hGetRunSpeed		 = DHookCreateEx(hConf, "ILocomotion::GetRunSpeed",		HookType_Raw, ReturnType_Float,	 ThisPointer_Address, ILocomotion_GetRunSpeed);
-	g_hGetGroundNormal	 = DHookCreateEx(hConf, "ILocomotion::GetGroundNormal",	HookType_Raw, ReturnType_VectorPtr, ThisPointer_Address, ILocomotion_GetGroundNormal);
-	g_hGetMaxAcceleration  = DHookCreateEx(hConf, "ILocomotion::GetMaxAcceleration", HookType_Raw, ReturnType_Float,	 ThisPointer_Address, ILocomotion_GetMaxAcceleration);
-
-	g_hShouldCollideWithAlly = DHookCreateEx(hConf, "ILocomotion::ShouldCollideWith",  HookType_Raw, ReturnType_Bool, ThisPointer_Address, ILocomotion_ShouldCollideWithAlly);
-	DHookAddParam(g_hShouldCollideWithAlly, HookParamType_CBaseEntity);
-
-	g_hShouldCollideWithAllyInvince = DHookCreateEx(hConf, "ILocomotion::ShouldCollideWith",  HookType_Raw, ReturnType_Bool, ThisPointer_Address, ILocomotion_ShouldCollideWithAllyInvince);
-	DHookAddParam(g_hShouldCollideWithAllyInvince, HookParamType_CBaseEntity);
-
-	g_hShouldCollideWithAllyEnemy = DHookCreateEx(hConf, "ILocomotion::ShouldCollideWith",  HookType_Raw, ReturnType_Bool, ThisPointer_Address, ILocomotion_ShouldCollideWithEnemy);
-	DHookAddParam(g_hShouldCollideWithAllyEnemy, HookParamType_CBaseEntity);
-
-	g_hShouldCollideWithAllyEnemyIngoreBuilding = DHookCreateEx(hConf, "ILocomotion::ShouldCollideWith",  HookType_Raw, ReturnType_Bool, ThisPointer_Address, ILocomotion_ShouldCollideWithEnemyIngoreBuilding);
-	DHookAddParam(g_hShouldCollideWithAllyEnemyIngoreBuilding, HookParamType_CBaseEntity);
-
-	g_hGetSolidMask		= DHookCreateEx(hConf, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
-	g_hGetActivity		 = DHookCreateEx(hConf, "IBody::GetActivity",		HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetActivity);
-
-	g_hGetHullWidthGiant		= DHookCreateEx(hConf, "IBody::GetHullWidth",	   HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullWidth_ISGIANT);
-	g_hGetHullHeightGiant	   = DHookCreateEx(hConf, "IBody::GetHullHeight",	  HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullHeight_ISGIANT);
-	g_hGetStandHullHeightGiant  = DHookCreateEx(hConf, "IBody::GetStandHullHeight", HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetStandHullHeight_ISGIANT);
-
-
-
-	g_hGetHullWidth		= DHookCreateEx(hConf, "IBody::GetHullWidth",	   HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullWidth);
-	g_hGetHullHeight	   = DHookCreateEx(hConf, "IBody::GetHullHeight",	  HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullHeight);
-	g_hGetStandHullHeight  = DHookCreateEx(hConf, "IBody::GetStandHullHeight", HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetStandHullHeight);
-
-	g_hIsActivity   = DHookCreateEx(hConf, "IBody::IsActivity",   HookType_Raw, ReturnType_Bool, ThisPointer_Address, IBody_IsActivity);
-	DHookAddParam(g_hIsActivity, HookParamType_Int);
-
-	g_hStartActivity = DHookCreateEx(hConf, "IBody::StartActivity", HookType_Raw, ReturnType_Bool, ThisPointer_Address, IBody_StartActivity);
-	DHookAddParam(g_hStartActivity, HookParamType_Int);
-	DHookAddParam(g_hStartActivity, HookParamType_Int);
-
-	g_hEvent_Killed = DHookCreateEx(hConf, "CTFBaseBoss::Event_Killed", HookType_Entity, ReturnType_Void, ThisPointer_CBaseEntity, CTFBaseBoss_Event_Killed);
-	DHookAddParam(g_hEvent_Killed, HookParamType_Int); //( const CTakeDamageInfo &info )
-
-//	g_hAlwaysTransmit = DynamicHook.FromConf(hConf, "CTFBaseBoss::UpdateTransmitState()");
-
-	g_hEvent_Ragdoll = DHookCreateEx(hConf, "CBaseCombatCharacter::BecomeRagdoll", HookType_Entity, ReturnType_Bool, ThisPointer_CBaseEntity, CTFBaseBoss_Ragdoll);
-
-	DHookAddParam(g_hEvent_Ragdoll, HookParamType_Int); //( const CTakeDamageInfo &info )
-	DHookAddParam(g_hEvent_Ragdoll, HookParamType_VectorPtr); //( const vector )
-
-	Address iAddr = GameConfGetAddress(hConf, "GetAnimationEvent");
-	if(iAddr == Address_Null) SetFailState("Can't find GetAnimationEvent address for patch.");
-
-	StoreToAddress(iAddr += view_as<Address>(131), 9999, NumberType_Int16);
-
 	delete hConf;
 
-	HookIdMap = new StringMap();
-	HookListMap = new StringMap();*/
-
-	for (int i = 0; i < MAX_NPCS; i++) g_PathFollower[i] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
+	for (int i = 0; i < MAX_NPCS; i++)
+	{
+		g_PathFollower[i] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
+	}
 }
 /*
 Handle DHookCreateEx(Handle gc, const char[] key, HookType hooktype, ReturnType returntype, ThisPointerType thistype, DHookCallback callback)
@@ -2593,8 +2291,7 @@ public Action CBaseCombatCharacter_EventKilled(int pThis, int &iAttacker, int &i
 		{
 			if(!npc.m_bGib)
 			{
-				//SDKCall(g_hNextBotCombatCharacter_Event_Killed, pThis, CTakeDamageInfo);
-				//SDKCall(g_hCBaseCombatCharacter_Event_Killed,   pThis, CTakeDamageInfo);
+				// TODO: Use Nextbot Action Factories
 			}
 			else
 			{
@@ -3227,7 +2924,10 @@ stock bool IsLengthGreaterThan(float vector[3], float length)
 	return (SquareRoot(GetVectorLength(vector, false)) > length * length);
 }
 
-stock float clamp(float a, float b, float c) { return (a > c ? c : (a < b ? b : a)); }
+stock float clamp(float a, float b, float c)
+{
+	return (a > c ? c : (a < b ? b : a));
+}
 
 stock float[] WorldSpaceCenter(int entity)
 {
@@ -3253,7 +2953,7 @@ stock float[] WorldSpaceCenter(int entity)
 	}
 	else
 	{
-		SDKCall(g_hSDKWorldSpaceCenter, entity, vecPos);
+		CBaseEntity(entity).WorldSpaceCenter(vecPos);
 	}
 
 	return vecPos;
@@ -3463,6 +3163,7 @@ public bool BulletAndMeleeTraceDontIgnoreBaseBoss(int entity, int contentsMask, 
 	return !(entity == iExclude);
 }
 
+// TODO: Have a second look at this to see if its needed over CBaseNPC's default Path_Cost
 //public float PluginBot_PathCost(int bot_entidx, NavArea area, NavArea from_area, float length)
 public float PathCost(INextBot bot, CNavArea area, CNavArea from_area, CNavLadder ladder, int iElevator, float length)
 {
@@ -4319,7 +4020,7 @@ public void Check_If_Stuck(int iNPC)
 
 					if(!IsSpaceOccupiedIgnorePlayers(flMyPos_2, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, Hit_player))
 					{
-						SDKCall_SetLocalOrigin(Hit_player, flMyPos_2);
+						CBaseEntity(Hit_player).SetLocalOrigin(flMyPos_2);
 					//	TeleportEntity(entity, f3_LastValidPosition[entity], NULL_VECTOR, { 0.0, 0.0, 0.0 });
 					}
 					else
@@ -4352,7 +4053,7 @@ public void Check_If_Stuck(int iNPC)
 
 					if(!IsSpaceOccupiedIgnorePlayers(flMyPos_2, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, iNPC))
 					{
-						SDKCall_SetLocalOrigin(iNPC, flMyPos_2);
+						CBaseEntity(Hit_player).SetLocalOrigin(flMyPos_2);
 						TeleportEntity(iNPC, flMyPos_2, NULL_VECTOR, { 0.0, 0.0, 0.0 }); //Reset their speed
 						npc.SetVelocity({ 0.0, 0.0, 0.0 });
 					}

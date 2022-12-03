@@ -358,7 +358,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 								npc.GetAttachment("rhand", flPos, flAng);
 								TeleportEntity(client, flPos, NULL_VECTOR, {0.0,0.0,0.0});
 
-								SDKCall_SetLocalOrigin(client, flPos);
+								CBaseEntity(client).SetLocalOrigin(flPos);
 
 								float vecTarget_closest[3]; vecTarget_closest = WorldSpaceCenter(Closest_non_grabbed_player);
 								npc.FaceTowards(vecTarget_closest, 20000.0);
@@ -382,7 +382,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 						npc.GetAttachment("rhand", flPos, flAng);
 						TeleportEntity(client, flPos, NULL_VECTOR, {0.0,0.0,0.0});
 
-						SDKCall_SetLocalOrigin(client, flPos);
+						CBaseEntity(client).SetLocalOrigin(flPos);
 
 						if(client <= MaxClients)
 						{
@@ -514,7 +514,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 
 					TeleportEntity(Enemy_I_See, flPos, NULL_VECTOR, {0.0,0.0,0.0});
 
-					SDKCall_SetLocalOrigin(Enemy_I_See, flPos);
+					CBaseEntity(Enemy_I_See).SetLocalOrigin(flPos);
 
 					if(Enemy_I_See <= MaxClients)
 					{
@@ -571,7 +571,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 
 						TeleportEntity(ally, flPos, NULL_VECTOR, {0.0,0.0,0.0});
 
-						SDKCall_SetLocalOrigin(ally, flPos);
+						CBaseEntity(ally).SetLocalOrigin(flPos);
 
 						b_DoNotUnStuck[ally] = true;
 
