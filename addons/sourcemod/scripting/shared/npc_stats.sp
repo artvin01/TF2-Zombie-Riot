@@ -195,11 +195,11 @@ methodmap CClotBody
 #endif
 		baseNPC.flStepSize = 17.0;
 		baseNPC.flGravity = 800.0;
-		baseNPC.flAcceleration = 5000.0;
+		baseNPC.flAcceleration = 3000.0;
 		baseNPC.flJumpHeight = 250.0;
 		baseNPC.flRunSpeed = 300.0;
-		baseNPC.flFrictionSideways = 3.0;
-		baseNPC.flMaxYawRate = 750.0; //this is the default.
+		baseNPC.flFrictionSideways = 5.0;
+		baseNPC.flMaxYawRate = 500.0; //this is the default.
 
 		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
 		
@@ -1538,7 +1538,6 @@ methodmap CClotBody
 	{
 		CBaseNPC npc = this.GetBaseNPC();
 
-		PrintToChatAll("%f",turnrate);
 		npc.flMaxYawRate = turnrate;
 		npc.GetLocomotion().FaceTowards(vecGoal);
 		npc.flMaxYawRate = defaultturn; //this is the default.
