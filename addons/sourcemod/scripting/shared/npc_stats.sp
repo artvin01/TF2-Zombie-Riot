@@ -1428,22 +1428,19 @@ methodmap CClotBody
 	{
 		Address pStudioHdr = this.GetModelPtr();
 		if(pStudioHdr == Address_Null)
-		{
 			return -1;
-		}
 
-		return SDKCall(g_hLookupActivity, pStudioHdr, activity);
+		int pos = SDKCall(g_hLookupActivity, pStudioHdr, activity);
+		PrintToChatAll("%d", pos);
+		return pos;
 	}
 	// TODO: Replace the gesture functions with layer functions
 	// These works the same as gestures but give you more control
 	public void AddGesture(const char[] anim, bool cancel_animation = true)
 	{
 		Activity iSequence = this.LookupActivity(anim);
-		PrintToChatAll("test1 %i",iSequence);
 		if(iSequence < ACT_RESET)
 			return;
-
-		PrintToChatAll("test2");
 
 		CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(this.index);
 		if(cancel_animation)
