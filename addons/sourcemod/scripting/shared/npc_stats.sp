@@ -1329,8 +1329,7 @@ methodmap CClotBody
 		CBaseNPC id = TheNPCs.FindNPCByEntIndex(this.index);
 		if(id == INVALID_NPC)
 			ThrowError("Invalid NPC ID");
-		
-		PrintToServer("CBaseNPC == %d | Entity == %d", id, this);
+			
 		return id;
 	}
 	public CBaseNPC_Locomotion GetLocomotionInterface()
