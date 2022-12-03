@@ -1428,7 +1428,10 @@ methodmap CClotBody
 	{
 		Address pStudioHdr = this.GetModelPtr();
 		if(pStudioHdr == Address_Null)
+		{
+			PrintToChatAll("failed");
 			return -1;
+		}
 
 		int pos = SDKCall(g_hLookupActivity, pStudioHdr, activity);
 		PrintToChatAll("%d", pos);
