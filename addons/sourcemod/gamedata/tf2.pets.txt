@@ -226,7 +226,7 @@
 			// STR: "BaseCombatCharacter.StopWeaponSounds", "KilledNPC", "item_healthvial"
 			"CBaseCombatCharacter::Event_Killed" //(CBaseCombatCharacter *this, const CTakeDamageInfo *a2)
 			{
-				"windows"	"\x55\x8B\xEC\x53\x8B\x5D\x08\x56\x8B\xF1\x8B\x43\x28"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x20\x53\x56\x8B\xF1\xC6\x45\xFF\x01"
 			}
 
 			"CTFBaseBoss::OnTakeDamage_Alive_SIGNATURE" //NPC hurt and below are alot of empty spaces, about 10
