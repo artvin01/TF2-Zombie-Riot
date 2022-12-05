@@ -124,8 +124,6 @@ void ViewChange_PlayerModel(int client)
 
 void ViewChange_Switch(int client, int active, const char[] buffer = "")
 {
-	PrintToChatAll("active::%d", active);
-
 	int entity = EntRefToEntIndex(WeaponRef[client]);
 	if(entity > MaxClients)
 		TF2_RemoveWearable(client, entity);
@@ -133,7 +131,6 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 	entity = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
 	if(entity > MaxClients)
 	{
-		PrintToChatAll("Found Viewmodel");
 		SetEntProp(entity, Prop_Send, "m_fEffects", EF_NODRAW);
 		if(active > MaxClients)
 		{
@@ -165,7 +162,6 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 					ActivateEntity(entity);
 					SDKCall_EquipWearable(client, entity);
 					WeaponRef[client] = EntIndexToEntRef(entity);
-					PrintToChatAll("Updated Weapon");
 				}
 				
 				//if(WeaponClass[client] != class)
@@ -175,15 +171,14 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 					TF2_SetPlayerClass(client, WeaponClass[client], _, false);
 					Store_ApplyAttribs(client);
 					
+					ViewChange_DeleteHands(client);
 					ViewChange_UpdateHands(client, CurrentClass[client]);
-					PrintToChatAll("Updated Hands");
 				}
 				return;
 			}
 		}
 	}
 
-	PrintToChatAll("Failed, deleting hands");
 	ViewChange_DeleteHands(client);
 	WeaponClass[client] = TFClass_Unknown;
 	WeaponRef[client] = INVALID_ENT_REFERENCE;
