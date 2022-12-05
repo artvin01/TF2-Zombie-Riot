@@ -1660,12 +1660,6 @@ public void Citizen_ClotThink(int iNPC)
 						}
 						else if(npc.m_iAttacksTillReload != 0 && (npc.m_bCamo || distance > 22500.0))
 						{
-							npc.SetActivity("ACT_RANGE_ATTACK_PISTOL");
-							npc.m_flSpeed = 0.0;
-							
-							if(npc.m_iWearable1 > 0)
-								AcceptEntityInput(npc.m_iWearable1, "Enable");
-							
 							float npc_pos[3];
 							npc_pos = GetAbsOrigin(npc.index);
 								
@@ -1678,6 +1672,12 @@ public void Citizen_ClotThink(int iNPC)
 							
 							if(IsValidEnemy(npc.index, enemy, true))
 							{
+								npc.SetActivity("ACT_RANGE_ATTACK_PISTOL");
+								npc.m_flSpeed = 0.0;
+
+								if(npc.m_iWearable1 > 0)
+									AcceptEntityInput(npc.m_iWearable1, "Enable");
+								
 								npc.FaceTowards(vecTarget, 15000.0);
 								
 								npc.m_iState = -1;
@@ -2063,6 +2063,8 @@ public void Citizen_ClotThink(int iNPC)
 				
 				if(!npc.m_bPathing)
 					npc.StartPathing();
+				
+				return;
 			}
 			else if(moveUp)
 			{
