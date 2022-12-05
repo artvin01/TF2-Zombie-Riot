@@ -243,7 +243,10 @@ methodmap CClotBody
 		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
 		
 		DispatchSpawn(npc); //Do this at the end :)
-		
+
+		SetEntProp(npc, Prop_Data, "m_bSequenceLoops", true);
+		//potentially newly added ? or might not get set ?
+		//Just set it to true at all times.
 		if(Ally)
 		{
 			SetEntityCollisionGroup(npc, 24);
@@ -1436,13 +1439,7 @@ methodmap CClotBody
 	
 	public Address GetModelPtr()
 	{
-		int offset = FindSendPropInfo("CBaseAnimating", "m_flFadeScale") + 28;
-		
-		if(IsValidEntity(this.index)) {
-			return view_as<Address>(GetEntData(this.index, offset));
-		}
-		
-		return Address_Null;
+		return view_as<Address>(GetEntData(this.index, FindDataMapInfo(this.index, "m_flFadeScale") + 28));
 	}	
 	public void SetPoseParameter(int iParameter, float value)
 	{
@@ -5439,7 +5436,7 @@ public MRESReturn IBody_GetActivity(Address pThis, Handle hReturn, Handle hParam
 	#if defined DEBUG_ANIMATION
 	PrintToServer("IBody_GetActivity");	
 	#endif
-
+	
 	DHookSetReturn(hReturn, view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis))).GetActivity()); 
 	return MRES_Supercede; 
 }
