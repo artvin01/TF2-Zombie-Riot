@@ -168,7 +168,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 					PrintToChatAll("Updated Weapon");
 				}
 				
-				if(WeaponClass[client] != class)
+				//if(WeaponClass[client] != class)
 				{
 					WeaponClass[client] = class;
 					
