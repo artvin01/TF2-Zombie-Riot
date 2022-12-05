@@ -1436,10 +1436,10 @@ methodmap CClotBody
 	
 	public Address GetModelPtr()
 	{
-		//const int offset = FindSendPropInfo("CBaseAnimating", "m_flFadeScale ") + 28;
+		int offset = FindSendPropInfo("CBaseAnimating", "m_flFadeScale") + 28;
 		
 		if(IsValidEntity(this.index)) {
-			return view_as<Address>(GetEntData(this.index, 283 * 4));
+			return view_as<Address>(GetEntData(this.index, offset));
 		}
 		
 		return Address_Null;
@@ -5461,9 +5461,7 @@ public MRESReturn IBody_StartActivity(Address pThis, Handle hReturn, Handle hPar
 	int iActivity = DHookGetParam(hParams, 1);
 	int fFlags	= DHookGetParam(hParams, 2);
 	
-	#if defined DEBUG_ANIMATION
 	PrintToServer("IBody_StartActivity %i %i", iActivity, fFlags);	
-	#endif
 	
 	DHookSetReturn(hReturn, view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis))).StartActivity(iActivity, fFlags)); 
 	
