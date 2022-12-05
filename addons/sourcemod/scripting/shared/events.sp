@@ -179,6 +179,8 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		
 	   		b_ThisEntityIgnored[client] = true;
 
+			TF2_RemoveAllWeapons(client);
+			
 	   		int weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword");
 	   		
 	   		TF2Attrib_RemoveAll(weapon_index);
