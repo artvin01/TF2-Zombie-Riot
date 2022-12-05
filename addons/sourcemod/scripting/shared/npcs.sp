@@ -1473,6 +1473,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 								damage *= 1.35;
 #endif
 							
+							/*
+							Latest tf2 update broke this, too lazy to fix lol
 							if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
 							{
 								
@@ -1485,6 +1487,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 								TE_WriteNum("m_nData", Animation_Index[attacker]);
 								TE_SendToAll();
 							}
+							*/
 							int heal_amount = 0;
 							if(melee == 356)
 							{
