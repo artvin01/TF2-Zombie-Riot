@@ -298,6 +298,8 @@ void ZR_PluginLoad()
 
 void ZR_PluginStart()
 {
+	LoadTranslations("zombieriot.phrases.zombienames");
+	
 	RegServerCmd("zr_reloadnpcs", OnReloadCommand, "Reload NPCs");
 	RegServerCmd("sm_reloadnpcs", OnReloadCommand, "Reload NPCs", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_store", Access_StoreViaCommand, "Please Press TAB instad");
@@ -1334,4 +1336,53 @@ void ReviveAll(bool raidspawned = false)
 	
 	Music_EndLastmann();
 	CheckAlivePlayers();
+}
+
+int XpToLevel(int xp)
+{
+	return RoundToFloor(Pow(xp / 200.0, 0.5));
+}
+
+int LevelToXp(int lv)
+{
+	return lv * lv * 200;
+}
+
+void GiveXP(int client, int xp)
+{
+	XP[client] += RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
+	int nextLevel = XpToLevel(XP[client]);
+	if(nextLevel > Level[client])
+	{
+		static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
+		ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
+		
+		int maxhealth = SDKCall_GetMaxHealth(client);
+		if(GetClientHealth(client) < maxhealth)
+			SetEntityHealth(client, maxhealth);
+		
+		SetGlobalTransTarget(client);
+		PrintToChat(client, "%t", "Level Up", nextLevel);
+		
+		bool found;
+		int slots;
+		
+		for(Level[client]++; Level[client]<=nextLevel; Level[client]++)
+		{
+			if(Store_PrintLevelItems(client, Level[client]))
+				found = true;
+			
+			if(!(Level[client] % 2))
+				slots++;
+		}
+		
+		if(slots)
+		{
+			PrintToChat(client, "%t", "Loadout Slots", slots);
+		}
+		else if(!found)
+		{
+			PrintToChat(client, "%t", "None");
+		}
+	}
 }

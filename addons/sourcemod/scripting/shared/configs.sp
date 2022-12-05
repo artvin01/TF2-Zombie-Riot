@@ -23,6 +23,7 @@ public void Configs_ConfigsExecuted()
 	
 #if defined ZR
 	if(!zr_ignoremapconfig.BoolValue)
+#endif
 	{
 		char mapname[64];
 		GetCurrentMap(mapname, sizeof(mapname));
@@ -62,8 +63,8 @@ public void Configs_ConfigsExecuted()
 	
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
-	delete kv;
 #endif
+	delete kv;
 
 	delete WeaponList;
 	WeaponList = new ArrayList(sizeof(WeaponData));

@@ -1790,8 +1790,11 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		
 #if defined RPG
 		SetGlobalTransTarget(attacker);
+		GetDisplayString(Level[victim], level, sizeof(level));
+		
+		char level[64];
 		SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-		ShowSyncHudText(attacker, SyncHud, "Level %d\n%t\n%d / %d\n%s", Level[victim], NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
+		ShowSyncHudText(attacker, SyncHud, "%s\n%t\n%d / %d\n%s", level, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
 #endif
 		
 	}	

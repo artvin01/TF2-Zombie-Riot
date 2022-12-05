@@ -1004,14 +1004,11 @@ public void OnPluginStart()
 	Niko_Cookies = new Cookie("zr_niko", "Are you a niko", CookieAccess_Protected);
 	
 	LoadTranslations("zombieriot.phrases");
-	LoadTranslations("zombieriot.phrases.zombienames");
 	LoadTranslations("zombieriot.phrases.weapons.description");
 	LoadTranslations("zombieriot.phrases.weapons");
 	LoadTranslations("zombieriot.phrases.bob");
 	LoadTranslations("zombieriot.phrases.icons"); 
 	LoadTranslations("common.phrases");
-
-	LoadTranslations("rpgfortress.phrases.enemynames");
 	
 	DHook_Setup();
 	SDKCall_Setup();
@@ -1027,6 +1024,10 @@ public void OnPluginStart()
 	
 #if defined ZR
 	ZR_PluginStart();
+#endif
+	
+#if defined RPG
+	RPG_PluginStart();
 #endif
 	//Global Hud for huds.
 	SyncHud_Notifaction = CreateHudSynchronizer();
@@ -2600,72 +2601,6 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 	return false;
 }
 
-void GiveXP(int client, int xp)
-{
-	XP[client] += RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
-	int nextLevel = XpToLevel(XP[client]);
-	if(nextLevel > Level[client])
-	{
-		static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
-		ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
-		
-		int maxhealth = SDKCall_GetMaxHealth(client);
-		if(GetClientHealth(client) < maxhealth)
-			SetEntityHealth(client, maxhealth);
-		
-#if defined RPG
-		SPrintToChat(client, "%t", "Level Up", nextLevel);
-#else
-		SetGlobalTransTarget(client);
-		PrintToChat(client, "%t", "Level Up", nextLevel);
-#endif
-		
-#if defined ZR
-		bool found;
-		int slots;
-		
-		for(Level[client]++; Level[client]<=nextLevel; Level[client]++)
-		{
-			if(Store_PrintLevelItems(client, Level[client]))
-				found = true;
-			
-			if(!(Level[client] % 2))
-				slots++;
-		}
-		
-		if(slots)
-		{
-			PrintToChat(client, "%t", "Loadout Slots", slots);
-		}
-		else if(!found)
-		{
-			PrintToChat(client, "%t", "None");
-		}
-#endif
-
-#if defined RPG
-		Level[client] = nextLevel;
-#endif
-	}
-}
-
-int XpToLevel(int xp)
-{
-#if defined ZR
-	return RoundToFloor(Pow(xp/200.0, 0.5));
-#else
-	return RoundToFloor(Pow(xp/100.0, 0.5));
-#endif
-}
-
-int LevelToXp(int lv)
-{
-#if defined ZR
-	return RoundToCeil(Pow(float(lv), 2.0)*200.0);
-#else
-	return RoundToCeil(Pow(float(lv), 2.0)*100.0);
-#endif
-}
 /*
 public void Frame_OffCheats()
 {
