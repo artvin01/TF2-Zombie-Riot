@@ -1,3 +1,6 @@
+NOTE! the latest tf2 update broke the npcs entirely and i dont have enough knowledge to fix the pathfinder extention (i never coded for extentions, and especially tha way pelipoika did it.)
+so untill someone else fixes it, you can concider this gamemode dead due to the vscript update.
+
 # TF2 Zombie Riot
 
 You fight against AI enemies/Zombies with allies and try to win/suvive as long as possible, You buy weapons and or upgrade them from previous ones. Stay together and beat them

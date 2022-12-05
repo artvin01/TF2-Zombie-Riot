@@ -42,7 +42,7 @@ public Action ASX_Timer3(Handle timer, int client)
 				bool hit = false;
 				float hit_enemies = 1.0;
 				b_LagCompNPC_No_Layers = true;
-				StartLagCompensation_Base_Boss(client, false);
+				StartLagCompensation_Base_Boss(client);
 				
 				for(int entitycount_2; entitycount_2<i_MaxcountNpc; entitycount_2++)
 				{

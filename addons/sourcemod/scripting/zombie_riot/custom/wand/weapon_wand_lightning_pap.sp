@@ -65,7 +65,7 @@ public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int s
 				GetClientEyeAngles(client, vAngles);
 				
 				b_LagCompNPC_ExtendBoundingBox = true;
-				StartLagCompensation_Base_Boss(client, false);
+				StartLagCompensation_Base_Boss(client);
 				Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
 				FinishLagCompensation_Base_boss();
 				
@@ -135,7 +135,7 @@ public Action Smite_Timer(Handle Smite_Logic, DataPack pack)
 	float damage = ReadPackFloat(pack);
 	int weapon = EntRefToEntIndex(ReadPackCell(pack));
 	
-	if(IsValidEntity)
+	if(IsValidEntity(weapon))
 	{
 		if (NumLoops >= Smite_ChargeTime)
 		{

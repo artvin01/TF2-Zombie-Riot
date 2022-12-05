@@ -146,12 +146,12 @@ methodmap TrueFusionWarrior < CClotBody
 		public set(float TempValueForProperty) 	{ fl_NextPull[this.index] = TempValueForProperty; }
 	}
 	public void PlayIdleSound(bool repeat = false) {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		int sound = GetRandomInt(0, sizeof(g_IdleSounds) - 1);
 		
 		EmitSoundToAll(g_IdleSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(24.0, 48.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
 		DataPack pack;
 		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -161,13 +161,13 @@ methodmap TrueFusionWarrior < CClotBody
 	}
 	
 	public void PlayIdleAlertSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 			
 		int sound = GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1);
 		
 		EmitSoundToAll(g_IdleAlertedSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		DataPack pack;
 		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -180,7 +180,7 @@ methodmap TrueFusionWarrior < CClotBody
 		int sound = GetRandomInt(0, sizeof(g_HurtSounds) - 1);
 
 		EmitSoundToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextHurtSound = GetGameTime() + GetRandomFloat(0.6, 1.6);
+		this.m_flNextHurtSound = GetGameTime(this.index) + GetRandomFloat(0.6, 1.6);
 		
 		DataPack pack;
 		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -291,7 +291,7 @@ methodmap TrueFusionWarrior < CClotBody
 		
 		npc.m_bThisNpcIsABoss = true;
 		
-		RaidModeTime = GetGameTime() + 200.0;
+		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		
@@ -376,8 +376,8 @@ methodmap TrueFusionWarrior < CClotBody
 		//IDLE
 		npc.m_flSpeed = 330.0;
 		
-		npc.m_flTimebeforekamehameha = GetGameTime() + 10.0;
-		npc.m_flNextPull = GetGameTime() + 5.0;
+		npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 10.0;
+		npc.m_flNextPull = GetGameTime(npc.index) + 5.0;
 		npc.m_bInKame = false;
 		
 		Citizen_MiniBossSpawn(npc.index);
@@ -392,25 +392,6 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 {
 	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(iNPC);
 	
-	if(npc.m_flNextDelayTime > GetGameTime())
-	{
-		return;
-	}
-	
-	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
-	
-	npc.Update();
-	
-	//Think throttling
-	if(npc.m_flNextThinkTime > GetGameTime()) {
-		return;
-	}
-	if(npc.m_blPlayHurtAnimation)
-	{
-		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
-		npc.PlayHurtSound();
-		npc.m_blPlayHurtAnimation = false;
-	}
 	if(RaidModeTime < GetGameTime())
 	{
 		int entity = CreateEntityByName("game_round_win"); //You loose.
@@ -422,13 +403,33 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
 	}
-	
-	npc.m_flNextThinkTime = GetGameTime() + 0.10;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	{
+		return;
+	}
+	
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	
+	npc.Update();
+	
+	//Think throttling
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index)) {
+		return;
+	}
+	if(npc.m_blPlayHurtAnimation)
+	{
+		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
+		npc.PlayHurtSound();
+		npc.m_blPlayHurtAnimation = false;
+	}
+	
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
+
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	
 	int closest = npc.m_iTarget;
@@ -509,15 +510,15 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			
 			if(ZR_GetWaveCount()+1 > 25)
 			{
-				if(npc.m_flTimebeforekamehameha < GetGameTime() && !npc.Anger)
+				if(npc.m_flTimebeforekamehameha < GetGameTime(npc.index) && !npc.Anger)
 				{
-					npc.m_flTimebeforekamehameha = GetGameTime() + 35.0;
+					npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 35.0;
 					npc.m_bInKame = true;
 					TrueFusionWarrior_TBB_Ability(npc.index);
 				}
-				else if(npc.m_flTimebeforekamehameha < GetGameTime() && npc.Anger)
+				else if(npc.m_flTimebeforekamehameha < GetGameTime(npc.index) && npc.Anger)
 				{
-					npc.m_flTimebeforekamehameha = GetGameTime() + 35.0;
+					npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 35.0;
 					npc.m_bInKame = true;
 					TrueFusionWarrior_TBB_Ability_Anger(npc.index);
 				}
@@ -541,14 +542,14 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				}
 			}
 			
-			if (npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > Pow(110.0, 2.0)  && flDistanceToTarget < Pow(500.0, 2.0) || (npc.m_bInKame && npc.m_flNextRangedAttack < GetGameTime()))
+			if (npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > Pow(110.0, 2.0)  && flDistanceToTarget < Pow(500.0, 2.0) || (npc.m_bInKame && npc.m_flNextRangedAttack < GetGameTime(npc.index)))
 			{
 				if (!npc.Anger)
 				{
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
 					npc.FireRocket(vPredictedPos, 10.0 * RaidModeScaling, 800.0, "models/effects/combineball.mdl", 1.0);	
-					npc.m_flNextRangedAttack = GetGameTime() + 4.0;
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 4.0;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
 				}
@@ -557,13 +558,13 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
 					npc.FireRocket(vPredictedPos, 10.0 * RaidModeScaling, 800.0, "models/effects/combineball.mdl", 1.0);	
-					npc.m_flNextRangedAttack = GetGameTime() + 3.0;
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.0;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
 				}
 			}
 			
-			if(npc.m_flNextPull < GetGameTime() && !npc.m_bInKame)
+			if(npc.m_flNextPull < GetGameTime(npc.index) && !npc.m_bInKame)
 			{
 				if (!npc.Anger)
 				{
@@ -610,7 +611,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.DispatchParticleEffect(npc.index, "hammer_bell_ring_shockwave2", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
 					
 					
-					npc.m_flNextPull = GetGameTime() + 15.0;
+					npc.m_flNextPull = GetGameTime(npc.index) + 15.0;
 					npc.PlayPullSound();
 					npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 				}
@@ -657,14 +658,14 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					
 					npc.DispatchParticleEffect(npc.index, "hammer_bell_ring_shockwave2", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
 	
-					npc.m_flNextPull = GetGameTime() + 13.0;
+					npc.m_flNextPull = GetGameTime(npc.index) + 13.0;
 					npc.PlayPullSound();
 					npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 				}
 			} 
 									
 									
-			if(npc.m_flNextRangedBarrage_Spam < GetGameTime() && npc.m_flNextRangedBarrage_Singular < GetGameTime() && flDistanceToTarget > Pow(110.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) || (npc.m_bInKame && npc.m_flNextRangedAttack < GetGameTime()))
+			if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget > Pow(110.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) || (npc.m_bInKame && npc.m_flNextRangedAttack < GetGameTime(npc.index)))
 			{
 				if (!npc.Anger)
 				{
@@ -674,7 +675,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
-					npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.15;
+					npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 0.15;
 					
 					if(ZR_GetWaveCount()+1 > 55)
 						TrueFusionwarrior_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
@@ -682,7 +683,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					if (npc.m_iAmountProjectiles >= 8)
 					{
 						npc.m_iAmountProjectiles = 0;
-						npc.m_flNextRangedBarrage_Spam = GetGameTime() + 13.0;
+						npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 13.0;
 					}
 				}
 				else if (npc.Anger)
@@ -698,15 +699,15 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					if(ZR_GetWaveCount()+1 > 55)
 						TrueFusionwarrior_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 						
-					npc.m_flNextRangedBarrage_Singular = GetGameTime() + 0.15;
+					npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 0.15;
 					if (npc.m_iAmountProjectiles >= 12)
 					{
 						npc.m_iAmountProjectiles = 0;
-						npc.m_flNextRangedBarrage_Spam = GetGameTime() + 11.0;
+						npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 11.0;
 					}
 				}
 			}
-			if(npc.m_flNextTeleport < GetGameTime() && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && !npc.m_bInKame && ZR_GetWaveCount()+1 > 40)
+			if(npc.m_flNextTeleport < GetGameTime(npc.index) && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && !npc.m_bInKame && ZR_GetWaveCount()+1 > 40)
 			{
 				static float flVel[3];
 				GetEntPropVector(closest, Prop_Data, "m_vecVelocity", flVel);
@@ -716,7 +717,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					{
 						npc.FaceTowards(vecTarget);
 						npc.FaceTowards(vecTarget);
-						npc.m_flNextTeleport = GetGameTime() + 6.0;
+						npc.m_flNextTeleport = GetGameTime(npc.index) + 6.0;
 						float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
 						
 						if(Tele_Check > 120)
@@ -732,7 +733,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					{
 						npc.FaceTowards(vecTarget);
 						npc.FaceTowards(vecTarget);
-						npc.m_flNextTeleport = GetGameTime() + 5.0;
+						npc.m_flNextTeleport = GetGameTime(npc.index) + 5.0;
 						float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
 						if(Tele_Check > 120)
 						{
@@ -747,18 +748,18 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			{
 				//Look at target so we hit.
 				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GetGameTime())
+				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 				{
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime()+0.3;
-						npc.m_flAttackHappens_bullshit = GetGameTime()+0.44;
+						npc.m_flAttackHappens = GetGameTime(npc.index)+0.3;
+						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.44;
 						npc.m_flAttackHappenswillhappen = true;
 					}
 						
-					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 5000.0);
@@ -814,13 +815,13 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 								} 
 							}
 						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
 						npc.m_flAttackHappenswillhappen = false;
 					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
 					}
 				}
 				PF_StopPathing(npc.index);
@@ -843,9 +844,9 @@ public Action TrueFusionWarrior_ClotDamaged(int victim, int &attacker, int &infl
 		
 	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(victim);
 	
-	if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
 	

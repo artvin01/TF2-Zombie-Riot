@@ -197,7 +197,7 @@ public void DDT_ClotThink(int iNPC)
 		AcceptEntityInput(iNPC, "SetBodyGroup");
 	}
 	
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 	{
 		return;
@@ -311,7 +311,7 @@ public Action DDT_ClotDamaged(int victim, int &attacker, int &inflictor, float &
 	{
 		npc.PlayHitSound();
 	}
-	else if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime())
+	else if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime(npc.index))
 	{
 		damage *= 0.15;
 	}

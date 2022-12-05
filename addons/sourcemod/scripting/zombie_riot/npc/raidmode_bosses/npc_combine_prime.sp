@@ -181,7 +181,7 @@ methodmap CombinePrime < CClotBody
 		
 		npc.m_bThisNpcIsABoss = true;
 		
-		RaidModeTime = GetGameTime() + 200.0;
+		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		
@@ -219,7 +219,7 @@ public void CombinePrime_ClotThink(int iNPC)
 {
 	CombinePrime npc = view_as<CombinePrime>(iNPC);
 	
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(npc.index);
 	
 	if(npc.m_flNextDelayTime > gameTime)
 	{
@@ -396,9 +396,9 @@ public Action CombinePrime_ClotDamaged(int victim, int &attacker, int &inflictor
 	CombinePrime npc = view_as<CombinePrime>(victim);
 	
 	//Have a cooldown for hurt animations and hurt sound alike, incase we want them.
-	if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
 	

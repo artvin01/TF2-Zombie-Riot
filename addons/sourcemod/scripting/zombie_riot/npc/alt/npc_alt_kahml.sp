@@ -139,10 +139,10 @@ public void Kahmlstein_OnMapStart_NPC()
 methodmap Kahmlstein < CClotBody
 {
 	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(24.0, 48.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
@@ -150,11 +150,11 @@ methodmap Kahmlstein < CClotBody
 	}
 	
 	public void PlayIdleAlertSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
@@ -162,10 +162,10 @@ methodmap Kahmlstein < CClotBody
 	}
 	
 	public void PlayHurtSound() {
-		if(this.m_flNextHurtSound > GetGameTime())
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
-		this.m_flNextHurtSound = GetGameTime() + 0.4;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
@@ -323,13 +323,13 @@ methodmap Kahmlstein < CClotBody
 		fl_kahml_combo_reset_timer[npc.index] = 0.0;
 		fl_kahml_annihilation_reset_timer[npc.index] = 0.0;
 		fl_kahml_annihilation_firerate[npc.index] = 0.0;
-		fl_kahml_nano_reset[npc.index] = 60.0 + GetGameTime();
+		fl_kahml_nano_reset[npc.index] = 60.0 + GetGameTime(npc.index);
 		
 		fl_TheFinalCountdown[npc.index] = 0.0;
 		fl_TheFinalCountdown2[npc.index] = 0.0;
 		
 		npc.m_flCharge_Duration = 0.0;
-		npc.m_flCharge_delay = GetGameTime() + 2.0;
+		npc.m_flCharge_delay = GetGameTime(npc.index) + 2.0;
 		
 		return npc;
 	}
@@ -341,12 +341,12 @@ public void Kahmlstein_ClotThink(int iNPC)
 {
 	Kahmlstein npc = view_as<Kahmlstein>(iNPC);
 	
-	if(npc.m_flNextDelayTime > GetGameTime())
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
 	
@@ -357,17 +357,17 @@ public void Kahmlstein_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime())
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime() + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
@@ -409,7 +409,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 			EmitSoundToAll("items/powerup_pickup_knockout_melee_hit.wav");
 			}
 		}//fast3
-		if(fl_kahml_combo_reset_timer[npc.index] <= GetGameTime() && i_kahml_combo_offest[npc.index] != 0 && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index])
+		if(fl_kahml_combo_reset_timer[npc.index] <= GetGameTime(npc.index) && i_kahml_combo_offest[npc.index] != 0 && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index])
 		{
 			fl_kahml_main_melee_damage[npc.index] = 80.0 * fl_kahml_galactic_strenght[npc.index];
 			i_kahml_combo_offest[npc.index] = 0;
@@ -432,7 +432,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		if(i_kahml_combo[npc.index] == 3 && i_kahml_combo_offest[npc.index] == 0 && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index])
 		{
 			fl_kahml_main_melee_damage[npc.index] = 90.0 * fl_kahml_galactic_strenght[npc.index];
-			fl_kahml_combo_reset_timer[npc.index] = GetGameTime() + 5.0;
+			fl_kahml_combo_reset_timer[npc.index] = GetGameTime(npc.index) + 5.0;
 			i_kahml_combo_offest[npc.index]++;
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
@@ -456,7 +456,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		if(i_kahml_combo[npc.index] == 5 && i_kahml_combo_offest[npc.index] == 1 && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index])
 		{
 			fl_kahml_main_melee_damage[npc.index] = 100.0 * fl_kahml_galactic_strenght[npc.index];
-			fl_kahml_combo_reset_timer[npc.index] = GetGameTime() + 5.0;
+			fl_kahml_combo_reset_timer[npc.index] = GetGameTime(npc.index) + 5.0;
 			i_kahml_combo_offest[npc.index]++;
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
@@ -480,7 +480,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		if(i_kahml_combo[npc.index] == 7 && i_kahml_combo_offest[npc.index] == 2 && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index])
 		{
 			fl_kahml_main_melee_damage[npc.index] = 120.0 * fl_kahml_galactic_strenght[npc.index];
-			fl_kahml_combo_reset_timer[npc.index] = GetGameTime() + 5.0;
+			fl_kahml_combo_reset_timer[npc.index] = GetGameTime(npc.index) + 5.0;
 			i_kahml_combo_offest[npc.index]++;
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
@@ -504,7 +504,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		if(i_kahml_combo[npc.index] == 8 && i_kahml_combo_offest[npc.index] == 3 && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index]) 
 		{
 			fl_kahml_main_melee_damage[npc.index] = 135.0 * fl_kahml_galactic_strenght[npc.index];
-			fl_kahml_combo_reset_timer[npc.index] = GetGameTime() + 5.0;
+			fl_kahml_combo_reset_timer[npc.index] = GetGameTime(npc.index) + 5.0;
 			i_kahml_combo_offest[npc.index]++;
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
@@ -528,7 +528,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		if(i_kahml_combo[npc.index] == 9 && i_kahml_combo_offest[npc.index] == 4 && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index])
 		{
 			fl_kahml_main_melee_damage[npc.index] = 150.0 * fl_kahml_galactic_strenght[npc.index];
-			fl_kahml_combo_reset_timer[npc.index] = GetGameTime() + 30.0;
+			fl_kahml_combo_reset_timer[npc.index] = GetGameTime(npc.index) + 30.0;
 			i_kahml_combo_offest[npc.index]++;
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
@@ -552,7 +552,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 			EmitSoundToAll("mvm/mvm_tank_horn.wav");
 			EmitSoundToAll("vo/heavy_domination16.mp3");
 			CPrintToChatAll("{blue}Kahmlstein{default}: {crimson}I Will BREAK YOU");
-			fl_kahml_combo_reset_timer[npc.index] = GetGameTime() + 10.0;
+			fl_kahml_combo_reset_timer[npc.index] = GetGameTime(npc.index) + 10.0;
 			i_kahml_combo_offest[npc.index]++;
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
@@ -565,7 +565,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		if(i_kahml_combo[npc.index] == 16 && i_kahml_combo_offest[npc.index] == 6)
 		{
 			npc.m_flSpeed = 350.0;
-			fl_kahml_combo_reset_timer[npc.index] = GetGameTime() + 0.1;
+			fl_kahml_combo_reset_timer[npc.index] = GetGameTime(npc.index) + 0.1;
 			fl_kahml_knockback[npc.index] = 0.0;
 		}
 		if(Health/MaxHealth>0 && Health/MaxHealth<0.25 && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index] && !b_kahml_annihilation_used[npc.index])
@@ -588,9 +588,9 @@ public void Kahmlstein_ClotThink(int iNPC)
 			i_kahml_combo_offest[npc.index] = 0;
 			i_kahml_combo[npc.index] = 0;
 		
-			fl_kahml_annihilation_reset_timer[npc.index] = GetGameTime() + 15.0;	
+			fl_kahml_annihilation_reset_timer[npc.index] = GetGameTime(npc.index) + 15.0;	
 		}
-		if(b_kahml_annihilation_used[npc.index] && fl_kahml_annihilation_reset_timer[npc.index] <= GetGameTime())
+		if(b_kahml_annihilation_used[npc.index] && fl_kahml_annihilation_reset_timer[npc.index] <= GetGameTime(npc.index))
 		{
 			npc.m_flSpeed = 350.0;
 			fl_kahml_bulletres[npc.index] = 1.0;
@@ -601,13 +601,13 @@ public void Kahmlstein_ClotThink(int iNPC)
 			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_fists_of_steel/c_fists_of_steel.mdl");
 			SetVariantString("1.0");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-			fl_kahml_annihilation_reset_timer[npc.index] = GetGameTime() + 100000000.0;
+			fl_kahml_annihilation_reset_timer[npc.index] = GetGameTime(npc.index) + 100000000.0;
 		}
 		if(b_kahml_inNANOMACHINESSON[npc.index])
 		{
 			fl_kahml_main_melee_damage[npc.index] = 50.0 * fl_kahml_galactic_strenght[npc.index];	//cause funny 3x thingy makes this thing go brrrrrrr and his dmg becomes god-like
 		}
-		if(fl_kahml_nano_reset[npc.index] <= GetGameTime() && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index])
+		if(fl_kahml_nano_reset[npc.index] <= GetGameTime(npc.index) && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index])
 		{
 			CPrintToChatAll("{blue}Kahmlstein{default}: NANOMACHINES SON, THEY HARDEN IN RESPONSE TO PHYSICAL TRAUMA, YOU CAN'T HURT ME.");
 			fl_kahml_main_melee_damage[npc.index] = 50.0 * fl_kahml_galactic_strenght[npc.index];
@@ -615,7 +615,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 			fl_kahml_meleeres[npc.index] = 0.1;
 			b_kahml_inNANOMACHINESSON[npc.index] = true;
 			//nano timers.
-			fl_kahml_nano_reset[npc.index] = 30.0 + GetGameTime();
+			fl_kahml_nano_reset[npc.index] = 30.0 + GetGameTime(npc.index);
 			
 			fl_kahml_knockback[npc.index] = 0.0;
 			
@@ -637,15 +637,15 @@ public void Kahmlstein_ClotThink(int iNPC)
 			npc.DispatchParticleEffect(npc.index, "hammer_bell_ring_shockwave2", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
 		
 		}
-		if(fl_kahml_nano_reset[npc.index] <= GetGameTime() && b_kahml_inNANOMACHINESSON[npc.index])
+		if(fl_kahml_nano_reset[npc.index] <= GetGameTime(npc.index) && b_kahml_inNANOMACHINESSON[npc.index])
 		{
 			b_kahml_inNANOMACHINESSON[npc.index] = false;
 			fl_kahml_bulletres[npc.index] = 1.0;
 			fl_kahml_meleeres[npc.index] = 1.0;
 			fl_kahml_melee_speed[npc.index] = 0.4;
 			CPrintToChatAll("{blue}Kahmlstein{default}: NANI? I'm out of nanomachines?");
-			fl_kahml_nano_reset[npc.index] = 60.0 + GetGameTime();
-			fl_kahml_combo_reset_timer[npc.index] = 60.0 + GetGameTime();
+			fl_kahml_nano_reset[npc.index] = 60.0 + GetGameTime(npc.index);
+			fl_kahml_combo_reset_timer[npc.index] = 60.0 + GetGameTime(npc.index);
 			i_kahml_combo_offest[npc.index] = 0;
 			i_kahml_combo[npc.index] = 0;
 		}
@@ -661,7 +661,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		
 			EmitSoundToAll("vo/heavy_domination06.mp3");
 		
-			fl_TheFinalCountdown2[npc.index] = GetGameTime()+7.5;
+			fl_TheFinalCountdown2[npc.index] = GetGameTime(npc.index)+7.5;
 		
 			fl_kahml_bulletres[npc.index] = 0.1;
 			fl_kahml_meleeres[npc.index] = 0.1;
@@ -669,9 +669,9 @@ public void Kahmlstein_ClotThink(int iNPC)
 			b_kahml_annihilation[npc.index]=true;
 			b_kahml_annihilation_used[npc.index]=true;
 		
-			fl_kahml_annihilation_reset_timer[npc.index] = GetGameTime() + 15.0;	
+			fl_kahml_annihilation_reset_timer[npc.index] = GetGameTime(npc.index) + 15.0;	
 		}
-		if(b_kahml_annihilation_used[npc.index] && fl_kahml_annihilation_reset_timer[npc.index] <= GetGameTime())
+		if(b_kahml_annihilation_used[npc.index] && fl_kahml_annihilation_reset_timer[npc.index] <= GetGameTime(npc.index))
 		{
 			fl_kahml_bulletres[npc.index] = 1.0;
 			fl_kahml_meleeres[npc.index] = 1.0;
@@ -690,10 +690,10 @@ public void Kahmlstein_ClotThink(int iNPC)
 		
 		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex, 0.3);
 		
-		if(npc.m_flCharge_Duration < GetGameTime() && i_kahml_dash_charge[npc.index] > 0)
+		if(npc.m_flCharge_Duration < GetGameTime(npc.index) && i_kahml_dash_charge[npc.index] > 0)
 		{
 			npc.m_flSpeed = 400.0;
-			if(npc.m_flCharge_delay < GetGameTime())
+			if(npc.m_flCharge_delay < GetGameTime(npc.index))
 			{
 				int Enemy_I_See;
 				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
@@ -702,13 +702,13 @@ public void Kahmlstein_ClotThink(int iNPC)
 				{
 					i_kahml_dash_charge[npc.index]--;
 					npc.PlayChargeSound();
-					npc.m_flCharge_delay = GetGameTime() + 1.0;
-					npc.m_flCharge_Duration = GetGameTime() + 1.0;
+					npc.m_flCharge_delay = GetGameTime(npc.index) + 1.0;
+					npc.m_flCharge_Duration = GetGameTime(npc.index) + 1.0;
 					PluginBot_Jump(npc.index, vecTarget);
 				}
 			}
 		}
-		if(npc.m_flNextTeleport < GetGameTime() && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && i_kahml_teleport_charge[npc.index] > 0)
+		if(npc.m_flNextTeleport < GetGameTime(npc.index) && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && i_kahml_teleport_charge[npc.index] > 0)
 		{
 			static float flVel[3];
 			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
@@ -717,7 +717,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 			{
 				npc.FaceTowards(vecTarget);
 				npc.FaceTowards(vecTarget);
-				npc.m_flNextTeleport = GetGameTime() + 11.0;
+				npc.m_flNextTeleport = GetGameTime(npc.index) + 11.0;
 				float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
 			
 				if(Tele_Check > 120.0)
@@ -746,7 +746,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
 				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GetGameTime())
+				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 				{
 					//Play attack ani
 					if (!npc.m_flAttackHappenswillhappen)
@@ -754,10 +754,10 @@ public void Kahmlstein_ClotThink(int iNPC)
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 						npc.PlayMeleeSound();
 						npc.m_flAttackHappens = 0.0;
-						npc.m_flAttackHappens_bullshit = GetGameTime()+fl_kahml_melee_speed[npc.index];
+						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+fl_kahml_melee_speed[npc.index];
 						npc.m_flAttackHappenswillhappen = true;
 					}
-					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
@@ -812,13 +812,13 @@ public void Kahmlstein_ClotThink(int iNPC)
 							} 
 						}
 						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime() + fl_kahml_melee_speed[npc.index];
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + fl_kahml_melee_speed[npc.index];
 						npc.m_flAttackHappenswillhappen = false;
 					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime() + fl_kahml_melee_speed[npc.index];
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + fl_kahml_melee_speed[npc.index];
 					}
 				}
 			}
@@ -842,15 +842,15 @@ public void Kahmlstein_ClotThink(int iNPC)
 					npc.FaceTowards(vecTarget, 1500.0);
 					
 					//Can we attack right now?
-					if(npc.m_flNextMeleeAttack < GetGameTime())
+					if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 					{
 						//Play attack anim
 						npc.AddGesture("ACT_MP_DEPLOYED_PRIMARY");
 						npc.PlayRangedSound();
 						npc.FireRocket(vecTarget, fl_kahml_main_melee_damage[npc.index], 2500.0, "models/effects/combineball.mdl", 1.0, EP_NO_KNOCKBACK);
-						npc.m_flNextMeleeAttack = GetGameTime() + 0.075 / fl_kahml_galactic_strenght[npc.index];
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.075 / fl_kahml_galactic_strenght[npc.index];
 					}
-					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
@@ -891,7 +891,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 							} 
 						}
 						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime() + 0.075 / fl_kahml_galactic_strenght[npc.index];
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.075 / fl_kahml_galactic_strenght[npc.index];
 						npc.m_flAttackHappenswillhappen = false;
 					}
 				}
@@ -913,10 +913,10 @@ public void Kahmlstein_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-	if(b_kahml_annihilation[npc.index] && fl_TheFinalCountdown[npc.index] <= GetGameTime())
+	if(b_kahml_annihilation[npc.index] && fl_TheFinalCountdown[npc.index] <= GetGameTime(npc.index))
 	{
 		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
-		fl_TheFinalCountdown[npc.index] = GetGameTime()+1.0;
+		fl_TheFinalCountdown[npc.index] = GetGameTime(npc.index)+1.0;
 	}
 	npc.PlayIdleAlertSound();
 }
@@ -928,9 +928,9 @@ public Action Kahmlstein_ClotDamaged(int victim, int &attacker, int &inflictor, 
 	if(attacker <= 0)
 		return Plugin_Continue;
 	
-	if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
 	

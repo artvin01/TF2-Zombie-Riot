@@ -167,27 +167,27 @@ methodmap CuredFatherGrigori < CClotBody
 {
 	
 	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 			
 		Citizen_LiveCitizenReaction(this.index);	
 		
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(48.0, 60.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(48.0, 60.0);
 		#if defined DEBUG_SOUND
 		PrintToServer("CCuredFatherGrigori::PlayIdleSound()");
 		#endif
 	}
 	
 	public void PlayIdleAlertSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		Citizen_LiveCitizenReaction(this.index);
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(24.0, 38.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 38.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CCuredFatherGrigori::PlayIdleAlertSound()");
@@ -195,10 +195,10 @@ methodmap CuredFatherGrigori < CClotBody
 	}
 	
 	public void PlayHurtSound() {
-		if(this.m_flNextHurtSound > GetGameTime())
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
-		this.m_flNextHurtSound = GetGameTime() + 0.4;
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		
@@ -330,7 +330,7 @@ methodmap CuredFatherGrigori < CClotBody
 		npc.m_flNextRangedBarrage_Singular = 0.0;
 		npc.m_bNextRangedBarrage_OnGoing = false;
 		npc.m_flAttackHappenswillhappen = false;
-		npc.m_flNextTeleport = GetGameTime() + 5.0;
+		npc.m_flNextTeleport = GetGameTime(npc.index) + 5.0;
 		npc.m_flDoingAnimation = 0.0;
 		npc.m_iChanged_WalkCycle = -1;
 		npc.m_iAttacksTillReload = 2;
@@ -356,31 +356,31 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 {
 	CuredFatherGrigori npc = view_as<CuredFatherGrigori>(iNPC);
 	
-	if(npc.m_flNextDelayTime > GetGameTime())
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 	
-	if(npc.m_flNextThinkTime > GetGameTime())
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime() + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index, _ , 1000.0);
-		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(npc.m_flReloadDelay > GetGameTime())
+	if(npc.m_flReloadDelay > GetGameTime(npc.index))
 	{
 		npc.m_iChanged_WalkCycle = 999;
 		npc.m_flSpeed = 0.0;
@@ -415,7 +415,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 	
-			if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 15000 && flDistanceToTarget < 1000000 && npc.m_flReloadDelay < GetGameTime())
+			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 15000 && flDistanceToTarget < 1000000 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				int Enemy_I_See;
 			
@@ -449,8 +449,8 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 					if (npc.m_iAttacksTillReload == 0)
 					{
 						npc.AddGesture("ACT_RELOAD_shotgun"); //lol no caps
-						npc.m_flReloadDelay = GetGameTime() + 2.5;
-						npc.m_flNextRangedAttack = GetGameTime() + 2.5;
+						npc.m_flReloadDelay = GetGameTime(npc.index) + 2.5;
+						npc.m_flNextRangedAttack = GetGameTime(npc.index) + 2.5;
 						npc.m_iAttacksTillReload = 2;
 						npc.PlayRangedReloadSound();
 						return; //bye
@@ -461,7 +461,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 					
 					npc.FaceTowards(vecTarget, 10000.0);
 					
-					npc.m_flNextRangedAttack = GetGameTime() + 1.2;
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.2;
 					
 					float vecSpread = 0.1;
 				
@@ -503,7 +503,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 			
 					
 			//Target close enough to hit
-			if((flDistanceToTarget < 15000 && npc.m_flReloadDelay < GetGameTime()) || npc.m_flAttackHappenswillhappen)
+			if((flDistanceToTarget < 15000 && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
 			{
 				npc.StartPathing();
 				 //Walk at all times when they are close enough.
@@ -522,21 +522,21 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 				{
 				//	npc.FaceTowards(vecTarget, 1000.0);
 					
-					if(npc.m_flNextMeleeAttack < GetGameTime() || npc.m_flAttackHappenswillhappen)
+					if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) || npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flSpeed = 0.0;
 						if (!npc.m_flAttackHappenswillhappen)
 						{
-							npc.m_flNextMeleeAttack = GetGameTime() + 1.5;
-							npc.m_flNextRangedAttack = GetGameTime() + 1.5;
+							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.5;
+							npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.5;
 							npc.AddGesture("ACT_MELEE_ATTACK");
 							npc.PlayMeleeSound();
-							npc.m_flAttackHappens = GetGameTime()+0.4;
-							npc.m_flAttackHappens_bullshit = GetGameTime()+0.54;
+							npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
+							npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
 							npc.m_flAttackHappenswillhappen = true;
 						}
 							
-						if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+						if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 						{
 							Handle swingTrace;
 							npc.FaceTowards(vecTarget, 20000.0);
@@ -567,7 +567,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 							delete swingTrace;
 							npc.m_flAttackHappenswillhappen = false;
 						}
-						else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+						else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 						{
 							npc.m_flAttackHappenswillhappen = false;
 						}
@@ -578,7 +578,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 	else
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index, _ , 1000.0);
-		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
 			return;
@@ -644,8 +644,8 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 				if (npc.m_iAttacksTillReload != 2)
 				{
 					npc.AddGesture("ACT_RELOAD_shotgun"); //lol no caps
-					npc.m_flReloadDelay = GetGameTime() + 2.5;
-					npc.m_flNextRangedAttack = GetGameTime() + 2.5;
+					npc.m_flReloadDelay = GetGameTime(npc.index) + 2.5;
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 2.5;
 					npc.m_iAttacksTillReload = 2;
 					npc.PlayRangedReloadSound();
 				}

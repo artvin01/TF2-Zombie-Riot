@@ -82,10 +82,10 @@ methodmap AltCombineMage < CClotBody
 {
 	
 	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(24.0, 48.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
@@ -93,11 +93,11 @@ methodmap AltCombineMage < CClotBody
 	}
 	
 	public void PlayIdleAlertSound() {
-		if(this.m_flNextIdleSound > GetGameTime())
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime() + GetRandomFloat(12.0, 24.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleAlertSound()");
@@ -107,7 +107,7 @@ methodmap AltCombineMage < CClotBody
 	public void PlayHurtSound() {
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		this.m_flNextHurtSound = GetGameTime() + GetRandomFloat(0.6, 1.6);
+		this.m_flNextHurtSound = GetGameTime(this.index) + GetRandomFloat(0.6, 1.6);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayHurtSound()");
@@ -213,12 +213,12 @@ public void AltCombineMage_ClotThink(int iNPC)
 {
 	AltCombineMage npc = view_as<AltCombineMage>(iNPC);
 	
-	if(npc.m_flNextDelayTime > GetGameTime())
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
 	
@@ -230,16 +230,16 @@ public void AltCombineMage_ClotThink(int iNPC)
 	}
 	
 	//Think throttling
-	if(npc.m_flNextThinkTime > GetGameTime()) {
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index)) {
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime() + 0.10;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime())
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime() + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -247,17 +247,17 @@ public void AltCombineMage_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			if (npc.m_fbGunout == false && npc.m_flReloadDelay < GetGameTime())
+			if (npc.m_fbGunout == false && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
-				if (npc.m_flmovedelay < GetGameTime())
+				if (npc.m_flmovedelay < GetGameTime(npc.index))
 				{
 					int iActivity_melee = npc.LookupActivity("ACT_RUN");
 					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-					npc.m_flmovedelay = GetGameTime() + 1.5;
+					npc.m_flmovedelay = GetGameTime(npc.index) + 1.5;
 				}
 				
 			}
-			else if (npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime())
+			else if (npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				int iActivity_melee = npc.LookupActivity("ACT_IDLE_ANGRY");
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
@@ -290,7 +290,7 @@ public void AltCombineMage_ClotThink(int iNPC)
 			} else {
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			if(npc.m_flNextRangedSpecialAttack < GetGameTime() && flDistanceToTarget > 14400 && flDistanceToTarget < 250000)
+			if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index) && flDistanceToTarget > 14400 && flDistanceToTarget < 250000)
 			{
 				int Enemy_I_See;
 				
@@ -302,14 +302,14 @@ public void AltCombineMage_ClotThink(int iNPC)
 					if(!npc.m_fbRangedSpecialOn)
 					{
 						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
-						npc.m_flRangedSpecialDelay = GetGameTime() + 0.4;
+						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 0.4;
 						npc.m_fbRangedSpecialOn = true;
-						npc.m_flReloadDelay = GetGameTime() + 1.0;
+						npc.m_flReloadDelay = GetGameTime(npc.index) + 1.0;
 					}
-					if(npc.m_flRangedSpecialDelay < GetGameTime())
+					if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 					{
 						npc.m_fbRangedSpecialOn = false;
-						npc.m_flNextRangedSpecialAttack = GetGameTime() + 1.2;
+						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 1.2;
 						npc.PlayRangedAttackSecondarySound();
 						
 						npc.FaceTowards(vecTarget, 20000.0);
@@ -330,18 +330,18 @@ public void AltCombineMage_ClotThink(int iNPC)
 				npc.StartPathing();
 				
 				
-				if(npc.m_flNextMeleeAttack < GetGameTime() && flDistanceToTarget < 7225)
+				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) && flDistanceToTarget < 7225)
 				{
 					if (!npc.m_flAttackHappenswillhappen)
 					{
-						npc.m_flNextRangedSpecialAttack = GetGameTime() + 2.0;
+						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
 						npc.AddGesture("ACT_PUSH_PLAYER");
-						npc.m_flAttackHappens = GetGameTime()+0.4;
-						npc.m_flAttackHappens_bullshit = GetGameTime()+0.51;
+						npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
+						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.51;
 						npc.m_flAttackHappenswillhappen = true;
 					}
 						
-					if (npc.m_flAttackHappens < GetGameTime() && npc.m_flAttackHappens_bullshit >= GetGameTime() && npc.m_flAttackHappenswillhappen)
+					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{
 						npc.FaceTowards(vecTarget, 20000.0);
 						Handle swingTrace;
@@ -389,13 +389,13 @@ public void AltCombineMage_ClotThink(int iNPC)
 								} 
 							}
 						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
 						npc.m_flAttackHappenswillhappen = false;
 					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime() && npc.m_flAttackHappenswillhappen)
+					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
 					}
 				}
 			}
@@ -427,9 +427,9 @@ public Action AltCombineMage_OnTakeDamage(int victim, int &attacker, int &inflic
 	if(npc.m_fbRangedSpecialOn)
 		damage *= 0.75;
 	
-	if (npc.m_flHeadshotCooldown < GetGameTime())
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
 	

@@ -6,23 +6,35 @@
 #define MAX_TARGETS_HIT_RIOT 10 //Dont hit more then 5.
 
 //same as melee for now. but abit more fat
-#define RIOT_MAX_RANGE 100
-#define RIOT_MAX_BOUNDS 33.0
+#define RIOT_MAX_RANGE 150
+#define RIOT_MAX_BOUNDS 45.0
 
 static int ShieldModel;
 static int ViewmodelRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static int WearableRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static int RIOT_EnemiesHit[MAX_TARGETS_HIT_RIOT];
+static float f_TimeSinceLastStunHit[MAXENTITIES];
 
 #define SOUND_RIOTSHIELD_ACTIVATION "weapons/air_burster_explode1.wav"
 
 void Weapon_RiotShield_Map_Precache()
 {
+	Zero(f_TimeSinceLastStunHit);
 	PrecacheSound(SOUND_RIOTSHIELD_ACTIVATION);
 	ShieldModel = PrecacheModel("models/player/items/sniper/knife_shield.mdl");
 }
 
 public void Weapon_RiotShield_M2(int client, int weapon, bool crit, int slot)
+{
+	Weapon_RiotShield_M2_Base(client, weapon, crit, slot, 0);
+}
+
+public void Weapon_RiotShield_M2_PaP(int client, int weapon, bool crit, int slot)
+{
+	Weapon_RiotShield_M2_Base(client, weapon, crit, slot, 1);
+}
+
+public void Weapon_RiotShield_M2_Base(int client, int weapon, bool crit, int slot, int pap)
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
@@ -53,10 +65,15 @@ public void Weapon_RiotShield_M2(int client, int weapon, bool crit, int slot)
 		Handle trace;
 
 		b_LagCompNPC_No_Layers = true;
-		StartLagCompensation_Base_Boss(client, false);
+		StartLagCompensation_Base_Boss(client);
 		trace = TR_TraceHullFilterEx(fPos, endPoint, hullMin, hullMax, 1073741824, Shield_TraceTargets, client);	// 1073741824 is CONTENTS_LADDER?
 		CloseHandle(trace);
 		FinishLagCompensation_Base_boss();
+
+		bool RaidActive = false;
+
+		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			RaidActive = true;
 
 		for (int enemy_hit = 0; enemy_hit < MAX_TARGETS_HIT; enemy_hit++)
 		{
@@ -65,16 +82,40 @@ public void Weapon_RiotShield_M2(int client, int weapon, bool crit, int slot)
 				if(IsValidEntity(RIOT_EnemiesHit[enemy_hit]))
 				{
 					find = true;
-					f_TargetWasBlitzedByRiotShield[RIOT_EnemiesHit[enemy_hit]][weapon] = GetGameTime() + 2.0;
-					if(!b_thisNpcIsABoss[RIOT_EnemiesHit[enemy_hit]])
+					float TimeSinceLastStunSubtract;
+					TimeSinceLastStunSubtract = f_TimeSinceLastStunHit[RIOT_EnemiesHit[enemy_hit]] - GetGameTime();
+					
+					if(TimeSinceLastStunSubtract < 0.0)
 					{
-						fl_NextDelayTime[RIOT_EnemiesHit[enemy_hit]] = GetGameTime () + 1.0;
-						f_TankGrabbedStandStill[RIOT_EnemiesHit[enemy_hit]] = GetGameTime () + 1.0;
+						TimeSinceLastStunSubtract = 0.0;
+					}
+
+					float Duration_ExtraDamage = 2.0;
+					float Duration_Stun = 1.0;
+					float Duration_Stun_Boss = 0.5;
+
+					if(pap == 1)
+					{
+						Duration_ExtraDamage = 3.0;
+						Duration_Stun = 1.5;
+						Duration_Stun_Boss = 0.75;
+					}
+
+					f_TargetWasBlitzedByRiotShield[RIOT_EnemiesHit[enemy_hit]][weapon] = GetGameTime() + Duration_ExtraDamage;
+
+					if(!b_thisNpcIsABoss[RIOT_EnemiesHit[enemy_hit]] && !RaidActive)
+					{
+						f_StunExtraGametimeDuration[RIOT_EnemiesHit[enemy_hit]] += (Duration_Stun - TimeSinceLastStunSubtract);
+						fl_NextDelayTime[RIOT_EnemiesHit[enemy_hit]] = GetGameTime() + Duration_Stun - f_StunExtraGametimeDuration[RIOT_EnemiesHit[enemy_hit]];
+						f_TankGrabbedStandStill[RIOT_EnemiesHit[enemy_hit]] = GetGameTime() + Duration_Stun - f_StunExtraGametimeDuration[RIOT_EnemiesHit[enemy_hit]];
+						f_TimeSinceLastStunHit[RIOT_EnemiesHit[enemy_hit]] = GetGameTime() + Duration_Stun;
 					}
 					else
 					{
-						fl_NextDelayTime[RIOT_EnemiesHit[enemy_hit]] = GetGameTime () + 0.2;
-						f_TankGrabbedStandStill[RIOT_EnemiesHit[enemy_hit]] = GetGameTime () + 0.2;
+						f_StunExtraGametimeDuration[RIOT_EnemiesHit[enemy_hit]] += (Duration_Stun_Boss - TimeSinceLastStunSubtract);
+						fl_NextDelayTime[RIOT_EnemiesHit[enemy_hit]] = GetGameTime() + Duration_Stun_Boss - f_StunExtraGametimeDuration[RIOT_EnemiesHit[enemy_hit]];
+						f_TankGrabbedStandStill[RIOT_EnemiesHit[enemy_hit]] = GetGameTime() + Duration_Stun_Boss - f_StunExtraGametimeDuration[RIOT_EnemiesHit[enemy_hit]];
+						f_TimeSinceLastStunHit[RIOT_EnemiesHit[enemy_hit]] = GetGameTime() + Duration_Stun_Boss;
 					}
 					//PrintToChatAll("boom! %i",RIOT_EnemiesHit[enemy_hit]);
 				}
@@ -121,10 +162,21 @@ public void Weapon_RiotShield_M2(int client, int weapon, bool crit, int slot)
 			int particle = ParticleEffectAt(ClientPos, "mvm_loot_dustup2", 0.5);
 					
 			SetParent(client, particle, "effect_hand_l");
+
+			TE_Particle("mvm_soldier_shockwave", ClientPos, NULL_VECTOR, ClientAng, -1, _, _, _, _, _, _, _, _, _, 0.0);
+
 			TeleportEntity(particle, NULL_VECTOR,fAng,NULL_VECTOR);
 
 			CreateTimer(3.0, RiotShieldAbilityEnd_M2, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
-			Ability_Apply_Cooldown(client, slot, 20.0);
+
+			if(pap == 1)
+			{
+				Ability_Apply_Cooldown(client, slot, 25.0);
+			}
+			else
+			{
+				Ability_Apply_Cooldown(client, slot, 35.0);
+			}
 		}
 		else
 		{
@@ -175,6 +227,7 @@ public void Weapon_RiotShield_Deploy(int client, int weapon)
 		pos[1] += 15.0 * (90.0 - fabs(ang[1])) / 90.0;
 		pos[2] -= 72.5;
 		ang[1] += 180.0;
+		ang[2] = 1.5;
 		
 		TeleportEntity(entity, pos, ang, NULL_VECTOR);
 		DispatchSpawn(entity);
@@ -202,10 +255,11 @@ public void Weapon_RiotShield_Deploy(int client, int weapon)
 			SetVariantString("!activator");
 			AcceptEntityInput(entity, "SetParent", weapon);
 			
-			pos[0] = 5.0;
+			pos[0] = 0.0;
 			pos[1] = 7.5;
 			pos[2] = -60.0;
 			ang[1] = 180.0;
+			ang[2] = 1.5;
 			TeleportEntity(entity, pos, ang, NULL_VECTOR);
 		}
 	}

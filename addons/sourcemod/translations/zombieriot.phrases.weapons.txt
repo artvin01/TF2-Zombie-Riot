@@ -500,6 +500,7 @@
 	"Riot Gun"
 	{
 		"en"		"Riot Gun"
+		"ru"		"Полицейский пистолет"
 	}
 	"Heavy Desert Eagle"
 	{
@@ -531,7 +532,7 @@
 	"PhlogStorms Detonator"
 	{
 		"en"		"PhlogStorms Detonator"
-		"ru"		"Детонатор ФлогШторм"
+		"ru"		"Детонатор 'ФлогШторм'"
 		"de"		"PhlogStorms Zünder"
 		"pt"		"Detonador FlogisTade"
 		"nl"		"PhlogStorms onsteker"
@@ -562,7 +563,7 @@
 		"de"		"Schlüsselwerkzeug"
 		"pt"		"Chave Inglesa"
 		"nl"		"Moersleutel"
-		"chi"       "扳手"
+		"chi"       "建筑扳手"
 	}
 	"Knife"
 	{
@@ -827,7 +828,7 @@
 	"Buildable Healing Station"
 	{
 		"en"		"Buildable Healing Station"
-		"ru"		"Возвед. лечебной станции"
+		"ru"		"Возвед. лечеб. станции"
 		"de"		"Baubare Heilstation"
 		"pt"		"Estação de Cura Construível"
 		"nl"		"Bouwbare genezingsstation"
@@ -837,12 +838,14 @@
 	{
 		"en"        "Buildable Village"
 		"pt"		"Vila Construível"
+		"ru"        "Возведение деревни"
 		"chi"       "建筑升级器"
 	}
 	"Chooseable Buildings (Only one)"
 	{
 		"en"        "Chooseable Buildings (Only one)"
 		"pt"		"Construção escolhivel (apenas uma)"
+		"ru"        "Выбор постройки (только одну)"
 		"chi"       "该列表只允许放置一个建筑物"
 	}
 	"Upgrades"//Upgrades here!!!!
@@ -857,7 +860,7 @@
 	"Melee Upgrades"//Melee Upgrades HERE!!!
 	{
 		"en"		"Melee Upgrades"
-		"ru"		"Улучшения ближнего боя"
+		"ru"		"Улучш. ближн. боя"
 		"de"		"Nahkampf Upgrades"
 		"pt"		"Melhorias de Corpo-a-Corpo"
 		"nl"		"Handwapen Upgrades"
@@ -1947,10 +1950,10 @@
 	}
 	"Only one allowed, sell to see and buy others."
 	{
-	     "en"       "Only one allowed, sell to see and buy others."
-		 "ru"       "Можно только один, продавайте, чтобы увидеть и купить другие."
-		 "pt"		"Apenas 1 permitido, venda para poder ver e comprar outros."
-	     "chi"       "只允许装备一个"
+	    "en"       "Only one allowed, sell to see and buy others."
+		"ru"       "Можно только один, продайте для покупки других."
+		"pt"		"Apenas 1 permitido, venda para poder ver e comprar outros."
+	    "chi"       "只允许装备一个"
 	}
 	"Throwable Armor Grenade"
 	{

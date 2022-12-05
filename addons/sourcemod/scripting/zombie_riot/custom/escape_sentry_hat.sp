@@ -6,8 +6,6 @@ static Handle Mount_Building[MAXPLAYERS + 1];
 static int Building_particle[MAXENTITIES];
 static int Building_particle_Owner[MAXENTITIES];
 
-static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
-
 public void SentryHat_OnPluginStart()
 {
 	HookEvent("player_builtobject", Event_player_builtobject);
@@ -636,7 +634,16 @@ public Action ParticleTransmit(int entity, int client)
 	
 	if(client == Building_particle_Owner[entity])
 		return Plugin_Handled;
-	
+
+	static int building_attached;
+
+	building_attached = EntRefToEntIndex(Building_Mounted[Building_particle_Owner[entity]]);
+
+	if(IsValidEntity(building_attached))
+	{
+		if(Building_Collect_Cooldown[building_attached][client] > GetGameTime())
+			return Plugin_Handled;
+	}
 	return Plugin_Continue;
 }
 

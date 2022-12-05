@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+// NOTE: This may be used for RPG in the future but not done now because lets invest in core features before the extras
+
 #define DATABASE			"zr"
 #define DATATABLE_LOADOUT		"zr_loadout"
 #define DATATABLE_GAMEDATA	"zr_gamedata"
@@ -196,7 +198,7 @@ void Database_SaveLoadout(int client, const char[] name)
 			int owned, scale, equip;
 			for(int i; Store_GetNextItem(client, i, owned, scale, equip, buffer, sizeof(buffer)); i++)
 			{
-				if(owned && equip)
+				if(owned/* && equip*/)
 				{
 					DataBase.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_LOADOUT ... " (steamid, item, loadout) VALUES ('%d', '%s', '%s')", id, buffer, name);
 					tr.AddQuery(buffer);
