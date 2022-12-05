@@ -2595,7 +2595,7 @@ public Action Timer_DroppedBuildingWaitRailgun(Handle htimer, int entref)
 		if(Building_Constructed[obj])
 		{
 			int iActivity = npc.LookupActivity("RAIL_IDLE");
-			if(iActivity > 0) npc.StartActivity(iActivity);
+			if(iActivity > 0) npc.StartActivity(iActivity, _, false);
 		//	npc.Update(); //SO THE ANIMATION PROPERLY LOOPS! CHECK THIS VERY OFTEN!
 			return Plugin_Continue;
 		}
@@ -2624,7 +2624,7 @@ public Action Timer_DroppedBuildingWaitMortar(Handle htimer, int entref)
 		if(Building_Constructed[obj])
 		{
 			int iActivity = npc.LookupActivity("MORTAR_IDLE");
-			if(iActivity > 0) npc.StartActivity(iActivity);
+			if(iActivity > 0) npc.StartActivity(iActivity, _, false);
 		//	npc.Update(); //SO THE ANIMATION PROPERLY LOOPS! CHECK THIS VERY OFTEN!
 			return Plugin_Continue;
 		}

@@ -1992,12 +1992,8 @@ methodmap CClotBody
 	*/
 
 	//Begin an animation activity, return false if we cant do that right now.
-	public bool StartActivity(int iActivity, int flags = 0)
+	public bool StartActivity(int iActivity, int flags = 0, bool Reset_Sequence_Info = true)
 	{
-		//Translate jump anim
-		if(iActivity == 29)
-			iActivity = this.LookupActivity("ACT_MP_JUMP_START_MELEE");
-		
 		int nSequence = this.SelectWeightedSequence(iActivity, GetEntProp(this.index, Prop_Send, "m_nSequence"));
 		if (nSequence == 0) 
 			return false;
@@ -2007,8 +2003,12 @@ methodmap CClotBody
 		this.SetSequence(nSequence);
 		this.SetPlaybackRate(1.0);
 		this.SetCycle(0.0);
-		
-		this.ResetSequenceInfo();
+	
+//		Crashes now for buildings, ignore.
+		if(Reset_Sequence_Info)
+		{
+			this.ResetSequenceInfo();
+		}
 		
 		return true;
 	}
