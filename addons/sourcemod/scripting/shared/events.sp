@@ -178,7 +178,6 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", true);
 	   		
 	   		b_ThisEntityIgnored[client] = true;
-	   		
 
 	   		int weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword");
 	   		

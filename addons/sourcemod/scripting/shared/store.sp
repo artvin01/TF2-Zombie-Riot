@@ -3197,7 +3197,13 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	}
 
 #if defined ZR
-	if(TeutonType[client])
+
+	if(!i_ClientHasCustomGearEquipped[client])
+	{
+		TF2_RemoveAllWeapons(client);
+	}
+	
+	if(TeutonType[client] != TEUTON_NONE)
 	{
 		TF2_RegeneratePlayer(client);
 		return;
@@ -3251,10 +3257,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		}
 	}
 	*/
-	if(!i_ClientHasCustomGearEquipped[client])
-	{
-		TF2_RemoveAllWeapons(client);
-	}
+
 	/*
 	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(SpawnWeapon_Special(client, "tf_weapon_pda_engineer_destroy", 26, 100, 5, "671 ; 1"));
 	*/
