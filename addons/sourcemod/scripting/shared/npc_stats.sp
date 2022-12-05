@@ -2992,6 +2992,12 @@ public MRESReturn CTFBaseBoss_Ragdoll(int pThis, Handle hReturn, Handle hParams)
 	float Push[3];
 	npc.m_vecpunchforce(Push, false);
 	ScaleVector(Push, 2.0);
+	if(Push[0] == 0.0 || Push[0] > 10000000.0 || Push[1] > 10000000.0 || Push[2] > 10000000.0 || Push[0] < -10000000.0 || Push[1] < -10000000.0 || Push[2] < -10000000.0) //knockback is way too huge. set to 0.
+	{
+		Push[0] = 1.0;
+		Push[1] = 1.0;
+		Push[2] = 1.0;
+	}
 	DHookSetParamVector(hParams, 2, view_as<float>(Push));
 //	RequestFrames(Kill_Npc, 5, EntIndexToEntRef(pThis));		
 	//Play Ragdolls correctly.
