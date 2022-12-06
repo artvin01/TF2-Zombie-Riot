@@ -49,6 +49,7 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 	
 	return entity;
 }	
+
 public void NPCDeath(int entity)
 {
 	switch(i_NpcInternalId[entity])

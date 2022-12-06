@@ -86,6 +86,7 @@ methodmap MadChicken < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
