@@ -28,7 +28,7 @@ void NPC_MapStart()
 	StartChicken_OnMapStart_NPC();
 }
 
-any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
+stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
 {
 	any entity = -1;
 	switch(Index_Of_Npc)

@@ -78,12 +78,18 @@ ConVar zr_tagwhitelist;
 ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
 ConVar zr_smallmapbalancemulti;
+ConVar CvarNoRoundStart;
+ConVar CvarInfiniteCash;
+ConVar CvarNoSpecialZombieSpawn;
+ConVar zr_spawnprotectiontime;
+//ConVar CvarEnablePrivatePlugins;
 int CurrentGame;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
 int CurrentCash;
 bool LastMann;
 bool EscapeMode;
+int LimitNpcs;
 
 //bool RaidMode; 							//Is this raidmode?
 float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
@@ -298,6 +304,8 @@ void ZR_PluginLoad()
 
 void ZR_PluginStart()
 {
+	LoadTranslations("zombieriot.phrases.zombienames");
+	
 	RegServerCmd("zr_reloadnpcs", OnReloadCommand, "Reload NPCs");
 	RegServerCmd("sm_reloadnpcs", OnReloadCommand, "Reload NPCs", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_store", Access_StoreViaCommand, "Please Press TAB instad");
@@ -322,7 +330,6 @@ void ZR_PluginStart()
 	Medigun_PluginStart();
 	OnPluginStartMangler();
 	SentryHat_OnPluginStart();
-	OnPluginStart_Build_on_Building();
 	OnPluginStart_Glitched_Weapon();
 	Tutorial_PluginStart();
 	Waves_PluginStart();
@@ -409,7 +416,6 @@ void ZR_MapStart()
 	Wand_autoaim_Map_Precache();
 	Weapon_Arrow_Shoot_Map_Precache();
 //	Weapon_Pipe_Shoot_Map_Precache();
-	OnMapStart_Build_on_Build();
 	Building_MapStart();
 	Survival_Knife_Map_Precache();
 	Aresenal_Weapons_Map_Precache();
@@ -439,7 +445,6 @@ void ZR_MapStart()
 	Wand_Cryo_Precache();
 	Abiltity_Coin_Flip_Map_Change();
 	Wand_Cryo_Precache();
-	Npc_Sp_Precache();
 	Fusion_Melee_OnMapStart();
 	Atomic_MapStart();
 	SSS_Map_Precache();
@@ -701,15 +706,9 @@ public void OnClientAuthorized(int client)
 	Database_ClientAuthorized(client);
 }
 
-public void OnClientDisconnect_Post(int client)
+void ZR_OnClientDisconnect_Post()
 {
-	int Players_left;
-	for(int client_check=1; client_check<=MaxClients; client_check++)
-	{
-		if(IsClientInGame(client_check) && !IsFakeClient(client_check))
-			Players_left++;
-	}
-	CheckAlivePlayers(_);
+	CheckAlivePlayers();
 }
 
 public Action Timer_Dieing(Handle timer, int client)
@@ -1334,4 +1333,53 @@ void ReviveAll(bool raidspawned = false)
 	
 	Music_EndLastmann();
 	CheckAlivePlayers();
+}
+
+int XpToLevel(int xp)
+{
+	return RoundToFloor(Pow(xp / 200.0, 0.5));
+}
+
+int LevelToXp(int lv)
+{
+	return lv * lv * 200;
+}
+
+void GiveXP(int client, int xp)
+{
+	XP[client] += RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
+	int nextLevel = XpToLevel(XP[client]);
+	if(nextLevel > Level[client])
+	{
+		static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
+		ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
+		
+		int maxhealth = SDKCall_GetMaxHealth(client);
+		if(GetClientHealth(client) < maxhealth)
+			SetEntityHealth(client, maxhealth);
+		
+		SetGlobalTransTarget(client);
+		PrintToChat(client, "%t", "Level Up", nextLevel);
+		
+		bool found;
+		int slots;
+		
+		for(Level[client]++; Level[client]<=nextLevel; Level[client]++)
+		{
+			if(Store_PrintLevelItems(client, Level[client]))
+				found = true;
+			
+			if(!(Level[client] % 2))
+				slots++;
+		}
+		
+		if(slots)
+		{
+			PrintToChat(client, "%t", "Loadout Slots", slots);
+		}
+		else if(!found)
+		{
+			PrintToChat(client, "%t", "None");
+		}
+	}
 }

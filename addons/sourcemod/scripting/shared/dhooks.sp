@@ -4,8 +4,11 @@
 static DynamicHook ForceRespawn;
 static int ForceRespawnHook[MAXTF2PLAYERS];
 static int GetChargeEffectBeingProvided;
+
+#if defined ZR
 static bool IsRespawning;
 //static bool Disconnecting;
+#endif
 
 static DynamicHook g_WrenchSmack;
 
@@ -1024,6 +1027,8 @@ void DHook_ClientDisconnectPost()
 	Disconnecting = false;
 }
 */
+
+#if defined ZR
 void DHook_RespawnPlayer(int client)
 {
 	IsRespawning = true;
@@ -1031,6 +1036,7 @@ void DHook_RespawnPlayer(int client)
 	SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", 0.0); //No cloak regen at all. Very important to set here!
 	IsRespawning = false;
 }
+#endif
 
 public MRESReturn DHook_CanAirDashPre(int client, DHookReturn ret)
 {

@@ -12,8 +12,6 @@
 #define GORE_UPARMRIGHT   (1 << 8)
 #define GORE_HANDLEFT	 (1 << 9)
 
-static ConVar MapSpawnersActive;
-
 enum //hitgroup_t
 {
 	HITGROUP_GENERIC,
@@ -28,7 +26,7 @@ enum //hitgroup_t
 	NUM_HITGROUPS
 };
 
-
+#if defined ZR
 enum struct SpawnerData
 {
 	int 	indexnumber;
@@ -45,6 +43,10 @@ enum struct SpawnerData
 
 //ArrayList NPCList; Make this global, i need it globally.
 static ArrayList SpawnerList;
+
+static ConVar MapSpawnersActive;
+#endif
+
 static Handle SyncHud;
 static Handle SyncHudRaid;
 static char LastClassname[2049][64];
@@ -62,8 +64,11 @@ void Npc_Sp_Precache()
 
 void NPC_PluginStart()
 {
+#if defined ZR
 	MapSpawnersActive = CreateConVar("zr_spawnersactive", "4", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
 	SpawnerList = new ArrayList(sizeof(SpawnerData));
+#endif
+
 	SyncHud = CreateHudSynchronizer();
 	SyncHudRaid = CreateHudSynchronizer();
 	
@@ -71,11 +76,13 @@ void NPC_PluginStart()
 	LF_HookSpawn("", NPC_OnCreatePost, true);
 }
 
+#if defined ZR
 void NPC_RoundEnd()
 {
 	delete SpawnerList;
 	SpawnerList = new ArrayList(sizeof(SpawnerData));
 }
+#endif
 
 public Action LF_OnMakeNPC(char[] classname, int &entity)
 {
@@ -1790,8 +1797,12 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		
 #if defined RPG
 		SetGlobalTransTarget(attacker);
+
+		char level[32];
+		GetDisplayString(Level[victim], level, sizeof(level));
+		
 		SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-		ShowSyncHudText(attacker, SyncHud, "Level %d\n%t\n%d / %d\n%s", Level[victim], NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
+		ShowSyncHudText(attacker, SyncHud, "%s\n%t\n%d / %d\n%s", level, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
 #endif
 		
 	}	

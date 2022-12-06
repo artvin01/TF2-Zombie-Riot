@@ -655,6 +655,10 @@
 		"pt"		"Grande Aeronave do Fim"
 		"nl"		"Grote Luchtballon van Ondergang"
 	}
+	"Golden Bloon"
+	{
+		"en" 		"Golden Bloon"
+	}
 	"Medic Apprentice Mage"
 	{
 		"en" 		"Medic Apprentice Mage"

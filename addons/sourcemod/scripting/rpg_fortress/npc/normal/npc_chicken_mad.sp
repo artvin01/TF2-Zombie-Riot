@@ -298,12 +298,12 @@ public void MadChicken_NPCDeath(int entity)
 	SDKUnhook(entity, SDKHook_OnTakeDamage, MadChicken_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, MadChicken_ClotThink);
 
-		if(IsValidEntity(npc.m_iWearable1))
-			RemoveEntity(npc.m_iWearable1);
-		if(IsValidEntity(npc.m_iWearable2))
-			RemoveEntity(npc.m_iWearable2);
-		if(IsValidEntity(npc.m_iWearable3))
-			RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
 }
 
 
