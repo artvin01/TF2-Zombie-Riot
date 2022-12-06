@@ -42,7 +42,7 @@ enum struct SpawnEnum
 		if(!this.Index)
 			this.Index = GetIndexByPluginName(this.Item1);
 		
-		this.Angle = kv.GetFloat("angle");
+		this.Angle = kv.GetFloat("angle", -1.0);
 		this.Count = kv.GetNum("count", 1);
 		this.Time = kv.GetFloat("time");
 		this.Boss = view_as<bool>(kv.GetNum("boss"));
@@ -251,10 +251,36 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 		{
 			static float ang[3];
 			ang[0] = spawn.Angle;
-
+			if(ang[0] < 0.0)
+				ang[0] = GetURandomFloat() * 360.0;
+			
+			int diff = spawn.Level[HIGH] - spawn.Level[LOW];
 			for(i = 0; i < count; i++)
 			{
-				Npc_Create(spawn.Index, 0, spawn.Pos, ang, false);
+				int entity = Npc_Create(spawn.Index, 0, spawn.Pos, ang, false);
+				if(entity == -1)
+					break;
+				
+				int strength = 0;
+				if(diff > 0)
+				{
+					strength = GetURandomInt() % (diff + 1);
+				}
+				else
+				{
+					diff = 1;
+				}
+				
+				Level[entity] = spawn.Level[LOW] + strength;
+				Cash[entity] = GetScaledRate(spawn.Cash, strength, diff);
+				XP[entity] = GetScaledRate(spawn.XP, strength, diff);
+
+				if(spawn.Health[LOW])
+				{
+					int health = GetScaledRate(spawn.Health, strength, diff);
+					SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+					SetEntProp(entity, Prop_Data, "m_iHealth", health);
+				}
 			}
 		}
 	}
@@ -265,7 +291,12 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 	}
 }
 
-static void RollItemDrop(const char[] name, float chance, const float pos[3])
+static int GetScaledRate(const int rates[2], int power, int maxpower)
+{
+	return rates[LOW] + ((rates[HIGH] - rates[LOW]) * power / maxpower);
+}
+
+static stock void RollItemDrop(const char[] name, float chance, const float pos[3])
 {
 	if(chance > GetURandomFloat())
 	{

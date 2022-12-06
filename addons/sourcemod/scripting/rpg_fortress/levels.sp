@@ -25,13 +25,6 @@ int GetLevelCap(int tier)
 	return (tier + 1) * (tier + 2) * 5;	// 5(x+1)(x+2)
 }
 
-stock void CapLevel(int &lv, int tier)
-{
-	int cap = GetLevelCap(tier);
-	if(lv > cap)
-		lv = cap;
-}
-
 int GetDisplayLevel(int level, int &tier=0)
 {
 	tier = 0;
@@ -67,7 +60,8 @@ void GetDisplayString(int base, char[] buffer, int length, bool short = false)
 
 void GiveXP(int client, int xp, bool silent = false)
 {
-	XP[client] += RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
+	TextStore_AddXP(client, RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue));
+	
 	int nextLevel = XpToLevel(XP[client]);
 	int levelCap = GetLevelCap(Tier[client]);
 	if(nextLevel > levelCap)

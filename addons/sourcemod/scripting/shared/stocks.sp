@@ -3049,8 +3049,7 @@ stock void ShowAnnotationToPlayer(int client, float pos[3], const char[] Text, f
 	
 }
 
-
-void AdjustBotCount(int ExtraData = 1) //1 is the default
+stock void AdjustBotCount(int ExtraData = 1) //1 is the default
 {
 	int botscalculaton = 1;
 	int botsonserver = 0;

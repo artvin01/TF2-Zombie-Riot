@@ -57,11 +57,7 @@
 
 public const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 
-ConVar CvarNoRoundStart;
 ConVar CvarDisableThink;
-ConVar CvarInfiniteCash;
-ConVar CvarNoSpecialZombieSpawn;
-//ConVar CvarEnablePrivatePlugins;
 ConVar CvarMaxBotsForKillfeed;
 ConVar CvarXpMultiplier;
 
@@ -177,8 +173,6 @@ enum
 
 Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;
-
-ConVar zr_spawnprotectiontime;
 //ConVar tf_bot_quota;
 
 bool DoingLagCompensation;
@@ -397,7 +391,6 @@ Function EntityFuncReload4[MAXENTITIES];
 
 int i_assist_heal_player[MAXTF2PLAYERS];
 float f_assist_heal_player_time[MAXTF2PLAYERS];
-int LimitNpcs;
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -868,7 +861,6 @@ bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
 float f_StuckOutOfBoundsCheck[MAXENTITIES];
 
-bool EscapeModeMap;
 int g_particleImpactMetal;
 
 char c_HeadPlaceAttachmentGibName[MAXENTITIES][64];
@@ -1016,6 +1008,7 @@ public void OnPluginStart()
 	NPC_PluginStart();
 	SDKHook_PluginStart();
 	Thirdperson_PluginStart();
+	OnPluginStart_Build_on_Building();
 //	Building_PluginStart();
 #if defined LagCompensation
 	OnPluginStart_LagComp();
@@ -1138,10 +1131,12 @@ public void OnMapStart()
 	RPG_MapStart();
 #endif
 
+	Npc_Sp_Precache();
 	OnMapStart_NPC_Base();
 	SDKHook_MapStart();
 	ViewChange_MapStart();
 	MapStart_CustomMeleePrecache();
+	OnMapStart_Build_on_Build();
 	WandStocks_Map_Precache();
 	
 	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
@@ -1326,6 +1321,10 @@ public void OnClientPutInServer(int client)
 	ZR_ClientPutInServer(client);
 #endif
 	
+#if defined RPG
+	RPG_PutInServer();
+#endif
+
 	if(AreClientCookiesCached(client)) //Ingore this. This only bugs it out, just force it, who cares.
 		OnClientCookiesCached(client);	
 	
@@ -1345,16 +1344,16 @@ public void OnClientCookiesCached(int client)
 	{
 		Scrap[client] = 0;
 	}
-#endif
 	
-	ThirdPerson_OnClientCookiesCached(client);
 	CookieXP.Get(client, buffer, sizeof(buffer));
 	XP[client] = StringToInt(buffer);
 	Level[client] = XpToLevel(XP[client]);
+#endif
+
+	ThirdPerson_OnClientCookiesCached(client);
 	
-	char buffer_niko[12];
-	Niko_Cookies.Get(client, buffer_niko, sizeof(buffer_niko));
-	if(StringToInt(buffer_niko) == 1)
+	Niko_Cookies.Get(client, buffer, sizeof(buffer));
+	if(StringToInt(buffer) == 1)
 	{
 	 	b_IsPlayerNiko[client] = true;
 	}
@@ -1363,7 +1362,9 @@ public void OnClientCookiesCached(int client)
 		b_IsPlayerNiko[client] = false;
 	}
 	
+#if defined ZR
 	Store_ClientCookiesCached(client);
+#endif
 }
 
 public void OnClientDisconnect(int client)
@@ -1399,6 +1400,17 @@ public void OnClientDisconnect(int client)
 		Niko_Cookies.Set(client, buffer);
 	}
 	XP[client] = 0;
+}
+
+public void OnClientDisconnect_Post(int client)
+{
+#if defined ZR
+	ZR_OnClientDisconnect_Post();
+#endif
+
+#if defined RPG
+	RPG_ClientDisconnect_Post();
+#endif
 }
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
@@ -2115,15 +2127,15 @@ public void OnEntityCreated(int entity, const char[] classname)
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
 		}
+		else if (!StrContains(classname, "tf_weapon_handgun_scout_primary")) 
+		{
+			ScatterGun_Prevent_M2_OnEntityCreated(entity);
+		}
 		
 #if defined ZR
 		else if (!StrContains(classname, "tf_weapon_medigun")) 
 		{
 			Medigun_OnEntityCreated(entity);
-		}
-		else if (!StrContains(classname, "tf_weapon_handgun_scout_primary")) 
-		{
-			ScatterGun_Prevent_M2_OnEntityCreated(entity);
 		}
 		else if (!StrContains(classname, "tf_weapon_particle_cannon")) 
 		{

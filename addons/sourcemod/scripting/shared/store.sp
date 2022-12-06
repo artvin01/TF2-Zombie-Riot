@@ -409,6 +409,39 @@ static ArrayList EquippedItems;
 static bool HasMultiInSlot[MAXTF2PLAYERS][6];
 static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 
+#if defined RPG
+bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name, bool auto)
+{
+	int pos = EquippedItems.FindValue(index, ItemInfo::Store);
+	if(pos != -1)
+	{
+		if(!auto)
+		{
+			if(kv.GetNum("level") > Level[client])
+			{
+				char buffer[32];
+				GetDisplayString(Level[client], buffer, sizeof(buffer));
+
+				SPrintToChat(client, "You must be %s to use this.", buffer);
+				return false;
+			}
+		}
+
+		static ItemInfo info;
+		info.SetupKV(kv, name);
+
+		if(!auto)
+			Store_EquipSlotCheck(client, info.Slot);
+		
+		info.Owner = client;
+		info.Store = index;
+		EquippedItems.PushArray(info);
+		return true;
+	}
+	return false;
+}
+#endif
+
 void Store_WeaponSwitch(int client, int weapon)
 {
 	if(HolsterFunc[client] != INVALID_FUNCTION)
@@ -476,9 +509,7 @@ void Store_RemoveSellValue()
 		StoreItems.SetArray(i, item);
 	}
 }
-#endif
 
-#if defined ZR
 bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 {
 	if(StoreItems)
@@ -526,7 +557,7 @@ bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 	}
 	return false;
 }
-#endif
+#endif	// ZR
 
 bool Store_ActiveCanMulti(int client)
 {
@@ -792,9 +823,11 @@ int Store_GetSpecialOfSlot(int client, int slot)
 	}
 	return -1;
 }
+#endif
 
 void Store_ConfigSetup()
 {
+#if defined ZR
 	if(StoreItems)
 	{
 		Item item;
@@ -834,8 +867,14 @@ void Store_ConfigSetup()
 	{
 		ConfigSetup(-1, kv, false, whitelist, whitecount, blacklist, blackcount);
 	} while(kv.GotoNextKey());
+#endif
+
+#if defined RPG
+	TextStore_ConfigSetup();
+#endif
 }
 
+#if defined ZR
 static void ConfigSetup(int section, KeyValues kv, bool hidden, const char[][] whitelist, int whitecount, const char[][] blacklist, int blackcount)
 {
 	bool isItem = kv.GetNum("cost", -1) >= 0;
@@ -1208,11 +1247,9 @@ void Store_SetNamedItem(int client, const char[] name, int amount)
 	
 	ThrowError("Unknown item name %s", name);
 }
-#endif	// ZR
 
 void Store_ClientCookiesCached(int client)
 {
-#if defined ZR
 	char buffer[32];
 	CookieCache.Get(client, buffer, sizeof(buffer));
 	
@@ -1220,10 +1257,8 @@ void Store_ClientCookiesCached(int client)
 	ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
 	if(CurrentGame && buffers[0] == CurrentGame)
 		Database_LoadGameData(client);
-#endif
 }
 
-#if defined ZR
 void Store_SetClientItem(int client, int index, int owned, int scaled, int equipped)
 {
 	static Item item;
@@ -4254,7 +4289,6 @@ bool Store_PrintLevelItems(int client, int level)
 	}
 	return found;
 }
-#endif	// ZR
 
 char[] TranslateItemName(int client, const char name[64], const char Custom_Name[64]) //Just make it 0 as a default so if its not used, fuck it
 {
@@ -4323,7 +4357,6 @@ char[] TranslateItemDescription(int client, const char Desc[256])
 	return buffer;
 }
 
-#if defined ZR
 static void ItemCost(int client, Item item, int &cost)
 {
 	bool started = !Waves_InSetup();

@@ -59,8 +59,9 @@ public void Configs_ConfigsExecuted()
 		}
 	}
 	
-#if defined ZR
 	Store_ConfigSetup();
+	
+#if defined ZR
 	
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
