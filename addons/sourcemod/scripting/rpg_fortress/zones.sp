@@ -11,7 +11,7 @@ void Zones_PluginStart()
 	HookEntityOutput("trigger_multiple", "OnTouching", Zones_StartTouch);
 	
 	int entity = -1;
-	while((entity = FindEntityByClassname("trigger_multiple"))
+	while((entity = FindEntityByClassname(entity, "trigger_multiple")) != -1)
 	{
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && !StrContains(name, "zr_", false))
 			AcceptEntityInput(entity, "TouchTest", entity, entity);
@@ -24,10 +24,12 @@ void Zones_PluginStart()
 
 static void OnActive(const char[] name)
 {
+	Spawns_UpdateSpawn(name);
 }
 
 static void OnDisable(const char[] name)
 {
+	Spawns_DisableSpawn(name);
 }
 
 stock bool Zones_IsActive(const char[] name)

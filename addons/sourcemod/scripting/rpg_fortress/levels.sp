@@ -25,7 +25,7 @@ int GetLevelCap(int tier)
 	return (tier + 1) * (tier + 2) * 5;	// 5(x+1)(x+2)
 }
 
-void CapLevel(int &lv, int tier)
+stock void CapLevel(int &lv, int tier)
 {
 	int cap = GetLevelCap(tier);
 	if(lv > cap)
@@ -53,19 +53,19 @@ void GetDisplayString(int base, char[] buffer, int length, bool short = false)
 	
 	if(!tier)
 	{
-		Format(buffer, length, "%t", "Level", level);
+		Format(buffer, length, "Level %d", level);
 	}
 	else if(short)
 	{
-		Format(buffer, length, "%t", "Short Tier Level", tier, level);
+		Format(buffer, length, "E%d L%d", tier, level);
 	}
 	else
 	{
-		Format(buffer, length, "%t", "Tier Level", tier, level);
+		Format(buffer, length, "Elite %d Level %d", tier, level);
 	}
 }
 
-void GiveXP(int client, int xp)
+void GiveXP(int client, int xp, bool silent = false)
 {
 	XP[client] += RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
 	int nextLevel = XpToLevel(XP[client]);
@@ -75,44 +75,77 @@ void GiveXP(int client, int xp)
 	
 	if(nextLevel > Level[client])
 	{
-		static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
-		ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
-		
-		SPrintToChat(client, "%t", "Level Up", nextLevel - GetLevelCap(Tier[client] - 1));
+		if(!silent)
+		{
+			static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
+			ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
+			
+			SPrintToChat(client, "%t", "Level Up", nextLevel - GetLevelCap(Tier[client] - 1));
+		}
+
 		Level[client] = nextLevel;
 		
-		Store_ApplyAttribs(client);
+		if(!silent)
+			Store_ApplyAttribs(client);
 	}
+
+	ShowLevelHud(client);
 }
 
 void ShowLevelHud(int client)
 {
-	int xpLevel = LevelToXp(Level[client]);
-	int xpNext = LevelToXp(Level[client]+1);
-	
-	int extra = XP[client]-xpLevel;
-	int nextAt = xpNext-xpLevel;
-	
-	for(int i=1; i<21; i++)
+	static char buffer[128];
+	if(Tier[client])
 	{
-		if(extra > nextAt*(i*0.05))
+		Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client]);
+	}
+	else
+	{
+		Format(buffer, sizeof(buffer), "Level %d", Level[client]);
+	}
+
+	if(Level[client] == GetLevelCap(Tier[client]))
+	{
+		Format(buffer, sizeof(buffer), "%s\n%d", buffer, XP[client] - LevelToXp(Level[client]));
+
+		for(int i=1; i<21; i++)
 		{
 			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
 		}
-		else if(extra > nextAt*(i*0.05 - 1.0/60.0))
+
+		Format(buffer, sizeof(buffer), "%s E%d", buffer, Tier[client] + 1);
+	}
+	else
+	{
+		int xpLevel = LevelToXp(Level[client]);
+		int xpNext = LevelToXp(Level[client]+1);
+		
+		int extra = XP[client]-xpLevel;
+		int nextAt = xpNext-xpLevel;
+		
+		Format(buffer, sizeof(buffer), "%s\n%d", buffer, extra);
+
+		for(int i=1; i<21; i++)
 		{
-			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
-		}
-		else if(extra > nextAt*(i*0.05 - 1.0/30.0))
-		{
-			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
-		}
-		else
-		{
-			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+			if(extra > nextAt*(i*0.05))
+			{
+				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+			}
+			else if(extra > nextAt*(i*0.05 - 1.0/60.0))
+			{
+				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+			}
+			else if(extra > nextAt*(i*0.05 - 1.0/30.0))
+			{
+				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+			}
+			else
+			{
+				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+			}
 		}
 	}
 	
 	SetHudTextParams(-1.0, 0.96, 1.8, 200, 69, 0, 200);
-	ShowSyncHudText(client, HudLevel, "Level %d\n%d %s %d", Level[client], extra, buffer, xpNext-XP[client]);
+	ShowSyncHudText(client, HudLevel, buffer);
 }

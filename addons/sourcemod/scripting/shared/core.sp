@@ -1133,6 +1133,11 @@ public void OnMapStart()
 #if defined ZR
 	ZR_MapStart();
 #endif
+	
+#if defined RPG
+	RPG_MapStart();
+#endif
+
 	OnMapStart_NPC_Base();
 	SDKHook_MapStart();
 	ViewChange_MapStart();
@@ -1152,6 +1157,11 @@ public void OnMapEnd()
 	OnRoundEnd(null, NULL_STRING, false);
 	OnMapEndWaves();
 #endif
+
+#if defined RPG
+	RPG_MapEnd();
+#endif
+
 	ConVar_Disable();
 }
 

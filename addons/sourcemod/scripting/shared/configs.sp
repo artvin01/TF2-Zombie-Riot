@@ -59,11 +59,17 @@ public void Configs_ConfigsExecuted()
 		}
 	}
 	
+#if defined ZR
 	Store_ConfigSetup();
 	
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
 #endif
+	
+#if defined RPG
+	Spawns_ConfigSetup(kv);
+#endif
+
 	delete kv;
 
 	delete WeaponList;
