@@ -107,7 +107,8 @@ void Spawns_ConfigSetup(KeyValues map)
 	{
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "spawns");
 		kv = new KeyValues("Spawns");
-		kv.ImportFromFile(buffer);
+		if(!kv.ImportFromFile(buffer))
+			PrintToChatAll("Failed to import '%s'", buffer);
 	}
 	
 	delete SpawnList;
@@ -136,6 +137,7 @@ void Spawns_ConfigSetup(KeyValues map)
 	if(kv != map)
 		delete kv;
 	
+	PrintToChatAll("Found %d Spawners", SpawnList.Length);
 	if(!SpawnTimer && SpawnList.Length)
 		SpawnTimer = CreateTimer(0.1, Spawner_Timer, _, TIMER_REPEAT);
 }
