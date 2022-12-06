@@ -973,6 +973,7 @@ public void OnPluginStart()
 	RegAdminCmd("zr_reload_plugin", Command_ToggleReload, ADMFLAG_GENERIC, "Reload plugin on map change");
 	
 	RegAdminCmd("sm_test_hud_notif", Command_Hudnotif, ADMFLAG_GENERIC, "Hud Notif");
+	RegConsoleCmd("sm_getpos", GetPos);
 //	HookEvent("npc_hurt", OnNpcHurt);
 	
 	sv_cheats = FindConVar("sv_cheats");
@@ -1282,6 +1283,18 @@ public Action Command_Hudnotif(int client, int args)
 	
 	return Plugin_Handled;
 }
+
+public Action GetPos(int client, int args)
+{
+	float pos[3];
+	GetEntPropVector(client, Prop_Send, "m_vecOrigin", pos);
+	ReplyToCommand(client, "m_vecOrigin: %f %f %f", pos[0], pos[1], pos[2]);
+
+	GetClientEyeAngles(client, pos);
+	ReplyToCommand(client, "m_vecAngles: %f %f %f", pos[0], pos[1], pos[2]);
+	return Plugin_Handled;
+}
+
 
 public Action Command_ToggleReload(int client, int args)
 {
