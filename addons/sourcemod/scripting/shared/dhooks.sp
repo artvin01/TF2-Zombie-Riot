@@ -1252,7 +1252,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 		}
 		else
 		{
-			TeleportEntity(client, view_as<float>({96.899589, 35.983245, 249.892990}), view_as<float>({ 87.334396, 22.944311, 250.150756}), NULL_VECTOR);
+			TeleportEntity(client, view_as<float>({119.946655, 137.253311, 247.851776}), view_as<float>({ 9.774813, -125.745986, 0.0}), NULL_VECTOR);
 		}
 #endif
 	}
