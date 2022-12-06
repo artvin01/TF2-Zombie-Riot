@@ -8,7 +8,7 @@ static int ItemXP = -1;
 
 #define ITEM_TIER	"Elite Promotions"
 static int ItemTier = -1;
-
+/*
 enum struct StoreEnum
 {
 	char Tag[16];
@@ -118,7 +118,7 @@ enum struct StoreEnum
 			this.Ref = EntIndexToEntRef(entity);
 		}
 	}
-}
+}*/
 
 static void HashCheck(KeyValues kv)
 {
