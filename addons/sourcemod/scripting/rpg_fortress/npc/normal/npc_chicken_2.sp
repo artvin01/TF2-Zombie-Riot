@@ -64,6 +64,7 @@ methodmap StartChicken < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		//IDLE
+		npc.m_bDissapearOnDeath = true;
 		npc.m_flSpeed = 120.0;
 
 		npc.m_bisWalking = false;
@@ -211,10 +212,17 @@ public Action StartChicken_OnTakeDamage(int victim, int &attacker, int &inflicto
 
 public void StartChicken_NPCDeath(int entity)
 {
-//	StartChicken npc = view_as<StartChicken>(entity);
+	StartChicken npc = view_as<StartChicken>(entity);
 
 	SDKUnhook(entity, SDKHook_OnTakeDamage, StartChicken_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, StartChicken_ClotThink);
+
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
 }
 
 
