@@ -8,7 +8,7 @@ static int ItemXP = -1;
 
 #define ITEM_TIER	"Elite Promotions"
 static int ItemTier = -1;
-/*
+
 enum struct StoreEnum
 {
 	char Tag[16];
@@ -20,6 +20,7 @@ enum struct StoreEnum
 	float Ang[3];
 	float Scale;
 	char Enter[64];
+	char Talk[64];
 	char Leave[64];
 	
 	char Wear1[PLATFORM_MAX_PATH];
@@ -60,40 +61,76 @@ enum struct StoreEnum
 		if(this.Enter[0])
 			PrecacheScriptSound(this.Enter);
 		
+		kv.GetString("sound_buy", this.Talk, 64);
+		if(this.Talk[0])
+			PrecacheScriptSound(this.Talk);
+		
 		kv.GetString("sound_leave", this.Leave, 64);
 		if(this.Leave[0])
 			PrecacheScriptSound(this.Leave);
 	}
 	
+	void PlayEnter(int client)
+	{
+		if(this.Enter[0])
+		{
+			int entity = client;
+			if(this.EntRef != INVALID_ENT_REFERENCE)
+				entity = EntRefToEntIndex(this.EntRef);
+			
+			EmitGameSoundToClient(client, this.Enter, entity);
+		}
+	}
+	
+	void PlayBuy(int client)
+	{
+		if(this.Talk[0])
+		{
+			int entity = client;
+			if(this.EntRef != INVALID_ENT_REFERENCE)
+				entity = EntRefToEntIndex(this.EntRef);
+			
+			EmitGameSoundToClient(client, this.Talk, entity);
+		}
+	}
+	
+	void PlayLeave(int client)
+	{
+		if(this.Leave[0])
+		{
+			int entity = client;
+			if(this.EntRef != INVALID_ENT_REFERENCE)
+				entity = EntRefToEntIndex(this.EntRef);
+			
+			EmitGameSoundToClient(client, this.Leave, entity);
+		}
+	}
+	
 	void Despawn()
 	{
-		for(int i; i < 4; i++)
+		if(this.EntRef != INVALID_ENT_REFERENCE)
 		{
-			if(this.EntRef[i] && this.EntRef[i] != INVALID_ENT_REFERENCE)
-			{
-				int entity = EntRefToEntIndex(this.EntRef[i]);
-				if(entity != -1)
-					RemoveEntity(entity);
-				
-				this.EntRef[i] = INVALID_ENT_REFERENCE;
-			}
+			int entity = EntRefToEntIndex(this.EntRef);
+			if(entity != -1)
+				RemoveEntity(entity);
+			
+			this.EntRef = INVALID_ENT_REFERENCE;
 		}
 	}
 	
 	void Spawn()
 	{
-		if(this.EntRef[0] == INVALID_ENT_REFERENCE)
+		if(this.EntRef == INVALID_ENT_REFERENCE && this.Model[0])
 		{
 			int entity = CreateEntityByName("prop_dynamic_override");
 			if(IsValidEntity(entity))
 			{
 				DispatchKeyValue(entity, "model", this.Model);
-				DispatchKeyValue(entity, "targetname", "rpg_fortress");
 				
 				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR);
 				
 				DispatchSpawn(entity);
-				SetEntProp(entity, Prop_Send, "m_CollisionGroup", 2);
+				SetEntityCollisionGroup(entity, 2);
 				
 				if(this.Extra1[0])
 					GivePropAttachment(entity, this.Extra1);
@@ -119,7 +156,10 @@ enum struct StoreEnum
 			}
 		}
 	}
-}*/
+}
+
+static StringMap StoreList;
+static char InStore[MAXTF2PLAYERS][16];
 
 static void HashCheck(KeyValues kv)
 {
@@ -131,11 +171,46 @@ static void HashCheck(KeyValues kv)
 	}
 }
 
-void TextStore_ConfigSetup()
+void TextStore_ConfigSetup((KeyValues map)
 {
+	KeyValues kv = map;
+	if(kv)
+	{
+		kv.Rewind();
+		if(!kv.JumpToKey("Stores"))
+			kv = null;
+	}
+	
+	char buffer[PLATFORM_MAX_PATH];
+	if(!kv)
+	{
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "stores");
+		kv = new KeyValues("Stores");
+		kv.ImportFromFile(buffer);
+	}
+	
+	delete StoreList;
+	StoreList = new StringMap();
+
+	StoreEnum store;
+	store.EntRef = INVALID_ENT_REFERENCE;
+
+	kv.GotoFirstSubKey();
+	do
+	{
+		kv.GetSectionName(buffer, sizeof(buffer));
+		store.SetupEnum(kv);
+		StoreList.SetArray(buffer, store, sizeof(store));
+	}
+	while(kv.GotoNextKey());
+
+	if(kv != map)
+		delete kv;
+	
 	HashCheck(TextStore_GetItemKv(0));
 	for(int client = 1; client <= MaxClients; client++)
 	{
+		InStore[client][0] = 0;
 		if(IsClientInGame(client) && TextStore_GetClientLoad(client))
 			LoadItems(client);
 	}
@@ -219,5 +294,39 @@ stock void TextStore_AddTier(int client)
 		TextStore_GetInv(client, ItemTier, Tier[client]);
 		Tier[client]++;
 		TextStore_SetInv(client, ItemTier, Tier[client]);
+	}
+}
+
+void TextStore_ZoneEnter(int client, const char[] name)
+{
+	static StoreEnum store;
+	if(StoreList.GetArray(name, store, sizeof(store)))
+	{
+		if(store.EntRef == INVALID_ENT_REFERENCE)
+		{
+			store.Spawn();
+			StoreList.SetArray(name, store, sizeof(store));
+		}
+		
+		store.PlayEnter(client);
+		strcopy(InStore[client], sizeof(InStore[]), name);
+	}
+}
+
+void TextStore_ZoneLeave(int client, const char[] name)
+{
+	if(InStore[client][0] && StrEqual(name, InStore[client]))
+	{
+		InStore[client][0] = 0;
+	}
+}
+
+void TextStore_ZoneAllLeave(const char[] name)
+{
+	static StoreEnum store;
+	if(StoreList.GetArray(name, store, sizeof(store)))
+	{
+		store.Despawn();
+		StoreList.SetArray(name, store, sizeof(store));
 	}
 }
