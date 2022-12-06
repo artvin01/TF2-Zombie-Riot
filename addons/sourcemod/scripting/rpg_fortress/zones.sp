@@ -32,7 +32,7 @@ static void OnDisable(const char[] name)
 	Spawns_DisableSpawn(name);
 }
 
-stock bool Zones_IsActive(const char[] name)
+bool Zones_IsActive(const char[] name)
 {
 	return ActiveZones.FindString(name) != -1;
 }

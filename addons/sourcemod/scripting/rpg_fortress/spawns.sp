@@ -216,15 +216,6 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 		int count;
 		if(spawn.NextSpawnTime)
 		{
-			count = spawn.Count;
-		}
-		else if(alive)
-		{
-			spawn.NextSpawnTime = GetGameTime() + spawn.Time;
-			SpawnList.SetArray(pos, spawn);
-		}
-		else
-		{
 			float gameTime = GetGameTime();
 
 			int limit = spawn.Count - alive;
@@ -245,6 +236,15 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 
 			if(count)
 				SpawnList.SetArray(pos, spawn);
+		}
+		else if(alive)
+		{
+			spawn.NextSpawnTime = GetGameTime() + spawn.Time;
+			SpawnList.SetArray(pos, spawn);
+		}
+		else
+		{
+			count = spawn.Count;
 		}
 		
 		if(count)
