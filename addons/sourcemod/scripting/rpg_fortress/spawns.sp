@@ -3,7 +3,7 @@
 
 #define LOW	0
 #define HIGH	1
-
+/*
 enum struct SpawnEnum
 {
 	int Index;
@@ -86,7 +86,7 @@ enum struct SpawnEnum
 			RollItemDrop(this.Item3, (this.Chance3 * multi) + addon, pos);
 
 	}
-}
+}*/
 
 static ArrayList SpawnList;
 static Handle SpawnTimer;
@@ -211,6 +211,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 			alive++;
 	}
 	
+	PrintToChatAll("%d / %d alive", alive, spawn.Count);
 	if(alive < spawn.Count)
 	{
 		int count;

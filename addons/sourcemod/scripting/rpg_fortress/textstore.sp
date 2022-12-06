@@ -82,40 +82,41 @@ enum struct StoreEnum
 	
 	void Spawn()
 	{
-		this.Despawn();
-		
-		int entity = CreateEntityByName("prop_dynamic_override");
-		if(IsValidEntity(entity))
+		if(this.EntRef[0] == INVALID_ENT_REFERENCE)
 		{
-			DispatchKeyValue(entity, "model", this.Model);
-			DispatchKeyValue(entity, "targetname", "rpg_fortress");
-			
-			TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR);
-			
-			DispatchSpawn(entity);
-			SetEntProp(entity, Prop_Send, "m_CollisionGroup", 2);
-			
-			if(this.Extra1[0])
-				GivePropAttachment(entity, this.Extra1);
-			
-			if(this.Extra2[0])
-				GivePropAttachment(entity, this.Extra2);
-			
-			if(this.Extra3[0])
-				GivePropAttachment(entity, this.Extra3);
-			
-			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
-			
-			SetVariantString(this.Idle);
-			AcceptEntityInput(entity, "SetDefaultAnimation", entity, entity);
-			
-			if(this.Intro[0])
+			int entity = CreateEntityByName("prop_dynamic_override");
+			if(IsValidEntity(entity))
 			{
-				SetVariantString(this.Intro);
-				AcceptEntityInput(entity, "SetAnimation", entity, entity);
+				DispatchKeyValue(entity, "model", this.Model);
+				DispatchKeyValue(entity, "targetname", "rpg_fortress");
+				
+				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR);
+				
+				DispatchSpawn(entity);
+				SetEntProp(entity, Prop_Send, "m_CollisionGroup", 2);
+				
+				if(this.Extra1[0])
+					GivePropAttachment(entity, this.Extra1);
+				
+				if(this.Extra2[0])
+					GivePropAttachment(entity, this.Extra2);
+				
+				if(this.Extra3[0])
+					GivePropAttachment(entity, this.Extra3);
+				
+				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
+				
+				SetVariantString(this.Idle);
+				AcceptEntityInput(entity, "SetDefaultAnimation", entity, entity);
+				
+				if(this.Intro[0])
+				{
+					SetVariantString(this.Intro);
+					AcceptEntityInput(entity, "SetAnimation", entity, entity);
+				}
+				
+				this.EntRef = EntIndexToEntRef(entity);
 			}
-			
-			this.Ref = EntIndexToEntRef(entity);
 		}
 	}
 }*/
