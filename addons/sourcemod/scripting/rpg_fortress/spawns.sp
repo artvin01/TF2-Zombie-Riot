@@ -211,6 +211,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 			alive++;
 	}
 
+	PrintToChatAll("%d / %d alive", alive, spawn.Count);
 	if(alive < spawn.Count)
 	{
 		int count;
@@ -233,7 +234,9 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 				count++;
 				spawn.NextSpawnTime += spawn.Time;
 			}
-
+			
+			PrintToChatAll("Next Spawn Time: %f", spawn.NextSpawnTime - gameTime);
+			
 			if(count)
 				SpawnList.SetArray(pos, spawn);
 		}
@@ -249,6 +252,8 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 		
 		if(count)
 		{
+			PrintToChatAll("Creating %d more", count);
+			
 			static float ang[3];
 			ang[0] = spawn.Angle;
 			if(ang[0] < 0.0)
@@ -260,6 +265,8 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 				int entity = Npc_Create(spawn.Index, 0, spawn.Pos, ang, false);
 				if(entity == -1)
 					break;
+				
+				hFromSpawnerIndex[entity] = -1;
 				
 				int strength = 0;
 				if(diff > 0)
