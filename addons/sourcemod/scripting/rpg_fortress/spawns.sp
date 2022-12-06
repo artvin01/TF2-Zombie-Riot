@@ -107,8 +107,7 @@ void Spawns_ConfigSetup(KeyValues map)
 	{
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "spawns");
 		kv = new KeyValues("Spawns");
-		if(!kv.ImportFromFile(buffer))
-			PrintToChatAll("Failed to import '%s'", buffer);
+		kv.ImportFromFile(buffer);
 	}
 	
 	delete SpawnList;
@@ -137,7 +136,6 @@ void Spawns_ConfigSetup(KeyValues map)
 	if(kv != map)
 		delete kv;
 	
-	PrintToChatAll("Found %d Spawners", SpawnList.Length);
 	if(!SpawnTimer && SpawnList.Length)
 		SpawnTimer = CreateTimer(0.1, Spawner_Timer, _, TIMER_REPEAT);
 }
@@ -212,8 +210,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 		if(hFromSpawnerIndex[i] == pos)
 			alive++;
 	}
-
-	PrintToChatAll("%d / %d alive", alive, spawn.Count);
+	
 	if(alive < spawn.Count)
 	{
 		int count;
@@ -237,8 +234,6 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 				spawn.NextSpawnTime += spawn.Time;
 			}
 			
-			PrintToChatAll("Next Spawn Time: %f", spawn.NextSpawnTime - gameTime);
-			
 			if(count)
 				SpawnList.SetArray(pos, spawn);
 		}
@@ -254,8 +249,6 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 		
 		if(count)
 		{
-			PrintToChatAll("Creating %d more", count);
-			
 			static float ang[3];
 			ang[0] = spawn.Angle;
 			if(ang[0] < 0.0)
@@ -268,7 +261,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 				if(entity == -1)
 					break;
 				
-				hFromSpawnerIndex[entity] = -1;
+				hFromSpawnerIndex[entity] = pos;
 				
 				int strength = 0;
 				if(diff > 0)

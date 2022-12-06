@@ -39,7 +39,6 @@ bool Zones_IsActive(const char[] name)
 
 public Action Zones_StartTouch(const char[] output, int entity, int caller, float delay)
 {
-	PrintToChatAll("touched");
 	char name[32];
 	if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 	{
@@ -51,7 +50,6 @@ public Action Zones_StartTouch(const char[] output, int entity, int caller, floa
 
 public Action Zones_EndTouch(const char[] output, int entity, int caller, float delay)
 {
-	PrintToChatAll("un-Touched");
 	char name[32];
 	if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 	{
