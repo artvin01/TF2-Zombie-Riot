@@ -171,7 +171,7 @@ static void HashCheck(KeyValues kv)
 	}
 }
 
-void TextStore_ConfigSetup((KeyValues map)
+void TextStore_ConfigSetup(KeyValues map)
 {
 	KeyValues kv = map;
 	if(kv)
