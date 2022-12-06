@@ -73,7 +73,7 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [CollisionHookFIX](https://github.com/SlidyBat/CollisionHook) THIS IS A GAMEDATA FIX FOR...
 - [CollisionHook](https://github.com/Adrianilloo/Collisionhook)
 - [TFEconData](https://github.com/nosoop/SM-TFEconData)
-- [PathFollower](https://github.com/Pelipoika/PathFollower)
+- [PathFollower](https://github.com/Pelipoika/PathFollower) THERE IS A PATHFOLLOWER DLL HERE ALREADY AVAIABLE, the one in this repo thats compiled is outdated, but the sourcecode is updated, if you dont know how to compile use the one in this repo, if youre scared, compile that one.
 - [lambda](https://github.com/Batfoxkid/lambda)
 - [Timescale Windows Fix](https://forums.alliedmods.net/showthread.php?t=324264)
 
