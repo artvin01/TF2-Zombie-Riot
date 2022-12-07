@@ -310,6 +310,7 @@ void TextStore_ZoneEnter(int client, const char[] name)
 		
 		store.PlayEnter(client);
 		strcopy(InStore[client], sizeof(InStore[]), name);
+		FakeClientCommand(client, "sm_buy");
 	}
 }
 
@@ -318,6 +319,7 @@ void TextStore_ZoneLeave(int client, const char[] name)
 	if(InStore[client][0] && StrEqual(name, InStore[client]))
 	{
 		InStore[client][0] = 0;
+		CancelClientMenu(client);
 	}
 }
 
@@ -328,5 +330,38 @@ void TextStore_ZoneAllLeave(const char[] name)
 	{
 		store.Despawn();
 		StoreList.SetArray(name, store, sizeof(store));
+	}
+}
+
+public Action TextStore_OnSellItem(int client, int item, int cash, int &count, int &sell)
+{
+	if(InStore[client][0])
+		return Plugin_Continue;
+	
+	SPrintToChat(client, "You must sell this in a shop!");
+	return Plugin_Handled;
+}
+
+public Action TextStore_OnMainMenu(int client, Menu menu)
+{
+	if(!InStore[client][0])
+		menu.RemoveItem(0);
+	
+	return Plugin_Continue;
+}
+
+public void TextStore_OnCatalog(int client)
+{
+	int length = TextStore_GetItems();
+	for(int i; i < length; i++)
+	{
+		KeyValues kv = TextStore_GetItemKv(i);
+		if(kv)
+		{
+			static char buffer[128];
+			kv.GetString("storetags", buffer, sizeof(buffer));
+			if(buffer[0])
+				kv.SetNum("hidden", StrContains(buffer, InStore[client], false) == -1 ? 1 : 0);
+		}
 	}
 }

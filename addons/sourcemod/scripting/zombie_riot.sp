@@ -1,4 +1,5 @@
 #include <sourcemod>
+#tryinclude <menus-controller>
 
 #undef REQUIRE_PLUGIN
 #include <textstore>

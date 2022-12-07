@@ -6,6 +6,17 @@ static Handle HudLevel;
 void Levels_PluginStart()
 {
 	HudLevel = CreateHudSynchronizer();
+	CreateTimer(1.0, Levels_Timer, _, TIMER_REPEAT);
+}
+
+public Action Levels_Timer(Handle timer)
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+			ShowLevelHud(client);
+	}
+	return Plugin_Continue;
 }
 
 int XpToLevel(int xp)

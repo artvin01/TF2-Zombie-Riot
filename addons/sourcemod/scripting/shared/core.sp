@@ -13,7 +13,6 @@
 #include <PathFollower>
 #include <PathFollower_Nav>
 #include <morecolors>
-#tryinclude <menus-controller>
 
 #define CHAR_FULL	"█"
 #define CHAR_PARTFULL	"▓"
