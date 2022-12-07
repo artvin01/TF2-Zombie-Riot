@@ -1,6 +1,14 @@
 # TF2 Zombie Riot
 
 You fight against AI enemies/Zombies with allies and try to win/suvive as long as possible, You buy weapons and or upgrade them from previous ones. Stay together and beat them
+Compile zombie_riot.sp for this.
+
+# TF2 RPG Fortress
+
+Still currently in development. Not recommended to use.
+Compile rpg_fortress.sp for this.
+
+DO NOT HAVE BOTH ON THE SERVER.
 
 ## Information
 
