@@ -2970,14 +2970,8 @@ void Store_ApplyAttribs(int client)
 #if defined RPG
 	map.SetValue("26", RemoveExtraHealth(ClassForStats, 50.0));
 #endif
-
-#if defined ZR
+	
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, 330.0));		// Move Speed
-#endif
-
-#if defined RPG
-	map.SetValue("107", RemoveExtraSpeed(ClassForStats, 200.0));
-#endif
 
 	map.SetValue("353", 1.0);	// No manual building pickup.
 	map.SetValue("465", 10.0);	// x10 faster diepsner build
