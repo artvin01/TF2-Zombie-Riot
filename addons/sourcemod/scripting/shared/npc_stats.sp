@@ -1320,6 +1320,60 @@ methodmap CClotBody
 		}
 	}
 #endif
+	property int m_iTextEntity1
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_TextEntity[this.index][0]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_TextEntity[this.index][0] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_TextEntity[this.index][0] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
+	property int m_iTextEntity2
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_TextEntity[this.index][1]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_TextEntity[this.index][1] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_TextEntity[this.index][1] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
+	property int m_iTextEntity3
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_TextEntity[this.index][2]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_TextEntity[this.index][2] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_TextEntity[this.index][2] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	property int m_iWearable1
 	{
 		public get()		 
@@ -2654,6 +2708,13 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 #endif
 		if(IsValidEntity(npc.m_iSpawnProtectionEntity))
 			RemoveEntity(npc.m_iSpawnProtectionEntity);
+
+		if(IsValidEntity(npc.m_iTextEntity1))
+			RemoveEntity(npc.m_iTextEntity1);
+		if(IsValidEntity(npc.m_iTextEntity2))
+			RemoveEntity(npc.m_iTextEntity2);
+		if(IsValidEntity(npc.m_iTextEntity3))
+			RemoveEntity(npc.m_iTextEntity3);
 		
 #if defined ZR
 		if (EntRefToEntIndex(RaidBossActive) == pThis)
@@ -6366,6 +6427,9 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	IgniteFor[entity] = 0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	f_StunExtraGametimeDuration[entity] = 0.0;
+	i_TextEntity[entity][0] = -1;
+	i_TextEntity[entity][1] = -1;
+	i_TextEntity[entity][2] = -1;
 
 	
 	FormatEx(c_HeadPlaceAttachmentGibName[entity], sizeof(c_HeadPlaceAttachmentGibName[]), "");

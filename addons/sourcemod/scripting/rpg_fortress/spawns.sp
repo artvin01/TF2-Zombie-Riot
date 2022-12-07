@@ -243,9 +243,9 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 		if(count)
 		{
 			static float ang[3];
-			ang[0] = spawn.Angle;
-			if(ang[0] < 0.0)
-				ang[0] = GetURandomFloat() * 360.0;
+			ang[1] = spawn.Angle;
+			if(ang[1] < 0.0)
+				ang[1] = GetURandomFloat() * 360.0;
 			
 			int diff = spawn.Level[HIGH] - spawn.Level[LOW];
 			for(i = 0; i < count; i++)
@@ -269,13 +269,30 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 				Level[entity] = spawn.Level[LOW] + strength;
 				Cash[entity] = GetScaledRate(spawn.Cash, strength, diff);
 				XP[entity] = GetScaledRate(spawn.XP, strength, diff);
+				int health = 999999999; //ayo he forgor, ANNOY ADMINO
 
 				if(spawn.Health[LOW])
 				{
-					int health = GetScaledRate(spawn.Health, strength, diff);
+					health = GetScaledRate(spawn.Health, strength, diff);
 					SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 					SetEntProp(entity, Prop_Data, "m_iHealth", health);
 				}
+
+				CClotBody npc = view_as<CClotBody>(entity);
+				char String[128];
+				GetDisplayString(Level[entity], String, sizeof(String), true);
+
+				int color[3];
+		
+				color[0] = RenderColors_RPG[strength][0];
+				color[1] = RenderColors_RPG[strength][1];
+				color[2] = RenderColors_RPG[strength][2];
+
+				npc.m_iTextEntity1 = SpawnFormattedWorldText(NPC_Names[i_NpcInternalId[entity]], 10,{0.0,0.0,0.0},color, entity, {0.0,0.0,85.0});
+				npc.m_iTextEntity2 = SpawnFormattedWorldText(String, 10,{0.0,0.0,0.0},color, entity, {0.0,0.0,95.0});
+
+				Format(String, sizeof(String), "%i | %i", health, health);
+				npc.m_iTextEntity3 = SpawnFormattedWorldText(String, 10,{0.0,0.0,0.0},color, entity, {0.0,0.0,75.0});
 			}
 		}
 	}
