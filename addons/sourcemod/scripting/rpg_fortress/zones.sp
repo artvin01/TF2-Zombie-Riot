@@ -58,7 +58,7 @@ public Action Zones_StartTouch(const char[] output, int entity, int caller, floa
 		char name[32];
 		GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
-			OnEnter(caller, entity);
+			OnEnter(caller, name);
 	}
 	return Plugin_Continue;
 }
@@ -70,7 +70,7 @@ public Action Zones_EndTouch(const char[] output, int entity, int caller, float 
 		char name[32];
 		GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
-			OnLeave(caller, entity);
+			OnLeave(caller, name);
 	}
 	return Plugin_Continue;
 }

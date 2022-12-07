@@ -823,11 +823,9 @@ int Store_GetSpecialOfSlot(int client, int slot)
 	}
 	return -1;
 }
-#endif
 
 void Store_ConfigSetup()
 {
-#if defined ZR
 	if(StoreItems)
 	{
 		Item item;
@@ -867,14 +865,8 @@ void Store_ConfigSetup()
 	{
 		ConfigSetup(-1, kv, false, whitelist, whitecount, blacklist, blackcount);
 	} while(kv.GotoNextKey());
-#endif
-
-#if defined RPG
-	TextStore_ConfigSetup();
-#endif
 }
 
-#if defined ZR
 static void ConfigSetup(int section, KeyValues kv, bool hidden, const char[][] whitelist, int whitecount, const char[][] blacklist, int blackcount)
 {
 	bool isItem = kv.GetNum("cost", -1) >= 0;

@@ -27,7 +27,7 @@ enum struct StoreEnum
 	char Wear2[PLATFORM_MAX_PATH];
 	char Wear3[PLATFORM_MAX_PATH];
 	
-	int EntRef[4];
+	int EntRef;
 	
 	void SetupEnum(KeyValues kv)
 	{
@@ -132,14 +132,14 @@ enum struct StoreEnum
 				DispatchSpawn(entity);
 				SetEntityCollisionGroup(entity, 2);
 				
-				if(this.Extra1[0])
-					GivePropAttachment(entity, this.Extra1);
+				if(this.Wear1[0])
+					GivePropAttachment(entity, this.Wear1);
 				
-				if(this.Extra2[0])
-					GivePropAttachment(entity, this.Extra2);
+				if(this.Wear2[0])
+					GivePropAttachment(entity, this.Wear2);
 				
-				if(this.Extra3[0])
-					GivePropAttachment(entity, this.Extra3);
+				if(this.Wear3[0])
+					GivePropAttachment(entity, this.Wear3);
 				
 				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
 				

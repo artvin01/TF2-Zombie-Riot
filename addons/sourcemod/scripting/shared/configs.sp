@@ -59,16 +59,16 @@ public void Configs_ConfigsExecuted()
 		}
 	}
 	
-	Store_ConfigSetup();
 	
 #if defined ZR
-	
+	Store_ConfigSetup();
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
 #endif
 	
 #if defined RPG
 	Spawns_ConfigSetup(kv);
+	TextStore_ConfigSetup(kv);
 #endif
 
 	delete kv;
