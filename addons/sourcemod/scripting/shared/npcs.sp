@@ -1263,7 +1263,18 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	
 	if(attacker <= MaxClients)
 	{
-		
+#if defined RPG	
+
+		//Random crit damage!
+		//Yes, we allow those.
+		if(GetRandomFloat(0.0, 1.0) < 0.01)
+		{
+			damage *= 3.0;
+			DisplayCritAboveNpc(victim, attacker, true); //Display crit above head
+		}
+
+#endif
+
 #if defined ZR
 		if(dieingstate[attacker] > 0)
 		{

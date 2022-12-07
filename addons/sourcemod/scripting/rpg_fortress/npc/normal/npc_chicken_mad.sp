@@ -4,21 +4,36 @@
 // this should vary from npc to npc as some are in a really small area.
 
 static const char g_DeathSounds[][] = {
-	"vo/scout_painsharp01.mp3",
+	"vo/scout_paincrticialdeath01.mp3",
+	"vo/scout_paincrticialdeath02.mp3",
+	"vo/scout_paincrticialdeath03.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/machete_swing.wav",
 };
 static const char g_MeleeHitSounds[][] = {
-	"weapons/bat_hit.wav",
+	"weapons/holy_mackerel1.wav",
+	"weapons/holy_mackerel2.wav",
+	"weapons/holy_mackerel3.wav",
 };
 
 static const char g_IdleSound[][] = {
-	"vo/taunts/scout_taunts19.mp3",
-	"vo/taunts/scout_taunts20.mp3",
-	"vo/taunts/scout_taunts21.mp3",
-	"vo/taunts/scout_taunts22.mp3",
+	"vo/taunts/scout_taunts08.mp3",
+	"vo/taunts/scout_taunts06.mp3",
+	"vo/taunts/scout_taunts09.mp3",
+	"vo/taunts/scout_taunts12.mp3",
+	"vo/taunts/scout_taunts15.mp3",
+	"vo/taunts/scout_taunts16.mp3",
+};
+
+static const char g_KilledEnemySound[][] = {
+	"vo/taunts/scout_taunts02.mp3",
+	"vo/taunts/scout_taunts11.mp3",
+	"vo/taunts/scout_taunts07.mp3",
+	"vo/taunts/scout_taunts05.mp3",
+	"vo/taunts/scout_taunts04.mp3",
+	"vo/taunts/scout_taunts02.mp3",
 };
 
 static const char g_HurtSound[][] = {
@@ -39,6 +54,7 @@ public void MadChicken_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
+	for (int i = 0; i < (sizeof(g_KilledEnemySound));	i++) { PrecacheSound(g_KilledEnemySound[i]);	}
 	PrecacheModel("models/player/scout.mdl");
 }
 
@@ -49,28 +65,33 @@ methodmap MadChicken < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 
-		EmitSoundToAll(g_IdleSound[GetRandomInt(0, sizeof(g_IdleSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, GetRandomInt(125, 135), NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleSound[GetRandomInt(0, sizeof(g_IdleSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,GetRandomInt(125, 135));
 
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
 	
 	public void PlayHurtSound()
-	 {
+	{
 		
-		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, GetRandomInt(125, 135), NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,GetRandomInt(125, 135));
 	}
 	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,GetRandomInt(125, 135));
+	}
+	public void PlayKilledEnemySound() 
+	{
+		EmitSoundToAll(g_KilledEnemySound[GetRandomInt(0, sizeof(g_KilledEnemySound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,GetRandomInt(125, 135));
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(5.0, 10.0);
 	}
 	public void PlayMeleeSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
 	public void PlayMeleeHitSound()
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);	
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
 	
@@ -82,8 +103,10 @@ methodmap MadChicken < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.m_bisWalking = false;
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = true;
@@ -180,12 +203,26 @@ public void MadChicken_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 1.0;
+					float damage = 2.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
+
+						int Health = GetEntProp(target, Prop_Data, "m_iHealth");
+						
+						if(Health <= 0)
+						{
+							npc.PlayKilledEnemySound();
+							if(GetRandomInt(0,0) == 0)
+							{
+								npc.m_bisWalking = false;
+								npc.m_flNextThinkTime = gameTime + 1.0; //lol taunt, only works if there are people actually around
+								npc.AddGesture("ACT_MP_CYOA_PDA_INTRO");
+								//Outright taunt them.
+							}
+						}
 					}
 				}
 				delete swingTrace;
@@ -294,7 +331,7 @@ public void MadChicken_NPCDeath(int entity)
 	MadChicken npc = view_as<MadChicken>(entity);
 	if(!npc.m_bGib)
 	{
-		npc.PlayDeathSound();	
+		npc.PlayDeathSound();
 	}
 	SDKUnhook(entity, SDKHook_OnTakeDamage, MadChicken_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, MadChicken_ClotThink);

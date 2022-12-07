@@ -34,14 +34,14 @@ methodmap StartChicken < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 
-		EmitSoundToAll(g_IdleSound[GetRandomInt(0, sizeof(g_IdleSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, GetRandomInt(125, 135), NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleSound[GetRandomInt(0, sizeof(g_IdleSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,GetRandomInt(125, 135));
 
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
 	
 	public void PlayHurtSound() {
 		
-		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, GetRandomInt(125, 135), NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,GetRandomInt(125, 135));
 		
 	}
 	
@@ -56,6 +56,10 @@ methodmap StartChicken < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		f3_SpawnPosition[npc.index][0] = vecPos[0];
+		f3_SpawnPosition[npc.index][1] = vecPos[1];
+		f3_SpawnPosition[npc.index][2] = vecPos[2];
 
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -167,26 +171,41 @@ public void StartChicken_ClotThink(int iNPC)
 	if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 	{
 		//Pick a random goal area
-		NavArea RandomArea = PickRandomArea();	
+	//	NavArea RandomArea = PickRandomArea();	
 			
-		if(RandomArea == NavArea_Null) 
-			return;
-			
-		float vecGoal[3]; RandomArea.GetCenter(vecGoal);
+	//	if(RandomArea == NavArea_Null) 
+	//		return;
+
+		float AproxRandomSpaceToWalkTo[3];
+
+		AproxRandomSpaceToWalkTo[0] = f3_SpawnPosition[npc.index][0];
+		AproxRandomSpaceToWalkTo[1] = f3_SpawnPosition[npc.index][1];
+		AproxRandomSpaceToWalkTo[2] = f3_SpawnPosition[npc.index][2];
+
+		AproxRandomSpaceToWalkTo[2] += 20.0;
+
+		AproxRandomSpaceToWalkTo[0] = GetRandomFloat((AproxRandomSpaceToWalkTo[0] - 400.0),(AproxRandomSpaceToWalkTo[0] + 400.0));
+		AproxRandomSpaceToWalkTo[1] = GetRandomFloat((AproxRandomSpaceToWalkTo[1] - 400.0),(AproxRandomSpaceToWalkTo[1] + 400.0));
 		
-		if(!PF_IsPathToVectorPossible(iNPC, vecGoal))
+		if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
 			return;
 			
-		f3_PositionArrival[iNPC][0] = vecGoal[0];
-		f3_PositionArrival[iNPC][1] = vecGoal[1];
-		f3_PositionArrival[iNPC][2] = vecGoal[2];
+
+		Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
+		
+		TR_GetEndPosition(AproxRandomSpaceToWalkTo, ToGroundTrace);
+		delete ToGroundTrace;
 
 		npc.m_bisWalking = true;
 
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 
-		PF_SetGoalVector(iNPC, vecGoal);
+		PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
 		PF_StartPathing(iNPC);
+
+		f3_PositionArrival[iNPC][0] = AproxRandomSpaceToWalkTo[0];
+		f3_PositionArrival[iNPC][1] = AproxRandomSpaceToWalkTo[1];
+		f3_PositionArrival[iNPC][2] = AproxRandomSpaceToWalkTo[2];
 			
 		//Timeout
 		npc.m_flNextMeleeAttack = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);

@@ -246,6 +246,10 @@ methodmap CClotBody
 		
 		DispatchSpawn(npc); //Do this at the end :)
 
+#if defined RPG
+		SetEntPropFloat(npc, Prop_Send, "m_fadeMinDist", 1600.0);
+		SetEntPropFloat(npc, Prop_Send, "m_fadeMaxDist", 1800.0);
+#endif
 		SetEntProp(npc, Prop_Data, "m_bSequenceLoops", true);
 		//potentially newly added ? or might not get set ?
 		//Just set it to true at all times.
@@ -1737,6 +1741,11 @@ methodmap CClotBody
 			SetVariantString(anim);
 			AcceptEntityInput(item, "SetAnimation");
 		}
+
+#if defined RPG
+		SetEntPropFloat(item, Prop_Send, "m_fadeMinDist", 1600.0);
+		SetEntPropFloat(item, Prop_Send, "m_fadeMaxDist", 1800.0);
+#endif
 
 		SetVariantString("!activator");
 		AcceptEntityInput(item, "SetParent", this.index);
