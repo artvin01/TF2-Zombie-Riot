@@ -4415,7 +4415,6 @@ public void Check_If_Stuck(int iNPC)
 		}
 		
 		int Hit_player = IsSpaceOccupiedOnlyPlayers(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
-			
 		if (Hit_player) //The boss will start to merge with player, STOP!
 		{
 			static float flPlayerPos[3];
@@ -4434,11 +4433,9 @@ public void Check_If_Stuck(int iNPC)
 					
 					static float hullcheckmaxs_Player_Again[3];
 					static float hullcheckmins_Player_Again[3];
-					if(IsValidClient(Hit_player)) //Player size
-					{
-						hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
-						hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
-					}
+
+					hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
+					hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
 					
 					if(!IsSpaceOccupiedIgnorePlayers(flMyPos_2, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, Hit_player))
 					{
@@ -4460,18 +4457,16 @@ public void Check_If_Stuck(int iNPC)
 				flMyPos_2[0] = flMyPos[0];
 				flMyPos_2[1] = flMyPos[1];
 				flMyPos_2[2] = flMyPos[2];
-				flMyPos_2[2] += hullcheckmaxs_Player[2];
+				flMyPos_2[2] += 82.0; //Player height.
 				flMyPos_2[2] += 5.0;
 				
 				if(IsValidEntity(Hit_player))
 				{
 					static float hullcheckmaxs_Player_Again[3];
 					static float hullcheckmins_Player_Again[3];
-					if(IsValidClient(Hit_player)) //Player size
-					{
-						hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
-						hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
-					}
+
+					hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
+					hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
 					
 					if(!IsSpaceOccupiedIgnorePlayers(flMyPos_2, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, iNPC))
 					{

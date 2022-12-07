@@ -572,7 +572,7 @@ static void DropItem(int index, float pos[3], int amount)
 				DispatchSpawn(entity);
 				SetEntityCollisionGroup(entity, 2);
 
-				int color[3] = {255, 255, 255};
+				int color[4] = {255, 255, 255, 255};
 				if(index != -1)
 				{
 					int alpha = 255;
@@ -601,7 +601,7 @@ static void DropItem(int index, float pos[3], int amount)
 				if(amount != 1)
 					Format(buffer, sizeof(buffer), "%s x%d", buffer, amount);
 				
-				i_TextEntity[entity][0] = EntIndexToEntRef(SpawnFormattedWorldText(buffer, {0.0, 0.0, 10.0}, amount == 1 ? 5 : 6, color, entity));
+				i_TextEntity[entity][0] = EntIndexToEntRef(SpawnFormattedWorldText(buffer, {0.0, 0.0, 30.0}, amount == 1 ? 5 : 6, color, entity));
 			}
 		}
 	}
@@ -627,7 +627,7 @@ static void UpdateItemText(int entity, int index, KeyValues kv)
 	
 	Format(buffer, sizeof(buffer), "%s x%d", buffer, ItemCount[entity]);
 
-	int color[3] = {255, 255, 255};
+	int color[4] = {255, 255, 255, 255};
 	if(index != -1)
 	{
 		kv.GetColor("color", color[0], color[1], color[2], text);
@@ -638,7 +638,7 @@ static void UpdateItemText(int entity, int index, KeyValues kv)
 		}
 	}
 
-	i_TextEntity[entity][0] = EntIndexToEntRef(SpawnFormattedWorldText(buffer, {0.0, 0.0, 10.0}, 6, color, entity, ItemCount[entity] > 99));
+	i_TextEntity[entity][0] = EntIndexToEntRef(SpawnFormattedWorldText(buffer, {0.0, 0.0, 30.0}, 6, color, entity, ItemCount[entity] > 99));
 }
 
 static int GetBackpackSize(int client)

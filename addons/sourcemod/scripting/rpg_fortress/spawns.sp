@@ -282,17 +282,28 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 				char String[128];
 				GetDisplayString(Level[entity], String, sizeof(String), true);
 
-				int color[3];
+				int color[4];
 		
 				color[0] = RenderColors_RPG[strength][0];
 				color[1] = RenderColors_RPG[strength][1];
 				color[2] = RenderColors_RPG[strength][2];
+				color[3] = RenderColors_RPG[strength][3];
 
-				npc.m_iTextEntity1 = SpawnFormattedWorldText(NPC_Names[i_NpcInternalId[entity]], {0.0,0.0,85.0}, 10,color, entity);
-				npc.m_iTextEntity2 = SpawnFormattedWorldText(String, {0.0,0.0,95.0}, 10,color, entity);
+				float OffsetFromHead[3];
+
+				OffsetFromHead[2] = 95.0;
+				OffsetFromHead[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+
+				
+				OffsetFromHead[2] += 10.0;
+				npc.m_iTextEntity1 = SpawnFormattedWorldText(NPC_Names[i_NpcInternalId[entity]], OffsetFromHead, 10,color, entity);
+				
+				OffsetFromHead[2] += 10.0;
+				npc.m_iTextEntity2 = SpawnFormattedWorldText(String, OffsetFromHead, 10,color, entity);
 
 				Format(String, sizeof(String), "%i | %i", health, health);
-				npc.m_iTextEntity3 = SpawnFormattedWorldText(String, {0.0,0.0,75.0}, 10,color, entity);
+				OffsetFromHead[2] -= 20.0;
+				npc.m_iTextEntity3 = SpawnFormattedWorldText(String, OffsetFromHead, 10,color, entity);
 			}
 		}
 	}
