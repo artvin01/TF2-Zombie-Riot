@@ -211,7 +211,6 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 			alive++;
 	}
 	
-	PrintToChatAll("%d / %d alive", alive, spawn.Count);
 	if(alive < spawn.Count)
 	{
 		int count;
@@ -220,14 +219,8 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 			float gameTime = GetGameTime();
 
 			int limit = spawn.Count - alive;
-			for(i = 0; ; i++)
+			for(i = 0; i < limit; i++)
 			{
-				if(i >= limit)
-				{
-					spawn.NextSpawnTime = 0.0;
-					break;
-				}
-
 				if(spawn.NextSpawnTime > gameTime)
 					break;
 				
