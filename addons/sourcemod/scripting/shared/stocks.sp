@@ -3132,14 +3132,6 @@ public void GiveCompleteInvul(int client, float time)
 	TF2_AddCondition(client, TFCond_MegaHeal, time);
 }
 
-stock bool DispatchKeyValueInt(int entity, const char[] keyName, int value)
-{
-	char str[12];
-	IntToString(value, str, sizeof(str));
-
-	return DispatchKeyValue(entity, keyName, str);
-}
-
 stock int SpawnFormattedWorldText(const char[] format, const float origin[3], int textSize = 10, const int colour[3] = {255,255,255}, int entity_parent = -1, bool rainbow = false)
 {
 	int worldtext = CreateEntityByName("point_worldtext");
