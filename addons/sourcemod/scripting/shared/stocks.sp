@@ -861,7 +861,7 @@ stock int TF2_CreateGlow(int iEnt)
 
 	return ent;
 }
-stock void SetParent(int iParent, int iChild, const char[] szAttachment = "", float vOffsets[3] = {0.0,0.0,0.0})
+stock void SetParent(int iParent, int iChild, const char[] szAttachment = "", const float vOffsets[3] = {0.0,0.0,0.0})
 {
 	SetVariantString("!activator");
 	AcceptEntityInput(iChild, "SetParent", iParent, iChild);
@@ -907,7 +907,7 @@ stock int GiveWearable(int client, int index)
 	return -1;
 }
 
-stock bool AreVectorsEqual(float vVec1[3], float vVec2[3])
+stock bool AreVectorsEqual(const float vVec1[3], const float vVec2[3])
 {
 	return (vVec1[0] == vVec2[0] && vVec1[1] == vVec2[1] && vVec1[2] == vVec2[2]);
 } 
@@ -3132,42 +3132,43 @@ public void GiveCompleteInvul(int client, float time)
 	TF2_AddCondition(client, TFCond_MegaHeal, time);
 }
 
-stock int SpawnFormattedWorldText(const char[] format, const int textSize = 10, const float origin[3], int colour[3] = {255,255,255}, int entity_parent = -1,float offset_parent[3] = {0.0,0.0,0.0}, bool rainbow = false)
+stock bool DispatchKeyValueInt(int entity, const char[] keyName, int value)
 {
-    int worldtext = CreateEntityByName("point_worldtext");
-    if(IsValidEntity(worldtext))
-	{
-		
-        char myFormattedString[512];
-        VFormat(myFormattedString, sizeof(myFormattedString), format, 4);
-        
-        DispatchKeyValue(worldtext, "message", myFormattedString);
-        IntToString(textSize, myFormattedString, sizeof(myFormattedString));
-        DispatchKeyValue(worldtext, "textsize", myFormattedString);
-        DispatchSpawn(worldtext);
+	char str[12];
+	IntToString(value, str, sizeof(str));
+
+	return DispatchKeyValue(entity, keyName, str);
+}
+
+stock int SpawnFormattedWorldText(const char[] format, const float origin[3], int textSize = 10, const int colour[3] = {255,255,255}, int entity_parent = -1, bool rainbow = false)
+{
+	int worldtext = CreateEntityByName("point_worldtext");
+	if(IsValidEntity(worldtext))
+	{	
+		DispatchKeyValue(worldtext, "message", format);
+		DispatchKeyValueInt(worldtext, "textsize", textSize);
+		DispatchSpawn(worldtext);
 		DispatchKeyValue(worldtext, "orientation", "1");
 		if(rainbow)
-		{
 			DispatchKeyValue(worldtext, "rainbow", "1");
-		}
-		if(IsValidEntity(entity_parent))
+		
+		if(entity_parent != -1)
 		{
 			float vector[3];
 
 			vector = GetAbsOrigin(entity_parent);
 			
-			vector[0] += offset_parent[0];
-			vector[1] += offset_parent[1];
-			vector[2] += offset_parent[2];
+			vector[0] += origin[0];
+			vector[1] += origin[1];
+			vector[2] += origin[2];
 
 			TeleportEntity(worldtext, vector, NULL_VECTOR, NULL_VECTOR);
-			SetParent(entity_parent, worldtext, "", offset_parent);
+			SetParent(entity_parent, worldtext, "", origin);
 		}
 		else
 		{
 			TeleportEntity(worldtext, origin, NULL_VECTOR, NULL_VECTOR);
 		}	
-
-    }
-    return worldtext;
+	}
+	return worldtext;
 }

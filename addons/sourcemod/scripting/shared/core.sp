@@ -1973,6 +1973,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_SemiAutoWeapon[entity] = false;
 		b_NpcHasDied[entity] = true;
 		
+#if defined RPG
+		TextStore_EntityCreated(entity);
+#endif
+
 		if(!StrContains(classname, "env_entity_dissolver"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly_Disolve);
@@ -2617,15 +2621,16 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 
 bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 {
-	if(weapon!=-1) //Just allow. || GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack")<GetGameTime())
+	if(weapon != -1) //Just allow. || GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack")<GetGameTime())
 	{
 		int entity = GetClientPointVisible(client); //So you can also correctly interact with players holding shit.
 		if(entity > 0)
 		{
+
+#if defined ZR
 			static char buffer[64];
 			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 			{
-#if defined ZR
 				if(Building_Interact(client, entity, Is_Reload_Button))
 					return true;
 					
@@ -2640,9 +2645,14 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				
 				if(Citizen_Interact(client, entity))
 					return true;
-#endif
-				
 			}
+#endif
+			
+#if defined RPG
+			if(TextStore_Interact(client, entity, Is_Reload_Button))
+				return true;
+#endif
+
 		}
 	}
 	return false;

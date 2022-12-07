@@ -1323,7 +1323,7 @@ methodmap CClotBody
 	property int m_iTextEntity1
 	{
 		public get()		 
-		{ 
+		{
 			return EntRefToEntIndex(i_TextEntity[this.index][0]); 
 		}
 		public set(int iInt) 
@@ -2678,7 +2678,7 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 
 			i_KillsMade[client] += 1;
 #endif
-			
+
 			Calculate_And_Display_hp(client, pThis, Damage[pThis], true, overkill);
 		}
 		

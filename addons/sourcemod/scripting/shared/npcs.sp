@@ -1972,15 +1972,7 @@ void NPC_DeadEffects(int entity)
 #endif
 			
 #if defined RPG
-			int xp = XP[entity];
-			if(xp < 0)
-				xp = Level[entity];
-			
-			int diff = Level[entity] - Level[client] - 1;
-			if(diff > 0)	// TODO: Factor in party level difference
-				xp = xp * 10 / (10 + (diff * diff / 2));
-			
-			GiveXP(client, xp);
+			Spawns_NPCDeath(entity, client);
 #endif
 			
 			NPC_Killed_Show_Hud(client, entity, WeaponLastHit, NPC_Names[i_NpcInternalId[entity]], DamageBits[entity]);

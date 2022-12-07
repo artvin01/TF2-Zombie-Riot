@@ -71,7 +71,7 @@ enum struct SpawnEnum
 			this.Chance3 = kv.GetFloat("drop_chance_3", 1.0);
 	}
 
-	void DoAllDrops(int client, const float pos[3], int level)
+	void DoAllDrops(int client, float pos[3], int level)
 	{
 		float multi = float(level - this.Level[LOW]) / float(this.Level[HIGH] - this.Level[LOW]) * this.DropMulti;
 		float addon = 0.0;//float(luck) * 0.01;
@@ -288,11 +288,11 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 				color[1] = RenderColors_RPG[strength][1];
 				color[2] = RenderColors_RPG[strength][2];
 
-				npc.m_iTextEntity1 = SpawnFormattedWorldText(NPC_Names[i_NpcInternalId[entity]], 10,{0.0,0.0,0.0},color, entity, {0.0,0.0,85.0});
-				npc.m_iTextEntity2 = SpawnFormattedWorldText(String, 10,{0.0,0.0,0.0},color, entity, {0.0,0.0,95.0});
+				npc.m_iTextEntity1 = SpawnFormattedWorldText(NPC_Names[i_NpcInternalId[entity]], {0.0,0.0,85.0}, 10,color, entity);
+				npc.m_iTextEntity2 = SpawnFormattedWorldText(String, {0.0,0.0,95.0}, 10,color, entity);
 
 				Format(String, sizeof(String), "%i | %i", health, health);
-				npc.m_iTextEntity3 = SpawnFormattedWorldText(String, 10,{0.0,0.0,0.0},color, entity, {0.0,0.0,75.0});
+				npc.m_iTextEntity3 = SpawnFormattedWorldText(String, {0.0,0.0,75.0}, 10,color, entity);
 			}
 		}
 	}
@@ -303,10 +303,46 @@ static int GetScaledRate(const int rates[2], int power, int maxpower)
 	return rates[LOW] + ((rates[HIGH] - rates[LOW]) * power / maxpower);
 }
 
-static stock void RollItemDrop(const char[] name, float chance, const float pos[3])
+void Spawns_NPCDeath(int entity, int client)
+{
+	int xp = XP[entity];
+	if(xp < 0)
+		xp = Level[entity];
+	
+	GiveXP(client, xp);
+
+	static float pos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+
+	if(Cash[entity])
+	{
+		if(Cash[entity] > 199)
+		{
+			TextStore_DropCash(pos, Cash[entity]);
+		}
+		else if(Cash[entity] > 99)
+		{
+			if(GetURandomInt() % 2)
+				TextStore_DropCash(pos, Cash[entity] * 2);
+		}
+		else if(!(GetURandomInt() % 5))
+		{
+			TextStore_DropCash(pos, Cash[entity] * 5);
+		}
+	}
+
+	if(hFromSpawnerIndex[entity] >= 0)
+	{
+		static SpawnEnum spawn;
+		SpawnList.GetArray(hFromSpawnerIndex[entity], spawn);
+
+		spawn.DoAllDrops(client, pos, Level[entity]);
+		hFromSpawnerIndex[entity] = -1;
+	}
+}
+
+static void RollItemDrop(const char[] name, float chance, float pos[3])
 {
 	if(chance > GetURandomFloat())
-	{
-		// THING
-	}
+		TextStore_DropNamedItem(name, pos, 1);
 }

@@ -1,6 +1,31 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static const char MiningLevels[][] =
+{
+	"Wooden (0)",
+	"Stone (1)",
+	"Bronze (2)",
+	"Iron (3)",
+	"Steel (4)",
+	"Diamond (5)",
+	"Emerald (6)",
+	"Obsidian (7)"
+};
+
+static const char FishingLevels[][] =
+{
+	"Leaf (0)",
+	"Feather (1)",
+	"Silk (2)",
+	"Wire (3)",
+	"IV Cable (4)",
+	"Carving Tool (5)",
+	"MV Cable (6)",
+	"HV Cable (7)"
+};
+
+
 static KeyValues HashKey;
 
 #define ITEM_XP		"Experience Points"
@@ -125,6 +150,7 @@ enum struct StoreEnum
 			int entity = CreateEntityByName("prop_dynamic_override");
 			if(IsValidEntity(entity))
 			{
+				DispatchKeyValue(entity, "targetname", "rpg_fortress");
 				DispatchKeyValue(entity, "model", this.Model);
 				
 				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR);
@@ -158,8 +184,19 @@ enum struct StoreEnum
 	}
 }
 
+enum struct BackpackEnum
+{
+	int Owner;
+	int Item;
+	int Amount;
+}
+
+static ArrayList Backpack;
 static StringMap StoreList;
 static char InStore[MAXTF2PLAYERS][16];
+static int ItemIndex[MAXENTITIES];
+static int ItemCount[MAXENTITIES];
+static float ItemLifetime[MAXENTITIES];
 
 static void HashCheck(KeyValues kv)
 {
@@ -167,8 +204,23 @@ static void HashCheck(KeyValues kv)
 	{
 		ItemXP = -1;
 		ItemTier = -1;
+
+		delete Backpack;
+		Backpack = new ArrayList(sizeof(BackpackEnum));
+
+		Store_Reset();
+		RPG_PluginEnd();
+
+		if(HashKey)
+			SPrintToChatAll("The store was reloaded, items and areas were also reloaded!");
+
 		HashKey = kv;
 	}
+}
+
+void TextStore_PluginStart()
+{
+	CreateTimer(2.0, TextStore_ItemTimer, _, TIMER_REPEAT);
 }
 
 void TextStore_ConfigSetup(KeyValues map)
@@ -225,6 +277,70 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 	
 	Store_EquipItem(client, item, index, name, auto);
 	return Item_On;
+}
+
+public void TextStore_OnDescItem(int client, int item, char[] desc)
+{
+	static char buffer[256];
+	KeyValues kv = TextStore_GetItemKv(item);
+	if(kv)
+	{
+		kv.GetString("plugin", buffer, sizeof(buffer));
+		if(StrEqual(buffer, "rpg_fortress"))
+		{
+			GetDisplayString(kv.GetNum("level"), buffer, sizeof(buffer));
+			Format(desc, 512, "%s\n%s", desc, buffer);
+			
+			float val = kv.GetFloat("oredmg");
+			if(val > 0)
+			{
+				int tier = kv.GetNum("oretier");
+				if(tier < sizeof(MiningLevels))
+				{
+					Format(desc, 512, "%s\nMining Level: %s\nMining Efficiency: %.2f%%", desc, MiningLevels[tier], val);
+				}
+				else
+				{
+					Format(desc, 512, "%s\nMining Level: %d\nMining Efficiency: %.2f%%", desc, tier, val);
+				}
+			}
+			
+			val = kv.GetFloat("fishchance");
+			if(val > 0)
+			{
+				int tier = kv.GetNum("fishtier", 3);
+				if(tier < sizeof(FishingLevels))
+				{
+					Format(desc, 512, "%s\nFishing Level: %s\nFishing Efficiency: %.2f%%", desc, FishingLevels[tier], val*100.0);
+				}
+				else
+				{
+					Format(desc, 512, "%s\nFishing Level: %d\nFishing Efficiency: %.2f%%", desc, tier, val*100.0);
+				}
+			}
+
+			static int attrib[16];
+			static float value[16];
+			static char buffers[32][16];
+
+			kv.GetString("attributes", buffer, sizeof(buffer));
+			int count = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
+			for(int i; i < count; i++)
+			{
+				attrib[i] = StringToInt(buffers[i*2]);
+				if(!attrib[i])
+				{
+					count = i;
+					break;
+				}
+				
+				value[i] = StringToFloat(buffers[i*2+1]);
+			}
+			
+			kv.GetString("classname", buffer, sizeof(buffer));
+			Config_CreateDescription(buffer, attrib, value, count, desc, 512);
+		}
+	}
 }
 
 public Action TextStore_OnClientLoad(int client, char file[PLATFORM_MAX_PATH])
@@ -364,4 +480,303 @@ public void TextStore_OnCatalog(int client)
 				kv.SetNum("hidden", StrContains(buffer, InStore[client], false) == -1 ? 1 : 0);
 		}
 	}
+}
+
+void TextStore_EntityCreated(int entity)
+{
+	ItemCount[entity] = 0;
+}
+
+void TextStore_DropCash(float pos[3], int amount)
+{
+	DropItem(-1, pos, amount);
+}
+
+void TextStore_DropNamedItem(const char[] name, float pos[3], int amount)
+{
+	int length = TextStore_GetItems();
+	for(int i; i < length; i++)
+	{
+		static char buffer[48];
+		if(TextStore_GetItemName(i, buffer, sizeof(buffer)) && StrEqual(buffer, name, false))
+		{
+			DropItem(i, pos, amount);
+		}
+	}
+}
+
+static void DropItem(int index, float pos[3], int amount)
+{
+	KeyValues kv = index == -1 ? null : TextStore_GetItemKv(index);
+	if(kv || index == -1)
+	{
+		float ang[3];
+		static char buffer[PLATFORM_MAX_PATH];
+
+		int entity = MaxClients + 1;
+		while((entity = FindEntityByClassname(entity, "prop_physics_multiplayer")) != -1)
+		{
+			if(ItemCount[entity] && ItemIndex[entity] == index)
+			{
+				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", ang);
+				if(GetVectorDistance(pos, ang, true) < 100000.0)
+				{
+					ItemCount[entity] += amount;
+					UpdateItemText(entity, index, kv);
+					break;
+				}
+			}
+		}
+
+		if(GetEntityCount() > 1850)
+			return;
+
+		if(index == -1)
+		{
+			strcopy(buffer, sizeof(buffer), "models/items/currencypack_small.mdl");
+		}
+		else
+		{
+			kv.GetString("model", buffer, sizeof(buffer), "error.mdl");
+		}
+
+		if(buffer[0])
+		{
+			PrecacheModel(buffer);
+
+			entity = CreateEntityByName("prop_physics_multiplayer");
+			if(entity != -1)
+			{
+				DispatchKeyValue(entity, "model", buffer);
+				DispatchKeyValue(entity, "physicsmode", "2");
+				DispatchKeyValue(entity, "massScale", "1.0");
+				DispatchKeyValue(entity, "spawnflags", "2");
+				DispatchKeyValue(entity, "targetname", "rpg_item");
+
+				if(index != -1)
+				{
+					ang[0] = GetRandomFloat(0.0, 360.0);
+					ang[2] = GetRandomFloat(0.0, 360.0);
+				}
+
+				ang[1] = GetRandomFloat(0.0, 360.0);
+
+				static float vel[3];
+				vel[0] = GetRandomFloat(-160.0, 160.0);
+				vel[1] = GetRandomFloat(-160.0, 160.0);
+				vel[2] = GetRandomFloat(0.0, 160.0);
+
+				pos[2] += 20.0;
+				TeleportEntity(entity, pos, NULL_VECTOR, vel);
+
+				DispatchSpawn(entity);
+				SetEntityCollisionGroup(entity, 2);
+
+				int color[3] = {255, 255, 255};
+				if(index != -1)
+				{
+					int alpha = 255;
+					kv.GetColor("color", color[0], color[1], color[2], alpha);
+					SetEntityRenderColor(entity, color[0], color[1], color[2], alpha);
+
+					for(int i; i < sizeof(color); i++)
+					{
+						color[i] = 128 + color[i] / 2;
+					}
+				}
+
+				ItemIndex[entity] = index;
+				ItemCount[entity] = amount;
+				ItemLifetime[entity] = GetGameTime() + 30.0;
+
+				if(index == -1)
+				{
+					strcopy(buffer, sizeof(buffer), "Credits");
+				}
+				else
+				{
+					TextStore_GetItemName(index, buffer, sizeof(buffer));
+				}
+				
+				if(amount != 1)
+					Format(buffer, sizeof(buffer), "%s x%d", buffer, amount);
+				
+				i_TextEntity[entity][0] = EntIndexToEntRef(SpawnFormattedWorldText(buffer, {0.0, 0.0, 10.0}, amount == 1 ? 5 : 6, color, entity));
+			}
+		}
+	}
+}
+
+static void UpdateItemText(int entity, int index, KeyValues kv)
+{
+	ItemLifetime[entity] = GetGameTime() + 30.0;
+	
+	int text = EntRefToEntIndex(i_TextEntity[entity][0]);
+	if(text != INVALID_ENT_REFERENCE)
+		RemoveEntity(text);
+	
+	static char buffer[64];			
+	if(index == -1)
+	{
+		strcopy(buffer, sizeof(buffer), "Credits");
+	}
+	else
+	{
+		TextStore_GetItemName(index, buffer, sizeof(buffer));
+	}
+	
+	Format(buffer, sizeof(buffer), "%s x%d", buffer, ItemCount[entity]);
+
+	int color[3] = {255, 255, 255};
+	if(index != -1)
+	{
+		kv.GetColor("color", color[0], color[1], color[2], text);
+		
+		for(int i; i < sizeof(color); i++)
+		{
+			color[i] = 128 + color[i] / 2;
+		}
+	}
+
+	i_TextEntity[entity][0] = EntIndexToEntRef(SpawnFormattedWorldText(buffer, {0.0, 0.0, 10.0}, 6, color, entity, ItemCount[entity] > 99));
+}
+
+static int GetBackpackSize(int client)
+{
+	int amount;
+
+	static BackpackEnum pack;
+	int length = Backpack.Length;
+	for(int i; i < length; i++)
+	{
+		Backpack.GetArray(i, pack);
+		if(pack.Owner == client)
+		{
+			int weight = pack.Amount;
+			if(pack.Item == -1)
+			{
+				weight = 1 + weight / 1000;
+			}
+			
+			amount += weight;
+		}
+	}
+
+	return amount;
+}
+
+bool TextStore_Interact(int client, int entity, bool reload)
+{
+	if(ItemCount[entity])
+	{
+		if(reload)
+		{
+			int weight = GetBackpackSize(client);
+
+			int i, strength;
+			while(TF2_GetItem(client, strength, i))
+			{
+				weight += 1 + Tier[client];
+			}
+
+			strength = Stats_BaseCarry(client);
+			if(weight > strength)
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				ShowGameText(client, "ico_notify_highfive", 0, "You can't carry any more items (%d / %d)", weight, strength);
+
+				if(Level[client] < 6)
+				{
+					SPrintToChat(client, "TIP: Head over to a shop to deposit your backpack");
+				}
+				else if((Level[client] == 10 && Tier[client] == 0) || (Level[client] == 30 && Tier[client] == 1))
+				{
+					SPrintToChat(client, "TIP: You can carry 10 more items for each elite level up");
+				}
+				else if(Level[client] < 30)
+				{
+					SPrintToChat(client, "TIP: Switch to your backpack to drop items you don't need");
+				}
+			}
+			else
+			{
+				ClientCommand(client, "playgamesound items/gift_pickup.wav");
+				
+				int amount = strength - weight;
+				if(ItemIndex[entity] == -1)
+					amount *= 1000;
+				
+				if(amount > ItemCount[entity])
+					amount = ItemCount[entity];
+				
+				bool found;
+				static BackpackEnum pack;
+				int length = Backpack.Length;
+				for(i = 0; i < length; i++)
+				{
+					Backpack.GetArray(i, pack);
+					if(pack.Owner == client && pack.Item == ItemIndex[entity])
+					{
+						pack.Amount += amount;
+						Backpack.SetArray(i, pack);
+
+						found = true;
+						break;
+					}
+				}
+
+				if(!found)
+				{
+					pack.Owner = client;
+					pack.Item = ItemIndex[entity];
+					pack.Amount = amount;
+					Backpack.PushArray(pack);
+				}
+				
+				if(amount == ItemCount[entity])
+				{
+					int text = EntRefToEntIndex(i_TextEntity[entity][0]);
+					if(text != INVALID_ENT_REFERENCE)
+						RemoveEntity(text);
+					
+					i_TextEntity[entity][0] = INVALID_ENT_REFERENCE;
+					ItemCount[entity] = 0;
+					RemoveEntity(entity);
+				}
+				else
+				{
+					UpdateItemText(entity, ItemIndex[entity], ItemIndex[entity] == -1 ? null : TextStore_GetItemKv(ItemIndex[entity]));
+				}
+			}
+			return true;
+		}
+		else if(Level[client] < 8)
+		{
+			SPrintToChat(client, "TIP: Press RELOAD (R) to pick up an item");
+			return true;
+		}
+	}
+	return false;
+}
+
+public Action TextStore_ItemTimer(Handle timer)
+{
+	float gameTime = GetGameTime();
+
+	int entity = MaxClients + 1;
+	while((entity = FindEntityByClassname(entity, "prop_physics_multiplayer")) != -1)
+	{
+		if(ItemCount[entity] && ItemLifetime[entity] < gameTime)
+		{
+			int text = EntRefToEntIndex(i_TextEntity[entity][0]);
+			if(text != INVALID_ENT_REFERENCE)
+				RemoveEntity(text);
+			
+			i_TextEntity[entity][0] = INVALID_ENT_REFERENCE;
+			ItemCount[entity] = 0;
+			RemoveEntity(entity);
+		}
+	}
+
+	return Plugin_Continue;
 }

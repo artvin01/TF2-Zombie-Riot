@@ -128,7 +128,7 @@ void ShowLevelHud(int client)
 		int extra = XP[client]-xpLevel;
 		int nextAt = xpNext-xpLevel;
 		
-		Format(buffer, sizeof(buffer), "%s\n%d", buffer, extra);
+		Format(buffer, sizeof(buffer), "%s\n%d ", buffer, extra);
 
 		for(int i=1; i<21; i++)
 		{
@@ -149,6 +149,8 @@ void ShowLevelHud(int client)
 				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
 			}
 		}
+
+		Format(buffer, sizeof(buffer), "%s %d", buffer, nextAt);
 	}
 	
 	SetHudTextParams(-1.0, 0.96, 1.8, 200, 69, 0, 200);
