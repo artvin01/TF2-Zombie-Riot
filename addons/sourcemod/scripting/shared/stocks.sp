@@ -3131,3 +3131,43 @@ public void GiveCompleteInvul(int client, float time)
 	TF2_AddCondition(client, TFCond_UberchargedCanteen, time);
 	TF2_AddCondition(client, TFCond_MegaHeal, time);
 }
+
+stock int SpawnFormattedWorldText(const char[] format, const int textSize = 10, const float origin[3], int colour[3] = {255,255,255}, int entity_parent = -1,float offset_parent[3] = {0.0,0.0,0.0}, bool rainbow = false)
+{
+    int worldtext = CreateEntityByName("point_worldtext");
+    if(IsValidEntity(worldtext))
+	{
+		
+        char myFormattedString[512];
+        VFormat(myFormattedString, sizeof(myFormattedString), format, 4);
+        
+        DispatchKeyValue(worldtext, "message", myFormattedString);
+        IntToString(textSize, myFormattedString, sizeof(myFormattedString));
+        DispatchKeyValue(worldtext, "textsize", myFormattedString);
+        DispatchSpawn(worldtext);
+		DispatchKeyValue(worldtext, "orientation", "1");
+		if(rainbow)
+		{
+			DispatchKeyValue(worldtext, "rainbow", "1");
+		}
+		if(IsValidEntity(entity_parent))
+		{
+			float vector[3];
+
+			vector = GetAbsOrigin(entity_parent);
+			
+			vector[0] += offset_parent[0];
+			vector[1] += offset_parent[1];
+			vector[2] += offset_parent[2];
+
+			TeleportEntity(worldtext, vector, NULL_VECTOR, NULL_VECTOR);
+			SetParent(entity_parent, worldtext, "", offset_parent);
+		}
+		else
+		{
+			TeleportEntity(worldtext, origin, NULL_VECTOR, NULL_VECTOR);
+		}	
+
+    }
+    return worldtext;
+}

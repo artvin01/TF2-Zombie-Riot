@@ -13,18 +13,6 @@ enum
 	Rarity_Legend = 3,
 	Rarity_Mythic = 4
 }
-
-static int RenderColors_RPG[][] =
-{
-	{255, 255, 255, 255}, 	// 0
-	{0, 255, 0, 255, 255}, 	//Green
-	{ 65, 105, 225 , 255},	//Blue
-	{ 255, 255, 0 , 255},	//yellow
-	{ 178, 34, 34 , 255},	//Red
-	{ 138, 43, 226 , 255},	//wat
-	{0, 0, 0, 255}			//none, black.
-};
-
 static const char CommonDrops[][] =
 {
 	"Scrap Helmet [Common]",

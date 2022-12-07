@@ -171,6 +171,18 @@ enum
 	Ammo_MAX
 };
 
+public int RenderColors_RPG[][] =
+{
+	{255, 255, 255, 255}, 	// 0
+	{0, 255, 0, 255, 255}, 	//Green
+	{ 65, 105, 225 , 255},	//Blue
+	{ 255, 255, 0 , 255},	//yellow
+	{ 178, 34, 34 , 255},	//Red
+	{ 138, 43, 226 , 255},	//wat
+	{0, 0, 0, 255}			//none, black.
+};
+
+
 Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;
 //ConVar tf_bot_quota;
@@ -842,6 +854,7 @@ int i_TargetAlly[MAXENTITIES];
 bool b_GetClosestTargetTimeAlly[MAXENTITIES];
 float fl_Duration[MAXENTITIES];
 int i_OverlordComboAttack[MAXENTITIES];
+int i_TextEntity[MAXENTITIES][3];
 
 int i_Activity[MAXENTITIES];
 int i_PoseMoveX[MAXENTITIES];
