@@ -222,7 +222,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 			float gameTime = GetGameTime();
 
 			int limit = spawn.Count - alive;
-			for(i = 0; i < limit; i++)
+			for(int i; i < limit; i++)
 			{
 				if(i >= limit)
 				{
@@ -257,7 +257,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 				ang[1] = GetURandomFloat() * 360.0;
 			
 			int diff = spawn.Level[HIGH] - spawn.Level[LOW];
-			for(i = 0; i < count; i++)
+			for(int i; i < count; i++)
 			{
 				int entity = Npc_Create(spawn.Index, 0, spawn.Pos, ang, false);
 				if(entity == -1)
