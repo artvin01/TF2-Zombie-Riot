@@ -198,35 +198,30 @@ static int ItemIndex[MAXENTITIES];
 static int ItemCount[MAXENTITIES];
 static float ItemLifetime[MAXENTITIES];
 
-static void HasCache()
+static void HashCheck()
 {
 	for(int i; ; i++)
 	{
 		KeyValues kv = TextStore_GetItemKv(i);
 		if(kv)
 		{
-			HashCheck(kv);
+			if(kv != HashKey)
+			{
+				ItemXP = -1;
+				ItemTier = -1;
+
+				delete Backpack;
+				Backpack = new ArrayList(sizeof(BackpackEnum));
+
+				Store_Reset();
+				RPG_PluginEnd();
+
+				SPrintToChatAll("The store was reloaded, items and areas were also reloaded!");
+
+				HashKey = kv;
+			}
 			break;
 		}
-	}
-}
-
-static void HashCheck(KeyValues kv)
-{
-	if(kv != HashKey)
-	{
-		ItemXP = -1;
-		ItemTier = -1;
-
-		delete Backpack;
-		Backpack = new ArrayList(sizeof(BackpackEnum));
-
-		Store_Reset();
-		RPG_PluginEnd();
-
-		SPrintToChatAll("The store was reloaded, items and areas were also reloaded!");
-
-		HashKey = kv;
 	}
 }
 
@@ -271,7 +266,7 @@ void TextStore_ConfigSetup(KeyValues map)
 	if(kv != map)
 		delete kv;
 	
-	HasCache();
+	HashCheck();
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		InStore[client][0] = 0;
@@ -282,7 +277,7 @@ void TextStore_ConfigSetup(KeyValues map)
 
 public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int index, const char[] name, int &count, bool auto)
 {
-	HashCheck(item);
+	HashCheck();
 
 	if(equipped)
 		return Item_Off;
@@ -368,7 +363,7 @@ public void TextStore_LoadFrame(int userid)
 	{
 		if(TextStore_GetClientLoad(client))
 		{
-			HasCache();
+			HashCheck();
 			LoadItems(client);
 		}
 		else
@@ -405,7 +400,7 @@ static void LoadItems(int client)
 
 void TextStore_AddXP(int client, int xp)
 {
-	HasCache();
+	HashCheck();
 	if(ItemXP != -1)
 	{
 		TextStore_GetInv(client, ItemXP, XP[client]);
@@ -416,7 +411,7 @@ void TextStore_AddXP(int client, int xp)
 
 stock void TextStore_AddTier(int client)
 {
-	HasCache();
+	HashCheck();
 	if(ItemTier != -1)
 	{
 		TextStore_GetInv(client, ItemTier, Tier[client]);

@@ -417,7 +417,7 @@ bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name, boo
 	{
 		if(!auto)
 		{
-			if(kv.GetNum("level") > Level[client])
+			if(kv.GetNum("level") >= Level[client])
 			{
 				char buffer[32];
 				GetDisplayString(Level[client], buffer, sizeof(buffer));
@@ -3349,6 +3349,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 				item.GetItemInfo(item.Owned[client]-1, info);
 #endif
 
+				PrintToChatAll("Classname: %s", info.Classname);
 				if(info.Classname[0])
 				{
 					if(!StrContains(info.Classname, "tf_weapon_pda_engineer_build"))
