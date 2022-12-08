@@ -198,6 +198,19 @@ static int ItemIndex[MAXENTITIES];
 static int ItemCount[MAXENTITIES];
 static float ItemLifetime[MAXENTITIES];
 
+static void HasCache()
+{
+	for(int i; ; i++)
+	{
+		KeyValues kv = TextStore_GetItemKv(i);
+		if(kv)
+		{
+			HashCheck(kv);
+			break;
+		}
+	}
+}
+
 static void HashCheck(KeyValues kv)
 {
 	if(kv != HashKey)
@@ -258,7 +271,7 @@ void TextStore_ConfigSetup(KeyValues map)
 	if(kv != map)
 		delete kv;
 	
-	HashCheck(TextStore_GetItemKv(0));
+	HasCache();
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		InStore[client][0] = 0;
@@ -344,21 +357,18 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 
 public Action TextStore_OnClientLoad(int client, char file[PLATFORM_MAX_PATH])
 {
-	PrintToChatAll("TextStore_OnClientLoad");
 	RequestFrame(TextStore_LoadFrame, GetClientUserId(client));
 	return Plugin_Continue;
 }
 
 public void TextStore_LoadFrame(int userid)
 {
-	PrintToChatAll("TextStore_LoadFrame");
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
 		if(TextStore_GetClientLoad(client))
 		{
-			PrintToChatAll("Loaded");
-			HashCheck(TextStore_GetItemKv(0));
+			HasCache();
 			LoadItems(client);
 		}
 		else
@@ -395,7 +405,7 @@ static void LoadItems(int client)
 
 void TextStore_AddXP(int client, int xp)
 {
-	HashCheck(TextStore_GetItemKv(0));
+	HasCache();
 	if(ItemXP != -1)
 	{
 		TextStore_GetInv(client, ItemXP, XP[client]);
@@ -406,7 +416,7 @@ void TextStore_AddXP(int client, int xp)
 
 stock void TextStore_AddTier(int client)
 {
-	HashCheck(TextStore_GetItemKv(0));
+	HasCache();
 	if(ItemTier != -1)
 	{
 		TextStore_GetInv(client, ItemTier, Tier[client]);
