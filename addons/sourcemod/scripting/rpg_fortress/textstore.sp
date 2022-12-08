@@ -344,12 +344,14 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 
 public Action TextStore_OnClientLoad(int client, char file[PLATFORM_MAX_PATH])
 {
+	PrintToChatAll("TextStore_OnClientLoad");
 	RequestFrame(TextStore_LoadFrame, GetClientUserId(client));
 	return Plugin_Continue;
 }
 
 public void TextStore_LoadFrame(int userid)
 {
+	PrintToChatAll("TextStore_LoadFrame");
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
