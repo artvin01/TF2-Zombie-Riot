@@ -3495,7 +3495,8 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 #if defined RPG
 	int length = EquippedItems.Length;
 #endif
-	
+
+	PrintToChatAll("Store_GiveItem: %d / %d", index, length);
 	if(index > 0 && index < length)
 	{
 
@@ -3515,6 +3516,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 			item.GetItemInfo(item.Owned[client]-1, info);
 #endif
 
+			PrintToChatAll("You owner and equipped");
 			if(info.Classname[0])
 			{
 				slot = TF2_GetClassnameSlot(info.Classname);
@@ -3536,7 +3538,8 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 				}
 
 				entity = SpawnWeapon(client, info.Classname, info.Index, 5, 6, info.Attrib, info.Value, info.Attribs);
-				
+				PrintToChatAll("%d", entity);
+
 #if defined ZR
 				StoreWeapon[entity] = index;
 				i_CustomWeaponEquipLogic[entity] = 0;
