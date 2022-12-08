@@ -310,7 +310,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 				OffsetFromHead[2] += 10.0;
 				npc.m_iTextEntity2 = SpawnFormattedWorldText(String, OffsetFromHead, 10,color, entity);
 
-				Format(String, sizeof(String), "%i | %i", health, health);
+				Format(String, sizeof(String), "%d / %d", health, health);
 				OffsetFromHead[2] -= 20.0;
 				npc.m_iTextEntity3 = SpawnFormattedWorldText(String, OffsetFromHead, 10,color, entity);
 			}

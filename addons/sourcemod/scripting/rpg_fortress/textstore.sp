@@ -355,6 +355,7 @@ public void TextStore_LoadFrame(int userid)
 	{
 		if(TextStore_GetClientLoad(client))
 		{
+			PrintToChatAll("Loaded");
 			HashCheck(TextStore_GetItemKv(0));
 			LoadItems(client);
 		}
