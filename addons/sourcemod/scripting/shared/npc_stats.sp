@@ -4956,7 +4956,7 @@ public void GibCollidePlayerInteraction(int gib, int player)
 			int weapon = GetEntPropEnt(player, Prop_Send, "m_hActiveWeapon");
 			if(IsValidEntity(weapon)) //Must also hold melee out 
 			{
-				if(!IsWandWeapon(weapon)) //Make sure its not wand.
+				if(!i_IsWandWeapon[weapon]) //Make sure its not wand.
 				{
 					if(SDKCall_GetMaxHealth(player) > GetEntProp(player, Prop_Send, "m_iHealth"))
 					{

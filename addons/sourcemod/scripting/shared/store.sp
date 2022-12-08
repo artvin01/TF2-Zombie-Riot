@@ -50,6 +50,9 @@ enum struct ItemInfo
 	bool DontMoveBuildingComp;
 	bool DontMoveAlliedNpcs;
 	bool BlockLagCompInternal;
+
+	bool IsWand;
+	bool IsWrench;
 	
 	char Classname[36];
 	char Custom_Name[64];
@@ -168,7 +171,7 @@ enum struct ItemInfo
 		
 		FormatEx(buffer, sizeof(buffer), "%slag_comp_dont_move_building", prefix);
 		this.DontMoveBuildingComp	= view_as<bool>(kv.GetNum(buffer));
-		
+	
 		FormatEx(buffer, sizeof(buffer), "%slag_comp_dont_allied_npc", prefix);
 		this.DontMoveAlliedNpcs	= view_as<bool>(kv.GetNum(buffer));
 		
@@ -183,6 +186,12 @@ enum struct ItemInfo
 		
 		FormatEx(buffer, sizeof(buffer), "%sno_headshot", prefix);
 		this.NoHeadshot				= view_as<bool>(kv.GetNum(buffer));
+
+		FormatEx(buffer, sizeof(buffer), "%sis_a_wand", prefix);
+		this.IsWand	= view_as<bool>(kv.GetNum(buffer));
+
+		FormatEx(buffer, sizeof(buffer), "%sis_a_wrench", prefix);
+		this.IsWrench	= view_as<bool>(kv.GetNum(buffer));
 		
 
 		
@@ -3349,7 +3358,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 				item.GetItemInfo(item.Owned[client]-1, info);
 #endif
 
-				PrintToChatAll("Classname: %s", info.Classname);
 				if(info.Classname[0])
 				{
 					if(!StrContains(info.Classname, "tf_weapon_pda_engineer_build"))
@@ -3496,7 +3504,6 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 	int length = EquippedItems.Length;
 #endif
 
-	PrintToChatAll("%d / %d", index, length);
 #if defined ZR
 	if(index > 0 && index < length)
 #else
@@ -3520,8 +3527,6 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 #if defined ZR
 			item.GetItemInfo(item.Owned[client]-1, info);
 #endif
-
-			PrintToChatAll("You owner and equipped");
 			if(info.Classname[0])
 			{
 				slot = TF2_GetClassnameSlot(info.Classname);
@@ -3543,7 +3548,6 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 				}
 
 				entity = SpawnWeapon(client, info.Classname, info.Index, 5, 6, info.Attrib, info.Value, info.Attribs);
-				PrintToChatAll("%d", entity);
 
 #if defined ZR
 				StoreWeapon[entity] = index;
@@ -3856,12 +3860,12 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 						{
 							case 0, 1, 2:
 							{
-								if(info.Index == slot && !IsWandWeapon(entity) && !IsEngineerWeapon(entity))
+								if(info.Index == slot && !info.IsWand && !info.IsWrench)
 									apply = true;
 							}
 							case 6:
 							{
-								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !IsWandWeapon(entity) && !IsEngineerWeapon(entity)))
+								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !info.IsWand && !info.IsWrench))
 								{
 									apply = true;
 								}
@@ -3873,12 +3877,12 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 							}
 							case 8:
 							{
-								if(slot == TFWeaponSlot_Melee && IsWandWeapon(entity))
+								if(slot == TFWeaponSlot_Melee && info.IsWand)
 									apply = true;
 							}
 							case 9:
 							{
-								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !IsWandWeapon(entity)))
+								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !info.IsWand))
 									apply = true;
 							}
 							case 10:
@@ -3920,12 +3924,12 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 						{
 							case 0, 1, 2:
 							{
-								if(info.Index2 == slot && !IsWandWeapon(entity) && !IsEngineerWeapon(entity))
+								if(info.Index2 == slot && !info.IsWand && !info.IsWrench)
 									apply = true;
 							}
 							case 6:
 							{
-								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !IsWandWeapon(entity) && !IsEngineerWeapon(entity)))
+								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !info.IsWand && !info.IsWrench))
 									apply = true;
 							}
 							case 7:
@@ -3935,12 +3939,12 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 							}
 							case 8:
 							{
-								if(slot == TFWeaponSlot_Melee && IsWandWeapon(entity))
+								if(slot == TFWeaponSlot_Melee && info.IsWand)
 									apply = true;
 							}
 							case 9:
 							{
-								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !IsWandWeapon(entity)))
+								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !info.IsWand))
 									apply = true;
 							}
 							case 10:
@@ -4027,7 +4031,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 		}
 
 		int itemdefindex = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-		if(itemdefindex == 772 || itemdefindex == 349 || itemdefindex == 30667 || itemdefindex == 200 || itemdefindex == 45 || itemdefindex == 449 || itemdefindex == 773 || itemdefindex == 973 || itemdefindex == 1103 || itemdefindex == 669 || IsWandWeapon(entity))
+		if(itemdefindex == 772 || itemdefindex == 349 || itemdefindex == 30667 || itemdefindex == 200 || itemdefindex == 45 || itemdefindex == 449 || itemdefindex == 773 || itemdefindex == 973 || itemdefindex == 1103 || itemdefindex == 669 || info.IsWand)
 		{		
 			TF2Attrib_SetByDefIndex(entity, 49, 1.0);
 		}
@@ -4045,6 +4049,10 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 		
 		i_LowTeslarStaff[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 3002));
 		i_HighTeslarStaff[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 3000));
+
+
+		i_IsWandWeapon[entity] = info.IsWand;
+		i_IsWrench[entity] = info.IsWrench;
 		
 #if defined ZR
 		Enable_Management(client, entity);

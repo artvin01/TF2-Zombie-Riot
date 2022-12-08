@@ -127,6 +127,19 @@ static const char g_KatanaHitWorld[][] = {
 	"weapons/samurai/tf_katana_impact_object_03.wav",
 };
 
+static const char g_MeatHitFlesh[][] = {
+	"weapons/holy_mackerel1.wav",
+	"weapons/holy_mackerel2.wav",
+	"weapons/holy_mackerel3.wav",
+};
+
+
+static const char g_MeatHitWorld[][] = {
+	"weapons/holy_mackerel1.wav",
+	"weapons/holy_mackerel2.wav",
+	"weapons/holy_mackerel3.wav",
+};
+
 
 void MapStart_CustomMeleePrecache()
 {
@@ -364,14 +377,29 @@ public void PlayCustomWeaponSoundFromPlayerCorrectly(int target, int client, int
 	}
 	else if(!StrContains(classname, "tf_weapon_bonesaw"))
 	{
-		if(target > 0 && !b_NpcHasDied[target])
+		if(item_index == 1013)
 		{
-			EmitSoundToAll(g_UberSawHitFlesh[GetRandomInt(0, sizeof(g_UberSawHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
+			if(target > 0 && !b_NpcHasDied[target])
+			{
+				EmitSoundToAll(g_MeatHitFlesh[GetRandomInt(0, sizeof(g_MeatHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
+			}
+			else
+			{
+				EmitSoundToAll(g_MeatHitWorld[GetRandomInt(0, sizeof(g_MeatHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
+			}	
+
 		}
 		else
 		{
-			EmitSoundToAll(g_DefaultHitWorld[GetRandomInt(0, sizeof(g_DefaultHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-		}		
+			if(target > 0 && !b_NpcHasDied[target])
+			{
+				EmitSoundToAll(g_UberSawHitFlesh[GetRandomInt(0, sizeof(g_UberSawHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
+			}
+			else
+			{
+				EmitSoundToAll(g_DefaultHitWorld[GetRandomInt(0, sizeof(g_DefaultHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
+			}			
+		}	
 		
 	}
 	else if(!StrContains(classname, "tf_weapon_club"))

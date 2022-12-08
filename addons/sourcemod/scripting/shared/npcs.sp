@@ -1294,7 +1294,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			if(IsValidEntity(weapon))
 			{
-				if(!IsWandWeapon(weapon) && !IsEngineerWeapon(weapon)) //make sure its not a wand.
+				if(!i_IsWandWeapon[weapon] && !i_IsWrench[weapon]) //make sure its not a wand.
 				{
 					char melee_classname[64];
 					GetEntityClassname(weapon, melee_classname, 64);

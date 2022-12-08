@@ -1884,7 +1884,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 							if(IsValidEntity(weapon))
 							{
-								if(IsWandWeapon(weapon))
+								if(i_IsWandWeapon[weapon])
 								{
 									float max_mana_temp = 800.0;
 									float mana_regen_temp = 100.0;

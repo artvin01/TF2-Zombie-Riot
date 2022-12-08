@@ -281,7 +281,7 @@ void Attributes_OnKill(int client, int weapon)
 #if defined ZR
 		if(EscapeMode)
 		{
-			if(!IsWandWeapon(weapon))
+			if(!i_IsWandWeapon[weapon])
 			{
 				char melee_classname[64];
 				GetEntityClassname(weapon, melee_classname, 64);
