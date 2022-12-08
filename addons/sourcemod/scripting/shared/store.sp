@@ -3496,8 +3496,13 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 	int length = EquippedItems.Length;
 #endif
 
-	PrintToChatAll("Store_GiveItem: %d / %d", index, length);
+	PrintToChatAll("%d / %d", index, length);
+#if defined ZR
 	if(index > 0 && index < length)
+#else
+	if(index >= 0 && index < length)
+#endif
+	
 	{
 
 #if defined ZR

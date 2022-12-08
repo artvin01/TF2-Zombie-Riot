@@ -150,7 +150,7 @@ void ShowLevelHud(int client)
 			}
 		}
 
-		Format(buffer, sizeof(buffer), "%s %d", buffer, nextAt);
+		Format(buffer, sizeof(buffer), "%s %d", buffer, xpNext - XP[client]);
 	}
 	
 	SetHudTextParams(-1.0, 0.96, 1.8, 200, 69, 0, 200);
