@@ -272,7 +272,7 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 							{
 								if(IsValidEntity(weapon))
 								{
-									if(IsWandWeapon(weapon))
+									if(i_IsWandWeapon[weapon])
 									{
 										float max_mana_temp = 800.0;
 										float mana_regen_temp = 200.0; //abit extra :)

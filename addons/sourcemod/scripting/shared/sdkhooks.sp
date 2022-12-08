@@ -240,7 +240,7 @@ public void OnPostThink(int client)
 			int i, entity;
 			while(TF2_GetItem(client, entity, i))
 			{
-				if(IsWandWeapon(entity))
+				if(i_IsWandWeapon[entity])
 				{
 					has_mage_weapon[client] = true;
 					break;
@@ -1101,7 +1101,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			if(IsValidEntity(Victim_weapon))
 			{
-				if(!IsWandWeapon(Victim_weapon) && !IsEngineerWeapon(Victim_weapon)) //Make sure its not wand.
+				if(!i_IsWandWeapon[Victim_weapon] && !i_IsWrench[Victim_weapon]) //Make sure its not wand.
 				{
 					char melee_classname[64];
 					GetEntityClassname(Victim_weapon, melee_classname, 64);

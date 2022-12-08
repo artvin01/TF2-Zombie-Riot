@@ -431,7 +431,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 								
 									int weapon_slot = TF2_GetClassnameSlot(classname);
 								
-									if(weapon_slot != 2 || IsWandWeapon(weapon))
+									if(weapon_slot != 2 || i_IsWandWeapon[weapon])
 									{
 										Bonus_damage = 1.5;
 									}
