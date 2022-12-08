@@ -3675,7 +3675,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 		}
 
 #if defined RPG
-		else
+		else if(info.Owner == client)
 		{
 			EquippedItems.Erase(index);
 			length--;
