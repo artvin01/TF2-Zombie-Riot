@@ -3682,9 +3682,9 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 
 #if defined RPG
 					info.EntRef = EntIndexToEntRef(entity);
-					EquippedItems.SetArray(i, info);
+					EquippedItems.SetArray(index, info);
 
-					strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), info.Name);
+					strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), info.Custom_Name);
 #endif
 
 					if(use)

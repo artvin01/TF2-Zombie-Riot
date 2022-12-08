@@ -832,11 +832,11 @@ static void ShowMenu(int client)
 		}
 		case MENU_BACKPACK:
 		{
-			Menu menu = new Menu(TextStore_BackpackMenu);
+			/*Menu menu = new Menu(TextStore_BackpackMenu);
 
 			menu.SetTitle("RPG Fortress\n \nBackpack:");
 
-			int length = Backpacks.Length;
+			int length = Backpack.Length;*/
 		}
 	}
 }
