@@ -413,7 +413,7 @@ static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name, bool auto)
 {
 	int pos = EquippedItems.FindValue(index, ItemInfo::Store);
-	if(pos != -1)
+	if(pos == -1)
 	{
 		if(!auto)
 		{
