@@ -17,6 +17,9 @@ char StoreWeapon[MAXENTITIES][48];
 #include "rpg_fortress/textstore.sp"
 #include "rpg_fortress/zones.sp"
 
+
+#include "zombie_riot/custom/wand/weapon_default_wand.sp"
+
 void RPG_PluginStart()
 {
 	LoadTranslations("rpgfortress.phrases.enemynames");
@@ -66,6 +69,7 @@ void RPG_PluginEnd()
 void RPG_MapStart()
 {
 	Zero2(f3_SpawnPosition);
+	Wand_Map_Precache();
 }
 
 void RPG_MapEnd()

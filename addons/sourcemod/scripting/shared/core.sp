@@ -432,8 +432,8 @@ float f_WandDamage[MAXENTITIES]; //
 int i_WandOwner[MAXENTITIES]; //
 int i_WandWeapon[MAXENTITIES]; //
 int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever ever. lag max otherwise.
-int i_IsWandWeapon[MAXENTITIES]; 
-int i_IsWrench[MAXENTITIES]; 
+bool i_IsWandWeapon[MAXENTITIES]; 
+bool i_IsWrench[MAXENTITIES]; 
 
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
 
@@ -1833,7 +1833,9 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		}
 		
 		TF2Attrib_SetByDefIndex(client, 201, attack_speed);
-			
+		
+		PrintToChatAll("%b, %b",i_IsWandWeapon[weapon],i_IsWrench[weapon]);
+
 		if(!i_IsWandWeapon[weapon] && StrContains(classname, "tf_weapon_wrench"))
 		{
 			if(Panic_Attack[weapon] && !i_IsWrench[weapon])

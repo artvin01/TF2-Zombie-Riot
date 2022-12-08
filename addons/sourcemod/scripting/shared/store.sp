@@ -3559,6 +3559,8 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 				i_SemiAutoWeapon[entity] = false;
 				i_WeaponCannotHeadshot[entity] = false;
 				i_WeaponDamageFalloff[entity] = 1.0;
+				i_IsWandWeapon[entity] = false;
+				i_IsWrench[entity] = false;
 				
 				if(entity > MaxClients)
 				{
@@ -3590,6 +3592,14 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 									if(info.NoHeadshot)
 									{
 										i_WeaponCannotHeadshot[entity] = true;
+									}
+									if(info.IsWand)
+									{
+										i_IsWandWeapon[entity] = true;
+									}
+									if(info.IsWrench)
+									{
+										i_IsWrench[entity] = true;
 									}
 									if(info.SemiAuto)
 									{
@@ -3823,9 +3833,9 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 			TF2Attrib_SetByDefIndex(entity, 263, 0.0);
 			TF2Attrib_SetByDefIndex(entity, 264, 0.0);
 			EquipPlayerWeapon(client, entity);
-
+#if defined RPG			
 			strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Fists");
-			
+#endif			
 			if(use)
 			{
 				Store_SwapToItem(client, entity);
@@ -4100,10 +4110,6 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 		
 		i_LowTeslarStaff[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 3002));
 		i_HighTeslarStaff[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 3000));
-
-
-		i_IsWandWeapon[entity] = info.IsWand;
-		i_IsWrench[entity] = info.IsWrench;
 		
 #if defined ZR
 		Enable_Management(client, entity);

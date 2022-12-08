@@ -140,8 +140,8 @@ public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pac
 
 public void Wand_Base_StartTouch(int entity, int other)
 {
-#if defined ZR
 	int target = Target_Hit_Wand_Detection(entity, other);
+	#if defined ZR
 	switch(i_WandIdNumber[entity])
 	{
 		case 0:
@@ -189,7 +189,17 @@ public void Wand_Base_StartTouch(int entity, int other)
 			Want_CalciumWandTouch(entity, target);
 		}
 	}
-// Dont delete it here, the wands might have pierce or something. who knows.
-//	RemoveEntity(arrow);
+#else
+	switch(i_WandIdNumber[entity])
+	{
+		case 0:
+		{
+			return; //This was has its own entire logic, dont do anything.
+		}
+		case 1:
+		{
+			Want_DefaultWandTouch(entity, target);
+		}	
+	}
 #endif
 }
