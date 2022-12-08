@@ -181,7 +181,7 @@ void Spawns_UpdateSpawn(const char[] name)
 			static SpawnEnum spawn;
 			SpawnList.GetArray(i, spawn);
 			if(StrEqual(spawn.Zone, name))
-				UpdateSpawn(i, spawn);
+				UpdateSpawn(i, spawn, true);
 		}
 	}
 }
@@ -194,21 +194,24 @@ public Action Spawner_Timer(Handle timer)
 	static SpawnEnum spawn;
 	SpawnList.GetArray(SpawnCycle, spawn);
 	if(Zones_IsActive(spawn.Zone))
-		UpdateSpawn(SpawnCycle, spawn);
+		UpdateSpawn(SpawnCycle, spawn, false);
 	
 	SpawnCycle++;
 	return Plugin_Continue;
 }
 
-static void UpdateSpawn(int pos, SpawnEnum spawn)
+static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 {
 	int alive;
 
-	int i = MaxClients + 1;
-	while((i = FindEntityByClassname(i, "base_boss")) != -1)
+	if(!start)
 	{
-		if(hFromSpawnerIndex[i] == pos)
-			alive++;
+		int i = MaxClients + 1;
+		while((i = FindEntityByClassname(i, "base_boss")) != -1)
+		{
+			if(hFromSpawnerIndex[i] == pos)
+				alive++;
+		}
 	}
 	
 	if(alive < spawn.Count)
@@ -221,6 +224,11 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 			int limit = spawn.Count - alive;
 			for(i = 0; i < limit; i++)
 			{
+				if(i >= limit)
+				{
+					spawn.NextSpawnTime = 0.0;
+				}
+
 				if(spawn.NextSpawnTime > gameTime)
 					break;
 				
@@ -231,13 +239,14 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 			if(count)
 				SpawnList.SetArray(pos, spawn);
 		}
+		else if(start)
+		{
+			count = spawn.Count;
+		}
 		else
 		{
 			spawn.NextSpawnTime = GetGameTime() + spawn.Time;
 			SpawnList.SetArray(pos, spawn);
-
-			if(!alive)
-				count = spawn.Count;
 		}
 		
 		if(count)
@@ -306,6 +315,11 @@ static void UpdateSpawn(int pos, SpawnEnum spawn)
 				npc.m_iTextEntity3 = SpawnFormattedWorldText(String, OffsetFromHead, 10,color, entity);
 			}
 		}
+	}
+	else if(spawn.NextSpawnTime)
+	{
+		spawn.NextSpawnTime = 0.0;
+		SpawnList.SetArray(pos, spawn);
 	}
 }
 

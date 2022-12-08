@@ -211,8 +211,7 @@ static void HashCheck(KeyValues kv)
 		Store_Reset();
 		RPG_PluginEnd();
 
-		if(HashKey)
-			SPrintToChatAll("The store was reloaded, items and areas were also reloaded!");
+		SPrintToChatAll("The store was reloaded, items and areas were also reloaded!");
 
 		HashKey = kv;
 	}
