@@ -191,12 +191,21 @@ enum struct BackpackEnum
 	int Amount;
 }
 
+enum
+{
+	MENU_WEAPONS = 0,
+	MENU_SPELLS = 1,
+	MENU_BACKPACK = 2
+}
+
 static ArrayList Backpack;
 static StringMap StoreList;
 static char InStore[MAXTF2PLAYERS][16];
 static int ItemIndex[MAXENTITIES];
 static int ItemCount[MAXENTITIES];
 static float ItemLifetime[MAXENTITIES];
+static bool InMenu[MAXTF2PLAYERS];
+static int MenuType[MAXTF2PLAYERS];
 
 static void HashCheck()
 {
@@ -492,6 +501,7 @@ public void TextStore_OnCatalog(int client)
 void TextStore_EntityCreated(int entity)
 {
 	ItemCount[entity] = 0;
+	StoreWeapon[entity][0] = 0;
 }
 
 void TextStore_DropCash(float pos[3], int amount)
@@ -786,4 +796,47 @@ public Action TextStore_ItemTimer(Handle timer)
 	}
 
 	return Plugin_Continue;
+}
+
+void TextStore_WeaponSwitch(int client, int weapon)
+{
+	if(weapon != -1 && StrEqual(StoreWeapon[weapon], "Backpack"))
+	{
+		MenuType[client] = MENU_BACKPACK;
+	}
+	else if(MenuType[client] == MENU_BACKPACK)
+	{
+		MenuType[client] = MENU_WEAPONS;
+	}
+}
+
+void TextStore_PlayerRunCmd(int client)
+{
+	if(InMenu[client] || GetClientMenu(client) == MenuSource_None)
+	{
+		ShowMenu(client);
+	}
+}
+
+static void ShowMenu(int client)
+{
+	switch(MenuType[client])
+	{
+		case MENU_WEAPONS:
+		{
+			
+		}
+		case MENU_SPELLS:
+		{
+			
+		}
+		case MENU_BACKPACK:
+		{
+			Menu menu = new Menu(TextStore_BackpackMenu);
+
+			menu.SetTitle("RPG Fortress\n \nBackpack:");
+
+			int length = Backpacks.Length;
+		}
+	}
 }

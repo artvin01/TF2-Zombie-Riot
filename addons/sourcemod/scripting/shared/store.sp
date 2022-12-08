@@ -307,6 +307,8 @@ enum struct ItemInfo
 		FormatEx(buffer, sizeof(buffer), "%sslot", prefix);
 		this.Slot = kv.GetNum(buffer, -1);
 
+		strcopy(this.Custom_Name, 64, name);
+		
 		this.EntRef = INVALID_ENT_REFERENCE;
 		this.Store = 0;
 #endif
@@ -3349,7 +3351,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 				item.GetItemInfo(item.Owned[client]-1, info);
 #endif
 
-				PrintToChatAll("Classname: %s", info.Classname);
 				if(info.Classname[0])
 				{
 					if(!StrContains(info.Classname, "tf_weapon_pda_engineer_build"))
@@ -3361,7 +3362,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 					}
 
 					Store_GiveItem(client, i, use, found);
-					if(++count > 9)
+					if(++count > 7)
 					{
 						SetGlobalTransTarget(client);
 						PrintToChat(client, "%t", "At Weapon Limit");
@@ -3496,7 +3497,6 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 	int length = EquippedItems.Length;
 #endif
 
-	PrintToChatAll("%d / %d", index, length);
 #if defined ZR
 	if(index > 0 && index < length)
 #else
@@ -3521,7 +3521,6 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 			item.GetItemInfo(item.Owned[client]-1, info);
 #endif
 
-			PrintToChatAll("You owner and equipped");
 			if(info.Classname[0])
 			{
 				slot = TF2_GetClassnameSlot(info.Classname);
@@ -3543,7 +3542,6 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 				}
 
 				entity = SpawnWeapon(client, info.Classname, info.Index, 5, 6, info.Attrib, info.Value, info.Attribs);
-				PrintToChatAll("%d", entity);
 
 #if defined ZR
 				StoreWeapon[entity] = index;
@@ -3673,6 +3671,14 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 					{
 						SetEntProp(entity, Prop_Data, "m_bReloadsSingly", 1);
 					}
+
+#if defined RPG
+					info.EntRef = EntIndexToEntRef(entity);
+					EquippedItems.SetArray(i, info);
+
+					strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), info.Name);
+#endif
+
 					if(use)
 					{
 						Store_SwapToItem(client, entity);
@@ -3692,6 +3698,45 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 #endif
 
 	}
+	
+#if defined RPG
+	else if(index == -2)
+	{
+		entity = CreateEntityByName("tf_weapon_grapplinghook");
+		if(entity > MaxClients)
+		{
+			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", 28);
+			SetEntProp(entity, Prop_Send, "m_bInitialized", 1);
+			SetEntProp(entity, Prop_Send, "m_iEntityQuality", 0);
+			SetEntProp(entity, Prop_Send, "m_iEntityLevel", 1);
+
+			static int offset;
+			if(!offset)
+			{
+				char netclass[64];
+				GetEntityNetClass(entity, netclass, sizeof(netclass));
+				offset = FindSendPropInfo(netclass, "m_iItemIDHigh");
+			}
+
+			SetEntData(entity, offset - 8, 0);	// m_iItemID
+			SetEntData(entity, offset - 4, 0);	// m_iItemID
+			SetEntData(entity, offset, 0);		// m_iItemIDHigh
+			SetEntData(entity, offset + 4, 0);	// m_iItemIDLow
+			
+			DispatchSpawn(entity);
+			SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
+			SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
+
+			TF2Attrib_SetByDefIndex(entity, 128, 1.0);
+			TF2Attrib_SetByDefIndex(entity, 821, 1.0);
+
+			EquipPlayerWeapon(client, entity);
+
+			strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Backpack");
+		}
+	}
+#endif
+
 	else
 	{
 		
@@ -3770,6 +3815,8 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 			TF2Attrib_SetByDefIndex(entity, 263, 0.0);
 			TF2Attrib_SetByDefIndex(entity, 264, 0.0);
 			EquipPlayerWeapon(client, entity);
+
+			strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Fists");
 			
 			if(use)
 			{
