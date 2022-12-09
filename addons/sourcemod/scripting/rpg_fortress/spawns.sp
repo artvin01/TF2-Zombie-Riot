@@ -343,7 +343,7 @@ void Spawns_NPCDeath(int entity, int client)
 		{
 			TextStore_DropCash(pos, Cash[entity]);
 		}
-		else if(Cash[entity] > 99)
+		else if(Cash[entity] > 49)
 		{
 			if(GetURandomInt() % 2)
 				TextStore_DropCash(pos, Cash[entity] * 2);
