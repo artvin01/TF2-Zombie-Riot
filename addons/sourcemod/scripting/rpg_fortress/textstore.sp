@@ -561,7 +561,7 @@ static void DropItem(int index, float pos[3], int amount)
 		}
 		else
 		{
-			kv.GetString("model", buffer, sizeof(buffer), "error.mdl");
+			kv.GetString("model", buffer, sizeof(buffer), "models/items/currencypack_small.mdl");
 		}
 
 		if(buffer[0])
