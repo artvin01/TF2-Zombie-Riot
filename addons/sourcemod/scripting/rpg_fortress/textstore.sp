@@ -894,8 +894,10 @@ static void ShowMenu(int client)
 			
 			int backpack = -1;
 			int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-			int amount;
 			char index[16];
+
+			int list[8];
+			int amount;
 
 			int i, entity;
 			while(TF2_GetItem(client, entity, i))
@@ -906,13 +908,22 @@ static void ShowMenu(int client)
 				}
 				else
 				{
-					IntToString(EntIndexToEntRef(entity), index, sizeof(index));
-					menu.AddItem(index, StoreWeapon[entity], entity == active ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-					amount++;
+					list[amount++] = entity;
 				}
 			}
 
-			while(amount < 8)
+			i = 0;
+			if(amount)
+			{
+				SortCustom1D(list, amount, TextStore_WeaponSort);
+				for(; i < amount; i++)
+				{
+					IntToString(EntIndexToEntRef(list[i]), index, sizeof(index));
+					menu.AddItem(index, StoreWeapon[list[i]], list[i] == active ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				}
+			}
+
+			for(; i < 8; i++)
 			{
 				menu.AddItem("-1", "");
 				amount++;
@@ -1006,6 +1017,20 @@ static void ShowMenu(int client)
 			InMenu[client] = false;
 		}
 	}
+}
+
+public int TextStore_WeaponSort(int elem1, int elem2, const int[] array, Handle hndl)
+{
+	for(int i; i < 8; i++)
+	{
+		if(StoreWeapon[elem1][i] > StoreWeapon[elem2][i])
+			return 1;
+		
+		if(StoreWeapon[elem1][i] < StoreWeapon[elem2][i])
+			return -1;
+	}
+	
+	return elem1 > elem2 ? 1 : -1;
 }
 
 public int TextStore_WeaponMenu(Menu menu, MenuAction action, int client, int choice)
