@@ -611,21 +611,6 @@ static void UpdateItemText(int entity, int index, KeyValues kv)
 	int text = EntRefToEntIndex(i_TextEntity[entity][0]);
 	if(IsValidEntity(text))
 	{
-		strcopy(buffer, sizeof(buffer), "Credits");
-	}
-	else
-	{
-		TextStore_GetItemName(index, buffer, sizeof(buffer));
-	}
-	
-	Format(buffer, sizeof(buffer), "%s x%d", buffer, ItemCount[entity]);
-
-	int color[4] = {255, 255, 255, 255};
-	if(index != -1)
-	{
-		kv.GetColor4("color", color);
-		
-		for(int i; i < sizeof(color); i++)
 		static char buffer[64];			
 		if(index == -1)
 		{
