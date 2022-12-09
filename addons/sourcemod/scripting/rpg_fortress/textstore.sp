@@ -625,7 +625,7 @@ static void DropItem(int index, float pos[3], int amount)
 				if(amount != 1)
 					Format(buffer, sizeof(buffer), "%s x%d", buffer, amount);
 				
-				i_TextEntity[entity][0] = EntIndexToEntRef(SpawnFormattedWorldText(buffer, {0.0, 0.0, 30.0}, amount == 1 ? 5 : 6, color, entity));
+				i_TextEntity[entity][0] = EntIndexToEntRef(SpawnFormattedWorldText(buffer, {0.0, 0.0, 30.0}, amount == 1 ? 5 : 6, color, entity,_,true));
 			}
 		}
 	}
@@ -662,7 +662,7 @@ static void UpdateItemText(int entity, int index, KeyValues kv)
 		}
 	}
 
-	i_TextEntity[entity][0] = EntIndexToEntRef(SpawnFormattedWorldText(buffer, {0.0, 0.0, 30.0}, 6, color, entity, ItemCount[entity] > 99));
+	i_TextEntity[entity][0] = EntIndexToEntRef(SpawnFormattedWorldText(buffer, {0.0, 0.0, 30.0}, 6, color, entity, ItemCount[entity] > 99,true));
 }
 
 static int GetBackpackSize(int client)

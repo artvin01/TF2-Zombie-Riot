@@ -3120,7 +3120,7 @@ public void GiveCompleteInvul(int client, float time)
 	TF2_AddCondition(client, TFCond_MegaHeal, time);
 }
 
-stock int SpawnFormattedWorldText(const char[] format, const float origin[3], int textSize = 10, const int colour[4] = {255,255,255,255}, int entity_parent = -1, bool rainbow = false)
+stock int SpawnFormattedWorldText(const char[] format, const float origin[3], int textSize = 10, const int colour[4] = {255,255,255,255}, int entity_parent = -1, bool rainbow = false, bool teleport = false)
 {
 	int worldtext = CreateEntityByName("point_worldtext");
 	if(IsValidEntity(worldtext))
@@ -3137,7 +3137,7 @@ stock int SpawnFormattedWorldText(const char[] format, const float origin[3], in
 		if(rainbow)
 			DispatchKeyValue(worldtext, "rainbow", "1");
 		
-		if(entity_parent != -1)
+		if(entity_parent != -1 && !teleport)
 		{
 			float vector[3];
 
@@ -3152,8 +3152,46 @@ stock int SpawnFormattedWorldText(const char[] format, const float origin[3], in
 		}
 		else
 		{
+			if(teleport)
+			{
+				DataPack pack;
+				CreateDataTimer(0.1, TeleportTextTimer, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+				pack.WriteCell(EntIndexToEntRef(worldtext));
+				pack.WriteCell(EntIndexToEntRef(entity_parent));
+				pack.WriteFloat(origin[0]);
+				pack.WriteFloat(origin[1]);
+				pack.WriteFloat(origin[2]);
+			}
 			TeleportEntity(worldtext, origin, NULL_VECTOR, NULL_VECTOR);
 		}	
 	}
 	return worldtext;
+}
+
+public Action TeleportTextTimer(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int text_entity = EntRefToEntIndex(pack.ReadCell());
+	int parented_entity = EntRefToEntIndex(pack.ReadCell());
+	float vector_offset[3];
+	vector_offset[0] = pack.ReadFloat();
+	vector_offset[1] = pack.ReadFloat();
+	vector_offset[2] = pack.ReadFloat();
+	if(IsValidEntity(text_entity) && IsValidEntity(parented_entity))
+	{
+		float vector[3];
+		vector = GetAbsOrigin(parented_entity);
+		
+		vector[0] += vector_offset[0];
+		vector[1] += vector_offset[1];
+		vector[2] += vector_offset[2];
+
+		TeleportEntity(text_entity, vector, NULL_VECTOR, NULL_VECTOR);
+		return Plugin_Continue;
+	}
+	else
+	{
+		return Plugin_Stop;
+	}
+	
 }
