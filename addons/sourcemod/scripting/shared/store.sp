@@ -3755,7 +3755,14 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 			//TF2Attrib_SetByDefIndex(entity, 128, 1.0);
 			//TF2Attrib_SetByDefIndex(entity, 821, 1.0);
+			
+			SetEntProp(entity, Prop_Send, "m_iObjectType", 3);
+			SetEntProp(entity, Prop_Data, "m_iSubType", 3);
+			SetEntProp(entity, Prop_Send, "m_aBuildableObjectTypes", 0, _, 0);
+			SetEntProp(entity, Prop_Send, "m_aBuildableObjectTypes", 0, _, 1);
+			SetEntProp(entity, Prop_Send, "m_aBuildableObjectTypes", 0, _, 2);
 
+			SetEntProp(entity, Prop_Send, "m_aBuildableObjectTypes", 1, _, 3);
 			EquipPlayerWeapon(client, entity);
 
 			strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Backpack");
