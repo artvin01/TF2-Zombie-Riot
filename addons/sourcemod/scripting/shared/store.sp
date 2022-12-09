@@ -3728,10 +3728,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 #if defined RPG
 	else if(index == -2)
 	{
-		entity = CreateEntityByName("tf_weapon_grapplinghook");
+		entity = CreateEntityByName("tf_weapon_laser_pointer");
 		if(entity > MaxClients)
 		{
-			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", 28);
+			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", 737);
 			SetEntProp(entity, Prop_Send, "m_bInitialized", 1);
 			SetEntProp(entity, Prop_Send, "m_iEntityQuality", 0);
 			SetEntProp(entity, Prop_Send, "m_iEntityLevel", 1);
@@ -3753,8 +3753,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
 			SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 
-			TF2Attrib_SetByDefIndex(entity, 128, 1.0);
-			TF2Attrib_SetByDefIndex(entity, 821, 1.0);
+			//TF2Attrib_SetByDefIndex(entity, 128, 1.0);
+			//TF2Attrib_SetByDefIndex(entity, 821, 1.0);
 
 			EquipPlayerWeapon(client, entity);
 
