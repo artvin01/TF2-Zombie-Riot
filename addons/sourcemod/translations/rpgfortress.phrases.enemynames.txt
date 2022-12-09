@@ -23,5 +23,12 @@
 	{
 		"en" 		"Heavy Bear"
 	}
-
+	"Heavy Bear Boss"
+	{
+		"en" 		"Heavy Bear Boss"
+	}
+	"Heavy Bear Minion"
+	{
+		"en" 		"Heavy Bear Minion"
+	}
 }

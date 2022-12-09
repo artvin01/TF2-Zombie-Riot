@@ -42,8 +42,9 @@ static char g_MeleeAttackSounds[][] = {
 	")weapons/boxing_gloves_swing4.wav",
 };
 
+static int i_OwnerToGoTo[MAXENTITIES];
 
-public void HeavyBear_OnMapStart_NPC()
+public void HeavyBearBoss_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
@@ -54,7 +55,7 @@ public void HeavyBear_OnMapStart_NPC()
 	PrecacheModel("models/player/scout.mdl");
 }
 
-methodmap HeavyBear < CClotBody
+methodmap HeavyBearBoss < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -91,11 +92,11 @@ methodmap HeavyBear < CClotBody
 	}
 	
 	
-	public HeavyBear(int client, float vecPos[3], float vecAng[3], bool ally)
+	public HeavyBearBoss(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		HeavyBear npc = view_as<HeavyBear>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "300", ally, false,_,_,_,_));
+		HeavyBearBoss npc = view_as<HeavyBearBoss>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "1000", ally, false, true));
 		
-		i_NpcInternalId[npc.index] = HEAVY_BEAR;
+		i_NpcInternalId[npc.index] = HEAVY_BEAR_BOSS;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -111,12 +112,17 @@ methodmap HeavyBear < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
+		npc.g_TimesSummoned = 0;
+
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
+
+		npc.m_iAttacksTillMegahit = 0;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, HeavyBear_OnTakeDamage);
-		SDKHook(npc.index, SDKHook_Think, HeavyBear_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, HeavyBearBoss_OnTakeDamage);
+		SDKHook(npc.index, SDKHook_OnTakeDamagePost, HeavyBearBoss_OnTakeDamagePost);
+		SDKHook(npc.index, SDKHook_Think, HeavyBearBoss_ClotThink);
 		
 		int skin = GetRandomInt(0, 1);
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -149,9 +155,9 @@ methodmap HeavyBear < CClotBody
 
 //TODO 
 //Rewrite
-public void HeavyBear_ClotThink(int iNPC)
+public void HeavyBearBoss_ClotThink(int iNPC)
 {
-	HeavyBear npc = view_as<HeavyBear>(iNPC);
+	HeavyBearBoss npc = view_as<HeavyBearBoss>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -181,7 +187,7 @@ public void HeavyBear_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, 300.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 200.0, gameTime);
+	Npc_Base_Thinking(iNPC, 400.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 200.0, gameTime);
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -193,18 +199,26 @@ public void HeavyBear_ClotThink(int iNPC)
 			{
 				Handle swingTrace;
 				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 5.0;
+					float damage = 15.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
+						if(npc.m_iAttacksTillMegahit > 3)
+						{
+							npc.m_iAttacksTillMegahit = 0;
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 2, DMG_CLUB);
+						}
+						else
+						{
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
+						}
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");
 						
@@ -248,7 +262,7 @@ public void HeavyBear_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(70.0, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < Pow(100.0, 2.0) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
@@ -285,16 +299,24 @@ public void HeavyBear_ClotThink(int iNPC)
 				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
+					npc.m_iAttacksTillMegahit += 1;
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+					if(npc.m_iAttacksTillMegahit > 3)
+					{
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
+					}
+					else
+					{
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+					}
 
 					npc.PlayMeleeSound();
 					
 					npc.m_flAttackHappens = gameTime + 0.2;
 
 				//	npc.m_flDoingAnimation = gameTime + 0.6;
-					npc.m_flNextMeleeAttack = gameTime + 1.0;
+					npc.m_flNextMeleeAttack = gameTime + 1.5;
 					npc.m_bisWalking = true;
 				}
 			}
@@ -304,13 +326,13 @@ public void HeavyBear_ClotThink(int iNPC)
 }
 
 
-public Action HeavyBear_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action HeavyBearBoss_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	HeavyBear npc = view_as<HeavyBear>(victim);
+	HeavyBearBoss npc = view_as<HeavyBearBoss>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -319,18 +341,72 @@ public Action HeavyBear_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+
 	return Plugin_Changed;
 }
 
-public void HeavyBear_NPCDeath(int entity)
+public void HeavyBearBoss_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
-	HeavyBear npc = view_as<HeavyBear>(entity);
+	HeavyBearBoss npc = view_as<HeavyBearBoss>(victim);
+	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	
+	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
+	if(0.9-(npc.g_TimesSummoned*0.2) > ratio)
+	{
+		npc.g_TimesSummoned++;
+		maxhealth /= 10;
+		for(int i; i<1; i++)
+		{
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			
+			int spawn_index = Npc_Create(HEAVY_BEAR_MINION, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			if(spawn_index > MaxClients)
+			{
+				Level[spawn_index] = Level[victim];
+				i_OwnerToGoTo[spawn_index] = EntIndexToEntRef(victim);
+				Apply_Text_Above_Npc(spawn_index,0, maxhealth);
+				CreateTimer(0.1, TimerHeavyBearBossInitiateStuff, EntIndexToEntRef(spawn_index), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			}
+		}
+	}
+}
+public Action TimerHeavyBearBossInitiateStuff(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
+	{
+		int owner = EntRefToEntIndex(i_OwnerToGoTo[entity]);
+		if(IsValidEntity(owner))
+		{
+			//Get the bosses location, and set it as their spawn, so they move there.
+			GetEntPropVector(owner, Prop_Data, "m_vecAbsOrigin", f3_SpawnPosition[entity]);
+		}
+		else
+		{
+			NPC_Despawn(entity); //despawn em. Dont kill.
+			return Plugin_Stop;
+		}
+	}
+	else
+	{
+		//not valid.
+		return Plugin_Stop;
+	}
+}
+
+public void HeavyBearBoss_NPCDeath(int entity)
+{
+	HeavyBearBoss npc = view_as<HeavyBearBoss>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();
 	}
-	SDKUnhook(entity, SDKHook_OnTakeDamage, HeavyBear_OnTakeDamage);
-	SDKUnhook(entity, SDKHook_Think, HeavyBear_ClotThink);
+	SDKUnhook(entity, SDKHook_OnTakeDamage, HeavyBearBoss_OnTakeDamage);
+	SDKUnhook(entity, SDKHook_OnTakeDamagePost, HeavyBearBoss_OnTakeDamagePost);
+	SDKUnhook(entity, SDKHook_Think, HeavyBearBoss_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

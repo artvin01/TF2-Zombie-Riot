@@ -43,7 +43,7 @@ static char g_MeleeAttackSounds[][] = {
 };
 
 
-public void HeavyBear_OnMapStart_NPC()
+public void HeavyBearMinion_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
@@ -54,7 +54,7 @@ public void HeavyBear_OnMapStart_NPC()
 	PrecacheModel("models/player/scout.mdl");
 }
 
-methodmap HeavyBear < CClotBody
+methodmap HeavyBearMinion < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -91,11 +91,11 @@ methodmap HeavyBear < CClotBody
 	}
 	
 	
-	public HeavyBear(int client, float vecPos[3], float vecAng[3], bool ally)
+	public HeavyBearMinion(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		HeavyBear npc = view_as<HeavyBear>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "300", ally, false,_,_,_,_));
+		HeavyBearMinion npc = view_as<HeavyBearMinion>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "0.75", "300", ally, false,_,_,_,_));
 		
-		i_NpcInternalId[npc.index] = HEAVY_BEAR;
+		i_NpcInternalId[npc.index] = HEAVY_BEAR_MINION;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -115,8 +115,8 @@ methodmap HeavyBear < CClotBody
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, HeavyBear_OnTakeDamage);
-		SDKHook(npc.index, SDKHook_Think, HeavyBear_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, HeavyBearMinion_OnTakeDamage);
+		SDKHook(npc.index, SDKHook_Think, HeavyBearMinion_ClotThink);
 		
 		int skin = GetRandomInt(0, 1);
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -149,9 +149,9 @@ methodmap HeavyBear < CClotBody
 
 //TODO 
 //Rewrite
-public void HeavyBear_ClotThink(int iNPC)
+public void HeavyBearMinion_ClotThink(int iNPC)
 {
-	HeavyBear npc = view_as<HeavyBear>(iNPC);
+	HeavyBearMinion npc = view_as<HeavyBearMinion>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -181,7 +181,7 @@ public void HeavyBear_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, 300.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 200.0, gameTime);
+	Npc_Base_Thinking(iNPC, 500.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 250.0, gameTime); //Big range but not infinite.
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -304,13 +304,13 @@ public void HeavyBear_ClotThink(int iNPC)
 }
 
 
-public Action HeavyBear_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action HeavyBearMinion_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	HeavyBear npc = view_as<HeavyBear>(victim);
+	HeavyBearMinion npc = view_as<HeavyBearMinion>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -322,15 +322,15 @@ public Action HeavyBear_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	return Plugin_Changed;
 }
 
-public void HeavyBear_NPCDeath(int entity)
+public void HeavyBearMinion_NPCDeath(int entity)
 {
-	HeavyBear npc = view_as<HeavyBear>(entity);
+	HeavyBearMinion npc = view_as<HeavyBearMinion>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();
 	}
-	SDKUnhook(entity, SDKHook_OnTakeDamage, HeavyBear_OnTakeDamage);
-	SDKUnhook(entity, SDKHook_Think, HeavyBear_ClotThink);
+	SDKUnhook(entity, SDKHook_OnTakeDamage, HeavyBearMinion_OnTakeDamage);
+	SDKUnhook(entity, SDKHook_Think, HeavyBearMinion_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

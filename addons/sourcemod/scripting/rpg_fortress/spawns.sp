@@ -286,33 +286,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 					SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 					SetEntProp(entity, Prop_Data, "m_iHealth", health);
 				}
-
-				CClotBody npc = view_as<CClotBody>(entity);
-				char String[128];
-				GetDisplayString(Level[entity], String, sizeof(String), true);
-
-				int color[4];
-		
-				color[0] = RenderColors_RPG[strength][0];
-				color[1] = RenderColors_RPG[strength][1];
-				color[2] = RenderColors_RPG[strength][2];
-				color[3] = RenderColors_RPG[strength][3];
-
-				float OffsetFromHead[3];
-
-				OffsetFromHead[2] = 95.0;
-				OffsetFromHead[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
-
-				
-				OffsetFromHead[2] += 10.0;
-				npc.m_iTextEntity1 = SpawnFormattedWorldText(NPC_Names[i_NpcInternalId[entity]], OffsetFromHead, 10,color, entity);
-				
-				OffsetFromHead[2] += 10.0;
-				npc.m_iTextEntity2 = SpawnFormattedWorldText(String, OffsetFromHead, 10,color, entity);
-
-				Format(String, sizeof(String), "%d / %d", health, health);
-				OffsetFromHead[2] -= 20.0;
-				npc.m_iTextEntity3 = SpawnFormattedWorldText(String, OffsetFromHead, 10,color, entity);
+				Apply_Text_Above_Npc(entity,strength, health);
 			}
 		}
 	}
@@ -321,6 +295,36 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 		spawn.NextSpawnTime = 0.0;
 		SpawnList.SetArray(pos, spawn);
 	}
+}
+
+void Apply_Text_Above_Npc(int entity,int strength, int health)
+{
+	CClotBody npc = view_as<CClotBody>(entity);
+	char String[128];
+	GetDisplayString(Level[entity], String, sizeof(String), true);
+
+	int color[4];
+		
+	color[0] = RenderColors_RPG[strength][0];
+	color[1] = RenderColors_RPG[strength][1];
+	color[2] = RenderColors_RPG[strength][2];
+	color[3] = RenderColors_RPG[strength][3];
+
+	float OffsetFromHead[3];
+
+	OffsetFromHead[2] = 95.0;
+	OffsetFromHead[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+
+				
+	OffsetFromHead[2] += 10.0;
+	npc.m_iTextEntity1 = SpawnFormattedWorldText(NPC_Names[i_NpcInternalId[entity]], OffsetFromHead, 10,color, entity);
+				
+	OffsetFromHead[2] += 10.0;
+	npc.m_iTextEntity2 = SpawnFormattedWorldText(String, OffsetFromHead, 10,color, entity);
+
+	Format(String, sizeof(String), "%d / %d", health, health);
+	OffsetFromHead[2] -= 20.0;
+	npc.m_iTextEntity3 = SpawnFormattedWorldText(String, OffsetFromHead, 10,color, entity);
 }
 
 static int GetScaledRate(const int rates[2], int power, int maxpower)

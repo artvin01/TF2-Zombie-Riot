@@ -7,7 +7,9 @@ enum
 	START_CHICKEN 			= 1,
 	MAD_CHICKEN 			= 2,
 	MAD_ROOST				= 3,
-	HEAVY_BEAR				= 4
+	HEAVY_BEAR				= 4,
+	HEAVY_BEAR_BOSS			= 5,
+	HEAVY_BEAR_MINION		= 6
 }
 
 public const char NPC_Names[][] =
@@ -16,7 +18,9 @@ public const char NPC_Names[][] =
 	"Chicken",
 	"Mad Chicken",
 	"Mad Roost",
-	"Heavy Bear"
+	"Heavy Bear",
+	"Heavy Bear Boss",
+	"Heavy Bear Minion"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -25,7 +29,9 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_chicken_2",
 	"npc_chicken_mad",
 	"npc_roost_mad",
-	"npc_heavy_bear"
+	"npc_heavy_bear",
+	"npc_heavy_bear_boss",
+	"npc_heavy_bear_minion"
 };
 
 void NPC_MapStart()
@@ -34,6 +40,8 @@ void NPC_MapStart()
 	StartChicken_OnMapStart_NPC();
 	MadRoost_OnMapStart_NPC();
 	HeavyBear_OnMapStart_NPC();
+	HeavyBearBoss_OnMapStart_NPC();
+	HeavyBearMinion_OnMapStart_NPC();
 }
 
 stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
@@ -56,6 +64,14 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 		case HEAVY_BEAR:
 		{
 			entity = HeavyBear(client, vecPos, vecAng, ally);
+		}
+		case HEAVY_BEAR_BOSS:
+		{
+			entity = HeavyBearBoss(client, vecPos, vecAng, ally);
+		}
+		case HEAVY_BEAR_MINION:
+		{
+			entity = HeavyBearMinion(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -85,6 +101,14 @@ public void NPCDeath(int entity)
 		case HEAVY_BEAR:
 		{
 			entity = HeavyBear_NPCDeath(entity);
+		}
+		case HEAVY_BEAR_BOSS:
+		{
+			entity = HeavyBearBoss_NPCDeath(entity);
+		}
+		case HEAVY_BEAR_MINION:
+		{
+			entity = HeavyBearMinion_NPCDeath(entity);
 		}
 		default:
 		{
@@ -135,8 +159,6 @@ public void NPC_Despawn(int entity)
 	if(IsValidEntity(entity))
 	{
 		CClotBody npc = view_as<CClotBody>(entity);
-		RemoveEntity(entity);
-
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
 		if(IsValidEntity(npc.m_iWearable2))
@@ -149,9 +171,15 @@ public void NPC_Despawn(int entity)
 			RemoveEntity(npc.m_iWearable5);
 		if(IsValidEntity(npc.m_iWearable6))
 			RemoveEntity(npc.m_iWearable6);
+		if(IsValidEntity(npc.m_iTextEntity1))
+			RemoveEntity(npc.m_iTextEntity1);
+		if(IsValidEntity(npc.m_iTextEntity2))
+			RemoveEntity(npc.m_iTextEntity2);
+		if(IsValidEntity(npc.m_iTextEntity3))
+			RemoveEntity(npc.m_iTextEntity3);
+
+		RemoveEntity(entity);
 	}
-
-
 }
 
 public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] StandStill, float walkspeedback, float gameTime)
@@ -255,3 +283,5 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 #include "rpg_fortress/npc/normal/npc_chicken_mad.sp"
 #include "rpg_fortress/npc/normal/npc_roost_mad.sp"
 #include "rpg_fortress/npc/normal/npc_heavy_bear.sp"
+#include "rpg_fortress/npc/normal/npc_heavy_bear_boss.sp"
+#include "rpg_fortress/npc/normal/npc_heavy_bear_minion.sp"
