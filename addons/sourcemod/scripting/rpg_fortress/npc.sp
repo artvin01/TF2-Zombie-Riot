@@ -104,11 +104,11 @@ public void NPCDeath(int entity)
 		}
 		case HEAVY_BEAR_BOSS:
 		{
-			entity = HeavyBearBoss_NPCDeath(entity);
+			HeavyBearBoss_NPCDeath(entity);
 		}
 		case HEAVY_BEAR_MINION:
 		{
-			entity = HeavyBearMinion_NPCDeath(entity);
+			HeavyBearMinion_NPCDeath(entity);
 		}
 		default:
 		{
