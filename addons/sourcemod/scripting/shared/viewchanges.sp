@@ -138,10 +138,11 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 			//GetEntityClassname(active, buffer, sizeof(buffer));
 			//if(!StrEqual(buffer, "tf_weapon_sapper"))
 			{
-
-				int itemdefindex = GetEntProp(active, Prop_Send, "m_iItemDefinitionIndex");
+				TFClassType class = TFClass_Engineer;
 				
-				TFClassType class = TF2_GetWeaponClass(itemdefindex, CurrentClass[client], TF2_GetClassnameSlot(buffer, true));
+				int itemdefindex = GetEntProp(active, Prop_Send, "m_iItemDefinitionIndex");
+				if(itemdefindex != 28)
+					class = TF2_GetWeaponClass(itemdefindex, CurrentClass[client], TF2_GetClassnameSlot(buffer, true));
 				
 				SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[class]);
 
