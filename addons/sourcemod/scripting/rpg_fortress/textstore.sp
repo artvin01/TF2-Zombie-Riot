@@ -725,9 +725,9 @@ bool TextStore_Interact(int client, int entity, bool reload)
 			int strength;
 			if(ItemIndex[entity] != -1)
 			{
-				int weight = GetBackpackSize(client) - 1 - Tier[client];
+				weight = GetBackpackSize(client) - 1 - Tier[client];
 
-				int i, strength;
+				int i;
 				while(TF2_GetItem(client, strength, i))
 				{
 					weight += 1 + Tier[client];
