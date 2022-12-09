@@ -36,6 +36,8 @@ enum struct MineEnum
 	{
 		kv.GetSectionName(this.Model, PLATFORM_MAX_PATH);
 		ExplodeStringFloat(this.Model, " ", this.Pos, sizeof(this.Pos));
+
+		kv.GetString("zone", this.Zone, 32);
 		
 		kv.GetString("model", this.Model, PLATFORM_MAX_PATH, "models/error.mdl");
 		if(!this.Model[0])
@@ -209,113 +211,121 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 		DoSwingTrace_Custom(tr, client, forwar);
 
 		int target = TR_GetEntityIndex(tr);
-		int index = MineList.FindValue(EntIndexToEntRef(target), MineEnum::EntRef);
-		if(index != -1)
+		if(target != 1)
 		{
-			int Item_Index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-			PlayCustomWeaponSoundFromPlayerCorrectly(target, client, weapon, Item_Index, "tf_weapon_club");	
-			static MineEnum mine;
-			MineList.GetArray(index, mine);
+			int index = MineList.FindValue(EntIndexToEntRef(target), MineEnum::EntRef);
+			if(index != -1)
+			{
+				int Item_Index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+				PlayCustomWeaponSoundFromPlayerCorrectly(target, client, weapon, Item_Index, "tf_weapon_club");	
+				static MineEnum mine;
+				MineList.GetArray(index, mine);
 
-			int tier = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
-			if(tier < mine.Tier)
-			{
-				ShowGameText(client, "ico_metal", 0, "You need atleast %s tier to mine this!", MiningLevels[mine.Tier]);
-			}
-			else
-			{
-				bool Rare_hit = false;
-				if(f_clientFoundRareRockSpot[client] > GetGameTime())
+				int tier = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
+				float attackspeed = Attributes_FindOnWeapon(client, weapon, 6 , true, 1.0);
+				if(tier < mine.Tier)
 				{
-					float f_positionhit[3];	
-					TR_GetEndPosition(f_positionhit, tr);
-					float distance = GetVectorDistance( f_clientFoundRareRockSpotPos[client], f_positionhit, true ); 
-					if(distance < (15.0 * 15.0))
-					{
-						Rare_hit = true;
-						PrintToChatAll("hit!");
-						DisplayCritAboveNpc(_, client, true,f_positionhit); //Display crit above head
-						f_clientFoundRareRockSpot[client] = 0.0;
-						f_clientFoundRareRockSpotPos[client][0] = 0.0;
-						f_clientFoundRareRockSpotPos[client][1] = 0.0;
-						f_clientFoundRareRockSpotPos[client][2] = 0.0;
-					}
+					ShowGameText(client, "ico_metal", 0, "You need atleast %s tier to mine this!", MiningLevels[mine.Tier]);
 				}
-				if(!Rare_hit)
+				else
 				{
-					float f_ang[3];
-					float f_pos[3];
-
-					GetClientEyeAngles(client,f_ang);
-					GetClientEyePosition(client,f_pos);
-
-					float tmp[3];
-					float actualBeamOffset[3];
-					float BEAM_BeamOffset[3];
-					BEAM_BeamOffset[0] = -35.0; //Go back 20 units.
-					BEAM_BeamOffset[1] = 0.0;
-					BEAM_BeamOffset[2] = 0.0;
-
-					tmp[0] = BEAM_BeamOffset[0];
-					tmp[1] = BEAM_BeamOffset[1];
-					tmp[2] = 0.0;
-					VectorRotate(tmp, f_pos, actualBeamOffset);
-					actualBeamOffset[2] = BEAM_BeamOffset[2];
-					f_pos[0] += actualBeamOffset[0];
-					f_pos[1] += actualBeamOffset[1];
-					f_pos[2] += actualBeamOffset[2];
-
-					float f_resulthit[3];
-
-					f_ang[0] += GetRandomFloat(-20.0,20.0);
-					f_ang[1] += GetRandomFloat(-20.0,20.0);
-					f_ang[2] += GetRandomFloat(-20.0,20.0);
-
-					Handle trace; 
-					trace = TR_TraceRayFilterEx(f_pos, f_ang, ( MASK_SHOT | MASK_SHOT_HULL ), RayType_Infinite, BulletAndMeleeTrace, client);
-					
-
-					TR_GetEndPosition(f_resulthit, trace);
-					int i_entity_hit = TR_GetEntityIndex(trace);
-					delete trace;
-
-				//	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-				//	TE_SetupBeamPoints(f_pos, f_resulthit, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
-				//	TE_SendToAll();
-
-					if(i_entity_hit == target)
+					bool Rare_hit = false;
+					if(f_clientFoundRareRockSpot[client] > GetGameTime())
 					{
-						if(f_clientFoundRareRockSpot[client] < GetGameTime())
+						float f_positionhit[3];	
+						TR_GetEndPosition(f_positionhit, tr);
+						float distance = GetVectorDistance( f_clientFoundRareRockSpotPos[client], f_positionhit, true ); 
+						if(distance < (20.0 * 20.0))
 						{
-							f_clientFoundRareRockSpot[client] = GetGameTime() + 10.0;
-							DataPack pack_repack;
-							CreateDataTimer(5.0, ApplyRareMiningChance, pack_repack, TIMER_FLAG_NO_MAPCHANGE);
-							pack_repack.WriteCell(EntIndexToEntRef(client));
-							pack_repack.WriteCell(EntIndexToEntRef(i_entity_hit));
-							pack_repack.WriteFloat(f_resulthit[0]);
-							pack_repack.WriteFloat(f_resulthit[1]);
-							pack_repack.WriteFloat(f_resulthit[2]);
+							Rare_hit = true;
+							DisplayCritAboveNpc(_, client, true,f_positionhit); //Display crit above head
+							f_clientFoundRareRockSpot[client] = 0.0;
+							f_clientFoundRareRockSpotPos[client][0] = 0.0;
+							f_clientFoundRareRockSpotPos[client][1] = 0.0;
+							f_clientFoundRareRockSpotPos[client][2] = 0.0;
 						}
 					}
-				}
-				int damage = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2016, true));
+					if(!Rare_hit)
+					{
+						float f_ang[3];
+						float f_pos[3];
 
-				Event event = CreateEvent("npc_hurt", true);
-				event.SetInt("entindex", target);
-				event.SetInt("attacker_player", GetClientUserId(client));
-				event.SetInt("weaponid", weapon);
-				event.SetInt("damageamount", damage);
-				event.SetInt("health", 999999);
-				event.SetBool("crit", false);
-				event.FireToClient(client);
-				event.Cancel();
-				
-				MineDamage[client] += damage;
-				if(MineDamage[client] >= mine.Health)
-				{
-					GetClientEyePosition(client, forwar);
-					TextStore_DropNamedItem(mine.Item, forwar, 1);
-					MineDamage[client] = 0;
+						GetClientEyeAngles(client,f_ang);
+						GetClientEyePosition(client,f_pos);
+
+						float tmp[3];
+						float actualBeamOffset[3];
+						float BEAM_BeamOffset[3];
+						BEAM_BeamOffset[0] = -35.0; //Go back 35 units.
+						BEAM_BeamOffset[1] = 0.0;
+						BEAM_BeamOffset[2] = 0.0;
+
+						tmp[0] = BEAM_BeamOffset[0];
+						tmp[1] = BEAM_BeamOffset[1];
+						tmp[2] = 0.0;
+						VectorRotate(tmp, f_pos, actualBeamOffset);
+						actualBeamOffset[2] = BEAM_BeamOffset[2];
+						f_pos[0] += actualBeamOffset[0];
+						f_pos[1] += actualBeamOffset[1];
+						f_pos[2] += actualBeamOffset[2];
+
+						float f_resulthit[3];
+
+						f_ang[0] += GetRandomFloat(-20.0,20.0);
+						f_ang[1] += GetRandomFloat(-20.0,20.0);
+						f_ang[2] += GetRandomFloat(-20.0,20.0);
+
+						Handle trace; 
+						trace = TR_TraceRayFilterEx(f_pos, f_ang, ( MASK_SHOT | MASK_SHOT_HULL ), RayType_Infinite, BulletAndMeleeTrace, client);
+						
+
+						TR_GetEndPosition(f_resulthit, trace);
+						int i_entity_hit = TR_GetEntityIndex(trace);
+						delete trace;
+
+					//	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+					//	TE_SetupBeamPoints(f_pos, f_resulthit, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+					//	TE_SendToAll();
+
+						if(i_entity_hit == target)
+						{
+							if(f_clientFoundRareRockSpot[client] < GetGameTime())
+							{
+								f_clientFoundRareRockSpot[client] = GetGameTime() + 10.0;
+								DataPack pack_repack;
+								CreateDataTimer((5.0 * attackspeed), ApplyRareMiningChance, pack_repack, TIMER_FLAG_NO_MAPCHANGE);
+								pack_repack.WriteCell(EntIndexToEntRef(client));
+								pack_repack.WriteCell(EntIndexToEntRef(i_entity_hit));
+								pack_repack.WriteFloat(f_resulthit[0]);
+								pack_repack.WriteFloat(f_resulthit[1]);
+								pack_repack.WriteFloat(f_resulthit[2]);
+							}
+						}
+					}
+					int damage = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2016, true));
+
+					if(Rare_hit)
+					{
+						damage *= 6;
+					}
+
+					Event event = CreateEvent("npc_hurt", true);
+					event.SetInt("entindex", target);
+					event.SetInt("attacker_player", GetClientUserId(client));
+					event.SetInt("weaponid", weapon);
+					event.SetInt("damageamount", damage);
+					event.SetInt("health", 999999);
+					event.SetBool("crit", Rare_hit);
+					event.FireToClient(client);
+					event.Cancel();
+					
+					MineDamage[client] += damage;
+					while(MineDamage[client] >= mine.Health)
+					{
+						GetClientEyePosition(client, forwar);
+						TextStore_DropNamedItem(mine.Item, forwar, 1);
+						MineDamage[client] -= mine.Health;
+					}
 				}
 			}
 		}
@@ -361,7 +371,7 @@ public Action ApplyRareMiningChanceRepeat(Handle timer, DataPack pack)
 	f_pos[2] = pack.ReadFloat();
 	if(IsValidEntity(client) && IsValidEntity(mined_rock))
 	{
-		if(f_clientFoundRareRockSpot[client] > GetGameTime())
+		if((f_clientFoundRareRockSpot[client] - 0.3) > GetGameTime())
 		{
 			static float m_vecMaxs[3];
 			static float m_vecMins[3];
