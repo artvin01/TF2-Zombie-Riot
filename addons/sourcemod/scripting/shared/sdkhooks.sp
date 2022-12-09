@@ -1517,6 +1517,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 
 #if defined RPG
 	TextStore_WeaponSwitch(client, weapon);
+	TF2Attrib_SetByDefIndex(client, 698, 1.0);
 #endif
 }
 

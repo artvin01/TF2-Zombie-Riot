@@ -19,6 +19,14 @@ void Stats_GetCustomStats(int client, int attrib, float value)
 	}
 }
 
+int Stats_BaseHealth(int client, int level = -1, int tier = -1)
+{
+	int lv = level == -1 ? Level[client] : level;
+	int ti = tier == -1 ? Tier[client] : tier;
+
+	return 50 + (lv * 5) + (ti * 20);
+}
+
 int Stats_BaseCarry(int client, int &base = 0, int &bonus = 0, int level = -1, int tier = -1)
 {
 	int lv = level == -1 ? Level[client] : level;
@@ -48,7 +56,7 @@ void Stats_ShowLevelUp(int client, int oldLevel, int oldTier)
 	}
 	
 	char buffer[64];
-	
+
 	// Backpack
 	int oldAmount, newAmount;
 	Stats_BaseCarry(client, newAmount, _, oldLevel, oldTier);

@@ -702,8 +702,11 @@ void Store_OpenItemPage(int client)
 
 void Store_SwapToItem(int client, int swap)
 {
+#if defined RPG
 	//SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
-	
+	TF2Attrib_SetByDefIndex(client, 698, 0.0);
+#endif
+
 	char classname[36], buffer[36];
 	GetEntityClassname(swap, classname, sizeof(classname));
 
@@ -2989,7 +2992,7 @@ void Store_ApplyAttribs(int client)
 #endif
 	
 #if defined RPG
-	map.SetValue("26", RemoveExtraHealth(ClassForStats, 50.0));
+	map.SetValue("26", RemoveExtraHealth(ClassForStats, float(Stats_BaseHealth(client))));
 #endif
 	
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, 330.0));		// Move Speed

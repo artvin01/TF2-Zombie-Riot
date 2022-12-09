@@ -1447,8 +1447,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	if(b_IsPlayerABot[client])
 		return Plugin_Continue;
 	
-	Action action;
-
 #if defined LagCompensation
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 #endif
@@ -1462,11 +1460,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 
 #if defined RPG
 	TextStore_PlayerRunCmd(client);
-	if(weapon && !AllowSwitch[client])
-	{
-		weapon = 0;
-		action = Plugin_Changed;
-	}
 #endif
 
 	if(buttons & IN_ATTACK)
@@ -1516,6 +1509,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			{
 				bool result = false; //ignore crit.
 				int slot = 2;
+				Action action;
 				Call_StartFunction(null, EntityFuncAttack2[weapon_holding]);
 				Call_PushCell(client);
 				Call_PushCell(weapon_holding);
@@ -1581,6 +1575,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				{
 					bool result = false; //ignore crit.
 					int slot = 3;
+					Action action;
 					Call_StartFunction(null, EntityFuncAttack3[weapon_holding]);
 					Call_PushCell(client);
 					Call_PushCell(weapon_holding);
@@ -1772,7 +1767,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 //	Building_PlayerRunCmd(client, buttons);
 #endif	// ZR
 
-	return action;
+	return Plugin_Continue;
 }
 
 public void Movetype_walk(int client)
