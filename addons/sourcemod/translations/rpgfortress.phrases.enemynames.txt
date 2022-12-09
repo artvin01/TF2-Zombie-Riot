@@ -15,5 +15,13 @@
 	{
 		"en" 		"Mad Chicken"
 	}
+	"Mad Roost"
+	{
+		"en" 		"Mad Roost"
+	}
+	"Heavy Bear"
+	{
+		"en" 		"Heavy Bear"
+	}
 
 }

@@ -5,27 +5,35 @@ enum
 {
 	NOTHING 				= 0,
 	START_CHICKEN 			= 1,
-	MAD_CHICKEN 			= 2
+	MAD_CHICKEN 			= 2,
+	MAD_ROOST				= 3,
+	HEAVY_BEAR				= 4
 }
 
 public const char NPC_Names[][] =
 {
 	"nothing",
 	"Chicken",
-	"Mad Chicken"
+	"Mad Chicken",
+	"Mad Roost",
+	"Heavy Bear"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
 {
 	"",
 	"npc_chicken_2",
-	"npc_chicken_mad"
+	"npc_chicken_mad",
+	"npc_roost_mad",
+	"npc_heavy_bear"
 };
 
 void NPC_MapStart()
 {
 	MadChicken_OnMapStart_NPC();
 	StartChicken_OnMapStart_NPC();
+	MadRoost_OnMapStart_NPC();
+	HeavyBear_OnMapStart_NPC();
 }
 
 stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
@@ -40,6 +48,14 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 		case MAD_CHICKEN:
 		{
 			entity = MadChicken(client, vecPos, vecAng, ally);
+		}
+		case MAD_ROOST:
+		{
+			entity = MadRoost(client, vecPos, vecAng, ally);
+		}
+		case HEAVY_BEAR:
+		{
+			entity = HeavyBear(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -61,6 +77,14 @@ public void NPCDeath(int entity)
 		case MAD_CHICKEN:
 		{
 			MadChicken_NPCDeath(entity);
+		}
+		case MAD_ROOST:
+		{
+			MadRoost_NPCDeath(entity);
+		}
+		case HEAVY_BEAR:
+		{
+			entity = HeavyBear_NPCDeath(entity);
 		}
 		default:
 		{
@@ -229,3 +253,5 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 
 #include "rpg_fortress/npc/normal/npc_chicken_2.sp"
 #include "rpg_fortress/npc/normal/npc_chicken_mad.sp"
+#include "rpg_fortress/npc/normal/npc_roost_mad.sp"
+#include "rpg_fortress/npc/normal/npc_heavy_bear.sp"
