@@ -104,7 +104,7 @@ enum struct MineEnum
 				*/
 				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
 				
-				SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(entity, RENDER_NORMAL);
 				SetEntityRenderColor(entity, this.Color[0], this.Color[1], this.Color[2], this.Color[3]);
 				
 				this.EntRef = EntIndexToEntRef(entity);
@@ -235,7 +235,7 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 						float f_positionhit[3];	
 						TR_GetEndPosition(f_positionhit, tr);
 						float distance = GetVectorDistance( f_clientFoundRareRockSpotPos[client], f_positionhit, true ); 
-						if(distance < (20.0 * 20.0))
+						if(distance < (27.0 * 27.0))
 						{
 							Rare_hit = true;
 							DisplayCritAboveNpc(_, client, true,f_positionhit); //Display crit above head
@@ -245,7 +245,7 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 							f_clientFoundRareRockSpotPos[client][2] = 0.0;
 						}
 					}
-					if(!Rare_hit)
+					if(!Rare_hit && f_clientFoundRareRockSpot[client] < GetGameTime())
 					{
 						float f_ang[3];
 						float f_pos[3];
@@ -263,7 +263,7 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 						tmp[0] = BEAM_BeamOffset[0];
 						tmp[1] = BEAM_BeamOffset[1];
 						tmp[2] = 0.0;
-						VectorRotate(tmp, f_pos, actualBeamOffset);
+						VectorRotate(tmp, f_ang, actualBeamOffset);
 						actualBeamOffset[2] = BEAM_BeamOffset[2];
 						f_pos[0] += actualBeamOffset[0];
 						f_pos[1] += actualBeamOffset[1];
@@ -273,7 +273,7 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 
 						f_ang[0] += GetRandomFloat(-20.0,20.0);
 						f_ang[1] += GetRandomFloat(-20.0,20.0);
-						f_ang[2] += GetRandomFloat(-20.0,20.0);
+					//	f_ang[2] += GetRandomFloat(-20.0,20.0);
 
 						Handle trace; 
 						trace = TR_TraceRayFilterEx(f_pos, f_ang, ( MASK_SHOT | MASK_SHOT_HULL ), RayType_Infinite, BulletAndMeleeTrace, client);
