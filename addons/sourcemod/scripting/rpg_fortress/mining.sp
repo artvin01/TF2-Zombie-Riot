@@ -14,6 +14,18 @@ enum struct MineEnum
 	char Item[48];
 	int Health;
 	int Tier;
+	
+	char Item1[48];
+	float Chance1;
+	int Tier1;
+	
+	char Item2[48];
+	float Chance2;
+	int Tier2;
+	
+	char Item3[48];
+	float Chance3;
+	int Tier3;
 
 	int EntRef;
 	
@@ -37,6 +49,18 @@ enum struct MineEnum
 		kv.GetString("item", this.Item, 48);
 		this.Health = kv.GetNum("health");
 		this.Tier = kv.GetNum("tier");
+
+		kv.GetString("s1_item", this.Item1, 48);
+		this.Chance1 = kv.GetFloat("s1_chance");
+		this.Tier1 = kv.GetNum("s1_tier");
+
+		kv.GetString("s2_item", this.Item2, 48);
+		this.Chance2 = kv.GetFloat("s2_chance");
+		this.Tier2 = kv.GetNum("s2_tier");
+
+		kv.GetString("s3_item", this.Item3, 48);
+		this.Chance3 = kv.GetFloat("s3_chance");
+		this.Tier3 = kv.GetNum("s3_tier");
 	}
 	
 	void Despawn()

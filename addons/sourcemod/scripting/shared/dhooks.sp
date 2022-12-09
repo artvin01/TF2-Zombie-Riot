@@ -83,6 +83,7 @@ void DHook_Setup()
 #if defined ZR
 	DHook_CreateDetour(gamedata, "CBaseObject::FinishedBuilding", Dhook_FinishedBuilding_Pre, Dhook_FinishedBuilding_Post);
 	DHook_CreateDetour(gamedata, "CBaseObject::FirstSpawn", Dhook_FirstSpawn_Pre, Dhook_FirstSpawn_Post);
+	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
 #endif
 
 	DHook_CreateDetour(gamedata, "FX_FireBullets()", FX_FireBullets_Pre, FX_FireBullets_Post);
@@ -100,7 +101,6 @@ void DHook_Setup()
 	
 	g_DHookRocketExplode = DHook_CreateVirtual(gamedata, "CTFBaseRocket::Explode");
 	g_DHookFireballExplode = DHook_CreateVirtual(gamedata, "CTFProjectile_SpellFireball::Explode");
-	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
 	g_DHookScoutSecondaryFire = DHook_CreateVirtual(gamedata, "CTFPistol_ScoutPrimary::SecondaryAttack()");
 	 
 	ForceRespawn = DynamicHook.FromConf(gamedata, "CBasePlayer::ForceRespawn");
@@ -1011,10 +1011,7 @@ void DHook_HookClient(int client)
 void DHook_UnhookClient(int client)
 {
 	if(ForceRespawn)
-	{
 		DynamicHook.RemoveHook(ForceRespawnHook[client]);
-		RequestFrame(CheckIfAloneOnServer);
-	}
 }
 /*
 void DHook_ClientDisconnect()

@@ -30,8 +30,6 @@ int Level[MAXENTITIES];
 int Cash[MAXENTITIES];
 int XP[MAXENTITIES];
 
-int BackpackBonus[MAXTF2PLAYERS];
-
 char StoreWeapon[MAXENTITIES][48];
 
 #include "rpg_fortress/npc.sp"	// Global NPC List

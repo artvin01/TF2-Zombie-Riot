@@ -43,12 +43,11 @@ enum struct SpawnerData
 
 //ArrayList NPCList; Make this global, i need it globally.
 static ArrayList SpawnerList;
-
 static ConVar MapSpawnersActive;
+static Handle SyncHudRaid;
 #endif
 
 static Handle SyncHud;
-static Handle SyncHudRaid;
 static char LastClassname[2049][64];
 //static float f_SpawnerCooldown[MAXENTITIES];
 /*
@@ -67,10 +66,10 @@ void NPC_PluginStart()
 #if defined ZR
 	MapSpawnersActive = CreateConVar("zr_spawnersactive", "4", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
 	SpawnerList = new ArrayList(sizeof(SpawnerData));
+	SyncHudRaid = CreateHudSynchronizer();
 #endif
 
 	SyncHud = CreateHudSynchronizer();
-	SyncHudRaid = CreateHudSynchronizer();
 	
 	LF_HookSpawn("", NPC_OnCreatePre, false);
 	LF_HookSpawn("", NPC_OnCreatePost, true);

@@ -1760,7 +1760,7 @@ stock void AnglesToVelocity(const float ang[3], float vel[3], float speed=1.0)
 	ScaleVector(vel, speed);
 }
 
-bool ObstactleBetweenEntities(int entity1, int entity2)
+stock bool ObstactleBetweenEntities(int entity1, int entity2)
 {
 	static float pos1[3], pos2[3];
 	if(IsValidClient(entity1))
@@ -1786,7 +1786,7 @@ bool ObstactleBetweenEntities(int entity1, int entity2)
 	return false;
 }
 
-bool IsEntityStuck(int entity)
+stock bool IsEntityStuck(int entity)
 {
 	static float minn[3], maxx[3], pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecMins", minn);
@@ -2068,7 +2068,7 @@ public bool TF2U_GetWearable(int client, int &entity, int &index)
 	return false;
 }
 
-void spawnRing(int client, float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
+stock void spawnRing(int client, float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
 {
 	if (IsValidEntity(client))
 	{
@@ -2194,7 +2194,7 @@ public void SpawnSmallExplosionNotRandom(float DetLoc[3])
 	TE_Particle(EXPLOSION_PARTICLE_SMALL_1, DetLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 }
 
-void GetVectorAnglesTwoPoints(const float startPos[3], const float endPos[3], float angles[3])
+stock void GetVectorAnglesTwoPoints(const float startPos[3], const float endPos[3], float angles[3])
 {
 	static float tmpVec[3];
 	tmpVec[0] = endPos[0] - startPos[0];
