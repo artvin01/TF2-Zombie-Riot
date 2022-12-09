@@ -3727,14 +3727,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 #if defined RPG
 	else if(index == -2)
 	{
-		TFClassType class = TF2_GetPlayerClass(client);
-		TF2_SetPlayerClass(client, TFClass_Engineer);
-		
-		entity = SpawnWeapon(client, "tf_weapon_laser_pointer", 25, 1, 0, {0}, {0.0}, 0);
+		entity = SpawnWeapon(client, "tf_weapon_sapper", 25, 1, 0, {0}, {0.0}, 0);
 		if(entity > MaxClients)
 			strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Backpack");
-		
-		TF2_SetPlayerClass(client, class);
 	}
 #endif
 
