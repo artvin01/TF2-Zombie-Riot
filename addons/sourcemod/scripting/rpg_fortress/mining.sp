@@ -50,9 +50,8 @@ enum struct MineEnum
 		this.Health = kv.GetNum("health");
 		this.Tier = kv.GetNum("tier");
 
-<<<<<<< HEAD
 		this.EntRef = INVALID_ENT_REFERENCE;
-=======
+
 		kv.GetString("s1_item", this.Item1, 48);
 		this.Chance1 = kv.GetFloat("s1_chance");
 		this.Tier1 = kv.GetNum("s1_tier");
@@ -64,7 +63,6 @@ enum struct MineEnum
 		kv.GetString("s3_item", this.Item3, 48);
 		this.Chance3 = kv.GetFloat("s3_chance");
 		this.Tier3 = kv.GetNum("s3_tier");
->>>>>>> c094c85d3aa07c89823ac778f2f1febd9724b9a8
 	}
 	
 	void Despawn()
