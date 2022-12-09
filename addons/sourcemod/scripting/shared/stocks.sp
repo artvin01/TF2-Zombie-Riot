@@ -2757,17 +2757,24 @@ float dmg_against_entity_multiplier = 3.0)
 	}
 	
 }
-stock void DisplayCritAboveNpc(int victim, int client, bool sound)
+stock void DisplayCritAboveNpc(int victim = -1, int client, bool sound, float position[3] = {0.0,0.0,0.0})
 {
 	float chargerPos[3];
-	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
-	if(b_BoundingBoxVariant[victim] == 1)
+	if(victim != -1)
 	{
-		chargerPos[2] += 120.0;
+		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
+		if(b_BoundingBoxVariant[victim] == 1)
+		{
+			chargerPos[2] += 120.0;
+		}
+		else
+		{
+			chargerPos[2] += 82.0;
+		}
 	}
 	else
 	{
-		chargerPos[2] += 82.0;
+		chargerPos = position;
 	}
 
 	if(sound)
