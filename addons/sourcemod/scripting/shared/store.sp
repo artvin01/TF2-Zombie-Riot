@@ -704,6 +704,10 @@ void Store_OpenItemPage(int client)
 
 void Store_SwapToItem(int client, int swap)
 {
+	bool suit = GetEntProp(client, Prop_Send, "m_bWearingSuit");
+	if(!suit)
+		SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
+	
 	char classname[36], buffer[36];
 	GetEntityClassname(swap, classname, sizeof(classname));
 
@@ -732,10 +736,17 @@ void Store_SwapToItem(int client, int swap)
 	}
 
 	FakeClientCommand(client, "use %s", classname);
+
+	if(suit)
+		SetEntProp(client, Prop_Send, "m_bWearingSuit", false);
 }
 
 void Store_SwapItems(int client)
 {
+	bool suit = GetEntProp(client, Prop_Send, "m_bWearingSuit");
+	if(!suit)
+		SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
+	
 	int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(active > MaxClients)
 	{
@@ -819,6 +830,9 @@ void Store_SwapItems(int client)
 			}
 		}
 	}
+
+	if(suit)
+		SetEntProp(client, Prop_Send, "m_bWearingSuit", false);
 }
 
 #if defined ZR

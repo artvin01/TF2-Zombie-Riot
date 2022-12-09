@@ -19,6 +19,9 @@ enum struct MineEnum
 	
 	void SetupEnum(KeyValues kv)
 	{
+		kv.GetSectionName(this.Model, PLATFORM_MAX_PATH);
+		ExplodeStringFloat(this.Model, " ", this.Pos, sizeof(this.Pos));
+
 		kv.GetString("zone", this.Zone, 32);
 		
 		kv.GetString("model", this.Model, PLATFORM_MAX_PATH, "models/error.mdl");
@@ -27,7 +30,6 @@ enum struct MineEnum
 		
 		PrecacheModel(this.Model);
 		
-		kv.GetVector("pos", this.Pos);
 		kv.GetVector("ang", this.Ang);
 		kv.GetColor("color", this.Color[0], this.Color[1], this.Color[2], this.Color[3]);
 		this.Scale = kv.GetFloat("scale", 1.0);

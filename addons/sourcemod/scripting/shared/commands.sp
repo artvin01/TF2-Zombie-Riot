@@ -23,6 +23,8 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	kv.GetSectionName(buffer, sizeof(buffer));
 	if(StrEqual(buffer, "+inspect_server", false))
 	{
+		
+#if defined ZR
 		if(GetClientButtons(client) & IN_SCORE)
 		{
 			Store_OpenItemPage(client);
@@ -31,6 +33,12 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 		{
 			Store_SwapItems(client);
 		}
+#endif
+
+#if defined RPG
+		Store_OpenItemPage(client);
+#endif
+
 		return Plugin_Handled;
 	}
 	return Plugin_Continue;
@@ -88,7 +96,7 @@ public Action OnTaunt(int client, const char[] command, int args)
 
 public Action OnSayCommand(int client, const char[] command, int args)
 {
-#if defined ZR	// For now...
+#if defined ZR	// For now
 	if(Store_SayCommand(client))
 		return Plugin_Handled;
 #endif
