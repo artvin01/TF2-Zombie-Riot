@@ -395,6 +395,7 @@ public Action TimerHeavyBearBossInitiateStuff(Handle timer, int ref)
 		//not valid.
 		return Plugin_Stop;
 	}
+	return Plugin_Continue;
 }
 
 public void HeavyBearBoss_NPCDeath(int entity)
