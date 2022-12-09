@@ -35,6 +35,8 @@ enum struct MineEnum
 		kv.GetString("item", this.Item, 48);
 		this.Health = kv.GetNum("health");
 		this.Tier = kv.GetNum("tier");
+
+		this.EntRef = INVALID_ENT_REFERENCE;
 	}
 	
 	void Despawn()
@@ -60,10 +62,17 @@ enum struct MineEnum
 				DispatchKeyValue(entity, "model", this.Model);
 				DispatchKeyValue(entity, "solid", "6");
 				
-				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR);
-				
 				DispatchSpawn(entity);
-				
+
+				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR);
+				/*
+				float vector[3];
+
+				vector = this.Pos;
+				PrintToChatAll("%f",vector[0]);
+				PrintToChatAll("%f",vector[1]);
+				PrintToChatAll("%f",vector[2]);
+				*/
 				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
 				
 				SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
