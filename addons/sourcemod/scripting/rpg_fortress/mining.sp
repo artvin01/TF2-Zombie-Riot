@@ -211,7 +211,7 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 		DoSwingTrace_Custom(tr, client, forwar);
 
 		int target = TR_GetEntityIndex(tr);
-		if(target != 1)
+		if(target != -1)
 		{
 			int index = MineList.FindValue(EntIndexToEntRef(target), MineEnum::EntRef);
 			if(index != -1)
