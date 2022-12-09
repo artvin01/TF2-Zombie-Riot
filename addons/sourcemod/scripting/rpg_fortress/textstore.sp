@@ -721,16 +721,22 @@ bool TextStore_Interact(int client, int entity, bool reload)
 	{
 		if(reload)
 		{
-			int weight = GetBackpackSize(client) - 1 - Tier[client];
-
-			int i, strength;
-			while(TF2_GetItem(client, strength, i))
+			int weight = -1;
+			int strength;
+			if(ItemIndex[entity] != -1)
 			{
-				weight += 1 + Tier[client];
+				int weight = GetBackpackSize(client) - 1 - Tier[client];
+
+				int i, strength;
+				while(TF2_GetItem(client, strength, i))
+				{
+					weight += 1 + Tier[client];
+				}
+
+				strength = Stats_BaseCarry(client);
 			}
 
-			strength = Stats_BaseCarry(client);
-			if(weight > strength)
+			if(weight >= strength)
 			{
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				ShowGameText(client, "ico_notify_highfive", 0, "You can't carry any more items (%d / %d)", weight, strength);
@@ -753,10 +759,7 @@ bool TextStore_Interact(int client, int entity, bool reload)
 				ClientCommand(client, "playgamesound items/gift_pickup.wav");
 				
 				int amount = strength - weight;
-				if(ItemIndex[entity] == -1)
-					amount *= 1000;
-				
-				if(amount > ItemCount[entity])
+				if(ItemIndex[entity] == -1 || amount > ItemCount[entity])
 					amount = ItemCount[entity];
 				
 				bool found;

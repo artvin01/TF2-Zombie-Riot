@@ -69,6 +69,8 @@ void Stats_ShowLevelUp(int client, int oldLevel, int oldTier)
 	Stats_BaseCarry(client, newAmount, _, oldLevel, oldTier);
 	Stats_BaseCarry(client, oldAmount);
 	MACRO_SHOWDIFF("Backpack Storage")
+
+	menu.Display(client, MENU_TIME_FOREVER);
 }
 
 public int Stats_ShowLevelUpH(Menu menu, MenuAction action, int client, int choice)
