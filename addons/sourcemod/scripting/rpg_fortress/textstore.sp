@@ -792,6 +792,7 @@ bool TextStore_Interact(int client, int entity, bool reload)
 				}
 				else
 				{
+					ItemCount[entity] -= amount;
 					UpdateItemText(entity, ItemIndex[entity], ItemIndex[entity] == -1 ? null : TextStore_GetItemKv(ItemIndex[entity]));
 				}
 			}

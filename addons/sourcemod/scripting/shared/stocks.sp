@@ -83,7 +83,7 @@ stock int ParticleEffectAt(float position[3], char[] effectName, float duration 
 	if (particle != -1)
 	{
 		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
-		DispatchKeyValue(particle, "targetname", "tf2particle");
+		DispatchKeyValue(particle, "targetname", "rpg_fortress");
 		DispatchKeyValue(particle, "effect_name", effectName);
 		DispatchSpawn(particle);
 		ActivateEntity(particle);
@@ -101,7 +101,7 @@ stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iPar
 	if (particle != -1)
 	{
 		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
-		DispatchKeyValue(particle, "targetname", "tf2particle");
+		DispatchKeyValue(particle, "targetname", "rpg_fortress");
 		DispatchKeyValue(particle, "effect_name", effectName);
 		DispatchSpawn(particle);
 
@@ -124,7 +124,7 @@ stock int ParticleEffectAtWithRotation(float position[3], float rotation[3], cha
 	{
 		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
 		SetEntPropVector(particle, Prop_Data, "m_angRotation", rotation);
-		DispatchKeyValue(particle, "targetname", "tf2particle");
+		DispatchKeyValue(particle, "targetname", "rpg_fortress");
 		DispatchKeyValue(particle, "effect_name", effectName);
 		DispatchSpawn(particle);
 		ActivateEntity(particle);
@@ -3104,7 +3104,7 @@ stock int SpawnFormattedWorldText(const char[] format, const float origin[3], in
 {
 	int worldtext = CreateEntityByName("point_worldtext");
 	if(IsValidEntity(worldtext))
-	{	
+	{
 		DispatchKeyValue(worldtext, "targetname", "rpg_fortress");
 		DispatchKeyValue(worldtext, "message", format);
 		DispatchKeyValueInt(worldtext, "textsize", textSize);
