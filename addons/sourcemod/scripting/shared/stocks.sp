@@ -3112,6 +3112,7 @@ stock int SpawnFormattedWorldText(const char[] format, const float origin[3], in
 	int worldtext = CreateEntityByName("point_worldtext");
 	if(IsValidEntity(worldtext))
 	{	
+		DispatchKeyValue(worldtext, "targetname", "rpg_fortress");
 		DispatchKeyValue(worldtext, "message", format);
 		DispatchKeyValueInt(worldtext, "textsize", textSize);
 
