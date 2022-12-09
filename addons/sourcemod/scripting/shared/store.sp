@@ -3728,45 +3728,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 #if defined RPG
 	else if(index == -2)
 	{
-		entity = CreateEntityByName("tf_weapon_sapper");
+		entity = SpawnWeapon(client, "tf_weapon_sapper", 25, 1, 0, {0}, {0.0}, 0)
 		if(entity > MaxClients)
-		{
-			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", 25);
-			SetEntProp(entity, Prop_Send, "m_bInitialized", 1);
-			SetEntProp(entity, Prop_Send, "m_iEntityQuality", 0);
-			SetEntProp(entity, Prop_Send, "m_iEntityLevel", 1);
-
-			static int offset;
-			if(!offset)
-			{
-				char netclass[64];
-				GetEntityNetClass(entity, netclass, sizeof(netclass));
-				offset = FindSendPropInfo(netclass, "m_iItemIDHigh");
-			}
-
-			SetEntData(entity, offset - 8, 0);	// m_iItemID
-			SetEntData(entity, offset - 4, 0);	// m_iItemID
-			SetEntData(entity, offset, 0);		// m_iItemIDHigh
-			SetEntData(entity, offset + 4, 0);	// m_iItemIDLow
-			
-			DispatchSpawn(entity);
-			SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
-			SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
-
-			//TF2Attrib_SetByDefIndex(entity, 128, 1.0);
-			//TF2Attrib_SetByDefIndex(entity, 821, 1.0);
-			
-			SetEntProp(entity, Prop_Send, "m_iObjectType", 3);
-			SetEntProp(entity, Prop_Data, "m_iSubType", 3);
-			SetEntProp(entity, Prop_Send, "m_aBuildableObjectTypes", 0, _, 0);
-			SetEntProp(entity, Prop_Send, "m_aBuildableObjectTypes", 0, _, 1);
-			SetEntProp(entity, Prop_Send, "m_aBuildableObjectTypes", 0, _, 2);
-
-			SetEntProp(entity, Prop_Send, "m_aBuildableObjectTypes", 1, _, 3);
-			EquipPlayerWeapon(client, entity);
-
 			strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Backpack");
-		}
 	}
 #endif
 
