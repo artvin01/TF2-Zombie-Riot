@@ -3731,7 +3731,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		entity = CreateEntityByName("tf_weapon_sapper");
 		if(entity > MaxClients)
 		{
-			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", 737);
+			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", 25);
 			SetEntProp(entity, Prop_Send, "m_bInitialized", 1);
 			SetEntProp(entity, Prop_Send, "m_iEntityQuality", 0);
 			SetEntProp(entity, Prop_Send, "m_iEntityLevel", 1);
