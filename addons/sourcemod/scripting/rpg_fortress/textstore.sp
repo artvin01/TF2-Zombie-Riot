@@ -698,17 +698,20 @@ void TextStore_DespoitBackpack(int client, bool death)
 		}
 	}
 
-	if(cash && amount)
+	if(death)
 	{
-		SPrintToChat(client, "You have dropped %d credits and %d items", cash, amount);
-	}
-	else if(cash)
-	{
-		SPrintToChat(client, "You have dropped %d credits", cash);
-	}
-	else if(amount)
-	{
-		SPrintToChat(client, "You have dropped %d items", amount);
+		if(cash && amount)
+		{
+			SPrintToChat(client, "You have dropped %d credits and %d items", cash, amount);
+		}
+		else if(cash)
+		{
+			SPrintToChat(client, "You have dropped %d credits", cash);
+		}
+		else if(amount)
+		{
+			SPrintToChat(client, "You have dropped %d items", amount);
+		}
 	}
 }
 
