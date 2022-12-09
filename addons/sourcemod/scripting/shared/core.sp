@@ -1463,6 +1463,10 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	Tutorial_MakeClientNotMove(client);
 #endif
 
+#if defined RPG
+	TextStore_PlayerRunCmd(client);
+#endif
+
 	if(buttons & IN_ATTACK)
 	{
 		int entity = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");

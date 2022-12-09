@@ -1514,6 +1514,10 @@ public void OnWeaponSwitchPost(int client, int weapon)
 	}
 
 	Store_WeaponSwitch(client, weapon);
+
+#if defined RPG
+	TextStore_WeaponSwitch(client, weapon);
+#endif
 }
 
 public void OnWeaponSwitchPre(int client, int weapon)

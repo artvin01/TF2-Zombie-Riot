@@ -696,7 +696,10 @@ void Store_OpenItemPage(int client)
 	}
 #endif
 
+#if defined RPG
 	// RPG TODO: Yell at me for TextStore native
+	FakeClientCommandEx(client, "sm_inv");
+#endif
 }
 
 void Store_SwapToItem(int client, int swap)
@@ -3388,9 +3391,13 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	
 		if(!found)
 			Store_GiveItem(client, -1, use);
-		
-		CheckMultiSlots(client);
 	}
+
+#if defined RPG
+	Store_GiveItem(client, -2);
+#endif
+	
+	CheckMultiSlots(client);
 	
 //	Spawn_Buildable(client);
 //	TF2_SetPlayerClass(client, TFClass_Engineer, true, false);
@@ -3478,7 +3485,7 @@ void Store_RemoveNullWeapons(int client)
 	}
 }
 
-int Store_GiveItem(int client, int index, bool &use, bool &found=false)
+int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 {
 
 #if defined ZR
@@ -3645,7 +3652,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 					{
 						i_IsWrench[entity] = true;
 					}
-					
+
 					i_Hex_WeaponUsesTheseAbilities[entity] = 0;
 		
 					if(info.FuncAttack != INVALID_FUNCTION)
