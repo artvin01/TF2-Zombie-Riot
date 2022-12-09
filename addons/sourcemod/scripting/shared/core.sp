@@ -1779,19 +1779,14 @@ public void Movetype_walk(int client)
 	
 }
 
+#if defined ZR
 public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon)
 {
-#if defined ZR
 	SemiAutoWeapon(client, buttons);
 	Pets_PlayerRunCmdPost(client, buttons, angles);
 	Medikit_healing(client, buttons);
-#endif
-
-#if defined RPG
-	if(weapon)
-		SetEntProp(client, Prop_Send, "m_bWearingSuit", false);
-#endif
 }
+#endif
 
 public void Update_Ammo(int  client)
 {
