@@ -547,7 +547,7 @@ static void DropItem(int index, float pos[3], int amount)
 				{
 					ItemCount[entity] += amount;
 					UpdateItemText(entity, index, kv);
-					break;
+					return;
 				}
 			}
 		}
@@ -967,6 +967,7 @@ static void ShowMenu(int client)
 			Menu menu = new Menu(TextStore_BackpackMenu);
 
 			int amount;
+			bool found;
 			int length = Backpack.Length;
 			for(int i; i < length; i++)
 			{
@@ -991,17 +992,26 @@ static void ShowMenu(int client)
 					
 					if(pack.Item == -1)
 					{
-						menu.InsertItem(0, index, name);
+						if(amount)
+						{
+							menu.InsertItem(0, index, name);
+						}
+						else
+						{
+							menu.AddItem(index, name);
+						}
 					}
 					else
 					{
 						menu.AddItem(index, name);
 						amount += pack.Amount;
 					}
+
+					found = true;
 				}
 			}
 
-			if(!amount)
+			if(!found)
 				menu.AddItem(NULL_STRING, "Empty", ITEMDRAW_DISABLED);
 
 			amount -= 1 + Tier[client];
