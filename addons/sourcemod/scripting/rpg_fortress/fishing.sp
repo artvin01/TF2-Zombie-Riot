@@ -1,6 +1,5 @@
 #pragma semicolon 1
 #pragma newdecls required
-#include <profiler>
 
 enum struct FishingEnum
 {
