@@ -1,9 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-
-static KeyValues HashKey;
-
 #define ITEM_XP		"Experience Points"
 static int ItemXP = -1;
 
@@ -174,6 +171,7 @@ enum
 	MENU_BACKPACK = 2
 }
 
+static KeyValues HashKey;
 static ArrayList Backpack;
 static StringMap StoreList;
 static char InStore[MAXTF2PLAYERS][16];
@@ -1028,6 +1026,9 @@ static void ShowMenu(int client)
 
 public int TextStore_WeaponSort(int elem1, int elem2, const int[] array, Handle hndl)
 {
+	if(!StoreWeapon[elem1][0])
+		return 1;
+	
 	for(int i; i < 8; i++)
 	{
 		if(StoreWeapon[elem1][i] > StoreWeapon[elem2][i])
