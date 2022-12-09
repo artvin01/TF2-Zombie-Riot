@@ -765,7 +765,7 @@ bool TextStore_Interact(int client, int entity, bool reload)
 				bool found;
 				static BackpackEnum pack;
 				int length = Backpack.Length;
-				for(i = 0; i < length; i++)
+				for(int i; i < length; i++)
 				{
 					Backpack.GetArray(i, pack);
 					if(pack.Owner == client && pack.Item == ItemIndex[entity])
