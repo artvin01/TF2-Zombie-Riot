@@ -3728,7 +3728,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 #if defined RPG
 	else if(index == -2)
 	{
-		entity = CreateEntityByName("tf_weapon_laser_pointer");
+		entity = CreateEntityByName("tf_weapon_sapper");
 		if(entity > MaxClients)
 		{
 			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", 737);
