@@ -573,9 +573,8 @@ static void DropItem(int index, float pos[3], int amount)
 				int color[4] = {255, 255, 255, 255};
 				if(index != -1)
 				{
-					int alpha = 255;
-					kv.GetColor("color", color[0], color[1], color[2], alpha);
-					SetEntityRenderColor(entity, color[0], color[1], color[2], alpha);
+					kv.GetColor4("color", color);
+					SetEntityRenderColor(entity, color[0], color[1], color[2], color[3]);
 
 					for(int i; i < sizeof(color); i++)
 					{
@@ -628,7 +627,7 @@ static void UpdateItemText(int entity, int index, KeyValues kv)
 	int color[4] = {255, 255, 255, 255};
 	if(index != -1)
 	{
-		kv.GetColor("color", color[0], color[1], color[2], text);
+		kv.GetColor4("color", color);
 		
 		for(int i; i < sizeof(color); i++)
 		{
@@ -937,12 +936,12 @@ static void ShowMenu(int client)
 
 			if(backpack == -1)
 			{
-				menu.AddItem("-1", "Backpack", ITEMDRAW_DISABLED);
+				menu.AddItem("-1", "Backpack\n ", ITEMDRAW_DISABLED);
 			}
 			else
 			{
 				IntToString(EntIndexToEntRef(backpack), index, sizeof(index));
-				menu.AddItem(index, "Backpack", backpack == active ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				menu.AddItem(index, "Backpack\n ", backpack == active ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			}
 
 			//menu.AddItem("-1", "Spells");

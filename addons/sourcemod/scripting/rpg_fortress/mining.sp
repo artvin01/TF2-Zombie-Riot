@@ -44,7 +44,7 @@ enum struct MineEnum
 		PrecacheModel(this.Model);
 		
 		kv.GetVector("ang", this.Ang);
-		kv.GetColor("color", this.Color[0], this.Color[1], this.Color[2], this.Color[3]);
+		kv.GetColor4("color", this.Color);
 		this.Scale = kv.GetFloat("scale", 1.0);
 
 		kv.GetString("item", this.Item, 48);

@@ -36,6 +36,7 @@ char StoreWeapon[MAXENTITIES][48];
 
 #include "rpg_fortress/levels.sp"
 #include "rpg_fortress/mining.sp"
+//#include "rpg_fortress/quests.sp"
 #include "rpg_fortress/spawns.sp"
 #include "rpg_fortress/stats.sp"
 #include "rpg_fortress/textstore.sp"

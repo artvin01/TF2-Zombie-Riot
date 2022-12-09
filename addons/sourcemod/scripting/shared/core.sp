@@ -2658,7 +2658,7 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 					return true;
 			}
 #endif
-			
+					
 #if defined RPG
 			if(TextStore_Interact(client, entity, Is_Reload_Button))
 				return true;
