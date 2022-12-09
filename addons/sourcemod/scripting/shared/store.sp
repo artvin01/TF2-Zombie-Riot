@@ -3731,6 +3731,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		entity = SpawnWeapon(client, "tf_weapon_sapper", 25, 1, 0, {0}, {0.0}, 0)
 		if(entity > MaxClients)
 			strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Backpack");
+		
+		PrintToChatAll("%d", entity);
 	}
 #endif
 
