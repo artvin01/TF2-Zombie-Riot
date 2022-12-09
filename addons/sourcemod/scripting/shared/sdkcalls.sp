@@ -142,6 +142,7 @@ void SDKCall_Setup()
 		LogError("[Gamedata] Could not find CBaseCombatWeapon::WeaponSound");
 	*/
 	
+#if defined ZR
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CObjectDispenser::MakeCarriedObject");
 	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
@@ -151,7 +152,7 @@ void SDKCall_Setup()
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CObjectSentrygun::MakeCarriedObject");
 	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
 	if ((g_hSDKMakeCarriedObjectSentry = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CObjectSentrygun::MakeCarriedObject");
-	
+#endif
 	
 	//from kenzzer
 	

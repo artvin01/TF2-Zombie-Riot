@@ -2759,16 +2759,12 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 				float damageForce[3];
 				npc.m_vecpunchforce(damageForce, false);
 
-#if defined RPG
-				bool Limit_Gibs = true;
-#else
 				bool Limit_Gibs = false;
-
 				if(CurrentGibCount > ZR_MAX_GIBCOUNT)
 				{
 					Limit_Gibs = true;
 				}
-#endif
+
 				static int Main_Gib;
 				
 				

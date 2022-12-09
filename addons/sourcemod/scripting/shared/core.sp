@@ -192,7 +192,11 @@ float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
 int Dont_Crouch[MAXENTITIES]={0, ...};
 
+// RPG TODO: 
+#if defined ZR
+bool b_IsAloneOnServer = false;
 int CurrentPlayers;
+#endif
 
 ConVar cvarTimeScale;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
@@ -288,15 +292,8 @@ const int i_MaxcountBuilding = ZR_MAX_BUILDINGS;
 int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
 bool i_IsABuilding[MAXENTITIES];
 
-const int i_MaxcountTraps = ZR_MAX_TRAPS;
-int i_ObjectsTraps[ZR_MAX_TRAPS];
-
 const int i_MaxcountBreakable = ZR_MAX_BREAKBLES;
 int i_ObjectsBreakable[ZR_MAX_BREAKBLES];
-
-//We kinda check these almost 24/7, its better to put them into an array!
-const int i_MaxcountSpawners = ZR_MAX_SPAWNERS;
-int i_ObjectsSpawners[ZR_MAX_SPAWNERS];
 
 
 bool b_IsAGib[MAXENTITIES];
@@ -309,7 +306,6 @@ bool f_ClientServerShowMessages[MAXTF2PLAYERS];
 //Needs to be global.
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
-float f_ChargeTerroriserSniper[MAXENTITIES];
 bool b_npcspawnprotection[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
 float f_HighTeslarDebuff[MAXENTITIES];
@@ -371,8 +367,13 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
+#if defined ZR
 int Armor_Level[MAXPLAYERS + 1]={0, ...}; 				//701
 int Jesus_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777
+int i_BadHealthRegen[MAXENTITIES]={0, ...}; 				//805
+bool b_HasGlassBuilder[MAXTF2PLAYERS];
+bool b_LeftForDead[MAXTF2PLAYERS];
+#endif
 float Panic_Attack[MAXENTITIES]={0.0, ...};				//651
 float Mana_Regen_Level[MAXPLAYERS]={0.0, ...};				//405
 int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 				//785
@@ -384,15 +385,12 @@ int i_AresenalTrap[MAXENTITIES]={0, ...}; 				//719
 int i_ArsenalBombImplanter[MAXENTITIES]={0, ...}; 				//544
 int i_NoBonusRange[MAXENTITIES]={0, ...}; 				//410
 int i_BuffBannerPassively[MAXENTITIES]={0, ...}; 				//786
-int i_BadHealthRegen[MAXENTITIES]={0, ...}; 				//805
 
 int i_LowTeslarStaff[MAXENTITIES]={0, ...}; 				//3002
 int i_HighTeslarStaff[MAXENTITIES]={0, ...}; 				//3000
 int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
 bool b_FaceStabber[MAXTF2PLAYERS];
 bool b_IsCannibal[MAXTF2PLAYERS];
-bool b_HasGlassBuilder[MAXTF2PLAYERS];
-bool b_LeftForDead[MAXTF2PLAYERS];
 
 Function EntityFuncAttack[MAXENTITIES];
 Function EntityFuncAttack2[MAXENTITIES];
@@ -453,7 +451,6 @@ bool b_BlockLagCompInternal[MAXENTITIES];
 bool b_Dont_Move_Building[MAXENTITIES];
 bool b_Dont_Move_Allied_Npc[MAXENTITIES];
 int b_BoundingBoxVariant[MAXENTITIES];
-bool b_IsAloneOnServer = false;
 bool b_ThisEntityIgnored[MAXENTITIES];
 bool b_ThisEntityIgnoredEntirelyFromAllCollisions[MAXENTITIES];
 bool b_ThisEntityIsAProjectileForUpdateContraints[MAXENTITIES];
@@ -552,10 +549,7 @@ Address TheNavAreas;
 Address navarea_count;
 
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
-DynamicHook g_DHookMedigunPrimary; 
 
-Handle g_hSDKMakeCarriedObjectDispenser;
-Handle g_hSDKMakeCarriedObjectSentry;
 Handle gH_BotAddCommand = INVALID_HANDLE;
 
 int CurrentGibCount = 0;
@@ -1440,6 +1434,7 @@ public void OnClientDisconnect_Post(int client)
 {
 #if defined ZR
 	ZR_OnClientDisconnect_Post();
+	RequestFrame(CheckIfAloneOnServer);
 #endif
 
 #if defined RPG
@@ -2512,30 +2507,31 @@ public void RemoveNpcThingsAgain(int entity)
 	i_HexCustomDamageTypes[entity] = 0;
 }
 
+#if defined ZR
 public void CheckIfAloneOnServer()
 {
 	b_IsAloneOnServer = false;
 	int players;
 
-#if defined ZR
+//#if defined ZR
 	int player_alone;
-#endif
+//#endif
 
 	for(int client=1; client<=MaxClients; client++)
 	{
 		
-#if defined ZR
+//#if defined ZR
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
-#else
+//#else
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client))
-#endif
+//#endif
 		
 		{
 			players += 1;
 
-#if defined ZR
+//#if defined ZR
 			player_alone = client;
-#endif
+//#endif
 
 		}
 	}
@@ -2544,7 +2540,7 @@ public void CheckIfAloneOnServer()
 		b_IsAloneOnServer = true;	
 	}
 	
-#if defined ZR
+//#if defined ZR
 	if (players < 4 && players > 0)
 	{
 		if (Bob_Exists)
@@ -2559,12 +2555,13 @@ public void CheckIfAloneOnServer()
 		NPC_Despawn_bob(EntRefToEntIndex(Bob_Exists_Index));
 		Bob_Exists_Index = -1;
 	}
-#endif
+//#endif
 
-#if defined RPG
-	CurrentPlayers = players;
-#endif
+//#if defined RPG
+//	CurrentPlayers = players;
+//#endif
 }
+#endif
 
 /*
 //Looping function for above!

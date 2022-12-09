@@ -373,7 +373,6 @@ enum struct Item
 		return true;
 	}
 }
-#endif
 
 static const char AmmoNames[][] =
 {
@@ -405,13 +404,12 @@ static const char AmmoNames[][] =
 	"Potion Supply"
 };
 
-#if defined ZR
 static ArrayList StoreItems;
 static int NPCOnly[MAXTF2PLAYERS];
 static int NPCCash[MAXTF2PLAYERS];
 static int NPCTarget[MAXTF2PLAYERS];
 static bool InLoadoutMenu[MAXTF2PLAYERS];
-#endif
+#endif	// ZR
 
 #if defined RPG
 static ArrayList EquippedItems;
@@ -704,6 +702,10 @@ void Store_OpenItemPage(int client)
 
 void Store_SwapToItem(int client, int swap)
 {
+	int suit = GetEntProp(client, Prop_Send, "m_bWearingSuit");
+	if(!suit)
+		SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
+	
 	char classname[36], buffer[36];
 	GetEntityClassname(swap, classname, sizeof(classname));
 
@@ -732,10 +734,18 @@ void Store_SwapToItem(int client, int swap)
 	}
 
 	FakeClientCommand(client, "use %s", classname);
+
+	if(suit)
+		SetEntProp(client, Prop_Send, "m_bWearingSuit", false);
 }
 
+#if defined ZR
 void Store_SwapItems(int client)
 {
+	//int suit = GetEntProp(client, Prop_Send, "m_bWearingSuit");
+	//if(!suit)
+	//	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
+	
 	int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(active > MaxClients)
 	{
@@ -819,9 +829,11 @@ void Store_SwapItems(int client)
 			}
 		}
 	}
+
+	//if(suit)
+	//	SetEntProp(client, Prop_Send, "m_bWearingSuit", false);
 }
 
-#if defined ZR
 int Store_GetSpecialOfSlot(int client, int slot)
 {
 	if(StoreItems)
@@ -3152,12 +3164,17 @@ void Store_ApplyAttribs(int client)
 	i_BadHealthRegen[client] = 0;
 #endif
 
+#if defined RPG
+	Stats_ClearCustomStats(client);
+#endif
+
 	StringMapSnapshot snapshot = map.Snapshot();
 	int entity = client;
 	int length = snapshot.Length;
+	int attribs;
 	for(int i; i < length; i++)
 	{
-		if(i && !(i % 16))
+		if(attribs && !(attribs % 16))
 		{
 			if(!TF2_GetWearable(client, entity))
 				break;
@@ -3170,27 +3187,39 @@ void Store_ApplyAttribs(int client)
 		if(map.GetValue(buffer1, value))
 		{
 			int index = StringToInt(buffer1);
-			TF2Attrib_SetByDefIndex(entity, index, value);
-			
-#if defined ZR
-			if(index == 701)
-				Armor_Level[client] = RoundToCeil(value);
-				
-			if(index == 777)
-				Jesus_Blessing[client] = RoundToCeil(value);
-				
-			if(index == 785)
-				i_HeadshotAffinity[client] = RoundToCeil(value);
-				
-			if(index == 830)
-				i_BarbariansMind[client] = RoundToCeil(value);
-				
-			if(index == 527)
-				i_SoftShoes[client] = RoundToCeil(value);
-				
-			if(index == 805)
-				i_BadHealthRegen[client] = RoundToCeil(value);
+
+#if defined RPG
+			if(index < 0)
+			{
+				Stats_GetCustomStats(client, index, value);
+			}
+			else
 #endif
+
+			{
+				TF2Attrib_SetByDefIndex(entity, index, value);
+				attribs++;
+				
+#if defined ZR
+				if(index == 701)
+					Armor_Level[client] = RoundToCeil(value);
+					
+				if(index == 777)
+					Jesus_Blessing[client] = RoundToCeil(value);
+					
+				if(index == 785)
+					i_HeadshotAffinity[client] = RoundToCeil(value);
+					
+				if(index == 830)
+					i_BarbariansMind[client] = RoundToCeil(value);
+					
+				if(index == 527)
+					i_SoftShoes[client] = RoundToCeil(value);
+					
+				if(index == 805)
+					i_BadHealthRegen[client] = RoundToCeil(value);
+#endif
+			}
 
 		}
 	}

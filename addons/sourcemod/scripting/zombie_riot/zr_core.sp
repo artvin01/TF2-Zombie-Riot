@@ -106,7 +106,10 @@ Cookie CookieScrap;
 Cookie CookiePlayStreak;
 Cookie CookieCache;
 ArrayList Loadouts[MAXTF2PLAYERS];
+DynamicHook g_DHookMedigunPrimary; 
 
+Handle g_hSDKMakeCarriedObjectDispenser;
+Handle g_hSDKMakeCarriedObjectSentry;
 float f_RingDelayGift[MAXENTITIES];
 
 //custom wave music.
@@ -153,6 +156,14 @@ int Armor_Charge[MAXTF2PLAYERS];
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
 int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
 int i_BarricadesBuild[MAXTF2PLAYERS]={0, ...};
+
+//We kinda check these almost 24/7, its better to put them into an array!
+const int i_MaxcountSpawners = ZR_MAX_SPAWNERS;
+int i_ObjectsSpawners[ZR_MAX_SPAWNERS];
+
+const int i_MaxcountTraps = ZR_MAX_TRAPS;
+int i_ObjectsTraps[ZR_MAX_TRAPS];
+float f_ChargeTerroriserSniper[MAXENTITIES];
 
 //float Resistance_for_building_High[MAXENTITIES];
 int i_WhatBuilding[MAXENTITIES]={0, ...};

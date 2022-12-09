@@ -14,11 +14,26 @@ enum struct MineEnum
 	char Item[48];
 	int Health;
 	int Tier;
+	
+	char Item1[48];
+	float Chance1;
+	int Tier1;
+	
+	char Item2[48];
+	float Chance2;
+	int Tier2;
+	
+	char Item3[48];
+	float Chance3;
+	int Tier3;
 
 	int EntRef;
 	
 	void SetupEnum(KeyValues kv)
 	{
+		kv.GetSectionName(this.Model, PLATFORM_MAX_PATH);
+		ExplodeStringFloat(this.Model, " ", this.Pos, sizeof(this.Pos));
+
 		kv.GetString("zone", this.Zone, 32);
 		
 		kv.GetString("model", this.Model, PLATFORM_MAX_PATH, "models/error.mdl");
@@ -27,7 +42,6 @@ enum struct MineEnum
 		
 		PrecacheModel(this.Model);
 		
-		kv.GetVector("pos", this.Pos);
 		kv.GetVector("ang", this.Ang);
 		kv.GetColor("color", this.Color[0], this.Color[1], this.Color[2], this.Color[3]);
 		this.Scale = kv.GetFloat("scale", 1.0);
@@ -36,7 +50,21 @@ enum struct MineEnum
 		this.Health = kv.GetNum("health");
 		this.Tier = kv.GetNum("tier");
 
+<<<<<<< HEAD
 		this.EntRef = INVALID_ENT_REFERENCE;
+=======
+		kv.GetString("s1_item", this.Item1, 48);
+		this.Chance1 = kv.GetFloat("s1_chance");
+		this.Tier1 = kv.GetNum("s1_tier");
+
+		kv.GetString("s2_item", this.Item2, 48);
+		this.Chance2 = kv.GetFloat("s2_chance");
+		this.Tier2 = kv.GetNum("s2_tier");
+
+		kv.GetString("s3_item", this.Item3, 48);
+		this.Chance3 = kv.GetFloat("s3_chance");
+		this.Tier3 = kv.GetNum("s3_tier");
+>>>>>>> c094c85d3aa07c89823ac778f2f1febd9724b9a8
 	}
 	
 	void Despawn()
