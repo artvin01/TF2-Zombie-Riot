@@ -1460,6 +1460,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 
 #if defined RPG
 	TextStore_PlayerRunCmd(client);
+	Fishing_PlayerRunCmd(client);
 #endif
 
 	if(buttons & IN_ATTACK)

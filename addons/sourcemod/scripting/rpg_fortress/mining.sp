@@ -36,6 +36,8 @@ enum struct MineEnum
 	{
 		kv.GetSectionName(this.Model, PLATFORM_MAX_PATH);
 		ExplodeStringFloat(this.Model, " ", this.Pos, sizeof(this.Pos));
+
+		kv.GetString("zone", this.Zone, 32);
 		
 		kv.GetString("model", this.Model, PLATFORM_MAX_PATH, "models/error.mdl");
 		if(!this.Model[0])
