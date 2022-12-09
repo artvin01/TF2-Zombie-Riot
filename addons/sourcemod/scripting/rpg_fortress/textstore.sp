@@ -674,16 +674,8 @@ static int GetBackpackSize(int client)
 	for(int i; i < length; i++)
 	{
 		Backpack.GetArray(i, pack);
-		if(pack.Owner == client)
-		{
-			int weight = pack.Amount;
-			if(pack.Item == -1)
-			{
-				weight = 1 + weight / 1000;
-			}
-			
-			amount += weight;
-		}
+		if(pack.Owner == client && pack.Item != -1)
+			amount += pack.Amount;
 	}
 
 	return amount;
@@ -997,14 +989,13 @@ static void ShowMenu(int client)
 					if(pack.Amount != 1)
 						Format(name, sizeof(name), "%s x%d", name, pack.Amount);
 					
-					menu.AddItem(index, name);
-
 					if(pack.Item == -1)
 					{
-						amount += 1 + ((pack.Amount - 1) / 1000);
+						menu.InsertItem(0, index, name);
 					}
 					else
 					{
+						menu.AddItem(index, name);
 						amount += pack.Amount;
 					}
 				}
