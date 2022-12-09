@@ -512,7 +512,7 @@ void Manual_Impulse_101(int client, int health)
 #endif
 	
 	SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 0.0);
-	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
+//	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
 //	SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", 0.0); //No cloak regen at all.
 	OnWeaponSwitchPost(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
 	

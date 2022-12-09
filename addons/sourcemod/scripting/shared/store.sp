@@ -702,7 +702,7 @@ void Store_OpenItemPage(int client)
 
 void Store_SwapToItem(int client, int swap)
 {
-	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
+	//SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
 	
 	char classname[36], buffer[36];
 	GetEntityClassname(swap, classname, sizeof(classname));

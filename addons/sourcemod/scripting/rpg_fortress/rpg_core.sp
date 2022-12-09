@@ -29,6 +29,7 @@ int Tier[MAXTF2PLAYERS];
 int Level[MAXENTITIES];
 int Cash[MAXENTITIES];
 int XP[MAXENTITIES];
+bool AllowSwitch[MAXTF2PLAYERS];
 
 char StoreWeapon[MAXENTITIES][48];
 

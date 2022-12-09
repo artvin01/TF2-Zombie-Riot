@@ -48,7 +48,7 @@ void Stats_ShowLevelUp(int client, int oldLevel, int oldTier)
 	}
 	
 	char buffer[64];
-
+	
 	// Backpack
 	int oldAmount, newAmount;
 	Stats_BaseCarry(client, newAmount, _, oldLevel, oldTier);

@@ -1517,7 +1517,6 @@ public void OnWeaponSwitchPost(int client, int weapon)
 
 #if defined RPG
 	TextStore_WeaponSwitch(client, weapon);
-	SetEntProp(client, Prop_Send, "m_bWearingSuit", false);
 #endif
 }
 
