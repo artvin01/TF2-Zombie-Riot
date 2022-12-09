@@ -206,6 +206,7 @@ static int ItemCount[MAXENTITIES];
 static float ItemLifetime[MAXENTITIES];
 static bool InMenu[MAXTF2PLAYERS];
 static int MenuType[MAXTF2PLAYERS];
+static float RefreshAt[MAXTF2PLAYERS];
 
 static void HashCheck()
 {
@@ -224,6 +225,12 @@ static void HashCheck()
 
 				Store_Reset();
 				RPG_PluginEnd();
+
+				for(int client = 1; client <= MaxClients; client++)
+				{
+					if(IsClientInGame(client))
+						CancelClientMenu(client);
+				}
 
 				SPrintToChatAll("The store was reloaded, items and areas were also reloaded!");
 
@@ -682,13 +689,69 @@ static int GetBackpackSize(int client)
 	return amount;
 }
 
+void TextStore_DespoitBackpack(int client, bool death)
+{
+	float pos[3];
+	int amount;
+	int cash;
+
+	if(death)
+		GetClientAbsOrigin(client, pos);
+	
+	for(int i = Backpack.Length - 1; i >= 0; i--)
+	{
+		static BackpackEnum pack;
+		Backpack.GetArray(i, pack);
+		if(pack.Owner == client)
+		{
+			if(death)
+			{
+				DropItem(pack.Item, pos, pack.Amount);
+
+				if(pack.Item == -1)
+				{
+					cash = pack.Amount;
+				}
+				else
+				{
+					amount += pack.Amount;
+				}
+			}
+			else if(pack.Item == -1)
+			{
+				TextStore_Cash(client, pack.Amount);
+			}
+			else
+			{
+				TextStore_GetInv(client, pack.Item, amount);
+				TextStore_SetInv(client, pack.Item, pack.Amount + amount);
+			}
+
+			Backpack.Erase(i);
+		}
+	}
+
+	if(cash && amount)
+	{
+		SPrintToChat(client, "You have dropped %d credits and %d items", cash, amount);
+	}
+	else if(cash)
+	{
+		SPrintToChat(client, "You have dropped %d credits", cash);
+	}
+	else if(amount)
+	{
+		SPrintToChat(client, "You have dropped %d items", amount);
+	}
+}
+
 bool TextStore_Interact(int client, int entity, bool reload)
 {
 	if(ItemCount[entity])
 	{
 		if(reload)
 		{
-			int weight = GetBackpackSize(client);
+			int weight = GetBackpackSize(client) - 1 - Tier[client];
 
 			int i, strength;
 			while(TF2_GetItem(client, strength, i))
@@ -803,17 +866,51 @@ void TextStore_WeaponSwitch(int client, int weapon)
 	if(weapon != -1 && StrEqual(StoreWeapon[weapon], "Backpack"))
 	{
 		MenuType[client] = MENU_BACKPACK;
+		RefreshAt[client] = 1.0;
 	}
 	else if(MenuType[client] == MENU_BACKPACK)
 	{
 		MenuType[client] = MENU_WEAPONS;
 	}
+
+	if(MenuType[client] == MENU_WEAPONS)
+		RefreshAt[client] = 1.0;
 }
 
 void TextStore_PlayerRunCmd(int client)
 {
-	if(InMenu[client] || GetClientMenu(client) == MenuSource_None)
+	if((InMenu[client] || GetClientMenu(client) == MenuSource_None) && IsPlayerAlive(client))
 	{
+		if(InMenu[client])
+		{
+			switch(MenuType[client])
+			{
+				case MENU_SPELLS:
+				{
+					float gameTime = GetGameTime();
+					if(RefreshAt[client] < gameTime)
+					{
+						gameTime += 1.0;
+						if(RefreshAt[client] < gameTime)
+						{
+							RefreshAt[client] = gameTime;
+						}
+						else
+						{
+							RefreshAt[client] += 1.0;
+						}
+					}
+				}
+				default:
+				{
+					if(!RefreshAt[client])
+						return;
+					
+					RefreshAt[client] = 0.0;
+				}
+			}
+		}
+		
 		ShowMenu(client);
 	}
 }
@@ -824,19 +921,214 @@ static void ShowMenu(int client)
 	{
 		case MENU_WEAPONS:
 		{
+			Menu menu = new Menu(TextStore_BackpackMenu);
+
+			menu.SetTitle("RPG Fortress\n \nItems:");
 			
+			int backpack = -1;
+			int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+			int amount;
+			char index[16];
+
+			int i, entity;
+			while(TF2_GetItem(client, entity, i))
+			{
+				if(StrEqual(StoreWeapon[entity], "Backpack"))
+				{
+					backpack = entity;
+				}
+				else
+				{
+					IntToString(EntIndexToEntRef(entity), index, sizeof(index));
+					menu.AddItem(index, StoreWeapon[entity], entity == active ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+					amount++;
+				}
+			}
+
+			while(amount < 8)
+			{
+				menu.AddItem("-1", "");
+				amount++;
+			}
+
+			if(backpack == -1)
+			{
+				menu.AddItem("-1", "Backpack", ITEMDRAW_DISABLED);
+			}
+			else
+			{
+				IntToString(EntIndexToEntRef(backpack), index, sizeof(index));
+				menu.AddItem(index, "Backpack", backpack == active ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			}
+
+			//menu.AddItem("-1", "Spells");
+
+			menu.Pagination = 0;
+			InMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
 		}
 		case MENU_SPELLS:
 		{
-			
+			InMenu[client] = false;
 		}
 		case MENU_BACKPACK:
 		{
-			/*Menu menu = new Menu(TextStore_BackpackMenu);
+			Menu menu = new Menu(TextStore_BackpackMenu);
 
-			menu.SetTitle("RPG Fortress\n \nBackpack:");
+			int amount;
+			int length = Backpack.Length;
+			for(int i; i < length; i++)
+			{
+				static BackpackEnum pack;
+				Backpack.GetArray(i, pack);
+				if(pack.Owner == client)
+				{
+					static char index[16], name[64];
+					IntToString(pack.Item, index, sizeof(index));
+					TextStore_GetItemName(pack.Item, name, sizeof(name));
+					if(pack.Amount != 1)
+						Format(name, sizeof(name), "%s x%d", name, pack.Amount);
+					
+					menu.AddItem(index, name);
 
-			int length = Backpack.Length;*/
+					if(pack.Item == -1)
+					{
+						amount += 1 + ((pack.Amount - 1) / 1000);
+					}
+					else
+					{
+						amount += pack.Amount;
+					}
+				}
+			}
+
+			if(!amount)
+				menu.AddItem(NULL_STRING, "Empty", ITEMDRAW_DISABLED);
+
+			amount -= 1 + Tier[client];
+			
+			int i;
+			while(TF2_GetItem(client, length, i))
+			{
+				amount += 1 + Tier[client];
+			}
+
+			menu.SetTitle("RPG Fortress\n \nBackpack (%d / %d):", amount, Stats_BaseCarry(client));
+
+			InMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
+		}
+		default:
+		{
+			InMenu[client] = false;
 		}
 	}
+}
+
+public int TextStore_WeaponMenu(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			InMenu[client] = false;
+		}
+		case MenuAction_Select:
+		{
+			if(choice == 9)
+			{
+				MenuType[client] = MENU_SPELLS;
+			}
+			else if(IsPlayerAlive(client))
+			{
+				char num[16];
+				menu.GetItem(choice, num, sizeof(num));
+
+				int entity = EntRefToEntIndex(StringToInt(num));
+				if(entity != INVALID_ENT_REFERENCE)
+					Store_SwapToItem(client, entity);
+			}
+
+			ShowMenu(client);
+		}
+	}
+	return 0;
+}
+
+public int TextStore_BackpackMenu(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			InMenu[client] = false;
+
+			switch(choice)
+			{
+				case MenuCancel_ExitBack:
+				{
+					FakeClientCommandEx(client, "sm_inv");
+				}
+				case MenuCancel_Exit:
+				{
+					ClientCommand(client, "lastinv");
+				}
+			}
+		}
+		case MenuAction_Select:
+		{
+			if(IsPlayerAlive(client))
+			{
+				char num[16];
+				menu.GetItem(choice, num, sizeof(num));
+
+				int index = StringToInt(num);
+
+				int length = Backpack.Length;
+				for(int i; i < length; i++)
+				{
+					static BackpackEnum pack;
+					Backpack.GetArray(i, pack);
+					if(pack.Owner == client && pack.Item == index)
+					{
+						float pos[3];
+						GetClientEyePosition(client, pos);
+						if(pack.Item == -1)
+						{
+							length = pack.Amount % 1000;
+							if(!length)
+								length = 1000;
+							
+							DropItem(index, pos, length);
+							pack.Amount -= length;
+						}
+						else
+						{
+							DropItem(index, pos, 1);
+							pack.Amount--;
+						}
+
+						if(pack.Amount)
+						{
+							Backpack.SetArray(i, pack);
+						}
+						else
+						{
+							Backpack.Erase(i);
+						}
+						break;
+					}
+				}
+			}
+
+			ShowMenu(client);
+		}
+	}
+	return 0;
 }

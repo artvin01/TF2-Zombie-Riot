@@ -115,6 +115,11 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	if(client)
 	{
+		
+#if defined RPG
+		TextStore_DespoitBackpack(client, false);
+#endif
+
 		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.0);
 		SetVariantString("");
 	  	AcceptEntityInput(client, "SetCustomModel");
@@ -363,6 +368,7 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	if(client)
 	{
+		
 #if defined ZR
 		Escape_DropItem(client);
 		if(g_CarriedDispenser[client] != INVALID_ENT_REFERENCE)
@@ -384,6 +390,10 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 		Citizen_PlayerDeath(client);
 		Bob_player_killed(event, name, dontBroadcast);
 		RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
+#endif
+
+#if defined RPG
+		TextStore_DespoitBackpack(client, true);
 #endif
 
 		Store_WeaponSwitch(client, -1);
