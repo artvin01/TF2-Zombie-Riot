@@ -3593,14 +3593,6 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 									{
 										i_WeaponCannotHeadshot[entity] = true;
 									}
-									if(info.IsWand)
-									{
-										i_IsWandWeapon[entity] = true;
-									}
-									if(info.IsWrench)
-									{
-										i_IsWrench[entity] = true;
-									}
 									if(info.SemiAuto)
 									{
 										i_SemiAutoWeapon[entity] = true;
@@ -3643,6 +3635,15 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 							SetAmmo(client, 29, 99999);
 							SetEntProp(entity, Prop_Send, "m_iSecondaryAmmoType", 29);
 						}
+					}
+					
+					if(info.IsWand)
+					{
+						i_IsWandWeapon[entity] = true;
+					}
+					if(info.IsWrench)
+					{
+						i_IsWrench[entity] = true;
 					}
 					
 					i_Hex_WeaponUsesTheseAbilities[entity] = 0;
@@ -3921,12 +3922,12 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 						{
 							case 0, 1, 2:
 							{
-								if(info.Index == slot && !info.IsWand && !info.IsWrench)
+								if(info.Index == slot && !i_IsWandWeapon[entity] && !i_IsWrench[entity])
 									apply = true;
 							}
 							case 6:
 							{
-								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !info.IsWand && !info.IsWrench))
+								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !i_IsWandWeapon[entity] && !i_IsWrench[entity]))
 								{
 									apply = true;
 								}
@@ -3938,12 +3939,12 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 							}
 							case 8:
 							{
-								if(slot == TFWeaponSlot_Melee && info.IsWand)
+								if(slot == TFWeaponSlot_Melee && i_IsWandWeapon[entity])
 									apply = true;
 							}
 							case 9:
 							{
-								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !info.IsWand))
+								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !i_IsWandWeapon[entity]))
 									apply = true;
 							}
 							case 10:
@@ -3985,12 +3986,12 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 						{
 							case 0, 1, 2:
 							{
-								if(info.Index2 == slot && !info.IsWand && !info.IsWrench)
+								if(info.Index2 == slot && !i_IsWandWeapon[entity] && !i_IsWrench[entity])
 									apply = true;
 							}
 							case 6:
 							{
-								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !info.IsWand && !info.IsWrench))
+								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !i_IsWandWeapon[entity] && !i_IsWrench[entity]))
 									apply = true;
 							}
 							case 7:
@@ -4000,12 +4001,12 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 							}
 							case 8:
 							{
-								if(slot == TFWeaponSlot_Melee && info.IsWand)
+								if(slot == TFWeaponSlot_Melee && i_IsWandWeapon[entity])
 									apply = true;
 							}
 							case 9:
 							{
-								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !info.IsWand))
+								if(slot == TFWeaponSlot_Secondary || (slot == TFWeaponSlot_Melee && !i_IsWandWeapon[entity]))
 									apply = true;
 							}
 							case 10:
@@ -4092,7 +4093,7 @@ int Store_GiveItem(int client, int index, bool &use, bool &found=false)
 		}
 
 		int itemdefindex = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-		if(itemdefindex == 772 || itemdefindex == 349 || itemdefindex == 30667 || itemdefindex == 200 || itemdefindex == 45 || itemdefindex == 449 || itemdefindex == 773 || itemdefindex == 973 || itemdefindex == 1103 || itemdefindex == 669 || info.IsWand)
+		if(itemdefindex == 772 || itemdefindex == 349 || itemdefindex == 30667 || itemdefindex == 200 || itemdefindex == 45 || itemdefindex == 449 || itemdefindex == 773 || itemdefindex == 973 || itemdefindex == 1103 || itemdefindex == 669 || i_IsWandWeapon[entity])
 		{		
 			TF2Attrib_SetByDefIndex(entity, 49, 1.0);
 		}
