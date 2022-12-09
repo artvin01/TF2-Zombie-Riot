@@ -1062,6 +1062,7 @@ public int TextStore_BackpackMenu(Menu menu, MenuAction action, int client, int 
 				}
 				case MenuCancel_Exit:
 				{
+					SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
 					ClientCommand(client, "lastinv");
 				}
 			}
