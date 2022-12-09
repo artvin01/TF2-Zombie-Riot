@@ -1,23 +1,26 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define ITEM_XP		"Experience Points"
-static int ItemXP = -1;
-
-#define ITEM_TIER	"Elite Promotions"
-static int ItemTier = -1;
-
-enum struct StoreEnum
+enum struct QuestEnum
 {
-	char Tag[16];
+	char Id[16];
+
+
+}
+
+enum struct GiverEnum
+{
+	char Zone[32];
+	char Name[64];
+	ArrayList Quests;
 	
 	char Model[PLATFORM_MAX_PATH];
-	char Intro[64];
-	char Idle[64];
+	char AnimIdle[64];
+	char AnimIntro[64];
+	char AnimLeave[64];
 	float Pos[3];
 	float Ang[3];
 	float Scale;
-	char Enter[64];
 	char Talk[64];
 	char Leave[64];
 	
@@ -27,39 +30,47 @@ enum struct StoreEnum
 	
 	int EntRef;
 	
-	void SetupEnum(KeyValues kv)
+	void Delete()
 	{
-		kv.GetString("tag", this.Tag, 16);
-		
-		kv.GetString("model", this.Model, PLATFORM_MAX_PATH);
-		if(this.Model[0])
+		int length = this.Quests.Length;
+		for(int i; i < length; i++)
 		{
-			this.Scale = kv.GetFloat("scale", 1.0);
-			
-			kv.GetString("anim_enter", this.Intro, 64);
-			kv.GetString("anim_idle", this.Idle, 64);
-			
-			kv.GetVector("pos", this.Pos);
-			kv.GetVector("ang", this.Ang);
-			
-			kv.GetString("wear1", this.Wear1, PLATFORM_MAX_PATH);
-			if(this.Wear1[0])
-				PrecacheModel(this.Wear1);
-			
-			kv.GetString("wear2", this.Wear2, PLATFORM_MAX_PATH);
-			if(this.Wear2[0])
-				PrecacheModel(this.Wear2);
-			
-			kv.GetString("wear3", this.Wear3, PLATFORM_MAX_PATH);
-			if(this.Wear3[0])
-				PrecacheModel(this.Wear3);
+
 		}
 		
-		kv.GetString("sound_enter", this.Enter, 64);
-		if(this.Enter[0])
-			PrecacheScriptSound(this.Enter);
+		delete quest;
+	}
+
+	void SetupEnum(KeyValues kv)
+	{
+		kv.GetSectionName(this.Name, 64);
 		
-		kv.GetString("sound_buy", this.Talk, 64);
+		kv.GetString("model", this.Model, PLATFORM_MAX_PATH, "models/error.mdl");
+		if(!this.Model[0])
+			SetFailState("Missing model in quests.cfg");
+		
+		this.Scale = kv.GetFloat("scale", 1.0);
+		
+		kv.GetString("anim_idle", this.AnimIdle, 64);
+		kv.GetString("anim_talk", this.AnimIntro, 64);
+		kv.GetString("anim_leave", this.AnimLeave, 64);
+		
+		kv.GetVector("pos", this.Pos);
+		kv.GetVector("ang", this.Ang);
+		
+		kv.GetString("wear1", this.Wear1, PLATFORM_MAX_PATH);
+		if(this.Wear1[0])
+			PrecacheModel(this.Wear1);
+		
+		kv.GetString("wear2", this.Wear2, PLATFORM_MAX_PATH);
+		if(this.Wear2[0])
+			PrecacheModel(this.Wear2);
+		
+		kv.GetString("wear3", this.Wear3, PLATFORM_MAX_PATH);
+		if(this.Wear3[0])
+			PrecacheModel(this.Wear3);
+		
+		kv.GetString("sound_talk", this.Talk, 64);
 		if(this.Talk[0])
 			PrecacheScriptSound(this.Talk);
 		
@@ -68,40 +79,32 @@ enum struct StoreEnum
 			PrecacheScriptSound(this.Leave);
 	}
 	
-	void PlayEnter(int client)
+	void PlaySoundAnim(int client, const char[] sound, const char[] anim)
 	{
-		if(this.Enter[0])
+		if(sound[0])
 		{
 			int entity = client;
 			if(this.EntRef != INVALID_ENT_REFERENCE)
 				entity = EntRefToEntIndex(this.EntRef);
 			
-			EmitGameSoundToClient(client, this.Enter, entity);
+			EmitGameSoundToClient(client, sound, entity);
+		}
+
+		if(anim[0])
+		{
+			SetVariantString(anim);
+			AcceptEntityInput(entity, "SetAnimation", entity, entity);
 		}
 	}
-	
-	void PlayBuy(int client)
+
+	void PlayTalk(int client)
 	{
-		if(this.Talk[0])
-		{
-			int entity = client;
-			if(this.EntRef != INVALID_ENT_REFERENCE)
-				entity = EntRefToEntIndex(this.EntRef);
-			
-			EmitGameSoundToClient(client, this.Talk, entity);
-		}
+		this.PlaySoundAnim(client, this.Talk, this.AnimIntro);
 	}
 	
 	void PlayLeave(int client)
 	{
-		if(this.Leave[0])
-		{
-			int entity = client;
-			if(this.EntRef != INVALID_ENT_REFERENCE)
-				entity = EntRefToEntIndex(this.EntRef);
-			
-			EmitGameSoundToClient(client, this.Leave, entity);
-		}
+		this.PlaySoundAnim(client, this.Leave, this.AnimLeave);
 	}
 	
 	void Despawn()
@@ -142,14 +145,8 @@ enum struct StoreEnum
 				
 				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
 				
-				SetVariantString(this.Idle);
+				SetVariantString(this.AnimIdle);
 				AcceptEntityInput(entity, "SetDefaultAnimation", entity, entity);
-				
-				if(this.Intro[0])
-				{
-					SetVariantString(this.Intro);
-					AcceptEntityInput(entity, "SetAnimation", entity, entity);
-				}
 				
 				this.EntRef = EntIndexToEntRef(entity);
 			}
@@ -432,8 +429,7 @@ void TextStore_ZoneLeave(int client, const char[] name)
 	if(InStore[client][0] && StrEqual(name, InStore[client]))
 	{
 		InStore[client][0] = 0;
-		if(!InMenu[client])
-			CancelClientMenu(client);
+		CancelClientMenu(client);
 	}
 }
 
