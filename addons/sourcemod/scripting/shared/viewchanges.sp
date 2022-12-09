@@ -141,11 +141,8 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 
 				int itemdefindex = GetEntProp(active, Prop_Send, "m_iItemDefinitionIndex");
 				
-				TFClassType class = TFClass_Engineer;
-				if(itemdefindex != 25)
-					class = TF2_GetWeaponClass(itemdefindex, CurrentClass[client], TF2_GetClassnameSlot(buffer, true));
+				TFClassType class = TF2_GetWeaponClass(itemdefindex, CurrentClass[client], TF2_GetClassnameSlot(buffer, true));
 
-				PrintToChatAll("Index: %d | Class: %d", itemdefindex, class);
 				SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[class]);
 
 				entity = CreateEntityByName("tf_wearable_vm");
