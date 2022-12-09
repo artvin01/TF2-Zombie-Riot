@@ -67,8 +67,11 @@ public void Configs_ConfigsExecuted()
 #endif
 	
 #if defined RPG
+	Mining_ConfigSetup(kv);
 	Spawns_ConfigSetup(kv);
 	TextStore_ConfigSetup(kv);
+
+	Zones_ConfigsSetupPost();
 #endif
 
 	delete kv;

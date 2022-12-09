@@ -570,7 +570,7 @@ bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 }
 #endif	// ZR
 
-bool Store_ActiveCanMulti(int client)
+stock bool Store_ActiveCanMulti(int client)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon != -1)
@@ -3467,7 +3467,7 @@ void Delete_Clip_again(int entity)
 	}
 }
 
-void Store_RemoveNullWeapons(int client)
+stock void Store_RemoveNullWeapons(int client)
 {
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))

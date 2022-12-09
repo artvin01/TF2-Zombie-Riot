@@ -1987,6 +1987,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_NpcHasDied[entity] = true;
 		
 #if defined RPG
+		RPG_EntityCreated(entity);
 		TextStore_EntityCreated(entity);
 #endif
 

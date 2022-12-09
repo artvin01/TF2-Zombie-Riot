@@ -1,30 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char MiningLevels[][] =
-{
-	"Wooden (0)",
-	"Stone (1)",
-	"Bronze (2)",
-	"Iron (3)",
-	"Steel (4)",
-	"Diamond (5)",
-	"Emerald (6)",
-	"Obsidian (7)"
-};
-
-static const char FishingLevels[][] =
-{
-	"Leaf (0)",
-	"Feather (1)",
-	"Silk (2)",
-	"Wire (3)",
-	"IV Cable (4)",
-	"Carving Tool (5)",
-	"MV Cable (6)",
-	"HV Cable (7)"
-};
-
 
 static KeyValues HashKey;
 
@@ -508,7 +484,6 @@ public void TextStore_OnCatalog(int client)
 void TextStore_EntityCreated(int entity)
 {
 	ItemCount[entity] = 0;
-	StoreWeapon[entity][0] = 0;
 }
 
 void TextStore_DropCash(float pos[3], int amount)

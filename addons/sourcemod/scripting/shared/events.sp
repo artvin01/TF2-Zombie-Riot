@@ -335,6 +335,8 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		{
 			SetAmmo(client, i, CurrentAmmo[client][i]);
 		}
+
+		SetEntProp(client, Prop_Send, "m_bWearingSuit", false);
 #endif
 
 	}

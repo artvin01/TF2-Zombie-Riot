@@ -147,42 +147,36 @@ void Spawns_MapEnd()
 
 void Spawns_DisableSpawn(const char[] name)
 {
-	if(SpawnList)
+	ArrayList list = new ArrayList();
+
+	int length = SpawnList.Length;
+	for(int i; i < length; i++)
 	{
-		ArrayList list = new ArrayList();
-
-		int length = SpawnList.Length;
-		for(int i; i < length; i++)
-		{
-			static SpawnEnum spawn;
-			SpawnList.GetArray(i, spawn);
-			if(StrEqual(spawn.Zone, name))
-				list.Push(i);
-		}
-
-		int i = MaxClients + 1;
-		while((i = FindEntityByClassname(i, "base_boss")) != -1)
-		{
-			if(list.FindValue(hFromSpawnerIndex[i]) != -1)
-				NPC_Despawn(i);
-		}
-
-		delete list;
+		static SpawnEnum spawn;
+		SpawnList.GetArray(i, spawn);
+		if(StrEqual(spawn.Zone, name))
+			list.Push(i);
 	}
+
+	int i = MaxClients + 1;
+	while((i = FindEntityByClassname(i, "base_boss")) != -1)
+	{
+		if(list.FindValue(hFromSpawnerIndex[i]) != -1)
+			NPC_Despawn(i);
+	}
+
+	delete list;
 }
 
 void Spawns_UpdateSpawn(const char[] name)
 {
-	if(SpawnList)
+	int length = SpawnList.Length;
+	for(int i; i < length; i++)
 	{
-		int length = SpawnList.Length;
-		for(int i; i < length; i++)
-		{
-			static SpawnEnum spawn;
-			SpawnList.GetArray(i, spawn);
-			if(StrEqual(spawn.Zone, name))
-				UpdateSpawn(i, spawn, true);
-		}
+		static SpawnEnum spawn;
+		SpawnList.GetArray(i, spawn);
+		if(StrEqual(spawn.Zone, name))
+			UpdateSpawn(i, spawn, true);
 	}
 }
 

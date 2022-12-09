@@ -5,9 +5,17 @@ static ArrayList ActiveZones;
 
 void Zones_PluginStart()
 {
-	char name[32];
-	ActiveZones = new ArrayList(ByteCountToCells(sizeof(name)));
+	ActiveZones = new ArrayList(ByteCountToCells(32));
 	
+	HookEntityOutput("trigger_multiple", "OnStartTouch", Zones_StartTouch);
+	HookEntityOutput("trigger_multiple", "OnStartTouchAll", Zones_StartTouchAll);
+	HookEntityOutput("trigger_multiple", "OnEndTouch", Zones_EndTouch);
+	HookEntityOutput("trigger_multiple", "OnEndTouchAll", Zones_EndTouchAll);
+}
+
+void Zones_ConfigsSetupPost()
+{
+	char name[32];
 	HookEntityOutput("trigger_multiple", "OnTouching", Zones_StartTouchAll);
 	
 	int entity = -1;
@@ -18,11 +26,6 @@ void Zones_PluginStart()
 	}
 	
 	UnhookEntityOutput("trigger_multiple", "OnTouching", Zones_StartTouchAll);
-	
-	HookEntityOutput("trigger_multiple", "OnStartTouch", Zones_StartTouch);
-	HookEntityOutput("trigger_multiple", "OnStartTouchAll", Zones_StartTouchAll);
-	HookEntityOutput("trigger_multiple", "OnEndTouch", Zones_EndTouch);
-	HookEntityOutput("trigger_multiple", "OnEndTouchAll", Zones_EndTouchAll);
 }
 
 static void OnEnter(int client, const char[] name)
@@ -37,11 +40,13 @@ static void OnLeave(int client, const char[] name)
 
 static void OnActive(const char[] name)
 {
+	Mining_EnableZone(name);
 	Spawns_UpdateSpawn(name);
 }
 
 static void OnDisable(const char[] name)
 {
+	Mining_DisableZone(name);
 	Spawns_DisableSpawn(name);
 	TextStore_ZoneAllLeave(name);
 }

@@ -46,26 +46,6 @@ stock Function ValToFunc(any val)
 	return val;
 }
 
-stock void SetActiveWeapon(int client, int entity)
-{
-	int holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(holding > MaxClients && HasEntProp(holding, Prop_Send, "m_flChargeLevel"))
-		SetEntPropFloat(holding, Prop_Send, "m_flChargeLevel", 0.0);
-
-	TF2Attrib_SetByDefIndex(client, 698, 0.0);
-	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
-
-	//static char buffer[36];
-	//GetEntityClassname(entity, buffer, sizeof(buffer));
-	//FakeClientCommand(client, "use %s", buffer);	//TODO: Rare bug where client is just deleted
-	SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", entity);
-
-	TF2Attrib_SetByDefIndex(client, 698, 1.0);
-	SetEntProp(client, Prop_Send, "m_bWearingSuit", false);
-
-//	ViewChange_Switch(client, entity);
-}
-
 stock int GetSpellbook(int client)
 {
 	int i, entity;
