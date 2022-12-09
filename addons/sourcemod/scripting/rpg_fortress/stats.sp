@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define MACRO_SHOWDIFF(%1)	if(oldAmount != newAmount) { FormatEx(buffer, sizeof(buffer), "%s (%d -> %d)", %1, oldAmount, newAmount); menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED); }
+
 static int BackpackBonus[MAXTF2PLAYERS];
 
 void Stats_ClearCustomStats(int client)
@@ -56,17 +58,18 @@ void Stats_ShowLevelUp(int client, int oldLevel, int oldTier)
 	}
 	
 	char buffer[64];
-
-	// Backpack
 	int oldAmount, newAmount;
+
+	// Health
 	Stats_BaseCarry(client, newAmount, _, oldLevel, oldTier);
 	Stats_BaseCarry(client, oldAmount);
+	//MACRO_SHOWDIFF("Max Health");
+	//if(oldAmount != newAmount) { FormatEx(buffer, sizeof(buffer), "%s (%d -> %d)", "Max Health", oldAmount, newAmount); menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED); }
 
-	if(oldAmount != newAmount)
-	{
-		FormatEx(buffer, sizeof(buffer), "Backpack Storage (%d -> %d)", oldAmount, newAmount);
-		menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
-	}
+	// Backpack
+	Stats_BaseCarry(client, newAmount, _, oldLevel, oldTier);
+	Stats_BaseCarry(client, oldAmount);
+	//MACRO_SHOWDIFF("Backpack Storage");
 }
 
 public int Stats_ShowLevelUpH(Menu menu, MenuAction action, int client, int choice)

@@ -888,7 +888,7 @@ static void ShowMenu(int client)
 	{
 		case MENU_WEAPONS:
 		{
-			Menu menu = new Menu(TextStore_BackpackMenu);
+			Menu menu = new Menu(TextStore_WeaponMenu);
 
 			menu.SetTitle("RPG Fortress\n \nItems:");
 			

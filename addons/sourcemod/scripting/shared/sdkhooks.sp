@@ -1517,7 +1517,8 @@ public void OnWeaponSwitchPost(int client, int weapon)
 
 #if defined RPG
 	TextStore_WeaponSwitch(client, weapon);
-	TF2Attrib_SetByDefIndex(client, 698, 1.0);
+	//TF2Attrib_SetByDefIndex(client, 698, 1.0);
+	SetEntProp(client, Prop_Send, "m_bWearingSuit", false);
 #endif
 }
 
