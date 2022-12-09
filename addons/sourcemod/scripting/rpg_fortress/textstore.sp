@@ -984,7 +984,16 @@ static void ShowMenu(int client)
 				{
 					static char index[16], name[64];
 					IntToString(pack.Item, index, sizeof(index));
-					TextStore_GetItemName(pack.Item, name, sizeof(name));
+
+					if(pack.Item == -1)
+					{
+						strcopy(name, sizeof(name), "Credits");
+					}
+					else
+					{
+						TextStore_GetItemName(pack.Item, name, sizeof(name));
+					}
+					
 					if(pack.Amount != 1)
 						Format(name, sizeof(name), "%s x%d", name, pack.Amount);
 					
