@@ -278,8 +278,8 @@ static bool ShouldShowPointer(int client, int entity)
 	}
 	while(QuestKv.GotoNextKey());
 	return false;
-}
-*/
+}*/
+
 bool Quests_Interact(int client, int entity)
 {
 	QuestKv.Rewind();
@@ -322,20 +322,6 @@ static void MainMenu(int client)
 		QuestKv.GotoFirstSubKey();
 		do
 		{
-			QuestKv.GetString("complete", buffer, sizeof(buffer));
-			if(name[0])
-			{
-				int progress;
-				if(SaveKv.JumpToKey(buffer))
-				{
-					progress = SaveKv.GetNum(steamid);
-					SaveKv.GoBack();
-				}
-
-				if(progress != Status_Completed)
-					continue;
-			}
-
 			QuestKv.GetSectionName(name, sizeof(name));
 
 			int level = QuestKv.GetNum("level");
