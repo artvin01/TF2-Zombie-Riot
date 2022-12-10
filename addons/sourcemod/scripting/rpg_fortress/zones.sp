@@ -31,7 +31,7 @@ void Zones_ConfigsSetupPost()
 static void OnEnter(int client, const char[] name)
 {
 	TextStore_ZoneEnter(client, name);
-	Quests_ZoneCheckQuestExistant(client, name);
+	Quests_EnableZone(client, name);
 }
 
 static void OnLeave(int client, const char[] name)
@@ -42,7 +42,6 @@ static void OnLeave(int client, const char[] name)
 static void OnActive(const char[] name)
 {
 	Mining_EnableZone(name);
-	Quests_EnableZone(name);
 	Spawns_UpdateSpawn(name);
 }
 
@@ -90,7 +89,7 @@ public Action Zones_StartTouchAll(const char[] output, int entity, int caller, f
 	if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 	{
 		ActiveZones.PushString(name);
-		OnActive(name, client);
+		OnActive(name);
 	}
 	return Plugin_Continue;
 }

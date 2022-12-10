@@ -103,27 +103,7 @@ void Quests_ConfigSetup(KeyValues map)
 	SaveKv.ImportFromFile(buffer);
 }
 
-void Quests_ZoneCheckQuestExistant(int client, const char[] name)
-{
-	QuestKv.Rewind();
-	QuestKv.GotoFirstSubKey();
-	do
-	{
-		static char buffer[PLATFORM_MAX_PATH];
-		QuestKv.GetString("zone", buffer, sizeof(buffer));
-		if(StrEqual(buffer, name, false))
-		{
-			int entity = EntRefToEntIndex(QuestKv.GetNum("_entref", INVALID_ENT_REFERENCE));
-			if(entity != INVALID_ENT_REFERENCE)
-			{
-				b_NpcHasQuestForPlayer[entity][client] = ShouldShowPointer(client, entity);
-			}
-		}
-	}
-
-}
-
-void Quests_EnableZone(const char[] name)
+void Quests_EnableZone(int client, const char[] name)
 {
 	QuestKv.Rewind();
 	QuestKv.GotoFirstSubKey();
@@ -251,10 +231,12 @@ static bool ShouldShowPointer(int client, int entity)
 	{
 		if(EntRefToEntIndex(QuestKv.GetNum("_entref", INVALID_ENT_REFERENCE)) == entity)
 		{
+			static char steamid[64], buffer[64];
+			QuestKv.GetSectionName(buffer, sizeof(buffer));
+
 			SaveKv.Rewind();
-			SaveKv.JumpToKey(CurrentNPC[client], true);
+			SaveKv.JumpToKey(buffer, true);
 			
-			static char steamid[64], buffer[256];
 			if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
 			{
 				QuestKv.GotoFirstSubKey();
@@ -263,6 +245,7 @@ static bool ShouldShowPointer(int client, int entity)
 					int level = QuestKv.GetNum("level");
 					if(Level[client] >= level)
 					{
+						QuestKv.GetSectionName(buffer, sizeof(buffer));
 						if(SaveKv.JumpToKey(buffer, true))
 						{
 							switch(SaveKv.GetNum(steamid))
