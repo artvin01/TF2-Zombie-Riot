@@ -3401,7 +3401,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 					}
 
 					Store_GiveItem(client, i, use, found);
-					if(++count > 7)
+					if(++count > 6)
 					{
 						SetGlobalTransTarget(client);
 						PrintToChat(client, "%t", "At Weapon Limit");
@@ -3422,6 +3422,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 
 #if defined RPG
 	Store_GiveItem(client, -2);
+	Store_GiveItem(client, -3);
 #endif
 	
 	CheckMultiSlots(client);
@@ -3755,6 +3756,12 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	else if(index == -2)
 	{
 		entity = SpawnWeapon(client, "tf_weapon_pistol", 25, 1, 0, {128, 301, 821}, {1.0, 1.0, 1.0}, 3);
+		if(entity > MaxClients)
+			strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Backpack");
+	}
+	else if(index == -3)
+	{
+		entity = SpawnWeapon(client, "tf_weapon_pistol", 26, 1, 0, {128, 301, 821}, {1.0, 1.0, 1.0}, 3);
 		if(entity > MaxClients)
 			strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Backpack");
 	}

@@ -770,7 +770,7 @@ bool TextStore_Interact(int client, int entity, bool reload)
 			int strength;
 			if(ItemIndex[entity] != -1)
 			{
-				weight = GetBackpackSize(client) - 1 - Tier[client];
+				weight = GetBackpackSize(client) - 2 - (2 * Tier[client]);
 
 				int i;
 				while(TF2_GetItem(client, strength, i))
@@ -1055,7 +1055,7 @@ static void ShowMenu(int client, int page = 0)
 			if(!found)
 				menu.AddItem(NULL_STRING, "Empty", ITEMDRAW_DISABLED);
 
-			amount -= 1 + Tier[client];
+			amount -= 2 + (2 * Tier[client]);
 			
 			int i;
 			while(TF2_GetItem(client, length, i))
@@ -1065,6 +1065,7 @@ static void ShowMenu(int client, int page = 0)
 
 			menu.SetTitle("RPG Fortress\n \nBackpack (%d / %d):", amount, Stats_BaseCarry(client));
 
+			menu.ExitBackButton = true;
 			InMenu[client] = menu.DisplayAt(client, page / 7 * 7, MENU_TIME_FOREVER);
 		}
 		default:
@@ -1147,6 +1148,7 @@ public int TextStore_BackpackMenu(Menu menu, MenuAction action, int client, int 
 				{
 					SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
 					ClientCommand(client, "lastinv");
+					ClientCommand(client, "slot3");
 				}
 			}
 		}

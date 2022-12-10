@@ -404,20 +404,16 @@ static void MainMenu(int client)
 	menu.Display(client, MENU_TIME_FOREVER);
 }
 
-static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "")
+static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "", Menu book = null)
 {
 	bool canTurnIn = true;
 	static char buffer[64];
 
-	QuestKv.GetSectionName(buffer, sizeof(buffer));
-	PrintToChatAll("0 = Section = %s", buffer);
-
 	if(QuestKv.JumpToKey("obtain"))
 	{
-		QuestKv.GetSectionName(buffer, sizeof(buffer));
-		PrintToChatAll("1 = Section = %s", buffer);
+		if(!book)
+			Format(title, sizeof(title), "%s\n \nObtain:", title);
 		
-		Format(title, sizeof(title), "%s\n \nObtain:", title);
 		if(QuestKv.GotoFirstSubKey(false))
 		{
 			do
@@ -426,7 +422,15 @@ static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "
 				int need = QuestKv.GetNum(NULL_STRING, 1);
 				int count = TextStore_GetItemCount(client, buffer);
 
-				Format(title, sizeof(title), "%s\n%s (%d / %d)", title, buffer, count, need);
+				if(book)
+				{
+					Format(buffer, sizeof(buffer), "%s (%d / %d)", buffer, count, need);
+					book.AddItem(NULL_STRING, buffer);
+				}
+				else
+				{
+					Format(title, sizeof(title), "%s\n%s (%d / %d)", title, buffer, count, need);
+				}
 
 				if(count < need)
 					canTurnIn = false;
@@ -436,21 +440,14 @@ static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "
 			QuestKv.GoBack();
 		}
 
-		QuestKv.GetSectionName(buffer, sizeof(buffer));
-		PrintToChatAll("2 = Section = %s", buffer);
-
 		QuestKv.GoBack();
-
-		QuestKv.GetSectionName(buffer, sizeof(buffer));
-		PrintToChatAll("3 = Section = %s", buffer);
 	}
 
 	if(QuestKv.JumpToKey("give"))
 	{
-		QuestKv.GetSectionName(buffer, sizeof(buffer));
-		PrintToChatAll("4 = Section = %s", buffer);
-
-		Format(title, sizeof(title), "%s\n \nGive:", title);
+		if(!book)
+			Format(title, sizeof(title), "%s\n \nGive:", title);
+		
 		if(QuestKv.GotoFirstSubKey(false))
 		{
 			do
@@ -459,7 +456,15 @@ static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "
 				int need = QuestKv.GetNum(NULL_STRING, 1);
 				int count = TextStore_GetItemCount(client, buffer);
 
-				Format(title, sizeof(title), "%s\n%s (%d / %d)", title, buffer, count, need);
+				if(book)
+				{
+					Format(buffer, sizeof(buffer), "%s (%d / %d)", buffer, count, need);
+					book.AddItem(NULL_STRING, buffer);
+				}
+				else
+				{
+					Format(title, sizeof(title), "%s\n%s (%d / %d)", title, buffer, count, need);
+				}
 
 				if(count < need)
 					canTurnIn = false;
@@ -469,32 +474,23 @@ static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "
 			QuestKv.GoBack();
 		}
 
-		QuestKv.GetSectionName(buffer, sizeof(buffer));
-		PrintToChatAll("5 = Section = %s", buffer);
-
 		QuestKv.GoBack();
-
-		QuestKv.GetSectionName(buffer, sizeof(buffer));
-		PrintToChatAll("6 = Section = %s", buffer);
 	}
 
 	if(QuestKv.JumpToKey("kill"))
 	{
-		QuestKv.GetSectionName(buffer, sizeof(buffer));
-		PrintToChatAll("7 = Section = %s", buffer);
-
 		SaveKv.Rewind();
 		SaveKv.JumpToKey("_kills", true);
 
-		Format(title, sizeof(title), "%s\n \nKill:", title);
+		if(!book)
+			Format(title, sizeof(title), "%s\n \nKill:", title);
+		
 		if(QuestKv.GotoFirstSubKey(false))
 		{
-			PrintToChatAll("Found subsection");
 			do
 			{
 				QuestKv.GetSectionName(buffer, sizeof(buffer));
 				int need = QuestKv.GetNum(NULL_STRING, 1);
-				PrintToChatAll("%s = %d", buffer, need);
 
 				int count;
 				if(SaveKv.JumpToKey(buffer, true))
@@ -503,7 +499,18 @@ static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "
 					SaveKv.GoBack();
 				}
 
-				Format(title, sizeof(title), "%s\n%s (%d / %d)", title, buffer, count, need);
+				if(book)
+				{
+					if(need > count)
+					{
+						Format(buffer, sizeof(buffer), "Kill %s %d more times", buffer, need - count);
+						book.AddItem(NULL_STRING, buffer);
+					}
+				}
+				else
+				{
+					Format(title, sizeof(title), "%s\n%s (%d / %d)", title, buffer, count, need);
+				}
 
 				if(count < need)
 					canTurnIn = false;
@@ -513,27 +520,21 @@ static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "
 			QuestKv.GoBack();
 		}
 		
-		QuestKv.GetSectionName(buffer, sizeof(buffer));
-		PrintToChatAll("8 = Section = %s", buffer);
-
 		QuestKv.GoBack();
-		
-		QuestKv.GetSectionName(buffer, sizeof(buffer));
-		PrintToChatAll("9 = Section = %s", buffer);
 	}
 
 	if(QuestKv.JumpToKey("equip"))
 	{
-		QuestKv.GetSectionName(buffer, sizeof(buffer));
-		PrintToChatAll("10 = Section = %s", buffer);
-
-		Format(title, sizeof(title), "%s\n \nEquip:", title);
+		if(!book)
+			Format(title, sizeof(title), "%s\n \nEquip:", title);
+		
 		if(QuestKv.GotoFirstSubKey(false))
 		{
 			do
 			{
 				QuestKv.GetSectionName(buffer, sizeof(buffer));
-				Format(title, sizeof(title), "%s\n%s", title, buffer);
+				if(!book)
+					Format(title, sizeof(title), "%s\n%s", title, buffer);
 
 				if(canTurnIn)
 				{
@@ -554,14 +555,8 @@ static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "
 
 			QuestKv.GoBack();
 		}
-		
-		QuestKv.GetSectionName(buffer, sizeof(buffer));
-		PrintToChatAll("11 = Section = %s", buffer);
 
 		QuestKv.GoBack();
-		
-		QuestKv.GetSectionName(buffer, sizeof(buffer));
-		PrintToChatAll("12 = Section = %s", buffer);
 	}
 
 	return canTurnIn;
@@ -574,6 +569,19 @@ public int Quests_MenuHandle(Menu menu2, MenuAction action, int client, int choi
 		case MenuAction_End:
 		{
 			delete menu2;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_Exit)
+			{
+				QuestKv.Rewind();
+				if(QuestKv.JumpToKey(CurrentNPC[client]))
+				{
+					int entity = EntRefToEntIndex(QuestKv.GetNum("_entref", INVALID_ENT_REFERENCE));
+					if(entity != INVALID_ENT_REFERENCE)
+						MakeInteraction(client, entity, "sound_leave", "anim_leave");
+				}
+			}
 		}
 		case MenuAction_Select:
 		{
@@ -589,9 +597,6 @@ public int Quests_MenuHandle(Menu menu2, MenuAction action, int client, int choi
 					//Format(title, sizeof(title), "%s\n%s\n \n%s", CurrentNPC[client], name, title);
 
 					bool canTurnIn = CanTurnInQuest(client, steamid, title);
-
-					QuestKv.GetSectionName(name, sizeof(name));
-					PrintToChatAll("Section = %s", name);
 
 					SaveKv.Rewind();
 					SaveKv.JumpToKey(CurrentNPC[client], true);
@@ -676,12 +681,10 @@ public int Quests_QuestHandle(Menu menu2, MenuAction action, int client, int cho
 			menu2.GetItem(choice, name, sizeof(name));
 			if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
 			{
-				PrintToChatAll(CurrentNPC[client]);
 				QuestKv.Rewind();
 				if(QuestKv.JumpToKey(CurrentNPC[client]))
 				{
 					int entity = EntRefToEntIndex(QuestKv.GetNum("_entref", INVALID_ENT_REFERENCE));
-					PrintToChatAll("%d - %s", entity, name);
 					if(QuestKv.JumpToKey(name))
 					{
 						SaveKv.Rewind();
@@ -689,7 +692,6 @@ public int Quests_QuestHandle(Menu menu2, MenuAction action, int client, int cho
 						SaveKv.JumpToKey(name, true);
 						
 						int progress = SaveKv.GetNum(steamid);
-						PrintToChatAll("%d", progress);
 						switch(progress)
 						{
 							case Status_NotStarted, Status_Completed:
@@ -803,4 +805,86 @@ public int Quests_QuestHandle(Menu menu2, MenuAction action, int client, int cho
 		}
 	}
 	return 0;
+}
+
+void Quests_WeaponSwitch(int client, int weapon)
+{
+	if(weapon != -1 && StrEqual(StoreWeapon[weapon], "Quest Book"))
+	{
+		Menu menu = new Menu(Quests_BookHandle);
+		menu.SetTitle("RPG Fortress\n \nObjectives:");
+
+		static char steamid[64], name[64], buffer[64];
+		if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
+		{
+			QuestKv.Rewind();
+			QuestKv.GotoFirstSubKey();
+			do
+			{
+				QuestKv.GetSectionName(name, sizeof(name));
+				if(QuestKv.GotoFirstSubKey())
+				{
+					do
+					{
+						SaveKv.Rewind();
+						if(SaveKv.JumpToKey(name))
+						{
+							QuestKv.GetSectionName(buffer, sizeof(buffer));
+							if(SaveKv.JumpToKey(buffer))
+							{
+								if(SaveKv.GetNum(steamid) == Status_InProgress)
+								{
+									if(CanTurnInQuest(client, steamid))
+									{
+										Format(buffer, sizeof(buffer), "Talk to %s");
+										menu.AddItem(NULL_STRING, "");
+									}
+									else
+									{
+
+									}
+								}
+							}
+						}
+					}
+					while(QuestKv.GotoNextKey());
+				}
+			}
+			while(QuestKv.GotoNextKey());
+		}
+
+		if(!menu.ItemCount)
+		{
+			menu.AddItem(NULL_STRING, "  No active quests, talk to", ITEMDRAW_DISABLED);
+			menu.AddItem(NULL_STRING, "a NPC with a spark above them.", ITEMDRAW_DISABLED);
+		}
+
+		menu.Display(client, MENU_TIME_FOREVER);
+	}
+}
+
+public int Quests_BookHandle(Menu menu2, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu2;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_Exit)
+			{
+				SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
+				ClientCommand(client, "lastinv");
+				ClientCommand(client, "slot3");
+			}
+		}
+		case MenuAction_Select:
+		{
+			SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
+			ClientCommand(client, "lastinv");
+			ClientCommand(client, "slot3");
+		}
+	}
 }

@@ -61,13 +61,13 @@ void Stats_ShowLevelUp(int client, int oldLevel, int oldTier)
 	int oldAmount, newAmount;
 
 	// Health
-	Stats_BaseCarry(client, newAmount, _, oldLevel, oldTier);
-	Stats_BaseCarry(client, oldAmount);
+	Stats_BaseHealth(client, oldAmount, _, oldLevel, oldTier);
+	Stats_BaseHealth(client, newAmount);
 	MACRO_SHOWDIFF("Max Health")
 
 	// Backpack
-	Stats_BaseCarry(client, newAmount, _, oldLevel, oldTier);
-	Stats_BaseCarry(client, oldAmount);
+	Stats_BaseCarry(client, oldAmount, _, oldLevel, oldTier);
+	Stats_BaseCarry(client, newAmount);
 	MACRO_SHOWDIFF("Backpack Storage")
 
 	menu.Display(client, MENU_TIME_FOREVER);
