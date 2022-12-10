@@ -203,7 +203,7 @@ static void MakeInteraction(int client, int entity, const char[] sound, const ch
 		AcceptEntityInput(entity, "SetAnimation", entity, entity);
 	}
 }
-/*
+
 static bool ShouldShowPointer(int client, int entity)
 {
 	QuestKv.Rewind();
@@ -215,28 +215,12 @@ static bool ShouldShowPointer(int client, int entity)
 			SaveKv.Rewind();
 			SaveKv.JumpToKey(CurrentNPC[client], true);
 			
-			static char steamid[64], name[64], buffer[256];
+			static char steamid[64], buffer[256];
 			if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
 			{
 				QuestKv.GotoFirstSubKey();
 				do
 				{
-					QuestKv.GetString("complete", buffer, sizeof(buffer));
-					if(name[0])
-					{
-						int progress;
-						if(SaveKv.JumpToKey(buffer))
-						{
-							progress = SaveKv.GetNum(steamid);
-							SaveKv.GoBack();
-						}
-
-						if(progress != Status_Completed)
-							continue;
-					}
-
-					QuestKv.GetSectionName(name, sizeof(name));
-
 					int level = QuestKv.GetNum("level");
 					if(Level[client] >= level)
 					{
@@ -246,38 +230,33 @@ static bool ShouldShowPointer(int client, int entity)
 							{
 								case Status_NotStarted, Status_Canceled:
 								{
-									menu.AddItem(name, name);
+									return true;
 								}
 								case Status_InProgress:
 								{
-									menu.InsertItem(0, name, name);
+									if(CanTurnInQuest(client, steamid))
+										return true;
 								}
 								case Status_Completed:
 								{
 									if(QuestKv.GetNum("repeatable"))
-										menu.AddItem(name, name);
+										return true;
 								}
 							}
 
 							SaveKv.GoBack();
 						}
 					}
-					else
-					{
-						GetDisplayString(level, buffer, sizeof(buffer));
-						Format(buffer, sizeof(buffer), "%s (%s)", name, buffer);
-						menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
-					}
 				}
 				while(QuestKv.GotoNextKey());
 			}
-
-			menu.Display(client, MENU_TIME_FOREVER);
+			
+			break;
 		}
 	}
 	while(QuestKv.GotoNextKey());
 	return false;
-}*/
+}
 
 bool Quests_Interact(int client, int entity)
 {
@@ -510,7 +489,7 @@ public int Quests_MenuHandle(Menu menu2, MenuAction action, int client, int choi
 					//Format(title, sizeof(title), "%s\n%s\n \n%s", CurrentNPC[client], name, title);
 
 					bool canTurnIn = progress == Status_InProgress;
-					if(!CanTurnInQuest(client, steamid, title))
+					if(canTurnIn && !CanTurnInQuest(client, steamid, title))
 						canTurnIn = false;
 
 					if(QuestKv.JumpToKey("reward"))
