@@ -12,6 +12,7 @@ enum
 static KeyValues QuestKv;
 static KeyValues SaveKv;
 static char CurrentNPC[MAXTF2PLAYERS][64];
+static bool b_NpcHasQuestForPlayer[MAXENTITIES][MAXTF2PLAYERS];
 
 static void ForceSave(int client)
 {
@@ -102,6 +103,26 @@ void Quests_ConfigSetup(KeyValues map)
 	SaveKv.ImportFromFile(buffer);
 }
 
+void Quests_ZoneCheckQuestExistant(int client, const char[] name)
+{
+	QuestKv.Rewind();
+	QuestKv.GotoFirstSubKey();
+	do
+	{
+		static char buffer[PLATFORM_MAX_PATH];
+		QuestKv.GetString("zone", buffer, sizeof(buffer));
+		if(StrEqual(buffer, name, false))
+		{
+			int entity = EntRefToEntIndex(QuestKv.GetNum("_entref", INVALID_ENT_REFERENCE));
+			if(entity != INVALID_ENT_REFERENCE)
+			{
+				b_NpcHasQuestForPlayer[entity][client] = ShouldShowPointer(client, entity);
+			}
+		}
+	}
+
+}
+
 void Quests_EnableZone(const char[] name)
 {
 	QuestKv.Rewind();
@@ -110,11 +131,9 @@ void Quests_EnableZone(const char[] name)
 	{
 		static char buffer[PLATFORM_MAX_PATH];
 		QuestKv.GetString("zone", buffer, sizeof(buffer));
-		PrintToChatAll("'%s' == '%s'", name, buffer);
 		if(StrEqual(buffer, name, false))
 		{
 			int entity = EntRefToEntIndex(QuestKv.GetNum("_entref", INVALID_ENT_REFERENCE));
-			PrintToChatAll("'%s' == '%d'", buffer, entity);
 			if(entity == INVALID_ENT_REFERENCE)
 			{
 				entity = CreateEntityByName("prop_dynamic");
@@ -164,7 +183,13 @@ void Quests_EnableZone(const char[] name)
 					AcceptEntityInput(entity, "SetAnimation", entity, entity);
 					
 					QuestKv.SetNum("_entref", EntIndexToEntRef(entity));
+
+					b_NpcHasQuestForPlayer[entity][client] = ShouldShowPointer(client, entity);
 				}
+			}
+			else
+			{
+				b_NpcHasQuestForPlayer[entity][client] = ShouldShowPointer(client, entity);
 			}
 		}
 	}
@@ -698,6 +723,7 @@ public int Quests_QuestHandle(Menu menu2, MenuAction action, int client, int cho
 								}
 							}
 						}
+						b_NpcHasQuestForPlayer[entity][client] = ShouldShowPointer(client, entity);
 					}
 				}
 			}
