@@ -160,6 +160,9 @@ void Quests_EnableZone(const char[] name)
 					SetVariantString(buffer);
 					AcceptEntityInput(entity, "SetDefaultAnimation", entity, entity);
 					
+					SetVariantString(buffer);
+					AcceptEntityInput(entity, "SetAnimation", entity, entity);
+					
 					QuestKv.SetNum("_entref", EntIndexToEntRef(entity));
 				}
 			}
