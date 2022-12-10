@@ -115,21 +115,32 @@ void Quests_EnableZone(const char[] name)
 			PrintToChatAll("'%s' == '%d'", buffer, entity);
 			if(entity == INVALID_ENT_REFERENCE)
 			{
-				entity = CreateEntityByName("prop_dynamic_override");
+				entity = CreateEntityByName("prop_dynamic");
 				if(IsValidEntity(entity))
 				{
 					static float pos[3], ang[3];
-					
-					DispatchKeyValue(entity, "targetname", "rpg_fortress");
+
+					QuestKv.GetVector("pos", pos);
+					QuestKv.GetVector("ang", ang);
+					TeleportEntity(entity, pos, ang, NULL_VECTOR);
 
 					QuestKv.GetString("model", buffer, sizeof(buffer));
 					DispatchKeyValue(entity, "model", buffer);
-					
-					QuestKv.GetVector("pos", pos);
-					QuestKv.GetVector("ang", ang);
-					
+					DispatchKeyValue(entity, "solid", "1");
+					SetEntityCollisionGroup(entity, 1);
+					DispatchKeyValue(entity, "targetname", "rpg_fortress");
+
+
 					DispatchSpawn(entity);
-					SetEntityCollisionGroup(entity, 2);
+
+					SetEntPropFloat(entity, Prop_Send, "m_flModelScale", QuestKv.GetFloat("scale", 1.0));
+				//	SetEntityModel(entity, buffer);
+				//	SetEntityCollisionGroup(entity, 24);
+				//	SetVariantString("solid 2");
+				//	AcceptEntityInput(entity, "AddOutput");
+					AcceptEntityInput(entity, "DisableCollision");
+					SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 1600.0);
+					SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 2000.0);
 					TeleportEntity(entity, pos, ang, NULL_VECTOR);					
 					QuestKv.GetString("wear1", buffer, sizeof(buffer));
 					if(buffer[0])
@@ -142,8 +153,6 @@ void Quests_EnableZone(const char[] name)
 					QuestKv.GetString("wear3", buffer, sizeof(buffer));
 					if(buffer[0])
 						GivePropAttachment(entity, buffer);
-					
-					SetEntPropFloat(entity, Prop_Send, "m_flModelScale", QuestKv.GetFloat("scale", 1.0));
 					
 					QuestKv.GetString("anim_idle", buffer, sizeof(buffer));
 					SetVariantString(buffer);
