@@ -1164,12 +1164,11 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		{
 			CPrintToChatAll("{crimson}Blitzkrieg{default}: The brothers have joined the battle.");
 		}
-		int dahp = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-		float maxhealth = 1.0*dahp;
-		float heck;
+		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int heck;
 		int spawn_index;
 		heck= maxhealth;
-		maxhealth=(heck/10)*zr_smallmapbalancemulti.FloatValue;
+		maxhealth=RoundToNearest((heck/10)*zr_smallmapbalancemulti.FloatValue);
 		spawn_index = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 		if(spawn_index > MaxClients)	//Currently always spawns.
 		{
@@ -1189,7 +1188,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		if(i_currentwave[npc.index]>=60)	//Only spawns if the wave is 60 or beyond.
 		{
 			CPrintToChatAll("{crimson}Blitzkrieg{default}: The brothers have been reborn.");
-			maxhealth=(heck/5)*zr_smallmapbalancemulti.FloatValue;	//mid squishy
+			maxhealth=RoundToNearest((heck/5)*zr_smallmapbalancemulti.FloatValue);	//mid squishy
 			spawn_index = Npc_Create(ALT_DONNERKRIEG, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 			if(spawn_index > MaxClients)
 			{
@@ -1197,7 +1196,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}
-			maxhealth=(heck/2)*zr_smallmapbalancemulti.FloatValue;	//the tankiest
+			maxhealth=RoundToNearest((heck/2)*zr_smallmapbalancemulti.FloatValue);	//the tankiest
 			spawn_index = Npc_Create(ALT_SCHWERTKRIEG, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 			if(spawn_index > MaxClients)
 			{
