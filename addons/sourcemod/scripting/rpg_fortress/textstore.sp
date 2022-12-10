@@ -429,10 +429,12 @@ void TextStore_AddItemCount(int client, const char[] name, int amount)
 {
 	if(StrEqual(name, ITEM_CASH))
 	{
+		SPrintToChat(client, "You gained %d credits", amount);
 		TextStore_Cash(client, amount);
 	}
 	else if(StrEqual(name, ITEM_XP))
 	{
+		SPrintToChat(client, "You gained %d XP", amount);
 		GiveXP(client, amount);
 	}
 	else if(StrEqual(name, ITEM_TIER))
@@ -450,6 +452,14 @@ void TextStore_AddItemCount(int client, const char[] name, int amount)
 			{
 				TextStore_GetInv(client, i, length);
 				TextStore_SetInv(client, i, length + amount);
+				if(amount == 1)
+				{
+					SPrintToChat(client, "You gained %s", name);
+				}
+				else
+				{
+					SPrintToChat(client, "You gained %s x%d", name, amount);
+				}
 				return;
 			}
 		}

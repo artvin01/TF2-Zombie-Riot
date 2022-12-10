@@ -426,7 +426,7 @@ bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name, boo
 	{
 		if(!auto)
 		{
-			if(kv.GetNum("level") >= Level[client])
+			if(kv.GetNum("level") > Level[client])
 			{
 				char buffer[32];
 				GetDisplayString(Level[client], buffer, sizeof(buffer));

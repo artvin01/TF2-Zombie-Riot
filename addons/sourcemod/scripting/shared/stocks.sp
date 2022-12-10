@@ -109,7 +109,7 @@ stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iPar
 		DispatchKeyValue(particle, "effect_name", effectName);
 		DispatchSpawn(particle);
 
-		SetParent(iParent, particle);
+		SetParent(iParent, particle, szAttachment, vOffsets);
 
 		ActivateEntity(particle);
 
