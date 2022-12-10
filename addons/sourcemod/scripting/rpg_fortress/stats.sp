@@ -58,11 +58,10 @@ void Stats_ShowLevelUp(int client, int oldLevel, int oldTier)
 	}
 	
 	char buffer[64];
-	int oldAmount, newAmount;
 
 	// Health
-	Stats_BaseHealth(client, oldAmount, _, oldLevel, oldTier);
-	Stats_BaseHealth(client, newAmount);
+	int oldAmount = Stats_BaseHealth(client, oldLevel, oldTier);
+	int newAmount = Stats_BaseHealth(client);
 	MACRO_SHOWDIFF("Max Health")
 
 	// Backpack

@@ -3763,7 +3763,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	{
 		entity = SpawnWeapon(client, "tf_weapon_pistol", 26, 1, 0, {128, 301, 821}, {1.0, 1.0, 1.0}, 3);
 		if(entity > MaxClients)
-			strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Backpack");
+			strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Quest Book");
 	}
 #endif
 

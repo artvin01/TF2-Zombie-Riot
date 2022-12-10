@@ -424,8 +424,11 @@ static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "
 
 				if(book)
 				{
-					Format(buffer, sizeof(buffer), "%s (%d / %d)", buffer, count, need);
-					book.AddItem(NULL_STRING, buffer);
+					if(need > count)
+					{
+						Format(buffer, sizeof(buffer), "Obtain %d more %s", need - count, buffer);
+						book.AddItem(NULL_STRING, buffer);
+					}
 				}
 				else
 				{
@@ -458,8 +461,11 @@ static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "
 
 				if(book)
 				{
-					Format(buffer, sizeof(buffer), "%s (%d / %d)", buffer, count, need);
-					book.AddItem(NULL_STRING, buffer);
+					if(need > count)
+					{
+						Format(buffer, sizeof(buffer), "Obtain %d more %s", need - count, buffer);
+						book.AddItem(NULL_STRING, buffer);
+					}
 				}
 				else
 				{
@@ -523,18 +529,15 @@ static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "
 		QuestKv.GoBack();
 	}
 
-	if(QuestKv.JumpToKey("equip"))
+	if(!book && QuestKv.JumpToKey("equip"))
 	{
-		if(!book)
-			Format(title, sizeof(title), "%s\n \nEquip:", title);
-		
+		Format(title, sizeof(title), "%s\n \nEquip:", title);
 		if(QuestKv.GotoFirstSubKey(false))
 		{
 			do
 			{
 				QuestKv.GetSectionName(buffer, sizeof(buffer));
-				if(!book)
-					Format(title, sizeof(title), "%s\n%s", title, buffer);
+				Format(title, sizeof(title), "%s\n%s", title, buffer);
 
 				if(canTurnIn)
 				{
@@ -836,12 +839,12 @@ void Quests_WeaponSwitch(int client, int weapon)
 								{
 									if(CanTurnInQuest(client, steamid))
 									{
-										Format(buffer, sizeof(buffer), "Talk to %s");
-										menu.AddItem(NULL_STRING, "");
+										Format(buffer, sizeof(buffer), "Talk to %s", name);
+										menu.AddItem(NULL_STRING, buffer);
 									}
 									else
 									{
-
+										CanTurnInQuest(client, steamid, _, menu);
 									}
 								}
 							}
@@ -887,4 +890,5 @@ public int Quests_BookHandle(Menu menu2, MenuAction action, int client, int choi
 			ClientCommand(client, "slot3");
 		}
 	}
+	return 0;
 }
