@@ -62,7 +62,7 @@ static float f_ClientWasPreviouslyFishing[MAXTF2PLAYERS];
 
 void Fishing_PluginStart()
 {
-	CreateTimer(30.0, Fishing_Timer, _, TIMER_REPEAT);
+	CreateTimer(10.0, Fishing_Timer, _, TIMER_REPEAT);
 }
 
 void Fishing_ConfigSetup(KeyValues map)
@@ -257,17 +257,17 @@ public Action Fishing_Timer(Handle timer)
 										int amount = RoundFloat(fish.Move * GetURandomFloat());
 										if(amount)
 										{
-											/*static char buffer2[32];
+											static char buffer2[32];
 											switch(fish.Pref)
 											{
 												case 1:
 												{
-													if(fish.North)
+													if(place.North[0])
 													{
-
+														
 													}
 												}
-											}*/
+											}
 
 											Population.SetNum(buffer, Population.GetNum(buffer) + amount);
 											PrintToChatAll("[FISH] %d %s moved to %s", amount, buffer);
