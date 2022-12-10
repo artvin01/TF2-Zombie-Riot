@@ -52,6 +52,7 @@ void RPG_PluginStart()
 {
 	LoadTranslations("rpgfortress.phrases.enemynames");
 	
+	Fishing_PluginStart();
 	Store_Reset();
 	Levels_PluginStart();
 	TextStore_PluginStart();
@@ -108,6 +109,11 @@ void RPG_MapEnd()
 void RPG_PutInServer()
 {
 	CountPlayersOnRed();
+}
+
+void RPG_ClientDisconnect(int client)
+{
+	Fishing_ClientDisconnect(client);
 }
 
 void RPG_ClientDisconnect_Post()

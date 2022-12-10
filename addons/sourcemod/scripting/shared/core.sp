@@ -203,7 +203,6 @@ ConVar CvarMpSolidObjects; //mp_solidobjects
 ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar sv_cheats;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
-Cookie CookieXP;
 Cookie Niko_Cookies;
 
 bool b_LagCompNPC_No_Layers;
@@ -1409,9 +1408,6 @@ public void OnClientDisconnect(int client)
 		CookieScrap.Set(client, buffer);
 	}
 	Scrap[client] = -1;
-#endif
-	
-	WeaponClass[client] = TFClass_Unknown;
 	
 	if(XP[client] > 0)
 	{
@@ -1428,6 +1424,13 @@ public void OnClientDisconnect(int client)
 		Niko_Cookies.Set(client, buffer);
 	}
 	XP[client] = 0;
+#endif
+	
+	WeaponClass[client] = TFClass_Unknown;
+
+#if defined RPG
+	RPG_ClientDisconnect(client);
+#endif
 }
 
 public void OnClientDisconnect_Post(int client)

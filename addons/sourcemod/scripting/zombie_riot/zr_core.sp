@@ -105,6 +105,7 @@ bool b_HasBeenHereSinceStartOfWave[MAXTF2PLAYERS];
 Cookie CookieScrap;
 Cookie CookiePlayStreak;
 Cookie CookieCache;
+Cookie CookieXP;
 ArrayList Loadouts[MAXTF2PLAYERS];
 DynamicHook g_DHookMedigunPrimary; 
 

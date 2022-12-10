@@ -255,28 +255,103 @@ public Action Fishing_Timer(Handle timer)
 									if(fish.Move > 0.5)
 									{
 										int amount = RoundFloat(fish.Move * GetURandomFloat());
-										if(amount)
+										if(amount <= current)
 										{
-											static char buffer2[32];
-											switch(fish.Pref)
+											for(;;)
 											{
-												case 1:
+												switch(fish.Pref)
 												{
-													if(place.North[0])
+													case 1:
 													{
+														if(place.North[0])
+															break;
 														
+														fish.Pref = 2;
+													}
+													case 2:
+													{
+														if(place.West[0])
+															break;
+														
+														fish.Pref = 4;
+													}
+													case 3:
+													{
+														if(place.East[0])
+															break;
+														
+														fish.Pref = 1;
+													}
+													case 4:
+													{
+														if(place.South[0])
+															break;
+														
+														fish.Pref = 3;
+													}
+													default:
+													{
+														fish.Pref = (GetURandomInt() % 4) + 1;
+														break;
 													}
 												}
 											}
 
+											Population.SetNum(buffer, current - amount);
+											Population.GoBack();
+
+											switch(fish.Pref)
+											{
+												case 1:
+												{
+													Population.JumpToKey(place.North);
+													PlaceList.GetArray(place.North, place, sizeof(place));
+												}
+												case 2:
+												{
+													Population.JumpToKey(place.West);
+													PlaceList.GetArray(place.West, place, sizeof(place));
+												}
+												case 3:
+												{
+													Population.JumpToKey(place.East);
+													PlaceList.GetArray(place.East, place, sizeof(place));
+												}
+												default:
+												{
+													Population.JumpToKey(place.South);
+													PlaceList.GetArray(place.South, place, sizeof(place));
+												}
+											}
+											
 											Population.SetNum(buffer, Population.GetNum(buffer) + amount);
-											PrintToChatAll("[FISH] %d %s moved to %s", amount, buffer);
+											checkPop = true;
 										}
 									}
 								}
 							}
 						}
+						case 4:
+						{
+							snapFish.GetKey(GetURandomInt() % lengthFish, buffer, sizeof(buffer));
+							int current = Population.GetNum(buffer);
+							if(current > 0)
+							{
+								FishList.GetArray(buffer, fish, sizeof(fish));
+								if(fish.Breed > 0.5)
+								{
+									int amount = RoundFloat(fish.Breed * GetURandomFloat());
+									if(amount)
+									{
+										Population.SetNum(buffer, Population.GetNum(buffer) + amount);
+										checkPop = true;
+									}
+								}
+							}
+						}
 					}
+
+					Population.GoBack();
 				}
 			}
 

@@ -35,6 +35,7 @@ void Quests_ConfigSetup(KeyValues map)
 		if(map.JumpToKey("Quests"))
 		{
 			QuestKv = new KeyValues("Quests");
+			QuestKv.SetEscapeSequences(true);
 			QuestKv.Import(map);
 		}
 	}
@@ -44,6 +45,7 @@ void Quests_ConfigSetup(KeyValues map)
 	{
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "quests");
 		QuestKv = new KeyValues("Quests");
+		QuestKv.SetEscapeSequences(true);
 		QuestKv.ImportFromFile(buffer);
 	}
 
