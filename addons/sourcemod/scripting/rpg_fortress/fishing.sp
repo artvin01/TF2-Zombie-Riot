@@ -186,7 +186,7 @@ public Action Fishing_Timer(Handle timer)
 				PlaceList.GetArray(buffer, place, sizeof(place));
 				if(Population.JumpToKey(buffer, true))
 				{
-					bool checkPop;
+					//bool checkPop;
 					switch(GetURandomInt() % 5)
 					{
 						case 0:
@@ -200,7 +200,7 @@ public Action Fishing_Timer(Handle timer)
 									int amount = RoundFloat(fish.Rate * GetURandomFloat());
 									if(amount)
 									{
-										checkPop = true;
+										//checkPop = true;
 										Population.SetNum(buffer, Population.GetNum(buffer) + amount);
 										PrintToChatAll("[FISH] Gained %d %s via ocean", amount, buffer);
 									}
@@ -218,7 +218,7 @@ public Action Fishing_Timer(Handle timer)
 									int amount = RoundFloat(fish.Rate * GetURandomFloat());
 									if(amount)
 									{
-										checkPop = true;
+										//checkPop = true;
 										Population.SetNum(buffer, Population.GetNum(buffer) + amount);
 										PrintToChatAll("[FISH] Gained %d %s via nature", amount, buffer);
 									}
@@ -236,7 +236,7 @@ public Action Fishing_Timer(Handle timer)
 									int amount = RoundFloat(fish.Rate * GetURandomFloat());
 									if(amount)
 									{
-										checkPop = true;
+										//checkPop = true;
 										Population.SetNum(buffer, Population.GetNum(buffer) + amount);
 										PrintToChatAll("[FISH] Gained %d %s via city", amount, buffer);
 									}
@@ -325,7 +325,7 @@ public Action Fishing_Timer(Handle timer)
 											}
 											
 											Population.SetNum(buffer, Population.GetNum(buffer) + amount);
-											checkPop = true;
+											//checkPop = true;
 										}
 									}
 								}
@@ -344,12 +344,34 @@ public Action Fishing_Timer(Handle timer)
 									if(amount)
 									{
 										Population.SetNum(buffer, Population.GetNum(buffer) + amount);
-										checkPop = true;
+										//checkPop = true;
 									}
 								}
 							}
 						}
 					}
+
+					/*if(checkPop && Population.GotoFirstSubKey(false))
+					{
+						int total;
+						do
+						{
+							total += Population.GetNum(NULL_STRING);
+						}
+						while(Population.GotoNextKey(false));
+
+						if(total > place.Pop)
+						{
+							Population.GoBack();
+							if(Population.GotoFirstSubKey(false))
+							{
+								if(Population.DeleteThis() != -1)
+									Population.GoBack();
+							}
+						}
+
+						Population.GoBack();
+					}*/
 
 					Population.GoBack();
 				}
