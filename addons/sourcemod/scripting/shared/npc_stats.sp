@@ -248,7 +248,7 @@ methodmap CClotBody
 
 #if defined RPG
 		SetEntPropFloat(npc, Prop_Send, "m_fadeMinDist", 1600.0);
-		SetEntPropFloat(npc, Prop_Send, "m_fadeMaxDist", 1800.0);
+		SetEntPropFloat(npc, Prop_Send, "m_fadeMaxDist", 2000.0);
 #endif
 		SetEntProp(npc, Prop_Data, "m_bSequenceLoops", true);
 		//potentially newly added ? or might not get set ?
