@@ -127,11 +127,10 @@ void Quests_EnableZone(const char[] name)
 					
 					QuestKv.GetVector("pos", pos);
 					QuestKv.GetVector("ang", ang);
-					TeleportEntity(entity, pos, ang, NULL_VECTOR);
 					
 					DispatchSpawn(entity);
 					SetEntityCollisionGroup(entity, 2);
-					
+					TeleportEntity(entity, pos, ang, NULL_VECTOR);					
 					QuestKv.GetString("wear1", buffer, sizeof(buffer));
 					if(buffer[0])
 						GivePropAttachment(entity, buffer);
