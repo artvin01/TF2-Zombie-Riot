@@ -64,15 +64,19 @@ stock int GivePropAttachment(int entity, const char[] model)
 	if(IsValidEntity(prop))
 	{
 		DispatchKeyValue(prop, "model", model);
+		SetEntityCollisionGroup(prop, 1);
 		DispatchSpawn(prop);
 		SetEntProp(prop, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES);
-		SetEntityCollisionGroup(prop, 2);
 
 		SetVariantString("!activator");
 		AcceptEntityInput(prop, "SetParent", entity, prop);
 
 		SetVariantString("head");
 		AcceptEntityInput(prop, "SetParentAttachmentMaintainOffset"); 
+
+		SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 1600.0);
+		SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 2000.0);
+
 	}
 	return prop;
 }
