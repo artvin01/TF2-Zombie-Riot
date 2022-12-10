@@ -1982,6 +1982,7 @@ void NPC_DeadEffects(int entity)
 #endif
 			
 #if defined RPG
+			Quests_AddKill(client, NPC_Names[i_NpcInternalId[entity]]);
 			Spawns_NPCDeath(entity, client);
 #endif
 			

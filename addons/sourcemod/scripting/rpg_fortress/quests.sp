@@ -1,10 +1,28 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+enum
+{
+	Status_NotStarted = 0,
+	Status_Canceled,
+	Status_InProgress,
+	Status_Completed
+}
+
 static KeyValues QuestKv;
 static KeyValues SaveKv;
 static char CurrentNPC[MAXTF2PLAYERS][64];
-static char CurrentQuest[MAXTF2PLAYERS][64];
+
+static void ForceSave(int client)
+{
+	static char buffer[PLATFORM_MAX_PATH];
+	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "quests_savedata");
+
+	SaveKv.Rewind();
+	SaveKv.ExportToFile(buffer);
+
+	TextStore_ClientSave(client);
+}
 
 void Quests_ConfigSetup(KeyValues map)
 {
@@ -15,7 +33,10 @@ void Quests_ConfigSetup(KeyValues map)
 	{
 		map.Rewind();
 		if(map.JumpToKey("Quests"))
-			QuestKv = map.Import();
+		{
+			QuestKv = new KeyValues("Quests");
+			QuestKv.Import(map);
+		}
 	}
 	
 	char buffer[PLATFORM_MAX_PATH];
@@ -155,6 +176,18 @@ void Quests_DisableZone(const char[] name)
 	while(QuestKv.GotoNextKey());
 }
 
+void Quests_AddKill(int client, const char[] name)
+{
+	static char steamid[64];
+	if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
+	{
+		SaveKv.Rewind();
+		SaveKv.JumpToKey("_kills", true);
+		SaveKv.JumpToKey(name, true);
+		SaveKv.SetNum(steamid, SaveKv.GetNum(steamid) + 1);
+	}
+}
+
 bool Quests_Interact(int client, int entity)
 {
 	QuestKv.Rewind();
@@ -177,7 +210,7 @@ void Quests_MainMenu(int client, const char[] name)
 	QuestKv.Rewind();
 	if(QuestKv.JumpToKey(name))
 	{
-		strcopy(CurrentNPC[client], sizeof(CurrentNPC[]));
+		strcopy(CurrentNPC[client], sizeof(CurrentNPC[]), name);
 		MainMenu(client);
 	}
 }
@@ -190,30 +223,400 @@ static void MainMenu(int client)
 	Menu menu = new Menu(Quests_MenuHandle);
 	menu.SetTitle("%s\n ", CurrentNPC[client]);
 
-	static char steamid[64], buffer[256];
+	static char steamid[64], name[64], buffer[256];
 	if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
 	{
 		QuestKv.GotoFirstSubKey();
 		do
 		{
-			QuestKv.GetSectionName(buffer, sizeof(buffer));
-			SaveKv.JumpToKey(buffer, true);
-			menu.AddItem(NULL_STRING, buffer);
+			QuestKv.GetString("complete", buffer, sizeof(buffer));
+			if(name[0])
+			{
+				int progress;
+				if(SaveKv.JumpToKey(buffer))
+				{
+					progress = SaveKv.GetNum(steamid);
+					SaveKv.GoBack();
+				}
+
+				if(progress != Status_Completed)
+					continue;
+			}
+
+			QuestKv.GetSectionName(name, sizeof(name));
+
+			int level = QuestKv.GetNum("level");
+			if(Level[client] >= level)
+			{
+				if(SaveKv.JumpToKey(buffer, true))
+				{
+					switch(SaveKv.GetNum(steamid))
+					{
+						case Status_NotStarted, Status_Canceled:
+						{
+							menu.AddItem(name, name);
+						}
+						case Status_InProgress:
+						{
+							menu.InsertItem(0, name, name);
+						}
+						case Status_Completed:
+						{
+							if(QuestKv.GetNum("repeatable"))
+								menu.AddItem(name, name);
+						}
+					}
+
+					SaveKv.GoBack();
+				}
+			}
+			else
+			{
+				GetDisplayString(level, buffer, sizeof(buffer));
+				Format(buffer, sizeof(buffer), "%s (%s)", name, buffer);
+				menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
+			}
 		}
 		while(QuestKv.GotoNextKey());
 	}
+
+	menu.Display(client, MENU_TIME_FOREVER);
 }
 
-public int Quests_MenuHandle(Menu menu, MenuAction action, int client, int choice)
+static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "")
+{
+	bool canTurnIn = true;
+	static char buffer[64];
+
+	if(QuestKv.JumpToKey("obtain"))
+	{
+		Format(title, sizeof(title), "%s\n \nObtain:", title);
+		if(QuestKv.GotoFirstSubKey(false))
+		{
+			do
+			{
+				QuestKv.GetSectionName(buffer, sizeof(buffer));
+				int need = QuestKv.GetNum(NULL_STRING, 1);
+				int count = TextStore_GetItemCount(client, buffer);
+
+				Format(title, sizeof(title), "%s\n%s (%d / %d)", title, buffer, count, need);
+
+				if(count < need)
+					canTurnIn = false;
+			}
+			while(QuestKv.GotoNextKey(false));
+
+			QuestKv.GoBack();
+		}
+
+		QuestKv.GoBack();
+	}
+
+	if(QuestKv.JumpToKey("give"))
+	{
+		Format(title, sizeof(title), "%s\n \nGive:", title);
+		if(QuestKv.GotoFirstSubKey(false))
+		{
+			do
+			{
+				QuestKv.GetSectionName(buffer, sizeof(buffer));
+				int need = QuestKv.GetNum(NULL_STRING, 1);
+				int count = TextStore_GetItemCount(client, buffer);
+
+				Format(title, sizeof(title), "%s\n%s (%d / %d)", title, buffer, count, need);
+
+				if(count < need)
+					canTurnIn = false;
+			}
+			while(QuestKv.GotoNextKey(false));
+
+			QuestKv.GoBack();
+		}
+
+		QuestKv.GoBack();
+	}
+
+	if(QuestKv.JumpToKey("kill"))
+	{
+		SaveKv.Rewind();
+		SaveKv.JumpToKey("_kills", true);
+
+		Format(title, sizeof(title), "%s\n \nKill:", title);
+		if(QuestKv.GotoFirstSubKey(false))
+		{
+			do
+			{
+				QuestKv.GetSectionName(buffer, sizeof(buffer));
+				int need = QuestKv.GetNum(NULL_STRING, 1);
+
+				int count;
+				if(SaveKv.JumpToKey(buffer, true))
+				{
+					count = SaveKv.GetNum(steamid);
+					SaveKv.GoBack();
+				}
+
+				Format(title, sizeof(title), "%s\n%s (%d / %d)", title, buffer, count, need);
+
+				if(count < need)
+					canTurnIn = false;
+			}
+			while(QuestKv.GotoNextKey(false));
+
+			QuestKv.GoBack();
+		}
+
+		QuestKv.GoBack();
+	}
+
+	if(QuestKv.JumpToKey("equip"))
+	{
+		Format(title, sizeof(title), "%s\n \nEquip:", title);
+		if(QuestKv.GotoFirstSubKey(false))
+		{
+			do
+			{
+				QuestKv.GetSectionName(buffer, sizeof(buffer));
+				Format(title, sizeof(title), "%s\n%s", title, buffer);
+
+				if(canTurnIn)
+				{
+					canTurnIn = false;
+
+					int i, entity;
+					while(TF2_GetItem(client, entity, i))
+					{
+						if(StrEqual(StoreWeapon[entity], buffer, false))
+						{
+							canTurnIn = true;
+							break;
+						}
+					}
+				}
+			}
+			while(QuestKv.GotoNextKey(false));
+
+			QuestKv.GoBack();
+		}
+
+		QuestKv.GoBack();
+	}
+
+	return canTurnIn;
+}
+
+public int Quests_MenuHandle(Menu menu2, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
 		case MenuAction_End:
 		{
-			delete menu;
+			delete menu2;
 		}
 		case MenuAction_Select:
 		{
+			static char name[64], steamid[64];
+			menu2.GetItem(choice, name, sizeof(name));
+			if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
+			{
+				QuestKv.Rewind();
+				if(QuestKv.JumpToKey(CurrentNPC[client]) && QuestKv.JumpToKey(name))
+				{
+					SaveKv.Rewind();
+					SaveKv.JumpToKey(CurrentNPC[client], true);
+					SaveKv.JumpToKey(name, true);
+					int progress = SaveKv.GetNum(steamid);
+
+					static char title[512];
+					QuestKv.GetString("desc", title, sizeof(title));
+					//Format(title, sizeof(title), "%s\n%s\n \n%s", CurrentNPC[client], name, title);
+
+					bool canTurnIn = progress == Status_InProgress;
+					if(!CanTurnInQuest(client, steamid, title))
+						canTurnIn = false;
+
+					if(QuestKv.JumpToKey("reward"))
+					{
+						Format(title, sizeof(title), "%s\n \nReward:", title);
+						if(QuestKv.GotoFirstSubKey(false))
+						{
+							do
+							{
+								QuestKv.GetSectionName(name, sizeof(name));
+								int count = QuestKv.GetNum(NULL_STRING, 1);
+								if(count == 1)
+								{
+									Format(title, sizeof(title), "%s\n%s", title, name);
+								}
+								else
+								{
+									Format(title, sizeof(title), "%s\n%s x%d", title, name, count);
+								}
+							}
+							while(QuestKv.GotoNextKey(false));
+
+							QuestKv.GoBack();
+						}
+
+						QuestKv.GoBack();
+					}
+
+					Menu menu = new Menu(Quests_QuestHandle);
+					menu.SetTitle("%s\n ", title);
+
+					switch(progress)
+					{
+						case Status_NotStarted:
+						{
+							menu.AddItem(name, "Start Quest");
+						}
+						case Status_Canceled:
+						{
+							menu.AddItem(name, "Restart Quest");
+						}
+						case Status_InProgress:
+						{
+							menu.AddItem(name, "Turn In", canTurnIn ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+							menu.AddItem(name, "Cancel Quest");
+						}
+						case Status_Completed:
+						{
+							menu.AddItem(name, "Restart Quest", QuestKv.GetNum("repeatable") ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+						}
+					}
+
+					menu.ExitBackButton = true;
+					menu.Display(client, MENU_TIME_FOREVER);
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+public int Quests_QuestHandle(Menu menu2, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu2;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+				Quests_MainMenu(client, CurrentNPC[client]);
+		}
+		case MenuAction_Select:
+		{
+			static char name[64], steamid[64];
+			menu2.GetItem(choice, name, sizeof(name));
+			if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
+			{
+				QuestKv.Rewind();
+				if(QuestKv.JumpToKey(CurrentNPC[client]) && QuestKv.JumpToKey(name))
+				{
+					SaveKv.Rewind();
+					SaveKv.JumpToKey(CurrentNPC[client], true);
+					SaveKv.JumpToKey(name, true);
+					
+					int progress = SaveKv.GetNum(steamid);
+					switch(progress)
+					{
+						case Status_NotStarted, Status_Completed:
+						{
+							SaveKv.SetNum(steamid, Status_InProgress);
+
+							if(QuestKv.JumpToKey("start"))
+							{
+								if(QuestKv.GotoFirstSubKey(false))
+								{
+									do
+									{
+										QuestKv.GetSectionName(name, sizeof(name));
+										TextStore_AddItemCount(client, name, QuestKv.GetNum(NULL_STRING, 1));
+									}
+									while(QuestKv.GotoNextKey(false));
+								}
+
+								ForceSave(client);
+							}
+						}
+						case Status_Canceled:
+						{
+							SaveKv.SetNum(steamid, Status_InProgress);
+						}
+						case Status_InProgress:
+						{
+							if(choice)
+							{
+								SaveKv.SetNum(steamid, Status_Canceled);
+								Quests_MainMenu(client, CurrentNPC[client]);
+							}
+							else if(CanTurnInQuest(client, steamid))
+							{
+								SaveKv.SetNum(steamid, Status_Completed);
+
+								if(QuestKv.JumpToKey("give"))
+								{
+									if(QuestKv.GotoFirstSubKey(false))
+									{
+										do
+										{
+											QuestKv.GetSectionName(name, sizeof(name));
+											TextStore_AddItemCount(client, name, -QuestKv.GetNum(NULL_STRING, 1));
+										}
+										while(QuestKv.GotoNextKey(false));
+
+										QuestKv.GoBack();
+									}
+
+									QuestKv.GoBack();
+								}
+
+								if(QuestKv.JumpToKey("kill"))
+								{
+									SaveKv.Rewind();
+									SaveKv.JumpToKey("_kills", true);
+
+									if(QuestKv.GotoFirstSubKey(false))
+									{
+										do
+										{
+											QuestKv.GetSectionName(name, sizeof(name));
+											if(SaveKv.JumpToKey(name))
+											{
+												SaveKv.SetNum(steamid, SaveKv.GetNum(steamid) - QuestKv.GetNum(NULL_STRING, 1));
+												SaveKv.GoBack();
+											}
+										}
+										while(QuestKv.GotoNextKey(false));
+
+										QuestKv.GoBack();
+									}
+
+									QuestKv.GoBack();
+								}
+
+								if(QuestKv.JumpToKey("reward"))
+								{
+									if(QuestKv.GotoFirstSubKey(false))
+									{
+										do
+										{
+											QuestKv.GetSectionName(name, sizeof(name));
+											TextStore_AddItemCount(client, name, QuestKv.GetNum(NULL_STRING, 1));
+										}
+										while(QuestKv.GotoNextKey(false));
+									}
+								}
+
+								ForceSave(client);
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	return 0;

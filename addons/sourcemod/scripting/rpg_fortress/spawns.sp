@@ -270,7 +270,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 				}
 				
 				Level[entity] = spawn.Level[LOW] + strength;
-				Cash[entity] = GetScaledRate(spawn.Cash, strength, diff);
+				i_CreditsOnKill[entity] = GetScaledRate(spawn.Cash, strength, diff);
 				XP[entity] = GetScaledRate(spawn.XP, strength, diff);
 				int health = 999999999; //ayo he forgor, ANNOY ADMINO
 
@@ -337,20 +337,20 @@ void Spawns_NPCDeath(int entity, int client)
 	static float pos[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 
-	if(Cash[entity])
+	if(i_CreditsOnKill[entity])
 	{
-		if(Cash[entity] > 199)
+		if(i_CreditsOnKill[entity] > 199)
 		{
-			TextStore_DropCash(pos, Cash[entity]);
+			TextStore_DropCash(pos, i_CreditsOnKill[entity]);
 		}
-		else if(Cash[entity] > 49)
+		else if(i_CreditsOnKill[entity] > 49)
 		{
 			if(GetURandomInt() % 2)
-				TextStore_DropCash(pos, Cash[entity] * 2);
+				TextStore_DropCash(pos, i_CreditsOnKill[entity] * 2);
 		}
 		else if(!(GetURandomInt() % 5))
 		{
-			TextStore_DropCash(pos, Cash[entity] * 5);
+			TextStore_DropCash(pos, i_CreditsOnKill[entity] * 5);
 		}
 	}
 

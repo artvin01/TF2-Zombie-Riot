@@ -67,7 +67,9 @@ public void Configs_ConfigsExecuted()
 #endif
 	
 #if defined RPG
+	Fishing_ConfigSetup(kv);
 	Mining_ConfigSetup(kv);
+	Quests_ConfigSetup(kv);
 	Spawns_ConfigSetup(kv);
 	TextStore_ConfigSetup(kv);
 

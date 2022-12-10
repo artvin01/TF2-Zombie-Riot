@@ -41,12 +41,14 @@ static void OnLeave(int client, const char[] name)
 static void OnActive(const char[] name)
 {
 	Mining_EnableZone(name);
+	Quests_EnableZone(name);
 	Spawns_UpdateSpawn(name);
 }
 
 static void OnDisable(const char[] name)
 {
 	Mining_DisableZone(name);
+	Quests_DisableZone(name);
 	Spawns_DisableSpawn(name);
 	TextStore_ZoneAllLeave(name);
 }

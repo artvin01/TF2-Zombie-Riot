@@ -1,6 +1,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define ITEM_CASH	"Credits"
+#define ITEM_XP		"XP"
+#define ITEM_TIER	"Elite Promotion"
+
 public const char MiningLevels[][] =
 {
 	"Wooden (0)",
@@ -27,7 +31,6 @@ public const char FishingLevels[][] =
 
 int Tier[MAXTF2PLAYERS];
 int Level[MAXENTITIES];
-int Cash[MAXENTITIES];
 int XP[MAXENTITIES];
 
 char StoreWeapon[MAXENTITIES][48];
@@ -36,7 +39,7 @@ char StoreWeapon[MAXENTITIES][48];
 
 #include "rpg_fortress/levels.sp"
 #include "rpg_fortress/mining.sp"
-//#include "rpg_fortress/quests.sp"
+#include "rpg_fortress/quests.sp"
 #include "rpg_fortress/fishing.sp"
 #include "rpg_fortress/spawns.sp"
 #include "rpg_fortress/stats.sp"

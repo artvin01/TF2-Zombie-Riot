@@ -80,20 +80,41 @@ void GiveXP(int client, int xp, bool silent = false)
 	
 	if(nextLevel > Level[client])
 	{
+		int oldLevel = Level[client];
+		Level[client] = nextLevel;
+
 		if(!silent)
 		{
 			static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
 			ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
 			
-			SPrintToChat(client, "%t", "Level Up", nextLevel - GetLevelCap(Tier[client] - 1));
+			Stats_ShowLevelUp(client, oldLevel, Tier[client]);
 		}
-
-		Level[client] = nextLevel;
 		
 		if(!silent)
 			Store_ApplyAttribs(client);
 	}
 
+	if(!silent)
+		ShowLevelHud(client);
+}
+
+void GiveTier(int client)
+{
+	static const char Names[][] = { "one", "two", "three", "four", "five" };
+	int rand = Tier[client];
+	if(rand >= sizeof(Names))
+		rand = GetRandomInt(0, sizeof(Names)-1);
+	
+	ClientCommand(client, "playgamesound ui/mm_rank_%s_achieved.wav", Names[rand]);
+	
+	int oldLevel = Level[client];
+	Tier[client]++;
+
+	GiveXP(client, Tier[client] * 1000, true);
+
+	Stats_ShowLevelUp(client, oldLevel, Tier[client] - 1);
+	Store_ApplyAttribs(client);
 	ShowLevelHud(client);
 }
 

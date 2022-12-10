@@ -1,12 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define ITEM_XP		"Experience Points"
-static int ItemXP = -1;
-
-#define ITEM_TIER	"Elite Promotions"
-static int ItemTier = -1;
-
 enum struct StoreEnum
 {
 	char Tag[16];
@@ -171,6 +165,8 @@ enum
 	MENU_BACKPACK = 2
 }
 
+static int ItemXP = -1;
+static int ItemTier = -1;
 static KeyValues HashKey;
 static ArrayList Backpack;
 static StringMap StoreList;
@@ -365,10 +361,10 @@ public void TextStore_LoadFrame(int userid)
 
 static void LoadItems(int client)
 {
-	char buffer[48];
 	int length = TextStore_GetItems();
 	for(int i; i < length; i++)
 	{
+		static char buffer[48];
 		TextStore_GetItemName(i, buffer, sizeof(buffer));
 		if(StrEqual(buffer, ITEM_XP, false))
 		{
@@ -407,6 +403,58 @@ stock void TextStore_AddTier(int client)
 		TextStore_GetInv(client, ItemTier, Tier[client]);
 		Tier[client]++;
 		TextStore_SetInv(client, ItemTier, Tier[client]);
+	}
+}
+
+int TextStore_GetItemCount(int client, const char[] name)
+{
+	int amount = -1;
+	
+	int length = TextStore_GetItems();
+	for(int i; i < length; i++)
+	{
+		static char buffer[48];
+		TextStore_GetItemName(i, buffer, sizeof(buffer));
+		if(StrEqual(buffer, name, false))
+		{
+			TextStore_GetInv(client, i, amount);
+			break;
+		}
+	}
+
+	return amount;
+}
+
+void TextStore_AddItemCount(int client, const char[] name, int amount)
+{
+	if(StrEqual(name, ITEM_CASH))
+	{
+		TextStore_Cash(client, amount);
+	}
+	else if(StrEqual(name, ITEM_XP))
+	{
+		GiveXP(client, amount);
+	}
+	else if(StrEqual(name, ITEM_TIER))
+	{
+		GiveTier(client);
+	}
+	else
+	{
+		int length = TextStore_GetItems();
+		for(int i; i < length; i++)
+		{
+			static char buffer[48];
+			TextStore_GetItemName(i, buffer, sizeof(buffer));
+			if(StrEqual(buffer, name, false))
+			{
+				TextStore_GetInv(client, i, length);
+				TextStore_SetInv(client, i, length + amount);
+				return;
+			}
+		}
+
+		LogError("Could not find item '%s'", name);
 	}
 }
 
@@ -505,27 +553,27 @@ void TextStore_DropNamedItem(const char[] name, float pos[3], int amount)
 
 static void DropItem(int index, float pos[3], int amount)
 {
+	float ang[3];
+	static char buffer[PLATFORM_MAX_PATH];
+
+	int entity = MaxClients + 1;
+	while((entity = FindEntityByClassname(entity, "prop_physics_multiplayer")) != -1)
+	{
+		if(ItemCount[entity] && ItemIndex[entity] == index)
+		{
+			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", ang);
+			if(GetVectorDistance(pos, ang, true) < 100000.0)
+			{
+				ItemCount[entity] += amount;
+				UpdateItemText(entity, index);
+				return;
+			}
+		}
+	}
+
 	KeyValues kv = index == -1 ? null : TextStore_GetItemKv(index);
 	if(kv || index == -1)
 	{
-		float ang[3];
-		static char buffer[PLATFORM_MAX_PATH];
-
-		int entity = MaxClients + 1;
-		while((entity = FindEntityByClassname(entity, "prop_physics_multiplayer")) != -1)
-		{
-			if(ItemCount[entity] && ItemIndex[entity] == index)
-			{
-				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", ang);
-				if(GetVectorDistance(pos, ang, true) < 100000.0)
-				{
-					ItemCount[entity] += amount;
-					UpdateItemText(entity, index, kv);
-					return;
-				}
-			}
-		}
-
 		if(GetEntityCount() > 1850)
 			return;
 
@@ -588,7 +636,7 @@ static void DropItem(int index, float pos[3], int amount)
 
 				if(index == -1)
 				{
-					strcopy(buffer, sizeof(buffer), "Credits");
+					strcopy(buffer, sizeof(buffer), ITEM_CASH);
 				}
 				else
 				{
@@ -604,7 +652,7 @@ static void DropItem(int index, float pos[3], int amount)
 	}
 }
 
-static void UpdateItemText(int entity, int index, KeyValues kv)
+static void UpdateItemText(int entity, int index)
 {
 	ItemLifetime[entity] = GetGameTime() + 30.0;
 	
@@ -614,7 +662,7 @@ static void UpdateItemText(int entity, int index, KeyValues kv)
 		static char buffer[64];			
 		if(index == -1)
 		{
-			strcopy(buffer, sizeof(buffer), "Credits");
+			strcopy(buffer, sizeof(buffer), ITEM_CASH);
 		}
 		else
 		{
@@ -786,8 +834,11 @@ bool TextStore_Interact(int client, int entity, bool reload)
 				else
 				{
 					ItemCount[entity] -= amount;
-					UpdateItemText(entity, ItemIndex[entity], ItemIndex[entity] == -1 ? null : TextStore_GetItemKv(ItemIndex[entity]));
+					UpdateItemText(entity, ItemIndex[entity]);
 				}
+
+				if(InMenu[client] && MenuType[client] == MENU_BACKPACK)
+					ShowMenu(client);
 			}
 			return true;
 		}
@@ -876,7 +927,7 @@ void TextStore_PlayerRunCmd(int client)
 	}
 }
 
-static void ShowMenu(int client)
+static void ShowMenu(int client, int page = 0)
 {
 	switch(MenuType[client])
 	{
@@ -960,7 +1011,7 @@ static void ShowMenu(int client)
 
 					if(pack.Item == -1)
 					{
-						strcopy(name, sizeof(name), "Credits");
+						strcopy(name, sizeof(name), ITEM_CASH);
 					}
 					else
 					{
@@ -1004,7 +1055,7 @@ static void ShowMenu(int client)
 
 			menu.SetTitle("RPG Fortress\n \nBackpack (%d / %d):", amount, Stats_BaseCarry(client));
 
-			InMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
+			InMenu[client] = menu.DisplayAt(client, page / 7 * 7, MENU_TIME_FOREVER);
 		}
 		default:
 		{
@@ -1135,7 +1186,7 @@ public int TextStore_BackpackMenu(Menu menu, MenuAction action, int client, int 
 				}
 			}
 
-			ShowMenu(client);
+			ShowMenu(client, choice);
 		}
 	}
 	return 0;
