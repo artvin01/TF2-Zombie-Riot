@@ -877,6 +877,8 @@ void Quests_WeaponSwitch(int client, int weapon)
 						}
 					}
 					while(QuestKv.GotoNextKey());
+
+					QuestKv.GoBack();
 				}
 			}
 			while(QuestKv.GotoNextKey());

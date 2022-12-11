@@ -430,13 +430,15 @@ void TextStore_AddItemCount(int client, const char[] name, int amount)
 {
 	if(StrEqual(name, ITEM_CASH))
 	{
-		SPrintToChat(client, "You gained %d credits", amount);
 		TextStore_Cash(client, amount);
+		if(amount > 0)
+			SPrintToChat(client, "You gained %d credits", amount);
 	}
 	else if(StrEqual(name, ITEM_XP))
 	{
-		SPrintToChat(client, "You gained %d XP", amount);
 		GiveXP(client, amount);
+		if(amount > 0)
+			SPrintToChat(client, "You gained %d XP", amount);
 	}
 	else if(StrEqual(name, ITEM_TIER))
 	{
@@ -457,7 +459,7 @@ void TextStore_AddItemCount(int client, const char[] name, int amount)
 				{
 					SPrintToChat(client, "You gained %s", name);
 				}
-				else
+				else if(amount > 1)
 				{
 					SPrintToChat(client, "You gained %s x%d", name, amount);
 				}
@@ -944,7 +946,6 @@ void TextStore_PlayerRunCmd(int client)
 
 static void ShowMenu(int client, int page = 0)
 {
-	PrintToChatAll("Menu Source: %d", GetClientMenu(client));
 	switch(MenuType[client])
 	{
 		case MENU_WEAPONS:
