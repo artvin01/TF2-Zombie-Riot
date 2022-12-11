@@ -87,7 +87,7 @@ public void SDKHook_ScoreThink(int entity)
 	int Conversion_ExtraPoints[MAXTF2PLAYERS];
 	for(int client=1; client<=MaxClients; client++)
 	{
-		Conversion_ExtraPoints[client] = i_ExtraPlayerPoints[client] / 2;
+		Conversion_ExtraPoints[client] = RoundToCeil(float(i_ExtraPlayerPoints[client]) * 0.5);
 	}
 
 	SetEntDataArray(entity, offset_damageblocked, Conversion_ExtraPoints, MaxClients + 1);
@@ -100,7 +100,7 @@ public void SDKHook_ScoreThink(int entity)
 			SetEntProp(client, Prop_Send, "m_iHealPoints", Healing_done_in_total[client]);
 			SetEntProp(client, Prop_Send, "m_iBackstabs", i_Backstabs[client]);
 			SetEntProp(client, Prop_Send, "m_iHeadshots", i_Headshots[client]);
-			SetEntProp(client, Prop_Send, "m_iDefenses", i_BarricadeHasBeenDamaged[client] / 1000);
+			SetEntProp(client, Prop_Send, "m_iDefenses", RoundToCeil(float(i_BarricadeHasBeenDamaged[client]) * 0.001));
 
 
 		//	m_iHealPoints

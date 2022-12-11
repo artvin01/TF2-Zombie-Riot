@@ -3122,7 +3122,7 @@ public void GiveCompleteInvul(int client, float time)
 	TF2_AddCondition(client, TFCond_MegaHeal, time);
 }
 
-stock int SpawnFormattedWorldText(const char[] format, const float origin[3], int textSize = 10, const int colour[4] = {255,255,255,255}, int entity_parent = -1, bool rainbow = false, bool teleport = false)
+stock int SpawnFormattedWorldText(const char[] format, float origin[3], int textSize = 10, const int colour[4] = {255,255,255,255}, int entity_parent = -1, bool rainbow = false, bool teleport = false)
 {
 	int worldtext = CreateEntityByName("point_worldtext");
 	if(IsValidEntity(worldtext))
@@ -3165,7 +3165,7 @@ stock int SpawnFormattedWorldText(const char[] format, const float origin[3], in
 				pack.WriteFloat(origin[1]);
 				pack.WriteFloat(origin[2]);
 			}
-			TeleportEntity(worldtext, origin, NULL_VECTOR, NULL_VECTOR);
+			SDKCall_SetLocalOrigin(worldtext, origin);
 		}	
 	}
 	return worldtext;
@@ -3189,7 +3189,7 @@ public Action TeleportTextTimer(Handle timer, DataPack pack)
 		vector[1] += vector_offset[1];
 		vector[2] += vector_offset[2];
 
-		TeleportEntity(text_entity, vector, NULL_VECTOR, NULL_VECTOR);
+		SDKCall_SetLocalOrigin(text_entity,vector);
 		return Plugin_Continue;
 	}
 	else
