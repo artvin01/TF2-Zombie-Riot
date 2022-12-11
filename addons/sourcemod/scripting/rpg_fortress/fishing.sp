@@ -390,6 +390,20 @@ void Fishing_ClientDisconnect(int client)
 	f_ClientWasPreviouslyFishing[client] = 0.0;
 }
 
+static int GetNearestPond(const float pos[3])
+{
+		static PlaceEnum place;
+		StringMapSnapshot snap = PlaceList.Snapshot();
+
+		int length = snap.Length;
+		for(int i; i < length; i++)
+		{
+			
+		}
+
+		delete snap;
+}
+
 void Fishing_PlayerRunCmd(int client)
 {
 	if(f_ClientWasFishingDelayCheck[client] < GetGameTime())

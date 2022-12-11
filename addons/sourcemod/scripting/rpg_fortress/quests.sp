@@ -112,7 +112,8 @@ void Quests_EnableZone(int client, const char[] name)
 	do
 	{
 		static char buffer[PLATFORM_MAX_PATH];
-		QuestKv.GetString("zone", buffer, sizeof(buffer));
+		QuestKv.GetSectionName(buffer, sizeof(buffer));
+		QuestKv.GetString("zone", buffer, sizeof(buffer), buffer);
 		if(StrEqual(buffer, name, false))
 		{
 			int entity = EntRefToEntIndex(QuestKv.GetNum("_entref", INVALID_ENT_REFERENCE));
@@ -176,12 +177,12 @@ void Quests_EnableZone(int client, const char[] name)
 					SDKHook(particle, SDKHook_SetTransmit, QuestIndicatorTransmit);
 					b_ParticleToOwner[particle] = EntIndexToEntRef(entity);
 					b_OwnerToParticle[entity] = EntIndexToEntRef(particle);
-					b_NpcHasQuestForPlayer[entity][client] = ShouldShowPointer(client, entity);
+					b_NpcHasQuestForPlayer[entity][client] = ShouldShowPointerKv(client);
 				}
 			}
 			else
 			{
-				b_NpcHasQuestForPlayer[entity][client] = ShouldShowPointer(client, entity);
+				b_NpcHasQuestForPlayer[entity][client] = ShouldShowPointerKv(client);
 			}
 		}
 	}
@@ -207,8 +208,6 @@ public Action QuestIndicatorTransmit(int entity, int client)
 	}
 	return Plugin_Continue;
 }
-
-
 
 void Quests_DisableZone(const char[] name)
 {
@@ -264,6 +263,62 @@ static void MakeInteraction(int client, int entity, const char[] sound, const ch
 	}
 }
 
+static bool ShouldShowPointerKv(int client)
+{
+	static char steamid[64], name[64], buffer[64];
+	QuestKv.GetSectionName(name, sizeof(name));
+	
+	bool result;
+	if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
+	{
+		if(QuestKv.GotoFirstSubKey())
+		{
+			do
+			{
+				int level = QuestKv.GetNum("level");
+				if(Level[client] >= level)
+				{
+					QuestKv.GetSectionName(buffer, sizeof(buffer));
+
+					SaveKv.Rewind();
+					SaveKv.JumpToKey(name, true);
+					if(SaveKv.JumpToKey(buffer, true))
+					{
+						switch(SaveKv.GetNum(steamid))
+						{
+							case Status_NotStarted, Status_Canceled:
+							{
+								result = true;
+								break;
+							}
+							case Status_InProgress:
+							{
+								if(CanTurnInQuest(client, steamid))
+								{
+									result = true;
+									break;
+								}
+							}
+							case Status_Completed:
+							{
+								if(QuestKv.GetNum("repeatable"))
+								{
+									result = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+			while(QuestKv.GotoNextKey());
+
+			QuestKv.GoBack();
+		}
+	}
+	return result;
+}
+
 static bool ShouldShowPointer(int client, int entity)
 {
 	QuestKv.Rewind();
@@ -272,46 +327,7 @@ static bool ShouldShowPointer(int client, int entity)
 	{
 		if(EntRefToEntIndex(QuestKv.GetNum("_entref", INVALID_ENT_REFERENCE)) == entity)
 		{
-			static char steamid[64], buffer[64];
-			QuestKv.GetSectionName(buffer, sizeof(buffer));
-			
-			if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
-			{
-				QuestKv.GotoFirstSubKey();
-				do
-				{
-					int level = QuestKv.GetNum("level");
-					if(Level[client] >= level)
-					{
-						QuestKv.GetSectionName(buffer, sizeof(buffer));
-
-						SaveKv.Rewind();
-						SaveKv.JumpToKey(buffer, true);
-						if(SaveKv.JumpToKey(buffer, true))
-						{
-							switch(SaveKv.GetNum(steamid))
-							{
-								case Status_NotStarted, Status_Canceled:
-								{
-									return true;
-								}
-								case Status_InProgress:
-								{
-									if(CanTurnInQuest(client, steamid))
-										return true;
-								}
-								case Status_Completed:
-								{
-									if(QuestKv.GetNum("repeatable"))
-										return true;
-								}
-							}
-						}
-					}
-				}
-				while(QuestKv.GotoNextKey());
-			}
-			
+			ShouldShowPointerKv(client);
 			break;
 		}
 	}
@@ -361,9 +377,26 @@ static void MainMenu(int client)
 		QuestKv.GotoFirstSubKey();
 		do
 		{
-			QuestKv.GetSectionName(name, sizeof(name));
+			QuestKv.GetString("complete", buffer, sizeof(buffer));
+			if(name[0])
+			{
+				int progress;
+				if(SaveKv.JumpToKey(buffer))
+				{
+					progress = SaveKv.GetNum(steamid);
+					SaveKv.GoBack();
+				}
 
+				if(progress != Status_Completed)
+					continue;
+			}
+			
+			QuestKv.GetSectionName(name, sizeof(name));
+			
 			int level = QuestKv.GetNum("level");
+			GetDisplayString(level, buffer, sizeof(buffer));
+			Format(buffer, sizeof(buffer), "%s (%s)", name, buffer);
+
 			if(Level[client] >= level)
 			{
 				if(SaveKv.JumpToKey(name, true))
@@ -372,16 +405,16 @@ static void MainMenu(int client)
 					{
 						case Status_NotStarted, Status_Canceled:
 						{
-							menu.AddItem(name, name);
+							menu.AddItem(name, buffer);
 						}
 						case Status_InProgress:
 						{
-							menu.InsertItem(0, name, name);
+							menu.AddItem(name, buffer);
 						}
 						case Status_Completed:
 						{
 							if(QuestKv.GetNum("repeatable"))
-								menu.AddItem(name, name);
+								menu.AddItem(name, buffer);
 						}
 					}
 
@@ -390,8 +423,6 @@ static void MainMenu(int client)
 			}
 			else
 			{
-				GetDisplayString(level, buffer, sizeof(buffer));
-				Format(buffer, sizeof(buffer), "%s (%s)", name, buffer);
 				menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 			}
 		}
@@ -404,7 +435,7 @@ static void MainMenu(int client)
 	menu.Display(client, MENU_TIME_FOREVER);
 }
 
-static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "", Menu book = null)
+static bool CanTurnInQuest(int client, const char[] steamid, char title[256] = "", Menu book = null)
 {
 	bool canTurnIn = true;
 	static char buffer[64];
@@ -595,7 +626,7 @@ public int Quests_MenuHandle(Menu menu2, MenuAction action, int client, int choi
 				QuestKv.Rewind();
 				if(QuestKv.JumpToKey(CurrentNPC[client]) && QuestKv.JumpToKey(name))
 				{
-					static char title[512];
+					static char title[256];
 					QuestKv.GetString("desc", title, sizeof(title));
 					//Format(title, sizeof(title), "%s\n%s\n \n%s", CurrentNPC[client], name, title);
 
@@ -815,9 +846,9 @@ void Quests_WeaponSwitch(int client, int weapon)
 	if(weapon != -1 && StrEqual(StoreWeapon[weapon], "Quest Book"))
 	{
 		Menu menu = new Menu(Quests_BookHandle);
-		menu.SetTitle("RPG Fortress\n \nObjectives:");
-
-		static char steamid[64], name[64], buffer[64];
+		menu.SetTitle("RPG Fortress\n \n");
+		
+		static char steamid[64], name[64], buffer[256];
 		if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
 		{
 			QuestKv.Rewind();
@@ -837,15 +868,10 @@ void Quests_WeaponSwitch(int client, int weapon)
 							{
 								if(SaveKv.GetNum(steamid) == Status_InProgress)
 								{
-									if(CanTurnInQuest(client, steamid))
-									{
-										Format(buffer, sizeof(buffer), "Talk to %s", name);
-										menu.AddItem(NULL_STRING, buffer);
-									}
-									else
-									{
-										CanTurnInQuest(client, steamid, _, menu);
-									}
+									Format(buffer, sizeof(buffer), "%s - %s", name, buffer);
+									CanTurnInQuest(client, steamid, buffer);
+									Format(buffer, sizeof(buffer), "%s\n ", buffer);
+									menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 								}
 							}
 						}
@@ -856,38 +882,37 @@ void Quests_WeaponSwitch(int client, int weapon)
 			while(QuestKv.GotoNextKey());
 		}
 
-		if(!menu.ItemCount)
+		if(menu.ItemCount)
+		{
+			menu.Pagination = 2;
+			menu.ExitButton = true;
+		}
+		else
 		{
 			menu.AddItem(NULL_STRING, "  No active quests, talk to", ITEMDRAW_DISABLED);
-			menu.AddItem(NULL_STRING, "a NPC with a spark above them.", ITEMDRAW_DISABLED);
+			menu.AddItem(NULL_STRING, "a NPC with an icon above them.", ITEMDRAW_DISABLED);
 		}
 
 		menu.Display(client, MENU_TIME_FOREVER);
 	}
 }
 
-public int Quests_BookHandle(Menu menu2, MenuAction action, int client, int choice)
+public int Quests_BookHandle(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
 		case MenuAction_End:
 		{
-			delete menu2;
+			delete menu;
 		}
 		case MenuAction_Cancel:
 		{
-			if(choice == MenuCancel_Exit)
-			{
-				SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
-				ClientCommand(client, "lastinv");
-				ClientCommand(client, "slot3");
-			}
+			if(choice != MenuCancel_Disconnected)
+				Store_SwapToItem(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
 		}
 		case MenuAction_Select:
 		{
-			SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
-			ClientCommand(client, "lastinv");
-			ClientCommand(client, "slot3");
+			Store_SwapToItem(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
 		}
 	}
 	return 0;

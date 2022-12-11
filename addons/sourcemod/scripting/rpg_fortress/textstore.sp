@@ -160,6 +160,7 @@ enum struct BackpackEnum
 
 enum
 {
+	MENU_NONE = -1,
 	MENU_WEAPONS = 0,
 	MENU_SPELLS = 1,
 	MENU_BACKPACK = 2
@@ -890,7 +891,11 @@ void TextStore_WeaponSwitch(int client, int weapon)
 		MenuType[client] = MENU_BACKPACK;
 		RefreshAt[client] = 1.0;
 	}
-	else if(MenuType[client] == MENU_BACKPACK)
+	else if(weapon != -1 && StrEqual(StoreWeapon[weapon], "Quest Book"))
+	{
+		MenuType[client] = MENU_NONE;
+	}
+	else if(MenuType[client] == MENU_NONE || MenuType[client] == MENU_BACKPACK)
 	{
 		MenuType[client] = MENU_WEAPONS;
 	}
@@ -939,6 +944,7 @@ void TextStore_PlayerRunCmd(int client)
 
 static void ShowMenu(int client, int page = 0)
 {
+	PrintToChatAll("Menu Source: %d", GetClientMenu(client));
 	switch(MenuType[client])
 	{
 		case MENU_WEAPONS:
@@ -948,10 +954,11 @@ static void ShowMenu(int client, int page = 0)
 			menu.SetTitle("RPG Fortress\n \nItems:");
 			
 			int backpack = -1;
+			int questbook = -1;
 			int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			char index[16];
 
-			int list[8];
+			int list[7];
 			int amount;
 
 			int i, entity;
@@ -961,7 +968,11 @@ static void ShowMenu(int client, int page = 0)
 				{
 					backpack = entity;
 				}
-				else
+				else if(StrEqual(StoreWeapon[entity], "Quest Book"))
+				{
+					questbook = entity;
+				}
+				else if(amount < sizeof(list))
 				{
 					list[amount++] = entity;
 				}
@@ -978,10 +989,20 @@ static void ShowMenu(int client, int page = 0)
 				}
 			}
 
-			for(; i < 8; i++)
+			for(; i < 7; i++)
 			{
 				menu.AddItem("-1", "");
 				amount++;
+			}
+
+			if(questbook == -1)
+			{
+				menu.AddItem("-1", "");
+			}
+			else
+			{
+				IntToString(EntIndexToEntRef(questbook), index, sizeof(index));
+				menu.AddItem(index, "Quest Book", ITEMDRAW_DEFAULT);
 			}
 
 			if(backpack == -1)
@@ -991,7 +1012,7 @@ static void ShowMenu(int client, int page = 0)
 			else
 			{
 				IntToString(EntIndexToEntRef(backpack), index, sizeof(index));
-				menu.AddItem(index, "Backpack\n ", backpack == active ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				menu.AddItem(index, "Backpack\n ", ITEMDRAW_DEFAULT);
 			}
 
 			//menu.AddItem("-1", "Spells");
@@ -1141,15 +1162,10 @@ public int TextStore_BackpackMenu(Menu menu, MenuAction action, int client, int 
 			switch(choice)
 			{
 				case MenuCancel_ExitBack:
-				{
 					FakeClientCommandEx(client, "sm_inv");
-				}
+				
 				case MenuCancel_Exit:
-				{
-					SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
-					ClientCommand(client, "lastinv");
-					ClientCommand(client, "slot3");
-				}
+					Store_SwapToItem(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
 			}
 		}
 		case MenuAction_Select:

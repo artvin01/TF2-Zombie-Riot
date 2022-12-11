@@ -73,7 +73,7 @@ void RPG_PluginEnd()
 				NPC_Despawn(i);
 				continue;
 			}
-			else if(!StrContains(buffer, "prop_dynamic") || !StrContains(buffer, "point_worldtext"))
+			else if(!StrContains(buffer, "prop_dynamic") || !StrContains(buffer, "point_worldtext") || !StrContains(buffer, "info_particle_system"))
 			{
 				GetEntPropString(i, Prop_Data, "m_iName", buffer, sizeof(buffer));
 				if(!StrEqual(buffer, "rpg_fortress"))

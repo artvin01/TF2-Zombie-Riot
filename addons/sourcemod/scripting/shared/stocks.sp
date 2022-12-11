@@ -401,7 +401,7 @@ stock TFClassType TF2_GetWeaponClass(int index, TFClassType defaul=TFClass_Unkno
 {
 	switch(index)
 	{
-		case 25:
+		case 25, 26:
 			return TFClass_Engineer;
 		
 		case 735, 736, 810, 831, 933, 1080, 1102:

@@ -1461,11 +1461,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	Tutorial_MakeClientNotMove(client);
 #endif
 
-#if defined RPG
-	TextStore_PlayerRunCmd(client);
-	Fishing_PlayerRunCmd(client);
-#endif
-
 	if(buttons & IN_ATTACK)
 	{
 		int entity = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -1783,14 +1778,19 @@ public void Movetype_walk(int client)
 	
 }
 
-#if defined ZR
 public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon)
 {
+#if defined ZR
 	SemiAutoWeapon(client, buttons);
 	Pets_PlayerRunCmdPost(client, buttons, angles);
 	Medikit_healing(client, buttons);
-}
 #endif
+
+#if defined RPG
+	TextStore_PlayerRunCmd(client);
+	Fishing_PlayerRunCmd(client);
+#endif
+}
 
 public void Update_Ammo(int  client)
 {
