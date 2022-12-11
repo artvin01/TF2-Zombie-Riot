@@ -431,6 +431,7 @@ int i_WandWeapon[MAXENTITIES]; //
 int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever ever. lag max otherwise.
 bool i_IsWandWeapon[MAXENTITIES]; 
 bool i_IsWrench[MAXENTITIES]; 
+bool b_is_a_brush[MAXENTITIES]; 
 
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
 
@@ -1944,7 +1945,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		StoreWeapon[entity] = -1;
 		b_SentryIsCustom[entity] = false;
 #endif
-		
+		i_IsWandWeapon[entity] = false;
+		i_IsWrench[entity] = false;
 		LastHitId[entity] = -1;
 		DamageBits[entity] = -1;
 		Damage[entity] = 0.0;
@@ -1984,6 +1986,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		SetDefaultValuesToZeroNPC(entity);
 		i_SemiAutoWeapon[entity] = false;
 		b_NpcHasDied[entity] = true;
+		b_is_a_brush[entity] = false;
 		
 #if defined RPG
 		RPG_EntityCreated(entity);
@@ -1998,15 +2001,25 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
-#if defined ZR
 		else if(!StrContains(classname, "item_currencypack_custom"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
+		}
+#if defined RPG
+		else if(!StrContains(classname, "phys_bone_follower"))
+		{
+			//every prop_Dynamic that spawns these  can make upto 16 entities, holy fuck
+			//make a func_brush and use it to detect collisions!
+			RemoveEntity(entity);
 		}
 #endif
 		else if(!StrContains(classname, "tf_projectile_energy_ring"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
+		}
+		else if(!StrContains(classname, "func_brush"))
+		{
+			b_is_a_brush[entity] = true;
 		}
 		else if(!StrContains(classname, "entity_medigun_shield"))
 		{
@@ -2641,6 +2654,16 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 		int entity = GetClientPointVisible(client); //So you can also correctly interact with players holding shit.
 		if(entity > 0)
 		{
+#if defined RPG
+			if(b_is_a_brush[entity]) //THIS is for brushes that act as collision boxes for NPCS inside quests.sp
+			{
+				int entityfrombrush = BrushToEntity(entity);
+				if(entityfrombrush != -1)
+				{
+					entity = entityfrombrush;
+				}
+			}
+#endif
 
 #if defined ZR
 			static char buffer[64];
