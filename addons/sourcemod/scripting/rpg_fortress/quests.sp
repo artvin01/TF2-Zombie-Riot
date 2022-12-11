@@ -378,7 +378,7 @@ static void MainMenu(int client)
 		do
 		{
 			QuestKv.GetString("complete", buffer, sizeof(buffer));
-			if(name[0])
+			if(buffer[0])
 			{
 				int progress;
 				if(SaveKv.JumpToKey(buffer))
