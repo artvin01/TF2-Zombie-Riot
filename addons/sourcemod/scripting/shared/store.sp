@@ -4131,7 +4131,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		
 		Enable_StarShooter(client, entity);
 #endif
-		
+
+#if defined RPG
+		Stats_SetWeaponStats(client, entity, slot);
+#endif
+
 	}
 	return entity;
 }

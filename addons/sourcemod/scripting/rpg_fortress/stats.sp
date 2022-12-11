@@ -4,10 +4,20 @@
 #define MACRO_SHOWDIFF(%1)	if(oldAmount != newAmount) { FormatEx(buffer, sizeof(buffer), %1 ... " (%d -> %d)", oldAmount, newAmount); menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED); }
 
 static int BackpackBonus[MAXTF2PLAYERS];
+static int Strength[MAXTF2PLAYERS];
+static int Dexterity[MAXTF2PLAYERS];
+static int Intelligence[MAXTF2PLAYERS];
+static int Agility[MAXTF2PLAYERS];
+static int Luck[MAXTF2PLAYERS];
 
 void Stats_ClearCustomStats(int client)
 {
 	BackpackBonus[client] = 0;
+	Strength[client] = 0;
+	Dexterity[client] = 0;
+	Intelligence[client] = 0;
+	Agility[client] = 0;
+	Luck[client] = 0;
 }
 
 void Stats_GetCustomStats(int client, int attrib, float value)
@@ -15,8 +25,49 @@ void Stats_GetCustomStats(int client, int attrib, float value)
 	switch(attrib)
 	{
 		case -1:
-		{
 			BackpackBonus[client] = RoundFloat(value);
+		
+		case -2:
+			Strength[client] = RoundFloat(value);
+		
+		case -3:
+			Dexterity[client] = RoundFloat(value);
+		
+		case -4:
+			Intelligence[client] = RoundFloat(value);
+		
+		case -5:
+			Luck[client] = RoundFloat(value);
+	}
+}
+
+void Stats_SetWeaponStats(int client, int entity, int slot)
+{
+	if(slot > TFWeaponSlot_Melee || i_IsWrench[entity])
+	{
+		if(Dexterity[client])
+		{
+			Address address = TF2Attrib_GetByDefIndex(entity, 2);
+			if(address != Address_Null)
+				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * (1.0 + (Dexterity[client] * 0.03)));
+		}
+	}
+	else if(i_IsWandWeapon[entity])
+	{
+		if(Intelligence[client])
+		{
+			Address address = TF2Attrib_GetByDefIndex(entity, 2);
+			if(address != Address_Null)
+				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * (1.0 + (Intelligence[client] * 0.03)));
+		}
+	}
+	else if(slot == TFWeaponSlot_Melee)
+	{
+		if(Strength[client])
+		{
+			Address address = TF2Attrib_GetByDefIndex(entity, 2);
+			if(address != Address_Null)
+				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * (1.0 + (Strength[client] * 0.03)));
 		}
 	}
 }
