@@ -403,11 +403,7 @@ static void MainMenu(int client)
 				{
 					switch(SaveKv.GetNum(steamid))
 					{
-						case Status_NotStarted, Status_Canceled:
-						{
-							menu.AddItem(name, buffer);
-						}
-						case Status_InProgress:
+						case Status_NotStarted, Status_Canceled, Status_InProgress:
 						{
 							menu.AddItem(name, buffer);
 						}
@@ -415,6 +411,10 @@ static void MainMenu(int client)
 						{
 							if(QuestKv.GetNum("repeatable"))
 								menu.AddItem(name, buffer);
+						}
+						default:
+						{
+							PrintToChatAll("INVALID QUEST STATUSSSSSSSS");
 						}
 					}
 
