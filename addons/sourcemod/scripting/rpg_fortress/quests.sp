@@ -435,7 +435,7 @@ static void MainMenu(int client)
 	menu.Display(client, MENU_TIME_FOREVER);
 }
 
-static bool CanTurnInQuest(int client, const char[] steamid, char title[256] = "", Menu book = null)
+static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "", Menu book = null)
 {
 	bool canTurnIn = true;
 	static char buffer[64];
@@ -626,7 +626,7 @@ public int Quests_MenuHandle(Menu menu2, MenuAction action, int client, int choi
 				QuestKv.Rewind();
 				if(QuestKv.JumpToKey(CurrentNPC[client]) && QuestKv.JumpToKey(name))
 				{
-					static char title[256];
+					static char title[512];
 					QuestKv.GetString("desc", title, sizeof(title));
 					//Format(title, sizeof(title), "%s\n%s\n \n%s", CurrentNPC[client], name, title);
 
@@ -848,7 +848,7 @@ void Quests_WeaponSwitch(int client, int weapon)
 		Menu menu = new Menu(Quests_BookHandle);
 		menu.SetTitle("RPG Fortress\n \n");
 		
-		static char steamid[64], name[64], buffer[256];
+		static char steamid[64], name[64], buffer[512];
 		if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
 		{
 			QuestKv.Rewind();
