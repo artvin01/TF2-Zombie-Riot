@@ -291,7 +291,7 @@ public void HeavyBearMinion_ClotThink(int iNPC)
 
 					npc.PlayMeleeSound();
 					
-					npc.m_flAttackHappens = gameTime + 0.2;
+					npc.m_flAttackHappens = gameTime + 0.3;
 
 				//	npc.m_flDoingAnimation = gameTime + 0.6;
 					npc.m_flNextMeleeAttack = gameTime + 1.0;

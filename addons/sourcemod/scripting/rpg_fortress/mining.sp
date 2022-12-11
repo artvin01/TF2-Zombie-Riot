@@ -4,6 +4,10 @@
 float f_clientFoundRareRockSpot[MAXTF2PLAYERS];
 float f_clientFoundRareRockSpotPos[MAXTF2PLAYERS][3];
 
+float f_ClientStartedTouch[MAXTF2PLAYERS];
+float f_ClientStartedTouchDelay[MAXTF2PLAYERS];
+float f_TouchedThisManyTimes[MAXTF2PLAYERS];
+
 enum struct MineEnum
 {
 	char Zone[32];
@@ -12,6 +16,7 @@ enum struct MineEnum
 	float Pos[3];
 	float Ang[3];
 	float Scale;
+	bool OnTouch;
 	int Color[4];
 	
 	char Item[48];
@@ -52,6 +57,8 @@ enum struct MineEnum
 		kv.GetString("item", this.Item, 48);
 		this.Health = kv.GetNum("health");
 		this.Tier = kv.GetNum("tier");
+		
+		this.OnTouch = view_as<bool>(kv.GetNum("ontouch"));
 
 		this.EntRef = INVALID_ENT_REFERENCE;
 
@@ -102,12 +109,42 @@ enum struct MineEnum
 				PrintToChatAll("%f",vector[1]);
 				PrintToChatAll("%f",vector[2]);
 				*/
+				if(this.OnTouch)
+				{
+					SDKHook(entity, SDKHook_Touch, AntiTouchStuckMine);
+				}	
 				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
 				
 				SetEntityRenderMode(entity, RENDER_NORMAL);
 				SetEntityRenderColor(entity, this.Color[0], this.Color[1], this.Color[2], this.Color[3]);
 				
 				this.EntRef = EntIndexToEntRef(entity);
+			}
+		}
+	}
+}
+
+public void AntiTouchStuckMine(int entity, int other)
+{
+	if(other <= MaxClients)
+	{
+		if(f_ClientStartedTouchDelay[other] < GetGameTime())
+		{
+			f_ClientStartedTouchDelay[other] = GetGameTime() + 0.5;
+			if(f_ClientStartedTouch[other] > GetGameTime())
+			{
+				f_ClientStartedTouch[other] = GetGameTime() + 5.0;
+				f_TouchedThisManyTimes[other] *= 2.0;
+				SDKHooks_TakeDamage(other, entity, entity, f_TouchedThisManyTimes[other], DMG_DROWN, -1);
+
+				//Already touched before!
+			}
+			else
+			{
+				//new touch!
+				f_ClientStartedTouch[other] = GetGameTime() + 5.0;
+				f_TouchedThisManyTimes[other] = 1.0;
+				SDKHooks_TakeDamage(other, entity, entity, f_TouchedThisManyTimes[other], DMG_DROWN, -1);
 			}
 		}
 	}

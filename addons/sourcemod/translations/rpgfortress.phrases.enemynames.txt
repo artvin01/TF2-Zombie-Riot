@@ -31,4 +31,8 @@
 	{
 		"en" 		"Heavy Bear Minion"
 	}
+	"Ore Miner"
+	{
+		"en" 		"Ore Miner"
+	}
 }

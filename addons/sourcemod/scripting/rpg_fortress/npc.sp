@@ -9,7 +9,8 @@ enum
 	MAD_ROOST				= 3,
 	HEAVY_BEAR				= 4,
 	HEAVY_BEAR_BOSS			= 5,
-	HEAVY_BEAR_MINION		= 6
+	HEAVY_BEAR_MINION		= 6,
+	MINER_NPC				= 7
 }
 
 public const char NPC_Names[][] =
@@ -20,7 +21,8 @@ public const char NPC_Names[][] =
 	"Mad Roost",
 	"Heavy Bear",
 	"Heavy Bear Boss",
-	"Heavy Bear Minion"
+	"Heavy Bear Minion",
+	"Ore Miner"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -31,7 +33,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_roost_mad",
 	"npc_heavy_bear",
 	"npc_heavy_bear_boss",
-	"npc_heavy_bear_minion"
+	"npc_heavy_bear_minion",
+	"npc_miner"
 };
 
 void NPC_MapStart()
@@ -42,6 +45,7 @@ void NPC_MapStart()
 	HeavyBear_OnMapStart_NPC();
 	HeavyBearBoss_OnMapStart_NPC();
 	HeavyBearMinion_OnMapStart_NPC();
+	Miner_Enemy_OnMapStart_NPC();
 }
 
 stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
@@ -72,6 +76,10 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 		case HEAVY_BEAR_MINION:
 		{
 			entity = HeavyBearMinion(client, vecPos, vecAng, ally);
+		}
+		case MINER_NPC:
+		{
+			entity = Miner_Enemy(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -109,6 +117,10 @@ public void NPCDeath(int entity)
 		case HEAVY_BEAR_MINION:
 		{
 			HeavyBearMinion_NPCDeath(entity);
+		}
+		case MINER_NPC:
+		{
+			Miner_Enemy_NPCDeath(entity);
 		}
 		default:
 		{
@@ -285,3 +297,4 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 #include "rpg_fortress/npc/normal/npc_heavy_bear.sp"
 #include "rpg_fortress/npc/normal/npc_heavy_bear_boss.sp"
 #include "rpg_fortress/npc/normal/npc_heavy_bear_minion.sp"
+#include "rpg_fortress/npc/normal/npc_miner.sp"
