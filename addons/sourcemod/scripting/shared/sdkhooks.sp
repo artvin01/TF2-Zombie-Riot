@@ -587,9 +587,9 @@ public void OnPostThink(int client)
 			green = 0;
 			blue = 255;
 			
-			red = Current_Mana[client] * 255  / RoundToFloor(max_mana[client]) + 1; //DO NOT DIVIDE BY 0
+			red = Current_Mana[client] * 255  / (RoundToFloor(max_mana[client]) + 1); //DO NOT DIVIDE BY 0
 			
-			blue = Current_Mana[client] * 255  / RoundToFloor(max_mana[client]) + 1;
+			blue = Current_Mana[client] * 255  / (RoundToFloor(max_mana[client]) + 1);
 			 
 			red = 255 - red;
 			

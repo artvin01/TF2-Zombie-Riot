@@ -120,6 +120,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		TextStore_DespoitBackpack(client, false);
 #endif
 
+		TF2_RemoveAllWeapons(client); //Remove all weapons. No matter what.
 		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.0);
 		SetVariantString("");
 	  	AcceptEntityInput(client, "SetCustomModel");
@@ -183,8 +184,6 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", true);
 	   		
 	   		b_ThisEntityIgnored[client] = true;
-
-			TF2_RemoveAllWeapons(client);
 			
 	   		int weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword");
 	   		
