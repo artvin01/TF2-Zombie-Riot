@@ -4,46 +4,44 @@
 // this should vary from npc to npc as some are in a really small area.
 
 static char g_DeathSounds[][] = {
-	"vo/heavy_paincrticialdeath01.mp3",
-	"vo/heavy_paincrticialdeath02.mp3",
-	"vo/heavy_paincrticialdeath03.mp3",
+	"vo/soldier_paincrticialdeath01.mp3",
+	"vo/soldier_paincrticialdeath02.mp3",
+	"vo/soldier_paincrticialdeath03.mp3",
 };
 
 static char g_HurtSound[][] = {
-	")vo/heavy_painsharp01.mp3",
-	")vo/heavy_painsharp02.mp3",
-	")vo/heavy_painsharp03.mp3",
-	")vo/heavy_painsharp04.mp3",
-	")vo/heavy_painsharp05.mp3",
+	")vo/soldier_painsharp01.mp3",
+	")vo/soldier_painsharp02.mp3",
+	")vo/soldier_painsharp03.mp3",
+	")vo/soldier_painsharp04.mp3",
+	")vo/soldier_painsharp05.mp3",
 };
 
 static char g_IdleSound[][] = {
-	")vo/heavy_jeers03.mp3",	
-	")vo/heavy_jeers04.mp3",	
-	")vo/heavy_jeers06.mp3",
-	")vo/heavy_jeers09.mp3",	
+	")vo/soldier_jeers03.mp3",	
+	")vo/soldier_jeers04.mp3",	
+	")vo/soldier_jeers06.mp3",
+	")vo/soldier_jeers09.mp3",	
 };
 
 static char g_IdleAlertedSounds[][] = {
-	")vo/taunts/heavy_taunts16.mp3",
-	")vo/taunts/heavy_taunts18.mp3",
-	")vo/taunts/heavy_taunts19.mp3",
+	")vo/taunts/soldier_taunts16.mp3",
+	")vo/taunts/soldier_taunts18.mp3",
+	")vo/taunts/soldier_taunts19.mp3",
 };
 
 static char g_MeleeHitSounds[][] = {
-	")weapons/boxing_gloves_hit1.wav",
-	")weapons/boxing_gloves_hit2.wav",
-	")weapons/boxing_gloves_hit3.wav",
-	")weapons/boxing_gloves_hit4.wav",
+	"weapons/cbar_hit1.wav",
+	"weapons/cbar_hit2.wav",
 };
 static char g_MeleeAttackSounds[][] = {
-	")weapons/boxing_gloves_swing1.wav",
-	")weapons/boxing_gloves_swing2.wav",
-	")weapons/boxing_gloves_swing4.wav",
+	")weapons/pickaxe_swing1.wav",
+	")weapons/pickaxe_swing2.wav",
+	")weapons/pickaxe_swing3.wav",
 };
 
 
-public void HeavyBear_OnMapStart_NPC()
+public void Miner_Enemy_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
@@ -51,10 +49,9 @@ public void HeavyBear_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
-	PrecacheModel("models/player/scout.mdl");
 }
 
-methodmap HeavyBear < CClotBody
+methodmap Miner_Enemy < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -91,11 +88,11 @@ methodmap HeavyBear < CClotBody
 	}
 	
 	
-	public HeavyBear(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Miner_Enemy(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		HeavyBear npc = view_as<HeavyBear>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "300", ally, false,_,_,_,_));
+		Miner_Enemy npc = view_as<Miner_Enemy>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "300", ally, false,_,_,_,_));
 		
-		i_NpcInternalId[npc.index] = HEAVY_BEAR;
+		i_NpcInternalId[npc.index] = MINER_NPC;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -115,29 +112,24 @@ methodmap HeavyBear < CClotBody
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, HeavyBear_OnTakeDamage);
-		SDKHook(npc.index, SDKHook_Think, HeavyBear_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, Miner_Enemy_OnTakeDamage);
+		SDKHook(npc.index, SDKHook_Think, Miner_Enemy_ClotThink);
 		
 		int skin = GetRandomInt(0, 1);
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 	
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/heavy/jul13_bear_necessitys/jul13_bear_necessitys.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_pickaxe/c_pickaxe.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_bear_claw/c_bear_claw.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/all_class/all_class_reddit_alt_soldier_hat.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
+
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/sbox2014_heavy_gunshow/sbox2014_heavy_gunshow.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		
 		PF_StopPathing(npc.index);
 		npc.m_bPathing = false;	
@@ -149,9 +141,9 @@ methodmap HeavyBear < CClotBody
 
 //TODO 
 //Rewrite
-public void HeavyBear_ClotThink(int iNPC)
+public void Miner_Enemy_ClotThink(int iNPC)
 {
-	HeavyBear npc = view_as<HeavyBear>(iNPC);
+	Miner_Enemy npc = view_as<Miner_Enemy>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -181,7 +173,7 @@ public void HeavyBear_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, 300.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 200.0, gameTime);
+	Npc_Base_Thinking(iNPC, 500.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 230.0, gameTime);
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -199,7 +191,7 @@ public void HeavyBear_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 5.0;
+					float damage = 10.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -294,7 +286,7 @@ public void HeavyBear_ClotThink(int iNPC)
 					npc.m_flAttackHappens = gameTime + 0.3;
 
 				//	npc.m_flDoingAnimation = gameTime + 0.6;
-					npc.m_flNextMeleeAttack = gameTime + 1.0;
+					npc.m_flNextMeleeAttack = gameTime + 1.5;
 					npc.m_bisWalking = true;
 				}
 			}
@@ -304,13 +296,13 @@ public void HeavyBear_ClotThink(int iNPC)
 }
 
 
-public Action HeavyBear_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Miner_Enemy_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	HeavyBear npc = view_as<HeavyBear>(victim);
+	Miner_Enemy npc = view_as<Miner_Enemy>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -322,15 +314,15 @@ public Action HeavyBear_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	return Plugin_Changed;
 }
 
-public void HeavyBear_NPCDeath(int entity)
+public void Miner_Enemy_NPCDeath(int entity)
 {
-	HeavyBear npc = view_as<HeavyBear>(entity);
+	Miner_Enemy npc = view_as<Miner_Enemy>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();
 	}
-	SDKUnhook(entity, SDKHook_OnTakeDamage, HeavyBear_OnTakeDamage);
-	SDKUnhook(entity, SDKHook_Think, HeavyBear_ClotThink);
+	SDKUnhook(entity, SDKHook_OnTakeDamage, Miner_Enemy_OnTakeDamage);
+	SDKUnhook(entity, SDKHook_Think, Miner_Enemy_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

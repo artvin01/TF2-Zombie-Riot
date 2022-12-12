@@ -1199,10 +1199,21 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 		}
 #else
 		return false;
-#endif
-		
+#endif		
 	}
-	
+#if defined RPG
+	else if(entity > MaxClients && entity < MAXENTITIES)
+	{
+		if(b_is_a_brush[entity])//THIS is for brushes that act as collision boxes for NPCS inside quests.sp
+		{
+			int entityfrombrush = BrushToEntity(entity);
+			if(entityfrombrush != -1)
+			{
+				return entityfrombrush!=data;
+			}
+		}
+	}
+#endif	
 	return entity!=data;
 }
 
@@ -3111,7 +3122,7 @@ public void GiveCompleteInvul(int client, float time)
 	TF2_AddCondition(client, TFCond_MegaHeal, time);
 }
 
-stock int SpawnFormattedWorldText(const char[] format, const float origin[3], int textSize = 10, const int colour[4] = {255,255,255,255}, int entity_parent = -1, bool rainbow = false, bool teleport = false)
+stock int SpawnFormattedWorldText(const char[] format, float origin[3], int textSize = 10, const int colour[4] = {255,255,255,255}, int entity_parent = -1, bool rainbow = false, bool teleport = false)
 {
 	int worldtext = CreateEntityByName("point_worldtext");
 	if(IsValidEntity(worldtext))
@@ -3154,7 +3165,7 @@ stock int SpawnFormattedWorldText(const char[] format, const float origin[3], in
 				pack.WriteFloat(origin[1]);
 				pack.WriteFloat(origin[2]);
 			}
-			TeleportEntity(worldtext, origin, NULL_VECTOR, NULL_VECTOR);
+			SDKCall_SetLocalOrigin(worldtext, origin);
 		}	
 	}
 	return worldtext;
@@ -3178,7 +3189,7 @@ public Action TeleportTextTimer(Handle timer, DataPack pack)
 		vector[1] += vector_offset[1];
 		vector[2] += vector_offset[2];
 
-		TeleportEntity(text_entity, vector, NULL_VECTOR, NULL_VECTOR);
+		SDKCall_SetLocalOrigin(text_entity,vector);
 		return Plugin_Continue;
 	}
 	else
@@ -3186,4 +3197,54 @@ public Action TeleportTextTimer(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 	
+}
+
+
+stock int SpawnSeperateCollisionBox(int entity, float Mins[3] = {-24.0,-24.0,0.0}, float Maxs[3] = {24.0,24.0,82.0})
+{
+	static bool precached;
+
+	if(!precached)
+	{
+		precached = true;
+		PrecacheModel("models/error.mdl");
+	}
+
+	float vector[3];
+
+	vector = GetAbsOrigin(entity);
+
+	int brush = CreateEntityByName("func_brush");
+        
+	if (brush != -1)
+	{
+		DispatchKeyValueVector(brush, "origin", vector);
+		DispatchKeyValue(brush, "spawnflags", "64");
+
+		DispatchSpawn(brush);
+		ActivateEntity(brush);    
+
+		SetEntityModel(brush, "models/error.mdl");
+	//	SetEntityModel(brush, "models/error.mdl");
+		SetEntProp(brush, Prop_Send, "m_nSolidType", 2);
+		SetEntityCollisionGroup(brush, 5);
+							
+		SetEntPropVector(brush, Prop_Send, "m_vecMinsPreScaled", Mins);
+							
+		SetEntPropVector(brush, Prop_Send, "m_vecMaxsPreScaled", Maxs);
+			
+		SetEntPropVector(brush, Prop_Send, "m_vecMins", Mins);
+		SetEntPropVector(brush, Prop_Send, "m_vecMaxs", Maxs);
+
+		CClotBody npc = view_as<CClotBody>(brush);
+		npc.UpdateCollisionBox();	
+            
+		SetEntProp(brush, Prop_Send, "m_fEffects", GetEntProp(brush, Prop_Send, "m_fEffects") | EF_NODRAW); 
+		TeleportEntity(entity, vector, NULL_VECTOR, NULL_VECTOR);
+		return brush;
+	} 
+	else
+	{
+		return -1;
+	}
 }

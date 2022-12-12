@@ -62,7 +62,7 @@ methodmap HeavyBearBoss < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 
-		EmitSoundToAll(g_IdleSound[GetRandomInt(0, sizeof(g_IdleSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_IdleSound[GetRandomInt(0, sizeof(g_IdleSound) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
@@ -70,25 +70,25 @@ methodmap HeavyBearBoss < CClotBody
 	public void PlayHurtSound()
 	{
 		
-		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
 	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
 	public void PlayKilledEnemySound() 
 	{
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(5.0, 10.0);
 	}
 	public void PlayMeleeSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
 	public void PlayMeleeHitSound()
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);	
 	}
 	
 	
@@ -313,7 +313,7 @@ public void HeavyBearBoss_ClotThink(int iNPC)
 
 					npc.PlayMeleeSound();
 					
-					npc.m_flAttackHappens = gameTime + 0.2;
+					npc.m_flAttackHappens = gameTime + 0.3;
 
 				//	npc.m_flDoingAnimation = gameTime + 0.6;
 					npc.m_flNextMeleeAttack = gameTime + 1.5;
@@ -381,8 +381,16 @@ public Action TimerHeavyBearBossInitiateStuff(Handle timer, int ref)
 		int owner = EntRefToEntIndex(i_OwnerToGoTo[entity]);
 		if(IsValidEntity(owner))
 		{
+			if(!b_NpcHasDied[owner])
+			{
+				GetEntPropVector(owner, Prop_Data, "m_vecAbsOrigin", f3_SpawnPosition[entity]);
+			}
+			else
+			{
+				NPC_Despawn(entity); //despawn em. Dont kill.
+				return Plugin_Stop;				
+			}
 			//Get the bosses location, and set it as their spawn, so they move there.
-			GetEntPropVector(owner, Prop_Data, "m_vecAbsOrigin", f3_SpawnPosition[entity]);
 		}
 		else
 		{

@@ -575,7 +575,7 @@ static void DropItem(int index, float pos[3], int amount)
 		if(ItemCount[entity] && ItemIndex[entity] == index)
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", ang);
-			if(GetVectorDistance(pos, ang, true) < 100000.0)
+			if(GetVectorDistance(pos, ang, true) < 100000.0) // 100.0
 			{
 				ItemCount[entity] += amount;
 				UpdateItemText(entity, index);
@@ -630,6 +630,7 @@ static void DropItem(int index, float pos[3], int amount)
 
 				DispatchSpawn(entity);
 				SetEntityCollisionGroup(entity, 2);
+				b_Is_Player_Projectile[entity] = true;
 
 				int color[4] = {255, 255, 255, 255};
 				if(index != -1)
@@ -659,6 +660,8 @@ static void DropItem(int index, float pos[3], int amount)
 				if(amount != 1)
 					Format(buffer, sizeof(buffer), "%s x%d", buffer, amount);
 				
+				CreateTimer(2.5, Timer_DisableMotion, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+
 				i_TextEntity[entity][0] = EntIndexToEntRef(SpawnFormattedWorldText(buffer, {0.0, 0.0, 30.0}, amount == 1 ? 5 : 6, color, entity,_,true));
 			}
 		}
