@@ -1787,6 +1787,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 #if defined RPG
 	TextStore_PlayerRunCmd(client);
 	Fishing_PlayerRunCmd(client);
+	Garden_PlayerRunCmd(client);
 #endif
 }
 
