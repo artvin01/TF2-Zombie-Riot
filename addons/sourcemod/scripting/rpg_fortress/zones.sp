@@ -5,16 +5,17 @@ static ArrayList ActiveZones;
 
 void Zones_PluginStart()
 {
-	ActiveZones = new ArrayList(ByteCountToCells(32));
-	
 	HookEntityOutput("trigger_multiple", "OnStartTouch", Zones_StartTouch);
 	HookEntityOutput("trigger_multiple", "OnStartTouchAll", Zones_StartTouchAll);
 	HookEntityOutput("trigger_multiple", "OnEndTouch", Zones_EndTouch);
 	HookEntityOutput("trigger_multiple", "OnEndTouchAll", Zones_EndTouchAll);
 }
 
-void Zones_ConfigsSetupPost()
+void Zones_ResetAll()
 {
+	delete ActiveZones;
+	ActiveZones = new ArrayList(ByteCountToCells(32));
+	
 	char name[32];
 	HookEntityOutput("trigger_multiple", "OnTouching", Zones_StartTouchAll);
 	
@@ -30,12 +31,14 @@ void Zones_ConfigsSetupPost()
 
 static void OnEnter(int client, const char[] name)
 {
-	TextStore_ZoneEnter(client, name);
+	Garden_ClientEnter(client, name);
 	Quests_EnableZone(client, name);
+	TextStore_ZoneEnter(client, name);
 }
 
 static void OnLeave(int client, const char[] name)
 {
+	Garden_ClientLeave(client, name);
 	TextStore_ZoneLeave(client, name);
 }
 
@@ -55,7 +58,7 @@ static void OnDisable(const char[] name)
 
 bool Zones_IsActive(const char[] name)
 {
-	return ActiveZones.FindString(name) != -1;
+	return (ActiveZones && ActiveZones.FindString(name) != -1);
 }
 
 public Action Zones_StartTouch(const char[] output, int entity, int caller, float delay)
@@ -84,27 +87,33 @@ public Action Zones_EndTouch(const char[] output, int entity, int caller, float 
 
 public Action Zones_StartTouchAll(const char[] output, int entity, int caller, float delay)
 {
-	char name[32];
-	GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
-	if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
+	if(ActiveZones)
 	{
-		ActiveZones.PushString(name);
-		OnActive(name);
+		char name[32];
+		GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
+		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
+		{
+			ActiveZones.PushString(name);
+			OnActive(name);
+		}
 	}
 	return Plugin_Continue;
 }
 
 public Action Zones_EndTouchAll(const char[] output, int entity, int caller, float delay)
 {
-	char name[32];
-	GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
-	if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
+	if(ActiveZones)
 	{
-		int pos = ActiveZones.FindString(name);
-		if(pos != -1)
+		char name[32];
+		GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
+		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 		{
-			ActiveZones.Erase(pos);
-			OnDisable(name);
+			int pos = ActiveZones.FindString(name);
+			if(pos != -1)
+			{
+				ActiveZones.Erase(pos);
+				OnDisable(name);
+			}
 		}
 	}
 	return Plugin_Continue;

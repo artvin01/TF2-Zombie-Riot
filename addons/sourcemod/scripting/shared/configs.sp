@@ -68,12 +68,12 @@ public void Configs_ConfigsExecuted()
 	
 #if defined RPG
 	Fishing_ConfigSetup(kv);
+	Garden_ConfigSetup(kv);
 	Mining_ConfigSetup(kv);
 	Quests_ConfigSetup(kv);
 	Spawns_ConfigSetup(kv);
+	
 	TextStore_ConfigSetup(kv);
-
-	Zones_ConfigsSetupPost();
 #endif
 
 	delete kv;

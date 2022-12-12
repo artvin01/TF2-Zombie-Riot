@@ -209,7 +209,8 @@ static void HashCheck()
 
 				delete SpellList;
 				SpellList = new ArrayList(sizeof(SpellEnum));
-
+				
+				Garden_ResetAll();
 				Store_Reset();
 				RPG_PluginEnd();
 
@@ -222,6 +223,8 @@ static void HashCheck()
 				SPrintToChatAll("The store was reloaded, items and areas were also reloaded!");
 
 				HashKey = kv;
+				
+				Zones_ResetAll();
 			}
 			break;
 		}

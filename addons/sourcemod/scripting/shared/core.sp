@@ -2648,7 +2648,8 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 {
 	if(weapon != -1) //Just allow. || GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack")<GetGameTime())
 	{
-		int entity = GetClientPointVisible(client); //So you can also correctly interact with players holding shit.
+		static float vecEndOrigin[3];
+		int entity = GetClientPointVisible(client, _, _, _, vecEndOrigin); //So you can also correctly interact with players holding shit.
 		if(entity > 0)
 		{
 #if defined RPG
@@ -2690,8 +2691,17 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 			if(Quests_Interact(client, entity))
 				return true;
 #endif
-
+		
 		}
+		
+#if defined RPG
+		else
+		{
+			if(Garden_Interact(client, vecEndOrigin))
+				return true;
+		}
+#endif
+		
 	}
 	return false;
 }
