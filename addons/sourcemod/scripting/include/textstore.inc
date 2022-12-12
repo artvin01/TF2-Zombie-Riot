@@ -173,6 +173,25 @@ native int TextStore_CreateUniqueItem(int client, int item, const char[] data, c
 native bool TextStore_UseItem(int client, int item, bool auto=false);
 
 /**
+ * Gets if the item is hidden in the store
+ *
+ * @param item		Item index
+ *
+ * @return		If the item is hidden
+ */
+native bool TextStore_GetItemHidden(int item);
+
+/**
+ * Sets if the item is hidden in the store
+ *
+ * @param item		Item index
+ * @param hidden	If the item is hidden
+ *
+ * @noreturn
+ */
+native void TextStore_SetItemHidden(int item, bool hidden);
+
+/**
  * Called when a client is about to be sold
  *
  * @param client	Client index
@@ -313,11 +332,17 @@ public void __pl_TextStore_SetNTVOptional()
 	MarkNativeAsOptional("TextStore_Cash");
 	MarkNativeAsOptional("TextStore_ClientSave");
 	MarkNativeAsOptional("TextStore_ClientReload");
+	MarkNativeAsOptional("TextStore_GetClientLoad");
+	MarkNativeAsOptional("TextStore_SetClientLoad");
 	MarkNativeAsOptional("TextStore_GetItems");
+	MarkNativeAsOptional("TextStore_GetItemKv");
 	MarkNativeAsOptional("TextStore_GetItemName");
 	MarkNativeAsOptional("TextStore_SetItemName");
 	MarkNativeAsOptional("TextStore_GetItemData");
 	MarkNativeAsOptional("TextStore_SetItemData");
 	MarkNativeAsOptional("TextStore_CreateUniqueItem");
+	MarkNativeAsOptional("TextStore_UseItem");
+	MarkNativeAsOptional("TextStore_GetItemHidden");
+	MarkNativeAsOptional("TextStore_SetItemHidden");
 }
 #endif
