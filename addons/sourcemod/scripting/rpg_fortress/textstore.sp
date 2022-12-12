@@ -534,9 +534,9 @@ public void TextStore_OnCatalog(int client)
 		if(kv)
 		{
 			static char buffer[128];
-			kv.GetString("storetags", buffer, sizeof(buffer));
+			kv.GetString("storetags", buffer, sizeof(buffer), "null");
 			if(buffer[0])
-				kv.SetNum("hidden", StrContains(buffer, InStore[client], false) == -1 ? 1 : 0);
+				kv.SetNum("hidden", (kv.GetNum("level") <= Level[client] && StrContains(buffer, InStore[client], false) == -1) ? 1 : 0);
 		}
 	}
 }
