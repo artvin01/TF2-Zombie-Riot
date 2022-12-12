@@ -192,6 +192,25 @@ native bool TextStore_GetItemHidden(int item);
 native void TextStore_SetItemHidden(int item, bool hidden);
 
 /**
+ * Gets the item's parent category
+ *
+ * @param item		Item index
+ *
+ * @return		Parent item index
+ */
+native int TextStore_GetItemHidden(int item);
+
+/**
+ * Sets the item's parent category
+ *
+ * @param item		Item index
+ * @param parent	Parent item index
+ *
+ * @noreturn
+ */
+native void TextStore_SetItemHidden(int item, bool parent);
+
+/**
  * Called when a client is about to be sold
  *
  * @param client	Client index
@@ -344,5 +363,7 @@ public void __pl_TextStore_SetNTVOptional()
 	MarkNativeAsOptional("TextStore_UseItem");
 	MarkNativeAsOptional("TextStore_GetItemHidden");
 	MarkNativeAsOptional("TextStore_SetItemHidden");
+	MarkNativeAsOptional("TextStore_GetItemParent");
+	MarkNativeAsOptional("TextStore_SetItemParent");
 }
 #endif
