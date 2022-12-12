@@ -38,6 +38,9 @@ void Stats_GetCustomStats(int client, int attrib, float value)
 		
 		case -5:
 			Luck[client] = RoundFloat(value);
+		
+		case -6:
+			Intelligence[client] = RoundFloat(value);
 	}
 }
 
@@ -91,6 +94,14 @@ int Stats_BaseCarry(int client, int &base = 0, int &bonus = 0, int level = -1, i
 	
 	base = strength + (ti * 10);
 	bonus = BackpackBonus[client];
+
+	return base + bonus;
+}
+
+int Stats_Luck(int client, int &base = 0, int &bonus = 0, int tier = -1)
+{
+	base = tier == -1 ? Tier[client] : tier;
+	bonus = Luck[client];
 
 	return base + bonus;
 }
