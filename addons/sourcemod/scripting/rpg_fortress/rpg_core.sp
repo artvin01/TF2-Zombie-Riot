@@ -5,18 +5,6 @@
 #define ITEM_XP		"XP"
 #define ITEM_TIER	"Elite Promotion"
 
-public const char MiningLevels[][] =
-{
-	"Wooden (0)",
-	"Stone (1)",
-	"Bronze (2)",
-	"Iron (3)",
-	"Steel (4)",
-	"Diamond (5)",
-	"Emerald (6)",
-	"Obsidian (7)"
-};
-
 public const char FishingLevels[][] =
 {
 	"Leaf (0)",
