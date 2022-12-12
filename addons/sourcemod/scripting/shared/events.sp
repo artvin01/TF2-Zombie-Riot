@@ -334,6 +334,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		{
 			SetAmmo(client, i, CurrentAmmo[client][i]);
 		}
+		UpdateLevelAbovePlayerText(client);
 #endif
 
 	}
@@ -393,6 +394,7 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 
 #if defined RPG
 		TextStore_DespoitBackpack(client, true);
+		UpdateLevelAbovePlayerText(client, true);
 #endif
 
 		Store_WeaponSwitch(client, -1);

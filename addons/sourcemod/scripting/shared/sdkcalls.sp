@@ -6,7 +6,6 @@ static Handle SDKGetMaxHealth;
 //static Handle g_hGetAttachment;
 //static Handle g_hStudio_FindAttachment;
 
-static Handle g_hSetLocalOrigin;
 //static Handle g_hSetLocalAngle;
 //static Handle g_hSetAbsOrigin;
 //static Handle g_hSetAbsAngle;
@@ -74,7 +73,19 @@ void SDKCall_Setup()
 
 	if(!gH_BotAddCommand)
 		SetFailState("[Gamedata] Unable to prepare SDKCall for NextBotCreatePlayerBot<CTFBot>");
-		
+
+	//CBasePlayer
+	StartPrepSDKCall(SDKCall_Player);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBasePlayer::SnapEyeAngles");
+	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef);
+	if ((g_hSnapEyeAngles = EndPrepSDKCall()) == null) SetFailState("Failed to create SDKCall for CBasePlayer::SnapEyeAngles!");
+
+
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseEntity::SetAbsVelocity");
+	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef);
+	if ((g_hSetAbsVelocity = EndPrepSDKCall()) == null) SetFailState("Failed to create SDKCall for CBaseEntity::SetAbsVelocity");
+
 		/*
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseEntity::SetLocalAngles");
@@ -99,7 +110,8 @@ void SDKCall_Setup()
 		LogError("[Gamedata] Could not find CBaseEntity::SetAbsAngles");
 		*/
 		
-	
+
+
 	StartPrepSDKCall(SDKCall_Player);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBasePlayer::CheatImpulseCommands");
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain); //Player
@@ -320,6 +332,16 @@ public Address GetStudioHdr(int index)
 		
 	return Address_Null;
 }	
+
+stock void SnapEyeAngles(int client, float viewAngles[3])
+{
+	SDKCall(g_hSnapEyeAngles, client, viewAngles);
+}
+
+stock void SetAbsVelocity(int client, float viewAngles[3])
+{
+	SDKCall(g_hSetAbsVelocity, client, viewAngles);
+}
 
 void GetAttachment(int index, const char[] szName, float absOrigin[3], float absAngles[3])
 {

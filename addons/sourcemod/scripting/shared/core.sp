@@ -186,6 +186,11 @@ Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;
 //ConVar tf_bot_quota;
 
+Handle g_hSetLocalOrigin;
+Handle g_hSnapEyeAngles;
+Handle g_hSetAbsVelocity;
+//MUST BE HERE!
+
 bool DoingLagCompensation;
 
 float f_BotDelayShow[MAXTF2PLAYERS];
@@ -2133,6 +2138,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			b_Is_Player_Projectile[entity] = true; //Pretend its a player projectile for now.
+			npc.bCantCollidie = true;
+			npc.bCantCollidieAlly = true;
+		}
+		else if(!StrContains(classname, "trigger_teleport")) //npcs think they cant go past this sometimes, lol
+		{
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}

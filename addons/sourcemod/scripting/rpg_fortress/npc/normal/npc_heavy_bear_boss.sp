@@ -214,12 +214,12 @@ public void HeavyBearBoss_ClotThink(int iNPC)
 						{
 							npc.m_iAttacksTillMegahit = 0;
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 2, DMG_CLUB);
-							Custom_Knockback(npc.index, target, 500.0);
+							Custom_Knockback(npc.index, target, 9999.0);
 						}
 						else
 						{
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-							Custom_Knockback(npc.index, target, 350.0);
+							Custom_Knockback(npc.index, target, 9999.0);
 						}
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");
@@ -264,7 +264,7 @@ public void HeavyBearBoss_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(120.0, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < Pow(GIANT_ENEMY_MELEE_RANGE_FLOAT, 2.0) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}

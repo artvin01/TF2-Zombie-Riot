@@ -3248,3 +3248,91 @@ stock int SpawnSeperateCollisionBox(int entity, float Mins[3] = {-24.0,-24.0,0.0
 		return -1;
 	}
 }
+
+
+//static int b_TextEntityToOwner[MAXPLAYERS];
+
+stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
+{
+	int textentity = EntRefToEntIndex(i_TextEntity[client][0]);
+	int textentity2 = EntRefToEntIndex(i_TextEntity[client][1]);
+	if(deleteText)
+	{
+		if(IsValidEntity(textentity))
+		{
+			RemoveEntity(textentity);
+		}
+		if(IsValidEntity(textentity2))
+		{
+			RemoveEntity(textentity2);
+		}
+	}
+	if(deleteText)
+		return;
+		
+	if(IsValidEntity(textentity))
+	{
+		static char buffer[128];
+		if(Tier[client])
+		{
+			Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client]);
+		}
+		else
+		{
+			Format(buffer, sizeof(buffer), "Level %d", Level[client]);
+		}
+		DispatchKeyValue(textentity, "message", buffer);
+	}
+	else
+	{
+		float OffsetFromHead[3];
+
+		OffsetFromHead[2] = 120.0;
+		static char buffer[128];
+		if(Tier[client])
+		{
+			Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client]);
+		}
+		else
+		{
+			Format(buffer, sizeof(buffer), "Level %d", Level[client]);
+		}
+		int textentityMade = SpawnFormattedWorldText(buffer, OffsetFromHead, 10, {255,255,255,255}, client);
+		i_TextEntity[client][0] = EntIndexToEntRef(textentityMade);
+	//	b_TextEntityToOwner[textentityMade] = client;
+	//	SetEdictFlags(textentityMade, GetEdictFlags(textentityMade) &~ FL_EDICT_ALWAYS);
+	//	SDKHook(textentityMade, SDKHook_SetTransmit, SDKHook_Settransmit_TextParentedToPlayer);
+	}
+	if(IsValidEntity(textentity2))
+	{
+		static char buffer[128];
+		Format(buffer, sizeof(buffer), "ok.");
+		DispatchKeyValue(textentity2, "message", buffer);
+	}
+	else
+	{
+		float OffsetFromHead[3];
+
+		OffsetFromHead[2] = 110.0;
+		static char buffer[128];
+		Format(buffer, sizeof(buffer), "Miner of Fusion Warrior");
+		int textentityMade = SpawnFormattedWorldText(buffer, OffsetFromHead, 10, {255,255,0,255}, client, false);
+		i_TextEntity[client][1] = EntIndexToEntRef(textentityMade);
+	//	b_TextEntityToOwner[textentityMade] = client;
+	//	SetEdictFlags(textentityMade, GetEdictFlags(textentityMade) &~ FL_EDICT_ALWAYS);
+	//	SDKHook(textentityMade, SDKHook_SetTransmit, SDKHook_Settransmit_TextParentedToPlayer);
+	}
+}
+/*
+public Action SDKHook_Settransmit_TextParentedToPlayer(int entity, int client)
+{
+	SetEdictFlags(entity, GetEdictFlags(entity) &~ FL_EDICT_ALWAYS);
+	if(client == b_TextEntityToOwner[entity])
+	{
+		PrintToChatAll("bruh");
+		return Plugin_Handled;
+	}
+	PrintToChatAll("bruh1");
+	return Plugin_Continue;
+}
+*/

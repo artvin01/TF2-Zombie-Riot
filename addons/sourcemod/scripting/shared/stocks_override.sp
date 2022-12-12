@@ -266,3 +266,49 @@ stock float ZR_GetGameTime(int entity = 0)
 }
 
 #define GetGameTime ZR_GetGameTime
+
+//This is here for rpg, because it relies on triggers, teleportentity disables triggers for an entity for a frame for some reason.
+
+stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR, const float angles[3] = NULL_VECTOR, const float velocity[3] = NULL_VECTOR)
+{
+	if(origin[1] != NULL_VECTOR[1])
+	{
+		Custom_SDKCall_SetLocalOrigin(entity, origin);
+	}
+
+	if(angles[1] != NULL_VECTOR[1])
+	{
+		if(entity <= MaxClients)
+		{
+			Custom_SetAbsVelocity(entity, angles);
+		}
+		else
+		{
+			SetEntPropVector(entity, Prop_Data, "m_angRotation", angles); 
+		}
+	}
+
+	if(velocity[1] != NULL_VECTOR[1])
+	{
+		Custom_SetAbsVelocity(entity, velocity);
+	}
+}
+
+stock void Custom_SDKCall_SetLocalOrigin(int index, const float localOrigin[3])
+{
+	if(g_hSetLocalOrigin)
+	{
+		SDKCall(g_hSetLocalOrigin, index, localOrigin);
+	}
+}
+stock void Custom_SnapEyeAngles(int client, const float viewAngles[3])
+{
+	SDKCall(g_hSnapEyeAngles, client, viewAngles);
+}
+
+stock void Custom_SetAbsVelocity(int client, const float viewAngles[3])
+{
+	SDKCall(g_hSetAbsVelocity, client, viewAngles);
+}
+
+#define TeleportEntity Custom_TeleportEntity

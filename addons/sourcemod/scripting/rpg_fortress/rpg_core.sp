@@ -108,6 +108,7 @@ void RPG_ClientCookiesCached(int client)
 
 void RPG_ClientDisconnect(int client)
 {
+	UpdateLevelAbovePlayerText(client, true);
 	Ammo_ClientDisconnect(client);
 	Fishing_ClientDisconnect(client);
 }

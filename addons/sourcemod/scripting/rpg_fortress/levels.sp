@@ -93,6 +93,8 @@ void GiveXP(int client, int xp, bool silent = false)
 		
 		if(!silent)
 			Store_ApplyAttribs(client);
+
+		UpdateLevelAbovePlayerText(client);
 	}
 
 	if(!silent)

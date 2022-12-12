@@ -266,8 +266,8 @@ public void OnPostThink(int client)
 #endif
 				
 #if defined RPG
-				max_mana[client] = 20.0;
-				mana_regen[client] = 0.5;
+				max_mana[client] = 40.0;
+				mana_regen[client] = 1.0;
 #endif
 					
 				mana_regen[client] *= Mana_Regen_Level[client];

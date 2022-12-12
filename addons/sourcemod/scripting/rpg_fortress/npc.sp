@@ -48,6 +48,9 @@ void NPC_MapStart()
 	Miner_Enemy_OnMapStart_NPC();
 }
 
+#define NORMAL_ENEMY_MELEE_RANGE_FLOAT 120.0
+#define GIANT_ENEMY_MELEE_RANGE_FLOAT 130.0
+
 stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
 {
 	any entity = -1;

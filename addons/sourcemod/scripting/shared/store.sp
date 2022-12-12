@@ -3607,7 +3607,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					}
 #endif
 					
-					PrintToChatAll("Ammo Type: %d", info.Ammo);
 					if(info.Ammo > 0)
 					{
 						if(!StrEqual(info.Classname[0], "tf_weapon_medigun"))

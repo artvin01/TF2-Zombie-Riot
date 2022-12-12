@@ -182,6 +182,15 @@ void Quests_EnableZone(int client, const char[] name)
 					SetVariantString(buffer);
 					AcceptEntityInput(entity, "SetAnimation", entity, entity);
 					
+					int force_bodygroup;
+
+					force_bodygroup = QuestKv.GetNum("force_bodygroup", 0);
+					if(force_bodygroup > 0)
+					{
+						SetVariantInt(force_bodygroup);
+						AcceptEntityInput(entity, "SetBodyGroup");
+					}
+
 					QuestKv.SetNum("_entref", EntIndexToEntRef(entity));
 
 					pos[2] += 90.0;
