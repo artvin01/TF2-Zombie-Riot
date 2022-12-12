@@ -160,10 +160,11 @@ void Garden_PlayerRunCmd(int client)
 				{
 					if(garden.ReadyIn[client])
 					{
-						// Has Plant
+						PlantHasBeenPlanted(client, garden.Pos, 0);
 					}
 					else
 					{
+						NoPlantPlanted(client, garden.Pos);
 						// No Plant
 					}
 				}
@@ -171,6 +172,75 @@ void Garden_PlayerRunCmd(int client)
 			
 			if(InMenu[client] != -1)
 				ShowMenu(client, false);
+		}
+	}
+}
+
+stock void NoPlantPlanted(int client, float pos[3])
+{
+	static float m_vecMaxs[3];
+	static float m_vecMins[3];
+	m_vecMaxs = view_as<float>( { 10.0, 10.0, -5.0 } );
+	m_vecMins = view_as<float>( { -10.0, -10.0, 5.0 } );	
+	TE_DrawBox(client, pos, m_vecMins, m_vecMaxs, 3.5, view_as<int>({255, 0, 0, 255}));
+}
+
+stock void PlantHasBeenPlanted(int client, float pos[3], int stage)
+{
+	float temp[3];
+	static float m_vecMaxs[3];
+	static float m_vecMins[3];	
+	temp = pos; 
+	//since this wont ever be rotated, we dont have to bother with rotating this position
+	switch(stage)
+	{
+		case 0: //new sprout!
+		{
+			temp[2] += 5.0;
+			TE_SendBeam(client, pos, temp, 3.5, {0, 255, 0, 255}); //very new plant! we want it to be green.
+		}
+		case 1: //it grew abit! how cute!
+		{
+			temp[2] += 15.0;
+			TE_SendBeam(client, pos, temp, 3.5, {50, 255, 0, 255}); //it grew abit, make it abit more yellow.
+			m_vecMaxs = view_as<float>( { 5.0, 5.0, 10.0 } );
+			m_vecMins = view_as<float>( { -5.0, -5.0, 0.0 } );	
+			TE_DrawBox(client, temp, m_vecMins, m_vecMaxs, 3.5, view_as<int>({50, 255, 0, 255}));
+		}
+		case 2: //oh its abit more now!
+		{
+			temp[2] += 25.0;
+			TE_SendBeam(client, pos, temp, 3.5, {100, 255, 0, 255}); //it grew abit, make it abit more yellow.
+			m_vecMaxs = view_as<float>( { 10.0, 10.0, 20.0 } );
+			m_vecMins = view_as<float>( { -10.0, -10.0, 0.0 } );	
+			TE_DrawBox(client, temp, m_vecMins, m_vecMaxs, 3.5, view_as<int>({100, 255, 0, 255}));
+		}
+		case 3: //grow abit more, almost done!
+		{
+			temp[2] += 35.0;
+			TE_SendBeam(client, pos, temp, 3.5, {150, 255, 0, 255}); //it grew abit, make it abit more yellow.
+
+			m_vecMaxs = view_as<float>( { 15.0, 15.0, 30.0 } );
+			m_vecMins = view_as<float>( { -15.0, -15.0, 0.0 } );
+			TE_DrawBox(client, temp, m_vecMins, m_vecMaxs, 3.5, view_as<int>({150, 255, 0, 255}));
+		}
+		case 4: //its done!
+		{
+			float temp_2[3];
+			float temp_3[3];
+			temp_2 = pos;
+			temp_3 = pos;
+			temp[2] += 45.0;
+			TE_SendBeam(client, pos, temp, 3.5, {255, 255, 0, 255}); //it grew abit, make it abit more yellow.
+
+			temp_2[2] += 10.0;
+			temp_3[2] += 35.0;
+			temp_3[1] += 25.0;
+			TE_SendBeam(client, temp_2, temp_3, 3.5, {255, 255, 0, 255}); //it grew abit, make it abit more yellow.
+
+			m_vecMaxs = view_as<float>( { 20.0, 20.0, 40.0 } );
+			m_vecMins = view_as<float>( { -20.0, -20.0, 0.0 } );
+			TE_DrawBox(client, temp, m_vecMins, m_vecMaxs, 3.5, view_as<int>({255, 255, 0, 255}));
 		}
 	}
 }
