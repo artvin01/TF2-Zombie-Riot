@@ -198,7 +198,7 @@ native void TextStore_SetItemHidden(int item, bool hidden);
  *
  * @return		Parent item index
  */
-native int TextStore_GetItemHidden(int item);
+native int TextStore_GetItemParent(int item);
 
 /**
  * Sets the item's parent category
@@ -208,7 +208,7 @@ native int TextStore_GetItemHidden(int item);
  *
  * @noreturn
  */
-native void TextStore_SetItemHidden(int item, bool parent);
+native void TextStore_SetItemParent(int item, bool parent);
 
 /**
  * Called when a client is about to be sold
