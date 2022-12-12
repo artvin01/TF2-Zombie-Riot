@@ -27,6 +27,7 @@ char StoreWeapon[MAXENTITIES][48];
 
 #include "rpg_fortress/ammo.sp"
 #include "rpg_fortress/fishing.sp"
+#include "rpg_fortress/garden.sp"
 #include "rpg_fortress/levels.sp"
 #include "rpg_fortress/mining.sp"
 #include "rpg_fortress/quests.sp"
