@@ -3423,6 +3423,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 #if defined RPG
 	Store_GiveItem(client, -2);
 	Store_GiveItem(client, -3);
+	TextStore_GiveAll(client);
 #endif
 	
 	CheckMultiSlots(client);
@@ -3606,6 +3607,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					}
 #endif
 					
+					PrintToChatAll("Ammo Type: %d", info.Ammo);
 					if(info.Ammo > 0)
 					{
 						if(!StrEqual(info.Classname[0], "tf_weapon_medigun"))

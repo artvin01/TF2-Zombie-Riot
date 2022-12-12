@@ -205,12 +205,33 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 		{
 			if(entity_found != -1) //Dont reset it, but if its someone else, allow it.
 			{
-				npc.m_iTarget = entity_found;
+				int Enemy_I_See;
+							
+				Enemy_I_See = Can_I_See_Enemy(npc.index, entity_found);
+				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See)) //Can i even see this enemy that i want to go to newly?
+				{
+					//found enemy, go to new enemy
+					npc.m_iTarget = Enemy_I_See;
+				}
 			}
 		}
 		else //Allow the reset of aggro.
 		{
-			npc.m_iTarget = entity_found;
+			if(entity_found != -1) //Dont reset it, but if its someone else, allow it.
+			{
+				int Enemy_I_See;
+								
+				Enemy_I_See = Can_I_See_Enemy(npc.index, entity_found);
+				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+				{
+					//if we want to search for new enemies, it must be a valid one that can be seen.
+					npc.m_iTarget = Enemy_I_See;
+				}
+			}
+			else //can reset to -1
+			{
+				npc.m_iTarget = entity_found;
+			}
 		}
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
@@ -239,20 +260,26 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 			{
 				//We now afk and are back in our spawnpoint heal back up, but not instantly incase they quickly can attack again.
 
-				int HealthToHealPerIncrement = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 100;
+				int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+				int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+
+				int HealthToHealPerIncrement = MaxHealth / 100;
 
 				if(HealthToHealPerIncrement < 1) //should never be 0
 				{
 					HealthToHealPerIncrement = 1;
 				}
 
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealthToHealPerIncrement);
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", Health + HealthToHealPerIncrement);
+				
 
-				if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+				if((Health + HealthToHealPerIncrement) >= MaxHealth)
 				{
-					SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+					SetEntProp(npc.index, Prop_Data, "m_iHealth", MaxHealth);
 				}
 				//Slowly heal when we are standing still.
+
+				Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
 				npc.m_bisWalking = false;
 				if(npc.m_iChanged_WalkCycle != 5) 	//Stand still.
@@ -260,6 +287,11 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 					npc.m_iChanged_WalkCycle = 5;
 					npc.SetActivity(StandStill);
 				}
+
+				char HealthString[512];
+				Format(HealthString, sizeof(HealthString), "%i | %i", Health, MaxHealth);
+		
+				DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
 			}
 		}
 		npc.m_flGetClosestTargetTime = 0.0;

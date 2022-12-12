@@ -1,12 +1,24 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-float f_clientFoundRareRockSpot[MAXTF2PLAYERS];
-float f_clientFoundRareRockSpotPos[MAXTF2PLAYERS][3];
+static const char MiningLevels[][] =
+{
+	"Wooden (0)",
+	"Stone (1)",
+	"Bronze (2)",
+	"Iron (3)",
+	"Steel (4)",
+	"Diamond (5)",
+	"Emerald (6)",
+	"Obsidian (7)"
+};
 
-float f_ClientStartedTouch[MAXTF2PLAYERS];
-float f_ClientStartedTouchDelay[MAXTF2PLAYERS];
-float f_TouchedThisManyTimes[MAXTF2PLAYERS];
+static float f_clientFoundRareRockSpot[MAXTF2PLAYERS];
+static float f_clientFoundRareRockSpotPos[MAXTF2PLAYERS][3];
+
+static float f_ClientStartedTouch[MAXTF2PLAYERS];
+static float f_ClientStartedTouchDelay[MAXTF2PLAYERS];
+static float f_TouchedThisManyTimes[MAXTF2PLAYERS];
 
 enum struct MineEnum
 {
@@ -224,6 +236,31 @@ void Mining_DisableZone(const char[] name)
 		{
 			mine.Despawn();
 			MineList.SetArray(i, mine);
+		}
+	}
+}
+
+void Mining_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, int attribs)
+{
+	static char buffer[64];
+	kv.GetString("func_attack", buffer, sizeof(buffer));
+	if(StrEqual(buffer, "Mining_PickaxeM1"))
+	{
+		for(int i; i < attribs; i++)
+		{
+			switch(attrib[i])
+			{
+				case 2016:
+				{
+					Format(desc, 512, "%s\nMining Efficiency: %.0f%%", desc, value[i]);
+				}
+				case 2017:
+				{
+					int pos = RoundFloat(value[i]);
+					if(pos < sizeof(MiningLevels))
+						Format(desc, 512, "%s\nMining Level: %s", desc, MiningLevels[pos]);
+				}
+			}
 		}
 	}
 }

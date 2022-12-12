@@ -37,10 +37,11 @@ char StoreWeapon[MAXENTITIES][48];
 
 #include "rpg_fortress/npc.sp"	// Global NPC List
 
+#include "rpg_fortress/ammo.sp"
+#include "rpg_fortress/fishing.sp"
 #include "rpg_fortress/levels.sp"
 #include "rpg_fortress/mining.sp"
 #include "rpg_fortress/quests.sp"
-#include "rpg_fortress/fishing.sp"
 #include "rpg_fortress/spawns.sp"
 #include "rpg_fortress/stats.sp"
 #include "rpg_fortress/textstore.sp"
@@ -52,6 +53,7 @@ void RPG_PluginStart()
 {
 	LoadTranslations("rpgfortress.phrases.enemynames");
 	
+	Ammo_PluginStart();
 	Fishing_PluginStart();
 	Store_Reset();
 	Levels_PluginStart();
@@ -111,8 +113,14 @@ void RPG_PutInServer()
 	CountPlayersOnRed();
 }
 
+void RPG_ClientCookiesCached(int client)
+{
+	Ammo_ClientCookiesCached(client);
+}
+
 void RPG_ClientDisconnect(int client)
 {
+	Ammo_ClientDisconnect(client);
 	Fishing_ClientDisconnect(client);
 }
 

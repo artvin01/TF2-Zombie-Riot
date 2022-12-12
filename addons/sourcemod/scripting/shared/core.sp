@@ -1386,6 +1386,10 @@ public void OnClientCookiesCached(int client)
 #if defined ZR
 	Store_ClientCookiesCached(client);
 #endif
+
+#if defined RPG
+	RPG_ClientCookiesCached(client);
+#endif
 }
 
 public void OnClientDisconnect(int client)
