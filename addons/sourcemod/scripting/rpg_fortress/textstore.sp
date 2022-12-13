@@ -344,12 +344,10 @@ void TextStore_GiveAll(int client)
 				spell.Active = true;
 				spell.Cooldown = 0.0;
 				strcopy(spell.Display, sizeof(spell.Display), spell.Name);
-				PrintToChatAll("Active: %s", spell.Display);
 				SpellList.SetArray(i, spell);
 			}
 			else
 			{
-				PrintToChatAll("Removed: %s", spell.Display);
 				SpellList.Erase(i--);
 				length--;
 			}

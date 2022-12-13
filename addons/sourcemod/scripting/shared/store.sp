@@ -421,33 +421,36 @@ static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 #if defined RPG
 bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name, bool auto)
 {
-	int pos = EquippedItems.FindValue(index, ItemInfo::Store);
-	if(pos == -1)
+	static ItemInfo info;
+	int length = EquippedItems.Length;
+	for(int i; i < length; i++)
 	{
-		if(!auto)
-		{
-			if(kv.GetNum("level") > Level[client])
-			{
-				char buffer[32];
-				GetDisplayString(Level[client], buffer, sizeof(buffer));
-
-				SPrintToChat(client, "You must be %s to use this.", buffer);
-				return false;
-			}
-		}
-
-		static ItemInfo info;
-		info.SetupKV(kv, name);
-
-		if(!auto)
-			Store_EquipSlotCheck(client, info.Slot);
-		
-		info.Owner = client;
-		info.Store = index;
-		EquippedItems.PushArray(info);
-		return true;
+		EquippedItems.GetArray(i, info);
+		if(info.Owner == client && info.Store == index)
+			return false;
 	}
-	return false;
+
+	if(!auto)
+	{
+		if(kv.GetNum("level") > Level[client])
+		{
+			char buffer[32];
+			GetDisplayString(Level[client], buffer, sizeof(buffer));
+
+			SPrintToChat(client, "You must be %s to use this.", buffer);
+			return false;
+		}
+	}
+
+	info.SetupKV(kv, name);
+
+	if(!auto)
+		Store_EquipSlotCheck(client, info.Slot);
+	
+	info.Owner = client;
+	info.Store = index;
+	EquippedItems.PushArray(info);
+	return true;
 }
 #endif
 
@@ -3170,6 +3173,7 @@ void Store_ApplyAttribs(int client)
 #if defined RPG
 				else
 				{
+					PrintToChat(client, "[DEBUG] Unequipped recently");
 					EquippedItems.Erase(i--);
 					length--;
 				}
@@ -3544,6 +3548,8 @@ stock void Store_RemoveNullWeapons(int client)
 
 int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 {
+	PrintToChat(client, "[DEBUG] Store_GiveItem::%d", index);
+
 #if defined ZR
 	if(!StoreItems)
 #endif
@@ -3773,6 +3779,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 #if defined RPG
 		else if(info.Owner == client)
 		{
+			PrintToChat(client, "[DEBUG] Unequipped recent");
 			EquippedItems.Erase(index);
 			length--;
 			return entity;
