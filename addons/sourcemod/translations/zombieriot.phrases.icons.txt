@@ -107,4 +107,43 @@
 		"ru" 		"Тень. Оно ни разу не покидало нас и никогда по-настоящему не существовало."
 		"chi"       "一片阴影。它从未离开过，也从未真正存在过。"
 	}
+	"Gambler Spawn Message"
+	{
+		"en"		"You think you can easily run in here for safty? Not with me."
+		"de"		"Du denkst du kannst einfach hier rein gehen zur Sicherheit? Nicht mit mir."
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Pablo Spawn Message"
+	{
+		"en"		"Let's see if you can handle me."
+		"de"		"Mal sehen ob du es mit mir handel kannst."
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"DokMed Spawn Message"
+	{
+		"en"		"Let's see how long you can last with us both."
+		"de"		"Mal sehen wie lange du es aushalten kannst mit uns beiden."
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
 }
