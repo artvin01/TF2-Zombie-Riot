@@ -1876,4 +1876,18 @@
 		"nl"		"Hier kan je bouwen!"
 		"chi"       "你可以在此摆放你的建筑"
 	}
+	"Gambler's Cash"
+	{
+		"en"	"Gambler's Cash"
+		"de"	"Gambler's Kohle"
+		//"de"	"Zockers Kohle"
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
 }
