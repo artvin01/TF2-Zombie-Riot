@@ -158,6 +158,21 @@ enum
 	ALT_DONNERKRIEG				= 135,
 	ALT_SCHWERTKRIEG			= 136,
 	PHANTOM_KNIGHT				= 137, //Lucian "Blood diamond"
+	
+	THE_GAMBLER		= 138,
+	PABLO_GONZALES	= 139,
+	DOKTOR_MEDICK	= 140,
+	KAPTAIN_HEAVY	= 141,
+	BOOTY_EXECUTIONIER = 142,
+	SANDVICH_SLAYER = 143,
+	PAYDAYCLOAKER	= 144,
+	COMBINEBUNKER_OVERLORD	= 145,
+	BUNKER_BOT_SOLDIER	= 146,
+	BUNKER_BOT_SNIPER	= 147,
+	BUNKER_SKELETON			= 148,
+	BUNKER_SKELETON_SMALL	= 149,
+	BUNKER_SKELETON_KING	= 150,
+	BUNKER_HEADLESSHORSE	= 151,
 }
 
 public const char NPC_Names[][] =
@@ -310,7 +325,22 @@ public const char NPC_Names[][] =
 	"Mecha Scout",
 	"Donnerkrieg",
 	"Schwertkrieg",
-	"Phantom Knight"
+	"Phantom Knight",
+
+	"Gambler",
+	"Pablo Gonzales",
+	"Doktor Medick",
+	"Eternal Kaptain Heavy",
+	"Booty Executioner",
+	"Sandvich Slayer",
+	"Payday Cloaker",
+	"Bunker Overlord",
+	"Bunker Bot Soldier",
+	"Bunker Bot Sniper",
+	"Bunker Skeleton",
+	"Bunker Small Skeleton",
+	"Bunker Skeleton King",
+	"Bunker Headless Horseman"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -460,7 +490,22 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_mecha_scout",
 	"npc_alt_donnerkrieg",
 	"npc_alt_schwertkrieg",
-	"npc_phantom_knight"
+	"npc_phantom_knight",
+
+	"npc_gambler",
+	"npc_pablo",
+	"npc_dokmedick",
+	"npc_kapheavy",
+	"npc_booty_execut",
+	"npc_sand_slayer",
+	"npc_payday_cloaker",
+	"npc_bunker_combine_soldier_overlord",
+	"npc_bunker_bot_soldier",
+	"npc_bunker_bot_sniper",
+	"npc_bunker_skeleton",
+	"npc_bunker_small_skeleton",
+	"npc_bunker_king_skeleton",
+	"npc_bunker_hhh",
 };
 
 void NPC_MapStart()
@@ -613,6 +658,21 @@ void NPC_MapStart()
 	Donnerkrieg_OnMapStart_NPC();
 	Schwertkrieg_OnMapStart_NPC();
 	PhantomKnight_OnMapStart_NPC();
+
+	TheGambler_OnMapStart_NPC();
+	Pablo_Gonzales_OnMapStart_NPC();
+	Doktor_Medick_OnMapStart_NPC();
+	Eternal_Kaptain_Heavy_OnMapStart_NPC();
+	BootyExecutioner_OnMapStart_NPC();
+	SandvichSlayer_OnMapStart_NPC();
+	Payday_Cloaker_OnMapStart_NPC();
+	CombineBunkerOverlord_OnMapStart_NPC();
+	BunkerBotSoldier_OnMapStart_NPC();
+	BunkerBotSniper_OnMapStart_NPC();
+	BunkerSkeleton_OnMapStart_NPC();
+	BunkerSkeletonSmall_OnMapStart_NPC();
+	BunkerSkeletonKing_OnMapStart_NPC();
+	BunkerHeadlessHorse_OnMapStart_NPC();
 }
 
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
@@ -1160,6 +1220,58 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case PHANTOM_KNIGHT:
 		{
 			entity = PhantomKnight(client, vecPos, vecAng, ally);
+		}
+		case THE_GAMBLER:
+		{
+			entity = TheGambler(client, vecPos, vecAng, ally);
+		}
+		case PABLO_GONZALES:
+		{
+			entity = Pablo_Gonzales(client, vecPos, vecAng, ally);
+		}
+		case DOKTOR_MEDICK:
+		{
+			entity = Doktor_Medick(client, vecPos, vecAng, ally);
+		}
+		case BOOTY_EXECUTIONIER:
+		{
+			entity = BootyExecutioner(client, vecPos, vecAng, ally);
+		}
+		case SANDVICH_SLAYER:
+		{
+			entity = SandvichSlayer(client, vecPos, vecAng, ally);
+		}
+		case PAYDAYCLOAKER:
+		{
+			entity = Payday_Cloaker(client, vecPos, vecAng, ally);
+		}
+		case COMBINEBUNKER_OVERLORD:
+		{
+			entity = CombineBunkerOverlord(client, vecPos, vecAng, ally);
+		}
+		case BUNKER_BOT_SOLDIER:
+		{
+			entity = BunkerBotSoldier(client, vecPos, vecAng, ally);
+		}
+		case BUNKER_BOT_SNIPER:
+		{
+			entity = BunkerBotSniper(client, vecPos, vecAng, ally);
+		}
+		case BUNKER_SKELETON:
+		{
+			entity = BunkerSkeleton(client, vecPos, vecAng, ally);
+		}
+		case BUNKER_SKELETON_SMALL:
+		{
+			entity = BunkerSkeletonKing(client, vecPos, vecAng, ally);
+		}
+		case BUNKER_SKELETON_KING:
+		{
+			entity = BunkerSkeletonKing(client, vecPos, vecAng, ally);
+		}
+		case BUNKER_HEADLESSHORSE:
+		{
+			entity = BunkerHeadlessHorse(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -1710,6 +1822,62 @@ public void NPCDeath(int entity)
 		{
 			PhantomKnight_NPCDeath(entity);
 		}
+		case THE_GAMBLER:
+		{
+			TheGambler_NPCDeath(entity);
+		}
+		case PABLO_GONZALES:
+		{
+			Pablo_Gonzales_NPCDeath(entity);
+		}
+		case DOKTOR_MEDICK:
+		{
+			Doktor_Medick_NPCDeath(entity);
+		}
+		case KAPTAIN_HEAVY:
+		{
+			Eternal_Kaptain_Heavy_NPCDeath(entity);
+		}
+		case BOOTY_EXECUTIONIER:
+		{
+			BootyExecutioner_NPCDeath(entity);
+		}
+		case SANDVICH_SLAYER:
+		{
+			SandvichSlayer_NPCDeath(entity);
+		}
+		case PAYDAYCLOAKER:
+		{
+			Payday_Cloaker_NPCDeath(entity);
+		}
+		case COMBINEBUNKER_OVERLORD:
+		{
+			CombineBunkerOverlord_NPCDeath(entity);
+		}
+		case BUNKER_BOT_SOLDIER:
+		{
+			BunkerBotSoldier_NPCDeath(entity);
+		}
+		case BUNKER_BOT_SNIPER:
+		{
+			BunkerBotSniper_NPCDeath(entity);
+		}
+		case BUNKER_SKELETON:
+		{
+			BunkerSkeleton_NPCDeath(entity);
+		}
+		case BUNKER_SKELETON_SMALL:
+		{
+			BunkerSkeletonSmall_NPCDeath(entity);
+		}
+		case BUNKER_SKELETON_KING:
+		{
+			BunkerSkeletonKing_NPCDeath(entity);
+		}
+		case BUNKER_HEADLESSHORSE:
+		{
+			BunkerHeadlessHorse_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1904,3 +2072,18 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/cof/npc_simon.sp"
 
 #include "zombie_riot/npc/bonezone/npc_basicbones.sp"
+
+#include "zombie_riot/npc/bunker/npc_gambler.sp"1
+#include "zombie_riot/npc/bunker/npc_pablo.sp"2
+#include "zombie_riot/npc/bunker/npc_dokmedick.sp"3
+#include "zombie_riot/npc/bunker/npc_kapheavy.sp"4
+#include "zombie_riot/npc/bunker/npc_booty_execut.sp"5
+#include "zombie_riot/npc/bunker/npc_sand_slayer.sp"6
+#include "zombie_riot/npc/bunker/npc_payday_cloaker.sp"7
+#include "zombie_riot/npc/bunker/npc_bunker_combine_soldier_overlord.sp"8
+#include "zombie_riot/npc/bunker/npc_bunker_bot_soldier.sp"9
+#include "zombie_riot/npc/bunker/npc_bunker_bot_sniper.sp"10
+#include "zombie_riot/npc/bunker/npc_bunker_skeleton.sp"
+#include "zombie_riot/npc/bunker/npc_bunker_small_skeleton.sp"
+#include "zombie_riot/npc/bunker/npc_bunker_king_skeleton.sp"
+#include "zombie_riot/npc/bunker/npc_bunker_hhh.sp"
