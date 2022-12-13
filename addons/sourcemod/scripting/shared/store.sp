@@ -3379,6 +3379,11 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	}
 #endif
 
+#if defined RPG
+	Store_GiveItem(client, -2);
+	Store_GiveItem(client, -3);
+#endif
+
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
 		int count;
@@ -3446,8 +3451,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	}
 
 #if defined RPG
-	Store_GiveItem(client, -2);
-	Store_GiveItem(client, -3);
 	TextStore_GiveAll(client);
 #endif
 	

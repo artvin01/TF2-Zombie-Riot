@@ -157,6 +157,7 @@ enum struct BackpackEnum
 	int Owner;
 	int Item;
 	int Amount;
+	int Weight;
 }
 
 enum struct SpellEnum
@@ -388,6 +389,7 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 			
 			Ammo_DescItem(kv, desc);
 			Mining_DescItem(kv, desc, attrib, value, count);
+			Fishing_DescItem(kv, desc, attrib, value, count);
 			
 			kv.GetString("classname", buffer, sizeof(buffer));
 			Config_CreateDescription(buffer, attrib, value, count, desc, 512);
@@ -582,6 +584,7 @@ public Action TextStore_OnMainMenu(int client, Menu menu)
 		menu.RemoveItem(0);
 	
 	menu.AddItem("rpg_stats", "Stats");
+	menu.AddItem("rpg_party", "Party");
 	return Plugin_Changed;
 }
 
@@ -707,8 +710,8 @@ static void DropItem(int index, float pos[3], int amount)
 				TeleportEntity(entity, pos, NULL_VECTOR, vel);
 
 				DispatchSpawn(entity);
-				SetEntityCollisionGroup(entity, 2);
-				b_Is_Player_Projectile[entity] = true;
+			//	SetEntityCollisionGroup(entity, 2);
+			//	b_Is_Player_Projectile[entity] = true;
 
 				int color[4] = {255, 255, 255, 255};
 				if(index != -1)
@@ -796,8 +799,8 @@ static int GetBackpackSize(int client)
 	for(int i; i < length; i++)
 	{
 		Backpack.GetArray(i, pack);
-		if(pack.Owner == client && pack.Item != -1)
-			amount += pack.Amount;
+		if(pack.Owner == client)
+			amount += pack.Amount * pack.Weight;
 	}
 
 	return amount;
@@ -930,6 +933,19 @@ bool TextStore_Interact(int client, int entity, bool reload)
 					pack.Owner = client;
 					pack.Item = ItemIndex[entity];
 					pack.Amount = amount;
+
+					if(ItemIndex[entity] == -1)
+					{
+						pack.Weight = 0;
+					}
+					else
+					{
+						pack.Weight = 1;
+						KeyValues kv = TextStore_GetItemKv(ItemIndex[entity]);
+						if(kv)
+							pack.Weight = kv.GetNum("weight", 1);
+					}
+					
 					Backpack.PushArray(pack);
 				}
 				
@@ -1051,7 +1067,7 @@ static void ShowMenu(int client, int page = 0)
 		{
 			Menu menu = new Menu(TextStore_WeaponMenu);
 
-			menu.SetTitle("RPG Fortress\n \nItems:");
+			menu.SetTitle("RPG Fortress\nPUBLIC ALPHA TESTING\n \nItems:");
 			
 			int backpack = -1;
 			int questbook = -1;
@@ -1125,7 +1141,7 @@ static void ShowMenu(int client, int page = 0)
 		{
 			Menu menu = new Menu(TextStore_SpellMenu);
 
-			menu.SetTitle("RPG Fortress\n \nSkills:");
+			menu.SetTitle("RPG Fortress\nPUBLIC ALPHA TESTING \nSkills:");
 
 			int amount;
 			float gameTime = GetGameTime();

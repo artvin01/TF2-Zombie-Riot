@@ -5,18 +5,6 @@
 #define ITEM_XP		"XP"
 #define ITEM_TIER	"Elite Promotion"
 
-public const char FishingLevels[][] =
-{
-	"Leaf (0)",
-	"Feather (1)",
-	"Silk (2)",
-	"Wire (3)",
-	"IV Cable (4)",
-	"Carving Tool (5)",
-	"MV Cable (6)",
-	"HV Cable (7)"
-};
-
 int Tier[MAXTF2PLAYERS];
 int Level[MAXENTITIES];
 int XP[MAXENTITIES];
@@ -33,6 +21,7 @@ char c_TagName[MAXTF2PLAYERS][64];
 #include "rpg_fortress/garden.sp"
 #include "rpg_fortress/levels.sp"
 #include "rpg_fortress/mining.sp"
+#include "rpg_fortress/party.sp"
 #include "rpg_fortress/quests.sp"
 #include "rpg_fortress/spawns.sp"
 #include "rpg_fortress/stats.sp"
@@ -49,6 +38,8 @@ void RPG_PluginStart()
 	Fishing_PluginStart();
 	Store_Reset();
 	Levels_PluginStart();
+	Party_PluginStart();
+	Stats_PluginStart();
 	TextStore_PluginStart();
 	Zones_PluginStart();
 
@@ -91,6 +82,7 @@ void RPG_PluginEnd()
 
 void RPG_MapStart()
 {
+	Fishing_OnMapStart();
 	Zero2(f3_SpawnPosition);
 	Wand_Map_Precache();
 }
@@ -115,6 +107,7 @@ void RPG_ClientDisconnect(int client)
 	UpdateLevelAbovePlayerText(client, true);
 	Ammo_ClientDisconnect(client);
 	Fishing_ClientDisconnect(client);
+	Party_ClientDisconnect(client);
 }
 
 void RPG_ClientDisconnect_Post()

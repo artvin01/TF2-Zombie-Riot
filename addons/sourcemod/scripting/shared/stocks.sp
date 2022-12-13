@@ -2772,7 +2772,7 @@ float dmg_against_entity_multiplier = 3.0)
 	}
 	
 }
-stock void DisplayCritAboveNpc(int victim = -1, int client, bool sound, float position[3] = {0.0,0.0,0.0})
+stock void DisplayCritAboveNpc(int victim = -1, int client, bool sound, float position[3] = {0.0,0.0,0.0}, int ParticleIndex = -1)
 {
 	float chargerPos[3];
 	if(victim != -1)
@@ -2819,8 +2819,17 @@ stock void DisplayCritAboveNpc(int victim = -1, int client, bool sound, float po
 			
 		}
 	}
-	TE_ParticleInt(g_particleCritText, chargerPos);
-	TE_SendToClient(client);	
+	if(ParticleIndex != -1)
+	{
+		TE_ParticleInt(ParticleIndex, chargerPos);
+		TE_SendToClient(client);	
+	}
+	else
+	{
+		TE_ParticleInt(g_particleCritText, chargerPos);
+		TE_SendToClient(client);		
+	}
+
 }
 
 public bool HitOnlyTargetOrWorld(int entity, int contentsMask, any iExclude)

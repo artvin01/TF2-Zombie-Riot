@@ -134,12 +134,23 @@ void Config_CreateDescription(const char[] classname, const int[] attrib, const 
 	// Damage and Pellets
 	if(data.Damage > 0)
 	{
+		float defaul = data.Damage;
 		for(i=0; i<attribs; i++)
 		{
 			if(attrib[i]==1 || attrib[i]==2 || attrib[i]==1000)
 				data.Damage *= value[i];
 		}
 		
+		if(!data.Damage)
+		{
+			data.Damage = defaul;
+			for(i=0; i<attribs; i++)
+			{
+				if(attrib[i] == 410)
+					data.Damage *= value[i];
+			}
+		}
+
 		if(data.Damage > 0)
 		{
 			if(data.Damage < 100.0)

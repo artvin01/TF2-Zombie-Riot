@@ -267,7 +267,8 @@ void Mining_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, int
 
 public void Mining_PickaxeM1(int client, int weapon, const char[] classname, bool &result)
 {
-	Ability_Apply_Cooldown(client, 1, Attributes_FindOnWeapon(client, weapon, 6, true, 1.0));
+	float ApplyCooldown =  0.8 * Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+	Ability_Apply_Cooldown(client, 1,ApplyCooldown);
 
 	DataPack pack;
 	CreateDataTimer(0.2, Mining_PickaxeM1Delay, pack, TIMER_FLAG_NO_MAPCHANGE);

@@ -1,6 +1,18 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static const char FishingLevels[][] =
+{
+	"Leaf (0)",
+	"Feather (1)",
+	"Silk (2)",
+	"Wire (3)",
+	"IV Cable (4)",
+	"Carving Tool (5)",
+	"MV Cable (6)",
+	"HV Cable (7)"
+};
+
 #define SHALLOW_WATER_POS_LIMIT 30.0
 
 enum struct PlaceEnum
@@ -76,11 +88,20 @@ static float f_ClientWasPreviouslyFishing[MAXTF2PLAYERS];
 static int FishingTier[MAXTF2PLAYERS];
 static char CurrentFishing[MAXTF2PLAYERS][32];
 
+static int g_FishCaughtParticle;
+static int g_FishCaughtText;
+
 void Fishing_PluginStart()
 {
+
 	PoolList = new ArrayList(sizeof(PoolEnum));
 	CreateTimer(0.1, Fishing_Drawing, _, TIMER_REPEAT);
 	CreateTimer(10.0, Fishing_Timer, _, TIMER_REPEAT);
+}
+void Fishing_OnMapStart()
+{
+	g_FishCaughtParticle = PrecacheParticleSystem("drg_3rd_impact");
+	g_FishCaughtText = PrecacheParticleSystem("hit_text");
 }
 
 void Fishing_ConfigSetup(KeyValues map)
@@ -481,7 +502,7 @@ void Fishing_PlayerRunCmd(int client)
 			}
 			while(Population.GotoNextKey(false));
 			
-			float spawnRate = 4.9 - (float(total) * 3.9 / float(place.Pop));
+			float spawnRate = 4.9 - (float(total) * 2.5 / float(place.Pop));
 			if(spawnRate < 0.2)
 				spawnRate = 0.2;
 			
@@ -630,9 +651,28 @@ public Action Fishing_Drawing(Handle timer)
 	return Plugin_Continue;
 }
 
+void Fishing_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, int attribs)
+{
+	static char buffer[64];
+	kv.GetString("func_attack", buffer, sizeof(buffer));
+	if(StrEqual(buffer, "Fishing_RodM1"))
+	{
+		for(int i; i < attribs; i++)
+		{
+			if(attrib[i] == 2019)
+			{
+				int pos = RoundFloat(value[i]);
+				if(pos < sizeof(FishingLevels))
+					Format(desc, 512, "%s\nFishing Level: %s", desc, FishingLevels[pos]);
+			}
+		}
+	}
+}
+
 public void Fishing_RodM1(int client, int weapon, const char[] classname, bool &result)
 {
-	Ability_Apply_Cooldown(client, 1, Attributes_FindOnWeapon(client, weapon, 6, true, 1.0));
+	float ApplyCooldown =  0.8 * Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+	Ability_Apply_Cooldown(client, 1, ApplyCooldown);
 	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2019));
 	
 	DataPack pack;
@@ -657,6 +697,7 @@ public Action Fishing_RodM1Delay(Handle timer, DataPack pack)
 		int choosen = -1;
 		//float gameTime = GetGameTime();
 		float distance = 2500.0;
+		float FishPos[3];
 		static PoolEnum pool;
 		int length = PoolList.Length;
 		for(int i; i < length; i++)
@@ -669,12 +710,16 @@ public Action Fishing_RodM1Delay(Handle timer, DataPack pack)
 				{
 					choosen = i;
 					distance = dist;
+					FishPos = pool.Pos;
 				}
 			}
 		}
 		
 		if(choosen != -1)
 		{
+			TE_ParticleInt(g_FishCaughtParticle, FishPos);
+			TE_SendToClient(client);
+			DisplayCritAboveNpc(_, client, true,FishPos, g_FishCaughtText); //Display crit above head
 			PoolList.GetArray(choosen, pool);
 			PoolList.Erase(choosen);
 			

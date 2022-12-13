@@ -193,7 +193,7 @@ void Quests_EnableZone(int client, const char[] name)
 
 					QuestKv.SetNum("_entref", EntIndexToEntRef(entity));
 
-					pos[2] += 90.0;
+					pos[2] += 110.0;
 
 					int particle = ParticleEffectAt(pos, "powerup_icon_regen", 0.0);
 					
@@ -269,13 +269,18 @@ void Quests_DisableZone(const char[] name)
 
 void Quests_AddKill(int client, const char[] name)
 {
-	static char steamid[64];
-	if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
+	SaveKv.Rewind();
+	SaveKv.JumpToKey("_kills", true);
+	SaveKv.JumpToKey(name, true);
+	
+	for(int target = 1; target <= MaxClients; target++)
 	{
-		SaveKv.Rewind();
-		SaveKv.JumpToKey("_kills", true);
-		SaveKv.JumpToKey(name, true);
-		SaveKv.SetNum(steamid, SaveKv.GetNum(steamid) + 1);
+		if(client == target || Party_IsClientMember(client, target))
+		{
+			static char steamid[64];
+			if(GetClientAuthId(target, AuthId_Steam3, steamid, sizeof(steamid)))
+				SaveKv.SetNum(steamid, SaveKv.GetNum(steamid) + 1);
+		}
 	}
 }
 
