@@ -2073,16 +2073,16 @@ public void NPCDeath(int entity)
 
 #include "zombie_riot/npc/bonezone/npc_basicbones.sp"
 
-#include "zombie_riot/npc/bunker/npc_gambler.sp"1
-#include "zombie_riot/npc/bunker/npc_pablo.sp"2
-#include "zombie_riot/npc/bunker/npc_dokmedick.sp"3
-#include "zombie_riot/npc/bunker/npc_kapheavy.sp"4
-#include "zombie_riot/npc/bunker/npc_booty_execut.sp"5
-#include "zombie_riot/npc/bunker/npc_sand_slayer.sp"6
-#include "zombie_riot/npc/bunker/npc_payday_cloaker.sp"7
-#include "zombie_riot/npc/bunker/npc_bunker_combine_soldier_overlord.sp"8
-#include "zombie_riot/npc/bunker/npc_bunker_bot_soldier.sp"9
-#include "zombie_riot/npc/bunker/npc_bunker_bot_sniper.sp"10
+#include "zombie_riot/npc/bunker/npc_gambler.sp"
+#include "zombie_riot/npc/bunker/npc_pablo.sp"
+#include "zombie_riot/npc/bunker/npc_dokmedick.sp"
+#include "zombie_riot/npc/bunker/npc_kapheavy.sp"
+#include "zombie_riot/npc/bunker/npc_booty_execut.sp"
+#include "zombie_riot/npc/bunker/npc_sand_slayer.sp"
+#include "zombie_riot/npc/bunker/npc_payday_cloaker.sp"
+#include "zombie_riot/npc/bunker/npc_bunker_combine_soldier_overlord.sp"
+#include "zombie_riot/npc/bunker/npc_bunker_bot_soldier.sp"
+#include "zombie_riot/npc/bunker/npc_bunker_bot_sniper.sp"
 #include "zombie_riot/npc/bunker/npc_bunker_skeleton.sp"
 #include "zombie_riot/npc/bunker/npc_bunker_small_skeleton.sp"
 #include "zombie_riot/npc/bunker/npc_bunker_king_skeleton.sp"
