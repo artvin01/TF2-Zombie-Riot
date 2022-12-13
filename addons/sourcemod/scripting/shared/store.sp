@@ -493,6 +493,13 @@ void Store_WeaponSwitch(int client, int weapon)
 					Call_StartFunction(null, info.FuncOnDeploy);
 					Call_PushCell(client);
 					Call_PushCell(weapon);
+					
+#if defined RPG
+					Call_PushCell(info.Store);
+#else
+					Call_PushCell(-1);
+#endif
+
 					Call_Finish();
 				}
 
@@ -2992,6 +2999,9 @@ void Store_ApplyAttribs(int client)
 #endif
 	
 #if defined RPG
+
+	Format(c_TagName[client],sizeof(c_TagName[]),"Newbie");
+	i_TagColor[client] =	{255,255,255,255};
 	map.SetValue("26", RemoveExtraHealth(ClassForStats, float(Stats_BaseHealth(client))));
 #endif
 	
@@ -3140,6 +3150,21 @@ void Store_ApplyAttribs(int client)
 								map.SetValue(buffer1, value * info.Value2[a]);
 							}
 						}
+					}
+
+					if(info.FuncOnDeploy != INVALID_FUNCTION)
+					{
+						Call_StartFunction(null, info.FuncOnDeploy);
+						Call_PushCell(client);
+						Call_PushCell(-1);
+
+#if defined RPG
+						Call_PushCell(info.Store);
+#else
+						Call_PushCell(-1);
+#endif
+
+						Call_Finish();
 					}
 				}
 #if defined RPG

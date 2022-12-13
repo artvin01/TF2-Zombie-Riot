@@ -7,6 +7,7 @@ enum struct GardenEnum
 	float Pos[3];
 	
 	int Store[MAXTF2PLAYERS];
+	float StartAt[MAXTF2PLAYERS];
 	float ReadyIn[MAXTF2PLAYERS];
 }
 
@@ -160,7 +161,13 @@ void Garden_PlayerRunCmd(int client)
 				{
 					if(garden.ReadyIn[client])
 					{
-						PlantHasBeenPlanted(client, garden.Pos, 0);
+						float time = garden.ReadyIn[client] - garden.StartAt[client];
+						float left = garden.ReadyIn[client] - GetGameTime();
+						int stage = 4 - RoundToCeil(left * 4.0 / time);
+						if(stage > 4)
+							stage = 4;
+						
+						PlantHasBeenPlanted(client, garden.Pos, stage);
 					}
 					else
 					{
@@ -343,7 +350,8 @@ public int Garden_PlantHandle(Menu menu, MenuAction action, int client, int choi
 						static GardenEnum garden;
 						GardenList.GetArray(InMenu[client], garden);
 						garden.Store[client] = index;
-						garden.ReadyIn[client] = kv.GetFloat("seed_time", -0.1) + GetGameTime();
+						garden.StartAt[client] = GetGameTime();
+						garden.ReadyIn[client] = kv.GetFloat("seed_time", -0.1) + garden.StartAt[client];
 						GardenList.SetArray(InMenu[client], garden);
 						
 						TextStore_SetInv(client, index, amount - 1);
@@ -386,8 +394,8 @@ public int Garden_GrowthHandle(Menu menu, MenuAction action, int client, int cho
 					kv.GetString("seed_result", buffer, sizeof(buffer));
 					if(buffer[0])
 					{
-						float low = kv.GetFloat("seed_low", 1.0);
-						float high = kv.GetFloat("seed_high", 1.0);
+						float low = kv.GetFloat("seed_min", 1.0);
+						float high = kv.GetFloat("seed_max", 1.0);
 						float rand = GetURandomFloat() * (1.0 + (luck / 50.0));
 						if(rand > 1.0)
 							rand = 1.0;

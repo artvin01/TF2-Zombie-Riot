@@ -214,12 +214,12 @@ public void HeavyBearBoss_ClotThink(int iNPC)
 						{
 							npc.m_iAttacksTillMegahit = 0;
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 2, DMG_CLUB);
-							Custom_Knockback(npc.index, target, 9999.0);
+							Custom_Knockback(npc.index, target, 500.0);
 						}
 						else
 						{
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-							Custom_Knockback(npc.index, target, 9999.0);
+							Custom_Knockback(npc.index, target, 350.0);
 						}
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");

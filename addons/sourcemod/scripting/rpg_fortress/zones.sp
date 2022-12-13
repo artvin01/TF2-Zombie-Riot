@@ -31,6 +31,7 @@ void Zones_ResetAll()
 
 static void OnEnter(int client, const char[] name)
 {
+	Crafting_ClientEnter(client, name);
 	Garden_ClientEnter(client, name);
 	Quests_EnableZone(client, name);
 	TextStore_ZoneEnter(client, name);
@@ -38,6 +39,7 @@ static void OnEnter(int client, const char[] name)
 
 static void OnLeave(int client, const char[] name)
 {
+	Crafting_ClientLeave(client, name);
 	Garden_ClientLeave(client, name);
 	TextStore_ZoneLeave(client, name);
 }

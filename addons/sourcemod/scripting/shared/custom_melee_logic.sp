@@ -363,7 +363,7 @@ public void PlayCustomWeaponSoundFromPlayerCorrectly(int target, int client, int
 	if(target == -1)
 		return;
 		
-		
+	
 	if(!StrContains(classname, "tf_weapon_knife"))
 	{
 		if(target > 0 && !b_NpcHasDied[target])
@@ -374,6 +374,10 @@ public void PlayCustomWeaponSoundFromPlayerCorrectly(int target, int client, int
 		{
 			EmitSoundToAll(g_KnifeHitWorld[GetRandomInt(0, sizeof(g_KnifeHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
 		}
+	}
+	else if(!StrContains(classname, "tf_weapon_bat_fish"))
+	{
+		EmitSoundToAll(g_MeatHitFlesh[GetRandomInt(0, sizeof(g_MeatHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
 	}
 	else if(!StrContains(classname, "tf_weapon_bonesaw"))
 	{

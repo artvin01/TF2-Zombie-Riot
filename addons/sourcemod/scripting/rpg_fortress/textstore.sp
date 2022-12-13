@@ -4,7 +4,8 @@
 enum struct StoreEnum
 {
 	char Tag[16];
-	
+
+	char ZoneItem[48];
 	char Model[PLATFORM_MAX_PATH];
 	char Intro[64];
 	char Idle[64];
@@ -318,6 +319,8 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 		
 		item.GetString("func", buffer, sizeof(buffer), "Ammo_HealingSpell");
 		spell.Func = GetFunctionByName(null, buffer);
+
+		SpellList.PushArray(spell);
 	}
 	else
 	{
@@ -340,10 +343,12 @@ void TextStore_GiveAll(int client)
 				spell.Active = true;
 				spell.Cooldown = 0.0;
 				strcopy(spell.Display, sizeof(spell.Display), spell.Name);
+				PrintToChatAll("Active: %s", spell.Display);
 				SpellList.SetArray(i, spell);
 			}
 			else
 			{
+				PrintToChatAll("Removed: %s", spell.Display);
 				SpellList.Erase(i--);
 				length--;
 			}
@@ -576,12 +581,12 @@ public Action TextStore_OnMainMenu(int client, Menu menu)
 	if(!InStore[client][0])
 		menu.RemoveItem(0);
 	
-	return Plugin_Continue;
+	menu.AddItem("rpg_stats", "Stats");
+	return Plugin_Changed;
 }
 
 public void TextStore_OnCatalog(int client)
 {
-	PrintToChatAll("TextStore_OnCatalog");
 	ArrayList list = new ArrayList();
 	
 	for(int i = TextStore_GetItems() - 1; i >= 0; i--)
@@ -648,7 +653,7 @@ static void DropItem(int index, float pos[3], int amount)
 		if(ItemCount[entity] && ItemIndex[entity] == index)
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", ang);
-			if(GetVectorDistance(pos, ang, true) < 100000.0) // 100.0
+			if(GetVectorDistance(pos, ang, true) < 10000.0) // 100.0
 			{
 				ItemCount[entity] += amount;
 				UpdateItemText(entity, index);
@@ -682,7 +687,7 @@ static void DropItem(int index, float pos[3], int amount)
 				DispatchKeyValue(entity, "model", buffer);
 				DispatchKeyValue(entity, "physicsmode", "2");
 				DispatchKeyValue(entity, "massScale", "1.0");
-				DispatchKeyValue(entity, "spawnflags", "2");
+				DispatchKeyValue(entity, "spawnflags", "6");
 				DispatchKeyValue(entity, "targetname", "rpg_item");
 
 				if(index != -1)
@@ -1102,12 +1107,12 @@ static void ShowMenu(int client, int page = 0)
 
 			if(backpack == -1)
 			{
-				menu.AddItem("-1", "Backpack\n ", ITEMDRAW_DISABLED);
+				menu.AddItem("-1", "Backpack", ITEMDRAW_DISABLED);
 			}
 			else
 			{
 				IntToString(EntIndexToEntRef(backpack), index, sizeof(index));
-				menu.AddItem(index, "Backpack\n ", ITEMDRAW_DEFAULT);
+				menu.AddItem(index, "Backpack", ITEMDRAW_DEFAULT);
 			}
 
 			menu.AddItem("-1", "Spells");

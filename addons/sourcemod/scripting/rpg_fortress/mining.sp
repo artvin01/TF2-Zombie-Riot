@@ -109,9 +109,9 @@ enum struct MineEnum
 				DispatchKeyValue(entity, "targetname", "rpg_fortress");
 				DispatchKeyValue(entity, "model", this.Model);
 				DispatchKeyValue(entity, "solid", "6");
-				
+				SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 1600.0);
+				SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 2400.0);				
 				DispatchSpawn(entity);
-
 				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR);
 				/*
 				float vector[3];
@@ -267,6 +267,8 @@ void Mining_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, int
 
 public void Mining_PickaxeM1(int client, int weapon, const char[] classname, bool &result)
 {
+	Ability_Apply_Cooldown(client, 1, Attributes_FindOnWeapon(client, weapon, 6, true, 1.0));
+
 	DataPack pack;
 	CreateDataTimer(0.2, Mining_PickaxeM1Delay, pack, TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(EntIndexToEntRef(client));
@@ -403,6 +405,8 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 				}
 			}
 		}
+
+		delete tr;
 	}
 	return Plugin_Handled;
 }

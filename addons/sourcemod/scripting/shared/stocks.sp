@@ -3251,7 +3251,7 @@ stock int SpawnSeperateCollisionBox(int entity, float Mins[3] = {-24.0,-24.0,0.0
 
 
 //static int b_TextEntityToOwner[MAXPLAYERS];
-
+#if defined RPG
 stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 {
 	int textentity = EntRefToEntIndex(i_TextEntity[client][0]);
@@ -3305,9 +3305,18 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 	}
 	if(IsValidEntity(textentity2))
 	{
-		static char buffer[128];
-		Format(buffer, sizeof(buffer), "ok.");
-		DispatchKeyValue(textentity2, "message", buffer);
+		DispatchKeyValue(textentity2, "message", c_TagName[client]);
+		char sColor[32];
+		Format(sColor, sizeof(sColor), " %d %d %d %d ", i_TagColor[client][0], i_TagColor[client][1], i_TagColor[client][2], i_TagColor[client][3]);
+		DispatchKeyValue(textentity2,     "color", sColor);
+		if(i_TagColor[client][0] == 254)
+		{
+			DispatchKeyValue(textentity2, "rainbow", "1");
+		}
+		else
+		{
+			DispatchKeyValue(textentity2, "rainbow", "0");
+		}
 	}
 	else
 	{
@@ -3315,12 +3324,19 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 
 		OffsetFromHead[2] = 110.0;
 		static char buffer[128];
-		Format(buffer, sizeof(buffer), "Miner of Fusion Warrior");
-		int textentityMade = SpawnFormattedWorldText(buffer, OffsetFromHead, 10, {255,255,0,255}, client, false);
+		Format(buffer, sizeof(buffer), c_TagName[client]);
+		int textentityMade = SpawnFormattedWorldText(buffer, OffsetFromHead, 10, i_TagColor[client], client, false);
+		
+		if(i_TagColor[client][0] == 254)
+		{
+			DispatchKeyValue(textentityMade, "rainbow", "1");
+		}
+		else
+		{
+			DispatchKeyValue(textentityMade, "rainbow", "0");
+		}
+		
 		i_TextEntity[client][1] = EntIndexToEntRef(textentityMade);
-	//	b_TextEntityToOwner[textentityMade] = client;
-	//	SetEdictFlags(textentityMade, GetEdictFlags(textentityMade) &~ FL_EDICT_ALWAYS);
-	//	SDKHook(textentityMade, SDKHook_SetTransmit, SDKHook_Settransmit_TextParentedToPlayer);
 	}
 }
 /*
@@ -3336,3 +3352,4 @@ public Action SDKHook_Settransmit_TextParentedToPlayer(int entity, int client)
 	return Plugin_Continue;
 }
 */
+#endif

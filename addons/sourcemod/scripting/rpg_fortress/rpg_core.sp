@@ -22,10 +22,13 @@ int Level[MAXENTITIES];
 int XP[MAXENTITIES];
 
 char StoreWeapon[MAXENTITIES][48];
+int i_TagColor[MAXTF2PLAYERS][4];
+char c_TagName[MAXTF2PLAYERS][64];
 
 #include "rpg_fortress/npc.sp"	// Global NPC List
 
 #include "rpg_fortress/ammo.sp"
+#include "rpg_fortress/crafting.sp"
 #include "rpg_fortress/fishing.sp"
 #include "rpg_fortress/garden.sp"
 #include "rpg_fortress/levels.sp"
