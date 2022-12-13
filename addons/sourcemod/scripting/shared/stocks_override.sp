@@ -269,7 +269,7 @@ stock float ZR_GetGameTime(int entity = 0)
 
 //This is here for rpg, because it relies on triggers, teleportentity disables triggers for an entity for a frame for some reason.
 
-stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR, const float angles[3] = NULL_VECTOR, const float velocity[3] = NULL_VECTOR)
+stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR, const float angles[3] = NULL_VECTOR, const float velocity[3] = NULL_VECTOR, bool do_original = false)
 {
 	if(origin[1] != NULL_VECTOR[1])
 	{
@@ -291,6 +291,10 @@ stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR
 	if(velocity[1] != NULL_VECTOR[1])
 	{
 		Custom_SetAbsVelocity(entity, velocity);
+	}
+	if(do_original)
+	{
+		TeleportEntity(entity,origin,angles,velocity);
 	}
 }
 

@@ -3173,7 +3173,6 @@ void Store_ApplyAttribs(int client)
 #if defined RPG
 				else
 				{
-					PrintToChat(client, "[DEBUG] Unequipped recently");
 					EquippedItems.Erase(i--);
 					length--;
 				}
@@ -3548,8 +3547,6 @@ stock void Store_RemoveNullWeapons(int client)
 
 int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 {
-	PrintToChat(client, "[DEBUG] Store_GiveItem::%d", index);
-
 #if defined ZR
 	if(!StoreItems)
 #endif
@@ -3779,7 +3776,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 #if defined RPG
 		else if(info.Owner == client)
 		{
-			PrintToChat(client, "[DEBUG] Unequipped recent");
 			EquippedItems.Erase(index);
 			length--;
 			return entity;

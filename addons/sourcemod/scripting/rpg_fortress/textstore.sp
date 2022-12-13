@@ -705,7 +705,7 @@ static void DropItem(int index, float pos[3], int amount)
 				vel[2] = GetRandomFloat(0.0, 160.0);
 
 				pos[2] += 20.0;
-				TeleportEntity(entity, pos, NULL_VECTOR, vel);
+				TeleportEntity(entity, pos, NULL_VECTOR, vel, true);
 
 				DispatchSpawn(entity);
 			//	SetEntityCollisionGroup(entity, 2);

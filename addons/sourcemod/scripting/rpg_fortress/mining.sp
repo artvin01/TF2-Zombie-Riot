@@ -106,13 +106,17 @@ enum struct MineEnum
 			int entity = CreateEntityByName("prop_dynamic_override");
 			if(IsValidEntity(entity))
 			{
+				char buffer[255];
+				Format(buffer,sizeof(buffer),this.Model);
 				DispatchKeyValue(entity, "targetname", "rpg_fortress");
-				DispatchKeyValue(entity, "model", this.Model);
+				DispatchKeyValue(entity, "model", buffer);
 				DispatchKeyValue(entity, "solid", "6");
 				SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 1600.0);
 				SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 2400.0);				
 				DispatchSpawn(entity);
-				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR);
+				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR, true);
+
+
 				/*
 				float vector[3];
 
@@ -125,10 +129,10 @@ enum struct MineEnum
 				{
 					SDKHook(entity, SDKHook_Touch, AntiTouchStuckMine);
 				}	
-				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
+			//	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
 				
-				SetEntityRenderMode(entity, RENDER_NORMAL);
-				SetEntityRenderColor(entity, this.Color[0], this.Color[1], this.Color[2], this.Color[3]);
+			//	SetEntityRenderMode(entity, RENDER_NORMAL);
+			//	SetEntityRenderColor(entity, this.Color[0], this.Color[1], this.Color[2], this.Color[3]);
 				
 				this.EntRef = EntIndexToEntRef(entity);
 			}
