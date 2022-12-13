@@ -505,7 +505,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_bunker_skeleton",
 	"npc_bunker_small_skeleton",
 	"npc_bunker_king_skeleton",
-	"npc_bunker_hhh",
+	"npc_bunker_hhh"
 };
 
 void NPC_MapStart()
