@@ -40,6 +40,11 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Escape_RoundStart();
 	Waves_RoundStart();
 #endif
+
+#if defined RPG
+	Zones_ResetAll();
+	ServerCommand("mp_waitingforplayers_cancel 1");
+#endif
 }
 
 #if defined ZR

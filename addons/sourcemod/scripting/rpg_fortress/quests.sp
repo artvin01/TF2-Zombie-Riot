@@ -272,7 +272,7 @@ void Quests_AddKill(int client, const char[] name)
 	SaveKv.Rewind();
 	SaveKv.JumpToKey("_kills", true);
 	SaveKv.JumpToKey(name, true);
-	
+
 	for(int target = 1; target <= MaxClients; target++)
 	{
 		if(client == target || Party_IsClientMember(client, target))

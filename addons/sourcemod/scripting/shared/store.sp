@@ -713,6 +713,9 @@ void Store_OpenItemPage(int client)
 
 void Store_SwapToItem(int client, int swap)
 {
+	if(swap == -1)
+		return;
+	
 #if defined RPG
 	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
 	//TF2Attrib_SetByDefIndex(client, 698, 0.0);

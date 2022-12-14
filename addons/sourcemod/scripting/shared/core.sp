@@ -790,6 +790,7 @@ int i_BleedType[MAXENTITIES];
 int i_State[MAXENTITIES];
 bool b_movedelay[MAXENTITIES];
 float fl_NextRangedAttack[MAXENTITIES];
+float fl_NextRangedAttackHappening[MAXENTITIES];
 int i_AttacksTillReload[MAXENTITIES];
 bool b_Gunout[MAXENTITIES];
 float fl_ReloadDelay[MAXENTITIES];

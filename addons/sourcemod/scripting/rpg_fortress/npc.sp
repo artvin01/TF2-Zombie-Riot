@@ -10,7 +10,10 @@ enum
 	HEAVY_BEAR				= 4,
 	HEAVY_BEAR_BOSS			= 5,
 	HEAVY_BEAR_MINION		= 6,
-	MINER_NPC				= 7
+	MINER_NPC				= 7,
+	HEADCRAB_ZOMBIE			= 8,
+	HEADCRAB_ZOMBIE_ELECTRO	= 9,
+	POISON_ZOMBIE			= 10
 }
 
 public const char NPC_Names[][] =
@@ -22,7 +25,10 @@ public const char NPC_Names[][] =
 	"Heavy Bear",
 	"Heavy Bear Boss",
 	"Heavy Bear Minion",
-	"Ore Miner"
+	"Ore Miner",
+	"Headcrab Zombie",
+	"Arrow Headcrab Zombie",
+	"Poison Zombie"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -34,7 +40,10 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_heavy_bear",
 	"npc_heavy_bear_boss",
 	"npc_heavy_bear_minion",
-	"npc_miner"
+	"npc_miner",
+	"npc_headcrab_zombie",
+	"npc_headcrab_zombie_electro",
+	"npc_poison_zombie"
 };
 
 void NPC_MapStart()
@@ -46,6 +55,9 @@ void NPC_MapStart()
 	HeavyBearBoss_OnMapStart_NPC();
 	HeavyBearMinion_OnMapStart_NPC();
 	Miner_Enemy_OnMapStart_NPC();
+	HeadcrabZombie_OnMapStart_NPC();
+	HeadcrabZombieElectro_OnMapStart_NPC();
+	PoisonZombie_OnMapStart_NPC();
 }
 
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 120.0
@@ -83,6 +95,18 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 		case MINER_NPC:
 		{
 			entity = Miner_Enemy(client, vecPos, vecAng, ally);
+		}
+		case HEADCRAB_ZOMBIE:
+		{
+			entity = HeadcrabZombie(client, vecPos, vecAng, ally);
+		}
+		case HEADCRAB_ZOMBIE_ELECTRO:
+		{
+			entity = HeadcrabZombieElectro(client, vecPos, vecAng, ally);
+		}
+		case POISON_ZOMBIE:
+		{
+			entity = PoisonZombie(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -124,6 +148,18 @@ public void NPCDeath(int entity)
 		case MINER_NPC:
 		{
 			Miner_Enemy_NPCDeath(entity);
+		}
+		case HEADCRAB_ZOMBIE:
+		{
+			HeadcrabZombie_NPCDeath(entity);
+		}
+		case HEADCRAB_ZOMBIE_ELECTRO:
+		{
+			HeadcrabZombieElectro_NPCDeath(entity);
+		}
+		case POISON_ZOMBIE:
+		{
+			PoisonZombie_NPCDeath(entity);
 		}
 		default:
 		{
@@ -292,9 +328,12 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 				}
 
 				char HealthString[512];
-				Format(HealthString, sizeof(HealthString), "%i | %i", Health, MaxHealth);
-		
-				DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
+				Format(HealthString, sizeof(HealthString), "%i / %i", Health, MaxHealth);
+
+				if(IsValidEntity(npc.m_iTextEntity3))
+				{
+					DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
+				}
 			}
 		}
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -334,3 +373,7 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 #include "rpg_fortress/npc/normal/npc_heavy_bear_boss.sp"
 #include "rpg_fortress/npc/normal/npc_heavy_bear_minion.sp"
 #include "rpg_fortress/npc/normal/npc_miner.sp"
+
+#include "rpg_fortress/npc/normal/npc_headcrab_zombie.sp"
+#include "rpg_fortress/npc/normal/npc_headcrab_zombie_electro.sp"
+#include "rpg_fortress/npc/normal/npc_poison_zombie.sp"
