@@ -364,8 +364,12 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 		kv.GetString("plugin", buffer, sizeof(buffer));
 		if(StrEqual(buffer, "rpg_fortress"))
 		{
-			GetDisplayString(kv.GetNum("level"), buffer, sizeof(buffer));
-			Format(desc, 512, "%s\n%s", desc, buffer);
+			int level = kv.GetNum("level");
+			if(level)
+			{
+				GetDisplayString(level, buffer, sizeof(buffer));
+				Format(desc, 512, "%s\n%s", desc, buffer);
+			}
 
 			static int attrib[16];
 			static float value[16];
@@ -627,7 +631,7 @@ void TextStore_EntityCreated(int entity)
 
 void TextStore_DropCash(float pos[3], int amount)
 {
-	DropItem(-1, pos, amount);
+	DropItem(-1, pos, amount, 0);
 }
 
 void TextStore_DropNamedItem(const char[] name, float pos[3], int amount)
@@ -638,13 +642,19 @@ void TextStore_DropNamedItem(const char[] name, float pos[3], int amount)
 		static char buffer[48];
 		if(TextStore_GetItemName(i, buffer, sizeof(buffer)) && StrEqual(buffer, name, false))
 		{
-			DropItem(i, pos, amount);
+			DropItem(i, pos, amount, 0);
 		}
 	}
 }
 
-static void DropItem(int index, float pos[3], int amount)
+static void DropItem(int index, float pos[3], int amount, int client)
 {
+	if(client)
+	{
+		if(Fishing_DroppedItem(client, pos, index))
+			return;
+	}
+
 	float ang[3];
 	static char buffer[PLATFORM_MAX_PATH];
 
@@ -821,7 +831,7 @@ void TextStore_DespoitBackpack(int client, bool death)
 		{
 			if(death)
 			{
-				DropItem(pack.Item, pos, pack.Amount);
+				DropItem(pack.Item, pos, pack.Amount, 0);
 
 				if(pack.Item == -1)
 				{
@@ -1065,7 +1075,7 @@ static void ShowMenu(int client, int page = 0)
 		{
 			Menu menu = new Menu(TextStore_WeaponMenu);
 
-			menu.SetTitle("RPG Fortress\nPUBLIC ALPHA TESTING\n \nItems:");
+			menu.SetTitle("RPG Fortress\n \nItems:");
 			
 			int backpack = -1;
 			int questbook = -1;
@@ -1129,7 +1139,7 @@ static void ShowMenu(int client, int page = 0)
 				menu.AddItem(index, "Backpack", ITEMDRAW_DEFAULT);
 			}
 
-			menu.AddItem("-1", "Spells");
+			menu.AddItem("-1", "Skills");
 
 			menu.Pagination = 0;
 			menu.OptionFlags |= MENUFLAG_NO_SOUND;
@@ -1139,7 +1149,7 @@ static void ShowMenu(int client, int page = 0)
 		{
 			Menu menu = new Menu(TextStore_SpellMenu);
 
-			menu.SetTitle("RPG Fortress\nPUBLIC ALPHA TESTING \nSkills:");
+			menu.SetTitle("RPG Fortress\n \nSkills:");
 
 			int amount;
 			float gameTime = GetGameTime();
@@ -1362,12 +1372,12 @@ public int TextStore_BackpackMenu(Menu menu, MenuAction action, int client, int 
 							if(!length)
 								length = 1000;
 							
-							DropItem(index, pos, length);
+							DropItem(index, pos, length, client);
 							pack.Amount -= length;
 						}
 						else
 						{
-							DropItem(index, pos, 1);
+							DropItem(index, pos, 1, client);
 							pack.Amount--;
 						}
 
@@ -1437,4 +1447,21 @@ public int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 		}
 	}
 	return 0;
+}
+
+void TextStore_Inpsect(int client)
+{
+	switch(MenuType[client])
+	{
+		case MENU_WEAPONS:
+		{
+			MenuType[client] = MENU_SPELLS;
+			RefreshAt[client] = 1.0;
+		}
+		case MENU_SPELLS:
+		{
+			MenuType[client] = MENU_WEAPONS;
+			RefreshAt[client] = 1.0;
+		}
+	}
 }

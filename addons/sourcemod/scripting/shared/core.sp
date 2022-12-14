@@ -29,10 +29,14 @@
 #define ZR_MAX_SPAWNERS 32 //cant ever have more then 32, if your map does, then what thed fuck are you doing ?
 #define ZR_MAX_GIBCOUNT 20 //Anymore then this, and it will only summon 1 gib per zombie instead.
 
+#if defined ZR
 #define MAX_PLAYER_COUNT			12
 #define MAX_PLAYER_COUNT_STRING		"12"
 //cant do more then 12, more then 12 cause memory isssues because that many npcs can just cause that much lag
-
+#else
+#define MAX_PLAYER_COUNT			24
+#define MAX_PLAYER_COUNT_STRING		"24"
+#endif
 
 //#pragma dynamic    131072
 //Allah This plugin has so much we need to do this.

@@ -432,10 +432,11 @@ bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name, boo
 
 	if(!auto)
 	{
-		if(kv.GetNum("level") > Level[client])
+		int level = kv.GetNum("level");
+		if(level > Level[client])
 		{
 			char buffer[32];
-			GetDisplayString(Level[client], buffer, sizeof(buffer));
+			GetDisplayString(level, buffer, sizeof(buffer));
 
 			SPrintToChat(client, "You must be %s to use this.", buffer);
 			return false;
@@ -3124,7 +3125,7 @@ void Store_ApplyAttribs(int client)
 							{
 								map.SetValue(buffer1, info.Value[a]);
 							}
-							else if(info.Attrib[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
+							else if(info.Attrib[a] < 0 || info.Attrib[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
 							{
 								map.SetValue(buffer1, value + info.Value[a]);
 							}
@@ -3144,7 +3145,7 @@ void Store_ApplyAttribs(int client)
 							{
 								map.SetValue(buffer1, info.Value2[a]);
 							}
-							else if(info.Attrib2[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
+							else if(info.Attrib2[a] < 0 || info.Attrib2[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
 							{
 								map.SetValue(buffer1, value + info.Value2[a]);
 							}
@@ -3789,13 +3790,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	{
 		entity = SpawnWeapon(client, "tf_weapon_pistol", 25, 1, 0, {128, 301, 821}, {1.0, 1.0, 1.0}, 3);
 		if(entity > MaxClients)
-			strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Backpack");
+			RequestFrame(SetBackpackName, EntIndexToEntRef(entity));
 	}
 	else if(index == -3)
 	{
 		entity = SpawnWeapon(client, "tf_weapon_pistol", 26, 1, 0, {128, 301, 821}, {1.0, 1.0, 1.0}, 3);
 		if(entity > MaxClients)
-			strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Quest Book");
+			RequestFrame(SetQuestBookName, EntIndexToEntRef(entity));
 	}
 #endif
 
@@ -4170,6 +4171,20 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 	}
 	return entity;
+}
+
+public void SetBackpackName(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(entity != INVALID_ENT_REFERENCE)
+		strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Backpack");
+}
+
+public void SetQuestBookName(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(entity != INVALID_ENT_REFERENCE)
+		strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Quest Book");
 }
 
 #if defined ZR

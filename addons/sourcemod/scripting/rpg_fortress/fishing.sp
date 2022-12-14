@@ -737,3 +737,23 @@ public Action Fishing_RodM1Delay(Handle timer, DataPack pack)
 	}
 	return Plugin_Handled;
 }
+
+bool Fishing_DroppedItem(int client, const float pos[3], int index)
+{
+	if(f_ClientWasPreviouslyFishing[client] > GetGameTime())
+	{
+		static char buffer[48];
+		TextStore_GetItemName(index, buffer, sizeof(buffer));
+		if(FishList.ContainsKey(buffer) && (TR_GetPointContents(pos) & CONTENTS_WATER))
+		{
+			Population.Rewind();
+			if(Population.JumpToKey(CurrentFishing[client]))
+			{
+				Population.SetNum(buffer, Population.GetNum(buffer) + 1);
+				SPrintToChat(client, "You released %s to these waters", buffer);
+				return true;
+			}
+		}
+	}
+	return false;
+}

@@ -73,7 +73,10 @@ enum struct SpawnEnum
 
 	void DoAllDrops(int client, float pos[3], int level)
 	{
-		float multi = float(level - this.Level[LOW]) / float(this.Level[HIGH] - this.Level[LOW]) * this.DropMulti;
+		float multi = 1.0;
+		if(this.Level[HIGH] > this.Level[LOW])
+			multi = float(level - this.Level[LOW]) / float(this.Level[HIGH] - this.Level[LOW]) * this.DropMulti;
+		
 		float luck = 1.0 + (float(Stats_Luck(client)) / 300.0);
 		
 		if(this.Item1[0])
