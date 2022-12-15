@@ -1404,7 +1404,45 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		}
 		if(attacker <= MaxClients && IsValidEntity(weapon))
 		{
-			
+#if defined RPG
+			if(f_HealingPotionDuration[attacker] > GetGameTime()) //Client has a buff, but which one?
+			{
+				char Weaponclassname[64];
+				GetEntityClassname(weapon, Weaponclassname, 64);
+
+				int slot = TF2_GetClassnameSlot(Weaponclassname);
+
+				switch(f_HealingPotionEffect[attacker])
+				{
+					case MELEE_BUFF_2:
+					{
+						if(slot == TFWeaponSlot_Melee && !i_IsWandWeapon[weapon] && !i_IsWrench[weapon]) //Only melee.
+						{
+							damage *= 1.15;
+						}
+					}
+					case RANGED_BUFF_2: 
+					{
+						if(slot > TFWeaponSlot_Melee) //Only Ranged
+						{
+							damage *= 1.25;
+						}
+					}
+					case MAGE_BUFF_2:
+					{
+						if(i_IsWandWeapon[weapon]) //Only Mage.
+						{
+							damage *= 1.25;
+						}
+					}
+					default: //Nothing.
+					{
+						damage *= 1.0;
+					}
+				}
+			}
+#endif
+
 #if defined ZR
 			float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 			

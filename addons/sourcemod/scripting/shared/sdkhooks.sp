@@ -439,12 +439,36 @@ public void OnPostThink(int client)
 			bool had_An_ability = false;
 			bool IsReady = false;
 			
+			if(f_HealingPotionDuration[client] > gameTime) //Client has a buff, but which one?
+			{
+				float time_left = f_HealingPotionDuration[client] - gameTime;
+				had_An_ability = true;
+				switch(f_HealingPotionEffect[client])
+				{
+					case MELEE_BUFF_2:
+					{
+						Format(buffer, sizeof(buffer), "[STR! %.0fs] %s",time_left, buffer);
+					}
+					case RANGED_BUFF_2: 
+					{
+						Format(buffer, sizeof(buffer), "[DEX! %.0fs] %s",time_left, buffer);
+					}
+					case MAGE_BUFF_2:
+					{
+						Format(buffer, sizeof(buffer), "[INT! %.0fs] %s",time_left, buffer);
+					}		
+				}
+			}
 			if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_M1)
 			{
-				had_An_ability = true;
 				
 				cooldown_time = Ability_Check_Cooldown(client, 1);
-				
+
+				if(had_An_ability)
+				{
+					Format(buffer, sizeof(buffer), "| %s", buffer);
+				}
+				had_An_ability = true;
 				if(cooldown_time < 0.0)
 				{
 					IsReady = true;
@@ -1115,7 +1139,23 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 		}
 #endif
-		
+#if defined RPG
+		if(f_HealingPotionDuration[victim] > gameTime) //Client has a buff, but which one?
+		{
+			switch(f_HealingPotionEffect[victim])
+			{
+				case MELEE_BUFF_2: //Take less damage.
+				{
+					damage *= 0.85;
+				}
+				default: //Nothing.
+				{
+					damage *= 1.0;
+				}
+			}
+		}
+
+#endif
 		if(f_EmpowerStateOther[victim] > gameTime) //Allow stacking.
 		{
 			

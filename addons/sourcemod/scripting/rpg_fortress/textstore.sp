@@ -1,6 +1,16 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static const char RarityName[][] = 
+{
+	"Common",
+	"Uncommon",
+	"Rare",
+	"Legendary",
+	"Mythic",
+	"Bob's Possession"
+};
+
 enum struct StoreEnum
 {
 	char Tag[16];
@@ -357,20 +367,13 @@ void TextStore_GiveAll(int client)
 
 public void TextStore_OnDescItem(int client, int item, char[] desc)
 {
-	static char buffer[256];
 	KeyValues kv = TextStore_GetItemKv(item);
 	if(kv)
 	{
+		static char buffer[256];
 		kv.GetString("plugin", buffer, sizeof(buffer));
 		if(StrEqual(buffer, "rpg_fortress"))
 		{
-			int level = kv.GetNum("level");
-			if(level)
-			{
-				GetDisplayString(level, buffer, sizeof(buffer));
-				Format(desc, 512, "%s\n%s", desc, buffer);
-			}
-
 			static int attrib[16];
 			static float value[16];
 			static char buffers[32][16];
@@ -392,9 +395,30 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 			Ammo_DescItem(kv, desc);
 			Mining_DescItem(kv, desc, attrib, value, count);
 			Fishing_DescItem(kv, desc, attrib, value, count);
+			Stats_DescItem(desc, attrib, value, count);
 			
 			kv.GetString("classname", buffer, sizeof(buffer));
 			Config_CreateDescription(buffer, attrib, value, count, desc, 512);
+			
+			int level = kv.GetNum("level");
+			if(level > 0)
+			{
+				GetDisplayString(level, buffer, sizeof(buffer));
+			}
+			else
+			{
+				strcopy(buffer, sizeof(buffer), "Any Level");
+			}
+			
+			int rarity = kv.GetNum("rarity");
+			if(rarity >= 0 && rarity < sizeof(RarityName))
+			{
+				Format(desc, 512, "%s\n%s\n%s", RarityName[rarity], buffer, desc);
+			}
+			else
+			{
+				Format(desc, 512, "%s\n%s", buffer, desc);
+			}
 		}
 	}
 }
@@ -668,7 +692,11 @@ static void DropItem(int index, float pos[3], int amount, int client)
 			{
 				ItemCount[entity] += amount;
 				UpdateItemText(entity, index);
-				return;
+				if(ItemCount[entity] < 51 || ItemIndex[entity] == -1)
+					return;
+				
+				amount = ItemCount[entity] - 50;
+				ItemCount[entity] = 50;
 			}
 		}
 	}

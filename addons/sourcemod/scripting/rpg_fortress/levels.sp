@@ -7,6 +7,28 @@ void Levels_PluginStart()
 {
 	HudLevel = CreateHudSynchronizer();
 	CreateTimer(1.0, Levels_Timer, _, TIMER_REPEAT);
+	RegConsoleCmd("rpg_xp_help", Levels_Command, _, FCVAR_HIDDEN);
+}
+
+public Action Levels_Command(int client, int args)
+{
+	if(args)
+	{
+		int level = GetCmdArgInt(1);
+		int xp = LevelToXp(level);
+		
+		char buffer1[32], buffer2[32];
+		GetDisplayString(level, buffer1, sizeof(buffer1));
+		GetDisplayString(level, buffer2, sizeof(buffer2), true);
+		ReplyToCommand(client, "Display Name: %s | Short: %s", buffer1, buffer2);
+		ReplyToCommand(client, "From Level 0 to Level %d: %d XP", level, xp);
+		ReplyToCommand(client, "From Level %d to Level %d: %d XP", level - 1, level, xp - LevelToXp(level - 1));
+	}
+	else
+	{
+		ReplyToCommand(client, "[SM] Usage: rpg_xp_help <level>");
+	}
+	return Plugin_Handled;
 }
 
 public Action Levels_Timer(Handle timer)
@@ -129,7 +151,7 @@ void GiveTier(int client)
 	int oldLevel = Level[client];
 	Tier[client]++;
 
-	GiveXP(client, Tier[client] * 1000, true);
+	GiveXP(client, 0, true);
 
 	Stats_ShowLevelUp(client, oldLevel, Tier[client] - 1);
 	Store_ApplyAttribs(client);

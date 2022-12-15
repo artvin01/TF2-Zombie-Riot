@@ -71,10 +71,14 @@ public void Configs_ConfigsExecuted()
 	Fishing_ConfigSetup(kv);
 	Garden_ConfigSetup(kv);
 	Mining_ConfigSetup(kv);
+	Music_ConfigSetup(kv);
 	Quests_ConfigSetup(kv);
 	Spawns_ConfigSetup(kv);
 	
 	TextStore_ConfigSetup(kv);
+
+	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/soundscript.txt");
+	LoadSoundScript(buffer);
 #endif
 
 	delete kv;

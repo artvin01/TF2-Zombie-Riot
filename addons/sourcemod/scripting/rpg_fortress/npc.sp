@@ -3,17 +3,19 @@
 
 enum
 {
-	NOTHING 				= 0,
-	START_CHICKEN 			= 1,
-	MAD_CHICKEN 			= 2,
-	MAD_ROOST				= 3,
-	HEAVY_BEAR				= 4,
-	HEAVY_BEAR_BOSS			= 5,
-	HEAVY_BEAR_MINION		= 6,
-	MINER_NPC				= 7,
-	HEADCRAB_ZOMBIE			= 8,
-	HEADCRAB_ZOMBIE_ELECTRO	= 9,
-	POISON_ZOMBIE			= 10
+	NOTHING 						= 0,
+	START_CHICKEN 					= 1,
+	MAD_CHICKEN 					= 2,
+	MAD_ROOST						= 3,
+	HEAVY_BEAR						= 4,
+	HEAVY_BEAR_BOSS					= 5,
+	HEAVY_BEAR_MINION				= 6,
+	MINER_NPC						= 7,
+	HEADCRAB_ZOMBIE					= 8,
+	HEADCRAB_ZOMBIE_ELECTRO			= 9,
+	POISON_ZOMBIE					= 10,
+	EXPLOSIVE_ZOMBIE				= 11,
+	ZOMBIEFIED_COMBINE_SWORDSMAN	= 12
 }
 
 public const char NPC_Names[][] =
@@ -28,7 +30,9 @@ public const char NPC_Names[][] =
 	"Ore Miner",
 	"Headcrab Zombie",
 	"Arrow Headcrab Zombie",
-	"Poison Zombie"
+	"Poison Zombie",
+	"Explosive Zombie",
+	"Zombified Combine Swordsman"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -43,7 +47,9 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_miner",
 	"npc_headcrab_zombie",
 	"npc_headcrab_zombie_electro",
-	"npc_poison_zombie"
+	"npc_poison_zombie",
+	"npc_headcrab_zombie_explosive",
+	"npc_zombiefied_combine_soldier_swordsman"
 };
 
 void NPC_MapStart()
@@ -58,6 +64,8 @@ void NPC_MapStart()
 	HeadcrabZombie_OnMapStart_NPC();
 	HeadcrabZombieElectro_OnMapStart_NPC();
 	PoisonZombie_OnMapStart_NPC();
+	ExplosiveHeadcrabZombie_OnMapStart_NPC();
+	ZombiefiedCombineSwordsman_OnMapStart_NPC();
 }
 
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 120.0
@@ -107,6 +115,14 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 		case POISON_ZOMBIE:
 		{
 			entity = PoisonZombie(client, vecPos, vecAng, ally);
+		}
+		case EXPLOSIVE_ZOMBIE:
+		{
+			entity = ExplosiveHeadcrabZombie(client, vecPos, vecAng, ally);
+		}
+		case ZOMBIEFIED_COMBINE_SWORDSMAN:
+		{
+			entity = ZombiefiedCombineSwordsman(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -160,6 +176,14 @@ public void NPCDeath(int entity)
 		case POISON_ZOMBIE:
 		{
 			PoisonZombie_NPCDeath(entity);
+		}
+		case EXPLOSIVE_ZOMBIE:
+		{
+			ExplosiveHeadcrabZombie_NPCDeath(entity);
+		}
+		case ZOMBIEFIED_COMBINE_SWORDSMAN:
+		{
+			ZombiefiedCombineSwordsman_NPCDeath(entity);
 		}
 		default:
 		{
@@ -377,3 +401,5 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie.sp"
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie_electro.sp"
 #include "rpg_fortress/npc/normal/npc_poison_zombie.sp"
+#include "rpg_fortress/npc/normal/npc_headcrab_zombie_explosive.sp"
+#include "rpg_fortress/npc/normal/npc_zombiefied_combine_soldier_swordsman.sp"

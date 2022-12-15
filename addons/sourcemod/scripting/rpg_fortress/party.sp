@@ -14,7 +14,7 @@ void Party_PluginStart()
 
 static bool IsInvitedBy(int client, int leader)
 {
-	return (PartyInvitedBy[client] & (1 << (leader - 1)));
+	return view_as<bool>(PartyInvitedBy[client] & (1 << (leader - 1)));
 }
 
 static void AddInvite(int client, int leader)
@@ -155,7 +155,7 @@ static void ShowMenu(int client)
 				menu.AddItem(index, buffer);
 			}
 		}
-		
+
 		if(!menu.ItemCount)
 			menu.AddItem(index, "No players to invite or join", ITEMDRAW_DISABLED);
 	}
