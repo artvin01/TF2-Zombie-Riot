@@ -33,6 +33,7 @@ static void OnEnter(int client, const char[] name)
 {
 	Crafting_ClientEnter(client, name);
 	Garden_ClientEnter(client, name);
+	Music_ZoneEnter(client, name);
 	Quests_EnableZone(client, name);
 	TextStore_ZoneEnter(client, name);
 }

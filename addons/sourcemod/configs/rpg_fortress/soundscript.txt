@@ -838,3 +838,65 @@
 		"wave"  "vo/citadel/al_buyyoudrink03.wav"
 	}
 }
+
+
+"Rpgfortress.SoldierQuestGiver.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/soldier_yes02.mp3"
+		"wave"  "vo/soldier_yes03.mp3"
+		"wave"  "vo/soldier_yes04.mp3"
+	}
+}
+
+"Rpgfortress.SoldierQuestGiver.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/soldier_helpmedefend01.mp3"
+		"wave"  "vo/soldier_helpmedefend02.mp3"
+		"wave"  "vo/soldier_helpmedefend03.mp3"
+		"wave"  "vo/soldier_helpmedefend04.mp3"
+	}
+}
+
+"Rpgfortress.SoldierQuestGiver.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/soldier_go01.mp3"
+		"wave"  "vo/soldier_go02.mp3"
+		"wave"  "vo/soldier_go03.mp3"
+	}
+}
+
+"Rpgfortress.SoldierQuestGiver.Turnin"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/soldier_goodjob01.mp3"
+		"wave"  "vo/soldier_goodjob02.mp3"
+		"wave"  "vo/soldier_goodjob03.mp3"
+	}
+}

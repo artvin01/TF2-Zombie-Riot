@@ -571,13 +571,15 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	TF2Items_SetItemIndex(weapon, index);
 	TF2Items_SetLevel(weapon, level);
 	TF2Items_SetQuality(weapon, qual);
-	
-	TF2Items_SetNumAttributes(weapon, count);
 
-	for(int i; i<count; i++)
+	int found;
+	for(int i; i < count; i++)
 	{
-		TF2Items_SetAttribute(weapon, i, attrib[i], value[i]);
+		if(attrib[i] > 0)
+			TF2Items_SetAttribute(weapon, found++, attrib[i], value[i]);
 	}
+	
+	TF2Items_SetNumAttributes(weapon, found);
 	
 	TF2_SetPlayerClass(client, TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true)), _, false);
 	
@@ -585,6 +587,12 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	delete weapon;
 	if(entity > MaxClients)
 	{
+		for(int i; i < count; i++)
+		{
+			if(attrib[i] < 0)
+				Stats_GetCustomStats(entity, attrib[i], value[i]);
+		}
+
 		if(StrEqual(name, "tf_weapon_sapper"))
 		{
 			SetEntProp(entity, Prop_Send, "m_iObjectType", 3);

@@ -3,12 +3,12 @@
 
 #define MACRO_SHOWDIFF(%1)	if(oldAmount != newAmount) { FormatEx(buffer, sizeof(buffer), %1 ... " (%d -> %d)", oldAmount, newAmount); menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED); }
 
-static int BackpackBonus[MAXTF2PLAYERS];
-static int Strength[MAXTF2PLAYERS];
-static int Dexterity[MAXTF2PLAYERS];
-static int Intelligence[MAXTF2PLAYERS];
-static int Agility[MAXTF2PLAYERS];
-static int Luck[MAXTF2PLAYERS];
+static int BackpackBonus[MAXENTITIES];
+static int Strength[MAXENTITIES];
+static int Dexterity[MAXENTITIES];
+static int Intelligence[MAXENTITIES];
+static int Agility[MAXENTITIES];
+static int Luck[MAXENTITIES];
 
 void Stats_PluginStart()
 {
@@ -16,37 +16,104 @@ void Stats_PluginStart()
 	RegConsoleCmd("sm_stats", Stats_ShowStats, "Shows your RPG stats", FCVAR_HIDDEN);
 }
 
-void Stats_ClearCustomStats(int client)
+void Stats_ClearCustomStats(int entity)
 {
-	BackpackBonus[client] = 0;
-	Strength[client] = 0;
-	Dexterity[client] = 0;
-	Intelligence[client] = 0;
-	Agility[client] = 0;
-	Luck[client] = 0;
+	BackpackBonus[entity] = 0;
+	Strength[entity] = 0;
+	Dexterity[entity] = 0;
+	Intelligence[entity] = 0;
+	Agility[entity] = 0;
+	Luck[entity] = 0;
 }
 
-void Stats_GetCustomStats(int client, int attrib, float value)
+static char[] CharInt(int value)
+{
+	static char buffer[16];
+	IntToString(value, buffer, sizeof(buffer));
+	if(value > 0)
+	{
+		for(int i = sizeof(buffer) - 1; i > 0; i--)
+		{
+			buffer[i] = buffer[i-1];
+		}
+
+		buffer[0] = '+';
+	}
+	return buffer;
+} 
+
+static char[] CharPercent(float value)
+{
+	static char buffer[16];
+	if(value < 1.0)
+	{
+		Format(buffer, sizeof(buffer), "-%d%%", RoundFloat((1.0 / value) * 100.0));
+	}
+	else
+	{
+		Format(buffer, sizeof(buffer), "+%d%%", RoundFloat((value - 1.0) * 100.0));
+	}
+	return buffer;
+} 
+
+void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
+{
+	for(int i; i < attribs; i++)
+	{
+		switch(attrib[i])
+		{
+			case -1:
+				Format(desc, 512, "%s\n%s Backpack Storage", desc, CharInt(RoundFloat(value[i])));
+			
+			case -2:
+				Format(desc, 512, "%s\n%s Strength", desc, CharInt(RoundFloat(value[i])));
+			
+			case -3:
+				Format(desc, 512, "%s\n%s Dexterity", desc, CharInt(RoundFloat(value[i])));
+			
+			case -4:
+				Format(desc, 512, "%s\n%s Intelligence", desc, CharInt(RoundFloat(value[i])));
+			
+			case -5:
+				Format(desc, 512, "%s\n%s Luck", desc, CharInt(RoundFloat(value[i])));
+
+			case -6:
+				Format(desc, 512, "%s\n%s Agility", desc, CharInt(RoundFloat(value[i])));
+
+			case 410:
+				Format(desc, 512, "%s\n%s Max Health", desc, CharInt(RoundFloat(value[i])));
+		
+			case 405:
+				Format(desc, 512, "%s\n%s Max Mana & Mana Regen", desc, CharPercent(value[i]));
+		
+			case 412:
+				Format(desc, 512, "%s\n%s Less Damage Taken", desc, CharPercent(value[i]));
+
+		}
+	}
+}
+
+void Stats_GetCustomStats(int entity, int attrib, float value)
 {
 	switch(attrib)
 	{
 		case -1:
-			BackpackBonus[client] = RoundFloat(value);
+			BackpackBonus[entity] += RoundFloat(value);
 		
 		case -2:
-			Strength[client] = RoundFloat(value);
+			Strength[entity] += RoundFloat(value);
 		
 		case -3:
-			Dexterity[client] = RoundFloat(value);
+			Dexterity[entity] += RoundFloat(value);
 		
 		case -4:
-			Intelligence[client] = RoundFloat(value);
+			Intelligence[entity] += RoundFloat(value);
 		
 		case -5:
-			Luck[client] = RoundFloat(value);
+			Luck[entity] += RoundFloat(value);
 
 		case -6:
-			Agility[client] = RoundFloat(value);
+			Agility[entity] += RoundFloat(value);
 	}
 }
 
@@ -100,6 +167,12 @@ void Stats_SetWeaponStats(int client, int entity, int slot)
 	}
 }
 
+void Stats_SetBodyStats(int client, TFClassType class, StringMap map)
+{
+	map.SetValue("26", RemoveExtraHealth(class, float(Stats_BaseHealth(client))));
+	map.SetValue("252", Stats_KnockbackResist(client));
+}
+
 int Stats_BaseHealth(int client, int level = -1, int tier = -1)
 {
 	int lv = level == -1 ? Level[client] : level;
@@ -120,6 +193,12 @@ int Stats_BaseCarry(int client, int &base = 0, int &bonus = 0, int level = -1, i
 	base = strength + (ti * 10);
 	bonus = BackpackBonus[client];
 
+	int i, entity;
+	while(TF2_GetItem(client, entity, i))
+	{
+		bonus += BackpackBonus[entity];
+	}
+
 	return base + bonus;
 }
 
@@ -130,6 +209,12 @@ int Stats_Strength(int client, int &base = 0, int &bonus = 0, int level = -1, in
 
 	base = lv / 2 + (ti * 5);
 	bonus = Strength[client];
+
+	int i, entity;
+	while(TF2_GetItem(client, entity, i))
+	{
+		bonus += Strength[entity];
+	}
 
 	return base + bonus;
 }
@@ -142,6 +227,12 @@ int Stats_Dexterity(int client, int &base = 0, int &bonus = 0, int level = -1, i
 	base = lv / 2 + (ti * 5);
 	bonus = Dexterity[client];
 
+	int i, entity;
+	while(TF2_GetItem(client, entity, i))
+	{
+		bonus += Dexterity[entity];
+	}
+
 	return base + bonus;
 }
 
@@ -153,17 +244,47 @@ int Stats_Intelligence(int client, int &base = 0, int &bonus = 0, int level = -1
 	base = lv / 2 + (ti * 5);
 	bonus = Intelligence[client];
 
+	int i, entity;
+	while(TF2_GetItem(client, entity, i))
+	{
+		bonus += Intelligence[entity];
+	}
+
 	return base + bonus;
 }
 
 int Stats_Agility(int client)
 {
-	return Agility[client];
+	int bonus = Agility[client];
+
+	int i, entity;
+	while(TF2_GetItem(client, entity, i))
+	{
+		bonus += Agility[entity];
+	}
+
+	return bonus;
 }
 
 int Stats_Luck(int client)
 {
-	return Luck[client];
+	int bonus = Luck[client];
+
+	int i, entity;
+	while(TF2_GetItem(client, entity, i))
+	{
+		bonus += Luck[entity];
+	}
+
+	return bonus;
+}
+
+float Stats_KnockbackResist(int client, int level = -1, int tier = -1)
+{
+	float lv = float(level == -1 ? Level[client] : level);
+	float ti = float(tier == -1 ? Tier[client] : tier);
+
+	return 1.0 / (0.5 + ti + (lv * 0.05));
 }
 
 void Stats_ShowLevelUp(int client, int oldLevel, int oldTier)

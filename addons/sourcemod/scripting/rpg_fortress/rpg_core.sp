@@ -13,6 +13,9 @@ char StoreWeapon[MAXENTITIES][48];
 int i_TagColor[MAXTF2PLAYERS][4];
 char c_TagName[MAXTF2PLAYERS][64];
 
+float f_HealingPotionDuration[MAXTF2PLAYERS];
+int f_HealingPotionEffect[MAXTF2PLAYERS];
+
 #include "rpg_fortress/npc.sp"	// Global NPC List
 
 #include "rpg_fortress/ammo.sp"
@@ -21,6 +24,7 @@ char c_TagName[MAXTF2PLAYERS][64];
 #include "rpg_fortress/garden.sp"
 #include "rpg_fortress/levels.sp"
 #include "rpg_fortress/mining.sp"
+#include "rpg_fortress/music.sp"
 #include "rpg_fortress/party.sp"
 #include "rpg_fortress/quests.sp"
 #include "rpg_fortress/spawns.sp"
@@ -28,7 +32,8 @@ char c_TagName[MAXTF2PLAYERS][64];
 #include "rpg_fortress/textstore.sp"
 #include "rpg_fortress/zones.sp"
 
-#include "zombie_riot/custom/wand/weapon_default_wand.sp"
+#include "rpg_fortress/custom/wand/weapon_default_wand.sp"
+#include "rpg_fortress/custom/potion_healing_effects.sp"
 
 void RPG_PluginStart()
 {
@@ -82,6 +87,7 @@ void RPG_PluginEnd()
 
 void RPG_MapStart()
 {
+	HealingPotion_Map_Start();
 	Fishing_OnMapStart();
 	Zero2(f3_SpawnPosition);
 	Wand_Map_Precache();
@@ -118,4 +124,5 @@ void RPG_ClientDisconnect_Post()
 void RPG_EntityCreated(int entity)
 {
 	StoreWeapon[entity][0] = 0;
+	Stats_ClearCustomStats(entity);
 }

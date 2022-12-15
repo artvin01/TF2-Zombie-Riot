@@ -65,8 +65,8 @@ void Crafting_ClientEnter(int client, const char[] zone)
 			CraftList.GetArray(i, craft);
 			if(StrEqual(craft.Zone, zone))
 			{
-				int length = TextStore_GetItems();
-				for(int a; a < length; a++)
+				int length2 = TextStore_GetItems();
+				for(int a; a < length2; a++)
 				{
 					static char buffer[48];
 					TextStore_GetItemName(a, buffer, sizeof(buffer));
@@ -92,8 +92,8 @@ void Crafting_ClientLeave(int client, const char[] zone)
 			CraftList.GetArray(i, craft);
 			if(StrEqual(craft.Zone, zone))
 			{
-				int length = TextStore_GetItems();
-				for(int a; a < length; a++)
+				int length2 = TextStore_GetItems();
+				for(int a; a < length2; a++)
 				{
 					static char buffer[48];
 					TextStore_GetItemName(a, buffer, sizeof(buffer));

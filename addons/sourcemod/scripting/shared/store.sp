@@ -113,35 +113,35 @@ enum struct ItemInfo
 	
 	bool SetupKV(KeyValues kv, const char[] name, const char[] prefix="")
 	{
-		char buffer[512];
+		static char buffer[512];
 		
-		FormatEx(buffer, sizeof(buffer), "%scost", prefix);
+		Format(buffer, sizeof(buffer), "%scost", prefix);
 		this.Cost = kv.GetNum(buffer, -1);
 		if(this.Cost < 0)
 			return false;
 		
-		FormatEx(buffer, sizeof(buffer), "%sdesc", prefix);
+		Format(buffer, sizeof(buffer), "%sdesc", prefix);
 		kv.GetString(buffer, this.Desc, 256);
 		
-		FormatEx(buffer, sizeof(buffer), "%sclassname", prefix);
+		Format(buffer, sizeof(buffer), "%sclassname", prefix);
 		kv.GetString(buffer, this.Classname, 36);
 		
-		FormatEx(buffer, sizeof(buffer), "%sindex", prefix);
+		Format(buffer, sizeof(buffer), "%sindex", prefix);
 		this.Index = kv.GetNum(buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sindex_2", prefix);
+		Format(buffer, sizeof(buffer), "%sindex_2", prefix);
 		this.Index2 = kv.GetNum(buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sammo", prefix);
+		Format(buffer, sizeof(buffer), "%sammo", prefix);
 		this.Ammo = kv.GetNum(buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sreload_mode", prefix);
+		Format(buffer, sizeof(buffer), "%sreload_mode", prefix);
 		this.Reload_ModeForce = kv.GetNum(buffer);
 
-		FormatEx(buffer, sizeof(buffer), "%sdamage_falloff", prefix);
+		Format(buffer, sizeof(buffer), "%sdamage_falloff", prefix);
 		this.DamageFallOffForWeapon		= kv.GetFloat(buffer, 0.9);
 		
-		//FormatEx(buffer, sizeof(buffer), "%ssniperfix", prefix);
+		//Format(buffer, sizeof(buffer), "%ssniperfix", prefix);
 		//this.SniperBugged = view_as<bool>(kv.GetNum(buffer));
 		
 		/*
@@ -157,93 +157,93 @@ enum struct ItemInfo
 				
 		*/
 		
-		FormatEx(buffer, sizeof(buffer), "%slag_comp", prefix);
+		Format(buffer, sizeof(buffer), "%slag_comp", prefix);
 		this.NoLagComp				= view_as<bool>(kv.GetNum(buffer));
 		
-		FormatEx(buffer, sizeof(buffer), "%slag_comp_collision", prefix);
+		Format(buffer, sizeof(buffer), "%slag_comp_collision", prefix);
 		this.OnlyLagCompCollision	= view_as<bool>(kv.GetNum(buffer));
 		
-		FormatEx(buffer, sizeof(buffer), "%slag_comp_away_everything_enemy", prefix);
+		Format(buffer, sizeof(buffer), "%slag_comp_away_everything_enemy", prefix);
 		this.OnlyLagCompAwayEnemy	= view_as<bool>(kv.GetNum(buffer));
 		
-		FormatEx(buffer, sizeof(buffer), "%slag_comp_extend_boundingbox", prefix);
+		Format(buffer, sizeof(buffer), "%slag_comp_extend_boundingbox", prefix);
 		this.ExtendBoundingBox		= view_as<bool>(kv.GetNum(buffer));
 		
-		FormatEx(buffer, sizeof(buffer), "%slag_comp_dont_move_building", prefix);
+		Format(buffer, sizeof(buffer), "%slag_comp_dont_move_building", prefix);
 		this.DontMoveBuildingComp	= view_as<bool>(kv.GetNum(buffer));
 	
-		FormatEx(buffer, sizeof(buffer), "%slag_comp_dont_allied_npc", prefix);
+		Format(buffer, sizeof(buffer), "%slag_comp_dont_allied_npc", prefix);
 		this.DontMoveAlliedNpcs	= view_as<bool>(kv.GetNum(buffer));
 		
-		FormatEx(buffer, sizeof(buffer), "%slag_comp_block_internal", prefix);
+		Format(buffer, sizeof(buffer), "%slag_comp_block_internal", prefix);
 		this.BlockLagCompInternal	= view_as<bool>(kv.GetNum(buffer));
 		
-		FormatEx(buffer, sizeof(buffer), "%sno_clip", prefix);
+		Format(buffer, sizeof(buffer), "%sno_clip", prefix);
 		this.HasNoClip				= view_as<bool>(kv.GetNum(buffer));
 		
-		FormatEx(buffer, sizeof(buffer), "%ssemi_auto", prefix);
+		Format(buffer, sizeof(buffer), "%ssemi_auto", prefix);
 		this.SemiAuto				= view_as<bool>(kv.GetNum(buffer));
 		
-		FormatEx(buffer, sizeof(buffer), "%sno_headshot", prefix);
+		Format(buffer, sizeof(buffer), "%sno_headshot", prefix);
 		this.NoHeadshot				= view_as<bool>(kv.GetNum(buffer));
 
-		FormatEx(buffer, sizeof(buffer), "%sis_a_wand", prefix);
+		Format(buffer, sizeof(buffer), "%sis_a_wand", prefix);
 		this.IsWand	= view_as<bool>(kv.GetNum(buffer));
 
-		FormatEx(buffer, sizeof(buffer), "%sis_a_wrench", prefix);
+		Format(buffer, sizeof(buffer), "%sis_a_wrench", prefix);
 		this.IsWrench	= view_as<bool>(kv.GetNum(buffer));
 		
 
 		
-		FormatEx(buffer, sizeof(buffer), "%ssemi_auto_stats_fire_rate", prefix);
+		Format(buffer, sizeof(buffer), "%ssemi_auto_stats_fire_rate", prefix);
 		this.SemiAutoStats_FireRate				= kv.GetFloat(buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%ssemi_auto_stats_maxAmmo", prefix);
+		Format(buffer, sizeof(buffer), "%ssemi_auto_stats_maxAmmo", prefix);
 		this.SemiAutoStats_MaxAmmo				= kv.GetNum(buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%ssemi_auto_stats_reloadtime", prefix);
+		Format(buffer, sizeof(buffer), "%ssemi_auto_stats_reloadtime", prefix);
 		this.SemiAutoStats_ReloadTime			= kv.GetFloat(buffer);
 	
 	
 		
-		FormatEx(buffer, sizeof(buffer), "%sfunc_attack", prefix);
+		Format(buffer, sizeof(buffer), "%sfunc_attack", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncAttack = GetFunctionByName(null, buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sfunc_attack2", prefix);
+		Format(buffer, sizeof(buffer), "%sfunc_attack2", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncAttack2 = GetFunctionByName(null, buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sfunc_attack3", prefix);
+		Format(buffer, sizeof(buffer), "%sfunc_attack3", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncAttack3 = GetFunctionByName(null, buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sfunc_reload", prefix);
+		Format(buffer, sizeof(buffer), "%sfunc_reload", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncReload4 = GetFunctionByName(null, buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sfunc_ondeploy", prefix);
+		Format(buffer, sizeof(buffer), "%sfunc_ondeploy", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncOnDeploy = GetFunctionByName(null, buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sfunc_onholster", prefix);
+		Format(buffer, sizeof(buffer), "%sfunc_onholster", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncOnHolster = GetFunctionByName(null, buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sint_ability_onequip", prefix);
+		Format(buffer, sizeof(buffer), "%sint_ability_onequip", prefix);
 		this.CustomWeaponOnEquip 		= kv.GetNum(buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sattack_3_ability_slot", prefix);
+		Format(buffer, sizeof(buffer), "%sattack_3_ability_slot", prefix);
 		this.Attack3AbilitySlot			= kv.GetNum(buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sspecial_attribute", prefix);
+		Format(buffer, sizeof(buffer), "%sspecial_attribute", prefix);
 		this.SpecialAdditionViaNonAttribute			= kv.GetNum(buffer);
 		
-		char buffers[32][16];
-		FormatEx(buffer, sizeof(buffer), "%sattributes", prefix);
+		static char buffers[32][16];
+		Format(buffer, sizeof(buffer), "%sattributes", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.Attribs = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
-		for(int i; i<this.Attribs; i++)
+		for(int i; i < this.Attribs; i++)
 		{
 			this.Attrib[i] = StringToInt(buffers[i*2]);
 			if(!this.Attrib[i])
@@ -257,10 +257,10 @@ enum struct ItemInfo
 		}
 
 		
-		FormatEx(buffer, sizeof(buffer), "%sattributes_check", prefix);
+		Format(buffer, sizeof(buffer), "%sattributes_check", prefix);
 		this.SpecialAttribRules			= kv.GetNum(buffer);
 		
-		FormatEx(buffer, sizeof(buffer), "%sattributes_2", prefix);
+		Format(buffer, sizeof(buffer), "%sattributes_2", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.Attribs2 = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
 		for(int i; i<this.Attribs2; i++)
@@ -277,43 +277,43 @@ enum struct ItemInfo
 		}
 
 		
-		FormatEx(buffer, sizeof(buffer), "%sattributes_check_2", prefix);
+		Format(buffer, sizeof(buffer), "%sattributes_check_2", prefix);
 		this.SpecialAttribRules_2			= kv.GetNum(buffer);
 
 #if defined ZR
-		FormatEx(buffer, sizeof(buffer), "%sfunc_onbuy", prefix);
+		Format(buffer, sizeof(buffer), "%sfunc_onbuy", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncOnBuy = GetFunctionByName(null, buffer);
 
-		/*FormatEx(buffer, sizeof(buffer), "%stier", prefix);
+		/*Format(buffer, sizeof(buffer), "%stier", prefix);
 		this.Tier = kv.GetNum(buffer, -1);
 		
-		FormatEx(buffer, sizeof(buffer), "%srarity", prefix);
+		Format(buffer, sizeof(buffer), "%srarity", prefix);
 		this.Rarity = kv.GetNum(buffer);
 		if(this.Rarity > HighestTier)
 			HighestTier = this.Rarity;*/
 		
-		FormatEx(buffer, sizeof(buffer), "%sscrap_cost", prefix);
+		Format(buffer, sizeof(buffer), "%sscrap_cost", prefix);
 		this.ScrapCost = kv.GetNum(buffer, -1);
 
-		FormatEx(buffer, sizeof(buffer), "%sunbox_rarity", prefix);
+		Format(buffer, sizeof(buffer), "%sunbox_rarity", prefix);
 		this.UnboxRarity = kv.GetNum(buffer, -1);
 		
-		FormatEx(buffer, sizeof(buffer), "%scannotbesaved", prefix);
+		Format(buffer, sizeof(buffer), "%scannotbesaved", prefix);
 		this.CannotBeSavedByCookies = view_as<bool>(kv.GetNum(buffer));
 
-		FormatEx(buffer, sizeof(buffer), "%spappaths", prefix);
+		Format(buffer, sizeof(buffer), "%spappaths", prefix);
 		this.PackBranches = kv.GetNum(buffer, 1);
 		
-		FormatEx(buffer, sizeof(buffer), "%spapskip", prefix);
+		Format(buffer, sizeof(buffer), "%spapskip", prefix);
 		this.PackSkip = kv.GetNum(buffer);
 
-		FormatEx(buffer, sizeof(buffer), "%scustom_name", prefix);
+		Format(buffer, sizeof(buffer), "%scustom_name", prefix);
 		kv.GetString(buffer, this.Custom_Name, 64);
 #endif
 
 #if defined RPG
-		FormatEx(buffer, sizeof(buffer), "%sslot", prefix);
+		Format(buffer, sizeof(buffer), "%sslot", prefix);
 		this.Slot = kv.GetNum(buffer, -1);
 
 		strcopy(this.Custom_Name, 64, name);
@@ -694,22 +694,17 @@ void Ability_Apply_Cooldown(int client, int what_slot, float cooldown)
 	}
 }
 
+#if defined ZR
 void Store_OpenItemPage(int client)
 {
-#if defined ZR
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon != -1 && StoreWeapon[weapon] > 0)
 	{
 		NPCOnly[client] = 0;
 		MenuPage(client, StoreWeapon[weapon]);
 	}
-#endif
-
-#if defined RPG
-	// RPG TODO: Yell at me for TextStore native
-	FakeClientCommandEx(client, "sm_inv");
-#endif
 }
+#endif
 
 void Store_SwapToItem(int client, int swap)
 {
@@ -3009,7 +3004,7 @@ void Store_ApplyAttribs(int client)
 
 	Format(c_TagName[client],sizeof(c_TagName[]),"Newbie");
 	i_TagColor[client] =	{255,255,255,255};
-	map.SetValue("26", RemoveExtraHealth(ClassForStats, float(Stats_BaseHealth(client))));
+	Stats_SetBodyStats(client, ClassForStats, map);
 #endif
 	
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, 330.0));		// Move Speed
@@ -4004,6 +3999,12 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						{
 							for(int a; a<info.Attribs; a++)
 							{
+								if(info.Attrib[a] < 0)
+								{
+									Stats_GetCustomStats(entity, info.Attrib[a], info.Value[a]);
+									continue;
+								}
+
 								bool ignore_rest = false;
 								Address address = TF2Attrib_GetByDefIndex(entity, info.Attrib[a]);
 								if(address == Address_Null)
@@ -4066,6 +4067,12 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						{
 							for(int a; a<info.Attribs2; a++)
 							{
+								if(info.Attrib2[a] < 0)
+								{
+									Stats_GetCustomStats(entity, info.Attrib2[a], info.Value2[a]);
+									continue;
+								}
+
 								bool ignore_rest = false;
 								Address address = TF2Attrib_GetByDefIndex(entity, info.Attrib2[a]);
 								if(address == Address_Null)

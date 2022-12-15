@@ -802,6 +802,7 @@ bool b_NextRangedBarrage_OnGoing[MAXENTITIES];
 float fl_NextTeleport[MAXENTITIES];
 bool b_Anger[MAXENTITIES];
 float fl_NextRangedSpecialAttack[MAXENTITIES];
+float fl_NextRangedSpecialAttackHappens[MAXENTITIES];
 bool b_RangedSpecialOn[MAXENTITIES];
 float fl_RangedSpecialDelay[MAXENTITIES];
 float fl_movedelay[MAXENTITIES];
@@ -1798,6 +1799,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 	TextStore_PlayerRunCmd(client);
 	Fishing_PlayerRunCmd(client);
 	Garden_PlayerRunCmd(client);
+	Music_PlayerRunCmd(client);
 #endif
 }
 
@@ -2031,7 +2033,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "entity_medigun_shield"))
 		{
-			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
+			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly_Shield);
 		}
 		else if(!StrContains(classname, "tf_projectile_energy_ball"))
 		{
@@ -2045,7 +2047,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SDKHook(entity, SDKHook_SpawnPost, ApplyExplosionDhook_Fireball);
 			#if defined ZR
-			SDKHook(entity, SDKHook_SpawnPost, Wand_Necro_Spell);
+			SDKHook(entity, SDKHook_SpawnPost, Wand_Necro_Spell);Delete_instantly
 			SDKHook(entity, SDKHook_SpawnPost, Wand_Calcium_Spell);
 			#endif
 			npc.bCantCollidie = true;
@@ -2465,6 +2467,16 @@ public void Check_For_Team_Npc_Delayed(int ref)
 public void Delete_instantly(int entity)
 {
 	RemoveEntity(entity);
+}
+
+public void Delete_instantly_Shield(int entity)
+{
+	int client;
+	GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity",client);
+	if(IsValidClient(client))
+	{
+		RemoveEntity(entity);
+	}
 }
 
 public void Delete_instantly_Disolve(int entity) //arck, they are client side...

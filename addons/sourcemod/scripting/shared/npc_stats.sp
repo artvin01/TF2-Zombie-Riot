@@ -770,6 +770,12 @@ methodmap CClotBody
 		public get()							{ return fl_NextRangedSpecialAttack[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextRangedSpecialAttack[this.index] = TempValueForProperty; }
 	}
+	
+	property float m_flNextRangedSpecialAttackHappens
+	{
+		public get()							{ return fl_NextRangedSpecialAttackHappens[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_NextRangedSpecialAttackHappens[this.index] = TempValueForProperty; }
+	}
 	property float m_flRangedSpecialDelay
 	{
 		public get()							{ return fl_RangedSpecialDelay[this.index]; }
@@ -1860,6 +1866,54 @@ methodmap CClotBody
 		}
 		*/
 		return (TR_GetFraction(trace) < 1.0);
+	}
+	public void GetPositionInfront(float DistanceOffsetInfront, float vecSwingEnd[3], float ang[3])
+	{	
+		GetEntPropVector(this.index, Prop_Data, "m_angRotation", ang);
+		
+		float vecSwingStart[3];
+		float vecSwingForward[3];
+
+		vecSwingStart = GetAbsOrigin(this.index);
+		
+		GetAngleVectors(ang, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
+		
+		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * DistanceOffsetInfront;
+		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * DistanceOffsetInfront;
+		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * DistanceOffsetInfront;
+	}
+	public int SpawnShield(float duration, char[] model, float position_offset)
+	{
+
+		float eyePitch[3];
+		float absorigin[3];
+		
+		this.GetPositionInfront(position_offset, absorigin, eyePitch);
+		int entity = CreateEntityByName("prop_dynamic_override");
+		if(IsValidEntity(entity))
+		{
+			DispatchKeyValue(entity, "targetname", "rpg_fortress");
+			DispatchKeyValue(entity, "model", model);
+			DispatchKeyValue(entity, "solid", "6");
+			SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 1600.0);
+			SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 2400.0);	
+			SetEntityCollisionGroup(entity, 24); //our savior
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);			
+			DispatchSpawn(entity);
+			TeleportEntity(entity, absorigin, eyePitch, NULL_VECTOR, true);
+			SetEntProp(entity, Prop_Send, "m_fEffects", EF_PARENT_ANIMATES);
+
+			SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 1600.0);
+			SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 1800.0);
+
+			SetVariantString("!activator");
+			AcceptEntityInput(entity, "SetParent", this.index);
+
+			SetVariantString("");
+			AcceptEntityInput(entity, "SetParentAttachmentMaintainOffset"); 	
+		}
+		CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		return entity;
 	}
 	public void FireRocket(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, int flags = 0) //No defaults, otherwise i cant even judge.
 	{
@@ -6406,6 +6460,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_NextTeleport[entity] = 0.0;
 	b_Anger[entity] = false;
 	fl_NextRangedSpecialAttack[entity] = 0.0;
+	fl_NextRangedSpecialAttackHappens[entity] = 0.0;
 	b_RangedSpecialOn[entity] = false;
 	fl_RangedSpecialDelay[entity] = 0.0;
 	fl_movedelay[entity] = 0.0;
