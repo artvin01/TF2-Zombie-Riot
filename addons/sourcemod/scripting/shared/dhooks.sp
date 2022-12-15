@@ -521,6 +521,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		//	PrintToChatAll("ingore");
 			return false;
 		}
+#if defined ZR
 		else if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
 		{
 			if(entity2 <= MaxClients && entity2 > 0)
@@ -529,6 +530,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 		}
+#endif
 		else if(b_Is_Npc_Projectile[entity1])
 		{
 			if(b_ThisEntityIgnored[entity2])

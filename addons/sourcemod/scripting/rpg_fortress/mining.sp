@@ -1,8 +1,24 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-float f_clientFoundRareRockSpot[MAXTF2PLAYERS];
-float f_clientFoundRareRockSpotPos[MAXTF2PLAYERS][3];
+static const char MiningLevels[][] =
+{
+	"Wooden (0)",
+	"Stone (1)",
+	"Bronze (2)",
+	"Iron (3)",
+	"Steel (4)",
+	"Diamond (5)",
+	"Emerald (6)",
+	"Obsidian (7)"
+};
+
+static float f_clientFoundRareRockSpot[MAXTF2PLAYERS];
+static float f_clientFoundRareRockSpotPos[MAXTF2PLAYERS][3];
+
+static float f_ClientStartedTouch[MAXTF2PLAYERS];
+static float f_ClientStartedTouchDelay[MAXTF2PLAYERS];
+static float f_TouchedThisManyTimes[MAXTF2PLAYERS];
 
 enum struct MineEnum
 {
@@ -12,6 +28,7 @@ enum struct MineEnum
 	float Pos[3];
 	float Ang[3];
 	float Scale;
+	bool OnTouch;
 	int Color[4];
 	
 	char Item[48];
@@ -52,6 +69,8 @@ enum struct MineEnum
 		kv.GetString("item", this.Item, 48);
 		this.Health = kv.GetNum("health");
 		this.Tier = kv.GetNum("tier");
+		
+		this.OnTouch = view_as<bool>(kv.GetNum("ontouch"));
 
 		this.EntRef = INVALID_ENT_REFERENCE;
 
@@ -87,13 +106,17 @@ enum struct MineEnum
 			int entity = CreateEntityByName("prop_dynamic_override");
 			if(IsValidEntity(entity))
 			{
+				char buffer[255];
+				Format(buffer,sizeof(buffer),this.Model);
 				DispatchKeyValue(entity, "targetname", "rpg_fortress");
-				DispatchKeyValue(entity, "model", this.Model);
+				DispatchKeyValue(entity, "model", buffer);
 				DispatchKeyValue(entity, "solid", "6");
-				
+				SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 1600.0);
+				SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 2400.0);				
 				DispatchSpawn(entity);
+				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR, true);
 
-				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR);
+
 				/*
 				float vector[3];
 
@@ -102,12 +125,42 @@ enum struct MineEnum
 				PrintToChatAll("%f",vector[1]);
 				PrintToChatAll("%f",vector[2]);
 				*/
-				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
+				if(this.OnTouch)
+				{
+					SDKHook(entity, SDKHook_Touch, AntiTouchStuckMine);
+				}	
+			//	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
 				
-				SetEntityRenderMode(entity, RENDER_NORMAL);
-				SetEntityRenderColor(entity, this.Color[0], this.Color[1], this.Color[2], this.Color[3]);
+			//	SetEntityRenderMode(entity, RENDER_NORMAL);
+			//	SetEntityRenderColor(entity, this.Color[0], this.Color[1], this.Color[2], this.Color[3]);
 				
 				this.EntRef = EntIndexToEntRef(entity);
+			}
+		}
+	}
+}
+
+public void AntiTouchStuckMine(int entity, int other)
+{
+	if(other <= MaxClients)
+	{
+		if(f_ClientStartedTouchDelay[other] < GetGameTime())
+		{
+			f_ClientStartedTouchDelay[other] = GetGameTime() + 0.5;
+			if(f_ClientStartedTouch[other] > GetGameTime())
+			{
+				f_ClientStartedTouch[other] = GetGameTime() + 5.0;
+				f_TouchedThisManyTimes[other] *= 2.0;
+				SDKHooks_TakeDamage(other, entity, entity, f_TouchedThisManyTimes[other], DMG_DROWN, -1);
+
+				//Already touched before!
+			}
+			else
+			{
+				//new touch!
+				f_ClientStartedTouch[other] = GetGameTime() + 5.0;
+				f_TouchedThisManyTimes[other] = 1.0;
+				SDKHooks_TakeDamage(other, entity, entity, f_TouchedThisManyTimes[other], DMG_DROWN, -1);
 			}
 		}
 	}
@@ -191,8 +244,36 @@ void Mining_DisableZone(const char[] name)
 	}
 }
 
+void Mining_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, int attribs)
+{
+	static char buffer[64];
+	kv.GetString("func_attack", buffer, sizeof(buffer));
+	if(StrEqual(buffer, "Mining_PickaxeM1"))
+	{
+		for(int i; i < attribs; i++)
+		{
+			switch(attrib[i])
+			{
+				case 2016:
+				{
+					Format(desc, 512, "%s\nMining Efficiency: %.0f%%", desc, value[i]);
+				}
+				case 2017:
+				{
+					int pos = RoundFloat(value[i]);
+					if(pos < sizeof(MiningLevels))
+						Format(desc, 512, "%s\nMining Level: %s", desc, MiningLevels[pos]);
+				}
+			}
+		}
+	}
+}
+
 public void Mining_PickaxeM1(int client, int weapon, const char[] classname, bool &result)
 {
+	float ApplyCooldown =  0.8 * Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+	Ability_Apply_Cooldown(client, 1,ApplyCooldown);
+
 	DataPack pack;
 	CreateDataTimer(0.2, Mining_PickaxeM1Delay, pack, TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(EntIndexToEntRef(client));
@@ -329,6 +410,8 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 				}
 			}
 		}
+
+		delete tr;
 	}
 	return Plugin_Handled;
 }

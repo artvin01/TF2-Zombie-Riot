@@ -281,9 +281,9 @@ stock bool KvJumpToKeySymbol2(KeyValues kv, int id)
 	return false;
 }
 
-stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool ignore_allied_npc = false, bool mask_shot = false)
+stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool ignore_allied_npc = false, bool mask_shot = false, float vecEndOrigin[3] = {0.0, 0.0, 0.0})
 {
-	float vecOrigin[3], vecAngles[3], vecEndOrigin[3];
+	float vecOrigin[3], vecAngles[3];
 	GetClientEyePosition(iClient, vecOrigin);
 	GetClientEyeAngles(iClient, vecAngles);
 	
@@ -401,7 +401,7 @@ stock TFClassType TF2_GetWeaponClass(int index, TFClassType defaul=TFClass_Unkno
 {
 	switch(index)
 	{
-		case 25:
+		case 25, 26:
 			return TFClass_Engineer;
 		
 		case 735, 736, 810, 831, 933, 1080, 1102:
@@ -1199,10 +1199,21 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 		}
 #else
 		return false;
-#endif
-		
+#endif		
 	}
-	
+#if defined RPG
+	else if(entity > MaxClients && entity < MAXENTITIES)
+	{
+		if(b_is_a_brush[entity])//THIS is for brushes that act as collision boxes for NPCS inside quests.sp
+		{
+			int entityfrombrush = BrushToEntity(entity);
+			if(entityfrombrush != -1)
+			{
+				return entityfrombrush!=data;
+			}
+		}
+	}
+#endif	
 	return entity!=data;
 }
 
@@ -2761,7 +2772,7 @@ float dmg_against_entity_multiplier = 3.0)
 	}
 	
 }
-stock void DisplayCritAboveNpc(int victim = -1, int client, bool sound, float position[3] = {0.0,0.0,0.0})
+stock void DisplayCritAboveNpc(int victim = -1, int client, bool sound, float position[3] = {0.0,0.0,0.0}, int ParticleIndex = -1)
 {
 	float chargerPos[3];
 	if(victim != -1)
@@ -2808,8 +2819,17 @@ stock void DisplayCritAboveNpc(int victim = -1, int client, bool sound, float po
 			
 		}
 	}
-	TE_ParticleInt(g_particleCritText, chargerPos);
-	TE_SendToClient(client);	
+	if(ParticleIndex != -1)
+	{
+		TE_ParticleInt(ParticleIndex, chargerPos);
+		TE_SendToClient(client);	
+	}
+	else
+	{
+		TE_ParticleInt(g_particleCritText, chargerPos);
+		TE_SendToClient(client);		
+	}
+
 }
 
 public bool HitOnlyTargetOrWorld(int entity, int contentsMask, any iExclude)
@@ -3111,7 +3131,7 @@ public void GiveCompleteInvul(int client, float time)
 	TF2_AddCondition(client, TFCond_MegaHeal, time);
 }
 
-stock int SpawnFormattedWorldText(const char[] format, const float origin[3], int textSize = 10, const int colour[4] = {255,255,255,255}, int entity_parent = -1, bool rainbow = false, bool teleport = false)
+stock int SpawnFormattedWorldText(const char[] format, float origin[3], int textSize = 10, const int colour[4] = {255,255,255,255}, int entity_parent = -1, bool rainbow = false, bool teleport = false)
 {
 	int worldtext = CreateEntityByName("point_worldtext");
 	if(IsValidEntity(worldtext))
@@ -3154,7 +3174,7 @@ stock int SpawnFormattedWorldText(const char[] format, const float origin[3], in
 				pack.WriteFloat(origin[1]);
 				pack.WriteFloat(origin[2]);
 			}
-			TeleportEntity(worldtext, origin, NULL_VECTOR, NULL_VECTOR);
+			SDKCall_SetLocalOrigin(worldtext, origin);
 		}	
 	}
 	return worldtext;
@@ -3178,7 +3198,7 @@ public Action TeleportTextTimer(Handle timer, DataPack pack)
 		vector[1] += vector_offset[1];
 		vector[2] += vector_offset[2];
 
-		TeleportEntity(text_entity, vector, NULL_VECTOR, NULL_VECTOR);
+		SDKCall_SetLocalOrigin(text_entity,vector);
 		return Plugin_Continue;
 	}
 	else
@@ -3187,3 +3207,158 @@ public Action TeleportTextTimer(Handle timer, DataPack pack)
 	}
 	
 }
+
+
+stock int SpawnSeperateCollisionBox(int entity, float Mins[3] = {-24.0,-24.0,0.0}, float Maxs[3] = {24.0,24.0,82.0})
+{
+	static bool precached;
+
+	if(!precached)
+	{
+		precached = true;
+		PrecacheModel("models/error.mdl");
+	}
+
+	float vector[3];
+
+	vector = GetAbsOrigin(entity);
+
+	int brush = CreateEntityByName("func_brush");
+        
+	if (brush != -1)
+	{
+		DispatchKeyValueVector(brush, "origin", vector);
+		DispatchKeyValue(brush, "spawnflags", "64");
+
+		DispatchSpawn(brush);
+		ActivateEntity(brush);    
+
+		SetEntityModel(brush, "models/error.mdl");
+	//	SetEntityModel(brush, "models/error.mdl");
+		SetEntProp(brush, Prop_Send, "m_nSolidType", 2);
+		SetEntityCollisionGroup(brush, 5);
+							
+		SetEntPropVector(brush, Prop_Send, "m_vecMinsPreScaled", Mins);
+							
+		SetEntPropVector(brush, Prop_Send, "m_vecMaxsPreScaled", Maxs);
+			
+		SetEntPropVector(brush, Prop_Send, "m_vecMins", Mins);
+		SetEntPropVector(brush, Prop_Send, "m_vecMaxs", Maxs);
+
+		CClotBody npc = view_as<CClotBody>(brush);
+		npc.UpdateCollisionBox();	
+            
+		SetEntProp(brush, Prop_Send, "m_fEffects", GetEntProp(brush, Prop_Send, "m_fEffects") | EF_NODRAW); 
+		TeleportEntity(entity, vector, NULL_VECTOR, NULL_VECTOR);
+		return brush;
+	} 
+	else
+	{
+		return -1;
+	}
+}
+
+
+//static int b_TextEntityToOwner[MAXPLAYERS];
+#if defined RPG
+stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
+{
+	int textentity = EntRefToEntIndex(i_TextEntity[client][0]);
+	int textentity2 = EntRefToEntIndex(i_TextEntity[client][1]);
+	if(deleteText)
+	{
+		if(IsValidEntity(textentity))
+		{
+			RemoveEntity(textentity);
+		}
+		if(IsValidEntity(textentity2))
+		{
+			RemoveEntity(textentity2);
+		}
+	}
+	if(deleteText)
+		return;
+		
+	if(IsValidEntity(textentity))
+	{
+		static char buffer[128];
+		if(Tier[client])
+		{
+			Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client]);
+		}
+		else
+		{
+			Format(buffer, sizeof(buffer), "Level %d", Level[client]);
+		}
+		DispatchKeyValue(textentity, "message", buffer);
+	}
+	else
+	{
+		float OffsetFromHead[3];
+
+		OffsetFromHead[2] = 120.0;
+		static char buffer[128];
+		if(Tier[client])
+		{
+			Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client]);
+		}
+		else
+		{
+			Format(buffer, sizeof(buffer), "Level %d", Level[client]);
+		}
+		int textentityMade = SpawnFormattedWorldText(buffer, OffsetFromHead, 10, {255,255,255,255}, client);
+		i_TextEntity[client][0] = EntIndexToEntRef(textentityMade);
+	//	b_TextEntityToOwner[textentityMade] = client;
+	//	SetEdictFlags(textentityMade, GetEdictFlags(textentityMade) &~ FL_EDICT_ALWAYS);
+	//	SDKHook(textentityMade, SDKHook_SetTransmit, SDKHook_Settransmit_TextParentedToPlayer);
+	}
+	if(IsValidEntity(textentity2))
+	{
+		DispatchKeyValue(textentity2, "message", c_TagName[client]);
+		char sColor[32];
+		Format(sColor, sizeof(sColor), " %d %d %d %d ", i_TagColor[client][0], i_TagColor[client][1], i_TagColor[client][2], i_TagColor[client][3]);
+		DispatchKeyValue(textentity2,     "color", sColor);
+		if(i_TagColor[client][0] == 254)
+		{
+			DispatchKeyValue(textentity2, "rainbow", "1");
+		}
+		else
+		{
+			DispatchKeyValue(textentity2, "rainbow", "0");
+		}
+	}
+	else
+	{
+		float OffsetFromHead[3];
+
+		OffsetFromHead[2] = 110.0;
+		static char buffer[128];
+		Format(buffer, sizeof(buffer), c_TagName[client]);
+		int textentityMade = SpawnFormattedWorldText(buffer, OffsetFromHead, 10, i_TagColor[client], client, false);
+		
+		if(i_TagColor[client][0] == 254)
+		{
+			DispatchKeyValue(textentityMade, "rainbow", "1");
+		}
+		else
+		{
+			DispatchKeyValue(textentityMade, "rainbow", "0");
+		}
+		
+		i_TextEntity[client][1] = EntIndexToEntRef(textentityMade);
+	}
+}
+/*
+public Action SDKHook_Settransmit_TextParentedToPlayer(int entity, int client)
+{
+	SetEdictFlags(entity, GetEdictFlags(entity) &~ FL_EDICT_ALWAYS);
+	if(client == b_TextEntityToOwner[entity])
+	{
+		PrintToChatAll("bruh");
+		return Plugin_Handled;
+	}
+	PrintToChatAll("bruh1");
+	return Plugin_Continue;
+}
+*/
+#endif

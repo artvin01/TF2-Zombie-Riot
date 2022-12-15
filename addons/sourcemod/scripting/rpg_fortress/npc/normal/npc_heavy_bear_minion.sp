@@ -248,7 +248,7 @@ public void HeavyBearMinion_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(70.0, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
@@ -291,7 +291,7 @@ public void HeavyBearMinion_ClotThink(int iNPC)
 
 					npc.PlayMeleeSound();
 					
-					npc.m_flAttackHappens = gameTime + 0.2;
+					npc.m_flAttackHappens = gameTime + 0.3;
 
 				//	npc.m_flDoingAnimation = gameTime + 0.6;
 					npc.m_flNextMeleeAttack = gameTime + 1.0;

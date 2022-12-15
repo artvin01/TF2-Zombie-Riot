@@ -37,6 +37,7 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_sentrygun_mini_damage", "10.0");
 	ConVar_Add("tf_sentrygun_notarget", "0.0"); 			// have our own find logic..?
 	ConVar_Add("tf_boost_drain_time", "99999.0"); 			// have our own find logic..?
+	ConVar_Add("tf_avoidteammates_pushaway", "0"); 
 	
 	ConVar_Add("sv_parallel_packentities", "1.0");
 	ConVar_Add("sv_parallel_sendsnapshot", "0.0");
@@ -77,7 +78,7 @@ void ConVar_PluginStart()
 	#endif
 	
 	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
-	CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "14", "The maximum amount of blue bots allowed for the killfeed and more");
+	CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "8", "The maximum amount of blue bots allowed for the killfeed and more");
 	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 	
 	AutoExecConfig(true, "zombie_riot");

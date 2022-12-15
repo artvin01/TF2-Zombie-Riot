@@ -49,7 +49,23 @@ int GetDisplayLevel(int level, int &tier=0)
 	
 	return level - currCap;
 }
-
+/*
+void GetClientString(int client, char[] buffer, int length, bool short = false)
+{
+	if(!Tier[client])
+	{
+		Format(buffer, length, "Level %d", Level[client]);
+	}
+	else if(short)
+	{
+		Format(buffer, length, "E%d L%d", Tier[client], Level[client]);
+	}
+	else
+	{
+		Format(buffer, length, "Elite %d Level %d", Tier[client], Level[client]);
+	}
+}
+*/
 void GetDisplayString(int base, char[] buffer, int length, bool short = false)
 {
 	int tier;
@@ -93,6 +109,8 @@ void GiveXP(int client, int xp, bool silent = false)
 		
 		if(!silent)
 			Store_ApplyAttribs(client);
+
+		UpdateLevelAbovePlayerText(client);
 	}
 
 	if(!silent)

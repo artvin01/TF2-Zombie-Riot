@@ -4,7 +4,8 @@
 enum struct StoreEnum
 {
 	char Tag[16];
-	
+
+	char ZoneItem[48];
 	char Model[PLATFORM_MAX_PATH];
 	char Intro[64];
 	char Idle[64];
@@ -156,10 +157,23 @@ enum struct BackpackEnum
 	int Owner;
 	int Item;
 	int Amount;
+	int Weight;
+}
+
+enum struct SpellEnum
+{
+	bool Active;
+	int Owner;
+	char Name[48];
+	char Display[64];
+	Function Func;
+	float Cooldown;
+	int Store;
 }
 
 enum
 {
+	MENU_NONE = -1,
 	MENU_WEAPONS = 0,
 	MENU_SPELLS = 1,
 	MENU_BACKPACK = 2
@@ -169,8 +183,10 @@ static int ItemXP = -1;
 static int ItemTier = -1;
 static KeyValues HashKey;
 static ArrayList Backpack;
+static ArrayList SpellList;
 static StringMap StoreList;
 static char InStore[MAXTF2PLAYERS][16];
+static char InStoreTag[MAXTF2PLAYERS][16];
 static int ItemIndex[MAXENTITIES];
 static int ItemCount[MAXENTITIES];
 static float ItemLifetime[MAXENTITIES];
@@ -193,6 +209,10 @@ static void HashCheck()
 				delete Backpack;
 				Backpack = new ArrayList(sizeof(BackpackEnum));
 
+				delete SpellList;
+				SpellList = new ArrayList(sizeof(SpellEnum));
+				
+				Garden_ResetAll();
 				Store_Reset();
 				RPG_PluginEnd();
 
@@ -205,6 +225,8 @@ static void HashCheck()
 				SPrintToChatAll("The store was reloaded, items and areas were also reloaded!");
 
 				HashKey = kv;
+				
+				Zones_ResetAll();
 			}
 			break;
 		}
@@ -265,11 +287,72 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 {
 	HashCheck();
 
+	static char buffer[64];
+	item.GetString("type", buffer, sizeof(buffer));
+	if(!StrContains(buffer, "ammo", false))
+	{
+		int type = item.GetNum("ammo");
+
+		int ammo = GetAmmo(client, type) + item.GetNum("amount");
+		SetAmmo(client, type, ammo);
+		CurrentAmmo[client][type] = ammo;
+		return Item_Used;
+	}
+
 	if(equipped)
 		return Item_Off;
 	
-	Store_EquipItem(client, item, index, name, auto);
+	if(!StrContains(buffer, "healing", false) || !StrContains(buffer, "spell", false))
+	{
+		static SpellEnum spell;
+		int length = SpellList.Length;
+		for(int i; i < length; i++)
+		{
+			SpellList.GetArray(i, spell);
+			if(spell.Owner == client && spell.Store == index)
+				return Item_On;
+		}
+
+		spell.Owner = client;
+		spell.Store = index;
+		spell.Active = false;
+		strcopy(spell.Name, 48, name);
+		
+		item.GetString("func", buffer, sizeof(buffer), "Ammo_HealingSpell");
+		spell.Func = GetFunctionByName(null, buffer);
+
+		SpellList.PushArray(spell);
+	}
+	else
+	{
+		Store_EquipItem(client, item, index, name, auto);
+	}
 	return Item_On;
+}
+
+void TextStore_GiveAll(int client)
+{
+	int length = SpellList.Length;
+	for(int i; i < length; i++)
+	{
+		static SpellEnum spell;
+		SpellList.GetArray(i, spell);
+		if(spell.Owner == client)
+		{
+			if(TextStore_GetInv(client, spell.Store))
+			{
+				spell.Active = true;
+				spell.Cooldown = 0.0;
+				strcopy(spell.Display, sizeof(spell.Display), spell.Name);
+				SpellList.SetArray(i, spell);
+			}
+			else
+			{
+				SpellList.Erase(i--);
+				length--;
+			}
+		}
+	}
 }
 
 public void TextStore_OnDescItem(int client, int item, char[] desc)
@@ -281,35 +364,11 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 		kv.GetString("plugin", buffer, sizeof(buffer));
 		if(StrEqual(buffer, "rpg_fortress"))
 		{
-			GetDisplayString(kv.GetNum("level"), buffer, sizeof(buffer));
-			Format(desc, 512, "%s\n%s", desc, buffer);
-			
-			float val = kv.GetFloat("oredmg");
-			if(val > 0)
+			int level = kv.GetNum("level");
+			if(level)
 			{
-				int tier = kv.GetNum("oretier");
-				if(tier < sizeof(MiningLevels))
-				{
-					Format(desc, 512, "%s\nMining Level: %s\nMining Efficiency: %.2f%%", desc, MiningLevels[tier], val);
-				}
-				else
-				{
-					Format(desc, 512, "%s\nMining Level: %d\nMining Efficiency: %.2f%%", desc, tier, val);
-				}
-			}
-			
-			val = kv.GetFloat("fishchance");
-			if(val > 0)
-			{
-				int tier = kv.GetNum("fishtier", 3);
-				if(tier < sizeof(FishingLevels))
-				{
-					Format(desc, 512, "%s\nFishing Level: %s\nFishing Efficiency: %.2f%%", desc, FishingLevels[tier], val*100.0);
-				}
-				else
-				{
-					Format(desc, 512, "%s\nFishing Level: %d\nFishing Efficiency: %.2f%%", desc, tier, val*100.0);
-				}
+				GetDisplayString(level, buffer, sizeof(buffer));
+				Format(desc, 512, "%s\n%s", desc, buffer);
 			}
 
 			static int attrib[16];
@@ -329,6 +388,10 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 				
 				value[i] = StringToFloat(buffers[i*2+1]);
 			}
+			
+			Ammo_DescItem(kv, desc);
+			Mining_DescItem(kv, desc, attrib, value, count);
+			Fishing_DescItem(kv, desc, attrib, value, count);
 			
 			kv.GetString("classname", buffer, sizeof(buffer));
 			Config_CreateDescription(buffer, attrib, value, count, desc, 512);
@@ -429,13 +492,15 @@ void TextStore_AddItemCount(int client, const char[] name, int amount)
 {
 	if(StrEqual(name, ITEM_CASH))
 	{
-		SPrintToChat(client, "You gained %d credits", amount);
 		TextStore_Cash(client, amount);
+		if(amount > 0)
+			SPrintToChat(client, "You gained %d credits", amount);
 	}
 	else if(StrEqual(name, ITEM_XP))
 	{
-		SPrintToChat(client, "You gained %d XP", amount);
 		GiveXP(client, amount);
+		if(amount > 0)
+			SPrintToChat(client, "You gained %d XP", amount);
 	}
 	else if(StrEqual(name, ITEM_TIER))
 	{
@@ -456,7 +521,7 @@ void TextStore_AddItemCount(int client, const char[] name, int amount)
 				{
 					SPrintToChat(client, "You gained %s", name);
 				}
-				else
+				else if(amount > 1)
 				{
 					SPrintToChat(client, "You gained %s x%d", name, amount);
 				}
@@ -481,6 +546,7 @@ void TextStore_ZoneEnter(int client, const char[] name)
 		
 		store.PlayEnter(client);
 		strcopy(InStore[client], sizeof(InStore[]), name);
+		strcopy(InStoreTag[client], sizeof(InStoreTag[]), store.Tag);
 		FakeClientCommand(client, "sm_buy");
 	}
 }
@@ -519,23 +585,43 @@ public Action TextStore_OnMainMenu(int client, Menu menu)
 	if(!InStore[client][0])
 		menu.RemoveItem(0);
 	
-	return Plugin_Continue;
+	menu.AddItem("rpg_stats", "Stats");
+	menu.AddItem("rpg_party", "Party");
+	return Plugin_Changed;
 }
 
 public void TextStore_OnCatalog(int client)
 {
-	int length = TextStore_GetItems();
-	for(int i; i < length; i++)
+	ArrayList list = new ArrayList();
+	
+	for(int i = TextStore_GetItems() - 1; i >= 0; i--)
 	{
+		bool block = true;
+
+		static char buffer[128];
 		KeyValues kv = TextStore_GetItemKv(i);
 		if(kv)
 		{
-			static char buffer[128];
-			kv.GetString("storetags", buffer, sizeof(buffer));
-			if(buffer[0])
-				kv.SetNum("hidden", StrContains(buffer, InStore[client], false) == -1 ? 1 : 0);
+			if(InStore[client][0] && kv.GetNum("level") <= Level[client])
+			{
+				kv.GetString("storetags", buffer, sizeof(buffer));
+				if(buffer[0] && StrContains(buffer, InStoreTag[client], false) != -1)
+				{
+					block = false;
+				}
+			}
 		}
+		else
+		{
+			block = list.FindValue(i) == -1;
+		}
+
+		TextStore_SetItemHidden(i, block);
+		if(!block)
+			list.Push(TextStore_GetItemParent(i));
 	}
+
+	delete list;
 }
 
 void TextStore_EntityCreated(int entity)
@@ -545,7 +631,7 @@ void TextStore_EntityCreated(int entity)
 
 void TextStore_DropCash(float pos[3], int amount)
 {
-	DropItem(-1, pos, amount);
+	DropItem(-1, pos, amount, 0);
 }
 
 void TextStore_DropNamedItem(const char[] name, float pos[3], int amount)
@@ -556,13 +642,19 @@ void TextStore_DropNamedItem(const char[] name, float pos[3], int amount)
 		static char buffer[48];
 		if(TextStore_GetItemName(i, buffer, sizeof(buffer)) && StrEqual(buffer, name, false))
 		{
-			DropItem(i, pos, amount);
+			DropItem(i, pos, amount, 0);
 		}
 	}
 }
 
-static void DropItem(int index, float pos[3], int amount)
+static void DropItem(int index, float pos[3], int amount, int client)
 {
+	if(client)
+	{
+		if(Fishing_DroppedItem(client, pos, index))
+			return;
+	}
+
 	float ang[3];
 	static char buffer[PLATFORM_MAX_PATH];
 
@@ -572,7 +664,7 @@ static void DropItem(int index, float pos[3], int amount)
 		if(ItemCount[entity] && ItemIndex[entity] == index)
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", ang);
-			if(GetVectorDistance(pos, ang, true) < 100000.0)
+			if(GetVectorDistance(pos, ang, true) < 10000.0) // 100.0
 			{
 				ItemCount[entity] += amount;
 				UpdateItemText(entity, index);
@@ -606,7 +698,7 @@ static void DropItem(int index, float pos[3], int amount)
 				DispatchKeyValue(entity, "model", buffer);
 				DispatchKeyValue(entity, "physicsmode", "2");
 				DispatchKeyValue(entity, "massScale", "1.0");
-				DispatchKeyValue(entity, "spawnflags", "2");
+				DispatchKeyValue(entity, "spawnflags", "6");
 				DispatchKeyValue(entity, "targetname", "rpg_item");
 
 				if(index != -1)
@@ -623,10 +715,11 @@ static void DropItem(int index, float pos[3], int amount)
 				vel[2] = GetRandomFloat(0.0, 160.0);
 
 				pos[2] += 20.0;
-				TeleportEntity(entity, pos, NULL_VECTOR, vel);
+				TeleportEntity(entity, pos, NULL_VECTOR, vel, true);
 
 				DispatchSpawn(entity);
-				SetEntityCollisionGroup(entity, 2);
+			//	SetEntityCollisionGroup(entity, 2);
+			//	b_Is_Player_Projectile[entity] = true;
 
 				int color[4] = {255, 255, 255, 255};
 				if(index != -1)
@@ -656,7 +749,27 @@ static void DropItem(int index, float pos[3], int amount)
 				if(amount != 1)
 					Format(buffer, sizeof(buffer), "%s x%d", buffer, amount);
 				
-				i_TextEntity[entity][0] = EntIndexToEntRef(SpawnFormattedWorldText(buffer, {0.0, 0.0, 30.0}, amount == 1 ? 5 : 6, color, entity,_,true));
+				CreateTimer(2.5, Timer_DisableMotion, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+				
+				int rarity;
+				
+				if(index != -1)
+				{
+					rarity = kv.GetNum("rarity", 0);
+				}
+				else
+				{
+					rarity = 3;
+				}
+				
+				int color_Text[4];
+		
+				color_Text[0] = RenderColors_RPG[rarity][0];
+				color_Text[1] = RenderColors_RPG[rarity][1];
+				color_Text[2] = RenderColors_RPG[rarity][2];
+				color_Text[3] = RenderColors_RPG[rarity][3];
+
+				i_TextEntity[entity][0] = EntIndexToEntRef(SpawnFormattedWorldText(buffer, {0.0, 0.0, 30.0}, amount == 1 ? 5 : 6, color_Text, entity,_,true));
 			}
 		}
 	}
@@ -694,8 +807,8 @@ static int GetBackpackSize(int client)
 	for(int i; i < length; i++)
 	{
 		Backpack.GetArray(i, pack);
-		if(pack.Owner == client && pack.Item != -1)
-			amount += pack.Amount;
+		if(pack.Owner == client)
+			amount += pack.Amount * pack.Weight;
 	}
 
 	return amount;
@@ -718,7 +831,7 @@ void TextStore_DespoitBackpack(int client, bool death)
 		{
 			if(death)
 			{
-				DropItem(pack.Item, pos, pack.Amount);
+				DropItem(pack.Item, pos, pack.Amount, 0);
 
 				if(pack.Item == -1)
 				{
@@ -770,7 +883,7 @@ bool TextStore_Interact(int client, int entity, bool reload)
 			int strength;
 			if(ItemIndex[entity] != -1)
 			{
-				weight = GetBackpackSize(client) - 1 - Tier[client];
+				weight = GetBackpackSize(client) - 2 - (2 * Tier[client]);
 
 				int i;
 				while(TF2_GetItem(client, strength, i))
@@ -828,6 +941,19 @@ bool TextStore_Interact(int client, int entity, bool reload)
 					pack.Owner = client;
 					pack.Item = ItemIndex[entity];
 					pack.Amount = amount;
+
+					if(ItemIndex[entity] == -1)
+					{
+						pack.Weight = 0;
+					}
+					else
+					{
+						pack.Weight = 1;
+						KeyValues kv = TextStore_GetItemKv(ItemIndex[entity]);
+						if(kv)
+							pack.Weight = kv.GetNum("weight", 1);
+					}
+					
 					Backpack.PushArray(pack);
 				}
 				
@@ -890,7 +1016,11 @@ void TextStore_WeaponSwitch(int client, int weapon)
 		MenuType[client] = MENU_BACKPACK;
 		RefreshAt[client] = 1.0;
 	}
-	else if(MenuType[client] == MENU_BACKPACK)
+	else if(weapon != -1 && StrEqual(StoreWeapon[weapon], "Quest Book"))
+	{
+		MenuType[client] = MENU_NONE;
+	}
+	else if(MenuType[client] == MENU_NONE || MenuType[client] == MENU_BACKPACK)
 	{
 		MenuType[client] = MENU_WEAPONS;
 	}
@@ -948,10 +1078,11 @@ static void ShowMenu(int client, int page = 0)
 			menu.SetTitle("RPG Fortress\n \nItems:");
 			
 			int backpack = -1;
+			int questbook = -1;
 			int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			char index[16];
 
-			int list[8];
+			int list[7];
 			int amount;
 
 			int i, entity;
@@ -961,7 +1092,11 @@ static void ShowMenu(int client, int page = 0)
 				{
 					backpack = entity;
 				}
-				else
+				else if(StrEqual(StoreWeapon[entity], "Quest Book"))
+				{
+					questbook = entity;
+				}
+				else if(amount < sizeof(list))
 				{
 					list[amount++] = entity;
 				}
@@ -978,30 +1113,96 @@ static void ShowMenu(int client, int page = 0)
 				}
 			}
 
-			for(; i < 8; i++)
+			for(; i < 7; i++)
 			{
 				menu.AddItem("-1", "");
 				amount++;
 			}
 
+			if(questbook == -1)
+			{
+				menu.AddItem("-1", "");
+			}
+			else
+			{
+				IntToString(EntIndexToEntRef(questbook), index, sizeof(index));
+				menu.AddItem(index, "Quest Book", ITEMDRAW_DEFAULT);
+			}
+
 			if(backpack == -1)
 			{
-				menu.AddItem("-1", "Backpack\n ", ITEMDRAW_DISABLED);
+				menu.AddItem("-1", "Backpack", ITEMDRAW_DISABLED);
 			}
 			else
 			{
 				IntToString(EntIndexToEntRef(backpack), index, sizeof(index));
-				menu.AddItem(index, "Backpack\n ", backpack == active ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				menu.AddItem(index, "Backpack", ITEMDRAW_DEFAULT);
 			}
 
-			//menu.AddItem("-1", "Spells");
+			menu.AddItem("-1", "Skills");
 
 			menu.Pagination = 0;
+			menu.OptionFlags |= MENUFLAG_NO_SOUND;
 			InMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
 		}
 		case MENU_SPELLS:
 		{
-			InMenu[client] = false;
+			Menu menu = new Menu(TextStore_SpellMenu);
+
+			menu.SetTitle("RPG Fortress\n \nSkills:");
+
+			int amount;
+			float gameTime = GetGameTime();
+			int length = SpellList.Length;
+			for(int i; i < length; i++)
+			{
+				static SpellEnum spell;
+				SpellList.GetArray(i, spell);
+				if(spell.Active && spell.Owner == client)
+				{
+					static char index[12];
+					IntToString(spell.Store, index, sizeof(index));
+
+					int cooldown = RoundToCeil(spell.Cooldown - gameTime);
+					if(!spell.Display[0] || cooldown > 999)
+					{
+						if(amount < 9)
+						{
+							amount++;
+							menu.AddItem(index, spell.Display, ITEMDRAW_DISABLED);
+						}
+						continue;
+					}
+
+					if(cooldown > 0)
+						Format(spell.Display, sizeof(spell.Display), "%s [%ds]", cooldown);
+					
+					if(++amount > 9)
+					{
+						menu.InsertItem(GetURandomInt() % amount, index, spell.Display);
+					}
+					else
+					{
+						menu.AddItem(index, spell.Display);
+					}
+				}
+			}
+
+			for(; amount < 9; amount++)
+			{
+				menu.AddItem("0", "");
+			}
+
+			for(; amount > 9; amount--)
+			{
+				menu.RemoveItem(amount);
+			}
+
+			menu.AddItem("-1", "Items");
+
+			menu.Pagination = 0;
+			menu.OptionFlags |= MENUFLAG_NO_SOUND;
+			InMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
 		}
 		case MENU_BACKPACK:
 		{
@@ -1055,7 +1256,7 @@ static void ShowMenu(int client, int page = 0)
 			if(!found)
 				menu.AddItem(NULL_STRING, "Empty", ITEMDRAW_DISABLED);
 
-			amount -= 1 + Tier[client];
+			amount -= 2 + (2 * Tier[client]);
 			
 			int i;
 			while(TF2_GetItem(client, length, i))
@@ -1065,6 +1266,7 @@ static void ShowMenu(int client, int page = 0)
 
 			menu.SetTitle("RPG Fortress\n \nBackpack (%d / %d):", amount, Stats_BaseCarry(client));
 
+			menu.ExitBackButton = true;
 			InMenu[client] = menu.DisplayAt(client, page / 7 * 7, MENU_TIME_FOREVER);
 		}
 		default:
@@ -1140,14 +1342,10 @@ public int TextStore_BackpackMenu(Menu menu, MenuAction action, int client, int 
 			switch(choice)
 			{
 				case MenuCancel_ExitBack:
-				{
 					FakeClientCommandEx(client, "sm_inv");
-				}
+				
 				case MenuCancel_Exit:
-				{
-					SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
-					ClientCommand(client, "lastinv");
-				}
+					Store_SwapToItem(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
 			}
 		}
 		case MenuAction_Select:
@@ -1174,12 +1372,12 @@ public int TextStore_BackpackMenu(Menu menu, MenuAction action, int client, int 
 							if(!length)
 								length = 1000;
 							
-							DropItem(index, pos, length);
+							DropItem(index, pos, length, client);
 							pack.Amount -= length;
 						}
 						else
 						{
-							DropItem(index, pos, 1);
+							DropItem(index, pos, 1, client);
 							pack.Amount--;
 						}
 
@@ -1200,4 +1398,70 @@ public int TextStore_BackpackMenu(Menu menu, MenuAction action, int client, int 
 		}
 	}
 	return 0;
+}
+
+public int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			InMenu[client] = false;
+		}
+		case MenuAction_Select:
+		{
+			if(choice == 9)
+			{
+				MenuType[client] = MENU_WEAPONS;
+			}
+			else if(IsPlayerAlive(client))
+			{
+				char num[16];
+				menu.GetItem(choice, num, sizeof(num));
+
+				int index = StringToInt(num);
+
+				int length = SpellList.Length;
+				for(int i; i < length; i++)
+				{
+					static SpellEnum spell;
+					SpellList.GetArray(i, spell);
+					if(spell.Owner == client && spell.Store == index && spell.Func)
+					{
+						Call_StartFunction(null, spell.Func);
+						Call_PushCell(client);
+						Call_PushCell(index);
+						Call_PushStringEx(spell.Display, sizeof(spell.Display), SM_PARAM_STRING_UTF8|SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
+						Call_Finish(spell.Cooldown);
+						SpellList.SetArray(i, spell);
+						break;
+					}
+				}
+			}
+
+			ShowMenu(client);
+		}
+	}
+	return 0;
+}
+
+void TextStore_Inpsect(int client)
+{
+	switch(MenuType[client])
+	{
+		case MENU_WEAPONS:
+		{
+			MenuType[client] = MENU_SPELLS;
+			RefreshAt[client] = 1.0;
+		}
+		case MENU_SPELLS:
+		{
+			MenuType[client] = MENU_WEAPONS;
+			RefreshAt[client] = 1.0;
+		}
+	}
 }

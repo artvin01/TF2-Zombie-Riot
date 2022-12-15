@@ -87,7 +87,7 @@ public void SDKHook_ScoreThink(int entity)
 	int Conversion_ExtraPoints[MAXTF2PLAYERS];
 	for(int client=1; client<=MaxClients; client++)
 	{
-		Conversion_ExtraPoints[client] = i_ExtraPlayerPoints[client] / 2;
+		Conversion_ExtraPoints[client] = RoundToCeil(float(i_ExtraPlayerPoints[client]) * 0.5);
 	}
 
 	SetEntDataArray(entity, offset_damageblocked, Conversion_ExtraPoints, MaxClients + 1);
@@ -100,7 +100,7 @@ public void SDKHook_ScoreThink(int entity)
 			SetEntProp(client, Prop_Send, "m_iHealPoints", Healing_done_in_total[client]);
 			SetEntProp(client, Prop_Send, "m_iBackstabs", i_Backstabs[client]);
 			SetEntProp(client, Prop_Send, "m_iHeadshots", i_Headshots[client]);
-			SetEntProp(client, Prop_Send, "m_iDefenses", i_BarricadeHasBeenDamaged[client] / 1000);
+			SetEntProp(client, Prop_Send, "m_iDefenses", RoundToCeil(float(i_BarricadeHasBeenDamaged[client]) * 0.001));
 
 
 		//	m_iHealPoints
@@ -266,8 +266,8 @@ public void OnPostThink(int client)
 #endif
 				
 #if defined RPG
-				max_mana[client] = 20.0;
-				mana_regen[client] = 0.5;
+				max_mana[client] = 40.0;
+				mana_regen[client] = 1.0;
 #endif
 					
 				mana_regen[client] *= Mana_Regen_Level[client];
@@ -587,9 +587,9 @@ public void OnPostThink(int client)
 			green = 0;
 			blue = 255;
 			
-			red = Current_Mana[client] * 255  / RoundToFloor(max_mana[client]) + 1; //DO NOT DIVIDE BY 0
+			red = Current_Mana[client] * 255  / (RoundToFloor(max_mana[client]) + 1); //DO NOT DIVIDE BY 0
 			
-			blue = Current_Mana[client] * 255  / RoundToFloor(max_mana[client]) + 1;
+			blue = Current_Mana[client] * 255  / (RoundToFloor(max_mana[client]) + 1);
 			 
 			red = 255 - red;
 			
@@ -1517,6 +1517,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 
 #if defined RPG
 	TextStore_WeaponSwitch(client, weapon);
+	Quests_WeaponSwitch(client, weapon);
 	//TF2Attrib_SetByDefIndex(client, 698, 1.0);
 	SetEntProp(client, Prop_Send, "m_bWearingSuit", false);
 #endif

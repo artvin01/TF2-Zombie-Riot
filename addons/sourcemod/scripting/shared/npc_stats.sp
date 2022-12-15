@@ -970,6 +970,11 @@ methodmap CClotBody
 		public get()							{ return fl_NextRangedAttack[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextRangedAttack[this.index] = TempValueForProperty; }
 	}
+	property float m_flNextRangedAttackHappening
+	{
+		public get()							{ return fl_NextRangedAttackHappening[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_NextRangedAttackHappening[this.index] = TempValueForProperty; }
+	}
 	property int m_iAttacksTillReload
 	{
 		public get()							{ return i_AttacksTillReload[this.index]; }
@@ -1903,6 +1908,43 @@ methodmap CClotBody
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
 			SetEntityCollisionGroup(entity, 19); //our savior
 			See_Projectile_Team(entity);
+		}
+	}
+	public void FireGrenade(float vecTarget[3], float grenadespeed = 800.0, float damage, char[] model)
+	{
+		int entity = CreateEntityByName("tf_projectile_pipe");
+		if(IsValidEntity(entity))
+		{
+			float vecForward[3], vecSwingStart[3], vecAngles[3];
+			this.GetVectors(vecForward, vecSwingStart, vecAngles);
+	
+			vecSwingStart = GetAbsOrigin(this.index);
+			vecSwingStart[2] += 90.0;
+	
+			MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
+			GetVectorAngles(vecAngles, vecAngles);
+	
+			vecSwingStart[0] += vecForward[0] * 64;
+			vecSwingStart[1] += vecForward[1] * 64;
+			vecSwingStart[2] += vecForward[2] * 64;
+	
+			vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*grenadespeed;
+			vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*grenadespeed;
+			vecForward[2] = Sine(DegToRad(vecAngles[0]))*-grenadespeed;
+			
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
+			SetEntPropEnt(entity, Prop_Send, "m_hThrower", this.index);
+			
+			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
+			f_CustomGrenadeDamage[entity] = damage;	
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
+			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
+			DispatchSpawn(entity);
+			SetEntityModel(entity, model);
+			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
+			
+			SetEntProp(entity, Prop_Send, "m_bTouched", true);
+			SetEntityCollisionGroup(entity, 1);
 		}
 	}
 	public void FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0) //No defaults, otherwise i cant even judge.
@@ -6352,6 +6394,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_State[entity] = 0;
 	b_movedelay[entity] = false;
 	fl_NextRangedAttack[entity] = 0.0;
+	fl_NextRangedAttackHappening[entity] = 0.0;
 	i_AttacksTillReload[entity] = 0;
 	b_Gunout[entity] = false;
 	fl_ReloadDelay[entity] = 0.0;

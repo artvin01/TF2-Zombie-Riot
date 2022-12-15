@@ -9,7 +9,11 @@ enum
 	MAD_ROOST				= 3,
 	HEAVY_BEAR				= 4,
 	HEAVY_BEAR_BOSS			= 5,
-	HEAVY_BEAR_MINION		= 6
+	HEAVY_BEAR_MINION		= 6,
+	MINER_NPC				= 7,
+	HEADCRAB_ZOMBIE			= 8,
+	HEADCRAB_ZOMBIE_ELECTRO	= 9,
+	POISON_ZOMBIE			= 10
 }
 
 public const char NPC_Names[][] =
@@ -20,7 +24,11 @@ public const char NPC_Names[][] =
 	"Mad Roost",
 	"Heavy Bear",
 	"Heavy Bear Boss",
-	"Heavy Bear Minion"
+	"Heavy Bear Minion",
+	"Ore Miner",
+	"Headcrab Zombie",
+	"Arrow Headcrab Zombie",
+	"Poison Zombie"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -31,7 +39,11 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_roost_mad",
 	"npc_heavy_bear",
 	"npc_heavy_bear_boss",
-	"npc_heavy_bear_minion"
+	"npc_heavy_bear_minion",
+	"npc_miner",
+	"npc_headcrab_zombie",
+	"npc_headcrab_zombie_electro",
+	"npc_poison_zombie"
 };
 
 void NPC_MapStart()
@@ -42,7 +54,14 @@ void NPC_MapStart()
 	HeavyBear_OnMapStart_NPC();
 	HeavyBearBoss_OnMapStart_NPC();
 	HeavyBearMinion_OnMapStart_NPC();
+	Miner_Enemy_OnMapStart_NPC();
+	HeadcrabZombie_OnMapStart_NPC();
+	HeadcrabZombieElectro_OnMapStart_NPC();
+	PoisonZombie_OnMapStart_NPC();
 }
+
+#define NORMAL_ENEMY_MELEE_RANGE_FLOAT 120.0
+#define GIANT_ENEMY_MELEE_RANGE_FLOAT 130.0
 
 stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
 {
@@ -72,6 +91,22 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 		case HEAVY_BEAR_MINION:
 		{
 			entity = HeavyBearMinion(client, vecPos, vecAng, ally);
+		}
+		case MINER_NPC:
+		{
+			entity = Miner_Enemy(client, vecPos, vecAng, ally);
+		}
+		case HEADCRAB_ZOMBIE:
+		{
+			entity = HeadcrabZombie(client, vecPos, vecAng, ally);
+		}
+		case HEADCRAB_ZOMBIE_ELECTRO:
+		{
+			entity = HeadcrabZombieElectro(client, vecPos, vecAng, ally);
+		}
+		case POISON_ZOMBIE:
+		{
+			entity = PoisonZombie(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -109,6 +144,22 @@ public void NPCDeath(int entity)
 		case HEAVY_BEAR_MINION:
 		{
 			HeavyBearMinion_NPCDeath(entity);
+		}
+		case MINER_NPC:
+		{
+			Miner_Enemy_NPCDeath(entity);
+		}
+		case HEADCRAB_ZOMBIE:
+		{
+			HeadcrabZombie_NPCDeath(entity);
+		}
+		case HEADCRAB_ZOMBIE_ELECTRO:
+		{
+			HeadcrabZombieElectro_NPCDeath(entity);
+		}
+		case POISON_ZOMBIE:
+		{
+			PoisonZombie_NPCDeath(entity);
 		}
 		default:
 		{
@@ -193,12 +244,33 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 		{
 			if(entity_found != -1) //Dont reset it, but if its someone else, allow it.
 			{
-				npc.m_iTarget = entity_found;
+				int Enemy_I_See;
+							
+				Enemy_I_See = Can_I_See_Enemy(npc.index, entity_found);
+				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See)) //Can i even see this enemy that i want to go to newly?
+				{
+					//found enemy, go to new enemy
+					npc.m_iTarget = Enemy_I_See;
+				}
 			}
 		}
 		else //Allow the reset of aggro.
 		{
-			npc.m_iTarget = entity_found;
+			if(entity_found != -1) //Dont reset it, but if its someone else, allow it.
+			{
+				int Enemy_I_See;
+								
+				Enemy_I_See = Can_I_See_Enemy(npc.index, entity_found);
+				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+				{
+					//if we want to search for new enemies, it must be a valid one that can be seen.
+					npc.m_iTarget = Enemy_I_See;
+				}
+			}
+			else //can reset to -1
+			{
+				npc.m_iTarget = entity_found;
+			}
 		}
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
@@ -215,6 +287,7 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 			if(fl_DistanceToOriginalSpawn > Pow(80.0, 2.0)) //We are too far away from our home! return!
 			{
 				PF_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
+				npc.m_bisWalking = true;
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
@@ -226,26 +299,40 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 			{
 				//We now afk and are back in our spawnpoint heal back up, but not instantly incase they quickly can attack again.
 
-				int HealthToHealPerIncrement = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 100;
+				int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+				int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+
+				int HealthToHealPerIncrement = MaxHealth / 100;
 
 				if(HealthToHealPerIncrement < 1) //should never be 0
 				{
 					HealthToHealPerIncrement = 1;
 				}
 
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealthToHealPerIncrement);
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", Health + HealthToHealPerIncrement);
+				
 
-				if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+				if((Health + HealthToHealPerIncrement) >= MaxHealth)
 				{
-					SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+					SetEntProp(npc.index, Prop_Data, "m_iHealth", MaxHealth);
 				}
 				//Slowly heal when we are standing still.
+
+				Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
 				npc.m_bisWalking = false;
 				if(npc.m_iChanged_WalkCycle != 5) 	//Stand still.
 				{
 					npc.m_iChanged_WalkCycle = 5;
 					npc.SetActivity(StandStill);
+				}
+
+				char HealthString[512];
+				Format(HealthString, sizeof(HealthString), "%i / %i", Health, MaxHealth);
+
+				if(IsValidEntity(npc.m_iTextEntity3))
+				{
+					DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
 				}
 			}
 		}
@@ -285,3 +372,8 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 #include "rpg_fortress/npc/normal/npc_heavy_bear.sp"
 #include "rpg_fortress/npc/normal/npc_heavy_bear_boss.sp"
 #include "rpg_fortress/npc/normal/npc_heavy_bear_minion.sp"
+#include "rpg_fortress/npc/normal/npc_miner.sp"
+
+#include "rpg_fortress/npc/normal/npc_headcrab_zombie.sp"
+#include "rpg_fortress/npc/normal/npc_headcrab_zombie_electro.sp"
+#include "rpg_fortress/npc/normal/npc_poison_zombie.sp"

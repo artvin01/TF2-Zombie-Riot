@@ -29,10 +29,14 @@
 #define ZR_MAX_SPAWNERS 32 //cant ever have more then 32, if your map does, then what thed fuck are you doing ?
 #define ZR_MAX_GIBCOUNT 20 //Anymore then this, and it will only summon 1 gib per zombie instead.
 
+#if defined ZR
 #define MAX_PLAYER_COUNT			12
 #define MAX_PLAYER_COUNT_STRING		"12"
 //cant do more then 12, more then 12 cause memory isssues because that many npcs can just cause that much lag
-
+#else
+#define MAX_PLAYER_COUNT			24
+#define MAX_PLAYER_COUNT_STRING		"24"
+#endif
 
 //#pragma dynamic    131072
 //Allah This plugin has so much we need to do this.
@@ -185,6 +189,11 @@ public int RenderColors_RPG[][] =
 Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;
 //ConVar tf_bot_quota;
+
+Handle g_hSetLocalOrigin;
+Handle g_hSnapEyeAngles;
+Handle g_hSetAbsVelocity;
+//MUST BE HERE!
 
 bool DoingLagCompensation;
 
@@ -431,6 +440,7 @@ int i_WandWeapon[MAXENTITIES]; //
 int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever ever. lag max otherwise.
 bool i_IsWandWeapon[MAXENTITIES]; 
 bool i_IsWrench[MAXENTITIES]; 
+bool b_is_a_brush[MAXENTITIES]; 
 
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
 
@@ -627,16 +637,9 @@ enum
 #define MAXENTITIES	2048
 
 //I put these here so we can change them on fly if we need to, cus zombies can be really loud, or quiet.
-#if defined ZR
-
-#define NORMAL_ZOMBIE_SOUNDLEVEL	 80
-#define NORMAL_ZOMBIE_VOLUME	 0.9
-
-#else
 
 #define NORMAL_ZOMBIE_SOUNDLEVEL	 70
 #define NORMAL_ZOMBIE_VOLUME	 0.8
-#endif
 
 #define BOSS_ZOMBIE_SOUNDLEVEL	 90
 #define BOSS_ZOMBIE_VOLUME	 1.0
@@ -787,6 +790,7 @@ int i_BleedType[MAXENTITIES];
 int i_State[MAXENTITIES];
 bool b_movedelay[MAXENTITIES];
 float fl_NextRangedAttack[MAXENTITIES];
+float fl_NextRangedAttackHappening[MAXENTITIES];
 int i_AttacksTillReload[MAXENTITIES];
 bool b_Gunout[MAXENTITIES];
 float fl_ReloadDelay[MAXENTITIES];
@@ -1392,6 +1396,10 @@ public void OnClientCookiesCached(int client)
 #if defined ZR
 	Store_ClientCookiesCached(client);
 #endif
+
+#if defined RPG
+	RPG_ClientCookiesCached(client);
+#endif
 }
 
 public void OnClientDisconnect(int client)
@@ -1459,11 +1467,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	
 	//tutorial stuff.
 	Tutorial_MakeClientNotMove(client);
-#endif
-
-#if defined RPG
-	TextStore_PlayerRunCmd(client);
-	Fishing_PlayerRunCmd(client);
 #endif
 
 	if(buttons & IN_ATTACK)
@@ -1783,14 +1786,20 @@ public void Movetype_walk(int client)
 	
 }
 
-#if defined ZR
 public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon)
 {
+#if defined ZR
 	SemiAutoWeapon(client, buttons);
 	Pets_PlayerRunCmdPost(client, buttons, angles);
 	Medikit_healing(client, buttons);
-}
 #endif
+
+#if defined RPG
+	TextStore_PlayerRunCmd(client);
+	Fishing_PlayerRunCmd(client);
+	Garden_PlayerRunCmd(client);
+#endif
+}
 
 public void Update_Ammo(int  client)
 {
@@ -1944,7 +1953,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		StoreWeapon[entity] = -1;
 		b_SentryIsCustom[entity] = false;
 #endif
-		
+		i_IsWandWeapon[entity] = false;
+		i_IsWrench[entity] = false;
 		LastHitId[entity] = -1;
 		DamageBits[entity] = -1;
 		Damage[entity] = 0.0;
@@ -1984,6 +1994,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		SetDefaultValuesToZeroNPC(entity);
 		i_SemiAutoWeapon[entity] = false;
 		b_NpcHasDied[entity] = true;
+		b_is_a_brush[entity] = false;
 		
 #if defined RPG
 		RPG_EntityCreated(entity);
@@ -1998,15 +2009,25 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
-#if defined ZR
 		else if(!StrContains(classname, "item_currencypack_custom"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
+		}
+#if defined RPG
+		else if(!StrContains(classname, "phys_bone_follower"))
+		{
+			//every prop_Dynamic that spawns these  can make upto 16 entities, holy fuck
+			//make a func_brush and use it to detect collisions!
+			RemoveEntity(entity);
 		}
 #endif
 		else if(!StrContains(classname, "tf_projectile_energy_ring"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
+		}
+		else if(!StrContains(classname, "func_brush"))
+		{
+			b_is_a_brush[entity] = true;
 		}
 		else if(!StrContains(classname, "entity_medigun_shield"))
 		{
@@ -2123,6 +2144,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			b_Is_Player_Projectile[entity] = true; //Pretend its a player projectile for now.
+			npc.bCantCollidie = true;
+			npc.bCantCollidieAlly = true;
+		}
+		else if(!StrContains(classname, "trigger_teleport")) //npcs think they cant go past this sometimes, lol
+		{
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
@@ -2638,9 +2664,20 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 {
 	if(weapon != -1) //Just allow. || GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack")<GetGameTime())
 	{
-		int entity = GetClientPointVisible(client); //So you can also correctly interact with players holding shit.
+		static float vecEndOrigin[3];
+		int entity = GetClientPointVisible(client, _, _, _, vecEndOrigin); //So you can also correctly interact with players holding shit.
 		if(entity > 0)
 		{
+#if defined RPG
+			if(b_is_a_brush[entity]) //THIS is for brushes that act as collision boxes for NPCS inside quests.sp
+			{
+				int entityfrombrush = BrushToEntity(entity);
+				if(entityfrombrush != -1)
+				{
+					entity = entityfrombrush;
+				}
+			}
+#endif
 
 #if defined ZR
 			static char buffer[64];
@@ -2670,8 +2707,17 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 			if(Quests_Interact(client, entity))
 				return true;
 #endif
-
+		
 		}
+		
+#if defined RPG
+		else
+		{
+			if(Garden_Interact(client, vecEndOrigin))
+				return true;
+		}
+#endif
+		
 	}
 	return false;
 }

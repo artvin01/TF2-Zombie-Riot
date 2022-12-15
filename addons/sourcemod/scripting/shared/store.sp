@@ -421,33 +421,37 @@ static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 #if defined RPG
 bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name, bool auto)
 {
-	int pos = EquippedItems.FindValue(index, ItemInfo::Store);
-	if(pos == -1)
+	static ItemInfo info;
+	int length = EquippedItems.Length;
+	for(int i; i < length; i++)
 	{
-		if(!auto)
-		{
-			if(kv.GetNum("level") > Level[client])
-			{
-				char buffer[32];
-				GetDisplayString(Level[client], buffer, sizeof(buffer));
-
-				SPrintToChat(client, "You must be %s to use this.", buffer);
-				return false;
-			}
-		}
-
-		static ItemInfo info;
-		info.SetupKV(kv, name);
-
-		if(!auto)
-			Store_EquipSlotCheck(client, info.Slot);
-		
-		info.Owner = client;
-		info.Store = index;
-		EquippedItems.PushArray(info);
-		return true;
+		EquippedItems.GetArray(i, info);
+		if(info.Owner == client && info.Store == index)
+			return false;
 	}
-	return false;
+
+	if(!auto)
+	{
+		int level = kv.GetNum("level");
+		if(level > Level[client])
+		{
+			char buffer[32];
+			GetDisplayString(level, buffer, sizeof(buffer));
+
+			SPrintToChat(client, "You must be %s to use this.", buffer);
+			return false;
+		}
+	}
+
+	info.SetupKV(kv, name);
+
+	if(!auto)
+		Store_EquipSlotCheck(client, info.Slot);
+	
+	info.Owner = client;
+	info.Store = index;
+	EquippedItems.PushArray(info);
+	return true;
 }
 #endif
 
@@ -493,6 +497,13 @@ void Store_WeaponSwitch(int client, int weapon)
 					Call_StartFunction(null, info.FuncOnDeploy);
 					Call_PushCell(client);
 					Call_PushCell(weapon);
+					
+#if defined RPG
+					Call_PushCell(info.Store);
+#else
+					Call_PushCell(-1);
+#endif
+
 					Call_Finish();
 				}
 
@@ -702,6 +713,9 @@ void Store_OpenItemPage(int client)
 
 void Store_SwapToItem(int client, int swap)
 {
+	if(swap == -1)
+		return;
+	
 #if defined RPG
 	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
 	//TF2Attrib_SetByDefIndex(client, 698, 0.0);
@@ -2992,6 +3006,9 @@ void Store_ApplyAttribs(int client)
 #endif
 	
 #if defined RPG
+
+	Format(c_TagName[client],sizeof(c_TagName[]),"Newbie");
+	i_TagColor[client] =	{255,255,255,255};
 	map.SetValue("26", RemoveExtraHealth(ClassForStats, float(Stats_BaseHealth(client))));
 #endif
 	
@@ -3111,7 +3128,7 @@ void Store_ApplyAttribs(int client)
 							{
 								map.SetValue(buffer1, info.Value[a]);
 							}
-							else if(info.Attrib[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
+							else if(info.Attrib[a] < 0 || info.Attrib[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
 							{
 								map.SetValue(buffer1, value + info.Value[a]);
 							}
@@ -3131,7 +3148,7 @@ void Store_ApplyAttribs(int client)
 							{
 								map.SetValue(buffer1, info.Value2[a]);
 							}
-							else if(info.Attrib2[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
+							else if(info.Attrib2[a] < 0 || info.Attrib2[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
 							{
 								map.SetValue(buffer1, value + info.Value2[a]);
 							}
@@ -3140,6 +3157,21 @@ void Store_ApplyAttribs(int client)
 								map.SetValue(buffer1, value * info.Value2[a]);
 							}
 						}
+					}
+
+					if(info.FuncOnDeploy != INVALID_FUNCTION)
+					{
+						Call_StartFunction(null, info.FuncOnDeploy);
+						Call_PushCell(client);
+						Call_PushCell(-1);
+
+#if defined RPG
+						Call_PushCell(info.Store);
+#else
+						Call_PushCell(-1);
+#endif
+
+						Call_Finish();
 					}
 				}
 #if defined RPG
@@ -3354,6 +3386,11 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	}
 #endif
 
+#if defined RPG
+	Store_GiveItem(client, -2);
+	Store_GiveItem(client, -3);
+#endif
+
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
 		int count;
@@ -3401,7 +3438,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 					}
 
 					Store_GiveItem(client, i, use, found);
-					if(++count > 7)
+					if(++count > 6)
 					{
 						SetGlobalTransTarget(client);
 						PrintToChat(client, "%t", "At Weapon Limit");
@@ -3421,7 +3458,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	}
 
 #if defined RPG
-	Store_GiveItem(client, -2);
+	TextStore_GiveAll(client);
 #endif
 	
 	CheckMultiSlots(client);
@@ -3756,7 +3793,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	{
 		entity = SpawnWeapon(client, "tf_weapon_pistol", 25, 1, 0, {128, 301, 821}, {1.0, 1.0, 1.0}, 3);
 		if(entity > MaxClients)
-			strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Backpack");
+			RequestFrame(SetBackpackName, EntIndexToEntRef(entity));
+	}
+	else if(index == -3)
+	{
+		entity = SpawnWeapon(client, "tf_weapon_pistol", 26, 1, 0, {128, 301, 821}, {1.0, 1.0, 1.0}, 3);
+		if(entity > MaxClients)
+			RequestFrame(SetQuestBookName, EntIndexToEntRef(entity));
 	}
 #endif
 
@@ -4124,9 +4167,27 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		
 		Enable_StarShooter(client, entity);
 #endif
-		
+
+#if defined RPG
+		Stats_SetWeaponStats(client, entity, slot);
+#endif
+
 	}
 	return entity;
+}
+
+public void SetBackpackName(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(entity != INVALID_ENT_REFERENCE)
+		strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Backpack");
+}
+
+public void SetQuestBookName(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(entity != INVALID_ENT_REFERENCE)
+		strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Quest Book");
 }
 
 #if defined ZR

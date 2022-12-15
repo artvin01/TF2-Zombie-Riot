@@ -40,6 +40,11 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Escape_RoundStart();
 	Waves_RoundStart();
 #endif
+
+#if defined RPG
+	Zones_ResetAll();
+	ServerCommand("mp_waitingforplayers_cancel 1");
+#endif
 }
 
 #if defined ZR
@@ -120,6 +125,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		TextStore_DespoitBackpack(client, false);
 #endif
 
+		TF2_RemoveAllWeapons(client); //Remove all weapons. No matter what.
 		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.0);
 		SetVariantString("");
 	  	AcceptEntityInput(client, "SetCustomModel");
@@ -183,8 +189,6 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", true);
 	   		
 	   		b_ThisEntityIgnored[client] = true;
-
-			TF2_RemoveAllWeapons(client);
 			
 	   		int weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword");
 	   		
@@ -335,6 +339,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		{
 			SetAmmo(client, i, CurrentAmmo[client][i]);
 		}
+		UpdateLevelAbovePlayerText(client);
 #endif
 
 	}
@@ -394,6 +399,7 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 
 #if defined RPG
 		TextStore_DespoitBackpack(client, true);
+		UpdateLevelAbovePlayerText(client, true);
 #endif
 
 		Store_WeaponSwitch(client, -1);

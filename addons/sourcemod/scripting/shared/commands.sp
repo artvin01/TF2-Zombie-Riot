@@ -36,7 +36,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 #endif
 
 #if defined RPG
-		Store_OpenItemPage(client);
+		TextStore_Inpsect(client);
 #endif
 
 		return Plugin_Handled;
@@ -67,10 +67,14 @@ public Action OnAutoTeam(int client, const char[] command, int args)
 
 public Action OnBuildCmd(int client, const char[] command, int args)
 {
+#if defined ZR
 	if(client && GameRules_GetProp("m_bInWaitingForPlayers"))
 		return Plugin_Handled;
 		
 	return Plugin_Continue;
+#else
+	return Plugin_Handled;
+#endif
 }
 
 public Action OnDropItem(int client, const char[] command, int args)

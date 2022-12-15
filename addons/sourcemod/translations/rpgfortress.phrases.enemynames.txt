@@ -31,4 +31,12 @@
 	{
 		"en" 		"Heavy Bear Minion"
 	}
+	"Ore Miner"
+	{
+		"en" 		"Ore Miner"
+	}
+	"Headcrab Zombie"
+	{
+		"en" 		"Headcrab Zombie"
+	}
 }
