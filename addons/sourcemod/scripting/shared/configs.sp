@@ -125,6 +125,9 @@ void Config_CreateDescription(const char[] classname, const int[] attrib, const 
 	WeaponData data;
 	int i;
 	int val = WeaponList.Length;
+
+	float damage_Calc;
+	float firerate_Calc;
 	for(; i<val; i++)
 	{
 		WeaponList.GetArray(i, data);
@@ -165,6 +168,7 @@ void Config_CreateDescription(const char[] classname, const int[] attrib, const 
 			{
 				Format(buffer, length, "%s\nDamage: %d", buffer, RoundFloat(data.Damage));
 			}
+
 			
 			for(i=0; i<attribs; i++)
 			{
@@ -175,6 +179,9 @@ void Config_CreateDescription(const char[] classname, const int[] attrib, const 
 			i = RoundFloat(data.Pellets);
 			if(i != 1)
 				Format(buffer, length, "%sx%d", buffer, i);
+
+
+			damage_Calc = data.Damage * data.Pellets;
 		}
 	}
 	
@@ -188,6 +195,7 @@ void Config_CreateDescription(const char[] classname, const int[] attrib, const 
 		}
 		
 		Format(buffer, length, "%s\nFire Rate: %.3fs", buffer, data.FireRate);
+		firerate_Calc = data.FireRate;
 	}
 	
 	// Clip and Ammo
@@ -381,6 +389,15 @@ void Config_CreateDescription(const char[] classname, const int[] attrib, const 
 		}
 		
 		Format(buffer, length, "%s\nRange: x%.2f", buffer, data.Range);
+	}
+
+	if(damage_Calc)
+	{
+		float damagepersecond;
+
+		damagepersecond = damage_Calc / firerate_Calc;
+
+		Format(buffer, length, "%s\nDPS: %1.f", buffer, damagepersecond);
 	}
 }
 

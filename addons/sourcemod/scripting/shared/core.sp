@@ -60,6 +60,7 @@
 
 public const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 
+ConVar CvarRPGInfiniteLevelAndAmmo;
 ConVar CvarDisableThink;
 ConVar CvarMaxBotsForKillfeed;
 ConVar CvarXpMultiplier;

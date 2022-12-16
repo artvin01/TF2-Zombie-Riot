@@ -199,6 +199,14 @@ public void Wand_Base_StartTouch(int entity, int other)
 		case 1:
 		{
 			Want_DefaultWandTouch(entity, target);
+		}
+		case 2:
+		{
+			Want_LightningTouch(entity, target);
+		}
+		case 4:
+		{
+			Want_FireWandTouch(entity, target);
 		}	
 	}
 #endif

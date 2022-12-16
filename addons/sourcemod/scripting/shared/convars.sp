@@ -80,6 +80,7 @@ void ConVar_PluginStart()
 	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
 	CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "8", "The maximum amount of blue bots allowed for the killfeed and more");
 	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
+	CvarRPGInfiniteLevelAndAmmo = CreateConVar("rpg_debug_store", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 	
 	AutoExecConfig(true, "zombie_riot");
 	
