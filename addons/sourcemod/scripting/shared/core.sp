@@ -513,6 +513,7 @@ Handle g_hSDKWorldSpaceCenter;
 Handle g_hStudio_FindAttachment;
 Handle g_hGetAttachment;
 Handle g_hAddGesture;
+Handle g_hAddGestureSequence;
 Handle g_hRemoveGesture;
 Handle g_hRestartGesture;
 Handle g_hRestartSequence;

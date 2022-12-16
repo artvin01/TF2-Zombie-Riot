@@ -1613,6 +1613,16 @@ methodmap CClotBody
 			SDKCall(g_hAddGesture, this.index, iSequence, true);
 		}
 	}
+	public void AddGestureViaSequence(const char[] anim, bool cancel_animation = true)
+	{
+		int iSequence;
+		iSequence = this.LookupSequence(anim);
+
+		if(iSequence < 0)
+			return;
+			
+		SDKCall(g_hAddGestureSequence, this.index, iSequence, true);
+	}
 	public void AddActivityViaSequence(const char[] anim)
 	{
 		int iSequence;
@@ -1907,7 +1917,7 @@ methodmap CClotBody
 		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * DistanceOffsetInfront;
 		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * DistanceOffsetInfront;
 	}
-	public int SpawnShield(float duration, char[] model, float position_offset)
+	public int SpawnShield(float duration, char[] model, float position_offset, bool parent = true)
 	{
 
 		float eyePitch[3];
@@ -1927,15 +1937,20 @@ methodmap CClotBody
 			DispatchSpawn(entity);
 			TeleportEntity(entity, absorigin, eyePitch, NULL_VECTOR, true);
 			SetEntProp(entity, Prop_Send, "m_fEffects", EF_PARENT_ANIMATES);
+			
+			b_ThisEntityIgnored[entity] = true;
 
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 1600.0);
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 1800.0);
 
-			SetVariantString("!activator");
-			AcceptEntityInput(entity, "SetParent", this.index);
+			if(parent)
+			{
+				SetVariantString("!activator");
+				AcceptEntityInput(entity, "SetParent", this.index);
 
-			SetVariantString("");
-			AcceptEntityInput(entity, "SetParentAttachmentMaintainOffset"); 	
+				SetVariantString("");
+				AcceptEntityInput(entity, "SetParentAttachmentMaintainOffset"); 	
+			}
 		}
 		CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		return entity;
@@ -2598,6 +2613,13 @@ public void NPC_Base_InitGamedata()
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
 	if((g_hAddGesture = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimatingOverlay::AddGesture");
 
+	//CBaseAnimatingOverlay::AddGesture( Activity activity, bool autokill )
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimatingOverlay::AddGestureSequence");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain); 
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	if((g_hAddGestureSequence = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimatingOverlay::AddGestureSequence");
 
 	//CBaseAnimatingOverlay::RemoveGesture( Activity activity )
 	StartPrepSDKCall(SDKCall_Entity);

@@ -95,6 +95,10 @@ static char g_RangedReloadSound[][] = {
 	"weapons/shotgun/shotgun_reload1.wav",
 };
 
+static const char g_RangedSpecialAttackSoundsSecondary[][] = {
+	"weapons/medi_shield_deploy.wav",
+};
+
 static char gGlow1;
 static char gExplosive1;
 static char gLaser1;
@@ -113,6 +117,7 @@ public void EnemyFatherGrigori_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_RangedSpecialAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedSpecialAttackSoundsSecondary[i]);	}
 	
 	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
@@ -127,7 +132,7 @@ public void EnemyFatherGrigori_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 
-	PrecacheModel("models/props_mvm/mvm_player_shield.mdl");
+	PrecacheModel("models/props_mvm/mvm_player_shield2.mdl");
 }
 
 methodmap EnemyFatherGrigori < CClotBody
@@ -206,6 +211,10 @@ methodmap EnemyFatherGrigori < CClotBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 	}	
+	public void PlayRangedSpecialAttackSecondarySound()
+	{
+		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedSpecialAttackSoundsSecondary) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+	}
 	public EnemyFatherGrigori(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		EnemyFatherGrigori npc = view_as<EnemyFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "300", ally, false,_,_,_,_));
@@ -297,7 +306,6 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 		speed = 120.0;
 	}
 	Npc_Base_Thinking(iNPC, 500.0, "Walk_aiming_all", "ACT_IDLE", speed, gameTime, true, false);
-
 	if(npc.m_flJumpCooldown)
 	{
 		if(npc.m_flJumpCooldown < gameTime)
@@ -305,6 +313,51 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 			npc.m_flJumpCooldown = 0.0;
 			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 255, 255, 255, 255);		
+		}
+	}
+
+	if(npc.m_flNextRangedBarrage_Singular)
+	{
+		if(npc.m_flNextRangedBarrage_Singular < gameTime)
+		{
+			npc.m_flNextRangedBarrage_Singular = 0.0;
+			static float victimPos[3];
+			static float partnerPos[3];
+			GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", partnerPos);
+			spawnRing_Vectors(partnerPos, /*RANGE*/ 250 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, /*DURATION*/ 0.4, 6.0, 0.1, 1, 1.0);
+				
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if (IsClientInGame(client))
+				{				
+					GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", victimPos); 
+						
+					//from 
+					//https://github.com/Batfoxkid/FF2-Library/blob/edited/addons/sourcemod/scripting/freaks/ff2_sarysamods9.sp
+					float Distance = GetVectorDistance(victimPos, partnerPos);
+					if(Distance < 1250)
+					{				
+						static float angles[3];
+						GetVectorAnglesTwoPoints(victimPos, partnerPos, angles);
+
+						if (GetEntityFlags(client) & FL_ONGROUND)
+							angles[0] = 0.0; // toss out pitch if on ground
+
+						static float velocity[3];
+						GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+						float attraction_intencity = 2.0;
+						ScaleVector(velocity, Distance * attraction_intencity);
+										
+										
+						// min Z if on ground
+						if (GetEntityFlags(client) & FL_ONGROUND)
+							velocity[2] = fmax(325.0, velocity[2]);
+									
+						// apply velocity
+						TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);       
+					}
+				}
+			}	
 		}
 	}
 
@@ -393,6 +446,20 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 			}
 		}
 	}
+	if(npc.m_flNextRangedSpecialAttackHappens)
+	{
+		if(IsValidEnemy(npc.index, npc.m_iTarget))
+		{
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+			npc.FaceTowards(vecTarget, 30000.0);
+			if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
+			{
+				npc.m_iWearable5 = npc.SpawnShield(6.0, "models/props_mvm/mvm_player_shield2.mdl",80.0, false);
+				npc.PlayRangedSpecialAttackSecondarySound();
+				npc.m_flNextRangedSpecialAttackHappens = 0.0;
+			}
+		}
+	}
 
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -419,6 +486,10 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
+		}
+		else if(flDistanceToTarget > Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0, 2.0) && npc.m_flNextRangedSpecialAttack < gameTime)
+		{
+			npc.m_iState = 5; //Deploy shield.
 		}
 		else if(flDistanceToTarget > Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0, 2.0) && npc.m_flNextTeleport < gameTime && npc.m_iOverlordComboAttack >= 3)
 		{
@@ -572,63 +643,70 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 					npc.m_iTarget = Enemy_I_See;
 					if(npc.m_flAttackHappens_bullshit > gameTime)
 					{
-						npc.m_flNextTeleport = gameTime + 3.0;
+						npc.m_flNextTeleport = gameTime + 10.0;
 					}
 					else
 					{
-						npc.m_flNextTeleport = gameTime + 10.0;
+						npc.m_flNextTeleport = gameTime + 15.0;
+					}
+
+					npc.AddGestureViaSequence("g_Raise_Gun_Settle");
+
+					npc.m_flDoingAnimation = gameTime + 2.0;
+					npc.m_bisWalking = true;
+					if(npc.m_iChanged_WalkCycle != 4) 	
+					{
+						npc.m_iChanged_WalkCycle = 4;
+						npc.AddActivityViaSequence("Walk_aiming_all");
 					}
 					FatherGrigori_IOC_Invoke(EntIndexToEntRef(npc.index), npc.m_iTarget);
-				}			
+				}
 			}
 			case 4:
 			{
 				if(npc.m_flAttackHappens_bullshit > gameTime)
 				{
-					npc.m_flNextRangedBarrage_Spam = gameTime + 5.0;
+					npc.m_flNextRangedBarrage_Spam = gameTime + 10.0;
 				}
 				else
 				{
 					npc.m_flNextRangedBarrage_Spam = gameTime + 15.0;
 				}
-				
-				static float victimPos[3];
-				static float partnerPos[3];
-				GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", partnerPos);
-				spawnRing_Vectors(partnerPos, /*RANGE*/ 250 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, /*DURATION*/ 0.4, 6.0, 0.1, 1, 1.0);
-				
-				for(int client = 1; client <= MaxClients; client++)
+				npc.m_flNextRangedBarrage_Singular = gameTime + 0.8;
+
+				npc.AddGestureViaSequence("g_High_Chop");
+				npc.m_bisWalking = true;
+				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
-					if (IsClientInGame(client))
-					{				
-						GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", victimPos); 
-						
-						//from 
-						//https://github.com/Batfoxkid/FF2-Library/blob/edited/addons/sourcemod/scripting/freaks/ff2_sarysamods9.sp
-						float Distance = GetVectorDistance(victimPos, partnerPos);
-						if(Distance < 1250)
-						{				
-							static float angles[3];
-							GetVectorAnglesTwoPoints(victimPos, partnerPos, angles);
-
-							if (GetEntityFlags(client) & FL_ONGROUND)
-								angles[0] = 0.0; // toss out pitch if on ground
-
-							static float velocity[3];
-							GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
-							float attraction_intencity = 2.0;
-							ScaleVector(velocity, Distance * attraction_intencity);
-										
-										
-							// min Z if on ground
-							if (GetEntityFlags(client) & FL_ONGROUND)
-								velocity[2] = fmax(325.0, velocity[2]);
-										
-							// apply velocity
-							TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);       
-						}
-					}
+					npc.m_iChanged_WalkCycle = 4;
+					npc.AddActivityViaSequence("Walk_aiming_all");
 				}
+				npc.m_flDoingAnimation = gameTime + 2.0;
+				npc.m_bisWalking = true;
+				npc.SetPlaybackRate(2.0);
+			}
+			case 5:
+			{
+				if(npc.m_flAttackHappens_bullshit > gameTime)
+				{
+					npc.m_flNextRangedSpecialAttack = gameTime + 10.0;
+				}
+				else
+				{
+					npc.m_flNextRangedSpecialAttack = gameTime + 15.0;
+				}
+				npc.m_flNextRangedSpecialAttackHappens = gameTime + 1.0;
+
+				npc.AddGestureViaSequence("g_Presenting");
+
+				if(npc.m_iChanged_WalkCycle != 5) 	//Stand still.
+				{
+					npc.m_iChanged_WalkCycle = 5;
+					npc.SetActivity("ACT_IDLE");
+				}
+				npc.m_bisWalking = false;
+				npc.SetPlaybackRate(1.0);
+				npc.m_flDoingAnimation = gameTime + 2.0;
 			}
 		}
 	}
@@ -698,7 +776,7 @@ public void EnemyFatherGrigori_OnTakeDamagePost(int victim, int attacker, int in
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 2.0;
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
-		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 15.0;
+		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 30.0;
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.0; //Take way less damage for 5 seconds.
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 100, 100, 255);
