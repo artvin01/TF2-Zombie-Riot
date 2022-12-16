@@ -327,7 +327,7 @@ public void FastZombie_ClotThink(int iNPC)
 							
 							float vecHit[3];
 							TR_GetEndPosition(vecHit, swingTrace);
-							float damage = 1.0;
+							float damage = 35.0;
 
 							npc.PlayMeleeHitSound();
 							if(target > 0) 
