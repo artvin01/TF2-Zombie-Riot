@@ -3999,12 +3999,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						{
 							for(int a; a<info.Attribs; a++)
 							{
+#if defined RPG
 								if(info.Attrib[a] < 0)
 								{
 									Stats_GetCustomStats(entity, info.Attrib[a], info.Value[a]);
 									continue;
 								}
-
+#endif
 								bool ignore_rest = false;
 								Address address = TF2Attrib_GetByDefIndex(entity, info.Attrib[a]);
 								if(address == Address_Null)
@@ -4067,12 +4068,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						{
 							for(int a; a<info.Attribs2; a++)
 							{
+#if defined RPG
 								if(info.Attrib2[a] < 0)
 								{
 									Stats_GetCustomStats(entity, info.Attrib2[a], info.Value2[a]);
 									continue;
 								}
-
+#endif
 								bool ignore_rest = false;
 								Address address = TF2Attrib_GetByDefIndex(entity, info.Attrib2[a]);
 								if(address == Address_Null)
@@ -4183,6 +4185,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	return entity;
 }
 
+#if defined RPG
 public void SetBackpackName(int ref)
 {
 	int entity = EntRefToEntIndex(ref);
@@ -4196,6 +4199,7 @@ public void SetQuestBookName(int ref)
 	if(entity != INVALID_ENT_REFERENCE)
 		strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Quest Book");
 }
+#endif
 
 #if defined ZR
 int Store_GiveSpecificItem(int client, const char[] name)

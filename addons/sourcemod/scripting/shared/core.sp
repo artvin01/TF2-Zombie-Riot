@@ -508,12 +508,15 @@ Handle g_hLookupPoseParameter;
 Handle g_hSetPoseParameter;
 Handle g_hGetPoseParameter;
 Handle g_hLookupActivity;
+Handle g_hLookupSequence;
 Handle g_hSDKWorldSpaceCenter;
 Handle g_hStudio_FindAttachment;
 Handle g_hGetAttachment;
 Handle g_hAddGesture;
+Handle g_hAddGestureSequence;
 Handle g_hRemoveGesture;
 Handle g_hRestartGesture;
+Handle g_hRestartSequence;
 Handle g_hIsPlayingGesture;
 Handle g_hFindBodygroupByName;
 Handle g_hSetBodyGroup;
@@ -868,6 +871,7 @@ int i_PoseMoveY[MAXENTITIES];
 //Arrays for npcs!
 bool b_bThisNpcGotDefaultStats_INVERTED[MAXENTITIES];
 float b_isGiantWalkCycle[MAXENTITIES];
+float f_NpcHasBeenUnstuckAboveThePlayer[MAXENTITIES];
 
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 int i_CreditsOnKill[MAXENTITIES];
@@ -2047,7 +2051,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SDKHook(entity, SDKHook_SpawnPost, ApplyExplosionDhook_Fireball);
 			#if defined ZR
-			SDKHook(entity, SDKHook_SpawnPost, Wand_Necro_Spell);Delete_instantly
+			SDKHook(entity, SDKHook_SpawnPost, Wand_Necro_Spell);
 			SDKHook(entity, SDKHook_SpawnPost, Wand_Calcium_Spell);
 			#endif
 			npc.bCantCollidie = true;

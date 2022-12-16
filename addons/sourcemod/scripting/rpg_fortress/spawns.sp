@@ -284,6 +284,9 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 					SetEntProp(entity, Prop_Data, "m_iHealth", health);
 				}
 				Apply_Text_Above_Npc(entity,strength, health);
+
+				b_npcspawnprotection[entity] = true;
+				CreateTimer(2.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 			}
 		}
 	}
@@ -335,7 +338,14 @@ void Spawns_NPCDeath(int entity, int client)
 	if(xp < 0)
 		xp = Level[entity];
 	
-	GiveXP(client, xp);
+	for(int target = 1; target <= MaxClients; target++)
+	{
+		if(client == target || Party_IsClientMember(client, target))
+		{
+			if((Level[client] - 5) < Level[entity] && (Level[client] + 5) > Level[entity] && GetLevelCap(Tier[client]) != Level[client])
+				GiveXP(client, xp);
+		}
+	}
 
 	static float pos[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);

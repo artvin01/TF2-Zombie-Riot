@@ -243,7 +243,7 @@ methodmap CClotBody
 			SetEntProp(npc, Prop_Send, "m_iTeamNum", TFTeam_Blue);
 		}
 		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
-		
+		b_NpcHasDied[npc] = false;
 		DispatchSpawn(npc); //Do this at the end :)
 
 #if defined RPG
@@ -1588,9 +1588,19 @@ methodmap CClotBody
 			
 		return SDKCall(g_hLookupActivity, pStudioHdr, activity);
 	}
+	public int LookupSequence(const char[] sequence)
+	{
+		Address pStudioHdr = this.GetModelPtr();
+		if(pStudioHdr == Address_Null)
+			return -1;
+			
+		return SDKCall(g_hLookupSequence, pStudioHdr, sequence);
+	}
 	public void AddGesture(const char[] anim, bool cancel_animation = true)
 	{
-		int iSequence = this.LookupActivity(anim);
+		int iSequence;
+		iSequence = this.LookupActivity(anim);
+
 		if(iSequence < 0)
 			return;
 			
@@ -1603,6 +1613,30 @@ methodmap CClotBody
 			SDKCall(g_hAddGesture, this.index, iSequence, true);
 		}
 	}
+	public void AddGestureViaSequence(const char[] anim, bool cancel_animation = true)
+	{
+		int iSequence;
+		iSequence = this.LookupSequence(anim);
+
+		if(iSequence < 0)
+			return;
+			
+		SDKCall(g_hAddGestureSequence, this.index, iSequence, true);
+	}
+	public void AddActivityViaSequence(const char[] anim)
+	{
+		int iSequence;
+		iSequence = this.LookupSequence(anim);
+
+		if(iSequence < 0)
+			return;
+		
+		SDKCall(g_hRestartSequence, this.index, iSequence);
+		this.SetPlaybackRate(1.0);
+		this.SetCycle(0.0);
+	
+		this.ResetSequenceInfo();	
+	}
 	public void RemoveGesture(const char[] anim)
 	{
 		int iSequence = this.LookupActivity(anim);
@@ -1611,9 +1645,10 @@ methodmap CClotBody
 			
 		SDKCall(g_hRemoveGesture, this.index, iSequence);
 	}
-	public void SetActivity(const char[] animation)
+	public void SetActivity(const char[] animation, bool Is_sequence = false)
 	{
-		int activity = this.LookupActivity(animation);
+		int activity;
+		activity = this.LookupActivity(animation);
 		if(activity > 0 && activity != this.m_iState)
 		{
 			this.m_iState = activity;
@@ -1882,7 +1917,7 @@ methodmap CClotBody
 		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * DistanceOffsetInfront;
 		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * DistanceOffsetInfront;
 	}
-	public int SpawnShield(float duration, char[] model, float position_offset)
+	public int SpawnShield(float duration, char[] model, float position_offset, bool parent = true)
 	{
 
 		float eyePitch[3];
@@ -1902,15 +1937,20 @@ methodmap CClotBody
 			DispatchSpawn(entity);
 			TeleportEntity(entity, absorigin, eyePitch, NULL_VECTOR, true);
 			SetEntProp(entity, Prop_Send, "m_fEffects", EF_PARENT_ANIMATES);
+			
+			b_ThisEntityIgnored[entity] = true;
 
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 1600.0);
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 1800.0);
 
-			SetVariantString("!activator");
-			AcceptEntityInput(entity, "SetParent", this.index);
+			if(parent)
+			{
+				SetVariantString("!activator");
+				AcceptEntityInput(entity, "SetParent", this.index);
 
-			SetVariantString("");
-			AcceptEntityInput(entity, "SetParentAttachmentMaintainOffset"); 	
+				SetVariantString("");
+				AcceptEntityInput(entity, "SetParentAttachmentMaintainOffset"); 	
+			}
 		}
 		CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		return entity;
@@ -2573,6 +2613,14 @@ public void NPC_Base_InitGamedata()
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
 	if((g_hAddGesture = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimatingOverlay::AddGesture");
 
+	//CBaseAnimatingOverlay::AddGesture( Activity activity, bool autokill )
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimatingOverlay::AddGestureSequence");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain); 
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	if((g_hAddGestureSequence = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimatingOverlay::AddGestureSequence");
+
 	//CBaseAnimatingOverlay::RemoveGesture( Activity activity )
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimatingOverlay::RemoveGesture");
@@ -2580,7 +2628,13 @@ public void NPC_Base_InitGamedata()
 	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_Plain);
 	if((g_hRemoveGesture = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimatingOverlay::RemoveGesture");
 
-	
+
+	//CBaseAnimatingOverlay::ResetSequence( int sequence? )
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::ResetSequence");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	if((g_hRestartSequence = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::ResetSequence");
+		
 	//( Activity activity, bool addifmissing /*=true*/, bool autokill /*=true*/ )
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimatingOverlay::RestartGesture");
@@ -2621,6 +2675,15 @@ public void NPC_Base_InitGamedata()
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);		//label
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return index
 	if((g_hLookupActivity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for LookupActivity");
+
+
+	
+	StartPrepSDKCall(SDKCall_Static);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "LookupSequence");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);		//label
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return index
+	if((g_hLookupSequence = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for LookupSequence");
 	
 	
 	//-----------------------------------------------------------------------------
@@ -4574,6 +4637,7 @@ public void Check_If_Stuck(int iNPC)
 						SDKCall_SetLocalOrigin(iNPC, flMyPos_2);	
 						TeleportEntity(iNPC, flMyPos_2, NULL_VECTOR, { 0.0, 0.0, 0.0 }); //Reset their speed
 						npc.SetVelocity({ 0.0, 0.0, 0.0 });
+						f_NpcHasBeenUnstuckAboveThePlayer[iNPC] = GetGameTime() + 1.0; //Make the npc immortal! This will prevent abuse of stuckspots.
 					}
 					else
 					{
@@ -4693,7 +4757,6 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 		return Plugin_Handled;
 	}
 	*/
-	
 	CClotBody npc = view_as<CClotBody>(victim);
 	npc.m_vecpunchforce(damageForce, true);
 	npc.m_bGib = false;
@@ -6396,7 +6459,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f3_SpawnPosition[entity][2] = 0.0;
 	hFromSpawnerIndex[entity] = -1;
 #endif
-	
+	f_NpcHasBeenUnstuckAboveThePlayer[entity] = 0.0;
 	i_NoEntityFoundCount[entity] = 0;
 	f3_CustomMinMaxBoundingBox[entity][0] = 0.0;
 	f3_CustomMinMaxBoundingBox[entity][1] = 0.0;
@@ -7020,3 +7083,4 @@ public void KillNpc(int ref)
 		SDKHooks_TakeDamage(entity, 0, 0, 99999999.9);
 	}
 }
+
