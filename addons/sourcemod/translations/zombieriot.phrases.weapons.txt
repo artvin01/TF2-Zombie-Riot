@@ -847,7 +847,7 @@
 	{
 		"en"        "Buildable Village"
 		"ru"        "Возведение деревни"
-		"chi"       "建筑升级器"
+		"chi"       "村庄"
 	}
 	"Chooseable Buildings (Only one)"
 	{
@@ -2022,13 +2022,13 @@
 	{
 	     "en"       "Bigger Radius"
 		 "ru"       "Увеличенный радиус"
-	     "chi"       "更大的范围"
+	     "chi"       "提高影响范围"
 	}
 	"Jungle Drums"
 	{
 	     "en"       "Jungle Drums"
 		 "ru"       "Барабаны джунглей"
-	     "chi"       "更快的速度"
+	     "chi"       "提高附近攻速"
 	}
 	"Grow Blocker"
 	{
