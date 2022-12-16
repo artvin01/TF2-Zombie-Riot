@@ -126,9 +126,27 @@ enum struct WeaponEnum
 	int Store;
 	int Owner;
 	int XP;
+	int Level;
 
 	int Perks[TINKER_CAP];
 	int PerkCount;
+
+	int Tier()
+	{
+		int tier = XpToLevel(this.XP * 5);
+		if(tier >= sizeof(TierName))
+			tier = sizeof(TierName) - 1;
+		
+		return tier;
+	}
+	int XpToNextTier()
+	{
+		int tier = XpToLevel(this.XP * 5) + 1;
+		if(tier >= sizeof(TierName))
+			return 0;
+		
+		return LevelToXp(tier) / 5;
+	}
 }
 
 static ArrayList TinkerList;
@@ -172,4 +190,13 @@ void Tinker_ConfigSetup(KeyValues map)
 
 	if(kv != map)
 		delete kv;
+}
+
+void Tinker_EquipItem(int client, KeyValues &kv, int index, const char[] name, bool auto)
+{
+	if(index < 0)
+	{
+		static char data[512];
+		TextStore_GetItemData(index, data, sizeof(data));
+	}
 }
