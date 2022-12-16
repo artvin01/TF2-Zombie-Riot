@@ -435,7 +435,6 @@ methodmap Blitzkrieg < CClotBody
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 125, 100, 100, 255);
 		
-		
 		//IDLE
 		npc.m_flSpeed = fl_move_speed[npc.index];
 		
@@ -448,7 +447,17 @@ methodmap Blitzkrieg < CClotBody
 		i_maxfirerockets[npc.index] = 20;	//blitz's max ammo, this number changes on lifeloss.
 		i_final_nr[npc.index] = 0;	//used for logic in blitzlight, basicaly locks out stuff so it doesn't repeat the ability.
 		
-		fl_blitzscale[npc.index] = RaidModeScaling;	//Storage for current raidmode scaling to use for calculating blitz's health scaling.
+		//adjust the "/4.0" to adjust how hard raid scaling happens. however be warned that on high player counts/waves blitz's scaling can scale extremely highly. 
+		fl_blitzscale[npc.index] = (RaidModeScaling/4.0)*zr_smallmapbalancemulti.FloatValue;	//Storage for current raidmode scaling to use for calculating blitz's health scaling.
+		fl_blitzscale[npc.index] *= 60/i_currentwave[npc.index]; //and now we do extra math to make sure blitz's scaling doesn't go to the moon on later waves.
+		
+		/*
+		Original scaling is divided by 4, the multiplied by the numbers bellow.
+		4x	Wave 15, origami scaling x4.
+		3x	wave 30, original scaling x3.
+		2x  wave 45, original scaling x2. | Asuming wave 45, 6 players. scaling=((7.2/4)*60/45)*(1.0+(1-(Health/MaxHealth))*1.22) | The entire scaling.
+		1x	wave 60, orginial.
+		*/
 		
 		b_BlitzLight[npc.index]=false;			//First stage of blitzlight, blocks health scaling.
 		b_BlitzLight_used[npc.index]=false;		//Tell's the npc that blitzlight has been used, and blocks it from being used again.
@@ -903,7 +912,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		{
 			RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth)));
 			i_HealthScale[npc.index]=fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth)));
-			fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.4;
+			fl_rocket_firerate[npc.index]=((Health/MaxHealth)-0.4)/zr_smallmapbalancemulti.FloatValue;
 			if(fl_rocket_firerate[npc.index]<=0.3)//This limits the firerate of the npc.
 			{
 				fl_rocket_firerate[npc.index]=0.3;
@@ -913,7 +922,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		{
 			RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.1);
 			i_HealthScale[npc.index]=fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.1);
-			fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.5;
+			fl_rocket_firerate[npc.index]=((Health/MaxHealth)-0.5)/zr_smallmapbalancemulti.FloatValue;
 			if(fl_rocket_firerate[npc.index]<=0.25)//This limits the firerate of the npc.
 			{
 				fl_rocket_firerate[npc.index]=0.25;
@@ -923,7 +932,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		{
 			RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.22);
 			i_HealthScale[npc.index]=fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.22);
-			fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.75;
+			fl_rocket_firerate[npc.index]=((Health/MaxHealth)-0.75)/zr_smallmapbalancemulti.FloatValue;
 			if(fl_rocket_firerate[npc.index]<=0.075)//This limits the firerate of the npc.
 			{
 				fl_rocket_firerate[npc.index]=0.075;
@@ -933,7 +942,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		{
 			RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.3);
 			i_HealthScale[npc.index]=fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.3);
-			fl_rocket_firerate[npc.index]=(Health/MaxHealth)-0.85;
+			fl_rocket_firerate[npc.index]=((Health/MaxHealth)-0.85)/zr_smallmapbalancemulti.FloatValue;
 			if(fl_rocket_firerate[npc.index]<=0.01)	//This limits the firerate of the npc. In this case its used to make sure it doesn't go negative or not to reach server crashing levels of firerate.
 			{
 				fl_rocket_firerate[npc.index]=0.01;
@@ -1147,7 +1156,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	}
 	if(i_currentwave[npc.index]>=45 && !b_allies[npc.index] && (b_life2[npc.index] || b_life3[npc.index]))
-	{	//This system is used to spawn minnions depending on wave and life.
+	{	//This system is used to spawn minnions depending on wave and life. Also almost everything here is hard coded to waves meaning they won't on other waves.
 		b_allies[npc.index]=true;
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
@@ -1155,11 +1164,12 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		{
 			CPrintToChatAll("{crimson}Blitzkrieg{default}: The brothers have joined the battle.");
 		}
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-		int heck;
+		int dahp = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		float maxhealth = 1.0*dahp;
+		float heck;
 		int spawn_index;
 		heck= maxhealth;
-		maxhealth=heck/10;
+		maxhealth=(heck/10)*zr_smallmapbalancemulti.FloatValue;
 		spawn_index = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 		if(spawn_index > MaxClients)	//Currently always spawns.
 		{
@@ -1179,7 +1189,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		if(i_currentwave[npc.index]>=60)	//Only spawns if the wave is 60 or beyond.
 		{
 			CPrintToChatAll("{crimson}Blitzkrieg{default}: The brothers have been reborn.");
-			maxhealth=heck/5;	//mid squishy
+			maxhealth=(heck/5)*zr_smallmapbalancemulti.FloatValue;	//mid squishy
 			spawn_index = Npc_Create(ALT_DONNERKRIEG, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 			if(spawn_index > MaxClients)
 			{
@@ -1187,7 +1197,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}
-			maxhealth=heck/2;	//the tankiest
+			maxhealth=(heck/2)*zr_smallmapbalancemulti.FloatValue;	//the tankiest
 			spawn_index = Npc_Create(ALT_SCHWERTKRIEG, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 			if(spawn_index > MaxClients)
 			{
@@ -1424,7 +1434,7 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 				alpha=2.75;
 			}
 			
-			makeexplosion(client, client, startPosition, "", RoundToCeil(225*alpha), 350);
+			makeexplosion(client, client, startPosition, "", RoundToCeil((225*alpha)*zr_smallmapbalancemulti.FloatValue), 350);
 				
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
@@ -1555,13 +1565,14 @@ public void BlitzLight_Invoke(int ref, int enemy, float timer, float charge)
 		float vecTarget[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", vecTarget);
 		
-		BlitzLight_Duration[npc.index] = timer;
+		float smallmap = zr_smallmapbalancemulti.FloatValue;	//Nerf's blitzlight on small maps. this is set in another plugin from this one
+		BlitzLight_Duration[npc.index] = timer*smallmap;
 		BlitzLight_ChargeTime[npc.index] = charge;
-		BlitzLight_Scale1[npc.index] = 200.0;	//Best to do the scales in sets of numbers.
-		BlitzLight_Scale2[npc.index] = 400.0;
-		BlitzLight_Scale3[npc.index] = 600.0;
-		BlitzLight_DMG_Base[npc.index] = 40.0;	//dmg is multiplied by duration, half duration is 1.5, near end of duration its almost 2x. it also does dmg 2 times a second.
-		BlitzLight_Radius[npc.index] = 200.0;	//Best to set radius as the same different of numbers when going up from scale 1, to 2. in this case scale goes up by 200 each time, so radius is 200.
+		BlitzLight_Scale1[npc.index] = 200.0*smallmap;	//Best to do the scales in sets of numbers.
+		BlitzLight_Scale2[npc.index] = 400.0*smallmap;
+		BlitzLight_Scale3[npc.index] = 600.0*smallmap;
+		BlitzLight_DMG_Base[npc.index] = 40.0*smallmap;	//dmg is multiplied by duration, half duration is 1.5, near end of duration its almost 2x. it also does dmg 2 times a second.
+		BlitzLight_Radius[npc.index] = 200.0*smallmap;	//Best to set radius as the same different of numbers when going up from scale 1, to 2. in this case scale goes up by 200 each time, so radius is 200.
 		BlitzLight_Duration_notick[npc.index] = GetGameTime(npc.index) + charge;	//Charge time.
 		
 		float time=BlitzLight_Duration[npc.index]+charge;	//Another value in a temp timer.

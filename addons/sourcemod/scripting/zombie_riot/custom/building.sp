@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-
-static const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 /*
 	Placement Type
 	static Handle SyncHud_Notifaction;
@@ -100,9 +98,9 @@ static int Village_TierExists[3];
 static int Beam_Laser;
 static int Beam_Glow;
 
-int i_HasMarker[MAXTF2PLAYERS];
+static int i_HasMarker[MAXTF2PLAYERS];
 
-float f_MarkerPosition[MAXTF2PLAYERS][3];
+static float f_MarkerPosition[MAXTF2PLAYERS][3];
 
 static Handle h_Pickup_Building[MAXPLAYERS + 1];
 
@@ -161,8 +159,6 @@ static int i_HasSentryGunAlive[MAXTF2PLAYERS]={-1, ...};
 
 static bool Building_cannot_be_repaired[MAXENTITIES]={false, ...};
 
-
-static float Building_Collect_Cooldown[MAXENTITIES][MAXTF2PLAYERS];
 static float Building_Sentry_Cooldown[MAXTF2PLAYERS];
 
 static int i_MachineJustClickedOn[MAXTF2PLAYERS];
@@ -3298,7 +3294,7 @@ public void BuildingMortarAction(int client, int mortar)
 	GetClientEyeAngles(client, eyeAng);
 	
 	b_LagCompNPC_No_Layers = true;
-	StartLagCompensation_Base_Boss(client, false);
+	StartLagCompensation_Base_Boss(client);
 	
 	Handle trace = TR_TraceRayFilterEx(eyePos, eyeAng, MASK_SHOT, RayType_Infinite, TraceEntityFilterPlayer);
 	
@@ -3752,7 +3748,7 @@ static void Railgun_Boom_Client(int client)
 			hullMax[0] = -hullMin[0];
 			hullMax[1] = -hullMin[1];
 			hullMax[2] = -hullMin[2];
-			StartLagCompensation_Base_Boss(client, false);
+			StartLagCompensation_Base_Boss(client);
 			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 			CloseHandle(trace);
 			FinishLagCompensation_Base_boss();

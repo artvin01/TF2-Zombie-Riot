@@ -373,7 +373,7 @@ static void TBB_Tick(int client)
 		hullMax[1]             = -hullMin[1];
 		hullMax[2]             = -hullMin[2];
 		b_LagCompNPC_No_Layers = true;
-		StartLagCompensation_Base_Boss(client, false);
+		StartLagCompensation_Base_Boss(client);
 		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BeamWand_TraceUsers, client);    // 1073741824 is CONTENTS_LADDER?
 		CloseHandle(trace);
 		FinishLagCompensation_Base_boss();

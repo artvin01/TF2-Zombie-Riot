@@ -8,9 +8,9 @@ static DynamicHook g_Particle_cannon_2nd_fire;
 
 public void OnPluginStartMangler()
 {
-	GameData gamedata = new GameData("rpg_fortress");
+	GameData gamedata = new GameData("zombie_riot");
 	if (gamedata == null)
-		SetFailState("Could not find rpg_fortress gamedata");
+		SetFailState("Could not find zombie_riot gamedata");
 	
 	g_Particle_cannon_2nd_fire = DynamicHook.FromConf(gamedata, "CTFParticleCannon::FireChargedShot");
 	
@@ -329,7 +329,7 @@ static void TBB_Tick(int client)
 		hullMax[1] = -hullMin[1];
 		hullMax[2] = -hullMin[2];
 		b_LagCompNPC_No_Layers = true;
-		StartLagCompensation_Base_Boss(client, false);
+		StartLagCompensation_Base_Boss(client);
 		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 		CloseHandle(trace);
 		FinishLagCompensation_Base_boss();

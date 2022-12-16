@@ -78,7 +78,6 @@ public void XenoCombineDeutsch_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
-	InitNavGamedata();
 }
 
 methodmap XenoCombineDeutsch < CClotBody
