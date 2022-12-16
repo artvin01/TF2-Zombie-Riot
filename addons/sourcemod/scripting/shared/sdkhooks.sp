@@ -438,7 +438,7 @@ public void OnPostThink(int client)
 			float cooldown_time;
 			bool had_An_ability = false;
 			bool IsReady = false;
-			
+#if defined RPG		
 			if(f_HealingPotionDuration[client] > gameTime) //Client has a buff, but which one?
 			{
 				float time_left = f_HealingPotionDuration[client] - gameTime;
@@ -459,6 +459,7 @@ public void OnPostThink(int client)
 					}		
 				}
 			}
+#endif
 			if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_M1)
 			{
 				

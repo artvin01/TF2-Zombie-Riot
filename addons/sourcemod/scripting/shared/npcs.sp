@@ -1153,7 +1153,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		damage *= 5.0;
 		return Plugin_Changed;	
 	}
-	
+
 	if(attacker < 1 ||/* attacker > MaxClients ||*/ victim == attacker)
 		return Plugin_Continue;
 		
@@ -1177,9 +1177,21 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	//Reset all things here.
 	if(b_npcspawnprotection[victim]) //make them resistant on spawn or else itll just be spawncamping fest
 	{
+
+#if defined RPG
+		if(Level[victim] < (Level[attacker] - 5))
+			damage = 0.0;
+#else
 		damage *= 0.25;
+#endif
+
 	}
-	
+
+	if(f_NpcHasBeenUnstuckAboveThePlayer[victim] > GetGameTime()) //They were immortal, just nullfy any and all damage.
+	{
+		damage = 0.0;
+	}
+
 	/*
 		The Bloons:
 		

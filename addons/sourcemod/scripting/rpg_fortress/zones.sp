@@ -31,32 +31,65 @@ void Zones_ResetAll()
 
 static void OnEnter(int client, const char[] name)
 {
-	Crafting_ClientEnter(client, name);
-	Garden_ClientEnter(client, name);
-	Music_ZoneEnter(client, name);
-	Quests_EnableZone(client, name);
-	TextStore_ZoneEnter(client, name);
+	if(!b_NpcHasDied[client]) //An npc just touched it!
+	{
+		PrintToChatAll("OnEnter");
+		return;
+	}
+	else
+	{
+		Crafting_ClientEnter(client, name);
+		Garden_ClientEnter(client, name);
+		Music_ZoneEnter(client, name);
+		Quests_EnableZone(client, name);
+		TextStore_ZoneEnter(client, name);		
+	}
 }
 
 static void OnLeave(int client, const char[] name)
 {
-	Crafting_ClientLeave(client, name);
-	Garden_ClientLeave(client, name);
-	TextStore_ZoneLeave(client, name);
+	if(!b_NpcHasDied[client]) //An npc just touched it!
+	{
+		PrintToChatAll("OnLeave");
+		return;
+	}
+	else
+	{
+		Crafting_ClientLeave(client, name);
+		Garden_ClientLeave(client, name);
+		TextStore_ZoneLeave(client, name);	
+	}
 }
 
-static void OnActive(const char[] name)
+static void OnActive(int client, const char[] name)
 {
-	Mining_EnableZone(name);
-	Spawns_UpdateSpawn(name);
+	if(!b_NpcHasDied[client]) //An npc just touched it!
+	{
+		PrintToChatAll("OnActive");
+		return;
+	}
+	else
+	{
+		Mining_EnableZone(name);
+		Spawns_UpdateSpawn(name);
+	}
 }
 
-static void OnDisable(const char[] name)
+static void OnDisable(int client, const char[] name)
 {
-	Mining_DisableZone(name);
-	Quests_DisableZone(name);
-	Spawns_DisableSpawn(name);
-	TextStore_ZoneAllLeave(name);
+	if(!b_NpcHasDied[client]) //An npc just touched it!
+	{
+		PrintToChatAll("OnDisable");
+		return;
+	}
+	else
+	{
+		Mining_DisableZone(name);
+		Quests_DisableZone(name);
+		Spawns_DisableSpawn(name);
+		TextStore_ZoneAllLeave(name);
+	}
+
 }
 
 bool Zones_IsActive(const char[] name)
@@ -97,7 +130,7 @@ public Action Zones_StartTouchAll(const char[] output, int entity, int caller, f
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 		{
 			ActiveZones.PushString(name);
-			OnActive(name);
+			OnActive(entity, name);
 		}
 	}
 	return Plugin_Continue;
@@ -115,7 +148,7 @@ public Action Zones_EndTouchAll(const char[] output, int entity, int caller, flo
 			if(pos != -1)
 			{
 				ActiveZones.Erase(pos);
-				OnDisable(name);
+				OnDisable(entity, name);
 			}
 		}
 	}
