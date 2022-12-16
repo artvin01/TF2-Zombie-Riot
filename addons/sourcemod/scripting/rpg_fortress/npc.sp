@@ -15,7 +15,10 @@ enum
 	HEADCRAB_ZOMBIE_ELECTRO			= 9,
 	POISON_ZOMBIE					= 10,
 	EXPLOSIVE_ZOMBIE				= 11,
-	ZOMBIEFIED_COMBINE_SWORDSMAN	= 12
+	ZOMBIEFIED_COMBINE_SWORDSMAN	= 12,
+	BOB_THE_TARGETDUMMY				= 13,
+	FAST_ZOMBIE						= 14,
+	FATHER_GRIGORI					= 15
 }
 
 public const char NPC_Names[][] =
@@ -32,7 +35,10 @@ public const char NPC_Names[][] =
 	"Arrow Headcrab Zombie",
 	"Poison Zombie",
 	"Explosive Zombie",
-	"Zombified Combine Swordsman"
+	"Zombified Combine Swordsman",
+	"Bob The Second - Target Dummy",
+	"Fast Zombie",
+	"Father Grigori ?"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -49,7 +55,10 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_headcrab_zombie_electro",
 	"npc_poison_zombie",
 	"npc_headcrab_zombie_explosive",
-	"npc_zombiefied_combine_soldier_swordsman"
+	"npc_zombiefied_combine_soldier_swordsman",
+	"npc_bob_the_targetdummy",
+	"npc_fastzombie",
+	"npc_enemy_grigori"
 };
 
 void NPC_MapStart()
@@ -66,6 +75,9 @@ void NPC_MapStart()
 	PoisonZombie_OnMapStart_NPC();
 	ExplosiveHeadcrabZombie_OnMapStart_NPC();
 	ZombiefiedCombineSwordsman_OnMapStart_NPC();
+	BobTheTargetDummy_OnMapStart_NPC();
+	FastZombie_OnMapStart_NPC();
+	EnemyFatherGrigori_OnMapStart_NPC();
 }
 
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 120.0
@@ -123,6 +135,18 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 		case ZOMBIEFIED_COMBINE_SWORDSMAN:
 		{
 			entity = ZombiefiedCombineSwordsman(client, vecPos, vecAng, ally);
+		}
+		case BOB_THE_TARGETDUMMY:
+		{
+			entity = BobTheTargetDummy(client, vecPos, vecAng, ally);
+		}
+		case FAST_ZOMBIE:
+		{
+			entity = FastZombie(client, vecPos, vecAng, ally);
+		}
+		case FATHER_GRIGORI:
+		{
+			entity = EnemyFatherGrigori(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -184,6 +208,18 @@ public void NPCDeath(int entity)
 		case ZOMBIEFIED_COMBINE_SWORDSMAN:
 		{
 			ZombiefiedCombineSwordsman_NPCDeath(entity);
+		}
+		case BOB_THE_TARGETDUMMY:
+		{
+			BobTheTargetDummy_NPCDeath(entity);
+		}
+		case FAST_ZOMBIE:
+		{
+			FastZombie_NPCDeath(entity);
+		}
+		case FATHER_GRIGORI:
+		{
+			EnemyFatherGrigori_NPCDeath(entity);
 		}
 		default:
 		{
@@ -257,7 +293,7 @@ public void NPC_Despawn(int entity)
 	}
 }
 
-public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] StandStill, float walkspeedback, float gameTime)
+void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] StandStill, float walkspeedback, float gameTime, bool walkback_use_sequence = false, bool standstill_use_sequence = false)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
 
@@ -315,7 +351,14 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity(WalkBack);
+					if(walkback_use_sequence)
+					{
+						npc.AddActivityViaSequence(WalkBack);
+					}
+					else
+					{
+						npc.SetActivity(WalkBack);
+					}
 				}
 
 			}
@@ -348,7 +391,14 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 				if(npc.m_iChanged_WalkCycle != 5) 	//Stand still.
 				{
 					npc.m_iChanged_WalkCycle = 5;
-					npc.SetActivity(StandStill);
+					if(standstill_use_sequence)
+					{
+						npc.AddActivityViaSequence(StandStill);
+					}
+					else
+					{
+						npc.SetActivity(StandStill);
+					}
 				}
 
 				char HealthString[512];
@@ -403,3 +453,6 @@ public void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[
 #include "rpg_fortress/npc/normal/npc_poison_zombie.sp"
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie_explosive.sp"
 #include "rpg_fortress/npc/normal/npc_zombiefied_combine_soldier_swordsman.sp"
+#include "rpg_fortress/npc/normal/npc_bob_the_targetdummy.sp"
+#include "rpg_fortress/npc/normal/npc_fastzombie.sp"
+#include "rpg_fortress/npc/normal/npc_enemy_grigori.sp"

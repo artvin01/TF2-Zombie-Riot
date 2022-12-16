@@ -121,12 +121,10 @@ void Music_PlayerRunCmd(int client)
 				float vol = music.Volume - ((GetGameTime() - FadingOut[client]) / 2.0);
 				if(vol > 0.0)
 				{
-					PrintToChat(client, "Volume: %f", vol);
 					EmitSoundToClient(client, music.Sound, client, SNDCHAN_STATIC, SNDLEVEL_NONE, SND_CHANGEVOL, vol);
 					return;
 				}
 
-				PrintToChat(client, "Ended");
 				StopSound(client, SNDCHAN_STATIC, music.Sound);
 				StopSound(client, SNDCHAN_STATIC, music.Sound);
 			}
@@ -143,12 +141,10 @@ void Music_PlayerRunCmd(int client)
 				float vol = ((GetGameTime() - FadingIn[client]) / 2.0);
 				if(vol < music.Volume)
 				{
-					PrintToChat(client, "Volume: %f", vol);
 					EmitSoundToClient(client, music.Sound, client, SNDCHAN_STATIC, SNDLEVEL_NONE, SND_CHANGEVOL, vol);
 					return;
 				}
 
-				PrintToChat(client, "Ended");
 				EmitSoundToClient(client, music.Sound, client, SNDCHAN_STATIC, SNDLEVEL_NONE, SND_CHANGEVOL, music.Volume);
 			}
 			
@@ -162,13 +158,11 @@ void Music_PlayerRunCmd(int client)
 			{
 				if(wasInFade)
 				{
-					PrintToChat(client, "Started Fade");
 					EmitSoundToClient(client, music.Sound, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.00001);
 					FadingIn[client] = GetGameTime();
 				}
 				else
 				{
-					PrintToChat(client, "Started New");
 					EmitSoundToClient(client, music.Sound, client, SNDCHAN_STATIC, SNDLEVEL_NONE, SND_CHANGEVOL, music.Volume);
 				}
 				
