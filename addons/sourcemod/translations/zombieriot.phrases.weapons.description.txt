@@ -1127,7 +1127,7 @@
 	{
 		"en"	"Provides various buffs to teammates and can be upgraded for more buffs.\nBuffs bought stay regardless if broken and rebuild."
 		"ru"	"Даёт различные усиления союзникам и может быть улучшена для получения дополнительных усилений.\nКупленные усиления сохраняются, если её сломать и восстановить."
-		"chi"   "为队友提供各种Buff，可以升级获得更多的buff\n建筑坏了后Buff将消失"
+		"chi"   "为周围提供增益，升级建筑来提升和获得增益\n建筑损坏后增益消失！"
 	}
 	
 	"Cannibalism Desc"
