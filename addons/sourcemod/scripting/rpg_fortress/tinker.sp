@@ -3,26 +3,29 @@
 
 static const char TierName[][] =
 {
-	"Strange",			// 3 / 6
-	"Unremarkable",		// 4 / 7
-	"Scarcely Lethal",	// 5 / 8
-	"Midly Menacing"	// 6 / 9
-	"Uncharitable"		// 7 / 10
-	"Truely Feared"		// 8 / 11
-	"Gore-Spattered"	// 9 / 12
-	"Wicked Nasty"		// 10 / 13
-	"Face-Melting"		// 11 / 14
-	"Epic"				// 12 / 15
-	"Legendary"			// 13 / 16
+	// 1 = Sell
+	// 2 = XP
+	// 3 = Forge Stat
+	// 4 = Forge Stat
+	// 5 = Forge Stat
+	// 6 = Forge Stat
+	"Strange",			// 3 / 9
+	"Unremarkable",		// 4 / 10
+	"Scarcely Lethal",	// 5 / 11
+	"Uncharitable"		// 6 / 12
+	"Truely Feared"		// 7 / 13
+	"Wicked Nasty"		// 8 / 14
+	"Epic"				// 9 / 15
+	"Legendary"			// 10 / 16
 };
 
-#define TINKER_CAP	13
+#define TINKER_CAP	10
 
-#define FLAG_MELEE	(1 << 0)
-#define FLAG_RANGE	(1 << 1)
-#define FLAG_WAND	(1 << 2)
-#define FLAG_MINE	(1 << 3)
-#define FLAG_FISH	(1 << 4)
+#define FLAG_MELEE	(1 << 0)	// 1
+#define FLAG_RANGE	(1 << 1)	// 2
+#define FLAG_WAND	(1 << 2)	// 4
+#define FLAG_MINE	(1 << 3)	// 8
+#define FLAG_FISH	(1 << 4)	// 16
 #define FLAG_ALL	31
 
 enum struct TinkerEnum
@@ -131,6 +134,10 @@ enum struct WeaponEnum
 	int Perks[TINKER_CAP];
 	int PerkCount;
 
+	int Forge[4];
+	float Value[4];
+	int ForgeCount;
+
 	int Tier()
 	{
 		int tier = XpToLevel(this.XP * 5);
@@ -169,9 +176,8 @@ void Tinker_ConfigSetup(KeyValues map)
 		kv = new KeyValues("Tinker");
 		kv.ImportFromFile(buffer);
 	}
-	
-	delete WeaponList;
-	WeaponList = new ArrayList(sizeof(WeaponEnum));
+
+	Tinker_ResetAll();
 
 	delete TinkerList;
 	TinkerList = new ArrayList(sizeof(TinkerEnum));
@@ -192,11 +198,95 @@ void Tinker_ConfigSetup(KeyValues map)
 		delete kv;
 }
 
+void Tinker_ResetAll()
+{
+	delete WeaponList;
+	WeaponList = new ArrayList(sizeof(WeaponEnum));
+}
+
+static int TinkerCost(int level)
+{
+	return 2000 + (level * 100);
+}
+
+static void ToMetaData(const WeaponEnum wepaon, char data[512])
+{
+	int sell = TinkerCost(weapon.Level);
+
+	Format(data, sizeof(data), "txp%d", weapon.XP);
+
+	for(int i; i < weapon.PerkCount; i++)
+	{
+		static TinkerEnum tinker;
+		TinkerList.GetArray(weapon.Perk[i], tinker);
+		Format(data, sizeof(data), "%s:%s", data, tinker.Name);
+		sell += tinker.Credits - (tinker.Level * 100);
+	}
+
+	if(weapon.ForgeCount)
+	{
+		for(int i; i < weapon.ForgeCount; i++)
+		{
+			Format(data, sizeof(data), "%s:forge,%d,%.2f", data, weapon.Forge[i], weapon.Value[i]);
+		}
+
+		sell += 1000;
+	}
+	
+	Format(data, sizeof(data), "sell%d:%s", sell, data);
+}
+
+static void ConvertToTinker(int client, int index)
+{
+
+}
+
 void Tinker_EquipItem(int client, KeyValues &kv, int index, const char[] name, bool auto)
 {
 	if(index < 0)
 	{
 		static char data[512];
 		TextStore_GetItemData(index, data, sizeof(data));
+		
+		WeaponEnum weapon;
+		strcopy(wepaon.Name, sizeof(weapon.Name), name);
+		weapon.Store = index;
+		weapon.Owner = client;
+
+		static char buffers[16][32];
+		int count = ExplodeString(data, ":", buffers, sizeof(buffers), sizeof(buffers[]));
+		int length = TinkerList.Length;
+		for(int i; i < count; i++)
+		{
+			if(!StrContains(buffers[i], "sell"))
+				continue;
+			
+			if(!StrContains(buffers[i], "txp"))
+			{
+				weapon.XP = StringToInt(buffers[i][3]);
+			}
+			else if(!StrContains(buffers[i], "forge"))
+			{
+				if(i > 1)
+				{
+					ExplodeString(buffers[i], ",", buffers, 2, sizeof(buffers[]));
+					weapon.Forge[weapon.ForgeCount] = StringToInt(buffers[1]);
+					weapon.Value[weapon.ForgeCount++] = StringToFloat(buffers[2]);
+				}
+			}
+			else
+			{
+				for(int a; a < length; a++)
+				{
+					static TinkerEnum tinker;
+					TinkerList.GetArray(a, tinker);
+					if(StrEqual(tinker, buffers[i], false))
+					{
+						weapon.Perks[weapon.PerkCount++] = a;
+						break;
+					}
+				}
+			}
+		}
 	}
 }

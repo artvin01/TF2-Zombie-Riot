@@ -3293,7 +3293,7 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 		static char buffer[128];
 		if(Tier[client])
 		{
-			Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client]);
+			Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
 		}
 		else
 		{
@@ -3309,7 +3309,7 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 		static char buffer[128];
 		if(Tier[client])
 		{
-			Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client]);
+			Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
 		}
 		else
 		{

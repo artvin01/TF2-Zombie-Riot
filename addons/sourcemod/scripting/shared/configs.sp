@@ -120,9 +120,55 @@ public void Configs_ConfigsExecuted()
 	}
 }
 
+float Config_GetDPSOfEntity(int entity)
+{
+	static char classname[36];
+	GetEntityClassname(entity, classname, sizeof(classname));
+	
+	static WeaponData data;
+
+	int i;
+	int val = WeaponList.Length;
+
+	for(; i<val; i++)
+	{
+		WeaponList.GetArray(i, data);
+		if(StrEqual(classname, data.Classname))
+			break;
+	}
+	
+	if(i == val)
+		return 0.0;
+	
+	// Damage and Pellets
+	Address address = TF2Attrib_GetByDefIndex(entity, 410);
+	if(address == Address_Null)
+	{
+		address = TF2Attrib_GetByDefIndex(entity, 2);
+		if(address != Address_Null)
+			data.Damage *= TF2Attrib_GetValue(address);
+	}
+	else
+	{
+		data.Damage *= TF2Attrib_GetValue(address);
+	}
+
+	address = TF2Attrib_GetByDefIndex(entity, 45);
+	if(address != Address_Null)
+		data.Pellets *= TF2Attrib_GetValue(address);
+	
+	data.Damage *= data.Pellets;
+
+	address = TF2Attrib_GetByDefIndex(entity, 6);
+	if(address != Address_Null)
+		data.FireRate *= TF2Attrib_GetValue(address);
+	
+	return data.Damage / data.FireRate;
+}
+
 void Config_CreateDescription(const char[] classname, const int[] attrib, const float[] value, int attribs, char[] buffer, int length)
 {
-	WeaponData data;
+	static WeaponData data;
 	int i;
 	int val = WeaponList.Length;
 

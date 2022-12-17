@@ -54,7 +54,7 @@ enum struct MineEnum
 		kv.GetSectionName(this.Model, PLATFORM_MAX_PATH);
 		ExplodeStringFloat(this.Model, " ", this.Pos, sizeof(this.Pos));
 
-		kv.GetString("zone", this.Zone, 32);
+		//kv.GetString("zone", this.Zone, 32);
 		
 		kv.GetString("model", this.Model, PLATFORM_MAX_PATH, "models/error.mdl");
 		if(!this.Model[0])
@@ -101,7 +101,7 @@ enum struct MineEnum
 	
 	void Spawn()
 	{
-		if(this.EntRef == INVALID_ENT_REFERENCE)
+		if(EntRefToEntIndex(this.EntRef) == INVALID_ENT_REFERENCE)
 		{
 			int entity = CreateEntityByName("prop_dynamic_override");
 			if(IsValidEntity(entity))

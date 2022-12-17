@@ -51,6 +51,7 @@ enum struct FishEnum
 	int Tier;
 	int Type;
 	int Pref;
+	int Pop;
 	float Rate;
 	float Breed;
 	float Move;
@@ -61,6 +62,7 @@ enum struct FishEnum
 		this.Tier = kv.GetNum("tier");
 		this.Type = kv.GetNum("type");
 		this.Pref = kv.GetNum("pref");
+		this.Pop = kv.GetNum("pop", 50);
 		this.Rate = kv.GetFloat("rate");
 		this.Breed = kv.GetFloat("breed");
 		this.Move = kv.GetFloat("move");
@@ -382,7 +384,11 @@ public Action Fishing_Timer(Handle timer)
 									int amount = RoundFloat(fish.Breed * GetURandomFloat());
 									if(amount)
 									{
-										Population.SetNum(buffer, Population.GetNum(buffer) + amount);
+										amount += Population.GetNum(buffer);
+										if(amount > fish.Pop)
+											amount = fish.Pop;
+										
+										Population.SetNum(buffer, amount);
 										//checkPop = true;
 									}
 								}

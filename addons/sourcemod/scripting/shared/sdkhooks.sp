@@ -1211,6 +1211,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				
 				damage *= 0.65;
 			}
+			if(f_ImmuneToFalldamage[victim] > GetGameTime())
+			{
+				damage = 0.0;
+			}
 		}
 		else
 		{
