@@ -1587,4 +1587,21 @@
 	{
 		"en"	"Active a long cooldown m2 ability.\nWhich buffs your damage and abit less resistance by 15%%, and allies by 10%% this stacks with 2 on eachother.\nThis works with allied npcs aswell."
 	}
+	
+	"Tornado Blitz Desc"
+	{
+		"en"	"We decided to steal blit'z rocket launcher\nThe results are quite intriging\nOne of these discoveries are Nano-rockets\nThese rockets remove all explosives and turn these rockets into kinetic shells."
+	}
+	"Tornado Blitz Desc Spam1"
+	{
+		"en" 	"We increased the kinetic damage of the Nano-rockets\nWe also increased the Nano-rocket to normal rocket efficiency."
+	}
+	"Tornado Blitz Desc Spam2"
+	{
+		"en"	"We may be aproaching the upper limit of what our technology can do at this point\nBut we must press on\nWe increased the cooling of the launcher to achive even more potent kinetic Nano-rockets\nEnjoy!"
+	}
+	"Tornado Blitz Desc Spam3"
+	{
+		"en"	"We are not responsible for what this monstrosity may cause\nWe have added liquid nitrogen cooling to increase the Nano-rocket efficiency\nWe have no idea if this is safe, however it is still quite potent."
+	}
 }

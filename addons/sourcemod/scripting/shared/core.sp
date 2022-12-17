@@ -347,6 +347,7 @@ int i_EntityRenderColour3[MAXENTITIES]={255, ...};
 int i_EntityRenderColour4[MAXENTITIES]={255, ...};
 bool i_EntityRenderOverride[MAXENTITIES]={false, ...};
 
+bool b_RocketBoomEffect[MAXENTITIES]={false, ...};
 //6 wearables
 int i_Wearable[MAXENTITIES][6];
 
@@ -1981,7 +1982,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_EntityRenderColour4[entity] = 255;
 		i_EntityRenderOverride[entity] = false;
 		b_StickyIsSticking[entity] = false;
-
+		
+		b_RocketBoomEffect[entity]=false;
 		b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
 		b_EntityIsArrow[entity] = false;
 		b_EntityIsWandProjectile[entity] = false;

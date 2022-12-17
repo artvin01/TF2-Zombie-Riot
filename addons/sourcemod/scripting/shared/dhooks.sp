@@ -433,27 +433,56 @@ public MRESReturn DHook_FireballExplodePre(int entity)
 
 public MRESReturn DHook_RocketExplodePre(int entity)
 {
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	if (0 < owner <= MaxClients)
+	
+	if(b_RocketBoomEffect[entity])
 	{
-		float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
-		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
-		int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
-		Explode_Logic_Custom(original_damage, owner, entity, weapon);
-	}
-	else if(owner > MaxClients)
-	{
-		float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
-		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
-	//	int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
-	//Important, make them not act as an ai if its on red, or else they are BUSTED AS FUCK.
-		if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if (0 < owner  && owner <= MaxClients)
 		{
-			Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
+			float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
+			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
+			int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
+			Explode_Logic_Custom(original_damage, owner, entity, weapon);
 		}
-		else
+		else if(owner > MaxClients)
 		{
-			Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,false);
+			float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
+			if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			{
+				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
+			}
+			else
+			{
+				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,false);
+			}
+		}
+		RemoveEntity(entity);
+		return MRES_Supercede;
+	}
+	else
+	{
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if (0 < owner  && owner <= MaxClients)
+		{
+			float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
+			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
+			int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
+			Explode_Logic_Custom(original_damage, owner, entity, weapon);
+		}
+		else if(owner > MaxClients)
+		{
+			float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
+			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
+		//	int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
+		//Important, make them not act as an ai if its on red, or else they are BUSTED AS FUCK.
+			if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			{
+				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
+			}
+			else
+			{
+				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,false);
+			}
 		}
 	}
 	return MRES_Ignored;

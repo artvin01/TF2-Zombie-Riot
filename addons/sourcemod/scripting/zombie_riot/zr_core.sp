@@ -254,6 +254,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_cowmangler.sp"
 #include "zombie_riot/custom/weapon_cowmangler_2.sp"
 #include "zombie_riot/custom/weapon_auto_shotgun.sp"
+#include "zombie_riot/custom/weapon_tornado.sp"
 #include "zombie_riot/custom/weapon_fists_of_kahml.sp"
 #include "zombie_riot/custom/weapon_fusion_melee.sp"
 #include "zombie_riot/custom/spike_layer.sp"
@@ -447,6 +448,7 @@ void ZR_MapStart()
 	Gb_Ball_Map_Precache();
 	Map_Precache_Zombie_Drops_Gift();
 	Grenade_Custom_Precache();
+	Weapon_Tornado_Blitz_Precache();
 	BoomStick_MapPrecache();
 	Charged_Handgun_Map_Precache();
 	TBB_Precahce_Mangler_2();
