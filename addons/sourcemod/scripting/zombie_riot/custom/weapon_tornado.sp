@@ -13,35 +13,35 @@ public void Weapon_Tornado_Blitz_Precache()	//we use a custom model for the spam
 
 public void Weapon_tornado_launcher_Spam(int client, int weapon, const char[] classname, bool &result)
 {
-	if(fl_tornados_rockets_eated[client]<0.75)	//The "micro rocket" core, basicaly lore wise converts 1 rockets into X "mini" rockets.
+	if(fl_tornados_rockets_eated[client]>3.0)	//Every 3rd rocket is free. or there abouts.
 	{
 		Add_Back_One_Rocket(weapon);
-		fl_tornados_rockets_eated[client]+=1.25;
+		fl_tornados_rockets_eated[client]=-3.0;
 	}
 	else
 	{
-		fl_tornados_rockets_eated[client]-=0.75;
+		fl_tornados_rockets_eated[client]+=1.25;
 	}
 	Weapon_Tornado_Launcher_Spam_Fire_Rocket(client, weapon);
 }
 
 public void Weapon_tornado_launcher_Spam_Pap1(int client, int weapon, const char[] classname, bool &result)
 {
-	if(fl_tornados_rockets_eated[client]<2.0)	//The "micro rocket" core, basicaly lore wise converts 1 rockets into X "mini" rockets.
+	if(fl_tornados_rockets_eated[client]<0.49)	//2 rockets eated, 1 free.
 	{
 		Add_Back_One_Rocket(weapon);
 		fl_tornados_rockets_eated[client]++;
 	}
 	else
 	{
-		fl_tornados_rockets_eated[client]=0.0;
+		fl_tornados_rockets_eated[client]-=0.5;
 	}
 	Weapon_Tornado_Launcher_Spam_Fire_Rocket(client, weapon);
 }
 
 public void Weapon_tornado_launcher_Spam_Pap2(int client, int weapon, const char[] classname, bool &result)
 {
-	if(fl_tornados_rockets_eated[client]<4.0)	//The "micro rocket" core, basicaly lore wise converts 1 rockets into X "mini" rockets.
+	if(fl_tornados_rockets_eated[client]<1.0)	//Half rockets eated, other half free
 	{
 		Add_Back_One_Rocket(weapon);
 		fl_tornados_rockets_eated[client]++;
@@ -55,7 +55,7 @@ public void Weapon_tornado_launcher_Spam_Pap2(int client, int weapon, const char
 
 public void Weapon_tornado_launcher_Spam_Pap3(int client, int weapon, const char[] classname, bool &result)
 {
-	if(fl_tornados_rockets_eated[client]<6)	//The "micro rocket" core, basicaly lore wise converts 1 rockets into X "mini" rockets.
+	if(fl_tornados_rockets_eated[client]<2.0)	//4x clip size, basically, most of it being free.
 	{
 		Add_Back_One_Rocket(weapon);
 		fl_tornados_rockets_eated[client]++;
@@ -96,7 +96,7 @@ void Weapon_Tornado_Launcher_Spam_Fire_Rocket(int client, int weapon)
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 		}*/
 		
-		float speedMult = 1000.0;
+		float speedMult = 1250.0;
 		float dmgProjectile = 100.0;
 		
 		
@@ -160,22 +160,8 @@ void Weapon_Tornado_Launcher_Spam_Fire_Rocket(int client, int weapon)
 				temp=0.0;
 		}
 		nfPos[1] = fPos[1]+temp;
-		
-		temp=GetRandomFloat(-10.0, 10.0);
-		
-		if(temp>0.0)
-		{
-			temp-positiveAngleModifier;
-			if(temp<0.0)
-				temp=0.0;
-		}
-		else
-		{
-			temp+positiveAngleModifier;
-			if(temp>0.0)
-				temp=0.0;
-		}
-		nfPos[2] = fPos[2]+temp;
+
+		nfPos[2] = fPos[2];
 	
 		nfAng[0] = fAng[0];
 		nfAng[1] = fAng[1];
@@ -214,7 +200,7 @@ void Weapon_Tornado_Launcher_Spam_Fire_Rocket(int client, int weapon)
 			{
 				SetEntProp(projectile, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
 			}
-			SetEntPropFloat(projectile, Prop_Send, "m_flModelScale", 2.0);
+			SetEntPropFloat(projectile, Prop_Send, "m_flModelScale", 3.0);
 		}
 	}
 }
