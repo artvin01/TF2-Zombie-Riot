@@ -60,6 +60,7 @@
 
 public const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 
+ConVar CvarRPGInfiniteLevelAndAmmo;
 ConVar CvarDisableThink;
 ConVar CvarMaxBotsForKillfeed;
 ConVar CvarXpMultiplier;
@@ -442,6 +443,7 @@ int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever e
 bool i_IsWandWeapon[MAXENTITIES]; 
 bool i_IsWrench[MAXENTITIES]; 
 bool b_is_a_brush[MAXENTITIES]; 
+float f_ImmuneToFalldamage[MAXENTITIES]; 
 
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
 
@@ -2773,6 +2775,7 @@ static void MapStartResetAll()
 	Zero(f_WidowsWineDebuff);
 	Zero(f_TempCooldownForVisualManaPotions);
 	Zero(i_IsABuilding);
+	Zero(f_ImmuneToFalldamage);
 	Zero(f_DelayLookingAtHud);
 	Zero(f_TimeUntillNormalHeal);
 	Zero(Mana_Regen_Delay);

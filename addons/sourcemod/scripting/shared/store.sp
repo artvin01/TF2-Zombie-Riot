@@ -432,14 +432,17 @@ bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name, boo
 
 	if(!auto)
 	{
-		int level = kv.GetNum("level");
-		if(level > Level[client])
+		if(!CvarRPGInfiniteLevelAndAmmo.BoolValue)
 		{
-			char buffer[32];
-			GetDisplayString(level, buffer, sizeof(buffer));
+			int level = kv.GetNum("level");
+			if(level > Level[client])
+			{
+				char buffer[32];
+				GetDisplayString(level, buffer, sizeof(buffer));
 
-			SPrintToChat(client, "You must be %s to use this.", buffer);
-			return false;
+				SPrintToChat(client, "You must be %s to use this.", buffer);
+				return false;
+			}
 		}
 	}
 
@@ -3637,7 +3640,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					}
 #endif
 					
-					if(info.Ammo > 0)
+					if(info.Ammo > 0 && !CvarRPGInfiniteLevelAndAmmo.BoolValue)
 					{
 						if(!StrEqual(info.Classname[0], "tf_weapon_medigun"))
 						{

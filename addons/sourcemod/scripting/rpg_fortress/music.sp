@@ -102,7 +102,7 @@ void Music_ZoneEnter(int client, const char[] name)
 			}
 
 			FadingOut[client] = GetGameTime();
-			NextSoundIn[client] = GetTime() + 1;
+			NextSoundIn[client] = 0;
 			strcopy(NextSong[client], sizeof(NextSong[]), name);
 		}
 	}
@@ -152,7 +152,7 @@ void Music_PlayerRunCmd(int client)
 		}
 		
 		int time = GetTime();
-		if(wasInFade || NextSoundIn[client] < time)
+		if(wasInFade)
 		{
 			if(MusicList.GetArray(NextSong[client], music, sizeof(music)) && music.Sound[0])
 			{
@@ -173,6 +173,13 @@ void Music_PlayerRunCmd(int client)
 			{
 				NextSong[client][0] = 0;
 			}
+			return;
+		}
+
+		if(NextSoundIn[client] < time)
+		{
+			FadingOut[client] = 1.0;
+			NextSoundIn[client] = 0;
 		}
 	}
 }

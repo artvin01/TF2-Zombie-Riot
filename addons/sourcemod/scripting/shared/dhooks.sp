@@ -403,6 +403,13 @@ public MRESReturn DHook_FireballExplodePre(int entity)
 	int owner = GetOwnerLoop(entity);
 	if (0 < owner <= MaxClients)
 	{
+#if defined RPG
+	int weapon;
+	weapon = GetEntPropEnt(entity, Prop_Send, "m_hLauncher");
+	Explode_Logic_Custom(f_CustomGrenadeDamage[entity], owner, entity, weapon, _, _, _, _, _, _, true);
+#endif
+
+#if defined ZR
 		int i, weapon;
 		while(TF2_GetItem(owner, weapon, i))
 		{
@@ -418,8 +425,9 @@ public MRESReturn DHook_FireballExplodePre(int entity)
 				break;
 			}
 		}
-
+#endif
 	}
+
 	return MRES_Ignored;
 }
 

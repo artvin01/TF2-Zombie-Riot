@@ -495,6 +495,9 @@ stock void TextStore_AddTier(int client)
 
 int TextStore_GetItemCount(int client, const char[] name)
 {
+	if(StrEqual(name, ITEM_CASH))
+		return TextStore_Cash(client);
+	
 	int amount = -1;
 	
 	int length = TextStore_GetItems();
@@ -1203,7 +1206,7 @@ static void ShowMenu(int client, int page = 0)
 					}
 
 					if(cooldown > 0)
-						Format(spell.Display, sizeof(spell.Display), "%s [%ds]", cooldown);
+						Format(spell.Display, sizeof(spell.Display), "%s [%ds]", spell.Display, cooldown);
 					
 					if(++amount > 9)
 					{
@@ -1458,14 +1461,17 @@ public int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 				{
 					static SpellEnum spell;
 					SpellList.GetArray(i, spell);
-					if(spell.Owner == client && spell.Store == index && spell.Func)
+					if(spell.Owner == client && spell.Store == index)
 					{
-						Call_StartFunction(null, spell.Func);
-						Call_PushCell(client);
-						Call_PushCell(index);
-						Call_PushStringEx(spell.Display, sizeof(spell.Display), SM_PARAM_STRING_UTF8|SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
-						Call_Finish(spell.Cooldown);
-						SpellList.SetArray(i, spell);
+						if(spell.Func && spell.Cooldown < GetGameTime())
+						{
+							Call_StartFunction(null, spell.Func);
+							Call_PushCell(client);
+							Call_PushCell(index);
+							Call_PushStringEx(spell.Display, sizeof(spell.Display), SM_PARAM_STRING_UTF8|SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
+							Call_Finish(spell.Cooldown);
+							SpellList.SetArray(i, spell);
+						}
 						break;
 					}
 				}

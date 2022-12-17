@@ -163,7 +163,7 @@ void ShowLevelHud(int client)
 	static char buffer[128];
 	if(Tier[client])
 	{
-		Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client]);
+		Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
 	}
 	else
 	{
