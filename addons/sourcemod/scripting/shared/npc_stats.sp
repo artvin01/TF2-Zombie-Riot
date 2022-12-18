@@ -452,7 +452,7 @@ methodmap CClotBody
 		
 		SDKHook(npc, SDKHook_OnTakeDamage, NPC_OnTakeDamage_Base);
 		SDKHook(npc, SDKHook_Think, Check_If_Stuck);
-		SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
+	//	SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
 		
 		CClotBody CreatePathfinderIndex = view_as<CClotBody>(npc);
 		
@@ -5977,7 +5977,7 @@ stock float[] BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject,
 	
 	return pathTarget;
 }
-
+/*
 public Action SDKHook_Settransmit_Baseboss(int entity, int client)
 {
 	
@@ -5992,14 +5992,9 @@ public Action SDKHook_Settransmit_Baseboss(int entity, int client)
 	}
 	else
 #endif
-/*	
-	{
-		SetEdictFlags(entity, (GetEdictFlags(entity) & ~FL_EDICT_ALWAYS));
-	}
-*/	
 	return Plugin_Continue;
 }
-
+*/
 stock float[] PredictSubjectPositionForProjectiles(CClotBody npc, int subject, float projectile_speed)
 {
 	float botPos[3];

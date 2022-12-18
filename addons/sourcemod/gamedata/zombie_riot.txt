@@ -697,7 +697,7 @@
 			}
 			"CBaseEntity::UpdateTransmitState()"
 			{
-				"offset"		"CBaseCombatWeapon::ItemPostFrame()"
+				"offset"		"CBaseEntity::UpdateTransmitState()"
 				"hooktype"		"entity"
 				"return"		"void"
 				"this"			"entity"

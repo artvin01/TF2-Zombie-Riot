@@ -695,7 +695,7 @@ static void DropItem(int index, float pos[3], int amount, int client)
 			{
 				ItemCount[entity] += amount;
 				UpdateItemText(entity, index);
-				if(ItemCount[entity] < 51 || ItemIndex[entity] == -1)
+				if(ItemCount[entity] < 50 || ItemIndex[entity] == -1)
 					return;
 				
 				amount = ItemCount[entity] - 50;
@@ -801,9 +801,16 @@ static void DropItem(int index, float pos[3], int amount, int client)
 				color_Text[3] = RenderColors_RPG[rarity][3];
 
 				i_TextEntity[entity][0] = EntIndexToEntRef(SpawnFormattedWorldText(buffer, {0.0, 0.0, 30.0}, amount == 1 ? 5 : 6, color_Text, entity,_,true));
+				SDKHook(i_TextEntity[entity][0], SDKHook_SetTransmit, DroppedItemSetTransmit);
+				SDKHook(entity, SDKHook_SetTransmit, DroppedItemSetTransmit);
+			
 			}
 		}
 	}
+}
+public Action DroppedItemSetTransmit(int entity, int client)
+{
+	return Plugin_Handled;
 }
 
 static void UpdateItemText(int entity, int index)
