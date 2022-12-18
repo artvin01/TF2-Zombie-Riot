@@ -98,8 +98,6 @@ static int Village_TierExists[3];
 static int Beam_Laser;
 static int Beam_Glow;
 
-static int i_HasMarker[MAXTF2PLAYERS];
-
 static float f_MarkerPosition[MAXTF2PLAYERS][3];
 
 static Handle h_Pickup_Building[MAXPLAYERS + 1];
@@ -3285,7 +3283,6 @@ public Action RailgunFire_DeleteSound_client(Handle timer, int client)
 }
 public void BuildingMortarAction(int client, int mortar)
 {
-	int team = GetClientTeam(client);
 	float spawnLoc[3];
 	float eyePos[3];
 	float eyeAng[3];
@@ -3322,77 +3319,28 @@ public void BuildingMortarAction(int client, int mortar)
 	TE_SendToAll();
 								
 	CloseHandle(trace);
-//	f_DamageReductionMortar[client] = 1.0;
-	int entity = CreateEntityByName("tf_projectile_pipe_remote");
-	if(IsValidEntity(entity))
-	{
-		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
-		SetEntProp(entity, Prop_Send, "m_bCritical", true);
-		SetEntProp(entity, Prop_Send, "m_iType", 1);
-		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 1.0);
-		//	SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher", weapon);
-		//	SetEntPropEnt(entity, Prop_Send, "m_hLauncher", weapon);
-		DispatchSpawn(entity);
-		TeleportEntity(entity, spawnLoc, NULL_VECTOR, NULL_VECTOR);
-	
-		i_HasMarker[client] = EntIndexToEntRef(entity);
-		EmitSoundToAll("weapons/drg_wrench_teleport.wav", entity, SNDCHAN_WEAPON, 70);
-		CreateTimer(0.5, MortarMarkSpot, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-	}
-}
-	
-public Action MortarMarkSpot(Handle timer, int client)
-{
-	if(IsClientInGame(client) && IsPlayerAlive(client))
-	{
-		int entity = EntRefToEntIndex(i_HasMarker[client]);
-		if(entity>MaxClients && IsValidEntity(entity))
-		{
-			if(!GetEntProp(entity, Prop_Send, "m_bTouched"))
-				return Plugin_Continue;
-
-			static float pos[3],pos_obj[3];
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
-			RemoveEntity(entity);
-			int obj=EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
-			if(IsValidEntity(obj))
-			{
-				GetEntPropVector(obj, Prop_Send, "m_vecOrigin", pos_obj);
-				pos_obj[2] += 100.0;
-				CClotBody npc = view_as<CClotBody>(obj);
-				npc.AddGesture("MORTAR_FIRE");
-				EmitSoundToAll(MORTAR_SHOT, 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, pos_obj);
-				EmitSoundToAll(MORTAR_SHOT, 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, pos_obj);
-				CreateTimer(1.0, MortarFire_Anims, client, TIMER_FLAG_NO_MAPCHANGE);
-				f_MarkerPosition[client] = pos;
-				float position[3];
-				position[0] = f_MarkerPosition[client][0];
-				position[1] = f_MarkerPosition[client][1];
-				position[2] = f_MarkerPosition[client][2];
+	EmitSoundToAll("weapons/drg_wrench_teleport.wav", client, SNDCHAN_AUTO, 70);
+	static float pos[3];
+	CreateTimer(1.0, MortarFire_Anims, client, TIMER_FLAG_NO_MAPCHANGE);
+	f_MarkerPosition[client] = spawnLoc;
+	float position[3];
+	position[0] = spawnLoc[0];
+	position[1] = spawnLoc[1];
+	position[2] = spawnLoc[2];
 				
-				position[2] += 3000.0;
-				
-				int particle = ParticleEffectAt(position, "kartimpacttrail", 2.0);
-				CreateTimer(1.7, MortarFire_Falling_Shot, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
-				ParticleEffectAt(pos, "utaunt_portalswirl_purple_warp2", 2.0);
-				ParticleEffectAt(pos_obj, "skull_island_embers", 2.0);
-			}
-	
-		}
-	}
-	else
-	{
-		int entity = EntRefToEntIndex(i_HasMarker[client]);
-		if(entity>MaxClients && IsValidEntity(entity))
-		{
-			RemoveEntity(entity);
-		}
-			
-	}
+	position[2] += 3000.0;
 
-	i_HasMarker[client] = 0;
-	return Plugin_Stop;
+	int obj=EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
+	if(IsValidEntity(obj))
+	{
+		int particle = ParticleEffectAt(position, "kartimpacttrail", 2.0);
+		float pos_obj[3];
+		CreateTimer(1.7, MortarFire_Falling_Shot, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+		ParticleEffectAt(pos, "utaunt_portalswirl_purple_warp2", 2.0);
+		GetEntPropVector(obj, Prop_Send, "m_vecOrigin", pos_obj);
+		pos_obj[2] += 100.0;
+		ParticleEffectAt(pos_obj, "skull_island_embers", 2.0);
+	}
 }
 
 public Action MortarFire_Falling_Shot(Handle timer, int ref)
@@ -3414,36 +3362,6 @@ public Action MortarFire_Anims(Handle timer, int client)
 		int obj = EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
 		if(obj>MaxClients && IsValidEntity(obj))
 		{
-			/*
-			float position[3];
-			position[0] = f_MarkerPosition[client][0];
-			position[1] = f_MarkerPosition[client][1];
-			position[2] += 1500.0;
-					
-			int r = 255;
-			int g = 165;
-			int b = 0;
-			int alpha = 200;
-			int diameter = 50;
-					
-			int colorLayer4[4];
-			SetColorRGBA(colorLayer4, r, g, b, alpha);
-			int colorLayer3[4];
-			SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, alpha);
-			int colorLayer2[4];
-			SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, alpha);
-			int colorLayer1[4];
-			SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, alpha);
-			TE_SetupBeamPoints(f_MarkerPosition[client], position, gLaser1, 0, 0, 0, 0.70, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
-			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(f_MarkerPosition[client], position, gLaser1, 0, 0, 0, 0.80, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
-			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(f_MarkerPosition[client], position, gLaser1, 0, 0, 0, 0.90, ClampBeamWidth(diameter * 0.8 * 1.28), ClampBeamWidth(diameter * 0.8 * 1.28), 0, 1.0, colorLayer3, 3);
-			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(f_MarkerPosition[client], position, gLaser1, 0, 0, 0, 1.0, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 1.0, colorLayer4, 3);
-			TE_SendToAll(0.0);
-			int glowColor[4];
-			*/
 			EmitSoundToAll(MORTAR_SHOT_INCOMMING, 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, f_MarkerPosition[client]);
 			EmitSoundToAll(MORTAR_SHOT_INCOMMING, 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, f_MarkerPosition[client]);
 		//	SetColorRGBA(glowColor, r, g, b, alpha);

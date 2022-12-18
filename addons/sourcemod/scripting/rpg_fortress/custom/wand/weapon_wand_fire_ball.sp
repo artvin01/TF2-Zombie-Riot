@@ -53,9 +53,10 @@ public void Weapon_Wand_FireBallSpell(int client, int weapon, int level)
 	
 	damage = Config_GetDPSOfEntity(weapon);
 
-	damage *= 2.0;	
+	damage *= 2.5;	
 
 	f_OriginalDamage[client] = damage;
+	
 	i_weaponused[client] = EntIndexToEntRef(weapon);
 
 	float fAng[3], fPos[3];
