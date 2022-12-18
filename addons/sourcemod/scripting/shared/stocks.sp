@@ -92,6 +92,7 @@ stock int ParticleEffectAt(float position[3], char[] effectName, float duration 
 		DispatchSpawn(particle);
 		ActivateEntity(particle);
 		AcceptEntityInput(particle, "start");
+		SetEdictFlags(particle, (GetEdictFlags(particle) & ~FL_EDICT_ALWAYS));	
 		if (duration > 0.0)
 			CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 	}
@@ -112,9 +113,9 @@ stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iPar
 		SetParent(iParent, particle, szAttachment, vOffsets);
 
 		ActivateEntity(particle);
+		SetEdictFlags(particle, (GetEdictFlags(particle) & ~FL_EDICT_ALWAYS));	
 
 		AcceptEntityInput(particle, "start");
-		
 		//CreateTimer(0.1, Activate_particle_late, particle, TIMER_FLAG_NO_MAPCHANGE);
 	}
 
@@ -132,6 +133,7 @@ stock int ParticleEffectAtWithRotation(float position[3], float rotation[3], cha
 		DispatchKeyValue(particle, "effect_name", effectName);
 		DispatchSpawn(particle);
 		ActivateEntity(particle);
+		SetEdictFlags(particle, (GetEdictFlags(particle) & ~FL_EDICT_ALWAYS));	
 		AcceptEntityInput(particle, "start");
 		if (duration > 0.0)
 			CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
@@ -3154,6 +3156,7 @@ stock int SpawnFormattedWorldText(const char[] format, float origin[3], int text
 		DispatchKeyValue(worldtext,     "color", sColor);
 
 		DispatchSpawn(worldtext);
+		SetEdictFlags(worldtext, (GetEdictFlags(worldtext) & ~FL_EDICT_ALWAYS));	
 		DispatchKeyValue(worldtext, "orientation", "1");
 		if(rainbow)
 			DispatchKeyValue(worldtext, "rainbow", "1");

@@ -16,6 +16,7 @@ static DynamicDetour gH_MaintainBotQuota = null;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
 static DynamicHook g_DHookScoutSecondaryFire; 
+static DynamicHook g_DhookUpdateTransmitState; 
 
 static DynamicDetour g_CalcPlayerScore;
 
@@ -102,7 +103,10 @@ void DHook_Setup()
 	g_DHookRocketExplode = DHook_CreateVirtual(gamedata, "CTFBaseRocket::Explode");
 	g_DHookFireballExplode = DHook_CreateVirtual(gamedata, "CTFProjectile_SpellFireball::Explode");
 	g_DHookScoutSecondaryFire = DHook_CreateVirtual(gamedata, "CTFPistol_ScoutPrimary::SecondaryAttack()");
-	 
+
+
+	g_DhookUpdateTransmitState = DHook_CreateVirtual(gamedata, "CBaseEntity::UpdateTransmitState()");
+
 	ForceRespawn = DynamicHook.FromConf(gamedata, "CBasePlayer::ForceRespawn");
 	if(!ForceRespawn)
 		LogError("[Gamedata] Could not find CBasePlayer::ForceRespawn");
@@ -1633,6 +1637,16 @@ MRESReturn OnWeaponReplenishClipPre(int weapon) // Not when the player press rel
 void ScatterGun_Prevent_M2_OnEntityCreated(int entity)
 {
 	g_DHookScoutSecondaryFire.HookEntity(Hook_Pre, entity, DHook_ScoutSecondaryFire);
+}
+
+void Hook_DHook_UpdateTransmitState(int entity)
+{
+	g_DhookUpdateTransmitState.HookEntity(Hook_Pre, entity, DHook_UpdateTransmitState);
+}
+
+public MRESReturn DHook_UpdateTransmitState(int entity) //BLOCK!!
+{
+	return MRES_Supercede;	//NEVER DO PERMA.
 }
 
 public MRESReturn DHook_ScoutSecondaryFire(int entity) //BLOCK!!
