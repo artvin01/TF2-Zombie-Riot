@@ -701,7 +701,7 @@ public bool NightmareCannon_BEAM_TraceUsers(int entity, int contentsMask, int cl
 			
 			if (!StrContains(classname, "base_boss", true) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
 			{
-				for(int i=1; i <= MAXENTITIES; i++)
+				for(int i=1; i < MAXENTITIES; i++)
 				{
 					if(!NightmareCannon_BEAM_BuildingHit[i])
 					{

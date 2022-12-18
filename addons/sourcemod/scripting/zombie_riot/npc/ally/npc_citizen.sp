@@ -1126,15 +1126,18 @@ void Citizen_SpawnAtPoint(const char[] data = "")
 		
 		entity = Npc_Create(CITIZEN, 0, pos, ang, true, data);
 		
-		Citizen npc = view_as<Citizen>(entity);
-		
-		npc.m_iWearable3 = TF2_CreateGlow(npc.index);
+		if(IsValidEntity(entity))
+		{
+			Citizen npc = view_as<Citizen>(entity);
 			
-		SetVariantColor(view_as<int>({0, 255, 0, 255}));
-		AcceptEntityInput(npc.m_iWearable3, "SetGlowColor");
-			
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 255, 255, 255, 125);
+			npc.m_iWearable3 = TF2_CreateGlow(npc.index);
+				
+			SetVariantColor(view_as<int>({0, 255, 0, 255}));
+			AcceptEntityInput(npc.m_iWearable3, "SetGlowColor");
+				
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 255, 255, 255, 125);
+		}
 	}
 }
 

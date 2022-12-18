@@ -1984,7 +1984,7 @@ methodmap CClotBody
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, rocket_damage, true);	// Damage
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(this.index, Prop_Send, "m_iTeamNum"));
-			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
+			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
 			DispatchSpawn(entity);
 			if(rocket_model[0])
 			{
@@ -1999,7 +1999,7 @@ methodmap CClotBody
 				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", model_scale); // ZZZZ i sleep
 			}
 			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
+			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
 			SetEntityCollisionGroup(entity, 19); //our savior
 			See_Projectile_Team(entity);
 		}

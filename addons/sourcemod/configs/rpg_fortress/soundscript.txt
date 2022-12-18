@@ -900,3 +900,63 @@
 		"wave"  "vo/soldier_goodjob03.mp3"
 	}
 }
+
+
+
+"Rpgfortress.BarneyQuestGiver.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/npc/barney/ba_hurryup.wav"
+		"wave"  "vo/npc/barney/ba_danger02.wav"
+		"wave"  "vo/npc/barney/ba_bringiton.wav"
+	}
+}
+
+"Rpgfortress.BarneyQuestGiver.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/npc/barney/ba_letsdoit.wav"
+		"wave"  "vo/npc/barney/ba_letsgo.wav"
+	}
+}
+
+"Rpgfortress.BarneyQuestGiver.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/npc/barney/ba_openfiregord.wav"
+		"wave"  "vo/npc/barney/ba_imwithyou.wav"
+	}
+}
+
+"Rpgfortress.BarneyQuestGiver.Turnin"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/npc/barney/ba_ohyeah.wav"
+		"wave"  "vo/npc/barney/ba_oldtimes.wav"
+		"wave"  "vo/npc/barney/ba_yell.wav"
+	}
+}

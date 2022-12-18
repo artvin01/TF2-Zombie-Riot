@@ -271,28 +271,31 @@ stock float ZR_GetGameTime(int entity = 0)
 
 stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR, const float angles[3] = NULL_VECTOR, const float velocity[3] = NULL_VECTOR, bool do_original = false)
 {
-	if(origin[1] != NULL_VECTOR[1])
+	if(!do_original || entity <= MaxClients)
 	{
-		Custom_SDKCall_SetLocalOrigin(entity, origin);
-	}
-
-	if(angles[1] != NULL_VECTOR[1])
-	{
-		if(entity <= MaxClients)
+		if(origin[1] != NULL_VECTOR[1])
 		{
-			Custom_SetAbsVelocity(entity, angles);
+			Custom_SDKCall_SetLocalOrigin(entity, origin);
 		}
-		else
-		{
-			SetEntPropVector(entity, Prop_Data, "m_angRotation", angles); 
-		}
-	}
 
-	if(velocity[1] != NULL_VECTOR[1])
-	{
-		Custom_SetAbsVelocity(entity, velocity);
+		if(angles[1] != NULL_VECTOR[1])
+		{
+			if(entity <= MaxClients)
+			{
+				Custom_SetAbsVelocity(entity, angles);
+			}
+			else
+			{
+				SetEntPropVector(entity, Prop_Data, "m_angRotation", angles); 
+			}
+		}
+
+		if(velocity[1] != NULL_VECTOR[1])
+		{
+			Custom_SetAbsVelocity(entity, velocity);
+		}
 	}
-	if(do_original)
+	else
 	{
 		TeleportEntity(entity,origin,angles,velocity);
 	}
