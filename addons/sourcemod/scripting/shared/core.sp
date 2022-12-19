@@ -2077,6 +2077,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "base_boss"))
 		{
+			Hook_DHook_UpdateTransmitState(entity);
 			SDKHook(entity, SDKHook_SpawnPost, Check_For_Team_Npc);
 		//	Check_For_Team_Npc(EntIndexToEntRef(entity)); //Dont delay ?
 		}
@@ -2254,6 +2255,14 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SDKHook(entity, SDKHook_StartTouch, SDKHook_RespawnRoom_StartTouch);
 			SDKHook(entity, SDKHook_EndTouch, SDKHook_RespawnRoom_EndTouch);
+		}
+		else if(!StrContains(classname, "point_worldtext"))
+		{
+			Hook_DHook_UpdateTransmitState(entity);
+		}
+		else if(!StrContains(classname, "info_particle_system"))
+		{
+			Hook_DHook_UpdateTransmitState(entity);
 		}
 	}
 	

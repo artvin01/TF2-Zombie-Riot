@@ -377,6 +377,14 @@ void Music_PostThink(int client)
 			f_intencity += 9999.9; //absolute max.
 			GlobalIntencity += 9999;
 		}
+
+		if(!ZombieMusicPlayed)//once set in a wave, it should stay untill the next mass revive.
+		{
+			if(!b_IsAloneOnServer && float(GlobalIntencity) >= float(PlayersInGame) * 0.25)
+			{
+				ZombieMusicPlayed = true;
+			}
+		}
 		
 		if(LastMann)
 		{
@@ -396,7 +404,7 @@ void Music_PostThink(int client)
 		}
 		else if(f_intencity < float(PlayersAliveScaling) * 0.2)
 		{
-			if(!b_IsAloneOnServer && float(GlobalIntencity) >= float(PlayersInGame) * 0.25)
+			if(ZombieMusicPlayed)
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/2.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/2.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
@@ -412,7 +420,7 @@ void Music_PostThink(int client)
 		}
 		else if(f_intencity < float(PlayersAliveScaling) * 0.3)
 		{
-			if(!b_IsAloneOnServer && float(GlobalIntencity) >= float(PlayersInGame) * 0.25)
+			if(ZombieMusicPlayed)
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/3.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/3.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
@@ -428,7 +436,7 @@ void Music_PostThink(int client)
 		}
 		else if(f_intencity < float(PlayersAliveScaling) * 0.4)
 		{
-			if(!b_IsAloneOnServer && float(GlobalIntencity) >= float(PlayersInGame) * 0.25)
+			if(ZombieMusicPlayed)
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/4.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/4.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
@@ -444,7 +452,7 @@ void Music_PostThink(int client)
 		}
 		else if(f_intencity < float(PlayersAliveScaling) * 0.5)
 		{
-			if(!b_IsAloneOnServer && float(GlobalIntencity) >= float(PlayersInGame) * 0.25)
+			if(ZombieMusicPlayed)
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/5.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/5.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
@@ -460,7 +468,7 @@ void Music_PostThink(int client)
 		}
 		else if(f_intencity < float(PlayersAliveScaling) * 0.6)
 		{
-			if(!b_IsAloneOnServer && float(GlobalIntencity) >= float(PlayersInGame) * 0.25)
+			if(ZombieMusicPlayed)
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/6.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/6.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
@@ -476,7 +484,7 @@ void Music_PostThink(int client)
 		}
 		else if(f_intencity < float(PlayersAliveScaling) * 0.7)
 		{
-			if(!b_IsAloneOnServer && float(GlobalIntencity) >= float(PlayersInGame) * 0.25)
+			if(ZombieMusicPlayed)
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/7.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/7.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
@@ -492,7 +500,7 @@ void Music_PostThink(int client)
 		}
 		else if(f_intencity < float(PlayersAliveScaling) * 0.8)
 		{
-			if(!b_IsAloneOnServer && float(GlobalIntencity) >= float(PlayersInGame) * 0.25)
+			if(ZombieMusicPlayed)
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/8.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/8.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
@@ -508,7 +516,7 @@ void Music_PostThink(int client)
 		}
 		else if(f_intencity < float(PlayersAliveScaling) * 0.9)
 		{
-			if(!b_IsAloneOnServer && float(GlobalIntencity) >= float(PlayersInGame) * 0.25)
+			if(ZombieMusicPlayed)
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/9.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/9.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
@@ -524,7 +532,7 @@ void Music_PostThink(int client)
 		}
 		else
 		{
-			if(!b_IsAloneOnServer && float(GlobalIntencity) >= float(PlayersInGame) * 0.25)
+			if(ZombieMusicPlayed)
 			{
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/10.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.75);
 				EmitSoundToClient(client, "#zombiesurvival/beats/defaultzombiev2/10.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.75);

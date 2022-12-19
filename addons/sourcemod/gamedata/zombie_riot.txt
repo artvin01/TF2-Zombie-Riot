@@ -695,6 +695,13 @@
 				"return"		"void"
 				"this"			"entity"
 			}
+			"CBaseEntity::UpdateTransmitState()"
+			{
+				"offset"		"CBaseEntity::UpdateTransmitState()"
+				"hooktype"		"entity"
+				"return"		"void"
+				"this"			"entity"
+			}
 		}
 		"Offsets"
 		{
@@ -817,6 +824,12 @@
 			{
 				"windows"	"272"
 				"linux"		"278"
+			}
+			//CBaseEntity is arbitrary.
+			"CBaseEntity::UpdateTransmitState()"
+			{
+				"windows"	"21"
+				"linux"		"22"
 			}
 		}
 	}

@@ -218,8 +218,7 @@ void Quests_EnableZone(int client, const char[] name)
 
 public Action QuestIndicatorTransmit(int entity, int client)
 {
-	SetEdictFlags(entity, GetEdictFlags(entity) &~ FL_EDICT_ALWAYS);
-	
+//	return Plugin_Handled;
 	int owner = EntRefToEntIndex(b_ParticleToOwner[entity]);
 	if(IsValidEntity(owner))
 	{

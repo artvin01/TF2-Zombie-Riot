@@ -100,6 +100,7 @@ int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, 
 
 int PlayersAliveScaling;
 int PlayersInGame;
+bool ZombieMusicPlayed;
 int GlobalIntencity;
 bool b_HasBeenHereSinceStartOfWave[MAXTF2PLAYERS];
 Cookie CookieScrap;
@@ -358,6 +359,7 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
+	ZombieMusicPlayed = false;
 	EscapeMode = false;
 	EscapeModeForNpc = false;
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
@@ -1253,6 +1255,8 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 
 void ReviveAll(bool raidspawned = false)
 {
+	//only set false here
+	ZombieMusicPlayed = false;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))

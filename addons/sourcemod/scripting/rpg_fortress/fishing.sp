@@ -95,11 +95,11 @@ static int g_FishCaughtText;
 
 void Fishing_PluginStart()
 {
-
 	PoolList = new ArrayList(sizeof(PoolEnum));
 	CreateTimer(0.1, Fishing_Drawing, _, TIMER_REPEAT);
 	CreateTimer(10.0, Fishing_Timer, _, TIMER_REPEAT);
 }
+
 void Fishing_OnMapStart()
 {
 	g_FishCaughtParticle = PrecacheParticleSystem("drg_3rd_impact");
@@ -730,7 +730,7 @@ public Action Fishing_RodM1Delay(Handle timer, DataPack pack)
 			PoolList.Erase(choosen);
 			
 			GetClientEyePosition(client, pos);
-			TextStore_DropNamedItem(pool.Name, pos, 1);
+			TextStore_DropNamedItem(client, pool.Name, pos, 1);
 
 			Population.Rewind();
 			if(Population.JumpToKey(pool.Place))

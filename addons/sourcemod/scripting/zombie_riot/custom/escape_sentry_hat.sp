@@ -630,8 +630,6 @@ stock int ParticleEffectAt_Building_Custom(float position[3], char[] effectName,
 
 public Action ParticleTransmit(int entity, int client)
 {
-	SetEdictFlags(entity, GetEdictFlags(entity) &~ FL_EDICT_ALWAYS);
-	
 	if(client == Building_particle_Owner[entity])
 		return Plugin_Handled;
 

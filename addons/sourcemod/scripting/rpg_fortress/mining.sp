@@ -20,6 +20,9 @@ static float f_ClientStartedTouch[MAXTF2PLAYERS];
 static float f_ClientStartedTouchDelay[MAXTF2PLAYERS];
 static float f_TouchedThisManyTimes[MAXTF2PLAYERS];
 
+static float f_clientMinedThisSpot[MAXTF2PLAYERS];
+static float f_clientMinedThisSpotPos[MAXTF2PLAYERS][3];
+
 enum struct MineEnum
 {
 	char Zone[32];
@@ -310,11 +313,35 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 				}
 				else
 				{
+					float f_positionhit[3];	
+					TR_GetEndPosition(f_positionhit, tr);
+						
+			//		static float f_clientMinedThisSpot[MAXTF2PLAYERS];
+			//		static float f_clientMinedThisSpotPos[MAXTF2PLAYERS][3];
+					if(f_clientMinedThisSpotPos[client][1] == f_positionhit[1] && f_clientMinedThisSpotPos[client][0] == f_positionhit[0]) //It should theoretically be absolutely impossible to hit the same spot when moving around.
+					{
+						//We do not care about height. Because the numbers will be very off in this case.
+						if(f_clientMinedThisSpot[client] < GetGameTime())
+						{
+							static float m_vecMaxs[3];
+							static float m_vecMins[3];
+							m_vecMaxs = view_as<float>( { 5.0, 5.0, 5.0 } );
+							m_vecMins = view_as<float>( { -5.0, -5.0, -5.0 } );	
+							TE_DrawBox(client, f_positionhit, m_vecMins, m_vecMaxs, 0.2, view_as<int>({255, 0, 0, 255}));
+							ShowGameText(client, "ico_metal", 0, "This part of the rock is exhausted, mine another spot!");
+							delete tr;
+							return Plugin_Handled;
+						}
+					}
+					else
+					{
+						f_clientMinedThisSpot[client] = GetGameTime() + 5.0; //You cannot mine the exact same spot after 5 seconds.
+						f_clientMinedThisSpotPos[client] = f_positionhit;
+					}
+
 					bool Rare_hit = false;
 					if(f_clientFoundRareRockSpot[client] > GetGameTime())
 					{
-						float f_positionhit[3];	
-						TR_GetEndPosition(f_positionhit, tr);
 						float distance = GetVectorDistance( f_clientFoundRareRockSpotPos[client], f_positionhit, true ); 
 						if(distance < (27.0 * 27.0))
 						{
@@ -404,7 +431,7 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 					while(MineDamage[client] >= mine.Health)
 					{
 						GetClientEyePosition(client, forwar);
-						TextStore_DropNamedItem(mine.Item, forwar, 1);
+						TextStore_DropNamedItem(client, mine.Item, forwar, 1);
 						MineDamage[client] -= mine.Health;
 					}
 				}
@@ -460,7 +487,7 @@ public Action ApplyRareMiningChanceRepeat(Handle timer, DataPack pack)
 			static float m_vecMins[3];
 			m_vecMaxs = view_as<float>( { 10.0, 10.0, 10.0 } );
 			m_vecMins = view_as<float>( { -10.0, -10.0, -10.0 } );	
-			TE_DrawBox(client, f_pos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({255, 0, 0, 255}));
+			TE_DrawBox(client, f_pos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({0, 255, 0, 255}));
 			return Plugin_Continue;
 		}
 		else
