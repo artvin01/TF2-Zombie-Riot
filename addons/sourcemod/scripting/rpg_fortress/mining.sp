@@ -431,7 +431,7 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 					while(MineDamage[client] >= mine.Health)
 					{
 						GetClientEyePosition(client, forwar);
-						TextStore_DropNamedItem(mine.Item, forwar, 1);
+						TextStore_DropNamedItem(client, mine.Item, forwar, 1);
 						MineDamage[client] -= mine.Health;
 					}
 				}

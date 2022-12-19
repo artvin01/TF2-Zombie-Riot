@@ -80,13 +80,13 @@ enum struct SpawnEnum
 		float luck = 1.0 + (float(Stats_Luck(client)) / 300.0);
 		
 		if(this.Item1[0])
-			RollItemDrop(this.Item1, (this.Chance1 * multi) * luck, pos);
+			RollItemDrop(client, this.Item1, (this.Chance1 * multi) * luck, pos);
 		
 		if(this.Item2[0])
-			RollItemDrop(this.Item2, (this.Chance2 * multi) * luck, pos);
+			RollItemDrop(client, this.Item2, (this.Chance2 * multi) * luck, pos);
 		
 		if(this.Item3[0])
-			RollItemDrop(this.Item3, (this.Chance3 * multi) * luck, pos);
+			RollItemDrop(client, this.Item3, (this.Chance3 * multi) * luck, pos);
 
 	}
 }
@@ -354,16 +354,16 @@ void Spawns_NPCDeath(int entity, int client)
 	{
 		if(i_CreditsOnKill[entity] > 199)
 		{
-			TextStore_DropCash(pos, i_CreditsOnKill[entity]);
+			TextStore_DropCash(client, pos, i_CreditsOnKill[entity]);
 		}
 		else if(i_CreditsOnKill[entity] > 49)
 		{
 			if(GetURandomInt() % 2)
-				TextStore_DropCash(pos, i_CreditsOnKill[entity] * 2);
+				TextStore_DropCash((client, pos, i_CreditsOnKill[entity] * 2);
 		}
 		else if(!(GetURandomInt() % 5))
 		{
-			TextStore_DropCash(pos, i_CreditsOnKill[entity] * 5);
+			TextStore_DropCash((client, pos, i_CreditsOnKill[entity] * 5);
 		}
 	}
 
@@ -377,8 +377,8 @@ void Spawns_NPCDeath(int entity, int client)
 	}
 }
 
-static void RollItemDrop(const char[] name, float chance, float pos[3])
+static void RollItemDrop(client, const char[] name, float chance, float pos[3])
 {
 	if(chance > GetURandomFloat())
-		TextStore_DropNamedItem(name, pos, 1);
+		TextStore_DropNamedItem(client, name, pos, 1);
 }

@@ -106,6 +106,7 @@ public void BuildingMortarAction(int client)
 	position[2] += 3000.0;
 
 	int particle = ParticleEffectAt(position, "kartimpacttrail", 2.0);
+	SetEdictFlags(particle, (GetEdictFlags(particle) | FL_EDICT_ALWAYS));	
 	CreateTimer(1.7, MortarFire_Falling_Shot, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 	ParticleEffectAt(pos, "utaunt_portalswirl_purple_warp2", 2.0);
 }

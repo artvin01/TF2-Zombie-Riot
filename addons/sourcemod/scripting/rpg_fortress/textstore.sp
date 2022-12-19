@@ -199,6 +199,7 @@ static char InStore[MAXTF2PLAYERS][16];
 static char InStoreTag[MAXTF2PLAYERS][16];
 static int ItemIndex[MAXENTITIES];
 static int ItemCount[MAXENTITIES];
+static int ItemOwner[MAXENTITIES];
 static float ItemLifetime[MAXENTITIES];
 static bool InMenu[MAXTF2PLAYERS];
 static int MenuType[MAXTF2PLAYERS];
@@ -656,12 +657,12 @@ void TextStore_EntityCreated(int entity)
 	ItemCount[entity] = 0;
 }
 
-void TextStore_DropCash(float pos[3], int amount)
+void TextStore_DropCash(int client, float pos[3], int amount)
 {
-	DropItem(-1, pos, amount, 0);
+	DropItem(client, -1, pos, amount);
 }
 
-void TextStore_DropNamedItem(const char[] name, float pos[3], int amount)
+void TextStore_DropNamedItem(int client, const char[] name, float pos[3], int amount)
 {
 	int length = TextStore_GetItems();
 	for(int i; i < length; i++)
@@ -669,26 +670,20 @@ void TextStore_DropNamedItem(const char[] name, float pos[3], int amount)
 		static char buffer[48];
 		if(TextStore_GetItemName(i, buffer, sizeof(buffer)) && StrEqual(buffer, name, false))
 		{
-			DropItem(i, pos, amount, 0);
+			DropItem(client, i, pos, amount);
 		}
 	}
 }
 
-static void DropItem(int index, float pos[3], int amount, int client)
+static void DropItem(int client, int index, float pos[3], int amount)
 {
-	if(client)
-	{
-		if(Fishing_DroppedItem(client, pos, index))
-			return;
-	}
-
 	float ang[3];
 	static char buffer[PLATFORM_MAX_PATH];
 
 	int entity = MaxClients + 1;
 	while((entity = FindEntityByClassname(entity, "prop_physics_multiplayer")) != -1)
 	{
-		if(ItemCount[entity] && ItemIndex[entity] == index)
+		if(ItemCount[entity] && ItemIndex[entity] == index && ItemOwner[entity] == client)
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", ang);
 			if(GetVectorDistance(pos, ang, true) < 10000.0) // 100.0
@@ -766,6 +761,7 @@ static void DropItem(int index, float pos[3], int amount, int client)
 
 				ItemIndex[entity] = index;
 				ItemCount[entity] = amount;
+				ItemOwner[entity] = client;
 				ItemLifetime[entity] = GetGameTime() + 30.0;
 
 				if(index == -1)
@@ -800,16 +796,28 @@ static void DropItem(int index, float pos[3], int amount, int client)
 				color_Text[2] = RenderColors_RPG[rarity][2];
 				color_Text[3] = RenderColors_RPG[rarity][3];
 
-				i_TextEntity[entity][0] = EntIndexToEntRef(SpawnFormattedWorldText(buffer, {0.0, 0.0, 30.0}, amount == 1 ? 5 : 6, color_Text, entity,_,true));
-				SDKHook(i_TextEntity[entity][0], SDKHook_SetTransmit, DroppedItemSetTransmit);
+				int text = SpawnFormattedWorldText(buffer, {0.0, 0.0, 30.0}, amount == 1 ? 5 : 6, color_Text, entity,_,true);
+				ItemOwner[text] = client;
+				i_TextEntity[entity][0] = EntIndexToEntRef(text);
+				
+				SDKHook(text, SDKHook_SetTransmit, DroppedItemSetTransmit);
 				SDKHook(entity, SDKHook_SetTransmit, DroppedItemSetTransmit);
 			
 			}
 		}
 	}
 }
+
+static bool CanSeeItem(int entity, int client)
+{
+	return (ItemOwner[entity] == client || Party_IsClientMember(ItemOwner[entity], client) || (ItemLifetime[entity] - 15.0) > GetGameTime());
+}
+
 public Action DroppedItemSetTransmit(int entity, int client)
 {
+	if(CanSeeItem(entity, client))
+		return Plugin_Continue;
+	
 	return Plugin_Handled;
 }
 

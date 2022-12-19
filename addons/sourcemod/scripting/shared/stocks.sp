@@ -1215,6 +1215,10 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 #if defined RPG
 	else if(entity > MaxClients && entity < MAXENTITIES)
 	{
+		if(CanSeeItem(entity, data))
+		{
+			return entity!=data;
+		}
 		if(b_is_a_brush[entity])//THIS is for brushes that act as collision boxes for NPCS inside quests.sp
 		{
 			int entityfrombrush = BrushToEntity(entity);
