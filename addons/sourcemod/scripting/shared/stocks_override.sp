@@ -271,7 +271,7 @@ stock float ZR_GetGameTime(int entity = 0)
 
 stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR, const float angles[3] = NULL_VECTOR, const float velocity[3] = NULL_VECTOR, bool do_original = false)
 {
-	if(!do_original || entity <= MaxClients)
+	if(!do_original && entity <= MaxClients)
 	{
 		if(origin[1] != NULL_VECTOR[1])
 		{
