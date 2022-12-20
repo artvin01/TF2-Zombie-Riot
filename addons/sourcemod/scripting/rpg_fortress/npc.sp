@@ -296,9 +296,13 @@ public void NPC_Despawn(int entity)
 void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] StandStill, float walkspeedback, float gameTime, bool walkback_use_sequence = false, bool standstill_use_sequence = false)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
-
+	
 	if(npc.m_flGetClosestTargetTime < gameTime) //Find a new victim to destroy.
 	{
+		if(b_NpcIsInADungeon[npc.index])
+		{
+			distance = 99999.9;
+		}
 		int entity_found = GetClosestTarget(npc.index, false, distance);
 		if(npc.m_flGetClosestTargetNoResetTime > gameTime) //We want to make sure that their aggro doesnt get reset instantly!
 		{
@@ -307,8 +311,12 @@ void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] Stand
 				int Enemy_I_See;
 							
 				Enemy_I_See = Can_I_See_Enemy(npc.index, entity_found);
-				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See)) //Can i even see this enemy that i want to go to newly?
+				if((b_NpcIsInADungeon[npc.index]) || (IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))) //Can i even see this enemy that i want to go to newly?
 				{
+					if(b_NpcIsInADungeon[npc.index])
+					{
+						npc.m_iTarget = entity_found;
+					}
 					//found enemy, go to new enemy
 					npc.m_iTarget = Enemy_I_See;
 				}
@@ -321,8 +329,12 @@ void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] Stand
 				int Enemy_I_See;
 								
 				Enemy_I_See = Can_I_See_Enemy(npc.index, entity_found);
-				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+				if((b_NpcIsInADungeon[npc.index]) || (IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See)))
 				{
+					if(b_NpcIsInADungeon[npc.index])
+					{
+						npc.m_iTarget = entity_found;
+					}
 					//if we want to search for new enemies, it must be a valid one that can be seen.
 					npc.m_iTarget = Enemy_I_See;
 				}

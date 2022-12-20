@@ -15,6 +15,8 @@ char c_TagName[MAXTF2PLAYERS][64];
 int b_BrushToOwner[MAXENTITIES];
 int b_OwnerToBrush[MAXENTITIES];
 
+bool b_NpcIsInADungeon[MAXENTITIES];
+
 float f_HealingPotionDuration[MAXTF2PLAYERS];
 int f_HealingPotionEffect[MAXTF2PLAYERS];
 
@@ -136,6 +138,7 @@ void RPG_ClientDisconnect_Post()
 
 void RPG_EntityCreated(int entity)
 {
+	b_NpcIsInADungeon[entity] = false;
 	StoreWeapon[entity][0] = 0;
 	Stats_ClearCustomStats(entity);
 }

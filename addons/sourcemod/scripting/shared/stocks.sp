@@ -3249,6 +3249,7 @@ stock int SpawnSeperateCollisionBox(int entity, float Mins[3] = {-24.0,-24.0,0.0
 	{
 		DispatchKeyValueVector(brush, "origin", vector);
 		DispatchKeyValue(brush, "spawnflags", "64");
+		DispatchKeyValue(brush, "targetname", "rpg_fortress");
 
 		DispatchSpawn(brush);
 		ActivateEntity(brush);    

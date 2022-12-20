@@ -29,6 +29,11 @@ enum struct MineEnum
 	
 	char Model[PLATFORM_MAX_PATH];
 	float Pos[3];
+	
+	float Text_Pos[3];
+	char Text_Name[PLATFORM_MAX_PATH];
+	int Text_Size;
+
 	float Ang[3];
 	float Scale;
 	bool OnTouch;
@@ -62,10 +67,16 @@ enum struct MineEnum
 		kv.GetString("model", this.Model, PLATFORM_MAX_PATH, "models/error.mdl");
 		if(!this.Model[0])
 			SetFailState("Missing model in mining.cfg");
+			
+		kv.GetString("text_name", this.Text_Name, PLATFORM_MAX_PATH, "Ore");
 		
+		this.Text_Size = kv.GetNum("text_font_size");
 		PrecacheModel(this.Model);
 		
 		kv.GetVector("ang", this.Ang);
+
+		kv.GetVector("text_pos", this.Text_Pos);
+
 		kv.GetColor4("color", this.Color);
 		this.Scale = kv.GetFloat("scale", 1.0);
 
@@ -95,6 +106,11 @@ enum struct MineEnum
 			int entity = EntRefToEntIndex(this.EntRef);
 			if(entity != -1)
 				RemoveEntity(entity);
+
+			int text = EntRefToEntIndex(i_TextEntity[entity][0]);
+			if(text != -1)
+				RemoveEntity(text);
+
 			
 			this.EntRef = INVALID_ENT_REFERENCE;
 		}
@@ -131,9 +147,14 @@ enum struct MineEnum
 					SDKHook(entity, SDKHook_Touch, AntiTouchStuckMine);
 				}	
 			//	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
-				
+
+				if(this.Text_Name[0])
+				{
+					int text = SpawnFormattedWorldText(this.Text_Name, this.Text_Pos, this.Text_Size, this.Color, _,_, false);
+					i_TextEntity[entity][0] = EntIndexToEntRef(text);
+				}			
 			//	SetEntityRenderMode(entity, RENDER_NORMAL);
-			//	SetEntityRenderColor(entity, this.Color[0], this.Color[1], this.Color[2], this.Color[3]);
+				SetEntityRenderColor(entity, this.Color[0], this.Color[1], this.Color[2], this.Color[3]);
 				
 				this.EntRef = EntIndexToEntRef(entity);
 			}
