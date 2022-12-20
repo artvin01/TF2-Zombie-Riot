@@ -135,21 +135,16 @@ public void Marksman_boom_rifle(int client, int weapon, const char[] classname, 
 	b_LagCompNPC_ExtendBoundingBox = true;
 	StartLagCompensation_Base_Boss(client);
 	Handle trace = TR_TraceRayFilterEx(eyePos, eyeAng, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
-	
+	if (TR_DidHit(trace))
+	{
+		TR_GetEndPosition(spawnLoc, trace);
+	}	
 	SpawnSmallExplosionNotRandom(spawnLoc);
 	EmitSoundToAll(HITSCAN_BOOM, -1, _, 90, _, _, _, _,spawnLoc);
 	Explode_Logic_Custom(damage, client, client, weapon, spawnLoc);
 		
 	FinishLagCompensation_Base_boss();
-	if (TR_DidHit(trace))
-	{
-		TR_GetEndPosition(spawnLoc, trace);
-	} 
 	CloseHandle(trace);
-//	if (GetVectorDistance(eyePos, spawnLoc, true) <= Pow(650.0, 2.0))
-	{	
-
-	}
 }
 
 
