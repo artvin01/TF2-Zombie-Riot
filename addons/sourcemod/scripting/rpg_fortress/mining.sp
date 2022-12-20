@@ -435,6 +435,7 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 					if(Rare_hit)
 					{
 						damage *= 6;
+						Tinker_GainXP(client, weapon);
 					}
 
 					Event event = CreateEvent("npc_hurt", true);
@@ -453,7 +454,6 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 						GetClientEyePosition(client, forwar);
 						TextStore_DropNamedItem(client, mine.Item, forwar, 1);
 						MineDamage[client] -= mine.Health;
-						Tinker_GainXP(client, weapon);
 					}
 				}
 			}
