@@ -1278,7 +1278,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 		//Random crit damage!
 		//Yes, we allow those.
-		if(GetRandomFloat(0.0, 1.0) < 0.01)
+		if(GetRandomFloat(0.0, 1.0) < (float(1 + Stats_Luck(attacker)) * 0.001))
 		{
 			damage *= 3.0;
 			DisplayCritAboveNpc(victim, attacker, true); //Display crit above head
@@ -2037,7 +2037,7 @@ void NPC_DeadEffects(int entity)
 			
 #if defined RPG
 			Quests_AddKill(client, NPC_Names[i_NpcInternalId[entity]]);
-			Spawns_NPCDeath(entity, client);
+			Spawns_NPCDeath(entity, client, WeaponLastHit);
 #endif
 			
 			NPC_Killed_Show_Hud(client, entity, WeaponLastHit, NPC_Names[i_NpcInternalId[entity]], DamageBits[entity]);

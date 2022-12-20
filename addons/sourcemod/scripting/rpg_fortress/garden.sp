@@ -68,6 +68,8 @@ void Garden_ConfigSetup(KeyValues map)
 					GardenList.PushArray(garden);
 				}
 				while(kv.GotoNextKey(false));
+
+				kv.GoBack();
 			}
 		}
 		while(kv.GotoNextKey());

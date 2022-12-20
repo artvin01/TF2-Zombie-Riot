@@ -100,12 +100,17 @@ public Action OnTaunt(int client, const char[] command, int args)
 
 public Action OnSayCommand(int client, const char[] command, int args)
 {
-// For now...
+	
 #if defined ZR
 	if(Store_SayCommand(client))
 		return Plugin_Handled;
 #endif
 	
+#if defined RPG
+	if(Tinker_SayCommand(client))
+		return Plugin_Handled;
+#endif
+
 	return NPC_SayCommand(client, command);
 }
 

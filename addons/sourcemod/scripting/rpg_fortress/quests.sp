@@ -15,18 +15,7 @@ static char CurrentNPC[MAXTF2PLAYERS][64];
 static bool b_NpcHasQuestForPlayer[MAXENTITIES][MAXTF2PLAYERS];
 static int b_ParticleToOwner[MAXENTITIES];
 static int b_OwnerToParticle[MAXENTITIES];
-static int b_BrushToOwner[MAXENTITIES];
-static int b_OwnerToBrush[MAXENTITIES];
 
-int BrushToEntity(int brush)
-{
-	int entity = EntRefToEntIndex(b_BrushToOwner[brush]);
-	if(IsValidEntity(entity))
-	{
-		return entity;
-	}
-	return -1;
-}
 static void ForceSave(int client)
 {
 	static char buffer[PLATFORM_MAX_PATH];

@@ -175,7 +175,7 @@ enum
 	Ammo_MAX
 };
 
-public int RenderColors_RPG[][] =
+public const int RenderColors_RPG[][] =
 {
 	{255, 255, 255, 255}, 	// 0
 	{0, 255, 0, 255, 255}, 	//Green
@@ -758,6 +758,7 @@ bool b_Pathing[MAXENTITIES];
 bool b_Jumping[MAXENTITIES];
 bool b_AllowBackWalking[MAXENTITIES];
 float fl_JumpStartTime[MAXENTITIES];
+float fl_JumpStartTimeInternal[MAXENTITIES];
 float fl_JumpCooldown[MAXENTITIES];
 float fl_NextThinkTime[MAXENTITIES];
 float fl_NextRunTime[MAXENTITIES];
@@ -2703,6 +2704,7 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				int entityfrombrush = BrushToEntity(entity);
 				if(entityfrombrush != -1)
 				{
+					PrintToChatAll("converted");
 					entity = entityfrombrush;
 				}
 			}
@@ -2733,6 +2735,9 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 			if(TextStore_Interact(client, entity, Is_Reload_Button))
 				return true;
 			
+			if(Tinker_Interact(client, entity, weapon))
+				return true;
+
 			if(Quests_Interact(client, entity))
 				return true;
 #endif

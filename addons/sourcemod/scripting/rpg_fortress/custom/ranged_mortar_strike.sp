@@ -35,8 +35,6 @@ public float AbilityMortarRanged(int client, int index, char name[48])
 	}
 	return 0.0;
 }
-static int i_HasMarker[MAXTF2PLAYERS];
-
 static float f_MarkerPosition[MAXTF2PLAYERS][3];
 static float f_Damage[MAXTF2PLAYERS];
 
@@ -48,15 +46,12 @@ public void Ability_MortarRanged(int client, int level, int weapon)
 	
 	f_Damage[client] = (damage * 6);
 
-	f_Damage[client] 
-
 	BuildingMortarAction(client);
 }
 	
 
 public void BuildingMortarAction(int client)
 {
-	int team = GetClientTeam(client);
 	float spawnLoc[3];
 	float eyePos[3];
 	float eyeAng[3];

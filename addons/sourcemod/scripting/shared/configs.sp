@@ -74,6 +74,7 @@ public void Configs_ConfigsExecuted()
 	Music_ConfigSetup(kv);
 	Quests_ConfigSetup(kv);
 	Spawns_ConfigSetup(kv);
+	Tinker_ConfigSetup(kv);
 	
 	TextStore_ConfigSetup(kv);
 

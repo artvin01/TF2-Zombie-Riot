@@ -26,36 +26,6 @@ void Stats_ClearCustomStats(int entity)
 	Luck[entity] = 0;
 }
 
-static char[] CharInt(int value)
-{
-	static char buffer[16];
-	IntToString(value, buffer, sizeof(buffer));
-	if(value > 0)
-	{
-		for(int i = sizeof(buffer) - 1; i > 0; i--)
-		{
-			buffer[i] = buffer[i-1];
-		}
-
-		buffer[0] = '+';
-	}
-	return buffer;
-} 
-
-static char[] CharPercent(float value)
-{
-	static char buffer[16];
-	if(value < 1.0)
-	{
-		Format(buffer, sizeof(buffer), "-%d%%", RoundFloat((1.0 / value) * 100.0));
-	}
-	else
-	{
-		Format(buffer, sizeof(buffer), "+%d%%", RoundFloat((value - 1.0) * 100.0));
-	}
-	return buffer;
-} 
-
 void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
 {
 	for(int i; i < attribs; i++)
@@ -80,7 +50,7 @@ void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
 			case -6:
 				Format(desc, 512, "%s\n%s Agility", desc, CharInt(RoundFloat(value[i])));
 
-			case 410:
+			case 140:
 				Format(desc, 512, "%s\n%s Max Health", desc, CharInt(RoundFloat(value[i])));
 		
 			case 405:
@@ -328,6 +298,8 @@ void Stats_ShowLevelUp(int client, int oldLevel, int oldTier)
 	Stats_Intelligence(client, oldAmount, _, oldLevel, oldTier);
 	Stats_Intelligence(client, newAmount);
 	MACRO_SHOWDIFF("Intelligence")
+
+	Tinker_StatsLevelUp(client, oldLevel, menu);
 
 	menu.Display(client, MENU_TIME_FOREVER);
 }

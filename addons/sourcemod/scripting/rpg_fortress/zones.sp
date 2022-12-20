@@ -22,7 +22,7 @@ void Zones_ResetAll()
 	int entity = -1;
 	while((entity = FindEntityByClassname(entity, "trigger_multiple")) != -1)
 	{
-		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && !StrContains(name, "zr_", false))
+		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && !StrContains(name, "rpg_", false))
 			AcceptEntityInput(entity, "TouchTest", entity, entity);
 	}
 	
@@ -72,6 +72,7 @@ static void OnActive(int client, const char[] name)
 	{
 		Mining_EnableZone(name);
 		Spawns_UpdateSpawn(name);
+		Tinker_EnableZone(name);
 	}
 }
 
@@ -88,6 +89,7 @@ static void OnDisable(int client, const char[] name)
 		Quests_DisableZone(name);
 		Spawns_DisableSpawn(name);
 		TextStore_ZoneAllLeave(name);
+		Tinker_DisableZone(name);
 	}
 
 }

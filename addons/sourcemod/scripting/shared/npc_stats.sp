@@ -852,6 +852,12 @@ methodmap CClotBody
 		public set(bool TempValueForProperty) 	{ b_NextRangedBarrage_OnGoing[this.index] = TempValueForProperty; }
 	}
 
+	property float m_flJumpStartTimeInternal
+	{
+		public get()							{ return fl_JumpStartTimeInternal[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_JumpStartTimeInternal[this.index] = TempValueForProperty; }
+	}
+
 	property float m_flJumpStartTime
 	{
 		public get()							{ return fl_JumpStartTime[this.index]; }
@@ -1703,10 +1709,10 @@ methodmap CClotBody
 		PF_DisableCallback(entity, PFCB_Approach);
 		PF_DisableCallback(entity, PFCB_IsEntityTraversable);
 		PF_DisableCallback(entity, PFCB_GetPathCost);
-	//	PF_DisableCallback(entity, PFCB_ClimbUpToLedge);
-		PF_DisableCallback(entity, PFCB_OnMoveToSuccess);
-		PF_DisableCallback(entity, PFCB_PathFailed);
-		PF_DisableCallback(entity, PFCB_OnMoveToFailure);
+		PF_DisableCallback(entity, PFCB_ClimbUpToLedge);
+	//	PF_DisableCallback(entity, PFCB_OnMoveToSuccess);
+	//	PF_DisableCallback(entity, PFCB_PathFailed);
+	//	PF_DisableCallback(entity, PFCB_OnMoveToFailure);
 		PF_DisableCallback(entity, PFCB_OnActorEmoted);
 		PF_Destroy(entity);
 	}	
@@ -4695,7 +4701,7 @@ public void Check_If_Stuck(int iNPC)
 			}
 		}
 	}
-
+	/*
 	if (!npc.IsOnGround())
 	{
 		static float hullcheckmaxs[3];
@@ -4722,14 +4728,14 @@ public void Check_If_Stuck(int iNPC)
 		
 		//invert to save 1 frame per 3 minutes
 	
-		hullcheckmins[0] -= 10.0;
-		hullcheckmins[1] -= 10.0;
+		hullcheckmins[0] -= 15.0;
+		hullcheckmins[1] -= 15.0;
 		
-		hullcheckmaxs[0] += 10.0;
-		hullcheckmaxs[1] += 10.0;
+		hullcheckmaxs[0] += 15.0;
+		hullcheckmaxs[1] += 15.0;
 		
-		hullcheckmins[2] -= 16.0; //STEP HEIGHT
-		hullcheckmaxs[2] += 16.0;
+		hullcheckmins[2] -= 20.0; //STEP HEIGHT
+		hullcheckmaxs[2] += 20.0;
 		
 		if (!npc.g_bNPCVelocityCancel && IsSpaceOccupiedIgnorePlayers(flMyPos, hullcheckmins, hullcheckmaxs, iNPC))//The boss will start to merge with shits, cancel out velocity.
 		{
@@ -4742,6 +4748,8 @@ public void Check_If_Stuck(int iNPC)
 	{
 		npc.g_bNPCVelocityCancel = false;
 	}
+	*/
+	
 }
 
 //using normal ontakedamage will make it abit more inaccurate but it will work
@@ -5245,15 +5253,41 @@ stock char[] GetStepSoundForMaterial(const char[] material)
 	
 	return sound;
 }
-/*
-public bool PluginBot_NormalJump(int bot_entidx, float vecPos[3], const float dir[3])
+
+public void PluginBot_Jump_Now(int bot_entidx, float vecPos[3])
 {
-	return view_as<CClotBody>(bot_entidx).PluginBot_Jump_Now(vecPos, dir);
+	CClotBody npc = view_as<CClotBody>(bot_entidx);
+	
+	float watchForClimbRange = 75.0;
+	
+	float vecNPC[3];
+	GetEntPropVector(bot_entidx, Prop_Data, "m_vecOrigin", vecNPC);
+	
+	float flDistance = GetVectorDistance(vecNPC, vecPos);
+	if(flDistance > watchForClimbRange || npc.m_bJumping)
+		return;
+	
+	//I guess we failed our last jump because we're jumping again this soon, let's try just a regular jump.
+	if((GetGameTime() - npc.m_flJumpStartTime) < 0.25)
+		npc.Jump();
+	/*
+	else
+		npc.JumpAcrossGap(vecPos, vecPos);
+	*/
+	npc.m_bJumping = true;
+	npc.m_flJumpStartTime = GetGameTime();
 }
 
-public bool PluginBot_Jump_Now(int bot_index)
+
+public void PluginBot_Jump_Now_old(int bot_index)
 {
 	CClotBody npc = view_as<CClotBody>(bot_index);
+
+	if((GetGameTime() - npc.m_flJumpStartTimeInternal) < 2.0)
+		return;
+
+	npc.m_flJumpStartTimeInternal = GetGameTime();
+
 	float Jump_1_frame[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
 	Jump_1_frame[2] += 20.0;
@@ -5283,15 +5317,15 @@ public bool PluginBot_Jump_Now(int bot_index)
 		vecJumpVel[2] = 350.0;
 		
 		npc.Jump();
-		vecJumpVel[0] = 0.0;
-		vecJumpVel[1] = 0.0;
+	//	vecJumpVel[0] = 0.0;
+	//	vecJumpVel[1] = 0.0;
 		SetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
 		CreateTimer(0.1, Did_They_Get_Suck, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		npc.SetVelocity(vecJumpVel);
 		
 	}
-	return true;
-}*/
+	return;
+}
 
 public Action Did_They_Get_Suck(Handle cut_timer, int ref)
 {
@@ -6474,6 +6508,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_Jumping[entity] = false;
 	b_AllowBackWalking[entity] = false;
 	fl_JumpStartTime[entity] = 0.0;
+	fl_JumpStartTimeInternal[entity] = 0.0;
 	fl_JumpCooldown[entity] = 0.0;
 	fl_NextDelayTime[entity] = 0.0;
 	fl_NextThinkTime[entity] = 0.0;

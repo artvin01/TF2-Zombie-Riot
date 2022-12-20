@@ -414,7 +414,33 @@ void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] Stand
 	}
 	else
 	{
+		if(npc.m_flDoingAnimation < GetGameTime())
+		{
+			float vecMe[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecMe);
+			float vecTarget[3];
+			GetEntPropVector(npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", vecTarget);
+
+			if((vecTarget[2] - vecMe[2]) > 100.0 && (vecTarget[2] - vecMe[2]) < 250.0)
+			{
+				vecMe[2] = vecTarget[2];
+				//Height should not be a factor in this calculation.
+				float f_DistanceForJump = GetVectorDistance(vecMe, vecTarget, true);
+				if(f_DistanceForJump < Pow(200.0, 2.0)) //Are they close enough for us to even jump after them..?
+				{
+					if((GetGameTime() - npc.m_flJumpStartTimeInternal) < 2.0)
+						return;
+
+					npc.m_flJumpStartTimeInternal = GetGameTime();
+
+					vecTarget[2] += 50.0;
+
+					PluginBot_Jump(npc.index, vecTarget);
+				}
+			}
+		}
 		i_NoEntityFoundCount[npc.index] = 0;
+
 	}
 
 	if(!npc.m_bisWalking) //Dont move, or path. so that he doesnt rotate randomly, also happens when they stop follwing.

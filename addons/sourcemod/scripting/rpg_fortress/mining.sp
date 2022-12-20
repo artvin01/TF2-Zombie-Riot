@@ -75,8 +75,6 @@ enum struct MineEnum
 		
 		this.OnTouch = view_as<bool>(kv.GetNum("ontouch"));
 
-		this.EntRef = INVALID_ENT_REFERENCE;
-
 		kv.GetString("s1_item", this.Item1, 48);
 		this.Chance1 = kv.GetFloat("s1_chance");
 		this.Tier1 = kv.GetNum("s1_tier");
@@ -194,6 +192,7 @@ void Mining_ConfigSetup(KeyValues map)
 	MineList = new ArrayList(sizeof(MineEnum));
 
 	MineEnum mine;
+	mine.EntRef = INVALID_ENT_REFERENCE;
 
 	kv.GotoFirstSubKey();
 	do
@@ -433,6 +432,7 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 						GetClientEyePosition(client, forwar);
 						TextStore_DropNamedItem(client, mine.Item, forwar, 1);
 						MineDamage[client] -= mine.Health;
+						Tinker_GainXP(client, weapon);
 					}
 				}
 			}

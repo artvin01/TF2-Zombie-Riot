@@ -1215,10 +1215,6 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 #if defined RPG
 	else if(entity > MaxClients && entity < MAXENTITIES)
 	{
-		if(CanSeeItem(entity, data))
-		{
-			return entity!=data;
-		}
 		if(b_is_a_brush[entity])//THIS is for brushes that act as collision boxes for NPCS inside quests.sp
 		{
 			int entityfrombrush = BrushToEntity(entity);
@@ -1226,6 +1222,14 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 			{
 				return entityfrombrush!=data;
 			}
+		}
+		if(Textstore_CanSeeItem(entity, data))
+		{
+			return entity!=data;
+		}
+		else
+		{
+			return false;
 		}
 	}
 #endif	
@@ -2243,7 +2247,7 @@ stock int TracePlayerHulls(const float pos[3], const float mins[3], const float 
 	return bHit;
 }
 
-void TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, int color[4])
+void TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, const int color[4])
 {
 	//Trace top down
 	/*
@@ -2315,7 +2319,7 @@ void TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_ve
 //	return true;
 }
 
-void TE_SendBeam(int client, float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, int color[4])
+void TE_SendBeam(int client, float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, const int color[4])
 {
 	TE_SetupBeamPoints(m_vecMins, m_vecMaxs, g_iLaserMaterial_Trace, g_iHaloMaterial_Trace, 0, 0, flDur, 1.0, 1.0, 1, 0.0, color, 0);
 	TE_SendToClient(client);
@@ -3277,6 +3281,17 @@ stock int SpawnSeperateCollisionBox(int entity, float Mins[3] = {-24.0,-24.0,0.0
 
 //static int b_TextEntityToOwner[MAXPLAYERS];
 #if defined RPG
+
+int BrushToEntity(int brush)
+{
+	int entity = EntRefToEntIndex(b_BrushToOwner[brush]);
+	if(IsValidEntity(entity))
+	{
+		return entity;
+	}
+	return -1;
+}
+
 stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 {
 	int textentity = EntRefToEntIndex(i_TextEntity[client][0]);
@@ -3402,3 +3417,33 @@ void spawnRing_Vectors(float center[3], float range, float modif_X, float modif_
 	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
 	TE_SendToAll();
 }
+
+stock char[] CharInt(int value)
+{
+	static char buffer[16];
+	IntToString(value, buffer, sizeof(buffer));
+	if(value > 0)
+	{
+		for(int i = sizeof(buffer) - 1; i > 0; i--)
+		{
+			buffer[i] = buffer[i-1];
+		}
+
+		buffer[0] = '+';
+	}
+	return buffer;
+}
+
+stock char[] CharPercent(float value)
+{
+	static char buffer[16];
+	if(value < 1.0)
+	{
+		Format(buffer, sizeof(buffer), "%d%%", 100 - RoundFloat((1.0 / value) * 100.0));
+	}
+	else
+	{
+		Format(buffer, sizeof(buffer), "+%d%%", RoundFloat((value - 1.0) * 100.0));
+	}
+	return buffer;
+} 

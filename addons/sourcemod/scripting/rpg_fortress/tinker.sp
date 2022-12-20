@@ -12,10 +12,10 @@ static const char TierName[][] =
 	"Strange",			// 3 / 9
 	"Unremarkable",		// 4 / 10
 	"Scarcely Lethal",	// 5 / 11
-	"Uncharitable"		// 6 / 12
-	"Truely Feared"		// 7 / 13
-	"Wicked Nasty"		// 8 / 14
-	"Epic"				// 9 / 15
+	"Uncharitable",		// 6 / 12
+	"Truely Feared",	// 7 / 13
+	"Wicked Nasty",		// 8 / 14
+	"Epic",				// 9 / 15
 	"Legendary"			// 10 / 16
 };
 
@@ -27,6 +27,109 @@ static const char TierName[][] =
 #define FLAG_MINE	(1 << 3)	// 8
 #define FLAG_FISH	(1 << 4)	// 16
 #define FLAG_ALL	31
+
+enum struct TinkerNPCEnum
+{
+	char Model[PLATFORM_MAX_PATH];
+	char Idle[64];
+	float Pos[3];
+	float Ang[3];
+	float Scale;
+	
+	char Wear1[PLATFORM_MAX_PATH];
+	char Wear2[PLATFORM_MAX_PATH];
+	char Wear3[PLATFORM_MAX_PATH];
+	
+	int EntRef;
+	
+	void SetupEnum(KeyValues kv)
+	{
+		kv.GetString("model", this.Model, PLATFORM_MAX_PATH);
+		if(!this.Model[0])
+			SetFailState("Missing model in tinker.cfg");
+		
+		this.Scale = kv.GetFloat("scale", 1.0);
+		
+		kv.GetString("anim_idle", this.Idle, 64);
+		
+		kv.GetVector("pos", this.Pos);
+		kv.GetVector("ang", this.Ang);
+		
+		kv.GetString("wear1", this.Wear1, PLATFORM_MAX_PATH);
+		if(this.Wear1[0])
+			PrecacheModel(this.Wear1);
+		
+		kv.GetString("wear2", this.Wear2, PLATFORM_MAX_PATH);
+		if(this.Wear2[0])
+			PrecacheModel(this.Wear2);
+		
+		kv.GetString("wear3", this.Wear3, PLATFORM_MAX_PATH);
+		if(this.Wear3[0])
+			PrecacheModel(this.Wear3);
+	}
+	
+	void Despawn()
+	{
+		if(this.EntRef != INVALID_ENT_REFERENCE)
+		{
+			int entity = EntRefToEntIndex(this.EntRef);
+
+			int brush = EntRefToEntIndex(b_OwnerToBrush[entity]);
+			if(IsValidEntity(brush))
+			{
+				RemoveEntity(brush);
+			}
+
+			if(entity != -1)
+				RemoveEntity(entity);
+			
+			this.EntRef = INVALID_ENT_REFERENCE;
+		}
+	}
+	
+	void Spawn()
+	{
+		if(EntRefToEntIndex(this.EntRef) == INVALID_ENT_REFERENCE)
+		{
+			int entity = CreateEntityByName("prop_dynamic_override");
+			if(IsValidEntity(entity))
+			{
+				DispatchKeyValue(entity, "targetname", "rpg_fortress");
+				DispatchKeyValue(entity, "model", this.Model);
+				
+				
+				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR);
+				
+				DispatchSpawn(entity);
+				SetEntityCollisionGroup(entity, 2);
+
+				int brush = SpawnSeperateCollisionBox(entity);
+				//Just reuse it.
+				b_BrushToOwner[brush] = EntIndexToEntRef(entity);
+				b_OwnerToBrush[entity] = EntIndexToEntRef(brush);
+				
+				if(this.Wear1[0])
+					GivePropAttachment(entity, this.Wear1);
+				
+				if(this.Wear2[0])
+					GivePropAttachment(entity, this.Wear2);
+				
+				if(this.Wear3[0])
+					GivePropAttachment(entity, this.Wear3);
+				
+				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
+				
+				SetVariantString(this.Idle);
+				AcceptEntityInput(entity, "SetDefaultAnimation", entity, entity);
+				
+				SetVariantString(this.Idle);
+				AcceptEntityInput(entity, "SetAnimation", entity, entity);
+				
+				this.EntRef = EntIndexToEntRef(entity);
+			}
+		}
+	}
+}
 
 enum struct TinkerEnum
 {
@@ -69,9 +172,9 @@ enum struct TinkerEnum
 		kv.GetSectionName(this.Name, 32);
 
 		this.ToolMinLv = kv.GetNum("tool_minlevel");
-		this.ToolMaxLv = kv.GetNum("tool_maxlevel");
-		this.ToolMinRarity = kv.GetNum("tool_minlevel");
-		this.ToolMaxRarity = kv.GetNum("tool_maxlevel", 9);
+		this.ToolMaxLv = kv.GetNum("tool_maxlevel", 99999);
+		this.ToolMinRarity = kv.GetNum("tool_minrarity");
+		this.ToolMaxRarity = kv.GetNum("tool_maxrarity", 9);
 		this.PlayerLevel = kv.GetNum("player_minlevel");
 		this.ToolFlags = kv.GetNum("tools");
 		this.Levels = kv.GetNum("levels");
@@ -104,8 +207,8 @@ enum struct TinkerEnum
 		this.FuncGainXP = GetFunctionByName(null, this.Desc);
 
 		static char buffers[32][16];
-		kv.GetString("attributes", this.Desc, 256);
-		this.Attribs = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
+		kv.GetString("attribs_multi", this.Desc, 256);
+		this.Attribs = ExplodeString(this.Desc, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
 		for(int i; i < this.Attribs; i++)
 		{
 			this.Attrib[i] = StringToInt(buffers[i*2]);
@@ -123,9 +226,27 @@ enum struct TinkerEnum
 	}
 }
 
+enum struct ForgeEnum
+{
+	int Attrib;
+	int Type;
+	int MinLevel;
+	int MaxLevel;
+	float Low;
+	float High;
+
+	void SetupEnum(KeyValues kv)
+	{
+		this.MinLevel = kv.GetNum("minlevel");
+		this.MaxLevel = kv.GetNum("maxlevel", 99999);
+		this.Type = kv.GetNum("type");
+		this.Low = kv.GetFloat("low");
+		this.High = kv.GetFloat("high");
+	}
+}
+
 enum struct WeaponEnum
 {
-	char Name[48];
 	int Store;
 	int Owner;
 	int XP;
@@ -156,8 +277,12 @@ enum struct WeaponEnum
 	}
 }
 
+static StringMap NPCList;
 static ArrayList TinkerList;
 static ArrayList WeaponList;
+static ArrayList ForgeList;
+static int CurrentWeapon[MAXTF2PLAYERS];
+static bool ChatListen[MAXTF2PLAYERS];
 
 void Tinker_ConfigSetup(KeyValues map)
 {
@@ -179,19 +304,74 @@ void Tinker_ConfigSetup(KeyValues map)
 
 	Tinker_ResetAll();
 
+	delete NPCList;
+	NPCList = new StringMap();
+
+	TinkerNPCEnum npc;
+	npc.EntRef = INVALID_ENT_REFERENCE;
+
+	if(kv.JumpToKey("Stores"))
+	{
+		if(kv.GotoFirstSubKey())
+		{
+			do
+			{
+				npc.SetupEnum(kv);
+				kv.GetSectionName(buffer, sizeof(buffer));
+				NPCList.SetArray(buffer, npc, sizeof(npc));
+			}
+			while(kv.GotoNextKey());
+
+			kv.GoBack();
+		}
+
+		kv.GoBack();
+	}
+
 	delete TinkerList;
 	TinkerList = new ArrayList(sizeof(TinkerEnum));
 
 	TinkerEnum tinker;
 
-	if(kv.GotoFirstSubKey())
+	if(kv.JumpToKey("Tinkers"))
 	{
-		do
+		if(kv.GotoFirstSubKey())
 		{
-			tinker.SetupEnum(kv);
-			TinkerList.PushArray(tinker);
+			do
+			{
+				tinker.SetupEnum(kv);
+				TinkerList.PushArray(tinker);
+			}
+			while(kv.GotoNextKey());
+
+			kv.GoBack();
 		}
-		while(kv.GotoNextKey());
+
+		kv.GoBack();
+	}
+
+	delete ForgeList;
+	ForgeList = new ArrayList(sizeof(ForgeEnum));
+
+	ForgeEnum forge;
+
+	if(kv.JumpToKey("Forge"))
+	{
+		if(kv.GotoFirstSubKey())
+		{
+			do
+			{
+				kv.GetSectionName(buffer, sizeof(buffer));
+				forge.Attrib = StringToInt(buffer);
+				forge.SetupEnum(kv);
+				ForgeList.PushArray(forge);
+			}
+			while(kv.GotoNextKey());
+
+			kv.GoBack();
+		}
+
+		kv.GoBack();
 	}
 
 	if(kv != map)
@@ -204,23 +384,43 @@ void Tinker_ResetAll()
 	WeaponList = new ArrayList(sizeof(WeaponEnum));
 }
 
-static int TinkerCost(int level)
+void Tinker_EnableZone(const char[] name)
 {
-	return 2000 + (level * 100);
+	static TinkerNPCEnum npc;
+	if(NPCList.GetArray(name, npc, sizeof(npc)))
+	{
+		npc.Spawn();
+		NPCList.SetArray(name, npc, sizeof(npc));
+	}
 }
 
-static void ToMetaData(const WeaponEnum wepaon, char data[512])
+void Tinker_DisableZone(const char[] name)
 {
-	int sell = TinkerCost(weapon.Level);
+	static TinkerNPCEnum npc;
+	if(NPCList.GetArray(name, npc, sizeof(npc)))
+	{
+		npc.Despawn();
+		NPCList.SetArray(name, npc, sizeof(npc));
+	}
+}
+
+static int TinkerCost(int level)
+{
+	return 1000 + (level * 200);
+}
+
+static void ToMetaData(int level, const WeaponEnum weapon, char data[512])
+{
+	int sell = TinkerCost(level);
 
 	Format(data, sizeof(data), "txp%d", weapon.XP);
 
 	for(int i; i < weapon.PerkCount; i++)
 	{
 		static TinkerEnum tinker;
-		TinkerList.GetArray(weapon.Perk[i], tinker);
+		TinkerList.GetArray(weapon.Perks[i], tinker);
 		Format(data, sizeof(data), "%s:%s", data, tinker.Name);
-		sell += tinker.Credits - (tinker.Level * 100);
+		sell += tinker.Credits - (tinker.Levels * 200);
 	}
 
 	if(weapon.ForgeCount)
@@ -230,18 +430,43 @@ static void ToMetaData(const WeaponEnum wepaon, char data[512])
 			Format(data, sizeof(data), "%s:forge,%d,%.2f", data, weapon.Forge[i], weapon.Value[i]);
 		}
 
-		sell += 1000;
+		sell += TinkerCost(level) / 2;
 	}
 	
 	Format(data, sizeof(data), "sell%d:%s", sell, data);
 }
 
-static void ConvertToTinker(int client, int index)
+static int ConvertToTinker(int client, int index)
 {
+	int newIndex = index;
 
+	KeyValues kv = TextStore_GetItemKv(index);
+	if(kv)
+	{
+		int cost = TinkerCost(kv.GetNum("level"));
+		int cash = TextStore_Cash(client);
+		if(cost <= cash)
+		{
+			int amount;
+			TextStore_GetInv(client, index, amount);
+			if(amount)
+			{
+				TextStore_SetInv(client, index, amount - 1, false);
+
+				char data[20];
+				FormatEx(data, sizeof(data), "sell%d", cost);
+				newIndex = TextStore_CreateUniqueItem(client, index, data);
+				TextStore_UseItem(client, newIndex, false);
+
+				TextStore_Cash(client, -cost);
+			}
+		}
+	}
+
+	return newIndex;
 }
 
-void Tinker_EquipItem(int client, KeyValues &kv, int index, const char[] name, bool auto)
+void Tinker_EquipItem(int client, int index)
 {
 	if(index < 0)
 	{
@@ -249,7 +474,6 @@ void Tinker_EquipItem(int client, KeyValues &kv, int index, const char[] name, b
 		TextStore_GetItemData(index, data, sizeof(data));
 		
 		WeaponEnum weapon;
-		strcopy(wepaon.Name, sizeof(weapon.Name), name);
 		weapon.Store = index;
 		weapon.Owner = client;
 
@@ -269,7 +493,7 @@ void Tinker_EquipItem(int client, KeyValues &kv, int index, const char[] name, b
 			{
 				if(i > 1)
 				{
-					ExplodeString(buffers[i], ",", buffers, 2, sizeof(buffers[]));
+					ExplodeString(buffers[i], ",", buffers, 3, sizeof(buffers[]));
 					weapon.Forge[weapon.ForgeCount] = StringToInt(buffers[1]);
 					weapon.Value[weapon.ForgeCount++] = StringToFloat(buffers[2]);
 				}
@@ -280,7 +504,7 @@ void Tinker_EquipItem(int client, KeyValues &kv, int index, const char[] name, b
 				{
 					static TinkerEnum tinker;
 					TinkerList.GetArray(a, tinker);
-					if(StrEqual(tinker, buffers[i], false))
+					if(StrEqual(tinker.Name, buffers[i], false))
 					{
 						weapon.Perks[weapon.PerkCount++] = a;
 						break;
@@ -288,5 +512,808 @@ void Tinker_EquipItem(int client, KeyValues &kv, int index, const char[] name, b
 				}
 			}
 		}
+
+		WeaponList.PushArray(weapon);
+	}
+}
+
+void Tinker_SpawnItem(int client, int index, int entity)
+{
+	if(index < 0)
+	{
+		int length = WeaponList.Length;
+		for(int i; i < length; i++)
+		{
+			static WeaponEnum weapon;
+			WeaponList.GetArray(i, weapon);
+			if(weapon.Store == index && weapon.Owner == client)
+			{
+				PrintToChatAll("Found");
+				TextStore_GetItemName(index, StoreWeapon[entity], sizeof(StoreWeapon[]));
+
+				static TinkerEnum tinker;
+				for(i = 0; i < weapon.PerkCount; i++)
+				{
+					TinkerList.GetArray(weapon.Perks[i], tinker);
+					
+					for(int a; a < tinker.Attribs; a++)
+					{
+						if(tinker.Attrib[a] < 0)
+						{
+							Stats_GetCustomStats(entity, tinker.Attrib[a], tinker.Value[a]);
+						}
+						else
+						{
+							Address address = TF2Attrib_GetByDefIndex(entity, tinker.Attrib[a]);
+							if(address == Address_Null)
+							{
+								TF2Attrib_SetByDefIndex(entity, tinker.Attrib[a], tinker.Value[a]);
+							}
+							else if(TF2Econ_GetAttributeDefinitionString(tinker.Attrib[a], "description_format", tinker.Name, sizeof(tinker.Name)) && StrContains(tinker.Name, "additive") != -1)
+							{
+								TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) + tinker.Value[a]);
+							}
+							else
+							{
+								TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * tinker.Value[a]);
+							}
+						}
+					}
+
+					if(tinker.FuncAttack != INVALID_FUNCTION)
+					{
+						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_M1;
+						EntityFuncAttack[entity] = tinker.FuncAttack;
+					}
+					
+					if(tinker.FuncAttack2 != INVALID_FUNCTION)
+					{
+						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_M2;
+						EntityFuncAttack2[entity] = tinker.FuncAttack2;
+					}
+					
+					if(tinker.FuncAttack3 != INVALID_FUNCTION)
+					{
+						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_R;
+						EntityFuncAttack3[entity] = tinker.FuncAttack3;
+					}
+					
+					if(tinker.FuncReload != INVALID_FUNCTION)
+						EntityFuncReload4[entity] = tinker.FuncReload;
+				}
+
+				for(i = 0; i < weapon.ForgeCount; i++)
+				{
+					PrintToChatAll("%d ; %f", weapon.Forge[i], weapon.Value[i]);
+					if(weapon.Forge[i] < 0)
+					{
+						Stats_GetCustomStats(entity, weapon.Forge[i], weapon.Value[i]);
+					}
+					else if(weapon.Forge[i])
+					{
+						Address address = TF2Attrib_GetByDefIndex(entity, weapon.Forge[i]);
+						if(address == Address_Null)
+						{
+							TF2Attrib_SetByDefIndex(entity, weapon.Forge[i], weapon.Value[i]);
+						}
+						else if(TF2Econ_GetAttributeDefinitionString(weapon.Forge[i], "description_format", tinker.Name, sizeof(tinker.Name)) && StrContains(tinker.Name, "additive") != -1)
+						{
+							TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) + weapon.Value[i]);
+						}
+						else
+						{
+							TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * weapon.Value[i]);
+						}
+
+						TF2Attrib_SetByDefIndex(entity, 128, 1.0);
+					}
+				}
+
+				break;
+			}
+		}
+	}
+}
+
+void Tinker_GainXP(int client, int entity)
+{
+	int index = Store_GetStoreOfEntity(entity);
+	if(index < 0)
+	{
+		static WeaponEnum weapon;
+		int length = WeaponList.Length;
+		for(int i; i < length; i++)
+		{
+			WeaponList.GetArray(i, weapon);
+			if(weapon.Store == index && weapon.Owner == client)
+			{
+				int xp = weapon.XP + 1;
+
+				if(xp % 5)
+				{
+					weapon.XP = xp;
+				}
+				else
+				{
+					int oldTier = weapon.Tier();
+					weapon.XP = xp;
+					int newTier = weapon.Tier();
+
+					if(oldTier != newTier)
+					{
+						SPrintToChat(client, "Your %s has reached a new rank: %s!", StoreWeapon[entity], TierName[newTier]);
+
+						if(newTier == (sizeof(TierName) - 1))
+						{
+							ClientCommand(client, "playgamesound ui/mm_medal_gold.wav");
+							ClientCommand(client, "playgamesound ui/mm_medal_gold.wav");
+							SPrintToChat(client, "%s has reached it's maximum potential!", StoreWeapon[entity]);
+						}
+						else
+						{
+							ClientCommand(client, "playgamesound ui/mm_rank_up_achieved.wav");
+							ClientCommand(client, "playgamesound ui/mm_rank_up_achieved.wav");
+						}
+					}
+					
+					KeyValues kv = TextStore_GetItemKv(weapon.Store);
+					if(kv)
+					{
+						static char data[512];
+						ToMetaData(kv.GetNum("level"), weapon, data);
+						TextStore_SetItemData(weapon.Store, data);
+					}
+				}
+
+				WeaponList.SetArray(i, weapon);
+				
+				for(i = 0; i < weapon.PerkCount; i++)
+				{
+					static TinkerEnum tinker;
+					TinkerList.GetArray(weapon.Perks[i], tinker);
+					if(tinker.FuncGainXP != INVALID_FUNCTION)
+					{
+						Call_StartFunction(null, tinker.FuncGainXP);
+						Call_PushCell(client);
+						Call_Finish();
+					}
+				}
+
+				break;
+			}
+		}
+	}
+}
+
+void Tinker_DescItem(int index, char[] desc)
+{
+	static char data[512];
+	TextStore_GetItemData(index, data, sizeof(data));
+	strcopy(desc, 512, NULL_STRING);
+
+	static char buffers[16][32];
+	int perks, xp;
+	int count = ExplodeString(data, ":", buffers, sizeof(buffers), sizeof(buffers[]));
+	for(int i; i < count; i++)
+	{
+		if(!StrContains(buffers[i], "sell"))
+			continue;
+		
+		if(!StrContains(buffers[i], "txp"))
+		{
+			xp = StringToInt(buffers[i][3]);
+		}
+		else if(!StrContains(buffers[i], "forge"))
+		{
+			if(i > 1)
+			{
+				ExplodeString(buffers[i], ",", buffers, 3, sizeof(buffers[]));
+
+				int attribs[2];
+				float values[2];
+
+				attribs[0] = StringToInt(buffers[1]);
+				values[0] = StringToFloat(buffers[2]);
+
+				GetAttributeFormat(desc, attribs[0], values[0]);
+				Stats_DescItem(desc, attribs, values, 1);
+			}
+		}
+		else
+		{
+			Format(desc, 512, "%s\n%s", desc, buffers[i]);
+			perks++;
+		}
+	}
+
+	Format(desc, 512, "XP: %d%s", xp, desc);
+
+	int limit = XpToLevel(xp * 5);
+	if(limit >= sizeof(TierName))
+		limit = sizeof(TierName) - 1;
+	
+	limit += 3;
+	if(perks > limit)
+		Format(desc, 512, "%s\n \nModifier Slots: %d", desc, perks - limit);
+}
+
+static void GetAttributeFormat(char[] desc, int attrib, float value)
+{
+	switch(attrib)
+	{
+		case 2:
+			Format(desc, 512, "%s\n%s Physical Damage", desc, CharPercent(value));
+		
+		case 6:
+			Format(desc, 512, "%s\n%s Fire Rate", desc, CharPercent(1.0 / value));
+		
+		case 96:
+			Format(desc, 512, "%s\n%s Reload Speed", desc, CharPercent(1.0 / value));
+		
+		case 410:
+			Format(desc, 512, "%s\n%s Magic Damage", desc, CharPercent(value));
+	}
+}
+
+bool Tinker_Interact(int client, int entity, int weapon)
+{
+	StringMapSnapshot snap = NPCList.Snapshot();
+
+	bool result;
+	int length = snap.Length;
+	for(int i; i < length; i++)
+	{
+		int size = snap.KeyBufferSize(i) + 1;
+		char[] name = new char[size];
+		snap.GetKey(i, name, size);
+
+		static TinkerNPCEnum npc;
+		NPCList.GetArray(name, npc, sizeof(npc));
+		if(EntRefToEntIndex(npc.EntRef) == entity)
+		{
+			CurrentWeapon[client] = Store_GetStoreOfEntity(weapon);
+			PrintToChatAll("%d", CurrentWeapon[client]);
+			if(CurrentWeapon[client])
+				ShowMenu(client, -1);
+			
+			result = true;
+			break;
+		}
+	}
+
+	delete snap;
+	return result;
+}
+
+static void ShowMenu(int client, int page)
+{
+	Menu menu = new Menu(Tinker_MainMenu);
+
+	static char buffer[512];
+
+	switch(page)
+	{
+		case -1, -2, -5:
+		{
+			TextStore_GetItemName(CurrentWeapon[client], buffer, sizeof(buffer));
+			menu.SetTitle("RPG Fortress\n \nForge: %s\n ", buffer);
+
+			KeyValues kv = TextStore_GetItemKv(CurrentWeapon[client]);
+			if(kv)
+			{
+				if(CurrentWeapon[client] < 0)
+				{
+					static WeaponEnum weapon;
+					int length = WeaponList.Length;
+					for(int i; i < length; i++)
+					{
+						WeaponList.GetArray(i, weapon);
+						if(weapon.Owner == client && weapon.Store == CurrentWeapon[client])
+						{
+							menu.AddItem("-3", "Rename");
+							menu.AddItem("-4", "Tinker\n ");
+
+							if((weapon.Tier() + 3) > weapon.PerkCount)
+							{
+								int level = kv.GetNum("level");
+								int rarity = kv.GetNum("rarity");
+
+								bool hasFunc[5];
+								
+								kv.GetString("func_attack", buffer, sizeof(buffer));
+								hasFunc[0] = view_as<bool>(buffer[0]);
+								
+								kv.GetString("func_attack2", buffer, sizeof(buffer));
+								hasFunc[1] = view_as<bool>(buffer[0]);
+								
+								kv.GetString("func_attack3", buffer, sizeof(buffer));
+								hasFunc[2] = view_as<bool>(buffer[0]);
+								
+								kv.GetString("func_reload", buffer, sizeof(buffer));
+								hasFunc[3] = view_as<bool>(buffer[0]);
+
+								static TinkerEnum tinker;
+								for(i = 0; i < weapon.PerkCount; i++)
+								{
+									TinkerList.GetArray(weapon.Perks[i], tinker);
+									//level += tinker.Level;
+
+									if(!hasFunc[0])
+										hasFunc[0] = tinker.FuncAttack != INVALID_FUNCTION;
+
+									if(!hasFunc[1])
+										hasFunc[1] = tinker.FuncAttack2 != INVALID_FUNCTION;
+
+									if(!hasFunc[2])
+										hasFunc[2] = tinker.FuncAttack3 != INVALID_FUNCTION;
+
+									if(!hasFunc[3])
+										hasFunc[3] = tinker.FuncReload != INVALID_FUNCTION;
+
+									if(!hasFunc[4])
+										hasFunc[4] = tinker.FuncGainXP != INVALID_FUNCTION;
+								}
+
+								length = TinkerList.Length;
+								for(i = 0; i < length; i++)
+								{
+									TinkerList.GetArray(i, tinker);
+									if(tinker.ToolMinLv <= level && tinker.ToolMaxLv >= level && 
+									   tinker.ToolMinRarity <= rarity && tinker.ToolMaxRarity >= rarity &&
+									 (!hasFunc[0] || tinker.FuncAttack == INVALID_FUNCTION) &&
+									 (!hasFunc[1] || tinker.FuncAttack2 == INVALID_FUNCTION) &&
+									 (!hasFunc[2] || tinker.FuncAttack3 == INVALID_FUNCTION) &&
+									 (!hasFunc[3] || tinker.FuncReload == INVALID_FUNCTION) &&
+									 (!hasFunc[4] || tinker.FuncGainXP == INVALID_FUNCTION))
+									{
+										bool found;
+										for(int a; a < weapon.PerkCount; a++)
+										{
+											if(weapon.Perks[a] == i)
+											{
+												found = true;
+												break;
+											}
+										}
+										
+										if(found)
+											continue;
+
+										IntToString(i, buffer, sizeof(buffer));
+										menu.AddItem(buffer, tinker.Name);
+									}
+								}
+							}
+
+							break;
+						}
+					}
+				}
+				else
+				{
+					int level = kv.GetNum("level");
+					if(level)
+					{
+						int cash = TextStore_Cash(client);
+						int cost = TinkerCost(level);
+						Format(buffer, sizeof(buffer), "Forge Item (%d / %d Credits)", cash, cost);
+						menu.AddItem("-2", buffer, cash < cost ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+					}
+					else
+					{
+						menu.AddItem("-1", "Can't Forge This Item", ITEMDRAW_DISABLED);
+					}
+				}
+			}
+		}
+		case -3:
+		{
+			TextStore_GetItemName(CurrentWeapon[client], buffer, sizeof(buffer));
+			menu.SetTitle("RPG Fortress\n \nForge: %s\n \nType in chat to enter a name for your item\n ", buffer);
+
+			menu.AddItem("-5", "Set Default");
+
+			menu.ExitBackButton = true;
+		}
+		case -4, -6:
+		{
+			TextStore_GetItemName(CurrentWeapon[client], buffer, sizeof(buffer));
+			Format(buffer, sizeof(buffer), "RPG Fortress\n \nForge: %s\n \nCurrent Tinker Stats:", buffer);
+			
+			bool first;
+			int cost;
+
+			KeyValues kv = TextStore_GetItemKv(CurrentWeapon[client]);
+			if(kv)
+			{
+				static WeaponEnum weapon;
+				int length = WeaponList.Length;
+				for(int i; i < length; i++)
+				{
+					WeaponList.GetArray(i, weapon);
+					if(weapon.Owner == client && weapon.Store == CurrentWeapon[client])
+					{
+						cost = TinkerCost(kv.GetNum("level")) * 4;
+
+						if(weapon.ForgeCount)
+						{
+							cost /= 5;
+
+							for(int a; a < weapon.ForgeCount; a++)
+							{
+								GetAttributeFormat(buffer, weapon.Forge[a], weapon.Value[a]);
+							}
+							
+							Stats_DescItem(buffer, weapon.Forge, weapon.Value, weapon.ForgeCount);
+						}
+						else
+						{
+							cost /= 8;
+							first = true;
+						}
+					}
+				}
+			}
+
+			menu.SetTitle("%s\n ", buffer);
+
+			int cash = TextStore_Cash(client);
+
+			if(first)
+			{
+				Format(buffer, sizeof(buffer), "Roll For Random Attributes (%d / %d Credits)", cash, cost);
+			}
+			else
+			{
+				Format(buffer, sizeof(buffer), "Reroll (%d / %d Credits)", cash, cost);
+			}
+
+			menu.AddItem("-6", buffer, cash < cost ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+
+			menu.ExitBackButton = true;
+		}
+		default:
+		{
+			if(page >= 0)
+			{
+				KeyValues kv = TextStore_GetItemKv(CurrentWeapon[client]);
+				if(kv)
+				{
+					static WeaponEnum weapon;
+					int length = WeaponList.Length;
+					for(int i; i < length; i++)
+					{
+						WeaponList.GetArray(i, weapon);
+						if(weapon.Owner == client && weapon.Store == CurrentWeapon[client])
+						{
+							int level = kv.GetNum("level");
+							
+							static TinkerEnum tinker;
+							for(i = 0; i < weapon.PerkCount; i++)
+							{
+								TinkerList.GetArray(weapon.Perks[i], tinker);
+								level += tinker.Levels;
+							}
+
+							TinkerList.GetArray(page, tinker);
+							Format(buffer, sizeof(buffer), "%s\n ", tinker.Desc);
+
+							bool failed;
+							if(tinker.Cost1[0])
+							{
+								int count = TextStore_GetItemCount(client, tinker.Cost1);
+								Format(buffer, sizeof(buffer), "%s\n%s (%d / %d)", buffer, tinker.Cost1, count, tinker.Amount1);
+
+								if(!failed)
+									failed = count < tinker.Amount1;
+							}
+
+							if(tinker.Cost2[0])
+							{
+								int count = TextStore_GetItemCount(client, tinker.Cost2);
+								Format(buffer, sizeof(buffer), "%s\n%s (%d / %d)", buffer, tinker.Cost2, count, tinker.Amount2);
+
+								if(!failed)
+									failed = count < tinker.Amount2;
+							}
+
+							if(tinker.Cost3[0])
+							{
+								int count = TextStore_GetItemCount(client, tinker.Cost3);
+								Format(buffer, sizeof(buffer), "%s\n%s (%d / %d)", buffer, tinker.Cost2, count, tinker.Amount3);
+
+								if(!failed)
+									failed = count < tinker.Amount3;
+							}
+
+							if(tinker.Credits)
+							{
+								int count = TextStore_Cash(client);
+								Format(buffer, sizeof(buffer), "%s\nCredits (%d / %d)", buffer, count, tinker.Credits);
+
+								if(!failed)
+									failed = count < tinker.Credits;
+							}
+
+							if(tinker.Levels)
+							{
+								GetDisplayString(level, tinker.Cost1, sizeof(tinker.Cost1));
+								GetDisplayString(level + tinker.Levels, tinker.Cost2, sizeof(tinker.Cost2));
+								Format(buffer, sizeof(buffer), "%s\n%s -> %s", buffer, tinker.Cost1, tinker.Cost2);
+
+								if(!failed)
+									failed = Level[client] < (level + tinker.Levels);
+							}
+
+							menu.SetTitle("%s\n \nModifier Limit: (%d / %d)", buffer, weapon.PerkCount, weapon.Tier() + 3);
+
+							TextStore_GetItemName(CurrentWeapon[client], buffer, sizeof(buffer));
+							Format(buffer, sizeof(buffer), "Apply %s on %s", tinker.Name, buffer);
+
+							IntToString(page, tinker.Cost1, sizeof(tinker.Cost1));
+							menu.AddItem(tinker.Cost1, buffer, failed ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	menu.Display(client, MENU_TIME_FOREVER);
+
+	if(page == -3)
+		ChatListen[client] = true;
+}
+
+bool Tinker_SayCommand(int client)
+{
+	if(!ChatListen[client])
+		return false;
+	
+	static char buffer[48];
+	int size = GetCmdArgString(buffer, sizeof(buffer));
+	if(size > 45)
+	{
+		SPrintToChat(client, "Your name must be below 46 characters.");
+	}
+	else if(StrContains(buffer, ";") != -1 || StrContains(buffer, "'") != -1 || StrContains(buffer, "\\") != -1)
+	{
+		SPrintToChat(client, "Your name contains invalid characters.");
+	}
+	else
+	{
+		ReplaceString(buffer, sizeof(buffer), "\"", "");
+		Format(buffer, sizeof(buffer), "\"%s\"", buffer);
+		TextStore_SetItemName(CurrentWeapon[client], buffer);
+
+		ShowMenu(client, -1);
+	}
+	return true;
+}
+
+public int Tinker_MainMenu(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			ChatListen[client] = false;
+
+			if(choice == MenuCancel_ExitBack)
+				ShowMenu(client, -1);
+		}
+		case MenuAction_Select:
+		{
+			ChatListen[client] = false;
+
+			static char data[512];
+			menu.GetItem(choice, data, sizeof(data));
+
+			int page = StringToInt(data);
+			switch(page)
+			{
+				case -2:
+				{
+					CurrentWeapon[client] = ConvertToTinker(client, CurrentWeapon[client]);
+					TF2_RegeneratePlayer(client);
+				}
+				case -5:
+				{
+					TextStore_SetItemName(CurrentWeapon[client], NULL_STRING);
+				}
+				case -6:
+				{
+					KeyValues kv = TextStore_GetItemKv(CurrentWeapon[client]);
+					if(kv)
+					{
+						static WeaponEnum weapon;
+						int length = WeaponList.Length;
+						for(int i; i < length; i++)
+						{
+							WeaponList.GetArray(i, weapon);
+							if(weapon.Owner == client && weapon.Store == CurrentWeapon[client])
+							{
+								int cost = TinkerCost(kv.GetNum("level")) * 4;
+								if(weapon.ForgeCount)
+								{
+									cost /= 5;
+								}
+								else
+								{
+									cost /= 8;
+								}
+								TextStore_Cash(client, -cost);
+
+								RollRandomAttribs(Level[client], weapon);
+								WeaponList.SetArray(i, weapon);
+
+								ToMetaData(kv.GetNum("level"), weapon, data);
+								TextStore_SetItemData(weapon.Store, data);
+								TF2_RegeneratePlayer(client);
+								break;
+							}
+						}
+					}
+				}
+				default:
+				{
+					if(!choice && page >= 0)
+					{
+						KeyValues kv = TextStore_GetItemKv(CurrentWeapon[client]);
+						if(kv)
+						{
+							static WeaponEnum weapon;
+							int length = WeaponList.Length;
+							for(int i; i < length; i++)
+							{
+								WeaponList.GetArray(i, weapon);
+								if(weapon.Owner == client && weapon.Store == CurrentWeapon[client])
+								{
+									static TinkerEnum tinker;
+									TinkerList.GetArray(page, tinker);
+
+									if(tinker.Cost1[0] && TextStore_GetItemCount(client, tinker.Cost1) < tinker.Amount1)
+										break;
+									
+									if(tinker.Cost2[0] && TextStore_GetItemCount(client, tinker.Cost2) < tinker.Amount2)
+										break;
+									
+									if(tinker.Cost3[0] && TextStore_GetItemCount(client, tinker.Cost3) < tinker.Amount3)
+										break;
+									
+									if(tinker.Credits)
+									{
+										int cash = TextStore_Cash(client);
+										if(cash < tinker.Credits)
+											break;
+										
+										TextStore_Cash(client, -tinker.Credits);
+									}
+
+									if(tinker.Cost1[0])
+										TextStore_AddItemCount(client, tinker.Cost1, -tinker.Amount1);
+
+									if(tinker.Cost2[0])
+										TextStore_AddItemCount(client, tinker.Cost2, -tinker.Amount2);
+
+									if(tinker.Cost3[0])
+										TextStore_AddItemCount(client, tinker.Cost3, -tinker.Amount3);
+									
+									weapon.Perks[weapon.PerkCount++] = page;
+									WeaponList.SetArray(i, weapon);
+
+									ToMetaData(kv.GetNum("level"), weapon, data);
+									TextStore_SetItemData(weapon.Store, data);
+									TF2_RegeneratePlayer(client);
+									break;
+								}
+							}
+						}
+
+						page = -1;
+					}
+				}
+			}
+
+			ShowMenu(client, page);
+		}
+	}
+	return 0;
+}
+
+static void RollRandomAttribs(int level, WeaponEnum weapon)
+{
+	weapon.ForgeCount = 0;
+
+	int fails;
+	int length = ForgeList.Length;
+	while(weapon.ForgeCount < 4)
+	{
+		static ForgeEnum forge;
+		ForgeList.GetArray(GetURandomInt() % length, forge);
+		if(fails < 9 && (forge.MinLevel > level || forge.MaxLevel < level))
+		{
+			fails++;
+			continue;
+		}
+
+		weapon.Forge[weapon.ForgeCount] = forge.Attrib;
+
+		float value = GetRandomFloat(forge.Low, forge.High);
+		weapon.Value[weapon.ForgeCount++] = value;
+		
+		bool bad = view_as<bool>(GetURandomInt() % 2);
+		if(!bad)
+		{
+			switch(forge.Type)
+			{
+				case 0:
+					bad = value <= 1.0;
+				
+				case 1:
+					bad = value >= 1.0;
+				
+				case 2:
+					bad = value <= 0.0;
+			}
+		}
+
+		if(!bad)
+			break;
+	}
+}
+
+void Tinker_StatsLevelUp(int client, int oldLevel, Menu menu)
+{
+	int count;
+	int length = TinkerList.Length;
+	for(int i; i < length; i++)
+	{
+		static TinkerEnum tinker;
+		TinkerList.GetArray(i, tinker);
+		if(tinker.PlayerLevel > oldLevel && tinker.PlayerLevel <= Level[client])
+			count++;
+	}
+
+	if(count)
+	{
+		char buffer[32];
+		FormatEx(buffer, sizeof(buffer), "%d New Modifiers In Forge", count);
+		menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+	}
+
+	count = 0;
+	length = ForgeList.Length;
+	for(int i; i < length; i++)
+	{
+		static ForgeEnum forge;
+		ForgeList.GetArray(i, forge);
+		if(forge.MinLevel > oldLevel && forge.MinLevel <= Level[client])
+			count++;
+		
+		if(forge.MaxLevel > oldLevel && forge.MaxLevel <= Level[client])
+			count++;
+	}
+
+	if(count > 0)
+	{
+		char buffer[32];
+		FormatEx(buffer, sizeof(buffer), "%d New Attributes In Tinker", count);
+		menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+	}
+}
+
+public void Tinker_XP_Ecological(int client)
+{
+	if(!(GetURandomInt() % 6))
+	{
+		float pos[3];
+		GetClientEyePosition(client, pos);
+		TextStore_DropNamedItem(client, "Wood", pos, 1);
 	}
 }

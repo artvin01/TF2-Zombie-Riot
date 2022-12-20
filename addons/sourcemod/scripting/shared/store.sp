@@ -419,6 +419,17 @@ static bool HasMultiInSlot[MAXTF2PLAYERS][6];
 static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 
 #if defined RPG
+int Store_GetStoreOfEntity(int entity)
+{
+	int pos = EquippedItems.FindValue(EntIndexToEntRef(entity), ItemInfo::EntRef);
+	if(pos == -1)
+		return 0;
+	
+	static ItemInfo info;
+	EquippedItems.GetArray(pos, info);
+	return info.Store;
+}
+
 bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name, bool auto)
 {
 	static ItemInfo info;
@@ -453,10 +464,13 @@ bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name, boo
 	
 	info.Owner = client;
 	info.Store = index;
+
+	Tinker_EquipItem(client, index);
+
 	EquippedItems.PushArray(info);
 	return true;
 }
-#endif
+#endif	// RPG
 
 void Store_WeaponSwitch(int client, int weapon)
 {
@@ -3385,8 +3399,13 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 #endif
 
 #if defined RPG
-	Store_GiveItem(client, -2);
-	Store_GiveItem(client, -3);
+	entity = SpawnWeapon(client, "tf_weapon_pistol", 25, 1, 0, {128, 301, 821}, {1.0, 1.0, 1.0}, 3);
+	if(entity > MaxClients)
+		RequestFrame(SetBackpackName, EntIndexToEntRef(entity));
+	
+	entity = SpawnWeapon(client, "tf_weapon_pistol", 26, 1, 0, {128, 301, 821}, {1.0, 1.0, 1.0}, 3);
+	if(entity > MaxClients)
+		RequestFrame(SetQuestBookName, EntIndexToEntRef(entity));
 #endif
 
 	if(!i_ClientHasCustomGearEquipped[client])
@@ -3761,9 +3780,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 #if defined RPG
 					info.EntRef = EntIndexToEntRef(entity);
-					EquippedItems.SetArray(index, info);
-
 					strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), info.Custom_Name);
+					Tinker_SpawnItem(client, info.Store, entity);
+					EquippedItems.SetArray(index, info);
 #endif
 
 					if(use)
@@ -3785,22 +3804,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 #endif
 
 	}
-	
-#if defined RPG
-	else if(index == -2)
-	{
-		entity = SpawnWeapon(client, "tf_weapon_pistol", 25, 1, 0, {128, 301, 821}, {1.0, 1.0, 1.0}, 3);
-		if(entity > MaxClients)
-			RequestFrame(SetBackpackName, EntIndexToEntRef(entity));
-	}
-	else if(index == -3)
-	{
-		entity = SpawnWeapon(client, "tf_weapon_pistol", 26, 1, 0, {128, 301, 821}, {1.0, 1.0, 1.0}, 3);
-		if(entity > MaxClients)
-			RequestFrame(SetQuestBookName, EntIndexToEntRef(entity));
-	}
-#endif
-
 	else
 	{
 		
@@ -4109,7 +4112,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 	if(EntityIsAWeapon)
 	{
-	
+
 #if defined ZR
 		//SPEED COLA!
 		if(i_CurrentEquippedPerk[client] == 4)

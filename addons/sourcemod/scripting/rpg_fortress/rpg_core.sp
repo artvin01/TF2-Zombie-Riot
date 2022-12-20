@@ -12,6 +12,8 @@ int XP[MAXENTITIES];
 char StoreWeapon[MAXENTITIES][48];
 int i_TagColor[MAXTF2PLAYERS][4];
 char c_TagName[MAXTF2PLAYERS][64];
+int b_BrushToOwner[MAXENTITIES];
+int b_OwnerToBrush[MAXENTITIES];
 
 float f_HealingPotionDuration[MAXTF2PLAYERS];
 int f_HealingPotionEffect[MAXTF2PLAYERS];
@@ -30,6 +32,7 @@ int f_HealingPotionEffect[MAXTF2PLAYERS];
 #include "rpg_fortress/spawns.sp"
 #include "rpg_fortress/stats.sp"
 #include "rpg_fortress/textstore.sp"
+#include "rpg_fortress/tinker.sp"
 #include "rpg_fortress/zones.sp"
 
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"

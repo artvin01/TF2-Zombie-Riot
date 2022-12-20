@@ -28,6 +28,9 @@ enum struct SpawnEnum
 	
 	char Item3[48];
 	float Chance3;
+
+	char Item4[48];
+	float Chance4;
 	
 	float NextSpawnTime;
 
@@ -69,6 +72,10 @@ enum struct SpawnEnum
 		kv.GetString("drop_name_3", this.Item3, 48);
 		if(this.Item3[0])
 			this.Chance3 = kv.GetFloat("drop_chance_3", 1.0);
+
+		kv.GetString("drop_name_4", this.Item4, 48);
+		if(this.Item4[0])
+			this.Chance4 = kv.GetFloat("drop_chance_4", 1.0);
 	}
 
 	void DoAllDrops(int client, float pos[3], int level)
@@ -332,7 +339,7 @@ static int GetScaledRate(const int rates[2], int power, int maxpower)
 	return rates[LOW] + ((rates[HIGH] - rates[LOW]) * power / maxpower);
 }
 
-void Spawns_NPCDeath(int entity, int client)
+void Spawns_NPCDeath(int entity, int client, int weapon)
 {
 	int xp = XP[entity];
 	if(xp < 0)
@@ -359,11 +366,11 @@ void Spawns_NPCDeath(int entity, int client)
 		else if(i_CreditsOnKill[entity] > 49)
 		{
 			if(GetURandomInt() % 2)
-				TextStore_DropCash((client, pos, i_CreditsOnKill[entity] * 2);
+				TextStore_DropCash(client, pos, i_CreditsOnKill[entity] * 2);
 		}
 		else if(!(GetURandomInt() % 5))
 		{
-			TextStore_DropCash((client, pos, i_CreditsOnKill[entity] * 5);
+			TextStore_DropCash(client, pos, i_CreditsOnKill[entity] * 5);
 		}
 	}
 
@@ -375,9 +382,12 @@ void Spawns_NPCDeath(int entity, int client)
 		spawn.DoAllDrops(client, pos, Level[entity]);
 		hFromSpawnerIndex[entity] = -1;
 	}
+
+	if(weapon != -1)
+		Tinker_GainXP(client, weapon);
 }
 
-static void RollItemDrop(client, const char[] name, float chance, float pos[3])
+static void RollItemDrop(int client, const char[] name, float chance, float pos[3])
 {
 	if(chance > GetURandomFloat())
 		TextStore_DropNamedItem(client, name, pos, 1);

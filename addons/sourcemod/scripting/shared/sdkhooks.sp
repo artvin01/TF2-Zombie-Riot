@@ -152,6 +152,12 @@ public void OnPreThinkPost(int client)
 		CvarSvRollagle.IntValue = i_SvRollAngle[client];
 	}
 #endif
+
+#if defined RPG
+	int maxhealth = SDKCall_GetMaxHealth(client);
+	if(GetClientHealth(client) > maxhealth)
+		SetEntityHealth(client, maxhealth);
+#endif
 }
 
 public void OnPostThink(int client)
@@ -1561,12 +1567,25 @@ public void OnWeaponSwitchPost(int client, int weapon)
 	Store_WeaponSwitch(client, weapon);
 
 #if defined RPG
-	TextStore_WeaponSwitch(client, weapon);
-	Quests_WeaponSwitch(client, weapon);
+	RequestFrame(OnWeaponSwitchFrame, GetClientUserId(client));
 	//TF2Attrib_SetByDefIndex(client, 698, 1.0);
 	SetEntProp(client, Prop_Send, "m_bWearingSuit", false);
 #endif
+
 }
+
+#if defined RPG
+public void OnWeaponSwitchFrame(int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(client)
+	{
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		TextStore_WeaponSwitch(client, weapon);
+		Quests_WeaponSwitch(client, weapon);
+	}
+}
+#endif
 
 public void OnWeaponSwitchPre(int client, int weapon)
 {

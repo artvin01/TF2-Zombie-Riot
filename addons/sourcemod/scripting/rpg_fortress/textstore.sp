@@ -14,8 +14,7 @@ static const char RarityName[][] =
 enum struct StoreEnum
 {
 	char Tag[16];
-
-	char ZoneItem[48];
+	
 	char Model[PLATFORM_MAX_PATH];
 	char Intro[64];
 	char Idle[64];
@@ -226,6 +225,7 @@ static void HashCheck()
 				Garden_ResetAll();
 				Store_Reset();
 				RPG_PluginEnd();
+				Tinker_ResetAll();
 
 				for(int client = 1; client <= MaxClients; client++)
 				{
@@ -375,50 +375,57 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 		kv.GetString("plugin", buffer, sizeof(buffer));
 		if(StrEqual(buffer, "rpg_fortress"))
 		{
-			static int attrib[16];
-			static float value[16];
-			static char buffers[32][16];
-
-			kv.GetString("attributes", buffer, sizeof(buffer));
-			int count = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
-			for(int i; i < count; i++)
+			if(item < 0)
 			{
-				attrib[i] = StringToInt(buffers[i*2]);
-				if(!attrib[i])
+				Tinker_DescItem(item, desc);
+			}
+			else
+			{
+				static int attrib[16];
+				static float value[16];
+				static char buffers[32][16];
+
+				kv.GetString("attributes", buffer, sizeof(buffer));
+				int count = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
+				for(int i; i < count; i++)
 				{
-					count = i;
-					break;
+					attrib[i] = StringToInt(buffers[i*2]);
+					if(!attrib[i])
+					{
+						count = i;
+						break;
+					}
+					
+					value[i] = StringToFloat(buffers[i*2+1]);
 				}
 				
-				value[i] = StringToFloat(buffers[i*2+1]);
-			}
-			
-			Ammo_DescItem(kv, desc);
-			Mining_DescItem(kv, desc, attrib, value, count);
-			Fishing_DescItem(kv, desc, attrib, value, count);
-			Stats_DescItem(desc, attrib, value, count);
-			
-			kv.GetString("classname", buffer, sizeof(buffer));
-			Config_CreateDescription(buffer, attrib, value, count, desc, 512);
-			
-			int level = kv.GetNum("level");
-			if(level > 0)
-			{
-				GetDisplayString(level, buffer, sizeof(buffer));
-			}
-			else
-			{
-				strcopy(buffer, sizeof(buffer), "Any Level");
-			}
-			
-			int rarity = kv.GetNum("rarity");
-			if(rarity >= 0 && rarity < sizeof(RarityName))
-			{
-				Format(desc, 512, "%s\n%s\n%s", RarityName[rarity], buffer, desc);
-			}
-			else
-			{
-				Format(desc, 512, "%s\n%s", buffer, desc);
+				Ammo_DescItem(kv, desc);
+				Mining_DescItem(kv, desc, attrib, value, count);
+				Fishing_DescItem(kv, desc, attrib, value, count);
+				Stats_DescItem(desc, attrib, value, count);
+				
+				kv.GetString("classname", buffer, sizeof(buffer));
+				Config_CreateDescription(buffer, attrib, value, count, desc, 512);
+				
+				int level = kv.GetNum("level");
+				if(level > 0)
+				{
+					GetDisplayString(level, buffer, sizeof(buffer));
+				}
+				else
+				{
+					strcopy(buffer, sizeof(buffer), "Any Level");
+				}
+				
+				int rarity = kv.GetNum("rarity");
+				if(rarity >= 0 && rarity < sizeof(RarityName))
+				{
+					Format(desc, 512, "%s\n%s\n%s", RarityName[rarity], buffer, desc);
+				}
+				else
+				{
+					Format(desc, 512, "%s\n%s", buffer, desc);
+				}
 			}
 		}
 	}
@@ -808,14 +815,14 @@ static void DropItem(int client, int index, float pos[3], int amount)
 	}
 }
 
-static bool CanSeeItem(int entity, int client)
+bool Textstore_CanSeeItem(int entity, int client)
 {
 	return (ItemOwner[entity] == client || Party_IsClientMember(ItemOwner[entity], client) || (ItemLifetime[entity] - 15.0) > GetGameTime());
 }
 
 public Action DroppedItemSetTransmit(int entity, int client)
 {
-	if(CanSeeItem(entity, client))
+	if(Textstore_CanSeeItem(entity, client))
 		return Plugin_Continue;
 	
 	return Plugin_Handled;
@@ -877,7 +884,7 @@ void TextStore_DespoitBackpack(int client, bool death)
 		{
 			if(death)
 			{
-				DropItem(pack.Item, pos, pack.Amount, 0);
+				DropItem(client, pack.Item, pos, pack.Amount);
 
 				if(pack.Item == -1)
 				{
@@ -1418,12 +1425,12 @@ public int TextStore_BackpackMenu(Menu menu, MenuAction action, int client, int 
 							if(!length)
 								length = 1000;
 							
-							DropItem(index, pos, length, client);
+							DropItem(client, index, pos, length);
 							pack.Amount -= length;
 						}
 						else
 						{
-							DropItem(index, pos, 1, client);
+							DropItem(client, index, pos, 1);
 							pack.Amount--;
 						}
 
