@@ -46,6 +46,8 @@
 
 #define BUILDINGCOLLISIONNUMBER	27
 
+#define MAX_REBELS_ALLOWED 4
+
 enum
 {
 	BuildingNone = 0,
@@ -147,6 +149,7 @@ void Building_MapStart()
 	PrecacheSound("player/mannpower_invulnerable.wav");
 }
 
+static int RebelTimerSpawnIn;
 static int Building_Repair_Health[MAXENTITIES]={0, ...};
 static int Building_Hidden_Prop[MAXENTITIES][2];
 static int Building_Hidden_Prop_To_Building[MAXENTITIES]={-1, ...};
@@ -166,6 +169,7 @@ public void Building_ClearAll()
 	Zero2(Building_Collect_Cooldown);
 	Zero(Building_Sentry_Cooldown);
 	Zero(Village_TierExists);
+	RebelTimerSpawnIn = 0;
 }
 public Action Building_PlaceSentry(int client, int weapon, const char[] classname, bool &result)
 {
@@ -4393,6 +4397,7 @@ bool Building_DoesPierce(int client)
 	return (client > 0 && client <= MaxClients && (GetBuffEffects(EntIndexToEntRef(client)) & VILLAGE_030));
 }
 
+
 int Building_GetCashOnWave(int current)
 {
 	int popCash;
@@ -4408,7 +4413,7 @@ int Building_GetCashOnWave(int current)
 				popCash++;
 			}
 			
-			if(Village_Flags[client] & VILLAGE_500)//VILLAGE_004)
+			if(Village_Flags[client] & VILLAGE_300)//VILLAGE_004)
 			{
 				i_ExtraPlayerPoints[client] += 10;
 				extras++;
@@ -4424,19 +4429,27 @@ int Building_GetCashOnWave(int current)
 	
 	if(extras)
 	{
-		int count;
-		
-		int i = MaxClients + 1;
-		while((i = FindEntityByClassname(i, "base_boss")) != -1)
+		if(RebelTimerSpawnIn >= 3)
 		{
-			if(i_NpcInternalId[i] == CITIZEN)
+			RebelTimerSpawnIn = 0;
+			int count;
+			
+			int i = MaxClients + 1;
+			while((i = FindEntityByClassname(i, "base_boss")) != -1)
+			{
+				if(i_NpcInternalId[i] == CITIZEN)
+					count++;
+			}
+			
+			for(i = 0; i < extras && count < MAX_REBELS_ALLOWED; i++) //Do not allow more then this many npcs
+			{
+				Citizen_SpawnAtPoint();
 				count++;
+			}
 		}
-		
-		for(i = 0; i < extras && count < 6; i++)
+		else
 		{
-			Citizen_SpawnAtPoint();
-			count++;
+			RebelTimerSpawnIn += 1;
 		}
 	}
 	
@@ -4548,29 +4561,29 @@ static void VillageUpgradeMenu(int client, int viewer)
 	{
 		menu.AddItem("", TranslateItemName(viewer, "Rebel Expertise", ""), ITEMDRAW_DISABLED);
 		menu.AddItem("", "Village becomes an attacking sentry, plus all Rebels in", ITEMDRAW_DISABLED);
-		menu.AddItem("", "radius attack faster, deal more damage, and start with $3000.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "radius attack faster, deal more damage, and start with $1000.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_400)
 	{
 		if(Village_TierExists[0] == 5)
 		{
 			menu.AddItem("", TranslateItemName(viewer, "Rebel Mentoring", ""), ITEMDRAW_DISABLED);
-			menu.AddItem("", "All Rebels in radius start with $1000,", ITEMDRAW_DISABLED);
+			menu.AddItem("", "All Rebels in radius start with $500,", ITEMDRAW_DISABLED);
 			menu.AddItem("", "increased range and attack speed.\n ", ITEMDRAW_DISABLED);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s [$10000]", TranslateItemName(viewer, "Rebel Expertise", ""));
-			menu.AddItem(VilN(VILLAGE_500), buffer, (!owner || cash < 10000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			FormatEx(buffer, sizeof(buffer), "%s [$5000]", TranslateItemName(viewer, "Rebel Expertise", ""));
+			menu.AddItem(VilN(VILLAGE_500), buffer, (!owner || cash < 5000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "Village becomes an attacking sentry, plus all Rebels in", ITEMDRAW_DISABLED);
-			menu.AddItem("", "radius attack faster, deal more damage, and start with $3000.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "radius attack faster, deal more damage, and start with $1000.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_300)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s [$2500]%s", TranslateItemName(viewer, "Rebel Mentoring", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_400), buffer, (!owner || cash < 2500) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "All Rebels in radius start with $1000,", ITEMDRAW_DISABLED);
+		menu.AddItem("", "All Rebels in radius start with $500,", ITEMDRAW_DISABLED);
 		menu.AddItem("", "increased range and attack speed.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_200)
@@ -4586,7 +4599,8 @@ static void VillageUpgradeMenu(int client, int viewer)
 			FormatEx(buffer, sizeof(buffer), "%s [$800]%s", TranslateItemName(viewer, "Rebel Training", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : "");
 			menu.AddItem(VilN(VILLAGE_300), buffer, (!owner || cash < 800) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "All Rebels in radius get", ITEMDRAW_DISABLED);
-			menu.AddItem("", "more range and more damage.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "more range and more damage.\n", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Village will spawn rebels every 3 waves upto 3\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_100)
@@ -4749,13 +4763,13 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				case VILLAGE_500:
 				{
 					Store_SetNamedItem(client, "Village NPC Expert", 5);
-					CashSpent[client] += 1000;
+					CashSpent[client] += 5000;
 					Village_TierExists[0] = 5;
 					
 					int entity = EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
 					if(entity > MaxClients && IsValidEntity(entity))
 					{
-						SDKHooks_TakeDamage(entity, 0, 0, 99999999.9);
+						RemoveEntity(entity);
 						f_BuildingIsNotReady[client] = 0.0; 
 						Building_Sentry_Cooldown[client] = 0.0; //Reset the cooldown!
 					}
@@ -4771,6 +4785,19 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 					Store_SetNamedItem(client, "Village NPC Expert", 3);
 					CashSpent[client] += 800;
 					Village_TierExists[0] = 3;
+					int i = MaxClients + 1;
+					int count = 0;
+					while((i = FindEntityByClassname(i, "base_boss")) != -1)
+					{
+						if(i_NpcInternalId[i] == CITIZEN)
+							count++;
+					}
+					
+					if(count < MAX_REBELS_ALLOWED) //Do not allow more then this many npcs
+					{
+						Citizen_SpawnAtPoint();
+						count++;
+					}
 				}
 				case VILLAGE_200:
 				{
@@ -5007,30 +5034,30 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						}
 						case VILLAGE_300:
 						{
-							if(npc.m_iGunClip > 0)
-								npc.m_iGunClip++;
+					//		if(npc.m_iGunClip > 0)
+					//			npc.m_iGunClip++;
 							
 							npc.m_fGunRangeBonus *= 1.1;
 						}
 						case VILLAGE_400:
 						{
-							if(npc.m_iGunValue < 1000)
-								npc.m_iGunValue = 1000;
+							if(npc.m_iGunValue < 500)
+								npc.m_iGunValue = 500;
 							
 							npc.m_fGunFirerate *= 0.9;
 							npc.m_fGunReload *= 0.9;
 						}
 						case VILLAGE_500:
 						{
-							if(npc.m_iGunClip > 0)
-								npc.m_iGunClip += 2;
+					//		if(npc.m_iGunClip > 0)
+					//			npc.m_iGunClip += 2;
 							
-							if(npc.m_iGunValue < 3000)
-								npc.m_iGunValue = 3000;
+							if(npc.m_iGunValue < 1000)
+								npc.m_iGunValue = 1000;
 							
-							npc.m_fGunRangeBonus *= 1.2;
-							npc.m_fGunFirerate *= 0.8;
-							npc.m_fGunReload *= 0.8;
+							npc.m_fGunRangeBonus *= 1.3;
+							npc.m_fGunFirerate *= 0.7;
+							npc.m_fGunReload *= 0.7;
 						}
 						case VILLAGE_040:
 						{
@@ -5075,9 +5102,9 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						if(npc.m_iGunClip > 2)
 							npc.m_iGunClip -= 2;
 						
-						npc.m_fGunRangeBonus /= 1.2;
-						npc.m_fGunFirerate /= 0.8;
-						npc.m_fGunReload /= 0.8;
+						npc.m_fGunRangeBonus /= 1.3;
+						npc.m_fGunFirerate /= 0.7;
+						npc.m_fGunReload /= 0.7;
 					}
 					case VILLAGE_040:
 					{
