@@ -104,7 +104,6 @@ public Action Zones_StartTouch(const char[] output, int entity, int caller, floa
 	if(caller > 0 && caller <= MaxClients)
 	{
 		char name[32];
-		GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 			OnEnter(caller, name);
 	}
@@ -116,7 +115,6 @@ public Action Zones_EndTouch(const char[] output, int entity, int caller, float 
 	if(caller > 0 && caller <= MaxClients)
 	{
 		char name[32];
-		GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 			OnLeave(caller, name);
 	}
@@ -128,7 +126,6 @@ public Action Zones_StartTouchAll(const char[] output, int entity, int caller, f
 	if(ActiveZones)
 	{
 		char name[32];
-		GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 		{
 			ActiveZones.PushString(name);
@@ -143,7 +140,6 @@ public Action Zones_EndTouchAll(const char[] output, int entity, int caller, flo
 	if(ActiveZones)
 	{
 		char name[32];
-		GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 		{
 			int pos = ActiveZones.FindString(name);
@@ -152,6 +148,51 @@ public Action Zones_EndTouchAll(const char[] output, int entity, int caller, flo
 				ActiveZones.Erase(pos);
 				OnDisable(entity, name);
 			}
+		}
+	}
+	return Plugin_Continue;
+}
+
+void Zones_EntityCreated(int entity, const char[] classname)
+{
+	if(!StrContains(classname, "trigger_teleport"))
+	{
+		SDKHook(entity, SDKHook_SpawnPost, Zones_TeleportSpawn);
+	}
+}
+
+public void Zones_TeleportSpawn(int entity)
+{
+	char name[32];
+	if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && !StrContains(name, "rpg_teleport_", false))
+	{
+		SDKHook(entity, SDKHook_StartTouch, Zones_TeleportTouch);
+		SDKHook(entity, SDKHook_Touch, Zones_TeleportTouch);
+	}
+}
+
+public Action Zones_TeleportTouch(int entity, int target)
+{
+	if(target > 0 && target < sizeof(Level))
+	{
+		static char name[32];
+		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && !StrContains(name, "rpg_teleport_", false))
+		{
+			int lv = StringToInt(name[9]);
+			if(lv > Level[target])
+			{
+				if(target <= MaxClients)
+				{
+					GetDisplayString(lv, name, sizeof(name));
+					ShowGameText(target, _, 0, "You must be %s to enter", name);
+				}
+				return Plugin_Handled;
+			}
+		}
+		else
+		{
+			SDKUnhook(entity, SDKHook_StartTouch, Zones_TeleportTouch);
+			SDKUnhook(entity, SDKHook_Touch, Zones_TeleportTouch);
 		}
 	}
 	return Plugin_Continue;

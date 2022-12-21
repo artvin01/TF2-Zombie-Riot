@@ -323,7 +323,7 @@ public Action Stats_ShowStats(int client, int args)
 
 		int amount = Stats_BaseHealth(client);
 		int bonus = SDKCall_GetMaxHealth(client) - amount;
-		FormatEx(buffer, sizeof(buffer), "Max Health: %d + %d (0%% resistance)", amount, bonus);
+		FormatEx(buffer, sizeof(buffer), "Max Health: %d + %d", amount, bonus);
 		menu.AddItem(NULL_STRING, buffer);
 
 		Stats_BaseCarry(client, amount, bonus);

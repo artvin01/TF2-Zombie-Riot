@@ -299,6 +299,7 @@ void Tinker_ConfigSetup(KeyValues map)
 	{
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "tinker");
 		kv = new KeyValues("Tinker");
+		kv.SetEscapeSequences(true);
 		kv.ImportFromFile(buffer);
 	}
 
@@ -878,7 +879,24 @@ static void ShowMenu(int client, int page)
 										
 										if(found)
 											continue;
+										
+										if(tinker.Previous[0])
+										{
+											for(int a; a < weapon.PerkCount; a++)
+											{
+												static TinkerEnum tinker2;
+												TinkerList.GetArray(weapon.Perks[a], tinker2);
+												if(StrEqual(tinker.Previous, tinker2.Name, false))
+												{
+													found = true;
+													break;
+												}
+											}
 
+											if(!found)
+												continue;
+										}
+										
 										IntToString(i, buffer, sizeof(buffer));
 										menu.AddItem(buffer, tinker.Name);
 									}
