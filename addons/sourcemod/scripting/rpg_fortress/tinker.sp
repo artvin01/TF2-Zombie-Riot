@@ -299,7 +299,6 @@ void Tinker_ConfigSetup(KeyValues map)
 	{
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "tinker");
 		kv = new KeyValues("Tinker");
-		kv.SetEscapeSequences(true);
 		kv.ImportFromFile(buffer);
 	}
 
@@ -529,7 +528,7 @@ void Tinker_SpawnItem(int client, int index, int entity)
 			WeaponList.GetArray(i, weapon);
 			if(weapon.Store == index && weapon.Owner == client)
 			{
-				PrintToChatAll("Found");
+		//		PrintToChatAll("Found");
 				TextStore_GetItemName(index, StoreWeapon[entity], sizeof(StoreWeapon[]));
 
 				static TinkerEnum tinker;
@@ -585,7 +584,7 @@ void Tinker_SpawnItem(int client, int index, int entity)
 
 				for(i = 0; i < weapon.ForgeCount; i++)
 				{
-					PrintToChatAll("%d ; %f", weapon.Forge[i], weapon.Value[i]);
+				//	PrintToChatAll("%d ; %f", weapon.Forge[i], weapon.Value[i]);
 					if(weapon.Forge[i] < 0)
 					{
 						Stats_GetCustomStats(entity, weapon.Forge[i], weapon.Value[i]);
@@ -667,7 +666,7 @@ void Tinker_GainXP(int client, int entity)
 				}
 
 				WeaponList.SetArray(i, weapon);
-				
+
 				for(i = 0; i < weapon.PerkCount; i++)
 				{
 					static TinkerEnum tinker;
@@ -676,6 +675,7 @@ void Tinker_GainXP(int client, int entity)
 					{
 						Call_StartFunction(null, tinker.FuncGainXP);
 						Call_PushCell(client);
+						Call_PushCell(entity);
 						Call_Finish();
 					}
 				}
@@ -773,7 +773,7 @@ bool Tinker_Interact(int client, int entity, int weapon)
 		if(EntRefToEntIndex(npc.EntRef) == entity)
 		{
 			CurrentWeapon[client] = Store_GetStoreOfEntity(weapon);
-			PrintToChatAll("%d", CurrentWeapon[client]);
+		//	PrintToChatAll("%d", CurrentWeapon[client]);
 			if(CurrentWeapon[client])
 				ShowMenu(client, -1);
 			
@@ -819,7 +819,7 @@ static void ShowMenu(int client, int page)
 								int level = kv.GetNum("level");
 								int rarity = kv.GetNum("rarity");
 
-								bool hasFunc[5];
+								bool hasFunc[4];
 								
 								kv.GetString("func_attack", buffer, sizeof(buffer));
 								hasFunc[0] = view_as<bool>(buffer[0]);
@@ -850,9 +850,6 @@ static void ShowMenu(int client, int page)
 
 									if(!hasFunc[3])
 										hasFunc[3] = tinker.FuncReload != INVALID_FUNCTION;
-
-									if(!hasFunc[4])
-										hasFunc[4] = tinker.FuncGainXP != INVALID_FUNCTION;
 								}
 
 								length = TinkerList.Length;
@@ -864,8 +861,7 @@ static void ShowMenu(int client, int page)
 									 (!hasFunc[0] || tinker.FuncAttack == INVALID_FUNCTION) &&
 									 (!hasFunc[1] || tinker.FuncAttack2 == INVALID_FUNCTION) &&
 									 (!hasFunc[2] || tinker.FuncAttack3 == INVALID_FUNCTION) &&
-									 (!hasFunc[3] || tinker.FuncReload == INVALID_FUNCTION) &&
-									 (!hasFunc[4] || tinker.FuncGainXP == INVALID_FUNCTION))
+									 (!hasFunc[3] || tinker.FuncReload == INVALID_FUNCTION))
 									{
 										bool found;
 										for(int a; a < weapon.PerkCount; a++)
@@ -879,24 +875,7 @@ static void ShowMenu(int client, int page)
 										
 										if(found)
 											continue;
-										
-										if(tinker.Previous[0])
-										{
-											for(int a; a < weapon.PerkCount; a++)
-											{
-												static TinkerEnum tinker2;
-												TinkerList.GetArray(weapon.Perks[a], tinker2);
-												if(StrEqual(tinker.Previous, tinker2.Name, false))
-												{
-													found = true;
-													break;
-												}
-											}
 
-											if(!found)
-												continue;
-										}
-										
 										IntToString(i, buffer, sizeof(buffer));
 										menu.AddItem(buffer, tinker.Name);
 									}
@@ -1326,12 +1305,47 @@ void Tinker_StatsLevelUp(int client, int oldLevel, Menu menu)
 	}
 }
 
-public void Tinker_XP_Ecological(int client)
+public void Tinker_XP_Ecological(int client, int weapon)
 {
 	if(!(GetURandomInt() % 6))
 	{
 		float pos[3];
 		GetClientEyePosition(client, pos);
 		TextStore_DropNamedItem(client, "Wood", pos, 1);
+	}
+}
+
+public void Tinker_XP_Glassy(int client, int weapon)
+{
+	Address address = TF2Attrib_GetByDefIndex(weapon, 2);
+	if(address != Address_Null)
+		TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 0.99);
+	
+	address = TF2Attrib_GetByDefIndex(weapon, 410);
+	if(address != Address_Null)
+		TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 0.99);
+	
+	address = TF2Attrib_GetByDefIndex(weapon, 2016);
+	if(address != Address_Null)
+		TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 0.99);
+}
+
+public void Tinker_Attack_Addiction(int client, int weapon, bool crit, int slot)
+{
+	if(Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		int damage = SDKCall_GetMaxHealth(client) * 2 / 5;
+		int health = GetClientHealth(client);
+		if(damage >= health)
+			damage = health - 1;
+		
+		SetEntityHealth(client, health - damage);
+		TF2_AddCondition(client, TFCond_MarkedForDeath, 5.0);
+		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 5.0);
+		Ability_Apply_Cooldown(client, slot, 30.0);
+	}
+	else
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
 	}
 }

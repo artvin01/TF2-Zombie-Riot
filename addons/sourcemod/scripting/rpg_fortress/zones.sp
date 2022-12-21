@@ -9,6 +9,17 @@ void Zones_PluginStart()
 	HookEntityOutput("trigger_multiple", "OnStartTouchAll", Zones_StartTouchAll);
 	HookEntityOutput("trigger_multiple", "OnEndTouch", Zones_EndTouch);
 	HookEntityOutput("trigger_multiple", "OnEndTouchAll", Zones_EndTouchAll);
+
+	char name[32];
+	int entity = -1;
+	while((entity = FindEntityByClassname(entity, "trigger_teleport")) != -1)
+	{
+		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && !StrContains(name, "rpg_teleport", false))
+		{
+			SDKHook(entity, SDKHook_StartTouch, Zones_TeleportTouch);
+			SDKHook(entity, SDKHook_Touch, Zones_TeleportTouch);
+		}
+	}
 }
 
 void Zones_ResetAll()
@@ -178,7 +189,7 @@ public Action Zones_TeleportTouch(int entity, int target)
 		static char name[32];
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && !StrContains(name, "rpg_teleport_", false))
 		{
-			int lv = StringToInt(name[9]);
+			int lv = StringToInt(name[13]);
 			if(lv > Level[target])
 			{
 				if(target <= MaxClients)

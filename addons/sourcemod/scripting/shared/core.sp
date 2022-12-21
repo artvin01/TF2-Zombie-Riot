@@ -2008,7 +2008,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_is_a_brush[entity] = false;
 		
 #if defined RPG
-		RPG_EntityCreated(entity);
+		RPG_EntityCreated(entity, classname);
 		TextStore_EntityCreated(entity);
 #endif
 
@@ -2704,7 +2704,6 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				int entityfrombrush = BrushToEntity(entity);
 				if(entityfrombrush != -1)
 				{
-					PrintToChatAll("converted");
 					entity = entityfrombrush;
 				}
 			}

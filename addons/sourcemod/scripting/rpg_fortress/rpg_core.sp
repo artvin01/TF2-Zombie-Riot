@@ -136,9 +136,10 @@ void RPG_ClientDisconnect_Post()
 	CountPlayersOnRed();
 }
 
-void RPG_EntityCreated(int entity)
+void RPG_EntityCreated(int entity, const char[] classname)
 {
 	b_NpcIsInADungeon[entity] = false;
 	StoreWeapon[entity][0] = 0;
 	Stats_ClearCustomStats(entity);
+	Zones_EntityCreated(entity, classname);
 }
