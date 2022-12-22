@@ -847,7 +847,7 @@
 	{
 		"en"        "Buildable Village"
 		"ru"        "Возведение деревни"
-		"chi"       "建筑升级器"
+		"chi"       "村庄"
 	}
 	"Chooseable Buildings (Only one)"
 	{
@@ -2012,7 +2012,7 @@
 		 "ru"       "Все предметы здесь влияют на улучшение построек."
 	     "chi"       "所有有关建筑的物品已被归类到此列表"
 	}
-	"TIP: Only one path can have a tier 3 upgrade" //卫星列表
+	"TIP: Only one path can have a tier 3 upgrade" //村庄列表
 	{
 	     "en"       "TIP: Only one path can have a tier 3 upgrade"
 		 "ru"       "СОВЕТ: Только один путь может иметь улучшение уровня 3"
@@ -2022,13 +2022,13 @@
 	{
 	     "en"       "Bigger Radius"
 		 "ru"       "Увеличенный радиус"
-	     "chi"       "更大的范围"
+	     "chi"       "加大影响范围"
 	}
 	"Jungle Drums"
 	{
 	     "en"       "Jungle Drums"
 		 "ru"       "Барабаны джунглей"
-	     "chi"       "更快的速度"
+	     "chi"       "加快范围内攻击速度"
 	}
 	"Grow Blocker"
 	{
