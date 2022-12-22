@@ -8,6 +8,9 @@ Compile zombie_riot.sp for this.
 Still currently in development. Not recommended to use.
 Compile rpg_fortress.sp for this.
 
+We will also not support anyone using RPG fortress, or help with debugging.
+Feel free to use this, but know what youre doing.
+
 DO NOT HAVE BOTH ON THE SERVER.
 
 ## Information
