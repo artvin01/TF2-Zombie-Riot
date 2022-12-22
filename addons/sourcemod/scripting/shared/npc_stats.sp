@@ -6638,7 +6638,7 @@ public void Raidboss_Clean_Everyone()
 		{
 			if(GetEntProp(base_boss, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 			{
-				if(!b_Map_BaseBoss_No_Layers[base_boss]) //Make sure it doesnt actually kill map base_bosses
+				if(!b_Map_BaseBoss_No_Layers[base_boss] && !b_IsAlliedNpc[base_boss]) //Make sure it doesnt actually kill map base_bosses
 				{
 					Change_Npc_Collision(base_boss, 1); //Gives raid collision
 				}

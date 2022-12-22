@@ -966,7 +966,7 @@ methodmap Citizen < CClotBody
 	public void SetDowned(bool state, int client = 0)
 	{
 		this.m_bDowned = state;
-		this.UpdateCollision(state);
+		this.UpdateCollision(state || this.m_bCamo);
 		
 		if(this.m_bDowned)
 		{

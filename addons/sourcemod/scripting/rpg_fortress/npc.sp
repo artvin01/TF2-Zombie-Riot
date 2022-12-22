@@ -499,8 +499,7 @@ bool AllyNpcInteract(int client, int entity, int weapon)
 	{
 		case FARM_COW:
 		{
-			result = true;
-			HeavyCow_Interact(client, entity, weapon);
+			result = HeavyCow_Interact(client, entity, weapon);
 		}
 	}
 	return result;

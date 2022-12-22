@@ -124,11 +124,11 @@ enum struct StoreEnum
 		{
 
 			int particle = EntRefToEntIndex(this.ParticleRef);
-			if(particle != -1)
+			if(IsValidEntity(particle))
 				RemoveEntity(particle);
 
 			int entity = EntRefToEntIndex(this.EntRef);
-			if(entity != -1)
+			if(IsValidEntity(entity))
 				RemoveEntity(entity);
 			
 			this.EntRef = INVALID_ENT_REFERENCE;

@@ -388,6 +388,7 @@ enum struct DungeonEnum
 
 static StringMap DungeonList;
 static char DungeonMenu[MAXTF2PLAYERS][64];
+static bool AltMenu[MAXTF2PLAYERS];
 static char InDungeon[MAXTF2PLAYERS][64];
 static bool IsAlive[MAXTF2PLAYERS];
 
@@ -409,7 +410,23 @@ void Dungeon_ConfigSetup(KeyValues map)
 		kv.ImportFromFile(buffer);
 	}
 
-	delete DungeonList;
+	if(DungeonList)
+	{
+		DungeonEnum dungeon;
+		StringMapSnapshot snap = DungeonList.Snapshot();
+		int length = snap.Length;
+		for(int i; i < length; i++)
+		{
+			int size = snap.KeyBufferSize(i) + 1;
+			char[] name = new char[size];
+			DungeonList.GetArray(name, dungeon, sizeof(dungeon));
+			dungeon.Delete();
+		}
+
+		delete snap;
+		delete DungeonList;
+	}
+	
 	DungeonList = new StringMap();
 
 	DungeonEnum dungeon;
@@ -467,7 +484,7 @@ bool Dungeon_Interact(int client, int entity, int weapon)
 		if(EntRefToEntIndex(dungeon.EntRef) == entity)
 		{
 			strcopy(DungeonMenu[client], sizeof(DungeonMenu[]), name);
-			ShowMenu(client, -1);
+			ShowMenu(client, 0);
 			result = true;
 			break;
 		}
@@ -479,7 +496,7 @@ bool Dungeon_Interact(int client, int entity, int weapon)
 
 void Dungeon_ClientDisconnect(int client)
 {
-
+	AltMenu[client] = false;
 }
 
 static void ShowMenu(int client, int page)
@@ -504,55 +521,82 @@ static void ShowMenu(int client, int page)
 				{
 					if(StrEqual(InDungeon[target], DungeonMenu[client]))
 					{
-						if(IsAlive[target])
+						if(client == target)
+						{
+							Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%N (Leave)", client);
+							menu.AddItem(NULL_STRING, dungeon.CurrentStage);
+						}
+						else if(IsAlive[target])
 						{
 							GetClientName(target, dungeon.CurrentStage, sizeof(dungeon.CurrentStage));
+							menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 						}
 						else
 						{
 							Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%N (Dead)", target);
+							menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 						}
-
-						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
-					}
-				}
-
-				if(!IsAlive[target] && StrEqual(InDungeon[target], DungeonMenu[client]))
-				{
-					int count = menu.ItemCount;
-					if(count > 6)
-					{
-						menu.InsertItem(6, "-2", "Quit Dungeon");
-					}
-					else
-					{
-						while(count < 6)
-						{
-							menu.AddItem(NULL_STRING, NULL_STRING, ITEMDRAW_NOTEXT);
-							count++;
-						}
-
-						menu.AddItem("-2", "Quit Dungeon");
 					}
 				}
 			}
-			else if(page == -1)
+			else
 			{
 				time = -time;
 				menu.SetTitle("RPG Fortress\n \nContingency Contract:\n%s △%d\nStarts In: %d:%02d\n ", dungeon.CurrentStage, dungeon.TierLevel(), time / 60, time % 60);
 
-				int count;
-				for(int target = 1; target <= MaxClients; target++)
+				static StageEnum stage;
+				dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage));
+
+				if(AltMenu[client] || !stage.ModList)
 				{
-					if(StrEqual(InDungeon[target], DungeonMenu[client]))
-						count++;
+					int count;
+					for(int target = 1; target <= MaxClients; target++)
+					{
+						if(client == target && client == leader)
+						{
+							Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%N (Leave)", client);
+							menu.AddItem(NULL_STRING, dungeon.CurrentStage);
+						}
+						else if(client != leader && target == leader)
+						{
+							Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%N (Party Leader)", target);
+							menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
+						}
+						else if(dungeon.CurrentHost == target)
+						{
+							Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%N (Host)", target);
+							menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
+						}
+						else if(StrEqual(InDungeon[target], DungeonMenu[client]))
+						{
+							GetClientName(target, dungeon.CurrentStage, sizeof(dungeon.CurrentStage));
+							menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
+						}
+					}
+				}
+				else
+				{
+					StringMapSnapshot snap = stage.ModList.Snapshot();
+
+					int length = snap.Length;
+					for(int i; i < length; i++)
+					{
+						int size = snap.KeyBufferSize(i) + 1;
+						char[] name = new char[size];
+
+						static ModEnum mod;
+						stage.ModList.GetArray(name, mod, sizeof(mod));
+						Format(mod.Desc, sizeof(mod.Desc), "[%s] %s △%d\n%s\n ", dungeon.ModList.FindString(name) == -1 ? " " : "X", name, mod.Tier, mod.Desc);
+
+						menu.AddItem(name, mod.Desc, client == dungeon.CurrentHost ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+					}
+
+					delete snap;
+
+					menu.Pagination = 3;
 				}
 
-				Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "Player List (%d Queued)", count);
-				menu.AddItem("-3", dungeon.CurrentStage);
-
-				Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "Modifiers (%d Added)", dungeon.ModList.Length);
-				menu.AddItem("-4", dungeon.CurrentStage);
+				menu.ExitBackButton = view_as<bool>(stage.ModList);
 			}
 		}
 		else
@@ -567,15 +611,12 @@ static void ShowMenu(int client, int page)
 			}
 
 			StringMapSnapshot snap = dungeon.StageList.Snapshot();
+
 			int length = snap.Length;
 			for(int i; i < length; i++)
 			{
 				int size = snap.KeyBufferSize(i) + 1;
 				char[] name = new char[size];
-
-				static StageEnum stage;
-				dungeon.StageList.GetArray(name, stage, sizeof(stage));
-				
 				menu.AddItem(name, name, client == leader ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 			}
 
@@ -583,7 +624,38 @@ static void ShowMenu(int client, int page)
 		}
 
 		strcopy(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), DungeonMenu[client]);
-		if(menu.Display(client, MENU_TIME_FOREVER))
+		if(menu.DisplayAt(client, page, MENU_TIME_FOREVER))
 			strcopy(DungeonMenu[client], sizeof(DungeonMenu[]), dungeon.CurrentStage);
+	}
+}
+
+public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+			{
+				AltMenu[client] = !AltMenu[client];
+				ShowMenu(client, 0);
+			}
+			else
+			{
+				DungeonMenu[client][0] = 0;
+			}
+		}
+		case MenuAction_Select:
+		{
+			static DungeonEnum dungeon;
+			if(DungeonList.GetArray(DungeonMenu[client], dungeon, sizeof(dungeon)))
+			{
+				bool 
+			}
+		}
 	}
 }
