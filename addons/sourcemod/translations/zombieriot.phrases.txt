@@ -761,7 +761,7 @@
 		"ru" 		"Получено дополнительно +{1} кредитов за волну благодаря деревням!"
 		"pt"		"Ganhou {1} extra nesta onda graças aos Aldeões!"
 		"nl"		"Je krijgt een extra {1} geld dankzij uw dorp!"
-		"chi"       "得益于卫星，回合结束额外获得 {1} 的现金奖励"
+		"chi"       "得益于村庄，回合结束额外获得 {1} 的现金奖励"
 	}
 	"Picking Up Building"
 	{
@@ -1396,7 +1396,7 @@
 		"ru" 		"Нажмите ПЕРЕЗАРЯДКА, чтобы улучшить свою деревню."
 		"pt"		"Aperte o botão de RECARREGAR para aprimorar sua vilá."
 		"nl"		"Druk op de HERLAAD toets om uw dorp te upgraden."
-		"chi"       "按下R键升级你的卫星"
+		"chi"       "按下R键升级你的村庄"
 	}
 	"Pong"
 	{
