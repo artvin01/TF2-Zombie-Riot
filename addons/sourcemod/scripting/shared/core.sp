@@ -2739,6 +2739,9 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 
 			if(Quests_Interact(client, entity))
 				return true;
+			
+			if(AllyNpcInteract(client, entity, weapon))
+				return true;
 #endif
 		
 		}

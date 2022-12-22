@@ -14,6 +14,7 @@ int i_TagColor[MAXTF2PLAYERS][4];
 char c_TagName[MAXTF2PLAYERS][64];
 int b_BrushToOwner[MAXENTITIES];
 int b_OwnerToBrush[MAXENTITIES];
+float Animal_Happy[MAXTF2PLAYERS][10][3];
 
 bool b_NpcIsInADungeon[MAXENTITIES];
 
@@ -125,6 +126,14 @@ void RPG_ClientCookiesCached(int client)
 
 void RPG_ClientDisconnect(int client)
 {
+	for(int loop1; loop1 < sizeof(Animal_Happy[]); loop1++)
+	{
+		for(int loop2; loop2 < sizeof(Animal_Happy[][]); loop2++)
+		{
+			Animal_Happy[client][loop1][loop2] = 0.0;
+		}
+	}
+
 	UpdateLevelAbovePlayerText(client, true);
 	Ammo_ClientDisconnect(client);
 	Fishing_ClientDisconnect(client);

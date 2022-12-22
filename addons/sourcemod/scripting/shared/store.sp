@@ -3399,11 +3399,11 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 #endif
 
 #if defined RPG
-	entity = SpawnWeapon(client, "tf_weapon_pistol", 25, 1, 0, {128, 301, 821}, {1.0, 1.0, 1.0}, 3);
+	entity = SpawnWeapon(client, "tf_weapon_pistol", 25, 1, 0, {128, 301, 821, 2}, {1.0, 1.0, 1.0, 0.0}, 3);
 	if(entity > MaxClients)
 		RequestFrame(SetBackpackName, EntIndexToEntRef(entity));
 	
-	entity = SpawnWeapon(client, "tf_weapon_pistol", 26, 1, 0, {128, 301, 821}, {1.0, 1.0, 1.0}, 3);
+	entity = SpawnWeapon(client, "tf_weapon_pistol", 26, 1, 0, {128, 301, 821, 2}, {1.0, 1.0, 1.0, 0.0}, 3);
 	if(entity > MaxClients)
 		RequestFrame(SetQuestBookName, EntIndexToEntRef(entity));
 #endif

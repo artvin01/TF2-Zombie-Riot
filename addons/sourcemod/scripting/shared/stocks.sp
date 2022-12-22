@@ -1227,6 +1227,10 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 		{
 			return entity!=data;
 		}
+		else if(b_IsAlliedNpc[entity])
+		{
+			return entity!=data;
+		}
 		else
 		{
 			return false;

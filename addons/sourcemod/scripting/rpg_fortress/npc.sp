@@ -18,7 +18,10 @@ enum
 	ZOMBIEFIED_COMBINE_SWORDSMAN	= 12,
 	BOB_THE_TARGETDUMMY				= 13,
 	FAST_ZOMBIE						= 14,
-	FATHER_GRIGORI					= 15
+	FATHER_GRIGORI					= 15,
+
+
+	FARM_COW						= 16
 }
 
 public const char NPC_Names[][] =
@@ -38,7 +41,8 @@ public const char NPC_Names[][] =
 	"Zombified Combine Swordsman",
 	"Bob The Second - Target Dummy",
 	"Fast Zombie",
-	"Father Grigori ?"
+	"Father Grigori ?",
+	"Farming Cow"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -58,7 +62,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_zombiefied_combine_soldier_swordsman",
 	"npc_bob_the_targetdummy",
 	"npc_fastzombie",
-	"npc_enemy_grigori"
+	"npc_enemy_grigori",
+	"npc_heavy_cow"
 };
 
 void NPC_MapStart()
@@ -78,6 +83,7 @@ void NPC_MapStart()
 	BobTheTargetDummy_OnMapStart_NPC();
 	FastZombie_OnMapStart_NPC();
 	EnemyFatherGrigori_OnMapStart_NPC();
+	FarmCow_OnMapStart_NPC();
 }
 
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 120.0
@@ -147,6 +153,10 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 		case FATHER_GRIGORI:
 		{
 			entity = EnemyFatherGrigori(client, vecPos, vecAng, ally);
+		}
+		case FARM_COW:
+		{
+			entity = FarmCow(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -220,6 +230,10 @@ public void NPCDeath(int entity)
 		case FATHER_GRIGORI:
 		{
 			EnemyFatherGrigori_NPCDeath(entity);
+		}
+		case FARM_COW:
+		{
+			FarmCow_NPCDeath(entity);
 		}
 		default:
 		{
@@ -478,6 +492,20 @@ void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] Stand
 	}
 }
 
+bool AllyNpcInteract(int client, int entity, int weapon)
+{
+	bool result;
+	switch(i_NpcInternalId[entity])
+	{
+		case FARM_COW:
+		{
+			result = true;
+			HeavyCow_Interact(client, entity, weapon);
+		}
+	}
+	return result;
+}
+
 #include "rpg_fortress/npc/normal/npc_chicken_2.sp"
 #include "rpg_fortress/npc/normal/npc_chicken_mad.sp"
 #include "rpg_fortress/npc/normal/npc_roost_mad.sp"
@@ -494,3 +522,6 @@ void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] Stand
 #include "rpg_fortress/npc/normal/npc_bob_the_targetdummy.sp"
 #include "rpg_fortress/npc/normal/npc_fastzombie.sp"
 #include "rpg_fortress/npc/normal/npc_enemy_grigori.sp"
+
+
+#include "rpg_fortress/npc/farm/npc_heavy_cow.sp"

@@ -140,7 +140,7 @@ public void Marksman_boom_rifle(int client, int weapon, const char[] classname, 
 		TR_GetEndPosition(spawnLoc, trace);
 	}	
 	SpawnSmallExplosionNotRandom(spawnLoc);
-	EmitSoundToAll(HITSCAN_BOOM, -1, _, 90, _, _, _, _,spawnLoc);
+	EmitSoundToAll(HITSCAN_BOOM, -1, _, 80, _, _, _, _,spawnLoc);
 	Explode_Logic_Custom(damage, client, client, weapon, spawnLoc);
 		
 	FinishLagCompensation_Base_boss();

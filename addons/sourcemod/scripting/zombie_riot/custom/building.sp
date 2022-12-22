@@ -4413,7 +4413,7 @@ int Building_GetCashOnWave(int current)
 				popCash++;
 			}
 			
-			if(Village_Flags[client] & VILLAGE_300)//VILLAGE_004)
+			if(Village_Flags[client] & VILLAGE_300 || Village_Flags[client] & VILLAGE_400 || Village_Flags[client] & VILLAGE_500)//VILLAGE_004)
 			{
 				i_ExtraPlayerPoints[client] += 10;
 				extras++;
@@ -4787,6 +4787,7 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 					Village_TierExists[0] = 3;
 					int i = MaxClients + 1;
 					int count = 0;
+					
 					while((i = FindEntityByClassname(i, "base_boss")) != -1)
 					{
 						if(i_NpcInternalId[i] == CITIZEN)

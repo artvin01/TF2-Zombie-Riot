@@ -23,7 +23,11 @@ enum struct StoreEnum
 	float Scale;
 	char Enter[64];
 	char Talk[64];
-	char Leave[64];
+	char Leave[64];	
+	int ParticleRef;
+	char Particle[64];
+	char ParticleParent[64];
+	int ForceBodyGroup;
 	
 	char Wear1[PLATFORM_MAX_PATH];
 	char Wear2[PLATFORM_MAX_PATH];
@@ -70,6 +74,12 @@ enum struct StoreEnum
 		kv.GetString("sound_leave", this.Leave, 64);
 		if(this.Leave[0])
 			PrecacheScriptSound(this.Leave);
+
+		this.ForceBodyGroup = kv.GetNum("force_bodygroup", 0);
+
+		kv.GetString("particle", this.Particle, 64);
+		
+		kv.GetString("particle_parent", this.ParticleParent, 64);
 	}
 	
 	void PlayEnter(int client)
@@ -112,6 +122,11 @@ enum struct StoreEnum
 	{
 		if(this.EntRef != INVALID_ENT_REFERENCE)
 		{
+
+			int particle = EntRefToEntIndex(this.ParticleRef);
+			if(particle != -1)
+				RemoveEntity(particle);
+
 			int entity = EntRefToEntIndex(this.EntRef);
 			if(entity != -1)
 				RemoveEntity(entity);
@@ -154,8 +169,24 @@ enum struct StoreEnum
 					SetVariantString(this.Intro);
 					AcceptEntityInput(entity, "SetAnimation", entity, entity);
 				}
-				
+				if(this.ForceBodyGroup > 0)
+				{
+					SetVariantInt(this.ForceBodyGroup);
+					AcceptEntityInput(entity, "SetBodyGroup");
+				}
+
 				this.EntRef = EntIndexToEntRef(entity);
+
+				if(this.Particle[0])
+				{
+					float flPos[3]; // original
+					float flAng[3]; // original
+					CClotBody npc = view_as<CClotBody>(entity);
+		
+					npc.GetAttachment(this.ParticleParent, flPos, flAng);
+
+					this.ParticleRef = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, this.Particle, entity, "", {0.0,0.0,15.0}));
+				}
 			}
 		}
 	}
