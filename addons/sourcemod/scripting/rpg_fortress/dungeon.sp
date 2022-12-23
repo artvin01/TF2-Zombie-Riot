@@ -386,11 +386,16 @@ enum struct DungeonEnum
 	}
 }
 
+static ConVar mp_disable_respawn_times;
 static StringMap DungeonList;
 static char DungeonMenu[MAXTF2PLAYERS][64];
 static bool AltMenu[MAXTF2PLAYERS];
-static char InDungeon[MAXTF2PLAYERS][64];
-static bool IsAlive[MAXTF2PLAYERS];
+static char InDungeon[MAXENTITIES][64];
+
+void Dungeon_PluginStart()
+{
+	mp_disable_respawn_times = FindConVar("mp_disable_respawn_times");
+}
 
 void Dungeon_ConfigSetup(KeyValues map)
 {
@@ -494,11 +499,6 @@ bool Dungeon_Interact(int client, int entity, int weapon)
 	return result;
 }
 
-void Dungeon_ClientDisconnect(int client)
-{
-	AltMenu[client] = false;
-}
-
 static void ShowMenu(int client, int page)
 {
 	static DungeonEnum dungeon;
@@ -526,7 +526,7 @@ static void ShowMenu(int client, int page)
 							Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%N (Leave)", client);
 							menu.AddItem(NULL_STRING, dungeon.CurrentStage);
 						}
-						else if(IsAlive[target])
+						else if(IsPlayerAlive(target))
 						{
 							GetClientName(target, dungeon.CurrentStage, sizeof(dungeon.CurrentStage));
 							menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
@@ -549,13 +549,25 @@ static void ShowMenu(int client, int page)
 
 				if(AltMenu[client] || !stage.ModList)
 				{
-					int count;
+					AltMenu[client] = true;
+
+					bool found;
 					for(int target = 1; target <= MaxClients; target++)
 					{
 						if(client == target && client == leader)
 						{
-							Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%N (Leave)", client);
-							menu.AddItem(NULL_STRING, dungeon.CurrentStage);
+							Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%N (Leave)\n ", client);
+							
+							if(menu.ItemCount)
+							{
+								menu.InsertItem(0, NULL_STRING, dungeon.CurrentStage);
+							}
+							else
+							{
+								menu.AddItem(NULL_STRING, dungeon.CurrentStage);
+							}
+							
+							found = true;
 						}
 						else if(client != leader && target == leader)
 						{
@@ -571,6 +583,18 @@ static void ShowMenu(int client, int page)
 						{
 							GetClientName(target, dungeon.CurrentStage, sizeof(dungeon.CurrentStage));
 							menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
+						}
+					}
+
+					if(!found)
+					{
+						if(client == leader)
+						{
+							menu.InsertItem(0, NULL_STRING, "Enter Queue\n ");
+						}
+						else
+						{
+							menu.InsertItem(0, NULL_STRING, "Party Leader Must Enter Queue\n ", ITEMDRAW_DISABLED);
 						}
 					}
 				}
@@ -623,9 +647,7 @@ static void ShowMenu(int client, int page)
 			delete snap;
 		}
 
-		strcopy(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), DungeonMenu[client]);
-		if(menu.DisplayAt(client, page, MENU_TIME_FOREVER))
-			strcopy(DungeonMenu[client], sizeof(DungeonMenu[]), dungeon.CurrentStage);
+		menu.DisplayAt(client, page, MENU_TIME_FOREVER);
 	}
 }
 
@@ -644,18 +666,181 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 				AltMenu[client] = !AltMenu[client];
 				ShowMenu(client, 0);
 			}
-			else
-			{
-				DungeonMenu[client][0] = 0;
-			}
 		}
 		case MenuAction_Select:
 		{
 			static DungeonEnum dungeon;
 			if(DungeonList.GetArray(DungeonMenu[client], dungeon, sizeof(dungeon)))
 			{
-				bool 
+				if(dungeon.CurrentStage[0])
+				{
+					static StageEnum stage;
+					if(dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage)))
+					{
+						menu.GetItem(choice, dungeon.CurrentStage, sizeof(dungeon.CurrentStage));
+						if(GetGameTime() < dungeon.StartTime && !AltMenu[client])	// Add/Remove Mod
+						{
+							if(!dungeon.CurrentStage[0])
+							{
+								ShowMenu(client, 0);
+							}
+							else
+							{
+								int pos = dungeon.ModList.FindString(dungeon.CurrentStage);
+								if(pos != -1)
+								{
+									dungeon.ModList.Erase(pos);
+								}
+								else if(stage.ModList.HasKey(dungeon.CurrentStage))
+								{
+									dungeon.ModList.PushString(dungeon.CurrentStage);
+								}
+
+								ShowMenu(client, choice);
+							}
+						}
+						else if(dungeon.CurrentStage[0])
+						{
+							ShowMenu(client, 0);
+						}
+						else	// Join/Leave Lobby
+						{
+							bool alreadyIn = StrEqual(InDungeon[client], DungeonMenu[client]);
+							Dungeon_ClientDisconnect(client, true);
+
+							if(!alreadyIn)
+							{
+								strcopy(InDungeon[client], sizeof(InDungeon[]), DungeonMenu[client]);
+								ShowMenu(client, 0);
+							}
+						}
+					}
+				}
+				else	// Create Lobby
+				{
+					menu.GetItem(choice, dungeon.CurrentStage, sizeof(dungeon.CurrentStage));
+					if(dungeon.CurrentStage[0])
+					{
+						delete dungeon.ModList;
+						dungeon.ModList = new ArrayList(ByteCountToCells(64));
+						dungeon.CurrentHost = client;
+						DungeonList.SetArray(DungeonMenu[client], dungeon, sizeof(dungeon));
+					}
+
+					ShowMenu(client, 0);
+				}
 			}
 		}
 	}
+}
+
+void Dungeon_ResetEntity(int entity)
+{
+	InDungeon[entity][0] = 0;
+}
+
+void Dungeon_ClientDisconnect(int client, bool alive = false)
+{
+	AltMenu[client] = false;
+
+	if(InDungeon[client][0])
+	{
+		static DungeonEnum dungeon;
+		if(DungeonList.GetArray(InDungeon[client], dungeon, sizeof(dungeon)) && dungeon.CurrentHost == client && !dungeon.WaveList)
+		{
+			dungeon.StartTime += 45.0;
+			float maximum = GetGameTime() + QUEUE_TIME;
+			if(dungeon.StartTime > maximum)
+				dungeon.StartTime = maximum;
+			
+			dungeon.CurrentHost = 0;
+			for(int target = 1; target <= MaxClients; target++)
+			{
+				if(target != client && StrEqual(InDungeon[client], InDungeon[target]))
+				{
+					if(!dungeon.CurrentHost)
+						dungeon.CurrentHost = target;
+					
+					SPrintToChat(target, "%N left the lobby as the host, %N is the new host!", client, dungeon.CurrentHost);
+				}
+			}
+		}
+
+		if(alive)
+			mp_disable_respawn_times.ReplicateToClient(client, "0");
+
+		InDungeon[client][0] = 0;
+		Dungeon_CheckAlivePlayers();
+	}
+}
+
+void Dungeon_CheckAlivePlayers()
+{
+	StringMapSnapshot snap = DungeonList.Snapshot();
+
+	int length = snap.Length;
+	for(int i; i < length; i++)
+	{
+		int size = snap.KeyBufferSize(i) + 1;
+		char[] name = new char[size];
+		snap.GetKey(i, name, size);
+
+		bool found;
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(StrEqual(InDungeon[client], name) && IsPlayerAlive(client))
+			{
+				found = true;
+				break;
+			}
+		}
+
+		CleanDungeon(name);
+	}
+
+	delete snap;
+}
+
+static void CleanDungeon(const char[] name)
+{
+	static DungeonEnum dungeon;
+	if(DungeonList.GetArray(name, dungeon, sizeof(dungeon)) && dungeon.CurrentStage[0])
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(StrEqual(InDungeon[client], name))
+			{
+				InDungeon[client][0] = 0;
+				mp_disable_respawn_times.ReplicateToClient(client, "0");
+				f3_SpawnPosition[client] = dungeon.RespawnPos;
+			}
+		}
+
+		int i = MaxClients + 1;
+		while((i = FindEntityByClassname(i, "base_boss")) != -1)
+		{
+			if(StrEqual(InDungeon[i], name))
+				NPC_Despawn(i);
+		}
+		
+		dungeon.CurrentStage[0] = 0;
+		dungeon.CurrentHost = 0;
+		dungeon.StartTime = 0.0;
+		delete dungeon.ModList;
+		delete dungeon.WaveList;
+		DungeonList.SetArray(name, dungeon, sizeof(dungeon));
+	}
+}
+
+bool Dungeon_CanClientRespawn(int client)
+{
+	if(InDungeon[client][0])
+	{
+		static DungeonEnum dungeon;
+		DungeonList.GetArray(InDungeon[client], dungeon, sizeof(dungeon));
+		if(dungeon.WaveList)
+			return false;
+	}
+
+	return true;
 }
