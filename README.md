@@ -57,6 +57,12 @@ Sub Servers that also host the gamemode:
 "zr_maxbotsforkillfeed" = "6" ( def. "6" )
  - The maximum amount of blue bots allowed for the killfeed
  
+"zr_viewshakeonlowhealth" = "1" ( def. "1" )
+ - Should the view shake when low on health?
+ 
+ 
+ 
+ 
 ## Commands
 
 "sm_give_cash" "PLAYER" "YOUR AMMOUNT"
