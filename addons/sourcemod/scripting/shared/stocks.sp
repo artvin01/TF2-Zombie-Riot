@@ -113,7 +113,14 @@ stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iPar
 		SetParent(iParent, particle, szAttachment, vOffsets);
 
 		ActivateEntity(particle);
-		SetEdictFlags(particle, (GetEdictFlags(particle) & ~FL_EDICT_ALWAYS));	
+		if(iParent < MAXTF2PLAYERS) //Exclude base_bosses from this, or any entity, then it has to always be rendered.
+		{
+			SetEdictFlags(particle, (GetEdictFlags(particle) & ~FL_EDICT_ALWAYS));	
+		}
+		else
+		{
+			SetEdictFlags(particle, (GetEdictFlags(particle) | FL_EDICT_ALWAYS));	
+		}
 
 		AcceptEntityInput(particle, "start");
 		//CreateTimer(0.1, Activate_particle_late, particle, TIMER_FLAG_NO_MAPCHANGE);
