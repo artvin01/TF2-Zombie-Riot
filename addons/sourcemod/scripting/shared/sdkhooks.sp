@@ -198,11 +198,11 @@ public void OnPostThink(int client)
 
 			float PercentageHealth = float(flHealth) / float(flMaxHealth);
 
-			if(TeutonType[client] == TEUTON_NONE)
+			if(TeutonType[client] == TEUTON_NONE && zr_viewshakeonlowhealth.BoolValue) //If the cvar is off, then the viewshake will not happen.
 			{
 				if(PercentageHealth > 0.35)
 				{
-					i_SvRollAngle[client] = 1;
+					i_SvRollAngle[client] = 0;
 				}
 				else
 				{
@@ -216,15 +216,15 @@ public void OnPostThink(int client)
 
 					i_SvRollAngle[client] = RoundToCeil(PercentageHealth);
 
-					if(i_SvRollAngle[client] < 1)
+					if(i_SvRollAngle[client] < 0)
 					{
-						i_SvRollAngle[client] = 1;
+						i_SvRollAngle[client] = 0;
 					}
 				}
 			}
 			else
 			{
-				i_SvRollAngle[client] = 1;
+				i_SvRollAngle[client] = 0;
 			}
 
 			char RollAngleValue[4];

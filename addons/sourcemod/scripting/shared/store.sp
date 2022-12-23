@@ -2617,7 +2617,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							VecOrigin[2] += 45.0;
 
 							Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, client, info.UnboxRarity -1); //since they are one lower
-
+							
 							if(!CvarInfiniteCash.BoolValue)
 							{
 								Scrap[client] -= info.ScrapCost;
