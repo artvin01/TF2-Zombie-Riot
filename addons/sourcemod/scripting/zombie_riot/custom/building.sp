@@ -2549,11 +2549,11 @@ public Action Timer_DroppedBuildingWaitAmmobox(Handle htimer,  DataPack pack)
 
 		//	fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 		
-			return Plugin_Continue;
 		}
 		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
 		Building_Constructed[obj] = true;
+		return Plugin_Continue;
 	}
 	else
 	{
@@ -2599,10 +2599,10 @@ public Action Timer_DroppedBuildingWaitRailgun(Handle htimer, int entref)
 			int iActivity = npc.LookupActivity("RAIL_IDLE");
 			if(iActivity > 0) npc.StartActivity(iActivity, _, false);
 		//	npc.Update(); //SO THE ANIMATION PROPERLY LOOPS! CHECK THIS VERY OFTEN!
-			return Plugin_Continue;
 		}
 		npc.bBuildingIsPlaced = true;
 		Building_Constructed[obj] = true;
+		return Plugin_Continue;
 		
 	}
 	else
@@ -2628,10 +2628,10 @@ public Action Timer_DroppedBuildingWaitMortar(Handle htimer, int entref)
 			int iActivity = npc.LookupActivity("MORTAR_IDLE");
 			if(iActivity > 0) npc.StartActivity(iActivity, _, false);
 		//	npc.Update(); //SO THE ANIMATION PROPERLY LOOPS! CHECK THIS VERY OFTEN!
-			return Plugin_Continue;
 		}
 		npc.bBuildingIsPlaced = true;
 		Building_Constructed[obj] = true;
+		return Plugin_Continue;
 	}
 	else
 	{
@@ -2671,11 +2671,11 @@ public Action Timer_DroppedBuildingWaitHealingStation(Handle htimer, DataPack pa
 //			int iActivity = npc.LookupActivity("MORTAR_IDLE");
 //			if(iActivity > 0) npc.StartActivity(iActivity);
 //			npc.Update(); //SO THE ANIMATION PROPERLY LOOPS! CHECK THIS VERY OFTEN!
-			return Plugin_Continue;
 		}
 		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
 		Building_Constructed[obj] = true;
+		return Plugin_Continue;
 	}
 	else
 	{
@@ -2729,11 +2729,11 @@ public Action Timer_DroppedBuildingWaitArmorTable(Handle htimer, DataPack pack)
 		{
 			SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") | EF_NODRAW);
 		//	SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") & ~EF_NODRAW);
-			return Plugin_Continue;
 		}
 		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
 		Building_Constructed[obj] = true;
+		return Plugin_Continue;
 	}
 	else
 	{
@@ -5276,7 +5276,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 				}
 			}
 			SetEntityModel(Building_Index, HEALING_STATION_MODEL);
-			
+			/*
 			static const float minbounds[3] = {-15.0, -15.0, 0.0};
 			static const float maxbounds[3] = {15.0, 15.0, 45.0};
 			SetEntPropVector(Building_Index, Prop_Send, "m_vecMins", minbounds);
@@ -5284,6 +5284,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 			SetEntPropVector(Building_Index, Prop_Send, "m_vecMinsPreScaled", minbounds);
 			SetEntPropVector(Building_Index, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 			npc.UpdateCollisionBox();	
+			*/
+			//Do not override model collisions of sentries, they are wierd.
 
 		}
 		case BuildingPackAPunch:
