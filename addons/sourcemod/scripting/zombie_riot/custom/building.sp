@@ -2784,7 +2784,6 @@ public Action Timer_DroppedBuildingWaitPerkMachine(Handle htimer, DataPack pack)
 		if(Building_Constructed[obj])
 		{
 			SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") | EF_NODRAW);
-			return Plugin_Continue;
 		}
 		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
@@ -2838,8 +2837,6 @@ public Action Timer_DroppedBuildingWaitPackAPunch(Handle htimer, DataPack pack)
 		if(Building_Constructed[obj])
 		{
 			SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") | EF_NODRAW);
-		//	SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") & ~EF_NODRAW);
-			return Plugin_Continue;
 		}
 		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
@@ -2892,11 +2889,6 @@ public Action Timer_DroppedBuildingWaitWall(Handle htimer, DataPack pack)
 	//Wait until full complete
 	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") == 1.0)
 	{
-		if(Building_Constructed[obj])
-		{
-			return Plugin_Continue;
-		}
-
 		CClotBody npc = view_as<CClotBody>(obj);
 		npc.bBuildingIsPlaced = true;
 		Building_Constructed[obj] = true;
