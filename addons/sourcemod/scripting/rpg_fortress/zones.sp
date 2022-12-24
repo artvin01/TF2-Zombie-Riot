@@ -40,62 +40,56 @@ void Zones_ResetAll()
 	UnhookEntityOutput("trigger_multiple", "OnTouching", Zones_StartTouchAll);
 }
 
-static void OnEnter(int client, const char[] name)
+static void OnEnter(int entity, const char[] name)
 {
-	if(!b_NpcHasDied[client]) //An npc just touched it!
+	if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
-		PrintToChatAll("OnEnter");
-		return;
 	}
 	else
 	{
-		Crafting_ClientEnter(client, name);
-		Garden_ClientEnter(client, name);
-		Music_ZoneEnter(client, name);
-		Quests_EnableZone(client, name);
-		TextStore_ZoneEnter(client, name);		
+		Crafting_ClientEnter(entity, name);
+		Garden_ClientEnter(entity, name);
+		Music_ZoneEnter(entity, name);
+		Quests_EnableZone(entity, name);
+		TextStore_ZoneEnter(entity, name);		
 	}
 }
 
-static void OnLeave(int client, const char[] name)
+static void OnLeave(int entity, const char[] name)
 {
-	if(!b_NpcHasDied[client]) //An npc just touched it!
+	if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
-		PrintToChatAll("OnLeave");
-		return;
 	}
 	else
 	{
-		Crafting_ClientLeave(client, name);
-		Garden_ClientLeave(client, name);
-		TextStore_ZoneLeave(client, name);	
+		Crafting_ClientLeave(entity, name);
+		Garden_ClientLeave(entity, name);
+		TextStore_ZoneLeave(entity, name);	
 	}
 }
 
-static void OnActive(int client, const char[] name)
+static void OnActive(int entity, const char[] name)
 {
-	if(!b_NpcHasDied[client]) //An npc just touched it!
+	if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
-		PrintToChatAll("OnActive");
-		return;
 	}
 	else
 	{
+		Dungeon_EnableZone(name);
 		Mining_EnableZone(name);
 		Spawns_UpdateSpawn(name);
 		Tinker_EnableZone(name);
 	}
 }
 
-static void OnDisable(int client, const char[] name)
+static void OnDisable(int entity, const char[] name)
 {
-	if(!b_NpcHasDied[client]) //An npc just touched it!
+	if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
-		PrintToChatAll("OnDisable");
-		return;
 	}
 	else
 	{
+		Dungeon_DisableZone(name);
 		Mining_DisableZone(name);
 		Quests_DisableZone(name);
 		Spawns_DisableSpawn(name);

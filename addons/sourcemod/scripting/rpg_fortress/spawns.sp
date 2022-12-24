@@ -255,14 +255,14 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 		
 		if(count)
 		{
-			static float ang[3];
-			ang[1] = spawn.Angle;
-			if(ang[1] < 0.0)
-				ang[1] = GetURandomFloat() * 360.0;
-			
 			int diff = spawn.Level[HIGH] - spawn.Level[LOW];
 			for(int i; i < count; i++)
 			{
+				static float ang[3];
+				ang[1] = spawn.Angle;
+				if(ang[1] < 0.0)
+					ang[1] = GetURandomFloat() * 360.0;
+				
 				int entity = Npc_Create(spawn.Index, 0, spawn.Pos, ang, false);
 				if(entity == -1)
 					break;
@@ -282,15 +282,21 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 				Level[entity] = spawn.Level[LOW] + strength;
 				i_CreditsOnKill[entity] = GetScaledRate(spawn.Cash, strength, diff);
 				XP[entity] = GetScaledRate(spawn.XP, strength, diff);
-				int health = 999999999; //ayo he forgor, ANNOY ADMINO
+				b_thisNpcIsABoss[entity] = spawn.Boss;
 
+				int health;
 				if(spawn.Health[LOW])
 				{
 					health = GetScaledRate(spawn.Health, strength, diff);
 					SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 					SetEntProp(entity, Prop_Data, "m_iHealth", health);
 				}
-				Apply_Text_Above_Npc(entity,strength, health);
+				else
+				{
+					health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+				}
+
+				Apply_Text_Above_Npc(entity, b_thisNpcIsABoss[entity] ? strength + 1 : strength, health);
 
 				b_npcspawnprotection[entity] = true;
 				CreateTimer(2.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);

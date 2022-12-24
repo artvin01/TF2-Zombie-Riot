@@ -57,7 +57,7 @@ void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
 				Format(desc, 512, "%s\n%s Max Mana & Mana Regen", desc, CharPercent(value[i]));
 		
 			case 412:
-				Format(desc, 512, "%s\n%s Less Damage Taken", desc, CharPercent(value[i]));
+				Format(desc, 512, "%s\n%s Damage Taken", desc, CharPercent(value[i]));
 
 		}
 	}
@@ -323,7 +323,7 @@ public Action Stats_ShowStats(int client, int args)
 
 		int amount = Stats_BaseHealth(client);
 		int bonus = SDKCall_GetMaxHealth(client) - amount;
-		FormatEx(buffer, sizeof(buffer), "Max Health: %d + %d", amount, bonus);
+		FormatEx(buffer, sizeof(buffer), "Max Health: %d + %d (%.0f%% resistance)", amount, bonus, 1.0 / Attributes_FindOnPlayer(client, 412, true, 1.0));
 		menu.AddItem(NULL_STRING, buffer);
 
 		Stats_BaseCarry(client, amount, bonus);

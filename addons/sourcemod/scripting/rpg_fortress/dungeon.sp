@@ -3,12 +3,30 @@
 
 #define QUEUE_TIME	90.0
 
+static const char RoundRetryWin[][] =
+{
+	"vo/announcer_dec_kill03.mp3",
+	"vo/announcer_dec_kill05.mp3",
+	"vo/announcer_dec_kill10.mp3",
+	"vo/announcer_dec_kill11.mp3",
+	"vo/announcer_dec_kill14.mp3"
+};
+
+static const char RoundRetryLoss[][] =
+{
+	"vo/announcer_do_not_fail_again.mp3",
+	"vo/announcer_do_not_fail_this_time.mp3",
+	"vo/announcer_you_must_not_fail_again.mp3",
+	"vo/announcer_you_must_not_fail_this_time.mp3"
+};
+
 enum struct ModEnum
 {
 	char Desc[128];
 	int Tier;
 	int Unlock;
 	int Slot;
+	int Level;
 
 	Function OnSpawn;
 	Function OnWaves;
@@ -25,6 +43,7 @@ enum struct ModEnum
 		this.Tier = kv.GetNum("tier");
 		this.Unlock = kv.GetNum("unlock");
 		this.Slot = kv.GetNum("slot");
+		this.Level = kv.GetNum("level");
 	}
 
 	void CallOnSpawn(int entity)
@@ -58,6 +77,7 @@ enum struct WaveEnum
 	bool Boss;
 	int Level;
 	int Health;
+	int Rarity;
 
 	void SetupEnum(KeyValues kv, char[] buffer, int length)
 	{
@@ -74,6 +94,7 @@ enum struct WaveEnum
 		this.Boss = view_as<bool>(kv.GetNum("boss"));
 		this.Level = kv.GetNum("level");
 		this.Health = kv.GetNum("health");
+		this.Rarity = kv.GetNum("rarity");
 	}
 }
 
@@ -227,6 +248,28 @@ enum struct StageEnum
 			kv.GoBack();
 		}
 	}
+
+	void DoAllDrops(int client, int tier)
+	{
+		TextStore_AddItemCount(client, "Credits", this.Cash + tier);
+		TextStore_AddItemCount(client, "XP", this.XP + tier);
+
+		float multi = 1.0 + float(tier) * 0.1;
+		float luck = 1.0 + (float(Stats_Luck(client)) / 300.0);
+		
+		if(this.DropName1[0])
+			RollItemDrop(client, this.DropName1, this.DropChance1 * multi * luck);
+		
+		if(this.DropName2[0])
+			RollItemDrop(client, this.DropName2, this.DropChance2 * multi * luck);
+		
+		if(this.DropName3[0])
+			RollItemDrop(client, this.DropName3, this.DropChance3 * multi * luck);
+		
+		if(this.DropName4[0])
+			RollItemDrop(client, this.DropName4, this.DropChance4 * multi * luck);
+
+	}
 }
 
 enum struct DungeonEnum
@@ -253,22 +296,28 @@ enum struct DungeonEnum
 	float StartTime;
 	int PlayerCount;
 	int CurrentHost;
+	int LastSoundTime;
 
-	int TierLevel()
+	int TierLevel(ArrayList slotList)
 	{
 		int tier;
-		if(ModList && this.CurrentStage[0])
+		if(this.ModList && this.CurrentStage[0])
 		{
 			static StageEnum stage;
-			if(StageList.GetArray(this.CurrentStage, stage, sizeof(stage)))
+			if(this.StageList.GetArray(this.CurrentStage, stage, sizeof(stage)))
 			{
-				int length = ModList.Length;
+				int length = this.ModList.Length;
 				for(int i; i < length; i++)
 				{
 					static ModEnum mod;
-					ModList.GetString(i, mod.MusicEasy, sizeof(mod.MusicEasy));
-					if(stage.ModList.GetArray(mod.MusicEasy, mod, sizeof(mod)))
+					this.ModList.GetString(i, mod.Desc, sizeof(mod.Desc));
+					if(stage.ModList.GetArray(mod.Desc, mod, sizeof(mod)))
+					{
 						tier += mod.Tier;
+
+						if(slotList && mod.Slot)
+							slotList.Push(mod.Slot);
+					}
 				}
 			}
 		}
@@ -403,13 +452,18 @@ enum struct DungeonEnum
 }
 
 static ConVar mp_disable_respawn_times;
+static Handle SyncHud;
+static Handle DungeonTimer;
 static StringMap DungeonList;
+static KeyValues SaveKv;
 static char DungeonMenu[MAXTF2PLAYERS][64];
 static bool AltMenu[MAXTF2PLAYERS];
 static char InDungeon[MAXENTITIES][64];
+static int LastResult[MAXENTITIES];
 
 void Dungeon_PluginStart()
 {
+	SyncHud = CreateHudSynchronizer();
 	mp_disable_respawn_times = FindConVar("mp_disable_respawn_times");
 }
 
@@ -430,6 +484,8 @@ void Dungeon_ConfigSetup(KeyValues map)
 		kv = new KeyValues("Dungeon");
 		kv.ImportFromFile(buffer);
 	}
+
+	delete DungeonTimer;
 
 	if(DungeonList)
 	{
@@ -466,6 +522,27 @@ void Dungeon_ConfigSetup(KeyValues map)
 
 	if(kv != map)
 		delete kv;
+	
+	delete SaveKv;
+
+	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "dungeon_savedata");
+	SaveKv = new KeyValues("SaveDData");
+	SaveKv.ImportFromFile(buffer);
+}
+
+int Dungeon_GetClientRank(int client, const char[] name, const char[] stage)
+{
+	int rank;
+
+	SaveKv.Rewind();
+	if(SaveKv.JumpToKey(name) && SaveKv.JumpToKey(stage))
+	{
+		static char steamid[64];
+		if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)))
+			rank = SaveKv.GetNum(steamid, -1);
+	}
+
+	return rank;
 }
 
 void Dungeon_EnableZone(const char[] name)
@@ -488,7 +565,7 @@ void Dungeon_DisableZone(const char[] name)
 	}
 }
 
-bool Dungeon_Interact(int client, int entity, int weapon)
+bool Dungeon_Interact(int client, int entity)
 {
 	StringMapSnapshot snap = DungeonList.Snapshot();
 
@@ -520,7 +597,7 @@ static void ShowMenu(int client, int page)
 	static DungeonEnum dungeon;
 	if(DungeonList.GetArray(DungeonMenu[client], dungeon, sizeof(dungeon)))
 	{
-		Menu menu = new Menu(Dungeon_Menu);
+		Menu menu = new Menu(Dungeon_MenuHandle);
 
 		int leader = Party_GetPartyLeader(client);
 		if(!leader)
@@ -531,7 +608,7 @@ static void ShowMenu(int client, int page)
 			int time = RoundToFloor(GetGameTime() - dungeon.StartTime);
 			if(time >= 0)
 			{
-				menu.SetTitle("RPG Fortress\n \nContingency Contract:\n%s △%d\nTime Elapsed: %d:%02d\n ", dungeon.CurrentStage, dungeon.TierLevel(), time / 60, time % 60);
+				menu.SetTitle("RPG Fortress\n \nContingency Contract:\n%s △%d\nTime Elapsed: %d:%02d\n ", dungeon.CurrentStage, dungeon.TierLevel(null), time / 60, time % 60);
 
 				for(int target = 1; target <= MaxClients; target++)
 				{
@@ -558,7 +635,9 @@ static void ShowMenu(int client, int page)
 			else
 			{
 				time = -time;
-				menu.SetTitle("RPG Fortress\n \nContingency Contract:\n%s △%d\nStarts In: %d:%02d\n ", dungeon.CurrentStage, dungeon.TierLevel(), time / 60, time % 60);
+
+				ArrayList slots;
+				menu.SetTitle("RPG Fortress\n \nContingency Contract:\n%s △%d\nStarts In: %d:%02d\n ", dungeon.CurrentStage, dungeon.TierLevel(slots), time / 60, time % 60);
 
 				static StageEnum stage;
 				dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage));
@@ -626,7 +705,26 @@ static void ShowMenu(int client, int page)
 
 						static ModEnum mod;
 						stage.ModList.GetArray(name, mod, sizeof(mod));
-						Format(mod.Desc, sizeof(mod.Desc), "[%s] %s △%d\n%s\n ", dungeon.ModList.FindString(name) == -1 ? " " : "X", name, mod.Tier, mod.Desc);
+						if(dungeon.ModList.FindString(name) != -1)
+						{
+							Format(mod.Desc, sizeof(mod.Desc), "[X] %s △%d\n%s\n ", name, mod.Tier, mod.Desc);
+						}
+						else if(Dungeon_GetClientRank(client, DungeonMenu[client], dungeon.CurrentStage) < mod.Unlock)
+						{
+							Format(mod.Desc, sizeof(mod.Desc), "[!] %s △%d\nComplete with atleast △%d to unlock\n ", name, mod.Tier, mod.Unlock);
+							menu.AddItem(NULL_STRING, mod.Desc, ITEMDRAW_DISABLED);
+							continue;
+						}
+						else if(mod.Slot && slots.FindValue(mod.Slot) != -1)
+						{
+							Format(mod.Desc, sizeof(mod.Desc), "[!] %s △%d\nConflicts with other modifiers\n ", name, mod.Tier);
+							menu.AddItem(NULL_STRING, mod.Desc, ITEMDRAW_DISABLED);
+							continue;
+						}
+						else
+						{
+							Format(mod.Desc, sizeof(mod.Desc), "[ ] %s △%d\n%s\n ", name, mod.Tier, mod.Desc);
+						}
 
 						menu.AddItem(name, mod.Desc, client == dungeon.CurrentHost ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 					}
@@ -688,15 +786,15 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 			static DungeonEnum dungeon;
 			if(DungeonList.GetArray(DungeonMenu[client], dungeon, sizeof(dungeon)))
 			{
+				static StageEnum stage;
 				if(dungeon.CurrentStage[0])
 				{
-					static StageEnum stage;
 					if(dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage)))
 					{
 						menu.GetItem(choice, dungeon.CurrentStage, sizeof(dungeon.CurrentStage));
-						if(GetGameTime() < dungeon.StartTime && !AltMenu[client])	// Add/Remove Mod
+						if(dungeon.CurrentHost != client && !AltMenu[client] && GetGameTime() < dungeon.StartTime)	// Add/Remove Mod
 						{
-							if(!dungeon.CurrentStage[0])
+							if(!dungeon.CurrentStage[0] || !dungeon.ModList)
 							{
 								ShowMenu(client, 0);
 							}
@@ -707,7 +805,7 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 								{
 									dungeon.ModList.Erase(pos);
 								}
-								else if(stage.ModList.HasKey(dungeon.CurrentStage))
+								else if(stage.ModList.ContainsKey(dungeon.CurrentStage))
 								{
 									dungeon.ModList.PushString(dungeon.CurrentStage);
 								}
@@ -726,6 +824,17 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 
 							if(!alreadyIn)
 							{
+								if(LastResult[client] > 0)
+								{
+									ClientCommand(client, "playgamesound %s", RoundRetryWin[GetURandomInt() % sizeof(RoundRetryWin)]);
+									LastResult[client] = 0;
+								}
+								else if(LastResult[client] < 0)
+								{
+									ClientCommand(client, "playgamesound %s", RoundRetryLoss[GetURandomInt() % sizeof(RoundRetryLoss)]);
+									LastResult[client] = 0;
+								}
+
 								strcopy(InDungeon[client], sizeof(InDungeon[]), DungeonMenu[client]);
 								ShowMenu(client, 0);
 							}
@@ -735,12 +844,29 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 				else	// Create Lobby
 				{
 					menu.GetItem(choice, dungeon.CurrentStage, sizeof(dungeon.CurrentStage));
-					if(dungeon.CurrentStage[0])
+					if(dungeon.CurrentStage[0] && dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage)))
 					{
 						delete dungeon.ModList;
-						dungeon.ModList = new ArrayList(ByteCountToCells(64));
+						if(stage.ModList)
+							dungeon.ModList = new ArrayList(ByteCountToCells(64));
+						
 						dungeon.CurrentHost = client;
+						dungeon.StartTime = GetGameTime() + QUEUE_TIME;
 						DungeonList.SetArray(DungeonMenu[client], dungeon, sizeof(dungeon));
+						
+						if(!DungeonTimer)
+							DungeonTimer = CreateTimer(0.2, Dungeon_Timer, _, TIMER_REPEAT);
+						
+						if(LastResult[client] > 0)
+						{
+							ClientCommand(client, "playgamesound %s", RoundRetryWin[GetURandomInt() % sizeof(RoundRetryWin)]);
+							LastResult[client] = 0;
+						}
+						else if(LastResult[client] < 0)
+						{
+							ClientCommand(client, "playgamesound %s", RoundRetryLoss[GetURandomInt() % sizeof(RoundRetryLoss)]);
+							LastResult[client] = 0;
+						}
 					}
 
 					ShowMenu(client, 0);
@@ -748,6 +874,7 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 			}
 		}
 	}
+	return 0;
 }
 
 void Dungeon_ResetEntity(int entity)
@@ -758,13 +885,14 @@ void Dungeon_ResetEntity(int entity)
 void Dungeon_ClientDisconnect(int client, bool alive = false)
 {
 	AltMenu[client] = false;
+	LastResult[client] = 0;
 
 	if(InDungeon[client][0])
 	{
 		static DungeonEnum dungeon;
 		if(DungeonList.GetArray(InDungeon[client], dungeon, sizeof(dungeon)) && dungeon.CurrentHost == client && !dungeon.WaveList)
 		{
-			dungeon.StartTime += 45.0;
+			dungeon.StartTime += 30.0;
 			float maximum = GetGameTime() + QUEUE_TIME;
 			if(dungeon.StartTime > maximum)
 				dungeon.StartTime = maximum;
@@ -777,6 +905,7 @@ void Dungeon_ClientDisconnect(int client, bool alive = false)
 					if(!dungeon.CurrentHost)
 						dungeon.CurrentHost = target;
 					
+					ClientCommand(target, "playgamesound vo/announcer_time_added.mp3");
 					SPrintToChat(target, "%N left the lobby as the host, %N is the new host!", client, dungeon.CurrentHost);
 				}
 			}
@@ -786,11 +915,11 @@ void Dungeon_ClientDisconnect(int client, bool alive = false)
 			mp_disable_respawn_times.ReplicateToClient(client, "0");
 
 		InDungeon[client][0] = 0;
-		Dungeon_CheckAlivePlayers();
+		Dungeon_CheckAlivePlayers(client);
 	}
 }
 
-void Dungeon_CheckAlivePlayers()
+void Dungeon_CheckAlivePlayers(int killed)
 {
 	StringMapSnapshot snap = DungeonList.Snapshot();
 
@@ -804,29 +933,47 @@ void Dungeon_CheckAlivePlayers()
 		bool found;
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(StrEqual(InDungeon[client], name) && IsPlayerAlive(client))
+			if(client != killed && StrEqual(InDungeon[client], name) && IsPlayerAlive(client))
 			{
 				found = true;
 				break;
 			}
 		}
 
-		CleanDungeon(name);
+		if(!found)
+			CleanDungeon(name, false);
 	}
 
 	delete snap;
 }
 
+bool Dungeon_MenuOverride(int client)
+{
+	if(InDungeon[client][0] && !IsPlayerAlive(client))
+	{
+		static DungeonEnum dungeon;
+		if(DungeonList.GetArray(InDungeon[client], dungeon, sizeof(dungeon)) && dungeon.WaveList)
+		{
+			strcopy(DungeonMenu[client], sizeof(DungeonMenu[]), InDungeon[client]);
+			ShowMenu(client, 0);
+			return true;
+		}
+	}
+
+	return false;
+}
+
 static void StartDungeon(const char[] name)
 {
 	static DungeonEnum dungeon;
-	if(DungeonList.GetArray(name, dungeon, sizeof(dungeon)) && dungeon.CurrentStage[0])
+	if(DungeonList.GetArray(name, dungeon, sizeof(dungeon)))
 	{
 		static StageEnum stage;
 		if(dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage)))
 		{
 			dungeon.PlayerCount = 0;
 
+			int rand = GetURandomInt() % 11;
 			int[] clients = new int[MaxClients];
 			for(int client = 1; client <= MaxClients; client++)
 			{
@@ -835,6 +982,7 @@ static void StartDungeon(const char[] name)
 					InDungeon[client][0] = 0;
 					mp_disable_respawn_times.ReplicateToClient(client, "1");
 					f3_SpawnPosition[client] = stage.StartPos;
+					ClientCommand(client, "playgamesound vo/compmode/cm_admin_round_start_%02d.mp3", rand + 1);
 					TF2_RespawnPlayer(client);
 					clients[dungeon.PlayerCount++] = client;
 				}
@@ -843,6 +991,7 @@ static void StartDungeon(const char[] name)
 			delete dungeon.WaveList;
 			dungeon.WaveList = stage.WaveList.Clone();
 			
+			int tier;
 			if(dungeon.ModList)
 			{
 				int length = dungeon.ModList.Length;
@@ -852,6 +1001,8 @@ static void StartDungeon(const char[] name)
 					dungeon.ModList.GetString(i, mod.Desc, sizeof(mod.Desc));
 					if(stage.ModList.GetArray(mod.Desc, mod, sizeof(mod)))
 					{
+						tier += mod.Tier;
+
 						for(int c; c < dungeon.PlayerCount; c++)
 						{
 							SPrintToChat(clients[c], mod.Desc);
@@ -862,12 +1013,20 @@ static void StartDungeon(const char[] name)
 
 				}
 			}
+
+			for(int c; c < dungeon.PlayerCount; c++)
+			{
+				if(stage.MusicTier > tier)
+				{
+					if(stage.MusicEasy[0])
+						Music_SetOverride(clients[c], stage.MusicEasy, stage.MusicEasyTime, stage.MusicEasyVolume);	
+				}
+				else if(stage.MusicHard[0])
+				{
+					Music_SetOverride(clients[c], stage.MusicHard, stage.MusicHardTime, stage.MusicHardVolume);	
+				}
+			}
 			
-			dungeon.CurrentStage[0] = 0;
-			dungeon.CurrentHost = 0;
-			dungeon.StartTime = 0.0;
-			delete dungeon.ModList;
-			delete dungeon.WaveList;
 			DungeonList.SetArray(name, dungeon, sizeof(dungeon));
 		}
 		else
@@ -881,38 +1040,95 @@ static void StartDungeon(const char[] name)
 	}
 }
 
-static void CleanDungeon(const char[] name)
+static void CleanDungeon(const char[] name, bool victory)
 {
 	static DungeonEnum dungeon;
 	if(DungeonList.GetArray(name, dungeon, sizeof(dungeon)) && dungeon.CurrentStage[0])
 	{
-		for(int client = 1; client <= MaxClients; client++)
+		static StageEnum stage;
+		if(dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage)))
 		{
-			if(StrEqual(InDungeon[client], name))
+			static ModEnum mod;
+
+			int tier;
+			if(dungeon.ModList)
 			{
-				InDungeon[client][0] = 0;
-				mp_disable_respawn_times.ReplicateToClient(client, "0");
-				f3_SpawnPosition[client] = dungeon.RespawnPos;
+				int length = dungeon.ModList.Length;
+				for(int i; i < length; i++)
+				{
+					dungeon.ModList.GetString(i, mod.Desc, sizeof(mod.Desc));
+					if(stage.ModList.GetArray(mod.Desc, mod, sizeof(mod)))
+						tier += mod.Tier;
+				}
+			}
+
+			SaveKv.Rewind();
+			SaveKv.JumpToKey(name, true);
+			SaveKv.JumpToKey(dungeon.CurrentStage, true);
+
+			bool clear = (victory || !dungeon.WaveList);
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(StrEqual(InDungeon[client], name))
+				{
+					clear = true;
+					if(dungeon.WaveList)
+					{
+						InDungeon[client][0] = 0;
+						f3_SpawnPosition[client] = dungeon.RespawnPos;
+						CreateTimer(8.25, Dungeon_EndMusicTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+						CreateTimer(8.25, Dungeon_RespawnTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+
+						if(victory)
+						{
+							LastResult[client] = 1;
+							Music_SetOverride(client, "misc/your_team_won.mp3", 999, 1.0);
+
+							if(IsPlayerAlive(client))
+								TF2_AddCondition(client, TFCond_HalloweenCritCandy, 8.1);
+
+							stage.DoAllDrops(client, tier);
+							if(GetClientAuthId(client, AuthId_Steam3, mod.Desc, sizeof(mod.Desc)))
+								SaveKv.SetNum(mod.Desc, tier);
+						}
+						else
+						{
+							LastResult[client] = -1;
+							Music_SetOverride(client, "misc/your_team_lost.mp3", 999, 1.0);
+						}
+					}
+				}
+			}
+
+			if(victory)
+			{
+				BuildPath(Path_SM, mod.Desc, sizeof(mod.Desc), CONFIG_CFG, "dungeon_savedata");
+
+				SaveKv.Rewind();
+				SaveKv.ExportToFile(mod.Desc);
+			}
+
+			if(clear)
+			{
+				int i = MaxClients + 1;
+				while((i = FindEntityByClassname(i, "base_boss")) != -1)
+				{
+					if(StrEqual(InDungeon[i], name))
+						NPC_Despawn(i);
+				}
+				
+				dungeon.CurrentStage[0] = 0;
+				dungeon.CurrentHost = 0;
+				dungeon.StartTime = 0.0;
+				delete dungeon.ModList;
+				delete dungeon.WaveList;
+				DungeonList.SetArray(name, dungeon, sizeof(dungeon));
 			}
 		}
-
-		int i = MaxClients + 1;
-		while((i = FindEntityByClassname(i, "base_boss")) != -1)
+		else
 		{
-			if(StrEqual(InDungeon[i], name))
-				NPC_Despawn(i);
+			ThrowError("Somehow got invalid stage '%s'", dungeon.CurrentStage);
 		}
-		
-		dungeon.CurrentStage[0] = 0;
-		dungeon.CurrentHost = 0;
-		dungeon.StartTime = 0.0;
-		delete dungeon.ModList;
-		delete dungeon.WaveList;
-		DungeonList.SetArray(name, dungeon, sizeof(dungeon));
-	}
-	else
-	{
-		ThrowError("Somehow got invalid dungeon '%s'", name);
 	}
 }
 
@@ -927,4 +1143,255 @@ bool Dungeon_CanClientRespawn(int client)
 	}
 
 	return true;
+}
+
+public Action Dungeon_EndMusicTimer(Handle timer, int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(client)
+		Music_SetOverride(client);
+	
+	return Plugin_Stop;
+}
+
+public Action Dungeon_RespawnTimer(Handle timer, int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(client && f3_SpawnPosition[client][0])
+	{
+		TF2_RespawnPlayer(client);
+		mp_disable_respawn_times.ReplicateToClient(client, "0");
+	}
+	return Plugin_Stop;
+}
+
+public Action Dungeon_Timer(Handle timer)
+{
+	bool found;
+	StringMapSnapshot snap = DungeonList.Snapshot();
+
+	int length = snap.Length;
+	for(int i; i < length; i++)
+	{
+		int size = snap.KeyBufferSize(i) + 1;
+		char[] name = new char[size];
+		snap.GetKey(i, name, size);
+
+		static DungeonEnum dungeon;
+		if(DungeonList.GetArray(name, dungeon, sizeof(dungeon)))
+		{
+			static ModEnum mod;
+
+			if(dungeon.WaveList)
+			{
+				found = true;
+				float time = GetGameTime() - dungeon.StartTime;
+				size = dungeon.WaveList.Length;
+				if(size)
+				{
+					for(int a; a < size; a++)
+					{
+						static WaveEnum wave;
+						dungeon.WaveList.GetArray(a, wave);
+						if(wave.Delay < time)
+						{
+							static float ang[3];
+							ang[1] = wave.Angle;
+							if(ang[1] < 0.0)
+								ang[1] = GetURandomFloat() * 360.0;
+
+							int entity = Npc_Create(wave.Index, 0, wave.Pos, ang, false);
+							if(entity != -1)
+							{
+								Level[entity] = wave.Level;
+								i_CreditsOnKill[entity] = 0;
+								XP[entity] = Level[entity] / 3;
+								b_thisNpcIsABoss[entity] = wave.Boss;
+								b_NpcIsInADungeon[entity] = true;
+								
+								if(wave.Health)
+								{
+									// +20% each player
+									wave.Health = wave.Health * (4 + dungeon.PlayerCount) / 5;
+									SetEntProp(entity, Prop_Data, "m_iMaxHealth", wave.Health);
+									SetEntProp(entity, Prop_Data, "m_iHealth", wave.Health);
+								}
+
+								static StageEnum stage;
+								if(dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage)))
+								{
+									size = dungeon.ModList.Length;
+									for(int b; b < size; b++)
+									{
+										dungeon.ModList.GetString(b, mod.Desc, sizeof(mod.Desc));
+										if(stage.ModList.GetArray(mod.Desc, mod, sizeof(mod)))
+										{
+											Level[entity] += mod.Level;
+											mod.CallOnSpawn(entity);
+										}
+									}
+								}
+
+								Apply_Text_Above_Npc(entity, wave.Rarity, GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
+							}
+
+							dungeon.WaveList.Erase(a);
+							break;
+						}
+					}
+				}
+				else
+				{
+					int entity = MaxClients + 1;
+					while((entity = FindEntityByClassname(i, "base_boss")) != -1)
+					{
+						if(StrEqual(InDungeon[entity], name) && GetEntProp(entity, Prop_Send, "m_iTeamNum") != 2)
+							break;
+					}
+
+					if(entity == -1)
+						CleanDungeon(name, true);
+				}
+			}
+			else if(dungeon.StartTime)
+			{
+				int time = RoundToCeil(dungeon.StartTime - GetGameTime());
+				if(time > 0)
+				{
+					for(int client = 1; client <= MaxClients; client++)
+					{
+						if(StrEqual(InDungeon[client], name))
+						{
+							if(dungeon.LastSoundTime != time)
+							{
+								switch(time)
+								{
+									case 30, 20, 10, 5, 4, 3, 2, 1:
+										ClientCommand(client, "playgamesound vo/announcer_begins_%dsec.mp3", time);
+								}
+							}
+
+							SetHudTextParams(-1.0, 0.08, 0.3, 200, 69, 0, 200);
+							ShowSyncHudText(client, SyncHud, "%d:%02d\n%s △%d", time / 60, time % 60, dungeon.CurrentStage, dungeon.TierLevel(null));
+						}
+					}
+
+					if(dungeon.LastSoundTime != time)
+					{
+						dungeon.LastSoundTime = time;
+						DungeonList.SetArray(name, dungeon, sizeof(dungeon));
+					}
+				}
+				else
+				{
+					StartDungeon(name);
+				}
+			}
+		}
+	}
+
+	delete snap;
+
+	if(found)
+		return Plugin_Continue;
+	
+	DungeonTimer = null;
+	return Plugin_Stop;
+}
+
+static void RollItemDrop(int client, const char[] name, float chance)
+{
+	if(chance > GetURandomFloat())
+		TextStore_AddItemCount(client, name, 1);
+}
+
+static int RandomStaticSeed(int seed, int rand)
+{
+	if(rand < 0)
+		rand = -rand;
+	
+	if(rand < 2)
+		rand = 2;
+	
+	if(seed > (2147483646 / rand))
+		return seed - (2147483646 / rand);
+	
+	return seed * rand;
+}
+
+/*
+	func_onspawn
+*/
+
+public void Dungeon_Spawn_20HP(int entity)
+{
+	int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth") * 6 / 5;
+	
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	SetEntProp(entity, Prop_Data, "m_iHealth", health);
+}
+
+public void Dungeon_Spawn_25HP(int entity)
+{
+	int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth") * 5 / 4;
+	
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	SetEntProp(entity, Prop_Data, "m_iHealth", health);
+}
+
+public void Dungeon_Spawn_33HP(int entity)
+{
+	int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth") * 4 / 3;
+	
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	SetEntProp(entity, Prop_Data, "m_iHealth", health);
+}
+
+public void Dungeon_Spawn_50HP(int entity)
+{
+	int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth") * 3 / 2;
+	
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	SetEntProp(entity, Prop_Data, "m_iHealth", health);
+}
+
+public void Dungeon_Spawn_75HP(int entity)
+{
+	int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth") * 7 / 4;
+	
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	SetEntProp(entity, Prop_Data, "m_iHealth", health);
+}
+
+public void Dungeon_Spawn_100HP(int entity)
+{
+	int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth") * 2;
+	
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	SetEntProp(entity, Prop_Data, "m_iHealth", health);
+}
+
+/*
+	func_onwaves
+*/
+
+public void Dungeon_Wave_TenFastZombies(ArrayList list)
+{
+	int length = list.Length;
+	int seed = length;
+
+	for(int i; i < 10; i++)
+	{
+		seed = RandomStaticSeed(seed, i + 2);
+
+		static WaveEnum wave;
+		list.GetArray(seed % length, wave);
+		
+		wave.Index = FAST_ZOMBIE;
+		wave.Boss = false;
+		wave.Level--;
+		wave.Rarity = 1;
+
+		list.PushArray(wave);
+	}
 }
