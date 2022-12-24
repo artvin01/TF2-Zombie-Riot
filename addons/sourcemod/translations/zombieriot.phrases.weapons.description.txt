@@ -60,9 +60,9 @@
 	}
 	"Annabelle Pap 2"
 	{
-		"en"		"Increased damage and attackspeed and extra ammo."
-		"ru"		"Увелич. урон и скорость атаки, а также доп. патроны."
-		"chi"       "增加伤害和攻击速度和额外的弹药。"
+		"en"		"Increased damage and attackspeed."
+		"ru"		"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度"
 	}
 	"Annabelle Pap 3"
 	{

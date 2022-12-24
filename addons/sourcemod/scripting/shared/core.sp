@@ -2042,7 +2042,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "entity_medigun_shield"))
 		{
-			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly_Shield);
+			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
 		else if(!StrContains(classname, "tf_projectile_energy_ball"))
 		{
@@ -2485,16 +2485,6 @@ public void Check_For_Team_Npc_Delayed(int ref)
 public void Delete_instantly(int entity)
 {
 	RemoveEntity(entity);
-}
-
-public void Delete_instantly_Shield(int entity)
-{
-	int client;
-	GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity",client);
-	if(IsValidClient(client))
-	{
-		RemoveEntity(entity);
-	}
 }
 
 public void Delete_instantly_Disolve(int entity) //arck, they are client side...
