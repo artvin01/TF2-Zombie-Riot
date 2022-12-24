@@ -134,7 +134,6 @@ void OnMapStart_NPC_Base()
 
 void NPC_Base_OnEntityDestroyed()
 {
-	//	OnEntityDestroyed_NPC(entity);
 	RequestFrame(DHookCleanIds);
 }
 
@@ -187,13 +186,13 @@ public void DHookCleanIds()
 							if(HookListMap.GetValue(buffer, value) && value > 1)
 							{
 								HookListMap.SetValue(buffer, value-1);
-							//	LogError("Raw hook %d removed dupe (%s %d)", id2, HookName[i], i);
+						//		LogError("Raw hook %d removed dupe (%s %d)", id2, HookName[i], i);
 							}
 							else
 							{
 								if(!DHookRemoveHookID(id2))
 								{
-								//		LogError("Raw hook %d somehow was removed (%s %d)", id2, HookName[i], i);	
+							//			LogError("Raw hook %d somehow was removed (%s %d)", id2, HookName[i], i);	
 								}
 								
 								HookListMap.Remove(buffer);
@@ -280,7 +279,6 @@ methodmap CClotBody
 		list.Push(DHookRaw(g_hGetStepHeight,	   true, pLocomotion));
 		list.Push(DHookRaw(g_hGetGravity,		  true, pLocomotion));
 		
-		
 		if(!Ally)
 		{
 #if defined ZR
@@ -310,8 +308,11 @@ methodmap CClotBody
 		
 		
 		
-		
-		list.Push(h_NpcCollissionHookType[npc]);
+	//	We already delete this! there is no need!
+	//	This also might not even work out, because it can be changed.
+	//	list.Push(h_NpcCollissionHookType[npc]);
+	//	and putting it here as a "safety measure" actually causes a leak!!!
+	//	not like we could have known this.
 		list.Push(DHookRaw(g_hGetMaxAcceleration,  true, pLocomotion));
 		list.Push(DHookRaw(g_hGetFrictionSideways, true, pLocomotion));
 		list.Push(DHookRaw(g_hGetRunSpeed,		 true, pLocomotion));
@@ -1709,7 +1710,7 @@ methodmap CClotBody
 		PF_DisableCallback(entity, PFCB_Approach);
 		PF_DisableCallback(entity, PFCB_IsEntityTraversable);
 		PF_DisableCallback(entity, PFCB_GetPathCost);
-		PF_DisableCallback(entity, PFCB_ClimbUpToLedge);
+	//	PF_DisableCallback(entity, PFCB_ClimbUpToLedge);
 	//	PF_DisableCallback(entity, PFCB_OnMoveToSuccess);
 	//	PF_DisableCallback(entity, PFCB_PathFailed);
 	//	PF_DisableCallback(entity, PFCB_OnMoveToFailure);
