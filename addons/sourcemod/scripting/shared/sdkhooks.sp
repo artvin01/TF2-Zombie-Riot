@@ -709,7 +709,7 @@ public void OnPostThink(int client)
 			KvSetNum(hKv,   "time",  10); // how long? 
 			//	CreateDialog(client, hKv, DialogType_Text); //Cool hud stuff!
 			CreateDialog(client, hKv, DialogType_Msg);
-			CloseHandle(hKv);
+			delete hKv;
 		}
 		else
 		{

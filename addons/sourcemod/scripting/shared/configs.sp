@@ -121,7 +121,7 @@ public void Configs_ConfigsExecuted()
 	}
 }
 
-float Config_GetDPSOfEntity(int entity)
+stock float Config_GetDPSOfEntity(int entity)
 {
 	static char classname[36];
 	GetEntityClassname(entity, classname, sizeof(classname));

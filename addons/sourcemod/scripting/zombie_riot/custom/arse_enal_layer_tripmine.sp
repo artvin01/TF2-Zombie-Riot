@@ -61,7 +61,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 		{
 			TR_GetEndPosition(spawnLoc, trace);
 		} 
-		CloseHandle(trace);
+		delete trace;
 		if (GetVectorDistance(eyePos, spawnLoc, true) <= Pow(450.0, 2.0))
 		{
 			float Calculate_HP_Spikes = 75.0; 
@@ -367,7 +367,7 @@ public void Trip_TrackPlanted(int client)
 									}
 								}
 										
-								CloseHandle(Trace);
+								delete Trace;
 								
 								if (TriggerExplosion)
 								{

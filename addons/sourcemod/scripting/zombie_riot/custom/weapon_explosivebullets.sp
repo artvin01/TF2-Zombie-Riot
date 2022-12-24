@@ -81,7 +81,7 @@ public void Weapon_ExplosiveBullets(int client, int weapon, const char[] classna
 		{
 			TR_GetEndPosition(spawnLoc, trace);
 		} 
-		CloseHandle(trace);
+		delete trace;
 		
 		Explode_Logic_Custom(BaseDMG, client, client, weapon, spawnLoc, Radius, Falloff);
 		
