@@ -102,8 +102,7 @@ void OnEntityDestroyed_LagComp(int entity)
 			for(int a; a<length2; a++)
 			{
 				list.GetArray(a, record);
-				if(entity > MaxClients)
-				if(record.m_layerRecords)
+				if(entity > MaxClients && !b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 				{
 					delete record.m_layerRecords;
 				}
@@ -113,12 +112,9 @@ void OnEntityDestroyed_LagComp(int entity)
 	
 		LagRecord record;
 		EntityRestore.GetArray(key, record, sizeof(record));
-		if(entity > MaxClients)
+		if(entity > MaxClients && !b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 		{
-			if(record.m_layerRecords)
-			{
-				delete record.m_layerRecords;
-			}
+			delete record.m_layerRecords;
 		}
 		EntityRestore.Remove(key);
 	}
