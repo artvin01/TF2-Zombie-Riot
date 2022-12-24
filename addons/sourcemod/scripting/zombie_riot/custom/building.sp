@@ -3314,7 +3314,7 @@ public void BuildingMortarAction(int client, int mortar)
 	TE_SetupBeamPoints(eyePos, spawnLoc, SPRITE_INT, 0, 0, 0, life, 2.0, 2.2, 1, amp, color, 0);
 	TE_SendToAll();
 								
-	CloseHandle(trace);
+	delete trace;
 	EmitSoundToAll("weapons/drg_wrench_teleport.wav", client, SNDCHAN_AUTO, 70);
 	static float pos[3];
 	CreateTimer(1.0, MortarFire_Anims, client, TIMER_FLAG_NO_MAPCHANGE);
@@ -3515,7 +3515,7 @@ static void Railgun_Boom(int client)
 			hullMax[1] = -hullMin[1];
 			hullMax[2] = -hullMin[2];
 			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, obj);	// 1073741824 is CONTENTS_LADDER?
-			CloseHandle(trace);
+			delete trace;
 	//		int weapon = BEAM_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
 			/*
 			for (int victim = 1; victim < MaxClients; victim++)
@@ -3593,7 +3593,7 @@ static void Railgun_Boom(int client)
 		}
 		else
 		{
-			PrintToConsoleAll("Error with dot_beam, could not determine end point for beam.");
+			delete trace;
 		}
 	}
 }
@@ -3665,7 +3665,7 @@ static void Railgun_Boom_Client(int client)
 			hullMax[2] = -hullMin[2];
 			StartLagCompensation_Base_Boss(client);
 			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-			CloseHandle(trace);
+			delete trace;
 			FinishLagCompensation_Base_boss();
 	//		int weapon = BEAM_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
 			/*
@@ -3742,7 +3742,7 @@ static void Railgun_Boom_Client(int client)
 		}
 		else
 		{
-			PrintToConsoleAll("Error with dot_beam, could not determine end point for beam.");
+			delete trace;
 		}
 	}
 }

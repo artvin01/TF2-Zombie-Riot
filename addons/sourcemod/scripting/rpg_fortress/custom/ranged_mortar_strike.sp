@@ -87,7 +87,7 @@ public void BuildingMortarAction(int client)
 	TE_SetupBeamPoints(eyePos, spawnLoc, SPRITE_INT, 0, 0, 0, life, 2.0, 2.2, 1, amp, color, 0);
 	TE_SendToAll();
 								
-	CloseHandle(trace);
+	delete trace;
 	
 	EmitSoundToAll("weapons/drg_wrench_teleport.wav", client, SNDCHAN_AUTO, 70);
 	static float pos[3];
