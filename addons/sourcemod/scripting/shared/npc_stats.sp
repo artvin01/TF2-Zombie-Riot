@@ -5164,7 +5164,7 @@ public Action Timer_RemoveEntity_Prop_Gib(Handle timer, any entid)
 //		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
 		RemoveEntity(entity);
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 public Action Timer_RemoveEntity_Prop(Handle timer, any entid)
@@ -5175,7 +5175,7 @@ public Action Timer_RemoveEntity_Prop(Handle timer, any entid)
 //		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
 		RemoveEntity(entity);
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 public Action Timer_RemoveEntityPanzer(Handle timer, any entid)
@@ -5195,7 +5195,7 @@ public Action Timer_RemoveEntityPanzer(Handle timer, any entid)
 //		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
 		RemoveEntity(entity);
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 public Action Timer_RemoveEntityOverlord(Handle timer, any entid)
@@ -5211,7 +5211,7 @@ public Action Timer_RemoveEntityOverlord(Handle timer, any entid)
 //		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
 		RemoveEntity(entity);
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 stock char[] GetStepSoundForMaterial(const char[] material)
@@ -5358,7 +5358,7 @@ public Action Did_They_Get_Suck(Handle cut_timer, int ref)
 				if(!IsSpaceOccupiedDontIgnorePlayers(Save_Old_Pos, hullcheckmins, hullcheckmaxs, npc.index))
 				{
 					SetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Save_Old_Pos);
-					KillTimer(cut_timer);
+					return Plugin_Stop;
 				}
 			}
 		}

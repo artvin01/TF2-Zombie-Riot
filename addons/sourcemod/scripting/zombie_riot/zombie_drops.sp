@@ -385,7 +385,7 @@ public Action Timer_Aleart_Despawn(Handle timer, any entid)
 	{
 		SetEntityRenderFx(entity, RENDERFX_PULSE_FAST); 
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 
@@ -396,5 +396,5 @@ public Action Timer_Despawn_Powerup(Handle timer, any entid)
 	{
 		RemoveEntity(entity);
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }

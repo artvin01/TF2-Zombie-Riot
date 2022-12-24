@@ -160,7 +160,7 @@ public Action NPC_PlayerDeathPost(Handle timer, Event event)
 		}
 	}
 	event.Cancel();
-	return Plugin_Continue;
+	return Plugin_Stop;
 }
 
 public Action NPC_PlayerRevertName(Handle timer, DataPack pack)
@@ -176,7 +176,7 @@ public Action NPC_PlayerRevertName(Handle timer, DataPack pack)
 		SetClientName(client, buffer);
 		SetEntPropString(client, Prop_Data, "m_szNetname", buffer);
 	}
-	return Plugin_Continue;
+	return Plugin_Stop;
 }
 
 public Action NPC_PlayerUserCommand(Handle timer, DataPack pack)
@@ -190,5 +190,5 @@ public Action NPC_PlayerUserCommand(Handle timer, DataPack pack)
 		pack.ReadString(buffer, sizeof(buffer));
 		FakeClientCommand(client, buffer);
 	}
-	return Plugin_Continue;
+	return Plugin_Stop;
 }

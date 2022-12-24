@@ -10,15 +10,11 @@ enum struct ModEnum
 	int Unlock;
 	int Slot;
 
-	Function OnDeath;
 	Function OnSpawn;
 	Function OnWaves;
 
 	void SetupEnum(KeyValues kv)
 	{
-		kv.GetString("func_ondeath", this.Desc, 128);
-		this.OnDeath = GetFunctionByName(null, this.Desc);
-
 		kv.GetString("func_onspawn", this.Desc, 128);
 		this.OnSpawn = GetFunctionByName(null, this.Desc);
 
@@ -29,6 +25,26 @@ enum struct ModEnum
 		this.Tier = kv.GetNum("tier");
 		this.Unlock = kv.GetNum("unlock");
 		this.Slot = kv.GetNum("slot");
+	}
+
+	void CallOnSpawn(int entity)
+	{
+		if(this.OnSpawn != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, this.OnSpawn);
+			Call_PushCell(entity);
+			Call_Finish();
+		}
+	}
+
+	void CallOnWaves(ArrayList list)
+	{
+		if(this.OnSpawn != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, this.OnSpawn);
+			Call_PushCell(list);
+			Call_Finish();
+		}
 	}
 }
 
@@ -801,6 +817,70 @@ void Dungeon_CheckAlivePlayers()
 	delete snap;
 }
 
+static void StartDungeon(const char[] name)
+{
+	static DungeonEnum dungeon;
+	if(DungeonList.GetArray(name, dungeon, sizeof(dungeon)) && dungeon.CurrentStage[0])
+	{
+		static StageEnum stage;
+		if(dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage)))
+		{
+			dungeon.PlayerCount = 0;
+
+			int[] clients = new int[MaxClients];
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(StrEqual(InDungeon[client], name))
+				{
+					InDungeon[client][0] = 0;
+					mp_disable_respawn_times.ReplicateToClient(client, "1");
+					f3_SpawnPosition[client] = stage.StartPos;
+					TF2_RespawnPlayer(client);
+					clients[dungeon.PlayerCount++] = client;
+				}
+			}
+
+			delete dungeon.WaveList;
+			dungeon.WaveList = stage.WaveList.Clone();
+			
+			if(dungeon.ModList)
+			{
+				int length = dungeon.ModList.Length;
+				for(int i; i < length; i++)
+				{
+					static ModEnum mod;
+					dungeon.ModList.GetString(i, mod.Desc, sizeof(mod.Desc));
+					if(stage.ModList.GetArray(mod.Desc, mod, sizeof(mod)))
+					{
+						for(int c; c < dungeon.PlayerCount; c++)
+						{
+							SPrintToChat(clients[c], mod.Desc);
+						}
+
+						mod.CallOnWaves(dungeon.WaveList);
+					}
+
+				}
+			}
+			
+			dungeon.CurrentStage[0] = 0;
+			dungeon.CurrentHost = 0;
+			dungeon.StartTime = 0.0;
+			delete dungeon.ModList;
+			delete dungeon.WaveList;
+			DungeonList.SetArray(name, dungeon, sizeof(dungeon));
+		}
+		else
+		{
+			ThrowError("Somehow got invalid stage '%s'", dungeon.CurrentStage);
+		}
+	}
+	else
+	{
+		ThrowError("Somehow got invalid dungeon '%s'", name);
+	}
+}
+
 static void CleanDungeon(const char[] name)
 {
 	static DungeonEnum dungeon;
@@ -829,6 +909,10 @@ static void CleanDungeon(const char[] name)
 		delete dungeon.ModList;
 		delete dungeon.WaveList;
 		DungeonList.SetArray(name, dungeon, sizeof(dungeon));
+	}
+	else
+	{
+		ThrowError("Somehow got invalid dungeon '%s'", name);
 	}
 }
 

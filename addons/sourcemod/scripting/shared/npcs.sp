@@ -749,7 +749,7 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 		
 		b_npcspawnprotection[index] = false;
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 #if defined ZR
@@ -791,7 +791,7 @@ public Action Timer_Delayed_BossSpawn(Handle timer, DataPack pack)
 			b_NpcForcepowerupspawn[entity] = forcepowerup;
 		}
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 #endif
 

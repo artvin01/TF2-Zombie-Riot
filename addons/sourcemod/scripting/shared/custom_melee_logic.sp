@@ -634,5 +634,5 @@ public Action Timer_Do_Melee_Attack(Handle timer, DataPack pack)
 		delete swingTrace;
 		FinishLagCompensation_Base_boss();
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }

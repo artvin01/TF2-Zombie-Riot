@@ -1296,7 +1296,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 		}
 #endif
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 public MRESReturn DHook_GetChargeEffectBeingProvidedPre(int client, DHookReturn ret)

@@ -427,7 +427,7 @@ public Action Timer_Despawn_Gift(Handle timer, DataPack pack)
 		}
 		RemoveEntity(entity);
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 public Action GiftTransmit(int entity, int target)

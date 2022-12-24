@@ -926,7 +926,7 @@ public Action Timer_RemoveEntity(Handle timer, any entid)
 		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
 		RemoveEntity(entity);
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 public Action Timer_RemoveEntity_CustomProjectile(Handle timer, DataPack pack)
@@ -947,7 +947,7 @@ public Action Timer_RemoveEntity_CustomProjectile(Handle timer, DataPack pack)
 	{
 		RemoveEntity(iRot);
 	}
-	return Plugin_Handled; 
+	return Plugin_Stop; 
 }
 
 public Action Timer_DisableMotion(Handle timer, any entid)
@@ -955,7 +955,7 @@ public Action Timer_DisableMotion(Handle timer, any entid)
 	int entity = EntRefToEntIndex(entid);
 	if(IsValidEntity(entity) && entity>MaxClients)
 		AcceptEntityInput(entity, "DisableMotion");
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon)

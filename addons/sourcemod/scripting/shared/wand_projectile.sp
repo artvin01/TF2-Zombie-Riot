@@ -134,7 +134,7 @@ public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pac
 	{
 		RemoveEntity(Particle);
 	}
-	return Plugin_Handled; 
+	return Plugin_Stop; 
 }
 
 
