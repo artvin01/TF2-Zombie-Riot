@@ -1656,7 +1656,7 @@
 		"de"		"Stimmen sie für die Schwierigkeit ab"
 		"pt"		"Vote na dificuldade"
 		"nl"		"Stem op het moeilijkheidsgraad"
-		"chi"       "为难度投票"
+		"chi"       "为难度投票\n难度越高获得的经验越多"
 	}
 	"Want to Pack a punch?"
 	{
