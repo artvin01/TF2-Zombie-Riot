@@ -86,7 +86,7 @@ Action OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcount)
 /* Manually remove no longer in use entites */
 void OnEntityDestroyed_LagComp(int entity)
 {
-	if(entity > 0)
+	if(entity > 0 && entity < MAXENTITIES)
 	{
 		int ref = EntIndexToEntRef(entity);
 		char key[13];
@@ -110,11 +110,11 @@ void OnEntityDestroyed_LagComp(int entity)
 			delete list;
 		}
 	
-		LagRecord record;
-		EntityRestore.GetArray(key, record, sizeof(record));
-		if(record.m_layerRecords)
+		LagRecord restore;
+		EntityRestore.GetArray(key, restore, sizeof(restore));
+		if(restore.m_layerRecords)
 		{
-			delete record.m_layerRecords;
+			delete restore.m_layerRecords;
 		}
 		EntityRestore.Remove(key);
 	}
@@ -168,7 +168,7 @@ void StartLagCompensation_Base_Boss(int client)
 				for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
 				{
 					int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
-					if(IsValidEntity(entity) /*&& !b_NpcHasDied[entity]*/ && entity != 0)
+					if(IsValidEntity(entity))
 					{
 							// Custom checks for if things should lag compensate (based on things like what team the player is on).
 						if(!WantsLagCompensationOnEntity(entity, client, ViewAngles[client]/*, pEntityTransmitBits*/))
@@ -238,13 +238,19 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 	char refchar[12];
 	IntToString(ref, refchar, sizeof(refchar));
 	
-	ArrayList list;
-	if(!EntityTrack.GetValue(refchar, list))
-		return;
-	
-	int length = list.Length;
-	if(length < 1)
-		return;
+    ArrayList list;
+    if (!EntityTrack.GetValue(refchar, list))
+    {
+        delete list;
+        return;
+    }
+    
+    int length = list.Length;
+    if (length < 1)
+    {
+        delete list;
+        return;
+    }
 	
 	LagRecord prevRecord;
 	LagRecord record;
@@ -476,7 +482,7 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 		for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
 		{
 			int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
-			if(IsValidEntity(entity) /*&& !b_NpcHasDied[entity]*/ && entity != 0)
+			if(IsValidEntity(entity))
 			{
 				IntToString(EntIndexToEntRef(entity), refchar, sizeof(refchar));
 				if(EntityRestore.GetArray(refchar, restore, sizeof(restore)))
@@ -520,7 +526,6 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 							}
 
 							SetEntPropVector(entity, Prop_Data, "m_vecMaxs", m_vecMaxs);
-							
 							SetEntPropVector(entity, Prop_Data, "m_vecMins", m_vecMins);
 						}
 					}
@@ -572,8 +577,20 @@ void LagCompensationThink_Forward()
 		for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
 		{
 			int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
-			if(IsValidEntity(entity) /*&& !b_NpcHasDied[entity]*/ && entity != 0)
+			if(IsValidEntity(entity))
 			{
+				if(b_NpcHasDied[entity]) //Is the npc dead?
+				{
+					if(b_bThisNpcGotDefaultStats_INVERTED[entity]) //We make sure to see if the npc has this.
+					//This was an old check for npcs spawned outside the plugin, but we will reuse it to see if this entity was an npc or not.
+					{
+						if(list)
+						{
+							delete list;
+						}
+						continue; //This npc has died. We reset it to be sure and dont keep tracking it.
+					}
+				}
 				IntToString(EntIndexToEntRef(entity), refchar, sizeof(refchar));
 				if(!EntityTrack.GetValue(refchar, list))
 				{
@@ -637,7 +654,6 @@ void LagCompensationThink_Forward()
 					record.m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
 					record.m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
 				}
-#endif
 				list.PushArray(record);
 			}
 		}

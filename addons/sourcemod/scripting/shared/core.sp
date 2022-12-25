@@ -935,9 +935,7 @@ char c_HeadPlaceAttachmentGibName[MAXENTITIES][64];
 #include "shared/viewchanges.sp"
 #include "shared/wand_projectile.sp"
 
-#if defined LagCompensation
 #include "shared/baseboss_lagcompensation.sp"
-#endif
 
 public Plugin myinfo =
 {
