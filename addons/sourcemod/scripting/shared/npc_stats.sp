@@ -371,6 +371,7 @@ methodmap CClotBody
 		IntToString(EntIndexToEntRef(npc), buffer, sizeof(buffer));
 		HookIdMap.SetValue(buffer, list);
 		
+		
 		//Ragdoll, hopefully
 		DHookEntity(g_hEvent_Killed,	 false, npc);
 		
@@ -3157,20 +3158,20 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 					}	
 				}
 			//	#endif					
-				Do_Death_Frame_Later(EntIndexToEntRef(pThis));
-				//RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));						
+			//	Do_Death_Frame_Later(EntIndexToEntRef(pThis));
+				RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));						
 			}
 		}
 		else
 		{	
-			Do_Death_Frame_Later(EntIndexToEntRef(pThis));
-			//RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));		
+		//	Do_Death_Frame_Later(EntIndexToEntRef(pThis));
+			RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));		
 		}
 	}
 	else
 	{	
-		Do_Death_Frame_Later(EntIndexToEntRef(pThis));
-		//RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));	
+	//	Do_Death_Frame_Later(EntIndexToEntRef(pThis));
+		RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));	
 	}
 	return MRES_Supercede;
 }
