@@ -2006,6 +2006,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_SemiAutoWeapon[entity] = false;
 		b_NpcHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
+		b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
+		b_ThisEntityIgnored[entity] = false;
 		
 #if defined RPG
 		RPG_EntityCreated(entity, classname);

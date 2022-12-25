@@ -2904,6 +2904,11 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		NPC_DeadEffects(pThis); //Do kill attribute stuff
 		b_NpcHasDied[pThis] = true;
 		NPCDeath(pThis);
+		//We do not want this entity to collide with anything when it dies. 
+		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
+		SetEntityCollisionGroup(pThis, 1);
+		b_ThisEntityIgnored[pThis] = true;
+		b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
 		
 		/*
 		#if defined ISSPECIALDEATHANIMATION
@@ -2920,6 +2925,7 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 			}
 			else
 			{
+				SDKCall(g_hNextBotCombatCharacter_Event_Killed, pThis, CTakeDamageInfo);
 				float startPosition[3]; //This is what we use if we cannot find the correct name of said bone for this npc.
 				
 				float accurateposition[3]; //What we use if it has one.
