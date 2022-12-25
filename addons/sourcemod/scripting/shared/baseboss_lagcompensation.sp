@@ -102,7 +102,7 @@ void OnEntityDestroyed_LagComp(int entity)
 			for(int a; a<length2; a++)
 			{
 				list.GetArray(a, record);
-				if(entity > MaxClients && !b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
+				if(record.m_layerRecords)
 				{
 					delete record.m_layerRecords;
 				}
@@ -112,7 +112,7 @@ void OnEntityDestroyed_LagComp(int entity)
 	
 		LagRecord record;
 		EntityRestore.GetArray(key, record, sizeof(record));
-		if(entity > MaxClients && !b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
+		if(record.m_layerRecords)
 		{
 			delete record.m_layerRecords;
 		}
@@ -472,12 +472,7 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 		
 		char refchar[12];
 		LagRecord restore;
-//------------------------------------------------------------------------------------------
-#if defined HaveLayersForLagCompensation
 		LayerRecord layer;
-//------------------------------------------------------------------------------------------		
-#endif
-//------------------------------------------------------------------------------------------	
 		for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
 		{
 			int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
@@ -538,7 +533,6 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 							SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", restore.m_flSimulationTime);
 							SetEntProp(entity, Prop_Data, "m_nSequence", restore.m_masterSequence);
 							SetEntPropFloat(entity, Prop_Data, "m_flCycle", restore.m_masterCycle);
-	#if defined HaveLayersForLagCompensation
 							CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
 							int layerCount = GetEntPropArraySize(entity, Prop_Data, "m_AnimOverlay");
 							for(int i; i<layerCount; i++)
@@ -550,9 +544,8 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 								currentLayer.Set(m_nSequence, layer.m_sequence);
 								currentLayer.Set(m_flWeight, layer.m_weight);
 							}
-	#endif
+							delete restore.m_layerRecords;
 						}
-						delete restore.m_layerRecords;
 					}
 					EntityRestore.Remove(refchar);
 				}
@@ -574,9 +567,7 @@ void LagCompensationThink_Forward()
 		char refchar[12];
 		ArrayList list;
 		LagRecord record;
-#if defined HaveLayersForLagCompensation
 		LayerRecord layer;
-#endif
 		// Iterate all active NPCs
 		for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
 		{
@@ -602,7 +593,7 @@ void LagCompensationThink_Forward()
 						break;
 					
 					// remove tail, get new tail
-					if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
+					if(record.m_layerRecords)
 					{
 						delete record.m_layerRecords;
 					}
@@ -626,8 +617,6 @@ void LagCompensationThink_Forward()
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", record.m_vecOrigin);
 			//	GetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", record.m_vecMinsPreScaled);
 			//	GetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", record.m_vecMaxsPreScaled);
-			
-#if defined HaveLayersForLagCompensation
 				if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity]) //If its an allied baseboss, make sure to not get layers.
 				{
 					CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
