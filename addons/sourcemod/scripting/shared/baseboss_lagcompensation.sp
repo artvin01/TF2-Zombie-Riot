@@ -238,19 +238,19 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 	char refchar[12];
 	IntToString(ref, refchar, sizeof(refchar));
 	
-    ArrayList list;
-    if (!EntityTrack.GetValue(refchar, list))
-    {
-        delete list;
-        return;
-    }
-    
-    int length = list.Length;
-    if (length < 1)
-    {
-        delete list;
-        return;
-    }
+	ArrayList list;
+	if (!EntityTrack.GetValue(refchar, list))
+	{
+		delete list;
+		return;
+	}
+	
+	int length = list.Length;
+	if (length < 1)
+	{
+		delete list;
+		return;
+	}
 	
 	LagRecord prevRecord;
 	LagRecord record;

@@ -311,6 +311,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_riotshield.sp"
 #include "zombie_riot/custom/escape_sentry_hat.sp"
 #include "zombie_riot/custom/m3_abilities.sp"
+#include "shared/custom/weapon_street_fighter.sp"
 
 void ZR_PluginLoad()
 {
