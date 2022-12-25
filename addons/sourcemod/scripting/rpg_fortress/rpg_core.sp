@@ -25,6 +25,7 @@ int f_HealingPotionEffect[MAXTF2PLAYERS];
 
 #include "rpg_fortress/ammo.sp"
 #include "rpg_fortress/crafting.sp"
+#include "rpg_fortress/dungeon.sp"
 #include "rpg_fortress/fishing.sp"
 #include "rpg_fortress/garden.sp"
 #include "rpg_fortress/levels.sp"
@@ -51,6 +52,7 @@ void RPG_PluginStart()
 	LoadTranslations("rpgfortress.phrases.enemynames");
 	
 	Ammo_PluginStart();
+	Dungeon_PluginStart();
 	Fishing_PluginStart();
 	Store_Reset();
 	Levels_PluginStart();
@@ -136,7 +138,9 @@ void RPG_ClientDisconnect(int client)
 
 	UpdateLevelAbovePlayerText(client, true);
 	Ammo_ClientDisconnect(client);
+	Dungeon_ClientDisconnect(client);
 	Fishing_ClientDisconnect(client);
+	Music_ClientDisconnect(client);
 	Party_ClientDisconnect(client);
 }
 
@@ -149,6 +153,17 @@ void RPG_EntityCreated(int entity, const char[] classname)
 {
 	b_NpcIsInADungeon[entity] = false;
 	StoreWeapon[entity][0] = 0;
+	Dungeon_ResetEntity(entity);
 	Stats_ClearCustomStats(entity);
 	Zones_EntityCreated(entity, classname);
+}
+
+public void CheckAlivePlayersforward(int killed)
+{
+	CheckAlivePlayers(killed);
+}
+
+void CheckAlivePlayers(int killed = 0)
+{
+	Dungeon_CheckAlivePlayers(killed);
 }

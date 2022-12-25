@@ -1153,6 +1153,12 @@ void TextStore_PlayerRunCmd(int client)
 
 static void ShowMenu(int client, int page = 0)
 {
+	if(Dungeon_MenuOverride(client))
+	{
+		InMenu[client] = false;
+		return;
+	}
+	
 	switch(MenuType[client])
 	{
 		case MENU_WEAPONS:

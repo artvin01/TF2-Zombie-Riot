@@ -68,6 +68,7 @@ public void Configs_ConfigsExecuted()
 	
 #if defined RPG
 	Crafting_ConfigSetup(kv);
+	Dungeon_ConfigSetup(kv);
 	Fishing_ConfigSetup(kv);
 	Garden_ConfigSetup(kv);
 	Mining_ConfigSetup(kv);

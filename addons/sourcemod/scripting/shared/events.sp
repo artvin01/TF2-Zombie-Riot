@@ -394,7 +394,6 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 
 		Citizen_PlayerDeath(client);
 		Bob_player_killed(event, name, dontBroadcast);
-		RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
 #endif
 
 #if defined RPG
@@ -403,6 +402,7 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #endif
 
 		Store_WeaponSwitch(client, -1);
+		RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
 	}
 }
 
