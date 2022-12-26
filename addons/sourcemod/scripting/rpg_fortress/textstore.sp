@@ -744,10 +744,10 @@ public void TextStore_ShowSellMenu(int client)
 			
 			if(market)
 			{
+				amount = kv.GetNum("cost");
 				kv.GetString("storetags", buffer, sizeof(buffer));
 				if(buffer[0])
 				{
-					amount = kv.GetNum("cost");
 					if(MarketSell[client] > amount)
 						MarketSell[client] = amount;
 				}

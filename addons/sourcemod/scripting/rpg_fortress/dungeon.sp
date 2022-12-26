@@ -472,6 +472,9 @@ void Dungeon_PluginStart()
 
 void Dungeon_ConfigSetup(KeyValues map)
 {
+	PrecacheSound("misc/your_team_won.mp3");
+	PrecacheSound("misc/your_team_lost.mp3");
+
 	KeyValues kv = map;
 	if(kv)
 	{
@@ -825,11 +828,17 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 								int pos = dungeon.ModList.FindString(dungeon.CurrentStage);
 								if(pos != -1)
 								{
+									PrintToChatAll("dungeon.sp - Removed %s", dungeon.CurrentStage);
 									dungeon.ModList.Erase(pos);
 								}
 								else if(stage.ModList.ContainsKey(dungeon.CurrentStage))
 								{
+									PrintToChatAll("dungeon.sp - Added %s", dungeon.CurrentStage);
 									dungeon.ModList.PushString(dungeon.CurrentStage);
+								}
+								else
+								{
+									PrintToChatAll("dungeon.sp - Does Not Exist??? %s", dungeon.CurrentStage);
 								}
 
 								ShowMenu(client, choice);
