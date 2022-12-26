@@ -1384,8 +1384,10 @@ void GiveXP(int client, int xp)
 		bool found;
 		int slots;
 		
-		for(Level[client]++; Level[client]<=nextLevel; Level[client]++)
+		while(Level[client] < nextLevel)
 		{
+			Level[client]++;
+			
 			if(Store_PrintLevelItems(client, Level[client]))
 				found = true;
 			

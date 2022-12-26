@@ -1289,6 +1289,7 @@ public Action Dungeon_Timer(Handle timer)
 			}
 			else if(dungeon.StartTime)
 			{
+				found = true;
 				int time = RoundToCeil(dungeon.StartTime - GetGameTime());
 				if(time > 0)
 				{
