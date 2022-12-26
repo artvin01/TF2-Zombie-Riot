@@ -754,6 +754,9 @@ static void GetAttributeFormat(char[] desc, int attrib, float value)
 		
 		case 410:
 			Format(desc, 512, "%s\n%s Magic Damage", desc, CharPercent(value));
+		
+		case 2016:
+			Format(desc, 512, "%s\n%s Tool Efficiency", desc, CharPercent(value));
 	}
 }
 

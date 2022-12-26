@@ -1082,6 +1082,8 @@ static void StartDungeon(const char[] name)
 
 static void CleanDungeon(const char[] name, bool victory)
 {
+	PrintToChatAll("dungeon.sp - CleanDungeon::%s::%d", name, victory);
+
 	static DungeonEnum dungeon;
 	if(DungeonList.GetArray(name, dungeon, sizeof(dungeon)) && dungeon.CurrentStage[0])
 	{
@@ -1287,6 +1289,8 @@ public Action Dungeon_Timer(Handle timer)
 				}
 				else
 				{
+					PrintToChatAll("dungeon.sp - Alive Check");
+
 					int entity = MaxClients + 1;
 					while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
 					{
@@ -1340,6 +1344,8 @@ public Action Dungeon_Timer(Handle timer)
 
 	if(found)
 		return Plugin_Continue;
+	
+	PrintToChatAll("dungeon.sp - Killed DungeonTimer");
 	
 	DungeonTimer = null;
 	return Plugin_Stop;
