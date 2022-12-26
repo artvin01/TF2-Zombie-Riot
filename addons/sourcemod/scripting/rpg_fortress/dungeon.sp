@@ -58,9 +58,9 @@ enum struct ModEnum
 
 	void CallOnWaves(ArrayList list)
 	{
-		if(this.OnSpawn != INVALID_FUNCTION)
+		if(this.OnWaves != INVALID_FUNCTION)
 		{
-			Call_StartFunction(null, this.OnSpawn);
+			Call_StartFunction(null, this.OnWaves);
 			Call_PushCell(list);
 			Call_Finish();
 		}
@@ -787,8 +787,8 @@ static void ShowMenu(int client, int page)
 		}
 
 		int pagination = menu.Pagination;
-		if(!pagination)
-			pagination = 1;
+		if(pagination < 3)
+			pagination = 999;
 		
 		menu.DisplayAt(client, page / pagination * pagination, MENU_TIME_FOREVER);
 	}
@@ -1047,8 +1047,12 @@ static void StartDungeon(const char[] name)
 				{
 					static ModEnum mod;
 					dungeon.ModList.GetString(i, mod.Desc, sizeof(mod.Desc));
+					PrintToChatAll("dungeon.sp - %s", mod.Desc);
+
 					if(stage.ModList.GetArray(mod.Desc, mod, sizeof(mod)))
 					{
+						PrintToChatAll("dungeon.sp - Found");
+
 						tier += mod.Tier;
 
 						for(int c; c < dungeon.PlayerCount; c++)
@@ -1058,7 +1062,10 @@ static void StartDungeon(const char[] name)
 
 						mod.CallOnWaves(dungeon.WaveList);
 					}
-
+					else
+					{
+						PrintToChatAll("dungeon.sp - NOT FOUND");
+					}
 				}
 			}
 
@@ -1248,6 +1255,7 @@ public Action Dungeon_Timer(Handle timer)
 
 				if(alive > 9)
 				{
+					PrintToChatAll("dungeon.sp - %d alive", alive);
 					int over = alive - 9;
 					for(int client = 1; client <= MaxClients; client++)
 					{
