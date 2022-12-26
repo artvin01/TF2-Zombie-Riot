@@ -267,11 +267,16 @@ void Mining_DisableZone(const char[] name)
 	}
 }
 
+bool Mining_IsPickaxeFunc(const char[] buffer)
+{
+	return StrEqual(buffer, "Mining_PickaxeM1");
+}
+
 void Mining_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, int attribs)
 {
 	static char buffer[64];
 	kv.GetString("func_attack", buffer, sizeof(buffer));
-	if(StrEqual(buffer, "Mining_PickaxeM1"))
+	if(Mining_IsPickaxeFunc(buffer))
 	{
 		for(int i; i < attribs; i++)
 		{

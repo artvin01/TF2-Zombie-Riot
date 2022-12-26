@@ -364,11 +364,16 @@ public Action Fishing_Drawing(Handle timer)
 	return Plugin_Continue;
 }
 
+bool Fishing_IsFishingFunc(const char[] buffer)
+{
+	return StrEqual(buffer, "Fishing_RodM1");
+}
+
 void Fishing_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, int attribs)
 {
 	static char buffer[64];
 	kv.GetString("func_attack", buffer, sizeof(buffer));
-	if(StrEqual(buffer, "Fishing_RodM1"))
+	if(Fishing_IsFishingFunc(buffer))
 	{
 		for(int i; i < attribs; i++)
 		{

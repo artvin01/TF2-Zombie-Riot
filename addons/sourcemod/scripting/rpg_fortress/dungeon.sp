@@ -883,6 +883,7 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 						dungeon.CurrentHost = client;
 						dungeon.StartTime = GetGameTime() + QUEUE_TIME;
 						DungeonList.SetArray(DungeonMenu[client], dungeon, sizeof(dungeon));
+						strcopy(InDungeon[client], sizeof(InDungeon[]), DungeonMenu[client]);
 						
 						if(!DungeonTimer)
 							DungeonTimer = CreateTimer(0.2, Dungeon_Timer, _, TIMER_REPEAT);
@@ -1015,7 +1016,12 @@ static void StartDungeon(const char[] name)
 				{
 					InDungeon[client][0] = 0;
 					mp_disable_respawn_times.ReplicateToClient(client, "1");
-					f3_SpawnPosition[client] = stage.StartPos;
+
+					for(int i; i < 3; i++)
+					{
+						f3_SpawnPosition[client][i] = stage.StartPos[i];
+					}
+
 					ClientCommand(client, "playgamesound vo/compmode/cm_admin_round_start_%02d.mp3", rand + 1);
 					TF2_RespawnPlayer(client);
 					clients[dungeon.PlayerCount++] = client;
@@ -1109,7 +1115,12 @@ static void CleanDungeon(const char[] name, bool victory)
 					if(dungeon.WaveList)
 					{
 						InDungeon[client][0] = 0;
-						f3_SpawnPosition[client] = dungeon.RespawnPos;
+						
+						for(int i; i < 3; i++)
+						{
+							f3_SpawnPosition[client][i] = dungeon.RespawnPos[i];
+						}
+						
 						CreateTimer(8.25, Dungeon_EndMusicTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 						CreateTimer(8.25, Dungeon_RespawnTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 

@@ -26,7 +26,8 @@ static const char TierName[][] =
 #define FLAG_WAND	(1 << 2)	// 4
 #define FLAG_MINE	(1 << 3)	// 8
 #define FLAG_FISH	(1 << 4)	// 16
-#define FLAG_ALL	31
+#define FLAG_WRENCH	(1 << 5)	// 32
+#define FLAG_ALL	63
 
 enum struct TinkerNPCEnum
 {
@@ -821,9 +822,39 @@ static void ShowMenu(int client, int page)
 
 								bool hasFunc[4];
 								
-								kv.GetString("func_attack", buffer, sizeof(buffer));
 								hasFunc[0] = view_as<bool>(buffer[0]);
-								
+								kv.GetString("func_attack", buffer, sizeof(buffer));
+
+								int tool = FLAG_ALL;
+								if(kv.GetNum("is_a_wand"))
+								{
+									tool = FLAG_WAND;
+								}
+								else if(Mining_IsPickaxeFunc(buffer))
+								{
+									tool = FLAG_MINE;
+								}
+								else if(Fishing_IsFishingFunc(buffer))
+								{
+									tool = FLAG_FISH;
+								}
+								else if(kv.GetNum("is_a_wrench"))
+								{
+									tool = FLAG_WRENCH;
+								}
+								else
+								{
+									kv.GetString("classname", buffer, sizeof(buffer));
+									if(TF2_GetClassnameSlot(buffer) == TFWeaponSlot_Melee)
+									{
+										tool = FLAG_MELEE;
+									}
+									else
+									{
+										tool = FLAG_RANGE;
+									}
+								}
+
 								kv.GetString("func_attack2", buffer, sizeof(buffer));
 								hasFunc[1] = view_as<bool>(buffer[0]);
 								
@@ -856,7 +887,8 @@ static void ShowMenu(int client, int page)
 								for(i = 0; i < length; i++)
 								{
 									TinkerList.GetArray(i, tinker);
-									if(tinker.ToolMinLv <= level && tinker.ToolMaxLv >= level && 
+									if((tinker.ToolFlags & tool) &&
+									   tinker.ToolMinLv <= level && tinker.ToolMaxLv >= level && 
 									   tinker.ToolMinRarity <= rarity && tinker.ToolMaxRarity >= rarity &&
 									 (!hasFunc[0] || tinker.FuncAttack == INVALID_FUNCTION) &&
 									 (!hasFunc[1] || tinker.FuncAttack2 == INVALID_FUNCTION) &&
