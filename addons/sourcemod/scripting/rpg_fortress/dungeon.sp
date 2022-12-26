@@ -1030,6 +1030,7 @@ static void StartDungeon(const char[] name)
 
 			delete dungeon.WaveList;
 			dungeon.WaveList = stage.WaveList.Clone();
+			PrintToChatAll("dungeon.sp - Found %d Enemies (Expected %d)", dungeon.WaveList, stage.WaveList.Length);
 			
 			int tier;
 			if(dungeon.ModList)
@@ -1236,6 +1237,7 @@ public Action Dungeon_Timer(Handle timer)
 				size = dungeon.WaveList.Length;
 				if(size)
 				{
+					PrintToChatAll("dungeon.sp - Enemies Remaining: %d", size);
 					for(int a; a < size; a++)
 					{
 						static WaveEnum wave;
