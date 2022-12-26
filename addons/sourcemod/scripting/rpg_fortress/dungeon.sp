@@ -1261,11 +1261,11 @@ public Action Dungeon_Timer(Handle timer)
 					{
 						if(StrEqual(InDungeon[client], name))
 						{
-							PrintCenterText(client, "There's too many of them! Your dying!");
+							PrintCenterText(client, "There's too many of them! You're dying!");
 							
 							int health = GetClientHealth(client);
 							int damage = SDKCall_GetMaxHealth(client) * over / 100;
-							if(health < damage)
+							if(health > damage)
 							{
 								SetEntityHealth(client, health - damage);
 							}
