@@ -1249,6 +1249,7 @@ public Action Dungeon_Timer(Handle timer)
 				int entity = MaxClients + 1;
 				while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
 				{
+					PrintToChatAll("dungeon.sp - NPC %d = '%s'", entity, InDungeon[entity]);
 					if(StrEqual(InDungeon[entity], name) && GetEntProp(entity, Prop_Send, "m_iTeamNum") != 2)
 						alive++;
 				}
