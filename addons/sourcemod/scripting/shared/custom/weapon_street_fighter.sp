@@ -125,7 +125,7 @@ static void StreetFighter(int client, int weapon, int slot, int flags)
 			
 			if(!ComboList)
 			{
-				ComboList = new PrivateForward(ET_Hook, Param_Cell, Param_Cell, Param_Cell);
+				ComboList = new PrivateForward(ET_Hook, Param_Cell, Param_Cell, Param_Cell, Param_Cell, Param_Cell, Param_Cell, Param_FloatByRef);
 				SetupList(ComboList);
 			}
 
