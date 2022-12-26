@@ -202,11 +202,7 @@ float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
 int Dont_Crouch[MAXENTITIES]={0, ...};
 
-// RPG TODO: 
-#if defined ZR
 bool b_IsAloneOnServer = false;
-int CurrentPlayers;
-#endif
 
 ConVar cvarTimeScale;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
@@ -1453,8 +1449,9 @@ public void OnClientDisconnect_Post(int client)
 {
 #if defined ZR
 	ZR_OnClientDisconnect_Post();
-	RequestFrame(CheckIfAloneOnServer);
 #endif
+
+	RequestFrame(CheckIfAloneOnServer);
 
 #if defined RPG
 	RPG_ClientDisconnect_Post();
@@ -2557,31 +2554,30 @@ public void RemoveNpcThingsAgain(int entity)
 	i_HexCustomDamageTypes[entity] = 0;
 }
 
-#if defined ZR
 public void CheckIfAloneOnServer()
 {
 	b_IsAloneOnServer = false;
 	int players;
 
-//#if defined ZR
+#if defined ZR
 	int player_alone;
-//#endif
+#endif
 
 	for(int client=1; client<=MaxClients; client++)
 	{
 		
-//#if defined ZR
+#if defined ZR
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
-//#else
+#else
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client))
-//#endif
+#endif
 		
 		{
 			players += 1;
 
-//#if defined ZR
+#if defined ZR
 			player_alone = client;
-//#endif
+#endif
 
 		}
 	}
@@ -2590,7 +2586,7 @@ public void CheckIfAloneOnServer()
 		b_IsAloneOnServer = true;	
 	}
 	
-//#if defined ZR
+#if defined ZR
 	if (players < 4 && players > 0)
 	{
 		if (Bob_Exists)
@@ -2605,13 +2601,8 @@ public void CheckIfAloneOnServer()
 		NPC_Despawn_bob(EntRefToEntIndex(Bob_Exists_Index));
 		Bob_Exists_Index = -1;
 	}
-//#endif
-
-//#if defined RPG
-//	CurrentPlayers = players;
-//#endif
-}
 #endif
+}
 
 /*
 //Looping function for above!

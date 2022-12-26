@@ -817,7 +817,7 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 					if(dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage)))
 					{
 						menu.GetItem(choice, dungeon.CurrentStage, sizeof(dungeon.CurrentStage));
-						if(dungeon.CurrentHost != client && !AltMenu[client] && GetGameTime() < dungeon.StartTime)	// Add/Remove Mod
+						if(dungeon.CurrentHost == client && !AltMenu[client] && GetGameTime() < dungeon.StartTime)	// Add/Remove Mod
 						{
 							if(!dungeon.CurrentStage[0] || !dungeon.ModList)
 							{
@@ -890,7 +890,7 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 							dungeon.ModList = new ArrayList(ByteCountToCells(64));
 						
 						dungeon.CurrentHost = client;
-						dungeon.StartTime = GetGameTime() + QUEUE_TIME;
+						dungeon.StartTime = GetGameTime() + (b_IsAloneOnServer ? 30.0 : QUEUE_TIME);
 						DungeonList.SetArray(DungeonMenu[client], dungeon, sizeof(dungeon));
 						strcopy(InDungeon[client], sizeof(InDungeon[]), DungeonMenu[client]);
 						
@@ -1280,7 +1280,7 @@ public Action Dungeon_Timer(Handle timer)
 							if(ang[1] < 0.0)
 								ang[1] = GetURandomFloat() * 360.0;
 
-							int entity = Npc_Create(wave.Index, 0, wave.Pos, ang, false);
+							entity = Npc_Create(wave.Index, 0, wave.Pos, ang, false);
 							if(entity != -1)
 							{
 								Level[entity] = wave.Level;

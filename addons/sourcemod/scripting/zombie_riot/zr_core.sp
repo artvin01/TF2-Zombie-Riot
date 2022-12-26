@@ -72,6 +72,7 @@ enum
 //int Bob_To_Player[MAXENTITIES];
 bool Bob_Exists = false;
 int Bob_Exists_Index = -1;
+int CurrentPlayers;
 ConVar zr_voteconfig;
 ConVar zr_tagblacklist;
 ConVar zr_tagwhitelist;
