@@ -103,9 +103,12 @@ void OnEntityDestroyed_LagComp(int entity)
 			for(int a; a<length2; a++)
 			{
 				list.GetArray(a, record);
-				if(record.m_layerRecords)
+				if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 				{
-					delete record.m_layerRecords;
+					if(record.m_layerRecords)
+					{
+						delete record.m_layerRecords;
+					}
 				}
 			}
 			delete list;
@@ -113,9 +116,12 @@ void OnEntityDestroyed_LagComp(int entity)
 	
 		LagRecord restore;
 		EntityRestore.GetArray(key, restore, sizeof(restore));
-		if(restore.m_layerRecords)
+		if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 		{
-			delete restore.m_layerRecords;
+			if(restore.m_layerRecords)
+			{
+				delete restore.m_layerRecords;
+			}
 		}
 		EntityRestore.Remove(key);
 	}
@@ -582,6 +588,7 @@ void LagCompensationThink_Forward()
 				{
 					continue; //This npc has died. We reset it to be sure and dont keep tracking it.
 				}
+				
 				IntToString(EntIndexToEntRef(entity), refchar, sizeof(refchar));
 				if(!EntityTrack.GetValue(refchar, list))
 				{
