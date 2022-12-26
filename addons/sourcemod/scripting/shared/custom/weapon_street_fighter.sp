@@ -15,19 +15,19 @@ static const char ComboName[][] =
 	"R,"
 };
 
-#define NL	0
-#define NR	1
-#define UL	2
-#define UR	3
-#define DL	4
-#define DR	5
+#define NL	0	// Netural M1
+#define NR	1	// Netural M2
+#define UL	2	// Air M1
+#define UR	3	// Air M2
+#define DL	4	// Ducking M1
+#define DR	5	// Ducking M2
 
-#define NL_1	0	// Netural M1
-#define NR_1	1	// Netural M2
-#define UL_1	2	// Air M1
-#define UR_1	3	// Air M2
-#define DL_1	4	// Ducking M1
-#define DR_1	5	// Ducking M2
+#define NL_1	0
+#define NR_1	1
+#define UL_1	2
+#define UR_1	3
+#define DL_1	4
+#define DR_1	5
 
 #define NL_2	0
 #define NR_2	6

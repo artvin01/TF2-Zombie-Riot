@@ -211,7 +211,7 @@ native int TextStore_GetItemParent(int item);
 native void TextStore_SetItemParent(int item, bool parent);
 
 /**
- * Called when a client is about to be sold
+ * Called when a client's item is about to be sold
  *
  * @param client	Client index
  * @param item		Item index
@@ -272,6 +272,30 @@ forward Action TextStore_OnMainMenu(int client, Menu menu);
  * @noreturn
  */
 forward void TextStore_OnCatalog(int client, Menu menu);
+
+/**
+ * Called when a client is about to buy an item
+ *
+ * @param client	Client index
+ * @param item		Item index
+ * @param cash		The current "cash" the client has
+ * @param count		The current amount of the item the client has
+ * @param cost		The amount the item is being sold for
+ *
+ * @return		Plugin_Changed to change values, Plugin_Handled/Plugin_Stop to prevent buying
+ */
+forward Action TextStore_OnBuyItem(int client, int item, int cash, int &count, int &cost);
+
+/**
+ * Called when an item's price displayed to the client
+ *
+ * @param client	Client index
+ * @param item		Item index
+ * @param price		Item's price
+ *
+ * @return		Plugin_Changed to change values, Plugin_Handled/Plugin_Stop to prevent buying
+ */
+forward Action TextStore_OnPriceItem(int client, int item, int &price);
 
 /**
  * Called to a given plugin when a item is used

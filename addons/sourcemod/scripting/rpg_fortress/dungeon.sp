@@ -103,6 +103,7 @@ enum struct StageEnum
 	float StartPos[3];
 	int XP;
 	int Cash;
+	int Level;
 
 	char DropName1[48];
 	float DropChance1;
@@ -143,6 +144,7 @@ enum struct StageEnum
 		kv.GetVector("pos", this.StartPos);
 		this.XP = kv.GetNum("xp");
 		this.Cash = kv.GetNum("cash");
+		this.Level = kv.GetNum("level");
 
 		kv.GetString("drop_name_1", this.DropName1, 48);
 		this.DropChance1 = kv.GetFloat("drop_chance_1", 1.0);
@@ -336,6 +338,7 @@ enum struct DungeonEnum
 		{
 			int size = snap.KeyBufferSize(i) + 1;
 			char[] name = new char[size];
+			snap.GetKey(i, name, size);
 			this.StageList.GetArray(name, stage, sizeof(stage));
 			stage.Delete();
 		}
@@ -496,6 +499,7 @@ void Dungeon_ConfigSetup(KeyValues map)
 		{
 			int size = snap.KeyBufferSize(i) + 1;
 			char[] name = new char[size];
+			snap.GetKey(i, name, size);
 			DungeonList.GetArray(name, dungeon, sizeof(dungeon));
 			dungeon.Delete();
 		}
@@ -603,6 +607,7 @@ static void ShowMenu(int client, int page)
 		if(!leader)
 			leader = client;
 		
+		static StageEnum stage;
 		if(dungeon.CurrentStage[0])
 		{
 			int time = RoundToFloor(GetGameTime() - dungeon.StartTime);
@@ -616,8 +621,16 @@ static void ShowMenu(int client, int page)
 					{
 						if(client == target)
 						{
-							Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%N (Leave)", client);
-							menu.AddItem(NULL_STRING, dungeon.CurrentStage);
+							Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%N (Leave)\n ", client);
+							
+							if(menu.ItemCount)
+							{
+								menu.InsertItem(0, NULL_STRING, dungeon.CurrentStage);
+							}
+							else
+							{
+								menu.AddItem(NULL_STRING, dungeon.CurrentStage);
+							}
 						}
 						else if(IsPlayerAlive(target))
 						{
@@ -639,7 +652,6 @@ static void ShowMenu(int client, int page)
 				ArrayList slots;
 				menu.SetTitle("RPG Fortress\n \nContingency Contract:\n%s △%d\nStarts In: %d:%02d\n ", dungeon.CurrentStage, dungeon.TierLevel(slots), time / 60, time % 60);
 
-				static StageEnum stage;
 				dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage));
 
 				if(AltMenu[client] || !stage.ModList)
@@ -685,7 +697,9 @@ static void ShowMenu(int client, int page)
 					{
 						if(client == leader)
 						{
-							menu.InsertItem(0, NULL_STRING, "Enter Queue\n ");
+							GetDisplayString(stage.Level, dungeon.CurrentStage, sizeof(dungeon.CurrentStage));
+							Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "Enter Queue (%s)\n ", dungeon.CurrentStage);
+							menu.InsertItem(0, NULL_STRING, dungeon.CurrentStage, stage.Level > Level[client] ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 						}
 						else
 						{
@@ -702,6 +716,7 @@ static void ShowMenu(int client, int page)
 					{
 						int size = snap.KeyBufferSize(i) + 1;
 						char[] name = new char[size];
+						snap.GetKey(i, name, size);
 
 						static ModEnum mod;
 						stage.ModList.GetArray(name, mod, sizeof(mod));
@@ -755,7 +770,14 @@ static void ShowMenu(int client, int page)
 			{
 				int size = snap.KeyBufferSize(i) + 1;
 				char[] name = new char[size];
-				menu.AddItem(name, name, client == leader ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+				snap.GetKey(i, name, size);
+
+				if(dungeon.StageList.GetArray(name, stage, sizeof(stage)))
+				{
+					GetDisplayString(stage.Level, stage.MusicEasy, sizeof(stage.MusicEasy));
+					Format(stage.MusicEasy, sizeof(stage.MusicEasy), "%s (%s)", name, stage.MusicEasy);
+					menu.AddItem(name, stage.MusicEasy, (stage.Level > Level[client] || client != leader) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				}
 			}
 
 			delete snap;
@@ -820,24 +842,32 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 						else	// Join/Leave Lobby
 						{
 							bool alreadyIn = StrEqual(InDungeon[client], DungeonMenu[client]);
-							Dungeon_ClientDisconnect(client, true);
+							for(int target = 1; target <= MaxClients; target++)
+							{
+								if(client == target || Party_IsClientMember(target, client))
+								{
+									Dungeon_ClientDisconnect(target, true);
+
+									if(!alreadyIn)
+									{
+										if(LastResult[target] > 0)
+										{
+											ClientCommand(target, "playgamesound %s", RoundRetryWin[GetURandomInt() % sizeof(RoundRetryWin)]);
+											LastResult[target] = 0;
+										}
+										else if(LastResult[target] < 0)
+										{
+											ClientCommand(target, "playgamesound %s", RoundRetryLoss[GetURandomInt() % sizeof(RoundRetryLoss)]);
+											LastResult[target] = 0;
+										}
+
+										strcopy(InDungeon[target], sizeof(InDungeon[]), DungeonMenu[client]);
+									}
+								}
+							}
 
 							if(!alreadyIn)
-							{
-								if(LastResult[client] > 0)
-								{
-									ClientCommand(client, "playgamesound %s", RoundRetryWin[GetURandomInt() % sizeof(RoundRetryWin)]);
-									LastResult[client] = 0;
-								}
-								else if(LastResult[client] < 0)
-								{
-									ClientCommand(client, "playgamesound %s", RoundRetryLoss[GetURandomInt() % sizeof(RoundRetryLoss)]);
-									LastResult[client] = 0;
-								}
-
-								strcopy(InDungeon[client], sizeof(InDungeon[]), DungeonMenu[client]);
 								ShowMenu(client, 0);
-							}
 						}
 					}
 				}
@@ -900,13 +930,17 @@ void Dungeon_ClientDisconnect(int client, bool alive = false)
 			dungeon.CurrentHost = 0;
 			for(int target = 1; target <= MaxClients; target++)
 			{
-				if(target != client && StrEqual(InDungeon[client], InDungeon[target]))
+				if(target != client)
 				{
-					if(!dungeon.CurrentHost)
-						dungeon.CurrentHost = target;
-					
-					ClientCommand(target, "playgamesound vo/announcer_time_added.mp3");
-					SPrintToChat(target, "%N left the lobby as the host, %N is the new host!", client, dungeon.CurrentHost);
+					int leader = dungeon.CurrentHost ? 0 : Party_GetPartyLeader(target);
+					if((!leader || leader == client) && StrEqual(InDungeon[client], InDungeon[target]))
+					{
+						if(!dungeon.CurrentHost)
+							dungeon.CurrentHost = target;
+						
+						ClientCommand(target, "playgamesound vo/announcer_time_added.mp3");
+						SPrintToChat(target, "%N left the lobby as the host, %N is the new host!", client, dungeon.CurrentHost);
+					}
 				}
 			}
 		}

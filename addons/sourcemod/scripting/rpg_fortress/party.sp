@@ -27,9 +27,9 @@ static void RemoveInvite(int client, int leader)
 	PartyInvitedBy[client] &= ~(1 << (leader - 1));
 }
 
-bool Party_GetPartyLeader(int client)
+int Party_GetPartyLeader(int client)
 {
-	return view_as<bool>(PartyLeader[client]);
+	return PartyLeader[client];
 }
 
 bool Party_IsClientMember(int client, int target)

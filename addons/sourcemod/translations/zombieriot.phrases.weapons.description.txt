@@ -1611,4 +1611,12 @@
 		"en"	"We are not responsible for what this monstrosity may cause\nWe have added liquid nitrogen cooling to increase the Nano-rocket efficiency\nWe have no idea if this is safe, however it is still quite potent."
 		"chi"   "我们对这个怪物可能造成的后果不负责，我们已经添加了液氮冷却来提高纳米火箭的效率，我们不知道这是否安全，但它仍然相当有效。"
 	}
+	"The Street Fighter Desc"
+	{
+		"en"	"Fight your away while creating your own combos that give off different effects."
+	}
+	"The Street Fighter Pap 1"
+	{
+		"en"	"Increased damage and combos are now affected by being mid-air or ducking."
+	}
 }
