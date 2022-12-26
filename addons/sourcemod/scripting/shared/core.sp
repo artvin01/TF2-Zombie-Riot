@@ -874,6 +874,7 @@ int i_PoseMoveX[MAXENTITIES];
 int i_PoseMoveY[MAXENTITIES];
 //Arrays for npcs!
 bool b_bThisNpcGotDefaultStats_INVERTED[MAXENTITIES];
+bool b_LagCompensationDeletedArrayList[MAXENTITIES];
 float b_isGiantWalkCycle[MAXENTITIES];
 float f_NpcHasBeenUnstuckAboveThePlayer[MAXENTITIES];
 
@@ -1955,7 +1956,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 	
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
-		
+		b_LagCompensationDeletedArrayList[entity] = false;
+		b_bThisNpcGotDefaultStats_INVERTED[entity] = false;
 #if defined ZR
 		i_WhatBuilding[entity] = 0;
 		StoreWeapon[entity] = -1;
@@ -2510,9 +2512,7 @@ public void OnEntityDestroyed(int entity)
 {
 	if(IsValidEntity(entity))
 	{
-		#if defined LagCompensation
 		OnEntityDestroyed_LagComp(entity);
-		#endif
 		
 		if(entity > MaxClients)
 		{

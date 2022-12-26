@@ -88,6 +88,7 @@ void OnEntityDestroyed_LagComp(int entity)
 {
 	if(entity > 0 && entity < MAXENTITIES)
 	{
+		b_LagCompensationDeletedArrayList[entity] = true;
 		int ref = EntIndexToEntRef(entity);
 		char key[13];
 		IntToString(ref, key, sizeof(key));
@@ -577,17 +578,9 @@ void LagCompensationThink_Forward()
 			int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
 			if(IsValidEntity(entity))
 			{
-				if(b_NpcHasDied[entity]) //Is the npc dead?
+				if(b_LagCompensationDeletedArrayList[entity]) //Is the npc dead?
 				{
-					if(b_bThisNpcGotDefaultStats_INVERTED[entity]) //We make sure to see if the npc has this.
-					//This was an old check for npcs spawned outside the plugin, but we will reuse it to see if this entity was an npc or not.
-					{
-						if(list)
-						{
-							delete list;
-						}
-						continue; //This npc has died. We reset it to be sure and dont keep tracking it.
-					}
+					continue; //This npc has died. We reset it to be sure and dont keep tracking it.
 				}
 				IntToString(EntIndexToEntRef(entity), refchar, sizeof(refchar));
 				if(!EntityTrack.GetValue(refchar, list))
