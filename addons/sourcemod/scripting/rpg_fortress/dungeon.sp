@@ -1286,6 +1286,7 @@ public Action Dungeon_Timer(Handle timer)
 					{
 						static WaveEnum wave;
 						dungeon.WaveList.GetArray(a, wave);
+						PrintToChatAll("dungeon.sp - %f < %f", wave.Delay, time);
 						if(wave.Delay < time)
 						{
 							static float ang[3];
