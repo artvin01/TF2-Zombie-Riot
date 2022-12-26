@@ -1014,7 +1014,6 @@ static void StartDungeon(const char[] name)
 			{
 				if(StrEqual(InDungeon[client], name))
 				{
-					InDungeon[client][0] = 0;
 					mp_disable_respawn_times.ReplicateToClient(client, "1");
 					f3_SpawnPosition[client] = stage.StartPos;
 					ClientCommand(client, "playgamesound vo/compmode/cm_admin_round_start_%02d.mp3", rand + 1);
@@ -1225,11 +1224,42 @@ public Action Dungeon_Timer(Handle timer)
 			if(dungeon.WaveList)
 			{
 				found = true;
+
+				int alive;
+				int entity = MaxClients + 1;
+				while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+				{
+					if(StrEqual(InDungeon[entity], name) && GetEntProp(entity, Prop_Send, "m_iTeamNum") != 2)
+						alive++;
+				}
+
+				if(alive > 9)
+				{
+					int over = alive - 9;
+					for(int client = 1; client <= MaxClients; client++)
+					{
+						if(StrEqual(InDungeon[client], name))
+						{
+							PrintCenterText(client, "There's too many of them! Your dying!");
+							
+							int health = GetClientHealth(client);
+							int damage = SDKCall_GetMaxHealth(client) * over / 100;
+							if(health < damage)
+							{
+								SetEntityHealth(client, health - damage);
+							}
+							else
+							{
+								ForcePlayerSuicide(client);
+							}
+						}
+					}
+				}
+
 				float time = GetGameTime() - dungeon.StartTime;
 				size = dungeon.WaveList.Length;
 				if(size)
 				{
-					PrintToChatAll("dungeon.sp - Enemies Remaining: %d", size);
 					for(int a; a < size; a++)
 					{
 						static WaveEnum wave;
@@ -1282,19 +1312,9 @@ public Action Dungeon_Timer(Handle timer)
 						}
 					}
 				}
-				else
+				else if(!alive)
 				{
-					PrintToChatAll("dungeon.sp - Alive Check");
-
-					int entity = MaxClients + 1;
-					while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
-					{
-						if(StrEqual(InDungeon[entity], name) && GetEntProp(entity, Prop_Send, "m_iTeamNum") != 2)
-							break;
-					}
-
-					if(entity == -1)
-						CleanDungeon(name, true);
+					CleanDungeon(name, true);
 				}
 			}
 			else if(dungeon.StartTime)
