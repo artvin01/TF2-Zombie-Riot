@@ -1306,7 +1306,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 			{
 				static char buffer[32];
 				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-				if(StrContains(buffer, "rpg_spawn_", false))
+				if(!StrContains(buffer, "rpg_spawn_", false))
 				{
 					int lv = StringToInt(buffer[10]);
 					if(lv > foundLv && Tier[client] >= lv)

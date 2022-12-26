@@ -1016,12 +1016,7 @@ static void StartDungeon(const char[] name)
 				{
 					InDungeon[client][0] = 0;
 					mp_disable_respawn_times.ReplicateToClient(client, "1");
-
-					for(int i; i < 3; i++)
-					{
-						f3_SpawnPosition[client][i] = stage.StartPos[i];
-					}
-
+					f3_SpawnPosition[client] = stage.StartPos;
 					ClientCommand(client, "playgamesound vo/compmode/cm_admin_round_start_%02d.mp3", rand + 1);
 					TF2_RespawnPlayer(client);
 					clients[dungeon.PlayerCount++] = client;
@@ -1030,7 +1025,7 @@ static void StartDungeon(const char[] name)
 
 			delete dungeon.WaveList;
 			dungeon.WaveList = stage.WaveList.Clone();
-			PrintToChatAll("dungeon.sp - Found %d Enemies (Expected %d)", dungeon.WaveList, stage.WaveList.Length);
+			PrintToChatAll("dungeon.sp - Found %d Enemies (Expected %d)", dungeon.WaveList.Length, stage.WaveList.Length);
 			
 			int tier;
 			if(dungeon.ModList)
@@ -1118,12 +1113,7 @@ static void CleanDungeon(const char[] name, bool victory)
 					if(dungeon.WaveList)
 					{
 						InDungeon[client][0] = 0;
-						
-						for(int i; i < 3; i++)
-						{
-							f3_SpawnPosition[client][i] = dungeon.RespawnPos[i];
-						}
-						
+						f3_SpawnPosition[client] = dungeon.RespawnPos;
 						CreateTimer(8.25, Dungeon_EndMusicTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 						CreateTimer(8.25, Dungeon_RespawnTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 
@@ -1257,6 +1247,7 @@ public Action Dungeon_Timer(Handle timer)
 								XP[entity] = Level[entity] / 3;
 								b_thisNpcIsABoss[entity] = wave.Boss;
 								b_NpcIsInADungeon[entity] = true;
+								strcopy(InDungeon[entity], sizeof(InDungeon[]), name);
 								
 								if(wave.Health)
 								{
