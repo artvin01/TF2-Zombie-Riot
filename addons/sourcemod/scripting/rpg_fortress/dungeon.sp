@@ -1493,11 +1493,11 @@ public void Dungeon_Wave_CoreInfection1(ArrayList list)
 	static WaveEnum wave;
 	wave.Delay = 5.0;
 	wave.Index = FAST_ZOMBIE;
-	wave.Pos = {0.0, 0.0, 0.0};
+	wave.Pos = {2232.911621, 6366.720214, -5223.968750};
 	wave.Angle = 0.0;
 	wave.Boss = false;
 	wave.Level = 25;
-	wave.Health = 1000;
+	wave.Health = 7500;
 	wave.Rarity = 1;
 	list.PushArray(wave);
 }
