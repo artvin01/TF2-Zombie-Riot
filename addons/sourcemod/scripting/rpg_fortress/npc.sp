@@ -331,8 +331,11 @@ void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] Stand
 					{
 						npc.m_iTarget = entity_found;
 					}
-					//found enemy, go to new enemy
-					npc.m_iTarget = Enemy_I_See;
+					else
+					{
+						//found enemy, go to new enemy
+						npc.m_iTarget = Enemy_I_See;
+					}
 				}
 			}
 		}
@@ -349,8 +352,11 @@ void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] Stand
 					{
 						npc.m_iTarget = entity_found;
 					}
-					//if we want to search for new enemies, it must be a valid one that can be seen.
-					npc.m_iTarget = Enemy_I_See;
+					else
+					{
+						//found enemy, go to new enemy
+						npc.m_iTarget = Enemy_I_See;
+					}
 				}
 			}
 			else //can reset to -1
