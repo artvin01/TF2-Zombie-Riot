@@ -280,9 +280,12 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 
 	npc.PlayIdleSound();
 
-	if(npc.m_bmovedelay)
+	if(!b_NpcIsInADungeon[npc.index])
 	{
-		return;
+		if(npc.m_bmovedelay)
+		{
+			return;
+		}
 	}
 
 	npc.Update();	
@@ -710,21 +713,23 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 			}
 		}
 	}
-	if(npc.m_flNextThinkTime > gameTime)
+	if(!b_NpcIsInADungeon[npc.index])
 	{
-		return;
-	}
-	
-	npc.m_flNextThinkTime = gameTime + 1.0;
-	//re-enable rage.
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) <= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //Anger after half hp/400 hp
-	{
-		if(npc.flXenoInfectedSpecialHurtTime > (gameTime - 3.0))
+		if(npc.m_flNextThinkTime > gameTime)
 		{
-			npc.m_iAttacksTillReload = 4;
-			npc.m_iOverlordComboAttack = 0;
-			npc.m_bmovedelay = true;
-			npc.Anger = false;
+			return;
+		}
+		npc.m_flNextThinkTime = gameTime + 1.0;
+		//re-enable rage.
+		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) <= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //Anger after half hp/400 hp
+		{
+			if(npc.flXenoInfectedSpecialHurtTime > (gameTime - 3.0))
+			{
+				npc.m_iAttacksTillReload = 4;
+				npc.m_iOverlordComboAttack = 0;
+				npc.m_bmovedelay = true;
+				npc.Anger = false;
+			}
 		}
 	}
 
@@ -750,15 +755,18 @@ public Action EnemyFatherGrigori_OnTakeDamage(int victim, int &attacker, int &in
 	{
 		damage *= 0.35;
 	}
-	if(npc.m_bmovedelay)
+	if(!b_NpcIsInADungeon[victim])
 	{
-		npc.flXenoInfectedSpecialHurtTime = gameTime + 0.5;
-		npc.m_bmovedelay = false;
-		damage = 0.0;
-	}
-	if(npc.flXenoInfectedSpecialHurtTime > gameTime)
-	{
-		damage = 0.0;		
+		if(npc.m_bmovedelay)
+		{
+			npc.flXenoInfectedSpecialHurtTime = gameTime + 0.5;
+			npc.m_bmovedelay = false;
+			damage = 0.0;
+		}
+		if(npc.flXenoInfectedSpecialHurtTime > gameTime)
+		{
+			damage = 0.0;		
+		}
 	}
 	return Plugin_Changed;
 }
