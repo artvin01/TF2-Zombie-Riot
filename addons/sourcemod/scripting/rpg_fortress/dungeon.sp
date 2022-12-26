@@ -1487,3 +1487,17 @@ public void Dungeon_Wave_TenFastZombies(ArrayList list)
 		list.PushArray(wave);
 	}
 }
+
+public void Dungeon_Wave_CoreInfection1(ArrayList list)
+{
+	static WaveEnum wave;
+	wave.Delay = 5.0;
+	wave.Index = FAST_ZOMBIE;
+	wave.Pos = {0.0, 0.0, 0.0};
+	wave.Angle = 0.0;
+	wave.Boss = false;
+	wave.Level = 25;
+	wave.Health = 1000;
+	wave.Rarity = 1;
+	list.PushArray(wave);
+}
