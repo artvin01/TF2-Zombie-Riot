@@ -407,7 +407,7 @@ void Tinker_DisableZone(const char[] name)
 
 static int TinkerCost(int level)
 {
-	return 1000 + (level * 200);
+	return 2000 + (level * 100);
 }
 
 static void ToMetaData(int level, const WeaponEnum weapon, char data[512])

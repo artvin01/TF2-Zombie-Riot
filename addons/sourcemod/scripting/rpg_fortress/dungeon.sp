@@ -1109,6 +1109,8 @@ static void CleanDungeon(const char[] name, bool victory)
 			{
 				if(StrEqual(InDungeon[client], name))
 				{
+					PrintToChatAll("dungeon.sp - %N", client);
+
 					clear = true;
 					if(dungeon.WaveList)
 					{
