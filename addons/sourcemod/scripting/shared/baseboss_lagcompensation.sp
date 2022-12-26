@@ -608,7 +608,7 @@ void LagCompensationThink_Forward()
 						break;
 					
 					// remove tail, get new tail
-					if(record.m_layerRecords)
+					if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity]) //Filter to make sure it doesnt delete things that dont exist.
 					{
 						delete record.m_layerRecords;
 					}
