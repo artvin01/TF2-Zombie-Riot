@@ -787,7 +787,10 @@ static void ShowMenu(int client, int page)
 		}
 
 		int pagination = menu.Pagination;
-		menu.DisplayAt(client, page / pggination * pagination, MENU_TIME_FOREVER);
+		if(!pagination)
+			pagination = 1;
+		
+		menu.DisplayAt(client, page / pagination * pagination, MENU_TIME_FOREVER);
 	}
 }
 
