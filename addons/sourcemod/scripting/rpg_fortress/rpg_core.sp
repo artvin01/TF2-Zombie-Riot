@@ -49,8 +49,6 @@ int f_HealingPotionEffect[MAXTF2PLAYERS];
 
 void RPG_PluginStart()
 {
-	LoadTranslations("rpgfortress.phrases.enemynames");
-	
 	Ammo_PluginStart();
 	Dungeon_PluginStart();
 	Fishing_PluginStart();

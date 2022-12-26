@@ -1277,7 +1277,7 @@ public Action Dungeon_Timer(Handle timer)
 				else
 				{
 					int entity = MaxClients + 1;
-					while((entity = FindEntityByClassname(i, "base_boss")) != -1)
+					while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
 					{
 						if(StrEqual(InDungeon[entity], name) && GetEntProp(entity, Prop_Send, "m_iTeamNum") != 2)
 							break;
