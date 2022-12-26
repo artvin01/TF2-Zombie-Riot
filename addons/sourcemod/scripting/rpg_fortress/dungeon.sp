@@ -1470,6 +1470,7 @@ public void Dungeon_Wave_TenFastZombies(ArrayList list)
 	int length = list.Length;
 	int seed = length;
 
+	// How many do we add to the list
 	for(int i; i < 10; i++)
 	{
 		seed = RandomStaticSeed(seed, i + 2);
@@ -1477,6 +1478,7 @@ public void Dungeon_Wave_TenFastZombies(ArrayList list)
 		static WaveEnum wave;
 		list.GetArray(seed % length, wave);
 		
+		// The NPC info we adding
 		wave.Index = FAST_ZOMBIE;
 		wave.Boss = false;
 		wave.Level--;
