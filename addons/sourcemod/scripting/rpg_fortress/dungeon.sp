@@ -786,7 +786,8 @@ static void ShowMenu(int client, int page)
 			delete snap;
 		}
 
-		menu.DisplayAt(client, page, MENU_TIME_FOREVER);
+		int pagination = menu.Pagination;
+		menu.DisplayAt(client, page / pggination * pagination, MENU_TIME_FOREVER);
 	}
 }
 
