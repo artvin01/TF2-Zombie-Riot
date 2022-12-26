@@ -3286,11 +3286,9 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 #if defined ZR
 	if(!StoreItems)
 #endif
-
 #if defined RPG
 	if(!EquippedItems)
 #endif
-
 	{
 		return; //STOP. BAD!
 	}

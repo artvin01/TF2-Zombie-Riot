@@ -2814,3 +2814,41 @@ static void MapStartResetAll()
 	Zero(f_EmpowerStateSelf);
 	Zero(f_EmpowerStateOther);
 }
+
+public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, Handle &item)
+{
+	if(!StrContains(classname, "tf_wear"))
+	{
+		switch(index)
+		{	
+			case 57, 131, 133, 231, 405, 406, 444, 608, 642, 1099, 1144:
+			{
+				if(!item)
+					return Plugin_Stop;
+				
+				TF2Items_SetFlags(item, OVERRIDE_ATTRIBUTES);
+				TF2Items_SetNumAttributes(item, 0);
+				return Plugin_Changed;
+			}
+		}
+	}
+	/*else if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
+	{
+		if(!item)
+			return Plugin_Stop;
+		
+		TF2Items_SetFlags(item, OVERRIDE_ATTRIBUTES);
+		TF2Items_SetNumAttributes(item, 5);
+		TF2Items_SetAttribute(item, 0, 1, 0.623);
+		TF2Items_SetAttribute(item, 1, 15, 0.0);
+		TF2Items_SetAttribute(item, 2, 93, 0.0);
+		TF2Items_SetAttribute(item, 3, 95, 0.0);
+		TF2Items_SetAttribute(item, 4, 2043, 0.0);
+		return Plugin_Changed;
+	}*/
+	else
+	{
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
+}
