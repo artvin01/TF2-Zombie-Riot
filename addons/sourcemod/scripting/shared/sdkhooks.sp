@@ -1147,6 +1147,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 #endif
 #if defined RPG
+
+		if(Ability_Mudrock_Shield_OnTakeDamage(victim))
+		{
+			damage = 0.0;
+			return Plugin_Handled;
+		}
 		if(f_HealingPotionDuration[victim] > gameTime) //Client has a buff, but which one?
 		{
 			switch(f_HealingPotionEffect[victim])
@@ -1348,6 +1354,17 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			
 		}
 #if defined RPG
+
+		if(b_DungeonContracts_35PercentMoreDamage[attacker])
+		{
+			damage *= 1.35;
+		}
+		if(b_DungeonContracts_25PercentMoreDamage[attacker])
+		{
+			damage *= 1.25;
+		}
+
+
 		//Slash is reserved for any debuffs like this.
 		if(!(damagetype & (DMG_SLASH)))
 		{

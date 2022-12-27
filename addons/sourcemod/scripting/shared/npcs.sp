@@ -1165,7 +1165,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			return Plugin_Handled;
 		}
 	}
-	
 	f_TimeUntillNormalHeal[victim] = GetGameTime() + 4.0;
 	i_HasBeenBackstabbed[victim] = false;
 
@@ -1417,12 +1416,13 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		if(attacker <= MaxClients && IsValidEntity(weapon))
 		{
 #if defined RPG
+			char Weaponclassname[64];
+			GetEntityClassname(weapon, Weaponclassname, 64);
+
+			int slot = TF2_GetClassnameSlot(Weaponclassname);
+
 			if(f_HealingPotionDuration[attacker] > GetGameTime()) //Client has a buff, but which one?
 			{
-				char Weaponclassname[64];
-				GetEntityClassname(weapon, Weaponclassname, 64);
-
-				int slot = TF2_GetClassnameSlot(Weaponclassname);
 
 				switch(f_HealingPotionEffect[attacker])
 				{
@@ -1451,6 +1451,49 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					{
 						damage *= 1.0;
 					}
+				}
+			}		
+			if(!(damagetype & (DMG_SLASH))) // if you want anything to be melee based, just give them this.
+			{
+				if(b_DungeonContracts_ZombieFlatArmorMelee[victim])
+				{
+					if(slot == TFWeaponSlot_Melee && !i_IsWandWeapon[weapon] && !i_IsWrench[weapon]) //Only melee.
+					{
+						damage -= 10.0;
+						if(damage < 0.0)
+						{
+							damage = 0.0;
+						}
+					}
+				}
+				if(b_DungeonContracts_ZombieFlatArmorRanged[victim])
+				{
+					if(slot > TFWeaponSlot_Melee) //Only Ranged
+					{
+						damage -= 5.0;
+						if(damage < 0.0)
+						{
+							damage = 0.0;
+						}
+					}
+				}
+				if(b_DungeonContracts_ZombieFlatArmorMage[victim])
+				{
+					if(i_IsWandWeapon[weapon]) //Only Mage.
+					{
+						damage -= 15.0;
+						if(damage < 0.0)
+						{
+							damage = 0.0;
+						}
+					}
+				}
+			}
+			else
+			{
+				if(b_DungeonContracts_ZombieArmorDebuffResistance[victim])
+				{
+					damage *= 0.5;
 				}
 			}
 #endif

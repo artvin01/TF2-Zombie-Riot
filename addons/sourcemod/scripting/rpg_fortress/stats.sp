@@ -26,6 +26,38 @@ void Stats_ClearCustomStats(int entity)
 	Luck[entity] = 0;
 }
 
+int ReturnStatsViaIndex(int client, int index)
+{
+	switch(index)
+	{
+		case 1:
+		{
+			return BackpackBonus[client];
+		}
+		case 2:
+		{
+			return Strength[client];
+		}
+		case 3:
+		{
+			return Dexterity[client];
+		}
+		case 4:
+		{
+			return Intelligence[client];
+		}
+		case 5:
+		{
+			return Agility[client];
+		}
+		case 6:
+		{
+			return Luck[client];
+		}
+	}
+	return 0;
+}
+
 void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
 {
 	for(int i; i < attribs; i++)
