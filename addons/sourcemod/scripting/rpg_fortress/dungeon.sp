@@ -22,7 +22,7 @@ static const char RoundRetryLoss[][] =
 
 enum struct ModEnum
 {
-	char Desc[128];
+	char Desc[168];
 	int Tier;
 	int Unlock;
 	int Slot;
@@ -39,7 +39,7 @@ enum struct ModEnum
 		kv.GetString("func_onwaves", this.Desc, 128);
 		this.OnWaves = GetFunctionByName(null, this.Desc);
 
-		kv.GetString("desc", this.Desc, 128);
+		kv.GetString("desc", this.Desc, 168);
 		this.Tier = kv.GetNum("tier");
 		this.Unlock = kv.GetNum("unlock");
 		this.Slot = kv.GetNum("slot");
@@ -121,6 +121,26 @@ enum struct StageEnum
 	float DropChance4;
 	int DropTier4;
 
+	char DropName5[48];
+	float DropChance5;
+	int DropTier5;
+	
+	char DropName6[48];
+	float DropChance6;
+	int DropTier6;
+	
+	char DropName7[48];
+	float DropChance7;
+	int DropTier7;
+	
+	char DropName8[48];
+	float DropChance8;
+	int DropTier8;
+	
+	char DropName9[48];
+	float DropChance9;
+	int DropTier9;
+
 	char MusicEasy[PLATFORM_MAX_PATH];
 	int MusicEasyTime;
 	float MusicEasyVolume;
@@ -161,6 +181,26 @@ enum struct StageEnum
 		kv.GetString("drop_name_4", this.DropName4, 48);
 		this.DropChance4 = kv.GetFloat("drop_chance_4", 1.0);
 		this.DropTier4 = kv.GetNum("drop_tier_4");
+
+		kv.GetString("drop_name_5", this.DropName5, 48);
+		this.DropChance5 = kv.GetFloat("drop_chance_5", 1.0);
+		this.DropTier5 = kv.GetNum("drop_tier_5");
+
+		kv.GetString("drop_name_6", this.DropName6, 48);
+		this.DropChance6 = kv.GetFloat("drop_chance_6", 1.0);
+		this.DropTier6 = kv.GetNum("drop_tier_6");
+
+		kv.GetString("drop_name_7", this.DropName7, 48);
+		this.DropChance7 = kv.GetFloat("drop_chance_7", 1.0);
+		this.DropTier7 = kv.GetNum("drop_tier_7");
+
+		kv.GetString("drop_name_8", this.DropName8, 48);
+		this.DropChance8 = kv.GetFloat("drop_chance_8", 1.0);
+		this.DropTier8 = kv.GetNum("drop_tier_8");
+
+		kv.GetString("drop_name_9", this.DropName9, 48);
+		this.DropChance9 = kv.GetFloat("drop_chance_9", 1.0);
+		this.DropTier9 = kv.GetNum("drop_tier_9");
 
 		kv.GetString("music_easy_file", this.MusicEasy, PLATFORM_MAX_PATH);
 		if(this.MusicEasy[0])
@@ -488,6 +528,7 @@ void Dungeon_ConfigSetup(KeyValues map)
 	{
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "dungeon");
 		kv = new KeyValues("Dungeon");
+		kv.SetEscapeSequences(true);
 		kv.ImportFromFile(buffer);
 	}
 
@@ -652,7 +693,7 @@ static void ShowMenu(int client, int page)
 			{
 				time = -time;
 
-				ArrayList slots;
+				ArrayList slots = new ArrayList ();
 				menu.SetTitle("RPG Fortress\n \nContingency Contract:\n%s △%d\nStarts In: %d:%02d\n ", dungeon.CurrentStage, dungeon.TierLevel(slots), time / 60, time % 60);
 
 				dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage));
@@ -753,6 +794,7 @@ static void ShowMenu(int client, int page)
 				}
 
 				menu.ExitBackButton = view_as<bool>(stage.ModList);
+				delete slots;
 			}
 		}
 		else
@@ -917,6 +959,7 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 
 void Dungeon_ResetEntity(int entity)
 {
+	ClearDungeonStats(entity);
 	InDungeon[entity][0] = 0;
 }
 
@@ -1485,85 +1528,153 @@ public void Dungeon_Wave_CoreInfection1(ArrayList list)
 	list.PushArray(wave);
 }
 
-public void Dungeon_40_Percent_More_Cooldown(ArrayList list)
+public void Dungeon_Wave_CoreInfection_Grigori(ArrayList list)
 {
-	StringMapSnapshot snap = DungeonList.Snapshot();
-	int length = list.Length;
-	for(int i; i < length; i++)
-	{
-		int size = snap.KeyBufferSize(i) + 1;
-		char[] name = new char[size];
-		snap.GetKey(i, name, size);
+	static WaveEnum wave;
+	wave.Delay = 82.0;
+	wave.Index = FATHER_GRIGORI;
+	wave.Pos = {2244.328857, 7762.802246, -5223.968750};
+	wave.Angle = 0.0;
+	wave.Boss = false;
+	wave.Level = 25;
+	wave.Health = 35000;
+	wave.Rarity = 1;
+	list.PushArray(wave);
+}
 
-		static DungeonEnum dungeon;
-		if(DungeonList.GetArray(name, dungeon, sizeof(dungeon)))
+public void Dungeon_RegenZombie(int entity)
+{
+	CreateTimer(1.0, HpRegenZombie25, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+}
+
+public Action HpRegenZombie25(Handle Timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if (IsValidEntity(entity))
+	{
+		CClotBody npc = view_as<CClotBody>(entity);
+
+		int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+
+		int HealthToHealPerIncrement = 25;
+
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", Health + HealthToHealPerIncrement);
+				
+
+		if((Health + HealthToHealPerIncrement) >= MaxHealth)
 		{
-			for(int client = 1; client <= MaxClients; client++)
-			{	
-				if(StrEqual(InDungeon[client], name))
-				{
-					b_DungeonContracts_LongerCooldown[client] = true;
-				}
-			}
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", MaxHealth);
 		}
+
+		//Slowly heal when we are standing still.
+
+		Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+
+		char HealthString[512];
+		Format(HealthString, sizeof(HealthString), "%i / %i", Health, MaxHealth);
+
+		if(IsValidEntity(npc.m_iTextEntity3))
+		{
+			DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
+		}
+		return Plugin_Continue;
+	}
+	else
+	{
+		return Plugin_Stop;
 	}
 }
 
-public void Dungeon_30_Percent_Slower_Attackspeed(ArrayList list)
+public void Dungeon_SuperRegenZombie(int entity)
 {
-	StringMapSnapshot snap = DungeonList.Snapshot();
-	int length = list.Length;
-	for(int i; i < length; i++)
-	{
-		int size = snap.KeyBufferSize(i) + 1;
-		char[] name = new char[size];
-		snap.GetKey(i, name, size);
+	CreateTimer(1.0, HpRegenZombie35, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+}
 
-		static DungeonEnum dungeon;
-		if(DungeonList.GetArray(name, dungeon, sizeof(dungeon)))
+public Action HpRegenZombie35(Handle Timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if (IsValidEntity(entity))
+	{
+		CClotBody npc = view_as<CClotBody>(entity);
+
+		int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+
+		int HealthToHealPerIncrement = 25;
+
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", Health + HealthToHealPerIncrement);
+				
+
+		if((Health + HealthToHealPerIncrement) >= (float(MaxHealth) * 1.25))
 		{
-			for(int client = 1; client <= MaxClients; client++)
-			{	
-				if(StrEqual(InDungeon[client], name))
-				{
-					b_DungeonContracts_SlowerAttackspeed[client] = true;
-				}
-			}
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", (float(MaxHealth) * 1.25));
 		}
+
+		//Slowly heal when we are standing still.
+
+		Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+
+		char HealthString[512];
+		Format(HealthString, sizeof(HealthString), "%i / %i", Health, MaxHealth);
+
+		if(IsValidEntity(npc.m_iTextEntity3))
+		{
+			DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
+		}
+		return Plugin_Continue;
+	}
+	else
+	{
+		return Plugin_Stop;
 	}
 }
-public void Dungeon_30_Percent_Slower_MoveSpeed(ArrayList list)
-{
-	StringMapSnapshot snap = DungeonList.Snapshot();
-	int length = list.Length;
-	for(int i; i < length; i++)
-	{
-		int size = snap.KeyBufferSize(i) + 1;
-		char[] name = new char[size];
-		snap.GetKey(i, name, size);
 
-		static DungeonEnum dungeon;
-		if(DungeonList.GetArray(name, dungeon, sizeof(dungeon)))
-		{
-			for(int client = 1; client <= MaxClients; client++)
-			{	
-				if(StrEqual(InDungeon[client], name))
-				{
-					b_DungeonContracts_SlowerMovespeed[client] = true;
-				}
-			}
-		}
+public void Dungeon_FastPoison(int entity)
+{
+	if(i_NpcInternalId[entity] == POISON_ZOMBIE)
+	{
+		b_DungeonContracts_ZombieSpeedTimes3[entity] = true;
 	}
 }
+
+public void Dungeon_FastZombies15(int entity)
+{
+	b_PernellBuff[entity] = true; //15% faster zombies.
+}
+
+public void Dungeon_40_Percent_More_Cooldown(int entity)
+{
+	b_DungeonContracts_LongerCooldown[entity] = true;
+}
+
+public void Dungeon_30_Percent_Slower_Attackspeed(int entity)
+{
+	b_DungeonContracts_SlowerAttackspeed[entity] = true;
+}
+public void Dungeon_30_Percent_Slower_MoveSpeed(int entity)
+{
+	b_DungeonContracts_SlowerMovespeed[entity] = true;
+}
+
 public void Dungeon_BleedOnHit(int entity)
+{
+	b_DungeonContracts_BleedOnHit[entity] = true;
+}
+
+public void Dungeon_Plus5Damage(int entity)
 {
 	b_DungeonContracts_BleedOnHit[entity] = true;
 }
 
 public void ClearDungeonStats(int entity)
 {
-	b_DungeonContracts_LongerCooldown[entity] = false;
-	b_DungeonContracts_SlowerAttackspeed[entity] = false;
-	b_DungeonContracts_SlowerMovespeed[entity] = false;
+	if(entity < MAXTF2PLAYERS)
+	{
+		b_DungeonContracts_LongerCooldown[entity] = false;
+		b_DungeonContracts_SlowerAttackspeed[entity] = false;
+		b_DungeonContracts_SlowerMovespeed[entity] = false;
+		b_DungeonContracts_FlatDamageIncreace5[entity] = false;
+	}
 //	b_DungeonContracts_BleedOnHit[entity] = false;
 }

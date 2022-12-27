@@ -1213,11 +1213,17 @@ methodmap CClotBody
 			}
 			speed_for_return *= slowdown_amount;
 		}
-		
+#if defined RPG
+		if (b_DungeonContracts_ZombieSpeedTimes3[this.index])
+		{
+			speed_for_return *= 3.0;
+		}	
+#endif			
 		if (this.m_bFrozen)
 		{
 			speed_for_return = 0.01;
 		}		
+
 		return speed_for_return;
 	}
 	public float GetRunSpeed()//For the future incase we want to alter it easier
@@ -6498,6 +6504,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f3_SpawnPosition[entity][2] = 0.0;
 	hFromSpawnerIndex[entity] = -1;
 	b_DungeonContracts_BleedOnHit[entity] = false;
+	b_DungeonContracts_ZombieSpeedTimes3[entity] = false;
 #endif
 	f_NpcHasBeenUnstuckAboveThePlayer[entity] = 0.0;
 	i_NoEntityFoundCount[entity] = 0;

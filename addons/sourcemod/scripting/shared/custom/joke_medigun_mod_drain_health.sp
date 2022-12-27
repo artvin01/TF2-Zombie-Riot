@@ -118,20 +118,29 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 	
 	if(owner > 0 && owner<=MaxClients && IsValidEntity(target))
 	{
+#if defined ZR
 		if(dieingstate[owner] > 0)
 		{
 			DHookSetReturn(hReturn, false);
 			return MRES_Supercede;	
 		}
-	
+#endif
 		if(What_type_Heal == 1.0)
 		{
 		//	bool is_uber_activated=view_as<bool>(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"));
+#if defined ZR
 			if (target > 0 && target <= MaxClients && dieingstate[owner] == 0 && dieingstate[target] == 0)	//only allow player heal IF you have attribute.
 			{
 				DHookSetReturn(hReturn, true);
 				return MRES_Supercede;
 			}
+#else
+			if (target > 0 && target <= MaxClients)	//only allow player heal IF you have attribute.
+			{
+				DHookSetReturn(hReturn, true);
+				return MRES_Supercede;
+			}
+#endif
 			else if(b_IsAlliedNpc[target])
 			{
 				DHookSetReturn(hReturn, true);
@@ -210,11 +219,12 @@ public void Medigun_ClearAll()
 
 public MRESReturn OnMedigunPostFramePost(int medigun) {
 	int owner = GetEntPropEnt(medigun, Prop_Send, "m_hOwnerEntity");
+#if defined ZR
 	if(dieingstate[owner] > 0)
 	{
 		return MRES_Ignored;	
 	}
-		
+#endif
 	if(medigun_heal_delay[owner] < GetGameTime())
 	{
 		medigun_heal_delay[owner] = GetGameTime() + 0.1;
@@ -231,7 +241,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				float flDrainRate = 500.0;
 				
 				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
-						
+				
 				if(!TF2_IsPlayerInCondition(owner, TFCond_Ubercharged) && !TF2_IsPlayerInCondition(owner, TFCond_MegaHeal))
 				{
 					flChargeLevel += 0.3*GetGameFrameTime();
@@ -248,13 +258,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				{
 
 					flDrainRate *= Attributes_FindOnPlayer(owner, 8, true, 1.0, true);
-
-					if(EscapeMode)
-						flDrainRate *= 2.0;
-						
+#if defined ZR						
 					if(LastMann)	
 						flDrainRate *= 2.0;
-						
+#endif					
 					if(TF2_IsPlayerInCondition(owner, TFCond_MegaHeal))
 					{
 						target_sucked_long[healTarget] += 0.21;
@@ -318,20 +325,14 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					}
 					
 				}
-				if(!EscapeMode)
-				{
-					SetAmmo(owner, 22, new_ammo);
-					CurrentAmmo[owner][22] = GetAmmo(owner, 22);
-				}
+				SetAmmo(owner, 22, new_ammo);
+				CurrentAmmo[owner][22] = GetAmmo(owner, 22);
 			}
-			if(!EscapeMode)
+			if(medigun_hud_delay[owner] < GetGameTime())
 			{
-				if(medigun_hud_delay[owner] < GetGameTime())
-				{
-					PrintHintText(owner,"Medigun Fluid Capacity: %iml", new_ammo + 1);
-					StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
-					medigun_hud_delay[owner] = GetGameTime() + 0.5;
-				}
+				PrintHintText(owner,"Medigun Fluid Capacity: %iml", new_ammo + 1);
+				StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
+				medigun_hud_delay[owner] = GetGameTime() + 0.5;
 			}
 		}
 		else if(What_type_Heal == 3.0)
@@ -487,41 +488,20 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					//	SetEntProp(healTarget, Prop_Send, "m_iMaxHealth", max_health);
 					}
 				}
-				if(!EscapeMode)
-				{
-					SetAmmo(owner, 3, new_ammo);
-					CurrentAmmo[owner][3] = GetAmmo(owner, 3);
-				}
+				SetAmmo(owner, 3, new_ammo);
+				CurrentAmmo[owner][3] = GetAmmo(owner, 3);
 			}
-			if(!EscapeMode)
+			if(medigun_hud_delay[owner] < GetGameTime())
 			{
-				if(medigun_hud_delay[owner] < GetGameTime())
-				{
-					if(medigun_mode == 0)
-						PrintHintText(owner,"[Heal Mode] Metal: %i", new_ammo);
-					else if(medigun_mode == 1)
-						PrintHintText(owner,"[Damage Mode] Metal: %i", new_ammo);
-					else if(medigun_mode == 2)
-						PrintHintText(owner,"[Metal-Efficient Mode] Metal: %i", new_ammo);
+				if(medigun_mode == 0)
+					PrintHintText(owner,"[Heal Mode] Metal: %i", new_ammo);
+				else if(medigun_mode == 1)
+					PrintHintText(owner,"[Damage Mode] Metal: %i", new_ammo);
+				else if(medigun_mode == 2)
+					PrintHintText(owner,"[Metal-Efficient Mode] Metal: %i", new_ammo);
 						
-					StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
-					medigun_hud_delay[owner] = GetGameTime() + 0.5;
-				}
-			}
-			else
-			{
-				if(medigun_hud_delay[owner] < GetGameTime())
-				{
-					if(medigun_mode == 0)
-						PrintHintText(owner,"[Heal Mode]");
-					else if(medigun_mode == 1)
-						PrintHintText(owner,"[Damage Mode]");
-					else if(medigun_mode == 2)
-						PrintHintText(owner,"[Metal-Efficient Mode]");
-						
-					StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
-					medigun_hud_delay[owner] = GetGameTime() + 0.5;
-				}	
+				StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
+				medigun_hud_delay[owner] = GetGameTime() + 0.5;
 			}
 		}
 		else if(What_type_Heal == 1.0)
@@ -553,12 +533,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 
 					float healing_Amount = Healing_Value;
 					float healing_Amount_Self = Healing_Value;
-					
-					if(EscapeMode)
-						healing_Amount = 2.0;
-						
-					if(EscapeMode)
-						healing_Amount_Self = 2.0;
 						
 					if(i_targethealedLastBy[healTarget] != owner) //If youre healing someone thats already being healed, then the healing amount will be heavily reduced.
 					{
@@ -664,10 +638,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					
 					if(!Is_Allied_Npc)
 					{
-						if(!EscapeMode)
-							flMaxHealth = RoundToNearest(float(SDKCall_GetMaxHealth(healTarget)) * 1.5);
-						else
-							flMaxHealth = RoundToNearest(float(SDKCall_GetMaxHealth(healTarget)) * 1.25);
+						flMaxHealth = RoundToNearest(float(SDKCall_GetMaxHealth(healTarget)) * 1.5);
 					}
 					else
 					{
@@ -685,7 +656,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 						SetEntProp(healTarget, Prop_Data, "m_iHealth", newHealth);
 						new_ammo -= i_TargetHealAmount;
+#if defined ZR
 						Healing_done_in_total[owner] += i_TargetHealAmount;
+#endif
 						if(!b_IsAlliedNpc[healTarget])
 						{
 							Give_Assist_Points(healTarget, owner);
@@ -716,8 +689,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 						SetEntProp(owner, Prop_Data, "m_iHealth", newHealth);
 						new_ammo -= i_SelfHealAmount;
+#if defined ZR
 						Healing_done_in_total[owner] += i_SelfHealAmount;
-						
+#endif						
 						//SELF HEAL
 						
 					}
@@ -728,20 +702,14 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					Resistance_Overall_Low[healTarget] = GetGameTime() + 0.11;
 					
 				}
-				if(!EscapeMode)
-				{
-					SetAmmo(owner, 21, new_ammo);
-					CurrentAmmo[owner][21] = GetAmmo(owner, 21);
-				}
+				SetAmmo(owner, 21, new_ammo);
+				CurrentAmmo[owner][21] = GetAmmo(owner, 21);
 			}
-			if(!EscapeMode)
+			if(medigun_hud_delay[owner] < GetGameTime())
 			{
-				if(medigun_hud_delay[owner] < GetGameTime())
-				{
-					PrintHintText(owner,"Medigun Medicine Fluid: %iml", new_ammo);
-					StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
-					medigun_hud_delay[owner] = GetGameTime() + 0.5;
-				}
+				PrintHintText(owner,"Medigun Medicine Fluid: %iml", new_ammo);
+				StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
+				medigun_hud_delay[owner] = GetGameTime() + 0.5;
 			}
 		}
 		else if(What_type_Heal == 4.0 && GetAmmo(owner, 22) > 0)
@@ -768,13 +736,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				{
 
 					flDrainRate *= Attributes_FindOnPlayer(owner, 8, true, 1.0, true);
-
-					if(EscapeMode)
-						flDrainRate *= 2.0;
-						
+#if defined ZR
 					if(LastMann)	
 						flDrainRate *= 2.0;
-					
+#endif				
 					target_sucked_long[healTarget] += 0.07;
 					
 					if(target_sucked_long[healTarget] >= 4.0)
@@ -795,10 +760,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					Entity_Position = WorldSpaceCenter(healTarget);
 						
 					SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
-					if(!EscapeMode)
-					{
-						new_ammo -= 6;
-					}
 				}
 				
 				if (flChargeLevel==1.0) {
@@ -806,37 +767,18 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				}
 				SetAmmo(owner, 22, new_ammo);
 				CurrentAmmo[owner][22] = GetAmmo(owner, 22);
-				if(!EscapeMode)
+				if(medigun_hud_delay[owner] < GetGameTime())
 				{
-					if(medigun_hud_delay[owner] < GetGameTime())
+					if(!gb_medigun_on_reload[owner])
 					{
-						if(!gb_medigun_on_reload[owner])
-						{
-							PrintHintText(owner,"Medigun Medicine Fluid: %iml\n Press RELOAD to Enable Fast Cooldown system.\n Press M2 to Shoot Energy projectiles.", new_ammo);
-						}
-						else
-						{
-							PrintHintText(owner,"FASTER COOLING DOWN ON! Unable to attack untill fully Cooled down!");
-						}
-						StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
-						medigun_hud_delay[owner] = GetGameTime() + 0.5;
+						PrintHintText(owner,"Medigun Medicine Fluid: %iml\n Press RELOAD to Enable Fast Cooldown system.\n Press M2 to Shoot Energy projectiles.", new_ammo);
 					}
-				}
-				else
-				{
-					if(medigun_hud_delay[owner] < GetGameTime())
+					else
 					{
-						if(!gb_medigun_on_reload[owner])
-						{
-							PrintHintText(owner,"Press RELOAD to Enable Fast Cooldown system.\n Press M2 to Shoot Energy projectiles.");
-						}
-						else
-						{
-							PrintHintText(owner,"FASTER COOLING DOWN ON! Unable to attack untill fully Cooled down!");
-						}
-						StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
-						medigun_hud_delay[owner] = GetGameTime() + 0.5;
-					}	
+						PrintHintText(owner,"FASTER COOLING DOWN ON! Unable to attack untill fully Cooled down!");
+					}
+					StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
+					medigun_hud_delay[owner] = GetGameTime() + 0.5;
 				}
 			}
 			else if (gb_medigun_on_reload[owner])
@@ -929,7 +871,7 @@ public void GB_On_Reload(int client, int weapon, bool crit) {
 						
 	gb_medigun_on_reload[client] = true;
 }
-
+#if defined ZR
 public void GB_Check_Ball(int client, int weapon, bool crit)
 {
 	if (gb_medigun_on_reload[client] || GetEntProp(weapon, Prop_Send, "m_bChargeRelease")==1)
@@ -952,7 +894,7 @@ public void GB_Check_Ball(int client, int weapon, bool crit)
 	
 	Weapon_GB_Ball(client, weapon, crit);
 }
-
+#endif
 
 public Action Reset_suck_bonus(Handle cut_timer, int entity)
 {

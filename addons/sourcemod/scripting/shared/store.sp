@@ -3023,10 +3023,10 @@ void Store_ApplyAttribs(int client)
 	i_TagColor[client] =	{255,255,255,255};
 	Stats_SetBodyStats(client, ClassForStats, map);
 
-	//CC DIFFICULTY, 30% SLOWER!
+	//CC DIFFICULTY, 15% SLOWER!
 	if(b_DungeonContracts_SlowerMovespeed[client])
 	{
-		MovementSpeed *= 0.7; 
+		MovementSpeed *= 0.85; 
 	}
 #endif
 

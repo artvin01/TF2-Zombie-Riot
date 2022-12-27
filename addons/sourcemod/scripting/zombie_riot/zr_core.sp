@@ -110,7 +110,6 @@ Cookie CookiePlayStreak;
 Cookie CookieCache;
 Cookie CookieXP;
 ArrayList Loadouts[MAXTF2PLAYERS];
-DynamicHook g_DHookMedigunPrimary; 
 
 Handle g_hSDKMakeCarriedObjectDispenser;
 Handle g_hSDKMakeCarriedObjectSentry;
@@ -249,7 +248,6 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_heavy_eagle.sp"
 #include "zombie_riot/custom/weapon_annabelle.sp"
 #include "zombie_riot/custom/weapon_rampager.sp"
-#include "zombie_riot/custom/joke_medigun_mod_drain_health.sp"
 #include "zombie_riot/custom/weapon_heaven_eagle.sp"
 #include "zombie_riot/custom/weapon_star_shooter.sp"
 #include "zombie_riot/custom/weapon_bison.sp"
@@ -313,6 +311,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/escape_sentry_hat.sp"
 #include "zombie_riot/custom/m3_abilities.sp"
 #include "shared/custom/weapon_street_fighter.sp"
+#include "shared/custom/joke_medigun_mod_drain_health.sp"
 
 void ZR_PluginLoad()
 {

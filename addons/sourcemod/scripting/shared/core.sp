@@ -409,6 +409,8 @@ float f_assist_heal_player_time[MAXTF2PLAYERS];
 
 #if defined RPG
 bool b_DungeonContracts_BleedOnHit[MAXENTITIES];
+bool b_DungeonContracts_FlatDamageIncreace5[MAXTF2PLAYERS];
+bool b_DungeonContracts_ZombieSpeedTimes3[MAXENTITIES];
 #endif
 
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -564,6 +566,7 @@ Address TheNavAreas;
 Address navarea_count;
 
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
+DynamicHook g_DHookMedigunPrimary; 
 
 Handle gH_BotAddCommand = INVALID_HANDLE;
 
@@ -2214,12 +2217,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			ScatterGun_Prevent_M2_OnEntityCreated(entity);
 		}
-		
-#if defined ZR
 		else if (!StrContains(classname, "tf_weapon_medigun")) 
 		{
 			Medigun_OnEntityCreated(entity);
 		}
+#if defined ZR
 		else if (!StrContains(classname, "tf_weapon_particle_cannon")) 
 		{
 			OnManglerCreated(entity);
