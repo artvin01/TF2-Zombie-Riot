@@ -44,8 +44,9 @@ static void OnEnter(int entity, const char[] name)
 {
 	if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
+		NPC_Despawn_Zone(entity, name);
 	}
-	else
+	else if(entity > 0 && entity <= MaxClients)
 	{
 		Crafting_ClientEnter(entity, name);
 		Garden_ClientEnter(entity, name);
@@ -96,7 +97,6 @@ static void OnDisable(int entity, const char[] name)
 		TextStore_ZoneAllLeave(name);
 		Tinker_DisableZone(name);
 	}
-
 }
 
 bool Zones_IsActive(const char[] name)
@@ -106,7 +106,7 @@ bool Zones_IsActive(const char[] name)
 
 public Action Zones_StartTouch(const char[] output, int entity, int caller, float delay)
 {
-	if(caller > 0 && caller <= MaxClients)
+	if(caller > 0 && caller <= MAXENTITIES)
 	{
 		char name[32];
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))

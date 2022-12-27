@@ -38,6 +38,7 @@ int f_HealingPotionEffect[MAXTF2PLAYERS];
 #include "rpg_fortress/textstore.sp"
 #include "rpg_fortress/tinker.sp"
 #include "rpg_fortress/zones.sp"
+#include "rpg_fortress/npc_despawn_zone.sp"
 
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"

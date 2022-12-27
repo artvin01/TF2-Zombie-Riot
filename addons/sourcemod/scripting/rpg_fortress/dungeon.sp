@@ -832,17 +832,11 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 								int pos = dungeon.ModList.FindString(dungeon.CurrentStage);
 								if(pos != -1)
 								{
-									PrintToChatAll("dungeon.sp - Removed %s", dungeon.CurrentStage);
 									dungeon.ModList.Erase(pos);
 								}
 								else if(stage.ModList.ContainsKey(dungeon.CurrentStage))
 								{
-									PrintToChatAll("dungeon.sp - Added %s", dungeon.CurrentStage);
 									dungeon.ModList.PushString(dungeon.CurrentStage);
-								}
-								else
-								{
-									PrintToChatAll("dungeon.sp - Does Not Exist??? %s", dungeon.CurrentStage);
 								}
 
 								ShowMenu(client, choice);
@@ -1037,7 +1031,6 @@ static void StartDungeon(const char[] name)
 
 			delete dungeon.WaveList;
 			dungeon.WaveList = stage.WaveList.Clone();
-			PrintToChatAll("dungeon.sp - Found %d Enemies (Expected %d)", dungeon.WaveList.Length, stage.WaveList.Length);
 			
 			int tier;
 			if(dungeon.ModList)
@@ -1047,11 +1040,9 @@ static void StartDungeon(const char[] name)
 				{
 					static ModEnum mod;
 					dungeon.ModList.GetString(i, mod.Desc, sizeof(mod.Desc));
-					PrintToChatAll("dungeon.sp - %s", mod.Desc);
 
 					if(stage.ModList.GetArray(mod.Desc, mod, sizeof(mod)))
 					{
-						PrintToChatAll("dungeon.sp - Found");
 
 						tier += mod.Tier;
 
@@ -1061,10 +1052,6 @@ static void StartDungeon(const char[] name)
 						}
 
 						mod.CallOnWaves(dungeon.WaveList);
-					}
-					else
-					{
-						PrintToChatAll("dungeon.sp - NOT FOUND");
 					}
 				}
 			}
@@ -1097,7 +1084,6 @@ static void StartDungeon(const char[] name)
 
 static void CleanDungeon(const char[] name, bool victory)
 {
-	PrintToChatAll("dungeon.sp - CleanDungeon::%s::%d", name, victory);
 
 	static DungeonEnum dungeon;
 	if(DungeonList.GetArray(name, dungeon, sizeof(dungeon)) && dungeon.CurrentStage[0])
@@ -1128,7 +1114,6 @@ static void CleanDungeon(const char[] name, bool victory)
 			{
 				if(StrEqual(InDungeon[client], name))
 				{
-					PrintToChatAll("dungeon.sp - %N", client);
 
 					clear = true;
 					if(dungeon.WaveList)
@@ -1249,14 +1234,12 @@ public Action Dungeon_Timer(Handle timer)
 				int entity = MaxClients + 1;
 				while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
 				{
-					PrintToChatAll("dungeon.sp - NPC %d = '%s'", entity, InDungeon[entity]);
 					if(StrEqual(InDungeon[entity], name) && GetEntProp(entity, Prop_Send, "m_iTeamNum") != 2)
 						alive++;
 				}
 
 				if(alive > 9)
 				{
-					PrintToChatAll("dungeon.sp - %d alive", alive);
 					int over = alive - 9;
 					for(int client = 1; client <= MaxClients; client++)
 					{
@@ -1286,7 +1269,6 @@ public Action Dungeon_Timer(Handle timer)
 					{
 						static WaveEnum wave;
 						dungeon.WaveList.GetArray(a, wave);
-						PrintToChatAll("dungeon.sp - %f < %f", wave.Delay, time);
 						if(wave.Delay < time)
 						{
 							static float ang[3];
@@ -1299,7 +1281,7 @@ public Action Dungeon_Timer(Handle timer)
 							{
 								Level[entity] = wave.Level;
 								i_CreditsOnKill[entity] = 0;
-								XP[entity] = Level[entity] / 3;
+								XP[entity] = 0; //No xp will be given on kill.
 								b_thisNpcIsABoss[entity] = wave.Boss;
 								b_NpcIsInADungeon[entity] = true;
 								strcopy(InDungeon[entity], sizeof(InDungeon[]), name);
@@ -1383,7 +1365,6 @@ public Action Dungeon_Timer(Handle timer)
 	if(found)
 		return Plugin_Continue;
 	
-	PrintToChatAll("dungeon.sp - Killed DungeonTimer");
 	
 	DungeonTimer = null;
 	return Plugin_Stop;
