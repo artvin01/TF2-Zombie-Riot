@@ -28,15 +28,19 @@ enum struct ModEnum
 	int Slot;
 	int Level;
 
+	Function OnPlayer;
 	Function OnSpawn;
 	Function OnWaves;
 
 	void SetupEnum(KeyValues kv)
 	{
-		kv.GetString("func_onspawn", this.Desc, 128);
+		kv.GetString("func_onplayer", this.Desc, 168);
+		this.OnPlayer = GetFunctionByName(null, this.Desc);
+
+		kv.GetString("func_onspawn", this.Desc, 168);
 		this.OnSpawn = GetFunctionByName(null, this.Desc);
 
-		kv.GetString("func_onwaves", this.Desc, 128);
+		kv.GetString("func_onwaves", this.Desc, 168);
 		this.OnWaves = GetFunctionByName(null, this.Desc);
 
 		kv.GetString("desc", this.Desc, 168);
@@ -44,6 +48,16 @@ enum struct ModEnum
 		this.Unlock = kv.GetNum("unlock");
 		this.Slot = kv.GetNum("slot");
 		this.Level = kv.GetNum("level");
+	}
+
+	void CallOnPlayer(int client)
+	{
+		if(this.OnPlayer != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, this.OnPlayer);
+			Call_PushCell(client);
+			Call_Finish();
+		}
 	}
 
 	void CallOnSpawn(int entity)
@@ -291,7 +305,34 @@ enum struct StageEnum
 		}
 	}
 
-	void DoAllDrops(int client, int tier)
+	float GetDropChance(int level, int luck, int tier, char name[48], float chance = 1.0, int required = 0)
+	{
+		if(required > tier)
+			return 0.0;
+		
+		if(StrEqual(name, "XP"))
+		{
+			if(level > this.Level || !this.XP)
+				return 0.0;
+			
+			Format(name, sizeof(name), "%d XP", this.XP + tier * 100);
+			return 1.0;
+		}
+		
+		if(StrEqual(name, "Credits"))
+		{
+			Format(name, sizeof(name), "%d Credits", this.Cash + tier * 10);
+			return 1.0;
+		}
+		
+		float multi = (1.0 + float(tier - required) * 0.1) * chance * (float(300 + luck) / 300.0);
+		if(multi > 1.0)
+			multi = 1.0;
+		
+		return multi;
+	}
+
+	void DoAllDrops(int[] clients int amount, , int tier)
 	{
 		TextStore_AddItemCount(client, "Credits", this.Cash + tier);
 		TextStore_AddItemCount(client, "XP", this.XP + tier);
@@ -500,7 +541,7 @@ static Handle DungeonTimer;
 static StringMap DungeonList;
 static KeyValues SaveKv;
 static char DungeonMenu[MAXTF2PLAYERS][64];
-static bool AltMenu[MAXTF2PLAYERS];
+static int AltMenu[MAXTF2PLAYERS];
 static char InDungeon[MAXENTITIES][64];
 static int LastResult[MAXENTITIES];
 
@@ -698,9 +739,13 @@ static void ShowMenu(int client, int page)
 
 				dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage));
 
-				if(AltMenu[client] || !stage.ModList)
+				if(AltMenu[client] ==  2)
 				{
-					AltMenu[client] = true;
+
+				}
+				else if(AltMenu[client] == 1 || !stage.ModList)
+				{
+					AltMenu[client] = 1;
 
 					bool found;
 					for(int target = 1; target <= MaxClients; target++)
@@ -793,7 +838,7 @@ static void ShowMenu(int client, int page)
 					menu.Pagination = 3;
 				}
 
-				menu.ExitBackButton = view_as<bool>(stage.ModList);
+				menu.ExitBackButton = true;
 				delete slots;
 			}
 		}
@@ -848,7 +893,9 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 		{
 			if(choice == MenuCancel_ExitBack)
 			{
-				AltMenu[client] = !AltMenu[client];
+				if(++AltMenu[client] > 2)
+					AltMenu[client] = 0;
+				
 				ShowMenu(client, 0);
 			}
 		}
@@ -965,7 +1012,7 @@ void Dungeon_ResetEntity(int entity)
 
 void Dungeon_ClientDisconnect(int client, bool alive = false)
 {
-	AltMenu[client] = false;
+	AltMenu[client] = 0;
 	LastResult[client] = 0;
 
 	if(InDungeon[client][0])
