@@ -1570,8 +1570,38 @@ public void Dungeon_Wave_CoreInfection1(ArrayList list)
 	wave.Angle = 0.0;
 	wave.Boss = false;
 	wave.Level = 25;
-	wave.Health = 7500;
+	wave.Health = 4000;
 	wave.Rarity = 1;
+	list.PushArray(wave);
+}
+
+public void Dungeon_Wave_CoreInfection2(ArrayList list)
+{
+	static WaveEnum wave;
+	wave.Delay = 82.0;
+	wave.Index = ZOMBIEFIED_COMBINE_SWORDSMAN;
+	wave.Pos = {2244.328857, 7762.802246, -5223.968750};
+	wave.Angle = 0.0;
+	wave.Boss = false;
+	wave.Level = 25;
+	wave.Health = 5000;
+	wave.Rarity = 1;
+	list.PushArray(wave);
+	list.PushArray(wave);
+}
+
+public void Dungeon_Wave_CoreInfection3(ArrayList list)
+{
+	static WaveEnum wave;
+	wave.Delay = 82.0;
+	wave.Index = ZOMBIEFIED_COMBINE_SWORDSMAN;
+	wave.Pos = {2244.328857, 7762.802246, -5223.968750};
+	wave.Angle = 0.0;
+	wave.Boss = false;
+	wave.Level = 25;
+	wave.Health = 10000;
+	wave.Rarity = 1;
+	list.PushArray(wave);
 	list.PushArray(wave);
 }
 
@@ -1638,6 +1668,25 @@ public void Dungeon_SuperRegenZombie(int entity)
 	CreateTimer(1.0, HpRegenZombie35, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 }
 
+public void Dungeon_FlatArmorMelee(int entity)
+{
+	b_DungeonContracts_ZombieFlatArmorMelee[entity] = true;
+}
+
+public void Dungeon_FlatArmorRanged(int entity)
+{
+	b_DungeonContracts_ZombieFlatArmorRanged[entity] = true;
+}
+public void Dungeon_FlatArmorMage(int entity)
+{
+	b_DungeonContracts_ZombieFlatArmorMage[entity] = true;
+}
+
+public void Dungeon_DebuffResistance(int entity)
+{
+	b_DungeonContracts_ZombieArmorDebuffResistance[entity] = true;
+}
+
 public Action HpRegenZombie35(Handle Timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);
@@ -1683,6 +1732,24 @@ public void Dungeon_FastPoison(int entity)
 	{
 		b_DungeonContracts_ZombieSpeedTimes3[entity] = true;
 	}
+}
+
+public void Dungeon_GrigoriBuff(int entity)
+{
+	if(i_NpcInternalId[entity] == FATHER_GRIGORI)
+	{
+		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth") * 3 / 2;
+	
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+
+		b_DungeonContracts_35PercentMoreDamage[entity] = true;
+	}
+}
+
+public void Dungeon_25PercentMoreDamage(int entity)
+{
+	b_DungeonContracts_25PercentMoreDamage[entity] = true; //15% faster zombies.
 }
 
 public void Dungeon_FastZombies15(int entity)

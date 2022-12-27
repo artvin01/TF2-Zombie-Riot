@@ -6505,6 +6505,12 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	hFromSpawnerIndex[entity] = -1;
 	b_DungeonContracts_BleedOnHit[entity] = false;
 	b_DungeonContracts_ZombieSpeedTimes3[entity] = false;
+	b_DungeonContracts_ZombieFlatArmorMelee[entity] = false;
+	b_DungeonContracts_ZombieFlatArmorRanged[entity] = false;
+	b_DungeonContracts_ZombieFlatArmorMage[entity] = false;
+	b_DungeonContracts_ZombieArmorDebuffResistance[entity] = false;
+	b_DungeonContracts_35PercentMoreDamage[entity] = false;
+	b_DungeonContracts_25PercentMoreDamage[entity] = false;
 #endif
 	f_NpcHasBeenUnstuckAboveThePlayer[entity] = 0.0;
 	i_NoEntityFoundCount[entity] = 0;

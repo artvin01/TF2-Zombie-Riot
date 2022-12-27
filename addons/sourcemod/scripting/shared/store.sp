@@ -3019,6 +3019,8 @@ void Store_ApplyAttribs(int client)
 	float MovementSpeed = 330.0;
 #if defined RPG
 
+	MudrockShieldUnequip(client);
+	
 	Format(c_TagName[client],sizeof(c_TagName[]),"Newbie");
 	i_TagColor[client] =	{255,255,255,255};
 	Stats_SetBodyStats(client, ClassForStats, map);

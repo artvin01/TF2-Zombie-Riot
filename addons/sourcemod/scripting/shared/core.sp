@@ -411,6 +411,12 @@ float f_assist_heal_player_time[MAXTF2PLAYERS];
 bool b_DungeonContracts_BleedOnHit[MAXENTITIES];
 bool b_DungeonContracts_FlatDamageIncreace5[MAXTF2PLAYERS];
 bool b_DungeonContracts_ZombieSpeedTimes3[MAXENTITIES];
+bool b_DungeonContracts_ZombieFlatArmorMelee[MAXENTITIES];
+bool b_DungeonContracts_ZombieFlatArmorRanged[MAXENTITIES];
+bool b_DungeonContracts_ZombieFlatArmorMage[MAXENTITIES];
+bool b_DungeonContracts_ZombieArmorDebuffResistance[MAXENTITIES];
+bool b_DungeonContracts_35PercentMoreDamage[MAXENTITIES];
+bool b_DungeonContracts_25PercentMoreDamage[MAXENTITIES];
 #endif
 
 //ATTRIBUTE ARRAY SUBTITIUTE
