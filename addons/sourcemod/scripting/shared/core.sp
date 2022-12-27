@@ -407,6 +407,10 @@ Function EntityFuncReload4[MAXENTITIES];
 int i_assist_heal_player[MAXTF2PLAYERS];
 float f_assist_heal_player_time[MAXTF2PLAYERS];
 
+#if defined RPG
+bool b_DungeonContracts_BleedOnHit[MAXENTITIES];
+#endif
+
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE

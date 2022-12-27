@@ -6497,6 +6497,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f3_SpawnPosition[entity][1] = 0.0;
 	f3_SpawnPosition[entity][2] = 0.0;
 	hFromSpawnerIndex[entity] = -1;
+	b_DungeonContracts_BleedOnHit[entity] = false;
 #endif
 	f_NpcHasBeenUnstuckAboveThePlayer[entity] = 0.0;
 	i_NoEntityFoundCount[entity] = 0;

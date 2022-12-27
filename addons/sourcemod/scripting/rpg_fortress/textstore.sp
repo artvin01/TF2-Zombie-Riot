@@ -2138,11 +2138,20 @@ public int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 					{
 						if(spell.Func && spell.Cooldown < GetGameTime())
 						{
+							float cooldownSet;
 							Call_StartFunction(null, spell.Func);
 							Call_PushCell(client);
 							Call_PushCell(index);
 							Call_PushStringEx(spell.Display, sizeof(spell.Display), SM_PARAM_STRING_UTF8|SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
-							Call_Finish(spell.Cooldown);
+							Call_Finish(cooldownSet);
+
+
+							//CC difficulty, increacing ability cooldowns by 40%.
+							if(b_DungeonContracts_LongerCooldown[client])
+							{
+								cooldownSet *= 1.4;	
+							}
+							spell.Cooldown = cooldownSet;
 							SpellList.SetArray(i, spell);
 						}
 						break;

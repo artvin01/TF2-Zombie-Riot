@@ -21,6 +21,12 @@ bool b_NpcIsInADungeon[MAXENTITIES];
 float f_HealingPotionDuration[MAXTF2PLAYERS];
 int f_HealingPotionEffect[MAXTF2PLAYERS];
 
+//CC CONTRACT DIFFICULTIES!
+bool b_DungeonContracts_LongerCooldown[MAXTF2PLAYERS];
+bool b_DungeonContracts_SlowerAttackspeed[MAXTF2PLAYERS];
+bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
+//bool b_DungeonContracts_BleedOnHit[MAXTF2PLAYERS]; Global inside core.sp
+
 #include "rpg_fortress/npc.sp"	// Global NPC List
 
 #include "rpg_fortress/ammo.sp"
@@ -47,6 +53,7 @@ int f_HealingPotionEffect[MAXTF2PLAYERS];
 #include "rpg_fortress/custom/potion_healing_effects.sp"
 #include "rpg_fortress/custom/ranged_mortar_strike.sp"
 #include "rpg_fortress/custom/ground_pound_melee.sp"
+#include "rpg_fortress/custom/weapon_boom_stick.sp"
 
 void RPG_PluginStart()
 {
@@ -108,6 +115,7 @@ void RPG_MapStart()
 	GroundSlam_Map_Precache();
 	Wand_FireBall_Map_Precache();
 	Mortar_MapStart();
+	BoomStick_MapPrecache();
 }
 
 void RPG_MapEnd()

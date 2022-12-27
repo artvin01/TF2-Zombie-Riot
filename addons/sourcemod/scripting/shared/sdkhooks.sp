@@ -1147,6 +1147,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 #endif
 #if defined RPG
+		if(b_DungeonContracts_BleedOnHit[attacker])
+		{
+			StartBleedingTimer_Against_Client(victim, attacker, damage * 0.05, 10); //10 bleeds for 5% of their damage, equalling to 50% extra damage taken over time.
+		}
+		//This happens Before any buffs.
 		if(f_HealingPotionDuration[victim] > gameTime) //Client has a buff, but which one?
 		{
 			switch(f_HealingPotionEffect[victim])

@@ -957,6 +957,55 @@ public Action Timer_DisableMotion(Handle timer, any entid)
 		AcceptEntityInput(entity, "DisableMotion");
 	return Plugin_Stop;
 }
+void StartBleedingTimer_Against_Client(int entity, int client, float damage, int amount)
+{
+	BleedAmountCountStack[entity] += 1;
+	DataPack pack;
+	CreateDataTimer(0.5, Timer_Bleeding_Against_Client, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(client));
+	pack.WriteCell(client);
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteFloat(damage);
+	pack.WriteCell(amount);
+}
+
+public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	int OriginalIndex = pack.ReadCell();
+	if(!IsValidClient(client))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		return Plugin_Stop;
+	}
+		
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(entity<=MaxClients || !IsValidEntity(entity))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		return Plugin_Stop;
+	}
+
+	float pos[3], ang[3];
+	
+	pos = WorldSpaceCenter(entity);
+	
+	GetClientEyeAngles(client, ang);
+	SDKHooks_TakeDamage(entity, client, client, pack.ReadFloat(), DMG_SLASH, _, _, pos, false);
+
+	entity = pack.ReadCell();
+	if(entity < 1)
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		return Plugin_Stop;
+	}
+
+	pack.Position--;
+	pack.WriteCell(entity-1, false);
+	return Plugin_Continue;
+}
+
 
 void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon)
 {

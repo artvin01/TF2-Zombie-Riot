@@ -3016,15 +3016,21 @@ void Store_ApplyAttribs(int client)
 		map.SetValue("26", RemoveExtraHealth(ClassForStats, 1.0));		// Health
 	}
 #endif
-	
+	float MovementSpeed = 330.0;
 #if defined RPG
 
 	Format(c_TagName[client],sizeof(c_TagName[]),"Newbie");
 	i_TagColor[client] =	{255,255,255,255};
 	Stats_SetBodyStats(client, ClassForStats, map);
+
+	//CC DIFFICULTY, 30% SLOWER!
+	if(b_DungeonContracts_SlowerMovespeed[client])
+	{
+		MovementSpeed *= 0.7; 
+	}
 #endif
-	
-	map.SetValue("107", RemoveExtraSpeed(ClassForStats, 330.0));		// Move Speed
+
+	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 
 	map.SetValue("353", 1.0);	// No manual building pickup.
 	map.SetValue("465", 10.0);	// x10 faster diepsner build
@@ -3656,7 +3662,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						i_CustomWeaponEquipLogic[entity] = info.CustomWeaponOnEquip;
 					}
 #endif
-					
 					if(info.Ammo > 0 && !CvarRPGInfiniteLevelAndAmmo.BoolValue)
 					{
 						if(!StrEqual(info.Classname[0], "tf_weapon_medigun"))
@@ -4110,7 +4115,22 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 	if(EntityIsAWeapon)
 	{
-
+//CC CONTRACT diffiulty
+//30% slower attackspeedfor all weapons.
+#if defined RPG
+		if(b_DungeonContracts_SlowerAttackspeed[client])
+		{
+			Address address = TF2Attrib_GetByDefIndex(entity, 6);
+			if(address == Address_Null)
+			{
+				TF2Attrib_SetByDefIndex(entity, 6, 1.3);
+			}
+			else
+			{
+				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 1.3);
+			}
+		}
+#endif
 #if defined ZR
 		//SPEED COLA!
 		if(i_CurrentEquippedPerk[client] == 4)

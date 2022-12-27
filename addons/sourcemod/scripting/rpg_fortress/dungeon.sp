@@ -957,6 +957,7 @@ void Dungeon_ClientDisconnect(int client, bool alive = false)
 			mp_disable_respawn_times.ReplicateToClient(client, "0");
 
 		InDungeon[client][0] = 0;
+		ClearDungeonStats(client);
 		Dungeon_CheckAlivePlayers(client);
 	}
 }
@@ -1119,6 +1120,7 @@ static void CleanDungeon(const char[] name, bool victory)
 					if(dungeon.WaveList)
 					{
 						InDungeon[client][0] = 0;
+						ClearDungeonStats(client);
 						f3_SpawnPosition[client] = dungeon.RespawnPos;
 						CreateTimer(8.25, Dungeon_EndMusicTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 						CreateTimer(8.25, Dungeon_RespawnTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
@@ -1481,4 +1483,87 @@ public void Dungeon_Wave_CoreInfection1(ArrayList list)
 	wave.Health = 7500;
 	wave.Rarity = 1;
 	list.PushArray(wave);
+}
+
+public void Dungeon_40_Percent_More_Cooldown(ArrayList list)
+{
+	StringMapSnapshot snap = DungeonList.Snapshot();
+	int length = list.Length;
+	for(int i; i < length; i++)
+	{
+		int size = snap.KeyBufferSize(i) + 1;
+		char[] name = new char[size];
+		snap.GetKey(i, name, size);
+
+		static DungeonEnum dungeon;
+		if(DungeonList.GetArray(name, dungeon, sizeof(dungeon)))
+		{
+			for(int client = 1; client <= MaxClients; client++)
+			{	
+				if(StrEqual(InDungeon[client], name))
+				{
+					b_DungeonContracts_LongerCooldown[client] = true;
+				}
+			}
+		}
+	}
+}
+
+public void Dungeon_30_Percent_Slower_Attackspeed(ArrayList list)
+{
+	StringMapSnapshot snap = DungeonList.Snapshot();
+	int length = list.Length;
+	for(int i; i < length; i++)
+	{
+		int size = snap.KeyBufferSize(i) + 1;
+		char[] name = new char[size];
+		snap.GetKey(i, name, size);
+
+		static DungeonEnum dungeon;
+		if(DungeonList.GetArray(name, dungeon, sizeof(dungeon)))
+		{
+			for(int client = 1; client <= MaxClients; client++)
+			{	
+				if(StrEqual(InDungeon[client], name))
+				{
+					b_DungeonContracts_SlowerAttackspeed[client] = true;
+				}
+			}
+		}
+	}
+}
+public void Dungeon_30_Percent_Slower_MoveSpeed(ArrayList list)
+{
+	StringMapSnapshot snap = DungeonList.Snapshot();
+	int length = list.Length;
+	for(int i; i < length; i++)
+	{
+		int size = snap.KeyBufferSize(i) + 1;
+		char[] name = new char[size];
+		snap.GetKey(i, name, size);
+
+		static DungeonEnum dungeon;
+		if(DungeonList.GetArray(name, dungeon, sizeof(dungeon)))
+		{
+			for(int client = 1; client <= MaxClients; client++)
+			{	
+				if(StrEqual(InDungeon[client], name))
+				{
+					b_DungeonContracts_SlowerMovespeed[client] = true;
+				}
+			}
+		}
+	}
+}
+public void Dungeon_BleedOnHit(int entity)
+{
+	b_DungeonContracts_BleedOnHit[entity] = true;
+}
+
+public void ClearDungeonStats(int entity)
+{
+	b_DungeonContracts_LongerCooldown[entity] = false;
+	b_DungeonContracts_SlowerAttackspeed[entity] = false;
+	b_DungeonContracts_SlowerMovespeed[entity] = false;
+//	b_DungeonContracts_BleedOnHit[entity] = false;
 }
