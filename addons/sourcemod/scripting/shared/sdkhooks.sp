@@ -231,8 +231,6 @@ public void OnPostThink(int client)
 
 			IntToString(i_SvRollAngle[client], RollAngleValue, sizeof(RollAngleValue));
 
-		//	PrintToChatAll("%s",RollAngleValue);
-
 			CvarSvRollagle.ReplicateToClient(client, RollAngleValue); //set replicate back to normal.
 		}
 #endif	// ZR

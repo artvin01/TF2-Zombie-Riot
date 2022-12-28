@@ -559,7 +559,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 		if(b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1])
 		{
-		//	PrintToChatAll("ingore");
 			return false;
 		}
 #if defined ZR
