@@ -38,20 +38,20 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 	}
 	else
 	{
-		float value = Attributes_FindOnWeapon(client, weapon, 16) +
-			Attributes_FindOnWeapon(client, weapon, 98) +
-			Attributes_FindOnWeapon(client, weapon, 110) +
-			Attributes_FindOnWeapon(client, weapon, 111);	// add_onhit_addhealth
-			
-		if(value)
-			StartHealingTimer(client, 0.1, value > 0 ? 1 : -1, value > 0 ? RoundFloat(value) : RoundFloat(-value));
-		
-		value = Attributes_FindOnWeapon(client, weapon, 19);	//  tmp dmgbuff on hit
-		if(value)
-			TF2_AddCondition(client, TFCond_TmpDamageBonus, 0.2);	// TODO: Set this to 1.0 and remove on miss
-		
 		if(!(damagetype & DMG_SLASH)) //Exclude itself so it doesnt do inf repeats! no weapon uses slash so we will use slash for any debuffs onto zombies that stacks
 		{
+			float value = Attributes_FindOnWeapon(client, weapon, 16) +
+				Attributes_FindOnWeapon(client, weapon, 98) +
+				Attributes_FindOnWeapon(client, weapon, 110) +
+				Attributes_FindOnWeapon(client, weapon, 111);	// add_onhit_addhealth
+				
+			if(value)
+				StartHealingTimer(client, 0.1, value > 0 ? 1 : -1, value > 0 ? RoundFloat(value) : RoundFloat(-value));
+			
+			value = Attributes_FindOnWeapon(client, weapon, 19);	//  tmp dmgbuff on hit
+			if(value)
+				TF2_AddCondition(client, TFCond_TmpDamageBonus, 0.2);	// TODO: Set this to 1.0 and remove on miss
+			
 			value = Attributes_FindOnWeapon(client, weapon, 149);	// bleeding duration
 			if(value)
 				StartBleedingTimer(victim, client, Attributes_FindOnWeapon(client, weapon, 2, true, 1.0)*4.0, RoundFloat(value*2.0), weapon);
