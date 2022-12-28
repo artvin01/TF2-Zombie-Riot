@@ -300,6 +300,7 @@ void Tinker_ConfigSetup(KeyValues map)
 	{
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "tinker");
 		kv = new KeyValues("Tinker");
+		kv.SetEscapeSequences(true);
 		kv.ImportFromFile(buffer);
 	}
 
@@ -1084,6 +1085,8 @@ static void ShowMenu(int client, int page)
 							break;
 						}
 					}
+					
+					menu.ExitBackButton = true;
 				}
 			}
 		}
