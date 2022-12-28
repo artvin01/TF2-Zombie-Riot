@@ -692,6 +692,7 @@ void TextStore_ZoneAllLeave(const char[] name)
 
 public Action TextStore_OnSellItem(int client, int item, int cash, int &count, int &sell)
 {
+	PrintToChatAll("textstore.sp - '%s'", InStore[client]);
 	if(InStore[client][0])
 	{
 		if(sell > 0)

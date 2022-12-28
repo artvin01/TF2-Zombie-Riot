@@ -348,15 +348,15 @@ static int GetScaledRate(const int rates[2], int power, int maxpower)
 void Spawns_NPCDeath(int entity, int client, int weapon)
 {
 	int xp = XP[entity];
-	if(xp < 0)
-		xp = Level[entity];
-	
-	for(int target = 1; target <= MaxClients; target++)
+	if(xp > 0)
 	{
-		if(client == target || Party_IsClientMember(client, target))
+		for(int target = 1; target <= MaxClients; target++)
 		{
-			if((Level[client] - 5) < Level[entity] && (Level[client] + 5) > Level[entity] && GetLevelCap(Tier[client]) != Level[client])
-				GiveXP(client, xp);
+			if(client == target || Party_IsClientMember(client, target))
+			{
+				if((Level[client] - 5) < Level[entity] && (Level[client] + 5) > Level[entity] && GetLevelCap(Tier[client]) != Level[client])
+					GiveXP(client, xp);
+			}
 		}
 	}
 

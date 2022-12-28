@@ -22,6 +22,7 @@ static const char RoundRetryLoss[][] =
 
 enum struct ModEnum
 {
+	char Name[32];
 	char Desc[168];
 	int Tier;
 	int Unlock;
@@ -34,6 +35,8 @@ enum struct ModEnum
 
 	void SetupEnum(KeyValues kv)
 	{
+		kv.GetSectionName(this.Name, 64);
+
 		kv.GetString("func_onplayer", this.Desc, 168);
 		this.OnPlayer = GetFunctionByName(null, this.Desc);
 
@@ -118,6 +121,7 @@ enum struct StageEnum
 	int XP;
 	int Cash;
 	int Level;
+	int MaxLevel;
 
 	char DropName1[48];
 	float DropChance1;
@@ -164,7 +168,7 @@ enum struct StageEnum
 	int MusicHardTime;
 	float MusicHardVolume;
 
-	StringMap ModList;
+	ArrayList ModList;
 	ArrayList WaveList;
 
 	void Delete()
@@ -179,6 +183,7 @@ enum struct StageEnum
 		this.XP = kv.GetNum("xp");
 		this.Cash = kv.GetNum("cash");
 		this.Level = kv.GetNum("level");
+		this.MaxLevel = kv.GetNum("maxlevel", this.Level + 4);
 
 		kv.GetString("drop_name_1", this.DropName1, 48);
 		this.DropChance1 = kv.GetFloat("drop_chance_1", 1.0);
@@ -264,13 +269,12 @@ enum struct StageEnum
 			if(kv.GotoFirstSubKey())
 			{
 				ModEnum mod;
-				this.ModList = new StringMap();
+				this.ModList = new ArrayList(sizeof(ModEnum));
 
 				do
 				{
-					kv.GetSectionName(buffer, length);
 					mod.SetupEnum(kv);
-					this.ModList.SetArray(buffer, mod, sizeof(mod));
+					this.ModList.PushArray(mod);
 				}
 				while(kv.GotoNextKey());
 
@@ -305,23 +309,35 @@ enum struct StageEnum
 		}
 	}
 
+	int FindModByName(const char[] name, ModEnum mod)
+	{
+		int length = this.ModList.Length;
+		for(int i; i < length; i++)
+		{
+			this.ModList.GetArray(i, mod);
+			if(StrEqual(name, mod.Name, false))
+				return i;
+		}
+		return -1;
+	}
+
 	float GetDropChance(int level, int luck, int tier, char name[48], float chance = 1.0, int required = 0)
 	{
-		if(required > tier)
+		if(!name[0] || required > tier)
 			return 0.0;
 		
 		if(StrEqual(name, "XP"))
 		{
-			if(level > this.Level || !this.XP)
+			if(level > this.MaxLevel || !this.XP)
 				return 0.0;
 			
-			Format(name, sizeof(name), "%d XP", this.XP + tier * 100);
+			Format(name, sizeof(name), "%d XP", this.XP * (10 + tier) / 10);
 			return 1.0;
 		}
 		
 		if(StrEqual(name, "Credits"))
 		{
-			Format(name, sizeof(name), "%d Credits", this.Cash + tier * 10);
+			Format(name, sizeof(name), "%d Credits", this.Cash * (10 + tier) / 10);
 			return 1.0;
 		}
 		
@@ -332,26 +348,42 @@ enum struct StageEnum
 		return multi;
 	}
 
-	void DoAllDrops(int[] clients int amount, , int tier)
+	void RollItemDrop(int[] clients, int amount, int luck, int tier, char name[48], float chance, int droptier)
 	{
-		TextStore_AddItemCount(client, "Credits", this.Cash + tier);
-		TextStore_AddItemCount(client, "XP", this.XP + tier);
+		if(name[0] && this.GetDropChance(0, luck, tier, name, chance, droptier) > GetURandomFloat())
+		{
+			for(int i; i < amount; i++)
+			{
+				TextStore_AddItemCount(clients[i], name, 1);
+			}
+		}
+	}
 
-		float multi = 1.0 + float(tier) * 0.1;
-		float luck = 1.0 + (float(Stats_Luck(client)) / 300.0);
-		
-		if(this.DropName1[0])
-			RollItemDrop(client, this.DropName1, this.DropChance1 * multi * luck);
-		
-		if(this.DropName2[0])
-			RollItemDrop(client, this.DropName2, this.DropChance2 * multi * luck);
-		
-		if(this.DropName3[0])
-			RollItemDrop(client, this.DropName3, this.DropChance3 * multi * luck);
-		
-		if(this.DropName4[0])
-			RollItemDrop(client, this.DropName4, this.DropChance4 * multi * luck);
+	void DoAllDrops(int[] clients, int amount, int tier)
+	{
+		int luck;
 
+		for(int i; i < amount; i++)
+		{
+			luck += Stats_Luck(clients[i]);
+
+			TextStore_AddItemCount(clients[i], "Credits", this.Cash * (10 + tier) / 10);
+
+			if(Level[clients[i]] <= this.MaxLevel && GetLevelCap(Tier[clients[i]]) != Level[clients[i]])
+				TextStore_AddItemCount(clients[i], "XP", this.XP * (10 + tier) / 10);
+		}
+
+		luck = (luck * 2) / amount;
+
+		this.RollItemDrop(clients, amount, luck, tier, this.DropName1, this.DropChance1, this.DropTier1);
+		this.RollItemDrop(clients, amount, luck, tier, this.DropName2, this.DropChance2, this.DropTier2);
+		this.RollItemDrop(clients, amount, luck, tier, this.DropName3, this.DropChance3, this.DropTier3);
+		this.RollItemDrop(clients, amount, luck, tier, this.DropName4, this.DropChance4, this.DropTier4);
+		this.RollItemDrop(clients, amount, luck, tier, this.DropName5, this.DropChance5, this.DropTier5);
+		this.RollItemDrop(clients, amount, luck, tier, this.DropName6, this.DropChance6, this.DropTier6);
+		this.RollItemDrop(clients, amount, luck, tier, this.DropName7, this.DropChance7, this.DropTier7);
+		this.RollItemDrop(clients, amount, luck, tier, this.DropName8, this.DropChance8, this.DropTier8);
+		this.RollItemDrop(clients, amount, luck, tier, this.DropName9, this.DropChance9, this.DropTier9);
 	}
 }
 
@@ -393,8 +425,7 @@ enum struct DungeonEnum
 				for(int i; i < length; i++)
 				{
 					static ModEnum mod;
-					this.ModList.GetString(i, mod.Desc, sizeof(mod.Desc));
-					if(stage.ModList.GetArray(mod.Desc, mod, sizeof(mod)))
+					if(stage.ModList.GetArray(this.ModList.Get(i), mod))
 					{
 						tier += mod.Tier;
 
@@ -735,13 +766,55 @@ static void ShowMenu(int client, int page)
 				time = -time;
 
 				ArrayList slots = new ArrayList ();
-				menu.SetTitle("RPG Fortress\n \nContingency Contract:\n%s △%d\nStarts In: %d:%02d\n ", dungeon.CurrentStage, dungeon.TierLevel(slots), time / 60, time % 60);
+				int tier = dungeon.TierLevel(slots);
+				menu.SetTitle("RPG Fortress\n \nContingency Contract:\n%s △%d\nStarts In: %d:%02d\n ", dungeon.CurrentStage, tier, time / 60, time % 60);
 
 				dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage));
 
 				if(AltMenu[client] ==  2)
 				{
-
+					int luck;
+					for(int target = 1; target <= MaxClients; target++)
+					{
+						luck += Stats_Luck(target);
+					}
+					
+					stage.DropChance1 = stage.GetDropChance(Level[client], luck, tier, stage.DropName1, stage.DropChance1, stage.DropTier1);
+					if(stage.DropChance1)
+						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName1, RoundToFloor(stage.DropChance1 * 100.0));
+					
+					stage.DropChance2 = stage.GetDropChance(Level[client], luck, tier, stage.DropName2, stage.DropChance2, stage.DropTier2);
+					if(stage.DropChance2)
+						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName2, RoundToFloor(stage.DropChance2 * 100.0));
+					
+					stage.DropChance3 = stage.GetDropChance(Level[client], luck, tier, stage.DropName3, stage.DropChance3, stage.DropTier3);
+					if(stage.DropChance3)
+						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName3, RoundToFloor(stage.DropChance3 * 100.0));
+					
+					stage.DropChance4 = stage.GetDropChance(Level[client], luck, tier, stage.DropName4, stage.DropChance4, stage.DropTier4);
+					if(stage.DropChance4)
+						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName4, RoundToFloor(stage.DropChance4 * 100.0));
+					
+					stage.DropChance5 = stage.GetDropChance(Level[client], luck, tier, stage.DropName5, stage.DropChance5, stage.DropTier5);
+					if(stage.DropChance5)
+						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName5, RoundToFloor(stage.DropChance5 * 100.0));
+					
+					stage.DropChance6 = stage.GetDropChance(Level[client], luck, tier, stage.DropName6, stage.DropChance6, stage.DropTier6);
+					if(stage.DropChance6)
+						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName6, RoundToFloor(stage.DropChance6 * 100.0));
+					
+					stage.DropChance7 = stage.GetDropChance(Level[client], luck, tier, stage.DropName7, stage.DropChance7, stage.DropTier7);
+					if(stage.DropChance7)
+						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName7, RoundToFloor(stage.DropChance7 * 100.0));
+					
+					stage.DropChance8 = stage.GetDropChance(Level[client], luck, tier, stage.DropName8, stage.DropChance8, stage.DropTier8);
+					if(stage.DropChance8)
+						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName8, RoundToFloor(stage.DropChance8 * 100.0));
+					
+					stage.DropChance9 = stage.GetDropChance(Level[client], luck, tier, stage.DropName9, stage.DropChance9, stage.DropTier9);
+					if(stage.DropChance9)
+						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName9, RoundToFloor(stage.DropChance9 * 100.0));
+					
 				}
 				else if(AltMenu[client] == 1 || !stage.ModList)
 				{
@@ -798,42 +871,34 @@ static void ShowMenu(int client, int page)
 				}
 				else
 				{
-					StringMapSnapshot snap = stage.ModList.Snapshot();
-
-					int length = snap.Length;
+					int length = stage.ModList.Length;
 					for(int i; i < length; i++)
 					{
-						int size = snap.KeyBufferSize(i) + 1;
-						char[] name = new char[size];
-						snap.GetKey(i, name, size);
-
 						static ModEnum mod;
-						stage.ModList.GetArray(name, mod, sizeof(mod));
-						if(dungeon.ModList.FindString(name) != -1)
+						stage.ModList.GetArray(i, mod);
+						if(dungeon.ModList.FindValue(i) != -1)
 						{
-							Format(mod.Desc, sizeof(mod.Desc), "[X] %s △%d\n%s\n ", name, mod.Tier, mod.Desc);
+							Format(mod.Desc, sizeof(mod.Desc), "[X] %s △%d\n%s\n ", mod.Name, mod.Tier, mod.Desc);
 						}
 						else if(Dungeon_GetClientRank(client, DungeonMenu[client], dungeon.CurrentStage) < mod.Unlock)
 						{
-							Format(mod.Desc, sizeof(mod.Desc), "[!] %s △%d\nComplete with atleast △%d to unlock\n ", name, mod.Tier, mod.Unlock);
+							Format(mod.Desc, sizeof(mod.Desc), "[!] %s △%d\nComplete with atleast △%d to unlock\n ", mod.Name, mod.Tier, mod.Unlock);
 							menu.AddItem(NULL_STRING, mod.Desc, ITEMDRAW_DISABLED);
 							continue;
 						}
 						else if(mod.Slot && slots.FindValue(mod.Slot) != -1)
 						{
-							Format(mod.Desc, sizeof(mod.Desc), "[!] %s △%d\nConflicts with other modifiers\n ", name, mod.Tier);
+							Format(mod.Desc, sizeof(mod.Desc), "[!] %s △%d\nConflicts with other modifiers\n ", mod.Name, mod.Tier);
 							menu.AddItem(NULL_STRING, mod.Desc, ITEMDRAW_DISABLED);
 							continue;
 						}
 						else
 						{
-							Format(mod.Desc, sizeof(mod.Desc), "[ ] %s △%d\n%s\n ", name, mod.Tier, mod.Desc);
+							Format(mod.Desc, sizeof(mod.Desc), "[ ] %s △%d\n%s\n ", mod.Name, mod.Tier, mod.Desc);
 						}
 
-						menu.AddItem(name, mod.Desc, client == dungeon.CurrentHost ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+						menu.AddItem(mod.Name, mod.Desc, client == dungeon.CurrentHost ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 					}
-
-					delete snap;
 
 					menu.Pagination = 3;
 				}
@@ -918,14 +983,19 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 							}
 							else
 							{
-								int pos = dungeon.ModList.FindString(dungeon.CurrentStage);
-								if(pos != -1)
+								static ModEnum mod;
+								int modPos = stage.FindModByName(dungeon.CurrentStage, mod);
+								if(modPos != -1)
 								{
-									dungeon.ModList.Erase(pos);
-								}
-								else if(stage.ModList.ContainsKey(dungeon.CurrentStage))
-								{
-									dungeon.ModList.PushString(dungeon.CurrentStage);
+									int pos = dungeon.ModList.FindValue(modPos);
+									if(pos != -1)
+									{
+										dungeon.ModList.Erase(pos);
+									}
+									else
+									{
+										dungeon.ModList.Push(modPos);
+									}
 								}
 
 								ShowMenu(client, choice);
@@ -974,7 +1044,7 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 					{
 						delete dungeon.ModList;
 						if(stage.ModList)
-							dungeon.ModList = new ArrayList(ByteCountToCells(64));
+							dungeon.ModList = new ArrayList();
 						
 						dungeon.CurrentHost = client;
 						dungeon.StartTime = GetGameTime() + (b_IsAloneOnServer ? 30.0 : QUEUE_TIME);
@@ -1130,11 +1200,8 @@ static void StartDungeon(const char[] name)
 				for(int i; i < length; i++)
 				{
 					static ModEnum mod;
-					dungeon.ModList.GetString(i, mod.Desc, sizeof(mod.Desc));
-
-					if(stage.ModList.GetArray(mod.Desc, mod, sizeof(mod)))
+					if(stage.ModList.GetArray(dungeon.ModList.Get(i), mod))
 					{
-
 						tier += mod.Tier;
 
 						for(int c; c < dungeon.PlayerCount; c++)
@@ -1190,8 +1257,7 @@ static void CleanDungeon(const char[] name, bool victory)
 				int length = dungeon.ModList.Length;
 				for(int i; i < length; i++)
 				{
-					dungeon.ModList.GetString(i, mod.Desc, sizeof(mod.Desc));
-					if(stage.ModList.GetArray(mod.Desc, mod, sizeof(mod)))
+					if(stage.ModList.GetArray(dungeon.ModList.Get(i), mod))
 						tier += mod.Tier;
 				}
 			}
@@ -1201,11 +1267,12 @@ static void CleanDungeon(const char[] name, bool victory)
 			SaveKv.JumpToKey(dungeon.CurrentStage, true);
 
 			bool clear = (victory || !dungeon.WaveList);
+			int amount;
+			int[] clients = new int[MaxClients];
 			for(int client = 1; client <= MaxClients; client++)
 			{
 				if(StrEqual(InDungeon[client], name))
 				{
-
 					clear = true;
 					if(dungeon.WaveList)
 					{
@@ -1223,7 +1290,6 @@ static void CleanDungeon(const char[] name, bool victory)
 							if(IsPlayerAlive(client))
 								TF2_AddCondition(client, TFCond_HalloweenCritCandy, 8.1);
 
-							stage.DoAllDrops(client, tier);
 							if(GetClientAuthId(client, AuthId_Steam3, mod.Desc, sizeof(mod.Desc)))
 								SaveKv.SetNum(mod.Desc, tier);
 						}
@@ -1238,6 +1304,8 @@ static void CleanDungeon(const char[] name, bool victory)
 
 			if(victory)
 			{
+				stage.DoAllDrops(clients, amount, tier);
+				
 				BuildPath(Path_SM, mod.Desc, sizeof(mod.Desc), CONFIG_CFG, "dungeon_savedata");
 
 				SaveKv.Rewind();
@@ -1381,7 +1449,7 @@ public Action Dungeon_Timer(Handle timer)
 								if(wave.Health)
 								{
 									// +20% each player
-									wave.Health = wave.Health * (4 + dungeon.PlayerCount) / 5;
+									wave.Health = wave.Health * (dungeon.PlayerCount);
 									SetEntProp(entity, Prop_Data, "m_iMaxHealth", wave.Health);
 									SetEntProp(entity, Prop_Data, "m_iHealth", wave.Health);
 								}
@@ -1392,8 +1460,7 @@ public Action Dungeon_Timer(Handle timer)
 									size = dungeon.ModList.Length;
 									for(int b; b < size; b++)
 									{
-										dungeon.ModList.GetString(b, mod.Desc, sizeof(mod.Desc));
-										if(stage.ModList.GetArray(mod.Desc, mod, sizeof(mod)))
+										if(stage.ModList.GetArray(dungeon.ModList.Get(b), mod))
 										{
 											Level[entity] += mod.Level;
 											mod.CallOnSpawn(entity);
@@ -1460,12 +1527,6 @@ public Action Dungeon_Timer(Handle timer)
 	
 	DungeonTimer = null;
 	return Plugin_Stop;
-}
-
-static void RollItemDrop(int client, const char[] name, float chance)
-{
-	if(chance > GetURandomFloat())
-		TextStore_AddItemCount(client, name, 1);
 }
 
 static int RandomStaticSeed(int seed, int rand)
