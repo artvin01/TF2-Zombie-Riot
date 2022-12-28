@@ -880,7 +880,7 @@ public int TextStore_SellMenuHandle(Menu menu, MenuAction action, int client, in
 									kv.GetSectionName(buffer, sizeof(buffer));
 									MarketKv.JumpToKey(buffer, true);
 
-									if(GetClientAuthId(client, AuthId_Steam3, buffer, sizeof(buffer)) && MarketKv.JumpToKey(buffer))
+									if(GetClientAuthId(client, AuthId_Steam3, buffer, sizeof(buffer)) && MarketKv.JumpToKey(buffer, true))
 									{
 										if(MarketKv.GetNum("price") == MarketSell[client])
 										{
@@ -1273,7 +1273,7 @@ public int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 									kv.GetSectionName(buffer, sizeof(buffer));
 									MarketKv.JumpToKey(buffer, true);
 									
-									if(GetClientAuthId(client, AuthId_Steam3, buffer, sizeof(buffer)) && MarketKv.JumpToKey(buffer))
+									if(GetClientAuthId(client, AuthId_Steam3, buffer, sizeof(buffer)) && MarketKv.JumpToKey(buffer, true))
 									{
 										int amount = MarketKv.GetNum("amount");
 										if(MarketCount[client] > amount)
