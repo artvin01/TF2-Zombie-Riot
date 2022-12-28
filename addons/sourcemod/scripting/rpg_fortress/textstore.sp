@@ -700,6 +700,9 @@ public Action TextStore_OnSellItem(int client, int item, int cash, int &count, i
 {
 	if(InStore[client][0])
 	{
+		if(item < 0)
+			return Plugin_Continue;
+		
 		if(sell > 0)
 		{
 			MarketItem[client] = item;
@@ -1278,7 +1281,7 @@ public int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 
 									kv.GetSectionName(buffer, sizeof(buffer));
 									MarketKv.JumpToKey(buffer, true);
-									
+
 									if(GetClientAuthId(client, AuthId_Steam3, buffer, sizeof(buffer)) && MarketKv.JumpToKey(buffer))
 									{
 										int amount = MarketKv.GetNum("amount");
