@@ -234,7 +234,7 @@ static KeyValues MarketKv;
 static ArrayList Backpack;
 static ArrayList SpellList;
 static StringMap StoreList;
-static char InStore[MAXTF2PLAYERS][16];
+static char InStore[MAXTF2PLAYERS][32];
 static char InStoreTag[MAXTF2PLAYERS][16];
 static int ItemIndex[MAXENTITIES];
 static int ItemCount[MAXENTITIES];
