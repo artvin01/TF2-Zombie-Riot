@@ -776,7 +776,8 @@ static void ShowMenu(int client, int page)
 					int luck;
 					for(int target = 1; target <= MaxClients; target++)
 					{
-						luck += Stats_Luck(target);
+						if(StrEqual(InDungeon[target], DungeonMenu[client]))
+							luck += Stats_Luck(target);
 					}
 					
 					stage.DropChance1 = stage.GetDropChance(Level[client], luck, tier, stage.DropName1, stage.DropChance1, stage.DropTier1);
