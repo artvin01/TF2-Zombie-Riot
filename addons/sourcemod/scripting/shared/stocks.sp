@@ -113,7 +113,14 @@ stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iPar
 		SetParent(iParent, particle, szAttachment, vOffsets);
 
 		ActivateEntity(particle);
-		SetEdictFlags(particle, (GetEdictFlags(particle) & ~FL_EDICT_ALWAYS));	
+		if(iParent < MAXTF2PLAYERS) //Exclude base_bosses from this, or any entity, then it has to always be rendered.
+		{
+			SetEdictFlags(particle, (GetEdictFlags(particle) & ~FL_EDICT_ALWAYS));	
+		}
+		else
+		{
+			SetEdictFlags(particle, (GetEdictFlags(particle) | FL_EDICT_ALWAYS));	
+		}
 
 		AcceptEntityInput(particle, "start");
 		//CreateTimer(0.1, Activate_particle_late, particle, TIMER_FLAG_NO_MAPCHANGE);
@@ -919,7 +926,7 @@ public Action Timer_RemoveEntity(Handle timer, any entid)
 		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
 		RemoveEntity(entity);
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 public Action Timer_RemoveEntity_CustomProjectile(Handle timer, DataPack pack)
@@ -940,7 +947,7 @@ public Action Timer_RemoveEntity_CustomProjectile(Handle timer, DataPack pack)
 	{
 		RemoveEntity(iRot);
 	}
-	return Plugin_Handled; 
+	return Plugin_Stop; 
 }
 
 public Action Timer_DisableMotion(Handle timer, any entid)
@@ -948,8 +955,57 @@ public Action Timer_DisableMotion(Handle timer, any entid)
 	int entity = EntRefToEntIndex(entid);
 	if(IsValidEntity(entity) && entity>MaxClients)
 		AcceptEntityInput(entity, "DisableMotion");
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
+void StartBleedingTimer_Against_Client(int entity, int client, float damage, int amount)
+{
+	BleedAmountCountStack[entity] += 1;
+	DataPack pack;
+	CreateDataTimer(0.5, Timer_Bleeding_Against_Client, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(client));
+	pack.WriteCell(client);
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteFloat(damage);
+	pack.WriteCell(amount);
+}
+
+public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	int OriginalIndex = pack.ReadCell();
+	if(!IsValidClient(client))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		return Plugin_Stop;
+	}
+		
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(entity<=MaxClients || !IsValidEntity(entity))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		return Plugin_Stop;
+	}
+
+	float pos[3], ang[3];
+	
+	pos = WorldSpaceCenter(entity);
+	
+	GetClientEyeAngles(client, ang);
+	SDKHooks_TakeDamage(entity, client, client, pack.ReadFloat(), DMG_SLASH, _, _, pos, false);
+
+	entity = pack.ReadCell();
+	if(entity < 1)
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		return Plugin_Stop;
+	}
+
+	pack.Position--;
+	pack.WriteCell(entity-1, false);
+	return Plugin_Continue;
+}
+
 
 void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon)
 {
@@ -1215,10 +1271,6 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 #if defined RPG
 	else if(entity > MaxClients && entity < MAXENTITIES)
 	{
-		if(CanSeeItem(entity, data))
-		{
-			return entity!=data;
-		}
 		if(b_is_a_brush[entity])//THIS is for brushes that act as collision boxes for NPCS inside quests.sp
 		{
 			int entityfrombrush = BrushToEntity(entity);
@@ -1226,6 +1278,18 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 			{
 				return entityfrombrush!=data;
 			}
+		}
+		if(Textstore_CanSeeItem(entity, data))
+		{
+			return entity!=data;
+		}
+		else if(b_IsAlliedNpc[entity])
+		{
+			return entity!=data;
+		}
+		else
+		{
+			return false;
 		}
 	}
 #endif	
@@ -2243,7 +2307,7 @@ stock int TracePlayerHulls(const float pos[3], const float mins[3], const float 
 	return bHit;
 }
 
-void TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, int color[4])
+void TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, const int color[4])
 {
 	//Trace top down
 	/*
@@ -2315,7 +2379,7 @@ void TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_ve
 //	return true;
 }
 
-void TE_SendBeam(int client, float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, int color[4])
+void TE_SendBeam(int client, float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, const int color[4])
 {
 	TE_SetupBeamPoints(m_vecMins, m_vecMaxs, g_iLaserMaterial_Trace, g_iHaloMaterial_Trace, 0, 0, flDur, 1.0, 1.0, 1, 0.0, color, 0);
 	TE_SendToClient(client);
@@ -2895,7 +2959,8 @@ public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 	{
 		SDKHooks_TakeDamage(Victim, client, inflictor, damage, damage_type, weapon, damage_force, playerPos);
 	}
-	
+
+//	pack.delete;
 	delete pack;
 }
 
@@ -3245,6 +3310,7 @@ stock int SpawnSeperateCollisionBox(int entity, float Mins[3] = {-24.0,-24.0,0.0
 	{
 		DispatchKeyValueVector(brush, "origin", vector);
 		DispatchKeyValue(brush, "spawnflags", "64");
+		DispatchKeyValue(brush, "targetname", "rpg_fortress");
 
 		DispatchSpawn(brush);
 		ActivateEntity(brush);    
@@ -3277,6 +3343,17 @@ stock int SpawnSeperateCollisionBox(int entity, float Mins[3] = {-24.0,-24.0,0.0
 
 //static int b_TextEntityToOwner[MAXPLAYERS];
 #if defined RPG
+
+int BrushToEntity(int brush)
+{
+	int entity = EntRefToEntIndex(b_BrushToOwner[brush]);
+	if(IsValidEntity(entity))
+	{
+		return entity;
+	}
+	return -1;
+}
+
 stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 {
 	int textentity = EntRefToEntIndex(i_TextEntity[client][0]);
@@ -3380,7 +3457,7 @@ public Action SDKHook_Settransmit_TextParentedToPlayer(int entity, int client)
 #endif
 
 
-void spawnRing_Vectors(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
+stock void spawnRing_Vectors(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
 {
 	center[0] += modif_X;
 	center[1] += modif_Y;
@@ -3402,3 +3479,33 @@ void spawnRing_Vectors(float center[3], float range, float modif_X, float modif_
 	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
 	TE_SendToAll();
 }
+
+stock char[] CharInt(int value)
+{
+	static char buffer[16];
+	IntToString(value, buffer, sizeof(buffer));
+	if(value > 0)
+	{
+		for(int i = sizeof(buffer) - 1; i > 0; i--)
+		{
+			buffer[i] = buffer[i-1];
+		}
+
+		buffer[0] = '+';
+	}
+	return buffer;
+}
+
+stock char[] CharPercent(float value)
+{
+	static char buffer[16];
+	if(value < 1.0)
+	{
+		Format(buffer, sizeof(buffer), "%d%%", 100 - RoundFloat((1.0 / value) * 100.0));
+	}
+	else
+	{
+		Format(buffer, sizeof(buffer), "+%d%%", RoundFloat((value - 1.0) * 100.0));
+	}
+	return buffer;
+} 

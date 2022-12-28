@@ -78,21 +78,21 @@ public Action Timer_EnableFp(Handle timer, any userid)
 		AcceptEntityInput(client, "SetForcedTauntCam");
 		CreateTimer(0.2, Timer_EnableTp, userid);								// Because sometimes, delay
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 public Action Timer_EnableFp_Force(Handle timer, int client)
 {
 	SetVariantInt(0);					
 	AcceptEntityInput(client, "SetForcedTauntCam");
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 public Action Timer_EnableTp_Force(Handle timer, int client)
 {
 	SetVariantInt(1);					
 	AcceptEntityInput(client, "SetForcedTauntCam");
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 public Action Timer_EnableTp(Handle timer, any userid)
@@ -103,7 +103,7 @@ public Action Timer_EnableTp(Handle timer, any userid)
 		SetVariantInt(1);													// Enable TP camera
 		AcceptEntityInput(client, "SetForcedTauntCam");
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 public Action Command_TpOn(int client, int args)

@@ -239,7 +239,7 @@ static void TBB_Tick(int client)
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-		CloseHandle(trace);
+		delete trace;
 		FinishLagCompensation_Base_boss();
 		
 		float vecForward[3];
@@ -302,6 +302,6 @@ static void TBB_Tick(int client)
 	}
 	else
 	{
-		PrintToConsoleAll("Error with dot_beam, could not determine end point for beam.");
+		delete trace;
 	}
 }

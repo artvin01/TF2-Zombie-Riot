@@ -84,9 +84,9 @@ void DHook_Setup()
 #if defined ZR
 	DHook_CreateDetour(gamedata, "CBaseObject::FinishedBuilding", Dhook_FinishedBuilding_Pre, Dhook_FinishedBuilding_Post);
 	DHook_CreateDetour(gamedata, "CBaseObject::FirstSpawn", Dhook_FirstSpawn_Pre, Dhook_FirstSpawn_Post);
-	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
 #endif
 
+	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
 	DHook_CreateDetour(gamedata, "FX_FireBullets()", FX_FireBullets_Pre, FX_FireBullets_Post);
 
 	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
@@ -1121,6 +1121,12 @@ public MRESReturn DHook_ForceRespawn(int client)
 		ChangeClientTeam(client, 2);
 		return MRES_Supercede;
 	}
+
+#if defined RPG
+	if(!Dungeon_CanClientRespawn(client))
+		return MRES_Supercede;
+#endif
+
 #if defined ZR
 	DoTutorialStep(client, false);
 	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
@@ -1292,11 +1298,35 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 		}
 		else
 		{
-			TeleportEntity(client, view_as<float>({119.946655, 137.253311, 247.851776}), view_as<float>({ 9.774813, -125.745986, 0.0}), NULL_VECTOR);
+			int foundEnt = -1;
+			int foundLv = -1;
+			int entity = -1;
+			while((entity=FindEntityByClassname(entity, "info_player_teamspawn")) != -1)
+			{
+				static char buffer[32];
+				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+				if(!StrContains(buffer, "rpg_spawn_", false))
+				{
+					int lv = StringToInt(buffer[10]);
+					if(lv > foundLv && Tier[client] >= lv)
+					{
+						foundEnt = entity;
+						foundLv = lv;
+					}
+				}
+			}
+
+			if(foundEnt != -1)
+			{
+				float pos[3], ang[3];
+				GetEntPropVector(foundEnt, Prop_Data, "m_vecOrigin", pos);
+				GetEntPropVector(foundEnt, Prop_Data, "m_angRotation", ang);
+				TeleportEntity(client, pos, ang, NULL_VECTOR);
+			}
 		}
 #endif
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 public MRESReturn DHook_GetChargeEffectBeingProvidedPre(int client, DHookReturn ret)

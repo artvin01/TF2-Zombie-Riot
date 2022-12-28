@@ -8,6 +8,9 @@ Compile zombie_riot.sp for this.
 Still currently in development. Not recommended to use.
 Compile rpg_fortress.sp for this.
 
+We will also not support anyone using RPG fortress, or help with debugging.
+Feel free to use this, but know what youre doing.
+
 DO NOT HAVE BOTH ON THE SERVER.
 
 ## Information
@@ -53,6 +56,12 @@ Sub Servers that also host the gamemode:
  
 "zr_maxbotsforkillfeed" = "6" ( def. "6" )
  - The maximum amount of blue bots allowed for the killfeed
+ 
+"zr_viewshakeonlowhealth" = "1" ( def. "1" )
+ - Should the view shake when low on health?
+ 
+ 
+ 
  
 ## Commands
 

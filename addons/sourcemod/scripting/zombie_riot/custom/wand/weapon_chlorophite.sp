@@ -114,7 +114,7 @@ public Action Homing_Shots_Repeat_Timer_Chlorophite(Handle timer, int ref)
 					GetRayAngles(rocketOrigin, targetOrigin, tmpAngles);
 					Handle trace = TR_TraceRayFilterEx(rocketOrigin, tmpAngles, (CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_GRATE), RayType_Infinite, TraceWallsOnly);
 					TR_GetEndPosition(tmpOrigin, trace);
-					CloseHandle(trace);
+					delete trace;
 					if (GetVectorDistance(rocketOrigin, targetOrigin, true) > GetVectorDistance(rocketOrigin, tmpOrigin, true))
 					{
 						RMR_CurrentHomingTarget[entity] = -1;
@@ -156,7 +156,7 @@ public Action Homing_Shots_Repeat_Timer_Chlorophite(Handle timer, int ref)
 						GetRayAngles(rocketOrigin, targetOrigin, tmpAngles);
 						Handle trace = TR_TraceRayFilterEx(rocketOrigin, tmpAngles, (CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_GRATE), RayType_Infinite, TraceWallsOnly);
 						TR_GetEndPosition(tmpOrigin, trace);
-						CloseHandle(trace);
+						delete trace;
 										
 						// wall test passed?
 						if (testDist < GetVectorDistance(rocketOrigin, tmpOrigin, true))

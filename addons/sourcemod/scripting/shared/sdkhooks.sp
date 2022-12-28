@@ -152,6 +152,12 @@ public void OnPreThinkPost(int client)
 		CvarSvRollagle.IntValue = i_SvRollAngle[client];
 	}
 #endif
+
+#if defined RPG
+	int maxhealth = SDKCall_GetMaxHealth(client);
+	if(GetClientHealth(client) > maxhealth)
+		SetEntityHealth(client, maxhealth);
+#endif
 }
 
 public void OnPostThink(int client)
@@ -192,11 +198,11 @@ public void OnPostThink(int client)
 
 			float PercentageHealth = float(flHealth) / float(flMaxHealth);
 
-			if(TeutonType[client] == TEUTON_NONE)
+			if(TeutonType[client] == TEUTON_NONE && zr_viewshakeonlowhealth.BoolValue) //If the cvar is off, then the viewshake will not happen.
 			{
 				if(PercentageHealth > 0.35)
 				{
-					i_SvRollAngle[client] = 1;
+					i_SvRollAngle[client] = 0;
 				}
 				else
 				{
@@ -210,15 +216,15 @@ public void OnPostThink(int client)
 
 					i_SvRollAngle[client] = RoundToCeil(PercentageHealth);
 
-					if(i_SvRollAngle[client] < 1)
+					if(i_SvRollAngle[client] < 0)
 					{
-						i_SvRollAngle[client] = 1;
+						i_SvRollAngle[client] = 0;
 					}
 				}
 			}
 			else
 			{
-				i_SvRollAngle[client] = 1;
+				i_SvRollAngle[client] = 0;
 			}
 
 			char RollAngleValue[4];
@@ -703,7 +709,7 @@ public void OnPostThink(int client)
 			KvSetNum(hKv,   "time",  10); // how long? 
 			//	CreateDialog(client, hKv, DialogType_Text); //Cool hud stuff!
 			CreateDialog(client, hKv, DialogType_Msg);
-			CloseHandle(hKv);
+			delete hKv;
 		}
 		else
 		{
@@ -1141,6 +1147,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 #endif
 #if defined RPG
+
+		if(Ability_Mudrock_Shield_OnTakeDamage(victim))
+		{
+			damage = 0.0;
+			return Plugin_Handled;
+		}
 		if(f_HealingPotionDuration[victim] > gameTime) //Client has a buff, but which one?
 		{
 			switch(f_HealingPotionEffect[victim])
@@ -1341,6 +1353,39 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #endif	// ZR
 			
 		}
+#if defined RPG
+
+		if(b_DungeonContracts_35PercentMoreDamage[attacker])
+		{
+			damage *= 1.35;
+		}
+		if(b_DungeonContracts_25PercentMoreDamage[attacker])
+		{
+			damage *= 1.25;
+		}
+
+
+		//Slash is reserved for any debuffs like this.
+		if(!(damagetype & (DMG_SLASH)))
+		{
+			if(b_DungeonContracts_BleedOnHit[attacker])
+			{
+				StartBleedingTimer_Against_Client(victim, attacker, damage * 0.05, 10); //10 bleeds for 5% of their damage, equalling to 50% extra damage taken over time.
+			}
+			//This happens after every calculation, it is like true damage but fancy.
+			if(b_DungeonContracts_FlatDamageIncreace5[victim])
+			{
+				damage += 5.0;
+			}
+		}
+		else
+		{
+			if(b_DungeonContracts_FlatDamageIncreace5[victim]) //If its a bleed, then we only add 1 more damage.
+			{
+				damage += 1.0;
+			}
+		}
+#endif
 	}
 	
 #if defined ZR
@@ -1561,12 +1606,25 @@ public void OnWeaponSwitchPost(int client, int weapon)
 	Store_WeaponSwitch(client, weapon);
 
 #if defined RPG
-	TextStore_WeaponSwitch(client, weapon);
-	Quests_WeaponSwitch(client, weapon);
+	RequestFrame(OnWeaponSwitchFrame, GetClientUserId(client));
 	//TF2Attrib_SetByDefIndex(client, 698, 1.0);
 	SetEntProp(client, Prop_Send, "m_bWearingSuit", false);
 #endif
+
 }
+
+#if defined RPG
+public void OnWeaponSwitchFrame(int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(client)
+	{
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		TextStore_WeaponSwitch(client, weapon);
+		Quests_WeaponSwitch(client, weapon);
+	}
+}
+#endif
 
 public void OnWeaponSwitchPre(int client, int weapon)
 {

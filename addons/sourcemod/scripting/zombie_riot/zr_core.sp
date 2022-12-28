@@ -72,6 +72,7 @@ enum
 //int Bob_To_Player[MAXENTITIES];
 bool Bob_Exists = false;
 int Bob_Exists_Index = -1;
+int CurrentPlayers;
 ConVar zr_voteconfig;
 ConVar zr_tagblacklist;
 ConVar zr_tagwhitelist;
@@ -82,6 +83,7 @@ ConVar CvarNoRoundStart;
 ConVar CvarInfiniteCash;
 ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_spawnprotectiontime;
+ConVar zr_viewshakeonlowhealth;
 //ConVar CvarEnablePrivatePlugins;
 int CurrentGame;
 bool b_GameOnGoing = true;
@@ -108,7 +110,6 @@ Cookie CookiePlayStreak;
 Cookie CookieCache;
 Cookie CookieXP;
 ArrayList Loadouts[MAXTF2PLAYERS];
-DynamicHook g_DHookMedigunPrimary; 
 
 Handle g_hSDKMakeCarriedObjectDispenser;
 Handle g_hSDKMakeCarriedObjectSentry;
@@ -247,7 +248,6 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_heavy_eagle.sp"
 #include "zombie_riot/custom/weapon_annabelle.sp"
 #include "zombie_riot/custom/weapon_rampager.sp"
-#include "zombie_riot/custom/joke_medigun_mod_drain_health.sp"
 #include "zombie_riot/custom/weapon_heaven_eagle.sp"
 #include "zombie_riot/custom/weapon_star_shooter.sp"
 #include "zombie_riot/custom/weapon_bison.sp"
@@ -310,6 +310,8 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_riotshield.sp"
 #include "zombie_riot/custom/escape_sentry_hat.sp"
 #include "zombie_riot/custom/m3_abilities.sp"
+#include "shared/custom/weapon_street_fighter.sp"
+#include "shared/custom/joke_medigun_mod_drain_health.sp"
 
 void ZR_PluginLoad()
 {
@@ -1382,8 +1384,10 @@ void GiveXP(int client, int xp)
 		bool found;
 		int slots;
 		
-		for(Level[client]++; Level[client]<=nextLevel; Level[client]++)
+		while(Level[client] < nextLevel)
 		{
+			Level[client]++;
+			
 			if(Store_PrintLevelItems(client, Level[client]))
 				found = true;
 			

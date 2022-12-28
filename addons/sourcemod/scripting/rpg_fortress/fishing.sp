@@ -19,53 +19,19 @@ enum struct PlaceEnum
 {
 	float Pos[3];
 	int Luck;
-	int Pop;
-	bool City;
-	bool Nature;
-	bool Ocean;
-
-	char North[32];
-	char West[32];
-	char East[32];
-	char South[32];
-	
-	void SetupEnum(KeyValues kv)
-	{
-		kv.GetVector("pos", this.Pos);
-		this.Luck = kv.GetNum("luck");
-		this.Pop = kv.GetNum("pop");
-
-		this.City = view_as<bool>(kv.GetNum("city"));
-		this.Nature = view_as<bool>(kv.GetNum("nature"));
-		this.Ocean = view_as<bool>(kv.GetNum("ocean"));
-
-		kv.GetString("north", this.North, 32);
-		kv.GetString("west", this.West, 32);
-		kv.GetString("east", this.East, 32);
-		kv.GetString("south", this.South, 32);
-	}
+	ArrayList Pool;
 }
 
 enum struct FishEnum
 {
 	int Tier;
 	int Type;
-	int Pref;
-	int Pop;
-	float Rate;
-	float Breed;
-	float Move;
 	int Color[4];
 	
 	void SetupEnum(KeyValues kv)
 	{
 		this.Tier = kv.GetNum("tier");
 		this.Type = kv.GetNum("type");
-		this.Pref = kv.GetNum("pref");
-		this.Pop = kv.GetNum("pop", 50);
-		this.Rate = kv.GetFloat("rate");
-		this.Breed = kv.GetFloat("breed");
-		this.Move = kv.GetFloat("move");
 		kv.GetColor4("color", this.Color);
 	}
 }
@@ -73,7 +39,7 @@ enum struct FishEnum
 enum struct PoolEnum
 {
 	int Client;
-	int Color[4];
+	int Tier;
 	float Pos[3];
 	char Name[48];
 	char Place[32];
@@ -83,10 +49,10 @@ enum struct PoolEnum
 static int DrawNum;
 static StringMap PlaceList;
 static StringMap FishList;
-static KeyValues Population;
 static ArrayList PoolList;
 static float f_ClientWasFishingDelayCheck[MAXTF2PLAYERS];
 static float f_ClientWasPreviouslyFishing[MAXTF2PLAYERS];
+static float FishingRate[MAXTF2PLAYERS] = {1.0, ...};
 static int FishingTier[MAXTF2PLAYERS];
 static char CurrentFishing[MAXTF2PLAYERS][32];
 
@@ -97,7 +63,6 @@ void Fishing_PluginStart()
 {
 	PoolList = new ArrayList(sizeof(PoolEnum));
 	CreateTimer(0.1, Fishing_Drawing, _, TIMER_REPEAT);
-	CreateTimer(10.0, Fishing_Timer, _, TIMER_REPEAT);
 }
 
 void Fishing_OnMapStart()
@@ -124,27 +89,6 @@ void Fishing_ConfigSetup(KeyValues map)
 		kv.ImportFromFile(buffer);
 	}
 	
-	delete PlaceList;
-	PlaceList = new StringMap();
-
-	PlaceEnum place;
-
-	if(kv.JumpToKey("Positions"))
-	{
-		if(kv.GotoFirstSubKey())
-		{
-			do
-			{
-				kv.GetSectionName(buffer, sizeof(buffer));
-				place.SetupEnum(kv);
-				PlaceList.SetArray(buffer, place, sizeof(place));
-			}
-			while(kv.GotoNextKey());
-			kv.GoBack();
-		}
-		kv.GoBack();
-	}
-	
 	delete FishList;
 	FishList = new StringMap();
 
@@ -165,268 +109,69 @@ void Fishing_ConfigSetup(KeyValues map)
 		}
 		kv.GoBack();
 	}
+	
+	PlaceEnum place;
+
+	if(PlaceList)
+	{
+		StringMapSnapshot snap = PlaceList.Snapshot();
+		int length = snap.Length;
+		for(int i; i < length; i++)
+		{
+			snap.GetKey(i, buffer, sizeof(buffer));
+			PlaceList.GetArray(buffer, place, sizeof(place));
+			delete place.Pool;
+		}
+
+		delete snap;
+		delete PlaceList;
+	}
+
+	PlaceList = new StringMap();
+
+	if(kv.JumpToKey("Positions") && kv.GotoFirstSubKey())
+	{
+		do
+		{
+			place.Pool = new ArrayList(ByteCountToCells(48));
+
+			if(kv.JumpToKey("Pool"))
+			{
+				if(kv.GotoFirstSubKey(false))
+				{
+					do
+					{
+						kv.GetSectionName(buffer, sizeof(buffer));
+						int amount = kv.GetNum(NULL_STRING, 1);
+						for(int i; i < amount; i++)
+						{
+							place.Pool.PushString(buffer);
+						}
+					}
+					while(kv.GotoNextKey(false));
+
+					kv.GoBack();
+				}
+
+				kv.GoBack();
+			}
+
+			if(!place.Pool.Length)
+			{
+				delete place.Pool;
+				continue;
+			}
+
+			kv.GetSectionName(buffer, sizeof(buffer));
+			kv.GetVector("pos", place.Pos);
+			place.Luck = kv.GetNum("luck");
+			PlaceList.SetArray(buffer, place, sizeof(place));
+		}
+		while(kv.GotoNextKey());
+	}
 
 	if(kv != map)
 		delete kv;
-	
-	delete Population;
-
-	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "fishing_savedata");
-	Population = new KeyValues("Fishing");
-	if(!Population.ImportFromFile(buffer))
-	{
-		StringMapSnapshot snapPlace = PlaceList.Snapshot();
-		StringMapSnapshot snapFish = FishList.Snapshot();
-		int lengthPlace = snapPlace.Length;
-		int lengthFish = snapFish.Length;
-
-		for(int i; i < lengthPlace && i < lengthFish; i++)
-		{
-			snapPlace.GetKey(i, buffer, sizeof(buffer));
-			if(Population.JumpToKey(buffer, true))
-			{
-				snapFish.GetKey(i, buffer, sizeof(buffer));
-				FishList.GetArray(buffer, fish, sizeof(fish));
-				Population.SetNum(buffer, RoundToCeil(fish.Rate * fish.Breed));
-				Population.GoBack();
-			}
-		}
-
-		delete snapPlace;
-		delete snapFish;
-	}
-}
-
-public Action Fishing_Timer(Handle timer)
-{
-	if(Population)
-	{
-		static char buffer[PLATFORM_MAX_PATH];
-
-		static int AutoSave;
-		if(++AutoSave > 99)
-		{
-			BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "fishing_savedata");
-			Population.ExportToFile(buffer);
-			AutoSave = 40;
-		}
-		else
-		{
-			static PlaceEnum place;
-			static FishEnum fish;
-
-			StringMapSnapshot snapPlace = PlaceList.Snapshot();
-			StringMapSnapshot snapFish = FishList.Snapshot();
-			int lengthPlace = snapPlace.Length;
-			int lengthFish = snapFish.Length;
-
-			Population.Rewind();
-			for(int i; i < lengthPlace; i++)
-			{
-				snapPlace.GetKey(i, buffer, sizeof(buffer));
-				PlaceList.GetArray(buffer, place, sizeof(place));
-				if(Population.JumpToKey(buffer, true))
-				{
-					//bool checkPop;
-					switch(GetURandomInt() % 5)
-					{
-						case 0:
-						{
-							if(place.Ocean)
-							{
-								snapFish.GetKey(GetURandomInt() % lengthFish, buffer, sizeof(buffer));
-								FishList.GetArray(buffer, fish, sizeof(fish));
-								if(fish.Type == 0 && fish.Rate > 0.5)
-								{
-									int amount = RoundFloat(fish.Rate * GetURandomFloat());
-									if(amount)
-									{
-										//checkPop = true;
-										Population.SetNum(buffer, Population.GetNum(buffer) + amount);
-								//		PrintToChatAll("[FISH] Gained %d %s via ocean", amount, buffer);
-									}
-								}
-							}
-						}
-						case 1:
-						{
-							if(place.Nature)
-							{
-								snapFish.GetKey(GetURandomInt() % lengthFish, buffer, sizeof(buffer));
-								FishList.GetArray(buffer, fish, sizeof(fish));
-								if(fish.Type == 1 && fish.Rate > 0.5)
-								{
-									int amount = RoundFloat(fish.Rate * GetURandomFloat());
-									if(amount)
-									{
-										//checkPop = true;
-										Population.SetNum(buffer, Population.GetNum(buffer) + amount);
-								//		PrintToChatAll("[FISH] Gained %d %s via nature", amount, buffer);
-									}
-								}
-							}
-						}
-						case 2:
-						{
-							if(place.City)
-							{
-								snapFish.GetKey(GetURandomInt() % lengthFish, buffer, sizeof(buffer));
-								FishList.GetArray(buffer, fish, sizeof(fish));
-								if(fish.Type == 2 && fish.Rate > 0.5)
-								{
-									int amount = RoundFloat(fish.Rate * GetURandomFloat());
-									if(amount)
-									{
-										//checkPop = true;
-										Population.SetNum(buffer, Population.GetNum(buffer) + amount);
-								//		PrintToChatAll("[FISH] Gained %d %s via city", amount, buffer);
-									}
-								}
-							}
-						}
-						case 3:
-						{
-							if(place.North[0] || place.South[0] || place.West[0] || place.East[0])
-							{
-								snapFish.GetKey(GetURandomInt() % lengthFish, buffer, sizeof(buffer));
-								int current = Population.GetNum(buffer);
-								if(current > 0)
-								{
-									FishList.GetArray(buffer, fish, sizeof(fish));
-									if(fish.Move > 0.5)
-									{
-										int amount = RoundFloat(fish.Move * GetURandomFloat());
-										if(amount <= current)
-										{
-											for(;;)
-											{
-												switch(fish.Pref)
-												{
-													case 1:
-													{
-														if(place.North[0])
-															break;
-														
-														fish.Pref = 2;
-													}
-													case 2:
-													{
-														if(place.West[0])
-															break;
-														
-														fish.Pref = 4;
-													}
-													case 3:
-													{
-														if(place.East[0])
-															break;
-														
-														fish.Pref = 1;
-													}
-													case 4:
-													{
-														if(place.South[0])
-															break;
-														
-														fish.Pref = 3;
-													}
-													default:
-													{
-														fish.Pref = (GetURandomInt() % 4) + 1;
-														break;
-													}
-												}
-											}
-
-											Population.SetNum(buffer, current - amount);
-											Population.GoBack();
-
-											switch(fish.Pref)
-											{
-												case 1:
-												{
-													Population.JumpToKey(place.North);
-													PlaceList.GetArray(place.North, place, sizeof(place));
-												}
-												case 2:
-												{
-													Population.JumpToKey(place.West);
-													PlaceList.GetArray(place.West, place, sizeof(place));
-												}
-												case 3:
-												{
-													Population.JumpToKey(place.East);
-													PlaceList.GetArray(place.East, place, sizeof(place));
-												}
-												default:
-												{
-													Population.JumpToKey(place.South);
-													PlaceList.GetArray(place.South, place, sizeof(place));
-												}
-											}
-											
-											Population.SetNum(buffer, Population.GetNum(buffer) + amount);
-											//checkPop = true;
-										}
-									}
-								}
-							}
-						}
-						case 4:
-						{
-							snapFish.GetKey(GetURandomInt() % lengthFish, buffer, sizeof(buffer));
-							int current = Population.GetNum(buffer);
-							if(current > 0)
-							{
-								FishList.GetArray(buffer, fish, sizeof(fish));
-								if(fish.Breed > 0.5)
-								{
-									int amount = RoundFloat(fish.Breed * GetURandomFloat());
-									if(amount)
-									{
-										amount += Population.GetNum(buffer);
-										if(amount > fish.Pop)
-											amount = fish.Pop;
-										
-										Population.SetNum(buffer, amount);
-										//checkPop = true;
-									}
-								}
-							}
-						}
-					}
-
-					/*if(checkPop && Population.GotoFirstSubKey(false))
-					{
-						int total;
-						do
-						{
-							total += Population.GetNum(NULL_STRING);
-						}
-						while(Population.GotoNextKey(false));
-
-						if(total > place.Pop)
-						{
-							Population.GoBack();
-							if(Population.GotoFirstSubKey(false))
-							{
-								if(Population.DeleteThis() != -1)
-									Population.GoBack();
-							}
-						}
-
-						Population.GoBack();
-					}*/
-
-					Population.GoBack();
-				}
-			}
-
-			delete snapPlace;
-			delete snapFish;
-		}
-	}
-	return Plugin_Continue;
 }
 
 void Fishing_ClientDisconnect(int client)
@@ -467,7 +212,7 @@ void Fishing_PlayerRunCmd(int client)
 	float gameTime = GetGameTime();
 	if(f_ClientWasFishingDelayCheck[client] < gameTime)
 	{
-		f_ClientWasFishingDelayCheck[client] = gameTime + 1.0;
+		f_ClientWasFishingDelayCheck[client] = gameTime + FishingRate[client];
 
 		int AllowFishing = 0;
 		if(GetEntProp(client, Prop_Send, "m_nWaterLevel") > 0)
@@ -496,23 +241,6 @@ void Fishing_PlayerRunCmd(int client)
 
 			static PlaceEnum place;
 			PlaceList.GetArray(CurrentFishing[client], place, sizeof(place));
-
-			Population.Rewind();
-			if(!Population.JumpToKey(CurrentFishing[client]) || !Population.GotoFirstSubKey(false))
-				return;
-			
-			int total;
-			do
-			{
-				total += Population.GetNum(NULL_STRING);
-			}
-			while(Population.GotoNextKey(false));
-			
-			float spawnRate = 4.9 - (float(total) * 2.5 / float(place.Pop));
-			if(spawnRate < 0.2)
-				spawnRate = 0.2;
-			
-			f_ClientWasFishingDelayCheck[client] = gameTime + spawnRate;
 
 			float f_ang[3];
 
@@ -565,7 +293,7 @@ void Fishing_PlayerRunCmd(int client)
 					delete trace_hull;
 					if(entity == -1)
 					{
-						CreateFish(client, f_MiddlePos);
+						CreateFish(client, f_MiddlePos, place);
 						//FishCreatedOrIsValid(client, f_MiddlePos);
 					}
 				}
@@ -585,49 +313,22 @@ void FishCreatedOrIsValid(int client, float f_fishpos[3])
 }
 */
 
-static void CreateFish(int client, float pos[3])
+static void CreateFish(int client, const float pos[3], const PlaceEnum place)
 {
-	Population.Rewind();
-	if(Population.JumpToKey(CurrentFishing[client]))
+	static PoolEnum pool;
+	place.Pool.GetString(GetURandomInt() % place.Pool.Length, pool.Name, sizeof(pool.Name));
+
+	static FishEnum fish;
+	FishList.GetArray(pool.Name, fish, sizeof(fish));
+	if(FishingTier[client] >= fish.Tier)
 	{
-		StringMapSnapshot snap = FishList.Snapshot();
-
-		int length = snap.Length;
-		int start = GetURandomInt() % length;
-		for(int i = start + 1; i != start; i++)
-		{
-			if(i >= length)
-			{
-				i = -1;
-				continue;
-			}
-
-			static PoolEnum pool;
-			snap.GetKey(i, pool.Name, sizeof(pool.Name));
-
-			if(Population.GetNum(pool.Name) > 0)
-			{
-				static FishEnum fish;
-				FishList.GetArray(pool.Name, fish, sizeof(fish));
-				if(FishingTier[client] >= fish.Tier)
-				{
-					pool.Client = client;
-					pool.Pos = pos;
-					pool.Color = fish.Color;
-					pool.ExpireIn = GetGameTime() + 15.0;
-					strcopy(pool.Place, sizeof(pool.Place), CurrentFishing[client]);
-					PoolList.PushArray(pool);
-				//	PrintToChatAll("Spawned %N's %s", pool.Client, pool.Name);
-					delete snap;
-					return;
-				}
-			}
-		}
-
-		delete snap;
+		pool.Client = client;
+		pool.Pos = pos;
+		pool.Tier = fish.Tier;
+		pool.ExpireIn = GetGameTime() + 15.0;
+		strcopy(pool.Place, sizeof(pool.Place), CurrentFishing[client]);
+		PoolList.PushArray(pool);
 	}
-
-//	PrintToChat(client, "Lee Fishy Gone :(");
 }
 
 public Action Fishing_Drawing(Handle timer)
@@ -646,8 +347,14 @@ public Action Fishing_Drawing(Handle timer)
 			static float m_vecMins[3];
 			m_vecMaxs = view_as<float>( { 5.0, 5.0, 5.0 } );
 			m_vecMins = view_as<float>( { -5.0, -5.0, -5.0 } );	
-			
-			TE_DrawBox(pool.Client, pool.Pos, m_vecMins, m_vecMaxs, float(length + 1) * 0.105, pool.Color);
+
+			int color[4];
+			color[0] = RenderColors_RPG[pool.Tier][0];
+			color[1] = RenderColors_RPG[pool.Tier][1];
+			color[2] = RenderColors_RPG[pool.Tier][2];
+			color[3] = RenderColors_RPG[pool.Tier][3];
+
+			TE_DrawBox(pool.Client, pool.Pos, m_vecMins, m_vecMaxs, float(length + 1) * 0.105, color);
 		}
 		else
 		{
@@ -657,19 +364,32 @@ public Action Fishing_Drawing(Handle timer)
 	return Plugin_Continue;
 }
 
+bool Fishing_IsFishingFunc(const char[] buffer)
+{
+	return StrEqual(buffer, "Fishing_RodM1");
+}
+
 void Fishing_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, int attribs)
 {
 	static char buffer[64];
 	kv.GetString("func_attack", buffer, sizeof(buffer));
-	if(StrEqual(buffer, "Fishing_RodM1"))
+	if(Fishing_IsFishingFunc(buffer))
 	{
 		for(int i; i < attribs; i++)
 		{
-			if(attrib[i] == 2019)
+			switch(attrib[i])
 			{
-				int pos = RoundFloat(value[i]);
-				if(pos < sizeof(FishingLevels))
-					Format(desc, 512, "%s\nFishing Level: %s", desc, FishingLevels[pos]);
+				case 2016:
+				{
+					if(value[i])
+						Format(desc, 512, "%s\nFishing Attraction: %.0f%%", desc, 1.6 / value[i]);
+				}
+				case 2017:
+				{
+					int pos = RoundFloat(value[i]);
+					if(pos < sizeof(FishingLevels))
+						Format(desc, 512, "%s\nFishing Level: %s", desc, FishingLevels[pos]);
+				}
 			}
 		}
 	}
@@ -679,7 +399,8 @@ public void Fishing_RodM1(int client, int weapon, const char[] classname, bool &
 {
 	float ApplyCooldown =  0.8 * Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
 	Ability_Apply_Cooldown(client, 1, ApplyCooldown);
-	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2019));
+	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
+	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
 	
 	DataPack pack;
 	CreateDataTimer(0.2, Fishing_RodM1Delay, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -731,35 +452,7 @@ public Action Fishing_RodM1Delay(Handle timer, DataPack pack)
 			
 			GetClientEyePosition(client, pos);
 			TextStore_DropNamedItem(client, pool.Name, pos, 1);
-
-			Population.Rewind();
-			if(Population.JumpToKey(pool.Place))
-			{
-				int amount = Population.GetNum(pool.Name);
-				if(amount)
-					Population.SetNum(pool.Name, amount - 1);
-			}
 		}
 	}
 	return Plugin_Handled;
-}
-
-bool Fishing_DroppedItem(int client, const float pos[3], int index)
-{
-	if(f_ClientWasPreviouslyFishing[client] > GetGameTime())
-	{
-		static char buffer[48];
-		TextStore_GetItemName(index, buffer, sizeof(buffer));
-		if(FishList.ContainsKey(buffer) && (TR_GetPointContents(pos) & CONTENTS_WATER))
-		{
-			Population.Rewind();
-			if(Population.JumpToKey(CurrentFishing[client]))
-			{
-				Population.SetNum(buffer, Population.GetNum(buffer) + 1);
-				SPrintToChat(client, "You released %s to these waters", buffer);
-				return true;
-			}
-		}
-	}
-	return false;
 }

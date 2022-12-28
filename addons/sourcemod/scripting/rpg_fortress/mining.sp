@@ -29,6 +29,11 @@ enum struct MineEnum
 	
 	char Model[PLATFORM_MAX_PATH];
 	float Pos[3];
+	
+	float Text_Pos[3];
+	char Text_Name[PLATFORM_MAX_PATH];
+	int Text_Size;
+
 	float Ang[3];
 	float Scale;
 	bool OnTouch;
@@ -62,10 +67,16 @@ enum struct MineEnum
 		kv.GetString("model", this.Model, PLATFORM_MAX_PATH, "models/error.mdl");
 		if(!this.Model[0])
 			SetFailState("Missing model in mining.cfg");
+			
+		kv.GetString("text_name", this.Text_Name, PLATFORM_MAX_PATH, "Ore");
 		
+		this.Text_Size = kv.GetNum("text_font_size");
 		PrecacheModel(this.Model);
 		
 		kv.GetVector("ang", this.Ang);
+
+		kv.GetVector("text_pos", this.Text_Pos);
+
 		kv.GetColor4("color", this.Color);
 		this.Scale = kv.GetFloat("scale", 1.0);
 
@@ -74,8 +85,6 @@ enum struct MineEnum
 		this.Tier = kv.GetNum("tier");
 		
 		this.OnTouch = view_as<bool>(kv.GetNum("ontouch"));
-
-		this.EntRef = INVALID_ENT_REFERENCE;
 
 		kv.GetString("s1_item", this.Item1, 48);
 		this.Chance1 = kv.GetFloat("s1_chance");
@@ -97,6 +106,11 @@ enum struct MineEnum
 			int entity = EntRefToEntIndex(this.EntRef);
 			if(entity != -1)
 				RemoveEntity(entity);
+
+			int text = EntRefToEntIndex(i_TextEntity[entity][0]);
+			if(text != -1)
+				RemoveEntity(text);
+
 			
 			this.EntRef = INVALID_ENT_REFERENCE;
 		}
@@ -119,23 +133,18 @@ enum struct MineEnum
 				DispatchSpawn(entity);
 				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR, true);
 
-
-				/*
-				float vector[3];
-
-				vector = this.Pos;
-				PrintToChatAll("%f",vector[0]);
-				PrintToChatAll("%f",vector[1]);
-				PrintToChatAll("%f",vector[2]);
-				*/
 				if(this.OnTouch)
 				{
 					SDKHook(entity, SDKHook_Touch, AntiTouchStuckMine);
-				}	
-			//	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
+				}
+
+				if(this.Text_Name[0])
+				{
+					int text = SpawnFormattedWorldText(this.Text_Name, this.Text_Pos, this.Text_Size, this.Color, _,_, false);
+					i_TextEntity[entity][0] = EntIndexToEntRef(text);
+				}
 				
-			//	SetEntityRenderMode(entity, RENDER_NORMAL);
-			//	SetEntityRenderColor(entity, this.Color[0], this.Color[1], this.Color[2], this.Color[3]);
+				SetEntityRenderColor(entity, this.Color[0], this.Color[1], this.Color[2], this.Color[3]);
 				
 				this.EntRef = EntIndexToEntRef(entity);
 			}
@@ -194,6 +203,7 @@ void Mining_ConfigSetup(KeyValues map)
 	MineList = new ArrayList(sizeof(MineEnum));
 
 	MineEnum mine;
+	mine.EntRef = INVALID_ENT_REFERENCE;
 
 	kv.GotoFirstSubKey();
 	do
@@ -247,11 +257,16 @@ void Mining_DisableZone(const char[] name)
 	}
 }
 
+bool Mining_IsPickaxeFunc(const char[] buffer)
+{
+	return StrEqual(buffer, "Mining_PickaxeM1");
+}
+
 void Mining_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, int attribs)
 {
 	static char buffer[64];
 	kv.GetString("func_attack", buffer, sizeof(buffer));
-	if(StrEqual(buffer, "Mining_PickaxeM1"))
+	if(Mining_IsPickaxeFunc(buffer))
 	{
 		for(int i; i < attribs; i++)
 		{
@@ -415,6 +430,7 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 					if(Rare_hit)
 					{
 						damage *= 6;
+						Tinker_GainXP(client, weapon);
 					}
 
 					Event event = CreateEvent("npc_hurt", true);

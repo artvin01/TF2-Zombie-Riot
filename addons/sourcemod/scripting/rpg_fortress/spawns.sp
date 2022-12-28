@@ -28,6 +28,9 @@ enum struct SpawnEnum
 	
 	char Item3[48];
 	float Chance3;
+
+	char Item4[48];
+	float Chance4;
 	
 	float NextSpawnTime;
 
@@ -69,6 +72,10 @@ enum struct SpawnEnum
 		kv.GetString("drop_name_3", this.Item3, 48);
 		if(this.Item3[0])
 			this.Chance3 = kv.GetFloat("drop_chance_3", 1.0);
+
+		kv.GetString("drop_name_4", this.Item4, 48);
+		if(this.Item4[0])
+			this.Chance4 = kv.GetFloat("drop_chance_4", 1.0);
 	}
 
 	void DoAllDrops(int client, float pos[3], int level)
@@ -248,14 +255,14 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 		
 		if(count)
 		{
-			static float ang[3];
-			ang[1] = spawn.Angle;
-			if(ang[1] < 0.0)
-				ang[1] = GetURandomFloat() * 360.0;
-			
 			int diff = spawn.Level[HIGH] - spawn.Level[LOW];
 			for(int i; i < count; i++)
 			{
+				static float ang[3];
+				ang[1] = spawn.Angle;
+				if(ang[1] < 0.0)
+					ang[1] = GetURandomFloat() * 360.0;
+				
 				int entity = Npc_Create(spawn.Index, 0, spawn.Pos, ang, false);
 				if(entity == -1)
 					break;
@@ -275,15 +282,21 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 				Level[entity] = spawn.Level[LOW] + strength;
 				i_CreditsOnKill[entity] = GetScaledRate(spawn.Cash, strength, diff);
 				XP[entity] = GetScaledRate(spawn.XP, strength, diff);
-				int health = 999999999; //ayo he forgor, ANNOY ADMINO
+				b_thisNpcIsABoss[entity] = spawn.Boss;
 
+				int health;
 				if(spawn.Health[LOW])
 				{
 					health = GetScaledRate(spawn.Health, strength, diff);
 					SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 					SetEntProp(entity, Prop_Data, "m_iHealth", health);
 				}
-				Apply_Text_Above_Npc(entity,strength, health);
+				else
+				{
+					health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+				}
+
+				Apply_Text_Above_Npc(entity, b_thisNpcIsABoss[entity] ? strength + 1 : strength, health);
 
 				b_npcspawnprotection[entity] = true;
 				CreateTimer(2.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
@@ -332,18 +345,18 @@ static int GetScaledRate(const int rates[2], int power, int maxpower)
 	return rates[LOW] + ((rates[HIGH] - rates[LOW]) * power / maxpower);
 }
 
-void Spawns_NPCDeath(int entity, int client)
+void Spawns_NPCDeath(int entity, int client, int weapon)
 {
 	int xp = XP[entity];
-	if(xp < 0)
-		xp = Level[entity];
-	
-	for(int target = 1; target <= MaxClients; target++)
+	if(xp > 0)
 	{
-		if(client == target || Party_IsClientMember(client, target))
+		for(int target = 1; target <= MaxClients; target++)
 		{
-			if((Level[client] - 5) < Level[entity] && (Level[client] + 5) > Level[entity] && GetLevelCap(Tier[client]) != Level[client])
-				GiveXP(client, xp);
+			if(client == target || Party_IsClientMember(client, target))
+			{
+				if((Level[client] - 5) < Level[entity] && (Level[client] + 5) > Level[entity] && GetLevelCap(Tier[client]) != Level[client])
+					GiveXP(client, xp);
+			}
 		}
 	}
 
@@ -359,11 +372,11 @@ void Spawns_NPCDeath(int entity, int client)
 		else if(i_CreditsOnKill[entity] > 49)
 		{
 			if(GetURandomInt() % 2)
-				TextStore_DropCash((client, pos, i_CreditsOnKill[entity] * 2);
+				TextStore_DropCash(client, pos, i_CreditsOnKill[entity] * 2);
 		}
 		else if(!(GetURandomInt() % 5))
 		{
-			TextStore_DropCash((client, pos, i_CreditsOnKill[entity] * 5);
+			TextStore_DropCash(client, pos, i_CreditsOnKill[entity] * 5);
 		}
 	}
 
@@ -375,9 +388,12 @@ void Spawns_NPCDeath(int entity, int client)
 		spawn.DoAllDrops(client, pos, Level[entity]);
 		hFromSpawnerIndex[entity] = -1;
 	}
+
+	if(weapon != -1)
+		Tinker_GainXP(client, weapon);
 }
 
-static void RollItemDrop(client, const char[] name, float chance, float pos[3])
+static void RollItemDrop(int client, const char[] name, float chance, float pos[3])
 {
 	if(chance > GetURandomFloat())
 		TextStore_DropNamedItem(client, name, pos, 1);

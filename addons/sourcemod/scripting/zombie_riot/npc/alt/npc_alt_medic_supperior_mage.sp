@@ -791,7 +791,7 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick(int client)
 			hullMax[1] = -hullMin[1];
 			hullMax[2] = -hullMin[2];
 			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-			CloseHandle(trace);
+			delete trace;
 			
 			for (int victim = 1; victim < MaxClients; victim++)
 			{
@@ -832,7 +832,7 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick(int client)
 		}
 		else
 		{
-			PrintToConsoleAll("Error with dot_beam, could not determine end point for beam.");
+			delete trace;
 		}
 	}
 	return Plugin_Continue;

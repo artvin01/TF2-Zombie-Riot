@@ -749,7 +749,7 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 		
 		b_npcspawnprotection[index] = false;
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 #if defined ZR
@@ -791,7 +791,7 @@ public Action Timer_Delayed_BossSpawn(Handle timer, DataPack pack)
 			b_NpcForcepowerupspawn[entity] = forcepowerup;
 		}
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 #endif
 
@@ -1165,7 +1165,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			return Plugin_Handled;
 		}
 	}
-	
 	f_TimeUntillNormalHeal[victim] = GetGameTime() + 4.0;
 	i_HasBeenBackstabbed[victim] = false;
 
@@ -1278,7 +1277,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 		//Random crit damage!
 		//Yes, we allow those.
-		if(GetRandomFloat(0.0, 1.0) < 0.01)
+		if(GetRandomFloat(0.0, 1.0) < (float(1 + Stats_Luck(attacker)) * 0.001))
 		{
 			damage *= 3.0;
 			DisplayCritAboveNpc(victim, attacker, true); //Display crit above head
@@ -1417,12 +1416,13 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		if(attacker <= MaxClients && IsValidEntity(weapon))
 		{
 #if defined RPG
+			char Weaponclassname[64];
+			GetEntityClassname(weapon, Weaponclassname, 64);
+
+			int slot = TF2_GetClassnameSlot(Weaponclassname);
+
 			if(f_HealingPotionDuration[attacker] > GetGameTime()) //Client has a buff, but which one?
 			{
-				char Weaponclassname[64];
-				GetEntityClassname(weapon, Weaponclassname, 64);
-
-				int slot = TF2_GetClassnameSlot(Weaponclassname);
 
 				switch(f_HealingPotionEffect[attacker])
 				{
@@ -1451,6 +1451,49 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					{
 						damage *= 1.0;
 					}
+				}
+			}		
+			if(!(damagetype & (DMG_SLASH))) // if you want anything to be melee based, just give them this.
+			{
+				if(b_DungeonContracts_ZombieFlatArmorMelee[victim])
+				{
+					if(slot == TFWeaponSlot_Melee && !i_IsWandWeapon[weapon] && !i_IsWrench[weapon]) //Only melee.
+					{
+						damage -= 10.0;
+						if(damage < 0.0)
+						{
+							damage = 0.0;
+						}
+					}
+				}
+				if(b_DungeonContracts_ZombieFlatArmorRanged[victim])
+				{
+					if(slot > TFWeaponSlot_Melee) //Only Ranged
+					{
+						damage -= 5.0;
+						if(damage < 0.0)
+						{
+							damage = 0.0;
+						}
+					}
+				}
+				if(b_DungeonContracts_ZombieFlatArmorMage[victim])
+				{
+					if(i_IsWandWeapon[weapon]) //Only Mage.
+					{
+						damage -= 15.0;
+						if(damage < 0.0)
+						{
+							damage = 0.0;
+						}
+					}
+				}
+			}
+			else
+			{
+				if(b_DungeonContracts_ZombieArmorDebuffResistance[victim])
+				{
+					damage *= 0.5;
 				}
 			}
 #endif
@@ -2037,7 +2080,7 @@ void NPC_DeadEffects(int entity)
 			
 #if defined RPG
 			Quests_AddKill(client, NPC_Names[i_NpcInternalId[entity]]);
-			Spawns_NPCDeath(entity, client);
+			Spawns_NPCDeath(entity, client, WeaponLastHit);
 #endif
 			
 			NPC_Killed_Show_Hud(client, entity, WeaponLastHit, NPC_Names[i_NpcInternalId[entity]], DamageBits[entity]);

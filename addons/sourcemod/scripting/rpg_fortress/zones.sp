@@ -9,6 +9,17 @@ void Zones_PluginStart()
 	HookEntityOutput("trigger_multiple", "OnStartTouchAll", Zones_StartTouchAll);
 	HookEntityOutput("trigger_multiple", "OnEndTouch", Zones_EndTouch);
 	HookEntityOutput("trigger_multiple", "OnEndTouchAll", Zones_EndTouchAll);
+
+	char name[32];
+	int entity = -1;
+	while((entity = FindEntityByClassname(entity, "trigger_teleport")) != -1)
+	{
+		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && !StrContains(name, "rpg_teleport", false))
+		{
+			SDKHook(entity, SDKHook_StartTouch, Zones_TeleportTouch);
+			SDKHook(entity, SDKHook_Touch, Zones_TeleportTouch);
+		}
+	}
 }
 
 void Zones_ResetAll()
@@ -22,74 +33,70 @@ void Zones_ResetAll()
 	int entity = -1;
 	while((entity = FindEntityByClassname(entity, "trigger_multiple")) != -1)
 	{
-		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && !StrContains(name, "zr_", false))
+		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && !StrContains(name, "rpg_", false))
 			AcceptEntityInput(entity, "TouchTest", entity, entity);
 	}
 	
 	UnhookEntityOutput("trigger_multiple", "OnTouching", Zones_StartTouchAll);
 }
 
-static void OnEnter(int client, const char[] name)
+static void OnEnter(int entity, const char[] name)
 {
-	if(!b_NpcHasDied[client]) //An npc just touched it!
+	if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
-		PrintToChatAll("OnEnter");
-		return;
+		NPC_Despawn_Zone(entity, name);
 	}
-	else
+	else if(entity > 0 && entity <= MaxClients)
 	{
-		Crafting_ClientEnter(client, name);
-		Garden_ClientEnter(client, name);
-		Music_ZoneEnter(client, name);
-		Quests_EnableZone(client, name);
-		TextStore_ZoneEnter(client, name);		
+		Crafting_ClientEnter(entity, name);
+		Garden_ClientEnter(entity, name);
+		Music_ZoneEnter(entity, name);
+		Quests_EnableZone(entity, name);
+		TextStore_ZoneEnter(entity, name);		
 	}
 }
 
-static void OnLeave(int client, const char[] name)
+static void OnLeave(int entity, const char[] name)
 {
-	if(!b_NpcHasDied[client]) //An npc just touched it!
+	if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
-		PrintToChatAll("OnLeave");
-		return;
 	}
 	else
 	{
-		Crafting_ClientLeave(client, name);
-		Garden_ClientLeave(client, name);
-		TextStore_ZoneLeave(client, name);	
+		Crafting_ClientLeave(entity, name);
+		Garden_ClientLeave(entity, name);
+		TextStore_ZoneLeave(entity, name);	
 	}
 }
 
-static void OnActive(int client, const char[] name)
+static void OnActive(int entity, const char[] name)
 {
-	if(!b_NpcHasDied[client]) //An npc just touched it!
+	if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
-		PrintToChatAll("OnActive");
-		return;
 	}
 	else
 	{
+		Dungeon_EnableZone(name);
 		Mining_EnableZone(name);
 		Spawns_UpdateSpawn(name);
+		Tinker_EnableZone(name);
 	}
 }
 
-static void OnDisable(int client, const char[] name)
+static void OnDisable(int entity, const char[] name)
 {
-	if(!b_NpcHasDied[client]) //An npc just touched it!
+	if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
-		PrintToChatAll("OnDisable");
-		return;
 	}
 	else
 	{
+		Dungeon_DisableZone(name);
 		Mining_DisableZone(name);
 		Quests_DisableZone(name);
 		Spawns_DisableSpawn(name);
 		TextStore_ZoneAllLeave(name);
+		Tinker_DisableZone(name);
 	}
-
 }
 
 bool Zones_IsActive(const char[] name)
@@ -99,10 +106,9 @@ bool Zones_IsActive(const char[] name)
 
 public Action Zones_StartTouch(const char[] output, int entity, int caller, float delay)
 {
-	if(caller > 0 && caller <= MaxClients)
+	if(caller > 0 && caller <= MAXENTITIES)
 	{
 		char name[32];
-		GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 			OnEnter(caller, name);
 	}
@@ -114,7 +120,6 @@ public Action Zones_EndTouch(const char[] output, int entity, int caller, float 
 	if(caller > 0 && caller <= MaxClients)
 	{
 		char name[32];
-		GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 			OnLeave(caller, name);
 	}
@@ -126,7 +131,6 @@ public Action Zones_StartTouchAll(const char[] output, int entity, int caller, f
 	if(ActiveZones)
 	{
 		char name[32];
-		GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 		{
 			ActiveZones.PushString(name);
@@ -141,7 +145,6 @@ public Action Zones_EndTouchAll(const char[] output, int entity, int caller, flo
 	if(ActiveZones)
 	{
 		char name[32];
-		GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 		{
 			int pos = ActiveZones.FindString(name);
@@ -150,6 +153,51 @@ public Action Zones_EndTouchAll(const char[] output, int entity, int caller, flo
 				ActiveZones.Erase(pos);
 				OnDisable(entity, name);
 			}
+		}
+	}
+	return Plugin_Continue;
+}
+
+void Zones_EntityCreated(int entity, const char[] classname)
+{
+	if(!StrContains(classname, "trigger_teleport"))
+	{
+		SDKHook(entity, SDKHook_SpawnPost, Zones_TeleportSpawn);
+	}
+}
+
+public void Zones_TeleportSpawn(int entity)
+{
+	char name[32];
+	if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && !StrContains(name, "rpg_teleport_", false))
+	{
+		SDKHook(entity, SDKHook_StartTouch, Zones_TeleportTouch);
+		SDKHook(entity, SDKHook_Touch, Zones_TeleportTouch);
+	}
+}
+
+public Action Zones_TeleportTouch(int entity, int target)
+{
+	if(target > 0 && target < sizeof(Level))
+	{
+		static char name[32];
+		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && !StrContains(name, "rpg_teleport_", false))
+		{
+			int lv = StringToInt(name[13]);
+			if(lv > Level[target])
+			{
+				if(target <= MaxClients)
+				{
+					GetDisplayString(lv, name, sizeof(name));
+					ShowGameText(target, _, 0, "You must be %s to enter", name);
+				}
+				return Plugin_Handled;
+			}
+		}
+		else
+		{
+			SDKUnhook(entity, SDKHook_StartTouch, Zones_TeleportTouch);
+			SDKUnhook(entity, SDKHook_Touch, Zones_TeleportTouch);
 		}
 	}
 	return Plugin_Continue;

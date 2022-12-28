@@ -26,35 +26,37 @@ void Stats_ClearCustomStats(int entity)
 	Luck[entity] = 0;
 }
 
-static char[] CharInt(int value)
+int ReturnStatsViaIndex(int client, int index)
 {
-	static char buffer[16];
-	IntToString(value, buffer, sizeof(buffer));
-	if(value > 0)
+	switch(index)
 	{
-		for(int i = sizeof(buffer) - 1; i > 0; i--)
+		case 1:
 		{
-			buffer[i] = buffer[i-1];
+			return BackpackBonus[client];
 		}
-
-		buffer[0] = '+';
+		case 2:
+		{
+			return Strength[client];
+		}
+		case 3:
+		{
+			return Dexterity[client];
+		}
+		case 4:
+		{
+			return Intelligence[client];
+		}
+		case 5:
+		{
+			return Agility[client];
+		}
+		case 6:
+		{
+			return Luck[client];
+		}
 	}
-	return buffer;
-} 
-
-static char[] CharPercent(float value)
-{
-	static char buffer[16];
-	if(value < 1.0)
-	{
-		Format(buffer, sizeof(buffer), "-%d%%", RoundFloat((1.0 / value) * 100.0));
-	}
-	else
-	{
-		Format(buffer, sizeof(buffer), "+%d%%", RoundFloat((value - 1.0) * 100.0));
-	}
-	return buffer;
-} 
+	return 0;
+}
 
 void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
 {
@@ -80,14 +82,14 @@ void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
 			case -6:
 				Format(desc, 512, "%s\n%s Agility", desc, CharInt(RoundFloat(value[i])));
 
-			case 410:
+			case 140:
 				Format(desc, 512, "%s\n%s Max Health", desc, CharInt(RoundFloat(value[i])));
 		
 			case 405:
 				Format(desc, 512, "%s\n%s Max Mana & Mana Regen", desc, CharPercent(value[i]));
 		
 			case 412:
-				Format(desc, 512, "%s\n%s Less Damage Taken", desc, CharPercent(value[i]));
+				Format(desc, 512, "%s\n%s Damage Taken", desc, CharPercent(value[i]));
 
 		}
 	}
@@ -329,6 +331,8 @@ void Stats_ShowLevelUp(int client, int oldLevel, int oldTier)
 	Stats_Intelligence(client, newAmount);
 	MACRO_SHOWDIFF("Intelligence")
 
+	Tinker_StatsLevelUp(client, oldLevel, menu);
+
 	menu.Display(client, MENU_TIME_FOREVER);
 }
 
@@ -351,7 +355,7 @@ public Action Stats_ShowStats(int client, int args)
 
 		int amount = Stats_BaseHealth(client);
 		int bonus = SDKCall_GetMaxHealth(client) - amount;
-		FormatEx(buffer, sizeof(buffer), "Max Health: %d + %d (0%% resistance)", amount, bonus);
+		FormatEx(buffer, sizeof(buffer), "Max Health: %d + %d (%.0f%% resistance)", amount, bonus, 1.0 / Attributes_FindOnPlayer(client, 412, true, 1.0));
 		menu.AddItem(NULL_STRING, buffer);
 
 		Stats_BaseCarry(client, amount, bonus);

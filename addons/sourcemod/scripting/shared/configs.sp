@@ -68,12 +68,14 @@ public void Configs_ConfigsExecuted()
 	
 #if defined RPG
 	Crafting_ConfigSetup(kv);
+	Dungeon_ConfigSetup(kv);
 	Fishing_ConfigSetup(kv);
 	Garden_ConfigSetup(kv);
 	Mining_ConfigSetup(kv);
 	Music_ConfigSetup(kv);
 	Quests_ConfigSetup(kv);
 	Spawns_ConfigSetup(kv);
+	Tinker_ConfigSetup(kv);
 	
 	TextStore_ConfigSetup(kv);
 
@@ -120,7 +122,7 @@ public void Configs_ConfigsExecuted()
 	}
 }
 
-float Config_GetDPSOfEntity(int entity)
+stock float Config_GetDPSOfEntity(int entity)
 {
 	static char classname[36];
 	GetEntityClassname(entity, classname, sizeof(classname));

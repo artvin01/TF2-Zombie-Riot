@@ -60,9 +60,9 @@
 	}
 	"Annabelle Pap 2"
 	{
-		"en"		"Increased damage and attackspeed and extra ammo."
-		"ru"		"Увелич. урон и скорость атаки, а также доп. патроны."
-		"chi"       "增加伤害和攻击速度和额外的弹药。"
+		"en"		"Increased damage and attackspeed."
+		"ru"		"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度"
 	}
 	"Annabelle Pap 3"
 	{
@@ -1386,6 +1386,7 @@
 	{
 		"en"	"+1500 HP"
 		"ru"	"+1500 ед. здоровья."
+		"chi"   "+1500生命值"
 
 	}
 	
@@ -1581,27 +1582,41 @@
 	"Fusion Blade Desc"
 	{
 		"en"	"Weak but gets more powerfull the more you upgrade it."
+		"chi"   "很弱，但升级得越多，它就越强大。"
 	}
 	
 	"Fusion Blade Pap 1"
 	{
 		"en"	"Active a long cooldown m2 ability.\nWhich buffs your damage and abit less resistance by 15%%, and allies by 10%% this stacks with 2 on eachother.\nThis works with allied npcs aswell."
+		"chi"   "按右键可以激活技能，但冷却时间较长。\n可以提高你的一点伤害和增大15%%的伤害抗性，队友可以获得10%%的增益(可叠加)。\n这也适用于友方npc。"
 	}
 	
 	"Tornado Blitz Desc"
 	{
 		"en"	"We decided to steal blit'z rocket launcher\nThe results are quite intriging\nOne of these discoveries are Nano-rockets\nThese rockets remove all explosives and turn these rockets into kinetic shells."
+		"chi"   "我们决定偷一偷blit'z的火箭筒，结果很有趣，发现都不是纳米火箭，这些火箭清除了所有炸药，把这些火箭变成动能炮弹。"
 	}
 	"Tornado Blitz Desc Spam1"
 	{
 		"en" 	"We increased the kinetic damage of the Nano-rockets\nWe also increased the Nano-rocket to normal rocket efficiency."
+		"chi"   "我们增加了纳米火箭的动能伤害，我们也将纳米火箭提高到正常火箭效率。"
 	}
 	"Tornado Blitz Desc Spam2"
 	{
 		"en"	"We may be aproaching the upper limit of what our technology can do at this point\nBut we must press on\nWe increased the cooling of the launcher to achive even more potent kinetic Nano-rockets\nEnjoy!"
+		"chi"   "在这一点上，我们可能已经接近了我们技术的上限，但我们必须继续努力，我们增加了发射装置的冷却，以实现更强大的动能纳米火箭，享受!"
 	}
 	"Tornado Blitz Desc Spam3"
 	{
 		"en"	"We are not responsible for what this monstrosity may cause\nWe have added liquid nitrogen cooling to increase the Nano-rocket efficiency\nWe have no idea if this is safe, however it is still quite potent."
+		"chi"   "我们对这个怪物可能造成的后果不负责，我们已经添加了液氮冷却来提高纳米火箭的效率，我们不知道这是否安全，但它仍然相当有效。"
+	}
+	"The Street Fighter Desc"
+	{
+		"en"	"Fight your away while creating your own combos that give off different effects."
+	}
+	"The Street Fighter Pap 1"
+	{
+		"en"	"Increased damage and combos are now affected by being mid-air or ducking."
 	}
 }

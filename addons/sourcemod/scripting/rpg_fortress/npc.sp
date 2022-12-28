@@ -18,7 +18,10 @@ enum
 	ZOMBIEFIED_COMBINE_SWORDSMAN	= 12,
 	BOB_THE_TARGETDUMMY				= 13,
 	FAST_ZOMBIE						= 14,
-	FATHER_GRIGORI					= 15
+	FATHER_GRIGORI					= 15,
+
+
+	FARM_COW						= 16
 }
 
 public const char NPC_Names[][] =
@@ -38,7 +41,8 @@ public const char NPC_Names[][] =
 	"Zombified Combine Swordsman",
 	"Bob The Second - Target Dummy",
 	"Fast Zombie",
-	"Father Grigori ?"
+	"Father Grigori ?",
+	"Farming Cow"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -58,7 +62,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_zombiefied_combine_soldier_swordsman",
 	"npc_bob_the_targetdummy",
 	"npc_fastzombie",
-	"npc_enemy_grigori"
+	"npc_enemy_grigori",
+	"npc_heavy_cow"
 };
 
 void NPC_MapStart()
@@ -78,6 +83,7 @@ void NPC_MapStart()
 	BobTheTargetDummy_OnMapStart_NPC();
 	FastZombie_OnMapStart_NPC();
 	EnemyFatherGrigori_OnMapStart_NPC();
+	FarmCow_OnMapStart_NPC();
 }
 
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 120.0
@@ -147,6 +153,10 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 		case FATHER_GRIGORI:
 		{
 			entity = EnemyFatherGrigori(client, vecPos, vecAng, ally);
+		}
+		case FARM_COW:
+		{
+			entity = FarmCow(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -220,6 +230,10 @@ public void NPCDeath(int entity)
 		case FATHER_GRIGORI:
 		{
 			EnemyFatherGrigori_NPCDeath(entity);
+		}
+		case FARM_COW:
+		{
+			FarmCow_NPCDeath(entity);
 		}
 		default:
 		{
@@ -296,9 +310,13 @@ public void NPC_Despawn(int entity)
 void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] StandStill, float walkspeedback, float gameTime, bool walkback_use_sequence = false, bool standstill_use_sequence = false)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
-
+	
 	if(npc.m_flGetClosestTargetTime < gameTime) //Find a new victim to destroy.
 	{
+		if(b_NpcIsInADungeon[npc.index])
+		{
+			distance = 99999.9;
+		}
 		int entity_found = GetClosestTarget(npc.index, false, distance);
 		if(npc.m_flGetClosestTargetNoResetTime > gameTime) //We want to make sure that their aggro doesnt get reset instantly!
 		{
@@ -307,10 +325,17 @@ void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] Stand
 				int Enemy_I_See;
 							
 				Enemy_I_See = Can_I_See_Enemy(npc.index, entity_found);
-				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See)) //Can i even see this enemy that i want to go to newly?
+				if((b_NpcIsInADungeon[npc.index]) || (IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))) //Can i even see this enemy that i want to go to newly?
 				{
-					//found enemy, go to new enemy
-					npc.m_iTarget = Enemy_I_See;
+					if(b_NpcIsInADungeon[npc.index])
+					{
+						npc.m_iTarget = entity_found;
+					}
+					else
+					{
+						//found enemy, go to new enemy
+						npc.m_iTarget = Enemy_I_See;
+					}
 				}
 			}
 		}
@@ -321,10 +346,17 @@ void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] Stand
 				int Enemy_I_See;
 								
 				Enemy_I_See = Can_I_See_Enemy(npc.index, entity_found);
-				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+				if((b_NpcIsInADungeon[npc.index]) || (IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See)))
 				{
-					//if we want to search for new enemies, it must be a valid one that can be seen.
-					npc.m_iTarget = Enemy_I_See;
+					if(b_NpcIsInADungeon[npc.index])
+					{
+						npc.m_iTarget = entity_found;
+					}
+					else
+					{
+						//found enemy, go to new enemy
+						npc.m_iTarget = Enemy_I_See;
+					}
 				}
 			}
 			else //can reset to -1
@@ -414,7 +446,33 @@ void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] Stand
 	}
 	else
 	{
+		if(npc.m_flDoingAnimation < GetGameTime())
+		{
+			float vecMe[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecMe);
+			float vecTarget[3];
+			GetEntPropVector(npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", vecTarget);
+
+			if((vecTarget[2] - vecMe[2]) > 100.0 && (vecTarget[2] - vecMe[2]) < 250.0)
+			{
+				vecMe[2] = vecTarget[2];
+				//Height should not be a factor in this calculation.
+				float f_DistanceForJump = GetVectorDistance(vecMe, vecTarget, true);
+				if(f_DistanceForJump < Pow(200.0, 2.0)) //Are they close enough for us to even jump after them..?
+				{
+					if((GetGameTime() - npc.m_flJumpStartTimeInternal) < 2.0)
+						return;
+
+					npc.m_flJumpStartTimeInternal = GetGameTime();
+
+					vecTarget[2] += 50.0;
+
+					PluginBot_Jump(npc.index, vecTarget);
+				}
+			}
+		}
 		i_NoEntityFoundCount[npc.index] = 0;
+
 	}
 
 	if(!npc.m_bisWalking) //Dont move, or path. so that he doesnt rotate randomly, also happens when they stop follwing.
@@ -440,6 +498,19 @@ void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] Stand
 	}
 }
 
+bool AllyNpcInteract(int client, int entity, int weapon)
+{
+	bool result;
+	switch(i_NpcInternalId[entity])
+	{
+		case FARM_COW:
+		{
+			result = HeavyCow_Interact(client, entity, weapon);
+		}
+	}
+	return result;
+}
+
 #include "rpg_fortress/npc/normal/npc_chicken_2.sp"
 #include "rpg_fortress/npc/normal/npc_chicken_mad.sp"
 #include "rpg_fortress/npc/normal/npc_roost_mad.sp"
@@ -456,3 +527,6 @@ void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] Stand
 #include "rpg_fortress/npc/normal/npc_bob_the_targetdummy.sp"
 #include "rpg_fortress/npc/normal/npc_fastzombie.sp"
 #include "rpg_fortress/npc/normal/npc_enemy_grigori.sp"
+
+
+#include "rpg_fortress/npc/farm/npc_heavy_cow.sp"

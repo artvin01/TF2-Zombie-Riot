@@ -126,7 +126,7 @@ static void TBB_Ability_Pomson(int client)
 	TBB_Tick(client);
 //	SDKHook(client, SDKHook_PreThink, TBB_Tick);
 	
-	CreateTimer(999.9, Timer_RemoveEntity, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+//	CreateTimer(999.9, Timer_RemoveEntity, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 }
 
 static bool BEAM_TraceWallsOnly(int entity, int contentsMask)
@@ -239,7 +239,7 @@ static void TBB_Tick(int client)
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-		CloseHandle(trace);
+		delete trace;
 		FinishLagCompensation_Base_boss();
 //		int weapon = BEAM_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
 		/*
@@ -315,6 +315,6 @@ static void TBB_Tick(int client)
 	}
 	else
 	{
-		PrintToConsoleAll("Error with dot_beam, could not determine end point for beam.");
+		delete trace;
 	}
 }

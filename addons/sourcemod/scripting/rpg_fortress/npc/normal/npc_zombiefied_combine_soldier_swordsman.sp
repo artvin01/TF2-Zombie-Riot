@@ -414,6 +414,10 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 					PF_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
+				else
+				{
+					npc.m_flNextRangedSpecialAttack = gameTime + 0.4; //Recheck later.
+				}
 			}
 			case 3:
 			{			

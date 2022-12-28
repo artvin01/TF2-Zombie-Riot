@@ -134,7 +134,6 @@ void OnMapStart_NPC_Base()
 
 void NPC_Base_OnEntityDestroyed()
 {
-	//	OnEntityDestroyed_NPC(entity);
 	RequestFrame(DHookCleanIds);
 }
 
@@ -187,13 +186,13 @@ public void DHookCleanIds()
 							if(HookListMap.GetValue(buffer, value) && value > 1)
 							{
 								HookListMap.SetValue(buffer, value-1);
-							//	LogError("Raw hook %d removed dupe (%s %d)", id2, HookName[i], i);
+						//		LogError("Raw hook %d removed dupe (%s %d)", id2, HookName[i], i);
 							}
 							else
 							{
 								if(!DHookRemoveHookID(id2))
 								{
-								//		LogError("Raw hook %d somehow was removed (%s %d)", id2, HookName[i], i);	
+							//			LogError("Raw hook %d somehow was removed (%s %d)", id2, HookName[i], i);	
 								}
 								
 								HookListMap.Remove(buffer);
@@ -280,7 +279,6 @@ methodmap CClotBody
 		list.Push(DHookRaw(g_hGetStepHeight,	   true, pLocomotion));
 		list.Push(DHookRaw(g_hGetGravity,		  true, pLocomotion));
 		
-		
 		if(!Ally)
 		{
 #if defined ZR
@@ -310,8 +308,11 @@ methodmap CClotBody
 		
 		
 		
-		
-		list.Push(h_NpcCollissionHookType[npc]);
+	//	We already delete this! there is no need!
+	//	This also might not even work out, because it can be changed.
+	//	list.Push(h_NpcCollissionHookType[npc]);
+	//	and putting it here as a "safety measure" actually causes a leak!!!
+	//	not like we could have known this.
 		list.Push(DHookRaw(g_hGetMaxAcceleration,  true, pLocomotion));
 		list.Push(DHookRaw(g_hGetFrictionSideways, true, pLocomotion));
 		list.Push(DHookRaw(g_hGetRunSpeed,		 true, pLocomotion));
@@ -369,6 +370,7 @@ methodmap CClotBody
 		
 		IntToString(EntIndexToEntRef(npc), buffer, sizeof(buffer));
 		HookIdMap.SetValue(buffer, list);
+		
 		
 		//Ragdoll, hopefully
 		DHookEntity(g_hEvent_Killed,	 false, npc);
@@ -852,6 +854,12 @@ methodmap CClotBody
 		public set(bool TempValueForProperty) 	{ b_NextRangedBarrage_OnGoing[this.index] = TempValueForProperty; }
 	}
 
+	property float m_flJumpStartTimeInternal
+	{
+		public get()							{ return fl_JumpStartTimeInternal[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_JumpStartTimeInternal[this.index] = TempValueForProperty; }
+	}
+
 	property float m_flJumpStartTime
 	{
 		public get()							{ return fl_JumpStartTime[this.index]; }
@@ -1205,11 +1213,17 @@ methodmap CClotBody
 			}
 			speed_for_return *= slowdown_amount;
 		}
-		
+#if defined RPG
+		if (b_DungeonContracts_ZombieSpeedTimes3[this.index])
+		{
+			speed_for_return *= 3.0;
+		}	
+#endif			
 		if (this.m_bFrozen)
 		{
 			speed_for_return = 0.01;
 		}		
+
 		return speed_for_return;
 	}
 	public float GetRunSpeed()//For the future incase we want to alter it easier
@@ -1704,9 +1718,9 @@ methodmap CClotBody
 		PF_DisableCallback(entity, PFCB_IsEntityTraversable);
 		PF_DisableCallback(entity, PFCB_GetPathCost);
 	//	PF_DisableCallback(entity, PFCB_ClimbUpToLedge);
-		PF_DisableCallback(entity, PFCB_OnMoveToSuccess);
-		PF_DisableCallback(entity, PFCB_PathFailed);
-		PF_DisableCallback(entity, PFCB_OnMoveToFailure);
+	//	PF_DisableCallback(entity, PFCB_OnMoveToSuccess);
+	//	PF_DisableCallback(entity, PFCB_PathFailed);
+	//	PF_DisableCallback(entity, PFCB_OnMoveToFailure);
 		PF_DisableCallback(entity, PFCB_OnActorEmoted);
 		PF_Destroy(entity);
 	}	
@@ -2896,6 +2910,11 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		NPC_DeadEffects(pThis); //Do kill attribute stuff
 		b_NpcHasDied[pThis] = true;
 		NPCDeath(pThis);
+		//We do not want this entity to collide with anything when it dies. 
+		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
+		SetEntityCollisionGroup(pThis, 1);
+		b_ThisEntityIgnored[pThis] = true;
+		b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
 		
 		/*
 		#if defined ISSPECIALDEATHANIMATION
@@ -2912,6 +2931,7 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 			}
 			else
 			{
+				SDKCall(g_hNextBotCombatCharacter_Event_Killed, pThis, CTakeDamageInfo);
 				float startPosition[3]; //This is what we use if we cannot find the correct name of said bone for this npc.
 				
 				float accurateposition[3]; //What we use if it has one.
@@ -3150,20 +3170,20 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 					}	
 				}
 			//	#endif					
-				Do_Death_Frame_Later(EntIndexToEntRef(pThis));
-				//RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));						
+			//	Do_Death_Frame_Later(EntIndexToEntRef(pThis));
+				RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));						
 			}
 		}
 		else
 		{	
-			Do_Death_Frame_Later(EntIndexToEntRef(pThis));
-			//RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));		
+		//	Do_Death_Frame_Later(EntIndexToEntRef(pThis));
+			RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));		
 		}
 	}
 	else
 	{	
-		Do_Death_Frame_Later(EntIndexToEntRef(pThis));
-		//RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));	
+	//	Do_Death_Frame_Later(EntIndexToEntRef(pThis));
+		RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));	
 	}
 	return MRES_Supercede;
 }
@@ -4695,7 +4715,7 @@ public void Check_If_Stuck(int iNPC)
 			}
 		}
 	}
-
+	/*
 	if (!npc.IsOnGround())
 	{
 		static float hullcheckmaxs[3];
@@ -4722,14 +4742,14 @@ public void Check_If_Stuck(int iNPC)
 		
 		//invert to save 1 frame per 3 minutes
 	
-		hullcheckmins[0] -= 10.0;
-		hullcheckmins[1] -= 10.0;
+		hullcheckmins[0] -= 15.0;
+		hullcheckmins[1] -= 15.0;
 		
-		hullcheckmaxs[0] += 10.0;
-		hullcheckmaxs[1] += 10.0;
+		hullcheckmaxs[0] += 15.0;
+		hullcheckmaxs[1] += 15.0;
 		
-		hullcheckmins[2] -= 16.0; //STEP HEIGHT
-		hullcheckmaxs[2] += 16.0;
+		hullcheckmins[2] -= 20.0; //STEP HEIGHT
+		hullcheckmaxs[2] += 20.0;
 		
 		if (!npc.g_bNPCVelocityCancel && IsSpaceOccupiedIgnorePlayers(flMyPos, hullcheckmins, hullcheckmaxs, iNPC))//The boss will start to merge with shits, cancel out velocity.
 		{
@@ -4742,6 +4762,8 @@ public void Check_If_Stuck(int iNPC)
 	{
 		npc.g_bNPCVelocityCancel = false;
 	}
+	*/
+	
 }
 
 //using normal ontakedamage will make it abit more inaccurate but it will work
@@ -5156,7 +5178,7 @@ public Action Timer_RemoveEntity_Prop_Gib(Handle timer, any entid)
 //		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
 		RemoveEntity(entity);
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 public Action Timer_RemoveEntity_Prop(Handle timer, any entid)
@@ -5167,7 +5189,7 @@ public Action Timer_RemoveEntity_Prop(Handle timer, any entid)
 //		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
 		RemoveEntity(entity);
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 public Action Timer_RemoveEntityPanzer(Handle timer, any entid)
@@ -5187,7 +5209,7 @@ public Action Timer_RemoveEntityPanzer(Handle timer, any entid)
 //		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
 		RemoveEntity(entity);
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 public Action Timer_RemoveEntityOverlord(Handle timer, any entid)
@@ -5203,7 +5225,7 @@ public Action Timer_RemoveEntityOverlord(Handle timer, any entid)
 //		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
 		RemoveEntity(entity);
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 stock char[] GetStepSoundForMaterial(const char[] material)
@@ -5245,15 +5267,41 @@ stock char[] GetStepSoundForMaterial(const char[] material)
 	
 	return sound;
 }
-/*
-public bool PluginBot_NormalJump(int bot_entidx, float vecPos[3], const float dir[3])
+
+public void PluginBot_Jump_Now(int bot_entidx, float vecPos[3])
 {
-	return view_as<CClotBody>(bot_entidx).PluginBot_Jump_Now(vecPos, dir);
+	CClotBody npc = view_as<CClotBody>(bot_entidx);
+	
+	float watchForClimbRange = 75.0;
+	
+	float vecNPC[3];
+	GetEntPropVector(bot_entidx, Prop_Data, "m_vecOrigin", vecNPC);
+	
+	float flDistance = GetVectorDistance(vecNPC, vecPos);
+	if(flDistance > watchForClimbRange || npc.m_bJumping)
+		return;
+	
+	//I guess we failed our last jump because we're jumping again this soon, let's try just a regular jump.
+	if((GetGameTime() - npc.m_flJumpStartTime) < 0.25)
+		npc.Jump();
+	/*
+	else
+		npc.JumpAcrossGap(vecPos, vecPos);
+	*/
+	npc.m_bJumping = true;
+	npc.m_flJumpStartTime = GetGameTime();
 }
 
-public bool PluginBot_Jump_Now(int bot_index)
+
+public void PluginBot_Jump_Now_old(int bot_index)
 {
 	CClotBody npc = view_as<CClotBody>(bot_index);
+
+	if((GetGameTime() - npc.m_flJumpStartTimeInternal) < 2.0)
+		return;
+
+	npc.m_flJumpStartTimeInternal = GetGameTime();
+
 	float Jump_1_frame[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
 	Jump_1_frame[2] += 20.0;
@@ -5283,15 +5331,15 @@ public bool PluginBot_Jump_Now(int bot_index)
 		vecJumpVel[2] = 350.0;
 		
 		npc.Jump();
-		vecJumpVel[0] = 0.0;
-		vecJumpVel[1] = 0.0;
+	//	vecJumpVel[0] = 0.0;
+	//	vecJumpVel[1] = 0.0;
 		SetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
 		CreateTimer(0.1, Did_They_Get_Suck, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		npc.SetVelocity(vecJumpVel);
 		
 	}
-	return true;
-}*/
+	return;
+}
 
 public Action Did_They_Get_Suck(Handle cut_timer, int ref)
 {
@@ -5324,7 +5372,7 @@ public Action Did_They_Get_Suck(Handle cut_timer, int ref)
 				if(!IsSpaceOccupiedDontIgnorePlayers(Save_Old_Pos, hullcheckmins, hullcheckmaxs, npc.index))
 				{
 					SetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Save_Old_Pos);
-					KillTimer(cut_timer);
+					return Plugin_Stop;
 				}
 			}
 		}
@@ -5641,11 +5689,11 @@ bool SetTeleportEndPoint(int client, float Position[3])
 	}
 	else
 	{
-		CloseHandle(trace);
+		delete trace;
 		return false;
 	}
 	
-	CloseHandle(trace);
+	delete trace;
 	return true;
 }
 
@@ -6455,6 +6503,14 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f3_SpawnPosition[entity][1] = 0.0;
 	f3_SpawnPosition[entity][2] = 0.0;
 	hFromSpawnerIndex[entity] = -1;
+	b_DungeonContracts_BleedOnHit[entity] = false;
+	b_DungeonContracts_ZombieSpeedTimes3[entity] = false;
+	b_DungeonContracts_ZombieFlatArmorMelee[entity] = false;
+	b_DungeonContracts_ZombieFlatArmorRanged[entity] = false;
+	b_DungeonContracts_ZombieFlatArmorMage[entity] = false;
+	b_DungeonContracts_ZombieArmorDebuffResistance[entity] = false;
+	b_DungeonContracts_35PercentMoreDamage[entity] = false;
+	b_DungeonContracts_25PercentMoreDamage[entity] = false;
 #endif
 	f_NpcHasBeenUnstuckAboveThePlayer[entity] = 0.0;
 	i_NoEntityFoundCount[entity] = 0;
@@ -6474,6 +6530,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_Jumping[entity] = false;
 	b_AllowBackWalking[entity] = false;
 	fl_JumpStartTime[entity] = 0.0;
+	fl_JumpStartTimeInternal[entity] = 0.0;
 	fl_JumpCooldown[entity] = 0.0;
 	fl_NextDelayTime[entity] = 0.0;
 	fl_NextThinkTime[entity] = 0.0;
@@ -6603,7 +6660,7 @@ public void Raidboss_Clean_Everyone()
 		{
 			if(GetEntProp(base_boss, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 			{
-				if(!b_Map_BaseBoss_No_Layers[base_boss]) //Make sure it doesnt actually kill map base_bosses
+				if(!b_Map_BaseBoss_No_Layers[base_boss] && !b_IsAlliedNpc[base_boss]) //Make sure it doesnt actually kill map base_bosses
 				{
 					Change_Npc_Collision(base_boss, 1); //Gives raid collision
 				}

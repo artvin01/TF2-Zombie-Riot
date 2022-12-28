@@ -101,6 +101,7 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			Armor_Charge[client] = 0;
 		}
 	}
+
 	for(int client_check=1; client_check<=MaxClients; client_check++)
 	{
 		if(IsClientInGame(client_check) && TeutonType[client_check] != TEUTON_WAITING)
@@ -181,6 +182,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			{
 				TF2_RemoveWearable(client, entity);
 			}
+			ViewChange_PlayerModel(client);
 			
 			TF2Attrib_RemoveAll(client);
 			TF2Attrib_SetByDefIndex(client, 68, -1.0);
@@ -191,7 +193,9 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		b_ThisEntityIgnored[client] = true;
 			
 	   		int weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword");
-	   		
+
+	   		ViewChange_Switch(client, weapon_index);
+
 	   		TF2Attrib_RemoveAll(weapon_index);
 	   		
 	   		float damage;
@@ -251,7 +255,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		TF2Attrib_SetByDefIndex(weapon_index, 442, 1.1);
 	   		TFClassType ClassForStats = WeaponClass[client];
 	   		
-	   		TF2Attrib_SetByDefIndex(weapon_index, 107, RemoveExtraSpeed(ClassForStats, 300.0));
+	   		TF2Attrib_SetByDefIndex(weapon_index, 107, RemoveExtraSpeed(ClassForStats, 330.0));
 	   		TF2Attrib_SetByDefIndex(weapon_index, 476, 0.0);
 	   		SetEntityCollisionGroup(client, 1);
 	   		SetEntityCollisionGroup(weapon_index, 1);
@@ -394,7 +398,6 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 
 		Citizen_PlayerDeath(client);
 		Bob_player_killed(event, name, dontBroadcast);
-		RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
 #endif
 
 #if defined RPG
@@ -403,6 +406,7 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #endif
 
 		Store_WeaponSwitch(client, -1);
+		RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
 	}
 }
 

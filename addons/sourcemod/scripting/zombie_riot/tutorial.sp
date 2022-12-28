@@ -170,6 +170,6 @@ public Action TimerTutorial_End(Handle timer, int ref)
 		TF2_RemoveCondition(client, TFCond_FreezeInput); //make it 1 second long, incase anything breaks, that itll kill itself eventually.
 		TF2_AddCondition(client, TFCond_UberchargedCanteen, 5.0); //Give 5 seconds of uber so they dont get instamurdered.*/
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 

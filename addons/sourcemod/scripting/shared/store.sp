@@ -419,6 +419,17 @@ static bool HasMultiInSlot[MAXTF2PLAYERS][6];
 static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 
 #if defined RPG
+int Store_GetStoreOfEntity(int entity)
+{
+	int pos = EquippedItems.FindValue(EntIndexToEntRef(entity), ItemInfo::EntRef);
+	if(pos == -1)
+		return 0;
+	
+	static ItemInfo info;
+	EquippedItems.GetArray(pos, info);
+	return info.Store;
+}
+
 bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name, bool auto)
 {
 	static ItemInfo info;
@@ -453,10 +464,13 @@ bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name, boo
 	
 	info.Owner = client;
 	info.Store = index;
+
+	Tinker_EquipItem(client, index);
+
 	EquippedItems.PushArray(info);
 	return true;
 }
-#endif
+#endif	// RPG
 
 void Store_WeaponSwitch(int client, int weapon)
 {
@@ -1974,15 +1988,15 @@ public void MenuPage(int client, int section)
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
 		{
-			menu.SetTitle("%t\n%t\n%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!" , "XP and Level", Level[client], nextAt - (xpNext - XP[client]), nextAt, "Credits", CurrentCash-CashSpent[client]);
+			menu.SetTitle("%t\n%t\n%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!" , "XP and Level", Level[client], xpNext - XP[client], nextAt, "Credits", CurrentCash-CashSpent[client]);
 		}
 		else if(!Waves_InSetup())
 		{
-			menu.SetTitle("%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "XP and Level", Level[client], nextAt - (xpNext - XP[client]), nextAt, "Credits", CurrentCash-CashSpent[client]);
+			menu.SetTitle("%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "XP and Level", Level[client], xpNext - XP[client], nextAt, "Credits", CurrentCash-CashSpent[client]);
 		}
 		else
 		{
-			menu.SetTitle("%t\n \n%t\n%t\n%t\n ", "TF2: Zombie Riot", "XP and Level", Level[client], nextAt - (xpNext - XP[client]), nextAt, "Credits", CurrentCash-CashSpent[client], "Store Discount");
+			menu.SetTitle("%t\n \n%t\n%t\n%t\n ", "TF2: Zombie Riot", "XP and Level", Level[client], xpNext - XP[client], nextAt, "Credits", CurrentCash-CashSpent[client], "Store Discount");
 		}
 		
 		if(!NPCOnly[client] && section == -1)
@@ -2603,7 +2617,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							VecOrigin[2] += 45.0;
 
 							Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, client, info.UnboxRarity -1); //since they are one lower
-
+							
 							if(!CvarInfiniteCash.BoolValue)
 							{
 								Scrap[client] -= info.ScrapCost;
@@ -3002,15 +3016,23 @@ void Store_ApplyAttribs(int client)
 		map.SetValue("26", RemoveExtraHealth(ClassForStats, 1.0));		// Health
 	}
 #endif
-	
+	float MovementSpeed = 330.0;
 #if defined RPG
 
+	MudrockShieldUnequip(client);
+	
 	Format(c_TagName[client],sizeof(c_TagName[]),"Newbie");
 	i_TagColor[client] =	{255,255,255,255};
 	Stats_SetBodyStats(client, ClassForStats, map);
+
+	//CC DIFFICULTY, 15% SLOWER!
+	if(b_DungeonContracts_SlowerMovespeed[client])
+	{
+		MovementSpeed *= 0.85; 
+	}
 #endif
-	
-	map.SetValue("107", RemoveExtraSpeed(ClassForStats, 330.0));		// Move Speed
+
+	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 
 	map.SetValue("353", 1.0);	// No manual building pickup.
 	map.SetValue("465", 10.0);	// x10 faster diepsner build
@@ -3272,11 +3294,9 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 #if defined ZR
 	if(!StoreItems)
 #endif
-
 #if defined RPG
 	if(!EquippedItems)
 #endif
-
 	{
 		return; //STOP. BAD!
 	}
@@ -3385,8 +3405,13 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 #endif
 
 #if defined RPG
-	Store_GiveItem(client, -2);
-	Store_GiveItem(client, -3);
+	entity = SpawnWeapon(client, "tf_weapon_pistol", 25, 1, 0, {128, 301, 821, 2}, {1.0, 1.0, 1.0, 0.0}, 3);
+	if(entity > MaxClients)
+		RequestFrame(SetBackpackName, EntIndexToEntRef(entity));
+	
+	entity = SpawnWeapon(client, "tf_weapon_pistol", 26, 1, 0, {128, 301, 821, 2}, {1.0, 1.0, 1.0, 0.0}, 3);
+	if(entity > MaxClients)
+		RequestFrame(SetQuestBookName, EntIndexToEntRef(entity));
 #endif
 
 	if(!i_ClientHasCustomGearEquipped[client])
@@ -3639,7 +3664,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						i_CustomWeaponEquipLogic[entity] = info.CustomWeaponOnEquip;
 					}
 #endif
-					
 					if(info.Ammo > 0 && !CvarRPGInfiniteLevelAndAmmo.BoolValue)
 					{
 						if(!StrEqual(info.Classname[0], "tf_weapon_medigun"))
@@ -3761,9 +3785,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 #if defined RPG
 					info.EntRef = EntIndexToEntRef(entity);
-					EquippedItems.SetArray(index, info);
-
 					strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), info.Custom_Name);
+					Tinker_SpawnItem(client, info.Store, entity);
+					EquippedItems.SetArray(index, info);
 #endif
 
 					if(use)
@@ -3785,22 +3809,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 #endif
 
 	}
-	
-#if defined RPG
-	else if(index == -2)
-	{
-		entity = SpawnWeapon(client, "tf_weapon_pistol", 25, 1, 0, {128, 301, 821}, {1.0, 1.0, 1.0}, 3);
-		if(entity > MaxClients)
-			RequestFrame(SetBackpackName, EntIndexToEntRef(entity));
-	}
-	else if(index == -3)
-	{
-		entity = SpawnWeapon(client, "tf_weapon_pistol", 26, 1, 0, {128, 301, 821}, {1.0, 1.0, 1.0}, 3);
-		if(entity > MaxClients)
-			RequestFrame(SetQuestBookName, EntIndexToEntRef(entity));
-	}
-#endif
-
 	else
 	{
 		
@@ -4109,7 +4117,22 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 	if(EntityIsAWeapon)
 	{
-	
+//CC CONTRACT diffiulty
+//30% slower attackspeedfor all weapons.
+#if defined RPG
+		if(b_DungeonContracts_SlowerAttackspeed[client])
+		{
+			Address address = TF2Attrib_GetByDefIndex(entity, 6);
+			if(address == Address_Null)
+			{
+				TF2Attrib_SetByDefIndex(entity, 6, 1.3);
+			}
+			else
+			{
+				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 1.3);
+			}
+		}
+#endif
 #if defined ZR
 		//SPEED COLA!
 		if(i_CurrentEquippedPerk[client] == 4)

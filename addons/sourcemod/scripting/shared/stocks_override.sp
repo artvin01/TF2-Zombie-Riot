@@ -231,23 +231,44 @@ stock void ResetToZero2(any[][] array, int length1, int length2)
 stock void RemoveSlotWeapons(int client, int slot)
 {
 	char buffer[36];
-
-	int i, entity;
-	while(TF2_GetItem(client, entity, i))
+	int entity;
+	bool found;
+	do
 	{
-		GetEntityClassname(entity, buffer, sizeof(buffer));
-		if(TF2_GetClassnameSlot(buffer) == slot)
-			TF2_RemoveItem(client, entity);
+		found = false;
+		
+		int i;
+		while(TF2_GetItem(client, entity, i))
+		{
+			GetEntityClassname(entity, buffer, sizeof(buffer));
+			if(TF2_GetClassnameSlot(buffer) == slot)
+			{
+				TF2_RemoveItem(client, entity);
+				found = true;
+				break;
+			}
+		}
 	}
+	while(found);
 }
 
 stock void RemoveAllWeapons(int client)
 {
-	int i, entity;
-	while(TF2_GetItem(client, entity, i))
+	int entity;
+	bool found;
+	do
 	{
-		TF2_RemoveItem(client, entity);
+		found = false;
+
+		int i;
+		while(TF2_GetItem(client, entity, i))
+		{
+			TF2_RemoveItem(client, entity);
+			found = true;
+			break;
+		}
 	}
+	while(found);
 }
 
 

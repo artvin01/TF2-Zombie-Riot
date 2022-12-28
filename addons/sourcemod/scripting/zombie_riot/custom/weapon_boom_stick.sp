@@ -135,21 +135,16 @@ public void Marksman_boom_rifle(int client, int weapon, const char[] classname, 
 	b_LagCompNPC_ExtendBoundingBox = true;
 	StartLagCompensation_Base_Boss(client);
 	Handle trace = TR_TraceRayFilterEx(eyePos, eyeAng, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
-	
-	SpawnSmallExplosionNotRandom(spawnLoc);
-	EmitSoundToAll(HITSCAN_BOOM, -1, _, 90, _, _, _, _,spawnLoc);
-	Explode_Logic_Custom(damage, client, client, weapon, spawnLoc);
-		
-	FinishLagCompensation_Base_boss();
 	if (TR_DidHit(trace))
 	{
 		TR_GetEndPosition(spawnLoc, trace);
-	} 
-	CloseHandle(trace);
-//	if (GetVectorDistance(eyePos, spawnLoc, true) <= Pow(650.0, 2.0))
-	{	
-
-	}
+	}	
+	SpawnSmallExplosionNotRandom(spawnLoc);
+	EmitSoundToAll(HITSCAN_BOOM, -1, _, 80, _, _, _, _,spawnLoc);
+	Explode_Logic_Custom(damage, client, client, weapon, spawnLoc);
+		
+	FinishLagCompensation_Base_boss();
+	delete trace;
 }
 
 
@@ -458,7 +453,7 @@ static void TBB_Tick(int client)
 			hullMax[1] = -hullMin[1];
 			hullMax[2] = -hullMin[2];
 			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-			CloseHandle(trace);
+			delete trace;
 	//		int weapon = BEAM_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
 			/*
 			for (int victim = 1; victim < MaxClients; victim++)
@@ -543,7 +538,7 @@ static void TBB_Tick(int client)
 		}
 		else
 		{
-			PrintToConsoleAll("Error with dot_beam, could not determine end point for beam.");
+			delete trace;
 		}
 	}
 	float vecForward[3];

@@ -428,7 +428,7 @@ static void TBB_Tick(int client)
 		hullMax[1] = -hullMin[1];
 		hullMax[2] = -hullMin[2];
 		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-		CloseHandle(trace);
+		delete trace;
 //		int weapon = BEAM_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
 		/*
 		for (int victim = 1; victim < MaxClients; victim++)
@@ -494,7 +494,7 @@ static void TBB_Tick(int client)
 	}
 	else
 	{
-		PrintToConsoleAll("Error with dot_beam, could not determine end point for beam.");
+		delete trace;
 	}
 }
 
