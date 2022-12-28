@@ -208,7 +208,7 @@ enum struct TinkerEnum
 		this.FuncGainXP = GetFunctionByName(null, this.Desc);
 
 		static char buffers[32][16];
-		kv.GetString("attribs_multi", this.Desc, 256);
+		kv.GetString("attribs", this.Desc, 256);
 		this.Attribs = ExplodeString(this.Desc, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
 		for(int i; i < this.Attribs; i++)
 		{
@@ -529,7 +529,6 @@ void Tinker_SpawnItem(int client, int index, int entity)
 			WeaponList.GetArray(i, weapon);
 			if(weapon.Store == index && weapon.Owner == client)
 			{
-		//		PrintToChatAll("Found");
 				TextStore_GetItemName(index, StoreWeapon[entity], sizeof(StoreWeapon[]));
 
 				static TinkerEnum tinker;
@@ -585,7 +584,6 @@ void Tinker_SpawnItem(int client, int index, int entity)
 
 				for(i = 0; i < weapon.ForgeCount; i++)
 				{
-				//	PrintToChatAll("%d ; %f", weapon.Forge[i], weapon.Value[i]);
 					if(weapon.Forge[i] < 0)
 					{
 						Stats_GetCustomStats(entity, weapon.Forge[i], weapon.Value[i]);
@@ -777,7 +775,6 @@ bool Tinker_Interact(int client, int entity, int weapon)
 		if(EntRefToEntIndex(npc.EntRef) == entity)
 		{
 			CurrentWeapon[client] = Store_GetStoreOfEntity(weapon);
-		//	PrintToChatAll("%d", CurrentWeapon[client]);
 			if(CurrentWeapon[client])
 				ShowMenu(client, -1);
 			

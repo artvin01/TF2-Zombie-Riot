@@ -1291,7 +1291,6 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 #endif
 		
 #if defined RPG
-		PrintToChatAll("dhooks.sp - %.2f %.2f %.2f", f3_SpawnPosition[client][0], f3_SpawnPosition[client][1], f3_SpawnPosition[client][2]);
 		if(f3_SpawnPosition[client][0])
 		{
 			TeleportEntity(client, f3_SpawnPosition[client], NULL_VECTOR, NULL_VECTOR);

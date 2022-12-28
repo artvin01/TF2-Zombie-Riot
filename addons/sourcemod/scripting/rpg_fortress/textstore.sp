@@ -692,7 +692,6 @@ void TextStore_ZoneAllLeave(const char[] name)
 
 public Action TextStore_OnSellItem(int client, int item, int cash, int &count, int &sell)
 {
-	PrintToChatAll("textstore.sp - '%s'", InStore[client]);
 	if(InStore[client][0])
 	{
 		if(sell > 0)
@@ -1273,11 +1272,10 @@ public int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 									kv.GetSectionName(buffer, sizeof(buffer));
 									MarketKv.JumpToKey(buffer, true);
 									
-									PrintToChatAll("textstore.sp - Checking Unlist");
+
 									if(GetClientAuthId(client, AuthId_Steam3, buffer, sizeof(buffer)) && MarketKv.JumpToKey(buffer))
 									{
 										int amount = MarketKv.GetNum("amount");
-										PrintToChatAll("textstore.sp - Unlisting Max %d", amount);
 
 										if(MarketCount[client] > amount)
 											MarketCount[client] = amount;

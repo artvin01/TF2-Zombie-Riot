@@ -133,27 +133,17 @@ enum struct MineEnum
 				DispatchSpawn(entity);
 				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR, true);
 
-
-				/*
-				float vector[3];
-
-				vector = this.Pos;
-				PrintToChatAll("%f",vector[0]);
-				PrintToChatAll("%f",vector[1]);
-				PrintToChatAll("%f",vector[2]);
-				*/
 				if(this.OnTouch)
 				{
 					SDKHook(entity, SDKHook_Touch, AntiTouchStuckMine);
-				}	
-			//	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
+				}
 
 				if(this.Text_Name[0])
 				{
 					int text = SpawnFormattedWorldText(this.Text_Name, this.Text_Pos, this.Text_Size, this.Color, _,_, false);
 					i_TextEntity[entity][0] = EntIndexToEntRef(text);
-				}			
-			//	SetEntityRenderMode(entity, RENDER_NORMAL);
+				}
+				
 				SetEntityRenderColor(entity, this.Color[0], this.Color[1], this.Color[2], this.Color[3]);
 				
 				this.EntRef = EntIndexToEntRef(entity);

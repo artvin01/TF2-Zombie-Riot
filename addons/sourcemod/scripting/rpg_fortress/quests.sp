@@ -438,7 +438,19 @@ static void MainMenu(int client)
 						}
 						default:
 						{
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS");
+							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
+							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
+							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
+							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
+							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
+							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
+							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
+							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
+							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
+							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
+							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
+							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
+							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
 						}
 					}
 
