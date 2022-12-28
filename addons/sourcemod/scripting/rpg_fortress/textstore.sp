@@ -1459,9 +1459,10 @@ static void DropItem(int client, int index, float pos[3], int amount)
 
 				int text = SpawnFormattedWorldText(buffer, {0.0, 0.0, 30.0}, amount == 1 ? 5 : 6, color_Text, entity,_,true);
 				ItemOwner[text] = client;
+				i_TextEntity[text][0] = entity;
 				i_TextEntity[entity][0] = EntIndexToEntRef(text);
 				
-				SDKHook(text, SDKHook_SetTransmit, DroppedItemSetTransmit);
+				SDKHook(text, SDKHook_SetTransmit, DroppedTextSetTransmit);
 				SDKHook(entity, SDKHook_SetTransmit, DroppedItemSetTransmit);
 			
 			}
@@ -1472,6 +1473,14 @@ static void DropItem(int client, int index, float pos[3], int amount)
 bool Textstore_CanSeeItem(int entity, int client)
 {
 	return (ItemOwner[entity] == client || Party_IsClientMember(ItemOwner[entity], client) || ItemLifetime[entity] < (GetGameTime() + 15.0));
+}
+
+public Action DroppedTextSetTransmit(int entity, int client)
+{
+	if(Textstore_CanSeeItem(i_TextEntity[entity][0], client))
+		return Plugin_Continue;
+	
+	return Plugin_Handled;
 }
 
 public Action DroppedItemSetTransmit(int entity, int client)
