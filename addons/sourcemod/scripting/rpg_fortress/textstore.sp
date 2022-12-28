@@ -1465,7 +1465,7 @@ static void DropItem(int client, int index, float pos[3], int amount)
 
 bool Textstore_CanSeeItem(int entity, int client)
 {
-	return (ItemOwner[entity] == client || Party_IsClientMember(ItemOwner[entity], client) || (ItemLifetime[entity] - 15.0) > GetGameTime());
+	return (ItemOwner[entity] == client || Party_IsClientMember(ItemOwner[entity], client) || ItemLifetime[entity] < (GetGameTime() + 15.0));
 }
 
 public Action DroppedItemSetTransmit(int entity, int client)
@@ -1953,7 +1953,7 @@ static void ShowMenu(int client, int page = 0)
 					else
 					{
 						menu.AddItem(index, name);
-						amount += pack.Amount;
+						amount += pack.Amount * pack.Weight;
 					}
 
 					found = true;
