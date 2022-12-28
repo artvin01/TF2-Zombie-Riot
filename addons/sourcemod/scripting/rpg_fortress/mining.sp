@@ -116,7 +116,7 @@ enum struct MineEnum
 		}
 	}
 
-	void DropChanceItem(int client, int hasTier, const float pos[3], const char[] name, float chance, int tier)
+	void DropChanceItem(int client, int hasTier, float pos[3], const char[] name, float chance, int tier)
 	{
 		if(name[0] && hasTier >= tier)
 		{
@@ -460,7 +460,7 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 						GetClientEyePosition(client, forwar);
 						TextStore_DropNamedItem(client, mine.Item, forwar, 1);
 						MineDamage[client] -= mine.Health;
-						
+
 						mine.DropChanceItem(client, tier, forwar, mine.Item1, mine.Chance1, mine.Tier1);
 						mine.DropChanceItem(client, tier, forwar, mine.Item2, mine.Chance2, mine.Tier2);
 						mine.DropChanceItem(client, tier, forwar, mine.Item3, mine.Chance3, mine.Tier3);
