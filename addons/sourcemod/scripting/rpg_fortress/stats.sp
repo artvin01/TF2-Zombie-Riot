@@ -295,7 +295,7 @@ void Stats_ShowLevelUp(int client, int oldLevel, int oldTier)
 
 	if(Tier[client])
 	{
-		menu.SetTitle("You are now Elite %d Level %d!\n ", Tier[client], Level[client]);
+		menu.SetTitle("You are now Elite %d Level %d!\n ", Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
 	}
 	else
 	{
