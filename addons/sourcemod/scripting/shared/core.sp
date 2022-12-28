@@ -34,8 +34,8 @@
 #define MAX_PLAYER_COUNT_STRING		"12"
 //cant do more then 12, more then 12 cause memory isssues because that many npcs can just cause that much lag
 #else
-#define MAX_PLAYER_COUNT			24
-#define MAX_PLAYER_COUNT_STRING		"24"
+#define MAX_PLAYER_COUNT			12
+#define MAX_PLAYER_COUNT_STRING		"12"
 #endif
 
 //#pragma dynamic    131072
