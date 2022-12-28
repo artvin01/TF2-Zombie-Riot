@@ -796,6 +796,7 @@ bool TextStore_SayCommand(int client)
 	
 	static char buffer[16];
 	GetCmdArgString(buffer, sizeof(buffer));
+	ReplaceString(buffer, sizeof(buffer), "\"", "");
 	int value = StringToInt(buffer);
 	if(value < 1)
 	{
