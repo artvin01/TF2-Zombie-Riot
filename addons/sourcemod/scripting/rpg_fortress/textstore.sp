@@ -1192,7 +1192,7 @@ public int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 						if(kv)
 						{
 							int cash = TextStore_Cash(client);
-							if((MarketCount[client] * MarketSell[client]) > cash)
+							if(cash >= (MarketCount[client] * MarketSell[client]))
 							{
 								static char buffer[64];
 								if(!StrEqual(InStoreTag[client], "market", false))
