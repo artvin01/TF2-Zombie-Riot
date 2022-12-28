@@ -177,7 +177,7 @@ enum struct TinkerEnum
 		this.ToolMinRarity = kv.GetNum("tool_minrarity");
 		this.ToolMaxRarity = kv.GetNum("tool_maxrarity", 9);
 		this.PlayerLevel = kv.GetNum("player_minlevel");
-		this.ToolFlags = kv.GetNum("tools");
+		this.ToolFlags = kv.GetNum("tools", FLAG_ALL);
 		this.Levels = kv.GetNum("levels");
 		this.Credits = kv.GetNum("credits");
 
@@ -1085,7 +1085,7 @@ static void ShowMenu(int client, int page)
 							break;
 						}
 					}
-					
+
 					menu.ExitBackButton = true;
 				}
 			}
