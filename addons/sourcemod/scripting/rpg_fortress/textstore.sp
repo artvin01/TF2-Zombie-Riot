@@ -1273,9 +1273,12 @@ public int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 									kv.GetSectionName(buffer, sizeof(buffer));
 									MarketKv.JumpToKey(buffer, true);
 									
-									if(GetClientAuthId(client, AuthId_Steam3, buffer, sizeof(buffer)) && MarketKv.JumpToKey(buffer, true))
+									PrintToChatAll("textstore.sp - Checking Unlist");
+									if(GetClientAuthId(client, AuthId_Steam3, buffer, sizeof(buffer)) && MarketKv.JumpToKey(buffer))
 									{
 										int amount = MarketKv.GetNum("amount");
+										PrintToChatAll("textstore.sp - Unlisting Max %d", amount);
+
 										if(MarketCount[client] > amount)
 											MarketCount[client] = amount;
 										
@@ -1284,9 +1287,9 @@ public int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 
 										if(MarketCount[client] == amount)
 											MarketKv.DeleteThis();
-									}
 
-									SaveMarket(client);
+										SaveMarket(client);
+									}
 								}
 
 								ClientCommand(client, "playgamesound mvm/mvm_bought_upgrade.wav");
