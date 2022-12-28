@@ -95,6 +95,9 @@ enum struct SpawnEnum
 		if(this.Item3[0])
 			RollItemDrop(client, this.Item3, (this.Chance3 * multi) * luck, pos);
 
+		if(this.Item4[0])
+			RollItemDrop(client, this.Item4, (this.Chance4 * multi) * luck, pos);
+
 	}
 }
 
