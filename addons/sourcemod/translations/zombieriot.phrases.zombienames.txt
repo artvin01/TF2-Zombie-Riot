@@ -935,4 +935,8 @@
 		"en"		"Lucian, ''Blood Diamond''"
 		"ru"		"Люциан, «Кровавый алмаз»"
 	}
+	"Medic Constructor"
+	{
+		"en"		"Medic Constructor"
+	}
 }
