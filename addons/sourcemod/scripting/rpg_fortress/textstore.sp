@@ -596,12 +596,15 @@ void TextStore_AddItemCount(int client, const char[] name, int amount)
 		if(amount > 0)
 			SPrintToChat(client, "You gained %d XP", amount);
 	}
-	else if(StrEqual(name, ITEM_TIER))
-	{
-		GiveTier(client);
-	}
 	else
 	{
+		bool tier = StrEqual(name, ITEM_TIER);
+		if(tier)
+		{
+			amount = 1;
+			GiveTier(client);
+		}
+		
 		int length = TextStore_GetItems();
 		for(int i; i < length; i++)
 		{
@@ -611,13 +614,16 @@ void TextStore_AddItemCount(int client, const char[] name, int amount)
 			{
 				TextStore_GetInv(client, i, length);
 				TextStore_SetInv(client, i, length + amount);
-				if(amount == 1)
+				if(!tier)
 				{
-					SPrintToChat(client, "You gained %s", name);
-				}
-				else if(amount > 1)
-				{
-					SPrintToChat(client, "You gained %s x%d", name, amount);
+					if(amount == 1)
+					{
+						SPrintToChat(client, "You gained %s", name);
+					}
+					else if(amount > 1)
+					{
+						SPrintToChat(client, "You gained %s x%d", name, amount);
+					}
 				}
 				return;
 			}
@@ -1580,102 +1586,109 @@ bool TextStore_Interact(int client, int entity, bool reload)
 	{
 		if(reload)
 		{
-			int weight = -1;
-			int strength;
-			if(ItemIndex[entity] != -1)
+			KeyValues kv = ItemIndex[entity] == -1 ? null : TextStore_GetItemKv(ItemIndex[entity]);
+			if(ItemIndex[entity] == -1 || kv)
 			{
-				weight = GetBackpackSize(client) - 2 - (2 * Tier[client]);
-
-				int i;
-				while(TF2_GetItem(client, strength, i))
+				int itemWeight = ItemIndex[entity] == -1 ? 1 : kv.GetNum("weight", 1);
+				int weight = -1;
+				int strength;
+				if(ItemIndex[entity] != -1)
 				{
-					weight += 1 + Tier[client];
+					weight = GetBackpackSize(client) - 2 - (2 * Tier[client]);
+
+					int i;
+					while(TF2_GetItem(client, strength, i))
+					{
+						weight += 1 + Tier[client];
+					}
+
+					strength = Stats_BaseCarry(client);
 				}
 
-				strength = Stats_BaseCarry(client);
-			}
+				if((weight + itemWeight) > strength)
+				{
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					ShowGameText(client, "ico_notify_highfive", 0, "You can't carry any more items (%d / %d)", weight, strength);
 
-			if(weight >= strength)
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				ShowGameText(client, "ico_notify_highfive", 0, "You can't carry any more items (%d / %d)", weight, strength);
+					if(Level[client] < 6)
+					{
+						SPrintToChat(client, "TIP: Head over to a shop to deposit your backpack");
+					}
+					else if((Level[client] == 10 && Tier[client] == 0) || (Level[client] == 30 && Tier[client] == 1))
+					{
+						SPrintToChat(client, "TIP: You can carry 10 more items for each elite level up");
+					}
+					else if(Level[client] < 30)
+					{
+						SPrintToChat(client, "TIP: Switch to your backpack to drop items you don't need");
+					}
+				}
+				else
+				{
+					ClientCommand(client, "playgamesound items/gift_pickup.wav");
+					
+					int amount = strength - weight;
+					if(ItemIndex[entity] == -1 || amount > ItemCount[entity])
+						amount = ItemCount[entity];
+					
+					bool found;
+					static BackpackEnum pack;
+					int length = Backpack.Length;
+					for(int i; i < length; i++)
+					{
+						Backpack.GetArray(i, pack);
+						if(pack.Owner == client && pack.Item == ItemIndex[entity])
+						{
+							pack.Amount += amount;
+							Backpack.SetArray(i, pack);
 
-				if(Level[client] < 6)
-				{
-					SPrintToChat(client, "TIP: Head over to a shop to deposit your backpack");
-				}
-				else if((Level[client] == 10 && Tier[client] == 0) || (Level[client] == 30 && Tier[client] == 1))
-				{
-					SPrintToChat(client, "TIP: You can carry 10 more items for each elite level up");
-				}
-				else if(Level[client] < 30)
-				{
-					SPrintToChat(client, "TIP: Switch to your backpack to drop items you don't need");
+							found = true;
+							break;
+						}
+					}
+
+					if(!found)
+					{
+						pack.Owner = client;
+						pack.Item = ItemIndex[entity];
+						pack.Amount = amount;
+
+						if(ItemIndex[entity] == -1)
+						{
+							pack.Weight = 0;
+						}
+						else
+						{
+							pack.Weight = itemWeight;
+						}
+						
+						Backpack.PushArray(pack);
+					}
+					
+					if(amount == ItemCount[entity])
+					{
+						int text = EntRefToEntIndex(i_TextEntity[entity][0]);
+						if(text != INVALID_ENT_REFERENCE)
+							RemoveEntity(text);
+						
+						i_TextEntity[entity][0] = INVALID_ENT_REFERENCE;
+						ItemCount[entity] = 0;
+						RemoveEntity(entity);
+					}
+					else
+					{
+						ItemCount[entity] -= amount;
+						UpdateItemText(entity, ItemIndex[entity]);
+					}
+
+					if(InMenu[client] && MenuType[client] == MENU_BACKPACK)
+						ShowMenu(client);
 				}
 			}
 			else
 			{
-				ClientCommand(client, "playgamesound items/gift_pickup.wav");
-				
-				int amount = strength - weight;
-				if(ItemIndex[entity] == -1 || amount > ItemCount[entity])
-					amount = ItemCount[entity];
-				
-				bool found;
-				static BackpackEnum pack;
-				int length = Backpack.Length;
-				for(int i; i < length; i++)
-				{
-					Backpack.GetArray(i, pack);
-					if(pack.Owner == client && pack.Item == ItemIndex[entity])
-					{
-						pack.Amount += amount;
-						Backpack.SetArray(i, pack);
-
-						found = true;
-						break;
-					}
-				}
-
-				if(!found)
-				{
-					pack.Owner = client;
-					pack.Item = ItemIndex[entity];
-					pack.Amount = amount;
-
-					if(ItemIndex[entity] == -1)
-					{
-						pack.Weight = 0;
-					}
-					else
-					{
-						pack.Weight = 1;
-						KeyValues kv = TextStore_GetItemKv(ItemIndex[entity]);
-						if(kv)
-							pack.Weight = kv.GetNum("weight", 1);
-					}
-					
-					Backpack.PushArray(pack);
-				}
-				
-				if(amount == ItemCount[entity])
-				{
-					int text = EntRefToEntIndex(i_TextEntity[entity][0]);
-					if(text != INVALID_ENT_REFERENCE)
-						RemoveEntity(text);
-					
-					i_TextEntity[entity][0] = INVALID_ENT_REFERENCE;
-					ItemCount[entity] = 0;
-					RemoveEntity(entity);
-				}
-				else
-				{
-					ItemCount[entity] -= amount;
-					UpdateItemText(entity, ItemIndex[entity]);
-				}
-
-				if(InMenu[client] && MenuType[client] == MENU_BACKPACK)
-					ShowMenu(client);
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				ShowGameText(client, "ico_notify_highfive", 0, "Ghost Item???? Please Report This");
 			}
 			return true;
 		}
