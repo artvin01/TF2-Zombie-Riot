@@ -133,11 +133,11 @@ void Stats_SetWeaponStats(int client, int entity, int slot)
 
 		Address address = TF2Attrib_GetByDefIndex(entity, 6);
 		if(address != Address_Null)
-			TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * multi);
+			TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(address) * multi);
 
 		address = TF2Attrib_GetByDefIndex(entity, 96);
 		if(address != Address_Null)
-			TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * multi);
+			TF2Attrib_SetByDefIndex(entity, 96, TF2Attrib_GetValue(address) * multi);
 	}
 
 	if(slot > TFWeaponSlot_Melee || i_IsWrench[entity])
@@ -147,7 +147,7 @@ void Stats_SetWeaponStats(int client, int entity, int slot)
 		{
 			Address address = TF2Attrib_GetByDefIndex(entity, 2);
 			if(address != Address_Null)
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * (1.0 + (stat / 30.0)));
+				TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(address) * (1.0 + (stat / 30.0)));
 		}
 	}
 	else if(i_IsWandWeapon[entity])
@@ -157,7 +157,7 @@ void Stats_SetWeaponStats(int client, int entity, int slot)
 		{
 			Address address = TF2Attrib_GetByDefIndex(entity, 410);
 			if(address != Address_Null)
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * (1.0 + (stat / 30.0)));
+				TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(address) * (1.0 + (stat / 30.0)));
 		}
 	}
 	else if(slot == TFWeaponSlot_Melee)
@@ -167,7 +167,7 @@ void Stats_SetWeaponStats(int client, int entity, int slot)
 		{
 			Address address = TF2Attrib_GetByDefIndex(entity, 2);
 			if(address != Address_Null)
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * (1.0 + (stat / 30.0)));
+				TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(address) * (1.0 + (stat / 30.0)));
 		}
 	}
 }

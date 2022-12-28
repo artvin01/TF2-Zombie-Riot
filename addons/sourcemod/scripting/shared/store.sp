@@ -4154,7 +4154,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			}
 			else
 			{
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 1.3);
+				TF2Attrib_SetByDefIndex(entity, TF2Attrib_GetValue(address) * 1.3);
 			}
 		}
 #endif
