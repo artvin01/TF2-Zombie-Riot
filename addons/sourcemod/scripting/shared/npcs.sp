@@ -881,6 +881,8 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 			}
 		}
 	}
+	
+	IgniteTimer[entity] = null;
 	return Plugin_Stop;
 }
 
