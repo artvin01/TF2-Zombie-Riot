@@ -86,11 +86,11 @@ bool Ability_Mudrock_Shield_OnTakeDamage(int victim)
 
 			float PercentageHeal = 0.15;
 			
-			if(ReturnStatsViaIndex(victim, 2) > 40) //Give melee more
+			if(Stats_Strength(victim) > 40) //Give melee more
 			{
 				PercentageHeal = 0.20;
 			}
-			else if(ReturnStatsViaIndex(victim, 2) > 60) //Give melee more
+			else if(Stats_Strength(victim) > 60) //Give melee more
 			{
 				PercentageHeal = 0.25;
 			}

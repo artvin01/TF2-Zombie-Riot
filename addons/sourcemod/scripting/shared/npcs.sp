@@ -1423,7 +1423,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 			if(f_HealingPotionDuration[attacker] > GetGameTime()) //Client has a buff, but which one?
 			{
-
 				switch(f_HealingPotionEffect[attacker])
 				{
 					case MELEE_BUFF_2:
@@ -1435,7 +1434,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					}
 					case RANGED_BUFF_2: 
 					{
-						if(slot > TFWeaponSlot_Melee) //Only Ranged
+						if(slot < TFWeaponSlot_Melee) //Only Ranged
 						{
 							damage *= 1.25;
 						}

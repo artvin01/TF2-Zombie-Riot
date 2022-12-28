@@ -140,7 +140,7 @@ void Stats_SetWeaponStats(int client, int entity, int slot)
 			TF2Attrib_SetByDefIndex(entity, 96, TF2Attrib_GetValue(address) * multi);
 	}
 
-	if(slot > TFWeaponSlot_Melee || i_IsWrench[entity])
+	if(slot < TFWeaponSlot_Melee || i_IsWrench[entity])
 	{
 		int stat = Stats_Dexterity(client);
 		if(stat)

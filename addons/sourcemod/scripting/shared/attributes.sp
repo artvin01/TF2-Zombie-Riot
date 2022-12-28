@@ -72,7 +72,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 
 				if(value < 1.0)
 					value = 2.0;
-				
+					
 				NPC_Ignite(victim, client, value, weapon);
 			}
 			value = Attributes_FindOnWeapon(client, weapon, 638);	// Extinquisher
