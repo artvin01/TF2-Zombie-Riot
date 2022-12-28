@@ -1279,7 +1279,6 @@ public int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 									kv.GetSectionName(buffer, sizeof(buffer));
 									MarketKv.JumpToKey(buffer, true);
 									
-
 									if(GetClientAuthId(client, AuthId_Steam3, buffer, sizeof(buffer)) && MarketKv.JumpToKey(buffer))
 									{
 										int amount = MarketKv.GetNum("amount");
@@ -1288,10 +1287,11 @@ public int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 											MarketCount[client] = amount;
 										
 										MarketKv.SetNum("amount", amount - MarketCount[client]);
-										TextStore_SetInv(client, MarketItem[client], amount + MarketCount[client]);
-
 										if(MarketCount[client] == amount)
 											MarketKv.DeleteThis();
+										
+										TextStore_GetInv(client, MarketItem[client], amount);
+										TextStore_SetInv(client, MarketItem[client], amount + MarketCount[client]);
 
 										SaveMarket(client);
 									}
