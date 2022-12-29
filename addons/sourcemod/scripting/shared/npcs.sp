@@ -856,7 +856,11 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				
 				pos = WorldSpaceCenter(entity);
 				
-				if(value < BurnDamage[client])
+				if(value < 0.2)
+				{
+					
+				}
+				else if(value < BurnDamage[client])
 				{
 					value = BurnDamage[client];
 				}
@@ -879,6 +883,18 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				}
 				return Plugin_Continue;
 			}
+			else
+			{
+				IgniteTimer[entity] = null;
+				IgniteFor[entity] = 0;
+				return Plugin_Stop;		
+			}
+		}
+		else
+		{
+			IgniteTimer[entity] = null;
+			IgniteFor[entity] = 0;
+			return Plugin_Stop;		
 		}
 	}
 	return Plugin_Stop;
@@ -1021,7 +1037,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				played_headshotsound_already[attacker] = GetGameTime();
 				if(!Blitzed_By_Riot) //dont play headshot sound if blized.
 				{
-					switch(random_case)
+					/*switch(random_case)
 					{
 						case 1:
 						{
@@ -1045,7 +1061,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 							}
 							EmitSoundToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, volume, pitch);
 						}
-					}
+					}*/
 				}
 				return Plugin_Changed;
 			}
@@ -1423,7 +1439,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 			if(f_HealingPotionDuration[attacker] > GetGameTime()) //Client has a buff, but which one?
 			{
-
 				switch(f_HealingPotionEffect[attacker])
 				{
 					case MELEE_BUFF_2:
@@ -1435,7 +1450,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					}
 					case RANGED_BUFF_2: 
 					{
-						if(slot > TFWeaponSlot_Melee) //Only Ranged
+						if(slot < TFWeaponSlot_Melee) //Only Ranged
 						{
 							damage *= 1.25;
 						}

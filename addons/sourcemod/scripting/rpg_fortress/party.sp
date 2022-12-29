@@ -110,7 +110,7 @@ static void ShowMenu(int client)
 						menu.AddItem(index, buffer);
 					}
 				}
-				else if(!joined)
+				else if(joined)
 				{
 					if(PartyLeader[client] == target)
 						Format(buffer, sizeof(buffer), "%s [Leader]", buffer);

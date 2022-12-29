@@ -165,6 +165,11 @@ stock float Config_GetDPSOfEntity(int entity)
 	if(address != Address_Null)
 		data.FireRate *= TF2Attrib_GetValue(address);
 	
+	
+	address = TF2Attrib_GetByDefIndex(entity, 876);
+	if(address != Address_Null)
+		data.Damage *= TF2Attrib_GetValue(address);
+	
 	return data.Damage / data.FireRate;
 }
 
@@ -444,6 +449,15 @@ void Config_CreateDescription(const char[] classname, const int[] attrib, const 
 		float damagepersecond;
 
 		damagepersecond = damage_Calc / firerate_Calc;
+
+		for(i=0; i<attribs; i++)
+		{
+			if(attrib[i] == 876)
+			{
+				damagepersecond *= value[i];
+				break;
+			}
+		}
 
 		Format(buffer, length, "%s\nDPS: %1.f", buffer, damagepersecond);
 	}

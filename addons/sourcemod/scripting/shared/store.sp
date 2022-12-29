@@ -418,6 +418,31 @@ static ArrayList EquippedItems;
 static bool HasMultiInSlot[MAXTF2PLAYERS][6];
 static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 
+#if defined ZR
+public Action TextStore_OnClientLoad(int client, char file[PLATFORM_MAX_PATH])
+{
+	RequestFrame(TextStore_LoadFrame, GetClientUserId(client));
+	return Plugin_Continue;
+}
+
+public void TextStore_LoadFrame(int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(client)
+	{
+		if(TextStore_GetClientLoad(client))
+		{
+			if(!CashSpent[client] && HasNamedItem(client, "ZR Contest Nominator [???]"))
+				CashSpent[client] = -100;
+		}
+		else
+		{
+			RequestFrame(TextStore_LoadFrame, userid);
+		}
+	}
+}
+#endif
+
 #if defined RPG
 int Store_GetStoreOfEntity(int entity)
 {
@@ -4129,7 +4154,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			}
 			else
 			{
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 1.3);
+				TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(address) * 1.3);
 			}
 		}
 #endif

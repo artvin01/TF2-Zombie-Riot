@@ -202,6 +202,11 @@ static float f_IncrementalSmallHeal[MAXENTITIES];
 static int i_targethealedLastBy[MAXENTITIES];
 
 float target_sucked_long[MAXENTITIES]={0.85, ...};
+
+float Target_Sucked_Long_Return(int entity)
+{
+	return target_sucked_long[entity];
+}
 static Handle Revert_target_sucked_long_timer[MAXENTITIES];
 static bool Handle_on_target_sucked_long[MAXENTITIES]={false, ...};
 
@@ -638,7 +643,11 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					
 					if(!Is_Allied_Npc)
 					{
+#if defined RPG
+						flMaxHealth = SDKCall_GetMaxHealth(healTarget);
+#else
 						flMaxHealth = RoundToNearest(float(SDKCall_GetMaxHealth(healTarget)) * 1.5);
+#endif
 					}
 					else
 					{

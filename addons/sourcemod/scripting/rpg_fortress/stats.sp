@@ -133,38 +133,41 @@ void Stats_SetWeaponStats(int client, int entity, int slot)
 
 		Address address = TF2Attrib_GetByDefIndex(entity, 6);
 		if(address != Address_Null)
-			TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * multi);
+			TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(address) * multi);
 
 		address = TF2Attrib_GetByDefIndex(entity, 96);
 		if(address != Address_Null)
-			TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * multi);
+			TF2Attrib_SetByDefIndex(entity, 96, TF2Attrib_GetValue(address) * multi);
 	}
 
-	if(slot > TFWeaponSlot_Melee || i_IsWrench[entity])
+	if(slot < TFWeaponSlot_Melee || i_IsWrench[entity])
 	{
-		if(Dexterity[client])
+		int stat = Stats_Dexterity(client);
+		if(stat)
 		{
 			Address address = TF2Attrib_GetByDefIndex(entity, 2);
 			if(address != Address_Null)
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * (1.0 + (Dexterity[client] / 30.0)));
+				TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(address) * (1.0 + (stat / 50.0)));
 		}
 	}
 	else if(i_IsWandWeapon[entity])
 	{
-		if(Intelligence[client])
+		int stat = Stats_Intelligence(client);
+		if(stat)
 		{
 			Address address = TF2Attrib_GetByDefIndex(entity, 410);
 			if(address != Address_Null)
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * (1.0 + (Intelligence[client] / 30.0)));
+				TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(address) * (1.0 + (stat / 50.0)));
 		}
 	}
 	else if(slot == TFWeaponSlot_Melee)
 	{
-		if(Strength[client])
+		int stat = Stats_Strength(client);
+		if(stat)
 		{
 			Address address = TF2Attrib_GetByDefIndex(entity, 2);
 			if(address != Address_Null)
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * (1.0 + (Strength[client] / 30.0)));
+				TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(address) * (1.0 + (stat / 50.0)));
 		}
 	}
 }
@@ -295,7 +298,7 @@ void Stats_ShowLevelUp(int client, int oldLevel, int oldTier)
 
 	if(Tier[client])
 	{
-		menu.SetTitle("You are now Elite %d Level %d!\n ", Tier[client], Level[client]);
+		menu.SetTitle("You are now Elite %d Level %d!\n ", Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
 	}
 	else
 	{
@@ -363,15 +366,15 @@ public Action Stats_ShowStats(int client, int args)
 		menu.AddItem(NULL_STRING, buffer);
 
 		int total = Stats_Strength(client, amount, bonus);
-		FormatEx(buffer, sizeof(buffer), "Strength: %d + %d (+%.0f%% melee damage)", amount, bonus, total * 3.33333);
+		FormatEx(buffer, sizeof(buffer), "Strength: %d + %d (+%.0f%% melee damage)", amount, bonus, total * 5.0);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Dexterity(client, amount, bonus);
-		FormatEx(buffer, sizeof(buffer), "Dexterity: %d + %d (+%.0f%% ranged damage)", amount, bonus, total * 3.33333);
+		FormatEx(buffer, sizeof(buffer), "Dexterity: %d + %d (+%.0f%% ranged damage)", amount, bonus, total * 5.0);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Intelligence(client, amount, bonus);
-		FormatEx(buffer, sizeof(buffer), "Intelligence: %d + %d (+%.0f%% magic damage)", amount, bonus, total * 3.33333);
+		FormatEx(buffer, sizeof(buffer), "Intelligence: %d + %d (+%.0f%% magic damage)", amount, bonus, total * 5.0);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Agility(client);

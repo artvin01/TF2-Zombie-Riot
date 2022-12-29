@@ -55,6 +55,7 @@ enum struct ModEnum
 
 	void CallOnPlayer(int client)
 	{
+		PrintToChatAll("func_onplayer");
 		if(this.OnPlayer != INVALID_FUNCTION)
 		{
 			Call_StartFunction(null, this.OnPlayer);
@@ -1092,21 +1093,30 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 						dungeon.CurrentHost = client;
 						dungeon.StartTime = GetGameTime() + (b_IsAloneOnServer ? 30.0 : QUEUE_TIME);
 						DungeonList.SetArray(DungeonMenu[client], dungeon, sizeof(dungeon));
-						strcopy(InDungeon[client], sizeof(InDungeon[]), DungeonMenu[client]);
+
+						for(int target = 1; target <= MaxClients; target++)
+						{
+							if(client == target || Party_IsClientMember(target, client))
+							{
+								Dungeon_ClientDisconnect(target, true);
+
+								if(LastResult[target] > 0)
+								{
+									ClientCommand(target, "playgamesound %s", RoundRetryWin[GetURandomInt() % sizeof(RoundRetryWin)]);
+									LastResult[target] = 0;
+								}
+								else if(LastResult[target] < 0)
+								{
+									ClientCommand(target, "playgamesound %s", RoundRetryLoss[GetURandomInt() % sizeof(RoundRetryLoss)]);
+									LastResult[target] = 0;
+								}
+
+								strcopy(InDungeon[target], sizeof(InDungeon[]), DungeonMenu[client]);
+							}
+						}
 						
 						if(!DungeonTimer)
 							DungeonTimer = CreateTimer(0.2, Dungeon_Timer, _, TIMER_REPEAT);
-						
-						if(LastResult[client] > 0)
-						{
-							ClientCommand(client, "playgamesound %s", RoundRetryWin[GetURandomInt() % sizeof(RoundRetryWin)]);
-							LastResult[client] = 0;
-						}
-						else if(LastResult[client] < 0)
-						{
-							ClientCommand(client, "playgamesound %s", RoundRetryLoss[GetURandomInt() % sizeof(RoundRetryLoss)]);
-							LastResult[client] = 0;
-						}
 					}
 
 					ShowMenu(client, 0);
@@ -1249,6 +1259,7 @@ static void StartDungeon(const char[] name)
 
 						for(int c; c < dungeon.PlayerCount; c++)
 						{
+							mod.CallOnPlayer(clients[c]);
 							SPrintToChat(clients[c], mod.Desc);
 						}
 
@@ -1319,6 +1330,7 @@ static void CleanDungeon(const char[] name, bool victory)
 					clear = true;
 					if(dungeon.WaveList)
 					{
+						clients[amount++] = client;
 						InDungeon[client][0] = 0;
 						ClearDungeonStats(client);
 						f3_SpawnPosition[client] = dungeon.RespawnPos;
@@ -1347,7 +1359,8 @@ static void CleanDungeon(const char[] name, bool victory)
 
 			if(victory)
 			{
-				stage.DoAllDrops(clients, amount, tier);
+				if(amount)
+					stage.DoAllDrops(clients, amount, tier);
 				
 				BuildPath(Path_SM, mod.Desc, sizeof(mod.Desc), CONFIG_CFG, "dungeon_savedata");
 
@@ -1492,7 +1505,7 @@ public Action Dungeon_Timer(Handle timer)
 								if(wave.Health)
 								{
 									// +20% each player
-									wave.Health = wave.Health * (dungeon.PlayerCount);
+									wave.Health = RoundToCeil(float(wave.Health) * float(dungeon.PlayerCount) * 0.5);
 									SetEntProp(entity, Prop_Data, "m_iMaxHealth", wave.Health);
 									SetEntProp(entity, Prop_Data, "m_iHealth", wave.Health);
 								}

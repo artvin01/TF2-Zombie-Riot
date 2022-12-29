@@ -613,10 +613,20 @@ static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "
 					int i, entity;
 					while(TF2_GetItem(client, entity, i))
 					{
-						if(StrEqual(StoreWeapon[entity], buffer, false))
+						int index = Store_GetStoreOfEntity(entity);
+						if(index != -1)
 						{
-							canTurnIn = true;
-							break;
+							KeyValues kv = TextStore_GetItemKv(index);
+							if(kv)
+							{
+								static char buffer2[48];
+								kv.GetSectionName(buffer2, sizeof(buffer2));
+								if(StrEqual(buffer, buffer2, false))
+								{
+									canTurnIn = true;
+									break;
+								}
+							}
 						}
 					}
 				}
