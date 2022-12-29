@@ -2542,6 +2542,22 @@ int CountPlayersOnRed(bool alive = false)
 	
 }
 
+int CountPlayersOnServer()
+{
+	int amount;
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientConnected(client))
+		{
+			if(!IsFakeClient(client))
+				amount++;
+		}
+	}
+	
+	return amount;
+	
+}
+
 stock int HasNamedItem(int client, const char[] name)
 {
 	int amount;

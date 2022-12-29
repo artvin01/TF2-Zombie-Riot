@@ -1316,6 +1316,7 @@ static void CleanDungeon(const char[] name, bool victory)
 			{
 				if(StrEqual(InDungeon[client], name))
 				{
+					amount += 1;
 					clear = true;
 					if(dungeon.WaveList)
 					{
@@ -1492,7 +1493,7 @@ public Action Dungeon_Timer(Handle timer)
 								if(wave.Health)
 								{
 									// +20% each player
-									wave.Health = wave.Health * (dungeon.PlayerCount);
+									wave.Health = RoundToCeil(float(wave.Health) * float(dungeon.PlayerCount) * 0.5));
 									SetEntProp(entity, Prop_Data, "m_iMaxHealth", wave.Health);
 									SetEntProp(entity, Prop_Data, "m_iHealth", wave.Health);
 								}

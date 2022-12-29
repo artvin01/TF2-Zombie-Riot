@@ -165,6 +165,11 @@ stock float Config_GetDPSOfEntity(int entity)
 	if(address != Address_Null)
 		data.FireRate *= TF2Attrib_GetValue(address);
 	
+	
+	address = TF2Attrib_GetByDefIndex(entity, 876);
+	if(address != Address_Null)
+		data.Damage *= TF2Attrib_GetValue(address);
+	
 	return data.Damage / data.FireRate;
 }
 
