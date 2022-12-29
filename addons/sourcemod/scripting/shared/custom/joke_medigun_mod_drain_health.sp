@@ -520,6 +520,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					bool Is_Allied_Npc = false;
 					if(b_IsAlliedNpc[healTarget]) //Give uber
 					{
+#if defined RPG
 						float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
 						
 						flChargeLevel += 0.03*GetGameFrameTime();
@@ -530,7 +531,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						}
 						
 						SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
-						
+#endif
 						Is_Allied_Npc = true;
 					}
 					
