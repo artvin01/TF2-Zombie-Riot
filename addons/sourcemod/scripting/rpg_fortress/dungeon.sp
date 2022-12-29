@@ -55,6 +55,7 @@ enum struct ModEnum
 
 	void CallOnPlayer(int client)
 	{
+		PrintToChatAll("func_onplayer");
 		if(this.OnPlayer != INVALID_FUNCTION)
 		{
 			Call_StartFunction(null, this.OnPlayer);
