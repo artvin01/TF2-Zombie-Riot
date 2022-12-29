@@ -643,7 +643,11 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					
 					if(!Is_Allied_Npc)
 					{
+#if defined RPG
+						flMaxHealth = SDKCall_GetMaxHealth(healTarget);
+#else
 						flMaxHealth = RoundToNearest(float(SDKCall_GetMaxHealth(healTarget)) * 1.5);
+#endif
 					}
 					else
 					{
