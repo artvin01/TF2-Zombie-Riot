@@ -572,6 +572,10 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 					
 					npc.m_bisWalking = false;
 				}
+				else
+				{
+					npc.m_flNextMeleeAttack = gameTime + 0.2;
+				}
 			}
 			case 2:
 			{			
@@ -632,6 +636,10 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 							}
 						}
 					}
+					else
+					{
+						npc.m_flNextRangedAttack = gameTime + 0.2;
+					}
 				}				
 			}
 			case 3:
@@ -663,6 +671,10 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 						npc.AddActivityViaSequence("Walk_aiming_all");
 					}
 					FatherGrigori_IOC_Invoke(EntIndexToEntRef(npc.index), npc.m_iTarget);
+				}
+				else
+				{
+					npc.m_flNextTeleport = gameTime + 0.2;
 				}
 			}
 			case 4:

@@ -1339,11 +1339,11 @@ void TextStore_DropNamedItem(int client, const char[] name, float pos[3], int am
 	}
 }
 
-static void DropItem(int client, int index, float pos[3], int amoun)
+static void DropItem(int client, int index, float pos[3], int amount)
 {
 	float ang[3];
 	static char buffer[PLATFORM_MAX_PATH];
-	int amount = amoun;
+
 	int entity = MaxClients + 1;
 	while((entity = FindEntityByClassname(entity, "prop_physics_multiplayer")) != -1)
 	{
@@ -2177,8 +2177,11 @@ public int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 							//CC difficulty, increacing ability cooldowns by 40%.
 							if(b_DungeonContracts_LongerCooldown[client])
 							{
-								cooldownSet *= 1.4;	
+								float calc = cooldownSet - GetGameTime();
+								calc *= 1.4;	
+								cooldownSet = calc + GetGameTime()
 							}
+							
 							spell.Cooldown = cooldownSet;
 							SpellList.SetArray(i, spell);
 						}
