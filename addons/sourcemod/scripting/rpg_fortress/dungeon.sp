@@ -1258,7 +1258,7 @@ static void StartDungeon(const char[] name)
 
 						for(int c; c < dungeon.PlayerCount; c++)
 						{
-							mod.CallOnPlayer(client);
+							mod.CallOnPlayer(clients[c]);
 							SPrintToChat(clients[c], mod.Desc);
 						}
 
