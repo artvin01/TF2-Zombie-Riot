@@ -1099,21 +1099,18 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 							{
 								Dungeon_ClientDisconnect(target, true);
 
-								if(!alreadyIn)
+								if(LastResult[target] > 0)
 								{
-									if(LastResult[target] > 0)
-									{
-										ClientCommand(target, "playgamesound %s", RoundRetryWin[GetURandomInt() % sizeof(RoundRetryWin)]);
-										LastResult[target] = 0;
-									}
-									else if(LastResult[target] < 0)
-									{
-										ClientCommand(target, "playgamesound %s", RoundRetryLoss[GetURandomInt() % sizeof(RoundRetryLoss)]);
-										LastResult[target] = 0;
-									}
-
-									strcopy(InDungeon[target], sizeof(InDungeon[]), DungeonMenu[client]);
+									ClientCommand(target, "playgamesound %s", RoundRetryWin[GetURandomInt() % sizeof(RoundRetryWin)]);
+									LastResult[target] = 0;
 								}
+								else if(LastResult[target] < 0)
+								{
+									ClientCommand(target, "playgamesound %s", RoundRetryLoss[GetURandomInt() % sizeof(RoundRetryLoss)]);
+									LastResult[target] = 0;
+								}
+
+								strcopy(InDungeon[target], sizeof(InDungeon[]), DungeonMenu[client]);
 							}
 						}
 						
