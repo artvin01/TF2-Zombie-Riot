@@ -1507,7 +1507,7 @@ public Action Dungeon_Timer(Handle timer)
 								if(wave.Health)
 								{
 									// +20% each player
-									wave.Health = RoundToCeil(float(wave.Health) * float(dungeon.PlayerCount) * 0.5));
+									wave.Health = RoundToCeil(float(wave.Health) * float(dungeon.PlayerCount) * 0.5);
 									SetEntProp(entity, Prop_Data, "m_iMaxHealth", wave.Health);
 									SetEntProp(entity, Prop_Data, "m_iHealth", wave.Health);
 								}
