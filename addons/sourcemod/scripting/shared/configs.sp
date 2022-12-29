@@ -450,6 +450,15 @@ void Config_CreateDescription(const char[] classname, const int[] attrib, const 
 
 		damagepersecond = damage_Calc / firerate_Calc;
 
+		for(i=0; i<attribs; i++)
+		{
+			if(attrib[i] == 876)
+			{
+				damagepersecond *= value[i];
+				break;
+			}
+		}
+
 		Format(buffer, length, "%s\nDPS: %1.f", buffer, damagepersecond);
 	}
 }
