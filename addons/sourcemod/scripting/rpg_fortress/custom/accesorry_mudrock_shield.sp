@@ -8,6 +8,7 @@ public void MudrockShieldUnequip(int client)
 	MudrockShieldCounter[client] = 0;
 	MudrockShield[client] = false;
 	TF2_RemoveCondition(client, TFCond_UberFireResist);
+	
 	if (MudrockShieldHandle[client] == INVALID_HANDLE)
 		return;
 
@@ -27,12 +28,11 @@ public void MudrockShieldEquip(int client, int weapon, int index)
 	KeyValues kv = TextStore_GetItemKv(index);
 	if(kv)
 	{
-		TF2_AddCondition(client, TFCond_UberFireResist, -1.0, client);
-		MudrockShieldCounter[client] = 60;
-		MudrockShield[client] = true;
 		if (MudrockShieldHandle[client] != INVALID_HANDLE)
 			return;
-		
+
+		MudrockShieldCounter[client] = 60;
+		MudrockShield[client] = true;		
 		MudrockShieldHandle[client] = CreateTimer(0.5, MudrockShieldTimer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	}
 }
@@ -123,13 +123,16 @@ bool Ability_Mudrock_Shield_OnTakeDamage(int victim)
 static Action MudrockShieldTimer(Handle dashHud, int ref)
 {
 	int client = EntRefToEntIndex(ref);
-	if (IsValidClient(client) && IsPlayerAlive(client))
+	if (IsValidClient(client))
 	{
-		if(MudrockShieldCounter[client] == 61)
+		if(!IsPlayerAlive(client))
+			return Plugin_Continue;
+
+		if(MudrockShieldCounter[client] > 60)
 			return Plugin_Continue;
 
 		MudrockShieldCounter[client] += 1;
-		if(MudrockShieldCounter[client] == 60)
+		if(MudrockShieldCounter[client] > 59)
 		{
 			EmitSoundToAll("weapons/medi_shield_deploy.wav",client,_,70,_,0.4);
 			TF2_AddCondition(client, TFCond_MegaHeal, 0.5, client);

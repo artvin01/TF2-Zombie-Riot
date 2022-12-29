@@ -3043,8 +3043,6 @@ void Store_ApplyAttribs(int client)
 #endif
 	float MovementSpeed = 330.0;
 #if defined RPG
-
-	MudrockShieldUnequip(client);
 	
 	Format(c_TagName[client],sizeof(c_TagName[]),"Newbie");
 	i_TagColor[client] =	{255,255,255,255};
@@ -3346,7 +3344,9 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 
 	b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
 #endif
-
+#if defined RPG
+	MudrockShieldUnequip(client);
+#endif
 	//There is no easy way to preserve uber through with multiple mediguns
 	//solution: save via index
 	int ie, entity;

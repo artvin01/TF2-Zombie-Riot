@@ -1037,7 +1037,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				played_headshotsound_already[attacker] = GetGameTime();
 				if(!Blitzed_By_Riot) //dont play headshot sound if blized.
 				{
-					/*switch(random_case)
+					switch(random_case)
 					{
 						case 1:
 						{
@@ -1061,7 +1061,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 							}
 							EmitSoundToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, volume, pitch);
 						}
-					}*/
+					}
 				}
 				return Plugin_Changed;
 			}
