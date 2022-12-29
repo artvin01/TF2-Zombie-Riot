@@ -140,7 +140,12 @@ stock float Config_GetDPSOfEntity(int entity)
 	}
 	
 	if(i == val)
-		return 1.0;
+		return 0.0;
+
+	if(!data.Damage)
+	{
+		return 0.0;
+	}
 	
 	// Damage and Pellets
 	Address address = TF2Attrib_GetByDefIndex(entity, 410);
@@ -172,16 +177,9 @@ stock float Config_GetDPSOfEntity(int entity)
 	
 
 	float damagedps;
+	
+	damagedps = data.Damage / data.FireRate;
 
-	damagedps = data.Damage  / data.FireRate;
-	if(damagedps > 1000000.0)
-	{
-		return 1.0;
-	}
-	else if(damagedps < 1.0)
-	{
-		return 1.0;
-	}
 	return damagedps;
 }
 

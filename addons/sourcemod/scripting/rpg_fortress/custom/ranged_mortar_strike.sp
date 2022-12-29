@@ -47,7 +47,14 @@ public void Ability_MortarRanged(int client, int level, int weapon)
 {
 	float damage = Config_GetDPSOfEntity(weapon);
 	
-	f_Damage[client] = (damage * 6);
+	if(damage < 1.0)
+	{
+		f_Damage[client] = 1.0;
+	}
+	else
+	{
+		f_Damage[client] = (damage * 6);
+	}
 
 	BuildingMortarAction(client);
 }
