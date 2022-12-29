@@ -1326,7 +1326,6 @@ static void CleanDungeon(const char[] name, bool victory)
 			{
 				if(StrEqual(InDungeon[client], name))
 				{
-					amount += 1;
 					clear = true;
 					if(dungeon.WaveList)
 					{
