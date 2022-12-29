@@ -1359,7 +1359,7 @@ static void DropItem(int client, int index, float pos[3], int amount)
 				
 				amount = ItemCount[entity] - 50;
 				ItemCount[entity] = 50;
-				return;
+				break;
 			}
 		}
 	}
