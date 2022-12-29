@@ -140,7 +140,7 @@ stock float Config_GetDPSOfEntity(int entity)
 	}
 	
 	if(i == val)
-		return 0.0;
+		return 1.0;
 	
 	// Damage and Pellets
 	Address address = TF2Attrib_GetByDefIndex(entity, 410);
@@ -170,7 +170,19 @@ stock float Config_GetDPSOfEntity(int entity)
 	if(address != Address_Null)
 		data.Damage *= TF2Attrib_GetValue(address);
 	
-	return data.Damage / data.FireRate;
+
+	float damagedps;
+
+	damagedps = data.Damage  / data.FireRate;
+	if(damagedps > 1000000.0)
+	{
+		return 1.0;
+	}
+	else if(damagedps < 1.0)
+	{
+		return 1.0;
+	}
+	return damagedps;
 }
 
 void Config_CreateDescription(const char[] classname, const int[] attrib, const float[] value, int attribs, char[] buffer, int length)
