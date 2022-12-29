@@ -1352,12 +1352,21 @@ static void DropItem(int client, int index, float pos[3], int amount)
 			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", ang);
 			if(GetVectorDistance(pos, ang, true) < 10000.0) // 100.0
 			{
-				if(ItemCount[entity] < 50 || ItemIndex[entity] == -1)
-					return;
+				if(ItemCount[entity] < 50)
+				{
+					if(ItemIndex[entity] == -1)
+					{
+						return;
+					}
+					else
+					{
+						ItemCount[entity] += amount;
+						UpdateItemText(entity, index);
+						return;
+					}
+				}
 
-				ItemCount[entity] += amount;
-				UpdateItemText(entity, index);	
-				amount = ItemCount[entity] - 50;
+				amount = ItemCount[entity] - 49;
 				ItemCount[entity] = 50;
 			}
 		}

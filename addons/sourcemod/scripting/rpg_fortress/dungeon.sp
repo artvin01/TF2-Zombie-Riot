@@ -1891,7 +1891,7 @@ public void Dungeon_30_Percent_Slower_Attackspeed(int entity)
 {
 	b_DungeonContracts_SlowerAttackspeed[entity] = true;
 }
-public void Dungeon_30_Percent_Slower_MoveSpeed(int entity)
+public void Dungeon_15_Percent_Slower_MoveSpeed(int entity)
 {
 	b_DungeonContracts_SlowerMovespeed[entity] = true;
 }
