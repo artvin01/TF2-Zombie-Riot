@@ -856,7 +856,11 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				
 				pos = WorldSpaceCenter(entity);
 				
-				if(value < BurnDamage[client])
+				if(value < 0.2)
+				{
+					
+				}
+				else if(value < BurnDamage[client])
 				{
 					value = BurnDamage[client];
 				}
@@ -879,10 +883,20 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				}
 				return Plugin_Continue;
 			}
+			else
+			{
+				IgniteTimer[entity] = null;
+				IgniteFor[entity] = 0;
+				return Plugin_Stop;		
+			}
+		}
+		else
+		{
+			IgniteTimer[entity] = null;
+			IgniteFor[entity] = 0;
+			return Plugin_Stop;		
 		}
 	}
-	
-	IgniteTimer[entity] = null;
 	return Plugin_Stop;
 }
 
