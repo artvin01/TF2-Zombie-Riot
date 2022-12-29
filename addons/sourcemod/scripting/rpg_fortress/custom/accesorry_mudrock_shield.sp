@@ -7,11 +7,18 @@ public void MudrockShieldUnequip(int client)
 {
 	MudrockShieldCounter[client] = 0;
 	MudrockShield[client] = false;
+	TF2_RemoveCondition(client, TFCond_UberFireResist);
 	if (MudrockShieldHandle[client] == INVALID_HANDLE)
 		return;
 
-	TF2_RemoveCondition(client, TFCond_UberFireResist);
 	KillTimer(MudrockShieldHandle[client]);
+	MudrockShieldHandle[client] = INVALID_HANDLE;
+}
+
+public void MudrockShieldDisconnect(int client)
+{
+	MudrockShieldCounter[client] = 0;
+	MudrockShield[client] = false;
 	MudrockShieldHandle[client] = INVALID_HANDLE;
 }
 
@@ -20,12 +27,12 @@ public void MudrockShieldEquip(int client, int weapon, int index)
 	KeyValues kv = TextStore_GetItemKv(index);
 	if(kv)
 	{
+		TF2_AddCondition(client, TFCond_UberFireResist, -1.0, client);
+		MudrockShieldCounter[client] = 60;
+		MudrockShield[client] = true;
 		if (MudrockShieldHandle[client] != INVALID_HANDLE)
 			return;
 		
-		TF2_AddCondition(client, TFCond_UberFireResist, -1.0, client);
-		MudrockShieldCounter[client] = 40;
-		MudrockShield[client] = true;
 		MudrockShieldHandle[client] = CreateTimer(0.5, MudrockShieldTimer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	}
 }
