@@ -142,7 +142,7 @@ methodmap Alt_Medic_Constructor < CClotBody
 		npc.StartPathing();
 		
 		
-		int skin = 5;
+		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 		
@@ -152,19 +152,18 @@ methodmap Alt_Medic_Constructor < CClotBody
 		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/xms2013_medic_robe/xms2013_medic_robe.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		
-		npc.m_iWearable2	= npc.EquipItem("head", "models/weapons/c_models/c_overhealer/c_overhealer.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/Hw2013_Spacemans_Suit/Hw2013_Spacemans_Suit.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		
+		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_medigun/c_medigun.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		npc.m_iWearable6	= npc.EquipItem("head", "models/workshop/player/items/all_class/fall2013_hong_kong_cone/fall2013_hong_kong_cone_medic.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		
-		SetEntProp(npc.m_iWearabl3, Prop_Send, "m_nSkin", 1);
 		npc.StartPathing();
 		
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
@@ -270,7 +269,7 @@ public void Alt_Medic_Constructor_ClotThink(int iNPC)
 						npc.Healing = true;
 						npc.m_bnew_target = true;
 					}
-					SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") + 50);
+					SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") + 60);
 					if(GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") >= GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"))
 					{
 						SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"));
@@ -290,6 +289,7 @@ public void Alt_Medic_Constructor_ClotThink(int iNPC)
 		}
 		else
 		{
+			
 			if(IsValidEntity(npc.m_iWearable3))
 				RemoveEntity(npc.m_iWearable3);
 				
@@ -391,9 +391,9 @@ public void Alt_Medic_Constructor_ClotThink(int iNPC)
 								{
 									
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 350.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 400.0, DMG_CLUB, -1, _, vecHit);
 									
 									
 									

@@ -1,7 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//There are like 3 warnings i'm sorry i have no idea to fix them
 static const char g_DeathSounds[][] = {
 	"vo/heavy_paincrticialdeath01.mp3",
 	"vo/heavy_paincrticialdeath02.mp3",
@@ -375,28 +374,29 @@ public void Kahmlstein_ClotThink(int iNPC)
 	
 	fl_kahml_galactic_strenght[npc.index] = 1+(1-(Health/MaxHealth))*1.5;
 	
-	float armour[2];
+	float armour_melee;
+	float armour_ranged;
 	if(Health/MaxHealth<=0.5)
 	{
-		armour[1]=fl_kahml_bulletres[npc.index] - 0.25;
-		armour[2]=fl_kahml_meleeres[npc.index] - 0.25;
-		if(armour[1]<0.25)
-			armour[1]=0.25;
-		if(armour[2]<0.25)
-			armour[2]=0.25;
-		npc.m_flRangedArmor = armour[1];
-		npc.m_flMeleeArmor = armour[2];
+		armour_ranged=fl_kahml_bulletres[npc.index] - 0.25;
+		armour_melee=fl_kahml_meleeres[npc.index] - 0.25;
+		if(armour_ranged<0.25)
+			armour_ranged=0.25;
+		if(armour_melee<0.25)
+			armour_melee=0.25;
+		npc.m_flRangedArmor = armour_ranged;
+		npc.m_flMeleeArmor = armour_melee;
 	}
 	else
 	{
-		armour[1]=fl_kahml_bulletres[npc.index];
-		armour[2]=fl_kahml_meleeres[npc.index];
-		if(armour[1]<0.25)
-			armour[1]=0.25;
-		if(armour[2]<0.25)
-			armour[2]=0.25;
-		npc.m_flRangedArmor = armour[1];
-		npc.m_flMeleeArmor = armour[2];
+		armour_ranged=fl_kahml_bulletres[npc.index] - 0.25;
+		armour_melee=fl_kahml_meleeres[npc.index] - 0.25;
+		if(armour_ranged<0.25)
+			armour_ranged=0.25;
+		if(armour_melee<0.25)
+			armour_melee=0.25;
+		npc.m_flRangedArmor = armour_melee;
+		npc.m_flMeleeArmor = armour_melee;
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -577,7 +577,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		}
 		if(i_kahml_combo[npc.index] == 16 && i_kahml_combo_offest[npc.index] == 6)
 		{
-			npc.m_flSpeed = 350.0;
+			npc.m_flSpeed = 300.0;
 			fl_kahml_combo_reset_timer[npc.index] = GetGameTime(npc.index) + 0.1;
 			fl_kahml_knockback[npc.index] = 0.0;
 		}
@@ -718,6 +718,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 					npc.m_flCharge_delay = GetGameTime(npc.index) + 1.0;
 					npc.m_flCharge_Duration = GetGameTime(npc.index) + 1.0;
 					PluginBot_Jump(npc.index, vecTarget);
+					npc.m_flSpeed = 400.0;
 				}
 			}
 		}

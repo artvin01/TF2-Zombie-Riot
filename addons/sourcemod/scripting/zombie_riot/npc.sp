@@ -463,7 +463,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_donnerkrieg",
 	"npc_alt_schwertkrieg",
 	"npc_phantom_knight",
-	"npc_alt_medic_3"			//3 being the 3rd stage of alt waves.
+	"npc_alt_medic_healer_3"			//3 being the 3rd stage of alt waves.
 };
 
 void NPC_MapStart()
