@@ -2,7 +2,6 @@
 #pragma newdecls required
 
 static float fl_tornados_rockets_eated[MAXPLAYERS+1]={0.0, ...};
-static int g_ProjectileModel;
 
 #define SOUND_IMPACT_1 					"physics/flesh/flesh_impact_bullet1.wav"	//We hit flesh, we are also kinetic, yes.
 #define SOUND_IMPACT_2 					"physics/flesh/flesh_impact_bullet2.wav"
@@ -17,10 +16,6 @@ static int g_ProjectileModel;
 
 public void Weapon_Tornado_Blitz_Precache()
 {
-	static char model[PLATFORM_MAX_PATH];
-	model = "models/weapons/w_bullet.mdl";
-	g_ProjectileModel = PrecacheModel(model);
-	
 	PrecacheSound(SOUND_IMPACT_CONCRETE_1);
 	PrecacheSound(SOUND_IMPACT_CONCRETE_2);
 	PrecacheSound(SOUND_IMPACT_CONCRETE_3);
