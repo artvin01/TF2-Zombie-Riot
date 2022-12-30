@@ -154,6 +154,7 @@ void RPG_ClientDisconnect(int client)
 	Fishing_ClientDisconnect(client);
 	Music_ClientDisconnect(client);
 	Party_ClientDisconnect(client);
+	MudrockShieldDisconnect(client);
 }
 
 void RPG_ClientDisconnect_Post()

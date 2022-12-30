@@ -212,7 +212,7 @@ void Fishing_PlayerRunCmd(int client)
 	float gameTime = GetGameTime();
 	if(f_ClientWasFishingDelayCheck[client] < gameTime)
 	{
-		f_ClientWasFishingDelayCheck[client] = gameTime + FishingRate[client];
+		f_ClientWasFishingDelayCheck[client] = gameTime + (1.0 / FishingRate[client]);
 
 		int AllowFishing = 0;
 		if(GetEntProp(client, Prop_Send, "m_nWaterLevel") > 0)
@@ -288,7 +288,7 @@ void Fishing_PlayerRunCmd(int client)
 					f_MiddlePos[2] += GetRandomFloat(-10.0, 10.0);
 
 					Handle trace_hull; 
-					trace_hull = TR_TraceHullFilterEx(f_MiddlePos, f_MiddlePos, { -10.0, -10.0, -10.0 }, { 10.0, 10.0, 10.0 }, ( MASK_SHOT_HULL ), HitOnlyWorld, client);
+					trace_hull = TR_TraceHullFilterEx(f_MiddlePos, f_MiddlePos, { -5.0, -5.0, -5.0 }, { 5.0, 5.0, 5.0 }, ( MASK_SHOT_HULL ), HitOnlyWorld, client);
 					int entity = TR_GetEntityIndex(trace_hull);
 					delete trace_hull;
 					if(entity == -1)
@@ -296,7 +296,19 @@ void Fishing_PlayerRunCmd(int client)
 						CreateFish(client, f_MiddlePos, place);
 						//FishCreatedOrIsValid(client, f_MiddlePos);
 					}
+					else
+					{
+						f_ClientWasFishingDelayCheck[client] = gameTime + (0.75 / FishingRate[client]); //Try again 2x as fast
+					}
 				}
+				else
+				{
+					f_ClientWasFishingDelayCheck[client] = gameTime + (0.75 / FishingRate[client]); //Try again 2x as fast
+				}
+			}
+			else
+			{
+				f_ClientWasFishingDelayCheck[client] = gameTime + (0.75 / FishingRate[client]); //Try again 2x as fast
 			}
 		}
 	}
@@ -406,6 +418,13 @@ public void Fishing_RodM1(int client, int weapon, const char[] classname, bool &
 	CreateDataTimer(0.2, Fishing_RodM1Delay, pack, TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(EntIndexToEntRef(client));
 	pack.WriteCell(EntIndexToEntRef(weapon));
+}
+
+public void FishingRodSetRarity(int client, int weapon, int index)
+{
+	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
+	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
+	PrintToChatAll("%i",FishingTier[client]);
 }
 
 public Action Fishing_RodM1Delay(Handle timer, DataPack pack)

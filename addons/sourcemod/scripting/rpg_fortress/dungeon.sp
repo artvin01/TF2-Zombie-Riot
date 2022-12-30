@@ -55,7 +55,6 @@ enum struct ModEnum
 
 	void CallOnPlayer(int client)
 	{
-		PrintToChatAll("func_onplayer");
 		if(this.OnPlayer != INVALID_FUNCTION)
 		{
 			Call_StartFunction(null, this.OnPlayer);
@@ -1230,6 +1229,7 @@ static void StartDungeon(const char[] name)
 			dungeon.PlayerCount = 0;
 
 			int rand = GetURandomInt() % 11;
+
 			int[] clients = new int[MaxClients];
 			for(int client = 1; client <= MaxClients; client++)
 			{
@@ -1238,14 +1238,10 @@ static void StartDungeon(const char[] name)
 					mp_disable_respawn_times.ReplicateToClient(client, "1");
 					f3_SpawnPosition[client] = stage.StartPos;
 					ClientCommand(client, "playgamesound vo/compmode/cm_admin_round_start_%02d.mp3", rand + 1);
-					TF2_RespawnPlayer(client);
 					clients[dungeon.PlayerCount++] = client;
 				}
 			}
 
-			delete dungeon.WaveList;
-			dungeon.WaveList = stage.WaveList.Clone();
-			
 			int tier;
 			if(dungeon.ModList)
 			{
@@ -1268,6 +1264,18 @@ static void StartDungeon(const char[] name)
 				}
 			}
 
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(StrEqual(InDungeon[client], name))
+				{
+					TF2_RespawnPlayer(client);
+				}
+			}
+
+
+			delete dungeon.WaveList;
+			dungeon.WaveList = stage.WaveList.Clone();
+			
 			for(int c; c < dungeon.PlayerCount; c++)
 			{
 				if(stage.MusicTier > tier)
@@ -1883,7 +1891,7 @@ public void Dungeon_30_Percent_Slower_Attackspeed(int entity)
 {
 	b_DungeonContracts_SlowerAttackspeed[entity] = true;
 }
-public void Dungeon_30_Percent_Slower_MoveSpeed(int entity)
+public void Dungeon_15_Percent_Slower_MoveSpeed(int entity)
 {
 	b_DungeonContracts_SlowerMovespeed[entity] = true;
 }

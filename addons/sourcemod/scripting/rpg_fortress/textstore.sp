@@ -1352,12 +1352,21 @@ static void DropItem(int client, int index, float pos[3], int amount)
 			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", ang);
 			if(GetVectorDistance(pos, ang, true) < 10000.0) // 100.0
 			{
-				ItemCount[entity] += amount;
-				UpdateItemText(entity, index);
-				if(ItemCount[entity] < 50 || ItemIndex[entity] == -1)
-					return;
-				
-				amount = ItemCount[entity] - 50;
+				if(ItemCount[entity] < 50)
+				{
+					if(ItemIndex[entity] == -1)
+					{
+						return;
+					}
+					else
+					{
+						ItemCount[entity] += amount;
+						UpdateItemText(entity, index);
+						return;
+					}
+				}
+
+				amount = ItemCount[entity] - 49;
 				ItemCount[entity] = 50;
 			}
 		}
@@ -2179,7 +2188,7 @@ public int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 							{
 								float calc = cooldownSet - GetGameTime();
 								calc *= 1.4;	
-								cooldownSet = calc + GetGameTime()
+								cooldownSet = calc + GetGameTime();
 							}
 							
 							spell.Cooldown = cooldownSet;
