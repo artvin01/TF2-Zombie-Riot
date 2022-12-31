@@ -1189,27 +1189,18 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		i_HasBeenHeadShotted[victim] = false;
 	}
 
+#if defined ZR
+	if(b_npcspawnprotection[victim]) //make them resistant on spawn or else itll just be spawncamping fest
+	{
+		damage *= 0.25;
+	}
+#endif
+
 #if defined RPG
 	if(b_NpcIsInADungeon[victim])
 	{
 		
 	}
-	else if(b_npcspawnprotection[victim])
-#else
-	//Reset all things here.
-	if(b_npcspawnprotection[victim]) //make them resistant on spawn or else itll just be spawncamping fest
-#endif
-	{
-
-#if defined RPG
-		if(Level[victim] < (Level[attacker] - 5))
-			damage = 0.0;
-#else
-		damage *= 0.25;
-#endif
-
-	}
-#if defined RPG
 	else if(!i_NpcFightOwner[victim] || f_NpcFightTime[victim] > GetGameTime())
 	{
 		i_NpcFightOwner[victim] = attacker;
@@ -1791,7 +1782,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		int blue = 0;
 
 #if defined RPG
-		if(!b_npcspawnprotection[victim] && (i_NpcFightOwner[victim] == attacker || f_NpcFightTime[victim] < GetGameTime() || Party_IsClientMember(i_NpcFightOwner[victim], attacker)))
+		if(i_NpcFightOwner[victim] == attacker || f_NpcFightTime[victim] < GetGameTime() || Party_IsClientMember(i_NpcFightOwner[victim], attacker))
 #else
 		if(!b_npcspawnprotection[victim])
 #endif
