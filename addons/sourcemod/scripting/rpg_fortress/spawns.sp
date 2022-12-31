@@ -472,6 +472,10 @@ public Action Spawns_Command(int client, int args)
 				menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
 			}
 		}
+		
+		if(!list.Length)
+			menu.AddItem(buffer, "Nothing Spawns Here", ITEMDRAW_DISABLED);
+		
 		delete list;
 
 		menu.Pagination = 2;
