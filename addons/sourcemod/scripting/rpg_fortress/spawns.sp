@@ -442,7 +442,7 @@ public Action Spawns_Command(int client, int args)
 		Menu menu = new Menu(Spawns_CommandH);
 		menu.SetTitle("RPG Fortress\n \nSpawn Stats:\n ");
 
-		float luck = 1.0 + (float(Stats_Luck(client)) / 300.0);
+		float luck = (1.0 + (float(Stats_Luck(client)) / 300.0)) * 100.0;
 
 		ArrayList list = new ArrayList();
 		int length = SpawnList.Length;
@@ -457,21 +457,17 @@ public Action Spawns_Command(int client, int args)
 				static char buffer[256];
 				Format(buffer, sizeof(buffer), "%s\n ", NPC_Names[spawn.Index]);
 				
-				float multi = 1.0;
-				if(spawn.Level[HIGH] > spawn.Level[LOW])
-					multi += ((spawn.DropMulti - 1.0) / 2.0);
-				
 				if(spawn.Item1[0])
-					Format(buffer, sizeof(buffer), "%s%s - %.2f%%\n ", buffer, spawn.Item1, spawn.Chance1 * multi * luck * 100.0);
+					Format(buffer, sizeof(buffer), "%s%s - %.2f%% ~ %.2f%%\n ", buffer, spawn.Item1, spawn.Chance1 * luck, spawn.Chance1 * luck * spawn.DropMulti);
 				
 				if(spawn.Item2[0])
-					Format(buffer, sizeof(buffer), "%s%s - %.2f%%\n ", buffer, spawn.Item2, spawn.Chance2 * multi * luck * 100.0);
+					Format(buffer, sizeof(buffer), "%s%s - %.2f%% ~ %.2f%%\n ", buffer, spawn.Item2, spawn.Chance2 * luck, spawn.Chance2 * luck * spawn.DropMulti);
 				
 				if(spawn.Item3[0])
-					Format(buffer, sizeof(buffer), "%s%s - %.2f%%\n ", buffer, spawn.Item3, spawn.Chance3 * multi * luck * 100.0);
+					Format(buffer, sizeof(buffer), "%s%s - %.2f%% ~ %.2f%%\n ", buffer, spawn.Item3, spawn.Chance3 * luck, spawn.Chance3 * luck * spawn.DropMulti);
 
 				if(spawn.Item4[0])
-					Format(buffer, sizeof(buffer), "%s%s - %.2f%%\n ", buffer, spawn.Item4, spawn.Chance4 * multi * luck * 100.0);
+					Format(buffer, sizeof(buffer), "%s%s - %.2f%% ~ %.2f%%\n ", buffer, spawn.Item4, spawn.Chance4 * luck, spawn.Chance4 * luck * spawn.DropMulti);
 				
 				menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
 			}
