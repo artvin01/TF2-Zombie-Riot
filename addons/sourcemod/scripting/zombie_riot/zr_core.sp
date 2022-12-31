@@ -255,7 +255,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_cowmangler.sp"
 #include "zombie_riot/custom/weapon_cowmangler_2.sp"
 #include "zombie_riot/custom/weapon_auto_shotgun.sp"
-#include "zombie_riot/custom/weapon_tornado.sp"
+#include "zombie_riot/custom/wand/weapon_tornado.sp"
 #include "zombie_riot/custom/weapon_fists_of_kahml.sp"
 #include "zombie_riot/custom/weapon_fusion_melee.sp"
 #include "zombie_riot/custom/spike_layer.sp"

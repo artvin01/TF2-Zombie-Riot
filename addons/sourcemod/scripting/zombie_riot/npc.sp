@@ -158,6 +158,7 @@ enum
 	ALT_DONNERKRIEG				= 135,
 	ALT_SCHWERTKRIEG			= 136,
 	PHANTOM_KNIGHT				= 137, //Lucian "Blood diamond"
+	ALT_MEDIC_HEALER_3			= 138, //3 being the 3rd stage of alt waves.
 }
 
 public const char NPC_Names[][] =
@@ -310,7 +311,8 @@ public const char NPC_Names[][] =
 	"Mecha Scout",
 	"Donnerkrieg",
 	"Schwertkrieg",
-	"Phantom Knight"
+	"Phantom Knight",
+	"Medic Constructor"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -460,7 +462,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_mecha_scout",
 	"npc_alt_donnerkrieg",
 	"npc_alt_schwertkrieg",
-	"npc_phantom_knight"
+	"npc_phantom_knight",
+	"npc_alt_medic_healer_3"			//3 being the 3rd stage of alt waves.
 };
 
 void NPC_MapStart()
@@ -613,6 +616,7 @@ void NPC_MapStart()
 	Donnerkrieg_OnMapStart_NPC();
 	Schwertkrieg_OnMapStart_NPC();
 	PhantomKnight_OnMapStart_NPC();
+	Alt_Medic_Constructor_OnMapStart_NPC();	//3rd alt medic.
 }
 
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
@@ -1160,6 +1164,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case PHANTOM_KNIGHT:
 		{
 			entity = PhantomKnight(client, vecPos, vecAng, ally);
+		}
+		case ALT_MEDIC_HEALER_3:	//3 being the 3rd stage of alt waves.
+		{
+			entity = Alt_Medic_Constructor(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -1710,6 +1718,10 @@ public void NPCDeath(int entity)
 		{
 			PhantomKnight_NPCDeath(entity);
 		}
+		case ALT_MEDIC_HEALER_3:
+		{
+			Alt_Medic_Constructor_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1883,6 +1895,7 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/alt/npc_alt_medic_apprentice_mage.sp"
 #include "zombie_riot/npc/alt/npc_alt_donnerkrieg.sp"
 #include "zombie_riot/npc/alt/npc_alt_schwertkrieg.sp"
+#include "zombie_riot/npc/alt/npc_alt_medic_constructor.sp"
 
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
 #include "zombie_riot/npc/medival/npc_medival_archer.sp"

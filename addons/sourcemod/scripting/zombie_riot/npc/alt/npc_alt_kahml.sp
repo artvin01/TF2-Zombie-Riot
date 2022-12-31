@@ -1,7 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//There are like 3 warnings i'm sorry i have no idea to fix them
 static const char g_DeathSounds[][] = {
 	"vo/heavy_paincrticialdeath01.mp3",
 	"vo/heavy_paincrticialdeath02.mp3",
@@ -375,15 +374,29 @@ public void Kahmlstein_ClotThink(int iNPC)
 	
 	fl_kahml_galactic_strenght[npc.index] = 1+(1-(Health/MaxHealth))*1.5;
 	
+	float armour_melee;
+	float armour_ranged;
 	if(Health/MaxHealth<=0.5)
 	{
-		npc.m_flRangedArmor = fl_kahml_bulletres[npc.index] - 0.25;
-		npc.m_flMeleeArmor = fl_kahml_meleeres[npc.index] - 0.25;
+		armour_ranged=fl_kahml_bulletres[npc.index] - 0.25;
+		armour_melee=fl_kahml_meleeres[npc.index] - 0.25;
+		if(armour_ranged<0.25)
+			armour_ranged=0.25;
+		if(armour_melee<0.25)
+			armour_melee=0.25;
+		npc.m_flRangedArmor = armour_ranged;
+		npc.m_flMeleeArmor = armour_melee;
 	}
 	else
 	{
-		npc.m_flRangedArmor = fl_kahml_bulletres[npc.index];
-		npc.m_flMeleeArmor = fl_kahml_meleeres[npc.index];
+		armour_ranged=fl_kahml_bulletres[npc.index] - 0.25;
+		armour_melee=fl_kahml_meleeres[npc.index] - 0.25;
+		if(armour_ranged<0.25)
+			armour_ranged=0.25;
+		if(armour_melee<0.25)
+			armour_melee=0.25;
+		npc.m_flRangedArmor = armour_melee;
+		npc.m_flMeleeArmor = armour_melee;
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -440,7 +453,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 			SetVariantString("1.0");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-			EmitSoundToAll("vaccinator_charge_tier_01.wav");
+			EmitSoundToAll("weapons/vaccinator_charge_tier_01.wav");
 		
 			npc.PlayRangedAttackSecondarySound();
 		
@@ -464,7 +477,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 			SetVariantString("1.0");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-			EmitSoundToAll("vaccinator_charge_tier_02.wav");
+			EmitSoundToAll("weapons/vaccinator_charge_tier_02.wav");
 		
 			npc.PlayRangedAttackSecondarySound();
 		
@@ -488,7 +501,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 			SetVariantString("1.0");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 			
-			EmitSoundToAll("vaccinator_charge_tier_03.wav");
+			EmitSoundToAll("weapons/vaccinator_charge_tier_03.wav");
 			
 			fl_kahml_melee_speed[npc.index] = 0.25;
 			
@@ -512,7 +525,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 			SetVariantString("1.0");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-			EmitSoundToAll("vaccinator_charge_tier_04.wav");
+			EmitSoundToAll("weapons/vaccinator_charge_tier_04.wav");
 		
 			fl_kahml_melee_speed[npc.index] = 0.25;
 			
@@ -564,7 +577,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		}
 		if(i_kahml_combo[npc.index] == 16 && i_kahml_combo_offest[npc.index] == 6)
 		{
-			npc.m_flSpeed = 350.0;
+			npc.m_flSpeed = 300.0;
 			fl_kahml_combo_reset_timer[npc.index] = GetGameTime(npc.index) + 0.1;
 			fl_kahml_knockback[npc.index] = 0.0;
 		}
@@ -619,7 +632,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 			
 			fl_kahml_knockback[npc.index] = 0.0;
 			
-			npc.m_flSpeed = 450.0;
+			npc.m_flSpeed = 350.0;
 			
 			fl_kahml_melee_speed[npc.index] = 0.2;
 			
@@ -705,6 +718,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 					npc.m_flCharge_delay = GetGameTime(npc.index) + 1.0;
 					npc.m_flCharge_Duration = GetGameTime(npc.index) + 1.0;
 					PluginBot_Jump(npc.index, vecTarget);
+					npc.m_flSpeed = 400.0;
 				}
 			}
 		}
@@ -728,7 +742,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 				}
 			}
 		}
-		if(flDistanceToTarget < npc.GetLeadRadius()) // DO NOT REMOVE THIS IF YOU DO HE WONT MOVE AT ALL
+		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 				PF_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -761,7 +775,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, _, _, _, 1))
+						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 100.0, 100.0, 100.0 }, { -100.0, -100.0, -100.0 })) 
 						{
 							int target = TR_GetEntityIndex(swingTrace);	
 							
