@@ -31,7 +31,7 @@ public void MudrockShieldEquip(int client, int weapon, int index)
 		if (MudrockShieldHandle[client] != INVALID_HANDLE)
 			return;
 
-		MudrockShieldCounter[client] = 60;
+		MudrockShieldCounter[client] = 80;
 		MudrockShield[client] = true;		
 		MudrockShieldHandle[client] = CreateTimer(0.5, MudrockShieldTimer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	}
@@ -59,7 +59,7 @@ bool Ability_Mudrock_Shield_OnTakeDamage(int victim)
 {
 	if (MudrockShield[victim])
 	{
-		if(MudrockShieldCounter[victim] > 60)
+		if(MudrockShieldCounter[victim] > 80)
 		{
 			MudrockShieldCounter[victim] = 0;
 			TF2_RemoveCondition(victim, TFCond_UberFireResist);
@@ -91,15 +91,15 @@ bool Ability_Mudrock_Shield_OnTakeDamage(int victim)
 			int MaxHealth = SDKCall_GetMaxHealth(victim);
 			int Health = GetEntProp(victim, Prop_Send, "m_iHealth");
 
-			float PercentageHeal = 0.15;
+			float PercentageHeal = 0.10;
 			
 			if(Stats_Strength(victim) > 40) //Give melee more
 			{
-				PercentageHeal = 0.20;
+				PercentageHeal = 0.15;
 			}
 			else if(Stats_Strength(victim) > 60) //Give melee more
 			{
-				PercentageHeal = 0.25;
+				PercentageHeal = 0.20;
 			}
 
 			int NewHealth = Health + RoundToCeil(float(MaxHealth) * PercentageHeal);
@@ -128,15 +128,15 @@ static Action MudrockShieldTimer(Handle dashHud, int ref)
 		if(!IsPlayerAlive(client))
 			return Plugin_Continue;
 
-		if(MudrockShieldCounter[client] > 60)
+		if(MudrockShieldCounter[client] > 80)
 			return Plugin_Continue;
 
 		MudrockShieldCounter[client] += 1;
-		if(MudrockShieldCounter[client] > 59)
+		if(MudrockShieldCounter[client] > 79)
 		{
 			EmitSoundToAll("weapons/medi_shield_deploy.wav",client,_,70,_,0.4);
 			TF2_AddCondition(client, TFCond_MegaHeal, 0.5, client);
-			MudrockShieldCounter[client] = 61;
+			MudrockShieldCounter[client] = 81;
 			TF2_AddCondition(client, TFCond_UberFireResist, -1.0, client);
 		}
 		return Plugin_Continue;

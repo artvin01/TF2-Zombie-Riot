@@ -410,7 +410,7 @@ void Tinker_DisableZone(const char[] name)
 
 static int TinkerCost(int level)
 {
-	return 1000 + (level * 50);
+	return 2500 + (level * 200);
 }
 
 static void ToMetaData(int level, const WeaponEnum weapon, char data[512])
@@ -1317,9 +1317,9 @@ static void RollRandomAttribs(int level, WeaponEnum weapon, int tool)
 		weapon.Forge[weapon.ForgeCount] = forge.Attrib;
 
 		float value = GetRandomFloat(forge.Low, forge.High);
-		weapon.Value[weapon.ForgeCount++] = value;
-		
+		weapon.Value[weapon.ForgeCount++] = value;		
 		bool bad = view_as<bool>(GetURandomInt() % 2);
+/*
 		if(!bad)
 		{
 			switch(forge.Type)
@@ -1334,9 +1334,10 @@ static void RollRandomAttribs(int level, WeaponEnum weapon, int tool)
 					bad = value <= 0.0;
 			}
 		}
-
+*/
 		if(!bad)
 			break;
+
 	}
 }
 
