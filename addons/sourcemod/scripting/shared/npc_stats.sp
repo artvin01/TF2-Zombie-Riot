@@ -1955,6 +1955,7 @@ methodmap CClotBody
 			SetEntProp(entity, Prop_Send, "m_fEffects", EF_PARENT_ANIMATES);
 			
 			b_ThisEntityIgnored[entity] = true;
+			b_ForceCollisionWithProjectile[entity] = true;
 
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 1600.0);
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 1800.0);
@@ -1963,9 +1964,6 @@ methodmap CClotBody
 			{
 				SetVariantString("!activator");
 				AcceptEntityInput(entity, "SetParent", this.index);
-
-				SetVariantString("");
-				AcceptEntityInput(entity, "SetParentAttachmentMaintainOffset"); 	
 			}
 		}
 		CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);

@@ -425,6 +425,7 @@ bool b_DungeonContracts_25PercentMoreDamage[MAXENTITIES];
 
 bool b_Is_Npc_Projectile[MAXENTITIES];
 bool b_Is_Player_Projectile[MAXENTITIES];
+bool b_ForceCollisionWithProjectile[MAXENTITIES];
 bool b_Is_Player_Projectile_Through_Npc[MAXENTITIES];
 bool b_Is_Blue_Npc[MAXENTITIES];
 bool b_IsInUpdateGroundConstraintLogic;
@@ -2016,6 +2017,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		EntityFuncReload4[entity] = INVALID_FUNCTION;
 		b_Map_BaseBoss_No_Layers[entity] = false;
 		b_Is_Player_Projectile_Through_Npc[entity] = false;
+		b_ForceCollisionWithProjectile[entity] = false;
 		i_IsABuilding[entity] = false;
 		i_InSafeZone[entity] = 0;
 		h_NpcCollissionHookType[entity] = 0;

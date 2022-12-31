@@ -308,7 +308,7 @@ public Action TextStore_HelpCommand(int client, int args)
 {
 	ReplyToCommand(client, "[SM] Use /inv <item name> to search for an item");
 	if(client)
-		FakeClientCommandEx("sm_store");
+		FakeClientCommandEx(client, "sm_store");
 	
 	return Plugin_Handled;
 }

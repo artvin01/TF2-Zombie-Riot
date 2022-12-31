@@ -771,7 +771,8 @@ public Action EnemyFatherGrigori_OnTakeDamage(int victim, int &attacker, int &in
 	{
 		if(npc.m_bmovedelay)
 		{
-			npc.flXenoInfectedSpecialHurtTime = gameTime + 0.5;
+			npc.m_flNextThinkTime = gameTime + 5.0;
+			npc.flXenoInfectedSpecialHurtTime = gameTime + 0.1;
 			npc.m_bmovedelay = false;
 			damage = 0.0;
 		}

@@ -1743,7 +1743,6 @@ public void Dungeon_Wave_CoreInfection_Grigori(ArrayList list)
 	static WaveEnum wave;
 	if(!wave.Index)
 	{
-		PrintToChatAll("Dungeon_Wave_CoreInfection_Grigori");
 		wave.Delay = 82.0;
 		wave.Index = FATHER_GRIGORI;
 		wave.Pos = {2244.328857, 7762.802246, -5223.968750};
