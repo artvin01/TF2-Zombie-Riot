@@ -67,6 +67,7 @@ void RPG_PluginStart()
 	Store_Reset();
 	Levels_PluginStart();
 	Party_PluginStart();
+	Spawns_PluginStart();
 	Stats_PluginStart();
 	TextStore_PluginStart();
 	Zones_PluginStart();
