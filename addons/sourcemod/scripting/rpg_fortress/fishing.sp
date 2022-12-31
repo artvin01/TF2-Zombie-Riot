@@ -493,12 +493,15 @@ public void Fishing_RodM2(int client, int weapon)
 	char current[48];
 	int count;
 	int length = place.Pool.Length;
-	for(int i; i < length; i++)
+	for(int i; i <= length; i++)
 	{
 		static char buffer[48];
-		place.Pool.GetString(i, buffer, sizeof(buffer));
-		if(StrEqual(buffer, current))
-			continue;
+		if(i < length)
+		{
+			place.Pool.GetString(i, buffer, sizeof(buffer));
+			if(StrEqual(buffer, current))
+				continue;
+		}
 		
 		if(count)
 			SPrintToChat(client, "%s %d%%", current, count * 100 / length);
