@@ -138,7 +138,7 @@ void Music_PlayerRunCmd(int client)
 {
 	if(CurrentSong[client][0] || NextSong[client][0] || OverrideSong[client][0])
 	{
-		bool wasInFade, wasInLoop;
+		bool wasInFade;
 		static MusicEnum music;
 		if(FadingOut[client])
 		{
@@ -160,7 +160,6 @@ void Music_PlayerRunCmd(int client)
 				CurrentSong[client][0] = 0;
 			}
 			
-			wasInLoop = FadingOut[client] == 1.0;
 			FadingOut[client] = 0.0;
 			wasInFade = true;
 		}
@@ -195,15 +194,8 @@ void Music_PlayerRunCmd(int client)
 			{
 				if(MusicList.GetArray(NextSong[client], music, sizeof(music)) && music.Sound[0])
 				{
-					if(wasInLoop)
-					{
-						EmitSoundToClient(client, music.Sound, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, music.Volume);
-					}
-					else
-					{
-						EmitSoundToClient(client, music.Sound, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.00001);
-						FadingIn[client] = GetGameTime();
-					}
+					EmitSoundToClient(client, music.Sound, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.00001);
+					FadingIn[client] = GetGameTime();
 					
 					NextSoundIn[client] = time + music.Duration;
 					strcopy(CurrentSong[client], sizeof(CurrentSong[]), NextSong[client]);
@@ -218,8 +210,22 @@ void Music_PlayerRunCmd(int client)
 
 		if(NextSoundIn[client] < time)
 		{
-			FadingOut[client] = 1.0;
 			NextSoundIn[client] = 0;
+
+			if(OverrideSong[client][0])
+			{
+				EmitSoundToClient(client, OverrideSong[client], client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, OverrideVolume[client]);
+				NextSoundIn[client] = time + OverrideTime[client];
+				CurrentSong[client][0] = 0;
+			}
+			else if(CurrentSong[client][0])
+			{
+				if(MusicList.GetArray(CurrentSong[client], music, sizeof(music)) && music.Sound[0])
+				{
+					EmitSoundToClient(client, music.Sound, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, music.Volume);
+					NextSoundIn[client] = time + music.Duration;
+				}
+			}
 		}
 	}
 }
