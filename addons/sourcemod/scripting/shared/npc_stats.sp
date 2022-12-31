@@ -6790,8 +6790,8 @@ public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask
 	return false;
 } 
 
+#if defined ZR
 //TELEPORT IS SAFE? FROM SARYSA BUT EDITED FOR NPCS!
-
 bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/)
 {
 	float sizeMultiplier = 1.0; //We do not want to teleport giants, yet.
@@ -7099,11 +7099,7 @@ bool Resize_TracePlayersAndBuildings(int entity, int contentsMask)
 {
 	if(entity > 0 && entity <= MaxClients)
 	{
-		
-#if defined ZR
 		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0)
-#endif
-		
 		{
 			if (!b_DoNotUnStuck[entity] && !b_ThisEntityIgnored[entity] && GetClientTeam(entity) != ResizeMyTeam)
 			{
@@ -7126,6 +7122,7 @@ bool Resize_TracePlayersAndBuildings(int entity, int contentsMask)
 
 	return false;
 }
+#endif
 
 //TELEPORT LOGIC END.
 

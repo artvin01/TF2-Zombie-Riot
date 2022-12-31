@@ -8,6 +8,7 @@ enum struct SpawnEnum
 {
 	int Index;
 	char Zone[32];
+	bool Touching[MAXTF2PLAYERS];
 	float Pos[3];
 	float Angle;
 	int Count;
@@ -105,6 +106,11 @@ static ArrayList SpawnList;
 static Handle SpawnTimer;
 static int SpawnCycle;
 
+void Spawns_PluginStart()
+{
+	RegConsoleCmd("rpg_spawns", Spawns_Command);
+}
+
 void Spawns_ConfigSetup(KeyValues map)
 {
 	KeyValues kv = map;
@@ -158,7 +164,49 @@ void Spawns_MapEnd()
 	delete SpawnTimer;
 }
 
-void Spawns_DisableSpawn(const char[] name)
+void Spawns_ClientEnter(int client, const char[] name)
+{
+	int length = SpawnList.Length;
+	for(int i; i < length; i++)
+	{
+		static SpawnEnum spawn;
+		SpawnList.GetArray(i, spawn);
+		if(StrEqual(spawn.Zone, name))
+		{
+			spawn.Touching[client] = true;
+			SpawnList.SetArray(i, spawn);
+		}
+	}
+}
+
+void Spawns_ClientLeave(int client, const char[] name)
+{
+	int length = SpawnList.Length;
+	for(int i; i < length; i++)
+	{
+		static SpawnEnum spawn;
+		SpawnList.GetArray(i, spawn);
+		if(StrEqual(spawn.Zone, name))
+		{
+			spawn.Touching[client] = false;
+			SpawnList.SetArray(i, spawn);
+		}
+	}
+}
+
+void Spawns_EnableZone(const char[] name)
+{
+	int length = SpawnList.Length;
+	for(int i; i < length; i++)
+	{
+		static SpawnEnum spawn;
+		SpawnList.GetArray(i, spawn);
+		if(StrEqual(spawn.Zone, name))
+			UpdateSpawn(i, spawn, true);
+	}
+}
+
+void Spawns_DisableZone(const char[] name)
 {
 	ArrayList list = new ArrayList();
 
@@ -179,18 +227,6 @@ void Spawns_DisableSpawn(const char[] name)
 	}
 
 	delete list;
-}
-
-void Spawns_UpdateSpawn(const char[] name)
-{
-	int length = SpawnList.Length;
-	for(int i; i < length; i++)
-	{
-		static SpawnEnum spawn;
-		SpawnList.GetArray(i, spawn);
-		if(StrEqual(spawn.Zone, name))
-			UpdateSpawn(i, spawn, true);
-	}
 }
 
 public Action Spawner_Timer(Handle timer)
@@ -397,4 +433,76 @@ static void RollItemDrop(int client, const char[] name, float chance, float pos[
 {
 	if(chance > GetURandomFloat())
 		TextStore_DropNamedItem(client, name, pos, 1);
+}
+
+public Action Spawns_Command(int client, int args)
+{
+	if(client)
+	{
+		Menu menu = new Menu(Spawns_CommandH);
+		menu.SetTitle("RPG Fortress\n \nSpawn Stats:");
+
+		float luck = 1.0 + (float(Stats_Luck(client)) / 300.0);
+
+		ArrayList list = new ArrayList();
+		int length = SpawnList.Length;
+		for(int i; i < length; i++)
+		{
+			static SpawnEnum spawn;
+			SpawnList.GetArray(i, spawn);
+			if(spawn.Touching[client] && list.FindValue(spawn.Index) == -1)
+			{
+				list.Push(spawn.Index);
+
+				static char buffer[256];
+				Format(buffer, sizeof(buffer), "%s:\n ", NPC_Names[spawn.Index]);
+				
+				float multi = 1.0;
+				if(spawn.Level[HIGH] > spawn.Level[LOW])
+					multi = spawn.Level[LOW] + (float(spawn.Level[HIGH] - spawn.Level[LOW]) / 2.0) * spawn.DropMulti;
+				
+				if(spawn.Item1[0])
+					Format(buffer, sizeof(buffer), "%s%s - %d%%\n ", buffer, spawn.Item1, RoundToCeil(spawn.Chance1 * multi * luck * 100.0));
+				
+				if(spawn.Item2[0])
+					Format(buffer, sizeof(buffer), "%s%s - %d%%\n ", buffer, spawn.Item2, RoundToCeil(spawn.Chance2 * multi * luck * 100.0));
+				
+				if(spawn.Item3[0])
+					Format(buffer, sizeof(buffer), "%s%s - %d%%\n ", buffer, spawn.Item3, RoundToCeil(spawn.Chance3 * multi * luck * 100.0));
+
+				if(spawn.Item4[0])
+					Format(buffer, sizeof(buffer), "%s%s - %d%%\n ", buffer, spawn.Item4, RoundToCeil(spawn.Chance4 * multi * luck * 100.0));
+				
+				menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+			}
+		}
+		delete list;
+
+		menu.Pagination = 2;
+		menu.ExitButton = true;
+		menu.ExitBackButton = true;
+		menu.Display(client, MENU_TIME_FOREVER);
+	}
+	return Plugin_Handled;
+}
+
+public int Spawns_CommandH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+				FakeClientCommandEx(client, "sm_store");
+		}
+		case MenuAction_Select:
+		{
+			FakeClientCommandEx(client, "sm_store");
+		}
+	}
+	return 0;
 }
