@@ -302,7 +302,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 				Apply_Text_Above_Npc(entity, b_thisNpcIsABoss[entity] ? strength + 1 : strength, health);
 
 				b_npcspawnprotection[entity] = true;
-				CreateTimer(2.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(5.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 			}
 		}
 	}
@@ -350,48 +350,43 @@ static int GetScaledRate(const int rates[2], int power, int maxpower)
 
 void Spawns_NPCDeath(int entity, int client, int weapon)
 {
-	int xp = XP[entity];
-	if(xp > 0)
-	{
-		for(int target = 1; target <= MaxClients; target++)
-		{
-			if(client == target || Party_IsClientMember(client, target))
-			{
-				if((Level[client] - 5) < Level[entity] && (Level[client] + 5) > Level[entity] && GetLevelCap(Tier[client]) != Level[client])
-					GiveXP(client, xp);
-			}
-		}
-	}
-
 	static float pos[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 
-	if(i_CreditsOnKill[entity])
-	{
-		if(i_CreditsOnKill[entity] > 199)
-		{
-			TextStore_DropCash(client, pos, i_CreditsOnKill[entity]);
-		}
-		else if(i_CreditsOnKill[entity] > 49)
-		{
-			if(GetURandomInt() % 2)
-				TextStore_DropCash(client, pos, i_CreditsOnKill[entity] * 2);
-		}
-		else if(!(GetURandomInt() % 5))
-		{
-			TextStore_DropCash(client, pos, i_CreditsOnKill[entity] * 5);
-		}
-	}
-
+	static SpawnEnum spawn;
 	if(hFromSpawnerIndex[entity] >= 0)
-	{
-		static SpawnEnum spawn;
 		SpawnList.GetArray(hFromSpawnerIndex[entity], spawn);
-
-		spawn.DoAllDrops(client, pos, Level[entity]);
-		hFromSpawnerIndex[entity] = -1;
+	
+	for(int target = 1; target <= MaxClients; target++)
+	{
+		if(client == target || Party_IsClientMember(client, target))
+		{
+			if(XP[entity] > 0 && (Level[client] - 5) < Level[entity] && (Level[client] + 5) > Level[entity] && GetLevelCap(Tier[client]) != Level[client])
+				GiveXP(client, XP[entity]);
+			
+			if(i_CreditsOnKill[entity])
+			{
+				if(i_CreditsOnKill[entity] > 199)
+				{
+					TextStore_DropCash(target, pos, i_CreditsOnKill[entity]);
+				}
+				else if(i_CreditsOnKill[entity] > 49)
+				{
+					if(GetURandomInt() % 2)
+						TextStore_DropCash(target, pos, i_CreditsOnKill[entity] * 2);
+				}
+				else if(!(GetURandomInt() % 5))
+				{
+					TextStore_DropCash(target, pos, i_CreditsOnKill[entity] * 5);
+				}
+			}
+			
+			spawn.DoAllDrops(target, pos, Level[entity]);
+		}
 	}
 
+	hFromSpawnerIndex[entity] = -1;
+	
 	if(weapon != -1)
 		Tinker_GainXP(client, weapon);
 }

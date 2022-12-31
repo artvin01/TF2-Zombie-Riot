@@ -235,6 +235,7 @@ enum struct ForgeEnum
 	int MaxLevel;
 	float Low;
 	float High;
+	int ToolFlags;
 
 	void SetupEnum(KeyValues kv)
 	{
@@ -243,6 +244,7 @@ enum struct ForgeEnum
 		this.Type = kv.GetNum("type");
 		this.Low = kv.GetFloat("low");
 		this.High = kv.GetFloat("high");
+		this.ToolFlags = kv.GetNum("tools", FLAG_ALL);
 	}
 }
 
@@ -1181,7 +1183,39 @@ public int Tinker_MainMenu(Menu menu, MenuAction action, int client, int choice)
 								}
 								TextStore_Cash(client, -cost);
 
-								RollRandomAttribs(Level[client], weapon);
+								kv.GetString("func_attack", data, sizeof(data));
+
+								int tool = FLAG_ALL;
+								if(kv.GetNum("is_a_wand"))
+								{
+									tool = FLAG_WAND;
+								}
+								else if(Mining_IsPickaxeFunc(data))
+								{
+									tool = FLAG_MINE;
+								}
+								else if(Fishing_IsFishingFunc(data))
+								{
+									tool = FLAG_FISH;
+								}
+								else if(kv.GetNum("is_a_wrench"))
+								{
+									tool = FLAG_WRENCH;
+								}
+								else
+								{
+									kv.GetString("classname", data, sizeof(data));
+									if(TF2_GetClassnameSlot(data) == TFWeaponSlot_Melee)
+									{
+										tool = FLAG_MELEE;
+									}
+									else
+									{
+										tool = FLAG_RANGE;
+									}
+								}
+
+								RollRandomAttribs(Level[client], weapon, tool);
 								WeaponList.SetArray(i, weapon);
 
 								ToMetaData(kv.GetNum("level"), weapon, data);
@@ -1258,7 +1292,7 @@ public int Tinker_MainMenu(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-static void RollRandomAttribs(int level, WeaponEnum weapon)
+static void RollRandomAttribs(int level, WeaponEnum weapon, int tool)
 {
 	weapon.ForgeCount = 0;
 
@@ -1269,6 +1303,12 @@ static void RollRandomAttribs(int level, WeaponEnum weapon)
 		static ForgeEnum forge;
 		ForgeList.GetArray(GetURandomInt() % length, forge);
 		if(fails < 9 && (forge.MinLevel > level || forge.MaxLevel < level))
+		{
+			fails++;
+			continue;
+		}
+
+		if(fails < 19 && !(forge.ToolFlags & tool))
 		{
 			fails++;
 			continue;
