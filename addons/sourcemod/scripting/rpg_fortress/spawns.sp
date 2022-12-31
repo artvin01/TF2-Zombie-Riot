@@ -337,8 +337,8 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 
 				Apply_Text_Above_Npc(entity, b_thisNpcIsABoss[entity] ? strength + 1 : strength, health);
 
-				b_npcspawnprotection[entity] = true;
-				CreateTimer(5.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+				//b_npcspawnprotection[entity] = true;
+				//CreateTimer(5.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 			}
 		}
 	}
@@ -472,7 +472,7 @@ public Action Spawns_Command(int client, int args)
 				menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
 			}
 		}
-		
+
 		if(!list.Length)
 			menu.AddItem(buffer, "Nothing Spawns Here", ITEMDRAW_DISABLED);
 		
