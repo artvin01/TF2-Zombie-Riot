@@ -455,11 +455,11 @@ public Action Spawns_Command(int client, int args)
 				list.Push(spawn.Index);
 
 				static char buffer[256];
-				Format(buffer, sizeof(buffer), "%s:\n ", NPC_Names[spawn.Index]);
+				Format(buffer, sizeof(buffer), "%s\n ", NPC_Names[spawn.Index]);
 				
 				float multi = 1.0;
 				if(spawn.Level[HIGH] > spawn.Level[LOW])
-					multi = spawn.Level[LOW] + (float(spawn.Level[HIGH] - spawn.Level[LOW]) / 2.0) * spawn.DropMulti;
+					multi += ((spawn.DropMulti - 1.0) / 2.0);
 				
 				if(spawn.Item1[0])
 					Format(buffer, sizeof(buffer), "%s%s - %d%%\n ", buffer, spawn.Item1, RoundToCeil(spawn.Chance1 * multi * luck * 100.0));
