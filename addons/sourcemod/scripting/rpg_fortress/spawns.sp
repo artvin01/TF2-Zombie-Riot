@@ -355,33 +355,35 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 
 	static SpawnEnum spawn;
 	if(hFromSpawnerIndex[entity] >= 0)
-		SpawnList.GetArray(hFromSpawnerIndex[entity], spawn);
-	
-	for(int target = 1; target <= MaxClients; target++)
 	{
-		if(client == target || Party_IsClientMember(client, target))
+		SpawnList.GetArray(hFromSpawnerIndex[entity], spawn);
+		
+		for(int target = 1; target <= MaxClients; target++)
 		{
-			if(XP[entity] > 0 && (Level[client] - 5) < Level[entity] && (Level[client] + 5) > Level[entity] && GetLevelCap(Tier[client]) != Level[client])
-				GiveXP(client, XP[entity]);
-			
-			if(i_CreditsOnKill[entity])
+			if(client == target || Party_IsClientMember(client, target))
 			{
-				if(i_CreditsOnKill[entity] > 199)
+				if(XP[entity] > 0 && (Level[client] - 5) < Level[entity] && (Level[client] + 5) > Level[entity] && GetLevelCap(Tier[client]) != Level[client])
+					GiveXP(client, XP[entity]);
+				
+				if(i_CreditsOnKill[entity])
 				{
-					TextStore_DropCash(target, pos, i_CreditsOnKill[entity]);
+					if(i_CreditsOnKill[entity] > 199)
+					{
+						TextStore_DropCash(target, pos, i_CreditsOnKill[entity]);
+					}
+					else if(i_CreditsOnKill[entity] > 49)
+					{
+						if(GetURandomInt() % 2)
+							TextStore_DropCash(target, pos, i_CreditsOnKill[entity] * 2);
+					}
+					else if(!(GetURandomInt() % 5))
+					{
+						TextStore_DropCash(target, pos, i_CreditsOnKill[entity] * 5);
+					}
 				}
-				else if(i_CreditsOnKill[entity] > 49)
-				{
-					if(GetURandomInt() % 2)
-						TextStore_DropCash(target, pos, i_CreditsOnKill[entity] * 2);
-				}
-				else if(!(GetURandomInt() % 5))
-				{
-					TextStore_DropCash(target, pos, i_CreditsOnKill[entity] * 5);
-				}
+				
+				spawn.DoAllDrops(target, pos, Level[entity]);
 			}
-			
-			spawn.DoAllDrops(target, pos, Level[entity]);
 		}
 	}
 
