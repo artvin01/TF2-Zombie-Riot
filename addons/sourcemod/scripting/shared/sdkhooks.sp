@@ -1367,7 +1367,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		//Slash is reserved for any debuffs like this.
 		if(!(damagetype & (DMG_SLASH)))
 		{
-			if(b_DungeonContracts_BleedOnHit[attacker])
+			if(!b_DungeonContracts_BleedOnHit[attacker])
 			{
 				StartBleedingTimer_Against_Client(victim, attacker, damage * 0.05, 10); //10 bleeds for 5% of their damage, equalling to 50% extra damage taken over time.
 			}
