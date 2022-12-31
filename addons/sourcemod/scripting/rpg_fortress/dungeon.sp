@@ -1303,7 +1303,6 @@ static void StartDungeon(const char[] name)
 
 static void CleanDungeon(const char[] name, bool victory)
 {
-
 	static DungeonEnum dungeon;
 	if(DungeonList.GetArray(name, dungeon, sizeof(dungeon)) && dungeon.CurrentStage[0])
 	{
@@ -1327,14 +1326,12 @@ static void CleanDungeon(const char[] name, bool victory)
 			SaveKv.JumpToKey(name, true);
 			SaveKv.JumpToKey(dungeon.CurrentStage, true);
 
-			bool clear = (victory || !dungeon.WaveList);
 			int amount;
 			int[] clients = new int[MaxClients];
 			for(int client = 1; client <= MaxClients; client++)
 			{
 				if(StrEqual(InDungeon[client], name))
 				{
-					clear = true;
 					if(dungeon.WaveList)
 					{
 						clients[amount++] = client;
@@ -1363,7 +1360,7 @@ static void CleanDungeon(const char[] name, bool victory)
 					}
 				}
 			}
-
+			
 			if(victory)
 			{
 				if(amount)
@@ -1375,22 +1372,19 @@ static void CleanDungeon(const char[] name, bool victory)
 				SaveKv.ExportToFile(mod.Desc);
 			}
 
-			if(clear)
+			int i = MaxClients + 1;
+			while((i = FindEntityByClassname(i, "base_boss")) != -1)
 			{
-				int i = MaxClients + 1;
-				while((i = FindEntityByClassname(i, "base_boss")) != -1)
-				{
-					if(StrEqual(InDungeon[i], name))
-						NPC_Despawn(i);
-				}
-				
-				dungeon.CurrentStage[0] = 0;
-				dungeon.CurrentHost = 0;
-				dungeon.StartTime = 0.0;
-				delete dungeon.ModList;
-				delete dungeon.WaveList;
-				DungeonList.SetArray(name, dungeon, sizeof(dungeon));
+				if(StrEqual(InDungeon[i], name))
+					NPC_Despawn(i);
 			}
+			
+			dungeon.CurrentStage[0] = 0;
+			dungeon.CurrentHost = 0;
+			dungeon.StartTime = 0.0;
+			delete dungeon.ModList;
+			delete dungeon.WaveList;
+			DungeonList.SetArray(name, dungeon, sizeof(dungeon));
 		}
 		else
 		{
