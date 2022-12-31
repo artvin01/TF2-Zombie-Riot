@@ -337,8 +337,11 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 
 				Apply_Text_Above_Npc(entity, b_thisNpcIsABoss[entity] ? strength + 1 : strength, health);
 
-				//b_npcspawnprotection[entity] = true;
-				//CreateTimer(5.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+				if(!b_IsAloneOnServer)
+				{
+					b_npcspawnprotection[entity] = true;
+					CreateTimer(5.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+				}
 			}
 		}
 	}
