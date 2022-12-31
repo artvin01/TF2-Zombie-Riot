@@ -1242,6 +1242,9 @@ static void StartDungeon(const char[] name)
 				}
 			}
 
+			delete dungeon.WaveList;
+			dungeon.WaveList = stage.WaveList.Clone();
+
 			int tier;
 			if(dungeon.ModList)
 			{
@@ -1271,9 +1274,6 @@ static void StartDungeon(const char[] name)
 					TF2_RespawnPlayer(client);
 				}
 			}
-
-			delete dungeon.WaveList;
-			dungeon.WaveList = stage.WaveList.Clone();
 			
 			for(int c; c < dungeon.PlayerCount; c++)
 			{

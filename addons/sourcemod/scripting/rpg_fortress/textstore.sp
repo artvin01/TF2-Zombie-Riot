@@ -301,6 +301,16 @@ static void HashCheck()
 void TextStore_PluginStart()
 {
 	CreateTimer(2.0, TextStore_ItemTimer, _, TIMER_REPEAT);
+	RegConsoleCmd("rpg_help", TextStore_HelpCommand, _, FCVAR_HIDDEN);
+}
+
+public Action TextStore_HelpCommand(int client, int args)
+{
+	ReplyToCommand(client, "[SM] Use /inv <item name> to search for an item");
+	if(client)
+		FakeClientCommandEx("sm_store");
+	
+	return Plugin_Handled;
 }
 
 void TextStore_ConfigSetup(KeyValues map)
@@ -940,6 +950,7 @@ public Action TextStore_OnMainMenu(int client, Menu menu)
 	
 	menu.AddItem("rpg_stats", "Stats");
 	menu.AddItem("rpg_party", "Party");
+	menu.AddItem("rpg_help", "Search");
 	return Plugin_Changed;
 }
 
