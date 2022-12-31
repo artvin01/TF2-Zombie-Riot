@@ -424,7 +424,6 @@ public void FishingRodSetRarity(int client, int weapon, int index)
 {
 	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
 	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
-	PrintToChatAll("%i",FishingTier[client]);
 }
 
 public Action Fishing_RodM1Delay(Handle timer, DataPack pack)
