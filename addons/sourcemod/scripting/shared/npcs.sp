@@ -1189,8 +1189,16 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		i_HasBeenHeadShotted[victim] = false;
 	}
 
+#if defined RPG
+	if(b_NpcIsInADungeon[victim])
+	{
+		
+	}
+	else if(b_npcspawnprotection[victim])
+#else
 	//Reset all things here.
 	if(b_npcspawnprotection[victim]) //make them resistant on spawn or else itll just be spawncamping fest
+#endif
 	{
 
 #if defined RPG
@@ -1201,6 +1209,21 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif
 
 	}
+#if defined RPG
+	else if(!i_NpcFightOwner[victim] || f_NpcFightTime[victim] > GetGameTime())
+	{
+		i_NpcFightOwner[victim] = attacker;
+		f_NpcFightTime[victim] = GetGameTime() + 10.0;
+	}
+	else if(i_NpcFightOwner[victim] != attacker && !Party_IsClientMember(i_NpcFightOwner[victim], attacker))
+	{
+		damage = 0.0;
+	}
+	else
+	{
+		f_NpcFightTime[victim] = GetGameTime() + 10.0;
+	}
+#endif
 
 	if(f_NpcHasBeenUnstuckAboveThePlayer[victim] > GetGameTime()) //They were immortal, just nullfy any and all damage.
 	{
@@ -1766,8 +1789,12 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		int red = 255;
 		int green = 255;
 		int blue = 0;
-		
+
+#if defined RPG
+		if(!b_npcspawnprotection[victim] && (i_NpcFightOwner[victim] == attacker || f_NpcFightTime[victim] < GetGameTime() || Party_IsClientMember(i_NpcFightOwner[victim], attacker)))
+#else
 		if(!b_npcspawnprotection[victim])
+#endif
 		{
 			red = Health * 255  / MaxHealth;
 			//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];

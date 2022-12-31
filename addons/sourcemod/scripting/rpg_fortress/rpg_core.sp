@@ -17,6 +17,8 @@ int b_OwnerToBrush[MAXENTITIES];
 float Animal_Happy[MAXTF2PLAYERS][10][3];
 
 bool b_NpcIsInADungeon[MAXENTITIES];
+int i_NpcFightOwner[MAXENTITIES];
+float f_NpcFightTime[MAXENTITIES];
 
 float f_HealingPotionDuration[MAXTF2PLAYERS];
 int f_HealingPotionEffect[MAXTF2PLAYERS];
@@ -165,6 +167,7 @@ void RPG_ClientDisconnect_Post()
 void RPG_EntityCreated(int entity, const char[] classname)
 {
 	b_NpcIsInADungeon[entity] = false;
+	i_NpcFightOwner[entity] = false;
 	StoreWeapon[entity][0] = 0;
 	Dungeon_ResetEntity(entity);
 	Stats_ClearCustomStats(entity);

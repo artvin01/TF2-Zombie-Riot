@@ -407,7 +407,7 @@ void Fishing_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, in
 	}
 }
 
-public void Fishing_RodM1(int client, int weapon, const char[] classname, bool &result)
+public void Fishing_RodM1(int client, int weapon)
 {
 	float ApplyCooldown =  0.8 * Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
 	Ability_Apply_Cooldown(client, 1, ApplyCooldown);
@@ -473,4 +473,36 @@ public Action Fishing_RodM1Delay(Handle timer, DataPack pack)
 		}
 	}
 	return Plugin_Handled;
+}
+
+public void Fishing_RodM2(int client, int weapon)
+{
+	float gameTime = GetGameTime();
+	if(f_ClientWasPreviouslyFishing[client] < gameTime)
+	{
+		float pos[3];
+		GetClientAbsOrigin(client, pos);
+		GetNearestPond(pos, CurrentFishing[client], sizeof(CurrentFishing[]));
+	}
+
+	f_ClientWasPreviouslyFishing[client] = gameTime + 5.0;
+
+	static PlaceEnum place;
+	PlaceList.GetArray(CurrentFishing[client], place, sizeof(place));
+
+	char current[48];
+	int count;
+	int length = place.Pool.Length;
+	for(int i; i < length; i++)
+	{
+		static char buffer[48];
+		place.Pool.GetString(i, buffer, sizeof(buffer));
+		if(StrEqual(buffer, current))
+			continue;
+		
+		if(count)
+			SPrintToChat(client, "%s %d%%", current, count * 100 / length);
+
+		strcopy(current, sizeof(current), buffer);
+	}
 }

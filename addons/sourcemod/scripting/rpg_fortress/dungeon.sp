@@ -326,7 +326,7 @@ enum struct StageEnum
 		if(!name[0] || required > tier)
 			return 0.0;
 		
-		if(StrEqual(name, "XP"))
+		if(StrEqual(name, ITEM_XP))
 		{
 			if(level > this.MaxLevel || !this.XP)
 				return 0.0;
@@ -335,13 +335,13 @@ enum struct StageEnum
 			return 1.0;
 		}
 		
-		if(StrEqual(name, "Credits"))
+		if(StrEqual(name, ITEM_CASH))
 		{
 			Format(name, sizeof(name), "%d Credits", this.Cash * (10 + tier) / 10);
 			return 1.0;
 		}
 		
-		float multi = (1.0 + float(tier - required) * 0.1) * chance * (float(300 + luck) / 300.0);
+		float multi = (1.0 + (float(tier - required) * 0.1)) * chance * (float(300 + luck) / 300.0);
 		if(multi > 1.0)
 			multi = 1.0;
 		
@@ -367,10 +367,10 @@ enum struct StageEnum
 		{
 			luck += Stats_Luck(clients[i]);
 
-			TextStore_AddItemCount(clients[i], "Credits", this.Cash * (10 + tier) / 10);
+			TextStore_AddItemCount(clients[i], ITEM_CASH, this.Cash * (10 + tier) / 10);
 
 			if(Level[clients[i]] <= this.MaxLevel && GetLevelCap(Tier[clients[i]]) != Level[clients[i]])
-				TextStore_AddItemCount(clients[i], "XP", this.XP * (10 + tier) / 10);
+				TextStore_AddItemCount(clients[i], ITEM_XP, this.XP * (10 + tier) / 10);
 		}
 
 		luck = (luck * 2) / amount;
@@ -843,7 +843,7 @@ static void ShowMenu(int client, int page)
 						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 					}
 					
-					strcopy(stage.DropName9, sizeof(stage.DropName9), "XP");
+					strcopy(stage.DropName9, sizeof(stage.DropName9), ITEM_XP);
 					stage.DropChance9 = stage.GetDropChance(Level[client], luck, tier, stage.DropName9);
 					if(stage.DropChance9)
 					{
@@ -851,7 +851,7 @@ static void ShowMenu(int client, int page)
 						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 					}
 					
-					strcopy(stage.DropName9, sizeof(stage.DropName9), "Credits");
+					strcopy(stage.DropName9, sizeof(stage.DropName9), ITEM_CASH);
 					stage.DropChance9 = stage.GetDropChance(Level[client], luck, tier, stage.DropName9);
 					if(stage.DropChance9)
 					{
@@ -1272,7 +1272,6 @@ static void StartDungeon(const char[] name)
 				}
 			}
 
-
 			delete dungeon.WaveList;
 			dungeon.WaveList = stage.WaveList.Clone();
 			
@@ -1689,28 +1688,34 @@ public void Dungeon_Wave_TenFastZombies(ArrayList list)
 public void Dungeon_Wave_CoreInfection1(ArrayList list)
 {
 	static WaveEnum wave;
-	wave.Delay = 5.0;
-	wave.Index = FAST_ZOMBIE;
-	wave.Pos = {2232.911621, 6366.720214, -5223.968750};
-	wave.Angle = 0.0;
-	wave.Boss = false;
-	wave.Level = 25;
-	wave.Health = 4000;
-	wave.Rarity = 1;
+	if(!wave.Index)
+	{
+		wave.Delay = 5.0;
+		wave.Index = FAST_ZOMBIE;
+		wave.Pos = {2232.911621, 6366.720214, -5223.968750};
+		wave.Angle = 0.0;
+		wave.Boss = false;
+		wave.Level = 25;
+		wave.Health = 4000;
+		wave.Rarity = 1;
+	}
 	list.PushArray(wave);
 }
 
 public void Dungeon_Wave_CoreInfection2(ArrayList list)
 {
 	static WaveEnum wave;
-	wave.Delay = 82.0;
-	wave.Index = ZOMBIEFIED_COMBINE_SWORDSMAN;
-	wave.Pos = {2244.328857, 7762.802246, -5223.968750};
-	wave.Angle = 0.0;
-	wave.Boss = false;
-	wave.Level = 25;
-	wave.Health = 5000;
-	wave.Rarity = 1;
+	if(!wave.Index)
+	{
+		wave.Delay = 82.0;
+		wave.Index = ZOMBIEFIED_COMBINE_SWORDSMAN;
+		wave.Pos = {2244.328857, 7762.802246, -5223.968750};
+		wave.Angle = 0.0;
+		wave.Boss = false;
+		wave.Level = 25;
+		wave.Health = 5000;
+		wave.Rarity = 1;
+	}
 	list.PushArray(wave);
 	list.PushArray(wave);
 }
@@ -1718,29 +1723,37 @@ public void Dungeon_Wave_CoreInfection2(ArrayList list)
 public void Dungeon_Wave_CoreInfection3(ArrayList list)
 {
 	static WaveEnum wave;
-	wave.Delay = 82.0;
-	wave.Index = ZOMBIEFIED_COMBINE_SWORDSMAN;
-	wave.Pos = {2244.328857, 7762.802246, -5223.968750};
-	wave.Angle = 0.0;
-	wave.Boss = false;
-	wave.Level = 25;
-	wave.Health = 10000;
-	wave.Rarity = 1;
+	if(!wave.Index)
+	{
+		wave.Delay = 82.0;
+		wave.Index = ZOMBIEFIED_COMBINE_SWORDSMAN;
+		wave.Pos = {2244.328857, 7762.802246, -5223.968750};
+		wave.Angle = 0.0;
+		wave.Boss = false;
+		wave.Level = 25;
+		wave.Health = 10000;
+		wave.Rarity = 1;
+	}
 	list.PushArray(wave);
 	list.PushArray(wave);
 }
 
 public void Dungeon_Wave_CoreInfection_Grigori(ArrayList list)
 {
+	PrintToChatAll("Dungeon_Wave_CoreInfection_Grigori");
+
 	static WaveEnum wave;
-	wave.Delay = 82.0;
-	wave.Index = FATHER_GRIGORI;
-	wave.Pos = {2244.328857, 7762.802246, -5223.968750};
-	wave.Angle = 0.0;
-	wave.Boss = false;
-	wave.Level = 25;
-	wave.Health = 35000;
-	wave.Rarity = 1;
+	if(!wave.Index)
+	{
+		wave.Delay = 82.0;
+		wave.Index = FATHER_GRIGORI;
+		wave.Pos = {2244.328857, 7762.802246, -5223.968750};
+		wave.Angle = 0.0;
+		wave.Boss = false;
+		wave.Level = 25;
+		wave.Health = 35000;
+		wave.Rarity = 1;
+	}
 	list.PushArray(wave);
 }
 

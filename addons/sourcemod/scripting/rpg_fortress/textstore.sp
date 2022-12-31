@@ -613,7 +613,7 @@ void TextStore_AddItemCount(int client, const char[] name, int amount)
 			if(StrEqual(buffer, name, false))
 			{
 				TextStore_GetInv(client, i, length);
-				TextStore_SetInv(client, i, length + amount);
+				TextStore_SetInv(client, i, length + amount, amount >= length ? 0 : -1);
 				if(!tier)
 				{
 					if(amount == 1)
@@ -1484,7 +1484,7 @@ static void DropItem(int client, int index, float pos[3], int amount)
 
 bool Textstore_CanSeeItem(int entity, int client)
 {
-	return (ItemOwner[entity] == client || Party_IsClientMember(ItemOwner[entity], client) || ItemLifetime[entity] < (GetGameTime() + 15.0));
+	return (ItemOwner[entity] == client);// || Party_IsClientMember(ItemOwner[entity], client) || ItemLifetime[entity] < (GetGameTime() + 15.0));
 }
 
 public Action DroppedTextSetTransmit(int entity, int client)

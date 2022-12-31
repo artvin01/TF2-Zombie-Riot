@@ -366,15 +366,15 @@ public Action Stats_ShowStats(int client, int args)
 		menu.AddItem(NULL_STRING, buffer);
 
 		int total = Stats_Strength(client, amount, bonus);
-		FormatEx(buffer, sizeof(buffer), "Strength: %d + %d (+%.0f%% melee damage)", amount, bonus, total * 5.0);
+		FormatEx(buffer, sizeof(buffer), "Strength: %d + %d (+%.0f%% melee damage)", amount, bonus, total * 2.0);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Dexterity(client, amount, bonus);
-		FormatEx(buffer, sizeof(buffer), "Dexterity: %d + %d (+%.0f%% ranged damage)", amount, bonus, total * 5.0);
+		FormatEx(buffer, sizeof(buffer), "Dexterity: %d + %d (+%.0f%% ranged damage)", amount, bonus, total * 2.0);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Intelligence(client, amount, bonus);
-		FormatEx(buffer, sizeof(buffer), "Intelligence: %d + %d (+%.0f%% magic damage)", amount, bonus, total * 5.0);
+		FormatEx(buffer, sizeof(buffer), "Intelligence: %d + %d (+%.0f%% magic damage)", amount, bonus, total * 2.0);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Agility(client);
