@@ -1002,13 +1002,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		return Plugin_Handled;
 	}
-#if defined RPG	
-	if(Ability_Mudrock_Shield_OnTakeDamage(victim))
-	{
-		damage = 0.0;
-		return Plugin_Handled;
-	}
-#endif
 
 #if defined ZR
 	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
@@ -1064,7 +1057,15 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if(attacker <= MaxClients && attacker > 0)	
 		return Plugin_Handled;	
 		
-		
+
+#if defined RPG	
+	if(Ability_Mudrock_Shield_OnTakeDamage(victim))
+	{
+		damage = 0.0;
+		return Plugin_Handled;
+	}
+#endif
+	
 	f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
 	
 #if defined ZR

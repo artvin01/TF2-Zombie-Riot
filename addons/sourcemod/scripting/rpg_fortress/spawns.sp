@@ -199,6 +199,10 @@ void Spawns_ClientLeave(int client, const char[] name)
 			if(spawn.Level[LOW] > (Level[client] - 5)) //Give priority to lower level players.
 			{
 				spawn.LowLevelClientAreaCount -= 1; //Remove by 1.
+				if(spawn.LowLevelClientAreaCount < 0)
+				{
+					spawn.LowLevelClientAreaCount = 0;
+				}
 			}
 
 			spawn.Touching[client] = false;
@@ -219,7 +223,7 @@ void Spawns_EnableZone(int client, const char[] name)
 		{
 			spawn.LowLevelClientAreaCount += 1; //Give the spawn a way to give the npcs inside itself to protect it from high levels.
 		}
-		
+
 		if(StrEqual(spawn.Zone, name))
 			UpdateSpawn(i, spawn, true);
 	}
@@ -234,10 +238,11 @@ void Spawns_DisableZone(const char[] name)
 	{
 		static SpawnEnum spawn;
 		SpawnList.GetArray(i, spawn);
+		spawn.LowLevelClientAreaCount = 0; //Reset to 0.
 		if(StrEqual(spawn.Zone, name))
 			list.Push(i);
 	}
-
+	
 	int i = MaxClients + 1;
 	while((i = FindEntityByClassname(i, "base_boss")) != -1)
 	{
