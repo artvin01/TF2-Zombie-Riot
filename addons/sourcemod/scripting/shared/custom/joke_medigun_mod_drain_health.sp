@@ -206,6 +206,11 @@ float target_sucked_long[MAXENTITIES]={0.85, ...};
 static Handle Revert_target_sucked_long_timer[MAXENTITIES];
 static bool Handle_on_target_sucked_long[MAXENTITIES]={false, ...};
 
+float Target_Sucked_Long_Return(int entity)
+{
+	return target_sucked_long[entity];
+}
+
 public void Medigun_ClearAll()
 {
 	Zero(f_IncrementalSmallHeal); //Do not save the heal across stages of the game.
