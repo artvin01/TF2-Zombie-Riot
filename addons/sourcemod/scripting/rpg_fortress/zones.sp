@@ -80,7 +80,7 @@ static void OnActive(int entity, const char[] name)
 	{
 		Dungeon_EnableZone(name);
 		Mining_EnableZone(name);
-		Spawns_EnableZone(name);
+		Spawns_EnableZone(entity, name);
 		Tinker_EnableZone(name);
 	}
 }

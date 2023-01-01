@@ -30,6 +30,7 @@ bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 #if defined RPG
 float f3_SpawnPosition[MAXENTITIES][3];
 int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
+int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES] = {0, ...};
 #endif
 
 static int g_particleImpactFlesh;
@@ -6501,6 +6502,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f3_SpawnPosition[entity][1] = 0.0;
 	f3_SpawnPosition[entity][2] = 0.0;
 	hFromSpawnerIndex[entity] = -1;
+	i_NpcIsUnderSpawnProtectionInfluence[entity] = 0;
 	b_DungeonContracts_BleedOnHit[entity] = false;
 	b_DungeonContracts_ZombieSpeedTimes3[entity] = false;
 	b_DungeonContracts_ZombieFlatArmorMelee[entity] = false;

@@ -14,6 +14,8 @@ enum struct SpawnEnum
 	int Count;
 	float Time;
 	
+	int LowLevelClientAreaCount;
+	
 	bool Boss;
 	int Level[2];
 	int Health[2];
@@ -41,6 +43,8 @@ enum struct SpawnEnum
 		ExplodeStringFloat(this.Item1, " ", this.Pos, sizeof(this.Pos));
 
 		kv.GetString("name", this.Item1, 48);
+
+		this.LowLevelClientAreaCount = 0;
 
 		this.Index = StringToInt(this.Item1);
 		if(!this.Index)
@@ -173,6 +177,10 @@ void Spawns_ClientEnter(int client, const char[] name)
 		SpawnList.GetArray(i, spawn);
 		if(StrEqual(spawn.Zone, name))
 		{
+			if(spawn.Level[LOW] > (Level[client] - 5)) //Give priority to lower level players.
+			{
+				spawn.LowLevelClientAreaCount += 1; //Give the spawn a way to give the npcs inside itself to protect it from high levels.
+			}
 			spawn.Touching[client] = true;
 			SpawnList.SetArray(i, spawn);
 		}
@@ -188,19 +196,30 @@ void Spawns_ClientLeave(int client, const char[] name)
 		SpawnList.GetArray(i, spawn);
 		if(StrEqual(spawn.Zone, name))
 		{
+			if(spawn.Level[LOW] > (Level[client] - 5)) //Give priority to lower level players.
+			{
+				spawn.LowLevelClientAreaCount -= 1; //Remove by 1.
+			}
+
 			spawn.Touching[client] = false;
 			SpawnList.SetArray(i, spawn);
 		}
 	}
 }
 
-void Spawns_EnableZone(const char[] name)
+void Spawns_EnableZone(int client, const char[] name)
 {
 	int length = SpawnList.Length;
 	for(int i; i < length; i++)
 	{
 		static SpawnEnum spawn;
 		SpawnList.GetArray(i, spawn);
+
+		if(spawn.Level[LOW] > (Level[client] - 5)) //Give priority to lower level players.
+		{
+			spawn.LowLevelClientAreaCount += 1; //Give the spawn a way to give the npcs inside itself to protect it from high levels.
+		}
+		
 		if(StrEqual(spawn.Zone, name))
 			UpdateSpawn(i, spawn, true);
 	}
@@ -253,7 +272,17 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 		while((i = FindEntityByClassname(i, "base_boss")) != -1)
 		{
 			if(hFromSpawnerIndex[i] == pos)
+			{
+				if(spawn.LowLevelClientAreaCount > 0)
+				{
+					i_NpcIsUnderSpawnProtectionInfluence[i] = 1;
+				}
+				else
+				{
+					i_NpcIsUnderSpawnProtectionInfluence[i] = 0;
+				}
 				alive++;
+			}
 		}
 	}
 	
