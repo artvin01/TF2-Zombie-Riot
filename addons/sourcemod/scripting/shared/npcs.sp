@@ -1181,6 +1181,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			return Plugin_Handled;
 		}
 	}
+
 	f_TimeUntillNormalHeal[victim] = GetGameTime() + 4.0;
 	i_HasBeenBackstabbed[victim] = false;
 
@@ -1188,32 +1189,33 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		i_HasBeenHeadShotted[victim] = false;
 	}
+	
+#if defined ZR
+	if(b_npcspawnprotection[victim])
+		damage *= 0.25;
+#endif
 
 #if defined RPG
 	if(b_NpcIsInADungeon[victim])
 	{
 		
 	}
-	else if(b_npcspawnprotection[victim])
-#else
-	//Reset all things here.
-	if(b_npcspawnprotection[victim]) //make them resistant on spawn or else itll just be spawncamping fest
-#endif
-	{
+	//We check if the npc is already hurt, dead, or other stuff like that.
 
-#if defined RPG
-		if(Level[victim] < (Level[attacker] - 5))
+	//TODO:
+	//Make sure ownership goes over other party members if you die
+	//Realisticly speaking this should never be an issue.
+	else if(!i_NpcFightOwner[victim] || f_NpcFightTime[victim] < GetGameTime() || !IsClientInGame(i_NpcFightOwner[victim]) || !IsPlayerAlive(i_NpcFightOwner[victim]))
+	{
+		if(b_npcspawnprotection[victim] && i_NpcIsUnderSpawnProtectionInfluence[victim] && Level[victim] < (Level[attacker] - 5))
+		{
 			damage = 0.0;
-#else
-		damage *= 0.25;
-#endif
-
-	}
-#if defined RPG
-	else if(!i_NpcFightOwner[victim] || f_NpcFightTime[victim] > GetGameTime())
-	{
-		i_NpcFightOwner[victim] = attacker;
-		f_NpcFightTime[victim] = GetGameTime() + 10.0;
+		}
+		else
+		{
+			i_NpcFightOwner[victim] = attacker;
+			f_NpcFightTime[victim] = GetGameTime() + 10.0;
+		}
 	}
 	else if(i_NpcFightOwner[victim] != attacker && !Party_IsClientMember(i_NpcFightOwner[victim], attacker))
 	{
@@ -1791,8 +1793,9 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		int blue = 0;
 
 #if defined RPG
-		if(!b_npcspawnprotection[victim] && (i_NpcFightOwner[victim] == attacker || f_NpcFightTime[victim] < GetGameTime() || Party_IsClientMember(i_NpcFightOwner[victim], attacker)))
-#else
+		if((!b_npcspawnprotection[victim] || i_NpcIsUnderSpawnProtectionInfluence[victim] == 0) && (i_NpcFightOwner[victim] == attacker || Party_IsClientMember(i_NpcFightOwner[victim], attacker)))
+#endif
+#if defined ZR
 		if(!b_npcspawnprotection[victim])
 #endif
 		{
@@ -1807,6 +1810,12 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 				red = 255;
 				green = 0;
 				blue = 0;
+			}
+			else if(Health >= MaxHealth)
+			{
+				red = 0;
+				green = 255;
+				blue = 0;				
 			}
 		}
 		else

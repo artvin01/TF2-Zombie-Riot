@@ -52,6 +52,7 @@ static void OnEnter(int entity, const char[] name)
 		Garden_ClientEnter(entity, name);
 		Music_ZoneEnter(entity, name);
 		Quests_EnableZone(entity, name);
+		Spawns_ClientEnter(entity, name);
 		TextStore_ZoneEnter(entity, name);		
 	}
 }
@@ -61,10 +62,11 @@ static void OnLeave(int entity, const char[] name)
 	if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
 	}
-	else
+	else if(entity > 0 && entity <= MaxClients)
 	{
 		Crafting_ClientLeave(entity, name);
 		Garden_ClientLeave(entity, name);
+		Spawns_ClientLeave(entity, name);
 		TextStore_ZoneLeave(entity, name);	
 	}
 }
@@ -78,7 +80,7 @@ static void OnActive(int entity, const char[] name)
 	{
 		Dungeon_EnableZone(name);
 		Mining_EnableZone(name);
-		Spawns_UpdateSpawn(name);
+		Spawns_EnableZone(entity, name);
 		Tinker_EnableZone(name);
 	}
 }
@@ -93,7 +95,7 @@ static void OnDisable(int entity, const char[] name)
 		Dungeon_DisableZone(name);
 		Mining_DisableZone(name);
 		Quests_DisableZone(name);
-		Spawns_DisableSpawn(name);
+		Spawns_DisableZone(name);
 		TextStore_ZoneAllLeave(name);
 		Tinker_DisableZone(name);
 	}

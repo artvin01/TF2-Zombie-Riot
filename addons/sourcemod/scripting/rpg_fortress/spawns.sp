@@ -8,10 +8,13 @@ enum struct SpawnEnum
 {
 	int Index;
 	char Zone[32];
+	bool Touching[MAXTF2PLAYERS];
 	float Pos[3];
 	float Angle;
 	int Count;
 	float Time;
+	
+	int LowLevelClientAreaCount;
 	
 	bool Boss;
 	int Level[2];
@@ -40,6 +43,8 @@ enum struct SpawnEnum
 		ExplodeStringFloat(this.Item1, " ", this.Pos, sizeof(this.Pos));
 
 		kv.GetString("name", this.Item1, 48);
+
+		this.LowLevelClientAreaCount = 0;
 
 		this.Index = StringToInt(this.Item1);
 		if(!this.Index)
@@ -105,6 +110,11 @@ static ArrayList SpawnList;
 static Handle SpawnTimer;
 static int SpawnCycle;
 
+void Spawns_PluginStart()
+{
+	RegConsoleCmd("rpg_spawns", Spawns_Command);
+}
+
 void Spawns_ConfigSetup(KeyValues map)
 {
 	KeyValues kv = map;
@@ -158,7 +168,68 @@ void Spawns_MapEnd()
 	delete SpawnTimer;
 }
 
-void Spawns_DisableSpawn(const char[] name)
+void Spawns_ClientEnter(int client, const char[] name)
+{
+	int length = SpawnList.Length;
+	for(int i; i < length; i++)
+	{
+		static SpawnEnum spawn;
+		SpawnList.GetArray(i, spawn);
+		if(StrEqual(spawn.Zone, name))
+		{
+			if(spawn.Level[LOW] > (Level[client] - 5)) //Give priority to lower level players.
+			{
+				spawn.LowLevelClientAreaCount += 1; //Give the spawn a way to give the npcs inside itself to protect it from high levels.
+			}
+			spawn.Touching[client] = true;
+			SpawnList.SetArray(i, spawn);
+		}
+	}
+}
+
+void Spawns_ClientLeave(int client, const char[] name)
+{
+	int length = SpawnList.Length;
+	for(int i; i < length; i++)
+	{
+		static SpawnEnum spawn;
+		SpawnList.GetArray(i, spawn);
+		if(StrEqual(spawn.Zone, name))
+		{
+			if(spawn.Level[LOW] > (Level[client] - 5)) //Give priority to lower level players.
+			{
+				spawn.LowLevelClientAreaCount -= 1; //Remove by 1.
+				if(spawn.LowLevelClientAreaCount < 0)
+				{
+					spawn.LowLevelClientAreaCount = 0;
+				}
+			}
+
+			spawn.Touching[client] = false;
+			SpawnList.SetArray(i, spawn);
+		}
+	}
+}
+
+void Spawns_EnableZone(int client, const char[] name)
+{
+	int length = SpawnList.Length;
+	for(int i; i < length; i++)
+	{
+		static SpawnEnum spawn;
+		SpawnList.GetArray(i, spawn);
+
+		if(spawn.Level[LOW] > (Level[client] - 5)) //Give priority to lower level players.
+		{
+			spawn.LowLevelClientAreaCount += 1; //Give the spawn a way to give the npcs inside itself to protect it from high levels.
+		}
+
+		if(StrEqual(spawn.Zone, name))
+			UpdateSpawn(i, spawn, true);
+	}
+}
+
+void Spawns_DisableZone(const char[] name)
 {
 	ArrayList list = new ArrayList();
 
@@ -167,10 +238,11 @@ void Spawns_DisableSpawn(const char[] name)
 	{
 		static SpawnEnum spawn;
 		SpawnList.GetArray(i, spawn);
+		spawn.LowLevelClientAreaCount = 0; //Reset to 0.
 		if(StrEqual(spawn.Zone, name))
 			list.Push(i);
 	}
-
+	
 	int i = MaxClients + 1;
 	while((i = FindEntityByClassname(i, "base_boss")) != -1)
 	{
@@ -179,18 +251,6 @@ void Spawns_DisableSpawn(const char[] name)
 	}
 
 	delete list;
-}
-
-void Spawns_UpdateSpawn(const char[] name)
-{
-	int length = SpawnList.Length;
-	for(int i; i < length; i++)
-	{
-		static SpawnEnum spawn;
-		SpawnList.GetArray(i, spawn);
-		if(StrEqual(spawn.Zone, name))
-			UpdateSpawn(i, spawn, true);
-	}
 }
 
 public Action Spawner_Timer(Handle timer)
@@ -217,7 +277,17 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 		while((i = FindEntityByClassname(i, "base_boss")) != -1)
 		{
 			if(hFromSpawnerIndex[i] == pos)
+			{
+				if(spawn.LowLevelClientAreaCount > 0)
+				{
+					i_NpcIsUnderSpawnProtectionInfluence[i] = 1;
+				}
+				else
+				{
+					i_NpcIsUnderSpawnProtectionInfluence[i] = 0;
+				}
 				alive++;
+			}
 		}
 	}
 	
@@ -301,8 +371,11 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 
 				Apply_Text_Above_Npc(entity, b_thisNpcIsABoss[entity] ? strength + 1 : strength, health);
 
-				b_npcspawnprotection[entity] = true;
-				CreateTimer(5.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+				if(!b_IsAloneOnServer)
+				{
+					b_npcspawnprotection[entity] = true;
+					CreateTimer(5.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+				}
 			}
 		}
 	}
@@ -355,33 +428,35 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 
 	static SpawnEnum spawn;
 	if(hFromSpawnerIndex[entity] >= 0)
-		SpawnList.GetArray(hFromSpawnerIndex[entity], spawn);
-	
-	for(int target = 1; target <= MaxClients; target++)
 	{
-		if(client == target || Party_IsClientMember(client, target))
+		SpawnList.GetArray(hFromSpawnerIndex[entity], spawn);
+		
+		for(int target = 1; target <= MaxClients; target++)
 		{
-			if(XP[entity] > 0 && (Level[client] - 5) < Level[entity] && (Level[client] + 5) > Level[entity] && GetLevelCap(Tier[client]) != Level[client])
-				GiveXP(client, XP[entity]);
-			
-			if(i_CreditsOnKill[entity])
+			if(client == target || Party_IsClientMember(client, target))
 			{
-				if(i_CreditsOnKill[entity] > 199)
+				if(XP[entity] > 0 && (Level[client] - 5) < Level[entity] && (Level[client] + 5) > Level[entity] && GetLevelCap(Tier[client]) != Level[client])
+					GiveXP(client, XP[entity]);
+				
+				if(i_CreditsOnKill[entity])
 				{
-					TextStore_DropCash(target, pos, i_CreditsOnKill[entity]);
+					if(i_CreditsOnKill[entity] > 199)
+					{
+						TextStore_DropCash(target, pos, i_CreditsOnKill[entity]);
+					}
+					else if(i_CreditsOnKill[entity] > 49)
+					{
+						if(GetURandomInt() % 2)
+							TextStore_DropCash(target, pos, i_CreditsOnKill[entity] * 2);
+					}
+					else if(!(GetURandomInt() % 5))
+					{
+						TextStore_DropCash(target, pos, i_CreditsOnKill[entity] * 5);
+					}
 				}
-				else if(i_CreditsOnKill[entity] > 49)
-				{
-					if(GetURandomInt() % 2)
-						TextStore_DropCash(target, pos, i_CreditsOnKill[entity] * 2);
-				}
-				else if(!(GetURandomInt() % 5))
-				{
-					TextStore_DropCash(target, pos, i_CreditsOnKill[entity] * 5);
-				}
+				
+				spawn.DoAllDrops(target, pos, Level[entity]);
 			}
-			
-			spawn.DoAllDrops(target, pos, Level[entity]);
 		}
 	}
 
@@ -395,4 +470,78 @@ static void RollItemDrop(int client, const char[] name, float chance, float pos[
 {
 	if(chance > GetURandomFloat())
 		TextStore_DropNamedItem(client, name, pos, 1);
+}
+
+public Action Spawns_Command(int client, int args)
+{
+	if(client)
+	{
+		Menu menu = new Menu(Spawns_CommandH);
+		menu.SetTitle("RPG Fortress\n \nSpawn Stats:\n ");
+
+		float luck = (1.0 + (float(Stats_Luck(client)) / 300.0)) * 100.0;
+
+		ArrayList list = new ArrayList();
+		int length = SpawnList.Length;
+		for(int i; i < length; i++)
+		{
+			static SpawnEnum spawn;
+			SpawnList.GetArray(i, spawn);
+			if(spawn.Touching[client] && list.FindValue(spawn.Index) == -1)
+			{
+				list.Push(spawn.Index);
+
+				static char buffer[256];
+				Format(buffer, sizeof(buffer), "%s\n ", NPC_Names[spawn.Index]);
+				
+				if(spawn.Item1[0])
+					Format(buffer, sizeof(buffer), "%s%s - %.2f%% ~ %.2f%%\n ", buffer, spawn.Item1, spawn.Chance1 * luck, spawn.Chance1 * luck * spawn.DropMulti);
+				
+				if(spawn.Item2[0])
+					Format(buffer, sizeof(buffer), "%s%s - %.2f%% ~ %.2f%%\n ", buffer, spawn.Item2, spawn.Chance2 * luck, spawn.Chance2 * luck * spawn.DropMulti);
+				
+				if(spawn.Item3[0])
+					Format(buffer, sizeof(buffer), "%s%s - %.2f%% ~ %.2f%%\n ", buffer, spawn.Item3, spawn.Chance3 * luck, spawn.Chance3 * luck * spawn.DropMulti);
+
+				if(spawn.Item4[0])
+					Format(buffer, sizeof(buffer), "%s%s - %.2f%% ~ %.2f%%\n ", buffer, spawn.Item4, spawn.Chance4 * luck, spawn.Chance4 * luck * spawn.DropMulti);
+				
+				menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+			}
+		}
+		
+		static char Empty[256];
+		
+		if(!list.Length)
+			menu.AddItem(Empty, "Nothing Spawns Here", ITEMDRAW_DISABLED);
+		
+		delete list;
+
+		menu.Pagination = 2;
+		menu.ExitButton = true;
+		menu.ExitBackButton = true;
+		menu.Display(client, MENU_TIME_FOREVER);
+	}
+	return Plugin_Handled;
+}
+
+public int Spawns_CommandH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+				FakeClientCommandEx(client, "sm_store");
+		}
+		case MenuAction_Select:
+		{
+			FakeClientCommandEx(client, "sm_store");
+		}
+	}
+	return 0;
 }

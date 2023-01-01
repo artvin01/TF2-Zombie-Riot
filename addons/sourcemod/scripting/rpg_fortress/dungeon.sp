@@ -1242,6 +1242,9 @@ static void StartDungeon(const char[] name)
 				}
 			}
 
+			delete dungeon.WaveList;
+			dungeon.WaveList = stage.WaveList.Clone();
+
 			int tier;
 			if(dungeon.ModList)
 			{
@@ -1271,9 +1274,6 @@ static void StartDungeon(const char[] name)
 					TF2_RespawnPlayer(client);
 				}
 			}
-
-			delete dungeon.WaveList;
-			dungeon.WaveList = stage.WaveList.Clone();
 			
 			for(int c; c < dungeon.PlayerCount; c++)
 			{
@@ -1303,7 +1303,6 @@ static void StartDungeon(const char[] name)
 
 static void CleanDungeon(const char[] name, bool victory)
 {
-
 	static DungeonEnum dungeon;
 	if(DungeonList.GetArray(name, dungeon, sizeof(dungeon)) && dungeon.CurrentStage[0])
 	{
@@ -1327,14 +1326,12 @@ static void CleanDungeon(const char[] name, bool victory)
 			SaveKv.JumpToKey(name, true);
 			SaveKv.JumpToKey(dungeon.CurrentStage, true);
 
-			bool clear = (victory || !dungeon.WaveList);
 			int amount;
 			int[] clients = new int[MaxClients];
 			for(int client = 1; client <= MaxClients; client++)
 			{
 				if(StrEqual(InDungeon[client], name))
 				{
-					clear = true;
 					if(dungeon.WaveList)
 					{
 						clients[amount++] = client;
@@ -1363,7 +1360,7 @@ static void CleanDungeon(const char[] name, bool victory)
 					}
 				}
 			}
-
+			
 			if(victory)
 			{
 				if(amount)
@@ -1375,22 +1372,19 @@ static void CleanDungeon(const char[] name, bool victory)
 				SaveKv.ExportToFile(mod.Desc);
 			}
 
-			if(clear)
+			int i = MaxClients + 1;
+			while((i = FindEntityByClassname(i, "base_boss")) != -1)
 			{
-				int i = MaxClients + 1;
-				while((i = FindEntityByClassname(i, "base_boss")) != -1)
-				{
-					if(StrEqual(InDungeon[i], name))
-						NPC_Despawn(i);
-				}
-				
-				dungeon.CurrentStage[0] = 0;
-				dungeon.CurrentHost = 0;
-				dungeon.StartTime = 0.0;
-				delete dungeon.ModList;
-				delete dungeon.WaveList;
-				DungeonList.SetArray(name, dungeon, sizeof(dungeon));
+				if(StrEqual(InDungeon[i], name))
+					NPC_Despawn(i);
 			}
+			
+			dungeon.CurrentStage[0] = 0;
+			dungeon.CurrentHost = 0;
+			dungeon.StartTime = 0.0;
+			delete dungeon.ModList;
+			delete dungeon.WaveList;
+			DungeonList.SetArray(name, dungeon, sizeof(dungeon));
 		}
 		else
 		{
@@ -1512,7 +1506,7 @@ public Action Dungeon_Timer(Handle timer)
 								if(wave.Health)
 								{
 									// +20% each player
-									wave.Health = RoundToCeil(float(wave.Health) * float(dungeon.PlayerCount) * 0.5);
+									wave.Health = RoundToCeil(float(wave.Health) * float(dungeon.PlayerCount) * 0.75);
 									SetEntProp(entity, Prop_Data, "m_iMaxHealth", wave.Health);
 									SetEntProp(entity, Prop_Data, "m_iHealth", wave.Health);
 								}
@@ -1740,8 +1734,6 @@ public void Dungeon_Wave_CoreInfection3(ArrayList list)
 
 public void Dungeon_Wave_CoreInfection_Grigori(ArrayList list)
 {
-	PrintToChatAll("Dungeon_Wave_CoreInfection_Grigori");
-
 	static WaveEnum wave;
 	if(!wave.Index)
 	{

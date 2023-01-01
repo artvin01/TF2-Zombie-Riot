@@ -211,7 +211,7 @@ public void FarmCow_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable3);
 }
 
-bool HeavyCow_Interact(int client, int entity, int weapon)
+bool HeavyCow_Interact(int client, int weapon)
 {
 	bool result;
 	int store_entity_number = Store_GetStoreOfEntity(weapon);

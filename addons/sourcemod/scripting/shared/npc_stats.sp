@@ -30,6 +30,7 @@ bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 #if defined RPG
 float f3_SpawnPosition[MAXENTITIES][3];
 int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
+int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES] = {0, ...};
 #endif
 
 static int g_particleImpactFlesh;
@@ -1955,6 +1956,7 @@ methodmap CClotBody
 			SetEntProp(entity, Prop_Send, "m_fEffects", EF_PARENT_ANIMATES);
 			
 			b_ThisEntityIgnored[entity] = true;
+			b_ForceCollisionWithProjectile[entity] = true;
 
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 1600.0);
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 1800.0);
@@ -1963,9 +1965,6 @@ methodmap CClotBody
 			{
 				SetVariantString("!activator");
 				AcceptEntityInput(entity, "SetParent", this.index);
-
-				SetVariantString("");
-				AcceptEntityInput(entity, "SetParentAttachmentMaintainOffset"); 	
 			}
 		}
 		CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
@@ -6503,6 +6502,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f3_SpawnPosition[entity][1] = 0.0;
 	f3_SpawnPosition[entity][2] = 0.0;
 	hFromSpawnerIndex[entity] = -1;
+	i_NpcIsUnderSpawnProtectionInfluence[entity] = 0;
 	b_DungeonContracts_BleedOnHit[entity] = false;
 	b_DungeonContracts_ZombieSpeedTimes3[entity] = false;
 	b_DungeonContracts_ZombieFlatArmorMelee[entity] = false;
@@ -6790,8 +6790,8 @@ public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask
 	return false;
 } 
 
+#if defined ZR
 //TELEPORT IS SAFE? FROM SARYSA BUT EDITED FOR NPCS!
-
 bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/)
 {
 	float sizeMultiplier = 1.0; //We do not want to teleport giants, yet.
@@ -7099,11 +7099,7 @@ bool Resize_TracePlayersAndBuildings(int entity, int contentsMask)
 {
 	if(entity > 0 && entity <= MaxClients)
 	{
-		
-#if defined ZR
 		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0)
-#endif
-		
 		{
 			if (!b_DoNotUnStuck[entity] && !b_ThisEntityIgnored[entity] && GetClientTeam(entity) != ResizeMyTeam)
 			{
@@ -7126,6 +7122,7 @@ bool Resize_TracePlayersAndBuildings(int entity, int contentsMask)
 
 	return false;
 }
+#endif
 
 //TELEPORT LOGIC END.
 

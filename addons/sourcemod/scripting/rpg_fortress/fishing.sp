@@ -477,6 +477,9 @@ public Action Fishing_RodM1Delay(Handle timer, DataPack pack)
 
 public void Fishing_RodM2(int client, int weapon)
 {
+	if(GetEntProp(client, Prop_Send, "m_nWaterLevel") == 0)
+		return;
+
 	float gameTime = GetGameTime();
 	if(f_ClientWasPreviouslyFishing[client] < gameTime)
 	{
@@ -493,16 +496,23 @@ public void Fishing_RodM2(int client, int weapon)
 	char current[48];
 	int count;
 	int length = place.Pool.Length;
-	for(int i; i < length; i++)
+	for(int i; i <= length; i++)
 	{
 		static char buffer[48];
-		place.Pool.GetString(i, buffer, sizeof(buffer));
-		if(StrEqual(buffer, current))
-			continue;
+		if(i < length)
+		{
+			place.Pool.GetString(i, buffer, sizeof(buffer));
+			if(StrEqual(buffer, current))
+			{
+				count++;
+				continue;
+			}
+		}
 		
 		if(count)
 			SPrintToChat(client, "%s %d%%", current, count * 100 / length);
 
 		strcopy(current, sizeof(current), buffer);
+		count = 1;
 	}
 }

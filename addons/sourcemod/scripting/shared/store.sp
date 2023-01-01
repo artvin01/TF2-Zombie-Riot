@@ -1442,9 +1442,12 @@ void Store_EquipSlotCheck(int client, int slot)
 				count++;
 				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
 				{
-					PrintToChat(client, "%s was unequipped", info.Custom_Name);
-					TextStore_SetInv(client, info.Store, _, false);
-					break;
+					if(TextStore_GetInv(client, info.Store))
+					{
+						PrintToChat(client, "%s was unequipped", info.Custom_Name);
+						TextStore_SetInv(client, info.Store, _, false);
+						break;
+					}
 				}
 			}
 		}
