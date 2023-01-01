@@ -1908,7 +1908,7 @@ public void Dungeon_BleedOnHit(int entity)
 
 public void Dungeon_Plus5Damage(int entity)
 {
-	b_DungeonContracts_BleedOnHit[entity] = true;
+	b_DungeonContracts_FlatDamageIncreace5[entity] = true;
 }
 
 public void ClearDungeonStats(int entity)
@@ -1920,5 +1920,87 @@ public void ClearDungeonStats(int entity)
 		b_DungeonContracts_SlowerMovespeed[entity] = false;
 		b_DungeonContracts_FlatDamageIncreace5[entity] = false;
 	}
-//	b_DungeonContracts_BleedOnHit[entity] = false;
+	b_DungeonContracts_BleedOnHit[entity] = false;
+}
+
+float RpgCC_ContractExtrasPlayerOnTakeDamage(int victim, int attacker, float damage, int damagetype)
+{
+	if(b_DungeonContracts_35PercentMoreDamage[attacker])
+	{
+		damage *= 1.35;
+	}
+	if(b_DungeonContracts_25PercentMoreDamage[attacker])
+	{
+		damage *= 1.25;
+	}
+
+	//Slash is reserved for any debuffs like this.
+	if(!(damagetype & (DMG_SLASH)))
+	{
+		if(b_DungeonContracts_BleedOnHit[attacker])
+		{
+			StartBleedingTimer_Against_Client(victim, attacker, damage * 0.05, 10); //10 bleeds for 5% of their damage, equalling to 50% extra damage taken over time.
+		}
+		//This happens after every calculation, it is like true damage but fancy.
+		if(b_DungeonContracts_FlatDamageIncreace5[victim])
+		{
+			damage += 5.0;
+		}
+	}
+	else
+	{
+		if(b_DungeonContracts_FlatDamageIncreace5[victim]) //If its a bleed, then we only add 1 more damage.
+		{
+			damage += 1.0;
+		}
+	}
+	return damage;
+}
+
+float RpgCC_ContractExtrasNpcOnTakeDamage(int victim, int attacker, float damage, int damagetype, int weapon, int weaponslot)
+{
+	if(!(damagetype & (DMG_SLASH))) // if you want anything to be melee based, just give them this.
+	{
+		if(b_DungeonContracts_ZombieFlatArmorMelee[victim])
+		{
+			if(weaponslot == TFWeaponSlot_Melee && !i_IsWandWeapon[weapon] && !i_IsWrench[weapon]) //Only melee.
+			{
+				damage -= 10.0;
+				if(damage < 0.0)
+				{
+					damage = 0.0;
+				}
+			}
+		}
+		if(b_DungeonContracts_ZombieFlatArmorRanged[victim])
+		{
+			if(weaponslot > TFWeaponSlot_Melee) //Only Ranged
+			{
+				damage -= 5.0;
+				if(damage < 0.0)
+				{
+					damage = 0.0;
+				}
+			}
+		}
+		if(b_DungeonContracts_ZombieFlatArmorMage[victim])
+		{
+			if(i_IsWandWeapon[weapon]) //Only Mage.
+			{
+				damage -= 15.0;
+				if(damage < 0.0)
+				{
+					damage = 0.0;
+				}
+			}
+		}
+	}
+	else
+	{
+		if(b_DungeonContracts_ZombieArmorDebuffResistance[victim])
+		{
+			damage *= 0.5;
+		}
+	}
+	return damage;
 }

@@ -1493,49 +1493,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					}
 				}
 			}		
-			if(!(damagetype & (DMG_SLASH))) // if you want anything to be melee based, just give them this.
-			{
-				if(b_DungeonContracts_ZombieFlatArmorMelee[victim])
-				{
-					if(slot == TFWeaponSlot_Melee && !i_IsWandWeapon[weapon] && !i_IsWrench[weapon]) //Only melee.
-					{
-						damage -= 10.0;
-						if(damage < 0.0)
-						{
-							damage = 0.0;
-						}
-					}
-				}
-				if(b_DungeonContracts_ZombieFlatArmorRanged[victim])
-				{
-					if(slot > TFWeaponSlot_Melee) //Only Ranged
-					{
-						damage -= 5.0;
-						if(damage < 0.0)
-						{
-							damage = 0.0;
-						}
-					}
-				}
-				if(b_DungeonContracts_ZombieFlatArmorMage[victim])
-				{
-					if(i_IsWandWeapon[weapon]) //Only Mage.
-					{
-						damage -= 15.0;
-						if(damage < 0.0)
-						{
-							damage = 0.0;
-						}
-					}
-				}
-			}
-			else
-			{
-				if(b_DungeonContracts_ZombieArmorDebuffResistance[victim])
-				{
-					damage *= 0.5;
-				}
-			}
+			damage = RpgCC_ContractExtrasNpcOnTakeDamage(victim, attacker, damage, damagetype, weapon, slot);
 #endif
 
 #if defined ZR
