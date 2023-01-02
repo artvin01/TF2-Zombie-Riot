@@ -1000,7 +1000,6 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 		BleedAmountCountStack[OriginalIndex] -= 1;
 		return Plugin_Stop;
 	}
-	PrintToChatAll("%i",bleed_count);
 
 	pack.Position--;
 	pack.WriteCell(bleed_count-1, false);
