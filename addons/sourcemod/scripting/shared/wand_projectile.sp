@@ -188,10 +188,6 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Want_CalciumWandTouch(entity, target);
 		}
-		case 11:
-		{
-			Gun_Tornado_Blitz_Touch(entity, target);
-		}
 	}
 #else
 	switch(i_WandIdNumber[entity])

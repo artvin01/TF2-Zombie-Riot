@@ -2,6 +2,11 @@
 #pragma newdecls required
 
 static float fl_tornados_rockets_eated[MAXPLAYERS+1]={0.0, ...};
+static int i_tornado_index[MAXENTITIES+1];
+static int i_tornado_wep[MAXENTITIES+1];
+static float fl_tornado_dmg[MAXENTITIES+1];
+static int g_ProjectileModel;
+
 
 #define SOUND_IMPACT_1 					"physics/flesh/flesh_impact_bullet1.wav"	//We hit flesh, we are also kinetic, yes.
 #define SOUND_IMPACT_2 					"physics/flesh/flesh_impact_bullet2.wav"
@@ -26,6 +31,10 @@ public void Weapon_Tornado_Blitz_Precache()
 	PrecacheSound(SOUND_IMPACT_3);
 	PrecacheSound(SOUND_IMPACT_4);
 	PrecacheSound(SOUND_IMPACT_5);
+	
+	static char model[PLATFORM_MAX_PATH];
+	model = "models/weapons/w_bullet.mdl";
+	g_ProjectileModel = PrecacheModel(model);
 }
 
 public void Weapon_tornado_launcher_Spam(int client, int weapon, const char[] classname, bool &result)
@@ -122,15 +131,83 @@ void Weapon_Tornado_Launcher_Spam_Fire_Rocket(int client, int weapon)
 			speedMult *= TF2Attrib_GetValue(address);
 			
 		float damage=dmgProjectile;
-		
-		float time = 10.0; //Eternal life, muhahahaha
 			
-		Wand_Projectile_Spawn(client, speedMult, time, damage, 11/*Tornado Blitz*/, weapon, "teleporter_arms_circle_red" , _ , true);
+		BlitzRocket(client, speedMult, damage, weapon);
 	}
 }
-public void Gun_Tornado_Blitz_Touch(int entity, int target)
+
+void BlitzRocket(int client, float speed, float damage, int weapon)
 {
-	int particle = EntRefToEntIndex(i_WandParticle[entity]);
+	float fAng[3], fPos[3];
+	GetClientEyeAngles(client, fAng);
+	GetClientEyePosition(client, fPos);
+	
+	float CustomAng[3] = {0.0,0.0,0.0};	//This part is incomplete. for now...
+	
+	if(CustomAng[0] != 0.0 || CustomAng[1] != 0.0)
+	{
+		fAng[0] = CustomAng[0];
+		fAng[1] = CustomAng[1];
+		fAng[2] = CustomAng[2];
+	}
+
+
+	float tmp[3];
+	float actualBeamOffset[3];
+	float BEAM_BeamOffset[3];
+	BEAM_BeamOffset[0] = 0.0;
+	BEAM_BeamOffset[1] = -8.0;
+	BEAM_BeamOffset[2] = -10.0;
+
+	tmp[0] = BEAM_BeamOffset[0];
+	tmp[1] = BEAM_BeamOffset[1];
+	tmp[2] = 0.0;
+	VectorRotate(tmp, fAng, actualBeamOffset);
+	actualBeamOffset[2] = BEAM_BeamOffset[2];
+	fPos[0] += actualBeamOffset[0];
+	fPos[1] += actualBeamOffset[1];
+	fPos[2] += actualBeamOffset[2];
+
+
+	float fVel[3], fBuf[3];
+	GetAngleVectors(fAng, fBuf, NULL_VECTOR, NULL_VECTOR);
+	fVel[0] = fBuf[0]*speed;
+	fVel[1] = fBuf[1]*speed;
+	fVel[2] = fBuf[2]*speed;
+
+	int entity = CreateEntityByName("tf_projectile_rocket");
+	if(IsValidEntity(entity))
+	{
+		fl_tornado_dmg[entity]=damage;
+		i_tornado_wep[entity]=weapon;
+		i_tornado_index[entity]=client;
+		b_EntityIsArrow[entity] = true;
+		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
+		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
+		DispatchSpawn(entity);
+		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
+		
+		for(int i; i<4; i++)
+		{
+			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
+		}
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 3.0);
+		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Tornado_RocketExplodePre); //In this case I reused code that was reused due to laziness, I am the ultiamte lazy. *yawn*
+		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+		SDKHook(entity, SDKHook_StartTouch, Tornado_Blitz_StartTouch);
+	}
+	return;
+}
+public MRESReturn Tornado_RocketExplodePre(int entity)
+{
+	//CPrintToChatAll("explode pre");
+	return MRES_Supercede;
+}
+public void Tornado_Blitz_StartTouch(int entity, int other)
+{
+	int target = Target_Hit_Wand_Detection(entity, other);
 	if (target > 0)	
 	{
 		//Code to do damage position and ragdolls
@@ -140,11 +217,14 @@ public void Gun_Tornado_Blitz_Touch(int entity, int target)
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
 		Entity_Position = WorldSpaceCenter(target);
+		
+		int owner = EntRefToEntIndex(i_tornado_index[entity]);
+		int weapon = EntRefToEntIndex(i_tornado_wep[entity]);
 
-		int owner = EntRefToEntIndex(i_WandOwner[entity]);
-		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
-
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, fl_tornado_dmg[entity], DMG_BULLET, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		
+		//CPrintToChatAll("sdk_dmg");
+		
 		switch(GetRandomInt(1,5)) 
 		{
 			case 1:EmitSoundToAll(SOUND_IMPACT_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
@@ -158,11 +238,6 @@ public void Gun_Tornado_Blitz_Touch(int entity, int target)
 			case 5:EmitSoundToAll(SOUND_IMPACT_5, entity, SNDCHAN_STATIC, 80, _, 0.9);
 				
 	   	}
-
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
 		RemoveEntity(entity);
 	}
 	else if(target == 0)
@@ -177,10 +252,7 @@ public void Gun_Tornado_Blitz_Touch(int entity, int target)
 			
 			case 4:EmitSoundToAll(SOUND_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
 		}
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
 		RemoveEntity(entity);
 	}
+	return;
 }
