@@ -11,7 +11,7 @@ static Handle SDKGetMaxHealth;
 //static Handle g_hSetAbsAngle;
 static Handle g_hInvalidateBoneCache;
 
-//static Handle g_hCTFCreateArrow;
+static Handle g_hCTFCreateArrow;
 //static Handle g_hCTFCreatePipe;
 //Handle g_hSDKMakeCarriedObject;
 //static Handle g_hGetVectors;
@@ -125,7 +125,7 @@ void SDKCall_Setup()
 	
 	
 	//( const Vector &vecOrigin, const QAngle &vecAngles, const float fSpeed, const float fGravity, ProjectileType_t projectileType, CBaseEntity *pOwner, CBaseEntity *pScorer )
-	/*StartPrepSDKCall(SDKCall_Static);
+	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFProjectile_Arrow::Create");
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
 	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef);
@@ -137,7 +137,7 @@ void SDKCall_Setup()
 	PrepSDKCall_SetReturnInfo(SDKType_CBaseEntity, SDKPass_Pointer);
 	g_hCTFCreateArrow = EndPrepSDKCall();
 	if(!g_hCTFCreateArrow)
-		LogError("[Gamedata] Could not find CTFProjectile_Arrow::Create");*/
+		LogError("[Gamedata] Could not find CTFProjectile_Arrow::Create");
 		
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFNavMesh::ComputeBlockedArea");
@@ -237,14 +237,14 @@ void SDKCall_EquipWearable(int client, int entity)
 		SDKCall(SDKEquipWearable, client, entity);
 }
 //( const Vector &vecOrigin, const QAngle &vecAngles, const float fSpeed, const float fGravity, ProjectileType_t projectileType, CBaseEntity *pOwner, CBaseEntity *pScorer )
-	/*
-int SDKCall_CTFCreateArrow(float VecOrigin[3], float VecAngles[3], const float fSpeed, const float fGravity, int projectileType, int Owner, int Scorer)
+
+stock int SDKCall_CTFCreateArrow(float VecOrigin[3], float VecAngles[3], const float fSpeed, const float fGravity, int projectileType, int Owner, int Scorer)
 {
 	if(g_hCTFCreateArrow)
 		return SDKCall(g_hCTFCreateArrow, VecOrigin, VecAngles, fSpeed, fGravity, projectileType, Owner, Scorer);
 	
 	return -1;
-}*/
+}
 
 /*		
 ( const Vector &position, const QAngle &angles, 

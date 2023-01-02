@@ -1354,37 +1354,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			
 		}
 #if defined RPG
-
-		if(b_DungeonContracts_35PercentMoreDamage[attacker])
-		{
-			damage *= 1.35;
-		}
-		if(b_DungeonContracts_25PercentMoreDamage[attacker])
-		{
-			damage *= 1.25;
-		}
-
-
-		//Slash is reserved for any debuffs like this.
-		if(!(damagetype & (DMG_SLASH)))
-		{
-			if(!b_DungeonContracts_BleedOnHit[attacker])
-			{
-				StartBleedingTimer_Against_Client(victim, attacker, damage * 0.05, 10); //10 bleeds for 5% of their damage, equalling to 50% extra damage taken over time.
-			}
-			//This happens after every calculation, it is like true damage but fancy.
-			if(b_DungeonContracts_FlatDamageIncreace5[victim])
-			{
-				damage += 5.0;
-			}
-		}
-		else
-		{
-			if(b_DungeonContracts_FlatDamageIncreace5[victim]) //If its a bleed, then we only add 1 more damage.
-			{
-				damage += 1.0;
-			}
-		}
+		damage = RpgCC_ContractExtrasPlayerOnTakeDamage(victim, attacker, damage, damagetype);
 #endif
 	}
 	
