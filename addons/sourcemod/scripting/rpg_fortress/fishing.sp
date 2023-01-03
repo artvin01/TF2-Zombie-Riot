@@ -56,6 +56,7 @@ static float f_ClientWasFishingDelayCheck[MAXTF2PLAYERS];
 static float f_ClientWasPreviouslyFishing[MAXTF2PLAYERS];
 static float FishingRate[MAXTF2PLAYERS] = {1.0, ...};
 static int FishingTier[MAXTF2PLAYERS];
+static int Desired_FishingTier[MAXTF2PLAYERS];
 static char CurrentFishing[MAXTF2PLAYERS][32];
 
 static int g_FishCaughtParticle;
@@ -192,9 +193,11 @@ void Fishing_ConfigSetup(KeyValues map)
 
 void Fishing_ClientDisconnect(int client)
 {
+	Desired_FishingTier[client] = 1; //Reset the desired fishing tier to 0.
 	f_ClientWasFishingDelayCheck[client] = 0.0;
 	f_ClientWasPreviouslyFishing[client] = 0.0;
 }
+
 
 static void GetNearestPond(const float pos[3], char[] found, int leng)
 {
@@ -257,7 +260,7 @@ void Fishing_PlayerRunCmd(int client)
 
 			static PlaceEnum place;
 			PlaceList.GetArray(CurrentFishing[client], place, sizeof(place));
-			if(place.Pool[FishingTier[client]])
+			if(place.Pool[Desired_FishingTier[client]])
 			{
 				float f_ang[3];
 
@@ -351,7 +354,7 @@ void FishCreatedOrIsValid(int client, float f_fishpos[3])
 static void CreateFish(int client, const float pos[3], const PlaceEnum place)
 {
 	static PoolEnum pool;
-	place.Pool[FishingTier[client]].GetString(GetURandomInt() % place.Pool[FishingTier[client]].Length, pool.Name, sizeof(pool.Name));
+	place.Pool[Desired_FishingTier[client]].GetString(GetURandomInt() % place.Pool[Desired_FishingTier[client]].Length, pool.Name, sizeof(pool.Name));
 
 	static FishEnum fish;
 	FishList.GetArray(pool.Name, fish, sizeof(fish));
@@ -432,8 +435,8 @@ public void Fishing_RodM1(int client, int weapon)
 {
 	float ApplyCooldown = 0.8 * Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
 	Ability_Apply_Cooldown(client, 1, ApplyCooldown);
-	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
-	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
+//	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
+//	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
 	
 	DataPack pack;
 	CreateDataTimer(0.2, Fishing_RodM1Delay, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -445,6 +448,25 @@ public void FishingRodSetRarity(int client, int weapon, int index)
 {
 	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
 	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
+	Desired_FishingTier[client] = FishingTier[client]; //Set the desired fishing tier to the tier of the rod.
+}
+
+public void FishingRodCycleRarity(int client, int weapon, int index)
+{
+	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
+	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
+	Desired_FishingTier[client] -= 1;
+	if(Desired_FishingTier[client] < 1)
+	{
+		Desired_FishingTier[client] = FishingTier[client]; //Reset desired fishing tier back to max.
+	}
+
+
+	if(Desired_FishingTier[client] > FishingTier[client])
+	{
+		Desired_FishingTier[client] = FishingTier[client]; //Safety check for incase it somehow goes over the fishing tier.
+	}
+	PrintHintText(client,"Your desired fishing tier is now: [%i]", Desired_FishingTier[client]);
 }
 
 public Action Fishing_RodM1Delay(Handle timer, DataPack pack)
@@ -513,17 +535,17 @@ public void Fishing_RodM2(int client, int weapon)
 
 	static PlaceEnum place;
 	PlaceList.GetArray(CurrentFishing[client], place, sizeof(place));
-	if(place.Pool[FishingTier[client]])
+	if(place.Pool[Desired_FishingTier[client]])
 	{
 		char current[48];
 		int count;
-		int length = place.Pool[FishingTier[client]].Length;
+		int length = place.Pool[Desired_FishingTier[client]].Length;
 		for(int i; i <= length; i++)
 		{
 			static char buffer[48];
 			if(i < length)
 			{
-				place.Pool[FishingTier[client]].GetString(i, buffer, sizeof(buffer));
+				place.Pool[Desired_FishingTier[client]].GetString(i, buffer, sizeof(buffer));
 				if(StrEqual(buffer, current))
 				{
 					count++;
