@@ -560,4 +560,5 @@ public void Fishing_RodM2(int client, int weapon)
 			count = 1;
 		}
 	}
+	PrintHintText(client,"These fish apear at your current desired tier: [%i]", Desired_FishingTier[client]);
 }
