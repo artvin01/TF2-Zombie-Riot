@@ -3778,12 +3778,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					}
 					if(info.FuncAttack3 != INVALID_FUNCTION)
 					{
-						PrintToChatAll("tst");
 						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_R;  //R status to weapon
-					}
-					else
-					{
-						PrintToChatAll("what");
 					}
 					
 					EntityFuncAttack[entity] = info.FuncAttack;
