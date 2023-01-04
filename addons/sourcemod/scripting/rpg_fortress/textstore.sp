@@ -410,6 +410,17 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 	return Item_On;
 }
 
+void TextStore_ClientDisconnect(int client)
+{
+	for(int i = SpellList.Length - 1; i >= 0; i--)
+	{
+		static SpellEnum spell;
+		SpellList.GetArray(i, spell);
+		if(spell.Owner == client)
+			SpellList.Erase(i);
+	}
+}
+
 void TextStore_GiveAll(int client)
 {
 	int length = SpellList.Length;

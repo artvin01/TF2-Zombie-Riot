@@ -1,7 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char FishingLevels[][] =
+#define MAX_FISH_TIER 8
+
+static const char FishingLevels[MAX_FISH_TIER][] =
 {
 	"Leaf (0)",
 	"Feather (1)",
@@ -19,7 +21,7 @@ enum struct PlaceEnum
 {
 	float Pos[3];
 	int Luck;
-	ArrayList Pool;
+	ArrayList Pool[MAX_FISH_TIER];
 }
 
 enum struct FishEnum
@@ -30,7 +32,7 @@ enum struct FishEnum
 	
 	void SetupEnum(KeyValues kv)
 	{
-		this.Tier = kv.GetNum("tier");
+		this.Tier = kv.GetNum("rarity");
 		this.Type = kv.GetNum("type");
 		kv.GetColor4("color", this.Color);
 	}
@@ -54,6 +56,7 @@ static float f_ClientWasFishingDelayCheck[MAXTF2PLAYERS];
 static float f_ClientWasPreviouslyFishing[MAXTF2PLAYERS];
 static float FishingRate[MAXTF2PLAYERS] = {1.0, ...};
 static int FishingTier[MAXTF2PLAYERS];
+static int Desired_FishingTier[MAXTF2PLAYERS];
 static char CurrentFishing[MAXTF2PLAYERS][32];
 
 static int g_FishCaughtParticle;
@@ -110,17 +113,19 @@ void Fishing_ConfigSetup(KeyValues map)
 		kv.GoBack();
 	}
 	
-	PlaceEnum place;
-
 	if(PlaceList)
 	{
+		PlaceEnum place;
 		StringMapSnapshot snap = PlaceList.Snapshot();
 		int length = snap.Length;
 		for(int i; i < length; i++)
 		{
 			snap.GetKey(i, buffer, sizeof(buffer));
 			PlaceList.GetArray(buffer, place, sizeof(place));
-			delete place.Pool;
+			for(int a; a < sizeof(place.Pool); a++)
+			{
+				delete place.Pool[a];
+			}
 		}
 
 		delete snap;
@@ -133,33 +138,45 @@ void Fishing_ConfigSetup(KeyValues map)
 	{
 		do
 		{
-			place.Pool = new ArrayList(ByteCountToCells(48));
+			PlaceEnum place;
 
-			if(kv.JumpToKey("Pool"))
+			if(kv.GotoFirstSubKey())
 			{
-				if(kv.GotoFirstSubKey(false))
+				do
 				{
-					do
+					kv.GetSectionName(buffer, sizeof(buffer));
+					int tier = StringToInt(buffer);
+					if(tier >= 0 && tier < sizeof(place.Pool))
 					{
-						kv.GetSectionName(buffer, sizeof(buffer));
-						int amount = kv.GetNum(NULL_STRING, 1);
-						for(int i; i < amount; i++)
+						delete place.Pool[tier];
+						place.Pool[tier] = new ArrayList(ByteCountToCells(48));
+
+						if(kv.GotoFirstSubKey(false))
 						{
-							place.Pool.PushString(buffer);
+							do
+							{
+								kv.GetSectionName(buffer, sizeof(buffer));
+								int amount = kv.GetNum(NULL_STRING, 1);
+								for(int i; i < amount; i++)
+								{
+									place.Pool[tier].PushString(buffer);
+								}
+							}
+							while(kv.GotoNextKey(false));
+
+							kv.GoBack();
+						}
+
+						if(!place.Pool[tier].Length)
+						{
+							delete place.Pool[tier];
+							continue;
 						}
 					}
-					while(kv.GotoNextKey(false));
-
-					kv.GoBack();
 				}
+				while(kv.GotoNextKey());
 
 				kv.GoBack();
-			}
-
-			if(!place.Pool.Length)
-			{
-				delete place.Pool;
-				continue;
 			}
 
 			kv.GetSectionName(buffer, sizeof(buffer));
@@ -176,9 +193,11 @@ void Fishing_ConfigSetup(KeyValues map)
 
 void Fishing_ClientDisconnect(int client)
 {
+	Desired_FishingTier[client] = 1; //Reset the desired fishing tier to 0.
 	f_ClientWasFishingDelayCheck[client] = 0.0;
 	f_ClientWasPreviouslyFishing[client] = 0.0;
 }
+
 
 static void GetNearestPond(const float pos[3], char[] found, int leng)
 {
@@ -241,60 +260,66 @@ void Fishing_PlayerRunCmd(int client)
 
 			static PlaceEnum place;
 			PlaceList.GetArray(CurrentFishing[client], place, sizeof(place));
-
-			float f_ang[3];
-
-			f_pos[2] += 150.0;
-
-			float f_resulthit[3];
-			
-			f_ang[0] = 5.0 + GetRandomFloat(20.0, 50.0);
-
-			f_ang[1] = GetRandomFloat(-180.0,180.0);
-
-			Handle trace; 
-			trace = TR_TraceRayFilterEx(f_pos, f_ang, ( MASK_WATER | MASK_SHOT_HULL ), RayType_Infinite, HitOnlyWorld, client);
-			//Do we hit water?
-			TR_GetEndPosition(f_resulthit, trace);
-
-			
-		//	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-		//	TE_SetupBeamPoints(f_pos, f_resulthit, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
-		//	TE_SendToAll();
-			
-			delete trace;
-
-			f_resulthit[2] -= 0.1;
-			
-			float f_WaterHitPos[3];
-			float f_GroundHitPos[3];
-			float f_MiddlePos[3];
-
-			f_WaterHitPos = f_resulthit;
-
-			if(TR_GetPointContents(f_resulthit) & CONTENTS_WATER) //We have hit water, hit groundto get the middle.
+			if(place.Pool[Desired_FishingTier[client]])
 			{
-				Handle trace_water; 
-				trace_water = TR_TraceRayFilterEx(f_pos, f_ang, ( MASK_SHOT_HULL ), RayType_Infinite, HitOnlyWorld, client);
+				float f_ang[3];
+
+				f_pos[2] += 150.0;
+
+				float f_resulthit[3];
 				
-				TR_GetEndPosition(f_GroundHitPos, trace_water);
-				delete trace_water;
-				f_MiddlePos[0] = f_GroundHitPos[0] + (f_WaterHitPos[0] - f_GroundHitPos[0]) / 2;
-				f_MiddlePos[1] = f_GroundHitPos[1] + (f_WaterHitPos[1] - f_GroundHitPos[1]) / 2;
-				f_MiddlePos[2] = f_GroundHitPos[2] + (f_WaterHitPos[2] - f_GroundHitPos[2]) / 2;
+				f_ang[0] = 5.0 + GetRandomFloat(20.0, 50.0);
 
-				if((f_GroundHitPos[2] - f_WaterHitPos[2] < -SHALLOW_WATER_POS_LIMIT) || (f_GroundHitPos[2] - f_WaterHitPos[2] > SHALLOW_WATER_POS_LIMIT))
+				f_ang[1] = GetRandomFloat(-180.0,180.0);
+
+				Handle trace; 
+				trace = TR_TraceRayFilterEx(f_pos, f_ang, ( MASK_WATER | MASK_SHOT_HULL ), RayType_Infinite, HitOnlyWorld, client);
+				//Do we hit water?
+				TR_GetEndPosition(f_resulthit, trace);
+
+				
+			//	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+			//	TE_SetupBeamPoints(f_pos, f_resulthit, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+			//	TE_SendToAll();
+				
+				delete trace;
+
+				f_resulthit[2] -= 0.1;
+				
+				float f_WaterHitPos[3];
+				float f_GroundHitPos[3];
+				float f_MiddlePos[3];
+
+				f_WaterHitPos = f_resulthit;
+
+				if(TR_GetPointContents(f_resulthit) & CONTENTS_WATER) //We have hit water, hit groundto get the middle.
 				{
-					f_MiddlePos[2] += GetRandomFloat(-10.0, 10.0);
+					Handle trace_water; 
+					trace_water = TR_TraceRayFilterEx(f_pos, f_ang, ( MASK_SHOT_HULL ), RayType_Infinite, HitOnlyWorld, client);
+					
+					TR_GetEndPosition(f_GroundHitPos, trace_water);
+					delete trace_water;
+					f_MiddlePos[0] = f_GroundHitPos[0] + (f_WaterHitPos[0] - f_GroundHitPos[0]) / 2;
+					f_MiddlePos[1] = f_GroundHitPos[1] + (f_WaterHitPos[1] - f_GroundHitPos[1]) / 2;
+					f_MiddlePos[2] = f_GroundHitPos[2] + (f_WaterHitPos[2] - f_GroundHitPos[2]) / 2;
 
-					Handle trace_hull; 
-					trace_hull = TR_TraceHullFilterEx(f_MiddlePos, f_MiddlePos, { -5.0, -5.0, -5.0 }, { 5.0, 5.0, 5.0 }, ( MASK_SHOT_HULL ), HitOnlyWorld, client);
-					int entity = TR_GetEntityIndex(trace_hull);
-					delete trace_hull;
-					if(entity == -1)
+					if((f_GroundHitPos[2] - f_WaterHitPos[2] < -SHALLOW_WATER_POS_LIMIT) || (f_GroundHitPos[2] - f_WaterHitPos[2] > SHALLOW_WATER_POS_LIMIT))
 					{
-						CreateFish(client, f_MiddlePos, place);
-						//FishCreatedOrIsValid(client, f_MiddlePos);
+						f_MiddlePos[2] += GetRandomFloat(-10.0, 10.0);
+
+						Handle trace_hull; 
+						trace_hull = TR_TraceHullFilterEx(f_MiddlePos, f_MiddlePos, { -5.0, -5.0, -5.0 }, { 5.0, 5.0, 5.0 }, ( MASK_SHOT_HULL ), HitOnlyWorld, client);
+						int entity = TR_GetEntityIndex(trace_hull);
+						delete trace_hull;
+						if(entity == -1)
+						{
+							CreateFish(client, f_MiddlePos, place);
+							//FishCreatedOrIsValid(client, f_MiddlePos);
+						}
+						else
+						{
+							f_ClientWasFishingDelayCheck[client] = gameTime + (0.75 / FishingRate[client]); //Try again 2x as fast
+						}
 					}
 					else
 					{
@@ -308,7 +333,8 @@ void Fishing_PlayerRunCmd(int client)
 			}
 			else
 			{
-				f_ClientWasFishingDelayCheck[client] = gameTime + (0.75 / FishingRate[client]); //Try again 2x as fast
+				f_ClientWasFishingDelayCheck[client] = gameTime + 6.0;
+				SPrintToChat(client, "There seems to be no fish attracted to your fishing rod... try another one!");
 			}
 		}
 	}
@@ -328,19 +354,17 @@ void FishCreatedOrIsValid(int client, float f_fishpos[3])
 static void CreateFish(int client, const float pos[3], const PlaceEnum place)
 {
 	static PoolEnum pool;
-	place.Pool.GetString(GetURandomInt() % place.Pool.Length, pool.Name, sizeof(pool.Name));
+	place.Pool[Desired_FishingTier[client]].GetString(GetURandomInt() % place.Pool[Desired_FishingTier[client]].Length, pool.Name, sizeof(pool.Name));
 
 	static FishEnum fish;
 	FishList.GetArray(pool.Name, fish, sizeof(fish));
-	if(FishingTier[client] >= fish.Tier)
-	{
-		pool.Client = client;
-		pool.Pos = pos;
-		pool.Tier = fish.Tier;
-		pool.ExpireIn = GetGameTime() + 15.0;
-		strcopy(pool.Place, sizeof(pool.Place), CurrentFishing[client]);
-		PoolList.PushArray(pool);
-	}
+	
+	pool.Client = client;
+	pool.Pos = pos;
+	pool.Tier = fish.Tier;
+	pool.ExpireIn = GetGameTime() + 15.0;
+	strcopy(pool.Place, sizeof(pool.Place), CurrentFishing[client]);
+	PoolList.PushArray(pool);
 }
 
 public Action Fishing_Drawing(Handle timer)
@@ -409,10 +433,10 @@ void Fishing_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, in
 
 public void Fishing_RodM1(int client, int weapon)
 {
-	float ApplyCooldown =  0.8 * Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+	float ApplyCooldown = 0.8 * Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
 	Ability_Apply_Cooldown(client, 1, ApplyCooldown);
-	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
-	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
+//	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
+//	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
 	
 	DataPack pack;
 	CreateDataTimer(0.2, Fishing_RodM1Delay, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -424,6 +448,25 @@ public void FishingRodSetRarity(int client, int weapon, int index)
 {
 	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
 	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
+	Desired_FishingTier[client] = FishingTier[client]; //Set the desired fishing tier to the tier of the rod.
+}
+
+public void FishingRodCycleRarity(int client, int weapon, int index)
+{
+	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
+	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
+	Desired_FishingTier[client] -= 1;
+	if(Desired_FishingTier[client] < 1)
+	{
+		Desired_FishingTier[client] = FishingTier[client]; //Reset desired fishing tier back to max.
+	}
+
+
+	if(Desired_FishingTier[client] > FishingTier[client])
+	{
+		Desired_FishingTier[client] = FishingTier[client]; //Safety check for incase it somehow goes over the fishing tier.
+	}
+	PrintHintText(client,"Your desired fishing tier is now: [%i]", Desired_FishingTier[client]);
 }
 
 public Action Fishing_RodM1Delay(Handle timer, DataPack pack)
@@ -492,27 +535,30 @@ public void Fishing_RodM2(int client, int weapon)
 
 	static PlaceEnum place;
 	PlaceList.GetArray(CurrentFishing[client], place, sizeof(place));
-
-	char current[48];
-	int count;
-	int length = place.Pool.Length;
-	for(int i; i <= length; i++)
+	if(place.Pool[Desired_FishingTier[client]])
 	{
-		static char buffer[48];
-		if(i < length)
+		char current[48];
+		int count;
+		int length = place.Pool[Desired_FishingTier[client]].Length;
+		for(int i; i <= length; i++)
 		{
-			place.Pool.GetString(i, buffer, sizeof(buffer));
-			if(StrEqual(buffer, current))
+			static char buffer[48];
+			if(i < length)
 			{
-				count++;
-				continue;
+				place.Pool[Desired_FishingTier[client]].GetString(i, buffer, sizeof(buffer));
+				if(StrEqual(buffer, current))
+				{
+					count++;
+					continue;
+				}
 			}
-		}
-		
-		if(count)
-			SPrintToChat(client, "%s %d%%", current, count * 100 / length);
+			
+			if(count)
+				SPrintToChat(client, "%s %d%%", current, count * 100 / length);
 
-		strcopy(current, sizeof(current), buffer);
-		count = 1;
+			strcopy(current, sizeof(current), buffer);
+			count = 1;
+		}
 	}
+	PrintHintText(client,"These fish apear at your current desired tier: [%i]", Desired_FishingTier[client]);
 }
