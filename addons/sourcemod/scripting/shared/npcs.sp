@@ -1897,6 +1897,35 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 			SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
 			ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
 		}
+		else if(EntRefToEntIndex(RaidBossActive) == victim && i_NpcInternalId[victim] == 139)
+		{
+			float Timer_Show = RaidModeTime - GetGameTime();
+		
+			if(Timer_Show < 0.0)
+				Timer_Show = 0.0;
+				
+			SetGlobalTransTarget(attacker);
+			SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
+			ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t: $%.2f% | %t: %.1f]\n%s\n%d / %d \n%s","Raidboss", "Gambler's Cash", GamblersCash[victim], "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
+		}
+		else if(EntRefToEntIndex(RaidBossActive) == victim && i_NpcInternalId[victim] == 140
+		|| EntRefToEntIndex(RaidBossActive) == victim && i_NpcInternalId[victim] == 141
+		|| EntRefToEntIndex(RaidBossActive) == victim && i_NpcInternalId[victim] == 142
+		|| EntRefToEntIndex(RaidBossActive) == victim && i_NpcInternalId[victim] == 143
+		|| EntRefToEntIndex(RaidBossActive) == victim && i_NpcInternalId[victim] == 144
+		|| EntRefToEntIndex(RaidBossActive) == victim && i_NpcInternalId[victim] == 145
+		|| EntRefToEntIndex(RaidBossActive) == victim && i_NpcInternalId[victim] == 146
+		|| EntRefToEntIndex(RaidBossActive) == victim && i_NpcInternalId[victim] == 147)
+		{
+			float Timer_Show = RaidModeTime - GetGameTime();
+		
+			if(Timer_Show < 0.0)
+				Timer_Show = 0.0;
+				
+			SetGlobalTransTarget(attacker);
+			SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
+			ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t: %.1f]\n%s\n%d / %d \n%s","Raidboss", "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
+		}
 		else
 		{
 			float Timer_Show = RaidModeTime - GetGameTime();
