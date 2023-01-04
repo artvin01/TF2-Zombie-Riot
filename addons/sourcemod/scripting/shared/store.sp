@@ -430,15 +430,15 @@ public void TextStore_LoadFrame(int userid)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
-		if(TextStore_GetClientLoad(client))
+		//if(TextStore_GetClientLoad(client))
 		{
 			if(!CashSpent[client] && HasNamedItem(client, "ZR Contest Nominator [???]"))
 				CashSpent[client] = -100;
 		}
-		else
-		{
-			RequestFrame(TextStore_LoadFrame, userid);
-		}
+		//else
+		//{
+		//	RequestFrame(TextStore_LoadFrame, userid);
+		//}
 	}
 }
 #endif
