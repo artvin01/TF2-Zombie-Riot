@@ -264,7 +264,7 @@ public void BunkerSkeletonKing_ClotThink(int iNPC)
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		
-					int spawn_index = Npc_Create(BUNKER_SKELETON_SMALL, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+					int spawn_index = Npc_Create(BUNKER_SMALL_SKELETON, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 					if(spawn_index > MaxClients)
 					{
 						Zombies_Currently_Still_Ongoing += 1;

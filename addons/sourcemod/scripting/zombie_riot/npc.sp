@@ -175,6 +175,7 @@ enum
 	BUNKER_SMALL_SKELETON		= 151,
 	BUNKER_KING_SKELETON		= 152,
 	BUNKER_HEADLESSHORSE		= 153,
+	
 }
 
 public const char NPC_Names[][] =

@@ -310,6 +310,7 @@ bool f_ClientServerShowMessages[MAXTF2PLAYERS];
 
 //Needs to be global.
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
+float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
 float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
 bool b_npcspawnprotection[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
@@ -2290,6 +2291,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	
 }
 
+
 public void SDKHook_SafeSpot_StartTouch(int entity, int target)
 {
 	if(target > 0 && target < sizeof(i_InSafeZone))
@@ -2563,10 +2565,9 @@ public void OnEntityDestroyed(int entity)
 
 public void RemoveNpcThingsAgain(int entity)
 {
+	CleanAllAppliedEffects_BombImplanter(entity, false);
 	//Dont have to check for if its an npc or not, really doesnt matter in this case, just be sure to delete it cus why not
 	//incase this breaks, add a baseboss check
-	CleanAllAppliedEffects(entity);
-	
 #if defined ZR
 	CleanAllApplied_Aresenal(entity);
 	CleanAllApplied_Cryo(entity);
