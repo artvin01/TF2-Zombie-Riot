@@ -1740,6 +1740,11 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 	
 #if defined ZR
+	bool raidboss_active = false;
+	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+	{
+		raidboss_active = true;
+	}
 	if(overkill <= 0)
 	{
 		Damage_dealt_in_total[attacker] += damage;
@@ -1751,7 +1756,10 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 #endif
 	if(GetGameTime() > f_damageAddedTogetherGametime[attacker])
 	{
-		f_damageAddedTogether[attacker] = 0.0; //reset to 0.
+		if(!raidboss_active)
+		{
+			f_damageAddedTogether[attacker] = 0.0; //reset to 0 if raid isnt active.
+		}
 	}
 	if(!ignore) //Cannot be a just show function
 	{
