@@ -94,6 +94,7 @@ void Reset_stats_Irene_Singular_Weapon(int client, int weapon) //This is on weap
 
 public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slot)
 {
+	Enable_Irene(client, weapon);
 	//Show the timer, this is purely for looks and doesnt do anything.
 //	float cooldown = 0.65 * Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
 
@@ -119,17 +120,14 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 	*/
 	//We save this onto the weapon if the modified attackspeed is not modified.
 
-	float attackspeed = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+	float attackspeed = Attributes_FindOnWeapon(client, weapon, 396, true, 1.0);
 	if(attackspeed > 0.35) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
 	{
-		TF2Attrib_SetByDefIndex(weapon, 6, attackspeed * 0.15); //Make it really fast for 1 hit!
-		f_WeaponAttackSpeedModified[weapon] = attackspeed;
+		TF2Attrib_SetByDefIndex(weapon, 396, 0.15); //Make it really fast for 1 hit!
 	}
 	else
 	{
-		//The attackspeed was really fast. Lets set it back to normal.
-		TF2Attrib_SetByDefIndex(weapon, 6, f_WeaponAttackSpeedModified[weapon]);
-		f_WeaponAttackSpeedModified[weapon] = 0.0; //reset back to 0. Loop and repeat.
+		TF2Attrib_SetByDefIndex(weapon, 396, 1.0); //Make it really fast for 1 hit!
 	}
 }
 
@@ -225,7 +223,7 @@ public void Kill_Timer_Irene(int client)
 public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 {
 	//This ability has no cooldown in itself, it just relies on hits you do.
-	if(i_IreneHitsDone[client] >= IRENE_JUDGEMENT_MAX_HITS_NEEDED)
+	if(i_IreneHitsDone[client] >= IRENE_JUDGEMENT_MAX_HITS_NEEDED || CvarInfiniteCash.BoolValue)
 	{
 		i_IreneHitsDone[client] = 0;
 		//Sucess! You have enough charges.
@@ -312,6 +310,10 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 		FinishLagCompensation_Base_boss();
 		EmitSoundToAll(IRENE_KICKUP_1, client, _, 75, _, 0.60);
 
+		spawnRing(client, IRENE_JUDGEMENT_MAXRANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 255, 1, 0.25, 6.0, 6.1, 1);
+		spawnRing(client, IRENE_JUDGEMENT_MAXRANGE * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 255, 1, 0.17, 6.0, 6.1, 1);
+		spawnRing(client, IRENE_JUDGEMENT_MAXRANGE * 2.0, 0.0, 0.0, 35.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 255, 1, 0.11, 6.0, 6.1, 1);
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, IRENE_JUDGEMENT_MAXRANGE * 2.0);	
 		if(!b_IsPlayerNiko[client])
 		{
 			switch(view_as<int>(CurrentClass[client]))
@@ -448,6 +450,8 @@ public void Npc_Irene_Launch_client(int client)
 			//Damage will be multiplied by 2 because it can double hit, and 50% more extra because its an ability.
 			float damage = (f_WeaponDamageCalculated[client] * 3.0);
 
+			damage *= 1.1; //Abit extra.
+			
 			CClotBody npc = view_as<CClotBody>(target);
 			if(!npc.IsOnGround())
 			{
@@ -484,7 +488,7 @@ public void Npc_Irene_Launch_client(int client)
 			TE_SetupBeamPoints(GunPos, VicLoc, LaserSprite, 0, 0, 0, life, 1.0, 1.2, 1, amp, color, 0);
 			TE_SendToAll();
 
-			spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 6.0, 2.1, 1, IRENE_JUDGEMENT_EXPLOSION_RANGE);	
+			spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, IRENE_JUDGEMENT_EXPLOSION_RANGE);	
 			Explode_Logic_Custom(damage, client, TemomaryGun, TemomaryGun, VicLoc, IRENE_JUDGEMENT_EXPLOSION_RANGE,_,_,false);
 		}
 		else

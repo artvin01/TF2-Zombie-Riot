@@ -1730,6 +1730,10 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	*/
 }
 
+
+static float f_damageAddedTogether[MAXTF2PLAYERS];
+static float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
+
 stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)
 {
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
@@ -1745,7 +1749,19 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		Damage_dealt_in_total[attacker] += overkill; //dont award for overkilling.
 	}
 #endif
-	
+	if(GetGameTime() > f_damageAddedTogetherGametime[attacker])
+	{
+		f_damageAddedTogether[attacker] = 0.0; //reset to 0.
+	}
+	if(!ignore) //Cannot be a just show function
+	{
+		f_damageAddedTogether[attacker] += damage;
+	}
+	if(damage > 0)
+	{
+		f_damageAddedTogetherGametime[attacker] = GetGameTime() + 1.0;
+	}
+
 	if(f_CooldownForHurtHud[attacker] < GetGameTime() || ignore)
 	{
 		if(!ignore)
@@ -1896,13 +1912,12 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 			
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
 		}
-		
 #if defined ZR
 		if(EntRefToEntIndex(RaidBossActive) != victim)
 		{
 			SetGlobalTransTarget(attacker);
 			SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-			ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
+			ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s-%0.f", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
 		}
 		else
 		{
@@ -1913,7 +1928,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 				
 			SetGlobalTransTarget(attacker);
 			SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-			ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
+			ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s-%0.f","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
 		}
 #endif
 		
@@ -2154,6 +2169,7 @@ void CleanAllNpcArray()
 {
 	Zero(played_headshotsound_already);
 	Zero(f_CooldownForHurtHud);
+	Zero(f_damageAddedTogetherGametime);
 }
 
 #if defined ZR
