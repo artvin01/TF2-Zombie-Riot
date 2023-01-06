@@ -104,6 +104,7 @@ static void StreetFighter(int client, int weapon, int slot, int flags)
 
 		if(ComboCount[client] == 0)
 		{
+			f_DelayLookingAtHud[client] = GetGameTime() + 2.1;
 			CurrentCombo[client] = GetComboType(flags, slot != 1);
 			ComboCount[client] = 1;
 			ComboTimer[client] = CreateTimer(2.1, StreetFighter_Timer, client);
@@ -117,6 +118,8 @@ static void StreetFighter(int client, int weapon, int slot, int flags)
 		}
 		else if(ComboCount[client] == 2)
 		{
+			f_DelayLookingAtHud[client] = GetGameTime() + 1.5;
+
 			int first = CurrentCombo[client] % NR_2;
 			int second = (CurrentCombo[client] % NR_3) - first;
 			int third = GetComboType(flags, slot != 1) * NR_3;
@@ -138,7 +141,7 @@ static void StreetFighter(int client, int weapon, int slot, int flags)
 			Call_PushCell(third);
 			Call_PushFloatRef(cooldown);
 			Call_Finish(action);
-			if(action != Plugin_Continue)
+			if(action == Plugin_Continue)
 			{
 				PrintCenterText(client, "No Effect...");
 				ClientCommand(client, "playgamesound ui/message_update.wav");
