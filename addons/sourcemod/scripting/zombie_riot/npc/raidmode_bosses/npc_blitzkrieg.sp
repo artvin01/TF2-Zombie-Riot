@@ -438,8 +438,6 @@ methodmap Blitzkrieg < CClotBody
 		//IDLE
 		npc.m_flSpeed = fl_move_speed[npc.index];
 		
-		npc.m_flMeleeArmor = 1.5;	//Blitz naturaly takes 50% extra melee damge while not using melee.
-		
 		fl_TheFinalCountdown[npc.index] = 0.0;	//used for timer logic on blitzlight
 		fl_TheFinalCountdown2[npc.index] = 0.0;	//used for timer logic on blitzlight
 		i_PrimaryRocketsFired[npc.index] = 0;	//Checks how many rockets haave been fired by blitz's RL.
@@ -620,12 +618,11 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				if(iActivity > 0) npc.StartActivity(iActivity);
 			}
 			//Extra rockets during rocket spam, also envokes ioc if blitz is on 3rd life.
-			if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget > Pow(110.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && i_NpcCurrentLives[npc.index]>4 && !b_Are_we_reloading[npc.index])
+			if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget > Pow(110.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && i_NpcCurrentLives[npc.index]>1 && !b_Are_we_reloading[npc.index])
 			{	
-				EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 			 	npc.FaceTowards(vecTarget);
 				npc.FaceTowards(vecTarget);
-				npc.FireRocket(vPredictedPos, 12.5 * i_HealthScale[npc.index], (300.0*i_HealthScale[npc.index]), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
+				npc.FireRocket(vPredictedPos, 7.5 * i_HealthScale[npc.index], (300.0*i_HealthScale[npc.index]), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
 				npc.m_iAmountProjectiles += 1;
 				npc.PlayRangedSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
@@ -636,6 +633,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 					npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 45.0 / i_HealthScale[npc.index];
 					if(i_NpcCurrentLives[npc.index]==2)
 					{
+						EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 						Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 					}
 				}
@@ -695,7 +693,6 @@ public void Blitzkrieg_ClotThink(int iNPC)
 			{
 				npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
 				npc.m_flReloadIn = GetGameTime(npc.index) + (10.0 * fl_LifelossReload[npc.index]);
-				npc.m_flMeleeArmor = 1.0;
 				i_PrimaryRocketsFired[npc.index] = 0;	//Resets fired rockets to 0 for when reload ends.
 				b_Are_we_reloading[npc.index] = true;
 				if(IsValidEntity(npc.m_iWearable1))
@@ -746,9 +743,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 			}
 			if(flDistanceToTarget < 10000000 && npc.m_flReloadIn <= GetGameTime(npc.index) && !b_Are_we_reloading[npc.index])
 			{	//Blitz has infinite range and moves while firing rockets.
-				int Enemy_I_See;
-				npc.m_flMeleeArmor = 1.5;
-				
+				int Enemy_I_See;		
 				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
 				if(IsValidEnemy(npc.index, Enemy_I_See))
