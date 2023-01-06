@@ -5787,10 +5787,15 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 	
 	float subjectPos[3];
 	GetEntPropVector(subject, Prop_Data, "m_vecAbsOrigin", subjectPos);
-	
+		
 	botPos[2] += 1.0;
 	subjectPos[2] += 1.0;
 	
+	if(Npc_Is_Targeted_In_Air(npc.index)) //Logic breaks when they are under this effect.
+	{
+		return subjectPos;
+	}
+
 	float to[3];
 	SubtractVectors(subjectPos, botPos, to);
 	to[2] = 0.0;
