@@ -160,6 +160,7 @@ static void StreetFighter(int client, int weapon, int slot, int flags)
 		Ability_Apply_Cooldown(client, 1, cooldown);
 		Ability_Apply_Cooldown(client, 2, cooldown);
 		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + cooldown);
+		SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + cooldown);
 	}
 }
 
