@@ -556,6 +556,8 @@ public void Blitzkrieg_ClotThink(int iNPC)
 	int PrimaryThreatIndex = npc.m_iTarget;
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	
+	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		
@@ -631,7 +633,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				{
 					npc.m_iAmountProjectiles = 0;
 					npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 45.0 / i_HealthScale[npc.index];
-					if(i_NpcCurrentLives[npc.index]==2)
+					if(i_NpcCurrentLives[npc.index]==3)
 					{
 						EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 						Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
@@ -905,7 +907,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 	{
 		//CPrintToChatAll("Target inside distance %i", attacker);
 		fl_blitz_ioc_punish_timer[npc.index][attacker]=GetGameTime(npc.index)+5.0;
-		Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), attacker);
+		Blitzkrieg_Punishment_Invoke(npc.index, attacker);
 	}
 	/*else
 	{
@@ -1265,8 +1267,109 @@ public void Blitzkrieg_NPCDeath(int entity)
 
 	Citizen_MiniBossDeath(entity);
 }
-// Ent_Create style position from Doomsday Nuke
 
+public void Blitzkrieg_Punishment_Invoke(int ref, int enemy)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
+	{
+					
+		float Rings=2.5;	//do x rings before kaboom.
+		float Ring_Interval=1.0;	//how much time per ring,
+		float Range=250.0;
+		float Dmg=100.0;
+		
+		float vecTarget[3];
+		vecTarget = WorldSpaceCenter(enemy);
+		vecTarget[2] -= 54.0;
+		
+		vecTarget[0]+=GetRandomInt(-50, 50);	//Randomize the place where it hits.
+		vecTarget[1]+=GetRandomInt(-50, 50);
+		
+		int color[4];
+		color[0] = 145;
+		color[1] = 47;
+		color[2] = 47;
+		color[3] = 255;
+		float UserLoc[3];
+		UserLoc = GetAbsOrigin(entity);
+		
+		int SPRITE_INT_2 = PrecacheModel("materials/sprites/lgtning.vmt", false);
+					
+		TE_SetupBeamPoints(vecTarget, UserLoc, SPRITE_INT_2, 0, 0, 0, 0.8, 22.0, 10.2, 1, 8.0, color, 0);
+		TE_SendToAll();
+		
+		
+		Handle data;
+		CreateDataTimer(Rings*Ring_Interval, Smite_Timer_Blitz, data, TIMER_FLAG_NO_MAPCHANGE);
+		WritePackFloat(data, vecTarget[0]);
+		WritePackFloat(data, vecTarget[1]);
+		WritePackFloat(data, vecTarget[2]);
+		WritePackCell(data, Range); // Range
+		WritePackCell(data, Dmg); // Damge
+		WritePackCell(data, ref);
+		
+		spawnRing_Vectors(vecTarget, Range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, Rings*Ring_Interval, 6.0, 0.1, 1, 1.0);
+	}
+}
+public Action Smite_Timer_Blitz(Handle Smite_Logic, DataPack data)
+{
+	ResetPack(data);
+		
+	float startPosition[3];
+	float position[3];
+	startPosition[0] = ReadPackFloat(data);
+	startPosition[1] = ReadPackFloat(data);
+	startPosition[2] = ReadPackFloat(data);
+	float Ionrange = ReadPackCell(data);
+	float Iondamage = ReadPackCell(data);
+	int client = EntRefToEntIndex(ReadPackCell(data));
+	
+	if (!IsValidEntity(client))
+	{
+		return Plugin_Stop;
+	}
+	int gama=ZR_GetWaveCount()+1;
+	float alpha=1.0;
+	if(gama==15)
+	{
+		alpha=1.0;
+	}
+	else if(gama==30)
+	{
+		alpha=1.75;
+	}
+	else if(gama==45)
+	{
+		alpha=2.25;
+	}
+	else if(gama==60)
+	{
+		alpha=2.75;
+	}
+				
+	Explode_Logic_Custom((Iondamage*alpha)*zr_smallmapbalancemulti.FloatValue, client, client, -1, startPosition, Ionrange , _ , _ , true);
+	
+	TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
+	TE_SendToAll();
+			
+	position[0] = startPosition[0];
+	position[1] = startPosition[1];
+	position[2] += startPosition[2] + 900.0;
+	startPosition[2] += -200;
+	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 30.0, 30.0, 0, 1.0, {145, 47, 47, 255}, 3);
+	TE_SendToAll();
+	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 50.0, 50.0, 0, 1.0, {145, 47, 47, 255}, 3);
+	TE_SendToAll();
+	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {145, 47, 47, 255}, 3);
+	TE_SendToAll();
+	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {145, 47, 47, 255}, 3);
+	TE_SendToAll();
+	
+	position[2] = startPosition[2] + 50.0;
+	EmitSoundToAll("ambient/explosions/explode_9.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
+	return Plugin_Continue;
+}
 public void Blitzkrieg_IOC_Invoke(int ref, int enemy)	//Ion cannon from above
 {
 	int entity = EntRefToEntIndex(ref);
