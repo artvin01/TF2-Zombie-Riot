@@ -707,8 +707,8 @@
 		{
 			"CTFWrench::Smack()" 
 			{
-				"windows" 	"469"
-				"linux" 	"476"
+				"windows" 	"470"
+				"linux" 	"477"
 			}
 			"CTFGrenadePipebombProjectile::PipebombTouch" 
 			{
@@ -792,8 +792,8 @@
 			}
 			"CTFParticleCannon::FireChargedShot"
 			{
-				"windows"	"490"
-				"linux"		"497"
+				"windows"	"491"
+				"linux"		"498"
 			}
 			"CBaseGrenade::Explode"
 			{
