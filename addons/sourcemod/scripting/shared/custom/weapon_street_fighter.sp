@@ -147,7 +147,7 @@ static void StreetFighter(int client, int weapon, int slot, int flags)
 				ClientCommand(client, "playgamesound ui/message_update.wav");
 			}
 
-			for(int i = sizeof(LastCombos[]); i > 0; i--)
+			for(int i = sizeof(LastCombos[]) - 1; i > 0; i--)
 			{
 				LastCombos[client][i] = LastCombos[client][i - 1];
 			}
