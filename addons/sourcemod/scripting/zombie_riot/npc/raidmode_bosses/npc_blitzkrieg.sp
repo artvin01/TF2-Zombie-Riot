@@ -883,6 +883,8 @@ public void Blitzkrieg_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
+static float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXTF2PLAYERS+1];//well it will work, but if npc's that attack from a rage, an error will be spat out
+
 public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.	AJA
@@ -896,6 +898,21 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+	
+	float vecTarget[3]; vecTarget = WorldSpaceCenter(attacker);
+	
+	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+	
+	if(flDistanceToTarget > 1000000 && fl_blitz_ioc_punish_timer[npc.index][attacker] < GetGameTime(npc.index))	//Basically we "punish(ment)" players who are too far from blitz.
+	{
+		//CPrintToChatAll("Target inside distance %i", attacker);
+		fl_blitz_ioc_punish_timer[npc.index][attacker]=GetGameTime(npc.index)+5.0;
+		Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), attacker);
+	}
+	/*else
+	{
+		CPrintToChatAll("Target outside distance %i", attacker);
+	}*/
 	int closest = npc.m_iTarget;
 	
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
