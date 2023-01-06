@@ -9,10 +9,15 @@
 #define IRENE_JUDGEMENT_MAXRANGE 350.0 		
 #define IRENE_JUDGEMENT_EXPLOSION_RANGE 75.0 		
 
-#define IRENE_BOSS_AIRTIME 1.0		
-#define IRENE_AIRTIME 2.0		
+#define IRENE_BOSS_AIRTIME 0.75		
+#define IRENE_AIRTIME 1.75		
 
 #define IRENE_MAX_HITUP 10
+
+#define IRENE_EXPLOSION_1 "mvm/giant_common/giant_common_explodes_01.wav"
+#define IRENE_EXPLOSION_2 "mvm/giant_common/giant_common_explodes_02.wav"
+
+#define IRENE_KICKUP_1 "mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
 
 Handle h_TimerIreneManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 static float f_Irenehuddelay[MAXTF2PLAYERS];
@@ -24,6 +29,7 @@ static float f_TargetAirtimeDelayHit[MAXENTITIES];
 static float f_TimeSinceLastStunHit[MAXENTITIES];
 static bool b_IreneNpcWasShotUp[MAXENTITIES];
 static int i_RefWeaponDelete[MAXTF2PLAYERS];
+static float f_WeaponDamageCalculated[MAXTF2PLAYERS];
 
 static int LaserSprite;
 #define SPRITE_SPRITE	"materials/sprites/laserbeam.vmt"
@@ -51,6 +57,19 @@ bool Npc_Is_Targeted_In_Air(int entity) //Anything that needs to be precaced lik
 
 void Irene_Map_Precache() //Anything that needs to be precaced like sounds or something.
 {
+	PrecacheSound(IRENE_KICKUP_1);
+	PrecacheSound(IRENE_EXPLOSION_1);
+	PrecacheSound(IRENE_EXPLOSION_2);
+	PrecacheSound("vo/taunts/scout_taunts06.mp3");
+	PrecacheSound("vo/taunts/soldier_taunts17.mp3");
+	PrecacheSound("vo/taunts/sniper_taunts22.mp3");
+	PrecacheSound("vo/taunts/demoman_taunts11.mp3");
+	PrecacheSound("vo/taunts/medic_taunts13.mp3");
+	PrecacheSound("vo/pyro_laughevil01.mp3");
+	PrecacheSound("vo/taunts/heavy_taunts16.mp3");
+	PrecacheSound("vo/taunts/spy_taunts12.mp3");
+	PrecacheSound("vo/taunts/engineer_taunts04.mp3");
+
 	LaserSprite = PrecacheModel(SPRITE_SPRITE, false);
 }
 
@@ -202,17 +221,26 @@ public void Kill_Timer_Irene(int client)
 	}
 }
 
-
-
 public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 {
 	//This ability has no cooldown in itself, it just relies on hits you do.
-	if(i_IreneHitsDone[client] >= 0)
+	if(i_IreneHitsDone[client] >= IRENE_JUDGEMENT_MAX_HITS_NEEDED)
 	{
+		i_IreneHitsDone[client] = 0;
 		//Sucess! You have enough charges.
 		//Heavy logic incomming.
 		float UserLoc[3], VicLoc[3];
 		GetClientAbsOrigin(client, UserLoc);
+
+
+		//Attackspeed wont affect this calculation.
+
+		float damage = 40.0;
+		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
+		if(address != Address_Null)
+			damage *= RoundToCeil(TF2Attrib_GetValue(address));
+
+		f_WeaponDamageCalculated[client] = damage;
 
 		bool raidboss_active = false;
 		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
@@ -258,32 +286,73 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 					{
 						break;
 					}
-					b_IreneNpcWasShotUp[target] = true;
-
-					float TimeSinceLastStunSubtract;
-					TimeSinceLastStunSubtract = f_TimeSinceLastStunHit[target] - GetGameTime();
-					
-					if(TimeSinceLastStunSubtract < 0.0)
+					if(GetGameTime() > f_TargetAirtime[target]) //Do not shoot up again once already dome.
 					{
-						TimeSinceLastStunSubtract = 0.0;
+						b_IreneNpcWasShotUp[target] = true;
 					}
 
 					if (b_thisNpcIsABoss[target] || raidboss_active)
 					{
-						f_TankGrabbedStandStill[target] = GetGameTime() + IRENE_BOSS_AIRTIME - f_StunExtraGametimeDuration[target];
+						f_TankGrabbedStandStill[target] = GetGameTime(target) + IRENE_BOSS_AIRTIME;
 						f_TargetAirtime[target] = GetGameTime() + IRENE_BOSS_AIRTIME; //Kick up for way less time.
 					}
 					else
 					{
-						f_TankGrabbedStandStill[target] = GetGameTime() + IRENE_AIRTIME - f_StunExtraGametimeDuration[target];
+						f_TankGrabbedStandStill[target] = GetGameTime(target) + IRENE_AIRTIME;
 						f_TargetAirtime[target] = GetGameTime() + IRENE_AIRTIME; //Kick up for the full skill duration.
 					}
+					spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 6.0, 2.1, 1, IRENE_JUDGEMENT_EXPLOSION_RANGE * 0.5);	
+					SDKUnhook(target, SDKHook_Think, Npc_Irene_Launch);
 					SDKHook(target, SDKHook_Think, Npc_Irene_Launch);
 					//For now, there is no limit.
 				}
 			}
 		}
 		FinishLagCompensation_Base_boss();
+		EmitSoundToAll(IRENE_KICKUP_1, client, _, 75, _, 0.40);
+
+		if(!b_IsPlayerNiko[client])
+		{
+			switch(view_as<int>(CurrentClass[client]))
+			{
+				case 1:
+				{
+					EmitSoundToAll("vo/taunts/scout_taunts06.mp3", client, SNDCHAN_VOICE, 90, _, 1.0);
+				}
+				case 2:
+				{
+					EmitSoundToAll("vo/taunts/soldier_taunts17.mp3", client, SNDCHAN_VOICE, 90, _, 1.0);
+				}
+				case 3:
+				{
+					EmitSoundToAll("vo/taunts/sniper_taunts22.mp3", client, SNDCHAN_VOICE, 90, _, 1.0);
+				}
+				case 4:
+				{
+					EmitSoundToAll("vo/taunts/demoman_taunts11.mp3", client, SNDCHAN_VOICE, 90, _, 1.0);
+				}
+				case 5:
+				{
+					EmitSoundToAll("vo/taunts/medic_taunts13.mp3", client, SNDCHAN_VOICE, 90, _, 1.0);
+				}
+				case 6:
+				{
+					EmitSoundToAll("vo/pyro_laughevil01.mp3", client, SNDCHAN_VOICE, 90, _, 1.0);
+				}
+				case 7:
+				{
+					EmitSoundToAll("vo/taunts/heavy_taunts16.mp3", client, SNDCHAN_VOICE, 90, _, 1.0);
+				}
+				case 8:
+				{
+					EmitSoundToAll("vo/taunts/spy_taunts12.mp3", client, SNDCHAN_VOICE, 90, _, 1.0);
+				}
+				case 9:
+				{
+					EmitSoundToAll("vo/taunts/engineer_taunts04.mp3", client, SNDCHAN_VOICE, 90, _, 1.0);
+				}
+			}
+		}
 		f_TargetAirtime[client] = GetGameTime() + 2.0;
 		f_TargetAirtimeDelayHit[client] = GetGameTime() + 0.25;
 		SDKHook(client, SDKHook_PreThink, Npc_Irene_Launch_client);
@@ -313,6 +382,14 @@ public void Npc_Irene_Launch_client(int client)
 	}	
 	else if(GetGameTime() > f_TargetAirtimeDelayHit[client])
 	{
+		int TemomaryGun = EntRefToEntIndex(i_RefWeaponDelete[client]);
+		if(!IsValidEntity(TemomaryGun))
+		{
+			Store_RemoveSpecificItem(client, "Irene's Handcannon");
+			SDKUnhook(client, SDKHook_PreThink, Npc_Irene_Launch_client);
+		}
+		i_ExplosiveProjectileHexArray[TemomaryGun] = EP_DEALS_CLUB_DAMAGE;
+
 		f_TargetAirtimeDelayHit[client] = GetGameTime() + 0.15;
 
 		//Gather all allive airborn-ed entities.
@@ -365,27 +442,31 @@ public void Npc_Irene_Launch_client(int client)
 
 			LookAtTarget(client, target);
 
-			//No weapon is attached, meaning it wont benifit from stats. lol.
 			//This can hit upto 10 targets in range.
 			//We dont do more otherwise it will be super god damn op.
-			float damage = 10.0;
+			//Damage will be multiplied by 2 because it can double hit, and 50% more extra because its an ability.
+			float damage = (f_WeaponDamageCalculated[client] * 2.0);
+
+			CClotBody npc = view_as<CClotBody>(target);
+			if(!npc.IsOnGround())
+			{
+				damage *= 1.5; //if the enemy is in the air, then we will do 50% more damage. This will apply to any surrounding targets too beacuse im lazy.
+			}
+
 			SpawnSmallExplosion(VicLoc);
 			//Reuse terroriser stuff for now.
-			switch(GetRandomInt(1, 3))
+			switch(GetRandomInt(1, 2))
 			{
 				case 1:
 				{
-					EmitSoundToAll(TERRORIZER_BLAST1, target, _);
+					EmitSoundToAll(IRENE_EXPLOSION_1, target, _, 75, _, 0.3);
 				}
 				case 2:
 				{
-					EmitSoundToAll(TERRORIZER_BLAST2, target, _);
-				}
-				case 3:
-				{
-					EmitSoundToAll(TERRORIZER_BLAST3, target, _);
+					EmitSoundToAll(IRENE_EXPLOSION_2, target, _, 75, _, 0.3);
 				}
 			}
+
 			//Cause a bunch of effects on the targeted enemy.
 
 			int color[4];
@@ -398,11 +479,12 @@ public void Npc_Irene_Launch_client(int client)
 			float GunPos[3];
 			float GunAng[3];
 			GetAttachment(client, "effect_hand_R", GunPos, GunAng);
+			TE_Particle("wrenchmotron_teleport_glow_big", GunPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 			TE_SetupBeamPoints(GunPos, VicLoc, LaserSprite, 0, 0, 0, life, 1.0, 1.2, 1, amp, color, 0);
 			TE_SendToAll();
 
-			spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 0.25, 6.0, 2.1, 1, IRENE_JUDGEMENT_EXPLOSION_RANGE);	
-			Explode_Logic_Custom(damage, client, client, -1, VicLoc, IRENE_JUDGEMENT_EXPLOSION_RANGE,_,_,false);
+			spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 6.0, 2.1, 1, IRENE_JUDGEMENT_EXPLOSION_RANGE);	
+			Explode_Logic_Custom(damage, client, client, TemomaryGun, VicLoc, IRENE_JUDGEMENT_EXPLOSION_RANGE,_,_,false);
 		}
 		else
 		{
@@ -433,11 +515,11 @@ public void Npc_Irene_Launch(int iNPC)
 	}
 	if (b_thisNpcIsABoss[iNPC] || raidboss_active)
 	{
-		time_stay_In_sky = 0.75;
+		time_stay_In_sky = 0.55;
 	}
 	else
 	{
-		time_stay_In_sky = 1.75;
+		time_stay_In_sky = 1.55;
 	}
 
 	if(GetGameTime() > f_TargetAirtime[iNPC])

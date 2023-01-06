@@ -128,7 +128,7 @@ enum struct ItemInfo
 		
 		Format(buffer, sizeof(buffer), "%sindex", prefix);
 		this.Index = kv.GetNum(buffer);
-		
+
 		Format(buffer, sizeof(buffer), "%sindex_2", prefix);
 		this.Index2 = kv.GetNum(buffer);
 		

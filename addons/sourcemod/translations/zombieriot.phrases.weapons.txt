@@ -2036,4 +2036,8 @@
 		 "ru"       "Блокировщик роста"
 	    // "chi"       "重置"
 	}
+	"Judgement Of Iberia"
+	{
+		"en"       "Judgement Of Iberia"
+	}
 }

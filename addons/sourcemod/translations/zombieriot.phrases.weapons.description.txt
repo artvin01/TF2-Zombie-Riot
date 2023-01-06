@@ -1619,4 +1619,9 @@
 	{
 		"en"	"Increased damage and combos are now affected by being mid-air or ducking."
 	}
+	
+	"Irene Weapon Desc"
+	{
+		"en"	"You double attack with each attack.\nHitting any enemy 64 times will give you an ability.\nThis ability kicks enemies into the air and bombards them with AOE attacks."
+	}
 }
