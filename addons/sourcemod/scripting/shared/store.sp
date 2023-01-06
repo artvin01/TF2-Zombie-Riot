@@ -4234,6 +4234,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 #if defined RPG
 		Stats_SetWeaponStats(client, entity, slot);
 #endif
+		Reset_stats_Irene_Singular_Weapon(client, entity);
+		Enable_Irene(client, entity);
 
 	}
 	return entity;

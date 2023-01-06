@@ -1539,7 +1539,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 			*/
 			GetEntityClassname(weapon, classname, sizeof(classname));
-			if(!StrContains(classname, "tf_weapon_knife", false))
+			if(!StrContains(classname, "tf_weapon_knife", false) && i_CustomWeaponEquipLogic[weapon] != 6) //Irene weapon cannot backstab.
 			{
 				if(damagetype & DMG_CLUB) //Use dmg slash for any npc that shouldnt be scaled.
 				{
@@ -2196,6 +2196,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		case WEAPON_CRIPPLEMOAB:
 		{
 			return SniperMonkey_CrippleMoab(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+		}
+		case WEAPON_IRENE:
+		{
+			Npc_OnTakeDamage_Iberia(attacker, damagetype, weapon);
 		}
 	}
 #endif

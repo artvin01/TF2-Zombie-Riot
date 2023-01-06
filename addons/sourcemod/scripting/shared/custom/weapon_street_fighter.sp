@@ -120,9 +120,9 @@ static void StreetFighter(int client, int weapon, int slot, int flags)
 			f_DelayLookingAtHud[client] = GetGameTime() + 1.5;
 
 			int first = CurrentCombo[client] % NR_2;
-			int second = (CurrentCombo[client] % NR_3) - first;
-			int third = GetComboType(flags, slot != 1) * NR_3;
-			CurrentCombo[client] += third;
+			int second = (CurrentCombo[client] % NR_3) / 6;
+			int third = GetComboType(flags, slot != 1);
+			CurrentCombo[client] += third * NR_3;
 			ComboCount[client] = 3;
 			
 			if(!ComboList)
