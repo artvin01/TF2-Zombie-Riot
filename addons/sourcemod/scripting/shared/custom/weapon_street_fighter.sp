@@ -6,7 +6,6 @@
 
 static const char ComboName[][] =
 {
-	"",
 	"L",
 	"R",
 	"L'",
@@ -53,7 +52,7 @@ static void ShowCombo(int client)
 {
 	if(ComboCount[client] > 1)
 	{
-		PrintCenterText(client, "%s + %s +", ComboName[CurrentCombo[client] % NR_2], ComboName[CurrentCombo[client] / 6]);
+		PrintCenterText(client, "%s + %s +", ComboName[CurrentCombo[client] % NR_2], ComboName[CurrentCombo[client] / NR_2]);
 	}
 	else
 	{
@@ -104,6 +103,7 @@ static void StreetFighter(int client, int weapon, int slot, int flags)
 
 		if(ComboCount[client] == 0)
 		{
+			f_DelayLookingAtHud[client] = GetGameTime() + 2.1;
 			CurrentCombo[client] = GetComboType(flags, slot != 1);
 			ComboCount[client] = 1;
 			ComboTimer[client] = CreateTimer(2.1, StreetFighter_Timer, client);
@@ -117,10 +117,12 @@ static void StreetFighter(int client, int weapon, int slot, int flags)
 		}
 		else if(ComboCount[client] == 2)
 		{
+			f_DelayLookingAtHud[client] = GetGameTime() + 1.5;
+
 			int first = CurrentCombo[client] % NR_2;
-			int second = (CurrentCombo[client] % NR_3) - first;
-			int third = GetComboType(flags, slot != 1) * NR_3;
-			CurrentCombo[client] += third;
+			int second = (CurrentCombo[client] % NR_3) / NR_2;
+			int third = GetComboType(flags, slot != 1);
+			CurrentCombo[client] += third * NR_3;
 			ComboCount[client] = 3;
 			
 			if(!ComboList)
@@ -138,17 +140,17 @@ static void StreetFighter(int client, int weapon, int slot, int flags)
 			Call_PushCell(third);
 			Call_PushFloatRef(cooldown);
 			Call_Finish(action);
-			if(action != Plugin_Continue)
+			if(action == Plugin_Continue)
 			{
 				PrintCenterText(client, "No Effect...");
 				ClientCommand(client, "playgamesound ui/message_update.wav");
 			}
 
-			for(int i = sizeof(LastCombos[]); i > 0; i--)
+			for(int i = sizeof(LastCombos[]) - 1; i > 0; i--)
 			{
 				LastCombos[client][i] = LastCombos[client][i - 1];
 			}
-			LastCombos[client][0] = ComboCount[client];
+			LastCombos[client][0] = CurrentCombo[client];
 
 			delete ComboTimer[client];
 			CurrentCombo[client] = 0;
@@ -158,6 +160,7 @@ static void StreetFighter(int client, int weapon, int slot, int flags)
 		Ability_Apply_Cooldown(client, 1, cooldown);
 		Ability_Apply_Cooldown(client, 2, cooldown);
 		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + cooldown);
+		SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + cooldown);
 	}
 }
 
@@ -374,7 +377,7 @@ public Action SF_JawBreaker(int client, int entity, int first, int second, int t
 		}
 		else
 		{
-			PrintCenterText(client, "Jaw Breaker");
+			PrintCenterText(client, "Jaw Breaker!");
 			ApplyTempAttrib(entity, 2, 3.5);
 		}
 
@@ -545,23 +548,27 @@ public Action SF_Knockup(int client, int entity, int first, int second, int thir
 			
 			int target = TR_GetEntityIndex(swingTrace);
 
-			float vecHit[3];
-			TR_GetEndPosition(vecHit, swingTrace);
-
 			delete swingTrace;
 			FinishLagCompensation_Base_boss();
 			
 			if(target > MaxClients)
-			{
-				vecHit[2] += 50.0;
-				PluginBot_Jump(target, vecHit);
-			}
+				SDKHook(target, SDKHook_Think, SF_KnockupThink);
 		}
 
 		ClientCommand(client, "playgamesound ui/killsound_beepo.wav");
 		return Plugin_Stop;
 	}
 	return Plugin_Continue;
+}
+
+public void SF_KnockupThink(int target)
+{
+	SDKUnhook(target, SDKHook_Think, SF_KnockupThink);
+
+	float pos[3];
+	pos = WorldSpaceCenter(target);
+	pos[2] += 100.0;
+	PluginBot_Jump(target, pos);
 }
 
 // R' R' L

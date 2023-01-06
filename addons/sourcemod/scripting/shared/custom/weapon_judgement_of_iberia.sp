@@ -1,0 +1,453 @@
+#pragma semicolon 1
+#pragma newdecls required
+
+//If i see any of you using this on any bvb hale i will kill you and turn you into a kebab.
+//This shit is so fucking unfair for the targeted.
+
+
+#define IRENE_JUDGEMENT_MAX_HITS_NEEDED 64 	//Double the amount because we do double hits.
+#define IRENE_JUDGEMENT_MAXRANGE 350.0 		
+#define IRENE_JUDGEMENT_EXPLOSION_RANGE 75.0 		
+
+#define IRENE_BOSS_AIRTIME 1.0		
+#define IRENE_AIRTIME 2.0		
+
+#define IRENE_MAX_HITUP 10
+
+Handle h_TimerIreneManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static float f_Irenehuddelay[MAXTF2PLAYERS];
+static int i_IreneHitsDone[MAXTF2PLAYERS];
+static float f_WeaponAttackSpeedModified[MAXENTITIES];
+static int i_IreneTargetsAirborn[MAXTF2PLAYERS][IRENE_MAX_HITUP];
+static float f_TargetAirtime[MAXENTITIES];
+static float f_TargetAirtimeDelayHit[MAXENTITIES];
+static float f_TimeSinceLastStunHit[MAXENTITIES];
+static bool b_IreneNpcWasShotUp[MAXENTITIES];
+static int i_RefWeaponDelete[MAXTF2PLAYERS];
+
+static int LaserSprite;
+#define SPRITE_SPRITE	"materials/sprites/laserbeam.vmt"
+
+void Npc_OnTakeDamage_Iberia(int attacker, int damagetype)
+{
+	if(damagetype & DMG_CLUB) //We only count normal melee hits.
+	{
+		i_IreneHitsDone[attacker] += 1;
+		if(i_IreneHitsDone[attacker] > IRENE_JUDGEMENT_MAX_HITS_NEEDED) //We do not go above this, no double charge.
+		{
+			i_IreneHitsDone[attacker] = IRENE_JUDGEMENT_MAX_HITS_NEEDED;
+		}
+	}
+}
+
+bool Npc_Is_Targeted_In_Air(int entity) //Anything that needs to be precaced like sounds or something.
+{
+	if(f_TargetAirtime[entity] > GetGameTime(entity))
+	{
+		return true;
+	}
+	return false;
+}
+
+void Irene_Map_Precache() //Anything that needs to be precaced like sounds or something.
+{
+	LaserSprite = PrecacheModel(SPRITE_SPRITE, false);
+}
+
+void Reset_stats_Irene_Global()
+{
+	Zero(f_TimeSinceLastStunHit);
+	Zero(h_TimerIreneManagement);
+	Zero(f_Irenehuddelay); //Only needs to get reset on map change, not disconnect.
+	Zero(i_IreneHitsDone); //This only ever gets reset on map change or player reset
+}
+
+void Reset_stats_Irene_Singular(int client) //This is on disconnect/connect
+{
+	i_IreneHitsDone[client] = 0;
+}
+
+void Reset_stats_Irene_Singular_Weapon(int client, int weapon) //This is on weapon remake. cannot set to 0 outright.
+{
+	f_WeaponAttackSpeedModified[weapon] = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+}
+
+public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slot)
+{
+	//Show the timer, this is purely for looks and doesnt do anything.
+//	float cooldown = 0.65 * Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+
+	//We wish to do a double attack.
+	//Delay it abit extra!
+
+	
+	/*
+	LAZY WAY:
+	DataPack pack;
+	CreateDataTimer(0.25, Timer_Do_Melee_Attack, pack, TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(GetClientUserId(client));
+	pack.WriteCell(EntIndexToEntRef(weapon));
+	pack.WriteString("tf_weapon_knife"); //We will hardcode this to tf_weapon_knife because i am lazy as fuck. 
+	*/
+	/* 
+		PRO WAY:
+		So that animations display properly, we wish to accelerate the attackspeed massively by 1
+		Issue: players can just delay the double attack
+		Fix for this would be just just reset back to the original attack speed if they dont attack.
+		This is annoying but this is really cool instead of the above LAZY method!
+
+	*/
+	//We save this onto the weapon if the modified attackspeed is not modified.
+
+	float attackspeed = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+	if(attackspeed > 0.35) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
+	{
+		TF2Attrib_SetByDefIndex(weapon, 6, attackspeed * 0.15); //Make it really fast for 1 hit!
+		f_WeaponAttackSpeedModified[weapon] = attackspeed;
+	}
+	else
+	{
+		//The attackspeed was really fast. Lets set it back to normal.
+		TF2Attrib_SetByDefIndex(weapon, 6, f_WeaponAttackSpeedModified[weapon]);
+		f_WeaponAttackSpeedModified[weapon] = 0.0; //reset back to 0. Loop and repeat.
+	}
+}
+
+public void Enable_Irene(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
+{
+	if (h_TimerIreneManagement[client] != INVALID_HANDLE)
+		return;
+		
+	if(i_CustomWeaponEquipLogic[weapon] == 6) //6 is for irene.
+	{
+		DataPack pack;
+		h_TimerIreneManagement[client] = CreateDataTimer(0.1, Timer_Management_Irene, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+	}
+	else
+	{
+		Kill_Timer_Irene(client);
+	}
+}
+
+
+
+public Action Timer_Management_Irene(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = pack.ReadCell();
+	if(IsValidClient(client))
+	{
+		if (IsClientInGame(client))
+		{
+			if (IsPlayerAlive(client))
+			{
+				Irene_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
+			}
+			else
+				Kill_Timer_Irene(client);
+		}
+		else
+			Kill_Timer_Irene(client);
+	}
+	else
+		Kill_Timer_Irene(client);
+		
+	return Plugin_Continue;
+}
+
+
+public void Irene_Cooldown_Logic(int client, int weapon)
+{
+	if (!IsValidMulti(client))
+		return;
+		
+	if(IsValidEntity(weapon))
+	{
+		if(i_CustomWeaponEquipLogic[weapon] == 6) //Double check to see if its good or bad :(
+		{	
+			if(f_Irenehuddelay[client] < GetGameTime())
+			{
+				if(i_IreneHitsDone[client] < IRENE_JUDGEMENT_MAX_HITS_NEEDED)
+				{
+					PrintHintText(client,"Judgemet Of Iberia [%i%/%i]", i_IreneHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
+				}
+				else
+				{
+					PrintHintText(client,"Judgemet Of Iberia [READY!]");
+				}
+				
+				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				f_Irenehuddelay[client] = GetGameTime() + 0.5;
+			}
+		}
+		else
+		{
+			Kill_Timer_Irene(client);
+		}
+	}
+	else
+	{
+		Kill_Timer_Irene(client);
+	}
+}
+
+public void Kill_Timer_Irene(int client)
+{
+	if (h_TimerIreneManagement[client] != INVALID_HANDLE)
+	{
+		KillTimer(h_TimerIreneManagement[client]);
+		h_TimerIreneManagement[client] = INVALID_HANDLE;
+	}
+}
+
+
+
+public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
+{
+	//This ability has no cooldown in itself, it just relies on hits you do.
+	if(i_IreneHitsDone[client] >= 0)
+	{
+		//Sucess! You have enough charges.
+		//Heavy logic incomming.
+		float UserLoc[3], VicLoc[3];
+		GetClientAbsOrigin(client, UserLoc);
+
+		bool raidboss_active = false;
+		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+		{
+			raidboss_active = true;
+		}
+		//Reset all airborn targets.
+		for (int enemy = 1; enemy < IRENE_MAX_HITUP; enemy++)
+		{
+			i_IreneTargetsAirborn[client][enemy] = false;
+		}
+
+		int weapon_new = Store_GiveSpecificItem(client, "Irene's Handcannon");
+		i_RefWeaponDelete[client] = EntIndexToEntRef(weapon_new);
+		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon_new);
+
+		ViewChange_Switch(client, weapon_new, "tf_weapon_revolver");
+
+		//We want to lag compensate this.
+		b_LagCompNPC_No_Layers = true;
+		StartLagCompensation_Base_Boss(client);
+
+		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		{
+			int target = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+			if(IsValidEntity(target) && !b_NpcHasDied[target])
+			{
+				VicLoc = WorldSpaceCenter(target);
+				
+				if (GetVectorDistance(UserLoc, VicLoc,true) <= Pow(IRENE_JUDGEMENT_MAXRANGE, 2.0))
+				{
+					bool Hitlimit = true;
+					for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
+					{
+						if(!i_IreneTargetsAirborn[client][i])
+						{
+							i_IreneTargetsAirborn[client][i] = target;
+							Hitlimit = false;
+							break;
+						}
+					}
+					if(Hitlimit)
+					{
+						break;
+					}
+					b_IreneNpcWasShotUp[target] = true;
+
+					float TimeSinceLastStunSubtract;
+					TimeSinceLastStunSubtract = f_TimeSinceLastStunHit[target] - GetGameTime();
+					
+					if(TimeSinceLastStunSubtract < 0.0)
+					{
+						TimeSinceLastStunSubtract = 0.0;
+					}
+
+					if (b_thisNpcIsABoss[target] || raidboss_active)
+					{
+						f_TankGrabbedStandStill[target] = GetGameTime() + IRENE_BOSS_AIRTIME - f_StunExtraGametimeDuration[target];
+						f_TargetAirtime[target] = GetGameTime() + IRENE_BOSS_AIRTIME; //Kick up for way less time.
+					}
+					else
+					{
+						f_TankGrabbedStandStill[target] = GetGameTime() + IRENE_AIRTIME - f_StunExtraGametimeDuration[target];
+						f_TargetAirtime[target] = GetGameTime() + IRENE_AIRTIME; //Kick up for the full skill duration.
+					}
+					SDKHook(target, SDKHook_Think, Npc_Irene_Launch);
+					//For now, there is no limit.
+				}
+			}
+		}
+		FinishLagCompensation_Base_boss();
+		f_TargetAirtime[client] = GetGameTime() + 2.0;
+		f_TargetAirtimeDelayHit[client] = GetGameTime() + 0.25;
+		SDKHook(client, SDKHook_PreThink, Npc_Irene_Launch_client);
+		//End of logic, everything done regarding getting all enemies effected by this effect.
+	}
+	else
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255, 1, 0.1, 0.1, 0.1);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.");
+	}
+}
+public void Npc_Irene_Launch_client(int client)
+{
+	if(GetGameTime() > f_TargetAirtime[client])
+	{
+		Store_RemoveSpecificItem(client, "Irene's Handcannon");
+		//We are Done, kill think.
+		int TemomaryGun = EntRefToEntIndex(i_RefWeaponDelete[client]);
+		if(IsValidEntity(TemomaryGun))
+		{
+			TF2_RemoveItem(client, TemomaryGun);
+			FakeClientCommand(client, "use tf_weapon_knife");
+		}
+		SDKUnhook(client, SDKHook_PreThink, Npc_Irene_Launch_client);
+	}	
+	else if(GetGameTime() > f_TargetAirtimeDelayHit[client])
+	{
+		f_TargetAirtimeDelayHit[client] = GetGameTime() + 0.15;
+
+		//Gather all allive airborn-ed entities.
+		int count;
+		int targets[MAX_TARGETS_HIT];
+		for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
+		{
+			// Check if it's a valid target
+			if(i_IreneTargetsAirborn[client][i] && IsValidEntity(i_IreneTargetsAirborn[client][i]) && !b_NpcHasDied[i_IreneTargetsAirborn[client][i]])
+			{
+				// Add it to our list, increase count by 1
+				targets[count++] = i_IreneTargetsAirborn[client][i];
+			}
+		}
+		
+		//All have died, we now shoot random stuff instead.
+		if(!count)
+		{
+			float UserLoc[3], VicLoc[3];
+			GetClientAbsOrigin(client, UserLoc);
+			//We want to lag compensate this.
+			b_LagCompNPC_No_Layers = true;
+			StartLagCompensation_Base_Boss(client);	
+
+			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+			{
+				int enemy = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+				if(IsValidEntity(enemy) && !b_NpcHasDied[enemy])
+				{
+					VicLoc = WorldSpaceCenter(enemy);
+					
+					if (GetVectorDistance(UserLoc, VicLoc,true) <= Pow(IRENE_JUDGEMENT_MAXRANGE, 2.0)) //respect max range.
+					{
+						targets[count++] = enemy;
+					}
+				}
+			}
+			FinishLagCompensation_Base_boss();
+		}
+
+		if(count)
+		{
+			// Choosen a random one in our list
+			int target = targets[GetRandomInt(0, count - 1)];
+
+			float VicLoc[3];
+
+			//poisition of the enemy we random decide to shoot.
+			VicLoc = WorldSpaceCenter(target);
+
+			LookAtTarget(client, target);
+
+			//No weapon is attached, meaning it wont benifit from stats. lol.
+			//This can hit upto 10 targets in range.
+			//We dont do more otherwise it will be super god damn op.
+			float damage = 10.0;
+			SpawnSmallExplosion(VicLoc);
+			//Reuse terroriser stuff for now.
+			switch(GetRandomInt(1, 3))
+			{
+				case 1:
+				{
+					EmitSoundToAll(TERRORIZER_BLAST1, target, _);
+				}
+				case 2:
+				{
+					EmitSoundToAll(TERRORIZER_BLAST2, target, _);
+				}
+				case 3:
+				{
+					EmitSoundToAll(TERRORIZER_BLAST3, target, _);
+				}
+			}
+			//Cause a bunch of effects on the targeted enemy.
+
+			int color[4];
+			color[0] = 255;
+			color[1] = 255;
+			color[2] = 255;
+			color[3] = 255;
+			float amp = 0.3;
+			float life = 0.1;			
+			float GunPos[3];
+			float GunAng[3];
+			GetAttachment(client, "effect_hand_R", GunPos, GunAng);
+			TE_SetupBeamPoints(GunPos, VicLoc, LaserSprite, 0, 0, 0, life, 1.0, 1.2, 1, amp, color, 0);
+			TE_SendToAll();
+
+			spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 0.25, 6.0, 2.1, 1, IRENE_JUDGEMENT_EXPLOSION_RANGE);	
+			Explode_Logic_Custom(damage, client, client, -1, VicLoc, IRENE_JUDGEMENT_EXPLOSION_RANGE,_,_,false);
+		}
+		else
+		{
+			//Do nothing. Just look into random directions?
+		}
+	}
+}
+
+public void Npc_Irene_Launch(int iNPC)
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
+	//Do their fly logic.
+
+	if(b_IreneNpcWasShotUp[iNPC])
+	{
+		float VicLoc[3];
+		VicLoc = WorldSpaceCenter(iNPC);
+		VicLoc[2] += 250.0; //Jump up.
+		PluginBot_Jump(iNPC, VicLoc);
+	}
+	b_IreneNpcWasShotUp[iNPC] = false;
+	
+	bool raidboss_active = false;
+	float time_stay_In_sky;
+	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+	{
+		raidboss_active = true;
+	}
+	if (b_thisNpcIsABoss[iNPC] || raidboss_active)
+	{
+		time_stay_In_sky = 0.75;
+	}
+	else
+	{
+		time_stay_In_sky = 1.75;
+	}
+
+	if(GetGameTime() > f_TargetAirtime[iNPC])
+	{
+		//We are Done, kill think.
+		SDKUnhook(iNPC, SDKHook_Think, Npc_Irene_Launch);
+	}	
+	else if(GetGameTime() + time_stay_In_sky > f_TargetAirtime[iNPC])
+	{
+		//After 0.5 seconds they stop accending to heaven, we also reset their velocity ontop of resetting their gravtiy
+		npc.SetVelocity({ 0.0, 0.0, 0.0 });
+	}
+}

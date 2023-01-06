@@ -430,15 +430,15 @@ public void TextStore_LoadFrame(int userid)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
-		if(TextStore_GetClientLoad(client))
+		//if(TextStore_GetClientLoad(client))
 		{
 			if(!CashSpent[client] && HasNamedItem(client, "ZR Contest Nominator [???]"))
 				CashSpent[client] = -100;
 		}
-		else
-		{
-			RequestFrame(TextStore_LoadFrame, userid);
-		}
+		//else
+		//{
+		//	RequestFrame(TextStore_LoadFrame, userid);
+		//}
 	}
 }
 #endif
@@ -3342,6 +3342,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	}
 	else if(StoreItems)
 	{
+		Store_RemoveSpecificItem(client, "Irene's Handcannon");
 		Store_RemoveSpecificItem(client, "Teutonic Longsword");
 	}
 
@@ -4234,6 +4235,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 #if defined RPG
 		Stats_SetWeaponStats(client, entity, slot);
 #endif
+		Reset_stats_Irene_Singular_Weapon(client, entity);
+		Enable_Irene(client, entity);
 
 	}
 	return entity;

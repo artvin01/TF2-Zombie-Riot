@@ -8,11 +8,14 @@ enum
 	Poker_Waiting = 0,
 	Poker_WarmUp,
 	Poker_Discard,
-	Poker_Final
+	Poker_Final,
+	Poker_Results
 }
 
 static int MinBet;
 static int GameState;
+static float TimeLeft;
+static bool Playing[MAXTF2PLAYERS];
 static int Cards[MAXTF2PLAYERS][5];
 static int Discarding[MAXTF2PLAYERS];
 static Handle PokerTimer;
@@ -25,7 +28,7 @@ void Games_Poker(int client)
 	bool found;
 	for(int i = 1; i <= MaxClients; i++)
 	{
-		if(StrEqual(name, InTable[i]))
+		if(Playing[i])
 		{
 			found = true;
 			break;
@@ -131,7 +134,7 @@ public int PokerJoinMenu(Menu menu, MenuAction action, int client, int choice)
 					PokerTable.SetValue(name, bet);
 				}
 
-				strcopy(InTable[client], sizeof(InTable[]), name);
+				Playing[client] = true;
 				PokerMenu(client);
 			}
 			else
@@ -172,11 +175,56 @@ public int PokerJoinMenu(Menu menu, MenuAction action, int client, int choice)
 	}
 }
 
+public Action Poker_Timer(Handle timer)
+{
+	int players;
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(Playing[i])
+			players++;
+	}
+	
+	if(!players)
+	{
+		GameState = Poker_Waiting;
+		PokerTimer = null;
+		return Plugin_Stop;
+	}
+
+	
+	return Plugin_Continue;
+}
+
 static void PokerMenu(int client)
 {
 	Menu menu = new Menu(PokerTableMenu);
 
-	menu.SetTitle("Draw Poker\n \n");
+	switch(GameState)
+	{
+		case Poker_Waiting:
+		{
+			menu.SetTitle("Draw Poker\n \nWaiting for players...");
+		}
+	}
+}
+
+public int PokerTableMenu(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+				Games_Poker(client);
+		}
+		case MenuAction_Select:
+		{
+		}
+	}
 }
 
 static void StartGame()

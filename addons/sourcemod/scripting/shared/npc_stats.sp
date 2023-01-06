@@ -455,7 +455,7 @@ methodmap CClotBody
 		
 		SDKHook(npc, SDKHook_OnTakeDamage, NPC_OnTakeDamage_Base);
 		SDKHook(npc, SDKHook_Think, Check_If_Stuck);
-	//	SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
+//		SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
 		
 		CClotBody CreatePathfinderIndex = view_as<CClotBody>(npc);
 		
@@ -2843,6 +2843,7 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 	CTakeDamageInfo -= view_as<Address>(16*4);
 	if(!b_NpcHasDied[pThis])
 	{
+
 		int client = GetClientOfUserId(LastHitId[pThis]);
 		int Health = GetEntProp(pThis, Prop_Data, "m_iHealth");
 		Health *= -1;
@@ -2908,6 +2909,9 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		
 		NPC_DeadEffects(pThis); //Do kill attribute stuff
 		b_NpcHasDied[pThis] = true;
+#if defined ZR
+		CleanAllAppliedEffects_BombImplanter(pThis, true);
+#endif
 		NPCDeath(pThis);
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
@@ -3387,7 +3391,20 @@ public MRESReturn ILocomotion_GetGroundNormal(Address pThis, Handle hReturn, Han
 public MRESReturn ILocomotion_GetStepHeight(Address pThis, Handle hReturn, Handle hParams)	   { DHookSetReturn(hReturn, 17.0);	return MRES_Supercede; }
 public MRESReturn ILocomotion_GetMaxAcceleration(Address pThis, Handle hReturn, Handle hParams)  { DHookSetReturn(hReturn, 5000.0); return MRES_Supercede; }
 public MRESReturn ILocomotion_GetFrictionSideways(Address pThis, Handle hReturn, Handle hParams) { DHookSetReturn(hReturn, 3.0);	return MRES_Supercede; }
-public MRESReturn ILocomotion_GetGravity(Address pThis, Handle hReturn, Handle hParams)		  { DHookSetReturn(hReturn, 800.0); return MRES_Supercede; }
+public MRESReturn ILocomotion_GetGravity(Address pThis, Handle hReturn, Handle hParams)
+{
+	int entity = view_as<int>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis)));
+	if(Npc_Is_Targeted_In_Air(entity))
+	{
+		DHookSetReturn(hReturn, 0.0); //We want no gravity
+	}
+	else
+	{
+		DHookSetReturn(hReturn, 800.0); 
+	}
+	return MRES_Supercede; 
+}
+
 public MRESReturn ILocomotion_ShouldCollideWithAlly(Address pThis, Handle hReturn, Handle hParams)   
 { 
 	int otherindex = DHookGetParam(hParams, 1);
@@ -6027,18 +6044,7 @@ stock float[] BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject,
 /*
 public Action SDKHook_Settransmit_Baseboss(int entity, int client)
 {
-	
-#if defined ZR
-	if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
-	{
-		if(b_thisNpcIsABoss[entity] || b_thisNpcHasAnOutline[entity] || EntRefToEntIndex(RaidBossActive) == entity)
-		{
-			return Plugin_Continue;
-		}
-		return Plugin_Continue;
-	}
-	else
-#endif
+	PrintToChatAll("SDKHook_Settransmit_Baseboss");
 	return Plugin_Continue;
 }
 */

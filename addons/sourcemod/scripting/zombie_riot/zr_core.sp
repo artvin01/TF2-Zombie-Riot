@@ -66,7 +66,8 @@ enum
 	WEAPON_FUSION = 2,
 	WEAPON_BOUNCING = 3,
 	WEAPON_MAIMMOAB = 4,
-	WEAPON_CRIPPLEMOAB = 5
+	WEAPON_CRIPPLEMOAB = 5,
+	WEAPON_IRENE = 6
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -312,6 +313,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/m3_abilities.sp"
 #include "shared/custom/weapon_street_fighter.sp"
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
+#include "shared/custom/weapon_judgement_of_iberia.sp"
 
 void ZR_PluginLoad()
 {
@@ -412,6 +414,8 @@ void ZR_MapStart()
 	Zero(i_ThisEntityHasAMachineThatBelongsToClientMoney);
 	Zero(f_WasRecentlyRevivedViaNonWave);
 	Zero(f_TimeAfterSpawn);
+	Reset_stats_Irene_Global();
+	Irene_Map_Precache();
 	
 	Waves_MapStart();
 	Music_MapStart();
@@ -525,6 +529,7 @@ void ZR_ClientDisconnect(int client)
 	SetClientTutorialStep(client, 0);
 	Pets_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
+	Reset_stats_Irene_Singular(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;

@@ -2982,32 +2982,32 @@ public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 
 stock void LookAtTarget(int client, int target)
 {
-    float angles[3];
-    float clientEyes[3];
-    float targetEyes[3];
-    float resultant[3]; 
-    
-    GetClientEyePosition(client, clientEyes);
-    if(target > 0 && target <= MaxClients && IsClientInGame(target))
-    {
+	float angles[3];
+	float clientEyes[3];
+	float targetEyes[3];
+	float resultant[3]; 
+		
+	GetClientEyePosition(client, clientEyes);
+	if(target > 0 && target <= MaxClients && IsClientInGame(target))
+	{
 		GetClientEyePosition(target, targetEyes);
-    }
-    else
-    {
-    	targetEyes = WorldSpaceCenter(target);
-    }
-    MakeVectorFromPoints(targetEyes, clientEyes, resultant); 
-    GetVectorAngles(resultant, angles); 
-    if(angles[0] >= 270){ 
-        angles[0] -= 270; 
-        angles[0] = (90-angles[0]); 
-    }else{ 
-        if(angles[0] <= 90){ 
-            angles[0] *= -1; 
-        } 
-    } 
-    angles[1] -= 180; 
-    TeleportEntity(client, NULL_VECTOR, angles, NULL_VECTOR); 
+	}
+	else
+	{
+		targetEyes = WorldSpaceCenter(target);
+	}
+	MakeVectorFromPoints(targetEyes, clientEyes, resultant); 
+	GetVectorAngles(resultant, angles); 
+	if(angles[0] >= 270){ 
+		angles[0] -= 270; 
+		angles[0] = (90-angles[0]); 
+	}else{ 
+		if(angles[0] <= 90){ 
+			angles[0] *= -1; 
+		} 
+	} 
+	angles[1] -= 180; 
+	SnapEyeAngles(client, angles);
 } 
 
 
