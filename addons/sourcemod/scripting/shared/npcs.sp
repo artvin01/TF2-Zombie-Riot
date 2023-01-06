@@ -1739,8 +1739,8 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 	
-#if defined ZR
 	bool raidboss_active = false;
+#if defined ZR
 	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
 		raidboss_active = true;
