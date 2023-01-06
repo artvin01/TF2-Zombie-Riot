@@ -150,7 +150,7 @@ static void StreetFighter(int client, int weapon, int slot, int flags)
 			{
 				LastCombos[client][i] = LastCombos[client][i - 1];
 			}
-			LastCombos[client][0] = ComboCount[client];
+			LastCombos[client][0] = CurrentCombo[client];
 
 			delete ComboTimer[client];
 			CurrentCombo[client] = 0;
@@ -377,7 +377,7 @@ public Action SF_JawBreaker(int client, int entity, int first, int second, int t
 		}
 		else
 		{
-			PrintCenterText(client, "Jaw Breaker");
+			PrintCenterText(client, "Jaw Breaker!");
 			ApplyTempAttrib(entity, 2, 3.5);
 		}
 
