@@ -16,7 +16,7 @@ static DynamicDetour gH_MaintainBotQuota = null;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
 static DynamicHook g_DHookScoutSecondaryFire; 
-static DynamicHook g_DhookUpdateTransmitState; 
+DynamicHook g_DhookUpdateTransmitState; 
 
 static DynamicDetour g_CalcPlayerScore;
 
@@ -105,8 +105,13 @@ void DHook_Setup()
 	g_DHookScoutSecondaryFire = DHook_CreateVirtual(gamedata, "CTFPistol_ScoutPrimary::SecondaryAttack()");
 
 
-	g_DhookUpdateTransmitState = DHook_CreateVirtual(gamedata, "CBaseEntity::UpdateTransmitState()");
-
+	int offset = gamedata.GetOffset("CBaseEntity::UpdateTransmitState()");
+	g_DhookUpdateTransmitState = new DynamicHook(offset, HookType_Entity, ReturnType_Int, ThisPointer_CBaseEntity);
+	if (!g_DhookUpdateTransmitState)
+	{
+		SetFailState("Failed to create hook CBaseEntity::UpdateTransmitState() offset from ZR gamedata!");
+	}
+	
 	ForceRespawn = DynamicHook.FromConf(gamedata, "CBasePlayer::ForceRespawn");
 	if(!ForceRespawn)
 		LogError("[Gamedata] Could not find CBasePlayer::ForceRespawn");
@@ -922,6 +927,7 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 	
 	g_hSDKEndLagCompAddress = manager;
 	Sdkcall_Load_Lagcomp();
+	StartLagCompResetValues();
 	
 	return MRES_Ignored;
 //	return MRES_Supercede;
@@ -1685,9 +1691,25 @@ void Hook_DHook_UpdateTransmitState(int entity)
 	g_DhookUpdateTransmitState.HookEntity(Hook_Pre, entity, DHook_UpdateTransmitState);
 }
 
-public MRESReturn DHook_UpdateTransmitState(int entity) //BLOCK!!
+public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) //BLOCK!!
+{   
+	returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_PVSCHECK);
+	return MRES_Supercede;
+}
+
+int SetEntityTransmitState(int entity, int newFlags)
 {
-	return MRES_Supercede;	//NEVER DO PERMA.
+    if (!IsValidEdict(entity))
+    {
+		return 0;
+	}
+
+    int flags = GetEdictFlags(entity);
+    flags &= ~(FL_EDICT_ALWAYS | FL_EDICT_PVSCHECK | FL_EDICT_DONTSEND);
+    flags |= newFlags;
+    SetEdictFlags(entity, flags);
+
+    return flags;
 }
 
 public MRESReturn DHook_ScoutSecondaryFire(int entity) //BLOCK!!

@@ -4,6 +4,13 @@
 	{
 		"Signatures"
 		{
+			"CBaseEntity::DispatchUpdateTransmitState"
+			{
+				// string aMerasmusSpawn ; "merasmus_spawn"
+				// has 5 calls, go up 2 functions, single call.
+				"windows"	"\x80\xB9\x74\x01\x00\x00\x00\x8B\x41\x18"
+				"linux"		""
+			}
 			"CBasePlayer::SnapEyeAngles"
 			{
 				// string "Usage:  setang pitch yaw <roll optional"

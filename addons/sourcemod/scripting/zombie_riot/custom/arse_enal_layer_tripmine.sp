@@ -516,7 +516,7 @@ public void Weapon_Arsenal_Terroriser_M2(int client, int weapon, const char[] cl
 		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 		{
 			int npc = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if (IsValidEntity(npc))
+			if (IsValidEntity(npc) && !b_NpcHasDied[npc])
 			{
 				if(i_HowManyBombsOnThisEntity[npc][client] > 0)
 				{
@@ -525,19 +525,14 @@ public void Weapon_Arsenal_Terroriser_M2(int client, int weapon, const char[] cl
 					Address address = TF2Attrib_GetByDefIndex(weapon, 2);
 					if(address != Address_Null)
 						damage *= RoundToCeil(TF2Attrib_GetValue(address));
-						
-					int r = 255;
-					int g = 0;
-					int b = 0;
+
+					damage *= i_HowManyBombsOnThisEntity[npc][client];
+
+					float EntLoc2[3];
 					
-					spawnRing(npc, 160.0, 0.0, 0.0, 0.0, "materials/sprites/lgtning.vmt", r, g, b, 255, 10, 0.4, 10.0, 1.0, 1, 10.0);
-					
-					Handle pack;
-					CreateDataTimer(0.5, Terroriser_Explosion, pack, TIMER_FLAG_NO_MAPCHANGE);
-					WritePackCell(pack, GetClientUserId(client));
-					WritePackCell(pack, EntIndexToEntRef(npc));
-					WritePackCell(pack, i_HowManyBombsOnThisEntity[npc][client]);
-					WritePackCell(pack, damage);
+					EntLoc2 = WorldSpaceCenter(npc);
+
+					Cause_Terroriser_Explosion(client, npc, damage, EntLoc2, true);
 					i_HowManyBombsOnThisEntity[npc][client] = 0;
 				}
 			}
@@ -571,42 +566,44 @@ public void CleanAllApplied_Aresenal(int entity)
 	}
 }
 
-public Action Terroriser_Explosion(Handle Trip_ArmMine_Handle, any pack)
+void Cause_Terroriser_Explosion(int client, int npc, float damage, float EntLoc2[3], bool allowLagcomp = false)
 {
-	ResetPack(pack);
-	int client = GetClientOfUserId(ReadPackCell(pack));
-	int npc = EntRefToEntIndex(ReadPackCell(pack));
-	int bomb_amount = ReadPackCell(pack);
-	float damage = ReadPackCell(pack);
-	if (IsValidMulti(client) && IsValidEntity(npc) && !b_NpcHasDied[npc])
-	{
-		damage *= bomb_amount;
-		float EntLoc2[3];
-		
-		EntLoc2 = WorldSpaceCenter(npc);
-							
-		SpawnSmallExplosion(EntLoc2);
+	SpawnSmallExplosion(EntLoc2);
 
-		switch(GetRandomInt(1, 3))
+	switch(GetRandomInt(1, 3))
+	{
+		case 1:
 		{
-			case 1:
-			{
-				EmitSoundToAll(TERRORIZER_BLAST1, npc, _);
-			}
-			case 2:
-			{
-				EmitSoundToAll(TERRORIZER_BLAST2, npc, _);
-			}
-			case 3:
-			{
-				EmitSoundToAll(TERRORIZER_BLAST2, npc, _);
-			}
+			EmitSoundToAll(TERRORIZER_BLAST1, npc, _);
 		}
-		CleanAllApplied_Aresenal(npc);
-		
+		case 2:
+		{
+			EmitSoundToAll(TERRORIZER_BLAST2, npc, _);
+		}
+		case 3:
+		{
+			EmitSoundToAll(TERRORIZER_BLAST3, npc, _);
+		}
+	}
+	CleanAllApplied_Aresenal(npc);
+	float radius = 100.0;
+	spawnRing_Vectors(EntLoc2, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 0.25, 6.0, 2.1, 1, radius);	
+	if(allowLagcomp)
+	{
+		StartLagCompensation_Base_Boss(client);
+		b_LagCompNPC_No_Layers = true;
+
 		Explode_Logic_Custom(damage, client, client, -1, EntLoc2, Terroriser_Implant_Radius,_,_,false);
+
+		FinishLagCompensation_Base_boss();
+	}
+	else
+	{
+		Explode_Logic_Custom(damage, client, client, -1, EntLoc2, Terroriser_Implant_Radius,_,_,false);
+	}
+	if(!b_NpcHasDied[npc]) //Incase it gets called later.
+	{
 		f_CooldownForHurtHud[client] = 0.0; //So it shows the damage delt by by secondary internal combustion too.
 		SDKHooks_TakeDamage(npc, client, client, damage * 0.5, DMG_BLAST); //extra damage to the target that was hit cus yeah.
 	}
-	return Plugin_Handled;
 }

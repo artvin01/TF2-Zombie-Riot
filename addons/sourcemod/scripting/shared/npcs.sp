@@ -1503,6 +1503,13 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			
 			if(i_ArsenalBombImplanter[weapon] > 0)
 			{
+				float damage_save = 50.0;
+				Address address = TF2Attrib_GetByDefIndex(weapon, 2);
+				if(address != Address_Null)
+					damage_save *= RoundToCeil(TF2Attrib_GetValue(address));
+
+				f_BombEntityWeaponDamageApplied[victim][attacker] = damage_save;
+
 				if(f_ChargeTerroriserSniper[weapon] > 149.0)
 				{
 					i_HowManyBombsOnThisEntity[victim][attacker] += 2;
@@ -2124,11 +2131,22 @@ void GiveNamedItem(int client, const char[] name)
 }
 #endif
 
-void CleanAllAppliedEffects(int entity)
+void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false)
 {
 	for (int client = 1; client <= MaxClients; client++)
 	{
+#if defined ZR
+		if(do_boom)
+		{
+			if(i_HowManyBombsOnThisEntity[entity][client] > 0)
+			{
+				float damage = f_BombEntityWeaponDamageApplied[entity][client] * i_HowManyBombsOnThisEntity[entity][client];
+				Cause_Terroriser_Explosion(client, entity, damage, WorldSpaceCenter(entity));
+			}
+		}
+#endif
 		i_HowManyBombsOnThisEntity[entity][client] = 0; //to clean on death ofc.
+		f_BombEntityWeaponDamageApplied[entity][client] = 0.0;
 	}
 }
 

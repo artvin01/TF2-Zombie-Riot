@@ -1876,4 +1876,57 @@
 		"nl"		"Hier kan je bouwen!"
 		"chi"       "你可以在此摆放你的建筑"
 	}
+	"Gambler's Cash"
+	{
+		"en"	"Gambler's Cash"
+		"de"	"Gambler's Kohle"
+		//"de"	"Zockers Kohle"
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Gambler Spawn Message"
+	{
+		"en"		"You think you can easily run in here for safty? Not with me."
+		"de"		"Du denkst du kannst einfach hier rein gehen zur Sicherheit? Nicht mit mir."
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Pablo Spawn Message"
+	{
+		"en"		"Let's see if you can handle me."
+		"de"		"Mal sehen ob du es mit mir handel kannst."
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"DokMed Spawn Message"
+	{
+		"en"		"Let's see how long you can last with us both."
+		"de"		"Mal sehen wie lange du es aushalten kannst mit uns beiden."
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
 }
