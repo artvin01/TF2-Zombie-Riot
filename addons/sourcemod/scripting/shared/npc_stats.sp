@@ -4572,6 +4572,23 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 
 float f_StuckTextChatNotif[MAXTF2PLAYERS];
 
+public Action Timer_CheckStuckOutsideMap(Handle cut_timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if (IsValidEntity(entity))
+	{
+		static float flMyPos_Bounds[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flMyPos_Bounds);
+		flMyPos_Bounds[2] += 25.0;
+		if(TR_PointOutsideWorld(flMyPos_Bounds))
+		{
+			LogError("Enemy NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
+			RequestFrame(KillNpc, EntIndexToEntRef(entity));
+		}
+	}
+	return Plugin_Stop;
+}
+
 public void Check_If_Stuck(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
@@ -4583,12 +4600,13 @@ public void Check_If_Stuck(int iNPC)
 		//If NPCs some how get out of bounds
 		if(f_StuckOutOfBoundsCheck[iNPC] < GetGameTime())
 		{
+			static float flMyPos_Bounds[3];
+			flMyPos_Bounds = flMyPos;
+			flMyPos_Bounds[2] += 25.0;
 			f_StuckOutOfBoundsCheck[iNPC] = GetGameTime() + 10.0;
 			if(TR_PointOutsideWorld(flMyPos))
 			{
-				LogError("Enemy NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos[0],flMyPos[1],flMyPos[2]);
-				RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
-				return;
+				CreateTimer(1.0, Timer_CheckStuckOutsideMap, EntIndexToEntRef(iNPC), TIMER_FLAG_NO_MAPCHANGE);
 			}
 		}
 
@@ -4696,9 +4714,12 @@ public void Check_If_Stuck(int iNPC)
 		{
 			f_StuckOutOfBoundsCheck[iNPC] = GetGameTime() + 10.0;
 			//If NPCs some how get out of bounds
-			if(TR_PointOutsideWorld(flMyPos))
+			static float flMyPos_Bounds[3];
+			flMyPos_Bounds = flMyPos;
+			flMyPos_Bounds[2] += 25.0;
+			if(TR_PointOutsideWorld(flMyPos_Bounds))
 			{
-				LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos[0],flMyPos[1],flMyPos[2]);
+				LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
 				
 #if defined ZR
 				int target = 0;
