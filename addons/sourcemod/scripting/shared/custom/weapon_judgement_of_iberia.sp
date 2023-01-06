@@ -83,6 +83,7 @@ void Reset_stats_Irene_Global()
 
 void Reset_stats_Irene_Singular(int client) //This is on disconnect/connect
 {
+	h_TimerIreneManagement[client] = INVALID_HANDLE;
 	i_IreneHitsDone[client] = 0;
 }
 
@@ -309,7 +310,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 			}
 		}
 		FinishLagCompensation_Base_boss();
-		EmitSoundToAll(IRENE_KICKUP_1, client, _, 75, _, 0.40);
+		EmitSoundToAll(IRENE_KICKUP_1, client, _, 75, _, 0.60);
 
 		if(!b_IsPlayerNiko[client])
 		{
@@ -445,7 +446,7 @@ public void Npc_Irene_Launch_client(int client)
 			//This can hit upto 10 targets in range.
 			//We dont do more otherwise it will be super god damn op.
 			//Damage will be multiplied by 2 because it can double hit, and 50% more extra because its an ability.
-			float damage = (f_WeaponDamageCalculated[client] * 2.0);
+			float damage = (f_WeaponDamageCalculated[client] * 3.0);
 
 			CClotBody npc = view_as<CClotBody>(target);
 			if(!npc.IsOnGround())
@@ -459,11 +460,11 @@ public void Npc_Irene_Launch_client(int client)
 			{
 				case 1:
 				{
-					EmitSoundToAll(IRENE_EXPLOSION_1, target, _, 75, _, 0.3);
+					EmitSoundToAll(IRENE_EXPLOSION_1, target, _, 85, _, 0.5);
 				}
 				case 2:
 				{
-					EmitSoundToAll(IRENE_EXPLOSION_2, target, _, 75, _, 0.3);
+					EmitSoundToAll(IRENE_EXPLOSION_2, target, _, 85, _, 0.5);
 				}
 			}
 
@@ -484,7 +485,7 @@ public void Npc_Irene_Launch_client(int client)
 			TE_SendToAll();
 
 			spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 6.0, 2.1, 1, IRENE_JUDGEMENT_EXPLOSION_RANGE);	
-			Explode_Logic_Custom(damage, client, client, TemomaryGun, VicLoc, IRENE_JUDGEMENT_EXPLOSION_RANGE,_,_,false);
+			Explode_Logic_Custom(damage, client, TemomaryGun, TemomaryGun, VicLoc, IRENE_JUDGEMENT_EXPLOSION_RANGE,_,_,false);
 		}
 		else
 		{
