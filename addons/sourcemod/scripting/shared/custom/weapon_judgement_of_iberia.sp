@@ -27,7 +27,7 @@ void Npc_OnTakeDamage_Iberia(int attacker, int damagetype, int weapon)
 
 bool Npc_Is_Targeted_In_Air(int entity) //Anything that needs to be precaced like sounds or something.
 {
-	if(f_TargetAirtime[entity] > GetGameTime(npc.index))
+	if(f_TargetAirtime[entity] > GetGameTime(entity))
 	{
 		return true;
 	}
