@@ -6,7 +6,6 @@
 
 static const char ComboName[][] =
 {
-	"",
 	"L",
 	"R",
 	"L'",
