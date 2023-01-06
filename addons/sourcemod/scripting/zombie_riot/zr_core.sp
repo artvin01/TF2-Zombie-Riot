@@ -195,6 +195,7 @@ int Armor_table_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int i_Healing_station_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int Perk_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int Pack_A_Punch_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
+float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXTF2PLAYERS+1];
 
 int i_ThisEntityHasAMachineThatBelongsToClient[MAXENTITIES];
 int i_ThisEntityHasAMachineThatBelongsToClientMoney[MAXENTITIES];
@@ -394,6 +395,7 @@ void ZR_MapStart()
 	Zero2(i_Healing_station_money_limit);
 	Zero2(Perk_Machine_money_limit);
 	Zero2(Pack_A_Punch_Machine_money_limit);
+	Zero2(fl_blitz_ioc_punish_timer);
 	CleanAllBuildingEscape();
 	M3_ClearAll();
 	ZeroRage_ClearAll();
