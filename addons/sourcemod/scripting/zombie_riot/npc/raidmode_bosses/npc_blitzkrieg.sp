@@ -883,8 +883,6 @@ public void Blitzkrieg_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXTF2PLAYERS+1];//well it will work, but if npc's that attack from a rage, an error will be spat out
-
 public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.	AJA
