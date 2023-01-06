@@ -3391,7 +3391,19 @@ public MRESReturn ILocomotion_GetGroundNormal(Address pThis, Handle hReturn, Han
 public MRESReturn ILocomotion_GetStepHeight(Address pThis, Handle hReturn, Handle hParams)	   { DHookSetReturn(hReturn, 17.0);	return MRES_Supercede; }
 public MRESReturn ILocomotion_GetMaxAcceleration(Address pThis, Handle hReturn, Handle hParams)  { DHookSetReturn(hReturn, 5000.0); return MRES_Supercede; }
 public MRESReturn ILocomotion_GetFrictionSideways(Address pThis, Handle hReturn, Handle hParams) { DHookSetReturn(hReturn, 3.0);	return MRES_Supercede; }
-public MRESReturn ILocomotion_GetGravity(Address pThis, Handle hReturn, Handle hParams)		  { DHookSetReturn(hReturn, 800.0); return MRES_Supercede; }
+public MRESReturn ILocomotion_GetGravity(Address pThis, Handle hReturn, Handle hParams)
+{
+	if(Npc_Is_Targeted_In_Air[view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis)))])
+	{
+		DHookSetReturn(hReturn, 0.0); //We want no gravity
+	}	
+	else
+	{
+		DHookSetReturn(hReturn, 800.0); 
+	}
+	return MRES_Supercede; 
+}
+
 public MRESReturn ILocomotion_ShouldCollideWithAlly(Address pThis, Handle hReturn, Handle hParams)   
 { 
 	int otherindex = DHookGetParam(hParams, 1);

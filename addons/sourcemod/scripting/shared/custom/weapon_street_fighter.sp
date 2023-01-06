@@ -52,7 +52,7 @@ static void ShowCombo(int client)
 {
 	if(ComboCount[client] > 1)
 	{
-		PrintCenterText(client, "%s + %s +", ComboName[CurrentCombo[client] % NR_2], ComboName[CurrentCombo[client] / 6]);
+		PrintCenterText(client, "%s + %s +", ComboName[CurrentCombo[client] % NR_2], ComboName[CurrentCombo[client] / NR_2]);
 	}
 	else
 	{
@@ -120,7 +120,7 @@ static void StreetFighter(int client, int weapon, int slot, int flags)
 			f_DelayLookingAtHud[client] = GetGameTime() + 1.5;
 
 			int first = CurrentCombo[client] % NR_2;
-			int second = (CurrentCombo[client] % NR_3) / 6;
+			int second = (CurrentCombo[client] % NR_3) / NR_2;
 			int third = GetComboType(flags, slot != 1);
 			CurrentCombo[client] += third * NR_3;
 			ComboCount[client] = 3;

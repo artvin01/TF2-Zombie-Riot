@@ -25,6 +25,14 @@ void Npc_OnTakeDamage_Iberia(int attacker, int damagetype, int weapon)
 	}
 }
 
+bool Npc_Is_Targeted_In_Air(int entity) //Anything that needs to be precaced like sounds or something.
+{
+	if(f_TargetAirtime[entity] > GetGameTime(npc.index))
+	{
+		return true;
+	}
+	return false;
+}
 void Irene_Map_Precache() //Anything that needs to be precaced like sounds or something.
 {
 	return;
@@ -197,7 +205,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 		//Reset all airborn targets.
 		for (int enemy = 1; enemy < IRENE_MAX_HITUP; enemy++)
 		{
-			i_IreneTargetsAirborn[client][building] = false;
+			i_IreneTargetsAirborn[client][enemy] = false;
 		}
 
 		//We want to lag compensate this.
@@ -219,7 +227,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 					{
 						if(!i_IreneTargetsAirborn[client][i])
 						{
-							i_IreneTargetsAirborn[client][i] = entity;
+							i_IreneTargetsAirborn[client][i] = target;
 							Hitlimit = false;
 							break;
 						}
