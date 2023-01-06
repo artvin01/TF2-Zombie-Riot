@@ -3342,6 +3342,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	}
 	else if(StoreItems)
 	{
+		Store_RemoveSpecificItem(client, "Irene's Handcannon");
 		Store_RemoveSpecificItem(client, "Teutonic Longsword");
 	}
 

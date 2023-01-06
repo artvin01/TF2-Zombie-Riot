@@ -548,23 +548,27 @@ public Action SF_Knockup(int client, int entity, int first, int second, int thir
 			
 			int target = TR_GetEntityIndex(swingTrace);
 
-			float vecHit[3];
-			TR_GetEndPosition(vecHit, swingTrace);
-
 			delete swingTrace;
 			FinishLagCompensation_Base_boss();
 			
 			if(target > MaxClients)
-			{
-				vecHit[2] += 50.0;
-				PluginBot_Jump(target, vecHit);
-			}
+				SDKHook(target, SDKHook_Think, SF_KnockupThink);
 		}
 
 		ClientCommand(client, "playgamesound ui/killsound_beepo.wav");
 		return Plugin_Stop;
 	}
 	return Plugin_Continue;
+}
+
+public void SF_KnockupThink(int target)
+{
+	SDKUnhook(target, SDKHook_Think, SF_KnockupThink);
+
+	float pos[3];
+	pos = WorldSpaceCenter(target);
+	pos[2] += 100.0;
+	PluginBot_Jump(target, pos);
 }
 
 // R' R' L

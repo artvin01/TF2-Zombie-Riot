@@ -2199,7 +2199,7 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		}
 		case WEAPON_IRENE:
 		{
-			Npc_OnTakeDamage_Iberia(attacker, damagetype, weapon);
+			Npc_OnTakeDamage_Iberia(attacker, damagetype);
 		}
 	}
 #endif
