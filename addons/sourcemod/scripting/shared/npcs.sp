@@ -1759,7 +1759,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 	}
 	if(damage > 0)
 	{
-		f_damageAddedTogetherGametime[attacker] = GetGameTime() + 1.0;
+		f_damageAddedTogetherGametime[attacker] = GetGameTime() + 0.6;
 	}
 
 	if(f_CooldownForHurtHud[attacker] < GetGameTime() || ignore)
