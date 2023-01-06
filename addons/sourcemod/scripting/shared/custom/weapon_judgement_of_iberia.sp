@@ -79,6 +79,7 @@ void Reset_stats_Irene_Global()
 	Zero(h_TimerIreneManagement);
 	Zero(f_Irenehuddelay); //Only needs to get reset on map change, not disconnect.
 	Zero(i_IreneHitsDone); //This only ever gets reset on map change or player reset
+	Zero(f_TargetAirtime); //what.
 }
 
 void Reset_stats_Irene_Singular(int client) //This is on disconnect/connect
