@@ -243,7 +243,7 @@ public Action SF_TripleAttack(int client, int entity, int first, int second, int
 // X R R,
 public Action SF_Block(int client, int entity, int first, int second, int third, float &cooldown)
 {
-	if((second == NR || second == DR) && (second == NR || third == NR) && !(second == DR && third == DR))
+	if((second == NR || second == DR) && (third == NR || third == NR) && !(second == DR && third == DR))
 	{
 		int stale = GetStaleAmount(client, CurrentCombo[client]);
 		if(stale)
