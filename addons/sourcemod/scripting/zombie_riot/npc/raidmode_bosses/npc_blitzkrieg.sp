@@ -174,6 +174,9 @@ public void Blitzkrieg_OnMapStart()
 	PrecacheSound(BLITZLIGHT_ACTIVATE, true);
 	PrecacheSound(BLITZLIGHT_ATTACK, true);
 	
+	PrecacheSound("misc/halloween/gotohell.wav");
+	
+	
 }
 
 static float fl_PlayMusicSound[MAXENTITIES];
@@ -1281,10 +1284,10 @@ public void Blitzkrieg_Punishment_Invoke(int ref, int enemy)
 		
 		float vecTarget[3];
 		vecTarget = WorldSpaceCenter(enemy);
-		vecTarget[2] -= 54.0;
+		vecTarget[2] += 1.0;
 		
-		vecTarget[0]+=GetRandomInt(-50, 50);	//Randomize the place where it hits.
-		vecTarget[1]+=GetRandomInt(-50, 50);
+		vecTarget[0]+=GetRandomInt(-100, 100);	//Randomize the place where it hits.
+		vecTarget[1]+=GetRandomInt(-100, 100);
 		
 		int color[4];
 		color[0] = 145;
@@ -1294,11 +1297,14 @@ public void Blitzkrieg_Punishment_Invoke(int ref, int enemy)
 		float UserLoc[3];
 		UserLoc = GetAbsOrigin(entity);
 		
+		UserLoc[2]+=75.0;
+		
 		int SPRITE_INT_2 = PrecacheModel("materials/sprites/lgtning.vmt", false);
 					
 		TE_SetupBeamPoints(vecTarget, UserLoc, SPRITE_INT_2, 0, 0, 0, 0.8, 22.0, 10.2, 1, 8.0, color, 0);
 		TE_SendToAll();
-		
+
+		EmitSoundToAll("misc/halloween/gotohell.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vecTarget);
 		
 		Handle data;
 		CreateDataTimer(Rings*Ring_Interval, Smite_Timer_Blitz, data, TIMER_FLAG_NO_MAPCHANGE);

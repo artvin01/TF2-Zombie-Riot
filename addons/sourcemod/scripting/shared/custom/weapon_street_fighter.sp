@@ -155,9 +155,9 @@ static void StreetFighter(int client, int weapon, int slot, int flags)
 			delete ComboTimer[client];
 			CurrentCombo[client] = 0;
 			ComboCount[client] = 0;
-			
+
 			Ability_Apply_Cooldown(client, 1, cooldown);
-			//Ability_Apply_Cooldown(client, 2, cooldown);
+			Ability_Apply_Cooldown(client, 2, cooldown);
 			SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + cooldown);
 			SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + cooldown);
 		}
@@ -243,7 +243,7 @@ public Action SF_TripleAttack(int client, int entity, int first, int second, int
 // X R R,
 public Action SF_Block(int client, int entity, int first, int second, int third, float &cooldown)
 {
-	if((second == NR || second == DR) && (third == NR || third == NR) && !(second == DR && third == DR))
+	if((second == NR || second == DR) && (third == NR || third == DR) && !(second == DR && third == DR))
 	{
 		int stale = GetStaleAmount(client, CurrentCombo[client]);
 		if(stale)
