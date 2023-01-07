@@ -393,12 +393,15 @@ public Action SF_JawBreaker(int client, int entity, int first, int second, int t
 	return Plugin_Continue;
 }
 
+// L' L' R
+// L L R
+// L, L, R
 // L' L' R,
 // L L R,
 // L, L, R,
 public Action SF_Charge(int client, int entity, int first, int second, int third, float &cooldown)
 {
-	if((first == UL || first == NL || first == DL) && first == second && third == DR)
+	if((first == UL || first == NL || first == DL) && first == second && (third == NR || third == DR))
 	{
 		int stale = GetStaleAmount(client, CurrentCombo[client]);
 		if(stale > 2)
@@ -433,7 +436,7 @@ public Action SF_Charge(int client, int entity, int first, int second, int third
 // R L L
 public Action SF_Random(int client, int entity, int first, int second, int third, float &cooldown)
 {
-	if(first == NR && second == NR && third == NL)
+	if(first == NR && second == NL && third == NL)
 	{
 		int stale = GetStaleAmount(client, CurrentCombo[client]);
 		if(stale)
