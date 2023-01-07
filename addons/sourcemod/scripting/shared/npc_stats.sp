@@ -458,9 +458,12 @@ methodmap CClotBody
 //		SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
 		
 		CClotBody CreatePathfinderIndex = view_as<CClotBody>(npc);
-		
+
 		if(IsRaidBoss)
+		{
+			RemoveAllDamageAddition();
 			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.1, 1.75); //Global.
+		}
 		else
 			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.29, 1.75); //Global.
 		
@@ -3393,10 +3396,11 @@ public MRESReturn ILocomotion_GetMaxAcceleration(Address pThis, Handle hReturn, 
 public MRESReturn ILocomotion_GetFrictionSideways(Address pThis, Handle hReturn, Handle hParams) { DHookSetReturn(hReturn, 3.0);	return MRES_Supercede; }
 public MRESReturn ILocomotion_GetGravity(Address pThis, Handle hReturn, Handle hParams)
 {
-	if(Npc_Is_Targeted_In_Air(view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis)))))
+	int entity = view_as<int>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis)));
+	if(Npc_Is_Targeted_In_Air(entity))
 	{
 		DHookSetReturn(hReturn, 0.0); //We want no gravity
-	}	
+	}
 	else
 	{
 		DHookSetReturn(hReturn, 800.0); 
@@ -3985,7 +3989,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false)
 			}
 			if(camoDetection)
 			{
-				if(npc.m_bThisEntityIgnored)
+				if(npc.m_bThisEntityIgnored || b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
 				{
 					return false;
 				}
@@ -3996,7 +4000,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false)
 			}
 			else
 			{
-				if(npc.m_bThisEntityIgnored || npc.m_bCamo)
+				if(npc.m_bThisEntityIgnored || npc.m_bCamo || b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
 				{
 					return false;
 				}
@@ -4141,7 +4145,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			if(searcher_team != 3) 
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0 && !onlyPlayers) //Check if dead or even targetable
+				if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0 && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
 					if(camoDetection)
 					{
@@ -4203,7 +4207,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			if(searcher_team != 2)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0 && !onlyPlayers) //Check if dead or even targetable
+				if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0 && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
 					if(camoDetection)
 					{
@@ -4270,7 +4274,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			if(IsValidEntity(entity_close) && entity_close != ingore_client)
 			{
 					CClotBody npc = view_as<CClotBody>(entity_close);
-					if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+					if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 					{
 						float TargetLocation[3]; 
 						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
@@ -4571,6 +4575,23 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 
 float f_StuckTextChatNotif[MAXTF2PLAYERS];
 
+public Action Timer_CheckStuckOutsideMap(Handle cut_timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if (IsValidEntity(entity))
+	{
+		static float flMyPos_Bounds[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flMyPos_Bounds);
+		flMyPos_Bounds[2] += 25.0;
+		if(TR_PointOutsideWorld(flMyPos_Bounds))
+		{
+			LogError("Enemy NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
+			RequestFrame(KillNpc, EntIndexToEntRef(entity));
+		}
+	}
+	return Plugin_Stop;
+}
+
 public void Check_If_Stuck(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
@@ -4582,12 +4603,13 @@ public void Check_If_Stuck(int iNPC)
 		//If NPCs some how get out of bounds
 		if(f_StuckOutOfBoundsCheck[iNPC] < GetGameTime())
 		{
+			static float flMyPos_Bounds[3];
+			flMyPos_Bounds = flMyPos;
+			flMyPos_Bounds[2] += 25.0;
 			f_StuckOutOfBoundsCheck[iNPC] = GetGameTime() + 10.0;
 			if(TR_PointOutsideWorld(flMyPos))
 			{
-				LogError("Enemy NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos[0],flMyPos[1],flMyPos[2]);
-				RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
-				return;
+				CreateTimer(1.0, Timer_CheckStuckOutsideMap, EntIndexToEntRef(iNPC), TIMER_FLAG_NO_MAPCHANGE);
 			}
 		}
 
@@ -4695,9 +4717,12 @@ public void Check_If_Stuck(int iNPC)
 		{
 			f_StuckOutOfBoundsCheck[iNPC] = GetGameTime() + 10.0;
 			//If NPCs some how get out of bounds
-			if(TR_PointOutsideWorld(flMyPos))
+			static float flMyPos_Bounds[3];
+			flMyPos_Bounds = flMyPos;
+			flMyPos_Bounds[2] += 25.0;
+			if(TR_PointOutsideWorld(flMyPos_Bounds))
 			{
-				LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos[0],flMyPos[1],flMyPos[2]);
+				LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
 				
 #if defined ZR
 				int target = 0;
@@ -5765,10 +5790,15 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 	
 	float subjectPos[3];
 	GetEntPropVector(subject, Prop_Data, "m_vecAbsOrigin", subjectPos);
-	
+		
 	botPos[2] += 1.0;
 	subjectPos[2] += 1.0;
 	
+	if(Npc_Is_Targeted_In_Air(npc.index)) //Logic breaks when they are under this effect.
+	{
+		return subjectPos;
+	}
+
 	float to[3];
 	SubtractVectors(subjectPos, botPos, to);
 	to[2] = 0.0;

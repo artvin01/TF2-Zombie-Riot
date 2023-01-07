@@ -983,6 +983,11 @@ public MRESReturn DHook_SentryFind_Target(int sentry, Handle hReturn, Handle hPa
 		Traced_Target = TR_GetEntityIndex(trace);
 		delete trace;
 		
+		if(IsValidEntity(Traced_Target) && b_ThisEntityIgnoredByOtherNpcsAggro[Traced_Target])
+		{
+			DHookSetReturn(hReturn, false); 
+			return MRES_Supercede;	
+		}
 		if(IsValidEntity(Traced_Target) && IsValidEnemy(sentry, Traced_Target))
 		{
 			DHookSetReturn(hReturn, true); 
@@ -1693,23 +1698,30 @@ void Hook_DHook_UpdateTransmitState(int entity)
 
 public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) //BLOCK!!
 {   
-	returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_PVSCHECK);
+	if(b_IsEntityAlwaysTranmitted[entity])
+	{
+		return MRES_Ignored;
+	}
+	else
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_PVSCHECK);
+	}
 	return MRES_Supercede;
 }
 
 int SetEntityTransmitState(int entity, int newFlags)
 {
-    if (!IsValidEdict(entity))
-    {
+	if (!IsValidEdict(entity))
+	{
 		return 0;
 	}
 
-    int flags = GetEdictFlags(entity);
-    flags &= ~(FL_EDICT_ALWAYS | FL_EDICT_PVSCHECK | FL_EDICT_DONTSEND);
-    flags |= newFlags;
-    SetEdictFlags(entity, flags);
+	int flags = GetEdictFlags(entity);
+	flags &= ~(FL_EDICT_ALWAYS | FL_EDICT_PVSCHECK | FL_EDICT_DONTSEND);
+	flags |= newFlags;
+	SetEdictFlags(entity, flags);
 
-    return flags;
+	return flags;
 }
 
 public MRESReturn DHook_ScoutSecondaryFire(int entity) //BLOCK!!

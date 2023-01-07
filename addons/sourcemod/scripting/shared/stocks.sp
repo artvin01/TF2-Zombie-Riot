@@ -113,13 +113,9 @@ stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iPar
 		SetParent(iParent, particle, szAttachment, vOffsets);
 
 		ActivateEntity(particle);
-		if(iParent < MAXTF2PLAYERS) //Exclude base_bosses from this, or any entity, then it has to always be rendered.
+		if(iParent > MAXTF2PLAYERS) //Exclude base_bosses from this, or any entity, then it has to always be rendered.
 		{
-			SetEdictFlags(particle, (GetEdictFlags(particle) & ~FL_EDICT_ALWAYS));	
-		}
-		else
-		{
-			SetEdictFlags(particle, (GetEdictFlags(particle) | FL_EDICT_ALWAYS));	
+			b_IsEntityAlwaysTranmitted[particle] = true;
 		}
 
 		AcceptEntityInput(particle, "start");
@@ -1040,6 +1036,12 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 
 	int client = GetClientOfUserId(pack.ReadCell());
 	if(!client || !IsClientInGame(client) || !IsPlayerAlive(client))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		return Plugin_Stop;
+	}
+
+	if(f_NpcImmuneToBleed[entity] > GetGameTime())
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
 		return Plugin_Stop;
@@ -2982,32 +2984,32 @@ public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 
 stock void LookAtTarget(int client, int target)
 {
-    float angles[3];
-    float clientEyes[3];
-    float targetEyes[3];
-    float resultant[3]; 
-    
-    GetClientEyePosition(client, clientEyes);
-    if(target > 0 && target <= MaxClients && IsClientInGame(target))
-    {
+	float angles[3];
+	float clientEyes[3];
+	float targetEyes[3];
+	float resultant[3]; 
+		
+	GetClientEyePosition(client, clientEyes);
+	if(target > 0 && target <= MaxClients && IsClientInGame(target))
+	{
 		GetClientEyePosition(target, targetEyes);
-    }
-    else
-    {
-    	targetEyes = WorldSpaceCenter(target);
-    }
-    MakeVectorFromPoints(targetEyes, clientEyes, resultant); 
-    GetVectorAngles(resultant, angles); 
-    if(angles[0] >= 270){ 
-        angles[0] -= 270; 
-        angles[0] = (90-angles[0]); 
-    }else{ 
-        if(angles[0] <= 90){ 
-            angles[0] *= -1; 
-        } 
-    } 
-    angles[1] -= 180; 
-    TeleportEntity(client, NULL_VECTOR, angles, NULL_VECTOR); 
+	}
+	else
+	{
+		targetEyes = WorldSpaceCenter(target);
+	}
+	MakeVectorFromPoints(targetEyes, clientEyes, resultant); 
+	GetVectorAngles(resultant, angles); 
+	if(angles[0] >= 270){ 
+		angles[0] -= 270; 
+		angles[0] = (90-angles[0]); 
+	}else{ 
+		if(angles[0] <= 90){ 
+			angles[0] *= -1; 
+		} 
+	} 
+	angles[1] -= 180; 
+	SnapEyeAngles(client, angles);
 } 
 
 

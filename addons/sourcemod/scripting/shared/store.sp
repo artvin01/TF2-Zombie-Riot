@@ -128,7 +128,7 @@ enum struct ItemInfo
 		
 		Format(buffer, sizeof(buffer), "%sindex", prefix);
 		this.Index = kv.GetNum(buffer);
-		
+
 		Format(buffer, sizeof(buffer), "%sindex_2", prefix);
 		this.Index2 = kv.GetNum(buffer);
 		
@@ -3342,6 +3342,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	}
 	else if(StoreItems)
 	{
+		Store_RemoveSpecificItem(client, "Irene's Handcannon");
 		Store_RemoveSpecificItem(client, "Teutonic Longsword");
 	}
 
