@@ -582,9 +582,11 @@ public void SF_KnockupThink(int target)
 
 // R' R' L
 // R' R' L'
+// R' R L
+// R' R L'
 public Action SF_Knockdown(int client, int entity, int first, int second, int third, float &cooldown)
 {
-	if(first == UR && second == NR && (third == NL || third == UL))
+	if(first == UR && (second == UR || second == NR) && (third == NL || third == UL))
 	{
 		int stale = GetStaleAmount(client, CurrentCombo[client]);
 		if(stale)
