@@ -13,6 +13,7 @@
 #include <PathFollower>
 #include <PathFollower_Nav>
 #include <morecolors>
+#include <tf2utils>
 
 #define CHAR_FULL	"█"
 #define CHAR_PARTFULL	"▓"

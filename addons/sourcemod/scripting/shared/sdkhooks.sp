@@ -977,14 +977,14 @@ public void OnPreThink(int client)
 */
 
 #if defined ZR
-static bool i_WasInUber;
+static float i_WasInUber;
 public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(i_WasInUber)
 	{
-		TF2_AddCondition(victim, TFCond_Ubercharged, -1.0);
+		TF2_AddCondition(victim, TFCond_Ubercharged, i_WasInUber);
 	}
-	i_WasInUber = false;
+	i_WasInUber = 0.0;
 	return Plugin_Continue;
 }
 #endif
@@ -1006,9 +1006,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #if defined ZR
 	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
-		if(TF2_IsPlayerInCondition(victim,TFCond_Ubercharged))
+		if(TF2_IsPlayerInCondition(victim, TFCond_Ubercharged))
 		{
-			i_WasInUber = true;
+			i_WasInUber = TF2Util_GetPlayerConditionDuration(victim, TFCond_Ubercharged);
 			TF2_RemoveCondition(victim, TFCond_Ubercharged);
 			damage *= 0.5;
 		}

@@ -1954,20 +1954,20 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 				CClotBody raid = view_as<CClotBody>(raidboss);
 				if(raid.m_flMeleeArmor != 1.0)
 				{
-					HudOffset += 0.02;
+					HudOffset += 0.035;
 				}
 				else if(raid.m_flRangedArmor != 1.0)
 				{
-					HudOffset += 0.02;
+					HudOffset += 0.035;
 				}
 				else if(Medival_Difficulty_Level != 0)
 				{
-					HudOffset += 0.02;
+					HudOffset += 0.035;
 				}
 
 				if(DoesNpcHaveHudDebuff(raidboss))
 				{
-					HudOffset += 0.02;
+					HudOffset += 0.035;
 				}
 			}
 
