@@ -427,7 +427,14 @@ public void Npc_Irene_Launch_client(int client)
 					
 					if (GetVectorDistance(UserLoc, VicLoc,true) <= Pow(IRENE_JUDGEMENT_MAXRANGE, 2.0)) //respect max range.
 					{
-						targets[count++] = enemy;
+						if(count < MAX_TARGETS_HIT)
+						{
+							targets[count++] = enemy;
+						}
+						else
+						{
+							break;
+						}
 					}
 				}
 			}

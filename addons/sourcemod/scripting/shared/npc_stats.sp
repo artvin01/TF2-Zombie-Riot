@@ -460,7 +460,10 @@ methodmap CClotBody
 		CClotBody CreatePathfinderIndex = view_as<CClotBody>(npc);
 		
 		if(IsRaidBoss)
+		{
+			RemoveAllDamageAddition();
 			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.1, 1.75); //Global.
+		}
 		else
 			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.29, 1.75); //Global.
 		

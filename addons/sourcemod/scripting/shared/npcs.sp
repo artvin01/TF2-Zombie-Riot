@@ -1734,6 +1734,12 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 static float f_damageAddedTogether[MAXTF2PLAYERS];
 static float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
 
+stock void RemoveAllDamageAddition()
+{
+	Zero(f_damageAddedTogether);
+	Zero(f_damageAddedTogetherGametime);
+}
+
 stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)
 {
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
