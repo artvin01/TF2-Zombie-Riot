@@ -82,7 +82,7 @@ static int GetComboType(int flags, bool right)
 	if(air)
 		return right ? UR : UL;
 	
-	return right ? DR : UL;
+	return right ? DR : DL;
 }
 
 public void Weapon_StreetFighter(int client, int weapon, bool crit, int slot)
