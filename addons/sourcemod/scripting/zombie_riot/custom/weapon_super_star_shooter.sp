@@ -35,7 +35,7 @@ my current plan was to make it decrease by 1 overheat charge every half a second
 
 public void Super_Star_Shooter_Main(int client, int weapon, bool crit, int slot)
 {
-	
+	Enable_StarShooter(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 3.0);
 	
 	SSS_overheat[client] += 1;
@@ -307,8 +307,12 @@ public void Starshooter_Cooldown_Logic(int client, int weapon)
 			}
 			if(starshooter_hud_delay[client] < GetGameTime())
 			{
-				PrintHintText(client,"Star Shooter Overheat %i%%%", SSS_overheat[client] * 4);
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+				{
+					PrintHintText(client,"Star Shooter Overheat %i%%%", SSS_overheat[client] * 4);
+					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				}
 				starshooter_hud_delay[client] = GetGameTime() + 0.5;
 			}
 		}

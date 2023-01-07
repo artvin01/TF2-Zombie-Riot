@@ -1954,20 +1954,20 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 				CClotBody raid = view_as<CClotBody>(raidboss);
 				if(raid.m_flMeleeArmor != 1.0)
 				{
-					HudOffset += 0.02;
+					HudOffset += 0.035;
 				}
 				else if(raid.m_flRangedArmor != 1.0)
 				{
-					HudOffset += 0.02;
+					HudOffset += 0.035;
 				}
 				else if(Medival_Difficulty_Level != 0)
 				{
-					HudOffset += 0.02;
+					HudOffset += 0.035;
 				}
 
 				if(DoesNpcHaveHudDebuff(raidboss))
 				{
-					HudOffset += 0.02;
+					HudOffset += 0.035;
 				}
 			}
 
@@ -2306,6 +2306,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		case WEAPON_IRENE:
 		{
 			Npc_OnTakeDamage_Iberia(attacker, damagetype);
+		}
+		case 7://WEAPON_PHLOG:
+		{
+			Npc_OnTakeDamage_Phlog(attacker, damagetype);
 		}
 	}
 #endif

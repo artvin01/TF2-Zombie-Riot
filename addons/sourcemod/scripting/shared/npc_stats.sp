@@ -41,6 +41,7 @@ static ConVar flTurnRate;
 
 static int g_sModelIndexBloodDrop;
 static int g_sModelIndexBloodSpray;
+static float f_TimeSinceLastStunHit[MAXENTITIES];
 
 public Action Command_PetMenu(int client, int argc)
 {
@@ -127,6 +128,8 @@ void OnMapStart_NPC_Base()
 	PrecacheDecal(ARROW_TRAIL, true);
 	PrecacheModel(ARROW_TRAIL_RED);
 	PrecacheDecal(ARROW_TRAIL_RED, true);
+
+	Zero(f_TimeSinceLastStunHit);
 	
 	InitNavGamedata();
 	
@@ -7170,3 +7173,18 @@ public void KillNpc(int ref)
 	}
 }
 
+void FreezeNpcInTime(int npc, float Duration_Stun)
+{
+	float TimeSinceLastStunSubtract;
+	TimeSinceLastStunSubtract = f_TimeSinceLastStunHit[npc] - GetGameTime();
+			
+	if(TimeSinceLastStunSubtract < 0.0)
+	{
+		TimeSinceLastStunSubtract = 0.0;
+	}
+
+	f_StunExtraGametimeDuration[npc] += (Duration_Stun - TimeSinceLastStunSubtract);
+	fl_NextDelayTime[npc] = GetGameTime() + Duration_Stun - f_StunExtraGametimeDuration[npc];
+	f_TankGrabbedStandStill[npc] = GetGameTime() + Duration_Stun - f_StunExtraGametimeDuration[npc];
+	f_TimeSinceLastStunHit[npc] = GetGameTime() + Duration_Stun;
+}

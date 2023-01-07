@@ -13,13 +13,11 @@ static int ShieldModel;
 static int ViewmodelRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static int WearableRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static int RIOT_EnemiesHit[MAX_TARGETS_HIT_RIOT];
-static float f_TimeSinceLastStunHit[MAXENTITIES];
 
 #define SOUND_RIOTSHIELD_ACTIVATION "weapons/air_burster_explode1.wav"
 
 void Weapon_RiotShield_Map_Precache()
 {
-	Zero(f_TimeSinceLastStunHit);
 	PrecacheSound(SOUND_RIOTSHIELD_ACTIVATION);
 	ShieldModel = PrecacheModel("models/player/items/sniper/knife_shield.mdl");
 }
@@ -82,13 +80,6 @@ public void Weapon_RiotShield_M2_Base(int client, int weapon, bool crit, int slo
 				if(IsValidEntity(RIOT_EnemiesHit[enemy_hit]))
 				{
 					find = true;
-					float TimeSinceLastStunSubtract;
-					TimeSinceLastStunSubtract = f_TimeSinceLastStunHit[RIOT_EnemiesHit[enemy_hit]] - GetGameTime();
-					
-					if(TimeSinceLastStunSubtract < 0.0)
-					{
-						TimeSinceLastStunSubtract = 0.0;
-					}
 
 					float Duration_ExtraDamage = 2.0;
 					float Duration_Stun = 1.0;
@@ -105,17 +96,11 @@ public void Weapon_RiotShield_M2_Base(int client, int weapon, bool crit, int slo
 
 					if(!b_thisNpcIsABoss[RIOT_EnemiesHit[enemy_hit]] && !RaidActive)
 					{
-						f_StunExtraGametimeDuration[RIOT_EnemiesHit[enemy_hit]] += (Duration_Stun - TimeSinceLastStunSubtract);
-						fl_NextDelayTime[RIOT_EnemiesHit[enemy_hit]] = GetGameTime() + Duration_Stun - f_StunExtraGametimeDuration[RIOT_EnemiesHit[enemy_hit]];
-						f_TankGrabbedStandStill[RIOT_EnemiesHit[enemy_hit]] = GetGameTime() + Duration_Stun - f_StunExtraGametimeDuration[RIOT_EnemiesHit[enemy_hit]];
-						f_TimeSinceLastStunHit[RIOT_EnemiesHit[enemy_hit]] = GetGameTime() + Duration_Stun;
+						FreezeNpcInTime(RIOT_EnemiesHit[enemy_hit],Duration_Stun);
 					}
 					else
 					{
-						f_StunExtraGametimeDuration[RIOT_EnemiesHit[enemy_hit]] += (Duration_Stun_Boss - TimeSinceLastStunSubtract);
-						fl_NextDelayTime[RIOT_EnemiesHit[enemy_hit]] = GetGameTime() + Duration_Stun_Boss - f_StunExtraGametimeDuration[RIOT_EnemiesHit[enemy_hit]];
-						f_TankGrabbedStandStill[RIOT_EnemiesHit[enemy_hit]] = GetGameTime() + Duration_Stun_Boss - f_StunExtraGametimeDuration[RIOT_EnemiesHit[enemy_hit]];
-						f_TimeSinceLastStunHit[RIOT_EnemiesHit[enemy_hit]] = GetGameTime() + Duration_Stun_Boss;
+						FreezeNpcInTime(RIOT_EnemiesHit[enemy_hit],Duration_Stun_Boss);
 					}
 					//PrintToChatAll("boom! %i",RIOT_EnemiesHit[enemy_hit]);
 				}

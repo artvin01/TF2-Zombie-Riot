@@ -1244,7 +1244,6 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 {
 	if(entity <= MaxClients)
 	{
-		
 #if defined ZR
 		if(entity != data) //make sure that they are not dead, if they are then just ignore them/give special shit
 		{

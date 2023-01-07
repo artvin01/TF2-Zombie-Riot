@@ -13,6 +13,7 @@
 #include <PathFollower>
 #include <PathFollower_Nav>
 #include <morecolors>
+#include <tf2utils>
 
 #define CHAR_FULL	"█"
 #define CHAR_PARTFULL	"▓"
@@ -1986,6 +1987,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_WhatBuilding[entity] = 0;
 		StoreWeapon[entity] = -1;
 		b_SentryIsCustom[entity] = false;
+		Building_Mounted[entity] = -1;
 #endif
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;

@@ -188,17 +188,21 @@ public void Irene_Cooldown_Logic(int client, int weapon)
 		{	
 			if(f_Irenehuddelay[client] < GetGameTime())
 			{
-				if(i_IreneHitsDone[client] < IRENE_JUDGEMENT_MAX_HITS_NEEDED)
+				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 				{
-					PrintHintText(client,"Judgemet Of Iberia [%i%/%i]", i_IreneHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
+					if(i_IreneHitsDone[client] < IRENE_JUDGEMENT_MAX_HITS_NEEDED)
+					{
+						PrintHintText(client,"Judgemet Of Iberia [%i%/%i]", i_IreneHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
+					}
+					else
+					{
+						PrintHintText(client,"Judgemet Of Iberia [READY!]");
+					}
+					
+					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					f_Irenehuddelay[client] = GetGameTime() + 0.5;
 				}
-				else
-				{
-					PrintHintText(client,"Judgemet Of Iberia [READY!]");
-				}
-				
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-				f_Irenehuddelay[client] = GetGameTime() + 0.5;
 			}
 		}
 		else
