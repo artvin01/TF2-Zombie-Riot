@@ -881,6 +881,13 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 					BurnDamage[client] = 0.0;
 					return Plugin_Stop;
 				}
+				if(f_NpcImmuneToBleed[entity] > GetGameTime())
+				{
+					IgniteTimer[entity] = null;
+					IgniteFor[entity] = 0;
+					BurnDamage[client] = 0.0;
+					return Plugin_Stop;
+				}
 				return Plugin_Continue;
 			}
 			else
@@ -1888,7 +1895,8 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		}
 		
 		CClotBody npc = view_as<CClotBody>(victim);
-		
+		Debuff_added = false;
+
 #if defined ZR
 		if(npc.m_flMeleeArmor != 1.0 || Medival_Difficulty_Level != 0)
 #else
@@ -1906,6 +1914,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 #endif
 			
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder, percentage);
+			Debuff_added = true;
 		}
 		
 #if defined ZR
@@ -1925,13 +1934,53 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 #endif
 			
 			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
+			Debuff_added = true;
+		}
+		if(Debuff_added)
+		{
+			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s\n", Debuff_Adder);
 		}
 #if defined ZR
 		if(EntRefToEntIndex(RaidBossActive) != victim)
 		{
+			float HudOffset = 0.05;
+
+			if(raidboss_active)
+			{
+				HudOffset = 0.205;
+
+				int raidboss = EntRefToEntIndex(RaidBossActive);
+				//We have to check if the raidboss has any debuffs.
+				CClotBody raid = view_as<CClotBody>(raidboss);
+				if(raid.m_flMeleeArmor != 1.0)
+				{
+					HudOffset += 0.02;
+				}
+				else if(raid.m_flRangedArmor != 1.0)
+				{
+					HudOffset += 0.02;
+				}
+				else if(Medival_Difficulty_Level != 0)
+				{
+					HudOffset += 0.02;
+				}
+
+				if(DoesNpcHaveHudDebuff(raidboss))
+				{
+					HudOffset += 0.02;
+				}
+			}
+
 			SetGlobalTransTarget(attacker);
-			SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-			ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s-%0.f", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
+			SetHudTextParams(-1.0, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
+			if(!raidboss_active)
+			{
+				ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s-%0.f", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
+			}
+			else
+			{
+				ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);	
+			}
 		}
 		else
 		{
@@ -1954,7 +2003,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 				
 			SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
 			//RPG cannot support translations! due to test and its used everywhere.
-			ShowSyncHudText(attacker, SyncHud, "%s\n%s\n%d / %d\n%s", level, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);
+			ShowSyncHudText(attacker, SyncHud, "%s\n%s\n%d / %d\n%s-%0.f", level, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
 				
 			char HealthString[512];
 			Format(HealthString, sizeof(HealthString), "%i / %i", Health, MaxHealth);
@@ -1965,6 +2014,33 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		
 	}
 }
+
+bool DoesNpcHaveHudDebuff(int npc)
+{
+	if(f_HighTeslarDebuff[npc] > GetGameTime())
+		return true;
+	else if(f_LowTeslarDebuff[npc] > GetGameTime())
+		return true;
+	else if(BleedAmountCountStack[npc] > 0) //bleed
+		return true;
+	else if(IgniteFor[npc] > 0) //burn
+		return true;
+	else if(f_HighIceDebuff[npc] > GetGameTime())
+		return true;
+	else if(f_LowIceDebuff[npc] > GetGameTime())
+		return true;
+	else if (f_VeryLowIceDebuff[npc] > GetGameTime())
+		return true;
+	else if(f_WidowsWineDebuff[npc] > GetGameTime())
+		return true;
+	else if(f_CrippleDebuff[npc] > GetGameTime())
+		return true;
+	else if(f_MaimDebuff[npc] > GetGameTime())
+		return true;
+
+	return false;
+}
+
 void DoMeleeAnimationFrameLater(DataPack pack)
 {
 	pack.Reset();
