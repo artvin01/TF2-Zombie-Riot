@@ -536,17 +536,27 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				}
 				if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Why did you spare me..? I thank you regardless for your kindness...");
+					CPrintToChatAll("{gold}Silvester{default}: I thank you for your acceptance, i will help you eventually as a gift of kindness...");
 					npc.m_bDissapearOnDeath = true;
 
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 				}
-				else if(GetGameTime() + 3.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
+				else if(GetGameTime() + 3.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
+				{
+					i_SaidLineAlready[npc.index] = 4;
+					CPrintToChatAll("{gold}Silvester{default}: ...You can cure this world, you cured me.");
+				}
+				else if(GetGameTime() + 7.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
+				{
+					i_SaidLineAlready[npc.index] = 3;
+					CPrintToChatAll("{gold}Silvester{default}: ...You know, fusion warrior isnt my name.");
+				}
+				else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
 				{
 					i_SaidLineAlready[npc.index] = 2;
 					CPrintToChatAll("{gold}Silvester{default}: Why...");
 				}
-				else if(GetGameTime() + 6.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
+				else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
 				{
 					i_SaidLineAlready[npc.index] = 1;
 					CPrintToChatAll("{gold}Silvester{default}: What are you waiting for..?");
@@ -929,7 +939,7 @@ public Action TrueFusionWarrior_ClotDamaged(int victim, int &attacker, int &infl
 		npc.m_blPlayHurtAnimation = true;
 	}
 
-	f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 10.0;
+	f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
 
 	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
@@ -1002,6 +1012,10 @@ public Action TrueFusionWarrior_ClotDamaged(int victim, int &attacker, int &infl
 			npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_astralbodies_greenorange_parent", npc.index, "head", {0.0,0.0,0.0});
 */
 		}
+	}
+	if(f_NpcImmuneToBleed[npc.index] > GetGameTime())
+	{
+		damage = 0.0;
 	}
 	if(b_angered_twice[npc.index])
 	{
