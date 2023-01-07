@@ -541,15 +541,15 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 				}
-				else if(GetGameTime() + 3.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
+				else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
 				{
 					i_SaidLineAlready[npc.index] = 4;
 					CPrintToChatAll("{gold}Silvester{default}: ...You can cure this world, you cured me.");
 				}
-				else if(GetGameTime() + 7.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
+				else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
 				{
 					i_SaidLineAlready[npc.index] = 3;
-					CPrintToChatAll("{gold}Silvester{default}: ...You know, fusion warrior isnt my name.");
+					CPrintToChatAll("{gold}Silvester{default}: ...You know, fusion warrior isn't my name");
 				}
 				else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
 				{
