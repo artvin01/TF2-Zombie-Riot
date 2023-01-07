@@ -82,7 +82,7 @@ static int GetComboType(int flags, bool right)
 	if(air)
 		return right ? UR : UL;
 	
-	return right ? DR : UL;
+	return right ? DR : DL;
 }
 
 public void Weapon_StreetFighter(int client, int weapon, bool crit, int slot)
@@ -155,12 +155,12 @@ static void StreetFighter(int client, int weapon, int slot, int flags)
 			delete ComboTimer[client];
 			CurrentCombo[client] = 0;
 			ComboCount[client] = 0;
+			
+			Ability_Apply_Cooldown(client, 1, cooldown);
+			//Ability_Apply_Cooldown(client, 2, cooldown);
+			SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + cooldown);
+			SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + cooldown);
 		}
-
-		Ability_Apply_Cooldown(client, 1, cooldown);
-		Ability_Apply_Cooldown(client, 2, cooldown);
-		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + cooldown);
-		SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + cooldown);
 	}
 }
 
@@ -243,7 +243,7 @@ public Action SF_TripleAttack(int client, int entity, int first, int second, int
 // X R R,
 public Action SF_Block(int client, int entity, int first, int second, int third, float &cooldown)
 {
-	if((second == NR || second == DR) && (second == NR || third == NR) && !(second == DR && third == DR))
+	if((second == NR || second == DR) && (third == NR || third == NR) && !(second == DR && third == DR))
 	{
 		int stale = GetStaleAmount(client, CurrentCombo[client]);
 		if(stale)
@@ -334,9 +334,14 @@ public Action SF_ToeSmash(int client, int entity, int first, int second, int thi
 }
 
 // L R L
+// L' R L
+// L R' L
+// L' R' L
+// L R, L
+// L' R, L
 public Action SF_SpeedUp(int client, int entity, int first, int second, int third, float &cooldown)
 {
-	if(first == NL && second == NR && third == NL)
+	if((first == NL || first == UL) && (second == NR || second == DR || second == UR) && third == NL)
 	{
 		int stale = GetStaleAmount(client, CurrentCombo[client]);
 		if(stale > 4)
@@ -425,10 +430,10 @@ public Action SF_Charge(int client, int entity, int first, int second, int third
 	return Plugin_Continue;
 }
 
-// R' R, L'
+// R L L
 public Action SF_Random(int client, int entity, int first, int second, int third, float &cooldown)
 {
-	if(first == UR && second == DR && third == UL)
+	if(first == NR && second == NR && third == NL)
 	{
 		int stale = GetStaleAmount(client, CurrentCombo[client]);
 		if(stale)
@@ -451,10 +456,10 @@ public Action SF_Random(int client, int entity, int first, int second, int third
 	return Plugin_Continue;
 }
 
-// R, R' R,
+// R L R
 public Action SF_Stack(int client, int entity, int first, int second, int third, float &cooldown)
 {
-	if(first == DR && second == UR && third == DR)
+	if(first == NR && second == NL && third == NR)
 	{
 		int stale = GetStaleAmount(client, CurrentCombo[client]);
 		if(stale)
@@ -527,9 +532,10 @@ public Action SF_HealthShare(int client, int entity, int first, int second, int 
 }
 
 // L' R, L'
+// L' R L'
 public Action SF_Knockup(int client, int entity, int first, int second, int third, float &cooldown)
 {
-	if(first == UL && second == NR && third == UL)
+	if(first == UL && (second == NR || second == DR) && third == UL)
 	{
 		int stale = GetStaleAmount(client, CurrentCombo[client]);
 		if(stale)
@@ -575,7 +581,7 @@ public void SF_KnockupThink(int target)
 // R' R' L'
 public Action SF_Knockdown(int client, int entity, int first, int second, int third, float &cooldown)
 {
-	if(first == UL && second == NR && (third == NL || third == UL))
+	if(first == UR && second == NR && (third == NL || third == UL))
 	{
 		int stale = GetStaleAmount(client, CurrentCombo[client]);
 		if(stale)
