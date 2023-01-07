@@ -113,13 +113,9 @@ stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iPar
 		SetParent(iParent, particle, szAttachment, vOffsets);
 
 		ActivateEntity(particle);
-		if(iParent < MAXTF2PLAYERS) //Exclude base_bosses from this, or any entity, then it has to always be rendered.
+		if(iParent > MAXTF2PLAYERS) //Exclude base_bosses from this, or any entity, then it has to always be rendered.
 		{
-			SetEdictFlags(particle, (GetEdictFlags(particle) & ~FL_EDICT_ALWAYS));	
-		}
-		else
-		{
-			SetEdictFlags(particle, (GetEdictFlags(particle) | FL_EDICT_ALWAYS));	
+			b_IsEntityAlwaysTranmitted[particle] = true;
 		}
 
 		AcceptEntityInput(particle, "start");
@@ -1040,6 +1036,12 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 
 	int client = GetClientOfUserId(pack.ReadCell());
 	if(!client || !IsClientInGame(client) || !IsPlayerAlive(client))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		return Plugin_Stop;
+	}
+
+	if(f_NpcImmuneToBleed[entity] > GetGameTime())
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
 		return Plugin_Stop;

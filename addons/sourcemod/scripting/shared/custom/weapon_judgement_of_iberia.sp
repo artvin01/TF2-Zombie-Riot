@@ -121,14 +121,14 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 	*/
 	//We save this onto the weapon if the modified attackspeed is not modified.
 
-	float attackspeed = Attributes_FindOnWeapon(client, weapon, 396, true, 1.0);
-	if(attackspeed > 0.35) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
+	float attackspeed = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+	if(attackspeed > 0.15) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
 	{
-		TF2Attrib_SetByDefIndex(weapon, 396, 0.15); //Make it really fast for 1 hit!
+		TF2Attrib_SetByDefIndex(weapon, 6, (attackspeed * 0.15));
 	}
 	else
 	{
-		TF2Attrib_SetByDefIndex(weapon, 396, 1.0); //Make it really fast for 1 hit!
+		TF2Attrib_SetByDefIndex(weapon, 6, (attackspeed / 0.15)); //Make it really fast for 1 hit!
 	}
 }
 
@@ -427,7 +427,14 @@ public void Npc_Irene_Launch_client(int client)
 					
 					if (GetVectorDistance(UserLoc, VicLoc,true) <= Pow(IRENE_JUDGEMENT_MAXRANGE, 2.0)) //respect max range.
 					{
-						targets[count++] = enemy;
+						if(count < MAX_TARGETS_HIT)
+						{
+							targets[count++] = enemy;
+						}
+						else
+						{
+							break;
+						}
 					}
 				}
 			}

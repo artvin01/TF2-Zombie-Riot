@@ -458,9 +458,12 @@ methodmap CClotBody
 //		SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
 		
 		CClotBody CreatePathfinderIndex = view_as<CClotBody>(npc);
-		
+
 		if(IsRaidBoss)
+		{
+			RemoveAllDamageAddition();
 			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.1, 1.75); //Global.
+		}
 		else
 			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.29, 1.75); //Global.
 		
@@ -3986,7 +3989,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false)
 			}
 			if(camoDetection)
 			{
-				if(npc.m_bThisEntityIgnored)
+				if(npc.m_bThisEntityIgnored || b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
 				{
 					return false;
 				}
@@ -3997,7 +4000,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false)
 			}
 			else
 			{
-				if(npc.m_bThisEntityIgnored || npc.m_bCamo)
+				if(npc.m_bThisEntityIgnored || npc.m_bCamo || b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
 				{
 					return false;
 				}
@@ -4142,7 +4145,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			if(searcher_team != 3) 
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0 && !onlyPlayers) //Check if dead or even targetable
+				if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0 && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
 					if(camoDetection)
 					{
@@ -4204,7 +4207,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			if(searcher_team != 2)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0 && !onlyPlayers) //Check if dead or even targetable
+				if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0 && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
 					if(camoDetection)
 					{
@@ -4271,7 +4274,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			if(IsValidEntity(entity_close) && entity_close != ingore_client)
 			{
 					CClotBody npc = view_as<CClotBody>(entity_close);
-					if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+					if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 					{
 						float TargetLocation[3]; 
 						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 

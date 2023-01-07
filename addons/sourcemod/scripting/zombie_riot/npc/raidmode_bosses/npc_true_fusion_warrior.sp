@@ -80,12 +80,17 @@ static float FusionWarrior_BEAM_ZOffset[MAXENTITIES];
 static bool FusionWarrior_BEAM_HitDetected[MAXENTITIES];
 static int FusionWarrior_BEAM_BuildingHit[MAXENTITIES];
 static bool FusionWarrior_BEAM_UseWeapon[MAXENTITIES];
+static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 
 
 static float fl_Timebeforekamehameha[MAXENTITIES];
 static bool b_InKame[MAXENTITIES];
 static float fl_NextPull[MAXENTITIES];
 static int i_AmountProjectiles[MAXENTITIES];
+
+static bool b_angered_twice[MAXENTITIES];
+static int i_SaidLineAlready[MAXENTITIES];
+static float f_TimeSinceHasBeenHurt[MAXENTITIES];
 
 public void TrueFusionWarrior_OnMapStart()
 {
@@ -318,6 +323,11 @@ methodmap TrueFusionWarrior < CClotBody
 		SDKHook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamage, TrueFusionWarrior_ClotDamaged);
 		
+		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
+		{
+			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
+		}
+		
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
@@ -332,7 +342,7 @@ methodmap TrueFusionWarrior < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_ubersaw/c_ubersaw.mdl");
-		SetVariantString("1.0");
+		SetVariantString("2.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/sbxo2014_medic_wintergarb_coat/sbxo2014_medic_wintergarb_coat.mdl");
@@ -353,7 +363,7 @@ methodmap TrueFusionWarrior < CClotBody
 	
 		npc.GetAttachment("head", flPos, flAng);
 		
-		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_lightning", npc.index, "head", {0.0,0.0,15.0});
+		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_lightning", npc.index, "head", {0.0,0.0,0.0});
 		
 		
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
@@ -361,18 +371,23 @@ methodmap TrueFusionWarrior < CClotBody
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 192, 192, 192, 255);
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 192, 192, 192, 255);
+		SetEntityRenderColor(npc.m_iWearable3, 192, 192, 0, 125);
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 192, 192, 192, 255);
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable5, 192, 192, 192, 255);
+		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 			
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
 		npc.Anger = false;
+		b_angered_twice[npc.index] = false;
+		f_TimeSinceHasBeenHurt[npc.index] = 0.0;
 		//IDLE
 		npc.m_flSpeed = 330.0;
 		
@@ -436,7 +451,12 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	
 	if(npc.m_bInKame)
 	{
-		if(npc.Anger)
+		if(b_angered_twice[npc.index])
+		{
+			npc.m_flRangedArmor = 1.0;
+			npc.m_flMeleeArmor = 1.0;
+		}
+		else if(npc.Anger)
 		{
 			npc.m_flRangedArmor = 0.4;
 			npc.m_flMeleeArmor = 0.4;
@@ -449,7 +469,12 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	}
 	else
 	{
-		if(npc.Anger)
+		if(b_angered_twice[npc.index])
+		{
+			npc.m_flRangedArmor = 1.0;
+			npc.m_flMeleeArmor = 1.0;
+		}
+		else if(npc.Anger)
 		{
 			npc.m_flRangedArmor = 0.8;
 			npc.m_flMeleeArmor = 0.8;
@@ -488,7 +513,56 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			//	ang[0] = clamp(ang[0], -44.0, 89.0);
 				npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 			}
-				
+			if(b_angered_twice[npc.index])
+			{
+				npc.m_flNextThinkTime = 0.0;
+				npc.FaceTowards(vecTarget, 100.0);
+				PF_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.SetActivity("ACT_MP_CROUCH_MELEE");
+				npc.m_bInKame = false;
+				npc.m_bisWalking = false;
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client))
+					{
+						if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
+						{
+							Music_Stop_All(client); //This is actually more expensive then i thought.
+						}
+						SetMusicTimer(client, GetTime() + 6);
+						fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
+					}
+				}
+				if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
+				{
+					CPrintToChatAll("{gold}Silvester{default}: I thank you for your acceptance, i will help you eventually as a gift of kindness...");
+					npc.m_bDissapearOnDeath = true;
+
+					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+				}
+				else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
+				{
+					i_SaidLineAlready[npc.index] = 4;
+					CPrintToChatAll("{gold}Silvester{default}: ...You can cure this world, you cured me.");
+				}
+				else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
+				{
+					i_SaidLineAlready[npc.index] = 3;
+					CPrintToChatAll("{gold}Silvester{default}: ...You know, fusion warrior isn't my name");
+				}
+				else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
+				{
+					i_SaidLineAlready[npc.index] = 2;
+					CPrintToChatAll("{gold}Silvester{default}: Why...");
+				}
+				else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
+				{
+					i_SaidLineAlready[npc.index] = 1;
+					CPrintToChatAll("{gold}Silvester{default}: What are you waiting for..?");
+				}
+				return; //He is trying to help.
+			}
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
 			/*	int color[4];
@@ -844,12 +918,29 @@ public Action TrueFusionWarrior_ClotDamaged(int victim, int &attacker, int &infl
 		
 	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(victim);
 	
+	if(b_angered_twice[npc.index]) //Ignore teutons during this. they might ruin it.
+	{
+		if(IsValidClient(attacker))
+		{
+			if(TeutonType[attacker] != TEUTON_NONE)
+			{
+				return Plugin_Handled;
+			}
+		}
+		else //Ignore any atacker that isnt a player, they might ruin this, like grigori.
+		{
+			return Plugin_Handled;
+		}
+	}
+
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
+
+	f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
+
 	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:(
@@ -872,14 +963,74 @@ public Action TrueFusionWarrior_ClotDamaged(int victim, int &attacker, int &infl
 		SetVariantColor(view_as<int>({255, 255, 0, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 	}
-	
+	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index])
+	{
+		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/20) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //npc.Anger after half hp/400 hp
+		{
+			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
+
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
+
+			ReviveAll(true);
+
+			b_angered_twice[npc.index] = true; //	>:(
+			RaidModeTime += 60.0;
+
+			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
+
+			StopSound(npc.index,SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
+			StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+			StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+			StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+
+			SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_TBB_Tick);
+
+			CPrintToChatAll("{gold}Silvester{default}: ...End this before its too late...");
+
+			int skin = 1;
+			SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+
+			if(IsValidEntity(npc.m_iWearable3))
+			{
+				RemoveEntity(npc.m_iWearable3);
+			}
+			if(IsValidEntity(npc.m_iWearable1))
+			{
+				RemoveEntity(npc.m_iWearable1);
+			}
+
+
+			SetVariantColor(view_as<int>({150, 150, 0, 150}));
+			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+
+/*
+			float flPos[3]; // original
+			float flAng[3]; // original
+
+			npc.GetAttachment("head", flPos, flAng);
+		
+			npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_astralbodies_greenorange_parent", npc.index, "head", {0.0,0.0,0.0});
+*/
+		}
+	}
+	if(f_NpcImmuneToBleed[npc.index] > GetGameTime())
+	{
+		damage = 0.0;
+	}
+	if(b_angered_twice[npc.index])
+	{
+		damage *= 0.1;
+	}
 	return Plugin_Changed;
 }
 
 public void TrueFusionWarrior_NPCDeath(int entity)
 {
 	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(entity);
-	npc.PlayDeathSound();
+	if(!npc.m_bDissapearOnDeath)
+	{
+		npc.PlayDeathSound();
+	}
 	StopSound(entity,SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");

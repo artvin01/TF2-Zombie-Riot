@@ -399,6 +399,8 @@ int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
 bool b_FaceStabber[MAXTF2PLAYERS];
 bool b_IsCannibal[MAXTF2PLAYERS];
 
+float f_NpcImmuneToBleed[MAXENTITIES];
+
 Function EntityFuncAttack[MAXENTITIES];
 Function EntityFuncAttack2[MAXENTITIES];
 Function EntityFuncAttack3[MAXENTITIES];
@@ -474,6 +476,7 @@ bool b_Dont_Move_Building[MAXENTITIES];
 bool b_Dont_Move_Allied_Npc[MAXENTITIES];
 int b_BoundingBoxVariant[MAXENTITIES];
 bool b_ThisEntityIgnored[MAXENTITIES];
+bool b_ThisEntityIgnoredByOtherNpcsAggro[MAXENTITIES];
 bool b_ThisEntityIgnoredEntirelyFromAllCollisions[MAXENTITIES];
 bool b_ThisEntityIsAProjectileForUpdateContraints[MAXENTITIES];
 
@@ -759,6 +762,7 @@ char g_TankStepSound[][] = {
 
 float f_ArrowDamage[MAXENTITIES];
 int f_ArrowTrailParticle[MAXENTITIES]={INVALID_ENT_REFERENCE, ...};
+bool b_IsEntityAlwaysTranmitted[MAXENTITIES];
 
 //Arrays for npcs!
 int i_NoEntityFoundCount[MAXENTITIES]={0, ...};
@@ -1993,6 +1997,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		IgniteFor[entity] = -1;
 		IgniteId[entity] = -1;
 		IgniteRef[entity] = -1;
+		b_IsEntityAlwaysTranmitted[entity] = false;
 
 		//Normal entity render stuff, This should be set to these things on spawn, just to be sure.
 		b_DoNotIgnoreDuringLagCompAlly[entity] = false;
@@ -2029,6 +2034,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_is_a_brush[entity] = false;
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
 		b_ThisEntityIgnored[entity] = false;
+		b_ThisEntityIgnoredByOtherNpcsAggro[entity] = false;
+		f_NpcImmuneToBleed[entity] = 0.0;
 		
 #if defined RPG
 		RPG_EntityCreated(entity, classname);
