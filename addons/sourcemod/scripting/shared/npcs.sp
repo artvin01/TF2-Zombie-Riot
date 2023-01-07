@@ -2307,6 +2307,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			Npc_OnTakeDamage_Iberia(attacker, damagetype);
 		}
+		case 7://WEAPON_PHLOG:
+		{
+			Npc_OnTakeDamage_Phlog(attacker, damagetype);
+		}
 	}
 #endif
 	return damage;

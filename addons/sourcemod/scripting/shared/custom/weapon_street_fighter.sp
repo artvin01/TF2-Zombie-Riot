@@ -726,15 +726,11 @@ public Action SF_Slap(int client, int entity, int first, int second, int third, 
 			if(!b_thisNpcIsABoss[target])
 #endif
 			{
-				f_StunExtraGametimeDuration[target] += Duration_Stun;
-				fl_NextDelayTime[target] = GetGameTime() + Duration_Stun;
-				f_TankGrabbedStandStill[target] = GetGameTime() + Duration_Stun;
+				FreezeNpcInTime(target,Duration_Stun);
 			}
 			else
 			{
-				f_StunExtraGametimeDuration[target] += Duration_Stun_Boss;
-				fl_NextDelayTime[target] = GetGameTime() + Duration_Stun_Boss;
-				f_TankGrabbedStandStill[target] = GetGameTime() + Duration_Stun_Boss;
+				FreezeNpcInTime(target,Duration_Stun_Boss);
 			}
 		}
 
