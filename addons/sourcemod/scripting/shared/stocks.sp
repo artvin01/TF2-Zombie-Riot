@@ -3526,3 +3526,17 @@ stock char[] CharPercent(float value)
 	}
 	return buffer;
 } 
+
+#if defined ZR
+
+stock bool AmmoBlacklist(int Ammotype)
+{
+	if(Ammotype == -1 || Ammotype >= Ammo_Hand_Grenade)
+	{
+		return false;
+	}
+	return true;
+} 
+
+
+#endif
