@@ -1017,7 +1017,7 @@ public Action TrueFusionWarrior_ClotDamaged(int victim, int &attacker, int &infl
 	{
 		damage = 0.0;
 	}
-	if(b_angered_twice[npc.index])
+	else if(f_NpcImmuneToBleed[npc.index] + 1.0 > GetGameTime()) //for 2 seconds he will take next to no damage.
 	{
 		damage *= 0.1;
 	}
