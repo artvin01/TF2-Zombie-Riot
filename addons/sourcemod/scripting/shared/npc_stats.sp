@@ -4758,7 +4758,10 @@ public void Check_If_Stuck(int iNPC)
 			}
 		}
 	}
-	/*
+	
+
+	//TODO:
+	//Rewrite  ::Update func inside nextbots instead of doing this.
 	if (!npc.IsOnGround())
 	{
 		static float hullcheckmaxs[3];
@@ -4776,7 +4779,8 @@ public void Check_If_Stuck(int iNPC)
 
 			hullcheckmins[0] = -f3_CustomMinMaxBoundingBox[iNPC][0];
 			hullcheckmins[1] = -f3_CustomMinMaxBoundingBox[iNPC][1];
-			hullcheckmins[2] = 0.0;	}
+			hullcheckmins[2] = 0.0;	
+		}
 		else
 		{
 			hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
@@ -4796,7 +4800,7 @@ public void Check_If_Stuck(int iNPC)
 		
 		if (!npc.g_bNPCVelocityCancel && IsSpaceOccupiedIgnorePlayers(flMyPos, hullcheckmins, hullcheckmaxs, iNPC))//The boss will start to merge with shits, cancel out velocity.
 		{
-			float vec3Origin[3];
+			static float vec3Origin[3];
 			npc.SetVelocity(vec3Origin);
 			npc.g_bNPCVelocityCancel = true;
 		}
@@ -4805,7 +4809,7 @@ public void Check_If_Stuck(int iNPC)
 	{
 		npc.g_bNPCVelocityCancel = false;
 	}
-	*/
+	
 	
 }
 
