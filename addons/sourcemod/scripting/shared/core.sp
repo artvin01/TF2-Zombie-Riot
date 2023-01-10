@@ -2011,7 +2011,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_EntityRenderOverride[entity] = false;
 		b_StickyIsSticking[entity] = false;
 		
-		b_RocketBoomEffect[entity]=false;
+		b_RocketBoomEffect[entity] = false;
+		b_IsAlliedNpc[entity] = false;
 		b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
 		b_EntityIsArrow[entity] = false;
 		b_EntityIsWandProjectile[entity] = false;
@@ -2035,6 +2036,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_NpcHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
+		b_IsAGib[entity] = false;
 		b_ThisEntityIgnored[entity] = false;
 		b_ThisEntityIgnoredByOtherNpcsAggro[entity] = false;
 		f_NpcImmuneToBleed[entity] = 0.0;
@@ -2547,7 +2549,6 @@ public void OnEntityDestroyed(int entity)
 		if(entity > MaxClients)
 		{
 			NPC_CheckDead(entity);
-			b_IsAGib[entity] = false;
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			
 #if defined ZR
