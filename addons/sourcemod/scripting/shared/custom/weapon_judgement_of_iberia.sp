@@ -299,11 +299,13 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 					{
 						f_TankGrabbedStandStill[target] = GetGameTime(target) + IRENE_BOSS_AIRTIME;
 						f_TargetAirtime[target] = GetGameTime() + IRENE_BOSS_AIRTIME; //Kick up for way less time.
+						FreezeNpcInTime(target,IRENE_BOSS_AIRTIME);
 					}
 					else
 					{
 						f_TankGrabbedStandStill[target] = GetGameTime(target) + IRENE_AIRTIME;
 						f_TargetAirtime[target] = GetGameTime() + IRENE_AIRTIME; //Kick up for the full skill duration.
+						FreezeNpcInTime(target,IRENE_AIRTIME);
 					}
 					spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 6.0, 2.1, 1, IRENE_JUDGEMENT_EXPLOSION_RANGE * 0.5);	
 					SDKUnhook(target, SDKHook_Think, Npc_Irene_Launch);
