@@ -515,7 +515,7 @@ stock int TF2_GetClassnameSlot(const char[] classname, bool econ=false)
 	{
 		return TFWeaponSlot_Secondary;
 	}
-	else if(!StrContains(classname, "tf_weapon_r"))	// Revolver
+	else if(!StrContains(classname, "tf_weapon_re"))	// Revolver
 	{
 		return econ ? TFWeaponSlot_Secondary : TFWeaponSlot_Primary;
 	}
