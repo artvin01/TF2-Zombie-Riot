@@ -45,7 +45,7 @@ static const char ComboName[][] =
 static PrivateForward ComboList;  
 static int CurrentCombo[MAXTF2PLAYERS];
 static int ComboCount[MAXTF2PLAYERS];
-static int LastCombos[MAXTF2PLAYERS][9];
+static int LastCombos[MAXTF2PLAYERS][10];
 static Handle ComboTimer[MAXTF2PLAYERS];
 
 static void ShowCombo(int client)
@@ -285,7 +285,7 @@ public Action SF_MultiAttack(int client, int entity, int first, int second, int 
 			PrintCenterText(client, "Sugar Coat!", stale + 1);
 			ApplyTempAttrib(entity, 2, 6.0);
 
-			ClientCommand(client, "playgamesound ui/powerup_pickup_knockout_melee_hit.wav");
+			ClientCommand(client, "playgamesound items/powerup_pickup_knockout_melee_hit.wav");
 		}
 		else
 		{
