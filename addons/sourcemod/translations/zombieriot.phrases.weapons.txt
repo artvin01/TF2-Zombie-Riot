@@ -2040,4 +2040,12 @@
 	{
 		"en"       "Judgement Of Iberia"
 	}
+	"Tornado-Blitz"
+	{
+		"en"		"Tornado-Blitz"
+	}
+	"Cosmic Terror"
+	{
+		"en"		"Cosmic Terror"
+	}
 }

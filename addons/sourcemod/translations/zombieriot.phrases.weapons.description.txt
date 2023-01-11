@@ -1624,4 +1624,17 @@
 	{
 		"en"	"You double attack with each attack.\nHitting any enemy 64 times will give you an ability.\nThis ability kicks enemies into the air and bombards them with AOE attacks."
 	}
+	
+	"Cosmic Terror Desc"
+	{
+		"en" "Have you ever looked at the sky and wondered if you could use that as a weapon?\nWell wonder-no-more!\nIntroducing the ''Cosmic Terror''\nEnjoy evicerating your foes with the power of the moon!"
+	}
+	"Cosmic Terror Desc pap1"
+	{
+		"en" "Do you need more power? more oomph?\nWell look no further, introducing 3 magnifying lenses that almost double the potential damage\nWarning: Warranty void on purchase."
+	}
+	"Cosmic Terror Desc pap2"
+	{
+		"en" "Whats better than 1 death beam?\n4 more death beams ofcourse\nThanks to these extra beams we have recreated the power of the moon!\nWarning: Warranty annihilated on purchase."
+	}
 }

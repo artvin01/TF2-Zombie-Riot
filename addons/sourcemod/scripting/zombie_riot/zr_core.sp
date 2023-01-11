@@ -67,7 +67,8 @@ enum
 	WEAPON_BOUNCING = 3,
 	WEAPON_MAIMMOAB = 4,
 	WEAPON_CRIPPLEMOAB = 5,
-	WEAPON_IRENE = 6
+	WEAPON_IRENE = 6,
+	WEAPON_COSMIC_TERROR = 8
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -316,6 +317,7 @@ bool applied_lastmann_buffs_once = false;
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
 #include "shared/custom/weapon_judgement_of_iberia.sp"
 #include "shared/custom/weapon_phlog_replacement.sp"
+#include "zombie_riot/custom/weapon_cosmic_terror.sp"
 
 void ZR_PluginLoad()
 {
@@ -421,6 +423,7 @@ void ZR_MapStart()
 	Reset_stats_PHLOG_Global();
 	Irene_Map_Precache();
 	PHLOG_Map_Precache();
+	Cosmic_Map_Precache();
 	
 	
 	Waves_MapStart();
