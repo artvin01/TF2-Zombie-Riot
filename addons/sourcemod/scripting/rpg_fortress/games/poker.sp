@@ -204,6 +204,8 @@ static void PokerMenu(int client)
 		case Poker_Waiting:
 		{
 			menu.SetTitle("Draw Poker\n \nWaiting for players...");
+
+			menu.AddItem(NULL_STRING, "");
 		}
 	}
 }

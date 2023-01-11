@@ -516,7 +516,7 @@ public void PlayCustomWeaponSoundFromPlayerCorrectly(int target, int client, int
 			}				
 		}
 	}
-	else if(!StrContains(classname, "tf_weapon_fists"))
+	else if(!StrContains(classname, "tf_weapon_fists") || !StrContains(classname, "tf_weapon_robot_arm"))
 	{
 		if(item_index == 331)
 		{

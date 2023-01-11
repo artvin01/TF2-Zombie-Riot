@@ -2062,7 +2062,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
 									}
-									else if(Ammo_type != -1 && Ammo_type < Ammo_Hand_Grenade) //Disallow Ammo_Hand_Grenade, that ammo type is regenerative!, dont use jar, tf2 needs jar? idk, wierdshit.
+									else if(AmmoBlacklist(Ammo_type)) //Disallow Ammo_Hand_Grenade, that ammo type is regenerative!, dont use jar, tf2 needs jar? idk, wierdshit.
 									{
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");

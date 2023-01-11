@@ -188,17 +188,21 @@ public void Irene_Cooldown_Logic(int client, int weapon)
 		{	
 			if(f_Irenehuddelay[client] < GetGameTime())
 			{
-				if(i_IreneHitsDone[client] < IRENE_JUDGEMENT_MAX_HITS_NEEDED)
+				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 				{
-					PrintHintText(client,"Judgemet Of Iberia [%i%/%i]", i_IreneHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
+					if(i_IreneHitsDone[client] < IRENE_JUDGEMENT_MAX_HITS_NEEDED)
+					{
+						PrintHintText(client,"Judgemet Of Iberia [%i%/%i]", i_IreneHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
+					}
+					else
+					{
+						PrintHintText(client,"Judgemet Of Iberia [READY!]");
+					}
+					
+					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					f_Irenehuddelay[client] = GetGameTime() + 0.5;
 				}
-				else
-				{
-					PrintHintText(client,"Judgemet Of Iberia [READY!]");
-				}
-				
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-				f_Irenehuddelay[client] = GetGameTime() + 0.5;
 			}
 		}
 		else
@@ -295,11 +299,13 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 					{
 						f_TankGrabbedStandStill[target] = GetGameTime(target) + IRENE_BOSS_AIRTIME;
 						f_TargetAirtime[target] = GetGameTime() + IRENE_BOSS_AIRTIME; //Kick up for way less time.
+						FreezeNpcInTime(target,IRENE_BOSS_AIRTIME);
 					}
 					else
 					{
 						f_TankGrabbedStandStill[target] = GetGameTime(target) + IRENE_AIRTIME;
 						f_TargetAirtime[target] = GetGameTime() + IRENE_AIRTIME; //Kick up for the full skill duration.
+						FreezeNpcInTime(target,IRENE_AIRTIME);
 					}
 					spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 6.0, 2.1, 1, IRENE_JUDGEMENT_EXPLOSION_RANGE * 0.5);	
 					SDKUnhook(target, SDKHook_Think, Npc_Irene_Launch);

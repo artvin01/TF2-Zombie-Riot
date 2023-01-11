@@ -45,7 +45,7 @@ static const char ComboName[][] =
 static PrivateForward ComboList;  
 static int CurrentCombo[MAXTF2PLAYERS];
 static int ComboCount[MAXTF2PLAYERS];
-static int LastCombos[MAXTF2PLAYERS][9];
+static int LastCombos[MAXTF2PLAYERS][10];
 static Handle ComboTimer[MAXTF2PLAYERS];
 
 static void ShowCombo(int client)
@@ -273,7 +273,7 @@ public Action SF_MultiAttack(int client, int entity, int first, int second, int 
 	if((first == NR || first == DR) && (second == NR || second == DR) && third == NL)
 	{
 		int stale = GetStaleAmount(client, CurrentCombo[client]);
-		if(stale == 10 || (stale && LastCombos[client][0] == CurrentCombo[client]))
+		if(stale == 10 || (stale && LastCombos[client][0] != CurrentCombo[client]))
 		{
 			PrintCenterText(client, "Sugar Coat...");
 			ApplyTempAttrib(entity, 2, 1.25);
@@ -285,7 +285,7 @@ public Action SF_MultiAttack(int client, int entity, int first, int second, int 
 			PrintCenterText(client, "Sugar Coat!", stale + 1);
 			ApplyTempAttrib(entity, 2, 6.0);
 
-			ClientCommand(client, "playgamesound ui/powerup_pickup_knockout_melee_hit.wav");
+			ClientCommand(client, "playgamesound items/powerup_pickup_knockout_melee_hit.wav");
 		}
 		else
 		{
@@ -393,12 +393,15 @@ public Action SF_JawBreaker(int client, int entity, int first, int second, int t
 	return Plugin_Continue;
 }
 
+// L' L' R
+// L L R
+// L, L, R
 // L' L' R,
 // L L R,
 // L, L, R,
 public Action SF_Charge(int client, int entity, int first, int second, int third, float &cooldown)
 {
-	if((first == UL || first == NL || first == DL) && first == second && third == DR)
+	if((first == UL || first == NL || first == DL) && first == second && (third == NR || third == DR))
 	{
 		int stale = GetStaleAmount(client, CurrentCombo[client]);
 		if(stale > 2)
@@ -433,7 +436,7 @@ public Action SF_Charge(int client, int entity, int first, int second, int third
 // R L L
 public Action SF_Random(int client, int entity, int first, int second, int third, float &cooldown)
 {
-	if(first == NR && second == NR && third == NL)
+	if(first == NR && second == NL && third == NL)
 	{
 		int stale = GetStaleAmount(client, CurrentCombo[client]);
 		if(stale)
@@ -579,9 +582,11 @@ public void SF_KnockupThink(int target)
 
 // R' R' L
 // R' R' L'
+// R' R L
+// R' R L'
 public Action SF_Knockdown(int client, int entity, int first, int second, int third, float &cooldown)
 {
-	if(first == UR && second == NR && (third == NL || third == UL))
+	if(first == UR && (second == UR || second == NR) && (third == NL || third == UL))
 	{
 		int stale = GetStaleAmount(client, CurrentCombo[client]);
 		if(stale)
@@ -726,15 +731,11 @@ public Action SF_Slap(int client, int entity, int first, int second, int third, 
 			if(!b_thisNpcIsABoss[target])
 #endif
 			{
-				f_StunExtraGametimeDuration[target] += Duration_Stun;
-				fl_NextDelayTime[target] = GetGameTime() + Duration_Stun;
-				f_TankGrabbedStandStill[target] = GetGameTime() + Duration_Stun;
+				FreezeNpcInTime(target,Duration_Stun);
 			}
 			else
 			{
-				f_StunExtraGametimeDuration[target] += Duration_Stun_Boss;
-				fl_NextDelayTime[target] = GetGameTime() + Duration_Stun_Boss;
-				f_TankGrabbedStandStill[target] = GetGameTime() + Duration_Stun_Boss;
+				FreezeNpcInTime(target,Duration_Stun_Boss);
 			}
 		}
 

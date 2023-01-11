@@ -515,7 +515,7 @@ stock int TF2_GetClassnameSlot(const char[] classname, bool econ=false)
 	{
 		return TFWeaponSlot_Secondary;
 	}
-	else if(!StrContains(classname, "tf_weapon_r"))	// Revolver
+	else if(!StrContains(classname, "tf_weapon_re"))	// Revolver
 	{
 		return econ ? TFWeaponSlot_Secondary : TFWeaponSlot_Primary;
 	}
@@ -1244,7 +1244,6 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 {
 	if(entity <= MaxClients)
 	{
-		
 #if defined ZR
 		if(entity != data) //make sure that they are not dead, if they are then just ignore them/give special shit
 		{
@@ -3527,3 +3526,17 @@ stock char[] CharPercent(float value)
 	}
 	return buffer;
 } 
+
+#if defined ZR
+
+stock bool AmmoBlacklist(int Ammotype)
+{
+	if(Ammotype == -1 || Ammotype >= Ammo_Hand_Grenade)
+	{
+		return false;
+	}
+	return true;
+} 
+
+
+#endif

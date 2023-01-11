@@ -335,11 +335,17 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 										}
 										else if(Ammo_type != -1 && Ammo_type < Ammo_Hand_Grenade) //Disallow Ammo_Hand_Grenade, that ammo type is regenerative!, dont use jar, tf2 needs jar? idk, wierdshit.
 										{
-											SetAmmo(client_Hud, Ammo_type, GetAmmo(client_Hud, Ammo_type)+(AmmoData[Ammo_type][1]*4));
+											if(AmmoBlacklist(Ammo_type))
+											{
+												SetAmmo(client_Hud, Ammo_type, GetAmmo(client_Hud, Ammo_type)+(AmmoData[Ammo_type][1]*4));
+											}
 										}
 										else if(Ammo_type > 0 && Ammo_type < Ammo_MAX)
 										{
-											SetAmmo(client_Hud, Ammo_type, GetAmmo(client_Hud, Ammo_type)+(AmmoData[Ammo_type][1]*4));
+											if(AmmoBlacklist(Ammo_type))
+											{
+												SetAmmo(client_Hud, Ammo_type, GetAmmo(client_Hud, Ammo_type)+(AmmoData[Ammo_type][1]*4));
+											}
 										}
 									}
 								}

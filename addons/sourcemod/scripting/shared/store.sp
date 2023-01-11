@@ -4237,6 +4237,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 #endif
 		Reset_stats_Irene_Singular_Weapon(client, entity);
 		Enable_Irene(client, entity);
+		Enable_PHLOG(client, entity);
 
 	}
 	return entity;

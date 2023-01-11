@@ -315,6 +315,7 @@ bool applied_lastmann_buffs_once = false;
 #include "shared/custom/weapon_street_fighter.sp"
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
 #include "shared/custom/weapon_judgement_of_iberia.sp"
+#include "shared/custom/weapon_phlog_replacement.sp"
 
 void ZR_PluginLoad()
 {
@@ -417,7 +418,10 @@ void ZR_MapStart()
 	Zero(f_WasRecentlyRevivedViaNonWave);
 	Zero(f_TimeAfterSpawn);
 	Reset_stats_Irene_Global();
+	Reset_stats_PHLOG_Global();
 	Irene_Map_Precache();
+	PHLOG_Map_Precache();
+	
 	
 	Waves_MapStart();
 	Music_MapStart();
@@ -532,6 +536,7 @@ void ZR_ClientDisconnect(int client)
 	Pets_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
 	Reset_stats_Irene_Singular(client);
+	Reset_stats_PHLOG_Singular(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
