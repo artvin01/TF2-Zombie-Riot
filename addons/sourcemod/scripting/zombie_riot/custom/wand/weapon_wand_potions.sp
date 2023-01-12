@@ -99,6 +99,7 @@ public void Weapon_Wand_PotionBasicTouch(int entity, int target)
 	float pos[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 	ParticleEffectAt(pos, PARTICLE_JARATE, 2.0);
+	EmitSoundToAll(SOUND_JAREXPLODE, entity, _, _, _, _, _, _, pos);
 
 	/*float pos1[3], pos2[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
