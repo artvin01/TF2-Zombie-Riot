@@ -148,9 +148,8 @@ public Action Cosmic_Activate_Tick(int client)
 	if(IsValidClient(client))
 	{
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(i_CustomWeaponEquipLogic[weapon]==8)
+		if(IsValidEntity(weapon) && i_CustomWeaponEquipLogic[weapon]==8)
 		{
-			
 			int new_ammo = GetAmmo(client, 23);
 			if(new_ammo >= 5)
 			{
@@ -222,7 +221,7 @@ public Action Cosmic_Heat_Tick(int client)
 		Cosmic_Terror_Cooling_Reset[client]=true;
 		if(Cosmic_Terror_Hud_Delay[client]<GetGameTime())
 		{
-			if(i_CustomWeaponEquipLogic[weapon]==8)	//Checks if the wep is indeed cosmic terror.
+			if(IsValidEntity(weapon) && i_CustomWeaponEquipLogic[weapon]==8)	//Checks if the wep is indeed cosmic terror.
 			{
 				int Heat = RoundToFloor((Cosmic_Heat[client]*100)/Cosmic_Heat_Max[client]);
 				if(Cosmic_Terror_Are_we_Cooling[client])

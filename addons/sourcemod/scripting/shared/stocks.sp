@@ -3540,3 +3540,25 @@ stock bool AmmoBlacklist(int Ammotype)
 
 
 #endif
+
+stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3], float Beamoffset[3] = {0.0,0.0,0.0})
+{
+	GetClientEyePosition(client, startPoint);
+	float angles[3];
+	GetClientEyeAngles(client, angles);
+	startPoint[2] -= 25.0;
+	if (0.0 == Beamoffset[0] && 0.0 == Beamoffset[1] && 0.0 == Beamoffset[2])
+	{
+		return;
+	}
+	float tmp[3];
+	float actualBeamOffset[3];
+	tmp[0] = Beamoffset[0];
+	tmp[1] = Beamoffset[1];
+	tmp[2] = 0.0;
+	VectorRotate(tmp, angles, actualBeamOffset);
+	actualBeamOffset[2] = Beamoffset[2];
+	startPoint[0] += actualBeamOffset[0];
+	startPoint[1] += actualBeamOffset[1];
+	startPoint[2] += actualBeamOffset[2];
+}

@@ -483,7 +483,8 @@ void ZR_MapStart()
 	Quantum_Gear_Map_Precache();
 	WandStocks_Map_Precache();
 	Weapon_RiotShield_Map_Precache();
-	
+	Passanger_Map_Precache();
+	Reset_stats_Passanger_Global();
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
 //	CreateEntityByName("info_populator");
@@ -540,6 +541,7 @@ void ZR_ClientDisconnect(int client)
 	Queue_ClientDisconnect(client);
 	Reset_stats_Irene_Singular(client);
 	Reset_stats_PHLOG_Singular(client);
+	Reset_stats_Passanger_Singular(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
