@@ -4224,7 +4224,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		i_HighTeslarStaff[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 3000));
 		
 #if defined ZR
-		Enable_Management(client, entity);
+		Enable_Management_Knife(client, entity);
 		Enable_Arsenal(client, entity);
 		On_Glitched_Give(client, entity);
 		Enable_Management_Banner(client, entity);

@@ -346,10 +346,9 @@ public void Enable_Passanger(int client, int weapon) // Enable management, handl
 			h_TimerPassangerManagement[client] = CreateDataTimer(0.1, Timer_Management_Passanger, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
-			
 		}
-	}
 		return;
+	}
 		
 	if(i_CustomWeaponEquipLogic[weapon] == 9) //9 Is for Passanger
 	{

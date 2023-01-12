@@ -43,13 +43,27 @@ void Reset_stats_PHLOG_Singular(int client) //This is on disconnect/connect
 
 public void Weapon_PHLOG_Attack(int client, int weapon, bool crit, int slot)
 {
-	Enable_PHLOG(client, weapon);
+	return;
 }
 
 public void Enable_PHLOG(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
 	if (h_TimerPHLOGManagement[client] != INVALID_HANDLE)
+	{
+		//This timer already exists.
+		if(i_CustomWeaponEquipLogic[weapon] == 7) //7 is for PHLOG.
+		{
+			//Is the weapon it again?
+			//Yes?
+			KillTimer(h_TimerPHLOGManagement[client]);
+			h_TimerPHLOGManagement[client] = INVALID_HANDLE;
+			DataPack pack;
+			h_TimerPHLOGManagement[client] = CreateDataTimer(0.1, Timer_Management_PHLOG, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
 		return;
+	}
 		
 	if(i_CustomWeaponEquipLogic[weapon] == 7) //7 is for PHLOG.
 	{
@@ -57,10 +71,6 @@ public void Enable_PHLOG(int client, int weapon) // Enable management, handle we
 		h_TimerPHLOGManagement[client] = CreateDataTimer(0.1, Timer_Management_PHLOG, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
-	}
-	else
-	{
-		Kill_Timer_PHLOG(client);
 	}
 }
 

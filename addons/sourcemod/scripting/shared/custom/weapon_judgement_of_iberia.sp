@@ -95,7 +95,6 @@ void Reset_stats_Irene_Singular_Weapon(int client, int weapon) //This is on weap
 
 public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slot)
 {
-	Enable_Irene(client, weapon);
 	//Show the timer, this is purely for looks and doesnt do anything.
 //	float cooldown = 0.65 * Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
 
@@ -135,7 +134,21 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 public void Enable_Irene(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
 	if (h_TimerIreneManagement[client] != INVALID_HANDLE)
+	{
+		//This timer already exists.
+		if(i_CustomWeaponEquipLogic[weapon] == 6) //6 Is for Passanger
+		{
+			//Is the weapon it again?
+			//Yes?
+			KillTimer(h_TimerIreneManagement[client]);
+			h_TimerIreneManagement[client] = INVALID_HANDLE;
+			DataPack pack;
+			h_TimerIreneManagement[client] = CreateDataTimer(0.1, Timer_Management_Irene, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
 		return;
+	}
 		
 	if(i_CustomWeaponEquipLogic[weapon] == 6) //6 is for irene.
 	{
@@ -143,10 +156,6 @@ public void Enable_Irene(int client, int weapon) // Enable management, handle we
 		h_TimerIreneManagement[client] = CreateDataTimer(0.1, Timer_Management_Irene, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
-	}
-	else
-	{
-		Kill_Timer_Irene(client);
 	}
 }
 
