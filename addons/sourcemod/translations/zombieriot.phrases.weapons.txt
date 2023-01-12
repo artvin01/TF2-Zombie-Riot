@@ -541,7 +541,7 @@
 	"PhlogStorms Detonator"
 	{
 		"en"		"PhlogStorms Detonator"
-		"ru"		"Детонатор 'ФлогШторм'"
+		"ru"		"Детонатор «ФлогШторм»"
 		"de"		"PhlogStorms Zünder"
 		"pt"		"Detonador FlogisTade"
 		"nl"		"PhlogStorms onsteker"
@@ -2039,17 +2039,21 @@
 	"Judgement Of Iberia"
 	{
 		"en"       "Judgement Of Iberia"
+		"ru"       "Суд Иберии"
 	}
 	"Tornado-Blitz"
 	{
 		"en"		"Tornado-Blitz"
+		"ru"		"Торнадо-Блиц"
 	}
 	"Cosmic Terror"
 	{
 		"en"		"Cosmic Terror"
+		"ru"		"Космический террор"
 	}
 	"Passanger's Device"
 	{
 		"en"	"Passanger's Device"
+		"ru"	"Пассажирское устройство"
 	}
 }
