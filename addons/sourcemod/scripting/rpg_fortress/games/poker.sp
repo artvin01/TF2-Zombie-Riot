@@ -321,6 +321,23 @@ public int PokerTableMenu(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Select:
 		{
+			switch(GameState)
+			{
+				case Poker_WarmUp:
+				{
+					if(Playing[client])
+					{
+						Playing[client] = false;
+						TriggerTimer();
+					}
+					else if(TextStore_Cash(client) >= MinBet)
+					{
+
+					}
+				}
+			}
+
+			PokerMenu(client);
 		}
 	}
 }
