@@ -4230,6 +4230,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Management_Banner(client, entity);
 		
 		Enable_StarShooter(client, entity);
+		Enable_Passanger(client, entity);
 #endif
 
 #if defined RPG

@@ -2204,9 +2204,7 @@ stock void spawnRing(int client, float range, float modif_X, float modif_Y, floa
 			endRange = range + 0.5;
 		}
 		
-		//TE_SetupBeamRingPoint(center, range, range+0.5, ICE_INT, ICE_INT, 0, fps, life, width, amp, {r, g, b, alpha}, speed, 0);
 		TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
-		//TE_SetupBeamRingPoint(center, range, range+0.5, ICE_INT, ICE_INT, 0, 10, 0.1, 50.0, 5.0, {255, 255, 255, 100}, 1, 0);
 		TE_SendToAll();
 	}
 }

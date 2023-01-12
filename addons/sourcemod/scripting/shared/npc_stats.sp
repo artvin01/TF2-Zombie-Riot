@@ -1137,6 +1137,10 @@ methodmap CClotBody
 			{
 				speed_for_return *= 0.35;
 			}
+			if(f_PassangerDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.20;
+			}
 			
 			if(this.m_fHighTeslarDebuff > Gametime)
 			{
@@ -1169,6 +1173,10 @@ methodmap CClotBody
 			else if(this.m_fLowTeslarDebuff > Gametime)
 			{
 				speed_for_return *= 0.95;
+			}
+			if(f_PassangerDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.9;
 			}
 			
 			if(f_HighIceDebuff[this.index] > Gametime)
@@ -6674,6 +6682,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_Frozen[entity] = false;
 	f_TankGrabbedStandStill[entity] = 0.0;
 	f_MaimDebuff[entity] = 0.0;
+	f_PassangerDebuff[entity] = 0.0;
 	f_CrippleDebuff[entity] = 0.0;
 	
 	fl_MeleeArmor[entity] = 1.0; //yeppers.

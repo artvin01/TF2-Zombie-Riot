@@ -14,10 +14,13 @@ enum
 
 static int MinBet;
 static int GameState;
+static int CurrentBet;
 static float TimeLeft;
-static bool Playing[MAXTF2PLAYERS];
+static bool Viewing[MAXTF2PLAYERS];
+static int Playing[MAXTF2PLAYERS];
 static int Cards[MAXTF2PLAYERS][5];
 static int Discarding[MAXTF2PLAYERS];
+static ArrayList CurrentDeck;
 static Handle PokerTimer;
 
 void Games_Poker(int client)
@@ -28,7 +31,7 @@ void Games_Poker(int client)
 	bool found;
 	for(int i = 1; i <= MaxClients; i++)
 	{
-		if(Playing[i])
+		if(Viewing[i])
 		{
 			found = true;
 			break;
@@ -45,7 +48,7 @@ void Games_Poker(int client)
 		int cash = TextStore_Cash(client);
 
 		menu.AddItem(name, "How to Play");
-		menu.AddItem(name, "Join Game", (cash < (bet * 10)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(name, "Join Table");
 	}
 	else
 	{
@@ -91,7 +94,7 @@ public int PokerJoinMenu(Menu menu, MenuAction action, int client, int choice)
 				bool found;
 				for(int i = 1; i <= MaxClients; i++)
 				{
-					if(StrEqual(name, InTable[i]))
+					if(Viewing[i])
 					{
 						found = true;
 						break;
@@ -134,7 +137,7 @@ public int PokerJoinMenu(Menu menu, MenuAction action, int client, int choice)
 					PokerTable.SetValue(name, bet);
 				}
 
-				Playing[client] = true;
+				Viewing[client] = true;
 				PokerMenu(client);
 			}
 			else
@@ -180,7 +183,7 @@ public Action Poker_Timer(Handle timer)
 	int players;
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(Playing[i])
+		if(Viewing[client])
 			players++;
 	}
 	
@@ -191,7 +194,58 @@ public Action Poker_Timer(Handle timer)
 		return Plugin_Stop;
 	}
 
-	
+	float gameTime = GetGameTime();
+	switch(GameState)
+	{
+		case Poker_Waiting:
+		{
+			if(players > 1)
+			{
+				TimeLeft = 0.0;
+				GameState = Poker_WarmUp;
+
+				for(int i = 1; i <= MaxClients; i++)
+				{
+					Playing[i] = 0;
+				}
+			}
+		}
+		case Poker_WarmUp:
+		{
+			if(players < 2)
+			{
+				GameState = Poker_Waiting;
+			}
+			else
+			{
+				int count;
+				for(int i = 1; i <= MaxClients; i++)
+				{
+					if(Playing[i])
+						count++;
+				}
+
+				if(count < 2)
+				{
+					TimeLeft = 0.0;
+				}
+				else if(!TimeLeft)
+				{
+					TimeLeft = gameTime + 15.0;
+				}
+				else if(TimeLeft < gameTime)
+				{
+					StartGame();
+				}
+			}
+		}
+	}
+
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(Viewing[client])
+			PokerMenu(client);
+	}
 	return Plugin_Continue;
 }
 
@@ -203,11 +257,54 @@ static void PokerMenu(int client)
 	{
 		case Poker_Waiting:
 		{
-			menu.SetTitle("Draw Poker\n \nWaiting for players...");
+			menu.SetTitle("Draw Poker\nWaiting for players%s\n ", FancyPeriodThing());
 
-			menu.AddItem(NULL_STRING, "");
+			menu.AddItem(NULL_STRING, "Rejoin to change table rules", ITEMDRAW_DISABLED);
+		}
+		case Poker_WarmUp:
+		{
+			if(TimeLeft)
+			{
+				menu.SetTitle("Draw Poker\nGetting ready... %.0f\n ", FancyPeriodThing(), TimeLeft - GetGameTime());
+			}
+			else
+			{
+				menu.SetTitle("Draw Poker\nGetting ready%s\n ", FancyPeriodThing());
+			}
+
+			char buffer[32];
+			if(Playing[client])
+			{
+				menu.AddItem(buffer, "Leave Game\n ");
+			}
+			else
+			{
+				FormatEx(buffer, sizeof(buffer), "Join Game (%d Bet)\n ", MinBet);
+				menu.AddItem(buffer, buffer, TextStore_Cash(client) < (MinBet * 10) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			}
+
+			int count;
+			for(int i = 1; i <= MaxClients; i++)
+			{
+				if(Playing[i])
+					count++;
+			}
+
+			if(TimeLeft)
+			{
+				FormatEx(buffer, sizeof(buffer), "%d / 5 players in game", count);
+			}
+			else
+			{
+				FormatEx(buffer, sizeof(buffer), "%d / 2 players to start game", count);
+			}
+
+			menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
 		}
 	}
+
+	menu.ExitButton = Playing[client];
+	Viewing[client] = menu.Display(client, 2);
 }
 
 public int PokerTableMenu(Menu menu, MenuAction action, int client, int choice)
@@ -220,8 +317,7 @@ public int PokerTableMenu(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
-			if(choice == MenuCancel_ExitBack)
-				Games_Poker(client);
+			Viewing[client] = false;
 		}
 		case MenuAction_Select:
 		{
@@ -229,8 +325,47 @@ public int PokerTableMenu(Menu menu, MenuAction action, int client, int choice)
 	}
 }
 
+static char[] FancyPeriodThing()
+{
+	char buffer[4];
+	int amount = (RoundToCeil(GetGameTime()) % 3) + 1;
+	for(int i; ; i++)
+	{
+		if(i < amount)
+		{
+			buffer[i] = '.';
+		}
+		else
+		{
+			buffer[i] = '\0';
+			break;
+		}
+	}
+	return buffer;
+}
+
 static void StartGame()
 {
+	delete CurrentDeck;
 	Zero2(Cards);
 	Zero(Discarding);
+
+	CurrentDeck = Games_GenerateNewDeck();
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(Playing[client])
+		{
+			// Normally, we would give out one at a time to each player
+			// Counterpoint: We're in code baby
+			for(int i; i < 5; i++)
+			{
+				int index = GetURandomInt() % CurrentDeck.Length;
+				Cards[client][i] = CurrentDeck.Get(index);
+				CurrentDeck.Erase(index);
+			}
+		}
+	}
+
+	TimeLeft = gameTime + 30.0;
+	GameState = Poker_Discard;
 }

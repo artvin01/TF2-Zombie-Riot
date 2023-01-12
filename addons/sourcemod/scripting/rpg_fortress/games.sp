@@ -6,15 +6,18 @@ enum
 	Suit_Heart = 0,
 	Suit_Club,
 	Suit_Diamond,
-	Suit_Clover
+	Suit_Clover,
+	Suit_MAX
 }
 
 enum
 {
+	Card_MIN = 2,
 	Card_Jack = 11,
 	Card_Queen = 12,
 	Card_King = 13,
-	Card_Ace = 14
+	Card_Ace = 14,
+	Card_MAX
 }
 
 #include "rpg_fortress/games/poker.sp"
@@ -77,4 +80,20 @@ static void StartGame(int client, const char[] zone, const char[] game)
 			FakeClientCommand(client, game);
 		}
 	}
+}
+
+ArrayList Games_GenerateNewDeck()
+{
+	ArrayList list = new ArrayList();
+
+	for(int s; s < Suit_MAX; s++)
+	{
+		for(int c = Card_MIN; c < Card_MAX; c++)
+		{
+			list.Push((s * 100) + c);
+		}
+	}
+
+	list.Sort(Sort_Random, Sort_Integer);
+	return list;
 }

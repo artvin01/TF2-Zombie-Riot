@@ -903,7 +903,7 @@
 	
 	"Lightning Staff Pap 3"
 	{
-		"en"	"Your ability changes to a 2x charged, aoe, multistrike Lighting chaining attack.\nYour base attack will also chain across 4 enemies, each attack will heavily slow the enemy for a short time."
+		"en"	"Massively increaced Damage.\nYour ability changes to a 2x charged, aoe, randomly targetting, multistrike Lighting chaining attack.\nYour attack will also chain across 4 enemies but attack 3x slower, each attack will heavily slow the enemy for a short time."
 	}
 	
 	"Beam Wand Desc"
