@@ -5,7 +5,6 @@ static float CD_Knife[MAXPLAYERS+1]={0.0, ...};
 static float CD_KnifeSet[MAXPLAYERS+1]={0.0, ...};
 static float CD_Throw[MAXPLAYERS+1]={0.0, ...};
 static float CD_Mode[MAXPLAYERS+1]={0.0, ...};
-static float CD_Madness[MAXPLAYERS+1]={0.0, ...};
 static int Knife_Count[MAXPLAYERS+1]={0, ...};
 static int Knife_Max[MAXPLAYERS+1]={0, ...};
 static bool Knife_Triple_Mode[MAXPLAYERS+1]={false, ...};
@@ -30,7 +29,6 @@ public void Survival_Knife_ClearAll()
 	Zero(CD_KnifeSet);
 	Zero(CD_Throw);
 	Zero(CD_Mode);
-	Zero(CD_Madness);
 	Zero(f_KnifeHudDelay);
 }
 
@@ -201,6 +199,10 @@ public Action Timer_Management_Survival(Handle timer, DataPack pack)
 							}
 						}
 					}
+					else if(InMadness[client])
+					{
+						PrintHintText(client,"Infinite Knives!");				
+					}
 					else
 					{
 						if(Knife_Count[client] != Knife_Max[client])
@@ -210,7 +212,7 @@ public Action Timer_Management_Survival(Handle timer, DataPack pack)
 						else
 						{
 							PrintHintText(client,"Knives [%i/%i]",Knife_Count[client],Knife_Max[client]);
-						}						
+						}							
 					}
 
 					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
@@ -340,16 +342,7 @@ public void Survival_Knife_Tier3_Reload(int client, int weapon, bool crit, int s
 	if (InMadness[client])
 		return;
 
-	Ability_Apply_Cooldown(client, slot, 15.0); //yeah.
-	
-	if (CD_Madness[client]>GetGameTime())
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", CD_Madness[client]-GetGameTime());
-	}
-	else
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		EmitSoundToAll(SOUND_MADNESS_ENTER2, client, SNDCHAN_STATIC, 70, _, 0.9);
 		EmitSoundToAll(SOUND_MADNESS_ENTER, client, SNDCHAN_STATIC, 70, _, 0.9);
@@ -366,6 +359,15 @@ public void Survival_Knife_Tier3_Reload(int client, int weapon, bool crit, int s
 		CreateDataTimer(5.0, Timer_Madness_Duration, pack, TIMER_FLAG_NO_MAPCHANGE);// Madness duration
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
+
+		Ability_Apply_Cooldown(client, slot, 15.0);
+	}
+	else
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
 	}
 }
 
@@ -383,7 +385,6 @@ public Action Timer_Madness_Duration(Handle timer, DataPack pack)
 			
 			InMadness[client] = false;
 			
-			CD_Madness[client] = 10.0 + GetGameTime();
 			EmitSoundToAll(SOUND_MADNESS_END, client, SNDCHAN_STATIC, 70, _, 0.9);
 			
 			SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);

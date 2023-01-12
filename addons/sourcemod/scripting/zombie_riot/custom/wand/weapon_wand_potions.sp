@@ -1,7 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define JAR_EXPLODE "weapons/weapons/jar_explode.wav"
+#define PARTICLE_JARATE		""
+#define SOUND_JAREXPLODE	"weapons/weapons/jar_explode.wav"
 
 void Wand_Potions_ClearAll()
 {
@@ -11,7 +12,7 @@ void Wand_Potions_ClearAll()
 
 void Wand_Potions_Precache()
 {
-	PrecacheSound(JAR_EXPLODE);
+	PrecacheSound(SOUND_JAREXPLODE);
 }
 
 public void Weapon_Wand_PotionBasicM1(int client, int weapon, bool &crit, int slot)
@@ -97,8 +98,7 @@ public void Weapon_Wand_PotionBasicTouch(int entity, int target)
 
 	float pos[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
-
-	// PARTICLE STUFF HERE
+	ParticleEffectAt(pos, )
 
 	/*float pos1[3], pos2[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
