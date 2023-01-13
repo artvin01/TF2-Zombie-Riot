@@ -84,6 +84,10 @@ void Reset_stats_Irene_Global()
 
 void Reset_stats_Irene_Singular(int client) //This is on disconnect/connect
 {
+	if (h_TimerIreneManagement[client] != INVALID_HANDLE)
+	{
+		KillTimer(h_TimerIreneManagement[client]);
+	}	
 	h_TimerIreneManagement[client] = INVALID_HANDLE;
 	i_IreneHitsDone[client] = 0;
 }

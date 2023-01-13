@@ -278,7 +278,7 @@ bool applied_lastmann_buffs_once = false;
 //#include "zombie_riot/custom/weapon_pipe_shot.sp"
 #include "zombie_riot/custom/weapon_survival_knife.sp"
 #include "zombie_riot/custom/weapon_glitched.sp"
-//#include "zombie_riot/custom/weapon_minecraft.sp"
+//#include "zombie_riot/custom/weimage.pngapon_minecraft.sp"
 #include "zombie_riot/custom/arse_enal_layer_tripmine.sp"
 #include "zombie_riot/custom/weapon_serioussam2_shooter.sp"
 #include "zombie_riot/custom/wand/weapon_elemental_staff.sp"
@@ -542,6 +542,7 @@ void ZR_ClientDisconnect(int client)
 	Reset_stats_Irene_Singular(client);
 	Reset_stats_PHLOG_Singular(client);
 	Reset_stats_Passanger_Singular(client);
+	Reset_stats_Survival_Singular(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;

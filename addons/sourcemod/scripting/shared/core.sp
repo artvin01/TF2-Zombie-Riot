@@ -2626,7 +2626,10 @@ public void CheckIfAloneOnServer()
 		if (Bob_Exists)
 			return;
 		
-		Spawn_Bob_Combine(player_alone);
+		if(!CvarInfiniteCash.BoolValue)
+		{
+			Spawn_Bob_Combine(player_alone);
+		}
 		
 	}
 	else if (Bob_Exists)
