@@ -37,6 +37,10 @@ void Reset_stats_PHLOG_Global()
 
 void Reset_stats_PHLOG_Singular(int client) //This is on disconnect/connect
 {
+	if (h_TimerPHLOGManagement[client] != INVALID_HANDLE)
+	{
+		KillTimer(h_TimerPHLOGManagement[client]);
+	}	
 	h_TimerPHLOGManagement[client] = INVALID_HANDLE;
 	i_PHLOGHitsDone[client] = 0;
 }

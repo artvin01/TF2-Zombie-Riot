@@ -57,6 +57,16 @@ void Survival_Knife_Map_Precache()
 	
 }
 
+void Reset_stats_Survival_Singular(int client) //This is on disconnect/connect
+{
+	if (Timer_Knife_Management[client] != INVALID_HANDLE)
+	{
+		KillTimer(Timer_Knife_Management[client]);
+	}	
+	Timer_Knife_Management[client] = INVALID_HANDLE;
+}
+
+
 public void Survival_Knife_Attack(int client, int weapon, bool crit)
 {
 	return;

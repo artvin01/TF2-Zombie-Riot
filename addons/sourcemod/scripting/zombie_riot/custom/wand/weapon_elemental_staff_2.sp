@@ -187,6 +187,10 @@ void Reset_stats_Passanger_Singular(int client) //This is on disconnect/connect
 {
 	f_PassangerAbilityCooldownRegen[client] = 0.0;
 	i_PassangerAbilityCount[client] = 0;
+	if (h_TimerPassangerManagement[client] != INVALID_HANDLE)
+	{
+		KillTimer(h_TimerPassangerManagement[client]);
+	}	
 	h_TimerPassangerManagement[client] = INVALID_HANDLE;
 }
 static bool b_EntityHitByLightning[MAXENTITIES];
