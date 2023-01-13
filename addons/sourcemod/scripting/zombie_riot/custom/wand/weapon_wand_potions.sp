@@ -342,4 +342,35 @@ public void Weapon_Wand_PotionTransM2(int client, int weapon, bool &crit, int sl
 
 	EmitGameSoundToAll(GSOUND_TRANSFORM, client);
 	i_ClientHasCustomGearEquipped[client] = true;
+
+	Weapon_Wand_Potion(weapon, 6, 0.2);
+	Weapon_Wand_Potion(weapon, 410, 0.5);
+}
+
+static void ApplyTempAttrib(int entity, int index, float multi)
+{
+	Address address = TF2Attrib_GetByDefIndex(entity, index);
+	if(address != Address_Null)
+	{
+		TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * multi);
+
+		DataPack pack;
+		CreateDataTimer(duration, StreetFighter_RestoreAttrib, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(entity));
+		pack.WriteCell(index);
+		pack.WriteFloat(multi);
+	}
+}
+
+public Action Weapon_Wand_PotionRestoreAttrib(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(entity != INVALID_ENT_REFERENCE)
+	{
+		Address address = TF2Attrib_GetByDefIndex(entity, pack.ReadCell());
+		if(address != Address_Null)
+			TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) / pack.ReadFloat());
+	}
+	return Plugin_Stop;
 }

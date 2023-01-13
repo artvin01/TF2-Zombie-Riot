@@ -75,6 +75,8 @@ static int i_RarityType[MAXENTITIES];
 
 static float f_IncreaceChanceManually = 1.0;
 
+static bool b_ForceSpawnNextTime;
+
 public void Map_Precache_Zombie_Drops_Gift()
 {
 	PrecacheModel(GIFT_MODEL, true);
@@ -90,17 +92,26 @@ public void Gift_DropChance(int entity)
 	{
 		if(IsValidEntity(entity))
 		{
-			if(GetRandomFloat(0.0, 200.0) < ((GIFT_CHANCE / (MultiGlobal + 0.0001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually)) //Never let it divide by 0
+			if(b_ForceSpawnNextTime || (GetRandomFloat(0.0, 200.0) < ((GIFT_CHANCE / (MultiGlobal + 0.0001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually))) //Never let it divide by 0
 			{
 				f_IncreaceChanceManually = 1.0;
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
+				VecOrigin[2] += 20.0;
 				for (int client = 1; client <= MaxClients; client++)
 				{
 					if (IsValidClient(client) && IsPlayerAlive(client) && GetClientTeam(client) == view_as<int>(TFTeam_Red))
 					{
 						int rarity = RollRandom(); //Random for each clie
-						Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, client, rarity);
+						if(!IsPointHazard(VecOrigin)) //Is it valid?
+						{
+							b_ForceSpawnNextTime = false;
+							Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, client, rarity);
+						}
+						else //Not a valid position, we must force it! next time we try!
+						{
+							b_ForceSpawnNextTime = true;
+						}
 					}
 				}
 			}	

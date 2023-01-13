@@ -3561,30 +3561,36 @@ stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3], float Be
 	startPoint[2] += actualBeamOffset[2];
 }
 
-stock bool IsPointHazard(const float pos1[3])
-{
-	float pos2[3], mins[3], maxs[3];
-	int entity = -1;
-	while((entity = FindEntityByClassname(entity, "trigger_hurt")) != -1)
-	{
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
-		GetEntPropVector(entity, Prop_Data, "m_vecMins", mins);
-		GetEntPropVector(entity, Prop_Data, "m_vecMaxs", maxs);
+// Thank you miku:)
+// https://github.com/Mikusch/PropHunt/blob/985808f13d8738945a2c9980db0b75865a20c99c/addons/sourcemod/scripting/prophunt.sp#L332
 
-		int found;
-		for(int i; i < 3; i++)
+static bool HazardResult;
+
+bool IsPointHazard(const float pos1[3])
+{
+	HazardResult = false;
+	TR_EnumerateEntities(pos1, pos1, PARTITION_TRIGGER_EDICTS, RayType_EndPoint, TraceEntityEnumerator_EnumerateTriggers);
+	return HazardResult;
+}
+
+public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
+{
+	char classname[16];
+	if(GetEntityClassname(entity, classname, sizeof(classname)) && !StrContains(classname, "trigger_hurt"))
+	{
+		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
 		{
-			// Example: 1000 > (1000 + -100) && 1000 < (1000 + 100)
-			if(pos1[i] > (pos2[i] + mins[i]) && pos1[i] < (pos2[i] + maxs[i]))
+			Handle trace = TR_ClipCurrentRayToEntityEx(MASK_PLAYERSOLID, entity);
+			bool didHit = TR_DidHit(trace);
+			delete trace;
+			
+			if (didHit)
 			{
-				if(++found > 2)
-					return true;
-			}
-			else
-			{
-				break;
+				HazardResult = true;
+				return false;
 			}
 		}
 	}
-	return false;
+	
+	return true;
 }

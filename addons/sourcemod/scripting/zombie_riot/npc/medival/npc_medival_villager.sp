@@ -218,29 +218,13 @@ methodmap MedivalVillager < CClotBody
 
 			if(IsPointHazard(vecGoal)) //Retry.
 			{
-				PrintToChatAll("fail, retry %i {%f,%f,%f}",loop, vecGoal[0], vecGoal[1], vecGoal[2]);
 				continue;
 			}
 			else
 			{
-	//			f3_AreasCollected[0] = vecGoal[0];
-	//			f3_AreasCollected[1] = vecGoal[1];
-	//			f3_AreasCollected[2] = vecGoal[2];
-				PrintToChatAll("suceed %i {%f,%f,%f}",loop, vecGoal[0], vecGoal[1], vecGoal[2]);
 				TeleportEntity(npc.index, vecGoal, NULL_VECTOR, NULL_VECTOR);
-	//			AreasCollected++;
 				break;
 			}
-			/*
-			if(AreasCollected == 1)
-			{	
-				//I am too lazy to right now bother with multiple spots.
-				PrintToChatAll("test");
-				TeleportEntity(npc.index, f3_AreasCollected[0], NULL_VECTOR, NULL_VECTOR);
-
-				break; //We have collected enough information.
-			}
-			*/
 		}
 		
 		return npc;
