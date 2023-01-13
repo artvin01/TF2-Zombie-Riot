@@ -318,6 +318,7 @@ bool applied_lastmann_buffs_once = false;
 #include "shared/custom/weapon_judgement_of_iberia.sp"
 #include "shared/custom/weapon_phlog_replacement.sp"
 #include "zombie_riot/custom/weapon_cosmic_terror.sp"
+#include "zombie_riot/custom/wand/weapon_wand_potions.sp"
 
 void ZR_PluginLoad()
 {
@@ -485,6 +486,8 @@ void ZR_MapStart()
 	Weapon_RiotShield_Map_Precache();
 	Passanger_Map_Precache();
 	Reset_stats_Passanger_Global();
+	Wand_Potions_Precache();
+	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
 //	CreateEntityByName("info_populator");
