@@ -2204,9 +2204,7 @@ stock void spawnRing(int client, float range, float modif_X, float modif_Y, floa
 			endRange = range + 0.5;
 		}
 		
-		//TE_SetupBeamRingPoint(center, range, range+0.5, ICE_INT, ICE_INT, 0, fps, life, width, amp, {r, g, b, alpha}, speed, 0);
 		TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
-		//TE_SetupBeamRingPoint(center, range, range+0.5, ICE_INT, ICE_INT, 0, 10, 0.1, 50.0, 5.0, {255, 255, 255, 100}, 1, 0);
 		TE_SendToAll();
 	}
 }
@@ -3540,3 +3538,59 @@ stock bool AmmoBlacklist(int Ammotype)
 
 
 #endif
+
+stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3], float Beamoffset[3] = {0.0,0.0,0.0})
+{
+	GetClientEyePosition(client, startPoint);
+	float angles[3];
+	GetClientEyeAngles(client, angles);
+	startPoint[2] -= 25.0;
+	if (0.0 == Beamoffset[0] && 0.0 == Beamoffset[1] && 0.0 == Beamoffset[2])
+	{
+		return;
+	}
+	float tmp[3];
+	float actualBeamOffset[3];
+	tmp[0] = Beamoffset[0];
+	tmp[1] = Beamoffset[1];
+	tmp[2] = 0.0;
+	VectorRotate(tmp, angles, actualBeamOffset);
+	actualBeamOffset[2] = Beamoffset[2];
+	startPoint[0] += actualBeamOffset[0];
+	startPoint[1] += actualBeamOffset[1];
+	startPoint[2] += actualBeamOffset[2];
+}
+
+// Thank you miku:)
+// https://github.com/Mikusch/PropHunt/blob/985808f13d8738945a2c9980db0b75865a20c99c/addons/sourcemod/scripting/prophunt.sp#L332
+
+static bool HazardResult;
+
+bool IsPointHazard(const float pos1[3])
+{
+	HazardResult = false;
+	TR_EnumerateEntities(pos1, pos1, PARTITION_TRIGGER_EDICTS, RayType_EndPoint, TraceEntityEnumerator_EnumerateTriggers);
+	return HazardResult;
+}
+
+public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
+{
+	char classname[16];
+	if(GetEntityClassname(entity, classname, sizeof(classname)) && !StrContains(classname, "trigger_hurt"))
+	{
+		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
+		{
+			Handle trace = TR_ClipCurrentRayToEntityEx(MASK_PLAYERSOLID, entity);
+			bool didHit = TR_DidHit(trace);
+			delete trace;
+			
+			if (didHit)
+			{
+				HazardResult = true;
+				return false;
+			}
+		}
+	}
+	
+	return true;
+}

@@ -2048,4 +2048,8 @@
 	{
 		"en"		"Cosmic Terror"
 	}
+	"Passanger's Device"
+	{
+		"en"	"Passanger's Device"
+	}
 }

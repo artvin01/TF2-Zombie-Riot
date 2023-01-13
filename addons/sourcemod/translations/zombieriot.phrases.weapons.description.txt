@@ -896,6 +896,16 @@
 		"chi"   "大量增加伤害和攻击速度，M2冷却变长，但伤害更高。"
 	}
 	
+	"Lightning Staff Pap 2"
+	{
+		"en"	"Increaced Damage"
+	}
+	
+	"Lightning Staff Pap 3"
+	{
+		"en"	"Massively increaced Damage.\nYour ability changes to a 2x charged, randomly targetting, multistrike Lighting chaining attack.\nYour attack will also chain across 4 enemies but attack 3x slower, each attack will heavily slow the enemy for a short time."
+	}
+	
 	"Beam Wand Desc"
 	{
 		"en"	"Hold M1 for a constant beam to eviscerate your enemies. M2: Magic overdrive, more mana=stronger but higher CD."

@@ -1137,6 +1137,10 @@ methodmap CClotBody
 			{
 				speed_for_return *= 0.35;
 			}
+			if(f_PassangerDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.20;
+			}
 			
 			if(this.m_fHighTeslarDebuff > Gametime)
 			{
@@ -1169,6 +1173,10 @@ methodmap CClotBody
 			else if(this.m_fLowTeslarDebuff > Gametime)
 			{
 				speed_for_return *= 0.95;
+			}
+			if(f_PassangerDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.9;
 			}
 			
 			if(f_HighIceDebuff[this.index] > Gametime)
@@ -1822,6 +1830,64 @@ methodmap CClotBody
 		SetVariantString(attachment);
 		AcceptEntityInput(item, "SetParentAttachmentMaintainOffset"); 			
 		
+		SetEntityCollisionGroup(item, 1);
+		/*
+		if(GetEntProp(this.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue))
+		{
+			b_Is_Blue_Npc[item] = true; //make sure they dont collide with stuff
+		}
+		else if(GetEntProp(this.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
+		{
+			b_IsAlliedNpc[item] = true; //make sure they dont collide with stuff
+		}
+		*/
+		return item;
+	}
+
+	public int EquipItemSeperate(
+	const char[] attachment,
+	const char[] model,
+	const char[] anim = "",
+	int skin = 0,
+	float model_size = 1.0)
+	{
+		int item = CreateEntityByName("prop_dynamic");
+		DispatchKeyValue(item, "model", model);
+
+		if(model_size == 1.0)
+		{
+			DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
+		}
+		else
+		{
+			DispatchKeyValueFloat(item, "modelscale", model_size);
+		}
+
+		DispatchSpawn(item);
+		
+	//	SetEntProp(item, Prop_Send, "m_fEffects", EF_PARENT_ANIMATES);
+		float eyePitch[3];
+		GetEntPropVector(this.index, Prop_Data, "m_angRotation", eyePitch);
+
+		TeleportEntity(item, GetAbsOrigin(this.index), eyePitch, NULL_VECTOR);
+
+		if(!StrEqual(anim, ""))
+		{
+			SetVariantString(anim);
+			AcceptEntityInput(item, "SetAnimation");
+		}
+
+#if defined RPG
+		SetEntPropFloat(item, Prop_Send, "m_fadeMinDist", 1600.0);
+		SetEntPropFloat(item, Prop_Send, "m_fadeMaxDist", 1800.0);
+#endif
+
+		SetVariantString("!activator");
+		AcceptEntityInput(item, "SetParent", this.index);
+/*
+		SetVariantString(attachment);
+		AcceptEntityInput(item, "SetParentAttachmentMaintainOffset"); 			
+*/		
 		SetEntityCollisionGroup(item, 1);
 		/*
 		if(GetEntProp(this.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue))
@@ -6674,6 +6740,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_Frozen[entity] = false;
 	f_TankGrabbedStandStill[entity] = 0.0;
 	f_MaimDebuff[entity] = 0.0;
+	f_PassangerDebuff[entity] = 0.0;
 	f_CrippleDebuff[entity] = 0.0;
 	
 	fl_MeleeArmor[entity] = 1.0; //yeppers.

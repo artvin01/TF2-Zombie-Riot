@@ -565,12 +565,12 @@
 				}
 			}
 			"CTFParticleCannon::FireChargedShot"
-            		{
-                		"offset"    	"CTFParticleCannon::FireChargedShot"
-                		"hooktype"    	"entity"
-               	 		"return"    	"void"
-                		"this"        	"entity"
-            		}
+            {
+				   "offset"    	"CTFParticleCannon::FireChargedShot"
+				   "hooktype"    "entity"
+				   "return"    	"void"
+				   "this"        "entity"
+            }
 			"CBaseCombatWeapon::FinishReload()"
 			{
 				"signature"		"CBaseCombatWeapon::FinishReload()"

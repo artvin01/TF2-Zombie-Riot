@@ -324,6 +324,7 @@ float f_TankGrabbedStandStill[MAXENTITIES];
 float f_StunExtraGametimeDuration[MAXENTITIES];
 bool b_PernellBuff[MAXENTITIES];
 float f_MaimDebuff[MAXENTITIES];
+float f_PassangerDebuff[MAXENTITIES];
 float f_CrippleDebuff[MAXENTITIES];
 int BleedAmountCountStack[MAXENTITIES];
 int g_particleCritText;
