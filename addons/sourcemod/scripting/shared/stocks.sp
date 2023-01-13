@@ -81,7 +81,7 @@ stock int GivePropAttachment(int entity, const char[] model)
 	return prop;
 }
 
-stock int ParticleEffectAt(float position[3], char[] effectName, float duration = 0.1)
+stock int ParticleEffectAt(float position[3], const char[] effectName, float duration = 0.1)
 {
 	int particle = CreateEntityByName("info_particle_system");
 	if (particle != -1)
@@ -427,6 +427,7 @@ stock TFClassType TF2_GetWeaponClass(int index, TFClassType defaul=TFClass_Unkno
 		}
 	}
 
+	TFClassType backup;
 	for(TFClassType class=TFClass_Engineer; class>TFClass_Unknown; class--)
 	{
 		if(defaul == class)
@@ -437,12 +438,19 @@ stock TFClassType TF2_GetWeaponClass(int index, TFClassType defaul=TFClass_Unkno
 		{
 			if(slot == checkSlot)
 				return class;
+			
+			if(!backup && slot >= 0 && slot < 6)
+				backup = class;
 		}
-		else if(slot>=0 && slot<6)
+		else if(slot >= 0 && slot < 6)
 		{
 			return class;
 		}
 	}
+
+	if(checkSlot != -1 && backup)
+		return backup;
+	
 	return defaul;
 }
 

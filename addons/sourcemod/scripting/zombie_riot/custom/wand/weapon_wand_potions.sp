@@ -30,17 +30,17 @@ public void Weapon_Wand_PotionBasicM2(int client, int weapon, bool &crit, int sl
 
 public void Weapon_Wand_PotionBuffM2(int client, int weapon, bool &crit, int slot)
 {
-	PotionM2(client, weapon, slot, 4.5, Weapon_Wand_PotionBuffTouch);
+	PotionM2(client, weapon, slot, 4.5, Weapon_Wand_PotionBuffTouch, 150);
 }
 
 public void Weapon_Wand_PotionBuffAllM2(int client, int weapon, bool &crit, int slot)
 {
-	PotionM2(client, weapon, slot, 6.0, Weapon_Wand_PotionBuffAllTouch);
+	PotionM2(client, weapon, slot, 6.0, Weapon_Wand_PotionBuffAllTouch, 200);
 }
 
 public void Weapon_Wand_PotionBuffPermaM2(int client, int weapon, bool &crit, int slot)
 {
-	PotionM2(client, weapon, slot, 6.0, Weapon_Wand_PotionBuffPermaTouch);
+	PotionM2(client, weapon, slot, 6.0, Weapon_Wand_PotionBuffPermaTouch, 300);
 }
 
 public void Weapon_Wand_PotionUnstableM1(int client, int weapon, bool &crit, int slot)
@@ -84,7 +84,7 @@ public void Weapon_Wand_PotionShrinkM2(int client, int weapon, bool &crit, int s
 	PotionM2(client, weapon, slot, 20.0, Weapon_Wand_PotionShrinkTouch);
 }
 
-static void PotionM2(int client, int weapon, int slot, float cooldown, SDKHookCB touch)
+static void PotionM2(int client, int weapon, int slot, float cooldown, SDKHookCB touch, int extra = 0)
 {
 	if(Ability_Check_Cooldown(client, slot) > 0.0)
 	{
@@ -95,16 +95,16 @@ static void PotionM2(int client, int weapon, int slot, float cooldown, SDKHookCB
 		return;
 	}
 
-	if(PotionM1(client, weapon, touch))
+	if(PotionM1(client, weapon, touch, extra))
 		Ability_Apply_Cooldown(client, slot, cooldown);
 }
 
-static bool PotionM1(int client, int weapon, SDKHookCB touch)
+static bool PotionM1(int client, int weapon, SDKHookCB touch, int extra = 0)
 {
-	int mana_cost;
+	int mana_cost = extra;
 	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
 	if(address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+		mana_cost += RoundToCeil(TF2Attrib_GetValue(address));
 	
 	if(Current_Mana[client] < mana_cost)
 	{
@@ -121,7 +121,40 @@ static bool PotionM1(int client, int weapon, SDKHookCB touch)
 	Current_Mana[client] -= mana_cost;
 	delay_hud[client] = 0.0;
 
-	int entity = CreateEntityByName("tf_projectile_pipe");
+	float damage = 32.5;
+	address = TF2Attrib_GetByDefIndex(weapon, 410);
+	if(address != Address_Null)
+		damage *= TF2Attrib_GetValue(address);
+	
+	float speed = 1000.0;
+	address = TF2Attrib_GetByDefIndex(weapon, 103);
+	if(address != Address_Null)
+		speed *= TF2Attrib_GetValue(address);
+	
+	float ang[3];
+	GetClientEyeAngles(client, ang);
+	ang[0] -= 10.0;
+
+	int entity = Wand_Projectile_Spawn(client, speed, 20.0, damage, 0, weapon, NULL_STRING, ang, false);
+	if(entity > MaxClients)
+	{
+		SetEntityGravity(entity, 1.5);
+		SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
+
+		int model = GetEntProp(weapon, Prop_Send, "m_iWorldModelIndex");
+		for(int i; i < 4; i++)
+		{
+			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", model, _, i);
+		}
+
+		SDKHook(entity, SDKHook_StartTouchPost, touch);
+	}
+
+	entity = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
+	if(entity != -1)
+		RequestFrame(Weapon_Wand_PotionAnim, EntIndexToEntRef(entity));
+	
+	/*int entity = CreateEntityByName("tf_projectile_jar");
 	if(entity > MaxClients)
 	{
 		float pos[3], ang[3], vel[3];
@@ -152,10 +185,17 @@ static bool PotionM1(int client, int weapon, SDKHookCB touch)
 		
 		DispatchSpawn(entity);
 		TeleportEntity(entity, pos, ang, vel);
-		IsCustomTfGrenadeProjectile(entity, 1999999.0);	// Block normal explosion
+		//IsCustomTfGrenadeProjectile(entity, 1999999.0);	// Block normal explosion
 		SDKHook(entity, SDKHook_StartTouchPost, touch);
-	}
+	}*/
 	return true;
+}
+
+public void Weapon_Wand_PotionAnim(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(entity != -1)
+		SetEntProp(entity, Prop_Send, "m_nSequence", 18);
 }
 
 public void Weapon_Wand_PotionBasicTouch(int entity, int target)
@@ -178,13 +218,8 @@ public void Weapon_Wand_PotionBasicTouch(int entity, int target)
 	ParticleEffectAt(pos1, PARTICLE_JARATE, 2.0);
 	EmitSoundToAll(SOUND_JAREXPLODE, entity, _, _, _, _, _, _, pos1);
 	
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	int weapon = GetEntPropEnt(entity, Prop_Send, "m_hLauncher");
-	
-	float damage = 32.5;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 410);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
 	int count;
 	int i = MaxClients + 1;
@@ -195,8 +230,8 @@ public void Weapon_Wand_PotionBasicTouch(int entity, int target)
 			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
 			{
-				SDKHooks_TakeDamage(i, entity, owner, damage, DMG_SLASH, weapon, _, pos1);
-				StartBleedingTimer(i, owner, damage / 8.0, 8, weapon);
+				SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
+				StartBleedingTimer(i, owner, f_WandDamage[entity] / 8.0, 8, weapon);
 				if(++count > 4)
 					break;
 			}
@@ -208,9 +243,11 @@ public void Weapon_Wand_PotionBasicTouch(int entity, int target)
 
 public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 {
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+
 	if(target)
 	{
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+		if(target == owner || GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
 			return;
 	}
 
@@ -220,8 +257,6 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
 	ParticleEffectAt(pos1, PARTICLE_MADMILK, 2.0);
 	EmitSoundToAll(SOUND_JAREXPLODE, entity, _, _, _, _, _, _, pos1);
-	
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -242,9 +277,11 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 
 public void Weapon_Wand_PotionBuffAllTouch(int entity, int target)
 {
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+	
 	if(target)
 	{
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+		if(target == owner || GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
 			return;
 	}
 
@@ -254,8 +291,6 @@ public void Weapon_Wand_PotionBuffAllTouch(int entity, int target)
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
 	ParticleEffectAt(pos1, PARTICLE_MADMILK, 2.0);
 	EmitSoundToAll(SOUND_JAREXPLODE, entity, _, _, _, _, _, _, pos1);
-	
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -275,9 +310,11 @@ public void Weapon_Wand_PotionBuffAllTouch(int entity, int target)
 
 public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 {
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+	
 	if(target)
 	{
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+		if(target == owner || GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
 			return;
 	}
 
@@ -287,8 +324,6 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
 	ParticleEffectAt(pos1, PARTICLE_MADMILK, 2.0);
 	EmitSoundToAll(SOUND_JAREXPLODE, entity, _, _, _, _, _, _, pos1);
-	
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -324,14 +359,9 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 	ParticleEffectAt(pos1, PARTICLE_JARATE, 2.0);
 	EmitSoundToAll(SOUND_JAREXPLODE, entity, _, _, _, _, _, _, pos1);
 	
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	int weapon = GetEntPropEnt(entity, Prop_Send, "m_hLauncher");
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 	
-	float damage = 32.5;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 410);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
-
 	int count;
 	int i = MaxClients + 1;
 	while((i = FindEntityByClassname(i, "base_boss")) != -1)
@@ -341,9 +371,9 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
 			{
+				float damage = f_WandDamage[entity];
 				StartBleedingTimer(i, owner, damage / 8.0, 8, weapon);
 
-				float newdamage = damage;
 				if(i_NpcInternalId[i] == BTD_BLOON)
 				{
 					if(view_as<Bloon>(i).m_bFortified)
@@ -351,9 +381,9 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 						view_as<Bloon>(i).m_bFortified = false;
 						SetEntProp(i, Prop_Data, "m_iMaxHealth", Bloon_Health(false, view_as<Bloon>(i).m_iOriginalType));
 
-						newdamage = float(GetEntProp(i, Prop_Data, "m_iHealth") - Bloon_Health(false, view_as<Bloon>(i).m_iType));
-						if(damage > newdamage)
-							newdamage = damage;
+						damage = float(GetEntProp(i, Prop_Data, "m_iHealth") - Bloon_Health(false, view_as<Bloon>(i).m_iType));
+						if(f_WandDamage[entity] > damage)
+							damage = f_WandDamage[entity];
 					}
 				}
 				else
@@ -363,7 +393,7 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 					Apply_Particle_Teroriser_Indicator(i);
 				}
 
-				SDKHooks_TakeDamage(i, entity, owner, newdamage, DMG_SLASH, weapon, _, pos1);
+				SDKHooks_TakeDamage(i, entity, owner, damage, DMG_SLASH, weapon, _, pos1);
 
 				if(++count > 4)
 					break;
@@ -495,14 +525,9 @@ public void Weapon_Wand_PotionLeadTouch(int entity, int target)
 	ParticleEffectAt(pos1, PARTICLE_ACIDPOOL, 0.5);
 	EmitSoundToAll(SOUND_JAREXPLODE, entity, _, _, _, _, _, _, pos1);
 	
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	int weapon = GetEntPropEnt(entity, Prop_Send, "m_hLauncher");
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 	
-	float damage = 32.5;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 410);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
-
 	int count;
 	int i = MaxClients + 1;
 	while((i = FindEntityByClassname(i, "base_boss")) != -1)
@@ -514,13 +539,13 @@ public void Weapon_Wand_PotionLeadTouch(int entity, int target)
 			{
 				if(view_as<CClotBody>(i).m_iBleedType == BLEEDTYPE_METAL)
 				{
-					SDKHooks_TakeDamage(i, entity, owner, damage, DMG_SLASH, weapon, _, pos1);
-					StartBleedingTimer(i, owner, damage / 4.0, 20, weapon);
+					SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
+					StartBleedingTimer(i, owner, f_WandDamage[entity] / 4.0, 20, weapon);
 				}
 				else
 				{
-					SDKHooks_TakeDamage(i, entity, owner, damage, DMG_SLASH, weapon, _, pos1);
-					StartBleedingTimer(i, owner, damage / 8.0, 8, weapon);
+					SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
+					StartBleedingTimer(i, owner, f_WandDamage[entity] / 8.0, 8, weapon);
 				}
 
 				if(++count > 4)
@@ -550,14 +575,9 @@ public void Weapon_Wand_PotionGoldTouch(int entity, int target)
 	ParticleEffectAt(pos1, PARTICLE_ACIDPOOL, 0.5);
 	EmitSoundToAll(SOUND_JAREXPLODE, entity, _, _, _, _, _, _, pos1);
 	
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	int weapon = GetEntPropEnt(entity, Prop_Send, "m_hLauncher");
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 	
-	float damage = 32.5;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 410);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
-
 	int count;
 	int i = MaxClients + 1;
 	while((i = FindEntityByClassname(i, "base_boss")) != -1)
@@ -569,13 +589,13 @@ public void Weapon_Wand_PotionGoldTouch(int entity, int target)
 			{
 				if(view_as<CClotBody>(i).m_iBleedType == BLEEDTYPE_METAL)
 				{
-					SDKHooks_TakeDamage(i, entity, owner, damage, DMG_SLASH, weapon, _, pos1);
-					StartBleedingTimer(i, owner, damage / 4.0, 20, weapon);
+					SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
+					StartBleedingTimer(i, owner, f_WandDamage[entity] / 4.0, 20, weapon);
 				}
 				else
 				{
-					SDKHooks_TakeDamage(i, entity, owner, damage, DMG_SLASH, weapon, _, pos1);
-					StartBleedingTimer(i, owner, damage / 8.0, 8, weapon);
+					SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
+					StartBleedingTimer(i, owner, f_WandDamage[entity] / 8.0, 8, weapon);
 				}
 
 				float time = GetGameTime() + 3.0;
