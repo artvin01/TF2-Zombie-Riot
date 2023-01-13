@@ -61,7 +61,6 @@ public void Weapon_Nailgun(int client, int weapon, bool crit)
 	float time = 10.0; //Pretty much inf.
 	
 
-
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "furious_flyer_activated",_,false);
 
 	SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
