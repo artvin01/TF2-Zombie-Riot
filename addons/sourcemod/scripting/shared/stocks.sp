@@ -3560,3 +3560,31 @@ stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3], float Be
 	startPoint[1] += actualBeamOffset[1];
 	startPoint[2] += actualBeamOffset[2];
 }
+
+stock bool IsPointHazard(const float pos1[3])
+{
+	float pos2[3], mins[3], maxs[3];
+	int entity = -1;
+	while((entity = FindEntityByClassname(entity, "trigger_hurt")) != -1)
+	{
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
+		GetEntPropVector(entity, Prop_Data, "m_vecMins", mins);
+		GetEntPropVector(entity, Prop_Data, "m_vecMaxs", maxs);
+
+		int found;
+		for(int i; i < 3; i++)
+		{
+			// Example: 1000 > (1000 + -100) && 1000 < (1000 + 100)
+			if(pos1[i] > (pos2[i] + mins[i]) && pos1[i] < (pos2[i] + maxs[i]))
+			{
+				if(++found > 2)
+					return true;
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+	return false;
+}

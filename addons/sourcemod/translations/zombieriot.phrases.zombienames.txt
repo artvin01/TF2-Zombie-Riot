@@ -1147,4 +1147,30 @@
 		//"it"		""
 		//"fr"		""
 	}
+	"Medival Scout"
+	{
+		"en"		"Ridden Scout"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Medival Villager"
+	{
+		"en"		"Villager"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
 }

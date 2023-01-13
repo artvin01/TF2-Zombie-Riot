@@ -33,7 +33,6 @@ static const char g_IdleSounds[][] = {
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
 	"npc/metropolice/vo/pickupthatcan1.wav",
 	"npc/metropolice/vo/pickupthatcan2.wav",
-	"npc/metropolice/vo/pickupthatcan3.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
 	"npc/metropolice/vo/xray.wav",

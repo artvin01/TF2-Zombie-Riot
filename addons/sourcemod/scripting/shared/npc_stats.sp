@@ -1843,6 +1843,64 @@ methodmap CClotBody
 		*/
 		return item;
 	}
+
+	public int EquipItemSeperate(
+	const char[] attachment,
+	const char[] model,
+	const char[] anim = "",
+	int skin = 0,
+	float model_size = 1.0)
+	{
+		int item = CreateEntityByName("prop_dynamic");
+		DispatchKeyValue(item, "model", model);
+
+		if(model_size == 1.0)
+		{
+			DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
+		}
+		else
+		{
+			DispatchKeyValueFloat(item, "modelscale", model_size);
+		}
+
+		DispatchSpawn(item);
+		
+	//	SetEntProp(item, Prop_Send, "m_fEffects", EF_PARENT_ANIMATES);
+		float eyePitch[3];
+		GetEntPropVector(this.index, Prop_Data, "m_angRotation", eyePitch);
+
+		TeleportEntity(item, GetAbsOrigin(this.index), eyePitch, NULL_VECTOR);
+
+		if(!StrEqual(anim, ""))
+		{
+			SetVariantString(anim);
+			AcceptEntityInput(item, "SetAnimation");
+		}
+
+#if defined RPG
+		SetEntPropFloat(item, Prop_Send, "m_fadeMinDist", 1600.0);
+		SetEntPropFloat(item, Prop_Send, "m_fadeMaxDist", 1800.0);
+#endif
+
+		SetVariantString("!activator");
+		AcceptEntityInput(item, "SetParent", this.index);
+/*
+		SetVariantString(attachment);
+		AcceptEntityInput(item, "SetParentAttachmentMaintainOffset"); 			
+*/		
+		SetEntityCollisionGroup(item, 1);
+		/*
+		if(GetEntProp(this.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue))
+		{
+			b_Is_Blue_Npc[item] = true; //make sure they dont collide with stuff
+		}
+		else if(GetEntProp(this.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
+		{
+			b_IsAlliedNpc[item] = true; //make sure they dont collide with stuff
+		}
+		*/
+		return item;
+	}
 	public bool DoSwingTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0, int Npc_type = 0, int Ignore_Buildings = 0)
 	{
 		switch(Npc_type)

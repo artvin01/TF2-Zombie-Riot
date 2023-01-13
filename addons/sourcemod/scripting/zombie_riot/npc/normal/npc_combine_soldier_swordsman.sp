@@ -171,7 +171,7 @@ methodmap CombineSwordsman < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_RUN");
+		int iActivity = npc.LookupActivity("ACT_RIDER_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -205,7 +205,7 @@ methodmap CombineSwordsman < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/jul13_trojan_helmet/jul13_trojan_helmet.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
+
 		npc.StartPathing();
 		
 		
