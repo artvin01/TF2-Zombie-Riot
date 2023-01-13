@@ -237,6 +237,12 @@ bool applied_lastmann_buffs_once = false;
 float f_ArmorHudOffsetX[MAXTF2PLAYERS];
 float f_ArmorHudOffsetY[MAXTF2PLAYERS];
 
+float f_HurtHudOffsetX[MAXTF2PLAYERS];
+float f_HurtHudOffsetY[MAXTF2PLAYERS];
+
+float f_WeaponHudOffsetX[MAXTF2PLAYERS];
+float f_WeaponHudOffsetY[MAXTF2PLAYERS];
+
 #include "zombie_riot/npc.sp"	// Global NPC List
 
 #include "zombie_riot/database.sp"

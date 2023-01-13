@@ -1328,21 +1328,38 @@ void Store_ClientCookiesCached(int client)
 
 void HudSettings_ClientCookiesCached(int client)
 {
-	char buffer[32];
+	char buffer[128];
 	HudSettings_Cookies.Get(client, buffer, sizeof(buffer));
 	if(buffer[0])
 	{
+		// Cookie has stuff, get values
+		float buffers[6];
+		ExplodeStringFloat(buffer, ";", buffers, sizeof(buffers));
+
+		f_ArmorHudOffsetX[client] = buffers[0];
+		f_ArmorHudOffsetY[client] = buffers[1];
+		f_HurtHudOffsetX[client] = buffers[2];
+		f_HurtHudOffsetY[client] = buffers[3];
+		f_WeaponHudOffsetX[client] = buffers[4];
+		f_WeaponHudOffsetY[client] = buffers[5];
+	}
+	else
+	{
+		// Cookie empty, get our own
 		f_ArmorHudOffsetX[client] = -0.085;
 		f_ArmorHudOffsetY[client] = 0.0;
+		f_HurtHudOffsetX[client] = 0.0;
+		f_HurtHudOffsetY[client] = 0.0;
+		f_WeaponHudOffsetX[client] = 0.0;
+		f_WeaponHudOffsetY[client] = 0.0;
 	}
-	float buffers[2];
-	ExplodeStringFloat(buffer, ";", buffers, sizeof(buffers));
+}
 
-	
-	if(CurrentGame && buffers[0] == CurrentGame) 
-	f_ArmorHudOffsetX
-	
-		Database_LoadGameData(client);
+void HudSettings_ClientCookiesDisconnect(int client)
+{
+	char buffer[32];
+	FormatEx(buffer, sizeof(buffer), "%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client]);
+	HudSettings_Cookies.Set(client, buffer);
 }
 
 void Store_SetClientItem(int client, int index, int owned, int scaled, int equipped)
@@ -2333,6 +2350,67 @@ public void ReShowArmorHud(int client)
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Right");
 	menu2.AddItem("-6", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Reset to Default");
+	menu2.AddItem("-7", buffer);
+					
+	FormatEx(buffer, sizeof(buffer), "%t", "Back");
+	menu2.AddItem("-1", buffer);
+
+	menu2.Display(client, MENU_TIME_FOREVER);
+}
+
+public void ReShowHurtHud(int client)
+{
+	char buffer[24];
+
+	Menu menu2 = new Menu(Settings_MenuPage);
+	menu2.SetTitle("%t", "Hurt Hud Setting Inside",f_HurtHudOffsetX[client],f_HurtHudOffsetY[client]);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Up");
+	menu2.AddItem("-9", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Down");
+	menu2.AddItem("-10", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Left");
+	menu2.AddItem("-11", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Right");
+	menu2.AddItem("-12", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Reset to Default");
+	menu2.AddItem("-13", buffer);
+					
+	FormatEx(buffer, sizeof(buffer), "%t", "Back");
+	menu2.AddItem("-1", buffer);
+
+	menu2.Display(client, MENU_TIME_FOREVER);
+
+	Calculate_And_Display_hp(client, 0, 0.0, true); //Apply hud update so they know where it is now
+}
+
+public void ReShowWeaponHud(int client)
+{
+	char buffer[24];
+
+	Menu menu2 = new Menu(Settings_MenuPage);
+	menu2.SetTitle("%t", "Weapon Hud Setting Inside",f_WeaponHudOffsetX[client],f_WeaponHudOffsetY[client]);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Up");
+	menu2.AddItem("-15", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Down");
+	menu2.AddItem("-16", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Left");
+	menu2.AddItem("-17", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Right");
+	menu2.AddItem("-18", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Reset to Default");
+	menu2.AddItem("-19", buffer);
 					
 	FormatEx(buffer, sizeof(buffer), "%t", "Back");
 	menu2.AddItem("-1", buffer);
@@ -2389,31 +2467,22 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				case -3: //Move Armor Hud Up
 				{
 					f_ArmorHudOffsetX[client] -= 0.005;
-					if(f_ArmorHudOffsetX[client] < -0.085)
+					if(f_ArmorHudOffsetX[client] < -1.0)
 					{
-						f_ArmorHudOffsetX[client] = -0.085;
+						f_ArmorHudOffsetX[client] = -1.0;
 					}
 					ReShowArmorHud(client);
 				}
 				case -4: //Move Armor Hud Down
 				{
 					f_ArmorHudOffsetX[client] += 0.005;
-					if(f_ArmorHudOffsetX[client] > 1.0)
+					if(f_ArmorHudOffsetX[client] > -0.085)
 					{
-						f_ArmorHudOffsetX[client] = 1.0;
+						f_ArmorHudOffsetX[client] = -0.085;
 					}
 					ReShowArmorHud(client);
 				}
 				case -5: //Move Armor Hud Left
-				{
-					f_ArmorHudOffsetY[client] += 0.005;
-					if(f_ArmorHudOffsetY[client] > 1.0)
-					{
-						f_ArmorHudOffsetY[client] = 1.0;
-					}
-					ReShowArmorHud(client);
-				}
-				case -6: //Move Armor Hud right
 				{
 					f_ArmorHudOffsetY[client] -= 0.005;
 					if(f_ArmorHudOffsetY[client] < -1.0)
@@ -2422,6 +2491,129 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 					}
 					ReShowArmorHud(client);
 				}
+				case -6: //Move Armor Hud right
+				{
+					f_ArmorHudOffsetY[client] += 0.005;
+					if(f_ArmorHudOffsetY[client] > 1.0)
+					{
+						f_ArmorHudOffsetY[client] = 1.0;
+					}
+					ReShowArmorHud(client);
+				}
+				case -7: //ResetARmorHud To default
+				{
+					f_ArmorHudOffsetX[client] = -0.085;
+					f_ArmorHudOffsetY[client] = 0.0;
+					
+					ReShowArmorHud(client);
+				}
+				
+				//HURT HUD STUFF!
+				case -8:
+				{
+					ReShowHurtHud(client);
+				}
+				case -9: //Move Armor Hud Up
+				{
+					f_HurtHudOffsetX[client] -= 0.005;
+					if(f_HurtHudOffsetX[client] < -1.0)
+					{
+						f_HurtHudOffsetX[client] = -1.0;
+					}
+					ReShowHurtHud(client);
+				}
+				case -10: //Move Armor Hud Down
+				{
+					f_HurtHudOffsetX[client] += 0.005;
+					if(f_HurtHudOffsetX[client] > -0.085)
+					{
+						f_HurtHudOffsetX[client] = -0.085;
+					}
+					ReShowHurtHud(client);
+				}
+				case -11: //Move Armor Hud Left
+				{
+					f_HurtHudOffsetY[client] -= 0.005;
+					if(f_HurtHudOffsetY[client] < 0.1)
+					{
+						f_HurtHudOffsetY[client] = 0.1;
+					}
+					ReShowHurtHud(client);
+				}
+				case -12: //Move Armor Hud right
+				{
+					if(f_HurtHudOffsetY[client] < 0.1)
+					{
+						f_HurtHudOffsetY[client] = 0.1;
+					}
+					f_HurtHudOffsetY[client] += 0.005;
+					if(f_HurtHudOffsetY[client] > 0.995)
+					{
+						f_HurtHudOffsetY[client] = 0.995;
+					}
+					ReShowHurtHud(client);
+				}
+				case -13: //ResetARmorHud To default
+				{
+					f_HurtHudOffsetX[client] = 0.0;
+					f_HurtHudOffsetY[client] = 0.0;
+					
+					ReShowHurtHud(client);
+				}
+
+				//Weapon HUD STUFF!
+				case -14:
+				{
+					ReShowWeaponHud(client);
+				}
+				case -15: //Move Armor Hud Up
+				{
+					f_WeaponHudOffsetX[client] -= 0.005;
+					if(f_WeaponHudOffsetX[client] < -1.0)
+					{
+						f_WeaponHudOffsetX[client] = -1.0;
+					}
+					ReShowWeaponHud(client);
+				}
+				case -16: //Move Armor Hud Down
+				{
+					f_WeaponHudOffsetX[client] += 0.005;
+					if(f_WeaponHudOffsetX[client] > 1.0)
+					{
+						f_WeaponHudOffsetX[client] = 1.0;
+					}
+					ReShowWeaponHud(client);
+				}
+				case -17: //Move Armor Hud Left
+				{
+					f_WeaponHudOffsetY[client] -= 0.005;
+					if(f_WeaponHudOffsetY[client] < 0.10)
+					{
+						f_WeaponHudOffsetY[client] = 0.10;
+					}
+					ReShowWeaponHud(client);
+				}
+				case -18: //Move Armor Hud right
+				{
+					if(f_WeaponHudOffsetY[client] < 0.10)
+					{
+						f_WeaponHudOffsetY[client] = 0.10;
+					}
+					f_WeaponHudOffsetY[client] += 0.005;
+					if(f_WeaponHudOffsetY[client] > 1.0)
+					{
+						f_WeaponHudOffsetY[client] = 1.0;
+					}
+					ReShowWeaponHud(client);
+				}
+				case -19: //ResetARmorHud To default
+				{
+					f_WeaponHudOffsetX[client] = 0.0;
+					f_WeaponHudOffsetY[client] = 0.0;
+					
+					ReShowWeaponHud(client);
+				}
+				
 				case -1: //Move Armor Hud right
 				{
 					Menu menu2 = new Menu(Settings_MenuPage);
@@ -2429,6 +2621,12 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 
 					FormatEx(buffer, sizeof(buffer), "%t", "Armor Hud Setting");
 					menu2.AddItem("-2", buffer);
+
+					FormatEx(buffer, sizeof(buffer), "%t", "Hurt Hud Setting");
+					menu2.AddItem("-8", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Weapon Hud Setting");
+					menu2.AddItem("-14", buffer);
 					
 					FormatEx(buffer, sizeof(buffer), "%t", "Back");
 					menu2.AddItem("-999", buffer);
@@ -2495,6 +2693,12 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 
 					FormatEx(buffer, sizeof(buffer), "%t", "Armor Hud Setting");
 					menu2.AddItem("-2", buffer);
+
+					FormatEx(buffer, sizeof(buffer), "%t", "Hurt Hud Setting");
+					menu2.AddItem("-8", buffer);
+
+					FormatEx(buffer, sizeof(buffer), "%t", "Weapon Hud Setting");
+					menu2.AddItem("-14", buffer);
 					
 					FormatEx(buffer, sizeof(buffer), "%t", "Back");
 					menu2.AddItem("-999", buffer);

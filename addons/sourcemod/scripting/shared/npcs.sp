@@ -1801,9 +1801,9 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		if(!b_npcspawnprotection[victim])
 #endif
 		{
-			red = Health * 255  / MaxHealth;
+			red = (Health + 1) * 255  / (MaxHealth + 1);
 			//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-			green = Health * 255  / MaxHealth;
+			green = (Health + 1) * 255  / (MaxHealth + 1);
 					
 			red = 255 - red;
 				
@@ -1972,7 +1972,14 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 			}
 
 			SetGlobalTransTarget(attacker);
-			SetHudTextParams(-1.0, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
+			float HudY = -1.0;
+
+#if defined ZR
+			HudY += f_HurtHudOffsetY[attacker];
+			HudOffset += f_HurtHudOffsetX[attacker];
+#endif	
+
+			SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
 			if(!raidboss_active)
 			{
 				ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s-%0.f", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);

@@ -659,7 +659,14 @@ public void OnPostThink(int client)
 			
 			Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
 		}
-		SetHudTextParams(-1.0, 0.85, 0.81, red, green, blue, 255);
+		float HudY = 0.85;
+		float HudX = -1.0;
+	
+#if defined ZR
+		HudX += f_WeaponHudOffsetY[client];
+		HudY += f_WeaponHudOffsetX[client];
+#endif
+		SetHudTextParams(HudX, HudY, 0.81, red, green, blue, 255);
 		ShowSyncHudText(client,  SyncHud_WandMana, "%s", buffer);
 	}
 	if(delay_hud[client] < gameTime)	

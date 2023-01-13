@@ -262,8 +262,6 @@ float Increaced_Sentry_damage_High[MAXENTITIES];
 float Resistance_for_building_Low[MAXENTITIES];
 
 
-float f_ArmorHudOffsetX[MAXENTITIES];
-float f_ArmorHudOffsetY[MAXENTITIES];
 
 float Increaced_Overall_damage_Low[MAXENTITIES];
 float Resistance_Overall_Low[MAXENTITIES];
@@ -1042,7 +1040,6 @@ public void OnPluginStart()
 	sv_cheats.Flags &= ~FCVAR_NOTIFY;
 	
 	Niko_Cookies = new Cookie("zr_niko", "Are you a niko", CookieAccess_Protected);
-	HudSettings_Cookies = new Cookie("zr_hudsetting", "hud settings", CookieAccess_Protected);
 	
 	LoadTranslations("zombieriot.phrases");
 	LoadTranslations("zombieriot.phrases.weapons.description");
@@ -1447,6 +1444,7 @@ public void OnClientDisconnect(int client)
 	Store_ClientDisconnect(client);
 	
 #if defined ZR
+	HudSettings_ClientCookiesDisconnect(client);
 	ZR_ClientDisconnect(client);
 	
 	if(Scrap[client] > -1)

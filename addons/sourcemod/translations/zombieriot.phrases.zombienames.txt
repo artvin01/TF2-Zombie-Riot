@@ -2,10 +2,7 @@
 {
 	"nothing"
 	{
-		"en" 		"This text isnt supposed to appear! Please report this to the admins!"
-		"ru" 		"Этот текст не должен появляться! Пожалуйста, сообщите об этом администраторам!"
-		"pt"		"Esta linha de texto não deveria estar aqui, seria uma boa ideia mostrar isso para os administradores."
-		"nl"		"Deze tekst zou niet moeten tevoorschijn komen! Raporteer dit Alstublieft aan een admin!"
+		"en" 		"Example Text!"
 	}
 	"Headcrab Zombie"
 	{

@@ -4,7 +4,7 @@
 #define PARTICLE_JARATE		"peejar_impact_small"
 #define PARTICLE_MADMILK	"peejar_impact_milk"
 #define PARTICLE_ACIDPOOL	"utaunt_bubbles_glow_orange_parent"
-#define PARTICLE_SHRINK		"utaunt_merasmus"
+#define PARTICLE_SHRINK		""//"utaunt_merasmus"
 #define SOUND_JAREXPLODE	"weapons/jar_explode.wav"
 #define SOUND_TRANSFORM1	"ambient/halloween/thunder_04.wav"
 #define SOUND_TRANSFORM2	"ambient/halloween/thunder_01.wav"
@@ -116,7 +116,10 @@ static bool PotionM1(int client, int weapon, SDKHookCB touch, int extra = 0)
 		return false;
 	}
 
-	Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+	float time = GetGameTime() + 1.0;
+	if(Mana_Regen_Delay[client] < time)
+		Mana_Regen_Delay[client] = time;
+	
 	Mana_Hud_Delay[client] = 0.0;
 	Current_Mana[client] -= mana_cost;
 	delay_hud[client] = 0.0;
@@ -393,7 +396,7 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 					Apply_Particle_Teroriser_Indicator(i);
 				}
 
-				SDKHooks_TakeDamage(i, entity, owner, damage, DMG_SLASH, weapon, _, pos1);
+				SDKHooks_TakeDamage(i, entity, owner, damage, DMG_BLAST, weapon, _, pos1);
 
 				if(++count > 4)
 					break;
@@ -484,7 +487,7 @@ static void ApplyTempAttrib(int entity, int index, float multi)
 	Address address = TF2Attrib_GetByDefIndex(entity, index);
 	if(address != Address_Null)
 	{
-		TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * multi);
+		TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) * multi);
 
 		DataPack pack;
 		CreateDataTimer(10.0, StreetFighter_RestoreAttrib, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -522,8 +525,16 @@ public void Weapon_Wand_PotionLeadTouch(int entity, int target)
 
 	float pos1[3], pos2[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
-	ParticleEffectAt(pos1, PARTICLE_ACIDPOOL, 0.5);
 	EmitSoundToAll(SOUND_JAREXPLODE, entity, _, _, _, _, _, _, pos1);
+
+	if(target)
+	{
+		ParticleEffectAt(pos1, PARTICLE_JARATE, 2.0);
+	}
+	else
+	{
+		ParticleEffectAt(pos1, PARTICLE_ACIDPOOL, 0.5);
+	}
 	
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
@@ -540,7 +551,7 @@ public void Weapon_Wand_PotionLeadTouch(int entity, int target)
 				if(view_as<CClotBody>(i).m_iBleedType == BLEEDTYPE_METAL)
 				{
 					SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
-					StartBleedingTimer(i, owner, f_WandDamage[entity] / 4.0, 20, weapon);
+					StartBleedingTimer(i, owner, f_WandDamage[entity] / 2.0, 10, weapon);
 				}
 				else
 				{
@@ -572,8 +583,16 @@ public void Weapon_Wand_PotionGoldTouch(int entity, int target)
 
 	float pos1[3], pos2[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
-	ParticleEffectAt(pos1, PARTICLE_ACIDPOOL, 0.5);
 	EmitSoundToAll(SOUND_JAREXPLODE, entity, _, _, _, _, _, _, pos1);
+	
+	if(target)
+	{
+		ParticleEffectAt(pos1, PARTICLE_JARATE, 2.0);
+	}
+	else
+	{
+		ParticleEffectAt(pos1, PARTICLE_ACIDPOOL, 0.5);
+	}
 	
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
@@ -590,7 +609,7 @@ public void Weapon_Wand_PotionGoldTouch(int entity, int target)
 				if(view_as<CClotBody>(i).m_iBleedType == BLEEDTYPE_METAL)
 				{
 					SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
-					StartBleedingTimer(i, owner, f_WandDamage[entity] / 4.0, 20, weapon);
+					StartBleedingTimer(i, owner, f_WandDamage[entity] / 2.0, 10, weapon);
 				}
 				else
 				{
@@ -624,34 +643,76 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 
 	SDKUnhook(entity, SDKHook_StartTouchPost, Weapon_Wand_PotionShrinkTouch);
 
-	if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)))
-	{
-		float pos1[3], pos2[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
-		ParticleEffectAt(pos1, PARTICLE_SHRINK, 1.0);
-		EmitSoundToAll(SOUND_SHRINK, entity, _, _, _, _, _, _, pos1);
+	float pos1[3], pos2[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+	ParticleEffectAt(pos1, PARTICLE_SHRINK, 1.0);
+	EmitSoundToAll(SOUND_SHRINK, entity, _, _, _, _, _, _, pos1);
 
-		int count;
-		int i = MaxClients + 1;
-		while((i = FindEntityByClassname(i, "base_boss")) != -1)
+	bool raid = IsValidEntity(EntRefToEntIndex(RaidBossActive));
+
+	int count;
+	int i = MaxClients + 1;
+	while((i = FindEntityByClassname(i, "base_boss")) != -1)
+	{
+		if(!b_NpcHasDied[i] && f_MaimDebuff[i] != FAR_FUTURE && GetEntProp(i, Prop_Send, "m_iTeamNum") != 2)
 		{
-			if(!b_NpcHasDied[i] && !b_thisNpcIsABoss[i] && GetEntProp(i, Prop_Send, "m_iTeamNum") != 2)
+			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
+			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS * 2))
 			{
-				GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
-				if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS * 2))
+				if(raid)
+				{
+					float time = GetGameTime() + 1.1;
+					if(f_MaimDebuff[i] < time)
+						f_MaimDebuff[i] = time;
+					
+					time += 1.9;
+					if(f_CrippleDebuff[i] < time)
+						f_CrippleDebuff[i] = time;
+					
+					break;
+				}
+				
+				float scale = GetEntPropFloat(i, Prop_Send, "m_flModelScale");
+				SetEntPropFloat(i, Prop_Send, "m_flModelScale", scale * 0.35);
+
+				if(b_thisNpcIsABoss[i])
+				{
+					if(!count)
+					{
+						float time = GetGameTime() + 1.1;
+						if(f_MaimDebuff[i] < time)
+							f_MaimDebuff[i] = time;
+						
+						time += 1.9;
+						if(f_CrippleDebuff[i] < time)
+							f_CrippleDebuff[i] = time;
+						
+						CreateTimer(1.0, Weapon_Wand_PotionEndShrink, EntIndexToEntRef(i), TIMER_FLAG_NO_MAPCHANGE);
+						break;
+					}
+				}
+				else
 				{
 					f_MaimDebuff[i] = FAR_FUTURE;
 					f_CrippleDebuff[i] = FAR_FUTURE;
-
-					float scale = GetEntPropFloat(i, Prop_Send, "m_flModelScale");
-					SetEntPropFloat(i, Prop_Send, "m_flModelScale", scale * 0.35);
-					
-					if(++count > 1)
-						break;
 				}
+				
+				if(++count > 1)
+					break;
 			}
 		}
 	}
 
 	RemoveEntity(entity);
+}
+
+public Action Weapon_Wand_PotionEndShrink(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(entity != -1)
+	{
+		float scale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale / 0.35);
+	}
+	return Plugin_Continue;
 }
