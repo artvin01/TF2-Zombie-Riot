@@ -774,7 +774,7 @@ public void OnPostThink(int client)
 					}
 					Format(buffer, sizeof(buffer), "%s%.1f", buffer, slowdown_amount);
 				}
-				SetHudTextParams(0.175, 0.86, 0.81, red, green, blue, 255);
+				SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.86 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
 				ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
 			}
 			

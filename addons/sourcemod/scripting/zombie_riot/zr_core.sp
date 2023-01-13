@@ -234,6 +234,9 @@ bool b_SpecialGrigoriStore;
 float f_ExtraDropChanceRarity = 1.0;
 bool applied_lastmann_buffs_once = false;
 
+float f_ArmorHudOffsetX[MAXTF2PLAYERS];
+float f_ArmorHudOffsetY[MAXTF2PLAYERS];
+
 #include "zombie_riot/npc.sp"	// Global NPC List
 
 #include "zombie_riot/database.sp"
@@ -343,6 +346,7 @@ void ZR_PluginStart()
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
+	HudSettings_Cookies = new Cookie("zr_hudsetting", "hud settings", CookieAccess_Protected);
 	
 	CvarSvRollagle = FindConVar("sv_rollangle");
 	if(CvarSvRollagle)

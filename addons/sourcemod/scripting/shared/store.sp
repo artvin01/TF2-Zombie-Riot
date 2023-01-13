@@ -1326,6 +1326,25 @@ void Store_ClientCookiesCached(int client)
 		Database_LoadGameData(client);
 }
 
+void HudSettings_ClientCookiesCached(int client)
+{
+	char buffer[32];
+	HudSettings_Cookies.Get(client, buffer, sizeof(buffer));
+	if(buffer[0])
+	{
+		f_ArmorHudOffsetX[client] = -0.085;
+		f_ArmorHudOffsetY[client] = 0.0;
+	}
+	float buffers[2];
+	ExplodeStringFloat(buffer, ";", buffers, sizeof(buffers));
+
+	
+	if(CurrentGame && buffers[0] == CurrentGame) 
+	f_ArmorHudOffsetX
+	
+		Database_LoadGameData(client);
+}
+
 void Store_SetClientItem(int client, int index, int owned, int scaled, int equipped)
 {
 	static Item item;
@@ -2266,6 +2285,9 @@ public void MenuPage(int client, int section)
 			menu.AddItem("-14", buffer);
 		}
 		
+		FormatEx(buffer, sizeof(buffer), "%t", "Settings"); //Settings
+		menu.AddItem("-23", buffer);
+		
 		FormatEx(buffer, sizeof(buffer), "%t", "Gamemode Credits"); //credits is whatever, put in back.
 		menu.AddItem("-21", buffer);
 	}
@@ -2292,6 +2314,137 @@ static char[] AddPluses(int amount)
 	return buffer;
 }
 */
+
+public void ReShowArmorHud(int client)
+{
+	char buffer[24];
+
+	Menu menu2 = new Menu(Settings_MenuPage);
+	menu2.SetTitle("%t", "Armor Hud Setting Inside",f_ArmorHudOffsetX[client],f_ArmorHudOffsetY[client]);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Up");
+	menu2.AddItem("-3", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Down");
+	menu2.AddItem("-4", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Left");
+	menu2.AddItem("-5", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Right");
+	menu2.AddItem("-6", buffer);
+					
+	FormatEx(buffer, sizeof(buffer), "%t", "Back");
+	menu2.AddItem("-1", buffer);
+
+	menu2.Display(client, MENU_TIME_FOREVER);
+}
+
+public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+			{
+				static Item item;
+				menu.GetItem(0, item.Name, sizeof(item.Name));
+				int index = StringToInt(item.Name);
+				if(index < 0)
+				{
+					item.Section = -1;
+				}
+				else
+				{
+					StoreItems.GetArray(index, item);
+					if(item.Section != -1)
+						StoreItems.GetArray(item.Section, item);
+				}
+
+				MenuPage(client, item.Section);
+			}
+			/*
+			else if(choice != MenuCancel_Disconnected)
+			{
+				StopSound(client, SNDCHAN_STATIC, "#items/tf_music_upgrade_machine.wav");
+			}
+			*/
+		}
+		case MenuAction_Select:
+		{
+			char buffer[24];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			int id = StringToInt(buffer);
+			switch(id)
+			{
+				case -2:
+				{
+					ReShowArmorHud(client);
+				}
+				case -3: //Move Armor Hud Up
+				{
+					f_ArmorHudOffsetX[client] -= 0.005;
+					if(f_ArmorHudOffsetX[client] < -0.085)
+					{
+						f_ArmorHudOffsetX[client] = -0.085;
+					}
+					ReShowArmorHud(client);
+				}
+				case -4: //Move Armor Hud Down
+				{
+					f_ArmorHudOffsetX[client] += 0.005;
+					if(f_ArmorHudOffsetX[client] > 1.0)
+					{
+						f_ArmorHudOffsetX[client] = 1.0;
+					}
+					ReShowArmorHud(client);
+				}
+				case -5: //Move Armor Hud Left
+				{
+					f_ArmorHudOffsetY[client] += 0.005;
+					if(f_ArmorHudOffsetY[client] > 1.0)
+					{
+						f_ArmorHudOffsetY[client] = 1.0;
+					}
+					ReShowArmorHud(client);
+				}
+				case -6: //Move Armor Hud right
+				{
+					f_ArmorHudOffsetY[client] -= 0.005;
+					if(f_ArmorHudOffsetY[client] < -1.0)
+					{
+						f_ArmorHudOffsetY[client] = -1.0;
+					}
+					ReShowArmorHud(client);
+				}
+				case -1: //Move Armor Hud right
+				{
+					Menu menu2 = new Menu(Settings_MenuPage);
+					menu2.SetTitle("%t", "Settings Page");
+
+					FormatEx(buffer, sizeof(buffer), "%t", "Armor Hud Setting");
+					menu2.AddItem("-2", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Back");
+					menu2.AddItem("-999", buffer);
+					
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
+				default:
+				{
+					MenuPage(client, -1);
+				}
+			}
+		}
+
+	}
+	return 0;
+}
 public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
@@ -2334,6 +2487,20 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 			int id = StringToInt(buffer);
 			switch(id)
 			{
+				
+				case -23:
+				{
+					Menu menu2 = new Menu(Settings_MenuPage);
+					menu2.SetTitle("%t", "Settings Page");
+
+					FormatEx(buffer, sizeof(buffer), "%t", "Armor Hud Setting");
+					menu2.AddItem("-2", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Back");
+					menu2.AddItem("-999", buffer);
+					
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
 				case -21:
 				{
 					Menu menu2 = new Menu(Store_MenuPage);
