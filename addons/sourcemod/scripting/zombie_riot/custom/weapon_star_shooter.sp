@@ -156,7 +156,6 @@ static bool BEAM_TraceWallsOnly(int entity, int contentsMask)
 
 static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
-	static char classname[64];
 	if (IsValidEntity(entity))
 	{
 		entity = Target_Hit_Wand_Detection(client, entity);

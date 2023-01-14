@@ -335,7 +335,7 @@ public void Weapon_Wand_Cryo_Shoot(int client, int weapon, bool crit, int slot, 
 
 //If you use SearchDamage (above), convert this timer to a void method and rename it to Cryo_DealDamage:
 
-public Action Cryo_Touch(int entity, int other)
+public void Cryo_Touch(int entity, int other)
 {
 	int target = Target_Hit_Wand_Detection(entity, other);
 	if (target > 0)	
@@ -380,6 +380,16 @@ public Action Cryo_Touch(int entity, int other)
 
 			int owner = EntRefToEntIndex(i_WandOwner[entity]);
 			int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+			if(owner == -1)
+			{
+				int particle = EntRefToEntIndex(i_WandParticle[entity]);
+				if(IsValidEntity(particle))
+				{
+					RemoveEntity(particle);
+				}
+				RemoveEntity(entity);
+				
+			}
 
 			SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 0.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
 			
@@ -408,7 +418,6 @@ public Action Cryo_Touch(int entity, int other)
 			f_WandDamage[entity] *= Cryo_M1_ReductionScale;
 		}
 	}
-	return Plugin_Continue;
 }
 
 /*
