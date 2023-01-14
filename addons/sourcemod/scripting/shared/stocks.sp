@@ -2415,7 +2415,10 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 		GetEntityClassname(other_entity, other_classname, sizeof(other_classname));
 		if (StrContains(other_classname, "base_boss") != -1 || StrContains(other_classname, "func_breakable") != -1 || StrContains(other_classname, "prop_dynamic") != -1)
 		{
-			return other_entity;
+			if(GetEntProp(other_entity, Prop_Data, "m_iHealth") > 0) //make sure to check.
+			{
+				return other_entity;				
+			}
 		}
 	}
 	return -1;
