@@ -2216,7 +2216,6 @@ void NPC_DeadEffects(int entity)
 			Attributes_OnKill(client, WeaponLastHit);
 		}
 	}
-	RemoveNpcThingsAgain(entity);
 }
 
 #if defined ZR

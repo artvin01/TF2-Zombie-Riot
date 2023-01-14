@@ -1126,6 +1126,7 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 
 public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 {
+	SetGlobalTransTarget(client);
 	switch(action)
 	{
 		case MenuAction_End:
@@ -2420,6 +2421,8 @@ public void ReShowWeaponHud(int client)
 
 public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choice)
 {
+	SetGlobalTransTarget(client);
+
 	switch(action)
 	{
 		case MenuAction_End:
@@ -2645,6 +2648,8 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 }
 public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 {
+	SetGlobalTransTarget(client);
+	
 	switch(action)
 	{
 		case MenuAction_End:
