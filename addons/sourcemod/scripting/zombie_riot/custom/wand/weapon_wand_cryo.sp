@@ -445,6 +445,14 @@ public Action Cryo_Timer(Handle CryoDMG, int ref)
 					{
 						Cryo_FreezeLevel[target] += (Health_Before_Hurt - Health_After_Hurt);
 						float maxHealth = float(GetEntProp(target, Prop_Data, "m_iMaxHealth"));
+						float damageRequiredForFreeze = Cryo_FreezeRequirement;
+						if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+						{
+							if(target == EntRefToEntIndex(RaidBossActive))
+							{
+								Cryo_FreezeRequirement *= 0.25; //Reduce way further so its good against raids.
+							}
+						}
 						if (Cryo_FreezeLevel[target] >= maxHealth * Cryo_FreezeRequirement)
 						{
 							Cryo_SlowType_Zombie[target] = Cryo_SlowType[entity];
@@ -482,25 +490,34 @@ public void Cryo_FreezeZombie(int zombie)
 	Cryo_Frozen[zombie] = true;
 	Cryo_FreezeLevel[zombie] = 0.0;
 
+	float FreezeDuration = Cryo_FreezeDuration;
+	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+	{
+		if(target == EntRefToEntIndex(RaidBossActive))
+		{
+			FreezeDuration *= 0.5; //Cut in half agianst raids.
+		}
+	}
+
 
 	SetEntityRenderMode(zombie, RENDER_TRANSCOLOR, false, 1, false, true);
 	SetEntityRenderColor(zombie, 0, 0, 255, 255, false, false, true);
-	CreateTimer(Cryo_FreezeDuration, Cryo_Unfreeze, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(FreezeDuration, Cryo_Unfreeze, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
 	float position[3];
 	GetEntPropVector(zombie, Prop_Data, "m_vecAbsOrigin", position);
 	switch (Cryo_SlowType_Zombie[zombie])
 	{
 		case 0:
 		{
-			f_VeryLowIceDebuff[zombie] = GetGameTime() + (Cryo_SlowDuration + Cryo_FreezeDuration);
+			f_VeryLowIceDebuff[zombie] = GetGameTime() + (Cryo_SlowDuration + FreezeDuration);
 		}
 		case 1:
 		{
-			f_LowIceDebuff[zombie] = GetGameTime() + (Cryo_SlowDuration + Cryo_FreezeDuration);
+			f_LowIceDebuff[zombie] = GetGameTime() + (Cryo_SlowDuration + FreezeDuration);
 		}
 		case 2:
 		{
-			f_HighIceDebuff[zombie] = GetGameTime() + (Cryo_SlowDuration + Cryo_FreezeDuration);
+			f_HighIceDebuff[zombie] = GetGameTime() + (Cryo_SlowDuration + FreezeDuration);
 		}
 	}
 	//Un-comment the following line if you want a particle to appear on frozen zombies:
