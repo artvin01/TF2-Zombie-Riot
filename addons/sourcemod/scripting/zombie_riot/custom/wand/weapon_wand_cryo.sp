@@ -394,10 +394,10 @@ public Action Cryo_Touch(int entity, int other)
 				{
 					if(target == EntRefToEntIndex(RaidBossActive))
 					{
-						Cryo_FreezeRequirement *= 0.15; //Reduce way further so its good against raids.
+						damageRequiredForFreeze *= 0.15; //Reduce way further so its good against raids.
 					}
 				}
-				if (Cryo_FreezeLevel[target] >= maxHealth * Cryo_FreezeRequirement)
+				if (Cryo_FreezeLevel[target] >= maxHealth * damageRequiredForFreeze)
 				{
 					Cryo_SlowType_Zombie[target] = Cryo_SlowType[entity];
 					Cryo_FreezeZombie(target);
