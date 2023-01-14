@@ -1358,7 +1358,7 @@ void HudSettings_ClientCookiesCached(int client)
 
 void HudSettings_ClientCookiesDisconnect(int client)
 {
-	char buffer[32];
+	char buffer[128];
 	FormatEx(buffer, sizeof(buffer), "%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client]);
 	HudSettings_Cookies.Set(client, buffer);
 }

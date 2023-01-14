@@ -10,14 +10,14 @@ static float Cryo_M1_Damage_Pap2 = 40.0; //M1 base damage per particle (Pack-a-P
 static float Cryo_M1_Radius = 150.0; //Size of each cryo particle, in hammer units
 static float Cryo_M1_Spread = 6.0;	//Random spread for particles
 static float Cryo_M1_Time = 175.0;	//Time of M1 particles
-static float Cryo_M1_Velocity = 500.0;	//Velocity of M1 particles
+static float Cryo_M1_Velocity = 750.0;	//Velocity of M1 particles
 static float Cryo_M1_ReductionScale = 0.66; //Amount to multiply M1 damage each time it hits a zombie
 
-static float Cryo_M2_Damage = 350.0; //M2 base damage
+static float Cryo_M2_Damage = 450.0; //M2 base damage
 static float Cryo_M2_FreezeMult = 2.0;	//Amount to multiply damage dealt by M2 to frozen zombies
-static float Cryo_M2_Damage_Pap = 450.0; //M2 base damage (Pack-a-Punch)
+static float Cryo_M2_Damage_Pap = 550.0; //M2 base damage (Pack-a-Punch)
 static float Cryo_M2_FreezeMult_Pap = 3.0;	//Amount to multiply damage dealt by M2 to frozen zombies (Pack-a-Punch)
-static float Cryo_M2_Damage_Pap2 = 550.0; //M2 base damage (Pack-a-Punch Tier 2)
+static float Cryo_M2_Damage_Pap2 = 650.0; //M2 base damage (Pack-a-Punch Tier 2)
 static float Cryo_M2_FreezeMult_Pap2 = 4.0;	//Amount to multiply damage dealt by M2 to frozen zombies (Pack-a-Punch Tier 2)
 static int Cryo_M2_Cost = 250;	//M2 Cost
 static float Cryo_M2_Radius = 400.0;
@@ -28,7 +28,7 @@ static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float Cryo_M2_Cooldown = 10.0;	//M2 Cooldown
 static float Cryo_M2_Falloff = 0.7;	//Amount to multiply damage dealt by M2 for each zombie it hits, like explosives
 
-static float Cryo_FreezeRequirement = 0.35; //% of target's max health M1 must do in order to trigger the freeze
+static float Cryo_FreezeRequirement = 0.25; //% of target's max health M1 must do in order to trigger the freeze
 static float Cryo_FreezeDuration = 2.0; //Duration to freeze zombies when the threshold is surpassed
 static float Cryo_SlowDuration = 5.0; //Duration to slow zombies when they are unfrozen
 static int Cryo_SlowType[MAXENTITIES] = {0, ...}; //Type of slow applied by the projectile, 0: None, 1: Weak Teslar Slow, 2: Strong Teslar Slow
