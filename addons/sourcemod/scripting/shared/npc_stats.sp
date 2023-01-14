@@ -2978,12 +2978,13 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 			Raidboss_Clean_Everyone();
 		}
 #endif
-		
-		NPC_DeadEffects(pThis); //Do kill attribute stuff
 		b_NpcHasDied[pThis] = true;
 #if defined ZR
 		CleanAllAppliedEffects_BombImplanter(pThis, true);
-#endif
+#endif		
+	
+		NPC_DeadEffects(pThis); //Do kill attribute stuff
+		RemoveNpcThingsAgain(pThis);
 		NPCDeath(pThis);
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.

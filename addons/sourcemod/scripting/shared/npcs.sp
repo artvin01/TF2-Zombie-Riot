@@ -2216,7 +2216,6 @@ void NPC_DeadEffects(int entity)
 			Attributes_OnKill(client, WeaponLastHit);
 		}
 	}
-	
 	RemoveNpcThingsAgain(entity);
 }
 
@@ -2253,11 +2252,11 @@ void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false)
 		flPos[2] += 40.0;
 		if(do_boom)
 		{
+			//Its 0 for no reason, i only ever set it to 0 here or in the m2 terroiser one
 			if(i_HowManyBombsOnThisEntity[entity][client] > 0)
 			{
 				if(IsValidClient(client))
 				{
-					PrintToChatAll("yes");
 					float damage = f_BombEntityWeaponDamageApplied[entity][client] * i_HowManyBombsOnThisEntity[entity][client];
 					i_HowManyBombsOnThisEntity[entity][client] = 0;
 					f_BombEntityWeaponDamageApplied[entity][client] = 0.0;
