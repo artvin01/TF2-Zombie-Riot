@@ -188,6 +188,13 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Want_CalciumWandTouch(entity, target);
 		}
+		/* Doesnt work, this projectile has noclip, go to DHOOK public bool PassfilterGlobal(int ent1, int ent2, bool result)
+		case 11:
+		{
+			
+			Cryo_Touch(entity, target);
+		}
+		*/
 	}
 #else
 	switch(i_WandIdNumber[entity])

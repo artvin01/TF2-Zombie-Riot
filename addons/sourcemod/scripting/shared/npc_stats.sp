@@ -6763,6 +6763,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_TextEntity[entity][1] = -1;
 	i_TextEntity[entity][2] = -1;
 	i_Changed_WalkCycle[entity] = -1;
+	ResetFreeze(entity);
 	
 	FormatEx(c_HeadPlaceAttachmentGibName[entity], sizeof(c_HeadPlaceAttachmentGibName[]), "");
 }
