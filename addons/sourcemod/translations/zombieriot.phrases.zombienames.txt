@@ -935,12 +935,13 @@
 	"Medic Constructor"
 	{
 		"en"		"Medic Constructor"
+		"ru"		"Медик-строитель"
 	}
 	"Gambler"
 	{
 		"en"	"Gambler"
-		"de"	"Gambler"
-		//"ru"		""//Not Really needed i just added them just incase others want their lang
+		"de"	"Gambler" //Not Really needed i just added them just in case others want their lang
+		"ru"	"Азартный игрок"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -953,7 +954,7 @@
 	{
 		"en"	"Pablo Gonzales"
 		"de"	"Pablo Gonzales"
-		//"ru"		""
+		"ru"	"Пабло Гонсалес"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -966,7 +967,7 @@
 	{
 		"en"	"Doktor Medick"
 		"de"	"Doktor Medick"
-		//"ru"		""
+		"ru"	"Доктор Мэдик"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -979,7 +980,7 @@
 	{
 		"en"	"Eternal Kaptain Heavy"
 		"de"	"Eternal Kaptain Heavy"
-		//"ru"		""
+		"ru"	"Вечный капитан Пулемётчик"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -992,7 +993,7 @@
 	{
 		"en"	"Booty Executioner"
 		"de"	"Booty Executioner"
-		//"ru"		""
+		"ru"	"Ягодичный Палач"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1005,7 +1006,7 @@
 	{
 		"en"	"Sandvich Slayer"
 		"de"	"Sandvich Slayer"
-		//"ru"		""
+		"ru"	"Палач Бутербродов"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1018,7 +1019,7 @@
 	{
 		"en"	"Payday Cloaker"
 		"de"	"Payday Cloaker"
-		//"ru"		""
+		"ru"	"Клокер из Payday"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1031,7 +1032,7 @@
 	{
 		"en"		"Bunker Kahmlstein"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Бункерный Кахмльштайн"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1044,7 +1045,7 @@
 	{
 		"en"		"Zerofuse"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Зерофуз"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1057,7 +1058,7 @@
 	{
 		"en"		"Bunker Bot Soldier"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Бункерный бот-солдат"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1070,7 +1071,7 @@
 	{
 		"en"		"Bunker Bot Sniper"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Бункерный бот-снайпер"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1083,7 +1084,7 @@
 	{
 		"en"		"Bunker Skeleton"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Бункерный скелет"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1096,7 +1097,7 @@
 	{
 		"en"		"Bunker Small Skeleton"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Бункерный маленький скелет"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1109,7 +1110,7 @@
 	{
 		"en"		"Bunker Skeleton King"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Бункерный король скелетов"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1122,7 +1123,7 @@
 	{
 		"en"		"Bunker Headless Horseman"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Бункерный Пеший всадник без головы"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1135,7 +1136,7 @@
 	{
 		"en"		"Gold Bloon"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Золотой шар"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
