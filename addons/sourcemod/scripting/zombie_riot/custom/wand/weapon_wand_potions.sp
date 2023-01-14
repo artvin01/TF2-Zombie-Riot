@@ -610,7 +610,7 @@ public void Weapon_Wand_PotionGoldTouch(int entity, int target)
 					StartBleedingTimer(i, owner, f_WandDamage[entity] / 8.0, 8, weapon);
 				}
 
-				float time = GetGameTime() + 3.0;
+				float time = GetGameTime() + 1.5;
 				if(f_CrippleDebuff[i] < time)
 					f_CrippleDebuff[i] = time;
 				
@@ -658,7 +658,7 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 					if(f_MaimDebuff[i] < time)
 						f_MaimDebuff[i] = time;
 					
-					time += 1.9;
+					time += 0.4;
 					if(f_CrippleDebuff[i] < time)
 						f_CrippleDebuff[i] = time;
 					
