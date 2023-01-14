@@ -836,7 +836,7 @@
 	{
 		"en"	"Consumes mana with each shot. M2 Gives extra attackspeed for a short time."
 		"ru"	"Расходует ману с каждым выстрелом. М2 - даёт доп. скорость атаки на короткое время."
-		"chi"   "每次射击消耗法力值。在短时间内增加额外的攻击速度。"
+		"chi"   "每次射击消耗法力值。按下鼠标右键在短时间内增加额外的攻击速度。"
 	}
 	"Bad Wand Pap 1"
 	{
