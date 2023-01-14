@@ -1125,6 +1125,7 @@ methodmap CClotBody
 		if(f_TankGrabbedStandStill[this.index] > GetGameTime(this.index))
 		{
 			speed_for_return = 0.0;
+			return speed_for_return;
 		}
 		if(b_PernellBuff[this.index])
 		{
