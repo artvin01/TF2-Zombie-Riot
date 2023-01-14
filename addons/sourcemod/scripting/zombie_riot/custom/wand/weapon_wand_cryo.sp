@@ -450,7 +450,7 @@ public Action Cryo_Timer(Handle CryoDMG, int ref)
 						{
 							if(target == EntRefToEntIndex(RaidBossActive))
 							{
-								Cryo_FreezeRequirement *= 0.25; //Reduce way further so its good against raids.
+								Cryo_FreezeRequirement *= 0.15; //Reduce way further so its good against raids.
 							}
 						}
 						if (Cryo_FreezeLevel[target] >= maxHealth * Cryo_FreezeRequirement)
@@ -504,7 +504,7 @@ public void Cryo_FreezeZombie(int zombie)
 	SetEntityRenderColor(zombie, 0, 0, 255, 255, false, false, true);
 	CreateTimer(FreezeDuration, Cryo_Unfreeze, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
 	FreezeNpcInTime(zombie, FreezeDuration);
-	
+
 	float position[3];
 	GetEntPropVector(zombie, Prop_Data, "m_vecAbsOrigin", position);
 	switch (Cryo_SlowType_Zombie[zombie])
