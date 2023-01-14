@@ -493,7 +493,7 @@ public void Cryo_FreezeZombie(int zombie)
 	float FreezeDuration = Cryo_FreezeDuration;
 	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
-		if(target == EntRefToEntIndex(RaidBossActive))
+		if(zombie == EntRefToEntIndex(RaidBossActive))
 		{
 			FreezeDuration *= 0.5; //Cut in half agianst raids.
 		}
@@ -503,6 +503,8 @@ public void Cryo_FreezeZombie(int zombie)
 	SetEntityRenderMode(zombie, RENDER_TRANSCOLOR, false, 1, false, true);
 	SetEntityRenderColor(zombie, 0, 0, 255, 255, false, false, true);
 	CreateTimer(FreezeDuration, Cryo_Unfreeze, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
+	FreezeNpcInTime(zombie, FreezeDuration);
+	
 	float position[3];
 	GetEntPropVector(zombie, Prop_Data, "m_vecAbsOrigin", position);
 	switch (Cryo_SlowType_Zombie[zombie])
