@@ -1672,7 +1672,7 @@
 	}
 	"Alchemist Potion Pap 2"
 	{
-		"en"	"Able to apply an explosive coat over an enemy which causes an explosion if killed by an explosive attack.\n "
+		"en"	"Able to apply an explosive coat over an enemy which causes an explosion if killed.\n "
 	}
 	"Alchemist Potion Pap 3"
 	{

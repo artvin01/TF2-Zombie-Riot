@@ -2585,7 +2585,7 @@ public void RemoveNpcThingsAgain(int entity)
 	//Dont have to check for if its an npc or not, really doesnt matter in this case, just be sure to delete it cus why not
 	//incase this breaks, add a baseboss check
 #if defined ZR
-	CleanAllApplied_Aresenal(entity);
+	CleanAllApplied_Aresenal(entity, true);
 	CleanAllApplied_Cryo(entity);
 	b_NpcForcepowerupspawn[entity] = 0;	
 #endif

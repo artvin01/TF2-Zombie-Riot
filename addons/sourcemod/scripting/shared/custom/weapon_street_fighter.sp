@@ -197,9 +197,10 @@ public Action StreetFighter_RestoreAttrib(Handle timer, DataPack pack)
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	if(entity != INVALID_ENT_REFERENCE)
 	{
-		Address address = TF2Attrib_GetByDefIndex(entity, pack.ReadCell());
+		int index = pack.ReadCell();
+		Address address = TF2Attrib_GetByDefIndex(entity, index);
 		if(address != Address_Null)
-			TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) / pack.ReadFloat());
+			TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) / pack.ReadFloat());
 	}
 	return Plugin_Stop;
 }

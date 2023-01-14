@@ -197,8 +197,6 @@ public void Weapon_Wand_PotionAnim(int ref)
 
 public void Weapon_Wand_PotionBasicTouch(int entity, int target)
 {
-	PrintToChatAll("%d", target);
-
 	if(target)
 	{
 		if(target <= MaxClients)
@@ -497,9 +495,10 @@ public Action Weapon_Wand_PotionRestoreAttrib(Handle timer, DataPack pack)
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	if(entity != INVALID_ENT_REFERENCE)
 	{
-		Address address = TF2Attrib_GetByDefIndex(entity, pack.ReadCell());
+		int index = pack.ReadCell();
+		Address address = TF2Attrib_GetByDefIndex(entity, index);
 		if(address != Address_Null)
-			TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) / pack.ReadFloat());
+			TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) / pack.ReadFloat());
 	}
 	return Plugin_Stop;
 }

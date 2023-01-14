@@ -2248,16 +2248,26 @@ void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false)
 	for (int client = 1; client <= MaxClients; client++)
 	{
 #if defined ZR
+		float flPos[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flPos);
+		flPos[2] += 40.0;
 		if(do_boom)
 		{
 			if(i_HowManyBombsOnThisEntity[entity][client] > 0)
 			{
-				float damage = f_BombEntityWeaponDamageApplied[entity][client] * i_HowManyBombsOnThisEntity[entity][client];
-				Cause_Terroriser_Explosion(client, entity, damage, WorldSpaceCenter(entity));
+				if(IsValidClient(client))
+				{
+					PrintToChatAll("yes");
+					float damage = f_BombEntityWeaponDamageApplied[entity][client] * i_HowManyBombsOnThisEntity[entity][client];
+					i_HowManyBombsOnThisEntity[entity][client] = 0;
+					f_BombEntityWeaponDamageApplied[entity][client] = 0.0;
+					Cause_Terroriser_Explosion(client, entity, damage, flPos);
+				}
 			}
 		}
 #endif
-		i_HowManyBombsOnThisEntity[entity][client] = 0; //to clean on death ofc.
+		//This is the only time it happens ever
+		i_HowManyBombsOnThisEntity[entity][client] = 0;
 		f_BombEntityWeaponDamageApplied[entity][client] = 0.0;
 	}
 }
