@@ -2,6 +2,7 @@
 #pragma newdecls required
 
 static float Cosmic_BeamSpeed[MAXPLAYERS+1] = {0.0, ...};
+static float Cosmic_Base_BeamSpeed[MAXPLAYERS+1] = {0.0, ...};
 static float Cosmic_DMG[MAXPLAYERS+1] = {0.0, ...};
 static float CosmicActualDamage[MAXPLAYERS+1] = {0.0, ...};
 static float Cosmic_Radius[MAXPLAYERS+1] = {0.0, ...};
@@ -46,12 +47,20 @@ static int Cosmic_Terror_GiveAmmo_interval[MAXPLAYERS+1]={0,...};
 
 public void Cosmic_Terror_Pap0(int client, int weapon, bool &result, int slot)
 {
-	Cosmic_Activate(client, weapon);
+	int new_ammo = GetAmmo(client, 23);
+	if(new_ammo >= 5)
+	{
+		Cosmic_Activate(client, weapon);
+	}
+	else
+	{
+		PrintHintText(client,"You ran out of Laser Battery!");
+	}
 	Cosmic_Heat_Max[client]=1000.0; //How much heat before we force a shutdown.
-	Cosmic_BeamSpeed[client] = 1.5;	//how fast the beam is
+	Cosmic_Base_BeamSpeed[client] = 1.5;	//how fast the beam is
 	Cosmic_Radius[client] = 100.0;	//damage radius
 	Cosmic_Terror_Pap[client]=0;
-	float time = 5.0;
+	float time = 4.0;
 	Cosmic_Terror_Charge_Timer[client]=GetGameTime()+time;	//Charge time for the beam.
 	Cosmic_Terror_Sound_Charge_Timer[client]=time/4.0;
 	
@@ -63,12 +72,20 @@ public void Cosmic_Terror_Pap0(int client, int weapon, bool &result, int slot)
 }
 public void Cosmic_Terror_Pap1(int client, int weapon, bool &result, int slot)
 {
-	Cosmic_Activate(client, weapon);
+	int new_ammo = GetAmmo(client, 23);
+	if(new_ammo >= 5)
+	{
+		Cosmic_Activate(client, weapon);
+	}
+	else
+	{
+		PrintHintText(client,"You ran out of Laser Battery!");
+	}
 	Cosmic_Heat_Max[client]=1750.0; //How much heat before we force a shutdown.
-	Cosmic_BeamSpeed[client] = 2.5;	//how fast the beam is
+	Cosmic_Base_BeamSpeed[client] = 2.5;	//how fast the beam is
 	Cosmic_Radius[client] = 120.0;	//damage radius
 	Cosmic_Terror_Pap[client]=1;
-	float time = 4.0;
+	float time = 3.0;
 	Cosmic_Terror_Charge_Timer[client]=GetGameTime()+time;	//Charge time for the beam.
 	Cosmic_Terror_Sound_Charge_Timer[client]=time/4.0;
 	
@@ -80,13 +97,21 @@ public void Cosmic_Terror_Pap1(int client, int weapon, bool &result, int slot)
 }
 public void Cosmic_Terror_Pap2(int client, int weapon, bool &result, int slot)
 {
-	Cosmic_Activate(client, weapon);
+	int new_ammo = GetAmmo(client, 23);
+	if(new_ammo >= 5)
+	{
+		Cosmic_Activate(client, weapon);
+	}
+	else
+	{
+		PrintHintText(client,"You ran out of Laser Battery!");
+	}
 	Cosmic_Heat_Max[client]=2500.0; //How much heat before we force a shutdown.
-	Cosmic_BeamSpeed[client] = 3.5;	//how fast the beam is
+	Cosmic_Base_BeamSpeed[client] = 3.5;	//how fast the beam is
 	Cosmic_Radius[client] = 150.0;	//damage radius
 
 	Cosmic_Terror_Pap[client]=2;
-	float time = 3.0;
+	float time = 2.0;
 	Cosmic_Terror_Charge_Timer[client]=GetGameTime()+time;	//Charge time for the beam.
 	Cosmic_Terror_Sound_Charge_Timer[client]=time/4.0;
 	
@@ -117,6 +142,8 @@ public void Cosmic_Activate(int client, int weapon)
 				Cosmic_DMG[client] *= TF2Attrib_GetValue(address);
 			
 			CosmicActualDamage[client] = Cosmic_DMG[client];
+			
+			Cosmic_BeamSpeed[client]=Cosmic_Base_BeamSpeed[client];
 			
 			if(!Cosmic_Terror_Are_we_Cooling[client])
 			{
@@ -153,6 +180,14 @@ public Action Cosmic_Activate_Tick(int client)
 			int new_ammo = GetAmmo(client, 23);
 			if(new_ammo >= 5)
 			{
+				if(LastMann)
+				{
+					Cosmic_BeamSpeed[client]=Cosmic_Base_BeamSpeed[client]*3;
+				}
+				else
+				{
+					Cosmic_BeamSpeed[client]=Cosmic_Base_BeamSpeed[client];
+				}
 				if(Cosmic_Heat[client]>=Cosmic_Heat_Max[client])
 				{
 					Cosmic_Terror_Are_we_Cooling[client]=true;
@@ -165,7 +200,7 @@ public Action Cosmic_Activate_Tick(int client)
 						
 						SDKUnhook(client, SDKHook_PreThink, Cosmic_Heat_Tick);
 					}
-					Revert_Weapon_Back_Timer[client] = CreateTimer(0.1, Cosmic_Terror_Reset_Wep, client, TIMER_FLAG_NO_MAPCHANGE);
+					Revert_Weapon_Back_Timer[client] = CreateTimer(0.5, Cosmic_Terror_Reset_Wep, client, TIMER_FLAG_NO_MAPCHANGE);
 					
 					Handle_on[client] = true;
 					Cosmic_Terror_Charge[client]=true;
@@ -207,6 +242,7 @@ public Action Cosmic_Activate_Tick(int client)
 			else
 			{
 				PrintHintText(client,"You ran out of Laser Battery!");
+				//SDKUnhook(client, SDKHook_PreThink, Cosmic_Activate_Tick);
 			}
 		}
 	}
@@ -239,7 +275,7 @@ public Action Cosmic_Heat_Tick(int client)
 		if(Cosmic_Heat[client]<=0)
 		{
 			Cosmic_Heat[client]=0;
-			if(i_CustomWeaponEquipLogic[weapon]==8)	//Checks if the wep is indeed cosmic terror.
+			if(IsValidEntity(weapon) && i_CustomWeaponEquipLogic[weapon]==8)	//Checks if the wep is indeed cosmic terror.
 			{
 				PrintHintText(client,"Fully Cooled Down", Cosmic_Heat[client]);
 			}
@@ -255,9 +291,15 @@ public Action Cosmic_Heat_Tick(int client)
 			}
 			else
 			{
-				Cosmic_Heat[client]-=2+Cosmic_Terror_Pap[client];
+				Cosmic_Heat[client]-=1+Cosmic_Terror_Pap[client];
 			}
 		}
+	}
+	else
+	{
+		Cosmic_Terror_Are_we_Cooling[client]=false;
+		Cosmic_Heat[client]=0;
+		SDKUnhook(client, SDKHook_PreThink, Cosmic_Heat_Tick);
 	}
 	return Plugin_Continue;
 }
@@ -300,7 +342,7 @@ void Cosmic_Terror_FullCharge(int client)
 		//CPrintToChatAll("Deactivated");
 	}
 	int new_ammo = GetAmmo(client, 23);
-	if(Cosmic_Terror_GiveAmmo_interval[client] >= 2)
+	if(Cosmic_Terror_GiveAmmo_interval[client] >= 3)
 	{
 		if(new_ammo >= 1)
 		{
