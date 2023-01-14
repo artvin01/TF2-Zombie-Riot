@@ -2052,4 +2052,8 @@
 	{
 		"en"	"Passanger's Device"
 	}
+	"Alchemist Potion"
+	{
+		"en"	"Alchemist Potion"
+	}
 }

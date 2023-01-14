@@ -4,7 +4,7 @@
 #define PARTICLE_JARATE		"peejar_impact_small"
 #define PARTICLE_MADMILK	"peejar_impact_milk"
 #define PARTICLE_ACIDPOOL	"utaunt_bubbles_glow_orange_parent"
-#define PARTICLE_SHRINK		""//"utaunt_merasmus"
+#define PARTICLE_SHRINK		"utaunt_arcane_green_parent"//"utaunt_merasmus"
 #define SOUND_JAREXPLODE	"weapons/jar_explode.wav"
 #define SOUND_TRANSFORM1	"ambient/halloween/thunder_04.wav"
 #define SOUND_TRANSFORM2	"ambient/halloween/thunder_01.wav"
@@ -75,12 +75,6 @@ public void Weapon_Wand_PotionGoldM2(int client, int weapon, bool &crit, int slo
 
 public void Weapon_Wand_PotionShrinkM2(int client, int weapon, bool &crit, int slot)
 {
-	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		return;
-	}
-
 	PotionM2(client, weapon, slot, 20.0, Weapon_Wand_PotionShrinkTouch);
 }
 
