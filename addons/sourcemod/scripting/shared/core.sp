@@ -13,6 +13,7 @@
 #include <PathFollower>
 #include <PathFollower_Nav>
 #include <morecolors>
+#include <tf2utils>
 
 #define CHAR_FULL	"█"
 #define CHAR_PARTFULL	"▓"
@@ -202,11 +203,7 @@ float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
 int Dont_Crouch[MAXENTITIES]={0, ...};
 
-// RPG TODO: 
-#if defined ZR
 bool b_IsAloneOnServer = false;
-int CurrentPlayers;
-#endif
 
 ConVar cvarTimeScale;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
@@ -214,6 +211,7 @@ ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar sv_cheats;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie Niko_Cookies;
+Cookie HudSettings_Cookies;
 
 bool b_LagCompNPC_No_Layers;
 bool b_LagCompNPC_AwayEnemies;
@@ -262,6 +260,7 @@ float f_MedigunChargeSave[MAXTF2PLAYERS][4];
 float Increaced_Sentry_damage_Low[MAXENTITIES];
 float Increaced_Sentry_damage_High[MAXENTITIES];
 float Resistance_for_building_Low[MAXENTITIES];
+
 
 
 float Increaced_Overall_damage_Low[MAXENTITIES];
@@ -314,6 +313,7 @@ bool f_ClientServerShowMessages[MAXTF2PLAYERS];
 
 //Needs to be global.
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
+float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
 float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
 bool b_npcspawnprotection[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
@@ -326,6 +326,7 @@ float f_TankGrabbedStandStill[MAXENTITIES];
 float f_StunExtraGametimeDuration[MAXENTITIES];
 bool b_PernellBuff[MAXENTITIES];
 float f_MaimDebuff[MAXENTITIES];
+float f_PassangerDebuff[MAXENTITIES];
 float f_CrippleDebuff[MAXENTITIES];
 int BleedAmountCountStack[MAXENTITIES];
 int g_particleCritText;
@@ -402,6 +403,8 @@ int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
 bool b_FaceStabber[MAXTF2PLAYERS];
 bool b_IsCannibal[MAXTF2PLAYERS];
 
+float f_NpcImmuneToBleed[MAXENTITIES];
+
 Function EntityFuncAttack[MAXENTITIES];
 Function EntityFuncAttack2[MAXENTITIES];
 Function EntityFuncAttack3[MAXENTITIES];
@@ -411,12 +414,25 @@ Function EntityFuncReload4[MAXENTITIES];
 int i_assist_heal_player[MAXTF2PLAYERS];
 float f_assist_heal_player_time[MAXTF2PLAYERS];
 
+#if defined RPG
+bool b_DungeonContracts_BleedOnHit[MAXENTITIES];
+bool b_DungeonContracts_FlatDamageIncreace5[MAXTF2PLAYERS];
+bool b_DungeonContracts_ZombieSpeedTimes3[MAXENTITIES];
+bool b_DungeonContracts_ZombieFlatArmorMelee[MAXENTITIES];
+bool b_DungeonContracts_ZombieFlatArmorRanged[MAXENTITIES];
+bool b_DungeonContracts_ZombieFlatArmorMage[MAXENTITIES];
+bool b_DungeonContracts_ZombieArmorDebuffResistance[MAXENTITIES];
+bool b_DungeonContracts_35PercentMoreDamage[MAXENTITIES];
+bool b_DungeonContracts_25PercentMoreDamage[MAXENTITIES];
+#endif
+
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
 
 bool b_Is_Npc_Projectile[MAXENTITIES];
 bool b_Is_Player_Projectile[MAXENTITIES];
+bool b_ForceCollisionWithProjectile[MAXENTITIES];
 bool b_Is_Player_Projectile_Through_Npc[MAXENTITIES];
 bool b_Is_Blue_Npc[MAXENTITIES];
 bool b_IsInUpdateGroundConstraintLogic;
@@ -464,6 +480,7 @@ bool b_Dont_Move_Building[MAXENTITIES];
 bool b_Dont_Move_Allied_Npc[MAXENTITIES];
 int b_BoundingBoxVariant[MAXENTITIES];
 bool b_ThisEntityIgnored[MAXENTITIES];
+bool b_ThisEntityIgnoredByOtherNpcsAggro[MAXENTITIES];
 bool b_ThisEntityIgnoredEntirelyFromAllCollisions[MAXENTITIES];
 bool b_ThisEntityIsAProjectileForUpdateContraints[MAXENTITIES];
 
@@ -564,6 +581,7 @@ Address TheNavAreas;
 Address navarea_count;
 
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
+DynamicHook g_DHookMedigunPrimary; 
 
 Handle gH_BotAddCommand = INVALID_HANDLE;
 
@@ -748,6 +766,7 @@ char g_TankStepSound[][] = {
 
 float f_ArrowDamage[MAXENTITIES];
 int f_ArrowTrailParticle[MAXENTITIES]={INVALID_ENT_REFERENCE, ...};
+bool b_IsEntityAlwaysTranmitted[MAXENTITIES];
 
 //Arrays for npcs!
 int i_NoEntityFoundCount[MAXENTITIES]={0, ...};
@@ -874,6 +893,7 @@ int i_PoseMoveX[MAXENTITIES];
 int i_PoseMoveY[MAXENTITIES];
 //Arrays for npcs!
 bool b_bThisNpcGotDefaultStats_INVERTED[MAXENTITIES];
+bool b_LagCompensationDeletedArrayList[MAXENTITIES];
 float b_isGiantWalkCycle[MAXENTITIES];
 float f_NpcHasBeenUnstuckAboveThePlayer[MAXENTITIES];
 
@@ -935,9 +955,7 @@ char c_HeadPlaceAttachmentGibName[MAXENTITIES][64];
 #include "shared/viewchanges.sp"
 #include "shared/wand_projectile.sp"
 
-#if defined LagCompensation
 #include "shared/baseboss_lagcompensation.sp"
-#endif
 
 public Plugin myinfo =
 {
@@ -1348,6 +1366,14 @@ public void OnClientPutInServer(int client)
 		b_IsPlayerABot[client] = true;
 		return;
 	}
+
+	if(CountPlayersOnServer() > MAX_PLAYER_COUNT)
+	{
+		if(!(CheckCommandAccess(client, "sm_admin", ADMFLAG_SLAY)))
+		{
+			KickClient(client, "Server is full, do not use the console to connect, thank you.");
+		}
+	}
 	
 	DHook_HookClient(client);
 	SDKHook_HookClient(client);
@@ -1401,8 +1427,10 @@ public void OnClientCookiesCached(int client)
 	{
 		b_IsPlayerNiko[client] = false;
 	}
+
 	
 #if defined ZR
+	HudSettings_ClientCookiesCached(client);
 	Store_ClientCookiesCached(client);
 #endif
 
@@ -1416,6 +1444,7 @@ public void OnClientDisconnect(int client)
 	Store_ClientDisconnect(client);
 	
 #if defined ZR
+	HudSettings_ClientCookiesDisconnect(client);
 	ZR_ClientDisconnect(client);
 	
 	if(Scrap[client] > -1)
@@ -1454,8 +1483,9 @@ public void OnClientDisconnect_Post(int client)
 {
 #if defined ZR
 	ZR_OnClientDisconnect_Post();
-	RequestFrame(CheckIfAloneOnServer);
 #endif
+
+	RequestFrame(CheckIfAloneOnServer);
 
 #if defined RPG
 	RPG_ClientDisconnect_Post();
@@ -1957,11 +1987,13 @@ public void OnEntityCreated(int entity, const char[] classname)
 	
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
-		
+		b_LagCompensationDeletedArrayList[entity] = false;
+		b_bThisNpcGotDefaultStats_INVERTED[entity] = false;
 #if defined ZR
 		i_WhatBuilding[entity] = 0;
 		StoreWeapon[entity] = -1;
 		b_SentryIsCustom[entity] = false;
+		Building_Mounted[entity] = -1;
 #endif
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
@@ -1973,6 +2005,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		IgniteFor[entity] = -1;
 		IgniteId[entity] = -1;
 		IgniteRef[entity] = -1;
+		b_IsEntityAlwaysTranmitted[entity] = false;
 
 		//Normal entity render stuff, This should be set to these things on spawn, just to be sure.
 		b_DoNotIgnoreDuringLagCompAlly[entity] = false;
@@ -1984,7 +2017,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_EntityRenderOverride[entity] = false;
 		b_StickyIsSticking[entity] = false;
 		
-		b_RocketBoomEffect[entity]=false;
+		b_RocketBoomEffect[entity] = false;
+		b_IsAlliedNpc[entity] = false;
 		b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
 		b_EntityIsArrow[entity] = false;
 		b_EntityIsWandProjectile[entity] = false;
@@ -1998,6 +2032,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		EntityFuncReload4[entity] = INVALID_FUNCTION;
 		b_Map_BaseBoss_No_Layers[entity] = false;
 		b_Is_Player_Projectile_Through_Npc[entity] = false;
+		b_ForceCollisionWithProjectile[entity] = false;
 		i_IsABuilding[entity] = false;
 		i_InSafeZone[entity] = 0;
 		h_NpcCollissionHookType[entity] = 0;
@@ -2006,6 +2041,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_SemiAutoWeapon[entity] = false;
 		b_NpcHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
+		b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
+		b_IsAGib[entity] = false;
+		b_ThisEntityIgnored[entity] = false;
+		b_ThisEntityIgnoredByOtherNpcsAggro[entity] = false;
+		f_NpcImmuneToBleed[entity] = 0.0;
 		
 #if defined RPG
 		RPG_EntityCreated(entity, classname);
@@ -2211,12 +2251,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			ScatterGun_Prevent_M2_OnEntityCreated(entity);
 		}
-		
-#if defined ZR
 		else if (!StrContains(classname, "tf_weapon_medigun")) 
 		{
 			Medigun_OnEntityCreated(entity);
 		}
+#if defined ZR
 		else if (!StrContains(classname, "tf_weapon_particle_cannon")) 
 		{
 			OnManglerCreated(entity);
@@ -2268,6 +2307,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	}
 	
 }
+
 
 public void SDKHook_SafeSpot_StartTouch(int entity, int target)
 {
@@ -2510,14 +2550,11 @@ public void OnEntityDestroyed(int entity)
 {
 	if(IsValidEntity(entity))
 	{
-		#if defined LagCompensation
 		OnEntityDestroyed_LagComp(entity);
-		#endif
 		
 		if(entity > MaxClients)
 		{
 			NPC_CheckDead(entity);
-			b_IsAGib[entity] = false;
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			
 #if defined ZR
@@ -2544,10 +2581,9 @@ public void OnEntityDestroyed(int entity)
 
 public void RemoveNpcThingsAgain(int entity)
 {
+	CleanAllAppliedEffects_BombImplanter(entity, false);
 	//Dont have to check for if its an npc or not, really doesnt matter in this case, just be sure to delete it cus why not
 	//incase this breaks, add a baseboss check
-	CleanAllAppliedEffects(entity);
-	
 #if defined ZR
 	CleanAllApplied_Aresenal(entity);
 	CleanAllApplied_Cryo(entity);
@@ -2557,31 +2593,30 @@ public void RemoveNpcThingsAgain(int entity)
 	i_HexCustomDamageTypes[entity] = 0;
 }
 
-#if defined ZR
 public void CheckIfAloneOnServer()
 {
 	b_IsAloneOnServer = false;
 	int players;
 
-//#if defined ZR
+#if defined ZR
 	int player_alone;
-//#endif
+#endif
 
 	for(int client=1; client<=MaxClients; client++)
 	{
 		
-//#if defined ZR
+#if defined ZR
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
-//#else
+#else
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client))
-//#endif
+#endif
 		
 		{
 			players += 1;
 
-//#if defined ZR
+#if defined ZR
 			player_alone = client;
-//#endif
+#endif
 
 		}
 	}
@@ -2590,13 +2625,16 @@ public void CheckIfAloneOnServer()
 		b_IsAloneOnServer = true;	
 	}
 	
-//#if defined ZR
+#if defined ZR
 	if (players < 4 && players > 0)
 	{
 		if (Bob_Exists)
 			return;
 		
-		Spawn_Bob_Combine(player_alone);
+		if(!CvarInfiniteCash.BoolValue)
+		{
+			Spawn_Bob_Combine(player_alone);
+		}
 		
 	}
 	else if (Bob_Exists)
@@ -2605,13 +2643,8 @@ public void CheckIfAloneOnServer()
 		NPC_Despawn_bob(EntRefToEntIndex(Bob_Exists_Index));
 		Bob_Exists_Index = -1;
 	}
-//#endif
-
-//#if defined RPG
-//	CurrentPlayers = players;
-//#endif
-}
 #endif
+}
 
 /*
 //Looping function for above!
@@ -2730,6 +2763,9 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 			if(Quests_Interact(client, entity))
 				return true;
 			
+			if(Dungeon_Interact(client, entity))
+				return true;
+
 			if(AllyNpcInteract(client, entity, weapon))
 				return true;
 #endif
@@ -2810,4 +2846,42 @@ static void MapStartResetAll()
 	CurrentGibCount = 0;
 	Zero(f_EmpowerStateSelf);
 	Zero(f_EmpowerStateOther);
+}
+
+public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, Handle &item)
+{
+	if(!StrContains(classname, "tf_wear"))
+	{
+		switch(index)
+		{	
+			case 57, 131, 133, 231, 405, 406, 444, 608, 642, 1099, 1144:
+			{
+				if(!item)
+					return Plugin_Stop;
+				
+				TF2Items_SetFlags(item, OVERRIDE_ATTRIBUTES);
+				TF2Items_SetNumAttributes(item, 0);
+				return Plugin_Changed;
+			}
+		}
+	}
+	/*else if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
+	{
+		if(!item)
+			return Plugin_Stop;
+		
+		TF2Items_SetFlags(item, OVERRIDE_ATTRIBUTES);
+		TF2Items_SetNumAttributes(item, 5);
+		TF2Items_SetAttribute(item, 0, 1, 0.623);
+		TF2Items_SetAttribute(item, 1, 15, 0.0);
+		TF2Items_SetAttribute(item, 2, 93, 0.0);
+		TF2Items_SetAttribute(item, 3, 95, 0.0);
+		TF2Items_SetAttribute(item, 4, 2043, 0.0);
+		return Plugin_Changed;
+	}*/
+	else
+	{
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
 }

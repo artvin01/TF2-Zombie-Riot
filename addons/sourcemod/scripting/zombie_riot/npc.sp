@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 #define ITSTILIVES 666
-
+#define NORMAL_ENEMY_MELEE_RANGE_FLOAT 100.0
 enum
 {
 	NOTHING 						= 0,	
@@ -158,6 +158,27 @@ enum
 	ALT_DONNERKRIEG				= 135,
 	ALT_SCHWERTKRIEG			= 136,
 	PHANTOM_KNIGHT				= 137, //Lucian "Blood diamond"
+	ALT_MEDIC_HEALER_3			= 138, //3 being the 3rd stage of alt waves.
+	
+	THE_GAMBLER				= 139,
+	PABLO_GONZALES				= 140,
+	DOKTOR_MEDICK				= 141,
+	KAPTAIN_HEAVY				= 142,
+	BOOTY_EXECUTIONIER 			= 143,
+	SANDVICH_SLAYER 			= 144,
+	PAYDAYCLOAKER				= 145,
+	BUNKER_KAHML_VTWO			= 146,
+	TRUE_ZEROFUSE				= 147,
+	BUNKER_BOT_SOLDIER			= 148,
+	BUNKER_BOT_SNIPER			= 149,
+	BUNKER_SKELETON				= 150,
+	BUNKER_SMALL_SKELETON		= 151,
+	BUNKER_KING_SKELETON		= 152,
+	BUNKER_HEADLESSHORSE		= 153,
+
+	MEDIVAL_SCOUT				= 154,
+	MEDIVAL_VILLAGER			= 155,
+	
 }
 
 public const char NPC_Names[][] =
@@ -310,7 +331,27 @@ public const char NPC_Names[][] =
 	"Mecha Scout",
 	"Donnerkrieg",
 	"Schwertkrieg",
-	"Phantom Knight"
+	"Phantom Knight",
+	"Medic Constructor",
+	
+	"Gambler",
+	"Pablo Gonzales",
+	"Doktor Medick",
+	"Eternal Kaptain Heavy",
+	"Booty Executioner",
+	"Sandvich Slayer",
+	"Payday Cloaker",
+	"Bunker Kahmlstein",
+	"Zerofuse",
+	"Bunker Bot Soldier",
+	"Bunker Bot Sniper",
+	"Bunker Skeleton",
+	"Bunker Small Skeleton",
+	"Bunker Skeleton King",
+	"Bunker Headless Horseman",
+
+	"Medival Scout",
+	"Medival Villager"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -460,7 +501,26 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_mecha_scout",
 	"npc_alt_donnerkrieg",
 	"npc_alt_schwertkrieg",
-	"npc_phantom_knight"
+	"npc_phantom_knight",
+	"npc_alt_medic_healer_3",			//3 being the 3rd stage of alt waves.
+	
+	"npc_gambler",
+	"npc_pablo",
+	"npc_dokmedick",
+	"npc_kapheavy",
+	"npc_booty_execut",
+	"npc_sand_slayer",
+	"npc_payday_cloaker",
+	"npc_bunker_kahml",
+	"npc_zerofuse",
+	"npc_bunker_bot_soldier",
+	"npc_bunker_bot_sniper",
+	"npc_bunker_skeleton",
+	"npc_bunker_small_skeleton",
+	"npc_bunker_king_skeleton",
+	"npc_bunker_hhh",
+	"npc_medival_scout",
+	"npc_medival_villager"
 };
 
 void NPC_MapStart()
@@ -509,6 +569,7 @@ void NPC_MapStart()
 	CombineDeutsch_OnMapStart_NPC();
 	Alt_CombineDeutsch_OnMapStart_NPC();
 	SpyMainBoss_OnMapStart_NPC();
+	MedivalVillager_OnMapStart_NPC();
 	/*
 	XenoHeadcrabZombie_OnMapStart_NPC();
 	XenoFortified_HeadcrabZombie_OnMapStart_NPC();
@@ -613,6 +674,25 @@ void NPC_MapStart()
 	Donnerkrieg_OnMapStart_NPC();
 	Schwertkrieg_OnMapStart_NPC();
 	PhantomKnight_OnMapStart_NPC();
+	Alt_Medic_Constructor_OnMapStart_NPC();	//3rd alt medic.
+	
+	TheGambler_OnMapStart_NPC();
+	Pablo_Gonzales_OnMapStart_NPC();
+	Doktor_Medick_OnMapStart_NPC();
+	Eternal_Kaptain_Heavy_OnMapStart_NPC();
+	BootyExecutioner_OnMapStart_NPC();
+	SandvichSlayer_OnMapStart_NPC();
+	Payday_Cloaker_OnMapStart_NPC();
+	BunkerKahml_OnMapStart_NPC();
+	TrueZerofuse_OnMapStart_NPC();
+	BunkerBotSoldier_OnMapStart_NPC();
+	BunkerBotSniper_OnMapStart_NPC();
+	BunkerSkeleton_OnMapStart_NPC();
+	BunkerSkeletonSmall_OnMapStart_NPC();
+	BunkerSkeletonKing_OnMapStart_NPC();
+	BunkerHeadlessHorse_OnMapStart_NPC();
+
+	MedivalScout_OnMapStart_NPC();
 }
 
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
@@ -1160,6 +1240,78 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case PHANTOM_KNIGHT:
 		{
 			entity = PhantomKnight(client, vecPos, vecAng, ally);
+		}
+		case ALT_MEDIC_HEALER_3:	//3 being the 3rd stage of alt waves.
+		{
+			entity = Alt_Medic_Constructor(client, vecPos, vecAng, ally);
+		}
+		case THE_GAMBLER:
+		{
+			entity = TheGambler(client, vecPos, vecAng, ally);
+		}
+		case PABLO_GONZALES:
+		{
+			entity = Pablo_Gonzales(client, vecPos, vecAng, ally);
+		}
+		case DOKTOR_MEDICK:
+		{
+			entity = Doktor_Medick(client, vecPos, vecAng, ally);
+		}
+		case KAPTAIN_HEAVY:
+		{
+			entity = Eternal_Kaptain_Heavy(client, vecPos, vecAng, ally);
+		}
+		case BOOTY_EXECUTIONIER:
+		{
+			entity = BootyExecutioner(client, vecPos, vecAng, ally);
+		}
+		case SANDVICH_SLAYER:
+		{
+			entity = SandvichSlayer(client, vecPos, vecAng, ally);
+		}
+		case PAYDAYCLOAKER:
+		{
+			entity = Payday_Cloaker(client, vecPos, vecAng, ally);
+		}
+		case BUNKER_KAHML_VTWO:
+		{
+			entity = BunkerKahml(client, vecPos, vecAng, ally);
+		}
+		case TRUE_ZEROFUSE:
+		{
+			entity = TrueZerofuse(client, vecPos, vecAng, ally);
+		}
+		case BUNKER_BOT_SOLDIER:
+		{
+			entity = BunkerBotSoldier(client, vecPos, vecAng, ally);
+		}
+		case BUNKER_BOT_SNIPER:
+		{
+			entity = BunkerBotSniper(client, vecPos, vecAng, ally);
+		}
+		case BUNKER_SKELETON:
+		{
+			entity = BunkerSkeleton(client, vecPos, vecAng, ally);
+		}
+		case BUNKER_SMALL_SKELETON:
+		{
+			entity = BunkerSkeletonKing(client, vecPos, vecAng, ally);
+		}
+		case BUNKER_KING_SKELETON:
+		{
+			entity = BunkerSkeletonKing(client, vecPos, vecAng, ally);
+		}
+		case BUNKER_HEADLESSHORSE:
+		{
+			entity = BunkerHeadlessHorse(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_SCOUT:
+		{
+			entity = MedivalScout(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_VILLAGER:
+		{
+			entity = MedivalVillager(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -1710,6 +1862,78 @@ public void NPCDeath(int entity)
 		{
 			PhantomKnight_NPCDeath(entity);
 		}
+		case ALT_MEDIC_HEALER_3:
+		{
+			Alt_Medic_Constructor_NPCDeath(entity);
+		}
+		case THE_GAMBLER:
+		{
+			TheGambler_NPCDeath(entity);
+		}
+		case PABLO_GONZALES:
+		{
+			Pablo_Gonzales_NPCDeath(entity);
+		}
+		case DOKTOR_MEDICK:
+		{
+			Doktor_Medick_NPCDeath(entity);
+		}
+		case KAPTAIN_HEAVY:
+		{
+			Eternal_Kaptain_Heavy_NPCDeath(entity);
+		}
+		case BOOTY_EXECUTIONIER:
+		{
+			BootyExecutioner_NPCDeath(entity);
+		}
+		case SANDVICH_SLAYER:
+		{
+			SandvichSlayer_NPCDeath(entity);
+		}
+		case PAYDAYCLOAKER:
+		{
+			Payday_Cloaker_NPCDeath(entity);
+		}
+		case BUNKER_KAHML_VTWO:
+		{
+			BunkerKahml_NPCDeath(entity);
+		}
+		case TRUE_ZEROFUSE:
+		{
+			TrueZerofuse_NPCDeath(entity);
+		}
+		case BUNKER_BOT_SOLDIER:
+		{
+			BunkerBotSoldier_NPCDeath(entity);
+		}
+		case BUNKER_BOT_SNIPER:
+		{
+			BunkerBotSniper_NPCDeath(entity);
+		}
+		case BUNKER_SKELETON:
+		{
+			BunkerSkeleton_NPCDeath(entity);
+		}
+		case BUNKER_SMALL_SKELETON:
+		{
+			BunkerSkeletonSmall_NPCDeath(entity);
+		}
+		case BUNKER_KING_SKELETON:
+		{
+			BunkerSkeletonKing_NPCDeath(entity);
+		}
+		case BUNKER_HEADLESSHORSE:
+		{
+			BunkerHeadlessHorse_NPCDeath(entity);
+		}
+		case MEDIVAL_SCOUT:
+		{
+			MedivalScout_NPCDeath(entity);
+		}
+		case MEDIVAL_VILLAGER:
+		{
+			MedivalVillager_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -1883,6 +2107,7 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/alt/npc_alt_medic_apprentice_mage.sp"
 #include "zombie_riot/npc/alt/npc_alt_donnerkrieg.sp"
 #include "zombie_riot/npc/alt/npc_alt_schwertkrieg.sp"
+#include "zombie_riot/npc/alt/npc_alt_medic_constructor.sp"
 
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
 #include "zombie_riot/npc/medival/npc_medival_archer.sp"
@@ -1898,9 +2123,27 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/medival/npc_medival_eagle_scout.sp"
 #include "zombie_riot/npc/medival/npc_medival_samurai.sp"
 #include "zombie_riot/npc/medival/npc_medival_ram.sp"
+#include "zombie_riot/npc/medival/npc_medival_scout.sp"
+#include "zombie_riot/npc/medival/npc_medival_villager.sp"
 
 #include "zombie_riot/npc/cof/npc_addiction.sp"
 #include "zombie_riot/npc/cof/npc_doctor.sp"
 #include "zombie_riot/npc/cof/npc_simon.sp"
 
 #include "zombie_riot/npc/bonezone/npc_basicbones.sp"
+
+#include "zombie_riot/npc/bunker/npc_gambler.sp"
+#include "zombie_riot/npc/bunker/npc_pablo.sp"
+#include "zombie_riot/npc/bunker/npc_dokmedick.sp"
+#include "zombie_riot/npc/bunker/npc_kapheavy.sp"
+#include "zombie_riot/npc/bunker/npc_booty_execut.sp"
+#include "zombie_riot/npc/bunker/npc_sand_slayer.sp"
+#include "zombie_riot/npc/bunker/npc_payday_cloaker.sp"
+#include "zombie_riot/npc/bunker/npc_bunker_kahml.sp"
+#include "zombie_riot/npc/bunker/npc_zerofuse.sp"
+#include "zombie_riot/npc/bunker/npc_bunker_bot_soldier.sp"
+#include "zombie_riot/npc/bunker/npc_bunker_bot_sniper.sp"
+#include "zombie_riot/npc/bunker/npc_bunker_skeleton.sp"
+#include "zombie_riot/npc/bunker/npc_bunker_small_skeleton.sp"
+#include "zombie_riot/npc/bunker/npc_bunker_king_skeleton.sp"
+#include "zombie_riot/npc/bunker/npc_bunker_hhh.sp"

@@ -17,6 +17,9 @@ static bool i_AllowMaxammo = true;
 static float f_KillTheseManyMorePowerup_base_Maxammo = 90.0;
 static int i_KillTheseManyMorePowerup_Maxammo = 90;
 
+static bool b_ForceSpawnNextTimeNuke;
+static bool b_ForceSpawnNextTimeAmmo;
+
 void Map_Precache_Zombie_Drops()
 {
 	PrecacheModel(NUKE_MODEL, true);
@@ -51,12 +54,12 @@ public void DropPowerupChance(int entity)
 {
 	if(b_NpcForcepowerupspawn[entity] == 2)
 	{
-		SpawnMaxAmmo(entity);
+		SpawnMaxAmmo(entity); //Dont care.
 	}
 	i_KilledThisMany_Nuke += 1;
-	if(i_KilledThisMany_Nuke > i_KillTheseManyMorePowerup_Nuke)
+	if(i_KilledThisMany_Nuke > i_KillTheseManyMorePowerup_Nuke || b_ForceSpawnNextTimeNuke)
 	{
-		if(GetRandomFloat(0.0, 1.0) < 0.01)
+		if(GetRandomFloat(0.0, 1.0) < 0.01 || b_ForceSpawnNextTimeNuke)
 		{
 			if(i_AllowNuke)
 			{
@@ -64,7 +67,18 @@ public void DropPowerupChance(int entity)
 				{
 					i_AllowNuke = false;
 				}
-				SpawnNuke(entity);
+				float VecOrigin[3];
+				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
+				VecOrigin[2] += 54.0;
+				if(!IsPointHazard(VecOrigin)) //Is it valid?
+				{
+					b_ForceSpawnNextTimeNuke = false;
+					SpawnNuke(entity);
+				}
+				else //Not a valid position, we must force it! next time we try!
+				{
+					b_ForceSpawnNextTimeNuke = true;
+				}
 				i_KilledThisMany_Nuke = 0;
 			}
 		}
@@ -72,9 +86,9 @@ public void DropPowerupChance(int entity)
 	if(!EscapeMode)
 	{
 		i_KilledThisMany_Maxammo += 1;
-		if(i_KilledThisMany_Maxammo > i_KillTheseManyMorePowerup_Maxammo)
+		if(i_KilledThisMany_Maxammo > i_KillTheseManyMorePowerup_Maxammo || b_ForceSpawnNextTimeAmmo)
 		{
-			if(GetRandomFloat(0.0, 1.0) < 0.01)
+			if(GetRandomFloat(0.0, 1.0) < 0.01 || b_ForceSpawnNextTimeAmmo)
 			{
 				if(i_AllowMaxammo)
 				{
@@ -82,7 +96,18 @@ public void DropPowerupChance(int entity)
 					{
 						i_AllowMaxammo = false;
 					}
-					SpawnMaxAmmo(entity);
+					float VecOrigin[3];
+					GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
+					VecOrigin[2] += 54.0;
+					if(!IsPointHazard(VecOrigin)) //Is it valid?
+					{
+						b_ForceSpawnNextTimeAmmo = false;
+						SpawnMaxAmmo(entity);
+					}
+					else //Not a valid position, we must force it! next time we try!
+					{
+						b_ForceSpawnNextTimeAmmo = true;
+					}
 					i_KilledThisMany_Maxammo = 0;
 				}
 			}
@@ -99,8 +124,8 @@ public void SpawnNuke(int entity)
 	{
 		DispatchKeyValue(prop, "model", NUKE_MODEL);
 		DispatchKeyValue(prop, "modelscale", "0.65");
-		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 		DispatchKeyValue(prop, "StartDisabled", "false");
+		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 		DispatchKeyValue(prop, "Solid", "0");
 		SetEntProp(prop, Prop_Data, "m_nSolidType", 0);
 		VecAngles[0] = -31.0;
@@ -335,11 +360,17 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 										}
 										else if(Ammo_type != -1 && Ammo_type < Ammo_Hand_Grenade) //Disallow Ammo_Hand_Grenade, that ammo type is regenerative!, dont use jar, tf2 needs jar? idk, wierdshit.
 										{
-											SetAmmo(client_Hud, Ammo_type, GetAmmo(client_Hud, Ammo_type)+(AmmoData[Ammo_type][1]*4));
+											if(AmmoBlacklist(Ammo_type))
+											{
+												SetAmmo(client_Hud, Ammo_type, GetAmmo(client_Hud, Ammo_type)+(AmmoData[Ammo_type][1]*4));
+											}
 										}
 										else if(Ammo_type > 0 && Ammo_type < Ammo_MAX)
 										{
-											SetAmmo(client_Hud, Ammo_type, GetAmmo(client_Hud, Ammo_type)+(AmmoData[Ammo_type][1]*4));
+											if(AmmoBlacklist(Ammo_type))
+											{
+												SetAmmo(client_Hud, Ammo_type, GetAmmo(client_Hud, Ammo_type)+(AmmoData[Ammo_type][1]*4));
+											}
 										}
 									}
 								}

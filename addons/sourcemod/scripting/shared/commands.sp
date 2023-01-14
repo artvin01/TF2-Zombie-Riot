@@ -107,6 +107,9 @@ public Action OnSayCommand(int client, const char[] command, int args)
 #endif
 	
 #if defined RPG
+	if(TextStore_SayCommand(client))
+		return Plugin_Handled;
+	
 	if(Tinker_SayCommand(client))
 		return Plugin_Handled;
 #endif

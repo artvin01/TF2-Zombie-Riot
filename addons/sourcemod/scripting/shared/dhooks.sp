@@ -16,7 +16,7 @@ static DynamicDetour gH_MaintainBotQuota = null;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
 static DynamicHook g_DHookScoutSecondaryFire; 
-static DynamicHook g_DhookUpdateTransmitState; 
+DynamicHook g_DhookUpdateTransmitState; 
 
 static DynamicDetour g_CalcPlayerScore;
 
@@ -84,9 +84,9 @@ void DHook_Setup()
 #if defined ZR
 	DHook_CreateDetour(gamedata, "CBaseObject::FinishedBuilding", Dhook_FinishedBuilding_Pre, Dhook_FinishedBuilding_Post);
 	DHook_CreateDetour(gamedata, "CBaseObject::FirstSpawn", Dhook_FirstSpawn_Pre, Dhook_FirstSpawn_Post);
-	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
 #endif
 
+	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
 	DHook_CreateDetour(gamedata, "FX_FireBullets()", FX_FireBullets_Pre, FX_FireBullets_Post);
 
 	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
@@ -105,8 +105,13 @@ void DHook_Setup()
 	g_DHookScoutSecondaryFire = DHook_CreateVirtual(gamedata, "CTFPistol_ScoutPrimary::SecondaryAttack()");
 
 
-	g_DhookUpdateTransmitState = DHook_CreateVirtual(gamedata, "CBaseEntity::UpdateTransmitState()");
-
+	int offset = gamedata.GetOffset("CBaseEntity::UpdateTransmitState()");
+	g_DhookUpdateTransmitState = new DynamicHook(offset, HookType_Entity, ReturnType_Int, ThisPointer_CBaseEntity);
+	if (!g_DhookUpdateTransmitState)
+	{
+		SetFailState("Failed to create hook CBaseEntity::UpdateTransmitState() offset from ZR gamedata!");
+	}
+	
 	ForceRespawn = DynamicHook.FromConf(gamedata, "CBasePlayer::ForceRespawn");
 	if(!ForceRespawn)
 		LogError("[Gamedata] Could not find CBasePlayer::ForceRespawn");
@@ -559,7 +564,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 		if(b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1])
 		{
-		//	PrintToChatAll("ingore");
 			return false;
 		}
 #if defined ZR
@@ -589,7 +593,19 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 		else if(b_Is_Player_Projectile[entity1])
 		{
-			if(b_ThisEntityIgnored[entity2])
+			if(b_ForceCollisionWithProjectile[entity2])
+			{
+				//We sadly cannot force a collision like this, but whatwe can do is manually call the collision with out own code.
+				//This is only used for wands so place beware, we will just delete the entity.
+				RemoveEntity(entity1);
+				int entity_particle = EntRefToEntIndex(i_WandParticle[entity1]);
+				if(IsValidEntity(entity_particle))
+				{
+					RemoveEntity(entity_particle);
+				}
+				return false;
+			}
+			else if(b_ThisEntityIgnored[entity2])
 			{
 				return false;
 			}
@@ -911,6 +927,7 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 	
 	g_hSDKEndLagCompAddress = manager;
 	Sdkcall_Load_Lagcomp();
+	StartLagCompResetValues();
 	
 	return MRES_Ignored;
 //	return MRES_Supercede;
@@ -966,6 +983,11 @@ public MRESReturn DHook_SentryFind_Target(int sentry, Handle hReturn, Handle hPa
 		Traced_Target = TR_GetEntityIndex(trace);
 		delete trace;
 		
+		if(IsValidEntity(Traced_Target) && b_ThisEntityIgnoredByOtherNpcsAggro[Traced_Target])
+		{
+			DHookSetReturn(hReturn, false); 
+			return MRES_Supercede;	
+		}
 		if(IsValidEntity(Traced_Target) && IsValidEnemy(sentry, Traced_Target))
 		{
 			DHookSetReturn(hReturn, true); 
@@ -1121,6 +1143,12 @@ public MRESReturn DHook_ForceRespawn(int client)
 		ChangeClientTeam(client, 2);
 		return MRES_Supercede;
 	}
+
+#if defined RPG
+	if(!Dungeon_CanClientRespawn(client))
+		return MRES_Supercede;
+#endif
+
 #if defined ZR
 	DoTutorialStep(client, false);
 	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
@@ -1292,7 +1320,31 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 		}
 		else
 		{
-			TeleportEntity(client, view_as<float>({119.946655, 137.253311, 247.851776}), view_as<float>({ 9.774813, -125.745986, 0.0}), NULL_VECTOR);
+			int foundEnt = -1;
+			int foundLv = -1;
+			int entity = -1;
+			while((entity=FindEntityByClassname(entity, "info_player_teamspawn")) != -1)
+			{
+				static char buffer[32];
+				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+				if(!StrContains(buffer, "rpg_spawn_", false))
+				{
+					int lv = StringToInt(buffer[10]);
+					if(lv > foundLv && Tier[client] >= lv)
+					{
+						foundEnt = entity;
+						foundLv = lv;
+					}
+				}
+			}
+
+			if(foundEnt != -1)
+			{
+				float pos[3], ang[3];
+				GetEntPropVector(foundEnt, Prop_Data, "m_vecOrigin", pos);
+				GetEntPropVector(foundEnt, Prop_Data, "m_angRotation", ang);
+				TeleportEntity(client, pos, ang, NULL_VECTOR);
+			}
 		}
 #endif
 	}
@@ -1644,9 +1696,32 @@ void Hook_DHook_UpdateTransmitState(int entity)
 	g_DhookUpdateTransmitState.HookEntity(Hook_Pre, entity, DHook_UpdateTransmitState);
 }
 
-public MRESReturn DHook_UpdateTransmitState(int entity) //BLOCK!!
+public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) //BLOCK!!
+{   
+	if(b_IsEntityAlwaysTranmitted[entity])
+	{
+		return MRES_Ignored;
+	}
+	else
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_PVSCHECK);
+	}
+	return MRES_Supercede;
+}
+
+int SetEntityTransmitState(int entity, int newFlags)
 {
-	return MRES_Supercede;	//NEVER DO PERMA.
+	if (!IsValidEdict(entity))
+	{
+		return 0;
+	}
+
+	int flags = GetEdictFlags(entity);
+	flags &= ~(FL_EDICT_ALWAYS | FL_EDICT_PVSCHECK | FL_EDICT_DONTSEND);
+	flags |= newFlags;
+	SetEdictFlags(entity, flags);
+
+	return flags;
 }
 
 public MRESReturn DHook_ScoutSecondaryFire(int entity) //BLOCK!!

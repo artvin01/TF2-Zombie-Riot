@@ -324,7 +324,7 @@ bool CTFWeaponBaseMelee::DoSwingTraceInternal( trace_t &trace, bool bCleave, CUt
 
 #define MELEE_RANGE 100
 #define MELEE_BOUNDS 22.0
-public void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3])
+void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], float CustomMeleeRange = 0.0)
 {
 	// Setup a volume for the melee weapon to be swung - approx size, so all melee behave the same.
 	static float vecSwingMins[3]; vecSwingMins = view_as<float>({-MELEE_BOUNDS, -MELEE_BOUNDS, -MELEE_BOUNDS});
@@ -339,9 +339,19 @@ public void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward
 	GetAngleVectors(ang, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
 	
 	float vecSwingEnd[3];
-	vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * MELEE_RANGE;
-	vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * MELEE_RANGE;
-	vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * MELEE_RANGE;
+
+	if(CustomMeleeRange)
+	{
+		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * CustomMeleeRange;
+		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * CustomMeleeRange;
+		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * CustomMeleeRange;
+	}
+	else
+	{
+		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * MELEE_RANGE;
+		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * MELEE_RANGE;
+		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * MELEE_RANGE;
+	}
 	
 	
 //	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
@@ -516,7 +526,7 @@ public void PlayCustomWeaponSoundFromPlayerCorrectly(int target, int client, int
 			}				
 		}
 	}
-	else if(!StrContains(classname, "tf_weapon_fists"))
+	else if(!StrContains(classname, "tf_weapon_fists") || !StrContains(classname, "tf_weapon_robot_arm"))
 	{
 		if(item_index == 331)
 		{

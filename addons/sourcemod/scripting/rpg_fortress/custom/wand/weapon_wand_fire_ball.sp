@@ -28,18 +28,21 @@ public float AbilityFireball(int client, int index, char name[48])
 	if(kv)
 	{
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		static char classname[36];
-		GetEntityClassname(weapon, classname, sizeof(classname));
-		if (i_IsWandWeapon[weapon])
+		if(IsValidEntity(weapon))
 		{
-			Weapon_Wand_FireBallSpell(client, weapon, 1);
-			return (GetGameTime() + 15.0);
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Magic Wand.");
-			return 0.0;
+			static char classname[36];
+			GetEntityClassname(weapon, classname, sizeof(classname));
+			if (i_IsWandWeapon[weapon])
+			{
+				Weapon_Wand_FireBallSpell(client, weapon, 1);
+				return (GetGameTime() + 15.0);
+			}
+			else
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Magic Wand.");
+				return 0.0;
+			}
 		}
 
 	//	if(kv.GetNum("consume", 1))

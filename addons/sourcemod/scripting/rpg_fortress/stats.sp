@@ -57,7 +57,7 @@ void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
 				Format(desc, 512, "%s\n%s Max Mana & Mana Regen", desc, CharPercent(value[i]));
 		
 			case 412:
-				Format(desc, 512, "%s\n%s Less Damage Taken", desc, CharPercent(value[i]));
+				Format(desc, 512, "%s\n%s Damage Taken", desc, CharPercent(value[i]));
 
 		}
 	}
@@ -101,38 +101,41 @@ void Stats_SetWeaponStats(int client, int entity, int slot)
 
 		Address address = TF2Attrib_GetByDefIndex(entity, 6);
 		if(address != Address_Null)
-			TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * multi);
+			TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(address) * multi);
 
 		address = TF2Attrib_GetByDefIndex(entity, 96);
 		if(address != Address_Null)
-			TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * multi);
+			TF2Attrib_SetByDefIndex(entity, 96, TF2Attrib_GetValue(address) * multi);
 	}
 
-	if(slot > TFWeaponSlot_Melee || i_IsWrench[entity])
+	if(slot < TFWeaponSlot_Melee || i_IsWrench[entity])
 	{
-		if(Dexterity[client])
+		int stat = Stats_Dexterity(client);
+		if(stat)
 		{
 			Address address = TF2Attrib_GetByDefIndex(entity, 2);
 			if(address != Address_Null)
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * (1.0 + (Dexterity[client] / 30.0)));
+				TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(address) * (1.0 + (stat / 50.0)));
 		}
 	}
 	else if(i_IsWandWeapon[entity])
 	{
-		if(Intelligence[client])
+		int stat = Stats_Intelligence(client);
+		if(stat)
 		{
 			Address address = TF2Attrib_GetByDefIndex(entity, 410);
 			if(address != Address_Null)
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * (1.0 + (Intelligence[client] / 30.0)));
+				TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(address) * (1.0 + (stat / 50.0)));
 		}
 	}
 	else if(slot == TFWeaponSlot_Melee)
 	{
-		if(Strength[client])
+		int stat = Stats_Strength(client);
+		if(stat)
 		{
 			Address address = TF2Attrib_GetByDefIndex(entity, 2);
 			if(address != Address_Null)
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * (1.0 + (Strength[client] / 30.0)));
+				TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(address) * (1.0 + (stat / 50.0)));
 		}
 	}
 }
@@ -263,7 +266,7 @@ void Stats_ShowLevelUp(int client, int oldLevel, int oldTier)
 
 	if(Tier[client])
 	{
-		menu.SetTitle("You are now Elite %d Level %d!\n ", Tier[client], Level[client]);
+		menu.SetTitle("You are now Elite %d Level %d!\n ", Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
 	}
 	else
 	{
@@ -317,13 +320,13 @@ public Action Stats_ShowStats(int client, int args)
 	if(client)
 	{
 		Menu menu = new Menu(Stats_ShowStatsH);
-		menu.SetTitle("RPG Fortress\n \nStats:");
+		menu.SetTitle("RPG Fortress\n \nPlayer Stats:");
 
 		char buffer[64];
 
 		int amount = Stats_BaseHealth(client);
 		int bonus = SDKCall_GetMaxHealth(client) - amount;
-		FormatEx(buffer, sizeof(buffer), "Max Health: %d + %d", amount, bonus);
+		FormatEx(buffer, sizeof(buffer), "Max Health: %d + %d (%.0f%% resistance)", amount, bonus, 1.0 / Attributes_FindOnPlayer(client, 412, true, 1.0));
 		menu.AddItem(NULL_STRING, buffer);
 
 		Stats_BaseCarry(client, amount, bonus);
@@ -331,15 +334,15 @@ public Action Stats_ShowStats(int client, int args)
 		menu.AddItem(NULL_STRING, buffer);
 
 		int total = Stats_Strength(client, amount, bonus);
-		FormatEx(buffer, sizeof(buffer), "Strength: %d + %d (+%.0f%% melee damage)", amount, bonus, total * 3.33333);
+		FormatEx(buffer, sizeof(buffer), "Strength: %d + %d (+%.0f%% melee damage)", amount, bonus, total * 2.0);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Dexterity(client, amount, bonus);
-		FormatEx(buffer, sizeof(buffer), "Dexterity: %d + %d (+%.0f%% ranged damage)", amount, bonus, total * 3.33333);
+		FormatEx(buffer, sizeof(buffer), "Dexterity: %d + %d (+%.0f%% ranged damage)", amount, bonus, total * 2.0);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Intelligence(client, amount, bonus);
-		FormatEx(buffer, sizeof(buffer), "Intelligence: %d + %d (+%.0f%% magic damage)", amount, bonus, total * 3.33333);
+		FormatEx(buffer, sizeof(buffer), "Intelligence: %d + %d (+%.0f%% magic damage)", amount, bonus, total * 2.0);
 		menu.AddItem(NULL_STRING, buffer);
 
 		total = Stats_Agility(client);

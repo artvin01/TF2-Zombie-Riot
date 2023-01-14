@@ -86,8 +86,9 @@ Action OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcount)
 /* Manually remove no longer in use entites */
 void OnEntityDestroyed_LagComp(int entity)
 {
-	if(entity > 0)
+	if(entity > 0 && entity < MAXENTITIES)
 	{
+		b_LagCompensationDeletedArrayList[entity] = true;
 		int ref = EntIndexToEntRef(entity);
 		char key[13];
 		IntToString(ref, key, sizeof(key));
@@ -102,19 +103,25 @@ void OnEntityDestroyed_LagComp(int entity)
 			for(int a; a<length2; a++)
 			{
 				list.GetArray(a, record);
-				if(entity > MaxClients && !b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
+				if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 				{
-					delete record.m_layerRecords;
+					if(record.m_layerRecords)
+					{
+						delete record.m_layerRecords;
+					}
 				}
 			}
 			delete list;
 		}
 	
-		LagRecord record;
-		EntityRestore.GetArray(key, record, sizeof(record));
-		if(entity > MaxClients && !b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
+		LagRecord restore;
+		EntityRestore.GetArray(key, restore, sizeof(restore));
+		if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 		{
-			delete record.m_layerRecords;
+			if(restore.m_layerRecords)
+			{
+				delete restore.m_layerRecords;
+			}
 		}
 		EntityRestore.Remove(key);
 	}
@@ -168,7 +175,7 @@ void StartLagCompensation_Base_Boss(int client)
 				for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
 				{
 					int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
-					if(IsValidEntity(entity) /*&& !b_NpcHasDied[entity]*/ && entity != 0)
+					if(IsValidEntity(entity))
 					{
 							// Custom checks for if things should lag compensate (based on things like what team the player is on).
 						if(!WantsLagCompensationOnEntity(entity, client, ViewAngles[client]/*, pEntityTransmitBits*/))
@@ -239,12 +246,16 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 	IntToString(ref, refchar, sizeof(refchar));
 	
 	ArrayList list;
-	if(!EntityTrack.GetValue(refchar, list))
+	if (!EntityTrack.GetValue(refchar, list))
+	{
 		return;
+	}
 	
 	int length = list.Length;
-	if(length < 1)
+	if (length < 1)
+	{
 		return;
+	}
 	
 	LagRecord prevRecord;
 	LagRecord record;
@@ -472,16 +483,11 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 		
 		char refchar[12];
 		LagRecord restore;
-//------------------------------------------------------------------------------------------
-#if defined HaveLayersForLagCompensation
 		LayerRecord layer;
-//------------------------------------------------------------------------------------------		
-#endif
-//------------------------------------------------------------------------------------------	
 		for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
 		{
 			int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
-			if(IsValidEntity(entity) /*&& !b_NpcHasDied[entity]*/ && entity != 0)
+			if(IsValidEntity(entity))
 			{
 				IntToString(EntIndexToEntRef(entity), refchar, sizeof(refchar));
 				if(EntityRestore.GetArray(refchar, restore, sizeof(restore)))
@@ -525,7 +531,6 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 							}
 
 							SetEntPropVector(entity, Prop_Data, "m_vecMaxs", m_vecMaxs);
-							
 							SetEntPropVector(entity, Prop_Data, "m_vecMins", m_vecMins);
 						}
 					}
@@ -538,7 +543,6 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 							SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", restore.m_flSimulationTime);
 							SetEntProp(entity, Prop_Data, "m_nSequence", restore.m_masterSequence);
 							SetEntPropFloat(entity, Prop_Data, "m_flCycle", restore.m_masterCycle);
-	#if defined HaveLayersForLagCompensation
 							CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
 							int layerCount = GetEntPropArraySize(entity, Prop_Data, "m_AnimOverlay");
 							for(int i; i<layerCount; i++)
@@ -550,9 +554,8 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 								currentLayer.Set(m_nSequence, layer.m_sequence);
 								currentLayer.Set(m_flWeight, layer.m_weight);
 							}
-	#endif
+							delete restore.m_layerRecords;
 						}
-						delete restore.m_layerRecords;
 					}
 					EntityRestore.Remove(refchar);
 				}
@@ -574,15 +577,18 @@ void LagCompensationThink_Forward()
 		char refchar[12];
 		ArrayList list;
 		LagRecord record;
-#if defined HaveLayersForLagCompensation
 		LayerRecord layer;
-#endif
 		// Iterate all active NPCs
 		for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
 		{
 			int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
-			if(IsValidEntity(entity) /*&& !b_NpcHasDied[entity]*/ && entity != 0)
+			if(IsValidEntity(entity))
 			{
+				if(b_LagCompensationDeletedArrayList[entity]) //Is the npc dead?
+				{
+					continue; //This npc has died. We reset it to be sure and dont keep tracking it.
+				}
+				
 				IntToString(EntIndexToEntRef(entity), refchar, sizeof(refchar));
 				if(!EntityTrack.GetValue(refchar, list))
 				{
@@ -602,7 +608,7 @@ void LagCompensationThink_Forward()
 						break;
 					
 					// remove tail, get new tail
-					if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
+					if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity]) //Filter to make sure it doesnt delete things that dont exist.
 					{
 						delete record.m_layerRecords;
 					}
@@ -626,8 +632,6 @@ void LagCompensationThink_Forward()
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", record.m_vecOrigin);
 			//	GetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", record.m_vecMinsPreScaled);
 			//	GetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", record.m_vecMaxsPreScaled);
-			
-#if defined HaveLayersForLagCompensation
 				if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity]) //If its an allied baseboss, make sure to not get layers.
 				{
 					CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
@@ -648,7 +652,6 @@ void LagCompensationThink_Forward()
 					record.m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
 					record.m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
 				}
-#endif
 				list.PushArray(record);
 			}
 		}

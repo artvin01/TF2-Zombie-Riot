@@ -4,6 +4,13 @@
 	{
 		"Signatures"
 		{
+			"CBaseEntity::DispatchUpdateTransmitState"
+			{
+				// string aMerasmusSpawn ; "merasmus_spawn"
+				// has 5 calls, go up 2 functions, single call.
+				"windows"	"\x80\xB9\x74\x01\x00\x00\x00\x8B\x41\x18"
+				"linux"		""
+			}
 			"CBasePlayer::SnapEyeAngles"
 			{
 				// string "Usage:  setang pitch yaw <roll optional"
@@ -558,12 +565,12 @@
 				}
 			}
 			"CTFParticleCannon::FireChargedShot"
-            		{
-                		"offset"    	"CTFParticleCannon::FireChargedShot"
-                		"hooktype"    	"entity"
-               	 		"return"    	"void"
-                		"this"        	"entity"
-            		}
+            {
+				   "offset"    	"CTFParticleCannon::FireChargedShot"
+				   "hooktype"    "entity"
+				   "return"    	"void"
+				   "this"        "entity"
+            }
 			"CBaseCombatWeapon::FinishReload()"
 			{
 				"signature"		"CBaseCombatWeapon::FinishReload()"
@@ -707,8 +714,8 @@
 		{
 			"CTFWrench::Smack()" 
 			{
-				"windows" 	"469"
-				"linux" 	"476"
+				"windows" 	"470"
+				"linux" 	"477"
 			}
 			"CTFGrenadePipebombProjectile::PipebombTouch" 
 			{
@@ -792,8 +799,8 @@
 			}
 			"CTFParticleCannon::FireChargedShot"
 			{
-				"windows"	"490"
-				"linux"		"497"
+				"windows"	"491"
+				"linux"		"498"
 			}
 			"CBaseGrenade::Explode"
 			{

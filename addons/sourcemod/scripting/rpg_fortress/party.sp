@@ -27,7 +27,7 @@ static void RemoveInvite(int client, int leader)
 	PartyInvitedBy[client] &= ~(1 << (leader - 1));
 }
 
-bool Party_GetPartyLeader(int client)
+int Party_GetPartyLeader(int client)
 {
 	return PartyLeader[client];
 }
@@ -110,7 +110,7 @@ static void ShowMenu(int client)
 						menu.AddItem(index, buffer);
 					}
 				}
-				else if(!joined)
+				else if(joined)
 				{
 					if(PartyLeader[client] == target)
 						Format(buffer, sizeof(buffer), "%s [Leader]", buffer);
@@ -141,7 +141,7 @@ static void ShowMenu(int client)
 	{
 		for(int target = 1; target <= MaxClients; target++)
 		{
-			if(IsInvitedBy(client, target))
+			if(IsValidClient(target) && IsInvitedBy(client, target))
 			{
 				IntToString(GetClientUserId(target), index, sizeof(index));
 				GetClientName(target, buffer, sizeof(buffer));
@@ -152,7 +152,7 @@ static void ShowMenu(int client)
 
 		for(int target = 1; target <= MaxClients; target++)
 		{
-			if(client != target && !PartyLeader[target] && !IsInvitedBy(client, target) && IsClientInGame(target) && !IsFakeClient(target) && !IsClientMuted(target, client) && !IsClientMuted(client, target))
+			if(IsValidClient(target) && client != target && !PartyLeader[target] && !IsInvitedBy(client, target) && IsClientInGame(target) && !IsFakeClient(target) && !IsClientMuted(target, client) && !IsClientMuted(client, target))
 			{
 				IntToString(GetClientUserId(target), index, sizeof(index));
 				GetClientName(target, buffer, sizeof(buffer));

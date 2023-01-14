@@ -66,12 +66,15 @@ enum
 	WEAPON_FUSION = 2,
 	WEAPON_BOUNCING = 3,
 	WEAPON_MAIMMOAB = 4,
-	WEAPON_CRIPPLEMOAB = 5
+	WEAPON_CRIPPLEMOAB = 5,
+	WEAPON_IRENE = 6,
+	WEAPON_COSMIC_TERROR = 8
 }
 
 //int Bob_To_Player[MAXENTITIES];
 bool Bob_Exists = false;
 int Bob_Exists_Index = -1;
+int CurrentPlayers;
 ConVar zr_voteconfig;
 ConVar zr_tagblacklist;
 ConVar zr_tagwhitelist;
@@ -109,7 +112,6 @@ Cookie CookiePlayStreak;
 Cookie CookieCache;
 Cookie CookieXP;
 ArrayList Loadouts[MAXTF2PLAYERS];
-DynamicHook g_DHookMedigunPrimary; 
 
 Handle g_hSDKMakeCarriedObjectDispenser;
 Handle g_hSDKMakeCarriedObjectSentry;
@@ -194,6 +196,7 @@ int Armor_table_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int i_Healing_station_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int Perk_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int Pack_A_Punch_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
+float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXTF2PLAYERS+1];
 
 int i_ThisEntityHasAMachineThatBelongsToClient[MAXENTITIES];
 int i_ThisEntityHasAMachineThatBelongsToClientMoney[MAXENTITIES];
@@ -231,6 +234,15 @@ bool b_SpecialGrigoriStore;
 float f_ExtraDropChanceRarity = 1.0;
 bool applied_lastmann_buffs_once = false;
 
+float f_ArmorHudOffsetX[MAXTF2PLAYERS];
+float f_ArmorHudOffsetY[MAXTF2PLAYERS];
+
+float f_HurtHudOffsetX[MAXTF2PLAYERS];
+float f_HurtHudOffsetY[MAXTF2PLAYERS];
+
+float f_WeaponHudOffsetX[MAXTF2PLAYERS];
+float f_WeaponHudOffsetY[MAXTF2PLAYERS];
+
 #include "zombie_riot/npc.sp"	// Global NPC List
 
 #include "zombie_riot/database.sp"
@@ -248,7 +260,6 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_heavy_eagle.sp"
 #include "zombie_riot/custom/weapon_annabelle.sp"
 #include "zombie_riot/custom/weapon_rampager.sp"
-#include "zombie_riot/custom/joke_medigun_mod_drain_health.sp"
 #include "zombie_riot/custom/weapon_heaven_eagle.sp"
 #include "zombie_riot/custom/weapon_star_shooter.sp"
 #include "zombie_riot/custom/weapon_bison.sp"
@@ -276,7 +287,7 @@ bool applied_lastmann_buffs_once = false;
 //#include "zombie_riot/custom/weapon_pipe_shot.sp"
 #include "zombie_riot/custom/weapon_survival_knife.sp"
 #include "zombie_riot/custom/weapon_glitched.sp"
-//#include "zombie_riot/custom/weapon_minecraft.sp"
+//#include "zombie_riot/custom/weimage.pngapon_minecraft.sp"
 #include "zombie_riot/custom/arse_enal_layer_tripmine.sp"
 #include "zombie_riot/custom/weapon_serioussam2_shooter.sp"
 #include "zombie_riot/custom/wand/weapon_elemental_staff.sp"
@@ -311,6 +322,12 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_riotshield.sp"
 #include "zombie_riot/custom/escape_sentry_hat.sp"
 #include "zombie_riot/custom/m3_abilities.sp"
+#include "shared/custom/weapon_street_fighter.sp"
+#include "shared/custom/joke_medigun_mod_drain_health.sp"
+#include "shared/custom/weapon_judgement_of_iberia.sp"
+#include "shared/custom/weapon_phlog_replacement.sp"
+#include "zombie_riot/custom/weapon_cosmic_terror.sp"
+#include "zombie_riot/custom/wand/weapon_wand_potions.sp"
 
 void ZR_PluginLoad()
 {
@@ -336,6 +353,7 @@ void ZR_PluginStart()
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
+	HudSettings_Cookies = new Cookie("zr_hudsetting", "hud settings", CookieAccess_Protected);
 	
 	CvarSvRollagle = FindConVar("sv_rollangle");
 	if(CvarSvRollagle)
@@ -391,6 +409,7 @@ void ZR_MapStart()
 	Zero2(i_Healing_station_money_limit);
 	Zero2(Perk_Machine_money_limit);
 	Zero2(Pack_A_Punch_Machine_money_limit);
+	Zero2(fl_blitz_ioc_punish_timer);
 	CleanAllBuildingEscape();
 	M3_ClearAll();
 	ZeroRage_ClearAll();
@@ -411,6 +430,12 @@ void ZR_MapStart()
 	Zero(i_ThisEntityHasAMachineThatBelongsToClientMoney);
 	Zero(f_WasRecentlyRevivedViaNonWave);
 	Zero(f_TimeAfterSpawn);
+	Reset_stats_Irene_Global();
+	Reset_stats_PHLOG_Global();
+	Irene_Map_Precache();
+	PHLOG_Map_Precache();
+	Cosmic_Map_Precache();
+	
 	
 	Waves_MapStart();
 	Music_MapStart();
@@ -469,6 +494,9 @@ void ZR_MapStart()
 	Quantum_Gear_Map_Precache();
 	WandStocks_Map_Precache();
 	Weapon_RiotShield_Map_Precache();
+	Passanger_Map_Precache();
+	Reset_stats_Passanger_Global();
+	Wand_Potions_Precache();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -524,6 +552,10 @@ void ZR_ClientDisconnect(int client)
 	SetClientTutorialStep(client, 0);
 	Pets_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
+	Reset_stats_Irene_Singular(client);
+	Reset_stats_PHLOG_Singular(client);
+	Reset_stats_Passanger_Singular(client);
+	Reset_stats_Survival_Singular(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
@@ -1383,8 +1415,10 @@ void GiveXP(int client, int xp)
 		bool found;
 		int slots;
 		
-		for(Level[client]++; Level[client]<=nextLevel; Level[client]++)
+		while(Level[client] < nextLevel)
 		{
+			Level[client]++;
+			
 			if(Store_PrintLevelItems(client, Level[client]))
 				found = true;
 			

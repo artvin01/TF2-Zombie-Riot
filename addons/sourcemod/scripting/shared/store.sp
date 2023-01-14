@@ -128,7 +128,7 @@ enum struct ItemInfo
 		
 		Format(buffer, sizeof(buffer), "%sindex", prefix);
 		this.Index = kv.GetNum(buffer);
-		
+
 		Format(buffer, sizeof(buffer), "%sindex_2", prefix);
 		this.Index2 = kv.GetNum(buffer);
 		
@@ -417,6 +417,31 @@ static ArrayList EquippedItems;
 
 static bool HasMultiInSlot[MAXTF2PLAYERS][6];
 static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
+
+#if defined ZR
+public Action TextStore_OnClientLoad(int client, char file[PLATFORM_MAX_PATH])
+{
+	RequestFrame(TextStore_LoadFrame, GetClientUserId(client));
+	return Plugin_Continue;
+}
+
+public void TextStore_LoadFrame(int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(client)
+	{
+		//if(TextStore_GetClientLoad(client))
+		{
+			if(!CashSpent[client] && HasNamedItem(client, "ZR Contest Nominator [???]"))
+				CashSpent[client] = -100;
+		}
+		//else
+		//{
+		//	RequestFrame(TextStore_LoadFrame, userid);
+		//}
+	}
+}
+#endif
 
 #if defined RPG
 int Store_GetStoreOfEntity(int entity)
@@ -1301,6 +1326,42 @@ void Store_ClientCookiesCached(int client)
 		Database_LoadGameData(client);
 }
 
+void HudSettings_ClientCookiesCached(int client)
+{
+	char buffer[128];
+	HudSettings_Cookies.Get(client, buffer, sizeof(buffer));
+	if(buffer[0])
+	{
+		// Cookie has stuff, get values
+		float buffers[6];
+		ExplodeStringFloat(buffer, ";", buffers, sizeof(buffers));
+
+		f_ArmorHudOffsetX[client] = buffers[0];
+		f_ArmorHudOffsetY[client] = buffers[1];
+		f_HurtHudOffsetX[client] = buffers[2];
+		f_HurtHudOffsetY[client] = buffers[3];
+		f_WeaponHudOffsetX[client] = buffers[4];
+		f_WeaponHudOffsetY[client] = buffers[5];
+	}
+	else
+	{
+		// Cookie empty, get our own
+		f_ArmorHudOffsetX[client] = -0.085;
+		f_ArmorHudOffsetY[client] = 0.0;
+		f_HurtHudOffsetX[client] = 0.0;
+		f_HurtHudOffsetY[client] = 0.0;
+		f_WeaponHudOffsetX[client] = 0.0;
+		f_WeaponHudOffsetY[client] = 0.0;
+	}
+}
+
+void HudSettings_ClientCookiesDisconnect(int client)
+{
+	char buffer[32];
+	FormatEx(buffer, sizeof(buffer), "%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client]);
+	HudSettings_Cookies.Set(client, buffer);
+}
+
 void Store_SetClientItem(int client, int index, int owned, int scaled, int equipped)
 {
 	static Item item;
@@ -1417,9 +1478,12 @@ void Store_EquipSlotCheck(int client, int slot)
 				count++;
 				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
 				{
-					PrintToChat(client, "%s was unequipped", info.Custom_Name);
-					TextStore_SetInv(client, info.Store, _, false);
-					break;
+					if(TextStore_GetInv(client, info.Store))
+					{
+						PrintToChat(client, "%s was unequipped", info.Custom_Name);
+						TextStore_SetInv(client, info.Store, _, false);
+						break;
+					}
 				}
 			}
 		}
@@ -1988,15 +2052,15 @@ public void MenuPage(int client, int section)
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
 		{
-			menu.SetTitle("%t\n%t\n%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!" , "XP and Level", Level[client], nextAt - (xpNext - XP[client]), nextAt, "Credits", CurrentCash-CashSpent[client]);
+			menu.SetTitle("%t\n%t\n%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!" , "XP and Level", Level[client], xpNext - XP[client], nextAt, "Credits", CurrentCash-CashSpent[client]);
 		}
 		else if(!Waves_InSetup())
 		{
-			menu.SetTitle("%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "XP and Level", Level[client], nextAt - (xpNext - XP[client]), nextAt, "Credits", CurrentCash-CashSpent[client]);
+			menu.SetTitle("%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "XP and Level", Level[client], xpNext - XP[client], nextAt, "Credits", CurrentCash-CashSpent[client]);
 		}
 		else
 		{
-			menu.SetTitle("%t\n \n%t\n%t\n%t\n ", "TF2: Zombie Riot", "XP and Level", Level[client], nextAt - (xpNext - XP[client]), nextAt, "Credits", CurrentCash-CashSpent[client], "Store Discount");
+			menu.SetTitle("%t\n \n%t\n%t\n%t\n ", "TF2: Zombie Riot", "XP and Level", Level[client], xpNext - XP[client], nextAt, "Credits", CurrentCash-CashSpent[client], "Store Discount");
 		}
 		
 		if(!NPCOnly[client] && section == -1)
@@ -2238,6 +2302,9 @@ public void MenuPage(int client, int section)
 			menu.AddItem("-14", buffer);
 		}
 		
+		FormatEx(buffer, sizeof(buffer), "%t", "Settings"); //Settings
+		menu.AddItem("-23", buffer);
+		
 		FormatEx(buffer, sizeof(buffer), "%t", "Gamemode Credits"); //credits is whatever, put in back.
 		menu.AddItem("-21", buffer);
 	}
@@ -2264,6 +2331,318 @@ static char[] AddPluses(int amount)
 	return buffer;
 }
 */
+
+public void ReShowArmorHud(int client)
+{
+	char buffer[24];
+
+	Menu menu2 = new Menu(Settings_MenuPage);
+	menu2.SetTitle("%t", "Armor Hud Setting Inside",f_ArmorHudOffsetX[client],f_ArmorHudOffsetY[client]);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Up");
+	menu2.AddItem("-3", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Down");
+	menu2.AddItem("-4", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Left");
+	menu2.AddItem("-5", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Right");
+	menu2.AddItem("-6", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Reset to Default");
+	menu2.AddItem("-7", buffer);
+					
+	FormatEx(buffer, sizeof(buffer), "%t", "Back");
+	menu2.AddItem("-1", buffer);
+
+	menu2.Display(client, MENU_TIME_FOREVER);
+}
+
+public void ReShowHurtHud(int client)
+{
+	char buffer[24];
+
+	Menu menu2 = new Menu(Settings_MenuPage);
+	menu2.SetTitle("%t", "Hurt Hud Setting Inside",f_HurtHudOffsetX[client],f_HurtHudOffsetY[client]);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Up");
+	menu2.AddItem("-9", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Down");
+	menu2.AddItem("-10", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Left");
+	menu2.AddItem("-11", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Right");
+	menu2.AddItem("-12", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Reset to Default");
+	menu2.AddItem("-13", buffer);
+					
+	FormatEx(buffer, sizeof(buffer), "%t", "Back");
+	menu2.AddItem("-1", buffer);
+
+	menu2.Display(client, MENU_TIME_FOREVER);
+
+	Calculate_And_Display_hp(client, 0, 0.0, true); //Apply hud update so they know where it is now
+}
+
+public void ReShowWeaponHud(int client)
+{
+	char buffer[24];
+
+	Menu menu2 = new Menu(Settings_MenuPage);
+	menu2.SetTitle("%t", "Weapon Hud Setting Inside",f_WeaponHudOffsetX[client],f_WeaponHudOffsetY[client]);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Up");
+	menu2.AddItem("-15", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Down");
+	menu2.AddItem("-16", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Left");
+	menu2.AddItem("-17", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Right");
+	menu2.AddItem("-18", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Reset to Default");
+	menu2.AddItem("-19", buffer);
+					
+	FormatEx(buffer, sizeof(buffer), "%t", "Back");
+	menu2.AddItem("-1", buffer);
+
+	menu2.Display(client, MENU_TIME_FOREVER);
+}
+
+public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+			{
+				static Item item;
+				menu.GetItem(0, item.Name, sizeof(item.Name));
+				int index = StringToInt(item.Name);
+				if(index < 0)
+				{
+					item.Section = -1;
+				}
+				else
+				{
+					StoreItems.GetArray(index, item);
+					if(item.Section != -1)
+						StoreItems.GetArray(item.Section, item);
+				}
+
+				MenuPage(client, item.Section);
+			}
+			/*
+			else if(choice != MenuCancel_Disconnected)
+			{
+				StopSound(client, SNDCHAN_STATIC, "#items/tf_music_upgrade_machine.wav");
+			}
+			*/
+		}
+		case MenuAction_Select:
+		{
+			char buffer[24];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			int id = StringToInt(buffer);
+			switch(id)
+			{
+				case -2:
+				{
+					ReShowArmorHud(client);
+				}
+				case -3: //Move Armor Hud Up
+				{
+					f_ArmorHudOffsetX[client] -= 0.005;
+					if(f_ArmorHudOffsetX[client] < -1.0)
+					{
+						f_ArmorHudOffsetX[client] = -1.0;
+					}
+					ReShowArmorHud(client);
+				}
+				case -4: //Move Armor Hud Down
+				{
+					f_ArmorHudOffsetX[client] += 0.005;
+					if(f_ArmorHudOffsetX[client] > -0.085)
+					{
+						f_ArmorHudOffsetX[client] = -0.085;
+					}
+					ReShowArmorHud(client);
+				}
+				case -5: //Move Armor Hud Left
+				{
+					f_ArmorHudOffsetY[client] -= 0.005;
+					if(f_ArmorHudOffsetY[client] < -1.0)
+					{
+						f_ArmorHudOffsetY[client] = -1.0;
+					}
+					ReShowArmorHud(client);
+				}
+				case -6: //Move Armor Hud right
+				{
+					f_ArmorHudOffsetY[client] += 0.005;
+					if(f_ArmorHudOffsetY[client] > 1.0)
+					{
+						f_ArmorHudOffsetY[client] = 1.0;
+					}
+					ReShowArmorHud(client);
+				}
+				case -7: //ResetARmorHud To default
+				{
+					f_ArmorHudOffsetX[client] = -0.085;
+					f_ArmorHudOffsetY[client] = 0.0;
+					
+					ReShowArmorHud(client);
+				}
+				
+				//HURT HUD STUFF!
+				case -8:
+				{
+					ReShowHurtHud(client);
+				}
+				case -9: //Move Armor Hud Up
+				{
+					f_HurtHudOffsetX[client] -= 0.005;
+					if(f_HurtHudOffsetX[client] < -1.0)
+					{
+						f_HurtHudOffsetX[client] = -1.0;
+					}
+					ReShowHurtHud(client);
+				}
+				case -10: //Move Armor Hud Down
+				{
+					f_HurtHudOffsetX[client] += 0.005;
+					if(f_HurtHudOffsetX[client] > -0.085)
+					{
+						f_HurtHudOffsetX[client] = -0.085;
+					}
+					ReShowHurtHud(client);
+				}
+				case -11: //Move Armor Hud Left
+				{
+					f_HurtHudOffsetY[client] -= 0.005;
+					if(f_HurtHudOffsetY[client] < 0.1)
+					{
+						f_HurtHudOffsetY[client] = 0.1;
+					}
+					ReShowHurtHud(client);
+				}
+				case -12: //Move Armor Hud right
+				{
+					if(f_HurtHudOffsetY[client] < 0.1)
+					{
+						f_HurtHudOffsetY[client] = 0.1;
+					}
+					f_HurtHudOffsetY[client] += 0.005;
+					if(f_HurtHudOffsetY[client] > 0.995)
+					{
+						f_HurtHudOffsetY[client] = 0.995;
+					}
+					ReShowHurtHud(client);
+				}
+				case -13: //ResetARmorHud To default
+				{
+					f_HurtHudOffsetX[client] = 0.0;
+					f_HurtHudOffsetY[client] = 0.0;
+					
+					ReShowHurtHud(client);
+				}
+
+				//Weapon HUD STUFF!
+				case -14:
+				{
+					ReShowWeaponHud(client);
+				}
+				case -15: //Move Armor Hud Up
+				{
+					f_WeaponHudOffsetX[client] -= 0.005;
+					if(f_WeaponHudOffsetX[client] < -1.0)
+					{
+						f_WeaponHudOffsetX[client] = -1.0;
+					}
+					ReShowWeaponHud(client);
+				}
+				case -16: //Move Armor Hud Down
+				{
+					f_WeaponHudOffsetX[client] += 0.005;
+					if(f_WeaponHudOffsetX[client] > 1.0)
+					{
+						f_WeaponHudOffsetX[client] = 1.0;
+					}
+					ReShowWeaponHud(client);
+				}
+				case -17: //Move Armor Hud Left
+				{
+					f_WeaponHudOffsetY[client] -= 0.005;
+					if(f_WeaponHudOffsetY[client] < 0.10)
+					{
+						f_WeaponHudOffsetY[client] = 0.10;
+					}
+					ReShowWeaponHud(client);
+				}
+				case -18: //Move Armor Hud right
+				{
+					if(f_WeaponHudOffsetY[client] < 0.10)
+					{
+						f_WeaponHudOffsetY[client] = 0.10;
+					}
+					f_WeaponHudOffsetY[client] += 0.005;
+					if(f_WeaponHudOffsetY[client] > 1.0)
+					{
+						f_WeaponHudOffsetY[client] = 1.0;
+					}
+					ReShowWeaponHud(client);
+				}
+				case -19: //ResetARmorHud To default
+				{
+					f_WeaponHudOffsetX[client] = 0.0;
+					f_WeaponHudOffsetY[client] = 0.0;
+					
+					ReShowWeaponHud(client);
+				}
+				
+				case -1: //Move Armor Hud right
+				{
+					Menu menu2 = new Menu(Settings_MenuPage);
+					menu2.SetTitle("%t", "Settings Page");
+
+					FormatEx(buffer, sizeof(buffer), "%t", "Armor Hud Setting");
+					menu2.AddItem("-2", buffer);
+
+					FormatEx(buffer, sizeof(buffer), "%t", "Hurt Hud Setting");
+					menu2.AddItem("-8", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Weapon Hud Setting");
+					menu2.AddItem("-14", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Back");
+					menu2.AddItem("-999", buffer);
+					
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
+				default:
+				{
+					MenuPage(client, -1);
+				}
+			}
+		}
+
+	}
+	return 0;
+}
 public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
@@ -2306,6 +2685,26 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 			int id = StringToInt(buffer);
 			switch(id)
 			{
+				
+				case -23:
+				{
+					Menu menu2 = new Menu(Settings_MenuPage);
+					menu2.SetTitle("%t", "Settings Page");
+
+					FormatEx(buffer, sizeof(buffer), "%t", "Armor Hud Setting");
+					menu2.AddItem("-2", buffer);
+
+					FormatEx(buffer, sizeof(buffer), "%t", "Hurt Hud Setting");
+					menu2.AddItem("-8", buffer);
+
+					FormatEx(buffer, sizeof(buffer), "%t", "Weapon Hud Setting");
+					menu2.AddItem("-14", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Back");
+					menu2.AddItem("-999", buffer);
+					
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
 				case -21:
 				{
 					Menu menu2 = new Menu(Store_MenuPage);
@@ -3016,15 +3415,21 @@ void Store_ApplyAttribs(int client)
 		map.SetValue("26", RemoveExtraHealth(ClassForStats, 1.0));		// Health
 	}
 #endif
-	
+	float MovementSpeed = 330.0;
 #if defined RPG
-
+	
 	Format(c_TagName[client],sizeof(c_TagName[]),"Newbie");
 	i_TagColor[client] =	{255,255,255,255};
 	Stats_SetBodyStats(client, ClassForStats, map);
+
+	//CC DIFFICULTY, 15% SLOWER!
+	if(b_DungeonContracts_SlowerMovespeed[client])
+	{
+		MovementSpeed *= 0.85; 
+	}
 #endif
-	
-	map.SetValue("107", RemoveExtraSpeed(ClassForStats, 330.0));		// Move Speed
+
+	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 
 	map.SetValue("353", 1.0);	// No manual building pickup.
 	map.SetValue("465", 10.0);	// x10 faster diepsner build
@@ -3286,11 +3691,9 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 #if defined ZR
 	if(!StoreItems)
 #endif
-
 #if defined RPG
 	if(!EquippedItems)
 #endif
-
 	{
 		return; //STOP. BAD!
 	}
@@ -3310,12 +3713,15 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	}
 	else if(StoreItems)
 	{
+		Store_RemoveSpecificItem(client, "Irene's Handcannon");
 		Store_RemoveSpecificItem(client, "Teutonic Longsword");
 	}
 
 	b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
 #endif
-
+#if defined RPG
+	MudrockShieldUnequip(client);
+#endif
 	//There is no easy way to preserve uber through with multiple mediguns
 	//solution: save via index
 	int ie, entity;
@@ -3658,7 +4064,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						i_CustomWeaponEquipLogic[entity] = info.CustomWeaponOnEquip;
 					}
 #endif
-					
 					if(info.Ammo > 0 && !CvarRPGInfiniteLevelAndAmmo.BoolValue)
 					{
 						if(!StrEqual(info.Classname[0], "tf_weapon_medigun"))
@@ -4112,7 +4517,22 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 	if(EntityIsAWeapon)
 	{
-
+//CC CONTRACT diffiulty
+//30% slower attackspeedfor all weapons.
+#if defined RPG
+		if(b_DungeonContracts_SlowerAttackspeed[client])
+		{
+			Address address = TF2Attrib_GetByDefIndex(entity, 6);
+			if(address == Address_Null)
+			{
+				TF2Attrib_SetByDefIndex(entity, 6, 1.3);
+			}
+			else
+			{
+				TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(address) * 1.3);
+			}
+		}
+#endif
 #if defined ZR
 		//SPEED COLA!
 		if(i_CurrentEquippedPerk[client] == 4)
@@ -4175,17 +4595,21 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		i_HighTeslarStaff[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 3000));
 		
 #if defined ZR
-		Enable_Management(client, entity);
+		Enable_Management_Knife(client, entity);
 		Enable_Arsenal(client, entity);
 		On_Glitched_Give(client, entity);
 		Enable_Management_Banner(client, entity);
 		
 		Enable_StarShooter(client, entity);
+		Enable_Passanger(client, entity);
 #endif
 
 #if defined RPG
 		Stats_SetWeaponStats(client, entity, slot);
 #endif
+		Reset_stats_Irene_Singular_Weapon(client, entity);
+		Enable_Irene(client, entity);
+		Enable_PHLOG(client, entity);
 
 	}
 	return entity;

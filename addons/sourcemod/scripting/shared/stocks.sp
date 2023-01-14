@@ -81,7 +81,7 @@ stock int GivePropAttachment(int entity, const char[] model)
 	return prop;
 }
 
-stock int ParticleEffectAt(float position[3], char[] effectName, float duration = 0.1)
+stock int ParticleEffectAt(float position[3], const char[] effectName, float duration = 0.1)
 {
 	int particle = CreateEntityByName("info_particle_system");
 	if (particle != -1)
@@ -113,13 +113,9 @@ stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iPar
 		SetParent(iParent, particle, szAttachment, vOffsets);
 
 		ActivateEntity(particle);
-		if(iParent < MAXTF2PLAYERS) //Exclude base_bosses from this, or any entity, then it has to always be rendered.
+		if(iParent > MAXTF2PLAYERS) //Exclude base_bosses from this, or any entity, then it has to always be rendered.
 		{
-			SetEdictFlags(particle, (GetEdictFlags(particle) & ~FL_EDICT_ALWAYS));	
-		}
-		else
-		{
-			SetEdictFlags(particle, (GetEdictFlags(particle) | FL_EDICT_ALWAYS));	
+			b_IsEntityAlwaysTranmitted[particle] = true;
 		}
 
 		AcceptEntityInput(particle, "start");
@@ -431,6 +427,7 @@ stock TFClassType TF2_GetWeaponClass(int index, TFClassType defaul=TFClass_Unkno
 		}
 	}
 
+	TFClassType backup;
 	for(TFClassType class=TFClass_Engineer; class>TFClass_Unknown; class--)
 	{
 		if(defaul == class)
@@ -441,12 +438,19 @@ stock TFClassType TF2_GetWeaponClass(int index, TFClassType defaul=TFClass_Unkno
 		{
 			if(slot == checkSlot)
 				return class;
+			
+			if(!backup && slot >= 0 && slot < 6)
+				backup = class;
 		}
-		else if(slot>=0 && slot<6)
+		else if(slot >= 0 && slot < 6)
 		{
 			return class;
 		}
 	}
+
+	if(checkSlot != -1 && backup)
+		return backup;
+	
 	return defaul;
 }
 
@@ -519,7 +523,7 @@ stock int TF2_GetClassnameSlot(const char[] classname, bool econ=false)
 	{
 		return TFWeaponSlot_Secondary;
 	}
-	else if(!StrContains(classname, "tf_weapon_r"))	// Revolver
+	else if(!StrContains(classname, "tf_weapon_re"))	// Revolver
 	{
 		return econ ? TFWeaponSlot_Secondary : TFWeaponSlot_Primary;
 	}
@@ -957,6 +961,55 @@ public Action Timer_DisableMotion(Handle timer, any entid)
 		AcceptEntityInput(entity, "DisableMotion");
 	return Plugin_Stop;
 }
+void StartBleedingTimer_Against_Client(int client, int entity, float damage, int amount)
+{
+	BleedAmountCountStack[client] += 1;
+	DataPack pack;
+	CreateDataTimer(0.5, Timer_Bleeding_Against_Client, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(client));
+	pack.WriteCell(client);
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteFloat(damage);
+	pack.WriteCell(amount);
+}
+
+public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	int OriginalIndex = pack.ReadCell();
+	if(!IsValidClient(client))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		return Plugin_Stop;
+	}
+		
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(entity<=MaxClients || !IsValidEntity(entity))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		return Plugin_Stop;
+	}
+
+	float pos[3], ang[3];
+	
+	pos = WorldSpaceCenter(client);
+	
+	GetClientEyeAngles(client, ang);
+	SDKHooks_TakeDamage(client, entity, entity, pack.ReadFloat(), DMG_SLASH, _, _, pos, false);
+
+	int bleed_count = pack.ReadCell();
+	if(bleed_count < 1)
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		return Plugin_Stop;
+	}
+
+	pack.Position--;
+	pack.WriteCell(bleed_count-1, false);
+	return Plugin_Continue;
+}
+
 
 void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon)
 {
@@ -991,6 +1044,12 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 
 	int client = GetClientOfUserId(pack.ReadCell());
 	if(!client || !IsClientInGame(client) || !IsPlayerAlive(client))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		return Plugin_Stop;
+	}
+
+	if(f_NpcImmuneToBleed[entity] > GetGameTime())
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
 		return Plugin_Stop;
@@ -1193,7 +1252,6 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 {
 	if(entity <= MaxClients)
 	{
-		
 #if defined ZR
 		if(entity != data) //make sure that they are not dead, if they are then just ignore them/give special shit
 		{
@@ -2154,9 +2212,7 @@ stock void spawnRing(int client, float range, float modif_X, float modif_Y, floa
 			endRange = range + 0.5;
 		}
 		
-		//TE_SetupBeamRingPoint(center, range, range+0.5, ICE_INT, ICE_INT, 0, fps, life, width, amp, {r, g, b, alpha}, speed, 0);
 		TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
-		//TE_SetupBeamRingPoint(center, range, range+0.5, ICE_INT, ICE_INT, 0, 10, 0.1, 50.0, 5.0, {255, 255, 255, 100}, 1, 0);
 		TE_SendToAll();
 	}
 }
@@ -2487,6 +2543,22 @@ int CountPlayersOnRed(bool alive = false)
 		if(IsClientInGame(client) && GetClientTeam(client) == 2 && (!alive || IsPlayerAlive(client)))
 #endif
 			amount++;
+	}
+	
+	return amount;
+	
+}
+
+int CountPlayersOnServer()
+{
+	int amount;
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientConnected(client))
+		{
+			if(!IsFakeClient(client))
+				amount++;
+		}
 	}
 	
 	return amount;
@@ -2917,32 +2989,32 @@ public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 
 stock void LookAtTarget(int client, int target)
 {
-    float angles[3];
-    float clientEyes[3];
-    float targetEyes[3];
-    float resultant[3]; 
-    
-    GetClientEyePosition(client, clientEyes);
-    if(target > 0 && target <= MaxClients && IsClientInGame(target))
-    {
+	float angles[3];
+	float clientEyes[3];
+	float targetEyes[3];
+	float resultant[3]; 
+		
+	GetClientEyePosition(client, clientEyes);
+	if(target > 0 && target <= MaxClients && IsClientInGame(target))
+	{
 		GetClientEyePosition(target, targetEyes);
-    }
-    else
-    {
-    	targetEyes = WorldSpaceCenter(target);
-    }
-    MakeVectorFromPoints(targetEyes, clientEyes, resultant); 
-    GetVectorAngles(resultant, angles); 
-    if(angles[0] >= 270){ 
-        angles[0] -= 270; 
-        angles[0] = (90-angles[0]); 
-    }else{ 
-        if(angles[0] <= 90){ 
-            angles[0] *= -1; 
-        } 
-    } 
-    angles[1] -= 180; 
-    TeleportEntity(client, NULL_VECTOR, angles, NULL_VECTOR); 
+	}
+	else
+	{
+		targetEyes = WorldSpaceCenter(target);
+	}
+	MakeVectorFromPoints(targetEyes, clientEyes, resultant); 
+	GetVectorAngles(resultant, angles); 
+	if(angles[0] >= 270){ 
+		angles[0] -= 270; 
+		angles[0] = (90-angles[0]); 
+	}else{ 
+		if(angles[0] <= 90){ 
+			angles[0] *= -1; 
+		} 
+	} 
+	angles[1] -= 180; 
+	SnapEyeAngles(client, angles);
 } 
 
 
@@ -3460,3 +3532,73 @@ stock char[] CharPercent(float value)
 	}
 	return buffer;
 } 
+
+#if defined ZR
+
+stock bool AmmoBlacklist(int Ammotype)
+{
+	if(Ammotype == -1 || Ammotype >= Ammo_Hand_Grenade)
+	{
+		return false;
+	}
+	return true;
+} 
+
+
+#endif
+
+stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3], float Beamoffset[3] = {0.0,0.0,0.0})
+{
+	GetClientEyePosition(client, startPoint);
+	float angles[3];
+	GetClientEyeAngles(client, angles);
+	startPoint[2] -= 25.0;
+	if (0.0 == Beamoffset[0] && 0.0 == Beamoffset[1] && 0.0 == Beamoffset[2])
+	{
+		return;
+	}
+	float tmp[3];
+	float actualBeamOffset[3];
+	tmp[0] = Beamoffset[0];
+	tmp[1] = Beamoffset[1];
+	tmp[2] = 0.0;
+	VectorRotate(tmp, angles, actualBeamOffset);
+	actualBeamOffset[2] = Beamoffset[2];
+	startPoint[0] += actualBeamOffset[0];
+	startPoint[1] += actualBeamOffset[1];
+	startPoint[2] += actualBeamOffset[2];
+}
+
+// Thank you miku:)
+// https://github.com/Mikusch/PropHunt/blob/985808f13d8738945a2c9980db0b75865a20c99c/addons/sourcemod/scripting/prophunt.sp#L332
+
+static bool HazardResult;
+
+bool IsPointHazard(const float pos1[3])
+{
+	HazardResult = false;
+	TR_EnumerateEntities(pos1, pos1, PARTITION_TRIGGER_EDICTS, RayType_EndPoint, TraceEntityEnumerator_EnumerateTriggers);
+	return HazardResult;
+}
+
+public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
+{
+	char classname[16];
+	if(GetEntityClassname(entity, classname, sizeof(classname)) && !StrContains(classname, "trigger_hurt"))
+	{
+		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
+		{
+			Handle trace = TR_ClipCurrentRayToEntityEx(MASK_PLAYERSOLID, entity);
+			bool didHit = TR_DidHit(trace);
+			delete trace;
+			
+			if (didHit)
+			{
+				HazardResult = true;
+				return false;
+			}
+		}
+	}
+	
+	return true;
+}

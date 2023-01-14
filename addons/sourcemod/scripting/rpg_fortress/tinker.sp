@@ -26,7 +26,8 @@ static const char TierName[][] =
 #define FLAG_WAND	(1 << 2)	// 4
 #define FLAG_MINE	(1 << 3)	// 8
 #define FLAG_FISH	(1 << 4)	// 16
-#define FLAG_ALL	31
+#define FLAG_WRENCH	(1 << 5)	// 32
+#define FLAG_ALL	63
 
 enum struct TinkerNPCEnum
 {
@@ -176,7 +177,7 @@ enum struct TinkerEnum
 		this.ToolMinRarity = kv.GetNum("tool_minrarity");
 		this.ToolMaxRarity = kv.GetNum("tool_maxrarity", 9);
 		this.PlayerLevel = kv.GetNum("player_minlevel");
-		this.ToolFlags = kv.GetNum("tools");
+		this.ToolFlags = kv.GetNum("tools", FLAG_ALL);
 		this.Levels = kv.GetNum("levels");
 		this.Credits = kv.GetNum("credits");
 
@@ -207,7 +208,7 @@ enum struct TinkerEnum
 		this.FuncGainXP = GetFunctionByName(null, this.Desc);
 
 		static char buffers[32][16];
-		kv.GetString("attribs_multi", this.Desc, 256);
+		kv.GetString("attribs", this.Desc, 256);
 		this.Attribs = ExplodeString(this.Desc, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
 		for(int i; i < this.Attribs; i++)
 		{
@@ -234,6 +235,7 @@ enum struct ForgeEnum
 	int MaxLevel;
 	float Low;
 	float High;
+	int ToolFlags;
 
 	void SetupEnum(KeyValues kv)
 	{
@@ -242,6 +244,7 @@ enum struct ForgeEnum
 		this.Type = kv.GetNum("type");
 		this.Low = kv.GetFloat("low");
 		this.High = kv.GetFloat("high");
+		this.ToolFlags = kv.GetNum("tools", FLAG_ALL);
 	}
 }
 
@@ -299,6 +302,7 @@ void Tinker_ConfigSetup(KeyValues map)
 	{
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "tinker");
 		kv = new KeyValues("Tinker");
+		kv.SetEscapeSequences(true);
 		kv.ImportFromFile(buffer);
 	}
 
@@ -406,7 +410,7 @@ void Tinker_DisableZone(const char[] name)
 
 static int TinkerCost(int level)
 {
-	return 1000 + (level * 200);
+	return 2000 + (level * 75);
 }
 
 static void ToMetaData(int level, const WeaponEnum weapon, char data[512])
@@ -528,7 +532,6 @@ void Tinker_SpawnItem(int client, int index, int entity)
 			WeaponList.GetArray(i, weapon);
 			if(weapon.Store == index && weapon.Owner == client)
 			{
-		//		PrintToChatAll("Found");
 				TextStore_GetItemName(index, StoreWeapon[entity], sizeof(StoreWeapon[]));
 
 				static TinkerEnum tinker;
@@ -551,11 +554,11 @@ void Tinker_SpawnItem(int client, int index, int entity)
 							}
 							else if(TF2Econ_GetAttributeDefinitionString(tinker.Attrib[a], "description_format", tinker.Name, sizeof(tinker.Name)) && StrContains(tinker.Name, "additive") != -1)
 							{
-								TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) + tinker.Value[a]);
+								TF2Attrib_SetByDefIndex(entity, tinker.Attrib[a], TF2Attrib_GetValue(address) + tinker.Value[a]);
 							}
 							else
 							{
-								TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * tinker.Value[a]);
+								TF2Attrib_SetByDefIndex(entity, tinker.Attrib[a], TF2Attrib_GetValue(address) * tinker.Value[a]);
 							}
 						}
 					}
@@ -584,7 +587,6 @@ void Tinker_SpawnItem(int client, int index, int entity)
 
 				for(i = 0; i < weapon.ForgeCount; i++)
 				{
-				//	PrintToChatAll("%d ; %f", weapon.Forge[i], weapon.Value[i]);
 					if(weapon.Forge[i] < 0)
 					{
 						Stats_GetCustomStats(entity, weapon.Forge[i], weapon.Value[i]);
@@ -598,11 +600,11 @@ void Tinker_SpawnItem(int client, int index, int entity)
 						}
 						else if(TF2Econ_GetAttributeDefinitionString(weapon.Forge[i], "description_format", tinker.Name, sizeof(tinker.Name)) && StrContains(tinker.Name, "additive") != -1)
 						{
-							TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) + weapon.Value[i]);
+							TF2Attrib_SetByDefIndex(entity, weapon.Forge[i], TF2Attrib_GetValue(address) + weapon.Value[i]);
 						}
 						else
 						{
-							TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * weapon.Value[i]);
+							TF2Attrib_SetByDefIndex(entity, weapon.Forge[i], TF2Attrib_GetValue(address) * weapon.Value[i]);
 						}
 
 						TF2Attrib_SetByDefIndex(entity, 128, 1.0);
@@ -753,6 +755,9 @@ static void GetAttributeFormat(char[] desc, int attrib, float value)
 		
 		case 410:
 			Format(desc, 512, "%s\n%s Magic Damage", desc, CharPercent(value));
+		
+		case 2016:
+			Format(desc, 512, "%s\n%s Tool Efficiency", desc, CharPercent(value));
 	}
 }
 
@@ -773,7 +778,6 @@ bool Tinker_Interact(int client, int entity, int weapon)
 		if(EntRefToEntIndex(npc.EntRef) == entity)
 		{
 			CurrentWeapon[client] = Store_GetStoreOfEntity(weapon);
-		//	PrintToChatAll("%d", CurrentWeapon[client]);
 			if(CurrentWeapon[client])
 				ShowMenu(client, -1);
 			
@@ -821,9 +825,39 @@ static void ShowMenu(int client, int page)
 
 								bool hasFunc[4];
 								
-								kv.GetString("func_attack", buffer, sizeof(buffer));
 								hasFunc[0] = view_as<bool>(buffer[0]);
-								
+								kv.GetString("func_attack", buffer, sizeof(buffer));
+
+								int tool = FLAG_ALL;
+								if(kv.GetNum("is_a_wand"))
+								{
+									tool = FLAG_WAND;
+								}
+								else if(Mining_IsPickaxeFunc(buffer))
+								{
+									tool = FLAG_MINE;
+								}
+								else if(Fishing_IsFishingFunc(buffer))
+								{
+									tool = FLAG_FISH;
+								}
+								else if(kv.GetNum("is_a_wrench"))
+								{
+									tool = FLAG_WRENCH;
+								}
+								else
+								{
+									kv.GetString("classname", buffer, sizeof(buffer));
+									if(TF2_GetClassnameSlot(buffer) == TFWeaponSlot_Melee)
+									{
+										tool = FLAG_MELEE;
+									}
+									else
+									{
+										tool = FLAG_RANGE;
+									}
+								}
+
 								kv.GetString("func_attack2", buffer, sizeof(buffer));
 								hasFunc[1] = view_as<bool>(buffer[0]);
 								
@@ -856,7 +890,8 @@ static void ShowMenu(int client, int page)
 								for(i = 0; i < length; i++)
 								{
 									TinkerList.GetArray(i, tinker);
-									if(tinker.ToolMinLv <= level && tinker.ToolMaxLv >= level && 
+									if((tinker.ToolFlags & tool) &&
+									   tinker.ToolMinLv <= level && tinker.ToolMaxLv >= level && 
 									   tinker.ToolMinRarity <= rarity && tinker.ToolMaxRarity >= rarity &&
 									 (!hasFunc[0] || tinker.FuncAttack == INVALID_FUNCTION) &&
 									 (!hasFunc[1] || tinker.FuncAttack2 == INVALID_FUNCTION) &&
@@ -1052,6 +1087,8 @@ static void ShowMenu(int client, int page)
 							break;
 						}
 					}
+
+					menu.ExitBackButton = true;
 				}
 			}
 		}
@@ -1146,7 +1183,39 @@ public int Tinker_MainMenu(Menu menu, MenuAction action, int client, int choice)
 								}
 								TextStore_Cash(client, -cost);
 
-								RollRandomAttribs(Level[client], weapon);
+								kv.GetString("func_attack", data, sizeof(data));
+
+								int tool = FLAG_ALL;
+								if(kv.GetNum("is_a_wand"))
+								{
+									tool = FLAG_WAND;
+								}
+								else if(Mining_IsPickaxeFunc(data))
+								{
+									tool = FLAG_MINE;
+								}
+								else if(Fishing_IsFishingFunc(data))
+								{
+									tool = FLAG_FISH;
+								}
+								else if(kv.GetNum("is_a_wrench"))
+								{
+									tool = FLAG_WRENCH;
+								}
+								else
+								{
+									kv.GetString("classname", data, sizeof(data));
+									if(TF2_GetClassnameSlot(data) == TFWeaponSlot_Melee)
+									{
+										tool = FLAG_MELEE;
+									}
+									else
+									{
+										tool = FLAG_RANGE;
+									}
+								}
+
+								RollRandomAttribs(Level[client], weapon, tool);
 								WeaponList.SetArray(i, weapon);
 
 								ToMetaData(kv.GetNum("level"), weapon, data);
@@ -1223,7 +1292,7 @@ public int Tinker_MainMenu(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-static void RollRandomAttribs(int level, WeaponEnum weapon)
+static void RollRandomAttribs(int level, WeaponEnum weapon, int tool)
 {
 	weapon.ForgeCount = 0;
 
@@ -1239,12 +1308,18 @@ static void RollRandomAttribs(int level, WeaponEnum weapon)
 			continue;
 		}
 
+		if(fails < 19 && !(forge.ToolFlags & tool))
+		{
+			fails++;
+			continue;
+		}
+
 		weapon.Forge[weapon.ForgeCount] = forge.Attrib;
 
 		float value = GetRandomFloat(forge.Low, forge.High);
-		weapon.Value[weapon.ForgeCount++] = value;
-		
+		weapon.Value[weapon.ForgeCount++] = value;		
 		bool bad = view_as<bool>(GetURandomInt() % 2);
+/*
 		if(!bad)
 		{
 			switch(forge.Type)
@@ -1259,9 +1334,10 @@ static void RollRandomAttribs(int level, WeaponEnum weapon)
 					bad = value <= 0.0;
 			}
 		}
-
+*/
 		if(!bad)
 			break;
+
 	}
 }
 
@@ -1319,15 +1395,15 @@ public void Tinker_XP_Glassy(int client, int weapon)
 {
 	Address address = TF2Attrib_GetByDefIndex(weapon, 2);
 	if(address != Address_Null)
-		TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 0.99);
+		TF2Attrib_SetByDefIndex(weapon, 2, TF2Attrib_GetValue(address) * 0.99);
 	
 	address = TF2Attrib_GetByDefIndex(weapon, 410);
 	if(address != Address_Null)
-		TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 0.99);
+		TF2Attrib_SetByDefIndex(weapon, 410, TF2Attrib_GetValue(address) * 0.99);
 	
 	address = TF2Attrib_GetByDefIndex(weapon, 2016);
 	if(address != Address_Null)
-		TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 0.99);
+		TF2Attrib_SetByDefIndex(weapon, 2016, TF2Attrib_GetValue(address) * 0.99);
 }
 
 public void Tinker_Attack_Addiction(int client, int weapon, bool crit, int slot)

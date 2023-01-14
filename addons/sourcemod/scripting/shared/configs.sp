@@ -68,6 +68,7 @@ public void Configs_ConfigsExecuted()
 	
 #if defined RPG
 	Crafting_ConfigSetup(kv);
+	Dungeon_ConfigSetup(kv);
 	Fishing_ConfigSetup(kv);
 	Garden_ConfigSetup(kv);
 	Mining_ConfigSetup(kv);
@@ -140,6 +141,11 @@ stock float Config_GetDPSOfEntity(int entity)
 	
 	if(i == val)
 		return 0.0;
+
+	if(!data.Damage)
+	{
+		return 0.0;
+	}
 	
 	// Damage and Pellets
 	Address address = TF2Attrib_GetByDefIndex(entity, 410);
@@ -164,7 +170,17 @@ stock float Config_GetDPSOfEntity(int entity)
 	if(address != Address_Null)
 		data.FireRate *= TF2Attrib_GetValue(address);
 	
-	return data.Damage / data.FireRate;
+	
+	address = TF2Attrib_GetByDefIndex(entity, 876);
+	if(address != Address_Null)
+		data.Damage *= TF2Attrib_GetValue(address);
+	
+
+	float damagedps;
+	
+	damagedps = data.Damage / data.FireRate;
+
+	return damagedps;
 }
 
 void Config_CreateDescription(const char[] classname, const int[] attrib, const float[] value, int attribs, char[] buffer, int length)
@@ -443,6 +459,15 @@ void Config_CreateDescription(const char[] classname, const int[] attrib, const 
 		float damagepersecond;
 
 		damagepersecond = damage_Calc / firerate_Calc;
+
+		for(i=0; i<attribs; i++)
+		{
+			if(attrib[i] == 876)
+			{
+				damagepersecond *= value[i];
+				break;
+			}
+		}
 
 		Format(buffer, length, "%s\nDPS: %1.f", buffer, damagepersecond);
 	}

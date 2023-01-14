@@ -1,6 +1,12 @@
 
 static float Duration_Pound[MAXTF2PLAYERS];
+static float Is_Duration_Pound[MAXTF2PLAYERS];
 
+
+float AbilityGroundPoundReturnFloat(int client)
+{
+	return Is_Duration_Pound[client];
+}
 static int particle[MAXTF2PLAYERS];
 static int particle_1[MAXTF2PLAYERS];
 static int i_weaponused[MAXTF2PLAYERS];
@@ -31,18 +37,21 @@ public float AbilityGroundSlam(int client, int index, char name[48])
 	if(kv)
 	{
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		static char classname[36];
-		GetEntityClassname(weapon, classname, sizeof(classname));
-		if (TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee && !i_IsWandWeapon[weapon])
+		if(IsValidEntity(weapon))
 		{
-			Ability_OnAbility_Ground_Pound(client, 1, weapon);
-			return (GetGameTime() + 40.0);
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Melee Weapon.");
-			return 0.0;
+			static char classname[36];
+			GetEntityClassname(weapon, classname, sizeof(classname));
+			if (TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee && !i_IsWandWeapon[weapon])
+			{
+				Ability_OnAbility_Ground_Pound(client, 1, weapon);
+				return (GetGameTime() + 40.0);
+			}
+			else
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Melee Weapon.");
+				return 0.0;
+			}
 		}
 
 	//	if(kv.GetNum("consume", 1))
@@ -95,6 +104,7 @@ public void Ability_OnAbility_Ground_Pound(int client, int level, int weapon)
 	particle_1[client] = EntIndexToEntRef(particle_1[client]);
 
 	Duration_Pound[client] = GetGameTime() + 1.0;
+	Is_Duration_Pound[client] = GetGameTime() + 5.0;
 		
 	SDKHook(client, SDKHook_PreThink, contact_ground_shockwave);
 	EmitSoundToAll("weapons/physcannon/energy_sing_flyby2.wav", client, SNDCHAN_STATIC, 80, _, 0.9);
@@ -103,6 +113,7 @@ public void Ability_OnAbility_Ground_Pound(int client, int level, int weapon)
 
 public Action contact_ground_shockwave(int client)
 {
+	Is_Duration_Pound[client] = GetGameTime() + 1.0;
 	f_ImmuneToFalldamage[client] = GetGameTime() + 0.5;
 	if (Duration_Pound[client] < GetGameTime())
 	{
@@ -116,6 +127,8 @@ public Action contact_ground_shockwave(int client)
 	
 	if (Duration_Pound[client] < GetGameTime() && ((flags & FL_ONGROUND)==1 || (flags & (FL_SWIM|FL_INWATER))))
 	{
+		Is_Duration_Pound[client] = 0.0;
+
 		SetEntityGravity(client, 1.0);
 		if(IsValidEntity(EntRefToEntIndex(particle[client])))
 			RemoveEntity(EntRefToEntIndex(particle[client]));

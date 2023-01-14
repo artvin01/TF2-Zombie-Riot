@@ -16,18 +16,21 @@ public float AbilityMortarRanged(int client, int index, char name[48])
 	if(kv)
 	{
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		static char classname[36];
-		GetEntityClassname(weapon, classname, sizeof(classname));
-		if (TF2_GetClassnameSlot(classname) != TFWeaponSlot_Melee && !i_IsWandWeapon[weapon] && !i_IsWrench[weapon])
+		if(IsValidEntity(weapon))
 		{
-			Ability_MortarRanged(client, 1, weapon);
-			return (GetGameTime() + 40.0);
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Ranged Weapon.");
-			return 0.0;
+			static char classname[36];
+			GetEntityClassname(weapon, classname, sizeof(classname));
+			if (TF2_GetClassnameSlot(classname) != TFWeaponSlot_Melee && !i_IsWandWeapon[weapon] && !i_IsWrench[weapon])
+			{
+				Ability_MortarRanged(client, 1, weapon);
+				return (GetGameTime() + 40.0);
+			}
+			else
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Ranged Weapon.");
+				return 0.0;
+			}
 		}
 
 	//	if(kv.GetNum("consume", 1))
@@ -44,7 +47,14 @@ public void Ability_MortarRanged(int client, int level, int weapon)
 {
 	float damage = Config_GetDPSOfEntity(weapon);
 	
-	f_Damage[client] = (damage * 6);
+	if(damage < 1.0)
+	{
+		f_Damage[client] = 1.0;
+	}
+	else
+	{
+		f_Damage[client] = (damage * 6);
+	}
 
 	BuildingMortarAction(client);
 }

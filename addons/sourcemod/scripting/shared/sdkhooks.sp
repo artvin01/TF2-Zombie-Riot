@@ -231,8 +231,6 @@ public void OnPostThink(int client)
 
 			IntToString(i_SvRollAngle[client], RollAngleValue, sizeof(RollAngleValue));
 
-		//	PrintToChatAll("%s",RollAngleValue);
-
 			CvarSvRollagle.ReplicateToClient(client, RollAngleValue); //set replicate back to normal.
 		}
 #endif	// ZR
@@ -661,7 +659,14 @@ public void OnPostThink(int client)
 			
 			Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
 		}
-		SetHudTextParams(-1.0, 0.85, 0.81, red, green, blue, 255);
+		float HudY = 0.85;
+		float HudX = -1.0;
+	
+#if defined ZR
+		HudX += f_WeaponHudOffsetY[client];
+		HudY += f_WeaponHudOffsetX[client];
+#endif
+		SetHudTextParams(HudX, HudY, 0.81, red, green, blue, 255);
 		ShowSyncHudText(client,  SyncHud_WandMana, "%s", buffer);
 	}
 	if(delay_hud[client] < gameTime)	
@@ -776,7 +781,7 @@ public void OnPostThink(int client)
 					}
 					Format(buffer, sizeof(buffer), "%s%.1f", buffer, slowdown_amount);
 				}
-				SetHudTextParams(0.175, 0.86, 0.81, red, green, blue, 255);
+				SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.86 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
 				ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
 			}
 			
@@ -979,14 +984,14 @@ public void OnPreThink(int client)
 */
 
 #if defined ZR
-static bool i_WasInUber;
+static float i_WasInUber;
 public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(i_WasInUber)
 	{
-		TF2_AddCondition(victim, TFCond_Ubercharged, -1.0);
+		TF2_AddCondition(victim, TFCond_Ubercharged, i_WasInUber);
 	}
-	i_WasInUber = false;
+	i_WasInUber = 0.0;
 	return Plugin_Continue;
 }
 #endif
@@ -1004,13 +1009,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		return Plugin_Handled;
 	}
-	
+
 #if defined ZR
 	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
-		if(TF2_IsPlayerInCondition(victim,TFCond_Ubercharged))
+		if(TF2_IsPlayerInCondition(victim, TFCond_Ubercharged))
 		{
-			i_WasInUber = true;
+			i_WasInUber = TF2Util_GetPlayerConditionDuration(victim, TFCond_Ubercharged);
 			TF2_RemoveCondition(victim, TFCond_Ubercharged);
 			damage *= 0.5;
 		}
@@ -1059,7 +1064,15 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if(attacker <= MaxClients && attacker > 0)	
 		return Plugin_Handled;	
 		
-		
+
+#if defined RPG	
+	if(Ability_Mudrock_Shield_OnTakeDamage(victim))
+	{
+		damage = 0.0;
+		return Plugin_Handled;
+	}
+#endif
+	
 	f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
 	
 #if defined ZR
@@ -1347,6 +1360,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #endif	// ZR
 			
 		}
+#if defined RPG
+		damage = RpgCC_ContractExtrasPlayerOnTakeDamage(victim, attacker, damage, damagetype);
+#endif
 	}
 	
 #if defined ZR
