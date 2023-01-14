@@ -1122,7 +1122,12 @@ methodmap CClotBody
 			}
 		}
 		
-		if(f_TankGrabbedStandStill[this.index] > GetGameTime(this.index))
+		if(f_TankGrabbedStandStill[this.index] > GetGameTime())
+		{
+			speed_for_return = 0.0;
+			return speed_for_return;
+		}
+		if(f_TimeFrozenStill[this.index] > GetGameTime(this.index))
 		{
 			speed_for_return = 0.0;
 			return speed_for_return;
@@ -6741,6 +6746,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_HighIceDebuff[entity] = 0.0;
 	b_Frozen[entity] = false;
 	f_TankGrabbedStandStill[entity] = 0.0;
+	f_TimeFrozenStill[entity] = 0.0;
 	f_MaimDebuff[entity] = 0.0;
 	f_PassangerDebuff[entity] = 0.0;
 	f_CrippleDebuff[entity] = 0.0;
@@ -7258,6 +7264,6 @@ void FreezeNpcInTime(int npc, float Duration_Stun)
 
 	f_StunExtraGametimeDuration[npc] += (Duration_Stun - TimeSinceLastStunSubtract);
 	fl_NextDelayTime[npc] = GetGameTime() + Duration_Stun - f_StunExtraGametimeDuration[npc];
-	f_TankGrabbedStandStill[npc] = GetGameTime() + Duration_Stun - f_StunExtraGametimeDuration[npc];
+	f_TimeFrozenStill[npc] = GetGameTime() + Duration_Stun - f_StunExtraGametimeDuration[npc];
 	f_TimeSinceLastStunHit[npc] = GetGameTime() + Duration_Stun;
 }
