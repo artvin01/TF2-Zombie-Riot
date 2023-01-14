@@ -2066,6 +2066,7 @@
 	{
 	     "en"       "Rebel Mounted Healing Station"
 	     "chi"      "叛军骑兵治疗机"
+	}
 	"Judgement Of Iberia"
 	{
 		"en"       "Judgement Of Iberia"
