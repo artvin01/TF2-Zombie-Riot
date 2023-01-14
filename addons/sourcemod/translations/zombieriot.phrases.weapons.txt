@@ -2056,4 +2056,8 @@
 		"en"	"Passanger's Device"
 		"ru"	"Пассажирское устройство"
 	}
+	"Alchemist Potion"
+	{
+		"en"	"Alchemist Potion"
+	}
 }

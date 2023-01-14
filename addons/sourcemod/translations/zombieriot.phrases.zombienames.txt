@@ -2,10 +2,7 @@
 {
 	"nothing"
 	{
-		"en" 		"This text isn't supposed to appear! Please report this to the admins!"
-		"ru" 		"Этот текст не должен появляться! Пожалуйста, сообщите об этом администраторам!"
-		"pt"		"Esta linha de texto não deveria estar aqui, seria uma boa ideia mostrar isso para os administradores."
-		"nl"		"Deze tekst zou niet moeten tevoorschijn komen! Raporteer dit Alstublieft aan een admin!"
+		"en" 		"Example Text!"
 	}
 	"Headcrab Zombie"
 	{
@@ -1140,6 +1137,32 @@
 		"en"		"Gold Bloon"
 		//"de"		""
 		"ru"		"Золотой шар"
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Medival Scout"
+	{
+		"en"		"Ridden Scout"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Medival Villager"
+	{
+		"en"		"Villager"
+		//"de"		""
+		//"ru"		""
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""

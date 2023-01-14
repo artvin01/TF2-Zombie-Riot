@@ -35,7 +35,12 @@ public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit, int slot)
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
 				Ability_Apply_Cooldown(client, slot, 15.0);
+				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				Mana_Hud_Delay[client] = 0.0;
+				
 				Current_Mana[client] -= mana_cost;
+				
+				delay_hud[client] = 0.0;
 				float damage = 160.0;
 				Address	address = TF2Attrib_GetByDefIndex(weapon, 410);
 				if(address != Address_Null)
@@ -182,6 +187,10 @@ void Reset_stats_Passanger_Singular(int client) //This is on disconnect/connect
 {
 	f_PassangerAbilityCooldownRegen[client] = 0.0;
 	i_PassangerAbilityCount[client] = 0;
+	if (h_TimerPassangerManagement[client] != INVALID_HANDLE)
+	{
+		KillTimer(h_TimerPassangerManagement[client]);
+	}	
 	h_TimerPassangerManagement[client] = INVALID_HANDLE;
 }
 static bool b_EntityHitByLightning[MAXENTITIES];
@@ -193,7 +202,12 @@ public void Weapon_Passanger_Attack(int client, int weapon, bool crit, int slot)
 		int mana_cost = 75;
 		if(mana_cost <= Current_Mana[client])
 		{
+			Mana_Regen_Delay[client] = GetGameTime() + 2.0;
+			Mana_Hud_Delay[client] = 0.0;
+			
 			Current_Mana[client] -= mana_cost;
+			
+			delay_hud[client] = 0.0;
 			b_LagCompNPC_No_Layers = true;
 			float vecSwingForward[3];
 			StartLagCompensation_Base_Boss(client);
@@ -324,7 +338,21 @@ void Passanger_Lightning_Effect(float belowBossEyes[3], float vecHit[3], int Pow
 public void Enable_Passanger(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
 	if (h_TimerPassangerManagement[client] != INVALID_HANDLE)
+	{
+		//This timer already exists.
+		if(i_CustomWeaponEquipLogic[weapon] == 9) //9 Is for Passanger
+		{
+			//Is the weapon it again?
+			//Yes?
+			KillTimer(h_TimerPassangerManagement[client]);
+			h_TimerPassangerManagement[client] = INVALID_HANDLE;
+			DataPack pack;
+			h_TimerPassangerManagement[client] = CreateDataTimer(0.1, Timer_Management_Passanger, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
 		return;
+	}
 		
 	if(i_CustomWeaponEquipLogic[weapon] == 9) //9 Is for Passanger
 	{
@@ -433,7 +461,12 @@ public void Weapon_Passanger_LightningArea(int client, int weapon, bool crit, in
 		int mana_cost = 350;
 		if(mana_cost <= Current_Mana[client])
 		{		
+			Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+			Mana_Hud_Delay[client] = 0.0;
+			
 			Current_Mana[client] -= mana_cost;
+			
+			delay_hud[client] = 0.0;
 			if(i_PassangerAbilityCount[client] == 2)
 			{
 				f_PassangerAbilityCooldownRegen[client] = GetGameTime() + PASSANGER_ABILITY_REGARGE_TIME;

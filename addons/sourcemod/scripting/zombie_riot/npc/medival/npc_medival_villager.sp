@@ -33,7 +33,6 @@ static const char g_IdleSounds[][] = {
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
 	"npc/metropolice/vo/pickupthatcan1.wav",
 	"npc/metropolice/vo/pickupthatcan2.wav",
-	"npc/metropolice/vo/pickupthatcan3.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
 	"npc/metropolice/vo/xray.wav",
@@ -170,13 +169,13 @@ methodmap MedivalVillager < CClotBody
 	
 	public MedivalVillager(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "20", ally));
+		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "5000", ally));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_VILLAGER;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_WALK");
+		int iActivity = npc.LookupActivity("ACT_VILLAGER_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -195,12 +194,38 @@ methodmap MedivalVillager < CClotBody
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("0.75");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_sledgehammer/c_sledgehammer.mdl");
+		SetVariantString("0.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		npc.StartPathing();
-		
+
+		//Pick a random area to be teleported to intantly. loop upto 100 times, if it fails, then just spawn normally.
+
+	//	int AreasCollected = 0;
+		float f3_AreasCollected[3];
+
+		for( int loop = 1; loop <= 100; loop++ ) 
+		{
+			NavArea RandomArea = PickRandomArea();	
+				
+			if(RandomArea == NavArea_Null) 
+				break; //No nav?
+
+			float vecGoal[3]; RandomArea.GetCenter(vecGoal);
+
+			vecGoal[2] += 20.0;
+
+			if(IsPointHazard(vecGoal)) //Retry.
+			{
+				continue;
+			}
+			else
+			{
+				TeleportEntity(npc.index, vecGoal, NULL_VECTOR, NULL_VECTOR);
+				break;
+			}
+		}
 		
 		return npc;
 	}
@@ -242,13 +267,13 @@ public void MedivalVillager_ClotThink(int iNPC)
 
 
 
-	VillagerSelfDefense(npc); //This is for self defense, incase an enemy is too close. This isnt the villagers main thing.
+	VillagerSelfDefense(npc,GetGameTime(npc.index)); //This is for self defense, incase an enemy is too close. This isnt the villagers main thing.
 	
 	npc.PlayIdleAlertSound();
 }
 
 
-void VillagerSelfDefense(MedivalVillager npc)
+void VillagerSelfDefense(MedivalVillager npc, float gameTime)
 {
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -304,27 +329,25 @@ void VillagerSelfDefense(MedivalVillager npc)
 
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 
-			int Enemy_I_See;
-								
-			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
-			//Can i see This enemy, is something in the way of us?
-			//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
-			if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+			if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0))
 			{
-				npc.m_iTarget = Enemy_I_See;
-
-				//SPAWN COOL EFFECT
-				float flPos[3];
-				float flAng[3];
-
-				npc.PlayMeleeSound();
+				int Enemy_I_See;
+									
+				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 						
-				npc.m_flAttackHappens = gameTime + 0.4;
+				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+				{
+					npc.m_iTarget = Enemy_I_See;
 
-				npc.m_flDoingAnimation = gameTime + 0.6;
-				npc.m_flNextMeleeAttack = gameTime + 2.5; //make him attack very slowly
-				npc.m_bisWalking = false;
+					npc.PlayMeleeSound();
+
+					npc.AddGesture("ACT_VILLAGER_ATTACK");
+							
+					npc.m_flAttackHappens = gameTime + 0.4;
+
+					npc.m_flDoingAnimation = gameTime + 0.6;
+					npc.m_flNextMeleeAttack = gameTime + 1.2;
+				}
 			}
 		}
 		else

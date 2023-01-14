@@ -181,7 +181,7 @@ static void ApplyTempAttrib(int entity, int index, float multi, float duration =
 	Address address = TF2Attrib_GetByDefIndex(entity, index);
 	if(address != Address_Null)
 	{
-		TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * multi);
+		TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) * multi);
 
 		DataPack pack;
 		CreateDataTimer(duration, StreetFighter_RestoreAttrib, pack, TIMER_FLAG_NO_MAPCHANGE);

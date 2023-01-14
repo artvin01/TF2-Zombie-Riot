@@ -81,7 +81,7 @@ stock int GivePropAttachment(int entity, const char[] model)
 	return prop;
 }
 
-stock int ParticleEffectAt(float position[3], char[] effectName, float duration = 0.1)
+stock int ParticleEffectAt(float position[3], const char[] effectName, float duration = 0.1)
 {
 	int particle = CreateEntityByName("info_particle_system");
 	if (particle != -1)
@@ -427,6 +427,7 @@ stock TFClassType TF2_GetWeaponClass(int index, TFClassType defaul=TFClass_Unkno
 		}
 	}
 
+	TFClassType backup;
 	for(TFClassType class=TFClass_Engineer; class>TFClass_Unknown; class--)
 	{
 		if(defaul == class)
@@ -437,12 +438,19 @@ stock TFClassType TF2_GetWeaponClass(int index, TFClassType defaul=TFClass_Unkno
 		{
 			if(slot == checkSlot)
 				return class;
+			
+			if(!backup && slot >= 0 && slot < 6)
+				backup = class;
 		}
-		else if(slot>=0 && slot<6)
+		else if(slot >= 0 && slot < 6)
 		{
 			return class;
 		}
 	}
+
+	if(checkSlot != -1 && backup)
+		return backup;
+	
 	return defaul;
 }
 
@@ -3559,4 +3567,38 @@ stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3], float Be
 	startPoint[0] += actualBeamOffset[0];
 	startPoint[1] += actualBeamOffset[1];
 	startPoint[2] += actualBeamOffset[2];
+}
+
+// Thank you miku:)
+// https://github.com/Mikusch/PropHunt/blob/985808f13d8738945a2c9980db0b75865a20c99c/addons/sourcemod/scripting/prophunt.sp#L332
+
+static bool HazardResult;
+
+bool IsPointHazard(const float pos1[3])
+{
+	HazardResult = false;
+	TR_EnumerateEntities(pos1, pos1, PARTITION_TRIGGER_EDICTS, RayType_EndPoint, TraceEntityEnumerator_EnumerateTriggers);
+	return HazardResult;
+}
+
+public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
+{
+	char classname[16];
+	if(GetEntityClassname(entity, classname, sizeof(classname)) && !StrContains(classname, "trigger_hurt"))
+	{
+		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
+		{
+			Handle trace = TR_ClipCurrentRayToEntityEx(MASK_PLAYERSOLID, entity);
+			bool didHit = TR_DidHit(trace);
+			delete trace;
+			
+			if (didHit)
+			{
+				HazardResult = true;
+				return false;
+			}
+		}
+	}
+	
+	return true;
 }

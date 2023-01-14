@@ -1661,4 +1661,45 @@
 		"en" "Whats better than 1 death beam?\n4 more death beams of course\nThanks to these extra beams we have recreated the power of the moon!\nWarning: Warranty annihilated on purchase."
 		"ru" "Что может быть лучше одного луча смерти?\nЧетыре луча смерти, конечно\nБлагодаря этим дополнительным лучам мы воссоздали силу луны!\nПредупреждение: Гарантия аннигилируется при покупке."
 	}
+
+	"Alchemist Potion Desc"
+	{
+		"en"	"Throws potions that deal half the damage and deals the rest over bleed.\nAble to hit 5 targets in it's splash.\nM2 throws a secondary potion with it's own attack delay."
+	}
+	"Alchemist Potion Pap 1"
+	{
+		"en"	"M2 now allows to throw an ally buffing potions that grants a damage bonus for the duration.\n "
+	}
+	"Alchemist Potion Pap 2"
+	{
+		"en"	"Able to apply an explosive coat over an enemy which causes an explosion if killed by an explosive attack.\n "
+	}
+	"Alchemist Potion Pap 3"
+	{
+		"en"	"Increases fire rate, splash effect lingers for a bit, and metallic enemies suffer x5 the damage from bleeding.\n "
+	}
+	"Alchemist Potion Pap 4"
+	{
+		"en"	"Buffing potions last longer and is able to buff multiple allies at once."
+	}
+	"Alchemist Potion Pap 5"
+	{
+		"en"	"M2 will now increase your fire rate heavily but lower your damage and prevent mana gain for the duration."
+	}
+	"Alchemist Potion Pap 6"
+	{
+		"en"	"Coated enemies now take extra damage from all sources for a few seconds."
+	}
+	"Alchemist Potion Pap 7"
+	{
+		"en"	"Buffing potions last until the ally gets revived from a wave end or a down."
+	}
+	"Alchemist Potion Pap 8"
+	{
+		"en"	"M2 now affects some nearby allies, granting increased fire rate but lower damage."
+	}
+	"Alchemist Potion Pap 9"
+	{
+		"en"	"M2 now is able to shrink enemies, causing a permanent debuff and slow.\nBosses will instead remove this debuff after a few seconds."
+	}
 }

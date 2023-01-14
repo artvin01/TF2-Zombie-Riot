@@ -211,6 +211,7 @@ ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar sv_cheats;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie Niko_Cookies;
+Cookie HudSettings_Cookies;
 
 bool b_LagCompNPC_No_Layers;
 bool b_LagCompNPC_AwayEnemies;
@@ -259,6 +260,7 @@ float f_MedigunChargeSave[MAXTF2PLAYERS][4];
 float Increaced_Sentry_damage_Low[MAXENTITIES];
 float Increaced_Sentry_damage_High[MAXENTITIES];
 float Resistance_for_building_Low[MAXENTITIES];
+
 
 
 float Increaced_Overall_damage_Low[MAXENTITIES];
@@ -1425,8 +1427,10 @@ public void OnClientCookiesCached(int client)
 	{
 		b_IsPlayerNiko[client] = false;
 	}
+
 	
 #if defined ZR
+	HudSettings_ClientCookiesCached(client);
 	Store_ClientCookiesCached(client);
 #endif
 
@@ -1440,6 +1444,7 @@ public void OnClientDisconnect(int client)
 	Store_ClientDisconnect(client);
 	
 #if defined ZR
+	HudSettings_ClientCookiesDisconnect(client);
 	ZR_ClientDisconnect(client);
 	
 	if(Scrap[client] > -1)
@@ -2626,7 +2631,10 @@ public void CheckIfAloneOnServer()
 		if (Bob_Exists)
 			return;
 		
-		Spawn_Bob_Combine(player_alone);
+		if(!CvarInfiniteCash.BoolValue)
+		{
+			Spawn_Bob_Combine(player_alone);
+		}
 		
 	}
 	else if (Bob_Exists)
