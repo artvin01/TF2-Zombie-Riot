@@ -1359,7 +1359,7 @@ void HudSettings_ClientCookiesCached(int client)
 void HudSettings_ClientCookiesDisconnect(int client)
 {
 	char buffer[128];
-	FormatEx(buffer, sizeof(buffer), "%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client]);
+	FormatEx(buffer, sizeof(buffer), "%.3f;%.3f;%.3f;%.3f;%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client], f_HurtHudOffsetX[client], f_HurtHudOffsetY[client], f_WeaponHudOffsetX[client], f_WeaponHudOffsetY[client]);
 	HudSettings_Cookies.Set(client, buffer);
 }
 
