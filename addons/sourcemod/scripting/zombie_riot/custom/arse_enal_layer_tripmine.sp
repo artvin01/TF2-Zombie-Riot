@@ -169,7 +169,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 			{
 				CurrentAmmo[client][i] = GetAmmo(client, i);
 			}	
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Too Far Away");
 			return;
@@ -186,7 +186,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 		{
 			CurrentAmmo[client][i] = GetAmmo(client, i);
 		}	
-		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Spike Limit Reached");
 		return;

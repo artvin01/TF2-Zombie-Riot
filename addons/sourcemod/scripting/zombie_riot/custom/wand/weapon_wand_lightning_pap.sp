@@ -100,7 +100,7 @@ public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int s
 					Ability_CD = 0.0;
 			
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 			}
@@ -108,7 +108,7 @@ public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int s
 		else
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 		}

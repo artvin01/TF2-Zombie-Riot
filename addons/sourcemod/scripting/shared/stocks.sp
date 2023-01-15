@@ -3605,3 +3605,15 @@ public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 	
 	return true;
 }
+
+
+void SetDefaultHudPosition(int client, int red = 34, int green = 139, int blue = 34)
+{
+
+	float HudY = 0.75;
+	float HudX = -1.0;
+	HudX += f_NotifHudOffsetY[client];
+	HudY += f_NotifHudOffsetX[client];
+
+	SetHudTextParams(HudX, HudY, 1.01, red, green, blue, 255);
+}

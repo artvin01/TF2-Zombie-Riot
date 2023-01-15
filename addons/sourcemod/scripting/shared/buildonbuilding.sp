@@ -234,7 +234,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 			if(f_DelayBuildNotif[client] < GetGameTime())
 			{
 				f_DelayBuildNotif[client] = GetGameTime() + 0.25;
-				SetHudTextParams(-1.0, 0.90, 0.5, 34, 139, 34, 255);
+				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
 			}
@@ -256,7 +256,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 				{
 					f_DelayBuildNotif[client] = GetGameTime() + 0.25;
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
-					SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
+					SetDefaultHudPosition(client, 255, 0, 0);
 					SetGlobalTransTarget(client);
 					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
 				}
@@ -316,7 +316,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 				{
 					f_DelayBuildNotif[client] = GetGameTime() + 0.25;
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
-					SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
+					SetDefaultHudPosition(client, 255, 0, 0);
 					SetGlobalTransTarget(client);
 					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
 				}
@@ -339,7 +339,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 			if(f_DelayBuildNotif[client] < GetGameTime())
 			{
 				f_DelayBuildNotif[client] = GetGameTime() + 0.25;
-				SetHudTextParams(-1.0, 0.90, 0.5, 34, 139, 34, 255);
+				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
 			}
@@ -354,7 +354,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		{
 			f_DelayBuildNotif[client] = GetGameTime() + 0.25;
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
+			SetDefaultHudPosition(client, 255, 0, 0);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
 		}

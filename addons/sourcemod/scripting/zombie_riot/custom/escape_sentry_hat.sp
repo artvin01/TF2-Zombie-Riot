@@ -256,7 +256,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							else
 							{
 								ClientCommand(client, "playgamesound items/medshotno1.wav");
-								SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+								SetDefaultHudPosition(client);
 								SetGlobalTransTarget(client);
 								ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cant Mount This");	
 							}	

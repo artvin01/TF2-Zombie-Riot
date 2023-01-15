@@ -185,7 +185,7 @@ public void Weapon_PHLOG_Judgement(int client, int weapon, bool crit, int slot)
 	else
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255, 1, 0.1, 0.1, 0.1);
+		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.");
 	}

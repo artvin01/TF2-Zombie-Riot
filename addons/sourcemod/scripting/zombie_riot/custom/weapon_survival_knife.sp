@@ -259,7 +259,7 @@ public void Survival_Knife_Tier1_Alt(int client, int weapon, bool crit, int slot
 		CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
 		Throw_Knife(client, weapon, KNIFE_SPEED_1, 0);
 		
-		SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
+		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t" , "Knife Amount", Knife_Count[client]);
 		if(Knife_Count[client] <= 0)
@@ -270,7 +270,7 @@ public void Survival_Knife_Tier1_Alt(int client, int weapon, bool crit, int slot
 	else
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
+		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "No Knifes left", CD_Knife[client]-GetGameTime());
 	}
@@ -299,7 +299,7 @@ public void Survival_Knife_Tier2_Alt(int client, int weapon, bool crit, int slot
 			CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
 			Throw_Knife(client, weapon, KNIFE_SPEED_2, 1);
 			
-			SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t" , "Knife Amount", Knife_Count[client]);
 			if(Knife_Count[client] <= 0)
@@ -310,7 +310,7 @@ public void Survival_Knife_Tier2_Alt(int client, int weapon, bool crit, int slot
 		else
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "No Knifes left", CD_Knife[client]-GetGameTime());
 		}
@@ -329,7 +329,7 @@ public void Survival_Knife_Tier2_Alt(int client, int weapon, bool crit, int slot
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 			
-			SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Knife Amount", Knife_Count[client]);
 			if(Knife_Count[client] <= 0)
@@ -340,7 +340,7 @@ public void Survival_Knife_Tier2_Alt(int client, int weapon, bool crit, int slot
 		else
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "No Knifes left ability", Knife_Count[client], CD_Knife[client]-GetGameTime());
 		}
@@ -375,7 +375,7 @@ public void Survival_Knife_Tier3_Reload(int client, int weapon, bool crit, int s
 	else
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
+		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
 	}
@@ -397,7 +397,7 @@ public Action Timer_Madness_Duration(Handle timer, DataPack pack)
 			
 			EmitSoundToAll(SOUND_MADNESS_END, client, SNDCHAN_STATIC, 70, _, 0.9);
 			
-			SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Madness ends");
 			
@@ -415,7 +415,7 @@ public Action Timer_Reable_Madness(Handle timer, int client)
 		if (IsPlayerAlive(client))
 		{
 			EmitSoundToAll(SOUND_MADNESS_BACK, client, SNDCHAN_STATIC, 70, _, 0.9);
-			SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Madness is back... Idk if it's a good thing");
 		}
@@ -444,7 +444,7 @@ public void Survival_Knife_Tier3_Alt(int client, int weapon, bool crit, int slot
 		else
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "No Knifes left", CD_Knife[client]-GetGameTime());
 		}

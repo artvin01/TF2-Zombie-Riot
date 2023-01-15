@@ -1995,6 +1995,19 @@
 		//"it"		""
 		//"fr"		""
 	}
+	"Notif Hud Setting"
+	{
+		"en"		"Notif Hud Setting"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
 	"Armor Hud Setting Inside"
 	{
 		"#format"	"{1:.3f},{2:.3f}"
@@ -2027,6 +2040,20 @@
 	{
 		"#format"	"{1:.3f},{2:.3f}"
 		"en"		"Weapon Hud Offset\nX-Axis:{1}\nY-Axis:{2}"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Notif Hud Setting Inside"
+	{
+		"#format"	"{1:.3f},{2:.3f}"
+		"en"		"Notif Hud Offset\nX-Axis:{1}\nY-Axis:{2}"
 		//"de"		""
 		//"ru"		""
 		//"pt"		""

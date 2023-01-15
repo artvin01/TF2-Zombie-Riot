@@ -243,6 +243,9 @@ float f_HurtHudOffsetY[MAXTF2PLAYERS];
 float f_WeaponHudOffsetX[MAXTF2PLAYERS];
 float f_WeaponHudOffsetY[MAXTF2PLAYERS];
 
+float f_NotifHudOffsetX[MAXTF2PLAYERS];
+float f_NotifHudOffsetY[MAXTF2PLAYERS];
+
 #include "zombie_riot/npc.sp"	// Global NPC List
 
 #include "zombie_riot/database.sp"
@@ -1276,7 +1279,7 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 			{
 				if(IsClientInGame(client))
 				{
-					SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
 					ShowSyncHudText(client,  SyncHud_Notifaction, "You have %.1f Seconds left to kill the Raid!", Timer_Show);	
 				}

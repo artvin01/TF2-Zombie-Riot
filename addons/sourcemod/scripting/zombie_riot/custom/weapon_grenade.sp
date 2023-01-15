@@ -24,7 +24,7 @@ public void Weapon_Grenade(int client, int weapon, const char[] classname, bool 
 		{
 			KillTimer(Give_bomb_back[client]);
 		}
-		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Threw Grenade");
 		Handle_on[client] = true;

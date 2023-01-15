@@ -266,7 +266,7 @@ public void ZeroRage(int client, int weapon, bool crit, int slot)
 				
 						ClientCommand(client, "playgamesound items/powerup_pickup_resistance.wav");
 						CreateTimer(MultiRageCooldown, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
-						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "Defence Rage has striked.");
 					}
@@ -305,7 +305,7 @@ public void ZeroRage(int client, int weapon, bool crit, int slot)
 								ClientCommand(client, "playgamesound items/powerup_pickup_base.wav");
 							}
 						}
-						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "Wrath Rage has striked.");
 						CreateTimer(MultiWrathResetSpeedTimer, Reset_Attackspeed, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
@@ -319,7 +319,7 @@ public void ZeroRage(int client, int weapon, bool crit, int slot)
 			if(Ability_CD <= 0.0)
 				Ability_CD = 0.0;
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		}
@@ -340,7 +340,7 @@ public void ZeroDefenceRage(int client, int weapon, bool crit, int slot)
 			
 			ClientCommand(client, "playgamesound items/powerup_pickup_resistance.wav");
 			
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Defence Rage has striked.");
 			CreateTimer(FirstDefenceRageCooldown, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
@@ -351,7 +351,7 @@ public void ZeroDefenceRage(int client, int weapon, bool crit, int slot)
 			if(Ability_CD <= 0.0)
 				Ability_CD = 0.0;
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		}
@@ -395,7 +395,7 @@ public void ZeroWrathRage(int client, int weapon, bool crit, int slot)
 					ClientCommand(client, "playgamesound items/powerup_pickup_base.wav");
 				}
 			}
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Wrath Rage has striked.");
 			CreateTimer(FinalWrathResetSpeedTimer, Reset_Attackspeed_Final, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
@@ -407,7 +407,7 @@ public void ZeroWrathRage(int client, int weapon, bool crit, int slot)
 			if(Ability_CD <= 0.0)
 				Ability_CD = 0.0;
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		}
@@ -419,7 +419,7 @@ public Action Ability_charged(Handle cut_timer, int client)
 	if (IsValidClient(client))
 	{
 		ClientCommand(client, "playgamesound items/gunpickup2.wav");
-		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "Rage Ability Is Back");
 	}

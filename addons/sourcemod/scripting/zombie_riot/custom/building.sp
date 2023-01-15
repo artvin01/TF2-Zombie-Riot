@@ -204,7 +204,7 @@ public Action Building_PlaceSentry(int client, int weapon, const char[] classnam
 				Ability_CD = 0.0;
 				
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		}
@@ -230,7 +230,7 @@ public Action Building_PlaceMortar(int client, int weapon, const char[] classnam
 				Ability_CD = 0.0;
 				
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		}
@@ -256,7 +256,7 @@ public Action Building_PlaceHealingStation(int client, int weapon, const char[] 
 				Ability_CD = 0.0;
 				
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		}
@@ -282,7 +282,7 @@ public Action Building_PlaceRailgun(int client, int weapon, const char[] classna
 				Ability_CD = 0.0;
 				
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		}
@@ -1686,7 +1686,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 		if(weapon > MaxClients && GetEntityClassname(weapon, buffer, sizeof(buffer)) && (StrEqual(buffer, "tf_weapon_wrench") || StrEqual(buffer, "tf_weapon_robot_arm")))
 		{
 			GrabAt[client] = GetGameTime()+1.0; //Make building pickup a bit faster, was 1.5 before, 1.0 is good
-	//		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+	//		SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			PrintCenterText(client, "%t", "Picking Up Building");
 	//		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Picking Up Building");
@@ -1804,7 +1804,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					else if(!b_IgnoreWarningForReloadBuidling[client])
 					{
 						ClientCommand(client, "playgamesound items/medshotno1.wav");
-						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");	
 						return true;			
@@ -1858,7 +1858,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			if(!Is_Reload_Button && !b_IgnoreWarningForReloadBuidling[client])
 			{
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");
 				return true;
@@ -1872,7 +1872,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					Building_Picking_up_cd = 0.0;
 					
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t","Object Cooldown",Building_Picking_up_cd);
 				return true;
@@ -1892,7 +1892,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							i_Healing_station_money_limit[owner][client] += 1;
 							Resupplies_Supplied[owner] += 4;
 							CashSpent[owner] -= 40;
-							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+							SetDefaultHudPosition(client);
 							SetGlobalTransTarget(owner);
 							ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Healing Station Used");
 						}
@@ -1949,7 +1949,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetDefaultHudPosition(client);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
@@ -1958,7 +1958,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									else
 									{
 										ClientCommand(client, "playgamesound items/medshotno1.wav");
-										SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+										SetDefaultHudPosition(client);
 										SetGlobalTransTarget(client);
 										ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Max Mana Reached");
 									}
@@ -1985,7 +1985,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetDefaultHudPosition(client);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
@@ -2010,7 +2010,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetDefaultHudPosition(client);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}								
@@ -2032,7 +2032,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetDefaultHudPosition(client);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
@@ -2054,7 +2054,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetDefaultHudPosition(client);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
@@ -2076,7 +2076,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetDefaultHudPosition(client);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
@@ -2098,7 +2098,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetDefaultHudPosition(client);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
@@ -2142,7 +2142,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											{
 												Resupplies_Supplied[owner] += 2;
 												CashSpent[owner] -= 20;
-												SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+												SetDefaultHudPosition(client);
 												SetGlobalTransTarget(owner);
 												ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 											}
@@ -2153,7 +2153,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										else
 										{
 											ClientCommand(client, "playgamesound items/medshotno1.wav");
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetDefaultHudPosition(client);
 											SetGlobalTransTarget(client);
 											ShowSyncHudText(client,  SyncHud_Notifaction, "%t" , "Armor Max Reached Ammo Box");
 										}
@@ -2164,7 +2164,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						else
 						{
 							ClientCommand(client, "playgamesound items/medshotno1.wav");
-							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+							SetDefaultHudPosition(client);
 							SetGlobalTransTarget(client);
 							ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "No Ammo Supplies");
 							
@@ -2224,7 +2224,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									CashSpent[owner] -= 40;
 									Armor_table_money_limit[owner][client] += 1;
 									Resupplies_Supplied[owner] += 4;
-									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetDefaultHudPosition(client);
 									SetGlobalTransTarget(owner);
 									ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Armor Table Used");
 								}
@@ -2235,7 +2235,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						else
 						{
 							ClientCommand(client, "playgamesound items/medshotno1.wav");
-							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+							SetDefaultHudPosition(client);
 							SetGlobalTransTarget(client);
 							ShowSyncHudText(client,  SyncHud_Notifaction, "%t" , "Armor Max Reached");
 						}
@@ -2277,7 +2277,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						else if(!b_IgnoreWarningForReloadBuidling[client])
 						{
 							ClientCommand(client, "playgamesound items/medshotno1.wav");
-							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+							SetDefaultHudPosition(client);
 							SetGlobalTransTarget(client);
 							ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");				
 						}
@@ -2296,7 +2296,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 								else
 								{
 									ClientCommand(client, "playgamesound items/medshotno1.wav");
-									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetDefaultHudPosition(client);
 									SetGlobalTransTarget(client);
 									ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Pap this");	
 								}
@@ -2305,7 +2305,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						else if(!b_IgnoreWarningForReloadBuidling[client])
 						{
 							ClientCommand(client, "playgamesound items/medshotno1.wav");
-							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+							SetDefaultHudPosition(client);
 							SetGlobalTransTarget(client);
 							ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");				
 						}
@@ -2968,7 +2968,7 @@ public bool BuildingCustomCommand(int client)
 						Ability_CD = 0.0;
 				
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
-					SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
 					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 				}
@@ -2990,7 +2990,7 @@ public bool BuildingCustomCommand(int client)
 							Ability_CD = 0.0;
 					
 						ClientCommand(client, "playgamesound items/medshotno1.wav");
-						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 					}
@@ -3018,7 +3018,7 @@ public bool BuildingCustomCommand(int client)
 										Ability_CD = 0.0;
 								
 									ClientCommand(client, "playgamesound items/medshotno1.wav");
-									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetDefaultHudPosition(client);
 									SetGlobalTransTarget(client);
 									ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 								}
@@ -3045,7 +3045,7 @@ public bool BuildingCustomCommand(int client)
 							Ability_CD = 0.0;
 					
 						ClientCommand(client, "playgamesound items/medshotno1.wav");
-						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 					}
@@ -3074,7 +3074,7 @@ public bool BuildingCustomCommand(int client)
 										Ability_CD = 0.0;
 								
 									ClientCommand(client, "playgamesound items/medshotno1.wav");
-									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetDefaultHudPosition(client);
 									SetGlobalTransTarget(client);
 									ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 								}
@@ -3115,7 +3115,7 @@ public bool BuildingCustomCommand(int client)
 							Ability_CD = 0.0;
 						
 						ClientCommand(client, "playgamesound items/medshotno1.wav");
-						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 					}
@@ -3123,7 +3123,7 @@ public bool BuildingCustomCommand(int client)
 				/*else
 				{
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
-					SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
 					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "No Ammo Supplies");
 				}*/
@@ -3888,12 +3888,12 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 											Pack_A_Punch_Machine_money_limit[owner][client] += 1;
 											CashSpent[owner] -= 400;
 											Resupplies_Supplied[owner] += 40;
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetDefaultHudPosition(client);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Pap Machine Used");
 										}
 									}
-									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetDefaultHudPosition(client);
 									SetGlobalTransTarget(client);
 									ShowSyncHudText(client,  SyncHud_Notifaction, "Your weapon was boosted");
 									Store_ApplyAttribs(client);
@@ -3902,14 +3902,14 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 								else if(number_return == 2)
 								{
 									ClientCommand(client, "playgamesound items/medshotno1.wav");
-									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetDefaultHudPosition(client);
 									SetGlobalTransTarget(client);
 									ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Money To Pap");	
 								}
 								else if(number_return == 1)
 								{
 									ClientCommand(client, "playgamesound items/medshotno1.wav");
-									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetDefaultHudPosition(client);
 									SetGlobalTransTarget(client);
 									ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Pap this");	
 								}
@@ -4045,7 +4045,7 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 			CashSpent[owner] -= 80;
 			Perk_Machine_money_limit[owner][client] += 2;
 			Resupplies_Supplied[owner] += 8;
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(owner);
 			ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Perk Machine Used");
 		}
@@ -4061,7 +4061,7 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	int particle = ParticleEffectAt(pos, "flamethrower_underwater", 1.0);
 	SetEntPropVector(particle, Prop_Send, "m_angRotation", angles);
 
-	SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+	SetDefaultHudPosition(client);
 	SetGlobalTransTarget(client);
 	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
 	Store_ApplyAttribs(client);
@@ -4082,7 +4082,7 @@ public Action Building_PlaceVillage(int client, int weapon, const char[] classna
 				Ability_CD = 0.0;
 				
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		}
