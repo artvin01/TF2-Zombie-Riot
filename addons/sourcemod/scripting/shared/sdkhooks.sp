@@ -760,7 +760,11 @@ public void OnPostThink(int client)
 	if(delay_hud[client] < gameTime)	
 	{
 		delay_hud[client] = gameTime + 0.4;
-		
+
+#if defined RPG
+		RPG_UpdateHud(client);
+#endif
+
 #if defined ZR
 		UpdatePlayerPoints(client);
 		

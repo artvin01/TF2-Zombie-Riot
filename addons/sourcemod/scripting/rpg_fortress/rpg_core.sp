@@ -180,6 +180,19 @@ void RPG_EntityCreated(int entity, const char[] classname)
 	Zones_EntityCreated(entity, classname);
 }
 
+void RPG_PlayerRunCmdPost(int client)
+{
+	TextStore_PlayerRunCmd(client);
+	Fishing_PlayerRunCmd(client);
+	Garden_PlayerRunCmd(client);
+	Music_PlayerRunCmd(client);
+}
+
+void RPG_UpdateHud(int client)
+{
+	Stats_UpdateHud(client);
+}
+
 public void CheckAlivePlayersforward(int killed)
 {
 	CheckAlivePlayers(killed);

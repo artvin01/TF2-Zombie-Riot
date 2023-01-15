@@ -2028,7 +2028,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 	}
 }
 
-bool DoesNpcHaveHudDebuff(int npc)
+stock bool DoesNpcHaveHudDebuff(int npc)
 {
 	if(f_HighTeslarDebuff[npc] > GetGameTime())
 		return true;
@@ -2247,7 +2247,7 @@ void GiveNamedItem(int client, const char[] name)
 }
 #endif
 
-void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false)
+stock void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false)
 {
 	for (int client = 1; client <= MaxClients; client++)
 	{

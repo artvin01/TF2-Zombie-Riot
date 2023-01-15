@@ -1835,6 +1835,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 #endif
 
 #if defined RPG
+	RPG_PlayerRunCmdPost(client);
 	TextStore_PlayerRunCmd(client);
 	Fishing_PlayerRunCmd(client);
 	Garden_PlayerRunCmd(client);
