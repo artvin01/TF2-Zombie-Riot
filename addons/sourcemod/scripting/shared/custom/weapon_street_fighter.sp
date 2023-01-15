@@ -176,19 +176,6 @@ public Action StreetFighter_Timer(Handle timer, int client)
 	return Plugin_Stop;
 }
 
-public Action StreetFighter_RestoreAttrib(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int entity = EntRefToEntIndex(pack.ReadCell());
-	if(entity != INVALID_ENT_REFERENCE)
-	{
-		int index = pack.ReadCell();
-		Address address = TF2Attrib_GetByDefIndex(entity, index);
-		if(address != Address_Null)
-			TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) / pack.ReadFloat());
-	}
-	return Plugin_Stop;
-}
 
 static void SetupList(PrivateForward pf)
 {
