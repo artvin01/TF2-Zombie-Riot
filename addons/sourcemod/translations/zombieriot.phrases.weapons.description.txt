@@ -1672,11 +1672,11 @@
 	}
 	"Alchemist Potion Pap 2"
 	{
-		"en"	"Able to apply an explosive coat over an enemy which causes an explosion if killed.\n "
+		"en"	"Able to apply an explosive coat over an enemy which causes an explosion if killed.\nWorks with Terroriser Rifle!"
 	}
 	"Alchemist Potion Pap 3"
 	{
-		"en"	"Increases fire rate, splash effect lingers for a bit, and metallic enemies suffer x5 the damage from bleeding.\n "
+		"en"	"Increases fire rate, splash effect lingers for a bit, and metallic enemies suffer x5 the damage from bleeding."
 	}
 	"Alchemist Potion Pap 4"
 	{
