@@ -81,7 +81,7 @@ stock int GivePropAttachment(int entity, const char[] model)
 	return prop;
 }
 
-stock int ParticleEffectAt(float position[3], char[] effectName, float duration = 0.1)
+stock int ParticleEffectAt(float position[3], const char[] effectName, float duration = 0.1)
 {
 	int particle = CreateEntityByName("info_particle_system");
 	if (particle != -1)
@@ -427,6 +427,7 @@ stock TFClassType TF2_GetWeaponClass(int index, TFClassType defaul=TFClass_Unkno
 		}
 	}
 
+	TFClassType backup;
 	for(TFClassType class=TFClass_Engineer; class>TFClass_Unknown; class--)
 	{
 		if(defaul == class)
@@ -437,12 +438,19 @@ stock TFClassType TF2_GetWeaponClass(int index, TFClassType defaul=TFClass_Unkno
 		{
 			if(slot == checkSlot)
 				return class;
+			
+			if(!backup && slot >= 0 && slot < 6)
+				backup = class;
 		}
-		else if(slot>=0 && slot<6)
+		else if(slot >= 0 && slot < 6)
 		{
 			return class;
 		}
 	}
+
+	if(checkSlot != -1 && backup)
+		return backup;
+	
 	return defaul;
 }
 
@@ -2407,7 +2415,10 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 		GetEntityClassname(other_entity, other_classname, sizeof(other_classname));
 		if (StrContains(other_classname, "base_boss") != -1 || StrContains(other_classname, "func_breakable") != -1 || StrContains(other_classname, "prop_dynamic") != -1)
 		{
-			return other_entity;
+			if(GetEntProp(other_entity, Prop_Data, "m_iHealth") > 0) //make sure to check.
+			{
+				return other_entity;				
+			}
 		}
 	}
 	return -1;

@@ -1801,9 +1801,9 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		if(!b_npcspawnprotection[victim])
 #endif
 		{
-			red = Health * 255  / MaxHealth;
+			red = (Health + 1) * 255  / (MaxHealth + 1);
 			//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-			green = Health * 255  / MaxHealth;
+			green = (Health + 1) * 255  / (MaxHealth + 1);
 					
 			red = 255 - red;
 				
@@ -1972,7 +1972,14 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 			}
 
 			SetGlobalTransTarget(attacker);
-			SetHudTextParams(-1.0, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
+			float HudY = -1.0;
+
+#if defined ZR
+			HudY += f_HurtHudOffsetY[attacker];
+			HudOffset += f_HurtHudOffsetX[attacker];
+#endif	
+
+			SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
 			if(!raidboss_active)
 			{
 				ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s-%0.f", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
@@ -2209,8 +2216,6 @@ void NPC_DeadEffects(int entity)
 			Attributes_OnKill(client, WeaponLastHit);
 		}
 	}
-	
-	RemoveNpcThingsAgain(entity);
 }
 
 #if defined ZR
@@ -2241,16 +2246,26 @@ void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false)
 	for (int client = 1; client <= MaxClients; client++)
 	{
 #if defined ZR
+		float flPos[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flPos);
+		flPos[2] += 40.0;
 		if(do_boom)
 		{
+			//Its 0 for no reason, i only ever set it to 0 here or in the m2 terroiser one
 			if(i_HowManyBombsOnThisEntity[entity][client] > 0)
 			{
-				float damage = f_BombEntityWeaponDamageApplied[entity][client] * i_HowManyBombsOnThisEntity[entity][client];
-				Cause_Terroriser_Explosion(client, entity, damage, WorldSpaceCenter(entity));
+				if(IsValidClient(client))
+				{
+					float damage = f_BombEntityWeaponDamageApplied[entity][client] * i_HowManyBombsOnThisEntity[entity][client];
+					i_HowManyBombsOnThisEntity[entity][client] = 0;
+					f_BombEntityWeaponDamageApplied[entity][client] = 0.0;
+					Cause_Terroriser_Explosion(client, entity, damage, flPos);
+				}
 			}
 		}
 #endif
-		i_HowManyBombsOnThisEntity[entity][client] = 0; //to clean on death ofc.
+		//This is the only time it happens ever
+		i_HowManyBombsOnThisEntity[entity][client] = 0;
 		f_BombEntityWeaponDamageApplied[entity][client] = 0.0;
 	}
 }

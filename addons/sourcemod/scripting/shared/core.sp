@@ -211,6 +211,7 @@ ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar sv_cheats;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie Niko_Cookies;
+Cookie HudSettings_Cookies;
 
 bool b_LagCompNPC_No_Layers;
 bool b_LagCompNPC_AwayEnemies;
@@ -259,6 +260,7 @@ float f_MedigunChargeSave[MAXTF2PLAYERS][4];
 float Increaced_Sentry_damage_Low[MAXENTITIES];
 float Increaced_Sentry_damage_High[MAXENTITIES];
 float Resistance_for_building_Low[MAXENTITIES];
+
 
 
 float Increaced_Overall_damage_Low[MAXENTITIES];
@@ -321,6 +323,7 @@ float f_LowIceDebuff[MAXENTITIES];
 float f_HighIceDebuff[MAXENTITIES];
 bool b_Frozen[MAXENTITIES];
 float f_TankGrabbedStandStill[MAXENTITIES];
+float f_TimeFrozenStill[MAXENTITIES];
 float f_StunExtraGametimeDuration[MAXENTITIES];
 bool b_PernellBuff[MAXENTITIES];
 float f_MaimDebuff[MAXENTITIES];
@@ -1425,8 +1428,10 @@ public void OnClientCookiesCached(int client)
 	{
 		b_IsPlayerNiko[client] = false;
 	}
+
 	
 #if defined ZR
+	HudSettings_ClientCookiesCached(client);
 	Store_ClientCookiesCached(client);
 #endif
 
@@ -1440,6 +1445,7 @@ public void OnClientDisconnect(int client)
 	Store_ClientDisconnect(client);
 	
 #if defined ZR
+	HudSettings_ClientCookiesDisconnect(client);
 	ZR_ClientDisconnect(client);
 	
 	if(Scrap[client] > -1)
@@ -2017,6 +2023,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
 		b_EntityIsArrow[entity] = false;
 		b_EntityIsWandProjectile[entity] = false;
+		i_WandIdNumber[entity] = -1;
 		CClotBody npc = view_as<CClotBody>(entity);
 		b_Is_Npc_Projectile[entity] = false;
 		b_Is_Player_Projectile[entity] = false;
@@ -2580,7 +2587,7 @@ public void RemoveNpcThingsAgain(int entity)
 	//Dont have to check for if its an npc or not, really doesnt matter in this case, just be sure to delete it cus why not
 	//incase this breaks, add a baseboss check
 #if defined ZR
-	CleanAllApplied_Aresenal(entity);
+	CleanAllApplied_Aresenal(entity, true);
 	CleanAllApplied_Cryo(entity);
 	b_NpcForcepowerupspawn[entity] = 0;	
 #endif
@@ -2626,7 +2633,10 @@ public void CheckIfAloneOnServer()
 		if (Bob_Exists)
 			return;
 		
-		Spawn_Bob_Combine(player_alone);
+		if(!CvarInfiniteCash.BoolValue)
+		{
+			Spawn_Bob_Combine(player_alone);
+		}
 		
 	}
 	else if (Bob_Exists)

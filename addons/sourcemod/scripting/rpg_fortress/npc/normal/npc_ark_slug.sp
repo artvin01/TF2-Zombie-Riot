@@ -80,12 +80,12 @@ methodmap ArkSlug < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
-	
 	public ArkSlug(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		ArkSlug npc = view_as<ArkSlug>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "300", ally, false,_,_,_,_));
-		
-		i_NpcInternalId[npc.index] = HEADCRAB_ZOMBIE;
+		ArkSlug npc = view_as<ArkSlug>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.15", "1050", ally, false));
+		// Originium Slug α (HP)
+
+		i_NpcInternalId[npc.index] = ARK_SLUG;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -105,19 +105,22 @@ methodmap ArkSlug < CClotBody
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
 		
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 50, 25, 0, 255);
+
 		SDKHook(npc.index, SDKHook_OnTakeDamage, ArkSlug_OnTakeDamage);
 		SDKHook(npc.index, SDKHook_Think, ArkSlug_ClotThink);
 		
 		PF_StopPathing(npc.index);
-		npc.m_bPathing = false;	
+		npc.m_bPathing = false;
+
+		i_NoEntityFoundCount[npc.index] = 6;
 		
 		return npc;
 	}
 	
 }
 
-//TODO 
-//Rewrite
 public void ArkSlug_ClotThink(int iNPC)
 {
 	ArkSlug npc = view_as<ArkSlug>(iNPC);
@@ -130,7 +133,6 @@ public void ArkSlug_ClotThink(int iNPC)
 		return;
 	}
 	
-
 	npc.m_flNextDelayTime = gameTime;// + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
@@ -149,21 +151,51 @@ public void ArkSlug_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	// npc.m_iTarget comes from here.
+	bool wasBurrowed;
 	if(i_NoEntityFoundCount[npc.index] > 9)
+	{
+		wasBurrowed = true;
 		i_NoEntityFoundCount[npc.index] = 9;
+	}
 
-	Npc_Base_Thinking(iNPC, 500.0, "ACT_RUN", "ACT_IDLE", 100.0, gameTime);
+	// npc.m_iTarget comes from here.
+	Npc_Base_Thinking(iNPC, f_SingerBuffedFor[npc.index] > gameTime ? 775.0 : 350.0, "ACT_RUN", "ACT_IDLE", 100.0, gameTime);
 	
 	if(i_NoEntityFoundCount[npc.index] == 9)
 	{
 		// Start hiding
 		npc.SetActivity("ACT_HEADCRAB_BURROW_IDLE");
 		npc.AddGesture("ACT_HEADCRAB_BURROW_IN");
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+
+		if(IsValidEntity(npc.m_iTextEntity1))
+			RemoveEntity(npc.m_iTextEntity1);
+		
+		if(IsValidEntity(npc.m_iTextEntity2))
+			RemoveEntity(npc.m_iTextEntity2);
+		
+		if(IsValidEntity(npc.m_iTextEntity3))
+			RemoveEntity(npc.m_iTextEntity3);
 	}
 	else if(i_NoEntityFoundCount[npc.index] > 9)
 	{
+		// Keep hiding
+		npc.SetActivity("ACT_HEADCRAB_BURROW_IDLE");
+	}
+	else if(wasBurrowed)
+	{
+		// Stop hiding
+		npc.SetActivity("ACT_IDLE");
+		npc.AddGesture("ACT_HEADCRAB_BURROW_OUT");
 
+		int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
+		
+		npc.m_flNextThinkTime = gameTime + 1.4;
+
+		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", 0.5);
+		Apply_Text_Above_Npc(npc.index, 0, health);
+		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", 1.15);
 	}
 
 	if(npc.m_flAttackHappens)
@@ -187,7 +219,8 @@ public void ArkSlug_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						int maxhealth = target > MaxClients ? GetEntProp(target, Prop_Data, "m_iMaxHealth") : SDKCall_GetMaxHealth(target);
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 92.5, DMG_CLUB);
+						// Originium Slug α (50% dmg)
 
 						if(GetEntProp(target, Prop_Data, "m_iHealth") < 1)
 						{
@@ -264,28 +297,24 @@ public void ArkSlug_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_WALK");
+					npc.SetActivity("ACT_RUN");
 				}
 			}
 			case 1:
 			{			
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.AddGesture("ACT_MELEE_ATTACK1");
+					npc.AddGesture("ACT_RANGE_ATTACK1");
 
 					npc.PlayMeleeSound();
 					
-					npc.m_flAttackHappens = gameTime + 0.8;
+					npc.m_flAttackHappens = gameTime + 0.5;
 
-					npc.m_flDoingAnimation = gameTime + 0.8;
-					npc.m_flNextMeleeAttack = gameTime + 1.5;
+					npc.m_flDoingAnimation = gameTime + 1.2;
+					npc.m_flNextMeleeAttack = gameTime + (f_SingerBuffedFor[npc.index] > gameTime ? 1.0 : 1.5);
 					npc.m_bisWalking = true;
 				}
 			}
@@ -293,7 +322,6 @@ public void ArkSlug_ClotThink(int iNPC)
 	}
 	npc.PlayIdleSound();
 }
-
 
 public Action ArkSlug_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -313,13 +341,14 @@ public Action ArkSlug_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	return Plugin_Changed;
 }
 
-public void ArkSlug_NPCDeath(int entity)
+void ArkSlug_NPCDeath(int entity)
 {
 	ArkSlug npc = view_as<ArkSlug>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();
 	}
+
 	SDKUnhook(entity, SDKHook_OnTakeDamage, ArkSlug_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, ArkSlug_ClotThink);
 

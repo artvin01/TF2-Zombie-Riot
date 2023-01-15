@@ -3,17 +3,41 @@
 
 #define MACRO_SHOWDIFF(%1)	if(oldAmount != newAmount) { FormatEx(buffer, sizeof(buffer), %1 ... " (%d -> %d)", oldAmount, newAmount); menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED); }
 
+static Cookie CookieInfection;
 static int BackpackBonus[MAXENTITIES];
 static int Strength[MAXENTITIES];
 static int Dexterity[MAXENTITIES];
 static int Intelligence[MAXENTITIES];
 static int Agility[MAXENTITIES];
 static int Luck[MAXENTITIES];
+static int Originium[MAXENTITIES];
+static int NeuralDamage[MAXTF2PLAYERS];
 
 void Stats_PluginStart()
 {
 	RegConsoleCmd("rpg_stats", Stats_ShowStats, "Shows your RPG stats");
 	RegConsoleCmd("sm_stats", Stats_ShowStats, "Shows your RPG stats", FCVAR_HIDDEN);
+
+	CookieInfection = new Cookie("rpg_originium", "Originium Infection Amount", CookieAccess_Protected);
+}
+
+void Stats_ClientCookiesCached(int client)
+{
+	char buffer[12];
+	CookieInfection.Get(client, buffer, sizeof(buffer));
+	Originium[client] = StringToInt(buffer);
+}
+
+void Stats_ClientDisconnect(int client)
+{
+	if(AreClientCookiesCached(client))
+	{
+		char buffer[12];
+		IntToString(Originium[client], buffer, sizeof(buffer));
+		CookieInfection.Set(client, buffer);
+	}
+
+	Originium[client] = 0;
 }
 
 void Stats_ClearCustomStats(int entity)
@@ -24,6 +48,34 @@ void Stats_ClearCustomStats(int entity)
 	Intelligence[entity] = 0;
 	Agility[entity] = 0;
 	Luck[entity] = 0;
+
+	if(entity <= MaxClients)
+	{
+		NeuralDamage[entity] = 0;
+	}
+	else
+	{
+		Originium[entity] = 0;
+	}
+}
+
+void Stats_AddNeuralDamage(int client, int attacker, int damage)
+{
+	NeuralDamage[client] = damage;
+	if(NeuralDamage[client] > 499)
+	{
+		NeuralDamage[client] = 0;
+		int health = GetClientHealth(client);
+		if(health > 500)
+		{
+			TF2_StunPlayer(client, 5.0);
+			SetEntityHealth(client, health - 500);
+		}
+		else
+		{
+			SDKHooks_TakeDamage(client, attacker, attacker, damage * 10, DMG_DROWN);
+		}
+	}
 }
 
 void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)

@@ -16,7 +16,7 @@ float time,
 float damage,
 int WandId,
 int weapon,
-char[] WandParticle,
+const char[] WandParticle,
 float CustomAng[3] = {0.0,0.0,0.0},
 bool hideprojectile = true) //This will handle just the spawning, the rest like particle effects should be handled within the plugins themselves. hopefully.
 {
@@ -94,8 +94,8 @@ bool hideprojectile = true) //This will handle just the spawning, the rest like 
 			TeleportEntity(particle, NULL_VECTOR, fAng, NULL_VECTOR);
 			SetParent(entity, particle);	
 			SetEntityCollisionGroup(particle, 27);
+			i_WandParticle[entity] = EntIndexToEntRef(particle);
 		}
-		i_WandParticle[entity] = EntIndexToEntRef(particle);
 
 		if(time < 10.0 && time > 0.1) //Make it vanish if there is no time set, or if its too big of a timer to not even bother.
 		{
@@ -188,6 +188,13 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Want_CalciumWandTouch(entity, target);
 		}
+		/* Doesnt work, this projectile has noclip, go to DHOOK public bool PassfilterGlobal(int ent1, int ent2, bool result)
+		case 11:
+		{
+			
+			Cryo_Touch(entity, target);
+		}
+		*/
 	}
 #else
 	switch(i_WandIdNumber[entity])

@@ -1122,9 +1122,15 @@ methodmap CClotBody
 			}
 		}
 		
-		if(f_TankGrabbedStandStill[this.index] > GetGameTime(this.index))
+		if(f_TankGrabbedStandStill[this.index] > GetGameTime())
 		{
 			speed_for_return = 0.0;
+			return speed_for_return;
+		}
+		if(f_TimeFrozenStill[this.index] > GetGameTime(this.index))
+		{
+			speed_for_return = 0.0;
+			return speed_for_return;
 		}
 		if(b_PernellBuff[this.index])
 		{
@@ -2978,12 +2984,13 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 			Raidboss_Clean_Everyone();
 		}
 #endif
-		
-		NPC_DeadEffects(pThis); //Do kill attribute stuff
 		b_NpcHasDied[pThis] = true;
 #if defined ZR
 		CleanAllAppliedEffects_BombImplanter(pThis, true);
-#endif
+#endif		
+	
+		NPC_DeadEffects(pThis); //Do kill attribute stuff
+		RemoveNpcThingsAgain(pThis);
 		NPCDeath(pThis);
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
@@ -6739,6 +6746,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_HighIceDebuff[entity] = 0.0;
 	b_Frozen[entity] = false;
 	f_TankGrabbedStandStill[entity] = 0.0;
+	f_TimeFrozenStill[entity] = 0.0;
 	f_MaimDebuff[entity] = 0.0;
 	f_PassangerDebuff[entity] = 0.0;
 	f_CrippleDebuff[entity] = 0.0;
@@ -6755,6 +6763,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_TextEntity[entity][1] = -1;
 	i_TextEntity[entity][2] = -1;
 	i_Changed_WalkCycle[entity] = -1;
+	ResetFreeze(entity);
 	
 	FormatEx(c_HeadPlaceAttachmentGibName[entity], sizeof(c_HeadPlaceAttachmentGibName[]), "");
 }
@@ -7256,6 +7265,6 @@ void FreezeNpcInTime(int npc, float Duration_Stun)
 
 	f_StunExtraGametimeDuration[npc] += (Duration_Stun - TimeSinceLastStunSubtract);
 	fl_NextDelayTime[npc] = GetGameTime() + Duration_Stun - f_StunExtraGametimeDuration[npc];
-	f_TankGrabbedStandStill[npc] = GetGameTime() + Duration_Stun - f_StunExtraGametimeDuration[npc];
+	f_TimeFrozenStill[npc] = GetGameTime() + Duration_Stun - f_StunExtraGametimeDuration[npc];
 	f_TimeSinceLastStunHit[npc] = GetGameTime() + Duration_Stun;
 }

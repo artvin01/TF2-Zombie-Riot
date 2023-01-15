@@ -234,6 +234,15 @@ bool b_SpecialGrigoriStore;
 float f_ExtraDropChanceRarity = 1.0;
 bool applied_lastmann_buffs_once = false;
 
+float f_ArmorHudOffsetX[MAXTF2PLAYERS];
+float f_ArmorHudOffsetY[MAXTF2PLAYERS];
+
+float f_HurtHudOffsetX[MAXTF2PLAYERS];
+float f_HurtHudOffsetY[MAXTF2PLAYERS];
+
+float f_WeaponHudOffsetX[MAXTF2PLAYERS];
+float f_WeaponHudOffsetY[MAXTF2PLAYERS];
+
 #include "zombie_riot/npc.sp"	// Global NPC List
 
 #include "zombie_riot/database.sp"
@@ -278,7 +287,7 @@ bool applied_lastmann_buffs_once = false;
 //#include "zombie_riot/custom/weapon_pipe_shot.sp"
 #include "zombie_riot/custom/weapon_survival_knife.sp"
 #include "zombie_riot/custom/weapon_glitched.sp"
-//#include "zombie_riot/custom/weapon_minecraft.sp"
+//#include "zombie_riot/custom/weimage.pngapon_minecraft.sp"
 #include "zombie_riot/custom/arse_enal_layer_tripmine.sp"
 #include "zombie_riot/custom/weapon_serioussam2_shooter.sp"
 #include "zombie_riot/custom/wand/weapon_elemental_staff.sp"
@@ -318,6 +327,7 @@ bool applied_lastmann_buffs_once = false;
 #include "shared/custom/weapon_judgement_of_iberia.sp"
 #include "shared/custom/weapon_phlog_replacement.sp"
 #include "zombie_riot/custom/weapon_cosmic_terror.sp"
+#include "zombie_riot/custom/wand/weapon_wand_potions.sp"
 
 void ZR_PluginLoad()
 {
@@ -343,6 +353,7 @@ void ZR_PluginStart()
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
+	HudSettings_Cookies = new Cookie("zr_hudsetting", "hud settings", CookieAccess_Protected);
 	
 	CvarSvRollagle = FindConVar("sv_rollangle");
 	if(CvarSvRollagle)
@@ -485,6 +496,8 @@ void ZR_MapStart()
 	Weapon_RiotShield_Map_Precache();
 	Passanger_Map_Precache();
 	Reset_stats_Passanger_Global();
+	Wand_Potions_Precache();
+	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
 //	CreateEntityByName("info_populator");
@@ -542,6 +555,7 @@ void ZR_ClientDisconnect(int client)
 	Reset_stats_Irene_Singular(client);
 	Reset_stats_PHLOG_Singular(client);
 	Reset_stats_Passanger_Singular(client);
+	Reset_stats_Survival_Singular(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;

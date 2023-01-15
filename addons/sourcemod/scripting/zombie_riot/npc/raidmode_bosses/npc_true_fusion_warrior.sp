@@ -1242,7 +1242,7 @@ public bool FusionWarrior_BEAM_TraceUsers(int entity, int contentsMask, int clie
 		{
 			GetEntityClassname(entity, classname, sizeof(classname));
 			
-			if (!StrContains(classname, "base_boss", true) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
+			if (StrContains(classname, "base_boss") != -1 && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
 			{
 				for(int i=1; i <= MAXENTITIES; i++)
 				{
@@ -1345,7 +1345,7 @@ public Action TrueFusionWarrior_TBB_Tick(int client)
 			{
 				ConformLineDistance(endPoint, startPoint, endPoint, curDist - lineReduce);
 			}
-			for (int i = 1; i < MAXTF2PLAYERS; i++)
+			for (int i = 1; i < MAXENTITIES; i++)
 			{
 				FusionWarrior_BEAM_HitDetected[i] = false;
 			}
@@ -1360,15 +1360,20 @@ public Action TrueFusionWarrior_TBB_Tick(int client)
 			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, FusionWarrior_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 			delete trace;
 			
-			for (int victim = 1; victim < MaxClients; victim++)
+			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (FusionWarrior_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetClientTeam(victim))
+				if (FusionWarrior_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
 					float damage = FusionWarrior_BEAM_CloseDPT[client] + (FusionWarrior_BEAM_FarDPT[client]-FusionWarrior_BEAM_CloseDPT[client]) * (distance/FusionWarrior_BEAM_MaxDistance[client]);
 					if (damage < 0)
 						damage *= -1.0;
+
+					if(victim > MAXTF2PLAYERS)
+					{
+						damage *= 3.0; //give 3x dmg to anything
+					}
 
 					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
 				}
