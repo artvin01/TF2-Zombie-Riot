@@ -1664,7 +1664,7 @@
 
 	"Alchemist Potion Desc"
 	{
-		"en"	"Throws potions that deal half the damage and deals the rest over bleed.\nAble to hit 5 targets in it's splash.\nM2 throws a secondary potion with it's own attack delay."
+		"en"	"Throws potions that deal half the damage and deals the rest over bleed.\nAble to hit 5 targets in it's splash and ignores most damage resistances.\nM2 throws a secondary potion with it's own attack delay."
 	}
 	"Alchemist Potion Pap 1"
 	{

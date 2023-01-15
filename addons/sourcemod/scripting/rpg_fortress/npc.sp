@@ -21,7 +21,10 @@ enum
 	FATHER_GRIGORI					= 15,
 
 
-	FARM_COW						= 16
+	FARM_COW						= 16,
+
+	ARK_SLUG	= 17,
+	ARK_SINGER	= 18,
 }
 
 public const char NPC_Names[][] =
@@ -42,7 +45,9 @@ public const char NPC_Names[][] =
 	"Bob The Second - Target Dummy",
 	"Fast Zombie",
 	"Father Grigori ?",
-	"Farming Cow"
+	"Farming Cow",
+	"Originium Slug",
+	"Scarlet_Singer"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -63,7 +68,9 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_bob_the_targetdummy",
 	"npc_fastzombie",
 	"npc_enemy_grigori",
-	"npc_heavy_cow"
+	"npc_heavy_cow",
+	"npc_ark_slug",
+	"npc_ark_singer"
 };
 
 void NPC_MapStart()
@@ -158,6 +165,18 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 		{
 			entity = FarmCow(client, vecPos, vecAng, ally);
 		}
+		case FARM_COW:
+		{
+			entity = FarmCow(client, vecPos, vecAng, ally);
+		}
+		case ARK_SLUG:
+		{
+			entity = ArkSlug(client, vecPos, vecAng, ally);
+		}
+		case ARK_SINGER:
+		{
+			entity = ArkSinger(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -234,6 +253,14 @@ public void NPCDeath(int entity)
 		case FARM_COW:
 		{
 			FarmCow_NPCDeath(entity);
+		}
+		case ARK_SLUG:
+		{
+			ArkSlug_NPCDeath(entity);
+		}
+		case ARK_SINGER:
+		{
+			ArkSinger_NPCDeath(entity);
 		}
 		default:
 		{
@@ -543,5 +570,7 @@ bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/normal/npc_fastzombie.sp"
 #include "rpg_fortress/npc/normal/npc_enemy_grigori.sp"
 
-
 #include "rpg_fortress/npc/farm/npc_heavy_cow.sp"
+
+#include "rpg_fortress/npc/normal/npc_ark_slug.sp"
+#include "rpg_fortress/npc/normal/npc_ark_singer.sp"

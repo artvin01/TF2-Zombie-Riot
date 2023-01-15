@@ -10,6 +10,13 @@
 #define SOUND_TRANSFORM2	"ambient/halloween/thunder_01.wav"
 #define SOUND_SHRINK		"items/powerup_pickup_plague_infected.wav"
 
+/*static Handle BuffTimer[MAXENTITIES];
+
+void Wands_Potions_EntityCreated(int entity)
+{
+	delete BuffTimer[entity];
+}*/
+
 void Wand_Potions_Precache()
 {
 	PrecacheSound(SOUND_JAREXPLODE);
@@ -388,7 +395,7 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 					Apply_Particle_Teroriser_Indicator(i);
 				}
 
-				SDKHooks_TakeDamage(i, entity, owner, damage, DMG_BLAST, weapon, _, pos1);
+				SDKHooks_TakeDamage(i, entity, owner, damage, DMG_SLASH, weapon, _, pos1);
 
 				if(++count > 4)
 					break;

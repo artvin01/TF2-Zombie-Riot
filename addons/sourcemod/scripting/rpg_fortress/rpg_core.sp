@@ -19,6 +19,7 @@ float Animal_Happy[MAXTF2PLAYERS][10][3];
 bool b_NpcIsInADungeon[MAXENTITIES];
 int i_NpcFightOwner[MAXENTITIES];
 float f_NpcFightTime[MAXENTITIES];
+float f_SingerBuffedFor[MAXTF2PLAYERS];
 
 float f_HealingPotionDuration[MAXTF2PLAYERS];
 int f_HealingPotionEffect[MAXTF2PLAYERS];
@@ -139,6 +140,7 @@ void RPG_PutInServer()
 void RPG_ClientCookiesCached(int client)
 {
 	Ammo_ClientCookiesCached(client);
+	Stats_ClientCookiesCached(client);
 }
 
 void RPG_ClientDisconnect(int client)
@@ -157,6 +159,7 @@ void RPG_ClientDisconnect(int client)
 	Fishing_ClientDisconnect(client);
 	Music_ClientDisconnect(client);
 	Party_ClientDisconnect(client);
+	Stats_ClientDisconnect(client);
 	TextStore_ClientDisconnect(client);
 	MudrockShieldDisconnect(client);
 }
@@ -170,6 +173,7 @@ void RPG_EntityCreated(int entity, const char[] classname)
 {
 	b_NpcIsInADungeon[entity] = false;
 	i_NpcFightOwner[entity] = false;
+	f_SingerBuffedFor[entity] = 0.0;
 	StoreWeapon[entity][0] = 0;
 	Dungeon_ResetEntity(entity);
 	Stats_ClearCustomStats(entity);
