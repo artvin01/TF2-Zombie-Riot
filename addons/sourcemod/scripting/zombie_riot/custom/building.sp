@@ -164,13 +164,32 @@ static float Building_Sentry_Cooldown[MAXTF2PLAYERS];
 
 static int i_MachineJustClickedOn[MAXTF2PLAYERS];
 
-public void Building_ClearAll()
+void Building_ClearAll()
 {
 	Zero2(Building_Collect_Cooldown);
 	Zero(Building_Sentry_Cooldown);
 	Zero(Village_TierExists);
 	RebelTimerSpawnIn = 0;
 }
+
+int Building_GetClientVillageFlags(int client)
+{
+	int applied;
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+	VillageBuff buff;
+	int length = Village_Effects.Length;
+	for(int i; i < length; i++)
+	{
+		Village_Effects.GetArray(i, buff);
+		int entity = EntRefToEntIndex(buff.EntityRef);
+		if(entity == client || entity == weapon)
+			applied |= buff.Effects;
+	}
+
+	return applied;
+}
+
 public Action Building_PlaceSentry(int client, int weapon, const char[] classname, bool &result)
 {
 	int Sentrygun = EntRefToEntIndex(i_HasSentryGunAlive[client]);

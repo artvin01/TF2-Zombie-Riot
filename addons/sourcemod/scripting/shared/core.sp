@@ -2049,6 +2049,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_ThisEntityIgnoredByOtherNpcsAggro[entity] = false;
 		f_NpcImmuneToBleed[entity] = 0.0;
 		
+#if defined ZR
+		Wands_Potions_EntityCreated(entity);
+#endif
+
 #if defined RPG
 		RPG_EntityCreated(entity, classname);
 		TextStore_EntityCreated(entity);

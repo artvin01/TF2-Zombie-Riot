@@ -274,7 +274,7 @@ public Action SF_MultiAttack(int client, int entity, int first, int second, int 
 	if((first == NR || first == DR) && (second == NR || second == DR) && third == NL)
 	{
 		int stale = GetStaleAmount(client, CurrentCombo[client]);
-		if(stale == 10 || (stale && LastCombos[client][0] != CurrentCombo[client]))
+		if(LastCombos[client][sizeof(LastCombos[]) - 1] == CurrentCombo[client])
 		{
 			PrintCenterText(client, "Sugar Coat...");
 			ApplyTempAttrib(entity, 2, 1.25);

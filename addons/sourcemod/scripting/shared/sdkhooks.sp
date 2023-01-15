@@ -442,28 +442,14 @@ public void OnPostThink(int client)
 			float cooldown_time;
 			bool had_An_ability = false;
 			bool IsReady = false;
-#if defined RPG		
-			if(f_HealingPotionDuration[client] > gameTime) //Client has a buff, but which one?
+
+			if(had_An_ability) //There was a debuff or buff create new inline.
 			{
-				float time_left = f_HealingPotionDuration[client] - gameTime;
-				had_An_ability = true;
-				switch(f_HealingPotionEffect[client])
-				{
-					case MELEE_BUFF_2:
-					{
-						Format(buffer, sizeof(buffer), "[STR! %.0fs] %s",time_left, buffer);
-					}
-					case RANGED_BUFF_2: 
-					{
-						Format(buffer, sizeof(buffer), "[DEX! %.0fs] %s",time_left, buffer);
-					}
-					case MAGE_BUFF_2:
-					{
-						Format(buffer, sizeof(buffer), "[INT! %.0fs] %s",time_left, buffer);
-					}		
-				}
+				Format(buffer, sizeof(buffer), "\n%s", buffer);
 			}
-#endif
+
+			had_An_ability = false;
+
 			if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_M1)
 			{
 				
@@ -606,9 +592,9 @@ public void OnPostThink(int client)
 			}
 		}
 		 
-		int red = 0;
-		int green = 255;
-		int blue = 0;
+		int red = 200;
+		int green = 200;
+		int blue = 200;
 		
 		if(has_mage_weapon[client])
 		{
@@ -616,23 +602,33 @@ public void OnPostThink(int client)
 			green = 0;
 			blue = 255;
 			
-			red = Current_Mana[client] * 255  / (RoundToFloor(max_mana[client]) + 1); //DO NOT DIVIDE BY 0
-			
-			blue = Current_Mana[client] * 255  / (RoundToFloor(max_mana[client]) + 1);
-			 
-			red = 255 - red;
-			
-			if(red > 255)
-				red = 255;
-			
-			if(blue > 255)
-				blue = 255;
+			if(Current_Mana[client] < max_mana[client])
+			{
+				red = Current_Mana[client] * 255  / (RoundToFloor(max_mana[client]) + 1); //DO NOT DIVIDE BY 0
 				
-			if(red < 0)
-				red = 0;
+				blue = Current_Mana[client] * 255  / (RoundToFloor(max_mana[client]) + 1);
 				
-			if(blue < 0)
-				blue = 0;
+				red = 255 - red;
+				
+				if(red > 255)
+					red = 255;
+				
+				if(blue > 200) //dont want full blue. bad.
+					blue = 200;
+					
+				if(red < 0)
+					red = 0;
+					
+				if(blue < 0)
+					blue = 0;
+							
+			}
+			else
+			{
+				blue = 125;
+				green = 255;
+				red = 125;
+			}
 			
 			
 			for(int i=1; i<21; i++)
@@ -659,15 +655,104 @@ public void OnPostThink(int client)
 			
 			Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
 		}
-		float HudY = 0.85;
+		float HudY = 0.90;
 		float HudX = -1.0;
 	
 #if defined ZR
 		HudX += f_WeaponHudOffsetY[client];
 		HudY += f_WeaponHudOffsetX[client];
 #endif
-		SetHudTextParams(HudX, HudY, 0.81, red, green, blue, 255);
-		ShowSyncHudText(client,  SyncHud_WandMana, "%s", buffer);
+		bool had_An_ability = false;
+		char bufferbuffs[64];
+		//BUFFS!
+#if defined RPG		
+			if(f_HealingPotionDuration[client] > gameTime) //Client has a buff, but which one?
+			{
+				float time_left = f_HealingPotionDuration[client] - gameTime;
+				had_An_ability = true;
+				switch(f_HealingPotionEffect[client])
+				{
+					case MELEE_BUFF_2:
+					{
+						Format(bufferbuffs, sizeof(bufferbuffs), "[STR! %.0fs] %s",time_left, bufferbuffs);
+					}
+					case RANGED_BUFF_2: 
+					{
+						Format(bufferbuffs, sizeof(bufferbuffs), "[DEX! %.0fs] %s",time_left, bufferbuffs);
+					}
+					case MAGE_BUFF_2:
+					{
+						Format(bufferbuffs, sizeof(bufferbuffs), "[INT! %.0fs] %s",time_left, bufferbuffs);
+					}		
+				}
+			}
+#endif
+		if(Wands_Potions_HasBuff(client))
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "⌂%s", bufferbuffs);
+		}
+		if(Increaced_Overall_damage_Low[client] > GetGameTime())
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "⌃%s", bufferbuffs);
+		}
+		if(Resistance_Overall_Low[client] > GetGameTime())
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "⌅%s", bufferbuffs);
+		}
+		if(Wands_Potions_HasTonicBuff(client))
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "⌇%s", bufferbuffs);
+		}
+/*
+#define VILLAGE_000	(1 << 0)	// Projectile Speed
+#define VILLAGE_200	(1 << 2)	// Fire Rate Bonus
+#define VILLAGE_030	(1 << 8)	// MIB
+#define VILLAGE_040	(1 << 9)	// Call of Arms
+#define VILLAGE_050	(1 << 10)	// Homeland Defense
+*/
+		int VillageBuffs = Building_GetClientVillageFlags(client);
+
+		if(VillageBuffs & VILLAGE_000)
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "⌒%s", bufferbuffs);
+		}
+		if(VillageBuffs & VILLAGE_200)
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "⌭%s", bufferbuffs);
+		}
+		if(VillageBuffs & VILLAGE_030)
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "⌬%s", bufferbuffs);
+		}
+		if(VillageBuffs & VILLAGE_050) //This has priority.
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "⍣%s", bufferbuffs);
+		}
+		else if(VillageBuffs & VILLAGE_040)
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "⍤%s", bufferbuffs);
+		}
+
+		if(had_An_ability)
+		{
+			Format(buffer, sizeof(buffer), "%s\n%s", bufferbuffs, buffer);
+			HudY += -0.0345; //correct offset
+		}
+
+		if(buffer[0])
+		{
+			SetHudTextParams(HudX, HudY, 0.81, red, green, blue, 255);
+			ShowSyncHudText(client,  SyncHud_WandMana, "%s", buffer);
+		}
 	}
 	if(delay_hud[client] < gameTime)	
 	{
