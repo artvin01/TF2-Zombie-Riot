@@ -348,17 +348,17 @@ public Action SF_SpeedUp(int client, int entity, int first, int second, int thir
 		if(stale > 4)
 		{
 			PrintCenterText(client, "Speed...");
-			ApplyTempAttrib(entity, 6, 0.7, 3.5);
+			ApplyTempAttrib(entity, 6, 0.9, 2.0);
 		}
 		else if(stale)
 		{
 			PrintCenterText(client, "Speed");
-			ApplyTempAttrib(entity, 6, 0.6, 6.0);
+			ApplyTempAttrib(entity, 6, 0.8, 3.0);
 		}
 		else
 		{
 			PrintCenterText(client, "Speed!");
-			ApplyTempAttrib(entity, 6, 0.5, 8.0);
+			ApplyTempAttrib(entity, 6, 0.75, 6.0);
 			
 		}
 
