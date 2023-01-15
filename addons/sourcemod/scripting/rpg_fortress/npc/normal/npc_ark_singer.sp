@@ -31,7 +31,7 @@ static const char g_RangedSpecialAttackSoundsSecondary[][] = {
 	"npc/combine_soldier/vo/prison_soldier_fallback_b4.wav"
 };
 
-void ArkSinger_OnMapStart_NPC()
+void ArkSinger_MapStart()
 {
 	PrecacheModel("models/effects/combineball.mdl");
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -222,11 +222,11 @@ public void ArkSinger_ClotThink(int iNPC)
 				
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 800.0);
 				npc.FireRocket(vPredictedPos, 250.0, 800.0, "models/effects/combineball.mdl");
-				npc.PlayRangedAttackSecondarySound();
+				npc.PlayRangedSound();
 				// Scarlet Singer (50% dmg)
 
 				if(npc.m_iTarget <= MaxClients)
-					Stats_AddNeuralDamage(npc.m_iTarget, 80.0);
+					Stats_AddNeuralDamage(npc.m_iTarget, npc.index, 80);
 			}
 		}
 	}
