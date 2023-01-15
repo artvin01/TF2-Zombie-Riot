@@ -3617,3 +3617,32 @@ stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int 
 #endif
 	SetHudTextParams(HudX, HudY, 1.01, red, green, blue, 255);
 }
+
+stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 0.3)
+{
+	Address address = TF2Attrib_GetByDefIndex(entity, index);
+	if(address != Address_Null)
+	{
+		TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) * multi);
+
+		DataPack pack;
+		CreateDataTimer(duration, StreetFighter_RestoreAttrib, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(entity));
+		pack.WriteCell(index);
+		pack.WriteFloat(multi);
+	}
+}
+
+public Action StreetFighter_RestoreAttrib(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(entity != INVALID_ENT_REFERENCE)
+	{
+		int index = pack.ReadCell();
+		Address address = TF2Attrib_GetByDefIndex(entity, index);
+		if(address != Address_Null)
+			TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) / pack.ReadFloat());
+	}
+	return Plugin_Stop;
+}

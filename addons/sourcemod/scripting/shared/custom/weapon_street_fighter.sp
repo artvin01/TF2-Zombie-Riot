@@ -176,21 +176,6 @@ public Action StreetFighter_Timer(Handle timer, int client)
 	return Plugin_Stop;
 }
 
-static void ApplyTempAttrib(int entity, int index, float multi, float duration = 0.3)
-{
-	Address address = TF2Attrib_GetByDefIndex(entity, index);
-	if(address != Address_Null)
-	{
-		TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) * multi);
-
-		DataPack pack;
-		CreateDataTimer(duration, StreetFighter_RestoreAttrib, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteCell(EntIndexToEntRef(entity));
-		pack.WriteCell(index);
-		pack.WriteFloat(multi);
-	}
-}
-
 public Action StreetFighter_RestoreAttrib(Handle timer, DataPack pack)
 {
 	pack.Reset();
