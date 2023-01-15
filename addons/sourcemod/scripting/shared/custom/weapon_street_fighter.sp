@@ -71,10 +71,10 @@ static int GetStaleAmount(int client, int combo)
 	return amount;
 }
 
-static int GetComboType(int flags, bool right)
+static int GetComboType(int buttons, bool right)
 {
-	bool air = !(flags & FL_ONGROUND);
-	bool duck = view_as<bool>(flags & FL_DUCKING);
+	bool air = view_as<bool>(buttons & IN_JUMP);
+	bool duck = view_as<bool>(buttons & IN_DUCK);
 
 	if(!(air ^ duck))
 		return right ? NR : NL;
@@ -87,15 +87,15 @@ static int GetComboType(int flags, bool right)
 
 public void Weapon_StreetFighter(int client, int weapon, bool crit, int slot)
 {
-	StreetFighter(client, weapon, slot, FL_ONGROUND);
+	StreetFighter(client, weapon, slot, 0);
 }
 
 public void Weapon_StreetFighterPap(int client, int weapon, bool crit, int slot)
 {
-	StreetFighter(client, weapon, slot, GetEntityFlags(client));
+	StreetFighter(client, weapon, slot, GetClientButtons(client));
 }
 
-static void StreetFighter(int client, int weapon, int slot, int flags)
+static void StreetFighter(int client, int weapon, int slot, int buttons)
 {
 	if(Ability_Check_Cooldown(client, slot) < 0.0)
 	{
@@ -104,14 +104,14 @@ static void StreetFighter(int client, int weapon, int slot, int flags)
 		if(ComboCount[client] == 0)
 		{
 			f_DelayLookingAtHud[client] = GetGameTime() + 2.1;
-			CurrentCombo[client] = GetComboType(flags, slot != 1);
+			CurrentCombo[client] = GetComboType(buttons, slot != 1);
 			ComboCount[client] = 1;
 			ComboTimer[client] = CreateTimer(2.1, StreetFighter_Timer, client);
 			ShowCombo(client);
 		}
 		else if(ComboCount[client] == 1)
 		{
-			CurrentCombo[client] += GetComboType(flags, slot != 1) * NR_2;
+			CurrentCombo[client] += GetComboType(buttons, slot != 1) * NR_2;
 			ComboCount[client] = 2;
 			ShowCombo(client);
 		}
@@ -121,7 +121,7 @@ static void StreetFighter(int client, int weapon, int slot, int flags)
 
 			int first = CurrentCombo[client] % NR_2;
 			int second = (CurrentCombo[client] % NR_3) / NR_2;
-			int third = GetComboType(flags, slot != 1);
+			int third = GetComboType(buttons, slot != 1);
 			CurrentCombo[client] += third * NR_3;
 			ComboCount[client] = 3;
 			
