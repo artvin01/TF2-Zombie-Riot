@@ -707,11 +707,8 @@
 	}
 	"Survivalist Blade Pap 2"
 	{
-		"en"	"Increased damage and attackspeed, R Gives you rage which boosts all of your stats for a short time"
-		"ru"	"Увелич. урон и скорость атаки, R - даёт вам ярость, которая повышает все ваши показатели на короткое время."
-		"chi"   "增加伤害和攻击速度，按R激活愤怒技能，在短时间内提高你的所有属性"
+		"en"	"Increased damage and attackspeed, R Gives you rage which hurts you for 20% of your maxhealth (cant kill you)\nbut you gain a 30% faster attackspeed and 35% damage resistance buff.\nDuring Rage you also have infinite throwable knives."
 	}
-	
 	"Kunai Desc"
 	{
 		"en"	"Can backstab and bleed, backstab gives health, no matter if it kills or not."

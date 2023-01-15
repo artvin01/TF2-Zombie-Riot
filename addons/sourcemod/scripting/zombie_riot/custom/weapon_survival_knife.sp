@@ -359,11 +359,21 @@ public void Survival_Knife_Tier3_Reload(int client, int weapon, bool crit, int s
 		
 		InMadness[client] = true;
 		
-		TF2Attrib_SetByDefIndex(weapon, 396, 0.7); // Attack speed bonus
-		SetEntityHealth(client, GetClientHealth(client)-25); // Self dmg
-		TF2_AddCondition(client, TFCond_RestrictToMelee, 6.0); // Madness duration (condition)
-		TF2_AddCondition(client, TFCond_DefenseBuffNoCritBlock, 6.0); // Madness duration (condition)
-		TF2_AddCondition(client, TFCond_CritHype, 6.0); // Madness duration (condition)
+		ApplyTempAttrib(weapon, 6, 0.7, 5.0);
+		ApplyTempAttrib(weapon, 205, 0.65, 5.0);
+		ApplyTempAttrib(weapon, 206, 0.65, 5.0);
+		int flMaxHealth = SDKCall_GetMaxHealth(client);
+		int flHealth = GetClientHealth(client);
+		
+		int health = flMaxHealth / 5;
+
+		flHealth -= health;
+		if((flHealth) < 1)
+		{
+			flHealth = 1;
+		}
+
+		SetEntityHealth(client, flHealth); // Self dmg
 
 		DataPack pack;
 		CreateDataTimer(5.0, Timer_Madness_Duration, pack, TIMER_FLAG_NO_MAPCHANGE);// Madness duration
@@ -389,10 +399,6 @@ public Action Timer_Madness_Duration(Handle timer, DataPack pack)
 	{
 		if (IsPlayerAlive(client))
 		{
-			int weapon = EntRefToEntIndex(pack.ReadCell());
-			if(weapon != INVALID_ENT_REFERENCE)
-				TF2Attrib_SetByDefIndex(weapon, 396, 1.0);
-			
 			InMadness[client] = false;
 			
 			EmitSoundToAll(SOUND_MADNESS_END, client, SNDCHAN_STATIC, 70, _, 0.9);
