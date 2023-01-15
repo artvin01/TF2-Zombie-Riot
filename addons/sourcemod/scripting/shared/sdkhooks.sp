@@ -625,9 +625,9 @@ public void OnPostThink(int client)
 			}
 			else
 			{
-				blue = 125;
-				green = 255;
-				red = 125;
+				blue = 200;
+				green = 200;
+				red = 200;
 			}
 			
 			
