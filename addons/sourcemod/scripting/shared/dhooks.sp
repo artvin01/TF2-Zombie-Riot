@@ -1635,6 +1635,11 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			ClientCommand(owner, "playgamesound items/medshotno1.wav");
 			SetGlobalTransTarget(owner);
 			PrintHintText(owner,"%N %t", target, "Is already at full hp");
+			
+			Increaced_Overall_damage_Low[owner] = GetGameTime() + 5.0;
+			Increaced_Overall_damage_Low[target] = GetGameTime() + 15.0;
+			Resistance_Overall_Low[owner] = GetGameTime() + 5.0;
+			Resistance_Overall_Low[target] = GetGameTime() + 15.0;
 		}
 		else
 		{
@@ -1657,10 +1662,10 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			
 			PrintHintText(owner, "%t", "You healed for", target, ammo_amount_left);
 			SetAmmo(owner, 21, new_ammo);
-			Increaced_Overall_damage_Low[owner] = GetGameTime() + 2.0;
-			Increaced_Overall_damage_Low[target] = GetGameTime() + 10.0;
-			Resistance_Overall_Low[owner] = GetGameTime() + 2.0;
-			Resistance_Overall_Low[target] = GetGameTime() + 10.0;
+			Increaced_Overall_damage_Low[owner] = GetGameTime() + 5.0;
+			Increaced_Overall_damage_Low[target] = GetGameTime() + 15.0;
+			Resistance_Overall_Low[owner] = GetGameTime() + 5.0;
+			Resistance_Overall_Low[target] = GetGameTime() + 15.0;
 			for(int i; i<Ammo_MAX; i++)
 			{
 				CurrentAmmo[owner][i] = GetAmmo(owner, i);

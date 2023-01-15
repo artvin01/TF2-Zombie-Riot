@@ -706,10 +706,28 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						//SELF HEAL
 						
 					}
-					Increaced_Overall_damage_Low[owner] = GetGameTime() + 1.0;
-					Resistance_Overall_Low[owner] = GetGameTime() + 1.0;
-					Increaced_Overall_damage_Low[healTarget] = GetGameTime() + 1.0;
-					Resistance_Overall_Low[healTarget] = GetGameTime() + 1.0;
+					float duration;
+
+					duration = Increaced_Overall_damage_Low[owner] - GetGameTime();
+					if(duration < 1.2)
+					{
+						Increaced_Overall_damage_Low[owner] = GetGameTime() + 1.0;
+					}
+					duration = Resistance_Overall_Low[owner] - GetGameTime();
+					if(duration < 1.2)
+					{
+						Resistance_Overall_Low[owner] = GetGameTime() + 1.0;
+					}
+					duration = Increaced_Overall_damage_Low[healTarget] - GetGameTime();
+					if(duration < 1.2)
+					{
+						Increaced_Overall_damage_Low[healTarget] = GetGameTime() + 1.0;
+					}
+					duration = Resistance_Overall_Low[healTarget] - GetGameTime();
+					if(duration < 1.2)
+					{
+						Resistance_Overall_Low[healTarget] = GetGameTime() + 1.0;
+					}
 					
 				}
 				SetAmmo(owner, 21, new_ammo);
