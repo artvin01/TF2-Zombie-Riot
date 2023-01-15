@@ -492,8 +492,8 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 				}
 				else
 				{
-					f_BombEntityWeaponDamageApplied[i][owner] = damage / 8.0;
-					i_HowManyBombsOnThisEntity[i][owner] += 2;
+					f_BombEntityWeaponDamageApplied[i][owner] = damage / 4.0;
+					i_HowManyBombsOnThisEntity[i][owner] += 12;
 					Apply_Particle_Teroriser_Indicator(i);
 				}
 
