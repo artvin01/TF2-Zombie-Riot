@@ -3472,12 +3472,14 @@ public MRESReturn ILocomotion_GetMaxAcceleration(Address pThis, Handle hReturn, 
 public MRESReturn ILocomotion_GetFrictionSideways(Address pThis, Handle hReturn, Handle hParams) { DHookSetReturn(hReturn, 3.0);	return MRES_Supercede; }
 public MRESReturn ILocomotion_GetGravity(Address pThis, Handle hReturn, Handle hParams)
 {
+#if defined ZR
 	int entity = view_as<int>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis)));
 	if(Npc_Is_Targeted_In_Air(entity))
 	{
 		DHookSetReturn(hReturn, 0.0); //We want no gravity
 	}
 	else
+#endif
 	{
 		DHookSetReturn(hReturn, 800.0); 
 	}
@@ -5873,12 +5875,12 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 		
 	botPos[2] += 1.0;
 	subjectPos[2] += 1.0;
-	
+#if defined ZR
 	if(Npc_Is_Targeted_In_Air(npc.index)) //Logic breaks when they are under this effect.
 	{
 		return subjectPos;
 	}
-
+#endif
 	float to[3];
 	SubtractVectors(subjectPos, botPos, to);
 	to[2] = 0.0;
@@ -6763,8 +6765,9 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_TextEntity[entity][1] = -1;
 	i_TextEntity[entity][2] = -1;
 	i_Changed_WalkCycle[entity] = -1;
+#if defined ZR
 	ResetFreeze(entity);
-	
+#endif
 	FormatEx(c_HeadPlaceAttachmentGibName[entity], sizeof(c_HeadPlaceAttachmentGibName[]), "");
 }
 

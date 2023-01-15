@@ -621,11 +621,13 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+#if defined ZR
 			else if(i_WandIdNumber[entity1] == 11)
 			{
 				//Have to use this here, please check wand_projectile for more info!
 				Cryo_Touch(entity1, entity2);
 			}
+#endif
 		}
 		else if (b_Is_Player_Projectile_Through_Npc[entity1])
 		{

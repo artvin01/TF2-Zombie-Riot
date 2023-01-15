@@ -3612,8 +3612,9 @@ void SetDefaultHudPosition(int client, int red = 34, int green = 139, int blue =
 
 	float HudY = 0.75;
 	float HudX = -1.0;
+#if defined ZR
 	HudX += f_NotifHudOffsetY[client];
 	HudY += f_NotifHudOffsetX[client];
-
+#endif
 	SetHudTextParams(HudX, HudY, 1.01, red, green, blue, 255);
 }

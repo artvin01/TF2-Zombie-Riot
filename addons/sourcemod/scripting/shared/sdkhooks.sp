@@ -687,26 +687,18 @@ public void OnPostThink(int client)
 				}
 			}
 #endif
+#if defined ZR	
 		if(Wands_Potions_HasBuff(client))
 		{
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⌂%s", bufferbuffs);
-		}
-		if(Increaced_Overall_damage_Low[client] > GetGameTime())
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⌃%s", bufferbuffs);
-		}
-		if(Resistance_Overall_Low[client] > GetGameTime())
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⌅%s", bufferbuffs);
 		}
 		if(Wands_Potions_HasTonicBuff(client))
 		{
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⌇%s", bufferbuffs);
 		}
+
 /*
 #define VILLAGE_000	(1 << 0)	// Projectile Speed
 #define VILLAGE_200	(1 << 2)	// Fire Rate Bonus
@@ -740,6 +732,17 @@ public void OnPostThink(int client)
 		{
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⍤%s", bufferbuffs);
+		}
+#endif
+		if(Increaced_Overall_damage_Low[client] > GetGameTime())
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "⌃%s", bufferbuffs);
+		}
+		if(Resistance_Overall_Low[client] > GetGameTime())
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "⌅%s", bufferbuffs);
 		}
 
 		if(had_An_ability)

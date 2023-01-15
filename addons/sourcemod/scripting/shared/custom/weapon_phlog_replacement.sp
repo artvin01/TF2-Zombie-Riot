@@ -10,7 +10,7 @@ static float f_PHLOGhuddelay[MAXTF2PLAYERS];
 static float f_PHLOGabilitydelay[MAXTF2PLAYERS];
 static int i_PHLOGHitsDone[MAXTF2PLAYERS];
 
-void Npc_OnTakeDamage_Phlog(int attacker, int damagetype)
+void Npc_OnTakeDamage_Phlog(int attacker)
 {
 	if(GetGameTime() > f_PHLOGabilitydelay[attacker])
 	{

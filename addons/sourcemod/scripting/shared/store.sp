@@ -4701,14 +4701,15 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		
 		Enable_StarShooter(client, entity);
 		Enable_Passanger(client, entity);
+		Reset_stats_Irene_Singular_Weapon(client, entity);
+		Enable_Irene(client, entity);
+		Enable_PHLOG(client, entity);
 #endif
 
 #if defined RPG
 		Stats_SetWeaponStats(client, entity, slot);
+
 #endif
-		Reset_stats_Irene_Singular_Weapon(client, entity);
-		Enable_Irene(client, entity);
-		Enable_PHLOG(client, entity);
 
 	}
 	return entity;
