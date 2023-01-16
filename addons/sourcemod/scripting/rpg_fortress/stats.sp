@@ -3,6 +3,10 @@
 
 #define MACRO_SHOWDIFF(%1)	if(oldAmount != newAmount) { FormatEx(buffer, sizeof(buffer), %1 ... " (%d -> %d)", oldAmount, newAmount); menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED); }
 
+#define ORIGINIUM_INFECTED 200
+#define ORIGINIUM_UNSTABLE 600
+#define NERVOUS_IMPAIRMENT 500
+
 static Cookie CookieInfection;
 static int BackpackBonus[MAXENTITIES];
 static int Strength[MAXENTITIES];
@@ -40,6 +44,28 @@ void Stats_ClientDisconnect(int client)
 	Originium[client] = 0;
 }
 
+void Stats_UpdateHud(int client)
+{
+	char buffer[256];
+
+	if(Originium[client] >= ORIGINIUM_INFECTED)
+	{
+		FormatEx(buffer, sizeof(buffer), "Originium Instability: %d%%", (Originium[client] - ORIGINIUM_INFECTED) * 100 / (ORIGINIUM_UNSTABLE - ORIGINIUM_INFECTED));
+	}
+	else if(Originium[client] > 0)
+	{
+		FormatEx(buffer, sizeof(buffer), "Originium Infection: %d%%", Originium[client] * 100 / ORIGINIUM_INFECTED);
+	}
+
+	if(NeuralDamage[client] > 0)
+	{
+		Format(buffer, sizeof(buffer), "Nervous Impairment: %d%%", NeuralDamage[client] * 100 / NERVOUS_IMPAIRMENT);
+	}
+
+	if(buffer[0])
+		PrintKeyHintText(client, buffer);
+}
+
 void Stats_ClearCustomStats(int entity)
 {
 	BackpackBonus[entity] = 0;
@@ -61,19 +87,22 @@ void Stats_ClearCustomStats(int entity)
 
 void Stats_AddNeuralDamage(int client, int attacker, int damage)
 {
-	NeuralDamage[client] = damage;
-	if(NeuralDamage[client] > 499)
+	if(NeuralDamage[client] || !TF2_IsPlayerInCondition(client, TFCond_Dazed))
 	{
-		NeuralDamage[client] = 0;
-		int health = GetClientHealth(client);
-		if(health > 500)
+		NeuralDamage[client] = damage;
+		if(NeuralDamage[client] >= NERVOUS_IMPAIRMENT)
 		{
-			TF2_StunPlayer(client, 5.0, 1.0, TF_STUNFLAGS_BIGBONK, client);
-			SetEntityHealth(client, health - 500);
-		}
-		else
-		{
-			SDKHooks_TakeDamage(client, attacker, attacker, damage * 10.0, DMG_DROWN);
+			NeuralDamage[client] = 0;
+			int health = GetClientHealth(client);
+			if(health > 500)
+			{
+				TF2_StunPlayer(client, 5.0, 1.0, TF_STUNFLAGS_BIGBONK, client);
+				SetEntityHealth(client, health - 500);
+			}
+			else
+			{
+				SDKHooks_TakeDamage(client, attacker, attacker, damage * 10.0, DMG_DROWN);
+			}
 		}
 	}
 }

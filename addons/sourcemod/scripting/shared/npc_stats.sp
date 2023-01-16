@@ -3650,14 +3650,19 @@ public void InitNavGamedata()
 	navarea_count = GameConfGetAddress(hConf, "navarea_count");
 	//PrintToServer("[CClotBody] Found \"navarea_count\" @ 0x%X", navarea_count);
 	
-	if(LoadFromAddress(navarea_count, NumberType_Int32) <= 0)
+	/*if(LoadFromAddress(navarea_count, NumberType_Int32) <= 0)
 	{
 		char buffer[64];
 		GetCurrentMap(buffer, sizeof(buffer));
-		PrintToServer("No Nav Mesh for %s, aborting map", buffer);
-		RemoveEntity(0);
+		for(int i; ; i++)
+		{
+			LogError("No Nav Mesh for %s", buffer);
+			PrintToServer("No Nav Mesh for %s", buffer);
+		}
+
+		SetFailState("Missing nav mesh");
 		return;
-	}
+	}*/
 	
 	//TheNavAreas is nicely above navarea_count
 	TheNavAreas = view_as<Address>(LoadFromAddress(navarea_count + view_as<Address>(0x4), NumberType_Int32));

@@ -741,6 +741,7 @@ void Waves_Progress()
 			if(round.MapSetupRelay)
 			{
 				ExcuteRelay("zr_setuptime");
+				Citizen_SetupStart();
 				f_DelaySpawnsForVariousReasons = GetGameTime() + 1.5; //Delay spawns for 1.5 seconds, so maps can do their thing.
 			}
 			
@@ -1150,6 +1151,8 @@ void Waves_Progress()
 				}
 				
 				menu.DisplayVote(players, total, 30);
+				
+				Citizen_SetupStart();
 			}
 			else
 			{
