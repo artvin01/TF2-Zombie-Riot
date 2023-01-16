@@ -2129,6 +2129,9 @@ public void Citizen_ClotThink(int iNPC)
 							
 							npc.m_iState = -1;
 							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_RPG");
+
+							npc.m_flNextRangedAttack = gameTime + npc.m_fGunFirerate;
+							npc.m_iAttacksTillReload--;
 							
 							npc.FireRocket(vecTarget, npc.m_fGunDamage, 1100.0, _, _, EP_DEALS_SLASH_DAMAGE); //WAAY TOO OP
 							npc.PlayRPGSound();
