@@ -19,7 +19,7 @@ float Animal_Happy[MAXTF2PLAYERS][10][3];
 bool b_NpcIsInADungeon[MAXENTITIES];
 int i_NpcFightOwner[MAXENTITIES];
 float f_NpcFightTime[MAXENTITIES];
-float f_SingerBuffedFor[MAXTF2PLAYERS];
+float f_SingerBuffedFor[MAXENTITIES];
 
 float f_HealingPotionDuration[MAXTF2PLAYERS];
 int f_HealingPotionEffect[MAXTF2PLAYERS];

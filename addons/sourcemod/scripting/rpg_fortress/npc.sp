@@ -47,7 +47,7 @@ public const char NPC_Names[][] =
 	"Father Grigori ?",
 	"Farming Cow",
 	"Originium Slug",
-	"Scarlet_Singer"
+	"Scarlet Singer"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =

@@ -1684,8 +1684,7 @@ methodmap CClotBody
 	}
 	public void SetActivity(const char[] animation, bool Is_sequence = false)
 	{
-		int activity;
-		activity = this.LookupActivity(animation);
+		int activity = this.LookupActivity(animation);
 		if(activity > 0 && activity != this.m_iState)
 		{
 			this.m_iState = activity;

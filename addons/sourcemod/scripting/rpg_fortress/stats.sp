@@ -8,6 +8,7 @@
 #define NERVOUS_IMPAIRMENT 500
 
 static Cookie CookieInfection;
+static bool HasKeyHintHud[MAXTF2PLAYERS];
 static int BackpackBonus[MAXENTITIES];
 static int Strength[MAXENTITIES];
 static int Dexterity[MAXENTITIES];
@@ -42,28 +43,43 @@ void Stats_ClientDisconnect(int client)
 	}
 
 	Originium[client] = 0;
+	HasKeyHintHud[client] = false;
 }
 
 void Stats_UpdateHud(int client)
 {
 	char buffer[256];
 
-	if(Originium[client] >= ORIGINIUM_INFECTED)
+	if(IsPlayerAlive(client))
 	{
-		FormatEx(buffer, sizeof(buffer), "Originium Instability: %d%%", (Originium[client] - ORIGINIUM_INFECTED) * 100 / (ORIGINIUM_UNSTABLE - ORIGINIUM_INFECTED));
-	}
-	else if(Originium[client] > 0)
-	{
-		FormatEx(buffer, sizeof(buffer), "Originium Infection: %d%%", Originium[client] * 100 / ORIGINIUM_INFECTED);
+		int originium = Stats_BaseOriginium(client);
+		if(originium > ORIGINIUM_UNSTABLE)
+		{
+			int rand = 50 + ORIGINIUM_UNSTABLE + originium;
+			if(rand < 2)
+				rand = 2;
+			
+			FormatEx(buffer, sizeof(buffer), "Originium Stability: %d％", (GetURandomInt() % rand ? 0 : (originium - ORIGINIUM_INFECTED) * 100 / (ORIGINIUM_UNSTABLE - ORIGINIUM_INFECTED)));
+		}
+		else if(originium >= ORIGINIUM_INFECTED)
+		{
+			FormatEx(buffer, sizeof(buffer), "Originium Stability: %d％", 100 - (originium - ORIGINIUM_INFECTED) * 100 / (ORIGINIUM_UNSTABLE - ORIGINIUM_INFECTED));
+		}
+		else if(originium > 1)
+		{
+			FormatEx(buffer, sizeof(buffer), "Originium Infection: %d％", originium * 100 / ORIGINIUM_INFECTED);
+		}
+
+		if(NeuralDamage[client] > 0)
+		{
+			Format(buffer, sizeof(buffer), "Nervous Impairment: %d％", NeuralDamage[client] * 100 / NERVOUS_IMPAIRMENT);
+		}
 	}
 
-	if(NeuralDamage[client] > 0)
-	{
-		Format(buffer, sizeof(buffer), "Nervous Impairment: %d%%", NeuralDamage[client] * 100 / NERVOUS_IMPAIRMENT);
-	}
-
-	if(buffer[0])
+	if(buffer[0] || HasKeyHintHud[client])
 		PrintKeyHintText(client, buffer);
+	
+	HasKeyHintHud[client] = view_as<bool>(buffer[0]);
 }
 
 void Stats_ClearCustomStats(int entity)
@@ -89,7 +105,7 @@ void Stats_AddNeuralDamage(int client, int attacker, int damage)
 {
 	if(NeuralDamage[client] || !TF2_IsPlayerInCondition(client, TFCond_Dazed))
 	{
-		NeuralDamage[client] = damage;
+		NeuralDamage[client] += damage;
 		if(NeuralDamage[client] >= NERVOUS_IMPAIRMENT)
 		{
 			NeuralDamage[client] = 0;
@@ -105,6 +121,50 @@ void Stats_AddNeuralDamage(int client, int attacker, int damage)
 			}
 		}
 	}
+}
+
+void Stats_AddOriginium(int entity, int amount)
+{
+	Originium[entity] += amount;
+}
+
+public ItemResult Stats_Custom_OriginiumMend(int client)
+{
+	if(Originium[client] > 1)
+	{
+		ClientCommand(client, "items/medshot4.wav");
+		Originium[client] -= 10;
+		return Item_Used;
+	}
+	
+	ClientCommand(client, "items/medshotno1.wav");
+	return Item_None;
+}
+
+stock float Stats_OriginiumPower(int client)
+{
+	int originium = Stats_BaseOriginium(client);
+	if(originium > ORIGINIUM_UNSTABLE)
+		return 3.0 - (float(originium - ORIGINIUM_UNSTABLE) / float(ORIGINIUM_UNSTABLE * 3));
+	
+	if(originium >= ORIGINIUM_INFECTED)
+		return float(originium) / float(ORIGINIUM_INFECTED);
+	
+	return float(originium / 2) / float(ORIGINIUM_INFECTED);
+}
+
+static int OriginiumHealth(int client)
+{
+	int originium = Stats_BaseOriginium(client);
+
+	int health;
+	if(originium >= ORIGINIUM_INFECTED)
+		health -= originium / 4;
+	
+	if(originium > ORIGINIUM_UNSTABLE)
+		health -= originium - ORIGINIUM_UNSTABLE;
+	
+	return health;
 }
 
 void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
@@ -130,15 +190,15 @@ void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
 
 			case -6:
 				Format(desc, 512, "%s\n%s Agility", desc, CharInt(RoundFloat(value[i])));
+		
+			case -7:
+				Format(desc, 512, "%s\n%s Originium", desc, CharInt(RoundFloat(value[i])));
 
 			case 140:
 				Format(desc, 512, "%s\n%s Max Health", desc, CharInt(RoundFloat(value[i])));
 		
 			case 405:
 				Format(desc, 512, "%s\n%s Max Mana & Mana Regen", desc, CharPercent(value[i]));
-		
-			case 412:
-				Format(desc, 512, "%s\n%s Damage Taken", desc, CharPercent(value[i]));
 
 		}
 	}
@@ -165,6 +225,9 @@ void Stats_GetCustomStats(int entity, int attrib, float value)
 
 		case -6:
 			Agility[entity] += RoundFloat(value);
+
+		case -7:
+			Originium[entity] += RoundFloat(value);
 	}
 }
 
@@ -227,12 +290,29 @@ void Stats_SetBodyStats(int client, TFClassType class, StringMap map)
 	map.SetValue("252", Stats_KnockbackResist(client));
 }
 
-int Stats_BaseHealth(int client, int level = -1, int tier = -1)
+int Stats_BaseOriginium(int client, int &base = 0, int &bonus = 0)
+{
+	base = Originium[client];
+	bonus = 0;
+
+	int i, entity;
+	while(TF2_GetItem(client, entity, i))
+	{
+		bonus += Originium[entity];
+	}
+
+	return base + bonus;
+}
+
+int Stats_BaseHealth(int client, int &base = 0, int &bonus = 0, int level = -1, int tier = -1)
 {
 	int lv = level == -1 ? Level[client] : level;
 	int ti = tier == -1 ? Tier[client] : tier;
 
-	return 50 + (lv * 5) + (ti * 20);
+	base = 50 + (lv * 5) + (ti * 20);
+	bonus = OriginiumHealth(client);
+
+	return base + bonus;
 }
 
 int Stats_BaseCarry(int client, int &base = 0, int &bonus = 0, int level = -1, int tier = -1)
@@ -356,8 +436,9 @@ void Stats_ShowLevelUp(int client, int oldLevel, int oldTier)
 	
 	char buffer[64];
 
-	int oldAmount = Stats_BaseHealth(client, oldLevel, oldTier);
-	int newAmount = Stats_BaseHealth(client);
+	int oldAmount, newAmount;
+	Stats_BaseHealth(client, oldAmount, _, oldLevel, oldTier);
+	Stats_BaseHealth(client, newAmount);
 	MACRO_SHOWDIFF("Max Health")
 
 	Stats_BaseCarry(client, oldAmount, _, oldLevel, oldTier);
@@ -405,7 +486,8 @@ public Action Stats_ShowStats(int client, int args)
 
 		char buffer[64];
 
-		int amount = Stats_BaseHealth(client);
+		int amount;
+		Stats_BaseHealth(client, amount);
 		int bonus = SDKCall_GetMaxHealth(client) - amount;
 		FormatEx(buffer, sizeof(buffer), "Max Health: %d + %d (%.0f%% resistance)", amount, bonus, 1.0 / Attributes_FindOnPlayer(client, 412, true, 1.0));
 		menu.AddItem(NULL_STRING, buffer);

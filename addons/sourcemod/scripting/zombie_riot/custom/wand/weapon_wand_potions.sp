@@ -774,11 +774,10 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 			{
 				if(raid)
 				{
-					float time = GetGameTime() + 1.1;
+					float time = GetGameTime() + 1.5;
 					if(f_MaimDebuff[i] < time)
 						f_MaimDebuff[i] = time;
 					
-					time += 0.4;
 					if(f_CrippleDebuff[i] < time)
 						f_CrippleDebuff[i] = time;
 					
@@ -792,15 +791,14 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 				{
 					if(!count)
 					{
-						float time = GetGameTime() + 1.1;
+						float time = GetGameTime() + 2.0;
 						if(f_MaimDebuff[i] < time)
 							f_MaimDebuff[i] = time;
 						
-						time += 1.9;
 						if(f_CrippleDebuff[i] < time)
 							f_CrippleDebuff[i] = time;
 						
-						CreateTimer(1.0, Weapon_Wand_PotionEndShrink, EntIndexToEntRef(i), TIMER_FLAG_NO_MAPCHANGE);
+						CreateTimer(2.0, Weapon_Wand_PotionEndShrink, EntIndexToEntRef(i), TIMER_FLAG_NO_MAPCHANGE);
 						break;
 					}
 				}

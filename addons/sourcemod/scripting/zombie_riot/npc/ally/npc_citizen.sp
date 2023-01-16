@@ -2435,7 +2435,7 @@ public void Citizen_ClotThink(int iNPC)
 		case 3:	// Walk away against our target
 		{
 			npc.m_flidle_talk = FAR_FUTURE;
-			npc.m_bAllowBackWalking = true;
+			npc.m_bAllowBackWalking = false;
 			
 			vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
 			PF_SetGoalVector(npc.index, vecTarget);
@@ -2491,11 +2491,23 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			case Cit_Melee:
 			{
-				npc.SetActivity(combat ? "ACT_IDLE_ANGRY_MELEE" : "ACT_IDLE_SUITCASE");
-				npc.m_flSpeed = 0.0;
+				// TODO: Barney has an issue with ACT_IDLE_SUITCASE, same with Rebels?
+				if(combat || !npc.m_bBarney)
+				{
+					npc.SetActivity(combat ? "ACT_IDLE_ANGRY_MELEE" : "ACT_IDLE_SUITCASE");
+					
+					if(npc.m_iWearable1 > 0)
+						AcceptEntityInput(npc.m_iWearable1, "Enable");
+				}
+				else
+				{
+					npc.SetActivity("ACT_IDLE");
+
+					if(npc.m_iWearable1 > 0)
+						AcceptEntityInput(npc.m_iWearable1, "Enable");
+				}
 				
-				if(npc.m_iWearable1 > 0)
-					AcceptEntityInput(npc.m_iWearable1, "Enable");
+				npc.m_flSpeed = 0.0;
 			}
 			case Cit_SMG:
 			{

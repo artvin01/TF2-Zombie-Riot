@@ -152,7 +152,7 @@ public void ArkSlug_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	bool wasBurrowed;
-	if(i_NoEntityFoundCount[npc.index] > 9)
+	if(i_NoEntityFoundCount[npc.index] > 8)
 	{
 		wasBurrowed = true;
 		i_NoEntityFoundCount[npc.index] = 9;
@@ -164,6 +164,7 @@ public void ArkSlug_ClotThink(int iNPC)
 	if(i_NoEntityFoundCount[npc.index] == 9)
 	{
 		// Start hiding
+		npc.m_bisWalking = false; 
 		npc.SetActivity("ACT_HEADCRAB_BURROW_IDLE");
 		npc.AddGesture("ACT_HEADCRAB_BURROW_IN");
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
@@ -180,11 +181,17 @@ public void ArkSlug_ClotThink(int iNPC)
 	else if(i_NoEntityFoundCount[npc.index] > 9)
 	{
 		// Keep hiding
-		npc.SetActivity("ACT_HEADCRAB_BURROW_IDLE");
+		npc.m_bisWalking = false;
+		if(npc.m_iChanged_WalkCycle != 5)
+		{
+			npc.m_iChanged_WalkCycle = 5;
+			npc.SetActivity("ACT_HEADCRAB_BURROW_IDLE");
+		}
 	}
 	else if(wasBurrowed)
 	{
 		// Stop hiding
+		npc.m_bisWalking = false; 
 		npc.SetActivity("ACT_IDLE");
 		npc.AddGesture("ACT_HEADCRAB_BURROW_OUT");
 
@@ -192,6 +199,7 @@ public void ArkSlug_ClotThink(int iNPC)
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 		
 		npc.m_flNextThinkTime = gameTime + 1.4;
+		npc.m_iChanged_WalkCycle = 5;
 
 		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", 0.5);
 		Apply_Text_Above_Npc(npc.index, 0, health);
@@ -220,12 +228,14 @@ public void ArkSlug_ClotThink(int iNPC)
 					{
 						int maxhealth = target > MaxClients ? GetEntProp(target, Prop_Data, "m_iMaxHealth") : SDKCall_GetMaxHealth(target);
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 92.5, DMG_CLUB);
+						Stats_AddOriginium(target, 1);
 						// Originium Slug α (50% dmg)
 
 						if(GetEntProp(target, Prop_Data, "m_iHealth") < 1)
 						{
 							npc.PlayKilledEnemySound();
 							
+							// Remove when the golden age comes:
 							float pos[3]; GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
 							float ang[3]; GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
 							
@@ -294,7 +304,7 @@ public void ArkSlug_ClotThink(int iNPC)
 					npc.StartPathing();
 					
 				npc.m_bisWalking = true;
-				if(npc.m_iChanged_WalkCycle != 4) 	
+				if(npc.m_iChanged_WalkCycle != 4)
 				{
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
@@ -320,7 +330,9 @@ public void ArkSlug_ClotThink(int iNPC)
 			}
 		}
 	}
-	npc.PlayIdleSound();
+
+	if(i_NoEntityFoundCount[npc.index] < 9)
+		npc.PlayIdleSound();
 }
 
 public Action ArkSlug_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
