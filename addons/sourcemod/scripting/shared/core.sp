@@ -223,6 +223,12 @@ bool b_LagCompAlliedPlayers; //Make sure this actually compensates allies.
 bool i_HasBeenBackstabbed[MAXENTITIES];
 bool i_HasBeenHeadShotted[MAXENTITIES];
 
+float f_BackstabDmgMulti[MAXENTITIES];
+float f_BackstabCooldown[MAXENTITIES];
+int i_BackstabHealEachTick[MAXENTITIES];
+int i_BackstabHealTicks[MAXENTITIES];
+bool b_BackstabLaugh[MAXENTITIES];
+
 bool thirdperson[MAXTF2PLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
 

@@ -1546,132 +1546,109 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 			*/
 			GetEntityClassname(weapon, classname, sizeof(classname));
-			if(!StrContains(classname, "tf_weapon_knife", false)) //Irene weapon cannot backstab.
+			if(!StrContains(classname, "tf_weapon_knife", false) && f_BackstabDmgMulti[weapon] != 0.0) //Irene weapon cannot backstab.
 			{
-#if defined ZR
-				if(i_CustomWeaponEquipLogic[weapon] != 6)
+				if(damagetype & DMG_CLUB) //Use dmg slash for any npc that shouldnt be scaled.
 				{
-#endif
-					if(damagetype & DMG_CLUB) //Use dmg slash for any npc that shouldnt be scaled.
+					if(IsBehindAndFacingTarget(attacker, victim) || b_FaceStabber[attacker])
 					{
-						if(IsBehindAndFacingTarget(attacker, victim) || b_FaceStabber[attacker])
+						int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
+						int melee = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+						if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
 						{
-							int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
-							int melee = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-							if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
-							{
-								i_HasBeenBackstabbed[victim] = true;
+							i_HasBeenBackstabbed[victim] = true;
 								
-								float attack_speed;
+							float attack_speed;
 				
-								attack_speed = Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);
-								attack_speed = Attributes_FindOnWeapon(attacker, weapon, 396, true, 1.0);
+							attack_speed = Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);
+							attack_speed = Attributes_FindOnWeapon(attacker, weapon, 396, true, 1.0);
 								
-								EmitSoundToAll("weapons/knife_swing_crit.wav", attacker, _, _, _, 0.7);
+							EmitSoundToAll("weapons/knife_swing_crit.wav", attacker, _, _, _, 0.7);
 								
-								DataPack pack = new DataPack();
-								RequestFrame(DoMeleeAnimationFrameLater, pack);
-								pack.WriteCell(EntIndexToEntRef(viewmodel));
-								pack.WriteCell(melee);
+							DataPack pack = new DataPack();
+							RequestFrame(DoMeleeAnimationFrameLater, pack);
+							pack.WriteCell(EntIndexToEntRef(viewmodel));
+							pack.WriteCell(melee);
 
-							//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
-								damage *= 5.25;
-								
+
+							attack_speed *= f_BackstabCooldown[weapon]; //extra delay.
+
+						//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
+							damage *= 5.25;
+							
+							if(b_FaceStabber[attacker])
+							{
+								damage *= 0.35; //cut damage in half and then some.
+							}
+							
+							CClotBody npc = view_as<CClotBody>(victim);
+							
+							if(attacker == npc.m_iTarget && !b_FaceStabber[attacker])
+							{
+								damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER! But not for facestabbers.
+							}
+
+							damage *= f_BackstabDmgMulti[weapon];		
+#if defined ZR
+							if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
+							{
+								damage *= 1.35;
+							}
+							
+							if(EscapeMode)
+								damage *= 1.35;
+#endif						
+							
+							//Latest tf2 update broke this, too lazy to fix lol
+							/*
+							if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
+							{
+							
+								RequestFrame(Try_Backstab_Anim_Again, attacker);
+								TE_Start("PlayerAnimEvent");
+								Animation_Setting[attacker] = 1;
+								Animation_Index[attacker] = 33;
+						//		new client    = MakeCompatEntRef(TE_ReadNum("m_hPlayer"));
+								TE_WriteNum("m_iPlayerIndex", attacker);
+								TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
+								TE_WriteNum("m_nData", Animation_Index[attacker]);
+								TE_SendToAll();
+							}
+							*/
+							
+							int heal_amount = i_BackstabHealEachTick[weapon];
+							int heal_ticks = i_BackstabHealTicks[weapon];
+							if(heal_amount && heal_ticks)
+							{
 								if(b_FaceStabber[attacker])
 								{
-									damage *= 0.35; //cut damage in half and then some.
-								}
-								
-								CClotBody npc = view_as<CClotBody>(victim);
-								
-								if(attacker == npc.m_iTarget && !b_FaceStabber[attacker])
-								{
-									damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER! But not for facestabbers.
-								}
-								
-#if defined ZR
-								if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
-								{
-									damage *= 1.35;
-								}
-								
-								if(EscapeMode)
-									damage *= 1.35;
-#endif
-							
-								
-								//Latest tf2 update broke this, too lazy to fix lol
-								/*
-								if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
-								{
-									
-									RequestFrame(Try_Backstab_Anim_Again, attacker);
-									TE_Start("PlayerAnimEvent");
-									Animation_Setting[attacker] = 1;
-									Animation_Index[attacker] = 33;
-							//		new client    = MakeCompatEntRef(TE_ReadNum("m_hPlayer"));
-									TE_WriteNum("m_iPlayerIndex", attacker);
-									TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
-									TE_WriteNum("m_nData", Animation_Index[attacker]);
-									TE_SendToAll();
-								}
-								*/
-								
-								int heal_amount = 0;
-								if(melee == 356)
-								{
-									heal_amount = 10;
-									if(b_FaceStabber[attacker])
+									heal_amount /= 4;
+									heal_ticks	/= 4;
+									if(heal_amount < 1)
 									{
 										heal_amount = 1;
 									}
-									StartHealingTimer(attacker, 0.1, 1, heal_amount);
-									SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
-									SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.5 * attack_speed));
-								}
-								else if(melee == 225)
-								{
-									heal_amount = 25;
-									if(b_FaceStabber[attacker])
+									if(heal_ticks < 1)
 									{
-										heal_amount = 4;
+										heal_ticks = 1;
 									}
-									StartHealingTimer(attacker, 0.1, 2, heal_amount);
-									SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.0 * attack_speed));
-									SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.0 * attack_speed));
+
 								}
-								else if(melee == 727)
-								{
-									heal_amount = 25;
-									if(b_FaceStabber[attacker])
-									{
-										heal_amount = 3;
-									}
-									//THIS MELEE WILL HAVE SPECIAL PROPERTIES SO ITS RECONISED AS A SPY MELEE AT ALL TIMES!
-									StartHealingTimer(attacker, 0.1, 3, heal_amount);
-									SepcialBackstabLaughSpy(attacker);
-									
-									if(b_FaceStabber[attacker])
-									{
-										damage *= 0.75;
-									}
-									damage *= 0.75; //Nerf the dmg abit for the last knife as itsotheriwse ridicilous
-								}
-								else if(melee == 910)
-								{
-									damage *= 0.10;
-								}
-								else
-								{
-									SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
-									SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.5 * attack_speed));	
-								}
+								StartHealingTimer(attacker, 0.1, heal_amount, heal_ticks);
+							}
+							if(f_BackstabCooldown[weapon] != 0.0)
+							{
+								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(attack_speed));
+								SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(attack_speed));
+							}
+
+							if(b_BackstabLaugh[weapon])
+							{
+								SepcialBackstabLaughSpy(attacker);
 							}
 						}
 					}
-#if defined ZR
 				}
-#endif
 			}
 #if defined ZR
 			else if(!StrContains(classname, "tf_weapon_compound_bow", false))

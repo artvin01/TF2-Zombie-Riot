@@ -72,6 +72,12 @@ enum struct ItemInfo
 	int Reload_ModeForce;
 
 	float DamageFallOffForWeapon; //Can this accept reversed?
+
+	float BackstabCD;
+	float BackstabDMGMulti;
+	int BackstabHealPerTick;
+	int BackstabHealTicks;
+	bool BackstabLaugh;
 	
 	Function FuncAttack;
 	Function FuncAttack2;
@@ -141,6 +147,21 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sdamage_falloff", prefix);
 		this.DamageFallOffForWeapon		= kv.GetFloat(buffer, 0.9);
 		
+		Format(buffer, sizeof(buffer), "%sbackstab_cd", prefix);
+		this.BackstabCD				= kv.GetFloat(buffer, 1.5);
+		
+		Format(buffer, sizeof(buffer), "%sbackstab_dmg_multi", prefix);
+		this.BackstabDMGMulti		= kv.GetFloat(buffer, 1.0);
+		
+		Format(buffer, sizeof(buffer), "%sbackstab_heal_per_tick", prefix);
+		this.BackstabHealPerTick		= kv.GetNum(buffer, 0);
+
+		Format(buffer, sizeof(buffer), "%sbackstab_heal_ticks", prefix);
+		this.BackstabHealTicks		= kv.GetNum(buffer, 0);
+
+		Format(buffer, sizeof(buffer), "%sbackstab_laugh", prefix);
+		this.BackstabLaugh		= view_as<bool>(kv.GetNum(buffer, 0));
+
 		//Format(buffer, sizeof(buffer), "%ssniperfix", prefix);
 		//this.SniperBugged = view_as<bool>(kv.GetNum(buffer));
 		
@@ -2001,12 +2022,13 @@ public void MenuPage(int client, int section)
 						menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 1
 					}
 
-					bool levelPerk = (!info.Classname[0] && !info.Cost && !Waves_InSetup());
+					//	bool levelPerk = (!info.Classname[0] && !info.Cost && !Waves_InSetup());
 
+					//We shall allow unequipping again.
 					if(item.Equipped[client])
 					{
 						FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
-						menu.AddItem(buffer2, buffer, levelPerk ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);	// 2
+						menu.AddItem(buffer2, buffer,/* levelPerk ? ITEMDRAW_DISABLED : */ITEMDRAW_DEFAULT);	// 2
 					}
 					else if(canSell)
 					{
@@ -4272,6 +4294,14 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						i_WeaponDamageFalloff[entity] 			= info.DamageFallOffForWeapon;
 					}
+					f_BackstabCooldown[entity] 					= info.BackstabCD;
+					f_BackstabDmgMulti[entity] 					= info.BackstabDMGMulti;
+					i_BackstabHealEachTick[entity] 				= info.BackstabHealPerTick;
+					i_BackstabHealTicks[entity] 				= info.BackstabHealTicks;
+					b_BackstabLaugh[entity] 					= info.BackstabLaugh;
+
+
+
 					if (info.Reload_ModeForce == 1)
 					{
 					//	SetWeaponViewPunch(entity, 100.0); unused.
