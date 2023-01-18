@@ -4805,7 +4805,8 @@ public void Check_If_Stuck(int iNPC)
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	
 	if(b_EntityInCrouchSpot[iNPC])
-	{	
+	{
+		/*	
 		if(IsValidEntity(npc.m_iTarget) && b_EntityInCrouchSpot[npc.m_iTarget])
 		{
 			if(!b_NpcResizedForCrouch[iNPC])
@@ -4816,6 +4817,7 @@ public void Check_If_Stuck(int iNPC)
 			}
 		}
 		else
+		*/
 		{
 			if(!b_NpcResizedForCrouch[iNPC])
 			{
