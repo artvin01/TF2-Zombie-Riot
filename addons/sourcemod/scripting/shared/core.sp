@@ -231,6 +231,7 @@ bool b_BackstabLaugh[MAXENTITIES];
 
 bool thirdperson[MAXTF2PLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
+bool b_PlayerIsInAnotherPart[MAXENTITIES];
 
 float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
 //float Check_Standstill_Delay[MAXTF2PLAYERS];

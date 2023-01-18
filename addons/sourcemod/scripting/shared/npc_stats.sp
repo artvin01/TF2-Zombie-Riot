@@ -137,6 +137,7 @@ void OnMapStart_NPC_Base()
 	Zero(f_TimeSinceLastStunHit);
 	Zero(b_EntityInCrouchSpot);
 	Zero(b_NpcResizedForCrouch);
+	Zero(b_PlayerIsInAnotherPart);
 	
 	InitNavGamedata();
 	
@@ -154,6 +155,10 @@ public Action Zones_StartTouch(const char[] output, int entity, int caller, floa
 			{
 				b_EntityInCrouchSpot[caller] = true;
 			}
+			if(StrEqual(name, "zr_spawner_scaler"))
+			{
+				b_PlayerIsInAnotherPart[caller] = true;
+			}
 		}
 	}
 	return Plugin_Continue;
@@ -169,6 +174,10 @@ public Action Zones_EndTouch(const char[] output, int entity, int caller, float 
 			if(StrEqual(name, "npc_crouch_simulation"))
 			{
 				b_EntityInCrouchSpot[caller] = false;
+			}
+			if(StrEqual(name, "zr_spawner_scaler"))
+			{
+				b_PlayerIsInAnotherPart[caller] = false;
 			}
 		}
 	}

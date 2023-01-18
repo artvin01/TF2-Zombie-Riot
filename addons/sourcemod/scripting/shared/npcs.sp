@@ -194,9 +194,21 @@ public Action GetClosestSpawners(Handle timer)
 								int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
 								if(index != -1)
 								{
+									char name[32];
+									if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
+
+									//For Zr_lila_panic.
+									if(StrEqual(name, "underground"))
+									{
+										if(!b_PlayerIsInAnotherPart[client])
+										{
+											continue;
+										}
+									}
+
 									SpawnerData Spawner;
 									SpawnerList.GetArray(index, Spawner);
-									
+										
 									float inverting_score_calc;
 
 									inverting_score_calc = ( distance / 100000000.0);
@@ -214,7 +226,7 @@ public Action GetClosestSpawners(Handle timer)
 
 									Spawner.f_PointScore += inverting_score_calc;
 
-									SpawnerList.SetArray(index, Spawner);
+									SpawnerList.SetArray(index, Spawner);										
 								}
 							}
 						}
