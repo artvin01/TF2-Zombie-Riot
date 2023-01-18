@@ -1545,14 +1545,14 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 #endif
 
 	static int holding[MAXTF2PLAYERS];
-	if(holding[client])
+	if(holding[client] & IN_ATTACK)
 	{
-		if(!(buttons & holding[client]))
-			holding[client] = 0;
+		if(!(buttons & IN_ATTACK))
+			holding[client] &= ~IN_ATTACK;
 	}
 	else if(buttons & IN_ATTACK)
 	{
-		holding[client] = IN_ATTACK;
+		holding[client] |= IN_ATTACK;
 		
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding != -1)
@@ -1571,9 +1571,15 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 		}
 	}
+	
+	if(holding[client] & IN_ATTACK2)
+	{
+		if(!(buttons & IN_ATTACK2))
+			holding[client] &= ~IN_ATTACK2;
+	}
 	else if(buttons & IN_ATTACK2)
 	{
-		holding[client] = IN_ATTACK2;
+		holding[client] |= IN_ATTACK2;
 		
 #if defined ZR
 		b_IgnoreWarningForReloadBuidling[client] = false;
@@ -1619,9 +1625,15 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 		EndPlayerOnlyLagComp(client);
 	}
+	
+	if(holding[client] & IN_RELOAD)
+	{
+		if(!(buttons & IN_RELOAD))
+			holding[client] &= ~IN_RELOAD;
+	}
 	else if(buttons & IN_RELOAD)
 	{
-		holding[client] = IN_RELOAD;
+		holding[client] |= IN_RELOAD;
 		
 		#if defined ZR
 		if(angles[0] < -70.0)
@@ -1663,9 +1675,15 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 		}
 	}
+
+	if(holding[client] & IN_SCORE)
+	{
+		if(!(buttons & IN_SCORE))
+			holding[client] &= ~IN_SCORE;
+	}
 	else if(buttons & IN_SCORE)
 	{
-		holding[client] = IN_SCORE;
+		holding[client] |= IN_SCORE;
 		
 #if defined ZR
 		if(dieingstate[client] == 0)
@@ -1687,9 +1705,15 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	}
 	
 #if defined ZR
+
+	if(holding[client] & IN_ATTACK3)
+	{
+		if(!(buttons & IN_ATTACK3))
+			holding[client] &= ~IN_ATTACK3;
+	}
 	else if(buttons & IN_ATTACK3)
 	{
-		holding[client] = IN_ATTACK3;
+		holding[client] |= IN_ATTACK3;
 		
 		if(TeutonType[client] == TEUTON_NONE)
 		{
