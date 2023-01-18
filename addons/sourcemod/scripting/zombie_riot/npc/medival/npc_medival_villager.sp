@@ -95,6 +95,13 @@ void MedivalVillager_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 }
 
+#define MAXTRIESVILLAGER 5
+
+static bool b_WantTobuild[MAXENTITIES];
+static bool b_AlreadyReparing[MAXENTITIES];
+static float f_RandomTolerance[MAXENTITIES];
+static int i_BuildingRef;
+
 methodmap MedivalVillager < CClotBody
 {
 	public void PlayIdleSound() {
@@ -178,7 +185,13 @@ methodmap MedivalVillager < CClotBody
 		int iActivity = npc.LookupActivity("ACT_VILLAGER_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		
+		npc.m_iChanged_WalkCycle = 0;
+
+		if(npc.m_iChanged_WalkCycle != 4) 	
+		{
+			npc.m_iChanged_WalkCycle = 4;
+			npc.SetActivity("ACT_VILLAGER_RUN");
+		}
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -189,7 +202,10 @@ methodmap MedivalVillager < CClotBody
 		SDKHook(npc.index, SDKHook_Think, MedivalVillager_ClotThink);
 
 		npc.m_iState = 0;
-		npc.m_flSpeed = 240.0;
+		npc.m_flSpeed = 200.0;
+		b_WantTobuild[npc.index] = true;
+		b_AlreadyReparing[npc.index] = false;
+		f_RandomTolerance[npc.index] = GetRandomFloat(0.25, 0.75);
 		
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
@@ -198,39 +214,69 @@ methodmap MedivalVillager < CClotBody
 		SetVariantString("0.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.StartPathing();
+		PF_StopPathing(npc.index);
 
-		//Pick a random area to be teleported to intantly. loop upto 100 times, if it fails, then just spawn normally.
-
-	//	int AreasCollected = 0;
-		float f3_AreasCollected[3];
-
-		for( int loop = 1; loop <= 100; loop++ ) 
+		if(!zr_disablerandomvillagerspawn.BoolValue)
 		{
-			NavArea RandomArea = PickRandomArea();	
-				
-			if(RandomArea == NavArea_Null) 
-				break; //No nav?
+			int AreasCollected = 0;
+			float CurrentPoints = 0.0;
+			float f3_AreasCollected[3];
 
-			float vecGoal[3]; RandomArea.GetCenter(vecGoal);
-
-			vecGoal[2] += 20.0;
-
-			if(IsPointHazard(vecGoal)) //Retry.
+			for( int loop = 1; loop <= 100; loop++ ) 
 			{
-				continue;
-			}
-			else
-			{
-				TeleportEntity(npc.index, vecGoal, NULL_VECTOR, NULL_VECTOR);
-				break;
+				NavArea RandomArea = PickRandomArea();	
+					
+				if(RandomArea == NavArea_Null) 
+					break; //No nav?
+
+				float vecGoal[3]; RandomArea.GetCenter(vecGoal);
+
+				vecGoal[2] += 20.0;
+
+				if(IsPointHazard(vecGoal)) //Retry.
+				{
+					continue;
+				}
+				else
+				{
+					float Accumulated_Points;
+					for(int client_check=1; client_check<=MaxClients; client_check++)
+					{
+						if(IsClientInGame(client_check) && IsPlayerAlive(client_check) && GetClientTeam(client_check)==2 && TeutonType[client_check] == TEUTON_NONE && dieingstate[client_check] == 0)
+						{		
+							float f3_PositionTemp[3];
+							GetEntPropVector(client_check, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+							float distance = GetVectorDistance( f3_PositionTemp, vecGoal, true); 
+							//leave it all squared for optimsation sake!
+							float inverting_score_calc;
+
+							inverting_score_calc = ( distance / 100000000.0);
+							inverting_score_calc -= 1;
+							inverting_score_calc *= -1.0;
+							Pow(inverting_score_calc * inverting_score_calc, 5.0);
+
+							Accumulated_Points += inverting_score_calc;
+						}
+					}
+					if(Accumulated_Points > CurrentPoints)
+					{
+						f3_AreasCollected = vecGoal;
+						CurrentPoints = Accumulated_Points;
+					}
+					AreasCollected += 1;
+					if(AreasCollected >= MAXTRIESVILLAGER)
+					{
+						if(vecGoal[0])
+						{
+							TeleportEntity(npc.index, f3_AreasCollected, NULL_VECTOR, NULL_VECTOR);
+						}
+						break;
+					}
+				}
 			}
 		}
-		
 		return npc;
 	}
-	
-	
 }
 
 public void MedivalVillager_ClotThink(int iNPC)
@@ -252,23 +298,283 @@ public void MedivalVillager_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
-	
+
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.05;
 
 	//Top logic should be ignored.
 	
 
+	int Behavior = -1;
 
+	int buildingentity = EntRefToEntIndex(i_BuildingRef);
 
+	if(b_WantTobuild[npc.index])
+	{
+		Behavior = 1;
+	}
+	else if(IsValidEntity(buildingentity) && i_AttacksTillMegahit[buildingentity] >= 255) //We already have 1
+	{
+		int healthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iHealth");
+		int Maxhealthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iMaxHealth");
 
+		if(healthbuilding >= Maxhealthbuilding)
+		{
+			Behavior = 0;
+		}
+		else if(healthbuilding < RoundToCeil(float(Maxhealthbuilding) * f_RandomTolerance[npc.index]) || b_AlreadyReparing[npc.index])
+		{
+			b_AlreadyReparing[npc.index] = true;
+			//Go repair!
+			Behavior = 2;
+		}
+	}
+	else if(!IsValidEntity(buildingentity)) //I am sad!
+	{
+		Behavior = 3;
+	}
+
+	switch(Behavior)
+	{
+		case 0:
+		{
+			if(npc.m_iChanged_WalkCycle != 5) 	
+			{
+				npc.m_bisWalking = false;
+				npc.m_flSpeed = 0.0;
+				npc.m_iChanged_WalkCycle = 5;
+				npc.SetActivity("ACT_VILLAGER_IDLE");
+				PF_StopPathing(iNPC);
+			}
+		}
+		case 1:
+		{
+			//Search and find a building.
+			if(IsValidEntity(buildingentity)) //We already have 1
+			{
+				
+				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(buildingentity), WorldSpaceCenter(npc.index), true);
+
+				int Entity_I_See;
+			
+				Entity_I_See = Can_I_See_Ally(npc.index, buildingentity);
+				if(i_AttacksTillMegahit[buildingentity] < 255)
+				{
+					if(flDistanceToTarget < Pow(125.0, 2.0) && IsValidAlly(npc.index, Entity_I_See))
+					{
+						if(npc.m_iChanged_WalkCycle != 3) 	
+						{
+							npc.m_iChanged_WalkCycle = 3;
+							npc.SetActivity("ACT_VILLAGER_BUILD_LOOP");
+							PF_StopPathing(iNPC);
+							npc.m_bisWalking = false;
+							npc.m_flSpeed = 0.0;
+						}
+						i_AttacksTillMegahit[buildingentity] += 1;
+						npc.FaceTowards(WorldSpaceCenter(buildingentity), 15000.0);
+					}
+					else
+					{
+						float AproxRandomSpaceToWalkTo[3];
+						GetEntPropVector(buildingentity, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
+						PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
+						PF_StartPathing(iNPC);
+						//Walk to building.
+						if(npc.m_iChanged_WalkCycle != 4) 	
+						{
+							npc.m_bisWalking = true;
+							npc.m_flSpeed = 200.0;
+							npc.m_iChanged_WalkCycle = 4;
+							npc.SetActivity("ACT_VILLAGER_RUN");
+						}
+					}					
+				}
+				else
+				{	
+					if(flDistanceToTarget < Pow(125.0, 2.0) && IsValidAlly(npc.index, Entity_I_See))
+					{
+						if(npc.m_iChanged_WalkCycle != 5) 	
+						{
+							npc.m_bisWalking = false;
+							npc.m_flSpeed = 0.0;
+							npc.m_iChanged_WalkCycle = 5;
+							npc.SetActivity("ACT_VILLAGER_IDLE");
+							PF_StopPathing(iNPC);
+						}
+						b_WantTobuild[npc.index] = false; //done.
+					}
+					else
+					{
+						float AproxRandomSpaceToWalkTo[3];
+						GetEntPropVector(buildingentity, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
+						PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
+						PF_StartPathing(iNPC);
+						if(npc.m_iChanged_WalkCycle != 4) 	
+						{
+							npc.m_bisWalking = true;
+							npc.m_flSpeed = 200.0;
+							npc.m_iChanged_WalkCycle = 4;
+							npc.SetActivity("ACT_VILLAGER_RUN");
+						}
+						i_AttacksTillMegahit[buildingentity] += 1;
+						npc.FaceTowards(WorldSpaceCenter(buildingentity), 15000.0);			
+					}
+
+				}
+			}
+			else
+			{
+				// make a building.
+				//For now only one building exists.
+				float AproxRandomSpaceToWalkTo[3];
+
+				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
+
+				AproxRandomSpaceToWalkTo[2] += 50.0;
+
+				AproxRandomSpaceToWalkTo[0] = GetRandomFloat((AproxRandomSpaceToWalkTo[0] - 800.0),(AproxRandomSpaceToWalkTo[0] + 800.0));
+				AproxRandomSpaceToWalkTo[1] = GetRandomFloat((AproxRandomSpaceToWalkTo[1] - 800.0),(AproxRandomSpaceToWalkTo[1] + 800.0));
+
+				if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
+					return;
+				//Retry.
+					
+
+				Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
+				
+				TR_GetEndPosition(AproxRandomSpaceToWalkTo, ToGroundTrace);
+				delete ToGroundTrace;
+
+				if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
+					return;
+
+				//Retry.
+
+				npc.m_bisWalking = true;
+
+				PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
+				PF_StartPathing(iNPC);
+	
+				//Timeout
+				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
+
+				int spawn_index = Npc_Create(MEDIVAL_BUILDING, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+				if(spawn_index > MaxClients)
+				{
+					i_BuildingRef = EntIndexToEntRef(spawn_index);
+					Zombies_Currently_Still_Ongoing += 1;
+					SetEntProp(spawn_index, Prop_Data, "m_iHealth", 50000);
+					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 50000);
+					i_AttacksTillMegahit[spawn_index] = 10;
+					SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);
+					SetEntityRenderColor(spawn_index, 255, 255, 255, 0);
+				}
+			}
+		}
+		case 2:
+		{
+			float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(buildingentity), WorldSpaceCenter(npc.index), true);
+
+			int Entity_I_See;
+			
+			Entity_I_See = Can_I_See_Ally(npc.index, buildingentity);
+			if(flDistanceToTarget < Pow(125.0, 2.0) && IsValidAlly(npc.index, Entity_I_See))
+			{
+				if(npc.m_iChanged_WalkCycle != 3) 	
+				{
+					npc.m_iChanged_WalkCycle = 3;
+					npc.SetActivity("ACT_VILLAGER_BUILD_LOOP");
+					PF_StopPathing(iNPC);
+					npc.m_bisWalking = false;
+					npc.m_flSpeed = 0.0;
+				}
+				int healthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iHealth");
+				int Maxhealthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iMaxHealth");
+				int AddHealth = Maxhealthbuilding / 1000;
+
+				if(AddHealth < 1)
+				{
+					AddHealth = 1;
+				}
+				healthbuilding += AddHealth;
+				if(healthbuilding > Maxhealthbuilding)
+				{
+					b_AlreadyReparing[npc.index] = false;
+					Maxhealthbuilding = healthbuilding;
+				}
+				SetEntProp(buildingentity, Prop_Data, "m_iHealth",healthbuilding);
+				npc.FaceTowards(WorldSpaceCenter(buildingentity), 15000.0);
+			}
+			else
+			{
+				float AproxRandomSpaceToWalkTo[3];
+				GetEntPropVector(buildingentity, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
+				PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
+				PF_StartPathing(iNPC);
+				//Walk to building.
+				if(npc.m_iChanged_WalkCycle != 4) 	
+				{
+					npc.m_bisWalking = true;
+					npc.m_flSpeed = 200.0;
+					npc.m_iChanged_WalkCycle = 4;
+					npc.SetActivity("ACT_VILLAGER_RUN");
+				}
+			}					
+		}
+		case 3:
+		{
+			if(IsValidEntity(buildingentity))
+			{
+				b_WantTobuild[npc.index] = true; //done.
+				//How?? I wanna build again!
+			}
+			if(IsValidEnemy(npc.index, npc.m_iTarget))
+			{
+				float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+
+				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+				
+				//Predict their pos.
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+
+					PF_SetGoalVector(npc.index, vPredictedPos);
+				}
+				else
+				{
+					PF_SetGoalEntity(npc.index, npc.m_iTarget);
+				}
+				PF_StartPathing(iNPC);
+				//Walk to building.
+				if(npc.m_iChanged_WalkCycle != 4) 	
+				{
+					npc.m_bisWalking = true;
+					npc.m_flSpeed = 200.0;
+					npc.m_iChanged_WalkCycle = 4;
+					npc.SetActivity("ACT_VILLAGER_RUN");
+				}
+			}
+			else
+			{
+				if(npc.m_iChanged_WalkCycle != 5) 	
+				{
+					npc.m_bisWalking = false;
+					npc.m_flSpeed = 0.0;
+					npc.m_iChanged_WalkCycle = 5;
+					npc.SetActivity("ACT_VILLAGER_IDLE");
+					PF_StopPathing(iNPC);
+				}
+			}
+		}
+	}
 
 	VillagerSelfDefense(npc,GetGameTime(npc.index)); //This is for self defense, incase an enemy is too close. This isnt the villagers main thing.
-	
+
 	npc.PlayIdleAlertSound();
 }
 

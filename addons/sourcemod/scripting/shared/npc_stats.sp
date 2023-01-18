@@ -2133,7 +2133,7 @@ methodmap CClotBody
 			SetEntityCollisionGroup(entity, 1);
 		}
 	}
-	public void FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0) //No defaults, otherwise i cant even judge.
+	public void FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, float offset = 0.0) //No defaults, otherwise i cant even judge.
 	{
 		//ITS NOT actually an arrow, because of an ANNOOOOOOOOOOOYING sound.
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
@@ -2141,6 +2141,8 @@ methodmap CClotBody
 
 		vecSwingStart = GetAbsOrigin(this.index);
 		vecSwingStart[2] += 54.0;
+
+		vecSwingStart[2] += offset;
 
 		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
 		GetVectorAngles(vecAngles, vecAngles);
@@ -4655,6 +4657,64 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 	return true;
 }
 
+public bool TraceRayCanSeeAllySpecific(int entity,int mask,any data)
+{
+	if(entity == 0)
+	{
+		return true;
+	}
+
+	if(entity == data)
+	{
+		return false;
+	}
+
+	if(entity > 0 && entity <= MaxClients) 
+	{
+		return false;
+	}
+
+	static char class[64];
+	GetEntityClassname(entity, class, sizeof(class));
+	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
+	{
+		return false;
+	}
+	
+	CClotBody npc = view_as<CClotBody>(entity);
+	
+	if(StrContains(class, "tf_projectile_", false) != -1)
+	{
+		return false;
+	}
+	
+	//if anything else is team
+	/*
+	if(GetEntProp(data, Prop_Send, "m_iTeamNum") != GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		return false;
+	*/
+	if(StrEqual(class, "func_brush"))
+	{
+		return true;//They blockin me
+	}
+	else if(StrEqual(class, "func_respawnroomvisualizer"))
+	{
+		return true;//They blockin me and not on same team, otherwsie top filter
+	}
+	
+	if(npc.m_bThisEntityIgnored)
+	{
+		return false;
+	}
+	
+	if(entity == Entity_to_Respect)
+	{
+		return true;
+	}
+	
+	return true;
+}
+
 float f_StuckTextChatNotif[MAXTF2PLAYERS];
 
 public Action Timer_CheckStuckOutsideMap(Handle cut_timer, int ref)
@@ -5104,6 +5164,26 @@ public bool Can_I_See_Enemy_Only(int attacker, int enemy)
 
 	delete trace;
 	return bHit;
+}
+
+public int Can_I_See_Ally(int attacker, int ally)
+{
+	Handle trace;
+	float pos_npc[3];
+	float pos_enemy[3];
+	pos_npc = WorldSpaceCenter(attacker);
+	pos_enemy = WorldSpaceCenter(ally);
+
+	
+	AddEntityToTraceStuckCheck(ally);
+	
+	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_ALL, RayType_EndPoint, TraceRayCanSeeAllySpecific, attacker);
+	
+	RemoveEntityToTraceStuckCheck(ally);
+	
+	int Traced_Target = TR_GetEntityIndex(trace);
+	delete trace;
+	return Traced_Target;
 }
 
 /*
@@ -6163,10 +6243,12 @@ public Action SDKHook_Settransmit_Baseboss(int entity, int client)
 	return Plugin_Continue;
 }
 */
-stock float[] PredictSubjectPositionForProjectiles(CClotBody npc, int subject, float projectile_speed)
+stock float[] PredictSubjectPositionForProjectiles(CClotBody npc, int subject, float projectile_speed, float offset = 0.0)
 {
 	float botPos[3];
 	botPos = WorldSpaceCenter(npc.index);
+
+	botPos[2] += offset;
 	
 	float subjectPos[3];
 	subjectPos = WorldSpaceCenter(subject);
@@ -6768,6 +6850,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_TextEntity[entity][0] = -1;
 	i_TextEntity[entity][1] = -1;
 	i_TextEntity[entity][2] = -1;
+	i_NpcIsABuilding[entity] = false;
 	i_Changed_WalkCycle[entity] = -1;
 #if defined ZR
 	ResetFreeze(entity);

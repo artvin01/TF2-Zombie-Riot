@@ -552,66 +552,6 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 										ShowGameText(panzer_warning_client, boss.Icon, 1, "%t", boss.Text_3);
 									}
 								}
-								
-								/*
-									Good images:
-									
-									"hud_menu_heavy_red" Fat Streched heavy
-
-								*/
-								/*
-									TODO:
-									Use Custom texts and maybe icons for each boss.
-								
-									(Panzer)
-
-									You can discern faint metalic screams not like the others...
-									
-									Distant low rumbles fill the air space...
-									
-									Die SS Division hat einer ihrer Infizierten soldaten Gesendet...
-									
-									(Sawrunner)
-									
-									Faint rattling can be heard, and its approaching at a fast pace...
-									
-									Something rapidly rams through hordes in your direction...
-									
-									Common means might not stop this agile enemy...
-									
-									(Tank)
-									
-									You have alerted the horde...
-									
-									Destruction echoes through a nearby space...
-									
-									A massive foe has entered this field...
-									
-									(Ghostface after getting found out before killing anyone)
-									
-									We are just getting started!
-									
-									Asshole!
-									
-									Lousy shot!
-									
-									(Whiteface and HER)
-									
-									Find HER
-									
-									I love watching You
-									
-									I'm afraid I can't let you do that
-									
-									{completely optional based on how masochistic you feel to code such useless detail}
-									
-									Ready for round 2?
-									
-									STAY WITH ME
-									
-									He won't let us leave
-								
-								*/
 							}
 				
 							EmitSoundToClient(panzer_warning_client, boss.Sound, panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
@@ -1550,7 +1490,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			{
 				if(damagetype & DMG_CLUB) //Use dmg slash for any npc that shouldnt be scaled.
 				{
-					if(IsBehindAndFacingTarget(attacker, victim) || b_FaceStabber[attacker])
+					if(IsBehindAndFacingTarget(attacker, victim) || b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
 					{
 						int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
 						int melee = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
@@ -1576,7 +1516,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
 							damage *= 5.25;
 							
-							if(b_FaceStabber[attacker])
+							if(b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
 							{
 								damage *= 0.35; //cut damage in half and then some.
 							}

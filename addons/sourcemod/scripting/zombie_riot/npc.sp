@@ -178,6 +178,8 @@ enum
 
 	MEDIVAL_SCOUT				= 154,
 	MEDIVAL_VILLAGER			= 155,
+
+	MEDIVAL_BUILDING			= 156,
 	
 }
 
@@ -351,7 +353,8 @@ public const char NPC_Names[][] =
 	"Bunker Headless Horseman",
 
 	"Medival Scout",
-	"Medival Villager"
+	"Medival Villager",
+	"Building"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -520,7 +523,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_bunker_king_skeleton",
 	"npc_bunker_hhh",
 	"npc_medival_scout",
-	"npc_medival_villager"
+	"npc_medival_villager",
+	"npc_medival_building"
 };
 
 void NPC_MapStart()
@@ -693,6 +697,7 @@ void NPC_MapStart()
 	BunkerHeadlessHorse_OnMapStart_NPC();
 
 	MedivalScout_OnMapStart_NPC();
+	MedivalBuilding_OnMapStart_NPC();
 }
 
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
@@ -1312,6 +1317,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case MEDIVAL_VILLAGER:
 		{
 			entity = MedivalVillager(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_BUILDING:
+		{
+			entity = MedivalBuilding(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -1934,6 +1943,10 @@ public void NPCDeath(int entity)
 		{
 			MedivalVillager_NPCDeath(entity);
 		}
+		case MEDIVAL_BUILDING:
+		{
+			MedivalBuilding_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2125,6 +2138,7 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/medival/npc_medival_ram.sp"
 #include "zombie_riot/npc/medival/npc_medival_scout.sp"
 #include "zombie_riot/npc/medival/npc_medival_villager.sp"
+#include "zombie_riot/npc/medival/npc_medival_building.sp"
 
 #include "zombie_riot/npc/cof/npc_addiction.sp"
 #include "zombie_riot/npc/cof/npc_doctor.sp"
