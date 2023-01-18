@@ -1091,6 +1091,8 @@ void Waves_Progress()
 			{
 				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
 			}
+			
+			ExcuteRelay("zr_wavedone");
 			CurrentRound++;
 			CurrentWave = -1;
 			Rounds.GetArray(length, round);

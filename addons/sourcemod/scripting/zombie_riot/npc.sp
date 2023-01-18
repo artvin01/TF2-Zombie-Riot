@@ -483,7 +483,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_l4d2_tank",
 	"npc_alt_combine_soldier_deutsch_ritter",
 	"npc_alt_sniper_railgunner",
-	"",
+	"npc_golden_bloon",
 	"",
 	"",
 	"",

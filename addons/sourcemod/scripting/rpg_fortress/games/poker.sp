@@ -107,31 +107,28 @@ public int PokerJoinMenu(Menu menu, MenuAction action, int client, int choice)
 					switch(choice)
 					{
 						case 1:
-							bet = 25;
+							bet = 10;
 						
 						case 2:
-							bet = 50;
+							bet = 25;
 						
 						case 3:
-							bet = 100;
+							bet = 50;
 						
 						case 4:
-							bet = 250;
+							bet = 100;
 						
 						case 5:
-							bet = 500;
+							bet = 250;
 						
 						case 6:
-							bet = 1000;
+							bet = 500;
 						
 						case 7:
-							bet = 2500;
-						
-						case 8:
-							bet = 5000;
+							bet = 1000;
 						
 						default:
-							bet = 10;
+							bet = 0;
 					}
 
 					PokerTable.SetValue(name, bet);
@@ -139,6 +136,9 @@ public int PokerJoinMenu(Menu menu, MenuAction action, int client, int choice)
 
 				Viewing[client] = true;
 				PokerMenu(client);
+
+				if(!PokerTimer)
+					PokerTimer = CreateTimer(0.5, Poker_Timer, _, TIMER_REPEAT);
 			}
 			else
 			{
@@ -332,7 +332,7 @@ public int PokerTableMenu(Menu menu, MenuAction action, int client, int choice)
 					}
 					else if(TextStore_Cash(client) >= MinBet)
 					{
-
+						Playing[client] = true;
 					}
 				}
 			}
