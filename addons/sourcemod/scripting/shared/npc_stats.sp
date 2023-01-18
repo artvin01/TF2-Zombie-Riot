@@ -42,6 +42,8 @@ static ConVar flTurnRate;
 static int g_sModelIndexBloodDrop;
 static int g_sModelIndexBloodSpray;
 static float f_TimeSinceLastStunHit[MAXENTITIES];
+static bool b_EntityInCrouchSpot[MAXENTITIES];
+static bool b_NpcResizedForCrouch[MAXENTITIES];
 
 public Action Command_PetMenu(int client, int argc)
 {
@@ -129,12 +131,50 @@ void OnMapStart_NPC_Base()
 	PrecacheModel(ARROW_TRAIL_RED);
 	PrecacheDecal(ARROW_TRAIL_RED, true);
 
+	HookEntityOutput("trigger_multiple", "OnStartTouch", Zones_StartTouch);
+	HookEntityOutput("trigger_multiple", "OnEndTouch", Zones_EndTouch);
+
 	Zero(f_TimeSinceLastStunHit);
+	Zero(b_EntityInCrouchSpot);
+	Zero(b_NpcResizedForCrouch);
 	
 	InitNavGamedata();
 	
 	NPC_MapStart();
 }
+
+public Action Zones_StartTouch(const char[] output, int entity, int caller, float delay)
+{
+	if(caller > 0 && caller < MAXENTITIES)
+	{
+		char name[32];
+		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
+		{
+			if(StrEqual(name, "npc_crouch_simulation"))
+			{
+				b_EntityInCrouchSpot[caller] = true;
+			}
+		}
+	}
+	return Plugin_Continue;
+}
+
+public Action Zones_EndTouch(const char[] output, int entity, int caller, float delay)
+{
+	if(caller > 0 && caller < MAXENTITIES)
+	{
+		char name[32];
+		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
+		{
+			if(StrEqual(name, "npc_crouch_simulation"))
+			{
+				b_EntityInCrouchSpot[caller] = false;
+			}
+		}
+	}
+	return Plugin_Continue;
+}
+
 
 void NPC_Base_OnEntityDestroyed()
 {
@@ -1136,7 +1176,10 @@ methodmap CClotBody
 		{
 			speed_for_return *= 1.15;
 		}
-		
+		if(b_NpcResizedForCrouch[this.index])
+		{
+			speed_for_return *= 0.33333;
+		}		
 		if(!Is_Boss) //Make sure that any slow debuffs dont affect these.
 		{
 			if(f_MaimDebuff[this.index] > Gametime)
@@ -3599,11 +3642,34 @@ public MRESReturn ILocomotion_ShouldCollideWithEnemyIngoreBuilding(Address pThis
 //2 * m_vecMaxs
 public MRESReturn IBody_GetHullWidth_ISGIANT(Address pThis, Handle hReturn, Handle hParams)			  { DHookSetReturn(hReturn, 60.0); return MRES_Supercede; }
 public MRESReturn IBody_GetHullHeight_ISGIANT(Address pThis, Handle hReturn, Handle hParams)			 { DHookSetReturn(hReturn, 120.0); return MRES_Supercede; }
-public MRESReturn IBody_GetStandHullHeight_ISGIANT(Address pThis, Handle hReturn, Handle hParams)		{ DHookSetReturn(hReturn, 120.0); return MRES_Supercede; }
-
+public MRESReturn IBody_GetStandHullHeight_ISGIANT(Address pThis, Handle hReturn, Handle hParams)
+{
+	int entity = view_as<int>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis)));
+	if(b_NpcResizedForCrouch[entity])
+	{
+		DHookSetReturn(hReturn, 41.0);
+	}
+	else
+	{
+		DHookSetReturn(hReturn, 120.0);
+	}
+	return MRES_Supercede; 
+}
 public MRESReturn IBody_GetHullWidth(Address pThis, Handle hReturn, Handle hParams)			  { DHookSetReturn(hReturn, 48.0); return MRES_Supercede; }
 public MRESReturn IBody_GetHullHeight(Address pThis, Handle hReturn, Handle hParams)			 { DHookSetReturn(hReturn, 82.0); return MRES_Supercede; }
-public MRESReturn IBody_GetStandHullHeight(Address pThis, Handle hReturn, Handle hParams)		{ DHookSetReturn(hReturn, 82.0); return MRES_Supercede; }
+public MRESReturn IBody_GetStandHullHeight(Address pThis, Handle hReturn, Handle hParams)
+{
+	int entity = view_as<int>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis)));
+	if(b_NpcResizedForCrouch[entity])
+	{
+		DHookSetReturn(hReturn, 41.0);
+	}
+	else
+	{
+		DHookSetReturn(hReturn, 82.0);
+	}
+	return MRES_Supercede; 
+}
 //npc.m_bISGIANT
 //BOUNDING BOX FOR ENEMY TO RESPECT
 
@@ -4738,6 +4804,36 @@ public void Check_If_Stuck(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	
+	if(b_EntityInCrouchSpot[iNPC])
+	{	
+		if(IsValidEntity(npc.m_iTarget) && b_EntityInCrouchSpot[npc.m_iTarget])
+		{
+			if(!b_NpcResizedForCrouch[iNPC])
+			{
+				float scale = GetEntPropFloat(iNPC, Prop_Send, "m_flModelScale");
+				SetEntPropFloat(iNPC, Prop_Send, "m_flModelScale", scale * 0.5);
+				b_NpcResizedForCrouch[iNPC] = true;
+			}
+		}
+		else
+		{
+			if(!b_NpcResizedForCrouch[iNPC])
+			{
+				float scale = GetEntPropFloat(iNPC, Prop_Send, "m_flModelScale");
+				SetEntPropFloat(iNPC, Prop_Send, "m_flModelScale", scale * 0.5);
+				b_NpcResizedForCrouch[iNPC] = true;
+			}
+		}
+	}
+	else //only turn off if outside.
+	{
+		if(b_NpcResizedForCrouch[iNPC])
+		{
+			float scale = GetEntPropFloat(iNPC, Prop_Send, "m_flModelScale");
+			SetEntPropFloat(iNPC, Prop_Send, "m_flModelScale", scale * 2.0);
+			b_NpcResizedForCrouch[iNPC] = false;
+		}
+	}
 	static float flMyPos[3];
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 	if(!b_IsAlliedNpc[iNPC])
@@ -4778,7 +4874,10 @@ public void Check_If_Stuck(int iNPC)
 			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
 			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
 		}
-		
+		if(b_NpcResizedForCrouch[iNPC])
+		{
+			hullcheckmaxs_Player[2] = 41.0;
+		}
 		int Hit_player = IsSpaceOccupiedOnlyPlayers(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
 		if (Hit_player) //The boss will start to merge with player, STOP!
 		{
@@ -4832,6 +4931,11 @@ public void Check_If_Stuck(int iNPC)
 
 					hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
 					hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
+
+					if(b_NpcResizedForCrouch[iNPC])
+					{
+						hullcheckmaxs_Player_Again[2] = 41.0;
+					}
 					
 					if(!IsSpaceOccupiedIgnorePlayers(flMyPos_2, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, iNPC))
 					{
@@ -4924,6 +5028,10 @@ public void Check_If_Stuck(int iNPC)
 		{
 			hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
 			hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );			
+		}
+		if(b_NpcResizedForCrouch[iNPC])
+		{
+			hullcheckmins[2] = 41.0;
 		}
 		
 		//invert to save 1 frame per 3 minutes
@@ -6851,6 +6959,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_TextEntity[entity][1] = -1;
 	i_TextEntity[entity][2] = -1;
 	i_NpcIsABuilding[entity] = false;
+	b_EntityInCrouchSpot[entity] = false;
+	b_NpcResizedForCrouch[entity] = false;
 	i_Changed_WalkCycle[entity] = -1;
 #if defined ZR
 	ResetFreeze(entity);
