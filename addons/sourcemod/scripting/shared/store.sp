@@ -80,6 +80,7 @@ enum struct ItemInfo
 	bool BackstabLaugh;
 	
 	Function FuncAttack;
+	Function FuncAttackInstant;
 	Function FuncAttack2;
 	Function FuncAttack3;
 	Function FuncReload4;
@@ -230,6 +231,10 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sfunc_attack", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncAttack = GetFunctionByName(null, buffer);
+		
+		Format(buffer, sizeof(buffer), "%sfunc_attack_immediate", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.FuncAttackInstant = GetFunctionByName(null, buffer);
 		
 		Format(buffer, sizeof(buffer), "%sfunc_attack2", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
@@ -4265,6 +4270,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_M1; //m1 status to weapon
 					}
+					if(info.FuncAttackInstant != INVALID_FUNCTION)
+					{
+						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_M1; //m1 status to weapon
+					}
 					if(info.FuncAttack2 != INVALID_FUNCTION)
 					{
 						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_M2; //m2 status to weapon
@@ -4275,6 +4284,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					}
 					
 					EntityFuncAttack[entity] = info.FuncAttack;
+					EntityFuncAttackInstant[entity] = info.FuncAttackInstant;
 					EntityFuncAttack2[entity] = info.FuncAttack2;
 					EntityFuncAttack3[entity] = info.FuncAttack3;
 					EntityFuncReload4[entity]  = info.FuncReload4;

@@ -231,6 +231,7 @@ bool b_BackstabLaugh[MAXENTITIES];
 
 bool thirdperson[MAXTF2PLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
+bool b_PlayerIsInAnotherPart[MAXENTITIES];
 
 float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
 //float Check_Standstill_Delay[MAXTF2PLAYERS];
@@ -305,6 +306,8 @@ int i_ObjectsNpcs_Allied[ZR_MAX_NPCS_ALLIED];
 const int i_MaxcountBuilding = ZR_MAX_BUILDINGS;
 int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
 bool i_IsABuilding[MAXENTITIES];
+
+bool i_NpcIsABuilding[MAXENTITIES];
 
 const int i_MaxcountBreakable = ZR_MAX_BREAKBLES;
 int i_ObjectsBreakable[ZR_MAX_BREAKBLES];
@@ -413,6 +416,7 @@ bool b_IsCannibal[MAXTF2PLAYERS];
 float f_NpcImmuneToBleed[MAXENTITIES];
 
 Function EntityFuncAttack[MAXENTITIES];
+Function EntityFuncAttackInstant[MAXENTITIES];
 Function EntityFuncAttack2[MAXENTITIES];
 Function EntityFuncAttack3[MAXENTITIES];
 Function EntityFuncReload4[MAXENTITIES];
@@ -631,9 +635,8 @@ enum
 	BLEEDTYPE_SKELETON = 5
 }
 
-//#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_59.mdl"
-
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
+//#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_181.mdl"
 #define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_175.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
@@ -1547,13 +1550,34 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		if(!(buttons & holding[client]))
 			holding[client] = 0;
 	}
+	else if(buttons & IN_ATTACK)
+	{
+		holding[client] = IN_ATTACK;
+		
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding != -1)
+		{
+			if(EntityFuncAttackInstant[weapon_holding] && EntityFuncAttackInstant[weapon_holding]!=INVALID_FUNCTION)
+			{
+				bool result = false; //ignore crit.
+				int slot = 1;
+				Action action;
+				Call_StartFunction(null, EntityFuncAttackInstant[weapon_holding]);
+				Call_PushCell(client);
+				Call_PushCell(weapon_holding);
+				Call_PushCellRef(result);
+				Call_PushCell(slot); //This is attack 1
+				Call_Finish(action);
+			}
+		}
+	}
 	else if(buttons & IN_ATTACK2)
 	{
 		holding[client] = IN_ATTACK2;
 		
-		#if defined ZR
+#if defined ZR
 		b_IgnoreWarningForReloadBuidling[client] = false;
-		#endif
+#endif
 		
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding != -1)
@@ -1869,7 +1893,6 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		Call_PushCell(slot);	//This is m1 :)
 		Call_Finish(action);
 	}
-	
 	if(i_SemiAutoWeapon[weapon])
 	{
 		i_SemiAutoWeapon_AmmoCount[weapon] -= 1;
@@ -2035,6 +2058,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		EntityFuncAttack2[entity] = INVALID_FUNCTION;
 		EntityFuncAttack3[entity] = INVALID_FUNCTION;
 		EntityFuncReload4[entity] = INVALID_FUNCTION;
+		EntityFuncAttackInstant[entity] = INVALID_FUNCTION;
 		b_Map_BaseBoss_No_Layers[entity] = false;
 		b_Is_Player_Projectile_Through_Npc[entity] = false;
 		b_ForceCollisionWithProjectile[entity] = false;

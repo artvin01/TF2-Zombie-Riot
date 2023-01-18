@@ -86,6 +86,7 @@ ConVar CvarInfiniteCash;
 ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_spawnprotectiontime;
 ConVar zr_viewshakeonlowhealth;
+ConVar zr_disablerandomvillagerspawn;
 //ConVar CvarEnablePrivatePlugins;
 int CurrentGame;
 bool b_GameOnGoing = true;
