@@ -205,6 +205,13 @@ public Action GetClosestSpawners(Handle timer)
 											continue;
 										}
 									}
+									if(b_PlayerIsInAnotherPart[client])
+									{
+										if(!StrEqual(name, "underground"))
+										{
+											continue;
+										}
+									}
 
 									SpawnerData Spawner;
 									SpawnerList.GetArray(index, Spawner);
