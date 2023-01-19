@@ -451,7 +451,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 							npc.m_bisWalking = false;
 							npc.m_flSpeed = 0.0;
 						}
-						i_AttacksTillMegahit[buildingentity] += 1;
+						i_AttacksTillMegahit[buildingentity] += 4;
 						npc.FaceTowards(WorldSpaceCenter(buildingentity), 15000.0);
 					}
 					else
@@ -506,7 +506,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 
 				hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
 				hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );	
-				
+
 				if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
 					return;
 
