@@ -237,8 +237,6 @@ methodmap MedivalVillager < CClotBody
 					break; //No nav?
 
 				float vecGoal[3]; RandomArea.GetCenter(vecGoal);
-				float vecTrue[3];
-				vecTrue = vecGoal;
 
 				vecGoal[2] += 20.0;
 				static float hullcheckmaxs_Player_Again[3];
@@ -250,7 +248,7 @@ methodmap MedivalVillager < CClotBody
 				{
 					continue;
 				}
-				else if(IsSpaceOccupiedIgnorePlayers(vecTrue, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
+				else if(IsSpaceOccupiedIgnorePlayers(vecGoal, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
 				{
 
 				}
@@ -263,7 +261,7 @@ methodmap MedivalVillager < CClotBody
 						{		
 							float f3_PositionTemp[3];
 							GetEntPropVector(client_check, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
-							float distance = GetVectorDistance( f3_PositionTemp, vecTrue, true); 
+							float distance = GetVectorDistance( f3_PositionTemp, vecGoal, true); 
 							//leave it all squared for optimsation sake!
 							float inverting_score_calc;
 
@@ -277,13 +275,13 @@ methodmap MedivalVillager < CClotBody
 					}
 					if(Accumulated_Points > CurrentPoints)
 					{
-						f3_AreasCollected = vecTrue;
+						f3_AreasCollected = vecGoal;
 						CurrentPoints = Accumulated_Points;
 					}
 					AreasCollected += 1;
 					if(AreasCollected >= MAXTRIESVILLAGER)
 					{
-						if(vecTrue[0])
+						if(vecGoal[0])
 						{
 							TeleportEntity(npc.index, f3_AreasCollected, NULL_VECTOR, NULL_VECTOR);
 						}
