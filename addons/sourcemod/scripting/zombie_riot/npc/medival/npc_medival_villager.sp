@@ -101,6 +101,8 @@ static bool b_WantTobuild[MAXENTITIES];
 static bool b_AlreadyReparing[MAXENTITIES];
 static float f_RandomTolerance[MAXENTITIES];
 static int i_BuildingRef;
+static int i_ClosestAlly[MAXENTITIES];
+static float i_ClosestAllyCD[MAXENTITIES];
 
 methodmap MedivalVillager < CClotBody
 {
@@ -200,6 +202,7 @@ methodmap MedivalVillager < CClotBody
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalVillager_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, MedivalVillager_ClotThink);
+		i_ClosestAllyCD[npc.index] = 0.0;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 200.0;
@@ -357,10 +360,18 @@ public void MedivalVillager_ClotThink(int iNPC)
 	{
 		case 0:
 		{
-			int Closest_ally = GetClosestAlly(npc.index);
-			if(IsValidAlly(npc.index, Closest_ally))
+			if(i_ClosestAllyCD[npc.index] < GetGameTime())
 			{
-				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(Closest_ally), WorldSpaceCenter(npc.index), true);
+				i_ClosestAllyCD[npc.index] = GetGameTime() + 1.0;
+				i_ClosestAlly[npc.index] = GetClosestAlly(npc.index);
+				if(IsValidEntity(buildingentity)) //We already have 1
+				{
+					i_ClosestAlly[npc.index] = GetClosestAlly(buildingentity, _ , npc.index);
+				}				
+			}
+			if(IsValidAlly(npc.index, i_ClosestAlly[npc.index]))
+			{
+				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(i_ClosestAlly[npc.index]), WorldSpaceCenter(npc.index), true);
 				if(flDistanceToTarget < Pow(125.0, 2.0))
 				{
 					if(npc.m_iChanged_WalkCycle != 5) 	
@@ -375,7 +386,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 				else
 				{
 					float AproxRandomSpaceToWalkTo[3];
-					GetEntPropVector(Closest_ally, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
+					GetEntPropVector(i_ClosestAlly[npc.index], Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
 					PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
 					PF_StartPathing(iNPC);
 					if(npc.m_iChanged_WalkCycle != 4) 	
@@ -451,7 +462,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 							npc.m_bisWalking = false;
 							npc.m_flSpeed = 0.0;
 						}
-						i_AttacksTillMegahit[buildingentity] += 4;
+						i_AttacksTillMegahit[buildingentity] += 2;
 						npc.FaceTowards(WorldSpaceCenter(buildingentity), 15000.0);
 					}
 					else

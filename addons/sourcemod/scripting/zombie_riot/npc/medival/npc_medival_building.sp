@@ -178,6 +178,7 @@ methodmap MedivalBuilding < CClotBody
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
 		i_NpcIsABuilding[npc.index] = true;
+		b_thisNpcIsABoss[npc.index] = true;
 
 		float wave = float(ZR_GetWaveCount()+1);
 		
@@ -257,7 +258,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				}
 			}
 			//emercency stop. 
-			float IncreaceSpawnRates = 10.0;
+			float IncreaceSpawnRates = 3.0;
 
 			IncreaceSpawnRates *= (1.0 - ((f_PlayerScalingBuilding - 1.0) * 7.0 / 110.0));
 
@@ -339,7 +340,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				//Target close enough to hit
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					float IncreaceAttackspeed = 1.0;
+					float IncreaceAttackspeed = 0.5;
 
 
 					IncreaceAttackspeed *= (1.0 - ((f_PlayerScalingBuilding - 1.0) * 7.0 / 110.0));
@@ -351,7 +352,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 					vecTarget = PredictSubjectPositionForProjectiles(npc, Target, projectile_speed, 75.0);
 					npc.PlayMeleeSound();
 
-					float damage = 10.0;	
+					float damage = 50.0;	
 
 					damage *= npc.m_flWaveScale;
 
@@ -405,7 +406,7 @@ public void MedivalBuilding_NPCDeath(int entity)
 
 static char[] GetBuildingHealth()
 {
-	int health = 400;
+	int health = 200;
 	
 	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
 	

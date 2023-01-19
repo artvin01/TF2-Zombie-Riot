@@ -1710,10 +1710,16 @@ void Hook_DHook_UpdateTransmitState(int entity)
 
 public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) //BLOCK!!
 {   
-	if(b_IsEntityAlwaysTranmitted[entity])
+	if(b_IsEntityAlwaysTranmitted[entity] || b_thisNpcIsABoss[entity])
 	{
 		return MRES_Ignored;
 	}
+#if defined ZR
+	else if(b_thisNpcHasAnOutline[entity])
+	{
+		return MRES_Ignored;
+	}
+#endif
 	else
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_PVSCHECK);
