@@ -11,8 +11,9 @@ static ConVar sv_cheats;
 static ConVar localplayer_index;
 
 static ConVar sm_ensurenav_spam_walk;
-static ConVar sm_ensurenav_restart;
 /*
+static ConVar sm_ensurenav_restart;
+
 static int CNavMesh_m_generationState_offset = -1;
 static int CNavMesh_m_generationMode_offset = -1;
 static int CNavMesh_m_isAnalyzed_offset = -1;
@@ -55,7 +56,7 @@ public void OnPluginStart()
 
 	nav_edit = FindConVar("nav_edit");
 	sv_cheats = FindConVar("sv_cheats");
-	nav_edit.AddChangeHook(nav_edit_changed);
+//	nav_edit.AddChangeHook(nav_edit_changed);
 
 	int flags = GetCommandFlags("nav_mark_walkable");
 	flags &= ~FCVAR_CHEAT;
@@ -78,7 +79,7 @@ public void OnPluginStart()
 	RegAdminCmd("sm_mark_walk", sm_mark_walk, ADMFLAG_ROOT);
 	RegAdminCmd("sm_nav_edit_mode", sm_nav_edit_mode, ADMFLAG_ROOT);
 }
-
+/*
 static void nav_edit_changed(ConVar convar, const char[] oldValue, const char[] newValue)
 {
 	if(localplayer_index == null) {
@@ -102,6 +103,7 @@ static void nav_edit_changed(ConVar convar, const char[] oldValue, const char[] 
 		localplayer_index.IntValue = -1;
 	}
 }
+*/
 
 public void OnAllPluginsLoaded()
 {
