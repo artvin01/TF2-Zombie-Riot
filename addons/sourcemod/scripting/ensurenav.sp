@@ -12,11 +12,11 @@ static ConVar localplayer_index;
 
 static ConVar sm_ensurenav_spam_walk;
 static ConVar sm_ensurenav_restart;
-
+/*
 static int CNavMesh_m_generationState_offset = -1;
 static int CNavMesh_m_generationMode_offset = -1;
 static int CNavMesh_m_isAnalyzed_offset = -1;
-
+*/
 static float last_walk_seed[TF2_MAXPLAYERS+1];
 
 static char currentmap[PLATFORM_MAX_PATH];
@@ -34,7 +34,7 @@ public void OnPluginStart()
 		SetFailState("Gamedata not found.");
 		return;
 	}
-
+/*
 	DynamicDetour tmp = DynamicDetour.FromConf(gamedata, "CNavMesh::UpdateGeneration");
 	if(!tmp || !tmp.Enable(Hook_Pre, CNavMesh_UpdateGeneration_detour)) {
 		SetFailState("Failed to enable pre detour for CNavMesh::UpdateGeneration");
@@ -50,7 +50,7 @@ public void OnPluginStart()
 	CNavMesh_m_generationState_offset = gamedata.GetOffset("CNavMesh::m_generationState");
 	CNavMesh_m_generationMode_offset = gamedata.GetOffset("CNavMesh::m_generationMode");
 	CNavMesh_m_isAnalyzed_offset = gamedata.GetOffset("CNavMesh::m_isAnalyzed");
-
+*/
 	delete gamedata;
 
 	nav_edit = FindConVar("nav_edit");
@@ -70,9 +70,9 @@ public void OnPluginStart()
 	SetCommandFlags("nav_generate_incremental", flags);
 
 	sm_ensurenav_spam_walk = CreateConVar("sm_ensurenav_spam_walk", "-1.0");
-
+/*
 	sm_ensurenav_restart = CreateConVar("sm_ensurenav_restart", "0");
-
+*/
 	RegAdminCmd("sm_ensurenav", sm_ensurenav, ADMFLAG_ROOT);
 	RegAdminCmd("sm_mark_all_walk", sm_mark_all_walk, ADMFLAG_ROOT);
 	RegAdminCmd("sm_mark_walk", sm_mark_walk, ADMFLAG_ROOT);
@@ -192,7 +192,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 		last_walk_seed[client] = GetGameTime() + time;
 	}
 }
-
+/*
 static MRESReturn CNavMesh_UpdateGeneration_detour(Address pThis, DHookReturn hReturn)
 {
 	int m_generationState = LoadFromAddress(pThis + view_as<Address>(CNavMesh_m_generationState_offset), NumberType_Int32);
@@ -215,7 +215,7 @@ static MRESReturn CNavMesh_UpdateGeneration_detour_post(Address pThis, DHookRetu
 	}
 	return MRES_Ignored;
 }
-
+*/
 static Action sm_ensurenav(int client, int args)
 {
 	if(maps) {
@@ -265,7 +265,7 @@ static void nav_done_cycle()
 		ForceChangeLevel(nextmap, "ensurenav");
 	}
 }
-
+/*
 static void nav_done()
 {
 	if(maps) {
@@ -277,7 +277,7 @@ static void nav_done()
 		}
 	}
 }
-
+*/
 public void OnMapStart()
 {
 	GetCurrentMap(currentmap, PLATFORM_MAX_PATH);
