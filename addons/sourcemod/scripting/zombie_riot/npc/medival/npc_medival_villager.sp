@@ -521,6 +521,13 @@ public void MedivalVillager_ClotThink(int iNPC)
 				if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
 					return;
 
+				AproxRandomSpaceToWalkTo[2] += 20.0;
+				
+				if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
+					return;
+
+				AproxRandomSpaceToWalkTo[2] -= 20.0;
+
 				//Retry.
 
 				npc.m_bisWalking = true;

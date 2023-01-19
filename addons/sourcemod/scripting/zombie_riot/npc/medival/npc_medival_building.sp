@@ -258,7 +258,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				}
 			}
 			//emercency stop. 
-			float IncreaceSpawnRates = 3.0;
+			float IncreaceSpawnRates = 5.0;
 
 			IncreaceSpawnRates *= (1.0 - ((f_PlayerScalingBuilding - 1.0) * 7.0 / 110.0));
 
@@ -340,7 +340,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				//Target close enough to hit
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					float IncreaceAttackspeed = 0.5;
+					float IncreaceAttackspeed = 0.65;
 
 
 					IncreaceAttackspeed *= (1.0 - ((f_PlayerScalingBuilding - 1.0) * 7.0 / 110.0));
@@ -352,7 +352,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 					vecTarget = PredictSubjectPositionForProjectiles(npc, Target, projectile_speed, 75.0);
 					npc.PlayMeleeSound();
 
-					float damage = 50.0;	
+					float damage = 40.0;	
 
 					damage *= npc.m_flWaveScale;
 
