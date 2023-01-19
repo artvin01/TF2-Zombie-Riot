@@ -258,7 +258,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				}
 			}
 			//emercency stop. 
-			float IncreaceSpawnRates = 5.0;
+			float IncreaceSpawnRates = 6.5;
 
 			IncreaceSpawnRates *= (1.0 - ((f_PlayerScalingBuilding - 1.0) * 7.0 / 110.0));
 
@@ -269,9 +269,14 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				
 				AproxRandomSpaceToWalkTo[2] += 10.0;
 
-				int EnemyToSpawn = MEDIVAL_MAN_AT_ARMS;
+				int EnemyToSpawn = MEDIVAL_MILITIA;
 
 				if(i_currentwave[iNPC] < 15)
+				{
+					EnemyToSpawn = MEDIVAL_MILITIA;
+					IncreaceSpawnRates *= 1.2; //less swarm!
+				}
+				else if(i_currentwave[iNPC] < 20)
 				{
 					EnemyToSpawn = MEDIVAL_MAN_AT_ARMS;
 				}
@@ -340,7 +345,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				//Target close enough to hit
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					float IncreaceAttackspeed = 0.65;
+					float IncreaceAttackspeed = 0.75;
 
 
 					IncreaceAttackspeed *= (1.0 - ((f_PlayerScalingBuilding - 1.0) * 7.0 / 110.0));

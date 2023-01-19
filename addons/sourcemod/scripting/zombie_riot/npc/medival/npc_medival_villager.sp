@@ -269,8 +269,7 @@ methodmap MedivalVillager < CClotBody
 							float inverting_score_calc;
 
 							inverting_score_calc = ( distance / 100000000.0);
-							inverting_score_calc -= 1;
-							inverting_score_calc *= -1.0;
+							
 							Pow(inverting_score_calc * inverting_score_calc, 5.0);
 
 							Accumulated_Points += inverting_score_calc;
@@ -462,7 +461,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 							npc.m_bisWalking = false;
 							npc.m_flSpeed = 0.0;
 						}
-						i_AttacksTillMegahit[buildingentity] += 2;
+						i_AttacksTillMegahit[buildingentity] += 1;
 						npc.FaceTowards(WorldSpaceCenter(buildingentity), 15000.0);
 					}
 					else
@@ -522,7 +521,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 					return;
 
 				AproxRandomSpaceToWalkTo[2] += 20.0;
-				
+
 				if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
 					return;
 
@@ -801,7 +800,7 @@ public void MedivalVillager_NPCDeath(int entity)
 
 static char[] GetVillagerHealth()
 {
-	int health = 100;
+	int health = 60;
 	
 	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
 	
