@@ -1882,10 +1882,23 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			{
 				case 7:
 				{
-					Building_Collect_Cooldown[entity][client] = GetGameTime() + 75.0;
+					Building_Collect_Cooldown[entity][client] = GetGameTime() + 90.0;
 					ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-					StartHealingTimer(client, 0.1, 1, 30);
-					if(owner != -1 && i_Healing_station_money_limit[owner][client] <= 3)
+					int HealAmmount = 1;
+					int HealTime = 30;
+					HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_FindOnPlayer(owner, 8, true, 1.0));
+				/*
+					if(f_TimeUntillNormalHeal[client])
+					{
+						HealTime =/ 2;
+						if(HealTime < 1)
+						{
+							HealTime = 1;
+						}
+					}
+			*/
+					StartHealingTimer(client, 0.1, HealAmmount, HealTime);
+					if(owner != -1 && i_Healing_station_money_limit[owner][client] < 10)
 					{
 						if(owner != client)
 						{
@@ -2219,7 +2232,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						//	CashSpent[owner] -= 20;
 							if(owner != -1 && owner != client)
 							{
-								if(Armor_table_money_limit[owner][client] <= 15)
+								if(Armor_table_money_limit[owner][client] < 15)
 								{
 									CashSpent[owner] -= 40;
 									Armor_table_money_limit[owner][client] += 1;
@@ -4040,7 +4053,7 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	
 	if(owner != -1 && owner != client)
 	{
-		if(Perk_Machine_money_limit[owner][client] <= 10)
+		if(Perk_Machine_money_limit[owner][client] < 10)
 		{
 			CashSpent[owner] -= 80;
 			Perk_Machine_money_limit[owner][client] += 2;

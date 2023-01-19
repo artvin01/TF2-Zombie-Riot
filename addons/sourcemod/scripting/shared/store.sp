@@ -1194,7 +1194,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 					owner = GetClientOfUserId(values[3]);
 					if(owner)
 					{
-						if(Pack_A_Punch_Machine_money_limit[owner][client] <= 5)
+						if(Pack_A_Punch_Machine_money_limit[owner][client] < 5)
 						{
 							Pack_A_Punch_Machine_money_limit[owner][client] += 1;
 							CashSpent[owner] -= 400;
