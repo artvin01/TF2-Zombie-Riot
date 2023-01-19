@@ -16,10 +16,27 @@ static const char g_HurtSounds[][] = {
 };
 
 static const char g_IdleSounds[][] = {
-	"npc/combine_soldier/vo/alert1.wav",
-	"npc/combine_soldier/vo/bouncerbouncer.wav",
-	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfirm.wav",
+	"npc/metropolice/vo/affirmative.wav",
+	"npc/metropolice/vo/affirmative2.wav",
+	"npc/metropolice/vo/canalblock.wav",
+	"npc/metropolice/vo/chuckle.wav",
+	"npc/metropolice/vo/citizen.wav",
+	"npc/metropolice/vo/code7.wav",
+	"npc/metropolice/vo/code100.wav",
+	"npc/metropolice/vo/copy.wav",
+	"npc/metropolice/vo/breakhiscover.wav",
+	"npc/metropolice/vo/help.wav",
+	"npc/metropolice/vo/hesgone148.wav",
+	"npc/metropolice/vo/hesrunning.wav",
+	"npc/metropolice/vo/infection.wav",
+	"npc/metropolice/vo/king.wav",
+	"npc/metropolice/vo/needanyhelpwiththisone.wav",
+	"npc/metropolice/vo/pickupthatcan1.wav",
+	"npc/metropolice/vo/pickupthatcan2.wav",
+	"npc/metropolice/vo/sociocide.wav",
+	"npc/metropolice/vo/watchit.wav",
+	"npc/metropolice/vo/xray.wav",
+	"npc/metropolice/vo/youknockeditover.wav",
 };
 
 static const char g_IdleAlertedSounds[][] = {
@@ -48,20 +65,21 @@ static const char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/takedown.wav",
 };
 
-
 static const char g_MeleeHitSounds[][] = {
-	"weapons/bat_baseball_hit_flesh.wav",
+	"weapons/blade_slice_2.wav",
+	"weapons/blade_slice_3.wav",
+	"weapons/blade_slice_4.wav",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/bow_shoot.wav",
+	"weapons/shovel_swing.wav",
 };
 
 static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
-void MedivalCrossbowMan_OnMapStart_NPC()
+void MedivalLightCav_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -73,7 +91,7 @@ void MedivalCrossbowMan_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 }
 
-methodmap MedivalCrossbowMan < CClotBody
+methodmap MedivalLightCav < CClotBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -145,15 +163,15 @@ methodmap MedivalCrossbowMan < CClotBody
 		#endif
 	}
 	
-	public MedivalCrossbowMan(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalLightCav(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "900", ally));
+		MedivalLightCav npc = view_as<MedivalLightCav>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
 		
-		i_NpcInternalId[npc.index] = MEDIVAL_CROSSBOW_MAN;
+		i_NpcInternalId[npc.index] = MEDIVAL_LIGHT_CAV;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_CROSSBOW");
+		int iActivity = npc.LookupActivity("ACT_RIDER_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -161,20 +179,13 @@ methodmap MedivalCrossbowMan < CClotBody
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
+		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_crusaders_crossbow/c_crusaders_crossbow.mdl");
-		SetVariantString("0.8");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalCrossbowMan_ClotDamaged);
-		SDKHook(npc.index, SDKHook_Think, MedivalCrossbowMan_ClotThink);
-	
-//		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-//		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalLightCav_ClotDamaged);
+		SDKHook(npc.index, SDKHook_Think, MedivalLightCav_ClotThink);
 
 		npc.m_iState = 0;
-		npc.m_flSpeed = 170.0;
+		npc.m_flSpeed = 350.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -182,42 +193,44 @@ methodmap MedivalCrossbowMan < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		
 		npc.m_flMeleeArmor = 1.0;
-		npc.m_flRangedArmor = 1.0;
-		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
+		npc.m_flRangedArmor = 0.75;
 
-	/*	
-		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/all_class/sbox2014_toowoomba_tunic/sbox2014_toowoomba_tunic_sniper.mdl");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_scout_sword/c_scout_sword.mdl");
 		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/medic/dec17_coldfront_commander/dec17_coldfront_commander.mdl");
+		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-	*/
+
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/medic/dec17_coldfront_commander/dec17_coldfront_commander.mdl");
+		SetVariantString("0.8");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+
+		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/engineer/hwn2022_pony_express/hwn2022_pony_express.mdl");
+		SetVariantString("1.1");
+		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+
 		npc.StartPathing();
-		
 		
 		return npc;
 	}
-	
-	
 }
 
 //TODO 
 //Rewrite
-public void MedivalCrossbowMan_ClotThink(int iNPC)
+public void MedivalLightCav_ClotThink(int iNPC)
 {
-	MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(iNPC);
-	
-	SetVariantInt(1);
-	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
-	
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	MedivalLightCav npc = view_as<MedivalLightCav>(iNPC);
+
+	float gameTime = GetGameTime(iNPC);
+
+	if(npc.m_flNextDelayTime > gameTime)
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 	
@@ -228,91 +241,131 @@ public void MedivalCrossbowMan_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	if(npc.m_flNextThinkTime > gameTime)
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
-	
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = gameTime + 1.0;
+	}
+
+	if(npc.m_flAttackHappens)
+	{
+		if(npc.m_flAttackHappens < gameTime)
+		{
+			npc.m_flAttackHappens = 0.0;
+			
+			if(IsValidEnemy(npc.index, npc.m_iTarget))
+			{
+				Handle swingTrace;
+				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+				{
+					int target = TR_GetEntityIndex(swingTrace);	
+					
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
+					float damage = 30.0;
+
+					if(Medival_Difficulty_Level > 1.0)
+					{
+						damage = 40.0;
+					}
+
+					if(target > MaxClients)
+					{
+						damage *= 3.0;
+					}
+					npc.PlayMeleeHitSound();
+					if(target > 0) 
+					{
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+					}
+				}
+				delete swingTrace;
+			}
+		}
 	}
 	
-	int PrimaryThreatIndex = npc.m_iTarget;
-	
-	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
+	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-			if(npc.m_flJumpStartTime < GetGameTime(npc.index))
-			{
-				npc.m_flSpeed = 170.0;
-			}
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			
+		//Predict their pos.
+		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		{
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			
+			PF_SetGoalVector(npc.index, vPredictedPos);
+		}
+		else
+		{
+			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+		}
+		//Get position for just travel here.
+
+		if(npc.m_flDoingAnimation > gameTime) //I am doing an animation or doing something else, default to doing nothing!
+		{
+			npc.m_iState = -1;
+		}
+		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		{
+			npc.m_iState = 1; //Engage in Close Range Destruction.
+		}
+		else 
+		{
+			npc.m_iState = 0; //stand and look if close enough.
+		}
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			
-			//Predict their pos.
-			if(flDistanceToTarget < npc.GetLeadRadius()) {
-				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				/*
-				int color[4];
-				color[0] = 255;
-				color[1] = 255;
-				color[2] = 0;
-				color[3] = 255;
-			
-				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
-			
-				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
-				TE_SendToAllInRange(vecTarget, RangeType_Visibility);
-				*/
-				
-				
-				
-				PF_SetGoalVector(npc.index, vPredictedPos);
-			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
-			}
-			
-			if(flDistanceToTarget < 160000)
+		switch(npc.m_iState)
+		{
+			case -1:
 			{
-				int Enemy_I_See;
-				
-				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-				//Target close enough to hit
-				if(IsValidEnemy(npc.index, Enemy_I_See))
-				{
-					//Can we attack right now?
-					if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
-					{
-						npc.m_flSpeed = 0.0;
-			//			npc.FaceTowards(vecTarget, 30000.0);
-						//Play attack anim
-						npc.AddGesture("ACT_CUSTOM_ATTACK_CROSSBOW");
-						
-			//			npc.PlayMeleeSound();
-			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;
-						npc.m_flJumpStartTime = GetGameTime(npc.index) + 0.7; //Reuse this!
-					}
-					PF_StopPathing(npc.index);
-					npc.m_bPathing = false;
-				}
-				else
-				{
+				return; //Do nothing.
+			}
+			case 0:
+			{
+				//Walk to target
+				if(!npc.m_bPathing)
 					npc.StartPathing();
 					
+				npc.m_bisWalking = true;
+				if(npc.m_iChanged_WalkCycle != 4) 	
+				{
+					npc.m_iChanged_WalkCycle = 4;
+					npc.SetActivity("ACT_RIDER_RUN");
 				}
 			}
-			else
-			{
-				npc.StartPathing();
-				
+			case 1:
+			{			
+				int Enemy_I_See;
+							
+				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				//Can i see This enemy, is something in the way of us?
+				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+				{
+					npc.m_iTarget = Enemy_I_See;
+
+					npc.AddGesture("ACT_RIDER_ATTACK");
+					
+
+					npc.PlayMeleeSound();
+					
+					npc.m_flAttackHappens = gameTime + 0.35;
+
+					npc.m_flDoingAnimation = gameTime + 0.35;
+					npc.m_flNextMeleeAttack = gameTime + 1.5;
+					npc.m_bisWalking = true;
+				}
 			}
+		}
 	}
 	else
 	{
@@ -321,47 +374,16 @@ public void MedivalCrossbowMan_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-	npc.PlayIdleAlertSound();
+	npc.PlayIdleSound();
 }
 
-public void HandleAnimEventMedival_CrossbowMan(int entity, int event)
-{
-	if(event == 1001)
-	{
-		MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(entity);
-		
-		int PrimaryThreatIndex = npc.m_iTarget;
-	
-		if(IsValidEnemy(npc.index, PrimaryThreatIndex))
-		{
-			float vecTarget[3];
-				
-			float projectile_speed = 1200.0;
-			
-			vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
-				
-			npc.FaceTowards(vecTarget, 30000.0);
-						
-			npc.PlayMeleeSound();
-			
-			float damage = 30.0;
-			if(Medival_Difficulty_Level > 1.0)
-			{
-				damage = 45.0;
-			}
-			npc.FireArrow(vecTarget, damage, projectile_speed);
-		}
-	}
-	
-}
-
-public Action MedivalCrossbowMan_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalLightCav_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(victim);
+	MedivalLightCav npc = view_as<MedivalLightCav>(victim);
 	
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
@@ -374,19 +396,23 @@ public Action MedivalCrossbowMan_ClotDamaged(int victim, int &attacker, int &inf
 	return Plugin_Changed;
 }
 
-public void MedivalCrossbowMan_NPCDeath(int entity)
+public void MedivalLightCav_NPCDeath(int entity)
 {
-	MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(entity);
+	MedivalLightCav npc = view_as<MedivalLightCav>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalCrossbowMan_ClotDamaged);
-	SDKUnhook(npc.index, SDKHook_Think, MedivalCrossbowMan_ClotThink);
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalLightCav_ClotDamaged);
+	SDKUnhook(npc.index, SDKHook_Think, MedivalLightCav_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 }

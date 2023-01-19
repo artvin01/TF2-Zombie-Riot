@@ -178,9 +178,10 @@ enum
 
 	MEDIVAL_SCOUT				= 154,
 	MEDIVAL_VILLAGER			= 155,
-
 	MEDIVAL_BUILDING			= 156,
-	
+	MEDIVAL_CONSTRUCT			= 157,
+	MEDIVAL_CHAMPION			= 158,
+	MEDIVAL_LIGHT_CAV			= 159,
 }
 
 public const char NPC_Names[][] =
@@ -354,7 +355,10 @@ public const char NPC_Names[][] =
 
 	"Medival Scout",
 	"Medival Villager",
-	"Building"
+	"Building",
+	"Medival Construct",
+	"Champion",
+	"Light Cavalry"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -524,7 +528,10 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_bunker_hhh",
 	"npc_medival_scout",
 	"npc_medival_villager",
-	"npc_medival_building"
+	"npc_medival_building",
+	"npc_medival_construct",
+	"npc_medival_champion",
+	"npc_medival_light_cav"
 };
 
 void NPC_MapStart()
@@ -698,6 +705,9 @@ void NPC_MapStart()
 
 	MedivalScout_OnMapStart_NPC();
 	MedivalBuilding_OnMapStart_NPC();
+	MedivalConstruct_OnMapStart_NPC();
+	MedivalChampion_OnMapStart_NPC();
+	MedivalLightCav_OnMapStart_NPC();
 }
 
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
@@ -1321,6 +1331,18 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case MEDIVAL_BUILDING:
 		{
 			entity = MedivalBuilding(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_CONSTRUCT:
+		{
+			entity = MedivalConstruct(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_CHAMPION:
+		{
+			entity = MedivalChampion(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_LIGHT_CAV:
+		{
+			entity = MedivalLightCav(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -1947,6 +1969,18 @@ public void NPCDeath(int entity)
 		{
 			MedivalBuilding_NPCDeath(entity);
 		}
+		case MEDIVAL_CONSTRUCT:
+		{
+			MedivalConstruct_NPCDeath(entity);
+		}
+		case MEDIVAL_CHAMPION:
+		{
+			MedivalChampion_NPCDeath(entity);
+		}
+		case MEDIVAL_LIGHT_CAV:
+		{
+			MedivalLightCav_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2139,6 +2173,9 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/medival/npc_medival_scout.sp"
 #include "zombie_riot/npc/medival/npc_medival_villager.sp"
 #include "zombie_riot/npc/medival/npc_medival_building.sp"
+#include "zombie_riot/npc/medival/npc_medival_construct.sp"
+#include "zombie_riot/npc/medival/npc_medival_champion.sp"
+#include "zombie_riot/npc/medival/npc_medival_light_cav.sp"
 
 #include "zombie_riot/npc/cof/npc_addiction.sp"
 #include "zombie_riot/npc/cof/npc_doctor.sp"

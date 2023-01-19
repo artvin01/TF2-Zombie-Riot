@@ -107,4 +107,16 @@
 		"ru" 		"Тень. Оно ни разу не покидало нас и никогда по-настоящему не существовало."
 		"chi"       "一片阴影。它从未离开过，也从未真正存在过。"
 	}
+	"Medival Speech 1"
+	{
+		"en" 		"A king wants to Conquer this land!"
+	}
+	"Medival Speech 2"
+	{
+		"en" 		"A stray villager has appeared, stop them!"
+	}
+	"Medival Speech 3"
+	{
+		"en" 		"An invasion of the past is accuring!"
+	}
 }

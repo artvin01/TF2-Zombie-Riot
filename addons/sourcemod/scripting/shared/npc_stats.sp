@@ -6720,7 +6720,7 @@ stock int GetClosestAlly(int entity, float limitsquared = 99999999.9)
 	int i = MaxClients + 1;
 	while ((i = FindEntityByClassname(i, "base_boss")) != -1)
 	{
-		if (i != entity && GetEntProp(entity, Prop_Send, "m_iTeamNum")==GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && GetEntProp(i, Prop_Data, "m_iHealth") > 0)  //The is a medic thing is really needed
+		if (i != entity && GetEntProp(entity, Prop_Send, "m_iTeamNum")==GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && GetEntProp(i, Prop_Data, "m_iHealth") > 0 && !i_NpcIsABuilding[i])  //The is a medic thing is really needed
 		{
 			float EntityLocation[3], TargetLocation[3]; 
 			GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 

@@ -1184,4 +1184,43 @@
 		//"it"		""
 		//"fr"		""
 	}
+	"Medival Construct"
+	{
+		"en"		"Medival Construct"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Champion"
+	{
+		"en"		"Medival Champion"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Light Cavalry"
+	{
+		"en"		"Light Cavalry"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
 }

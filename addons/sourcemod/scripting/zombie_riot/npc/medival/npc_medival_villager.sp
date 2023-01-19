@@ -176,7 +176,7 @@ methodmap MedivalVillager < CClotBody
 	
 	public MedivalVillager(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "5000", ally));
+		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetVillagerHealth(), ally));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_VILLAGER;
 		
@@ -206,9 +206,16 @@ methodmap MedivalVillager < CClotBody
 		b_WantTobuild[npc.index] = true;
 		b_AlreadyReparing[npc.index] = false;
 		f_RandomTolerance[npc.index] = GetRandomFloat(0.25, 0.75);
+		Is_a_Medic[npc.index] = false;
 		
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
+
+		float wave = float(ZR_GetWaveCount()+1);
+		
+		wave *= 0.1;
+	
+		npc.m_flWaveScale = wave;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_sledgehammer/c_sledgehammer.mdl");
 		SetVariantString("0.5");
@@ -230,12 +237,22 @@ methodmap MedivalVillager < CClotBody
 					break; //No nav?
 
 				float vecGoal[3]; RandomArea.GetCenter(vecGoal);
+				float vecTrue[3];
+				vecTrue = vecGoal;
 
 				vecGoal[2] += 20.0;
+				static float hullcheckmaxs_Player_Again[3];
+				static float hullcheckmins_Player_Again[3];
 
+				hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
+				hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
 				if(IsPointHazard(vecGoal)) //Retry.
 				{
 					continue;
+				}
+				else if(IsSpaceOccupiedIgnorePlayers(vecTrue, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
+				{
+
 				}
 				else
 				{
@@ -246,7 +263,7 @@ methodmap MedivalVillager < CClotBody
 						{		
 							float f3_PositionTemp[3];
 							GetEntPropVector(client_check, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
-							float distance = GetVectorDistance( f3_PositionTemp, vecGoal, true); 
+							float distance = GetVectorDistance( f3_PositionTemp, vecTrue, true); 
 							//leave it all squared for optimsation sake!
 							float inverting_score_calc;
 
@@ -260,13 +277,13 @@ methodmap MedivalVillager < CClotBody
 					}
 					if(Accumulated_Points > CurrentPoints)
 					{
-						f3_AreasCollected = vecGoal;
+						f3_AreasCollected = vecTrue;
 						CurrentPoints = Accumulated_Points;
 					}
 					AreasCollected += 1;
 					if(AreasCollected >= MAXTRIESVILLAGER)
 					{
-						if(vecGoal[0])
+						if(vecTrue[0])
 						{
 							TeleportEntity(npc.index, f3_AreasCollected, NULL_VECTOR, NULL_VECTOR);
 						}
@@ -342,13 +359,75 @@ public void MedivalVillager_ClotThink(int iNPC)
 	{
 		case 0:
 		{
-			if(npc.m_iChanged_WalkCycle != 5) 	
+			int Closest_ally = GetClosestAlly(npc.index);
+			if(IsValidAlly(npc.index, Closest_ally))
 			{
-				npc.m_bisWalking = false;
-				npc.m_flSpeed = 0.0;
-				npc.m_iChanged_WalkCycle = 5;
-				npc.SetActivity("ACT_VILLAGER_IDLE");
-				PF_StopPathing(iNPC);
+				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(Closest_ally), WorldSpaceCenter(npc.index), true);
+				if(flDistanceToTarget < Pow(125.0, 2.0))
+				{
+					if(npc.m_iChanged_WalkCycle != 5) 	
+					{
+						npc.m_bisWalking = false;
+						npc.m_flSpeed = 0.0;
+						npc.m_iChanged_WalkCycle = 5;
+						npc.SetActivity("ACT_VILLAGER_IDLE");
+						PF_StopPathing(iNPC);
+					}
+				}
+				else
+				{
+					float AproxRandomSpaceToWalkTo[3];
+					GetEntPropVector(Closest_ally, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
+					PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
+					PF_StartPathing(iNPC);
+					if(npc.m_iChanged_WalkCycle != 4) 	
+					{
+						npc.m_bisWalking = true;
+						npc.m_flSpeed = 200.0;
+						npc.m_iChanged_WalkCycle = 4;
+						npc.SetActivity("ACT_VILLAGER_RUN");
+					}		
+				}
+			}
+			else if(IsValidEntity(buildingentity)) //We already have 1
+			{
+				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(buildingentity), WorldSpaceCenter(npc.index), true);
+				
+				PF_SetGoalEntity(npc.index, npc.m_iTarget);
+				PF_StartPathing(iNPC);
+				//Walk to building.
+				if(flDistanceToTarget < Pow(125.0, 2.0) && IsValidAlly(npc.index, buildingentity))
+				{
+					if(npc.m_iChanged_WalkCycle != 4) 	
+					{
+						npc.m_bisWalking = true;
+						npc.m_flSpeed = 200.0;
+						npc.m_iChanged_WalkCycle = 4;
+						npc.SetActivity("ACT_VILLAGER_RUN");
+					}
+				}
+				else
+				{
+					if(npc.m_iChanged_WalkCycle != 5) 	
+					{
+						npc.m_bisWalking = false;
+						npc.m_flSpeed = 0.0;
+						npc.m_iChanged_WalkCycle = 5;
+						npc.SetActivity("ACT_VILLAGER_IDLE");
+						PF_StopPathing(iNPC);
+					}
+				}
+			}
+			else
+			{
+				if(npc.m_iChanged_WalkCycle != 5) 	
+				{
+					npc.m_bisWalking = false;
+					npc.m_flSpeed = 0.0;
+					npc.m_iChanged_WalkCycle = 5;
+					npc.SetActivity("ACT_VILLAGER_IDLE");
+					PF_StopPathing(iNPC);
+				}
 			}
 		}
 		case 1:
@@ -395,35 +474,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 				}
 				else
 				{	
-					if(flDistanceToTarget < Pow(125.0, 2.0) && IsValidAlly(npc.index, Entity_I_See))
-					{
-						if(npc.m_iChanged_WalkCycle != 5) 	
-						{
-							npc.m_bisWalking = false;
-							npc.m_flSpeed = 0.0;
-							npc.m_iChanged_WalkCycle = 5;
-							npc.SetActivity("ACT_VILLAGER_IDLE");
-							PF_StopPathing(iNPC);
-						}
-						b_WantTobuild[npc.index] = false; //done.
-					}
-					else
-					{
-						float AproxRandomSpaceToWalkTo[3];
-						GetEntPropVector(buildingentity, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-						PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
-						PF_StartPathing(iNPC);
-						if(npc.m_iChanged_WalkCycle != 4) 	
-						{
-							npc.m_bisWalking = true;
-							npc.m_flSpeed = 200.0;
-							npc.m_iChanged_WalkCycle = 4;
-							npc.SetActivity("ACT_VILLAGER_RUN");
-						}
-						i_AttacksTillMegahit[buildingentity] += 1;
-						npc.FaceTowards(WorldSpaceCenter(buildingentity), 15000.0);			
-					}
-
+					b_WantTobuild[npc.index] = false;
 				}
 			}
 			else
@@ -467,8 +518,6 @@ public void MedivalVillager_ClotThink(int iNPC)
 				{
 					i_BuildingRef = EntIndexToEntRef(spawn_index);
 					Zombies_Currently_Still_Ongoing += 1;
-					SetEntProp(spawn_index, Prop_Data, "m_iHealth", 50000);
-					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 50000);
 					i_AttacksTillMegahit[spawn_index] = 10;
 					SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(spawn_index, 255, 255, 255, 0);
@@ -527,7 +576,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 		}
 		case 3:
 		{
-			if(IsValidEntity(buildingentity))
+			if(IsValidEntity(buildingentity) && !b_NpcHasDied[buildingentity])
 			{
 				b_WantTobuild[npc.index] = true; //done.
 				//How?? I wanna build again!
@@ -607,18 +656,18 @@ void VillagerSelfDefense(MedivalVillager npc, float gameTime)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 55.0;
+					float damage = 35.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
 						if(target <= MaxClients)
 						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_CLUB);
 						}
 						else
 						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 4.0, DMG_CLUB);	
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 4.0 * npc.m_flWaveScale, DMG_CLUB);	
 						}
 					}
 				}
@@ -701,4 +750,36 @@ public void MedivalVillager_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
+}
+
+
+static char[] GetVillagerHealth()
+{
+	int health = 100;
+	
+	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	
+	float temp_float_hp = float(health);
+	
+	if(CurrentRound+1 < 30)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.20));
+	}
+	else if(CurrentRound+1 < 45)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.25));
+	}
+	else
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+	}
+	
+	health /= 2;
+	
+	
+	health = RoundToCeil(float(health) * 1.2);
+	
+	char buffer[16];
+	IntToString(health, buffer, sizeof(buffer));
+	return buffer;
 }

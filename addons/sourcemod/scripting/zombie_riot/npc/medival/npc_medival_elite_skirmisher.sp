@@ -176,7 +176,7 @@ methodmap MedivalEliteSkirmisher < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		npc.m_iState = 0;
-		npc.m_flSpeed = 220.0;
+		npc.m_flSpeed = 250.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -184,7 +184,7 @@ methodmap MedivalEliteSkirmisher < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		
 		npc.m_flMeleeArmor = 1.0;
-		npc.m_flRangedArmor = 0.25;
+		npc.m_flRangedArmor = 0.15;
 
 	
 		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/workshop/player/items/demo/jul13_stormn_normn/jul13_stormn_normn.mdl");
@@ -336,9 +336,14 @@ public void HandleAnimEvent_MedivalEliteSkirmisher(int entity, int event)
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 				
 			npc.FaceTowards(vecTarget, 30000.0);
-						
+			
+			float damage = 25.0;
+			if(Medival_Difficulty_Level > 1.0)
+			{
+				damage = 45.0;
+			}
 			npc.PlayMeleeSound();
-			npc.FireArrow(vecTarget, 45.0, 1200.0);
+			npc.FireArrow(vecTarget, damage, 1200.0);
 		}
 	}
 	
