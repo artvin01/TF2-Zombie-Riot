@@ -70,6 +70,7 @@ public void Configs_ConfigsExecuted()
 	Crafting_ConfigSetup(kv);
 	Dungeon_ConfigSetup(kv);
 	Fishing_ConfigSetup(kv);
+	Games_ConfigSetup(kv);
 	Garden_ConfigSetup(kv);
 	Mining_ConfigSetup(kv);
 	Music_ConfigSetup(kv);
