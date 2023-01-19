@@ -95,7 +95,7 @@ void MedivalVillager_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 }
 
-#define MAXTRIESVILLAGER 5
+#define MAXTRIESVILLAGER 25
 
 static bool b_WantTobuild[MAXENTITIES];
 static bool b_AlreadyReparing[MAXENTITIES];
@@ -229,7 +229,7 @@ methodmap MedivalVillager < CClotBody
 			float CurrentPoints = 0.0;
 			float f3_AreasCollected[3];
 
-			for( int loop = 1; loop <= 100; loop++ ) 
+			for( int loop = 1; loop <= 500; loop++ ) 
 			{
 				NavArea RandomArea = PickRandomArea();	
 					
@@ -243,14 +243,14 @@ methodmap MedivalVillager < CClotBody
 				static float hullcheckmins_Player_Again[3];
 
 				hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
-				hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
+				hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );	
 				if(IsPointHazard(vecGoal)) //Retry.
 				{
 					continue;
 				}
-				else if(IsSpaceOccupiedIgnorePlayers(vecGoal, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
+				else if(IsSpaceOccupiedIgnorePlayers(vecGoal, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(vecGoal, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
 				{
-
+					continue;
 				}
 				else
 				{
@@ -501,12 +501,42 @@ public void MedivalVillager_ClotThink(int iNPC)
 				if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
 					return;
 
+				static float hullcheckmaxs_Player_Again[3];
+				static float hullcheckmins_Player_Again[3];
+
+				hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
+				hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );	
+				
+				if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
+					return;
+
 				//Retry.
 
 				npc.m_bisWalking = true;
 
-				PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
-				PF_StartPathing(iNPC);
+				if(IsValidEnemy(npc.index,npc.m_iTarget))
+				{
+					PF_SetGoalEntity(npc.index, npc.m_iTarget);
+					PF_StartPathing(iNPC);
+					if(npc.m_iChanged_WalkCycle != 4) 	
+					{
+						npc.m_bisWalking = true;
+						npc.m_flSpeed = 200.0;
+						npc.m_iChanged_WalkCycle = 4;
+						npc.SetActivity("ACT_VILLAGER_RUN");
+					}
+				}
+				else
+				{
+					if(npc.m_iChanged_WalkCycle != 5) 	
+					{
+						npc.m_bisWalking = false;
+						npc.m_flSpeed = 0.0;
+						npc.m_iChanged_WalkCycle = 5;
+						npc.SetActivity("ACT_VILLAGER_IDLE");
+						PF_StopPathing(iNPC);
+					}
+				}
 	
 				//Timeout
 				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
