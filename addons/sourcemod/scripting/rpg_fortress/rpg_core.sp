@@ -36,6 +36,7 @@ bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 #include "rpg_fortress/crafting.sp"
 #include "rpg_fortress/dungeon.sp"
 #include "rpg_fortress/fishing.sp"
+#include "rpg_fortress/games.sp"
 #include "rpg_fortress/garden.sp"
 #include "rpg_fortress/levels.sp"
 #include "rpg_fortress/mining.sp"
@@ -65,6 +66,7 @@ void RPG_PluginStart()
 	Ammo_PluginStart();
 	Dungeon_PluginStart();
 	Fishing_PluginStart();
+	Games_PluginStart();
 	Store_Reset();
 	Levels_PluginStart();
 	Party_PluginStart();

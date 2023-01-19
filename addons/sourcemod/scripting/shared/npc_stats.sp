@@ -131,8 +131,8 @@ void OnMapStart_NPC_Base()
 	PrecacheModel(ARROW_TRAIL_RED);
 	PrecacheDecal(ARROW_TRAIL_RED, true);
 
-	HookEntityOutput("trigger_multiple", "OnStartTouch", Zones_StartTouch);
-	HookEntityOutput("trigger_multiple", "OnEndTouch", Zones_EndTouch);
+	HookEntityOutput("trigger_multiple", "OnStartTouch", NPCStats_StartTouch);
+	HookEntityOutput("trigger_multiple", "OnEndTouch", NPCStats_EndTouch);
 
 	Zero(f_TimeSinceLastStunHit);
 	Zero(b_EntityInCrouchSpot);
@@ -144,7 +144,7 @@ void OnMapStart_NPC_Base()
 	NPC_MapStart();
 }
 
-public Action Zones_StartTouch(const char[] output, int entity, int caller, float delay)
+public Action NPCStats_StartTouch(const char[] output, int entity, int caller, float delay)
 {
 	if(caller > 0 && caller < MAXENTITIES)
 	{
@@ -164,7 +164,7 @@ public Action Zones_StartTouch(const char[] output, int entity, int caller, floa
 	return Plugin_Continue;
 }
 
-public Action Zones_EndTouch(const char[] output, int entity, int caller, float delay)
+public Action NPCStats_EndTouch(const char[] output, int entity, int caller, float delay)
 {
 	if(caller > 0 && caller < MAXENTITIES)
 	{
@@ -4953,6 +4953,7 @@ public void Check_If_Stuck(int iNPC)
 						SDKCall_SetLocalOrigin(iNPC, flMyPos_2);	
 						TeleportEntity(iNPC, flMyPos_2, NULL_VECTOR, { 0.0, 0.0, 0.0 }); //Reset their speed
 						npc.SetVelocity({ 0.0, 0.0, 0.0 });
+#if defined ZR
 						if(f_NpcHasBeenUnstuckAboveThePlayer[iNPC] > GetGameTime())
 						{
 							bool wasactuallysawrunner = false;
@@ -4968,8 +4969,7 @@ public void Check_If_Stuck(int iNPC)
 							}
 						}
 						f_NpcHasBeenUnstuckAboveThePlayer[iNPC] = GetGameTime() + 1.0; //Make the npc immortal! This will prevent abuse of stuckspots.
-
-
+#endif
 					}
 					else
 					{
