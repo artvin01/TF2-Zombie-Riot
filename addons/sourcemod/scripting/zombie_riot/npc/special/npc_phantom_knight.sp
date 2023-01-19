@@ -735,7 +735,22 @@ public void PhantomKnight_NPCDeath(int entity)
 			CreateTimer(0.7, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable2), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(0.7, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(0.7, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable4), TIMER_FLAG_NO_MAPCHANGE);
-			SetVariantString("Lucian_Death_Fake");
+			switch(GetRandomInt(1,3))
+			{
+				case 1:
+				{
+					SetVariantString("Lucian_Death_Fake_1");
+				}
+				case 2:
+				{
+					SetVariantString("Lucian_Death_Fake_2");
+				}
+				case 3:
+				{
+					SetVariantString("Lucian_Death_Fake_3");
+				}
+			}
+
 		}	
 		else
 		{
