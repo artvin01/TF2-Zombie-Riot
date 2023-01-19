@@ -209,6 +209,7 @@ ConVar cvarTimeScale;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
 ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar sv_cheats;
+ConVar nav_edit;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie Niko_Cookies;
 Cookie HudSettings_Cookies;
@@ -1032,6 +1033,7 @@ public void OnPluginStart()
 //	HookEvent("npc_hurt", OnNpcHurt);
 	
 	sv_cheats = FindConVar("sv_cheats");
+	nav_edit = FindConVar("nav_edit");
 	cvarTimeScale = FindConVar("host_timescale");
 //	tf_bot_quota = FindConVar("tf_bot_quota");
 

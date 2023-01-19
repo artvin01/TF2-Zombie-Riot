@@ -498,8 +498,10 @@ void Manual_Impulse_101(int client, int health)
 	SetConVarInt(sv_cheats, 1, false, false);
 	
 	SDKCall(g_hImpulse, client, 101);
-	
-	SetConVarInt(sv_cheats, 0, false, false);
+	if(nav_edit.IntValue != 1)
+	{
+		SetConVarInt(sv_cheats, 0, false, false);
+	}
 	
 	
 	float host_timescale;
