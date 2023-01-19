@@ -1720,6 +1720,10 @@ public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) 
 		return MRES_Ignored;
 	}
 #endif
+	else if (!b_NpcHasDied[entity] && GetEntProp(entity, Prop_Send, "m_bGlowEnabled"))
+	{
+		return MRES_Ignored;
+	}
 	else
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_PVSCHECK);
