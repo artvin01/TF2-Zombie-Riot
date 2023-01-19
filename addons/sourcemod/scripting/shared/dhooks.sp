@@ -1720,7 +1720,7 @@ public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) 
 		return MRES_Ignored;
 	}
 #endif
-	else if (!b_NpcHasDied[entity] && GetEntProp(entity, Prop_Send, "m_bGlowEnabled"))
+	else if (!b_NpcHasDied[entity] && Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
 	{
 		return MRES_Ignored;
 	}
