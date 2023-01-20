@@ -1735,17 +1735,17 @@ public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) 
 {   
 	if(b_IsEntityAlwaysTranmitted[entity] || b_thisNpcIsABoss[entity])
 	{
-		return MRES_Ignored;
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
 	}
 #if defined ZR
 	else if(b_thisNpcHasAnOutline[entity])
 	{
-		return MRES_Ignored;
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
 	}
 #endif
 	else if (!b_NpcHasDied[entity] && Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
 	{
-		return MRES_Ignored;
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
 	}
 	else
 	{
