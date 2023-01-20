@@ -37,10 +37,10 @@ static const char BloonHighData[][] =
 // Halved on Elite
 static const int BloonHighCount[] =
 {
-	30,
-	60,
-	6,
-	10
+	5,//30,
+	20,//60,
+	6,//6,
+	3//10
 };
 
 static const int ZombieLow[] =
@@ -168,13 +168,19 @@ static void SetBossBloonPower(int players, bool elite)
 	RaidModeScaling *= 0.2 + (players * 0.2);
 }
 
+static int i_PlayMusicSound;
+
 methodmap Bloonarius < CClotBody
 {
 	public void PlayDeathSound()
 	{
+		EmitSoundToAll("zombie_riot/btd/bossbloonariusdeath.wav", this.index, SNDCHAN_VOICE, SNDLEVEL_NONE);
+		EmitSoundToAll("zombie_riot/btd/bossbloonariusdeath.wav", this.index, SNDCHAN_VOICE, SNDLEVEL_NONE);
 	}
 	public void PlayLifelossSound()
 	{
+		EmitSoundToAll("zombie_riot/btd/bossbloonariusvomit.wav", this.index, SNDCHAN_VOICE, SNDLEVEL_NONE);
+		EmitSoundToAll("zombie_riot/btd/bossbloonariusvomit.wav", this.index, SNDCHAN_VOICE, SNDLEVEL_NONE);
 	}
 	property bool m_bElite
 	{
@@ -226,11 +232,19 @@ methodmap Bloonarius < CClotBody
 	}
 	public Bloonarius(int clien, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		bool elite = StrContains(data, "e") != -1;
+		PrecacheSound("zombie_riot/btd/bossbloonariusdeath.wav");
+		PrecacheSound("zombie_riot/btd/bossbloonariusspawn.wav");
+		PrecacheSound("zombie_riot/btd/bossbloonariusvomit.wav");
+		PrecacheSound("#zombie_riot/btd/musicbossbloonarius.wav");
+
+		bool elite = false;//StrContains(data, "e") != -1;
 		
-		Bloonarius npc = view_as<Bloonarius>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloonarius.mdl", "1.0", "1000000", ally, false, true, true, true));
+		Bloonarius npc = view_as<Bloonarius>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bad.mdl", "1.15", "1000000", ally, false, true, true, true));
 		
 		i_NpcInternalId[npc.index] = BTD_BLOONARIUS;
+
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 128, 255, 128, 255);
 		
 		int activity = npc.LookupActivity("ACT_FLOAT");
 		if(activity > 0)
@@ -270,12 +284,18 @@ methodmap Bloonarius < CClotBody
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client) && !IsFakeClient(client))
+			{
+				ClientCommand(client, "playgamesound zombie_riot/btd/bossbloonariusspawn.wav");
+				ClientCommand(client, "playgamesound zombie_riot/btd/bossbloonariusspawn.wav");
 				LookAtTarget(client, npc.index);
+			}
 		}
 		
-		RaidModeTime = GetGameTime(npc.index) + 300.0;
-		
+		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		Raidboss_Clean_Everyone();
+
+		i_PlayMusicSound = 0;
+		ToggleMapMusic(false);
 		
 		ExcuteRelay("zr_btdraid", "FireUser1");
 		return npc;
@@ -299,12 +319,19 @@ public void Bloonarius_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = gameTime + 0.04;
 	npc.Update();
 	
+	int time = GetTime();
+	if(i_PlayMusicSound < time)
+	{
+		i_PlayMusicSound = time + 198;
+		EmitSoundToAll("#zombie_riot/btd/musicbossbloonarius.wav", npc.index, SNDCHAN_STATIC, SNDLEVEL_NONE);
+	}
+
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 	
-	if(npc.m_bElite)
+	//if(npc.m_bElite)
 	{
 		float armor = 1.0;
 		if(Zombies_Currently_Still_Ongoing > 50)
@@ -365,12 +392,16 @@ public void Bloonarius_ClotThink(int iNPC)
 		}
 		
 		npc.m_flNextThinkTime = gameTime + 2.0;
+
+		PF_StopPathing(npc.index);
+		npc.m_bPathing = false;
 		
-		if(npc.m_bElite)
+		//if(npc.m_bElite)
 		{
 			npc.m_flMeleeArmor = 0.1;
 			npc.m_flRangedArmor = 0.1;
 		}
+		return;
 	}
 	
 	if(npc.m_iMiniLivesLost < 99)
@@ -444,7 +475,7 @@ public void Bloonarius_ClotThink(int iNPC)
 						
 						if(npc.m_iTarget > MaxClients)
 						{
-							SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 10.0 * float(CurrentRound), DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 20.0 * float(CurrentRound), DMG_CLUB, -1, _, vecHit);
 						}
 						else
 						{
@@ -506,6 +537,13 @@ public void Bloonarius_NPCDeath(int entity)
 {
 	Bloonarius npc = view_as<Bloonarius>(entity);
 	npc.PlayDeathSound();
+
+	StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.wav");
+	StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.wav");
+	StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.wav");
+	StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.wav");
+	StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.wav");
+	ToggleMapMusic(true);
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bloonarius_ClotDamagedPost);
 	SDKUnhook(npc.index, SDKHook_Think, Bloonarius_ClotThink);
@@ -535,8 +573,11 @@ public void Bloonarius_NPCDeath(int entity)
 			DispatchKeyValue(entity_death, "body", "1");
 		
 		DispatchSpawn(entity_death);
+
+		SetEntityRenderMode(entity_death, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(entity_death, 128, 255, 128, 255);
 		
-		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.0); 
+		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15); 
 		SetEntityCollisionGroup(entity_death, 2);
 		SetVariantString("death");
 		AcceptEntityInput(entity_death, "SetAnimation");
@@ -553,4 +594,13 @@ public void Bloonarius_PostDeath(const char[] output, int caller, int activator,
 	GetEntPropVector(caller, Prop_Send, "m_vecOrigin", pos);
 	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, caller, _, _, _, _, _, _, _, _, _, 0.0);
 	RemoveEntity(caller);
+}
+
+static void ToggleMapMusic(bool enable)
+{
+	int entity = -1;
+	while((entity = FindEntityByClassname(entity, "env_soundscape")) != -1)
+	{
+		AcceptEntityInput(entity, enable ? "Enable" : "Disable");
+	}
 }
