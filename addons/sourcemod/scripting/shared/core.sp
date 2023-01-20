@@ -60,6 +60,7 @@
 //Comment this out, and reload the plugin once ingame if you wish to have infinite cash.
 
 public const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
+public float OFF_THE_MAP_NONCONST[3] = { 16383.0, 16383.0, -16383.0 };
 
 ConVar CvarRPGInfiniteLevelAndAmmo;
 ConVar CvarDisableThink;

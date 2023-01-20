@@ -154,18 +154,41 @@ void OnWrenchCreated(int entity)
 	g_WrenchSmack.HookEntity(Hook_Post, entity, Wrench_SmackPost);
 }
 
+//Bad news, resort to teleorting.
+
+static float f_TeleportedPosWrenchSmack[MAXENTITIES][3];
+
 public MRESReturn Wrench_SmackPre(int entity, DHookReturn ret, DHookParam param)
 {	
 	StartLagCompResetValues();
 	Dont_Move_Building = true;
+	Dont_Move_Allied_Npc = false;
 	int Compensator = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	LagCompEntitiesThatAreIntheWay(Compensator);
+
+	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	{
+		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+		if (IsValidEntity(baseboss_index_allied))
+		{
+			GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", f_TeleportedPosWrenchSmack[baseboss_index_allied]);
+			SDKCall_SetLocalOrigin(baseboss_index_allied, OFF_THE_MAP_NONCONST);
+		}
+	}
 	return MRES_Ignored;
 }
 
 public MRESReturn Wrench_SmackPost(int entity, DHookReturn ret, DHookParam param)
 {	
 	FinishLagCompMoveBack();
+	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	{
+		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+		if (IsValidEntity(baseboss_index_allied))
+		{
+			SDKCall_SetLocalOrigin(baseboss_index_allied, f_TeleportedPosWrenchSmack[baseboss_index_allied]);
+		}
+	}
 	return MRES_Ignored;
 }
 
@@ -207,7 +230,7 @@ void See_Projectile_Team(int entity)
 	{
 		entity = EntRefToEntIndex(entity);
 	}
-	if (IsValidEntity(entity) && entity != 0)
+	if (IsValidEntity(entity))
 	{
 		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
 		{
@@ -229,7 +252,7 @@ void See_Projectile_Team_Player(int entity)
 	{
 		entity = EntRefToEntIndex(entity);
 	}
-	if (IsValidEntity(entity) && entity != 0)
+	if (IsValidEntity(entity))
 	{
 		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
 		{
@@ -562,7 +585,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			entity1 = ent2;
 			entity2 = ent1;			
 		}
-		if(b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1])
+		if(b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1] || b_ThisEntityIgnoredEntirelyFromAllCollisions[entity2])
 		{
 			return false;
 		}
@@ -869,7 +892,7 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
 	{
 		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied) && baseboss_index_allied != 0)
+		if (IsValidEntity(baseboss_index_allied))
 		{
 			if(!Dont_Move_Allied_Npc || b_ThisEntityIgnored[baseboss_index_allied])
 			{
@@ -882,7 +905,7 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++)
 		{
 			int baseboss = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-			if (IsValidEntity(baseboss) && baseboss != 0)
+			if (IsValidEntity(baseboss))
 			{
 				b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss] = true;
 			}

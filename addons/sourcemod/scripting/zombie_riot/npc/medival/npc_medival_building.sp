@@ -236,9 +236,9 @@ public void MedivalBuilding_ClotThink(int iNPC)
 
 	if(i_AttacksTillMegahit[iNPC] >= 255)
 	{
-		if(i_AttacksTillMegahit[iNPC] == 255)
+		if(i_AttacksTillMegahit[iNPC] <= 600)
 		{
-			i_AttacksTillMegahit[iNPC] = 256;
+			i_AttacksTillMegahit[iNPC] = 601;
 			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		}
@@ -249,7 +249,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
 			{
 				int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-				if(IsValidEntity(entity) && entity != 0)
+				if(IsValidEntity(entity))
 				{
 					if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 					{
@@ -368,8 +368,28 @@ public void MedivalBuilding_ClotThink(int iNPC)
 	}
 	else
 	{
+		bool villagerexists = false;
+		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++)
+		{
+			int baseboss = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
+			if (IsValidEntity(baseboss) && i_NpcInternalId[baseboss] == MEDIVAL_VILLAGER)
+			{
+				villagerexists = true;
+			}
+		}	
+		if(!villagerexists)
+		{
+			SDKHooks_TakeDamage(iNPC, 0, 0, 99999999.0, DMG_BLAST); //Kill it so it triggers the neccecary shit.
+			return;
+		}
+
+		int alpha = i_AttacksTillMegahit[iNPC];
+		if(alpha > 255)
+		{
+			alpha = 255;
+		}
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, i_AttacksTillMegahit[iNPC]);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, alpha);
 	}
 }
 
