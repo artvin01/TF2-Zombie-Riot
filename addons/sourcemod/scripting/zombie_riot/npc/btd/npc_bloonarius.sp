@@ -371,8 +371,8 @@ public void Bloonarius_ClotThink(int iNPC)
 		
 		int players = CountPlayersOnRed();
 		int tier = npc.m_iTier;
-		if(!npc.m_bElite)
-			SetBossBloonPower(players, false);
+		//if(!npc.m_bElite)
+		//	SetBossBloonPower(players, false);
 		
 		int count = SpawnMulti(BloonHighCount[tier], players, npc.m_bElite);
 		
@@ -418,7 +418,7 @@ public void Bloonarius_ClotThink(int iNPC)
 			
 			Enemy enemy;
 			enemy.Index = BTD_BLOON;
-			enemy.Is_Static = !npc.m_bElite;
+			//enemy.Is_Static = !npc.m_bElite;
 			strcopy(enemy.Data, sizeof(enemy.Data), BloonLowData[tier]);
 			
 			for(int i; i<count; i++)

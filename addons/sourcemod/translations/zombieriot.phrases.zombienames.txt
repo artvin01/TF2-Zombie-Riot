@@ -656,6 +656,10 @@
 	{
 		"en" 		"Golden Bloon"
 	}
+	"Bloonarius"
+	{
+		"en" 		"Bloonarius"
+	}
 	"Medic Apprentice Mage"
 	{
 		"en" 		"Medic Apprentice Mage"
