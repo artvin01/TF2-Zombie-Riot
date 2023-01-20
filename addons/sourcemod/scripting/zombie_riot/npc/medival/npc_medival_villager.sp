@@ -269,7 +269,7 @@ methodmap MedivalVillager < CClotBody
 							float inverting_score_calc;
 
 							inverting_score_calc = ( distance / 100000000.0);
-							
+
 							Pow(inverting_score_calc * inverting_score_calc, 5.0);
 
 							Accumulated_Points += inverting_score_calc;
@@ -348,6 +348,10 @@ public void MedivalVillager_ClotThink(int iNPC)
 			b_AlreadyReparing[npc.index] = true;
 			//Go repair!
 			Behavior = 2;
+		}
+		else
+		{
+			Behavior = 0;
 		}
 	}
 	else if(!IsValidEntity(buildingentity)) //I am sad!

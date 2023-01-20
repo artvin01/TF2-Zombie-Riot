@@ -198,8 +198,8 @@ methodmap MedivalBuilding < CClotBody
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
 		
-		npc.m_flMeleeArmor = 1.25;
-		npc.m_flRangedArmor = 0.75;
+		npc.m_flMeleeArmor = 2.5;
+		npc.m_flRangedArmor = 1.0;
 
 		PF_StopPathing(npc.index);
 
