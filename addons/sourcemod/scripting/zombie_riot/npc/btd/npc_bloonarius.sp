@@ -322,7 +322,7 @@ public void Bloonarius_ClotThink(int iNPC)
 	int time = GetTime();
 	if(i_PlayMusicSound < time)
 	{
-		i_PlayMusicSound = time + 999;//198;
+		i_PlayMusicSound = time + 999;//198;	// Raid timer lasts as long as the music I guess, no need to loop this one...
 		EmitSoundToAll("#zombie_riot/btd/musicbossbloonarius.wav", npc.index, SNDCHAN_STATIC, SNDLEVEL_NONE);
 	}
 
