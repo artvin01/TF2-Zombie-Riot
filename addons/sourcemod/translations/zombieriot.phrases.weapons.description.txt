@@ -1050,9 +1050,11 @@
 	
 	"Wrench Desc"
 	{
-		"en"	"Repairs buildings and sentrys, have in hand to pickup buildings, works with any wrench."
-		"ru"	"Ремонтирует постройки и турели, имеет возможность поднятия построек, работает с любым гаечным ключом."
-		"chi"   "修理建筑物和步哨，可以用扳手搬运任何建筑物"
+		"en"	"Repairs buildings and sentrys, have in hand to Claim buildings, works with any wrench."
+	}
+	"Builder Extra Gear Desc"
+	{
+		"en"	"Extra Menu for builders!"
 	}
 	
 	"Texan business Desc"
