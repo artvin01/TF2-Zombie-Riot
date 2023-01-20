@@ -87,9 +87,9 @@ static int SpawnMulti(int count, int players, bool elite)
 static float MoabSpeed(bool elite)
 {
 	if(CurrentRound < (elite ? 29 : 59))
-		return 12.5;
+		return 62.5;
 	
-	return 15.0;
+	return 75.0;
 }
 
 static int CurrentTier(bool elite)
@@ -98,7 +98,7 @@ static int CurrentTier(bool elite)
 	
 	if(!elite)	// 40,60,80,100 -> 15,30,45,60
 	{
-		round = (round - 20) * 3 / 4;
+	//	round = (round - 20) * 3 / 4;
 	}
 	
 	round /= 15;
@@ -567,8 +567,8 @@ public void Bloonarius_NPCDeath(int entity)
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 		TeleportEntity(entity_death, pos, angles, NULL_VECTOR);
 		
-		DispatchKeyValue(entity_death, "model", "models/zombie_riot/btd/bloonarius.mdl");
-		DispatchKeyValue(entity_death, "skin", "4");
+		DispatchKeyValue(entity_death, "model", "models/zombie_riot/btd/bad.mdl");
+		DispatchKeyValue(entity_death, "skin", "0");
 		if(npc.m_bElite)
 			DispatchKeyValue(entity_death, "body", "1");
 		
