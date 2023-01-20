@@ -135,7 +135,7 @@ methodmap The_Shit_Slapper < CClotBody
 	
 	public The_Shit_Slapper(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		The_Shit_Slapper npc = view_as<The_Shit_Slapper>(CClotBody(vecPos, vecAng, "models/zombie/classic_torso.mdl", "7.5", "500", ally, false));
+		The_Shit_Slapper npc = view_as<The_Shit_Slapper>(CClotBody(vecPos, vecAng, "models/zombie/classic_torso.mdl", "4.5", "500", ally, false));
 		
 		i_NpcInternalId[npc.index] = ALT_The_Shit_Slapper;
 		

@@ -241,7 +241,7 @@ public void SoldierMinion_ClotThink(int iNPC)
 			} else {
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			
+			npc.StartPathing();
 			//Target close enough to hit
 			if(flDistanceToTarget < 7225)
 			{
@@ -305,13 +305,6 @@ public void SoldierMinion_ClotThink(int iNPC)
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
 					}
 				}
-				PF_StopPathing(npc.index);
-				npc.m_bPathing = false;
-			}
-			else
-			{
-				npc.StartPathing();
-				
 			}
 	}
 	else

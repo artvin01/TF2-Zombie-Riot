@@ -240,6 +240,7 @@ public void Scout_ClotThink(int iNPC)
 			} else {
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
+			npc.StartPathing();
 			
 			//Target close enough to hit
 			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
