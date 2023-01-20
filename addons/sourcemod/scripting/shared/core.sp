@@ -1382,7 +1382,7 @@ public void OnClientPutInServer(int client)
 
 	if(CountPlayersOnServer() > MAX_PLAYER_COUNT)
 	{
-		if(!(CheckCommandAccess(client, "sm_admin", ADMFLAG_SLAY)))
+		if(!(GetUserFlagBits(client) & ADMFLAG_SLAY))
 		{
 			KickClient(client, "Server is full, do not use the console to connect, thank you.");
 		}
