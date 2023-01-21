@@ -2129,4 +2129,43 @@
 		//"it"		""
 		//"fr"		""
 	}
+	"Mark Building For Deletion"
+	{
+		"en"		"Mark a building for deletion."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Delete Current Marked Building"
+	{
+		"en"		"Delete the current marked building ?"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Builder Extra Gear Menu"
+	{
+		"en"		"Builder extra gear menu"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
 }

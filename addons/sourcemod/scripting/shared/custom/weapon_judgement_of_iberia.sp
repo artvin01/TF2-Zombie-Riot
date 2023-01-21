@@ -92,7 +92,7 @@ void Reset_stats_Irene_Singular(int client) //This is on disconnect/connect
 	i_IreneHitsDone[client] = 0;
 }
 
-void Reset_stats_Irene_Singular_Weapon(int client, int weapon) //This is on weapon remake. cannot set to 0 outright.
+void Reset_stats_Irene_Singular_Weapon(int weapon) //This is on weapon remake. cannot set to 0 outright.
 {
 	b_WeaponAttackSpeedModified[weapon] = false;
 }
@@ -132,6 +132,7 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 	}
 	else
 	{
+		b_WeaponAttackSpeedModified[weapon] = false;
 		TF2Attrib_SetByDefIndex(weapon, 6, (attackspeed / 0.15)); //Make it really fast for 1 hit!
 	}
 }

@@ -674,7 +674,8 @@ void Citizen_OnMapStart()
 			PrecacheModel(buffer);
 		}
 	}
-	
+
+	PrecacheSound("weapons/rpg/rocketfire1.wav");
 	PrecacheSound("weapons/iceaxe/iceaxe_swing1.wav");
 }
 

@@ -1304,16 +1304,13 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 		int entity = GetClientPointVisible(client, _ , true, true);
 		if(entity > MaxClients)
 		{
-			PrintToConsole(client,"Can pickup, letsee if valid.");
 			if (IsValidEntity(entity))
 			{
-				PrintToConsole(client,"valid.");
 				static char buffer[64];
 				if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 				{
 					if(!StrContains(buffer, "obj_"))
 					{
-						PrintToConsole(client,"is building.");
 						if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
 						{
 							if(b_Doing_Buildingpickup_Handle[client])

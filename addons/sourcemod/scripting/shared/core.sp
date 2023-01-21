@@ -60,6 +60,7 @@
 //Comment this out, and reload the plugin once ingame if you wish to have infinite cash.
 
 public const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
+public float OFF_THE_MAP_NONCONST[3] = { 16383.0, 16383.0, -16383.0 };
 
 ConVar CvarRPGInfiniteLevelAndAmmo;
 ConVar CvarDisableThink;
@@ -1381,7 +1382,7 @@ public void OnClientPutInServer(int client)
 
 	if(CountPlayersOnServer() > MAX_PLAYER_COUNT)
 	{
-		if(!(CheckCommandAccess(client, "sm_admin", ADMFLAG_SLAY)))
+		if(!(GetUserFlagBits(client) & ADMFLAG_SLAY))
 		{
 			KickClient(client, "Server is full, do not use the console to connect, thank you.");
 		}
