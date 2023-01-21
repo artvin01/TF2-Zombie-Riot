@@ -28,7 +28,7 @@ static const int BloonHigh[] =
 
 static const char BloonHighData[][] =
 {
-	"9",
+	"8",
 	"9",
 	"",
 	""

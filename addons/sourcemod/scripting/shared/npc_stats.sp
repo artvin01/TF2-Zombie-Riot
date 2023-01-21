@@ -4220,7 +4220,7 @@ stock bool IsValidAllyPlayer(int index, int Ally)
 }
 
 
-stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldistancelimit = 999999.9, bool camoDetection=false, bool onlyPlayers = false, int ingore_client = -1, float EntityLocation[3] = {0.0,0.0,0.0})
+stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldistancelimit = 999999.9, bool camoDetection=false, bool onlyPlayers = false, int ingore_client = -1, float EntityLocation[3] = {0.0,0.0,0.0}, bool CanSee = false)
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = -1; 
@@ -4236,6 +4236,14 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			CClotBody npc = view_as<CClotBody>(i);
 			if (TF2_GetClientTeam(i)!=view_as<TFTeam>(searcher_team) && !npc.m_bThisEntityIgnored && IsEntityAlive(i)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 			{
+				if(CanSee)
+				{
+					int Enemy_I_See = Can_I_See_Enemy(entity, i);
+					if(Enemy_I_See != i)
+					{
+						continue;
+					}
+				}
 				if(camoDetection)
 				{
 					float TargetLocation[3]; 
@@ -4308,6 +4316,14 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 				CClotBody npc = view_as<CClotBody>(entity_close);
 				if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0 && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
+					if(CanSee)
+					{
+						int Enemy_I_See = Can_I_See_Enemy(entity, entity_close);
+						if(Enemy_I_See != entity_close)
+						{
+							continue;
+						}
+					}
 					if(camoDetection)
 					{
 						float TargetLocation[3]; 
@@ -4370,6 +4386,14 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 				CClotBody npc = view_as<CClotBody>(entity_close);
 				if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0 && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
+					if(CanSee)
+					{
+						int Enemy_I_See = Can_I_See_Enemy(entity, entity_close);
+						if(Enemy_I_See != entity_close)
+						{
+							continue;
+						}
+					}
 					if(camoDetection)
 					{
 						float TargetLocation[3]; 
@@ -4437,6 +4461,15 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 					CClotBody npc = view_as<CClotBody>(entity_close);
 					if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 					{
+						if(CanSee)
+						{
+							int Enemy_I_See = Can_I_See_Enemy(entity, entity_close);
+							if(Enemy_I_See != entity_close)
+							{
+								continue;
+							}
+						}
+
 						float TargetLocation[3]; 
 						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 									

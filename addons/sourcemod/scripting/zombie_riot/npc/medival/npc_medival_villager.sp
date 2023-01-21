@@ -277,6 +277,7 @@ methodmap MedivalVillager < CClotBody
 					}
 					if(Accumulated_Points > CurrentPoints)
 					{
+						vecGoal[2] -= 20.0;
 						f3_AreasCollected = vecGoal;
 						CurrentPoints = Accumulated_Points;
 					}
@@ -491,6 +492,34 @@ public void MedivalVillager_ClotThink(int iNPC)
 			}
 			else
 			{
+
+				
+				npc.m_bisWalking = true;
+	
+				if(IsValidEnemy(npc.index,npc.m_iTarget))
+				{
+					PF_SetGoalEntity(npc.index, npc.m_iTarget);
+					PF_StartPathing(iNPC);
+					if(npc.m_iChanged_WalkCycle != 4) 	
+					{
+						npc.m_bisWalking = true;
+						npc.m_flSpeed = 200.0;
+						npc.m_iChanged_WalkCycle = 4;
+						npc.SetActivity("ACT_VILLAGER_RUN");
+					}
+				}
+				else
+				{
+					if(npc.m_iChanged_WalkCycle != 5) 	
+					{
+						npc.m_bisWalking = false;
+						npc.m_flSpeed = 0.0;
+						npc.m_iChanged_WalkCycle = 5;
+						npc.SetActivity("ACT_VILLAGER_IDLE");
+						PF_StopPathing(iNPC);
+					}
+				}
+
 				// make a building.
 				//For now only one building exists.
 				float AproxRandomSpaceToWalkTo[3];
@@ -515,6 +544,18 @@ public void MedivalVillager_ClotThink(int iNPC)
 				if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
 					return;
 
+				NavArea area = TheNavMesh.GetNearestNavArea_Vec(AproxRandomSpaceToWalkTo, true);
+				if(area == NavArea_Null)
+					return;
+					
+			
+				area.GetCenter(AproxRandomSpaceToWalkTo);
+
+				AproxRandomSpaceToWalkTo[2] += 18.0;
+
+				if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
+					return;
+
 				static float hullcheckmaxs_Player_Again[3];
 				static float hullcheckmins_Player_Again[3];
 
@@ -522,42 +563,14 @@ public void MedivalVillager_ClotThink(int iNPC)
 				hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );	
 
 				if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
+				{
 					return;
-
-				AproxRandomSpaceToWalkTo[2] += 20.0;
+				}
 
 				if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
 					return;
 
-				AproxRandomSpaceToWalkTo[2] -= 20.0;
-
 				//Retry.
-
-				npc.m_bisWalking = true;
-
-				if(IsValidEnemy(npc.index,npc.m_iTarget))
-				{
-					PF_SetGoalEntity(npc.index, npc.m_iTarget);
-					PF_StartPathing(iNPC);
-					if(npc.m_iChanged_WalkCycle != 4) 	
-					{
-						npc.m_bisWalking = true;
-						npc.m_flSpeed = 200.0;
-						npc.m_iChanged_WalkCycle = 4;
-						npc.SetActivity("ACT_VILLAGER_RUN");
-					}
-				}
-				else
-				{
-					if(npc.m_iChanged_WalkCycle != 5) 	
-					{
-						npc.m_bisWalking = false;
-						npc.m_flSpeed = 0.0;
-						npc.m_iChanged_WalkCycle = 5;
-						npc.SetActivity("ACT_VILLAGER_IDLE");
-						PF_StopPathing(iNPC);
-					}
-				}
 	
 				//Timeout
 				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);

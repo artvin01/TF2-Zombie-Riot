@@ -76,7 +76,7 @@ static const char g_MeleeAttackSounds[][] = {
 };
 
 static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
+	"weapons/draw_sword.wav",
 };
 
 #define TOWER_MODEL "models/props_urban/urban_skybuilding005a.mdl"
@@ -195,6 +195,8 @@ methodmap MedivalBuilding < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalBuilding_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, MedivalBuilding_ClotThink);
 
+		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
 		
@@ -210,7 +212,7 @@ methodmap MedivalBuilding < CClotBody
 public void MedivalBuilding_ClotThink(int iNPC)
 {
 	MedivalBuilding npc = view_as<MedivalBuilding>(iNPC);
-	
+/*
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -219,7 +221,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
-
+*/
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.m_blPlayHurtAnimation = false;
@@ -231,7 +233,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 		return;
 	}
 
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.05;
 	
 
 	if(i_AttacksTillMegahit[iNPC] >= 255)
@@ -322,6 +324,8 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				int spawn_index = Npc_Create(EnemyToSpawn, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 				if(spawn_index > MaxClients)
 				{
+					npc.PlayMeleeMissSound();
+					npc.PlayMeleeMissSound();
 					Zombies_Currently_Still_Ongoing += 1;
 				}
 			}
@@ -335,9 +339,8 @@ public void MedivalBuilding_ClotThink(int iNPC)
 		if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 		{
 			//Shoot arrow!
-
 			int Target;
-			Target = GetClosestTarget(npc.index);
+			Target = GetClosestTarget(npc.index,_,_,_,_,_,_,true);
 			if(IsValidEnemy(npc.index, Target))
 			{
 				int Enemy_I_See;
@@ -345,19 +348,50 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				//Target close enough to hit
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					float IncreaceAttackspeed = 0.75;
+					/*
+					float IncreaceAttackspeed = 1.0;
 
 
-					IncreaceAttackspeed *= (1.0 - ((f_PlayerScalingBuilding - 1.0) * 7.0 / 110.0));
+					IncreaceAttackspeed *= (1.0 - ((12.0 - 1.0) * 7.0 / 110.0));
+					*/
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 5.0;
+					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + (f_PlayerScalingBuilding * 0.055);
+				}
+			}
+		}
+		if(npc.m_flAttackHappens_bullshit > GetGameTime(npc.index))
+		{
+			int Target;
+			Target = GetClosestTarget(npc.index,_,_,_,_,_,_,true);
+			if(IsValidEnemy(npc.index, Target))
+			{
+				float vecTarget[3];
+				float projectile_speed = 1200.0;
+			//	vecTarget = PredictSubjectPositionForProjectiles(npc, Target, projectile_speed, 75.0);
+				vecTarget = WorldSpaceCenter(Target);
 
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + IncreaceAttackspeed;
+				npc.PlayMeleeSound();
 
+				float damage = 20.0;	
+
+				damage *= npc.m_flWaveScale;
+
+				npc.FireArrow(vecTarget, damage, projectile_speed,_,_, 75.0);
+			}
+			else
+			{
+				//none...
+				Target = GetClosestTarget(npc.index,_,_,_,_,_,_,false);
+				if(IsValidEnemy(npc.index, Target))
+				{
 					float vecTarget[3];
 					float projectile_speed = 1200.0;
-					vecTarget = PredictSubjectPositionForProjectiles(npc, Target, projectile_speed, 75.0);
+				//	vecTarget = PredictSubjectPositionForProjectiles(npc, Target, projectile_speed, 75.0);
+					vecTarget = WorldSpaceCenter(Target);
+
 					npc.PlayMeleeSound();
 
-					float damage = 40.0;	
+					float damage = 20.0;	
 
 					damage *= npc.m_flWaveScale;
 
