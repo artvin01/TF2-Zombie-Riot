@@ -291,7 +291,7 @@ public Action Cosmic_Heat_Tick(int client)
 			}
 			else
 			{
-				Cosmic_Heat[client]-=1.5+Cosmic_Terror_Pap[client];
+				Cosmic_Heat[client]-=2+Cosmic_Terror_Pap[client];
 			}
 		}
 	}
