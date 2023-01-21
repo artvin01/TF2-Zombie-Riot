@@ -96,7 +96,7 @@ public void Glitched_Reload(int client, int weapon, const char[] classname)
 			TF2Attrib_SetByDefIndex(weapon, 97, glitchBaseReloadRate[client]); // Reload rate
 			
 			ClientCommand(client, "playgamesound items/powerup_pickup_base.wav");
-			SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Code error: H34Vy gUN");
 		}
@@ -114,7 +114,7 @@ public void Glitched_Reload(int client, int weapon, const char[] classname)
 			TF2Attrib_SetByDefIndex(weapon, 97, glitchBaseReloadRate[client]); // Reload rate
 			
 			ClientCommand(client, "playgamesound items/powerup_pickup_haste.wav");
-			SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Code error: H4a444A444");
 		}
@@ -133,7 +133,7 @@ public void Glitched_Reload(int client, int weapon, const char[] classname)
 			TF2Attrib_SetByDefIndex(weapon, 97, glitchBaseReloadRate[client]*1.5); // Reload rate
 			
 			ClientCommand(client, "playgamesound items/powerup_pickup_king.wav");
-			SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Code error: 411 iN");
 		}
@@ -151,7 +151,7 @@ public void Glitched_Reload(int client, int weapon, const char[] classname)
 			TF2Attrib_SetByDefIndex(weapon, 97, glitchBaseReloadRate[client]); // Reload rate
 			
 			ClientCommand(client, "playgamesound items/powerup_pickup_regeneration.wav");
-			SetHudTextParams(-1.0, 0.90, 1.5, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Code error: 5Pr34d");
 		}

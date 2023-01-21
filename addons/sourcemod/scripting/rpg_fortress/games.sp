@@ -10,6 +10,14 @@ enum
 	Suit_MAX
 }
 
+static const char SuitIcon[][] =
+{
+	"♥️",
+	"♠️",
+	"♦️",
+	"♣️"
+};
+
 enum
 {
 	Card_MIN = 2,
@@ -20,9 +28,41 @@ enum
 	Card_MAX
 }
 
+static const char NumberIcon[][] =
+{
+	"ERROR",
+	"ERROR",
+	"2",
+	"3",
+	"4",
+	"5",
+	"6",
+	"7",
+	"8",
+	"9",
+	"10",
+	"J",
+	"Q",
+	"K",
+	"A"
+};
+
 #include "rpg_fortress/games/poker.sp"
 
 static StringMap GameList;
+
+void Games_PluginStart()
+{
+	RegAdminCmd("rpg_testgame", Games_Command, ADMFLAG_ROOT);
+}
+
+public Action Games_Command(int client, int args)
+{
+	char buffer[32];
+	GetCmdArg(1, buffer, sizeof(buffer));
+	StartGame(client, buffer);
+	return Plugin_Handled;
+}
 
 void Games_ConfigSetup(KeyValues map)
 {
@@ -63,23 +103,30 @@ void Games_ClientEnter(int client, const char[] name)
 {
 	static char buffer[64];
 	if(GameList && GameList.GetString(name, buffer, sizeof(buffer)))
-		StartGame(client, name, buffer);
+		StartGame(client, buffer);
 }
 
-static void StartGame(int client, const char[] zone, const char[] game)
+static void StartGame(int client, const char[] game)
 {
 	int index = StringToInt(game);
 	switch(index)
 	{
 		case 1:
 		{
-			Games_Poker(client, zone);
+			Games_Poker(client);
 		}
 		default:
 		{
 			FakeClientCommand(client, game);
 		}
 	}
+}
+
+char[] Games_GetCardIcon(int card)
+{
+	char buffer[6];
+	FormatEx(buffer, sizeof(buffer), "%s%s ", NumberIcon[card % 100], SuitIcon[card / 100]);
+	return buffer;
 }
 
 ArrayList Games_GenerateNewDeck()

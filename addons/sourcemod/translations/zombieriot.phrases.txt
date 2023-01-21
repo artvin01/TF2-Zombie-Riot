@@ -1995,6 +1995,19 @@
 		//"it"		""
 		//"fr"		""
 	}
+	"Notif Hud Setting"
+	{
+		"en"		"Notif Hud Setting"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
 	"Armor Hud Setting Inside"
 	{
 		"#format"	"{1:.3f},{2:.3f}"
@@ -2027,6 +2040,20 @@
 	{
 		"#format"	"{1:.3f},{2:.3f}"
 		"en"		"Weapon Hud Offset\nX-Axis:{1}\nY-Axis:{2}"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Notif Hud Setting Inside"
+	{
+		"#format"	"{1:.3f},{2:.3f}"
+		"en"		"Notif Hud Offset\nX-Axis:{1}\nY-Axis:{2}"
 		//"de"		""
 		//"ru"		""
 		//"pt"		""
@@ -2092,6 +2119,45 @@
 	"Reset to Default"
 	{
 		"en"		"Reset to Default"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Mark Building For Deletion"
+	{
+		"en"		"Mark a building for deletion."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Delete Current Marked Building"
+	{
+		"en"		"Delete the current marked building ?"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Builder Extra Gear Menu"
+	{
+		"en"		"Builder extra gear menu"
 		//"de"		""
 		//"ru"		""
 		//"pt"		""

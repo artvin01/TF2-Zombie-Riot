@@ -194,9 +194,28 @@ public Action GetClosestSpawners(Handle timer)
 								int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
 								if(index != -1)
 								{
+									char name[32];
+									if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
+
+									//For Zr_lila_panic.
+									if(StrEqual(name, "underground"))
+									{
+										if(!b_PlayerIsInAnotherPart[client])
+										{
+											continue;
+										}
+									}
+									if(b_PlayerIsInAnotherPart[client])
+									{
+										if(!StrEqual(name, "underground"))
+										{
+											continue;
+										}
+									}
+
 									SpawnerData Spawner;
 									SpawnerList.GetArray(index, Spawner);
-									
+										
 									float inverting_score_calc;
 
 									inverting_score_calc = ( distance / 100000000.0);
@@ -214,7 +233,7 @@ public Action GetClosestSpawners(Handle timer)
 
 									Spawner.f_PointScore += inverting_score_calc;
 
-									SpawnerList.SetArray(index, Spawner);
+									SpawnerList.SetArray(index, Spawner);										
 								}
 							}
 						}
@@ -552,66 +571,6 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 										ShowGameText(panzer_warning_client, boss.Icon, 1, "%t", boss.Text_3);
 									}
 								}
-								
-								/*
-									Good images:
-									
-									"hud_menu_heavy_red" Fat Streched heavy
-
-								*/
-								/*
-									TODO:
-									Use Custom texts and maybe icons for each boss.
-								
-									(Panzer)
-
-									You can discern faint metalic screams not like the others...
-									
-									Distant low rumbles fill the air space...
-									
-									Die SS Division hat einer ihrer Infizierten soldaten Gesendet...
-									
-									(Sawrunner)
-									
-									Faint rattling can be heard, and its approaching at a fast pace...
-									
-									Something rapidly rams through hordes in your direction...
-									
-									Common means might not stop this agile enemy...
-									
-									(Tank)
-									
-									You have alerted the horde...
-									
-									Destruction echoes through a nearby space...
-									
-									A massive foe has entered this field...
-									
-									(Ghostface after getting found out before killing anyone)
-									
-									We are just getting started!
-									
-									Asshole!
-									
-									Lousy shot!
-									
-									(Whiteface and HER)
-									
-									Find HER
-									
-									I love watching You
-									
-									I'm afraid I can't let you do that
-									
-									{completely optional based on how masochistic you feel to code such useless detail}
-									
-									Ready for round 2?
-									
-									STAY WITH ME
-									
-									He won't let us leave
-								
-								*/
 							}
 				
 							EmitSoundToClient(panzer_warning_client, boss.Sound, panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
@@ -1546,34 +1505,37 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 			*/
 			GetEntityClassname(weapon, classname, sizeof(classname));
-			if(!StrContains(classname, "tf_weapon_knife", false) && i_CustomWeaponEquipLogic[weapon] != 6) //Irene weapon cannot backstab.
+			if(!StrContains(classname, "tf_weapon_knife", false) && f_BackstabDmgMulti[weapon] != 0.0) //Irene weapon cannot backstab.
 			{
 				if(damagetype & DMG_CLUB) //Use dmg slash for any npc that shouldnt be scaled.
 				{
-					if(IsBehindAndFacingTarget(attacker, victim) || b_FaceStabber[attacker])
+					if(IsBehindAndFacingTarget(attacker, victim) || b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
 					{
 						int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
 						int melee = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 						if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
 						{
 							i_HasBeenBackstabbed[victim] = true;
-							
+								
 							float attack_speed;
-			
+				
 							attack_speed = Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);
 							attack_speed = Attributes_FindOnWeapon(attacker, weapon, 396, true, 1.0);
-							
+								
 							EmitSoundToAll("weapons/knife_swing_crit.wav", attacker, _, _, _, 0.7);
-							
+								
 							DataPack pack = new DataPack();
 							RequestFrame(DoMeleeAnimationFrameLater, pack);
 							pack.WriteCell(EntIndexToEntRef(viewmodel));
 							pack.WriteCell(melee);
 
+
+							attack_speed *= f_BackstabCooldown[weapon]; //extra delay.
+
 						//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
 							damage *= 5.25;
 							
-							if(b_FaceStabber[attacker])
+							if(b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
 							{
 								damage *= 0.35; //cut damage in half and then some.
 							}
@@ -1584,7 +1546,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 							{
 								damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER! But not for facestabbers.
 							}
-							
+
+							damage *= f_BackstabDmgMulti[weapon];		
 #if defined ZR
 							if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
 							{
@@ -1593,14 +1556,13 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 							
 							if(EscapeMode)
 								damage *= 1.35;
-#endif
-							
+#endif						
 							
 							//Latest tf2 update broke this, too lazy to fix lol
 							/*
 							if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
 							{
-								
+							
 								RequestFrame(Try_Backstab_Anim_Again, attacker);
 								TE_Start("PlayerAnimEvent");
 								Animation_Setting[attacker] = 1;
@@ -1613,60 +1575,40 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 							}
 							*/
 							
-							int heal_amount = 0;
-							if(melee == 356)
+							int heal_amount = i_BackstabHealEachTick[weapon];
+							int heal_ticks = i_BackstabHealTicks[weapon];
+							if(heal_amount && heal_ticks)
 							{
-								heal_amount = 10;
 								if(b_FaceStabber[attacker])
 								{
-									heal_amount = 1;
+									heal_amount /= 4;
+									heal_ticks	/= 4;
+									if(heal_amount < 1)
+									{
+										heal_amount = 1;
+									}
+									if(heal_ticks < 1)
+									{
+										heal_ticks = 1;
+									}
+
 								}
-								StartHealingTimer(attacker, 0.1, 1, heal_amount);
-								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
-								SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.5 * attack_speed));
+								StartHealingTimer(attacker, 0.1, heal_amount, heal_ticks);
 							}
-							else if(melee == 225)
+							if(f_BackstabCooldown[weapon] != 0.0)
 							{
-								heal_amount = 25;
-								if(b_FaceStabber[attacker])
-								{
-									heal_amount = 4;
-								}
-								StartHealingTimer(attacker, 0.1, 2, heal_amount);
-								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.0 * attack_speed));
-								SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.0 * attack_speed));
+								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(attack_speed));
+								SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(attack_speed));
 							}
-							else if(melee == 727)
+
+							if(b_BackstabLaugh[weapon])
 							{
-								heal_amount = 25;
-								if(b_FaceStabber[attacker])
-								{
-									heal_amount = 3;
-								}
-								//THIS MELEE WILL HAVE SPECIAL PROPERTIES SO ITS RECONISED AS A SPY MELEE AT ALL TIMES!
-								StartHealingTimer(attacker, 0.1, 3, heal_amount);
 								SepcialBackstabLaughSpy(attacker);
-								
-								if(b_FaceStabber[attacker])
-								{
-									damage *= 0.75;
-								}
-								damage *= 0.75; //Nerf the dmg abit for the last knife as itsotheriwse ridicilous
-							}
-							else if(melee == 910)
-							{
-								damage *= 0.10;
-							}
-							else
-							{
-								SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+(1.5 * attack_speed));
-								SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime()+(1.5 * attack_speed));	
 							}
 						}
 					}
 				}
 			}
-			
 #if defined ZR
 			else if(!StrContains(classname, "tf_weapon_compound_bow", false))
 			{
@@ -2022,7 +1964,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 	}
 }
 
-bool DoesNpcHaveHudDebuff(int npc)
+stock bool DoesNpcHaveHudDebuff(int npc)
 {
 	if(f_HighTeslarDebuff[npc] > GetGameTime())
 		return true;
@@ -2241,7 +2183,7 @@ void GiveNamedItem(int client, const char[] name)
 }
 #endif
 
-void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false)
+stock void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false)
 {
 	for (int client = 1; client <= MaxClients; client++)
 	{
@@ -2324,7 +2266,7 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		}
 		case 7://WEAPON_PHLOG:
 		{
-			Npc_OnTakeDamage_Phlog(attacker, damagetype);
+			Npc_OnTakeDamage_Phlog(attacker);
 		}
 	}
 #endif

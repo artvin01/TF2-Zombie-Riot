@@ -169,7 +169,7 @@ methodmap MedivalTwoHandedSwordsman < CClotBody
 	
 	public MedivalTwoHandedSwordsman(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalTwoHandedSwordsman npc = view_as<MedivalTwoHandedSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "6000", ally));
+		MedivalTwoHandedSwordsman npc = view_as<MedivalTwoHandedSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "8000", ally));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_TWOHANDED_SWORDSMAN;
 		

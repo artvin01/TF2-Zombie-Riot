@@ -656,6 +656,10 @@
 	{
 		"en" 		"Golden Bloon"
 	}
+	"Bloonarius"
+	{
+		"en" 		"Bloonarius"
+	}
 	"Medic Apprentice Mage"
 	{
 		"en" 		"Medic Apprentice Mage"
@@ -1161,6 +1165,58 @@
 	"Medival Villager"
 	{
 		"en"		"Villager"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Building"
+	{
+		"en"		"Building"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Medival Construct"
+	{
+		"en"		"Medival Construct"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Champion"
+	{
+		"en"		"Medival Champion"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Light Cavalry"
+	{
+		"en"		"Light Cavalry"
 		//"de"		""
 		//"ru"		""
 		//"pt"		""

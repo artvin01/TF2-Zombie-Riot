@@ -95,12 +95,21 @@ void MedivalVillager_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 }
 
+#define MAXTRIESVILLAGER 25
+
+static bool b_WantTobuild[MAXENTITIES];
+static bool b_AlreadyReparing[MAXENTITIES];
+static float f_RandomTolerance[MAXENTITIES];
+static int i_BuildingRef;
+static int i_ClosestAlly[MAXENTITIES];
+static float i_ClosestAllyCD[MAXENTITIES];
+
 methodmap MedivalVillager < CClotBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
 		#if defined DEBUG_SOUND
@@ -112,7 +121,7 @@ methodmap MedivalVillager < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
@@ -126,7 +135,7 @@ methodmap MedivalVillager < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
 		
 		#if defined DEBUG_SOUND
@@ -136,7 +145,7 @@ methodmap MedivalVillager < CClotBody
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
@@ -144,7 +153,7 @@ methodmap MedivalVillager < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -152,7 +161,7 @@ methodmap MedivalVillager < CClotBody
 	}
 	
 	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -160,7 +169,7 @@ methodmap MedivalVillager < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
@@ -169,7 +178,7 @@ methodmap MedivalVillager < CClotBody
 	
 	public MedivalVillager(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "5000", ally));
+		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetVillagerHealth(), ally));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_VILLAGER;
 		
@@ -178,7 +187,13 @@ methodmap MedivalVillager < CClotBody
 		int iActivity = npc.LookupActivity("ACT_VILLAGER_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		
+		npc.m_iChanged_WalkCycle = 0;
+
+		if(npc.m_iChanged_WalkCycle != 4) 	
+		{
+			npc.m_iChanged_WalkCycle = 4;
+			npc.SetActivity("ACT_VILLAGER_RUN");
+		}
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -187,50 +202,99 @@ methodmap MedivalVillager < CClotBody
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalVillager_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, MedivalVillager_ClotThink);
+		i_ClosestAllyCD[npc.index] = 0.0;
 
 		npc.m_iState = 0;
-		npc.m_flSpeed = 240.0;
+		npc.m_flSpeed = 200.0;
+		b_WantTobuild[npc.index] = true;
+		b_AlreadyReparing[npc.index] = false;
+		f_RandomTolerance[npc.index] = GetRandomFloat(0.25, 0.75);
+		Is_a_Medic[npc.index] = false;
 		
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
+
+		float wave = float(ZR_GetWaveCount()+1);
+		
+		wave *= 0.1;
+	
+		npc.m_flWaveScale = wave;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_sledgehammer/c_sledgehammer.mdl");
 		SetVariantString("0.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.StartPathing();
+		PF_StopPathing(npc.index);
 
-		//Pick a random area to be teleported to intantly. loop upto 100 times, if it fails, then just spawn normally.
-
-	//	int AreasCollected = 0;
-		float f3_AreasCollected[3];
-
-		for( int loop = 1; loop <= 100; loop++ ) 
+		if(!zr_disablerandomvillagerspawn.BoolValue)
 		{
-			NavArea RandomArea = PickRandomArea();	
-				
-			if(RandomArea == NavArea_Null) 
-				break; //No nav?
+			int AreasCollected = 0;
+			float CurrentPoints = 0.0;
+			float f3_AreasCollected[3];
 
-			float vecGoal[3]; RandomArea.GetCenter(vecGoal);
-
-			vecGoal[2] += 20.0;
-
-			if(IsPointHazard(vecGoal)) //Retry.
+			for( int loop = 1; loop <= 500; loop++ ) 
 			{
-				continue;
-			}
-			else
-			{
-				TeleportEntity(npc.index, vecGoal, NULL_VECTOR, NULL_VECTOR);
-				break;
+				NavArea RandomArea = PickRandomArea();	
+					
+				if(RandomArea == NavArea_Null) 
+					break; //No nav?
+
+				float vecGoal[3]; RandomArea.GetCenter(vecGoal);
+
+				vecGoal[2] += 20.0;
+				static float hullcheckmaxs_Player_Again[3];
+				static float hullcheckmins_Player_Again[3];
+
+				hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
+				hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );	
+				if(IsPointHazard(vecGoal)) //Retry.
+				{
+					continue;
+				}
+				else if(IsSpaceOccupiedIgnorePlayers(vecGoal, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(vecGoal, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
+				{
+					continue;
+				}
+				else
+				{
+					float Accumulated_Points;
+					for(int client_check=1; client_check<=MaxClients; client_check++)
+					{
+						if(IsClientInGame(client_check) && IsPlayerAlive(client_check) && GetClientTeam(client_check)==2 && TeutonType[client_check] == TEUTON_NONE && dieingstate[client_check] == 0)
+						{		
+							float f3_PositionTemp[3];
+							GetEntPropVector(client_check, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+							float distance = GetVectorDistance( f3_PositionTemp, vecGoal, true); 
+							//leave it all squared for optimsation sake!
+							float inverting_score_calc;
+
+							inverting_score_calc = ( distance / 100000000.0);
+
+							Pow(inverting_score_calc * inverting_score_calc, 5.0);
+
+							Accumulated_Points += inverting_score_calc;
+						}
+					}
+					if(Accumulated_Points > CurrentPoints)
+					{
+						vecGoal[2] -= 20.0;
+						f3_AreasCollected = vecGoal;
+						CurrentPoints = Accumulated_Points;
+					}
+					AreasCollected += 1;
+					if(AreasCollected >= MAXTRIESVILLAGER)
+					{
+						if(vecGoal[0])
+						{
+							TeleportEntity(npc.index, f3_AreasCollected, NULL_VECTOR, NULL_VECTOR);
+						}
+						break;
+					}
+				}
 			}
 		}
-		
 		return npc;
 	}
-	
-	
 }
 
 public void MedivalVillager_ClotThink(int iNPC)
@@ -252,23 +316,376 @@ public void MedivalVillager_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
-	
+
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.05;
 
 	//Top logic should be ignored.
 	
 
+	int Behavior = -1;
 
+	int buildingentity = EntRefToEntIndex(i_BuildingRef);
 
+	if(b_WantTobuild[npc.index])
+	{
+		Behavior = 1;
+	}
+	else if(IsValidEntity(buildingentity) && i_AttacksTillMegahit[buildingentity] >= 255) //We already have 1
+	{
+		int healthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iHealth");
+		int Maxhealthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iMaxHealth");
 
+		if(healthbuilding >= Maxhealthbuilding)
+		{
+			Behavior = 0;
+		}
+		else if(healthbuilding < RoundToCeil(float(Maxhealthbuilding) * f_RandomTolerance[npc.index]) || b_AlreadyReparing[npc.index])
+		{
+			b_AlreadyReparing[npc.index] = true;
+			//Go repair!
+			Behavior = 2;
+		}
+		else
+		{
+			Behavior = 0;
+		}
+	}
+	else if(!IsValidEntity(buildingentity)) //I am sad!
+	{
+		Behavior = 3;
+	}
+
+	switch(Behavior)
+	{
+		case 0:
+		{
+			if(i_ClosestAllyCD[npc.index] < GetGameTime())
+			{
+				i_ClosestAllyCD[npc.index] = GetGameTime() + 1.0;
+				i_ClosestAlly[npc.index] = GetClosestAlly(npc.index);
+				if(IsValidEntity(buildingentity)) //We already have 1
+				{
+					i_ClosestAlly[npc.index] = GetClosestAlly(buildingentity, _ , npc.index);
+				}				
+			}
+			if(IsValidAlly(npc.index, i_ClosestAlly[npc.index]))
+			{
+				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(i_ClosestAlly[npc.index]), WorldSpaceCenter(npc.index), true);
+				if(flDistanceToTarget < Pow(125.0, 2.0))
+				{
+					if(npc.m_iChanged_WalkCycle != 5) 	
+					{
+						npc.m_bisWalking = false;
+						npc.m_flSpeed = 0.0;
+						npc.m_iChanged_WalkCycle = 5;
+						npc.SetActivity("ACT_VILLAGER_IDLE");
+						PF_StopPathing(iNPC);
+					}
+				}
+				else
+				{
+					float AproxRandomSpaceToWalkTo[3];
+					GetEntPropVector(i_ClosestAlly[npc.index], Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
+					PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
+					PF_StartPathing(iNPC);
+					if(npc.m_iChanged_WalkCycle != 4) 	
+					{
+						npc.m_bisWalking = true;
+						npc.m_flSpeed = 200.0;
+						npc.m_iChanged_WalkCycle = 4;
+						npc.SetActivity("ACT_VILLAGER_RUN");
+					}		
+				}
+			}
+			else if(IsValidEntity(buildingentity)) //We already have 1
+			{
+				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(buildingentity), WorldSpaceCenter(npc.index), true);
+				
+				PF_SetGoalEntity(npc.index, npc.m_iTarget);
+				PF_StartPathing(iNPC);
+				//Walk to building.
+				if(flDistanceToTarget < Pow(125.0, 2.0) && IsValidAlly(npc.index, buildingentity))
+				{
+					if(npc.m_iChanged_WalkCycle != 4) 	
+					{
+						npc.m_bisWalking = true;
+						npc.m_flSpeed = 200.0;
+						npc.m_iChanged_WalkCycle = 4;
+						npc.SetActivity("ACT_VILLAGER_RUN");
+					}
+				}
+				else
+				{
+					if(npc.m_iChanged_WalkCycle != 5) 	
+					{
+						npc.m_bisWalking = false;
+						npc.m_flSpeed = 0.0;
+						npc.m_iChanged_WalkCycle = 5;
+						npc.SetActivity("ACT_VILLAGER_IDLE");
+						PF_StopPathing(iNPC);
+					}
+				}
+			}
+			else
+			{
+				if(npc.m_iChanged_WalkCycle != 5) 	
+				{
+					npc.m_bisWalking = false;
+					npc.m_flSpeed = 0.0;
+					npc.m_iChanged_WalkCycle = 5;
+					npc.SetActivity("ACT_VILLAGER_IDLE");
+					PF_StopPathing(iNPC);
+				}
+			}
+		}
+		case 1:
+		{
+			//Search and find a building.
+			if(IsValidEntity(buildingentity)) //We already have 1
+			{
+				
+				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(buildingentity), WorldSpaceCenter(npc.index), true);
+
+				int Entity_I_See;
+			
+				Entity_I_See = Can_I_See_Ally(npc.index, buildingentity);
+				if(i_AttacksTillMegahit[buildingentity] < 255)
+				{
+					if(flDistanceToTarget < Pow(125.0, 2.0) && IsValidAlly(npc.index, Entity_I_See))
+					{
+						if(npc.m_iChanged_WalkCycle != 3) 	
+						{
+							npc.m_iChanged_WalkCycle = 3;
+							npc.SetActivity("ACT_VILLAGER_BUILD_LOOP");
+							PF_StopPathing(iNPC);
+							npc.m_bisWalking = false;
+							npc.m_flSpeed = 0.0;
+						}
+						i_AttacksTillMegahit[buildingentity] += 1;
+						npc.FaceTowards(WorldSpaceCenter(buildingentity), 15000.0);
+					}
+					else
+					{
+						float AproxRandomSpaceToWalkTo[3];
+						GetEntPropVector(buildingentity, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
+						PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
+						PF_StartPathing(iNPC);
+						//Walk to building.
+						if(npc.m_iChanged_WalkCycle != 4) 	
+						{
+							npc.m_bisWalking = true;
+							npc.m_flSpeed = 200.0;
+							npc.m_iChanged_WalkCycle = 4;
+							npc.SetActivity("ACT_VILLAGER_RUN");
+						}
+					}					
+				}
+				else
+				{	
+					b_WantTobuild[npc.index] = false;
+				}
+			}
+			else
+			{
+
+				
+				npc.m_bisWalking = true;
+	
+				if(IsValidEnemy(npc.index,npc.m_iTarget))
+				{
+					PF_SetGoalEntity(npc.index, npc.m_iTarget);
+					PF_StartPathing(iNPC);
+					if(npc.m_iChanged_WalkCycle != 4) 	
+					{
+						npc.m_bisWalking = true;
+						npc.m_flSpeed = 200.0;
+						npc.m_iChanged_WalkCycle = 4;
+						npc.SetActivity("ACT_VILLAGER_RUN");
+					}
+				}
+				else
+				{
+					if(npc.m_iChanged_WalkCycle != 5) 	
+					{
+						npc.m_bisWalking = false;
+						npc.m_flSpeed = 0.0;
+						npc.m_iChanged_WalkCycle = 5;
+						npc.SetActivity("ACT_VILLAGER_IDLE");
+						PF_StopPathing(iNPC);
+					}
+				}
+
+				// make a building.
+				//For now only one building exists.
+				float AproxRandomSpaceToWalkTo[3];
+
+				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
+
+				AproxRandomSpaceToWalkTo[2] += 50.0;
+
+				AproxRandomSpaceToWalkTo[0] = GetRandomFloat((AproxRandomSpaceToWalkTo[0] - 800.0),(AproxRandomSpaceToWalkTo[0] + 800.0));
+				AproxRandomSpaceToWalkTo[1] = GetRandomFloat((AproxRandomSpaceToWalkTo[1] - 800.0),(AproxRandomSpaceToWalkTo[1] + 800.0));
+
+				if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
+					return;
+				//Retry.
+					
+
+				Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
+				
+				TR_GetEndPosition(AproxRandomSpaceToWalkTo, ToGroundTrace);
+				delete ToGroundTrace;
+
+				if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
+					return;
+
+				NavArea area = TheNavMesh.GetNearestNavArea_Vec(AproxRandomSpaceToWalkTo, true);
+				if(area == NavArea_Null)
+					return;
+					
+			
+				area.GetCenter(AproxRandomSpaceToWalkTo);
+
+				AproxRandomSpaceToWalkTo[2] += 18.0;
+
+				if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
+					return;
+
+				static float hullcheckmaxs_Player_Again[3];
+				static float hullcheckmins_Player_Again[3];
+
+				hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
+				hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );	
+
+				if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
+				{
+					return;
+				}
+
+				if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
+					return;
+
+				//Retry.
+	
+				//Timeout
+				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
+
+				int spawn_index = Npc_Create(MEDIVAL_BUILDING, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+				if(spawn_index > MaxClients)
+				{
+					i_BuildingRef = EntIndexToEntRef(spawn_index);
+					Zombies_Currently_Still_Ongoing += 1;
+					i_AttacksTillMegahit[spawn_index] = 10;
+					SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);
+					SetEntityRenderColor(spawn_index, 255, 255, 255, 0);
+				}
+			}
+		}
+		case 2:
+		{
+			float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(buildingentity), WorldSpaceCenter(npc.index), true);
+
+			int Entity_I_See;
+			
+			Entity_I_See = Can_I_See_Ally(npc.index, buildingentity);
+			if(flDistanceToTarget < Pow(125.0, 2.0) && IsValidAlly(npc.index, Entity_I_See))
+			{
+				if(npc.m_iChanged_WalkCycle != 3) 	
+				{
+					npc.m_iChanged_WalkCycle = 3;
+					npc.SetActivity("ACT_VILLAGER_BUILD_LOOP");
+					PF_StopPathing(iNPC);
+					npc.m_bisWalking = false;
+					npc.m_flSpeed = 0.0;
+				}
+				int healthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iHealth");
+				int Maxhealthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iMaxHealth");
+				int AddHealth = Maxhealthbuilding / 1000;
+
+				if(AddHealth < 1)
+				{
+					AddHealth = 1;
+				}
+				healthbuilding += AddHealth;
+				if(healthbuilding > Maxhealthbuilding)
+				{
+					b_AlreadyReparing[npc.index] = false;
+					Maxhealthbuilding = healthbuilding;
+				}
+				SetEntProp(buildingentity, Prop_Data, "m_iHealth",healthbuilding);
+				npc.FaceTowards(WorldSpaceCenter(buildingentity), 15000.0);
+			}
+			else
+			{
+				float AproxRandomSpaceToWalkTo[3];
+				GetEntPropVector(buildingentity, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
+				PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
+				PF_StartPathing(iNPC);
+				//Walk to building.
+				if(npc.m_iChanged_WalkCycle != 4) 	
+				{
+					npc.m_bisWalking = true;
+					npc.m_flSpeed = 200.0;
+					npc.m_iChanged_WalkCycle = 4;
+					npc.SetActivity("ACT_VILLAGER_RUN");
+				}
+			}					
+		}
+		case 3:
+		{
+			if(IsValidEntity(buildingentity) && !b_NpcHasDied[buildingentity])
+			{
+				b_WantTobuild[npc.index] = true; //done.
+				//How?? I wanna build again!
+			}
+			if(IsValidEnemy(npc.index, npc.m_iTarget))
+			{
+				float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+
+				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+				
+				//Predict their pos.
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+
+					PF_SetGoalVector(npc.index, vPredictedPos);
+				}
+				else
+				{
+					PF_SetGoalEntity(npc.index, npc.m_iTarget);
+				}
+				PF_StartPathing(iNPC);
+				//Walk to building.
+				if(npc.m_iChanged_WalkCycle != 4) 	
+				{
+					npc.m_bisWalking = true;
+					npc.m_flSpeed = 200.0;
+					npc.m_iChanged_WalkCycle = 4;
+					npc.SetActivity("ACT_VILLAGER_RUN");
+				}
+			}
+			else
+			{
+				if(npc.m_iChanged_WalkCycle != 5) 	
+				{
+					npc.m_bisWalking = false;
+					npc.m_flSpeed = 0.0;
+					npc.m_iChanged_WalkCycle = 5;
+					npc.SetActivity("ACT_VILLAGER_IDLE");
+					PF_StopPathing(iNPC);
+				}
+			}
+		}
+	}
 
 	VillagerSelfDefense(npc,GetGameTime(npc.index)); //This is for self defense, incase an enemy is too close. This isnt the villagers main thing.
-	
+
 	npc.PlayIdleAlertSound();
 }
 
@@ -301,18 +718,18 @@ void VillagerSelfDefense(MedivalVillager npc, float gameTime)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 55.0;
+					float damage = 35.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
 						if(target <= MaxClients)
 						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_CLUB);
 						}
 						else
 						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 4.0, DMG_CLUB);	
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 4.0 * npc.m_flWaveScale, DMG_CLUB);	
 						}
 					}
 				}
@@ -395,4 +812,36 @@ public void MedivalVillager_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
+}
+
+
+static char[] GetVillagerHealth()
+{
+	int health = 60;
+	
+	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	
+	float temp_float_hp = float(health);
+	
+	if(CurrentRound+1 < 30)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.20));
+	}
+	else if(CurrentRound+1 < 45)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.25));
+	}
+	else
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+	}
+	
+	health /= 2;
+	
+	
+	health = RoundToCeil(float(health) * 1.2);
+	
+	char buffer[16];
+	IntToString(health, buffer, sizeof(buffer));
+	return buffer;
 }

@@ -1,0 +1,265 @@
+"Games"
+{
+	"#default"
+	{
+		"#supported"
+		{
+			"game"	"tf"
+			"game"	"left4dead2"
+		}
+
+		"Signatures"
+		{
+			"UTIL_GetLocalPlayer"
+			{
+				"library"	"server"
+				"linux"		"@_Z19UTIL_GetLocalPlayerv"
+				// aPlayerIsnTInTh_0
+				"windows" 	"\xA1\x2A\x2A\x2A\x2A\x8B\x40\x14\x83\xF8\x01\x7E\x2A\x33\xC0"
+			}
+			"UTIL_GetListenServerHost"
+			{
+				"library"	"server"
+				"linux"		"@_Z24UTIL_GetListenServerHostv"
+				// aUtilGetlistens
+				"windows" 	"\x8B\x0D\x2A\x2A\x2A\x2A\x8B\x01\x8B\x40\x08\xFF\xD0\x84\xC0\x74\x2A\x68\x2A\x2A\x2A\x2A"
+				
+			}
+			"NDebugOverlay::Line"
+			{
+				"library"	"server"
+				"linux"		"@_ZN13NDebugOverlay4LineERK6VectorS2_iiibf"
+				// aUpgradeMetalD 
+				"windows" 	"\x55\x8B\xEC\x83\xEC\x18\x56\xE8\x2A\x2A\x2A\x2A\x8B\xF0\x85\xF6\x0F\x84\x2A\x2A\x2A\x2A"
+				
+			}
+			"NDebugOverlay::Triangle"
+			{
+				"library"	"server"
+				"linux"		"@_ZN13NDebugOverlay8TriangleERK6VectorS2_S2_iiiibf"
+				//a32fStartingLed
+				//Same call 4 times one below, long
+				"windows" 	"\x55\x8B\xEC\x83\xEC\x30\x56\xE8\x2A\x2A\x2A\x2A"
+				
+			}
+			"NDebugOverlay::Circle"
+			{
+				"library"	"server"
+				"linux"		"@_ZN13NDebugOverlay6CircleERK6VectorS2_S2_fiiiibf"
+				//a32fSStuckAtPos
+				//inside that, small function.
+				"windows" 	"\x55\x8B\xEC\x83\xEC\x48\x8D\x45\xB8\x50\xFF\x75\x08"
+			}
+			"NDebugOverlay::BoxAngles"
+			{
+				"library"	"server"
+				"linux"		"@_ZN13NDebugOverlay9BoxAnglesERK6VectorS2_S2_RK6QAngleiiiif"
+				//idk lag comp
+				"windows" "\x55\x8B\xEC\x8B\x0D\x2A\x2A\x2A\x2A\x85\xC9\x74\x2A\xD9\x45\x28"
+			}
+		}
+		"Functions"
+		{
+			"NDebugOverlay::BoxAngles"
+			{
+				"signature" "NDebugOverlay::BoxAngles"
+				"callconv" "cdecl"
+				"return" "void"
+				"this" "ignore"
+				"hooktype" "raw"
+				"arguments"
+				{
+					"origin"
+					{
+						"type" "vectorptr"
+					}
+					"mins"
+					{
+						"type" "vectorptr"
+					}
+					"maxs"
+					{
+						"type" "vectorptr"
+					}
+					"angles"
+					{
+						"type" "vectorptr"
+					}
+					"r"
+					{
+						"type" "int"
+					}
+					"g"
+					{
+						"type" "int"
+					}
+					"b"
+					{
+						"type" "int"
+					}
+					"a"
+					{
+						"type" "int"
+					}
+					"duration"
+					{
+						"type" "float"
+					}
+				}
+			}
+			"NDebugOverlay::Line"
+			{
+				"signature" "NDebugOverlay::Line"
+				"callconv" "cdecl"
+				"return" "void"
+				"this" "ignore"
+				"hooktype" "raw"
+				"arguments"
+				{
+					"origin"
+					{
+						"type" "vectorptr"
+					}
+					"target"
+					{
+						"type" "vectorptr"
+					}
+					"r"
+					{
+						"type" "int"
+					}
+					"g"
+					{
+						"type" "int"
+					}
+					"b"
+					{
+						"type" "int"
+					}
+					"noDepthTest"
+					{
+						"type" "bool"
+					}
+					"duration"
+					{
+						"type" "float"
+					}
+				}
+			}
+			"NDebugOverlay::Circle"
+			{
+				"signature" "NDebugOverlay::Circle"
+				"callconv" "cdecl"
+				"return" "void"
+				"this" "ignore"
+				"hooktype" "raw"
+				"arguments"
+				{
+					"position"
+					{
+						"type" "vectorptr"
+					}
+					"xAxis"
+					{
+						"type" "vectorptr"
+					}
+					"yAxis"
+					{
+						"type" "vectorptr"
+					}
+					"radius"
+					{
+						"type" "float"
+					}
+					"r"
+					{
+						"type" "int"
+					}
+					"g"
+					{
+						"type" "int"
+					}
+					"b"
+					{
+						"type" "int"
+					}
+					"a"
+					{
+						"type" "int"
+					}
+					"noDepthTest"
+					{
+						"type" "bool"
+					}
+					"duration"
+					{
+						"type" "float"
+					}
+				}
+			}
+			"NDebugOverlay::Triangle"
+			{
+				"signature" "NDebugOverlay::Triangle"
+				"callconv" "cdecl"
+				"return" "void"
+				"this" "ignore"
+				"hooktype" "raw"
+				"arguments"
+				{
+					"p1"
+					{
+						"type" "vectorptr"
+					}
+					"p2"
+					{
+						"type" "vectorptr"
+					}
+					"p3"
+					{
+						"type" "vectorptr"
+					}
+					"r"
+					{
+						"type" "int"
+					}
+					"g"
+					{
+						"type" "int"
+					}
+					"b"
+					{
+						"type" "int"
+					}
+					"a"
+					{
+						"type" "int"
+					}
+					"noDepthTest"
+					{
+						"type" "bool"
+					}
+					"duration"
+					{
+						"type" "float"
+					}
+				}
+			}
+			"UTIL_GetLocalPlayer"
+			{
+				"signature" "UTIL_GetLocalPlayer"
+				"callconv" "cdecl"
+				"return" "cbaseentity"
+				"this" "ignore"
+				"hooktype" "raw"
+			}
+			"UTIL_GetListenServerHost"
+			{
+				"signature" "UTIL_GetListenServerHost"
+				"callconv" "cdecl"
+				"return" "cbaseentity"
+				"this" "ignore"
+				"hooktype" "raw"
+			}
+		}
+	}
+}

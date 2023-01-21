@@ -49,6 +49,7 @@ static void OnEnter(int entity, const char[] name)
 	else if(entity > 0 && entity <= MaxClients)
 	{
 		Crafting_ClientEnter(entity, name);
+		Games_ClientEnter(entity, name);
 		Garden_ClientEnter(entity, name);
 		Music_ZoneEnter(entity, name);
 		Quests_EnableZone(entity, name);

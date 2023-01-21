@@ -27,7 +27,7 @@ public void Configs_ConfigsExecuted()
 	{
 		char mapname[64];
 		GetCurrentMap(mapname, sizeof(mapname));
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG);
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/maps");
 		DirectoryListing dir = OpenDirectory(buffer);
 		if(dir != INVALID_HANDLE)
 		{
@@ -70,6 +70,7 @@ public void Configs_ConfigsExecuted()
 	Crafting_ConfigSetup(kv);
 	Dungeon_ConfigSetup(kv);
 	Fishing_ConfigSetup(kv);
+	Games_ConfigSetup(kv);
 	Garden_ConfigSetup(kv);
 	Mining_ConfigSetup(kv);
 	Music_ConfigSetup(kv);

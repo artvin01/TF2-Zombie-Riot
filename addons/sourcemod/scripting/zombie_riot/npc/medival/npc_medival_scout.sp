@@ -199,7 +199,7 @@ methodmap MedivalScout < CClotBody
 		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.m_iWearable4 = npc.EquipItemSeperate("partyhat", "models/workshop/player/items/engineer/hwn2022_pony_express/hwn2022_pony_express.mdl");
+		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/engineer/hwn2022_pony_express/hwn2022_pony_express.mdl");
 		SetVariantString("1.1");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 

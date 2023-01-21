@@ -3,6 +3,13 @@
 
 // ♠️ ♣️ ♥️ ♦️
 
+#define SOUND_START	"ui/duel_challenge.wav"
+#define SOUND_WIN	"ui/duel_challenge_accepted_with_restriction.wav"
+#define SOUND_LOST	"ui/duel_challenge_rejected_with_restriction.wav"
+#define SOUND_BET	"ui/duel_score_behind.wav"
+#define SOUND_MATCH	"mvm/mvm_money_pickup.wav"
+#define SOUND_EVENT	"ui/quest_alert.wav"
+
 enum
 {
 	Poker_Waiting = 0,
@@ -12,8 +19,36 @@ enum
 	Poker_Results
 }
 
+enum
+{
+	Poker_HighCard = 0,
+	Poker_OnePair,
+	Poker_TwoPair,
+	Poker_ThreeKind,
+	Poker_Straight,
+	Poker_Flush,
+	Poker_FullHouse,
+	Poker_FourKind,
+	Poker_StraightFlush
+}
+
+static const char RankNames[][] =
+{
+	"High Card",
+	"One Pair",
+	"Two Pair",
+	"Three of a Kind",
+	"Straight",
+	"Flush",
+	"Full House",
+	"Four of a Kind",
+	"Straight Flush"
+};
+
 static int MinBet;
 static int GameState;
+static int PrizePool;
+static int GameWinner;
 static int CurrentBet;
 static float TimeLeft;
 static bool Viewing[MAXTF2PLAYERS];
@@ -25,9 +60,6 @@ static Handle PokerTimer;
 
 void Games_Poker(int client)
 {
-	if(!PokerTable)
-		PokerTable = new StringMap();
-	
 	bool found;
 	for(int i = 1; i <= MaxClients; i++)
 	{
@@ -40,32 +72,29 @@ void Games_Poker(int client)
 
 	Menu menu = new Menu(PokerJoinMenu);
 
-	int bet;
-	if(found && PokerTable.GetValue(name, bet))
+	if(found)
 	{
-		menu.SetTitle("Draw Poker\n \nRules:\nMin Bet: %d Credits\nRaise Limit: %s\nJokers: 0\n ", bet, bet ? "x10" : "x0");
+		menu.SetTitle("Draw Poker\n \nRules:\nMin Bet: %d Credits\nRaise Limit: %s\nJokers: 0\n ", MinBet, MinBet ? "x8" : "x0");
 
-		int cash = TextStore_Cash(client);
-
-		menu.AddItem(name, "How to Play");
-		menu.AddItem(name, "Join Table");
+		menu.AddItem(NULL_STRING, "How to Play");
+		menu.AddItem(NULL_STRING, "View Table");
 	}
 	else
 	{
 		menu.SetTitle("Draw Poker\n ");
 
-		menu.AddItem(name, "How to Play\n \nRules:");
+		menu.AddItem(NULL_STRING, "How to Play\n \nRules:");
 
 		int cash = TextStore_Cash(client);
 
-		menu.AddItem(name, "0 Credit Bet");
-		menu.AddItem(name, "10 Credit Bet", cash < 500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(name, "25 Credit Bet", cash < 1250 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(name, "50 Credit Bet", cash < 2500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(name, "100 Credit Bet", cash < 5000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(name, "250 Credit Bet", cash < 12500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(name, "500 Credit Bet", cash < 25000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(name, "1000 Credit Bet", cash < 50000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "0 Credit Bet");
+		menu.AddItem(NULL_STRING, "10 Credit Bet", cash < 500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "25 Credit Bet", cash < 1250 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "50 Credit Bet", cash < 2500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "100 Credit Bet", cash < 5000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "250 Credit Bet", cash < 12500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "500 Credit Bet", cash < 25000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "1000 Credit Bet", cash < 50000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 		menu.Pagination = 0;
 		menu.ExitButton = true;
@@ -101,44 +130,41 @@ public int PokerJoinMenu(Menu menu, MenuAction action, int client, int choice)
 					}
 				}
 
-				int bet;
-				if(!found || !PokerTable.GetValue(name, bet))
+				if(!found)
 				{
 					switch(choice)
 					{
 						case 1:
-							bet = 25;
+							MinBet = 10;
 						
 						case 2:
-							bet = 50;
+							MinBet = 25;
 						
 						case 3:
-							bet = 100;
+							MinBet = 50;
 						
 						case 4:
-							bet = 250;
+							MinBet = 100;
 						
 						case 5:
-							bet = 500;
+							MinBet = 250;
 						
 						case 6:
-							bet = 1000;
+							MinBet = 500;
 						
 						case 7:
-							bet = 2500;
-						
-						case 8:
-							bet = 5000;
+							MinBet = 1000;
 						
 						default:
-							bet = 10;
+							MinBet = 0;
 					}
-
-					PokerTable.SetValue(name, bet);
 				}
 
 				Viewing[client] = true;
 				PokerMenu(client);
+
+				if(!PokerTimer)
+					PokerTimer = CreateTimer(0.5, Poker_Timer, _, TIMER_REPEAT);
 			}
 			else
 			{
@@ -176,6 +202,7 @@ public int PokerJoinMenu(Menu menu, MenuAction action, int client, int choice)
 			}
 		}
 	}
+	return 0;
 }
 
 public Action Poker_Timer(Handle timer)
@@ -233,10 +260,52 @@ public Action Poker_Timer(Handle timer)
 				{
 					TimeLeft = gameTime + 15.0;
 				}
-				else if(TimeLeft < gameTime)
+				else if(count > 4 || TimeLeft < gameTime)
 				{
 					StartGame();
 				}
+			}
+		}
+		case Poker_Discard:
+		{
+			int count;
+			for(int i = 1; i <= MaxClients; i++)
+			{
+				if(Playing[i])
+					count++;
+			}
+
+			if(count < 2)
+			{
+				ResultPeriod();
+			}
+			else if(TimeLeft < gameTime)
+			{
+				RedrawPeriod();
+			}
+		}
+		case Poker_Final:
+		{
+			int count;
+			for(int i = 1; i <= MaxClients; i++)
+			{
+				if(Playing[i])
+					count++;
+			}
+
+			if(count < 2 || TimeLeft < gameTime)
+			{
+				ResultPeriod();
+			}
+		}
+		case Poker_Results:
+		{
+			if(TimeLeft < gameTime)
+			{
+				Zero(Playing);
+
+				TimeLeft = 0.0;
+				GameState = Poker_WarmUp;
 			}
 		}
 	}
@@ -265,7 +334,7 @@ static void PokerMenu(int client)
 		{
 			if(TimeLeft)
 			{
-				menu.SetTitle("Draw Poker\nGetting ready... %.0f\n ", FancyPeriodThing(), TimeLeft - GetGameTime());
+				menu.SetTitle("Draw Poker\nGetting ready... %.0f\n ", TimeLeft - GetGameTime());
 			}
 			else
 			{
@@ -280,7 +349,7 @@ static void PokerMenu(int client)
 			else
 			{
 				FormatEx(buffer, sizeof(buffer), "Join Game (%d Bet)\n ", MinBet);
-				menu.AddItem(buffer, buffer, TextStore_Cash(client) < (MinBet * 10) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				menu.AddItem(buffer, buffer, TextStore_Cash(client) < (MinBet * 8) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			}
 
 			int count;
@@ -301,9 +370,146 @@ static void PokerMenu(int client)
 
 			menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
 		}
+		case Poker_Discard, Poker_Final:
+		{
+			char buffer[32];
+			if(Playing[client])
+			{
+				if(GameState == Poker_Discard)
+				{
+					menu.SetTitle("Draw Poker\nChoose what to discard... %.0f\n ", TimeLeft - GetGameTime());
+
+					for(int i; i < sizeof(Cards[]); i++)
+					{
+						if(Discarding[client] & (1 << i))
+						{
+							FormatEx(buffer, sizeof(buffer), "%s (Discarding)", Games_GetCardIcon(Cards[client][i]));
+						}
+						else
+						{
+							FormatEx(buffer, sizeof(buffer), "%s (Keeping)", Games_GetCardIcon(Cards[client][i]));
+						}
+
+						menu.AddItem(buffer, buffer);
+					}
+				}
+				else
+				{
+					menu.SetTitle("Draw Poker\n%s... %.0f\n ", RankNames[GetCardRank(Cards[client])], TimeLeft - GetGameTime());
+
+					for(int i; i < sizeof(Cards[]); i++)
+					{
+						menu.AddItem(buffer, Games_GetCardIcon(Cards[client][i]), ITEMDRAW_DISABLED);
+					}
+				}
+
+				menu.AddItem(buffer, buffer, ITEMDRAW_SPACER);
+
+				bool allIn;
+				if(!MinBet)
+				{
+					menu.AddItem(buffer, "Free Game ($0)", ITEMDRAW_DISABLED);
+				}
+				else if(Playing[client] < CurrentBet)
+				{
+					FormatEx(buffer, sizeof(buffer), "Match New Bet and Keep Playing? ($%d -> $%d)\n ", Playing[client], CurrentBet);
+					menu.AddItem(buffer, buffer);
+				}
+				else if(CurrentBet >= (MinBet * 8))
+				{
+					FormatEx(buffer, sizeof(buffer), "All In ($%d)\n ", CurrentBet);
+					menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+					allIn = true;
+				}
+				else if(CurrentBet >= (MinBet * 4))
+				{
+					FormatEx(buffer, sizeof(buffer), "All In ($%d -> $%d)\n ", CurrentBet, CurrentBet * 2);
+					menu.AddItem(buffer, buffer);
+				}
+				else
+				{
+					FormatEx(buffer, sizeof(buffer), "Double Bet ($%d -> $%d)\n ", CurrentBet, CurrentBet * 2);
+					menu.AddItem(buffer, buffer);
+				}
+
+				menu.AddItem(buffer, "Fold", allIn ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				menu.Pagination = 0;
+			}
+			else
+			{
+				menu.SetTitle("Draw Poker\nGame in progress%s\n ", FancyPeriodThing());
+
+				int count;
+				for(int i = 1; i <= MaxClients; i++)
+				{
+					if(Playing[i])
+						count++;
+				}
+
+				FormatEx(buffer, sizeof(buffer), "%d players left", count);
+				menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+			}
+		}
+		case Poker_Results:
+		{
+			char buffer[32];
+			if(!IsClientInGame(GameWinner) || !GetClientName(GameWinner, buffer, sizeof(buffer)))
+				strcopy(buffer, sizeof(buffer), "Disconnected");
+
+			int count;
+			for(int i = 1; i <= MaxClients; i++)
+			{
+				if(Playing[i])
+					count++;
+			}
+
+			if(count > 1)
+			{
+				int rank = GetCardRank(Cards[GameWinner]);
+				
+				menu.SetTitle("Draw Poker\n%s won the game\n%s\n%s %s %s %s %s\n ", buffer, RankNames[rank],
+					Games_GetCardIcon(Cards[GameWinner][0]), 
+					Games_GetCardIcon(Cards[GameWinner][1]), 
+					Games_GetCardIcon(Cards[GameWinner][2]), 
+					Games_GetCardIcon(Cards[GameWinner][3]), 
+					Games_GetCardIcon(Cards[GameWinner][4]));
+			}
+			else
+			{
+				menu.SetTitle("Draw Poker\n%s won the game\nLast Man\n ");
+			}
+
+			if(GameWinner == client)
+			{
+				FormatEx(buffer, sizeof(buffer), "You won %d credits", PrizePool);
+			}
+			else
+			{
+				menu.AddItem(buffer, "Your Hand:", ITEMDRAW_DISABLED);
+
+				if(Playing[client])
+				{
+					int rank = GetCardRank(Cards[client]);
+					menu.AddItem(buffer, RankNames[rank], ITEMDRAW_DISABLED);
+
+					FormatEx(buffer, sizeof(buffer), "%s %s %s %s %s",
+						Games_GetCardIcon(Cards[client][0]), 
+						Games_GetCardIcon(Cards[client][1]), 
+						Games_GetCardIcon(Cards[client][2]), 
+						Games_GetCardIcon(Cards[client][3]), 
+						Games_GetCardIcon(Cards[client][4]));
+				}
+				else
+				{
+					buffer[0] = 0;
+				}
+			}
+
+			menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+		}
 	}
 
-	menu.ExitButton = Playing[client];
+	menu.ExitButton = !Playing[client];
 	Viewing[client] = menu.Display(client, 2);
 }
 
@@ -327,12 +533,78 @@ public int PokerTableMenu(Menu menu, MenuAction action, int client, int choice)
 				{
 					if(Playing[client])
 					{
-						Playing[client] = false;
-						TriggerTimer();
+						Playing[client] = 0;
+						TriggerTimer(PokerTimer);
 					}
-					else if(TextStore_Cash(client) >= MinBet)
+					else if(TextStore_Cash(client) >= (MinBet * 8))
 					{
+						Playing[client] = MinBet;
+						TriggerTimer(PokerTimer);
+					}
+				}
+				case Poker_Discard, Poker_Final:
+				{
+					if(Playing[client])
+					{
+						if(choice < 5)
+						{
+							if(Discarding[client] & (1 << choice))
+							{
+								Discarding[client] &= ~(1 << choice);
+							}
+							else
+							{
+								Discarding[client] |= (1 << choice);
+							}
+						}
+						else if(choice == 6 && CurrentBet)	// Bet
+						{
+							if(Playing[client] < CurrentBet)
+							{
+								int cost = CurrentBet - Playing[client];
+								if(TextStore_Cash(client) >= cost)
+								{
+									PrizePool += cost;
+									TextStore_Cash(client, -cost);
+									Playing[client] = CurrentBet;
+									ClientCommand(client, "playgamesound %s", SOUND_MATCH);
+								}
+							}
+							else if(TextStore_Cash(client) >= CurrentBet)
+							{
+								PrizePool += CurrentBet;
+								TextStore_Cash(client, -CurrentBet);
 
+								CurrentBet *= 2;
+								Playing[client] = CurrentBet;
+								ClientCommand(client, "playgamesound %s", SOUND_MATCH);
+
+								float time = GetGameTime() + 10.0;
+								if(TimeLeft < time)
+									TimeLeft = time;
+
+								for(int i = 1; i <= MaxClients; i++)
+								{
+									if(i != client && Playing[i])
+									{
+										SPrintToChat(i, "%N doubled the current bet!", client);
+										ClientCommand(i, "playgamesound %s", SOUND_BET);
+										PokerMenu(i);
+									}
+								}
+							}
+						}
+						else if(choice == 7)	// Fold
+						{
+							Playing[client] = 0;
+							ClientCommand(client, "playgamesound %s", SOUND_LOST);
+
+							for(int i = 1; i <= MaxClients; i++)
+							{
+								if(i != client && Playing[i])
+									SPrintToChat(i, "%N folded!", client);
+							}
+						}
 					}
 				}
 			}
@@ -340,6 +612,7 @@ public int PokerTableMenu(Menu menu, MenuAction action, int client, int choice)
 			PokerMenu(client);
 		}
 	}
+	return 0;
 }
 
 static char[] FancyPeriodThing()
@@ -366,23 +639,264 @@ static void StartGame()
 	delete CurrentDeck;
 	Zero2(Cards);
 	Zero(Discarding);
+	PrizePool = 0;
+	CurrentBet = MinBet;
 
 	CurrentDeck = Games_GenerateNewDeck();
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(Playing[client])
 		{
-			// Normally, we would give out one at a time to each player
-			// Counterpoint: We're in code baby
-			for(int i; i < 5; i++)
+			if(TextStore_Cash(client) < MinBet)
 			{
-				int index = GetURandomInt() % CurrentDeck.Length;
-				Cards[client][i] = CurrentDeck.Get(index);
-				CurrentDeck.Erase(index);
+				Playing[client] = 0;
+			}
+			else
+			{
+				ClientCommand(client, "playgamesound %s", SOUND_START);
+				
+				TextStore_Cash(client, -MinBet);
+				PrizePool += MinBet;
+
+				// Normally, we would give out one at a time to each player
+				// Counterpoint: We're in code baby
+				for(int i; i < 5; i++)
+				{
+					int index = GetURandomInt() % CurrentDeck.Length;
+					Cards[client][i] = CurrentDeck.Get(index);
+					CurrentDeck.Erase(index);
+				}
 			}
 		}
 	}
 
-	TimeLeft = gameTime + 30.0;
+	TimeLeft = GetGameTime() + 30.0;
 	GameState = Poker_Discard;
+}
+
+static void RedrawPeriod()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(Playing[client])
+		{
+			if(Playing[client] < CurrentBet)
+			{
+				ClientCommand(client, "playgamesound %s", SOUND_LOST);
+
+				for(int i = 1; i <= MaxClients; i++)
+				{
+					if(Playing[i])
+						SPrintToChat(i, "%N folded!", client);
+				}
+				
+				Playing[client] = 0;
+			}
+			else
+			{
+				ClientCommand(client, "playgamesound %s", SOUND_EVENT);
+				
+				for(int i; i < 5; i++)
+				{
+					if(Discarding[client] & (1 << i))
+					{
+						int index = GetURandomInt() % CurrentDeck.Length;
+						Cards[client][i] = CurrentDeck.Get(index);
+						CurrentDeck.Erase(index);
+					}
+				}
+			}
+		}
+	}
+
+	TimeLeft = GetGameTime() + 10.0;
+	GameState = Poker_Final;
+}
+
+static void ResultPeriod()
+{
+	int count, winrank;
+	int[] winners = new int[MaxClients];
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(Playing[client])
+		{
+			if(Playing[client] < CurrentBet)
+			{
+				ClientCommand(client, "playgamesound %s", SOUND_LOST);
+
+				for(int i = 1; i <= MaxClients; i++)
+				{
+					if(Playing[i])
+						SPrintToChat(i, "%N folded!", client);
+				}
+				
+				Playing[client] = 0;
+			}
+			else
+			{
+				int rank = GetCardRank(Cards[client]);
+				if(rank > winrank)
+				{
+					winners[0] = client;
+					count = 1;
+					winrank = rank;
+				}
+				else if(winrank == rank)
+				{
+					winners[count++] = client;
+				}
+			}
+		}
+	}
+
+	if(!count)
+	{
+		GameState = Poker_WarmUp;
+		TimeLeft = 0.0;
+	}
+	else
+	{
+		GameState = Poker_Results;
+		TimeLeft = GetGameTime() + 10.0;
+
+		int index;
+		if(count > 1)
+		{
+			int high;
+			for(int c; c < sizeof(Cards[]); c++)
+			{
+				for(int i; i < count; i++)
+				{
+					int card = Cards[winners[i]][c] % 100;
+					if(card > high)
+					{
+						high = card;
+						index = i;
+					}
+				}
+			}
+		}
+		
+		GameWinner = winners[index];
+		ClientCommand(winners[index], "playgamesound %s", SOUND_WIN);
+		if(PrizePool)
+			TextStore_AddItemCount(winners[index], ITEM_CASH, PrizePool);
+
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(client != winners[index] && Playing[client])
+				ClientCommand(client, "playgamesound %s", SOUND_LOST);
+		}
+	}
+}
+
+static int GetCardRank(const int card[5])
+{
+	int count[sizeof(card) - 1];
+
+	bool straight = true;
+	bool flush = true;
+
+	for(int i; i < sizeof(card); i++)
+	{
+		if(i && flush)
+		{
+			// Check for suits
+			if((card[0] / 100) != (card[i] / 100))
+				flush = false;
+		}
+
+		int number = card[i] % 100;
+		if(i != (sizeof(card) - 1))
+		{
+			bool foundUp, foundDown;
+			for(int a = (i + i); a < sizeof(card); a++)
+			{
+				int num = card[a] % 100;
+				if(number == num)	// Found the same number
+				{
+					foundUp = false;
+					foundDown = false;
+					break;
+				}
+
+				if(number == (num - 1))
+				{
+					if(foundUp)	// Found the same number
+					{
+						foundUp = false;
+						foundDown = false;
+						break;
+					}
+
+					foundUp = true;
+				}
+
+				if(number == (num + 1))
+				{
+					if(foundDown)	// Found the same number
+					{
+						foundUp = false;
+						foundDown = false;
+						break;
+					}
+
+					foundDown = true;
+				}
+			}
+
+			if(!foundUp && !foundDown)
+				straight = false;
+		}
+
+		if(i)
+		{
+			for(int a; a < i; a++)
+			{
+				if(number == card[a] % 100)
+				{
+					count[a]++;
+					break;
+				}
+			}
+		}
+	}
+
+	if(straight && flush)
+		return Poker_StraightFlush;
+	
+	bool three;
+	int two;
+	for(int i; i < sizeof(count); i++)
+	{
+		if(count[i] == 3)
+			return Poker_FourKind;
+		
+		if(count[i] == 2)
+			three = true;
+		
+		if(count[i])
+			two++;
+	}
+
+	if(three && two == 2)
+		return Poker_FullHouse;
+
+	if(flush)
+		return Poker_Flush;
+
+	if(straight)
+		return Poker_Straight;
+
+	if(three)
+		return Poker_ThreeKind;
+
+	if(two == 2)
+		return Poker_TwoPair;
+
+	if(two)
+		return Poker_OnePair;
+	
+	return Poker_HighCard;
 }

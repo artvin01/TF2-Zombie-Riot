@@ -321,11 +321,17 @@ public void MedivalPikeman_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									
+									float damage = 18.0;
+
+									if(Medival_Difficulty_Level > 1.0)
+									{
+										damage = 25.0;
+									}
+
 									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 25.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 2.5, DMG_CLUB, -1, _, vecHit);
 									
 									// Hit particle
 									

@@ -87,7 +87,7 @@ public void Weapon_Black_Fire_Wand(int client, int weapon, bool crit)
 	else
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 	}
@@ -245,7 +245,7 @@ public void Weapon_Amaterasu(int client, int weapon, const char[] classname, boo
 					Ability_CD = 0.0;
 			
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 			}
@@ -253,7 +253,7 @@ public void Weapon_Amaterasu(int client, int weapon, const char[] classname, boo
 		else
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 		}

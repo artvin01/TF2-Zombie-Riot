@@ -47,7 +47,7 @@ public const char NPC_Names[][] =
 	"Father Grigori ?",
 	"Farming Cow",
 	"Originium Slug",
-	"Scarlet_Singer"
+	"Scarlet Singer"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -91,6 +91,8 @@ void NPC_MapStart()
 	FastZombie_OnMapStart_NPC();
 	EnemyFatherGrigori_OnMapStart_NPC();
 	FarmCow_OnMapStart_NPC();
+	ArkSlug_MapStart();
+	ArkSinger_MapStart();
 }
 
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 120.0
@@ -160,10 +162,6 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 		case FATHER_GRIGORI:
 		{
 			entity = EnemyFatherGrigori(client, vecPos, vecAng, ally);
-		}
-		case FARM_COW:
-		{
-			entity = FarmCow(client, vecPos, vecAng, ally);
 		}
 		case FARM_COW:
 		{

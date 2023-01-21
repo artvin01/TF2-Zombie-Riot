@@ -125,3 +125,15 @@ Alot of code is borrowed/just takes from other plugins i or friends made, often 
 rarely without cus i couldnt contact the person or it was just open sourcecode, credited anyways when i did that.
 
 IF YOU HAVE ANY QUESTIONS, CONTACT ME. My things are in my Bio.
+
+
+Note:
+Compile both listen.so and envnav.sp so you can edit the navmesh live on the server.
+
+Credits go to - [Arthurdead](https://github.com/arthurdead) for the original plugin nav plugin
+I just got windows gamedata.
+To edit the nav live, do sm_nav_edit_mode 
+BEWARE, THIS SETS sv_cheats TO 1, Do it again to disable, you must also run sm_rcon for any nav command
+(Zr will hide that sv_cheats got set and other stuff, and will also hide it from players, i will in the future code an anti cheat in zr to prevent this)
+
+Just dont announce that youll do it.

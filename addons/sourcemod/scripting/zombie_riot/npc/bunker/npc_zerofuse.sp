@@ -59,6 +59,10 @@ static const char g_HealingSound[][] = {
 	"zombie_riot/zerofuse/healing.mp3",
 };
 
+static const char g_HealingSound2[][] = {
+	"zombie_riot/zerofuse/healing2.mp3",
+};
+
 static const char g_SummonMinions[][] = {
 	"zombie_riot/zerofuse/lastman1.mp3",
 };
@@ -100,6 +104,30 @@ static const char g_Switch2[][] = {
 
 static const char g_Switch3[][] = {
 	"zombie_riot/zerofuse/switching3.mp3",
+};
+
+static const char g_Mood1[][] = {
+	"zombie_riot/zerofuse/mood1.mp3",
+};
+
+static const char g_Mood2[][] = {
+	"zombie_riot/zerofuse/mood2.mp3",
+};
+
+static const char g_Mood3[][] = {
+	"zombie_riot/zerofuse/mood3.mp3",
+};
+
+static const char g_Kill1[][] = {
+	"zombie_riot/zerofuse/kill1.mp3",
+};
+
+static const char g_Kill2[][] = {
+	"zombie_riot/zerofuse/kill2.mp3",
+};
+
+static const char g_Lifeloss[][] = {
+	"zombie_riot/zerofuse/lifeloss.mp3",
 };
 
 static float fl_AbilityManager_Timer[MAXENTITIES];
@@ -153,6 +181,7 @@ void TrueZerofuse_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	for (int i = 0; i < (sizeof(g_BalanceSound));   i++) { PrecacheSound(g_BalanceSound[i]);   }
 	for (int i = 0; i < (sizeof(g_HealingSound));   i++) { PrecacheSound(g_HealingSound[i]);   }
+	for (int i = 0; i < (sizeof(g_HealingSound2));   i++) { PrecacheSound(g_HealingSound2[i]);   }
 	for (int i = 0; i < (sizeof(g_SummonMinions));   i++) { PrecacheSound(g_SummonMinions[i]);   }
 	for (int i = 0; i < (sizeof(g_IntroSound));   i++) { PrecacheSound(g_IntroSound[i]);   }
 	for (int i = 0; i < (sizeof(g_JumpSound));   i++) { PrecacheSound(g_JumpSound[i]);   }
@@ -163,6 +192,12 @@ void TrueZerofuse_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_Switch1));   i++) { PrecacheSound(g_Switch1[i]);   }
 	for (int i = 0; i < (sizeof(g_Switch2));   i++) { PrecacheSound(g_Switch2[i]);   }
 	for (int i = 0; i < (sizeof(g_Switch3));   i++) { PrecacheSound(g_Switch3[i]);   }
+	for (int i = 0; i < (sizeof(g_Mood1));   i++) { PrecacheSound(g_Mood1[i]);   }
+	for (int i = 0; i < (sizeof(g_Mood2));   i++) { PrecacheSound(g_Mood2[i]);   }
+	for (int i = 0; i < (sizeof(g_Mood3));   i++) { PrecacheSound(g_Mood3[i]);   }
+	for (int i = 0; i < (sizeof(g_Kill1));   i++) { PrecacheSound(g_Kill1[i]);   }
+	for (int i = 0; i < (sizeof(g_Kill2));   i++) { PrecacheSound(g_Kill2[i]);   }
+	for (int i = 0; i < (sizeof(g_Lifeloss));   i++) { PrecacheSound(g_Lifeloss[i]);   }
 	PrecacheSound("zombie_riot/zerofuse/offensive_rage2.mp3", true);
 	PrecacheSound("zombie_riot/shoptheme.mp3", true);
 	PrecacheSound(EXPLOSION1, true);
@@ -282,11 +317,23 @@ methodmap TrueZerofuse < CClotBody
 		#endif
 	}
 	public void PlayHealingSound() {
-		EmitSoundToAll(g_HealingSound[GetRandomInt(0, sizeof(g_HealingSound) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_HealingSound[GetRandomInt(0, sizeof(g_HealingSound) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_HealingSound[GetRandomInt(0, sizeof(g_HealingSound) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_HealingSound[GetRandomInt(0, sizeof(g_HealingSound) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_HealingSound[GetRandomInt(0, sizeof(g_HealingSound) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		switch(GetRandomInt(1,4))
+		{
+			case 1:
+			{
+				EmitSoundToAll(g_HealingSound2[GetRandomInt(0, sizeof(g_HealingSound2) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+				EmitSoundToAll(g_HealingSound2[GetRandomInt(0, sizeof(g_HealingSound2) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+				EmitSoundToAll(g_HealingSound2[GetRandomInt(0, sizeof(g_HealingSound2) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+			}
+			default:
+			{
+				EmitSoundToAll(g_HealingSound[GetRandomInt(0, sizeof(g_HealingSound) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+				EmitSoundToAll(g_HealingSound[GetRandomInt(0, sizeof(g_HealingSound) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+				EmitSoundToAll(g_HealingSound[GetRandomInt(0, sizeof(g_HealingSound) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+				EmitSoundToAll(g_HealingSound[GetRandomInt(0, sizeof(g_HealingSound) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+				EmitSoundToAll(g_HealingSound[GetRandomInt(0, sizeof(g_HealingSound) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+			}
+		}
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayHealingSound()");
@@ -297,6 +344,51 @@ methodmap TrueZerofuse < CClotBody
 		EmitSoundToAll(g_SummonMinions[GetRandomInt(0, sizeof(g_SummonMinions) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 		EmitSoundToAll(g_SummonMinions[GetRandomInt(0, sizeof(g_SummonMinions) - 1)], _, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 		
+		#if defined DEBUG_SOUND
+		PrintToServer("CGoreFast::PlaySummonMinionSound()");
+		#endif
+	}
+	public void PlayMoodOne() {
+		EmitSoundToAll(g_Mood1[GetRandomInt(0, sizeof(g_Mood1) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_Mood1[GetRandomInt(0, sizeof(g_Mood1) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_Mood1[GetRandomInt(0, sizeof(g_Mood1) - 1)], _, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CGoreFast::PlaySummonMinionSound()");
+		#endif
+	}
+	public void PlayMoodTwo() {
+		EmitSoundToAll(g_Mood2[GetRandomInt(0, sizeof(g_Mood2) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_Mood2[GetRandomInt(0, sizeof(g_Mood2) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_Mood2[GetRandomInt(0, sizeof(g_Mood2) - 1)], _, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CGoreFast::PlaySummonMinionSound()");
+		#endif
+	}
+	public void PlayMoodThree() {
+		EmitSoundToAll(g_Mood3[GetRandomInt(0, sizeof(g_Mood3) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_Mood3[GetRandomInt(0, sizeof(g_Mood3) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_Mood3[GetRandomInt(0, sizeof(g_Mood3) - 1)], _, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CGoreFast::PlaySummonMinionSound()");
+		#endif
+	}
+	public void PlayKillPlayer() {
+		switch(GetRandomInt(1,2))
+		{
+			case 1:
+			{
+				EmitSoundToAll(g_Kill1[GetRandomInt(0, sizeof(g_Kill1) - 1)], _, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+				EmitSoundToAll(g_Kill1[GetRandomInt(0, sizeof(g_Kill1) - 1)], _, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+			}
+			case 2:
+			{
+				EmitSoundToAll(g_Kill2[GetRandomInt(0, sizeof(g_Kill2) - 1)], _, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+				EmitSoundToAll(g_Kill2[GetRandomInt(0, sizeof(g_Kill2) - 1)], _, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+			}
+		}
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlaySummonMinionSound()");
 		#endif
@@ -349,11 +441,21 @@ methodmap TrueZerofuse < CClotBody
 		PrintToServer("CGoreFast::PlayAoe()");
 		#endif
 	}
+	public void PlayLifelossSound() {
+		EmitSoundToAll(g_Lifeloss[GetRandomInt(0, sizeof(g_Lifeloss) - 1)], _, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_Lifeloss[GetRandomInt(0, sizeof(g_Lifeloss) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		//EmitSoundToAll(g_Lifeloss[GetRandomInt(0, sizeof(g_Lifeloss) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CGoreFast::PlayAoe()");
+		#endif
+	}
 	public void PlaySwitchSound() {
 		switch(GetRandomInt(1,3))
 		{
 			case 1:
 			{
+				EmitSoundToAll(g_Switch1[GetRandomInt(0, sizeof(g_Switch1) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 				EmitSoundToAll(g_Switch1[GetRandomInt(0, sizeof(g_Switch1) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 				EmitSoundToAll(g_Switch1[GetRandomInt(0, sizeof(g_Switch1) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 				EmitSoundToAll(g_Switch1[GetRandomInt(0, sizeof(g_Switch1) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
@@ -363,9 +465,11 @@ methodmap TrueZerofuse < CClotBody
 				EmitSoundToAll(g_Switch2[GetRandomInt(0, sizeof(g_Switch2) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 				EmitSoundToAll(g_Switch2[GetRandomInt(0, sizeof(g_Switch2) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 				EmitSoundToAll(g_Switch2[GetRandomInt(0, sizeof(g_Switch2) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+				EmitSoundToAll(g_Switch2[GetRandomInt(0, sizeof(g_Switch2) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 			}
 			case 3:
 			{
+				EmitSoundToAll(g_Switch3[GetRandomInt(0, sizeof(g_Switch3) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 				EmitSoundToAll(g_Switch3[GetRandomInt(0, sizeof(g_Switch3) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 				EmitSoundToAll(g_Switch3[GetRandomInt(0, sizeof(g_Switch3) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 				EmitSoundToAll(g_Switch3[GetRandomInt(0, sizeof(g_Switch3) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
@@ -541,25 +645,32 @@ public void TrueZerofuse_ClotThink(int iNPC)
 			RaidBossActive = INVALID_ENT_REFERENCE;
 			SDKUnhook(npc.index, SDKHook_Think, TrueZerofuse_ClotThink);
 		}
+		//Only works once do not remove this unless you have a better idea doing this
 		if(RaidModeTime - GetGameTime() < 180.0 && b_FirstMessage[npc.index])
 		{
 			CPrintToChatAll("{red}[Warning] {yellow}Zerofuse mood has slightly lowered.");
+			//taunts everyone
 			b_FirstMessage[npc.index] = false;
+			npc.PlayMoodOne();
 		}
 		if(RaidModeTime - GetGameTime() < 110.0 && b_SecondMessage[npc.index])
 		{
 			CPrintToChatAll("{red}[Warning] {yellow}Zerofuse mood has decreased in significant Amount.");
+			//taunts everyone
 			b_SecondMessage[npc.index] = false;
+			npc.PlayMoodTwo();//such weakness
 		}
 		if(fl_ZeroMusic_Timer[npc.index] <= gameTime)
 		{
 			fl_ZeroMusic_Timer[npc.index] = gameTime + 343.0;
-			//CPrintToChatAll("{lime}[Zombie Riot]{default} Now Playing: {lightblue}Masafumi Takada {default}- {orange}Mr. Monokuma After Class V3");//idk though it's fancy showing it
-			npc.PlayZeroMusic();
+			//CPrintToChatAll("{lime}[Zombie Riot]{default} Now Playing: {lightblue}Masafumi Takada {default}- {orange}Mr. Monokuma After Class V3");//he uses 3 themes at once won't bother
+			npc.PlayZeroMusic();//Embrace your doom
 		}
 		if(fl_ForceWrath[npc.index] <= gameTime && !b_ForceWrath[npc.index])
 		{
 			CPrintToChatAll("{crimson}[WARNING] {yellow}You've Awoken the Wrath of Zerofuse,{red} PREPARE TO BE EXTERMINATED.");
+			//had enough
+			npc.PlayMoodThree();//Your time has run out
 			b_WrathRage[npc.index] = false;
 			b_AbilityWrathRage[npc.index] = false;
 			float vEnd[3];
@@ -633,7 +744,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
-		npc.PlayHurtSound();
+		//npc.PlayHurtSound();
 	}
 	
 	if(npc.m_flNextThinkTime > gameTime)
@@ -649,6 +760,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 	
+	//Not the best stun anim but i don't want him to be constantly on stun anims then walk with stun anims either
 	if(fl_Stun_Timer[npc.index] <= gameTime && b_Stun[npc.index] && b_WrathRage[npc.index] && b_ForceWrath[npc.index])
 	{
 		fl_Stun_Timer[npc.index] = gameTime + 1.05;
@@ -682,13 +794,15 @@ public void TrueZerofuse_ClotThink(int iNPC)
 		}
 		//npc.PlaySwitchSound();
 		b_AbilityManager[npc.index] = true;
-	}//i really HATE how this somehow bypasses still
+	}//Unneeded just gonna comment it out
+	/*
 	else if(fl_AbilityManager_Timer[npc.index] <= gameTime && !b_AbilityManager[npc.index] && b_WrathRage[npc.index] && !b_ForceWrath[npc.index]
 	|| fl_AbilityManager_Timer[npc.index] <= gameTime && !b_AbilityManager[npc.index] && !b_WrathRage[npc.index] && b_ForceWrath[npc.index]
 	|| fl_AbilityManager_Timer[npc.index] <= gameTime && !b_AbilityManager[npc.index] && b_WrathRage[npc.index] && b_ForceWrath[npc.index])
 	{
 		fl_AbilityManager_Timer[npc.index] = gameTime + 5.0;
-	}
+	}*/
+	//if healing is active loop self healing X amount
 	if(fl_DefenseHealing_Timer[npc.index] <= gameTime && b_DefenseHealing[npc.index])
 	{
 		fl_DefenseHealing_Timer[npc.index] = gameTime + 0.2;//52 times intotal yeah i am quite retarded... BUT i like the "slow" regen gain :)
@@ -742,7 +856,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		npc.AddGesture("ACT_MP_STUN_END");
 		b_Stun[npc.index] = false;
-		fl_ForceWrath[npc.index] = gameTime + 79.0;//it's 78s left anyway
+		fl_ForceWrath[npc.index] = gameTime + 89.0;//it's 88s left anyway
 		b_AbilityWrathRage[npc.index] = true;
 		npc.m_flSpeed = fl_MainSpeed*1.25;//512 speed
 		npc.m_flRangedArmor = 0.15;
@@ -787,8 +901,16 @@ public void TrueZerofuse_ClotThink(int iNPC)
 		b_WrathRage[npc.index] = false;
 		b_AbilityWrathRage[npc.index] = false;
 		npc.m_flSpeed = fl_MainSpeed;
-		npc.m_flRangedArmor = 1.0;
-		npc.m_flMeleeArmor = 1.0;
+		if(b_FakeUber[npc.index])
+		{
+			npc.m_flRangedArmor = 0.0;
+			npc.m_flMeleeArmor = 0.0;
+		}
+		else
+		{
+			npc.m_flRangedArmor = 1.0;
+			npc.m_flMeleeArmor = 1.0;
+		}
 	}
 	if(fl_DisableFakeUber[npc.index] <= gameTime && b_FakeUber[npc.index] && b_Lifeloss[npc.index])
 	{
@@ -1029,6 +1151,17 @@ public void TrueZerofuse_ClotThink(int iNPC)
 									}
 									i_AoeHits[npc.index]++;
 								}
+								int Health = GetEntProp(target, Prop_Data, "m_iHealth");
+								if(Health <= 0)
+								{
+									switch(GetRandomInt(1,3))
+									{
+										case 1:
+										{
+											npc.PlayKillPlayer();
+										}
+									}
+								}
 							}
 							else
 							{
@@ -1141,6 +1274,7 @@ public void TrueZerofuse_ClotDamaged_Post(int iNPC, int attacker, int inflictor,
 		//npc.m_flSpeed = fl_MainSpeed;
 		npc.m_flRangedArmor = 0.0;
 		npc.m_flMeleeArmor = 0.0;
+		npc.PlayLifelossSound();
 	}
 	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 	//SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + MaxHealth / 200000);

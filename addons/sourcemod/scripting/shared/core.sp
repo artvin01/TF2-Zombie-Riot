@@ -60,6 +60,7 @@
 //Comment this out, and reload the plugin once ingame if you wish to have infinite cash.
 
 public const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
+public float OFF_THE_MAP_NONCONST[3] = { 16383.0, 16383.0, -16383.0 };
 
 ConVar CvarRPGInfiniteLevelAndAmmo;
 ConVar CvarDisableThink;
@@ -209,6 +210,7 @@ ConVar cvarTimeScale;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
 ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar sv_cheats;
+ConVar nav_edit;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie Niko_Cookies;
 Cookie HudSettings_Cookies;
@@ -223,8 +225,15 @@ bool b_LagCompAlliedPlayers; //Make sure this actually compensates allies.
 bool i_HasBeenBackstabbed[MAXENTITIES];
 bool i_HasBeenHeadShotted[MAXENTITIES];
 
+float f_BackstabDmgMulti[MAXENTITIES];
+float f_BackstabCooldown[MAXENTITIES];
+int i_BackstabHealEachTick[MAXENTITIES];
+int i_BackstabHealTicks[MAXENTITIES];
+bool b_BackstabLaugh[MAXENTITIES];
+
 bool thirdperson[MAXTF2PLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
+bool b_PlayerIsInAnotherPart[MAXENTITIES];
 
 float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
 //float Check_Standstill_Delay[MAXTF2PLAYERS];
@@ -299,6 +308,8 @@ int i_ObjectsNpcs_Allied[ZR_MAX_NPCS_ALLIED];
 const int i_MaxcountBuilding = ZR_MAX_BUILDINGS;
 int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
 bool i_IsABuilding[MAXENTITIES];
+
+bool i_NpcIsABuilding[MAXENTITIES];
 
 const int i_MaxcountBreakable = ZR_MAX_BREAKBLES;
 int i_ObjectsBreakable[ZR_MAX_BREAKBLES];
@@ -407,6 +418,7 @@ bool b_IsCannibal[MAXTF2PLAYERS];
 float f_NpcImmuneToBleed[MAXENTITIES];
 
 Function EntityFuncAttack[MAXENTITIES];
+Function EntityFuncAttackInstant[MAXENTITIES];
 Function EntityFuncAttack2[MAXENTITIES];
 Function EntityFuncAttack3[MAXENTITIES];
 Function EntityFuncReload4[MAXENTITIES];
@@ -625,10 +637,9 @@ enum
 	BLEEDTYPE_SKELETON = 5
 }
 
-//#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_59.mdl"
-
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_175.mdl"
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_184.mdl"
+//#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_175.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
 
@@ -1008,7 +1019,6 @@ public void OnPluginStart()
 	Commands_PluginStart();
 	Events_PluginStart();
 
-	
 	RegServerCmd("zr_update_blocked_nav", OnReloadBlockNav, "Reload Nav Blocks");
 	RegAdminCmd("sm_play_viewmodel_anim", Command_PlayViewmodelAnim, ADMFLAG_ROOT, "Testing viewmodel animation manually");
 	RegConsoleCmd("sm_make_niko", Command_MakeNiko, "Turn This player into niko");
@@ -1023,6 +1033,7 @@ public void OnPluginStart()
 //	HookEvent("npc_hurt", OnNpcHurt);
 	
 	sv_cheats = FindConVar("sv_cheats");
+	nav_edit = FindConVar("nav_edit");
 	cvarTimeScale = FindConVar("host_timescale");
 //	tf_bot_quota = FindConVar("tf_bot_quota");
 
@@ -1370,7 +1381,7 @@ public void OnClientPutInServer(int client)
 
 	if(CountPlayersOnServer() > MAX_PLAYER_COUNT)
 	{
-		if(!(CheckCommandAccess(client, "sm_admin", ADMFLAG_SLAY)))
+		if(!(GetUserFlagBits(client) & ADMFLAG_SLAY))
 		{
 			KickClient(client, "Server is full, do not use the console to connect, thank you.");
 		}
@@ -1536,18 +1547,45 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 #endif
 
 	static int holding[MAXTF2PLAYERS];
-	if(holding[client])
+	if(holding[client] & IN_ATTACK)
 	{
-		if(!(buttons & holding[client]))
-			holding[client] = 0;
+		if(!(buttons & IN_ATTACK))
+			holding[client] &= ~IN_ATTACK;
+	}
+	else if(buttons & IN_ATTACK)
+	{
+		holding[client] |= IN_ATTACK;
+		
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding != -1)
+		{
+			if(EntityFuncAttackInstant[weapon_holding] && EntityFuncAttackInstant[weapon_holding]!=INVALID_FUNCTION)
+			{
+				bool result = false; //ignore crit.
+				int slot = 1;
+				Action action;
+				Call_StartFunction(null, EntityFuncAttackInstant[weapon_holding]);
+				Call_PushCell(client);
+				Call_PushCell(weapon_holding);
+				Call_PushCellRef(result);
+				Call_PushCell(slot); //This is attack 1
+				Call_Finish(action);
+			}
+		}
+	}
+	
+	if(holding[client] & IN_ATTACK2)
+	{
+		if(!(buttons & IN_ATTACK2))
+			holding[client] &= ~IN_ATTACK2;
 	}
 	else if(buttons & IN_ATTACK2)
 	{
-		holding[client] = IN_ATTACK2;
+		holding[client] |= IN_ATTACK2;
 		
-		#if defined ZR
+#if defined ZR
 		b_IgnoreWarningForReloadBuidling[client] = false;
-		#endif
+#endif
 		
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding != -1)
@@ -1589,9 +1627,15 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 		EndPlayerOnlyLagComp(client);
 	}
+	
+	if(holding[client] & IN_RELOAD)
+	{
+		if(!(buttons & IN_RELOAD))
+			holding[client] &= ~IN_RELOAD;
+	}
 	else if(buttons & IN_RELOAD)
 	{
-		holding[client] = IN_RELOAD;
+		holding[client] |= IN_RELOAD;
 		
 		#if defined ZR
 		if(angles[0] < -70.0)
@@ -1633,9 +1677,15 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 		}
 	}
+
+	if(holding[client] & IN_SCORE)
+	{
+		if(!(buttons & IN_SCORE))
+			holding[client] &= ~IN_SCORE;
+	}
 	else if(buttons & IN_SCORE)
 	{
-		holding[client] = IN_SCORE;
+		holding[client] |= IN_SCORE;
 		
 #if defined ZR
 		if(dieingstate[client] == 0)
@@ -1657,9 +1707,15 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	}
 	
 #if defined ZR
+
+	if(holding[client] & IN_ATTACK3)
+	{
+		if(!(buttons & IN_ATTACK3))
+			holding[client] &= ~IN_ATTACK3;
+	}
 	else if(buttons & IN_ATTACK3)
 	{
-		holding[client] = IN_ATTACK3;
+		holding[client] |= IN_ATTACK3;
 		
 		if(TeutonType[client] == TEUTON_NONE)
 		{
@@ -1670,7 +1726,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 	}
 	
-	if(holding[client] == IN_RELOAD && dieingstate[client] <= 0 && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+	if((holding[client] & IN_RELOAD) && dieingstate[client] <= 0 && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 	{
 		int target = GetClientPointVisibleRevive(client);
 		if(target > 0 && target <= MaxClients)
@@ -1835,10 +1891,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 #endif
 
 #if defined RPG
-	TextStore_PlayerRunCmd(client);
-	Fishing_PlayerRunCmd(client);
-	Garden_PlayerRunCmd(client);
-	Music_PlayerRunCmd(client);
+	RPG_PlayerRunCmdPost(client);
 #endif
 }
 
@@ -1866,7 +1919,6 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		Call_PushCell(slot);	//This is m1 :)
 		Call_Finish(action);
 	}
-	
 	if(i_SemiAutoWeapon[weapon])
 	{
 		i_SemiAutoWeapon_AmmoCount[weapon] -= 1;
@@ -2032,6 +2084,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		EntityFuncAttack2[entity] = INVALID_FUNCTION;
 		EntityFuncAttack3[entity] = INVALID_FUNCTION;
 		EntityFuncReload4[entity] = INVALID_FUNCTION;
+		EntityFuncAttackInstant[entity] = INVALID_FUNCTION;
 		b_Map_BaseBoss_No_Layers[entity] = false;
 		b_Is_Player_Projectile_Through_Npc[entity] = false;
 		b_ForceCollisionWithProjectile[entity] = false;
@@ -2049,6 +2102,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_ThisEntityIgnoredByOtherNpcsAggro[entity] = false;
 		f_NpcImmuneToBleed[entity] = 0.0;
 		
+#if defined ZR
+		Wands_Potions_EntityCreated(entity);
+#endif
+
 #if defined RPG
 		RPG_EntityCreated(entity, classname);
 		TextStore_EntityCreated(entity);
@@ -2120,7 +2177,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "base_boss"))
 		{
-			Hook_DHook_UpdateTransmitState(entity);
+	//		Hook_DHook_UpdateTransmitState(entity);
 			SDKHook(entity, SDKHook_SpawnPost, Check_For_Team_Npc);
 		//	Check_For_Team_Npc(EntIndexToEntRef(entity)); //Dont delay ?
 		}
@@ -2556,6 +2613,7 @@ public void OnEntityDestroyed(int entity)
 		
 		if(entity > MaxClients)
 		{
+			i_WandIdNumber[entity] = -1;
 			NPC_CheckDead(entity);
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			

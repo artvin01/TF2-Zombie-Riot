@@ -72,8 +72,15 @@ enum struct ItemInfo
 	int Reload_ModeForce;
 
 	float DamageFallOffForWeapon; //Can this accept reversed?
+
+	float BackstabCD;
+	float BackstabDMGMulti;
+	int BackstabHealPerTick;
+	int BackstabHealTicks;
+	bool BackstabLaugh;
 	
 	Function FuncAttack;
+	Function FuncAttackInstant;
 	Function FuncAttack2;
 	Function FuncAttack3;
 	Function FuncReload4;
@@ -141,6 +148,21 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sdamage_falloff", prefix);
 		this.DamageFallOffForWeapon		= kv.GetFloat(buffer, 0.9);
 		
+		Format(buffer, sizeof(buffer), "%sbackstab_cd", prefix);
+		this.BackstabCD				= kv.GetFloat(buffer, 1.5);
+		
+		Format(buffer, sizeof(buffer), "%sbackstab_dmg_multi", prefix);
+		this.BackstabDMGMulti		= kv.GetFloat(buffer, 1.0);
+		
+		Format(buffer, sizeof(buffer), "%sbackstab_heal_per_tick", prefix);
+		this.BackstabHealPerTick		= kv.GetNum(buffer, 0);
+
+		Format(buffer, sizeof(buffer), "%sbackstab_heal_ticks", prefix);
+		this.BackstabHealTicks		= kv.GetNum(buffer, 0);
+
+		Format(buffer, sizeof(buffer), "%sbackstab_laugh", prefix);
+		this.BackstabLaugh		= view_as<bool>(kv.GetNum(buffer, 0));
+
 		//Format(buffer, sizeof(buffer), "%ssniperfix", prefix);
 		//this.SniperBugged = view_as<bool>(kv.GetNum(buffer));
 		
@@ -209,6 +231,10 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sfunc_attack", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.FuncAttack = GetFunctionByName(null, buffer);
+		
+		Format(buffer, sizeof(buffer), "%sfunc_attack_immediate", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.FuncAttackInstant = GetFunctionByName(null, buffer);
 		
 		Format(buffer, sizeof(buffer), "%sfunc_attack2", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
@@ -1159,7 +1185,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 					
 					TF2_StunPlayer(client, 2.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
 					
-					SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
 					ShowSyncHudText(client, SyncHud_Notifaction, "Your weapon was boosted");
 					Store_ApplyAttribs(client);
@@ -1168,12 +1194,12 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 					owner = GetClientOfUserId(values[3]);
 					if(owner)
 					{
-						if(Pack_A_Punch_Machine_money_limit[owner][client] <= 5)
+						if(Pack_A_Punch_Machine_money_limit[owner][client] < 5)
 						{
 							Pack_A_Punch_Machine_money_limit[owner][client] += 1;
 							CashSpent[owner] -= 400;
 							Resupplies_Supplied[owner] += 40;
-							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+							SetDefaultHudPosition(client);
 							SetGlobalTransTarget(owner);
 							ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Pap Machine Used");
 						}
@@ -1334,7 +1360,7 @@ void HudSettings_ClientCookiesCached(int client)
 	if(buffer[0])
 	{
 		// Cookie has stuff, get values
-		float buffers[6];
+		float buffers[8];
 		ExplodeStringFloat(buffer, ";", buffers, sizeof(buffers));
 
 		f_ArmorHudOffsetX[client] = buffers[0];
@@ -1343,6 +1369,8 @@ void HudSettings_ClientCookiesCached(int client)
 		f_HurtHudOffsetY[client] = buffers[3];
 		f_WeaponHudOffsetX[client] = buffers[4];
 		f_WeaponHudOffsetY[client] = buffers[5];
+		f_NotifHudOffsetX[client] = buffers[6];
+		f_NotifHudOffsetY[client] = buffers[7];
 	}
 	else
 	{
@@ -1353,13 +1381,15 @@ void HudSettings_ClientCookiesCached(int client)
 		f_HurtHudOffsetY[client] = 0.0;
 		f_WeaponHudOffsetX[client] = 0.0;
 		f_WeaponHudOffsetY[client] = 0.0;
+		f_NotifHudOffsetX[client] = 0.0;
+		f_NotifHudOffsetY[client] = 0.0;
 	}
 }
 
 void HudSettings_ClientCookiesDisconnect(int client)
 {
 	char buffer[128];
-	FormatEx(buffer, sizeof(buffer), "%.3f;%.3f;%.3f;%.3f;%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client], f_HurtHudOffsetX[client], f_HurtHudOffsetY[client], f_WeaponHudOffsetX[client], f_WeaponHudOffsetY[client]);
+	FormatEx(buffer, sizeof(buffer), "%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client], f_HurtHudOffsetX[client], f_HurtHudOffsetY[client], f_WeaponHudOffsetX[client], f_WeaponHudOffsetY[client], f_NotifHudOffsetX[client], f_NotifHudOffsetY[client]);
 	HudSettings_Cookies.Set(client, buffer);
 }
 
@@ -1997,12 +2027,13 @@ public void MenuPage(int client, int section)
 						menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 1
 					}
 
-					bool levelPerk = (!info.Classname[0] && !info.Cost && !Waves_InSetup());
+					//	bool levelPerk = (!info.Classname[0] && !info.Cost && !Waves_InSetup());
 
+					//We shall allow unequipping again.
 					if(item.Equipped[client])
 					{
 						FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
-						menu.AddItem(buffer2, buffer, levelPerk ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);	// 2
+						menu.AddItem(buffer2, buffer,/* levelPerk ? ITEMDRAW_DISABLED : */ITEMDRAW_DEFAULT);	// 2
 					}
 					else if(canSell)
 					{
@@ -2419,6 +2450,38 @@ public void ReShowWeaponHud(int client)
 	menu2.Display(client, MENU_TIME_FOREVER);
 }
 
+public void ReShowNotifHud(int client)
+{
+	char buffer[24];
+
+	Menu menu2 = new Menu(Settings_MenuPage);
+	menu2.SetTitle("%t", "Notif Hud Setting Inside",f_NotifHudOffsetX[client],f_NotifHudOffsetY[client]);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Up");
+	menu2.AddItem("-21", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Down");
+	menu2.AddItem("-22", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Left");
+	menu2.AddItem("-23", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Right");
+	menu2.AddItem("-24", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Reset to Default");
+	menu2.AddItem("-25", buffer);
+					
+	FormatEx(buffer, sizeof(buffer), "%t", "Back");
+	menu2.AddItem("-1", buffer);
+
+	SetDefaultHudPosition(client);
+	SetGlobalTransTarget(client);
+	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "nothing");
+
+	menu2.Display(client, MENU_TIME_FOREVER);
+}
+
 public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choice)
 {
 	SetGlobalTransTarget(client);
@@ -2616,7 +2679,59 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 					
 					ReShowWeaponHud(client);
 				}
-				
+
+				case -20:
+				{
+					ReShowNotifHud(client);
+				}
+				case -21: //Move Armor Hud Up
+				{
+					f_NotifHudOffsetX[client] -= 0.005;
+					if(f_NotifHudOffsetX[client] < -1.0)
+					{
+						f_NotifHudOffsetX[client] = -1.0;
+					}
+					ReShowNotifHud(client);
+				}
+				case -22: //Move Armor Hud Down
+				{
+					f_NotifHudOffsetX[client] += 0.005;
+					if(f_NotifHudOffsetX[client] > 1.0)
+					{
+						f_NotifHudOffsetX[client] = 1.0;
+					}
+					ReShowNotifHud(client);
+				}
+				case -23: //Move Armor Hud Left
+				{
+					f_NotifHudOffsetY[client] -= 0.005;
+					if(f_NotifHudOffsetY[client] < 0.10)
+					{
+						f_NotifHudOffsetY[client] = 0.10;
+					}
+					ReShowNotifHud(client);
+				}
+				case -24: //Move Armor Hud right
+				{
+					if(f_NotifHudOffsetY[client] < 0.10)
+					{
+						f_NotifHudOffsetY[client] = 0.10;
+					}
+					f_NotifHudOffsetY[client] += 0.005;
+					if(f_NotifHudOffsetY[client] > 1.0)
+					{
+						f_NotifHudOffsetY[client] = 1.0;
+					}
+					ReShowNotifHud(client);
+				}
+				case -25: 
+				{
+					f_NotifHudOffsetX[client] = 0.0;
+					f_NotifHudOffsetY[client] = 0.0;
+					
+					ReShowNotifHud(client);
+				}
+
 				case -1: //Move Armor Hud right
 				{
 					Menu menu2 = new Menu(Settings_MenuPage);
@@ -2630,6 +2745,9 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 					
 					FormatEx(buffer, sizeof(buffer), "%t", "Weapon Hud Setting");
 					menu2.AddItem("-14", buffer);
+							
+					FormatEx(buffer, sizeof(buffer), "%t", "Notif Hud Setting");
+					menu2.AddItem("-20", buffer);
 					
 					FormatEx(buffer, sizeof(buffer), "%t", "Back");
 					menu2.AddItem("-999", buffer);
@@ -2704,6 +2822,9 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 
 					FormatEx(buffer, sizeof(buffer), "%t", "Weapon Hud Setting");
 					menu2.AddItem("-14", buffer);
+
+					FormatEx(buffer, sizeof(buffer), "%t", "Notif Hud Setting");
+					menu2.AddItem("-20", buffer);
 					
 					FormatEx(buffer, sizeof(buffer), "%t", "Back");
 					menu2.AddItem("-999", buffer);
@@ -4149,6 +4270,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_M1; //m1 status to weapon
 					}
+					if(info.FuncAttackInstant != INVALID_FUNCTION)
+					{
+						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_M1; //m1 status to weapon
+					}
 					if(info.FuncAttack2 != INVALID_FUNCTION)
 					{
 						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_M2; //m2 status to weapon
@@ -4159,6 +4284,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					}
 					
 					EntityFuncAttack[entity] = info.FuncAttack;
+					EntityFuncAttackInstant[entity] = info.FuncAttackInstant;
 					EntityFuncAttack2[entity] = info.FuncAttack2;
 					EntityFuncAttack3[entity] = info.FuncAttack3;
 					EntityFuncReload4[entity]  = info.FuncReload4;
@@ -4178,6 +4304,14 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						i_WeaponDamageFalloff[entity] 			= info.DamageFallOffForWeapon;
 					}
+					f_BackstabCooldown[entity] 					= info.BackstabCD;
+					f_BackstabDmgMulti[entity] 					= info.BackstabDMGMulti;
+					i_BackstabHealEachTick[entity] 				= info.BackstabHealPerTick;
+					i_BackstabHealTicks[entity] 				= info.BackstabHealTicks;
+					b_BackstabLaugh[entity] 					= info.BackstabLaugh;
+
+
+
 					if (info.Reload_ModeForce == 1)
 					{
 					//	SetWeaponViewPunch(entity, 100.0); unused.
@@ -4607,14 +4741,15 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		
 		Enable_StarShooter(client, entity);
 		Enable_Passanger(client, entity);
+		Reset_stats_Irene_Singular_Weapon(entity);
+		Enable_Irene(client, entity);
+		Enable_PHLOG(client, entity);
 #endif
 
 #if defined RPG
 		Stats_SetWeaponStats(client, entity, slot);
+
 #endif
-		Reset_stats_Irene_Singular_Weapon(client, entity);
-		Enable_Irene(client, entity);
-		Enable_PHLOG(client, entity);
 
 	}
 	return entity;

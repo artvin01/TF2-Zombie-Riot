@@ -22,7 +22,7 @@
 Handle h_TimerIreneManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 static float f_Irenehuddelay[MAXTF2PLAYERS];
 static int i_IreneHitsDone[MAXTF2PLAYERS];
-static float f_WeaponAttackSpeedModified[MAXENTITIES];
+static bool b_WeaponAttackSpeedModified[MAXENTITIES];
 static int i_IreneTargetsAirborn[MAXTF2PLAYERS][IRENE_MAX_HITUP];
 static float f_TargetAirtime[MAXENTITIES];
 static float f_TargetAirtimeDelayHit[MAXENTITIES];
@@ -92,9 +92,9 @@ void Reset_stats_Irene_Singular(int client) //This is on disconnect/connect
 	i_IreneHitsDone[client] = 0;
 }
 
-void Reset_stats_Irene_Singular_Weapon(int client, int weapon) //This is on weapon remake. cannot set to 0 outright.
+void Reset_stats_Irene_Singular_Weapon(int weapon) //This is on weapon remake. cannot set to 0 outright.
 {
-	f_WeaponAttackSpeedModified[weapon] = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+	b_WeaponAttackSpeedModified[weapon] = false;
 }
 
 public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slot)
@@ -125,12 +125,14 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 	//We save this onto the weapon if the modified attackspeed is not modified.
 
 	float attackspeed = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
-	if(attackspeed > 0.15) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
+	if(!b_WeaponAttackSpeedModified[weapon]) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
 	{
+		b_WeaponAttackSpeedModified[weapon] = true;
 		TF2Attrib_SetByDefIndex(weapon, 6, (attackspeed * 0.15));
 	}
 	else
 	{
+		b_WeaponAttackSpeedModified[weapon] = false;
 		TF2Attrib_SetByDefIndex(weapon, 6, (attackspeed / 0.15)); //Make it really fast for 1 hit!
 	}
 }
@@ -384,7 +386,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 	else
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255, 1, 0.1, 0.1, 0.1);
+		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.");
 	}

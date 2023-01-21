@@ -177,7 +177,7 @@ methodmap Alt_CombineDeutsch < CClotBody
 		
 		i_NpcInternalId[npc.index] = ALT_COMBINE_DEUTSCH_RITTER;
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		int iActivity = npc.LookupActivity("ACT_TEUTON_NEW_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -203,7 +203,7 @@ methodmap Alt_CombineDeutsch < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		
 		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
-		SetVariantString("-0.8");
+		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		npc.m_iWearable1 = npc.EquipItem("partyhat", "models/workshop/player/items/all_class/Jul13_Se_Headset/Jul13_Se_Headset_soldier.mdl");
@@ -346,7 +346,7 @@ public void Alt_CombineDeutsch_ClotThink(int iNPC)
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+						npc.AddGesture("ACT_TEUTON_NEW_ATTACK");
 						npc.PlayMeleeSound();
 						npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
 						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;

@@ -31,7 +31,7 @@ static const char g_RangedSpecialAttackSoundsSecondary[][] = {
 	"npc/combine_soldier/vo/prison_soldier_fallback_b4.wav"
 };
 
-void ArkSinger_OnMapStart_NPC()
+void ArkSinger_MapStart()
 {
 	PrecacheModel("models/effects/combineball.mdl");
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -48,8 +48,11 @@ methodmap ArkSinger < CClotBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-
-		EmitSoundToAll(g_IdleSound[GetRandomInt(0, sizeof(g_IdleSound) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		
+		int rand = GetRandomInt(0, sizeof(g_IdleSound) - 1);
+		EmitSoundToAll(g_IdleSound[rand], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleSound[rand], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleSound[rand], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
@@ -67,12 +70,19 @@ methodmap ArkSinger < CClotBody
 	}
 	public void PlayKilledEnemySound() 
 	{
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		int rand = GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1);
+		EmitSoundToAll(g_IdleAlertedSounds[rand], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleAlertedSounds[rand], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleAlertedSounds[rand], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(5.0, 10.0);
 	}
 	public void PlayRangedSpecialAttackSecondarySound()
 	{
-		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedSpecialAttackSoundsSecondary) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		int rand = GetRandomInt(0, sizeof(g_RangedSpecialAttackSoundsSecondary) - 1);
+		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[rand], this.index, SNDCHAN_AUTO, 130, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[rand], this.index, SNDCHAN_AUTO, 130, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[rand], this.index, SNDCHAN_AUTO, 130, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[rand], this.index, SNDCHAN_AUTO, 130, _, BOSS_ZOMBIE_VOLUME);
 	}
 
 	public ArkSinger(int client, float vecPos[3], float vecAng[3], bool ally)
@@ -101,17 +111,16 @@ methodmap ArkSinger < CClotBody
 		SDKHook(npc.index, SDKHook_Think, ArkSinger_ClotThink);
 
 		npc.Anger = false;
-		npc.m_iAttacksTillReload = 4;
-		npc.m_iOverlordComboAttack = 20;
+		npc.m_iOverlordComboAttack = 0;
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 200, 200, 255);
 		
 		npc.m_iWearable1 = npc.EquipItem("partyhat", "models/player/items/spy/spy_party_phantom.mdl");
-		SetVariantString("2.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		SetVariantString("1.25");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/player/items/spy/spy_card_hat.mdl");
+		npc.m_iWearable2 = npc.EquipItem("forward", "models/workshop/player/items/all_class/fall17_jungle_wreath/fall17_jungle_wreath_spy.mdl");//"models/player/items/spy/spy_cardhat.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
@@ -192,6 +201,9 @@ public void ArkSinger_ClotThink(int iNPC)
 			f_SingerBuffedFor[npc.index] = gameTime + (npc.m_iOverlordComboAttack * 0.25);
 
 			float pos[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);
+
 			int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
 			int entity = -1;
 			while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
@@ -202,6 +214,7 @@ public void ArkSinger_ClotThink(int iNPC)
 					if(GetVectorDistance(pos, vecTarget, true) < 600000.0)	// 775 HU
 					{
 						f_SingerBuffedFor[entity] = f_SingerBuffedFor[npc.index];
+						ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);
 					}
 				}
 			}
@@ -222,11 +235,11 @@ public void ArkSinger_ClotThink(int iNPC)
 				
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 800.0);
 				npc.FireRocket(vPredictedPos, 250.0, 800.0, "models/effects/combineball.mdl");
-				npc.PlayRangedAttackSecondarySound();
+				npc.PlayRangedSound();
 				// Scarlet Singer (50% dmg)
 
 				if(npc.m_iTarget <= MaxClients)
-					Stats_AddNeuralDamage(npc.m_iTarget, 80.0);
+					Stats_AddNeuralDamage(npc.m_iTarget, npc.index, 40);	// (20% -> 5%)
 			}
 		}
 	}
@@ -275,7 +288,7 @@ public void ArkSinger_ClotThink(int iNPC)
 					npc.StartPathing();
 					
 				npc.m_bisWalking = true;
-				if(npc.m_iChanged_WalkCycle != 4) 	
+				if(npc.m_iChanged_WalkCycle != 4)
 				{
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_CUSTOM_WALK_BOW");
@@ -288,7 +301,9 @@ public void ArkSinger_ClotThink(int iNPC)
 				{
 					npc.m_iTarget = Enemy_I_See;
 
+					npc.SetActivity("ACT_IDLE_PISTOL");
 					npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
+					npc.m_iChanged_WalkCycle = 5;
 
 					npc.m_flNextRangedAttackHappening = gameTime + 0.4;
 

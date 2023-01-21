@@ -19,7 +19,7 @@ float Animal_Happy[MAXTF2PLAYERS][10][3];
 bool b_NpcIsInADungeon[MAXENTITIES];
 int i_NpcFightOwner[MAXENTITIES];
 float f_NpcFightTime[MAXENTITIES];
-float f_SingerBuffedFor[MAXTF2PLAYERS];
+float f_SingerBuffedFor[MAXENTITIES];
 
 float f_HealingPotionDuration[MAXTF2PLAYERS];
 int f_HealingPotionEffect[MAXTF2PLAYERS];
@@ -36,6 +36,7 @@ bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 #include "rpg_fortress/crafting.sp"
 #include "rpg_fortress/dungeon.sp"
 #include "rpg_fortress/fishing.sp"
+#include "rpg_fortress/games.sp"
 #include "rpg_fortress/garden.sp"
 #include "rpg_fortress/levels.sp"
 #include "rpg_fortress/mining.sp"
@@ -65,6 +66,7 @@ void RPG_PluginStart()
 	Ammo_PluginStart();
 	Dungeon_PluginStart();
 	Fishing_PluginStart();
+	Games_PluginStart();
 	Store_Reset();
 	Levels_PluginStart();
 	Party_PluginStart();
@@ -178,6 +180,19 @@ void RPG_EntityCreated(int entity, const char[] classname)
 	Dungeon_ResetEntity(entity);
 	Stats_ClearCustomStats(entity);
 	Zones_EntityCreated(entity, classname);
+}
+
+void RPG_PlayerRunCmdPost(int client)
+{
+	TextStore_PlayerRunCmd(client);
+	Fishing_PlayerRunCmd(client);
+	Garden_PlayerRunCmd(client);
+	Music_PlayerRunCmd(client);
+}
+
+void RPG_UpdateHud(int client)
+{
+	Stats_UpdateHud(client);
 }
 
 public void CheckAlivePlayersforward(int killed)

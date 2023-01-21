@@ -126,7 +126,7 @@ public void Cryo_CheckBurst(int client, int weapon, bool &result, int slot, floa
 				Ability_CD = 0.0;
 				
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 			}
@@ -134,7 +134,7 @@ public void Cryo_CheckBurst(int client, int weapon, bool &result, int slot, floa
 		else
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 		}
@@ -315,7 +315,7 @@ public void Weapon_Wand_Cryo_Shoot(int client, int weapon, bool crit, int slot, 
 	else
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 	}

@@ -2669,12 +2669,16 @@ float dmg_against_entity_multiplier = 3.0)
 	
 	if(IsValidEntity(Closest_npc))
 	{
-		
 		VicLoc = WorldSpaceCenter(Closest_npc);
+		float explosion_radius_temp = explosionRadius;
+		if(i_NpcIsABuilding[Closest_npc])
+		{
+			explosion_radius_temp *= 2.0;
+		}
 		float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
-		if (distance_1 <= explosionRadius)
+		if (distance_1 <= explosion_radius_temp)
 		{			
-			float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
+			float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosion_radius_temp + 1.0);
 			
 
 			if(damage_1 > damage)
@@ -2715,10 +2719,16 @@ float dmg_against_entity_multiplier = 3.0)
 					{
 						//Damage Calculations
 						VicLoc = WorldSpaceCenter(new_closest_npc);		
-						distance_1 = GetVectorDistance(VicLoc, spawnLoc);				
-						if (distance_1 <= explosionRadius)
+						distance_1 = GetVectorDistance(VicLoc, spawnLoc);	
+						explosion_radius_temp = explosionRadius;
+						if(i_NpcIsABuilding[new_closest_npc])
 						{
-							float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
+							explosion_radius_temp *= 2.0;
+						}
+
+						if (distance_1 <= explosion_radius_temp)
+						{
+							float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosion_radius_temp + 1.0);
 											
 							if(damage_1 > damage)
 							{
@@ -3604,4 +3614,45 @@ public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 	}
 	
 	return true;
+}
+
+stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int blue = 34)
+{
+
+	float HudY = 0.75;
+	float HudX = -1.0;
+#if defined ZR
+	HudX += f_NotifHudOffsetY[client];
+	HudY += f_NotifHudOffsetX[client];
+#endif
+	SetHudTextParams(HudX, HudY, 1.01, red, green, blue, 255);
+}
+
+stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 0.3)
+{
+	Address address = TF2Attrib_GetByDefIndex(entity, index);
+	if(address != Address_Null)
+	{
+		TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) * multi);
+
+		DataPack pack;
+		CreateDataTimer(duration, StreetFighter_RestoreAttrib, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(entity));
+		pack.WriteCell(index);
+		pack.WriteFloat(multi);
+	}
+}
+
+public Action StreetFighter_RestoreAttrib(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(entity != INVALID_ENT_REFERENCE)
+	{
+		int index = pack.ReadCell();
+		Address address = TF2Attrib_GetByDefIndex(entity, index);
+		if(address != Address_Null)
+			TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) / pack.ReadFloat());
+	}
+	return Plugin_Stop;
 }
