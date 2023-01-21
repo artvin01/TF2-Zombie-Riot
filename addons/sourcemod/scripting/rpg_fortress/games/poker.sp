@@ -396,12 +396,17 @@ static void PokerMenu(int client)
 				else
 				{
 					menu.SetTitle("Draw Poker\n%s... %.0f\n ", RankNames[GetCardRank(Cards[client])], TimeLeft - GetGameTime());
+
+					for(int i; i < sizeof(Cards[]); i++)
+					{
+						menu.AddItem(buffer, Games_GetCardIcon(Cards[client][i]), ITEMDRAW_DISABLED);
+					}
 				}
 
 				menu.AddItem(buffer, buffer, ITEMDRAW_SPACER);
 
 				bool allIn;
-				if(!CurrentBet)
+				if(!MinBet)
 				{
 					menu.AddItem(buffer, "Free Game ($0)", ITEMDRAW_DISABLED);
 				}
@@ -410,13 +415,13 @@ static void PokerMenu(int client)
 					FormatEx(buffer, sizeof(buffer), "Match New Bet and Keep Playing? ($%d -> $%d)\n ", Playing[client], CurrentBet);
 					menu.AddItem(buffer, buffer);
 				}
-				else if((CurrentBet * 8) >= MinBet)
+				else if(CurrentBet >= (MinBet * 8))
 				{
 					FormatEx(buffer, sizeof(buffer), "All In ($%d)\n ", CurrentBet);
 					menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
 					allIn = true;
 				}
-				else if((CurrentBet * 4) >= MinBet)
+				else if(CurrentBet >= (MinBet * 4))
 				{
 					FormatEx(buffer, sizeof(buffer), "All In ($%d -> $%d)\n ", CurrentBet, CurrentBet * 2);
 					menu.AddItem(buffer, buffer);
@@ -635,6 +640,7 @@ static void StartGame()
 	Zero2(Cards);
 	Zero(Discarding);
 	PrizePool = 0;
+	CurrentBet = MinBet;
 
 	CurrentDeck = Games_GenerateNewDeck();
 	for(int client = 1; client <= MaxClients; client++)
@@ -702,6 +708,9 @@ static void RedrawPeriod()
 			}
 		}
 	}
+
+	TimeLeft = GetGameTime() + 10.0;
+	GameState = Poker_Final;
 }
 
 static void ResultPeriod()
@@ -871,7 +880,7 @@ static int GetCardRank(const int card[5])
 			two++;
 	}
 
-	if(three && two)
+	if(three && two == 2)
 		return Poker_FullHouse;
 
 	if(flush)
