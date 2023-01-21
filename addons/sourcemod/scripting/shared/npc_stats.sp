@@ -1185,6 +1185,10 @@ methodmap CClotBody
 		{
 			speed_for_return *= 1.15;
 		}
+		if(f_HussarBuff[this.index] > GetGameTime())
+		{
+			speed_for_return *= 1.20;
+		}
 		if(b_NpcResizedForCrouch[this.index])
 		{
 			speed_for_return *= 0.33333;
@@ -5513,7 +5517,7 @@ public void GibCollidePlayerInteraction(int gib, int player)
 			{
 				if(!i_IsWandWeapon[weapon]) //Make sure its not wand.
 				{
-					if(SDKCall_GetMaxHealth(player) > GetEntProp(player, Prop_Send, "m_iHealth"))
+					if(SDKCall_GetMaxHealth(player) > GetEntProp(player, Prop_Data, "m_iHealth"))
 					{
 						float Heal_Amount = 0.0;
 						
@@ -6751,33 +6755,34 @@ stock int GetClosestAlly(int entity, float limitsquared = 99999999.9, int ingore
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = 0; 
-
-	int i = MaxClients + 1;
-	while ((i = FindEntityByClassname(i, "base_boss")) != -1)
+	for( int i = 1; i <= MAXENTITIES; i++ ) 
 	{
-		if (i != entity && i != ingore_thisAlly && GetEntProp(entity, Prop_Send, "m_iTeamNum")==GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && GetEntProp(i, Prop_Data, "m_iHealth") > 0 && !i_NpcIsABuilding[i])  //The is a medic thing is really needed
+		if (IsValidEntity(i) && i != entity && i != ingore_thisAlly && (i <= MaxClients || !b_NpcHasDied[i]))
 		{
-			float EntityLocation[3], TargetLocation[3]; 
-			GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
-			GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-				
-				
-			float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
-			if( distance < limitsquared )
+			if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && IsEntityAlive(i) && !i_NpcIsABuilding[i])  //The is a medic thing is really needed
 			{
-				if( TargetDistance ) 
+				float EntityLocation[3], TargetLocation[3]; 
+				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+				GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+					
+					
+				float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+				if( distance < limitsquared )
 				{
-					if( distance < TargetDistance ) 
+					if( TargetDistance ) 
+					{
+						if( distance < TargetDistance ) 
+						{
+							ClosestTarget = i; 
+							TargetDistance = distance;		  
+						}
+					} 
+					else 
 					{
 						ClosestTarget = i; 
-						TargetDistance = distance;		  
-					}
-				} 
-				else 
-				{
-					ClosestTarget = i; 
-					TargetDistance = distance;
-				}			
+						TargetDistance = distance;
+					}			
+				}
 			}
 		}
 	}
@@ -6788,14 +6793,10 @@ stock bool IsValidAlly(int index, int ally)
 {
 	if(IsValidEntity(ally))
 	{
-		static char strClassname[16];
-		GetEntityClassname(ally, strClassname, sizeof(strClassname));
-		if(StrEqual(strClassname, "base_boss"))
+
+		if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(ally, Prop_Send, "m_iTeamNum") && (ally <= MaxClients || !b_NpcHasDied[ally]) && IsEntityAlive(ally)) 
 		{
-			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(ally, Prop_Send, "m_iTeamNum") && GetEntProp(ally, Prop_Data, "m_iHealth") > 0) 
-			{
-				return true;
-			}
+			return true;
 		}
 	}
 	
@@ -7014,6 +7015,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_PickThisDirectionForabit[entity] = 0.0;
 	b_ScalesWithWaves[entity] = false;
 	b_PernellBuff[entity] = false;
+	f_HussarBuff[entity] = 0.0;
 	IgniteFor[entity] = 0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	f_StunExtraGametimeDuration[entity] = 0.0;

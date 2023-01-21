@@ -406,7 +406,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++)
 		{
 			int baseboss = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-			if (IsValidEntity(baseboss) && i_NpcInternalId[baseboss] == MEDIVAL_VILLAGER)
+			if (IsValidEntity(baseboss) && i_NpcInternalId[baseboss] == MEDIVAL_VILLAGER && !b_NpcHasDied[baseboss])
 			{
 				villagerexists = true;
 			}

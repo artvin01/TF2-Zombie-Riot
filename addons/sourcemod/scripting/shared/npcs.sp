@@ -1226,7 +1226,15 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 	}
 	*/
-	
+
+	if(f_HussarBuff[victim] > GetGameTime()) //hussar!
+	{
+		damage *= 0.85;
+	}
+	if(f_HussarBuff[attacker] > GetGameTime()) //hussar!
+	{
+		damage *= 1.15;
+	}
 	if(f_EmpowerStateOther[attacker] > GetGameTime()) //Allow stacking.
 	{
 		damage *= 1.1;

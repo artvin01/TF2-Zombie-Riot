@@ -337,6 +337,7 @@ float f_TankGrabbedStandStill[MAXENTITIES];
 float f_TimeFrozenStill[MAXENTITIES];
 float f_StunExtraGametimeDuration[MAXENTITIES];
 bool b_PernellBuff[MAXENTITIES];
+float f_HussarBuff[MAXENTITIES];
 float f_MaimDebuff[MAXENTITIES];
 float f_PassangerDebuff[MAXENTITIES];
 float f_CrippleDebuff[MAXENTITIES];
@@ -989,7 +990,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 #if defined ZR
 	ZR_PluginLoad();
 #endif
-	
+
 	return APLRes_Success;
 }
 
@@ -1089,6 +1090,15 @@ public void OnPluginStart()
 		if(IsClientInGame(client))
 		{
 			CurrentClass[client] = TF2_GetPlayerClass(client);
+		}
+	}
+	for( int i = 1; i <= MAXENTITIES; i++ ) 
+	{
+		if (IsValidEntity(i))
+		{
+			static char strClassname[64];
+			GetEntityClassname(i, strClassname, sizeof(strClassname));
+			OnEntityCreated(i,strClassname);
 		}
 	}
 }
@@ -1393,6 +1403,7 @@ public void OnClientPutInServer(int client)
 	
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_bThisEntityIgnored = false;
+	f_HussarBuff[client] = 0.0;
 	f_ShowHudDelayForServerMessage[client] = GetGameTime() + 50.0;
 	
 #if defined ZR
@@ -2048,6 +2059,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_SentryIsCustom[entity] = false;
 		Building_Mounted[entity] = -1;
 #endif
+		f_HussarBuff[entity] = 0.0;
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
 		LastHitId[entity] = -1;
@@ -2058,6 +2070,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		IgniteFor[entity] = -1;
 		IgniteId[entity] = -1;
 		IgniteRef[entity] = -1;
+		Is_a_Medic[entity] = false;
 		b_IsEntityAlwaysTranmitted[entity] = false;
 
 		//Normal entity render stuff, This should be set to these things on spawn, just to be sure.

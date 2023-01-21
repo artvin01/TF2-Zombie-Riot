@@ -209,7 +209,7 @@ methodmap MedivalVillager < CClotBody
 		b_WantTobuild[npc.index] = true;
 		b_AlreadyReparing[npc.index] = false;
 		f_RandomTolerance[npc.index] = GetRandomFloat(0.25, 0.75);
-		Is_a_Medic[npc.index] = false;
+		Is_a_Medic[npc.index] = true;
 		
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
