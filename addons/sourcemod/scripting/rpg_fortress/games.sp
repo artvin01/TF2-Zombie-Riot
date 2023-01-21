@@ -125,7 +125,7 @@ static void StartGame(int client, const char[] game)
 char[] Games_GetCardIcon(int card)
 {
 	char buffer[6];
-	FormatEx(buffer, sizeof(buffer), "%s%s", NumberIcon[card % 100], SuitIcon[card / 100]);
+	FormatEx(buffer, sizeof(buffer), "%s%s ", NumberIcon[card % 100], SuitIcon[card / 100]);
 	return buffer;
 }
 
