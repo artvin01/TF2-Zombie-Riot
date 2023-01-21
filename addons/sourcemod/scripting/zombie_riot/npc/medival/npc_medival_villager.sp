@@ -109,7 +109,7 @@ methodmap MedivalVillager < CClotBody
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
 		#if defined DEBUG_SOUND
@@ -121,7 +121,7 @@ methodmap MedivalVillager < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
@@ -135,7 +135,7 @@ methodmap MedivalVillager < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
 		
 		#if defined DEBUG_SOUND
@@ -145,7 +145,7 @@ methodmap MedivalVillager < CClotBody
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
@@ -153,7 +153,7 @@ methodmap MedivalVillager < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -161,7 +161,7 @@ methodmap MedivalVillager < CClotBody
 	}
 	
 	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -169,7 +169,7 @@ methodmap MedivalVillager < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
@@ -277,6 +277,7 @@ methodmap MedivalVillager < CClotBody
 					}
 					if(Accumulated_Points > CurrentPoints)
 					{
+						vecGoal[2] -= 20.0;
 						f3_AreasCollected = vecGoal;
 						CurrentPoints = Accumulated_Points;
 					}
@@ -491,6 +492,34 @@ public void MedivalVillager_ClotThink(int iNPC)
 			}
 			else
 			{
+
+				
+				npc.m_bisWalking = true;
+	
+				if(IsValidEnemy(npc.index,npc.m_iTarget))
+				{
+					PF_SetGoalEntity(npc.index, npc.m_iTarget);
+					PF_StartPathing(iNPC);
+					if(npc.m_iChanged_WalkCycle != 4) 	
+					{
+						npc.m_bisWalking = true;
+						npc.m_flSpeed = 200.0;
+						npc.m_iChanged_WalkCycle = 4;
+						npc.SetActivity("ACT_VILLAGER_RUN");
+					}
+				}
+				else
+				{
+					if(npc.m_iChanged_WalkCycle != 5) 	
+					{
+						npc.m_bisWalking = false;
+						npc.m_flSpeed = 0.0;
+						npc.m_iChanged_WalkCycle = 5;
+						npc.SetActivity("ACT_VILLAGER_IDLE");
+						PF_StopPathing(iNPC);
+					}
+				}
+
 				// make a building.
 				//For now only one building exists.
 				float AproxRandomSpaceToWalkTo[3];
@@ -515,6 +544,18 @@ public void MedivalVillager_ClotThink(int iNPC)
 				if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
 					return;
 
+				NavArea area = TheNavMesh.GetNearestNavArea_Vec(AproxRandomSpaceToWalkTo, true);
+				if(area == NavArea_Null)
+					return;
+					
+			
+				area.GetCenter(AproxRandomSpaceToWalkTo);
+
+				AproxRandomSpaceToWalkTo[2] += 18.0;
+
+				if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
+					return;
+
 				static float hullcheckmaxs_Player_Again[3];
 				static float hullcheckmins_Player_Again[3];
 
@@ -522,42 +563,14 @@ public void MedivalVillager_ClotThink(int iNPC)
 				hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );	
 
 				if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
+				{
 					return;
-
-				AproxRandomSpaceToWalkTo[2] += 20.0;
+				}
 
 				if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
 					return;
 
-				AproxRandomSpaceToWalkTo[2] -= 20.0;
-
 				//Retry.
-
-				npc.m_bisWalking = true;
-
-				if(IsValidEnemy(npc.index,npc.m_iTarget))
-				{
-					PF_SetGoalEntity(npc.index, npc.m_iTarget);
-					PF_StartPathing(iNPC);
-					if(npc.m_iChanged_WalkCycle != 4) 	
-					{
-						npc.m_bisWalking = true;
-						npc.m_flSpeed = 200.0;
-						npc.m_iChanged_WalkCycle = 4;
-						npc.SetActivity("ACT_VILLAGER_RUN");
-					}
-				}
-				else
-				{
-					if(npc.m_iChanged_WalkCycle != 5) 	
-					{
-						npc.m_bisWalking = false;
-						npc.m_flSpeed = 0.0;
-						npc.m_iChanged_WalkCycle = 5;
-						npc.SetActivity("ACT_VILLAGER_IDLE");
-						PF_StopPathing(iNPC);
-					}
-				}
 	
 				//Timeout
 				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);

@@ -2177,7 +2177,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "base_boss"))
 		{
-			Hook_DHook_UpdateTransmitState(entity);
+	//		Hook_DHook_UpdateTransmitState(entity);
 			SDKHook(entity, SDKHook_SpawnPost, Check_For_Team_Npc);
 		//	Check_For_Team_Npc(EntIndexToEntRef(entity)); //Dont delay ?
 		}
