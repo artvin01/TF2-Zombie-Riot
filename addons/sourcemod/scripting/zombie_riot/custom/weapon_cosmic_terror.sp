@@ -56,8 +56,8 @@ public void Cosmic_Terror_Pap0(int client, int weapon, bool &result, int slot)
 	{
 		PrintHintText(client,"You ran out of Laser Battery!");
 	}
-	Cosmic_Heat_Max[client]=1000.0; //How much heat before we force a shutdown.
-	Cosmic_Base_BeamSpeed[client] = 1.5;	//how fast the beam is
+	Cosmic_Heat_Max[client]=1350.0; //How much heat before we force a shutdown.
+	Cosmic_Base_BeamSpeed[client] = 2.5;	//how fast the beam is
 	Cosmic_Radius[client] = 100.0;	//damage radius
 	Cosmic_Terror_Pap[client]=0;
 	float time = 4.0;
@@ -82,7 +82,7 @@ public void Cosmic_Terror_Pap1(int client, int weapon, bool &result, int slot)
 		PrintHintText(client,"You ran out of Laser Battery!");
 	}
 	Cosmic_Heat_Max[client]=1750.0; //How much heat before we force a shutdown.
-	Cosmic_Base_BeamSpeed[client] = 2.5;	//how fast the beam is
+	Cosmic_Base_BeamSpeed[client] = 3.5;	//how fast the beam is
 	Cosmic_Radius[client] = 120.0;	//damage radius
 	Cosmic_Terror_Pap[client]=1;
 	float time = 3.0;
@@ -107,7 +107,7 @@ public void Cosmic_Terror_Pap2(int client, int weapon, bool &result, int slot)
 		PrintHintText(client,"You ran out of Laser Battery!");
 	}
 	Cosmic_Heat_Max[client]=2500.0; //How much heat before we force a shutdown.
-	Cosmic_Base_BeamSpeed[client] = 3.5;	//how fast the beam is
+	Cosmic_Base_BeamSpeed[client] = 4.5;	//how fast the beam is
 	Cosmic_Radius[client] = 150.0;	//damage radius
 
 	Cosmic_Terror_Pap[client]=2;
@@ -291,7 +291,7 @@ public Action Cosmic_Heat_Tick(int client)
 			}
 			else
 			{
-				Cosmic_Heat[client]-=1+Cosmic_Terror_Pap[client];
+				Cosmic_Heat[client]-=1.5+Cosmic_Terror_Pap[client];
 			}
 		}
 	}
@@ -342,7 +342,7 @@ void Cosmic_Terror_FullCharge(int client)
 		//CPrintToChatAll("Deactivated");
 	}
 	int new_ammo = GetAmmo(client, 23);
-	if(Cosmic_Terror_GiveAmmo_interval[client] >= 3)
+	if(Cosmic_Terror_GiveAmmo_interval[client] >= 5)
 	{
 		if(new_ammo >= 1)
 		{
