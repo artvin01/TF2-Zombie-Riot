@@ -203,7 +203,7 @@ methodmap Alt_CombineDeutsch < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		
 		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
-		SetVariantString("-0.8");
+		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		npc.m_iWearable1 = npc.EquipItem("partyhat", "models/workshop/player/items/all_class/Jul13_Se_Headset/Jul13_Se_Headset_soldier.mdl");
