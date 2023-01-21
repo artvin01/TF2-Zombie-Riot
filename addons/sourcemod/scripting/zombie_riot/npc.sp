@@ -715,6 +715,7 @@ void NPC_MapStart()
 	MedivalChampion_OnMapStart_NPC();
 	MedivalLightCav_OnMapStart_NPC();
 	MedivalHussar_OnMapStart_NPC();
+	MedivalKnight_OnMapStart_NPC();
 }
 
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings

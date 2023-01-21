@@ -33,10 +33,17 @@
 #if defined ZR
 #define MAX_PLAYER_COUNT			12
 #define MAX_PLAYER_COUNT_STRING		"12"
+
+//This is for spectating
+#define MAX_PLAYER_COUNT_SLOTS				24, //Max should be 24, rest is for killfeed bots
+#define MAX_PLAYER_COUNT_STRING_SLOTS		"24"
 //cant do more then 12, more then 12 cause memory isssues because that many npcs can just cause that much lag
 #else
 #define MAX_PLAYER_COUNT			24
 #define MAX_PLAYER_COUNT_STRING		"24"
+
+#define MAX_PLAYER_COUNT_SLOTS				24
+#define MAX_PLAYER_COUNT_STRING_SLOTS		"24"
 #endif
 
 //#pragma dynamic    131072
