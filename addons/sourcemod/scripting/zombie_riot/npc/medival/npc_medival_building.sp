@@ -85,7 +85,12 @@ static const char g_MeleeMissSounds[][] = {
 
 static float f_PlayerScalingBuilding;
 static int i_currentwave[MAXENTITIES];
+static bool AllyIsBoundToVillage[MAXENTITIES];
 
+void ResetBoundVillageAlly(int entity)
+{
+	AllyIsBoundToVillage[entity] = false;
+}
 void MedivalBuilding_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -177,8 +182,11 @@ methodmap MedivalBuilding < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
+		if(!ally)
+		{
+			b_thisNpcIsABoss[npc.index] = true;
+		}
 		i_NpcIsABuilding[npc.index] = true;
-		b_thisNpcIsABoss[npc.index] = true;
 
 		float wave = float(ZR_GetWaveCount()+1);
 		
@@ -248,12 +256,23 @@ public void MedivalBuilding_ClotThink(int iNPC)
 		if(npc.m_flAttackHappens < GetGameTime(npc.index)) //spawn enemy!
 		{
 			int npc_current_count;
-			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
+			if(!b_IsAlliedNpc[iNPC])
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-				if(IsValidEntity(entity))
+				for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
 				{
-					if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+					int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
+					if(IsValidEntity(entity))
+					{
+						npc_current_count += 1;
+					}
+				}
+			}
+			else
+			{
+				for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc_Allied; entitycount_again_2++) //Check for npcs
+				{
+					int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again_2]);
+					if(IsValidEntity(entity) && AllyIsBoundToVillage[entity])
 					{
 						npc_current_count += 1;
 					}
@@ -264,7 +283,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 
 			IncreaceSpawnRates *= (1.0 - ((f_PlayerScalingBuilding - 1.0) * 7.0 / 110.0));
 
-			if(npc_current_count < LimitNpcs)
+			if((!b_IsAlliedNpc[iNPC] && npc_current_count < LimitNpcs) || (b_IsAlliedNpc[iNPC] && npc_current_count < 6))
 			{
 				float AproxRandomSpaceToWalkTo[3];
 				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
@@ -273,6 +292,11 @@ public void MedivalBuilding_ClotThink(int iNPC)
 
 				int EnemyToSpawn = MEDIVAL_MILITIA;
 
+				if(b_IsAlliedNpc[iNPC])
+				{
+					IncreaceSpawnRates *= 5.0; //way slower.
+				}
+				
 				if(i_currentwave[iNPC] < 15)
 				{
 					EnemyToSpawn = MEDIVAL_MILITIA;
@@ -326,7 +350,14 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				{
 					npc.PlayMeleeMissSound();
 					npc.PlayMeleeMissSound();
-					Zombies_Currently_Still_Ongoing += 1;
+					if(!b_IsAlliedNpc[iNPC])
+					{
+						Zombies_Currently_Still_Ongoing += 1;
+					}
+					else
+					{
+						AllyIsBoundToVillage[spawn_index] = true;
+					}
 				}
 			}
 			else
@@ -403,14 +434,28 @@ public void MedivalBuilding_ClotThink(int iNPC)
 	else
 	{
 		bool villagerexists = false;
-		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++)
+		if(!b_IsAlliedNpc[iNPC])
 		{
-			int baseboss = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-			if (IsValidEntity(baseboss) && i_NpcInternalId[baseboss] == MEDIVAL_VILLAGER && !b_NpcHasDied[baseboss])
+			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
 			{
-				villagerexists = true;
+				int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
+				if (IsValidEntity(entity) && i_NpcInternalId[entity] == MEDIVAL_VILLAGER && !b_NpcHasDied[entity])
+				{
+					villagerexists = true;
+				}
 			}
-		}	
+		}
+		else
+		{
+			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc_Allied; entitycount_again_2++) //Check for npcs
+			{
+				int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again_2]);
+				if (IsValidEntity(entity) && i_NpcInternalId[entity] == MEDIVAL_VILLAGER && !b_NpcHasDied[entity])
+				{
+					villagerexists = true;
+				}
+			}
+		}
 		if(!villagerexists)
 		{
 			SDKHooks_TakeDamage(iNPC, 0, 0, 99999999.0, DMG_BLAST); //Kill it so it triggers the neccecary shit.

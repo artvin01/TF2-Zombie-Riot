@@ -7027,6 +7027,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_NpcResizedForCrouch[entity] = false;
 	i_Changed_WalkCycle[entity] = -1;
 #if defined ZR
+	ResetBoundVillageAlly(entity);
 	ResetFreeze(entity);
 #endif
 	FormatEx(c_HeadPlaceAttachmentGibName[entity], sizeof(c_HeadPlaceAttachmentGibName[]), "");
