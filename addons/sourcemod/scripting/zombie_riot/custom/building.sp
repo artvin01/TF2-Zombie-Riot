@@ -1677,7 +1677,7 @@ void Building_ShowInteractionHud(int client, int entity)
 bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 {
 	if (TeutonType[client] == TEUTON_WAITING)
-		return;
+		return false;
 	/*
 	static char buffer[36];
 	if(!Is_Reload_Button && GrabRef[client] == INVALID_ENT_REFERENCE && !StrContains(classname, "obj_") && GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
