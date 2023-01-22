@@ -4124,7 +4124,7 @@ stock bool IsEntityAlive(int index)
 		}
 		else
 		{
-			if(!IsPlayerAlive(index))
+			if(!IsPlayerAlive(index) || dieingstate[index] > 0 || TeutonType[index] != TEUTON_NONE)
 			{
 				return false;	
 			}
