@@ -135,25 +135,32 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 			b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss_index_allied] = true;
 		}
 	}
+	for(int entity=1; entity<=MAXENTITIES; entity++)
+	{
+		if (IsValidEntity(entity) && IsEntitySpike(entity))
+		{
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
+		}
+	}
+	for(int entitycount_again; entitycount_again<ZR_MAX_TRAPS; entitycount_again++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsTraps[entitycount_again]);
+		if (IsValidEntity(entity))
+		{
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
+		}
+	}
 	//UGLY ASS FIX! Teleport away all entites we wanna ignore, i have no other idea on how...
 	return MRES_Ignored;
 }
 
 public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hParams)
 {
-	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	for(int entity=1; entity<=MAXENTITIES; entity++)
 	{
-		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied))
+		if (IsValidEntity(entity))
 		{
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss_index_allied] = false;
-		}
-	}
-	for(int clientLoop=1; clientLoop<=MaxClients; clientLoop++)
-	{
-		if(IsClientInGame(clientLoop) && clientLoop != i_DoNotTeleportThisPlayer)
-		{
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[clientLoop] = false;
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
 		}
 	}
 	i_DoNotTeleportThisPlayer = 0;

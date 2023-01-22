@@ -712,30 +712,33 @@ public void Weapon_Wand_PotionGoldTouch(int entity, int target)
 	
 	int count;
 	int i = MaxClients + 1;
-	while((i = FindEntityByClassname(i, "base_boss")) != -1)
+	if(IsValidEntity(weapon))
 	{
-		if(!b_NpcHasDied[i] && GetEntProp(i, Prop_Send, "m_iTeamNum") != 2)
+		while((i = FindEntityByClassname(i, "base_boss")) != -1)
 		{
-			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
-			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
+			if(!b_NpcHasDied[i] && GetEntProp(i, Prop_Send, "m_iTeamNum") != 2)
 			{
-				if(view_as<CClotBody>(i).m_iBleedType == BLEEDTYPE_METAL)
+				GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
+				if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
 				{
-					SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
-					StartBleedingTimer(i, owner, f_WandDamage[entity] / 2.0, 10, weapon);
-				}
-				else
-				{
-					SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
-					StartBleedingTimer(i, owner, f_WandDamage[entity] / 8.0, 8, weapon);
-				}
+					if(view_as<CClotBody>(i).m_iBleedType == BLEEDTYPE_METAL)
+					{
+						SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
+						StartBleedingTimer(i, owner, f_WandDamage[entity] / 2.0, 10, weapon);
+					}
+					else
+					{
+						SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
+						StartBleedingTimer(i, owner, f_WandDamage[entity] / 8.0, 8, weapon);
+					}
 
-				float time = GetGameTime() + 1.5;
-				if(f_CrippleDebuff[i] < time)
-					f_CrippleDebuff[i] = time;
-				
-				if(++count > 4)
-					break;
+					float time = GetGameTime() + 1.5;
+					if(f_CrippleDebuff[i] < time)
+						f_CrippleDebuff[i] = time;
+					
+					if(++count > 4)
+						break;
+				}
 			}
 		}
 	}

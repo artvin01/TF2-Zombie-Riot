@@ -34,6 +34,7 @@ enum struct SpawnerData
 	float	f_ClosestSpawnerLessCooldown;
 	float	f_SpawnerCooldown;
 	float	f_PointScore;
+	bool	IsBaseBoss;
 }
 
 //todo: code a way to include 2 or more groups of players splitting up, so the enemies dont spawn in the middle of nowhere
@@ -42,7 +43,7 @@ enum struct SpawnerData
 
 
 //ArrayList NPCList; Make this global, i need it globally.
-static ArrayList SpawnerList;
+//ArrayList SpawnerList; global
 static ConVar MapSpawnersActive;
 static Handle SyncHudRaid;
 #endif
@@ -483,14 +484,14 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++)
 	{
 		entity_Spawner = i_ObjectsSpawners[entitycount];
-		if(IsValidEntity(entity_Spawner) && entity_Spawner != 0)
+		if(IsValidEntity(entity_Spawner))
 		{
 			int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
 			if(index != -1)
 			{
 				SpawnerData Spawner;
 				SpawnerList.GetArray(index, Spawner);
-				if(!GetEntProp(entity_Spawner, Prop_Data, "m_bDisabled") && GetEntProp(entity_Spawner, Prop_Data, "m_iTeamNum") != 2 && Spawner.b_SpawnIsCloseEnough)
+				if((Spawner.IsBaseBoss || !GetEntProp(entity_Spawner, Prop_Data, "m_bDisabled")) && GetEntProp(entity_Spawner, Prop_Data, "m_iTeamNum") != 2 && Spawner.b_SpawnIsCloseEnough)
 				{
 					Active_Spawners += 1;
 					if(Spawner.f_SpawnerCooldown < gameTime)

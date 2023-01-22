@@ -71,6 +71,8 @@ enum
 	WEAPON_COSMIC_TERROR = 8
 }
 
+ArrayList SpawnerList;
+
 //int Bob_To_Player[MAXENTITIES];
 bool Bob_Exists = false;
 int Bob_Exists_Index = -1;

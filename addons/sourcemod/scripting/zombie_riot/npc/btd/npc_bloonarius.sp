@@ -272,6 +272,13 @@ methodmap Bloonarius < CClotBody
 			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
 			{
 				Spawner_AddToArray(npc.index);
+				SpawnerData Spawner;
+				int index = SpawnerList.FindValue(npc.index, SpawnerData::indexnumber);
+				if(index == -1)
+				{
+					Spawner.IsBaseBoss = true;
+					SpawnerList.PushArray(Spawner);
+				}
 				i_ObjectsSpawners[i] = npc.index;
 				break;
 			}

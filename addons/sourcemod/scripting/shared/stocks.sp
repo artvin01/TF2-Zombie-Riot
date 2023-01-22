@@ -2729,7 +2729,7 @@ float dmg_against_entity_multiplier = 3.0)
 						if (distance_1 <= explosion_radius_temp)
 						{
 							float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosion_radius_temp + 1.0);
-											
+								
 							if(damage_1 > damage)
 							{
 								damage_1 = damage;
