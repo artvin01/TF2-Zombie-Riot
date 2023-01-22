@@ -61,7 +61,10 @@ static int Spikes_Alive[MAXPLAYERS+1]={0, ...};
 static int Spike_MaxHealth[MAXENTITIES]={0, ...};
 static bool Is_Spike[MAXENTITIES]={false, ...};
 
-
+bool IsEntitySpike(int entity)
+{
+	return Is_Spike[entity];
+}
 
 public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, bool &result)
 {

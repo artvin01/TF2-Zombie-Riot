@@ -34,6 +34,7 @@ enum struct SpawnerData
 	float	f_ClosestSpawnerLessCooldown;
 	float	f_SpawnerCooldown;
 	float	f_PointScore;
+	bool	IsBaseBoss;
 }
 
 //todo: code a way to include 2 or more groups of players splitting up, so the enemies dont spawn in the middle of nowhere
@@ -42,7 +43,7 @@ enum struct SpawnerData
 
 
 //ArrayList NPCList; Make this global, i need it globally.
-static ArrayList SpawnerList;
+//ArrayList SpawnerList; global
 static ConVar MapSpawnersActive;
 static Handle SyncHudRaid;
 #endif
@@ -267,7 +268,7 @@ public Action GetClosestSpawners(Handle timer)
 					SpawnerData Spawner;
 					SpawnerList.GetArray(index, Spawner);
 					bool Found = false;
-					if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
+					if((Spawner.IsBaseBoss || !GetEntProp(entity, Prop_Data, "m_bDisabled")) && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
 					{
 						for(int Repeats_anti=1; Repeats_anti<=Repeats; Repeats_anti++)
 						{
@@ -483,14 +484,14 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++)
 	{
 		entity_Spawner = i_ObjectsSpawners[entitycount];
-		if(IsValidEntity(entity_Spawner) && entity_Spawner != 0)
+		if(IsValidEntity(entity_Spawner))
 		{
 			int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
 			if(index != -1)
 			{
 				SpawnerData Spawner;
 				SpawnerList.GetArray(index, Spawner);
-				if(!GetEntProp(entity_Spawner, Prop_Data, "m_bDisabled") && GetEntProp(entity_Spawner, Prop_Data, "m_iTeamNum") != 2 && Spawner.b_SpawnIsCloseEnough)
+				if((Spawner.IsBaseBoss || !GetEntProp(entity_Spawner, Prop_Data, "m_bDisabled")) && GetEntProp(entity_Spawner, Prop_Data, "m_iTeamNum") != 2 && Spawner.b_SpawnIsCloseEnough)
 				{
 					Active_Spawners += 1;
 					if(Spawner.f_SpawnerCooldown < gameTime)
@@ -1226,7 +1227,15 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 	}
 	*/
-	
+
+	if(f_HussarBuff[victim] > GetGameTime()) //hussar!
+	{
+		damage *= 0.85;
+	}
+	if(f_HussarBuff[attacker] > GetGameTime()) //hussar!
+	{
+		damage *= 1.15;
+	}
 	if(f_EmpowerStateOther[attacker] > GetGameTime()) //Allow stacking.
 	{
 		damage *= 1.1;
@@ -2220,12 +2229,16 @@ void CleanAllNpcArray()
 }
 
 #if defined ZR
-void Spawner_AddToArray(int entity) //cant use ent ref here...
+void Spawner_AddToArray(int entity, bool base_boss = false) //cant use ent ref here...
 {
 	SpawnerData Spawner;
 	int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
 	if(index == -1)
 	{
+		if(base_boss)
+		{
+			Spawner.IsBaseBoss = true;
+		}
 		Spawner.indexnumber = entity;
 		SpawnerList.PushArray(Spawner);
 	}

@@ -119,4 +119,16 @@
 	{
 		"en" 		"An invasion of the past is accuring!"
 	}
+	"The golden bloon is valueable..."
+	{
+		"en"		"The golden bloon is valueable..."
+	}
+	"The golden bloon is said to be rich..."
+	{
+		"en"		"The golden bloon is said to be rich..."
+	}
+	"The golden bloon is what all monkeys wish to pop..."
+	{
+		"en"		"The golden bloon is what all monkeys wish to pop..."
+	}
 }

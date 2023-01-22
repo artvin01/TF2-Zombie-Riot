@@ -108,15 +108,15 @@ stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iPar
 		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
 		DispatchKeyValue(particle, "targetname", "rpg_fortress");
 		DispatchKeyValue(particle, "effect_name", effectName);
+		if(iParent > MAXTF2PLAYERS) //Exclude base_bosses from this, or any entity, then it has to always be rendered.
+		{
+			b_IsEntityAlwaysTranmitted[particle] = true;
+		}
 		DispatchSpawn(particle);
 
 		SetParent(iParent, particle, szAttachment, vOffsets);
 
 		ActivateEntity(particle);
-		if(iParent > MAXTF2PLAYERS) //Exclude base_bosses from this, or any entity, then it has to always be rendered.
-		{
-			b_IsEntityAlwaysTranmitted[particle] = true;
-		}
 
 		AcceptEntityInput(particle, "start");
 		//CreateTimer(0.1, Activate_particle_late, particle, TIMER_FLAG_NO_MAPCHANGE);
@@ -2729,7 +2729,7 @@ float dmg_against_entity_multiplier = 3.0)
 						if (distance_1 <= explosion_radius_temp)
 						{
 							float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosion_radius_temp + 1.0);
-											
+								
 							if(damage_1 > damage)
 							{
 								damage_1 = damage;
