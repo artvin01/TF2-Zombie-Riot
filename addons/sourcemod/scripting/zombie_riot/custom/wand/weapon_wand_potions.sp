@@ -250,7 +250,7 @@ public void Weapon_Wand_PotionBasicTouch(int entity, int target)
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
 			{
 				SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
-				StartBleedingTimer(i, owner, f_WandDamage[entity] / 8.0, 8, weapon);
+				StartBleedingTimer(i, owner, f_WandDamage[entity] / 8.0, 8, weapon, DMG_SLASH);
 				if(++count > 4)
 					break;
 			}
@@ -476,7 +476,7 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
 			{
 				float damage = f_WandDamage[entity];
-				StartBleedingTimer(i, owner, damage / 8.0, 8, weapon);
+				StartBleedingTimer(i, owner, damage / 8.0, 8, weapon, DMG_SLASH);
 
 				if(i_NpcInternalId[i] == BTD_BLOON)
 				{
@@ -664,12 +664,12 @@ public void Weapon_Wand_PotionLeadTouch(int entity, int target)
 				if(view_as<CClotBody>(i).m_iBleedType == BLEEDTYPE_METAL)
 				{
 					SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
-					StartBleedingTimer(i, owner, f_WandDamage[entity] / 2.0, 10, weapon);
+					StartBleedingTimer(i, owner, f_WandDamage[entity] / 2.0, 10, weapon, DMG_SLASH);
 				}
 				else
 				{
 					SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
-					StartBleedingTimer(i, owner, f_WandDamage[entity] / 8.0, 8, weapon);
+					StartBleedingTimer(i, owner, f_WandDamage[entity] / 8.0, 8, weapon, DMG_SLASH);
 				}
 
 				if(++count > 4)
@@ -724,12 +724,12 @@ public void Weapon_Wand_PotionGoldTouch(int entity, int target)
 					if(view_as<CClotBody>(i).m_iBleedType == BLEEDTYPE_METAL)
 					{
 						SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
-						StartBleedingTimer(i, owner, f_WandDamage[entity] / 2.0, 10, weapon);
+						StartBleedingTimer(i, owner, f_WandDamage[entity] / 2.0, 10, weapon, DMG_SLASH);
 					}
 					else
 					{
 						SDKHooks_TakeDamage(i, entity, owner, f_WandDamage[entity], DMG_SLASH, weapon, _, pos1);
-						StartBleedingTimer(i, owner, f_WandDamage[entity] / 8.0, 8, weapon);
+						StartBleedingTimer(i, owner, f_WandDamage[entity] / 8.0, 8, weapon, DMG_SLASH);
 					}
 
 					float time = GetGameTime() + 1.5;
