@@ -1396,7 +1396,7 @@ public void OnClientPutInServer(int client)
 		return;
 	}
 
-	if(CountPlayersOnServer() > MAX_PLAYER_COUNT)
+	if(CountPlayersOnServer() > MAX_PLAYER_COUNT_SLOTS)
 	{
 		if(!(GetUserFlagBits(client) & ADMFLAG_SLAY))
 		{
