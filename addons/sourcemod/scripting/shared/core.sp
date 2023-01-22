@@ -2825,13 +2825,16 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 					
 				if(Store_Girogi_Interact(client, entity, buffer, Is_Reload_Button))
 					return true;
-					
+
+				if (TeutonType[client] == TEUTON_WAITING)
+					return false;
+
 				if(Escape_Interact(client, entity))
 					return true;
 				
 				//if(Store_Interact(client, entity, buffer))
 				//	return true;
-				
+
 				if(Citizen_Interact(client, entity))
 					return true;
 			}
