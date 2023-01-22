@@ -22,8 +22,11 @@ static int i_tornado_pap[MAXPLAYERS+1]={0, ...};
 #define SOUND_IMPACT_CONCRETE_3 		"physics/concrete/concrete_impact_bullet3.wav"
 #define SOUND_IMPACT_CONCRETE_4 		"physics/concrete/concrete_impact_bullet4.wav"
 
+static int g_particleImpactTornado;
+
 public void Weapon_Tornado_Blitz_Precache()
 {
+	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
 	PrecacheSound(SOUND_IMPACT_CONCRETE_1);
 	PrecacheSound(SOUND_IMPACT_CONCRETE_2);
 	PrecacheSound(SOUND_IMPACT_CONCRETE_3);
@@ -275,6 +278,11 @@ public void Tornado_Blitz_StartTouch(int entity, int other)
 		int owner = EntRefToEntIndex(i_tornado_index[entity]);
 		int weapon = EntRefToEntIndex(i_tornado_wep[entity]);
 
+		float pos1[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+		TE_ParticleInt(g_particleImpactTornado, pos1);
+		TE_SendToAll();
+
 		SDKHooks_TakeDamage(target, owner, owner, fl_tornado_dmg[entity], DMG_BULLET, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		//CPrintToChatAll("sdk_dmg");
@@ -296,6 +304,10 @@ public void Tornado_Blitz_StartTouch(int entity, int other)
 	}
 	else if(target == 0)
 	{
+		float pos1[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+		TE_ParticleInt(g_particleImpactTornado, pos1);
+		TE_SendToAll();
 		switch(GetRandomInt(1,4)) 
 		{
 			case 1:EmitSoundToAll(SOUND_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 0.9);

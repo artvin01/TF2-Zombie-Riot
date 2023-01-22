@@ -1516,7 +1516,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			GetEntityClassname(weapon, classname, sizeof(classname));
 			if(!StrContains(classname, "tf_weapon_knife", false) && f_BackstabDmgMulti[weapon] != 0.0) //Irene weapon cannot backstab.
 			{
-				if(damagetype & DMG_CLUB) //Use dmg slash for any npc that shouldnt be scaled.
+				if(damagetype & DMG_CLUB && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)) //Use dmg slash for any npc that shouldnt be scaled.
 				{
 					if(IsBehindAndFacingTarget(attacker, victim) || b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
 					{
