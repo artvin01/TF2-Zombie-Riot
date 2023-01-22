@@ -12,10 +12,10 @@ static const char BloonLowData[][] =
 // Halved on Elite
 static const int BloonLowCount[] =
 {
-	8,
-	15,
-	25,
-	15
+	4,
+	7,
+	12,
+	7
 };
 
 static const int BloonHigh[] =
@@ -37,9 +37,9 @@ static const char BloonHighData[][] =
 // Halved on Elite
 static const int BloonHighCount[] =
 {
-	5,//30,
-	15,//60,
-	6,//6,
+	3,//30,
+	10,//60,
+	5,//6,
 	3//10
 };
 
@@ -271,14 +271,7 @@ methodmap Bloonarius < CClotBody
 		{
 			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
 			{
-				Spawner_AddToArray(npc.index);
-				SpawnerData Spawner;
-				int index = SpawnerList.FindValue(npc.index, SpawnerData::indexnumber);
-				if(index == -1)
-				{
-					Spawner.IsBaseBoss = true;
-					SpawnerList.PushArray(Spawner);
-				}
+				Spawner_AddToArray(npc.index, true);
 				i_ObjectsSpawners[i] = npc.index;
 				break;
 			}

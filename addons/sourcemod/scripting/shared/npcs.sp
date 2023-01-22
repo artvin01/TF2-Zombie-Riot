@@ -268,7 +268,7 @@ public Action GetClosestSpawners(Handle timer)
 					SpawnerData Spawner;
 					SpawnerList.GetArray(index, Spawner);
 					bool Found = false;
-					if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
+					if((Spawner.IsBaseBoss || !GetEntProp(entity, Prop_Data, "m_bDisabled")) && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
 					{
 						for(int Repeats_anti=1; Repeats_anti<=Repeats; Repeats_anti++)
 						{
@@ -2229,12 +2229,16 @@ void CleanAllNpcArray()
 }
 
 #if defined ZR
-void Spawner_AddToArray(int entity) //cant use ent ref here...
+void Spawner_AddToArray(int entity, bool base_boss = false) //cant use ent ref here...
 {
 	SpawnerData Spawner;
 	int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
 	if(index == -1)
 	{
+		if(base_boss)
+		{
+			Spawner.IsBaseBoss = true;
+		}
 		Spawner.indexnumber = entity;
 		SpawnerList.PushArray(Spawner);
 	}
