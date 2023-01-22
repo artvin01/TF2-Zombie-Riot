@@ -1405,6 +1405,9 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 		
 void Building_ShowInteractionHud(int client, int entity)
 {
+	if (TeutonType[client] == TEUTON_WAITING)
+		return;
+
 	bool Hide_Hud = true;
 	if(IsValidEntity(entity))
 	{
@@ -1673,8 +1676,8 @@ void Building_ShowInteractionHud(int client, int entity)
 }
 bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 {
-	
-
+	if (TeutonType[client] == TEUTON_WAITING)
+		return;
 	/*
 	static char buffer[36];
 	if(!Is_Reload_Button && GrabRef[client] == INVALID_ENT_REFERENCE && !StrContains(classname, "obj_") && GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
