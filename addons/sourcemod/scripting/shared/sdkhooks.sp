@@ -749,6 +749,11 @@ public void OnPostThink(int client)
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⍋%s", bufferbuffs);
 		}
+		if(f_HussarBuff[client] > GetGameTime()) //hussar!
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "ᐩ%s", bufferbuffs);
+		}
 
 		if(had_An_ability)
 		{
@@ -1219,6 +1224,14 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			
 			damage = modified_damage;
 			Replicated_Damage = modified_damage;
+		}
+		if(f_HussarBuff[attacker] > GetGameTime()) //hussar!
+		{
+			damage *= 1.15;
+		}
+		if(f_HussarBuff[victim] > GetGameTime()) //hussar!
+		{
+			damage *= 0.85;
 		}
 		
 		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!

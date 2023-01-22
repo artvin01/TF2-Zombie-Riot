@@ -39,10 +39,10 @@ public void Weapon_Tornado_Blitz_Precache()
 
 public void Weapon_tornado_launcher_Spam(int client, int weapon, const char[] classname, bool &result)
 {
-	if(fl_tornados_rockets_eated[client]>3.0)	//Every 3rd rocket is free. or there abouts.
+	if(fl_tornados_rockets_eated[client]>2.5)	//Every 3rd rocket is free. or there abouts.
 	{
 		Add_Back_One_Rocket(weapon);
-		fl_tornados_rockets_eated[client]=-3.0;
+		fl_tornados_rockets_eated[client]=-2.5;
 	}
 	else
 	{

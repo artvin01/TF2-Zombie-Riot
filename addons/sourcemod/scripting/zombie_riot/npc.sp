@@ -182,6 +182,8 @@ enum
 	MEDIVAL_CONSTRUCT			= 157,
 	MEDIVAL_CHAMPION			= 158,
 	MEDIVAL_LIGHT_CAV			= 159,
+	MEDIVAL_HUSSAR				= 160,
+	MEDIVAL_KNIGHT				= 161,
 }
 
 public const char NPC_Names[][] =
@@ -358,7 +360,9 @@ public const char NPC_Names[][] =
 	"Building",
 	"Medival Construct",
 	"Champion",
-	"Light Cavalry"
+	"Light Cavalry",
+	"Hussar",
+	"Knight"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -531,7 +535,9 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_medival_building",
 	"npc_medival_construct",
 	"npc_medival_champion",
-	"npc_medival_light_cav"
+	"npc_medival_light_cav",
+	"npc_medival_hussar",
+	"npc_medival_knight"
 };
 
 void NPC_MapStart()
@@ -708,6 +714,8 @@ void NPC_MapStart()
 	MedivalConstruct_OnMapStart_NPC();
 	MedivalChampion_OnMapStart_NPC();
 	MedivalLightCav_OnMapStart_NPC();
+	MedivalHussar_OnMapStart_NPC();
+	MedivalKnight_OnMapStart_NPC();
 }
 
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
@@ -1343,6 +1351,14 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case MEDIVAL_LIGHT_CAV:
 		{
 			entity = MedivalLightCav(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_HUSSAR:
+		{
+			entity = MedivalHussar(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_KNIGHT:
+		{
+			entity = MedivalKnight(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -1981,6 +1997,14 @@ public void NPCDeath(int entity)
 		{
 			MedivalLightCav_NPCDeath(entity);
 		}
+		case MEDIVAL_HUSSAR:
+		{
+			MedivalHussar_NPCDeath(entity);
+		}
+		case MEDIVAL_KNIGHT:
+		{
+			MedivalKnight_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2176,6 +2200,8 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/medival/npc_medival_construct.sp"
 #include "zombie_riot/npc/medival/npc_medival_champion.sp"
 #include "zombie_riot/npc/medival/npc_medival_light_cav.sp"
+#include "zombie_riot/npc/medival/npc_medival_hussar.sp"
+#include "zombie_riot/npc/medival/npc_medival_knight.sp"
 
 #include "zombie_riot/npc/cof/npc_addiction.sp"
 #include "zombie_riot/npc/cof/npc_doctor.sp"

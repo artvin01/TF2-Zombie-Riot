@@ -246,6 +246,11 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 					
 			else
 				damage = 100.0;
+
+			if(TeutonType[client] == TEUTON_WAITING)
+			{
+				damage *= 0.25;
+			}
 			
 	   		TF2Attrib_SetByDefIndex(weapon_index, 2, damage);
 	   		TF2Attrib_SetByDefIndex(weapon_index, 264, 0.0);

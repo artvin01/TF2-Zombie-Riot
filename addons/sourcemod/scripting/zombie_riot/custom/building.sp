@@ -1883,7 +1883,10 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 					int HealAmmount = 1;
 					int HealTime = 30;
-					HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_FindOnPlayer(owner, 8, true, 1.0));
+					if(IsValidClient(owner))
+					{
+						HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_FindOnPlayer(owner, 8, true, 1.0, true));
+					}
 				/*
 					if(f_TimeUntillNormalHeal[client])
 					{
