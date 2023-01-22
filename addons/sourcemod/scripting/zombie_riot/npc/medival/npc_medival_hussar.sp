@@ -379,6 +379,8 @@ public void MedivalHussar_ClotThink(int iNPC)
 
 void HussarAOEBuff(MedivalHussar npc, float gameTime)
 {
+	float pos1[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
 	if(npc.m_flAttackHappens_bullshit < gameTime)
 	{
 		bool buffed_anyone;
@@ -386,13 +388,18 @@ void HussarAOEBuff(MedivalHussar npc, float gameTime)
 		{
 			if(IsValidEntity(entitycount) && entitycount != npc.index && (entitycount <= MaxClients || !b_NpcHasDied[entitycount])) //Cannot buff self like this.
 			{
-				if(GetEntProp(entitycount, Prop_Data, "m_iTeamNum") == GetEntProp(npc.index, Prop_Data, "m_iTeamNum") && GetEntProp(entitycount, Prop_Data, "m_iHealth") > 0)
+				if(GetEntProp(entitycount, Prop_Data, "m_iTeamNum") == GetEntProp(npc.index, Prop_Data, "m_iTeamNum") && IsEntityAlive(entitycount))
 				{
-					if(i_NpcInternalId[entitycount] != MEDIVAL_HUSSAR) //Hussars cannot buff eachother.
+					static float pos2[3];
+					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
+					if(GetVectorDistance(pos1, pos2, true) < (HUSSAR_BUFF_MAXRANGE * HUSSAR_BUFF_MAXRANGE))
 					{
-						f_HussarBuff[entitycount] = GetGameTime() + 5.0; //allow buffing of players too if on red.
-						//Buff this entity.
-						buffed_anyone = true;	
+						if(i_NpcInternalId[entitycount] != MEDIVAL_HUSSAR) //Hussars cannot buff eachother.
+						{
+							f_HussarBuff[entitycount] = GetGameTime() + 5.0; //allow buffing of players too if on red.
+							//Buff this entity.
+							buffed_anyone = true;	
+						}
 					}
 				}
 			}
