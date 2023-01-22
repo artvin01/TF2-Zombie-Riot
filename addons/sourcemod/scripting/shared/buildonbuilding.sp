@@ -137,7 +137,7 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 	}
 	for(int entity=1; entity<=MAXENTITIES; entity++)
 	{
-		if (IsValidEntity(entity) && IsEntitySpike(entity))
+		if (IsValidEntity(entity) && (IsEntitySpike(entity) || b_Is_Player_Projectile[entity]))
 		{
 			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
 		}
