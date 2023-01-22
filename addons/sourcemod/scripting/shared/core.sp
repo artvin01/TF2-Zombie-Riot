@@ -1915,10 +1915,13 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 
 public void Update_Ammo(int  client)
 {
-	for(int i; i<Ammo_MAX; i++)
+	if(IsValidClient(client))
 	{
-		CurrentAmmo[client][i] = GetAmmo(client, i);
-	}	
+		for(int i; i<Ammo_MAX; i++)
+		{
+			CurrentAmmo[client][i] = GetAmmo(client, i);
+		}	
+	}
 }
 
 public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname, bool &result)
