@@ -231,8 +231,8 @@ public Action LessAttackSpeed(Handle cut_timer, int client)
 	if(IsValidClient(client))
 	{
 		int weapon = EntRefToEntIndex(weapon_id[client]);
-		/*Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 		fl_IncreaseAttackSpeed[client] = 1.0;
+		/*Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 		if(address != Address_Null)
 		fl_IncreaseAttackSpeed[client] = TF2Attrib_GetValue(address);
 		TF2Attrib_SetByDefIndex(weapon, 6, fl_IncreaseAttackSpeed[client] * DecreaseAttackSpeed_Pap);*/
@@ -248,8 +248,8 @@ public Action MoreAttackSpeed(Handle cut_timer, int client)
 	if(IsValidClient(client))
 	{
 		int weapon = EntRefToEntIndex(weapon_id[client]);
-		/*Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 		fl_IncreaseAttackSpeed[client] = 1.0;
+		/*Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 		if(address != Address_Null)
 		fl_IncreaseAttackSpeed[client] = TF2Attrib_GetValue(address);
 		TF2Attrib_SetByDefIndex(weapon, 6, fl_IncreaseAttackSpeed[client] * IncreaseAttackSpeed_Pap);*/
@@ -265,8 +265,8 @@ public Action DealMoreDmg(Handle cut_timer, int client)
 	if(IsValidClient(client))
 	{
 		int weapon = EntRefToEntIndex(weapon_id[client]);
-		/*Address address = TF2Attrib_GetByDefIndex(weapon, 2);
 		fl_IncreaseDamage[client] = 1.0;
+		/*Address address = TF2Attrib_GetByDefIndex(weapon, 2);
 		if(address != Address_Null)
 		fl_IncreaseDamage[client] = TF2Attrib_GetValue(address);
 		TF2Attrib_SetByDefIndex(weapon, 2, fl_IncreaseDamage[client] * DamageMultiplier_Pap);*/
@@ -282,8 +282,8 @@ public Action DealLessDmg(Handle cut_timer, int client)
 	if(IsValidClient(client))
 	{
 		int weapon = EntRefToEntIndex(weapon_id[client]);
-		/*Address address = TF2Attrib_GetByDefIndex(weapon, 2);
 		fl_IncreaseDamage[client] = 1.0;
+		/*Address address = TF2Attrib_GetByDefIndex(weapon, 2);
 		if(address != Address_Null)
 		fl_IncreaseDamage[client] = TF2Attrib_GetValue(address);
 		TF2Attrib_SetByDefIndex(weapon, 2, fl_IncreaseDamage[client] * LessDamageMultiplier_Pap);*/
