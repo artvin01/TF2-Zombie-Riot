@@ -426,6 +426,8 @@ public void Bloonarius_ClotThink(int iNPC)
 				Waves_AddNextEnemy(enemy);
 			}
 			
+			Zombies_Currently_Still_Ongoing += count;
+			
 			if(npc.m_bElite)
 			{
 				enemy.Index = ZombieLow[tier];
