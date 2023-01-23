@@ -627,7 +627,7 @@ public Action SpyMainBoss_ClotDamaged(int victim, int &attacker, int &inflictor,
 			npc.m_blPlayHurtAnimation = true;
 		}
 	}
-	else if(!Building_DoesPierce(attacker))
+	else
 	{
 		damage *= 0.1;
 	}

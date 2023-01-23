@@ -3658,3 +3658,31 @@ public Action StreetFighter_RestoreAttrib(Handle timer, DataPack pack)
 	}
 	return Plugin_Stop;
 }
+/*
+void PlayFakeDeathSound(int client)
+{
+	int victim;
+	for(int bot=1; bot<MaxClients; bot++)
+	{
+		if(IsValidClient(bot) && b_IsPlayerABot[bot])
+		{
+			victim = bot;
+			break;
+		}
+	}
+	if(victim == 0)
+	{
+		return;
+	}
+	PrintToChatAll("%i",victim);
+
+	Event event = CreateEvent("player_hurt", true);
+	event.SetInt("userid", GetClientUserId(victim));
+	event.SetInt("health", -25);
+	event.SetInt("attacker", GetClientUserId(client));
+	event.SetInt("damageamount", 99);
+	event.SetBool("crit", false);
+	event.FireToClient(client);
+	delete event;
+}
+*/

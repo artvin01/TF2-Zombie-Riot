@@ -525,10 +525,10 @@ public Action CombineOverlord_ClotDamaged(int victim, int &attacker, int &inflic
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
-	if(npc.m_flAngerDelay > GetGameTime(npc.index) && !Building_DoesPierce(attacker))
+	if(npc.m_flAngerDelay > GetGameTime(npc.index))
 		damage *= 0.25;
 	
-	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
+	if(npc.m_fbRangedSpecialOn)
 		damage *= 0.15;
 	
 	return Plugin_Changed;

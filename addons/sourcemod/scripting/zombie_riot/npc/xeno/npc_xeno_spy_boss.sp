@@ -776,7 +776,7 @@ public Action XenoSpyMainBoss_ClotDamaged(int victim, int &attacker, int &inflic
 			npc.m_blPlayHurtAnimation = true;
 		}
 	}
-	else if(!Building_DoesPierce(attacker))
+	else
 	{
 		damage *= 0.1;
 	}

@@ -447,7 +447,7 @@ public Action XenoCombineCollos_ClotDamaged(int victim, int &attacker, int &infl
 		
 	XenoCombineCollos npc = view_as<XenoCombineCollos>(victim);
 	
-	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
+	if(npc.m_fbRangedSpecialOn)
 		damage *= 0.15;
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))

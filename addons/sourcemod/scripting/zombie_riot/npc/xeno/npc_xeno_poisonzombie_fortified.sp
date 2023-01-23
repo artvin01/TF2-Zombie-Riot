@@ -341,7 +341,7 @@ public Action XenoFortifiedPoisonZombie_ClotDamaged(int victim, int &attacker, i
 		CreateTimer(2.0, XenoFortifiedPoisonZombie_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(10.0, XenoFortifiedPoisonZombie_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 	}
-	if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index) && !Building_DoesPierce(attacker))
+	if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
 	{
 		damage *= 0.25;
 	}

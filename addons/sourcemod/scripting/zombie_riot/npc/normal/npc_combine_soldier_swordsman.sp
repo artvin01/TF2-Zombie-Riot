@@ -430,7 +430,7 @@ public Action CombineSwordsman_ClotDamaged(int victim, int &attacker, int &infli
 		
 	CombineSwordsman npc = view_as<CombineSwordsman>(victim);
 	
-	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
+	if(npc.m_fbRangedSpecialOn)
 		damage *= 0.15;
 	
 	/*
