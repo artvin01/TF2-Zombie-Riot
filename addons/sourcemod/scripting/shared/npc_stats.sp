@@ -502,8 +502,6 @@ methodmap CClotBody
 			AcceptEntityInput(npcstats.m_iTeamGlow, "SetGlowColor");
 		}
 #endif
-
-		SetEdictFlags(npc, (GetEdictFlags(npc) & ~FL_EDICT_ALWAYS));
 		
 		SDKHook(npc, SDKHook_OnTakeDamage, NPC_OnTakeDamage_Base);
 		SDKHook(npc, SDKHook_Think, Check_If_Stuck);
@@ -4848,6 +4846,8 @@ public Action Timer_CheckStuckOutsideMap(Handle cut_timer, int ref)
 	return Plugin_Stop;
 }
 
+float f_CheckIfStuckPlayerDelay[MAXENTITIES];
+
 public void Check_If_Stuck(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
@@ -4900,128 +4900,131 @@ public void Check_If_Stuck(int iNPC)
 				CreateTimer(1.0, Timer_CheckStuckOutsideMap, EntIndexToEntRef(iNPC), TIMER_FLAG_NO_MAPCHANGE);
 			}
 		}
-
-		//This is a tempomary fix. find a better one for players getting stuck.
-		static float hullcheckmaxs_Player[3];
-		static float hullcheckmins_Player[3];
-		if(b_IsGiant[iNPC])
+		if(f_CheckIfStuckPlayerDelay[iNPC] < GetGameTime())
 		{
-		 	hullcheckmaxs_Player = view_as<float>( { 30.0, 30.0, 120.0 } );
-			hullcheckmins_Player = view_as<float>( { -30.0, -30.0, 0.0 } );	
-		}
-		else if(f3_CustomMinMaxBoundingBox[iNPC][1] != 0.0)
-		{
-			hullcheckmaxs_Player[0] = f3_CustomMinMaxBoundingBox[iNPC][0];
-			hullcheckmaxs_Player[1] = f3_CustomMinMaxBoundingBox[iNPC][1];
-			hullcheckmaxs_Player[2] = f3_CustomMinMaxBoundingBox[iNPC][2];
-
-			hullcheckmins_Player[0] = -f3_CustomMinMaxBoundingBox[iNPC][0];
-			hullcheckmins_Player[1] = -f3_CustomMinMaxBoundingBox[iNPC][1];
-			hullcheckmins_Player[2] = 0.0;
-		}
-		else
-		{
-			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
-			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
-		}
-		if(b_NpcResizedForCrouch[iNPC])
-		{
-			hullcheckmaxs_Player[2] = 41.0;
-		}
-		int Hit_player = IsSpaceOccupiedOnlyPlayers(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
-		if (Hit_player) //The boss will start to merge with player, STOP!
-		{
-			static float flPlayerPos[3];
-			GetEntPropVector(Hit_player, Prop_Data, "m_vecAbsOrigin", flPlayerPos);
-			static float flMyPos_2[3];
-			flMyPos_2[0] = flPlayerPos[0];
-			flMyPos_2[1] = flPlayerPos[1];
-			flMyPos_2[2] = flMyPos[2];
-			
-			if(flPlayerPos[2] > flMyPos_2[2]) //PLAYER IS ABOVE ZOMBIE
+			f_CheckIfStuckPlayerDelay[iNPC] = GetGameTime() + 0.1;
+			//This is a tempomary fix. find a better one for players getting stuck.
+			static float hullcheckmaxs_Player[3];
+			static float hullcheckmins_Player[3];
+			if(b_IsGiant[iNPC])
 			{
-				flMyPos_2[2] += hullcheckmaxs_Player[2];
-				
-				if(IsValidEntity(Hit_player))
-				{
-					
-					static float hullcheckmaxs_Player_Again[3];
-					static float hullcheckmins_Player_Again[3];
-
-					hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
-					hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
-					
-					if(!IsSpaceOccupiedIgnorePlayers(flMyPos_2, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, Hit_player))
-					{
-						SDKCall_SetLocalOrigin(Hit_player, flMyPos_2);	
-					//	TeleportEntity(entity, f3_LastValidPosition[entity], NULL_VECTOR, { 0.0, 0.0, 0.0 });
-					}
-					else
-					{
-						if(f_StuckTextChatNotif[Hit_player] < GetGameTime())
-						{
-							f_StuckTextChatNotif[Hit_player] = GetGameTime() + 1.0;
-							PrintToChat(Hit_player, "You are stuck, yet Unstucking you will stuck you again, you will remain in this position so if you kill the npc, you can get free.");
-						}
-					}
-				}		
+				hullcheckmaxs_Player = view_as<float>( { 30.0, 30.0, 120.0 } );
+				hullcheckmins_Player = view_as<float>( { -30.0, -30.0, 0.0 } );	
 			}
-			else //PLAYER IS BELOW ZOMBIE
+			else if(f3_CustomMinMaxBoundingBox[iNPC][1] != 0.0)
 			{
-				flMyPos_2[0] = flMyPos[0];
-				flMyPos_2[1] = flMyPos[1];
+				hullcheckmaxs_Player[0] = f3_CustomMinMaxBoundingBox[iNPC][0];
+				hullcheckmaxs_Player[1] = f3_CustomMinMaxBoundingBox[iNPC][1];
+				hullcheckmaxs_Player[2] = f3_CustomMinMaxBoundingBox[iNPC][2];
+
+				hullcheckmins_Player[0] = -f3_CustomMinMaxBoundingBox[iNPC][0];
+				hullcheckmins_Player[1] = -f3_CustomMinMaxBoundingBox[iNPC][1];
+				hullcheckmins_Player[2] = 0.0;
+			}
+			else
+			{
+				hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
+				hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
+			}
+			if(b_NpcResizedForCrouch[iNPC])
+			{
+				hullcheckmaxs_Player[2] = 41.0;
+			}
+			int Hit_player = IsSpaceOccupiedOnlyPlayers(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
+			if (Hit_player) //The boss will start to merge with player, STOP!
+			{
+				static float flPlayerPos[3];
+				GetEntPropVector(Hit_player, Prop_Data, "m_vecAbsOrigin", flPlayerPos);
+				static float flMyPos_2[3];
+				flMyPos_2[0] = flPlayerPos[0];
+				flMyPos_2[1] = flPlayerPos[1];
 				flMyPos_2[2] = flMyPos[2];
-				flMyPos_2[2] += 82.0; //Player height.
-				flMyPos_2[2] += 5.0;
 				
-				if(IsValidEntity(Hit_player))
+				if(flPlayerPos[2] > flMyPos_2[2]) //PLAYER IS ABOVE ZOMBIE
 				{
-					static float hullcheckmaxs_Player_Again[3];
-					static float hullcheckmins_Player_Again[3];
-
-					hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
-					hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
-
-					if(b_NpcResizedForCrouch[iNPC])
-					{
-						hullcheckmaxs_Player_Again[2] = 41.0;
-					}
+					flMyPos_2[2] += hullcheckmaxs_Player[2];
 					
-					if(!IsSpaceOccupiedIgnorePlayers(flMyPos_2, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, iNPC))
+					if(IsValidEntity(Hit_player))
 					{
-						SDKCall_SetLocalOrigin(iNPC, flMyPos_2);	
-						TeleportEntity(iNPC, flMyPos_2, NULL_VECTOR, { 0.0, 0.0, 0.0 }); //Reset their speed
-						npc.SetVelocity({ 0.0, 0.0, 0.0 });
-#if defined ZR
-						if(f_NpcHasBeenUnstuckAboveThePlayer[iNPC] > GetGameTime())
+						
+						static float hullcheckmaxs_Player_Again[3];
+						static float hullcheckmins_Player_Again[3];
+
+						hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
+						hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
+						
+						if(!IsSpaceOccupiedIgnorePlayers(flMyPos_2, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, Hit_player))
 						{
-							bool wasactuallysawrunner = false;
-							if(b_ThisNpcIsSawrunner[npc.index]) //Code works already good, do this.
+							SDKCall_SetLocalOrigin(Hit_player, flMyPos_2);	
+						//	TeleportEntity(entity, f3_LastValidPosition[entity], NULL_VECTOR, { 0.0, 0.0, 0.0 });
+						}
+						else
+						{
+							if(f_StuckTextChatNotif[Hit_player] < GetGameTime())
 							{
-								wasactuallysawrunner = true;
-							}
-							b_ThisNpcIsSawrunner[npc.index] = true;
-							SDKHooks_TakeDamage(Hit_player, iNPC, iNPC, float(SDKCall_GetMaxHealth(Hit_player) / 8), DMG_DROWN);
-							if(wasactuallysawrunner)
-							{
-								b_ThisNpcIsSawrunner[npc.index] = false;
+								f_StuckTextChatNotif[Hit_player] = GetGameTime() + 1.0;
+								PrintToChat(Hit_player, "You are stuck, yet Unstucking you will stuck you again, you will remain in this position so if you kill the npc, you can get free.");
 							}
 						}
-						f_NpcHasBeenUnstuckAboveThePlayer[iNPC] = GetGameTime() + 1.0; //Make the npc immortal! This will prevent abuse of stuckspots.
-#endif
-					}
-					else
+					}		
+				}
+				else //PLAYER IS BELOW ZOMBIE
+				{
+					flMyPos_2[0] = flMyPos[0];
+					flMyPos_2[1] = flMyPos[1];
+					flMyPos_2[2] = flMyPos[2];
+					flMyPos_2[2] += 82.0; //Player height.
+					flMyPos_2[2] += 5.0;
+					
+					if(IsValidEntity(Hit_player))
 					{
-						if(f_StuckTextChatNotif[Hit_player] < GetGameTime())
+						static float hullcheckmaxs_Player_Again[3];
+						static float hullcheckmins_Player_Again[3];
+
+						hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
+						hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
+
+						if(b_NpcResizedForCrouch[iNPC])
 						{
-							f_StuckTextChatNotif[Hit_player] = GetGameTime() + 1.0;
-							PrintToChat(Hit_player, "You are stuck, yet Unstucking you will stuck you again, you will remain in this position so if you kill the npc, you can get free.");
+							hullcheckmaxs_Player_Again[2] = 41.0;
+						}
+						
+						if(!IsSpaceOccupiedIgnorePlayers(flMyPos_2, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, iNPC))
+						{
+							SDKCall_SetLocalOrigin(iNPC, flMyPos_2);	
+							TeleportEntity(iNPC, flMyPos_2, NULL_VECTOR, { 0.0, 0.0, 0.0 }); //Reset their speed
+							npc.SetVelocity({ 0.0, 0.0, 0.0 });
+	#if defined ZR
+							if(f_NpcHasBeenUnstuckAboveThePlayer[iNPC] > GetGameTime())
+							{
+								bool wasactuallysawrunner = false;
+								if(b_ThisNpcIsSawrunner[npc.index]) //Code works already good, do this.
+								{
+									wasactuallysawrunner = true;
+								}
+								b_ThisNpcIsSawrunner[npc.index] = true;
+								SDKHooks_TakeDamage(Hit_player, iNPC, iNPC, float(SDKCall_GetMaxHealth(Hit_player) / 8), DMG_DROWN);
+								if(wasactuallysawrunner)
+								{
+									b_ThisNpcIsSawrunner[npc.index] = false;
+								}
+							}
+							f_NpcHasBeenUnstuckAboveThePlayer[iNPC] = GetGameTime() + 1.0; //Make the npc immortal! This will prevent abuse of stuckspots.
+	#endif
+						}
+						else
+						{
+							if(f_StuckTextChatNotif[Hit_player] < GetGameTime())
+							{
+								f_StuckTextChatNotif[Hit_player] = GetGameTime() + 1.0;
+								PrintToChat(Hit_player, "You are stuck, yet Unstucking you will stuck you again, you will remain in this position so if you kill the npc, you can get free.");
+							}
 						}
 					}
 				}
 			}
+			//This is a tempomary fix. find a better one for players getting stuck.
 		}
-		//This is a tempomary fix. find a better one for players getting stuck.
 	}
 	else
 	{
@@ -7026,6 +7029,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_EntityInCrouchSpot[entity] = false;
 	b_NpcResizedForCrouch[entity] = false;
 	i_Changed_WalkCycle[entity] = -1;
+	f_CheckIfStuckPlayerDelay[entity] = 0.0;
 #if defined ZR
 	ResetBoundVillageAlly(entity);
 	ResetFreeze(entity);

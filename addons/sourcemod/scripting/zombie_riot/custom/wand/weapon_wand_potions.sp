@@ -241,10 +241,10 @@ public void Weapon_Wand_PotionBasicTouch(int entity, int target)
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
 	int count;
-	int i = MaxClients + 1;
-	while((i = FindEntityByClassname(i, "base_boss")) != -1)
+	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
 	{
-		if(!b_NpcHasDied[i] && GetEntProp(i, Prop_Send, "m_iTeamNum") != 2)
+		int i = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
+		if(IsValidEntity(i) && !b_NpcHasDied[i])
 		{
 			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
@@ -467,10 +467,10 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 	
 	int count;
-	int i = MaxClients + 1;
-	while((i = FindEntityByClassname(i, "base_boss")) != -1)
+	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
 	{
-		if(!b_NpcHasDied[i] && GetEntProp(i, Prop_Send, "m_iTeamNum") != 2)
+		int i = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
+		if(IsValidEntity(i) && !b_NpcHasDied[i])
 		{
 			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
@@ -492,8 +492,8 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 				}
 				else
 				{
-					f_BombEntityWeaponDamageApplied[i][owner] = damage / 4.0;
-					i_HowManyBombsOnThisEntity[i][owner] += 12;
+					f_BombEntityWeaponDamageApplied[i][owner] = damage / 2.0;
+					i_HowManyBombsOnThisEntity[i][owner] += 1;
 					Apply_Particle_Teroriser_Indicator(i);
 				}
 
@@ -653,10 +653,10 @@ public void Weapon_Wand_PotionLeadTouch(int entity, int target)
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 	
 	int count;
-	int i = MaxClients + 1;
-	while((i = FindEntityByClassname(i, "base_boss")) != -1)
+	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
 	{
-		if(!b_NpcHasDied[i] && GetEntProp(i, Prop_Send, "m_iTeamNum") != 2)
+		int i = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
+		if(IsValidEntity(i) && !b_NpcHasDied[i])
 		{
 			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
@@ -711,12 +711,12 @@ public void Weapon_Wand_PotionGoldTouch(int entity, int target)
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 	
 	int count;
-	int i = MaxClients + 1;
 	if(IsValidEntity(weapon))
 	{
-		while((i = FindEntityByClassname(i, "base_boss")) != -1)
+		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
 		{
-			if(!b_NpcHasDied[i] && GetEntProp(i, Prop_Send, "m_iTeamNum") != 2)
+			int i = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
+			if(IsValidEntity(i) && !b_NpcHasDied[i])
 			{
 				GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 				if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
@@ -767,10 +767,10 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 	bool raid = IsValidEntity(EntRefToEntIndex(RaidBossActive));
 
 	int count;
-	int i = MaxClients + 1;
-	while((i = FindEntityByClassname(i, "base_boss")) != -1)
+	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
 	{
-		if(!b_NpcHasDied[i] && f_MaimDebuff[i] != FAR_FUTURE && GetEntProp(i, Prop_Send, "m_iTeamNum") != 2)
+		int i = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
+		if(IsValidEntity(i) && !b_NpcHasDied[i] && f_MaimDebuff[i] != FAR_FUTURE)
 		{
 			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS * 2))

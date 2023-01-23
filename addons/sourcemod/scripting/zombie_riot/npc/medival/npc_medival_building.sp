@@ -163,7 +163,7 @@ methodmap MedivalBuilding < CClotBody
 	
 	public MedivalBuilding(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,250.0}));
+		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_BUILDING;
 		
