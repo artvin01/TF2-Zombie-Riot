@@ -1945,7 +1945,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									
 									if(Current_Mana[client] < RoundToCeil(max_mana_temp))
 									{
-										Ammo_Count_Used[client] -= 1;
+										Ammo_Count_Used[client] += 1;
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										if(Current_Mana[client] < RoundToCeil(max_mana_temp))
@@ -1989,7 +1989,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										SetAmmo(client, 21, GetAmmo(client, 21)+(AmmoData[21][1]*2));
-										Ammo_Count_Used[client] -= 1;
+										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
@@ -2011,7 +2011,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										SetAmmo(client, 21, GetAmmo(client, 21)+(AmmoData[21][1]*2));
-										Ammo_Count_Used[client] -= 1;
+										Ammo_Count_Used[client] += 1;
 										SetAmmo(client, 14, GetAmmo(client, 14)+(AmmoData[14][1]*2));
 										//Yeah extra ammo, do i care ? no.
 										
@@ -2036,7 +2036,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										SetAmmo(client, 22, GetAmmo(client, 22)+(AmmoData[22][1]*2));
-										Ammo_Count_Used[client] -= 1;
+										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
@@ -2058,7 +2058,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										SetAmmo(client, 23, GetAmmo(client, 23)+(AmmoData[23][1]*2));
-										Ammo_Count_Used[client] -= 1;
+										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
@@ -2080,7 +2080,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										SetAmmo(client, 3, GetAmmo(client, 3)+(AmmoData[3][1]*2));
-										Ammo_Count_Used[client] -= 1;
+										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
@@ -2102,7 +2102,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+(AmmoData[Ammo_type][1]*2));
-										Ammo_Count_Used[client] -= 1;
+										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
@@ -2162,7 +2162,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 												SetGlobalTransTarget(owner);
 												ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 											}
-											Ammo_Count_Used[client] -= 1;
+											Ammo_Count_Used[client] += 1;
 											
 											ClientCommand(client, "playgamesound ambient/machines/machine1_hit2.wav");
 										}
