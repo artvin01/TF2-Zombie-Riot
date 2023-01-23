@@ -1691,6 +1691,7 @@ public void Citizen_ClotThink(int iNPC)
 
 	if(IsValidEnemy(npc.index, npc.m_iTarget, npc.m_bCamo))
 	{
+		npc.m_flidle_talk = FAR_FUTURE;
 		vecTarget = WorldSpaceCenter(npc.m_iTarget);
 		distance = GetVectorDistance(vecTarget, vecMe, true);
 		if(i_NpcInternalId[npc.m_iTarget] == SAWRUNNER && view_as<SawRunner>(npc.m_iTarget).m_iTarget == npc.index && distance < 250000.0)

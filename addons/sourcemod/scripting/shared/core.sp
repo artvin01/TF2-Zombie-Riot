@@ -1771,7 +1771,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					PrintCenterText(client, "%t", "Reviving", dieingstate[target]);
 					PrintCenterText(target, "%t", "You're Being Revived.", dieingstate[target]);
 					was_reviving_this[client] = target;
-					f_DisableDyingTimer[target] = GetGameTime() + 0.05;
+					f_DisableDyingTimer[target] = GetGameTime() + 0.15;
 					if(i_CurrentEquippedPerk[client] == 1)
 					{
 						dieingstate[target] -= 12;
