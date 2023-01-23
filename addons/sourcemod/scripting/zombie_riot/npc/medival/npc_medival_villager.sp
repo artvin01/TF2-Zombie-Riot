@@ -566,8 +566,8 @@ public void MedivalVillager_ClotThink(int iNPC)
 				static float hullcheckmaxs_Player_Again[3];
 				static float hullcheckmins_Player_Again[3];
 
-				hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
-				hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );	
+				hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 82.0 } ); //Fat
+				hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
 
 				if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
 				{
