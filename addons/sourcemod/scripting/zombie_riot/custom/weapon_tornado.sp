@@ -146,7 +146,7 @@ void Weapon_Tornado_Launcher_Spam_Fire_Rocket(int client, int weapon)
 	{
 		
 		float speedMult = 1250.0;
-		float dmgProjectile = 100.0;
+		float dmgProjectile = 90.0;
 		
 		
 		//note: redo attributes for better customizability
