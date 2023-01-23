@@ -51,29 +51,32 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 			value = Attributes_FindOnWeapon(client, weapon, 19);	//  tmp dmgbuff on hit
 			if(value)
 				TF2_AddCondition(client, TFCond_TmpDamageBonus, 0.2);	// TODO: Set this to 1.0 and remove on miss
-			
-			value = Attributes_FindOnWeapon(client, weapon, 149);	// bleeding duration
-			if(value)
-				StartBleedingTimer(victim, client, Attributes_FindOnWeapon(client, weapon, 2, true, 1.0)*4.0, RoundFloat(value*2.0), weapon);
-			
-			value = Attributes_FindOnWeapon(client, weapon, 208);	// Set DamageType Ignite
 
-			int itemdefindex = 0;
-			if(IsValidEntity(weapon))
-			{
-				itemdefindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-			}
-			
-			if(value || (itemdefindex ==  594 || itemdefindex == 208)) //Either this attribute, or burn damamage!
-			{
+			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+			{				
+				value = Attributes_FindOnWeapon(client, weapon, 149);	// bleeding duration
+				if(value)
+					StartBleedingTimer(victim, client, Attributes_FindOnWeapon(client, weapon, 2, true, 1.0)*4.0, RoundFloat(value*2.0), weapon, damagetype);
 
-				if(value == 1.0)
-					value = 7.5;
-
-				if(value < 1.0)
-					value = 2.0;
 					
-				NPC_Ignite(victim, client, value, weapon);
+				value = Attributes_FindOnWeapon(client, weapon, 208);	// Set DamageType Ignite
+
+				int itemdefindex = 0;
+				if(IsValidEntity(weapon))
+				{
+					itemdefindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+				}
+				if(value || (itemdefindex ==  594 || itemdefindex == 208)) //Either this attribute, or burn damamage!
+				{
+
+					if(value == 1.0)
+						value = 7.5;
+
+					if(value < 1.0)
+						value = 2.0;
+						
+					NPC_Ignite(victim, client, value, weapon);
+				}	
 			}
 			value = Attributes_FindOnWeapon(client, weapon, 638);	// Extinquisher
 			if(value)

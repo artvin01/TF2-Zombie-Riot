@@ -28,7 +28,7 @@
 #define ZR_MAX_TRAPS 64
 #define ZR_MAX_BREAKBLES 32
 #define ZR_MAX_SPAWNERS 32 //cant ever have more then 32, if your map does, then what thed fuck are you doing ?
-#define ZR_MAX_GIBCOUNT 20 //Anymore then this, and it will only summon 1 gib per zombie instead.
+#define ZR_MAX_GIBCOUNT 12 //Anymore then this, and it will only summon 1 gib per zombie instead.
 
 #if defined ZR
 #define MAX_PLAYER_COUNT			12
@@ -262,6 +262,8 @@ int i_SemiAutoWeapon_AmmoCount[MAXENTITIES]; //idk like 10 slots lol
 bool i_WeaponCannotHeadshot[MAXENTITIES];
 float i_WeaponDamageFalloff[MAXENTITIES];
 
+float f_ClientReviveDelay[MAXENTITIES];
+
 #define MAXSTICKYCOUNTTONPC 12
 const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
 int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max amount of stickies.
@@ -298,6 +300,7 @@ float f_ClientInvul[MAXTF2PLAYERS]; //Extra ontop of uber if they somehow lose i
 
 int Current_Mana[MAXTF2PLAYERS];
 float Mana_Regen_Delay[MAXTF2PLAYERS];
+float RollAngle_Regen_Delay[MAXTF2PLAYERS];
 float Mana_Hud_Delay[MAXTF2PLAYERS];
 
 bool b_NpcHasDied[MAXENTITIES]={true, ...};
@@ -391,9 +394,10 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 //Use what already exists in tf2 please, only add stuff here if it needs extra spacing like ice damage and so on
 //I dont want to use DMG_SHOCK for example due to its extra ugly effect thats annoying!
 
-#define ZR_DAMAGE_NONE                	0          	//Nothing special.
-#define ZR_DAMAGE_ICE					(1 << 1)
-#define ZR_DAMAGE_LASER_NO_BLAST		(1 << 2)
+#define ZR_DAMAGE_NONE                			0          	//Nothing special.
+#define ZR_DAMAGE_ICE							(1 << 1)
+#define ZR_DAMAGE_LASER_NO_BLAST				(1 << 2)
+#define ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED	(1 << 3)
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -1407,6 +1411,7 @@ public void OnClientPutInServer(int client)
 	DHook_HookClient(client);
 	SDKHook_HookClient(client);
 	WeaponClass[client] = TFClass_Unknown;
+	f_ClientReviveDelay[client] = 0.0;
 	
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_bThisEntityIgnored = false;
@@ -1743,124 +1748,137 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 		}
 	}
-	
-	if((holding[client] & IN_RELOAD) && dieingstate[client] <= 0 && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+	if(f_ClientReviveDelay[client] < GetGameTime())
 	{
-		int target = GetClientPointVisibleRevive(client);
-		if(target > 0 && target <= MaxClients)
+		f_ClientReviveDelay[client] = GetGameTime() + 0.1;
+		if((holding[client] & IN_RELOAD) && dieingstate[client] <= 0 && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 		{
-			float Healer[3];
-			Healer[2] += 62;
-			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Healer); 
-			float Injured[3];
-			Injured[2] += 62;
-			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", Injured);
-			if(GetVectorDistance(Healer, Injured) <= 250.0)
+			int target = GetClientPointVisibleRevive(client);
+			if(target > 0 && target <= MaxClients)
 			{
-				SetEntityMoveType(target, MOVETYPE_NONE);
-				was_reviving[client] = true;
-				f_DelayLookingAtHud[client] = GetGameTime() + 0.5;
-				f_DelayLookingAtHud[target] = GetGameTime() + 0.5;
-				PrintCenterText(client, "%t", "Reviving", dieingstate[target]);
-				PrintCenterText(target, "%t", "You're Being Revived.", dieingstate[target]);
-				was_reviving_this[client] = target;
-				f_DisableDyingTimer[target] = GetGameTime() + 0.05;
-				if(i_CurrentEquippedPerk[client] == 1)
+				float Healer[3];
+				Healer[2] += 62;
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Healer); 
+				float Injured[3];
+				Injured[2] += 62;
+				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", Injured);
+				if(GetVectorDistance(Healer, Injured) <= 250.0)
 				{
-					dieingstate[target] -= 2;
-				}
-				else
-				{
-					dieingstate[target] -= 1;
-				}
-				
-				if(dieingstate[target] <= 0)
-				{
-					SetEntityMoveType(target, MOVETYPE_WALK);
-					RequestFrame(Movetype_walk, target);
-					dieingstate[target] = 0;
-					
-					SetEntPropEnt(target, Prop_Send, "m_hObserverTarget", client);
-					f_WasRecentlyRevivedViaNonWave[target] = GetGameTime() + 1.0;
-					DHook_RespawnPlayer(target);
-					
-					float pos[3], ang[3];
-					GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
-					GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-					ang[2] = 0.0;
-					SetEntProp(target, Prop_Send, "m_bDucked", true);
-					SetEntityFlags(target, GetEntityFlags(target)|FL_DUCKING);
-					CClotBody npc = view_as<CClotBody>(client);
-					npc.m_bThisEntityIgnored = false;
-					TeleportEntity(target, pos, ang, NULL_VECTOR);
-					SetEntityCollisionGroup(target, 5);
-					PrintCenterText(client, "");
-					PrintCenterText(target, "");
-					DoOverlay(target, "");
-					if(!EscapeMode)
+					SetEntityMoveType(target, MOVETYPE_NONE);
+					was_reviving[client] = true;
+					f_DelayLookingAtHud[client] = GetGameTime() + 0.5;
+					f_DelayLookingAtHud[target] = GetGameTime() + 0.5;
+					PrintCenterText(client, "%t", "Reviving", dieingstate[target]);
+					PrintCenterText(target, "%t", "You're Being Revived.", dieingstate[target]);
+					was_reviving_this[client] = target;
+					f_DisableDyingTimer[target] = GetGameTime() + 0.05;
+					if(i_CurrentEquippedPerk[client] == 1)
 					{
-						SetEntityHealth(target, 50);
-						RequestFrame(SetHealthAfterRevive, target);
-					}	
+						dieingstate[target] -= 12;
+					}
 					else
 					{
-						SetEntityHealth(target, 150);
-						RequestFrame(SetHealthAfterRevive, target);						
+						dieingstate[target] -= 6;
 					}
-					int entity, i;
-					while(TF2U_GetWearable(target, entity, i))
+					
+					if(dieingstate[target] <= 0)
 					{
-						SetEntityRenderMode(entity, RENDER_NORMAL);
-						SetEntityRenderColor(entity, 255, 255, 255, 255);
+						SetEntityMoveType(target, MOVETYPE_WALK);
+						RequestFrame(Movetype_walk, target);
+						dieingstate[target] = 0;
+						
+						SetEntPropEnt(target, Prop_Send, "m_hObserverTarget", client);
+						f_WasRecentlyRevivedViaNonWave[target] = GetGameTime() + 1.0;
+						DHook_RespawnPlayer(target);
+						
+						float pos[3], ang[3];
+						GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
+						GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
+						ang[2] = 0.0;
+						SetEntProp(target, Prop_Send, "m_bDucked", true);
+						SetEntityFlags(target, GetEntityFlags(target)|FL_DUCKING);
+						CClotBody npc = view_as<CClotBody>(client);
+						npc.m_bThisEntityIgnored = false;
+						TeleportEntity(target, pos, ang, NULL_VECTOR);
+						SetEntityCollisionGroup(target, 5);
+						PrintCenterText(client, "");
+						PrintCenterText(target, "");
+						DoOverlay(target, "");
+						if(!EscapeMode)
+						{
+							SetEntityHealth(target, 50);
+							RequestFrame(SetHealthAfterRevive, target);
+						}	
+						else
+						{
+							SetEntityHealth(target, 150);
+							RequestFrame(SetHealthAfterRevive, target);						
+						}
+						int entity, i;
+						while(TF2U_GetWearable(target, entity, i))
+						{
+							SetEntityRenderMode(entity, RENDER_NORMAL);
+							SetEntityRenderColor(entity, 255, 255, 255, 255);
+						}
+						SetEntityRenderMode(target, RENDER_NORMAL);
+						SetEntityRenderColor(target, 255, 255, 255, 255);
 					}
-					SetEntityRenderMode(target, RENDER_NORMAL);
-					SetEntityRenderColor(target, 255, 255, 255, 255);
+				}
+				else if (was_reviving[client])
+				{
+					SetEntityMoveType(target, MOVETYPE_WALK);
+					was_reviving[client] = false;
+					PrintCenterText(client, "");
+					PrintCenterText(target, "");
 				}
 			}
-			else if (was_reviving[client])
+			else if(target > MaxClients)
 			{
-				SetEntityMoveType(target, MOVETYPE_WALK);
-				was_reviving[client] = false;
-				PrintCenterText(client, "");
-				PrintCenterText(target, "");
-			}
-		}
-		else if(target > MaxClients)
-		{
-			float Healer[3];
-			Healer[2] += 62;
-			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Healer); 
-			float Injured[3];
-			Injured[2] += 62;
-			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", Injured);
-			if(GetVectorDistance(Healer, Injured) <= 250.0)
-			{
-				int ticks;
-				was_reviving[client] = true;
-				f_DelayLookingAtHud[client] = GetGameTime() + 0.5;
-				was_reviving_this[client] = target;
-				if(i_CurrentEquippedPerk[client] == 1)
+				float Healer[3];
+				Healer[2] += 62;
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Healer); 
+				float Injured[3];
+				Injured[2] += 62;
+				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", Injured);
+				if(GetVectorDistance(Healer, Injured) <= 250.0)
 				{
-					ticks = Citizen_ReviveTicks(target, 2, client);
+					int ticks;
+					was_reviving[client] = true;
+					f_DelayLookingAtHud[client] = GetGameTime() + 0.5;
+					was_reviving_this[client] = target;
+					if(i_CurrentEquippedPerk[client] == 1)
+					{
+						ticks = Citizen_ReviveTicks(target, 12, client);
+					}
+					else
+					{
+						ticks = Citizen_ReviveTicks(target, 6, client);
+					}
+					
+					if(ticks <= 0)
+					{
+						PrintCenterText(client, "");
+					}
+					else
+					{
+						PrintCenterText(client, "%t", "Reviving", ticks);
+					}
 				}
-				else
+				else if (was_reviving[client])
 				{
-					ticks = Citizen_ReviveTicks(target, 1, client);
-				}
-				
-				if(ticks <= 0)
-				{
+					was_reviving[client] = false;
 					PrintCenterText(client, "");
 				}
-				else
-				{
-					PrintCenterText(client, "%t", "Reviving", ticks);
-				}
 			}
 			else if (was_reviving[client])
 			{
 				was_reviving[client] = false;
 				PrintCenterText(client, "");
+				if(IsValidClient(was_reviving_this[client]))
+				{
+					SetEntityMoveType(was_reviving_this[client], MOVETYPE_WALK);
+					PrintCenterText(was_reviving_this[client], "");
+				}
 			}
 		}
 		else if (was_reviving[client])
@@ -1872,16 +1890,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				SetEntityMoveType(was_reviving_this[client], MOVETYPE_WALK);
 				PrintCenterText(was_reviving_this[client], "");
 			}
-		}
-	}
-	else if (was_reviving[client])
-	{
-		was_reviving[client] = false;
-		PrintCenterText(client, "");
-		if(IsValidClient(was_reviving_this[client]))
-		{
-			SetEntityMoveType(was_reviving_this[client], MOVETYPE_WALK);
-			PrintCenterText(was_reviving_this[client], "");
 		}
 	}
 	
@@ -2824,13 +2832,16 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 					
 				if(Store_Girogi_Interact(client, entity, buffer, Is_Reload_Button))
 					return true;
-					
+
+				if (TeutonType[client] == TEUTON_WAITING)
+					return false;
+
 				if(Escape_Interact(client, entity))
 					return true;
 				
 				//if(Store_Interact(client, entity, buffer))
 				//	return true;
-				
+
 				if(Citizen_Interact(client, entity))
 					return true;
 			}
@@ -2904,6 +2915,7 @@ static void MapStartResetAll()
 	Zero(f_DelayLookingAtHud);
 	Zero(f_TimeUntillNormalHeal);
 	Zero(Mana_Regen_Delay);
+	Zero(RollAngle_Regen_Delay);
 	Zero(Mana_Hud_Delay);
 	Zero(delay_hud);
 	Zero(Increaced_Overall_damage_Low);

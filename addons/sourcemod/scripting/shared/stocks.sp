@@ -996,7 +996,7 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	pos = WorldSpaceCenter(client);
 	
 	GetClientEyeAngles(client, ang);
-	SDKHooks_TakeDamage(client, entity, entity, pack.ReadFloat(), DMG_SLASH, _, _, pos, false);
+	SDKHooks_TakeDamage(client, entity, entity, pack.ReadFloat(), DMG_SLASH, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 	int bleed_count = pack.ReadCell();
 	if(bleed_count < 1)
@@ -1011,7 +1011,7 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 }
 
 
-void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon)
+void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype)
 {
 	BleedAmountCountStack[entity] += 1;
 	DataPack pack;
@@ -1020,6 +1020,7 @@ void StartBleedingTimer(int entity, int client, float damage, int amount, int we
 	pack.WriteCell(entity);
 	pack.WriteCell(EntIndexToEntRef(weapon));
 	pack.WriteCell(GetClientUserId(client));
+	pack.WriteCell(damagetype);
 	pack.WriteFloat(damage);
 	pack.WriteCell(amount);
 }
@@ -1058,9 +1059,10 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	float pos[3], ang[3];
 	
 	pos = WorldSpaceCenter(entity);
+	int damagetype = pack.ReadCell(); //Same damagetype as the weapon.
 	
 	GetClientEyeAngles(client, ang);
-	SDKHooks_TakeDamage(entity, client, client, pack.ReadFloat(), DMG_SLASH, weapon, _, pos, false);
+	SDKHooks_TakeDamage(entity, client, client, pack.ReadFloat(), damagetype, weapon, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 	entity = pack.ReadCell();
 	if(entity < 1)
@@ -3656,3 +3658,31 @@ public Action StreetFighter_RestoreAttrib(Handle timer, DataPack pack)
 	}
 	return Plugin_Stop;
 }
+/*
+void PlayFakeDeathSound(int client)
+{
+	int victim;
+	for(int bot=1; bot<MaxClients; bot++)
+	{
+		if(IsValidClient(bot) && b_IsPlayerABot[bot])
+		{
+			victim = bot;
+			break;
+		}
+	}
+	if(victim == 0)
+	{
+		return;
+	}
+	PrintToChatAll("%i",victim);
+
+	Event event = CreateEvent("player_hurt", true);
+	event.SetInt("userid", GetClientUserId(victim));
+	event.SetInt("health", -25);
+	event.SetInt("attacker", GetClientUserId(client));
+	event.SetInt("damageamount", 99);
+	event.SetBool("crit", false);
+	event.FireToClient(client);
+	delete event;
+}
+*/

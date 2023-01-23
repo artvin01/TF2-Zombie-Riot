@@ -644,7 +644,7 @@ public Action Bloon_ClotDamaged(int victim, int &attacker, int &inflictor, float
 	bool magic;
 	bool pierce;
 	
-	if((damagetype & DMG_SLASH) || Building_DoesPierce(attacker))
+	if((damagetype & DMG_SLASH))
 	{
 		pierce = true;
 	}

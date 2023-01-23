@@ -828,8 +828,8 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				{
 					BurnDamage[client] = value;
 				}
-				
-				SDKHooks_TakeDamage(entity, client, client, value, DMG_SLASH, weapon, ang, pos, false);
+				//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
+				SDKHooks_TakeDamage(entity, client, client, value, DMG_SLASH, weapon, ang, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 				//Setting burn dmg to slash cus i want it to work with melee!!!
 				//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
 				//In this case ill buff it so its 2x as good as bleed! or more in the future
@@ -1516,7 +1516,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			GetEntityClassname(weapon, classname, sizeof(classname));
 			if(!StrContains(classname, "tf_weapon_knife", false) && f_BackstabDmgMulti[weapon] != 0.0) //Irene weapon cannot backstab.
 			{
-				if(damagetype & DMG_CLUB) //Use dmg slash for any npc that shouldnt be scaled.
+				if(damagetype & DMG_CLUB && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)) //Use dmg slash for any npc that shouldnt be scaled.
 				{
 					if(IsBehindAndFacingTarget(attacker, victim) || b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
 					{

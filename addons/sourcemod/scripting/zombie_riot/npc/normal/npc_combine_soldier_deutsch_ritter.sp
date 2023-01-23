@@ -365,7 +365,7 @@ public Action CombineDeutsch_ClotDamaged(int victim, int &attacker, int &inflict
 		
 	CombineDeutsch npc = view_as<CombineDeutsch>(victim);
 	
-	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
+	if(npc.m_fbRangedSpecialOn)
 		damage *= 0.75;
 	
 	/*

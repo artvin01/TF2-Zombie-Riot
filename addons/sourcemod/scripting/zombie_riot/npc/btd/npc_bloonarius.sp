@@ -12,10 +12,10 @@ static const char BloonLowData[][] =
 // Halved on Elite
 static const int BloonLowCount[] =
 {
-	4,
-	7,
-	12,
-	7
+	2,
+	2,
+	3,
+	3
 };
 
 static const int BloonHigh[] =
@@ -38,9 +38,9 @@ static const char BloonHighData[][] =
 static const int BloonHighCount[] =
 {
 	3,//30,
-	10,//60,
-	5,//6,
-	3//10
+	8,//60,
+	3,//6,
+	2//10
 };
 
 static const int ZombieLow[] =

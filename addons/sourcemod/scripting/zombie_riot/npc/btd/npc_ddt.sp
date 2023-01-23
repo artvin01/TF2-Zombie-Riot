@@ -307,7 +307,7 @@ public Action DDT_ClotDamaged(int victim, int &attacker, int &inflictor, float &
 	
 	DDT npc = view_as<DDT>(victim);
 	
-	if((damagetype & DMG_PLASMA) || (damagetype & DMG_SLASH) || Building_DoesPierce(attacker))
+	if((damagetype & DMG_PLASMA) || (damagetype & DMG_SLASH))
 	{
 		npc.PlayHitSound();
 	}

@@ -294,7 +294,7 @@ public Action GoldBloon_ClotDamaged(int victim, int &attacker, int &inflictor, f
 	bool magic;
 	bool pierce;
 	
-	if((damagetype & DMG_SLASH) || Building_DoesPierce(attacker))
+	if((damagetype & DMG_SLASH))
 	{
 		pierce = true;
 	}
