@@ -268,7 +268,7 @@ public Action GetClosestSpawners(Handle timer)
 					SpawnerData Spawner;
 					SpawnerList.GetArray(index, Spawner);
 					bool Found = false;
-					if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
+					if((Spawner.IsBaseBoss || !GetEntProp(entity, Prop_Data, "m_bDisabled")) && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
 					{
 						for(int Repeats_anti=1; Repeats_anti<=Repeats; Repeats_anti++)
 						{
@@ -828,8 +828,8 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				{
 					BurnDamage[client] = value;
 				}
-				
-				SDKHooks_TakeDamage(entity, client, client, value, DMG_SLASH, weapon, ang, pos, false);
+				//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
+				SDKHooks_TakeDamage(entity, client, client, value, DMG_SLASH, weapon, ang, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 				//Setting burn dmg to slash cus i want it to work with melee!!!
 				//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
 				//In this case ill buff it so its 2x as good as bleed! or more in the future
@@ -1516,7 +1516,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			GetEntityClassname(weapon, classname, sizeof(classname));
 			if(!StrContains(classname, "tf_weapon_knife", false) && f_BackstabDmgMulti[weapon] != 0.0) //Irene weapon cannot backstab.
 			{
-				if(damagetype & DMG_CLUB) //Use dmg slash for any npc that shouldnt be scaled.
+				if(damagetype & DMG_CLUB && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)) //Use dmg slash for any npc that shouldnt be scaled.
 				{
 					if(IsBehindAndFacingTarget(attacker, victim) || b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
 					{
@@ -2229,12 +2229,16 @@ void CleanAllNpcArray()
 }
 
 #if defined ZR
-void Spawner_AddToArray(int entity) //cant use ent ref here...
+void Spawner_AddToArray(int entity, bool base_boss = false) //cant use ent ref here...
 {
 	SpawnerData Spawner;
 	int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
 	if(index == -1)
 	{
+		if(base_boss)
+		{
+			Spawner.IsBaseBoss = true;
+		}
 		Spawner.indexnumber = entity;
 		SpawnerList.PushArray(Spawner);
 	}

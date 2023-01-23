@@ -100,7 +100,7 @@ void MedivalVillager_OnMapStart_NPC()
 static bool b_WantTobuild[MAXENTITIES];
 static bool b_AlreadyReparing[MAXENTITIES];
 static float f_RandomTolerance[MAXENTITIES];
-static int i_BuildingRef;
+static int i_BuildingRef[MAXENTITIES];
 static int i_ClosestAlly[MAXENTITIES];
 static float i_ClosestAllyCD[MAXENTITIES];
 
@@ -270,6 +270,13 @@ methodmap MedivalVillager < CClotBody
 
 							inverting_score_calc = ( distance / 100000000.0);
 
+							if(ally)
+							{
+								inverting_score_calc -= 1;
+
+								inverting_score_calc *= -1.0;					
+							}
+
 							Pow(inverting_score_calc * inverting_score_calc, 5.0);
 
 							Accumulated_Points += inverting_score_calc;
@@ -329,7 +336,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 
 	int Behavior = -1;
 
-	int buildingentity = EntRefToEntIndex(i_BuildingRef);
+	int buildingentity = EntRefToEntIndex(i_BuildingRef[iNPC]);
 
 	if(b_WantTobuild[npc.index])
 	{
@@ -559,8 +566,8 @@ public void MedivalVillager_ClotThink(int iNPC)
 				static float hullcheckmaxs_Player_Again[3];
 				static float hullcheckmins_Player_Again[3];
 
-				hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
-				hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );	
+				hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 82.0 } ); //Fat
+				hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
 
 				if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
 				{
@@ -578,8 +585,11 @@ public void MedivalVillager_ClotThink(int iNPC)
 				int spawn_index = Npc_Create(MEDIVAL_BUILDING, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 				if(spawn_index > MaxClients)
 				{
-					i_BuildingRef = EntIndexToEntRef(spawn_index);
-					Zombies_Currently_Still_Ongoing += 1;
+					i_BuildingRef[iNPC] = EntIndexToEntRef(spawn_index);
+					if(!b_IsAlliedNpc[iNPC])
+					{
+						Zombies_Currently_Still_Ongoing += 1;
+					}
 					i_AttacksTillMegahit[spawn_index] = 10;
 					SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(spawn_index, 255, 255, 255, 0);

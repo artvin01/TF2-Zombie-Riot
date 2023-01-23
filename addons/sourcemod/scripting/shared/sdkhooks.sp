@@ -145,14 +145,14 @@ public void OnPreThinkPost(int client)
 			CvarMpSolidObjects.IntValue = 0;
 		}
 	}
-	
+/*
 #if defined ZR
 	if(CvarSvRollagle)
 	{
 		CvarSvRollagle.IntValue = i_SvRollAngle[client];
 	}
 #endif
-
+*/
 #if defined RPG
 	int maxhealth = SDKCall_GetMaxHealth(client);
 	if(GetClientHealth(client) > maxhealth)
@@ -162,43 +162,43 @@ public void OnPreThinkPost(int client)
 
 public void OnPostThink(int client)
 {
-	float gameTime = GetGameTime();
+	static float gameTime;
+	gameTime = GetGameTime();
 #if !defined NoSendProxyClass
-//	if(IsPlayerAlive(client)) //This isnt needed if you dont got send proxy 
-#endif
+	if(WeaponClass[client]!=TFClass_Unknown)
 	{
-#if !defined NoSendProxyClass
-
-		if(WeaponClass[client]!=TFClass_Unknown)
-		{
-			TF2_SetPlayerClass(client, WeaponClass[client], false, false);
-			if(GetEntPropFloat(client, Prop_Send, "m_vecViewOffset[2]") > 64.0)	// Otherwise, shaking
-				SetEntPropFloat(client, Prop_Send, "m_vecViewOffset[2]", ViewHeights[WeaponClass[client]]);
-		}
+		TF2_SetPlayerClass(client, WeaponClass[client], false, false);
+		if(GetEntPropFloat(client, Prop_Send, "m_vecViewOffset[2]") > 64.0)	// Otherwise, shaking
+			SetEntPropFloat(client, Prop_Send, "m_vecViewOffset[2]", ViewHeights[WeaponClass[client]]);
+	}
 #endif
 
-		if(b_PhaseThroughBuildingsPerma[client] == 2)
+	if(b_PhaseThroughBuildingsPerma[client] == 2)
+	{
+		CvarMpSolidObjects.ReplicateToClient(client, "0");
+	}
+	else
+	{
+		if(b_PhaseThroughBuildingsPerma[client] == 1)
 		{
-			CvarMpSolidObjects.ReplicateToClient(client, "0");
+			b_PhaseThroughBuildingsPerma[client] = 0;
+			CvarMpSolidObjects.ReplicateToClient(client, "1"); //set replicate back to normal.
 		}
-		else
-		{
-			if(b_PhaseThroughBuildingsPerma[client] == 1)
-			{
-				b_PhaseThroughBuildingsPerma[client] = 0;
-				CvarMpSolidObjects.ReplicateToClient(client, "1"); //set replicate back to normal.
-			}
-		}
+	}
 		
 #if defined ZR
-		if(CvarSvRollagle)
+	if(RollAngle_Regen_Delay[client] < gameTime)	
+	{
+		RollAngle_Regen_Delay[client] = gameTime + 0.5;
+		
+		if(CvarSvRollagle && zr_viewshakeonlowhealth.BoolValue)
 		{
 			int flHealth = GetEntProp(client, Prop_Send, "m_iHealth");
 			int flMaxHealth = SDKCall_GetMaxHealth(client);
 
 			float PercentageHealth = float(flHealth) / float(flMaxHealth);
 
-			if(TeutonType[client] == TEUTON_NONE && zr_viewshakeonlowhealth.BoolValue) //If the cvar is off, then the viewshake will not happen.
+			if(TeutonType[client] == TEUTON_NONE) //If the cvar is off, then the viewshake will not happen.
 			{
 				if(PercentageHealth > 0.35)
 				{
@@ -207,13 +207,9 @@ public void OnPostThink(int client)
 				else
 				{
 					PercentageHealth *= 2.857142858142857; // 1 / 0.35
-
 					PercentageHealth = PercentageHealth - 1.0;
-
 					PercentageHealth *= -1.0; //convert to positive
-
 					PercentageHealth *= 125.0; // we want the full number! this only works in big ones. also divitde by 4
-
 					i_SvRollAngle[client] = RoundToCeil(PercentageHealth);
 
 					if(i_SvRollAngle[client] < 0)
@@ -233,203 +229,141 @@ public void OnPostThink(int client)
 
 			CvarSvRollagle.ReplicateToClient(client, RollAngleValue); //set replicate back to normal.
 		}
-#endif	// ZR
-		
-		if(Mana_Regen_Delay[client] < gameTime)	
+		else
 		{
-			Mana_Regen_Delay[client] = gameTime + 0.4;
+			RollAngle_Regen_Delay[client] = gameTime + 5.0;
+		}
+	}
+#endif	// ZR
+	if(Mana_Regen_Delay[client] < gameTime)	
+	{
+		Mana_Regen_Delay[client] = gameTime + 0.4;
 			
-			has_mage_weapon[client] = false;
+		has_mage_weapon[client] = false;
 
-			int i, entity;
-			while(TF2_GetItem(client, entity, i))
+		int i, entity;
+		while(TF2_GetItem(client, entity, i))
+		{
+			if(i_IsWandWeapon[entity])
 			{
-				if(i_IsWandWeapon[entity])
-				{
-					has_mage_weapon[client] = true;
-					break;
-				}
+				has_mage_weapon[client] = true;
+				break;
 			}
+		}
 
 #if defined ZR
-			if(!EscapeMode)
+		if(!EscapeMode)
 #endif
-			
-			{
+		{
 #if defined ZR
-				max_mana[client] = 400.0;
-				mana_regen[client] = 10.0;
+			max_mana[client] = 400.0;
+			mana_regen[client] = 10.0;
 				
-				if(LastMann)
-					mana_regen[client] *= 20.0; // 20x the regen to help last man mage cus they really suck otherwise alone.
+			if(LastMann)
+				mana_regen[client] *= 20.0; // 20x the regen to help last man mage cus they really suck otherwise alone.
 					
-				if(i_CurrentEquippedPerk[client] == 4)
-				{
-					mana_regen[client] *= 1.35;
-				}
+			if(i_CurrentEquippedPerk[client] == 4)
+			{
+				mana_regen[client] *= 1.35;
+			}
 #endif
 				
 #if defined RPG
-				max_mana[client] = 40.0;
-				mana_regen[client] = 1.0;
+			max_mana[client] = 40.0;
+			mana_regen[client] = 1.0;
 #endif
 					
-				mana_regen[client] *= Mana_Regen_Level[client];
-				max_mana[client] *= Mana_Regen_Level[client];	
-
-
-				/*
-				Current_Mana[client] += RoundToCeil(mana_regen[client]);
-					
-				if(Current_Mana[client] < RoundToCeil(max_mana[client]))
-					Current_Mana[client] = RoundToCeil(max_mana[client]);
-				*/
+			mana_regen[client] *= Mana_Regen_Level[client];
+			max_mana[client] *= Mana_Regen_Level[client];	
 				
-				if(Current_Mana[client] < RoundToCeil(max_mana[client]))
-				{
-					Current_Mana[client] += RoundToCeil(mana_regen[client]);
-					
-					if(Current_Mana[client] > RoundToCeil(max_mana[client])) //Should only apply during actual regen
-						Current_Mana[client] = RoundToCeil(max_mana[client]);
-				}
-					
-				Mana_Hud_Delay[client] = 0.0;
-			}
-			
-#if defined ZR
-			else
+			if(Current_Mana[client] < RoundToCeil(max_mana[client]))
 			{
-			//	if(Mana_Regen_Level[weapon])
-			//	{				
-			//		has_mage_weapon[client] = true;
-			//	}
-				has_mage_weapon[client] = true;
-				max_mana[client] = 1200.0;
-				mana_regen[client] = 20.0;
-				if(i_CurrentEquippedPerk[client] == 4)
-				{
-					mana_regen[client] *= 1.35;
-				}
 				Current_Mana[client] += RoundToCeil(mana_regen[client]);
 					
-				if(Current_Mana[client] > RoundToCeil(max_mana[client]))
+				if(Current_Mana[client] > RoundToCeil(max_mana[client])) //Should only apply during actual regen
 					Current_Mana[client] = RoundToCeil(max_mana[client]);
-				
-				Mana_Hud_Delay[client] = 0.0;
 			}
-#endif
-			
+					
+			Mana_Hud_Delay[client] = 0.0;
 		}
+#if defined ZR
+		else
+		{
+			has_mage_weapon[client] = true;
+			max_mana[client] = 1200.0;
+			mana_regen[client] = 20.0;
+			if(i_CurrentEquippedPerk[client] == 4)
+			{
+				mana_regen[client] *= 1.35;
+			}
+			Current_Mana[client] += RoundToCeil(mana_regen[client]);
+					
+			if(Current_Mana[client] > RoundToCeil(max_mana[client]))
+				Current_Mana[client] = RoundToCeil(max_mana[client]);
+				
+			Mana_Hud_Delay[client] = 0.0;
+		}
+#endif
+	}
 
 #if defined ZR
-		if(Armor_regen_delay[client] < gameTime)
-		{
-			Armour_Level_Current[client] = 0;
-			int flHealth = GetEntProp(client, Prop_Send, "m_iHealth");
-			int flMaxHealth = SDKCall_GetMaxHealth(client);
-			if (Jesus_Blessing[client] == 1)
+	if(Armor_regen_delay[client] < gameTime)
+	{
+		Armour_Level_Current[client] = 0;
+		int flHealth = GetEntProp(client, Prop_Send, "m_iHealth");
+		int flMaxHealth = SDKCall_GetMaxHealth(client);
+		if (Jesus_Blessing[client] == 1)
+		{	
+			int flMaxHealthJesus;
+				
+			flMaxHealthJesus = flMaxHealth;
+				
+			flMaxHealthJesus /= 2;
+				
+			if(flHealth < flMaxHealthJesus)
 			{
-				
-				int flMaxHealthJesus;
-				
-				flMaxHealthJesus = flMaxHealth;
-				
-				flMaxHealthJesus /= 2;
-				
-				if(flHealth < flMaxHealthJesus)
+					
+				int healing_Amount = flMaxHealthJesus / 50;
+					
+				if(dieingstate[client] > 0)
 				{
+					healing_Amount = 3;
+				}
+				int newHealth = flHealth + healing_Amount;
+						
+				if(newHealth >= flMaxHealthJesus)
+				{
+					healing_Amount -= newHealth - flMaxHealthJesus;
+					newHealth = flMaxHealthJesus;
+				}
+				
+				SetEntProp(client, Prop_Send, "m_iHealth", newHealth);
+				flHealth = newHealth;
+			}
+		}
+		if(dieingstate[client] == 0)
+		{
+			if(i_BadHealthRegen[client] == 1)
+			{
+				if(flHealth < flMaxHealth)
+				{
+					int healing_Amount = 1;
 					
-					int healing_Amount = flMaxHealthJesus / 50;
-					
-					if(dieingstate[client] > 0)
-					{
-						healing_Amount = 3;
-					}
 					int newHealth = flHealth + healing_Amount;
 						
-					if(newHealth >= flMaxHealthJesus)
+					if(newHealth >= flMaxHealth)
 					{
-						healing_Amount -= newHealth - flMaxHealthJesus;
-						newHealth = flMaxHealthJesus;
+						healing_Amount -= newHealth - flMaxHealth;
+						newHealth = flMaxHealth;
 					}
-					
+						
 					SetEntProp(client, Prop_Send, "m_iHealth", newHealth);
-					flHealth = newHealth;
-				}
+				}				
 			}
-			if(dieingstate[client] == 0)
-			{
-				if(i_BadHealthRegen[client] == 1)
-				{
-					if(flHealth < flMaxHealth)
-					{
-						int healing_Amount = 1;
-						
-						int newHealth = flHealth + healing_Amount;
-							
-						if(newHealth >= flMaxHealth)
-						{
-							healing_Amount -= newHealth - flMaxHealth;
-							newHealth = flMaxHealth;
-						}
-						
-						SetEntProp(client, Prop_Send, "m_iHealth", newHealth);
-					}
-					
-				}
-			}
-			int Armor_Max = 50;
-			int Extra = 0;
-		
-			Extra = Armor_Level[client];
-				
-			Armor_Max = MaxArmorCalculation(Extra, client, 0.25);
-			
-			if(Extra == 50)
-			{
-				Armour_Level_Current[client] = 1;
-			}
-			if(Extra == 100)
-			{
-				Armour_Level_Current[client] = 2;
-			}
-				
-			if(Extra == 150)
-			{
-				Armour_Level_Current[client] = 3;
-			}
-			if(Extra == 200)
-			{
-				Armour_Level_Current[client] = 4;
-			}
-			
-			if(Extra >= 50)
-			{			
-				if(Armor_Charge[client] < Armor_Max)
-				{
-					if(Extra == 50)
-					{
-						Armor_Charge[client] += 1;
-					}
-					else if(Extra == 100)
-					{
-						Armor_Charge[client] += 2;
-					}
-					else if(Extra == 150)
-					{
-						Armor_Charge[client] += 3;
-					}
-					else if(Extra == 200)
-					{
-						Armor_Charge[client] += 5;
-					}
-				}
-			}
-			Armor_regen_delay[client] = gameTime + 1.0;
 		}
-#endif	// ZR
-		
+		Armor_regen_delay[client] = gameTime + 1.0;
 	}
+#endif	// ZR
 	
 	if(Mana_Hud_Delay[client] < gameTime)	
 	{
@@ -439,9 +373,11 @@ public void OnPostThink(int client)
 		
 		if(IsValidEntity(weapon))
 		{
-			float cooldown_time;
-			bool had_An_ability = false;
-			bool IsReady = false;
+			static float cooldown_time;
+			static bool had_An_ability;
+			had_An_ability = false;
+			static bool IsReady;
+			IsReady = false;
 
 			if(had_An_ability) //There was a debuff or buff create new inline.
 			{
@@ -449,7 +385,7 @@ public void OnPostThink(int client)
 			}
 
 			had_An_ability = false;
-
+			
 			if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_M1)
 			{
 				
@@ -585,7 +521,6 @@ public void OnPostThink(int client)
 				had_An_ability = true;
 			}
 #endif	// ZR
-			
 			if(had_An_ability)
 			{
 				Format(buffer, sizeof(buffer), "%s\n", buffer);
@@ -655,37 +590,40 @@ public void OnPostThink(int client)
 			
 			Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
 		}
-		float HudY = 0.90;
-		float HudX = -1.0;
+		static float HudY;
+		HudY = 0.90;
+		static float HudX;
+		HudX = -1.0;
 	
 #if defined ZR
 		HudX += f_WeaponHudOffsetY[client];
 		HudY += f_WeaponHudOffsetX[client];
 #endif
-		bool had_An_ability = false;
+		static bool had_An_ability;
+		had_An_ability = false;
 		char bufferbuffs[64];
 		//BUFFS!
 #if defined RPG		
-			if(f_HealingPotionDuration[client] > gameTime) //Client has a buff, but which one?
+		if(f_HealingPotionDuration[client] > gameTime) //Client has a buff, but which one?
+		{
+			float time_left = f_HealingPotionDuration[client] - gameTime;
+			had_An_ability = true;
+			switch(f_HealingPotionEffect[client])
 			{
-				float time_left = f_HealingPotionDuration[client] - gameTime;
-				had_An_ability = true;
-				switch(f_HealingPotionEffect[client])
+				case MELEE_BUFF_2:
 				{
-					case MELEE_BUFF_2:
-					{
-						Format(bufferbuffs, sizeof(bufferbuffs), "[STR! %.0fs] %s",time_left, bufferbuffs);
-					}
-					case RANGED_BUFF_2: 
-					{
-						Format(bufferbuffs, sizeof(bufferbuffs), "[DEX! %.0fs] %s",time_left, bufferbuffs);
-					}
-					case MAGE_BUFF_2:
-					{
-						Format(bufferbuffs, sizeof(bufferbuffs), "[INT! %.0fs] %s",time_left, bufferbuffs);
-					}		
+					Format(bufferbuffs, sizeof(bufferbuffs), "[STR! %.0fs] %s",time_left, bufferbuffs);
 				}
+				case RANGED_BUFF_2: 
+				{
+					Format(bufferbuffs, sizeof(bufferbuffs), "[DEX! %.0fs] %s",time_left, bufferbuffs);
+				}
+				case MAGE_BUFF_2:
+				{
+					Format(bufferbuffs, sizeof(bufferbuffs), "[INT! %.0fs] %s",time_left, bufferbuffs);
+				}		
 			}
+		}
 #endif
 #if defined ZR	
 		if(Wands_Potions_HasBuff(client))
@@ -706,7 +644,8 @@ public void OnPostThink(int client)
 #define VILLAGE_040	(1 << 9)	// Call of Arms
 #define VILLAGE_050	(1 << 10)	// Homeland Defense
 */
-		int VillageBuffs = Building_GetClientVillageFlags(client);
+		static int VillageBuffs;
+		VillageBuffs = Building_GetClientVillageFlags(client);
 
 		if(VillageBuffs & VILLAGE_000)
 		{
@@ -734,22 +673,22 @@ public void OnPostThink(int client)
 			Format(bufferbuffs, sizeof(bufferbuffs), "⍤%s", bufferbuffs);
 		}
 #endif
-		if(Increaced_Overall_damage_Low[client] > GetGameTime())
+		if(Increaced_Overall_damage_Low[client] > gameTime)
 		{
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⌃%s", bufferbuffs);
 		}
-		if(Resistance_Overall_Low[client] > GetGameTime())
+		if(Resistance_Overall_Low[client] > gameTime)
 		{
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⌅%s", bufferbuffs);
 		}
-		if(f_EmpowerStateOther[client] > GetGameTime()) //Do not show fusion self buff.
+		if(f_EmpowerStateOther[client] > gameTime) //Do not show fusion self buff.
 		{
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⍋%s", bufferbuffs);
 		}
-		if(f_HussarBuff[client] > GetGameTime()) //hussar!
+		if(f_HussarBuff[client] > gameTime) //hussar!
 		{
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "ᐩ%s", bufferbuffs);
@@ -782,33 +721,14 @@ public void OnPostThink(int client)
 		{
 			DoOverlay(client, "debug/yuv");
 		}
-		//Removed "Medi-Kit Cooldown", Heal_CD
-		/*
-		float Heal_CD = healing_cooldown[client] - gameTime;
-		
-		if(Heal_CD <= 0.0)
-			Heal_CD = 0.0;
-		*/
-		/*
-		float Armor_CD = Armor_Ready[client] - gameTime;
-		
-		if(Armor_CD <= 0.0)
-			Armor_CD = 0.0;
-		*/
+
 		bool Has_Wave_Showing = false;
 		if(f_ClientServerShowMessages[client])
 		{
 			Has_Wave_Showing = true; //yay :)
 			SetGlobalTransTarget(client);
 			char WaveString[64];
-			if(EscapeMode)
-			{
-				Format(WaveString, sizeof(WaveString), "Escape Mode"); 
-			}
-			else
-			{
-				Format(WaveString, sizeof(WaveString), "%s | %t", WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1); 
-			}
+			Format(WaveString, sizeof(WaveString), "%s | %t", WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1); 
 			i_WhatLevelForHudIsThisClientAt[client] -= 1;
 			Handle hKv = CreateKeyValues("Stuff", "title", WaveString);
 			KvSetColor(hKv, "color", 0, 255, 0, 255); //green
@@ -826,177 +746,155 @@ public void OnPostThink(int client)
 				PrintToChat(client,"If you wish to see the wave counter in a better way, set ''cl_showpluginmessages'' to 1 in the console!");
 			}
 		}
-		//cl_showpluginmessages
-	//	if(Waves_Started())
-		{
-			int Armor_Max = 50;
-			int Extra = 0;
+		int Armor_Max = 50;
+		int Extra = 0;
 		
-			Extra = Armor_Level[client];
+		Extra = Armor_Level[client];
 				
-			Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
+		Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
 			
-			int red = 255;
-			int green = 255;
-			int blue = 0;
-			
+		int red = 255;
+		int green = 255;
+		int blue = 0;
+		if(Armor_Charge[client] != Armor_Max)
+		{
 			red = Armor_Charge[client] * 255  / Armor_Max;
-		//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
 			green = Armor_Charge[client] * 255  / Armor_Max;
-			
-			red = 255 - red;
-			
-			char buffer[64];
-			{
-				for(int i=10; i>0; i--)
-				{
-					if(Armor_Charge[client] >= Armor_Max*(i*0.1))
-					{
-						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
-					}
-					else if(Armor_Charge[client] > Armor_Max*(i*0.1 - 1.0/60.0))
-					{
-						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
-					}
-					else if(Armor_Charge[client] > Armor_Max*(i*0.1 - 1.0/30.0))
-					{
-						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
-					}
-					else
-					{
-						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
-					}
-					
-					if((i % 2) == 1)
-					{
-						Format(buffer, sizeof(buffer), "%s\n", buffer);
-					}
-				}
 				
-				if(i_CurrentEquippedPerk[client] == 6)
-				{
-					float slowdown_amount = f_WidowsWineDebuffPlayerCooldown[client] - GetGameTime();
-					
-					if(slowdown_amount < 0.0)
-					{
-						slowdown_amount = 0.0;
-					}
-					Format(buffer, sizeof(buffer), "%s%.1f", buffer, slowdown_amount);
-				}
-				SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.86 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
-				ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
-			}
+			red = 255 - red;
+		}
+		else
+		{
+			blue = 255;
+		}
 			
-		//	SetHudTextParams(0.165, 0.86, 3.01, red, green, blue, 255);
-		//	ShowSyncHudText(client,  SyncHud_ArmorCounter, "|%i|", Armor_Charge[client]);
-			
-			
-			
-			
-			if(!TeutonType[client])
+		char buffer[64];
+		for(int i=10; i>0; i--)
+		{
+			if(Armor_Charge[client] >= Armor_Max*(i*0.1))
 			{
-				if(Store_ActiveCanMulti(client))
-				{
-					if(Has_Wave_Showing)
-					{
-						PrintKeyHintText(client, "%t\n%t\n%t\n%t\n \n%t",
-						"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
-					//	"Wave", CurrentRound+1, CurrentWave+1,
-				//		"Armor Counter", Armor_Charge[client],
-						"Ammo Crate Supplies", Ammo_Count_Ready[client], //This bugs in russian
-				//		"Healing Done", Healing_done_in_total[client],
-				//		"Damage Dealt", Damage_dealt_in_total[client],
-						PerkNames[i_CurrentEquippedPerk[client]],
-						"Zombies Left", Zombies_Currently_Still_Ongoing,
-						"Press Button To Switch");
-					}
-					else
-					{
-						PrintKeyHintText(client, "%t\n%s | %t\n%t\n%t\n%t\n \n%t",
-						"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
-						WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
-			//			"Armor Counter", Armor_Charge[client],
-						"Ammo Crate Supplies", Ammo_Count_Ready[client], 
-			//			"Healing Done", Healing_done_in_total[client],
-			//			"Damage Dealt", Damage_dealt_in_total[client],
-						PerkNames[i_CurrentEquippedPerk[client]],
-						"Zombies Left", Zombies_Currently_Still_Ongoing,
-						"Press Button To Switch");	
-					}
-				}
-				else if(Has_Wave_Showing)
-				{
-					PrintKeyHintText(client, "%t\n%t\n%t\n%t",
-					"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
-				//	"Wave", CurrentRound+1, CurrentWave+1,
-			//		"Armor Counter", Armor_Charge[client],
-					"Ammo Crate Supplies", Ammo_Count_Ready[client], //This bugs in russian
-			//		"Healing Done", Healing_done_in_total[client],
-			//		"Damage Dealt", Damage_dealt_in_total[client],
-					PerkNames[i_CurrentEquippedPerk[client]],
-					"Zombies Left", Zombies_Currently_Still_Ongoing);
-				}
-				else
-				{
-					PrintKeyHintText(client, "%t\n%s | %t\n%t\n%t\n%t",
-					"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
-					WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
-		//			"Armor Counter", Armor_Charge[client],
-					"Ammo Crate Supplies", Ammo_Count_Ready[client], 
-		//			"Healing Done", Healing_done_in_total[client],
-		//			"Damage Dealt", Damage_dealt_in_total[client],
-					PerkNames[i_CurrentEquippedPerk[client]],
-					"Zombies Left", Zombies_Currently_Still_Ongoing);	
-				}
+				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
 			}
-			else if (TeutonType[client] == TEUTON_DEAD)
+			else if(Armor_Charge[client] > Armor_Max*(i*0.1 - 1.0/60.0))
 			{
-				if(Has_Wave_Showing)
-				{
-				PrintKeyHintText(client, "%t\n%t","You Died Teuton",
-				//							"Wave", CurrentRound+1, CurrentWave+1,
-											"Zombies Left", Zombies_Currently_Still_Ongoing);
-				}
-				else
-				{
-					PrintKeyHintText(client, "%t\n%s | %t\n%t","You Died Teuton",
-											WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
-											"Zombies Left", Zombies_Currently_Still_Ongoing);				
-				}
+				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+			}
+			else if(Armor_Charge[client] > Armor_Max*(i*0.1 - 1.0/30.0))
+			{
+				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
 			}
 			else
 			{
+				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+			}
+			
+			if((i % 2) == 1)
+			{
+				Format(buffer, sizeof(buffer), "%s\n", buffer);
+			}
+		}
+			
+		if(i_CurrentEquippedPerk[client] == 6)
+		{
+			static float slowdown_amount;
+			slowdown_amount = f_WidowsWineDebuffPlayerCooldown[client] - GetGameTime();
+			
+			if(slowdown_amount < 0.0)
+			{
+				slowdown_amount = 0.0;
+			}
+			Format(buffer, sizeof(buffer), "%s%.1f", buffer, slowdown_amount);
+		}
+		SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.86 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
+		ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
+			
+			
+		if(!TeutonType[client])
+		{
+			if(Store_ActiveCanMulti(client))
+			{
 				if(Has_Wave_Showing)
 				{
-				PrintKeyHintText(client, "%t\n%t","You Wait Teuton",
-				//							"Wave", CurrentRound+1, CurrentWave+1,
-											"Zombies Left", Zombies_Currently_Still_Ongoing);
+					PrintKeyHintText(client, "%t\n%t\n%t\n%t\n \n%t",
+					"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+					"Ammo Crate Supplies", Ammo_Count_Ready[client], //This bugs in russian
+					PerkNames[i_CurrentEquippedPerk[client]],
+					"Zombies Left", Zombies_Currently_Still_Ongoing,
+					"Press Button To Switch");
 				}
 				else
 				{
-					PrintKeyHintText(client, "%t\n%s | %t\n%t","You Wait Teuton",
-											WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
-											"Zombies Left", Zombies_Currently_Still_Ongoing);				
+					PrintKeyHintText(client, "%t\n%s | %t\n%t\n%t\n%t\n \n%t",
+					"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+					WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
+					"Ammo Crate Supplies", Ammo_Count_Ready[client], 
+					PerkNames[i_CurrentEquippedPerk[client]],
+					"Zombies Left", Zombies_Currently_Still_Ongoing,
+					"Press Button To Switch");	
 				}
 			}
+			else if(Has_Wave_Showing)
+			{
+				PrintKeyHintText(client, "%t\n%t\n%t\n%t",
+				"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+				"Ammo Crate Supplies", Ammo_Count_Ready[client], //This bugs in russian
+				PerkNames[i_CurrentEquippedPerk[client]],
+				"Zombies Left", Zombies_Currently_Still_Ongoing);
+			}
+			else
+			{
+				PrintKeyHintText(client, "%t\n%s | %t\n%t\n%t\n%t",
+				"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+				WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
+				"Ammo Crate Supplies", Ammo_Count_Ready[client], 
+				PerkNames[i_CurrentEquippedPerk[client]],
+				"Zombies Left", Zombies_Currently_Still_Ongoing);	
+			}
 		}
+		else if (TeutonType[client] == TEUTON_DEAD)
+		{
+			if(Has_Wave_Showing)
+			{
+				PrintKeyHintText(client, "%t\n%t","You Died Teuton",
+				"Zombies Left", Zombies_Currently_Still_Ongoing);
+			}
+			else
+			{
+				PrintKeyHintText(client, "%t\n%s | %t\n%t","You Died Teuton",
+				WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
+				"Zombies Left", Zombies_Currently_Still_Ongoing);				
+			}
+		}
+		else
+		{
+			if(Has_Wave_Showing)
+			{
+				PrintKeyHintText(client, "%t\n%t","You Wait Teuton",
+				"Zombies Left", Zombies_Currently_Still_Ongoing);
+			}
+			else
+			{
+				PrintKeyHintText(client, "%t\n%s | %t\n%t","You Wait Teuton",
+					WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
+				"Zombies Left", Zombies_Currently_Still_Ongoing);				
+			}
+		}
+	}
 #endif	// ZR
 		
 #if defined RPG
 		// RPG Level Stuff Here
 #endif	// RPG
-	}
 	
 #if defined ZR
 	if(f_DelayLookingAtHud[client] < GetGameTime())
 	{
 		if (IsPlayerAlive(client))
 		{
-		//	StartPlayerOnlyLagComp(client, true); //do not lag compensate, its actually way too expensive, and it doesnt really matter most of the time.
-			int entity = GetClientPointVisible(client); //allow them to get info if they stare at something for abit long
-		//	EndPlayerOnlyLagComp(client);
+			static int entity;
+			entity = GetClientPointVisible(client); //allow them to get info if they stare at something for abit long
 			Building_ShowInteractionHud(client, entity);
-			f_DelayLookingAtHud[client] = GetGameTime() + 0.2;	
+			f_DelayLookingAtHud[client] = GetGameTime() + 0.5;	
 		}
 		else
 		{

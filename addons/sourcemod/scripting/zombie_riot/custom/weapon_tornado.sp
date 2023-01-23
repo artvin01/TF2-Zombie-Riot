@@ -7,6 +7,9 @@ static int i_tornado_wep[MAXENTITIES+1];
 static float fl_tornado_dmg[MAXENTITIES+1];
 static int g_ProjectileModel;
 
+static bool bl_tornado_barrage_mode[MAXPLAYERS+1]={false,...};
+static int i_tornado_pap[MAXPLAYERS+1]={0, ...};
+
 
 #define SOUND_IMPACT_1 					"physics/flesh/flesh_impact_bullet1.wav"	//We hit flesh, we are also kinetic, yes.
 #define SOUND_IMPACT_2 					"physics/flesh/flesh_impact_bullet2.wav"
@@ -19,8 +22,11 @@ static int g_ProjectileModel;
 #define SOUND_IMPACT_CONCRETE_3 		"physics/concrete/concrete_impact_bullet3.wav"
 #define SOUND_IMPACT_CONCRETE_4 		"physics/concrete/concrete_impact_bullet4.wav"
 
+static int g_particleImpactTornado;
+
 public void Weapon_Tornado_Blitz_Precache()
 {
+	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
 	PrecacheSound(SOUND_IMPACT_CONCRETE_1);
 	PrecacheSound(SOUND_IMPACT_CONCRETE_2);
 	PrecacheSound(SOUND_IMPACT_CONCRETE_3);
@@ -37,12 +43,30 @@ public void Weapon_Tornado_Blitz_Precache()
 	g_ProjectileModel = PrecacheModel(model);
 }
 
+public void Weapon_Tornado_Laucher_M2(int client, int weapon, const char[] classname, bool &result)
+{
+	if(IsValidEntity(client))
+	{
+		if(bl_tornado_barrage_mode[client])
+		{
+			bl_tornado_barrage_mode[client]=false;
+			PrintHintText(client,"Barrage: OFF");
+		}
+		else
+		{
+			bl_tornado_barrage_mode[client]=true;
+			PrintHintText(client,"Barrage: ON");
+		}
+		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	}
+}
 public void Weapon_tornado_launcher_Spam(int client, int weapon, const char[] classname, bool &result)
 {
-	if(fl_tornados_rockets_eated[client]>2.5)	//Every 3rd rocket is free. or there abouts.
+	bl_tornado_barrage_mode[client]=false;
+	if(fl_tornados_rockets_eated[client]>3.0)	//Every 3rd rocket is free. or there abouts.
 	{
 		Add_Back_One_Rocket(weapon);
-		fl_tornados_rockets_eated[client]=-2.5;
+		fl_tornados_rockets_eated[client]=-3.0;
 	}
 	else
 	{
@@ -53,6 +77,7 @@ public void Weapon_tornado_launcher_Spam(int client, int weapon, const char[] cl
 
 public void Weapon_tornado_launcher_Spam_Pap1(int client, int weapon, const char[] classname, bool &result)
 {
+	bl_tornado_barrage_mode[client]=false;
 	if(fl_tornados_rockets_eated[client]<0.49)	//2 rockets eated, 1 free.
 	{
 		Add_Back_One_Rocket(weapon);
@@ -67,6 +92,7 @@ public void Weapon_tornado_launcher_Spam_Pap1(int client, int weapon, const char
 
 public void Weapon_tornado_launcher_Spam_Pap2(int client, int weapon, const char[] classname, bool &result)
 {
+	i_tornado_pap[client]=2;
 	if(fl_tornados_rockets_eated[client]<1.0)	//Half rockets eated, other half free
 	{
 		Add_Back_One_Rocket(weapon);
@@ -81,6 +107,7 @@ public void Weapon_tornado_launcher_Spam_Pap2(int client, int weapon, const char
 
 public void Weapon_tornado_launcher_Spam_Pap3(int client, int weapon, const char[] classname, bool &result)
 {
+	i_tornado_pap[client]=4;
 	if(fl_tornados_rockets_eated[client]<2.0)	//4x clip size, basically, most of it being free.
 	{
 		Add_Back_One_Rocket(weapon);
@@ -93,6 +120,16 @@ public void Weapon_tornado_launcher_Spam_Pap3(int client, int weapon, const char
 	Weapon_Tornado_Launcher_Spam_Fire_Rocket(client, weapon);
 }
 
+void remove_Back_One_Rocket(int entity)
+{
+	if(IsValidEntity(entity))
+	{
+		int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+		int ammo = GetEntData(entity, iAmmoTable, 4);
+		ammo -= 1;
+		SetEntData(entity, iAmmoTable, ammo, 4, true);
+	}
+}
 void Add_Back_One_Rocket(int entity)
 {
 	if(IsValidEntity(entity))
@@ -100,7 +137,6 @@ void Add_Back_One_Rocket(int entity)
 		int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
 		int ammo = GetEntData(entity, iAmmoTable, 4);
 		ammo += 1;
-
 		SetEntData(entity, iAmmoTable, ammo, 4, true);
 	}
 }
@@ -110,7 +146,7 @@ void Weapon_Tornado_Launcher_Spam_Fire_Rocket(int client, int weapon)
 	{
 		
 		float speedMult = 1250.0;
-		float dmgProjectile = 100.0;
+		float dmgProjectile = 90.0;
 		
 		
 		//note: redo attributes for better customizability
@@ -131,8 +167,23 @@ void Weapon_Tornado_Launcher_Spam_Fire_Rocket(int client, int weapon)
 			speedMult *= TF2Attrib_GetValue(address);
 			
 		float damage=dmgProjectile;
-			
-		BlitzRocket(client, speedMult, damage, weapon);
+		int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+		int ammo = GetEntData(weapon, iAmmoTable, 4);
+		if(bl_tornado_barrage_mode[client] && ammo>i_tornado_pap[client])
+		{
+			for(int i=1; i<=i_tornado_pap[client] ;i++)
+			{
+				BlitzRocket(client, speedMult, damage, weapon);
+			}
+			for(int j=1; j<=i_tornado_pap[client]-1 ;j++)
+			{
+				remove_Back_One_Rocket(weapon);	//in this case we remove
+			}
+		}
+		else
+		{
+			BlitzRocket(client, speedMult, damage, weapon);
+		}
 	}
 }
 
@@ -142,13 +193,11 @@ void BlitzRocket(int client, float speed, float damage, int weapon)
 	GetClientEyeAngles(client, fAng);
 	GetClientEyePosition(client, fPos);
 	
-	float CustomAng[3] = {0.0,0.0,0.0};	//This part is incomplete. for now...
-	
-	if(CustomAng[0] != 0.0 || CustomAng[1] != 0.0)
+	if(bl_tornado_barrage_mode[client])	//we randomise the barrage so it doesn't become a direct upgrade.
 	{
-		fAng[0] = CustomAng[0];
-		fAng[1] = CustomAng[1];
-		fAng[2] = CustomAng[2];
+		fAng[0] = fAng[0]+GetRandomFloat(-6.0,6.0);
+		fAng[1] = fAng[1]+GetRandomFloat(-6.0,6.0);
+		fAng[2] = fAng[2]+GetRandomFloat(-0.25,0.25);
 	}
 
 
@@ -193,7 +242,15 @@ void BlitzRocket(int client, float speed, float damage, int weapon)
 		{
 			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
 		}
-		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 3.0);
+		
+		if(bl_tornado_barrage_mode[client])	//we make the rocket smaller on barrage mode.
+		{
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 2.0);
+		}
+		else
+		{
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 3.0);
+		}
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Tornado_RocketExplodePre); //In this case I reused code that was reused due to laziness, I am the ultiamte lazy. *yawn*
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		SDKHook(entity, SDKHook_StartTouch, Tornado_Blitz_StartTouch);
@@ -221,6 +278,11 @@ public void Tornado_Blitz_StartTouch(int entity, int other)
 		int owner = EntRefToEntIndex(i_tornado_index[entity]);
 		int weapon = EntRefToEntIndex(i_tornado_wep[entity]);
 
+		float pos1[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+		TE_ParticleInt(g_particleImpactTornado, pos1);
+		TE_SendToAll();
+
 		SDKHooks_TakeDamage(target, owner, owner, fl_tornado_dmg[entity], DMG_BULLET, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		//CPrintToChatAll("sdk_dmg");
@@ -242,6 +304,10 @@ public void Tornado_Blitz_StartTouch(int entity, int other)
 	}
 	else if(target == 0)
 	{
+		float pos1[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+		TE_ParticleInt(g_particleImpactTornado, pos1);
+		TE_SendToAll();
 		switch(GetRandomInt(1,4)) 
 		{
 			case 1:EmitSoundToAll(SOUND_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
