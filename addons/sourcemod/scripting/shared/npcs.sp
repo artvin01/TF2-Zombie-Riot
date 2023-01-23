@@ -1475,8 +1475,9 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 			{
 				float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
+				damage = modified_damage;
 			}
-			damage = modified_damage;
+			
 			
 			if(i_ArsenalBombImplanter[weapon] > 0)
 			{
