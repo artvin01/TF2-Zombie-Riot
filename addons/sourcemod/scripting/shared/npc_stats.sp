@@ -5178,7 +5178,7 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 			damage *= Medival_Difficulty_Level;
 		}
 		
-		if(fl_MeleeArmor[victim] >= 1.0 || !Building_DoesPierce(attacker))
+		if(fl_MeleeArmor[victim] >= 1.0)
 #endif
 		
 		{
@@ -5194,7 +5194,7 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 			damage *= Medival_Difficulty_Level;
 		}
 		
-		if(fl_RangedArmor[victim] >= 1.0 || !Building_DoesPierce(attacker))
+		if(fl_RangedArmor[victim] >= 1.0)
 #endif
 		
 		{
