@@ -4680,8 +4680,8 @@ static void VillageUpgradeMenu(int client, int viewer)
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s [$5000]%s", TranslateItemName(viewer, "Monkey Intelligence Bureau", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : "");
-			menu.AddItem(VilN(VILLAGE_030), buffer, (!owner || cash < 5000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			FormatEx(buffer, sizeof(buffer), "%s [$4000]%s", TranslateItemName(viewer, "Monkey Intelligence Bureau", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : "");
+			menu.AddItem(VilN(VILLAGE_030), buffer, (!owner || cash < 4000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "The Bureau grants special Bloon popping knowledge, allowing", ITEMDRAW_DISABLED);
 			menu.AddItem("", "nearby players and allies to deal 10% more damage.\n ", ITEMDRAW_DISABLED);
 		}
@@ -4831,12 +4831,14 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				{
 					Store_SetNamedItem(client, "Village NPC Expert", 1);
 					CashSpent[client] += 400;
+					CashSpentTotal[client] += 400;
 					Village_TierExists[0] = 1;
 				}
 				case VILLAGE_050:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 5);
 					CashSpent[client] += 15000;
+					CashSpentTotal[client] += 15000;
 					f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
 					Village_TierExists[1] = 5;
 				}
@@ -4844,55 +4846,64 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 4);
 					CashSpent[client] += 8000;
+					CashSpentTotal[client] += 8000;
 					f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
 					Village_TierExists[1] = 4;
 				}
 				case VILLAGE_030:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 3);
-					CashSpent[client] += 5000;
+					CashSpent[client] += 4000;
+					CashSpentTotal[client] += 4000;
 					Village_TierExists[1] = 3;
 				}
 				case VILLAGE_020:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 2);
 					CashSpent[client] += 750;
+					CashSpentTotal[client] += 750;
 					Village_TierExists[1] = 2;
 				}
 				case VILLAGE_010:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 1);
 					CashSpent[client] += 250;
+					CashSpentTotal[client] += 250;
 					Village_TierExists[1] = 1;
 				}
 				case VILLAGE_005:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 5);
 					CashSpent[client] += 12000;
+					CashSpentTotal[client] += 12000;
 					Village_TierExists[2] = 5;
 				}
 				case VILLAGE_004:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 4);
 					CashSpent[client] += 3000;
+					CashSpentTotal[client] += 3000;
 					Village_TierExists[2] = 4;
 				}
 				case VILLAGE_003:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 3);
 					CashSpent[client] += 9000;
+					CashSpentTotal[client] += 9000;
 					Village_TierExists[2] = 3;
 				}
 				case VILLAGE_002:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 2);
 					CashSpent[client] += 1000;
+					CashSpentTotal[client] += 1000;
 					Village_TierExists[2] = 2;
 				}
 				case VILLAGE_001:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 1);
 					CashSpent[client] += 1000;
+					CashSpentTotal[client] += 1000;
 					Village_TierExists[2] = 1;
 				}
 			}
