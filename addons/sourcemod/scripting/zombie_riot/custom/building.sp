@@ -3106,7 +3106,7 @@ public bool BuildingCustomCommand(int client)
 					if(f_BuildingIsNotReady[client] < GetGameTime())
 					{
 						//Ammo_Count_Ready[client]--;
-						f_BuildingIsNotReady[client] = GetGameTime() + 60.0;
+						f_BuildingIsNotReady[client] = GetGameTime() + 120.0;
 						
 						if(Village_Flags[client] & VILLAGE_050)
 						{
@@ -4419,12 +4419,6 @@ float Building_GetCashOnKillMulti(int client)
 	return 1.0;
 }
 
-bool Building_DoesPierce(int client)
-{
-	return (client > 0 && client <= MaxClients && (GetBuffEffects(EntIndexToEntRef(client)) & VILLAGE_030));
-}
-
-
 int Building_GetCashOnWave(int current)
 {
 	int popCash;
@@ -4686,10 +4680,10 @@ static void VillageUpgradeMenu(int client, int viewer)
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s [$3000]%s", TranslateItemName(viewer, "Monkey Intelligence Bureau", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : "");
-			menu.AddItem(VilN(VILLAGE_030), buffer, (!owner || cash < 3000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			FormatEx(buffer, sizeof(buffer), "%s [$5000]%s", TranslateItemName(viewer, "Monkey Intelligence Bureau", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : "");
+			menu.AddItem(VilN(VILLAGE_030), buffer, (!owner || cash < 5000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "The Bureau grants special Bloon popping knowledge, allowing", ITEMDRAW_DISABLED);
-			menu.AddItem("", "nearby players and allies to ignore non-armor resistances.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "nearby players and allies to deal 10% more damage.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_010)
@@ -4856,7 +4850,7 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				case VILLAGE_030:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 3);
-					CashSpent[client] += 3000;
+					CashSpent[client] += 5000;
 					Village_TierExists[1] = 3;
 				}
 				case VILLAGE_020:
@@ -4973,6 +4967,16 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 							if(attrib != Address_Null)
 								TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) * 1.06);
 						}
+						case VILLAGE_030:
+						{
+							Address attrib = TF2Attrib_GetByDefIndex(entity, 2);	// Damage
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(attrib) * 1.1);
+							
+							attrib = TF2Attrib_GetByDefIndex(entity, 410);	// Mage Damage
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(attrib) * 1.1);
+						}
 						case VILLAGE_040, VILLAGE_050:
 						{
 							Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
@@ -5017,6 +5021,16 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
 						if(attrib != Address_Null)
 							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.06);
+					}
+					case VILLAGE_030:
+					{
+						Address attrib = TF2Attrib_GetByDefIndex(entity, 2);	// Damage
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(attrib)/ 1.1);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 410);	// Mage Damage
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(attrib) / 1.1);
 					}
 					case VILLAGE_040, VILLAGE_050:	// 1.0 * 1.5 / 1.5
 					{
