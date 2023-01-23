@@ -2915,6 +2915,7 @@ static void MapStartResetAll()
 	Zero(f_DelayLookingAtHud);
 	Zero(f_TimeUntillNormalHeal);
 	Zero(Mana_Regen_Delay);
+	Zero(RollAngle_Regen_Delay);
 	Zero(Mana_Hud_Delay);
 	Zero(delay_hud);
 	Zero(Increaced_Overall_damage_Low);
