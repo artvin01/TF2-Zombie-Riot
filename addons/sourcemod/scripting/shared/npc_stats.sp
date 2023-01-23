@@ -1019,12 +1019,11 @@ methodmap CClotBody
 		public get()							{ return i_NpcStepVariation[this.index]; }
 		public set(int TempValueForProperty) 	{ i_NpcStepVariation[this.index] = TempValueForProperty; }
 	}
-	property int m_iCreditsOnKill
+	property float m_fCreditsOnKill
 	{
-		public get()							{ return i_CreditsOnKill[this.index]; }
-		public set(int TempValueForProperty) 	{ i_CreditsOnKill[this.index] = TempValueForProperty; }
+		public get()							{ return f_CreditsOnKill[this.index]; }
+		public set(float TempValueForProperty) 	{ f_CreditsOnKill[this.index] = TempValueForProperty; }
 	}
-	
 	property float m_flGetClosestTargetTime
 	{
 		public get()							{ return fl_GetClosestTargetTime[this.index]; }
@@ -6997,7 +6996,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_PoseMoveY[entity] = -1;
 	b_NpcHasDied[entity] = false;
 	b_PlayHurtAnimation[entity] = false;
-	i_CreditsOnKill[entity] = 0;
+	f_CreditsOnKill[entity] = 0.0;
 	b_npcspawnprotection[entity] = false;
 	f_CooldownForHurtParticle[entity] = 0.0;
 	f_LowTeslarDebuff[entity] = 0.0;

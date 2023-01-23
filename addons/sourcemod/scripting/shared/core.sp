@@ -922,7 +922,7 @@ float b_isGiantWalkCycle[MAXENTITIES];
 float f_NpcHasBeenUnstuckAboveThePlayer[MAXENTITIES];
 
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
-int i_CreditsOnKill[MAXENTITIES];
+float f_CreditsOnKill[MAXENTITIES];
 
 int i_InSafeZone[MAXENTITIES];
 float fl_MeleeArmor[MAXENTITIES];
