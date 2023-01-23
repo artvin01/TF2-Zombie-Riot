@@ -113,6 +113,7 @@ bool b_HasBeenHereSinceStartOfWave[MAXTF2PLAYERS];
 Cookie CookieScrap;
 Cookie CookiePlayStreak;
 Cookie CookieCache;
+Cookie CookieAmmoCount;
 Cookie CookieXP;
 ArrayList Loadouts[MAXTF2PLAYERS];
 
@@ -154,7 +155,8 @@ int CashSpent[MAXTF2PLAYERS];
 int CashSpentTotal[MAXTF2PLAYERS];
 int CashRecievedNonWave[MAXTF2PLAYERS];
 int Scrap[MAXTF2PLAYERS];
-int Ammo_Count_Ready[MAXTF2PLAYERS];
+int Ammo_Count_Ready;
+int Ammo_Count_Used[MAXTF2PLAYERS];
 //float Armor_Ready[MAXTF2PLAYERS];
 int b_NpcForcepowerupspawn[MAXENTITIES]={0, ...}; 
 
@@ -356,6 +358,7 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_GENERIC, "Forcefully summon grigori");
 	
 	CookieCache = new Cookie("zr_lastgame", "The last game saved data is from", CookieAccess_Protected);
+	CookieAmmoCount = new Cookie("zr_ammoboxcount", "Ammobox count from game", CookieAccess_Protected);
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
@@ -536,7 +539,6 @@ void ZR_ClientPutInServer(int client)
 	i_KillsMade[client] = 0;
 	i_Backstabs[client] = 0;
 	i_Headshots[client] = 0;
-	Ammo_Count_Ready[client] = 0;
 	Armor_Charge[client] = 0;
 	Doing_Handle_Mount[client] = false;
 	b_Doing_Buildingpickup_Handle[client] = false;
@@ -545,6 +547,7 @@ void ZR_ClientPutInServer(int client)
 	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
+	Ammo_Count_Used[client] = 0;
 	
 	if(CurrentRound)
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.20);
@@ -567,7 +570,6 @@ void ZR_ClientDisconnect(int client)
 	Resupplies_Supplied[client] = 0;
 	CashRecievedNonWave[client] = 0;
 	Healing_done_in_total[client] = 0;
-	Ammo_Count_Ready[client] = 0;
 	Armor_Charge[client] = 0;
 	PlayerPoints[client] = 0;
 	i_PreviousPointAmount[client] = 0;

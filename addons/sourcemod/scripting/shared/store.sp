@@ -1351,6 +1351,14 @@ void Store_ClientCookiesCached(int client)
 	ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
 	if(CurrentGame && buffers[0] == CurrentGame)
 		Database_LoadGameData(client);
+
+	CookieAmmoCount.Get(client, buffer, sizeof(buffer));
+
+	ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
+	if(CurrentGame && buffers[0] == CurrentGame)
+	{
+		Ammo_Count_Used[client] = buffers[1];
+	}
 }
 
 void HudSettings_ClientCookiesCached(int client)
@@ -1556,6 +1564,13 @@ void Store_ClientDisconnect(int client)
 		char buffer[32];
 		FormatEx(buffer, sizeof(buffer), "%d;%d", CurrentGame, CashSpent[client]);
 		CookieCache.Set(client, buffer);
+	}
+
+	if(Waves_Started())
+	{
+		char buffer[32];
+		FormatEx(buffer, sizeof(buffer), "%d;%d", CurrentGame, Ammo_Count_Used[client]);
+		CookieAmmoCount.Set(client, buffer);
 	}
 
 	CashSpent[client] = 0;
@@ -1839,7 +1854,7 @@ public void MenuPage(int client, int section)
 	if(CvarInfiniteCash.BoolValue)
 	{
 		CurrentCash = 999999;
-		Ammo_Count_Ready[client] = 999999;
+		Ammo_Count_Used[client] = -999999;
 		CashSpent[client] = 0;
 	}
 

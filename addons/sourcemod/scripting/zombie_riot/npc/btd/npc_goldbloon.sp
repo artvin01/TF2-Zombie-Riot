@@ -280,7 +280,7 @@ public Action GoldBloon_ClotDamaged(int victim, int &attacker, int &inflictor, f
 	
 	if(attacker < 1)
 	{
-		npc.m_iCreditsOnKill = 0;
+		npc.m_fCreditsOnKill = 0.0;
 		b_NpcForcepowerupspawn[victim] = 0;
 		return Plugin_Continue;
 	}

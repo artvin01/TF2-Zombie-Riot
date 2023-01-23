@@ -12,7 +12,7 @@ enum struct Enemy
 	bool Is_Static;
 	bool Friendly;
 	int Index;
-	int Credits;
+	float Credits;
 	char Data[16];
 }
 
@@ -72,7 +72,7 @@ static bool InSetup;
 //static bool InFreeplay;
 static int WaveIntencity;
 
-static bool Gave_Ammo_Supply;
+static int Gave_Ammo_Supply;
 static int VotedFor[MAXTF2PLAYERS];
 
 static char LastWaveWas[64];
@@ -419,7 +419,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.Is_Immune_To_Nuke = kv.GetNum("is_immune_to_nuke");
 						enemy.Is_Static = view_as<bool>(kv.GetNum("is_static"));
 						enemy.Friendly = view_as<bool>(kv.GetNum("friendly"));
-						enemy.Credits = kv.GetNum("cash");
+						enemy.Credits = kv.GetFloat("cash");
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
 						
@@ -1170,9 +1170,9 @@ void Waves_Progress()
 
 		for(int client=1; client<=MaxClients; client++)
 		{
+			Ammo_Count_Ready = 8;
 			if(IsClientInGame(client) && GetClientTeam(client)==2)
 			{
-				Ammo_Count_Ready[client] = 8;
 				if(StartCash < 1500)
 				{
 					CashSpent[client] = StartCash;
@@ -1184,29 +1184,16 @@ void Waves_Progress()
 	{
 		Renable_Powerups();
 		CheckIfAloneOnServer();
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client) && GetClientTeam(client)==2)
-			{
-				Ammo_Count_Ready[client] += 1;
-			}
-		}
+		Ammo_Count_Ready += 1;
 	}
-//	else if (IsEven(CurrentRound+1)) Is even doesnt even work, just do a global bool of every 2nd round, should be good. And probably work out even better.
-	else if (!Gave_Ammo_Supply)
+	else if (Gave_Ammo_Supply > 2)
 	{
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client) && GetClientTeam(client)==2)
-			{
-				Ammo_Count_Ready[client] += 1;
-			}
-		}
-		Gave_Ammo_Supply = true;
+		Ammo_Count_Ready += 1;
+		Gave_Ammo_Supply = 0;
 	}	
 	else
 	{
-		Gave_Ammo_Supply = false;	
+		Gave_Ammo_Supply += 1;	
 	}
 //	PrintToChatAll("Wave: %d - %d", CurrentRound+1, CurrentWave+1);
 	
