@@ -321,11 +321,16 @@ public void MedivalPikeman_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									float damage = 18.0;
+									float damage = 15.0;
 
 									if(Medival_Difficulty_Level > 1.0)
 									{
-										damage = 25.0;
+										damage = 20.0;
+									}
+									int entity = EntRefToEntIndex(Building_Mounted[target]);
+									if(IsValidEntity(entity))
+									{
+										damage *= 3.0;
 									}
 
 									if(target <= MaxClients)
