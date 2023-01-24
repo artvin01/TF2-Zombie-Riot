@@ -540,6 +540,13 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.m_bDissapearOnDeath = true;
 
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+					for (int client = 0; client < MaxClients; client++)
+					{
+						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+						{
+							GiveNamedItem(client, "Cured Silvester");
+						}
+					}
 				}
 				else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
 				{

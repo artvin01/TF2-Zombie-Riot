@@ -7,7 +7,14 @@ void Stock_TakeDamage(int entity = 0, int inflictor = 0, int attacker = 0, float
 {
 	i_HexCustomDamageTypes[entity] = Zr_damage_custom;
 	
-	SDKHooks_TakeDamage(entity, inflictor, attacker, damage, damageType, weapon, damageForce, damagePosition, bypassHooks);
+	if(IsValidEntity(weapon))
+	{
+		SDKHooks_TakeDamage(entity, inflictor, attacker, damage, damageType, weapon, damageForce, damagePosition, bypassHooks);
+	}
+	else
+	{
+		SDKHooks_TakeDamage(entity, inflictor, attacker, damage, damageType, -1, damageForce, damagePosition, bypassHooks);
+	}
 
 }
 
