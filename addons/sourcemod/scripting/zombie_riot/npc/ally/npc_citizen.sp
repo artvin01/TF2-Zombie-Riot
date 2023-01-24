@@ -2205,7 +2205,7 @@ public void Citizen_ClotThink(int iNPC)
 			vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
 
 			distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			if(distance < 5000.0)
+			if(distance < 7000.0)
 			{
 				npc.SetActivity("ACT_CIT_HEAL");
 				npc.m_flSpeed = 0.0;
