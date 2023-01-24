@@ -589,7 +589,7 @@ public void Bloon_ClotThink(int iNPC)
 						{
 							if(npc.RegrowsInto(i) == npc.m_iType)
 							{
-								if(target <= MaxClients)
+								if(!ShouldNpcDealBonusDamage(target))
 								{
 									if(npc.m_bFortified)
 									{

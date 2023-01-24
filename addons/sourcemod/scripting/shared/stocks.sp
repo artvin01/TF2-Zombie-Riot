@@ -2823,10 +2823,10 @@ float dmg_against_entity_multiplier = 3.0)
 									{
 										damage_1 = damage;
 									}
-									if(FromBlueNpc)
-									{
-										damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
-									}
+								//	if(FromBlueNpc)
+								//	{
+								//		damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
+								//	}
 							
 									SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
 									TargetsHit += 1;
@@ -3495,7 +3495,22 @@ public Action SDKHook_Settransmit_TextParentedToPlayer(int entity, int client)
 #endif
 
 
-stock void spawnRing_Vectors(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
+stock void spawnRing_Vectors(float center[3],
+ float range,
+  float modif_X,
+  float modif_Y,
+   float modif_Z,
+    char sprite[255],
+	 int r,
+	  int g,
+	   int b,
+	    int alpha,
+		 int fps,
+		  float life,
+		   float width,
+		    float amp,
+			 int speed,
+			  float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
 {
 	center[0] += modif_X;
 	center[1] += modif_Y;
@@ -3686,3 +3701,12 @@ void PlayFakeDeathSound(int client)
 	delete event;
 }
 */
+
+stock bool ShouldNpcDealBonusDamage(int entity, int attacker = -1)
+{
+	if(entity < 1)
+	{
+		return false;
+	}
+	return i_IsABuilding[entity];
+}

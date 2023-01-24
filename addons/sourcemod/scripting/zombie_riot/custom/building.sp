@@ -144,6 +144,7 @@ void Building_MapStart()
 	PrecacheModel(VILLAGE_MODEL);
 	PrecacheModel(BARRICADE_MODEL);
 	PrecacheModel(ELEVATOR_MODEL);
+	PrecacheModel(SUMMONER_MODEL);
 	
 	PrecacheSound("items/powerup_pickup_uber.wav");
 	PrecacheSound("player/mannpower_invulnerable.wav");
@@ -1174,7 +1175,7 @@ void Building_WeaponSwitchPost(int client, int &weapon, const char[] buffer)
 	if(EntityFuncAttack[weapon] && EntityFuncAttack[weapon]!=INVALID_FUNCTION)
 	{
 		Function func = EntityFuncAttack[weapon];
-		if(func == Building_PlaceVillage || func == Building_PlaceHealingStation || func == Building_PlacePackAPunch || func == Building_PlacePerkMachine || func==Building_PlaceRailgun || func==Building_PlaceMortar || func==Building_PlaceSentry || func==Building_PlaceDispenser || func==Building_PlaceAmmoBox || func==Building_PlaceArmorTable || func==Building_PlaceElevator)
+		if(func == Building_PlaceSummoner || func == Building_PlaceVillage || func == Building_PlaceHealingStation || func == Building_PlacePackAPunch || func == Building_PlacePerkMachine || func==Building_PlaceRailgun || func==Building_PlaceMortar || func==Building_PlaceSentry || func==Building_PlaceDispenser || func==Building_PlaceAmmoBox || func==Building_PlaceArmorTable || func==Building_PlaceElevator)
 		{
 			if(Building[client] != INVALID_FUNCTION)
 			{
@@ -5842,7 +5843,7 @@ public bool Building_Summoner(int client, int entity)
 	CreateTimer(0.5, Timer_SummonerThink, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT); //No custom anims
 	
 	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
-	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
+	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 1.5);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
 	//SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	Building_Max_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
@@ -5921,15 +5922,24 @@ public Action Timer_SummonerThink(Handle timer, int ref)
 	
 	if(entity != INVALID_ENT_REFERENCE && owner && Building_Constructed[entity])
 	{
-		// 1 Supply = 1 Food & Wood Every 6 Seconds
-		int health = GetEntProp(entity, Prop_Send, "m_iHealth") + (SupplyRate[owner] * 10);
-		SetEntProp(entity, Prop_Send, "m_iHealth", health);
+		// 1 Supply = 1 Food & Wood Every 1 Second
+		int health = GetEntProp(entity, Prop_Send, "m_iHealth");
 
-		Building_Max_Health[entity] = health + 300;
+		float wood = health * WoodRatio[owner];
+		float food = health * (1.0 - WoodRatio[owner]);
+
+		wood += SupplyRate[owner] / 2.0;
+		food += SupplyRate[owner] / 2.0;
+
+		health = RoundFloat(wood + food);
+		SetEntProp(entity, Prop_Send, "m_iHealth", health);
+		WoodRatio[owner] = wood / (wood + food);
+
+		Building_Max_Health[entity] = health + 30;
 		SetEntProp(entity, Prop_Send, "m_iMaxHealth", Building_Max_Health[entity]);
 
-		// 1 Supply = 1 Gold Every 60 Seconds
-		GoldAmount[owner] += SupplyRate[owner] / 120.0;
+		// 1 Supply = 1 Gold Every 30 Seconds
+		GoldAmount[owner] += SupplyRate[owner] / 60.0;
 
 		if(TrainingIn[owner])
 		{
@@ -5967,22 +5977,22 @@ public Action Timer_SummonerThink(Handle timer, int ref)
 
 static void CheckSummonerUpgrades(int client)
 {
-	SupplyRate[client] = 2;
+	SupplyRate[client] = 1;
 
-	if(Store_HasNamedItem(client, "Repair Handling book for dummies"))
-		SupplyRate[client]++;
+	//if(Store_HasNamedItem(client, "Repair Handling book for dummies"))
+	//	SupplyRate[client]++;
 	
 	if(Store_HasNamedItem(client, "Ikea Repair Handling book"))
-		SupplyRate[client] += 2;
+		SupplyRate[client]++;
 	
 	if(Store_HasNamedItem(client, "Engineering Repair Handling book"))
-		SupplyRate[client] += 4;
+		SupplyRate[client] += 2;
 	
 	if(Store_HasNamedItem(client, "Alien Repair Handling book"))
-		SupplyRate[client] += 6;
+		SupplyRate[client] += 3;
 	
 	if(Store_HasNamedItem(client, "Cosmic Repair Handling book"))
-		SupplyRate[client] += 10;
+		SupplyRate[client] += 5;
 }
 
 static void OpenSummonerMenu(int client, int viewer)
@@ -6005,21 +6015,28 @@ static void SummonerMenu(int client, int viewer)
 	bool owner = client == viewer;
 	int level = MaxSupportBuildingsAllowed(client, true);
 	int health = GetEntProp(entity, Prop_Send, "m_iHealth");
-	int wood = RoundToFloor(health / 30.0 * WoodRatio[client]);
-	int food = RoundToFloor(health / 30.0 * (1.0 - WoodRatio[client]));
+	int wood = RoundToFloor(health * WoodRatio[client]);
+	int food = RoundToFloor(health * (1.0 - WoodRatio[client]));
 	
 	Menu menu = new Menu(SummonerMenuH);
 	
 	SetGlobalTransTarget(viewer);
-	menu.SetTitle("%t\n \n%s\n \n$%d £%d ¥%d\n ", "TF2: Zombie Riot", TranslateItemName(viewer, "Buildable Barracks", ""), wood, food, GoldAmount[client]);
+	menu.SetTitle("%t\n \n%s\n \n$%d £%d ¥%d\n ", "TF2: Zombie Riot", TranslateItemName(viewer, "Buildable Barracks", ""), wood, food, RoundToFloor(GoldAmount[client]));
 	
 	char buffer1[256];
 	if(TrainingIn[client])
 	{
-		float gameTime = GetGameTime();
-		FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f%%)\n ", NPC_Names[SummonerData[TrainingIndex[client]][NPCIndex]],
-			(gameTime - TrainingIn[client]) * -100.0 / (TrainingIn[client] - TrainingStartedIn[client]));
-		
+		if(AtMaxSupply())
+		{
+			FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)", NPC_Names[SummonerData[TrainingIndex[client]][NPCIndex]]);
+		}
+		else
+		{
+			float gameTime = GetGameTime();
+			FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f%%)\n ", NPC_Names[SummonerData[TrainingIndex[client]][NPCIndex]],
+				100.0 - ((TrainingIn[client] - gameTime) * 100.0 / (TrainingIn[client] - TrainingStartedIn[client])));
+		}
+
 		menu.AddItem(buffer1, buffer1, ITEMDRAW_DISABLED);
 		menu.AddItem(buffer1, "Cancel");
 	}
@@ -6078,8 +6095,8 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 			if(entity != INVALID_ENT_REFERENCE)
 			{
 				int health = GetEntProp(entity, Prop_Send, "m_iHealth");
-				float wood = health / 30.0 * WoodRatio[client];
-				float food = health / 30.0 * (1.0 - WoodRatio[client]);
+				float wood = health * WoodRatio[client];
+				float food = health * (1.0 - WoodRatio[client]);
 
 				if(TrainingIn[client])
 				{
@@ -6110,7 +6127,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 					}
 				}
 
-				SetEntProp(entity, Prop_Send, "m_iHealth", RoundFloat((wood + food) * 30.0));
+				SetEntProp(entity, Prop_Send, "m_iHealth", RoundFloat(wood + food));
 				WoodRatio[client] = wood / (wood + food);
 
 				SummonerMenu(client, client);
@@ -6118,4 +6135,17 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 		}
 	}
 	return 0;
+}
+
+static bool AtMaxSupply()
+{
+	int count;
+	int entity = MaxClients + 1;
+	while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+	{
+		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+			count++;
+	}
+
+	return count > 9;
 }

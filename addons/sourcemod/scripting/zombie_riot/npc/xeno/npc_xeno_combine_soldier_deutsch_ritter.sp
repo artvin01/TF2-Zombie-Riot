@@ -338,7 +338,7 @@ public void XenoCombineDeutsch_ClotThink(int iNPC)
 								if(target > 0) 
 								{
 									
-									if(target <= MaxClients)
+									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_CLUB, -1, _, vecHit);
 									else
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 700.0, DMG_CLUB, -1, _, vecHit);

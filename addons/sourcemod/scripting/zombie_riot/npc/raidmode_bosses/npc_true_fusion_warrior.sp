@@ -854,23 +854,12 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									if(target > MaxClients)
-									{
-										if(!npc.Anger)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 12.0 * RaidModeScaling * 10.0, DMG_CLUB, -1, _, vecHit);
+									if(!npc.Anger)
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 24.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 											
-										if(npc.Anger)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 14.0 * RaidModeScaling * 10.0, DMG_CLUB, -1, _, vecHit);
-									}
-									else
-									{
-										if(!npc.Anger)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 24.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
-											
-										if(npc.Anger)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 28.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
+									if(npc.Anger)
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 28.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
 										
-									}
 									
 									// Hit particle
 									

@@ -520,10 +520,11 @@ public void NaziPanzer_ClotThink(int iNPC)
 				{
 					float damage = 5.0;
 					
-					if(target <= MaxClients)
+					if(!ShouldNpcDealBonusDamage(target))
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_BURN);
-						TF2_IgnitePlayer(target, target, 4.0);
+						if(IsValidClient(target))
+							TF2_IgnitePlayer(target, target, 4.0);
 					}
 					else
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 2.0 * npc.m_flWaveScale, DMG_BURN);
@@ -571,10 +572,11 @@ public void NaziPanzer_ClotThink(int iNPC)
 					{
 						float damage = 10.0;
 						
-						if(target <= MaxClients)
+						if(!ShouldNpcDealBonusDamage(target))
 						{
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_BURN);
-							TF2_IgnitePlayer(target, target, 4.0);
+							if(IsValidClient(target))
+								TF2_IgnitePlayer(target, target, 4.0);
 						}
 						else
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 2.0 * npc.m_flWaveScale, DMG_BURN);
@@ -622,7 +624,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 						{
 							float damage = 50.0;
 							
-							if(target <= MaxClients)
+							if(!ShouldNpcDealBonusDamage(target))
 								SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
 							else
 								SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 2.0 * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
@@ -679,7 +681,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 						{
 							float damage = 50.0;
 							
-							if(target <= MaxClients)
+							if(!ShouldNpcDealBonusDamage(target))
 								SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
 							else
 								SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 2.0 * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);

@@ -351,14 +351,14 @@ public void MedivalSamurai_ClotThink(int iNPC)
 								}
 								if(npc.Anger)
 								{
-									if(target <= MaxClients)
+									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0 * Bonus_damage, DMG_CLUB, -1, _, vecHit);
 									else
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 600.0, DMG_CLUB, -1, _, vecHit);
 								}
 								else
 								{
-									if(target <= MaxClients)
+									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0 * Bonus_damage, DMG_CLUB, -1, _, vecHit);
 									else
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_CLUB, -1, _, vecHit);									

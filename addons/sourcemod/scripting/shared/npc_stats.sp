@@ -5891,6 +5891,11 @@ stock int FireBullet(int m_pAttacker, int iWeapon, float m_vecSrc[3], float m_ve
 		
 	//	TE_SetupBeamPoints(m_vecSrc, endpos, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 0.1, 0.1, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
 	//	TE_SendToAll();
+
+		if(ShouldNpcDealBonusDamage(entity))
+		{
+			bonus_entity_damage = 1.0;
+		}
 		if(client != -1)
 		{
 			if(IsValidEnemy(m_pAttacker, TR_GetEntityIndex(trace)))
@@ -7054,6 +7059,10 @@ public void ArrowStartTouch(int arrow, int entity)
 	if(entity > 0 && entity < MAXENTITIES)
 	{
 		int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
+		if(ShouldNpcDealBonusDamage(entity))
+		{
+			f_ArrowDamage[arrow] *= 3.0;
+		}
 		SDKHooks_TakeDamage(entity, arrow, arrow, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
 		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
 		if(IsValidEntity(arrow_particle))

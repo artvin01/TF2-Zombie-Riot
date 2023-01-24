@@ -212,7 +212,7 @@ methodmap MedivalObuch < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/demo/bak_hood_of_sorrows.mdl");
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/demo/bak_hood_of_sorrows/bak_hood_of_sorrows.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
@@ -287,8 +287,7 @@ public void MedivalObuch_ClotThink(int iNPC)
 					{
 						damage = 85.0;
 					}
-
-					if(target > MaxClients)
+					if(ShouldNpcDealBonusDamage(target))
 					{
 						damage *= 4.2;
 					}

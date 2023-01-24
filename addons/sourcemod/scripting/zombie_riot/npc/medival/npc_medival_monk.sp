@@ -80,10 +80,11 @@ static const char g_MeleeMissSounds[][] = {
 };
 
 static const char g_WarCry[][] = {
-	"mvm/mvm_tank_horn.wav",
+	"ambient/rottenburg/tunneldoor_open.wav",
 };
 
-void MedivalHussar_OnMapStart_NPC()
+static float f3_PlaceLocated[MAXENTITIES][3];
+void MedivalMonk_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -101,9 +102,9 @@ static float i_ClosestAllyCD[MAXENTITIES];
 static int i_ClosestAllyTarget[MAXENTITIES];
 static float i_ClosestAllyCDTarget[MAXENTITIES];
 
-#define HUSSAR_BUFF_MAXRANGE 350.0 		
+#define MONK_MAXRANGE 400.0 		
 
-methodmap MedivalHussar < CClotBody
+methodmap MedivalMonk < CClotBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -152,14 +153,14 @@ methodmap MedivalHussar < CClotBody
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	public void PlayMeleeWarCry() {
-		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 85, _, 0.8, 100);
+		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 90, _, 0.8, 100);
 	}
 	
-	public MedivalHussar(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalMonk(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalHussar npc = view_as<MedivalHussar>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "75000", ally));
+		MedivalMonk npc = view_as<MedivalMonk>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "75000", ally));
 		
-		i_NpcInternalId[npc.index] = MEDIVAL_HUSSAR;
+		i_NpcInternalId[npc.index] = MEDIVAL_MONK;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -173,8 +174,8 @@ methodmap MedivalHussar < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalHussar_ClotDamaged);
-		SDKHook(npc.index, SDKHook_Think, MedivalHussar_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalMonk_ClotDamaged);
+		SDKHook(npc.index, SDKHook_Think, MedivalMonk_ClotThink);
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 150.0;
@@ -203,9 +204,9 @@ methodmap MedivalHussar < CClotBody
 
 //TODO 
 //Rewrite
-public void MedivalHussar_ClotThink(int iNPC)
+public void MedivalMonk_ClotThink(int iNPC)
 {
-	MedivalHussar npc = view_as<MedivalHussar>(iNPC);
+	MedivalMonk npc = view_as<MedivalMonk>(iNPC);
 
 	float gameTime = GetGameTime(iNPC);
 
@@ -241,7 +242,11 @@ public void MedivalHussar_ClotThink(int iNPC)
 
 
 	int Behavior = -1;
-	if(IsValidAlly(npc.index, i_ClosestAlly[npc.index]))
+	if(npc.m_flDoingAnimation > GetGameTime())
+	{
+		Behavior = -1;
+	}
+	else if(IsValidAlly(npc.index, i_ClosestAlly[npc.index]))
 	{
 		Behavior = 1; //We go to the closest ally, and support them in battle!
 	}
@@ -261,6 +266,10 @@ public void MedivalHussar_ClotThink(int iNPC)
 
 	switch(Behavior)
 	{
+		case -1:
+		{
+			//nothing.
+		}
 		case 0:
 		{
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -359,13 +368,12 @@ public void MedivalHussar_ClotThink(int iNPC)
 		}
 	}
 
-	HussarSelfDefense(npc,GetGameTime(npc.index));
-	HussarAOEBuff(npc,GetGameTime(npc.index));
+	MonkSelfDefense(npc,GetGameTime(npc.index));
 
 	npc.PlayIdleSound();
 }
-
-void HussarAOEBuff(MedivalHussar npc, float gameTime)
+/*
+void HussarAOEBuff(MedivalMonk npc, float gameTime)
 {
 	float pos1[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
@@ -380,7 +388,7 @@ void HussarAOEBuff(MedivalHussar npc, float gameTime)
 				{
 					static float pos2[3];
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-					if(GetVectorDistance(pos1, pos2, true) < (HUSSAR_BUFF_MAXRANGE * HUSSAR_BUFF_MAXRANGE))
+					if(GetVectorDistance(pos1, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
 					{
 						if(i_NpcInternalId[entitycount] != MEDIVAL_HUSSAR) //Hussars cannot buff eachother.
 						{
@@ -414,10 +422,12 @@ void HussarAOEBuff(MedivalHussar npc, float gameTime)
 			}
 			static float UserLoc[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", UserLoc);
-			spawnRing(npc.index, HUSSAR_BUFF_MAXRANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 1.0, 6.0, 6.1, 1);
-			spawnRing(npc.index, HUSSAR_BUFF_MAXRANGE * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.8, 6.0, 6.1, 1);
-			spawnRing(npc.index, HUSSAR_BUFF_MAXRANGE * 2.0, 0.0, 0.0, 35.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.7, 6.0, 6.1, 1);
-			spawnRing_Vectors(UserLoc, 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.75, 12.0, 6.1, 1, HUSSAR_BUFF_MAXRANGE * 2.0);		
+			spawnRing(npc.index, MONK_MAXRANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 1.0, 6.0, 6.1, 1);
+			spawnRing(npc.index, MONK_MAXRANGE * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.8, 6.0, 6.1, 1);
+			spawnRing(npc.index, MONK_MAXRANGE * 2.0, 0.0, 0.0, 35.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.7, 6.0, 6.1, 1);
+			spawnRing_Vectors(UserLoc, 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.75, 12.0, 6.1, 1, MONK_MAXRANGE * 2.0);		
+			f3_PlaceLocated[npc.index] = UserLoc;
+			
 			npc.PlayMeleeWarCry();
 		}
 		else
@@ -426,13 +436,13 @@ void HussarAOEBuff(MedivalHussar npc, float gameTime)
 		}
 	}
 }
-
-void HussarSelfDefense(MedivalHussar npc, float gameTime)
+*/
+void MonkSelfDefense(MedivalMonk npc, float gameTime)
 {
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -441,49 +451,43 @@ void HussarSelfDefense(MedivalHussar npc, float gameTime)
 
 	if(npc.m_flAttackHappens)
 	{
-		if(npc.m_flAttackHappens < GetGameTime(npc.index))
+		npc.AddGesture("ACT_MONK_ATTACK", false);
+		if(npc.m_flAttackHappens < gameTime)
 		{
-			npc.m_flAttackHappens = 0.0;
-			
-			if(IsValidEnemy(npc.index, npc.m_iTarget))
+			static int r;
+			static int g;
+			static int b;
+			static int a = 255;
+			if(b_Is_Blue_Npc[npc.index])
 			{
-				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 0)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
-				{
-					int target = TR_GetEntityIndex(swingTrace);	
-					
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 75.0;
-
-					if(Medival_Difficulty_Level > 1.0) //Damage is high as its more of a support
-					{
-						damage = 100.0;
-					}
-					if(Medival_Difficulty_Level > 2.0) //Damage is high as its more of a support
-					{
-						damage = 150.0;
-					}
-
-					if(target > MaxClients)
-					{
-						damage *= 5.0;
-					}
-
-					npc.PlayMeleeHitSound();
-
-					if(target > 0) 
-					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-					}
-				}
-				delete swingTrace;
+				r = 125;
+				g = 125;
+				b = 255;
 			}
+			else
+			{
+				r = 255;
+				g = 125;
+				b = 125;
+			}
+			npc.m_flAttackHappens = 0.0;
+			spawnRing_Vectors(f3_PlaceLocated[npc.index], MONK_MAXRANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 10.0, 5.0, 3.1, 1, _);		
+		//	spawnRing_Vectors(f3_PlaceLocated[npc.index], MONK_MAXRANGE * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 10.0, 5.0, 3.1, 1, _);		
+		//	spawnRing_Vectors(f3_PlaceLocated[npc.index], MONK_MAXRANGE * 2.0, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 10.0, 5.0, 3.1, 1, _);		
+		//	spawnRing_Vectors(f3_PlaceLocated[npc.index], MONK_MAXRANGE * 2.0, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 10.0, 5.0, 3.1, 1, _);		
+			spawnRing_Vectors(f3_PlaceLocated[npc.index], MONK_MAXRANGE * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 10.0, 5.0, 3.1, 1, _);		
+			DataPack pack;
+			CreateDataTimer(0.1, MonkHealDamageZone, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteFloat(GetGameTime() + 10.0);
+			pack.WriteFloat(f3_PlaceLocated[npc.index][0]);
+			pack.WriteFloat(f3_PlaceLocated[npc.index][1]);
+			pack.WriteFloat(f3_PlaceLocated[npc.index][2]);
+			pack.WriteCell(b_IsAlliedNpc[npc.index]);
+			pack.WriteCell(EntIndexToEntRef(npc.index));
 		}
 	}
 
-	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
+	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex)) 
 		{
@@ -491,7 +495,7 @@ void HussarSelfDefense(MedivalHussar npc, float gameTime)
 
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 
-			if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0))
+			if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 15.0, 2.0))
 			{
 				int Enemy_I_See;
 									
@@ -499,16 +503,48 @@ void HussarSelfDefense(MedivalHussar npc, float gameTime)
 						
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
+					npc.PlayMeleeWarCry();
+					static int r;
+					static int g;
+					static int b ;
+					static int a = 50;
+					if(b_Is_Blue_Npc[npc.index])
+					{
+						r = 125;
+						g = 125;
+						b = 255;
+					}
+					else
+					{
+						r = 255;
+						g = 125;
+						b = 125;
+					}
 					npc.m_iTarget = Enemy_I_See;
 
 					npc.PlayMeleeSound();
 
 					npc.AddGesture("ACT_MONK_ATTACK");
 							
-					npc.m_flAttackHappens = gameTime + 0.4;
+					npc.m_flAttackHappens = gameTime + 1.3;
+					float UserLoc[3];
+					GetEntPropVector(npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", UserLoc);
+					spawnRing(npc.m_iTarget, MONK_MAXRANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 1.3, 6.0, 6.1, 1);
+					spawnRing_Vectors(UserLoc, 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 1.3, 12.0, 6.1, 1, MONK_MAXRANGE * 2.0);		
 
-					npc.m_flDoingAnimation = gameTime + 0.6;
-					npc.m_flNextMeleeAttack = gameTime + 1.2;
+					npc.FaceTowards(UserLoc, 15000.0);
+
+					npc.m_flDoingAnimation = gameTime + 1.3;
+					npc.m_flNextMeleeAttack = gameTime + 5.0;
+					f3_PlaceLocated[npc.index] = UserLoc;
+					if(npc.m_iChanged_WalkCycle != 5)
+					{
+						npc.m_bisWalking = false;
+						npc.m_flSpeed = 0.0;
+						npc.m_iChanged_WalkCycle = 5;
+						npc.SetActivity("ACT_MONK_IDLE");
+						PF_StopPathing(npc.index);
+					}
 				}
 			}
 		}
@@ -521,13 +557,13 @@ void HussarSelfDefense(MedivalHussar npc, float gameTime)
 	}
 }
 
-public Action MedivalHussar_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalMonk_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	MedivalHussar npc = view_as<MedivalHussar>(victim);
+	MedivalMonk npc = view_as<MedivalMonk>(victim);
 	
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
@@ -540,16 +576,16 @@ public Action MedivalHussar_ClotDamaged(int victim, int &attacker, int &inflicto
 	return Plugin_Changed;
 }
 
-public void MedivalHussar_NPCDeath(int entity)
+public void MedivalMonk_NPCDeath(int entity)
 {
-	MedivalHussar npc = view_as<MedivalHussar>(entity);
+	MedivalMonk npc = view_as<MedivalMonk>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalHussar_ClotDamaged);
-	SDKUnhook(npc.index, SDKHook_Think, MedivalHussar_ClotThink);
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalMonk_ClotDamaged);
+	SDKUnhook(npc.index, SDKHook_Think, MedivalMonk_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -559,4 +595,85 @@ public void MedivalHussar_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
+}
+
+
+public Action MonkHealDamageZone(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	float TimeSinceUsage = pack.ReadFloat();
+	if(TimeSinceUsage < GetGameTime())
+	{
+		return Plugin_Stop;
+	}
+	float vector[3];
+	vector[0] = pack.ReadFloat();
+	vector[1] = pack.ReadFloat();
+	vector[2] = pack.ReadFloat();
+	bool AlliedUnit = pack.ReadCell();
+	int Monk = EntRefToEntIndex(pack.ReadCell());
+	float damage = 20.0;
+	if(Monk == -1)
+	{
+		Monk = 0;
+	}
+	if(AlliedUnit)
+	{
+		//Doesnt do anything for now, too lazy.
+	}
+	else
+	{
+		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
+		{
+			int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK)
+			{
+				static float pos2[3];
+				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
+				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
+				{
+					SetEntProp(entity_close, Prop_Data, "m_iHealth",GetEntProp(entity_close, Prop_Data, "m_iMaxHealth"));
+				}
+			}
+		}
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && IsPlayerAlive(client))
+			{
+				static float pos2[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos2);
+				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
+				{
+					SDKHooks_TakeDamage(client, Monk, Monk, damage, DMG_SHOCK|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceCenter(client));	
+				}
+			}
+		}
+		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
+		{
+			int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+			if(IsValidEntity(entity_close))
+			{
+				static float pos2[3];
+				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
+				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
+				{
+					SDKHooks_TakeDamage(entity_close, Monk, Monk, damage * 3.0, DMG_SHOCK|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceCenter(entity_close));	
+				}
+			}
+		}
+		for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+		{
+			int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+			if(IsValidEntity(entity_close))
+			{
+				static float pos2[3];
+				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
+				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
+				{
+					SDKHooks_TakeDamage(entity_close, Monk, Monk, damage * 3.0, DMG_SHOCK|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceCenter(entity_close));	
+				}
+			}
+		}
+	}
+	return Plugin_Continue;
 }

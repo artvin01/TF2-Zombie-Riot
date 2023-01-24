@@ -358,26 +358,16 @@ public void AltCombineMage_ClotThink(int iNPC)
 									
 									npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 									npc.PlayMeleeSound();
-									
-									if(EscapeModeForNpc)
+									float damage = 60.0;
+									if(ZR_GetWaveCount()>30)
 									{
-										if(target <= MaxClients)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_CLUB, -1, _, vecHit);
-										else
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_CLUB, -1, _, vecHit);
+										damage=125.0;
 									}
-									else
+									if(ShouldNpcDealBonusDamage(target))
 									{
-										float dmg = 65.0;
-										if(ZR_GetWaveCount()>30)
-										{
-											dmg=125.0;
-										}
-										if(target <= MaxClients)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, dmg, DMG_CLUB, -1, _, vecHit);
-										else
-											SDKHooks_TakeDamage(target, npc.index, npc.index, dmg*2, DMG_CLUB, -1, _, vecHit);
+										damage *= 2.0;
 									}
+									SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 									
 									Custom_Knockback(npc.index, target, 250.0);
 									

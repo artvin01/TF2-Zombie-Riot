@@ -372,11 +372,11 @@ public void Alt_CombineDeutsch_ClotThink(int iNPC)
 									{
 										damage=75.0;
 									}
-									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, damage*3.3333, DMG_CLUB, -1, _, vecHit);//the *3.333 is the closest I could get to 500 building dmg.
-									
+									if(ShouldNpcDealBonusDamage(target))
+									{
+										damage *= 3.3;
+									}
+									SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 									// Hit particle
 									
 									

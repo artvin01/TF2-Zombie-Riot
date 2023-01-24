@@ -328,7 +328,7 @@ public void MedivalSpearMan_ClotThink(int iNPC)
 										damage *= 3.0;
 									}
 									
-									if(target <= MaxClients)
+									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 									else
 										SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 1.5, DMG_CLUB, -1, _, vecHit);

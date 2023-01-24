@@ -333,10 +333,14 @@ public void MedivalPikeman_ClotThink(int iNPC)
 										damage *= 3.0;
 									}
 
-									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-									else
+									if(ShouldNpcDealBonusDamage(target))
+									{
 										SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 2.5, DMG_CLUB, -1, _, vecHit);
+									}
+									else
+									{
+										SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+									}
 									
 									// Hit particle
 									

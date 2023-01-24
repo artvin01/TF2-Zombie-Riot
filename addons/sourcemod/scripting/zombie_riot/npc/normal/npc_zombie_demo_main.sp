@@ -244,7 +244,7 @@ public void DemoMain_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								
-								if(target <= MaxClients)
+								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 								else
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 350.0, DMG_CLUB, -1, _, vecHit);

@@ -468,7 +468,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 							{
 								float damage = 60.0;
 								
-								if(target <= MaxClients)
+								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
 								else
 									SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 2.0 * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
@@ -868,7 +868,7 @@ public Action contact_throw_tank_entity(int client)
 								damage = 2000;
 							}
 							
-							if(entity > MaxClients)
+							if(!ShouldNpcDealBonusDamage(target))
 							{
 								damage *= 4;
 							}

@@ -333,7 +333,7 @@ public void MedivalSwordsman_ClotThink(int iNPC)
 										damage = 80.0;
 									}
 
-									if(target <= MaxClients)
+									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 									else
 										SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 3.0, DMG_CLUB, -1, _, vecHit);
