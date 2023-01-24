@@ -168,7 +168,7 @@ static void SetBossBloonPower(int players, bool elite)
 	RaidModeScaling *= 0.2 + (players * 0.2);
 }
 
-static int i_PlayMusicSound;
+//static int i_PlayMusicSound;
 
 methodmap Bloonarius < CClotBody
 {
@@ -235,7 +235,7 @@ methodmap Bloonarius < CClotBody
 		PrecacheSound("zombie_riot/btd/bossbloonariusdeath.wav");
 		PrecacheSound("zombie_riot/btd/bossbloonariusspawn.wav");
 		PrecacheSound("zombie_riot/btd/bossbloonariusvomit.wav");
-		PrecacheSound("#zombie_riot/btd/musicbossbloonarius.wav");
+		//PrecacheSound("#zombie_riot/btd/musicbossbloonarius.wav");
 
 		bool elite = false;//StrContains(data, "e") != -1;
 		
@@ -294,8 +294,8 @@ methodmap Bloonarius < CClotBody
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		Raidboss_Clean_Everyone();
 
-		i_PlayMusicSound = 0;
-		ToggleMapMusic(false);
+		//i_PlayMusicSound = 0;
+		//ToggleMapMusic(false);
 		
 		ExcuteRelay("zr_btdraid", "FireUser1");
 		return npc;
@@ -319,12 +319,12 @@ public void Bloonarius_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = gameTime + 0.04;
 	npc.Update();
 	
-	int time = GetTime();
-	if(i_PlayMusicSound < time)
-	{
-		i_PlayMusicSound = time + 999;//198;	// Raid timer lasts as long as the music I guess, no need to loop this one...
-		EmitSoundToAll("#zombie_riot/btd/musicbossbloonarius.wav", npc.index, SNDCHAN_STATIC, SNDLEVEL_NONE);
-	}
+	//int time = GetTime();
+	//if(i_PlayMusicSound < time)
+	//{
+	//	i_PlayMusicSound = time + 999;//198;	// Raid timer lasts as long as the music I guess, no need to loop this one...
+	//	EmitSoundToAll("#zombie_riot/btd/musicbossbloonarius.wav", npc.index, SNDCHAN_STATIC, SNDLEVEL_NONE);
+	//}
 
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
@@ -540,12 +540,12 @@ public void Bloonarius_NPCDeath(int entity)
 	Bloonarius npc = view_as<Bloonarius>(entity);
 	npc.PlayDeathSound();
 
-	StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.wav");
-	StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.wav");
-	StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.wav");
-	StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.wav");
-	StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.wav");
-	ToggleMapMusic(true);
+	//StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.wav");
+	//StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.wav");
+	//StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.wav");
+	//StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.wav");
+	//StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.wav");
+	//ToggleMapMusic(true);
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bloonarius_ClotDamagedPost);
 	SDKUnhook(npc.index, SDKHook_Think, Bloonarius_ClotThink);
@@ -597,7 +597,7 @@ public void Bloonarius_PostDeath(const char[] output, int caller, int activator,
 	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, caller, _, _, _, _, _, _, _, _, _, 0.0);
 	RemoveEntity(caller);
 }
-
+/*
 static void ToggleMapMusic(bool enable)
 {
 	int entity = -1;
@@ -605,4 +605,4 @@ static void ToggleMapMusic(bool enable)
 	{
 		AcceptEntityInput(entity, enable ? "Enable" : "Disable");
 	}
-}
+}*/
