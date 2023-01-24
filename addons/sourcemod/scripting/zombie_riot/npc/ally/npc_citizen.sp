@@ -1103,7 +1103,7 @@ methodmap Citizen < CClotBody
 	}
 }
 
-void Citizen_SpawnAtPoint(const char[] data = "")
+void Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 {
 	int count;
 	int[] list = new int[i_MaxcountSpawners];
@@ -1125,7 +1125,7 @@ void Citizen_SpawnAtPoint(const char[] data = "")
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		
-		entity = Npc_Create(CITIZEN, 0, pos, ang, true, data);
+		entity = Npc_Create(CITIZEN, client, pos, ang, true, data);
 		
 		if(IsValidEntity(entity))
 		{

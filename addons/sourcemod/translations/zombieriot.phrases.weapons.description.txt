@@ -1699,8 +1699,14 @@
 	{
 		"en"	"M2 now is able to shrink enemies, causing a permanent debuff and slow.\nBosses will instead remove this debuff after a few seconds."
 	}
+
 	"Crusader Desc"
 	{
 		"en"	"Heals an ally for abit and gives them the medigun buff for 15 seconds and yourself for 5 seconds.\nBuff works on full HP targets."
+	}
+
+	"Buildable Barracks Desc"
+	{
+		"en"	"Allows training allies to fight for you.\nRepair upgrades provides more resources.\nBuilding upgrades provides stronger allies."
 	}
 }
