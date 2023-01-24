@@ -656,7 +656,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					}
 					
 					if(enemy.Credits && MultiGlobal)
-						npcstats.m_iCreditsOnKill = RoundToCeil(float(enemy.Credits) / MultiGlobal);
+						npcstats.m_fCreditsOnKill = enemy.Credits / MultiGlobal;
 					
 					if(enemy.Is_Boss || enemy.Is_Outlined)
 					{
@@ -1472,9 +1472,12 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif
 
 #if defined ZR
-			float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+			{
+				float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
+				damage = modified_damage;
+			}
 			
-			damage = modified_damage;
 			
 			if(i_ArsenalBombImplanter[weapon] > 0)
 			{

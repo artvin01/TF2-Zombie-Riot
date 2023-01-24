@@ -437,7 +437,7 @@ public void Simon_ClotThink(int iNPC)
 				if(TargetDistance < 5000.0)
 				{
 					npc.m_bRanAway = true;
-					npc.m_iCreditsOnKill = 0;
+					npc.m_fCreditsOnKill = 0.0;
 					SDKHooks_TakeDamage(npc.index, 0, 0, 99999999.9);
 					return;
 				}
@@ -457,7 +457,7 @@ public void Simon_ClotThink(int iNPC)
 				else if(npc.m_flRangedSpecialDelay < gameTime)
 				{
 					npc.m_bRanAway = true;
-					npc.m_iCreditsOnKill = 0;
+					npc.m_fCreditsOnKill = 0.0;
 					SDKHooks_TakeDamage(npc.index, 0, 0, 99999999.9);
 					ExcuteRelay("zr_simonescaped");
 					return;

@@ -817,7 +817,7 @@ public void OnPostThink(int client)
 				{
 					PrintKeyHintText(client, "%t\n%t\n%t\n%t\n \n%t",
 					"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
-					"Ammo Crate Supplies", Ammo_Count_Ready[client], //This bugs in russian
+					"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
 					PerkNames[i_CurrentEquippedPerk[client]],
 					"Zombies Left", Zombies_Currently_Still_Ongoing,
 					"Press Button To Switch");
@@ -827,7 +827,7 @@ public void OnPostThink(int client)
 					PrintKeyHintText(client, "%t\n%s | %t\n%t\n%t\n%t\n \n%t",
 					"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
 					WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
-					"Ammo Crate Supplies", Ammo_Count_Ready[client], 
+					"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
 					PerkNames[i_CurrentEquippedPerk[client]],
 					"Zombies Left", Zombies_Currently_Still_Ongoing,
 					"Press Button To Switch");	
@@ -837,7 +837,7 @@ public void OnPostThink(int client)
 			{
 				PrintKeyHintText(client, "%t\n%t\n%t\n%t",
 				"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
-				"Ammo Crate Supplies", Ammo_Count_Ready[client], //This bugs in russian
+				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
 				PerkNames[i_CurrentEquippedPerk[client]],
 				"Zombies Left", Zombies_Currently_Still_Ongoing);
 			}
@@ -846,7 +846,7 @@ public void OnPostThink(int client)
 				PrintKeyHintText(client, "%t\n%s | %t\n%t\n%t\n%t",
 				"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
 				WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
-				"Ammo Crate Supplies", Ammo_Count_Ready[client], 
+				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]), 
 				PerkNames[i_CurrentEquippedPerk[client]],
 				"Zombies Left", Zombies_Currently_Still_Ongoing);	
 			}

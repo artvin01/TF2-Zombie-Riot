@@ -1312,7 +1312,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 		GiveCompleteInvul(client, 2.0);
 		if(f_WasRecentlyRevivedViaNonWave[client] < GetGameTime())
 		{	
-			if(!Waves_InSetup())
+			if(Waves_Started())
 			{
 				int target = 0;
 				for(int i=1; i<=MaxClients; i++)

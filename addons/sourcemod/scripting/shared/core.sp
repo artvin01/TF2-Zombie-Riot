@@ -922,7 +922,7 @@ float b_isGiantWalkCycle[MAXENTITIES];
 float f_NpcHasBeenUnstuckAboveThePlayer[MAXENTITIES];
 
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
-int i_CreditsOnKill[MAXENTITIES];
+float f_CreditsOnKill[MAXENTITIES];
 
 int i_InSafeZone[MAXENTITIES];
 float fl_MeleeArmor[MAXENTITIES];
@@ -1771,7 +1771,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					PrintCenterText(client, "%t", "Reviving", dieingstate[target]);
 					PrintCenterText(target, "%t", "You're Being Revived.", dieingstate[target]);
 					was_reviving_this[client] = target;
-					f_DisableDyingTimer[target] = GetGameTime() + 0.05;
+					f_DisableDyingTimer[target] = GetGameTime() + 0.15;
 					if(i_CurrentEquippedPerk[client] == 1)
 					{
 						dieingstate[target] -= 12;

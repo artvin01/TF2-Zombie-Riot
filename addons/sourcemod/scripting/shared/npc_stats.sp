@@ -1019,12 +1019,11 @@ methodmap CClotBody
 		public get()							{ return i_NpcStepVariation[this.index]; }
 		public set(int TempValueForProperty) 	{ i_NpcStepVariation[this.index] = TempValueForProperty; }
 	}
-	property int m_iCreditsOnKill
+	property float m_fCreditsOnKill
 	{
-		public get()							{ return i_CreditsOnKill[this.index]; }
-		public set(int TempValueForProperty) 	{ i_CreditsOnKill[this.index] = TempValueForProperty; }
+		public get()							{ return f_CreditsOnKill[this.index]; }
+		public set(float TempValueForProperty) 	{ f_CreditsOnKill[this.index] = TempValueForProperty; }
 	}
-	
 	property float m_flGetClosestTargetTime
 	{
 		public get()							{ return fl_GetClosestTargetTime[this.index]; }
@@ -5181,12 +5180,8 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 			damage *= Medival_Difficulty_Level;
 		}
 		
-		if(fl_MeleeArmor[victim] >= 1.0)
 #endif
-		
-		{
-			damage *= fl_MeleeArmor[victim];
-		}
+		damage *= fl_MeleeArmor[victim];
 	}
 	else if(!(damagetype & DMG_SLASH))
 	{
@@ -5197,12 +5192,9 @@ public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, f
 			damage *= Medival_Difficulty_Level;
 		}
 		
-		if(fl_RangedArmor[victim] >= 1.0)
 #endif
 		
-		{
-			damage *= fl_RangedArmor[victim];
-		}
+		damage *= fl_RangedArmor[victim];
 	}
 	//No resistances towards slash as its internal.
 	
@@ -6997,7 +6989,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_PoseMoveY[entity] = -1;
 	b_NpcHasDied[entity] = false;
 	b_PlayHurtAnimation[entity] = false;
-	i_CreditsOnKill[entity] = 0;
+	f_CreditsOnKill[entity] = 0.0;
 	b_npcspawnprotection[entity] = false;
 	f_CooldownForHurtParticle[entity] = 0.0;
 	f_LowTeslarDebuff[entity] = 0.0;

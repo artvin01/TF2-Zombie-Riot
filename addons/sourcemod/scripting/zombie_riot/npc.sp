@@ -3,6 +3,10 @@
 
 #define ITSTILIVES 666
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 100.0
+
+static float f_FactionCreditGain;
+static float f_FactionCreditGainReduction[MAXTF2PLAYERS];
+
 enum
 {
 	NOTHING 						= 0,	
@@ -542,6 +546,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 
 void NPC_MapStart()
 {
+	f_FactionCreditGain = 0.0;
+	Zero(f_FactionCreditGainReduction);
 	HeadcrabZombie_OnMapStart_NPC();
 	Fortified_HeadcrabZombie_OnMapStart_NPC();
 	FastZombie_OnMapStart_NPC();
@@ -2011,41 +2017,75 @@ public void NPCDeath(int entity)
 		}
 	}
 	
-	if(view_as<CClotBody>(entity).m_iCreditsOnKill)
+	if(view_as<CClotBody>(entity).m_fCreditsOnKill)
 	{
-		CurrentCash += view_as<CClotBody>(entity).m_iCreditsOnKill;
-			
-		int extra;
-		
-		int client_killer = GetClientOfUserId(LastHitId[entity]);
-		if(client_killer && IsClientInGame(client_killer))
+		int GiveMoney = 0;
+		float CreditsOnKill = view_as<CClotBody>(entity).m_fCreditsOnKill;
+		if (CreditsOnKill <= 1.0)
 		{
-			extra = RoundToFloor(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * Building_GetCashOnKillMulti(client_killer));
-			extra -= view_as<CClotBody>(entity).m_iCreditsOnKill;
+			f_FactionCreditGain += CreditsOnKill;
+
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(!b_IsPlayerABot[client] && IsClientInGame(client))
+				{
+					if(GetClientTeam(client) != 2)
+					{
+						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.2;
+					}
+					else if (TeutonType[client] == TEUTON_WAITING)
+					{
+						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.1;
+					}
+				}
+			}		
+
+			if(f_FactionCreditGain >= 1.0)
+			{
+				f_FactionCreditGain -= 1.0;
+				GiveMoney = 1;
+			}
 		}
-		
+		else
+		{
+			GiveMoney = RoundToFloor(CreditsOnKill);
+			float Decimal_MoneyGain = FloatFraction(CreditsOnKill);	
+			f_FactionCreditGain += Decimal_MoneyGain;
+			
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(!b_IsPlayerABot[client] && IsClientInGame(client))
+				{
+					if(GetClientTeam(client) != 2)
+					{
+						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.2);
+					}
+					else if (TeutonType[client] == TEUTON_WAITING)
+					{
+						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.1);
+					}
+				}
+			}
+
+			if(f_FactionCreditGain >= 1.0)
+			{
+				f_FactionCreditGain -= 1.0;
+				GiveMoney += 1;
+			}
+		}
 		for(int client=1; client<=MaxClients; client++)
 		{
-			if(IsClientInGame(client))
+			if(!b_IsPlayerABot[client] && IsClientInGame(client))
 			{
-				if(extra > 0)
+				if(f_FactionCreditGainReduction[client] > 1.0)
 				{
-					CashSpent[client] -= extra;
-					CashRecievedNonWave[client] += extra;
-				}
-				if(GetClientTeam(client)!=2)
-				{
-					SetGlobalTransTarget(client);
-					CashSpent[client] += RoundToCeil(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * 0.40);
-					
-				}
-				else if (TeutonType[client] == TEUTON_WAITING)
-				{
-					SetGlobalTransTarget(client);
-					CashSpent[client] += RoundToCeil(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * 0.30);
+					int RemoveMoney = RoundToFloor(f_FactionCreditGainReduction[client]);
+					f_FactionCreditGainReduction[client] -= float(RemoveMoney);
+					CashSpent[client] += RemoveMoney;
 				}
 			}
 		}
+		CurrentCash += GiveMoney;
 	}
 }
 
