@@ -868,7 +868,7 @@ public Action contact_throw_tank_entity(int client)
 								damage = 2000;
 							}
 							
-							if(!ShouldNpcDealBonusDamage(target))
+							if(!ShouldNpcDealBonusDamage(entity))
 							{
 								damage *= 4;
 							}
