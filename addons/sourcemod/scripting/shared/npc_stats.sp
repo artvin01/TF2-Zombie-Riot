@@ -3451,6 +3451,10 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		{
 			HandleAnimEvent_MedivalEliteSkirmisher(pThis, event);
 		}
+		case BARRACK_ARCHER:
+		{
+			BarrackArcher_HandleAnimEvent(pThis, event);
+		}
 	}
 #endif
 	

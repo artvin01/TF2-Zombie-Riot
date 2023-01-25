@@ -475,7 +475,7 @@ public void Bloonarius_ClotThink(int iNPC)
 						float vecHit[3];
 						TR_GetEndPosition(vecHit, swingTrace);
 						
-						if(ShouldNpcDealBonusDamage(target))
+						if(ShouldNpcDealBonusDamage(npc.m_iTarget))
 						{
 							SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 20.0 * float(CurrentRound), DMG_CLUB, -1, _, vecHit);
 						}

@@ -5772,6 +5772,7 @@ static int InMenu[MAXTF2PLAYERS];
 static float TrainingStartedIn[MAXTF2PLAYERS];
 static float TrainingIn[MAXTF2PLAYERS];
 static int TrainingIndex[MAXTF2PLAYERS];
+static int CommandMode[MAXTF2PLAYERS];
 
 enum
 {
@@ -5783,22 +5784,28 @@ enum
 	TrainLevel
 }
 
+enum
+{
+	Command_Defensive = 0,
+	Command_Aggressive,
+	Command_Retreat,
+	Command_MAX
+}
+
+static const char CommandName[][] =
+{
+	"Command: Defensive",
+	"Command: Aggressive",
+	"Command: Retreat"
+};
+
 static const int SummonerData[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level
-	{ MEDIVAL_MILITIA, 5, 35, 0, 10, 1 },
+	{ BARRACK_MILITIA, 5, 30, 0, 5, 1 },
 
-	{ MEDIVAL_MAN_AT_ARMS, 10, 60, 0, 20, 2 },
-	{ MEDIVAL_ARCHER, 60, 10, 0, 20, 2 },
-	{ MEDIVAL_SPEARMEN, 0, 55, 1, 25, 2 },
-	{ MEDIVAL_SKIRMISHER, 55, 0, 1, 25, 2 },
-	
-	{ MEDIVAL_SWORDSMAN, 20, 100, 0, 35, 3 },
-	{ MEDIVAL_CROSSBOW_MAN, 100, 20, 0, 35, 3 },
-	{ MEDIVAL_PIKEMAN, 0, 90, 3, 40, 3 },
-	{ MEDIVAL_ELITE_SKIRMISHER, 90, 0, 3, 40, 3 },
-
-	{ MEDIVAL_SCOUT, 0, 110, 5, 40, 4 },
+	{ BARRACK_MAN_AT_ARMS, 10, 40, 0, 7, 2 },
+	{ BARRACK_ARCHER, 40, 10, 0, 10, 2 },
 
 	// Below will always show up
 	//{ MEDIVAL_VILLAGER, 50, 50, 10, 30, 1 }
@@ -5835,6 +5842,7 @@ public bool Building_Summoner(int client, int entity)
 	WoodRatio[client] = 0.5;
 	GoldAmount[client] = 0.0;
 	TrainingIn[client] = 0.0;
+	CommandMode[client] = 0;
 	
 	i_HasSentryGunAlive[client] = EntIndexToEntRef(entity);
 	b_SentryIsCustom[entity] = true;
@@ -5843,7 +5851,7 @@ public bool Building_Summoner(int client, int entity)
 	CreateTimer(0.5, Timer_SummonerThink, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT); //No custom anims
 	
 	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
-	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 1.5);
+	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 1.25);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
 	//SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	Building_Max_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
@@ -5872,13 +5880,28 @@ public Action Summoner_TakeDamage(int entity, int &attacker, int &inflictor, flo
 	if(action > Plugin_Changed)
 		return action;
 	
-	damage *= 30.0;
+	damage *= 2.0;
 	return Plugin_Changed;
+}
+
+int Building_GetFollowerEntity(int owner)
+{
+	if(Building_Mounted[owner] != i_HasSentryGunAlive[owner])
+	{
+		int entity = EntRefToEntIndex(i_HasSentryGunAlive[owner]);
+		if(entity != INVALID_ENT_REFERENCE)
+			return entity;
+	}
+	return owner;
+}
+
+int Building_GetFollowerCommand(int owner)
+{
+	return CommandMode[owner];
 }
 
 public Action Timer_SummonerThink(Handle timer, int ref)
 {
-	float pos1[3] = {999999999.9, 999999999.9, 999999999.9};
 	bool mounted;
 	int owner;
 	int entity = EntRefToEntIndex(ref);
@@ -5893,7 +5916,6 @@ public Action Timer_SummonerThink(Handle timer, int ref)
 		}
 		else if(Building_Mounted[owner] == ref)
 		{
-			GetClientEyePosition(owner, pos1);
 			mounted = true;
 		}
 		else if(GetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed") == 1.0)
@@ -5911,8 +5933,6 @@ public Action Timer_SummonerThink(Handle timer, int ref)
 				
 				SetEntityModel(entity, SUMMONER_MODEL);
 			}
-			
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
 		}
 		else
 		{
@@ -5928,14 +5948,14 @@ public Action Timer_SummonerThink(Handle timer, int ref)
 		float wood = health * WoodRatio[owner];
 		float food = health * (1.0 - WoodRatio[owner]);
 
-		wood += SupplyRate[owner] / 2.0;
-		food += SupplyRate[owner] / 2.0;
+		wood += SupplyRate[owner] / 2.333333;
+		food += SupplyRate[owner] / 1.75;
 
 		health = RoundFloat(wood + food);
 		SetEntProp(entity, Prop_Send, "m_iHealth", health);
 		WoodRatio[owner] = wood / (wood + food);
 
-		Building_Max_Health[entity] = health + 30;
+		Building_Max_Health[entity] = health + 60;
 		SetEntProp(entity, Prop_Send, "m_iMaxHealth", Building_Max_Health[entity]);
 
 		// 1 Supply = 1 Gold Every 30 Seconds
@@ -5950,7 +5970,7 @@ public Action Timer_SummonerThink(Handle timer, int ref)
 				TrainingIn[owner] = 0.0;
 
 				float pos[3], ang[3];
-				GetEntPropVector(mounted ? owner : entity, Prop_Data, "m_vecOrigin", pos);
+				GetEntPropVector(mounted ? owner : entity, Prop_Data, "m_vecAbsOrigin", pos);
 				GetEntPropVector(mounted ? owner : entity, Prop_Data, "m_angRotation", ang);
 				
 				Npc_Create(SummonerData[TrainingIndex[owner]][NPCIndex], owner, pos, ang, true);
@@ -5977,22 +5997,22 @@ public Action Timer_SummonerThink(Handle timer, int ref)
 
 static void CheckSummonerUpgrades(int client)
 {
-	SupplyRate[client] = 1;
+	SupplyRate[client] = 2;
 
-	//if(Store_HasNamedItem(client, "Repair Handling book for dummies"))
-	//	SupplyRate[client]++;
-	
-	if(Store_HasNamedItem(client, "Ikea Repair Handling book"))
+	if(Store_HasNamedItem(client, "Repair Handling book for dummies"))
 		SupplyRate[client]++;
 	
-	if(Store_HasNamedItem(client, "Engineering Repair Handling book"))
+	if(Store_HasNamedItem(client, "Ikea Repair Handling book"))
 		SupplyRate[client] += 2;
 	
+	if(Store_HasNamedItem(client, "Engineering Repair Handling book"))
+		SupplyRate[client] += 4;
+	
 	if(Store_HasNamedItem(client, "Alien Repair Handling book"))
-		SupplyRate[client] += 3;
+		SupplyRate[client] += 6;
 	
 	if(Store_HasNamedItem(client, "Cosmic Repair Handling book"))
-		SupplyRate[client] += 5;
+		SupplyRate[client] += 10;
 }
 
 static void OpenSummonerMenu(int client, int viewer)
@@ -6023,12 +6043,16 @@ static void SummonerMenu(int client, int viewer)
 	SetGlobalTransTarget(viewer);
 	menu.SetTitle("%t\n \n%s\n \n$%d £%d ¥%d\n ", "TF2: Zombie Riot", TranslateItemName(viewer, "Buildable Barracks", ""), wood, food, RoundToFloor(GoldAmount[client]));
 	
+	menu.AddItem(NULL_STRING, CommandName[CommandMode[client]], owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+
 	char buffer1[256];
 	if(TrainingIn[client])
 	{
-		if(AtMaxSupply())
+		if(AtMaxSupply(i_BarricadesBuild[client]))
 		{
 			FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)", NPC_Names[SummonerData[TrainingIndex[client]][NPCIndex]]);
+			if(i_BarricadesBuild[client])
+				Format(buffer1, sizeof(buffer1), "%s\nTIP: Your barricades counts towards the supply limit", buffer1);
 		}
 		else
 		{
@@ -6091,45 +6115,55 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Select:
 		{
-			int entity = EntRefToEntIndex(i_HasSentryGunAlive[client]);
-			if(entity != INVALID_ENT_REFERENCE)
+			if(choice)
 			{
-				int health = GetEntProp(entity, Prop_Send, "m_iHealth");
-				float wood = health * WoodRatio[client];
-				float food = health * (1.0 - WoodRatio[client]);
-
-				if(TrainingIn[client])
+				int entity = EntRefToEntIndex(i_HasSentryGunAlive[client]);
+				if(entity != INVALID_ENT_REFERENCE)
 				{
-					TrainingIn[client] = 0.0;
+					int health = GetEntProp(entity, Prop_Send, "m_iHealth");
+					float wood = health * WoodRatio[client];
+					float food = health * (1.0 - WoodRatio[client]);
 
-					wood += float(SummonerData[TrainingIndex[client]][WoodCost]);
-					food += float(SummonerData[TrainingIndex[client]][FoodCost]);
-					GoldAmount[client] += float(SummonerData[TrainingIndex[client]][GoldCost]);
-				}
-				else
-				{
-					char num[16];
-					menu.GetItem(choice, num, sizeof(num));
-					int item = StringToInt(num);
-
-					float woodcost = float(SummonerData[item][WoodCost]);
-					float foodcost = float(SummonerData[item][FoodCost]);
-					float goldcost = float(SummonerData[item][GoldCost]);
-
-					if(wood >= woodcost && food >= foodcost && GoldAmount[client] >= goldcost)
+					if(TrainingIn[client])
 					{
-						TrainingStartedIn[client] = GetGameTime();
-						TrainingIn[client] = TrainingStartedIn[client] + float(SummonerData[item][TrainTime]);
-						
-						wood -= woodcost;
-						food -= foodcost;
-						GoldAmount[client] -= goldcost;
+						TrainingIn[client] = 0.0;
+
+						wood += float(SummonerData[TrainingIndex[client]][WoodCost]);
+						food += float(SummonerData[TrainingIndex[client]][FoodCost]);
+						GoldAmount[client] += float(SummonerData[TrainingIndex[client]][GoldCost]);
 					}
+					else
+					{
+						char num[16];
+						menu.GetItem(choice, num, sizeof(num));
+						int item = StringToInt(num);
+
+						float woodcost = float(SummonerData[item][WoodCost]);
+						float foodcost = float(SummonerData[item][FoodCost]);
+						float goldcost = float(SummonerData[item][GoldCost]);
+
+						if(wood >= woodcost && food >= foodcost && GoldAmount[client] >= goldcost)
+						{
+							TrainingStartedIn[client] = GetGameTime();
+							TrainingIn[client] = TrainingStartedIn[client] + float(SummonerData[item][TrainTime]);
+							
+							wood -= woodcost;
+							food -= foodcost;
+							GoldAmount[client] -= goldcost;
+						}
+					}
+
+					SetEntProp(entity, Prop_Send, "m_iHealth", RoundFloat(wood + food));
+					WoodRatio[client] = wood / (wood + food);
+
+					SummonerMenu(client, client);
 				}
-
-				SetEntProp(entity, Prop_Send, "m_iHealth", RoundFloat(wood + food));
-				WoodRatio[client] = wood / (wood + food);
-
+			}
+			else
+			{
+				if(++CommandMode[client] >= Command_MAX)
+					CommandMode[client] = 0;
+				
 				SummonerMenu(client, client);
 			}
 		}
@@ -6137,9 +6171,9 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-static bool AtMaxSupply()
+static bool AtMaxSupply(int barricades)
 {
-	int count;
+	int count = barricades * 3;
 	int entity = MaxClients + 1;
 	while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
 	{

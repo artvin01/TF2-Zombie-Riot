@@ -190,6 +190,10 @@ enum
 	MEDIVAL_KNIGHT				= 161,
 	MEDIVAL_OBUCH				= 162,
 	MEDIVAL_MONK				= 163,
+
+	BARRACK_MILITIA		= 164,
+	BARRACK_ARCHER		= 165,
+	BARRACK_MAN_AT_ARMS	= 166
 }
 
 public const char NPC_Names[][] =
@@ -370,7 +374,11 @@ public const char NPC_Names[][] =
 	"Hussar",
 	"Knight",
 	"Obuch",
-	"Monk"
+	"Monk",
+
+	"Militia",
+	"Archer",
+	"Man-At-Arms"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -547,7 +555,11 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_medival_hussar",
 	"npc_medival_knight",
 	"npc_medival_obuch",
-	"npc_medival_monk"
+	"npc_medival_monk",
+
+	"npc_barrack_militia",
+	"npc_barrack_archer",
+	"npc_barrack_man_at_arms"
 };
 
 void NPC_MapStart()
@@ -1382,6 +1394,18 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = MedivalMonk(client, vecPos, vecAng, ally);
 		}
+		case BARRACK_MILITIA:
+		{
+			entity = BarrackMilitia(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_ARCHER:
+		{
+			entity = BarrackArcher(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_MAN_AT_ARMS:
+		{
+			entity = BarrackManAtArms(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2035,6 +2059,18 @@ public void NPCDeath(int entity)
 		{
 			MedivalMonk_NPCDeath(entity);
 		}
+		case BARRACK_MILITIA:
+		{
+			BarrackMilitia_NPCDeath(entity);
+		}
+		case BARRACK_ARCHER:
+		{
+			BarrackArcher_NPCDeath(entity);
+		}
+		case BARRACK_MAN_AT_ARMS:
+		{
+			BarrackManAtArms_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2290,3 +2326,8 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/bunker/npc_bunker_small_skeleton.sp"
 #include "zombie_riot/npc/bunker/npc_bunker_king_skeleton.sp"
 #include "zombie_riot/npc/bunker/npc_bunker_hhh.sp"
+
+#include "zombie_riot/npc/ally/npc_barrack.sp"
+#include "zombie_riot/npc/ally/npc_barrack_militia.sp"
+#include "zombie_riot/npc/ally/npc_barrack_archer.sp"
+#include "zombie_riot/npc/ally/npc_barrack_man_at_arms.sp"

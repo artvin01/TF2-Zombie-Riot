@@ -1567,7 +1567,7 @@ public void Citizen_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 0.5;
 		if(npc.m_iGunType != Cit_None)
 		{
-			npc.m_iTarget = GetClosestTarget(npc.index, _, BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus, npc.m_bCamo);
+			npc.m_iTarget = GetClosestTarget(npc.index, _, BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus, npc.m_bCamo, _, _, _, true);
 			if(npc.m_iTarget > 0 && view_as<CClotBody>(npc.m_iTarget).m_bCamo)
 				npc.PlaySound(Cit_Behind);
 		}
@@ -2858,7 +2858,7 @@ public Action Citizen_ClotDamaged(int victim, int &attacker, int &inflictor, flo
 		damage *= 0.9;
 	}
 	
-	if(npc.m_iGunType == CIT_MELEE)
+	if(npc.m_iGunType == Cit_Melee)
 	{
 		damage *= 0.8;
 		if(damagetype & (DMG_CLUB|DMG_SLASH))
