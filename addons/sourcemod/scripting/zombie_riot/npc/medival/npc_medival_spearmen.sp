@@ -321,11 +321,17 @@ public void MedivalSpearMan_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
+									float damage = 10.0;
+									int entity = EntRefToEntIndex(Building_Mounted[target]);
+									if(IsValidEntity(entity))
+									{
+										damage *= 3.0;
+									}
 									
-									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0, DMG_CLUB, -1, _, vecHit);
+									if(!ShouldNpcDealBonusDamage(target))
+										SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 25.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 1.5, DMG_CLUB, -1, _, vecHit);
 									
 									// Hit particle
 									

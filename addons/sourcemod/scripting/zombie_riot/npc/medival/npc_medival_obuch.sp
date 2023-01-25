@@ -83,7 +83,9 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
-void MedivalSwordsman_OnMapStart_NPC()
+static float f_ObuchSameEnemyAttacked[MAXENTITIES];
+static int i_ObuchSameEnemyAttacked[MAXENTITIES];
+void MedivalObuch_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -95,7 +97,7 @@ void MedivalSwordsman_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 }
 
-methodmap MedivalSwordsman < CClotBody
+methodmap MedivalObuch < CClotBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -167,15 +169,15 @@ methodmap MedivalSwordsman < CClotBody
 		#endif
 	}
 	
-	public MedivalSwordsman(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalObuch(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalSwordsman npc = view_as<MedivalSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2000", ally));
+		MedivalObuch npc = view_as<MedivalObuch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "15000", ally));
 		
-		i_NpcInternalId[npc.index] = MEDIVAL_SWORDSMAN;
+		i_NpcInternalId[npc.index] = MEDIVAL_OBUCH;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_SWORD");
+		int iActivity = npc.LookupActivity("ACT_OBUCH_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -185,39 +187,36 @@ methodmap MedivalSwordsman < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalSwordsman_ClotDamaged);
-		SDKHook(npc.index, SDKHook_Think, MedivalSwordsman_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalObuch_ClotDamaged);
+		SDKHook(npc.index, SDKHook_Think, MedivalObuch_ClotThink);
 	
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 //		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
-		npc.m_flSpeed = 250.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		npc.m_flMeleeArmor = 0.75;
+		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
+		npc.m_flSpeed = 300.0;
 		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
+
+		f_ObuchSameEnemyAttacked[npc.index] = 1.5;
+		i_ObuchSameEnemyAttacked[npc.index] = -1;
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_powerjack/c_powerjack.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/demo/jul13_stormn_normn/jul13_stormn_normn.mdl");
-		SetVariantString("1.75");
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/demo/bak_hood_of_sorrows/bak_hood_of_sorrows.mdl");
+		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		npc.m_iWearable3 = npc.EquipItem("weapon_targe", "models/workshop/weapons/c_models/c_persian_shield/c_persian_shield.mdl");
-		SetVariantString("1.25");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
+
 		
 		npc.StartPathing();
 		
@@ -230,16 +229,19 @@ methodmap MedivalSwordsman < CClotBody
 
 //TODO 
 //Rewrite
-public void MedivalSwordsman_ClotThink(int iNPC)
+public void MedivalObuch_ClotThink(int iNPC)
 {
-	MedivalSwordsman npc = view_as<MedivalSwordsman>(iNPC);
+	MedivalObuch npc = view_as<MedivalObuch>(iNPC);
 	
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+
+	float gameTime = GetGameTime(iNPC);
+
+	if(npc.m_flNextDelayTime > gameTime)
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 	
@@ -250,115 +252,161 @@ public void MedivalSwordsman_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	if(npc.m_flNextThinkTime > gameTime)
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
-	
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
-	
-	int PrimaryThreatIndex = npc.m_iTarget;
-	
-	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
+
+	if(npc.m_flAttackHappens)
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		if(npc.m_flAttackHappens < gameTime)
+		{
+			npc.m_flAttackHappens = 0.0;
 			
-		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			
-			//Predict their pos.
-			if(flDistanceToTarget < npc.GetLeadRadius()) {
-				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				
-			/*	int color[4];
-				color[0] = 255;
-				color[1] = 255;
-				color[2] = 0;
-				color[3] = 255;
-			
-				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
-			
-				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
-				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
-				
-				PF_SetGoalVector(npc.index, vPredictedPos);
-			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
-			}
-	
-			//Target close enough to hit
-			if((flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
+			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
-			//	npc.FaceTowards(vecTarget, 1000.0);
-				
-				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) || npc.m_flAttackHappenswillhappen)
+				Handle swingTrace;
+				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
-					if (!npc.m_flAttackHappenswillhappen)
-					{
-						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
-						npc.AddGesture("ACT_CUSTOM_ATTACK_SWORD");
-						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime(npc.index)+0.3;
-						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.44;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
-						npc.m_flAttackHappenswillhappen = true;
-					}
-						
-					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-					{
-						Handle swingTrace;
-						npc.FaceTowards(vecTarget, 20000.0);
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
-							{
-								
-								int target = TR_GetEntityIndex(swingTrace);	
-								
-								float vecHit[3];
-								TR_GetEndPosition(vecHit, swingTrace);
-								
-								if(target > 0) 
-								{
-									float damage = 60.0;
+					int target = TR_GetEntityIndex(swingTrace);	
+					
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
+					float damage = 55.0;
 
-									if(Medival_Difficulty_Level > 1.0)
-									{
-										damage = 80.0;
-									}
-
-									if(!ShouldNpcDealBonusDamage(target))
-										SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 3.0, DMG_CLUB, -1, _, vecHit);
-									
-									// Hit particle
-									
-									
-									// Hit sound
-									npc.PlayMeleeHitSound();
-								} 
-							}
-						delete swingTrace;
-						npc.m_flAttackHappenswillhappen = false;
-					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+					if(Medival_Difficulty_Level > 2.0)
 					{
-						npc.m_flAttackHappenswillhappen = false;
+						damage = 85.0;
+					}
+					if(ShouldNpcDealBonusDamage(target))
+					{
+						damage *= 4.2;
+					}
+					npc.PlayMeleeHitSound();
+					if(target > 0) 
+					{
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 					}
 				}
+				delete swingTrace;
 			}
-			if (npc.m_flReloadDelay < GetGameTime(npc.index))
+		}
+	}
+	
+	if(IsValidEnemy(npc.index, npc.m_iTarget))
+	{
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			
+		//Predict their pos.
+		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		{
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			
+			PF_SetGoalVector(npc.index, vPredictedPos);
+		}
+		else
+		{
+			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+		}
+		//Get position for just travel here.
+
+		if(npc.m_flDoingAnimation > gameTime) //I am doing an animation or doing something else, default to doing nothing!
+		{
+			npc.m_iState = -1;
+		}
+		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		{
+			npc.m_iState = 1; //Engage in Close Range Destruction.
+		}
+		else 
+		{
+			npc.m_iState = 0; //stand and look if close enough.
+		}
+		
+		switch(npc.m_iState)
+		{
+			case -1:
 			{
-				npc.StartPathing();
-				
+				return; //Do nothing.
 			}
+			case 0:
+			{
+				//Walk to target
+				if(!npc.m_bPathing)
+					npc.StartPathing();
+					
+				npc.m_bisWalking = true;
+				if(npc.m_iChanged_WalkCycle != 4) 	
+				{
+					npc.m_iChanged_WalkCycle = 4;
+					npc.SetActivity("ACT_OBUCH_WALK");
+				}
+			}
+			case 1:
+			{			
+				int Enemy_I_See;
+							
+				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				//Can i see This enemy, is something in the way of us?
+				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+				{
+					npc.m_iTarget = Enemy_I_See;
+
+					npc.AddGesture("ACT_OBUCH_ATTACK");
+					
+
+					npc.PlayMeleeSound();
+					int enemy_attacked_before = EntRefToEntIndex(i_ObuchSameEnemyAttacked[npc.index]);
+					if(enemy_attacked_before == npc.m_iTarget)
+					{
+						f_ObuchSameEnemyAttacked[npc.index] -= 0.2;
+						if(f_ObuchSameEnemyAttacked[npc.index] < 0.4)
+						{
+							f_ObuchSameEnemyAttacked[npc.index] = 0.4;
+						}
+					}
+					else
+					{
+						f_ObuchSameEnemyAttacked[npc.index] += 0.5;
+						if(f_ObuchSameEnemyAttacked[npc.index] > 1.5)
+						{
+							f_ObuchSameEnemyAttacked[npc.index] = 1.5;
+						}
+					}
+					float Armor_Max = 1.5;
+						
+					int red = 255;
+					int green = 255;
+					int blue = 0;
+
+					red = RoundToNearest(f_ObuchSameEnemyAttacked[npc.index] * 255.0  / Armor_Max);
+					green = RoundToNearest(f_ObuchSameEnemyAttacked[npc.index] * 255.0  / Armor_Max);
+							
+					red = 255 - red;
+
+					SetEntityRenderColor(npc.m_iWearable1, red, green, blue, 255);
+
+					i_ObuchSameEnemyAttacked[npc.index] = EntIndexToEntRef(npc.m_iTarget);
+
+					npc.m_flAttackHappens = gameTime + 0.35;
+
+					npc.m_flDoingAnimation = gameTime + 0.35;
+					npc.m_flNextMeleeAttack = gameTime + f_ObuchSameEnemyAttacked[npc.index];
+					npc.m_bisWalking = true;
+				}
+			}
+		}
 	}
 	else
 	{
@@ -367,16 +415,38 @@ public void MedivalSwordsman_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-	npc.PlayIdleAlertSound();
+
+	if(npc.m_flNextMeleeAttack < gameTime)
+	{
+		f_ObuchSameEnemyAttacked[npc.index] += 0.025;
+		if(f_ObuchSameEnemyAttacked[npc.index] > 1.5)
+		{
+			f_ObuchSameEnemyAttacked[npc.index] = 1.5;
+		}
+
+		float Armor_Max = 1.5;
+						
+		int red = 255;
+		int green = 255;
+		int blue = 0;
+
+		red = RoundToNearest(f_ObuchSameEnemyAttacked[npc.index] * 255.0  / Armor_Max);
+		green = RoundToNearest(f_ObuchSameEnemyAttacked[npc.index] * 255.0  / Armor_Max);
+							
+		red = 255 - red;
+
+		SetEntityRenderColor(npc.m_iWearable1, red, green, blue, 255);
+	}
+	npc.PlayIdleSound();
 }
 
-public Action MedivalSwordsman_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalObuch_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	MedivalSwordsman npc = view_as<MedivalSwordsman>(victim);
+	MedivalObuch npc = view_as<MedivalObuch>(victim);
 	
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
@@ -389,16 +459,16 @@ public Action MedivalSwordsman_ClotDamaged(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-public void MedivalSwordsman_NPCDeath(int entity)
+public void MedivalObuch_NPCDeath(int entity)
 {
-	MedivalSwordsman npc = view_as<MedivalSwordsman>(entity);
+	MedivalObuch npc = view_as<MedivalObuch>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalSwordsman_ClotDamaged);
-	SDKUnhook(npc.index, SDKHook_Think, MedivalSwordsman_ClotThink);
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalObuch_ClotDamaged);
+	SDKUnhook(npc.index, SDKHook_Think, MedivalObuch_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -820,23 +820,20 @@ public void Blitzkrieg_ClotThink(int iNPC)
 								{
 									float Bonus_damage = 1.0;
 									int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
-	
+		
 									char classname[32];
 									GetEntityClassname(weapon, classname, 32);
-								
+									
 									int weapon_slot = TF2_GetClassnameSlot(classname);
-								
+									
 									if(weapon_slot != 2 || i_IsWandWeapon[weapon])
 									{
 										Bonus_damage = 1.5;
 									}
 									meleedmg *= Bonus_damage;	//Blitz does 50% less damage to players who hold a melee. blitz also takes base melee damage and not 50% extra
-									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
+									
 								}
-								else
-								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg * 25, DMG_CLUB, -1, _, vecHit);	//this man will obliterate bareny with melee, mark my words.
-								}
+								SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
 								
 								npc.PlayMeleeHitSound();		
 								if(IsValidClient(target))	//This makes the target take knockback if he is ubered.

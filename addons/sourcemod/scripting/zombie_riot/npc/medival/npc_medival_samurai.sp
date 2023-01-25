@@ -182,7 +182,7 @@ methodmap MedivalSamurai < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, MedivalSamurai_ClotDamaged_Post);
 		
 		//IDLE
-		npc.m_flSpeed = 330.0;
+		npc.m_flSpeed = 310.0;
 		
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -346,27 +346,24 @@ public void MedivalSamurai_ClotThink(int iNPC)
 									
 									if(weapon_slot != 2 || i_IsWandWeapon[weapon])
 									{
-										Bonus_damage = 1.5;
+										Bonus_damage = 1.25;
 									}
 								}
 								if(npc.Anger)
 								{
-									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0 * Bonus_damage, DMG_CLUB, -1, _, vecHit);
+									if(!ShouldNpcDealBonusDamage(target))
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0 * Bonus_damage, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 1200.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 600.0, DMG_CLUB, -1, _, vecHit);
 								}
 								else
 								{
-									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0 * Bonus_damage, DMG_CLUB, -1, _, vecHit);
+									if(!ShouldNpcDealBonusDamage(target))
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0 * Bonus_damage, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 800.0, DMG_CLUB, -1, _, vecHit);									
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_CLUB, -1, _, vecHit);									
 								}
-								
-								
-								
-								
+
 								// Hit sound
 								npc.PlayMeleeHitSound();
 								
@@ -418,7 +415,7 @@ public void MedivalSamurai_ClotDamaged_Post(int victim, int attacker, int inflic
 	if(!(damagetype & (DMG_CLUB|DMG_SLASH)))
 	{
 		npc.Anger = true; //	>:(
-		npc.m_flSpeed = 350.0;
+		npc.m_flSpeed = 330.0;
 	}
 }
 

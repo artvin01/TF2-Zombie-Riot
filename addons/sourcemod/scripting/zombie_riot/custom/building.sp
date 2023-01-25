@@ -43,6 +43,7 @@
 
 #define ELEVATOR_MODEL "models/props_mvm/mvm_museum_pedestal.mdl"
 
+#define SUMMONER_MODEL	"models/props_combine/breenconsole.mdl"
 
 #define BUILDINGCOLLISIONNUMBER	27
 
@@ -61,7 +62,6 @@ enum
 	BuildingSentrygun = 8,
 	BuildingMortar = 9,
 	BuildingHealingStation = 10
-
 }
 
 enum struct VillageBuff
@@ -144,12 +144,13 @@ void Building_MapStart()
 	PrecacheModel(VILLAGE_MODEL);
 	PrecacheModel(BARRICADE_MODEL);
 	PrecacheModel(ELEVATOR_MODEL);
+	PrecacheModel(SUMMONER_MODEL);
 	
 	PrecacheSound("items/powerup_pickup_uber.wav");
 	PrecacheSound("player/mannpower_invulnerable.wav");
 }
 
-static int RebelTimerSpawnIn;
+//static int RebelTimerSpawnIn;
 static int Building_Repair_Health[MAXENTITIES]={0, ...};
 static int Building_Hidden_Prop[MAXENTITIES][2];
 static int Building_Hidden_Prop_To_Building[MAXENTITIES]={-1, ...};
@@ -169,7 +170,7 @@ void Building_ClearAll()
 	Zero2(Building_Collect_Cooldown);
 	Zero(Building_Sentry_Cooldown);
 	Zero(Village_TierExists);
-	RebelTimerSpawnIn = 0;
+	//RebelTimerSpawnIn = 0;
 }
 
 int Building_GetClientVillageFlags(int client)
@@ -1174,7 +1175,7 @@ void Building_WeaponSwitchPost(int client, int &weapon, const char[] buffer)
 	if(EntityFuncAttack[weapon] && EntityFuncAttack[weapon]!=INVALID_FUNCTION)
 	{
 		Function func = EntityFuncAttack[weapon];
-		if(func == Building_PlaceVillage || func == Building_PlaceHealingStation || func == Building_PlacePackAPunch || func == Building_PlacePerkMachine || func==Building_PlaceRailgun || func==Building_PlaceMortar || func==Building_PlaceSentry || func==Building_PlaceDispenser || func==Building_PlaceAmmoBox || func==Building_PlaceArmorTable || func==Building_PlaceElevator)
+		if(func == Building_PlaceSummoner || func == Building_PlaceVillage || func == Building_PlaceHealingStation || func == Building_PlacePackAPunch || func == Building_PlacePerkMachine || func==Building_PlaceRailgun || func==Building_PlaceMortar || func==Building_PlaceSentry || func==Building_PlaceDispenser || func==Building_PlaceAmmoBox || func==Building_PlaceArmorTable || func==Building_PlaceElevator)
 		{
 			if(Building[client] != INVALID_FUNCTION)
 			{
@@ -1724,6 +1725,10 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			else if(!StrContains(buffer, "zr_village"))
 			{
 				buildingType = 8;
+			}
+			else if(!StrContains(buffer, "zr_summoner"))
+			{
+				buildingType = 9;
 			}
 		}
 		else if(StrEqual(buffer, "obj_dispenser"))
@@ -2331,6 +2336,13 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					if(Is_Reload_Button)
 					{
 						VillageUpgradeMenu(owner, client);
+					}
+				}
+				case 9:
+				{
+					if(Is_Reload_Button)
+					{
+						OpenSummonerMenu(owner, client);
 					}
 				}
 			}
@@ -4419,8 +4431,9 @@ float Building_GetCashOnKillMulti(int client)
 	return 1.0;
 }
 */
-int Building_GetCashOnWave(int current)
+stock int Building_GetCashOnWave(int current)
 {
+	/*
 	int popCash;
 	int extras;
 	int farms;
@@ -4482,6 +4495,8 @@ int Building_GetCashOnWave(int current)
 		red = 1;
 	
 	return (current * popCash / 6) + (farms * (Waves_InFreeplay() ? (extras > 1 ? 575 : 500) : (extras > 1 ? 2760 : 2400)) / red);
+	*/
+	return 0;
 }
 
 static void VillageCheckItems(int client)
@@ -4794,32 +4809,51 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 						f_BuildingIsNotReady[client] = 0.0; 
 						Building_Sentry_Cooldown[client] = 0.0; //Reset the cooldown!
 					}
-				}
-				case VILLAGE_400:
-				{
-					Store_SetNamedItem(client, "Village NPC Expert", 4);
-					CashSpent[client] += 2500;
-					Village_TierExists[0] = 4;
-				}
-				case VILLAGE_300:
-				{
-					Store_SetNamedItem(client, "Village NPC Expert", 3);
-					CashSpent[client] += 800;
-					Village_TierExists[0] = 3;
+
+					int count;
 					int i = MaxClients + 1;
-					int count = 0;
-					
 					while((i = FindEntityByClassname(i, "base_boss")) != -1)
 					{
 						if(i_NpcInternalId[i] == CITIZEN)
 							count++;
 					}
 					
-					if(count < MAX_REBELS_ALLOWED) //Do not allow more then this many npcs
+					if(count < MAX_REBELS_ALLOWED)
+						Citizen_SpawnAtPoint(_, client);
+				}
+				case VILLAGE_400:
+				{
+					Store_SetNamedItem(client, "Village NPC Expert", 4);
+					CashSpent[client] += 2500;
+					Village_TierExists[0] = 4;
+
+					int count;
+					int i = MaxClients + 1;
+					while((i = FindEntityByClassname(i, "base_boss")) != -1)
 					{
-						Citizen_SpawnAtPoint();
-						count++;
+						if(i_NpcInternalId[i] == CITIZEN)
+							count++;
 					}
+					
+					if(count < MAX_REBELS_ALLOWED)
+						Citizen_SpawnAtPoint(_, client);
+				}
+				case VILLAGE_300:
+				{
+					Store_SetNamedItem(client, "Village NPC Expert", 3);
+					CashSpent[client] += 800;
+					Village_TierExists[0] = 3;
+
+					int count;
+					int i = MaxClients + 1;
+					while((i = FindEntityByClassname(i, "base_boss")) != -1)
+					{
+						if(i_NpcInternalId[i] == CITIZEN)
+							count++;
+					}
+					
+					if(count < MAX_REBELS_ALLOWED)
+						Citizen_SpawnAtPoint(_, client);
 				}
 				case VILLAGE_200:
 				{
@@ -5729,4 +5763,423 @@ public MRESReturn Dhook_FirstSpawn_Pre(int Building_Index, Handle hParams)
 public MRESReturn Dhook_FirstSpawn_Post(int Building_Index, Handle hParams) 
 {
 	return MRES_Ignored;
+}
+
+static float WoodRatio[MAXTF2PLAYERS];
+static float GoldAmount[MAXTF2PLAYERS];
+static int SupplyRate[MAXTF2PLAYERS];
+static int InMenu[MAXTF2PLAYERS];
+static float TrainingStartedIn[MAXTF2PLAYERS];
+static float TrainingIn[MAXTF2PLAYERS];
+static int TrainingIndex[MAXTF2PLAYERS];
+static int CommandMode[MAXTF2PLAYERS];
+
+enum
+{
+	NPCIndex = 0,
+	WoodCost,
+	FoodCost,
+	GoldCost,
+	TrainTime,
+	TrainLevel
+}
+
+enum
+{
+	Command_Defensive = 0,
+	Command_Aggressive,
+	Command_Retreat,
+	Command_MAX
+}
+
+static const char CommandName[][] =
+{
+	"Command: Defensive",
+	"Command: Aggressive",
+	"Command: Retreat"
+};
+
+static const int SummonerData[][] =
+{
+	// NPC Index, Wood, Food, Gold, Time, Level
+	{ BARRACK_MILITIA, 5, 30, 0, 5, 1 },
+
+	{ BARRACK_MAN_AT_ARMS, 10, 40, 0, 7, 2 },
+	{ BARRACK_ARCHER, 40, 10, 0, 10, 2 },
+
+	// Below will always show up
+	//{ MEDIVAL_VILLAGER, 50, 50, 10, 30, 1 }
+};
+
+public Action Building_PlaceSummoner(int client, int weapon, const char[] classname, bool &result)
+{
+	int Sentrygun = EntRefToEntIndex(i_HasSentryGunAlive[client]);
+	if(!IsValidEntity(Sentrygun))
+	{
+		if(Building_Sentry_Cooldown[client] > GetGameTime())
+		{
+			result = false;
+			float Ability_CD = Building_Sentry_Cooldown[client] - GetGameTime();
+			
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+				
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+		}
+		else
+		{
+			PlaceBuilding(client, weapon, Building_Summoner, TFObject_Sentry);
+		}
+	}
+	return Plugin_Continue;
+}
+
+public bool Building_Summoner(int client, int entity)
+{
+	WoodRatio[client] = 0.5;
+	GoldAmount[client] = 0.0;
+	TrainingIn[client] = 0.0;
+	CommandMode[client] = 0;
+	
+	i_HasSentryGunAlive[client] = EntIndexToEntRef(entity);
+	b_SentryIsCustom[entity] = true;
+	Building_Constructed[entity] = false;
+	CreateTimer(0.2, Building_Set_HP_Colour_Sentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateTimer(0.5, Timer_SummonerThink, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT); //No custom anims
+	
+	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
+	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 1.25);
+	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
+	//SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
+	Building_Max_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 0);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntPropString(entity, Prop_Data, "m_iName", "zr_summoner");
+	Building_cannot_be_repaired[entity] = false;
+	Is_Elevator[entity] = false;
+	Building_Sentry_Cooldown[client] = GetGameTime() + 60.0;
+	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
+	Building_Collect_Cooldown[entity][0] = 0.0;
+	
+	if(!EscapeMode)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+public Action Summoner_TakeDamage(int entity, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	Action action = Building_TakeDamage(entity, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+	if(action > Plugin_Changed)
+		return action;
+	
+	damage *= 2.0;
+	return Plugin_Changed;
+}
+
+int Building_GetFollowerEntity(int owner)
+{
+	if(Building_Mounted[owner] != i_HasSentryGunAlive[owner])
+	{
+		int entity = EntRefToEntIndex(i_HasSentryGunAlive[owner]);
+		if(entity != INVALID_ENT_REFERENCE)
+			return entity;
+	}
+	return owner;
+}
+
+int Building_GetFollowerCommand(int owner)
+{
+	return CommandMode[owner];
+}
+
+public Action Timer_SummonerThink(Handle timer, int ref)
+{
+	bool mounted;
+	int owner;
+	int entity = EntRefToEntIndex(ref);
+	if(entity != INVALID_ENT_REFERENCE)
+	{
+		owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+		if(owner < 1 || owner > MaxClients)
+		{
+			SDKHooks_TakeDamage(entity, entity, entity, 999999.9);
+			entity = INVALID_ENT_REFERENCE;
+			owner = 0;
+		}
+		else if(Building_Mounted[owner] == ref)
+		{
+			mounted = true;
+		}
+		else if(GetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed") == 1.0)
+		{
+			if(!Building_Constructed[entity])
+			{
+				//BELOW IS SET ONCE!
+				view_as<CClotBody>(entity).bBuildingIsPlaced = true;
+				Building_Constructed[entity] = true;
+				
+				static const float minbounds[3] = {-10.0, -20.0, 0.0};
+				static const float maxbounds[3] = {10.0, 20.0, -2.0};
+				SetEntPropVector(entity, Prop_Send, "m_vecMins", minbounds);
+				SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxbounds);
+				
+				SetEntityModel(entity, SUMMONER_MODEL);
+			}
+		}
+		else
+		{
+			Building_Constructed[entity] = false;
+		}
+	}
+	
+	if(entity != INVALID_ENT_REFERENCE && owner && Building_Constructed[entity])
+	{
+		// 1 Supply = 1 Food & Wood Every 1 Second
+		int health = GetEntProp(entity, Prop_Send, "m_iHealth");
+
+		float wood = health * WoodRatio[owner];
+		float food = health * (1.0 - WoodRatio[owner]);
+
+		wood += SupplyRate[owner] / 2.333333;
+		food += SupplyRate[owner] / 1.75;
+
+		health = RoundFloat(wood + food);
+		SetEntProp(entity, Prop_Send, "m_iHealth", health);
+		WoodRatio[owner] = wood / (wood + food);
+
+		Building_Max_Health[entity] = health + 60;
+		SetEntProp(entity, Prop_Send, "m_iMaxHealth", Building_Max_Health[entity]);
+
+		// 1 Supply = 1 Gold Every 30 Seconds
+		GoldAmount[owner] += SupplyRate[owner] / 60.0;
+
+		if(TrainingIn[owner])
+		{
+			float gameTime = GetGameTime();
+			if(TrainingIn[owner] < gameTime)
+			{
+				SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 0);
+				TrainingIn[owner] = 0.0;
+
+				float pos[3], ang[3];
+				GetEntPropVector(mounted ? owner : entity, Prop_Data, "m_vecAbsOrigin", pos);
+				GetEntPropVector(mounted ? owner : entity, Prop_Data, "m_angRotation", ang);
+				
+				Npc_Create(SummonerData[TrainingIndex[owner]][NPCIndex], owner, pos, ang, true);
+			}
+			else
+			{
+				int required = RoundFloat((TrainingIn[owner] - TrainingStartedIn[owner]) * 2.0);
+				int current = required - RoundToCeil((TrainingIn[owner] - gameTime) * 2.0);
+				
+				SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", current);
+				SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", required);
+			}
+		}
+
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(InMenu[i] == owner)
+				SummonerMenu(owner, i);
+		}
+	}
+
+	return entity == INVALID_ENT_REFERENCE ? Plugin_Stop : Plugin_Continue;
+}
+
+static void CheckSummonerUpgrades(int client)
+{
+	SupplyRate[client] = 2;
+
+	if(Store_HasNamedItem(client, "Repair Handling book for dummies"))
+		SupplyRate[client]++;
+	
+	if(Store_HasNamedItem(client, "Ikea Repair Handling book"))
+		SupplyRate[client] += 2;
+	
+	if(Store_HasNamedItem(client, "Engineering Repair Handling book"))
+		SupplyRate[client] += 4;
+	
+	if(Store_HasNamedItem(client, "Alien Repair Handling book"))
+		SupplyRate[client] += 6;
+	
+	if(Store_HasNamedItem(client, "Cosmic Repair Handling book"))
+		SupplyRate[client] += 10;
+}
+
+static void OpenSummonerMenu(int client, int viewer)
+{
+	if(client == viewer)
+		CheckSummonerUpgrades(client);
+	
+	SummonerMenu(client, viewer);
+}
+
+static void SummonerMenu(int client, int viewer)
+{
+	int entity = EntRefToEntIndex(i_HasSentryGunAlive[client]);
+	if(entity == INVALID_ENT_REFERENCE)
+	{
+		CancelClientMenu(viewer);
+		return;
+	}
+
+	bool owner = client == viewer;
+	int level = MaxSupportBuildingsAllowed(client, true);
+	int health = GetEntProp(entity, Prop_Send, "m_iHealth");
+	int wood = RoundToFloor(health * WoodRatio[client]);
+	int food = RoundToFloor(health * (1.0 - WoodRatio[client]));
+	
+	Menu menu = new Menu(SummonerMenuH);
+	
+	SetGlobalTransTarget(viewer);
+	menu.SetTitle("%t\n \n%s\n \n$%d £%d ¥%d\n ", "TF2: Zombie Riot", TranslateItemName(viewer, "Buildable Barracks", ""), wood, food, RoundToFloor(GoldAmount[client]));
+	
+	menu.AddItem(NULL_STRING, CommandName[CommandMode[client]], owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+
+	char buffer1[256];
+	if(TrainingIn[client])
+	{
+		if(AtMaxSupply(i_BarricadesBuild[client]))
+		{
+			FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)", NPC_Names[SummonerData[TrainingIndex[client]][NPCIndex]]);
+			if(i_BarricadesBuild[client])
+				Format(buffer1, sizeof(buffer1), "%s\nTIP: Your barricades counts towards the supply limit", buffer1);
+		}
+		else
+		{
+			float gameTime = GetGameTime();
+			FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f%%)\n ", NPC_Names[SummonerData[TrainingIndex[client]][NPCIndex]],
+				100.0 - ((TrainingIn[client] - gameTime) * 100.0 / (TrainingIn[client] - TrainingStartedIn[client])));
+		}
+
+		menu.AddItem(buffer1, buffer1, ITEMDRAW_DISABLED);
+		menu.AddItem(buffer1, "Cancel");
+	}
+	else
+	{
+		char buffer2[64];
+		int options;
+		for(int i = sizeof(SummonerData) - 1; i >= 0; i--)
+		{
+			if(SummonerData[i][TrainLevel] > level)
+				continue;
+			
+			FormatEx(buffer2, sizeof(buffer2), "%s Desc", NPC_Names[SummonerData[i][NPCIndex]]);
+			FormatEx(buffer1, sizeof(buffer1), "%t [", NPC_Names[SummonerData[i][NPCIndex]]);
+
+			if(SummonerData[i][WoodCost])
+				Format(buffer1, sizeof(buffer1), "%s $%d", buffer1, SummonerData[i][WoodCost]);
+			
+			if(SummonerData[i][FoodCost])
+				Format(buffer1, sizeof(buffer1), "%s £%d", buffer1, SummonerData[i][FoodCost]);
+			
+			if(SummonerData[i][GoldCost])
+				Format(buffer1, sizeof(buffer1), "%s ¥%d", buffer1, SummonerData[i][GoldCost]);
+			
+			Format(buffer1, sizeof(buffer1), "%s ]\n%s\n ", buffer1, buffer2);
+			IntToString(i, buffer2, sizeof(buffer2));
+			bool poor = (!owner || wood < SummonerData[i][WoodCost]) || (food < SummonerData[i][FoodCost]) || (GoldAmount[client] < SummonerData[i][GoldCost]);
+
+			menu.AddItem(buffer2, buffer1, poor ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			if(++options > 4)
+				break;
+		}
+	}
+
+	menu.Pagination = 0;
+	menu.ExitButton = true;
+	if(menu.Display(viewer, 1))
+		InMenu[viewer] = client;
+}
+
+public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			InMenu[client] = 0;
+		}
+		case MenuAction_Select:
+		{
+			if(choice)
+			{
+				int entity = EntRefToEntIndex(i_HasSentryGunAlive[client]);
+				if(entity != INVALID_ENT_REFERENCE)
+				{
+					int health = GetEntProp(entity, Prop_Send, "m_iHealth");
+					float wood = health * WoodRatio[client];
+					float food = health * (1.0 - WoodRatio[client]);
+
+					if(TrainingIn[client])
+					{
+						TrainingIn[client] = 0.0;
+
+						wood += float(SummonerData[TrainingIndex[client]][WoodCost]);
+						food += float(SummonerData[TrainingIndex[client]][FoodCost]);
+						GoldAmount[client] += float(SummonerData[TrainingIndex[client]][GoldCost]);
+					}
+					else
+					{
+						char num[16];
+						menu.GetItem(choice, num, sizeof(num));
+						int item = StringToInt(num);
+
+						float woodcost = float(SummonerData[item][WoodCost]);
+						float foodcost = float(SummonerData[item][FoodCost]);
+						float goldcost = float(SummonerData[item][GoldCost]);
+
+						if(wood >= woodcost && food >= foodcost && GoldAmount[client] >= goldcost)
+						{
+							TrainingStartedIn[client] = GetGameTime();
+							TrainingIn[client] = TrainingStartedIn[client] + float(SummonerData[item][TrainTime]);
+							
+							wood -= woodcost;
+							food -= foodcost;
+							GoldAmount[client] -= goldcost;
+						}
+					}
+
+					SetEntProp(entity, Prop_Send, "m_iHealth", RoundFloat(wood + food));
+					WoodRatio[client] = wood / (wood + food);
+
+					SummonerMenu(client, client);
+				}
+			}
+			else
+			{
+				if(++CommandMode[client] >= Command_MAX)
+					CommandMode[client] = 0;
+				
+				SummonerMenu(client, client);
+			}
+		}
+	}
+	return 0;
+}
+
+static bool AtMaxSupply(int barricades)
+{
+	int count = barricades * 3;
+	int entity = MaxClients + 1;
+	while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+	{
+		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+			count++;
+	}
+
+	return count > 9;
 }

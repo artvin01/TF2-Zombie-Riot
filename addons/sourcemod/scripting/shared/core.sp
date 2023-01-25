@@ -650,7 +650,7 @@ enum
 }
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_184.mdl"
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_185.mdl"
 //#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_175.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now

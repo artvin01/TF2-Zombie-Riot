@@ -792,8 +792,15 @@ public void Kahmlstein_ClotThink(int iNPC)
 									fl_kahml_main_melee_damage[npc.index] *= Bonus_damage;
 									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
 								}
+								else if(ShouldNpcDealBonusDamage(target))
+								{
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 5.0*fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
+								
+								}
 								else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 5.0*fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
+								{
+									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
+								}
 								if(IsValidClient(target))
 								{
 									Custom_Knockback(npc.index, target, fl_kahml_knockback[npc.index]);

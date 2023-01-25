@@ -2095,4 +2095,8 @@
 	{
 		"en"	"Builder Extra Gear"
 	}
+	"Buildable Barracks"
+	{
+		"en"	"Buildable Barracks"
+	}
 }

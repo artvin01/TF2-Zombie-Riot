@@ -1183,8 +1183,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	DoTutorialStep(client, false);
 	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
 	
-	bool started = !Waves_InSetup();
-	TeutonType[client] = (!IsRespawning && started) ? TEUTON_DEAD : TEUTON_NONE;
+	TeutonType[client] = (!IsRespawning && !Waves_InSetup()) ? TEUTON_DEAD : TEUTON_NONE;
 #endif
 	
 	CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
@@ -1208,7 +1207,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 #if defined ZR
 	GiveCompleteInvul(client, 2.0);
 	
-	if(started && TeutonType[client] == TEUTON_NONE)
+	if(Waves_Started() && TeutonType[client] == TEUTON_NONE)
 	{
 		SetEntityHealth(client, 50);
 		RequestFrame(SetHealthAfterRevive, client);

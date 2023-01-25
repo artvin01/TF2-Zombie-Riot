@@ -313,7 +313,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
-						if(target <= MaxClients)
+						if(!ShouldNpcDealBonusDamage(target))
 						{
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_CLUB);
 						}

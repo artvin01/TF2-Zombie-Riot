@@ -531,14 +531,14 @@ public void SpyMainBoss_ClotThink(int iNPC)
 						{
 							if(!npc.Anger)
 							{
-								if(target <= MaxClients)
+								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 180.0, DMG_CLUB, -1, _, vecHit);
 								else
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_CLUB, -1, _, vecHit);	
 							}
 							else if(npc.Anger)
 							{
-								if(target <= MaxClients)
+								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
 								else
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 7500.0, DMG_CLUB, -1, _, vecHit);	

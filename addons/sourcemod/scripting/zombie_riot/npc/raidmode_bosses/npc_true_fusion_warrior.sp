@@ -540,6 +540,13 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.m_bDissapearOnDeath = true;
 
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+					for (int client = 0; client < MaxClients; client++)
+					{
+						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+						{
+							GiveNamedItem(client, "Cured Silvester");
+						}
+					}
 				}
 				else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
 				{
@@ -847,23 +854,12 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									if(target > MaxClients)
-									{
-										if(!npc.Anger)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 12.0 * RaidModeScaling * 10.0, DMG_CLUB, -1, _, vecHit);
+									if(!npc.Anger)
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 24.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 											
-										if(npc.Anger)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 14.0 * RaidModeScaling * 10.0, DMG_CLUB, -1, _, vecHit);
-									}
-									else
-									{
-										if(!npc.Anger)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 24.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
-											
-										if(npc.Anger)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 28.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
+									if(npc.Anger)
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 28.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
 										
-									}
 									
 									// Hit particle
 									

@@ -668,14 +668,14 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 							{
 								if(!npc.Anger)
 								{
-									if(target <= MaxClients)
+									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
 									else
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_CLUB, -1, _, vecHit);	
 								}
 								else if(npc.Anger)
 								{
-									if(target <= MaxClients)
+									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB, -1, _, vecHit);
 									else
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_CLUB, -1, _, vecHit);	

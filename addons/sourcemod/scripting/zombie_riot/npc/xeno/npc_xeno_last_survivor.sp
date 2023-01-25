@@ -523,14 +523,14 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 							
 							if(EscapeModeForNpc)
 							{
-								if(target <= MaxClients)
+								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_CLUB, -1, _, vecHit);
 								else
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_CLUB, -1, _, vecHit);
 							}
 							else
 							{
-								if(target <= MaxClients)
+								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
 								else
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_CLUB, -1, _, vecHit);
