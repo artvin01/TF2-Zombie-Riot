@@ -44,9 +44,6 @@ public void BarrackHussar_ClotThink(int iNPC)
 	{
 		BarrackBody_ThinkTarget(npc.index, false);
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.index);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-
 		if(npc.m_iTarget > 0)
 		{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
@@ -63,8 +60,8 @@ public void BarrackHussar_ClotThink(int iNPC)
 						npc.PlaySwordSound();
 						npc.m_flAttackHappens = GetGameTime(npc.index) + 0.4;
 						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 0.54;
-						npc.m_flDoingAnimation = gameTime + 0.6;
-						npc.m_flReloadDelay = gameTime + 0.6;
+						npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.6;
+						npc.m_flReloadDelay = GetGameTime(npc.index) + 0.6;
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (1.2 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
 					}
@@ -96,7 +93,7 @@ public void BarrackHussar_ClotThink(int iNPC)
 				}
 			}
 
-			HussarAOEBuff(npc, GetGameTime(npc.index));
+			HussarAOEBuff(view_as<MedivalHussar>(npc), GetGameTime(npc.index));
 		}
 
 		BarrackBody_ThinkMove(npc.index, 250.0, "ACT_RIDER_IDLE", "ACT_RIDER_RUN");

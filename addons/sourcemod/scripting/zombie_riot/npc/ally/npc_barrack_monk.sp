@@ -32,15 +32,14 @@ public void BarrackMonk_ClotThink(int iNPC)
 	{
 		BarrackBody_ThinkTarget(npc.index, false);
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.index);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-
 		float gameTime = GetGameTime(npc.index);
 		if(npc.m_flAttackHappens)
 		{
 			npc.AddGesture("ACT_MONK_ATTACK", false);
 			if(npc.m_flAttackHappens < gameTime)
 			{
+				float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.index);
+				
 				npc.m_flAttackHappens = 0.0;
 				spawnRing_Vectors(vecTarget, MONK_MAXRANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 255, 1, 3.0, 5.0, 3.1, 1, _);		
 				

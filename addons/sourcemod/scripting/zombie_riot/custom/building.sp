@@ -5938,9 +5938,9 @@ static const int SummonerData[][] =
 	{ BARRACK_LONGBOW, 400, 100, 0, 8, 15 },	// Construction Expert & Cosmic Repair Handling book
 	{ BARRACK_CHAMPION, 100, 400, 0, 7, 16 },	// Construction Master
 
-	// Below will always show up when unlocked
-	{ BARRACK_MONK, 200, 0, 30, 10, 10 }		// Construction Worker
-	{ BARRACK_HUSSAR, 0, 400, 90, 10, 20 }		// Construction Master & Cosmic Repair Handling book
+
+	{ BARRACK_MONK, 210, 0, 50, 10, 10 },		// Construction Worker
+	{ BARRACK_HUSSAR, 0, 400, 100, 10, 20 }		// Construction Master & Cosmic Repair Handling book
 };
 
 public Action Building_PlaceSummoner(int client, int weapon, const char[] classname, bool &result)

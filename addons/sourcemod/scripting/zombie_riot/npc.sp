@@ -2193,6 +2193,38 @@ public void NPCDeath(int entity)
 		{
 			MedivalEliteLongbowmen_NPCDeath(entity);
 		}
+		case BARRACK_CROSSBOW:
+		{
+			BarrackCrossbow_NPCDeath(entity);
+		}
+		case BARRACK_SWORDSMAN:
+		{
+			BarrackSwordsman_NPCDeath(entity);
+		}
+		case BARRACK_ARBELAST:
+		{
+			BarrackArbelast_NPCDeath(entity);
+		}
+		case BARRACK_TWOHANDED:
+		{
+			BarrackTwoHanded_NPCDeath(entity);
+		}
+		case BARRACK_LONGBOW:
+		{
+			BarrackLongbow_NPCDeath(entity);
+		}
+		case BARRACK_CHAMPION:
+		{
+			BarrackChampion_NPCDeath(entity);
+		}
+		case BARRACK_MONK:
+		{
+			BarrackMonk_NPCDeath(entity);
+		}
+		case BARRACK_HUSSAR:
+		{
+			BarrackHussar_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2458,3 +2490,11 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/ally/npc_barrack_militia.sp"
 #include "zombie_riot/npc/ally/npc_barrack_archer.sp"
 #include "zombie_riot/npc/ally/npc_barrack_man_at_arms.sp"
+#include "zombie_riot/npc/ally/npc_barrack_crossbow.sp"
+#include "zombie_riot/npc/ally/npc_barrack_swordsman.sp"
+#include "zombie_riot/npc/ally/npc_barrack_arbelast.sp"
+#include "zombie_riot/npc/ally/npc_barrack_twohanded.sp"
+#include "zombie_riot/npc/ally/npc_barrack_longbow.sp"
+#include "zombie_riot/npc/ally/npc_barrack_champion.sp"
+#include "zombie_riot/npc/ally/npc_barrack_monk.sp"
+#include "zombie_riot/npc/ally/npc_barrack_hussar.sp"

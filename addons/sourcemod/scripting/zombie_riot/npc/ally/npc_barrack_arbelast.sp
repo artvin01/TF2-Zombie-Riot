@@ -37,7 +37,6 @@ public void BarrackArbelast_ClotThink(int iNPC)
 	{
 		BarrackBody_ThinkTarget(npc.index, false);
 
-		bool path = true;
 		if(npc.m_iTarget > 0)
 		{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);

@@ -3511,6 +3511,18 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		{
 			HandleAnimEventMedival_Arbalest(pThis, event);
 		}
+		case BARRACK_CROSSBOW:
+		{
+			BarrackCrossbow_HandleAnimEvent(pThis, event);
+		}
+		case BARRACK_ARBELAST:
+		{
+			BarrackArbelast_HandleAnimEvent(pThis, event);
+		}
+		case BARRACK_LONGBOW:
+		{
+			BarrackLongbow_HandleAnimEvent(pThis, event);
+		}
 	}
 #endif
 	
