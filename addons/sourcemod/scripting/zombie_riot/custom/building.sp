@@ -6225,7 +6225,7 @@ static void CheckSummonerUpgrades(int client)
 		SupplyRate[client] += 10;
 	}
 
-	MedievalUnlock[client] = HasNamedItem(client, "Medieval Crown");
+	MedievalUnlock[client] = view_as<bool>(HasNamedItem(client, "Medieval Crown"));
 }
 
 static void OpenSummonerMenu(int client, int viewer)

@@ -576,14 +576,14 @@ public void Bloon_ClotThink(int iNPC)
 			{
 				npc.m_flNextMeleeAttack = gameTime + 0.35;
 				
-				Handle swingTrace;
-				if(npc.DoAimbotTrace(swingTrace, PrimaryThreatIndex))
+				//Handle swingTrace;
+				//if(npc.DoAimbotTrace(swingTrace, PrimaryThreatIndex))
 				{
-					int target = TR_GetEntityIndex(swingTrace);
-					if(target > 0)
+					int target = PrimaryThreatIndex;//TR_GetEntityIndex(swingTrace);
+					//if(target > 0)
 					{
-						float vecHit[3];
-						TR_GetEndPosition(vecHit, swingTrace);
+						//float vecHit[3];
+						//TR_GetEndPosition(vecHit, swingTrace);
 						
 						for(int i; i<9; i++)
 						{
@@ -593,25 +593,25 @@ public void Bloon_ClotThink(int iNPC)
 								{
 									if(npc.m_bFortified)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 1.0 + float(i) * 1.4, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 1.0 + float(i) * 1.4, DMG_CLUB, -1, _, vecTarget);
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 1.0 + float(i), DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 1.0 + float(i), DMG_CLUB, -1, _, vecTarget);
 									}
 								}
 								else
 								{
 									if(npc.m_bFortified)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 2.0 + float(i) * 4.2, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 2.0 + float(i) * 4.2, DMG_CLUB, -1, _, vecTarget);
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 2.0 + float(i) * 3.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 2.0 + float(i) * 3.0, DMG_CLUB, -1, _, vecTarget);
 									}
 								}
-								delete swingTrace;
+								//delete swingTrace;
 							}
 						}
 					}
