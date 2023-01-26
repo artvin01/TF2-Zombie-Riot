@@ -5894,6 +5894,7 @@ static float TrainingIn[MAXTF2PLAYERS];
 static int TrainingIndex[MAXTF2PLAYERS];
 static int TrainingQueue[MAXTF2PLAYERS];
 static int CommandMode[MAXTF2PLAYERS];
+static bool MedievalUnlock[MAXTF2PLAYERS];
 
 enum
 {
@@ -5935,8 +5936,8 @@ static const int SummonerData[][] =
 	{ BARRACK_ARBELAST, 210, 50, 0, 9, 9 },		// Construction Worker & Engineering Repair Handling book
 	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 12 },	// Construction Expert & Ikea Repair Handling book
 
-	{ BARRACK_LONGBOW, 400, 100, 0, 8, 15 },	// Construction Expert & Cosmic Repair Handling book
-	{ BARRACK_CHAMPION, 100, 400, 0, 7, 16 },	// Construction Master
+	{ BARRACK_LONGBOW, 400, 100, 0, 10, 15 },	// Construction Expert & Cosmic Repair Handling book
+	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16 },	// Construction Master
 
 
 	{ BARRACK_MONK, 210, 0, 50, 10, 10 },		// Construction Worker
@@ -6111,7 +6112,8 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 		FoodAmount[owner] += SupplyRate[owner] / 8.75;
 
 		// 1 Supply = 1 Gold Every 30 Seconds
-		GoldAmount[owner] += SupplyRate[owner] / 300.0;
+		if(MedievalUnlock[owner])
+			GoldAmount[owner] += SupplyRate[owner] / 300.0;
 
 		if(TrainingIn[owner])
 		{
@@ -6222,6 +6224,8 @@ static void CheckSummonerUpgrades(int client)
 		RepairCount[client]++;
 		SupplyRate[client] += 10;
 	}
+
+	MedievalUnlock[client] = HasNamedItem(client, "Medieval Crown");
 }
 
 static void OpenSummonerMenu(int client, int viewer)
@@ -6300,7 +6304,7 @@ static void SummonerMenu(int client, int viewer)
 		if(SummonerData[i][GoldCost])
 			Format(buffer1, sizeof(buffer1), "%s ¥%d", buffer1, SummonerData[i][GoldCost]);
 		
-		Format(buffer1, sizeof(buffer1), "%s ]\n%s\n ", buffer1, buffer2);
+		Format(buffer1, sizeof(buffer1), "%s ]\n%t\n ", buffer1, buffer2);
 		IntToString(i, buffer2, sizeof(buffer2));
 		bool poor = (!owner || WoodAmount[client] < SummonerData[i][WoodCost]) || (FoodAmount[client] < SummonerData[i][FoodCost]) || (GoldAmount[client] < SummonerData[i][GoldCost]);
 
