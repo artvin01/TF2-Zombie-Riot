@@ -15,9 +15,13 @@ methodmap BarrackLongbow < BarrackBody
 
 		npc.m_flSpeed = 225.0;
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_crusaders_crossbow/c_crusaders_crossbow.mdl");
-		SetVariantString("0.4");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bow/c_bow.mdl");
+		SetVariantString("0.6");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/scout/spr17_the_lightning_lid/spr17_the_lightning_lid.mdl");
+		SetVariantString("1.2");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");

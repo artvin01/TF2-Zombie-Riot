@@ -199,7 +199,16 @@ enum
 	MEDIVAL_BRAWLER				= 168,
 	MEDIVAL_LONGBOWMEN			= 169,
 	MEDIVAL_ARBALEST			= 170,
-	MEDIVAL_ELITE_LONGBOWMEN	= 171
+	MEDIVAL_ELITE_LONGBOWMEN	= 171,
+
+	BARRACK_CROSSBOW			= 172,
+	BARRACK_SWORDSMAN			= 173,
+	BARRACK_ARBELAST			= 174,
+	BARRACK_TWOHANDED			= 175,
+	BARRACK_LONGBOW				= 176,
+	BARRACK_CHAMPION			= 177,
+	BARRACK_MONK				= 178,
+	BARRACK_HUSSAR				= 179
 }
 
 public const char NPC_Names[][] =
@@ -390,7 +399,16 @@ public const char NPC_Names[][] =
 	"Medival Brawler",
 	"Medival Longbowmen",
 	"Medival Abalest",
-	"Medival Elite Longbowmen"
+	"Medival Elite Longbowmen",
+
+	"Crossbow Man",
+	"Long Swordsman",
+	"Medival Abalest",
+	"Twohanded Swordsman",
+	"Medival Longbowmen",
+	"Champion",
+	"Monk",
+	"Hussar"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -569,14 +587,24 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_medival_obuch",
 	"npc_medival_monk",
 
-	"npc_barrack_militia",
-	"npc_barrack_archer",
-	"npc_barrack_man_at_arms",
+	"",
+	"",
+	"",
+
 	"npc_medival_halbadeer",
 	"npc_medival_brawler",
 	"npc_medival_longbowmen",
 	"npc_medival_arbalest",
-	"npc_medival_elite_longbowmen"
+	"npc_medival_elite_longbowmen",
+
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"npc_barrack_hussar"
 };
 
 void NPC_MapStart()
@@ -1447,6 +1475,38 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case MEDIVAL_ELITE_LONGBOWMEN:
 		{
 			entity = MedivalEliteLongbowmen(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_CROSSBOW:
+		{
+			entity = BarrackCrossbow(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_SWORDSMAN:
+		{
+			entity = BarrackSwordsman(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_ARBELAST:
+		{
+			entity = BarrackArbelast(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_TWOHANDED:
+		{
+			entity = BarrackTwoHanded(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_LONGBOW:
+		{
+			entity = BarrackLongbow(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_CHAMPION:
+		{
+			entity = BarrackChampion(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_MONK:
+		{
+			entity = BarrackMonk(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_HUSSAR:
+		{
+			entity = BarrackHussar(client, vecPos, vecAng, ally);
 		}
 		default:
 		{

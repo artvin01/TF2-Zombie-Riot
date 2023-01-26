@@ -5924,22 +5924,23 @@ static const char CommandName[][] =
 static const int SummonerData[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level
-	{ BARRACK_MILITIA, 5, 30, 0, 5, 1 },	// None
+	{ BARRACK_MILITIA, 5, 30, 0, 5, 1 },		// None
 
 	{ BARRACK_ARCHER, 50, 10, 0, 7, 2 },		// Construction Novice
 	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 3 },	// Construction Novice & Ikea Repair Handling book
-/*
+
 	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 5 },		// Construction Apprentice & Ikea Repair Handling book
 	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 6 },		// Construction Apprentice & Engineering Repair Handling book
 
 	{ BARRACK_ARBELAST, 210, 50, 0, 9, 9 },		// Construction Worker & Engineering Repair Handling book
 	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 12 },	// Construction Expert & Ikea Repair Handling book
 
-	{ BARRACK_LONGBOW, 410, 100, 0, 8, 15 },	// Construction Expert & Cosmic Repair Handling book
-	{ BARRACK_CHAMPION, 100, 410, 0, 7, 19 },	// Construction Master & Alien Repair Handling book
-*/
-	// Below will always show up
-	//{ MEDIVAL_VILLAGER, 50, 50, 10, 30, 1 }
+	{ BARRACK_LONGBOW, 400, 100, 0, 8, 15 },	// Construction Expert & Cosmic Repair Handling book
+	{ BARRACK_CHAMPION, 100, 400, 0, 7, 16 },	// Construction Master
+
+	// Below will always show up when unlocked
+	{ BARRACK_MONK, 200, 0, 30, 10, 10 }		// Construction Worker
+	{ BARRACK_HUSSAR, 0, 400, 90, 10, 20 }		// Construction Master & Cosmic Repair Handling book
 };
 
 public Action Building_PlaceSummoner(int client, int weapon, const char[] classname, bool &result)

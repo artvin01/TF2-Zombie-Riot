@@ -19,6 +19,10 @@ methodmap BarrackArbelast < BarrackBody
 		SetVariantString("0.4");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/scout/hwn2018_hephaistos_handcraft/hwn2018_hephaistos_handcraft.mdl");
+		SetVariantString("1.3");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+
 		SetVariantInt(1);
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 		

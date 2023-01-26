@@ -3,6 +3,10 @@
 
 methodmap BarrackMonk < BarrackBody
 {
+	public void PlayMeleeWarCry()
+	{
+		EmitSoundToAll("ambient/rottenburg/tunneldoor_open.wav", this.index, _, 90, _, 0.8, 100);
+	}
 	public BarrackMonk(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		BarrackMonk npc = view_as<BarrackMonk>(BarrackBody(client, vecPos, vecAng, "400"));
@@ -31,41 +35,22 @@ public void BarrackMonk_ClotThink(int iNPC)
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.index);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 
+		float gameTime = GetGameTime(npc.index);
 		if(npc.m_flAttackHappens)
 		{
 			npc.AddGesture("ACT_MONK_ATTACK", false);
 			if(npc.m_flAttackHappens < gameTime)
 			{
-				static int r;
-				static int g;
-				static int b;
-				static int a = 255;
-				if(b_Is_Blue_Npc[npc.index])
-				{
-					r = 125;
-					g = 125;
-					b = 255;
-				}
-				else
-				{
-					r = 255;
-					g = 125;
-					b = 125;
-				}
-
 				npc.m_flAttackHappens = 0.0;
-				spawnRing_Vectors(vecTarget, MONK_MAXRANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 3.0, 5.0, 3.1, 1, _);		
-			//	spawnRing_Vectors(vecTarget, MONK_MAXRANGE * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 3.0, 5.0, 3.1, 1, _);		
-			//	spawnRing_Vectors(vecTarget, MONK_MAXRANGE * 2.0, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 3.0, 5.0, 3.1, 1, _);		
-			//	spawnRing_Vectors(vecTarget, MONK_MAXRANGE * 2.0, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 3.0, 5.0, 3.1, 1, _);		
-			//	spawnRing_Vectors(vecTarget, MONK_MAXRANGE * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 3.0, 5.0, 3.1, 1, _);		
+				spawnRing_Vectors(vecTarget, MONK_MAXRANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 255, 1, 3.0, 5.0, 3.1, 1, _);		
+				
 				DataPack pack;
 				CreateDataTimer(0.1, MonkHealDamageZone, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 				pack.WriteFloat(GetGameTime() + 3.0);
 				pack.WriteFloat(vecTarget[0]);
 				pack.WriteFloat(vecTarget[1]);
 				pack.WriteFloat(vecTarget[2]);
-				pack.WriteCell(b_IsAlliedNpc[npc.index]);
+				pack.WriteCell(true);
 				pack.WriteCell(EntIndexToEntRef(npc.index));
 			}
 		}
