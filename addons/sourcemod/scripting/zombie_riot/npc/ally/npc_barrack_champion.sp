@@ -1,40 +1,39 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-// Balanced around Late Zombie
-// Construction Apprentice
+// Balanced around Mid Spy
 
-methodmap BarrackManAtArms < BarrackBody
+methodmap BarrackChampion < BarrackBody
 {
-	public BarrackManAtArms(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackChampion(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BarrackManAtArms npc = view_as<BarrackManAtArms>(BarrackBody(client, vecPos, vecAng, "225"));
+		BarrackChampion npc = view_as<BarrackChampion>(BarrackBody(client, vecPos, vecAng, "1000"));
 		
-		i_NpcInternalId[npc.index] = BARRACK_MAN_AT_ARMS;
+		i_NpcInternalId[npc.index] = BARRACK_CHAMPION;
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackManAtArms_ClotThink);
+		SDKHook(npc.index, SDKHook_Think, BarrackChampion_ClotThink);
 
-		npc.m_flSpeed = 175.0;
+		npc.m_flSpeed = 250.0;
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("0.75");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
+		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/player/items/mvm_loot/soldier/robot_helmet.mdl");
-		SetVariantString("0.875");
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/soldier/sum20_breach_and_bomb/sum20_breach_and_bomb.mdl");
+		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("weapon_targe", "models/weapons/c_models/c_targe/c_targe.mdl");
-		SetVariantString("1.25");
+		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/workshop/player/items/medic/hw2013_spacemans_suit/hw2013_spacemans_suit.mdl");
+		SetVariantString("0.9");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		return npc;
 	}
 }
 
-public void BarrackManAtArms_ClotThink(int iNPC)
+public void BarrackChampion_ClotThink(int iNPC)
 {
-	BarrackManAtArms npc = view_as<BarrackManAtArms>(iNPC);
+	BarrackChampion npc = view_as<BarrackChampion>(iNPC);
 	if(BarrackBody_ThinkStart(npc.index))
 	{
 		BarrackBody_ThinkTarget(npc.index, false);
@@ -52,10 +51,10 @@ public void BarrackManAtArms_ClotThink(int iNPC)
 					if(!npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
-						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
+						npc.AddGesture("ACT_CUSTOM_ATTACK_SWORD");
 						npc.PlaySwordSound();
-						npc.m_flAttackHappens = GetGameTime(npc.index) + 0.4;
-						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 0.54;
+						npc.m_flAttackHappens = GetGameTime(npc.index) + 0.3;
+						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 0.44;
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (1.0 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
 					}
@@ -73,7 +72,7 @@ public void BarrackManAtArms_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 6000.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}
@@ -88,13 +87,13 @@ public void BarrackManAtArms_ClotThink(int iNPC)
 			}
 		}
 
-		BarrackBody_ThinkMove(npc.index, 175.0, "ACT_IDLE", "ACT_WALK");
+		BarrackBody_ThinkMove(npc.index, 250.0, "ACT_IDLE", "ACT_CUSTOM_WALK_SWORD");
 	}
 }
 
-void BarrackManAtArms_NPCDeath(int entity)
+void BarrackChampion_NPCDeath(int entity)
 {
-	BarrackManAtArms npc = view_as<BarrackManAtArms>(entity);
+	BarrackChampion npc = view_as<BarrackChampion>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, BarrackManAtArms_ClotThink);
+	SDKUnhook(npc.index, SDKHook_Think, BarrackChampion_ClotThink);
 }

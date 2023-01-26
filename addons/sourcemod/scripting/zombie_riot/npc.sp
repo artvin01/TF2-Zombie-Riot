@@ -191,9 +191,15 @@ enum
 	MEDIVAL_OBUCH				= 162,
 	MEDIVAL_MONK				= 163,
 
-	BARRACK_MILITIA		= 164,
-	BARRACK_ARCHER		= 165,
-	BARRACK_MAN_AT_ARMS	= 166
+	BARRACK_MILITIA				= 164,
+	BARRACK_ARCHER				= 165,
+	BARRACK_MAN_AT_ARMS			= 166,
+
+	MEDIVAL_HALB				= 167,
+	MEDIVAL_BRAWLER				= 168,
+	MEDIVAL_LONGBOWMEN			= 169,
+	MEDIVAL_ARBALEST			= 170,
+	MEDIVAL_ELITE_LONGBOWMEN	= 171
 }
 
 public const char NPC_Names[][] =
@@ -378,7 +384,13 @@ public const char NPC_Names[][] =
 
 	"Militia",
 	"Archer",
-	"Man-At-Arms"
+	"Man-At-Arms",
+
+	"Medival Halberdier",
+	"Medival Brawler",
+	"Medival Longbowmen",
+	"Medival Abalest",
+	"Medival Elite Longbowmen"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -559,7 +571,12 @@ public const char NPC_Plugin_Names_Converted[][] =
 
 	"npc_barrack_militia",
 	"npc_barrack_archer",
-	"npc_barrack_man_at_arms"
+	"npc_barrack_man_at_arms",
+	"npc_medival_halbadeer",
+	"npc_medival_brawler",
+	"npc_medival_longbowmen",
+	"npc_medival_arbalest",
+	"npc_medival_elite_longbowmen"
 };
 
 void NPC_MapStart()
@@ -742,6 +759,11 @@ void NPC_MapStart()
 	MedivalKnight_OnMapStart_NPC();
 	MedivalObuch_OnMapStart_NPC();
 	MedivalMonk_OnMapStart_NPC();
+	MedivalHalb_OnMapStart_NPC();
+	MedivalBrawler_OnMapStart_NPC();
+	MedivalLongbowmen_OnMapStart_NPC();
+	MedivalArbalest_OnMapStart_NPC();
+	MedivalEliteLongbowmen_OnMapStart_NPC();
 }
 
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
@@ -1405,6 +1427,26 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case BARRACK_MAN_AT_ARMS:
 		{
 			entity = BarrackManAtArms(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_HALB:
+		{
+			entity = MedivalHalb(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_BRAWLER:
+		{
+			entity = MedivalBrawler(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_LONGBOWMEN:
+		{
+			entity = MedivalLongbowmen(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_ARBALEST:
+		{
+			entity = MedivalArbalest(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_ELITE_LONGBOWMEN:
+		{
+			entity = MedivalEliteLongbowmen(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -2071,6 +2113,26 @@ public void NPCDeath(int entity)
 		{
 			BarrackManAtArms_NPCDeath(entity);
 		}
+		case MEDIVAL_HALB:
+		{
+			MedivalHalb_NPCDeath(entity);
+		}
+		case MEDIVAL_BRAWLER:
+		{
+			MedivalBrawler_NPCDeath(entity);
+		}
+		case MEDIVAL_LONGBOWMEN:
+		{
+			MedivalLongbowmen_NPCDeath(entity);
+		}
+		case MEDIVAL_ARBALEST:
+		{
+			MedivalArbalest_NPCDeath(entity);
+		}
+		case MEDIVAL_ELITE_LONGBOWMEN:
+		{
+			MedivalEliteLongbowmen_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2304,6 +2366,11 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/medival/npc_medival_knight.sp"
 #include "zombie_riot/npc/medival/npc_medival_obuch.sp"
 #include "zombie_riot/npc/medival/npc_medival_monk.sp"
+#include "zombie_riot/npc/medival/npc_medival_halbadeer.sp"
+#include "zombie_riot/npc/medival/npc_medival_longbowmen.sp"
+#include "zombie_riot/npc/medival/npc_medival_arbalest.sp"
+#include "zombie_riot/npc/medival/npc_medival_brawler.sp"
+#include "zombie_riot/npc/medival/npc_medival_elite_longbowmen.sp"
 
 #include "zombie_riot/npc/cof/npc_addiction.sp"
 #include "zombie_riot/npc/cof/npc_doctor.sp"

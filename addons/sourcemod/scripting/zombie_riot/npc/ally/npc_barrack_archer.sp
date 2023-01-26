@@ -1,11 +1,14 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+// Balanced around Mid Zombie
+// Construction Novice
+
 methodmap BarrackArcher < BarrackBody
 {
 	public BarrackArcher(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BarrackArcher npc = view_as<BarrackArcher>(BarrackBody(client, vecPos, vecAng, "100"));
+		BarrackArcher npc = view_as<BarrackArcher>(BarrackBody(client, vecPos, vecAng, "110"));
 		
 		i_NpcInternalId[npc.index] = BARRACK_ARCHER;
 		
@@ -16,6 +19,9 @@ methodmap BarrackArcher < BarrackBody
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bow/c_bow.mdl");
 		SetVariantString("0.4");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 		
 		return npc;
 	}
@@ -44,22 +50,20 @@ public void BarrackArcher_ClotThink(int iNPC)
 					if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 					{
 						npc.m_flSpeed = 0.0;
-			//			npc.FaceTowards(vecTarget, 30000.0);
+						npc.FaceTowards(vecTarget, 30000.0);
 						//Play attack anim
 						npc.AddGesture("ACT_CUSTOM_ATTACK_BOW");
 						
 			//			npc.PlayMeleeSound();
 			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;
-						npc.m_flReloadDelay = GetGameTime(npc.index) + 1.0;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (2.0 * npc.BonusFireRate);
+						npc.m_flReloadDelay = GetGameTime(npc.index) + (1.0 * npc.BonusFireRate);
 					}
-
-					path = false;
 				}
 			}
 		}
 
-		BarrackBody_ThinkMove(npc.index, "ACT_CUSTOM_WALK_BOW", "ACT_CUSTOM_WALK_BOW", 160000.0, path);
+		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_CUSTOM_IDLE_BOW", "ACT_CUSTOM_WALK_BOW", 160000.0);
 	}
 }
 
@@ -75,7 +79,7 @@ void BarrackArcher_HandleAnimEvent(int entity, int event)
 			npc.FaceTowards(vecTarget, 30000.0);
 			
 			npc.PlayRangedSound();
-			npc.FireArrow(vecTarget, 100.0, 1200.0);
+			npc.FireArrow(vecTarget, 100.0 * npc.BonusDamageBonus, 1200.0);
 		}
 	}
 	

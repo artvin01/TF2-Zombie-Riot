@@ -91,6 +91,7 @@ void DHook_Setup()
 
 	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
+//	DHook_CreateDetour(gamedata, "PathFollower::Avoid", _, PathFollowerAvoid);
 
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
@@ -1832,3 +1833,35 @@ public MRESReturn FX_FireBullets_Post(DHookParam hParams)
 
     return MRES_Ignored;
 }
+/*
+( INextBot *bot, const Vector &goalPos, const Vector &forward, const Vector &left )
+*/
+/*
+public MRESReturn PathFollowerAvoid(DHookReturn Hreturn, DHookParam param)
+{
+	PrintToChatAll("PathFollowerAvoid");
+	
+	float goalPos[3];
+	DHookGetParamVector(param, 2, goalPos);
+	PrintToChatAll("%f,%f,%f,", goalPos[0], goalPos[1], goalPos[2]);
+
+	int bot = DHookGetParam(param, 1);
+	int entity = view_as<int>(SDKCall(g_hGetEntity, bot));
+	if(entity > MaxClients)
+	{
+		float goalPos[3];
+		DHookGetParamVector(param, 2, goalPos);
+		PrintToChatAll("%f,%f,%f,", goalPos[0], goalPos[1], goalPos[2]);
+		
+		float forwardVec[3];
+		float leftVec[3];
+		DHookGetParamVector(param, 3, forwardVec);
+		DHookGetParamVector(param, 4, leftVec);
+		
+		DHookSetReturnVector(Hreturn, goalPos);
+		return MRES_Supercede;
+	}
+	
+	return MRES_Ignored;
+}
+*/

@@ -590,6 +590,7 @@ Handle g_hShouldCollideWithAlly;
 Handle g_hShouldCollideWithAllyInvince;
 Handle g_hShouldCollideWithAllyEnemy;
 Handle g_hShouldCollideWithAllyEnemyIngoreBuilding;
+Handle g_hShouldCollideWithAllyIngoreBuilding;
 Handle g_hGetSolidMask;
 Handle g_hStartActivity;
 Handle g_hGetActivity;
@@ -600,6 +601,9 @@ Handle g_hGetStandHullHeight;
 Handle g_hGetHullWidthGiant;
 Handle g_hGetHullHeightGiant;
 Handle g_hGetStandHullHeightGiant;
+Handle g_hGetHullWidthSmall;
+Handle g_hGetHullHeightSmall;
+Handle g_hGetStandHullHeightSmall;
 
 //NavAreas
 Address TheNavAreas;
@@ -650,7 +654,7 @@ enum
 }
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_185.mdl"
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_186.mdl"
 //#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_175.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
@@ -813,13 +817,14 @@ float fl_GetClosestTargetNoResetTime[MAXENTITIES];
 float fl_NextHurtSound[MAXENTITIES];
 float fl_HeadshotCooldown[MAXENTITIES];
 bool b_CantCollidie[MAXENTITIES];
+bool b_CollidesWithEachother[MAXENTITIES];
 bool b_CantCollidieAlly[MAXENTITIES];
 bool b_BuildingIsStacked[MAXENTITIES];
 bool b_bBuildingIsPlaced[MAXENTITIES];
 bool b_XenoInfectedSpecialHurt[MAXENTITIES];
 float fl_XenoInfectedSpecialHurtTime[MAXENTITIES];
 bool b_DoGibThisNpc[MAXENTITIES];
-
+float f3_SpawnPosition[MAXENTITIES][3];
 int i_SpawnProtectionEntity[MAXENTITIES]={-1, ...};
 float f3_VecPunchForce[MAXENTITIES][3];
 float fl_NextDelayTime[MAXENTITIES];
@@ -2843,6 +2848,9 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				//	return true;
 
 				if(Citizen_Interact(client, entity))
+					return true;
+				
+				if(Is_Reload_Button && BarrackBody_Interact(client, entity))
 					return true;
 			}
 #endif

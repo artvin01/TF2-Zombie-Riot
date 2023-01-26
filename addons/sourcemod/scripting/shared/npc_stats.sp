@@ -28,7 +28,6 @@ bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 #endif
 
 #if defined RPG
-float f3_SpawnPosition[MAXENTITIES][3];
 int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
 int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES] = {0, ...};
 #endif
@@ -273,7 +272,8 @@ methodmap CClotBody
 						bool isGiant = false,
 						bool IgnoreBuildings = false,
 						bool IsRaidBoss = false,
-						float CustomThreeDimensions[3] = {0.0,0.0,0.0})
+						float CustomThreeDimensions[3] = {0.0,0.0,0.0},
+						bool Ally_Collideeachother = false)
 	{
 		int npc = CreateEntityByName("base_boss");
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
@@ -284,6 +284,7 @@ methodmap CClotBody
 		
 		if(Ally)
 		{
+			b_IsAlliedNpc[npc] = true;
 			if(Ally_Invince)
 			{
 				b_ThisEntityIgnored[npc] = true;
@@ -353,6 +354,11 @@ methodmap CClotBody
 			{
 				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyInvince,   false, pLocomotion);
 			}
+			else if (Ally_Collideeachother)
+			{
+				b_CollidesWithEachother[npc] = true;
+				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyIngoreBuilding,   false, pLocomotion);
+			}
 			else
 			{
 				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAlly,   false, pLocomotion);
@@ -386,6 +392,12 @@ methodmap CClotBody
 			list.Push(DHookRaw(g_hGetHullWidth,		true, pBody));
 			list.Push(DHookRaw(g_hGetHullHeight,	   true, pBody));
 			list.Push(DHookRaw(g_hGetStandHullHeight,  true, pBody));
+		}
+		else if (Ally_Collideeachother)
+		{
+			list.Push(DHookRaw(g_hGetHullWidthSmall,		true, pBody));
+			list.Push(DHookRaw(g_hGetHullHeightSmall,	   true, pBody));
+			list.Push(DHookRaw(g_hGetStandHullHeightSmall,  true, pBody));
 		}
 		else
 		{
@@ -453,7 +465,12 @@ methodmap CClotBody
 			b_BoundingBoxVariant[npc] = 1;
 			m_vecMaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
 			m_vecMins = view_as<float>( { -30.0, -30.0, 0.0 } );	
-		}			
+		}	
+		else if (Ally_Collideeachother)
+		{
+			m_vecMaxs = view_as<float>( { 8.0, 8.0, 31.0 } );
+			m_vecMins = view_as<float>( { -8.0, -8.0, 0.0 } );	
+		}		
 		else
 		{
 			m_vecMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
@@ -512,11 +529,18 @@ methodmap CClotBody
 		if(IsRaidBoss)
 		{
 			RemoveAllDamageAddition();
-			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.1, 1.75); //Global.
+			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, MASK_NPCSOLID, 150.0, 0.1, 1.75); //Global.
+		}
+		else if(Ally_Collideeachother)
+		{
+			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, MASK_NPCSOLID, 300.0, 0.29, 2.5); //Global.
 		}
 		else
-			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.29, 1.75); //Global.
-		
+		{
+			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, MASK_NPCSOLID, 150.0, 0.29, 1.75); //Global.
+			
+		}
+	
 		return view_as<CClotBody>(npc);
 	}
 		property int index 
@@ -1777,9 +1801,12 @@ methodmap CClotBody
 		PF_EnableCallback(this.index, PFCB_GetPathCost,		 PluginBot_PathCost);
 	//	PF_EnableCallback(this.index, PFCB_ClimbUpToLedge, 		PluginBot_NormalJump);
 	//	PF_EnableCallback(this.index, PFCB_PathSuccess,			PluginBot_PathSuccess);
-		//PF_EnableCallback(this.index, PFCB_OnMoveToSuccess,	 PluginBot_MoveToSuccess);
-		//PF_EnableCallback(this.index, PFCB_PathFailed,		  PluginBot_MoveToFailure);
-		//PF_EnableCallback(this.index, PFCB_OnMoveToFailure,	 PluginBot_MoveToFailure);
+		if(b_CollidesWithEachother[this.index])
+		{
+			PF_EnableCallback(this.index, PFCB_OnMoveToSuccess,	 PluginBot_MoveToSuccess);
+			PF_EnableCallback(this.index, PFCB_PathFailed,		  PluginBot_MoveToFailure);
+			PF_EnableCallback(this.index, PFCB_OnMoveToFailure,	 PluginBot_MoveToFailure);
+		}
 		
 		PF_EnableCallback(this.index, PFCB_OnActorEmoted, PluginBot_OnActorEmoted);
 		
@@ -1791,9 +1818,12 @@ methodmap CClotBody
 		PF_DisableCallback(entity, PFCB_IsEntityTraversable);
 		PF_DisableCallback(entity, PFCB_GetPathCost);
 	//	PF_DisableCallback(entity, PFCB_ClimbUpToLedge);
-	//	PF_DisableCallback(entity, PFCB_OnMoveToSuccess);
-	//	PF_DisableCallback(entity, PFCB_PathFailed);
-	//	PF_DisableCallback(entity, PFCB_OnMoveToFailure);
+		if(b_CollidesWithEachother[entity])
+		{
+			PF_DisableCallback(entity, PFCB_OnMoveToSuccess);
+			PF_DisableCallback(entity, PFCB_PathFailed);
+			PF_DisableCallback(entity, PFCB_OnMoveToFailure);
+		}
 		PF_DisableCallback(entity, PFCB_OnActorEmoted);
 		PF_Destroy(entity);
 	}	
@@ -2238,7 +2268,15 @@ methodmap CClotBody
 					SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_modelArrow, _, i);
 					
 				//	int trail = Trail_Attach(entity, "effects/arrowtrail_blue.vmt", 255, 1.5, 12.0, 0.0, 4);
-					int trail = Trail_Attach(entity, ARROW_TRAIL, 255, 0.3, 3.0, 3.0, 5);
+					int trail;
+					if(b_IsAlliedNpc[this.index])
+					{
+						trail = Trail_Attach(entity, ARROW_TRAIL_RED, 255, 0.3, 3.0, 3.0, 5);
+					}
+					else
+					{
+						trail = Trail_Attach(entity, ARROW_TRAIL, 255, 0.3, 3.0, 3.0, 5);
+					}
 					
 					f_ArrowTrailParticle[entity] = EntIndexToEntRef(trail);
 					
@@ -2253,6 +2291,7 @@ methodmap CClotBody
 			}
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
 			SetEntityCollisionGroup(entity, 19); //our savior
+			Set_Projectile_Collision(entity); //If red, set to 27
 			See_Projectile_Team(entity);
 			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Arrow_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
 			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
@@ -2913,6 +2952,10 @@ public void NPC_Base_InitGamedata()
 
 	g_hShouldCollideWithAllyEnemyIngoreBuilding = DHookCreateEx(hConf, "ILocomotion::ShouldCollideWith",  HookType_Raw, ReturnType_Bool, ThisPointer_Address, ILocomotion_ShouldCollideWithEnemyIngoreBuilding);
 	DHookAddParam(g_hShouldCollideWithAllyEnemyIngoreBuilding, HookParamType_CBaseEntity);
+
+
+	g_hShouldCollideWithAllyIngoreBuilding = DHookCreateEx(hConf, "ILocomotion::ShouldCollideWith",  HookType_Raw, ReturnType_Bool, ThisPointer_Address, ILocomotion_ShouldCollideWithAllyOnlyIngoreBuilding);
+	DHookAddParam(g_hShouldCollideWithAllyIngoreBuilding, HookParamType_CBaseEntity);
 	
 	g_hGetSolidMask		= DHookCreateEx(hConf, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
 	g_hGetActivity		 = DHookCreateEx(hConf, "IBody::GetActivity",		HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetActivity);
@@ -2927,6 +2970,11 @@ public void NPC_Base_InitGamedata()
 	g_hGetHullHeight	   = DHookCreateEx(hConf, "IBody::GetHullHeight",	  HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullHeight);
 	g_hGetStandHullHeight  = DHookCreateEx(hConf, "IBody::GetStandHullHeight", HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetStandHullHeight);
 	
+	g_hGetHullWidthSmall		= DHookCreateEx(hConf, "IBody::GetHullWidth",	   HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullWidthSmall);
+	g_hGetHullHeightSmall	   = DHookCreateEx(hConf, "IBody::GetHullHeight",	  HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullHeightSmall);
+	g_hGetStandHullHeightSmall  = DHookCreateEx(hConf, "IBody::GetStandHullHeight", HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetStandHullHeightSmall);
+
+
 	g_hIsActivity   = DHookCreateEx(hConf, "IBody::IsActivity",   HookType_Raw, ReturnType_Bool, ThisPointer_Address, IBody_IsActivity);
 	DHookAddParam(g_hIsActivity, HookParamType_Int);
 	
@@ -3455,6 +3503,14 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		{
 			BarrackArcher_HandleAnimEvent(pThis, event);
 		}
+		case MEDIVAL_LONGBOWMEN:
+		{
+			HandleAnimEventMedivalLongbowmen(pThis, event);
+		}
+		case MEDIVAL_ARBALEST:
+		{
+			HandleAnimEventMedival_Arbalest(pThis, event);
+		}
 	}
 #endif
 	
@@ -3655,6 +3711,36 @@ public MRESReturn ILocomotion_ShouldCollideWithEnemyIngoreBuilding(Address pThis
 //	DHookSetReturn(hReturn, true); 
 	return MRES_Ignored;
 }
+
+public MRESReturn ILocomotion_ShouldCollideWithAllyOnlyIngoreBuilding(Address pThis, Handle hReturn, Handle hParams)   
+{ 
+	int otherindex = DHookGetParam(hParams, 1);
+	
+	if(otherindex > 0 && otherindex <= MaxClients)
+	{
+		DHookSetReturn(hReturn, false); 
+		return MRES_Supercede; 
+	}
+
+	if(b_CollidesWithEachother[otherindex]) //no change in performance..., almost.
+	{
+		return MRES_Ignored;
+	}
+
+	if(b_CantCollidieAlly[otherindex]) //no change in performance..., almost.
+	{
+		if(i_IsABuilding[otherindex])
+		{
+			DHookSetReturn(hReturn, false); 
+			return MRES_Supercede;
+		}
+		DHookSetReturn(hReturn, false); 
+		return MRES_Supercede;
+	}
+	
+//	DHookSetReturn(hReturn, true); 
+	return MRES_Ignored;
+}
 //2 * m_vecMaxs
 public MRESReturn IBody_GetHullWidth_ISGIANT(Address pThis, Handle hReturn, Handle hParams)			  { DHookSetReturn(hReturn, 60.0); return MRES_Supercede; }
 public MRESReturn IBody_GetHullHeight_ISGIANT(Address pThis, Handle hReturn, Handle hParams)			 { DHookSetReturn(hReturn, 120.0); return MRES_Supercede; }
@@ -3686,6 +3772,11 @@ public MRESReturn IBody_GetStandHullHeight(Address pThis, Handle hReturn, Handle
 	}
 	return MRES_Supercede; 
 }
+
+public MRESReturn IBody_GetHullWidthSmall(Address pThis, Handle hReturn, Handle hParams)			  { DHookSetReturn(hReturn, 16.0); return MRES_Supercede; }
+public MRESReturn IBody_GetHullHeightSmall(Address pThis, Handle hReturn, Handle hParams)			 { DHookSetReturn(hReturn, 31.0); return MRES_Supercede; }
+public MRESReturn IBody_GetStandHullHeightSmall(Address pThis, Handle hReturn, Handle hParams)		{ DHookSetReturn(hReturn, 31.0); return MRES_Supercede; }
+
 //npc.m_bISGIANT
 //BOUNDING BOX FOR ENEMY TO RESPECT
 
@@ -3779,24 +3870,43 @@ public bool PluginBot_IsEntityTraversable(int bot_entidx, int other_entidx, Trav
 		return false;
 	}
 	
-	if(other_entidx > 0 && other_entidx <= MaxClients) 
+	if(b_IsAlliedNpc[bot_entidx]) //ally!
 	{
-		return true;
-	}	
-	
-	CClotBody npc = view_as<CClotBody>(other_entidx);
-
-	#if defined ISINVINCEABLEALLY || defined ISALLY
-	if(npc.bCantCollidieAlly) //no change in performance..., almost.
-	{
-		return true;
+		if(b_ThisEntityIgnored[bot_entidx] && b_ThisEntityIgnored[other_entidx])
+		{
+			return true; //yep! 
+		}
+		if(other_entidx > 0 && other_entidx <= MaxClients) 
+		{
+			return true; //Yep, is a player.
+		}	
+		if(b_CollidesWithEachother[bot_entidx])
+		{
+			if(b_CollidesWithEachother[other_entidx])
+			{
+				return false; //nope!
+			}
+		}
+		if(!b_IsAlliedNpc[other_entidx])
+		{
+			return false; //nope!
+		}	
+		if(i_IsABuilding[other_entidx])
+		{
+			return true; //yep!
+		}	
+		if(b_CantCollidieAlly[other_entidx])
+		{
+			return true; //yep!
+		}
 	}
-	#else
-	if(npc.bCantCollidie) //no change in performance..., almost.
+	else
 	{
-		return true;
+		if(b_CantCollidie[other_entidx])
+		{
+			return true; //yep!
+		}
 	}
-	#endif
 	
 	if(when == IMMEDIATELY) {
 		return false;
@@ -4012,7 +4122,7 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 		hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
 		hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );		
 	}
-
+	
 	if (!IsSpaceOccupiedDontIgnorePlayers(Jump_1_frame, hullcheckmins, hullcheckmaxs, bot_entidx))//The boss will start to merge with shits, cancel out velocity.
 	{
 		float vecNPC[3], vecJumpVel[3];
@@ -4083,7 +4193,7 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 	}
 	return false;
 }
-/*
+
 public void PluginBot_PathSuccess(int bot_entidx, Address path)
 {
 	PF_StopPathing(bot_entidx);
@@ -4107,7 +4217,7 @@ public void PluginBot_MoveToFailure(int bot_entidx, Address path, MoveToFailureT
 	
 	//view_as<CClotBody>(bot_entidx).m_flNextTargetTime = GetGameTime() + GetRandomFloat(1.0, 4.0);
 }
-*/
+
 stock bool IsEntityAlive(int index)
 {
 	if(IsValidEntity(index) && index > 0)
@@ -4676,6 +4786,15 @@ stock bool IsSpaceOccupiedDontIgnorePlayers(const float pos[3], const float mins
 	return bHit;
 }
 
+stock bool IsSpaceOccupiedRTSBuilding(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
+{
+	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayDontHitRTSAlliedNpc, entity);
+	bool bHit = TR_DidHit(hTrace);
+	ref = TR_GetEntityIndex(hTrace);
+	delete hTrace;
+	return bHit;
+}
+
 stock int IsSpaceOccupiedOnlyPlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayHitPlayersOnly, entity);
@@ -4737,6 +4856,69 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 	
 	if(StrEqual(class, "base_boss"))
 	{
+		return false;
+	}
+	
+	else if(StrContains(class, "tf_projectile_", false) != -1)
+	{
+		return false;
+	}
+	
+	//if anything else is team
+	
+	if(GetEntProp(data, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		return false;
+	
+	if(StrEqual(class, "func_brush"))
+	{
+		return true;//They blockin me
+	}
+	else if(StrEqual(class, "func_respawnroomvisualizer"))
+	{
+		return true;//They blockin me and not on same team, otherwsie top filter
+	}
+	
+	if(npc.m_bThisEntityIgnored)
+	{
+		return false;
+	}
+	
+	if(entity == Entity_to_Respect)
+	{
+		return false;
+	}
+	
+	return true;
+}
+
+
+public bool TraceRayDontHitRTSAlliedNpc(int entity,int mask,any data)
+{
+	if(entity == 0)
+	{
+		return true;
+	}
+
+	if(entity > 0 && entity <= MaxClients) 
+	{
+		return false;
+	}
+
+	static char class[64];
+	GetEntityClassname(entity, class, sizeof(class));
+	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
+	{
+		return false;
+	}
+	
+	CClotBody npc = view_as<CClotBody>(entity);
+	
+	if(StrEqual(class, "base_boss"))
+	{
+		if(b_CollidesWithEachother[entity])
+		{
+			return true;
+		}
 		return false;
 	}
 	
@@ -6876,9 +7058,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 #endif
 	
 #if defined RPG
-	f3_SpawnPosition[entity][0] = 0.0;
-	f3_SpawnPosition[entity][1] = 0.0;
-	f3_SpawnPosition[entity][2] = 0.0;
 	hFromSpawnerIndex[entity] = -1;
 	i_NpcIsUnderSpawnProtectionInfluence[entity] = 0;
 	b_DungeonContracts_BleedOnHit[entity] = false;
@@ -6901,7 +7080,9 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Wearable[entity][3] = -1;
 	i_Wearable[entity][4] = -1;
 	i_Wearable[entity][5] = -1;
-
+	f3_SpawnPosition[entity][0] = 0.0;
+	f3_SpawnPosition[entity][1] = 0.0;
+	f3_SpawnPosition[entity][2] = 0.0;
 	b_DissapearOnDeath[entity] = false;
 	b_IsGiant[entity] = false;
 	b_Pathing[entity] = false;
@@ -6921,6 +7102,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_NextHurtSound[entity] = 0.0;
 	fl_HeadshotCooldown[entity] = 0.0;
 	b_CantCollidie[entity] = false;
+	b_CollidesWithEachother[entity] = false;
 	b_CantCollidieAlly[entity] = false;
 	b_BuildingIsStacked[entity] = false;
 	b_bBuildingIsPlaced[entity] = false;

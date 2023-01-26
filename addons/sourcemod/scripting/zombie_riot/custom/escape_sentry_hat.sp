@@ -466,6 +466,10 @@ public Action Mount_Building_Timer(Handle sentryHud, DataPack pack)
 				else if (StrEqual(buffer, "zr_village"))
 				{
 					EquipDispenser(client, entity, 8);
+				}	
+				else if (StrEqual(buffer, "zr_summoner"))
+				{
+					EquipDispenser(client, entity, 9);
 				}					
 			}
 		}
