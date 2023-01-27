@@ -81,7 +81,9 @@ void BarrackArbelast_HandleAnimEvent(int entity, int event)
 			npc.FaceTowards(vecTarget, 30000.0);
 			
 			npc.PlayRangedSound();
-			npc.FireArrow(vecTarget, 650.0 * npc.BonusDamageBonus, 1200.0);
+			int arrow = npc.FireArrow(vecTarget, 650.0 * npc.BonusDamageBonus, 1200.0);
+			if(arrow > MaxClients)
+				SetEntPropEnt(arrow, Prop_Send, "m_hOwnerEntity", GetClientOfUserId(npc.OwnerUserId));
 		}
 	}
 }
