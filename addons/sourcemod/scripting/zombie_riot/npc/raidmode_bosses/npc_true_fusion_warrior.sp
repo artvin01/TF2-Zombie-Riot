@@ -78,7 +78,6 @@ static float FusionWarrior_BEAM_Duration[MAXENTITIES];
 static float FusionWarrior_BEAM_BeamOffset[MAXENTITIES][3];
 static float FusionWarrior_BEAM_ZOffset[MAXENTITIES];
 static bool FusionWarrior_BEAM_HitDetected[MAXENTITIES];
-static int FusionWarrior_BEAM_BuildingHit[MAXENTITIES];
 static bool FusionWarrior_BEAM_UseWeapon[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 
@@ -623,7 +622,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				}
 			}
 			
-			if (npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > Pow(110.0, 2.0)  && flDistanceToTarget < Pow(500.0, 2.0) || (npc.m_bInKame && npc.m_flNextRangedAttack < GetGameTime(npc.index)))
+			if (npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < Pow(500.0, 2.0) || (npc.m_bInKame && npc.m_flNextRangedAttack < GetGameTime(npc.index)))
 			{
 				if (!npc.Anger)
 				{
@@ -1059,11 +1058,6 @@ public void TrueFusionWarrior_NPCDeath(int entity)
 
 void TrueFusionWarrior_TBB_Ability_Anger(int client)
 {
-	for (int building = 1; building < MaxClients; building++)
-	{
-		FusionWarrior_BEAM_BuildingHit[building] = false;
-	}
-	
 	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
 	
 	FusionWarrior_BEAM_IsUsing[client] = false;
@@ -1126,11 +1120,6 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 
 void TrueFusionWarrior_TBB_Ability(int client)
 {
-	for (int building = 1; building < MaxClients; building++)
-	{
-		FusionWarrior_BEAM_BuildingHit[building] = false;
-	}
-	
 	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
 			
 	FusionWarrior_BEAM_IsUsing[client] = false;
@@ -1217,40 +1206,12 @@ public bool FusionWarrior_BEAM_TraceWallsOnly(int entity, int contentsMask)
 #define MAX_PLAYERS (MAX_PLAYERS_ARRAY < (MaxClients + 1) ? MAX_PLAYERS_ARRAY : (MaxClients + 1))
 #define MAX_PLAYERS_ARRAY 36
 
-stock bool IsLivingPlayer(int clientIdx)
-{
-	if (clientIdx <= 0 || clientIdx >= MAX_PLAYERS)
-		return false;
-		
-	return IsClientInGame(clientIdx) && IsPlayerAlive(clientIdx);
-}
 
 public bool FusionWarrior_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
-	static char classname[64];
-	if (IsLivingPlayer(entity))
+	if (IsEntityAlive(entity))
 	{
 		FusionWarrior_BEAM_HitDetected[entity] = true;
-	}
-	else if (IsValidEntity(entity))
-	{
-		if(0 < entity)
-		{
-			GetEntityClassname(entity, classname, sizeof(classname));
-			
-			if (StrContains(classname, "base_boss") != -1 && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
-			{
-				for(int i=1; i <= MAXENTITIES; i++)
-				{
-					if(!FusionWarrior_BEAM_BuildingHit[i])
-					{
-						FusionWarrior_BEAM_BuildingHit[i] = entity;
-						break;
-					}
-				}
-			}
-			
-		}
 	}
 	return false;
 }
