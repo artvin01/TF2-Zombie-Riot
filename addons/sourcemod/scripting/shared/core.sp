@@ -794,6 +794,7 @@ char g_TankStepSound[][] = {
 };
 
 float f_ArrowDamage[MAXENTITIES];
+int h_ArrowInflictorRef[MAXENTITIES];
 int f_ArrowTrailParticle[MAXENTITIES]={INVALID_ENT_REFERENCE, ...};
 bool b_IsEntityAlwaysTranmitted[MAXENTITIES];
 
@@ -2106,6 +2107,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_EntityRenderColour4[entity] = 255;
 		i_EntityRenderOverride[entity] = false;
 		b_StickyIsSticking[entity] = false;
+		h_ArrowInflictorRef[entity] = -1;
 		
 		b_RocketBoomEffect[entity] = false;
 		b_IsAlliedNpc[entity] = false;

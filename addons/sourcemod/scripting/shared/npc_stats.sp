@@ -2218,7 +2218,7 @@ methodmap CClotBody
 			SetEntityCollisionGroup(entity, 1);
 		}
 	}
-	public int FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, float offset = 0.0) //No defaults, otherwise i cant even judge.
+	public void FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE) //No defaults, otherwise i cant even judge.
 	{
 		//ITS NOT actually an arrow, because of an ANNOOOOOOOOOOOYING sound.
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
@@ -2248,6 +2248,7 @@ methodmap CClotBody
 		{
 			b_EntityIsArrow[entity] = true;
 			f_ArrowDamage[entity] = rocket_damage;
+			h_ArrowInflictorRef[entity] = inflictor < 1 ? INVALID_ENT_REFERENCE : EntIndexToEntRef(inflictor);
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(this.index, Prop_Send, "m_iTeamNum"));
@@ -2297,7 +2298,6 @@ methodmap CClotBody
 			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, ArrowStartTouch);
 		}
-		return entity;
 	}
 	/*
 	public void FireBolt(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "" , float model_scale = 1.0) //No defaults, otherwise i cant even judge.
@@ -7184,7 +7184,19 @@ public void ArrowStartTouch(int arrow, int entity)
 		{
 			f_ArrowDamage[arrow] *= 3.0;
 		}
-		SDKHooks_TakeDamage(entity, arrow, arrow, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
+
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(owner == -1)
+			owner = arrow;
+
+		int inflictor = h_ArrowInflictorRef[arrow];
+		if(inflictor != -1)
+			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[arrow]);
+
+		if(inflictor == -1)
+			inflictor = owner;
+
+		SDKHooks_TakeDamage(entity, owner, inflictor, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
 		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
 		if(IsValidEntity(arrow_particle))
 		{

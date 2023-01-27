@@ -1679,10 +1679,15 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	i_HexCustomDamageTypes[victim] = 0; //Reset it back to 0.
-	if(attacker < 1 || attacker > MaxClients)
-		return;
-		
-	Calculate_And_Display_hp(attacker, victim, damage, false);
+	
+	if(inflictor > 0 && inflictor <= MaxClients)
+	{
+		Calculate_And_Display_hp(inflictor, victim, damage, false);
+	}
+	else if(attacker > 0 && attacker <= MaxClients)
+	{
+		Calculate_And_Display_hp(attacker, victim, damage, false);	
+	}
 	/*
 	if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 	{

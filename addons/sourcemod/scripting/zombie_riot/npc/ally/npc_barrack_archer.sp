@@ -78,9 +78,7 @@ void BarrackArcher_HandleAnimEvent(int entity, int event)
 			npc.FaceTowards(vecTarget, 30000.0);
 			
 			npc.PlayRangedSound();
-			int arrow = npc.FireArrow(vecTarget, 100.0 * npc.BonusDamageBonus, 1200.0);
-			if(arrow > MaxClients)
-				SetEntPropEnt(arrow, Prop_Send, "m_hOwnerEntity", GetClientOfUserId(npc.OwnerUserId));
+			npc.FireArrow(vecTarget, 100.0 * npc.BonusDamageBonus, 1200.0, _, _, _, GetClientOfUserId(npc.OwnerUserId));
 		}
 	}
 	
