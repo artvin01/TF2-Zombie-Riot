@@ -35,7 +35,7 @@ public void BarrackLongbow_ClotThink(int iNPC)
 	BarrackLongbow npc = view_as<BarrackLongbow>(iNPC);
 	if(BarrackBody_ThinkStart(npc.index))
 	{
-		BarrackBody_ThinkTarget(npc.index, false);
+		BarrackBody_ThinkTarget(npc.index, true);
 
 		if(npc.m_iTarget > 0)
 		{

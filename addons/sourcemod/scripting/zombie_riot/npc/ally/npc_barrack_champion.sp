@@ -36,7 +36,7 @@ public void BarrackChampion_ClotThink(int iNPC)
 	BarrackChampion npc = view_as<BarrackChampion>(iNPC);
 	if(BarrackBody_ThinkStart(npc.index))
 	{
-		int client = BarrackBody_ThinkTarget(npc.index, false);
+		int client = BarrackBody_ThinkTarget(npc.index, true);
 
 		if(npc.m_iTarget > 0)
 		{

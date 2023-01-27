@@ -1128,7 +1128,6 @@ public void Map_BaseBoss_Damage_Post(int victim, int attacker, int inflictor, fl
 		ShowSyncHudText(attacker, SyncHud, "%d", Health);
 	}
 }
-
 public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(damagetype & DMG_DROWN)
@@ -1227,6 +1226,103 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 	}
 	*/
+
+	CClotBody npcBase = view_as<CClotBody>(victim);
+	npcBase.m_vecpunchforce(damageForce, true);
+	npcBase.m_bGib = false;
+
+	//This exists for rpg so that attacking the target will trigger it for hte next 5 seconds.
+	//ZR does not need this.
+#if defined RPG
+	if(IsValidEntity(attacker))
+	{
+		if(GetEntProp(attacker, Prop_Send, "m_iTeamNum")!=GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+		{
+			npcBase.m_flGetClosestTargetNoResetTime = GetGameTime(npcBase.index) + 5.0; //make them angry for 5 seconds if they are too far away.
+
+			if(npcBase.m_iTarget == -1) //Only set it if they actaully have no target.
+			{
+				npcBase.m_iTarget = attacker;
+			}
+		}
+	}
+#endif
+	if(f_IsThisExplosiveHitscan[attacker] == GetGameTime())
+	{
+		npcBase.m_vecpunchforce(CalculateDamageForceSelfCalculated(attacker, 10000.0), true);
+		damagetype |= DMG_BULLET; //add bullet logic
+		damagetype &= ~DMG_BLAST; //remove blast logic			
+	}
+	
+	if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
+	{
+#if defined ZR
+		if(Medival_Difficulty_Level != 0.0)
+		{
+			damage *= Medival_Difficulty_Level;
+		}
+#endif
+		damage *= fl_MeleeArmor[victim];
+	}
+	else if(!(damagetype & DMG_SLASH))
+	{
+#if defined ZR
+		if(Medival_Difficulty_Level != 0.0)
+		{
+			damage *= Medival_Difficulty_Level;
+		}
+#endif
+		damage *= fl_RangedArmor[victim];
+	}
+	//No resistances towards slash as its internal.
+	
+	
+	
+	if(!npcBase.m_bDissapearOnDeath) //Make sure that if they just vanish, its always false. so their deathsound plays.
+	{
+		if((damagetype & DMG_BLAST))
+		{
+			npcBase.m_bGib = true;
+		}
+		else if(damage > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 1.5))
+		{
+			npcBase.m_bGib = true;
+		}
+	}
+
+	if(damagePosition[0] != 0.0) //If there is no pos, then dont.
+	{
+		if(!(damagetype & (DMG_SHOCK)))
+		{
+			if (f_CooldownForHurtParticle[victim] < GetGameTime())
+			{
+				f_CooldownForHurtParticle[victim] = GetGameTime() + 0.1;
+
+				if(npcBase.m_iBleedType == 1)
+				{
+					TE_ParticleInt(g_particleImpactFlesh, damagePosition);
+					TE_SendToAll();
+				}
+				else if (npcBase.m_iBleedType == 2)
+				{
+					damagePosition[2] -= 40.0;
+					TE_ParticleInt(g_particleImpactMetal, damagePosition);
+					TE_SendToAll();
+				}
+				else if (npcBase.m_iBleedType == 3)
+				{
+					TE_ParticleInt(g_particleImpactRubber, damagePosition);
+					TE_SendToAll();
+				}
+				else if (npcBase.m_iBleedType == 4)
+				{
+					//If you cant find any good blood effect, use this one and just recolour it.
+					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 125, 255, 125, 255, 32);
+					TE_SendToAll();
+				}
+			}
+		}
+	}
 
 	if(f_HussarBuff[victim] > GetGameTime()) //hussar!
 	{

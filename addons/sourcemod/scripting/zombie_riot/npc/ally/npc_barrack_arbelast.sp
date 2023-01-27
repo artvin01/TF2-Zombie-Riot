@@ -35,7 +35,7 @@ public void BarrackArbelast_ClotThink(int iNPC)
 	BarrackArbelast npc = view_as<BarrackArbelast>(iNPC);
 	if(BarrackBody_ThinkStart(npc.index))
 	{
-		BarrackBody_ThinkTarget(npc.index, false);
+		BarrackBody_ThinkTarget(npc.index, true);
 
 		if(npc.m_iTarget > 0)
 		{

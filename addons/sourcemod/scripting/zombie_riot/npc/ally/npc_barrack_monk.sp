@@ -30,7 +30,7 @@ public void BarrackMonk_ClotThink(int iNPC)
 	BarrackMonk npc = view_as<BarrackMonk>(iNPC);
 	if(BarrackBody_ThinkStart(npc.index))
 	{
-		BarrackBody_ThinkTarget(npc.index, false);
+		BarrackBody_ThinkTarget(npc.index, true);
 
 		float gameTime = GetGameTime(npc.index);
 		if(npc.m_flAttackHappens)

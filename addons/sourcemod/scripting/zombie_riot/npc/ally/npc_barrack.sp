@@ -221,7 +221,7 @@ methodmap BarrackBody < CClotBody
 			CommandOverride[view_as<int>(this)] = value;
 		}
 	}
-	property int m_iTargetWalk
+	property int m_iTargetRally
 	{
 		public get()
 		{
@@ -338,7 +338,15 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo)
 	BarrackBody npc = view_as<BarrackBody>(iNPC);
 
 	int client = GetClientOfUserId(npc.OwnerUserId);
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index) || !IsValidEnemy(npc.index, npc.m_iTarget))
+	bool newTarget = npc.m_flGetClosestTargetTime < GetGameTime(npc.index);
+
+	if(!newTarget)
+		newTarget = !IsValidEnemy(npc.index, npc.m_iTarget);
+
+	if(!newTarget)
+		newTarget = !IsValidEnemy(npc.index, npc.m_iTargetRally);
+
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		int command = Command_Aggressive;
 
@@ -363,31 +371,32 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo)
 			npc.m_iTargetAlly = 0;
 		}
 		
+		npc.m_iTarget = GetClosestTarget(npc.index, _, command == Command_Aggressive ? FAR_FUTURE : 900.0, camo);
+		
 		if(npc.m_iTargetAlly > 0)
 		{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
-			npc.m_iTargetWalk = GetClosestTarget(npc.index, _, 900.0, camo);
-			npc.m_iTarget = GetClosestTarget(npc.index, _, 900.0, camo, _, _, vecTarget, command == Command_Aggressive);
+			npc.m_iTargetRally = GetClosestTarget(npc.index, _, command == Command_Aggressive ? FAR_FUTURE : 900.0, camo, _, _, vecTarget, command == Command_Aggressive);
 		}
 		else
 		{
-			npc.m_iTarget = GetClosestTarget(npc.index, _, _, camo);
-		}
+			npc.m_iTargetRally = 0;
 
-		if(npc.m_iTarget < 1)
-		{
 			int entity = MaxClients + 1;
 			while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
 			{
 				if(BarrackOwner[entity] == BarrackOwner[npc.index] && GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
 				{
-					CClotBody ally = view_as<CClotBody>(entity);
-					if(ally.m_iTarget > 0 && IsValidEnemy(npc.index, ally.m_iTarget))
+					BarrackBody ally = view_as<BarrackBody>(entity);
+					if(ally.m_iTargetRally > 0 && IsValidEnemy(npc.index, ally.m_iTargetRally))
 					{
-						npc.m_iTarget = ally.m_iTarget;
+						npc.m_iTargetRally = ally.m_iTargetRally;
 					}
 				}
 			}
+
+			if(npc.m_iTargetRally < 1)
+				npc.m_iTargetRally = npc.m_iTarget;
 		}
 
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
@@ -408,44 +417,45 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 
 		float myPos[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", myPos);
-
+		
 		bool retreating = (command == Command_Retreat || command == Command_RetreatPlayer);
 
-		float vecTarget[3];
-		if(npc.m_iTarget > 0 && command != Command_HoldPos && (canRetreat || !retreating))
+		if(npc.m_iTarget > 0 && canRetreat > 0.0 && command != Command_HoldPos && !retreating)
 		{
+			float vecTarget[3];
 			GetEntPropVector(npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", vecTarget);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, myPos, true);
-			
 			if(flDistanceToTarget < canRetreat)
 			{
-				//if(command == Command_Aggressive || npc.m_iTargetAlly < 1 || flDistanceToTarget < npc.GetLeadRadius())
-				{
-					vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-					PF_SetGoalVector(npc.index, vecTarget);
-					
-					npc.StartPathing();
-					pathed = true;
-				}
+				vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
+				PF_SetGoalVector(npc.index, vecTarget);
+				
+				npc.StartPathing();
+				pathed = true;
 			}
-			else if(!retreating)
+		}
+
+		if(!pathed && npc.m_iTargetRally > 0 && command != Command_HoldPos && !retreating)
+		{
+			float vecTarget[3];
+			GetEntPropVector(npc.m_iTargetRally, Prop_Data, "m_vecAbsOrigin", vecTarget);
+
+			float flDistanceToTarget = GetVectorDistance(vecTarget, myPos, true);
+			if(flDistanceToTarget < npc.GetLeadRadius())
 			{
-				if(flDistanceToTarget < npc.GetLeadRadius())
-				{
-					//Predict their pos.
-					vecTarget = PredictSubjectPosition(npc, npc.m_iTarget);
-					PF_SetGoalVector(npc.index, vecTarget);
+				//Predict their pos.
+				vecTarget = PredictSubjectPosition(npc, npc.m_iTargetRally);
+				PF_SetGoalVector(npc.index, vecTarget);
 
-					npc.StartPathing();
-					pathed = true;
-				}
-				else
-				{
-					PF_SetGoalEntity(npc.index, npc.m_iTarget);
+				npc.StartPathing();
+				pathed = true;
+			}
+			else
+			{
+				PF_SetGoalEntity(npc.index, npc.m_iTargetRally);
 
-					npc.StartPathing();
-					pathed = true;
-				}
+				npc.StartPathing();
+				pathed = true;
 			}
 		}
 		
@@ -453,6 +463,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 		{
 			if(command != Command_HoldPos)
 			{
+				float vecTarget[3];
 				if(npc.m_iTargetAlly <= MaxClients && f3_SpawnPosition[npc.index][0] && npc.m_flComeToMe >= (gameTime + 0.6))
 				{
 					GetEntPropVector(npc.m_iTargetAlly, Prop_Data, "m_vecAbsOrigin", vecTarget);

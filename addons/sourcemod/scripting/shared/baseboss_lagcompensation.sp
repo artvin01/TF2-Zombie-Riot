@@ -201,6 +201,10 @@ bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles
 	// If this entity hasn't been transmitted to us and acked, then don't bother lag compensating it.
 	//if ( pEntityTransmitBits && !pEntityTransmitBits.Get( pPlayer.entindex() ) )
 	//	return false;
+	if(b_LagCompNPC_OnlyAllies && !b_IsAlliedNpc[entity])
+	{
+		return false;
+	}
 	float pos1[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos1);
 	float pos2[3];
@@ -241,7 +245,6 @@ bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles
 void BacktrackEntity(int entity, float currentTime) //Make sure that allies only get compensated for their bounding box.
 {
 	int ref = EntIndexToEntRef(entity);
-	
 	char refchar[12];
 	IntToString(ref, refchar, sizeof(refchar));
 	

@@ -5908,13 +5908,13 @@ static float WoodAmount[MAXTF2PLAYERS];
 static float FoodAmount[MAXTF2PLAYERS];
 static float GoldAmount[MAXTF2PLAYERS];
 static int SupplyRate[MAXTF2PLAYERS];
-static int RepairCount[MAXTF2PLAYERS];
 static int InMenu[MAXTF2PLAYERS];
 static float TrainingStartedIn[MAXTF2PLAYERS];
 static float TrainingIn[MAXTF2PLAYERS];
 static int TrainingIndex[MAXTF2PLAYERS];
 static int TrainingQueue[MAXTF2PLAYERS];
 static int CommandMode[MAXTF2PLAYERS];
+static bool FinalBuilder[MAXTF2PLAYERS];
 static bool MedievalUnlock[MAXTF2PLAYERS];
 
 enum
@@ -5949,20 +5949,20 @@ static const int SummonerData[][] =
 	{ BARRACK_MILITIA, 5, 30, 0, 5, 1 },		// None
 
 	{ BARRACK_ARCHER, 50, 10, 0, 7, 2 },		// Construction Novice
-	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 3 },	// Construction Novice & Ikea Repair Handling book
+	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 4 },	// Construction Apprentice
 
-	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 5 },		// Construction Apprentice & Ikea Repair Handling book
-	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 6 },		// Construction Apprentice & Engineering Repair Handling book
+	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 4 },		// Construction Apprentice
+	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 7 },		// Construction Worker
 
-	{ BARRACK_ARBELAST, 210, 50, 0, 9, 9 },		// Construction Worker & Engineering Repair Handling book
-	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 12 },	// Construction Expert & Ikea Repair Handling book
+	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7 },		// Construction Worker
+	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 11 },	// Construction Expert
 
-	{ BARRACK_LONGBOW, 400, 100, 0, 10, 15 },	// Construction Expert & Cosmic Repair Handling book
+	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11 },	// Construction Expert
 	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16 },	// Construction Master
 
 
-	{ BARRACK_MONK, 210, 0, 50, 10, 10 },		// Construction Worker
-	{ BARRACK_HUSSAR, 0, 400, 100, 10, 20 }		// Construction Master & Cosmic Repair Handling book
+	{ BARRACK_MONK, 210, 0, 50, 10, 11 },		// Construction Worker
+	{ BARRACK_HUSSAR, 0, 400, 100, 10, 16 }		// Construction Master
 };
 
 public Action Building_PlaceSummoner(int client, int weapon, const char[] classname, bool &result)
@@ -5993,8 +5993,8 @@ public Action Building_PlaceSummoner(int client, int weapon, const char[] classn
 
 public bool Building_Summoner(int client, int entity)
 {
-	WoodAmount[client] = 0.0;
-	FoodAmount[client] = 0.0;
+	WoodAmount[client] = 50.0;
+	FoodAmount[client] = 100.0;
 	GoldAmount[client] = 0.0;
 	TrainingIn[client] = 0.0;
 	CommandMode[client] = 0;
@@ -6173,8 +6173,12 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						GetEntPropVector(mounted ? owner : entity, Prop_Data, "m_vecAbsOrigin", pos);
 						GetEntPropVector(mounted ? owner : entity, Prop_Data, "m_angRotation", ang);
 						
-						view_as<BarrackBody>(entity).PlaySpawnSound();
-						Npc_Create(SummonerData[TrainingIndex[owner]][NPCIndex], owner, pos, ang, true);
+						view_as<BarrackBody>(mounted ? owner : entity).PlaySpawnSound();
+						int npc = Npc_Create(SummonerData[TrainingIndex[owner]][NPCIndex], owner, pos, ang, true);
+						if(npc > MaxClients && FinalBuilder[owner])
+						{
+							view_as<BarrackBody>(npc).BonusDamageBonus = 1.3;
+						}
 
 						if(TrainingQueue[owner] != -1)
 						{
@@ -6213,39 +6217,24 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 
 static void CheckSummonerUpgrades(int client)
 {
-	RepairCount[client] = 0;
 	SupplyRate[client] = 2;
 
 	if(Store_HasNamedItem(client, "Repair Handling book for dummies"))
-	{
-		//RepairCount[client]++;
 		SupplyRate[client]++;
-	}
 	
 	if(Store_HasNamedItem(client, "Ikea Repair Handling book"))
-	{
-		RepairCount[client]++;
 		SupplyRate[client] += 2;
-	}
 	
 	if(Store_HasNamedItem(client, "Engineering Repair Handling book"))
-	{
-		RepairCount[client]++;
 		SupplyRate[client] += 4;
-	}
 	
 	if(Store_HasNamedItem(client, "Alien Repair Handling book"))
-	{
-		RepairCount[client]++;
 		SupplyRate[client] += 6;
-	}
 	
 	if(Store_HasNamedItem(client, "Cosmic Repair Handling book"))
-	{
-		RepairCount[client]++;
 		SupplyRate[client] += 10;
-	}
-
+	
+	FinalBuilder[client] = Store_HasNamedItem(client, "Construction Killer");
 	MedievalUnlock[client] = view_as<bool>(HasNamedItem(client, "Medieval Crown"));
 }
 

@@ -32,8 +32,6 @@ int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
 int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES] = {0, ...};
 #endif
 
-static int g_particleImpactFlesh;
-static int g_particleImpactRubber;
 static int g_modelArrow;
 
 static ConVar flTurnRate;
@@ -526,7 +524,6 @@ methodmap CClotBody
 		}
 #endif
 		
-		SDKHook(npc, SDKHook_OnTakeDamage, NPC_OnTakeDamage_Base);
 		SDKHook(npc, SDKHook_Think, Check_If_Stuck);
 //		SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
 		
@@ -2972,11 +2969,11 @@ public void NPC_Base_InitGamedata()
 	g_hGetHullWidth		= DHookCreateEx(hConf, "IBody::GetHullWidth",	   HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullWidth);
 	g_hGetHullHeight	   = DHookCreateEx(hConf, "IBody::GetHullHeight",	  HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullHeight);
 	g_hGetStandHullHeight  = DHookCreateEx(hConf, "IBody::GetStandHullHeight", HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetStandHullHeight);
-	
+/*	
 	g_hGetHullWidthSmall		= DHookCreateEx(hConf, "IBody::GetHullWidth",	   HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullWidthSmall);
 	g_hGetHullHeightSmall	   = DHookCreateEx(hConf, "IBody::GetHullHeight",	  HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullHeightSmall);
 	g_hGetStandHullHeightSmall  = DHookCreateEx(hConf, "IBody::GetStandHullHeight", HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetStandHullHeightSmall);
-
+*/
 
 	g_hIsActivity   = DHookCreateEx(hConf, "IBody::IsActivity",   HookType_Raw, ReturnType_Bool, ThisPointer_Address, IBody_IsActivity);
 	DHookAddParam(g_hIsActivity, HookParamType_Int);
@@ -3069,7 +3066,6 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		}
 		
 		CClotBody npc = view_as<CClotBody>(pThis);
-		SDKUnhook(pThis, SDKHook_OnTakeDamage, NPC_OnTakeDamage_Base);
 		SDKUnhook(pThis, SDKHook_Think, Check_If_Stuck);
 #if defined ZR
 		if(IsValidEntity(npc.m_iTeamGlow))
@@ -5249,126 +5245,6 @@ public void Check_If_Stuck(int iNPC)
 	}
 	
 	
-}
-
-//using normal ontakedamage will make it abit more inaccurate but it will work
-//Using post will make it too late and it wont even get called as the npc has already died, resulting in post not calling anymore
-//Have to use this, for now, if that one bug still happens with unhooks and dhooks then i will revert back.
-
-static float f_CooldownForHurtParticle[MAXENTITIES];	
-
-public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	/*
-	if(attacker < MaxClients && attacker > 0) //make sure players cannot hurt allied npcs.
-	//Do not use team checks, they actually lag alot...
-	{
-		return Plugin_Handled;
-	}
-	*/
-	CClotBody npc = view_as<CClotBody>(victim);
-	npc.m_vecpunchforce(damageForce, true);
-	npc.m_bGib = false;
-
-//This exists for rpg so that attacking the target will trigger it for hte next 5 seconds.
-//ZR does not need this.
-#if defined RPG
-	if(IsValidEntity(attacker))
-	{
-		if(GetEntProp(attacker, Prop_Send, "m_iTeamNum")!=GetEntProp(victim, Prop_Send, "m_iTeamNum"))
-		{
-			npc.m_flGetClosestTargetNoResetTime = GetGameTime(npc.index) + 5.0; //make them angry for 5 seconds if they are too far away.
-
-			if(npc.m_iTarget == -1) //Only set it if they actaully have no target.
-			{
-				npc.m_iTarget = attacker;
-			}
-		}
-	}
-
-#endif
-	if(f_IsThisExplosiveHitscan[attacker] == GetGameTime())
-	{
-		npc.m_vecpunchforce(CalculateDamageForceSelfCalculated(attacker, 10000.0), true);
-		damagetype |= DMG_BULLET; //add bullet logic
-		damagetype &= ~DMG_BLAST; //remove blast logic			
-	}
-	
-	if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
-	{
-		
-#if defined ZR
-		if(Medival_Difficulty_Level != 0.0)
-		{
-			damage *= Medival_Difficulty_Level;
-		}
-		
-#endif
-		damage *= fl_MeleeArmor[victim];
-	}
-	else if(!(damagetype & DMG_SLASH))
-	{
-		
-#if defined ZR
-		if(Medival_Difficulty_Level != 0.0)
-		{
-			damage *= Medival_Difficulty_Level;
-		}
-		
-#endif
-		
-		damage *= fl_RangedArmor[victim];
-	}
-	//No resistances towards slash as its internal.
-	
-	
-	
-	if(!npc.m_bDissapearOnDeath) //Make sure that if they just vanish, its always false. so their deathsound plays.
-	{
-		if((damagetype & DMG_BLAST))
-		{
-			npc.m_bGib = true;
-		}
-		else if(damage > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 1.5))
-		{
-			npc.m_bGib = true;
-		}
-	}
-	if(damagePosition[0] != 0.0) //If there is no pos, then dont.
-	{
-		if(!(damagetype & (DMG_SHOCK)))
-		{
-			if (f_CooldownForHurtParticle[victim] < GetGameTime())
-			{
-				f_CooldownForHurtParticle[victim] = GetGameTime() + 0.1;
-
-				if(npc.m_iBleedType == 1)
-				{
-					TE_ParticleInt(g_particleImpactFlesh, damagePosition);
-					TE_SendToAll();
-				}
-				else if (npc.m_iBleedType == 2)
-				{
-					damagePosition[2] -= 40.0;
-					TE_ParticleInt(g_particleImpactMetal, damagePosition);
-					TE_SendToAll();
-				}
-				else if (npc.m_iBleedType == 3)
-				{
-					TE_ParticleInt(g_particleImpactRubber, damagePosition);
-					TE_SendToAll();
-				}
-				else if (npc.m_iBleedType == 4)
-				{
-					//If you cant find any good blood effect, use this one and just recolour it.
-					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 125, 255, 125, 255, 32);
-					TE_SendToAll();
-				}
-			}
-		}
-	}
-	return Plugin_Continue;
-	//return CClotBodyDamaged_flare(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 }
 
 stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignore_attribute = false, bool override = false, bool work_on_entity = false)

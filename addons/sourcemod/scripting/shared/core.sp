@@ -226,12 +226,17 @@ bool b_LagCompNPC_No_Layers;
 bool b_LagCompNPC_AwayEnemies;
 bool b_LagCompNPC_ExtendBoundingBox;
 bool b_LagCompNPC_BlockInteral;
+bool b_LagCompNPC_OnlyAllies;
 
 bool b_LagCompAlliedPlayers; //Make sure this actually compensates allies.
 
 bool i_HasBeenBackstabbed[MAXENTITIES];
 bool i_HasBeenHeadShotted[MAXENTITIES];
 
+int g_particleImpactFlesh;
+int g_particleImpactRubber;
+
+float f_CooldownForHurtParticle[MAXENTITIES];	
 float f_BackstabDmgMulti[MAXENTITIES];
 float f_BackstabCooldown[MAXENTITIES];
 int i_BackstabHealEachTick[MAXENTITIES];
@@ -602,9 +607,6 @@ Handle g_hGetStandHullHeight;
 Handle g_hGetHullWidthGiant;
 Handle g_hGetHullHeightGiant;
 Handle g_hGetStandHullHeightGiant;
-Handle g_hGetHullWidthSmall;
-Handle g_hGetHullHeightSmall;
-Handle g_hGetStandHullHeightSmall;
 
 //NavAreas
 Address TheNavAreas;
