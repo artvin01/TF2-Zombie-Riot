@@ -221,6 +221,17 @@ methodmap BarrackBody < CClotBody
 			CommandOverride[view_as<int>(this)] = value;
 		}
 	}
+	property int m_iTargetWalk
+	{
+		public get()
+		{
+			return i_OverlordComboAttack[this.index];
+		}
+		public set(int value)
+		{
+			i_OverlordComboAttack[this.index] = value;
+		}
+	}
 	property int OwnerUserId
 	{
 		public get()
@@ -355,6 +366,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo)
 		if(npc.m_iTargetAlly > 0)
 		{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
+			npc.m_iTargetWalk = GetClosestTarget(npc.index, _, 900.0, camo);
 			npc.m_iTarget = GetClosestTarget(npc.index, _, 900.0, camo, _, _, vecTarget, command == Command_Aggressive);
 		}
 		else
@@ -397,10 +409,10 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 		float myPos[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", myPos);
 
-		bool retreating = (command == Command_Retreat || command == Command_RetreatPlayer || command == Command_HoldPos);
+		bool retreating = (command == Command_Retreat || command == Command_RetreatPlayer);
 
 		float vecTarget[3];
-		if(npc.m_iTarget > 0 && (canRetreat || !retreating))
+		if(npc.m_iTarget > 0 && command != Command_HoldPos && (canRetreat || !retreating))
 		{
 			GetEntPropVector(npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", vecTarget);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, myPos, true);
