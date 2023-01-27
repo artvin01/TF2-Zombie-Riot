@@ -395,12 +395,14 @@ methodmap CClotBody
 			list.Push(DHookRaw(g_hGetHullHeight,	   true, pBody));
 			list.Push(DHookRaw(g_hGetStandHullHeight,  true, pBody));
 		}
+		/*
 		else if (Ally_Collideeachother)
 		{
 			list.Push(DHookRaw(g_hGetHullWidthSmall,		true, pBody));
 			list.Push(DHookRaw(g_hGetHullHeightSmall,	   true, pBody));
 			list.Push(DHookRaw(g_hGetStandHullHeightSmall,  true, pBody));
 		}
+		*/
 		else
 		{
 			b_IsGiant[npc] = true;
@@ -468,11 +470,13 @@ methodmap CClotBody
 			m_vecMaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
 			m_vecMins = view_as<float>( { -30.0, -30.0, 0.0 } );	
 		}	
+		/*
 		else if (Ally_Collideeachother)
 		{
 			m_vecMaxs = view_as<float>( { 8.0, 8.0, 56.0 } );
 			m_vecMins = view_as<float>( { -8.0, -8.0, 0.0 } );	
 		}		
+		*/
 		else
 		{
 			m_vecMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
@@ -532,11 +536,6 @@ methodmap CClotBody
 		{
 			RemoveAllDamageAddition();
 			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, MASK_NPCSOLID, 150.0, 0.1, 1.75); //Global.
-		}
-		else if (Ally_Collideeachother)
-		{
-			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, MASK_NPCSOLID, 600.0, 0.29, 2.5); //Global.
-		
 		}
 		else
 		{

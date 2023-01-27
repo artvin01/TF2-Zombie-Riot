@@ -556,7 +556,10 @@ public Action BarrackBody_ClotDamaged(int victim, int &attacker, int &inflictor,
 	if(attacker < 1)
 		return Plugin_Continue;
 	
-	damage *= 0.5;
+	if((damagetype & DMG_CLUB) && !IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+	{
+		damage *= 0.5;
+	}
 
 	BarrackBody npc = view_as<BarrackBody>(victim);
 	if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
