@@ -32,7 +32,7 @@ public void BarrackMilitia_ClotThink(int iNPC)
 	BarrackMilitia npc = view_as<BarrackMilitia>(iNPC);
 	if(BarrackBody_ThinkStart(npc.index))
 	{
-		BarrackBody_ThinkTarget(npc.index, false);
+		int client = BarrackBody_ThinkTarget(npc.index, false);
 
 		if(npc.m_iTarget > 0)
 		{
@@ -68,7 +68,7 @@ public void BarrackMilitia_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, 150.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
 								npc.PlayMeleeHitSound();
 							} 
 						}

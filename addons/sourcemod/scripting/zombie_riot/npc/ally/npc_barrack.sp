@@ -289,13 +289,14 @@ bool BarrackBody_ThinkStart(int iNPC)
 	return true;
 }
 
-void BarrackBody_ThinkTarget(int iNPC, bool camo)
+int BarrackBody_ThinkTarget(int iNPC, bool camo)
 {
 	BarrackBody npc = view_as<BarrackBody>(iNPC);
 
+	int client;
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index) || !IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		int client = GetClientOfUserId(npc.OwnerUserId);
+		client = GetClientOfUserId(npc.OwnerUserId);
 		if(client)
 		{
 			int command = npc.CmdOverride == Command_Default ? Building_GetFollowerCommand(client) : npc.CmdOverride;
@@ -345,6 +346,7 @@ void BarrackBody_ThinkTarget(int iNPC, bool camo)
 
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
+	return client;
 }
 
 void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", const char[] moveAnim = "", float canRetreat = 0.0, bool move = true)

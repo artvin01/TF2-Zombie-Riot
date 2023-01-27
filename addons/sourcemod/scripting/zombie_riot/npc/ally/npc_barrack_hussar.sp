@@ -42,7 +42,7 @@ public void BarrackHussar_ClotThink(int iNPC)
 	BarrackHussar npc = view_as<BarrackHussar>(iNPC);
 	if(BarrackBody_ThinkStart(npc.index))
 	{
-		BarrackBody_ThinkTarget(npc.index, false);
+		int client = BarrackBody_ThinkTarget(npc.index, false);
 
 		if(npc.m_iTarget > 0)
 		{
@@ -79,7 +79,7 @@ public void BarrackHussar_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 6000.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, 6000.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}

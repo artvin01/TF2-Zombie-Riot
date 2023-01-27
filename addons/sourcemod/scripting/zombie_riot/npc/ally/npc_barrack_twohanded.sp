@@ -36,7 +36,7 @@ public void BarrackTwoHanded_ClotThink(int iNPC)
 	BarrackTwoHanded npc = view_as<BarrackTwoHanded>(iNPC);
 	if(BarrackBody_ThinkStart(npc.index))
 	{
-		BarrackBody_ThinkTarget(npc.index, false);
+		int client = BarrackBody_ThinkTarget(npc.index, false);
 
 		if(npc.m_iTarget > 0)
 		{
@@ -72,7 +72,7 @@ public void BarrackTwoHanded_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 1200.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, 1200.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}

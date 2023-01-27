@@ -1279,4 +1279,12 @@
 		//"it"		""
 		//"fr"		""
 	}
+	"Medival Abalest"
+	{
+		"en"		"Medival Abalest"
+	}
+	"Medival Longbowmen"
+	{
+		"en"		"Medival Longbowmen"
+	}
 }
