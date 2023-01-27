@@ -275,7 +275,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		
 	   		SetEntPropFloat(wearable, Prop_Send, "m_flModelScale", 1.25);
 	   		
-	   		SetEntPropFloat(weapon_index, Prop_Send, "m_flModelScale", -0.8);
+	   		SetEntPropFloat(weapon_index, Prop_Send, "m_flModelScale", 0.8);
 	   		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 0.7);
 	   		
 			SetAmmo(client, 1, 9999);

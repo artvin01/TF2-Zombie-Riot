@@ -34,7 +34,7 @@ static const char g_IdleSounds[][] =
 	"npc/metropolice/vo/infection.wav",
 	"npc/metropolice/vo/king.wav",
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
-	"npc/metropolice/vo/pickupthatcan1.wav",
+
 	"npc/metropolice/vo/pickupthatcan2.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
@@ -260,9 +260,42 @@ methodmap BarrackBody < CClotBody
 
 		SDKHook(npc.index, SDKHook_OnTakeDamage, BarrackBody_ClotDamaged);
 		
+		int particle = CreateEntityByName("info_particle_system");
+		if(particle != -1)
+		{
+			float vecPos2[3];
+			vecPos2 = vecPos;
+			vecPos2[2] += 40.0;
+			TeleportEntity(particle, vecPos2, NULL_VECTOR, NULL_VECTOR);
+			DispatchKeyValue(particle, "targetname", "tf2particle");
+			DispatchKeyValue(particle, "effect_name", "powerup_icon_strength_red");
+			DispatchSpawn(particle);
+
+			SetParent(npc.index, particle);
+
+			ActivateEntity(particle);
+
+			AcceptEntityInput(particle, "start");
+
+			BarrackOwner[particle] = client;
+
+			SetEdictFlags(particle, GetEdictFlags(particle) &~ FL_EDICT_ALWAYS);
+			SDKHook(particle, SDKHook_SetTransmit, BarrackBody_Transmit);
+			
+			npc.m_iWearable6 = particle;
+		}
+		
 		npc.StartPathing();
 		return npc;
 	}
+}
+
+public Action BarrackBody_Transmit(int entity, int client)
+{
+	if(client == BarrackOwner[entity])
+		return Plugin_Continue;
+	
+	return Plugin_Handled;
 }
 
 bool BarrackBody_ThinkStart(int iNPC)
@@ -293,13 +326,14 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo)
 {
 	BarrackBody npc = view_as<BarrackBody>(iNPC);
 
-	int client;
+	int client = GetClientOfUserId(npc.OwnerUserId);
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index) || !IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		client = GetClientOfUserId(npc.OwnerUserId);
+		int command = Command_Aggressive;
+
 		if(client)
 		{
-			int command = npc.CmdOverride == Command_Default ? Building_GetFollowerCommand(client) : npc.CmdOverride;
+			command = npc.CmdOverride == Command_Default ? Building_GetFollowerCommand(client) : npc.CmdOverride;
 			if(command == Command_HoldPos)
 			{
 				npc.m_iTargetAlly = npc.index;
@@ -321,7 +355,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo)
 		if(npc.m_iTargetAlly > 0)
 		{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
-			npc.m_iTarget = GetClosestTarget(npc.index, _, 900.0, camo, _, _, vecTarget, true);
+			npc.m_iTarget = GetClosestTarget(npc.index, _, 900.0, camo, _, _, vecTarget, command == Command_Aggressive);
 		}
 		else
 		{
@@ -521,7 +555,9 @@ public Action BarrackBody_ClotDamaged(int victim, int &attacker, int &inflictor,
 	//Valid attackers only.
 	if(attacker < 1)
 		return Plugin_Continue;
-		
+	
+	damage *= 0.5;
+
 	BarrackBody npc = view_as<BarrackBody>(victim);
 	if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -646,4 +682,13 @@ void BarrackBody_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
+	
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
+	
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 }

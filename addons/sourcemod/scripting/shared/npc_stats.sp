@@ -354,11 +354,13 @@ methodmap CClotBody
 			{
 				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyInvince,   false, pLocomotion);
 			}
+			/*
 			else if (Ally_Collideeachother)
 			{
 				b_CollidesWithEachother[npc] = true;
 				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyIngoreBuilding,   false, pLocomotion);
 			}
+			*/
 			else
 			{
 				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAlly,   false, pLocomotion);
@@ -510,7 +512,7 @@ methodmap CClotBody
 		SetEntPropVector(npc, Prop_Data, "m_vecMinsPreScaled", m_vecMinsNothing);
 
 #if defined ZR
-		if(Ally)
+		if(Ally && !Ally_Collideeachother)
 		{
 			CClotBody npcstats = view_as<CClotBody>(npc);
 			npcstats.m_iTeamGlow = TF2_CreateGlow(npc);
@@ -531,9 +533,10 @@ methodmap CClotBody
 			RemoveAllDamageAddition();
 			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, MASK_NPCSOLID, 150.0, 0.1, 1.75); //Global.
 		}
-		else if(Ally_Collideeachother)
+		else if (Ally_Collideeachother)
 		{
-			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, MASK_NPCSOLID, 300.0, 0.29, 2.5); //Global.
+			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, MASK_NPCSOLID, 600.0, 0.29, 2.5); //Global.
+		
 		}
 		else
 		{

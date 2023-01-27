@@ -919,6 +919,23 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 	return Plugin_Changed;
 }
 
+public Action BuildingSetAlphaClientSideReady_SetTransmitProp_1_Summoner(int entity, int client)
+{
+	int building = EntRefToEntIndex(Building_Hidden_Prop_To_Building[entity]);
+	
+	if(IsValidEntity(building))
+	{
+		if(i_BeingCarried[building])
+		{
+			return Plugin_Handled;
+		}
+		return Plugin_Continue;
+	}
+	RemoveEntity(entity);
+	return Plugin_Handled;
+}
+
+
 public Action BuildingSetAlphaClientSideReady_SetTransmitProp_1(int entity, int client)
 {
 	float Gametime = GetGameTime();
@@ -5408,7 +5425,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
 					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
-				//	SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
+					SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1_Summoner);
 				}
 			}
 			SetEntityModel(Building_Index, SUMMONER_MODEL);			

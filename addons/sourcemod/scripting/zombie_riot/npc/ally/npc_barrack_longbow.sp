@@ -65,7 +65,7 @@ public void BarrackLongbow_ClotThink(int iNPC)
 			}
 		}
 
-		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_CUSTOM_IDLE_BOW", "ACT_LONGBOW_WALK", 250000.0);
+		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_LONGBOW_IDLE", "ACT_LONGBOW_WALK", 250000.0);
 	}
 }
 
