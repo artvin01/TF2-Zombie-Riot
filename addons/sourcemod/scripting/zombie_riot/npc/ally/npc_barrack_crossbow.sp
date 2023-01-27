@@ -62,7 +62,7 @@ public void BarrackCrossbow_ClotThink(int iNPC)
 			}
 		}
 
-		BarrackBody_ThinkMove(npc.index, 175.0, "ACT_CUSTOM_IDLE_BOW", "ACT_CUSTOM_WALK_CROSSBOW", 170000.0);
+		BarrackBody_ThinkMove(npc.index, 175.0, "ACT_CUSTOM_IDLE_CROSSBOW", "ACT_CUSTOM_WALK_CROSSBOW", 170000.0);
 	}
 }
 

@@ -3867,10 +3867,8 @@ stock NavArea PickRandomArea()
 
 public bool FilterBaseActorsAndData(int entity, int contentsMask, any data)
 {
-	static char class[12];
-	GetEntityClassname(entity, class, sizeof(class));
-	
-	if(!StrContains(class, "base_boss")) return true;
+	if(!b_NpcHasDied[entity])
+		return true;
 	
 	return !(entity == data);
 }
@@ -3938,9 +3936,6 @@ public void PluginBot_Approach(int bot_entidx, const float vec[3])
 
 public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 {
-	char class[64];
-	GetEntityClassname(entity, class, sizeof(class));
-
 #if defined ZR
 	if(entity > 0 && entity <= MaxClients) 
 	{
@@ -3950,43 +3945,32 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		}
 	}
 #endif
-	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
 	{
 		return false;
 	}
-	
-	CClotBody npc = view_as<CClotBody>(entity);
-	if(StrEqual(class, "func_respawnroomvisualizer"))
+	else if(!b_NpcHasDied[entity])
 	{
-		return false;
-	}	
-	else if(StrEqual(class, "base_boss"))
-	{
-			//Yes its double but i need it here too for npc vs npc, sorry.
 		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
-		{
-			return false;				
-		}
-		else if (npc.bCantCollidie && npc.bCantCollidieAlly) //If both are on, then that means the npc shouldnt be invis and stuff
 		{
 			return false;
 		}
-	}
-	
-	else if(StrContains(class, "tf_projectile_", false) != -1)
-	{
-		return false;
+		else if (b_CantCollidie[entity] && b_CantCollidieAlly[entity]) //If both are on, then that means the npc shouldnt be invis and stuff
+		{
+			return false;
+		}
 	}
 	
 	//if anything else is team
 	
 	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
 		return false;
-	
-	if(npc.m_bThisEntityIgnored)
+
+	if(b_ThisEntityIgnored[entity])
 	{
 		return false;
-	}
+	}	
+
 	return !(entity == iExclude);
 }
 
@@ -4003,9 +3987,6 @@ public void RemoveEntityToTraceStuckCheck(int entity)
 
 public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMask, any iExclude)
 {
-	char class[64];
-	GetEntityClassname(entity, class, sizeof(class));
-
 #if defined ZR
 	if(entity > 0 && entity <= MaxClients) 
 	{
@@ -4016,21 +3997,12 @@ public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMas
 	}
 #endif
 
-	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
-	{
-		return false;
-	}
-	CClotBody npc = view_as<CClotBody>(entity);
-	if(StrEqual(class, "func_respawnroomvisualizer"))
-	{
-		return false;
-	}	
-	else if(StrContains(class, "obj_", false) != -1)
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
 	{
 		return false;
 	}
 	
-	else if(StrContains(class, "tf_projectile_", false) != -1)
+	else if(i_IsABuilding[entity])
 	{
 		return false;
 	}
@@ -4040,11 +4012,11 @@ public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMas
 	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
 		return false;
 	
-	if(npc.m_bThisEntityIgnored)
+	if(b_ThisEntityIgnored[entity])
 	{
 		return false;
 	}
-	if(StrEqual(class, "base_boss"))
+	if(!b_NpcHasDied[entity])
 	{
 		return true;
 	}
@@ -4053,20 +4025,8 @@ public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMas
 
 public bool BulletAndMeleeTraceDontIgnoreBaseBoss(int entity, int contentsMask, any iExclude)
 {
-	char class[64];
-	GetEntityClassname(entity, class, sizeof(class));
-	/*
-	if(other_entidx > 0 && other_entidx <= MaxClients) 
-	{
-		return true;
-	}
-	*/
-	if(StrEqual(class, "func_respawnroomvisualizer"))
-	{
-		return false;
-	}
-	
-	else if(StrContains(class, "tf_projectile_", false) != -1)
+
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
 	{
 		return false;
 	}
@@ -4266,18 +4226,15 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false)
 {
 	if(IsValidEntity(enemy))
 	{
-		static char strClassname[16];
-		GetEntityClassname(enemy, strClassname, sizeof(strClassname));
-		if(StrEqual(strClassname, "player") || StrEqual(strClassname, "base_boss"))
+		if(enemy <= MaxClients || !b_NpcHasDied[enemy])
 		{
-			CClotBody npc = view_as<CClotBody>(enemy);
 			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(enemy, Prop_Send, "m_iTeamNum"))
 			{
 				return false;
 			}
 			if(camoDetection)
 			{
-				if(npc.m_bThisEntityIgnored || b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
+				if(b_ThisEntityIgnored[enemy] || b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
 				{
 					return false;
 				}
@@ -4288,7 +4245,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false)
 			}
 			else
 			{
-				if(npc.m_bThisEntityIgnored || npc.m_bCamo || b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
+				if(b_ThisEntityIgnored[enemy] || b_IsCamoNPC[enemy] || b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
 				{
 					return false;
 				}
@@ -4298,20 +4255,19 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false)
 				}
 			}	
 		}
-		else if(StrEqual(strClassname, "obj_dispenser") || StrEqual(strClassname, "obj_teleporter") || StrEqual(strClassname, "obj_sentrygun"))
+		else if(i_IsABuilding[enemy])
 		{
-			CClotBody npc = view_as<CClotBody>(enemy);
 			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(enemy, Prop_Send, "m_iTeamNum"))
 			{
 				return false;
 			}
 			
-			else if(npc.bBuildingIsStacked)
+			else if(b_BuildingIsStacked[enemy])
 			{
 				return false;
 			}
 			
-			else if(npc.bBuildingIsPlaced)
+			else if(b_bBuildingIsPlaced[enemy])
 			{
 				return true;
 			}
@@ -4329,10 +4285,9 @@ stock bool IsValidAllyPlayer(int index, int Ally)
 {
 	if(IsValidClient(Ally))
 	{
-		CClotBody npc = view_as<CClotBody>(Ally);
 		if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(Ally, Prop_Send, "m_iTeamNum"))
 		{
-			if(npc.m_bThisEntityIgnored)
+			if(b_ThisEntityIgnored[Ally])
 			{
 				return false;
 			}
@@ -4856,22 +4811,12 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 	{
 		return false;
 	}
-
-	static char class[64];
-	GetEntityClassname(entity, class, sizeof(class));
-	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
 	{
 		return false;
 	}
 	
-	CClotBody npc = view_as<CClotBody>(entity);
-	
-	if(StrEqual(class, "base_boss"))
-	{
-		return false;
-	}
-	
-	else if(StrContains(class, "tf_projectile_", false) != -1)
+	if(!b_NpcHasDied[entity])
 	{
 		return false;
 	}
@@ -4881,16 +4826,16 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 	if(GetEntProp(data, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
 		return false;
 	
-	if(StrEqual(class, "func_brush"))
+	if(b_is_a_brush[entity])
 	{
 		return true;//They blockin me
 	}
-	else if(StrEqual(class, "func_respawnroomvisualizer"))
+	else if(b_IsARespawnroomVisualiser[entity])
 	{
 		return true;//They blockin me and not on same team, otherwsie top filter
 	}
 	
-	if(npc.m_bThisEntityIgnored)
+	if(b_ThisEntityIgnored[entity])
 	{
 		return false;
 	}
@@ -4916,16 +4861,12 @@ public bool TraceRayDontHitRTSAlliedNpc(int entity,int mask,any data)
 		return false;
 	}
 
-	static char class[64];
-	GetEntityClassname(entity, class, sizeof(class));
-	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
 	{
 		return false;
 	}
 	
-	CClotBody npc = view_as<CClotBody>(entity);
-	
-	if(StrEqual(class, "base_boss"))
+	if(!b_NpcHasDied[entity])
 	{
 		if(b_CollidesWithEachother[entity])
 		{
@@ -4934,26 +4875,21 @@ public bool TraceRayDontHitRTSAlliedNpc(int entity,int mask,any data)
 		return false;
 	}
 	
-	else if(StrContains(class, "tf_projectile_", false) != -1)
-	{
-		return false;
-	}
-	
 	//if anything else is team
 	
 	if(GetEntProp(data, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
 		return false;
 	
-	if(StrEqual(class, "func_brush"))
+	if(b_is_a_brush[entity])
 	{
 		return true;//They blockin me
 	}
-	else if(StrEqual(class, "func_respawnroomvisualizer"))
+	else if(b_IsARespawnroomVisualiser[entity])
 	{
 		return true;//They blockin me and not on same team, otherwsie top filter
 	}
 	
-	if(npc.m_bThisEntityIgnored)
+	if(b_ThisEntityIgnored[entity])
 	{
 		return false;
 	}
@@ -4983,35 +4919,21 @@ public bool TraceRayCanSeeAllySpecific(int entity,int mask,any data)
 		return false;
 	}
 
-	static char class[64];
-	GetEntityClassname(entity, class, sizeof(class));
-	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
 	{
 		return false;
 	}
 	
-	CClotBody npc = view_as<CClotBody>(entity);
-	
-	if(StrContains(class, "tf_projectile_", false) != -1)
-	{
-		return false;
-	}
-	
-	//if anything else is team
-	/*
-	if(GetEntProp(data, Prop_Send, "m_iTeamNum") != GetEntProp(entity, Prop_Send, "m_iTeamNum"))
-		return false;
-	*/
-	if(StrEqual(class, "func_brush"))
+	if(b_is_a_brush[entity])
 	{
 		return true;//They blockin me
 	}
-	else if(StrEqual(class, "func_respawnroomvisualizer"))
+	else if(b_IsARespawnroomVisualiser[entity])
 	{
 		return true;//They blockin me and not on same team, otherwsie top filter
 	}
 	
-	if(npc.m_bThisEntityIgnored)
+	if(b_ThisEntityIgnored[entity])
 	{
 		return false;
 	}

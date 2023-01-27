@@ -484,6 +484,7 @@ int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever e
 bool i_IsWandWeapon[MAXENTITIES]; 
 bool i_IsWrench[MAXENTITIES]; 
 bool b_is_a_brush[MAXENTITIES]; 
+bool b_IsARespawnroomVisualiser[MAXENTITIES];
 float f_ImmuneToFalldamage[MAXENTITIES]; 
 
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
@@ -2132,6 +2133,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_SemiAutoWeapon[entity] = false;
 		b_NpcHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
+		b_IsARespawnroomVisualiser[entity] = false;
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
 		b_IsAGib[entity] = false;
 		b_ThisEntityIgnored[entity] = false;
@@ -2278,6 +2280,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
+		}
+		else if(!StrContains(classname, "func_respawnroomvisualizer"))
+		{
+			b_IsARespawnroomVisualiser[entity] = true;
 		}
 		else if(!StrContains(classname, "prop_physics_multiplayer"))
 		{
