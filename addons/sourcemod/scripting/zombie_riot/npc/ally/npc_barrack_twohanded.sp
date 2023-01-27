@@ -72,7 +72,7 @@ public void BarrackTwoHanded_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, 1200.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, 2400.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}

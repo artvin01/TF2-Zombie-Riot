@@ -68,7 +68,7 @@ public void BarrackMilitia_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, 150.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, 300.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
 								npc.PlayMeleeHitSound();
 							} 
 						}

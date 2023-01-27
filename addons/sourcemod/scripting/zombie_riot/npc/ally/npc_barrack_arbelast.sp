@@ -81,7 +81,7 @@ void BarrackArbelast_HandleAnimEvent(int entity, int event)
 			npc.FaceTowards(vecTarget, 30000.0);
 			
 			npc.PlayRangedSound();
-			npc.FireArrow(vecTarget, 650.0 * npc.BonusDamageBonus, 1200.0, _, _, _, GetClientOfUserId(npc.OwnerUserId));
+			npc.FireArrow(vecTarget, 1300.0 * npc.BonusDamageBonus, 1200.0, _, _, _, GetClientOfUserId(npc.OwnerUserId));
 		}
 	}
 }
