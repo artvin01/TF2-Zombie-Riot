@@ -346,7 +346,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo)
 	if(!newTarget)
 		newTarget = !IsValidEnemy(npc.index, npc.m_iTargetRally);
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(newTarget)
 	{
 		int command = Command_Aggressive;
 
