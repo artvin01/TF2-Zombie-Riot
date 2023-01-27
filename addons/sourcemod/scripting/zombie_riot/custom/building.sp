@@ -6129,8 +6129,8 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 	if(entity != INVALID_ENT_REFERENCE && owner && Building_Constructed[entity])
 	{
 		// 1 Supply = 1 Food Every 2 Seconds, 1 Wood Every 4 Seconds
-		WoodAmount[owner] += SupplyRate[owner] / 40.0;
-		FoodAmount[owner] += SupplyRate[owner] / 20.0;
+		WoodAmount[owner] += SupplyRate[owner] / (LastMann ? 20.0 : 40.0);
+		FoodAmount[owner] += SupplyRate[owner] / (LastMann ? 10.0 : 20.0);
 
 		// 1 Supply = 1 Gold Every 30 Seconds
 		if(MedievalUnlock[owner])
@@ -6383,7 +6383,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 							{
 								TrainingIndex[client] = item;
 								TrainingStartedIn[client] = GetGameTime();
-								TrainingIn[client] = TrainingStartedIn[client] + float(SummonerData[item][TrainTime]);
+								TrainingIn[client] = TrainingStartedIn[client] + float(LastMann ? (SummonerData[item][TrainTime] / 3) : SummonerData[item][TrainTime]);
 							}
 							else if(TrainingQueue[client] == -1)
 							{
