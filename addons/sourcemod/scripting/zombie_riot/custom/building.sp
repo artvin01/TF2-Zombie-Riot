@@ -3164,6 +3164,10 @@ public bool BuildingCustomCommand(int client)
 					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "No Ammo Supplies");
 				}*/
 			}
+			else if(StrEqual(buffer, "zr_summoner"))
+			{
+				OpenSummonerMenu(client, client);
+			}
 		}
 		return true;
 	}
