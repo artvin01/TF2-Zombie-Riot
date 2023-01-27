@@ -604,7 +604,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",
 	"",
 	"",
-	"npc_barrack_hussar"
+	"npc_barrack_hussar",
+	"npc_medival_eagle_warrior"
 };
 
 void NPC_MapStart()
@@ -792,6 +793,7 @@ void NPC_MapStart()
 	MedivalLongbowmen_OnMapStart_NPC();
 	MedivalArbalest_OnMapStart_NPC();
 	MedivalEliteLongbowmen_OnMapStart_NPC();
+	MedivalEagleWarrior_OnMapStart_NPC();
 }
 
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
@@ -1507,6 +1509,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case BARRACK_HUSSAR:
 		{
 			entity = BarrackHussar(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_EAGLE_WARRIOR:
+		{
+			entity = MedivalEagleWarrior(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -2225,6 +2231,10 @@ public void NPCDeath(int entity)
 		{
 			BarrackHussar_NPCDeath(entity);
 		}
+		case MEDIVAL_EAGLE_WARRIOR:
+		{
+			MedivalEagleWarrior_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2463,6 +2473,7 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/medival/npc_medival_arbalest.sp"
 #include "zombie_riot/npc/medival/npc_medival_brawler.sp"
 #include "zombie_riot/npc/medival/npc_medival_elite_longbowmen.sp"
+#include "zombie_riot/npc/medival/npc_medival_eagle_warrior.sp"
 
 #include "zombie_riot/npc/cof/npc_addiction.sp"
 #include "zombie_riot/npc/cof/npc_doctor.sp"

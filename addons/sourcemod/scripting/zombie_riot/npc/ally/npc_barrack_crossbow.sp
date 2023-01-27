@@ -32,7 +32,7 @@ public void BarrackCrossbow_ClotThink(int iNPC)
 	BarrackCrossbow npc = view_as<BarrackCrossbow>(iNPC);
 	if(BarrackBody_ThinkStart(npc.index))
 	{
-		BarrackBody_ThinkTarget(npc.index, false);
+		BarrackBody_ThinkTarget(npc.index, true);
 
 		if(npc.m_iTarget > 0)
 		{
