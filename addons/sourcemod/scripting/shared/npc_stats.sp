@@ -470,7 +470,7 @@ methodmap CClotBody
 		}	
 		else if (Ally_Collideeachother)
 		{
-			m_vecMaxs = view_as<float>( { 8.0, 8.0, 41.0 } );
+			m_vecMaxs = view_as<float>( { 8.0, 8.0, 56.0 } );
 			m_vecMins = view_as<float>( { -8.0, -8.0, 0.0 } );	
 		}		
 		else
@@ -3790,8 +3790,8 @@ public MRESReturn IBody_GetStandHullHeight(Address pThis, Handle hReturn, Handle
 }
 
 public MRESReturn IBody_GetHullWidthSmall(Address pThis, Handle hReturn, Handle hParams)			  { DHookSetReturn(hReturn, 16.0); return MRES_Supercede; }
-public MRESReturn IBody_GetHullHeightSmall(Address pThis, Handle hReturn, Handle hParams)			 { DHookSetReturn(hReturn, 41.0); return MRES_Supercede; }
-public MRESReturn IBody_GetStandHullHeightSmall(Address pThis, Handle hReturn, Handle hParams)		{ DHookSetReturn(hReturn, 41.0); return MRES_Supercede; }
+public MRESReturn IBody_GetHullHeightSmall(Address pThis, Handle hReturn, Handle hParams)			 { DHookSetReturn(hReturn, 56.0); return MRES_Supercede; }
+public MRESReturn IBody_GetStandHullHeightSmall(Address pThis, Handle hReturn, Handle hParams)		{ DHookSetReturn(hReturn, 56.0); return MRES_Supercede; }
 
 //npc.m_bISGIANT
 //BOUNDING BOX FOR ENEMY TO RESPECT

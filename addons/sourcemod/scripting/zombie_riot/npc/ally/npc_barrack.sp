@@ -265,7 +265,7 @@ methodmap BarrackBody < CClotBody
 		{
 			float vecPos2[3];
 			vecPos2 = vecPos;
-			vecPos2[2] += 40.0;
+			vecPos2[2] += 50.0;
 			TeleportEntity(particle, vecPos2, NULL_VECTOR, NULL_VECTOR);
 			DispatchKeyValue(particle, "targetname", "tf2particle");
 			DispatchKeyValue(particle, "effect_name", "powerup_icon_strength_red");

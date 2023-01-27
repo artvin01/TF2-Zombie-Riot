@@ -562,6 +562,7 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 			}
 		}
 	}
+	StartLagCompResetValues();
 }
 
 /* game/server/player_lagcompensation.cpp#L233 */
