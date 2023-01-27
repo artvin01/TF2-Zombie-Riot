@@ -189,7 +189,7 @@ methodmap MedivalMonk < CClotBody
 
 		Is_a_Medic[npc.index] = true; //This npc buffs, we dont waant allies to follow this ally.
 		
-		npc.m_flMeleeArmor = 1.0;
+		npc.m_flMeleeArmor = 3.0;
 		npc.m_flRangedArmor = 1.0;
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop_partner/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
