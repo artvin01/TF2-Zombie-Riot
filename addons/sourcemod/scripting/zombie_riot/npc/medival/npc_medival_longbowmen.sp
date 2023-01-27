@@ -350,10 +350,10 @@ public void HandleAnimEventMedivalLongbowmen(int entity, int event)
 						
 			npc.PlayMeleeSound();
 			
-			float damage = 80.0;
+			float damage = 50.0;
 			if(Medival_Difficulty_Level > 2.0)
 			{
-				damage = 120.0;
+				damage = 80.0;
 			}
 			npc.FireArrow(vecTarget, damage, projectile_speed);
 		}

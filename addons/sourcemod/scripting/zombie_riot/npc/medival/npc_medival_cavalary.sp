@@ -79,19 +79,7 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
-void MedivalKnight_OnMapStart_NPC()
-{
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	PrecacheModel(COMBINE_CUSTOM_MODEL);
-}
-
-methodmap MedivalKnight < CClotBody
+methodmap MedivalCavalary < CClotBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -163,11 +151,11 @@ methodmap MedivalKnight < CClotBody
 		#endif
 	}
 	
-	public MedivalKnight(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalCavalary(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalKnight npc = view_as<MedivalKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "5000", ally));
+		MedivalCavalary npc = view_as<MedivalCavalary>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "12500", ally));
 		
-		i_NpcInternalId[npc.index] = MEDIVAL_KNIGHT;
+		i_NpcInternalId[npc.index] = MEDIVAL_CAVALARY;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -181,11 +169,11 @@ methodmap MedivalKnight < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalKnight_ClotDamaged);
-		SDKHook(npc.index, SDKHook_Think, MedivalKnight_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalCavalary_ClotDamaged);
+		SDKHook(npc.index, SDKHook_Think, MedivalCavalary_ClotThink);
 
 		npc.m_iState = 0;
-		npc.m_flSpeed = 325.0;
+		npc.m_flSpeed = 333.33;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -203,16 +191,16 @@ methodmap MedivalKnight < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop/player/items/soldier/dec17_brass_bucket/dec17_brass_bucket.mdl");
-		SetVariantString("1.25");
+		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/workshop/player/items/demo/spr17_blast_defense/spr17_blast_defense.mdl");
+		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
 		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/engineer/hwn2022_pony_express/hwn2022_pony_express.mdl");
 		SetVariantString("1.1");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/bak_caped_crusader/bak_caped_crusader.mdl");
-		SetVariantString("1.25");
+		npc.m_iWearable5 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/sbox2014_juggernaut_jacket/sbox2014_juggernaut_jacket.mdl");
+		SetVariantString("1.1");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
 		npc.StartPathing();
@@ -223,9 +211,9 @@ methodmap MedivalKnight < CClotBody
 
 //TODO 
 //Rewrite
-public void MedivalKnight_ClotThink(int iNPC)
+public void MedivalCavalary_ClotThink(int iNPC)
 {
-	MedivalKnight npc = view_as<MedivalKnight>(iNPC);
+	MedivalCavalary npc = view_as<MedivalCavalary>(iNPC);
 
 	float gameTime = GetGameTime(iNPC);
 
@@ -274,11 +262,11 @@ public void MedivalKnight_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 40.0;
+					float damage = 100.0;
 
 					if(Medival_Difficulty_Level > 2.0)
 					{
-						damage = 50.0;
+						damage = 120.0;
 					}
 
 					if(ShouldNpcDealBonusDamage(target))
@@ -381,13 +369,13 @@ public void MedivalKnight_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action MedivalKnight_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalCavalary_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	MedivalKnight npc = view_as<MedivalKnight>(victim);
+	MedivalCavalary npc = view_as<MedivalCavalary>(victim);
 	
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
@@ -400,16 +388,16 @@ public Action MedivalKnight_ClotDamaged(int victim, int &attacker, int &inflicto
 	return Plugin_Changed;
 }
 
-public void MedivalKnight_NPCDeath(int entity)
+void MedivalCavalary_NPCDeath(int entity)
 {
-	MedivalKnight npc = view_as<MedivalKnight>(entity);
+	MedivalCavalary npc = view_as<MedivalCavalary>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalKnight_ClotDamaged);
-	SDKUnhook(npc.index, SDKHook_Think, MedivalKnight_ClotThink);
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalCavalary_ClotDamaged);
+	SDKUnhook(npc.index, SDKHook_Think, MedivalCavalary_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -350,7 +350,7 @@ public void HandleAnimEventMedivalEliteLongbowmen(int entity, int event)
 						
 			npc.PlayMeleeSound();
 			
-			float damage = 110.0;
+			float damage = 70.0;
 
 			npc.FireArrow(vecTarget, damage, projectile_speed);
 		}

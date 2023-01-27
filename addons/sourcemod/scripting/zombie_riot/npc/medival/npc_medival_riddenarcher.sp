@@ -341,7 +341,7 @@ public void HandleAnimEventMedival_RiddenArcher(int entity, int event)
 			npc.FaceTowards(vecTarget, 30000.0);
 						
 			npc.PlayMeleeSound();
-			npc.FireArrow(vecTarget, 75.0, 1200.0);
+			npc.FireArrow(vecTarget, 50.0, 1200.0);
 		}
 	}
 	

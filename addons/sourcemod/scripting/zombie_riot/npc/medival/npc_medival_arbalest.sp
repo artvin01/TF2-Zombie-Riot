@@ -348,10 +348,10 @@ public void HandleAnimEventMedival_Arbalest(int entity, int event)
 						
 			npc.PlayMeleeSound();
 			
-			float damage = 65.0;
+			float damage = 40.0;
 			if(Medival_Difficulty_Level > 1.0)
 			{
-				damage = 85.0;
+				damage = 55.0;
 			}
 			npc.FireArrow(vecTarget, damage, projectile_speed);
 		}

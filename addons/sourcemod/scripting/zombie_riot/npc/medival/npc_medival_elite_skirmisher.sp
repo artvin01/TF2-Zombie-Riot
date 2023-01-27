@@ -354,10 +354,10 @@ public void HandleAnimEvent_MedivalEliteSkirmisher(int entity, int event)
 				
 			npc.FaceTowards(vecTarget, 30000.0);
 			
-			float damage = 25.0;
+			float damage = 15.0;
 			if(Medival_Difficulty_Level > 1.0)
 			{
-				damage = 45.0;
+				damage = 30.0;
 			}
 			npc.PlayMeleeSound();
 			npc.FireArrow(vecTarget, damage, 1200.0);
