@@ -556,7 +556,7 @@ public Action BarrackBody_ClotDamaged(int victim, int &attacker, int &inflictor,
 	if(attacker < 1)
 		return Plugin_Continue;
 	
-	if((damagetype & DMG_CLUB) && !IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+	if(!(damagetype & DMG_CLUB) || !IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
 		damage *= 0.5;
 	}
