@@ -250,7 +250,7 @@
 				"signature"	"NextBotGroundLocomotion::ResolveCollision"
 				"callconv"	"thiscall"
 				"return"	"vector"
-				"this"		"entity"
+				"this"		"ignore"
 				"arguments"
 				{
 					"from"

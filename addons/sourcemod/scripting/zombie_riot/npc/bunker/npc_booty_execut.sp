@@ -943,7 +943,7 @@ public bool BootyExecutioner_BEAM_TraceWallsOnly(int entity, int contentsMask)
 public bool BootyExecutioner_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	static char classname[64];
-	if (IsLivingPlayer(entity))
+	if (IsEntityAlive(entity))
 	{
 		BootyExecutioner_BEAM_HitDetected[entity] = true;
 	}

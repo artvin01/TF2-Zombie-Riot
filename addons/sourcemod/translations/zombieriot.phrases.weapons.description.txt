@@ -1492,9 +1492,7 @@
 	
 	"Glass Cannon Blueprints Desc"
 	{
-		"en"	"30%% more building damage, 75%% less building HP, can only have 1 support buidling/cant build more/claim more."
-		"ru"	"На 30%% больше урона у построек, на 75%% меньше здоровья у построек, можно иметь только 1 постройку поддержки при строительстве."
-		"chi"   "增加30%%的建筑伤害，建筑生命值提高75%%，但仅能建筑一个建筑...."
+		"en"	"30%% more building damage, 75%% less building HP, can only have 1 support buidling/cant build more/claim more.\nAlso works with Barraks, gives units 15%% more damage."
 	}
 	
 	"Build Collider Disabler Desc"
@@ -1708,5 +1706,51 @@
 	"Buildable Barracks Desc"
 	{
 		"en"	"Allows training allies to fight for you.\nRepair upgrades provides more resources.\nBuilding upgrades provides stronger allies."
+	}
+	"Militia Desc"
+	{
+		"en"	"Basic cheap melee unit"
+	}
+	"Archer Desc"
+	{
+		"en"	"Basic first ranged unit"
+	}
+	"Man-At-Arms Desc"
+	{
+		"en"	"Upgraded Militia suitable for fortified zombies"
+	}
+	"Crossbow Man Desc"
+	{
+		"en"	"Upgraded Archer suitable for basic combine armor"
+	}
+	"Long Swordsman Desc"
+	{
+		"en"	"Upgraded Man-At-Arms suitable for warrior combine armor"
+	}
+	"Medival Abalest Desc"
+	{
+		"en"	"Upgraded Crossbow Man suitable for takes downs from a safe distance"
+	}
+	"Twohanded Swordsman Desc"
+	{
+		"en"	"Upgraded Long Swordsman suitable for heavy targets"
+	}
+	"Medival Longbowmen Desc"
+	{
+		"en"	"Fire slower than Abalest but deals much more damage and a longer range"
+	}
+	"Champion Desc"
+	{
+		"en"	"Has a much more health and damage than Two-Handed Swordsman"
+	}
+	"Monk Desc"
+	{
+		//"en"	"Provides healing to all allies around it but lacks self defense"
+		"en"	"Requires gold... I wonder where we can get some..."
+	}
+	"Hussar Desc"
+	{
+		//"en"	"High damage and health and provides a buffing aura to nearby allies"
+		"en"	"Requires gold... I wonder where we can get some..."
 	}
 }

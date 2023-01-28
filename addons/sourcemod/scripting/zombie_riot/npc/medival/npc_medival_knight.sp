@@ -31,7 +31,7 @@ static const char g_IdleSounds[][] = {
 	"npc/metropolice/vo/infection.wav",
 	"npc/metropolice/vo/king.wav",
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
-	"npc/metropolice/vo/pickupthatcan1.wav",
+
 	"npc/metropolice/vo/pickupthatcan2.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
@@ -203,16 +203,16 @@ methodmap MedivalKnight < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/workshop/player/items/demo/spr17_blast_defense/spr17_blast_defense.mdl");
-		SetVariantString("0.8");
+		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop/player/items/soldier/dec17_brass_bucket/dec17_brass_bucket.mdl");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
 		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/engineer/hwn2022_pony_express/hwn2022_pony_express.mdl");
 		SetVariantString("1.1");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
-		npc.m_iWearable5 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/sbox2014_juggernaut_jacket/sbox2014_juggernaut_jacket.mdl");
-		SetVariantString("1.1");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/bak_caped_crusader/bak_caped_crusader.mdl");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
 		npc.StartPathing();
@@ -281,7 +281,7 @@ public void MedivalKnight_ClotThink(int iNPC)
 						damage = 50.0;
 					}
 
-					if(target > MaxClients)
+					if(ShouldNpcDealBonusDamage(target))
 					{
 						damage *= 3.0;
 					}

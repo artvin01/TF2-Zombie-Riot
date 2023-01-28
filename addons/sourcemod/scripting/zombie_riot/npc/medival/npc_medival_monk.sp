@@ -31,7 +31,7 @@ static const char g_IdleSounds[][] = {
 	"npc/metropolice/vo/infection.wav",
 	"npc/metropolice/vo/king.wav",
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
-	"npc/metropolice/vo/pickupthatcan1.wav",
+
 	"npc/metropolice/vo/pickupthatcan2.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
@@ -189,7 +189,7 @@ methodmap MedivalMonk < CClotBody
 
 		Is_a_Medic[npc.index] = true; //This npc buffs, we dont waant allies to follow this ally.
 		
-		npc.m_flMeleeArmor = 1.0;
+		npc.m_flMeleeArmor = 3.0;
 		npc.m_flRangedArmor = 1.0;
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop_partner/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");

@@ -604,6 +604,7 @@ public void OnPostThink(int client)
 		char bufferbuffs[64];
 		//BUFFS!
 #if defined RPG		
+		HudY = 0.85;
 		if(f_HealingPotionDuration[client] > gameTime) //Client has a buff, but which one?
 		{
 			float time_left = f_HealingPotionDuration[client] - gameTime;
@@ -879,8 +880,9 @@ public void OnPostThink(int client)
 				"Zombies Left", Zombies_Currently_Still_Ongoing);				
 			}
 		}
-	}
 #endif	// ZR
+	}
+
 		
 #if defined RPG
 		// RPG Level Stuff Here

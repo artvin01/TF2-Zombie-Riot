@@ -91,6 +91,7 @@ void DHook_Setup()
 
 	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
+//	DHook_CreateDetour(gamedata, "PathFollower::Avoid", _, PathFollowerAvoid);
 
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
@@ -740,6 +741,7 @@ public void StartLagCompResetValues()
 	b_LagCompNPC_AwayEnemies = false;
 	b_LagCompNPC_ExtendBoundingBox = false;
 	b_LagCompNPC_BlockInteral = false;
+	b_LagCompNPC_OnlyAllies = false;
 }
 //if you find a way thats better to ignore fellow dispensers then tell me..!
 public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
@@ -751,6 +753,11 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 	bool already_moved = false;
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
+		b_LagCompNPC = true;
+		b_LagCompNPC_ExtendBoundingBox = false;
+		b_LagCompNPC_No_Layers = false;
+		b_LagCompNPC_OnlyAllies = false;
+		StartLagCompensation_Base_Boss(Compensator); //Compensate, but mostly allies.
 		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Spectator)); //Hardcode to red as there will be no blue players.
 		return MRES_Ignored;
 	}
@@ -1832,3 +1839,35 @@ public MRESReturn FX_FireBullets_Post(DHookParam hParams)
 
     return MRES_Ignored;
 }
+/*
+( INextBot *bot, const Vector &goalPos, const Vector &forward, const Vector &left )
+*/
+/*
+public MRESReturn PathFollowerAvoid(DHookReturn Hreturn, DHookParam param)
+{
+	PrintToChatAll("PathFollowerAvoid");
+	
+	float goalPos[3];
+	DHookGetParamVector(param, 2, goalPos);
+	PrintToChatAll("%f,%f,%f,", goalPos[0], goalPos[1], goalPos[2]);
+
+	int bot = DHookGetParam(param, 1);
+	int entity = view_as<int>(SDKCall(g_hGetEntity, bot));
+	if(entity > MaxClients)
+	{
+		float goalPos[3];
+		DHookGetParamVector(param, 2, goalPos);
+		PrintToChatAll("%f,%f,%f,", goalPos[0], goalPos[1], goalPos[2]);
+		
+		float forwardVec[3];
+		float leftVec[3];
+		DHookGetParamVector(param, 3, forwardVec);
+		DHookGetParamVector(param, 4, leftVec);
+		
+		DHookSetReturnVector(Hreturn, goalPos);
+		return MRES_Supercede;
+	}
+	
+	return MRES_Ignored;
+}
+*/

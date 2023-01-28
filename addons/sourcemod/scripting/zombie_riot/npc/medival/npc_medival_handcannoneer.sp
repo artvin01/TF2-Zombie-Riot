@@ -331,7 +331,7 @@ public void HandleAnimEventMedival_HandCannoneer(int entity, int event)
 			npc.FaceTowards(vecTarget, 30000.0);
 						
 			npc.PlayMeleeSound();
-			npc.FireArrow(vecTarget, 25.0, 1200.0);
+			npc.FireArrow(vecTarget, 20.0, 1200.0);
 		}
 	}
 	

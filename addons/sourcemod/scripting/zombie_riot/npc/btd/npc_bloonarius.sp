@@ -443,7 +443,7 @@ public void Bloonarius_ClotThink(int iNPC)
 		}
 	}
 	
-	if(npc.m_iTarget < 1 && !IsValidEnemy(npc.index, npc.m_iTarget))
+	if(npc.m_iTarget < 1 || !IsValidEnemy(npc.index, npc.m_iTarget))
 		npc.m_flGetClosestTargetTime = 0.0;
 	
 	if(npc.m_flGetClosestTargetTime < gameTime)

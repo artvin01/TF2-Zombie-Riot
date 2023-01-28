@@ -665,7 +665,7 @@ public bool NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceWallsOnly(int entity, int con
 public bool NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	static char classname[64];
-	if (IsLivingPlayer(entity))
+	if (IsEntityAlive(entity))
 	{
 		NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_HitDetected[entity] = true;
 	}

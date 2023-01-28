@@ -1,11 +1,13 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+// Balanced around Early Zombie
+
 methodmap BarrackMilitia < BarrackBody
 {
 	public BarrackMilitia(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BarrackMilitia npc = view_as<BarrackMilitia>(BarrackBody(client, vecPos, vecAng, "125"));
+		BarrackMilitia npc = view_as<BarrackMilitia>(BarrackBody(client, vecPos, vecAng, "165"));
 		
 		i_NpcInternalId[npc.index] = BARRACK_MILITIA;
 		
@@ -14,11 +16,11 @@ methodmap BarrackMilitia < BarrackBody
 		npc.m_flSpeed = 150.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_boston_basher/c_boston_basher.mdl");
-		SetVariantString("0.5");
+		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/sniper/spr17_archers_sterling/spr17_archers_sterling.mdl");
-		SetVariantString("0.5");
+		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		return npc;
@@ -30,7 +32,7 @@ public void BarrackMilitia_ClotThink(int iNPC)
 	BarrackMilitia npc = view_as<BarrackMilitia>(iNPC);
 	if(BarrackBody_ThinkStart(npc.index))
 	{
-		BarrackBody_ThinkTarget(npc.index, false);
+		int client = BarrackBody_ThinkTarget(npc.index, false);
 
 		if(npc.m_iTarget > 0)
 		{
@@ -49,7 +51,7 @@ public void BarrackMilitia_ClotThink(int iNPC)
 						npc.PlayMeleeSound();
 						npc.m_flAttackHappens = GetGameTime(npc.index) + 0.4;
 						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 0.54;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (1.0 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
 					}
 						
@@ -66,7 +68,7 @@ public void BarrackMilitia_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, 300.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
 								npc.PlayMeleeHitSound();
 							} 
 						}
@@ -81,7 +83,7 @@ public void BarrackMilitia_ClotThink(int iNPC)
 			}
 		}
 
-		BarrackBody_ThinkMove(npc.index, "ACT_IDLE", "ACT_WALK");
+		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_IDLE", "ACT_WALK");
 	}
 }
 

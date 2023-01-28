@@ -297,6 +297,22 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 								f_DelayLookingAtHud[client] = GetGameTime() + 1.0;	
 								PrintCenterText(client, "%t", "Picking Up Building");
 							}
+							else if (StrEqual(buffer, "zr_summoner"))
+							{
+								if(Doing_Handle_Mount[client])
+								{
+									KillTimer(Mount_Building[client]);
+								}
+								Doing_Handle_Mount[client] = true;
+								DataPack pack;
+								Mount_Building[client] = CreateDataTimer(1.0, Mount_Building_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+								pack.WriteCell(client);
+								pack.WriteCell(EntIndexToEntRef(entity));
+								pack.WriteCell(GetClientUserId(client));
+								SetGlobalTransTarget(client);
+								f_DelayLookingAtHud[client] = GetGameTime() + 1.0;	
+								PrintCenterText(client, "%t", "Picking Up Building");
+							}
 							else
 							{
 								ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -450,6 +466,10 @@ public Action Mount_Building_Timer(Handle sentryHud, DataPack pack)
 				else if (StrEqual(buffer, "zr_village"))
 				{
 					EquipDispenser(client, entity, 8);
+				}	
+				else if (StrEqual(buffer, "zr_summoner"))
+				{
+					EquipDispenser(client, entity, 9);
 				}					
 			}
 		}

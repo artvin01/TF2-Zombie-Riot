@@ -361,7 +361,7 @@ public void HandleAnimEvent_MedivalSkirmisher(int entity, int event)
 						
 				
 			npc.PlayMeleeSound();
-			npc.FireArrow(vecTarget, 12.0, 1200.0);
+			npc.FireArrow(vecTarget, 8.0, 1200.0);
 		}
 	}
 	

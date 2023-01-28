@@ -28,13 +28,10 @@ bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 #endif
 
 #if defined RPG
-float f3_SpawnPosition[MAXENTITIES][3];
 int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
 int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES] = {0, ...};
 #endif
 
-static int g_particleImpactFlesh;
-static int g_particleImpactRubber;
 static int g_modelArrow;
 
 static ConVar flTurnRate;
@@ -273,7 +270,8 @@ methodmap CClotBody
 						bool isGiant = false,
 						bool IgnoreBuildings = false,
 						bool IsRaidBoss = false,
-						float CustomThreeDimensions[3] = {0.0,0.0,0.0})
+						float CustomThreeDimensions[3] = {0.0,0.0,0.0},
+						bool Ally_Collideeachother = false)
 	{
 		int npc = CreateEntityByName("base_boss");
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
@@ -284,6 +282,7 @@ methodmap CClotBody
 		
 		if(Ally)
 		{
+			b_IsAlliedNpc[npc] = true;
 			if(Ally_Invince)
 			{
 				b_ThisEntityIgnored[npc] = true;
@@ -353,6 +352,13 @@ methodmap CClotBody
 			{
 				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyInvince,   false, pLocomotion);
 			}
+			/*
+			else if (Ally_Collideeachother)
+			{
+				b_CollidesWithEachother[npc] = true;
+				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyIngoreBuilding,   false, pLocomotion);
+			}
+			*/
 			else
 			{
 				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAlly,   false, pLocomotion);
@@ -387,6 +393,14 @@ methodmap CClotBody
 			list.Push(DHookRaw(g_hGetHullHeight,	   true, pBody));
 			list.Push(DHookRaw(g_hGetStandHullHeight,  true, pBody));
 		}
+		/*
+		else if (Ally_Collideeachother)
+		{
+			list.Push(DHookRaw(g_hGetHullWidthSmall,		true, pBody));
+			list.Push(DHookRaw(g_hGetHullHeightSmall,	   true, pBody));
+			list.Push(DHookRaw(g_hGetStandHullHeightSmall,  true, pBody));
+		}
+		*/
 		else
 		{
 			b_IsGiant[npc] = true;
@@ -453,7 +467,14 @@ methodmap CClotBody
 			b_BoundingBoxVariant[npc] = 1;
 			m_vecMaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
 			m_vecMins = view_as<float>( { -30.0, -30.0, 0.0 } );	
-		}			
+		}	
+		/*
+		else if (Ally_Collideeachother)
+		{
+			m_vecMaxs = view_as<float>( { 8.0, 8.0, 56.0 } );
+			m_vecMins = view_as<float>( { -8.0, -8.0, 0.0 } );	
+		}		
+		*/
 		else
 		{
 			m_vecMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
@@ -493,7 +514,7 @@ methodmap CClotBody
 		SetEntPropVector(npc, Prop_Data, "m_vecMinsPreScaled", m_vecMinsNothing);
 
 #if defined ZR
-		if(Ally)
+		if(Ally && !Ally_Collideeachother)
 		{
 			CClotBody npcstats = view_as<CClotBody>(npc);
 			npcstats.m_iTeamGlow = TF2_CreateGlow(npc);
@@ -503,7 +524,6 @@ methodmap CClotBody
 		}
 #endif
 		
-		SDKHook(npc, SDKHook_OnTakeDamage, NPC_OnTakeDamage_Base);
 		SDKHook(npc, SDKHook_Think, Check_If_Stuck);
 //		SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
 		
@@ -512,11 +532,14 @@ methodmap CClotBody
 		if(IsRaidBoss)
 		{
 			RemoveAllDamageAddition();
-			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.1, 1.75); //Global.
+			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, MASK_NPCSOLID, 150.0, 0.1, 1.75); //Global.
 		}
 		else
-			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.29, 1.75); //Global.
-		
+		{
+			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, MASK_NPCSOLID, 150.0, 0.29, 1.75); //Global.
+			
+		}
+	
 		return view_as<CClotBody>(npc);
 	}
 		property int index 
@@ -1777,9 +1800,12 @@ methodmap CClotBody
 		PF_EnableCallback(this.index, PFCB_GetPathCost,		 PluginBot_PathCost);
 	//	PF_EnableCallback(this.index, PFCB_ClimbUpToLedge, 		PluginBot_NormalJump);
 	//	PF_EnableCallback(this.index, PFCB_PathSuccess,			PluginBot_PathSuccess);
-		//PF_EnableCallback(this.index, PFCB_OnMoveToSuccess,	 PluginBot_MoveToSuccess);
-		//PF_EnableCallback(this.index, PFCB_PathFailed,		  PluginBot_MoveToFailure);
-		//PF_EnableCallback(this.index, PFCB_OnMoveToFailure,	 PluginBot_MoveToFailure);
+		if(b_CollidesWithEachother[this.index])
+		{
+			PF_EnableCallback(this.index, PFCB_OnMoveToSuccess,	 PluginBot_MoveToSuccess);
+			PF_EnableCallback(this.index, PFCB_PathFailed,		  PluginBot_MoveToFailure);
+			PF_EnableCallback(this.index, PFCB_OnMoveToFailure,	 PluginBot_MoveToFailure);
+		}
 		
 		PF_EnableCallback(this.index, PFCB_OnActorEmoted, PluginBot_OnActorEmoted);
 		
@@ -1791,9 +1817,12 @@ methodmap CClotBody
 		PF_DisableCallback(entity, PFCB_IsEntityTraversable);
 		PF_DisableCallback(entity, PFCB_GetPathCost);
 	//	PF_DisableCallback(entity, PFCB_ClimbUpToLedge);
-	//	PF_DisableCallback(entity, PFCB_OnMoveToSuccess);
-	//	PF_DisableCallback(entity, PFCB_PathFailed);
-	//	PF_DisableCallback(entity, PFCB_OnMoveToFailure);
+		if(b_CollidesWithEachother[entity])
+		{
+			PF_DisableCallback(entity, PFCB_OnMoveToSuccess);
+			PF_DisableCallback(entity, PFCB_PathFailed);
+			PF_DisableCallback(entity, PFCB_OnMoveToFailure);
+		}
 		PF_DisableCallback(entity, PFCB_OnActorEmoted);
 		PF_Destroy(entity);
 	}	
@@ -2188,7 +2217,7 @@ methodmap CClotBody
 			SetEntityCollisionGroup(entity, 1);
 		}
 	}
-	public void FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, float offset = 0.0) //No defaults, otherwise i cant even judge.
+	public void FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE) //No defaults, otherwise i cant even judge.
 	{
 		//ITS NOT actually an arrow, because of an ANNOOOOOOOOOOOYING sound.
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
@@ -2218,6 +2247,7 @@ methodmap CClotBody
 		{
 			b_EntityIsArrow[entity] = true;
 			f_ArrowDamage[entity] = rocket_damage;
+			h_ArrowInflictorRef[entity] = inflictor < 1 ? INVALID_ENT_REFERENCE : EntIndexToEntRef(inflictor);
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(this.index, Prop_Send, "m_iTeamNum"));
@@ -2238,7 +2268,15 @@ methodmap CClotBody
 					SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_modelArrow, _, i);
 					
 				//	int trail = Trail_Attach(entity, "effects/arrowtrail_blue.vmt", 255, 1.5, 12.0, 0.0, 4);
-					int trail = Trail_Attach(entity, ARROW_TRAIL, 255, 0.3, 3.0, 3.0, 5);
+					int trail;
+					if(b_IsAlliedNpc[this.index])
+					{
+						trail = Trail_Attach(entity, ARROW_TRAIL_RED, 255, 0.3, 3.0, 3.0, 5);
+					}
+					else
+					{
+						trail = Trail_Attach(entity, ARROW_TRAIL, 255, 0.3, 3.0, 3.0, 5);
+					}
 					
 					f_ArrowTrailParticle[entity] = EntIndexToEntRef(trail);
 					
@@ -2253,6 +2291,7 @@ methodmap CClotBody
 			}
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
 			SetEntityCollisionGroup(entity, 19); //our savior
+			Set_Projectile_Collision(entity); //If red, set to 27
 			See_Projectile_Team(entity);
 			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Arrow_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
 			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
@@ -2913,6 +2952,10 @@ public void NPC_Base_InitGamedata()
 
 	g_hShouldCollideWithAllyEnemyIngoreBuilding = DHookCreateEx(hConf, "ILocomotion::ShouldCollideWith",  HookType_Raw, ReturnType_Bool, ThisPointer_Address, ILocomotion_ShouldCollideWithEnemyIngoreBuilding);
 	DHookAddParam(g_hShouldCollideWithAllyEnemyIngoreBuilding, HookParamType_CBaseEntity);
+
+
+	g_hShouldCollideWithAllyIngoreBuilding = DHookCreateEx(hConf, "ILocomotion::ShouldCollideWith",  HookType_Raw, ReturnType_Bool, ThisPointer_Address, ILocomotion_ShouldCollideWithAllyOnlyIngoreBuilding);
+	DHookAddParam(g_hShouldCollideWithAllyIngoreBuilding, HookParamType_CBaseEntity);
 	
 	g_hGetSolidMask		= DHookCreateEx(hConf, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
 	g_hGetActivity		 = DHookCreateEx(hConf, "IBody::GetActivity",		HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetActivity);
@@ -2926,7 +2969,12 @@ public void NPC_Base_InitGamedata()
 	g_hGetHullWidth		= DHookCreateEx(hConf, "IBody::GetHullWidth",	   HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullWidth);
 	g_hGetHullHeight	   = DHookCreateEx(hConf, "IBody::GetHullHeight",	  HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullHeight);
 	g_hGetStandHullHeight  = DHookCreateEx(hConf, "IBody::GetStandHullHeight", HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetStandHullHeight);
-	
+/*	
+	g_hGetHullWidthSmall		= DHookCreateEx(hConf, "IBody::GetHullWidth",	   HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullWidthSmall);
+	g_hGetHullHeightSmall	   = DHookCreateEx(hConf, "IBody::GetHullHeight",	  HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullHeightSmall);
+	g_hGetStandHullHeightSmall  = DHookCreateEx(hConf, "IBody::GetStandHullHeight", HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetStandHullHeightSmall);
+*/
+
 	g_hIsActivity   = DHookCreateEx(hConf, "IBody::IsActivity",   HookType_Raw, ReturnType_Bool, ThisPointer_Address, IBody_IsActivity);
 	DHookAddParam(g_hIsActivity, HookParamType_Int);
 	
@@ -3018,7 +3066,6 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		}
 		
 		CClotBody npc = view_as<CClotBody>(pThis);
-		SDKUnhook(pThis, SDKHook_OnTakeDamage, NPC_OnTakeDamage_Base);
 		SDKUnhook(pThis, SDKHook_Think, Check_If_Stuck);
 #if defined ZR
 		if(IsValidEntity(npc.m_iTeamGlow))
@@ -3455,6 +3502,34 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		{
 			BarrackArcher_HandleAnimEvent(pThis, event);
 		}
+		case MEDIVAL_LONGBOWMEN:
+		{
+			HandleAnimEventMedivalLongbowmen(pThis, event);
+		}
+		case MEDIVAL_ARBALEST:
+		{
+			HandleAnimEventMedival_Arbalest(pThis, event);
+		}
+		case BARRACK_CROSSBOW:
+		{
+			BarrackCrossbow_HandleAnimEvent(pThis, event);
+		}
+		case BARRACK_ARBELAST:
+		{
+			BarrackArbelast_HandleAnimEvent(pThis, event);
+		}
+		case BARRACK_LONGBOW:
+		{
+			BarrackLongbow_HandleAnimEvent(pThis, event);
+		}
+		case MEDIVAL_RIDDENARCHER:
+		{
+			HandleAnimEventMedival_RiddenArcher(pThis, event);
+		}
+		case MEDIVAL_CROSSBOW_GIANT:
+		{
+			HandleAnimEventMedival_GiantCrossbowMan(pThis, event);
+		}
 	}
 #endif
 	
@@ -3655,6 +3730,36 @@ public MRESReturn ILocomotion_ShouldCollideWithEnemyIngoreBuilding(Address pThis
 //	DHookSetReturn(hReturn, true); 
 	return MRES_Ignored;
 }
+
+public MRESReturn ILocomotion_ShouldCollideWithAllyOnlyIngoreBuilding(Address pThis, Handle hReturn, Handle hParams)   
+{ 
+	int otherindex = DHookGetParam(hParams, 1);
+	
+	if(otherindex > 0 && otherindex <= MaxClients)
+	{
+		DHookSetReturn(hReturn, false); 
+		return MRES_Supercede; 
+	}
+
+	if(b_CollidesWithEachother[otherindex]) //no change in performance..., almost.
+	{
+		return MRES_Ignored;
+	}
+
+	if(b_CantCollidieAlly[otherindex]) //no change in performance..., almost.
+	{
+		if(i_IsABuilding[otherindex])
+		{
+			DHookSetReturn(hReturn, false); 
+			return MRES_Supercede;
+		}
+		DHookSetReturn(hReturn, false); 
+		return MRES_Supercede;
+	}
+	
+//	DHookSetReturn(hReturn, true); 
+	return MRES_Ignored;
+}
 //2 * m_vecMaxs
 public MRESReturn IBody_GetHullWidth_ISGIANT(Address pThis, Handle hReturn, Handle hParams)			  { DHookSetReturn(hReturn, 60.0); return MRES_Supercede; }
 public MRESReturn IBody_GetHullHeight_ISGIANT(Address pThis, Handle hReturn, Handle hParams)			 { DHookSetReturn(hReturn, 120.0); return MRES_Supercede; }
@@ -3686,6 +3791,11 @@ public MRESReturn IBody_GetStandHullHeight(Address pThis, Handle hReturn, Handle
 	}
 	return MRES_Supercede; 
 }
+
+public MRESReturn IBody_GetHullWidthSmall(Address pThis, Handle hReturn, Handle hParams)			  { DHookSetReturn(hReturn, 16.0); return MRES_Supercede; }
+public MRESReturn IBody_GetHullHeightSmall(Address pThis, Handle hReturn, Handle hParams)			 { DHookSetReturn(hReturn, 56.0); return MRES_Supercede; }
+public MRESReturn IBody_GetStandHullHeightSmall(Address pThis, Handle hReturn, Handle hParams)		{ DHookSetReturn(hReturn, 56.0); return MRES_Supercede; }
+
 //npc.m_bISGIANT
 //BOUNDING BOX FOR ENEMY TO RESPECT
 
@@ -3764,10 +3874,8 @@ stock NavArea PickRandomArea()
 
 public bool FilterBaseActorsAndData(int entity, int contentsMask, any data)
 {
-	static char class[12];
-	GetEntityClassname(entity, class, sizeof(class));
-	
-	if(!StrContains(class, "base_boss")) return true;
+	if(!b_NpcHasDied[entity])
+		return true;
 	
 	return !(entity == data);
 }
@@ -3779,24 +3887,43 @@ public bool PluginBot_IsEntityTraversable(int bot_entidx, int other_entidx, Trav
 		return false;
 	}
 	
-	if(other_entidx > 0 && other_entidx <= MaxClients) 
+	if(b_IsAlliedNpc[bot_entidx]) //ally!
 	{
-		return true;
-	}	
-	
-	CClotBody npc = view_as<CClotBody>(other_entidx);
-
-	#if defined ISINVINCEABLEALLY || defined ISALLY
-	if(npc.bCantCollidieAlly) //no change in performance..., almost.
-	{
-		return true;
+		if(b_ThisEntityIgnored[bot_entidx] && b_ThisEntityIgnored[other_entidx])
+		{
+			return true; //yep! 
+		}
+		if(other_entidx > 0 && other_entidx <= MaxClients) 
+		{
+			return true; //Yep, is a player.
+		}	
+		if(b_CollidesWithEachother[bot_entidx])
+		{
+			if(b_CollidesWithEachother[other_entidx])
+			{
+				return false; //nope!
+			}
+		}
+		if(!b_IsAlliedNpc[other_entidx])
+		{
+			return false; //nope!
+		}	
+		if(i_IsABuilding[other_entidx])
+		{
+			return true; //yep!
+		}	
+		if(b_CantCollidieAlly[other_entidx])
+		{
+			return true; //yep!
+		}
 	}
-	#else
-	if(npc.bCantCollidie) //no change in performance..., almost.
+	else
 	{
-		return true;
+		if(b_CantCollidie[other_entidx])
+		{
+			return true; //yep!
+		}
 	}
-	#endif
 	
 	if(when == IMMEDIATELY) {
 		return false;
@@ -3816,9 +3943,6 @@ public void PluginBot_Approach(int bot_entidx, const float vec[3])
 
 public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 {
-	char class[64];
-	GetEntityClassname(entity, class, sizeof(class));
-
 #if defined ZR
 	if(entity > 0 && entity <= MaxClients) 
 	{
@@ -3828,43 +3952,32 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		}
 	}
 #endif
-	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
 	{
 		return false;
 	}
-	
-	CClotBody npc = view_as<CClotBody>(entity);
-	if(StrEqual(class, "func_respawnroomvisualizer"))
+	else if(!b_NpcHasDied[entity])
 	{
-		return false;
-	}	
-	else if(StrEqual(class, "base_boss"))
-	{
-			//Yes its double but i need it here too for npc vs npc, sorry.
 		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
-		{
-			return false;				
-		}
-		else if (npc.bCantCollidie && npc.bCantCollidieAlly) //If both are on, then that means the npc shouldnt be invis and stuff
 		{
 			return false;
 		}
-	}
-	
-	else if(StrContains(class, "tf_projectile_", false) != -1)
-	{
-		return false;
+		else if (b_CantCollidie[entity] && b_CantCollidieAlly[entity]) //If both are on, then that means the npc shouldnt be invis and stuff
+		{
+			return false;
+		}
 	}
 	
 	//if anything else is team
 	
 	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
 		return false;
-	
-	if(npc.m_bThisEntityIgnored)
+
+	if(b_ThisEntityIgnored[entity])
 	{
 		return false;
-	}
+	}	
+
 	return !(entity == iExclude);
 }
 
@@ -3881,9 +3994,6 @@ public void RemoveEntityToTraceStuckCheck(int entity)
 
 public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMask, any iExclude)
 {
-	char class[64];
-	GetEntityClassname(entity, class, sizeof(class));
-
 #if defined ZR
 	if(entity > 0 && entity <= MaxClients) 
 	{
@@ -3894,21 +4004,12 @@ public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMas
 	}
 #endif
 
-	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
-	{
-		return false;
-	}
-	CClotBody npc = view_as<CClotBody>(entity);
-	if(StrEqual(class, "func_respawnroomvisualizer"))
-	{
-		return false;
-	}	
-	else if(StrContains(class, "obj_", false) != -1)
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
 	{
 		return false;
 	}
 	
-	else if(StrContains(class, "tf_projectile_", false) != -1)
+	else if(i_IsABuilding[entity])
 	{
 		return false;
 	}
@@ -3918,11 +4019,11 @@ public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMas
 	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
 		return false;
 	
-	if(npc.m_bThisEntityIgnored)
+	if(b_ThisEntityIgnored[entity])
 	{
 		return false;
 	}
-	if(StrEqual(class, "base_boss"))
+	if(!b_NpcHasDied[entity])
 	{
 		return true;
 	}
@@ -3931,20 +4032,8 @@ public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMas
 
 public bool BulletAndMeleeTraceDontIgnoreBaseBoss(int entity, int contentsMask, any iExclude)
 {
-	char class[64];
-	GetEntityClassname(entity, class, sizeof(class));
-	/*
-	if(other_entidx > 0 && other_entidx <= MaxClients) 
-	{
-		return true;
-	}
-	*/
-	if(StrEqual(class, "func_respawnroomvisualizer"))
-	{
-		return false;
-	}
-	
-	else if(StrContains(class, "tf_projectile_", false) != -1)
+
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
 	{
 		return false;
 	}
@@ -4012,7 +4101,7 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 		hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
 		hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );		
 	}
-
+	
 	if (!IsSpaceOccupiedDontIgnorePlayers(Jump_1_frame, hullcheckmins, hullcheckmaxs, bot_entidx))//The boss will start to merge with shits, cancel out velocity.
 	{
 		float vecNPC[3], vecJumpVel[3];
@@ -4083,7 +4172,7 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 	}
 	return false;
 }
-/*
+
 public void PluginBot_PathSuccess(int bot_entidx, Address path)
 {
 	PF_StopPathing(bot_entidx);
@@ -4107,7 +4196,7 @@ public void PluginBot_MoveToFailure(int bot_entidx, Address path, MoveToFailureT
 	
 	//view_as<CClotBody>(bot_entidx).m_flNextTargetTime = GetGameTime() + GetRandomFloat(1.0, 4.0);
 }
-*/
+
 stock bool IsEntityAlive(int index)
 {
 	if(IsValidEntity(index) && index > 0)
@@ -4125,10 +4214,18 @@ stock bool IsEntityAlive(int index)
 		}
 		else
 		{
+#if defined ZR
 			if(!IsPlayerAlive(index) || dieingstate[index] > 0 || TeutonType[index] != TEUTON_NONE)
 			{
 				return false;	
 			}
+#endif
+#if defined RPG
+			if(!IsPlayerAlive(index))
+			{
+				return false;	
+			}
+#endif
 			else
 			{
 				return true;
@@ -4144,18 +4241,15 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false)
 {
 	if(IsValidEntity(enemy))
 	{
-		static char strClassname[16];
-		GetEntityClassname(enemy, strClassname, sizeof(strClassname));
-		if(StrEqual(strClassname, "player") || StrEqual(strClassname, "base_boss"))
+		if(enemy <= MaxClients || !b_NpcHasDied[enemy])
 		{
-			CClotBody npc = view_as<CClotBody>(enemy);
 			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(enemy, Prop_Send, "m_iTeamNum"))
 			{
 				return false;
 			}
 			if(camoDetection)
 			{
-				if(npc.m_bThisEntityIgnored || b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
+				if(b_ThisEntityIgnored[enemy] || b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
 				{
 					return false;
 				}
@@ -4166,7 +4260,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false)
 			}
 			else
 			{
-				if(npc.m_bThisEntityIgnored || npc.m_bCamo || b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
+				if(b_ThisEntityIgnored[enemy] || b_IsCamoNPC[enemy] || b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
 				{
 					return false;
 				}
@@ -4176,20 +4270,19 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false)
 				}
 			}	
 		}
-		else if(StrEqual(strClassname, "obj_dispenser") || StrEqual(strClassname, "obj_teleporter") || StrEqual(strClassname, "obj_sentrygun"))
+		else if(i_IsABuilding[enemy])
 		{
-			CClotBody npc = view_as<CClotBody>(enemy);
 			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(enemy, Prop_Send, "m_iTeamNum"))
 			{
 				return false;
 			}
 			
-			else if(npc.bBuildingIsStacked)
+			else if(b_BuildingIsStacked[enemy])
 			{
 				return false;
 			}
 			
-			else if(npc.bBuildingIsPlaced)
+			else if(b_bBuildingIsPlaced[enemy])
 			{
 				return true;
 			}
@@ -4207,10 +4300,9 @@ stock bool IsValidAllyPlayer(int index, int Ally)
 {
 	if(IsValidClient(Ally))
 	{
-		CClotBody npc = view_as<CClotBody>(Ally);
 		if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(Ally, Prop_Send, "m_iTeamNum"))
 		{
-			if(npc.m_bThisEntityIgnored)
+			if(b_ThisEntityIgnored[Ally])
 			{
 				return false;
 			}
@@ -4676,6 +4768,15 @@ stock bool IsSpaceOccupiedDontIgnorePlayers(const float pos[3], const float mins
 	return bHit;
 }
 
+stock bool IsSpaceOccupiedRTSBuilding(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
+{
+	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayDontHitRTSAlliedNpc, entity);
+	bool bHit = TR_DidHit(hTrace);
+	ref = TR_GetEntityIndex(hTrace);
+	delete hTrace;
+	return bHit;
+}
+
 stock int IsSpaceOccupiedOnlyPlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayHitPlayersOnly, entity);
@@ -4725,22 +4826,12 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 	{
 		return false;
 	}
-
-	static char class[64];
-	GetEntityClassname(entity, class, sizeof(class));
-	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
 	{
 		return false;
 	}
 	
-	CClotBody npc = view_as<CClotBody>(entity);
-	
-	if(StrEqual(class, "base_boss"))
-	{
-		return false;
-	}
-	
-	else if(StrContains(class, "tf_projectile_", false) != -1)
+	if(!b_NpcHasDied[entity])
 	{
 		return false;
 	}
@@ -4750,16 +4841,70 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 	if(GetEntProp(data, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
 		return false;
 	
-	if(StrEqual(class, "func_brush"))
+	if(b_is_a_brush[entity])
 	{
 		return true;//They blockin me
 	}
-	else if(StrEqual(class, "func_respawnroomvisualizer"))
+	else if(b_IsARespawnroomVisualiser[entity])
 	{
 		return true;//They blockin me and not on same team, otherwsie top filter
 	}
 	
-	if(npc.m_bThisEntityIgnored)
+	if(b_ThisEntityIgnored[entity])
+	{
+		return false;
+	}
+	
+	if(entity == Entity_to_Respect)
+	{
+		return false;
+	}
+	
+	return true;
+}
+
+
+public bool TraceRayDontHitRTSAlliedNpc(int entity,int mask,any data)
+{
+	if(entity == 0)
+	{
+		return true;
+	}
+
+	if(entity > 0 && entity <= MaxClients) 
+	{
+		return false;
+	}
+
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
+	{
+		return false;
+	}
+	
+	if(!b_NpcHasDied[entity])
+	{
+		if(b_CollidesWithEachother[entity])
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	//if anything else is team
+	
+	if(GetEntProp(data, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		return false;
+	
+	if(b_is_a_brush[entity])
+	{
+		return true;//They blockin me
+	}
+	else if(b_IsARespawnroomVisualiser[entity])
+	{
+		return true;//They blockin me and not on same team, otherwsie top filter
+	}
+	
+	if(b_ThisEntityIgnored[entity])
 	{
 		return false;
 	}
@@ -4789,35 +4934,21 @@ public bool TraceRayCanSeeAllySpecific(int entity,int mask,any data)
 		return false;
 	}
 
-	static char class[64];
-	GetEntityClassname(entity, class, sizeof(class));
-	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
 	{
 		return false;
 	}
 	
-	CClotBody npc = view_as<CClotBody>(entity);
-	
-	if(StrContains(class, "tf_projectile_", false) != -1)
-	{
-		return false;
-	}
-	
-	//if anything else is team
-	/*
-	if(GetEntProp(data, Prop_Send, "m_iTeamNum") != GetEntProp(entity, Prop_Send, "m_iTeamNum"))
-		return false;
-	*/
-	if(StrEqual(class, "func_brush"))
+	if(b_is_a_brush[entity])
 	{
 		return true;//They blockin me
 	}
-	else if(StrEqual(class, "func_respawnroomvisualizer"))
+	else if(b_IsARespawnroomVisualiser[entity])
 	{
 		return true;//They blockin me and not on same team, otherwsie top filter
 	}
 	
-	if(npc.m_bThisEntityIgnored)
+	if(b_ThisEntityIgnored[entity])
 	{
 		return false;
 	}
@@ -5130,126 +5261,6 @@ public void Check_If_Stuck(int iNPC)
 	}
 	
 	
-}
-
-//using normal ontakedamage will make it abit more inaccurate but it will work
-//Using post will make it too late and it wont even get called as the npc has already died, resulting in post not calling anymore
-//Have to use this, for now, if that one bug still happens with unhooks and dhooks then i will revert back.
-
-static float f_CooldownForHurtParticle[MAXENTITIES];	
-
-public Action NPC_OnTakeDamage_Base(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	/*
-	if(attacker < MaxClients && attacker > 0) //make sure players cannot hurt allied npcs.
-	//Do not use team checks, they actually lag alot...
-	{
-		return Plugin_Handled;
-	}
-	*/
-	CClotBody npc = view_as<CClotBody>(victim);
-	npc.m_vecpunchforce(damageForce, true);
-	npc.m_bGib = false;
-
-//This exists for rpg so that attacking the target will trigger it for hte next 5 seconds.
-//ZR does not need this.
-#if defined RPG
-	if(IsValidEntity(attacker))
-	{
-		if(GetEntProp(attacker, Prop_Send, "m_iTeamNum")!=GetEntProp(victim, Prop_Send, "m_iTeamNum"))
-		{
-			npc.m_flGetClosestTargetNoResetTime = GetGameTime(npc.index) + 5.0; //make them angry for 5 seconds if they are too far away.
-
-			if(npc.m_iTarget == -1) //Only set it if they actaully have no target.
-			{
-				npc.m_iTarget = attacker;
-			}
-		}
-	}
-
-#endif
-	if(f_IsThisExplosiveHitscan[attacker] == GetGameTime())
-	{
-		npc.m_vecpunchforce(CalculateDamageForceSelfCalculated(attacker, 10000.0), true);
-		damagetype |= DMG_BULLET; //add bullet logic
-		damagetype &= ~DMG_BLAST; //remove blast logic			
-	}
-	
-	if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
-	{
-		
-#if defined ZR
-		if(Medival_Difficulty_Level != 0.0)
-		{
-			damage *= Medival_Difficulty_Level;
-		}
-		
-#endif
-		damage *= fl_MeleeArmor[victim];
-	}
-	else if(!(damagetype & DMG_SLASH))
-	{
-		
-#if defined ZR
-		if(Medival_Difficulty_Level != 0.0)
-		{
-			damage *= Medival_Difficulty_Level;
-		}
-		
-#endif
-		
-		damage *= fl_RangedArmor[victim];
-	}
-	//No resistances towards slash as its internal.
-	
-	
-	
-	if(!npc.m_bDissapearOnDeath) //Make sure that if they just vanish, its always false. so their deathsound plays.
-	{
-		if((damagetype & DMG_BLAST))
-		{
-			npc.m_bGib = true;
-		}
-		else if(damage > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 1.5))
-		{
-			npc.m_bGib = true;
-		}
-	}
-	if(damagePosition[0] != 0.0) //If there is no pos, then dont.
-	{
-		if(!(damagetype & (DMG_SHOCK)))
-		{
-			if (f_CooldownForHurtParticle[victim] < GetGameTime())
-			{
-				f_CooldownForHurtParticle[victim] = GetGameTime() + 0.1;
-
-				if(npc.m_iBleedType == 1)
-				{
-					TE_ParticleInt(g_particleImpactFlesh, damagePosition);
-					TE_SendToAll();
-				}
-				else if (npc.m_iBleedType == 2)
-				{
-					damagePosition[2] -= 40.0;
-					TE_ParticleInt(g_particleImpactMetal, damagePosition);
-					TE_SendToAll();
-				}
-				else if (npc.m_iBleedType == 3)
-				{
-					TE_ParticleInt(g_particleImpactRubber, damagePosition);
-					TE_SendToAll();
-				}
-				else if (npc.m_iBleedType == 4)
-				{
-					//If you cant find any good blood effect, use this one and just recolour it.
-					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 125, 255, 125, 255, 32);
-					TE_SendToAll();
-				}
-			}
-		}
-	}
-	return Plugin_Continue;
-	//return CClotBodyDamaged_flare(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 }
 
 stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignore_attribute = false, bool override = false, bool work_on_entity = false)
@@ -6876,9 +6887,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 #endif
 	
 #if defined RPG
-	f3_SpawnPosition[entity][0] = 0.0;
-	f3_SpawnPosition[entity][1] = 0.0;
-	f3_SpawnPosition[entity][2] = 0.0;
 	hFromSpawnerIndex[entity] = -1;
 	i_NpcIsUnderSpawnProtectionInfluence[entity] = 0;
 	b_DungeonContracts_BleedOnHit[entity] = false;
@@ -6901,7 +6909,9 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Wearable[entity][3] = -1;
 	i_Wearable[entity][4] = -1;
 	i_Wearable[entity][5] = -1;
-
+	f3_SpawnPosition[entity][0] = 0.0;
+	f3_SpawnPosition[entity][1] = 0.0;
+	f3_SpawnPosition[entity][2] = 0.0;
 	b_DissapearOnDeath[entity] = false;
 	b_IsGiant[entity] = false;
 	b_Pathing[entity] = false;
@@ -6921,6 +6931,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_NextHurtSound[entity] = 0.0;
 	fl_HeadshotCooldown[entity] = 0.0;
 	b_CantCollidie[entity] = false;
+	b_CollidesWithEachother[entity] = false;
 	b_CantCollidieAlly[entity] = false;
 	b_BuildingIsStacked[entity] = false;
 	b_bBuildingIsPlaced[entity] = false;
@@ -6999,6 +7010,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_NpcHasDied[entity] = false;
 	b_PlayHurtAnimation[entity] = false;
 	f_CreditsOnKill[entity] = 0.0;
+	i_CreditsOnKill[entity] = 0;
 	b_npcspawnprotection[entity] = false;
 	f_CooldownForHurtParticle[entity] = 0.0;
 	f_LowTeslarDebuff[entity] = 0.0;
@@ -7067,7 +7079,19 @@ public void ArrowStartTouch(int arrow, int entity)
 		{
 			f_ArrowDamage[arrow] *= 3.0;
 		}
-		SDKHooks_TakeDamage(entity, arrow, arrow, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
+
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(owner == -1)
+			owner = arrow;
+
+		int inflictor = h_ArrowInflictorRef[arrow];
+		if(inflictor != -1)
+			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[arrow]);
+
+		if(inflictor == -1)
+			inflictor = owner;
+
+		SDKHooks_TakeDamage(entity, owner, inflictor, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
 		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
 		if(IsValidEntity(arrow_particle))
 		{

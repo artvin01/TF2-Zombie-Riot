@@ -226,12 +226,17 @@ bool b_LagCompNPC_No_Layers;
 bool b_LagCompNPC_AwayEnemies;
 bool b_LagCompNPC_ExtendBoundingBox;
 bool b_LagCompNPC_BlockInteral;
+bool b_LagCompNPC_OnlyAllies;
 
 bool b_LagCompAlliedPlayers; //Make sure this actually compensates allies.
 
 bool i_HasBeenBackstabbed[MAXENTITIES];
 bool i_HasBeenHeadShotted[MAXENTITIES];
 
+int g_particleImpactFlesh;
+int g_particleImpactRubber;
+
+float f_CooldownForHurtParticle[MAXENTITIES];	
 float f_BackstabDmgMulti[MAXENTITIES];
 float f_BackstabCooldown[MAXENTITIES];
 int i_BackstabHealEachTick[MAXENTITIES];
@@ -484,6 +489,7 @@ int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever e
 bool i_IsWandWeapon[MAXENTITIES]; 
 bool i_IsWrench[MAXENTITIES]; 
 bool b_is_a_brush[MAXENTITIES]; 
+bool b_IsARespawnroomVisualiser[MAXENTITIES];
 float f_ImmuneToFalldamage[MAXENTITIES]; 
 
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
@@ -590,6 +596,7 @@ Handle g_hShouldCollideWithAlly;
 Handle g_hShouldCollideWithAllyInvince;
 Handle g_hShouldCollideWithAllyEnemy;
 Handle g_hShouldCollideWithAllyEnemyIngoreBuilding;
+Handle g_hShouldCollideWithAllyIngoreBuilding;
 Handle g_hGetSolidMask;
 Handle g_hStartActivity;
 Handle g_hGetActivity;
@@ -650,7 +657,7 @@ enum
 }
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_185.mdl"
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_187.mdl"
 //#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_175.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
@@ -789,6 +796,7 @@ char g_TankStepSound[][] = {
 };
 
 float f_ArrowDamage[MAXENTITIES];
+int h_ArrowInflictorRef[MAXENTITIES];
 int f_ArrowTrailParticle[MAXENTITIES]={INVALID_ENT_REFERENCE, ...};
 bool b_IsEntityAlwaysTranmitted[MAXENTITIES];
 
@@ -813,13 +821,14 @@ float fl_GetClosestTargetNoResetTime[MAXENTITIES];
 float fl_NextHurtSound[MAXENTITIES];
 float fl_HeadshotCooldown[MAXENTITIES];
 bool b_CantCollidie[MAXENTITIES];
+bool b_CollidesWithEachother[MAXENTITIES];
 bool b_CantCollidieAlly[MAXENTITIES];
 bool b_BuildingIsStacked[MAXENTITIES];
 bool b_bBuildingIsPlaced[MAXENTITIES];
 bool b_XenoInfectedSpecialHurt[MAXENTITIES];
 float fl_XenoInfectedSpecialHurtTime[MAXENTITIES];
 bool b_DoGibThisNpc[MAXENTITIES];
-
+float f3_SpawnPosition[MAXENTITIES][3];
 int i_SpawnProtectionEntity[MAXENTITIES]={-1, ...};
 float f3_VecPunchForce[MAXENTITIES][3];
 float fl_NextDelayTime[MAXENTITIES];
@@ -922,6 +931,8 @@ float b_isGiantWalkCycle[MAXENTITIES];
 float f_NpcHasBeenUnstuckAboveThePlayer[MAXENTITIES];
 
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
+
+int i_CreditsOnKill[MAXENTITIES];
 float f_CreditsOnKill[MAXENTITIES];
 
 int i_InSafeZone[MAXENTITIES];
@@ -2100,6 +2111,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_EntityRenderColour4[entity] = 255;
 		i_EntityRenderOverride[entity] = false;
 		b_StickyIsSticking[entity] = false;
+		h_ArrowInflictorRef[entity] = -1;
 		
 		b_RocketBoomEffect[entity] = false;
 		b_IsAlliedNpc[entity] = false;
@@ -2127,6 +2139,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_SemiAutoWeapon[entity] = false;
 		b_NpcHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
+		b_IsARespawnroomVisualiser[entity] = false;
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
 		b_IsAGib[entity] = false;
 		b_ThisEntityIgnored[entity] = false;
@@ -2273,6 +2286,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
+		}
+		else if(!StrContains(classname, "func_respawnroomvisualizer"))
+		{
+			b_IsARespawnroomVisualiser[entity] = true;
 		}
 		else if(!StrContains(classname, "prop_physics_multiplayer"))
 		{
@@ -2686,6 +2703,7 @@ public void RemoveNpcThingsAgain(int entity)
 
 public void CheckIfAloneOnServer()
 {
+	CountPlayersOnRed();
 	b_IsAloneOnServer = false;
 	int players;
 
@@ -2843,6 +2861,9 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				//	return true;
 
 				if(Citizen_Interact(client, entity))
+					return true;
+				
+				if(Is_Reload_Button && BarrackBody_Interact(client, entity))
 					return true;
 			}
 #endif

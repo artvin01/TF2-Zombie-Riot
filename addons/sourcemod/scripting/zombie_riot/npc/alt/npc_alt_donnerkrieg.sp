@@ -689,7 +689,7 @@ public bool NightmareCannon_BEAM_TraceWallsOnly(int entity, int contentsMask)
 public bool NightmareCannon_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	static char classname[64];
-	if (IsLivingPlayer(entity))
+	if (IsEntityAlive(entity))
 	{
 		NightmareCannon_BEAM_HitDetected[entity] = true;
 	}
