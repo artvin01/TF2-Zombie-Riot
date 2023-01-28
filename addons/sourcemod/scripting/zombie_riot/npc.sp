@@ -208,7 +208,15 @@ enum
 	BARRACK_LONGBOW				= 176,
 	BARRACK_CHAMPION			= 177,
 	BARRACK_MONK				= 178,
-	BARRACK_HUSSAR				= 179
+	BARRACK_HUSSAR				= 179,
+	
+	MEDIVAL_CAVALARY			= 180,
+	MEDIVAL_PALADIN				= 181,
+	MEDIVAL_CROSSBOW_GIANT		= 182,
+	MEDIVAL_SWORDSMAN_GIANT		= 183,
+	MEDIVAL_RIDDENARCHER		= 184,
+	MEDIVAL_EAGLE_WARRIOR		= 185,
+	MEDIVAL_EAGLE_GIANT			= 186
 }
 
 public const char NPC_Names[][] =
@@ -408,7 +416,15 @@ public const char NPC_Names[][] =
 	"Medival Longbowmen",
 	"Champion",
 	"Monk",
-	"Hussar"
+	"Hussar",
+
+	"Cavalary",
+	"Paladin",
+	"Crossbow Giant",
+	"Swordsman Giant",
+	"Mounted Archer",
+	"Eagle Warrior",
+	"Giant Eagle Warrior"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -605,7 +621,14 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",
 	"",
 	"npc_barrack_hussar",
-	"npc_medival_eagle_warrior"
+
+	"npc_medival_cavalary",
+	"npc_medival_paladin",
+	"npc_medival_crossbow_giant",
+	"npc_medival_swordsman_giant",
+	"npc_medival_riddenarcher",
+	"npc_medival_eagle_warrior",
+	"npc_medival_eagle_giant"
 };
 
 void NPC_MapStart()
@@ -794,6 +817,7 @@ void NPC_MapStart()
 	MedivalArbalest_OnMapStart_NPC();
 	MedivalEliteLongbowmen_OnMapStart_NPC();
 	MedivalEagleWarrior_OnMapStart_NPC();
+	MedivalRiddenArcher_OnMapStart_NPC();
 }
 
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
@@ -1510,9 +1534,33 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = BarrackHussar(client, vecPos, vecAng, ally);
 		}
+		case MEDIVAL_CAVALARY:
+		{
+			entity = MedivalCavalary(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_PALADIN:
+		{
+			entity = MedivalPaladin(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_CROSSBOW_GIANT:
+		{
+			entity = MedivalCrossbowGiant(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_SWORDSMAN_GIANT:
+		{
+			entity = MedivalSwordsmanGiant(client, vecPos, vecAng, ally);
+		}
 		case MEDIVAL_EAGLE_WARRIOR:
 		{
 			entity = MedivalEagleWarrior(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_RIDDENARCHER:
+		{
+			entity = MedivalRiddenArcher(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_EAGLE_GIANT:
+		{
+			entity = MedivalEagleGiant(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -2231,9 +2279,33 @@ public void NPCDeath(int entity)
 		{
 			BarrackHussar_NPCDeath(entity);
 		}
+		case MEDIVAL_CAVALARY:
+		{
+			MedivalCavalary_NPCDeath(entity);
+		}
+		case MEDIVAL_PALADIN:
+		{
+			MedivalPaladin_NPCDeath(entity);
+		}
+		case MEDIVAL_CROSSBOW_GIANT:
+		{
+			MedivalCrossbowGiant_NPCDeath(entity);
+		}
+		case MEDIVAL_SWORDSMAN_GIANT:
+		{
+			MedivalSwordsmanGiant_NPCDeath(entity);
+		}
 		case MEDIVAL_EAGLE_WARRIOR:
 		{
 			MedivalEagleWarrior_NPCDeath(entity);
+		}
+		case MEDIVAL_RIDDENARCHER:
+		{
+			MedivalRiddenArcher_NPCDeath(entity);
+		}
+		case MEDIVAL_EAGLE_GIANT:
+		{
+			MedivalEagleGiant_NPCDeath(entity);
 		}
 		default:
 		{
@@ -2474,6 +2546,12 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/medival/npc_medival_brawler.sp"
 #include "zombie_riot/npc/medival/npc_medival_elite_longbowmen.sp"
 #include "zombie_riot/npc/medival/npc_medival_eagle_warrior.sp"
+#include "zombie_riot/npc/medival/npc_medival_cavalary.sp"
+#include "zombie_riot/npc/medival/npc_medival_paladin.sp"
+#include "zombie_riot/npc/medival/npc_medival_crossbow_giant.sp"
+#include "zombie_riot/npc/medival/npc_medival_swordsman_giant.sp"
+#include "zombie_riot/npc/medival/npc_medival_eagle_giant.sp"
+#include "zombie_riot/npc/medival/npc_medival_riddenarcher.sp"
 
 #include "zombie_riot/npc/cof/npc_addiction.sp"
 #include "zombie_riot/npc/cof/npc_doctor.sp"

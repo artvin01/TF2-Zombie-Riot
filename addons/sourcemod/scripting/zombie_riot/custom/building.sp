@@ -5916,6 +5916,7 @@ static int TrainingQueue[MAXTF2PLAYERS];
 static int CommandMode[MAXTF2PLAYERS];
 static bool FinalBuilder[MAXTF2PLAYERS];
 static bool MedievalUnlock[MAXTF2PLAYERS];
+static bool GlassBuilder[MAXTF2PLAYERS];
 
 enum
 {
@@ -6179,6 +6180,10 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						{
 							view_as<BarrackBody>(npc).BonusDamageBonus = 1.3;
 						}
+						if(npc > MaxClients && GlassBuilder[owner])
+						{
+							view_as<BarrackBody>(npc).BonusDamageBonus = 1.15;
+						}
 
 						if(TrainingQueue[owner] != -1)
 						{
@@ -6234,8 +6239,9 @@ static void CheckSummonerUpgrades(int client)
 	if(Store_HasNamedItem(client, "Cosmic Repair Handling book"))
 		SupplyRate[client] += 10;
 	
-	FinalBuilder[client] = Store_HasNamedItem(client, "Construction Killer");
+	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
 	MedievalUnlock[client] = view_as<bool>(HasNamedItem(client, "Medieval Crown"));
+	GlassBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Glass Cannon Blueprints"));
 }
 
 static void OpenSummonerMenu(int client, int viewer)

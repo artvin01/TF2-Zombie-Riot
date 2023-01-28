@@ -17,14 +17,7 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
-void MedivalRam_OnMapStart()
-{
-	PrecacheModel(NPCModel);
-}
-
-static int Garrison[MAXENTITIES];
-
-methodmap MedivalRam < CClotBody
+methodmap MedivalTrebuchet < CClotBody
 {
 	public void PlayMeleeSound()
 	{
@@ -41,9 +34,9 @@ methodmap MedivalRam < CClotBody
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
-	public MedivalRam(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public MedivalTrebuchet(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		MedivalRam npc = view_as<MedivalRam>(CClotBody(vecPos, vecAng, NPCModel, "1.15", "5000", ally));
+		MedivalTrebuchet npc = view_as<MedivalTrebuchet>(CClotBody(vecPos, vecAng, NPCModel, "1.15", "5000", ally));
 		i_NpcInternalId[npc.index] = MEDIVAL_RAM;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
@@ -64,7 +57,7 @@ methodmap MedivalRam < CClotBody
 			Garrison[npc.index] = 0;
 		}
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalRam_ClotThink);
+		SDKHook(npc.index, SDKHook_Think, MedivalTrebuchet_ClotThink);
 		
 		npc.m_iState = 0;
 		npc.m_flSpeed = Garrison[npc.index] ? 170.0 : 150.0;
@@ -97,9 +90,9 @@ methodmap MedivalRam < CClotBody
 
 //TODO 
 //Rewrite
-public void MedivalRam_ClotThink(int iNPC)
+public void MedivalTrebuchet_ClotThink(int iNPC)
 {
-	MedivalRam npc = view_as<MedivalRam>(iNPC);
+	MedivalTrebuchet npc = view_as<MedivalTrebuchet>(iNPC);
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -219,18 +212,18 @@ public void MedivalRam_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-//	npc.PlayIdleAlertSound();
+	npc.PlayIdleAlertSound();
 }
 
-void MedivalRam_NPCDeath(int entity)
+void MedivalTrebuchet_NPCDeath(int entity)
 {
-	MedivalRam npc = view_as<MedivalRam>(entity);
+	MedivalTrebuchet npc = view_as<MedivalTrebuchet>(entity);
 	if(!npc.m_bGib)
 	{
-//		npc.PlayDeathSound();	
+		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalRam_ClotThink);
+	SDKUnhook(npc.index, SDKHook_Think, MedivalTrebuchet_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -242,6 +235,7 @@ void MedivalRam_NPCDeath(int entity)
 	{
 		bool friendly = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
 		
+		float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		
 		for(int i; i < 4; i++)

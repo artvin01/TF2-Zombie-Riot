@@ -155,7 +155,7 @@ methodmap MedivalPaladin < CClotBody
 	{
 		MedivalPaladin npc = view_as<MedivalPaladin>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "30000", ally));
 		
-		i_NpcInternalId[npc.index] = MEDIVAL_CAVALARY;
+		i_NpcInternalId[npc.index] = MEDIVAL_PALADIN;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -173,7 +173,7 @@ methodmap MedivalPaladin < CClotBody
 		SDKHook(npc.index, SDKHook_Think, MedivalPaladin_ClotThink);
 
 		npc.m_iState = 0;
-		npc.m_flSpeed = 350.0;
+		npc.m_flSpeed = 310.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -271,7 +271,7 @@ public void MedivalPaladin_ClotThink(int iNPC)
 
 					if(ShouldNpcDealBonusDamage(target))
 					{
-						damage *= 3.0;
+						damage *= 5.0;
 					}
 					npc.PlayMeleeHitSound();
 					if(target > 0) 

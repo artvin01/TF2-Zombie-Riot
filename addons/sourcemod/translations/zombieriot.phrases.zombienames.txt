@@ -1190,7 +1190,7 @@
 	}
 	"Medival Construct"
 	{
-		"en"		"Medival Construct"
+		"en"		"Construct"
 		//"de"		""
 		//"ru"		""
 		//"pt"		""
@@ -1203,7 +1203,7 @@
 	}
 	"Champion"
 	{
-		"en"		"Medival Champion"
+		"en"		"Champion"
 		//"de"		""
 		//"ru"		""
 		//"pt"		""
@@ -1279,12 +1279,95 @@
 		//"it"		""
 		//"fr"		""
 	}
-	"Medival Abalest"
+	"Cavalary"
 	{
-		"en"		"Medival Abalest"
+		"en"		"Cavalary"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
 	}
-	"Medival Longbowmen"
+	"Paladin"
 	{
-		"en"		"Medival Longbowmen"
+		"en"		"Paladin"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Crossbow Giant"
+	{
+		"en"		"Crossbow Giant"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Swordsman Giant"
+	{
+		"en"		"Swordsman Giant"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Mounted Archer"
+	{
+		"en"		"Mounted Archer"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Eagle Warrior"
+	{
+		"en"		"Eagle Warrior"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Giant Eagle Warrior"
+	{
+		"en"		"Giant Eagle Warrior"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
 	}
 }

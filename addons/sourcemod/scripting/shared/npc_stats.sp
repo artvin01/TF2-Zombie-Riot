@@ -3522,6 +3522,14 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		{
 			BarrackLongbow_HandleAnimEvent(pThis, event);
 		}
+		case MEDIVAL_RIDDENARCHER:
+		{
+			HandleAnimEventMedival_RiddenArcher(pThis, event);
+		}
+		case MEDIVAL_CROSSBOW_GIANT:
+		{
+			HandleAnimEventMedival_GiantCrossbowMan(pThis, event);
+		}
 	}
 #endif
 	

@@ -61,18 +61,6 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
-void MedivalCrossbowGiant_OnMapStart_NPC()
-{
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	PrecacheModel(COMBINE_CUSTOM_MODEL);
-}
-
 methodmap MedivalCrossbowGiant < CClotBody
 {
 	public void PlayIdleSound() {
@@ -147,7 +135,7 @@ methodmap MedivalCrossbowGiant < CClotBody
 	
 	public MedivalCrossbowGiant(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalCrossbowGiant npc = view_as<MedivalCrossbowGiant>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.85", "20000", ally));
+		MedivalCrossbowGiant npc = view_as<MedivalCrossbowGiant>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "20000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_CROSSBOW_GIANT;
 		
@@ -323,6 +311,37 @@ public void MedivalCrossbowGiant_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
+}
+
+public void HandleAnimEventMedival_GiantCrossbowMan(int entity, int event)
+{
+	if(event == 1001)
+	{
+		MedivalCrossbowMan npc = view_as<MedivalCrossbowMan>(entity);
+		
+		int PrimaryThreatIndex = npc.m_iTarget;
+	
+		if(IsValidEnemy(npc.index, PrimaryThreatIndex))
+		{
+			float vecTarget[3];
+				
+			float projectile_speed = 1200.0;
+			
+			vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
+				
+			npc.FaceTowards(vecTarget, 30000.0);
+						
+			npc.PlayMeleeSound();
+			
+			float damage = 50.0;
+			if(Medival_Difficulty_Level > 1.0)
+			{
+				damage = 65.0;
+			}
+			npc.FireArrow(vecTarget, damage, projectile_speed);
+		}
+	}
+	
 }
 
 public Action MedivalCrossbowGiant_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
