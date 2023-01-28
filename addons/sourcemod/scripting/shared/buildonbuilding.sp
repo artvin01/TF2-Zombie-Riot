@@ -137,11 +137,20 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 	}
 	for(int entity=1; entity<=MAXENTITIES; entity++)
 	{
+#if defined ZR
 		if (IsValidEntity(entity) && (IsEntitySpike(entity) || b_Is_Player_Projectile[entity]))
 		{
 			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
 		}
+#endif
+#if defined RPG
+		if (IsValidEntity(entity) && (b_Is_Player_Projectile[entity]))
+		{
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
+		}
+#endif
 	}
+#if defined ZR
 	for(int entitycount_again; entitycount_again<ZR_MAX_TRAPS; entitycount_again++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsTraps[entitycount_again]);
@@ -150,7 +159,7 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
 		}
 	}
-	//UGLY ASS FIX! Teleport away all entites we wanna ignore, i have no other idea on how...
+#endif
 	return MRES_Ignored;
 }
 

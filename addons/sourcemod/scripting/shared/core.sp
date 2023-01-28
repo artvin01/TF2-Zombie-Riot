@@ -931,6 +931,8 @@ float b_isGiantWalkCycle[MAXENTITIES];
 float f_NpcHasBeenUnstuckAboveThePlayer[MAXENTITIES];
 
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
+
+int i_CreditsOnKill[MAXENTITIES];
 float f_CreditsOnKill[MAXENTITIES];
 
 int i_InSafeZone[MAXENTITIES];
@@ -2701,6 +2703,7 @@ public void RemoveNpcThingsAgain(int entity)
 
 public void CheckIfAloneOnServer()
 {
+	CountPlayersOnRed();
 	b_IsAloneOnServer = false;
 	int players;
 

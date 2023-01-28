@@ -4214,10 +4214,18 @@ stock bool IsEntityAlive(int index)
 		}
 		else
 		{
+#if defined ZR
 			if(!IsPlayerAlive(index) || dieingstate[index] > 0 || TeutonType[index] != TEUTON_NONE)
 			{
 				return false;	
 			}
+#endif
+#if defined RPG
+			if(!IsPlayerAlive(index))
+			{
+				return false;	
+			}
+#endif
 			else
 			{
 				return true;
@@ -7002,6 +7010,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_NpcHasDied[entity] = false;
 	b_PlayHurtAnimation[entity] = false;
 	f_CreditsOnKill[entity] = 0.0;
+	i_CreditsOnKill[entity] = 0;
 	b_npcspawnprotection[entity] = false;
 	f_CooldownForHurtParticle[entity] = 0.0;
 	f_LowTeslarDebuff[entity] = 0.0;
