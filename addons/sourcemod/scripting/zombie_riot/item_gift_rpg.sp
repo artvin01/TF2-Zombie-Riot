@@ -39,7 +39,9 @@ static const char UncommonDrops[][] =
 	"Aztec Warrior Paint [Uncommon]",
 	"Iron Ammo Coating [Uncommon]",
 	"Sandals [Uncommon]",
-	"Baggy Trousers [Uncommon]"
+	"Baggy Trousers [Uncommon]",
+	"Scrap Backpack [Uncommon]",
+	"Burning Wind [Uncommon]"
 };
 
 static const char RareDrops[][] =
@@ -52,7 +54,22 @@ static const char RareDrops[][] =
 	"SUPER Range [Rare]",
 	"Strong Tonic [Rare]",
 	"Arcane Impale [Rare]",
-	"Tiny Tornadoes [Rare]"
+	"Tiny Tornadoes [Rare]",
+	"Radar Dish [Rare]",
+	"Steel Armet [Rare]",
+	"Steel Ammo Coating [Rare]",
+	"Robes of Calamity [Rare]",
+	"Steel Bevor [Rare]",
+	"Adidas Training Pant's [Rare]",
+	"Steel Cuisse [Rare]",
+	"Astral Shoes [Rare]",
+	"Steel Sabatons [Rare]",
+	"DEUS VULT! [Rare]",
+	"Explosive Rampage [Rare]",
+	"Military Monkey Training [Rare]",
+	"Light Cannon [Rare]",
+	"Metal Shoes [Rare]"
+	
 };
 
 static const char LegendDrops[][] =
@@ -61,12 +78,38 @@ static const char LegendDrops[][] =
 	"Big Bloon Sabotage [Legendary]",
 	"Heavy Knockback [Legendary]",
 	"To ARMS! [Legendary]",
-	"Healthy Bananas [Legendary]"
+	"Healthy Bananas [Legendary]",
+	"Bead's of Destruction [Legendary]",
+	"Medicinal Necklace [Legendary]",
+	"Medicinal Cross [Legendary]",
+	"Robes of Wisdom [Legendary]",
+	"Cobalt Ammo Coating [Legendary]",
+	"Chainmale Chestplate [Legendary]",
+	"Demoman's Kilt [Legendary]",
+	"Crystal Shoes [Legendary]",
+	"Adrenaline Rush [Legendary]",
+	"Improved Mobile Defence [Legendary]",
+	"Bass Kanone [Legendary]",
+	"Astra Impaler [Legendary]",
+	"Astra Manifestation [Legendary]",
+	"Diamond Shoes [Legendary]"
+	
 };
 
 static const char MythicDrops[][] =
 {
-	"There Can Be Only One [Mythic]"
+	"There Can Be Only One [Mythic]",
+	"Crown of infinity [Mythic]",
+	"Targeting HUD [Mythic]",
+	"Mythril Ammo Coating [Mythic]",
+	"Quantum Chestplate [Mythic]",
+	"Blitzkrieg's Leggings [Mythic]",
+	"Petticoat [Mythic]",
+	"Atomic Rage [Mythic]",
+	"Fortress of Fantasy [Mythic]",
+	"Medical Lisence [Mythic]",
+	"Spec Ops Monkey Training [Mythic]",
+	"Fusion Warrior's Shoes [Mythic]"
 };
 
 static int g_BeamIndex = -1;
