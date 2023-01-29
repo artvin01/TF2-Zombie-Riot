@@ -4118,7 +4118,7 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	int particle = ParticleEffectAt(pos, "flamethrower_underwater", 1.0);
 	SetEntPropVector(particle, Prop_Send, "m_angRotation", angles);
 
-	SetDefaultHudPosition(client);
+	SetDefaultHudPosition(client, _, _, _, 5.0);
 	SetGlobalTransTarget(client);
 	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
 	Store_ApplyAttribs(client);

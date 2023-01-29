@@ -574,7 +574,7 @@ public Action SF_Knockup(int client, int entity, int first, int second, int thir
 			delete swingTrace;
 			FinishLagCompensation_Base_boss();
 			
-			if(target > MaxClients)
+			if(target > MaxClients && !b_CannotBeKnockedUp[target])
 				SDKHook(target, SDKHook_Think, SF_KnockupThink);
 		}
 

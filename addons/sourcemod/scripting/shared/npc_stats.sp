@@ -1213,7 +1213,8 @@ methodmap CClotBody
 		{
 			speed_for_return *= 0.33333;
 		}		
-		if(!Is_Boss) //Make sure that any slow debuffs dont affect these.
+
+		if(!Is_Boss && !b_CannotBeSlowed[this.index]) //Make sure that any slow debuffs dont affect these.
 		{
 			if(f_MaimDebuff[this.index] > Gametime)
 			{
@@ -1246,7 +1247,7 @@ methodmap CClotBody
 				speed_for_return *= 0.95;
 			}
 		}
-		else
+		else if (!b_CannotBeSlowed[this.index])
 		{
 			if(this.m_fHighTeslarDebuff > Gametime)
 			{
@@ -1274,7 +1275,7 @@ methodmap CClotBody
 				speed_for_return *= 0.97;
 			}
 		}
-		if(this.mf_WidowsWineDebuff > Gametime)
+		if(this.mf_WidowsWineDebuff > Gametime && !b_CannotBeSlowed[this.index])
 		{
 			float slowdown_amount = this.mf_WidowsWineDebuff - Gametime;
 			
@@ -1316,7 +1317,7 @@ methodmap CClotBody
 			speed_for_return *= 3.0;
 		}	
 #endif			
-		if (this.m_bFrozen)
+		if (this.m_bFrozen && !b_CannotBeSlowed[this.index])
 		{
 			speed_for_return = 0.01;
 		}		
@@ -6962,6 +6963,12 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_DoingAnimation[entity] = 0.0;
 	fl_NextRangedBarrage_Spam[entity] = 0.0;
 	fl_NextRangedBarrage_Singular[entity] = 0.0;
+	b_CannotBeHeadshot[entity] = false;
+	b_CannotBeBackstabbed[entity] = false;
+	b_CannotBeStunned[entity] = false;
+	b_CannotBeKnockedUp[entity] = false;
+	b_CannotBeSlowed[entity] = false;
+
 	b_NextRangedBarrage_OnGoing[entity] = false;
 	fl_NextTeleport[entity] = 0.0;
 	b_Anger[entity] = false;
@@ -7553,6 +7560,10 @@ public void KillNpc(int ref)
 
 void FreezeNpcInTime(int npc, float Duration_Stun)
 {
+	if(b_CannotBeStunned[npc])
+	{
+		return;
+	}
 	float TimeSinceLastStunSubtract;
 	TimeSinceLastStunSubtract = f_TimeSinceLastStunHit[npc] - GetGameTime();
 			

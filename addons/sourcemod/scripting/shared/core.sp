@@ -465,6 +465,11 @@ bool b_Is_Player_Projectile[MAXENTITIES];
 bool b_ForceCollisionWithProjectile[MAXENTITIES];
 bool b_Is_Player_Projectile_Through_Npc[MAXENTITIES];
 bool b_Is_Blue_Npc[MAXENTITIES];
+bool b_CannotBeHeadshot[MAXENTITIES];
+bool b_CannotBeBackstabbed[MAXENTITIES];
+bool b_CannotBeStunned[MAXENTITIES];
+bool b_CannotBeKnockedUp[MAXENTITIES];
+bool b_CannotBeSlowed[MAXENTITIES];
 bool b_IsInUpdateGroundConstraintLogic;
 
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
