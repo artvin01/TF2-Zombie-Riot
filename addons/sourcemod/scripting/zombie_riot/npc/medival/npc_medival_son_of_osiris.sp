@@ -554,7 +554,8 @@ stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(int traceentity , f
 					
 				if(distance <= Pow(SON_OF_OSIRIS_RANGE , 2.0))
 				{
-					if(Can_I_See_Enemy_Only(traceentity, baseboss_index) == baseboss_index)
+					int hitentity = Can_I_See_Enemy_Only(traceentity, clibaseboss_indexent)
+					if(hitentity == baseboss_index)
 					{
 						if( TargetDistance ) 
 						{
@@ -587,7 +588,8 @@ stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(int traceentity , f
 					
 				if(distance <= Pow(SON_OF_OSIRIS_RANGE , 2.0))
 				{
-					if(Can_I_See_Enemy_Only(traceentity, baseboss_index) == baseboss_index)
+					int hitentity = Can_I_See_Enemy_Only(traceentity, clibaseboss_indexent)
+					if(hitentity == baseboss_index)
 					{
 						if( TargetDistance ) 
 						{
@@ -619,7 +621,8 @@ stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(int traceentity , f
 						
 					if(distance <= Pow(SON_OF_OSIRIS_RANGE , 2.0))
 					{
-						if(Can_I_See_Enemy_Only(traceentity, client) == client)
+						int hitentity = Can_I_See_Enemy_Only(traceentity, client)
+						if(hitentity == client)
 						{
 							if( TargetDistance ) 
 							{
