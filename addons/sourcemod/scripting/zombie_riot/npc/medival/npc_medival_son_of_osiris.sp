@@ -72,13 +72,11 @@ static const char g_MeleeHitSounds[][] = {
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"items/powerups_pickup_crits.wav",
+	"items/powerup_pickup_crits.wav",
 };
 
-
-static int BeamWand_Laser;
-static int BeamWand_Glow;
-#define SON_OF_OSIRIS_RANGE 200.0
+#define SON_OF_OSIRIS_RANGE 350.0
+#define LASERBEAM "sprites/laserbeam.vmt"
 
 void MedivalSonOfOsiris_OnMapStart_NPC()
 {
@@ -89,8 +87,6 @@ void MedivalSonOfOsiris_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
-	BeamWand_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
-	BeamWand_Glow = PrecacheModel("sprites/glow02.vmt", true);
 }
 
 static bool b_EntityHitByLightning[MAXENTITIES];
@@ -159,7 +155,7 @@ methodmap MedivalSonOfOsiris < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_BRAWLER_RUN");
+		int iActivity = npc.LookupActivity("ACT_PRINCE_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -244,19 +240,17 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 
 	if(npc.m_flAttackHappens)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 			npc.FaceTowards(vecTarget, 20000.0);
 		}
 
 		if(npc.m_flAttackHappens < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
-			
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{		
-
 				float TargetLocation[3]; 
 				GetEntPropVector( npc.index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 				float EntityLocation[3]; 
@@ -267,8 +261,7 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 				{
 					npc.PlayMeleeSound();
 				
-					vecTarget = WorldSpaceCenter(npc.index);
-					SonOfOsiris_Lightning_Strike(npc.index, npc.m_iTarget, 450.0, vecTarget, b_IsAlliedNpc[npc.index]);
+					SonOfOsiris_Lightning_Strike(npc.index, npc.m_iTarget, 500.0, b_IsAlliedNpc[npc.index]);
 				}
 			}
 		}
@@ -314,14 +307,13 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 			case 0:
 			{
 				//Walk to target
-				if(!npc.m_bPathing)
-					npc.StartPathing();
-					
-				npc.m_bisWalking = true;
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
+					npc.m_flSpeed = 330.0;
+					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_BRAWLER_RUN");
+					npc.SetActivity("ACT_PRINCE_WALK");
+					npc.StartPathing();
 				}
 			}
 			case 1:
@@ -333,15 +325,22 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
+					if(npc.m_iChanged_WalkCycle != 5) 	
+					{
+						npc.m_bisWalking = false;
+						npc.m_iChanged_WalkCycle = 5;
+						npc.SetActivity("ACT_PRINCE_IDLE");
+					}
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.AddGesture("ACT_BRAWLER_ATTACK_RIGHT");
+					npc.AddGesture("ACT_PRINCE_ATTACK");
 
-					npc.m_flAttackHappens = gameTime + 1.0;
+					npc.m_flAttackHappens = gameTime + 0.8;
 
-					npc.m_flDoingAnimation = gameTime + 1.0;
+					npc.m_flDoingAnimation = gameTime + 1.3;
 					npc.m_flNextMeleeAttack = gameTime + 4.0;
-					npc.m_bisWalking = true;
+					PF_StopPathing(npc.index);
+					npc.m_flSpeed = 0.0;
 				}
 			}
 		}
@@ -349,7 +348,6 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 	else
 	{
 		PF_StopPathing(npc.index);
-		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -398,52 +396,36 @@ public void MedivalSonOfOsiris_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable5);
 }
 
-static void SonOfOsiris_Lightning_Effect(float belowBossEyes[3], float vecHit[3], int Power)
+static void SonOfOsiris_Lightning_Effect(int entity = -1, int target = -1, float VecPos_entity[3] = {0.0,0.0,0.0}, float VecPos_target[3] = {0.0,0.0,0.0})
 {	
-	
 	int r = 65; //Yellow.
 	int g = 65;
 	int b = 255;
-	float diameter = 30.0;
-
-	int colorLayer4[4];
-	SetColorRGBA(colorLayer4, r, g, b, 125);
-	int colorLayer3[4];
-	SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, 60);
-	int colorLayer2[4];
-	SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 60);
-	int colorLayer1[4];
-	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 60);
-	if(Power == 2)
+	int laser;
+	if(entity != -1 && target != -1)
 	{
-		TE_SetupBeamPoints(belowBossEyes, vecHit, BeamWand_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
-		TE_SendToAll(0.0);
-
-		TE_SetupBeamPoints(belowBossEyes, vecHit, BeamWand_Laser, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
-		TE_SendToAll(0.0);
-		TE_SetupBeamPoints(belowBossEyes, vecHit, BeamWand_Laser, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 0.8 * 1.28), ClampBeamWidth(diameter * 0.8 * 1.28), 0, 1.0, colorLayer3, 3);
-		TE_SendToAll(0.0);
+		laser = ConnectWithBeam(entity, target, r, g, b, 3.0, 3.0, 2.35, LASERBEAM);
 	}
-	TE_SetupBeamPoints(belowBossEyes, vecHit, BeamWand_Laser, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 1.0, colorLayer4, 3);
-	TE_SendToAll(0.0);
-
-	int glowColor[4];
-	SetColorRGBA(glowColor, r, g, b, 125);
-	TE_SetupBeamPoints(belowBossEyes, vecHit, BeamWand_Glow, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
-	TE_SendToAll(0.0);
+	else if(entity != -1)
+	{
+		laser = ConnectWithBeam(entity, -1, r, g, b, 3.0, 3.0, 2.35, LASERBEAM, _, VecPos_target);
+	}
+	else if (target != -1)
+	{
+		laser = ConnectWithBeam(-1, target, r, g, b, 3.0, 3.0, 2.35, LASERBEAM, VecPos_entity, _);
+	}
+	else
+	{
+		laser = ConnectWithBeam(-1, -1, r, g, b, 3.0, 3.0, 2.35, LASERBEAM, VecPos_entity, VecPos_target);
+	}
+	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 }
 
 
-static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, float StartLightningPos[3], bool alliednpc = false)
+static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, bool alliednpc = false)
 {
 	static float vecHit[3];
-	StartLightningPos = WorldSpaceCenter(entity);
 	GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", vecHit);
-//	if(Firstlightning)
-	{
-		SonOfOsiris_Lightning_Effect(StartLightningPos, WorldSpaceCenter(target), 1);
-	}
-	StartLightningPos = WorldSpaceCenter(target);
 
 	float dodamage = damage;
 	if(ShouldNpcDealBonusDamage(target)) //If he attacks a building first, then its going to hurt alot more.
@@ -452,13 +434,35 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, f
 		dodamage *= 100.0;
 	}
 
+	float vecTarget[3];
+	float vecTarget_2[3];
+	vecTarget = WorldSpaceCenter(target);
+	vecTarget_2 = WorldSpaceCenter(target);
+
+	bool first_target = true;
+	bool enemy_died = false;
+
 	SDKHooks_TakeDamage(target, entity, entity, dodamage, DMG_PLASMA, _, {0.0, 0.0, -50000.0}, vecHit);	//BURNING TO THE GROUND!!!
+	
+	if(IsValidEntity(target) && (!b_BuildingHasDied[target] || !b_NpcHasDied[target] || target <= MaxClients))
+	{
+		SonOfOsiris_Lightning_Effect(entity, target);
+	}
+	else
+	{
+		enemy_died = true;
+		SonOfOsiris_Lightning_Effect(entity, -1, _, vecTarget_2);	
+	}
+
 	b_EntityHitByLightning[target] = true;
 	float original_damage = damage;
+
+	int PreviousTarget = target;
+
 	for (int loop = 8; loop > 2; loop--) //Chain upto alot of times
 	{
 		int enemy = SonOfOsiris_GetClosestTargetNotAffectedByLightning(vecHit, alliednpc);
-		if(IsValidEntity(enemy))
+		if(IsValidEntity(enemy) && PreviousTarget != enemy)
 		{
 			if(IsValidClient(enemy))
 			{
@@ -468,10 +472,55 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, f
 				}
 			}
 			damage = (original_damage * (0.15 * loop));
-			SDKHooks_TakeDamage(enemy, entity, entity, damage, DMG_PLASMA, _, {0.0, 0.0, -50000.0}, vecHit);		
-			GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecHit);
-			SonOfOsiris_Lightning_Effect(StartLightningPos, WorldSpaceCenter(enemy), 3);
-			StartLightningPos = WorldSpaceCenter(enemy);
+
+			if(!first_target)
+			{
+				if(!enemy_died)
+				{
+					vecTarget = WorldSpaceCenter(PreviousTarget);
+				}
+				else
+				{
+					vecTarget = vecTarget_2;
+				}
+			}
+
+			first_target = false;
+			
+			vecTarget_2 = WorldSpaceCenter(enemy);
+			enemy_died = false;
+			float vehit_save[3];
+			GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vehit_save);
+			SDKHooks_TakeDamage(enemy, entity, entity, damage, DMG_PLASMA, _, {0.0, 0.0, -50000.0}, vecHit);	
+			if(IsValidEntity(enemy) && (!b_BuildingHasDied[enemy] || !b_NpcHasDied[enemy] || enemy <= MaxClients))
+			{
+				if(IsValidEntity(PreviousTarget) && (!b_BuildingHasDied[PreviousTarget] || !b_NpcHasDied[PreviousTarget] || PreviousTarget <= MaxClients))
+				{
+					//both alive!
+					SonOfOsiris_Lightning_Effect(PreviousTarget, enemy, _, _);
+				}
+				else
+				{
+					//previous died.
+					SonOfOsiris_Lightning_Effect(-1, enemy, vecTarget, _);
+				}
+			}
+			else //Enemy died.
+			{
+				enemy_died = true;
+				if(IsValidEntity(PreviousTarget) && (!b_BuildingHasDied[PreviousTarget] || !b_NpcHasDied[PreviousTarget] || PreviousTarget <= MaxClients))
+				{
+					//enemy died, but previous was alive.
+					SonOfOsiris_Lightning_Effect(PreviousTarget, -1, _, vecTarget_2);
+				}
+				else
+				{
+					//both died.
+					SonOfOsiris_Lightning_Effect(-1, -1, vecTarget, vecTarget_2);
+				}
+			}	
+			vecHit = vehit_save;
+			PreviousTarget = enemy;
 		}
 		else
 		{
@@ -517,7 +566,7 @@ stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(float EntityLocatio
 	}
 	else
 	{
-		for(int targ; targ<i_MaxcountNpc; targ++)
+		for(int targ; targ<i_MaxcountNpc_Allied; targ++)
 		{
 			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs_Allied[targ]);
 			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && !b_EntityHitByLightning[baseboss_index])
@@ -549,7 +598,7 @@ stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(float EntityLocatio
 			if (IsValidClient(client))
 			{
 				CClotBody npc = view_as<CClotBody>(client);
-				if (!npc.m_bThisEntityIgnored && IsEntityAlive(client)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+				if (!npc.m_bThisEntityIgnored && IsEntityAlive(client) && !b_EntityHitByLightning[client]) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 				{
 					float TargetLocation[3]; 
 					GetEntPropVector( client, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 

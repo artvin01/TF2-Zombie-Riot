@@ -891,6 +891,10 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 	{
 		damage *= 1.5;
 	}
+	if(GetEntProp(entity, Prop_Data, "m_iHealth") <= damage)
+	{
+		b_BuildingHasDied[entity] = true;
+	}
 	//This is no longer needed, this logic has been added to the base explosive plugin, this also means that it allows
 	//npc vs npc interaction (mainly from blu to red) to deal 3x the explosive damage, so its not so weak.
 	/*
@@ -911,6 +915,7 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 		return Plugin_Changed;
 	}
 	*/
+
 	damagePosition[2] -= 40.0;
 	TE_ParticleInt(g_particleImpactMetal, damagePosition);
 	TE_SendToAll();
@@ -1177,6 +1182,8 @@ public void Building_TakeDamagePost(int entity, int attacker, int inflictor, flo
 			i_BarricadeHasBeenDamaged[client] += RoundToCeil(damage);
 		}
 	}
+
+
 }
 
 /*

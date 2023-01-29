@@ -1370,4 +1370,17 @@
 		//"it"		""
 		//"fr"		""
 	}
+	"Son Of Osiris"
+	{
+		"en"		"Son Of Osiris"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
 }

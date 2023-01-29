@@ -6713,7 +6713,8 @@ void TE_BloodSprite(float Origin[3],float Direction[3], int red, int green, int 
 }
 
 stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
-							float fStartWidth=NORMAL_ZOMBIE_VOLUME, float fEndWidth=NORMAL_ZOMBIE_VOLUME, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt")
+							float fStartWidth=0.8, float fEndWidth=0.8, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt",
+							float vector1[3]= {0.0,0.0,0.0},float vector2[3]= {0.0,0.0,0.0})
 {
 	int iBeam = CreateEntityByName("env_beam");
 	if(iBeam <= MaxClients)
@@ -6731,8 +6732,26 @@ stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int
 
 	DispatchSpawn(iBeam);
 
-	SetEntPropEnt(iBeam, Prop_Send, "m_hAttachEntity", EntIndexToEntRef(iEnt));
-	SetEntPropEnt(iBeam, Prop_Send, "m_hAttachEntity", EntIndexToEntRef(iEnt2), 1);
+	int particle;
+	if(iEnt != -1)
+	{
+		particle = Create_BeamParent(iEnt,_, iBeam);
+	}
+	else
+	{
+		particle = Create_BeamParent(-1, vector1, iBeam);
+	}
+	SetEntPropEnt(iBeam, Prop_Send, "m_hAttachEntity", EntIndexToEntRef(particle));
+
+	if(iEnt2 != -1)
+	{
+		particle = Create_BeamParent(iEnt2,_, iBeam);
+	}
+	else
+	{
+		particle = Create_BeamParent(-1, vector2, iBeam);
+	}
+	SetEntPropEnt(iBeam, Prop_Send, "m_hAttachEntity", EntIndexToEntRef(particle), 1);
 
 	SetEntProp(iBeam, Prop_Send, "m_nNumBeamEnts", 2);
 	SetEntProp(iBeam, Prop_Send, "m_nBeamType", 2);
@@ -6747,6 +6766,51 @@ stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int
 	AcceptEntityInput(iBeam, "TurnOn");
 	return iBeam;
 }
+
+stock int Create_BeamParent(int parented, float f3_PositionTemp[3] = {0.0,0.0,0.0}, int beam)
+{
+	int entity = CreateEntityByName("info_particle_system");
+	DispatchSpawn(entity);
+
+	
+	if(parented != -1)
+	{
+		f3_PositionTemp = WorldSpaceCenter(parented);
+		
+		TeleportEntity(entity, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
+
+		SetVariantString("!activator");
+		AcceptEntityInput(entity, "SetParent", parented);
+	}
+	else
+	{
+		TeleportEntity(entity, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
+	}
+
+	DataPack pack;
+	CreateDataTimer(1.0, Create_BeamParent_Owner_Check, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(beam));
+	pack.WriteCell(EntIndexToEntRef(entity));
+
+	return entity;
+}
+
+public Action Create_BeamParent_Owner_Check(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int OwnerEntity = EntRefToEntIndex(pack.ReadCell());
+	int ChildEntity = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(OwnerEntity))
+	{
+		if(IsValidEntity(ChildEntity))
+		{
+			RemoveEntity(ChildEntity);	
+		}
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
+}
+
 
 stock int TF2_CreateParticle(int iEnt, const char[] attachment, const char[] particle)
 {

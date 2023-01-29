@@ -309,6 +309,7 @@ float RollAngle_Regen_Delay[MAXTF2PLAYERS];
 float Mana_Hud_Delay[MAXTF2PLAYERS];
 
 bool b_NpcHasDied[MAXENTITIES]={true, ...};
+bool b_BuildingHasDied[MAXENTITIES]={true, ...};
 const int i_MaxcountNpc = ZR_MAX_NPCS;
 int i_ObjectsNpcs[ZR_MAX_NPCS];
 
@@ -2143,6 +2144,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		SetDefaultValuesToZeroNPC(entity);
 		i_SemiAutoWeapon[entity] = false;
 		b_NpcHasDied[entity] = true;
+		b_BuildingHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
 		b_IsARespawnroomVisualiser[entity] = false;
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
@@ -2376,6 +2378,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		
 		else if(!StrContains(classname, "obj_"))
 		{
+			b_BuildingHasDied[entity] = false;
 			npc.bCantCollidieAlly = true;
 			i_IsABuilding[entity] = true;
 			for (int i = 0; i < ZR_MAX_BUILDINGS; i++)

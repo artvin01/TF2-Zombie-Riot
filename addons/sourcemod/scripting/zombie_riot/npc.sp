@@ -425,7 +425,8 @@ public const char NPC_Names[][] =
 	"Swordsman Giant",
 	"Mounted Archer",
 	"Eagle Warrior",
-	"Giant Eagle Warrior"
+	"Giant Eagle Warrior",
+	"Son Of Osiris"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
