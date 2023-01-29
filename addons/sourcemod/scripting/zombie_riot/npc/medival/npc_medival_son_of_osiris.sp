@@ -340,7 +340,7 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 					npc.m_flAttackHappens = gameTime + 1.0;
 
 					npc.m_flDoingAnimation = gameTime + 1.0;
-					npc.m_flNextMeleeAttack = gameTime + 2.0;
+					npc.m_flNextMeleeAttack = gameTime + 4.0;
 					npc.m_bisWalking = true;
 				}
 			}
@@ -445,15 +445,17 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, f
 	}
 	StartLightningPos = WorldSpaceCenter(target);
 
+	float dodamage = damage;
 	if(ShouldNpcDealBonusDamage(target)) //If he attacks a building first, then its going to hurt alot more.
 	{
-		damage *= 3.0;
+		damage *= 2.0;
+		dodamage *= 100.0;
 	}
 
-	SDKHooks_TakeDamage(target, entity, entity, damage, DMG_PLASMA, _, {0.0, 0.0, -50000.0}, vecHit);	//BURNING TO THE GROUND!!!
+	SDKHooks_TakeDamage(target, entity, entity, dodamage, DMG_PLASMA, _, {0.0, 0.0, -50000.0}, vecHit);	//BURNING TO THE GROUND!!!
 	b_EntityHitByLightning[target] = true;
 	float original_damage = damage;
-	for (int loop = 6; loop > 2; loop--)
+	for (int loop = 8; loop > 2; loop--) //Chain upto alot of times
 	{
 		int enemy = SonOfOsiris_GetClosestTargetNotAffectedByLightning(vecHit, alliednpc);
 		if(IsValidEntity(enemy))
