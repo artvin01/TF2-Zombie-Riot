@@ -54,7 +54,7 @@ static const char g_MeleeHitSounds[][] = {
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/bow_shoot.wav",
+	"weapons/quake_rpg_fire_remastered.wav",
 };
 
 static const char g_MeleeMissSounds[][] = {
@@ -147,7 +147,7 @@ methodmap MedivalHandCannoneer < CClotBody
 	
 	public MedivalHandCannoneer(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalHandCannoneer npc = view_as<MedivalHandCannoneer>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "10000", ally));
+		MedivalHandCannoneer npc = view_as<MedivalHandCannoneer>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "12500", ally));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_HANDCANNONEER;
 		
@@ -163,8 +163,8 @@ methodmap MedivalHandCannoneer < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_demo_cannon/c_demo_cannon.mdl");
-		SetVariantString("0.6");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop_partner/weapons/c_models/c_bet_rocketlauncher/c_bet_rocketlauncher.mdl");
+		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalHandCannoneer_ClotDamaged);
@@ -203,9 +203,6 @@ methodmap MedivalHandCannoneer < CClotBody
 public void MedivalHandCannoneer_ClotThink(int iNPC)
 {
 	MedivalHandCannoneer npc = view_as<MedivalHandCannoneer>(iNPC);
-	
-	SetVariantInt(0);
-	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -331,7 +328,7 @@ public void HandleAnimEventMedival_HandCannoneer(int entity, int event)
 			npc.FaceTowards(vecTarget, 30000.0);
 						
 			npc.PlayMeleeSound();
-			npc.FireArrow(vecTarget, 20.0, 1200.0);
+			npc.FireArrow(vecTarget, 150.0, 1200.0);
 		}
 	}
 	

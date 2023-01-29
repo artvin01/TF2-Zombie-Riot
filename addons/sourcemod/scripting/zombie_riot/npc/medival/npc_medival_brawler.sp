@@ -261,7 +261,7 @@ public void MedivalBrawler_ClotThink(int iNPC)
 						damage = 30.0;
 					}
 
-					if(target > MaxClients)
+					if(ShouldNpcDealBonusDamage(target))
 					{
 						damage *= 3.0;
 					}

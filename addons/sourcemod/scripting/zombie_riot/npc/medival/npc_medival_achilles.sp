@@ -79,6 +79,10 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
+#define ACHILLES_CHARGE_TIME 3.1
+#define ACHILLES_CHARGE_SPAN 1.0
+#define ACHILLES_LIGHTNING_RANGE 150.0
+
 void MedivalAchilles_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -89,6 +93,7 @@ void MedivalAchilles_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	PrecacheModel("models/props_junk/harpoon002a.mdl");
 }
 
 methodmap MedivalAchilles < CClotBody
@@ -165,9 +170,9 @@ methodmap MedivalAchilles < CClotBody
 	
 	public MedivalAchilles(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalAchilles npc = view_as<MedivalAchilles>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "4500", ally));
+		MedivalAchilles npc = view_as<MedivalAchilles>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "100000", ally));
 		
-		i_NpcInternalId[npc.index] = MEDIVAL_BRAWLER;
+		i_NpcInternalId[npc.index] = MEDIVAL_ACHILLES;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -185,7 +190,7 @@ methodmap MedivalAchilles < CClotBody
 		SDKHook(npc.index, SDKHook_Think, MedivalAchilles_ClotThink);
 
 		npc.m_iState = 0;
-		npc.m_flSpeed = 310.0;
+		npc.m_flSpeed = 330.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -194,6 +199,27 @@ methodmap MedivalAchilles < CClotBody
 		
 		npc.m_flMeleeArmor = 0.9;
 		npc.m_flRangedArmor = 1.0;
+
+		npc.m_iWearable1 = npc.EquipItem("partyhat", "models/player/items/soldier/soldier_spartan.mdl");
+		SetVariantString("1.2");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+
+		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/weapons/c_models/c_persian_shield/c_persian_shield.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+
+		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop/weapons/c_models/c_scout_sword/c_scout_sword.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
+		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/weapons/c_models/c_golfclub/c_golfclub.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+		
+		//Hide Sword
+		AcceptEntityInput(npc.m_iWearable3, "Disable");
+		AcceptEntityInput(npc.m_iWearable4, "Enable");
+
 
 		npc.StartPathing();
 		
@@ -248,25 +274,25 @@ public void MedivalAchilles_ClotThink(int iNPC)
 			{
 				Handle swingTrace;
 				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, { 80.0, 80.0, 80.0 }, { -80.0, -80.0, -80.0 })) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 20.0;
+					float damage = 65.0;
 
 					if(Medival_Difficulty_Level > 2.0)
 					{
-						damage = 30.0;
+						damage = 85.0;
 					}
 
-					if(target > MaxClients)
+					if(ShouldNpcDealBonusDamage(target))
 					{
-						damage *= 3.0;
+						damage *= 15.0;
 					}
 					npc.PlayMeleeHitSound();
-					if(target > 0) 
+					if(target > 0)
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 					}
@@ -275,6 +301,32 @@ public void MedivalAchilles_ClotThink(int iNPC)
 			}
 		}
 	}
+
+	if(npc.m_flInJump)
+	{
+		if(npc.m_flInJump < gameTime)
+		{
+			npc.m_flInJump = 0.0;
+			
+			if(IsValidEnemy(npc.index, npc.m_iTarget))
+			{
+				float TargetLocation[3]; 
+				GetEntPropVector( npc.index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+				float EntityLocation[3]; 
+				GetEntPropVector( npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+				float distance = GetVectorDistance( EntityLocation, TargetLocation, true );  
+					
+				float vecTarget[3];
+				vecTarget = WorldSpaceCenter(npc.m_iTarget);
+
+				if(distance <= Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 8.0, 2.0)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
+				{
+					PluginBot_Jump(npc.index, vecTarget);
+				}
+			}
+		}
+	}
+
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -298,9 +350,17 @@ public void MedivalAchilles_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
+		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 12.0, 2.0) && npc.m_flNextRangedAttack < gameTime)
+		{
+			npc.m_iState = 3; //Throw Spear
+		}
 		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
+		}
+		else if(flDistanceToTarget > Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 3.0, 2.0) && flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 6.0, 2.0) && npc.m_flJumpCooldown < gameTime)
+		{
+			npc.m_iState = 2; //Jump
 		}
 		else 
 		{
@@ -317,13 +377,33 @@ public void MedivalAchilles_ClotThink(int iNPC)
 			{
 				//Walk to target
 				if(!npc.m_bPathing)
-					npc.StartPathing();
-					
-				npc.m_bisWalking = true;
-				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
-					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_BRAWLER_RUN");
+					npc.StartPathing();
+					npc.m_bisWalking = true;
+					npc.m_flSpeed = 330.0;
+				}
+					
+				if(npc.m_flNextRangedAttack > gameTime)
+				{
+					if(npc.m_iChanged_WalkCycle != 5) 	
+					{
+						//Hide spear
+						AcceptEntityInput(npc.m_iWearable3, "Enable");
+						AcceptEntityInput(npc.m_iWearable4, "Disable");
+						npc.m_iChanged_WalkCycle = 5;
+						npc.SetActivity("ACT_ACHILLES_RUN_DAGGER");
+					}
+				}
+				else
+				{
+					if(npc.m_iChanged_WalkCycle != 4) 	
+					{
+						//Hide sword
+						AcceptEntityInput(npc.m_iWearable3, "Disable");
+						AcceptEntityInput(npc.m_iWearable4, "Enable");
+						npc.m_iChanged_WalkCycle = 4;
+						npc.SetActivity("ACT_ACHILLES_RUN_SPEAR");
+					}
 				}
 			}
 			case 1:
@@ -335,28 +415,98 @@ public void MedivalAchilles_ClotThink(int iNPC)
 				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
+					//Hide spear
+					AcceptEntityInput(npc.m_iWearable3, "Enable");
+					AcceptEntityInput(npc.m_iWearable4, "Disable");
 					npc.m_iTarget = Enemy_I_See;
 
-					switch(GetRandomInt(0,1))
-					{
-						case 0:
-						{
-							npc.AddGesture("ACT_BRAWLER_ATTACK_LEFT");
-						}
-						case 1:
-						{
-							npc.AddGesture("ACT_BRAWLER_ATTACK_RIGHT");
-						}
-					}
-				
+					npc.AddGesture("ACT_ACHILLES_ATTACK_DAGGER");
 
 					npc.PlayMeleeSound();
 					
-					npc.m_flAttackHappens = gameTime + 0.35;
+					npc.m_flAttackHappens = gameTime + 0.25;
 
-					npc.m_flDoingAnimation = gameTime + 0.35;
-					npc.m_flNextMeleeAttack = gameTime + 0.4;
+					npc.m_flDoingAnimation = gameTime + 0.25;
+					npc.m_flNextMeleeAttack = gameTime + 0.7;
 					npc.m_bisWalking = true;
+				}
+			}
+			case 2:
+			{			
+				int Enemy_I_See;
+							
+				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+
+				//jump at them.
+				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+				{
+					//Hide spear
+					AcceptEntityInput(npc.m_iWearable3, "Enable");
+					AcceptEntityInput(npc.m_iWearable4, "Disable");
+					npc.m_iTarget = Enemy_I_See;
+
+					if(npc.m_iChanged_WalkCycle != 7) 	
+					{
+						PF_StopPathing(npc.index);
+						npc.m_bPathing = false;
+						npc.m_flSpeed = 0.0;
+						npc.m_bisWalking = false;
+						npc.m_iChanged_WalkCycle = 7;
+						npc.SetActivity("ACT_BRAWLER_RUN");
+					}
+
+					npc.PlayMeleeSound();
+					
+					npc.m_flInJump = gameTime + 0.5;
+
+					npc.m_flDoingAnimation = gameTime + 0.5;
+					npc.m_flJumpCooldown = gameTime + 10.0;
+					npc.m_bisWalking = true;
+				}
+			}
+			case 3:
+			{
+				int Enemy_I_See;
+							
+				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+
+				//jump at them.
+				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+				{
+					if(IsValidEntity(npc.m_iTarget))
+					{
+						//Hide sword
+						AcceptEntityInput(npc.m_iWearable3, "Disable");
+						AcceptEntityInput(npc.m_iWearable4, "Enable");
+						float vEnd[3];
+						
+						vEnd = GetAbsOrigin(npc.m_iTarget);
+						Handle pack;
+						CreateDataTimer(ACHILLES_CHARGE_SPAN, Smite_Timer_achilles, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+						WritePackCell(pack, EntIndexToEntRef(npc.index));
+						WritePackFloat(pack, 0.0);
+						WritePackFloat(pack, vEnd[0]);
+						WritePackFloat(pack, vEnd[1]);
+						WritePackFloat(pack, vEnd[2]);
+						WritePackFloat(pack, 500.0);
+							
+						spawnRing_Vectors(vEnd, ACHILLES_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, ACHILLES_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
+						
+						npc.m_flNextRangedAttack = gameTime + 15.0;
+						npc.m_flDoingAnimation = gameTime + 2.0;
+						if(npc.m_iChanged_WalkCycle != 7) 	
+						{
+							PF_StopPathing(npc.index);
+							npc.m_bPathing = false;
+							npc.m_flSpeed = 0.0;
+							npc.m_bisWalking = false;
+							//Hide sword
+							AcceptEntityInput(npc.m_iWearable3, "Disable");
+							AcceptEntityInput(npc.m_iWearable4, "Enable");
+							npc.m_iChanged_WalkCycle = 7;
+							npc.SetActivity("ACT_ACHILLES_SPEAR_NUKE");
+						}
+					}
 				}
 			}
 		}
@@ -411,4 +561,116 @@ public void MedivalAchilles_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
+}
+
+
+public void HandleAnimEvent_MedivalAchilles(int entity, int event)
+{
+	if(event == 5231)
+	{
+		MedivalAchilles npc = view_as<MedivalAchilles>(entity);
+
+		AcceptEntityInput(npc.m_iWearable4, "Disable");
+	}
+}
+
+public Action Smite_Timer_achilles(Handle Smite_Logic, DataPack pack)
+{
+	ResetPack(pack);
+	int entity = EntRefToEntIndex(ReadPackCell(pack));
+	
+	if (!IsValidEntity(entity))
+	{
+		return Plugin_Stop;
+	}
+		
+	float NumLoops = ReadPackFloat(pack);
+	float spawnLoc[3];
+	for (int GetVector = 0; GetVector < 3; GetVector++)
+	{
+		spawnLoc[GetVector] = ReadPackFloat(pack);
+	}
+	
+	float damage = ReadPackFloat(pack);
+	
+	if (NumLoops >= ACHILLES_CHARGE_TIME)
+	{
+		float secondLoc[3];
+		for (int replace = 0; replace < 3; replace++)
+		{
+			secondLoc[replace] = spawnLoc[replace];
+		}
+		
+		for (int sequential = 1; sequential <= 5; sequential++)
+		{
+			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 120, 1, 0.33, 6.0, 0.4, 1, (ACHILLES_LIGHTNING_RANGE * 5.0)/float(sequential));
+			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
+		}
+		
+		secondLoc[2] = 1500.0;
+		
+		float vAngles[3];
+		int prop2 = CreateEntityByName("prop_dynamic_override");
+		if(IsValidEntity(prop2))
+		{
+			DispatchKeyValue(prop2, "model", "models/props_junk/harpoon002a.mdl");
+			DispatchKeyValue(prop2, "modelscale", "2.00");
+			DispatchKeyValue(prop2, "StartDisabled", "false");
+			DispatchKeyValue(prop2, "Solid", "0");
+			SetEntProp(prop2, Prop_Data, "m_nSolidType", 0);
+			DispatchSpawn(prop2);
+			SetEntityCollisionGroup(prop2, 1);
+			AcceptEntityInput(prop2, "DisableShadow");
+			AcceptEntityInput(prop2, "DisableCollision");
+			vAngles[0] += 90.0;
+			TeleportEntity(prop2, spawnLoc, vAngles, NULL_VECTOR);
+			CreateTimer(5.0, Timer_RemoveEntity, EntIndexToEntRef(prop2), TIMER_FLAG_NO_MAPCHANGE);
+		}
+
+		spawnBeam(0.8, 255, 50, 50, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, secondLoc, spawnLoc);	
+		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, secondLoc, spawnLoc);	
+		spawnBeam(0.8, 255, 50, 50, 200, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, secondLoc, spawnLoc);	
+		
+		DataPack pack_boom = new DataPack();
+		pack_boom.WriteFloat(spawnLoc[0]);
+		pack_boom.WriteFloat(spawnLoc[1]);
+		pack_boom.WriteFloat(spawnLoc[2]);
+		pack_boom.WriteCell(1);
+		RequestFrame(MakeExplosionFrameLater, pack_boom);
+		
+		CreateEarthquake(spawnLoc, 1.0, ACHILLES_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, ACHILLES_LIGHTNING_RANGE * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increace
+	
+		return Plugin_Stop;
+	}
+	else
+	{
+		spawnRing_Vectors(spawnLoc, ACHILLES_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
+	//	EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, spawnLoc, _, 60, _, _, GetRandomInt(80, 110));
+		
+		ResetPack(pack);
+		WritePackCell(pack, EntIndexToEntRef(entity));
+		WritePackFloat(pack, NumLoops + ACHILLES_CHARGE_TIME);
+		WritePackFloat(pack, spawnLoc[0]);
+		WritePackFloat(pack, spawnLoc[1]);
+		WritePackFloat(pack, spawnLoc[2]);
+		WritePackFloat(pack, damage);
+	}
+	
+	return Plugin_Continue;
+}
+
+static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})
+{
+	int color[4];
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	color[3] = a;
+		
+	int SPRITE_INT = PrecacheModel(sprite, false);
+
+	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
+	
+	TE_SendToAll();
 }

@@ -83,6 +83,8 @@ static const char g_WarCry[][] = {
 	"mvm/mvm_tank_horn.wav",
 };
 
+static float f_GlobalSoundCD;
+
 void MedivalHussar_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -94,12 +96,14 @@ void MedivalHussar_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_WarCry));   i++) { PrecacheSound(g_WarCry[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	f_GlobalSoundCD = 0.0;
 }
 
 static int i_ClosestAlly[MAXENTITIES];
 static float i_ClosestAllyCD[MAXENTITIES];
 static int i_ClosestAllyTarget[MAXENTITIES];
 static float i_ClosestAllyCDTarget[MAXENTITIES];
+
 
 #define HUSSAR_BUFF_MAXRANGE 350.0 		
 
@@ -150,8 +154,14 @@ methodmap MedivalHussar < CClotBody
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-	}
-	public void PlayMeleeWarCry() {
+	}	
+	public void PlayMeleeWarCry() 
+	{
+		if(f_GlobalSoundCD > GetGameTime())
+			return;
+			
+		f_GlobalSoundCD = GetGameTime() + 5.0;
+
 		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 85, _, 0.8, 100);
 	}
 	

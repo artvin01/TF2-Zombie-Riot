@@ -3507,6 +3507,10 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		{
 			HandleAnimEventMedivalLongbowmen(pThis, event);
 		}
+		case MEDIVAL_ELITE_LONGBOWMEN:
+		{
+			HandleAnimEventMedivalEliteLongbowmen(pThis, event);
+		}
 		case MEDIVAL_ARBALEST:
 		{
 			HandleAnimEventMedival_Arbalest(pThis, event);
@@ -3530,6 +3534,10 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		case MEDIVAL_CROSSBOW_GIANT:
 		{
 			HandleAnimEventMedival_GiantCrossbowMan(pThis, event);
+		}
+		case MEDIVAL_ACHILLES:
+		{
+			HandleAnimEvent_MedivalAchilles(pThis, event);
 		}
 	}
 #endif

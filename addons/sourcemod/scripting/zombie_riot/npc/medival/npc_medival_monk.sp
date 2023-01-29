@@ -612,7 +612,7 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 	vector[2] = pack.ReadFloat();
 	bool AlliedUnit = pack.ReadCell();
 	int Monk = EntRefToEntIndex(pack.ReadCell());
-	float damage = 20.0;
+	float damage = 10.0;
 	if(Monk == -1)
 	{
 		Monk = 0;

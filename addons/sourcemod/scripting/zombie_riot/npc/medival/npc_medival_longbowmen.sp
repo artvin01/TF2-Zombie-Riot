@@ -302,7 +302,7 @@ public void MedivalLongbowmen_ClotThink(int iNPC)
 						
 			//			npc.PlayMeleeSound();
 			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 3.0;
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;
 						npc.m_flJumpStartTime = GetGameTime(npc.index) + 1.0;
 					}
 					PF_StopPathing(npc.index);
@@ -350,10 +350,10 @@ public void HandleAnimEventMedivalLongbowmen(int entity, int event)
 						
 			npc.PlayMeleeSound();
 			
-			float damage = 50.0;
+			float damage = 100.0;
 			if(Medival_Difficulty_Level > 2.0)
 			{
-				damage = 80.0;
+				damage = 130.0;
 			}
 			npc.FireArrow(vecTarget, damage, projectile_speed);
 		}

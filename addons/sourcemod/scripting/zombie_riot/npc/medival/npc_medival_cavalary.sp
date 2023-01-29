@@ -262,16 +262,16 @@ public void MedivalCavalary_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 100.0;
+					float damage = 80.0;
 
 					if(Medival_Difficulty_Level > 2.0)
 					{
-						damage = 120.0;
+						damage = 95.0;
 					}
 
 					if(ShouldNpcDealBonusDamage(target))
 					{
-						damage *= 3.0;
+						damage *= 5.0;
 					}
 					npc.PlayMeleeHitSound();
 					if(target > 0) 

@@ -177,7 +177,7 @@ methodmap MedivalSonOfOsiris < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		npc.m_iState = 0;
-		npc.m_flSpeed = 330.0;
+		npc.m_flSpeed = 300.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -251,17 +251,24 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 			npc.m_flAttackHappens = 0.0;
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{		
-				float TargetLocation[3]; 
-				GetEntPropVector( npc.index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-				float EntityLocation[3]; 
-				GetEntPropVector( npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
-				float distance = GetVectorDistance( EntityLocation, TargetLocation, true );  
-					
-				if(distance <= Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 6.5, 2.0)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
+				int Enemy_I_See;
+							
+				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				//Can i see This enemy, is something in the way of us?
+				npc.PlayMeleeSound();
+				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					npc.PlayMeleeSound();
-				
-					SonOfOsiris_Lightning_Strike(npc.index, npc.m_iTarget, 500.0, b_IsAlliedNpc[npc.index]);
+					npc.m_iTarget = Enemy_I_See;
+					float TargetLocation[3]; 
+					GetEntPropVector( npc.index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+					float EntityLocation[3]; 
+					GetEntPropVector( npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+					float distance = GetVectorDistance( EntityLocation, TargetLocation, true );  
+						
+					if(distance <= Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 6.5, 2.0)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
+					{
+						SonOfOsiris_Lightning_Strike(npc.index, npc.m_iTarget, 500.0, b_IsAlliedNpc[npc.index]);
+					}
 				}
 			}
 		}
@@ -398,7 +405,7 @@ public void MedivalSonOfOsiris_NPCDeath(int entity)
 
 static void SonOfOsiris_Lightning_Effect(int entity = -1, int target = -1, float VecPos_entity[3] = {0.0,0.0,0.0}, float VecPos_target[3] = {0.0,0.0,0.0})
 {	
-	int r = 65; //Yellow.
+	int r = 65; //Blue.
 	int g = 65;
 	int b = 255;
 	int laser;
@@ -461,7 +468,7 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 
 	for (int loop = 8; loop > 2; loop--) //Chain upto alot of times
 	{
-		int enemy = SonOfOsiris_GetClosestTargetNotAffectedByLightning(vecHit, alliednpc);
+		int enemy = SonOfOsiris_GetClosestTargetNotAffectedByLightning(entity, vecHit, alliednpc);
 		if(IsValidEntity(enemy) && PreviousTarget != enemy)
 		{
 			if(IsValidClient(enemy))
@@ -530,7 +537,7 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 	Zero(b_EntityHitByLightning); //delete this logic.
 }
 
-stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(float EntityLocation[3], bool ally = false)
+stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(int traceentity , float EntityLocation[3], bool ally = false)
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = 0; 
@@ -547,18 +554,21 @@ stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(float EntityLocatio
 					
 				if(distance <= Pow(SON_OF_OSIRIS_RANGE , 2.0))
 				{
-					if( TargetDistance ) 
+					if(Can_I_See_Enemy_Only(traceentity, baseboss_index) == baseboss_index)
 					{
-						if( distance < TargetDistance ) 
+						if( TargetDistance ) 
+						{
+							if( distance < TargetDistance ) 
+							{
+								ClosestTarget = baseboss_index; 
+								TargetDistance = distance;          
+							}
+						} 
+						else 
 						{
 							ClosestTarget = baseboss_index; 
-							TargetDistance = distance;          
+							TargetDistance = distance;
 						}
-					} 
-					else 
-					{
-						ClosestTarget = baseboss_index; 
-						TargetDistance = distance;
 					}
 				}
 			}
@@ -577,18 +587,21 @@ stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(float EntityLocatio
 					
 				if(distance <= Pow(SON_OF_OSIRIS_RANGE , 2.0))
 				{
-					if( TargetDistance ) 
+					if(Can_I_See_Enemy_Only(traceentity, baseboss_index) == baseboss_index)
 					{
-						if( distance < TargetDistance ) 
+						if( TargetDistance ) 
+						{
+							if( distance < TargetDistance ) 
+							{
+								ClosestTarget = baseboss_index; 
+								TargetDistance = distance;          
+							}
+						} 
+						else 
 						{
 							ClosestTarget = baseboss_index; 
-							TargetDistance = distance;          
+							TargetDistance = distance;
 						}
-					} 
-					else 
-					{
-						ClosestTarget = baseboss_index; 
-						TargetDistance = distance;
 					}
 				}
 			}
@@ -606,18 +619,21 @@ stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(float EntityLocatio
 						
 					if(distance <= Pow(SON_OF_OSIRIS_RANGE , 2.0))
 					{
-						if( TargetDistance ) 
+						if(Can_I_See_Enemy_Only(traceentity, client) == client)
 						{
-							if( distance < TargetDistance ) 
+							if( TargetDistance ) 
+							{
+								if( distance < TargetDistance ) 
+								{
+									ClosestTarget = client; 
+									TargetDistance = distance;          
+								}
+							} 
+							else 
 							{
 								ClosestTarget = client; 
-								TargetDistance = distance;          
+								TargetDistance = distance;
 							}
-						} 
-						else 
-						{
-							ClosestTarget = client; 
-							TargetDistance = distance;
 						}
 					}
 				}
