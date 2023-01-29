@@ -1257,7 +1257,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
 	{
 #if defined ZR
-		if(Medival_Difficulty_Level != 0.0)
+		if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
 		{
 			damage *= Medival_Difficulty_Level;
 		}
@@ -1267,7 +1267,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	else if(!(damagetype & DMG_SLASH))
 	{
 #if defined ZR
-		if(Medival_Difficulty_Level != 0.0)
+		if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
 		{
 			damage *= Medival_Difficulty_Level;
 		}
@@ -1962,7 +1962,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 			float percentage = npc.m_flMeleeArmor * 100.0;
 			
 #if defined ZR
-			if(Medival_Difficulty_Level != 0.0)
+			if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
 			{
 				percentage *= Medival_Difficulty_Level;
 			}
@@ -1982,7 +1982,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 			float percentage = npc.m_flRangedArmor * 100.0;
 			
 #if defined ZR
-			if(Medival_Difficulty_Level != 0.0)
+			if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
 			{
 				percentage *= Medival_Difficulty_Level;
 			}
