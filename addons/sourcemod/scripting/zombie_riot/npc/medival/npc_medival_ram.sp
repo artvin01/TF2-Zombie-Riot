@@ -44,7 +44,7 @@ methodmap MedivalRam < CClotBody
 	
 	public MedivalRam(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		MedivalRam npc = view_as<MedivalRam>(CClotBody(vecPos, vecAng, NPCModel, "0.5", "5000", ally));
+		MedivalRam npc = view_as<MedivalRam>(CClotBody(vecPos, vecAng, NPCModel, "0.5", "10000", ally));
 		i_NpcInternalId[npc.index] = MEDIVAL_RAM;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
