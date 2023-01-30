@@ -1226,13 +1226,7 @@ public void Medival_Wave_Difficulty_Riser(int difficulty)
 {
 	PrintToChatAll("%t", "Medival_Difficulty", difficulty);
 	
-	float difficulty_math = float(difficulty);
-	
-	difficulty_math *= -1.0;
-	
-	difficulty_math /= 10.0;
-	
-	difficulty_math += 1.0;
+	float difficulty_math = Pow(0.9, float(difficulty));
 	
 	if(difficulty_math < 0.1) //Just make sure that it doesnt go below.
 	{
