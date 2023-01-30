@@ -648,6 +648,8 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					
 					if(enemy.Is_Boss == 1)
 					{
+						npcstats.RemovePather(entity_Spawner);
+						npcstats.CreatePather(16.0, npcstats.GetMaxJumpHeight(), 1000.0, MASK_NPCSOLID, 150.0, 0.1, 1.75); //Global.
 						npcstats.m_bThisNpcIsABoss = true; //Set to true!
 					}
 					else

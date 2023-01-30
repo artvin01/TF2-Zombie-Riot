@@ -1,66 +1,28 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char NPCModel[] = "models/combine_apc.mdl";
-
-static const char g_MeleeHitSounds[][] = {
-	"mvm/melee_impacts/bottle_hit_robo01.wav",
-	"mvm/melee_impacts/bottle_hit_robo02.wav",
-	"mvm/melee_impacts/bottle_hit_robo03.wav",
-};
-
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/shovel_swing.wav",
-};
-
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
+static const char NPCModel[] = "models/combine_apc_dynamic.mdl";
 
 methodmap MedivalTrebuchet < CClotBody
 {
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll("weapons/stinger_fire1.wav", this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
-	public void PlayMeleeHitSound()
+	public MedivalTrebuchet(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-	}
-
-	public void PlayMeleeMissSound()
-	{
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-	}
-	
-	public MedivalTrebuchet(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
-	{
-		MedivalTrebuchet npc = view_as<MedivalTrebuchet>(CClotBody(vecPos, vecAng, NPCModel, "1.15", "5000", ally));
-		i_NpcInternalId[npc.index] = MEDIVAL_RAM;
+		MedivalTrebuchet npc = view_as<MedivalTrebuchet>(CClotBody(vecPos, vecAng, NPCModel, "0.85", "5000", ally));
+		i_NpcInternalId[npc.index] = MEDIVAL_TREBUCHET;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = 0;
 		
-		if(data[0])
-		{
-			Garrison[npc.index] = StringToInt(data);
-			if(!Garrison[npc.index])
-				Garrison[npc.index] = GetIndexByPluginName(data);
-			
-			if(Garrison[npc.index] && !ally)
-				Zombies_Currently_Still_Ongoing += 4;
-		}
-		else
-		{
-			Garrison[npc.index] = 0;
-		}
-		
 		SDKHook(npc.index, SDKHook_Think, MedivalTrebuchet_ClotThink);
 		
 		npc.m_iState = 0;
-		npc.m_flSpeed = Garrison[npc.index] ? 170.0 : 150.0;
+		npc.m_flSpeed = 150.0;
 		npc.m_flReloadDelay = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -70,17 +32,7 @@ methodmap MedivalTrebuchet < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_flMeleeArmor = 2.0;
-		npc.m_flRangedArmor = 0.2;
-		
-		if(Garrison[npc.index])
-		{
-			//TODO: Give flag wearable
-			npc.m_iWearable1 = -1;
-		}
-		else
-		{
-			npc.m_iWearable1 = -1;
-		}
+		npc.m_flRangedArmor = 0.25;
 		
 		return npc;
 	}
@@ -148,49 +100,32 @@ public void MedivalTrebuchet_ClotThink(int iNPC)
 			}
 	
 			//Target close enough to hit
-			if((flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
+			//if((flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
+			
 			{
 			//	npc.FaceTowards(vecTarget, 1000.0);
-				
-				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) || npc.m_flAttackHappenswillhappen)
+				npc.FaceTowards(vecTarget, 20000.0);
+				if(npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) || npc.m_flAttackHappenswillhappen)
 				{
 					if (!npc.m_flAttackHappenswillhappen)
 					{
-						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
-						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
-						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
-						npc.m_flAttackHappenswillhappen = true;
+						//Target close enough to hit
+						if(IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, PrimaryThreatIndex)))
+						{
+							npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
+							npc.m_flAttackHappens = GetGameTime(npc.index)+2.4;
+							npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+2.54;
+							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 4.0;
+							npc.m_flAttackHappenswillhappen = true;
+							PF_StopPathing(npc.index);
+							npc.m_bPathing = false;
+						}
 					}
 						
 					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 					{
-						Handle swingTrace;
-						npc.FaceTowards(vecTarget, 20000.0);
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
-							{
-								
-								int target = TR_GetEntityIndex(swingTrace);	
-								
-								float vecHit[3];
-								TR_GetEndPosition(vecHit, swingTrace);
-								
-								if(target > 0) 
-								{
-									if(!ShouldNpcDealBonusDamage(target))
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 20.0, DMG_CLUB, -1, _, vecHit);
-									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, Garrison[npc.index] ? 3300.0 : 2500.0, DMG_CLUB, -1, _, vecHit);
-									
-									// Hit particle
-									
-									
-									// Hit sound
-									npc.PlayMeleeHitSound();
-								} 
-							}
-						delete swingTrace;
+						npc.FireRocket(vecTarget, 500.0, 600.0);
+						npc.PlayMeleeSound();
 						npc.m_flAttackHappenswillhappen = false;
 					}
 					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
@@ -199,7 +134,7 @@ public void MedivalTrebuchet_ClotThink(int iNPC)
 					}
 				}
 			}
-			if (npc.m_flReloadDelay < GetGameTime(npc.index))
+			if (npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 			{
 				npc.StartPathing();
 				
@@ -212,16 +147,11 @@ public void MedivalTrebuchet_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-	npc.PlayIdleAlertSound();
 }
 
 void MedivalTrebuchet_NPCDeath(int entity)
 {
 	MedivalTrebuchet npc = view_as<MedivalTrebuchet>(entity);
-	if(!npc.m_bGib)
-	{
-		npc.PlayDeathSound();	
-	}
 	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalTrebuchet_ClotThink);
 		
@@ -230,20 +160,4 @@ void MedivalTrebuchet_NPCDeath(int entity)
 	
 	float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, entity, _, _, _, _, _, _, _, _, _, 0.0);
-	
-	if(Garrison[entity])
-	{
-		bool friendly = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
-		
-		float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
-		float ang[3]; GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
-		
-		for(int i; i < 4; i++)
-		{
-			Npc_Create(Garrison[entity], -1, pos, ang, friendly);
-		}
-
-		if(!friendly)
-			Zombies_Currently_Still_Ongoing -= 4;
-	}
 }

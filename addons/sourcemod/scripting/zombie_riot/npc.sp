@@ -218,7 +218,8 @@ enum
 	MEDIVAL_EAGLE_WARRIOR		= 185,
 	MEDIVAL_EAGLE_GIANT			= 186,
 	MEDIVAL_SON_OF_OSIRIS		= 187,
-	MEDIVAL_ACHILLES			= 188
+	MEDIVAL_ACHILLES			= 188,
+	MEDIVAL_TREBUCHET			= 189
 }
 
 public const char NPC_Names[][] =
@@ -428,7 +429,8 @@ public const char NPC_Names[][] =
 	"Eagle Warrior",
 	"Giant Eagle Warrior",
 	"Son Of Osiris",
-	"Achilles"
+	"Achilles",
+	"Trebuchet"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -634,7 +636,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_medival_eagle_warrior",
 	"npc_medival_eagle_giant",
 	"npc_medival_son_of_osiris",
-	"npc_medival_achilles"
+	"npc_medival_achilles",
+	"npc_medival_trebuchet"
 };
 
 void NPC_MapStart()
@@ -1578,6 +1581,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = MedivalAchilles(client, vecPos, vecAng, ally);
 		}
+		case MEDIVAL_TREBUCHET:
+		{
+			entity = MedivalTrebuchet(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2331,6 +2338,10 @@ public void NPCDeath(int entity)
 		{
 			MedivalAchilles_NPCDeath(entity);
 		}
+		case MEDIVAL_TREBUCHET:
+		{
+			MedivalTrebuchet_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2578,6 +2589,7 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/medival/npc_medival_riddenarcher.sp"
 #include "zombie_riot/npc/medival/npc_medival_son_of_osiris.sp"
 #include "zombie_riot/npc/medival/npc_medival_achilles.sp"
+#include "zombie_riot/npc/medival/npc_medival_trebuchet.sp"
 
 #include "zombie_riot/npc/cof/npc_addiction.sp"
 #include "zombie_riot/npc/cof/npc_doctor.sp"

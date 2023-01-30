@@ -617,8 +617,24 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 	{
 		Monk = 0;
 	}
+	
 	if(AlliedUnit)
 	{
+		BarrackBody npc = view_as<BarrackBody>(Monk);
+		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
+		{
+			int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK)
+			{
+				static float pos2[3];
+				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
+				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
+				{
+					SDKHooks_TakeDamage(entity_close, Monk, GetClientOfUserId(npc.OwnerUserId), damage * 20.0, DMG_PLASMA|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceCenter(entity_close));	
+					damage *= 0.8;
+				}
+			}
+		}
 		//Doesnt do anything for now, too lazy.
 	}
 	else
@@ -670,7 +686,7 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
 				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
 				{
-					SDKHooks_TakeDamage(entity_close, Monk, Monk, damage * 3.0, DMG_SHOCK|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceCenter(entity_close));	
+					SDKHooks_TakeDamage(entity_close, Monk, Monk, damage, DMG_SHOCK|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceCenter(entity_close));	
 				}
 			}
 		}

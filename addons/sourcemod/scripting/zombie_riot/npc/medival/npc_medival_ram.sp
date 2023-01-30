@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char NPCModel[] = "models/combine_apc.mdl";
+static const char NPCModel[] = "models/combine_apc_dynamic.mdl";
 
 static const char g_MeleeHitSounds[][] = {
 	"mvm/melee_impacts/bottle_hit_robo01.wav",
@@ -20,6 +20,7 @@ static const char g_MeleeMissSounds[][] = {
 void MedivalRam_OnMapStart()
 {
 	PrecacheModel(NPCModel);
+	PrecacheSound("weapons/stinger_fire1.wav");
 }
 
 static int Garrison[MAXENTITIES];
@@ -43,7 +44,7 @@ methodmap MedivalRam < CClotBody
 	
 	public MedivalRam(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		MedivalRam npc = view_as<MedivalRam>(CClotBody(vecPos, vecAng, NPCModel, "1.15", "5000", ally));
+		MedivalRam npc = view_as<MedivalRam>(CClotBody(vecPos, vecAng, NPCModel, "0.5", "5000", ally));
 		i_NpcInternalId[npc.index] = MEDIVAL_RAM;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
@@ -188,7 +189,7 @@ public void MedivalRam_ClotThink(int iNPC)
 									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 20.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, Garrison[npc.index] ? 3300.0 : 2500.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, Garrison[npc.index] ? 7600.0 : 5500.0, DMG_CLUB, -1, _, vecHit);
 									
 									// Hit particle
 									
