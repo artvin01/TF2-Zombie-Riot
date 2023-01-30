@@ -102,7 +102,7 @@ static float i_ClosestAllyCD[MAXENTITIES];
 static int i_ClosestAllyTarget[MAXENTITIES];
 static float i_ClosestAllyCDTarget[MAXENTITIES];
 
-#define MONK_MAXRANGE 400.0 		
+#define MONK_MAXRANGE 250.0 		
 
 methodmap MedivalMonk < CClotBody
 {
