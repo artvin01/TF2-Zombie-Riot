@@ -284,6 +284,8 @@ float Increaced_Sentry_damage_Low[MAXENTITIES];
 float Increaced_Sentry_damage_High[MAXENTITIES];
 float Resistance_for_building_Low[MAXENTITIES];
 
+bool b_DisplayDamageHud[MAXTF2PLAYERS];
+
 
 
 float Increaced_Overall_damage_Low[MAXENTITIES];

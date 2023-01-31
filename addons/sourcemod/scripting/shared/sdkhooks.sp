@@ -162,8 +162,14 @@ public void OnPreThinkPost(int client)
 
 public void OnPostThink(int client)
 {
+	
 	static float gameTime;
 	gameTime = GetGameTime();
+	if(b_DisplayDamageHud[client])
+	{
+		Calculate_And_Display_HP_Hud(client);
+		b_DisplayDamageHud[client] = false;
+	}
 #if !defined NoSendProxyClass
 	if(WeaponClass[client]!=TFClass_Unknown)
 	{
