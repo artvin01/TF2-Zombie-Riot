@@ -6140,9 +6140,9 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 		WoodAmount[owner] += SupplyRate[owner] / (LastMann ? 20.0 : 40.0);
 		FoodAmount[owner] += SupplyRate[owner] / (LastMann ? 10.0 : 20.0);
 
-		// 1 Supply = 1 Gold Every 30 Seconds
+		// 1 Supply = 1 Gold Every 150 Seconds
 		if(MedievalUnlock[owner])
-			GoldAmount[owner] += SupplyRate[owner] / 300.0;
+			GoldAmount[owner] += SupplyRate[owner] / 1500.0;
 
 		if(TrainingIn[owner])
 		{
