@@ -5,7 +5,7 @@
 
 #define DATABASE			"zr"
 #define DATATABLE_LOADOUT		"zr_loadout"
-#define DATATABLE_GAMEDATA	"zr_gamedata"
+#define DATATABLE_GAMEDATA	"zr_gamedata2"
 
 static Database DataBase;
 
@@ -48,7 +48,8 @@ public void Database_Connected(Database db, const char[] error, any data)
 		... "item INTEGER NOT NULL, "
 		... "level INTEGER NOT NULL, "
 		... "scale INTEGER NOT NULL, "
-		... "equip INTEGER NOT NULL);");
+		... "equip INTEGER NOT NULL, "
+		... "sell INTEGER NOT NULL);");
 		
 		db.Execute(tr, Database_SetupCallback, Database_FailHandle, db);
 	}
@@ -123,10 +124,10 @@ bool Database_SaveGameData(int client)
 			FormatEx(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_GAMEDATA ... " WHERE steamid = %d;", id);
 			tr.AddQuery(buffer);
 			
-			int owned, scale, equip;
-			for(int i; Store_GetNextItem(client, i, owned, scale, equip); i++)
+			int owned, scale, equip, sell;
+			for(int i; Store_GetNextItem(client, i, owned, scale, equip, sell); i++)
 			{
-				DataBase.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GAMEDATA ... " (steamid, item, level, scale, equip) VALUES ('%d', '%d', '%d', '%d', '%d')", id, i, owned, scale, equip);
+				DataBase.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GAMEDATA ... " (steamid, item, level, scale, equip, sell) VALUES ('%d', '%d', '%d', '%d', '%d', '%d')", id, i, owned, scale, equip, sell);
 				tr.AddQuery(buffer);
 			}
 			
@@ -171,7 +172,7 @@ public void Database_OnGameData(Database db, int userid, int numQueries, DBResul
 		do
 		{
 			if(results[0].FetchRow())
-				Store_SetClientItem(client, results[0].FetchInt(1), results[0].FetchInt(2), results[0].FetchInt(3), results[0].FetchInt(4));
+				Store_SetClientItem(client, results[0].FetchInt(1), results[0].FetchInt(2), results[0].FetchInt(3), results[0].FetchInt(4), results[0].FetchInt(5));
 		}
 		while(results[0].MoreRows);
 		
@@ -195,8 +196,8 @@ void Database_SaveLoadout(int client, const char[] name)
 			DataBase.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_LOADOUT ... " WHERE steamid = %d AND loadout = '%s';", id, name);
 			tr.AddQuery(buffer);
 			
-			int owned, scale, equip;
-			for(int i; Store_GetNextItem(client, i, owned, scale, equip, buffer, sizeof(buffer)); i++)
+			int owned, scale, equip, sell;
+			for(int i; Store_GetNextItem(client, i, owned, scale, equip, sell, buffer, sizeof(buffer)); i++)
 			{
 				if(owned/* && equip*/)
 				{

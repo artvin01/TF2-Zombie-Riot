@@ -1401,7 +1401,7 @@ void HudSettings_ClientCookiesDisconnect(int client)
 	HudSettings_Cookies.Set(client, buffer);
 }
 
-void Store_SetClientItem(int client, int index, int owned, int scaled, int equipped)
+void Store_SetClientItem(int client, int index, int owned, int scaled, int equipped, int sell)
 {
 	static Item item;
 	StoreItems.GetArray(index, item);
@@ -1409,7 +1409,7 @@ void Store_SetClientItem(int client, int index, int owned, int scaled, int equip
 	item.Owned[client] = owned;
 	item.Scaled[client] = scaled;
 	item.Equipped[client] = view_as<bool>(equipped);
-	item.Sell[client] = 0;
+	item.Sell[client] = sell;
 	item.BuyWave[client] = -1;
 	
 	StoreItems.SetArray(index, item);
@@ -1607,7 +1607,7 @@ void Store_ClientDisconnect(int client)
 }
 
 #if defined ZR
-bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped, char[] buffer="", int size=0)
+bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped, int &sell, char[] buffer="", int size=0)
 {
 	static Item item;
 	int length = StoreItems.Length;
@@ -1619,6 +1619,7 @@ bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped
 			owned = item.Owned[client];
 			scale = item.Scaled[client];
 			equipped = item.Equipped[client];
+			sell = item.Sell[client];
 			
 			if(size)
 			{
