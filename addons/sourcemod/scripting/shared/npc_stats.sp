@@ -5018,6 +5018,11 @@ public bool TraceRayCanSeeAllySpecific(int entity,int mask,any data)
 	{
 		return false;
 	}
+	
+	if(entity == Entity_to_Respect)
+	{
+		return true;
+	}
 
 	if(entity > 0 && entity <= MaxClients) 
 	{
@@ -5430,7 +5435,7 @@ public bool Can_I_See_Enemy_Only(int attacker, int enemy)
 	
 	AddEntityToTraceStuckCheck(enemy);
 	
-	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_PLAYERSOLID, RayType_EndPoint, TraceRayDontHitPlayersOrEntityCombat, attacker);
+	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_ALL, RayType_EndPoint, TraceRayCanSeeAllySpecific, attacker);
 	
 	RemoveEntityToTraceStuckCheck(enemy);
 	
