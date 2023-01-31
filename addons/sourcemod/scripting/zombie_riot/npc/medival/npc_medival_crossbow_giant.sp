@@ -267,7 +267,7 @@ public void MedivalCrossbowGiant_ClotThink(int iNPC)
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
-			if(flDistanceToTarget < 240000)
+			if(flDistanceToTarget < 500000)
 			{
 				int Enemy_I_See;
 				
@@ -333,10 +333,10 @@ public void HandleAnimEventMedival_GiantCrossbowMan(int entity, int event)
 						
 			npc.PlayMeleeSound();
 			
-			float damage = 50.0;
+			float damage = 70.0;
 			if(Medival_Difficulty_Level > 1.0)
 			{
-				damage = 65.0;
+				damage = 85.0;
 			}
 			npc.FireArrow(vecTarget, damage, projectile_speed);
 		}

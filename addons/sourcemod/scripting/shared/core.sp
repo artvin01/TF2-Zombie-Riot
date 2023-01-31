@@ -309,6 +309,7 @@ float RollAngle_Regen_Delay[MAXTF2PLAYERS];
 float Mana_Hud_Delay[MAXTF2PLAYERS];
 
 bool b_NpcHasDied[MAXENTITIES]={true, ...};
+bool b_BuildingHasDied[MAXENTITIES]={true, ...};
 const int i_MaxcountNpc = ZR_MAX_NPCS;
 int i_ObjectsNpcs[ZR_MAX_NPCS];
 
@@ -465,6 +466,11 @@ bool b_Is_Player_Projectile[MAXENTITIES];
 bool b_ForceCollisionWithProjectile[MAXENTITIES];
 bool b_Is_Player_Projectile_Through_Npc[MAXENTITIES];
 bool b_Is_Blue_Npc[MAXENTITIES];
+bool b_CannotBeHeadshot[MAXENTITIES];
+bool b_CannotBeBackstabbed[MAXENTITIES];
+bool b_CannotBeStunned[MAXENTITIES];
+bool b_CannotBeKnockedUp[MAXENTITIES];
+bool b_CannotBeSlowed[MAXENTITIES];
 bool b_IsInUpdateGroundConstraintLogic;
 
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
@@ -657,7 +663,7 @@ enum
 }
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_187.mdl"
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_191.mdl"
 //#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_175.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
@@ -2138,6 +2144,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		SetDefaultValuesToZeroNPC(entity);
 		i_SemiAutoWeapon[entity] = false;
 		b_NpcHasDied[entity] = true;
+		b_BuildingHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
 		b_IsARespawnroomVisualiser[entity] = false;
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
@@ -2371,6 +2378,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		
 		else if(!StrContains(classname, "obj_"))
 		{
+			b_BuildingHasDied[entity] = false;
 			npc.bCantCollidieAlly = true;
 			i_IsABuilding[entity] = true;
 			for (int i = 0; i < ZR_MAX_BUILDINGS; i++)

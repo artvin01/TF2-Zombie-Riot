@@ -76,6 +76,7 @@ static int Gave_Ammo_Supply;
 static int VotedFor[MAXTF2PLAYERS];
 
 static char LastWaveWas[64];
+static char TextStoreItem[48];
 
 void Waves_PluginStart()
 {
@@ -363,6 +364,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	
 	b_SpecialGrigoriStore = view_as<bool>(kv.GetNum("grigori_special_shop_logic"));
 	f_ExtraDropChanceRarity = kv.GetFloat("gift_drop_chance_multiplier");
+	kv.GetString("complete_item", TextStoreItem, sizeof(TextStoreItem));
 	
 	if(f_ExtraDropChanceRarity < 0.01) //Incase some idiot forgot
 	{
@@ -939,6 +941,27 @@ void Waves_Progress()
 						Music_Stop_All(i);
 						SendConVarValue(i, sv_cheats, "1");
 						players[total++] = i;
+
+						if(TextStoreItem[0] && PlayerPoints[i] > 500)
+						{
+							int length = TextStore_GetItems();
+							for(int a; a < length; a++)
+							{
+								static char buffer[48];
+								TextStore_GetItemName(a, buffer, sizeof(buffer));
+								if(StrEqual(buffer, TextStoreItem, false))
+								{
+									TextStore_GetInv(i, a, length);
+									if(!length)
+									{
+										CPrintToChat(i,"{default}You have found {yellow}%s{default}!", buffer);
+										TextStore_SetInv(i, a, 1);
+									}
+
+									break;
+								}
+							}
+						}
 					}
 				}
 
@@ -1203,13 +1226,7 @@ public void Medival_Wave_Difficulty_Riser(int difficulty)
 {
 	PrintToChatAll("%t", "Medival_Difficulty", difficulty);
 	
-	float difficulty_math = float(difficulty);
-	
-	difficulty_math *= -1.0;
-	
-	difficulty_math /= 10.0;
-	
-	difficulty_math += 1.0;
+	float difficulty_math = Pow(0.9, float(difficulty));
 	
 	if(difficulty_math < 0.1) //Just make sure that it doesnt go below.
 	{

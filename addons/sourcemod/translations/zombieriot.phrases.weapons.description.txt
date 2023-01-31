@@ -1705,7 +1705,7 @@
 
 	"Buildable Barracks Desc"
 	{
-		"en"	"Allows training allies to fight for you.\nRepair upgrades provides more resources.\nBuilding upgrades provides stronger allies."
+		"en"	"Allows training allies to fight for you.\nRepair upgrades provides more resources.\nBuilding upgrades provides stronger allies.\nPress R on your troups to give more commands."
 	}
 	"Militia Desc"
 	{
@@ -1745,12 +1745,10 @@
 	}
 	"Monk Desc"
 	{
-		//"en"	"Provides healing to all allies around it but lacks self defense"
-		"en"	"Requires gold... I wonder where we can get some..."
+		"en"	"Provides healing to all allies around it but lacks self defense"
 	}
 	"Hussar Desc"
 	{
-		//"en"	"High damage and health and provides a buffing aura to nearby allies"
-		"en"	"Requires gold... I wonder where we can get some..."
+		"en"	"High damage and health and provides a buffing aura to nearby allies"
 	}
 }

@@ -648,6 +648,8 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					
 					if(enemy.Is_Boss == 1)
 					{
+					//	npcstats.RemovePather(entity_Spawner);
+					//	npcstats.CreatePather(16.0, npcstats.GetMaxJumpHeight(), 1000.0, MASK_NPCSOLID, 150.0, 0.1, 1.75); //Global.
 						npcstats.m_bThisNpcIsABoss = true; //Set to true!
 					}
 					else
@@ -941,7 +943,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				Blitzed_By_Riot = true;
 			}
 
-			if(hitgroup == HITGROUP_HEAD || Blitzed_By_Riot)
+			if((hitgroup == HITGROUP_HEAD && !b_CannotBeHeadshot[victim]) || Blitzed_By_Riot)
 			{
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
@@ -954,7 +956,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 
 				if(Blitzed_By_Riot) //Extra damage.
 				{
-					damage *= 2.0;
+					damage *= 1.35;
 				}
 				else
 				{
@@ -1257,7 +1259,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
 	{
 #if defined ZR
-		if(Medival_Difficulty_Level != 0.0)
+		if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
 		{
 			damage *= Medival_Difficulty_Level;
 		}
@@ -1267,7 +1269,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	else if(!(damagetype & DMG_SLASH))
 	{
 #if defined ZR
-		if(Medival_Difficulty_Level != 0.0)
+		if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
 		{
 			damage *= Medival_Difficulty_Level;
 		}
@@ -1613,7 +1615,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 			*/
 			GetEntityClassname(weapon, classname, sizeof(classname));
-			if(!StrContains(classname, "tf_weapon_knife", false) && f_BackstabDmgMulti[weapon] != 0.0) //Irene weapon cannot backstab.
+			if(!StrContains(classname, "tf_weapon_knife", false) && f_BackstabDmgMulti[weapon] != 0.0 && !b_CannotBeBackstabbed[victim]) //Irene weapon cannot backstab.
 			{
 				if(damagetype & DMG_CLUB && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)) //Use dmg slash for any npc that shouldnt be scaled.
 				{
@@ -1962,7 +1964,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 			float percentage = npc.m_flMeleeArmor * 100.0;
 			
 #if defined ZR
-			if(Medival_Difficulty_Level != 0.0)
+			if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
 			{
 				percentage *= Medival_Difficulty_Level;
 			}
@@ -1982,7 +1984,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 			float percentage = npc.m_flRangedArmor * 100.0;
 			
 #if defined ZR
-			if(Medival_Difficulty_Level != 0.0)
+			if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
 			{
 				percentage *= Medival_Difficulty_Level;
 			}
