@@ -34,6 +34,16 @@ int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES] = {0, ...};
 
 static int g_modelArrow;
 
+static bool b_should_explode[MAXENTITIES];
+static bool b_rocket_particle_from_blue_npc[MAXENTITIES];
+static int g_rocket_particle;
+static int i_rocket_particle[MAXENTITIES];
+static float fl_rocket_particle_dmg[MAXENTITIES];
+static float fl_rocket_particle_radius[MAXENTITIES];
+
+#define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
+
+
 static ConVar flTurnRate;
 
 static int g_sModelIndexBloodDrop;
@@ -123,6 +133,7 @@ void OnMapStart_NPC_Base()
 	g_particleImpactFlesh = PrecacheParticleSystem("blood_impact_red_01");
 	g_particleImpactRubber = PrecacheParticleSystem("halloween_explosion_bits");
 	g_modelArrow = PrecacheModel("models/weapons/w_models/w_arrow.mdl");
+	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
 	PrecacheModel(ARROW_TRAIL);
 	PrecacheDecal(ARROW_TRAIL, true);
 	PrecacheModel(ARROW_TRAIL_RED);
@@ -2179,6 +2190,76 @@ methodmap CClotBody
 			SetEntityCollisionGroup(entity, 19); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
 			See_Projectile_Team(entity);
+		}
+	}
+	public void FireParticleRocket(float vecTarget[3], float rocket_damage, float rocket_speed, float damage_radius , const char[] rocket_particle = "", bool do_aoe_dmg=false , bool FromBlueNpc=true, bool Override_Spawn_Loc = false, float Override_VEC[3] = {0.0,0.0,0.0}, int flags = 0)
+	{
+		float vecForward[3], vecSwingStart[3], vecAngles[3];
+		this.GetVectors(vecForward, vecSwingStart, vecAngles);
+		
+		if(Override_Spawn_Loc)
+		{
+			vecSwingStart[0]=Override_VEC[0];
+			vecSwingStart[1]=Override_VEC[1];
+			vecSwingStart[2]=Override_VEC[2];
+		}
+		else
+		{
+			vecSwingStart = GetAbsOrigin(this.index);
+			vecSwingStart[2] += 54.0;
+		}
+		
+		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
+		GetVectorAngles(vecAngles, vecAngles);
+
+		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*rocket_speed;
+		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
+		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
+
+		int entity = CreateEntityByName("tf_projectile_rocket");
+		if(IsValidEntity(entity))
+		{
+			b_should_explode[entity] = do_aoe_dmg;
+			i_ExplosiveProjectileHexArray[entity] = flags;
+			fl_rocket_particle_dmg[entity] = rocket_damage;
+			fl_rocket_particle_radius[entity] = damage_radius;
+			b_rocket_particle_from_blue_npc[entity] = FromBlueNpc;
+			
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
+			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(this.index, Prop_Send, "m_iTeamNum")));
+			
+			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
+			DispatchSpawn(entity);
+			for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
+			{
+				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_rocket_particle, _, i);
+			}
+			SetEntityModel(entity, PARTICLE_ROCKET_MODEL);
+	
+			//Make it entirely invis. Shouldnt even render these 8 polygons.
+			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+			
+			int particle = 0;
+	
+			if(rocket_particle[0]) //If it has something, put it in. usually it has one. but if it doesn't base model it remains.
+			{
+				particle = ParticleEffectAt(vecSwingStart, rocket_particle, 0.0); //Inf duartion
+				i_rocket_particle[entity]=particle;
+				TeleportEntity(particle, NULL_VECTOR, vecAngles, NULL_VECTOR);
+				SetParent(entity, particle);	
+				SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
+				SetEntityRenderColor(entity, 255, 255, 255, 0);
+			}
+			
+			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
+			SetEntityCollisionGroup(entity, 19); //our savior
+			Set_Projectile_Collision(entity); //If red, set to 27
+			See_Projectile_Team(entity);
+			
+			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre); //*yawn*
+			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			SDKHook(entity, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 		}
 	}
 	public void FireGrenade(float vecTarget[3], float grenadespeed = 800.0, float damage, char[] model)
@@ -7197,6 +7278,53 @@ public void ArrowStartTouch(int arrow, int entity)
 		}
 	}
 	RemoveEntity(arrow);
+}
+
+public void Rocket_Particle_StartTouch(int entity, int target)
+{
+	//PrintToChatAll("touch: Started");
+	
+	if(target > 0 && target < MAXENTITIES)	//did we hit something???
+	{
+		
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		float ProjectileLoc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+		
+		if(b_should_explode[entity])	//should we "explode" or do "kinetic" damage
+		{
+			//PrintToChatAll("touch: explosive!");
+			Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
+		}
+		else
+		{
+			//PrintToChatAll("touch: kinetic!");
+			SDKHooks_TakeDamage(target, owner, owner, fl_rocket_particle_dmg[entity], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
+		}
+		
+		int particle = i_rocket_particle[entity];
+		if(IsValidEntity(particle))
+		{
+			//PrintToChatAll("touch: Removed particle!");
+			RemoveEntity(particle);
+		}
+	}
+	else
+	{
+		int particle = i_rocket_particle[entity];
+		//we uhh, missed?
+		if(IsValidEntity(particle))
+		{
+			//PrintToChatAll("touch: Removed particle MISS!");
+			RemoveEntity(particle);
+		}
+	}
+	RemoveEntity(entity);
+}
+
+public MRESReturn Rocket_Particle_DHook_RocketExplodePre(int entity)
+{
+	return MRES_Supercede;	//Don't even think about it mate
 }
 
 public MRESReturn Arrow_DHook_RocketExplodePre(int arrow)
