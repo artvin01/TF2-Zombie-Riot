@@ -1347,7 +1347,7 @@ void Store_ClientCookiesCached(int client)
 	char buffer[32];
 	CookieCache.Get(client, buffer, sizeof(buffer));
 	
-	int buffers[2];
+	int buffers[3];
 	ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
 	if(CurrentGame && buffers[0] == CurrentGame)
 		Database_LoadGameData(client);
@@ -1562,7 +1562,7 @@ void Store_ClientDisconnect(int client)
 	if(Waves_Started() && Database_SaveGameData(client))
 	{
 		char buffer[32];
-		FormatEx(buffer, sizeof(buffer), "%d;%d", CurrentGame, CashSpent[client]);
+		FormatEx(buffer, sizeof(buffer), "%d;%d", CurrentGame, CashSpent[client], CashSpentTotal[client]);
 		CookieCache.Set(client, buffer);
 	}
 

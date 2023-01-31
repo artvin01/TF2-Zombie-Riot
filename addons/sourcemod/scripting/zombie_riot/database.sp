@@ -165,9 +165,10 @@ public void Database_OnGameData(Database db, int userid, int numQueries, DBResul
 		char buffer[32];
 		CookieCache.Get(client, buffer, sizeof(buffer));
 		
-		int buffers[2];
+		int buffers[3];
 		ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
 		CashSpent[client] = buffers[1];
+		CashSpentTotal[client] = buffers[2];
 		
 		do
 		{
