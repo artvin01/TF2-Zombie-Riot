@@ -5018,7 +5018,7 @@ public bool TraceRayCanSeeAllySpecific(int entity,int mask,any data)
 	{
 		return false;
 	}
-	
+
 	if(entity == Entity_to_Respect)
 	{
 		return true;
@@ -7292,7 +7292,11 @@ public void Rocket_Particle_StartTouch(int entity, int target)
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
 	{
 		
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");´
+		if(!IsValidEntity(owner))
+		{
+			owner = 0;
+		}
 		float ProjectileLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 		
