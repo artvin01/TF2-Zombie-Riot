@@ -4326,7 +4326,7 @@ stock bool IsValidAllyPlayer(int index, int Ally)
 }
 
 
-stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldistancelimit = 999999.9, bool camoDetection=false, bool onlyPlayers = false, int ingore_client = -1, float EntityLocation[3] = {0.0,0.0,0.0}, bool CanSee = false)
+stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldistancelimit = 999999.9, bool camoDetection=false, bool onlyPlayers = false, int ingore_client = -1, float EntityLocation[3] = {0.0,0.0,0.0}, bool CanSee = false, float fldistancelimitAllyNPC = 500.0)
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = -1; 
@@ -4507,7 +4507,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 									
 									
 						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-						if(distance < fldistancelimit)
+						if(distance < fldistancelimitAllyNPC)
 						{
 							if( TargetDistance ) 
 							{
@@ -4531,7 +4531,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 							
 							
 						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-						if(distance < fldistancelimit)
+						if(distance < fldistancelimitAllyNPC)
 						{
 							if( TargetDistance ) 
 							{
@@ -4581,7 +4581,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 									
 									
 						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-						if(distance < fldistancelimit)
+						if(distance < fldistancelimitAllyNPC)
 						{
 							if( TargetDistance ) 
 							{
