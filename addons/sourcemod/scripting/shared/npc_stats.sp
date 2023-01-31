@@ -7292,7 +7292,7 @@ public void Rocket_Particle_StartTouch(int entity, int target)
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
 	{
 		
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");´
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 		if(!IsValidEntity(owner))
 		{
 			owner = 0;
