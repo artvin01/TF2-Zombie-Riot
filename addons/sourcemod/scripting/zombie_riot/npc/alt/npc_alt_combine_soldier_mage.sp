@@ -314,7 +314,8 @@ public void AltCombineMage_ClotThink(int iNPC)
 						
 						npc.FaceTowards(vecTarget, 20000.0);
 						
-						npc.FireRocket(vecTarget, 20.0, 600.0, _, 0.75);
+						npc.FireParticleRocket(vecTarget, 20.0 , 600.0 , 100.0 , "raygun_projectile_blue");
+						//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
 					}
 				}
 				else

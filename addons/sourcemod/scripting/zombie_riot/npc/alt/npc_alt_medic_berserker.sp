@@ -343,7 +343,8 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 			npc.m_flAttackHappens_2 = GetGameTime(npc.index) + crocket;
 			npc.PlayRangedSound();
-			npc.FireRocket(vecTarget, 20.0, 600.0);
+			npc.FireParticleRocket(vecTarget, 20.0 , 600.0 , 100.0 , "raygun_projectile_blue_crit");
+			//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
 		}
 		else
 		{
@@ -359,7 +360,7 @@ public void AltMedicBerseker_ClotThink(int iNPC)
 		{
 			static float flVel[3];
 			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
-			if (flVel[0] <= 200.0)
+			if (flVel[0] >= 200.0)
 			{
 				float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 				float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
