@@ -3839,6 +3839,13 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		return; //STOP. BAD!
 	}
 
+	int entity = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(entity != -1 && GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex") == 28)
+	{
+		// Holding a building, prevent breakage
+		return;
+	}
+
 	if(removeWeapons)
 	{
 		TF2_RegeneratePlayer(client);
@@ -3865,7 +3872,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 #endif
 	//There is no easy way to preserve uber through with multiple mediguns
 	//solution: save via index
-	int ie, entity;
+	int ie;
 	while(TF2_GetItem(client, entity, ie))
 	{
 		int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
