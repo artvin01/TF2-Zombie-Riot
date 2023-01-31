@@ -944,15 +944,15 @@ void Waves_Progress()
 
 						if(TextStoreItem[0] && PlayerPoints[i] > 500)
 						{
-							int length = TextStore_GetItems();
-							for(int a; a < length; a++)
+							int length_2 = TextStore_GetItems();
+							for(int a; a < length_2; a++)
 							{
 								static char buffer[48];
 								TextStore_GetItemName(a, buffer, sizeof(buffer));
 								if(StrEqual(buffer, TextStoreItem, false))
 								{
-									TextStore_GetInv(i, a, length);
-									if(!length)
+									TextStore_GetInv(i, a, length_2);
+									if(!length_2)
 									{
 										CPrintToChat(i,"{default}You have found {yellow}%s{default}!", buffer);
 										TextStore_SetInv(i, a, 1);

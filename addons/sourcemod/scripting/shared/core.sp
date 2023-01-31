@@ -1525,7 +1525,7 @@ public void OnClientDisconnect(int client)
 	}
 	XP[client] = 0;
 #endif
-	
+	b_DisplayDamageHud[client] = false;
 	WeaponClass[client] = TFClass_Unknown;
 
 #if defined RPG

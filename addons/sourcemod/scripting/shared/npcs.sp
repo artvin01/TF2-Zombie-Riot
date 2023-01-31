@@ -1809,7 +1809,9 @@ stock void RemoveAllDamageAddition()
 stock void Calculate_And_Display_HP_Hud(int attacker)
 {
 	int victim = i_HudVictimToDisplay[attacker];
-
+	if(!IsValidEntity(victim))
+		return;
+		
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 	bool raidboss_active = false;
