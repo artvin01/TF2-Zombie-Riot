@@ -130,6 +130,7 @@ methodmap GoldBloon < CClotBody
 		
 		i_NpcInternalId[npc.index] = BTD_GOLDBLOON;
 		
+		npc.m_flSpeed = 300.0;
 		npc.m_iBleedType = SpriteNumber() ? BLEEDTYPE_METAL : BLEEDTYPE_RUBBER;
 		npc.m_iStepNoiseType = NOTHING;	
 		npc.m_iNpcStepVariation = NOTHING;	
@@ -248,10 +249,10 @@ public void GoldBloon_ClotThink(int iNPC)
 			{
 				npc.m_flNextMeleeAttack = gameTime + 0.35;
 				
-				Handle swingTrace;
-				if(npc.DoAimbotTrace(swingTrace, npc.m_iTarget))
+				//Handle swingTrace;
+				//if(npc.DoAimbotTrace(swingTrace, npc.m_iTarget))
 				{
-					int target = TR_GetEntityIndex(swingTrace);
+					int target = npc.m_iTarget;//TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
 						float vecHit[3];
@@ -259,7 +260,7 @@ public void GoldBloon_ClotThink(int iNPC)
 						
 						SDKHooks_TakeDamage(target, npc.index, npc.index, float(LastGoldBloon) * float(CountPlayersOnRed()), DMG_SLASH, -1, _, vecHit);
 						
-						delete swingTrace;
+						//delete swingTrace;
 					}
 				}
 			}

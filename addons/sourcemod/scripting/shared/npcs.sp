@@ -1644,6 +1644,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 						//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
 							damage *= 5.25;
+							if(LastMann)
+							{
+								attack_speed *= 0.5; //extra delay.
+							}
 							
 							if(b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
 							{
@@ -1798,16 +1802,261 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 static float f_damageAddedTogether[MAXTF2PLAYERS];
 static float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
 
+static int i_HudVictimToDisplay[MAXTF2PLAYERS];
+
 stock void RemoveAllDamageAddition()
 {
 	Zero(f_damageAddedTogether);
 	Zero(f_damageAddedTogetherGametime);
 }
 
-stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)
+stock void Calculate_And_Display_HP_Hud(int attacker)
 {
+	int victim = i_HudVictimToDisplay[attacker];
+	if(!IsValidEntity(victim))
+		return;
+		
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+	bool raidboss_active = false;
+#if defined ZR
+	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+	{
+		raidboss_active = true;
+	}
+#endif	
+	int red = 255;
+	int green = 255;
+	int blue = 0;
+
+#if defined RPG
+	if((!b_npcspawnprotection[victim] || i_NpcIsUnderSpawnProtectionInfluence[victim] == 0) && (i_NpcFightOwner[victim] == attacker || Party_IsClientMember(i_NpcFightOwner[victim], attacker)))
+#endif
+#if defined ZR
+	if(!b_npcspawnprotection[victim])
+#endif
+	{
+		red = (Health + 1) * 255  / (MaxHealth + 1);
+		//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
+		green = (Health + 1) * 255  / (MaxHealth + 1);
+					
+		red = 255 - red;
+				
+		if(Health <= 0)
+		{
+			red = 255;
+			green = 0;
+			blue = 0;
+		}
+		else if(Health >= MaxHealth)
+		{
+			red = 0;
+			green = 255;
+			blue = 0;				
+		}
+	}
+	else
+	{
+		red = 0;
+		green = 0;
+		blue = 255;
+	}
+		
+	char Debuff_Adder[64];
+		
+	bool Debuff_added = false;
+		
+	if(f_HighTeslarDebuff[victim] > GetGameTime())
+	{
+		Debuff_added = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "⌁⌁");
+	}
+	else if(f_LowTeslarDebuff[victim] > GetGameTime())
+	{
+		Debuff_added = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "⌁");
+	}
+		
+	if(BleedAmountCountStack[victim] > 0) //bleed
+	{
+		Debuff_added = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❣%i", Debuff_Adder, BleedAmountCountStack[victim]);			
+	}
+		
+	if(IgniteFor[victim] > 0) //burn
+	{
+		Debuff_added = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s♨", Debuff_Adder);			
+	}
+		
+	if(f_HighIceDebuff[victim] > GetGameTime())
+	{
+		Debuff_added = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅❅❅", Debuff_Adder);
+	}
+	else if(f_LowIceDebuff[victim] > GetGameTime())
+	{
+		Debuff_added = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅❅", Debuff_Adder);
+	}
+	else if (f_VeryLowIceDebuff[victim] > GetGameTime())
+	{
+		Debuff_added = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅", Debuff_Adder);	
+	}
+		
+	if(f_WidowsWineDebuff[victim] > GetGameTime())
+	{
+		Debuff_added = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s४", Debuff_Adder);
+	}
+		
+	if(f_CrippleDebuff[victim] > GetGameTime())
+	{
+		Debuff_added = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s⯯", Debuff_Adder);
+	}
+		
+	if(f_MaimDebuff[victim] > GetGameTime())
+	{
+		Debuff_added = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s↓", Debuff_Adder);
+	}
+		
+	
+	if(Debuff_added)
+	{
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s\n", Debuff_Adder);
+	}
+	
+	CClotBody npc = view_as<CClotBody>(victim);
+	Debuff_added = false;
+
+#if defined ZR
+	if(npc.m_flMeleeArmor != 1.0 || Medival_Difficulty_Level != 0)
+#else
+	if(npc.m_flMeleeArmor != 1.0)
+#endif
+	
+	{
+		float percentage = npc.m_flMeleeArmor * 100.0;
+		
+#if defined ZR
+		if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+		{
+			percentage *= Medival_Difficulty_Level;
+		}
+#endif
+		
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder, percentage);
+		Debuff_added = true;
+	}
+	
+#if defined ZR
+	if(npc.m_flRangedArmor != 1.0 || Medival_Difficulty_Level != 0)
+#else
+	if(npc.m_flRangedArmor != 1.0)
+#endif
+	
+	{
+		float percentage = npc.m_flRangedArmor * 100.0;
+		
+#if defined ZR
+		if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+		{
+			percentage *= Medival_Difficulty_Level;
+		}
+#endif
+		
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
+		Debuff_added = true;
+	}
+	if(Debuff_added)
+	{
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s\n", Debuff_Adder);
+	}
+#if defined ZR
+	if(EntRefToEntIndex(RaidBossActive) != victim)
+	{
+		float HudOffset = 0.05;
+
+		if(raidboss_active)
+		{
+			HudOffset = 0.205;
+
+			int raidboss = EntRefToEntIndex(RaidBossActive);
+			//We have to check if the raidboss has any debuffs.
+			CClotBody raid = view_as<CClotBody>(raidboss);
+			if(raid.m_flMeleeArmor != 1.0)
+			{
+				HudOffset += 0.035;
+			}
+			else if(raid.m_flRangedArmor != 1.0)
+			{
+				HudOffset += 0.035;
+			}
+			else if(Medival_Difficulty_Level != 0)
+			{
+				HudOffset += 0.035;
+			}
+
+			if(DoesNpcHaveHudDebuff(raidboss))
+			{
+				HudOffset += 0.035;
+			}
+		}
+
+		SetGlobalTransTarget(attacker);
+		float HudY = -1.0;
+
+#if defined ZR
+		HudY += f_HurtHudOffsetY[attacker];
+		HudOffset += f_HurtHudOffsetX[attacker];
+#endif	
+
+		SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
+		if(!raidboss_active)
+		{
+			ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s-%0.f", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
+		}
+		else
+		{
+			ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);	
+		}
+	}
+	else
+	{
+		float Timer_Show = RaidModeTime - GetGameTime();
+	
+		if(Timer_Show < 0.0)
+			Timer_Show = 0.0;
+			
+		SetGlobalTransTarget(attacker);
+		SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
+		ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s-%0.f","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
+	}
+#if defined RPG
+	if(IsValidEntity(npc.m_iTextEntity3))
+	{
+		char level[32];
+		GetDisplayString(Level[victim], level, sizeof(level));
+			
+		SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
+		//RPG cannot support translations! due to test and its used everywhere.
+		ShowSyncHudText(attacker, SyncHud, "%s\n%s\n%d / %d\n%s-%0.f", level, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
+			
+		char HealthString[512];
+		Format(HealthString, sizeof(HealthString), "%i / %i", Health, MaxHealth);
+			
+		DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
+	}
+#endif
+}
+
+stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)
+{
+	b_DisplayDamageHud[attacker] = true;
+	i_HudVictimToDisplay[attacker] = victim;
 	
 	bool raidboss_active = false;
 #if defined ZR
@@ -1838,244 +2087,6 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 	if(damage > 0)
 	{
 		f_damageAddedTogetherGametime[attacker] = GetGameTime() + 0.6;
-	}
-
-	if(f_CooldownForHurtHud[attacker] < GetGameTime() || ignore)
-	{
-		if(!ignore)
-		{
-			f_CooldownForHurtHud[attacker] = GetGameTime() + 0.1;
-		}
-		
-		int red = 255;
-		int green = 255;
-		int blue = 0;
-
-#if defined RPG
-		if((!b_npcspawnprotection[victim] || i_NpcIsUnderSpawnProtectionInfluence[victim] == 0) && (i_NpcFightOwner[victim] == attacker || Party_IsClientMember(i_NpcFightOwner[victim], attacker)))
-#endif
-#if defined ZR
-		if(!b_npcspawnprotection[victim])
-#endif
-		{
-			red = (Health + 1) * 255  / (MaxHealth + 1);
-			//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-			green = (Health + 1) * 255  / (MaxHealth + 1);
-					
-			red = 255 - red;
-				
-			if(Health <= 0)
-			{
-				red = 255;
-				green = 0;
-				blue = 0;
-			}
-			else if(Health >= MaxHealth)
-			{
-				red = 0;
-				green = 255;
-				blue = 0;				
-			}
-		}
-		else
-		{
-			red = 0;
-			green = 0;
-			blue = 255;
-		}
-		
-		char Debuff_Adder[64];
-		
-		bool Debuff_added = false;
-		
-		if(f_HighTeslarDebuff[victim] > GetGameTime())
-		{
-			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "⌁⌁");
-		}
-		else if(f_LowTeslarDebuff[victim] > GetGameTime())
-		{
-			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "⌁");
-		}
-		
-		if(BleedAmountCountStack[victim] > 0) //bleed
-		{
-			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❣%i", Debuff_Adder, BleedAmountCountStack[victim]);			
-		}
-		
-		if(IgniteFor[victim] > 0) //burn
-		{
-			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s♨", Debuff_Adder);			
-		}
-		
-		if(f_HighIceDebuff[victim] > GetGameTime())
-		{
-			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅❅❅", Debuff_Adder);
-		}
-		else if(f_LowIceDebuff[victim] > GetGameTime())
-		{
-			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅❅", Debuff_Adder);
-		}
-		else if (f_VeryLowIceDebuff[victim] > GetGameTime())
-		{
-			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅", Debuff_Adder);	
-		}
-		
-		if(f_WidowsWineDebuff[victim] > GetGameTime())
-		{
-			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s४", Debuff_Adder);
-		}
-		
-		if(f_CrippleDebuff[victim] > GetGameTime())
-		{
-			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s⯯", Debuff_Adder);
-		}
-		
-		if(f_MaimDebuff[victim] > GetGameTime())
-		{
-			Debuff_added = true;
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s↓", Debuff_Adder);
-		}
-		
-		
-		if(Debuff_added)
-		{
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s\n", Debuff_Adder);
-		}
-		
-		CClotBody npc = view_as<CClotBody>(victim);
-		Debuff_added = false;
-
-#if defined ZR
-		if(npc.m_flMeleeArmor != 1.0 || Medival_Difficulty_Level != 0)
-#else
-		if(npc.m_flMeleeArmor != 1.0)
-#endif
-		
-		{
-			float percentage = npc.m_flMeleeArmor * 100.0;
-			
-#if defined ZR
-			if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
-			{
-				percentage *= Medival_Difficulty_Level;
-			}
-#endif
-			
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder, percentage);
-			Debuff_added = true;
-		}
-		
-#if defined ZR
-		if(npc.m_flRangedArmor != 1.0 || Medival_Difficulty_Level != 0)
-#else
-		if(npc.m_flRangedArmor != 1.0)
-#endif
-		
-		{
-			float percentage = npc.m_flRangedArmor * 100.0;
-			
-#if defined ZR
-			if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
-			{
-				percentage *= Medival_Difficulty_Level;
-			}
-#endif
-			
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
-			Debuff_added = true;
-		}
-		if(Debuff_added)
-		{
-			FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s\n", Debuff_Adder);
-		}
-#if defined ZR
-		if(EntRefToEntIndex(RaidBossActive) != victim)
-		{
-			float HudOffset = 0.05;
-
-			if(raidboss_active)
-			{
-				HudOffset = 0.205;
-
-				int raidboss = EntRefToEntIndex(RaidBossActive);
-				//We have to check if the raidboss has any debuffs.
-				CClotBody raid = view_as<CClotBody>(raidboss);
-				if(raid.m_flMeleeArmor != 1.0)
-				{
-					HudOffset += 0.035;
-				}
-				else if(raid.m_flRangedArmor != 1.0)
-				{
-					HudOffset += 0.035;
-				}
-				else if(Medival_Difficulty_Level != 0)
-				{
-					HudOffset += 0.035;
-				}
-
-				if(DoesNpcHaveHudDebuff(raidboss))
-				{
-					HudOffset += 0.035;
-				}
-			}
-
-			SetGlobalTransTarget(attacker);
-			float HudY = -1.0;
-
-#if defined ZR
-			HudY += f_HurtHudOffsetY[attacker];
-			HudOffset += f_HurtHudOffsetX[attacker];
-#endif	
-
-			SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-			if(!raidboss_active)
-			{
-				ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s-%0.f", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
-			}
-			else
-			{
-				ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);	
-			}
-		}
-		else
-		{
-			float Timer_Show = RaidModeTime - GetGameTime();
-		
-			if(Timer_Show < 0.0)
-				Timer_Show = 0.0;
-				
-			SetGlobalTransTarget(attacker);
-			SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-			ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s-%0.f","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
-		}
-#endif
-		
-#if defined RPG
-		if(IsValidEntity(npc.m_iTextEntity3))
-		{
-			char level[32];
-			GetDisplayString(Level[victim], level, sizeof(level));
-				
-			SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-			//RPG cannot support translations! due to test and its used everywhere.
-			ShowSyncHudText(attacker, SyncHud, "%s\n%s\n%d / %d\n%s-%0.f", level, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
-				
-			char HealthString[512];
-			Format(HealthString, sizeof(HealthString), "%i / %i", Health, MaxHealth);
-				
-			DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
-		}
-#endif
-		
 	}
 }
 

@@ -1945,7 +1945,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							i_Healing_station_money_limit[owner][client] += 1;
 							Resupplies_Supplied[owner] += 4;
 							CashSpent[owner] -= 40;
-							SetDefaultHudPosition(client);
+							SetDefaultHudPosition(owner);
 							SetGlobalTransTarget(owner);
 							ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Healing Station Used");
 						}
@@ -2002,7 +2002,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetDefaultHudPosition(client);
+											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
@@ -2038,7 +2038,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetDefaultHudPosition(client);
+											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
@@ -2063,7 +2063,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetDefaultHudPosition(client);
+											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}								
@@ -2085,7 +2085,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetDefaultHudPosition(client);
+											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
@@ -2107,7 +2107,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetDefaultHudPosition(client);
+											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
@@ -2129,7 +2129,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetDefaultHudPosition(client);
+											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
@@ -2151,7 +2151,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetDefaultHudPosition(client);
+											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
@@ -2195,7 +2195,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											{
 												Resupplies_Supplied[owner] += 2;
 												CashSpent[owner] -= 20;
-												SetDefaultHudPosition(client);
+												SetDefaultHudPosition(owner);
 												SetGlobalTransTarget(owner);
 												ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 											}
@@ -2277,7 +2277,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									CashSpent[owner] -= 40;
 									Armor_table_money_limit[owner][client] += 1;
 									Resupplies_Supplied[owner] += 4;
-									SetDefaultHudPosition(client);
+									SetDefaultHudPosition(owner);
 									SetGlobalTransTarget(owner);
 									ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Armor Table Used");
 								}
@@ -4109,7 +4109,7 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 			CashSpent[owner] -= 80;
 			Perk_Machine_money_limit[owner][client] += 2;
 			Resupplies_Supplied[owner] += 8;
-			SetDefaultHudPosition(client);
+			SetDefaultHudPosition(owner);
 			SetGlobalTransTarget(owner);
 			ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Perk Machine Used");
 		}
@@ -5969,8 +5969,8 @@ static const int SummonerData[][] =
 	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16 },	// Construction Master
 
 
-	{ BARRACK_MONK, 210, 0, 50, 10, 11 },		// Construction Worker
-	{ BARRACK_HUSSAR, 0, 400, 100, 10, 16 }		// Construction Master
+	{ BARRACK_MONK, 210, 0, 50, 12, 11 },		// Construction Worker
+	{ BARRACK_HUSSAR, 0, 400, 100, 15, 16 }		// Construction Master
 };
 
 public Action Building_PlaceSummoner(int client, int weapon, const char[] classname, bool &result)
@@ -6140,9 +6140,9 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 		WoodAmount[owner] += SupplyRate[owner] / (LastMann ? 20.0 : 40.0);
 		FoodAmount[owner] += SupplyRate[owner] / (LastMann ? 10.0 : 20.0);
 
-		// 1 Supply = 1 Gold Every 30 Seconds
+		// 1 Supply = 1 Gold Every 150 Seconds
 		if(MedievalUnlock[owner])
-			GoldAmount[owner] += SupplyRate[owner] / 300.0;
+			GoldAmount[owner] += SupplyRate[owner] / 1500.0;
 
 		if(TrainingIn[owner])
 		{

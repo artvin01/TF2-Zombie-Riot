@@ -3189,16 +3189,15 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 			return MRES_Supercede;
 		#else
 		*/
+		SDKCall(g_hNextBotCombatCharacter_Event_Killed, pThis, CTakeDamageInfo);
 		if(!npc.m_bDissapearOnDeath)
 		{
 			if(!npc.m_bGib)
 			{
-				SDKCall(g_hNextBotCombatCharacter_Event_Killed, pThis, CTakeDamageInfo);
 				SDKCall(g_hCBaseCombatCharacter_Event_Killed,   pThis, CTakeDamageInfo);
 			}
 			else
 			{
-				SDKCall(g_hNextBotCombatCharacter_Event_Killed, pThis, CTakeDamageInfo);
 				float startPosition[3]; //This is what we use if we cannot find the correct name of said bone for this npc.
 				
 				float accurateposition[3]; //What we use if it has one.
@@ -3436,26 +3435,47 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						}
 					}	
 				}
-			//	#endif					
-			//	Do_Death_Frame_Later(EntIndexToEntRef(pThis));
-				RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));						
+			//	#endif	
+				SetNpcToDeadViaGib(pThis);
 			}
 		}
 		else
 		{	
-		//	Do_Death_Frame_Later(EntIndexToEntRef(pThis));
-			RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));		
+			SetNpcToDeadViaGib(pThis);
 		}
 	}
 	else
 	{	
-	//	Do_Death_Frame_Later(EntIndexToEntRef(pThis));
-		RequestFrame(Do_Death_Frame_Later, EntIndexToEntRef(pThis));	
+		SetNpcToDeadViaGib(pThis);
 	}
 	return MRES_Supercede;
 }
+public void SetNpcToDeadViaGib(int pThis)
+{
+	SetEdictFlags(pThis, SetEntityTransmitState(pThis, FL_EDICT_DONTSEND));
+	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(pThis), TIMER_FLAG_NO_MAPCHANGE);	
+	if(PF_Exists(pThis))
+	{
+		PF_Destroy(pThis);
+	}	
+}
+public Action SDKHook_Settransmit_Hide(int entity, int client)
+{
+	return Plugin_Handled;
+}
 
+//Delay Twice for various reasons.
+/*
 public void Do_Death_Frame_Later(int ref)
+{
+	int pThis = EntRefToEntIndex(ref);
+	if(IsValidEntity(pThis) && pThis > 0)
+	{
+		RequestFrame(Do_Death_Frame_Later_Again, EntIndexToEntRef(pThis));
+	}
+}
+
+public void Do_Death_Frame_Later_Again(int ref)
 {
 	int pThis = EntRefToEntIndex(ref);
 	if(IsValidEntity(pThis) && pThis > 0)
@@ -3463,6 +3483,7 @@ public void Do_Death_Frame_Later(int ref)
 		RemoveEntity(pThis);
 	}
 }
+*/
 /*
 public Action Check_Emergency_Reload(Handle Timer_Handle, int ref)
 {
@@ -5019,6 +5040,11 @@ public bool TraceRayCanSeeAllySpecific(int entity,int mask,any data)
 		return false;
 	}
 
+	if(entity == Entity_to_Respect)
+	{
+		return true;
+	}
+
 	if(entity > 0 && entity <= MaxClients) 
 	{
 		return false;
@@ -5430,7 +5456,7 @@ public bool Can_I_See_Enemy_Only(int attacker, int enemy)
 	
 	AddEntityToTraceStuckCheck(enemy);
 	
-	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_PLAYERSOLID, RayType_EndPoint, TraceRayDontHitPlayersOrEntityCombat, attacker);
+	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_ALL, RayType_EndPoint, TraceRayCanSeeAllySpecific, attacker);
 	
 	RemoveEntityToTraceStuckCheck(enemy);
 	
@@ -6518,7 +6544,7 @@ stock float[] BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject,
 /*
 public Action SDKHook_Settransmit_Baseboss(int entity, int client)
 {
-	PrintToChatAll("SDKHook_Settransmit_Baseboss");
+	if(I)
 	return Plugin_Continue;
 }
 */
@@ -7288,6 +7314,10 @@ public void Rocket_Particle_StartTouch(int entity, int target)
 	{
 		
 		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(!IsValidEntity(owner))
+		{
+			owner = 0;
+		}
 		float ProjectileLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 		
