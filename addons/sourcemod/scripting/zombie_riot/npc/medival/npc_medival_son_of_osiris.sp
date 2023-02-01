@@ -267,7 +267,7 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 						
 					if(distance <= Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 6.5, 2.0)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
 					{
-						SonOfOsiris_Lightning_Strike(npc.index, npc.m_iTarget, 500.0, b_IsAlliedNpc[npc.index]);
+						SonOfOsiris_Lightning_Strike(npc.index, npc.m_iTarget, 650.0, b_IsAlliedNpc[npc.index]);
 					}
 				}
 			}
@@ -345,7 +345,7 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 					npc.m_flAttackHappens = gameTime + 0.8;
 
 					npc.m_flDoingAnimation = gameTime + 1.3;
-					npc.m_flNextMeleeAttack = gameTime + 4.0;
+					npc.m_flNextMeleeAttack = gameTime + 3.0;
 					PF_StopPathing(npc.index);
 					npc.m_flSpeed = 0.0;
 				}

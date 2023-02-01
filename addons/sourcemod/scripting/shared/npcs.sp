@@ -1644,6 +1644,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 						//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
 							damage *= 5.25;
+							if(LastMann)
+							{
+								attack_speed *= 0.5; //extra delay.
+							}
 							
 							if(b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
 							{
