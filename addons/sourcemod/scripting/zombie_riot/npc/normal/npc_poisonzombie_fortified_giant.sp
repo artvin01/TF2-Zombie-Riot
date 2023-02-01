@@ -182,8 +182,8 @@ public void FortifiedGiantPoisonZombie_ClotThink(int iNPC)
 	{
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
-		if(!npc.m_flAttackHappenswillhappen)
-			npc.AddGesture("ACT_SMALL_FLINCH", false);
+//		if(!npc.m_flAttackHappenswillhappen)
+//			npc.AddGesture("ACT_SMALL_FLINCH", false);
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
