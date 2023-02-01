@@ -543,11 +543,11 @@ methodmap CClotBody
 		if(IsRaidBoss)
 		{
 			RemoveAllDamageAddition();
-			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, MASK_NPCSOLID, 150.0, 0.1, 1.75); //Global.
+			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.1, 1.75); //Global.
 		}
 		else
 		{
-			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, MASK_NPCSOLID, 150.0, 0.29, 1.75); //Global.
+			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.19, 1.75); //Global.
 			
 		}
 	
@@ -4033,6 +4033,10 @@ public bool PluginBot_IsEntityTraversable(int bot_entidx, int other_entidx, Trav
 		if(b_CantCollidie[other_entidx])
 		{
 			return true; //yep!
+		}
+		if(other_entidx > 0 && other_entidx <= MaxClients) 
+		{
+			return true; //Yep, is a player.
 		}
 	}
 	
