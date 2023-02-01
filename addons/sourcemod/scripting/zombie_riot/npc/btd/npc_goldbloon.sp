@@ -255,10 +255,10 @@ public void GoldBloon_ClotThink(int iNPC)
 					int target = npc.m_iTarget;//TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
-						float vecHit[3];
-						TR_GetEndPosition(vecHit, swingTrace);
+				//		float vecHit[3];
+				//		TR_GetEndPosition(vecHit, swingTrace);
 						
-						SDKHooks_TakeDamage(target, npc.index, npc.index, float(LastGoldBloon) * float(CountPlayersOnRed()), DMG_SLASH, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, float(LastGoldBloon) * float(CountPlayersOnRed()), DMG_SLASH, -1, _, vecTarget);
 						
 						//delete swingTrace;
 					}
