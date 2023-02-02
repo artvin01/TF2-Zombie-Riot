@@ -5,7 +5,8 @@ methodmap BarrackHussar < BarrackBody
 {
 	public void PlayMeleeWarCry()
 	{
-		EmitSoundToAll("mvm/mvm_tank_horn.wav", this.index, _, 60, _, 0.4, 60);
+		return;
+//		EmitSoundToAll("mvm/mvm_tank_horn.wav", this.index, _, 60, _, 0.4, 60);
 	}
 	public BarrackHussar(int client, float vecPos[3], float vecAng[3], bool ally)
 	{

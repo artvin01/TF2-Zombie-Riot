@@ -5,7 +5,8 @@ methodmap BarrackMonk < BarrackBody
 {
 	public void PlayMeleeWarCry()
 	{
-		EmitSoundToAll("ambient/rottenburg/tunneldoor_open.wav", this.index, _, 60, _, 0.4, 60);
+		return;
+	//	EmitSoundToAll("ambient/rottenburg/tunneldoor_open.wav", this.index, _, 60, _, 0.4, 60);
 	}
 	public BarrackMonk(int client, float vecPos[3], float vecAng[3], bool ally)
 	{

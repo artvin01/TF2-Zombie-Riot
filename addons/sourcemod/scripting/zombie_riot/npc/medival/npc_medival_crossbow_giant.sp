@@ -212,7 +212,7 @@ public void MedivalCrossbowGiant_ClotThink(int iNPC)
 	
 	if(npc.m_blPlayHurtAnimation)
 	{
-		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
+		npc.AddGesture("ACT_GESTURE_FLINCH_STOMACH", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
