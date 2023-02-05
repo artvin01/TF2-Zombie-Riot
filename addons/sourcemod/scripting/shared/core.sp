@@ -807,6 +807,7 @@ float f_ArrowDamage[MAXENTITIES];
 int h_ArrowInflictorRef[MAXENTITIES];
 int f_ArrowTrailParticle[MAXENTITIES]={INVALID_ENT_REFERENCE, ...};
 bool b_IsEntityAlwaysTranmitted[MAXENTITIES];
+bool b_IsEntityNeverTranmitted[MAXENTITIES];
 
 //Arrays for npcs!
 int i_NoEntityFoundCount[MAXENTITIES]={0, ...};
@@ -2109,6 +2110,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		IgniteRef[entity] = -1;
 		Is_a_Medic[entity] = false;
 		b_IsEntityAlwaysTranmitted[entity] = false;
+		b_IsEntityNeverTranmitted[entity] = false;
 
 		//Normal entity render stuff, This should be set to these things on spawn, just to be sure.
 		b_DoNotIgnoreDuringLagCompAlly[entity] = false;

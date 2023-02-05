@@ -320,34 +320,35 @@ public void SpyMainBoss_ClotThink(int iNPC)
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
-	
+	if(npc.m_flDead_Ringer_Invis < GetGameTime(npc.index) && npc.m_flDead_Ringer_Invis_bool)
+	{
+		SDKUnhook(npc.index, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
+		npc.m_flDead_Ringer_Invis_bool = false;
+			
+		SetEntityRenderMode(npc.index, RENDER_NORMAL);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
+			
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_NORMAL);
+		SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
+			
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_NORMAL);
+		SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 255);
+			
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_NORMAL);
+		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 255);
+			
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
+			
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
+		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
+			
+		npc.PlayDecloakSound();
+		npc.PlayDecloakSound();
+	}
+
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 	{
-		if(npc.m_flDead_Ringer_Invis < GetGameTime(npc.index) && npc.m_flDead_Ringer_Invis_bool)
-		{
-			npc.m_flDead_Ringer_Invis_bool = false;
-			
-			SetEntityRenderMode(npc.index, RENDER_NORMAL);
-			SetEntityRenderColor(npc.index, 255, 255, 255, 255);
-			
-			SetEntityRenderMode(npc.m_iWearable4, RENDER_NORMAL);
-			SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
-			
-			SetEntityRenderMode(npc.m_iWearable5, RENDER_NORMAL);
-			SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 255);
-			
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_NORMAL);
-			SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 255);
-			
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
-			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
-			
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
-			SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
-			
-			npc.PlayDecloakSound();
-			npc.PlayDecloakSound();
-		}
 	
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -413,6 +414,11 @@ public void SpyMainBoss_ClotThink(int iNPC)
 			PF_SetGoalVector(npc.index, vPredictedPos);
 		} else {
 			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		}
+		if(npc.m_flDead_Ringer_Invis_bool) //no attack or anything.
+		{
+			npc.m_flSpeed = 300.0; //Abit slower
+			return;
 		}
 		if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 40000 && flDistanceToTarget < 90000 && npc.m_flReloadDelay < GetGameTime(npc.index) && !npc.Anger)
 		{
@@ -534,14 +540,14 @@ public void SpyMainBoss_ClotThink(int iNPC)
 								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 180.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_CLUB, -1, _, vecHit);	
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 3000.0, DMG_CLUB, -1, _, vecHit);	
 							}
 							else if(npc.Anger)
 							{
 								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 7500.0, DMG_CLUB, -1, _, vecHit);	
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 4500.0, DMG_CLUB, -1, _, vecHit);	
 							}
 								
 							if(npc.m_iAttacksTillMegahit >= 3)
@@ -595,6 +601,8 @@ public Action SpyMainBoss_ClotDamaged(int victim, int &attacker, int &inflictor,
 	
 	if(npc.m_flDead_Ringer < GetGameTime(npc.index))
 	{
+		SDKUnhook(npc.index, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
+		SDKHook(npc.index, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 		
@@ -634,7 +642,7 @@ public Action SpyMainBoss_ClotDamaged(int victim, int &attacker, int &inflictor,
 	
 	if(npc.Anger)
 	{
-		damage *= 0.5;
+		damage *= 0.65;
 	}
 	
 	
