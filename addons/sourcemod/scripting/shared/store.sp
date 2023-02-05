@@ -3067,6 +3067,11 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Select:
 		{
+			if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
+			{
+				return 0;
+			}
+			
 			static Item item;
 			menu.GetItem(0, item.Name, sizeof(item.Name));
 			int index = StringToInt(item.Name);
