@@ -83,7 +83,7 @@ public void NaziPanzer_OnMapStart_NPC()
 
 static char[] GetPanzerHealth()
 {
-	int health = 90;
+	int health = 110;
 	
 	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
 	
@@ -427,9 +427,10 @@ public void NaziPanzer_ClotThink(int iNPC)
 	if(npc.m_flDoSpawnGesture < GetGameTime(npc.index))
 	{
 		if(npc.m_bDuringHighFlight)
-			npc.m_flSpeed = 600.0;
+			npc.m_flSpeed = 900.0;
 		else
 			npc.m_flSpeed = 300.0;
+
 		if (npc.m_bLostHalfHealthAnim && npc.m_bLostHalfHealth)
 		{
 			if(npc.m_bDuringHighFlight)
@@ -570,7 +571,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					if(target > 0) 
 					{
-						float damage = 10.0;
+						float damage = 20.0;
 						
 						if(!ShouldNpcDealBonusDamage(target))
 						{
@@ -719,7 +720,11 @@ public void NaziPanzer_ClotThink(int iNPC)
 			{
 				float vecTargetHook[3]; vecTargetHook = WorldSpaceCenter(HumanTarget);
 				npc.FaceTowards(vecTargetHook, 20000.0);
-				float vPredictedPosHuman[3]; vPredictedPosHuman = PredictSubjectPositionForProjectiles(npc, HumanTarget, 1200.0);
+				
+				float projectile_speed = 1200.0;
+			
+				float vPredictedPosHuman[3];
+				vPredictedPosHuman = PredictSubjectPositionForProjectiles(npc, HumanTarget, projectile_speed);
 				npc.FireHook(vPredictedPosHuman);
 				npc.m_flGrappleCooldown = GetGameTime(npc.index) + 30.0;
 				
@@ -762,7 +767,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 			if(iActivity > 0) npc.StartActivity(iActivity);
 			npc.AddGesture("ACT_FLY_START");
 			npc.m_bDuringHighFlight = true;
-			npc.m_flStandStill = GetGameTime(npc.index) + 1.0;
+			npc.m_flStandStill = GetGameTime(npc.index) + 1.2;
 		}
 		//Target close enough to hit
 	}
@@ -825,7 +830,7 @@ public void NaziPanzer_ClotDamagedPost(int victim, int attacker, int inflictor, 
 	if(npc.m_bGrabbedSomeone || npc.m_bDuringHook)
 	{
 		npc.m_flHookDamageTaken += damage;
-		if(npc.m_flHookDamageTaken > GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/20)
+		if(npc.m_flHookDamageTaken > GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/10)
 		{
 			npc.m_bUseDefaultAnim = true;
 			npc.m_bGrabbedSomeone = false;

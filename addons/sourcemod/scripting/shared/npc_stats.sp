@@ -3452,13 +3452,17 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 }
 public void SetNpcToDeadViaGib(int pThis)
 {
+	b_thisNpcHasAnOutline[pThis] = false;
+	b_IsEntityNeverTranmitted[pThis] = true; //doesnt seem to work all the time, but the more the better.
 	SetEdictFlags(pThis, SetEntityTransmitState(pThis, FL_EDICT_DONTSEND));
 	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(pThis), TIMER_FLAG_NO_MAPCHANGE);	
+	SDKHook(pThis, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
 	if(PF_Exists(pThis))
 	{
 		PF_Destroy(pThis);
 	}	
 }
+
 public Action SDKHook_Settransmit_Hide(int entity, int client)
 {
 	return Plugin_Handled;
