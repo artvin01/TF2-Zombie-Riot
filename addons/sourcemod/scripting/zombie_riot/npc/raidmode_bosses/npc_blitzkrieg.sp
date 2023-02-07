@@ -124,9 +124,7 @@ static float BlitzLight_Duration[MAXENTITIES];
 static float BlitzLight_ChargeTime[MAXENTITIES];
 static float BlitzLight_Scale1[MAXENTITIES];
 static float BlitzLight_Scale2[MAXENTITIES];
-static float BlitzLight_Scale2_timer[MAXENTITIES];
 static float BlitzLight_Scale3[MAXENTITIES];
-static float BlitzLight_Scale3_timer[MAXENTITIES];
 static float BlitzLight_DMG[MAXENTITIES];
 static float BlitzLight_DMG_Base[MAXENTITIES];
 static float BlitzLight_DMG_Radius[MAXENTITIES];
@@ -1748,9 +1746,6 @@ public void BlitzLight_Invoke(int ref, int enemy, float timer, float charge)
 		
 		float time=BlitzLight_Duration[npc.index]+charge;	//Another value in a temp timer.
 		BlitzLight_Duration[npc.index]*=66.0;	//Converts the duration into ticks
-		
-		BlitzLight_Scale2_timer[npc.index]=GetGameTime(npc.index)+(timer/3)+charge;	//makes it so the 3 beam rings spawn in 3 seperate times.
-		BlitzLight_Scale3_timer[npc.index]=GetGameTime(npc.index)+((timer/3)*2)+charge;
 		
 		//Convert the time into tick amount
 		TickCount_Stage1[npc.index]=RoundToFloor(((charge/2)+charge)*66);
