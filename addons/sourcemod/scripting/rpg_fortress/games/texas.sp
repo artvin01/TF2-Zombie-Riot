@@ -154,6 +154,7 @@ public int TexasJoinMenu(Menu menu, MenuAction action, int client, int choice)
 					}
 				}
 
+				BlindSince[client] = 0;
 				Viewing[client] = true;
 				TexasMenu(client);
 
@@ -305,21 +306,21 @@ static void TexasMenu(int client)
 
 	switch(GameState)
 	{
-		case Poker_Waiting:
+		case Texas_Waiting:
 		{
 			menu.SetTitle("Texas Hold 'Em\nWaiting for players%s\n ", FancyPeriodThing());
 
 			menu.AddItem(NULL_STRING, "Rejoin to change table rules", ITEMDRAW_DISABLED);
 		}
-		case Poker_WarmUp:
+		case Texas_WarmUp:
 		{
 			if(TimeLeft)
 			{
-				menu.SetTitle("Draw Poker\nGetting ready... %.0f\n ", TimeLeft - GetGameTime());
+				menu.SetTitle("Texas Hold 'Em\nGetting ready... %.0f\n ", TimeLeft - GetGameTime());
 			}
 			else
 			{
-				menu.SetTitle("Draw Poker\nGetting ready%s\n ", FancyPeriodThing());
+				menu.SetTitle("Texas Hold 'Em\nGetting ready%s\n ", FancyPeriodThing());
 			}
 
 			char buffer[32];
