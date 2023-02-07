@@ -1,28 +1,25 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-// ♠️ ♣️ ♥️ ♦️
-
 enum
 {
-	Poker_Waiting = 0,
-	Poker_WarmUp,
-	Poker_Discard,
-	Poker_Final,
-	Poker_Results
+	Texas_Waiting = 0,
+	Texas_WarmUp,
+	Texas_Active,
+	Texas_Results
 }
 
 enum
 {
-	Poker_HighCard = 0,
-	Poker_OnePair,
-	Poker_TwoPair,
-	Poker_ThreeKind,
-	Poker_Straight,
-	Poker_Flush,
-	Poker_FullHouse,
-	Poker_FourKind,
-	Poker_StraightFlush
+	Texas_HighCard = 0,
+	Texas_OnePair,
+	Texas_TwoPair,
+	Texas_ThreeKind,
+	Texas_Straight,
+	Texas_Flush,
+	Texas_FullHouse,
+	Texas_FourKind,
+	Texas_StraightFlush
 }
 
 static const char RankNames[][] =
@@ -38,20 +35,21 @@ static const char RankNames[][] =
 	"Straight Flush"
 };
 
-static int MinBet;
+static int BlindBet;
 static int GameState;
 static int PrizePool;
 static int GameWinner;
 static int CurrentBet;
 static float TimeLeft;
 static bool Viewing[MAXTF2PLAYERS];
+static int BlindSince[MAXTF2PLAYERS];
 static int Playing[MAXTF2PLAYERS];
 static int Cards[MAXTF2PLAYERS][5];
 static int Discarding[MAXTF2PLAYERS];
 static ArrayList CurrentDeck;
-static Handle PokerTimer;
+static Handle TexasTimer;
 
-void Games_Poker(int client)
+void Games_Texas(int client)
 {
 	bool found;
 	for(int i = 1; i <= MaxClients; i++)
@@ -63,31 +61,31 @@ void Games_Poker(int client)
 		}
 	}
 
-	Menu menu = new Menu(PokerJoinMenu);
+	int cash = TextStore_Cash(client);
+	Menu menu = new Menu(TexasJoinMenu);
 
 	if(found)
 	{
-		menu.SetTitle("Draw Poker\n \nRules:\nMin Bet: %d Credits\nRaise Limit: %s\nJokers: 0\n ", MinBet, MinBet ? "x8" : "x0");
+		menu.SetTitle("Texas Hold 'Em\n \nRules:\nBlind: %d, %d Credits\nRaise Limit: x16\n ", BlindBet / 2, BlindBet);
 
 		menu.AddItem(NULL_STRING, "How to Play");
 		menu.AddItem(NULL_STRING, "View Table");
 	}
 	else
 	{
-		menu.SetTitle("Draw Poker\n ");
+		menu.SetTitle("Texas Hold 'Em\n ");
 
 		menu.AddItem(NULL_STRING, "How to Play\n \nRules:");
 
-		int cash = TextStore_Cash(client);
-
-		menu.AddItem(NULL_STRING, "0 Credit Bet");
-		menu.AddItem(NULL_STRING, "10 Credit Bet", cash < 500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "25 Credit Bet", cash < 1250 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "50 Credit Bet", cash < 2500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "100 Credit Bet", cash < 5000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "250 Credit Bet", cash < 12500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "500 Credit Bet", cash < 25000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "1000 Credit Bet", cash < 50000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "5, 10 Credit Blind", cash < 500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "10, 20 Credit Blind", cash < 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "25, 50 Credit Blind", cash < 2500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "50, 100 Credit Blind", cash < 5000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "100, 200 Credit Blind", cash < 10000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "250, 500 Credit Blind", cash < 25000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "500, 1000 Credit Blind", cash < 50000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "1000, 2000 Credit Blind", cash < 100000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "2500, 5000 Credit Blind", cash < 250000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 		menu.Pagination = 0;
 		menu.ExitButton = true;
@@ -96,7 +94,7 @@ void Games_Poker(int client)
 	menu.Display(client, MENU_TIME_FOREVER);
 }
 
-public int PokerJoinMenu(Menu menu, MenuAction action, int client, int choice)
+public int TexasJoinMenu(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
@@ -107,7 +105,7 @@ public int PokerJoinMenu(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_Cancel:
 		{
 			if(choice == MenuCancel_ExitBack)
-				Games_Poker(client);
+				Games_Texas(client);
 		}
 		case MenuAction_Select:
 		{
@@ -128,56 +126,58 @@ public int PokerJoinMenu(Menu menu, MenuAction action, int client, int choice)
 					switch(choice)
 					{
 						case 1:
-							MinBet = 10;
+							BlindBet = 20;
 						
 						case 2:
-							MinBet = 25;
+							BlindBet = 50;
 						
 						case 3:
-							MinBet = 50;
+							BlindBet = 100;
 						
 						case 4:
-							MinBet = 100;
+							BlindBet = 200;
 						
 						case 5:
-							MinBet = 250;
+							BlindBet = 500;
 						
 						case 6:
-							MinBet = 500;
+							BlindBet = 1000;
 						
 						case 7:
-							MinBet = 1000;
+							BlindBet = 2000;
+						
+						case 8:
+							BlindBet = 5000;
 						
 						default:
-							MinBet = 0;
+							BlindBet = 10;
 					}
 				}
 
 				Viewing[client] = true;
-				PokerMenu(client);
+				TexasMenu(client);
 
-				if(!PokerTimer)
-					PokerTimer = CreateTimer(0.5, Poker_Timer, _, TIMER_REPEAT);
+				if(!TexasTimer)
+					TexasTimer = CreateTimer(0.5, Texas_Timer, _, TIMER_REPEAT);
 			}
 			else
 			{
-				Menu menu2 = new Menu(PokerJoinMenu);
+				Menu menu2 = new Menu(TexasJoinMenu);
 
-				menu2.SetTitle("Draw Poker\n ");
+				menu2.SetTitle("Texas Hold Em'\n ");
 
-				menu2.AddItem(NULL_STRING, "Each player draws 5 cards from the deck.", ITEMDRAW_DISABLED);
-				menu2.AddItem(NULL_STRING, "You will have the chance to discard cards you choose.", ITEMDRAW_DISABLED);
-				menu2.AddItem(NULL_STRING, "You can also increase the bet, other players will have to match this bet.", ITEMDRAW_DISABLED);
-				menu2.AddItem(NULL_STRING, "Afterwards you draw to obtain 5 total cards in hand.", ITEMDRAW_DISABLED);
-				menu2.AddItem(NULL_STRING, "One more chance to increase the bet is done.", ITEMDRAW_DISABLED);
+				menu2.AddItem(NULL_STRING, "Each player draws 2 cards from the deck.", ITEMDRAW_DISABLED);
+				menu2.AddItem(NULL_STRING, "2 players will be will pay a blind and half a blind.", ITEMDRAW_DISABLED);
+				menu2.AddItem(NULL_STRING, "You can choose to match the starting blind or in a blind to play.", ITEMDRAW_DISABLED);
+				menu2.AddItem(NULL_STRING, "Dealer will draw 3 cards, up to 5, in a global hand you share with.", ITEMDRAW_DISABLED);
+				menu2.AddItem(NULL_STRING, "You can increase the bet, other players will have to match this bet.", ITEMDRAW_DISABLED);
 
-				menu2.AddItem(NULL_STRING, "Your goal is to get matching cards.", ITEMDRAW_DISABLED);
+				menu2.AddItem(NULL_STRING, "Your goal is to get matching cards with your hand annd the global hand.", ITEMDRAW_DISABLED);
 				menu2.AddItem(NULL_STRING, "This means cards with the same number or letter.", ITEMDRAW_DISABLED);
 				menu2.AddItem(NULL_STRING, "You can also get all matching suits or an ordered set of numbers.", ITEMDRAW_DISABLED);
 				menu2.AddItem(NULL_STRING, "To win, you must best your oppenent's hand.", ITEMDRAW_DISABLED);
 				menu2.AddItem(NULL_STRING, NULL_STRING, ITEMDRAW_DISABLED);
 
-				// ♠️ ♣️ ♥️ ♦️
 				menu2.AddItem(NULL_STRING, "The following are the highest hands in order:", ITEMDRAW_DISABLED);
 				menu2.AddItem(NULL_STRING, "Straight Flush - Q♥️ J♥️ 10♥️ 9♥️ 8♥️", ITEMDRAW_DISABLED);
 				menu2.AddItem(NULL_STRING, "Four of a Kind - 9♠️ 9♣️ 9♥️ 9♦️ ?", ITEMDRAW_DISABLED);
@@ -200,7 +200,7 @@ public int PokerJoinMenu(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-public Action Poker_Timer(Handle timer)
+public Action Texas_Timer(Handle timer)
 {
 	int players;
 	for(int client = 1; client <= MaxClients; client++)
@@ -211,20 +211,20 @@ public Action Poker_Timer(Handle timer)
 	
 	if(!players)
 	{
-		GameState = Poker_Waiting;
-		PokerTimer = null;
+		GameState = Texas_Waiting;
+		TexasTimer = null;
 		return Plugin_Stop;
 	}
 
 	float gameTime = GetGameTime();
 	switch(GameState)
 	{
-		case Poker_Waiting:
+		case Texas_Waiting:
 		{
 			if(players > 1)
 			{
 				TimeLeft = 0.0;
-				GameState = Poker_WarmUp;
+				GameState = Texas_WarmUp;
 
 				for(int i = 1; i <= MaxClients; i++)
 				{
@@ -232,11 +232,11 @@ public Action Poker_Timer(Handle timer)
 				}
 			}
 		}
-		case Poker_WarmUp:
+		case Texas_WarmUp:
 		{
 			if(players < 2)
 			{
-				GameState = Poker_Waiting;
+				GameState = Texas_Waiting;
 			}
 			else
 			{
@@ -253,15 +253,15 @@ public Action Poker_Timer(Handle timer)
 				}
 				else if(!TimeLeft)
 				{
-					TimeLeft = gameTime + 15.0;
+					TimeLeft = gameTime + 20.0;
 				}
-				else if(count > 4 || TimeLeft < gameTime)
+				else if(count > 19 || TimeLeft < gameTime)
 				{
 					StartGame();
 				}
 			}
 		}
-		case Poker_Discard:
+		case Texas_Active:
 		{
 			int count;
 			for(int i = 1; i <= MaxClients; i++)
@@ -279,21 +279,7 @@ public Action Poker_Timer(Handle timer)
 				RedrawPeriod();
 			}
 		}
-		case Poker_Final:
-		{
-			int count;
-			for(int i = 1; i <= MaxClients; i++)
-			{
-				if(Playing[i])
-					count++;
-			}
-
-			if(count < 2 || TimeLeft < gameTime)
-			{
-				ResultPeriod();
-			}
-		}
-		case Poker_Results:
+		case Texas_Results:
 		{
 			if(TimeLeft < gameTime)
 			{
@@ -308,20 +294,20 @@ public Action Poker_Timer(Handle timer)
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(Viewing[client])
-			PokerMenu(client);
+			TexasMenu(client);
 	}
 	return Plugin_Continue;
 }
 
-static void PokerMenu(int client)
+static void TexasMenu(int client)
 {
-	Menu menu = new Menu(PokerTableMenu);
+	Menu menu = new Menu(TexasTableMenu);
 
 	switch(GameState)
 	{
 		case Poker_Waiting:
 		{
-			menu.SetTitle("Draw Poker\nWaiting for players%s\n ", FancyPeriodThing());
+			menu.SetTitle("Texas Hold 'Em\nWaiting for players%s\n ", FancyPeriodThing());
 
 			menu.AddItem(NULL_STRING, "Rejoin to change table rules", ITEMDRAW_DISABLED);
 		}
@@ -343,8 +329,8 @@ static void PokerMenu(int client)
 			}
 			else
 			{
-				FormatEx(buffer, sizeof(buffer), "Join Game (%d Bet)\n ", MinBet);
-				menu.AddItem(buffer, buffer, TextStore_Cash(client) < (MinBet * 8) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				FormatEx(buffer, sizeof(buffer), "Join Game (%d Blind)\n ", BlindBet);
+				menu.AddItem(buffer, buffer, TextStore_Cash(client) < (BlindBet * 16) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			}
 
 			int count;
@@ -356,7 +342,7 @@ static void PokerMenu(int client)
 
 			if(TimeLeft)
 			{
-				FormatEx(buffer, sizeof(buffer), "%d / 5 players in game", count);
+				FormatEx(buffer, sizeof(buffer), "%d / 20 players in game", count);
 			}
 			else
 			{
@@ -508,7 +494,7 @@ static void PokerMenu(int client)
 	Viewing[client] = menu.Display(client, 2);
 }
 
-public int PokerTableMenu(Menu menu, MenuAction action, int client, int choice)
+public int TexasTableMenu(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{

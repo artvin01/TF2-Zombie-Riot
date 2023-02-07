@@ -88,6 +88,7 @@ void Games_Poker(int client)
 		menu.AddItem(NULL_STRING, "250 Credit Bet", cash < 12500 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem(NULL_STRING, "500 Credit Bet", cash < 25000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem(NULL_STRING, "1000 Credit Bet", cash < 50000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "2500 Credit Bet", cash < 125000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 		menu.Pagination = 0;
 		menu.ExitButton = true;
@@ -147,6 +148,9 @@ public int PokerJoinMenu(Menu menu, MenuAction action, int client, int choice)
 						
 						case 7:
 							MinBet = 1000;
+						
+						case 8:
+							MinBet = 2500;
 						
 						default:
 							MinBet = 0;

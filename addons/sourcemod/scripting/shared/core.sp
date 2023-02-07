@@ -581,7 +581,8 @@ Handle g_hFindBodygroupByName;
 Handle g_hSetBodyGroup;
 Handle g_hSelectWeightedSequence;
 Handle g_hResetSequenceInfo;
-
+Handle g_hLookupBone;
+Handle g_hGetBonePosition;
 //Death
 Handle g_hNextBotCombatCharacter_Event_Killed;
 Handle g_hCBaseCombatCharacter_Event_Killed;
