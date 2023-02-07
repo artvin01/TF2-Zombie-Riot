@@ -1644,10 +1644,13 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 						//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
 							damage *= 5.25;
+
+#if defined ZR
 							if(LastMann)
 							{
 								attack_speed *= 0.5; //extra delay.
 							}
+#endif
 							
 							if(b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
 							{
@@ -2009,10 +2012,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		SetGlobalTransTarget(attacker);
 		float HudY = -1.0;
 
-#if defined ZR
 		HudY += f_HurtHudOffsetY[attacker];
 		HudOffset += f_HurtHudOffsetX[attacker];
-#endif	
 
 		SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
 		if(!raidboss_active)
@@ -2035,6 +2036,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
 		ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s-%0.f","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
 	}
+#endif	// ZR
+
 #if defined RPG
 	if(IsValidEntity(npc.m_iTextEntity3))
 	{

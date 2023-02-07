@@ -1,6 +1,13 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define SOUND_START	"ui/duel_challenge.wav"
+#define SOUND_WIN	"ui/duel_challenge_accepted_with_restriction.wav"
+#define SOUND_LOST	"ui/duel_challenge_rejected_with_restriction.wav"
+#define SOUND_BET	"ui/duel_score_behind.wav"
+#define SOUND_MATCH	"mvm/mvm_money_pickup.wav"
+#define SOUND_EVENT	"ui/quest_alert.wav"
+
 enum
 {
 	Suit_Heart = 0,
@@ -48,6 +55,7 @@ static const char NumberIcon[][] =
 };
 
 #include "rpg_fortress/games/poker.sp"
+#include "rpg_fortress/games/blackjack.sp"
 
 static StringMap GameList;
 
