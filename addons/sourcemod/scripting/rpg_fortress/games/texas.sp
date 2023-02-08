@@ -9,44 +9,18 @@ enum
 	Texas_Results
 }
 
-enum
-{
-	Texas_HighCard = 0,
-	Texas_OnePair,
-	Texas_TwoPair,
-	Texas_ThreeKind,
-	Texas_Straight,
-	Texas_Flush,
-	Texas_FullHouse,
-	Texas_FourKind,
-	Texas_StraightFlush
-}
-
-static const char RankNames[][] =
-{
-	"High Card",
-	"One Pair",
-	"Two Pair",
-	"Three of a Kind",
-	"Straight",
-	"Flush",
-	"Full House",
-	"Four of a Kind",
-	"Straight Flush"
-};
-
 static int BlindBet;
 static int GameState;
 static int PrizePool;
 static int GameWinner;
 static int CurrentBet;
 static float TimeLeft;
+static int GlobalHand[5];
 static bool Viewing[MAXTF2PLAYERS];
 static int BlindSince[MAXTF2PLAYERS];
 static bool Playing[MAXTF2PLAYERS];
 static int PlayerBet[MAXTF2PLAYERS];
-static int Cards[MAXTF2PLAYERS][5];
-static int Discarding[MAXTF2PLAYERS];
+static int Cards[MAXTF2PLAYERS][2];
 static ArrayList CurrentDeck;
 static Handle TexasTimer;
 
@@ -273,14 +247,8 @@ public Action Texas_Timer(Handle timer)
 					count++;
 			}
 
-			if(count < 2)
-			{
-				ResultPeriod();
-			}
-			else if(TimeLeft < gameTime)
-			{
-				RedrawPeriod();
-			}
+			if(count < 2 || TimeLeft < gameTime)
+				NextPeriod();
 		}
 		case Texas_Results:
 		{
@@ -289,7 +257,7 @@ public Action Texas_Timer(Handle timer)
 				Zero(Playing);
 
 				TimeLeft = 0.0;
-				GameState = Poker_WarmUp;
+				GameState = Texas_WarmUp;
 			}
 		}
 	}
@@ -354,58 +322,38 @@ static void TexasMenu(int client)
 
 			menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
 		}
-		case Poker_Discard, Poker_Final:
+		case Texas_Active:
 		{
 			char buffer[32];
 			if(Playing[client])
 			{
-				if(GameState == Poker_Discard)
+				menu.SetTitle("Texas Hold 'Em\n%s... %.0f\n ", RankNames[GetCardRank(Cards[client])], TimeLeft - GetGameTime());
+
+				for(int i; i < sizeof(GlobalHand[]); i++)
 				{
-					menu.SetTitle("Draw Poker\nChoose what to discard... %.0f\n ", TimeLeft - GetGameTime());
-
-					for(int i; i < sizeof(Cards[]); i++)
-					{
-						if(Discarding[client] & (1 << i))
-						{
-							FormatEx(buffer, sizeof(buffer), "%s (Discarding)", Games_GetCardIcon(Cards[client][i]));
-						}
-						else
-						{
-							FormatEx(buffer, sizeof(buffer), "%s (Keeping)", Games_GetCardIcon(Cards[client][i]));
-						}
-
-						menu.AddItem(buffer, buffer);
-					}
+					menu.AddItem(buffer, Games_GetCardIcon(GlobalHand[i]), ITEMDRAW_DISABLED);
 				}
-				else
-				{
-					menu.SetTitle("Draw Poker\n%s... %.0f\n ", RankNames[GetCardRank(Cards[client])], TimeLeft - GetGameTime());
 
-					for(int i; i < sizeof(Cards[]); i++)
-					{
-						menu.AddItem(buffer, Games_GetCardIcon(Cards[client][i]), ITEMDRAW_DISABLED);
-					}
+				for(int i; i < sizeof(Cards[]); i++)
+				{
+					menu.AddItem(buffer, Games_GetCardIcon(Cards[client][i]), ITEMDRAW_DISABLED);
 				}
 
 				menu.AddItem(buffer, buffer, ITEMDRAW_SPACER);
 
 				bool allIn;
-				if(!MinBet)
+				if(PlayerBet[client] < CurrentBet)
 				{
-					menu.AddItem(buffer, "Free Game ($0)", ITEMDRAW_DISABLED);
-				}
-				else if(Playing[client] < CurrentBet)
-				{
-					FormatEx(buffer, sizeof(buffer), "Match New Bet and Keep Playing? ($%d -> $%d)\n ", Playing[client], CurrentBet);
+					FormatEx(buffer, sizeof(buffer), "Match Bet and Keep Playing? ($%d -> $%d)\n ", Playing[client], CurrentBet);
 					menu.AddItem(buffer, buffer);
 				}
-				else if(CurrentBet >= (MinBet * 8))
+				else if(CurrentBet >= (BlindBet * 16))
 				{
 					FormatEx(buffer, sizeof(buffer), "All In ($%d)\n ", CurrentBet);
 					menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
 					allIn = true;
 				}
-				else if(CurrentBet >= (MinBet * 4))
+				else if(CurrentBet >= (BlindBet * 8))
 				{
 					FormatEx(buffer, sizeof(buffer), "All In ($%d -> $%d)\n ", CurrentBet, CurrentBet * 2);
 					menu.AddItem(buffer, buffer);
@@ -421,7 +369,7 @@ static void TexasMenu(int client)
 			}
 			else
 			{
-				menu.SetTitle("Draw Poker\nGame in progress%s\n ", FancyPeriodThing());
+				menu.SetTitle("Texas Hold 'Em\nGame in progress%s\n ", FancyPeriodThing());
 
 				int count;
 				for(int i = 1; i <= MaxClients; i++)
@@ -434,7 +382,7 @@ static void TexasMenu(int client)
 				menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
 			}
 		}
-		case Poker_Results:
+		case Texas_Results:
 		{
 			char buffer[32];
 			if(!IsClientInGame(GameWinner) || !GetClientName(GameWinner, buffer, sizeof(buffer)))
@@ -451,16 +399,23 @@ static void TexasMenu(int client)
 			{
 				int rank = GetCardRank(Cards[GameWinner]);
 				
-				menu.SetTitle("Draw Poker\n%s won the game\n%s\n%s %s %s %s %s\n ", buffer, RankNames[rank],
+				menu.SetTitle("Texas Hold 'Em\n%s won the game\n%s\n%s %s\n%s %s %s %s %s\n ", buffer, RankNames[rank],
 					Games_GetCardIcon(Cards[GameWinner][0]), 
 					Games_GetCardIcon(Cards[GameWinner][1]), 
-					Games_GetCardIcon(Cards[GameWinner][2]), 
-					Games_GetCardIcon(Cards[GameWinner][3]), 
-					Games_GetCardIcon(Cards[GameWinner][4]));
+					Games_GetCardIcon(GlobalHand[0]), 
+					Games_GetCardIcon(GlobalHand[1]), 
+					Games_GetCardIcon(GlobalHand[2]), 
+					Games_GetCardIcon(GlobalHand[3]), 
+					Games_GetCardIcon(GlobalHand[4]));
 			}
 			else
 			{
-				menu.SetTitle("Draw Poker\n%s won the game\nLast Man\n ");
+				menu.SetTitle("Texas Hold 'Em\n%s won the game\nLast Man\n%s %s %s %s %s\n ", 
+					Games_GetCardIcon(GlobalHand[0]), 
+					Games_GetCardIcon(GlobalHand[1]), 
+					Games_GetCardIcon(GlobalHand[2]), 
+					Games_GetCardIcon(GlobalHand[3]), 
+					Games_GetCardIcon(GlobalHand[4]));
 			}
 
 			if(GameWinner == client)
@@ -476,12 +431,9 @@ static void TexasMenu(int client)
 					int rank = GetCardRank(Cards[client]);
 					menu.AddItem(buffer, RankNames[rank], ITEMDRAW_DISABLED);
 
-					FormatEx(buffer, sizeof(buffer), "%s %s %s %s %s",
+					FormatEx(buffer, sizeof(buffer), "%s %s",
 						Games_GetCardIcon(Cards[client][0]), 
-						Games_GetCardIcon(Cards[client][1]), 
-						Games_GetCardIcon(Cards[client][2]), 
-						Games_GetCardIcon(Cards[client][3]), 
-						Games_GetCardIcon(Cards[client][4]));
+						Games_GetCardIcon(Cards[client][1]));
 				}
 				else
 				{
@@ -513,44 +465,33 @@ public int TexasTableMenu(Menu menu, MenuAction action, int client, int choice)
 		{
 			switch(GameState)
 			{
-				case Poker_WarmUp:
+				case Texas_WarmUp:
 				{
 					if(Playing[client])
 					{
-						Playing[client] = 0;
-						TriggerTimer(PokerTimer);
+						Playing[client] = false;
+						TriggerTimer(TexasTimer);
 					}
-					else if(TextStore_Cash(client) >= (MinBet * 8))
+					else if(TextStore_Cash(client) >= (BlindBet * 16))
 					{
-						Playing[client] = MinBet;
-						TriggerTimer(PokerTimer);
+						Playing[client] = true;
+						TriggerTimer(TexasTimer);
 					}
 				}
-				case Poker_Discard, Poker_Final:
+				case Texas_Active:
 				{
 					if(Playing[client])
 					{
-						if(choice < 5)
+						if(choice == 8)	// Bet
 						{
-							if(Discarding[client] & (1 << choice))
+							if(PlayerBet[client] < CurrentBet)
 							{
-								Discarding[client] &= ~(1 << choice);
-							}
-							else
-							{
-								Discarding[client] |= (1 << choice);
-							}
-						}
-						else if(choice == 6 && CurrentBet)	// Bet
-						{
-							if(Playing[client] < CurrentBet)
-							{
-								int cost = CurrentBet - Playing[client];
+								int cost = CurrentBet - PlayerBet[client];
 								if(TextStore_Cash(client) >= cost)
 								{
 									PrizePool += cost;
 									TextStore_Cash(client, -cost);
-									Playing[client] = CurrentBet;
+									PlayerBet[client] = CurrentBet;
 									ClientCommand(client, "playgamesound %s", SOUND_MATCH);
 								}
 							}
@@ -560,7 +501,7 @@ public int TexasTableMenu(Menu menu, MenuAction action, int client, int choice)
 								TextStore_Cash(client, -CurrentBet);
 
 								CurrentBet *= 2;
-								Playing[client] = CurrentBet;
+								PlayerBet[client] = CurrentBet;
 								ClientCommand(client, "playgamesound %s", SOUND_MATCH);
 
 								float time = GetGameTime() + 10.0;
@@ -569,18 +510,18 @@ public int TexasTableMenu(Menu menu, MenuAction action, int client, int choice)
 
 								for(int i = 1; i <= MaxClients; i++)
 								{
-									if(i != client && Playing[i])
+									if(i != client && PlayerBet[i])
 									{
 										SPrintToChat(i, "%N doubled the current bet!", client);
 										ClientCommand(i, "playgamesound %s", SOUND_BET);
-										PokerMenu(i);
+										TexasMenu(i);
 									}
 								}
 							}
 						}
-						else if(choice == 7)	// Fold
+						else if(choice == 9)	// Fold
 						{
-							Playing[client] = 0;
+							Playing[client] = false;
 							ClientCommand(client, "playgamesound %s", SOUND_LOST);
 
 							for(int i = 1; i <= MaxClients; i++)
@@ -593,7 +534,7 @@ public int TexasTableMenu(Menu menu, MenuAction action, int client, int choice)
 				}
 			}
 
-			PokerMenu(client);
+			TexasMenu(client);
 		}
 	}
 	return 0;
@@ -621,8 +562,8 @@ static char[] FancyPeriodThing()
 static void StartGame()
 {
 	delete CurrentDeck;
+	Zero(GlobalHand);
 	Zero2(Cards);
-	Zero(Discarding);
 	PrizePool = 0;
 	CurrentBet = BlindBet;
 
@@ -685,7 +626,7 @@ static void StartGame()
 		PrizePool += PlayerBet[low];
 	}
 
-	TimeLeft = GetGameTime() + 30.0;
+	TimeLeft = GetGameTime() + 15.0;
 	GameState = Texas_Active;
 }
 /*
@@ -700,13 +641,14 @@ public int Texas_BindSorting(int elem1, int elem2, const int[] array, Handle hnd
 	return -1;
 }
 */
-static void RedrawPeriod()
+static void NextPeriod()
 {
+	int players;
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(Playing[client])
 		{
-			if(Playing[client] < CurrentBet)
+			if(PlayerBet[client] < CurrentBet)
 			{
 				ClientCommand(client, "playgamesound %s", SOUND_LOST);
 
@@ -716,25 +658,47 @@ static void RedrawPeriod()
 						SPrintToChat(i, "%N folded!", client);
 				}
 				
-				Playing[client] = 0;
+				Playing[client] = false;
 			}
 			else
 			{
-				ClientCommand(client, "playgamesound %s", SOUND_EVENT);
-				
-				for(int i; i < 5; i++)
-				{
-					if(Discarding[client] & (1 << i))
-					{
-						Cards[client][i] = DrawNewCard();
-					}
-				}
+				players++;
 			}
 		}
 	}
 
-	TimeLeft = GetGameTime() + 10.0;
-	GameState = Poker_Final;
+	int cards;
+	while(cards < sizeof(GlobalHand) && GlobalHand[cards])
+	{
+		cards++;
+	}
+
+	if(players < 2 || cards >= sizeof(GlobalHand))
+	{
+		ResultPeriod();
+	}
+	else
+	{
+		TimeLeft = GetGameTime() + 15.0;
+
+		if(!cards)
+		{
+			for(int i; i < 3; i++)
+			{
+				GlobalHand[i] = DrawNewCard();
+			}
+		}
+		else
+		{
+			GlobalHand[cards] = DrawNewCard();
+		}
+
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(Playing[client])
+				ClientCommand(client, "playgamesound %s", SOUND_EVENT);
+		}
+	}
 }
 
 static void ResultPeriod()
@@ -745,43 +709,28 @@ static void ResultPeriod()
 	{
 		if(Playing[client])
 		{
-			if(Playing[client] < CurrentBet)
+			int rank = GetCardRank(Cards[client]);
+			if(rank > winrank)
 			{
-				ClientCommand(client, "playgamesound %s", SOUND_LOST);
-
-				for(int i = 1; i <= MaxClients; i++)
-				{
-					if(Playing[i])
-						SPrintToChat(i, "%N folded!", client);
-				}
-				
-				Playing[client] = 0;
+				winners[0] = client;
+				count = 1;
+				winrank = rank;
 			}
-			else
+			else if(winrank == rank)
 			{
-				int rank = GetCardRank(Cards[client]);
-				if(rank > winrank)
-				{
-					winners[0] = client;
-					count = 1;
-					winrank = rank;
-				}
-				else if(winrank == rank)
-				{
-					winners[count++] = client;
-				}
+				winners[count++] = client;
 			}
 		}
 	}
 
 	if(!count)
 	{
-		GameState = Poker_WarmUp;
+		GameState = Texas_WarmUp;
 		TimeLeft = 0.0;
 	}
 	else
 	{
-		GameState = Poker_Results;
+		GameState = Texas_Results;
 		TimeLeft = GetGameTime() + 10.0;
 
 		int index;
@@ -804,8 +753,7 @@ static void ResultPeriod()
 		
 		GameWinner = winners[index];
 		ClientCommand(winners[index], "playgamesound %s", SOUND_WIN);
-		if(PrizePool)
-			TextStore_AddItemCount(winners[index], ITEM_CASH, PrizePool);
+		TextStore_AddItemCount(winners[index], ITEM_CASH, PrizePool);
 
 		for(int client = 1; client <= MaxClients; client++)
 		{
@@ -823,112 +771,22 @@ static int DrawNewCard()
 	return card;
 }
 
-static int GetCardRank(const int card[5])
+static int GetCardRank(const int card[2])
 {
-	int count[sizeof(card) - 1];
-
-	bool straight = true;
-	bool flush = true;
-
+	int cards[sizeof(card) + sizeof(GlobalHand)];
 	for(int i; i < sizeof(card); i++)
 	{
-		if(i && flush)
-		{
-			// Check for suits
-			if((card[0] / 100) != (card[i] / 100))
-				flush = false;
-		}
-
-		int number = card[i] % 100;
-		if(i != (sizeof(card) - 1))
-		{
-			bool foundUp, foundDown;
-			for(int a = (i + i); a < sizeof(card); a++)
-			{
-				int num = card[a] % 100;
-				if(number == num)	// Found the same number
-				{
-					foundUp = false;
-					foundDown = false;
-					break;
-				}
-
-				if(number == (num - 1))
-				{
-					if(foundUp)	// Found the same number
-					{
-						foundUp = false;
-						foundDown = false;
-						break;
-					}
-
-					foundUp = true;
-				}
-
-				if(number == (num + 1))
-				{
-					if(foundDown)	// Found the same number
-					{
-						foundUp = false;
-						foundDown = false;
-						break;
-					}
-
-					foundDown = true;
-				}
-			}
-
-			if(!foundUp && !foundDown)
-				straight = false;
-		}
-
-		if(i)
-		{
-			for(int a; a < i; a++)
-			{
-				if(number == card[a] % 100)
-				{
-					count[a]++;
-					break;
-				}
-			}
-		}
+		cards[i] = card[i];
 	}
 
-	if(straight && flush)
-		return Poker_StraightFlush;
-	
-	bool three;
-	int two;
-	for(int i; i < sizeof(count); i++)
+	int count = sizeof(card);
+	for(int i; i < sizeof(GlobalHand); i++)
 	{
-		if(count[i] == 3)
-			return Poker_FourKind;
+		if(!GlobalHand[i])
+			break;
 		
-		if(count[i] == 2)
-			three = true;
-		
-		if(count[i])
-			two++;
+		cards[i + sizeof(card)] = GlobalHand[i];
 	}
 
-	if(three && two == 2)
-		return Poker_FullHouse;
-
-	if(flush)
-		return Poker_Flush;
-
-	if(straight)
-		return Poker_Straight;
-
-	if(three)
-		return Poker_ThreeKind;
-
-	if(two == 2)
-		return Poker_TwoPair;
-
-	if(two)
-		return Poker_OnePair;
-	
-	return Poker_HighCard;
+	return Games_GetCardRank(cards, count);
 }

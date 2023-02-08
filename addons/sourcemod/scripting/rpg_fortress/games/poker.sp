@@ -12,32 +12,6 @@ enum
 	Poker_Results
 }
 
-enum
-{
-	Poker_HighCard = 0,
-	Poker_OnePair,
-	Poker_TwoPair,
-	Poker_ThreeKind,
-	Poker_Straight,
-	Poker_Flush,
-	Poker_FullHouse,
-	Poker_FourKind,
-	Poker_StraightFlush
-}
-
-static const char RankNames[][] =
-{
-	"High Card",
-	"One Pair",
-	"Two Pair",
-	"Three of a Kind",
-	"Straight",
-	"Flush",
-	"Full House",
-	"Four of a Kind",
-	"Straight Flush"
-};
-
 static int MinBet;
 static int GameState;
 static int PrizePool;
@@ -394,7 +368,7 @@ static void PokerMenu(int client)
 				}
 				else
 				{
-					menu.SetTitle("Draw Poker\n%s... %.0f\n ", RankNames[GetCardRank(Cards[client])], TimeLeft - GetGameTime());
+					menu.SetTitle("Draw Poker\n%s... %.0f\n ", RankNames[Games_GetCardRank(Cards[client], sizeof(Cards[]))], TimeLeft - GetGameTime());
 
 					for(int i; i < sizeof(Cards[]); i++)
 					{
@@ -411,7 +385,7 @@ static void PokerMenu(int client)
 				}
 				else if(Playing[client] < CurrentBet)
 				{
-					FormatEx(buffer, sizeof(buffer), "Match New Bet and Keep Playing? ($%d -> $%d)\n ", Playing[client], CurrentBet);
+					FormatEx(buffer, sizeof(buffer), "Match Bet and Keep Playing? ($%d -> $%d)\n ", Playing[client], CurrentBet);
 					menu.AddItem(buffer, buffer);
 				}
 				else if(CurrentBet >= (MinBet * 8))
@@ -464,7 +438,7 @@ static void PokerMenu(int client)
 
 			if(count > 1)
 			{
-				int rank = GetCardRank(Cards[GameWinner]);
+				int rank = Games_GetCardRank(Cards[GameWinner], sizeof(Cards[]));
 				
 				menu.SetTitle("Draw Poker\n%s won the game\n%s\n%s %s %s %s %s\n ", buffer, RankNames[rank],
 					Games_GetCardIcon(Cards[GameWinner][0]), 
@@ -488,7 +462,7 @@ static void PokerMenu(int client)
 
 				if(Playing[client])
 				{
-					int rank = GetCardRank(Cards[client]);
+					int rank = Games_GetCardRank(Cards[client], sizeof(Cards[]));
 					menu.AddItem(buffer, RankNames[rank], ITEMDRAW_DISABLED);
 
 					FormatEx(buffer, sizeof(buffer), "%s %s %s %s %s",
@@ -730,7 +704,7 @@ static void ResultPeriod()
 			}
 			else
 			{
-				int rank = GetCardRank(Cards[client]);
+				int rank = Games_GetCardRank(Cards[client], sizeof(Cards[]));
 				if(rank > winrank)
 				{
 					winners[0] = client;
@@ -792,114 +766,4 @@ static int DrawNewCard()
 	int card = CurrentDeck.Get(index);
 	CurrentDeck.Erase(index);
 	return card;
-}
-
-static int GetCardRank(const int card[5])
-{
-	int count[sizeof(card) - 1];
-
-	bool straight = true;
-	bool flush = true;
-
-	for(int i; i < sizeof(card); i++)
-	{
-		if(i && flush)
-		{
-			// Check for suits
-			if((card[0] / 100) != (card[i] / 100))
-				flush = false;
-		}
-
-		int number = card[i] % 100;
-		if(i != (sizeof(card) - 1))
-		{
-			bool foundUp, foundDown;
-			for(int a = (i + i); a < sizeof(card); a++)
-			{
-				int num = card[a] % 100;
-				if(number == num)	// Found the same number
-				{
-					foundUp = false;
-					foundDown = false;
-					break;
-				}
-
-				if(number == (num - 1))
-				{
-					if(foundUp)	// Found the same number
-					{
-						foundUp = false;
-						foundDown = false;
-						break;
-					}
-
-					foundUp = true;
-				}
-
-				if(number == (num + 1))
-				{
-					if(foundDown)	// Found the same number
-					{
-						foundUp = false;
-						foundDown = false;
-						break;
-					}
-
-					foundDown = true;
-				}
-			}
-
-			if(!foundUp && !foundDown)
-				straight = false;
-		}
-
-		if(i)
-		{
-			for(int a; a < i; a++)
-			{
-				if(number == card[a] % 100)
-				{
-					count[a]++;
-					break;
-				}
-			}
-		}
-	}
-
-	if(straight && flush)
-		return Poker_StraightFlush;
-	
-	bool three;
-	int two;
-	for(int i; i < sizeof(count); i++)
-	{
-		if(count[i] == 3)
-			return Poker_FourKind;
-		
-		if(count[i] == 2)
-			three = true;
-		
-		if(count[i])
-			two++;
-	}
-
-	if(three && two == 2)
-		return Poker_FullHouse;
-
-	if(flush)
-		return Poker_Flush;
-
-	if(straight)
-		return Poker_Straight;
-
-	if(three)
-		return Poker_ThreeKind;
-
-	if(two == 2)
-		return Poker_TwoPair;
-
-	if(two)
-		return Poker_OnePair;
-	
-	return Poker_HighCard;
 }
