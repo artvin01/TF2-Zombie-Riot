@@ -661,9 +661,7 @@ static void StartGame()
 				// Counterpoint: We're in code baby
 				for(int i; i < 5; i++)
 				{
-					int index = GetURandomInt() % CurrentDeck.Length;
-					Cards[client][i] = CurrentDeck.Get(index);
-					CurrentDeck.Erase(index);
+					Cards[client][i] = DrawNewCard();
 				}
 			}
 		}
@@ -699,9 +697,7 @@ static void RedrawPeriod()
 				{
 					if(Discarding[client] & (1 << i))
 					{
-						int index = GetURandomInt() % CurrentDeck.Length;
-						Cards[client][i] = CurrentDeck.Get(index);
-						CurrentDeck.Erase(index);
+						Cards[client][i] = DrawNewCard();
 					}
 				}
 			}
@@ -788,6 +784,14 @@ static void ResultPeriod()
 				ClientCommand(client, "playgamesound %s", SOUND_LOST);
 		}
 	}
+}
+
+static int DrawNewCard()
+{
+	int index = GetURandomInt() % CurrentDeck.Length;
+	int card = CurrentDeck.Get(index);
+	CurrentDeck.Erase(index);
+	return card;
 }
 
 static int GetCardRank(const int card[5])

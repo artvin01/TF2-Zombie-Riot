@@ -43,7 +43,8 @@ static int CurrentBet;
 static float TimeLeft;
 static bool Viewing[MAXTF2PLAYERS];
 static int BlindSince[MAXTF2PLAYERS];
-static int Playing[MAXTF2PLAYERS];
+static bool Playing[MAXTF2PLAYERS];
+static int PlayerBet[MAXTF2PLAYERS];
 static int Cards[MAXTF2PLAYERS][5];
 static int Discarding[MAXTF2PLAYERS];
 static ArrayList CurrentDeck;
@@ -154,6 +155,7 @@ public int TexasJoinMenu(Menu menu, MenuAction action, int client, int choice)
 					}
 				}
 
+				BlindSince[client] = 99;
 				Viewing[client] = true;
 				TexasMenu(client);
 
@@ -228,7 +230,8 @@ public Action Texas_Timer(Handle timer)
 
 				for(int i = 1; i <= MaxClients; i++)
 				{
-					Playing[i] = 0;
+					Playing[i] = false;
+					PlayerBet[i] = 0;
 				}
 			}
 		}
@@ -621,40 +624,82 @@ static void StartGame()
 	Zero2(Cards);
 	Zero(Discarding);
 	PrizePool = 0;
-	CurrentBet = MinBet;
+	CurrentBet = BlindBet;
 
 	CurrentDeck = Games_GenerateNewDeck();
+	
+	int low, high;
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(Playing[client])
 		{
-			if(TextStore_Cash(client) < MinBet)
+			if(TextStore_Cash(client) < BlindBet)
 			{
-				Playing[client] = 0;
+				Playing[client] = false;
 			}
 			else
 			{
+				BlindSince[client]++;
+				PlayerBet[client] = 0;
 				ClientCommand(client, "playgamesound %s", SOUND_START);
 				
-				TextStore_Cash(client, -MinBet);
-				PrizePool += MinBet;
-
 				// Normally, we would give out one at a time to each player
 				// Counterpoint: We're in code baby
-				for(int i; i < 5; i++)
+				for(int i; i < 2; i++)
 				{
-					int index = GetURandomInt() % CurrentDeck.Length;
-					Cards[client][i] = CurrentDeck.Get(index);
-					CurrentDeck.Erase(index);
+					Cards[client][i] = DrawNewCard();
+				}
+
+				if(!high)
+				{
+					high = client;
+				}
+				else if(!low)
+				{
+					low = client;
+				}
+				else if(BlindSince[client] > BlindSince[high])
+				{
+					high = client;
+				}
+				else if(BlindSince[client] < BlindSince[low])
+				{
+					low = client;
 				}
 			}
 		}
 	}
 
-	TimeLeft = GetGameTime() + 30.0;
-	GameState = Poker_Discard;
-}
+	if(high)
+	{
+		BlindSince[high] = 0;
+		PlayerBet[high] = BlindBet;
+		TextStore_Cash(high, -PlayerBet[high]);
+		PrizePool += PlayerBet[high];
+	}
 
+	if(low)
+	{
+		PlayerBet[low] = BlindBet / 2;
+		TextStore_Cash(low, -PlayerBet[low]);
+		PrizePool += PlayerBet[low];
+	}
+
+	TimeLeft = GetGameTime() + 30.0;
+	GameState = Texas_Active;
+}
+/*
+public int Texas_BindSorting(int elem1, int elem2, const int[] array, Handle hndl)
+{
+	if(BlindSince[elem1] > BlindSince[elem2])
+		return -1;
+	
+	if(BlindSince[elem1] < BlindSince[elem2] || elem1 < elem2)
+		return 1;
+	
+	return -1;
+}
+*/
 static void RedrawPeriod()
 {
 	for(int client = 1; client <= MaxClients; client++)
@@ -681,9 +726,7 @@ static void RedrawPeriod()
 				{
 					if(Discarding[client] & (1 << i))
 					{
-						int index = GetURandomInt() % CurrentDeck.Length;
-						Cards[client][i] = CurrentDeck.Get(index);
-						CurrentDeck.Erase(index);
+						Cards[client][i] = DrawNewCard();
 					}
 				}
 			}
@@ -770,6 +813,14 @@ static void ResultPeriod()
 				ClientCommand(client, "playgamesound %s", SOUND_LOST);
 		}
 	}
+}
+
+static int DrawNewCard()
+{
+	int index = GetURandomInt() % CurrentDeck.Length;
+	int card = CurrentDeck.Get(index);
+	CurrentDeck.Erase(index);
+	return card;
 }
 
 static int GetCardRank(const int card[5])
