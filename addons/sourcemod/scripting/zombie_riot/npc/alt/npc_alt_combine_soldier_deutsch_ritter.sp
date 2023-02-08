@@ -231,7 +231,7 @@ methodmap Alt_CombineDeutsch < CClotBody
 		npc.StartPathing();
 		
 		i_barrage[npc.index] = 0;
-		fl_barragetimer[npc.index] = GetGameTime(npc.index) + 20.0;
+		fl_barragetimer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(5.0, 10.0);
 		fl_singularbarrage[npc.index] = GetGameTime(npc.index) + 1.0;
 		b_barrage[npc.index] = false;
 		return npc;
@@ -313,21 +313,56 @@ public void Alt_CombineDeutsch_ClotThink(int iNPC)
 			{	
 				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable3, 1, 1, 1, 1);
-				npc.FaceTowards(vecTarget);
-				npc.FaceTowards(vecTarget);
-				vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 450.0);
+				
 				float  dmg=40.0;
 				if(ZR_GetWaveCount()<40)
 				{
 					dmg=20.0;
 				}
-				npc.FireRocket(vecTarget, dmg, 450.0, "models/effects/combineball.mdl", 1.0);
 				i_barrage[npc.index]++;
+				
+				float Angles[3], distance = 100.0, UserLoc[3];
+				
+				
+				UserLoc = GetAbsOrigin(npc.index);
+				
+				MakeVectorFromPoints(UserLoc, vecTarget, Angles);
+				GetVectorAngles(Angles, Angles);
+				
+				float type;
+				
+				if(flDistanceToTarget < 62500)	//Target is close, we do wide attack
+				{
+					Angles[1]-=22.5;
+					type = 9.0;
+				}
+				else	//Target is far, we do long range attack.
+				{
+					Angles[1]-=10.0;
+					type = 4.0;
+				}
+				
+				for(int alpha=1 ; alpha<=5 ; alpha++)	//Shoot 5 rockets dependant on the stuff above this
+				{
+							
+					float tempAngles[3], endLoc[3], Direction[3];
+					tempAngles[0] = -32.5;
+					tempAngles[1] = Angles[1] + type * alpha;
+					tempAngles[2] = 0.0;
+							
+					GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+					ScaleVector(Direction, distance);
+					AddVectors(UserLoc, Direction, endLoc);
+							
+					npc.FireParticleRocket(endLoc, dmg , 450.0 , 100.0 , "raygun_projectile_blue");
+					//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
+		
+				}
 				npc.PlayRangedSound();
 				npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
-				fl_singularbarrage[npc.index] = GetGameTime(npc.index) + 0.25;
+				fl_singularbarrage[npc.index] = GetGameTime(npc.index) + 0.1;
 				b_barrage[npc.index] = true;
-				if (i_barrage[npc.index] >= 5)
+				if (i_barrage[npc.index] >= 1)	//Stays here incase you want this multi shoot to act like a barrage
 				{
 					SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc.m_iWearable3, 255, 1, 1, 255);
