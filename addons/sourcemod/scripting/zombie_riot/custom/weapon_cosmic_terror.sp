@@ -22,6 +22,13 @@ void Cosmic_Map_Precache()
 	PrecacheSound("weapons/vaccinator_charge_tier_02.wav");
 	PrecacheSound("weapons/vaccinator_charge_tier_03.wav");
 	PrecacheSound("weapons/vaccinator_charge_tier_04.wav");
+	
+	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
+	PrecacheSound("weapons/physcannon/superphys_launch2.wav", true);
+	PrecacheSound("weapons/physcannon/superphys_launch3.wav", true);
+	PrecacheSound("weapons/physcannon/superphys_launch4.wav", true);
+	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
+	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 }
 
 static Handle Revert_Weapon_Back_Timer[MAXPLAYERS+1];
@@ -226,6 +233,8 @@ public Action Cosmic_Activate_Tick(int client)
 							else if(Cosmic_Terror_Charge_Sound_interval[client]==3)
 							{
 								ClientCommand(client, "playgamesound weapons/vaccinator_charge_tier_04.wav");
+								
+								CreateTimer(Cosmic_Terror_Sound_Charge_Timer[client], Cosmic_Terror_Sound, client, TIMER_FLAG_NO_MAPCHANGE);
 							}
 							Cosmic_Terror_Charge_Sound_interval[client]++;
 							Cosmic_Terror_Sound_Charge_Timer2[client]=GetGameTime()+Cosmic_Terror_Sound_Charge_Timer[client];
@@ -303,8 +312,52 @@ public Action Cosmic_Heat_Tick(int client)
 	}
 	return Plugin_Continue;
 }
+public Action Cosmic_Terror_Sound(Handle timer, int client)
+{
+	EmitSoundToClient(client,"weapons/physcannon/energy_sing_loop4.wav",_, SNDCHAN_STATIC, 100, _, 0.175, 30);
+	if(Cosmic_Terror_Pap[client]>=1)
+	{
+		EmitSoundToClient(client,"weapons/physcannon/energy_sing_loop4.wav",_, SNDCHAN_STATIC, 100, _, 0.175, 60);
+	}
+	if(Cosmic_Terror_Pap[client]>=2)
+	{
+		EmitSoundToClient(client,"weapons/physcannon/energy_sing_loop4.wav",_, SNDCHAN_STATIC, 100, _, 0.175, 90);
+	}
+								
+	switch(GetRandomInt(1, 4))
+	{
+		case 1:
+		{
+			EmitSoundToClient(client,"weapons/physcannon/superphys_launch1.wav", _, _, _, _, 0.5, 60);
+			EmitSoundToClient(client,"weapons/physcannon/superphys_launch1.wav", _, _, _, _, 0.5, 60);			
+		}
+		case 2:
+		{
+			EmitSoundToClient(client,"weapons/physcannon/superphys_launch2.wav", _, _, _, _, 0.5, 60);
+			EmitSoundToClient(client,"weapons/physcannon/superphys_launch2.wav", _, _, _, _, 0.5, 60);
+		}
+		case 3:
+		{
+			EmitSoundToClient(client,"weapons/physcannon/superphys_launch3.wav", _, _, _, _, 0.5, 60);	
+			EmitSoundToClient(client,"weapons/physcannon/superphys_launch3.wav", _, _, _, _, 0.5, 60);			
+		}
+		case 4:
+		{
+			EmitSoundToClient(client,"weapons/physcannon/superphys_launch4.wav", _, _, _, _, 0.5, 60);
+			EmitSoundToClient(client,"weapons/physcannon/superphys_launch4.wav", _, _, _, _, 0.5, 60);
+		}		
+	}
+	return Plugin_Continue;
+}
 public Action Cosmic_Terror_Reset_Wep(Handle cut_timer, int client)
 {
+	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	EmitSoundToClient(client,"weapons/physcannon/physcannon_drop.wav",  _, _, _, _, 0.5, 60);
+	
 	SDKHook(client, SDKHook_PreThink, Cosmic_Heat_Tick);
 	Cosmic_Terror_Cooling_Reset[client]=false;
 	Handle_on[client] = false;
@@ -427,7 +480,7 @@ void Cosmic_Terror_FullCharge(int client)
 	
 	if(Cosmic_Terror_Sound_Tick[client]>=20)
 	{
-		EmitSoundToAll(SND_WELD_SOUND, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.1, SNDPITCH_NORMAL, -1, Cosmic_BeamLoc[client]);
+		EmitSoundToAll(SND_WELD_SOUND, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.15, SNDPITCH_NORMAL, -1, Cosmic_BeamLoc[client]);
 		Cosmic_Terror_Sound_Tick[client]=0;
 	}
 	else
