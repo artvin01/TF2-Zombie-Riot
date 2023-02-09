@@ -314,37 +314,41 @@ public Action Cosmic_Heat_Tick(int client)
 }
 public Action Cosmic_Terror_Sound(Handle timer, int client)
 {
-	EmitSoundToClient(client,"weapons/physcannon/energy_sing_loop4.wav",_, SNDCHAN_STATIC, 100, _, 0.175, 30);
-	if(Cosmic_Terror_Pap[client]>=1)
+	if(IsValidClient(client))
 	{
-		EmitSoundToClient(client,"weapons/physcannon/energy_sing_loop4.wav",_, SNDCHAN_STATIC, 100, _, 0.175, 60);
-	}
-	if(Cosmic_Terror_Pap[client]>=2)
-	{
-		EmitSoundToClient(client,"weapons/physcannon/energy_sing_loop4.wav",_, SNDCHAN_STATIC, 100, _, 0.175, 90);
-	}
-								
-	switch(GetRandomInt(1, 4))
-	{
-		case 1:
+			
+		EmitSoundToClient(client,"weapons/physcannon/energy_sing_loop4.wav",_, SNDCHAN_STATIC, 100, _, 0.175, 30);
+		if(Cosmic_Terror_Pap[client]>=1)
 		{
-			EmitSoundToClient(client,"weapons/physcannon/superphys_launch1.wav", _, _, _, _, 0.5, 60);
-			EmitSoundToClient(client,"weapons/physcannon/superphys_launch1.wav", _, _, _, _, 0.5, 60);			
+			EmitSoundToClient(client,"weapons/physcannon/energy_sing_loop4.wav",_, SNDCHAN_STATIC, 100, _, 0.175, 60);
 		}
-		case 2:
+		if(Cosmic_Terror_Pap[client]>=2)
 		{
-			EmitSoundToClient(client,"weapons/physcannon/superphys_launch2.wav", _, _, _, _, 0.5, 60);
-			EmitSoundToClient(client,"weapons/physcannon/superphys_launch2.wav", _, _, _, _, 0.5, 60);
+			EmitSoundToClient(client,"weapons/physcannon/energy_sing_loop4.wav",_, SNDCHAN_STATIC, 100, _, 0.175, 90);
 		}
-		case 3:
+									
+		switch(GetRandomInt(1, 4))
 		{
-			EmitSoundToClient(client,"weapons/physcannon/superphys_launch3.wav", _, _, _, _, 0.5, 60);	
-			EmitSoundToClient(client,"weapons/physcannon/superphys_launch3.wav", _, _, _, _, 0.5, 60);			
-		}
-		case 4:
-		{
-			EmitSoundToClient(client,"weapons/physcannon/superphys_launch4.wav", _, _, _, _, 0.5, 60);
-			EmitSoundToClient(client,"weapons/physcannon/superphys_launch4.wav", _, _, _, _, 0.5, 60);
+			case 1:
+			{
+				EmitSoundToClient(client,"weapons/physcannon/superphys_launch1.wav", _, _, _, _, 0.5, 60);
+				EmitSoundToClient(client,"weapons/physcannon/superphys_launch1.wav", _, _, _, _, 0.5, 60);			
+			}
+			case 2:
+			{
+				EmitSoundToClient(client,"weapons/physcannon/superphys_launch2.wav", _, _, _, _, 0.5, 60);
+				EmitSoundToClient(client,"weapons/physcannon/superphys_launch2.wav", _, _, _, _, 0.5, 60);
+			}
+			case 3:
+			{
+				EmitSoundToClient(client,"weapons/physcannon/superphys_launch3.wav", _, _, _, _, 0.5, 60);	
+				EmitSoundToClient(client,"weapons/physcannon/superphys_launch3.wav", _, _, _, _, 0.5, 60);			
+			}
+			case 4:
+			{
+				EmitSoundToClient(client,"weapons/physcannon/superphys_launch4.wav", _, _, _, _, 0.5, 60);
+				EmitSoundToClient(client,"weapons/physcannon/superphys_launch4.wav", _, _, _, _, 0.5, 60);
+			}	
 		}		
 	}
 	return Plugin_Continue;
