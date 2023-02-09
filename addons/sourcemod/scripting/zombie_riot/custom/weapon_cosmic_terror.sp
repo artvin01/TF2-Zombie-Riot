@@ -315,8 +315,7 @@ public Action Cosmic_Heat_Tick(int client)
 public Action Cosmic_Terror_Sound(Handle timer, int client)
 {
 	if(IsValidClient(client))
-	{
-			
+	{		
 		EmitSoundToClient(client,"weapons/physcannon/energy_sing_loop4.wav",_, SNDCHAN_STATIC, 100, _, 0.175, 30);
 		if(Cosmic_Terror_Pap[client]>=1)
 		{
@@ -360,7 +359,10 @@ public Action Cosmic_Terror_Reset_Wep(Handle cut_timer, int client)
 	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	EmitSoundToClient(client,"weapons/physcannon/physcannon_drop.wav",  _, _, _, _, 0.5, 60);
+	if(IsValidClient(client))
+	{
+		EmitSoundToClient(client,"weapons/physcannon/physcannon_drop.wav",  _, _, _, _, 0.5, 60);
+	}
 	
 	SDKHook(client, SDKHook_PreThink, Cosmic_Heat_Tick);
 	Cosmic_Terror_Cooling_Reset[client]=false;
