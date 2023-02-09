@@ -91,7 +91,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 				}
 				//dont actually extinquish, just give them more damage.
 			}
-			if(!TF2_IsPlayerInCondition(client, TFCond_Ubercharged)) //No infinite uber chain.
+			if(!TF2_IsPlayerInCondition(client, TFCond_Ubercharged) && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)) //No infinite uber chain.
 			{
 				value = Attributes_FindOnWeapon(client, weapon, 17);	// add uber charge on hit
 				if(value)
