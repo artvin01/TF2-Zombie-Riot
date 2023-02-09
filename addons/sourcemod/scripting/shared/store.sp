@@ -4772,6 +4772,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Reset_stats_Irene_Singular_Weapon(entity);
 		Enable_Irene(client, entity);
 		Enable_PHLOG(client, entity);
+		Enable_OceanSong(client, entity);
 #endif
 
 #if defined RPG

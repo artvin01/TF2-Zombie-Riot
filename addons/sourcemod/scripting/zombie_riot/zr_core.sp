@@ -336,6 +336,7 @@ float f_NotifHudOffsetY[MAXTF2PLAYERS];
 #include "shared/custom/weapon_phlog_replacement.sp"
 #include "zombie_riot/custom/weapon_cosmic_terror.sp"
 #include "zombie_riot/custom/wand/weapon_wand_potions.sp"
+#include "zombie_riot/custom/weapon_ocean_song.sp"
 
 void ZR_PluginLoad()
 {

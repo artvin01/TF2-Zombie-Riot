@@ -870,7 +870,7 @@ stock int TF2_CreateGlow(int iEnt)
 
 	return ent;
 }
-stock void SetParent(int iParent, int iChild, const char[] szAttachment = "", const float vOffsets[3] = {0.0,0.0,0.0})
+stock void SetParent(int iParent, int iChild, const char[] szAttachment = "", const float vOffsets[3] = {0.0,0.0,0.0}, bool maintain_anyways = false)
 {
 	SetVariantString("!activator");
 	AcceptEntityInput(iChild, "SetParent", iParent, iChild);
@@ -879,12 +879,15 @@ stock void SetParent(int iParent, int iChild, const char[] szAttachment = "", co
 	{
 		SetVariantString(szAttachment); // "head"
 
-		if (!AreVectorsEqual(vOffsets, view_as<float>({0.0,0.0,0.0}))) // NULL_VECTOR
+		if (maintain_anyways || !AreVectorsEqual(vOffsets, view_as<float>({0.0,0.0,0.0}))) // NULL_VECTOR
 		{
-			float vPos[3];
-			GetEntPropVector(iParent, Prop_Send, "m_vecOrigin", vPos);
-			AddVectors(vPos, vOffsets, vPos);
-			TeleportEntity(iChild, vPos, NULL_VECTOR, NULL_VECTOR);
+			if(!maintain_anyways)
+			{
+				float vPos[3];
+				GetEntPropVector(iParent, Prop_Send, "m_vecOrigin", vPos);
+				AddVectors(vPos, vOffsets, vPos);
+				TeleportEntity(iChild, vPos, NULL_VECTOR, NULL_VECTOR);
+			}
 			AcceptEntityInput(iChild, "SetParentAttachmentMaintainOffset", iParent, iChild);
 		}
 		else
@@ -3709,4 +3712,93 @@ stock bool ShouldNpcDealBonusDamage(int entity, int attacker = -1)
 		return false;
 	}
 	return i_IsABuilding[entity];
+}
+
+stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
+							float fStartWidth=0.8, float fEndWidth=0.8, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt")
+{
+	int iBeam = CreateEntityByName("env_beam");
+	if(iBeam <= MaxClients)
+		return -1;
+
+	if(!IsValidEntity(iBeam))
+		return -1;
+
+	SetEntityModel(iBeam, Model);
+	char sColor[16];
+	Format(sColor, sizeof(sColor), "%d %d %d", iRed, iGreen, iBlue);
+
+	DispatchKeyValue(iBeam, "rendercolor", sColor);
+	DispatchKeyValue(iBeam, "life", "0");
+
+	DispatchSpawn(iBeam);
+
+	SetEntPropEnt(iBeam, Prop_Send, "m_hAttachEntity", EntIndexToEntRef(iEnt));
+
+	SetEntPropEnt(iBeam, Prop_Send, "m_hAttachEntity", EntIndexToEntRef(iEnt2), 1);
+
+	SetEntProp(iBeam, Prop_Send, "m_nNumBeamEnts", 2);
+	SetEntProp(iBeam, Prop_Send, "m_nBeamType", 2);
+
+	SetEntPropFloat(iBeam, Prop_Data, "m_fWidth", fStartWidth);
+	SetEntPropFloat(iBeam, Prop_Data, "m_fEndWidth", fEndWidth);
+
+	SetEntPropFloat(iBeam, Prop_Data, "m_fAmplitude", fAmp);
+
+	SetVariantFloat(32.0);
+	AcceptEntityInput(iBeam, "Amplitude");
+	AcceptEntityInput(iBeam, "TurnOn");
+	return iBeam;
+}
+
+//bool identified if it went above max health or not.
+
+static float f_IncrementalSmallHeal[MAXENTITIES];
+//No need to delele it, its just 1 ho difference, wow so huge.
+bool HealClientViaFloat(int client, float healing_Amount, float MaxHealthOverMulti = 1.0)
+{
+	int flHealth = GetEntProp(client, Prop_Data, "m_iHealth");
+	int flMaxHealth = SDKCall_GetMaxHealth(client);
+
+	int i_TargetHealAmount; //Health to actaully apply
+
+	if (healing_Amount <= 1.0)
+	{
+		f_IncrementalSmallHeal[client] += healing_Amount;
+			
+		if(f_IncrementalSmallHeal[client] >= 1.0)
+		{
+			f_IncrementalSmallHeal[client] -= 1.0;
+			i_TargetHealAmount = 1;
+		}
+	}
+	else
+	{
+		i_TargetHealAmount = RoundToFloor(healing_Amount);
+							
+		float Decimal_healing = FloatFraction(healing_Amount);
+							
+							
+		f_IncrementalSmallHeal[client] += Decimal_healing;
+							
+		while(f_IncrementalSmallHeal[client] >= 1.0)
+		{
+			f_IncrementalSmallHeal[client] -= 1.0;
+			i_TargetHealAmount += 1;
+		}
+	}
+	int newHealth = flHealth + i_TargetHealAmount;
+
+	if(newHealth != flHealth) //Make sure to only set hp when it is actually being overridden.
+	{
+		if((flMaxHealth * MaxHealthOverMulti) > newHealth)
+		{
+			SetEntProp(client, Prop_Data, "m_iHealth", newHealth);	
+		}
+	}
+	if((flMaxHealth * MaxHealthOverMulti) > newHealth)
+	{
+		return true;
+	}
+	return false;
 }

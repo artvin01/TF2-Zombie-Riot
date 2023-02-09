@@ -2318,7 +2318,7 @@ public void Citizen_ClotThink(int iNPC)
 	// Go to ally players
 	if(!walkStatus)
 	{
-		if(npc.m_bGetClosestTargetTimeAlly)
+		if(npc.m_bGetClosestTargetTimeAlly || !npc.m_iTargetAlly || !IsValidAlly(npc.index, npc.m_iTargetAlly))
 		{
 			npc.m_iTargetAlly = 0;
 			npc.m_bSeakingGeneric = false;
