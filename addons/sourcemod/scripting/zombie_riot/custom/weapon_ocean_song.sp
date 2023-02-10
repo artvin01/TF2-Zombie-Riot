@@ -311,7 +311,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
 	{
 		int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(ally))
+		if (IsValidEntity(ally) && !b_NpcHasDied[ally])
 		{
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= range)
