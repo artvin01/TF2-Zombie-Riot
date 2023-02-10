@@ -295,7 +295,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 					flHealMutli_Calc = flHealMulti;
 				} 
 				flHealMutli_Calc *= extra_heal;
-				HealEntityViaFloat(ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0);
+				int healingdone = HealEntityViaFloat(ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0);
 				if(f_OceanBuffAbility[client] > GetGameTime())
 				{
 					f_Ocean_Buff_Stronk_Buff[ally] = GetGameTime() + 0.21;
@@ -304,7 +304,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 				{
 					f_Ocean_Buff_Weak_Buff[ally] = GetGameTime() + 0.21;
 				}
-				i_ExtraPlayerPoints[client] += 1;
+				Healing_done_in_total[client] += healingdone;
 			}
 		}
 	}
@@ -325,7 +325,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 					flHealMutli_Calc = flHealMulti;
 				} 
 				flHealMutli_Calc *= extra_heal;
-				HealEntityViaFloat(ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0);
+				int healingdone = HealEntityViaFloat(ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0);
 				if(f_OceanBuffAbility[client] > GetGameTime())
 				{
 					f_Ocean_Buff_Stronk_Buff[ally] = GetGameTime() + 0.21;
@@ -334,7 +334,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 				{
 					f_Ocean_Buff_Weak_Buff[ally] = GetGameTime() + 0.21;
 				}
-			//	i_ExtraPlayerPoints[client] += 1;
+				Healing_done_in_total[client] += healingdone;
 			}
 		}
 	}
