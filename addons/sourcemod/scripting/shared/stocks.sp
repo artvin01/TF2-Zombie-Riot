@@ -3755,10 +3755,20 @@ stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=25
 
 static float f_IncrementalSmallHeal[MAXENTITIES];
 //No need to delele it, its just 1 ho difference, wow so huge.
-bool HealClientViaFloat(int client, float healing_Amount, float MaxHealthOverMulti = 1.0)
+bool HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMulti = 1.0)
 {
-	int flHealth = GetEntProp(client, Prop_Data, "m_iHealth");
-	int flMaxHealth = SDKCall_GetMaxHealth(client);
+	bool isNotClient = false;
+	int flHealth = GetEntProp(entity, Prop_Data, "m_iHealth");
+	int flMaxHealth;
+	if(entity > MaxClients)
+	{
+		flMaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+		isNotClient = true;
+	}
+	else
+	{
+		flMaxHealth = SDKCall_GetMaxHealth(client);
+	}
 
 	int i_TargetHealAmount; //Health to actaully apply
 

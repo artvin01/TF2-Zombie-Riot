@@ -700,6 +700,16 @@ public void OnPostThink(int client)
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "ᐩ%s", bufferbuffs);
 		}
+		if(f_Ocean_Buff_Stronk_Buff[client] > gameTime) //hussar!
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "⍟%s", bufferbuffs);
+		}
+		else if(f_Ocean_Buff_Weak_Buff[client] > gameTime) //hussar!
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "⌾%s", bufferbuffs);
+		}
 
 		if(had_An_ability)
 		{
@@ -1081,7 +1091,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}
 #endif
 	
-	f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
+	f_TimeUntillNormalHeal[victim] = gameTime + 4	;
 	
 #if defined ZR
 	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
