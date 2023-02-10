@@ -1928,7 +1928,7 @@ public void BlitzLight_DealDamage(int entity)
 	if(i_BlitzLight_dmg_throttle[npc.index] > 6)	//do damage 10 times a second.
 	{
 		i_BlitzLight_dmg_throttle[npc.index] = 0;	//damage throttle
-		Explode_Logic_Custom(BlitzLight_DMG[npc.index], entity, entity, -1, beamLoc, 0.5*BlitzLight_DMG_Radius[npc.index] , _ , _ , true);
+		Explode_Logic_Custom(BlitzLight_DMG[npc.index] * 0.25, entity, entity, -1, beamLoc, 2*BlitzLight_DMG_Radius[npc.index] , _ , _ , true);
 		//CPrintToChatAll("dmg: %fl", BlitzLight_DMG[npc.index]);
 		//CPrintToChatAll("radius: %fl", 1.25*BlitzLight_DMG_Radius[npc.index]);
 		beamLoc[2]+=10;
