@@ -1444,7 +1444,7 @@ public void OnClientPutInServer(int client)
 #endif
 	
 #if defined RPG
-	RPG_PutInServer();
+	RPG_PutInServer(client);
 #endif
 
 	if(AreClientCookiesCached(client)) //Ingore this. This only bugs it out, just force it, who cares.

@@ -960,3 +960,145 @@
 		"wave"  "vo/npc/barney/ba_yell.wav"
 	}
 }
+
+"Rpgfortress.CasinoSpyQuest.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_stabtaunt05.mp3"
+		"wave"  "vo/spy_tietaunt01.mp3"
+		"wave"  "vo/spy_tietaunt02.mp3"
+		"wave"  "vo/spy_tietaunt03.mp3"
+		"wave"  "vo/spy_tietaunt04.mp3"
+		"wave"  "vo/spy_tietaunt05.mp3"
+		"wave"  "vo/spy_tietaunt06.mp3"
+	}
+}
+
+"Rpgfortress.CasinoSpyQuest.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_rpsstart01.mp3"
+		"wave"  "vo/spy_mvm_loot_common02.mp3"
+		"wave"  "vo/spy_laughshort01.mp3"
+		"wave"  "vo/spy_laughshort02.mp3"
+		"wave"  "vo/spy_laughshort03.mp3"
+		"wave"  "vo/spy_laughshort04.mp3"
+		"wave"  "vo/spy_laughshort05.mp3"
+		"wave"  "vo/spy_laughshort06.mp3"
+		"wave"	"vo/spy_sf12_dancing01.mp3"
+	}
+}
+
+"Rpgfortress.CasinoSpyQuest.ProblemTurnIn"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_sf12_badmagic07.mp3"
+	}
+}
+
+"Rpgfortress.CasinoSpyQuest.KillAccept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_tietaunt09.mp3"
+		"wave"  "vo/spy_tietaunt09.mp3"
+		"wave"  "vo/spy_tietaunt09.mp3"
+		"wave"	"vo/spy_activatecharge02.mp3"
+	}
+}
+
+"Rpgfortress.CasinoSpyQuest.ClueAccept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_mvm_loot_rare01.mp3"
+		"wave"  "vo/spy_go01.mp3"
+		"wave"	"vo/spy_go03.mp3"
+		"wave"	"vo/spy_activatecharge02.mp3"
+	}
+}
+
+"Rpgfortress.CasinoSpyQuest.TurnIn"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_paulingkilltaunt03.mp3"
+		"wave"  "vo/spy_rpswin01.mp3"
+		"wave"  "vo/spy_sf12_goodmagic01.mp3"
+		"wave"  "vo/spy_sf12_goodmagic02.mp3"
+		"wave"  "vo/spy_sf12_goodmagic03.mp3"
+	}
+}
+
+"Rpgfortress.CasinoSpyQuest.SemiFinalTurnIn"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_sf13_magic_reac01.mp3"
+	}
+}
+
+"Rpgfortress.CasinoSpyQuest.FinalAccept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_sf12_scared01.mp3"
+		"wave"  "vo/spy_sf13_magic_reac04.mp3"
+	}
+}
+
+"Rpgfortress.CasinoSpyQuest.FinalTurnIn"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/spy_sf13_magic_reac06.mp3"
+	}
+}
