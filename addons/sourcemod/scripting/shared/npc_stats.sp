@@ -4130,6 +4130,7 @@ public bool BulletAndMeleeTraceAlly(int entity, int contentsMask, any iExclude)
 		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
 		{
 			return !(entity == iExclude);
+			
 		}
 		else if (b_CantCollidie[entity] && b_CantCollidieAlly[entity]) //If both are on, then that means the npc shouldnt be invis and stuff
 		{
