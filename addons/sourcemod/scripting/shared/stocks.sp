@@ -3750,3 +3750,55 @@ stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=25
 	AcceptEntityInput(iBeam, "TurnOn");
 	return iBeam;
 }
+
+//bool identified if it went above max health or not.
+
+static float f_IncrementalSmallHeal[MAXENTITIES];
+//No need to delele it, its just 1 ho difference, wow so huge.
+bool HealClientViaFloat(int client, float healing_Amount, float MaxHealthOverMulti = 1.0)
+{
+	int flHealth = GetEntProp(client, Prop_Data, "m_iHealth");
+	int flMaxHealth = SDKCall_GetMaxHealth(client);
+
+	int i_TargetHealAmount; //Health to actaully apply
+
+	if (healing_Amount <= 1.0)
+	{
+		f_IncrementalSmallHeal[client] += healing_Amount;
+			
+		if(f_IncrementalSmallHeal[client] >= 1.0)
+		{
+			f_IncrementalSmallHeal[client] -= 1.0;
+			i_TargetHealAmount = 1;
+		}
+	}
+	else
+	{
+		i_TargetHealAmount = RoundToFloor(healing_Amount);
+							
+		float Decimal_healing = FloatFraction(healing_Amount);
+							
+							
+		f_IncrementalSmallHeal[client] += Decimal_healing;
+							
+		while(f_IncrementalSmallHeal[client] >= 1.0)
+		{
+			f_IncrementalSmallHeal[client] -= 1.0;
+			i_TargetHealAmount += 1;
+		}
+	}
+	int newHealth = flHealth + i_TargetHealAmount;
+
+	if(newHealth != flHealth) //Make sure to only set hp when it is actually being overridden.
+	{
+		if((flMaxHealth * MaxHealthOverMulti) > newHealth)
+		{
+			SetEntProp(client, Prop_Data, "m_iHealth", newHealth);	
+		}
+	}
+	if((flMaxHealth * MaxHealthOverMulti) > newHealth)
+	{
+		return true;
+	}
+	return false;
+}
