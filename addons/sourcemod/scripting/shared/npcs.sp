@@ -1334,6 +1334,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		damage *= 1.15;
 	}
+	if(f_Ocean_Buff_Stronk_Buff[attacker] > GetGameTime()) //hussar!
+	{
+		damage *= 1.30;
+	}
+	else if (f_Ocean_Buff_Weak_Buff[attacker] > GetGameTime()) //hussar!
+	{
+		damage *= 1.10;
+	}
 	if(f_EmpowerStateOther[attacker] > GetGameTime()) //Allow stacking.
 	{
 		damage *= 1.1;

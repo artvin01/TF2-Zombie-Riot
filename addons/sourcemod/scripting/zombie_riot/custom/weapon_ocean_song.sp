@@ -1,11 +1,13 @@
-Handle h_TimerOceanSongManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
-int i_Particle_1[MAXPLAYERS+1];
-int i_Particle_2[MAXPLAYERS+1];
-int i_Particle_3[MAXPLAYERS+1];
-int i_Particle_4[MAXPLAYERS+1];
-int i_Laser_1[MAXPLAYERS+1];
+static Handle h_TimerOceanSongManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static int i_Particle_1[MAXPLAYERS+1];
+static int i_Particle_2[MAXPLAYERS+1];
+static int i_Particle_3[MAXPLAYERS+1];
+static int i_Particle_4[MAXPLAYERS+1];
+static int i_Laser_1[MAXPLAYERS+1];
+static float f_OceanBuffAbility[MAXPLAYERS+1];
 
 #define LASERBEAM "sprites/laserbeam.vmt"
+#define OCEAN_HEAL_BASE 0.15
 
 //code that starts up a repeat timer upon weapon equip
 public void Enable_OceanSong(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
@@ -46,7 +48,10 @@ public void Enable_OceanSong(int client, int weapon) // Enable management, handl
 
 #define OCEAN_SING_OFFSET_UP 100.0
 #define OCEAN_SING_OFFSET_DOWN 25.0
-
+void ResetMapStartOcean()
+{
+	Zero(f_OceanBuffAbility);
+}
 void ApplyExtraOceanEffects(int client, bool remove = false)
 {
 	bool do_new = true;
@@ -196,16 +201,66 @@ public Action Timer_Management_OceanSong(Handle timer, DataPack pack)
 					ApplyExtraOceanEffects(client, false);
 					float BannerPos[3];
 					GetClientAbsOrigin(client, BannerPos);
+					float flHealMulti;
+					float flHealMutli2;
+
+					flHealMulti = Attributes_FindOnPlayer(client, 8, true, 1.0, true);
+					
+					float targPos[3];
 					for(int ally=1; ally<=MaxClients; ally++)
 					{
 						if(IsClientInGame(ally) && IsPlayerAlive(ally))
 						{
-							float targPos[3];
 							GetClientAbsOrigin(ally, targPos);
 							if (GetVectorDistance(BannerPos, targPos, true) <= 160000.0) // 650.0
 							{
-								TF2_AddCondition(ally, TFCond_RuneRegen, 0.5, client); //So if they go out of range, they'll keep it abit
+								if(f_TimeUntillNormalHeal[ally] > GetGameTime())
+								{
+									flHealMutli2 = flHealMulti * 0.75;
+								}
+								else 
+								{
+									flHealMutli2 = flHealMulti;
+								} 
+								HealEntityViaFloat(ally, OCEAN_HEAL_BASE * flHealMulti2, 1.0);
+								if(f_OceanBuffAbility[ally] > GetGameTime())
+								{
+									f_Ocean_Buff_Stronk_Buff[ally] = GetGameTime() + 0.11;
+								}
+								else 
+								{
+									f_Ocean_Buff_Weak_Buff[ally] = GetGameTime() + 0.11;
+								}
 								i_ExtraPlayerPoints[client] += 1;
+							}
+						}
+					}
+					for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+					{
+						int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+						if (IsValidEntity(ally))
+						{
+							GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
+							if (GetVectorDistance(BannerPos, targPos, true) <= 160000.0)
+							{
+								if(f_TimeUntillNormalHeal[ally] > GetGameTime())
+								{
+									flHealMutli2 = flHealMulti * 0.75;
+								}
+								else 
+								{
+									flHealMutli2 = flHealMulti;
+								} 
+								HealEntityViaFloat(ally, OCEAN_HEAL_BASE * flHealMulti2, 1.0);
+								if(f_OceanBuffAbility[ally] > GetGameTime())
+								{
+									f_Ocean_Buff_Stronk_Buff[ally] = GetGameTime() + 0.11;
+								}
+								else 
+								{
+									f_Ocean_Buff_Weak_Buff[ally] = GetGameTime() + 0.11;
+								}
+							//	i_ExtraPlayerPoints[client] += 1;
 							}
 						}
 					}
@@ -324,3 +379,25 @@ void AttachParticleOceanCustom(int ent, char[] particleType,int controlpoint, in
 	i_Particle_3[client] = EntIndexToEntRef(particle);
 	i_Particle_4[client] = EntIndexToEntRef(particle2);
 } 
+
+public void Ocean_song_ability(int client, int weapon, bool crit, int slot)
+{
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		Ability_Apply_Cooldown(client, slot, 75.0);
+		f_OceanBuffAbility[client] = GetGameTime() + 15.0;
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+	}
+
+}

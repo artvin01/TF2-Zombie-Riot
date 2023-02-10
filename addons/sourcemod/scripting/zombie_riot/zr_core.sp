@@ -507,6 +507,7 @@ void ZR_MapStart()
 	Passanger_Map_Precache();
 	Reset_stats_Passanger_Global();
 	Wand_Potions_Precache();
+	ResetMapStartOcean();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
