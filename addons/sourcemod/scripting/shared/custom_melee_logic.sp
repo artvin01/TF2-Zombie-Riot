@@ -324,7 +324,7 @@ bool CTFWeaponBaseMelee::DoSwingTraceInternal( trace_t &trace, bool bCleave, CUt
 
 #define MELEE_RANGE 100
 #define MELEE_BOUNDS 22.0
-void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], float CustomMeleeRange = 0.0)
+void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], float CustomMeleeRange = 0.0, bool Hit_ally = false)
 {
 	// Setup a volume for the melee weapon to be swung - approx size, so all melee behave the same.
 	static float vecSwingMins[3]; vecSwingMins = view_as<float>({-MELEE_BOUNDS, -MELEE_BOUNDS, -MELEE_BOUNDS});
@@ -358,13 +358,27 @@ void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], fl
 //	TE_SetupBeamPoints(vecSwingStart, vecSwingEnd, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
 //	TE_SendToAll();
 	
-	// See if we hit anything.
-	trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, client );
-	if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
+	if(!Hit_ally)
 	{
-		delete trace;
-		trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
-	//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
+		// See if we hit anything.
+		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, client );
+		if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
+		{
+			delete trace;
+			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
+		//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
+		}	
+	}
+	else
+	{
+		// See if we hit anything.
+		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTraceAlly, client );
+		if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
+		{
+			delete trace;
+			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTraceAlly, client );
+		//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
+		}			
 	}
 }
 

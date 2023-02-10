@@ -8,7 +8,8 @@ static float f_OceanBuffAbility[MAXPLAYERS+1];
 
 #define LASERBEAM "sprites/laserbeam.vmt"
 #define OCEAN_HEAL_BASE 0.15
-
+#define OCEAN_SOUND "ambient_mp3/lair/cap_1_tone_metal_movement2.mp3"
+#define OCEAN_SOUND_MELEE "ambient/water/water_splash1.wav"
 //code that starts up a repeat timer upon weapon equip
 public void Enable_OceanSong(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
@@ -50,7 +51,49 @@ public void Enable_OceanSong(int client, int weapon) // Enable management, handl
 #define OCEAN_SING_OFFSET_DOWN 25.0
 void ResetMapStartOcean()
 {
+	PrecacheSound(OCEAN_SOUND);
+	PrecacheSound(OCEAN_SOUND_MELEE);
 	Zero(f_OceanBuffAbility);
+}
+void ConnectTwoEntitiesWithMedibeam(int owner, int target)
+{
+	int OldParticle = EntRefToEntIndex(i_Particle_1[owner]);
+	int OldParticle2 = EntRefToEntIndex(i_Particle_2[owner]);
+	if(!IsValidEntity(OldParticle) || !IsValidEntity(OldParticle2))
+	{
+		return;
+	}
+	float vecTarget[3];
+	
+	vecTarget = WorldSpaceCenter(target);
+
+	int particle = ParticleEffectAtOcean(vecTarget, "medicgun_beam_blue", 0.0 , _, false);
+	
+	SetParent(target, particle, "", _, true);
+
+	i_Particle_3[owner] = EntIndexToEntRef(particle);
+
+	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+	
+	vecTarget = WorldSpaceCenter(OldParticle2);
+
+	int particle2 = ParticleEffectAtOcean(vecTarget, "medicgun_beam_blue", 0.0 , particle, false);
+	SetParent(OldParticle2, particle2, "", _, true);
+
+	i_Particle_4[owner] = EntIndexToEntRef(particle2);
+	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(particle2), TIMER_FLAG_NO_MAPCHANGE);
+
+	char szCtrlParti[128];
+	Format(szCtrlParti, sizeof(szCtrlParti), "tf2ctrlpart%i", EntIndexToEntRef(particle2));
+	DispatchKeyValue(particle, "targetname", szCtrlParti);
+
+	DispatchKeyValue(particle2, "cpoint1", szCtrlParti);
+	ActivateEntity(particle2);
+//	ActivateEntity(particle);
+	AcceptEntityInput(particle2, "start");
+//	AcceptEntityInput(particle, "start");	
+
+
 }
 void ApplyExtraOceanEffects(int client, bool remove = false)
 {
@@ -199,71 +242,7 @@ public Action Timer_Management_OceanSong(Handle timer, DataPack pack)
 				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 				{
 					ApplyExtraOceanEffects(client, false);
-					float BannerPos[3];
-					GetClientAbsOrigin(client, BannerPos);
-					float flHealMulti;
-					float flHealMutli2;
-
-					flHealMulti = Attributes_FindOnPlayer(client, 8, true, 1.0, true);
-					
-					float targPos[3];
-					for(int ally=1; ally<=MaxClients; ally++)
-					{
-						if(IsClientInGame(ally) && IsPlayerAlive(ally))
-						{
-							GetClientAbsOrigin(ally, targPos);
-							if (GetVectorDistance(BannerPos, targPos, true) <= 160000.0) // 650.0
-							{
-								if(f_TimeUntillNormalHeal[ally] > GetGameTime())
-								{
-									flHealMutli2 = flHealMulti * 0.75;
-								}
-								else 
-								{
-									flHealMutli2 = flHealMulti;
-								} 
-								HealEntityViaFloat(ally, OCEAN_HEAL_BASE * flHealMulti2, 1.0);
-								if(f_OceanBuffAbility[ally] > GetGameTime())
-								{
-									f_Ocean_Buff_Stronk_Buff[ally] = GetGameTime() + 0.11;
-								}
-								else 
-								{
-									f_Ocean_Buff_Weak_Buff[ally] = GetGameTime() + 0.11;
-								}
-								i_ExtraPlayerPoints[client] += 1;
-							}
-						}
-					}
-					for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
-					{
-						int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-						if (IsValidEntity(ally))
-						{
-							GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
-							if (GetVectorDistance(BannerPos, targPos, true) <= 160000.0)
-							{
-								if(f_TimeUntillNormalHeal[ally] > GetGameTime())
-								{
-									flHealMutli2 = flHealMulti * 0.75;
-								}
-								else 
-								{
-									flHealMutli2 = flHealMulti;
-								} 
-								HealEntityViaFloat(ally, OCEAN_HEAL_BASE * flHealMulti2, 1.0);
-								if(f_OceanBuffAbility[ally] > GetGameTime())
-								{
-									f_Ocean_Buff_Stronk_Buff[ally] = GetGameTime() + 0.11;
-								}
-								else 
-								{
-									f_Ocean_Buff_Weak_Buff[ally] = GetGameTime() + 0.11;
-								}
-							//	i_ExtraPlayerPoints[client] += 1;
-							}
-						}
-					}
+					DoHealingOcean(client, client);
 				}
 				else
 				{
@@ -290,6 +269,76 @@ public Action Timer_Management_OceanSong(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
+void DoHealingOcean(int client, int target, float range = 160000.0, float extra_heal = 1.0)
+{
+	float BannerPos[3];
+	GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", BannerPos);
+	float flHealMulti;
+	float flHealMutli_Calc;
+
+	flHealMulti = Attributes_FindOnPlayer(client, 8, true, 1.0, true);
+	
+	float targPos[3];
+	for(int ally=1; ally<=MaxClients; ally++)
+	{
+		if(IsClientInGame(ally) && IsPlayerAlive(ally))
+		{
+			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
+			if (GetVectorDistance(BannerPos, targPos, true) <= range) // 650.0
+			{
+				if(f_TimeUntillNormalHeal[ally] > GetGameTime())
+				{
+					flHealMutli_Calc = flHealMulti * 0.5;
+				}
+				else 
+				{
+					flHealMutli_Calc = flHealMulti;
+				} 
+				flHealMutli_Calc *= extra_heal;
+				HealEntityViaFloat(ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0);
+				if(f_OceanBuffAbility[client] > GetGameTime())
+				{
+					f_Ocean_Buff_Stronk_Buff[ally] = GetGameTime() + 0.21;
+				}
+				else 
+				{
+					f_Ocean_Buff_Weak_Buff[ally] = GetGameTime() + 0.21;
+				}
+				i_ExtraPlayerPoints[client] += 1;
+			}
+		}
+	}
+	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	{
+		int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+		if (IsValidEntity(ally))
+		{
+			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
+			if (GetVectorDistance(BannerPos, targPos, true) <= range)
+			{
+				if(f_TimeUntillNormalHeal[ally] > GetGameTime())
+				{
+					flHealMutli_Calc = flHealMulti * 0.5;
+				}
+				else 
+				{
+					flHealMutli_Calc = flHealMulti;
+				} 
+				flHealMutli_Calc *= extra_heal;
+				HealEntityViaFloat(ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0);
+				if(f_OceanBuffAbility[client] > GetGameTime())
+				{
+					f_Ocean_Buff_Stronk_Buff[ally] = GetGameTime() + 0.21;
+				}
+				else 
+				{
+					f_Ocean_Buff_Weak_Buff[ally] = GetGameTime() + 0.21;
+				}
+			//	i_ExtraPlayerPoints[client] += 1;
+			}
+		}
+	}
+}
 public void Kill_Timer_Management_OceanSong(int client)
 {
 	if (h_TimerOceanSongManagement[client] != INVALID_HANDLE)
@@ -305,6 +354,10 @@ stock int ParticleEffectAtOcean(float position[3], const char[] effectName, floa
 	int particle = CreateEntityByName("info_particle_system");
 	if (particle != -1)
 	{
+	//	float angle[3];
+	//	angle[0] = 90.0;
+	//	angle[1] = 90.0;
+	//	angle[2] = 90.0;
 		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
 		DispatchKeyValue(particle, "targetname", "rpg_fortress");
 		DispatchKeyValue(particle, "effect_name", effectName);
@@ -321,7 +374,7 @@ stock int ParticleEffectAtOcean(float position[3], const char[] effectName, floa
 	}
 	return particle;
 }
-
+/*
 void AttachParticleOceanCustom(int ent, char[] particleType,int controlpoint, int client)
 {
 	int particle  = CreateEntityByName("info_particle_system");
@@ -379,13 +432,24 @@ void AttachParticleOceanCustom(int ent, char[] particleType,int controlpoint, in
 	i_Particle_3[client] = EntIndexToEntRef(particle);
 	i_Particle_4[client] = EntIndexToEntRef(particle2);
 } 
-
+*/
 public void Ocean_song_ability(int client, int weapon, bool crit, int slot)
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Ability_Apply_Cooldown(client, slot, 75.0);
 		f_OceanBuffAbility[client] = GetGameTime() + 15.0;
+		float UserLoc[3];
+		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", UserLoc);
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, 2.5, 12.0, 2.1, 5, 650 * 2.0);	
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, 2.0, 12.0, 2.1, 5, 650 * 2.0);	
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, 1.5, 12.0, 2.1, 5, 650 * 2.0);	
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, 1.0, 12.0, 2.1, 5, 650 * 2.0);	
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, 0.5, 12.0, 2.1, 5, 650 * 2.0);	
+		EmitSoundToAll(OCEAN_SOUND, client, _, 75, _, 1.0);
+		EmitSoundToAll(OCEAN_SOUND, client, _, 75, _, 1.0);
+		EmitSoundToAll(OCEAN_SOUND, client, _, 75, _, 1.0);
+		EmitSoundToAll(OCEAN_SOUND, client, _, 75, _, 1.0);
 	}
 	else
 	{
@@ -400,4 +464,40 @@ public void Ocean_song_ability(int client, int weapon, bool crit, int slot)
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 	}
 
+}
+
+#define OCEAN_MELEE_RANGE_DETECTION 300.0
+
+public void Weapon_Ocean_Attack(int client, int weapon, bool crit, int slot)
+{		
+	float vecSwingForward[3];
+	StartPlayerOnlyLagComp(client, true);
+	Handle swingTrace;
+	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, OCEAN_MELEE_RANGE_DETECTION, true); //want to hit only allies!
+				
+	int target = TR_GetEntityIndex(swingTrace);
+	float vecHit[3];
+	TR_GetEndPosition(vecHit, swingTrace);	
+
+	delete swingTrace;
+/*
+	static float belowBossEyes[3];
+	float damage = 65.0;
+	Address	address = TF2Attrib_GetByDefIndex(weapon, 410);
+	if(address != Address_Null)
+		damage *= TF2Attrib_GetValue(address); //massive damage!
+*/
+//	EmitSoundToAll(SOUND_WAND_PASSANGER, client, SNDCHAN_AUTO, 80, _, 0.9, GetRandomInt(95, 110));
+	if(IsValidAlly(client, target))
+	{
+		int pitch = GetRandomInt(90,110);
+		EmitSoundToAll(OCEAN_SOUND_MELEE, client, _, 75, _, 1.0, pitch);
+		EmitSoundToAll(OCEAN_SOUND_MELEE, target, _, 75, _, 1.0, pitch);
+		float UserLoc[3];
+		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", UserLoc);
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, 0.5, 6.0, 2.1, 5, 150 * 2.0);	
+		DoHealingOcean(client, target, 22500.0, 8.0);
+		ConnectTwoEntitiesWithMedibeam(client, target);
+	}
+	EndPlayerOnlyLagComp(client);
 }

@@ -3757,28 +3757,28 @@ static float f_IncrementalSmallHeal[MAXENTITIES];
 //No need to delele it, its just 1 ho difference, wow so huge.
 bool HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMulti = 1.0)
 {
-	bool isNotClient = false;
+//	bool isNotClient = false;
 	int flHealth = GetEntProp(entity, Prop_Data, "m_iHealth");
 	int flMaxHealth;
 	if(entity > MaxClients)
 	{
 		flMaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
-		isNotClient = true;
+//		isNotClient = true;
 	}
 	else
 	{
-		flMaxHealth = SDKCall_GetMaxHealth(client);
+		flMaxHealth = SDKCall_GetMaxHealth(entity);
 	}
 
 	int i_TargetHealAmount; //Health to actaully apply
 
 	if (healing_Amount <= 1.0)
 	{
-		f_IncrementalSmallHeal[client] += healing_Amount;
+		f_IncrementalSmallHeal[entity] += healing_Amount;
 			
-		if(f_IncrementalSmallHeal[client] >= 1.0)
+		if(f_IncrementalSmallHeal[entity] >= 1.0)
 		{
-			f_IncrementalSmallHeal[client] -= 1.0;
+			f_IncrementalSmallHeal[entity] -= 1.0;
 			i_TargetHealAmount = 1;
 		}
 	}
@@ -3789,11 +3789,11 @@ bool HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMul
 		float Decimal_healing = FloatFraction(healing_Amount);
 							
 							
-		f_IncrementalSmallHeal[client] += Decimal_healing;
+		f_IncrementalSmallHeal[entity] += Decimal_healing;
 							
-		while(f_IncrementalSmallHeal[client] >= 1.0)
+		while(f_IncrementalSmallHeal[entity] >= 1.0)
 		{
-			f_IncrementalSmallHeal[client] -= 1.0;
+			f_IncrementalSmallHeal[entity] -= 1.0;
 			i_TargetHealAmount += 1;
 		}
 	}
@@ -3803,7 +3803,7 @@ bool HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMul
 	{
 		if((flMaxHealth * MaxHealthOverMulti) > newHealth)
 		{
-			SetEntProp(client, Prop_Data, "m_iHealth", newHealth);	
+			SetEntProp(entity, Prop_Data, "m_iHealth", newHealth);	
 		}
 	}
 	if((flMaxHealth * MaxHealthOverMulti) > newHealth)

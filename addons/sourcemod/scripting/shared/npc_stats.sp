@@ -4103,6 +4103,53 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 	return !(entity == iExclude);
 }
 
+public bool BulletAndMeleeTraceAlly(int entity, int contentsMask, any iExclude)
+{
+#if defined ZR
+	if(entity > 0 && entity <= MaxClients) 
+	{
+		if(TeutonType[entity])
+		{
+			return false;
+		}
+	}
+#endif
+	if(i_IsABuilding[entity])
+	{
+		return false;
+	}
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
+	{
+		return false;
+	}
+	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") != GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		return false;
+
+	else if(!b_NpcHasDied[entity])
+	{
+		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		{
+			return !(entity == iExclude);
+		}
+		else if (b_CantCollidie[entity] && b_CantCollidieAlly[entity]) //If both are on, then that means the npc shouldnt be invis and stuff
+		{
+			return false;
+		}
+	}
+	
+	//if anything else is team
+	if(b_ThisEntityIgnored[entity])
+	{
+		return false;
+	}	
+
+	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		return !(entity == iExclude);
+
+
+	return !(entity == iExclude);
+}
+
 int Entity_to_Respect;
 
 public void AddEntityToTraceStuckCheck(int entity)
