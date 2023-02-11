@@ -281,7 +281,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 	float targPos[3];
 	for(int ally=1; ally<=MaxClients; ally++)
 	{
-		if(IsClientInGame(ally) && IsPlayerAlive(ally) && dieingstate[client] == 0 && TeutonType[client] == TEUTON_NONE)
+		if(IsClientInGame(ally) && IsPlayerAlive(ally) && dieingstate[ally] == 0 && TeutonType[ally] == TEUTON_NONE)
 		{
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= range) // 650.0
