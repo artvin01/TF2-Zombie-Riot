@@ -62,6 +62,7 @@ bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 #include "rpg_fortress/custom/weapon_boom_stick.sp"
 #include "rpg_fortress/custom/accesorry_mudrock_shield.sp"
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
+#include "rpg_fortress/custom/wand/weapon_arts_wand.sp"
 
 void RPG_PluginStart()
 {
@@ -129,6 +130,7 @@ void RPG_MapStart()
 	BoomStick_MapPrecache();
 	Medigun_PersonOnMapStart();
 	Abiltity_Mudrock_Shield_Shield_PluginStart();
+	Wand_Arts_MapStart();
 }
 
 void RPG_MapEnd()
