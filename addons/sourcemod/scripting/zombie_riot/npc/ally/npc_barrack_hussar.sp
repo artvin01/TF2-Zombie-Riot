@@ -94,7 +94,7 @@ public void BarrackHussar_ClotThink(int iNPC)
 				}
 			}
 
-			HussarAOEBuff(view_as<MedivalHussar>(npc), GetGameTime(npc.index));
+			HussarAOEBuff(view_as<MedivalHussar>(npc), GetGameTime(npc.index), true);
 		}
 
 		BarrackBody_ThinkMove(npc.index, 250.0, "ACT_RIDER_IDLE", "ACT_RIDER_RUN");
