@@ -5,7 +5,7 @@
 //This shit is so fucking unfair for the targeted.
 
 
-#define IRENE_JUDGEMENT_MAX_HITS_NEEDED 64 	//Double the amount because we do double hits.
+#define IRENE_JUDGEMENT_MAX_HITS_NEEDED 42 	//Double the amount because we do double hits.
 #define IRENE_JUDGEMENT_MAXRANGE 350.0 		
 #define IRENE_JUDGEMENT_EXPLOSION_RANGE 75.0 		
 
