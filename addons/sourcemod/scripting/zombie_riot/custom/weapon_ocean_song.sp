@@ -49,6 +49,7 @@ public void Enable_OceanSong(int client, int weapon) // Enable management, handl
 
 #define OCEAN_SING_OFFSET_UP 100.0
 #define OCEAN_SING_OFFSET_DOWN 25.0
+
 void ResetMapStartOcean()
 {
 	for( int client = 1; client <= MaxClients; client++ ) 
@@ -59,6 +60,7 @@ void ResetMapStartOcean()
 	PrecacheSound(OCEAN_SOUND_MELEE);
 	Zero(f_OceanBuffAbility);
 }
+
 void ConnectTwoEntitiesWithMedibeam(int owner, int target)
 {
 	int OldParticle = EntRefToEntIndex(i_Particle_1[owner]);
@@ -256,6 +258,7 @@ public Action Timer_Management_OceanSong(Handle timer, DataPack pack)
 			else
 			{
 				ApplyExtraOceanEffects(client, true);
+				Kill_Timer_Management_OceanSong(client);
 			}
 		}
 		else
