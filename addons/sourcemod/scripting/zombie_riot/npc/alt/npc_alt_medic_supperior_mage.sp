@@ -242,8 +242,8 @@ methodmap NPC_ALT_MEDIC_SUPPERIOR_MAGE < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "Enable");
 		
 		npc.StartPathing();
-		fl_TimebeforeIOC[npc.index] = GetGameTime(npc.index) + 10.0;
-		npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 15.0;
+		fl_TimebeforeIOC[npc.index] = GetGameTime(npc.index) + 5.0;
+		npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 7.5;
 		npc.m_bInKame = false;
 		npc.Anger = false;
 		
