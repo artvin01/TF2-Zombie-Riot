@@ -465,10 +465,11 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 	float original_damage = damage;
 
 	int PreviousTarget = target;
+	int TraceFromThis = entity;
 
 	for (int loop = 8; loop > 2; loop--) //Chain upto alot of times
 	{
-		int enemy = SonOfOsiris_GetClosestTargetNotAffectedByLightning(entity, vecHit, alliednpc);
+		int enemy = SonOfOsiris_GetClosestTargetNotAffectedByLightning(TraceFromThis, vecHit, alliednpc);
 		if(IsValidEntity(enemy) && PreviousTarget != enemy)
 		{
 			if(IsValidClient(enemy))
@@ -528,6 +529,7 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 			}	
 			vecHit = vehit_save;
 			PreviousTarget = enemy;
+			TraceFromThis = enemy;
 		}
 		else
 		{
@@ -554,8 +556,8 @@ stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(int traceentity , f
 					
 				if(distance <= Pow(SON_OF_OSIRIS_RANGE , 2.0))
 				{
-					int hitentity = Can_I_See_Enemy_Only(traceentity, baseboss_index);
-					if(hitentity == baseboss_index)
+					bool hitentity = Can_I_See_Enemy_Only(traceentity, baseboss_index);
+					if(hitentity)
 					{
 						if( TargetDistance ) 
 						{
@@ -588,8 +590,8 @@ stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(int traceentity , f
 					
 				if(distance <= Pow(SON_OF_OSIRIS_RANGE , 2.0))
 				{
-					int hitentity = Can_I_See_Enemy_Only(traceentity, baseboss_index);
-					if(hitentity == baseboss_index)
+					bool hitentity = Can_I_See_Enemy_Only(traceentity, baseboss_index);
+					if(hitentity)
 					{
 						if( TargetDistance ) 
 						{
@@ -621,8 +623,8 @@ stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(int traceentity , f
 						
 					if(distance <= Pow(SON_OF_OSIRIS_RANGE , 2.0))
 					{
-						int hitentity = Can_I_See_Enemy_Only(traceentity, client);
-						if(hitentity == client)
+						bool hitentity = Can_I_See_Enemy_Only(traceentity, client);
+						if(hitentity)
 						{
 							if( TargetDistance ) 
 							{

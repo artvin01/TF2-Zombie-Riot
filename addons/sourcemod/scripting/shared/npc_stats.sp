@@ -5521,10 +5521,13 @@ public bool Can_I_See_Enemy_Only(int attacker, int enemy)
 	
 	RemoveEntityToTraceStuckCheck(enemy);
 	
-	bool bHit = TR_DidHit(trace);	
-
+	int Traced_Target = TR_GetEntityIndex(trace);
 	delete trace;
-	return bHit;
+	if(Traced_Target == enemy)
+	{
+		return true;
+	}
+	return false;
 }
 
 public int Can_I_See_Ally(int attacker, int ally)

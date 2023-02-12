@@ -51,6 +51,10 @@ public void Enable_OceanSong(int client, int weapon) // Enable management, handl
 #define OCEAN_SING_OFFSET_DOWN 25.0
 void ResetMapStartOcean()
 {
+	for( int client = 1; client <= MaxClients; client++ ) 
+	{
+		ApplyExtraOceanEffects(client, true);
+	}
 	PrecacheSound(OCEAN_SOUND);
 	PrecacheSound(OCEAN_SOUND_MELEE);
 	Zero(f_OceanBuffAbility);
@@ -67,7 +71,7 @@ void ConnectTwoEntitiesWithMedibeam(int owner, int target)
 	
 	vecTarget = WorldSpaceCenter(target);
 
-	int particle = ParticleEffectAtOcean(vecTarget, "medicgun_beam_blue", 0.0 , _, false);
+	int particle = ParticleEffectAtOcean(vecTarget, "medicgun_beam_red", 0.0 , _, false);
 	
 	SetParent(target, particle, "", _, true);
 
@@ -77,7 +81,7 @@ void ConnectTwoEntitiesWithMedibeam(int owner, int target)
 	
 	vecTarget = WorldSpaceCenter(OldParticle2);
 
-	int particle2 = ParticleEffectAtOcean(vecTarget, "medicgun_beam_blue", 0.0 , particle, false);
+	int particle2 = ParticleEffectAtOcean(vecTarget, "medicgun_beam_red", 0.0 , particle, false);
 	SetParent(OldParticle2, particle2, "", _, true);
 
 	i_Particle_4[owner] = EntIndexToEntRef(particle2);
@@ -189,7 +193,7 @@ void ApplyExtraOceanEffects(int client, bool remove = false)
 	vecSwingEnd[2] = flPos[2] + (vecSwingForward[2] * OCEAN_SING_OFFSET_DOWN);
 
 	
-	int particle = ParticleEffectAtOcean(vecSwingEnd, "player_drips_blue", 0.0 , _, false);
+	int particle = ParticleEffectAtOcean(vecSwingEnd, "player_dripsred", 0.0 , _, false);
 
 
 	SetParent(client, particle, "effect_hand_r", _, true);
@@ -207,7 +211,7 @@ void ApplyExtraOceanEffects(int client, bool remove = false)
 	vecSwingEnd[1] = flPos[1] + (vecSwingForward[1] * OCEAN_SING_OFFSET_UP);
 	vecSwingEnd[2] = flPos[2] + (vecSwingForward[2] * OCEAN_SING_OFFSET_UP);
 
-	int particle2 = ParticleEffectAtOcean(vecSwingEnd, "medicgun_beam_blue", 0.0 , particle, false);
+	int particle2 = ParticleEffectAtOcean(vecSwingEnd, "medicgun_beam_red", 0.0 , particle, false);
 	SetParent(client, particle2, "effect_hand_r", _, true);
 
 	char szCtrlParti[128];
@@ -224,7 +228,7 @@ void ApplyExtraOceanEffects(int client, bool remove = false)
 	i_Particle_2[client] = EntIndexToEntRef(particle2);
 
 
-	i_Laser_1[client] = EntIndexToEntRef(ConnectWithBeamClient(particle, particle2, 65, 65, 200, 4.0, 2.0, 1.0, LASERBEAM));
+	i_Laser_1[client] = EntIndexToEntRef(ConnectWithBeamClient(particle, particle2, 200, 65, 65, 4.0, 2.0, 1.0, LASERBEAM));
 }
 //main code responsible for checking if the player is alive etc. and actualy giving the buffs
 public Action Timer_Management_OceanSong(Handle timer, DataPack pack)
@@ -441,11 +445,11 @@ public void Ocean_song_ability(int client, int weapon, bool crit, int slot)
 		f_OceanBuffAbility[client] = GetGameTime() + 15.0;
 		float UserLoc[3];
 		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", UserLoc);
-		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, 2.5, 12.0, 2.1, 5, 650 * 2.0);	
-		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, 2.0, 12.0, 2.1, 5, 650 * 2.0);	
-		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, 1.5, 12.0, 2.1, 5, 650 * 2.0);	
-		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, 1.0, 12.0, 2.1, 5, 650 * 2.0);	
-		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, 0.5, 12.0, 2.1, 5, 650 * 2.0);	
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, 2.5, 12.0, 2.1, 5, 650 * 2.0);	
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, 2.0, 12.0, 2.1, 5, 650 * 2.0);	
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, 1.5, 12.0, 2.1, 5, 650 * 2.0);	
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, 1.0, 12.0, 2.1, 5, 650 * 2.0);	
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, 0.5, 12.0, 2.1, 5, 650 * 2.0);	
 		EmitSoundToAll(OCEAN_SOUND, client, _, 75, _, 1.0);
 		EmitSoundToAll(OCEAN_SOUND, client, _, 75, _, 1.0);
 		EmitSoundToAll(OCEAN_SOUND, client, _, 75, _, 1.0);
@@ -495,7 +499,7 @@ public void Weapon_Ocean_Attack(int client, int weapon, bool crit, int slot)
 		EmitSoundToAll(OCEAN_SOUND_MELEE, target, _, 75, _, 1.0, pitch);
 		float UserLoc[3];
 		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", UserLoc);
-		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, 0.5, 6.0, 2.1, 5, 150 * 2.0);	
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, 0.5, 6.0, 2.1, 5, 150 * 2.0);	
 		DoHealingOcean(client, target, 22500.0, 8.0);
 		ConnectTwoEntitiesWithMedibeam(client, target);
 	}
