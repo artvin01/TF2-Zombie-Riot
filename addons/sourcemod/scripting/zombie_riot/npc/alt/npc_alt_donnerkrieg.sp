@@ -240,7 +240,7 @@ methodmap Donnerkrieg < CClotBody
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 		
-		CPrintToChatAll("{crimson}Donnerkrieg:{default} I have arrived to render judgement");
+		CPrintToChatAll("{crimson}Donnerkrieg{default}: I have arrived to render judgement");
 		
 		return npc;
 	}
@@ -346,9 +346,9 @@ public void Donnerkrieg_ClotThink(int iNPC)
 					float flAng[3]; // original
 					
 					npc.GetAttachment("root", flPos, flAng);
-					npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "utaunt_portalswirl_purple_parent", npc.index, "root", {0.0,0.0,15.0});
+					npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "utaunt_portalswirl_purple_parent", npc.index, "root", {0.0,0.0,0.0});
 					npc.GetAttachment("root", flPos, flAng);
-					npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_runeprison_yellow_parent", npc.index, "root", {0.0,0.0,15.0});
+					npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_runeprison_yellow_parent", npc.index, "root", {0.0,0.0,0.0});
 					
 					npc.FaceTowards(vecTarget, 20000.0);	//TURN DAMMIT
 					
@@ -424,7 +424,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 						if(fl_nightmare_intial_timer[npc.index] < GetGameTime(npc.index))
 						{
 							bl_nightmare_stage2[npc.index]=true;
-							CPrintToChatAll("{crimson}Donnerkrieg:{default} Prepare thyself");
+							//CPrintToChatAll("{crimson}Donnerkrieg:{default} Prepare thyself");
 						}
 						else
 						{
@@ -474,7 +474,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 		{
 			NightmareCannon_TBB_Ability(npc.index);
 			bl_nightmare_stage4[npc.index]=true;
-			CPrintToChatAll("{crimson}Donnerkrieg: {default} JUDGEMENT");
+			//CPrintToChatAll("{crimson}Donnerkrieg: {default} JUDGEMENT");
 			fl_nightmare_end_timer[npc.index]= GetGameTime(npc.index) + 90.0;	//1.5 minute cooldown.
 			fl_nightmare_reset_timer[npc.index] = GetGameTime(npc.index) + 15.0;
 			
@@ -564,31 +564,27 @@ void Normal_Attack_BEAM_TBB_Ability(int client)
 	NightmareCannon_BEAM_IsUsing[client] = true;
 	NightmareCannon_BEAM_TicksActive[client] = 0;
 	
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
-	
 	switch(GetRandomInt(1, 4))
 	{
 		case 1:
 		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);			
+			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
 		}
 		case 2:
 		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
+			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
+			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
 		}
 		case 3:
 		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);	
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);			
+			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
+			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);				
 		}
 		case 4:
 		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
+			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
+			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
 		}		
 	}
 			
@@ -613,7 +609,7 @@ void NightmareCannon_TBB_Ability(int client)
 	NightmareCannon_BEAM_CloseDPT[client] = 200.0;
 	NightmareCannon_BEAM_FarDPT[client] = 200.0;
 	NightmareCannon_BEAM_MaxDistance[client] = 10000;
-	NightmareCannon_BEAM_BeamRadius[client] = 200;
+	NightmareCannon_BEAM_BeamRadius[client] = 150;
 	NightmareCannon_BEAM_ColorHex[client] = ParseColor("ff0303");
 	NightmareCannon_BEAM_ChargeUpTime[client] = 150;
 	NightmareCannon_BEAM_CloseBuildingDPT[client] = 0.0;
@@ -767,7 +763,7 @@ public Action NightmareCannon_TBB_Tick(int client)
 	tickCountClient[client]++;
 
 	NightmareCannon_BEAM_TicksActive[client] = tickCount;
-	float diameter = float(NightmareCannon_BEAM_BeamRadius[client] * 2);
+	float diameter = float(NightmareCannon_BEAM_BeamRadius[client] * 4);
 	int r = GetR(NightmareCannon_BEAM_ColorHex[client]);
 	int g = GetG(NightmareCannon_BEAM_ColorHex[client]);
 	int b = GetB(NightmareCannon_BEAM_ColorHex[client]);
