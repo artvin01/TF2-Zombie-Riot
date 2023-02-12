@@ -356,6 +356,8 @@ float f_TimeFrozenStill[MAXENTITIES];
 float f_StunExtraGametimeDuration[MAXENTITIES];
 bool b_PernellBuff[MAXENTITIES];
 float f_HussarBuff[MAXENTITIES];
+float f_Ocean_Buff_Weak_Buff[MAXENTITIES];
+float f_Ocean_Buff_Stronk_Buff[MAXENTITIES];
 float f_MaimDebuff[MAXENTITIES];
 float f_PassangerDebuff[MAXENTITIES];
 float f_CrippleDebuff[MAXENTITIES];
@@ -1437,6 +1439,8 @@ public void OnClientPutInServer(int client)
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_bThisEntityIgnored = false;
 	f_HussarBuff[client] = 0.0;
+	f_Ocean_Buff_Stronk_Buff[client] = 0.0;
+	f_Ocean_Buff_Weak_Buff[client] = 0.0;
 	f_ShowHudDelayForServerMessage[client] = GetGameTime() + 50.0;
 	
 #if defined ZR
@@ -1444,7 +1448,7 @@ public void OnClientPutInServer(int client)
 #endif
 	
 #if defined RPG
-	RPG_PutInServer();
+	RPG_PutInServer(client);
 #endif
 
 	if(AreClientCookiesCached(client)) //Ingore this. This only bugs it out, just force it, who cares.
@@ -2099,6 +2103,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Building_Mounted[entity] = -1;
 #endif
 		f_HussarBuff[entity] = 0.0;
+		f_Ocean_Buff_Stronk_Buff[entity] = 0.0;
+		f_Ocean_Buff_Weak_Buff[entity] = 0.0;
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
 		LastHitId[entity] = -1;

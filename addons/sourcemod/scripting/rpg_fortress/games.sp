@@ -83,6 +83,8 @@ public const char RankNames[][] =
 #include "rpg_fortress/games/poker.sp"
 #include "rpg_fortress/games/blackjack.sp"
 #include "rpg_fortress/games/texas.sp"
+#include "rpg_fortress/games/roulette.sp"
+#include "rpg_fortress/games/crimson.sp"
 
 static StringMap GameList;
 
@@ -157,6 +159,14 @@ static void StartGame(int client, const char[] game)
 		case 3:
 		{
 			Games_Texas(client);
+		}
+		case 4:
+		{
+			Games_Roulette(client);
+		}
+		case 5:
+		{
+			Games_Crimson(client);
 		}
 		default:
 		{
@@ -251,7 +261,7 @@ int Games_GetCardRank(const int[] card, int cardcount)
 	bool flush;
 	for(int i; i < sizeof(suits); i++)
 	{
-		// Found more then 5 of the same suit?
+		// Found more then 4 of the same suit?
 		if(suits[i] > 4)
 		{
 			flush = true;

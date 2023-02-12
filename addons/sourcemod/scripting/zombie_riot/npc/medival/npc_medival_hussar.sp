@@ -387,7 +387,7 @@ public void MedivalHussar_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void HussarAOEBuff(MedivalHussar npc, float gameTime)
+void HussarAOEBuff(MedivalHussar npc, float gameTime, bool mute = false)
 {
 	float pos1[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
@@ -437,10 +437,13 @@ void HussarAOEBuff(MedivalHussar npc, float gameTime)
 			static float UserLoc[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", UserLoc);
 			spawnRing(npc.index, HUSSAR_BUFF_MAXRANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 1.0, 6.0, 6.1, 1);
-			spawnRing(npc.index, HUSSAR_BUFF_MAXRANGE * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.8, 6.0, 6.1, 1);
-			spawnRing(npc.index, HUSSAR_BUFF_MAXRANGE * 2.0, 0.0, 0.0, 35.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.7, 6.0, 6.1, 1);
 			spawnRing_Vectors(UserLoc, 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.75, 12.0, 6.1, 1, HUSSAR_BUFF_MAXRANGE * 2.0);		
-			npc.PlayMeleeWarCry();
+			if(!mute)
+			{
+				spawnRing(npc.index, HUSSAR_BUFF_MAXRANGE * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.8, 6.0, 6.1, 1);
+				spawnRing(npc.index, HUSSAR_BUFF_MAXRANGE * 2.0, 0.0, 0.0, 35.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.7, 6.0, 6.1, 1);
+				npc.PlayMeleeWarCry();
+			}
 		}
 		else
 		{

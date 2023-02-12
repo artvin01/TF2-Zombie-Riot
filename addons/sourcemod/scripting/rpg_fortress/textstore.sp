@@ -741,7 +741,12 @@ public Action TextStore_OnSellItem(int client, int item, int cash, int &count, i
 		if(item < 0)
 			return Plugin_Continue;
 		
-		if(sell > 0)
+		KeyValues kv = TextStore_GetItemKv(item);
+		if(!kv || !kv.GetNum("trade", 1))
+		{
+			SPrintToChat(client, "This item can't be sold in the market!");
+		}
+		else if(sell > 0)
 		{
 			MarketItem[client] = item;
 			MarketCount[client] = 1;

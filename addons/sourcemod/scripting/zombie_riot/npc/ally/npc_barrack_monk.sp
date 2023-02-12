@@ -42,7 +42,7 @@ public void BarrackMonk_ClotThink(int iNPC)
 				float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.index);
 				
 				npc.m_flAttackHappens = 0.0;
-				spawnRing_Vectors(vecTarget, MONK_MAXRANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 255, 1, 3.0, 5.0, 3.1, 1, _);		
+				spawnRing_Vectors(vecTarget, MONK_MAXRANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 255, 1, 3.0, 5.0, 3.1, 1, _);		
 				
 				DataPack pack;
 				CreateDataTimer(0.1, MonkHealDamageZone, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);

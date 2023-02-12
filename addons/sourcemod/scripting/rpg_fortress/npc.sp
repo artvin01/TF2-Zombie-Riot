@@ -25,6 +25,7 @@ enum
 
 	ARK_SLUG	= 17,
 	ARK_SINGER	= 18,
+	ARK_SLUGACID	= 19
 }
 
 public const char NPC_Names[][] =
@@ -47,7 +48,8 @@ public const char NPC_Names[][] =
 	"Father Grigori ?",
 	"Farming Cow",
 	"Originium Slug",
-	"Scarlet Singer"
+	"Scarlet Singer",
+	"Acid Originium Slug"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -70,7 +72,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_enemy_grigori",
 	"npc_heavy_cow",
 	"npc_ark_slug",
-	"npc_ark_singer"
+	"npc_ark_singer",
+	"npc_ark_slug_acid"
 };
 
 void NPC_MapStart()
@@ -93,6 +96,7 @@ void NPC_MapStart()
 	FarmCow_OnMapStart_NPC();
 	ArkSlug_MapStart();
 	ArkSinger_MapStart();
+	ArkSlugAcid_MapStart();
 }
 
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 120.0
@@ -174,6 +178,10 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 		case ARK_SINGER:
 		{
 			entity = ArkSinger(client, vecPos, vecAng, ally);
+		}
+		case ARK_SLUGACID:
+		{
+			entity = ArkSlugAcid(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -259,6 +267,10 @@ public void NPCDeath(int entity)
 		case ARK_SINGER:
 		{
 			ArkSinger_NPCDeath(entity);
+		}
+		case ARK_SLUGACID:
+		{
+			ArkSlugAcid_NPCDeath(entity);
 		}
 		default:
 		{
@@ -572,3 +584,4 @@ bool AllyNpcInteract(int client, int entity, int weapon)
 
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"
 #include "rpg_fortress/npc/normal/npc_ark_singer.sp"
+#include "rpg_fortress/npc/normal/npc_ark_slug_acid.sp"

@@ -3460,10 +3460,12 @@ public void SetNpcToDeadViaGib(int pThis)
 	SetEdictFlags(pThis, SetEntityTransmitState(pThis, FL_EDICT_DONTSEND));
 	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(pThis), TIMER_FLAG_NO_MAPCHANGE);	
 	SDKHook(pThis, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
+	/*
 	if(PF_Exists(pThis))
 	{
 		PF_Destroy(pThis);
 	}	
+	*/
 }
 
 public Action SDKHook_Settransmit_Hide(int entity, int client)
@@ -4099,6 +4101,54 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 	{
 		return false;
 	}	
+
+	return !(entity == iExclude);
+}
+
+public bool BulletAndMeleeTraceAlly(int entity, int contentsMask, any iExclude)
+{
+#if defined ZR
+	if(entity > 0 && entity <= MaxClients) 
+	{
+		if(TeutonType[entity])
+		{
+			return false;
+		}
+	}
+#endif
+	if(i_IsABuilding[entity])
+	{
+		return false;
+	}
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
+	{
+		return false;
+	}
+	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") != GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		return false;
+
+	else if(!b_NpcHasDied[entity])
+	{
+		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		{
+			return !(entity == iExclude);
+			
+		}
+		else if (b_CantCollidie[entity] && b_CantCollidieAlly[entity]) //If both are on, then that means the npc shouldnt be invis and stuff
+		{
+			return false;
+		}
+	}
+	
+	//if anything else is team
+	if(b_ThisEntityIgnored[entity])
+	{
+		return false;
+	}	
+
+	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		return !(entity == iExclude);
+
 
 	return !(entity == iExclude);
 }
@@ -5471,10 +5521,13 @@ public bool Can_I_See_Enemy_Only(int attacker, int enemy)
 	
 	RemoveEntityToTraceStuckCheck(enemy);
 	
-	bool bHit = TR_DidHit(trace);	
-
+	int Traced_Target = TR_GetEntityIndex(trace);
 	delete trace;
-	return bHit;
+	if(Traced_Target == enemy)
+	{
+		return true;
+	}
+	return false;
 }
 
 public int Can_I_See_Ally(int attacker, int ally)

@@ -1073,9 +1073,9 @@
 	
 	"Buildable Barricade Desc"
 	{
-		"en"	"Each wave increases its cost, you may only have 2 barricades built at once."
-		"ru"	"Каждая волна увеличивает её стоимость, одновременно можно построить только 2 баррикады."
-		"chi"   "每一波都会增加它的价格，你最多只能建造2个路障。"
+		"en"	"Each wave increases its cost, you may only have 3 barricades built at once."
+		"ru"	"Каждая волна увеличивает её стоимость, одновременно можно построить только 3 баррикады."
+		"chi"   "每一波都会增加它的价格，你最多只能建造3个路障。"
 	}
 	
 	"Buildable Armortable Desc"
@@ -1750,5 +1750,9 @@
 	"Hussar Desc"
 	{
 		"en"	"High damage and health and provides a buffing aura to nearby allies"
+	}
+	"Fish Melee Desc"
+	{
+		"en" 	"Heals allies slowly around you and gives them a 10% dmg buff.\nSclaes with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 30% dmg  buff to all allies for 15 sec."
 	}
 }

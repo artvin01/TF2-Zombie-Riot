@@ -715,21 +715,21 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 		//PrintToChatAll("parry worked");
 		if(Ark_Level[victim] == 2)
 		{
-			damage_reflected *= 10.0;
+			damage_reflected *= 40.0;
 			
 			Ark_Hits[victim] = 20;
 		}
 		else if(Ark_Level[victim] == 1)
 		{
-			damage_reflected *= 5.0;
+			damage_reflected *= 15.0;
 			
 			Ark_Hits[victim] = 12;			
 		}
 		else
 		{
-			damage_reflected *= 2.0;
+			damage_reflected *= 6.0;
 			
-			Ark_Hits[victim] = 12;
+			Ark_Hits[victim] = 0;
 		}
 		
 		if(f_AniSoundSpam[victim] < GetGameTime())

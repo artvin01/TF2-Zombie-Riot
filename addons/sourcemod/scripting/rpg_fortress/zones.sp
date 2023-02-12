@@ -186,6 +186,12 @@ public Action Zones_TeleportTouch(int entity, int target)
 		static char name[32];
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && !StrContains(name, "rpg_teleport_", false))
 		{
+			if(DisabledDownloads[target])
+			{
+				ShowGameText(target, _, 0, "cl_allowdownload or cl_downloadfilter was disabled");
+				return Plugin_Handled;
+			}
+
 			int lv = StringToInt(name[13]);
 			if(lv > Level[target])
 			{

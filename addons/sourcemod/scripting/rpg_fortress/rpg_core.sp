@@ -5,6 +5,8 @@
 #define ITEM_XP		"XP"
 #define ITEM_TIER	"Elite Promotion"
 
+bool DisabledDownloads[MAXTF2PLAYERS];
+
 int Tier[MAXTF2PLAYERS];
 int Level[MAXENTITIES];
 int XP[MAXENTITIES];
@@ -60,6 +62,7 @@ bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 #include "rpg_fortress/custom/weapon_boom_stick.sp"
 #include "rpg_fortress/custom/accesorry_mudrock_shield.sp"
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
+#include "rpg_fortress/custom/wand/weapon_arts_wand.sp"
 
 void RPG_PluginStart()
 {
@@ -127,6 +130,7 @@ void RPG_MapStart()
 	BoomStick_MapPrecache();
 	Medigun_PersonOnMapStart();
 	Abiltity_Mudrock_Shield_Shield_PluginStart();
+	Wand_Arts_MapStart();
 }
 
 void RPG_MapEnd()
@@ -134,9 +138,30 @@ void RPG_MapEnd()
 	Spawns_MapEnd();
 }
 
-void RPG_PutInServer()
+void RPG_PutInServer(int client)
 {
 	CountPlayersOnRed();
+
+	int userid = GetClientUserId(client);
+	QueryClientConVar(client, "cl_allowdownload", OnQueryFinished, userid);
+	QueryClientConVar(client, "cl_downloadfilter", OnQueryFinished, userid);
+}
+
+public void OnQueryFinished(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue, int userid)
+{
+	if(result == ConVarQuery_Okay && GetClientOfUserId(userid) == client)
+	{
+		if(StrEqual(cvarName, "cl_allowdownload"))
+		{
+			if(!StringToInt(cvarValue))
+				DisabledDownloads[client] = true;
+		}
+		else if(StrEqual(cvarName, "cl_downloadfilter"))
+		{
+			if(StrContains("all", cvarValue) == -1)
+				DisabledDownloads[client] = true;
+		}
+	}
 }
 
 void RPG_ClientCookiesCached(int client)
@@ -154,6 +179,8 @@ void RPG_ClientDisconnect(int client)
 			Animal_Happy[client][loop1][loop2] = 0.0;
 		}
 	}
+
+	DisabledDownloads[client] = false;
 
 	UpdateLevelAbovePlayerText(client, true);
 	Ammo_ClientDisconnect(client);
