@@ -338,6 +338,8 @@ int i_NpcInternalId[MAXENTITIES];
 bool b_IsCamoNPC[MAXENTITIES];
 
 float f_TimeUntillNormalHeal[MAXENTITIES]={0.0, ...};
+float f_ClientWasTooLongInsideHurtZone[MAXENTITIES]={0.0, ...};
+float f_ClientWasTooLongInsideHurtZoneDamage[MAXENTITIES]={0.0, ...};
 bool f_ClientServerShowMessages[MAXTF2PLAYERS];
 
 //Needs to be global.
@@ -2956,6 +2958,8 @@ static void MapStartResetAll()
 	Zero(f_ImmuneToFalldamage);
 	Zero(f_DelayLookingAtHud);
 	Zero(f_TimeUntillNormalHeal);
+	Zero(f_ClientWasTooLongInsideHurtZone);
+	Zero(f_ClientWasTooLongInsideHurtZoneDamage);
 	Zero(Mana_Regen_Delay);
 	Zero(RollAngle_Regen_Delay);
 	Zero(Mana_Hud_Delay);
