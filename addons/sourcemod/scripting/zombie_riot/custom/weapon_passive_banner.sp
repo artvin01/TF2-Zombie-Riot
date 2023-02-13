@@ -21,7 +21,7 @@ public void Enable_Management_Banner(int client, int weapon) // Enable managemen
 	{	
 		DataPack pack;
 		//The delay is usually 0.2 seconds.
-		Timer_Banner_Management[client] = CreateDataTimer(0.1, Timer_Management_Banner, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		Timer_Banner_Management[client] = CreateDataTimer(0.1, Timer_Management_Banner, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}

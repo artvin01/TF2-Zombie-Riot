@@ -30,7 +30,7 @@ public void Enable_OceanSong(int client, int weapon) // Enable management, handl
 			KillTimer(h_TimerOceanSongManagement[client]);
 			h_TimerOceanSongManagement[client] = INVALID_HANDLE;
 			DataPack pack;
-			h_TimerOceanSongManagement[client] = CreateDataTimer(0.1, Timer_Management_OceanSong, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			h_TimerOceanSongManagement[client] = CreateDataTimer(0.1, Timer_Management_OceanSong, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}

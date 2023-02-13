@@ -1636,9 +1636,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 							i_HasBeenBackstabbed[victim] = true;
 								
 							float attack_speed;
-				
-							attack_speed = Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);
-							attack_speed = Attributes_FindOnWeapon(attacker, weapon, 396, true, 1.0);
+
+							attack_speed = 1.0;
+							
+							attack_speed *= Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);
+							attack_speed *= Attributes_FindOnWeapon(attacker, weapon, 396, true, 1.0); //Extra
 								
 							EmitSoundToAll("weapons/knife_swing_crit.wav", attacker, _, _, _, 0.7);
 								
@@ -1685,6 +1687,9 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 							
 							//Latest tf2 update broke this, too lazy to fix lol
 							/*
+							THERE IS A FIX IN SOURCEMOD 1.12 FOR THIS!
+							TE_WriteEnt
+							TE_ReadEnt 
 							if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
 							{
 							
