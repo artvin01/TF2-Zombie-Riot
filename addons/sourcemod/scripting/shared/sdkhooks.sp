@@ -1091,7 +1091,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}
 #endif
 	
-	f_TimeUntillNormalHeal[victim] = gameTime + 4	;
+	f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
 	
 #if defined ZR
 	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
@@ -1102,17 +1102,26 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #endif
 	
 	{
-		
 #if defined ZR
-		Replicated_Damage *= 2.0;
-		damage *= 2.0;
+		if ((GetEntityFlags(victim) & FL_ONGROUND) != 0 || GetEntProp(victim, Prop_Send, "m_nWaterLevel") >= 1 || b_ThisNpcIsSawrunner[attacker]) 
 #endif
-		
+		{
+		//only damage if actually standing or in water, itll be more forgiving.
+#if defined ZR
+			Replicated_Damage *= 2.0;
+			damage *= 2.0;
+#endif
+
 #if defined RPG
-		damage *= 5.0;
+			damage *= 5.0;
 #endif
 		
-		return Plugin_Changed;	
+			return Plugin_Changed;	
+		}
+		else
+		{
+			return Plugin_Handled;	
+		}
 	}
 	
 #if defined ZR
