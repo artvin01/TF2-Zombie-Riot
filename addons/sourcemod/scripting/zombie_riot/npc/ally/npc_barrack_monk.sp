@@ -10,7 +10,7 @@ methodmap BarrackMonk < BarrackBody
 	}
 	public BarrackMonk(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BarrackMonk npc = view_as<BarrackMonk>(BarrackBody(client, vecPos, vecAng, "400"));
+		BarrackMonk npc = view_as<BarrackMonk>(BarrackBody(client, vecPos, vecAng, "750"));
 		
 		i_NpcInternalId[npc.index] = BARRACK_MONK;
 		
@@ -42,7 +42,7 @@ public void BarrackMonk_ClotThink(int iNPC)
 				float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.index);
 				
 				npc.m_flAttackHappens = 0.0;
-				spawnRing_Vectors(vecTarget, MONK_MAXRANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 255, 1, 3.0, 5.0, 3.1, 1, _);		
+				spawnRing_Vectors(vecTarget, MONK_MAXRANGE_ALLY * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 255, 1, 3.0, 5.0, 3.1, 1, _);		
 				
 				DataPack pack;
 				CreateDataTimer(0.1, MonkHealDamageZone, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -63,7 +63,7 @@ public void BarrackMonk_ClotThink(int iNPC)
 			npc.m_flAttackHappens = gameTime + 1.3;
 			npc.m_flDoingAnimation = gameTime + 1.3;
 			npc.m_flReloadDelay = gameTime + 1.3;
-			npc.m_flNextMeleeAttack = gameTime + 20.3;
+			npc.m_flNextMeleeAttack = gameTime + 10.3;
 		}
 
 		BarrackBody_ThinkMove(npc.index, 175.0, "ACT_MONK_IDLE", "ACT_MONK_WALK", 90000.0);

@@ -2654,6 +2654,7 @@ float dmg_against_entity_multiplier = 3.0)
 	float VicLoc[3];
 	
 	int damage_flags = 0;
+	int custom_flags = 0;
 	if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_SLASH_DAMAGE))
 	{
 		damage_flags |= DMG_SLASH;
@@ -2665,6 +2666,10 @@ float dmg_against_entity_multiplier = 3.0)
 	else
 	{
 		damage_flags |= DMG_BLAST;
+	}
+	if((i_ExplosiveProjectileHexArray[entity] & EP_GIBS_REGARDLESS))
+	{
+		custom_flags |= ZR_DAMAGE_GIB_REGARDLESS;
 	}
 	
 	if((i_ExplosiveProjectileHexArray[entity] & EP_NO_KNOCKBACK))
@@ -2700,7 +2705,7 @@ float dmg_against_entity_multiplier = 3.0)
 			{
 				damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
 			}
-			SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+			SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc, _, custom_flags);
 			
 			if(!FromBlueNpc) //Npcs do not have damage falloff, dodge.
 			{
@@ -2747,7 +2752,7 @@ float dmg_against_entity_multiplier = 3.0)
 							{
 								damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
 							}						
-							SDKHooks_TakeDamage(new_closest_npc, client, client, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+							SDKHooks_TakeDamage(new_closest_npc, client, client, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc, _, custom_flags);
 							
 							damage_reduction *= ExplosionDmgMultihitFalloff;
 							TargetsHit += 1;
@@ -2790,7 +2795,7 @@ float dmg_against_entity_multiplier = 3.0)
 									damage_1 = damage;
 								}
 								//Dont give 3x dmg to players lmao
-								SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+								SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc, _, custom_flags);
 								TargetsHit += 1;
 							}
 						}
@@ -2831,7 +2836,7 @@ float dmg_against_entity_multiplier = 3.0)
 								//		damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
 								//	}
 							
-									SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+									SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc, _, custom_flags);
 									TargetsHit += 1;
 								}
 							}
@@ -2877,7 +2882,7 @@ float dmg_against_entity_multiplier = 3.0)
 											damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
 										}
 
-										SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc);
+										SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc, _, custom_flags);
 										TargetsHit += 1;
 									}
 								}

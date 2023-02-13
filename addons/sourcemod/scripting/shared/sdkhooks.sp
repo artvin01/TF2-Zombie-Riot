@@ -1091,8 +1091,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}
 #endif
 	
-	f_TimeUntillNormalHeal[victim] = gameTime + 4	;
-	
 #if defined ZR
 	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
 #endif
@@ -1102,19 +1100,40 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #endif
 	
 	{
-		
 #if defined ZR
-		Replicated_Damage *= 2.0;
-		damage *= 2.0;
+		if(!b_ThisNpcIsSawrunner[attacker])
+		{
+			PrintToChat(victim, "Get out of the npc stuck zone. you will recieve this message every 0.5 seconds if you stay in it.");
+			if (gameTime > f_ClientWasTooLongInsideHurtZone[victim])
+			{
+				f_ClientWasTooLongInsideHurtZone[victim] = gameTime + 6.0;	
+			}
+			if (gameTime > f_ClientWasTooLongInsideHurtZoneDamage[victim] + 2.0)
+			{	
+				f_ClientWasTooLongInsideHurtZoneDamage[victim] = gameTime + 4.0;	
+			}
+		}
+		if ((GetEntityFlags(victim) & FL_ONGROUND) != 0 || GetEntProp(victim, Prop_Send, "m_nWaterLevel") >= 1 || b_ThisNpcIsSawrunner[attacker] || f_ClientWasTooLongInsideHurtZoneDamage[victim] < gameTime) 
 #endif
-		
+		{
+		//only damage if actually standing or in water, itll be more forgiving.
+#if defined ZR
+			Replicated_Damage *= 2.0;
+			damage *= 2.0;
+#endif
+
 #if defined RPG
-		damage *= 5.0;
+			damage *= 5.0;
 #endif
-		
-		return Plugin_Changed;	
+			f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
+			return Plugin_Changed;	
+		}
+		else
+		{
+			return Plugin_Handled;	
+		}
 	}
-	
+	f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
 #if defined ZR
 	if(Medival_Difficulty_Level != 0.0)
 	{
