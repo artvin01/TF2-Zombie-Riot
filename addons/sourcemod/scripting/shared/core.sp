@@ -408,6 +408,7 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 #define ZR_DAMAGE_ICE							(1 << 1)
 #define ZR_DAMAGE_LASER_NO_BLAST				(1 << 2)
 #define ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED	(1 << 3)
+#define ZR_DAMAGE_GIB_REGARDLESS				(1 << 4)
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -483,6 +484,7 @@ int h_NpcCollissionHookType[MAXENTITIES];
 #define EP_NO_KNOCKBACK              		(1 << 0)   					// No knockback
 #define EP_DEALS_SLASH_DAMAGE              	(1 << 1)   					// Slash Damage (For no npc scaling, or ignoring resistances.)
 #define EP_DEALS_CLUB_DAMAGE              	(1 << 2)   					// To deal melee damage.
+#define EP_GIBS_REGARDLESS              	(1 << 3)   					// Even if its anything then blast, it will still gib.
 
 
 

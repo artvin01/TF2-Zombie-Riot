@@ -646,7 +646,10 @@ public Action Timer_Do_Melee_Attack(Handle timer, DataPack pack)
 		}
 		else if(target > -1 && Item_Index == 214)
 		{
-			i_ExplosiveProjectileHexArray[weapon] = EP_DEALS_CLUB_DAMAGE;
+			i_ExplosiveProjectileHexArray[weapon] = 0;
+			i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;
+			i_ExplosiveProjectileHexArray[weapon] |= EP_GIBS_REGARDLESS;
+			
 			Explode_Logic_Custom(damage, client, weapon, weapon, vecHit, _, _, _, _, 5); //Only allow 5 targets hit, otherwise it can be really op.
 			DataPack pack_boom = new DataPack();
 			pack_boom.WriteFloat(vecHit[0]);
