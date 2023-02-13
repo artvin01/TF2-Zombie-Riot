@@ -102,7 +102,8 @@ static float i_ClosestAllyCD[MAXENTITIES];
 static int i_ClosestAllyTarget[MAXENTITIES];
 static float i_ClosestAllyCDTarget[MAXENTITIES];
 
-#define MONK_MAXRANGE 250.0 		
+#define MONK_MAXRANGE 250.0 	
+#define MONK_MAXRANGE_ALLY 350.0 		
 
 methodmap MedivalMonk < CClotBody
 {
@@ -628,9 +629,9 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 			{
 				static float pos2[3];
 				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
-				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
+				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE_ALLY * MONK_MAXRANGE_ALLY))
 				{
-					SDKHooks_TakeDamage(entity_close, Monk, GetClientOfUserId(npc.OwnerUserId), damage * 20.0, DMG_PLASMA|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceCenter(entity_close));	
+					SDKHooks_TakeDamage(entity_close, Monk, GetClientOfUserId(npc.OwnerUserId), damage * 40.0, DMG_PLASMA|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceCenter(entity_close));	
 					damage *= 0.8;
 				}
 			}

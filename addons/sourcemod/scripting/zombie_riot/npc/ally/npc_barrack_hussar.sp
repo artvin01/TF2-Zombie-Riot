@@ -10,7 +10,7 @@ methodmap BarrackHussar < BarrackBody
 	}
 	public BarrackHussar(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BarrackHussar npc = view_as<BarrackHussar>(BarrackBody(client, vecPos, vecAng, "1250"));
+		BarrackHussar npc = view_as<BarrackHussar>(BarrackBody(client, vecPos, vecAng, "3500"));
 		
 		i_NpcInternalId[npc.index] = BARRACK_HUSSAR;
 		
@@ -80,7 +80,7 @@ public void BarrackHussar_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, 6000.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, 20000.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}
