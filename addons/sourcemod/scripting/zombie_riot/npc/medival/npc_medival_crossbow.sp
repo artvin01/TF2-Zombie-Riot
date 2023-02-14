@@ -344,7 +344,12 @@ public void HandleAnimEventMedival_CrossbowMan(int entity, int event)
 						
 			npc.PlayMeleeSound();
 			
-			npc.FireArrow(vecTarget, 30.0, projectile_speed);
+			float damage = 20.0;
+			if(Medival_Difficulty_Level > 1.0)
+			{
+				damage = 30.0;
+			}
+			npc.FireArrow(vecTarget, damage, projectile_speed);
 		}
 	}
 	

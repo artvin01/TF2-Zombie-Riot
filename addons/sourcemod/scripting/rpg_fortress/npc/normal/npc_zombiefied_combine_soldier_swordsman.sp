@@ -363,7 +363,7 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 					npc.StartPathing();
 					
 				npc.m_bisWalking = true;
-				if(npc.m_iChanged_WalkCycle != 4) 	
+				if(npc.m_iChanged_WalkCycle != 4)
 				{
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");

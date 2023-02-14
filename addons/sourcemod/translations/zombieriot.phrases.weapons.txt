@@ -1203,6 +1203,7 @@
 		"de"		"Kevlar"
 		"pt"		"Kevlar"
 		"nl"		"Kevlar"
+		"chi"       "芳族聚酰胺纤维"
 	}
 	"Heavy Vest"
 	{
@@ -2036,6 +2037,36 @@
 		 "ru"       "Блокировщик роста"
 	    // "chi"       "重置"
 	}
+	"Rebel Active Camo"
+	{
+	     "en"       "Rebel Active Camo"
+	     "chi"      "叛军主动迷彩"
+	}
+	"Rebel Mounted Armortable"
+	{
+	     "en"       "Rebel Mounted Armortable"
+	     "chi"      "叛军骑兵护甲柜"
+	}
+	"Rebel Mounted AmmoBox"
+	{
+	     "en"       "Rebel Mounted AmmoBox"
+	     "chi"      "叛军骑兵弹药箱"
+	}
+	"Rebel Mounted Perk Machine"
+	{
+	     "en"       "Rebel Mounted Perk Machine"
+	     "chi"      "叛军骑兵Buff箱"
+	}
+	"Rebel Mounted Pack-a-Punch"
+	{
+	     "en"       "Rebel Mounted Pack-a-Punch"
+	     "chi"      "叛军骑兵武器工作台"
+	}
+	"Rebel Mounted Healing Station"
+	{
+	     "en"       "Rebel Mounted Healing Station"
+	     "chi"      "叛军骑兵治疗机"
+	}
 	"Judgement Of Iberia"
 	{
 		"en"       "Judgement Of Iberia"
@@ -2059,5 +2090,13 @@
 	"Alchemist Potion"
 	{
 		"en"	"Alchemist Potion"
+	}
+	"Builder Extra Gear"
+	{
+		"en"	"Builder Extra Gear"
+	}
+	"Buildable Barracks"
+	{
+		"en"	"Buildable Barracks"
 	}
 }

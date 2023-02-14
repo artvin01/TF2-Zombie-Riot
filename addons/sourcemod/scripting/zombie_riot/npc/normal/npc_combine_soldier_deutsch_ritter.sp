@@ -171,7 +171,7 @@ methodmap CombineDeutsch < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		int iActivity = npc.LookupActivity("ACT_TEUTON_NEW_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -194,7 +194,7 @@ methodmap CombineDeutsch < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		
 		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("-0.8");
+		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		npc.m_iWearable1 = npc.EquipItem("partyhat", "models/workshop/player/items/soldier/dec17_brass_bucket/dec17_brass_bucket.mdl");
@@ -294,7 +294,7 @@ public void CombineDeutsch_ClotThink(int iNPC)
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+						npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
 						npc.PlayMeleeSound();
 						npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
 						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
@@ -315,8 +315,7 @@ public void CombineDeutsch_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									
-									if(target <= MaxClients)
+									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 115.0, DMG_CLUB, -1, _, vecHit);
 									else
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 600.0, DMG_CLUB, -1, _, vecHit);
@@ -365,7 +364,7 @@ public Action CombineDeutsch_ClotDamaged(int victim, int &attacker, int &inflict
 		
 	CombineDeutsch npc = view_as<CombineDeutsch>(victim);
 	
-	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
+	if(npc.m_fbRangedSpecialOn)
 		damage *= 0.75;
 	
 	/*

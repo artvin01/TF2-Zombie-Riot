@@ -169,7 +169,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 			{
 				CurrentAmmo[client][i] = GetAmmo(client, i);
 			}	
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Too Far Away");
 			return;
@@ -186,7 +186,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 		{
 			CurrentAmmo[client][i] = GetAmmo(client, i);
 		}	
-		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Spike Limit Reached");
 		return;
@@ -532,8 +532,8 @@ public void Weapon_Arsenal_Terroriser_M2(int client, int weapon, const char[] cl
 					
 					EntLoc2 = WorldSpaceCenter(npc);
 
-					Cause_Terroriser_Explosion(client, npc, damage, EntLoc2, true);
 					i_HowManyBombsOnThisEntity[npc][client] = 0;
+					Cause_Terroriser_Explosion(client, npc, damage, EntLoc2, true);
 				}
 			}
 		}
@@ -556,13 +556,25 @@ public void Apply_Particle_Teroriser_Indicator(int entity)
 	}
 }
 
-public void CleanAllApplied_Aresenal(int entity)
+void CleanAllApplied_Aresenal(int entity, bool force = false)
 {
-	int particle_index;
-	particle_index = EntRefToEntIndex(Terroriser_Bomb_Implant_Particle[entity]);
-	if(IsValidEntity(particle_index))
+	bool Anyplayerhasbombsleft = false;
+	for (int client = 1; client <= MaxClients; client++)
 	{
-		RemoveEntity(particle_index);
+		if(i_HowManyBombsOnThisEntity[entity][client] > 0)
+		{
+			Anyplayerhasbombsleft = true;
+		}
+	}
+	if(!Anyplayerhasbombsleft || force)
+	{
+		int particle_index;
+		particle_index = EntRefToEntIndex(Terroriser_Bomb_Implant_Particle[entity]);
+
+		if(IsValidEntity(particle_index))
+		{
+			RemoveEntity(particle_index);
+		}		
 	}
 }
 

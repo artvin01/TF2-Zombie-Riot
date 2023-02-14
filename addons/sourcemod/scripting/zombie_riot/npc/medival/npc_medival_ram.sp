@@ -1,71 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char NPCModel[] = "models/combine_apc.mdl";
-
-static const char g_DeathSounds[][] = {
-	"npc/metropolice/die1.wav",
-	"npc/metropolice/die2.wav",
-	"npc/metropolice/die3.wav",
-	"npc/metropolice/die4.wav",
-};
-
-static const char g_HurtSounds[][] = {
-	"npc/metropolice/pain1.wav",
-	"npc/metropolice/pain2.wav",
-	"npc/metropolice/pain3.wav",
-	"npc/metropolice/pain4.wav",
-};
-
-static const char g_IdleSounds[][] = {
-	"npc/metropolice/vo/affirmative.wav",
-	"npc/metropolice/vo/affirmative2.wav",
-	"npc/metropolice/vo/canalblock.wav",
-	"npc/metropolice/vo/chuckle.wav",
-	"npc/metropolice/vo/citizen.wav",
-	"npc/metropolice/vo/code7.wav",
-	"npc/metropolice/vo/code100.wav",
-	"npc/metropolice/vo/copy.wav",
-	"npc/metropolice/vo/breakhiscover.wav",
-	"npc/metropolice/vo/help.wav",
-	"npc/metropolice/vo/hesgone148.wav",
-	"npc/metropolice/vo/hesrunning.wav",
-	"npc/metropolice/vo/infection.wav",
-	"npc/metropolice/vo/king.wav",
-	"npc/metropolice/vo/needanyhelpwiththisone.wav",
-	"npc/metropolice/vo/pickupthatcan1.wav",
-	"npc/metropolice/vo/pickupthatcan2.wav",
-	"npc/metropolice/vo/sociocide.wav",
-	"npc/metropolice/vo/watchit.wav",
-	"npc/metropolice/vo/xray.wav",
-	"npc/metropolice/vo/youknockeditover.wav",
-};
-
-static const char g_IdleAlertedSounds[][] = {
-	"npc/metropolice/vo/affirmative.wav",
-	"npc/metropolice/vo/affirmative2.wav",
-	"npc/metropolice/vo/canalblock.wav",
-	"npc/metropolice/vo/chuckle.wav",
-	"npc/metropolice/vo/citizen.wav",
-	"npc/metropolice/vo/code7.wav",
-	"npc/metropolice/vo/code100.wav",
-	"npc/metropolice/vo/copy.wav",
-	"npc/metropolice/vo/breakhiscover.wav",
-	"npc/metropolice/vo/help.wav",
-	"npc/metropolice/vo/hesgone148.wav",
-	"npc/metropolice/vo/hesrunning.wav",
-	"npc/metropolice/vo/infection.wav",
-	"npc/metropolice/vo/king.wav",
-	"npc/metropolice/vo/needanyhelpwiththisone.wav",
-	"npc/metropolice/vo/pickupthecan1.wav",
-	"npc/metropolice/vo/pickupthecan2.wav",
-	"npc/metropolice/vo/pickupthecan3.wav",
-	"npc/metropolice/vo/sociocide.wav",
-	"npc/metropolice/vo/watchit.wav",
-	"npc/metropolice/vo/xray.wav",
-	"npc/metropolice/vo/youknockeditover.wav",
-	"npc/metropolice/takedown.wav",
-};
+static const char NPCModel[] = "models/combine_apc_dynamic.mdl";
 
 static const char g_MeleeHitSounds[][] = {
 	"mvm/melee_impacts/bottle_hit_robo01.wav",
@@ -83,52 +19,14 @@ static const char g_MeleeMissSounds[][] = {
 
 void MedivalRam_OnMapStart()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(NPCModel);
+	PrecacheSound("weapons/stinger_fire1.wav");
 }
 
 static int Garrison[MAXENTITIES];
 
 methodmap MedivalRam < CClotBody
 {
-	public void PlayIdleSound()
-	{
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
-		
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-	}
-	
-	public void PlayIdleAlertSound()
-	{
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
-		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-	}
-	
-	public void PlayHurtSound()
-	{
-		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-		
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-	}
-	
-	public void PlayDeathSound()
-	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-	}
-	
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
@@ -146,7 +44,7 @@ methodmap MedivalRam < CClotBody
 	
 	public MedivalRam(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		MedivalRam npc = view_as<MedivalRam>(CClotBody(vecPos, vecAng, NPCModel, "1.15", "1500", ally));
+		MedivalRam npc = view_as<MedivalRam>(CClotBody(vecPos, vecAng, NPCModel, "0.5", "10000", ally));
 		i_NpcInternalId[npc.index] = MEDIVAL_RAM;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
@@ -170,12 +68,14 @@ methodmap MedivalRam < CClotBody
 		SDKHook(npc.index, SDKHook_Think, MedivalRam_ClotThink);
 		
 		npc.m_iState = 0;
-		npc.m_flSpeed = EscapeModeForNpc ? 240.0 : Garrison[npc.index] ? 170.0 : 150.0;
+		npc.m_flSpeed = Garrison[npc.index] ? 170.0 : 150.0;
+		npc.m_flReloadDelay = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
+		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_flMeleeArmor = 2.0;
 		npc.m_flRangedArmor = 0.2;
@@ -286,10 +186,10 @@ public void MedivalRam_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									if(target <= MaxClients)
+									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 20.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, Garrison[npc.index] ? 3300.0 : 2500.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, Garrison[npc.index] ? 7600.0 : 5500.0, DMG_CLUB, -1, _, vecHit);
 									
 									// Hit particle
 									
@@ -320,15 +220,15 @@ public void MedivalRam_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-	npc.PlayIdleAlertSound();
+//	npc.PlayIdleAlertSound();
 }
 
-public void MedivalRam_NPCDeath(int entity)
+void MedivalRam_NPCDeath(int entity)
 {
 	MedivalRam npc = view_as<MedivalRam>(entity);
 	if(!npc.m_bGib)
 	{
-		npc.PlayDeathSound();	
+//		npc.PlayDeathSound();	
 	}
 	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalRam_ClotThink);
@@ -336,18 +236,21 @@ public void MedivalRam_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	
+	float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, entity, _, _, _, _, _, _, _, _, _, 0.0);
+	
 	if(Garrison[entity])
 	{
 		bool friendly = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
 		
-		float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		
 		for(int i; i < 4; i++)
 		{
-			int spawn_index = Npc_Create(Garrison[entity], -1, pos, ang, friendly);
-			if(!friendly && spawn_index <= MaxClients)
-				Zombies_Currently_Still_Ongoing--;
+			Npc_Create(Garrison[entity], -1, pos, ang, friendly);
 		}
+
+		if(!friendly)
+			Zombies_Currently_Still_Ongoing -= 4;
 	}
 }

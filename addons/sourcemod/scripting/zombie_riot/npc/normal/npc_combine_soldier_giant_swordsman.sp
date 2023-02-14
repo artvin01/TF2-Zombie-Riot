@@ -370,7 +370,7 @@ public void CombineGaint_ClotThink(int iNPC)
 								if(target > 0) 
 								{
 									
-									if(target <= MaxClients)
+									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_CLUB, -1, _, vecHit);
 									else
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
@@ -419,7 +419,7 @@ public Action CombineGaint_ClotDamaged(int victim, int &attacker, int &inflictor
 		
 	CombineGaint npc = view_as<CombineGaint>(victim);
 	
-	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
+	if(npc.m_fbRangedSpecialOn)
 		damage *= 0.15;
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))

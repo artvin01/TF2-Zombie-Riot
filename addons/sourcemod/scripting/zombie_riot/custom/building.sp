@@ -43,6 +43,7 @@
 
 #define ELEVATOR_MODEL "models/props_mvm/mvm_museum_pedestal.mdl"
 
+#define SUMMONER_MODEL	"models/props_island/parts/guard_tower01.mdl"
 
 #define BUILDINGCOLLISIONNUMBER	27
 
@@ -60,8 +61,8 @@ enum
 	BuildingRailgun = 7,
 	BuildingSentrygun = 8,
 	BuildingMortar = 9,
-	BuildingHealingStation = 10
-
+	BuildingHealingStation = 10,
+	BuildingSummoner = 11
 }
 
 enum struct VillageBuff
@@ -144,12 +145,13 @@ void Building_MapStart()
 	PrecacheModel(VILLAGE_MODEL);
 	PrecacheModel(BARRICADE_MODEL);
 	PrecacheModel(ELEVATOR_MODEL);
+	PrecacheModel(SUMMONER_MODEL);
 	
 	PrecacheSound("items/powerup_pickup_uber.wav");
 	PrecacheSound("player/mannpower_invulnerable.wav");
 }
 
-static int RebelTimerSpawnIn;
+//static int RebelTimerSpawnIn;
 static int Building_Repair_Health[MAXENTITIES]={0, ...};
 static int Building_Hidden_Prop[MAXENTITIES][2];
 static int Building_Hidden_Prop_To_Building[MAXENTITIES]={-1, ...};
@@ -164,13 +166,32 @@ static float Building_Sentry_Cooldown[MAXTF2PLAYERS];
 
 static int i_MachineJustClickedOn[MAXTF2PLAYERS];
 
-public void Building_ClearAll()
+void Building_ClearAll()
 {
 	Zero2(Building_Collect_Cooldown);
 	Zero(Building_Sentry_Cooldown);
 	Zero(Village_TierExists);
-	RebelTimerSpawnIn = 0;
+	//RebelTimerSpawnIn = 0;
 }
+
+int Building_GetClientVillageFlags(int client)
+{
+	int applied;
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+	VillageBuff buff;
+	int length = Village_Effects.Length;
+	for(int i; i < length; i++)
+	{
+		Village_Effects.GetArray(i, buff);
+		int entity = EntRefToEntIndex(buff.EntityRef);
+		if(entity == client || entity == weapon)
+			applied |= buff.Effects;
+	}
+
+	return applied;
+}
+
 public Action Building_PlaceSentry(int client, int weapon, const char[] classname, bool &result)
 {
 	int Sentrygun = EntRefToEntIndex(i_HasSentryGunAlive[client]);
@@ -185,7 +206,7 @@ public Action Building_PlaceSentry(int client, int weapon, const char[] classnam
 				Ability_CD = 0.0;
 				
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		}
@@ -211,7 +232,7 @@ public Action Building_PlaceMortar(int client, int weapon, const char[] classnam
 				Ability_CD = 0.0;
 				
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		}
@@ -237,7 +258,7 @@ public Action Building_PlaceHealingStation(int client, int weapon, const char[] 
 				Ability_CD = 0.0;
 				
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		}
@@ -263,7 +284,7 @@ public Action Building_PlaceRailgun(int client, int weapon, const char[] classna
 				Ability_CD = 0.0;
 				
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		}
@@ -870,6 +891,10 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 	{
 		damage *= 1.5;
 	}
+	if(GetEntProp(entity, Prop_Data, "m_iHealth") <= damage)
+	{
+		b_BuildingHasDied[entity] = true;
+	}
 	//This is no longer needed, this logic has been added to the base explosive plugin, this also means that it allows
 	//npc vs npc interaction (mainly from blu to red) to deal 3x the explosive damage, so its not so weak.
 	/*
@@ -890,6 +915,7 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 		return Plugin_Changed;
 	}
 	*/
+
 	damagePosition[2] -= 40.0;
 	TE_ParticleInt(g_particleImpactMetal, damagePosition);
 	TE_SendToAll();
@@ -897,6 +923,23 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 
 	return Plugin_Changed;
 }
+
+public Action BuildingSetAlphaClientSideReady_SetTransmitProp_1_Summoner(int entity, int client)
+{
+	int building = EntRefToEntIndex(Building_Hidden_Prop_To_Building[entity]);
+	
+	if(IsValidEntity(building))
+	{
+		if(i_BeingCarried[building])
+		{
+			return Plugin_Handled;
+		}
+		return Plugin_Continue;
+	}
+	RemoveEntity(entity);
+	return Plugin_Handled;
+}
+
 
 public Action BuildingSetAlphaClientSideReady_SetTransmitProp_1(int entity, int client)
 {
@@ -1139,6 +1182,8 @@ public void Building_TakeDamagePost(int entity, int attacker, int inflictor, flo
 			i_BarricadeHasBeenDamaged[client] += RoundToCeil(damage);
 		}
 	}
+
+
 }
 
 /*
@@ -1155,7 +1200,7 @@ void Building_WeaponSwitchPost(int client, int &weapon, const char[] buffer)
 	if(EntityFuncAttack[weapon] && EntityFuncAttack[weapon]!=INVALID_FUNCTION)
 	{
 		Function func = EntityFuncAttack[weapon];
-		if(func == Building_PlaceVillage || func == Building_PlaceHealingStation || func == Building_PlacePackAPunch || func == Building_PlacePerkMachine || func==Building_PlaceRailgun || func==Building_PlaceMortar || func==Building_PlaceSentry || func==Building_PlaceDispenser || func==Building_PlaceAmmoBox || func==Building_PlaceArmorTable || func==Building_PlaceElevator)
+		if(func == Building_PlaceSummoner || func == Building_PlaceVillage || func == Building_PlaceHealingStation || func == Building_PlacePackAPunch || func == Building_PlacePerkMachine || func==Building_PlaceRailgun || func==Building_PlaceMortar || func==Building_PlaceSentry || func==Building_PlaceDispenser || func==Building_PlaceAmmoBox || func==Building_PlaceArmorTable || func==Building_PlaceElevator)
 		{
 			if(Building[client] != INVALID_FUNCTION)
 			{
@@ -1285,16 +1330,13 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 		int entity = GetClientPointVisible(client, _ , true, true);
 		if(entity > MaxClients)
 		{
-			PrintToConsole(client,"Can pickup, letsee if valid.");
 			if (IsValidEntity(entity))
 			{
-				PrintToConsole(client,"valid.");
 				static char buffer[64];
 				if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 				{
 					if(!StrContains(buffer, "obj_"))
 					{
-						PrintToConsole(client,"is building.");
 						if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
 						{
 							if(b_Doing_Buildingpickup_Handle[client])
@@ -1389,6 +1431,9 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 		
 void Building_ShowInteractionHud(int client, int entity)
 {
+	if (TeutonType[client] == TEUTON_WAITING)
+		return;
+
 	bool Hide_Hud = true;
 	if(IsValidEntity(entity))
 	{
@@ -1547,6 +1592,13 @@ void Building_ShowInteractionHud(int client, int entity)
 		}
 		else if(StrEqual(buffer, "base_boss"))
 		{
+			if(b_IsAlliedNpc[entity])
+			{
+				if(f_CooldownForHurtHud[client] < GetGameTime())
+				{
+					Calculate_And_Display_hp(client, entity, 0.0, true);
+				}
+			}
 			switch(Citizen_ShowInteractionHud(entity, client))
 			{
 				case -1:
@@ -1657,8 +1709,8 @@ void Building_ShowInteractionHud(int client, int entity)
 }
 bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 {
-	
-
+	if (TeutonType[client] == TEUTON_WAITING)
+		return false;
 	/*
 	static char buffer[36];
 	if(!Is_Reload_Button && GrabRef[client] == INVALID_ENT_REFERENCE && !StrContains(classname, "obj_") && GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
@@ -1667,7 +1719,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 		if(weapon > MaxClients && GetEntityClassname(weapon, buffer, sizeof(buffer)) && (StrEqual(buffer, "tf_weapon_wrench") || StrEqual(buffer, "tf_weapon_robot_arm")))
 		{
 			GrabAt[client] = GetGameTime()+1.0; //Make building pickup a bit faster, was 1.5 before, 1.0 is good
-	//		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+	//		SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			PrintCenterText(client, "%t", "Picking Up Building");
 	//		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Picking Up Building");
@@ -1705,6 +1757,10 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			else if(!StrContains(buffer, "zr_village"))
 			{
 				buildingType = 8;
+			}
+			else if(!StrContains(buffer, "zr_summoner"))
+			{
+				buildingType = 9;
 			}
 		}
 		else if(StrEqual(buffer, "obj_dispenser"))
@@ -1785,7 +1841,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					else if(!b_IgnoreWarningForReloadBuidling[client])
 					{
 						ClientCommand(client, "playgamesound items/medshotno1.wav");
-						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");	
 						return true;			
@@ -1839,7 +1895,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			if(!Is_Reload_Button && !b_IgnoreWarningForReloadBuidling[client])
 			{
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");
 				return true;
@@ -1853,7 +1909,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					Building_Picking_up_cd = 0.0;
 					
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t","Object Cooldown",Building_Picking_up_cd);
 				return true;
@@ -1863,17 +1919,33 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			{
 				case 7:
 				{
-					Building_Collect_Cooldown[entity][client] = GetGameTime() + 75.0;
+					Building_Collect_Cooldown[entity][client] = GetGameTime() + 90.0;
 					ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-					StartHealingTimer(client, 0.1, 1, 30);
-					if(owner != -1 && i_Healing_station_money_limit[owner][client] <= 3)
+					int HealAmmount = 1;
+					int HealTime = 30;
+					if(IsValidClient(owner))
+					{
+						HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_FindOnPlayer(owner, 8, true, 1.0, true));
+					}
+				/*
+					if(f_TimeUntillNormalHeal[client])
+					{
+						HealTime =/ 2;
+						if(HealTime < 1)
+						{
+							HealTime = 1;
+						}
+					}
+			*/
+					StartHealingTimer(client, 0.1, HealAmmount, HealTime);
+					if(owner != -1 && i_Healing_station_money_limit[owner][client] < 10)
 					{
 						if(owner != client)
 						{
 							i_Healing_station_money_limit[owner][client] += 1;
 							Resupplies_Supplied[owner] += 4;
 							CashSpent[owner] -= 40;
-							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+							SetDefaultHudPosition(owner);
 							SetGlobalTransTarget(owner);
 							ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Healing Station Used");
 						}
@@ -1881,7 +1953,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 				}
 				case 2:
 				{
-						if(Ammo_Count_Ready[client] > 0)
+						if((Ammo_Count_Ready - Ammo_Count_Used[client]) > 0)
 						{
 							int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 							if(IsValidEntity(weapon))
@@ -1910,7 +1982,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									
 									if(Current_Mana[client] < RoundToCeil(max_mana_temp))
 									{
-										Ammo_Count_Ready[client] -= 1;
+										Ammo_Count_Used[client] += 1;
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										if(Current_Mana[client] < RoundToCeil(max_mana_temp))
@@ -1930,7 +2002,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
@@ -1939,7 +2011,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									else
 									{
 										ClientCommand(client, "playgamesound items/medshotno1.wav");
-										SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+										SetDefaultHudPosition(client);
 										SetGlobalTransTarget(client);
 										ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Max Mana Reached");
 									}
@@ -1954,7 +2026,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										SetAmmo(client, 21, GetAmmo(client, 21)+(AmmoData[21][1]*2));
-										Ammo_Count_Ready[client] -= 1;
+										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
@@ -1966,7 +2038,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
@@ -1976,7 +2048,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										SetAmmo(client, 21, GetAmmo(client, 21)+(AmmoData[21][1]*2));
-										Ammo_Count_Ready[client] -= 1;
+										Ammo_Count_Used[client] += 1;
 										SetAmmo(client, 14, GetAmmo(client, 14)+(AmmoData[14][1]*2));
 										//Yeah extra ammo, do i care ? no.
 										
@@ -1991,7 +2063,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}								
@@ -2001,7 +2073,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										SetAmmo(client, 22, GetAmmo(client, 22)+(AmmoData[22][1]*2));
-										Ammo_Count_Ready[client] -= 1;
+										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
@@ -2013,7 +2085,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
@@ -2023,7 +2095,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										SetAmmo(client, 23, GetAmmo(client, 23)+(AmmoData[23][1]*2));
-										Ammo_Count_Ready[client] -= 1;
+										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
@@ -2035,7 +2107,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
@@ -2045,7 +2117,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										SetAmmo(client, 3, GetAmmo(client, 3)+(AmmoData[3][1]*2));
-										Ammo_Count_Ready[client] -= 1;
+										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
@@ -2057,7 +2129,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
@@ -2067,7 +2139,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+(AmmoData[Ammo_type][1]*2));
-										Ammo_Count_Ready[client] -= 1;
+										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
 											CurrentAmmo[client][i] = GetAmmo(client, i);
@@ -2079,7 +2151,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
@@ -2123,18 +2195,18 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											{
 												Resupplies_Supplied[owner] += 2;
 												CashSpent[owner] -= 20;
-												SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+												SetDefaultHudPosition(owner);
 												SetGlobalTransTarget(owner);
 												ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 											}
-											Ammo_Count_Ready[client] -= 1;
+											Ammo_Count_Used[client] += 1;
 											
 											ClientCommand(client, "playgamesound ambient/machines/machine1_hit2.wav");
 										}
 										else
 										{
 											ClientCommand(client, "playgamesound items/medshotno1.wav");
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetDefaultHudPosition(client);
 											SetGlobalTransTarget(client);
 											ShowSyncHudText(client,  SyncHud_Notifaction, "%t" , "Armor Max Reached Ammo Box");
 										}
@@ -2145,7 +2217,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						else
 						{
 							ClientCommand(client, "playgamesound items/medshotno1.wav");
-							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+							SetDefaultHudPosition(client);
 							SetGlobalTransTarget(client);
 							ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "No Ammo Supplies");
 							
@@ -2200,12 +2272,12 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						//	CashSpent[owner] -= 20;
 							if(owner != -1 && owner != client)
 							{
-								if(Armor_table_money_limit[owner][client] <= 15)
+								if(Armor_table_money_limit[owner][client] < 15)
 								{
 									CashSpent[owner] -= 40;
 									Armor_table_money_limit[owner][client] += 1;
 									Resupplies_Supplied[owner] += 4;
-									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetDefaultHudPosition(owner);
 									SetGlobalTransTarget(owner);
 									ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Armor Table Used");
 								}
@@ -2216,7 +2288,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						else
 						{
 							ClientCommand(client, "playgamesound items/medshotno1.wav");
-							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+							SetDefaultHudPosition(client);
 							SetGlobalTransTarget(client);
 							ShowSyncHudText(client,  SyncHud_Notifaction, "%t" , "Armor Max Reached");
 						}
@@ -2258,7 +2330,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						else if(!b_IgnoreWarningForReloadBuidling[client])
 						{
 							ClientCommand(client, "playgamesound items/medshotno1.wav");
-							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+							SetDefaultHudPosition(client);
 							SetGlobalTransTarget(client);
 							ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");				
 						}
@@ -2277,7 +2349,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 								else
 								{
 									ClientCommand(client, "playgamesound items/medshotno1.wav");
-									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetDefaultHudPosition(client);
 									SetGlobalTransTarget(client);
 									ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Pap this");	
 								}
@@ -2286,7 +2358,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						else if(!b_IgnoreWarningForReloadBuidling[client])
 						{
 							ClientCommand(client, "playgamesound items/medshotno1.wav");
-							SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+							SetDefaultHudPosition(client);
 							SetGlobalTransTarget(client);
 							ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");				
 						}
@@ -2296,6 +2368,13 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					if(Is_Reload_Button)
 					{
 						VillageUpgradeMenu(owner, client);
+					}
+				}
+				case 9:
+				{
+					if(Is_Reload_Button)
+					{
+						OpenSummonerMenu(owner, client);
 					}
 				}
 			}
@@ -2949,7 +3028,7 @@ public bool BuildingCustomCommand(int client)
 						Ability_CD = 0.0;
 				
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
-					SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
 					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 				}
@@ -2971,7 +3050,7 @@ public bool BuildingCustomCommand(int client)
 							Ability_CD = 0.0;
 					
 						ClientCommand(client, "playgamesound items/medshotno1.wav");
-						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 					}
@@ -2999,7 +3078,7 @@ public bool BuildingCustomCommand(int client)
 										Ability_CD = 0.0;
 								
 									ClientCommand(client, "playgamesound items/medshotno1.wav");
-									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetDefaultHudPosition(client);
 									SetGlobalTransTarget(client);
 									ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 								}
@@ -3026,7 +3105,7 @@ public bool BuildingCustomCommand(int client)
 							Ability_CD = 0.0;
 					
 						ClientCommand(client, "playgamesound items/medshotno1.wav");
-						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 					}
@@ -3055,7 +3134,7 @@ public bool BuildingCustomCommand(int client)
 										Ability_CD = 0.0;
 								
 									ClientCommand(client, "playgamesound items/medshotno1.wav");
-									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetDefaultHudPosition(client);
 									SetGlobalTransTarget(client);
 									ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 								}
@@ -3066,12 +3145,12 @@ public bool BuildingCustomCommand(int client)
 			}
 			else if((Village_Flags[client] & VILLAGE_040) && StrEqual(buffer, "zr_village"))
 			{
-				//if(Ammo_Count_Ready[client] > 0)
+				//if(Ammo_Count_Used[client] > 0)
 				{
 					if(f_BuildingIsNotReady[client] < GetGameTime())
 					{
-						//Ammo_Count_Ready[client]--;
-						f_BuildingIsNotReady[client] = GetGameTime() + 60.0;
+						//Ammo_Count_Used[client]--;
+						f_BuildingIsNotReady[client] = GetGameTime() + 120.0;
 						
 						if(Village_Flags[client] & VILLAGE_050)
 						{
@@ -3096,7 +3175,7 @@ public bool BuildingCustomCommand(int client)
 							Ability_CD = 0.0;
 						
 						ClientCommand(client, "playgamesound items/medshotno1.wav");
-						SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 					}
@@ -3104,10 +3183,14 @@ public bool BuildingCustomCommand(int client)
 				/*else
 				{
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
-					SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
 					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "No Ammo Supplies");
 				}*/
+			}
+			else if(StrEqual(buffer, "zr_summoner"))
+			{
+				OpenSummonerMenu(client, client);
 			}
 		}
 		return true;
@@ -3869,12 +3952,12 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 											Pack_A_Punch_Machine_money_limit[owner][client] += 1;
 											CashSpent[owner] -= 400;
 											Resupplies_Supplied[owner] += 40;
-											SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+											SetDefaultHudPosition(client);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Pap Machine Used");
 										}
 									}
-									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetDefaultHudPosition(client);
 									SetGlobalTransTarget(client);
 									ShowSyncHudText(client,  SyncHud_Notifaction, "Your weapon was boosted");
 									Store_ApplyAttribs(client);
@@ -3883,14 +3966,14 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 								else if(number_return == 2)
 								{
 									ClientCommand(client, "playgamesound items/medshotno1.wav");
-									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetDefaultHudPosition(client);
 									SetGlobalTransTarget(client);
 									ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Money To Pap");	
 								}
 								else if(number_return == 1)
 								{
 									ClientCommand(client, "playgamesound items/medshotno1.wav");
-									SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+									SetDefaultHudPosition(client);
 									SetGlobalTransTarget(client);
 									ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Pap this");	
 								}
@@ -4021,12 +4104,12 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	
 	if(owner != -1 && owner != client)
 	{
-		if(Perk_Machine_money_limit[owner][client] <= 10)
+		if(Perk_Machine_money_limit[owner][client] < 10)
 		{
 			CashSpent[owner] -= 80;
 			Perk_Machine_money_limit[owner][client] += 2;
 			Resupplies_Supplied[owner] += 8;
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(owner);
 			SetGlobalTransTarget(owner);
 			ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Perk Machine Used");
 		}
@@ -4042,7 +4125,7 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	int particle = ParticleEffectAt(pos, "flamethrower_underwater", 1.0);
 	SetEntPropVector(particle, Prop_Send, "m_angRotation", angles);
 
-	SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+	SetDefaultHudPosition(client, _, _, _, 5.0);
 	SetGlobalTransTarget(client);
 	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
 	Store_ApplyAttribs(client);
@@ -4063,7 +4146,7 @@ public Action Building_PlaceVillage(int client, int weapon, const char[] classna
 				Ability_CD = 0.0;
 				
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		}
@@ -4375,7 +4458,7 @@ void Building_CamoOrRegrowBlocker(bool &camo, bool &regrow)
 		}
 	}
 }
-
+/*
 float Building_GetCashOnKillMulti(int client)
 {
 	if(GetBuffEffects(EntIndexToEntRef(client)) & VILLAGE_003)
@@ -4383,15 +4466,10 @@ float Building_GetCashOnKillMulti(int client)
 	
 	return 1.0;
 }
-
-bool Building_DoesPierce(int client)
+*/
+stock int Building_GetCashOnWave(int current)
 {
-	return (client > 0 && client <= MaxClients && (GetBuffEffects(EntIndexToEntRef(client)) & VILLAGE_030));
-}
-
-
-int Building_GetCashOnWave(int current)
-{
+	/*
 	int popCash;
 	int extras;
 	int farms;
@@ -4453,6 +4531,8 @@ int Building_GetCashOnWave(int current)
 		red = 1;
 	
 	return (current * popCash / 6) + (farms * (Waves_InFreeplay() ? (extras > 1 ? 575 : 500) : (extras > 1 ? 2760 : 2400)) / red);
+	*/
+	return 0;
 }
 
 static void VillageCheckItems(int client)
@@ -4651,10 +4731,10 @@ static void VillageUpgradeMenu(int client, int viewer)
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s [$5000]%s", TranslateItemName(viewer, "Monkey Intelligence Bureau", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : "");
-			menu.AddItem(VilN(VILLAGE_030), buffer, (!owner || cash < 5000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			FormatEx(buffer, sizeof(buffer), "%s [$4000]%s", TranslateItemName(viewer, "Monkey Intelligence Bureau", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : "");
+			menu.AddItem(VilN(VILLAGE_030), buffer, (!owner || cash < 4000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "The Bureau grants special Bloon popping knowledge, allowing", ITEMDRAW_DISABLED);
-			menu.AddItem("", "nearby players and allies to ignore enemy resistances.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "nearby players and allies to deal 10% more damage.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_010)
@@ -4765,32 +4845,51 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 						f_BuildingIsNotReady[client] = 0.0; 
 						Building_Sentry_Cooldown[client] = 0.0; //Reset the cooldown!
 					}
-				}
-				case VILLAGE_400:
-				{
-					Store_SetNamedItem(client, "Village NPC Expert", 4);
-					CashSpent[client] += 2500;
-					Village_TierExists[0] = 4;
-				}
-				case VILLAGE_300:
-				{
-					Store_SetNamedItem(client, "Village NPC Expert", 3);
-					CashSpent[client] += 800;
-					Village_TierExists[0] = 3;
+
+					int count;
 					int i = MaxClients + 1;
-					int count = 0;
-					
 					while((i = FindEntityByClassname(i, "base_boss")) != -1)
 					{
 						if(i_NpcInternalId[i] == CITIZEN)
 							count++;
 					}
 					
-					if(count < MAX_REBELS_ALLOWED) //Do not allow more then this many npcs
+					if(count < MAX_REBELS_ALLOWED)
+						Citizen_SpawnAtPoint(_, client);
+				}
+				case VILLAGE_400:
+				{
+					Store_SetNamedItem(client, "Village NPC Expert", 4);
+					CashSpent[client] += 2500;
+					Village_TierExists[0] = 4;
+
+					int count;
+					int i = MaxClients + 1;
+					while((i = FindEntityByClassname(i, "base_boss")) != -1)
 					{
-						Citizen_SpawnAtPoint();
-						count++;
+						if(i_NpcInternalId[i] == CITIZEN)
+							count++;
 					}
+					
+					if(count < MAX_REBELS_ALLOWED)
+						Citizen_SpawnAtPoint(_, client);
+				}
+				case VILLAGE_300:
+				{
+					Store_SetNamedItem(client, "Village NPC Expert", 3);
+					CashSpent[client] += 800;
+					Village_TierExists[0] = 3;
+
+					int count;
+					int i = MaxClients + 1;
+					while((i = FindEntityByClassname(i, "base_boss")) != -1)
+					{
+						if(i_NpcInternalId[i] == CITIZEN)
+							count++;
+					}
+					
+					if(count < MAX_REBELS_ALLOWED)
+						Citizen_SpawnAtPoint(_, client);
 				}
 				case VILLAGE_200:
 				{
@@ -4802,12 +4901,14 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				{
 					Store_SetNamedItem(client, "Village NPC Expert", 1);
 					CashSpent[client] += 400;
+					CashSpentTotal[client] += 400;
 					Village_TierExists[0] = 1;
 				}
 				case VILLAGE_050:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 5);
 					CashSpent[client] += 15000;
+					CashSpentTotal[client] += 15000;
 					f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
 					Village_TierExists[1] = 5;
 				}
@@ -4815,55 +4916,64 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 4);
 					CashSpent[client] += 8000;
+					CashSpentTotal[client] += 8000;
 					f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
 					Village_TierExists[1] = 4;
 				}
 				case VILLAGE_030:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 3);
-					CashSpent[client] += 5000;
+					CashSpent[client] += 4000;
+					CashSpentTotal[client] += 4000;
 					Village_TierExists[1] = 3;
 				}
 				case VILLAGE_020:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 2);
 					CashSpent[client] += 750;
+					CashSpentTotal[client] += 750;
 					Village_TierExists[1] = 2;
 				}
 				case VILLAGE_010:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 1);
 					CashSpent[client] += 250;
+					CashSpentTotal[client] += 250;
 					Village_TierExists[1] = 1;
 				}
 				case VILLAGE_005:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 5);
 					CashSpent[client] += 12000;
+					CashSpentTotal[client] += 12000;
 					Village_TierExists[2] = 5;
 				}
 				case VILLAGE_004:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 4);
 					CashSpent[client] += 3000;
+					CashSpentTotal[client] += 3000;
 					Village_TierExists[2] = 4;
 				}
 				case VILLAGE_003:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 3);
 					CashSpent[client] += 9000;
+					CashSpentTotal[client] += 9000;
 					Village_TierExists[2] = 3;
 				}
 				case VILLAGE_002:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 2);
 					CashSpent[client] += 1000;
+					CashSpentTotal[client] += 1000;
 					Village_TierExists[2] = 2;
 				}
 				case VILLAGE_001:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 1);
 					CashSpent[client] += 1000;
+					CashSpentTotal[client] += 1000;
 					Village_TierExists[2] = 1;
 				}
 			}
@@ -4938,6 +5048,16 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 							if(attrib != Address_Null)
 								TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) * 1.06);
 						}
+						case VILLAGE_030:
+						{
+							Address attrib = TF2Attrib_GetByDefIndex(entity, 2);	// Damage
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(attrib) * 1.1);
+							
+							attrib = TF2Attrib_GetByDefIndex(entity, 410);	// Mage Damage
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(attrib) * 1.1);
+						}
 						case VILLAGE_040, VILLAGE_050:
 						{
 							Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
@@ -4982,6 +5102,16 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
 						if(attrib != Address_Null)
 							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.06);
+					}
+					case VILLAGE_030:
+					{
+						Address attrib = TF2Attrib_GetByDefIndex(entity, 2);	// Damage
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(attrib)/ 1.1);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 410);	// Mage Damage
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(attrib) / 1.1);
 					}
 					case VILLAGE_040, VILLAGE_050:	// 1.0 * 1.5 / 1.5
 					{
@@ -5052,6 +5182,10 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 							npc.m_fGunFirerate *= 0.7;
 							npc.m_fGunReload *= 0.7;
 						}
+						case VILLAGE_030:
+						{
+							npc.m_fGunRangeBonus *= 1.1;
+						}
 						case VILLAGE_040:
 						{
 							npc.m_fGunFirerate *= 0.75;
@@ -5099,6 +5233,10 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						npc.m_fGunFirerate /= 0.7;
 						npc.m_fGunReload /= 0.7;
 					}
+					case VILLAGE_030:
+					{
+						npc.m_fGunRangeBonus /= 1.1;
+					}
 					case VILLAGE_040:
 					{
 						npc.m_fGunFirerate /= 0.75;
@@ -5108,6 +5246,67 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					{
 						npc.m_fGunFirerate /= 0.75;
 						npc.m_fGunReload /= 0.75;
+					}
+				}
+			}
+		}
+	}
+	else if(entity > MaxClients)
+	{
+		BarrackBody npc = view_as<BarrackBody>(entity);
+		
+		if(npc.OwnerUserId)
+		{
+			for(int i; i < 16; i++)
+			{
+				int flag = (1 << i);
+				bool hadBefore = view_as<bool>(oldBuffs & flag);
+				
+				if(newBuffs & flag)
+				{
+					if(!hadBefore)
+					{
+						switch(flag)
+						{
+							case VILLAGE_200:
+							{
+								npc.BonusFireRate *= 0.95;
+							}
+							case VILLAGE_030:
+							{
+								npc.BonusDamageBonus *= 1.1;
+							}
+							case VILLAGE_040:
+							{
+								npc.BonusFireRate *= 0.75;
+							}
+							case VILLAGE_050:
+							{
+								npc.BonusFireRate *= 0.75;
+							}
+						}
+					}
+				}
+				else if(hadBefore)
+				{
+					switch(flag)
+					{
+						case VILLAGE_200:
+						{
+							npc.BonusFireRate/= 0.95;
+						}
+						case VILLAGE_030:
+						{
+							npc.BonusDamageBonus /= 1.1;
+						}
+						case VILLAGE_040:
+						{
+							npc.BonusFireRate /= 0.75;
+						}
+						case VILLAGE_050:
+						{
+							npc.BonusFireRate /= 0.75;
+						}
 					}
 				}
 			}
@@ -5196,6 +5395,47 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 			npc.UpdateCollisionBox();	
 			*/
 
+		}
+		case BuildingSummoner:
+		{
+			SetEntProp(Building_Index, Prop_Send, "m_fEffects", GetEntProp(Building_Index, Prop_Send, "m_fEffects") | EF_NODRAW);
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[Building_Index] = true;
+			float vOrigin[3];
+			float vAngles[3];
+			int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][1]);
+			
+			if(IsValidEntity(prop1))
+			{
+				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+				TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+			}
+			else
+			{
+				prop1 = CreateEntityByName("prop_dynamic_override");
+				if(IsValidEntity(prop1))
+				{
+					DispatchKeyValue(prop1, "model", SUMMONER_MODEL);
+					DispatchKeyValue(prop1, "modelscale", "0.15");
+					DispatchKeyValue(prop1, "StartDisabled", "false");
+					DispatchKeyValue(prop1, "Solid", "0");
+					SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
+					DispatchSpawn(prop1);
+					SetEntityCollisionGroup(prop1, 1);
+					AcceptEntityInput(prop1, "DisableShadow");
+					AcceptEntityInput(prop1, "DisableCollision");
+					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop1);
+					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
+					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
+
+					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+					SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1_Summoner);
+				}
+			}
+			SetEntityModel(Building_Index, SUMMONER_MODEL);			
 		}
 		case BuildingHealingStation:
 		{	
@@ -5669,4 +5909,546 @@ public MRESReturn Dhook_FirstSpawn_Pre(int Building_Index, Handle hParams)
 public MRESReturn Dhook_FirstSpawn_Post(int Building_Index, Handle hParams) 
 {
 	return MRES_Ignored;
+}
+
+static float WoodAmount[MAXTF2PLAYERS];
+static float FoodAmount[MAXTF2PLAYERS];
+static float GoldAmount[MAXTF2PLAYERS];
+static int SupplyRate[MAXTF2PLAYERS];
+static int InMenu[MAXTF2PLAYERS];
+static float TrainingStartedIn[MAXTF2PLAYERS];
+static float TrainingIn[MAXTF2PLAYERS];
+static int TrainingIndex[MAXTF2PLAYERS];
+static int TrainingQueue[MAXTF2PLAYERS];
+static int CommandMode[MAXTF2PLAYERS];
+static bool FinalBuilder[MAXTF2PLAYERS];
+static bool MedievalUnlock[MAXTF2PLAYERS];
+static bool GlassBuilder[MAXTF2PLAYERS];
+
+enum
+{
+	NPCIndex = 0,
+	WoodCost,
+	FoodCost,
+	GoldCost,
+	TrainTime,
+	TrainLevel
+}
+
+static const char CommandName[][] =
+{
+	"Command: Defensive",
+	"Command: Aggressive",
+	"Command: Retreat"
+};
+
+/*
+	None - 1.0/s
+	Repair Handling book for dummies - 1.5/s
+	Ikea Repair Handling book - 2.5/s
+	Engineering Repair Handling book - 4.5/s
+	Alien Repair Handling book - 10.5/s
+	Cosmic Repair Handling book - 20.5/s
+*/
+
+static const int SummonerData[][] =
+{
+	// NPC Index, Wood, Food, Gold, Time, Level
+	{ BARRACK_MILITIA, 5, 30, 0, 5, 1 },		// None
+
+	{ BARRACK_ARCHER, 50, 10, 0, 7, 2 },		// Construction Novice
+	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 4 },	// Construction Apprentice
+
+	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 4 },		// Construction Apprentice
+	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 7 },		// Construction Worker
+
+	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7 },		// Construction Worker
+	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 11 },	// Construction Expert
+
+	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11 },	// Construction Expert
+	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16 },	// Construction Master
+
+
+	{ BARRACK_MONK, 210, 0, 50, 12, 11 },		// Construction Worker
+	{ BARRACK_HUSSAR, 0, 400, 100, 15, 16 }		// Construction Master
+};
+
+public Action Building_PlaceSummoner(int client, int weapon, const char[] classname, bool &result)
+{
+	int Sentrygun = EntRefToEntIndex(i_HasSentryGunAlive[client]);
+	if(!IsValidEntity(Sentrygun))
+	{
+		if(Building_Sentry_Cooldown[client] > GetGameTime())
+		{
+			result = false;
+			float Ability_CD = Building_Sentry_Cooldown[client] - GetGameTime();
+			
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+				
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+		}
+		else
+		{
+			PlaceBuilding(client, weapon, Building_Summoner, TFObject_Sentry);
+		}
+	}
+	return Plugin_Continue;
+}
+
+public bool Building_Summoner(int client, int entity)
+{
+	WoodAmount[client] = 50.0;
+	FoodAmount[client] = 100.0;
+	GoldAmount[client] = 0.0;
+	TrainingIn[client] = 0.0;
+	CommandMode[client] = 0;
+	TrainingQueue[client] = -1;
+	
+	i_HasSentryGunAlive[client] = EntIndexToEntRef(entity);
+	b_SentryIsCustom[entity] = true;
+	Building_Constructed[entity] = false;
+	CreateTimer(0.2, Building_Set_HP_Colour_Sentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	DataPack pack;
+	CreateDataTimer(0.1, Timer_SummonerThink, pack, TIMER_REPEAT);
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteCell(entity);
+	i_WhatBuilding[entity] = BuildingSummoner;
+	
+	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
+	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 1.15);
+	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
+	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
+	Building_Max_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	SetEntPropString(entity, Prop_Data, "m_iName", "zr_summoner");
+	Building_cannot_be_repaired[entity] = true;
+	Is_Elevator[entity] = false;
+	Building_Sentry_Cooldown[client] = GetGameTime() + 60.0;
+	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
+	Building_Collect_Cooldown[entity][0] = 0.0;
+	
+	if(!EscapeMode)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+int Building_GetFollowerEntity(int owner)
+{
+	if(Building_Mounted[owner] != i_HasSentryGunAlive[owner])
+	{
+		int entity = EntRefToEntIndex(i_HasSentryGunAlive[owner]);
+		if(entity != INVALID_ENT_REFERENCE)
+			return entity;
+	}
+	return owner;
+}
+
+int Building_GetFollowerCommand(int owner)
+{
+	return CommandMode[owner];
+}
+
+public Action Timer_SummonerThink(Handle timer, DataPack pack)
+{
+	bool mounted;
+	int owner;
+	pack.Reset();
+	int ref = pack.ReadCell();
+	int entity = EntRefToEntIndex(ref);
+	int original_entity = pack.ReadCell(); //Need original!
+	if(!IsValidEntity(entity))
+	{
+		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[original_entity][0]);
+		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[original_entity][1]);
+		
+		if(IsValidEntity(prop1))
+		{
+			RemoveEntity(prop1);
+		}
+		if(IsValidEntity(prop2))
+		{
+			RemoveEntity(prop2);
+		}
+		return Plugin_Stop;
+	}
+	if(entity != INVALID_ENT_REFERENCE)
+	{
+		owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+		if(owner < 1 || owner > MaxClients)
+		{
+			SDKHooks_TakeDamage(entity, entity, entity, 999999.9);
+			entity = INVALID_ENT_REFERENCE;
+			owner = 0;
+		}
+		else if(Building_Mounted[owner] == ref)
+		{
+			mounted = true;
+		}
+		else if(GetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed") == 1.0)
+		{
+			if(Building_Constructed[entity])
+			{
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+			}
+			if(!Building_Constructed[entity])
+			{
+				//BELOW IS SET ONCE!
+				view_as<CClotBody>(entity).bBuildingIsPlaced = true;
+				Building_Constructed[entity] = true;
+				
+				SetEntityModel(entity, SUMMONER_MODEL);
+				
+				static const float minbounds[3] = {-20.0, -20.0, 0.0};
+				static const float maxbounds[3] = {20.0, 20.0, 30.0};
+				SetEntPropVector(entity, Prop_Send, "m_vecMins", minbounds);
+				SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxbounds);
+				SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", minbounds);
+				SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
+
+				view_as<CClotBody>(entity).UpdateCollisionBox();			
+			}
+		}
+		else
+		{
+			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+			int prop1 = EntRefToEntIndex(Building_Hidden_Prop[entity][0]);
+			int prop2 = EntRefToEntIndex(Building_Hidden_Prop[entity][1]);
+			
+			if(IsValidEntity(prop1))
+			{
+				RemoveEntity(prop1);
+			}
+			if(IsValidEntity(prop2))
+			{
+				RemoveEntity(prop2);
+			}
+			Building_Constructed[entity] = false;
+		}
+	}
+	
+	if(entity != INVALID_ENT_REFERENCE && owner && Building_Constructed[entity])
+	{
+		// 1 Supply = 1 Food Every 2 Seconds, 1 Wood Every 4 Seconds
+		WoodAmount[owner] += SupplyRate[owner] / (LastMann ? 20.0 : 40.0);
+		FoodAmount[owner] += SupplyRate[owner] / (LastMann ? 10.0 : 20.0);
+
+		// 1 Supply = 1 Gold Every 150 Seconds
+		if(MedievalUnlock[owner])
+			GoldAmount[owner] += SupplyRate[owner] / 1500.0;
+
+		if(TrainingIn[owner])
+		{
+			if(!AtMaxSupply(owner))
+			{
+				float gameTime = GetGameTime();
+				if(TrainingIn[owner] < gameTime)
+				{
+					static float VecStuckCheck[3];
+
+					int entity_to_heck_from;
+
+					if(mounted)
+					{
+						entity_to_heck_from = owner;
+					}
+					else
+					{
+						entity_to_heck_from = entity;
+					}
+
+					GetEntPropVector(entity_to_heck_from, Prop_Data, "m_vecAbsOrigin", VecStuckCheck);
+					
+					static float hullcheckmaxs[3];
+					static float hullcheckmins[3];
+					
+					hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+					hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );		
+
+					if (!IsSpaceOccupiedRTSBuilding(VecStuckCheck, hullcheckmins, hullcheckmaxs, entity_to_heck_from))
+					{
+						SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 0);
+						TrainingIn[owner] = 0.0;
+
+						float pos[3], ang[3];
+						GetEntPropVector(mounted ? owner : entity, Prop_Data, "m_vecAbsOrigin", pos);
+						GetEntPropVector(mounted ? owner : entity, Prop_Data, "m_angRotation", ang);
+						
+						view_as<BarrackBody>(mounted ? owner : entity).PlaySpawnSound();
+						int npc = Npc_Create(SummonerData[TrainingIndex[owner]][NPCIndex], owner, pos, ang, true);
+						if(npc > MaxClients && FinalBuilder[owner])
+						{
+							view_as<BarrackBody>(npc).BonusDamageBonus = 1.3;
+						}
+						if(npc > MaxClients && GlassBuilder[owner])
+						{
+							view_as<BarrackBody>(npc).BonusDamageBonus = 1.15;
+						}
+
+						if(TrainingQueue[owner] != -1)
+						{
+							TrainingIndex[owner] = TrainingQueue[owner];
+							TrainingStartedIn[owner] = GetGameTime();
+							TrainingIn[owner] = TrainingStartedIn[owner] + float(SummonerData[TrainingQueue[owner]][TrainTime]);
+							TrainingQueue[owner] = -1;
+						}
+					}
+					else
+					{
+						TrainingIn[owner] = gameTime + 0.1;
+						TrainingStartedIn[owner] = -1.0;
+					}
+				}
+				else
+				{
+					int required = RoundFloat((TrainingIn[owner] - TrainingStartedIn[owner]) * 2.0);
+					int current = required - RoundToCeil((TrainingIn[owner] - gameTime) * 2.0);
+					
+					SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", current);
+					SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", required);
+				}
+			}
+		}
+
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(InMenu[i] == owner)
+				SummonerMenu(owner, i);
+		}
+	}
+
+	return entity == INVALID_ENT_REFERENCE ? Plugin_Stop : Plugin_Continue;
+}
+
+static void CheckSummonerUpgrades(int client)
+{
+	SupplyRate[client] = 2;
+
+	if(Store_HasNamedItem(client, "Repair Handling book for dummies"))
+		SupplyRate[client]++;
+	
+	if(Store_HasNamedItem(client, "Ikea Repair Handling book"))
+		SupplyRate[client] += 2;
+	
+	if(Store_HasNamedItem(client, "Engineering Repair Handling book"))
+		SupplyRate[client] += 4;
+	
+	if(Store_HasNamedItem(client, "Alien Repair Handling book"))
+		SupplyRate[client] += 6;
+	
+	if(Store_HasNamedItem(client, "Cosmic Repair Handling book"))
+		SupplyRate[client] += 10;
+	
+	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
+	MedievalUnlock[client] = view_as<bool>(HasNamedItem(client, "Medieval Crown"));
+	GlassBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Glass Cannon Blueprints"));
+}
+
+static void OpenSummonerMenu(int client, int viewer)
+{
+	if(client == viewer)
+		CheckSummonerUpgrades(client);
+	
+	SummonerMenu(client, viewer);
+}
+
+static void SummonerMenu(int client, int viewer)
+{
+	int entity = EntRefToEntIndex(i_HasSentryGunAlive[client]);
+	if(entity == INVALID_ENT_REFERENCE)
+	{
+		CancelClientMenu(viewer);
+		return;
+	}
+
+	bool owner = client == viewer;
+	int level = MaxSupportBuildingsAllowed(client, true);
+	
+	Menu menu = new Menu(SummonerMenuH);
+	
+	SetGlobalTransTarget(viewer);
+	menu.SetTitle("%t\n \n%s\n \n$%d £%d ¥%d\n ", "TF2: Zombie Riot", TranslateItemName(viewer, "Buildable Barracks", ""), RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), RoundToFloor(GoldAmount[client]));
+	
+	menu.AddItem(NULL_STRING, CommandName[CommandMode[client]], owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+
+	char buffer1[256];
+	if(TrainingIn[client])
+	{
+		if(AtMaxSupply(client))
+		{
+			FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", NPC_Names[SummonerData[TrainingIndex[client]][NPCIndex]]);
+			if(i_BarricadesBuild[client])
+				Format(buffer1, sizeof(buffer1), "%s\nTIP: Your barricades counts towards the supply limit\n ", buffer1);
+		}
+		else if(TrainingStartedIn[client] < 0.0)
+		{
+			FormatEx(buffer1, sizeof(buffer1), "Training %t... (Spaced Occupied)\n ", NPC_Names[SummonerData[TrainingIndex[client]][NPCIndex]]);
+		}
+		else
+		{
+			float gameTime = GetGameTime();
+			FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f%%)\n ", NPC_Names[SummonerData[TrainingIndex[client]][NPCIndex]],
+				100.0 - ((TrainingIn[client] - gameTime) * 100.0 / (TrainingIn[client] - TrainingStartedIn[client])));
+		}
+
+		if(TrainingQueue[client] != -1)
+			Format(buffer1, sizeof(buffer1), "%sNext: %t\n ", buffer1, NPC_Names[SummonerData[TrainingQueue[client]][NPCIndex]]);
+		
+		menu.AddItem(buffer1, buffer1, owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	}
+	else
+	{
+		menu.AddItem(buffer1, "\n ", owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	}
+
+	char buffer2[64];
+	int options;
+	for(int i = sizeof(SummonerData) - 1; i >= 0; i--)
+	{
+		if(SummonerData[i][TrainLevel] > level)
+			continue;
+		
+		FormatEx(buffer2, sizeof(buffer2), "%s Desc", NPC_Names[SummonerData[i][NPCIndex]]);
+		FormatEx(buffer1, sizeof(buffer1), "%t [", NPC_Names[SummonerData[i][NPCIndex]]);
+
+		if(SummonerData[i][WoodCost])
+			Format(buffer1, sizeof(buffer1), "%s $%d", buffer1, SummonerData[i][WoodCost]);
+		
+		if(SummonerData[i][FoodCost])
+			Format(buffer1, sizeof(buffer1), "%s £%d", buffer1, SummonerData[i][FoodCost]);
+		
+		if(SummonerData[i][GoldCost])
+			Format(buffer1, sizeof(buffer1), "%s ¥%d", buffer1, SummonerData[i][GoldCost]);
+		
+		Format(buffer1, sizeof(buffer1), "%s ]\n%t\n ", buffer1, buffer2);
+		IntToString(i, buffer2, sizeof(buffer2));
+		bool poor = (!owner || WoodAmount[client] < SummonerData[i][WoodCost]) || (FoodAmount[client] < SummonerData[i][FoodCost]) || (GoldAmount[client] < SummonerData[i][GoldCost]);
+
+		menu.AddItem(buffer2, buffer1, poor ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		if(++options > 3)
+			break;
+	}
+
+	menu.Pagination = 0;
+	menu.ExitButton = true;
+	if(menu.Display(viewer, 1))
+		InMenu[viewer] = client;
+}
+
+public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			InMenu[client] = 0;
+		}
+		case MenuAction_Select:
+		{
+			if(choice)
+			{
+				int entity = EntRefToEntIndex(i_HasSentryGunAlive[client]);
+				if(entity != INVALID_ENT_REFERENCE)
+				{
+					if(choice == 1)
+					{
+						if(TrainingQueue[client] != -1)
+						{
+							WoodAmount[client] += float(SummonerData[TrainingQueue[client]][WoodCost]);
+							FoodAmount[client] += float(SummonerData[TrainingQueue[client]][FoodCost]);
+							GoldAmount[client] += float(SummonerData[TrainingQueue[client]][GoldCost]);
+
+							TrainingQueue[client] = -1;
+						}
+						else if(TrainingIn[client])
+						{
+							TrainingIn[client] = 0.0;
+
+							WoodAmount[client] += float(SummonerData[TrainingIndex[client]][WoodCost]);
+							FoodAmount[client] += float(SummonerData[TrainingIndex[client]][FoodCost]);
+							GoldAmount[client] += float(SummonerData[TrainingIndex[client]][GoldCost]);
+						}
+					}
+					else
+					{
+						char num[16];
+						menu.GetItem(choice, num, sizeof(num));
+						int item = StringToInt(num);
+
+						float woodcost = float(SummonerData[item][WoodCost]);
+						float foodcost = float(SummonerData[item][FoodCost]);
+						float goldcost = float(SummonerData[item][GoldCost]);
+
+						if(WoodAmount[client] >= woodcost && FoodAmount[client] >= foodcost && GoldAmount[client] >= goldcost)
+						{
+							if(!TrainingIn[client])
+							{
+								TrainingIndex[client] = item;
+								TrainingStartedIn[client] = GetGameTime();
+								TrainingIn[client] = TrainingStartedIn[client] + float(LastMann ? (SummonerData[item][TrainTime] / 3) : SummonerData[item][TrainTime]);
+							}
+							else if(TrainingQueue[client] == -1)
+							{
+								TrainingQueue[client] = item;
+							}
+							else
+							{
+								WoodAmount[client] += float(SummonerData[TrainingQueue[client]][WoodCost]);
+								FoodAmount[client] += float(SummonerData[TrainingQueue[client]][FoodCost]);
+								GoldAmount[client] += float(SummonerData[TrainingQueue[client]][GoldCost]);
+
+								TrainingQueue[client] = item;
+							}
+							
+							WoodAmount[client] -= woodcost;
+							FoodAmount[client] -= foodcost;
+							GoldAmount[client] -= goldcost;
+						}
+					}
+
+					SummonerMenu(client, client);
+				}
+			}
+			else
+			{
+				if(++CommandMode[client] >= sizeof(CommandName))
+					CommandMode[client] = 0;
+				
+				SummonerMenu(client, client);
+			}
+		}
+	}
+	return 0;
+}
+
+static bool AtMaxSupply(int client)
+{
+	int userid = GetClientUserId(client);
+	int personal = i_BarricadesBuild[client];
+	int global;
+	int entity = MaxClients + 1;
+	while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+	{
+		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+		{
+			global++;
+
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(npc.OwnerUserId == userid)
+				personal++;
+		}
+	}
+
+	return (global > 9 || personal > 2);
 }

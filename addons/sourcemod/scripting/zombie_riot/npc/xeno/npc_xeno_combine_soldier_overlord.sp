@@ -512,7 +512,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 									
 									if(target > 0) 
 									{
-										if(target <= MaxClients)
+										if(!ShouldNpcDealBonusDamage(target))
 											SDKHooks_TakeDamage(target, npc.index, npc.index, 110.0, DMG_CLUB, -1, _, vecHit);
 										else
 											SDKHooks_TakeDamage(target, npc.index, npc.index, 450.0, DMG_CLUB, -1, _, vecHit);
@@ -599,10 +599,10 @@ public Action XenoCombineOverlord_ClotDamaged(int victim, int &attacker, int &in
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
-	if(npc.m_flAngerDelay > GetGameTime(npc.index) && !Building_DoesPierce(attacker))
+	if(npc.m_flAngerDelay > GetGameTime(npc.index))
 		damage *= 0.25;
 	
-	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
+	if(npc.m_fbRangedSpecialOn)
 		damage *= 0.15;
 	
 	return Plugin_Changed;

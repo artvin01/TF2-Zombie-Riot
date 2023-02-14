@@ -97,7 +97,7 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			Resupplies_Supplied[client] = 0;
 			CashRecievedNonWave[client] = 0;
 			Healing_done_in_total[client] = 0;
-			Ammo_Count_Ready[client] = 0;
+			Ammo_Count_Used[client] = 0;
 			Armor_Charge[client] = 0;
 		}
 	}
@@ -246,6 +246,11 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 					
 			else
 				damage = 100.0;
+
+			if(TeutonType[client] == TEUTON_WAITING)
+			{
+				damage *= 0.25;
+			}
 			
 	   		TF2Attrib_SetByDefIndex(weapon_index, 2, damage);
 	   		TF2Attrib_SetByDefIndex(weapon_index, 264, 0.0);
@@ -270,7 +275,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		
 	   		SetEntPropFloat(wearable, Prop_Send, "m_flModelScale", 1.25);
 	   		
-	   		SetEntPropFloat(weapon_index, Prop_Send, "m_flModelScale", -0.8);
+	   		SetEntPropFloat(weapon_index, Prop_Send, "m_flModelScale", 0.8);
 	   		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 0.7);
 	   		
 			SetAmmo(client, 1, 9999);

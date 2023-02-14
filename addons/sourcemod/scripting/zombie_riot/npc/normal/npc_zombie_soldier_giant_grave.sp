@@ -278,6 +278,7 @@ public void SoldierGiant_ClotThink(int iNPC)
 			} else {
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
+			npc.StartPathing();
 			
 			//Target close enough to hit
 			if(flDistanceToTarget < 22500 || npc.m_flAttackHappenswillhappen)
@@ -312,7 +313,7 @@ public void SoldierGiant_ClotThink(int iNPC)
 								if(target > 0) 
 								{
 									
-									if(target <= MaxClients)
+									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 135.0, DMG_CLUB, -1, _, vecHit);
 									else
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 1000.0, DMG_CLUB, -1, _, vecHit);
@@ -345,11 +346,6 @@ public void SoldierGiant_ClotThink(int iNPC)
 				npc.m_flAttackHappens_2 = GetGameTime(npc.index) + 3.0;
 				npc.PlayRangedSound();
 				npc.FireRocket(vecTarget, 20.0, 600.0);
-			}
-			else
-			{
-				npc.StartPathing();
-				
 			}
 	}
 	else

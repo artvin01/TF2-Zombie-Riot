@@ -182,8 +182,8 @@ public void FortifiedGiantPoisonZombie_ClotThink(int iNPC)
 	{
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
-		if(!npc.m_flAttackHappenswillhappen)
-			npc.AddGesture("ACT_SMALL_FLINCH", false);
+//		if(!npc.m_flAttackHappenswillhappen)
+//			npc.AddGesture("ACT_SMALL_FLINCH", false);
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
@@ -261,7 +261,7 @@ public void FortifiedGiantPoisonZombie_ClotThink(int iNPC)
 								if(target > 0) 
 								{
 									
-									if(target <= MaxClients)
+									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 									
 									else

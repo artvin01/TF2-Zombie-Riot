@@ -31,7 +31,7 @@ static const char g_IdleSounds[][] = {
 	"npc/metropolice/vo/infection.wav",
 	"npc/metropolice/vo/king.wav",
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
-	"npc/metropolice/vo/pickupthatcan1.wav",
+
 	"npc/metropolice/vo/pickupthatcan2.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
@@ -169,7 +169,7 @@ methodmap MedivalTwoHandedSwordsman < CClotBody
 	
 	public MedivalTwoHandedSwordsman(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		MedivalTwoHandedSwordsman npc = view_as<MedivalTwoHandedSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "6000", ally));
+		MedivalTwoHandedSwordsman npc = view_as<MedivalTwoHandedSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "8000", ally));
 		
 		i_NpcInternalId[npc.index] = MEDIVAL_TWOHANDED_SWORDSMAN;
 		
@@ -328,7 +328,7 @@ public void MedivalTwoHandedSwordsman_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									if(target <= MaxClients)
+									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 									else
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 350.0, DMG_CLUB, -1, _, vecHit);

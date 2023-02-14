@@ -135,25 +135,41 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 			b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss_index_allied] = true;
 		}
 	}
-	//UGLY ASS FIX! Teleport away all entites we wanna ignore, i have no other idea on how...
+	for(int entity=1; entity<=MAXENTITIES; entity++)
+	{
+#if defined ZR
+		if (IsValidEntity(entity) && (IsEntitySpike(entity) || b_Is_Player_Projectile[entity]))
+		{
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
+		}
+#endif
+#if defined RPG
+		if (IsValidEntity(entity) && (b_Is_Player_Projectile[entity]))
+		{
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
+		}
+#endif
+	}
+#if defined ZR
+	for(int entitycount_again; entitycount_again<ZR_MAX_TRAPS; entitycount_again++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsTraps[entitycount_again]);
+		if (IsValidEntity(entity))
+		{
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
+		}
+	}
+#endif
 	return MRES_Ignored;
 }
 
 public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hParams)
 {
-	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	for(int entity=1; entity<=MAXENTITIES; entity++)
 	{
-		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied))
+		if (IsValidEntity(entity))
 		{
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss_index_allied] = false;
-		}
-	}
-	for(int clientLoop=1; clientLoop<=MaxClients; clientLoop++)
-	{
-		if(IsClientInGame(clientLoop) && clientLoop != i_DoNotTeleportThisPlayer)
-		{
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[clientLoop] = false;
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
 		}
 	}
 	i_DoNotTeleportThisPlayer = 0;
@@ -234,7 +250,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 			if(f_DelayBuildNotif[client] < GetGameTime())
 			{
 				f_DelayBuildNotif[client] = GetGameTime() + 0.25;
-				SetHudTextParams(-1.0, 0.90, 0.5, 34, 139, 34, 255);
+				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
 			}
@@ -256,7 +272,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 				{
 					f_DelayBuildNotif[client] = GetGameTime() + 0.25;
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
-					SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
+					SetDefaultHudPosition(client, 255, 0, 0);
 					SetGlobalTransTarget(client);
 					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
 				}
@@ -316,7 +332,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 				{
 					f_DelayBuildNotif[client] = GetGameTime() + 0.25;
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
-					SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
+					SetDefaultHudPosition(client, 255, 0, 0);
 					SetGlobalTransTarget(client);
 					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
 				}
@@ -339,7 +355,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 			if(f_DelayBuildNotif[client] < GetGameTime())
 			{
 				f_DelayBuildNotif[client] = GetGameTime() + 0.25;
-				SetHudTextParams(-1.0, 0.90, 0.5, 34, 139, 34, 255);
+				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
 			}
@@ -354,7 +370,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		{
 			f_DelayBuildNotif[client] = GetGameTime() + 0.25;
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 0.5, 200, 25, 34, 255);
+			SetDefaultHudPosition(client, 255, 0, 0);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
 		}

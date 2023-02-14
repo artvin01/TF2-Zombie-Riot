@@ -329,14 +329,14 @@ public void XenoFortifiedFastZombie_ClotThink(int iNPC)
 						
 						if(EscapeModeForNpc)
 						{
-							if(target <= MaxClients)
+							if(!ShouldNpcDealBonusDamage(target))
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 12.0, DMG_CLUB, -1, _, vecHit);
 							else
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 20.0, DMG_CLUB, -1, _, vecHit);
 						}
 						else
 						{
-							if(target <= MaxClients)
+							if(!ShouldNpcDealBonusDamage(target))
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 4.0, DMG_CLUB, -1, _, vecHit);
 							else
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 15.0, DMG_CLUB, -1, _, vecHit);
@@ -382,7 +382,7 @@ public Action XenoFortifiedFastZombie_ClotDamaged(int victim, int &attacker, int
 	XenoFortifiedFastZombie npc = view_as<XenoFortifiedFastZombie>(victim);
 	
 	
-	if(!npc.bXenoInfectedSpecialHurt && !Building_DoesPierce(attacker))
+	if(!npc.bXenoInfectedSpecialHurt)
 	{
 		npc.bXenoInfectedSpecialHurt = true;
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);

@@ -61,7 +61,10 @@ static int Spikes_Alive[MAXPLAYERS+1]={0, ...};
 static int Spike_MaxHealth[MAXENTITIES]={0, ...};
 static bool Is_Spike[MAXENTITIES]={false, ...};
 
-
+bool IsEntitySpike(int entity)
+{
+	return Is_Spike[entity];
+}
 
 public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, bool &result)
 {
@@ -78,7 +81,7 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 			{
 				CurrentAmmo[client][i] = GetAmmo(client, i);
 			}	
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Spike Limit Reached");
 			return;

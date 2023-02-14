@@ -5,6 +5,8 @@
 #define ITEM_XP		"XP"
 #define ITEM_TIER	"Elite Promotion"
 
+bool DisabledDownloads[MAXTF2PLAYERS];
+
 int Tier[MAXTF2PLAYERS];
 int Level[MAXENTITIES];
 int XP[MAXENTITIES];
@@ -19,6 +21,7 @@ float Animal_Happy[MAXTF2PLAYERS][10][3];
 bool b_NpcIsInADungeon[MAXENTITIES];
 int i_NpcFightOwner[MAXENTITIES];
 float f_NpcFightTime[MAXENTITIES];
+float f_SingerBuffedFor[MAXENTITIES];
 
 float f_HealingPotionDuration[MAXTF2PLAYERS];
 int f_HealingPotionEffect[MAXTF2PLAYERS];
@@ -35,6 +38,7 @@ bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 #include "rpg_fortress/crafting.sp"
 #include "rpg_fortress/dungeon.sp"
 #include "rpg_fortress/fishing.sp"
+#include "rpg_fortress/games.sp"
 #include "rpg_fortress/garden.sp"
 #include "rpg_fortress/levels.sp"
 #include "rpg_fortress/mining.sp"
@@ -58,12 +62,14 @@ bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 #include "rpg_fortress/custom/weapon_boom_stick.sp"
 #include "rpg_fortress/custom/accesorry_mudrock_shield.sp"
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
+#include "rpg_fortress/custom/wand/weapon_arts_wand.sp"
 
 void RPG_PluginStart()
 {
 	Ammo_PluginStart();
 	Dungeon_PluginStart();
 	Fishing_PluginStart();
+	Games_PluginStart();
 	Store_Reset();
 	Levels_PluginStart();
 	Party_PluginStart();
@@ -124,6 +130,7 @@ void RPG_MapStart()
 	BoomStick_MapPrecache();
 	Medigun_PersonOnMapStart();
 	Abiltity_Mudrock_Shield_Shield_PluginStart();
+	Wand_Arts_MapStart();
 }
 
 void RPG_MapEnd()
@@ -131,14 +138,36 @@ void RPG_MapEnd()
 	Spawns_MapEnd();
 }
 
-void RPG_PutInServer()
+void RPG_PutInServer(int client)
 {
 	CountPlayersOnRed();
+
+	int userid = GetClientUserId(client);
+	QueryClientConVar(client, "cl_allowdownload", OnQueryFinished, userid);
+	QueryClientConVar(client, "cl_downloadfilter", OnQueryFinished, userid);
+}
+
+public void OnQueryFinished(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue, int userid)
+{
+	if(result == ConVarQuery_Okay && GetClientOfUserId(userid) == client)
+	{
+		if(StrEqual(cvarName, "cl_allowdownload"))
+		{
+			if(!StringToInt(cvarValue))
+				DisabledDownloads[client] = true;
+		}
+		else if(StrEqual(cvarName, "cl_downloadfilter"))
+		{
+			if(StrContains("all", cvarValue) == -1)
+				DisabledDownloads[client] = true;
+		}
+	}
 }
 
 void RPG_ClientCookiesCached(int client)
 {
 	Ammo_ClientCookiesCached(client);
+	Stats_ClientCookiesCached(client);
 }
 
 void RPG_ClientDisconnect(int client)
@@ -151,12 +180,15 @@ void RPG_ClientDisconnect(int client)
 		}
 	}
 
+	DisabledDownloads[client] = false;
+
 	UpdateLevelAbovePlayerText(client, true);
 	Ammo_ClientDisconnect(client);
 	Dungeon_ClientDisconnect(client);
 	Fishing_ClientDisconnect(client);
 	Music_ClientDisconnect(client);
 	Party_ClientDisconnect(client);
+	Stats_ClientDisconnect(client);
 	TextStore_ClientDisconnect(client);
 	MudrockShieldDisconnect(client);
 }
@@ -170,10 +202,24 @@ void RPG_EntityCreated(int entity, const char[] classname)
 {
 	b_NpcIsInADungeon[entity] = false;
 	i_NpcFightOwner[entity] = false;
+	f_SingerBuffedFor[entity] = 0.0;
 	StoreWeapon[entity][0] = 0;
 	Dungeon_ResetEntity(entity);
 	Stats_ClearCustomStats(entity);
 	Zones_EntityCreated(entity, classname);
+}
+
+void RPG_PlayerRunCmdPost(int client)
+{
+	TextStore_PlayerRunCmd(client);
+	Fishing_PlayerRunCmd(client);
+	Garden_PlayerRunCmd(client);
+	Music_PlayerRunCmd(client);
+}
+
+void RPG_UpdateHud(int client)
+{
+	Stats_UpdateHud(client);
 }
 
 public void CheckAlivePlayersforward(int killed)

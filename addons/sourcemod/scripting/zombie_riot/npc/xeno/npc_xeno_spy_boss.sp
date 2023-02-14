@@ -403,34 +403,34 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 			SetEntityRenderColor(npc.m_iWearable5, 150, 255, 150, 255);
 		}
 	}
-	
+	if(npc.m_flDead_Ringer_Invis < GetGameTime(npc.index) && npc.m_flDead_Ringer_Invis_bool)
+	{
+		SDKUnhook(npc.index, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
+		npc.m_flDead_Ringer_Invis_bool = false;
+			
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
+			
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
+			
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 255);
+			
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable3, 150, 255, 150, 255);
+			
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable4, 150, 255, 150, 255);
+			
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable5, 150, 255, 150, 255);
+			
+		npc.PlayDecloakSound();
+		npc.PlayDecloakSound();
+	}	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		if(npc.m_flDead_Ringer_Invis < GetGameTime(npc.index) && npc.m_flDead_Ringer_Invis_bool)
-		{
-			npc.m_flDead_Ringer_Invis_bool = false;
-			
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.index, 150, 255, 150, 255);
-			
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
-			
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 255);
-			
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable3, 150, 255, 150, 255);
-			
-			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable4, 150, 255, 150, 255);
-			
-			SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable5, 150, 255, 150, 255);
-			
-			npc.PlayDecloakSound();
-			npc.PlayDecloakSound();
-		}
 	
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -520,6 +520,11 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 			PF_SetGoalVector(npc.index, vPredictedPos);
 		} else {
 			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		}
+		if(npc.m_flDead_Ringer_Invis_bool) //no attack or anything.
+		{
+		//	npc.m_flSpeed = 300.0; //Xeno doesnt get slower. :)
+			return;
 		}
 		if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 40000 && flDistanceToTarget < 90000 && npc.m_flReloadDelay < GetGameTime(npc.index) && !npc.Anger)
 		{
@@ -647,52 +652,25 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 								
 						if(target > 0) 
 						{
-							if(!EscapeMode)
+							if(!npc.Anger)
 							{
-								if(!npc.Anger)
-								{
-									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 180.0, DMG_CLUB, -1, _, vecHit);
-									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_CLUB, -1, _, vecHit);	
-								}
-								else if(npc.Anger)
-								{
-									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
-									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 7500.0, DMG_CLUB, -1, _, vecHit);	
-								}
+								if(!ShouldNpcDealBonusDamage(target))
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 180.0, DMG_CLUB, -1, _, vecHit);
+								else
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 3500.0, DMG_CLUB, -1, _, vecHit);	
 							}
-							else
+							else if(npc.Anger)
 							{
-								if(!npc.Anger)
-								{
-									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
-									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_CLUB, -1, _, vecHit);	
-								}
-								else if(npc.Anger)
-								{
-									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB, -1, _, vecHit);
-									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_CLUB, -1, _, vecHit);	
-								}										
+								if(!ShouldNpcDealBonusDamage(target))
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
+								else
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 4750.0, DMG_CLUB, -1, _, vecHit);	
 							}
 								
 							if(npc.m_iAttacksTillMegahit >= 3)
 							{
 								Custom_Knockback(npc.index, target, 500.0);
-								if(!EscapeMode)
-								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
-								}
-								else
-								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 35.0, DMG_CLUB, -1, _, vecHit);
-								}
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 								npc.m_iAttacksTillMegahit = 0;
 								
 							}
@@ -744,6 +722,17 @@ public Action XenoSpyMainBoss_ClotDamaged(int victim, int &attacker, int &inflic
 	
 	if(npc.m_flDead_Ringer < GetGameTime(npc.index))
 	{
+		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (maxhealth / 50));
+		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= maxhealth)
+		{
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", maxhealth);
+		}
+
+		SDKUnhook(npc.index, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
+		SDKHook(npc.index, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
+
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 		
@@ -776,14 +765,14 @@ public Action XenoSpyMainBoss_ClotDamaged(int victim, int &attacker, int &inflic
 			npc.m_blPlayHurtAnimation = true;
 		}
 	}
-	else if(!Building_DoesPierce(attacker))
+	else
 	{
-		damage *= 0.1;
+		damage = 0.0;
 	}
 	
 	if(npc.Anger)
 	{
-		damage *= 0.5;
+		damage *= 0.65;
 	}
 	
 	

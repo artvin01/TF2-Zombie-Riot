@@ -319,10 +319,9 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 								{
 									damage=20.0;
 								}
-								npc.FireRocket(vecTarget, damage, speed, "models/effects/combineball.mdl", 1.0);
-								npc.FireRocket(vecTarget, damage, speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0, EP_NO_KNOCKBACK);
-								npc.FireRocket(vecTarget, damage, speed);
-								npc.FireArrow(vecTarget, damage, speed);
+								
+								npc.FireParticleRocket(vecTarget, damage*4 , speed , 100.0 , "raygun_projectile_red_crit");
+								//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
 							}
 							else
 							{

@@ -71,6 +71,8 @@ enum
 	WEAPON_COSMIC_TERROR = 8
 }
 
+ArrayList SpawnerList;
+
 //int Bob_To_Player[MAXENTITIES];
 bool Bob_Exists = false;
 int Bob_Exists_Index = -1;
@@ -86,6 +88,7 @@ ConVar CvarInfiniteCash;
 ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_spawnprotectiontime;
 ConVar zr_viewshakeonlowhealth;
+ConVar zr_disablerandomvillagerspawn;
 //ConVar CvarEnablePrivatePlugins;
 int CurrentGame;
 bool b_GameOnGoing = true;
@@ -110,6 +113,7 @@ bool b_HasBeenHereSinceStartOfWave[MAXTF2PLAYERS];
 Cookie CookieScrap;
 Cookie CookiePlayStreak;
 Cookie CookieCache;
+Cookie CookieAmmoCount;
 Cookie CookieXP;
 ArrayList Loadouts[MAXTF2PLAYERS];
 
@@ -151,7 +155,8 @@ int CashSpent[MAXTF2PLAYERS];
 int CashSpentTotal[MAXTF2PLAYERS];
 int CashRecievedNonWave[MAXTF2PLAYERS];
 int Scrap[MAXTF2PLAYERS];
-int Ammo_Count_Ready[MAXTF2PLAYERS];
+int Ammo_Count_Ready;
+int Ammo_Count_Used[MAXTF2PLAYERS];
 //float Armor_Ready[MAXTF2PLAYERS];
 int b_NpcForcepowerupspawn[MAXENTITIES]={0, ...}; 
 
@@ -196,7 +201,7 @@ int Armor_table_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int i_Healing_station_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int Perk_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int Pack_A_Punch_Machine_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
-float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXTF2PLAYERS+1];
+float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXENTITIES+1];
 
 int i_ThisEntityHasAMachineThatBelongsToClient[MAXENTITIES];
 int i_ThisEntityHasAMachineThatBelongsToClientMoney[MAXENTITIES];
@@ -242,6 +247,9 @@ float f_HurtHudOffsetY[MAXTF2PLAYERS];
 
 float f_WeaponHudOffsetX[MAXTF2PLAYERS];
 float f_WeaponHudOffsetY[MAXTF2PLAYERS];
+
+float f_NotifHudOffsetX[MAXTF2PLAYERS];
+float f_NotifHudOffsetY[MAXTF2PLAYERS];
 
 #include "zombie_riot/npc.sp"	// Global NPC List
 
@@ -328,6 +336,7 @@ float f_WeaponHudOffsetY[MAXTF2PLAYERS];
 #include "shared/custom/weapon_phlog_replacement.sp"
 #include "zombie_riot/custom/weapon_cosmic_terror.sp"
 #include "zombie_riot/custom/wand/weapon_wand_potions.sp"
+#include "zombie_riot/custom/weapon_ocean_song.sp"
 
 void ZR_PluginLoad()
 {
@@ -350,6 +359,7 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_GENERIC, "Forcefully summon grigori");
 	
 	CookieCache = new Cookie("zr_lastgame", "The last game saved data is from", CookieAccess_Protected);
+	CookieAmmoCount = new Cookie("zr_ammoboxcount", "Ammobox count from game", CookieAccess_Protected);
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
@@ -497,6 +507,7 @@ void ZR_MapStart()
 	Passanger_Map_Precache();
 	Reset_stats_Passanger_Global();
 	Wand_Potions_Precache();
+	ResetMapStartOcean();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -530,7 +541,6 @@ void ZR_ClientPutInServer(int client)
 	i_KillsMade[client] = 0;
 	i_Backstabs[client] = 0;
 	i_Headshots[client] = 0;
-	Ammo_Count_Ready[client] = 0;
 	Armor_Charge[client] = 0;
 	Doing_Handle_Mount[client] = false;
 	b_Doing_Buildingpickup_Handle[client] = false;
@@ -539,6 +549,7 @@ void ZR_ClientPutInServer(int client)
 	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
+	Ammo_Count_Used[client] = 0;
 	
 	if(CurrentRound)
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.20);
@@ -561,7 +572,6 @@ void ZR_ClientDisconnect(int client)
 	Resupplies_Supplied[client] = 0;
 	CashRecievedNonWave[client] = 0;
 	Healing_done_in_total[client] = 0;
-	Ammo_Count_Ready[client] = 0;
 	Armor_Charge[client] = 0;
 	PlayerPoints[client] = 0;
 	i_PreviousPointAmount[client] = 0;
@@ -1276,7 +1286,7 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 			{
 				if(IsClientInGame(client))
 				{
-					SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
 					ShowSyncHudText(client,  SyncHud_Notifaction, "You have %.1f Seconds left to kill the Raid!", Timer_Show);	
 				}

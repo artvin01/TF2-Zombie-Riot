@@ -176,7 +176,7 @@ methodmap MedivalEliteSkirmisher < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		npc.m_iState = 0;
-		npc.m_flSpeed = 220.0;
+		npc.m_flSpeed = 250.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -184,7 +184,7 @@ methodmap MedivalEliteSkirmisher < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		
 		npc.m_flMeleeArmor = 1.0;
-		npc.m_flRangedArmor = 0.25;
+		npc.m_flRangedArmor = 0.15;
 
 	
 		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/workshop/player/items/demo/jul13_stormn_normn/jul13_stormn_normn.mdl");
@@ -240,7 +240,6 @@ public void MedivalEliteSkirmisher_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		
 			if(npc.m_flJumpStartTime < GetGameTime(npc.index))
 			{
 				npc.m_flSpeed = 170.0;
@@ -276,39 +275,57 @@ public void MedivalEliteSkirmisher_ClotThink(int iNPC)
 			
 			if(flDistanceToTarget < 160000)
 			{
-				int Enemy_I_See;
 				
-				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-				//Target close enough to hit
-				if(IsValidEnemy(npc.index, Enemy_I_See))
-				{
-					
-					//Can we attack right now?
-					if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
-					{
-			//			npc.FaceTowards(vecTarget, 30000.0);
-						//Play attack anim
-						npc.m_flSpeed = 0.0;
-						npc.AddGesture("ACT_CUSTOM_ATTACK_SPEAR");
-						
-			//			npc.PlayMeleeSound();
-			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.5;
-						npc.m_flJumpStartTime = GetGameTime(npc.index) + 0.9;
-					}
-					PF_StopPathing(npc.index);
-					npc.m_bPathing = false;
-				}
-				else
+				if(flDistanceToTarget < 40000) //too close, back off!! Now!
 				{
 					npc.StartPathing();
 					
+					int Enemy_I_See;
+				
+					Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+					//Target close enough to hit
+					if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
+					{
+						float vBackoffPos[3];
+						
+						vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
+						
+						PF_SetGoalVector(npc.index, vBackoffPos);
+					}
+				}
+				else
+				{
+					int Enemy_I_See;
+				
+					Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+					//Target close enough to hit
+					if(IsValidEnemy(npc.index, Enemy_I_See))
+					{
+						
+						//Can we attack right now?
+						if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
+						{
+				//			npc.FaceTowards(vecTarget, 30000.0);
+							//Play attack anim
+							npc.AddGesture("ACT_CUSTOM_ATTACK_SPEAR");
+							npc.m_flSpeed = 0.0;
+				//			npc.PlayMeleeSound();
+				//			npc.FireArrow(vecTarget, 25.0, 1200.0);
+							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;
+							npc.m_flJumpStartTime = GetGameTime(npc.index) + 0.9;
+						}
+						PF_StopPathing(npc.index);
+						npc.m_bPathing = false;
+					}
+					else
+					{
+						npc.StartPathing();
+					}
 				}
 			}
 			else
 			{
 				npc.StartPathing();
-				
 			}
 	}
 	else
@@ -336,9 +353,14 @@ public void HandleAnimEvent_MedivalEliteSkirmisher(int entity, int event)
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 				
 			npc.FaceTowards(vecTarget, 30000.0);
-						
+			
+			float damage = 15.0;
+			if(Medival_Difficulty_Level > 1.0)
+			{
+				damage = 30.0;
+			}
 			npc.PlayMeleeSound();
-			npc.FireArrow(vecTarget, 45.0, 1200.0);
+			npc.FireArrow(vecTarget, damage, 1200.0);
 		}
 	}
 	

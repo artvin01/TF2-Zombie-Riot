@@ -49,6 +49,7 @@ static void OnEnter(int entity, const char[] name)
 	else if(entity > 0 && entity <= MaxClients)
 	{
 		Crafting_ClientEnter(entity, name);
+		Games_ClientEnter(entity, name);
 		Garden_ClientEnter(entity, name);
 		Music_ZoneEnter(entity, name);
 		Quests_EnableZone(entity, name);
@@ -185,6 +186,12 @@ public Action Zones_TeleportTouch(int entity, int target)
 		static char name[32];
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && !StrContains(name, "rpg_teleport_", false))
 		{
+			if(DisabledDownloads[target])
+			{
+				ShowGameText(target, _, 0, "cl_allowdownload or cl_downloadfilter was disabled");
+				return Plugin_Handled;
+			}
+
 			int lv = StringToInt(name[13]);
 			if(lv > Level[target])
 			{

@@ -91,6 +91,7 @@ void DHook_Setup()
 
 	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
+//	DHook_CreateDetour(gamedata, "PathFollower::Avoid", _, PathFollowerAvoid);
 
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
@@ -154,18 +155,41 @@ void OnWrenchCreated(int entity)
 	g_WrenchSmack.HookEntity(Hook_Post, entity, Wrench_SmackPost);
 }
 
+//Bad news, resort to teleorting.
+
+static float f_TeleportedPosWrenchSmack[MAXENTITIES][3];
+
 public MRESReturn Wrench_SmackPre(int entity, DHookReturn ret, DHookParam param)
 {	
 	StartLagCompResetValues();
 	Dont_Move_Building = true;
+	Dont_Move_Allied_Npc = false;
 	int Compensator = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	LagCompEntitiesThatAreIntheWay(Compensator);
+
+	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	{
+		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+		if (IsValidEntity(baseboss_index_allied))
+		{
+			GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", f_TeleportedPosWrenchSmack[baseboss_index_allied]);
+			SDKCall_SetLocalOrigin(baseboss_index_allied, OFF_THE_MAP_NONCONST);
+		}
+	}
 	return MRES_Ignored;
 }
 
 public MRESReturn Wrench_SmackPost(int entity, DHookReturn ret, DHookParam param)
 {	
 	FinishLagCompMoveBack();
+	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+	{
+		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+		if (IsValidEntity(baseboss_index_allied))
+		{
+			SDKCall_SetLocalOrigin(baseboss_index_allied, f_TeleportedPosWrenchSmack[baseboss_index_allied]);
+		}
+	}
 	return MRES_Ignored;
 }
 
@@ -207,7 +231,7 @@ void See_Projectile_Team(int entity)
 	{
 		entity = EntRefToEntIndex(entity);
 	}
-	if (IsValidEntity(entity) && entity != 0)
+	if (IsValidEntity(entity))
 	{
 		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
 		{
@@ -229,7 +253,7 @@ void See_Projectile_Team_Player(int entity)
 	{
 		entity = EntRefToEntIndex(entity);
 	}
-	if (IsValidEntity(entity) && entity != 0)
+	if (IsValidEntity(entity))
 	{
 		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
 		{
@@ -562,7 +586,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			entity1 = ent2;
 			entity2 = ent1;			
 		}
-		if(b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1])
+		if(b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1] || b_ThisEntityIgnoredEntirelyFromAllCollisions[entity2])
 		{
 			return false;
 		}
@@ -621,6 +645,13 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+#if defined ZR
+			else if(i_WandIdNumber[entity1] == 11)
+			{
+				//Have to use this here, please check wand_projectile for more info!
+				Cryo_Touch(entity1, entity2);
+			}
+#endif
 		}
 		else if (b_Is_Player_Projectile_Through_Npc[entity1])
 		{
@@ -710,6 +741,7 @@ public void StartLagCompResetValues()
 	b_LagCompNPC_AwayEnemies = false;
 	b_LagCompNPC_ExtendBoundingBox = false;
 	b_LagCompNPC_BlockInteral = false;
+	b_LagCompNPC_OnlyAllies = false;
 }
 //if you find a way thats better to ignore fellow dispensers then tell me..!
 public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
@@ -721,6 +753,11 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 	bool already_moved = false;
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
+		b_LagCompNPC = true;
+		b_LagCompNPC_ExtendBoundingBox = false;
+		b_LagCompNPC_No_Layers = false;
+		b_LagCompNPC_OnlyAllies = false;
+		StartLagCompensation_Base_Boss(Compensator); //Compensate, but mostly allies.
 		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Spectator)); //Hardcode to red as there will be no blue players.
 		return MRES_Ignored;
 	}
@@ -862,7 +899,7 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
 	{
 		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied) && baseboss_index_allied != 0)
+		if (IsValidEntity(baseboss_index_allied))
 		{
 			if(!Dont_Move_Allied_Npc || b_ThisEntityIgnored[baseboss_index_allied])
 			{
@@ -875,7 +912,7 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++)
 		{
 			int baseboss = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-			if (IsValidEntity(baseboss) && baseboss != 0)
+			if (IsValidEntity(baseboss))
 			{
 				b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss] = true;
 			}
@@ -1153,8 +1190,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	DoTutorialStep(client, false);
 	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
 	
-	bool started = !Waves_InSetup();
-	TeutonType[client] = (!IsRespawning && started) ? TEUTON_DEAD : TEUTON_NONE;
+	TeutonType[client] = (!IsRespawning && !Waves_InSetup()) ? TEUTON_DEAD : TEUTON_NONE;
 #endif
 	
 	CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
@@ -1178,7 +1214,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 #if defined ZR
 	GiveCompleteInvul(client, 2.0);
 	
-	if(started && TeutonType[client] == TEUTON_NONE)
+	if(Waves_Started() && TeutonType[client] == TEUTON_NONE)
 	{
 		SetEntityHealth(client, 50);
 		RequestFrame(SetHealthAfterRevive, client);
@@ -1282,7 +1318,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 		GiveCompleteInvul(client, 2.0);
 		if(f_WasRecentlyRevivedViaNonWave[client] < GetGameTime())
 		{	
-			if(!Waves_InSetup())
+			if(Waves_Started())
 			{
 				int target = 0;
 				for(int i=1; i<=MaxClients; i++)
@@ -1608,7 +1644,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 		
 		if(f_TimeUntillNormalHeal[target] > GetGameTime())
 		{
-			HealAmmount /= 8.0; //make sure they dont get the full benifit if hurt recently.
+			HealAmmount /= 4.0; //make sure they dont get the full benifit if hurt recently.
 		}
 		
 		if(ammo_amount_left > RoundToCeil(HealAmmount))
@@ -1628,6 +1664,11 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			ClientCommand(owner, "playgamesound items/medshotno1.wav");
 			SetGlobalTransTarget(owner);
 			PrintHintText(owner,"%N %t", target, "Is already at full hp");
+			
+			Increaced_Overall_damage_Low[owner] = GetGameTime() + 5.0;
+			Increaced_Overall_damage_Low[target] = GetGameTime() + 15.0;
+			Resistance_Overall_Low[owner] = GetGameTime() + 5.0;
+			Resistance_Overall_Low[target] = GetGameTime() + 15.0;
 		}
 		else
 		{
@@ -1650,10 +1691,10 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			
 			PrintHintText(owner, "%t", "You healed for", target, ammo_amount_left);
 			SetAmmo(owner, 21, new_ammo);
-			Increaced_Overall_damage_Low[owner] = GetGameTime() + 2.0;
-			Increaced_Overall_damage_Low[target] = GetGameTime() + 10.0;
-			Resistance_Overall_Low[owner] = GetGameTime() + 2.0;
-			Resistance_Overall_Low[target] = GetGameTime() + 10.0;
+			Increaced_Overall_damage_Low[owner] = GetGameTime() + 5.0;
+			Increaced_Overall_damage_Low[target] = GetGameTime() + 15.0;
+			Resistance_Overall_Low[owner] = GetGameTime() + 5.0;
+			Resistance_Overall_Low[target] = GetGameTime() + 15.0;
 			for(int i; i<Ammo_MAX; i++)
 			{
 				CurrentAmmo[owner][i] = GetAmmo(owner, i);
@@ -1698,10 +1739,24 @@ void Hook_DHook_UpdateTransmitState(int entity)
 
 public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) //BLOCK!!
 {   
-	if(b_IsEntityAlwaysTranmitted[entity])
+	if(b_IsEntityNeverTranmitted[entity])
 	{
-		return MRES_Ignored;
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_DONTSEND);
 	}
+	if(b_IsEntityAlwaysTranmitted[entity] || b_thisNpcIsABoss[entity])
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+	}
+#if defined ZR
+	else if(b_thisNpcHasAnOutline[entity])
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+	}
+	else if (!b_NpcHasDied[entity] && Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+	}
+#endif
 	else
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_PVSCHECK);
@@ -1788,3 +1843,35 @@ public MRESReturn FX_FireBullets_Post(DHookParam hParams)
 
     return MRES_Ignored;
 }
+/*
+( INextBot *bot, const Vector &goalPos, const Vector &forward, const Vector &left )
+*/
+/*
+public MRESReturn PathFollowerAvoid(DHookReturn Hreturn, DHookParam param)
+{
+	PrintToChatAll("PathFollowerAvoid");
+	
+	float goalPos[3];
+	DHookGetParamVector(param, 2, goalPos);
+	PrintToChatAll("%f,%f,%f,", goalPos[0], goalPos[1], goalPos[2]);
+
+	int bot = DHookGetParam(param, 1);
+	int entity = view_as<int>(SDKCall(g_hGetEntity, bot));
+	if(entity > MaxClients)
+	{
+		float goalPos[3];
+		DHookGetParamVector(param, 2, goalPos);
+		PrintToChatAll("%f,%f,%f,", goalPos[0], goalPos[1], goalPos[2]);
+		
+		float forwardVec[3];
+		float leftVec[3];
+		DHookGetParamVector(param, 3, forwardVec);
+		DHookGetParamVector(param, 4, leftVec);
+		
+		DHookSetReturnVector(Hreturn, goalPos);
+		return MRES_Supercede;
+	}
+	
+	return MRES_Ignored;
+}
+*/

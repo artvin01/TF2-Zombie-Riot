@@ -242,8 +242,8 @@ methodmap NPC_ALT_MEDIC_SUPPERIOR_MAGE < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "Enable");
 		
 		npc.StartPathing();
-		fl_TimebeforeIOC[npc.index] = GetGameTime(npc.index) + 10.0;
-		npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 15.0;
+		fl_TimebeforeIOC[npc.index] = GetGameTime(npc.index) + 5.0;
+		npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 7.5;
 		npc.m_bInKame = false;
 		npc.Anger = false;
 		
@@ -328,7 +328,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 		} else {
 			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
-		if(flDistanceToTarget < 30000)	//Do laser of hopefully not doom within a 100 hu's, might be too close but who knows.
+		if(flDistanceToTarget < 60000)	//Do laser of hopefully not doom within a 100 hu's, might be too close but who knows.
 		{
 			if(npc.m_flTimebeforekamehameha < GetGameTime(npc.index) && !npc.Anger)
 			{
@@ -352,7 +352,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 		{
 			npc.m_flSpeed = 300.0;
 		}
-		if(flDistanceToTarget > 30000 && flDistanceToTarget < 90000 && !npc.m_bInKame && fl_TimebeforeIOC[npc.index] < GetGameTime(npc.index))
+		if(flDistanceToTarget > 60000 && flDistanceToTarget < 120000 && !npc.m_bInKame && fl_TimebeforeIOC[npc.index] < GetGameTime(npc.index))
 		{
 			if(!npc.Anger)
 			{
@@ -435,7 +435,8 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
 			npc.m_flAttackHappens_2 = GetGameTime(npc.index) + crocket;
 			npc.PlayRangedSound();
-			npc.FireRocket(vecTarget, dmg, 600.0);
+			npc.FireParticleRocket(vecTarget, dmg , 600.0 , 100.0 , "raygun_projectile_blue");
+			//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
 		}
 		else
 		{
@@ -665,7 +666,7 @@ public bool NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceWallsOnly(int entity, int con
 public bool NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	static char classname[64];
-	if (IsLivingPlayer(entity))
+	if (IsEntityAlive(entity))
 	{
 		NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_HitDetected[entity] = true;
 	}

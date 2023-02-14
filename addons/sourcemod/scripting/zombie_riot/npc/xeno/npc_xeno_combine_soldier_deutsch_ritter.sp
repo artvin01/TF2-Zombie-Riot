@@ -78,7 +78,6 @@ public void XenoCombineDeutsch_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
-	InitNavGamedata();
 }
 
 methodmap XenoCombineDeutsch < CClotBody
@@ -184,7 +183,7 @@ methodmap XenoCombineDeutsch < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		int iActivity = npc.LookupActivity("ACT_TEUTON_NEW_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -211,7 +210,7 @@ methodmap XenoCombineDeutsch < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("-0.8");
+		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/soldier/dec17_brass_bucket/dec17_brass_bucket.mdl");
@@ -317,7 +316,7 @@ public void XenoCombineDeutsch_ClotThink(int iNPC)
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+						npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
 						npc.PlayMeleeSound();
 						npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
 						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
@@ -339,7 +338,7 @@ public void XenoCombineDeutsch_ClotThink(int iNPC)
 								if(target > 0) 
 								{
 									
-									if(target <= MaxClients)
+									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_CLUB, -1, _, vecHit);
 									else
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 700.0, DMG_CLUB, -1, _, vecHit);
@@ -388,7 +387,7 @@ public Action XenoCombineDeutsch_ClotDamaged(int victim, int &attacker, int &inf
 		
 	XenoCombineDeutsch npc = view_as<XenoCombineDeutsch>(victim);
 	
-	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
+	if(npc.m_fbRangedSpecialOn)
 		damage *= 0.75;
 	
 	/*

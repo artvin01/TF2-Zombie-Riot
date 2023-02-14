@@ -314,7 +314,8 @@ public void AltCombineMage_ClotThink(int iNPC)
 						
 						npc.FaceTowards(vecTarget, 20000.0);
 						
-						npc.FireRocket(vecTarget, 20.0, 600.0, _, 0.75);
+						npc.FireParticleRocket(vecTarget, 20.0 , 600.0 , 100.0 , "raygun_projectile_blue");
+						//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
 					}
 				}
 				else
@@ -358,26 +359,16 @@ public void AltCombineMage_ClotThink(int iNPC)
 									
 									npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 									npc.PlayMeleeSound();
-									
-									if(EscapeModeForNpc)
+									float damage = 60.0;
+									if(ZR_GetWaveCount()>30)
 									{
-										if(target <= MaxClients)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_CLUB, -1, _, vecHit);
-										else
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_CLUB, -1, _, vecHit);
+										damage=125.0;
 									}
-									else
+									if(ShouldNpcDealBonusDamage(target))
 									{
-										float dmg = 65.0;
-										if(ZR_GetWaveCount()>30)
-										{
-											dmg=125.0;
-										}
-										if(target <= MaxClients)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, dmg, DMG_CLUB, -1, _, vecHit);
-										else
-											SDKHooks_TakeDamage(target, npc.index, npc.index, dmg*2, DMG_CLUB, -1, _, vecHit);
+										damage *= 2.0;
 									}
+									SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 									
 									Custom_Knockback(npc.index, target, 250.0);
 									

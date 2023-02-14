@@ -78,7 +78,6 @@ static float FusionWarrior_BEAM_Duration[MAXENTITIES];
 static float FusionWarrior_BEAM_BeamOffset[MAXENTITIES][3];
 static float FusionWarrior_BEAM_ZOffset[MAXENTITIES];
 static bool FusionWarrior_BEAM_HitDetected[MAXENTITIES];
-static int FusionWarrior_BEAM_BuildingHit[MAXENTITIES];
 static bool FusionWarrior_BEAM_UseWeapon[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 
@@ -540,6 +539,13 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.m_bDissapearOnDeath = true;
 
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+					for (int client = 0; client < MaxClients; client++)
+					{
+						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+						{
+							GiveNamedItem(client, "Cured Silvester");
+						}
+					}
 				}
 				else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
 				{
@@ -616,7 +622,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				}
 			}
 			
-			if (npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > Pow(110.0, 2.0)  && flDistanceToTarget < Pow(500.0, 2.0) || (npc.m_bInKame && npc.m_flNextRangedAttack < GetGameTime(npc.index)))
+			if (npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < Pow(500.0, 2.0) || (npc.m_bInKame && npc.m_flNextRangedAttack < GetGameTime(npc.index)))
 			{
 				if (!npc.Anger)
 				{
@@ -739,7 +745,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			} 
 									
 									
-			if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget > Pow(110.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) || (npc.m_bInKame && npc.m_flNextRangedAttack < GetGameTime(npc.index)))
+			if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget < Pow(500.0, 2.0) || (npc.m_bInKame && npc.m_flNextRangedAttack < GetGameTime(npc.index)))
 			{
 				if (!npc.Anger)
 				{
@@ -847,23 +853,12 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									if(target > MaxClients)
-									{
-										if(!npc.Anger)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 12.0 * RaidModeScaling * 10.0, DMG_CLUB, -1, _, vecHit);
+									if(!npc.Anger)
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 24.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 											
-										if(npc.Anger)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 14.0 * RaidModeScaling * 10.0, DMG_CLUB, -1, _, vecHit);
-									}
-									else
-									{
-										if(!npc.Anger)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 24.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
-											
-										if(npc.Anger)
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 28.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
+									if(npc.Anger)
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 28.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
 										
-									}
 									
 									// Hit particle
 									
@@ -1063,11 +1058,6 @@ public void TrueFusionWarrior_NPCDeath(int entity)
 
 void TrueFusionWarrior_TBB_Ability_Anger(int client)
 {
-	for (int building = 1; building < MaxClients; building++)
-	{
-		FusionWarrior_BEAM_BuildingHit[building] = false;
-	}
-	
 	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
 	
 	FusionWarrior_BEAM_IsUsing[client] = false;
@@ -1130,11 +1120,6 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 
 void TrueFusionWarrior_TBB_Ability(int client)
 {
-	for (int building = 1; building < MaxClients; building++)
-	{
-		FusionWarrior_BEAM_BuildingHit[building] = false;
-	}
-	
 	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
 			
 	FusionWarrior_BEAM_IsUsing[client] = false;
@@ -1221,40 +1206,12 @@ public bool FusionWarrior_BEAM_TraceWallsOnly(int entity, int contentsMask)
 #define MAX_PLAYERS (MAX_PLAYERS_ARRAY < (MaxClients + 1) ? MAX_PLAYERS_ARRAY : (MaxClients + 1))
 #define MAX_PLAYERS_ARRAY 36
 
-stock bool IsLivingPlayer(int clientIdx)
-{
-	if (clientIdx <= 0 || clientIdx >= MAX_PLAYERS)
-		return false;
-		
-	return IsClientInGame(clientIdx) && IsPlayerAlive(clientIdx);
-}
 
 public bool FusionWarrior_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
-	static char classname[64];
-	if (IsLivingPlayer(entity))
+	if (IsEntityAlive(entity))
 	{
 		FusionWarrior_BEAM_HitDetected[entity] = true;
-	}
-	else if (IsValidEntity(entity))
-	{
-		if(0 < entity)
-		{
-			GetEntityClassname(entity, classname, sizeof(classname));
-			
-			if (!StrContains(classname, "base_boss", true) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
-			{
-				for(int i=1; i <= MAXENTITIES; i++)
-				{
-					if(!FusionWarrior_BEAM_BuildingHit[i])
-					{
-						FusionWarrior_BEAM_BuildingHit[i] = entity;
-						break;
-					}
-				}
-			}
-			
-		}
 	}
 	return false;
 }
@@ -1345,7 +1302,7 @@ public Action TrueFusionWarrior_TBB_Tick(int client)
 			{
 				ConformLineDistance(endPoint, startPoint, endPoint, curDist - lineReduce);
 			}
-			for (int i = 1; i < MAXTF2PLAYERS; i++)
+			for (int i = 1; i < MAXENTITIES; i++)
 			{
 				FusionWarrior_BEAM_HitDetected[i] = false;
 			}
@@ -1360,15 +1317,20 @@ public Action TrueFusionWarrior_TBB_Tick(int client)
 			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, FusionWarrior_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 			delete trace;
 			
-			for (int victim = 1; victim < MaxClients; victim++)
+			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (FusionWarrior_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetClientTeam(victim))
+				if (FusionWarrior_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
 					float damage = FusionWarrior_BEAM_CloseDPT[client] + (FusionWarrior_BEAM_FarDPT[client]-FusionWarrior_BEAM_CloseDPT[client]) * (distance/FusionWarrior_BEAM_MaxDistance[client]);
 					if (damage < 0)
 						damage *= -1.0;
+
+					if(victim > MAXTF2PLAYERS)
+					{
+						damage *= 3.0; //give 3x dmg to anything
+					}
 
 					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
 				}

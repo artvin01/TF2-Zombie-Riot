@@ -31,7 +31,7 @@ static const char g_IdleSounds[][] = {
 	"npc/metropolice/vo/infection.wav",
 	"npc/metropolice/vo/king.wav",
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
-	"npc/metropolice/vo/pickupthatcan1.wav",
+
 	"npc/metropolice/vo/pickupthatcan2.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
@@ -326,10 +326,17 @@ public void MedivalSwordsman_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									if(target <= MaxClients)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_CLUB, -1, _, vecHit);
+									float damage = 60.0;
+
+									if(Medival_Difficulty_Level > 1.0)
+									{
+										damage = 80.0;
+									}
+
+									if(!ShouldNpcDealBonusDamage(target))
+										SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 3.0, DMG_CLUB, -1, _, vecHit);
 									
 									// Hit particle
 									

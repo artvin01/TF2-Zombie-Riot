@@ -21,7 +21,7 @@ public void Enable_Management_Banner(int client, int weapon) // Enable managemen
 	{	
 		DataPack pack;
 		//The delay is usually 0.2 seconds.
-		Timer_Banner_Management[client] = CreateDataTimer(0.1, Timer_Management_Banner, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		Timer_Banner_Management[client] = CreateDataTimer(0.1, Timer_Management_Banner, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
@@ -49,10 +49,10 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 						{
 							float targPos[3];
 							GetClientAbsOrigin(ally, targPos);
-							if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
+							if (GetVectorDistance(BannerPos, targPos, true) <= 160000.0) // 650.0
 							{
 								TF2_AddCondition(ally, TFCond_Buffed, 0.5, client); //So if they go out of range, they'll keep it abit
-								i_ExtraPlayerPoints[client] += 2;
+								i_ExtraPlayerPoints[client] += 1;
 							}
 						}
 					}

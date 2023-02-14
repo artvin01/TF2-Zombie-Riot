@@ -374,7 +374,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 				if(What_Uber_Type == -1)
 				{
-					flChargeLevel += 0.05*GetGameFrameTime();
+					flChargeLevel += 0.15*GetGameFrameTime();
 					
 					if (flChargeLevel > 1.0)
 					{
@@ -521,10 +521,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					bool Is_Allied_Npc = false;
 					if(b_IsAlliedNpc[healTarget]) //Give uber
 					{
-#if defined RPG
+#if defined ZR
 						float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
 						
-						flChargeLevel += 0.03*GetGameFrameTime();
+						flChargeLevel += 0.12*GetGameFrameTime();
 					
 						if (flChargeLevel > 1.0)
 						{
@@ -674,11 +674,11 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						{
 							Give_Assist_Points(healTarget, owner);
 						}
-						if(b_IsAlliedNpc[healTarget])
-						{
-							Calculate_And_Display_hp(owner, healTarget, 0.0, true);
-						}
 						//TARGET HEAL
+					}
+					if(b_IsAlliedNpc[healTarget])
+					{
+						Calculate_And_Display_hp(owner, healTarget, 0.0, true);
 					}
 					flHealth = GetEntProp(owner, Prop_Data, "m_iHealth");
 					
@@ -706,11 +706,28 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						//SELF HEAL
 						
 					}
-					
-					Increaced_Overall_damage_Low[owner] = GetGameTime() + 0.11;
-					Resistance_Overall_Low[owner] = GetGameTime() + 0.11;
-					Increaced_Overall_damage_Low[healTarget] = GetGameTime() + 0.11;
-					Resistance_Overall_Low[healTarget] = GetGameTime() + 0.11;
+					float duration;
+
+					duration = Increaced_Overall_damage_Low[owner] - GetGameTime();
+					if(duration < 1.2)
+					{
+						Increaced_Overall_damage_Low[owner] = GetGameTime() + 1.0;
+					}
+					duration = Resistance_Overall_Low[owner] - GetGameTime();
+					if(duration < 1.2)
+					{
+						Resistance_Overall_Low[owner] = GetGameTime() + 1.0;
+					}
+					duration = Increaced_Overall_damage_Low[healTarget] - GetGameTime();
+					if(duration < 1.2)
+					{
+						Increaced_Overall_damage_Low[healTarget] = GetGameTime() + 1.0;
+					}
+					duration = Resistance_Overall_Low[healTarget] - GetGameTime();
+					if(duration < 1.2)
+					{
+						Resistance_Overall_Low[healTarget] = GetGameTime() + 1.0;
+					}
 					
 				}
 				SetAmmo(owner, 21, new_ammo);

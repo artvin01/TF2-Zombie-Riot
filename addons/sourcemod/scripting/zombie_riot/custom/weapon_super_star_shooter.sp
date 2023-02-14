@@ -233,19 +233,29 @@ public Action Event_SSS_OnHatTouch(int entity, int other)
 
 public void Enable_StarShooter(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (Timer_Trip_Management[client] != INVALID_HANDLE)
+	if (Timer_Starshooter_Management[client] != INVALID_HANDLE)
+	{
+		//This timer already exists.
+		if(i_CustomWeaponEquipLogic[weapon] == 2) //2
+		{
+			//Is the weapon it again?
+			//Yes?
+			KillTimer(Timer_Starshooter_Management[client]);
+			Timer_Starshooter_Management[client] = INVALID_HANDLE;
+			DataPack pack;
+			Timer_Starshooter_Management[client] = CreateDataTimer(0.1, Timer_Management_StarShooter, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
 		return;
+	}
 		
-	if(i_CustomWeaponEquipLogic[weapon] == 2)
+	if(i_CustomWeaponEquipLogic[weapon] == 2) //
 	{
 		DataPack pack;
 		Timer_Starshooter_Management[client] = CreateDataTimer(0.1, Timer_Management_StarShooter, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
-	}
-	else
-	{
-		Kill_Timer_Starshooter(client);
 	}
 }
 

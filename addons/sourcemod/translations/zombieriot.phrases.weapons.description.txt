@@ -707,11 +707,8 @@
 	}
 	"Survivalist Blade Pap 2"
 	{
-		"en"	"Increased damage and attackspeed, R Gives you rage which boosts all of your stats for a short time"
-		"ru"	"Увелич. урон и скорость атаки, R - даёт вам ярость, которая повышает все ваши показатели на короткое время."
-		"chi"   "增加伤害和攻击速度，按R激活愤怒技能，在短时间内提高你的所有属性"
+		"en"	"Increased damage and attackspeed, R Gives you rage which hurts you for 20% of your maxhealth (cant kill you)\nbut you gain a 30% faster attackspeed and 35% damage resistance buff.\nDuring Rage you also have infinite throwable knives."
 	}
-	
 	"Kunai Desc"
 	{
 		"en"	"Can backstab and bleed, backstab gives health, no matter if it kills or not."
@@ -836,7 +833,7 @@
 	{
 		"en"	"Consumes mana with each shot. M2 Gives extra attackspeed for a short time."
 		"ru"	"Расходует ману с каждым выстрелом. М2 - даёт доп. скорость атаки на короткое время."
-		"chi"   "每次射击消耗法力值。在短时间内增加额外的攻击速度。"
+		"chi"   "每次射击消耗法力值。按下鼠标右键在短时间内增加额外的攻击速度。"
 	}
 	"Bad Wand Pap 1"
 	{
@@ -1053,9 +1050,11 @@
 	
 	"Wrench Desc"
 	{
-		"en"	"Repairs buildings and sentrys, have in hand to pickup buildings, works with any wrench."
-		"ru"	"Ремонтирует постройки и турели, имеет возможность поднятия построек, работает с любым гаечным ключом."
-		"chi"   "修理建筑物和步哨，可以用扳手搬运任何建筑物"
+		"en"	"Repairs buildings and sentrys, have in hand to Claim buildings, works with any wrench."
+	}
+	"Builder Extra Gear Desc"
+	{
+		"en"	"Extra Menu for builders!"
 	}
 	
 	"Texan business Desc"
@@ -1074,9 +1073,9 @@
 	
 	"Buildable Barricade Desc"
 	{
-		"en"	"Each wave increases its cost, you may only have 2 barricades built at once."
-		"ru"	"Каждая волна увеличивает её стоимость, одновременно можно построить только 2 баррикады."
-		"chi"   "每一波都会增加它的价格，你最多只能建造2个路障。"
+		"en"	"Each wave increases its cost, you may only have 3 barricades built at once."
+		"ru"	"Каждая волна увеличивает её стоимость, одновременно можно построить только 3 баррикады."
+		"chi"   "每一波都会增加它的价格，你最多只能建造3个路障。"
 	}
 	
 	"Buildable Armortable Desc"
@@ -1130,9 +1129,7 @@
 	
 	"Buildable Healing Station Desc"
 	{
-		"en"	"Heals for 30 Health, its rather weak but good if you need tiny heals early on and cant affort a secondary slot for the medikit."
-		"ru"	"Лечит 30 ед. здоровья, довольно слабо, но хорошо, если вам нужны крошечные лечения на ранних стадиях и вы не можете позволить себе второй слот для аптечки."
-		"chi"   "治疗30点生命值，这是相当少的，但如果你需要早期的小治疗和买不起副武器的医疗包就很好。"
+		"en"	"Heals for 30 Health, scales with medigun upgrades."
 	}
 	
 	"Buildable Village Desc"
@@ -1495,9 +1492,7 @@
 	
 	"Glass Cannon Blueprints Desc"
 	{
-		"en"	"30%% more building damage, 75%% less building HP, can only have 1 support buidling/cant build more/claim more."
-		"ru"	"На 30%% больше урона у построек, на 75%% меньше здоровья у построек, можно иметь только 1 постройку поддержки при строительстве."
-		"chi"   "增加30%%的建筑伤害，建筑生命值提高75%%，但仅能建筑一个建筑...."
+		"en"	"30%% more building damage, 75%% less building HP, can only have 1 support buidling/cant build more/claim more.\nAlso works with Barraks, gives units 15%% more damage."
 	}
 	
 	"Build Collider Disabler Desc"
@@ -1664,23 +1659,23 @@
 
 	"Alchemist Potion Desc"
 	{
-		"en"	"Throws potions that deal half the damage and deals the rest over bleed.\nAble to hit 5 targets in it's splash.\nM2 throws a secondary potion with it's own attack delay."
+		"en"	"Throws potions that deal half the damage and deals the rest over bleed.\nAble to hit 5 targets in it's splash and ignores most damage resistances.\nM2 throws a secondary potion with it's own attack delay."
 	}
 	"Alchemist Potion Pap 1"
 	{
-		"en"	"M2 now allows to throw an ally buffing potions that grants a damage bonus for the duration.\n "
+		"en"	"M2 now allows to throw an ally current active weapon buffing potions that grants a attackspeed bonus for the duration."
 	}
 	"Alchemist Potion Pap 2"
 	{
-		"en"	"Able to apply an explosive coat over an enemy which causes an explosion if killed by an explosive attack.\n "
+		"en"	"Able to apply an explosive coat over an enemy which causes an explosion if killed.\nWorks with Terroriser Rifle!"
 	}
 	"Alchemist Potion Pap 3"
 	{
-		"en"	"Increases fire rate, splash effect lingers for a bit, and metallic enemies suffer x5 the damage from bleeding.\n "
+		"en"	"Increases fire rate, splash effect lingers for a bit, and metallic enemies suffer x5 the damage from bleeding."
 	}
 	"Alchemist Potion Pap 4"
 	{
-		"en"	"Buffing potions last longer and is able to buff multiple allies at once."
+		"en"	"Buffing potions last longer and is able to buff multiple allies current active weapon at once."
 	}
 	"Alchemist Potion Pap 5"
 	{
@@ -1692,7 +1687,7 @@
 	}
 	"Alchemist Potion Pap 7"
 	{
-		"en"	"Buffing potions last until the ally gets revived from a wave end or a down."
+		"en"	"Buffing potions last until the allies gets revived from a wave end or a down or reset or perk cola or shop buy."
 	}
 	"Alchemist Potion Pap 8"
 	{
@@ -1701,5 +1696,63 @@
 	"Alchemist Potion Pap 9"
 	{
 		"en"	"M2 now is able to shrink enemies, causing a permanent debuff and slow.\nBosses will instead remove this debuff after a few seconds."
+	}
+
+	"Crusader Desc"
+	{
+		"en"	"Heals an ally for abit and gives them the medigun buff for 15 seconds and yourself for 5 seconds.\nBuff works on full HP targets."
+	}
+
+	"Buildable Barracks Desc"
+	{
+		"en"	"Allows training allies to fight for you.\nRepair upgrades provides more resources.\nBuilding upgrades provides stronger allies.\nPress R on your troups to give more commands."
+	}
+	"Militia Desc"
+	{
+		"en"	"Basic cheap melee unit"
+	}
+	"Archer Desc"
+	{
+		"en"	"Basic first ranged unit"
+	}
+	"Man-At-Arms Desc"
+	{
+		"en"	"Upgraded Militia suitable for fortified zombies"
+	}
+	"Crossbow Man Desc"
+	{
+		"en"	"Upgraded Archer suitable for basic combine armor"
+	}
+	"Long Swordsman Desc"
+	{
+		"en"	"Upgraded Man-At-Arms suitable for warrior combine armor"
+	}
+	"Medival Abalest Desc"
+	{
+		"en"	"Upgraded Crossbow Man suitable for takes downs from a safe distance"
+	}
+	"Twohanded Swordsman Desc"
+	{
+		"en"	"Upgraded Long Swordsman suitable for heavy targets"
+	}
+	"Medival Longbowmen Desc"
+	{
+		"en"	"Fire slower than Abalest but deals much more damage and a longer range"
+	}
+	"Champion Desc"
+	{
+		"en"	"Has a much more health and damage than Two-Handed Swordsman"
+	}
+	"Monk Desc"
+	{
+		"en"	"Provides healing to all allies around it but lacks self defense"
+	}
+	"Hussar Desc"
+	{
+		"en"	"High damage and health and provides a buffing aura to nearby allies"
+	}
+	"Fish Melee Desc"
+	{
+		"en" 	"Heals allies slowly around you and gives them a 10% dmg buff.\nSclaes with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 30% dmg  buff to all allies for 15 sec."
 	}
 }

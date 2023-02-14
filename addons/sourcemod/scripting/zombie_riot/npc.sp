@@ -3,6 +3,10 @@
 
 #define ITSTILIVES 666
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 100.0
+
+static float f_FactionCreditGain;
+static float f_FactionCreditGainReduction[MAXTF2PLAYERS];
+
 enum
 {
 	NOTHING 						= 0,	
@@ -178,7 +182,44 @@ enum
 
 	MEDIVAL_SCOUT				= 154,
 	MEDIVAL_VILLAGER			= 155,
+	MEDIVAL_BUILDING			= 156,
+	MEDIVAL_CONSTRUCT			= 157,
+	MEDIVAL_CHAMPION			= 158,
+	MEDIVAL_LIGHT_CAV			= 159,
+	MEDIVAL_HUSSAR				= 160,
+	MEDIVAL_KNIGHT				= 161,
+	MEDIVAL_OBUCH				= 162,
+	MEDIVAL_MONK				= 163,
+
+	BARRACK_MILITIA				= 164,
+	BARRACK_ARCHER				= 165,
+	BARRACK_MAN_AT_ARMS			= 166,
+
+	MEDIVAL_HALB				= 167,
+	MEDIVAL_BRAWLER				= 168,
+	MEDIVAL_LONGBOWMEN			= 169,
+	MEDIVAL_ARBALEST			= 170,
+	MEDIVAL_ELITE_LONGBOWMEN	= 171,
+
+	BARRACK_CROSSBOW			= 172,
+	BARRACK_SWORDSMAN			= 173,
+	BARRACK_ARBELAST			= 174,
+	BARRACK_TWOHANDED			= 175,
+	BARRACK_LONGBOW				= 176,
+	BARRACK_CHAMPION			= 177,
+	BARRACK_MONK				= 178,
+	BARRACK_HUSSAR				= 179,
 	
+	MEDIVAL_CAVALARY			= 180,
+	MEDIVAL_PALADIN				= 181,
+	MEDIVAL_CROSSBOW_GIANT		= 182,
+	MEDIVAL_SWORDSMAN_GIANT		= 183,
+	MEDIVAL_RIDDENARCHER		= 184,
+	MEDIVAL_EAGLE_WARRIOR		= 185,
+	MEDIVAL_EAGLE_GIANT			= 186,
+	MEDIVAL_SON_OF_OSIRIS		= 187,
+	MEDIVAL_ACHILLES			= 188,
+	MEDIVAL_TREBUCHET			= 189
 }
 
 public const char NPC_Names[][] =
@@ -351,7 +392,45 @@ public const char NPC_Names[][] =
 	"Bunker Headless Horseman",
 
 	"Medival Scout",
-	"Medival Villager"
+	"Medival Villager",
+	"Building",
+	"Medival Construct",
+	"Champion",
+	"Light Cavalry",
+	"Hussar",
+	"Knight",
+	"Obuch",
+	"Monk",
+
+	"Militia",
+	"Archer",
+	"Man-At-Arms",
+
+	"Medival Halberdier",
+	"Medival Brawler",
+	"Medival Longbowmen",
+	"Medival Abalest",
+	"Medival Elite Longbowmen",
+
+	"Crossbow Man",
+	"Long Swordsman",
+	"Medival Abalest",
+	"Twohanded Swordsman",
+	"Medival Longbowmen",
+	"Champion",
+	"Monk",
+	"Hussar",
+
+	"Cavalary",
+	"Paladin",
+	"Crossbow Giant",
+	"Swordsman Giant",
+	"Mounted Archer",
+	"Eagle Warrior",
+	"Giant Eagle Warrior",
+	"Son Of Osiris",
+	"Achilles",
+	"Trebuchet"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -483,7 +562,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_l4d2_tank",
 	"npc_alt_combine_soldier_deutsch_ritter",
 	"npc_alt_sniper_railgunner",
-	"",
+	"npc_golden_bloon",
 	"",
 	"",
 	"",
@@ -520,11 +599,51 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_bunker_king_skeleton",
 	"npc_bunker_hhh",
 	"npc_medival_scout",
-	"npc_medival_villager"
+	"npc_medival_villager",
+	"npc_medival_building",
+	"npc_medival_construct",
+	"npc_medival_champion",
+	"npc_medival_light_cav",
+	"npc_medival_hussar",
+	"npc_medival_knight",
+	"npc_medival_obuch",
+	"npc_medival_monk",
+
+	"",
+	"",
+	"",
+
+	"npc_medival_halbadeer",
+	"npc_medival_brawler",
+	"npc_medival_longbowmen",
+	"npc_medival_arbalest",
+	"npc_medival_elite_longbowmen",
+
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"npc_barrack_hussar",
+
+	"npc_medival_cavalary",
+	"npc_medival_paladin",
+	"npc_medival_crossbow_giant",
+	"npc_medival_swordsman_giant",
+	"npc_medival_riddenarcher",
+	"npc_medival_eagle_warrior",
+	"npc_medival_eagle_giant",
+	"npc_medival_son_of_osiris",
+	"npc_medival_achilles",
+	"npc_medival_trebuchet"
 };
 
 void NPC_MapStart()
 {
+	f_FactionCreditGain = 0.0;
+	Zero(f_FactionCreditGainReduction);
 	HeadcrabZombie_OnMapStart_NPC();
 	Fortified_HeadcrabZombie_OnMapStart_NPC();
 	FastZombie_OnMapStart_NPC();
@@ -693,6 +812,23 @@ void NPC_MapStart()
 	BunkerHeadlessHorse_OnMapStart_NPC();
 
 	MedivalScout_OnMapStart_NPC();
+	MedivalBuilding_OnMapStart_NPC();
+	MedivalConstruct_OnMapStart_NPC();
+	MedivalChampion_OnMapStart_NPC();
+	MedivalLightCav_OnMapStart_NPC();
+	MedivalHussar_OnMapStart_NPC();
+	MedivalKnight_OnMapStart_NPC();
+	MedivalObuch_OnMapStart_NPC();
+	MedivalMonk_OnMapStart_NPC();
+	MedivalHalb_OnMapStart_NPC();
+	MedivalBrawler_OnMapStart_NPC();
+	MedivalLongbowmen_OnMapStart_NPC();
+	MedivalArbalest_OnMapStart_NPC();
+	MedivalEliteLongbowmen_OnMapStart_NPC();
+	MedivalEagleWarrior_OnMapStart_NPC();
+	MedivalRiddenArcher_OnMapStart_NPC();
+	MedivalSonOfOsiris_OnMapStart_NPC();
+	MedivalAchilles_OnMapStart_NPC();
 }
 
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
@@ -1312,6 +1448,142 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case MEDIVAL_VILLAGER:
 		{
 			entity = MedivalVillager(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_BUILDING:
+		{
+			entity = MedivalBuilding(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_CONSTRUCT:
+		{
+			entity = MedivalConstruct(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_CHAMPION:
+		{
+			entity = MedivalChampion(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_LIGHT_CAV:
+		{
+			entity = MedivalLightCav(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_HUSSAR:
+		{
+			entity = MedivalHussar(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_KNIGHT:
+		{
+			entity = MedivalKnight(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_OBUCH:
+		{
+			entity = MedivalObuch(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_MONK:
+		{
+			entity = MedivalMonk(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_MILITIA:
+		{
+			entity = BarrackMilitia(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_ARCHER:
+		{
+			entity = BarrackArcher(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_MAN_AT_ARMS:
+		{
+			entity = BarrackManAtArms(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_HALB:
+		{
+			entity = MedivalHalb(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_BRAWLER:
+		{
+			entity = MedivalBrawler(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_LONGBOWMEN:
+		{
+			entity = MedivalLongbowmen(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_ARBALEST:
+		{
+			entity = MedivalArbalest(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_ELITE_LONGBOWMEN:
+		{
+			entity = MedivalEliteLongbowmen(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_CROSSBOW:
+		{
+			entity = BarrackCrossbow(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_SWORDSMAN:
+		{
+			entity = BarrackSwordsman(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_ARBELAST:
+		{
+			entity = BarrackArbelast(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_TWOHANDED:
+		{
+			entity = BarrackTwoHanded(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_LONGBOW:
+		{
+			entity = BarrackLongbow(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_CHAMPION:
+		{
+			entity = BarrackChampion(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_MONK:
+		{
+			entity = BarrackMonk(client, vecPos, vecAng, ally);
+		}
+		case BARRACK_HUSSAR:
+		{
+			entity = BarrackHussar(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_CAVALARY:
+		{
+			entity = MedivalCavalary(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_PALADIN:
+		{
+			entity = MedivalPaladin(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_CROSSBOW_GIANT:
+		{
+			entity = MedivalCrossbowGiant(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_SWORDSMAN_GIANT:
+		{
+			entity = MedivalSwordsmanGiant(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_EAGLE_WARRIOR:
+		{
+			entity = MedivalEagleWarrior(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_RIDDENARCHER:
+		{
+			entity = MedivalRiddenArcher(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_EAGLE_GIANT:
+		{
+			entity = MedivalEagleGiant(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_SON_OF_OSIRIS:
+		{
+			entity = MedivalSonOfOsiris(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_ACHILLES:
+		{
+			entity = MedivalAchilles(client, vecPos, vecAng, ally);
+		}
+		case MEDIVAL_TREBUCHET:
+		{
+			entity = MedivalTrebuchet(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -1934,47 +2206,217 @@ public void NPCDeath(int entity)
 		{
 			MedivalVillager_NPCDeath(entity);
 		}
+		case MEDIVAL_BUILDING:
+		{
+			MedivalBuilding_NPCDeath(entity);
+		}
+		case MEDIVAL_CONSTRUCT:
+		{
+			MedivalConstruct_NPCDeath(entity);
+		}
+		case MEDIVAL_CHAMPION:
+		{
+			MedivalChampion_NPCDeath(entity);
+		}
+		case MEDIVAL_LIGHT_CAV:
+		{
+			MedivalLightCav_NPCDeath(entity);
+		}
+		case MEDIVAL_HUSSAR:
+		{
+			MedivalHussar_NPCDeath(entity);
+		}
+		case MEDIVAL_KNIGHT:
+		{
+			MedivalKnight_NPCDeath(entity);
+		}
+		case MEDIVAL_OBUCH:
+		{
+			MedivalObuch_NPCDeath(entity);
+		}
+		case MEDIVAL_MONK:
+		{
+			MedivalMonk_NPCDeath(entity);
+		}
+		case BARRACK_MILITIA:
+		{
+			BarrackMilitia_NPCDeath(entity);
+		}
+		case BARRACK_ARCHER:
+		{
+			BarrackArcher_NPCDeath(entity);
+		}
+		case BARRACK_MAN_AT_ARMS:
+		{
+			BarrackManAtArms_NPCDeath(entity);
+		}
+		case MEDIVAL_HALB:
+		{
+			MedivalHalb_NPCDeath(entity);
+		}
+		case MEDIVAL_BRAWLER:
+		{
+			MedivalBrawler_NPCDeath(entity);
+		}
+		case MEDIVAL_LONGBOWMEN:
+		{
+			MedivalLongbowmen_NPCDeath(entity);
+		}
+		case MEDIVAL_ARBALEST:
+		{
+			MedivalArbalest_NPCDeath(entity);
+		}
+		case MEDIVAL_ELITE_LONGBOWMEN:
+		{
+			MedivalEliteLongbowmen_NPCDeath(entity);
+		}
+		case BARRACK_CROSSBOW:
+		{
+			BarrackCrossbow_NPCDeath(entity);
+		}
+		case BARRACK_SWORDSMAN:
+		{
+			BarrackSwordsman_NPCDeath(entity);
+		}
+		case BARRACK_ARBELAST:
+		{
+			BarrackArbelast_NPCDeath(entity);
+		}
+		case BARRACK_TWOHANDED:
+		{
+			BarrackTwoHanded_NPCDeath(entity);
+		}
+		case BARRACK_LONGBOW:
+		{
+			BarrackLongbow_NPCDeath(entity);
+		}
+		case BARRACK_CHAMPION:
+		{
+			BarrackChampion_NPCDeath(entity);
+		}
+		case BARRACK_MONK:
+		{
+			BarrackMonk_NPCDeath(entity);
+		}
+		case BARRACK_HUSSAR:
+		{
+			BarrackHussar_NPCDeath(entity);
+		}
+		case MEDIVAL_CAVALARY:
+		{
+			MedivalCavalary_NPCDeath(entity);
+		}
+		case MEDIVAL_PALADIN:
+		{
+			MedivalPaladin_NPCDeath(entity);
+		}
+		case MEDIVAL_CROSSBOW_GIANT:
+		{
+			MedivalCrossbowGiant_NPCDeath(entity);
+		}
+		case MEDIVAL_SWORDSMAN_GIANT:
+		{
+			MedivalSwordsmanGiant_NPCDeath(entity);
+		}
+		case MEDIVAL_EAGLE_WARRIOR:
+		{
+			MedivalEagleWarrior_NPCDeath(entity);
+		}
+		case MEDIVAL_RIDDENARCHER:
+		{
+			MedivalRiddenArcher_NPCDeath(entity);
+		}
+		case MEDIVAL_EAGLE_GIANT:
+		{
+			MedivalEagleGiant_NPCDeath(entity);
+		}
+		case MEDIVAL_SON_OF_OSIRIS:
+		{
+			MedivalSonOfOsiris_NPCDeath(entity);
+		}
+		case MEDIVAL_ACHILLES:
+		{
+			MedivalAchilles_NPCDeath(entity);
+		}
+		case MEDIVAL_TREBUCHET:
+		{
+			MedivalTrebuchet_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
 		}
 	}
 	
-	if(view_as<CClotBody>(entity).m_iCreditsOnKill)
+	if(view_as<CClotBody>(entity).m_fCreditsOnKill)
 	{
-		CurrentCash += view_as<CClotBody>(entity).m_iCreditsOnKill;
-			
-		int extra;
-		
-		int client_killer = GetClientOfUserId(LastHitId[entity]);
-		if(client_killer && IsClientInGame(client_killer))
+		int GiveMoney = 0;
+		float CreditsOnKill = view_as<CClotBody>(entity).m_fCreditsOnKill;
+		if (CreditsOnKill <= 1.0)
 		{
-			extra = RoundToFloor(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * Building_GetCashOnKillMulti(client_killer));
-			extra -= view_as<CClotBody>(entity).m_iCreditsOnKill;
+			f_FactionCreditGain += CreditsOnKill;
+
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(!b_IsPlayerABot[client] && IsClientInGame(client))
+				{
+					if(GetClientTeam(client) != 2)
+					{
+						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.2;
+					}
+					else if (TeutonType[client] == TEUTON_WAITING)
+					{
+						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.1;
+					}
+				}
+			}		
+
+			if(f_FactionCreditGain >= 1.0)
+			{
+				f_FactionCreditGain -= 1.0;
+				GiveMoney = 1;
+			}
 		}
-		
+		else
+		{
+			GiveMoney = RoundToFloor(CreditsOnKill);
+			float Decimal_MoneyGain = FloatFraction(CreditsOnKill);	
+			f_FactionCreditGain += Decimal_MoneyGain;
+			
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(!b_IsPlayerABot[client] && IsClientInGame(client))
+				{
+					if(GetClientTeam(client) != 2)
+					{
+						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.2);
+					}
+					else if (TeutonType[client] == TEUTON_WAITING)
+					{
+						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.1);
+					}
+				}
+			}
+
+			if(f_FactionCreditGain >= 1.0)
+			{
+				f_FactionCreditGain -= 1.0;
+				GiveMoney += 1;
+			}
+		}
 		for(int client=1; client<=MaxClients; client++)
 		{
-			if(IsClientInGame(client))
+			if(!b_IsPlayerABot[client] && IsClientInGame(client))
 			{
-				if(extra > 0)
+				if(f_FactionCreditGainReduction[client] > 1.0)
 				{
-					CashSpent[client] -= extra;
-					CashRecievedNonWave[client] += extra;
-				}
-				if(GetClientTeam(client)!=2)
-				{
-					SetGlobalTransTarget(client);
-					CashSpent[client] += RoundToCeil(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * 0.40);
-					
-				}
-				else if (TeutonType[client] == TEUTON_WAITING)
-				{
-					SetGlobalTransTarget(client);
-					CashSpent[client] += RoundToCeil(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * 0.30);
+					int RemoveMoney = RoundToFloor(f_FactionCreditGainReduction[client]);
+					f_FactionCreditGainReduction[client] -= float(RemoveMoney);
+					CashSpent[client] += RemoveMoney;
 				}
 			}
 		}
+		CurrentCash += GiveMoney;
 	}
 }
 
@@ -2125,6 +2567,29 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/medival/npc_medival_ram.sp"
 #include "zombie_riot/npc/medival/npc_medival_scout.sp"
 #include "zombie_riot/npc/medival/npc_medival_villager.sp"
+#include "zombie_riot/npc/medival/npc_medival_building.sp"
+#include "zombie_riot/npc/medival/npc_medival_construct.sp"
+#include "zombie_riot/npc/medival/npc_medival_champion.sp"
+#include "zombie_riot/npc/medival/npc_medival_light_cav.sp"
+#include "zombie_riot/npc/medival/npc_medival_hussar.sp"
+#include "zombie_riot/npc/medival/npc_medival_knight.sp"
+#include "zombie_riot/npc/medival/npc_medival_obuch.sp"
+#include "zombie_riot/npc/medival/npc_medival_monk.sp"
+#include "zombie_riot/npc/medival/npc_medival_halbadeer.sp"
+#include "zombie_riot/npc/medival/npc_medival_longbowmen.sp"
+#include "zombie_riot/npc/medival/npc_medival_arbalest.sp"
+#include "zombie_riot/npc/medival/npc_medival_brawler.sp"
+#include "zombie_riot/npc/medival/npc_medival_elite_longbowmen.sp"
+#include "zombie_riot/npc/medival/npc_medival_eagle_warrior.sp"
+#include "zombie_riot/npc/medival/npc_medival_cavalary.sp"
+#include "zombie_riot/npc/medival/npc_medival_paladin.sp"
+#include "zombie_riot/npc/medival/npc_medival_crossbow_giant.sp"
+#include "zombie_riot/npc/medival/npc_medival_swordsman_giant.sp"
+#include "zombie_riot/npc/medival/npc_medival_eagle_giant.sp"
+#include "zombie_riot/npc/medival/npc_medival_riddenarcher.sp"
+#include "zombie_riot/npc/medival/npc_medival_son_of_osiris.sp"
+#include "zombie_riot/npc/medival/npc_medival_achilles.sp"
+#include "zombie_riot/npc/medival/npc_medival_trebuchet.sp"
 
 #include "zombie_riot/npc/cof/npc_addiction.sp"
 #include "zombie_riot/npc/cof/npc_doctor.sp"
@@ -2147,3 +2612,16 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/bunker/npc_bunker_small_skeleton.sp"
 #include "zombie_riot/npc/bunker/npc_bunker_king_skeleton.sp"
 #include "zombie_riot/npc/bunker/npc_bunker_hhh.sp"
+
+#include "zombie_riot/npc/ally/npc_barrack.sp"
+#include "zombie_riot/npc/ally/npc_barrack_militia.sp"
+#include "zombie_riot/npc/ally/npc_barrack_archer.sp"
+#include "zombie_riot/npc/ally/npc_barrack_man_at_arms.sp"
+#include "zombie_riot/npc/ally/npc_barrack_crossbow.sp"
+#include "zombie_riot/npc/ally/npc_barrack_swordsman.sp"
+#include "zombie_riot/npc/ally/npc_barrack_arbelast.sp"
+#include "zombie_riot/npc/ally/npc_barrack_twohanded.sp"
+#include "zombie_riot/npc/ally/npc_barrack_longbow.sp"
+#include "zombie_riot/npc/ally/npc_barrack_champion.sp"
+#include "zombie_riot/npc/ally/npc_barrack_monk.sp"
+#include "zombie_riot/npc/ally/npc_barrack_hussar.sp"

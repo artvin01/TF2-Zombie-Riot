@@ -385,7 +385,7 @@ public void XenoCombineGaint_ClotThink(int iNPC)
 								if(target > 0) 
 								{
 									
-									if(target <= MaxClients)
+									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 90.0, DMG_CLUB, -1, _, vecHit);
 									else
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 220.0, DMG_CLUB, -1, _, vecHit);
@@ -434,7 +434,7 @@ public Action XenoCombineGaint_ClotDamaged(int victim, int &attacker, int &infli
 		
 	XenoCombineGaint npc = view_as<XenoCombineGaint>(victim);
 	
-	if(npc.m_fbRangedSpecialOn && !Building_DoesPierce(attacker))
+	if(npc.m_fbRangedSpecialOn)
 		damage *= 0.15;
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))

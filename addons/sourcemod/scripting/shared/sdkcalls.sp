@@ -58,7 +58,22 @@ void SDKCall_Setup()
 	g_hSetLocalOrigin = EndPrepSDKCall();
 	if(!g_hSetLocalOrigin)
 		LogError("[Gamedata] Could not find CBaseEntity::SetLocalOrigin");
-
+		
+	//CBaseAnimating::LookupBone( const char *szName )
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseEntity::SetLocalOrigin");
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	if ((g_hLookupBone = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::LookupBone signature!");
+	
+	//void CBaseAnimating::GetBonePosition ( int iBone, Vector &origin, QAngle &angles )
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseAnimating::GetBonePosition");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
+	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
+	if ((g_hGetBonePosition = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::GetBonePosition signature!");
+	
 
 	//	https://github.com/Wilzzu/testing/blob/18a3680a9a1c8bdabc30c504bbf9467ac6e7d7b4/samu/addons/sourcemod/scripting/shavit-replay.sp
 
@@ -364,6 +379,15 @@ public void GetVectors(int client, float pForward[3], float pRight[3], float pUp
 	SDKCall(g_hGetVectors, client, pForward, pRight, pUp);
 }
 
+void GetBoneAnglesAndPos(int client, char[] BoneName, float origin[3], float angles[3])
+{
+	int iBone = SDKCall(g_hLookupBone, client, BoneName);
+	if(iBone == -1)
+		return;
+		
+	SDKCall(g_hGetBonePosition, client, iBone, origin, angles);
+}
+
 public void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 {
 	if(g_GottenAddressesForLagComp)
@@ -498,8 +522,10 @@ void Manual_Impulse_101(int client, int health)
 	SetConVarInt(sv_cheats, 1, false, false);
 	
 	SDKCall(g_hImpulse, client, 101);
-	
-	SetConVarInt(sv_cheats, 0, false, false);
+	if(nav_edit.IntValue != 1)
+	{
+		SetConVarInt(sv_cheats, 0, false, false);
+	}
 	
 	
 	float host_timescale;

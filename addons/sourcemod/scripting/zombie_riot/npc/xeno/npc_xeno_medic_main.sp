@@ -273,7 +273,7 @@ public void XenoMedicMain_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								
-								if(target <= MaxClients)
+								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 								else
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 550.0, DMG_CLUB, -1, _, vecHit);
@@ -337,7 +337,7 @@ public Action XenoMedicMain_ClotDamaged(int victim, int &attacker, int &inflicto
 		CreateTimer(2.0, XenoMedicMain_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(10.0, XenoMedicMain_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 	}
-	if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index) && !Building_DoesPierce(attacker))
+	if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
 	{
 		damage *= 0.25;
 	}

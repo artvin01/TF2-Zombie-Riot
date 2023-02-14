@@ -260,7 +260,7 @@ public void DDT_ClotThink(int iNPC)
 						
 						if(npc.m_bFortified)
 						{
-							if(target <= MaxClients)
+							if(!ShouldNpcDealBonusDamage(target))
 							{
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, vecHit);
 							}
@@ -271,7 +271,7 @@ public void DDT_ClotThink(int iNPC)
 						}
 						else
 						{
-							if(target <= MaxClients)
+							if(!ShouldNpcDealBonusDamage(target))
 							{
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 							}
@@ -307,7 +307,7 @@ public Action DDT_ClotDamaged(int victim, int &attacker, int &inflictor, float &
 	
 	DDT npc = view_as<DDT>(victim);
 	
-	if((damagetype & DMG_PLASMA) || (damagetype & DMG_SLASH) || Building_DoesPierce(attacker))
+	if((damagetype & DMG_PLASMA) || (damagetype & DMG_SLASH))
 	{
 		npc.PlayHitSound();
 	}

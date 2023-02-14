@@ -71,6 +71,10 @@ public void M3_Abilities(int client)
 		{
 			GearTesting(client);
 		}
+		case 5:
+		{
+			BuilderMenu(client);
+		}
 	}
 }
 public void WeakDash(int client)
@@ -90,7 +94,7 @@ public void WeakDash(int client)
 				Ability_CD = 0.0;
 				
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		}		
@@ -111,7 +115,7 @@ public void WeakDash(int client)
 				Ability_CD = 0.0;
 				
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		}
@@ -213,7 +217,7 @@ public void PlaceableTempomaryArmorGrenade(int client)
 			Ability_CD = 0.0;
 			
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 	}
@@ -385,7 +389,7 @@ public void PlaceableTempomaryHealingGrenade(int client)
 			Ability_CD = 0.0;
 			
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 	}
@@ -518,6 +522,53 @@ public Action M3_Ability_Is_Back(Handle cut_timer, int ref)
 	return Plugin_Handled;
 }
 
+public void BuilderMenu(int client)
+{
+	if(dieingstate[client] == 0)
+	{	
+		static char buffer[64];
+		Menu menu = new Menu(BuilderMenuM);
+
+		SetGlobalTransTarget(client);
+		
+		menu.SetTitle("%t", "Builder Extra Gear Menu");
+
+		FormatEx(buffer, sizeof(buffer), "%t", "Mark Building For Deletion");
+		menu.AddItem("-1", buffer);
+									
+		menu.ExitButton = true;
+		menu.Display(client, MENU_TIME_FOREVER);
+	}
+}
+
+public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			char buffer[24];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			int id = StringToInt(buffer);
+			switch(id)
+			{
+				case -1:
+				{
+					if(IsValidClient(client))
+					{
+						DeleteBuildingLookedAt(client);
+					}
+				}
+				default:
+				{
+					delete menu;
+				}
+			}
+		}
+	}
+	return 0;
+}
+
 public void GearTesting(int client)
 {
 	if(dieingstate[client] > 0)
@@ -534,7 +585,7 @@ public void GearTesting(int client)
 				Ability_CD = 0.0;
 				
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		}		
@@ -584,7 +635,7 @@ public void GearTesting(int client)
 				Ability_CD = 0.0;
 				
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		}

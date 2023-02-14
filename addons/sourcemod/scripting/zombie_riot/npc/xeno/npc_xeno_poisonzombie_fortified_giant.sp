@@ -266,7 +266,7 @@ public void XenoFortifiedGiantPoisonZombie_ClotThink(int iNPC)
 								if(target > 0) 
 								{
 									
-									if(target <= MaxClients)
+									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 									
 									else
@@ -335,7 +335,7 @@ public Action XenoFortifiedGiantPoisonZombie_ClotDamaged(int victim, int &attack
 		CreateTimer(2.0, XenoFortifiedGiantPoisonZombie_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(10.0, XenoFortifiedGiantPoisonZombie_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 	}
-	if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index) && !Building_DoesPierce(attacker))
+	if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
 	{
 		damage *= 0.25;
 	}

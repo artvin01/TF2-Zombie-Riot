@@ -379,6 +379,23 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 		return Item_Used;
 	}
 
+	if(!StrContains(buffer, "custom", false))
+	{
+		ItemResult result = Item_None;
+		item.GetString("func", buffer, sizeof(buffer), "Ammo_HealingSpell");
+		if(buffer[0])
+		{
+			Function func = GetFunctionByName(null, buffer);
+			if(func != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, func);
+				Call_PushCell(client);
+				Call_Finish(result);
+			}
+		}
+		return result;
+	}
+
 	if(equipped)
 		return Item_Off;
 	
@@ -724,7 +741,12 @@ public Action TextStore_OnSellItem(int client, int item, int cash, int &count, i
 		if(item < 0)
 			return Plugin_Continue;
 		
-		if(sell > 0)
+		KeyValues kv = TextStore_GetItemKv(item);
+		if(!kv || !kv.GetNum("trade", 1))
+		{
+			SPrintToChat(client, "This item can't be sold in the market!");
+		}
+		else if(sell > 0)
 		{
 			MarketItem[client] = item;
 			MarketCount[client] = 1;

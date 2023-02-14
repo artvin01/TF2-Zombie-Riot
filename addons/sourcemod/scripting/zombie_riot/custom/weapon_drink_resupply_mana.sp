@@ -15,7 +15,7 @@ public void Weapon_Magic_Restore(int client, int weapon, const char[] classname,
 			{
 				KillTimer(Give_bomb_back[client]);
 			}
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Drank Mana Regen Potion");
 			SetAmmo(client, Ammo_Potion_Supply, 0); //Give ammo back that they just spend like an idiot
@@ -46,7 +46,7 @@ public void Weapon_Magic_Restore(int client, int weapon, const char[] classname,
 				Ability_CD = 0.0;
 			
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 		}
@@ -68,7 +68,7 @@ public Action Give_Back_Magic_Restore(Handle cut_timer, int client)
 		SetAmmo(client, Ammo_Potion_Supply, 1); //Give ammo back that they just spend like an idiot
 		CurrentAmmo[client][Ammo_Potion_Supply] = GetAmmo(client, Ammo_Potion_Supply);
 		ClientCommand(client, "playgamesound items/gunpickup2.wav");
-		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Mana Regen Potion Back");
 	}

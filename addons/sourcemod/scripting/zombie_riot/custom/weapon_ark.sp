@@ -86,7 +86,7 @@ public void Ark_empower_ability(int client, int weapon, bool crit, int slot) // 
 			Ability_CD = 0.0;
 			
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 	}
@@ -135,7 +135,7 @@ public void Ark_empower_ability_2(int client, int weapon, bool crit, int slot) /
 			Ability_CD = 0.0;
 			
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 	}
@@ -182,7 +182,7 @@ public void Ark_empower_ability_3(int client, int weapon, bool crit, int slot) /
 			Ability_CD = 0.0;
 			
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetHudTextParams(-1.0, 0.90, 3.01, 34, 139, 34, 255);
+		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 	}
@@ -715,21 +715,21 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 		//PrintToChatAll("parry worked");
 		if(Ark_Level[victim] == 2)
 		{
-			damage_reflected *= 10.0;
+			damage_reflected *= 40.0;
 			
 			Ark_Hits[victim] = 20;
 		}
 		else if(Ark_Level[victim] == 1)
 		{
-			damage_reflected *= 5.0;
+			damage_reflected *= 15.0;
 			
 			Ark_Hits[victim] = 12;			
 		}
 		else
 		{
-			damage_reflected *= 2.0;
+			damage_reflected *= 6.0;
 			
-			Ark_Hits[victim] = 12;
+			Ark_Hits[victim] = 0;
 		}
 		
 		if(f_AniSoundSpam[victim] < GetGameTime())

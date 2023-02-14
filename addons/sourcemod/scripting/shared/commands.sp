@@ -3,6 +3,7 @@
 
 void Commands_PluginStart()
 {
+	AddCommandListener(OnNavCommand);
 	AddCommandListener(OnAutoTeam, "autoteam");
 	AddCommandListener(OnAutoTeam, "jointeam");
 	AddCommandListener(OnBuildCmd, "build");
@@ -40,6 +41,16 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 #endif
 
 		return Plugin_Handled;
+	}
+	return Plugin_Continue;
+}
+
+public Action OnNavCommand(int client, const char[] command, int args)
+{
+	if(!client && !StrContains(command, "nav", false))
+	{
+		PrintToServer("[ZR] Reloaded Nav Gamedata");
+		InitNavGamedata();
 	}
 	return Plugin_Continue;
 }

@@ -12,7 +12,7 @@ enum struct Enemy
 	bool Is_Static;
 	bool Friendly;
 	int Index;
-	int Credits;
+	float Credits;
 	char Data[16];
 }
 
@@ -72,10 +72,11 @@ static bool InSetup;
 //static bool InFreeplay;
 static int WaveIntencity;
 
-static bool Gave_Ammo_Supply;
+static int Gave_Ammo_Supply;
 static int VotedFor[MAXTF2PLAYERS];
 
 static char LastWaveWas[64];
+static char TextStoreItem[48];
 
 void Waves_PluginStart()
 {
@@ -363,6 +364,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	
 	b_SpecialGrigoriStore = view_as<bool>(kv.GetNum("grigori_special_shop_logic"));
 	f_ExtraDropChanceRarity = kv.GetFloat("gift_drop_chance_multiplier");
+	kv.GetString("complete_item", TextStoreItem, sizeof(TextStoreItem));
 	
 	if(f_ExtraDropChanceRarity < 0.01) //Incase some idiot forgot
 	{
@@ -419,7 +421,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.Is_Immune_To_Nuke = kv.GetNum("is_immune_to_nuke");
 						enemy.Is_Static = view_as<bool>(kv.GetNum("is_static"));
 						enemy.Friendly = view_as<bool>(kv.GetNum("friendly"));
-						enemy.Credits = kv.GetNum("cash");
+						enemy.Credits = kv.GetFloat("cash");
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
 						
@@ -741,6 +743,7 @@ void Waves_Progress()
 			if(round.MapSetupRelay)
 			{
 				ExcuteRelay("zr_setuptime");
+				Citizen_SetupStart();
 				f_DelaySpawnsForVariousReasons = GetGameTime() + 1.5; //Delay spawns for 1.5 seconds, so maps can do their thing.
 			}
 			
@@ -938,6 +941,27 @@ void Waves_Progress()
 						Music_Stop_All(i);
 						SendConVarValue(i, sv_cheats, "1");
 						players[total++] = i;
+
+						if(TextStoreItem[0] && PlayerPoints[i] > 500)
+						{
+							int length_2 = TextStore_GetItems();
+							for(int a; a < length_2; a++)
+							{
+								static char buffer[48];
+								TextStore_GetItemName(a, buffer, sizeof(buffer));
+								if(StrEqual(buffer, TextStoreItem, false))
+								{
+									TextStore_GetInv(i, a, length_2);
+									if(!length_2)
+									{
+										CPrintToChat(i,"{default}You have found {yellow}%s{default}!", buffer);
+										TextStore_SetInv(i, a, 1);
+									}
+
+									break;
+								}
+							}
+						}
 					}
 				}
 
@@ -1090,6 +1114,8 @@ void Waves_Progress()
 			{
 				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
 			}
+			
+			ExcuteRelay("zr_wavedone");
 			CurrentRound++;
 			CurrentWave = -1;
 			Rounds.GetArray(length, round);
@@ -1150,6 +1176,8 @@ void Waves_Progress()
 				}
 				
 				menu.DisplayVote(players, total, 30);
+				
+				Citizen_SetupStart();
 			}
 			else
 			{
@@ -1165,9 +1193,9 @@ void Waves_Progress()
 
 		for(int client=1; client<=MaxClients; client++)
 		{
+			Ammo_Count_Ready = 8;
 			if(IsClientInGame(client) && GetClientTeam(client)==2)
 			{
-				Ammo_Count_Ready[client] = 8;
 				if(StartCash < 1500)
 				{
 					CashSpent[client] = StartCash;
@@ -1179,29 +1207,16 @@ void Waves_Progress()
 	{
 		Renable_Powerups();
 		CheckIfAloneOnServer();
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client) && GetClientTeam(client)==2)
-			{
-				Ammo_Count_Ready[client] += 1;
-			}
-		}
+		Ammo_Count_Ready += 1;
 	}
-//	else if (IsEven(CurrentRound+1)) Is even doesnt even work, just do a global bool of every 2nd round, should be good. And probably work out even better.
-	else if (!Gave_Ammo_Supply)
+	else if (Gave_Ammo_Supply > 2)
 	{
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client) && GetClientTeam(client)==2)
-			{
-				Ammo_Count_Ready[client] += 1;
-			}
-		}
-		Gave_Ammo_Supply = true;
+		Ammo_Count_Ready += 1;
+		Gave_Ammo_Supply = 0;
 	}	
 	else
 	{
-		Gave_Ammo_Supply = false;	
+		Gave_Ammo_Supply += 1;	
 	}
 //	PrintToChatAll("Wave: %d - %d", CurrentRound+1, CurrentWave+1);
 	
@@ -1211,13 +1226,7 @@ public void Medival_Wave_Difficulty_Riser(int difficulty)
 {
 	PrintToChatAll("%t", "Medival_Difficulty", difficulty);
 	
-	float difficulty_math = float(difficulty);
-	
-	difficulty_math *= -1.0;
-	
-	difficulty_math /= 10.0;
-	
-	difficulty_math += 1.0;
+	float difficulty_math = Pow(0.9, float(difficulty));
 	
 	if(difficulty_math < 0.1) //Just make sure that it doesnt go below.
 	{

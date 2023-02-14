@@ -47,6 +47,7 @@ static int CurrentCombo[MAXTF2PLAYERS];
 static int ComboCount[MAXTF2PLAYERS];
 static int LastCombos[MAXTF2PLAYERS][10];
 static Handle ComboTimer[MAXTF2PLAYERS];
+static bool ComboBlockM1[MAXTF2PLAYERS];
 
 static void ShowCombo(int client)
 {
@@ -71,10 +72,10 @@ static int GetStaleAmount(int client, int combo)
 	return amount;
 }
 
-static int GetComboType(int flags, bool right)
+static int GetComboType(int buttons, bool right)
 {
-	bool air = !(flags & FL_ONGROUND);
-	bool duck = view_as<bool>(flags & FL_DUCKING);
+	bool air = view_as<bool>(buttons & IN_JUMP);
+	bool duck = view_as<bool>(buttons & IN_DUCK);
 
 	if(!(air ^ duck))
 		return right ? NR : NL;
@@ -87,15 +88,41 @@ static int GetComboType(int flags, bool right)
 
 public void Weapon_StreetFighter(int client, int weapon, bool crit, int slot)
 {
-	StreetFighter(client, weapon, slot, FL_ONGROUND);
+	if(!ComboBlockM1[client] || slot != 1)
+	{
+		StreetFighter(client, weapon, slot, 0, 0);
+	}
+	if(slot == 1)
+	{	
+		ComboBlockM1[client] = true;
+	}
+}
+
+public void Weapon_StreetFighterAllowM1(int client, int weapon, bool crit, int slot)
+{
+	StreetFighter(client, weapon, slot, 0, 1);
+	ComboBlockM1[client] = false;
+}
+
+public void Weapon_StreetFighterAllowM1Pap(int client, int weapon, bool crit, int slot)
+{
+	StreetFighter(client, weapon, slot, GetClientButtons(client), 1);
+	ComboBlockM1[client] = false;
 }
 
 public void Weapon_StreetFighterPap(int client, int weapon, bool crit, int slot)
 {
-	StreetFighter(client, weapon, slot, GetEntityFlags(client));
+	if(!ComboBlockM1[client] || slot != 1)
+	{
+		StreetFighter(client, weapon, slot, GetClientButtons(client), 0);
+	}
+	if(slot == 1)
+	{	
+		ComboBlockM1[client] = true;
+	}
 }
 
-static void StreetFighter(int client, int weapon, int slot, int flags)
+static void StreetFighter(int client, int weapon, int slot, int buttons, int CD)
 {
 	if(Ability_Check_Cooldown(client, slot) < 0.0)
 	{
@@ -104,62 +131,76 @@ static void StreetFighter(int client, int weapon, int slot, int flags)
 		if(ComboCount[client] == 0)
 		{
 			f_DelayLookingAtHud[client] = GetGameTime() + 2.1;
-			CurrentCombo[client] = GetComboType(flags, slot != 1);
-			ComboCount[client] = 1;
-			ComboTimer[client] = CreateTimer(2.1, StreetFighter_Timer, client);
+			if(slot != 1 || !CD)
+			{
+				CurrentCombo[client] = GetComboType(buttons, slot != 1);
+				ComboCount[client] = 1;
+				ComboTimer[client] = CreateTimer(2.1, StreetFighter_Timer, client);
+			}
 			ShowCombo(client);
 		}
 		else if(ComboCount[client] == 1)
 		{
-			CurrentCombo[client] += GetComboType(flags, slot != 1) * NR_2;
-			ComboCount[client] = 2;
+			if(slot != 1 || !CD)
+			{
+				CurrentCombo[client] += GetComboType(buttons, slot != 1) * NR_2;
+				ComboCount[client] = 2;
+			}
 			ShowCombo(client);
 		}
 		else if(ComboCount[client] == 2)
 		{
 			f_DelayLookingAtHud[client] = GetGameTime() + 1.5;
-
+			
 			int first = CurrentCombo[client] % NR_2;
 			int second = (CurrentCombo[client] % NR_3) / NR_2;
-			int third = GetComboType(flags, slot != 1);
-			CurrentCombo[client] += third * NR_3;
-			ComboCount[client] = 3;
-			
-			if(!ComboList)
+			int third = GetComboType(buttons, slot != 1);
+			if(slot != 1 || !CD)
 			{
-				ComboList = new PrivateForward(ET_Hook, Param_Cell, Param_Cell, Param_Cell, Param_Cell, Param_Cell, Param_FloatByRef);
-				SetupList(ComboList);
+				CurrentCombo[client] += third * NR_3;
+				ComboCount[client] = 3;
 			}
-
-			Action action;
-			Call_StartForward(ComboList);
-			Call_PushCell(client);
-			Call_PushCell(weapon);
-			Call_PushCell(first);
-			Call_PushCell(second);
-			Call_PushCell(third);
-			Call_PushFloatRef(cooldown);
-			Call_Finish(action);
-			if(action == Plugin_Continue)
+			if(((slot != 1 || !ComboBlockM1[client]) || CD) && ComboCount[client] == 3)
 			{
-				PrintCenterText(client, "No Effect...");
-				ClientCommand(client, "playgamesound ui/message_update.wav");
+				if(!ComboList)
+				{
+					ComboList = new PrivateForward(ET_Hook, Param_Cell, Param_Cell, Param_Cell, Param_Cell, Param_Cell, Param_FloatByRef);
+					SetupList(ComboList);
+				}
+
+				Action action;
+				Call_StartForward(ComboList);
+				Call_PushCell(client);
+				Call_PushCell(weapon);
+				Call_PushCell(first);
+				Call_PushCell(second);
+				Call_PushCell(third);
+				Call_PushFloatRef(cooldown);
+				Call_Finish(action);
+				if(action == Plugin_Continue)
+				{
+					PrintCenterText(client, "No Effect...");
+					ClientCommand(client, "playgamesound ui/message_update.wav");
+				}
+
+				for(int i = sizeof(LastCombos[]) - 1; i > 0; i--)
+				{
+					LastCombos[client][i] = LastCombos[client][i - 1];
+				}
+				LastCombos[client][0] = CurrentCombo[client];
+
+				delete ComboTimer[client];
+				CurrentCombo[client] = 0;
+				ComboCount[client] = 0;
+
+				Ability_Apply_Cooldown(client, 1, cooldown);
+				Ability_Apply_Cooldown(client, 2, cooldown);
+				if(slot != 1 || CD)
+				{
+					SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + cooldown);
+					SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + cooldown);
+				}				
 			}
-
-			for(int i = sizeof(LastCombos[]) - 1; i > 0; i--)
-			{
-				LastCombos[client][i] = LastCombos[client][i - 1];
-			}
-			LastCombos[client][0] = CurrentCombo[client];
-
-			delete ComboTimer[client];
-			CurrentCombo[client] = 0;
-			ComboCount[client] = 0;
-
-			Ability_Apply_Cooldown(client, 1, cooldown);
-			Ability_Apply_Cooldown(client, 2, cooldown);
-			SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + cooldown);
-			SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + cooldown);
 		}
 	}
 }
@@ -176,33 +217,6 @@ public Action StreetFighter_Timer(Handle timer, int client)
 	return Plugin_Stop;
 }
 
-static void ApplyTempAttrib(int entity, int index, float multi, float duration = 0.3)
-{
-	Address address = TF2Attrib_GetByDefIndex(entity, index);
-	if(address != Address_Null)
-	{
-		TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) * multi);
-
-		DataPack pack;
-		CreateDataTimer(duration, StreetFighter_RestoreAttrib, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteCell(EntIndexToEntRef(entity));
-		pack.WriteCell(index);
-		pack.WriteFloat(multi);
-	}
-}
-
-public Action StreetFighter_RestoreAttrib(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int entity = EntRefToEntIndex(pack.ReadCell());
-	if(entity != INVALID_ENT_REFERENCE)
-	{
-		Address address = TF2Attrib_GetByDefIndex(entity, pack.ReadCell());
-		if(address != Address_Null)
-			TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) / pack.ReadFloat());
-	}
-	return Plugin_Stop;
-}
 
 static void SetupList(PrivateForward pf)
 {
@@ -273,7 +287,7 @@ public Action SF_MultiAttack(int client, int entity, int first, int second, int 
 	if((first == NR || first == DR) && (second == NR || second == DR) && third == NL)
 	{
 		int stale = GetStaleAmount(client, CurrentCombo[client]);
-		if(stale == 10 || (stale && LastCombos[client][0] != CurrentCombo[client]))
+		if(LastCombos[client][sizeof(LastCombos[]) - 1] == CurrentCombo[client])
 		{
 			PrintCenterText(client, "Sugar Coat...");
 			ApplyTempAttrib(entity, 2, 1.25);
@@ -347,17 +361,17 @@ public Action SF_SpeedUp(int client, int entity, int first, int second, int thir
 		if(stale > 4)
 		{
 			PrintCenterText(client, "Speed...");
-			ApplyTempAttrib(entity, 6, 0.7, 3.5);
+			ApplyTempAttrib(entity, 6, 0.9, 2.0);
 		}
 		else if(stale)
 		{
 			PrintCenterText(client, "Speed");
-			ApplyTempAttrib(entity, 6, 0.6, 6.0);
+			ApplyTempAttrib(entity, 6, 0.8, 3.0);
 		}
 		else
 		{
 			PrintCenterText(client, "Speed!");
-			ApplyTempAttrib(entity, 6, 0.5, 8.0);
+			ApplyTempAttrib(entity, 6, 0.75, 6.0);
 			
 		}
 
@@ -560,7 +574,7 @@ public Action SF_Knockup(int client, int entity, int first, int second, int thir
 			delete swingTrace;
 			FinishLagCompensation_Base_boss();
 			
-			if(target > MaxClients)
+			if(target > MaxClients && !b_CannotBeKnockedUp[target])
 				SDKHook(target, SDKHook_Think, SF_KnockupThink);
 		}
 

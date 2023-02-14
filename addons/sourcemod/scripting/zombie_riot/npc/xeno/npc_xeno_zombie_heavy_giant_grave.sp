@@ -245,6 +245,8 @@ public void XenoHeavyGiant_ClotThink(int iNPC)
 			} else {
 				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
+
+			npc.StartPathing();
 			
 			//Target close enough to hit
 			if(flDistanceToTarget < 22500 || npc.m_flAttackHappenswillhappen)
@@ -279,7 +281,7 @@ public void XenoHeavyGiant_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								
-								if(target <= MaxClients)
+								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_CLUB, -1, _, vecHit);
 								else
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_CLUB, -1, _, vecHit);
@@ -302,11 +304,6 @@ public void XenoHeavyGiant_ClotThink(int iNPC)
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.8;
 					}
 				}
-			}
-			else
-			{
-				npc.StartPathing();
-				
 			}
 		}
 	else
