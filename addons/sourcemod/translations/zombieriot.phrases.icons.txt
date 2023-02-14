@@ -110,25 +110,31 @@
 	"Medival Speech 1"
 	{
 		"en" 		"A king wants to Conquer this land!"
+		"ru" 		"Король хочет покорить эту землю!"
 	}
 	"Medival Speech 2"
 	{
 		"en" 		"A stray villager has appeared, stop them!"
+		"ru" 		"Появился бродячий житель, остановите его!"
 	}
 	"Medival Speech 3"
 	{
 		"en" 		"An invasion of the past is accuring!"
+		"ru" 		"Надвигается вторжение прошлого!"
 	}
 	"The golden bloon is valueable..."
 	{
 		"en"		"The golden bloon is valueable..."
+		"ru"		"Золотой шар имеет ценность..."
 	}
 	"The golden bloon is said to be rich..."
 	{
 		"en"		"The golden bloon is said to be rich..."
+		"ru"		"Говорят, что золотой шар ведёт к богатству..."
 	}
 	"The golden bloon is what all monkeys wish to pop..."
 	{
 		"en"		"The golden bloon is what all monkeys wish to pop..."
+		"ru"		"Золотой шар - это то, о чём мечтают все обезьяны..."
 	}
 }

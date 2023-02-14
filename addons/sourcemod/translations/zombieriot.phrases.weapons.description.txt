@@ -595,7 +595,7 @@
 	"Riot Gun Pap 1"
 	{
 		"en"	"Boosts resistance, including melee. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nPress M2 Nearby enemies to stun them and gain massively increased attackspeed and damage for upto 10 hit targets"
-		"ru"	"Усиливает сопротивление, в том числе в ближнем бою. Оружие стреляет 3 пулями одновременно. Становится основным оружием.\nНажмите М2 вблизи врагов, чтобы оглушить их и увеличить скорость атаки и урон до 10 целей."
+		"ru"	"Усиливает сопр., в том числе в ближнем бою. Оружие стреляет 3 пулями одновременно. Становится основным оружием.\nНажмите М2 вблизи врагов для оглушения и увеличения скорость атаки и урона до 10 целей."
 	}
 	"Buff Banner Desc"
 	{
@@ -708,6 +708,7 @@
 	"Survivalist Blade Pap 2"
 	{
 		"en"	"Increased damage and attackspeed, R Gives you rage which hurts you for 20% of your maxhealth (cant kill you)\nbut you gain a 30% faster attackspeed and 35% damage resistance buff.\nDuring Rage you also have infinite throwable knives."
+		"ru"	"Увелич. урона и скорости атаки, R - ярость, которая ранит вас на 20% от вашего макс. здоровья (не может убить вас)\nно вы получаете эфф. 30% быстрой скорости атаки и 35% сопротивления урону.\nВо время ярости у вас также есть бесконечные метательные ножи."
 	}
 	"Kunai Desc"
 	{
@@ -1493,6 +1494,7 @@
 	"Glass Cannon Blueprints Desc"
 	{
 		"en"	"30%% more building damage, 75%% less building HP, can only have 1 support buidling/cant build more/claim more.\nAlso works with Barraks, gives units 15%% more damage."
+		"ru"	"На 30%% больше урона у построек, на 75% меньше ОЗ у построек, можно иметь только 1 здание поддержки/можно строить больше/забрать больше.\nДаёт боевым единицам из казарм на 15% больше урона."
 	}
 	
 	"Build Collider Disabler Desc"
@@ -1660,99 +1662,123 @@
 	"Alchemist Potion Desc"
 	{
 		"en"	"Throws potions that deal half the damage and deals the rest over bleed.\nAble to hit 5 targets in it's splash and ignores most damage resistances.\nM2 throws a secondary potion with it's own attack delay."
+		"ru"	"Бросает зелья, которые наносят половину урона, а остальной урон наносит кровотечение.\nСпособно поразить 5 целей по области и игнорирует большинство сопротивлений урону.\nM2 бросает доп. зелье с задержкой атаки."
 	}
 	"Alchemist Potion Pap 1"
 	{
 		"en"	"M2 now allows to throw an ally current active weapon buffing potions that grants a attackspeed bonus for the duration."
+		"ru"	"M2 теперь позволяет бросить союзнику зелье усиления для выбранного оружия, дающее бонус к скорости атаки на время действия."
 	}
 	"Alchemist Potion Pap 2"
 	{
 		"en"	"Able to apply an explosive coat over an enemy which causes an explosion if killed.\nWorks with Terroriser Rifle!"
+		"ru"	"Возможность нанести на врага взрывное покрытие, которое при убийстве вызывает взрыв.\nРаботает с винтовкой террориста!"
 	}
 	"Alchemist Potion Pap 3"
 	{
 		"en"	"Increases fire rate, splash effect lingers for a bit, and metallic enemies suffer x5 the damage from bleeding."
+		"ru"	"Увеличивает скорострельность, эффект по области сохраняется некоторое время, а металлические враги получают х5 урона от кровотечения."
 	}
 	"Alchemist Potion Pap 4"
 	{
 		"en"	"Buffing potions last longer and is able to buff multiple allies current active weapon at once."
+		"ru"	"Зелья с усилениями действуют дольше и могут усилить сразу несколько союзников с им выбранным оружием."
 	}
 	"Alchemist Potion Pap 5"
 	{
 		"en"	"M2 will now increase your fire rate heavily but lower your damage and prevent mana gain for the duration."
+		"ru"	"M2 теперь сильно повышает вашу скорострельность, но снижает урон и препятствует получению маны на время действия."
 	}
 	"Alchemist Potion Pap 6"
 	{
 		"en"	"Coated enemies now take extra damage from all sources for a few seconds."
+		"ru"	"Враги с покрытием теперь получают дополнительный урон от всех источников в течение нескольких секунд."
 	}
 	"Alchemist Potion Pap 7"
 	{
 		"en"	"Buffing potions last until the allies gets revived from a wave end or a down or reset or perk cola or shop buy."
+		"ru"	"Зелья усиления действуют до тех пор, пока союзники не воскреснут после окончания волны, или выведения из строя, или сброса, или перк-колы, или покупки в магазине."
 	}
 	"Alchemist Potion Pap 8"
 	{
 		"en"	"M2 now affects some nearby allies, granting increased fire rate but lower damage."
+		"ru"	"M2 теперь действует на некоторых ближайших союзников, увеличивая скорострельность, но снижая урон."
 	}
 	"Alchemist Potion Pap 9"
 	{
 		"en"	"M2 now is able to shrink enemies, causing a permanent debuff and slow.\nBosses will instead remove this debuff after a few seconds."
+		"ru"	"M2 теперь может уменьшать врагов, накладывая на них постоянный негат. эфф. и замедление.\nБоссы будут снимать этот эффект через несколько секунд."
 	}
 
 	"Crusader Desc"
 	{
-		"en"	"Heals an ally for abit and gives them the medigun buff for 15 seconds and yourself for 5 seconds.\nBuff works on full HP targets."
+		"en"	"Heals an ally for a bit and gives them the medigun buff for 15 seconds and yourself for 5 seconds.\nBuff works on full HP targets."
+		"ru"	"Немного лечит союзника и накладывает на него эфф. лечебной пушки на 15 секунд, а на себя - на 5 секунд.\nЭффект действует на цели с полным ОЗ."
 	}
 
 	"Buildable Barracks Desc"
 	{
-		"en"	"Allows training allies to fight for you.\nRepair upgrades provides more resources.\nBuilding upgrades provides stronger allies.\nPress R on your troups to give more commands."
+		"en"	"Allows training allies to fight for you.\nRepair upgrades provides more resources.\nBuilding upgrades provides stronger allies.\nPress R on your troops to give more commands."
+		"ru"	"Позволяет обучать союзников, чтобы они сражались за вас.\nРемонт даёт больше ресурсов.\nУлучшение строения даёт более сильных союзников.\nНажмите R на своих войсках для командования."
 	}
 	"Militia Desc"
 	{
 		"en"	"Basic cheap melee unit"
+		"ru"	"Базовая дешёвая единица ближнего боя"
 	}
 	"Archer Desc"
 	{
 		"en"	"Basic first ranged unit"
+		"ru"	"Базовая первая единица дальнего боя"
 	}
 	"Man-At-Arms Desc"
 	{
 		"en"	"Upgraded Militia suitable for fortified zombies"
+		"ru"	"Улучшенный ополченец подходит для укреплённых зомби"
 	}
 	"Crossbow Man Desc"
 	{
 		"en"	"Upgraded Archer suitable for basic combine armor"
+		"ru"	"Улучшенный лучник подходит для базовой брони комбайнов"
 	}
 	"Long Swordsman Desc"
 	{
 		"en"	"Upgraded Man-At-Arms suitable for warrior combine armor"
+		"ru"	"Улучшенный гвардеец подходит для брони комбайнов-воинов"
 	}
 	"Medival Abalest Desc"
 	{
 		"en"	"Upgraded Crossbow Man suitable for takes downs from a safe distance"
+		"ru"	"Улучшенный арбалетчик подходит для поражения с безопасного расстояния"
 	}
 	"Twohanded Swordsman Desc"
 	{
 		"en"	"Upgraded Long Swordsman suitable for heavy targets"
+		"ru"	"Улучшенный мечник с длинным мечом подходит для тяжёлых целей"
 	}
 	"Medival Longbowmen Desc"
 	{
 		"en"	"Fire slower than Abalest but deals much more damage and a longer range"
+		"ru"	"Стреляет медленнее, чем арбалетчик, но наносит гораздо больше урона и имеет большую дальность"
 	}
 	"Champion Desc"
 	{
 		"en"	"Has a much more health and damage than Two-Handed Swordsman"
+		"ru"	"Имеет гораздо больше здоровья и урона, чем двуручный мечник"
 	}
 	"Monk Desc"
 	{
 		"en"	"Provides healing to all allies around it but lacks self defense"
+		"ru"	"Исцеляет всех союзников вокруг себя, но не имеет самозащиты"
 	}
 	"Hussar Desc"
 	{
 		"en"	"High damage and health and provides a buffing aura to nearby allies"
+		"ru"	"Высокий урон и здоровье и имеет ауру усиления ближайшим союзникам"
 	}
 	"Fish Melee Desc"
 	{
-		"en" 	"Heals allies slowly around you and gives them a 10% dmg buff.\nSclaes with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 30% dmg  buff to all allies for 15 sec."
+		"en" 	"Heals allies slowly around you and gives them a 10% dmg buff.\nScales with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 30% dmg buff to all allies for 15 sec."
+		"ru" 	"Медленно исцеляет союзников вокруг вас и даёт им 10% усиление урона.\nУвеличивается с улучшением медицинской пушки.\nM1 - доп. исцеление на союзников.\nM2 - более сильное усиление урона на 30% на всех союзников на 15 сек."
 	}
 }
