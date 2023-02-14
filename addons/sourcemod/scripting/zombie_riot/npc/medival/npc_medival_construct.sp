@@ -381,16 +381,15 @@ public void MedivalConstruct_ClotThink(int iNPC)
 					{
 						npc.AddGesture("ACT_COLOSUS_EAT");
 
-						npc.m_flAttackHappens_bullshit = gameTime + 0.35;
+						npc.m_flAttackHappens_bullshit = gameTime + 0.45;
 
-						npc.m_flDoingAnimation = gameTime + 0.35;
+						npc.m_flDoingAnimation = gameTime + 0.45;
 						npc.m_flNextMeleeAttack = gameTime + 1.5;
 						npc.m_bisWalking = true;
 					}
 					else
 					{
-						npc.AddGesture("ACT_COLOSUS_ATTACK");
-						
+						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
 
 						npc.PlayMeleeSound();
 						
