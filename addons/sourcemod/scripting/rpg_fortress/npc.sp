@@ -23,9 +23,10 @@ enum
 
 	FARM_COW						= 16,
 
-	ARK_SLUG	= 17,
-	ARK_SINGER	= 18,
-	ARK_SLUGACID	= 19
+	ARK_SLUG		= 17,
+	ARK_SINGER		= 18,
+	ARK_SLUGACID		= 19,
+	ARK_SLUG_INFUSED	= 20
 }
 
 public const char NPC_Names[][] =
@@ -49,7 +50,8 @@ public const char NPC_Names[][] =
 	"Farming Cow",
 	"Originium Slug",
 	"Scarlet Singer",
-	"Acid Originium Slug"
+	"Acid Originium Slug",
+	"Infused Originium Slug"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -73,7 +75,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_heavy_cow",
 	"npc_ark_slug",
 	"npc_ark_singer",
-	"npc_ark_slug_acid"
+	"npc_ark_slug_acid",
+	"npc_ark_slug_infused"
 };
 
 void NPC_MapStart()
@@ -97,6 +100,7 @@ void NPC_MapStart()
 	ArkSlug_MapStart();
 	ArkSinger_MapStart();
 	ArkSlugAcid_MapStart();
+	ArkSlugInfused_MapStart();
 }
 
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 120.0
@@ -182,6 +186,10 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 		case ARK_SLUGACID:
 		{
 			entity = ArkSlugAcid(client, vecPos, vecAng, ally);
+		}
+		case ARK_SLUG_INFUSED:
+		{
+			entity = ArkSlugInfused(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -271,6 +279,10 @@ public void NPCDeath(int entity)
 		case ARK_SLUGACID:
 		{
 			ArkSlugAcid_NPCDeath(entity);
+		}
+		case ARK_SLUG_INFUSED:
+		{
+			ArkSlugInfused_NPCDeath(entity);
 		}
 		default:
 		{

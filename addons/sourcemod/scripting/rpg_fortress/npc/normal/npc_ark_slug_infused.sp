@@ -1,50 +1,45 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] = {
-	"npc/headcrab/die1.wav",
-	"npc/headcrab/die2.wav"
-};
-
 static const char g_HurtSound[][] = {
-	"npc/headcrab/pain1.wav",
-	"npc/headcrab/pain2.wav",
-	"npc/headcrab/pain3.wav"
+	"npc/headcrab_poison/ph_pain1.wav",
+	"npc/headcrab_poison/ph_pain2.wav"
 };
 
 static const char g_IdleSound[][] = {
-	"npc/headcrab/idle1.wav",
-	"npc/headcrab/idle2.wav",
-	"npc/headcrab/idle3.wav"
+	"npc/headcrab_poison/ph_talk1.wav",
+	"npc/headcrab_poison/ph_talk2.wav",
+	"npc/headcrab_poison/ph_talk3.wav"
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"npc/headcrab/alert1.wav"
+	"npc/headcrab_poison/ph_rattle1.wav",
+	"npc/headcrab_poison/ph_rattle2.wav",
+	"npc/headcrab_poison/ph_rattle3.wav"
+};
+
+static const char g_MeleeAttackSounds[][] = {
+	"npc/headcrab_poison/ph_scream1.wav",
+	"npc/headcrab_poison/ph_scream2.wav",
+	"npc/headcrab_poison/ph_scream3.wav"
 };
 
 static const char g_MeleeHitSounds[][] = {
 	"npc/headcrab/headbite.wav"
 };
 
-static const char g_MeleeAttackSounds[][] = {
-	"npc/headcrab/attack1.wav",
-	"npc/headcrab/attack2.wav",
-	"npc/headcrab/attack3.wav"
-};
-
-void ArkSlug_MapStart()
+void ArkSlugInfused_MapStart()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 
-	PrecacheModel("models/headcrabclassic.mdl");
+	PrecacheModel("models/headcrab.mdl");
 }
 
-methodmap ArkSlug < CClotBody
+methodmap ArkSlugInfused < CClotBody
 {
 	public void PlayIdleSound(bool alert)
 	{
@@ -66,10 +61,6 @@ methodmap ArkSlug < CClotBody
 	{
 		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
-	public void PlayDeathSound() 
-	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
-	}
 	public void PlayKilledEnemySound() 
 	{
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
@@ -84,12 +75,12 @@ methodmap ArkSlug < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
-	public ArkSlug(int client, float vecPos[3], float vecAng[3], bool ally)
+	public ArkSlugInfused(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		ArkSlug npc = view_as<ArkSlug>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.15", "1050", ally, false));
-		// Originium Slug α (HP)
+		ArkSlugInfused npc = view_as<ArkSlugInfused>(CClotBody(vecPos, vecAng, "models/headcrab.mdl", "1.15", "2460", ally, false));
+		// Infused Originium Slug (HP)
 
-		i_NpcInternalId[npc.index] = ARK_SLUG;
+		i_NpcInternalId[npc.index] = ARK_SLUG_INFUSED;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -98,36 +89,34 @@ methodmap ArkSlug < CClotBody
 		npc.m_bisWalking = false;
 
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_bDissapearOnDeath = false;
+		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		npc.m_flNextThinkTime = GetGameTime() + GetRandomFloat(0.0, 0.5);
+		npc.m_flNextThinkTime = GetGameTime() + GetRandomFloat(0.0, 1.0);
 
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 50, 25, 0, 255);
+		SetEntityRenderColor(npc.index, 150, 25, 0, 255);
 
-		SDKHook(npc.index, SDKHook_OnTakeDamage, ArkSlug_OnTakeDamage);
-		SDKHook(npc.index, SDKHook_Think, ArkSlug_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, ArkSlugInfused_OnTakeDamage);
+		SDKHook(npc.index, SDKHook_Think, ArkSlugInfused_ClotThink);
 		
 		PF_StopPathing(npc.index);
 		npc.m_bPathing = false;
-
-		i_NoEntityFoundCount[npc.index] = 6;
 		
 		return npc;
 	}
 	
 }
 
-public void ArkSlug_ClotThink(int iNPC)
+public void ArkSlugInfused_ClotThink(int iNPC)
 {
-	ArkSlug npc = view_as<ArkSlug>(iNPC);
+	ArkSlugInfused npc = view_as<ArkSlugInfused>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -155,61 +144,9 @@ public void ArkSlug_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	bool wasBurrowed;
-	if(i_NoEntityFoundCount[npc.index] > 8)
-	{
-		wasBurrowed = true;
-		i_NoEntityFoundCount[npc.index] = 9;
-	}
-
 	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, f_SingerBuffedFor[npc.index] > gameTime ? 775.0 : 350.0, "ACT_RUN", "ACT_IDLE", 100.0, gameTime);
+	Npc_Base_Thinking(iNPC, f_SingerBuffedFor[npc.index] > gameTime ? 775.0 : 500.0, "ACT_RUN", "ACT_IDLE", 216.0, gameTime);
 	
-	if(i_NoEntityFoundCount[npc.index] == 9)
-	{
-		// Start hiding
-		npc.m_bisWalking = false; 
-		npc.SetActivity("ACT_HEADCRAB_BURROW_IDLE");
-		npc.AddGesture("ACT_HEADCRAB_BURROW_IN");
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-
-		if(IsValidEntity(npc.m_iTextEntity1))
-			RemoveEntity(npc.m_iTextEntity1);
-		
-		if(IsValidEntity(npc.m_iTextEntity2))
-			RemoveEntity(npc.m_iTextEntity2);
-		
-		if(IsValidEntity(npc.m_iTextEntity3))
-			RemoveEntity(npc.m_iTextEntity3);
-	}
-	else if(i_NoEntityFoundCount[npc.index] > 9)
-	{
-		// Keep hiding
-		npc.m_bisWalking = false;
-		if(npc.m_iChanged_WalkCycle != 5)
-		{
-			npc.m_iChanged_WalkCycle = 5;
-			npc.SetActivity("ACT_HEADCRAB_BURROW_IDLE");
-		}
-	}
-	else if(wasBurrowed)
-	{
-		// Stop hiding
-		npc.m_bisWalking = false; 
-		npc.SetActivity("ACT_IDLE");
-		npc.AddGesture("ACT_HEADCRAB_BURROW_OUT");
-
-		int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-		
-		npc.m_flNextThinkTime = gameTime + 1.4;
-		npc.m_iChanged_WalkCycle = 5;
-
-		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", 0.5);
-		Apply_Text_Above_Npc(npc.index, 0, health);
-		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", 1.15);
-	}
-
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
@@ -231,33 +168,9 @@ public void ArkSlug_ClotThink(int iNPC)
 					{
 						npc.PlayMeleeHitSound();
 						
-						int maxhealth = target > MaxClients ? GetEntProp(target, Prop_Data, "m_iMaxHealth") : SDKCall_GetMaxHealth(target);
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 92.5, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 130.0, DMG_CLUB);
 						Stats_AddOriginium(target, 1);
-						// Originium Slug α (50% dmg)
-
-						if(GetEntProp(target, Prop_Data, "m_iHealth") < 1)
-						{
-							npc.PlayKilledEnemySound();
-							
-							// Remove when the golden age comes:
-							float pos[3]; GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
-							float ang[3]; GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-							
-							int entity = Npc_Create(HEADCRAB_ZOMBIE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
-							if(entity > MaxClients)
-							{
-								hFromSpawnerIndex[entity] = hFromSpawnerIndex[npc.index];
-								Level[entity] = Level[target];
-								i_CreditsOnKill[entity] = 0;
-								XP[entity] = 0;
-								b_thisNpcIsABoss[entity] = false;
-								
-								SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-								SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-								Apply_Text_Above_Npc(entity, 0, maxhealth);
-							}
-						}
+						// Infused Originium Slug (50% dmg)
 					}
 				}
 				delete swingTrace;
@@ -326,7 +239,7 @@ public void ArkSlug_ClotThink(int iNPC)
 
 					npc.PlayMeleeSound();
 					
-					npc.m_flAttackHappens = gameTime + 0.5;
+					npc.m_flAttackHappens = gameTime + 0.3;
 
 					//npc.m_flDoingAnimation = gameTime + 1.2;
 					npc.m_flNextMeleeAttack = gameTime + (f_SingerBuffedFor[npc.index] > gameTime ? 1.0 : 1.5);
@@ -339,13 +252,13 @@ public void ArkSlug_ClotThink(int iNPC)
 	npc.PlayIdleSound(i_NoEntityFoundCount[npc.index] < 9);
 }
 
-public Action ArkSlug_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action ArkSlugInfused_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	ArkSlug npc = view_as<ArkSlug>(victim);
+	ArkSlugInfused npc = view_as<ArkSlugInfused>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -357,16 +270,18 @@ public Action ArkSlug_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	return Plugin_Changed;
 }
 
-void ArkSlug_NPCDeath(int entity)
+void ArkSlugInfused_NPCDeath(int entity)
 {
-	ArkSlug npc = view_as<ArkSlug>(entity);
-	if(!npc.m_bGib)
-	{
-		npc.PlayDeathSound();
-	}
+	ArkSlugInfused npc = view_as<ArkSlugInfused>(entity);
+	
+	float pos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos); 
+	pos[2] += 30;
+	makeexplosion(entity, entity, pos, "", 520, 100, _, _, true);
+	// Infused Originium Slug boom.atk_scale (50% dmg)
 
-	SDKUnhook(entity, SDKHook_OnTakeDamage, ArkSlug_OnTakeDamage);
-	SDKUnhook(entity, SDKHook_Think, ArkSlug_ClotThink);
+	SDKUnhook(entity, SDKHook_OnTakeDamage, ArkSlugInfused_OnTakeDamage);
+	SDKUnhook(entity, SDKHook_Think, ArkSlugInfused_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
