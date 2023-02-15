@@ -390,7 +390,7 @@
 	{
 		"en"		"Pistol Magazines"
 		"it"		"Caricatori Pistola"
-		"ru"		"Магазины для пистолета"
+		"ru"		"Обойма для пистолета"
 		"pl"		"Magazynek do Pistoletu"
 		"es"		"Cartuchos de Pistola"
 		"fr"		"Munitions de Pistolet"
@@ -1934,7 +1934,7 @@
 	{
 		"en"		"Settings"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Настройки"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1947,7 +1947,7 @@
 	{
 		"en"		"Settings Page"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Страница настроек"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1960,7 +1960,7 @@
 	{
 		"en"		"Armor Hud Setting"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Интерфейс брони"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1973,7 +1973,7 @@
 	{
 		"en"		"Hurt Hud Setting"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Интерфейс угроз"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1986,7 +1986,7 @@
 	{
 		"en"		"Weapon Hud Setting"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Интерфейс оружия"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1999,7 +1999,7 @@
 	{
 		"en"		"Notif Hud Setting"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Интерфейс уведомл."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2013,7 +2013,7 @@
 		"#format"	"{1:.3f},{2:.3f}"
 		"en"		"Armor Hud Offset\nX-Axis:{1}\nY-Axis:{2}"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Смещ. интерф. брони\nПо верт.:{1}\nПо гориз.:{2}"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2027,7 +2027,7 @@
 		"#format"	"{1:.3f},{2:.3f}"
 		"en"		"Hurt Hud Offset\nX-Axis:{1}\nY-Axis:{2}"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Смещ. интерф. угроз\nПо верт.:{1}\nПо гориз.:{2}"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2041,7 +2041,7 @@
 		"#format"	"{1:.3f},{2:.3f}"
 		"en"		"Weapon Hud Offset\nX-Axis:{1}\nY-Axis:{2}"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Смещ. интерф. оруж.\nПо верт.:{1}\nПо гориз.:{2}"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2055,7 +2055,7 @@
 		"#format"	"{1:.3f},{2:.3f}"
 		"en"		"Notif Hud Offset\nX-Axis:{1}\nY-Axis:{2}"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Смещ. интерф. увед.\nПо верт.:{1}\nПо гориз.:{2}"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2068,7 +2068,7 @@
 	{
 		"en"		"Move Hud Up"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Интерф. вверх"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2081,7 +2081,7 @@
 	{
 		"en"		"Move Hud Down"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Интерф. вниз"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2094,7 +2094,7 @@
 	{
 		"en"		"Move Hud Left"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Интерф. влево"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2107,7 +2107,7 @@
 	{
 		"en"		"Move Hud Right"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Интерф. вправо"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2120,7 +2120,7 @@
 	{
 		"en"		"Reset to Default"
 		//"de"		""
-		//"ru"		""
+		"ru"		"По умолч."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2133,7 +2133,7 @@
 	{
 		"en"		"Mark a building for deletion."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Отметить постройку для удаления."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2146,7 +2146,7 @@
 	{
 		"en"		"Delete the current marked building ?"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Удалить текущую отмеченную постройку?"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2159,7 +2159,7 @@
 	{
 		"en"		"Builder extra gear menu"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Меню доп. снаряж. строителя"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""

@@ -7852,7 +7852,7 @@ public void KillNpc(int ref)
 	}
 }
 
-void FreezeNpcInTime(int npc, float Duration_Stun)
+stock void FreezeNpcInTime(int npc, float Duration_Stun)
 {
 	if(b_CannotBeStunned[npc])
 	{

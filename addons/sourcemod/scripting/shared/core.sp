@@ -14,6 +14,7 @@
 #include <PathFollower_Nav>
 #include <morecolors>
 #include <tf2utils>
+#include <filenetwork>
 
 #define CHAR_FULL	"█"
 #define CHAR_PARTFULL	"▓"
@@ -996,6 +997,7 @@ char c_HeadPlaceAttachmentGibName[MAXENTITIES][64];
 #include "shared/custom_melee_logic.sp"
 #include "shared/dhooks.sp"
 #include "shared/events.sp"
+#include "shared/filenetwork.sp"
 #include "shared/npcs.sp"
 #include "shared/npc_death_showing.sp"
 #include "shared/sdkcalls.sp"
@@ -1057,6 +1059,7 @@ public void OnPluginStart()
 	
 	Commands_PluginStart();
 	Events_PluginStart();
+	FileNetwork_PluginStart();
 
 	RegServerCmd("zr_update_blocked_nav", OnReloadBlockNav, "Reload Nav Blocks");
 	RegAdminCmd("sm_play_viewmodel_anim", Command_PlayViewmodelAnim, ADMFLAG_ROOT, "Testing viewmodel animation manually");
@@ -1216,8 +1219,6 @@ public void OnMapStart()
 	PrecacheSound("items/powerup_pickup_knockout_melee_hit.wav");
 	PrecacheSound("weapons/capper_shoot.wav");
 
-	PrecacheSound("zombiesurvival/headshot1.wav");
-	PrecacheSound("zombiesurvival/headshot2.wav");
 	PrecacheSound("misc/halloween/clock_tick.wav");
 	PrecacheSound("mvm/mvm_bomb_warning.wav");
 	PrecacheSound("weapons/jar_explode.wav");
@@ -1226,6 +1227,9 @@ public void OnMapStart()
 	PrecacheSound("player/crit_hit3.wav");
 	PrecacheSound("player/crit_hit2.wav");
 	PrecacheSound("player/crit_hit.wav");
+
+	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
+	PrecacheSoundCustom("zombiesurvival/headshot2.wav");
 	
 	MapStartResetAll();
 	
@@ -1264,6 +1268,7 @@ public void OnMapEnd()
 #endif
 
 	ConVar_Disable();
+	FileNetwork_MapEnd();
 }
 
 public void OnConfigsExecuted()
@@ -1436,6 +1441,7 @@ public void OnClientPutInServer(int client)
 	}
 	
 	DHook_HookClient(client);
+	FileNetwork_ClientPutInServer(client);
 	SDKHook_HookClient(client);
 	WeaponClass[client] = TFClass_Unknown;
 	f_ClientReviveDelay[client] = 0.0;
@@ -1505,6 +1511,7 @@ public void OnClientCookiesCached(int client)
 
 public void OnClientDisconnect(int client)
 {
+	FileNetwork_ClientDisconnect(client);
 	Store_ClientDisconnect(client);
 	
 #if defined ZR

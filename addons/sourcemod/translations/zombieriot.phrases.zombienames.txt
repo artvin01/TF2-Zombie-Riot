@@ -154,7 +154,7 @@
 	"Heavy Brawler"
 	{
 		"en" 		"Heavy Brawler"
-		"ru" 		"Пулемётчик-дебошир"
+		"ru" 		"Пулемётчик-боец"
 		"pt"		"Heavy Lutador"
 		"nl"		"Heavy Vechter"
 	}
@@ -189,7 +189,7 @@
 	"Giant Heavy Brawler"
 	{
 		"en" 		"Giant Heavy Brawler"
-		"ru" 		"Гигантский пулемётчик-дебошир"
+		"ru" 		"Гигантский пулемётчик-боец"
 		"pt"		"Heavy Gigante Lutador"
 		"nl"		"Gigantische Heavy Vechter"
 	}
@@ -437,7 +437,7 @@
 	"Xeno Heavy Brawler"
 	{
 		"en" 		"Xeno Heavy Brawler"
-		"ru" 		"Ксенопулемётчик-дебошир"
+		"ru" 		"Ксенопулемётчик-боец"
 		"pt"		"Xeno Heavy Lutador"
 		"nl"		"Xeno Heavy Vechter"
 	}
@@ -472,7 +472,7 @@
 	"Xeno Giant Heavy Brawler"
 	{
 		"en" 		"Xeno Giant Heavy Brawler"
-		"ru" 		"Гигантский ксенопулемётчик-дебошир"
+		"ru" 		"Гигантский ксенопулемётчик-боец"
 		"pt"		"Xeno Heavy Gigante Lutador"
 		"nl"		"Xeno Heavy Gigantische Vechter"
 	}
@@ -1153,7 +1153,7 @@
 	{
 		"en"		"Ridden Scout"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Ездовой разведчик"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1166,7 +1166,7 @@
 	{
 		"en"		"Villager"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Житель"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1179,7 +1179,7 @@
 	{
 		"en"		"Building"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Постройка"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1192,7 +1192,7 @@
 	{
 		"en"		"Construct"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Строение"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1205,7 +1205,7 @@
 	{
 		"en"		"Champion"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Чемпион"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1218,7 +1218,7 @@
 	{
 		"en"		"Light Cavalry"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Лёгкий кавалерист"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1231,7 +1231,7 @@
 	{
 		"en"		"Hussar"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Гусар"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1244,7 +1244,7 @@
 	{
 		"en"		"Knight"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Рыцарь"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1257,7 +1257,7 @@
 	{
 		"en"		"Obuch"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Обух"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1270,7 +1270,7 @@
 	{
 		"en"		"Monk"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Монах"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1283,7 +1283,7 @@
 	{
 		"en"		"Cavalary"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Кавалерист"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1296,7 +1296,7 @@
 	{
 		"en"		"Paladin"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Паладин"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1309,7 +1309,7 @@
 	{
 		"en"		"Crossbow Giant"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Гигантский арбалетчик"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1322,7 +1322,7 @@
 	{
 		"en"		"Swordsman Giant"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Гигантский мечник"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1335,7 +1335,7 @@
 	{
 		"en"		"Mounted Archer"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Конный лучник"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1348,7 +1348,7 @@
 	{
 		"en"		"Eagle Warrior"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Орёл-воин"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1361,7 +1361,7 @@
 	{
 		"en"		"Giant Eagle Warrior"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Гигантский орёл-воин"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1374,7 +1374,7 @@
 	{
 		"en"		"Son Of Osiris"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Сын Осириса"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1387,7 +1387,7 @@
 	{
 		"en"		"Achilles"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Ахилл"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1398,9 +1398,9 @@
 	}
 	"Medival Abalest"
 	{
-		"en"		"Medival Abalest"
+		"en"		"Medieval Arbalest"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Арбалетчик средневековья"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1411,9 +1411,9 @@
 	}
 	"Medival Brawler"
 	{
-		"en"		"Medival Brawler"
+		"en"		"Medieval Brawler"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Боец средневековья"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1424,9 +1424,9 @@
 	}
 	"Medival Longbowmen"
 	{
-		"en"		"Medival Longbowmen"
+		"en"		"Medieval Longbowmen"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Лучник средневековья"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1437,9 +1437,9 @@
 	}
 	"Medival Halberdier"
 	{
-		"en"		"Medival Halberdier"
+		"en"		"Medieval Halberdier"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Алебардист средневековья"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1450,9 +1450,9 @@
 	}
 	"Medival Elite Longbowmen"
 	{
-		"en"		"Medival Elite Longbowmen"
+		"en"		"Medieval Elite Longbowmen"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Элитный лучник средневековья"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -1465,7 +1465,7 @@
 	{
 		"en"		"Trebuchet"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Требушет"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
