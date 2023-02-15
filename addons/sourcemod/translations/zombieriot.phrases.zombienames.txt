@@ -1474,4 +1474,30 @@
 		//"it"		""
 		//"fr"		""
 	}
+	"Ikunagae"
+	{
+		"en"		"Iku Nagae"
+		"de"		"Iku Nagae"
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Mecha Soldier Barrager"
+	{
+		"en"		"Mecha Soldier Barrager"
+		"de"		"Machine Soldat Spammer"
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
 }
