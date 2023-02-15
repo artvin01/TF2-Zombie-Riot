@@ -277,8 +277,13 @@ void ArkSlugInfused_NPCDeath(int entity)
 	float pos[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos); 
 	pos[2] += 30;
-	makeexplosion(entity, entity, pos, "", 520, 100, _, _, true);
-	// Infused Originium Slug boom.atk_scale (50% dmg)
+	
+	DataPack pack;
+	CreateDataTimer(0.5, ArkSlugInfused_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(entity);
+	pack.WriteFloat(pos[0]);
+	pack.WriteFloat(pos[1]);
+	pack.WriteFloat(pos[2]);
 
 	SDKUnhook(entity, SDKHook_OnTakeDamage, ArkSlugInfused_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, ArkSlugInfused_ClotThink);
@@ -291,4 +296,17 @@ void ArkSlugInfused_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable3);
 }
 
+public Action ArkSlugInfused_Timer(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int entity = pack.ReadCell();
+	float pos[3];
+	pos[0] = pack.ReadFloat();
+	pos[1] = pack.ReadFloat();
+	pos[2] = pack.ReadFloat();
 
+	makeexplosion(IsValidEntity(entity) ? entity : 0, _, pos, "", 520, 100, _, _, true);
+	// Infused Originium Slug boom.atk_scale (50% dmg)
+
+	return Plugin_Continue;
+}

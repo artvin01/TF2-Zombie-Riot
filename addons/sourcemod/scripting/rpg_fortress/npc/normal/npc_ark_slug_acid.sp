@@ -80,7 +80,7 @@ methodmap ArkSlugAcid < CClotBody
 		ArkSlugAcid npc = view_as<ArkSlugAcid>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.15", "2080", ally, false));
 		// Acid Originium Slug (HP)
 
-		i_NpcInternalId[npc.index] = ARK_SLUG;
+		i_NpcInternalId[npc.index] = ARK_SLUGACID;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
