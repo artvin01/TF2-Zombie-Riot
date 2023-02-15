@@ -253,7 +253,7 @@ void SDKCall_EquipWearable(int client, int entity)
 }
 //( const Vector &vecOrigin, const QAngle &vecAngles, const float fSpeed, const float fGravity, ProjectileType_t projectileType, CBaseEntity *pOwner, CBaseEntity *pScorer )
 
-stock int SDKCall_CTFCreateArrow(float VecOrigin[3], float VecAngles[3], const float fSpeed, const float fGravity, int projectileType, int Owner, int Scorer)
+int SDKCall_CTFCreateArrow(float VecOrigin[3], float VecAngles[3], const float fSpeed, const float fGravity, int projectileType, int Owner, int Scorer)
 {
 	if(g_hCTFCreateArrow)
 		return SDKCall(g_hCTFCreateArrow, VecOrigin, VecAngles, fSpeed, fGravity, projectileType, Owner, Scorer);
@@ -328,8 +328,7 @@ int SDKCall_GetMaxHealth(int client)
 	return SDKGetMaxHealth ? SDKCall(SDKGetMaxHealth, client) : GetEntProp(client, Prop_Data, "m_iMaxHealth");
 }
 
-
-public int FindAttachment(int index, const char[] pAttachmentName)
+int FindAttachment(int index, const char[] pAttachmentName)
 {
 	Address pStudioHdr = GetStudioHdr(index);
 	if(pStudioHdr == Address_Null)
@@ -348,12 +347,12 @@ public Address GetStudioHdr(int index)
 	return Address_Null;
 }	
 
-stock void SnapEyeAngles(int client, float viewAngles[3])
+void SnapEyeAngles(int client, float viewAngles[3])
 {
 	SDKCall(g_hSnapEyeAngles, client, viewAngles);
 }
 
-stock void SetAbsVelocity(int client, float viewAngles[3])
+void SetAbsVelocity(int client, float viewAngles[3])
 {
 	SDKCall(g_hSetAbsVelocity, client, viewAngles);
 }
@@ -374,7 +373,7 @@ void SDKCall_DoAnimationEvent(int iClient, int event_int, int extra_data = 0)
 }*/
 
 
-public void GetVectors(int client, float pForward[3], float pRight[3], float pUp[3])
+void GetVectors(int client, float pForward[3], float pRight[3], float pUp[3])
 {
 	SDKCall(g_hGetVectors, client, pForward, pRight, pUp);
 }
@@ -388,7 +387,7 @@ void GetBoneAnglesAndPos(int client, char[] BoneName, float origin[3], float ang
 	SDKCall(g_hGetBonePosition, client, iBone, origin, angles);
 }
 
-public void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
+void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 {
 	if(g_GottenAddressesForLagComp)
 	{
@@ -403,7 +402,7 @@ public void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 	}
 }
 
-public void EndPlayerOnlyLagComp(int client)
+void EndPlayerOnlyLagComp(int client)
 {
 	if(g_GottenAddressesForLagComp)
 	{
@@ -412,7 +411,7 @@ public void EndPlayerOnlyLagComp(int client)
 	}
 }
 
-public void UpdateBlockedNavmesh()
+void UpdateBlockedNavmesh()
 {
 	SDKCall(g_hSDKUpdateBlocked);
 }	
@@ -430,13 +429,14 @@ static MRESReturn CEconItemView_IterateAttributes_Post(Address pThis, DHookParam
     return MRES_Ignored;
 }
 
-public void TF2Items_OnGiveNamedItem_Post_SDK(int iClient, char[] sClassname, int iItemDefIndex, int iLevel, int iQuality, int iEntity)
+stock void TF2Items_OnGiveNamedItem_Post_SDK(int iClient, char[] sClassname, int iItemDefIndex, int iLevel, int iQuality, int iEntity)
 {
 	Address pCEconItemView = GetEntityAddress(iEntity) + view_as<Address>(g_iCEconItem_m_Item);
 	g_hDHookItemIterateAttribute.HookRaw(Hook_Pre, pCEconItemView, CEconItemView_IterateAttributes);
 	g_hDHookItemIterateAttribute.HookRaw(Hook_Post, pCEconItemView, CEconItemView_IterateAttributes_Post);
 }
-public int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
+
+stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 {
 	int bot = SDKCall(
 	gH_BotAddCommand,

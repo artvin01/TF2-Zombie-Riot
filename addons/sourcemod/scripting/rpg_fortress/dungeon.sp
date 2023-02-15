@@ -1957,7 +1957,7 @@ float RpgCC_ContractExtrasPlayerOnTakeDamage(int victim, int attacker, float dam
 	return damage;
 }
 
-float RpgCC_ContractExtrasNpcOnTakeDamage(int victim, int attacker, float damage, int damagetype, int weapon, int weaponslot)
+stock float RpgCC_ContractExtrasNpcOnTakeDamage(int victim, int attacker, float damage, int damagetype, int weapon, int weaponslot)
 {
 	if(!(damagetype & (DMG_SLASH))) // if you want anything to be melee based, just give them this.
 	{

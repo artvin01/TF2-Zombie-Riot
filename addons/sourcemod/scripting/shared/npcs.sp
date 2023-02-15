@@ -1014,10 +1014,10 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 							{
 								if(IsClientInGame(client) && client != attacker)
 								{
-									EmitSoundToClient(client, "zombiesurvival/headshot1.wav", victim, _, 80, _, volume, pitch);
+									EmitCustomToClient(client, "zombiesurvival/headshot1.wav", victim, _, 80, _, volume, pitch);
 								}
 							}
-							EmitSoundToClient(attacker, "zombiesurvival/headshot1.wav", _, _, 90, _, volume, pitch);
+							EmitCustomToClient(attacker, "zombiesurvival/headshot1.wav", _, _, 90, _, volume, pitch);
 						}
 						case 2:
 						{
@@ -1025,10 +1025,10 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 							{
 								if(IsClientInGame(client) && client != attacker)
 								{
-									EmitSoundToClient(client, "zombiesurvival/headshot2.wav", victim, _, 80, _, volume, pitch);
+									EmitCustomToClient(client, "zombiesurvival/headshot2.wav", victim, _, 80, _, volume, pitch);
 								}
 							}
-							EmitSoundToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, volume, pitch);
+							EmitCustomToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, volume, pitch);
 						}
 					}
 				}
@@ -1841,8 +1841,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
-	bool raidboss_active = false;
 #if defined ZR
+	bool raidboss_active = false;
 	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
 		raidboss_active = true;

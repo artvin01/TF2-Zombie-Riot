@@ -94,6 +94,7 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [lambda](https://github.com/Batfoxkid/lambda)
 - [Timescale Windows Fix](https://forums.alliedmods.net/showthread.php?t=324264)
 - [TF2Utils](https://github.com/nosoop/SM-TFUtils)
+- [File Network](https://github.com/Batfoxkid/File-Network)
 
 ### Supported
 

@@ -1128,10 +1128,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
 			return Plugin_Changed;	
 		}
+#if defined ZR
 		else
 		{
 			return Plugin_Handled;	
 		}
+#endif
 	}
 	f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
 #if defined ZR
