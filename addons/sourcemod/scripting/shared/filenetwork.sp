@@ -60,12 +60,15 @@ static void SendNextFile(int client)
 		DataPack pack = new DataPack();
 		pack.WriteString(sound);
 		FileNet_RequestFile(client, filecheck, FileNetwork_RequestResults, pack);
+		PrintToChat(client, "Requesting: \"%s\"", filecheck);
 	}
 }
 
 public void FileNetwork_RequestResults(int client, const char[] file, int id, bool success, DataPack pack)
 {
 	// If not found, send the actual file
+
+	PrintToChat(client, "Done");
 
 	if(success)
 	{
@@ -77,14 +80,15 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 				LogError("Failed to delete file \"%s\"", file);
 		}
 	}
-
-	if(SoundLevel[client] && !success)
+	else if(SoundLevel[client])
 	{
 		static char sound[PLATFORM_MAX_PATH];
 		pack.Reset();
 		pack.ReadString(sound, sizeof(sound));
 		if(!FileNet_SendFile(client, sound, FileNetwork_SendResults))
 			LogError("Failed to queue file \"%s\" to client", sound);
+		
+		PrintToChat(client, "Sending: \"%s\"", filecheck);
 	}
 
 	delete pack;
@@ -92,6 +96,8 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 
 public void FileNetwork_SendResults(int client, const char[] file, bool success)
 {
+	PrintToChat(client, "Done");
+
 	// When done, send a dummy file and the next file in queue
 	if(SoundLevel[client])
 	{
@@ -110,6 +116,8 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success)
 				if(!DeleteFile(filecheck))
 					LogError("Failed to delete file \"%s\"", filecheck);
 			}
+
+			PrintToChat(client, "Sending: \"%s\"", filecheck);
 			
 			SendNextFile(client);
 		}
@@ -122,6 +130,8 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success)
 
 public void FileNetwork_SendFileCheck(int client, const char[] file, bool success)
 {
+	PrintToChat(client, "Done");
+	
 	// Delete the dummy file left over
 	if(SoundLevel[client] && !success)
 		LogError("Failed to send file \"%s\" to client", file);
