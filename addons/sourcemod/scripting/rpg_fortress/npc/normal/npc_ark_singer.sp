@@ -111,6 +111,7 @@ methodmap ArkSinger < CClotBody
 		SDKHook(npc.index, SDKHook_Think, ArkSinger_ClotThink);
 
 		npc.Anger = false;
+		npc.m_bmovedelay = true;
 		npc.m_iOverlordComboAttack = 0;
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -233,8 +234,8 @@ public void ArkSinger_ClotThink(int iNPC)
 			{
 				npc.m_flNextRangedAttackHappening = 0.0;
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 800.0);
-				npc.FireRocket(vPredictedPos, 250.0, 800.0, "models/effects/combineball.mdl");
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 600.0);
+				npc.FireRocket(vPredictedPos, 250.0, 600.0, "models/effects/combineball.mdl");
 				npc.PlayRangedSound();
 				// Scarlet Singer (50% dmg)
 
@@ -337,6 +338,15 @@ public Action ArkSinger_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 			npc.m_iOverlordComboAttack++;
 	}
 
+	if(npc.m_bmovedelay)
+	{
+		npc.flXenoInfectedSpecialHurtTime = gameTime + 0.1;
+		npc.m_bmovedelay = false;
+	}
+
+	if(!b_NpcIsInADungeon[victim] && npc.flXenoInfectedSpecialHurtTime > gameTime)
+		damage = 0.0;
+	
 	return Plugin_Changed;
 }
 

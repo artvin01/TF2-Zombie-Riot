@@ -455,7 +455,7 @@ static void CrimsonMenu(int client)
 			}
 			else
 			{
-				menu.SetTitle("Crimson Poker\n%s won the game\nLast Man\n ");
+				menu.SetTitle("Crimson Poker\n%s won the game\nLast Man\n ", buffer);
 			}
 
 			if(GameWinner == client)
