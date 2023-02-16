@@ -43,6 +43,13 @@ void PrecacheSoundCustom(const char[] sound, const char[] altsound = "")
 		SoundList.PushString(sound);
 }
 
+static void FormatFileCheck(const char[] file, int client, char[] output, int length)
+{
+	strcopy(output, length, file);
+	ReplaceString(output, length, ".", "");
+	Format(output, length, "%s_%d", output, GetSteamAccountID(client));
+}
+
 static void SendNextFile(int client)
 {
 	// First, request a dummy file to see if they have it downloaded before
@@ -53,7 +60,7 @@ static void SendNextFile(int client)
 		Format(sound, sizeof(sound), "sound/%s", sound[sound[0] == '#' ? 1 : 0]);
 
 		static char filecheck[PLATFORM_MAX_PATH];
-		Format(filecheck, sizeof(filecheck), "%s_%d.txt", sound, GetSteamAccountID(client));
+		FormatFileCheck(sound, client, filecheck, sizeof(filecheck));
 		
 		SoundLevel[client]++;
 		
@@ -104,7 +111,7 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success)
 		if(success)
 		{
 			static char filecheck[PLATFORM_MAX_PATH];
-			Format(filecheck, sizeof(filecheck), "%s_%d.txt", file, GetSteamAccountID(client));
+			FormatFileCheck(sound, client, filecheck, sizeof(filecheck));
 
 			File filec = OpenFile(filecheck, "wt");
 			filec.WriteLine("Used for file checks for ZR/RPG");
