@@ -1,25 +1,21 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] = {
-	"npc/headcrab_poison/ph_pain3.wav"
-};
-
 static const char g_HurtSound[][] = {
 	"npc/headcrab_poison/ph_pain1.wav",
 	"npc/headcrab_poison/ph_pain2.wav"
 };
 
 static const char g_IdleSound[][] = {
-	"npc/headcrab_poison/ph_idle1.wav",
-	"npc/headcrab_poison/ph_idle2.wav",
-	"npc/headcrab_poison/ph_idle3.wav"
+	"npc/headcrab_poison/ph_talk1.wav",
+	"npc/headcrab_poison/ph_talk2.wav",
+	"npc/headcrab_poison/ph_talk3.wav"
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"npc/headcrab_poison/ph_warning1.wav",
-	"npc/headcrab_poison/ph_warning2.wav",
-	"npc/headcrab_poison/ph_warning3.wav"
+	"npc/headcrab_poison/ph_rattle1.wav",
+	"npc/headcrab_poison/ph_rattle2.wav",
+	"npc/headcrab_poison/ph_rattle3.wav"
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -28,18 +24,22 @@ static const char g_MeleeAttackSounds[][] = {
 	"npc/headcrab_poison/ph_scream3.wav"
 };
 
-void ArkSlugAcid_MapStart()
+static const char g_MeleeHitSounds[][] = {
+	"npc/headcrab/headbite.wav"
+};
+
+void ArkSlugInfused_MapStart()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 
-	PrecacheModel("models/headcrabclassic.mdl");
+	PrecacheModel("models/headcrab.mdl");
 }
 
-methodmap ArkSlugAcid < CClotBody
+methodmap ArkSlugInfused < CClotBody
 {
 	public void PlayIdleSound(bool alert)
 	{
@@ -61,10 +61,6 @@ methodmap ArkSlugAcid < CClotBody
 	{
 		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
-	public void PlayDeathSound() 
-	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
-	}
 	public void PlayKilledEnemySound() 
 	{
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
@@ -74,13 +70,17 @@ methodmap ArkSlugAcid < CClotBody
  	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
-	
-	public ArkSlugAcid(int client, float vecPos[3], float vecAng[3], bool ally)
+	public void PlayMeleeHitSound()
 	{
-		ArkSlugAcid npc = view_as<ArkSlugAcid>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.15", "2080", ally, false));
-		// Acid Originium Slug (HP)
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
+	}
+	
+	public ArkSlugInfused(int client, float vecPos[3], float vecAng[3], bool ally)
+	{
+		ArkSlugInfused npc = view_as<ArkSlugInfused>(CClotBody(vecPos, vecAng, "models/headcrab.mdl", "1.15", "2460", ally, false));
+		// Infused Originium Slug (HP)
 
-		i_NpcInternalId[npc.index] = ARK_SLUGACID;
+		i_NpcInternalId[npc.index] = ARK_SLUG_INFUSED;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -89,36 +89,34 @@ methodmap ArkSlugAcid < CClotBody
 		npc.m_bisWalking = false;
 
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_bDissapearOnDeath = false;
+		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		npc.m_flNextThinkTime = GetGameTime() + GetRandomFloat(0.0, 0.5);
+		npc.m_flNextThinkTime = GetGameTime() + GetRandomFloat(0.0, 1.0);
 
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 150, 150, 0, 255);
+		SetEntityRenderColor(npc.index, 150, 25, 0, 255);
 
-		SDKHook(npc.index, SDKHook_OnTakeDamage, ArkSlugAcid_OnTakeDamage);
-		SDKHook(npc.index, SDKHook_Think, ArkSlugAcid_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, ArkSlugInfused_OnTakeDamage);
+		SDKHook(npc.index, SDKHook_Think, ArkSlugInfused_ClotThink);
 		
 		PF_StopPathing(npc.index);
 		npc.m_bPathing = false;
-
-		i_NoEntityFoundCount[npc.index] = 6;
 		
 		return npc;
 	}
 	
 }
 
-public void ArkSlugAcid_ClotThink(int iNPC)
+public void ArkSlugInfused_ClotThink(int iNPC)
 {
-	ArkSlugAcid npc = view_as<ArkSlugAcid>(iNPC);
+	ArkSlugInfused npc = view_as<ArkSlugInfused>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -146,61 +144,9 @@ public void ArkSlugAcid_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	bool wasBurrowed;
-	if(i_NoEntityFoundCount[npc.index] > 8)
-	{
-		wasBurrowed = true;
-		i_NoEntityFoundCount[npc.index] = 9;
-	}
-
 	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, f_SingerBuffedFor[npc.index] > gameTime ? 775.0 : 350.0, "ACT_RUN", "ACT_IDLE", 100.0, gameTime);
+	Npc_Base_Thinking(iNPC, f_SingerBuffedFor[npc.index] > gameTime ? 775.0 : 500.0, "ACT_RUN", "ACT_IDLE", 216.0, gameTime);
 	
-	if(i_NoEntityFoundCount[npc.index] == 9)
-	{
-		// Start hiding
-		npc.m_bisWalking = false; 
-		npc.SetActivity("ACT_HEADCRAB_BURROW_IDLE");
-		npc.AddGesture("ACT_HEADCRAB_BURROW_IN");
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-
-		if(IsValidEntity(npc.m_iTextEntity1))
-			RemoveEntity(npc.m_iTextEntity1);
-		
-		if(IsValidEntity(npc.m_iTextEntity2))
-			RemoveEntity(npc.m_iTextEntity2);
-		
-		if(IsValidEntity(npc.m_iTextEntity3))
-			RemoveEntity(npc.m_iTextEntity3);
-	}
-	else if(i_NoEntityFoundCount[npc.index] > 9)
-	{
-		// Keep hiding
-		npc.m_bisWalking = false;
-		if(npc.m_iChanged_WalkCycle != 5)
-		{
-			npc.m_iChanged_WalkCycle = 5;
-			npc.SetActivity("ACT_HEADCRAB_BURROW_IDLE");
-		}
-	}
-	else if(wasBurrowed)
-	{
-		// Stop hiding
-		npc.m_bisWalking = false; 
-		npc.SetActivity("ACT_IDLE");
-		npc.AddGesture("ACT_HEADCRAB_BURROW_OUT");
-
-		int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-		
-		npc.m_flNextThinkTime = gameTime + 1.4;
-		npc.m_iChanged_WalkCycle = 5;
-
-		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", 0.5);
-		Apply_Text_Above_Npc(npc.index, 0, health);
-		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", 1.15);
-	}
-
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
@@ -209,12 +155,25 @@ public void ArkSlugAcid_ClotThink(int iNPC)
 			
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
-				float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-				npc.FaceTowards(vecTarget, 30000.0);
-				
-				npc.PlayMeleeSound();
-				npc.FireArrow(vecTarget, 90.0, 600.0);
-				// Acid Originium Slug (50% dmg)
+				Handle swingTrace;
+				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+				{
+					int target = TR_GetEntityIndex(swingTrace);	
+					
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
+
+					if(target > 0) 
+					{
+						npc.PlayMeleeHitSound();
+						
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 130.0, DMG_CLUB);
+						Stats_AddOriginium(target, 1);
+						// Infused Originium Slug (50% dmg)
+					}
+				}
+				delete swingTrace;
 			}
 		}
 	}
@@ -276,20 +235,15 @@ public void ArkSlugAcid_ClotThink(int iNPC)
 				{
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.SetActivity("ACT_IDLE");
 					npc.AddGesture("ACT_RANGE_ATTACK1");
-					npc.m_iChanged_WalkCycle = 5;
 
 					npc.PlayMeleeSound();
 					
-					npc.m_flAttackHappens = gameTime + 0.5;
+					npc.m_flAttackHappens = gameTime + 0.3;
 
-					npc.m_flDoingAnimation = gameTime + 1.2;
+					//npc.m_flDoingAnimation = gameTime + 1.2;
 					npc.m_flNextMeleeAttack = gameTime + (f_SingerBuffedFor[npc.index] > gameTime ? 1.0 : 1.5);
-					
-					npc.m_bisWalking = false;
-					PF_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.m_bisWalking = true;
 				}
 			}
 		}
@@ -298,13 +252,13 @@ public void ArkSlugAcid_ClotThink(int iNPC)
 	npc.PlayIdleSound(i_NoEntityFoundCount[npc.index] < 9);
 }
 
-public Action ArkSlugAcid_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action ArkSlugInfused_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	ArkSlugAcid npc = view_as<ArkSlugAcid>(victim);
+	ArkSlugInfused npc = view_as<ArkSlugInfused>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -316,16 +270,23 @@ public Action ArkSlugAcid_OnTakeDamage(int victim, int &attacker, int &inflictor
 	return Plugin_Changed;
 }
 
-void ArkSlugAcid_NPCDeath(int entity)
+void ArkSlugInfused_NPCDeath(int entity)
 {
-	ArkSlugAcid npc = view_as<ArkSlugAcid>(entity);
-	if(!npc.m_bGib)
-	{
-		npc.PlayDeathSound();
-	}
+	ArkSlugInfused npc = view_as<ArkSlugInfused>(entity);
+	
+	float pos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos); 
+	pos[2] += 30;
+	
+	DataPack pack;
+	CreateDataTimer(0.5, ArkSlugInfused_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(entity);
+	pack.WriteFloat(pos[0]);
+	pack.WriteFloat(pos[1]);
+	pack.WriteFloat(pos[2]);
 
-	SDKUnhook(entity, SDKHook_OnTakeDamage, ArkSlugAcid_OnTakeDamage);
-	SDKUnhook(entity, SDKHook_Think, ArkSlugAcid_ClotThink);
+	SDKUnhook(entity, SDKHook_OnTakeDamage, ArkSlugInfused_OnTakeDamage);
+	SDKUnhook(entity, SDKHook_Think, ArkSlugInfused_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -335,4 +296,17 @@ void ArkSlugAcid_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable3);
 }
 
+public Action ArkSlugInfused_Timer(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int entity = pack.ReadCell();
+	float pos[3];
+	pos[0] = pack.ReadFloat();
+	pos[1] = pack.ReadFloat();
+	pos[2] = pack.ReadFloat();
 
+	makeexplosion(IsValidEntity(entity) ? entity : 0, _, pos, "", 520, 100, _, _, true);
+	// Infused Originium Slug boom.atk_scale (50% dmg)
+
+	return Plugin_Continue;
+}

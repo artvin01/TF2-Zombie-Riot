@@ -103,7 +103,7 @@ methodmap ArkSlug < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		npc.m_flNextThinkTime = GetGameTime() + GetRandomFloat(0.0, 1.0);
+		npc.m_flNextThinkTime = GetGameTime() + GetRandomFloat(0.0, 0.5);
 
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];

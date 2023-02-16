@@ -18,7 +18,6 @@ void Games_Blackjack(int client, bool results = false)
 		
 		int cash = TextStore_Cash(client);
 
-		menu.AddItem(NULL_STRING, "0 Credit Bet");
 		menu.AddItem(NULL_STRING, "10 Credit Bet", cash < 40 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem(NULL_STRING, "25 Credit Bet", cash < 100 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem(NULL_STRING, "50 Credit Bet", cash < 200 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
@@ -194,7 +193,12 @@ void Games_Blackjack(int client, bool results = false)
 			{
 				Format(buffer, sizeof(buffer), "%s| %d (%d)\n", buffer, hard, soft);
 			}
+
+			menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 		}
+
+		menu.ExitBackButton = true;
+		menu.Display(client, MENU_TIME_FOREVER);
 	}
 }
 
@@ -246,7 +250,7 @@ public int BlackjackJoinMenu(Menu menu, MenuAction action, int client, int choic
 				}
 
 				ResetToZero2(Hands[client], sizeof(Hands[]), sizeof(Hands[][]));
-				ResetToZero(Dealer[client], sizeof(Dealer));
+				ResetToZero(Dealer[client], sizeof(Dealer[]));
 
 				delete CurrentDeck[client];
 				CurrentDeck[client] = Games_GenerateNewDeck();
@@ -303,6 +307,11 @@ public int BlackjackTableMenu(Menu menu, MenuAction action, int client, int choi
 		{
 			delete menu;
 		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+				Games_Blackjack(client);
+		}
 		case MenuAction_Select:
 		{
 			bool results, hit, stand;
@@ -335,6 +344,10 @@ public int BlackjackTableMenu(Menu menu, MenuAction action, int client, int choi
 
 						TextStore_Cash(client, -CurrentBet[client]);
 						CurrentBet[client] *= 2;
+
+						Hands[client][1][0] = Hands[client][0][1];
+						Hands[client][0][1] = DrawNewCard(client);
+						Hands[client][1][1] = DrawNewCard(client);
 					}
 				}
 				case 4:	// Surrender
@@ -443,7 +456,7 @@ public int BlackjackTableMenu(Menu menu, MenuAction action, int client, int choi
 					cards++;
 				}
 
-				int cash, hands;
+				int wins, hands;
 				for(int a; a < sizeof(Hands[]); a++)
 				{
 					if(!Hands[client][a][0])
@@ -452,7 +465,7 @@ public int BlackjackTableMenu(Menu menu, MenuAction action, int client, int choi
 					hands++;
 					if(hard > 21)
 					{
-						cash += 2;
+						wins += 2;
 					}
 					else
 					{
@@ -491,34 +504,34 @@ public int BlackjackTableMenu(Menu menu, MenuAction action, int client, int choi
 								{
 									if(cards == 2)
 									{
-										cash++;	// Tie
+										wins++;	// Tie
 									}
 									else
 									{
-										cash += 3;	// Blackjack
+										wins += 3;	// Blackjack
 									}
 								}
 								else if(cards != 2)
 								{
-									cash++;	// Tie
+									wins++;	// Tie
 								}
 							}
 							else
 							{
-								cash++;	// Tie
+								wins++;	// Tie
 							}
 						}
 						else if(player > soft)
 						{
-							cash += 2;	// Win
+							wins += 2;	// Win
 						}
 					}
 				}
 
-				if(cash)
+				if(wins)
 				{
-					win = cash > hands;
-					TextStore_AddItemCount(client, ITEM_CASH, CurrentBet[client] * cash / hands);
+					win = wins > hands;
+					TextStore_AddItemCount(client, ITEM_CASH, CurrentBet[client] * wins / hands);
 				}
 			}
 
@@ -536,7 +549,7 @@ public int BlackjackTableMenu(Menu menu, MenuAction action, int client, int choi
 				}
 
 				ResetToZero2(Hands[client], sizeof(Hands[]), sizeof(Hands[][]));
-				ResetToZero(Dealer[client], sizeof(Dealer));
+				ResetToZero(Dealer[client], sizeof(Dealer[]));
 				delete CurrentDeck[client];
 			}
 		}
