@@ -197,6 +197,7 @@ void Games_Blackjack(int client, bool results = false)
 			menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 		}
 
+		menu.ExitBackButton = true;
 		menu.Display(client, MENU_TIME_FOREVER);
 	}
 }
@@ -305,6 +306,11 @@ public int BlackjackTableMenu(Menu menu, MenuAction action, int client, int choi
 		case MenuAction_End:
 		{
 			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+				Games_Blackjack(client);
 		}
 		case MenuAction_Select:
 		{
