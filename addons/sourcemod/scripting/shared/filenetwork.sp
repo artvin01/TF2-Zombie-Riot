@@ -43,12 +43,74 @@ void PrecacheSoundCustom(const char[] sound, const char[] altsound = "")
 		SoundList.PushString(sound);
 }
 
+static void SendNextFile(int client)
+{
+	// First, request a dummy file to see if they have it downloaded before
+	if(SoundLevel[client] < SoundList.Length)
+	{
+		static char sound[PLATFORM_MAX_PATH];
+		SoundList.GetString(SoundLevel[client], sound, sizeof(sound));
+		Format(sound, sizeof(sound), "sound/%s", sound[sound[0] == '#' ? 1 : 0]);
+
+		static char filecheck[PLATFORM_MAX_PATH];
+		Format(filecheck, sizeof(filecheck), "%s_%d.txt", sound, GetSteamAccountID(client));
+		
+		SoundLevel[client]++;
+		
+		DataPack pack = new DataPack();
+		pack.WriteString(sound);
+		FileNet_RequestFile(client, filecheck, FileNetwork_RequestResults, pack);
+	}
+}
+
+public void FileNetwork_RequestResults(int client, const char[] file, int id, bool success, DataPack pack)
+{
+	// If not found, send the actual file
+
+	if(success)
+	{
+		if(!DeleteFile(file, true))
+		{
+			static char filecheck[PLATFORM_MAX_PATH];
+			Format(filecheck, sizeof(filecheck), "download/%s", file);
+			if(!DeleteFile(filecheck))
+				LogError("Failed to delete file \"%s\"", file);
+		}
+	}
+
+	if(SoundLevel[client] && !success)
+	{
+		static char sound[PLATFORM_MAX_PATH];
+		pack.Reset();
+		pack.ReadString(sound, sizeof(sound));
+		if(!FileNet_SendFile(client, sound, FileNetwork_SendResults))
+			LogError("Failed to queue file \"%s\" to client", sound);
+	}
+
+	delete pack;
+}
+
 public void FileNetwork_SendResults(int client, const char[] file, bool success)
 {
+	// When done, send a dummy file and the next file in queue
 	if(SoundLevel[client])
 	{
 		if(success)
 		{
+			static char filecheck[PLATFORM_MAX_PATH];
+			Format(filecheck, sizeof(filecheck), "%s_%d.txt", file, GetSteamAccountID(client));
+
+			File filec = OpenFile(filecheck, "wt");
+			filec.WriteLine("Used for file checks for ZR/RPG");
+			filec.Close();
+
+			if(!FileNet_SendFile(client, filecheck, FileNetwork_SendFileCheck))
+			{
+				LogError("Failed to queue file \"%s\" to client", filecheck);
+				if(!DeleteFile(filecheck))
+					LogError("Failed to delete file \"%s\"", filecheck);
+			}
+			
 			SendNextFile(client);
 		}
 		else
@@ -58,19 +120,14 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success)
 	}
 }
 
-static void SendNextFile(int client)
+public void FileNetwork_SendFileCheck(int client, const char[] file, bool success)
 {
-	if(SoundLevel[client] < SoundList.Length)
-	{
-		static char sound[PLATFORM_MAX_PATH];
-		SoundList.GetString(SoundLevel[client], sound, sizeof(sound));
-		Format(sound, sizeof(sound), "sound/%s", sound[sound[0] == '#' ? 1 : 0]);
-		
-		SoundLevel[client]++;
-		
-		if(!FileNet_SendFile(client, sound, FileNetwork_SendResults))
-			LogError("Failed to queue file \"%s\" to client", sound);
-	}
+	// Delete the dummy file left over
+	if(SoundLevel[client] && !success)
+		LogError("Failed to send file \"%s\" to client", file);
+	
+	if(!DeleteFile(file))
+		LogError("Failed to delete file \"%s\"", file);
 }
 
 stock void EmitCustomToClient(int client, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
