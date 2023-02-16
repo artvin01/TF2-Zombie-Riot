@@ -300,6 +300,7 @@ bool i_ClientHasCustomGearEquipped[MAXTF2PLAYERS]={false, ...};
 	
 int Animation_Setting[MAXTF2PLAYERS];
 int Animation_Index[MAXTF2PLAYERS];
+int Animation_Retry[MAXTF2PLAYERS];
 bool b_IsPlayerNiko[MAXTF2PLAYERS];
 
 float delay_hud[MAXTF2PLAYERS];
