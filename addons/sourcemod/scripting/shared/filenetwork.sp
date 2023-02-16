@@ -111,7 +111,7 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success)
 		if(success)
 		{
 			static char filecheck[PLATFORM_MAX_PATH];
-			FormatFileCheck(sound, client, filecheck, sizeof(filecheck));
+			FormatFileCheck(file, client, filecheck, sizeof(filecheck));
 
 			File filec = OpenFile(filecheck, "wt");
 			filec.WriteLine("Used for file checks for ZR/RPG");
