@@ -88,7 +88,7 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 		if(!FileNet_SendFile(client, sound, FileNetwork_SendResults))
 			LogError("Failed to queue file \"%s\" to client", sound);
 		
-		PrintToChat(client, "Sending: \"%s\"", filecheck);
+		PrintToChat(client, "Sending: \"%s\"", sound);
 	}
 
 	delete pack;
