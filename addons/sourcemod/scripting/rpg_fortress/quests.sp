@@ -171,6 +171,8 @@ void Quests_EnableZone(int client, const char[] name)
 					SetVariantString(buffer);
 					AcceptEntityInput(entity, "SetAnimation", entity, entity);
 					
+					SetEntProp(entity, Prop_Data, "m_bSequenceLoops", true);
+					
 					int force_bodygroup;
 
 					force_bodygroup = QuestKv.GetNum("force_bodygroup", 0);

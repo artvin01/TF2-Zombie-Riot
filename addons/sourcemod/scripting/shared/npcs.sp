@@ -1675,25 +1675,25 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	#endif						
 								
 								//Latest tf2 update broke this, too lazy to fix lol
-								/*
-								THERE IS A FIX IN SOURCEMOD 1.12 FOR THIS!
-								TE_WriteEnt
-								TE_ReadEnt 
-								if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
+								
+					//			THERE IS A FIX IN SOURCEMOD 1.12 FOR THIS!
+								if(!b_IsPlayerNiko[attacker])
 								{
-								
-									RequestFrame(Try_Backstab_Anim_Again, attacker);
-									TE_Start("PlayerAnimEvent");
-									Animation_Setting[attacker] = 1;
-									Animation_Index[attacker] = 33;
-							//		new client    = MakeCompatEntRef(TE_ReadNum("m_hPlayer"));
-									TE_WriteNum("m_iPlayerIndex", attacker);
-									TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
-									TE_WriteNum("m_nData", Animation_Index[attacker]);
-									TE_SendToAll();
+									if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
+									{
+										Animation_Retry[attacker] = 4;
+										RequestFrame(Try_Backstab_Anim_Again, attacker);
+										TE_Start("PlayerAnimEvent");
+										Animation_Setting[attacker] = 1;
+										Animation_Index[attacker] = 33;
+										TE_WriteEnt("m_hPlayer",attacker);
+										TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
+										TE_WriteNum("m_nData", Animation_Index[attacker]);
+										TE_SendToAll();
+									}
 								}
-								*/
 								
+							
 								int heal_amount = i_BackstabHealEachTick[weapon];
 								int heal_ticks = i_BackstabHealTicks[weapon];
 								if(heal_amount && heal_ticks)
@@ -2214,35 +2214,18 @@ enum PlayerAnimEvent_t
 */
 public void Try_Backstab_Anim_Again(int attacker)
 {
-	RequestFrame(Try_Backstab_Anim_Again2, attacker);
+	if(Animation_Retry[attacker] > 0)
+	{
+		RequestFrame(Try_Backstab_Anim_Again, attacker);
+	}
+	Animation_Retry[attacker] -= 1;
 	TE_Start("PlayerAnimEvent");
-	TE_WriteNum("m_iPlayerIndex", attacker);
+	TE_WriteEnt("m_iPlayerIndex", attacker);
 	TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
 	TE_WriteNum("m_nData", Animation_Index[attacker]);
 	TE_SendToAll();
 					
 }
-public void Try_Backstab_Anim_Again2(int attacker)
-{
-	TE_Start("PlayerAnimEvent");
-	TE_WriteNum("m_iPlayerIndex", attacker);
-	TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
-	TE_WriteNum("m_nData", Animation_Index[attacker]);
-	TE_SendToAll();
-	if(Dont_Crouch[attacker] > 0)
-		RequestFrame(Try_Backstab_Anim_Again3, attacker);
-					
-}
-public void Try_Backstab_Anim_Again3(int attacker)
-{
-	TE_Start("PlayerAnimEvent");
-	TE_WriteNum("m_iPlayerIndex", attacker);
-	TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
-	TE_WriteNum("m_nData", Animation_Index[attacker]);
-	TE_SendToAll();
-					
-}
-
 public void NPC_CheckDead(int entity)
 {
 	if(IsValidEntity(entity))

@@ -3264,7 +3264,9 @@ stock int SpawnFormattedWorldText(const char[] format, float origin[3], int text
 	{
 		DispatchKeyValue(worldtext, "targetname", "rpg_fortress");
 		DispatchKeyValue(worldtext, "message", format);
-		DispatchKeyValueInt(worldtext, "textsize", textSize);
+		char intstring[32];
+		StringToInt(intstring, textSize);
+		DispatchKeyValue(worldtext, "textsize", intstring);
 
 		char sColor[32];
 		Format(sColor, sizeof(sColor), " %d %d %d %d ", colour[0], colour[1], colour[2], colour[3]);
