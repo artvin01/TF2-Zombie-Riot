@@ -47,7 +47,7 @@ static void FormatFileCheck(const char[] file, int client, char[] output, int le
 {
 	strcopy(output, length, file);
 	ReplaceString(output, length, ".", "");
-	Format(output, length, "%s_%d", output, GetSteamAccountID(client));
+	Format(output, length, "%s_%d.txt", output, GetSteamAccountID(client));
 }
 
 static void SendNextFile(int client)
