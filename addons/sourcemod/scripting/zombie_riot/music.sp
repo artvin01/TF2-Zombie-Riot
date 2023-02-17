@@ -274,12 +274,12 @@ void Music_PostThink(int client)
 				{
 					if(char_MusicString1[0])
 					{
-						EmitSoundToClient(client, char_MusicString1[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+						EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 						SetMusicTimer(client, GetTime() + i_MusicLength1);
 					}
 					else if(char_MusicString2[0])
 					{
-						EmitSoundToClient(client, char_MusicString2[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+						EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 						SetMusicTimer(client, GetTime() + i_MusicLength2);				
 					}
 					//Make checks to be sure.
@@ -288,12 +288,12 @@ void Music_PostThink(int client)
 				{
 					if(char_MusicString2[0])
 					{
-						EmitSoundToClient(client, char_MusicString2[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+						EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 						SetMusicTimer(client, GetTime() + i_MusicLength2);
 					}
 					else if(char_MusicString1[0])
 					{
-						EmitSoundToClient(client, char_MusicString1[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+						EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 						SetMusicTimer(client, GetTime() + i_MusicLength1);				
 					}
 					//Make checks to be sure.

@@ -951,8 +951,6 @@ void Waves_Progress()
 				}	
 			}
 			//This should nullfy anyways if nothings in it
-			PrintToChatAll("music 1:%s",round.music_round_1);
-			PrintToChatAll("music 2:%s",round.music_round_2);
 			FormatEx(char_MusicString1, sizeof(char_MusicString1), round.music_round_1);
 			
 			FormatEx(char_MusicString2, sizeof(char_MusicString2), round.music_round_2);

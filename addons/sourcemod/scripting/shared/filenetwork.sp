@@ -68,7 +68,9 @@ static void SendNextFile(int client)
 	}
 	else
 	{
-		PrintToConsole(client, "[ZR/RPG] Finished Downloading/Verifying Files");
+		PrintToConsole(client, "---");
+		PrintToConsole(client, "[ZR/RPG] Finished Downloading/Verifying Files! You will hear and see everything as intended now.");
+		PrintToConsole(client, "---");
 	}
 	
 	SoundLevel[client]++;
