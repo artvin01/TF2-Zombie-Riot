@@ -939,6 +939,12 @@ void Waves_Progress()
 					
 			if(char_MusicString2[0])
 				RoundHasCustomMusic = true;
+
+			if(char_RaidMusicSpecial1[0])
+			{
+				RoundHasCustomMusic = true;
+			}
+
 				
 			if(RoundHasCustomMusic) //only do it when there was actually custom music previously
 			{
@@ -946,6 +952,7 @@ void Waves_Progress()
 				{
 					if(IsClientInGame(client))
 					{
+						SetMusicTimer(client, GetTime() + RoundToNearest(round.Setup) + 1); //This is here beacuse of raid music.
 						Music_Stop_All(client);
 					}
 				}	
@@ -954,7 +961,7 @@ void Waves_Progress()
 			FormatEx(char_MusicString1, sizeof(char_MusicString1), round.music_round_1);
 			
 			FormatEx(char_MusicString2, sizeof(char_MusicString2), round.music_round_2);
-
+			FormatEx(char_RaidMusicSpecial1, sizeof(char_RaidMusicSpecial1), "");
 			i_MusicLength1 = round.music_duration_1;
 			
 			i_MusicLength2 = round.music_duration_2;
@@ -1043,6 +1050,8 @@ void Waves_Progress()
 				FormatEx(char_MusicString1, sizeof(char_MusicString1), "");
 
 				FormatEx(char_MusicString2, sizeof(char_MusicString2), "");
+
+				FormatEx(char_RaidMusicSpecial1, sizeof(char_RaidMusicSpecial1), "");
 
 				i_MusicLength1 = 1;
 				i_MusicLength2 = 1;
