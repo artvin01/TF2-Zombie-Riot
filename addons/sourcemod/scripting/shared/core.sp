@@ -210,7 +210,7 @@ bool DoingLagCompensation;
 
 float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
-int Dont_Crouch[MAXENTITIES]={0, ...};
+//int Dont_Crouch[MAXENTITIES]={0, ...};
 
 bool b_IsAloneOnServer = false;
 

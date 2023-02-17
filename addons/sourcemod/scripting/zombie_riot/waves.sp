@@ -22,6 +22,7 @@ enum struct MiniBoss
 	int Powerup;
 	float Delay;
 	float HealthMulti;
+	bool SoundCustom;
 	char Sound[128];
 	char Icon[128];
 	char Text_1[128];
@@ -51,6 +52,10 @@ enum struct Round
 	int music_duration_1;
 	char music_round_2[255];
 	int music_duration_2;
+	char music_round_outro[255];
+	bool music_custom_outro;
+	char Message[255];
+
 	float Setup;
 	ArrayList Waves;
 }
@@ -317,9 +322,20 @@ void Waves_SetupMiniBosses(KeyValues map)
 			boss.Powerup = kv.GetNum("powerup");
 			boss.Delay = kv.GetFloat("delay", 2.0);
 			boss.HealthMulti = kv.GetFloat("healthmulti");
-			kv.GetString("sound", boss.Sound, sizeof(boss.Sound));
-			if(boss.Sound[0])
-				PrecacheSound(boss.Sound);
+			boss.SoundCustom = view_as<bool>(kv.GetNum("sound_iscustom"));
+			if(boss.SoundCustom)
+			{
+				kv.GetString("sound", boss.Sound, sizeof(boss.Sound));
+				kv.GetString("sound_alt", buffer, sizeof(buffer));
+				if(boss.Sound[0])
+					PrecacheSoundCustom(boss.Sound, buffer);
+			}
+			else
+			{
+				kv.GetString("sound", boss.Sound, sizeof(boss.Sound));
+				if(boss.Sound[0])
+					PrecacheSound(boss.Sound);
+			}
 				
 			kv.GetString("icon", boss.Icon, sizeof(boss.Icon));
 			
@@ -390,10 +406,26 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		round.music_duration_2 = kv.GetNum("music_seconds_2");
 		
 		if(round.music_round_1[0])
-			PrecacheSound(round.music_round_1, true);
+			PrecacheSound(round.music_round_1);
 		
 		if(round.music_round_2[0])
-			PrecacheSound(round.music_round_2, true);
+			PrecacheSound(round.music_round_2);
+		
+		kv.GetString("music_track_outro", round.music_round_outro, sizeof(round.music_round_outro));
+		round.music_custom_outro = view_as<bool>(kv.GetNum("music_download_outro"));
+		if(round.music_round_outro[0])
+		{
+			if(round.music_custom_outro)
+			{
+				PrecacheSoundCustom(round.music_round_outro);
+			}
+			else
+			{
+				PrecacheSound(round.music_round_outro);
+			}
+		}
+
+		kv.GetString("message_outro", round.Message, sizeof(round.Message));
 
 		round.Waves = new ArrayList(sizeof(Wave));
 		if(kv.GotoFirstSubKey())
@@ -735,6 +767,43 @@ void Waves_Progress()
 						SetGlobalTransTarget(client_Penalise);
 						PrintToChat(client_Penalise, "%t", "You have only gained 90 %% due to being a non-player player, but still helping");
 						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.10);
+					}
+				}
+			}
+
+			bool music_stop = false;
+			if(round.music_round_outro[0])
+			{
+				music_stop = true;
+				if(round.music_custom_outro)
+				{
+					EmitCustomToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+				}
+				else
+				{
+					EmitSoundToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+				}
+			}
+
+			if(round.Message[0])
+			{
+				SetHudTextParams(-1.0, -1.0, 8.0, 255, 0, 0, 255);
+				for(int client = 1; client <= MaxClients; client++)
+				{
+					if(IsClientInGame(client) && !b_IsPlayerABot[client])
+					{
+						SetGlobalTransTarget(client);
+						ShowHudText(client, -1, "%t", round.Message);
+					}
+				}
+			}
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+				{
+					if(music_stop)
+					{
+						Music_Stop_All(client);
 					}
 				}
 			}
