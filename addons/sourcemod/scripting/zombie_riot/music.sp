@@ -307,8 +307,8 @@ void Music_PostThink(int client)
 					EmitSoundToClient(client, char_RaidMusicSpecial1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				}
 				SetMusicTimer(client, GetTime() + i_RaidMusicLength1);
+				return;
 			}
-			return;
 			switch(GetRandomInt(1,2))
 			{
 				case 1:
