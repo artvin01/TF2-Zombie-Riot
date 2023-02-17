@@ -80,8 +80,8 @@ Sub Servers that also host the gamemode:
 
 ### Dependencies
 
-Sourcemod 1.11
-1.11 Compiler
+Sourcemod 1.12
+1.11 Compiler (didnt test 1.12 compiler.)
 
 WINDOWS SERVER IS A MUST DUE TO PATHFOLLOWER!!
 
