@@ -308,6 +308,7 @@ void Music_PostThink(int client)
 				}
 				SetMusicTimer(client, GetTime() + i_RaidMusicLength1);
 			}
+			return;
 			switch(GetRandomInt(1,2))
 			{
 				case 1:
