@@ -790,8 +790,9 @@ void Waves_Progress()
 				SetHudTextParams(-1.0, -1.0, 8.0, 255, 0, 0, 255);
 				for(int client = 1; client <= MaxClients; client++)
 				{
-					if(IsClientInGame(client))
+					if(IsClientInGame(client) && !b_IsPlayerABot[client])
 					{
+						SetGlobalTransTarget(client);
 						ShowHudText(client, -1, "%t", round.Message);
 					}
 				}
