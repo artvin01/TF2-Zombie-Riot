@@ -87,7 +87,8 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 				LogError("Failed to delete file \"%s\"", file);
 		}
 	}
-	else if(SoundLevel[client])
+	
+	if(SoundLevel[client])
 	{
 		static char sound[PLATFORM_MAX_PATH];
 		pack.Reset();
