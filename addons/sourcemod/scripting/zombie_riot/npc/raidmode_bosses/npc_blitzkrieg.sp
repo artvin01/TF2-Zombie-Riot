@@ -56,7 +56,7 @@ static char g_AngerSounds[][] = {
 	"vo/medic_weapon_taunts03.mp3",
 };
 static const char g_IdleMusic[][] = {
-	"#ui/gamestartup12.mp3",
+	"#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3",
 };
 static char g_PullSounds[][] = {
 	"weapons/knife_swing.wav",
@@ -143,7 +143,7 @@ public void Blitzkrieg_OnMapStart()
 	for (int i = 0; i < (sizeof(g_TeleportSounds));   i++) { PrecacheSound(g_TeleportSounds[i]);  			}		
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   				}
-	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSound(g_IdleMusic[i]);   }
+	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSoundCustom(g_IdleMusic[i]);   }
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
 	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
@@ -213,11 +213,11 @@ methodmap Blitzkrieg < CClotBody
 		if(this.m_flPlayMusicSound > GetEngineTime())
 			return;
 			
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		this.m_flPlayMusicSound = GetEngineTime() + 233.0;
+		EmitCustomToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		this.m_flPlayMusicSound = GetEngineTime() + 228.0;
 		
 	}
 	public void PlayHurtSound() {
@@ -1637,14 +1637,14 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 
 void Music_Stop_All_Blitzkrieg(int entity)
 {
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
 }
 void Music_Stop_All_Beat(int entity)
 {
