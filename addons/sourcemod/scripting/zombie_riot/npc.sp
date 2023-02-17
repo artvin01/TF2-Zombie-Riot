@@ -219,7 +219,10 @@ enum
 	MEDIVAL_EAGLE_GIANT			= 186,
 	MEDIVAL_SON_OF_OSIRIS		= 187,
 	MEDIVAL_ACHILLES			= 188,
-	MEDIVAL_TREBUCHET			= 189
+	MEDIVAL_TREBUCHET			= 189,
+	
+	ALT_IKUNAGAE				= 190,
+	ALT_MECHASOLDIER_BARRAGER	= 191
 }
 
 public const char NPC_Names[][] =
@@ -430,7 +433,10 @@ public const char NPC_Names[][] =
 	"Giant Eagle Warrior",
 	"Son Of Osiris",
 	"Achilles",
-	"Trebuchet"
+	"Trebuchet",
+	
+	"Ikunagae",
+	"Mecha Soldier Barrager"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -637,7 +643,9 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_medival_eagle_giant",
 	"npc_medival_son_of_osiris",
 	"npc_medival_achilles",
-	"npc_medival_trebuchet"
+	"npc_medival_trebuchet",
+	"npc_alt_ikunagae",
+	"npc_alt_mecha_soldier_barrager"
 };
 
 void NPC_MapStart()
@@ -829,6 +837,9 @@ void NPC_MapStart()
 	MedivalRiddenArcher_OnMapStart_NPC();
 	MedivalSonOfOsiris_OnMapStart_NPC();
 	MedivalAchilles_OnMapStart_NPC();
+	
+	Ikunagae_OnMapStart_NPC();
+	MechaSoldier_Barrager_OnMapStart_NPC();
 }
 
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
@@ -1584,6 +1595,14 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case MEDIVAL_TREBUCHET:
 		{
 			entity = MedivalTrebuchet(client, vecPos, vecAng, ally);
+		}
+		case ALT_IKUNAGAE:
+		{
+			entity = Ikunagae(client, vecPos, vecAng, ally);
+		}
+		case ALT_MECHASOLDIER_BARRAGER:
+		{
+			entity = MechaSoldier_Barrager(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -2342,6 +2361,14 @@ public void NPCDeath(int entity)
 		{
 			MedivalTrebuchet_NPCDeath(entity);
 		}
+		case ALT_IKUNAGAE:
+		{
+			Ikunagae_NPCDeath(entity);
+		}
+		case ALT_MECHASOLDIER_BARRAGER:
+		{
+			MechaSoldier_Barrager_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2550,6 +2577,8 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/alt/npc_alt_donnerkrieg.sp"
 #include "zombie_riot/npc/alt/npc_alt_schwertkrieg.sp"
 #include "zombie_riot/npc/alt/npc_alt_medic_constructor.sp"
+#include "zombie_riot/npc/alt/npc_alt_ikunagae.sp"
+#include "zombie_riot/npc/alt/npc_alt_mecha_soldier_barrager.sp"
 
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
 #include "zombie_riot/npc/medival/npc_medival_archer.sp"
