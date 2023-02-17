@@ -162,11 +162,13 @@ enum struct StageEnum
 	char MusicEasy[PLATFORM_MAX_PATH];
 	int MusicEasyTime;
 	float MusicEasyVolume;
+	bool MusicEasyCustom;
 
 	int MusicTier;
 	char MusicHard[PLATFORM_MAX_PATH];
 	int MusicHardTime;
 	float MusicHardVolume;
+	bool MusicHardCustom;
 
 	ArrayList ModList;
 	ArrayList WaveList;
@@ -222,45 +224,37 @@ enum struct StageEnum
 		this.DropTier9 = kv.GetNum("drop_tier_9");
 
 		kv.GetString("music_easy_file", this.MusicEasy, PLATFORM_MAX_PATH);
-		if(this.MusicEasy[0])
-			PrecacheSound(this.MusicEasy);
-		
 		this.MusicEasyTime = kv.GetNum("music_easy_duration");
 		this.MusicEasyVolume = kv.GetFloat("music_easy_volume", 1.0);
-		
-		if(kv.GetNum("music_easy_download"))
+		this.MusicEasyCustom = view_as<bool>(kv.GetNum("music_easy_download"));
+
+		if(this.MusicEasy[0])
 		{
-			Format(buffer, length, "sound/%s", this.MusicEasy);
-			ReplaceString(buffer, length, "#", "");
-			if(FileExists(buffer, true))
+			if(this.MusicEasyCustom)
 			{
-				AddFileToDownloadsTable(buffer);
+				PrecacheSoundCustom(this.MusicEasy);
 			}
 			else
 			{
-				LogError("'%s' is missing from files", buffer);
+				PrecacheSound(this.MusicEasy);
 			}
 		}
-
-		kv.GetString("music_hard_file", this.MusicHard, PLATFORM_MAX_PATH);
-		if(this.MusicHard[0])
-			PrecacheSound(this.MusicHard);
 		
+		kv.GetString("music_hard_file", this.MusicHard, PLATFORM_MAX_PATH);
 		this.MusicHardTime = kv.GetNum("music_hard_duration");
 		this.MusicHardVolume = kv.GetFloat("music_hard_volume", 1.0);
+		this.MusicHardCustom = view_as<bool>(kv.GetNum("music_hard_download"));
 		this.MusicTier = kv.GetNum("music_hard_cap", 99999);
-		
-		if(kv.GetNum("download"))
+
+		if(this.MusicHard[0])
 		{
-			Format(buffer, length, "sound/%s", this.MusicHard);
-			ReplaceString(buffer, length, "#", "");
-			if(FileExists(buffer, true))
+			if(this.MusicHardCustom)
 			{
-				AddFileToDownloadsTable(buffer);
+				PrecacheSoundCustom(this.MusicHard);
 			}
 			else
 			{
-				LogError("'%s' is missing from files", buffer);
+				PrecacheSound(this.MusicHard);
 			}
 		}
 
@@ -1280,11 +1274,11 @@ static void StartDungeon(const char[] name)
 				if(stage.MusicTier > tier)
 				{
 					if(stage.MusicEasy[0])
-						Music_SetOverride(clients[c], stage.MusicEasy, stage.MusicEasyTime, stage.MusicEasyVolume);	
+						Music_SetOverride(clients[c], stage.MusicEasy, stage.MusicEasyTime, stage.MusicEasyCustom, stage.MusicEasyVolume);	
 				}
 				else if(stage.MusicHard[0])
 				{
-					Music_SetOverride(clients[c], stage.MusicHard, stage.MusicHardTime, stage.MusicHardVolume);	
+					Music_SetOverride(clients[c], stage.MusicHard, stage.MusicHardTime, stage.MusicHardCustom, stage.MusicHardVolume);	
 				}
 			}
 			
@@ -1344,7 +1338,7 @@ static void CleanDungeon(const char[] name, bool victory)
 						if(victory)
 						{
 							LastResult[client] = 1;
-							Music_SetOverride(client, "misc/your_team_won.mp3", 999, 1.0);
+							Music_SetOverride(client, "misc/your_team_won.mp3", 999, false, 1.0);
 
 							if(IsPlayerAlive(client))
 								TF2_AddCondition(client, TFCond_HalloweenCritCandy, 8.1);
@@ -1355,7 +1349,7 @@ static void CleanDungeon(const char[] name, bool victory)
 						else
 						{
 							LastResult[client] = -1;
-							Music_SetOverride(client, "misc/your_team_lost.mp3", 999, 1.0);
+							Music_SetOverride(client, "misc/your_team_lost.mp3", 999, false, 1.0);
 						}
 					}
 				}
