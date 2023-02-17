@@ -797,6 +797,16 @@ void Waves_Progress()
 					}
 				}
 			}
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+				{
+					if(music_stop)
+					{
+						Music_Stop_All(client);
+					}
+				}
+			}
 			
 			Rounds.GetArray(CurrentRound, round);
 			if(round.MapSetupRelay)
@@ -922,13 +932,15 @@ void Waves_Progress()
 			
 			//MUSIC LOGIC
 			
+			bool RoundHasCustomMusic = false;
+		
 			if(char_MusicString1[0])
-				music_stop = true;
+				RoundHasCustomMusic = true;
 					
 			if(char_MusicString2[0])
-				music_stop = true;
+				RoundHasCustomMusic = true;
 				
-			if(music_stop) //only do it when there was actually custom music previously
+			if(RoundHasCustomMusic) //only do it when there was actually custom music previously
 			{
 				for(int client=1; client<=MaxClients; client++)
 				{
