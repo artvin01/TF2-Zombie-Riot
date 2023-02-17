@@ -87,16 +87,23 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 				LogError("Failed to delete file \"%s\"", file);
 		}
 	}
-	
+
 	if(SoundLevel[client])
 	{
-		static char sound[PLATFORM_MAX_PATH];
-		pack.Reset();
-		pack.ReadString(sound, sizeof(sound));
-		if(!FileNet_SendFile(client, sound, FileNetwork_SendResults))
-			LogError("Failed to queue file \"%s\" to client", sound);
-		
-		PrintToChat(client, "Sending: \"%s\"", sound);
+		if(success)
+		{
+			SendNextFile(client);
+		}
+		else
+		{
+			static char sound[PLATFORM_MAX_PATH];
+			pack.Reset();
+			pack.ReadString(sound, sizeof(sound));
+			if(!FileNet_SendFile(client, sound, FileNetwork_SendResults))
+				LogError("Failed to queue file \"%s\" to client", sound);
+			
+			PrintToChat(client, "Sending: \"%s\"", sound);
+		}
 	}
 
 	delete pack;
