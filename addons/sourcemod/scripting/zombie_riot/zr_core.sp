@@ -126,6 +126,9 @@ char char_MusicString1[256];
 int i_MusicLength1;
 char char_MusicString2[256];
 int i_MusicLength2;
+char char_RaidMusicSpecial1[256];
+int i_RaidMusicLength1;
+bool b_RaidMusicCustom1;
 //custom wave music.
 float f_DelaySpawnsForVariousReasons;
 int CurrentRound;
@@ -520,9 +523,12 @@ void ZR_MapStart()
 	FormatEx(char_MusicString1, sizeof(char_MusicString1), "");
 			
 	FormatEx(char_MusicString2, sizeof(char_MusicString2), "");
+	FormatEx(char_RaidMusicSpecial1, sizeof(char_RaidMusicSpecial1), "");
 			
 	i_MusicLength1 = 0;
 	i_MusicLength2 = 0;
+	i_RaidMusicLength1 = 0;
+	b_RaidMusicCustom1 = false;
 	
 	//Store_RandomizeNPCStore(true);
 }

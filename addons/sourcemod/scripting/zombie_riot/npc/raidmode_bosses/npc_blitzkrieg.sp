@@ -56,7 +56,7 @@ static char g_AngerSounds[][] = {
 	"vo/medic_weapon_taunts03.mp3",
 };
 static const char g_IdleMusic[][] = {
-	"#ui/gamestartup12.mp3",
+	"#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3",
 };
 static char g_PullSounds[][] = {
 	"weapons/knife_swing.wav",
@@ -143,7 +143,7 @@ public void Blitzkrieg_OnMapStart()
 	for (int i = 0; i < (sizeof(g_TeleportSounds));   i++) { PrecacheSound(g_TeleportSounds[i]);  			}		
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   				}
-	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSound(g_IdleMusic[i]);   }
+	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSoundCustom(g_IdleMusic[i]);   }
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
 	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
@@ -174,7 +174,7 @@ public void Blitzkrieg_OnMapStart()
 	
 }
 
-static float fl_PlayMusicSound[MAXENTITIES];
+//static float fl_PlayMusicSound[MAXENTITIES];
 
 methodmap Blitzkrieg < CClotBody
 {
@@ -183,11 +183,11 @@ methodmap Blitzkrieg < CClotBody
 		public get()							{ return i_AmountProjectiles[this.index]; }
 		public set(int TempValueForProperty) 	{ i_AmountProjectiles[this.index] = TempValueForProperty; }
 	}
-	property float m_flPlayMusicSound
-	{
-		public get()							{ return fl_PlayMusicSound[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_PlayMusicSound[this.index] = TempValueForProperty; }
-	}
+//	property float m_flPlayMusicSound
+//	{
+//		public get()							{ return fl_PlayMusicSound[this.index]; }
+//		public set(float TempValueForProperty) 	{ fl_PlayMusicSound[this.index] = TempValueForProperty; }
+//	}
 		public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
@@ -209,17 +209,20 @@ methodmap Blitzkrieg < CClotBody
 		PrintToServer("CClot::PlayIdleAlertSound()");
 		#endif
 	}
+	/*
 	public void PlayMusicSound() {
 		if(this.m_flPlayMusicSound > GetEngineTime())
 			return;
 			
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		this.m_flPlayMusicSound = GetEngineTime() + 233.0;
+		EmitCustomToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		this.m_flPlayMusicSound = GetEngineTime() + 228.0;
+		
 		
 	}
+	*/
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
@@ -318,11 +321,13 @@ methodmap Blitzkrieg < CClotBody
 			1 = Primary Run.
 			2 = Melee Run.
 		*/
-		npc.m_flPlayMusicSound = 0.0;
+//		npc.m_flPlayMusicSound = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
+
+		Music_SetRaidMusic(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], 228, true);
 		
 		npc.m_bThisNpcIsABoss = true;
 		
@@ -477,9 +482,8 @@ methodmap Blitzkrieg < CClotBody
 		
 		b_final_push[npc.index] = false;			//used for blitzlight logic.
 		b_Are_we_reloading[npc.index] = false;		//Tell's the npc that it is indeed reloading and that its a good idea to switch to melee. blocks certain abilities, also is used to block the RJ during blitzlight.
-		npc.PlayMusicSound();
+//		npc.PlayMusicSound();
 		npc.StartPathing();
-		Music_Stop_All_Beat(client);
 		
 		npc.m_flCharge_Duration = 0.0;					//during blitzlight, blitz's teleport gets replaced with a dash.
 		npc.m_flCharge_delay = GetGameTime(npc.index) + 2.0;
@@ -514,7 +518,6 @@ public void Blitzkrieg_ClotThink(int iNPC)
 		int entity = CreateEntityByName("game_round_win"); //You loose.
 		DispatchKeyValue(entity, "force_map_reset", "1");
 		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		Music_Stop_All_Blitzkrieg(entity);
 		DispatchSpawn(entity);
 		AcceptEntityInput(entity, "RoundWin");
 		Music_RoundEnd(entity);
@@ -549,6 +552,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
+		/*
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client))
@@ -561,6 +565,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
 			}
 		}
+		*/
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
@@ -941,8 +946,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-	
-	npc.PlayMusicSound();
+//	npc.PlayMusicSound();
 	npc.PlayIdleAlertSound();
 }
 
@@ -1282,7 +1286,6 @@ public void Blitzkrieg_NPCDeath(int entity)
 {
 	Blitzkrieg npc = view_as<Blitzkrieg>(entity);
 	npc.PlayDeathSound();
-	Music_Stop_All_Blitzkrieg(entity);
 	SDKUnhook(npc.index, SDKHook_Think, Blitzkrieg_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Blitzkrieg_ClotDamaged);
 //	Music_RoundEnd(entity);
@@ -1634,17 +1637,17 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 			EmitSoundToAll("ambient/explosions/explode_9.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
 		}
 }
-
+/*
 void Music_Stop_All_Blitzkrieg(int entity)
 {
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
 }
 void Music_Stop_All_Beat(int entity)
 {
@@ -1656,6 +1659,7 @@ void Music_Stop_All_Beat(int entity)
 	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
 	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
 }
+*/
 
 
 

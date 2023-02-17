@@ -12,6 +12,22 @@ Big thanks to backwards#8236 For pointing me towards GetTime and helping me with
 DO NOT USE GetEngineTime, its not good in this case
 */
 
+void Music_SetRaidMusic(const char[] MusicPath, int duration, bool isCustom)
+{
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			Music_Stop_All(client); //This is actually more expensive then i thought.
+			SetMusicTimer(client, GetTime() + 5);
+		}
+	}
+	strcopy(char_RaidMusicSpecial1, sizeof(char_RaidMusicSpecial1), MusicPath);
+	i_RaidMusicLength1 = duration;
+	b_RaidMusicCustom1 = isCustom;
+
+}
+
 void Music_MapStart()
 {
 	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/1.mp3");
@@ -179,6 +195,14 @@ void Music_Stop_All(int client)
 		StopSound(client, SNDCHAN_STATIC, char_MusicString2);
 		StopSound(client, SNDCHAN_STATIC, char_MusicString2);
 	}
+
+	if(char_RaidMusicSpecial1[0])
+	{
+		StopSound(client, SNDCHAN_STATIC, char_RaidMusicSpecial1);
+		StopSound(client, SNDCHAN_STATIC, char_RaidMusicSpecial1);
+		StopSound(client, SNDCHAN_STATIC, char_RaidMusicSpecial1);
+		StopSound(client, SNDCHAN_STATIC, char_RaidMusicSpecial1);
+	}
 	
 }
 
@@ -250,7 +274,7 @@ void Music_PostThink(int client)
 	
 	if(f_ClientMusicVolume[client] < 0.05)
 		return;
-	
+
 	if(Music_Timer[client] < GetTime() && Music_Timer_2[client] < GetTime())
 	{
 		bool RoundHasCustomMusic = false;
@@ -260,6 +284,9 @@ void Music_PostThink(int client)
 			
 		if(char_MusicString2[0])
 			RoundHasCustomMusic = true;
+
+		if(char_RaidMusicSpecial1[0])
+			RoundHasCustomMusic = true;
 		
 		if(LastMann)
 		{
@@ -268,18 +295,34 @@ void Music_PostThink(int client)
 		
 		if(RoundHasCustomMusic)
 		{
+			if(char_RaidMusicSpecial1[0])
+			{
+				if(b_RaidMusicCustom1)
+				{
+					EmitCustomToClient(client, char_RaidMusicSpecial1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+				}
+				else
+				{
+					EmitSoundToClient(client, char_RaidMusicSpecial1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					EmitSoundToClient(client, char_RaidMusicSpecial1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+				}
+				SetMusicTimer(client, GetTime() + i_RaidMusicLength1);
+				return;
+			}
 			switch(GetRandomInt(1,2))
 			{
 				case 1:
 				{
 					if(char_MusicString1[0])
 					{
-						EmitSoundToClient(client, char_MusicString1[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+						EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+						EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						SetMusicTimer(client, GetTime() + i_MusicLength1);
 					}
 					else if(char_MusicString2[0])
 					{
-						EmitSoundToClient(client, char_MusicString2[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+						EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+						EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						SetMusicTimer(client, GetTime() + i_MusicLength2);				
 					}
 					//Make checks to be sure.
@@ -288,12 +331,14 @@ void Music_PostThink(int client)
 				{
 					if(char_MusicString2[0])
 					{
-						EmitSoundToClient(client, char_MusicString2[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+						EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+						EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						SetMusicTimer(client, GetTime() + i_MusicLength2);
 					}
 					else if(char_MusicString1[0])
 					{
-						EmitSoundToClient(client, char_MusicString1[0], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+						EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+						EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						SetMusicTimer(client, GetTime() + i_MusicLength1);				
 					}
 					//Make checks to be sure.

@@ -777,11 +777,12 @@ void Waves_Progress()
 				music_stop = true;
 				if(round.music_custom_outro)
 				{
-					EmitCustomToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					EmitCustomToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.45);
 				}
 				else
 				{
-					EmitSoundToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					EmitSoundToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.73);
+					EmitSoundToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.73);
 				}
 			}
 
@@ -794,6 +795,16 @@ void Waves_Progress()
 					{
 						SetGlobalTransTarget(client);
 						ShowHudText(client, -1, "%t", round.Message);
+					}
+				}
+			}
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+				{
+					if(music_stop)
+					{
+						Music_Stop_All(client);
 					}
 				}
 			}
@@ -922,18 +933,27 @@ void Waves_Progress()
 			
 			//MUSIC LOGIC
 			
+			bool RoundHasCustomMusic = false;
+		
 			if(char_MusicString1[0])
-				music_stop = true;
+				RoundHasCustomMusic = true;
 					
 			if(char_MusicString2[0])
-				music_stop = true;
+				RoundHasCustomMusic = true;
+
+			if(char_RaidMusicSpecial1[0])
+			{
+				RoundHasCustomMusic = true;
+			}
+
 				
-			if(music_stop) //only do it when there was actually custom music previously
+			if(RoundHasCustomMusic) //only do it when there was actually custom music previously
 			{
 				for(int client=1; client<=MaxClients; client++)
 				{
 					if(IsClientInGame(client))
 					{
+						SetMusicTimer(client, GetTime() + RoundToNearest(round.Setup) + 1); //This is here beacuse of raid music.
 						Music_Stop_All(client);
 					}
 				}	
@@ -942,7 +962,7 @@ void Waves_Progress()
 			FormatEx(char_MusicString1, sizeof(char_MusicString1), round.music_round_1);
 			
 			FormatEx(char_MusicString2, sizeof(char_MusicString2), round.music_round_2);
-
+			FormatEx(char_RaidMusicSpecial1, sizeof(char_RaidMusicSpecial1), "");
 			i_MusicLength1 = round.music_duration_1;
 			
 			i_MusicLength2 = round.music_duration_2;
@@ -1031,6 +1051,8 @@ void Waves_Progress()
 				FormatEx(char_MusicString1, sizeof(char_MusicString1), "");
 
 				FormatEx(char_MusicString2, sizeof(char_MusicString2), "");
+
+				FormatEx(char_RaidMusicSpecial1, sizeof(char_RaidMusicSpecial1), "");
 
 				i_MusicLength1 = 1;
 				i_MusicLength2 = 1;
