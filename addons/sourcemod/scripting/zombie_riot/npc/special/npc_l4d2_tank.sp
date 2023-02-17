@@ -30,9 +30,8 @@ static char g_MeleeMissSounds[][] = {
 	"npc/fast_zombie/claw_miss2.wav",
 };
 
-static const char g_IdleMusic[][] = {
-	"#infected_riot/tank/onebadtank.mp3",
-};
+static const char g_IdleMusic[] = "#infected_riot/tank/onebadtank.mp3";
+
 public void L4D2_Tank_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_SpawnSounds));	   i++) { PrecacheSound(g_SpawnSounds[i]);	   }
@@ -40,9 +39,16 @@ public void L4D2_Tank_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSound(g_IdleMusic[i]);   }
 	for (int i = 0; i < (sizeof(g_DeathSounds));   i++) { PrecacheSound(g_DeathSounds[i]);   }
 
+	PrecacheSoundCustom("#infected_riot/tank/onebadtank.mp3");
+	PrecacheSoundCustom("infected_riot/tank/tank_dead.mp3");
+	PrecacheSoundCustom("infected_riot/tank/tank_pain_01.mp3");
+	PrecacheSoundCustom("infected_riot/tank/tank_pain_02.mp3");
+	PrecacheSoundCustom("infected_riot/tank/tank_pain_03.mp3");
+	PrecacheSoundCustom("infected_riot/tank/tank_attack_01.mp3");
+	PrecacheSoundCustom("infected_riot/tank/tank_attack_04.mp3");
+	PrecacheSoundCustom("infected_riot/tank/tank_spawn.mp3");
 //	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 
 	PrecacheSound("player/flow.wav");
@@ -80,7 +86,7 @@ methodmap L4D2_Tank < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.25;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayHurtSound()");
@@ -89,8 +95,8 @@ methodmap L4D2_Tank < CClotBody
 
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
@@ -99,7 +105,7 @@ methodmap L4D2_Tank < CClotBody
 
 	public void PlaySpawnSound() {
 	
-		EmitSoundToAll(g_SpawnSounds[GetRandomInt(0, sizeof(g_SpawnSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_SpawnSounds[GetRandomInt(0, sizeof(g_SpawnSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
@@ -107,7 +113,7 @@ methodmap L4D2_Tank < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, 80, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, 80, BOSS_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -141,7 +147,8 @@ methodmap L4D2_Tank < CClotBody
 		if(this.m_iPlayMusicSound > GetTime())
 			return;
 		
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_VOICE, SNDLEVEL_NONE, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll(g_IdleMusic, this.index, SNDCHAN_VOICE, SNDLEVEL_NONE, _, BOSS_ZOMBIE_VOLUME, 100);
+
 		this.m_iPlayMusicSound = GetTime() + 52;
 		
 	}

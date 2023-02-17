@@ -62,13 +62,16 @@ static void SendNextFile(int client)
 		static char filecheck[PLATFORM_MAX_PATH];
 		FormatFileCheck(sound, client, filecheck, sizeof(filecheck));
 		
-		SoundLevel[client]++;
-		
 		DataPack pack = new DataPack();
 		pack.WriteString(sound);
 		FileNet_RequestFile(client, filecheck, FileNetwork_RequestResults, pack);
-		PrintToChat(client, "Requesting: \"%s\"", filecheck);
 	}
+	else
+	{
+		PrintToConsole(client, "[ZR/RPG] Finished Downloading/Verifying Files");
+	}
+	
+	SoundLevel[client]++;
 }
 
 public void FileNetwork_RequestResults(int client, const char[] file, int id, bool success, DataPack pack)
@@ -98,7 +101,7 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 			pack.ReadString(sound, sizeof(sound));
 
 			// So the client doesn't freak out about existing CreateFragmentsFromFile spam
-			PrintToConsole(client, "CreateFragmentsFromFile: Downloading '%s'", sound);
+			PrintToConsole(client, "[ZR/RPG] Downloading '%s'", sound);
 
 			if(!FileNet_SendFile(client, sound, FileNetwork_SendResults))
 				LogError("Failed to queue file \"%s\" to client", sound);
@@ -148,7 +151,7 @@ public void FileNetwork_SendFileCheck(int client, const char[] file, bool succes
 		LogError("Failed to delete file \"%s\"", file);
 }
 
-stock void EmitCustomToClient(int client, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
+stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
 {
 	int soundlevel = SoundList.FindString(sound) + 1;
 	if(soundlevel == 0)
@@ -165,23 +168,23 @@ stock void EmitCustomToClient(int client, const char[] sound, int entity = SOUND
 		{
 			EmitSoundToClient(client, sound, entity, channel, level, flags, volume2, pitch, speakerentity, origin, dir, updatePos, soundtime);
 		}
+		return true;
 	}
-	else
+	
+	static char buffer[PLATFORM_MAX_PATH];
+	if(!SoundAlts.GetString(sound, buffer, sizeof(buffer)))
+		return false;
+	
+	float volume2 = volume;
+	int count = RoundToCeil(volume);
+	if(count > 1)
+		volume2 /= float(count);
+		
+	for(int i; i < count; i++)
 	{
-		static char buffer[PLATFORM_MAX_PATH];
-		if(SoundAlts.GetString(sound, buffer, sizeof(buffer)))
-		{
-			float volume2 = volume;
-			int count = RoundToCeil(volume);
-			if(count > 1)
-				volume2 /= float(count);
-				
-			for(int i; i < count; i++)
-			{
-				EmitSoundToClient(client, buffer, entity, channel, level, flags, volume2, pitch, speakerentity, origin, dir, updatePos, soundtime);
-			}
-		}
+		EmitSoundToClient(client, buffer, entity, channel, level, flags, volume2, pitch, speakerentity, origin, dir, updatePos, soundtime);
 	}
+	return true;
 }
 
 stock void EmitCustomToAll(const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
