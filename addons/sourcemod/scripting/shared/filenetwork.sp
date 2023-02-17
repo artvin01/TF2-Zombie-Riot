@@ -74,9 +74,6 @@ static void SendNextFile(int client)
 public void FileNetwork_RequestResults(int client, const char[] file, int id, bool success, DataPack pack)
 {
 	// If not found, send the actual file
-
-	PrintToChat(client, "Done");
-
 	if(success)
 	{
 		if(!DeleteFile(file, true))
@@ -99,10 +96,12 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 			static char sound[PLATFORM_MAX_PATH];
 			pack.Reset();
 			pack.ReadString(sound, sizeof(sound));
+
+			// So the client doesn't freak out about existing CreateFragmentsFromFile spam
+			PrintToConsole(client, "CreateFragmentsFromFile: Downloading '%s'", sound);
+
 			if(!FileNet_SendFile(client, sound, FileNetwork_SendResults))
 				LogError("Failed to queue file \"%s\" to client", sound);
-			
-			PrintToChat(client, "Sending: \"%s\"", sound);
 		}
 	}
 
@@ -111,8 +110,6 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 
 public void FileNetwork_SendResults(int client, const char[] file, bool success)
 {
-	PrintToChat(client, "Done");
-
 	// When done, send a dummy file and the next file in queue
 	if(SoundLevel[client])
 	{
@@ -132,8 +129,6 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success)
 					LogError("Failed to delete file \"%s\"", filecheck);
 			}
 
-			PrintToChat(client, "Sending: \"%s\"", filecheck);
-			
 			SendNextFile(client);
 		}
 		else
@@ -145,8 +140,6 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success)
 
 public void FileNetwork_SendFileCheck(int client, const char[] file, bool success)
 {
-	PrintToChat(client, "Done");
-	
 	// Delete the dummy file left over
 	if(SoundLevel[client] && !success)
 		LogError("Failed to send file \"%s\" to client", file);
@@ -167,7 +160,7 @@ stock void EmitCustomToClient(int client, const char[] sound, int entity = SOUND
 		int count = RoundToCeil(volume);
 		if(count > 1)
 			volume2 /= float(count);
-			
+		
 		for(int i; i < count; i++)
 		{
 			EmitSoundToClient(client, sound, entity, channel, level, flags, volume2, pitch, speakerentity, origin, dir, updatePos, soundtime);
