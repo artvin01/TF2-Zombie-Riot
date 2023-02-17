@@ -55,7 +55,8 @@ enum struct Round
 	char music_round_outro[255];
 	bool music_custom_outro;
 	char Message[255];
-
+	bool SpawnGrigori;
+	int GrigoriMaxSellsItems;
 	float Setup;
 	ArrayList Waves;
 }
@@ -413,6 +414,8 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		
 		kv.GetString("music_track_outro", round.music_round_outro, sizeof(round.music_round_outro));
 		round.music_custom_outro = view_as<bool>(kv.GetNum("music_download_outro"));
+		round.SpawnGrigori = view_as<bool>(kv.GetNum("spawn_grigori"));
+		round.GrigoriMaxSellsItems = kv.GetNum("grigori_sells_items_max");
 		if(round.music_round_outro[0])
 		{
 			if(round.music_custom_outro)
@@ -849,11 +852,11 @@ void Waves_Progress()
 			
 			//Loop through all the still alive enemies that are indexed!
 			
-			if(CurrentRound == 4)
+			if(round.GrigoriMaxSellsItems > 0)
 			{
-				Citizen_SpawnAtPoint("b");
+				GrigoriMaxSells = round.GrigoriMaxSellsItems;
 			}
-			else if(CurrentRound == 15) //He should spawn at wave 16.
+			if(round.SpawnGrigori)
 			{
 				for(int client_Grigori=1; client_Grigori<=MaxClients; client_Grigori++)
 				{
@@ -865,9 +868,12 @@ void Waves_Progress()
 						ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "Father Grigori Spawn");		
 					}
 				}
-				
 				Spawn_Cured_Grigori();
 				Store_RandomizeNPCStore(false);
+			}
+			if(CurrentRound == 4)
+			{
+				Citizen_SpawnAtPoint("b");
 			}
 			else if(CurrentRound == 11)
 			{

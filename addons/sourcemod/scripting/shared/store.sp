@@ -1660,7 +1660,7 @@ public void Store_RandomizeNPCStore(bool ResetStore)
 		{
 			bool OneSuperSale = true;
 			SortIntegers(indexes, amount, Sort_Random);
-			for(int i; i<3 && i<amount; i++) //amount of items to sell
+			for(int i; i<GrigoriMaxSells && i<amount; i++) //amount of items to sell
 			{
 				StoreItems.GetArray(indexes[i], item);
 				if(OneSuperSale)

@@ -75,6 +75,7 @@ ArrayList SpawnerList;
 
 //int Bob_To_Player[MAXENTITIES];
 bool Bob_Exists = false;
+int GrigoriMaxSells = 3;
 int Bob_Exists_Index = -1;
 int CurrentPlayers;
 ConVar zr_voteconfig;

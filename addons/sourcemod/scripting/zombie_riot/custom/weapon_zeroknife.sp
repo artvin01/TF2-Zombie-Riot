@@ -283,7 +283,6 @@ public void ZeroRage(int client, int weapon, bool crit, int slot)
 							Original_Attackspeed = TF2Attrib_GetValue(address);
 
 						TF2Attrib_SetByDefIndex(weapon, 6, Original_Attackspeed * MultiWrathRageSpeed);
-						
 						CreateTimer(MultiRageCooldown, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
 			
 						TF2_StunPlayer(client, MultiWrathStunTimer, _, TF_STUNFLAG_BONKSTUCK, 0);
@@ -308,6 +307,7 @@ public void ZeroRage(int client, int weapon, bool crit, int slot)
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "Wrath Rage has striked.");
+						f_BackstabDmgMulti[weapon] = 0.0;
 						CreateTimer(MultiWrathResetSpeedTimer, Reset_Attackspeed, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 					}
 				}
@@ -398,6 +398,7 @@ public void ZeroWrathRage(int client, int weapon, bool crit, int slot)
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Wrath Rage has striked.");
+			f_BackstabDmgMulti[weapon] = 0.0;
 			CreateTimer(FinalWrathResetSpeedTimer, Reset_Attackspeed_Final, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(FinalWrathRageCooldown, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
 		}
@@ -433,6 +434,7 @@ public Action Reset_Attackspeed(Handle cut_timer, int ref)
 	{
 		float Original_Atackspeed;
 
+		f_BackstabDmgMulti[weapon] = 1.0;
 		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 		if(address != Address_Null)
 			Original_Atackspeed = TF2Attrib_GetValue(address);
@@ -449,6 +451,7 @@ public Action Reset_Attackspeed_Final(Handle cut_timer, int ref)
 	{
 		float Original_Atackspeed;
 
+		f_BackstabDmgMulti[weapon] = 0.65;
 		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 		if(address != Address_Null)
 			Original_Atackspeed = TF2Attrib_GetValue(address);
