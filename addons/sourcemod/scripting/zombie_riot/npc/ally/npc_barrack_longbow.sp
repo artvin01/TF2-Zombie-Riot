@@ -13,7 +13,7 @@ methodmap BarrackLongbow < BarrackBody
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackLongbow_ClotThink);
 
-		npc.m_flSpeed = 225.0;
+		npc.m_flSpeed = 275.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bow/c_bow.mdl");
 		SetVariantString("0.6");

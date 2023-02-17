@@ -14,7 +14,7 @@ methodmap BarrackArcher < BarrackBody
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackArcher_ClotThink);
 
-		npc.m_flSpeed = 150.0;
+		npc.m_flSpeed = 200.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bow/c_bow.mdl");
 		SetVariantString("0.4");

@@ -13,7 +13,7 @@ methodmap BarrackArbelast < BarrackBody
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackArbelast_ClotThink);
 
-		npc.m_flSpeed = 200.0;
+		npc.m_flSpeed = 250.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_crusaders_crossbow/c_crusaders_crossbow.mdl");
 		SetVariantString("0.4");
