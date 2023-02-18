@@ -812,7 +812,10 @@ void Waves_Progress()
 				}
 			}
 			
+			// Above is the round that just ended
 			Rounds.GetArray(CurrentRound, round);
+			// Below is the new round
+			
 			if(round.MapSetupRelay)
 			{
 				ExcuteRelay("zr_setuptime");
