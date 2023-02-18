@@ -811,6 +811,25 @@ void Waves_Progress()
 					}
 				}
 			}
+			if(round.GrigoriMaxSellsItems > 0)
+			{
+				GrigoriMaxSells = round.GrigoriMaxSellsItems;
+			}
+			if(round.SpawnGrigori)
+			{
+				for(int client_Grigori=1; client_Grigori<=MaxClients; client_Grigori++)
+				{
+					if(IsClientInGame(client_Grigori) && GetClientTeam(client_Grigori)==2)
+					{
+						ClientCommand(client_Grigori, "playgamesound vo/ravenholm/yard_greetings.wav");
+						SetHudTextParams(-1.0, -1.0, 3.01, 34, 139, 34, 255);
+						SetGlobalTransTarget(client_Grigori);
+						ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "Father Grigori Spawn");		
+					}
+				}
+				Spawn_Cured_Grigori();
+				Store_RandomizeNPCStore(false);
+			}
 			
 			// Above is the round that just ended
 			Rounds.GetArray(CurrentRound, round);
@@ -855,25 +874,6 @@ void Waves_Progress()
 			
 			//Loop through all the still alive enemies that are indexed!
 			
-			if(round.GrigoriMaxSellsItems > 0)
-			{
-				GrigoriMaxSells = round.GrigoriMaxSellsItems;
-			}
-			if(round.SpawnGrigori)
-			{
-				for(int client_Grigori=1; client_Grigori<=MaxClients; client_Grigori++)
-				{
-					if(IsClientInGame(client_Grigori) && GetClientTeam(client_Grigori)==2)
-					{
-						ClientCommand(client_Grigori, "playgamesound vo/ravenholm/yard_greetings.wav");
-						SetHudTextParams(-1.0, -1.0, 3.01, 34, 139, 34, 255);
-						SetGlobalTransTarget(client_Grigori);
-						ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "Father Grigori Spawn");		
-					}
-				}
-				Spawn_Cured_Grigori();
-				Store_RandomizeNPCStore(false);
-			}
 			if(CurrentRound == 4)
 			{
 				Citizen_SpawnAtPoint("b");
