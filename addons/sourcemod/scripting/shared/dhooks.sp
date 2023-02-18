@@ -97,6 +97,8 @@ void DHook_Setup()
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	
 	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
+
+	DHook_CreateDetour(gamedata, "CTFPlayer::SpeakConceptIfAllowed()", SpeakConceptIfAllowed_Pre, SpeakConceptIfAllowed_Post);
 	
 	g_detour_CTFGrenadePipebombProjectile_PipebombTouch = CheckedDHookCreateFromConf(gamedata, "CTFGrenadePipebombProjectile::PipebombTouch");
 	
@@ -155,6 +157,7 @@ void OnWrenchCreated(int entity)
 	g_WrenchSmack.HookEntity(Hook_Post, entity, Wrench_SmackPost);
 }
 
+
 //Bad news, resort to teleorting.
 
 static float f_TeleportedPosWrenchSmack[MAXENTITIES][3];
@@ -192,6 +195,23 @@ public MRESReturn Wrench_SmackPost(int entity, DHookReturn ret, DHookParam param
 	}
 	return MRES_Ignored;
 }
+
+//Thanks to rafradek#0936 on the allied modders discord for pointing this function out!
+//This changes player classes to the correct one.
+public MRESReturn SpeakConceptIfAllowed_Pre(int client, Handle hReturn, Handle hParams)
+{	
+	TF2_SetPlayerClass(client, CurrentClass[client], false, false); 
+	return MRES_Ignored;
+}
+public MRESReturn SpeakConceptIfAllowed_Post(int client, Handle hReturn, Handle hParams)
+{
+	if(GetEntProp(client, Prop_Send, "m_iHealth") > 0) //otherwise death sounds dont work.
+	{
+		TF2_SetPlayerClass(client, WeaponClass[client], false, false);
+	}
+	return MRES_Ignored;
+}
+
 
 //prevent infinite score gain
 MRESReturn Detour_CalcPlayerScore(DHookReturn hReturn, DHookParam hParams)
@@ -1097,6 +1117,7 @@ public MRESReturn DHook_SentryFire_Post(int sentry, Handle hReturn, Handle hPara
 
 void DHook_HookClient(int client)
 {
+
 	if(ForceRespawn)
 	{
 		ForceRespawnHook[client] = ForceRespawn.HookEntity(Hook_Pre, client, DHook_ForceRespawn);

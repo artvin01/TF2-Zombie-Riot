@@ -1228,6 +1228,7 @@ public void OnMapStart()
 	PrecacheSound("player/crit_hit3.wav");
 	PrecacheSound("player/crit_hit2.wav");
 	PrecacheSound("player/crit_hit.wav");
+	PrecacheSound("mvm/mvm_revive.wav");
 
 	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
 	PrecacheSoundCustom("zombiesurvival/headshot2.wav");
@@ -1249,6 +1250,7 @@ public void OnMapStart()
 	MapStart_CustomMeleePrecache();
 	OnMapStart_Build_on_Build();
 	WandStocks_Map_Precache();
+	PrecachePlayerGiveGiveResponseVoice();
 	
 	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
 	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");
@@ -1859,8 +1861,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 						}
 						SetEntityRenderMode(target, RENDER_NORMAL);
 						SetEntityRenderColor(target, 255, 255, 255, 255);
-						SetVariantString("TLK_RESURRECTED");
-						AcceptEntityInput(target, "SpeakResponseConcept");
+						EmitSoundToAll("mvm/mvm_revive.wav", target, SNDCHAN_AUTO, 90, _, 1.0);
+						MakePlayerGiveResponseVoice(target, 3); //Revived response!
 					}
 				}
 				else if (was_reviving[client])

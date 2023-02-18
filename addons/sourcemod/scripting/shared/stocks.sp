@@ -3815,3 +3815,316 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 	}
 	return i_TargetHealAmount;
 }
+
+static const char g_ScoutDownedResponse[][] = {
+	"vo/scout_paincrticialdeath01.mp3",
+	"vo/scout_paincrticialdeath02.mp3",
+	"vo/scout_paincrticialdeath03.mp3",
+};
+
+static const char g_SoldierDownedResponse[][] = {
+	"vo/soldier_paincrticialdeath01.mp3",
+	"vo/soldier_paincrticialdeath02.mp3",
+	"vo/soldier_paincrticialdeath03.mp3",
+	"vo/soldier_paincrticialdeath04.mp3",
+};
+
+static const char g_SniperDownedResponse[][] = {
+	"vo/sniper_paincrticialdeath01.mp3",
+	"vo/sniper_paincrticialdeath02.mp3",
+	"vo/sniper_paincrticialdeath03.mp3",
+	"vo/sniper_paincrticialdeath04.mp3",
+};
+
+static const char g_DemomanDownedResponse[][] = {
+	"vo/demoman_paincrticialdeath01.mp3",
+	"vo/demoman_paincrticialdeath02.mp3",
+	"vo/demoman_paincrticialdeath03.mp3",
+	"vo/demoman_paincrticialdeath04.mp3",
+	"vo/demoman_paincrticialdeath05.mp3",
+};
+
+static const char g_MedicDownedResponse[][] = {
+	"vo/medic_paincrticialdeath01.mp3",
+	"vo/medic_paincrticialdeath02.mp3",
+	"vo/medic_paincrticialdeath03.mp3",
+	"vo/medic_paincrticialdeath04.mp3",
+};
+
+static const char g_PyroDownedResponse[][] = {
+	"vo/pyro_paincrticialdeath01.mp3",
+	"vo/pyro_paincrticialdeath02.mp3",
+	"vo/pyro_paincrticialdeath03.mp3",
+};
+static const char g_HeavyDownedResponse[][] = {
+	"vo/heavy_paincrticialdeath01.mp3",
+	"vo/heavy_paincrticialdeath02.mp3",
+	"vo/heavy_paincrticialdeath03.mp3",
+};
+
+static const char g_SpyDownedResponse[][] = {
+	"vo/spy_paincrticialdeath01.mp3",
+	"vo/spy_paincrticialdeath02.mp3",
+	"vo/spy_paincrticialdeath03.mp3",
+};
+
+static const char g_EngineerDownedResponse[][] = {
+	"vo/engineer_paincrticialdeath01.mp3",
+	"vo/engineer_paincrticialdeath02.mp3",
+	"vo/engineer_paincrticialdeath03.mp3",
+	"vo/engineer_paincrticialdeath04.mp3",
+	"vo/engineer_paincrticialdeath05.mp3",
+	"vo/engineer_paincrticialdeath06.mp3",
+};
+
+//revive!
+
+static const char g_ScoutReviveResponse[][] = {
+	"vo/scout_mvm_resurrect01.mp3",
+	"vo/scout_mvm_resurrect02.mp3",
+	"vo/scout_mvm_resurrect03.mp3",
+	"vo/scout_mvm_resurrect04.mp3",
+	"vo/scout_mvm_resurrect05.mp3",
+	"vo/scout_mvm_resurrect06.mp3",
+	"vo/scout_mvm_resurrect07.mp3",
+	"vo/scout_mvm_resurrect08.mp3",
+};
+
+static const char g_SoldierReviveResponse[][] = {
+	"vo/soldier_mvm_resurrect01.mp3",
+	"vo/soldier_mvm_resurrect02.mp3",
+	"vo/soldier_mvm_resurrect03.mp3",
+	"vo/soldier_mvm_resurrect04.mp3",
+	"vo/soldier_mvm_resurrect05.mp3",
+	"vo/soldier_mvm_resurrect06.mp3",
+};
+
+static const char g_SniperReviveResponse[][] = {
+	"vo/sniper_mvm_resurrect01.mp3",
+	"vo/sniper_mvm_resurrect02.mp3",
+	"vo/sniper_mvm_resurrect03.mp3",
+	"vo/sniper_mvm_resurrect04.mp3",
+};
+
+static const char g_DemomanReviveResponse[][] = {
+	"vo/demoman_mvm_resurrect01.mp3",
+	"vo/demoman_mvm_resurrect02.mp3",
+	"vo/demoman_mvm_resurrect03.mp3",
+	"vo/demoman_mvm_resurrect04.mp3",
+	"vo/demoman_mvm_resurrect05.mp3",
+	"vo/demoman_mvm_resurrect06.mp3",
+	"vo/demoman_mvm_resurrect07.mp3",
+	"vo/demoman_mvm_resurrect08.mp3",
+	"vo/demoman_mvm_resurrect09.mp3",
+	"vo/demoman_mvm_resurrect10.mp3",
+	"vo/demoman_mvm_resurrect11.mp3",
+};
+
+static const char g_MedicReviveResponse[][] = {
+	"vo/medic_mvm_resurrect01.mp3",
+	"vo/medic_mvm_resurrect02.mp3",
+	"vo/medic_mvm_resurrect03.mp3",
+};
+
+static const char g_PyroReviveResponse[][] = {
+	"vo/pyro_laughhappy01.mp3",
+};
+static const char g_HeavyReviveResponse[][] = {
+	"vo/heavy_mvm_resurrect01.mp3",
+	"vo/heavy_mvm_resurrect02.mp3",
+	"vo/heavy_mvm_resurrect03.mp3",
+	"vo/heavy_mvm_resurrect04.mp3",
+	"vo/heavy_mvm_resurrect05.mp3",
+	"vo/heavy_mvm_resurrect06.mp3",
+	"vo/heavy_mvm_resurrect07.mp3",
+};
+
+static const char g_SpyReviveResponse[][] = {
+	"vo/spy_mvm_resurrect01.mp3",
+	"vo/spy_mvm_resurrect02.mp3",
+	"vo/spy_mvm_resurrect03.mp3",
+	"vo/spy_mvm_resurrect04.mp3",
+	"vo/spy_mvm_resurrect05.mp3",
+	"vo/spy_mvm_resurrect06.mp3",
+	"vo/spy_mvm_resurrect07.mp3",
+	"vo/spy_mvm_resurrect08.mp3",
+	"vo/spy_mvm_resurrect09.mp3",
+};
+
+static const char g_EngineerReviveResponse[][] = {
+	"vo/engineer_mvm_resurrect01.mp3",
+	"vo/engineer_mvm_resurrect02.mp3",
+	"vo/engineer_mvm_resurrect03.mp3",
+};
+
+
+#define VOICERESPONSESOUNDAREA 90
+void PrecachePlayerGiveGiveResponseVoice()
+{
+	PrecacheSound("vo/taunts/scout_taunts06.mp3");
+	PrecacheSound("vo/taunts/soldier_taunts17.mp3");
+	PrecacheSound("vo/taunts/sniper_taunts22.mp3");
+	PrecacheSound("vo/taunts/demoman_taunts11.mp3");
+	PrecacheSound("vo/taunts/medic_taunts13.mp3");
+	PrecacheSound("vo/pyro_laughevil01.mp3");
+	PrecacheSound("vo/taunts/heavy_taunts16.mp3");
+	PrecacheSound("vo/taunts/spy_taunts12.mp3");
+	PrecacheSound("vo/taunts/engineer_taunts04.mp3");
+
+	for (int i = 0; i < (sizeof(g_ScoutDownedResponse));	   i++) { PrecacheSound(g_ScoutDownedResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_SoldierDownedResponse));	   i++) { PrecacheSound(g_SoldierDownedResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_SniperDownedResponse));	   i++) { PrecacheSound(g_SniperDownedResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_DemomanDownedResponse));	   i++) { PrecacheSound(g_DemomanDownedResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_PyroDownedResponse));	   i++) { PrecacheSound(g_PyroDownedResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_HeavyDownedResponse));	   i++) { PrecacheSound(g_HeavyDownedResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_SpyDownedResponse));	   i++) { PrecacheSound(g_SpyDownedResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_EngineerDownedResponse));	   i++) { PrecacheSound(g_EngineerDownedResponse[i]);	   }
+
+
+	for (int i = 0; i < (sizeof(g_ScoutReviveResponse));	   i++) { PrecacheSound(g_ScoutReviveResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_SoldierReviveResponse));	   i++) { PrecacheSound(g_SoldierReviveResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_SniperReviveResponse));	   i++) { PrecacheSound(g_SniperReviveResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_DemomanReviveResponse));	   i++) { PrecacheSound(g_DemomanReviveResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_PyroReviveResponse));	   i++) { PrecacheSound(g_PyroReviveResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_HeavyReviveResponse));	   i++) { PrecacheSound(g_HeavyReviveResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_SpyReviveResponse));	   i++) { PrecacheSound(g_SpyReviveResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_EngineerReviveResponse));	   i++) { PrecacheSound(g_EngineerReviveResponse[i]);	   }
+}
+
+void MakePlayerGiveResponseVoice(int client, int status)
+{
+	if(b_IsPlayerNiko[client])
+		return;
+	
+	int ClassShown = view_as<int>(CurrentClass[client]);
+
+	switch(status)
+	{	
+		case 1: //Irene cocky talk
+		{
+			switch(ClassShown)
+			{
+				case 1:
+				{
+					EmitSoundToAll("vo/taunts/scout_taunts06.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 2:
+				{
+					EmitSoundToAll("vo/taunts/soldier_taunts17.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 3:
+				{
+					EmitSoundToAll("vo/taunts/sniper_taunts22.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 4:
+				{
+					EmitSoundToAll("vo/taunts/demoman_taunts11.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 5:
+				{
+					EmitSoundToAll("vo/taunts/medic_taunts13.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 6:
+				{
+					EmitSoundToAll("vo/taunts/heavy_taunts16.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 7:
+				{
+					EmitSoundToAll("vo/pyro_laughevil01.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 8:
+				{
+					EmitSoundToAll("vo/taunts/spy_taunts12.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 9:
+				{
+					EmitSoundToAll("vo/taunts/engineer_taunts04.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+			}
+		}
+		case 2: //downed, help!
+		{
+			switch(ClassShown)
+			{
+				case 1:
+				{
+					EmitSoundToAll(g_ScoutDownedResponse[GetRandomInt(0, sizeof(g_ScoutDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 2:
+				{
+					EmitSoundToAll(g_SoldierDownedResponse[GetRandomInt(0, sizeof(g_SoldierDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 3:
+				{
+					EmitSoundToAll(g_SniperDownedResponse[GetRandomInt(0, sizeof(g_SniperDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 4:
+				{
+					EmitSoundToAll(g_DemomanDownedResponse[GetRandomInt(0, sizeof(g_DemomanDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 5:
+				{
+					EmitSoundToAll(g_MedicDownedResponse[GetRandomInt(0, sizeof(g_MedicDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 6:
+				{
+					EmitSoundToAll(g_HeavyDownedResponse[GetRandomInt(0, sizeof(g_HeavyDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 7:
+				{
+					EmitSoundToAll(g_PyroDownedResponse[GetRandomInt(0, sizeof(g_PyroDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 8:
+				{
+					EmitSoundToAll(g_SpyDownedResponse[GetRandomInt(0, sizeof(g_SpyDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 9:
+				{
+					EmitSoundToAll(g_EngineerDownedResponse[GetRandomInt(0, sizeof(g_EngineerDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+			}
+		}
+		case 3: //back from the dead!
+		{
+			switch(ClassShown)
+			{
+				case 1:
+				{
+					EmitSoundToAll(g_ScoutReviveResponse[GetRandomInt(0, sizeof(g_ScoutReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 2:
+				{
+					EmitSoundToAll(g_SoldierReviveResponse[GetRandomInt(0, sizeof(g_SoldierReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 3:
+				{
+					EmitSoundToAll(g_SniperReviveResponse[GetRandomInt(0, sizeof(g_SniperReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 4:
+				{
+					EmitSoundToAll(g_DemomanReviveResponse[GetRandomInt(0, sizeof(g_DemomanReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 5:
+				{
+					EmitSoundToAll(g_MedicReviveResponse[GetRandomInt(0, sizeof(g_MedicReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 6:
+				{
+					EmitSoundToAll(g_HeavyReviveResponse[GetRandomInt(0, sizeof(g_HeavyReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 7:
+				{
+					EmitSoundToAll(g_PyroReviveResponse[GetRandomInt(0, sizeof(g_PyroReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 8:
+				{
+					EmitSoundToAll(g_SpyReviveResponse[GetRandomInt(0, sizeof(g_SpyReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 9:
+				{
+					EmitSoundToAll(g_EngineerReviveResponse[GetRandomInt(0, sizeof(g_EngineerReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+			}
+		}
+	}
+}

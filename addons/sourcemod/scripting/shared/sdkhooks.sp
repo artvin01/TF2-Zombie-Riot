@@ -1013,14 +1013,13 @@ public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &infli
 	return Plugin_Continue;
 }
 #endif
-
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 #if defined ZR
 	if(TeutonType[victim])
 		return Plugin_Handled;
 #endif
-	
+
 	float gameTime = GetGameTime();
 
 	if(f_ClientInvul[victim] > gameTime) //Treat this as if they were a teuton, complete and utter immunity to everything in existance.
@@ -1459,8 +1458,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			if((i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
 			{
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
-				SetVariantString("TLK_DIED");
-				AcceptEntityInput(victim, "SpeakResponseConcept");
+				MakePlayerGiveResponseVoice(victim, 2); //dead!
+			//	SetVariantString("TLK_DIED");
+			//	AcceptEntityInput(victim, "SpeakResponseConcept");
 				i_CurrentEquippedPerk[victim] = 0;
 				SetEntityHealth(victim, 200);
 				if(!b_LeftForDead[victim])
@@ -1532,7 +1532,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 	return Plugin_Changed;
 }
-
 #if defined ZR
 float Replicate_Damage_Medications(int victim, float damage, int damagetype)
 {
