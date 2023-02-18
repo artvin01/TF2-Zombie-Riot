@@ -1468,6 +1468,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				{
 					dieingstate[victim] = 500;
 				}
+				DoOverlay(victim, "debug/yuv");
 				SetEntityCollisionGroup(victim, 1);
 				CClotBody player = view_as<CClotBody>(victim);
 				player.m_bThisEntityIgnored = true;

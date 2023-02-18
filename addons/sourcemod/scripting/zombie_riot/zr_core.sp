@@ -1311,6 +1311,23 @@ void ReviveAll(bool raidspawned = false)
 	{
 		if(IsClientInGame(client))
 		{
+			int glowentity = EntRefToEntIndex(i_DyingParticleIndication[client]);
+			if(glowentity > MaxClients)
+				RemoveEntity(glowentity);
+
+			if(IsPlayerAlive(client))
+			{
+				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+				int entity, i;
+				while(TF2U_GetWearable(client, entity, i))
+				{
+					SetEntityRenderMode(entity, RENDER_NORMAL);
+					SetEntityRenderColor(entity, 255, 255, 255, 255);
+				}
+				SetEntityRenderMode(client, RENDER_NORMAL);
+				SetEntityRenderColor(client, 255, 255, 255, 255);
+			}
+
 			i_AmountDowned[client] = 0;
 			DoOverlay(client, "");
 			if(GetClientTeam(client)==2)
