@@ -254,7 +254,7 @@ methodmap Ikunagae < CClotBody
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 7, 255, 255, 255);
 		
-		npc.m_flSpeed = 278.0;
+		npc.m_flSpeed = 262.0;
 		
 		npc.StartPathing();
 		
@@ -372,7 +372,7 @@ public void Ikunagae_ClotThink(int iNPC)
 				if(clearance[npc.index])
 				{
 					fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + 120.0;
-					fl_Spin_To_Win_Global_Ability_Timer=GetGameTime(npc.index) + 30.0;
+					fl_Spin_To_Win_Global_Ability_Timer=GetGameTime(npc.index) + 45.0;
 					
 					Spin_To_Win_Activate(npc.index, i_Severity_Spin_To_Win[npc.index], b_Severity_Spin_To_Win[npc.index], 15.0, 10.0);	//setting severity to 10 or more is just pointless, also lots of lag! same thing when using alt but with over 5
 				}
@@ -383,7 +383,7 @@ public void Ikunagae_ClotThink(int iNPC)
 			if(fl_Scaramouche_Ability_Timer[npc.index] < GetGameTime(npc.index))
 			{
 				fl_Scaramouche_Ability_Timer[npc.index] = GetGameTime(npc.index) + 60.0;
-				fl_Scaramouche_Global_Ability_Timer = GetGameTime(npc.index) + 30.0;
+				fl_Scaramouche_Global_Ability_Timer = GetGameTime(npc.index) + 45.0;
 				Scaramouche_Activate(npc.index);
 			}
 		}
@@ -868,6 +868,9 @@ public Action Spin_To_Win_TBB_Tick(int client)
 	i_spin_to_win_throttle[npc.index]++;
 	return Plugin_Continue;
 }
+
+static int Spin_To_Win_Damage_Multi[MAXENTITIES];
+
 static void Spin_To_Win_attack(int client, float endLoc[3], int type)
 {
 	
@@ -877,7 +880,7 @@ static void Spin_To_Win_attack(int client, float endLoc[3], int type)
 	{
 		case 0:
 		{
-			npc.FireParticleRocket(endLoc, 100.0 , 300.0 , 100.0 , "raygun_projectile_blue_crit",_,_,true,fl_spin_to_win_Origin_Vec[client]);
+			npc.FireParticleRocket(endLoc, 25.0*Spin_To_Win_Damage_Multi[client] , 300.0 , 100.0 , "raygun_projectile_blue_crit",_,_,true,fl_spin_to_win_Origin_Vec[client]);
 			r = 41;
 			g = 146;
 			b = 158;
@@ -885,7 +888,7 @@ static void Spin_To_Win_attack(int client, float endLoc[3], int type)
 		}
 		case 1:
 		{
-			npc.FireParticleRocket(endLoc, 100.0 , 300.0 , 100.0 , "raygun_projectile_red_crit",_,_,true,fl_spin_to_win_Origin_Vec[client]);
+			npc.FireParticleRocket(endLoc, 25.0*Spin_To_Win_Damage_Multi[client] , 300.0 , 100.0 , "raygun_projectile_red_crit",_,_,true,fl_spin_to_win_Origin_Vec[client]);
 			r = 158;
 			g = 146;
 			b = 41;
@@ -1088,8 +1091,10 @@ static void Severity_Core(int client) //Depending on current hp we determin  the
 	if(Health_Current>90)
 	{
 		i_Severity_Spin_To_Win[npc.index] = 2;
+		b_Severity_Spin_To_Win[npc.index] = false;
 		i_Severity_Barrage[npc.index] = 6;
 		fl_Severity_Scaramouche[npc.index] = 3.0; //The timer thats used to attack on this ability
+		Spin_To_Win_Damage_Multi[npc.index] = 1;
 	}
 	else if(Health_Current>80)
 	{
@@ -1104,55 +1109,55 @@ static void Severity_Core(int client) //Depending on current hp we determin  the
 	}
 	else if(Health_Current>60)
 	{
-		i_Severity_Barrage[npc.index] =12;
+		i_Severity_Barrage[npc.index] = 12;
 		fl_Severity_Scaramouche[npc.index] = 2.4;
+		i_Severity_Spin_To_Win[npc.index] = 4;
 	}
 	else if(Health_Current>50)
 	{
 		i_Severity_Spin_To_Win[npc.index] = 5;
 		i_Severity_Barrage[npc.index] = 14;
 		fl_Severity_Scaramouche[npc.index] = 2.2;
+		Spin_To_Win_Damage_Multi[npc.index] = 2;
 	}
 	else if(Health_Current>40)
-	{
-		i_Severity_Barrage[npc.index] = 16;
-		fl_Severity_Scaramouche[npc.index] = 2.0;
-	}
-	else if(Health_Current>50)
 	{
 		i_Severity_Spin_To_Win[npc.index] = 3;
 		b_Severity_Spin_To_Win[npc.index] = true;
-		i_Severity_Barrage[npc.index] = 18;
-		fl_Severity_Scaramouche[npc.index] = 1.8;
-	}
-	else if(Health_Current>40)
-	{
-		i_Severity_Barrage[npc.index] = 20;
-		fl_Severity_Scaramouche[npc.index] = 1.6;
+		i_Severity_Barrage[npc.index] = 16;
+		fl_Severity_Scaramouche[npc.index] = 1.5;
 	}
 	else if(Health_Current>30)
 	{
-		fl_Severity_Scaramouche[npc.index] = 2.2;
-		i_Severity_Spin_To_Win[npc.index] = 4;
-		b_Severity_Spin_To_Win[npc.index] = true;
-		i_Severity_Barrage[npc.index] = 22;
+		Spin_To_Win_Damage_Multi[npc.index] = 3;
+		i_Severity_Barrage[npc.index] = 18;
+		fl_Severity_Scaramouche[npc.index] = 1.15;
 	}
 	else if(Health_Current>20)
 	{
+		Spin_To_Win_Damage_Multi[npc.index] = 4;
+		i_Severity_Spin_To_Win[npc.index] = 4;
 		fl_Severity_Scaramouche[npc.index] = 2.0;
 		fl_Severity_Scaramouche[npc.index] = 2.0;
-		i_Severity_Barrage[npc.index] = 24;
+		i_Severity_Barrage[npc.index] = 20;
 	}
-	else if(Health_Current<10)	// THATS IT YOU FUCKERS
+	else if(Health_Current>10)
 	{
 		fl_Severity_Scaramouche[npc.index] = 0.75;
-		b_Severity_Spin_To_Win[npc.index] = true;
-		i_Severity_Barrage[npc.index] = 26;
+		Spin_To_Win_Damage_Multi[npc.index] = 5;
+		i_Severity_Barrage[npc.index] = 22;
+	}
+	else	// THATS IT YOU FUCKERS
+	{
+		fl_Severity_Scaramouche[npc.index] = 0.5;
+		Spin_To_Win_Damage_Multi[npc.index] = 6;
+		i_Severity_Barrage[npc.index] = 24;
+		i_Severity_Spin_To_Win[npc.index] = 5;
 	}
 	
 	if((ZR_GetWaveCount()+1)==59)	//Makes it so the spam on wave 59 doesn't absoluetly annihialate the server.
 	{
-		i_Severity_Barrage[npc.index] = 6;
+		i_Severity_Barrage[npc.index] = 8;
 	}
 }
 
@@ -1169,7 +1174,7 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	Ikunagae_BEAM_TicksActive[client] = 0;
 
 	Ikunagae_BEAM_CanUse[client] = true;
-	Ikunagae_BEAM_CloseDPT[client] = 50.0;
+	Ikunagae_BEAM_CloseDPT[client] = 30.0;
 	Ikunagae_BEAM_FarDPT[client] = 25.0;
 	Ikunagae_BEAM_MaxDistance[client] = 1000;
 	Ikunagae_BEAM_BeamRadius[client] = 10;
