@@ -4098,7 +4098,7 @@ void MakePlayerGiveResponseVoice(int client, int status)
 				}
 				case 3:
 				{
-					EmitSoundToAll(g_SoldierDownedResponse[GetRandomInt(0, sizeof(g_SoldierDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+					EmitSoundToAll(g_SoldierReviveResponse[GetRandomInt(0, sizeof(g_SoldierReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
 				}
 				case 4:
 				{
