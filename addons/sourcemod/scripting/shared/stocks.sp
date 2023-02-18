@@ -4010,11 +4010,11 @@ void MakePlayerGiveResponseVoice(int client, int status)
 				}
 				case 2:
 				{
-					EmitSoundToAll("vo/taunts/soldier_taunts17.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+					EmitSoundToAll("vo/taunts/sniper_taunts22.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
 				}
 				case 3:
 				{
-					EmitSoundToAll("vo/taunts/sniper_taunts22.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+					EmitSoundToAll("vo/taunts/soldier_taunts17.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
 				}
 				case 4:
 				{
@@ -4052,11 +4052,11 @@ void MakePlayerGiveResponseVoice(int client, int status)
 				}
 				case 2:
 				{
-					EmitSoundToAll(g_SoldierDownedResponse[GetRandomInt(0, sizeof(g_SoldierDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+					EmitSoundToAll(g_SniperDownedResponse[GetRandomInt(0, sizeof(g_SniperDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
 				}
 				case 3:
 				{
-					EmitSoundToAll(g_SniperDownedResponse[GetRandomInt(0, sizeof(g_SniperDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+					EmitSoundToAll(g_SoldierDownedResponse[GetRandomInt(0, sizeof(g_SoldierDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
 				}
 				case 4:
 				{
@@ -4094,11 +4094,11 @@ void MakePlayerGiveResponseVoice(int client, int status)
 				}
 				case 2:
 				{
-					EmitSoundToAll(g_SoldierReviveResponse[GetRandomInt(0, sizeof(g_SoldierReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+					EmitSoundToAll(g_SniperReviveResponse[GetRandomInt(0, sizeof(g_SniperReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
 				}
 				case 3:
 				{
-					EmitSoundToAll(g_SniperReviveResponse[GetRandomInt(0, sizeof(g_SniperReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+					EmitSoundToAll(g_SoldierDownedResponse[GetRandomInt(0, sizeof(g_SoldierDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
 				}
 				case 4:
 				{
