@@ -1174,7 +1174,7 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	Ikunagae_BEAM_TicksActive[client] = 0;
 
 	Ikunagae_BEAM_CanUse[client] = true;
-	Ikunagae_BEAM_CloseDPT[client] = 50.0;
+	Ikunagae_BEAM_CloseDPT[client] = 30.0;
 	Ikunagae_BEAM_FarDPT[client] = 25.0;
 	Ikunagae_BEAM_MaxDistance[client] = 1000;
 	Ikunagae_BEAM_BeamRadius[client] = 10;
