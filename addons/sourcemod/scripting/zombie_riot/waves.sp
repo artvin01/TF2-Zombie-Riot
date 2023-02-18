@@ -55,7 +55,8 @@ enum struct Round
 	char music_round_outro[255];
 	bool music_custom_outro;
 	char Message[255];
-
+	bool SpawnGrigori;
+	int GrigoriMaxSellsItems;
 	float Setup;
 	ArrayList Waves;
 }
@@ -413,6 +414,8 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		
 		kv.GetString("music_track_outro", round.music_round_outro, sizeof(round.music_round_outro));
 		round.music_custom_outro = view_as<bool>(kv.GetNum("music_download_outro"));
+		round.SpawnGrigori = view_as<bool>(kv.GetNum("spawn_grigori"));
+		round.GrigoriMaxSellsItems = kv.GetNum("grigori_sells_items_max");
 		if(round.music_round_outro[0])
 		{
 			if(round.music_custom_outro)
@@ -777,11 +780,12 @@ void Waves_Progress()
 				music_stop = true;
 				if(round.music_custom_outro)
 				{
-					EmitCustomToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					EmitCustomToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.45);
 				}
 				else
 				{
-					EmitSoundToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					EmitSoundToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.73);
+					EmitSoundToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.73);
 				}
 			}
 
@@ -807,8 +811,30 @@ void Waves_Progress()
 					}
 				}
 			}
+			if(round.GrigoriMaxSellsItems > 0)
+			{
+				GrigoriMaxSells = round.GrigoriMaxSellsItems;
+			}
+			if(round.SpawnGrigori)
+			{
+				for(int client_Grigori=1; client_Grigori<=MaxClients; client_Grigori++)
+				{
+					if(IsClientInGame(client_Grigori) && GetClientTeam(client_Grigori)==2)
+					{
+						ClientCommand(client_Grigori, "playgamesound vo/ravenholm/yard_greetings.wav");
+						SetHudTextParams(-1.0, -1.0, 3.01, 34, 139, 34, 255);
+						SetGlobalTransTarget(client_Grigori);
+						ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "Father Grigori Spawn");		
+					}
+				}
+				Spawn_Cured_Grigori();
+				Store_RandomizeNPCStore(false);
+			}
 			
+			// Above is the round that just ended
 			Rounds.GetArray(CurrentRound, round);
+			// Below is the new round
+			
 			if(round.MapSetupRelay)
 			{
 				ExcuteRelay("zr_setuptime");
@@ -851,22 +877,6 @@ void Waves_Progress()
 			if(CurrentRound == 4)
 			{
 				Citizen_SpawnAtPoint("b");
-			}
-			else if(CurrentRound == 15) //He should spawn at wave 16.
-			{
-				for(int client_Grigori=1; client_Grigori<=MaxClients; client_Grigori++)
-				{
-					if(IsClientInGame(client_Grigori) && GetClientTeam(client_Grigori)==2)
-					{
-						ClientCommand(client_Grigori, "playgamesound vo/ravenholm/yard_greetings.wav");
-						SetHudTextParams(-1.0, -1.0, 3.01, 34, 139, 34, 255);
-						SetGlobalTransTarget(client_Grigori);
-						ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "Father Grigori Spawn");		
-					}
-				}
-				
-				Spawn_Cured_Grigori();
-				Store_RandomizeNPCStore(false);
 			}
 			else if(CurrentRound == 11)
 			{
@@ -939,6 +949,12 @@ void Waves_Progress()
 					
 			if(char_MusicString2[0])
 				RoundHasCustomMusic = true;
+
+			if(char_RaidMusicSpecial1[0])
+			{
+				RoundHasCustomMusic = true;
+			}
+
 				
 			if(RoundHasCustomMusic) //only do it when there was actually custom music previously
 			{
@@ -946,6 +962,7 @@ void Waves_Progress()
 				{
 					if(IsClientInGame(client))
 					{
+						SetMusicTimer(client, GetTime() + RoundToNearest(round.Setup) + 1); //This is here beacuse of raid music.
 						Music_Stop_All(client);
 					}
 				}	
@@ -954,7 +971,7 @@ void Waves_Progress()
 			FormatEx(char_MusicString1, sizeof(char_MusicString1), round.music_round_1);
 			
 			FormatEx(char_MusicString2, sizeof(char_MusicString2), round.music_round_2);
-
+			FormatEx(char_RaidMusicSpecial1, sizeof(char_RaidMusicSpecial1), "");
 			i_MusicLength1 = round.music_duration_1;
 			
 			i_MusicLength2 = round.music_duration_2;
@@ -1043,6 +1060,8 @@ void Waves_Progress()
 				FormatEx(char_MusicString1, sizeof(char_MusicString1), "");
 
 				FormatEx(char_MusicString2, sizeof(char_MusicString2), "");
+
+				FormatEx(char_RaidMusicSpecial1, sizeof(char_RaidMusicSpecial1), "");
 
 				i_MusicLength1 = 1;
 				i_MusicLength2 = 1;

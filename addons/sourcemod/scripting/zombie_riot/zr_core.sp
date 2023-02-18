@@ -75,6 +75,7 @@ ArrayList SpawnerList;
 
 //int Bob_To_Player[MAXENTITIES];
 bool Bob_Exists = false;
+int GrigoriMaxSells = 3;
 int Bob_Exists_Index = -1;
 int CurrentPlayers;
 ConVar zr_voteconfig;
@@ -126,6 +127,9 @@ char char_MusicString1[256];
 int i_MusicLength1;
 char char_MusicString2[256];
 int i_MusicLength2;
+char char_RaidMusicSpecial1[256];
+int i_RaidMusicLength1;
+bool b_RaidMusicCustom1;
 //custom wave music.
 float f_DelaySpawnsForVariousReasons;
 int CurrentRound;
@@ -520,9 +524,12 @@ void ZR_MapStart()
 	FormatEx(char_MusicString1, sizeof(char_MusicString1), "");
 			
 	FormatEx(char_MusicString2, sizeof(char_MusicString2), "");
+	FormatEx(char_RaidMusicSpecial1, sizeof(char_RaidMusicSpecial1), "");
 			
 	i_MusicLength1 = 0;
 	i_MusicLength2 = 0;
+	i_RaidMusicLength1 = 0;
+	b_RaidMusicCustom1 = false;
 	
 	//Store_RandomizeNPCStore(true);
 }
@@ -1304,6 +1311,24 @@ void ReviveAll(bool raidspawned = false)
 	{
 		if(IsClientInGame(client))
 		{
+			int glowentity = EntRefToEntIndex(i_DyingParticleIndication[client]);
+			if(glowentity > MaxClients)
+				RemoveEntity(glowentity);
+
+			if(IsPlayerAlive(client))
+			{
+				SetEntityMoveType(client, MOVETYPE_WALK);
+				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+				int entity, i;
+				while(TF2U_GetWearable(client, entity, i))
+				{
+					SetEntityRenderMode(entity, RENDER_NORMAL);
+					SetEntityRenderColor(entity, 255, 255, 255, 255);
+				}
+				SetEntityRenderMode(client, RENDER_NORMAL);
+				SetEntityRenderColor(client, 255, 255, 255, 255);
+			}
+
 			i_AmountDowned[client] = 0;
 			DoOverlay(client, "");
 			if(GetClientTeam(client)==2)

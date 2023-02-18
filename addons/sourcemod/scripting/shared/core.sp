@@ -1859,6 +1859,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 						}
 						SetEntityRenderMode(target, RENDER_NORMAL);
 						SetEntityRenderColor(target, 255, 255, 255, 255);
+						SetVariantString("TLK_RESURRECTED");
+						AcceptEntityInput(target, "SpeakResponseConcept");
 					}
 				}
 				else if (was_reviving[client])

@@ -1458,6 +1458,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			i_AmountDowned[victim] += 1;
 			if((i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
 			{
+				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
+				SetVariantString("TLK_DIED");
+				AcceptEntityInput(victim, "SpeakResponseConcept");
 				i_CurrentEquippedPerk[victim] = 0;
 				SetEntityHealth(victim, 200);
 				if(!b_LeftForDead[victim])
@@ -1468,6 +1471,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				{
 					dieingstate[victim] = 500;
 				}
+				DoOverlay(victim, "debug/yuv");
 				SetEntityCollisionGroup(victim, 1);
 				CClotBody player = view_as<CClotBody>(victim);
 				player.m_bThisEntityIgnored = true;
