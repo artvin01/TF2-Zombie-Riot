@@ -60,15 +60,6 @@ void Irene_Map_Precache() //Anything that needs to be precaced like sounds or so
 	PrecacheSound(IRENE_KICKUP_1);
 	PrecacheSound(IRENE_EXPLOSION_1);
 	PrecacheSound(IRENE_EXPLOSION_2);
-	PrecacheSound("vo/taunts/scout_taunts06.mp3");
-	PrecacheSound("vo/taunts/soldier_taunts17.mp3");
-	PrecacheSound("vo/taunts/sniper_taunts22.mp3");
-	PrecacheSound("vo/taunts/demoman_taunts11.mp3");
-	PrecacheSound("vo/taunts/medic_taunts13.mp3");
-	PrecacheSound("vo/pyro_laughevil01.mp3");
-	PrecacheSound("vo/taunts/heavy_taunts16.mp3");
-	PrecacheSound("vo/taunts/spy_taunts12.mp3");
-	PrecacheSound("vo/taunts/engineer_taunts04.mp3");
 
 	LaserSprite = PrecacheModel(SPRITE_SPRITE, false);
 }
@@ -337,48 +328,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 		spawnRing(client, IRENE_JUDGEMENT_MAXRANGE * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 255, 1, 0.17, 6.0, 6.1, 1);
 		spawnRing(client, IRENE_JUDGEMENT_MAXRANGE * 2.0, 0.0, 0.0, 35.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 255, 1, 0.11, 6.0, 6.1, 1);
 		spawnRing_Vectors(UserLoc, 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, IRENE_JUDGEMENT_MAXRANGE * 2.0);	
-		if(!b_IsPlayerNiko[client])
-		{
-			switch(view_as<int>(CurrentClass[client]))
-			{
-				case 1:
-				{
-					EmitSoundToAll("vo/taunts/scout_taunts06.mp3", client, SNDCHAN_VOICE, 90, _, 1.0);
-				}
-				case 2:
-				{
-					EmitSoundToAll("vo/taunts/soldier_taunts17.mp3", client, SNDCHAN_VOICE, 90, _, 1.0);
-				}
-				case 3:
-				{
-					EmitSoundToAll("vo/taunts/sniper_taunts22.mp3", client, SNDCHAN_VOICE, 90, _, 1.0);
-				}
-				case 4:
-				{
-					EmitSoundToAll("vo/taunts/demoman_taunts11.mp3", client, SNDCHAN_VOICE, 90, _, 1.0);
-				}
-				case 5:
-				{
-					EmitSoundToAll("vo/taunts/medic_taunts13.mp3", client, SNDCHAN_VOICE, 90, _, 1.0);
-				}
-				case 6:
-				{
-					EmitSoundToAll("vo/pyro_laughevil01.mp3", client, SNDCHAN_VOICE, 90, _, 1.0);
-				}
-				case 7:
-				{
-					EmitSoundToAll("vo/taunts/heavy_taunts16.mp3", client, SNDCHAN_VOICE, 90, _, 1.0);
-				}
-				case 8:
-				{
-					EmitSoundToAll("vo/taunts/spy_taunts12.mp3", client, SNDCHAN_VOICE, 90, _, 1.0);
-				}
-				case 9:
-				{
-					EmitSoundToAll("vo/taunts/engineer_taunts04.mp3", client, SNDCHAN_VOICE, 90, _, 1.0);
-				}
-			}
-		}
+		MakePlayerGiveResponseVoice(client, 1); //haha!
 		f_TargetAirtime[client] = GetGameTime() + 2.0;
 		f_TargetAirtimeDelayHit[client] = GetGameTime() + 0.25;
 		SDKHook(client, SDKHook_PreThink, Npc_Irene_Launch_client);
