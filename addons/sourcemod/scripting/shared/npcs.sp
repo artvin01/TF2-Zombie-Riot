@@ -2227,7 +2227,7 @@ public void Try_Backstab_Anim_Again(int attacker)
 	}
 	Animation_Retry[attacker] -= 1;
 	TE_Start("PlayerAnimEvent");
-	TE_WriteEnt("m_iPlayerIndex", attacker);
+	TE_WriteEnt("m_hPlayer", attacker);
 	TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
 	TE_WriteNum("m_nData", Animation_Index[attacker]);
 	TE_SendToAll();
