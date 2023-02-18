@@ -1458,6 +1458,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			i_AmountDowned[victim] += 1;
 			if((i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
 			{
+				SetVariantString("TLK_DIED");
+				AcceptEntityInput(victim, "SpeakResponseConcept");
 				i_CurrentEquippedPerk[victim] = 0;
 				SetEntityHealth(victim, 200);
 				if(!b_LeftForDead[victim])

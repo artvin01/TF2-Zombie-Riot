@@ -1317,6 +1317,7 @@ void ReviveAll(bool raidspawned = false)
 
 			if(IsPlayerAlive(client))
 			{
+				SetEntityMoveType(client, MOVETYPE_WALK);
 				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
