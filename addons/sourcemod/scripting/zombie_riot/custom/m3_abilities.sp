@@ -594,10 +594,10 @@ public void GearTesting(int client)
 	{
 		if (ability_cooldown[client] < GetGameTime())
 		{
-			ability_cooldown[client] = GetGameTime() + 500.0;
+			ability_cooldown[client] = GetGameTime() + 350.0;
 
 
-			CreateTimer(500.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(350.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 
 			SetEntityMoveType(client, MOVETYPE_NONE);
 

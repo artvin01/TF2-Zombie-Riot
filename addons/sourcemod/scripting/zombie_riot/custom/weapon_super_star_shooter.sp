@@ -42,11 +42,11 @@ public void Super_Star_Shooter_Main(int client, int weapon, bool crit, int slot)
 
 	float damage = 1000.0;
 		
-	if(SSS_overheat[client] > 10)
+	if(SSS_overheat[client] > 15)
 	{
 		damage = 750.0;
 	} 
-	if(SSS_overheat[client] > 15)
+	if(SSS_overheat[client] > 18)
 	{
 		damage = 500.0;
 	} 
