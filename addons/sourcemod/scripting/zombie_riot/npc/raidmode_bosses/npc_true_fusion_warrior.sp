@@ -461,13 +461,13 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		}
 		else if(npc.Anger)
 		{
-			npc.m_flRangedArmor = 0.4;
-			npc.m_flMeleeArmor = 0.4;
+			npc.m_flRangedArmor = 0.6;
+			npc.m_flMeleeArmor = 0.6;
 		}	
 		else
 		{
-			npc.m_flRangedArmor = 0.5;
-			npc.m_flMeleeArmor = 0.5;			
+			npc.m_flRangedArmor = 0.7;
+			npc.m_flMeleeArmor = 0.7;			
 		}
 	}
 	else
@@ -479,8 +479,8 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		}
 		else if(npc.Anger)
 		{
-			npc.m_flRangedArmor = 0.8;
-			npc.m_flMeleeArmor = 0.8;
+			npc.m_flRangedArmor = 0.85;
+			npc.m_flMeleeArmor = 0.85;
 		}	
 		else
 		{
@@ -632,7 +632,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				{
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 10.0 * RaidModeScaling, 800.0, "models/effects/combineball.mdl", 1.0);	
+					npc.FireRocket(vPredictedPos, 8.0 * RaidModeScaling, 800.0, "models/effects/combineball.mdl", 1.0);	
 					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 4.0;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
@@ -641,7 +641,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				{
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 10.0 * RaidModeScaling, 800.0, "models/effects/combineball.mdl", 1.0);	
+					npc.FireRocket(vPredictedPos, 8.0 * RaidModeScaling, 800.0, "models/effects/combineball.mdl", 1.0);	
 					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.0;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
@@ -755,7 +755,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				{
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 4.0 * RaidModeScaling, 700.0, "models/effects/combineball.mdl", 1.0);	
+					npc.FireRocket(vPredictedPos, 3.0 * RaidModeScaling, 700.0, "models/effects/combineball.mdl", 1.0);	
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
@@ -775,7 +775,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 4.0 * RaidModeScaling, 700.0, "models/effects/combineball.mdl", 1.0);
+					npc.FireRocket(vPredictedPos, 3.0 * RaidModeScaling, 700.0, "models/effects/combineball.mdl", 1.0);
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
@@ -857,11 +857,24 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
+									float damage = 24.0;
+									float damage_rage = 28.0;
+									if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+									{
+										damage = 20.0; //nerf
+										damage_rage = 21.0; //nerf
+									}
+									else if(ZR_GetWaveCount()+1 > 55)
+									{
+										damage = 19.0; //nerf
+										damage_rage = 20.0; //nerf
+									}
+
 									if(!npc.Anger)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 24.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 											
 									if(npc.Anger)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 28.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
+										SDKHooks_TakeDamage(target, npc.index, npc.index, damage_rage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
 										
 									
 									// Hit particle
