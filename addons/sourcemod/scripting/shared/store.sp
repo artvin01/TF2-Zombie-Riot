@@ -3862,6 +3862,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		return; //STOP. BAD!
 	}
+	TF2_SetPlayerClass(client, CurrentClass[client], false, false);
 
 	int entity = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(entity != -1 && GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex") == 28)
