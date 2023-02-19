@@ -2186,7 +2186,7 @@ methodmap CClotBody
 			{
 				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", model_scale); // ZZZZ i sleep
 			}
-			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
 			SetEntityCollisionGroup(entity, 19); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
@@ -2259,7 +2259,7 @@ methodmap CClotBody
 			See_Projectile_Team(entity);
 			
 			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre); //*yawn*
-			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 		}
 	}
@@ -2377,7 +2377,7 @@ methodmap CClotBody
 			Set_Projectile_Collision(entity); //If red, set to 27
 			See_Projectile_Team(entity);
 			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Arrow_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
-			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+	//		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, ArrowStartTouch);
 		}
 	}
