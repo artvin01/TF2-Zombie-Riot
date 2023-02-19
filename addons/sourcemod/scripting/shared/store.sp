@@ -3295,9 +3295,12 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					if(item.Owned[client] && item.Equipped[client])
 					{
 						int active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
 						if(active_weapon > MaxClients)
 						{
-							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime())
+							char buffer[64];
+							GetEntityClassname(active_weapon, buffer, sizeof(buffer));
+							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
 							{
 								item.GetItemInfo(item.Owned[client]-1, info);
 								if(info.Cost <= 0) //make sure it even can be sold.
@@ -3325,35 +3328,50 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 				{
 					if(item.Owned[client])
 					{
-						item.GetItemInfo(item.Owned[client]-1, info);
+						int active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 
-						int sell = item.Sell[client];
-						bool fullSell = item.BuyWave[client] == Waves_GetRound();
-						if(fullSell)
+						if(active_weapon > MaxClients)
 						{
-							item.Scaled[client]--;
-							ItemCost(client, item, info.Cost);
-							item.Scaled[client]++;
-							
-							sell = info.Cost;
+							char buffer[64];
+							GetEntityClassname(active_weapon, buffer, sizeof(buffer));
+							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+							{
+									
+								item.GetItemInfo(item.Owned[client]-1, info);
+
+								int sell = item.Sell[client];
+								bool fullSell = item.BuyWave[client] == Waves_GetRound();
+								if(fullSell)
+								{
+									item.Scaled[client]--;
+									ItemCost(client, item, info.Cost);
+									item.Scaled[client]++;
+									
+									sell = info.Cost;
+								}
+								
+								if(sell) //make sure it even can be sold.
+								{
+									CashSpent[client] -= sell;
+									CashSpentTotal[client] -= sell;
+									ClientCommand(client, "playgamesound \"mvm/mvm_money_pickup.wav\"");
+								}
+								
+								item.Owned[client] = 0;
+								if(item.Scaled[client] > 0)
+									item.Scaled[client]--;
+								
+								item.Equipped[client] = false;
+								StoreItems.SetArray(index, item);
+									
+								Store_ApplyAttribs(client);
+								Store_GiveAll(client, GetClientHealth(client));
+							}
+							else
+							{
+								ClientCommand(client, "playgamesound items/medshotno1.wav");
+							}
 						}
-						
-						if(sell) //make sure it even can be sold.
-						{
-							CashSpent[client] -= sell;
-							CashSpentTotal[client] -= sell;
-							ClientCommand(client, "playgamesound \"mvm/mvm_money_pickup.wav\"");
-						}
-						
-						item.Owned[client] = 0;
-						if(item.Scaled[client] > 0)
-							item.Scaled[client]--;
-						
-						item.Equipped[client] = false;
-						StoreItems.SetArray(index, item);
-							
-						Store_ApplyAttribs(client);
-						Store_GiveAll(client, GetClientHealth(client));
 					}
 				}
 			}

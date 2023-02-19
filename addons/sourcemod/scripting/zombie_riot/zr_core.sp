@@ -789,6 +789,12 @@ public Action Timer_Dieing(Handle timer, int client)
 			
 			if(dieingstate[client] <= 0)
 			{
+				if(dieingstate[client] != -5)
+				{
+					GiveCompleteInvul(client, 2.0);
+					EmitSoundToAll("mvm/mvm_revive.wav", client, SNDCHAN_AUTO, 90, _, 1.0);
+					MakePlayerGiveResponseVoice(client, 3); //Revived response!
+				}
 				SetEntityMoveType(client, MOVETYPE_WALK);
 				RequestFrame(Movetype_walk, client);
 				dieingstate[client] = 0;
@@ -1345,7 +1351,8 @@ void ReviveAll(bool raidspawned = false)
 				}
 				else if(dieingstate[client] > 0)
 				{
-					dieingstate[client] = 0;
+					GiveCompleteInvul(client, 2.0);
+					dieingstate[client] -= 8; //-8 for incode reasons, check dieing timer.
 					Store_ApplyAttribs(client);
 					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 					int entity, i;
