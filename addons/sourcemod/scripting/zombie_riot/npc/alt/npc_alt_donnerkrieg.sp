@@ -686,30 +686,9 @@ public bool NightmareCannon_BEAM_TraceWallsOnly(int entity, int contentsMask)
 
 public bool NightmareCannon_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
-	static char classname[64];
 	if (IsEntityAlive(entity))
 	{
 		NightmareCannon_BEAM_HitDetected[entity] = true;
-	}
-	else if (IsValidEntity(entity))
-	{
-		if(0 < entity)
-		{
-			GetEntityClassname(entity, classname, sizeof(classname));
-			
-			if (!StrContains(classname, "base_boss", true) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
-			{
-				for(int i=1; i < MAXENTITIES; i++)
-				{
-					if(!NightmareCannon_BEAM_BuildingHit[i])
-					{
-						NightmareCannon_BEAM_BuildingHit[i] = entity;
-						break;
-					}
-				}
-			}
-			
-		}
 	}
 	return false;
 }
@@ -799,7 +778,7 @@ public Action NightmareCannon_TBB_Tick(int client)
 			{
 				ConformLineDistance(endPoint, startPoint, endPoint, curDist - lineReduce);
 			}
-			for (int i = 1; i < MAXTF2PLAYERS; i++)
+			for (int i = 1; i < MAXENTITIES; i++)
 			{
 				NightmareCannon_BEAM_HitDetected[i] = false;
 			}
@@ -814,9 +793,9 @@ public Action NightmareCannon_TBB_Tick(int client)
 			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, NightmareCannon_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 			delete trace;
 			
-			for (int victim = 1; victim < MaxClients; victim++)
+			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (NightmareCannon_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetClientTeam(victim))
+				if (NightmareCannon_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
@@ -824,6 +803,10 @@ public Action NightmareCannon_TBB_Tick(int client)
 					if (damage < 0)
 						damage *= -1.0;
 
+					if(ShouldNpcDealBonusDamage(victim))
+					{
+						damage *= 5.0;
+					}
 					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
 				}
 			}

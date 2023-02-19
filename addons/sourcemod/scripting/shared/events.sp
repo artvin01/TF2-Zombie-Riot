@@ -121,7 +121,6 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	if(client)
 	{
-		
 #if defined RPG
 		TextStore_DespoitBackpack(client, false);
 #endif
@@ -131,7 +130,13 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		SetVariantString("");
 	  	AcceptEntityInput(client, "SetCustomModel");
 	  	
-	  	if(b_IsPlayerNiko[client])
+	  	
+		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
+		ViewChange_DeleteHands(client);
+		ViewChange_UpdateHands(client, CurrentClass[client]);
+		TF2_SetPlayerClass(client, CurrentClass[client], false, false);
+
+		if(b_IsPlayerNiko[client])
 		{
 		  	int entity = MaxClients+1;
 			while(TF2_GetWearable(client, entity))
@@ -139,10 +144,14 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 				SetEntProp(entity, Prop_Send, "m_fEffects", EF_NODRAW);
 			}
 		}
-	  	
-		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
-		ViewChange_DeleteHands(client);
-		ViewChange_UpdateHands(client, CurrentClass[client]);
+		else
+		{
+			int entity = MaxClients+1;
+			while(TF2_GetWearable(client, entity))
+			{
+				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+			}
+		}
 		
 #if defined ZR
 		//DEFAULTS
@@ -382,7 +391,7 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	if(client)
 	{
-		
+		TF2_SetPlayerClass(client, CurrentClass[client], false, false);
 #if defined ZR
 		Escape_DropItem(client);
 		if(g_CarriedDispenser[client] != INVALID_ENT_REFERENCE)

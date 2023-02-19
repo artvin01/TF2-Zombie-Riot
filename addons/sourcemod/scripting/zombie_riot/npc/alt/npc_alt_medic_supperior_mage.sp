@@ -779,7 +779,7 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick(int client)
 			{
 				ConformLineDistance(endPoint, startPoint, endPoint, curDist - lineReduce);
 			}
-			for (int i = 1; i < MAXTF2PLAYERS; i++)
+			for (int i = 1; i < MAXENTITIES; i++)
 			{
 				NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_HitDetected[i] = false;
 			}
@@ -794,15 +794,21 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick(int client)
 			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 			delete trace;
 			
-			for (int victim = 1; victim < MaxClients; victim++)
+			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetClientTeam(victim))
+				if (NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
 					float damage = NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseDPT[client] + (NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarDPT[client]-NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseDPT[client]) * (distance/NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_MaxDistance[client]);
 					if (damage < 0)
 						damage *= -1.0;
+
+
+					if(ShouldNpcDealBonusDamage(victim))
+					{
+						damage *= 5.0;
+					}
 
 					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
 				}

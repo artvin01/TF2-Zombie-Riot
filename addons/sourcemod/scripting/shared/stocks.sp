@@ -3808,7 +3808,7 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 
 	if(newHealth != flHealth) //Make sure to only set hp when it is actually being overridden.
 	{
-		if((flMaxHealth * MaxHealthOverMulti) > newHealth)
+		if(RoundToNearest(float(flMaxHealth) * MaxHealthOverMulti) >= newHealth) //allow 1 tick of overheal.
 		{
 			SetEntProp(entity, Prop_Data, "m_iHealth", newHealth);	
 		}

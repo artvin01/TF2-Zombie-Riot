@@ -1476,8 +1476,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				CClotBody player = view_as<CClotBody>(victim);
 				player.m_bThisEntityIgnored = true;
 				TF2Attrib_SetByDefIndex(victim, 489, 0.15);
-				TF2Attrib_SetByDefIndex(victim, 820, 1.0);
-				TF2Attrib_SetByDefIndex(victim, 819, 1.0);	
+			//	TF2Attrib_SetByDefIndex(victim, 820, 1.0);
+			//	TF2Attrib_SetByDefIndex(victim, 819, 1.0);	
 				TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 0.00001);
 				int entity;
 				if(!b_LeftForDead[victim])
@@ -1589,6 +1589,10 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	{
 		if(entity > 0 && entity <= MaxClients)
 		{
+			if(StrContains(sample, "specialcompleted", true) != -1) //These voicelines dont get translated to the correct class!
+			{
+				return Plugin_Handled;
+			}
 			if(b_IsPlayerNiko[entity])
 			{
 				return Plugin_Handled;
