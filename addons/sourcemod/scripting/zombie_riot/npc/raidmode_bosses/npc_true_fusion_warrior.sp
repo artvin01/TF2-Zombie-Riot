@@ -120,7 +120,7 @@ public void TrueFusionWarrior_OnMapStart()
 	
 	PrecacheSound("player/flow.wav");
 
-	PrecacheSoundCustom("#zombiesurvival/fusion_raid/music/fusion_bgm.mp3");
+	PrecacheSoundCustom("#zombiesurvival/fusion_raid/fusion_bgm.mp3");
 }
 
 void TrueFusionWarrior_TBB_Precahce()
@@ -386,7 +386,7 @@ methodmap TrueFusionWarrior < CClotBody
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
-		Music_SetRaidMusic("#zombiesurvival/fusion_raid/music/fusion_bgm.mp3", 178, true);
+		Music_SetRaidMusic("#zombiesurvival/fusion_raid/fusion_bgm.mp3", 178, true);
 		
 		npc.Anger = false;
 		b_angered_twice[npc.index] = false;
