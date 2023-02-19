@@ -149,9 +149,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			int entity = MaxClients+1;
 			while(TF2_GetWearable(client, entity))
 			{
-				int effects;
-				GetEntProp(entity, Prop_Send, "m_fEffects", effects);
-				SetEntProp(entity, Prop_Send, "m_fEffects", effects &= ~ EF_NODRAW);
+				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 			}
 		}
 		
