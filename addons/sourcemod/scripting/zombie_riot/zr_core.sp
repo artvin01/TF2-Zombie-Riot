@@ -1352,7 +1352,14 @@ void ReviveAll(bool raidspawned = false)
 				else if(dieingstate[client] > 0)
 				{
 					GiveCompleteInvul(client, 2.0);
-					dieingstate[client] -= 8; //-8 for incode reasons, check dieing timer.
+					if(b_LeftForDead[client])
+					{
+						dieingstate[client] = -8; //-8 for incode reasons, check dieing timer.
+					}
+					else
+					{
+						dieingstate[client] = 0;
+					}
 					Store_ApplyAttribs(client);
 					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 					int entity, i;
