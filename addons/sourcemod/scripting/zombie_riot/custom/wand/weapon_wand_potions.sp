@@ -573,7 +573,7 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 					ApplyTempAttrib(entity, 6, 0.333, true);
 					ApplyTempAttrib(entity, 97, 0.333, false);
 					ApplyTempAttrib(entity, 410, 0.666, false);
-					ApplyTempAttrib(weapon, 733, 0.333, false);
+					ApplyTempAttrib(entity, 733, 0.333, false);
 					EmitSoundToClient(target, SOUND_TRANSFORM2);
 
 					TonicBuff[target] = Mana_Regen_Delay[client];

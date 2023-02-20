@@ -1163,11 +1163,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 		if(f_HussarBuff[attacker] > GetGameTime()) //hussar!
 		{
-			damage *= 1.15;
+			damage *= 1.10;
 		}
 		if(f_HussarBuff[victim] > GetGameTime()) //hussar!
 		{
-			damage *= 0.85;
+			damage *= 0.90;
 		}
 		
 		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!

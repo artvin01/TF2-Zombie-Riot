@@ -489,6 +489,7 @@ int h_NpcCollissionHookType[MAXENTITIES];
 #define EP_DEALS_SLASH_DAMAGE              	(1 << 1)   					// Slash Damage (For no npc scaling, or ignoring resistances.)
 #define EP_DEALS_CLUB_DAMAGE              	(1 << 2)   					// To deal melee damage.
 #define EP_GIBS_REGARDLESS              	(1 << 3)   					// Even if its anything then blast, it will still gib.
+#define EP_DEALS_PLASMA_DAMAGE             	(1 << 4)   					// for wands to deal plasma dmg
 
 
 

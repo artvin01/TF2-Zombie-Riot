@@ -3150,7 +3150,7 @@ public bool BuildingCustomCommand(int client)
 					if(f_BuildingIsNotReady[client] < GetGameTime())
 					{
 						//Ammo_Count_Used[client]--;
-						f_BuildingIsNotReady[client] = GetGameTime() + 120.0;
+						f_BuildingIsNotReady[client] = GetGameTime() + 90.0;
 						
 						if(Village_Flags[client] & VILLAGE_050)
 						{
@@ -4663,7 +4663,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 		if(tier)
 		{
 			menu.AddItem("", TranslateItemName(viewer, "Jungle Drums", ""), ITEMDRAW_DISABLED);
-			menu.AddItem("", "Increases attack speed of all", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Increases attack speed and reloadspeed of all", ITEMDRAW_DISABLED);
 			menu.AddItem("", "players and allies in the radius.\n ", ITEMDRAW_DISABLED);
 		}
 		else
@@ -4680,7 +4680,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 		FormatEx(buffer, sizeof(buffer), "%s [$1500]%s", TranslateItemName(viewer, "Jungle Drums", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : Village_TierExists[0] == 2 ? " [Tier 2 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_200), buffer, (!owner || cash < 1500) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Increases attack speed of all", ITEMDRAW_DISABLED);
-		menu.AddItem("", "players and allies in the radius.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "players and allies in the radius by 5% and healrate by 8%.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(paths < 2)
 	{
@@ -4695,7 +4695,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	if(Village_Flags[client] & VILLAGE_050)
 	{
 		menu.AddItem("", TranslateItemName(viewer, "Homeland Defense", ""), ITEMDRAW_DISABLED);
-		menu.AddItem("", "Ability now increases attack speed by 100%", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Ability now increases attack speed and reloadspeed by 50%", ITEMDRAW_DISABLED);
 		menu.AddItem("", "for all players and allies for 20 seconds.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_040)
@@ -4704,13 +4704,13 @@ static void VillageUpgradeMenu(int client, int viewer)
 		{
 			menu.AddItem("", TranslateItemName(viewer, "Call To Arms", ""), ITEMDRAW_DISABLED);
 			menu.AddItem("", "Press E to activate an ability that gives nearby", ITEMDRAW_DISABLED);
-			menu.AddItem("", "players and allies +50% attack speed for a short time.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "players and allies +25% attack speed and reloadspeed for a short time.\n ", ITEMDRAW_DISABLED);
 		}
 		else
 		{
 			FormatEx(buffer, sizeof(buffer), "%s [$15000]", TranslateItemName(viewer, "Homeland Defense", ""));
 			menu.AddItem(VilN(VILLAGE_050), buffer, (!owner || cash < 15000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("", "Ability now increases attack speed by 100%", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Ability now increases attack speed and reloadspeed by 50%", ITEMDRAW_DISABLED);
 			menu.AddItem("", "for all players and allies for 20 seconds.\n ", ITEMDRAW_DISABLED);
 		}
 	}
@@ -4719,7 +4719,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 		FormatEx(buffer, sizeof(buffer), "%s [$8000]%s", TranslateItemName(viewer, "Call To Arms", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_040), buffer, (!owner || cash < 8000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Press E to activate an ability that gives nearby", ITEMDRAW_DISABLED);
-		menu.AddItem("", "players and allies +50% attack speed for a short time.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "players and allies +25% attack speed and reloadspeed for a short time.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_020)
 	{
@@ -5038,11 +5038,11 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						{
 							Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
 							if(attrib != Address_Null)
-								TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) * 0.97);
+								TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) * 0.95);
 							
 							attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
 							if(attrib != Address_Null)
-								TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) * 0.97);
+								TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) * 0.95);
 							
 							attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
 							if(attrib != Address_Null)
@@ -5062,15 +5062,15 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						{
 							Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
 							if(attrib != Address_Null)
-								TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) * 0.75);
+								TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) * 0.875);
 							
 							attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
 							if(attrib != Address_Null)
-								TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) * 0.75);
+								TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) * 0.875);
 							
 							attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
 							if(attrib != Address_Null)
-								TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) * 1.5);
+								TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) * 1.25);
 						}
 					}
 				}
@@ -5093,11 +5093,11 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					{
 						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
 						if(attrib != Address_Null)
-							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.97);
+							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.95);
 						
 						attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
 						if(attrib != Address_Null)
-							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.97);
+							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.95);
 						
 						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
 						if(attrib != Address_Null)
@@ -5117,15 +5117,15 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					{
 						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
 						if(attrib != Address_Null)
-							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.75);
+							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.875);
 						
 						attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
 						if(attrib != Address_Null)
-							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.75);
+							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.875);
 						
 						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
 						if(attrib != Address_Null)
-							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.5);
+							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.25);
 					}
 				}
 			}
@@ -5188,13 +5188,13 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						}
 						case VILLAGE_040:
 						{
-							npc.m_fGunFirerate *= 0.75;
-							npc.m_fGunReload *= 0.75;
+							npc.m_fGunFirerate *= 0.875;
+							npc.m_fGunReload *= 0.875;
 						}
 						case VILLAGE_050:
 						{
-							npc.m_fGunFirerate *= 0.75;
-							npc.m_fGunReload *= 0.75;
+							npc.m_fGunFirerate *= 0.875;
+							npc.m_fGunReload *= 0.875;
 						}
 					}
 				}
@@ -5239,13 +5239,13 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					}
 					case VILLAGE_040:
 					{
-						npc.m_fGunFirerate /= 0.75;
-						npc.m_fGunReload /= 0.75;
+						npc.m_fGunFirerate /= 0.875;
+						npc.m_fGunReload /= 0.875;
 					}
 					case VILLAGE_050:
 					{
-						npc.m_fGunFirerate /= 0.75;
-						npc.m_fGunReload /= 0.75;
+						npc.m_fGunFirerate /= 0.875;
+						npc.m_fGunReload /= 0.875;
 					}
 				}
 			}
@@ -5278,11 +5278,11 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 							}
 							case VILLAGE_040:
 							{
-								npc.BonusFireRate *= 0.75;
+								npc.BonusFireRate *= 0.875;
 							}
 							case VILLAGE_050:
 							{
-								npc.BonusFireRate *= 0.75;
+								npc.BonusFireRate *= 0.875;
 							}
 						}
 					}
@@ -5301,11 +5301,11 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						}
 						case VILLAGE_040:
 						{
-							npc.BonusFireRate /= 0.75;
+							npc.BonusFireRate /= 0.875;
 						}
 						case VILLAGE_050:
 						{
-							npc.BonusFireRate /= 0.75;
+							npc.BonusFireRate /= 0.875;
 						}
 					}
 				}

@@ -667,9 +667,9 @@ static void Wand_Create_Tornado(int client, int iCarrier)
 	Projectile_To_Particle[iCarrier] = EntIndexToEntRef(particle);
 	*/
 	
-	TORNADO_Radius[client] = 150.0;
+	TORNADO_Radius[client] = 215.0;
 	
-	float damage = 50.0;
+	float damage = 65.0;
 	Address address = TF2Attrib_GetByDefIndex(Projectile_To_Weapon[iCarrier], 410);
 	if(address != Address_Null)
 		damage *= TF2Attrib_GetValue(address);
@@ -724,34 +724,10 @@ public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 	
 	float flCarrierPos[3], targPos[3];
 	GetEntPropVector(iCarrier, Prop_Send, "m_vecOrigin", flCarrierPos);
+
+//	i_ExplosiveProjectileHexArray[weapon] = EP_DEALS_PLASMA_DAMAGE;
 	
-	Damage_Reduction[iCarrier] = 1.0;
-					
-	for(int targ; targ<i_MaxcountNpc; targ++)
-	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-		if (IsValidEntity(baseboss_index))
-		{
-			if(!b_NpcHasDied[baseboss_index])
-			{
-				if (GetEntProp(client, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
-				{
-					GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", targPos);
-					if (GetVectorDistance(flCarrierPos, targPos) <= TORNADO_Radius[client])
-					{
-						float distance_1 = GetVectorDistance(flCarrierPos, targPos);
-						float damage_1 = Custom_Explosive_Logic(client, distance_1, 0.75, Damage_Tornado[iCarrier], TORNADO_Radius[client]+1.0);				
-						damage_1 /= Damage_Reduction[iCarrier];
-						
-						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1, DMG_PLASMA, -1, {0.0, 0.0, 50000.0}, flCarrierPos);
-						
-						Damage_Reduction[iCarrier] *= EXPLOSION_AOE_DAMAGE_FALLOFF;
-						//use blast cus it does its own calculations for that ahahahah im evil (you scare me sometime man)
-					}
-				}
-			}
-		}
-	}
+	Explode_Logic_Custom(Damage_Tornado[iCarrier], client, client, -1, flCarrierPos, TORNADO_Radius[client],_,_,false);
 	
 	return Plugin_Continue;
 }
