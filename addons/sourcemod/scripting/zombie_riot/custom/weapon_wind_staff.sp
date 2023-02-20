@@ -3,7 +3,6 @@
 
 static float Strength[MAXTF2PLAYERS];
 static float Damage_Projectile[MAXENTITIES]={0.0, ...};
-static float Damage_Reduction[MAXENTITIES]={0.0, ...};
 static float Damage_Tornado[MAXENTITIES]={0.0, ...};
 static float Duration_Tornado[MAXENTITIES]={0.0, ...};
 static int Projectile_To_Client[MAXENTITIES]={0, ...};
@@ -722,7 +721,7 @@ public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 		return Plugin_Stop;
 	}
 	
-	float flCarrierPos[3], targPos[3];
+	float flCarrierPos[3];//, targPos[3];
 	GetEntPropVector(iCarrier, Prop_Send, "m_vecOrigin", flCarrierPos);
 
 //	i_ExplosiveProjectileHexArray[weapon] = EP_DEALS_PLASMA_DAMAGE;

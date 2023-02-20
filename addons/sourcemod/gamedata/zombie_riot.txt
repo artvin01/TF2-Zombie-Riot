@@ -707,6 +707,13 @@
 				"return" 		"void"
 				"this" 			"entity"
 			}
+			"CBaseObject::StartUpgrading()" 
+			{
+				"offset" 		"CBaseObject::StartUpgrading()" 
+				"hooktype" 		"entity"
+				"return" 		"void"
+				"this" 			"entity"
+			}
 			"CTFPlayer::SpeakConceptIfAllowed()" 
 			{
 				"signature"		"CTFPlayer::SpeakConceptIfAllowed()"
@@ -772,6 +779,11 @@
 			{
 				"windows" 	"470"
 				"linux" 	"477"
+			}
+			"CBaseObject::StartUpgrading()" 
+			{
+				"windows" 	"382"
+				"linux" 	"384"
 			}
 			"CTFGrenadePipebombProjectile::PipebombTouch" 
 			{
