@@ -446,7 +446,18 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		if(npc.m_bInKame)
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,true);
+			if(npc.m_iTarget == -1)
+			{
+				npc.m_iTarget = GetClosestTarget(npc.index);
+			}
+		}
+		else
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index);
+		}
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	
@@ -548,6 +559,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 						{
 							GiveNamedItem(client, "Cured Silvester");
+							CPrintToChat(client,"{default}You gained his favor, you obtained: {yellow}''Cured Silvester''{default}!");
 						}
 					}
 				}
