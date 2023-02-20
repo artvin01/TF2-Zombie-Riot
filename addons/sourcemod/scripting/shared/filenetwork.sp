@@ -43,7 +43,7 @@ void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", int del
 
 	DataPack pack = new DataPack();
 	pack.WriteString(sound);
-	RequestFrames(FileNetwork_AddSoundFrame, delay, data);
+	RequestFrames(FileNetwork_AddSoundFrame, delay, pack);
 }
 
 public void FileNetwork_AddSoundFrame(DataPack pack)
