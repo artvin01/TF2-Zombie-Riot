@@ -2074,12 +2074,20 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			}
 			else
 			{
-				DataPack pack;
+				DataPack pack = new DataPack();
 				//The delay is usually 0.2 seconds.
-				CreateDataTimer(0.2, Timer_Do_Melee_Attack, pack, TIMER_FLAG_NO_MAPCHANGE);
+			
+		//		CreateDataTimer(0.2, Timer_Do_Melee_Attack, pack, TIMER_FLAG_NO_MAPCHANGE);
+
+				//every 0.1 has 6 frames
+				//soo..
+				//we will use request frames in this case, reasoningbeing is that melee's should be relieable, timers have an ugly 0.1 delay thing where it
+				//only does check every 0.1 seconds.
+				//passanger ability for example could benifit from this, although thats unneeded.
 				pack.WriteCell(GetClientUserId(client));
 				pack.WriteCell(EntIndexToEntRef(weapon));
 				pack.WriteString(classname);
+				RequestFrames(Timer_Do_Melee_Attack, 12, pack);
 			}
 		}
 	}
