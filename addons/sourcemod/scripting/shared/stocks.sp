@@ -798,14 +798,17 @@ void RequestFrames(RequestFrameCallback func, int frames, any data=0)
 public void RequestFramesCallback(DataPack pack)
 {
 	pack.Reset();
-	RequestFrameCallback func = view_as<RequestFrameCallback>(pack.ReadFunction());
+	Function func = pack.ReadFunction();
 	any data = pack.ReadCell();
 
 	int frames = pack.ReadCell();
-	if(frames < 2)
+	if(frames < 1)
 	{
-		RequestFrame(func, data);
 		delete pack;
+		
+		Call_StartFunction(null, func);
+		Call_PushCell(data);
+		Call_Finish();
 	}
 	else
 	{
