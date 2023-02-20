@@ -785,7 +785,7 @@ stock float RemoveExtraSpeed(TFClassType class, float value)
 			return value / 300.0;
 	}
 }
-/*
+
 void RequestFrames(RequestFrameCallback func, int frames, any data=0)
 {
 	DataPack pack = new DataPack();
@@ -814,7 +814,7 @@ public void RequestFramesCallback(DataPack pack)
 		RequestFrame(RequestFramesCallback, pack);
 	}
 }
-*/
+
 /*
 int TF2_CreateGlow(int entity, const char[] model, int owner, int color[4])
 {

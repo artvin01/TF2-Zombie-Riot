@@ -4,6 +4,7 @@
 static ArrayList SoundList;
 static StringMap SoundAlts;
 static int SoundLevel[MAXTF2PLAYERS];
+static bool Downloading[MAXTF2PLAYERS];
 
 void FileNetwork_PluginStart()
 {
@@ -27,10 +28,11 @@ void FileNetwork_ClientPutInServer(int client)
 
 void FileNetwork_ClientDisconnect(int client)
 {
+	Downloading[client] = false;
 	SoundLevel[client] = 0;
 }
 
-void PrecacheSoundCustom(const char[] sound, const char[] altsound = "")
+void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", int delay = 5)
 {
 	PrecacheSound(sound);
 	if(altsound[0])
@@ -39,8 +41,35 @@ void PrecacheSoundCustom(const char[] sound, const char[] altsound = "")
 		SoundAlts.SetString(sound, altsound);
 	}
 
+	DataPack pack = new DataPack();
+	pack.WriteString(sound);
+	RequestFrames(FileNetwork_AddSoundFrame, delay, data);
+}
+
+public void FileNetwork_AddSoundFrame(DataPack pack)
+{
+	pack.Reset();
+
+	char buffer[PLATFORM_MAX_PATH];
+	pack.ReadString(buffer, sizeof(buffer));
+
+	AddSoundFile(buffer);
+}
+
+static void AddSoundFile(const char[] sound)
+{
 	if(SoundList.FindString(sound) == -1)
+	{
 		SoundList.PushString(sound);
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(SoundLevel[client] && !Downloading[client])
+			{
+				SoundLevel[client]--;
+				SendNextFile(client);
+			}
+		}
+	}
 }
 
 static void FormatFileCheck(const char[] file, int client, char[] output, int length)
@@ -55,6 +84,8 @@ static void SendNextFile(int client)
 	// First, request a dummy file to see if they have it downloaded before
 	if(SoundLevel[client] < SoundList.Length)
 	{
+		Downloading[client] = true;
+		
 		static char sound[PLATFORM_MAX_PATH];
 		SoundList.GetString(SoundLevel[client], sound, sizeof(sound));
 		Format(sound, sizeof(sound), "sound/%s", sound[sound[0] == '#' ? 1 : 0]);
@@ -68,6 +99,8 @@ static void SendNextFile(int client)
 	}
 	else
 	{
+		Downloading[client] = false;
+
 		PrintToConsole(client, "---");
 		PrintToConsole(client, "[ZR/RPG] Finished Downloading/Verifying Files! You will hear and see everything as intended now.");
 		PrintToConsole(client, "---");
