@@ -785,7 +785,7 @@ stock float RemoveExtraSpeed(TFClassType class, float value)
 			return value / 300.0;
 	}
 }
-/*
+
 void RequestFrames(RequestFrameCallback func, int frames, any data=0)
 {
 	DataPack pack = new DataPack();
@@ -798,14 +798,17 @@ void RequestFrames(RequestFrameCallback func, int frames, any data=0)
 public void RequestFramesCallback(DataPack pack)
 {
 	pack.Reset();
-	RequestFrameCallback func = view_as<RequestFrameCallback>(pack.ReadFunction());
+	Function func = pack.ReadFunction();
 	any data = pack.ReadCell();
 
 	int frames = pack.ReadCell();
-	if(frames < 2)
+	if(frames < 1)
 	{
-		RequestFrame(func, data);
 		delete pack;
+		
+		Call_StartFunction(null, func);
+		Call_PushCell(data);
+		Call_Finish();
 	}
 	else
 	{
@@ -814,7 +817,7 @@ public void RequestFramesCallback(DataPack pack)
 		RequestFrame(RequestFramesCallback, pack);
 	}
 }
-*/
+
 /*
 int TF2_CreateGlow(int entity, const char[] model, int owner, int color[4])
 {

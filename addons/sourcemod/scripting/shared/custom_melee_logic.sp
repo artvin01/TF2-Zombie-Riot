@@ -582,8 +582,7 @@ stock bool IsValidCurrentWeapon(int client, int weapon)
 	return false;
 }
 
-
-public Action Timer_Do_Melee_Attack(Handle timer, DataPack pack)
+public void Timer_Do_Melee_Attack(DataPack pack)
 {
 	pack.Reset();
 	int client = GetClientOfUserId(pack.ReadCell());
@@ -661,5 +660,5 @@ public Action Timer_Do_Melee_Attack(Handle timer, DataPack pack)
 		delete swingTrace;
 		FinishLagCompensation_Base_boss();
 	}
-	return Plugin_Stop;
+	delete pack;
 }

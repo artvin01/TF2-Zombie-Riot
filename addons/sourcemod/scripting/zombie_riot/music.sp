@@ -30,30 +30,30 @@ void Music_SetRaidMusic(const char[] MusicPath, int duration, bool isCustom)
 
 void Music_MapStart()
 {
-	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/1.mp3");
-	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/2.mp3");
-	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/3.mp3");
-	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/4.mp3");
-	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/5.mp3");
-	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/6.mp3");
-	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/7.mp3");
-	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/8.mp3");
-	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/9.mp3");
+	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/1.mp3",_,0);
+	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/2.mp3",_,0);
+	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/3.mp3",_,0);
+	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/4.mp3",_,0);
+	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/5.mp3",_,0);
+	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/6.mp3",_,0);
+	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/7.mp3",_,0);
+	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/8.mp3",_,0);
+	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/9.mp3",_,0);
 
-	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/1.mp3");
-	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/2.mp3");
-	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/3.mp3");
-	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/4.mp3");
-	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/5.mp3");
-	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/6.mp3");
-	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/7.mp3");
-	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/8.mp3");
-	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/9.mp3");
-	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/10.mp3");
+	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/1.mp3",_,0);
+	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/2.mp3",_,0);
+	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/3.mp3",_,0);
+	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/4.mp3",_,0);
+	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/5.mp3",_,0);
+	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/6.mp3",_,0);
+	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/7.mp3",_,0);
+	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/8.mp3",_,0);
+	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/9.mp3",_,0);
+	PrecacheSoundCustom("#zombiesurvival/beats/defaultzombiev2/10.mp3",_,0);
 	
-	PrecacheSoundCustom("#zombiesurvival/lasthuman.mp3");
-	PrecacheSoundCustom("#zombiesurvival/music_lose.mp3");
-	PrecacheSoundCustom("#zombiesurvival/music_win.mp3");
+	PrecacheSoundCustom("#zombiesurvival/lasthuman.mp3",_,1);
+	PrecacheSoundCustom("#zombiesurvival/music_lose.mp3",_,1);
+	PrecacheSoundCustom("#zombiesurvival/music_win.mp3",_,1);
 
 	MusicDisabled = FindInfoTarget("zr_nomusic");
 }
