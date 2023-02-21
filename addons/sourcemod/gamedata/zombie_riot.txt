@@ -298,6 +298,13 @@
 				"linux"		"@_ZN9CTFPlayer21SpeakConceptIfAllowedEiPKcPcjP16IRecipientFilter"
 				"windows"	"\x55\x8B\xEC\x81\xEC\xE8\x00\x00\x00\x53\x8B\xD9\x89\x5D\xFC"
 			}
+			"CTFPlayer::ManageRegularWeapons()"
+			{
+				// semi-unique xref "PlayerLoadoutUpdated"
+				"library"		"server"
+				"linux"			"@_ZN9CTFPlayer20ManageRegularWeaponsEP19TFPlayerClassData_t"
+				"windows"		"\x55\x8B\xEC\x83\xEC\x6C\x53\x56\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A"
+			}
 		}
 		"Functions"
 		{
@@ -707,6 +714,13 @@
 				"return" 		"void"
 				"this" 			"entity"
 			}
+			"CBasePlayer::EquipWearable" 
+			{
+				"offset" 		"CBasePlayer::EquipWearable"
+				"hooktype" 		"entity"
+				"return" 		"void"
+				"this" 			"entity"
+			}
 			"CTFPlayer::SpeakConceptIfAllowed()" 
 			{
 				"signature"		"CTFPlayer::SpeakConceptIfAllowed()"
@@ -732,6 +746,20 @@
 						"type"	"int"
 					}
 					"IRecipientFilter"
+					{
+						"type"	"int"
+					}
+				}
+			}
+			"CTFPlayer::ManageRegularWeapons()"
+			{
+				"signature"		"CTFPlayer::ManageRegularWeapons()"
+				"callconv"		"thiscall"
+				"return"		"void"
+				"this"			"entity"
+				"arguments"
+				{
+					"class_data"
 					{
 						"type"	"int"
 					}
@@ -772,6 +800,11 @@
 			{
 				"windows" 	"470"
 				"linux" 	"477"
+			}
+			"CBaseObject::StartUpgrading()" 
+			{
+				"windows" 	"382"
+				"linux" 	"384"
 			}
 			"CTFGrenadePipebombProjectile::PipebombTouch" 
 			{

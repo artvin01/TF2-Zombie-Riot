@@ -33,7 +33,7 @@ public void Weapon_Wand_LightningSpell(int client, int weapon, bool &result, int
 			{
 				Ability_Apply_Cooldown(client, slot, 15.0);
 				
-				float damage = 150.0;
+				float damage = 130.0;
 				
 				damage *= 7.5;
 				

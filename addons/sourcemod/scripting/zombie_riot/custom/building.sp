@@ -394,8 +394,8 @@ public bool Building_Sentry(int client, int entity)
 	i_WhatBuilding[entity] = BuildingSentrygun;
 	i_HasSentryGunAlive[client] = EntIndexToEntRef(entity);
 	b_SentryIsCustom[entity] = false;
-//	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-//	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	Building_Constructed[entity] = false;
 	CreateTimer(0.2, Building_Set_HP_Colour_Sentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	CreateTimer(0.5, Timer_DroppedBuildingWaitSentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -436,6 +436,8 @@ public bool Building_Railgun(int client, int entity)
 	//This is so low because it has to update the animation very often, this is needed.
 	//i dont want to use an sdkhook for this as i already have this here, and i dont think buildings have think, and it wouldnt be needed here
 	//anyways as i have to reuse whats in there anyways.
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -474,6 +476,10 @@ public bool Building_Mortar(int client, int entity)
 	//This is so low because it has to update the animation very often, this is needed.
 	//i dont want to use an sdkhook for this as i already have this here, and i dont think buildings have think, and it wouldnt be needed here
 	//anyways as i have to reuse whats in there anyways.
+
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
+
 	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -518,6 +524,8 @@ public bool Building_HealingStation(int client, int entity)
 	//This is so low because it has to update the animation very often, this is needed.
 	//i dont want to use an sdkhook for this as i already have this here, and i dont think buildings have think, and it wouldnt be needed here
 	//anyways as i have to reuse whats in there anyways.
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -609,8 +617,8 @@ public bool Building_DispenserWall(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_barricade");
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -641,8 +649,8 @@ public bool Building_DispenserElevator(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_elevator");
 	SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
@@ -682,8 +690,8 @@ public bool Building_AmmoBox(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 //	SetEntProp(entity, Prop_Send, "m_iAmmoMetal", 300);
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_ammobox");
@@ -723,8 +731,8 @@ public bool Building_ArmorTable(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 //	SetEntProp(entity, Prop_Send, "m_iAmmoMetal", 300);
 
@@ -768,9 +776,8 @@ public bool Building_PerkMachine(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
-	
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 //	SetEntProp(entity, Prop_Send, "m_iAmmoMetal", 300);
 
@@ -812,8 +819,8 @@ public bool Building_PackAPunch(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 //	SetEntProp(entity, Prop_Send, "m_iAmmoMetal", 300);
 
@@ -1158,7 +1165,13 @@ public void Building_TakeDamagePost(int entity, int attacker, int inflictor, flo
 			if(Building_Repair_Health[entity] > 0)
 			{
 				dmg = 0;
-				SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", Building_Repair_Health[entity] * 200 / GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
+				int progress = Building_Repair_Health[entity] * 100 / GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+				progress += 1; //so it goes to 100 :)
+				if(progress > 100)
+				{
+					progress = 100;
+				}
+				SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", progress);
 			}
 			else
 			{
@@ -3150,7 +3163,7 @@ public bool BuildingCustomCommand(int client)
 					if(f_BuildingIsNotReady[client] < GetGameTime())
 					{
 						//Ammo_Count_Used[client]--;
-						f_BuildingIsNotReady[client] = GetGameTime() + 120.0;
+						f_BuildingIsNotReady[client] = GetGameTime() + 90.0;
 						
 						if(Village_Flags[client] & VILLAGE_050)
 						{
@@ -4663,7 +4676,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 		if(tier)
 		{
 			menu.AddItem("", TranslateItemName(viewer, "Jungle Drums", ""), ITEMDRAW_DISABLED);
-			menu.AddItem("", "Increases attack speed of all", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Increases attack speed and reloadspeed of all", ITEMDRAW_DISABLED);
 			menu.AddItem("", "players and allies in the radius.\n ", ITEMDRAW_DISABLED);
 		}
 		else
@@ -4680,7 +4693,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 		FormatEx(buffer, sizeof(buffer), "%s [$1500]%s", TranslateItemName(viewer, "Jungle Drums", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : Village_TierExists[0] == 2 ? " [Tier 2 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_200), buffer, (!owner || cash < 1500) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Increases attack speed of all", ITEMDRAW_DISABLED);
-		menu.AddItem("", "players and allies in the radius.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "players and allies in the radius by 5% and healrate by 8%.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(paths < 2)
 	{
@@ -4695,7 +4708,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	if(Village_Flags[client] & VILLAGE_050)
 	{
 		menu.AddItem("", TranslateItemName(viewer, "Homeland Defense", ""), ITEMDRAW_DISABLED);
-		menu.AddItem("", "Ability now increases attack speed by 100%", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Ability now increases attack speed and reloadspeed by 50%", ITEMDRAW_DISABLED);
 		menu.AddItem("", "for all players and allies for 20 seconds.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_040)
@@ -4704,13 +4717,13 @@ static void VillageUpgradeMenu(int client, int viewer)
 		{
 			menu.AddItem("", TranslateItemName(viewer, "Call To Arms", ""), ITEMDRAW_DISABLED);
 			menu.AddItem("", "Press E to activate an ability that gives nearby", ITEMDRAW_DISABLED);
-			menu.AddItem("", "players and allies +50% attack speed for a short time.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "players and allies +25% attack speed and reloadspeed for a short time.\n ", ITEMDRAW_DISABLED);
 		}
 		else
 		{
 			FormatEx(buffer, sizeof(buffer), "%s [$15000]", TranslateItemName(viewer, "Homeland Defense", ""));
 			menu.AddItem(VilN(VILLAGE_050), buffer, (!owner || cash < 15000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("", "Ability now increases attack speed by 100%", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Ability now increases attack speed and reloadspeed by 50%", ITEMDRAW_DISABLED);
 			menu.AddItem("", "for all players and allies for 20 seconds.\n ", ITEMDRAW_DISABLED);
 		}
 	}
@@ -4719,7 +4732,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 		FormatEx(buffer, sizeof(buffer), "%s [$8000]%s", TranslateItemName(viewer, "Call To Arms", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_040), buffer, (!owner || cash < 8000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Press E to activate an ability that gives nearby", ITEMDRAW_DISABLED);
-		menu.AddItem("", "players and allies +50% attack speed for a short time.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "players and allies +25% attack speed and reloadspeed for a short time.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_020)
 	{
@@ -5038,11 +5051,11 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						{
 							Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
 							if(attrib != Address_Null)
-								TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) * 0.97);
+								TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) * 0.95);
 							
 							attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
 							if(attrib != Address_Null)
-								TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) * 0.97);
+								TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) * 0.95);
 							
 							attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
 							if(attrib != Address_Null)
@@ -5062,15 +5075,15 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						{
 							Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
 							if(attrib != Address_Null)
-								TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) * 0.75);
+								TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) * 0.875);
 							
 							attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
 							if(attrib != Address_Null)
-								TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) * 0.75);
+								TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) * 0.875);
 							
 							attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
 							if(attrib != Address_Null)
-								TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) * 1.5);
+								TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) * 1.25);
 						}
 					}
 				}
@@ -5093,11 +5106,11 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					{
 						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
 						if(attrib != Address_Null)
-							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.97);
+							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.95);
 						
 						attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
 						if(attrib != Address_Null)
-							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.97);
+							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.95);
 						
 						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
 						if(attrib != Address_Null)
@@ -5117,15 +5130,15 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					{
 						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
 						if(attrib != Address_Null)
-							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.75);
+							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.875);
 						
 						attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
 						if(attrib != Address_Null)
-							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.75);
+							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.875);
 						
 						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
 						if(attrib != Address_Null)
-							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.5);
+							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.25);
 					}
 				}
 			}
@@ -5188,13 +5201,13 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						}
 						case VILLAGE_040:
 						{
-							npc.m_fGunFirerate *= 0.75;
-							npc.m_fGunReload *= 0.75;
+							npc.m_fGunFirerate *= 0.875;
+							npc.m_fGunReload *= 0.875;
 						}
 						case VILLAGE_050:
 						{
-							npc.m_fGunFirerate *= 0.75;
-							npc.m_fGunReload *= 0.75;
+							npc.m_fGunFirerate *= 0.875;
+							npc.m_fGunReload *= 0.875;
 						}
 					}
 				}
@@ -5239,13 +5252,13 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					}
 					case VILLAGE_040:
 					{
-						npc.m_fGunFirerate /= 0.75;
-						npc.m_fGunReload /= 0.75;
+						npc.m_fGunFirerate /= 0.875;
+						npc.m_fGunReload /= 0.875;
 					}
 					case VILLAGE_050:
 					{
-						npc.m_fGunFirerate /= 0.75;
-						npc.m_fGunReload /= 0.75;
+						npc.m_fGunFirerate /= 0.875;
+						npc.m_fGunReload /= 0.875;
 					}
 				}
 			}
@@ -5278,11 +5291,11 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 							}
 							case VILLAGE_040:
 							{
-								npc.BonusFireRate *= 0.75;
+								npc.BonusFireRate *= 0.875;
 							}
 							case VILLAGE_050:
 							{
-								npc.BonusFireRate *= 0.75;
+								npc.BonusFireRate *= 0.875;
 							}
 						}
 					}
@@ -5301,11 +5314,11 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						}
 						case VILLAGE_040:
 						{
-							npc.BonusFireRate /= 0.75;
+							npc.BonusFireRate /= 0.875;
 						}
 						case VILLAGE_050:
 						{
-							npc.BonusFireRate /= 0.75;
+							npc.BonusFireRate /= 0.875;
 						}
 					}
 				}
@@ -6018,6 +6031,9 @@ public bool Building_Summoner(int client, int entity)
 	pack.WriteCell(entity);
 	i_WhatBuilding[entity] = BuildingSummoner;
 	
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
+
 	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 1.15);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -6211,8 +6227,8 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 					int required = RoundFloat((TrainingIn[owner] - TrainingStartedIn[owner]) * 2.0);
 					int current = required - RoundToCeil((TrainingIn[owner] - gameTime) * 2.0);
 					
-					SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", current);
-					SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", required);
+				//	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", current);
+				//	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", required);
 				}
 			}
 		}
