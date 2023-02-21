@@ -11,7 +11,7 @@ static bool IsRespawning;
 #endif
 
 static DynamicHook g_WrenchSmack;
-DynamicHook g_ObjStartUpgrading;
+//DynamicHook g_ObjStartUpgrading;
 
 static DynamicDetour gH_MaintainBotQuota = null;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
@@ -98,7 +98,7 @@ void DHook_Setup()
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	
 	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
-	g_ObjStartUpgrading = DHook_CreateVirtual(gamedata, "CBaseObject::StartUpgrading()");
+//	g_ObjStartUpgrading = DHook_CreateVirtual(gamedata, "CBaseObject::StartUpgrading()"); //causes crashes.
 
 	DHook_CreateDetour(gamedata, "CTFPlayer::SpeakConceptIfAllowed()", SpeakConceptIfAllowed_Pre, SpeakConceptIfAllowed_Post);
 	
@@ -196,11 +196,13 @@ public MRESReturn Wrench_SmackPost(int entity, DHookReturn ret, DHookParam param
 	return MRES_Ignored;
 }
 //NEVER upgrade buildings, EVER.
+/*
 public MRESReturn ObjStartUpgrading_SmackPre(int entity, DHookReturn ret, DHookParam param)
 {	
 	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199); //just incase.
 	return MRES_Supercede;
 }
+*/
 
 
 

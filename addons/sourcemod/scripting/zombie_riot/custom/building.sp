@@ -394,8 +394,8 @@ public bool Building_Sentry(int client, int entity)
 	i_WhatBuilding[entity] = BuildingSentrygun;
 	i_HasSentryGunAlive[client] = EntIndexToEntRef(entity);
 	b_SentryIsCustom[entity] = false;
-//	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-//	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	Building_Constructed[entity] = false;
 	CreateTimer(0.2, Building_Set_HP_Colour_Sentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	CreateTimer(0.5, Timer_DroppedBuildingWaitSentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -436,6 +436,8 @@ public bool Building_Railgun(int client, int entity)
 	//This is so low because it has to update the animation very often, this is needed.
 	//i dont want to use an sdkhook for this as i already have this here, and i dont think buildings have think, and it wouldnt be needed here
 	//anyways as i have to reuse whats in there anyways.
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -474,6 +476,10 @@ public bool Building_Mortar(int client, int entity)
 	//This is so low because it has to update the animation very often, this is needed.
 	//i dont want to use an sdkhook for this as i already have this here, and i dont think buildings have think, and it wouldnt be needed here
 	//anyways as i have to reuse whats in there anyways.
+
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
+
 	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -518,6 +524,8 @@ public bool Building_HealingStation(int client, int entity)
 	//This is so low because it has to update the animation very often, this is needed.
 	//i dont want to use an sdkhook for this as i already have this here, and i dont think buildings have think, and it wouldnt be needed here
 	//anyways as i have to reuse whats in there anyways.
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -609,8 +617,8 @@ public bool Building_DispenserWall(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_barricade");
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -641,8 +649,8 @@ public bool Building_DispenserElevator(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_elevator");
 	SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
@@ -682,8 +690,8 @@ public bool Building_AmmoBox(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 //	SetEntProp(entity, Prop_Send, "m_iAmmoMetal", 300);
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_ammobox");
@@ -723,8 +731,8 @@ public bool Building_ArmorTable(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 //	SetEntProp(entity, Prop_Send, "m_iAmmoMetal", 300);
 
@@ -768,9 +776,8 @@ public bool Building_PerkMachine(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
-	
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 //	SetEntProp(entity, Prop_Send, "m_iAmmoMetal", 300);
 
@@ -812,8 +819,8 @@ public bool Building_PackAPunch(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 //	SetEntProp(entity, Prop_Send, "m_iAmmoMetal", 300);
 
@@ -1158,7 +1165,13 @@ public void Building_TakeDamagePost(int entity, int attacker, int inflictor, flo
 			if(Building_Repair_Health[entity] > 0)
 			{
 				dmg = 0;
-				SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", Building_Repair_Health[entity] * 200 / GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
+				int progress = Building_Repair_Health[entity] * 100 / GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+				progress += 1; //so it goes to 100 :)
+				if(progress > 100)
+				{
+					progress = 100;
+				}
+				SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", progress);
 			}
 			else
 			{
@@ -6018,6 +6031,9 @@ public bool Building_Summoner(int client, int entity)
 	pack.WriteCell(entity);
 	i_WhatBuilding[entity] = BuildingSummoner;
 	
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
+
 	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 1.15);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -6211,8 +6227,8 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 					int required = RoundFloat((TrainingIn[owner] - TrainingStartedIn[owner]) * 2.0);
 					int current = required - RoundToCeil((TrainingIn[owner] - gameTime) * 2.0);
 					
-					SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", current);
-					SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", required);
+				//	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", current);
+				//	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", required);
 				}
 			}
 		}

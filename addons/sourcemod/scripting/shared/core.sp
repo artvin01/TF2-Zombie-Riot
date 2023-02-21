@@ -2414,7 +2414,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		
 		else if(!StrContains(classname, "obj_"))
 		{
-			g_ObjStartUpgrading.HookEntity(Hook_Pre, entity, ObjStartUpgrading_SmackPre);
+		//	g_ObjStartUpgrading.HookEntity(Hook_Pre, entity, ObjStartUpgrading_SmackPre); //causes crashes.
 			//prevent upgrades at all times.
 			b_BuildingHasDied[entity] = false;
 			npc.bCantCollidieAlly = true;
