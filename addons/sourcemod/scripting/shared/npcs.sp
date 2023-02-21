@@ -1324,15 +1324,15 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 		if(f_HussarBuff[victim] > GetGameTime()) //hussar!
 		{
-			damage *= 0.85;
+			damage *= 0.90;
 		}
 		if(f_HussarBuff[attacker] > GetGameTime()) //hussar!
 		{
-			damage *= 1.15;
+			damage *= 1.10;
 		}
 		if(f_Ocean_Buff_Stronk_Buff[attacker] > GetGameTime()) //hussar!
 		{
-			damage *= 1.30;
+			damage *= 1.25;
 		}
 		else if (f_Ocean_Buff_Weak_Buff[attacker] > GetGameTime()) //hussar!
 		{
@@ -1349,11 +1349,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 		if(f_HighTeslarDebuff[victim] > GetGameTime())
 		{
-			damage *= 1.25;
+			damage *= 1.35;
 		}
 		else if(f_LowTeslarDebuff[victim] > GetGameTime())
 		{
-			damage *= 1.15;
+			damage *= 1.25;
 		}
 		
 		if(f_HighIceDebuff[victim] > GetGameTime())
