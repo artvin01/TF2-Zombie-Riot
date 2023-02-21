@@ -4135,3 +4135,10 @@ void MakePlayerGiveResponseVoice(int client, int status)
 		}
 	}
 }
+
+void KillDyingGlowEffect(int client)
+{
+	int entity = EntRefToEntIndex(i_DyingParticleIndication[client]);
+	if(entity > MaxClients)
+		RemoveEntity(entity);
+}

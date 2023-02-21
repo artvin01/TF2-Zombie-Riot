@@ -158,8 +158,6 @@ void OnWrenchCreated(int entity)
 	g_WrenchSmack.HookEntity(Hook_Pre, entity, Wrench_SmackPre);
 	g_WrenchSmack.HookEntity(Hook_Post, entity, Wrench_SmackPost);
 }
-//Bad news, resort to teleorting.
-
 static float f_TeleportedPosWrenchSmack[MAXENTITIES][3];
 
 public MRESReturn Wrench_SmackPre(int entity, DHookReturn ret, DHookParam param)

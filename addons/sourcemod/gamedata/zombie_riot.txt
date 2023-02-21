@@ -707,9 +707,9 @@
 				"return" 		"void"
 				"this" 			"entity"
 			}
-			"CBaseObject::StartUpgrading()" 
+			"CBasePlayer::EquipWearable" 
 			{
-				"offset" 		"CBaseObject::StartUpgrading()" 
+				"offset" 		"CBasePlayer::EquipWearable"
 				"hooktype" 		"entity"
 				"return" 		"void"
 				"this" 			"entity"
