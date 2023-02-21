@@ -3944,18 +3944,18 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(SpawnWeapon_Special(client, "tf_weapon_pda_engineer_destroy", 26, 100, 5, "671 ; 1"));
 	*/
 
-	int entity = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
-	if(entity != INVALID_ENT_REFERENCE)
-		TF2_RemoveWearable(entity);
+	int watch_entity_attribs = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
+	if(watch_entity_attribs != INVALID_ENT_REFERENCE)
+		TF2_RemoveWearable(client, watch_entity_attribs);
 
-	entity = GiveWearable(client, 0);
-	TF2Attrib_SetByDefIndex(entity, 221, -99.0);
-	TF2Attrib_SetByDefIndex(entity, 160, 1.0);
-	TF2Attrib_SetByDefIndex(entity, 35, 0.0);
-	TF2Attrib_SetByDefIndex(entity, 816, 1.0);
-	TF2Attrib_SetByDefIndex(entity, 671, 1.0);
-	TF2Attrib_SetByDefIndex(entity, 34, 999.0);
-	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(entity);
+	watch_entity_attribs = GiveWearable(client, 0);
+	TF2Attrib_SetByDefIndex(watch_entity_attribs, 221, -99.0);
+	TF2Attrib_SetByDefIndex(watch_entity_attribs, 160, 1.0);
+	TF2Attrib_SetByDefIndex(watch_entity_attribs, 35, 0.0);
+	TF2Attrib_SetByDefIndex(watch_entity_attribs, 816, 1.0);
+	TF2Attrib_SetByDefIndex(watch_entity_attribs, 671, 1.0);
+	TF2Attrib_SetByDefIndex(watch_entity_attribs, 34, 999.0);
+	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(watch_entity_attribs);
 	
 #if defined ZR
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
