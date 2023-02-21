@@ -1331,9 +1331,10 @@ void ReviveAll(bool raidspawned = false)
 					SetEntityRenderMode(entity, RENDER_NORMAL);
 					SetEntityRenderColor(entity, 255, 255, 255, 255);
 				}
-				SetEntityRenderMode(client, RENDER_NORMAL);
-				SetEntityRenderColor(client, 255, 255, 255, 255);
 			}
+			//just make visible.
+			SetEntityRenderMode(client, RENDER_NORMAL);
+			SetEntityRenderColor(client, 255, 255, 255, 255);
 
 			i_AmountDowned[client] = 0;
 			DoOverlay(client, "");

@@ -2666,6 +2666,10 @@ float dmg_against_entity_multiplier = 3.0)
 	{
 		damage_flags |= DMG_CLUB;
 	}
+	else if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_PLASMA_DAMAGE))
+	{
+		damage_flags |= DMG_PLASMA;
+	}
 	else
 	{
 		damage_flags |= DMG_BLAST;
@@ -4130,4 +4134,11 @@ void MakePlayerGiveResponseVoice(int client, int status)
 			}
 		}
 	}
+}
+
+void KillDyingGlowEffect(int client)
+{
+	int entity = EntRefToEntIndex(i_DyingParticleIndication[client]);
+	if(entity > MaxClients)
+		RemoveEntity(entity);
 }

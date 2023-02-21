@@ -347,3 +347,22 @@ stock void Custom_SetAbsVelocity(int client, const float viewAngles[3])
 }
 
 #define TeleportEntity Custom_TeleportEntity
+
+
+void Edited_TF2_RegeneratePlayer(int client)
+{
+	TF2_SetPlayerClass(client, CurrentClass[client], false, false);
+
+
+	KillDyingGlowEffect(client);
+
+	//delete at all times, they have no purpose here, you respawn.
+	TF2_RegeneratePlayer(client);
+
+	//player needs to be fully nowmally visible.
+	SetEntityRenderMode(client, RENDER_NORMAL);
+	SetEntityRenderColor(client, 255, 255, 255, 255);
+}
+
+#define TF2_RegeneratePlayer Edited_TF2_RegeneratePlayer
+
