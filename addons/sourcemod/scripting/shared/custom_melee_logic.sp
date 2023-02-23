@@ -126,7 +126,7 @@ static const char g_KatanaHitWorld[][] = {
 	"weapons/samurai/tf_katana_impact_object_02.wav",
 	"weapons/samurai/tf_katana_impact_object_03.wav",
 };
-
+/*
 static const char g_MeatHitFlesh[][] = {
 	"weapons/holy_mackerel1.wav",
 	"weapons/holy_mackerel2.wav",
@@ -139,7 +139,7 @@ static const char g_MeatHitWorld[][] = {
 	"weapons/holy_mackerel2.wav",
 	"weapons/holy_mackerel3.wav",
 };
-
+*/
 
 void MapStart_CustomMeleePrecache()
 {
@@ -382,188 +382,26 @@ void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], fl
 	}
 }
 
-public void PlayCustomWeaponSoundFromPlayerCorrectly(int target, int client, int weapon, int item_index, const char[] classname)
+public int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int weapon_index)
 {
 	if(target == -1)
-		return;
+		return ZEROSOUND;
 		
-	
-	if(!StrContains(classname, "tf_weapon_knife"))
+	if(target > 0 && !b_NpcHasDied[target])
 	{
-		if(target > 0 && !b_NpcHasDied[target])
+		switch(weapon_index)
 		{
-			EmitSoundToAll(g_KnifeHitFlesh[GetRandomInt(0, sizeof(g_KnifeHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
+			case 649: //The Spy-cicle
+			{
+				EmitSoundToAll(g_KnifeHitFlesh[GetRandomInt(0, sizeof(g_KnifeHitFlesh) - 1)], client, SNDCHAN_ITEM, 90, _, 1.0);
+				return ZEROSOUND;
+			}
 		}
-		else
-		{
-			EmitSoundToAll(g_KnifeHitWorld[GetRandomInt(0, sizeof(g_KnifeHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-		}
+		return MELEE_HIT;
 	}
-	else if(!StrContains(classname, "tf_weapon_bat_fish"))
+	else
 	{
-		EmitSoundToAll(g_MeatHitFlesh[GetRandomInt(0, sizeof(g_MeatHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-	}
-	else if(!StrContains(classname, "tf_weapon_bonesaw"))
-	{
-		if(item_index == 1013)
-		{
-			if(target > 0 && !b_NpcHasDied[target])
-			{
-				EmitSoundToAll(g_MeatHitFlesh[GetRandomInt(0, sizeof(g_MeatHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}
-			else
-			{
-				EmitSoundToAll(g_MeatHitWorld[GetRandomInt(0, sizeof(g_MeatHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}	
-
-		}
-		else
-		{
-			if(target > 0 && !b_NpcHasDied[target])
-			{
-				EmitSoundToAll(g_UberSawHitFlesh[GetRandomInt(0, sizeof(g_UberSawHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}
-			else
-			{
-				EmitSoundToAll(g_DefaultHitWorld[GetRandomInt(0, sizeof(g_DefaultHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}			
-		}	
-		
-	}
-	else if(!StrContains(classname, "tf_weapon_club"))
-	{
-		if(target > 0 && !b_NpcHasDied[target])
-		{
-			EmitSoundToAll(g_DefaultHitFlesh[GetRandomInt(0, sizeof(g_DefaultHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-		}
-		else
-		{
-			EmitSoundToAll(g_DefaultHitWorld[GetRandomInt(0, sizeof(g_DefaultHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-		}		
-		
-	}
-	else if(!StrContains(classname, "tf_weapon_fireaxe"))
-	{
-		if(item_index == 153)
-		{
-			if(target > 0 && !b_NpcHasDied[target])
-			{
-				EmitSoundToAll(g_DefaultHitFlesh[GetRandomInt(0, sizeof(g_DefaultHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}
-			else
-			{
-				EmitSoundToAll(g_DefaultHitWorld[GetRandomInt(0, sizeof(g_DefaultHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}	
-		}
-		else if(item_index == 593)
-		{
-			if(target > 0 && !b_NpcHasDied[target])
-			{
-				EmitSoundToAll(g_ThirdDegreeHitFlesh[GetRandomInt(0, sizeof(g_ThirdDegreeHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}
-			else
-			{
-				EmitSoundToAll(g_ThirdDegreeHitWorld[GetRandomInt(0, sizeof(g_ThirdDegreeHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}				
-		}
-		else
-		{
-			if(target > 0 && !b_NpcHasDied[target])
-			{
-				EmitSoundToAll(g_AxeHitFlesh[GetRandomInt(0, sizeof(g_AxeHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}
-			else
-			{
-				EmitSoundToAll(g_DefaultHitWorld[GetRandomInt(0, sizeof(g_DefaultHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}				
-		}
-	}
-	else if(!StrContains(classname, "tf_weapon_sword"))
-	{
-		if(item_index == 266)
-		{
-			if(target > 0 && !b_NpcHasDied[target])
-			{
-				EmitSoundToAll(g_HHHAxeHitFlesh[GetRandomInt(0, sizeof(g_HHHAxeHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}
-			else
-			{
-				EmitSoundToAll(g_HHHAxeHitWorld[GetRandomInt(0, sizeof(g_HHHAxeHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}
-		}
-		else
-		{
-			if(target > 0 && !b_NpcHasDied[target])
-			{
-				EmitSoundToAll(g_SwordHitFlesh[GetRandomInt(0, sizeof(g_SwordHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}
-			else
-			{
-				EmitSoundToAll(g_SwordHitWorld[GetRandomInt(0, sizeof(g_SwordHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}			
-		}
-	}
-	else if(!StrContains(classname, "tf_weapon_katana"))
-	{
-
-		if(target > 0 && !b_NpcHasDied[target])
-		{
-			EmitSoundToAll(g_KatanaHitFlesh[GetRandomInt(0, sizeof(g_KatanaHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-		}
-		else
-		{
-			EmitSoundToAll(g_KatanaHitWorld[GetRandomInt(0, sizeof(g_KatanaHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-		}			
-	}
-	else if(!StrContains(classname, "tf_weapon_bat"))
-	{
-		if(item_index == 30667)
-		{
-			if(target > 0 && !b_NpcHasDied[target])
-			{
-				EmitSoundToAll(g_BatSaberHitFlesh[GetRandomInt(0, sizeof(g_BatSaberHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}
-			else
-			{
-				EmitSoundToAll(g_BatSaberHitWorld[GetRandomInt(0, sizeof(g_BatSaberHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}		
-		}	
-		else
-		{
-			if(target > 0 && !b_NpcHasDied[target])
-			{
-				EmitSoundToAll(g_BatHitFlesh[GetRandomInt(0, sizeof(g_BatHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}
-			else
-			{
-				EmitSoundToAll(g_DefaultHitWorld[GetRandomInt(0, sizeof(g_DefaultHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}				
-		}
-	}
-	else if(!StrContains(classname, "tf_weapon_fists") || !StrContains(classname, "tf_weapon_robot_arm"))
-	{
-		if(item_index == 331)
-		{
-			if(target > 0 && !b_NpcHasDied[target])
-			{
-				EmitSoundToAll(g_FistsMetalHitFlesh[GetRandomInt(0, sizeof(g_FistsMetalHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}
-			else
-			{
-				EmitSoundToAll(g_FistsMetalHitWorld[GetRandomInt(0, sizeof(g_FistsMetalHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}		
-		}	
-		else
-		{
-			if(target > 0 && !b_NpcHasDied[target])
-			{
-				EmitSoundToAll(g_DefaultHitFlesh[GetRandomInt(0, sizeof(g_DefaultHitFlesh) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}
-			else
-			{
-				EmitSoundToAll(g_FistsHitWorld[GetRandomInt(0, sizeof(g_FistsHitWorld) - 1)], client, SNDCHAN_AUTO, 70, _, 1.0);
-			}				
-		}
+		return MELEE_HIT_WORLD;
 	}
 }
 
@@ -582,6 +420,51 @@ stock bool IsValidCurrentWeapon(int client, int weapon)
 	return false;
 }
 
+/*
+typedef enum {
+    EMPTY,
+    SINGLE,
+    SINGLE_NPC,
+    WPN_DOUBLE, // Can't be "DOUBLE" because windows.h uses it.
+    DOUBLE_NPC,
+    BURST,
+    RELOAD,
+    RELOAD_NPC,
+    MELEE_MISS,
+    MELEE_HIT,
+    MELEE_HIT_WORLD,
+    SPECIAL1,
+    SPECIAL2,
+    SPECIAL3,
+    TAUNT,
+    DEPLOY,
+
+    // Add new shoot sound types here
+
+    NUM_SHOOT_SOUND_TYPES,
+} WeaponSound_t;*/
+
+enum
+{
+	ZEROSOUND 						= 0,	
+    SINGLE							= 1,
+    SINGLE_NPC						= 2,
+    WPN_DOUBLE						= 3,
+    DOUBLE_NPC						= 4,
+    BURST							= 5,
+    RELOAD							= 6,
+    RELOAD_NPC						= 7,
+    MELEE_MISS						= 8,
+    MELEE_HIT						= 9,
+    MELEE_HIT_WORLD					= 10,
+    SPECIAL1						= 11,
+    SPECIAL2						= 12,
+    SPECIAL3						= 13,
+    TAUNT							= 14,
+    DEPLOY							= 15,
+
+};
+
 public void Timer_Do_Melee_Attack(DataPack pack)
 {
 	pack.Reset();
@@ -591,6 +474,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 	pack.ReadString(classname, 32);
 	if(IsValidClient(client) && IsValidCurrentWeapon(client, weapon))
 	{
+
 		Handle swingTrace;
 		b_LagCompNPC_No_Layers = true;
 		float vecSwingForward[3];
@@ -603,8 +487,15 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		TR_GetEndPosition(vecHit, swingTrace);	
 			
 		int Item_Index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-		PlayCustomWeaponSoundFromPlayerCorrectly(target, client, weapon, Item_Index, classname);	
-			
+		int soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, target, Item_Index);	
+
+		if(soundIndex > 0)
+		{
+			char SoundStringToPlay[256];
+			SDKCall_GetShootSound(weapon, soundIndex, SoundStringToPlay, sizeof(SoundStringToPlay));
+			EmitGameSoundToAll(SoundStringToPlay, client);
+		}
+
 		Address address;
 		
 		float damage = 65.0;

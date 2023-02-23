@@ -25,6 +25,8 @@ static Handle g_hSDKUpdateBlocked;
 
 static Handle g_hImpulse;
 
+static Handle SDKGetShootSound;
+
 static DynamicHook g_hDHookItemIterateAttribute;
 static int g_iCEconItem_m_Item;
 static int g_iCEconItemView_m_bOnlyIterateItemViewAttributes;
@@ -194,6 +196,12 @@ void SDKCall_Setup()
 	g_iCEconItem_m_Item = FindSendPropInfo("CEconEntity", "m_Item");
 	FindSendPropInfo("CEconEntity", "m_bOnlyIterateItemViewAttributes", _, _, g_iCEconItemView_m_bOnlyIterateItemViewAttributes);
 	
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFWeaponBaseMelee::GetShootSound");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_SetReturnInfo(SDKType_String, SDKPass_Pointer);
+	if((SDKGetShootSound = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CTFWeaponBaseMelee::GetShootSound");
+
 	delete gamedata;
 	
 	Handle hConf = LoadGameConfigFile("tf2.pets");
@@ -251,6 +259,13 @@ void SDKCall_EquipWearable(int client, int entity)
 	if(SDKEquipWearable)
 		SDKCall(SDKEquipWearable, client, entity);
 }
+
+void SDKCall_GetShootSound(int entity, int index, char[] buffer, int length)
+{
+	if(SDKGetShootSound)
+		SDKCall(SDKGetShootSound, entity, buffer, length, index);
+}
+
 //( const Vector &vecOrigin, const QAngle &vecAngles, const float fSpeed, const float fGravity, ProjectileType_t projectileType, CBaseEntity *pOwner, CBaseEntity *pScorer )
 
 int SDKCall_CTFCreateArrow(float VecOrigin[3], float VecAngles[3], const float fSpeed, const float fGravity, int projectileType, int Owner, int Scorer)

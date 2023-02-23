@@ -305,6 +305,13 @@
 				"linux"			"@_ZN9CTFPlayer20ManageRegularWeaponsEP19TFPlayerClassData_t"
 				"windows"		"\x55\x8B\xEC\x83\xEC\x6C\x53\x56\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A"
 			}
+			"CTFWeaponBaseMelee::GetShootSound"
+			{
+				// "Weapon_Slap.OpenHand", last function in the end
+				"library"		"server"
+				"linux"			"@_ZNK7CTFSlap13GetShootSoundEi"
+				"windows"		"\x55\x8B\xEC\x53\x8B\x5D\x08\x57\x8B\xF9\x83\xFB\x09"
+			}
 		}
 		"Functions"
 		{
@@ -926,6 +933,11 @@
 			{
 				"windows"	"21"
 				"linux"		"22"
+			}
+			"CTFWeaponBaseMelee::GetShootSound"
+			{
+				"windows"	"337"
+				"linux"		"343"
 			}
 		}
 	}
