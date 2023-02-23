@@ -380,6 +380,7 @@ enum struct Item
 	bool Equipped[MAXTF2PLAYERS];
 	int Sell[MAXTF2PLAYERS];
 	int BuyWave[MAXTF2PLAYERS];
+	int BuyPrice[MAXTF2PLAYERS];
 	float Cooldown1[MAXTF2PLAYERS];
 	float Cooldown2[MAXTF2PLAYERS];
 	float Cooldown3[MAXTF2PLAYERS];
@@ -1442,6 +1443,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 					Store_BuyClientItem(client, item, info);
 					item.Sell[client] = ItemSell(base, info.Cost);
 					item.BuyWave[client] = Waves_GetRound();
+					item.BuyPrice[client] = info.Cost;
 					StoreItems.SetArray(a, item);
 					return;
 				}
@@ -2058,14 +2060,7 @@ public void MenuPage(int client, int section)
 
 					if(canSell)
 					{
-						if(fullSell)
-						{
-							item.Scaled[client]--;
-							ItemCost(client, item, info.Cost);
-							item.Scaled[client]++;
-						}
-
-						FormatEx(buffer, sizeof(buffer), "%t ($%d) | (%t: $%d)", "Sell", fullSell ? info.Cost : item.Sell[client], "Credits After Selling", (fullSell ? info.Cost : item.Sell[client]) + (CurrentCash-CashSpent[client]));	// 3
+						FormatEx(buffer, sizeof(buffer), "%t ($%d) | (%t: $%d)", "Sell", fullSell ? info.BuyPrice[client] : item.Sell[client], "Credits After Selling", (fullSell ? info.Cost : item.Sell[client]) + (CurrentCash-CashSpent[client]));	// 3
 						menu.AddItem(buffer2, buffer);
 					}
 									
@@ -3200,6 +3195,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									Store_BuyClientItem(client, item, info);
 									item.Sell[client] = ItemSell(base, info.Cost);
 									item.BuyWave[client] = Waves_GetRound();
+									item.BuyPrice[client] = info.Cost;
 									item.Equipped[client] = false;
 									
 									ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
@@ -3340,15 +3336,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.GetItemInfo(item.Owned[client]-1, info);
 
 								int sell = item.Sell[client];
-								bool fullSell = item.BuyWave[client] == Waves_GetRound();
-								if(fullSell)
-								{
-									item.Scaled[client]--;
-									ItemCost(client, item, info.Cost);
-									item.Scaled[client]++;
-									
-									sell = info.Cost;
-								}
+								if(item.BuyWave[client] == Waves_GetRound())
+									sell = item.BuyPrice[client];
 								
 								if(sell) //make sure it even can be sold.
 								{
@@ -4841,7 +4830,7 @@ int Store_GiveSpecificItem(int client, const char[] name)
 			item.Owned[client] = 1;
 			item.Equipped[client] = true;
 			item.Sell[client] = 0;
-			item.BuyWave[client] = 0;
+			item.BuyWave[client] = -1;
 			StoreItems.SetArray(i, item);
 			
 			int entity = Store_GiveItem(client, i, item.Equipped[client]);
