@@ -2108,4 +2108,8 @@
 		"en"	"Buildable Barracks"
 		"ru"	"Возведение казармы"
 	}
+	"Nearl Silvester Spear"
+	{
+		"en"	"Nearl Silvester Spear"
+	}
 }

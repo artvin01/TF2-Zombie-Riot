@@ -241,7 +241,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 			Handle hTrace;
 			static float m_vecLookdown[3];
 			m_vecLookdown = view_as<float>( { 90.0, 0.0, 0.0 } );
-			hTrace = TR_TraceRayFilterEx(fPos, m_vecLookdown, ( MASK_SHOT ), RayType_Infinite, HitOnlyWorld, client);	
+			hTrace = TR_TraceRayFilterEx(fPos, m_vecLookdown, ( MASK_ALL ), RayType_Infinite, HitOnlyWorld, client);	
 			TR_GetEndPosition(fPos, hTrace);
 			delete hTrace;
 			fPos[2] += 4.0;
