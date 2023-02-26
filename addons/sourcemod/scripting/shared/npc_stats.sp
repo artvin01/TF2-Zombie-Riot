@@ -548,7 +548,7 @@ methodmap CClotBody
 		}
 		else
 		{
-			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.19, 1.75); //Global.
+			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 500.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.24, 1.75); //Global.
 			
 		}
 	
@@ -1912,6 +1912,9 @@ methodmap CClotBody
 		DispatchSpawn(item);
 		
 		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES);
+		SetEntityMoveType(item, MOVETYPE_NONE);
+	//	SetEntProp(item, Prop_Send, "m_nNextThinkTick", 9999999);
+		SetEntProp(item, Prop_Data, "m_nNextThinkTick", -1.0);
 	
 		if(!StrEqual(anim, ""))
 		{
@@ -1966,6 +1969,9 @@ methodmap CClotBody
 		DispatchSpawn(item);
 		
 	//	SetEntProp(item, Prop_Send, "m_fEffects", EF_PARENT_ANIMATES);
+		SetEntityMoveType(item, MOVETYPE_NONE);
+	//	SetEntProp(item, Prop_Send, "m_nNextThinkTick", 9999999);
+		SetEntProp(item, Prop_Data, "m_nNextThinkTick", -1.0);
 		float eyePitch[3];
 		GetEntPropVector(this.index, Prop_Data, "m_angRotation", eyePitch);
 
@@ -2126,6 +2132,9 @@ methodmap CClotBody
 			DispatchSpawn(entity);
 			TeleportEntity(entity, absorigin, eyePitch, NULL_VECTOR, true);
 			SetEntProp(entity, Prop_Send, "m_fEffects", EF_PARENT_ANIMATES);
+			SetEntityMoveType(entity, MOVETYPE_NONE);
+		//	SetEntProp(entity, Prop_Send, "m_nNextThinkTick", 9999999);
+			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1.0);
 			
 			b_ThisEntityIgnored[entity] = true;
 			b_ForceCollisionWithProjectile[entity] = true;
@@ -6894,7 +6903,7 @@ void TE_BloodSprite(float Origin[3],float Direction[3], int red, int green, int 
 
 stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
 							float fStartWidth=0.8, float fEndWidth=0.8, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt",
-							float vector1[3]= {0.0,0.0,0.0},float vector2[3]= {0.0,0.0,0.0})
+							float vector1[3]= {0.0,0.0,0.0},float vector2[3]= {0.0,0.0,0.0}, char[] attachment1= "")
 {
 	int iBeam = CreateEntityByName("env_beam");
 	if(iBeam <= MaxClients)
@@ -6915,7 +6924,7 @@ stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int
 	int particle;
 	if(iEnt != -1)
 	{
-		particle = Create_BeamParent(iEnt,_, iBeam);
+		particle = Create_BeamParent(iEnt,_, iBeam, attachment1);
 	}
 	else
 	{
@@ -6947,20 +6956,47 @@ stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int
 	return iBeam;
 }
 
-stock int Create_BeamParent(int parented, float f3_PositionTemp[3] = {0.0,0.0,0.0}, int beam)
+stock int Create_BeamParent(int parented, float f3_PositionTemp[3] = {0.0,0.0,0.0}, int beam, char[] attachment = "")
 {
 	int entity = CreateEntityByName("info_particle_system");
 	DispatchSpawn(entity);
 
-	
+	//Visualise.
+	/*
+	DispatchKeyValue(entity, "effect_name", "raygun_projectile_red_crit");
+	DispatchSpawn(entity);
+	ActivateEntity(entity);
+	AcceptEntityInput(entity, "Start");	
+	*/
 	if(parented != -1)
 	{
-		f3_PositionTemp = WorldSpaceCenter(parented);
+		if(attachment[0])
+		{
+			static float flAng[3];
+			GetAttachment(parented, attachment, f3_PositionTemp, flAng);
+			SDKCall_SetLocalOrigin(entity, f3_PositionTemp);		
+		}
+		else
+		{
+			f3_PositionTemp = WorldSpaceCenter(parented);
 		
-		TeleportEntity(entity, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
+			TeleportEntity(entity, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
+		}
 
 		SetVariantString("!activator");
 		AcceptEntityInput(entity, "SetParent", parented);
+
+		if(attachment[0])
+		{
+			SetVariantString(attachment);
+			AcceptEntityInput(entity, "SetParentAttachment", parented);
+			if(attachment[0]) //Delay for 0.001 sec
+			{
+				SetVariantString(attachment);
+				AcceptEntityInput(entity, "SetParentAttachmentMaintainOffset"); 	
+			}
+		}	
+
 	}
 	else
 	{

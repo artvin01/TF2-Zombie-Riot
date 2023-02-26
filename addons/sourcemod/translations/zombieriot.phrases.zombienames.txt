@@ -1500,4 +1500,17 @@
 		//"it"		""
 		//"fr"		""
 	}
+	"Nearl Radiant Sword"
+	{
+		"en"		"Nearl Radiant Sword"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}	
 }

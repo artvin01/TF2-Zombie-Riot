@@ -222,7 +222,8 @@ enum
 	MEDIVAL_TREBUCHET			= 189,
 	
 	ALT_IKUNAGAE				= 190,
-	ALT_MECHASOLDIER_BARRAGER	= 191
+	ALT_MECHASOLDIER_BARRAGER	= 191,
+	NEARL_SWORD					= 192
 }
 
 public const char NPC_Names[][] =
@@ -436,7 +437,8 @@ public const char NPC_Names[][] =
 	"Trebuchet",
 	
 	"Ikunagae",
-	"Mecha Soldier Barrager"
+	"Mecha Soldier Barrager",
+	"Nearl Radiant Sword"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -645,7 +647,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_medival_achilles",
 	"npc_medival_trebuchet",
 	"npc_alt_ikunagae",
-	"npc_alt_mecha_soldier_barrager"
+	"npc_alt_mecha_soldier_barrager",
+	""
 };
 
 void NPC_MapStart()
@@ -840,6 +843,7 @@ void NPC_MapStart()
 	
 	Ikunagae_OnMapStart_NPC();
 	MechaSoldier_Barrager_OnMapStart_NPC();
+	NearlSwordAbility_OnMapStart_NPC();
 }
 
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
@@ -1603,6 +1607,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case ALT_MECHASOLDIER_BARRAGER:
 		{
 			entity = MechaSoldier_Barrager(client, vecPos, vecAng, ally);
+		}
+		case NEARL_SWORD:
+		{
+			entity = NearlSwordAbility(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -2369,6 +2377,10 @@ public void NPCDeath(int entity)
 		{
 			MechaSoldier_Barrager_NPCDeath(entity);
 		}
+		case NEARL_SWORD:
+		{
+			NearlSwordAbility_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2654,3 +2666,4 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/ally/npc_barrack_champion.sp"
 #include "zombie_riot/npc/ally/npc_barrack_monk.sp"
 #include "zombie_riot/npc/ally/npc_barrack_hussar.sp"
+#include "zombie_riot/npc/ally/npc_nearl_sword.sp"
