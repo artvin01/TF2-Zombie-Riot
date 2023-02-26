@@ -1440,10 +1440,10 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 				{
 					CashSpent[client] += info.Cost;
 					CashSpentTotal[client] += info.Cost;
+					item.BuyPrice[client] = info.Cost;
 					Store_BuyClientItem(client, item, info);
 					item.Sell[client] = ItemSell(base, info.Cost);
 					item.BuyWave[client] = Waves_GetRound();
-					item.BuyPrice[client] = info.Cost;
 					StoreItems.SetArray(a, item);
 					return;
 				}
@@ -2060,7 +2060,7 @@ public void MenuPage(int client, int section)
 
 					if(canSell)
 					{
-						FormatEx(buffer, sizeof(buffer), "%t ($%d) | (%t: $%d)", "Sell", fullSell ? item.BuyPrice[client] : item.Sell[client], "Credits After Selling", (fullSell ? info.Cost : item.Sell[client]) + (CurrentCash-CashSpent[client]));	// 3
+						FormatEx(buffer, sizeof(buffer), "%t ($%d) | (%t: $%d)", "Sell", fullSell ? item.BuyPrice[client] : item.Sell[client], "Credits After Selling", (fullSell ? item.BuyPrice[client] : item.Sell[client]) + (CurrentCash-CashSpent[client]));	// 3
 						menu.AddItem(buffer2, buffer);
 					}
 									
@@ -3192,10 +3192,10 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								{
 									CashSpent[client] += info.Cost;
 									CashSpentTotal[client] += info.Cost;
+									item.BuyPrice[client] = info.Cost;
 									Store_BuyClientItem(client, item, info);
 									item.Sell[client] = ItemSell(base, info.Cost);
 									item.BuyWave[client] = Waves_GetRound();
-									item.BuyPrice[client] = info.Cost;
 									item.Equipped[client] = false;
 									
 									ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
