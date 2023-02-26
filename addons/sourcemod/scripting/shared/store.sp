@@ -1534,7 +1534,7 @@ void Store_EquipSlotCheck(int client, int slot)
 }
 
 #if defined ZR
-void Store_BuyClientItem(int client, Item item, ItemInfo info)
+void Store_BuyClientItem(int client, Item item, const ItemInfo info)
 {
 	Store_EquipSlotCheck(client, item.Slot);
 
@@ -3228,6 +3228,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							{
 								CashSpent[client] += info.Cost;
 								CashSpentTotal[client] += info.Cost;
+								item.BuyPrice[client] = info.Cost;
 								Store_BuyClientItem(client, item, info);
 								item.Sell[client] = ItemSell(base, info.Cost);
 								item.BuyWave[client] = Waves_GetRound();
