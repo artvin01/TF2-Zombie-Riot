@@ -6222,6 +6222,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						TrainingStartedIn[owner] = -1.0;
 					}
 				}
+				/*
 				else
 				{
 					int required = RoundFloat((TrainingIn[owner] - TrainingStartedIn[owner]) * 2.0);
@@ -6230,6 +6231,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 				//	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", current);
 				//	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", required);
 				}
+				*/
 			}
 		}
 

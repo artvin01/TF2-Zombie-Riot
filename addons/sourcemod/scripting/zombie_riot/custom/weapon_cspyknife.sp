@@ -21,12 +21,12 @@ static float fl_IncreaseDamageTaken[MAXPLAYERS+1]={1.0, ...};
 
 //Third Pap Stuff
 #define CooldownTimer_Pap 1.55
-#define MinicritTimer_Pap 0.88
-#define SpeedBuffTimer_Pap 0.55
+#define MinicritTimer_Pap 2.0
+#define SpeedBuffTimer_Pap 1.0
 #define SlowStunTimer_Pap 0.88
 
 #define LessDamageMultiplier_Pap 0.70
-#define DamageMultiplier_Pap 1.75
+#define DamageMultiplier_Pap 2.2
 #define TakeMoreDamageMultiplier_Pap 1.15
 #define IncreaseAttackSpeed_Pap 0.28
 #define DecreaseAttackSpeed_Pap 1.35
@@ -49,7 +49,7 @@ public void Weapon_CspyKnife(int client, int weapon, bool crit, int slot)
 	{
 		if(Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Ability_Apply_Cooldown(client, slot, TheTimerForCoolDown);
+		//	Ability_Apply_Cooldown(client, slot, TheTimerForCoolDown);
 			weapon_id[client] = EntIndexToEntRef(weapon);
 			
 			switch(GetRandomInt(1,8))
@@ -123,7 +123,7 @@ public void Weapon_CspyKnife_Pap(int client, int weapon, bool crit, int slot)
 	{
 		if(Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Ability_Apply_Cooldown(client, slot, CooldownTimer_Pap);
+		//	Ability_Apply_Cooldown(client, slot, CooldownTimer_Pap);
 			weapon_id[client] = EntIndexToEntRef(weapon);
 			
 			switch(GetRandomInt(1, 13))

@@ -2051,7 +2051,14 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 				TR_GetEndPosition(vecHit, swingTrace);	
 					
 				int Item_Index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-				PlayCustomWeaponSoundFromPlayerCorrectly(target, client, weapon, Item_Index, classname);	
+				int soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, target, Item_Index);	
+
+				if(soundIndex > 0)
+				{
+					char SoundStringToPlay[256];
+					SDKCall_GetShootSound(weapon, soundIndex, SoundStringToPlay, sizeof(SoundStringToPlay));
+					EmitGameSoundToAll(SoundStringToPlay, client);
+				}
 					
 				if(target > 0)
 				{
