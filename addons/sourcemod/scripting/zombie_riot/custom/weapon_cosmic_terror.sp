@@ -8,6 +8,7 @@ static float CosmicActualDamage[MAXPLAYERS+1] = {0.0, ...};
 static float Cosmic_Radius[MAXPLAYERS+1] = {0.0, ...};
 static float Cosmic_BeamLoc[MAXPLAYERS+1][3];
 static float Cosmic_Terror_Hud_Delay[MAXPLAYERS+1] = {0.0, ...};
+static float Cosmic_Terror_Trace_Delay[MAXPLAYERS+1] = {0.0, ...};
 
 static char gLaser1;
 
@@ -18,6 +19,7 @@ void Cosmic_Map_Precache()
 	PrecacheSound(SND_WELD_SOUND);
 	gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Zero(Cosmic_Terror_Hud_Delay);
+	Zero(Cosmic_Terror_Trace_Delay);
 	PrecacheSound("weapons/vaccinator_charge_tier_01.wav");
 	PrecacheSound("weapons/vaccinator_charge_tier_02.wav");
 	PrecacheSound("weapons/vaccinator_charge_tier_03.wav");
@@ -49,6 +51,7 @@ static float Cosmic_Terror_Sound_Charge_Timer[MAXPLAYERS+1]={0.0,...};
 static float Cosmic_Terror_Sound_Charge_Timer2[MAXPLAYERS+1]={0.0,...};
 static int Cosmic_Terror_Charge_Sound_interval[MAXPLAYERS+1]={0,...};
 static float Cosmic_Terror_Angle[MAXPLAYERS+1]={0.0,...};
+static float Cosmic_Terror_Last_Known_Loc[MAXPLAYERS + 1][3];
 
 static int Cosmic_Terror_GiveAmmo_interval[MAXPLAYERS+1]={0,...};
 
@@ -364,6 +367,8 @@ public Action Cosmic_Terror_Reset_Wep(Handle cut_timer, int client)
 		EmitSoundToClient(client,"weapons/physcannon/physcannon_drop.wav",  _, _, _, _, 0.5, 60);
 	}
 	
+	Cosmic_Terror_Trace_Delay[client] = 0.0;
+	
 	SDKHook(client, SDKHook_PreThink, Cosmic_Heat_Tick);
 	Cosmic_Terror_Cooling_Reset[client]=false;
 	Handle_on[client] = false;
@@ -380,18 +385,24 @@ void Cosmic_Terror_Charging(int client)
 	GetClientEyeAngles(client, SpawnLoc);
 	
 	//Cosmic_Radius[client]= 120.0;
-	Handle trace = TR_TraceRayFilterEx(EyeLoc, SpawnLoc, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
-	TR_GetEndPosition(SpawnLoc, trace);
-	CloseHandle(trace);
-	
-	for (int vec = 0; vec < 3; vec++)
+	if(Cosmic_Terror_Trace_Delay[client] <= GetGameTime())
 	{
-		Cosmic_BeamLoc[client][vec] = SpawnLoc[vec];
+		Cosmic_Terror_Trace_Delay[client] = GetGameTime() + 0.1;
+		Handle trace = TR_TraceRayFilterEx(EyeLoc, SpawnLoc, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
+		TR_GetEndPosition(SpawnLoc, trace);
+		CloseHandle(trace);
+		
+		SpawnLoc[2] += 10.0;
+		
+		Cosmic_Terror_Last_Known_Loc[client] = SpawnLoc;
+		
 	}
 	
+	Cosmic_BeamLoc[client] = Cosmic_Terror_Last_Known_Loc[client];
+	
 	int red=3, green=4, blue=94, alpha=150;
-	SpawnLoc[2]+=10;
-	spawnRing_Vector(SpawnLoc, Cosmic_Radius[client] * 1.25, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", red, green, blue, alpha, 1, 0.1, 8.0, 0.1, 1);
+	
+	spawnRing_Vector(Cosmic_Terror_Last_Known_Loc[client], Cosmic_Radius[client] * 1.25, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", red, green, blue, alpha, 1, 0.1, 8.0, 0.1, 1);
 }
 void Cosmic_Terror_FullCharge(int client)
 {
@@ -416,22 +427,28 @@ void Cosmic_Terror_FullCharge(int client)
 	GetClientEyePosition(client, EyeLoc);
 	GetClientEyeAngles(client, SpawnLoc);
 	
-	Handle trace = TR_TraceRayFilterEx(EyeLoc, SpawnLoc, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
-	TR_GetEndPosition(SpawnLoc, trace);
-	CloseHandle(trace);
+	if(Cosmic_Terror_Trace_Delay[client] <= GetGameTime())
+	{
+		Cosmic_Terror_Trace_Delay[client] = GetGameTime() + 0.33;
+		Handle trace = TR_TraceRayFilterEx(EyeLoc, SpawnLoc, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
+		TR_GetEndPosition(SpawnLoc, trace);
+		CloseHandle(trace);
+		Cosmic_Terror_Last_Known_Loc[client] = SpawnLoc;
+	}
 		
 	for(int vec = 0; vec < 3; vec++)
 	{
-		if(Cosmic_BeamLoc[client][vec] < SpawnLoc[vec])
+		if(Cosmic_BeamLoc[client][vec] < Cosmic_Terror_Last_Known_Loc[client][vec])
 		{
 			Cosmic_BeamLoc[client][vec] += Cosmic_BeamSpeed[client];
 		}
 			
-		if(Cosmic_BeamLoc[client][vec] > SpawnLoc[vec])
+		if(Cosmic_BeamLoc[client][vec] > Cosmic_Terror_Last_Known_Loc[client][vec])
 		{
 			Cosmic_BeamLoc[client][vec] += -Cosmic_BeamSpeed[client];
 		}
 	}
+	
 	float SkyLoc[3];
 
 	SkyLoc[0] = Cosmic_BeamLoc[client][0];
