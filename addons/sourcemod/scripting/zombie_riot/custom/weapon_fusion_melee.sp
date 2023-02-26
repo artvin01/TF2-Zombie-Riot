@@ -167,7 +167,6 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Ability_Apply_Cooldown(client, slot, 60.0); //Semi long cooldown, this is a strong buff.
 		
 		i_NearlWeaponUsedWith[client] = EntIndexToEntRef(weapon);
 		if(f_NearlDurationCheckApply[client] > GetGameTime())
@@ -180,7 +179,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 
 			if(validpos)
 			{
-
+				Ability_Apply_Cooldown(client, slot, 60.0); //Semi long cooldown, this is a strong buff.
 				float damage = 500.0;
 				Address address = TF2Attrib_GetByDefIndex(weapon, 2);
 				if(address != Address_Null)
@@ -236,9 +235,6 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again]);
 						if (IsValidEntity(baseboss_index))
 						{
-							CClotBody npc_set_aggro = view_as<CClotBody>(baseboss_index);
-							npc_set_aggro.m_iTarget = spawn_index;
-							npc_set_aggro.m_flGetClosestTargetTime = GetGameTime(npc_set_aggro.index) + 1.0;
 							GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", EnemyPos);
 							if (GetVectorDistance(EnemyPos, fPos, true) <= Pow(NEARL_STUN_RANGE, 2.0))
 							{
@@ -251,6 +247,9 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 									FreezeNpcInTime(baseboss_index,Duration_Stun_Boss);
 								}
 							}
+							CClotBody npc_set_aggro = view_as<CClotBody>(baseboss_index);
+							npc_set_aggro.m_iTarget = spawn_index;
+							npc_set_aggro.m_flGetClosestTargetTime = GetGameTime(npc_set_aggro.index) + 1.0;
 						}
 					}
 					FinishLagCompensation_Base_boss();
