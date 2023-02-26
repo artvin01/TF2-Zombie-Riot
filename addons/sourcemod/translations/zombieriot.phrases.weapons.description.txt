@@ -1768,7 +1768,7 @@
 	}
 	"Monk Desc"
 	{
-		"en"	"Provides healing to all allies around it but lacks self defense"
+		"en"	"Provides AOE damage around it but lacks self defense"
 		"ru"	"Исцеляет всех союзников вокруг себя, но не имеет самозащиты"
 	}
 	"Hussar Desc"
