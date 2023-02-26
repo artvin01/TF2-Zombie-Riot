@@ -5666,8 +5666,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop1, 1);
 					AcceptEntityInput(prop1, "DisableShadow");
 					AcceptEntityInput(prop1, "DisableCollision");
-					SetEntityMoveType(prop2, MOVETYPE_NONE);
-					SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
+					SetEntityMoveType(prop1, MOVETYPE_NONE);
+					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
 					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
