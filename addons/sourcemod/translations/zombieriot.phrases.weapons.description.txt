@@ -1603,6 +1603,10 @@
 	}
 	"Fusion Blade Pap 2"
 	{
+		"en"	"More damage and 5% melee resistance."
+	}
+	"Fusion Blade Pap 3"
+	{
 		"en"	"M2 ability changes.\nPlace a giant sword infront of you, doing damage.\nStun all enemies in range.\nYou get Major buffs.\nHurting enemies focusing the sword gives you 2x dmg.\nSparing ''fusion warrior'' might give you extra strength..."
 	}
 
