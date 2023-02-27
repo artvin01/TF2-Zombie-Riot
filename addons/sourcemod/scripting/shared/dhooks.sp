@@ -92,7 +92,7 @@ void DHook_Setup()
 
 	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
-	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHookManageRegularWeapons_Pre, DHookManageRegularWeapons_Post);
+	DHook_CreateDetour(gamedata, "CTFPlayer::GiveDefaultItems", DHookGiveDefaultItems_Pre, DHookGiveDefaultItems_Post);
 //	DHook_CreateDetour(gamedata, "PathFollower::Avoid", _, PathFollowerAvoid);
 
 	
@@ -1906,13 +1906,13 @@ public MRESReturn PathFollowerAvoid(DHookReturn Hreturn, DHookParam param)
 }
 */
 
-public MRESReturn DHookManageRegularWeapons_Pre(int client, Handle hParams) 
+public MRESReturn DHookGiveDefaultItems_Pre(int client, Handle hParams) 
 {
 	TF2_SetPlayerClass(client, CurrentClass[client], false, false); 
 	return MRES_Ignored;
 }
 
-public MRESReturn DHookManageRegularWeapons_Post(int client, Handle hParams) 
+public MRESReturn DHookGiveDefaultItems_Post(int client, Handle hParams) 
 {
 	TF2_SetPlayerClass(client, WeaponClass[client], false, false);
 	return MRES_Ignored;

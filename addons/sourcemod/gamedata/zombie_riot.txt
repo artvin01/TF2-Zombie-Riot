@@ -305,6 +305,14 @@
 				"linux"			"@_ZN9CTFPlayer20ManageRegularWeaponsEP19TFPlayerClassData_t"
 				"windows"		"\x55\x8B\xEC\x83\xEC\x6C\x53\x56\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A"
 			}
+			// CTFPlayer::ManageRegularWeapons has unique string "ManageRegularWeapons" and the only xref is GiveDefaultItems
+            "CTFPlayer::GiveDefaultItems"
+            {
+                "library"   "server"
+                "linux"     "@_ZN9CTFPlayer16GiveDefaultItemsEv"
+                // sub_104D4220:
+                "windows"   "\x56\x57\x8B\xF9\xFF\xB7\x40\x22\x00\x00\xE8\x2A\x2A\x2A\x2A\x83\xC4\x04"
+            }
 			"CTFWeaponBaseMelee::GetShootSound"
 			{
 				// "Weapon_Slap.OpenHand", last function in the end
@@ -794,6 +802,13 @@
 					}
 				}
 			}
+			"CTFPlayer::GiveDefaultItems"
+            {
+				"signature"		"CTFPlayer::GiveDefaultItems"
+				"callconv"		"thiscall"
+				"return"		"void"
+				"this"			"entity"
+            }
 			"CWeaponMedigun::AllowedToHealTarget()"
 			{
 				"signature"		"CWeaponMedigun::AllowedToHealTarget()"

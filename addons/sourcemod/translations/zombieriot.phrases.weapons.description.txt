@@ -1607,7 +1607,7 @@
 	}
 	"Fusion Blade Pap 2"
 	{
-		"en"	"More damage and 5% melee resistance."
+		"en"	"More damage and 5%% melee resistance."
 	}
 	"Fusion Blade Pap 3"
 	{
