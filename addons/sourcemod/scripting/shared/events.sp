@@ -386,6 +386,16 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 	if(client)
 	{
 		Thirdperson_PlayerSpawn(client);
+
+		// Resets the hand/arm pos for melee weapons because it fucks up melee weapons and looks like dick
+		CClotBody npc = view_as<CClotBody>(client);
+		int index = npc.LookupPoseParameter("r_hand_grip");
+		if(index >= 0)
+			npc.SetPoseParameter(index, 0.0);
+		
+		index = npc.LookupPoseParameter("r_arm");
+		if(index >= 0)
+			npc.SetPoseParameter(index, 0.0);
 	}
 }
 
