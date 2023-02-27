@@ -177,7 +177,7 @@ methodmap NearlSwordAbility < CClotBody
 		npc.m_flSpeed = 0.0;
 		
 		npc.m_flMeleeArmor = 1.0;
-		npc.m_flRangedArmor = 3.0;
+		npc.m_flRangedArmor = 1.25;
 
 		PF_StopPathing(npc.index);
 
