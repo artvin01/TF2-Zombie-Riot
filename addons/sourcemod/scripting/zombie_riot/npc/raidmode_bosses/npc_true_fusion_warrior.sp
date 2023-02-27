@@ -1010,7 +1010,11 @@ public Action TrueFusionWarrior_ClotDamaged(int victim, int &attacker, int &infl
 			SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_TBB_Tick);
 
 			CPrintToChatAll("{gold}Silvester{default}: ...End this before its too late...");
-
+			int i = MaxClients + 1;
+			while((i = FindEntityByClassname(i, "obj_sentrygun")) != -1)
+			{
+				RemoveEntity(i);
+			}
 			int skin = 1;
 			SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 

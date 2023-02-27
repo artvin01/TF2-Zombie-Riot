@@ -4858,7 +4858,6 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 						f_BuildingIsNotReady[client] = 0.0; 
 						Building_Sentry_Cooldown[client] = 0.0; //Reset the cooldown!
 					}
-
 					int count;
 					int i = MaxClients + 1;
 					while((i = FindEntityByClassname(i, "base_boss")) != -1)
