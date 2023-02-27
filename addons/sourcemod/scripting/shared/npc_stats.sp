@@ -5609,6 +5609,7 @@ static int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.
 	DispatchKeyValue(prop, "physicsmode", "2");
 	DispatchKeyValue(prop, "massScale", "1.0");
 	DispatchKeyValue(prop, "spawnflags", "2");
+
 /*
 	TF2_CreateGlow(prop, model, client, color);
 
@@ -5645,26 +5646,34 @@ static int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.
 	{
 		if(!Rotate)
 		{
-			TeleportEntity(prop, pos, NULL_VECTOR, NULL_VECTOR);
+			ang[0] = 0.0;
+			ang[1] = 0.0;
+			ang[2] = 0.0;
+		//	TeleportEntity(prop, pos, NULL_VECTOR, NULL_VECTOR);
 		}
 		else
 		{
-			TeleportEntity(prop, pos, {90.0,0.0,0.0}, NULL_VECTOR);
+			ang[0] = 90.0;
+			ang[1] = 0.0;
+			ang[2] = 0.0;
+	//		TeleportEntity(prop, pos, {90.0,0.0,0.0}, NULL_VECTOR);
 		}
 	}
 	else
 	{
 		if(!Rotate)
 		{
-			TeleportEntity(prop, pos, ang, NULL_VECTOR);
+		//	TeleportEntity(prop, pos, ang, NULL_VECTOR);
 		}
 		else
 		{
 			ang[0] += 90.0;
-			TeleportEntity(prop, pos, ang, NULL_VECTOR);
+		//	TeleportEntity(prop, pos, ang, NULL_VECTOR);
 		}		
 		
 	}
+	DispatchKeyValueVector(prop, "origin",	 pos);
+	DispatchKeyValueVector(prop, "angles",	 ang);
 	DispatchSpawn(prop);
 	TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vel);
 
@@ -5732,6 +5741,7 @@ public void GibCollidePlayerInteraction(int gib, int player)
 						
 						if(Heal_Amount_calc > 0)
 						{
+							b_IsAGib[gib] = false; //we dont want the same gib to heal twice.
 							if(b_LimitedGibGiveMoreHealth[gib])
 							{
 								Heal_Amount_calc *= 3;
