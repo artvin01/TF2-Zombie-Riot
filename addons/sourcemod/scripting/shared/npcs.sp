@@ -2411,6 +2411,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			Npc_OnTakeDamage_Phlog(attacker);
 		}
+		case 8: //pap fusion
+		{
+			return Npc_OnTakeDamage_PaP_Fusion(attacker, victim, damage, weapon);
+		}
 	}
 #endif
 	return damage;

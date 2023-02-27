@@ -1601,6 +1601,19 @@
 		"ru"	"Активирует способность на M2 с длительным временем восстановления.\nКоторая увеличивает ваш урон и сопротивление на 15%%, а союзников на 10%%, при этом эффект накапливается по 2 на каждого.\nТакже действует на дружественных NPC."
 		"chi"   "按右键可以激活技能，但冷却时间较长。\n可以提高你的一点伤害和增大15%%的伤害抗性，队友可以获得10%%的增益(可叠加)。\n这也适用于友方npc。"
 	}
+	"Fusion Blade Pap 1.5"
+	{
+		"en"	"Increased damage."
+	}
+	"Fusion Blade Pap 2"
+	{
+		"en"	"More damage and 5% melee resistance."
+	}
+	"Fusion Blade Pap 3"
+	{
+		"en"	"M2 ability changes.\nPlace a giant sword infront of you, doing damage.\nStun all enemies in range.\nYou get Major buffs.\nHurting enemies focusing the sword gives you 2x dmg.\nSparing ''fusion warrior'' might give you extra strength..."
+	}
+
 	
 	"Tornado Blitz Desc"
 	{
@@ -1768,7 +1781,7 @@
 	}
 	"Monk Desc"
 	{
-		"en"	"Provides healing to all allies around it but lacks self defense"
+		"en"	"Provides AOE damage around it but lacks self defense"
 		"ru"	"Исцеляет всех союзников вокруг себя, но не имеет самозащиты"
 	}
 	"Hussar Desc"

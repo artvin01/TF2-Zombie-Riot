@@ -4858,7 +4858,6 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 						f_BuildingIsNotReady[client] = 0.0; 
 						Building_Sentry_Cooldown[client] = 0.0; //Reset the cooldown!
 					}
-
 					int count;
 					int i = MaxClients + 1;
 					while((i = FindEntityByClassname(i, "base_boss")) != -1)
@@ -5438,6 +5437,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop1, 1);
 					AcceptEntityInput(prop1, "DisableShadow");
 					AcceptEntityInput(prop1, "DisableCollision");
+					SetEntityMoveType(prop1, MOVETYPE_NONE);
+					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1);
 					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop1);
 					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
@@ -5479,6 +5480,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop1, 1);
 					AcceptEntityInput(prop1, "DisableShadow");
 					AcceptEntityInput(prop1, "DisableCollision");
+					SetEntityMoveType(prop1, MOVETYPE_NONE);
+					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
 					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
@@ -5510,6 +5513,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop2, 1);
 					AcceptEntityInput(prop2, "DisableShadow");
 					AcceptEntityInput(prop2, "DisableCollision");
+					SetEntityMoveType(prop2, MOVETYPE_NONE);
+					SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
 					Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
@@ -5563,6 +5568,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop1, 1);
 					AcceptEntityInput(prop1, "DisableShadow");
 					AcceptEntityInput(prop1, "DisableCollision");
+					SetEntityMoveType(prop1, MOVETYPE_NONE);
+					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
 					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
@@ -5596,6 +5603,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop2, 1);
 					AcceptEntityInput(prop2, "DisableShadow");
 					AcceptEntityInput(prop2, "DisableCollision");
+					SetEntityMoveType(prop2, MOVETYPE_NONE);
+					SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
 
 					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
 					Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
@@ -5656,6 +5665,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop1, 1);
 					AcceptEntityInput(prop1, "DisableShadow");
 					AcceptEntityInput(prop1, "DisableCollision");
+					SetEntityMoveType(prop1, MOVETYPE_NONE);
+					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
 					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
@@ -5689,6 +5700,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop2, 1);
 					AcceptEntityInput(prop2, "DisableShadow");
 					AcceptEntityInput(prop2, "DisableCollision");
+					SetEntityMoveType(prop2, MOVETYPE_NONE);
+					SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
 					Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
@@ -5748,6 +5761,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop1, 1);
 					AcceptEntityInput(prop1, "DisableShadow");
 					AcceptEntityInput(prop1, "DisableCollision");
+					SetEntityMoveType(prop1, MOVETYPE_NONE);
+					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
 					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
@@ -5779,6 +5794,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop2, 1);
 					AcceptEntityInput(prop2, "DisableShadow");
 					AcceptEntityInput(prop2, "DisableCollision");
+					SetEntityMoveType(prop2, MOVETYPE_NONE);
+					SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
 					Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
@@ -5833,6 +5850,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop1, 1);
 					AcceptEntityInput(prop1, "DisableShadow");
 					AcceptEntityInput(prop1, "DisableCollision");
+					SetEntityMoveType(prop1, MOVETYPE_NONE);
+					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
 					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
@@ -5868,6 +5887,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop2, 1);
 					AcceptEntityInput(prop2, "DisableShadow");
 					AcceptEntityInput(prop2, "DisableCollision");
+					SetEntityMoveType(prop2, MOVETYPE_NONE);
+					SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
 					Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);

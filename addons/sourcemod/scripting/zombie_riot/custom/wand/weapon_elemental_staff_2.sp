@@ -456,7 +456,7 @@ public void Kill_Timer_Passanger(int client)
 
 public void Weapon_Passanger_LightningArea(int client, int weapon, bool crit, int slot)
 {
-	if(i_PassangerAbilityCount[client] > 0)
+	if(i_PassangerAbilityCount[client] > 0 || CvarInfiniteCash.BoolValue)
 	{	
 		int mana_cost = 350;
 		if(mana_cost <= Current_Mana[client])
@@ -606,6 +606,9 @@ void Passanger_Activate_Storm(int client, int weapon, float lightningpos[3])
 	if(address != Address_Null)
 		damage *= TF2Attrib_GetValue(address); //massive damage!
 
+
+	FakeClientCommand(client, "voicemenu 0 2"); //Go go go! Cause them to point!
+	PassangerHandLightningEffect(client, lightningpos);
 	DataPack pack;
 	CreateDataTimer(PASSANGER_DELAY_ABILITY, TimerPassangerAbility, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(client);
@@ -702,4 +705,16 @@ public Action TimerPassangerAbility(Handle timer, DataPack pack)
 	pack.WriteCell(LightningStrikes-1, false);
 
 	return Plugin_Continue;
+}
+
+static void PassangerHandLightningEffect(int entity = -1, float VecPos_target[3] = {0.0,0.0,0.0})
+{	
+	int r = 255; //Blue.
+	int g = 255;
+	int b = 65;
+	int laser;
+
+	laser = ConnectWithBeam(entity, -1, r, g, b, 3.0, 3.0, 2.35, LASERBEAM, _, VecPos_target,"effect_hand_l");
+
+	CreateTimer(1.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 }

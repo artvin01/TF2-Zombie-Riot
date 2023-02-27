@@ -2181,4 +2181,17 @@
 		//"it"		""
 		//"fr"		""
 	}
+	"Silvester Shares His Power"
+	{
+		"en"		"Silvester shares his power with you..."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
 }
