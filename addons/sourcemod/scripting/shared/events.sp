@@ -387,7 +387,10 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 	{
 		Thirdperson_PlayerSpawn(client);
 
-		// Resets the hand/arm pos for melee weapons because it fucks up melee weapons and looks like dick
+		// Resets the hand/arm pos for melee weapons 
+		//it doesnt do it on its own, and weapon such as the song of the ocean due to this
+		//come out from behind and it litterally looks like a dick
+		//Im unsure why this happens, something with the hothand probably as it looks like that.
 		CClotBody npc = view_as<CClotBody>(client);
 		int index = npc.LookupPoseParameter("r_hand_grip");
 		if(index >= 0)
