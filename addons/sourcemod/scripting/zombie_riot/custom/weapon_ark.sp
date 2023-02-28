@@ -838,10 +838,10 @@ void Weapon_ark_LapplandRangedAttack(int client, int weapon)
 	int target = TR_GetEntityIndex(swingTrace);	
 	delete swingTrace;
 	
-	EmitSoundToAll(SOUND_LAPPLAND_SHOT, client, _, 75, _, 0.70, GetRandomInt(90, 110));
+	EmitSoundToAll(SOUND_LAPPLAND_SHOT, client, _, 75, _, 0.55, GetRandomInt(90, 110));
 
 	float damage = 65.0;
-	damage *= 0.8; //Reduction
+	damage *= 0.6; //Reduction
 	if(f_LappLandAbilityActive[client] > GetGameTime())
 	{
 		damage *= 2.0;
