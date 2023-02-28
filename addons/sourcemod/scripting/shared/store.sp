@@ -3879,7 +3879,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		Store_RemoveSpecificItem(client, "Irene's Handcannon");
 		Store_RemoveSpecificItem(client, "Teutonic Longsword");
 	}
-
 	b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
 #endif
 #if defined RPG

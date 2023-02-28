@@ -1,7 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define NIKO_PLAYERMODEL "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
 
 static const char HandModels[][] =
 {
@@ -76,9 +75,9 @@ void ViewChange_MapStart()
 
 void ViewChange_PlayerModel(int client)
 {
-	#if defined ZR
+#if defined ZR
 	if(TeutonType[client] == TEUTON_NONE)
-	#endif
+#endif
 	{
 		if(b_IsPlayerNiko[client])
 		{

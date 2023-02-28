@@ -907,6 +907,8 @@ public void OnPostThink(int client)
 #if defined ZR
 	if(f_DelayLookingAtHud[client] < GetGameTime())
 	{
+		//Reuse uhh
+		EscapeSentryHat_ApplyBuidingIcon(client);
 		if (IsPlayerAlive(client))
 		{
 			static int entity;

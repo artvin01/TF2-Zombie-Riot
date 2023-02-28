@@ -449,6 +449,7 @@ void ZR_MapStart()
 	Irene_Map_Precache();
 	PHLOG_Map_Precache();
 	Cosmic_Map_Precache();
+	EscapeSentryHat_MapStart();
 	
 	
 	Waves_MapStart();
