@@ -434,8 +434,11 @@ public Action XenoCombineGaint_ClotDamaged(int victim, int &attacker, int &infli
 		
 	XenoCombineGaint npc = view_as<XenoCombineGaint>(victim);
 	
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.15;
+	if(!NpcStats_IsEnemySilenced(victim))
+	{
+		if(npc.m_fbRangedSpecialOn)
+			damage *= 0.15;
+	}
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{

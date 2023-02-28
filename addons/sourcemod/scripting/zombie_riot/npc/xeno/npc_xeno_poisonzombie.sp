@@ -319,19 +319,21 @@ public Action XenoPoisonZombie_ClotDamaged(int victim, int &attacker, int &infli
 		return Plugin_Continue;
 		
 	XenoPoisonZombie npc = view_as<XenoPoisonZombie>(victim);
-	
-	if(!npc.bXenoInfectedSpecialHurt)
+	if(!NpcStats_IsEnemySilenced(victim))
 	{
-		npc.bXenoInfectedSpecialHurt = true;
-		npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 2.0;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 150, 255, 150, 65);
-		CreateTimer(2.0, XenoPoisonZombie_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(10.0, XenoPoisonZombie_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
-	}
-	if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
-	{
-		damage *= 0.25;
+		if(!npc.bXenoInfectedSpecialHurt)
+		{
+			npc.bXenoInfectedSpecialHurt = true;
+			npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 2.0;
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 150, 255, 150, 65);
+			CreateTimer(2.0, XenoPoisonZombie_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(10.0, XenoPoisonZombie_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		if(npc.flXenoInfectedSpecialHurtTime > GetGameTime(npc.index))
+		{
+			damage *= 0.25;
+		}
 	}
 	
 	/*

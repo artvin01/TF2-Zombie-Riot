@@ -319,18 +319,20 @@ public Action XenoHeadcrabZombie_ClotDamaged(int victim, int &attacker, int &inf
 		return Plugin_Continue;
 
 	XenoHeadcrabZombie npc = view_as<XenoHeadcrabZombie>(victim);
-	
-	if(!npc.bXenoInfectedSpecialHurt)
+	if(!NpcStats_IsEnemySilenced(victim))
 	{
-		if(EscapeModeForNpc)
+		if(!npc.bXenoInfectedSpecialHurt)
 		{
-			npc.m_flSpeed = 300.0;
+			if(EscapeModeForNpc)
+			{
+				npc.m_flSpeed = 300.0;
+			}
+			else
+			{
+				npc.m_flSpeed = 250.0;
+			}
+			npc.bXenoInfectedSpecialHurt = true;
 		}
-		else
-		{
-			npc.m_flSpeed = 250.0;
-		}
-		npc.bXenoInfectedSpecialHurt = true;
 	}
 	
 				

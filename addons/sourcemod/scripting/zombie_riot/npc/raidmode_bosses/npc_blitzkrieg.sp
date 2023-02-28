@@ -752,49 +752,52 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				
 				b_BlitzLight_sound[npc.index]=true;
 			}
-			if(!b_BlitzLight[npc.index])	//this checks if the npc is in blitzlight, if it is use dash instead of teleport.
+			if(!NpcStats_IsEnemySilenced(npc.index))
 			{
-				if(npc.m_flNextTeleport < GetGameTime(npc.index) && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0))
+				if(!b_BlitzLight[npc.index])	//this checks if the npc is in blitzlight, if it is use dash instead of teleport.
 				{
-					static float flVel[3];
-					GetEntPropVector(closest, Prop_Data, "m_vecVelocity", flVel);
-	
-					if (flVel[0] >= 190.0)
+					if(npc.m_flNextTeleport < GetGameTime(npc.index) && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0))
 					{
-						npc.FaceTowards(vecTarget);
-						npc.FaceTowards(vecTarget);
-						npc.m_flNextTeleport = GetGameTime(npc.index) + 30.0;
-						float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
-						
-						if(Tele_Check > 120.0)
+						static float flVel[3];
+						GetEntPropVector(closest, Prop_Data, "m_vecVelocity", flVel);
+		
+						if (flVel[0] >= 190.0)
 						{
-							TeleportEntity(npc.index, vPredictedPos, NULL_VECTOR, NULL_VECTOR);
-							npc.PlayTeleportSound();
-						}
-					}
-				}
-			}
-			else
-			{
-				npc.m_flSpeed=fl_move_speed[npc.index];
-				if(npc.m_flCharge_Duration < GetGameTime(npc.index))
-				{
-					if(npc.m_flCharge_delay < GetGameTime(npc.index))
-					{
-						int Enemy_I_See;
-						Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-						//Target close enough to hit
-						if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
-						{
-							npc.m_flCharge_delay = GetGameTime(npc.index) + 7.5;
-							npc.m_flCharge_Duration = GetGameTime(npc.index) + 1.0;
-							PluginBot_Jump(npc.index, vecTarget);
+							npc.FaceTowards(vecTarget);
+							npc.FaceTowards(vecTarget);
+							npc.m_flNextTeleport = GetGameTime(npc.index) + 30.0;
+							float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
+							
+							if(Tele_Check > 120.0)
+							{
+								TeleportEntity(npc.index, vPredictedPos, NULL_VECTOR, NULL_VECTOR);
+								npc.PlayTeleportSound();
+							}
 						}
 					}
 				}
 				else
 				{
-					npc.m_flSpeed=325.0;
+					npc.m_flSpeed=fl_move_speed[npc.index];
+					if(npc.m_flCharge_Duration < GetGameTime(npc.index))
+					{
+						if(npc.m_flCharge_delay < GetGameTime(npc.index))
+						{
+							int Enemy_I_See;
+							Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+							//Target close enough to hit
+							if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
+							{
+								npc.m_flCharge_delay = GetGameTime(npc.index) + 7.5;
+								npc.m_flCharge_Duration = GetGameTime(npc.index) + 1.0;
+								PluginBot_Jump(npc.index, vecTarget);
+							}
+						}
+					}
+					else
+					{
+						npc.m_flSpeed=325.0;
+					}
 				}
 			}
 			if(i_PrimaryRocketsFired[npc.index] > i_maxfirerockets[npc.index])	//Every x rockets npc enters a 10 second reload time that scales on lifeloss reload.

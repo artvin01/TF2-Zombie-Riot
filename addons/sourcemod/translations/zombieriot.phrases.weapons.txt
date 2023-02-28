@@ -2112,4 +2112,8 @@
 	{
 		"en"	"Nearl Silvester Spear"
 	}
+	"Lapplands Sword"
+	{
+		"en"	"Lapplands Sword"
+	}
 }

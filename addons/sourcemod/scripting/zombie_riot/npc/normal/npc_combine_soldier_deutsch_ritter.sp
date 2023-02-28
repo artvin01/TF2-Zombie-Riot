@@ -364,8 +364,11 @@ public Action CombineDeutsch_ClotDamaged(int victim, int &attacker, int &inflict
 		
 	CombineDeutsch npc = view_as<CombineDeutsch>(victim);
 	
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.75;
+	if(!NpcStats_IsEnemySilenced(victim))
+	{
+		if(npc.m_fbRangedSpecialOn)
+			damage *= 0.15;
+	}
 	
 	/*
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))

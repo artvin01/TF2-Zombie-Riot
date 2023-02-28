@@ -304,7 +304,8 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 							float speed;
 							speed = 1250.0;
 							damage = 50.0;
-							if(i_overcharge[npc.index] > 5)	//tl;dr, 6th shot is super pew pew. quad pew for 400 dmg 
+							
+							if(i_overcharge[npc.index] > 5 && !NpcStats_IsEnemySilenced(npc.index))	//tl;dr, 6th shot is super pew pew. quad pew for 400 dmg 
 							{
 								speed = 2000.0;
 								damage = 50.0;

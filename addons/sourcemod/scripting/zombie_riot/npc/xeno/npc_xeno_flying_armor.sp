@@ -404,21 +404,24 @@ public Action XenoFlyingArmor_ClotDamaged(int victim, int &attacker, int &inflic
 public void XenoFlyingArmor_NPCDeath(int entity)
 {
 	XenoFlyingArmor npc = view_as<XenoFlyingArmor>(entity);
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-	float startPosition[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
-	maxhealth /= 2;
-	for(int i; i<2; i++)
+	if(!NpcStats_IsEnemySilenced(entity))
 	{
-		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-		
-		int spawn_index = Npc_Create(XENO_FLYINGARMOR_TINY_ZOMBIE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
-		if(spawn_index > MaxClients)
+		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		float startPosition[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+		maxhealth /= 2;
+		for(int i; i<2; i++)
 		{
-			Zombies_Currently_Still_Ongoing += 1;
-			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			
+			int spawn_index = Npc_Create(XENO_FLYINGARMOR_TINY_ZOMBIE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			if(spawn_index > MaxClients)
+			{
+				Zombies_Currently_Still_Ongoing += 1;
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			}
 		}
 	}
 	if(!npc.m_bGib)

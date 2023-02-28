@@ -382,23 +382,26 @@ public Action XenoSoldierGiant_ClotDamaged(int victim, int &attacker, int &infli
 public void XenoSoldierGiant_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	XenoSoldierGiant npc = view_as<XenoSoldierGiant>(victim);
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
-	if(0.9-(npc.g_TimesSummoned*0.2) > ratio)
+	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
-		npc.g_TimesSummoned++;
-		maxhealth /= 7;
-		for(int i; i<1; i++)
+		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
+		if(0.9-(npc.g_TimesSummoned*0.2) > ratio)
 		{
-			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			
-			int spawn_index = Npc_Create(XENO_SOLDIER_ZOMBIE_MINION, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
-			if(spawn_index > MaxClients)
+			npc.g_TimesSummoned++;
+			maxhealth /= 7;
+			for(int i; i<1; i++)
 			{
-				Zombies_Currently_Still_Ongoing += 1;
-				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+				
+				int spawn_index = Npc_Create(XENO_SOLDIER_ZOMBIE_MINION, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+				if(spawn_index > MaxClients)
+				{
+					Zombies_Currently_Still_Ongoing += 1;
+					SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+				}
 			}
 		}
 	}

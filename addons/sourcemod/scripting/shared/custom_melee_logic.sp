@@ -324,12 +324,25 @@ bool CTFWeaponBaseMelee::DoSwingTraceInternal( trace_t &trace, bool bCleave, CUt
 
 #define MELEE_RANGE 100
 #define MELEE_BOUNDS 22.0
-void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], float CustomMeleeRange = 0.0, bool Hit_ally = false)
+void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], float CustomMeleeRange = 0.0, bool Hit_ally = false, float CustomMeleeWide = 0.0, bool ignore_walls = false)
 {
 	// Setup a volume for the melee weapon to be swung - approx size, so all melee behave the same.
-	static float vecSwingMins[3]; vecSwingMins = view_as<float>({-MELEE_BOUNDS, -MELEE_BOUNDS, -MELEE_BOUNDS});
-	static float vecSwingMaxs[3]; vecSwingMaxs = view_as<float>({MELEE_BOUNDS, MELEE_BOUNDS, MELEE_BOUNDS});
-
+	float vecSwingMins[3];
+	float vecSwingMaxs[3];
+	if(CustomMeleeWide)
+	{
+		vecSwingMins[0] = -CustomMeleeWide;
+		vecSwingMins[1] = -CustomMeleeWide;
+		vecSwingMins[2] = -CustomMeleeWide;
+		vecSwingMaxs[0] = CustomMeleeWide;
+		vecSwingMaxs[1] = CustomMeleeWide;
+		vecSwingMaxs[2] = CustomMeleeWide;
+	}
+	else
+	{
+		vecSwingMins = view_as<float>({-MELEE_BOUNDS, -MELEE_BOUNDS, -MELEE_BOUNDS});
+		vecSwingMaxs = view_as<float>({MELEE_BOUNDS, MELEE_BOUNDS, MELEE_BOUNDS});
+	}
 	float vecSwingStart[3];
 //	float vecSwingForward[3];
 	float ang[3];
@@ -357,8 +370,18 @@ void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], fl
 //	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 //	TE_SetupBeamPoints(vecSwingStart, vecSwingEnd, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
 //	TE_SendToAll();
-	
-	if(!Hit_ally)
+	if(ignore_walls)
+	{
+		// See if we hit anything.
+		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTraceIngoreWalls, client );
+		if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
+		{
+			delete trace;
+			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTraceIngoreWalls, client );
+		//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
+		}	
+	}
+	else if(!Hit_ally)
 	{
 		// See if we hit anything.
 		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, client );
@@ -474,7 +497,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 	pack.ReadString(classname, 32);
 	if(IsValidClient(client) && IsValidCurrentWeapon(client, weapon))
 	{
-
+		
 		Handle swingTrace;
 		b_LagCompNPC_No_Layers = true;
 		float vecSwingForward[3];
@@ -485,10 +508,23 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 										
 		float vecHit[3];
 		TR_GetEndPosition(vecHit, swingTrace);	
-			
+		
+		//We want extra rules!, do we have a melee that acts differently when we didnt hit an enemy or ally?
+		if(target < 1)
+		{
+			switch(i_CustomWeaponEquipLogic[weapon])
+			{
+				case WEAPON_LAPPLAND: //yes, if we miss, then we do other stuff.
+				{
+					Weapon_ark_LapplandRangedAttack(client, weapon);
+					delete swingTrace;
+					FinishLagCompensation_Base_boss();
+					delete pack;
+				}	
+			}
+		}
 		int Item_Index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 		int soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, target, Item_Index);	
-
 		if(soundIndex > 0)
 		{
 			char SoundStringToPlay[256];

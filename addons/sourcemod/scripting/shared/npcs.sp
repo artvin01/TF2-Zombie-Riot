@@ -1265,26 +1265,28 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			damagetype |= DMG_BULLET; //add bullet logic
 			damagetype &= ~DMG_BLAST; //remove blast logic			
 		}
-		
-		if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
+		if(!NpcStats_IsEnemySilenced(victim))
 		{
-	#if defined ZR
-			if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+			if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
 			{
-				damage *= Medival_Difficulty_Level;
+#if defined ZR
+				if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+				{
+					damage *= Medival_Difficulty_Level;
+				}
+#endif
+				damage *= fl_MeleeArmor[victim];
 			}
-	#endif
-			damage *= fl_MeleeArmor[victim];
-		}
-		else if(!(damagetype & DMG_SLASH))
-		{
-	#if defined ZR
-			if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+			else if(!(damagetype & DMG_SLASH))
 			{
-				damage *= Medival_Difficulty_Level;
+#if defined ZR
+				if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+				{
+					damage *= Medival_Difficulty_Level;
+				}
+#endif
+				damage *= fl_RangedArmor[victim];
 			}
-	#endif
-			damage *= fl_RangedArmor[victim];
 		}
 		//No resistances towards slash as its internal.
 
@@ -1321,14 +1323,19 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				}
 			}
 		}
-
-		if(f_HussarBuff[victim] > GetGameTime()) //hussar!
+		if(!NpcStats_IsEnemySilenced(victim))
 		{
-			damage *= 0.90;
+			if(f_HussarBuff[victim] > GetGameTime()) //hussar!
+			{
+				damage *= 0.90;
+			}
 		}
-		if(f_HussarBuff[attacker] > GetGameTime()) //hussar!
+		if(!NpcStats_IsEnemySilenced(attacker))
 		{
-			damage *= 1.10;
+			if(f_HussarBuff[attacker] > GetGameTime()) //hussar!
+			{
+				damage *= 1.10;
+			}
 		}
 		if(f_Ocean_Buff_Stronk_Buff[attacker] > GetGameTime()) //hussar!
 		{
@@ -1952,6 +1959,11 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s↓", Debuff_Adder);
 	}
+	if(NpcStats_IsEnemySilenced(victim))
+	{
+		Debuff_added = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%sX", Debuff_Adder);
+	}
 		
 	
 	if(Debuff_added)
@@ -1972,9 +1984,12 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		float percentage = npc.m_flMeleeArmor * 100.0;
 		
 #if defined ZR
-		if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+		if(!NpcStats_IsEnemySilenced(victim))
 		{
-			percentage *= Medival_Difficulty_Level;
+			if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+			{
+				percentage *= Medival_Difficulty_Level;
+			}
 		}
 #endif
 		
@@ -1992,9 +2007,12 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		float percentage = npc.m_flRangedArmor * 100.0;
 		
 #if defined ZR
-		if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+		if(!NpcStats_IsEnemySilenced(victim))
 		{
-			percentage *= Medival_Difficulty_Level;
+			if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+			{
+				percentage *= Medival_Difficulty_Level;
+			}
 		}
 #endif
 		
@@ -2027,7 +2045,10 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			}
 			else if(Medival_Difficulty_Level != 0)
 			{
-				HudOffset += 0.035;
+				if(!NpcStats_IsEnemySilenced(raid.index))
+				{
+					HudOffset += 0.035;
+				}
 			}
 
 			if(DoesNpcHaveHudDebuff(raidboss))
@@ -2142,6 +2163,9 @@ stock bool DoesNpcHaveHudDebuff(int npc)
 		return true;
 	else if(f_MaimDebuff[npc] > GetGameTime())
 		return true;
+	else if(NpcStats_IsEnemySilenced(npc))
+		return true;
+				
 
 	return false;
 }
@@ -2411,9 +2435,13 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			Npc_OnTakeDamage_Phlog(attacker);
 		}
-		case 8: //pap fusion
+		case WEAPON_NEARL: //pap fusion
 		{
 			return Npc_OnTakeDamage_PaP_Fusion(attacker, victim, damage, weapon);
+		}
+		case WEAPON_LAPPLAND: //pap ark alt
+		{
+			return Npc_OnTakeDamage_LappLand(damage, attacker, damagetype, inflictor, victim);
 		}
 	}
 #endif

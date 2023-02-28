@@ -473,10 +473,12 @@ public Action XenoSniperMain_ClotDamaged(int victim, int &attacker, int &inflict
 public void XenoSniperMain_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	XenoSniperMain npc = view_as<XenoSniperMain>(victim);
-
-	if(!npc.Anger)
+	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
-		npc.Anger = true; //	>:(
+		if(!npc.Anger)
+		{
+			npc.Anger = true; //	>:(
+		}
 	}
 }
 

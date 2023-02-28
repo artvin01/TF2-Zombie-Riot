@@ -659,106 +659,108 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.AddGesture("ACT_MP_THROW");
 				}
 			}
-			
-			if(npc.m_flNextPull < GetGameTime(npc.index) && !npc.m_bInKame)
+			if(!NpcStats_IsEnemySilenced(npc.index))
 			{
-				if (!npc.Anger)
+				if(npc.m_flNextPull < GetGameTime(npc.index) && !npc.m_bInKame)
 				{
-					npc.FaceTowards(vecTarget);
-					
-					for(int client = 1; client <= MaxClients; client++)
+					if (!npc.Anger)
 					{
-						if (IsClientInGame(client) && dieingstate[client] == 0 && TeutonType[client] == 0)
+						npc.FaceTowards(vecTarget);
+						
+						for(int client = 1; client <= MaxClients; client++)
 						{
-							float vAngles[3], vDirection[3];
-							
-							float entity_angles[3];
-									
-							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vAngles); 
-							
-							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", entity_angles); 
-							
-							float Distance = GetVectorDistance(vAngles, entity_angles);
-							if(Distance < 1250)
-							{				
-								if(vAngles[0] > -45.0)
-								{
-											vAngles[0] = -45.0;
-								}
-													
-								TF2_AddCondition(client, TFCond_LostFooting, 0.5);
-								TF2_AddCondition(client, TFCond_AirCurrent, 0.5);
-														
-								GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
-													
-								ScaleVector(vDirection, -1250.0);
+							if (IsClientInGame(client) && dieingstate[client] == 0 && TeutonType[client] == 0)
+							{
+								float vAngles[3], vDirection[3];
 								
-								if(vDirection[2] > 0.0)
-								{
-									vDirection[2] *= -1.0;
-								}
-													                    
-								TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vDirection);
-							}
-						}
-					}
-					
-					
-					npc.DispatchParticleEffect(npc.index, "hammer_bell_ring_shockwave2", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
-					
-					
-					npc.m_flNextPull = GetGameTime(npc.index) + 15.0;
-					npc.PlayPullSound();
-					npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
-				}
-				else if (npc.Anger)
-				{
-					npc.FaceTowards(vecTarget);
-					for(int client = 1; client <= MaxClients; client++)
-					{
-						if (IsClientInGame(client) && dieingstate[client] == 0 && TeutonType[client] == 0)
-						{
-							float vAngles[3], vDirection[3];
-							
-							float entity_angles[3];
-									
-							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vAngles); 
-							
-							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", entity_angles); 
-							
-							float Distance = GetVectorDistance(vAngles, entity_angles);
-							if(Distance < 1250)
-							{				
-								if(vAngles[0] > -45.0)
-								{
-										vAngles[0] = -45.0;
-								}
-													
-								TF2_AddCondition(client, TFCond_LostFooting, 0.5);
-								TF2_AddCondition(client, TFCond_AirCurrent, 0.5);
-														
-								GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
+								float entity_angles[3];
 										
-								if(vDirection[2] > 0.0)
-								{
-									vDirection[2] *= -1.0;
-								}
+								GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vAngles); 
 								
-								ScaleVector(vDirection, -1250.0);
-													                    
-								TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vDirection);
+								GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", entity_angles); 
+								
+								float Distance = GetVectorDistance(vAngles, entity_angles);
+								if(Distance < 1250)
+								{				
+									if(vAngles[0] > -45.0)
+									{
+												vAngles[0] = -45.0;
+									}
+														
+									TF2_AddCondition(client, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(client, TFCond_AirCurrent, 0.5);
+															
+									GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
+														
+									ScaleVector(vDirection, -1250.0);
+									
+									if(vDirection[2] > 0.0)
+									{
+										vDirection[2] *= -1.0;
+									}
+																			
+									TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vDirection);
+								}
 							}
 						}
+						
+						
+						npc.DispatchParticleEffect(npc.index, "hammer_bell_ring_shockwave2", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
+						
+						
+						npc.m_flNextPull = GetGameTime(npc.index) + 15.0;
+						npc.PlayPullSound();
+						npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 					}
-					
-					
-					npc.DispatchParticleEffect(npc.index, "hammer_bell_ring_shockwave2", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
-	
-					npc.m_flNextPull = GetGameTime(npc.index) + 13.0;
-					npc.PlayPullSound();
-					npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
-				}
-			} 
+					else if (npc.Anger)
+					{
+						npc.FaceTowards(vecTarget);
+						for(int client = 1; client <= MaxClients; client++)
+						{
+							if (IsClientInGame(client) && dieingstate[client] == 0 && TeutonType[client] == 0)
+							{
+								float vAngles[3], vDirection[3];
+								
+								float entity_angles[3];
+										
+								GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vAngles); 
+								
+								GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", entity_angles); 
+								
+								float Distance = GetVectorDistance(vAngles, entity_angles);
+								if(Distance < 1250)
+								{				
+									if(vAngles[0] > -45.0)
+									{
+											vAngles[0] = -45.0;
+									}
+														
+									TF2_AddCondition(client, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(client, TFCond_AirCurrent, 0.5);
+															
+									GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
+											
+									if(vDirection[2] > 0.0)
+									{
+										vDirection[2] *= -1.0;
+									}
+									
+									ScaleVector(vDirection, -1250.0);
+																			
+									TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vDirection);
+								}
+							}
+						}
+						
+						
+						npc.DispatchParticleEffect(npc.index, "hammer_bell_ring_shockwave2", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
+		
+						npc.m_flNextPull = GetGameTime(npc.index) + 13.0;
+						npc.PlayPullSound();
+						npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
+					}
+				} 
+			}
 									
 									
 			if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget < Pow(500.0, 2.0) || (npc.m_bInKame && npc.m_flNextRangedAttack < GetGameTime(npc.index)))

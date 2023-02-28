@@ -351,6 +351,7 @@ float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
 bool b_npcspawnprotection[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
 float f_HighTeslarDebuff[MAXENTITIES];
+float f_Silenced[MAXENTITIES];
 float f_VeryLowIceDebuff[MAXENTITIES];
 float f_LowIceDebuff[MAXENTITIES];
 float f_HighIceDebuff[MAXENTITIES];

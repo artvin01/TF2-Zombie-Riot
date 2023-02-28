@@ -4114,6 +4114,49 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 
 	return !(entity == iExclude);
 }
+public bool BulletAndMeleeTraceIngoreWalls(int entity, int contentsMask, any iExclude)
+{
+#if defined ZR
+	if(entity > 0 && entity <= MaxClients) 
+	{
+		if(TeutonType[entity])
+		{
+			return false;
+		}
+	}
+#endif
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
+	{
+		return false;
+	}
+	else if(!b_NpcHasDied[entity])
+	{
+		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		{
+			return false;
+		}
+		else if (b_CantCollidie[entity] && b_CantCollidieAlly[entity]) //If both are on, then that means the npc shouldnt be invis and stuff
+		{
+			return false;
+		}
+	}
+	
+	//if anything else is team
+	
+	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		return false;
+
+	if(b_ThisEntityIgnored[entity])
+	{
+		return false;
+	}	
+	if(entity == 0)
+	{
+		return false;
+	}	
+
+	return !(entity == iExclude);
+}
 
 public bool BulletAndMeleeTraceAlly(int entity, int contentsMask, any iExclude)
 {
@@ -7311,6 +7354,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_npcspawnprotection[entity] = false;
 	f_CooldownForHurtParticle[entity] = 0.0;
 	f_LowTeslarDebuff[entity] = 0.0;
+	f_Silenced[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
 	f_WidowsWineDebuff[entity] = 0.0;
 	f_VeryLowIceDebuff[entity] = 0.0;
@@ -7917,4 +7961,25 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun)
 	fl_NextDelayTime[npc] = GetGameTime() + Duration_Stun - f_StunExtraGametimeDuration[npc];
 	f_TimeFrozenStill[npc] = GetGameTime() + Duration_Stun - f_StunExtraGametimeDuration[npc];
 	f_TimeSinceLastStunHit[npc] = GetGameTime() + Duration_Stun;
+}
+
+
+void NpcStats_SilenceEnemy(int enemy, float duration)
+{
+	if(f_Silenced[enemy] < (GetGameTime() + duration))
+	{
+		f_Silenced[enemy] = GetGameTime() + duration; //make sure longer silence buff is prioritised.
+	}
+}
+
+bool NpcStats_IsEnemySilenced(int enemy)
+{
+	if(!IsValidEntity(enemy))
+		return true; //they dont exist, pretend as if they are silenced.
+
+	if(f_Silenced[enemy] < GetGameTime())
+	{
+		return false;
+	}
+	return true;
 }

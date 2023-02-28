@@ -747,6 +747,10 @@
 		"ru"	"Увеличенный урон и скорость атаки, ещё больше снарядов, сила отражения парирования увеличена."
 		"chi"   "增加伤害和攻击速度，可以格挡更多的炮弹，格挡的力量增加"
 	}
+	"Fractured Ark Pap 3"
+	{
+		"en"	"Abilities change.\nEach attack silences the enemies for 5 seconds.\nAttacks give charges, melee gives 2x more.\nRanged attacks if melee didnt hit.\nHomes onto enemy that you looked at.\nAbility 2x dmg and ability duration and AOE silence."
+	}
 	
 	"Longsword Desc"
 	{

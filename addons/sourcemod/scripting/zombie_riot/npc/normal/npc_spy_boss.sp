@@ -635,7 +635,7 @@ public Action SpyMainBoss_ClotDamaged(int victim, int &attacker, int &inflictor,
 			npc.m_blPlayHurtAnimation = true;
 		}
 	}
-	else
+	else if(!NpcStats_IsEnemySilenced(npc.index))
 	{
 		damage *= 0.1;
 	}

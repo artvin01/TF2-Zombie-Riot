@@ -430,8 +430,11 @@ public Action CombineSwordsman_ClotDamaged(int victim, int &attacker, int &infli
 		
 	CombineSwordsman npc = view_as<CombineSwordsman>(victim);
 	
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.15;
+	if(!NpcStats_IsEnemySilenced(victim))
+	{
+		if(npc.m_fbRangedSpecialOn)
+			damage *= 0.15;
+	}
 	
 	/*
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))

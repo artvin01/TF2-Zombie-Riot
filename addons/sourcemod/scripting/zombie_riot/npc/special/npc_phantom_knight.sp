@@ -633,25 +633,28 @@ public Action PhantomKnight_TraceAttack(int victim, int& attacker, int& inflicto
 {
 	PhantomKnight npc = view_as<PhantomKnight>(victim);
 
-	if(npc.m_flDoingAnimation < GetGameTime(npc.index))
+	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
-		if(hitgroup == HITGROUP_HEAD)
+		if(npc.m_flDoingAnimation < GetGameTime(npc.index))
 		{
-			if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+			if(hitgroup == HITGROUP_HEAD)
 			{
-				b_WasAHeadShot[victim] = true;
-				npc.m_flHeadshotCooldown = GetGameTime(npc.index) + 1.0;
-				npc.m_blPlayHurtAnimation = true;
+				if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+				{
+					b_WasAHeadShot[victim] = true;
+					npc.m_flHeadshotCooldown = GetGameTime(npc.index) + 1.0;
+					npc.m_blPlayHurtAnimation = true;
+				}
 			}
-		}
-		else
-		{
-			if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+			else
 			{
-				b_WasAHeadShot[victim] = false;
-				npc.m_flHeadshotCooldown = GetGameTime(npc.index) + 1.0;
-				npc.m_blPlayHurtAnimation = true;
-			}	
+				if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+				{
+					b_WasAHeadShot[victim] = false;
+					npc.m_flHeadshotCooldown = GetGameTime(npc.index) + 1.0;
+					npc.m_blPlayHurtAnimation = true;
+				}	
+			}
 		}
 	}
 	return Plugin_Continue;

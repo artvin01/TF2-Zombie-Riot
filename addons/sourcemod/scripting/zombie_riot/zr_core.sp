@@ -68,7 +68,13 @@ enum
 	WEAPON_MAIMMOAB = 4,
 	WEAPON_CRIPPLEMOAB = 5,
 	WEAPON_IRENE = 6,
-	WEAPON_COSMIC_TERROR = 8
+	WEAPON_7 = 7,
+	WEAPON_8 = 8,
+	WEAPON_9 = 9,
+	WEAPON_10 = 10,
+	WEAPON_OCEAN = 11,
+	WEAPON_NEARL = 12,
+	WEAPON_LAPPLAND = 13,
 }
 
 ArrayList SpawnerList;
@@ -575,6 +581,7 @@ void ZR_ClientDisconnect(int client)
 	Reset_stats_PHLOG_Singular(client);
 	Reset_stats_Passanger_Singular(client);
 	Reset_stats_Survival_Singular(client);
+	Reset_stats_LappLand_Singular(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;

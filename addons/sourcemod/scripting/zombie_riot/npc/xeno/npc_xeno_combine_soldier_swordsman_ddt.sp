@@ -374,20 +374,22 @@ public Action XenoCombineDDT_ClotDamaged(int victim, int &attacker, int &inflict
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
 		return Plugin_Continue;
 	*/
-	
-	if(!npc.bXenoInfectedSpecialHurt)
+	if(!NpcStats_IsEnemySilenced(victim))
 	{
-		npc.bXenoInfectedSpecialHurt = true;
-		npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 2.0;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 150, 255, 150, 35);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 35);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 35);
-		
-		CreateTimer(2.0, XenoCombineDDT_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(10.0, XenoCombineDDT_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
+		if(!npc.bXenoInfectedSpecialHurt)
+		{
+			npc.bXenoInfectedSpecialHurt = true;
+			npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 2.0;
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 150, 255, 150, 35);
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 35);
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 35);
+			
+			CreateTimer(2.0, XenoCombineDDT_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(10.0, XenoCombineDDT_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
+		}
 	}
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))

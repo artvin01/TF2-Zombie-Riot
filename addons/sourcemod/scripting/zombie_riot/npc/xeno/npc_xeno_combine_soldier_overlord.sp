@@ -598,12 +598,14 @@ public Action XenoCombineOverlord_ClotDamaged(int victim, int &attacker, int &in
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
-	if(npc.m_flAngerDelay > GetGameTime(npc.index))
-		damage *= 0.25;
-	
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.15;
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		if(npc.m_flAngerDelay > GetGameTime(npc.index))
+			damage *= 0.25;
+		
+		if(npc.m_fbRangedSpecialOn)
+			damage *= 0.15;
+	}
 	
 	return Plugin_Changed;
 }
