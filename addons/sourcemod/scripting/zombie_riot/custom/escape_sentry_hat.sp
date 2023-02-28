@@ -1022,12 +1022,12 @@ public Action ParticleTransmit(int entity, int client)
 		Cooldowntocheck = Building_Collect_Cooldown[building_attached][client];
 		static bool DoSentryCheck;
 		DoSentryCheck = false;
-		switch(Building_IconType[client])
+		switch(Building_IconType[Building_particle_Owner[entity]])
 		{
 			case 3,4,8,9:
 				DoSentryCheck = true;
 		}
-		
+
 		if(DoSentryCheck) //all non supportive, like sentry and so on.
 		{
 			Cooldowntocheck = f_BuildingIsNotReady[Building_particle_Owner[entity]];
