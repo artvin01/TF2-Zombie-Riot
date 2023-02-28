@@ -7,7 +7,6 @@ static int Building_particle[MAXENTITIES];
 static int Building_particle_Owner[MAXENTITIES];
 
 //for strength.
-static int Building_particle_2[MAXENTITIES];
 static int Building_IconType[MAXENTITIES];
 static bool BuildingIconShown[MAXENTITIES];
 static bool BuildingIconShownSpecific[MAXENTITIES];
@@ -634,12 +633,13 @@ stock void EquipDispenser(int client, int target, int building_variant)
 		//hide powerup icon.	
 		SetVariantString("ParticleEffectStop");
 		AcceptEntityInput(client, "DispatchEffect"); 
-		flPos[2] += 90.0;
-		Building_particle_2[client] = EntIndexToEntRef(ParticleEffectAt_Building_Custom(flPos, "powerup_icon_strength", client));
-		SDKHook(Building_particle_2[client], SDKHook_SetTransmit, ParticleTransmitSelf);
-		SDKUnhook(Building_particle_2[client], SDKHook_SetTransmit, ParticleTransmit);
+//		flPos[2] += 90.0;
+//		Building_particle_2[client] = EntIndexToEntRef(ParticleEffectAt_Building_Custom(flPos, "powerup_icon_strength", client));
+//		SDKHook(Building_particle_2[client], SDKHook_SetTransmit, ParticleTransmitSelf);
+//		SDKUnhook(Building_particle_2[client], SDKHook_SetTransmit, ParticleTransmit);
 				
-		flPos[2] += 20.0;
+//		flPos[2] += 20.0;
+		flPos[2] += 110.0;
 		Building_IconType[client] = building_variant;
 		switch(building_variant)
 		{
@@ -773,6 +773,7 @@ public void OnEntityDestroyed_BackPack(int iEntity)
 						AcceptEntityInput(converted_ref, "Stop");
 						AcceptEntityInput(converted_ref, "Kill");
 					}
+					/*
 					converted_ref = EntRefToEntIndex(Building_particle_2[builder]);
 					if(converted_ref > 0 && IsValidEntity(converted_ref))
 					{
@@ -780,6 +781,7 @@ public void OnEntityDestroyed_BackPack(int iEntity)
 						AcceptEntityInput(converted_ref, "Stop");
 						AcceptEntityInput(converted_ref, "Kill");
 					}
+					*/
 					Building_Mounted[builder] = 0;
 					i_BeingCarried[Dispenser] = false;
 					Player_Mounting_Building[builder] = false;
@@ -819,6 +821,7 @@ stock void DestroyDispenser(int client)
 				AcceptEntityInput(converted_ref, "Stop");
 				AcceptEntityInput(converted_ref, "Kill");
 			}
+			/*
 			converted_ref = EntRefToEntIndex(Building_particle_2[client]);
 			if(converted_ref > 0 && IsValidEntity(converted_ref))
 			{
@@ -826,6 +829,7 @@ stock void DestroyDispenser(int client)
 				AcceptEntityInput(converted_ref, "Stop");
 				AcceptEntityInput(converted_ref, "Kill");
 			}
+			*/
 			SetVariantInt(999999);
 			AcceptEntityInput(Dispenser, "RemoveHealth");
 			Building_Mounted[client] = 0;
@@ -955,6 +959,7 @@ stock void UnequipDispenser(int client)
 				AcceptEntityInput(converted_ref, "Stop");
 				AcceptEntityInput(converted_ref, "Kill");
 			}
+			/*
 			converted_ref = EntRefToEntIndex(Building_particle_2[client]);
 			if(converted_ref > 0 && IsValidEntity(converted_ref))
 			{
@@ -962,6 +967,7 @@ stock void UnequipDispenser(int client)
 				AcceptEntityInput(converted_ref, "Stop");
 				AcceptEntityInput(converted_ref, "Kill");
 			}
+			*/
 			Building_Mounted[client] = 0;
 			SetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed", 0.1);
 			i_BeingCarried[entity] = false;
@@ -1038,6 +1044,7 @@ public Action ParticleTransmit(int entity, int client)
 	}
 	return Plugin_Continue;
 }
+/*
 public Action ParticleTransmitSelf(int entity, int client)
 {
 	if(client == Building_particle_Owner[entity])
@@ -1045,7 +1052,7 @@ public Action ParticleTransmitSelf(int entity, int client)
 
 	return Plugin_Continue;
 }
-
+*/
 public void CleanAllBuildingEscape()
 {
 	Zero(Player_Mounting_Building);

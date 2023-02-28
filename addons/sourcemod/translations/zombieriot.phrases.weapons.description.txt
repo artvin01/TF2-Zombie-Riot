@@ -1451,9 +1451,8 @@
 	
 	"Barbarians Mind Desc"
 	{
-		"en"	"Your melee will deal 10%% more damage, and you will take 5%% less damage overall, but all your other weapons will be completely useless and deal NO damage."
-		"ru"	"Ваше оружие ближнего боя будет наносить на 10%% больше урона, и вы будете получать на 5%% меньше урона в целом, но всё остальное оружие будет совершенно бесполезным и не будет наносить НИКАКОГО урона."
-		"chi"   "你的近战伤害将增加10%%，但你的其他伤害将减少5%%，你的所有非近战武器将完全无用，不会造成伤害。"
+		"en"	"Your melee will deal 10%% more damage, and you will take 5%% less damage overall, but all your other weapons will be completely useless and deal NO damage.\nPassive healing wont work, such as ocean song, but still give buffs."
+		
 	}
 	
 	"Face Stabber Desc"
