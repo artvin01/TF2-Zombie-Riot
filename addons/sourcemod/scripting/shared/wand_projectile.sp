@@ -97,7 +97,7 @@ bool hideprojectile = true) //This will handle just the spawning, the rest like 
 			i_WandParticle[entity] = EntIndexToEntRef(particle);
 		}
 
-		if(time < 10.0 && time > 0.1) //Make it vanish if there is no time set, or if its too big of a timer to not even bother.
+		if(time < 60.0 && time > 0.1) //Make it vanish if there is no time set, or if its too big of a timer to not even bother.
 		{
 			DataPack pack;
 			CreateDataTimer(time, Timer_RemoveEntity_CustomProjectileWand, pack, TIMER_FLAG_NO_MAPCHANGE);
