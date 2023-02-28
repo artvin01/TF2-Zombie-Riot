@@ -3,27 +3,32 @@
 
 static int lantean_Wand_Drone_Count[MAXPLAYERS+1]={0, ...};
 static float fl_hud_timer[MAXPLAYERS+1]={0.0, ...};
+static float fl_AimbotTimer[MAXPLAYERS+1]={0.0, ...};
 static float fl_overcharge[MAXENTITIES]={0.0, ...};
 
 static float fl_lantean_Wand_Drone_Life[MAXENTITIES] = { 0.0, ... };
+static float fl_lantean_Wand_Drone_HitSafe[MAXENTITIES][MAXENTITIES];
 
 static int i_drone_targets_penetrated[MAXENTITIES] = { 0, ... };
 
 static char particle_type[MAXPLAYERS + 1][200];
 
 static bool bl_penetrate[MAXPLAYERS + 1] = { false, ... };
+static float f3_Vector_To_Aimbot_To[MAXPLAYERS + 1][3];
 
 
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 
-#define DRONE_MAX_PENETRATION 5	//how many npc's the drone will penetrate before commiting die
+#define DRONE_MAX_PENETRATION 10	//how many npc's the drone will penetrate before commiting die
 
 
 public void Weapon_lantean_Wand_ClearAll()
 {
 	Zero(ability_cooldown);
+	Zero(fl_AimbotTimer);
 	Zero(fl_hud_timer);
 	Zero(fl_lantean_Wand_Drone_Life);
+	Zero2(fl_lantean_Wand_Drone_HitSafe);
 }
 
 #define LANTEAN_WAND_SHOT_1 	"weapons/physcannon/energy_sing_flyby1.wav"
@@ -181,20 +186,23 @@ static void Weapon_lantean_Wand(int client, int weapon)
 		if(address != Address_Null)
 			time *= TF2Attrib_GetValue(address);
 			
-			
-		int projectile = Wand_Projectile_Spawn(client, speed, 100.0, damage, WEAPON_LANTEAN, weapon, particle_type[client]);
 		
+		//sanity check, make sure it despawns eventually if smth goes wrong!
+		int projectile = Wand_Projectile_Spawn(client, speed, 59.0, damage, WEAPON_LANTEAN, weapon, particle_type[client]);
+		
+		for (int entity = 0; entity < MAXENTITIES; entity++)
+		{
+			fl_lantean_Wand_Drone_HitSafe[projectile][entity] = 0.0;
+		}
+		SetEntityCollisionGroup(projectile, 1); //Do not collide.
+
+	//	SDKUnhook(projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
+
 		lantean_Wand_Drone_Count[client]++;
 		fl_lantean_Wand_Drone_Life[projectile] = GetGameTime()+time;
 		i_drone_targets_penetrated[projectile] = 0;
 	
-		Handle swingTrace;
-		float vecSwingForward[3] , vec[3];
-		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, false); //infinite range, and (doesn't)ignore walls!
-				
-		TR_GetEndPosition(vec, swingTrace);
-		delete swingTrace;
-		
+		LanternFindVecToBotTo(client);
 		switch(GetRandomInt(1, 2))
 		{
 			case 1:
@@ -207,7 +215,7 @@ static void Weapon_lantean_Wand(int client, int weapon)
 			}
 		}
 		
-		Lantean_HomingProjectile_TurnToTarget(vec, projectile);
+		Lantean_HomingProjectile_TurnToTarget(f3_Vector_To_Aimbot_To[client], projectile);
 		
 		DataPack pack;
 		CreateDataTimer(0.1, Lantean_PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -224,68 +232,88 @@ static void Weapon_lantean_Wand(int client, int weapon)
 	}
 }
 
-public void lantean_Wand_Touch(int entity, int target)
+public void lantean_Wand_Touch_World(int entity, int other)
 {
-	int owner = EntRefToEntIndex(i_WandOwner[entity]);
-	int particle = EntRefToEntIndex(i_WandParticle[entity]);
-	if (target > 0 && IsValidClient(owner))	
+	int target = Target_Hit_Wand_Detection(entity, other);
+	if(target == 0)
 	{
-		//Code to do damage position and ragdolls
-		static float angles[3];
-		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
-		float vecForward[3];
-		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenter(target);
-
-		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
-		
-		i_drone_targets_penetrated[entity]++;
-		
-		SDKHooks_TakeDamage(target, entity, owner, f_WandDamage[entity]/i_drone_targets_penetrated[entity], DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
-	
-		
-		if(IsValidEntity(particle) && (!bl_penetrate[owner] || i_drone_targets_penetrated[entity] >= DRONE_MAX_PENETRATION))
+		if(fl_lantean_Wand_Drone_Life[entity] < GetGameTime())
 		{
-			RemoveEntity(particle);
+			int owner = EntRefToEntIndex(i_WandOwner[entity]);
+			int particle = EntRefToEntIndex(i_WandParticle[entity]);
+			if(IsValidEntity(particle))
+			{
+				RemoveEntity(particle);
+			}
+			switch(GetRandomInt(1,4)) 
+			{
+				case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
+					
+				case 2:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
+					
+				case 3:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+				case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			}
+			RemoveEntity(entity);
+			lantean_Wand_Drone_Count[owner]--;
 		}
-		switch(GetRandomInt(1,5)) 
-		{
-			case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-			case 2:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-			case 3:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
-			
-			case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
-			
-			case 5:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_5, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-	   	}
-	   	if(i_drone_targets_penetrated[entity] >= DRONE_MAX_PENETRATION || !bl_penetrate[owner])
-	   	{
-	   		RemoveEntity(entity);
-	   		lantean_Wand_Drone_Count[owner]--;
-	   	}
 	}
-	else if(target == 0)
+}
+
+public void lantean_Wand_Touch(int entity, int other)
+{
+	int target = Target_Hit_Wand_Detection(entity, other);
+	if (target > 0)	
 	{
-		if(IsValidEntity(particle))
+		if(fl_lantean_Wand_Drone_HitSafe[entity][target] > GetGameTime())
 		{
-			RemoveEntity(particle);
+			return;
 		}
-		switch(GetRandomInt(1,4)) 
+		fl_lantean_Wand_Drone_HitSafe[entity][target] = GetGameTime() + 0.3;
+
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+		if (IsValidClient(owner))	
 		{
-			case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-			case 2:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-			case 3:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			//Code to do damage position and ragdolls
+			static float angles[3];
+			GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
+			float vecForward[3];
+			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+			static float Entity_Position[3];
+			Entity_Position = WorldSpaceCenter(target);
+
+			int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 			
-			case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			i_drone_targets_penetrated[entity]++;
+			
+			SDKHooks_TakeDamage(target, entity, owner, f_WandDamage[entity]/i_drone_targets_penetrated[entity], DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		
+			
+			if(IsValidEntity(particle) && (!bl_penetrate[owner] || i_drone_targets_penetrated[entity] >= DRONE_MAX_PENETRATION))
+			{
+				RemoveEntity(particle);
+			}
+			switch(GetRandomInt(1,5)) 
+			{
+				case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
+					
+				case 2:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
+					
+				case 3:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+				case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+				case 5:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_5, entity, SNDCHAN_STATIC, 80, _, 0.9);
+					
+			}
+			if(i_drone_targets_penetrated[entity] >= DRONE_MAX_PENETRATION || !bl_penetrate[owner])
+			{
+				RemoveEntity(entity);
+				lantean_Wand_Drone_Count[owner]--;
+			}
 		}
-		RemoveEntity(entity);
-		lantean_Wand_Drone_Count[owner]--;
 	}
 }
 
@@ -301,30 +329,53 @@ public Action Lantean_PerfectHomingShot(Handle timer, DataPack pack)
 	int weapon = GetEntPropEnt(Client, Prop_Send, "m_hActiveWeapon");
 	if(IsValidEntity(Projectile) && IsPlayerAlive(Client) && fl_lantean_Wand_Drone_Life[Projectile] > GetGameTime() && i_CustomWeaponEquipLogic[weapon]==WEAPON_LANTEAN)	//if drone is beyond its lifetime, it loses homing and crashes and burns 
 	{
+		if(fl_AimbotTimer[Client] < GetGameTime())
+		{
+			if(fl_hud_timer[Client] < GetGameTime())
+			{
+				Lantean_Wand_Hud(Client);
+				fl_hud_timer[Client] = GetGameTime() + 0.5;
+			}
+			fl_AimbotTimer[Client] = GetGameTime() + 0.25;
+
+			LanternFindVecToBotTo(Client);
+		}
 		if(fl_overcharge[Projectile] < GetGameTime())
 		{
 			if(lantean_Wand_Drone_Count[Client]>10)
 			{
 				fl_overcharge[Projectile] = GetGameTime() + lantean_Wand_Drone_Count[Client] / 10.0 - 1.0;	//if drones are over 10, the homing update becomes delayed making them harder to control/hopefuly less resource intensive
 			}
-			Handle swingTrace;
-			float vecSwingForward[3] , vec[3];
-			DoSwingTrace_Custom(swingTrace, Client, vecSwingForward, 9999.9, false, 45.0, false); //infinite range, and (doesn't)ignore walls!
-						
-			TR_GetEndPosition(vec, swingTrace);
-			delete swingTrace;
-			Lantean_HomingProjectile_TurnToTarget(vec, Projectile);
-		}
-		if(fl_hud_timer[Client] < GetGameTime())
-		{
-			Lantean_Wand_Hud(Client);
-			fl_hud_timer[Client] = GetGameTime() + 0.5;
+
+			Lantean_HomingProjectile_TurnToTarget(f3_Vector_To_Aimbot_To[Client], Projectile);
 		}
 		return Plugin_Continue;
 	}
 	return Plugin_Handled;
 }
+static void LanternFindVecToBotTo(int client)
+{
+	Handle swingTrace;
+	float vecSwingForward[3] , vec[3];
+			
+	b_LagCompNPC_No_Layers = true;
+	StartLagCompensation_Base_Boss(client);
+	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, false); //infinite range, and (doesn't)ignore walls!	
+	FinishLagCompensation_Base_boss();
 
+	int target = TR_GetEntityIndex(swingTrace);	
+	if(IsValidEnemy(client, target))
+	{
+		vec = WorldSpaceCenter(target);
+	}
+	else
+	{
+		TR_GetEndPosition(vec, swingTrace);
+	}
+	f3_Vector_To_Aimbot_To[client] = vec;
+			
+	delete swingTrace;
+}
 static void Lantean_Wand_Hud(int client)
 {
 	if(lantean_Wand_Drone_Count[client]<11)
@@ -341,6 +392,9 @@ static void Lantean_HomingProjectile_TurnToTarget(float Vec[3], int Projectile)
 {
 	float flTargetPos[3];
 	flTargetPos = Vec;	//Well this works ig
+	flTargetPos[0] += GetRandomFloat(-10.0, 10.0);
+	flTargetPos[1] += GetRandomFloat(-10.0, 10.0);
+	flTargetPos[2] += GetRandomFloat(-10.0, 10.0);
 	float flRocketPos[3];
 	GetEntPropVector(Projectile, Prop_Data, "m_vecAbsOrigin", flRocketPos);
 
