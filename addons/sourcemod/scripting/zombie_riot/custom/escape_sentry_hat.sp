@@ -725,6 +725,7 @@ stock void EquipDispenser(int client, int target, int building_variant)
 			{
 				if(Building_Collect_Cooldown[target][client] < GetGameTime())
 				{
+					Building_particle[client] = EntIndexToEntRef(ParticleEffectAt_Building_Custom(flPos, "powerup_icon_precision", client)); // Village
 					BuildingIconShownSpecific[client] = true;
 					TF2_AddCondition(client, TFCond_RunePrecision, -1.0);
 				}
@@ -1017,7 +1018,22 @@ public Action ParticleTransmit(int entity, int client)
 
 	if(IsValidEntity(building_attached))
 	{
-		if(Building_Collect_Cooldown[building_attached][client] > GetGameTime())
+		static float Cooldowntocheck;
+		Cooldowntocheck = Building_Collect_Cooldown[building_attached][client];
+		static bool DoSentryCheck;
+		DoSentryCheck = false;
+		switch(Building_IconType[client])
+		{
+			case 3,4,8,9:
+				DoSentryCheck = true;
+		}
+		
+		if(DoSentryCheck) //all non supportive, like sentry and so on.
+		{
+			Cooldowntocheck = f_BuildingIsNotReady[Building_particle_Owner[entity]];
+		}
+
+		if(Cooldowntocheck > GetGameTime())
 			return Plugin_Handled;
 	}
 	return Plugin_Continue;

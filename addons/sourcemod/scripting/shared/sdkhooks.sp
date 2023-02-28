@@ -909,6 +909,9 @@ public void OnPostThink(int client)
 	{
 		//Reuse uhh
 		EscapeSentryHat_ApplyBuidingIcon(client);
+		//Doesnt reset often enough, fuck clientside.
+		SetVariantString("ParticleEffectStop");
+		AcceptEntityInput(client, "DispatchEffect"); 
 		if (IsPlayerAlive(client))
 		{
 			static int entity;
