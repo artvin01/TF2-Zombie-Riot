@@ -927,7 +927,7 @@ public void Melee_LapplandArkTouch(int entity, int target)
 				float flAng[3]; // original
 				EmitSoundToAll(SOUND_LAPPLAND_ABILITY, owner, _, 90, _, 1.0);
 				GetAttachment(owner, "effect_hand_r", flPos, flAng);				
-				int particle_Hand = ParticleEffectAt(flPos, "manmelter_projectile_trail", 20.0);
+				int particle_Hand = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 20.0);
 				SetParent(owner, particle_Hand, "effect_hand_r");
 				Weapon_Ark_SilenceAOE(target); //lag comp or not, doesnt matter.
 				NpcStats_SilenceEnemy(target, 10.0);
@@ -1149,7 +1149,7 @@ float Npc_OnTakeDamage_LappLand(float damage ,int attacker, int damagetype, int 
 					float flAng[3]; // original
 
 					GetAttachment(attacker, "effect_hand_r", flPos, flAng);				
-					int particle_Hand = ParticleEffectAt(flPos, "manmelter_projectile_trail", 20.0);
+					int particle_Hand = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 20.0);
 					SetParent(attacker, particle_Hand, "effect_hand_r");
 
 					i_LappLandHitsDone[attacker] = 0;
