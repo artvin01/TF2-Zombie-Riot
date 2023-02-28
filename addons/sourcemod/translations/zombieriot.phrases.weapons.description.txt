@@ -1796,4 +1796,12 @@
 		"en" 	"Heals allies slowly around you and gives them a 10% dmg buff.\nScales with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 25% dmg buff to all allies for 15 sec."
 		"ru" 	"Медленно исцеляет союзников вокруг вас и даёт им 10% усиление урона.\nУвеличивается с улучшением медицинской пушки.\nM1 - доп. исцеление на союзников.\nM2 - более сильное усиление урона на 25% на всех союзников на 15 сек."
 	}
+	"Lantean Staff Desc"
+	{
+		"en" 	"Wherever you look, the drones fly, going over 10 drones makes them harder to control"
+	}
+	"Lantean Staff Desc pap"
+	{
+		"en"	"Your drones can now penetrate enemies up to 5 times, less damage each time it penetrates a target."
+	}
 }

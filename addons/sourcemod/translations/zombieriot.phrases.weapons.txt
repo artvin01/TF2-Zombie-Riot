@@ -2116,4 +2116,8 @@
 	{
 		"en"	"Lapplands Sword"
 	}
+	"Lantean Staff"
+	{
+		"en" 	"Lantean Staff"
+	}
 }
