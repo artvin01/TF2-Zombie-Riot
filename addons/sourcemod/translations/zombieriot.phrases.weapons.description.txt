@@ -1444,15 +1444,14 @@
 	
 	"Panic Attack Desc"
 	{
-		"en"	"You attack 15%% slower but the lower your health is, the faster you attack, up to 25%% faster, doesn't work with last man alive."
-		"ru"	"Вы атакуете на 15%% медленнее, но чем меньше у вас здоровья, тем быстрее вы атакуете, до 25%% быстрее, не работает, если вы последний выживший."
-		"chi"   "攻击速度降低15%%，但你的血量越低，你的攻击速度就越快，最高可达25%%，当你是最后一名玩家时不起作用。"
+		"en"	"You attack 15%% slower but the lower your health is, the faster you attack, up to 25%% faster, doesn't work with last man alive.\nPassive healing wont work if your holding weapon has this effect, such as ocean song, but still give buffs."
 	}
 	
 	"Barbarians Mind Desc"
 	{
-		"en"	"Your melee will deal 10%% more damage, and you will take 5%% less damage overall, but all your other weapons will be completely useless and deal NO damage.\nPassive healing wont work, such as ocean song, but still give buffs."
-		
+		"en"	"Your melee will deal 10%% more damage, and you will take 5%% less damage overall, but all your other weapons will be completely useless and deal NO damage."
+		"ru"	"Ваше оружие ближнего боя будет наносить на 10%% больше урона, и вы будете получать на 5%% меньше урона в целом, но всё остальное оружие будет совершенно бесполезным и не будет наносить НИКАКОГО урона."
+		"chi"   "你的近战伤害将增加10%%，但你的其他伤害将减少5%%，你的所有非近战武器将完全无用，不会造成伤害。"
 	}
 	
 	"Face Stabber Desc"

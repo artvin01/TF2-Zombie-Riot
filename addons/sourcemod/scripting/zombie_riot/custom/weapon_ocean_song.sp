@@ -293,7 +293,15 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= range) // 650.0
 			{
-				if(i_BarbariansMind[ally] < 1)
+				bool inore_Heal = false;
+
+				int weapon = GetEntPropEnt(ally, Prop_Send, "m_hActiveWeapon");
+				if(IsValidEntity(weapon) && Panic_Attack[weapon])
+				{
+					inore_Heal = true;
+				}
+
+				if(!inore_Heal)
 				{	
 					if(f_TimeUntillNormalHeal[ally] > GetGameTime())
 					{
