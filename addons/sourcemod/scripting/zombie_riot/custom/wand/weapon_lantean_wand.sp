@@ -37,14 +37,14 @@ void Weapon_lantean_Wand_Map_Precache()
 }
 public void Weapon_lantean_Wand_m1(int client, int weapon, bool crit, int slot)
 {
-	particle_type[client]="manmelter_projectile_trail";
+	particle_type[client]="flaregun_energyfield_red";
 	bl_penetrate[client] = false;
 	Weapon_lantean_Wand(client, weapon);
 }
 
 public void Weapon_lantean_Wand_pap_m1(int client, int weapon, bool crit, int slot)
 {
-	particle_type[client]="raygun_projectile_red_crit";
+	particle_type[client]="flaregun_energyfield_blue";
 	bl_penetrate[client] = true;
 	Weapon_lantean_Wand(client, weapon);
 }
@@ -63,7 +63,7 @@ public void Weapon_lantean_Wand_m2(int client, int weapon, bool crit, int slot)
 		{
 			Ability_Apply_Cooldown(client, slot, 30.0);
 	
-			particle_type[client]="manmelter_projectile_trail";
+			particle_type[client]="scorchshot_trail_crit_red";
 			bl_penetrate[client] = false;
 			Current_Mana[client] -= mana_cost / 5;
 			for(int i=1 ; i<=5 ; i++)
@@ -107,7 +107,7 @@ public void Weapon_lantean_Wand_pap_m2(int client, int weapon, bool crit, int sl
 		{
 			Ability_Apply_Cooldown(client, slot, 30.0);
 	
-			particle_type[client]="raygun_projectile_red_crit";
+			particle_type[client]="scorchshot_trail_crit_blue";
 			bl_penetrate[client] = true;
 			Current_Mana[client] -= mana_cost / 10;
 			for(int i=1 ; i<=10 ; i++)
@@ -228,7 +228,7 @@ public void lantean_Wand_Touch(int entity, int target)
 {
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);
-	if (target > 0)	
+	if (target > 0 && IsValidClient(owner))	
 	{
 		//Code to do damage position and ragdolls
 		static float angles[3];
@@ -291,12 +291,15 @@ public void lantean_Wand_Touch(int entity, int target)
 
 public Action Lantean_PerfectHomingShot(Handle timer, DataPack pack)
 {
-	//fl_overcharge
 	pack.Reset();
 	int Projectile = EntRefToEntIndex(pack.ReadCell());
 	int Client = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(Client))
+	{
+		return Plugin_Handled;
+	}
 	int weapon = GetEntPropEnt(Client, Prop_Send, "m_hActiveWeapon");
-	if(IsValidEntity(Projectile) && IsValidClient(Client) && fl_lantean_Wand_Drone_Life[Projectile] > GetGameTime() && i_CustomWeaponEquipLogic[weapon]==WEAPON_LANTEAN)	//if drone is beyond its lifetime, it loses homing and crashes and burns 
+	if(IsValidEntity(Projectile) && IsPlayerAlive(Client) && fl_lantean_Wand_Drone_Life[Projectile] > GetGameTime() && i_CustomWeaponEquipLogic[weapon]==WEAPON_LANTEAN)	//if drone is beyond its lifetime, it loses homing and crashes and burns 
 	{
 		if(fl_overcharge[Projectile] < GetGameTime())
 		{
