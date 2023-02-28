@@ -460,11 +460,13 @@ public Action SniperMain_ClotDamaged(int victim, int &attacker, int &inflictor, 
 public void SniperMain_ClotDamaged_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	SniperMain npc = view_as<SniperMain>(victim);
-
-	if(15000 >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)
+	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
-		npc.Anger = true; //	>:(
-		npc.m_flSpeed = 330.0;
+		if(15000 >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)
+		{
+			npc.Anger = true; //	>:(
+			npc.m_flSpeed = 330.0;
+		}
 	}
 }
 

@@ -70,6 +70,7 @@ bool hideprojectile = true) //This will handle just the spawning, the rest like 
 		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
 		DispatchSpawn(entity);
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
+		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", fVel);
 
 		SetEntityCollisionGroup(entity, 27);
 		for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
@@ -97,7 +98,7 @@ bool hideprojectile = true) //This will handle just the spawning, the rest like 
 			i_WandParticle[entity] = EntIndexToEntRef(particle);
 		}
 
-		if(time < 10.0 && time > 0.1) //Make it vanish if there is no time set, or if its too big of a timer to not even bother.
+		if(time < 60.0 && time > 0.1) //Make it vanish if there is no time set, or if its too big of a timer to not even bother.
 		{
 			DataPack pack;
 			CreateDataTimer(time, Timer_RemoveEntity_CustomProjectileWand, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -141,7 +142,7 @@ public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pac
 public void Wand_Base_StartTouch(int entity, int other)
 {
 	int target = Target_Hit_Wand_Detection(entity, other);
-	#if defined ZR
+#if defined ZR
 	switch(i_WandIdNumber[entity])
 	{
 		case 0:
@@ -187,6 +188,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		case 10:
 		{
 			Want_CalciumWandTouch(entity, target);
+		}
+		case WEAPON_LAPPLAND:
+		{
+			Melee_LapplandArkTouch(entity, target);
 		}
 		/* Doesnt work, this projectile has noclip, go to DHOOK public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		case 11:

@@ -640,16 +640,19 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 	}
 	else
 	{
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
+		if(!NpcStats_IsEnemySilenced(Monk))
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK)
+			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
 			{
-				static float pos2[3];
-				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
-				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
+				int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+				if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK)
 				{
-					SetEntProp(entity_close, Prop_Data, "m_iHealth",GetEntProp(entity_close, Prop_Data, "m_iMaxHealth"));
+					static float pos2[3];
+					GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
+					if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
+					{
+						SetEntProp(entity_close, Prop_Data, "m_iHealth",GetEntProp(entity_close, Prop_Data, "m_iMaxHealth"));
+					}
 				}
 			}
 		}

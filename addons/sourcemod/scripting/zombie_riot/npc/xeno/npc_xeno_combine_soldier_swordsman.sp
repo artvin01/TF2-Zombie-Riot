@@ -453,17 +453,20 @@ public Action XenoCombineSwordsman_ClotDamaged(int victim, int &attacker, int &i
 		
 	XenoCombineSwordsman npc = view_as<XenoCombineSwordsman>(victim);
 	
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.15;
-	
-	if(!npc.bXenoInfectedSpecialHurt)
+	if(!NpcStats_IsEnemySilenced(victim))
 	{
-		PF_StopPathing(npc.index);
-		npc.m_bPathing = false;
-		npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 0.5;
-		npc.bXenoInfectedSpecialHurt = true;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
+		if(npc.m_fbRangedSpecialOn)
+			damage *= 0.15;
+			
+		if(!npc.bXenoInfectedSpecialHurt)
+		{
+			PF_StopPathing(npc.index);
+			npc.m_bPathing = false;
+			npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 0.5;
+			npc.bXenoInfectedSpecialHurt = true;
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 150, 255, 150, 255);
+		}
 	}
 	
 	/*

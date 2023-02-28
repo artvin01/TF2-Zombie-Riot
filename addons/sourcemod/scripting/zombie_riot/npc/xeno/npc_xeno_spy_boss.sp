@@ -765,7 +765,7 @@ public Action XenoSpyMainBoss_ClotDamaged(int victim, int &attacker, int &inflic
 			npc.m_blPlayHurtAnimation = true;
 		}
 	}
-	else
+	else if(!NpcStats_IsEnemySilenced(npc.index))
 	{
 		damage = 0.0;
 	}

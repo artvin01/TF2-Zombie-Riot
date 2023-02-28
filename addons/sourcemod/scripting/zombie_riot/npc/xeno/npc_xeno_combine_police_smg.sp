@@ -412,15 +412,17 @@ public Action XenoCombinePoliceSmg_ClotDamaged(int victim, int &attacker, int &i
 		return Plugin_Continue;
 		
 	XenoCombinePoliceSmg npc = view_as<XenoCombinePoliceSmg>(victim);
-	
-	if(!npc.bXenoInfectedSpecialHurt)
+	if(!NpcStats_IsEnemySilenced(victim))
 	{
-		npc.bXenoInfectedSpecialHurt = true;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 255, 0, 0, 255);
-		npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 2.0;
-		CreateTimer(2.0, XenoCombinePoliceSmg_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(10.0, XenoCombinePoliceSmg_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
+		if(!npc.bXenoInfectedSpecialHurt)
+		{
+			npc.bXenoInfectedSpecialHurt = true;
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 255, 0, 0, 255);
+			npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 2.0;
+			CreateTimer(2.0, XenoCombinePoliceSmg_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(10.0, XenoCombinePoliceSmg_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
+		}
 	}
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))

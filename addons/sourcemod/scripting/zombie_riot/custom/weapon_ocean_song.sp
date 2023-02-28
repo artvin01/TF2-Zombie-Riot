@@ -293,16 +293,28 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= range) // 650.0
 			{
-				if(f_TimeUntillNormalHeal[ally] > GetGameTime())
+				bool inore_Heal = false;
+
+				int weapon = GetEntPropEnt(ally, Prop_Send, "m_hActiveWeapon");
+				if(IsValidEntity(weapon) && Panic_Attack[weapon])
 				{
-					flHealMutli_Calc = flHealMulti * 0.5;
+					inore_Heal = true;
 				}
-				else 
-				{
-					flHealMutli_Calc = flHealMulti;
-				} 
-				flHealMutli_Calc *= extra_heal;
-				int healingdone = HealEntityViaFloat(ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0);
+
+				if(!inore_Heal)
+				{	
+					if(f_TimeUntillNormalHeal[ally] > GetGameTime())
+					{
+						flHealMutli_Calc = flHealMulti * 0.5;
+					}
+					else 
+					{
+						flHealMutli_Calc = flHealMulti;
+					} 
+					flHealMutli_Calc *= extra_heal;
+					int healingdone = HealEntityViaFloat(ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0);
+					Healing_done_in_total[client] += healingdone;
+				}
 				if(f_OceanBuffAbility[client] > GetGameTime())
 				{
 					f_Ocean_Buff_Stronk_Buff[ally] = GetGameTime() + 0.21;
@@ -311,7 +323,6 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 				{
 					f_Ocean_Buff_Weak_Buff[ally] = GetGameTime() + 0.21;
 				}
-				Healing_done_in_total[client] += healingdone;
 			}
 		}
 	}

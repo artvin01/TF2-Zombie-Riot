@@ -907,6 +907,11 @@ public void OnPostThink(int client)
 #if defined ZR
 	if(f_DelayLookingAtHud[client] < GetGameTime())
 	{
+		//Reuse uhh
+		EscapeSentryHat_ApplyBuidingIcon(client);
+		//Doesnt reset often enough, fuck clientside.
+		SetVariantString("ParticleEffectStop");
+		AcceptEntityInput(client, "DispatchEffect"); 
 		if (IsPlayerAlive(client))
 		{
 			static int entity;

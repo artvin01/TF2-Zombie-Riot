@@ -323,18 +323,20 @@ public Action XenoFortifiedHeadcrabZombie_ClotDamaged(int victim, int &attacker,
 		return Plugin_Continue;
 
 	XenoFortifiedHeadcrabZombie npc = view_as<XenoFortifiedHeadcrabZombie>(victim);
-	
-	if(!npc.bXenoInfectedSpecialHurt)
+	if(!NpcStats_IsEnemySilenced(victim))
 	{
-		if(EscapeModeForNpc)
+		if(!npc.bXenoInfectedSpecialHurt)
 		{
-			npc.m_flSpeed = 310.0;
+			if(EscapeModeForNpc)
+			{
+				npc.m_flSpeed = 310.0;
+			}
+			else
+			{
+				npc.m_flSpeed = 260.0;
+			}
+			npc.bXenoInfectedSpecialHurt = true;
 		}
-		else
-		{
-			npc.m_flSpeed = 260.0;
-		}
-		npc.bXenoInfectedSpecialHurt = true;
 	}
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{

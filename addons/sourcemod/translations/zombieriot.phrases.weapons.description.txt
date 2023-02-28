@@ -747,6 +747,10 @@
 		"ru"	"Увеличенный урон и скорость атаки, ещё больше снарядов, сила отражения парирования увеличена."
 		"chi"   "增加伤害和攻击速度，可以格挡更多的炮弹，格挡的力量增加"
 	}
+	"Fractured Ark Pap 3"
+	{
+		"en"	"Abilities change.\nEach attack silences the enemies for 5 seconds.\nAttacks give charges, melee gives 2x more.\nRanged attacks if melee didnt hit.\nHomes onto enemy that you looked at.\nAbility 2x dmg and ability duration and AOE silence."
+	}
 	
 	"Longsword Desc"
 	{
@@ -1444,9 +1448,7 @@
 	
 	"Panic Attack Desc"
 	{
-		"en"	"You attack 15%% slower but the lower your health is, the faster you attack, up to 25%% faster, doesn't work with last man alive."
-		"ru"	"Вы атакуете на 15%% медленнее, но чем меньше у вас здоровья, тем быстрее вы атакуете, до 25%% быстрее, не работает, если вы последний выживший."
-		"chi"   "攻击速度降低15%%，但你的血量越低，你的攻击速度就越快，最高可达25%%，当你是最后一名玩家时不起作用。"
+		"en"	"You attack 15%% slower but the lower your health is, the faster you attack, up to 25%% faster, doesn't work with last man alive.\nPassive healing wont work if your holding weapon has this effect, such as ocean song, but still give buffs."
 	}
 	
 	"Barbarians Mind Desc"
@@ -1607,7 +1609,7 @@
 	}
 	"Fusion Blade Pap 2"
 	{
-		"en"	"More damage and 5% melee resistance."
+		"en"	"More damage and 5%% melee resistance."
 	}
 	"Fusion Blade Pap 3"
 	{

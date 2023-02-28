@@ -479,15 +479,17 @@ public Action XenoCombinePolicePistol_ClotDamaged(int victim, int &attacker, int
 		return Plugin_Continue;
 		
 	XenoCombinePolicePistol npc = view_as<XenoCombinePolicePistol>(victim);
-	
-	if(!npc.bXenoInfectedSpecialHurt)
+	if(!NpcStats_IsEnemySilenced(victim))
 	{
-		npc.bXenoInfectedSpecialHurt = true;
-		npc.m_flSpeed = 420.0;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 255, 0, 0, 255);
-		CreateTimer(2.0, XenoCombinePolicePistol_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(10.0, XenoCombinePolicePistol_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
+		if(!npc.bXenoInfectedSpecialHurt)
+		{
+			npc.bXenoInfectedSpecialHurt = true;
+			npc.m_flSpeed = 420.0;
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 255, 0, 0, 255);
+			CreateTimer(2.0, XenoCombinePolicePistol_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(10.0, XenoCombinePolicePistol_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
+		}	
 	}
 	
 	/*

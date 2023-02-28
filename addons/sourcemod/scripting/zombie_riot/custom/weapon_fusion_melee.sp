@@ -246,10 +246,10 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 								{
 									FreezeNpcInTime(baseboss_index,Duration_Stun_Boss);
 								}
+								CClotBody npc_set_aggro = view_as<CClotBody>(baseboss_index);
+								npc_set_aggro.m_iTarget = spawn_index;
+								npc_set_aggro.m_flGetClosestTargetTime = GetGameTime(npc_set_aggro.index) + 1.0;
 							}
-							CClotBody npc_set_aggro = view_as<CClotBody>(baseboss_index);
-							npc_set_aggro.m_iTarget = spawn_index;
-							npc_set_aggro.m_flGetClosestTargetTime = GetGameTime(npc_set_aggro.index) + 1.0;
 						}
 					}
 					FinishLagCompensation_Base_boss();

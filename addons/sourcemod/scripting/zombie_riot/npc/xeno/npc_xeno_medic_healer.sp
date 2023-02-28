@@ -279,10 +279,20 @@ public void XenoMedicHealer_ClotThink(int iNPC)
 						npc.Healing = true;
 						npc.m_bnew_target = true;
 					}
-					SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") + 100);
-					if(GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") >= GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"))
+					if(!NpcStats_IsEnemySilenced(npc.index))
 					{
-						SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"));
+						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+						SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
+						SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") + 100);
+						if(GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") >= GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"))
+						{
+							SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"));
+						}
+					}
+					else
+					{
+						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+						SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
 					}
 					
 					npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 2000.0);

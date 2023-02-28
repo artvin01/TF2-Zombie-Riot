@@ -740,7 +740,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 				
 			}
 		}
-		else if(flDistanceToTarget > 1250000/*1100*/ && !npc.m_bDuringHighFlight && !npc.m_bFlamerToggled)
+		else if(flDistanceToTarget > 1250000/*1100*/ && !npc.m_bDuringHighFlight && !npc.m_bFlamerToggled && !NpcStats_IsEnemySilenced(npc.index))
 		{
 				
 			if(IsValidEntity(npc.m_iWearable1))
@@ -748,6 +748,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 			
 			if(IsValidEntity(npc.m_iWearable2))
 				RemoveEntity(npc.m_iWearable2);
+				
 			float flPos[3]; // original
 			float flAng[3]; // original
 	

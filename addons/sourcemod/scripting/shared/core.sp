@@ -351,6 +351,7 @@ float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
 bool b_npcspawnprotection[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
 float f_HighTeslarDebuff[MAXENTITIES];
+float f_Silenced[MAXENTITIES];
 float f_VeryLowIceDebuff[MAXENTITIES];
 float f_LowIceDebuff[MAXENTITIES];
 float f_HighIceDebuff[MAXENTITIES];
@@ -675,6 +676,7 @@ enum
 }
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
+#define NIKO_PLAYERMODEL "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
 #define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_191.mdl"
 //#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_175.mdl"
 

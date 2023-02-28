@@ -387,8 +387,11 @@ public Action XenoCombineDeutsch_ClotDamaged(int victim, int &attacker, int &inf
 		
 	XenoCombineDeutsch npc = view_as<XenoCombineDeutsch>(victim);
 	
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.75;
+	if(!NpcStats_IsEnemySilenced(victim))
+	{
+		if(npc.m_fbRangedSpecialOn)
+			damage *= 0.15;
+	}
 	
 	/*
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
