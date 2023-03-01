@@ -112,6 +112,11 @@ stock void Specter_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 		if(CvarInfiniteCash.BoolValue)
 			SpecterCharge[attacker] = SPECTER_MAXCHARGE;
 	}
+
+	if(SpecterCharge[attacker] > SPECTER_MAXCHARGE)
+	{
+		SpecterCharge[attacker] = SPECTER_MAXCHARGE;
+	}
 }
 
 int SpecterHowManyEnemiesHit(int client, int weapon)
