@@ -412,7 +412,7 @@ void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], fl
 	{
 		for (int i = 1; i < MAXENTITIES; i++)
 		{
-			i_EntitiesHitAoeSwing[i] = false;
+			i_EntitiesHitAoeSwing[i] = -1;
 		}
 		b_iHitNothing = true;
 		trace = TR_TraceHullFilterEx(vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace_Multi, client);	// 1073741824 is CONTENTS_LADDER?
@@ -613,7 +613,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			float playerPos[3];
 			for (int counter = 0; counter < MAXENTITIES; counter++)
 			{
-				if (i_EntitiesHitAoeSwing[counter])
+				if (i_EntitiesHitAoeSwing[counter] != -1)
 				{
 					if(IsValidEntity(i_EntitiesHitAoeSwing[counter]))
 					{
@@ -678,7 +678,7 @@ static bool BulletAndMeleeTrace_Multi(int entity, int contentsMask, int client)
 
 	for(int i=1; i <= (i_EntitiesHitAtOnceMax); i++)
 	{
-		if(!i_EntitiesHitAoeSwing[i])
+		if(i_EntitiesHitAoeSwing[i] == -1)
 		{
 			b_iHitNothing = false;
 			i_EntitiesHitAoeSwing[i] = entity;
