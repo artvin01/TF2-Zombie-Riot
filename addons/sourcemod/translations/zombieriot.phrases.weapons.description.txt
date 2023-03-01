@@ -1804,4 +1804,28 @@
 	{
 		"en"	"Your drones can now penetrate enemies up to 5 times, less damage each time it penetrates a target."
 	}
+	"Specter Pap 1"
+	{
+		"en"	"Attacks slower but hits two targets at once"
+	}
+	"Specter Pap 2a"
+	{
+		"en"	"Attacks a third target"
+	}
+	"Specter Pap 2b"
+	{
+		"en"	"Gains the ability to go intangible but lose all health and become stunned afterwards"
+	}
+	"Specter Pap 3"
+	{
+		"en"	"Grants the effect of the previous unbought upgrade"
+	}
+	"Specter Pap 4"
+	{
+		"en"	"Increased damage and gains the ability to self revive if enough damage is dealt"
+	}
+	"Specter Pap 5"
+	{
+		"en"	"Replaces ability to go intangible with triple damage, resistance, and attack a 4th target\nHealth is only lost when attacking enemies with a lower precent health than you, otherwise deal bonus damage"
+	}
 }

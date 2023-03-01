@@ -193,7 +193,13 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Melee_LapplandArkTouch(entity, target);
 		}
-		/* Doesnt work, this projectile has noclip, go to DHOOK public bool PassfilterGlobal(int ent1, int ent2, bool result)
+		
+		case WEAPON_LANTEAN:
+		{
+			lantean_Wand_Touch_World(entity, target);
+		}
+		/*
+		 	Doesnt work, this projectile has noclip, go to DHOOK public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		case 11:
 		{
 			

@@ -1975,7 +1975,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	Debuff_added = false;
 
 #if defined ZR
-	if(npc.m_flMeleeArmor != 1.0 || Medival_Difficulty_Level != 0)
+	if(npc.m_flMeleeArmor != 1.0 || (Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim)))
 #else
 	if(npc.m_flMeleeArmor != 1.0)
 #endif
@@ -1998,7 +1998,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	}
 	
 #if defined ZR
-	if(npc.m_flRangedArmor != 1.0 || Medival_Difficulty_Level != 0)
+	if(npc.m_flRangedArmor != 1.0 || (Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim)))
 #else
 	if(npc.m_flRangedArmor != 1.0)
 #endif
@@ -2442,6 +2442,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		case WEAPON_LAPPLAND: //pap ark alt
 		{
 			return Npc_OnTakeDamage_LappLand(damage, attacker, damagetype, inflictor, victim);
+		}
+		case WEAPON_SPECTER:
+		{
+			Specter_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		}
 	}
 #endif
