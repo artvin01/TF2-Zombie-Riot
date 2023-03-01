@@ -71,6 +71,8 @@ bool hideprojectile = true) //This will handle just the spawning, the rest like 
 		DispatchSpawn(entity);
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
 		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", fVel);
+	//	SetEntProp(entity, Prop_Send, "m_flDestroyableTime", GetGameTime());
+		//make rockets visible on spawn.
 
 		SetEntityCollisionGroup(entity, 27);
 		for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
@@ -193,12 +195,12 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Melee_LapplandArkTouch(entity, target);
 		}
-		
+		/*		
 		case WEAPON_LANTEAN:
 		{
 			lantean_Wand_Touch_World(entity, target);
 		}
-		/*
+
 		 	Doesnt work, this projectile has noclip, go to DHOOK public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		case 11:
 		{

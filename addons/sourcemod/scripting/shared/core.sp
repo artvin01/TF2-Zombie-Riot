@@ -392,6 +392,7 @@ int i_Wearable[MAXENTITIES][6];
 
 float f_WidowsWineDebuff[MAXENTITIES];
 float f_WidowsWineDebuffPlayerCooldown[MAXTF2PLAYERS];
+float f_SpecterDyingDebuff[MAXENTITIES];
 
 int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
 
@@ -2053,7 +2054,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 				TR_GetEndPosition(vecHit, swingTrace);	
 					
 				int Item_Index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-				int soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, target, Item_Index);	
+				int soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, target, Item_Index, weapon);	
 
 				if(soundIndex > 0)
 				{

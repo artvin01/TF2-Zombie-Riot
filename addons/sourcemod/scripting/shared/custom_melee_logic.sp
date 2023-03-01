@@ -141,6 +141,10 @@ static const char g_MeatHitWorld[][] = {
 };
 */
 
+int i_EntitiesHitAoeSwing[MAXENTITIES];	//Who got hit
+int i_EntitiesHitAtOnceMax; //How many do we stack
+bool b_iHitNothing;
+
 void MapStart_CustomMeleePrecache()
 {
 	for (int i = 0; i < (sizeof(g_KnifeHitFlesh));	   i++) { PrecacheSound(g_KnifeHitFlesh[i]);	   }
@@ -324,7 +328,7 @@ bool CTFWeaponBaseMelee::DoSwingTraceInternal( trace_t &trace, bool bCleave, CUt
 
 #define MELEE_RANGE 100
 #define MELEE_BOUNDS 22.0
-void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], float CustomMeleeRange = 0.0, bool Hit_ally = false, float CustomMeleeWide = 0.0, bool ignore_walls = false)
+void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], float CustomMeleeRange = 0.0, bool Hit_ally = false, float CustomMeleeWide = 0.0, bool ignore_walls = false, int &enemies_hit_aoe = 1, int weapon = -1)
 {
 	// Setup a volume for the melee weapon to be swung - approx size, so all melee behave the same.
 	float vecSwingMins[3];
@@ -365,47 +369,71 @@ void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], fl
 		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * MELEE_RANGE;
 		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * MELEE_RANGE;
 	}
-	
-	
-//	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-//	TE_SetupBeamPoints(vecSwingStart, vecSwingEnd, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
-//	TE_SendToAll();
-	if(ignore_walls)
+
+	if(weapon > 0)
 	{
-		// See if we hit anything.
-		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTraceIngoreWalls, client );
-		if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
+		switch(i_CustomWeaponEquipLogic[weapon])
 		{
-			delete trace;
-			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTraceIngoreWalls, client );
-		//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
+			case WEAPON_SPECTER: //yes, if we miss, then we do other stuff.
+			{
+				enemies_hit_aoe = SpecterHowManyEnemiesHit(client, weapon);
+			}	
 		}	
 	}
-	else if(!Hit_ally)
+	
+	i_EntitiesHitAtOnceMax = enemies_hit_aoe;
+	
+	if(enemies_hit_aoe < 2)
 	{
-		// See if we hit anything.
-		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, client );
-		if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
+		if(!Hit_ally)
 		{
-			delete trace;
-			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
-		//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
-		}	
+			// See if we hit anything.
+			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, client );
+			if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
+			{
+				delete trace;
+				trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
+			//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
+			}	
+		}
+		else
+		{
+			// See if we hit anything.
+			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTraceAlly, client );
+			if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
+			{
+				delete trace;
+				trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTraceAlly, client );
+			//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
+			}			
+		}		
 	}
 	else
 	{
-		// See if we hit anything.
-		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTraceAlly, client );
-		if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
+		for (int i = 1; i < MAXENTITIES; i++)
 		{
-			delete trace;
-			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTraceAlly, client );
-		//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
-		}			
+			i_EntitiesHitAoeSwing[i] = false;
+		}
+		b_iHitNothing = true;
+		trace = TR_TraceHullFilterEx(vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace_Multi, client);	// 1073741824 is CONTENTS_LADDER?
+		delete trace;
+		if(b_iHitNothing) //aaa panic
+		{
+			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, client );
+			if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
+			{
+				if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
+				{
+					delete trace;
+					trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
+				//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
+				}
+			}
+		}
 	}
 }
 
-public int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int weapon_index)
+public int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int weapon_index, int weapon)
 {
 	if(target == -1)
 		return ZEROSOUND;
@@ -419,6 +447,14 @@ public int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int 
 				EmitSoundToAll(g_KnifeHitFlesh[GetRandomInt(0, sizeof(g_KnifeHitFlesh) - 1)], client, SNDCHAN_ITEM, 90, _, 1.0);
 				return ZEROSOUND;
 			}
+		}
+		switch(i_CustomWeaponEquipLogic[weapon])
+		{
+			case WEAPON_SPECTER: //yes, if we miss, then we do other stuff.
+			{
+				PlayCustomSoundSpecter(client);
+				return ZEROSOUND;
+			}	
 		}
 		return MELEE_HIT;
 	}
@@ -498,12 +534,16 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 	if(IsValidClient(client) && IsValidCurrentWeapon(client, weapon))
 	{
 		
+		int aoeSwing = 1;
+
 		Handle swingTrace;
 		b_LagCompNPC_No_Layers = true;
 		float vecSwingForward[3];
 		StartLagCompensation_Base_Boss(client);
-		DoSwingTrace_Custom(swingTrace, client, vecSwingForward);
-				
+		DoSwingTrace_Custom(swingTrace, client, vecSwingForward,_,_,_,_,aoeSwing, weapon);
+		
+		aoeSwing = i_EntitiesHitAtOnceMax;
+
 		int target = TR_GetEntityIndex(swingTrace);	
 										
 		float vecHit[3];
@@ -524,7 +564,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			}
 		}
 		int Item_Index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-		int soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, target, Item_Index);	
+		int soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, target, Item_Index, weapon);	
 		if(soundIndex > 0)
 		{
 			char SoundStringToPlay[256];
@@ -566,31 +606,78 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		if(address != Address_Null)
 			damage *= TF2Attrib_GetValue(address);
 				
-		if(target > 0 && Item_Index != 214)
+		if(aoeSwing > 1)
 		{
-		//	PrintToChatAll("%i",MELEE_HIT);
-		//	SDKCall_CallCorrectWeaponSound(weapon, MELEE_HIT, 1.0);
-		// 	This doesnt work sadly and i dont have the power/patience to make it work, just do a custom check with some big shit, im sorry.
-			
-				
-			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), vecHit);	
+			float playerPos[3];
+			for (int counter = 0; counter < MAXENTITIES; counter++)
+			{
+				if (i_EntitiesHitAoeSwing[counter])
+				{
+					if(IsValidEntity(i_EntitiesHitAoeSwing[counter]))
+					{
+						soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, i_EntitiesHitAoeSwing[counter], Item_Index, weapon);	
+
+						if(soundIndex > 0)
+						{
+							char SoundStringToPlay[256];
+							SDKCall_GetShootSound(weapon, soundIndex, SoundStringToPlay, sizeof(SoundStringToPlay));
+							EmitGameSoundToAll(SoundStringToPlay, client);
+						}
+						GetEntPropVector(i_EntitiesHitAoeSwing[counter], Prop_Data, "m_vecAbsOrigin", playerPos);
+						SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), playerPos);
+					}
+				}
+			}
 		}
-		else if(target > -1 && Item_Index == 214)
+		else
 		{
-			i_ExplosiveProjectileHexArray[weapon] = 0;
-			i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;
-			i_ExplosiveProjectileHexArray[weapon] |= EP_GIBS_REGARDLESS;
-			
-			Explode_Logic_Custom(damage, client, weapon, weapon, vecHit, _, _, _, _, 5); //Only allow 5 targets hit, otherwise it can be really op.
-			DataPack pack_boom = new DataPack();
-			pack_boom.WriteFloat(vecHit[0]);
-			pack_boom.WriteFloat(vecHit[1]);
-			pack_boom.WriteFloat(vecHit[2]);
-			pack_boom.WriteCell(1);
-			RequestFrame(MakeExplosionFrameLater, pack_boom);
+			if(target > 0 && Item_Index != 214)
+			{
+			//	PrintToChatAll("%i",MELEE_HIT);
+			//	SDKCall_CallCorrectWeaponSound(weapon, MELEE_HIT, 1.0);
+			// 	This doesnt work sadly and i dont have the power/patience to make it work, just do a custom check with some big shit, im sorry.
+				
+					
+				SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), vecHit);	
+			}
+			else if(target > -1 && Item_Index == 214)
+			{
+				i_ExplosiveProjectileHexArray[weapon] = 0;
+				i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;
+				i_ExplosiveProjectileHexArray[weapon] |= EP_GIBS_REGARDLESS;
+				
+				Explode_Logic_Custom(damage, client, weapon, weapon, vecHit, _, _, _, _, 5); //Only allow 5 targets hit, otherwise it can be really op.
+				DataPack pack_boom = new DataPack();
+				pack_boom.WriteFloat(vecHit[0]);
+				pack_boom.WriteFloat(vecHit[1]);
+				pack_boom.WriteFloat(vecHit[2]);
+				pack_boom.WriteCell(1);
+				RequestFrame(MakeExplosionFrameLater, pack_boom);
+			}
+				
 		}
 		delete swingTrace;
 		FinishLagCompensation_Base_boss();
 	}
 	delete pack;
+}
+
+static bool BulletAndMeleeTrace_Multi(int entity, int contentsMask, int client)
+{
+	bool type = BulletAndMeleeTrace(entity, contentsMask, client);
+	if(!type) //if it collised, return.
+	{
+		return type;
+	}
+
+	for(int i=1; i <= (i_EntitiesHitAtOnceMax); i++)
+	{
+		if(!i_EntitiesHitAoeSwing[i])
+		{
+			b_iHitNothing = false;
+			i_EntitiesHitAoeSwing[i] = entity;
+			break;
+		}
+	}
+	return false;
 }

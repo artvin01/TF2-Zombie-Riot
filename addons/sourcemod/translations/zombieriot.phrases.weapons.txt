@@ -2120,27 +2120,27 @@
 	{
 		"en" 	"Lantean Staff"
 	}
-	"Specter E1 S4"
+	"Chainblade"
 	{
 		"en"	"Chainblade"
 	}
-	"Specter E1 S7"
+	"Skilled Chainblade"
 	{
 		"en"	"Skilled Chainblade"
 	}
-	"Specter E2 S4"
+	"Elite Chainblade"
 	{
 		"en"	"Elite Chainblade"
 	}
-	"Specter E2 S7"
+	"Elite Skilled Chainblade"
 	{
 		"en"	"Elite Skilled Chainblade"
 	}
-	"Specter the Unchained E1"
+	"Unchained Blade"
 	{
 		"en"	"Unchained Blade"
 	}
-	"Specter the Unchained E2"
+	"Elite Unchained Blade"
 	{
 		"en"	"Elite Unchained Blade"
 	}

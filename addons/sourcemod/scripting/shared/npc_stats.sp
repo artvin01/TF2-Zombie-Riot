@@ -1245,6 +1245,11 @@ methodmap CClotBody
 			{
 				speed_for_return *= 0.75;
 			}
+
+			if(f_SpecterDyingDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.4;
+			}
 			
 			if(f_HighIceDebuff[this.index] > Gametime)
 			{
@@ -1285,6 +1290,10 @@ methodmap CClotBody
 			else if (f_VeryLowIceDebuff[this.index] > Gametime)
 			{
 				speed_for_return *= 0.97;
+			}
+			if(f_SpecterDyingDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.75;
 			}
 		}
 		if(this.mf_WidowsWineDebuff > Gametime && !b_CannotBeSlowed[this.index])
@@ -7357,6 +7366,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_Silenced[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
 	f_WidowsWineDebuff[entity] = 0.0;
+	f_SpecterDyingDebuff[entity] = 0.0;
 	f_VeryLowIceDebuff[entity] = 0.0;
 	f_LowIceDebuff[entity] = 0.0;
 	f_HighIceDebuff[entity] = 0.0;

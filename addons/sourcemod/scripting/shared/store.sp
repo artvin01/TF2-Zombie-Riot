@@ -4786,6 +4786,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_LappLand(client, entity);
 		Enable_PHLOG(client, entity);
 		Enable_OceanSong(client, entity);
+		Enable_SpecterAlter(client, entity);
 #endif
 
 #if defined RPG
