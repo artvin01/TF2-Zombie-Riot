@@ -576,7 +576,13 @@ public void MedivalVillager_ClotThink(int iNPC)
 
 				if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
 					return;
+				
+				float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceCenter(npc.index), true);
 
+				if(flDistanceToBuild < (500.0 * 500.0))
+				{
+					return; //The building is too close, we want to retry! it is unfair otherwise.
+				}
 				//Retry.
 	
 				//Timeout
