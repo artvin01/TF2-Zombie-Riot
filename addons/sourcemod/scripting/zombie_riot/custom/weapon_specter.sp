@@ -116,8 +116,8 @@ public void Weapon_SpecterBone(int client, int weapon, bool &result, int slot)
 		TF2_AddCondition(client, TFCond_MegaHeal, 6.75);
 		TF2_AddCondition(client, TFCond_UberchargedHidden, 6.75);
 		TF2_AddCondition(client, TFCond_NoHealingDamageBuff, 6.75);
-		CreateTimer(6.6, Specter_DrainTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(0.1, Specter_BoneTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		CreateTimer(6.6, Specter_BoneTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.1, Specter_DrainTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		Ability_Apply_Cooldown(client, slot, 206.6);
 	}
 	else
