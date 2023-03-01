@@ -36,14 +36,17 @@ static int Specter_GetSpecterFlags(int weapon)
 	return flags;
 }
 
-stock float Specter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
+stock void Specter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
 	if(InSpecterHit == victim)
-		return 0.0;
+	{
+		damage = 0.0;
+		return;
+	}
 	
 	int flags = Specter_GetSpecterFlags(weapon);
 	float gameTime = GetGameTime();
-	bool survival = SpecterSurviveFor[client] > gameTime;
+	bool survival = SpecterSurviveFor[attacker] > gameTime;
 	
 	if(survival)
 	{
@@ -100,8 +103,6 @@ stock float Specter_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 				SpecterTimer[attacker] = CreateTimer(0.5, Specter_ReviveTimer, attacker, TIMER_REPEAT);
 		}
 	}
-
-	return damage;
 }
 
 public void Weapon_SpecterBone(int client, int weapon, bool &result, int slot)
@@ -155,21 +156,8 @@ public Action Specter_BoneTimer(Handle timer, int userid)
 		TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
 		SetEntityHealth(client, 1);
 		
-		if(i_HealthBeforeSuit[victim] > 0)
-		{
-			// 1 HP Suit
-		}
-		else if((LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GetGameTime())
-		{
-			// Trigger One Shot Protection
-			Player_OnTakeDamage(client, 0, 0, 999.9, DMG_GENERIC, -1, NULL_VECTOR, NULL_VECTOR, 0);
-		}
-		else
-		{
-			// Specter Stun
-			TF2_StunPlayer(client, 5.0, 0.0, TF_STUNFLAG_BONKSTUCK|TF_STUNFLAG_SOUND, 0);
-			StopSound(client, SNDCHAN_STATIC, "player/pl_impact_stun.wav")
-		}
+		TF2_StunPlayer(client, 5.0, 0.0, TF_STUNFLAG_BONKSTUCK|TF_STUNFLAG_SOUND, 0);
+		StopSound(client, SNDCHAN_STATIC, "player/pl_impact_stun.wav");
 	}
 	return Plugin_Stop;
 }
@@ -181,11 +169,13 @@ public void Weapon_SpecterSurvive(int client, int weapon, bool &result, int slot
 	{
 		ClientCommand(client, "playgamesound %s", SPECTER_SURVIVEUSE)
 
+		SpecterSurviveFor[client] = GetGameTime() + 9.8;
+
 		ApplyTempAttrib(weapon, 2, 3.6, 10.0);
 		ApplyTempAttrib(weapon, 6, 2.0, 10.0);
 		ApplyTempAttrib(weapon, 412, 0.333, 10.0);
 		ApplyTempAttrib(weapon, 740, 0.333, 10.0);
-		Ability_Apply_Cooldown(client, slot, 210.0);
+		Ability_Apply_Cooldown(client, slot, 29.8);
 	}
 	else
 	{
