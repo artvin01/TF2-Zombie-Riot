@@ -604,7 +604,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 	for( int ent = 1; ent <= 2; ent++ ) 
 	{
 		static int entity1;
-		static int entity2;
+		static int entity2; 	
 		if(ent == 1)
 		{
 			entity1 = ent1;
@@ -679,6 +679,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				//Have to use this here, please check wand_projectile for more info!
 				Cryo_Touch(entity1, entity2);
+			}
+			else if (i_WandIdNumber[entity1] == 14)
+			{
+				lantean_Wand_Touch(entity1, entity2);
 			}
 #endif
 		}

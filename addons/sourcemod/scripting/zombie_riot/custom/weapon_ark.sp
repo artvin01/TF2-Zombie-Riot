@@ -838,10 +838,10 @@ void Weapon_ark_LapplandRangedAttack(int client, int weapon)
 	int target = TR_GetEntityIndex(swingTrace);	
 	delete swingTrace;
 	
-	EmitSoundToAll(SOUND_LAPPLAND_SHOT, client, _, 75, _, 0.70, GetRandomInt(90, 110));
+	EmitSoundToAll(SOUND_LAPPLAND_SHOT, client, _, 75, _, 0.55, GetRandomInt(90, 110));
 
 	float damage = 65.0;
-	damage *= 0.8; //Reduction
+	damage *= 0.6; //Reduction
 	if(f_LappLandAbilityActive[client] > GetGameTime())
 	{
 		damage *= 2.0;
@@ -927,7 +927,7 @@ public void Melee_LapplandArkTouch(int entity, int target)
 				float flAng[3]; // original
 				EmitSoundToAll(SOUND_LAPPLAND_ABILITY, owner, _, 90, _, 1.0);
 				GetAttachment(owner, "effect_hand_r", flPos, flAng);				
-				int particle_Hand = ParticleEffectAt(flPos, "manmelter_projectile_trail", 20.0);
+				int particle_Hand = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 20.0);
 				SetParent(owner, particle_Hand, "effect_hand_r");
 				Weapon_Ark_SilenceAOE(target); //lag comp or not, doesnt matter.
 				NpcStats_SilenceEnemy(target, 10.0);
@@ -1149,7 +1149,7 @@ float Npc_OnTakeDamage_LappLand(float damage ,int attacker, int damagetype, int 
 					float flAng[3]; // original
 
 					GetAttachment(attacker, "effect_hand_r", flPos, flAng);				
-					int particle_Hand = ParticleEffectAt(flPos, "manmelter_projectile_trail", 20.0);
+					int particle_Hand = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 20.0);
 					SetParent(attacker, particle_Hand, "effect_hand_r");
 
 					i_LappLandHitsDone[attacker] = 0;

@@ -1975,7 +1975,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	Debuff_added = false;
 
 #if defined ZR
-	if(npc.m_flMeleeArmor != 1.0 || Medival_Difficulty_Level != 0)
+	if(npc.m_flMeleeArmor != 1.0 || (Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim)))
 #else
 	if(npc.m_flMeleeArmor != 1.0)
 #endif
@@ -1998,7 +1998,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	}
 	
 #if defined ZR
-	if(npc.m_flRangedArmor != 1.0 || Medival_Difficulty_Level != 0)
+	if(npc.m_flRangedArmor != 1.0 || (Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim)))
 #else
 	if(npc.m_flRangedArmor != 1.0)
 #endif

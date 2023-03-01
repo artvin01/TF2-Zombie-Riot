@@ -75,7 +75,8 @@ enum
 	WEAPON_OCEAN = 11,
 	WEAPON_NEARL = 12,
 	WEAPON_LAPPLAND = 13,
-	WEAPON_SPECTER = 14
+	WEAPON_LANTEAN = 14,
+	WEAPON_SPECTER = 15
 }
 
 ArrayList SpawnerList;
@@ -348,6 +349,7 @@ float f_NotifHudOffsetY[MAXTF2PLAYERS];
 #include "zombie_riot/custom/weapon_cosmic_terror.sp"
 #include "zombie_riot/custom/wand/weapon_wand_potions.sp"
 #include "zombie_riot/custom/weapon_ocean_song.sp"
+#include "zombie_riot/custom/wand/weapon_lantean_wand.sp"
 #include "zombie_riot/custom/weapon_specter.sp"
 
 void ZR_PluginLoad()
@@ -419,6 +421,7 @@ void ZR_MapStart()
 	Survival_Knife_ClearAll();
 	MedKit_ClearAll();
 	Wand_autoaim_ClearAll();
+	Weapon_lantean_Wand_ClearAll();
 	Wand_Elemental_2_ClearAll();
 	Wand_Calcium_Spell_ClearAll();
 	Wand_Fire_Spell_ClearAll();
@@ -457,6 +460,7 @@ void ZR_MapStart()
 	Irene_Map_Precache();
 	PHLOG_Map_Precache();
 	Cosmic_Map_Precache();
+	Weapon_lantean_Wand_Map_Precache();
 	EscapeSentryHat_MapStart();
 	
 	
