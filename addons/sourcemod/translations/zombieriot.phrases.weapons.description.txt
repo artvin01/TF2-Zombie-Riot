@@ -1798,11 +1798,11 @@
 	}
 	"Lantean Staff Desc"
 	{
-		"en" 	"Wherever you look, the drones fly, going over 10 drones makes them harder to control"
+		"en" 	"Wherever you look, the drones fly, going over 10 drones makes them harder to control\nGoing over 10 drones makes the wand go into overcharge meaning they do less damage, and are harder to control"
 	}
 	"Lantean Staff Desc pap"
 	{
-		"en"	"Your drones can now penetrate enemies up to 5 times, less damage each time it penetrates a target."
+		"en"	"Your drones can now penetrate enemies up to 5 times, less damage each time it penetrates a target.\nLess damage loss on overcharge"
 	}
 	"Specter Pap 1"
 	{
@@ -1827,5 +1827,9 @@
 	"Specter Pap 5"
 	{
 		"en"	"Replaces ability from being intangible to triple damage, resistance, and attack a 4th target\nHealth is only lost when attacking enemies with a lower precent health than you, otherwise deal bonus damage"
+	}
+	"Lantean Staff Desc pap2"
+	{
+		"en"	"Your drones can now penetrate up to 10 targets\nLess damge loss on penetration\nLower damage penatly on overcharge too"
 	}
 }
