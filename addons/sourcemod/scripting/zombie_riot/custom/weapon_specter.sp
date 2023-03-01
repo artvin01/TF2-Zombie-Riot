@@ -136,7 +136,7 @@ public Action Specter_DrainTimer(Handle timer, int userid)
 	{
 		if(IsPlayerAlive(client) && TF2_IsPlayerInCondition(client, TFCond_UberchargedHidden))
 		{
-			int health = GetClientHealth(client) * 9 / 10;
+			int health = GetClientHealth(client) * 49 / 50;
 			if(health < 1)
 				health = 1;
 			
