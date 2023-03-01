@@ -60,7 +60,8 @@ public void Weapon_lantean_Wand_m2(int client, int weapon, bool crit, int slot)
 	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
 	if(address != Address_Null)
 		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
-	
+
+
 	mana_cost *= 7;
 	if(mana_cost <= Current_Mana[client])
 	{
@@ -189,15 +190,16 @@ static void Weapon_lantean_Wand(int client, int weapon)
 		
 		//sanity check, make sure it despawns eventually if smth goes wrong!
 		int projectile = Wand_Projectile_Spawn(client, speed, 59.0, damage, WEAPON_LANTEAN, weapon, particle_type[client]);
-		
+		float GameTimeExtra = GetGameTime() + 0.25;
+		//Dont instantly collide for reasons.
 		for (int entity = 0; entity < MAXENTITIES; entity++)
 		{
-			fl_lantean_Wand_Drone_HitSafe[projectile][entity] = 0.0;
+			fl_lantean_Wand_Drone_HitSafe[projectile][entity] = GameTimeExtra;
 		}
 		SetEntityCollisionGroup(projectile, 1); //Do not collide.
-
+		SetEntProp(projectile, Prop_Send, "m_nSolidType",(FSOLID_TRIGGER | FSOLID_NOT_SOLID));//FSOLID_TRIGGER && FSOLID_NOT_SOLID
 		SDKUnhook(projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
-		SDKHook(projectile, SDKHook_Touch, lantean_Wand_Touch_World);//need collisions all the time!
+		SDKHook(projectile, SDKHook_Touch, lantean_Wand_Touch);//need collisions all the time!
 
 		lantean_Wand_Drone_Count[client]++;
 		fl_lantean_Wand_Drone_Life[projectile] = GetGameTime()+time;
@@ -232,36 +234,6 @@ static void Weapon_lantean_Wand(int client, int weapon)
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 	}
 }
-
-public void lantean_Wand_Touch_World(int entity, int other)
-{
-	int target = Target_Hit_Wand_Detection(entity, other);
-	if(target == 0)
-	{
-		if(fl_lantean_Wand_Drone_Life[entity] < GetGameTime())
-		{
-			int owner = EntRefToEntIndex(i_WandOwner[entity]);
-			int particle = EntRefToEntIndex(i_WandParticle[entity]);
-			if(IsValidEntity(particle))
-			{
-				RemoveEntity(particle);
-			}
-			switch(GetRandomInt(1,4)) 
-			{
-				case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
-					
-				case 2:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
-					
-				case 3:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-				case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
-			}
-			RemoveEntity(entity);
-			lantean_Wand_Drone_Count[owner]--;
-		}
-	}
-}
-
 public void lantean_Wand_Touch(int entity, int other)
 {
 	int target = Target_Hit_Wand_Detection(entity, other);
@@ -314,6 +286,30 @@ public void lantean_Wand_Touch(int entity, int other)
 				RemoveEntity(entity);
 				lantean_Wand_Drone_Count[owner]--;
 			}
+		}
+	}
+	else if(target == 0)
+	{
+		if(fl_lantean_Wand_Drone_Life[entity] < GetGameTime())
+		{
+			int owner = EntRefToEntIndex(i_WandOwner[entity]);
+			int particle = EntRefToEntIndex(i_WandParticle[entity]);
+			if(IsValidEntity(particle))
+			{
+				RemoveEntity(particle);
+			}
+			switch(GetRandomInt(1,4)) 
+			{
+				case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
+					
+				case 2:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
+					
+				case 3:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+				case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			}
+			RemoveEntity(entity);
+			lantean_Wand_Drone_Count[owner]--;
 		}
 	}
 }

@@ -3,18 +3,25 @@
 #define SPECTER_BONEFRACTURE	"misc/halloween/hwn_wheel_of_fate.wav"
 #define SPECTER_SURVIVEUSE	"items/powerup_pickup_strength.wav"
 #define SPECTER_SURVIVEHIT	"items/powerup_pickup_knockout_melee_hit.wav"
-#define SPECTER_SINGING		"ui/halloween_boss_summoned.wav"	// 5 seconds
+#define SPECTER_SINGING		"player/taunt_medic_heroic.wav"	// 5 seconds
 #define SPECTER_CHARGED		"ui/halloween_boss_escape_ten.wav"
+
+#define SPECTER_BONE_FRACTURE_DURATION				8.0
+#define SPECTER_AOE_HIT_RANGE						100.0
+#define SPECTER_MAXCHARGE							100
+#define SPECTER_DEAD_RANGE							350.0
+#define SPECTER_DAMAGE_FALLOFF_PER_ENEMY			1.1
 
 #define SPECTER_THREE	(1 << 0)
 #define SPECTER_REVIVE	(1 << 1)
 
-static int InSpecterHit;
-static bool SpecterBigHit;
 static float SpecterExpireIn[MAXTF2PLAYERS];
 static int SpecterCharge[MAXTF2PLAYERS];
 static float SpecterSurviveFor[MAXTF2PLAYERS];
-static Handle SpecterTimer[MAXTF2PLAYERS];
+Handle h_TimerSpecterAlterManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static float f_SpecterAlterhuddelay[MAXPLAYERS+1]={0.0, ...};
+static float f_SpecterDeadDamage[MAXPLAYERS+1]={0.0, ...};
+static float f_SpecterDyingTime[MAXPLAYERS+1]={0.0, ...};
 
 void Specter_MapStart()
 {
@@ -22,8 +29,31 @@ void Specter_MapStart()
 	PrecacheSound(SPECTER_DAMAGE_2);
 	PrecacheSound(SPECTER_SINGING);
 	PrecacheSound(SPECTER_SURVIVEHIT);
+	Zero(h_TimerSpecterAlterManagement);
+	Zero(f_SpecterDyingTime);
+	Zero(f_SpecterAlterhuddelay);
+	Zero(f_SpecterDeadDamage);
+	Zero(SpecterExpireIn);
 
 	Zero(SpecterSurviveFor);
+}
+
+void PlayCustomSoundSpecter(int client)
+{
+	if(SpecterSurviveFor[client] > GetGameTime())
+	{
+		bool rand = view_as<bool>(GetURandomInt() % 2);
+		int pitch = GetRandomInt(65,75);
+		EmitSoundToAll(rand ? SPECTER_DAMAGE_1 : SPECTER_DAMAGE_2, client, SNDCHAN_AUTO, 80,_,_,pitch);
+//		EmitSoundToAll(rand ? SPECTER_DAMAGE_1 : SPECTER_DAMAGE_2, client, SNDCHAN_AUTO, 80,_,_,pitch);
+//		EmitSoundToAll(SPECTER_SURVIVEHIT, client, SNDCHAN_AUTO, 80);
+	}
+	else
+	{
+		bool rand = view_as<bool>(GetURandomInt() % 2);
+		int pitch = GetRandomInt(95,105);
+		EmitSoundToAll(rand ? SPECTER_DAMAGE_1 : SPECTER_DAMAGE_2, client, SNDCHAN_AUTO, 80,_,_,pitch);
+	}
 }
 
 static int Specter_GetSpecterFlags(int weapon)
@@ -38,72 +68,58 @@ static int Specter_GetSpecterFlags(int weapon)
 
 stock void Specter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
-	if(InSpecterHit == victim)
-	{
-		damage = 0.0;
-		return;
-	}
-	
+
 	int flags = Specter_GetSpecterFlags(weapon);
 	float gameTime = GetGameTime();
 	bool survival = SpecterSurviveFor[attacker] > gameTime;
 	
 	if(survival)
 	{
+		int health = GetClientHealth(attacker);
 		int maxhealth = SDKCall_GetMaxHealth(attacker);
-		float attackerHealthRatio = float(GetClientHealth(attacker)) / float(maxhealth);
+		float attackerHealthRatio = float(health) / float(maxhealth);
 		float victimHealthRatio = float(GetEntProp(victim, Prop_Data, "m_iHealth")) / float(GetEntProp(victim, Prop_Data, "m_iMaxHealth"));
 		
 		if(victimHealthRatio < attackerHealthRatio)
 		{
-			// If victim has less health %, self damage
-			float selfdamage = float(maxhealth * 3 / 100);
-			SDKHooks_TakeDamage(attacker, victim, victim, selfdamage, damagetype, weapon, damageForce, damagePosition);
+			// If victim has less health %, self damage (1.5% of max health)
+			health -= maxhealth * 3 / 200;
+			if(health < 1)
+				health = 1;
+			
+			SetEntityHealth(attacker, health);
 		}
 		else
 		{
-			// If victim has more health %, bonus damage
+			// If victim has more health %, bonus damage (+70% damage)
 			damage *= 1.7;
-			SpecterBigHit = true;
 			DisplayCritAboveNpc(victim, attacker, false);
-			if((flags & SPECTER_REVIVE) &&  dieingstate[attacker] < 1 && SpecterCharge[attacker] < 97)
-				SpecterCharge[attacker] += 3;
+			if((flags & SPECTER_REVIVE) &&  dieingstate[attacker] < 1 && SpecterCharge[attacker] < SPECTER_MAXCHARGE)
+				SpecterCharge[attacker] += 2;
 		}
 	}
-	else if((flags & SPECTER_REVIVE) && dieingstate[attacker] < 1 && SpecterCharge[attacker] < 60)
+	else if((flags & SPECTER_REVIVE) && dieingstate[attacker] < 1 && SpecterCharge[attacker] < SPECTER_MAXCHARGE)
 	{
 		SpecterCharge[attacker]++;
 	}
 
-	if(!InSpecterHit)
-	{
-		int value = i_ExplosiveProjectileHexArray[attacker];
-		i_ExplosiveProjectileHexArray[attacker] = EP_DEALS_CLUB_DAMAGE;
-		InSpecterHit = victim;
-		
-		Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 75.0, 1.0, 0.0, false, survival ? 4 : ((flags & SPECTER_THREE) ? 3 : 2));
-		
-		i_ExplosiveProjectileHexArray[attacker] = value;
-		InSpecterHit = 0;
 
-		if(SpecterBigHit)
-		{
-			EmitSoundToAll(SPECTER_SURVIVEHIT, victim, SNDCHAN_AUTO, SNDLEVEL_CONVO);
-			SpecterBigHit = false;
-		}
-		else
-		{
-			EmitSoundToAll((GetURandomInt() % 2) ? SPECTER_DAMAGE_1 : SPECTER_DAMAGE_2, victim, SNDCHAN_AUTO, SNDLEVEL_CONVO);
-		}
-		
-		if(flags & SPECTER_REVIVE)
-		{
-			SpecterCharge[attacker]++;
-			SpecterExpireIn[attacker] = gameTime + 30.0;
-			if(!SpecterTimer[attacker])
-				SpecterTimer[attacker] = CreateTimer(0.5, Specter_ReviveTimer, attacker, TIMER_REPEAT);
-		}
+	if((flags & SPECTER_REVIVE) && dieingstate[attacker] < 1)
+	{
+		SpecterCharge[attacker]++;
+		SpecterExpireIn[attacker] = gameTime + 30.0;
+
+		if(CvarInfiniteCash.BoolValue)
+			SpecterCharge[attacker] = SPECTER_MAXCHARGE;
 	}
+}
+
+int SpecterHowManyEnemiesHit(int client, int weapon)
+{
+	bool survival = SpecterSurviveFor[client] > GetGameTime();
+	int flags = Specter_GetSpecterFlags(weapon);
+
+	return (survival ? 4 : ((flags & SPECTER_THREE) ? 3 : 2));
 }
 
 public void Weapon_SpecterBone(int client, int weapon, bool &result, int slot)
@@ -113,12 +129,31 @@ public void Weapon_SpecterBone(int client, int weapon, bool &result, int slot)
 	{
 		ClientCommand(client, "playgamesound %s", SPECTER_BONEFRACTURE);
 
-		TF2_AddCondition(client, TFCond_MegaHeal, 6.75);
-		TF2_AddCondition(client, TFCond_UberchargedHidden, 6.75);
-		TF2_AddCondition(client, TFCond_NoHealingDamageBuff, 6.75);
-		CreateTimer(6.6, Specter_BoneTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(0.1, Specter_DrainTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-		Ability_Apply_Cooldown(client, slot, 206.6);
+		TF2_AddCondition(client, TFCond_MegaHeal, SPECTER_BONE_FRACTURE_DURATION);
+		TF2_AddCondition(client, TFCond_NoHealingDamageBuff, SPECTER_BONE_FRACTURE_DURATION);
+		MakePlayerGiveResponseVoice(client, 1); //haha!
+
+		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+		{
+			ApplyTempAttrib(weapon, 412, 0.25, SPECTER_BONE_FRACTURE_DURATION);
+		}
+		else
+		{
+			TF2_AddCondition(client, TFCond_UberchargedHidden, SPECTER_BONE_FRACTURE_DURATION);
+			CreateTimer(0.1, Specter_DrainTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		}
+
+		ApplyTempAttrib(weapon, 6, 0.40,SPECTER_BONE_FRACTURE_DURATION);
+	//	ApplyTempAttrib(weapon, 2, 0.75,SPECTER_BONE_FRACTURE_DURATION);
+		
+		float flPos[3]; // original
+		float flAng[3]; // original
+		GetAttachment(client, "eyeglow_R", flPos, flAng);				
+		int particle_Hand = ParticleEffectAt(flPos, "utaunt_glowyplayer_orange_sparks", SPECTER_BONE_FRACTURE_DURATION);
+		SetParent(client, particle_Hand, "eyeglow_R");
+
+		CreateTimer(SPECTER_BONE_FRACTURE_DURATION - 0.15, Specter_BoneTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+		Ability_Apply_Cooldown(client, slot, CvarInfiniteCash.BoolValue ? SPECTER_BONE_FRACTURE_DURATION : 106.6);
 	}
 	else
 	{
@@ -136,7 +171,7 @@ public Action Specter_DrainTimer(Handle timer, int userid)
 	{
 		if(IsPlayerAlive(client) && TF2_IsPlayerInCondition(client, TFCond_UberchargedHidden))
 		{
-			int health = GetClientHealth(client) * 49 / 50;
+			int health = GetClientHealth(client) * 39 / 40;
 			if(health < 1)
 				health = 1;
 			
@@ -157,7 +192,7 @@ public Action Specter_BoneTimer(Handle timer, int userid)
 		TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
 		SetEntityHealth(client, 1);
 		
-		TF2_StunPlayer(client, 5.0, 0.0, TF_STUNFLAG_BONKSTUCK|TF_STUNFLAG_SOUND, 0);
+		TF2_StunPlayer(client, 3.0, 0.0, TF_STUNFLAG_BONKSTUCK|TF_STUNFLAG_SOUND, 0);
 		StopSound(client, SNDCHAN_STATIC, "player/pl_impact_stun.wav");
 	}
 	return Plugin_Stop;
@@ -168,7 +203,9 @@ public void Weapon_SpecterSurvive(int client, int weapon, bool &result, int slot
 	float cooldown = Ability_Check_Cooldown(client, slot);
 	if(cooldown < 0.0)
 	{
-		ClientCommand(client, "playgamesound %s", SPECTER_SURVIVEUSE)
+		MakePlayerGiveResponseVoice(client, 1); //haha!
+		ClientCommand(client, "playgamesound %s", SPECTER_SURVIVEUSE);
+		ClientCommand(client, "playgamesound %s", SPECTER_SURVIVEUSE);
 
 		SpecterSurviveFor[client] = GetGameTime() + 9.8;
 
@@ -176,7 +213,13 @@ public void Weapon_SpecterSurvive(int client, int weapon, bool &result, int slot
 		ApplyTempAttrib(weapon, 6, 2.0, 10.0);
 		ApplyTempAttrib(weapon, 412, 0.333, 10.0);
 		ApplyTempAttrib(weapon, 740, 0.333, 10.0);
-		Ability_Apply_Cooldown(client, slot, 29.8);
+		Ability_Apply_Cooldown(client, slot, CvarInfiniteCash.BoolValue ? 11.0 : 109.8);
+		
+		float flPos[3]; // original
+		float flAng[3]; // original
+		GetAttachment(client, "eyeglow_R", flPos, flAng);				
+		int particle_Hand = ParticleEffectAt(flPos, "critical_rocket_redsparks", 10.0);
+		SetParent(client, particle_Hand, "eyeglow_R");
 	}
 	else
 	{
@@ -186,10 +229,10 @@ public void Weapon_SpecterSurvive(int client, int weapon, bool &result, int slot
 		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", cooldown);	
 	}
 }
-
+/*
 public Action Specter_ReviveTimer(Handle timer, int client)
 {
-	if(SpecterCharge[client] < 60 && SpecterExpireIn[client] > GetGameTime())
+	if(SpecterCharge[client] < 60 && SpecterExpireIn[client] < GetGameTime())
 	{
 		SpecterCharge[client]--;
 		SpecterExpireIn[client] = GetGameTime() + 5.0;
@@ -200,14 +243,15 @@ public Action Specter_ReviveTimer(Handle timer, int client)
 	{
 		endTimer = true;
 	}
-	else if(dieingstate[client] > 150 || !b_LeftForDead[client])
+	else if(dieingstate[client] > 159 || (dieingstate[client] > 0 && !b_LeftForDead[client]))
 	{
 		if(SpecterCharge[client] > 59)
 		{
 			ClientCommand(client, "playgamesound %s", SPECTER_SINGING);
+			ClientCommand(client, "playgamesound %s", SPECTER_SINGING);
 
 			b_LeftForDead[client] = true;
-			dieingstate[client] = 150; // 5 seconds
+			dieingstate[client] = 159; // 5 seconds
 			i_AmountDowned[client]--;
 			SpecterCharge[client] -= 60;
 			endTimer = true;
@@ -217,8 +261,12 @@ public Action Specter_ReviveTimer(Handle timer, int client)
 	}
 	else
 	{
-		PrintHintText(client, "Specter Revive [%d / 60]", SpecterCharge[client]);
-		StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon != -1 && weapon == WEAPON_SPECTER)
+		{
+			PrintHintText(client, "Specter Revive [%d / 60]", SpecterCharge[client]);
+			StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+		}
 	}
 
 	if(!endTimer)
@@ -226,6 +274,227 @@ public Action Specter_ReviveTimer(Handle timer, int client)
 	
 	SpecterExpireIn[client] = 0.0;
 	SpecterCharge[client] = 0;
-	SpecterTimer[client] = null;
 	return Plugin_Stop;
+}
+*/
+
+
+
+public void Kill_Timer_SpecterAlter(int client)
+{
+	if (h_TimerSpecterAlterManagement[client] != INVALID_HANDLE)
+	{
+		KillTimer(h_TimerSpecterAlterManagement[client]);
+		h_TimerSpecterAlterManagement[client] = INVALID_HANDLE;
+	}
+	f_SpecterDeadDamage[client] = 0.0;
+}
+
+bool SpecterCheckIfAutoRevive(int client)
+{
+	if(SpecterCharge[client] >= SPECTER_MAXCHARGE)
+	{
+		if(f_SpecterDeadDamage[client] == 0.0)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+public void SpecterAlter_Cooldown_Logic(int client, int weapon)
+{
+	if (!IsValidMulti(client))
+		return;
+		
+	if(IsValidEntity(weapon))
+	{
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SPECTER) //Double check to see if its good or bad :(
+		{	
+			if(f_SpecterAlterhuddelay[client] < GetGameTime())
+			{
+				f_SpecterAlterhuddelay[client] = GetGameTime() + 0.5;
+				if(SpecterCharge[client] < SPECTER_MAXCHARGE && SpecterExpireIn[client] < GetGameTime())
+				{
+					SpecterCharge[client]--;
+					SpecterExpireIn[client] = GetGameTime() + 5.0;
+				}
+				if(SpecterCharge[client] < 0)
+				{
+					SpecterCharge[client] = 0;
+				}
+				if(dieingstate[client] > 159 || (dieingstate[client] > 0 && !b_LeftForDead[client]))
+				{
+					if(SpecterCharge[client] >= SPECTER_MAXCHARGE)
+					{
+						float flPos[3];
+						GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);		
+						int particle_Sing = ParticleEffectAt(flPos, "utaunt_arcane_purple_parent", 5.0);
+						SetParent(client, particle_Sing);
+						ClientCommand(client, "playgamesound %s", SPECTER_SINGING);
+						ClientCommand(client, "playgamesound %s", SPECTER_SINGING);
+						KillDyingGlowEffect(client);
+
+						b_LeftForDead[client] = true;
+						dieingstate[client] = 159; // 5 seconds
+						i_AmountDowned[client]--;
+						SpecterCharge[client] -= SPECTER_MAXCHARGE;
+
+						PrintHintText(client, "Specter Revive Activated");
+						f_SpecterDyingTime[client] = GetGameTime() + 6.0;
+					}
+				}
+
+				if(dieingstate[client] > 0)
+				{
+					if(SpecterCharge[client] < SPECTER_MAXCHARGE)
+					{
+						if(f_SpecterDyingTime[client] > GetGameTime())
+						{
+							//When dead, you deal way less damage, buff this.
+							//This will count as ranged damage.
+							Explode_Logic_Custom(f_SpecterDeadDamage[client] * 4.0, client, client, -1, _, SPECTER_DEAD_RANGE, SPECTER_DAMAGE_FALLOFF_PER_ENEMY, _, _, 10);
+							
+							float flPos[3];
+							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);		
+							float vecTarget[3];
+							for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+							{
+								int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+								if (IsValidEntity(baseboss_index))
+								{
+									vecTarget = WorldSpaceCenter(baseboss_index);
+											
+									float flDistanceToTarget = GetVectorDistance(flPos, vecTarget, true);
+									if(flDistanceToTarget < (SPECTER_DEAD_RANGE * SPECTER_DEAD_RANGE))
+									{
+										f_SpecterDyingDebuff[baseboss_index] = GetGameTime() + 1.0;
+									}
+								}
+							}
+						}
+					}
+					return;
+				}
+				else
+				{
+					if(f_SpecterDyingTime[client] > GetGameTime())
+					{
+						f_SpecterDyingTime[client] = 0.0;
+						int maxhealth = SDKCall_GetMaxHealth(client);
+						SetEntityHealth(client, maxhealth / 2); //Heal the client to half of their max health after being revived, otherwise this revive makes no sense.
+					}
+				}
+				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+				{
+					PrintHintText(client, "Specter Revive [%d / %i]", SpecterCharge[client], SPECTER_MAXCHARGE);
+					StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+				}
+			}
+		}
+		else
+		{
+			Kill_Timer_SpecterAlter(client);
+		}
+	}
+	else
+	{
+		Kill_Timer_SpecterAlter(client);
+	}
+}
+
+public Action Timer_Management_SpecterAlter(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = pack.ReadCell();
+	if(IsValidClient(client))
+	{
+		if (IsClientInGame(client))
+		{
+			if (IsPlayerAlive(client))
+			{
+				SpecterAlter_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
+			}
+			else
+				Kill_Timer_SpecterAlter(client);
+		}
+		else
+			Kill_Timer_SpecterAlter(client);
+	}
+	else
+		Kill_Timer_SpecterAlter(client);
+		
+	return Plugin_Continue;
+}
+
+public void Enable_SpecterAlter(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
+{
+	if (h_TimerSpecterAlterManagement[client] != INVALID_HANDLE)
+	{
+		//This timer already exists.
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SPECTER)
+		{
+			//Is the weapon it again?
+			//Yes?
+			float damage = 65.0;
+
+			Address address;
+			address = TF2Attrib_GetByDefIndex(weapon, 1);
+			if(address != Address_Null)
+				damage *= TF2Attrib_GetValue(address);
+
+			address = TF2Attrib_GetByDefIndex(weapon, 2);
+			if(address != Address_Null)
+				damage *= TF2Attrib_GetValue(address);
+
+			f_SpecterDeadDamage[client] = damage;
+
+			int flags = Specter_GetSpecterFlags(weapon);
+			if(flags & SPECTER_REVIVE)
+			{
+				KillTimer(h_TimerSpecterAlterManagement[client]);
+				h_TimerSpecterAlterManagement[client] = INVALID_HANDLE;
+				DataPack pack;
+				h_TimerSpecterAlterManagement[client] = CreateDataTimer(0.1, Timer_Management_SpecterAlter, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+				pack.WriteCell(client);
+				pack.WriteCell(EntIndexToEntRef(weapon));
+			}
+		}
+		return;
+	}
+		
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SPECTER)
+	{
+		float damage = 65.0;
+
+		Address address;
+		address = TF2Attrib_GetByDefIndex(weapon, 1);
+		if(address != Address_Null)
+			damage *= TF2Attrib_GetValue(address);
+
+		address = TF2Attrib_GetByDefIndex(weapon, 2);
+		if(address != Address_Null)
+			damage *= TF2Attrib_GetValue(address);
+
+		f_SpecterDeadDamage[client] = damage;
+		int flags = Specter_GetSpecterFlags(weapon);
+		if(flags & SPECTER_REVIVE)
+		{
+			DataPack pack;
+			h_TimerSpecterAlterManagement[client] = CreateDataTimer(0.1, Timer_Management_SpecterAlter, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
+	}
+}
+
+
+void SpecterResetHudTime(int client)
+{
+	f_SpecterAlterhuddelay[client] = 0.0;
 }

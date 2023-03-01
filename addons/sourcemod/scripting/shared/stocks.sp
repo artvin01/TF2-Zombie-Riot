@@ -11,6 +11,23 @@ enum ParticleAttachment_t {
 	PATTACH_ROOTBONE_FOLLOW
 };
 
+enum SolidFlags_t
+{
+	FSOLID_CUSTOMRAYTEST		= 0x0001,	// Ignore solid type + always call into the entity for ray tests
+	FSOLID_CUSTOMBOXTEST		= 0x0002,	// Ignore solid type + always call into the entity for swept box tests
+	FSOLID_NOT_SOLID			= 0x0004,	// Are we currently not solid?
+	FSOLID_TRIGGER				= 0x0008,	// This is something may be collideable but fires touch functions
+											// even when it's not collideable (when the FSOLID_NOT_SOLID flag is set)
+	FSOLID_NOT_STANDABLE		= 0x0010,	// You can't stand on this
+	FSOLID_VOLUME_CONTENTS		= 0x0020,	// Contains volumetric contents (like water)
+	FSOLID_FORCE_WORLD_ALIGNED	= 0x0040,	// Forces the collision rep to be world-aligned even if it's SOLID_BSP or SOLID_VPHYSICS
+	FSOLID_USE_TRIGGER_BOUNDS	= 0x0080,	// Uses a special trigger bounds separate from the normal OBB
+	FSOLID_ROOT_PARENT_ALIGNED	= 0x0100,	// Collisions are defined in root parent's local coordinate space
+	FSOLID_TRIGGER_TOUCH_DEBRIS	= 0x0200,	// This trigger will touch debris objects
+
+	FSOLID_MAX_BITS	= 10
+};
+
 stock int abs(int x)
 {
 	return x < 0 ? -x : x;
@@ -2429,17 +2446,9 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	{
 		return -1;
 	}
-	else if(GetEntProp(owner_projectile, Prop_Send, "m_iTeamNum") != GetEntProp(other_entity, Prop_Send, "m_iTeamNum"))
+	else if(IsValidEnemy(owner_projectile, other_entity))
 	{
-		char other_classname[32];
-		GetEntityClassname(other_entity, other_classname, sizeof(other_classname));
-		if (StrContains(other_classname, "base_boss") != -1 || StrContains(other_classname, "func_breakable") != -1 || StrContains(other_classname, "prop_dynamic") != -1)
-		{
-			if(GetEntProp(other_entity, Prop_Data, "m_iHealth") > 0) //make sure to check.
-			{
-				return other_entity;				
-			}
-		}
+		return other_entity;
 	}
 	return -1;
 }
@@ -4154,3 +4163,40 @@ void KillDyingGlowEffect(int client)
 	if(entity > MaxClients)
 		RemoveEntity(entity);
 }
+
+enum g_Collision_Group
+{
+    COLLISION_GROUP_NONE  = 0,
+    COLLISION_GROUP_DEBRIS,            // Collides with nothing but world and static stuff
+    COLLISION_GROUP_DEBRIS_TRIGGER,        // Same as debris, but hits triggers
+    COLLISION_GROUP_INTERACTIVE_DEBRIS,    // Collides with everything except other interactive debris or debris
+    COLLISION_GROUP_INTERACTIVE,        // Collides with everything except interactive debris or debris    Can be hit by bullets, explosions, players, projectiles, melee
+    COLLISION_GROUP_PLAYER,            // Can be hit by bullets, explosions, players, projectiles, melee
+    COLLISION_GROUP_BREAKABLE_GLASS,
+    COLLISION_GROUP_VEHICLE,
+    COLLISION_GROUP_PLAYER_MOVEMENT,    // For HL2, same as Collision_Group_Player, for TF2, this filters out other players and CBaseObjects
+
+    COLLISION_GROUP_NPC,        // Generic NPC group
+    COLLISION_GROUP_IN_VEHICLE,    // for any entity inside a vehicle    Can be hit by explosions. Melee unknown.
+    COLLISION_GROUP_WEAPON,        // for any weapons that need collision detection
+    COLLISION_GROUP_VEHICLE_CLIP,    // vehicle clip brush to restrict vehicle movement
+    COLLISION_GROUP_PROJECTILE,    // Projectiles!
+    COLLISION_GROUP_DOOR_BLOCKER,    // Blocks entities not permitted to get near moving doors
+    COLLISION_GROUP_PASSABLE_DOOR,    // ** sarysa TF2 note: Must be scripted, not passable on physics prop (Doors that the player shouldn't collide with)
+    COLLISION_GROUP_DISSOLVING,    // Things that are dissolving are in this group
+    COLLISION_GROUP_PUSHAWAY,    // ** sarysa TF2 note: I could swear the collision detection is better for this than NONE. (Nonsolid on client and server, pushaway in player code) // Can be hit by bullets, explosions, projectiles, melee
+    COLLISION_GROUP_NPC_ACTOR,        // Used so NPCs in scripts ignore the player.
+    COLLISION_GROUP_NPC_SCRIPTED = 19,    // Used for NPCs in scripts that should not collide with each other.
+
+    LAST_SHARED_COLLISION_GROUP,
+
+    TF_COLLISIONGROUP_GRENADE = 20,
+    TFCOLLISION_GROUP_OBJECT,
+    TFCOLLISION_GROUP_OBJECT_SOLIDTOPLAYERMOVEMENT,
+    TFCOLLISION_GROUP_COMBATOBJECT,
+    TFCOLLISION_GROUP_ROCKETS,        // Solid to players, but not player movement. ensures touch calls are originating from rocket
+    TFCOLLISION_GROUP_RESPAWNROOMS,
+    TFCOLLISION_GROUP_TANK,
+    TFCOLLISION_GROUP_ROCKET_BUT_NOT_WITH_OTHER_ROCKETS
+	
+};

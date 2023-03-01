@@ -1460,7 +1460,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 			
 			i_AmountDowned[victim] += 1;
-			if((i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
+			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
 			{
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
 				MakePlayerGiveResponseVoice(victim, 2); //dead!
@@ -1476,6 +1476,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				{
 					dieingstate[victim] = 500;
 				}
+				SpecterResetHudTime(victim);
 				DoOverlay(victim, "debug/yuv");
 				SetEntityCollisionGroup(victim, 1);
 				CClotBody player = view_as<CClotBody>(victim);
@@ -1485,7 +1486,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			//	TF2Attrib_SetByDefIndex(victim, 819, 1.0);	
 				TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 0.00001);
 				int entity;
-				if(!b_LeftForDead[victim])
+				if(!b_LeftForDead[victim] && !SpecterCheckIfAutoRevive(victim))
 				{
 					entity = EntRefToEntIndex(i_DyingParticleIndication[victim]);
 					if(entity > MaxClients)
@@ -1502,7 +1503,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				int i;
 				while(TF2U_GetWearable(victim, entity, i))
 				{
-					if(!b_LeftForDead[victim])
+					if(!b_LeftForDead[victim] && !SpecterCheckIfAutoRevive(victim))
 					{
 						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 						SetEntityRenderColor(entity, 255, 255, 255, 125);
@@ -1513,7 +1514,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 						SetEntityRenderColor(entity, 255, 255, 255, 10);
 					}
 				}
-				if(!b_LeftForDead[victim])
+				if(!b_LeftForDead[victim] && !SpecterCheckIfAutoRevive(victim))
 				{
 					SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(victim, 255, 255, 255, 125);

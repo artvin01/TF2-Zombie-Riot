@@ -328,6 +328,7 @@ static float Velocity_Rocket[MAXENTITIES][3];
 
 public void ApplyExplosionDhook_Rocket(int entity)
 {
+//	SetEntProp(entity, Prop_Send, "m_flDestroyableTime", GetGameTime());
 	if(!b_EntityIsArrow[entity] && !b_EntityIsWandProjectile[entity]) //No!
 	{
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, DHook_RocketExplodePre);
@@ -554,7 +555,7 @@ public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 {
 	if(IsValidEntity(ent1) && IsValidEntity(ent2))
 	{
-		result = PassfilterGlobal(ent1, ent2, true);
+		result = CustomDetectionPassFlter(ent1, ent2, true);
 		if(result)
 		{
 			return Plugin_Continue;
@@ -674,10 +675,18 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+//TODO find better way to collide.
 #if defined ZR
+/*
+things i tried
+
+	SetEntProp(projectile, Prop_Send, "m_nSolidType",(FSOLID_TRIGGER | FSOLID_NOT_SOLID));//FSOLID_TRIGGER && FSOLID_NOT_SOLID
+	All collision groups
+
+*/
 			else if(i_WandIdNumber[entity1] == 11)
 			{
-				//Have to use this here, please check wand_projectile for more info!
+		//		//Have to use this here, please check wand_projectile for more info!
 				Cryo_Touch(entity1, entity2);
 			}
 			else if (i_WandIdNumber[entity1] == 14)

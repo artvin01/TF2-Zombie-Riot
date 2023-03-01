@@ -33,6 +33,9 @@ static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
 #define SOUND_LAPPLAND_SHOT 	"weapons/fx/nearmiss/dragons_fury_nearmiss.wav"
 #define SOUND_LAPPLAND_ABILITY 	"items/powerup_pickup_plague.wav"
 
+#define LAPPLAND_SILENCE_DUR_NORMAL 3.0
+#define LAPPLAND_SILENCE_DUR_ABILITY 6.0
+
 
 //This shitshow of a weapon is basicly the combination of bad wand/homing wand along with some abilities and a sword
 
@@ -919,7 +922,7 @@ public void Melee_LapplandArkTouch(int entity, int target)
 
 		if(f_LappLandAbilityActive[owner] < GetGameTime())
 		{
-			NpcStats_SilenceEnemy(target, 5.0);
+			NpcStats_SilenceEnemy(target, LAPPLAND_SILENCE_DUR_NORMAL);
 			i_LappLandHitsDone[owner] += 1;
 			if(i_LappLandHitsDone[owner] >= LAPPLAND_MAX_HITS_NEEDED) //We do not go above this, no double charge.
 			{
@@ -930,8 +933,9 @@ public void Melee_LapplandArkTouch(int entity, int target)
 				int particle_Hand = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 20.0);
 				SetParent(owner, particle_Hand, "effect_hand_r");
 				Weapon_Ark_SilenceAOE(target); //lag comp or not, doesnt matter.
-				NpcStats_SilenceEnemy(target, 10.0);
 				i_LappLandHitsDone[owner] = 0;
+				
+				MakePlayerGiveResponseVoice(owner, 1); //haha!
 				f_LappLandAbilityActive[owner] = GetGameTime() + 20.0;
 				f_WandDamage[entity] *= 2.0;
 			}
@@ -939,7 +943,6 @@ public void Melee_LapplandArkTouch(int entity, int target)
 		else
 		{
 			Weapon_Ark_SilenceAOE(target); //lag comp or not, doesnt matter.
-			NpcStats_SilenceEnemy(target, 10.0);
 		}
 
 		SDKHooks_TakeDamage(target, entity, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
@@ -1140,7 +1143,7 @@ float Npc_OnTakeDamage_LappLand(float damage ,int attacker, int damagetype, int 
 		{
 			if(f_LappLandAbilityActive[attacker] < GetGameTime())
 			{
-				NpcStats_SilenceEnemy(victim, 5.0);
+				NpcStats_SilenceEnemy(victim, LAPPLAND_SILENCE_DUR_NORMAL);
 				i_LappLandHitsDone[attacker] += 2;
 				if(i_LappLandHitsDone[attacker] >= LAPPLAND_MAX_HITS_NEEDED) //We do not go above this, no double charge.
 				{
@@ -1154,6 +1157,7 @@ float Npc_OnTakeDamage_LappLand(float damage ,int attacker, int damagetype, int 
 
 					i_LappLandHitsDone[attacker] = 0;
 					f_LappLandAbilityActive[attacker] = GetGameTime() + 20.0;
+					MakePlayerGiveResponseVoice(attacker, 1); //haha!
 					Weapon_Ark_SilenceAOE(victim); //lag comp or not, doesnt matter.
 					damage *= 2.0; //2x dmg
 				}
@@ -1161,7 +1165,6 @@ float Npc_OnTakeDamage_LappLand(float damage ,int attacker, int damagetype, int 
 			else
 			{
 				Weapon_Ark_SilenceAOE(victim); //lag comp or not, doesnt matter.
-				NpcStats_SilenceEnemy(victim, 10.0);
 				damage *= 2.0; //2x dmg
 			}
 		}
@@ -1182,7 +1185,7 @@ void Weapon_Ark_SilenceAOE(int enemyStruck)
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", EnemyPos);
 			if (GetVectorDistance(EnemyPos, VictimPos, true) <= Pow(LAPPLAND_AOE_SILENCE_RANGE, 2.0))
 			{
-				NpcStats_SilenceEnemy(entity, 10.0);
+				NpcStats_SilenceEnemy(entity, LAPPLAND_SILENCE_DUR_ABILITY);
 			}
 		}
 	}
