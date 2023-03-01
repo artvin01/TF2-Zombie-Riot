@@ -44,7 +44,7 @@ void PlayCustomSoundSpecter(int client)
 	{
 		bool rand = view_as<bool>(GetURandomInt() % 2);
 		int pitch = GetRandomInt(65,75);
-		EmitSoundToAll(rand ? SPECTER_DAMAGE_1 : SPECTER_DAMAGE_2, client, SNDCHAN_AUTO, 80,_,_,pitch);
+		EmitSoundToAll(rand ? SPECTER_DAMAGE_1 : SPECTER_DAMAGE_2, client, SNDCHAN_AUTO, 75,_,0.8,pitch);
 //		EmitSoundToAll(rand ? SPECTER_DAMAGE_1 : SPECTER_DAMAGE_2, client, SNDCHAN_AUTO, 80,_,_,pitch);
 //		EmitSoundToAll(SPECTER_SURVIVEHIT, client, SNDCHAN_AUTO, 80);
 	}
@@ -52,7 +52,7 @@ void PlayCustomSoundSpecter(int client)
 	{
 		bool rand = view_as<bool>(GetURandomInt() % 2);
 		int pitch = GetRandomInt(95,105);
-		EmitSoundToAll(rand ? SPECTER_DAMAGE_1 : SPECTER_DAMAGE_2, client, SNDCHAN_AUTO, 80,_,_,pitch);
+		EmitSoundToAll(rand ? SPECTER_DAMAGE_1 : SPECTER_DAMAGE_2, client, SNDCHAN_AUTO, 75,_,0.8,pitch);
 	}
 }
 

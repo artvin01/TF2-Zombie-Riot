@@ -606,8 +606,10 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		if(address != Address_Null)
 			damage *= TF2Attrib_GetValue(address);
 				
+		
 		if(aoeSwing > 1)
 		{
+			bool PlayOnceOnly = false;
 			float playerPos[3];
 			for (int counter = 0; counter < MAXENTITIES; counter++)
 			{
@@ -615,13 +617,17 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 				{
 					if(IsValidEntity(i_EntitiesHitAoeSwing[counter]))
 					{
-						soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, i_EntitiesHitAoeSwing[counter], Item_Index, weapon);	
-
-						if(soundIndex > 0)
+						if(!PlayOnceOnly)
 						{
-							char SoundStringToPlay[256];
-							SDKCall_GetShootSound(weapon, soundIndex, SoundStringToPlay, sizeof(SoundStringToPlay));
-							EmitGameSoundToAll(SoundStringToPlay, client);
+							PlayOnceOnly = true;
+							soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, i_EntitiesHitAoeSwing[counter], Item_Index, weapon);	
+
+							if(soundIndex > 0)
+							{
+								char SoundStringToPlay[256];
+								SDKCall_GetShootSound(weapon, soundIndex, SoundStringToPlay, sizeof(SoundStringToPlay));
+								EmitGameSoundToAll(SoundStringToPlay, client);
+							}	
 						}
 						GetEntPropVector(i_EntitiesHitAoeSwing[counter], Prop_Data, "m_vecAbsOrigin", playerPos);
 						SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), playerPos);
