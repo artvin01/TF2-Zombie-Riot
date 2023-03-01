@@ -539,6 +539,11 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		{
 			damage = 35.0;
 		}
+		else if(!StrContains(classname, "tf_weapon_knife"))
+		{
+			damage = 40.0;
+		}
+
 		if(Item_Index != 155)
 		{
 			address = TF2Attrib_GetByDefIndex(weapon, 2);

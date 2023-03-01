@@ -2443,6 +2443,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			return Npc_OnTakeDamage_LappLand(damage, attacker, damagetype, inflictor, victim);
 		}
+		case WEAPON_SPECTER:
+		{
+			return Npc_OnTakeDamage_LappLand(damage, attacker, damagetype, inflictor, victim);
+		}
 	}
 #endif
 	return damage;

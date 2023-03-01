@@ -1908,7 +1908,7 @@ public MRESReturn PathFollowerAvoid(DHookReturn Hreturn, DHookParam param)
 
 public MRESReturn DHookGiveDefaultItems_Pre(int client, Handle hParams) 
 {
-	TF2_SetPlayerClass(client, CurrentClass[client], false, false); 
+	TF2_SetPlayerClass(client, CurrentClass[client]); 
 	return MRES_Ignored;
 }
 

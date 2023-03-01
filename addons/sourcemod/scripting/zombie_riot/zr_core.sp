@@ -75,6 +75,7 @@ enum
 	WEAPON_OCEAN = 11,
 	WEAPON_NEARL = 12,
 	WEAPON_LAPPLAND = 13,
+	WEAPON_SPECTER = 14
 }
 
 ArrayList SpawnerList;
@@ -347,6 +348,7 @@ float f_NotifHudOffsetY[MAXTF2PLAYERS];
 #include "zombie_riot/custom/weapon_cosmic_terror.sp"
 #include "zombie_riot/custom/wand/weapon_wand_potions.sp"
 #include "zombie_riot/custom/weapon_ocean_song.sp"
+#include "zombie_riot/custom/weapon_specter.sp"
 
 void ZR_PluginLoad()
 {
@@ -519,6 +521,7 @@ void ZR_MapStart()
 	Reset_stats_Passanger_Global();
 	Wand_Potions_Precache();
 	ResetMapStartOcean();
+	Specter_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
