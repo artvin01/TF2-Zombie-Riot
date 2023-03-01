@@ -19,7 +19,9 @@ static float f3_Vector_To_Aimbot_To[MAXPLAYERS + 1][3];
 
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 
-#define DRONE_MAX_PENETRATION 10	//how many npc's the drone will penetrate before commiting die
+static int i_lantean_max_penetration[MAXPLAYERS+1];	//how many npc's the drone will penetrate before commiting die
+static float fl_lantean_penetration_dmg_penatly[MAXPLAYERS+1];	
+static float fl_lantean_overcharge_dmg_penalty[MAXPLAYERS+1];	
 
 
 public void Weapon_lantean_Wand_ClearAll()
@@ -40,9 +42,12 @@ void Weapon_lantean_Wand_Map_Precache()
 	PrecacheSound(LANTEAN_WAND_SHOT_2);
 	
 }
+
 public void Weapon_lantean_Wand_m1(int client, int weapon, bool crit, int slot)
 {
 	particle_type[client]="flaregun_energyfield_red";
+	fl_lantean_overcharge_dmg_penalty[client] = 3.0;	//3x dmg penalty multi for having too many drones
+	fl_lantean_penetration_dmg_penatly[client] = 1.0;	//base dmg
 	bl_penetrate[client] = false;
 	Weapon_lantean_Wand(client, weapon);
 }
@@ -50,6 +55,19 @@ public void Weapon_lantean_Wand_m1(int client, int weapon, bool crit, int slot)
 public void Weapon_lantean_Wand_pap_m1(int client, int weapon, bool crit, int slot)
 {
 	particle_type[client]="flaregun_energyfield_blue";
+	i_lantean_max_penetration[client] = 5;
+	fl_lantean_overcharge_dmg_penalty[client] = 2.5;	//2.5x dmg penalty multi for having too many drones
+	fl_lantean_penetration_dmg_penatly[client] = 2.0;	//damage reduction is 2x stronger.
+	bl_penetrate[client] = true;
+	Weapon_lantean_Wand(client, weapon);
+}
+
+public void Weapon_lantean_Wand_pap2_m1(int client, int weapon, bool crit, int slot)
+{
+	particle_type[client]="flaregun_energyfield_blue";
+	i_lantean_max_penetration[client] = 10;
+	fl_lantean_overcharge_dmg_penalty[client] = 1.75;	//1.75x dmg penalty multi for having too many drones
+	fl_lantean_penetration_dmg_penatly[client] = 1.0;	//no damage reduction due to 2x the penetration count
 	bl_penetrate[client] = true;
 	Weapon_lantean_Wand(client, weapon);
 }
@@ -60,8 +78,7 @@ public void Weapon_lantean_Wand_m2(int client, int weapon, bool crit, int slot)
 	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
 	if(address != Address_Null)
 		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
-
-
+	
 	mana_cost *= 7;
 	if(mana_cost <= Current_Mana[client])
 	{
@@ -116,6 +133,8 @@ public void Weapon_lantean_Wand_pap_m2(int client, int weapon, bool crit, int sl
 			particle_type[client]="scorchshot_trail_crit_blue";
 			bl_penetrate[client] = true;
 			Current_Mana[client] -= mana_cost / 10;
+			i_lantean_max_penetration[client] = 5;
+			fl_lantean_penetration_dmg_penatly[client] = 1.5;
 			for(int i=1 ; i<=10 ; i++)
 			{
 				Weapon_lantean_Wand(client, weapon);
@@ -261,10 +280,17 @@ public void lantean_Wand_Touch(int entity, int other)
 			
 			i_drone_targets_penetrated[entity]++;
 			
-			SDKHooks_TakeDamage(target, entity, owner, f_WandDamage[entity]/i_drone_targets_penetrated[entity], DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+			float dmg_penalty = 1.0;
+			
+			if(lantean_Wand_Drone_Count[owner] > 10)	//if drone overcharge kicks in, damage penalty is applied
+			{
+				dmg_penalty=(lantean_Wand_Drone_Count[owner]-10)*fl_lantean_overcharge_dmg_penalty[owner];
+			}
+			
+			SDKHooks_TakeDamage(target, entity, owner, (f_WandDamage[entity]/(i_drone_targets_penetrated[entity]*fl_lantean_penetration_dmg_penatly[owner]))/dmg_penalty, DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
 		
 			
-			if(IsValidEntity(particle) && (!bl_penetrate[owner] || i_drone_targets_penetrated[entity] >= DRONE_MAX_PENETRATION))
+			if(IsValidEntity(particle) && (!bl_penetrate[owner] || i_drone_targets_penetrated[entity] >= i_lantean_max_penetration[owner]))
 			{
 				RemoveEntity(particle);
 			}
@@ -281,7 +307,7 @@ public void lantean_Wand_Touch(int entity, int other)
 				case 5:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_5, entity, SNDCHAN_STATIC, 80, _, 0.9);
 					
 			}
-			if(i_drone_targets_penetrated[entity] >= DRONE_MAX_PENETRATION || !bl_penetrate[owner])
+			if(i_drone_targets_penetrated[entity] >= i_lantean_max_penetration[owner] || !bl_penetrate[owner])
 			{
 				RemoveEntity(entity);
 				lantean_Wand_Drone_Count[owner]--;
@@ -381,7 +407,7 @@ static void Lantean_Wand_Hud(int client)
 	}
 	else
 	{
-		PrintHintText(client,"Drone Overcharge!: %i", lantean_Wand_Drone_Count[client]);
+		PrintHintText(client,"Drone Overcharge: %i", lantean_Wand_Drone_Count[client]);
 	}
 	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 }
