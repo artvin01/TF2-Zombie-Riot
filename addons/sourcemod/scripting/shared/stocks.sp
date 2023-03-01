@@ -2413,13 +2413,13 @@ float[] CalculateBulletDamageForce( const float vecBulletDir[3], float flScale )
 
 int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 {
-	if(other_entity < 1)
-	{
-		return 0;
-	}
 	if(owner_projectile < 1)
 	{
 		return -1; //IT doesnt exist, dont return anything.
+	}
+	if(other_entity < 1)
+	{
+		return 0;
 	}
 	else if(GetEntProp(owner_projectile, Prop_Send, "m_iTeamNum") != GetEntProp(other_entity, Prop_Send, "m_iTeamNum"))
 	{
