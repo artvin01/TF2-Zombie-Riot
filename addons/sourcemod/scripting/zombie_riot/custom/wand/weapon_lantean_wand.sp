@@ -196,7 +196,8 @@ static void Weapon_lantean_Wand(int client, int weapon)
 		}
 		SetEntityCollisionGroup(projectile, 1); //Do not collide.
 
-	//	SDKUnhook(projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
+		SDKUnhook(projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
+		SDKHook(projectile, SDKHook_Touch, Wand_Base_StartTouch);//need collisions all the time!
 
 		lantean_Wand_Drone_Count[client]++;
 		fl_lantean_Wand_Drone_Life[projectile] = GetGameTime()+time;
