@@ -98,6 +98,7 @@ stock void Specter_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 		
 		if(flags & SPECTER_REVIVE)
 		{
+			SpecterCharge[attacker]++;
 			SpecterExpireIn[attacker] = gameTime + 30.0;
 			if(!SpecterTimer[attacker])
 				SpecterTimer[attacker] = CreateTimer(0.5, Specter_ReviveTimer, attacker, TIMER_REPEAT);
