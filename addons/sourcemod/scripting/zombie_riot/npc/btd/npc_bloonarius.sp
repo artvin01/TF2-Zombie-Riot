@@ -404,7 +404,7 @@ public void Bloonarius_ClotThink(int iNPC)
 		return;
 	}
 	
-	if(npc.m_iMiniLivesLost < 99)
+	if(npc.m_iMiniLivesLost < 99 && !NpcStats_IsEnemySilenced(npc.index))
 	{
 		nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (99 - npc.m_iMiniLivesLost) / 100;
 		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < nextLoss)
