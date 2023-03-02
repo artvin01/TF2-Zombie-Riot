@@ -40,7 +40,7 @@ void Weapon_lantean_Wand_Map_Precache()
 {
 	PrecacheSound(LANTEAN_WAND_SHOT_1);
 	PrecacheSound(LANTEAN_WAND_SHOT_2);
-	
+	Zero(lantean_Wand_Drone_Count);
 }
 
 public void Weapon_lantean_Wand_m1(int client, int weapon, bool crit, int slot)
