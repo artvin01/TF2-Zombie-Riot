@@ -95,7 +95,7 @@ stock void Specter_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 			damage *= 1.7;
 			DisplayCritAboveNpc(victim, attacker, false);
 			if((flags & SPECTER_REVIVE) &&  dieingstate[attacker] < 1 && SpecterCharge[attacker] < SPECTER_MAXCHARGE)
-				SpecterCharge[attacker] += 2;
+				SpecterCharge[attacker] += 5;
 		}
 	}
 	else if((flags & SPECTER_REVIVE) && dieingstate[attacker] < 1 && SpecterCharge[attacker] < SPECTER_MAXCHARGE)
@@ -195,9 +195,10 @@ public Action Specter_BoneTimer(Handle timer, int userid)
 		TF2_RemoveCondition(client, TFCond_MegaHeal);
 		TF2_RemoveCondition(client, TFCond_UberchargedHidden);
 		TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
+		f_ImmuneToFalldamage[client] = GetGameTime() + 5.0;
 		SetEntityHealth(client, 1);
 		
-		TF2_StunPlayer(client, 3.0, 0.0, TF_STUNFLAG_BONKSTUCK|TF_STUNFLAG_SOUND, 0);
+		TF2_StunPlayer(client, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK|TF_STUNFLAG_SOUND, 0);
 		StopSound(client, SNDCHAN_STATIC, "player/pl_impact_stun.wav");
 	}
 	return Plugin_Stop;
@@ -291,8 +292,8 @@ public void Kill_Timer_SpecterAlter(int client)
 	{
 		KillTimer(h_TimerSpecterAlterManagement[client]);
 		h_TimerSpecterAlterManagement[client] = INVALID_HANDLE;
+		f_SpecterDeadDamage[client] = 0.0;
 	}
-	f_SpecterDeadDamage[client] = 0.0;
 }
 
 bool SpecterCheckIfAutoRevive(int client)
@@ -362,8 +363,11 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 						{
 							//When dead, you deal way less damage, buff this.
 							//This will count as ranged damage.
-							Explode_Logic_Custom(f_SpecterDeadDamage[client] * 4.0, client, client, -1, _, SPECTER_DEAD_RANGE, SPECTER_DAMAGE_FALLOFF_PER_ENEMY, _, _, 10);
-							
+							i_ExplosiveProjectileHexArray[weapon] = 0;
+							i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;
+							Explode_Logic_Custom(f_SpecterDeadDamage[client] * 4.0, client, weapon, weapon, _, SPECTER_DEAD_RANGE, SPECTER_DAMAGE_FALLOFF_PER_ENEMY, _, _, 10);
+							//Bleed sucks but thats on purpose
+
 							float flPos[3];
 							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);		
 							float vecTarget[3];
@@ -373,7 +377,7 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 								if (IsValidEntity(baseboss_index))
 								{
 									vecTarget = WorldSpaceCenter(baseboss_index);
-											
+									
 									float flDistanceToTarget = GetVectorDistance(flPos, vecTarget, true);
 									if(flDistanceToTarget < (SPECTER_DEAD_RANGE * SPECTER_DEAD_RANGE))
 									{
