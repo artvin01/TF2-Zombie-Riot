@@ -1476,6 +1476,8 @@ public void Citizen_ClotThink(int iNPC)
 	
 	if(npc.m_bDowned)
 	{
+		npc.m_iTargetAlly = 0;
+		
 		if(npc.m_flidle_talk == FAR_FUTURE)
 		{
 			npc.m_flidle_talk = gameTime + 30.0 + (float(npc.m_iSeed) / 214748364.7);
@@ -1490,6 +1492,8 @@ public void Citizen_ClotThink(int iNPC)
 
 	if(npc.m_flAttackHappens)
 	{
+		npc.m_iTargetAlly = 0;
+		
 		if(npc.m_iGunType != Cit_Melee)
 		{
 			npc.m_flAttackHappens = 0.0;
@@ -1546,6 +1550,7 @@ public void Citizen_ClotThink(int iNPC)
 
 	if(npc.m_flReloadDelay > gameTime)
 	{
+		npc.m_iTargetAlly = 0;
 		if(npc.m_bPathing)
 		{
 			PF_StopPathing(npc.index);
