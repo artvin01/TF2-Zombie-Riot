@@ -532,7 +532,7 @@ public void Bloon_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 	
-	if(npc.m_bRegrow)
+	if(npc.m_bRegrow && !NpcStats_IsEnemySilenced(npc.index))
 	{
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
@@ -686,7 +686,7 @@ public Action Bloon_ClotDamaged(int victim, int &attacker, int &inflictor, float
 		}
 		case Bloon_Purple:
 		{
-			if(magic)
+			if(magic && !NpcStats_IsEnemySilenced(npc.index))
 			{
 				damage *= 0.1;
 				npc.PlayPurpleSound();
@@ -717,6 +717,12 @@ public void Bloon_ClotDamagedPost(int victim, int attacker, int inflictor, float
 {
 	Bloon npc = view_as<Bloon>(victim);
 	npc.UpdateBloonOnDamage();
+
+	if(npc.m_bCamo && NpcStats_IsEnemySilenced(npc.index))
+	{
+		npc.m_bCamo = false;
+		npc.UpdateBloonInfo();
+	}
 }
 
 public void Bloon_NPCDeath(int entity)
