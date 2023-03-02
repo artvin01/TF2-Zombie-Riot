@@ -46,18 +46,19 @@ void Weapon_lantean_Wand_Map_Precache()
 public void Weapon_lantean_Wand_m1(int client, int weapon, bool crit, int slot)
 {
 	particle_type[client]="flaregun_energyfield_red";
-	fl_lantean_overcharge_dmg_penalty[client] = 3.0;	//3x dmg penalty multi for having too many drones
-	fl_lantean_penetration_dmg_penatly[client] = 1.0;	//base dmg
-	bl_penetrate[client] = false;
+	i_lantean_max_penetration[client] = 2;
+	fl_lantean_overcharge_dmg_penalty[client] = 2.0;	//2.5x dmg penalty multi for having too many drones
+	fl_lantean_penetration_dmg_penatly[client] = 1.3;	//base dmg
+	bl_penetrate[client] = true;
 	Weapon_lantean_Wand(client, weapon);
 }
 
 public void Weapon_lantean_Wand_pap_m1(int client, int weapon, bool crit, int slot)
 {
 	particle_type[client]="flaregun_energyfield_blue";
-	i_lantean_max_penetration[client] = 5;
-	fl_lantean_overcharge_dmg_penalty[client] = 2.5;	//2.5x dmg penalty multi for having too many drones
-	fl_lantean_penetration_dmg_penatly[client] = 2.0;	//damage reduction is 2x stronger.
+	i_lantean_max_penetration[client] = 7;
+	fl_lantean_overcharge_dmg_penalty[client] = 2.0;	//2.0x dmg penalty multi for having too many drones
+	fl_lantean_penetration_dmg_penatly[client] = 1.2;	//damage reduction is 2x stronger.
 	bl_penetrate[client] = true;
 	Weapon_lantean_Wand(client, weapon);
 }
@@ -65,7 +66,7 @@ public void Weapon_lantean_Wand_pap_m1(int client, int weapon, bool crit, int sl
 public void Weapon_lantean_Wand_pap2_m1(int client, int weapon, bool crit, int slot)
 {
 	particle_type[client]="flaregun_energyfield_blue";
-	i_lantean_max_penetration[client] = 10;
+	i_lantean_max_penetration[client] = 13;
 	fl_lantean_overcharge_dmg_penalty[client] = 1.75;	//1.75x dmg penalty multi for having too many drones
 	fl_lantean_penetration_dmg_penatly[client] = 1.0;	//no damage reduction due to 2x the penetration count
 	bl_penetrate[client] = true;
@@ -208,7 +209,17 @@ static void Weapon_lantean_Wand(int client, int weapon)
 			
 		
 		//sanity check, make sure it despawns eventually if smth goes wrong!
-		int projectile = Wand_Projectile_Spawn(client, speed, 59.0, damage, WEAPON_LANTEAN, weapon, particle_type[client]);
+		int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_LANTEAN, weapon, particle_type[client]);
+
+
+		//30 sec, own respawnlogic.
+		int particle = EntRefToEntIndex(i_WandParticle[projectile]);
+		DataPack pack;
+		CreateDataTimer(30.0, Timer_RemoveEntity_CustomProjectileWand_Lanteen, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(projectile));
+		pack.WriteCell(EntIndexToEntRef(particle));
+		pack.WriteCell(client);
+
 		float GameTimeExtra = GetGameTime() + 0.25;
 		//Dont instantly collide for reasons.
 		for (int entity = 0; entity < MAXENTITIES; entity++)
@@ -216,7 +227,7 @@ static void Weapon_lantean_Wand(int client, int weapon)
 			fl_lantean_Wand_Drone_HitSafe[projectile][entity] = GameTimeExtra;
 		}
 		SetEntityCollisionGroup(projectile, 1); //Do not collide.
-		SetEntProp(projectile, Prop_Send, "m_nSolidType",(FSOLID_TRIGGER | FSOLID_NOT_SOLID));//FSOLID_TRIGGER && FSOLID_NOT_SOLID
+//		SetEntProp(projectile, Prop_Send, "m_nSolidType",(FSOLID_TRIGGER | FSOLID_NOT_SOLID));//FSOLID_TRIGGER && FSOLID_NOT_SOLID
 		SDKUnhook(projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
 		SDKHook(projectile, SDKHook_Touch, lantean_Wand_Touch);//need collisions all the time!
 
@@ -239,10 +250,10 @@ static void Weapon_lantean_Wand(int client, int weapon)
 		
 		Lantean_HomingProjectile_TurnToTarget(f3_Vector_To_Aimbot_To[client], projectile);
 		
-		DataPack pack;
-		CreateDataTimer(0.1, Lantean_PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-		pack.WriteCell(EntIndexToEntRef(projectile)); //projectile
-		pack.WriteCell(EntIndexToEntRef(client));		//so rather than a victim, we send the client to use for trace's
+		DataPack Datapack;
+		CreateDataTimer(0.1, Lantean_PerfectHomingShot, Datapack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		Datapack.WriteCell(EntIndexToEntRef(projectile)); //projectile
+		Datapack.WriteCell(EntIndexToEntRef(client));		//so rather than a victim, we send the client to use for trace's
 
 	}
 	else
@@ -253,6 +264,25 @@ static void Weapon_lantean_Wand(int client, int weapon)
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 	}
 }
+
+public Action Timer_RemoveEntity_CustomProjectileWand_Lanteen(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int Projectile = EntRefToEntIndex(pack.ReadCell());
+	int Particle = EntRefToEntIndex(pack.ReadCell());
+	int clientindex = pack.ReadCell();
+	if(IsValidEntity(Projectile) && Projectile>MaxClients)
+	{
+		lantean_Wand_Drone_Count[clientindex]--;
+		RemoveEntity(Projectile);
+	}
+	if(IsValidEntity(Particle) && Particle>MaxClients)
+	{
+		RemoveEntity(Particle);
+	}
+	return Plugin_Stop; 
+}
+
 public void lantean_Wand_Touch(int entity, int other)
 {
 	int target = Target_Hit_Wand_Detection(entity, other);
@@ -284,7 +314,7 @@ public void lantean_Wand_Touch(int entity, int other)
 			
 			if(lantean_Wand_Drone_Count[owner] > 10)	//if drone overcharge kicks in, damage penalty is applied
 			{
-				dmg_penalty=(lantean_Wand_Drone_Count[owner]-10)*fl_lantean_overcharge_dmg_penalty[owner];
+				dmg_penalty=(lantean_Wand_Drone_Count[owner]/10)*fl_lantean_overcharge_dmg_penalty[owner];
 			}
 			
 			SDKHooks_TakeDamage(target, entity, owner, (f_WandDamage[entity]/(i_drone_targets_penetrated[entity]*fl_lantean_penetration_dmg_penatly[owner]))/dmg_penalty, DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
