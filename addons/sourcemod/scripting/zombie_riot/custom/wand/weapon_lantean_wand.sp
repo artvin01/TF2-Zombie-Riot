@@ -314,7 +314,7 @@ public void lantean_Wand_Touch(int entity, int other)
 			
 			if(lantean_Wand_Drone_Count[owner] > 10)	//if drone overcharge kicks in, damage penalty is applied
 			{
-				dmg_penalty=(lantean_Wand_Drone_Count[owner]-10)*fl_lantean_overcharge_dmg_penalty[owner];
+				dmg_penalty=(lantean_Wand_Drone_Count[owner]/10)*fl_lantean_overcharge_dmg_penalty[owner];
 			}
 			
 			SDKHooks_TakeDamage(target, entity, owner, (f_WandDamage[entity]/(i_drone_targets_penetrated[entity]*fl_lantean_penetration_dmg_penatly[owner]))/dmg_penalty, DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
