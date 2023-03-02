@@ -731,7 +731,7 @@
 	
 	"Fractured Ark Desc"
 	{
-		"en"	"A legendary blade with magical properties, can parry with m2"
+		"en"	"A legendary blade with magical properties, can parry with m2\nParry to get weak projectiles."
 		"ru"	"Легендарный клинок с магическими свойствами, может парировать с помощью М2."
 		"chi"   "一把具有魔法属性的传奇剑，可以用m2格挡"
 	}
