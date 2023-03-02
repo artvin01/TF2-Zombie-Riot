@@ -363,13 +363,16 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 						{
 							//When dead, you deal way less damage, buff this.
 							//This will count as ranged damage.
+							float flPos[3];
+							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+
+							flPos[2] += 45.0;
+
 							i_ExplosiveProjectileHexArray[weapon] = 0;
 							i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;
-							Explode_Logic_Custom(f_SpecterDeadDamage[client] * 4.0, client, weapon, weapon, _, SPECTER_DEAD_RANGE, SPECTER_DAMAGE_FALLOFF_PER_ENEMY, _, _, 10);
+							Explode_Logic_Custom(f_SpecterDeadDamage[client] * 4.0, client, weapon, weapon, flPos, SPECTER_DEAD_RANGE, SPECTER_DAMAGE_FALLOFF_PER_ENEMY, _, _, 10);
 							//Bleed sucks but thats on purpose
-
-							float flPos[3];
-							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);		
+		
 							float vecTarget[3];
 							for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 							{
