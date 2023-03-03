@@ -30,6 +30,7 @@ public void Weapon_lantean_Wand_ClearAll()
 	Zero(fl_AimbotTimer);
 	Zero(fl_hud_timer);
 	Zero(fl_lantean_Wand_Drone_Life);
+	Zero(fl_overcharge);
 	Zero2(fl_lantean_Wand_Drone_HitSafe);
 }
 
