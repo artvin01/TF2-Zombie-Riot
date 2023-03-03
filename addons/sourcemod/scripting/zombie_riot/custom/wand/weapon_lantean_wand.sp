@@ -381,27 +381,30 @@ public Action Lantean_PerfectHomingShot(Handle timer, DataPack pack)
 		return Plugin_Handled;
 	}
 	int weapon = GetEntPropEnt(Client, Prop_Send, "m_hActiveWeapon");
-	if(IsValidEntity(Projectile) && IsPlayerAlive(Client) && fl_lantean_Wand_Drone_Life[Projectile] > GetGameTime() && i_CustomWeaponEquipLogic[weapon]==WEAPON_LANTEAN)	//if drone is beyond its lifetime, it loses homing and crashes and burns 
+	if(IsValidEntity(Projectile) && fl_lantean_Wand_Drone_Life[Projectile] > GetGameTime())	//if drone is beyond its lifetime, it loses homing and crashes and burns 
 	{
-		if(fl_AimbotTimer[Client] < GetGameTime())
+		if(i_CustomWeaponEquipLogic[weapon]==WEAPON_LANTEAN)
 		{
-			if(fl_hud_timer[Client] < GetGameTime())
+			if(fl_AimbotTimer[Client] < GetGameTime())
 			{
-				Lantean_Wand_Hud(Client);
-				fl_hud_timer[Client] = GetGameTime() + 0.5;
-			}
-			fl_AimbotTimer[Client] = GetGameTime() + 0.25;
+				if(fl_hud_timer[Client] < GetGameTime())
+				{
+					Lantean_Wand_Hud(Client);
+					fl_hud_timer[Client] = GetGameTime() + 0.5;
+				}
+				fl_AimbotTimer[Client] = GetGameTime() + 0.25;
 
-			LanternFindVecToBotTo(Client);
-		}
-		if(fl_overcharge[Projectile] < GetGameTime())
-		{
-			if(lantean_Wand_Drone_Count[Client]>10)
+				LanternFindVecToBotTo(Client);
+			}
+			if(fl_overcharge[Projectile] < GetGameTime())
 			{
-				fl_overcharge[Projectile] = GetGameTime() + lantean_Wand_Drone_Count[Client] / 10.0 - 1.0;	//if drones are over 10, the homing update becomes delayed making them harder to control/hopefuly less resource intensive
-			}
+				if(lantean_Wand_Drone_Count[Client]>10)
+				{
+					fl_overcharge[Projectile] = GetGameTime() + lantean_Wand_Drone_Count[Client] / 10.0 - 1.0;	//if drones are over 10, the homing update becomes delayed making them harder to control/hopefuly less resource intensive
+				}
 
-			Lantean_HomingProjectile_TurnToTarget(f3_Vector_To_Aimbot_To[Client], Projectile);
+				Lantean_HomingProjectile_TurnToTarget(f3_Vector_To_Aimbot_To[Client], Projectile);
+			}
 		}
 		return Plugin_Continue;
 	}
