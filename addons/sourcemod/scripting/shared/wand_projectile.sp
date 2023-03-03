@@ -195,6 +195,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Melee_LapplandArkTouch(entity, target);
 		}
+		case 15:
+		{
+			Event_Ark_OnHatTouch(entity, target);
+		}
 		/*		
 		case WEAPON_LANTEAN:
 		{

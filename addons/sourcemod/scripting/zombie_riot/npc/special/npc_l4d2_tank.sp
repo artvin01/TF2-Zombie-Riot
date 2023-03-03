@@ -920,14 +920,14 @@ void ApplySdkHookTankThrow(int ref)
 
 public Action CheckStuckTank(Handle timer, any entid)
 {
-	int entity = EntRefToEntIndex(entid);
-	if(IsValidEntity(entity))
+	int client = EntRefToEntIndex(entid);
+	if(IsValidEntity(client))
 	{
 		float flMyPos[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", flMyPos);
+		GetEntPropVector(client, Prop_Data, "m_vecOrigin", flMyPos);
 		static float hullcheckmaxs_Player[3];
 		static float hullcheckmins_Player[3];
-		if(b_IsGiant[entity])
+		if(b_IsGiant[client])
 		{
 		 	hullcheckmaxs_Player = view_as<float>( { 30.0, 30.0, 120.0 } );
 			hullcheckmins_Player = view_as<float>( { -30.0, -30.0, 0.0 } );	
@@ -938,42 +938,42 @@ public Action CheckStuckTank(Handle timer, any entid)
 			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
 		}
 		
-		if(IsValidClient(entity)) //Player size
+		if(IsValidClient(client)) //Player size
 		{
 			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
 			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );		
 		}
 		
-		if(IsSpaceOccupiedIgnorePlayers(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, entity))
+		if(IsSpaceOccupiedIgnorePlayers(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, client))
 		{
-			if(IsValidClient(entity)) //Player Unstuck, but give them a penalty for doing this in the first place.
+			if(IsValidClient(client)) //Player Unstuck, but give them a penalty for doing this in the first place.
 			{
-				int damage = SDKCall_GetMaxHealth(entity) / 8;
-				SDKHooks_TakeDamage(entity, 0, 0, float(damage), DMG_GENERIC, -1, NULL_VECTOR);
+				int damage = SDKCall_GetMaxHealth(client) / 8;
+				SDKHooks_TakeDamage(client, 0, 0, float(damage), DMG_GENERIC, -1, NULL_VECTOR);
 			}
-			TeleportEntity(entity, f3_LastValidPosition[entity], NULL_VECTOR, { 0.0, 0.0, 0.0 });
+			TeleportEntity(client, f3_LastValidPosition[client], NULL_VECTOR, { 0.0, 0.0, 0.0 });
 		}
 		else
 		{
-			int tank = EntRefToEntIndex(i_TankAntiStuck[entity]);
+			int tank = EntRefToEntIndex(i_TankAntiStuck[client]);
 			if(IsValidEntity(tank))
 			{
-				bool Hit_something = Can_I_See_Enemy_Only(tank, entity);
+				bool Hit_something = Can_I_See_Enemy_Only(tank, client);
 				//Target close enough to hit
-				if(Hit_something)
+				if(!Hit_something)
 				{	
-					if(IsValidClient(entity)) //Player Unstuck, but give them a penalty for doing this in the first place.
+					if(IsValidClient(client)) //Player Unstuck, but give them a penalty for doing this in the first place.
 					{
-						int damage = SDKCall_GetMaxHealth(entity) / 8;
-						SDKHooks_TakeDamage(entity, 0, 0, float(damage), DMG_GENERIC, -1, NULL_VECTOR);
+						int damage = SDKCall_GetMaxHealth(client) / 8;
+						SDKHooks_TakeDamage(client, 0, 0, float(damage), DMG_GENERIC, -1, NULL_VECTOR);
 					}
-					TeleportEntity(entity, f3_LastValidPosition[entity], NULL_VECTOR, { 0.0, 0.0, 0.0 });
+					TeleportEntity(client, f3_LastValidPosition[client], NULL_VECTOR, { 0.0, 0.0, 0.0 });
 				}
 			}
 			else
 			{
 				//Just teleport back, dont fucking risk it.
-				TeleportEntity(entity, f3_LastValidPosition[entity], NULL_VECTOR, { 0.0, 0.0, 0.0 });
+				TeleportEntity(client, f3_LastValidPosition[client], NULL_VECTOR, { 0.0, 0.0, 0.0 });
 			}
 		}
 	}

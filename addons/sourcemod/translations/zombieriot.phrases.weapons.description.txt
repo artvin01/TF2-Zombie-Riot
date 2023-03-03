@@ -731,7 +731,7 @@
 	
 	"Fractured Ark Desc"
 	{
-		"en"	"A legendary blade with magical properties, can parry with m2"
+		"en"	"A legendary blade with magical properties, can parry with m2\nParry to get weak projectiles."
 		"ru"	"Легендарный клинок с магическими свойствами, может парировать с помощью М2."
 		"chi"   "一把具有魔法属性的传奇剑，可以用m2格挡"
 	}
@@ -1826,7 +1826,7 @@
 	}
 	"Specter Pap 5"
 	{
-		"en"	"Replaces ability from being intangible to triple damage, resistance, and attack a 4th target\nHealth is only lost when attacking enemies with a lower precent health than you, otherwise deal bonus damage"
+		"en"	"Replaces ability from being intangible to triple damage, resistance, and attack a 4th target\nHealth is only lost when attacking enemies with a lower precent health than you, otherwise deal bonus damage\nYou do more dmg, and take less damage."
 	}
 	"Lantean Staff Desc pap2"
 	{

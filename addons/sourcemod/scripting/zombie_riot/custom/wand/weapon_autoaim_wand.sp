@@ -399,9 +399,9 @@ void Wand_Homing()
 
 public void Want_HomingWandTouch(int entity, int target)
 {
-	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if (target > 0)	
 	{
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		//Code to do damage position and ragdolls
 		static float angles[3];
 		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
@@ -431,7 +431,8 @@ public void Want_HomingWandTouch(int entity, int target)
 		RemoveEntity(entity);
 	}
 	else if(target == 0)
-	{
+	{	
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);

@@ -1477,6 +1477,9 @@ public void Citizen_ClotThink(int iNPC)
 	if(npc.m_bDowned)
 	{
 		npc.m_iTargetAlly = 0;
+		npc.m_bSeakingMedic = false;
+		npc.m_bSeakingGeneric = false;
+		npc.m_bGetClosestTargetTimeAlly = true;
 		
 		if(npc.m_flidle_talk == FAR_FUTURE)
 		{
@@ -1493,6 +1496,9 @@ public void Citizen_ClotThink(int iNPC)
 	if(npc.m_flAttackHappens)
 	{
 		npc.m_iTargetAlly = 0;
+		npc.m_bSeakingMedic = false;
+		npc.m_bSeakingGeneric = false;
+		npc.m_bGetClosestTargetTimeAlly = true;
 		
 		if(npc.m_iGunType != Cit_Melee)
 		{
@@ -1551,6 +1557,10 @@ public void Citizen_ClotThink(int iNPC)
 	if(npc.m_flReloadDelay > gameTime)
 	{
 		npc.m_iTargetAlly = 0;
+		npc.m_bSeakingMedic = false;
+		npc.m_bSeakingGeneric = false;
+		npc.m_bGetClosestTargetTimeAlly = true;
+
 		if(npc.m_bPathing)
 		{
 			PF_StopPathing(npc.index);

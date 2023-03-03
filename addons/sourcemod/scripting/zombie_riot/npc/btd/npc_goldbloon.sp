@@ -331,7 +331,7 @@ public Action GoldBloon_ClotDamaged(int victim, int &attacker, int &inflictor, f
 	
 	if(LastGoldBloon > 6)
 	{
-		if(magic)
+		if(magic && !NpcStats_IsEnemySilenced(npc.index))
 		{
 			npc.PlayPurpleSound();
 			return Plugin_Handled;
@@ -358,24 +358,27 @@ public Action GoldBloon_ClotDamaged(int victim, int &attacker, int &inflictor, f
 	}
 	
 	npc.PlayHitSound();
-	
-	int target = (GetURandomInt() % 2) ? GetClosestAlly(npc.index) : 0;
-	if(target < 1)
-	{
-		target = GetClosestTarget(npc.index, true, _, npc.m_bCamo, true, npc.m_iTarget);
-		if(target > 0)
-		{
-			npc.m_iTarget = target;
-		}
-		else
-		{
-			target = attacker;
-		}
-	}
-	
 	npc.m_flNextRangedAttack = gameTime + 1.0;
-	PluginBot_Jump(npc.index, WorldSpaceCenter(target));
 	
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		int target = (GetURandomInt() % 2) ? GetClosestAlly(npc.index) : 0;
+		if(target < 1)
+		{
+			target = GetClosestTarget(npc.index, true, _, npc.m_bCamo, true, npc.m_iTarget);
+			if(target > 0)
+			{
+				npc.m_iTarget = target;
+			}
+			else
+			{
+				target = attacker;
+			}
+		}
+		
+		PluginBot_Jump(npc.index, WorldSpaceCenter(target));
+	}
+
 	SetEntProp(victim, Prop_Data, "m_iHealth", health - 1);
 	return Plugin_Handled;
 }

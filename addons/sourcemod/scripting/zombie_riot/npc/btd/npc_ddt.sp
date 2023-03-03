@@ -327,6 +327,12 @@ public void DDT_ClotDamagedPost(int victim, int attacker, int inflictor, float d
 {
 	DDT npc = view_as<DDT>(victim);
 	npc.UpdateBloonOnDamage();
+
+	if(npc.m_bCamo && NpcStats_IsEnemySilenced(npc.index))
+	{
+		npc.m_bCamo = false;
+		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
+	}
 }
 
 public void DDT_NPCDeath(int entity)
