@@ -145,7 +145,13 @@ void Reload_Me(int client)
 							
 					TF2Attrib_SetByDefIndex(entity, 821, 0.0);
 					
-					PrintHintText(client, "[%i/%i]", i_SemiAutoStats_MaxAmmo[entity], i_SemiAutoWeapon_AmmoCount[entity]);
+					char buffer[16];
+					for(int i; i < i_SemiAutoWeapon_AmmoCount[entity]; i++)
+					{
+						buffer[i] = '|';
+					}
+
+					PrintHintText(client, buffer);
 					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 				}
 			}
