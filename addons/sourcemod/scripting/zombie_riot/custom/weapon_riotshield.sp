@@ -13,11 +13,13 @@ static int ShieldModel;
 static int ViewmodelRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static int WearableRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static int RIOT_EnemiesHit[MAX_TARGETS_HIT_RIOT];
+static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
 
 #define SOUND_RIOTSHIELD_ACTIVATION "weapons/air_burster_explode1.wav"
 
 void Weapon_RiotShield_Map_Precache()
 {
+	Zero(f_AniSoundSpam);
 	PrecacheSound(SOUND_RIOTSHIELD_ACTIVATION);
 	ShieldModel = PrecacheModel("models/player/items/sniper/knife_shield.mdl");
 }
@@ -154,14 +156,23 @@ public void Weapon_RiotShield_M2_Base(int client, int weapon, bool crit, int slo
 
 			CreateTimer(3.0, RiotShieldAbilityEnd_M2, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 
+			float cooldownAbility = 25.0;
 			if(pap == 1)
 			{
-				Ability_Apply_Cooldown(client, slot, 25.0);
+				cooldownAbility = 25.0;
 			}
 			else
 			{
-				Ability_Apply_Cooldown(client, slot, 35.0);
+				cooldownAbility = 35.0;
 			}
+
+			//speed cola
+			if(i_CurrentEquippedPerk[client] == 4)
+			{
+				cooldownAbility *= 0.65;
+			}
+
+			Ability_Apply_Cooldown(client, slot, cooldownAbility);
 		}
 		else
 		{
@@ -326,4 +337,70 @@ static bool Shield_TraceTargets(int entity, int contentsMask, int client)
 		}
 	}
 	return false;
+}
+
+//taken and edited from ff2_sarysapub3
+#define MINYAW_RAID_SHIELD -60.0
+#define MAXYAW_RAID_SHIELD 60.0
+public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
+{
+	// need position of either the inflictor or the attacker
+	float actualDamagePos[3];
+	float victimPos[3];
+	float angle[3];
+	float eyeAngles[3];
+	GetEntPropVector(victim, Prop_Send, "m_vecOrigin", victimPos);
+
+	bool BlockAnyways = false;
+	if(damagePosition[0]) //Make sure if it doesnt
+	{
+		if(IsValidEntity(attacker))
+		{
+			GetEntPropVector(attacker, Prop_Send, "m_vecOrigin", actualDamagePos);
+
+		}
+		else
+		{
+			BlockAnyways = true;
+		}
+
+	}
+	else
+	{
+		actualDamagePos = damagePosition;
+	}
+
+	GetVectorAnglesTwoPoints(victimPos, actualDamagePos, angle);
+	GetClientEyeAngles(victim, eyeAngles);
+
+
+	// need the yaw offset from the player's POV, and set it up to be between (-180.0..180.0]
+	float yawOffset = fixAngle(angle[1]) - fixAngle(eyeAngles[1]);
+	if (yawOffset <= -180.0)
+		yawOffset += 360.0;
+	else if (yawOffset > 180.0)
+		yawOffset -= 360.0;
+		
+	// now it's a simple check
+	if ((yawOffset >= MINYAW_RAID_SHIELD && yawOffset <= MAXYAW_RAID_SHIELD) || BlockAnyways)
+	{
+		damage *= 0.39;
+		if(f_AniSoundSpam[victim] < GetGameTime())
+		{
+			f_AniSoundSpam[victim] = GetGameTime() + 0.2;
+			switch(GetRandomInt(1,2))
+			{
+				case 1:
+				{
+					ClientCommand(victim, "playgamesound items/pegleg_01.wav");
+				}
+				case 2:
+				{
+					ClientCommand(victim, "playgamesound items/pegleg_02.wav");
+				}
+			}
+		}
+	}
+
+	return damage;
 }

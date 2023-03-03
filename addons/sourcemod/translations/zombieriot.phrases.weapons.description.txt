@@ -589,8 +589,7 @@
 	}
 	"Riot Gun Desc"
 	{
-		"en"	"A gun that comes with a riot shield for anti-range damage.\nPress M2 Nearby enemies to stun them and gain massively increased attackspeed and damage for upto 10 hit targets."
-		"ru"	"Пистолет, имеющий щит для защиты от урона дальних атак.\nНажав М2 вблизи врагов, вы оглушите их и получите увеличенную скорость атаки и урон до 10 поражённых целей."
+		"en"	"A gun that comes with a riot shield for anti-range damage.\nPress M2 Nearby enemies to stun them and gain massively increased attackspeed and damage for upto 10 hit targets.\nTake 61%% less damage from attacks you look at.\nSpeedcola reduces ability cooldown."
 	}
 	"Riot Gun Pap 1"
 	{
