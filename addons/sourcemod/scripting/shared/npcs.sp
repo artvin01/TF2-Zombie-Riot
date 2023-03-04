@@ -1799,6 +1799,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	npcBase.m_bGib = false;
 	if(!npcBase.m_bDissapearOnDeath) //Make sure that if they just vanish, its always false. so their deathsound plays.
 	{
+		float damage_amp = damage;
+		if(attacker > MaxClients)
+		{	
+			if(TF2_IsPlayerInCondition(attacker, TFCond_Buffed))
+			{
+				damage_amp *= 1.35;
+			}
+		}
 		if((damagetype & DMG_BLAST))
 		{
 			npcBase.m_bGib = true;
@@ -1821,10 +1829,18 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	
 	if(inflictor > 0 && inflictor <= MaxClients)
 	{
+		if(TF2_IsPlayerInCondition(inflictor, TFCond_Buffed))
+		{
+			damage *= 1.35;
+		}
 		Calculate_And_Display_hp(inflictor, victim, damage, false);
 	}
 	else if(attacker > 0 && attacker <= MaxClients)
 	{
+		if(TF2_IsPlayerInCondition(attacker, TFCond_Buffed))
+		{
+			damage *= 1.35;
+		}
 		Calculate_And_Display_hp(attacker, victim, damage, false);	
 	}
 	/*
