@@ -386,7 +386,7 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 	{
 		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 		{
-			damage *= 0.55; //45% res instead of 61%
+			damage *= 0.65; //35% res instead of 61%
 		}
 		else
 		{
