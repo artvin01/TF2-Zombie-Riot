@@ -370,7 +370,7 @@ public void MedivalObuch_ClotThink(int iNPC)
 					int enemy_attacked_before = EntRefToEntIndex(i_ObuchSameEnemyAttacked[npc.index]);
 					if(enemy_attacked_before == npc.m_iTarget)
 					{
-						f_ObuchSameEnemyAttacked[npc.index] -= 0.2;
+						f_ObuchSameEnemyAttacked[npc.index] -= 0.35;
 						if(f_ObuchSameEnemyAttacked[npc.index] < 0.4)
 						{
 							f_ObuchSameEnemyAttacked[npc.index] = 0.4;

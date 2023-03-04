@@ -384,7 +384,14 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 	// now it's a simple check
 	if ((yawOffset >= MINYAW_RAID_SHIELD && yawOffset <= MAXYAW_RAID_SHIELD) || BlockAnyways)
 	{
-		damage *= 0.39;
+		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)) || b_thisNpcIsABoss[attacker])
+		{
+			damage *= 0.65; //35% res instead of 61%, too op against singular.
+		}
+		else
+		{
+			damage *= 0.39;
+		}
 		if(f_AniSoundSpam[victim] < GetGameTime())
 		{
 			f_AniSoundSpam[victim] = GetGameTime() + 0.2;
