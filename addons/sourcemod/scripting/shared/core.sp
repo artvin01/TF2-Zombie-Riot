@@ -1996,7 +1996,13 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	if(i_SemiAutoWeapon[weapon])
 	{
 		i_SemiAutoWeapon_AmmoCount[weapon] -= 1;
-		PrintHintText(client, "[%i/%i]", i_SemiAutoStats_MaxAmmo[weapon],i_SemiAutoWeapon_AmmoCount[weapon]);
+		char buffer[16];
+		for(int i; i < i_SemiAutoWeapon_AmmoCount[weapon]; i++)
+		{
+			buffer[i] = '|';
+		}
+
+		PrintHintText(client, buffer);
 		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 	}
 	
