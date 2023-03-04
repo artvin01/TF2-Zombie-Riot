@@ -384,9 +384,9 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 	// now it's a simple check
 	if ((yawOffset >= MINYAW_RAID_SHIELD && yawOffset <= MAXYAW_RAID_SHIELD) || BlockAnyways)
 	{
-		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)) || b_thisNpcIsABoss[attacker])
 		{
-			damage *= 0.65; //35% res instead of 61%
+			damage *= 0.65; //35% res instead of 61%, too op against singular.
 		}
 		else
 		{
