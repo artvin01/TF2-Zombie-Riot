@@ -23,6 +23,7 @@ static int i_lantean_max_penetration[MAXPLAYERS+1];	//how many npc's the drone w
 static float fl_lantean_penetration_dmg_penatly[MAXPLAYERS+1];	
 static float fl_lantean_overcharge_dmg_penalty[MAXPLAYERS+1];	
 
+static bool bl_Drone_Crash_and_burn[MAXPLAYERS + 1][MAXENTITIES];
 
 public void Weapon_lantean_Wand_ClearAll()
 {
@@ -31,6 +32,7 @@ public void Weapon_lantean_Wand_ClearAll()
 	Zero(fl_hud_timer);
 	Zero(fl_lantean_Wand_Drone_Life);
 	Zero(fl_overcharge);
+	Zero2(bl_Drone_Crash_and_burn);
 	Zero2(fl_lantean_Wand_Drone_HitSafe);
 }
 
@@ -42,6 +44,25 @@ void Weapon_lantean_Wand_Map_Precache()
 	PrecacheSound(LANTEAN_WAND_SHOT_1);
 	PrecacheSound(LANTEAN_WAND_SHOT_2);
 	Zero(lantean_Wand_Drone_Count);
+}
+
+public void Reset_Stats_Lantean_Weapon(int client)
+{
+	if(IsValidClient(client))
+	{
+		//KILL YOURSELF NOW!
+		lantean_Wand_Drone_Count[client] = 0;
+		bl_penetrate[client] = false;
+			
+		for (int entity = 0; entity < MAXENTITIES; entity++)
+		{
+			bl_Drone_Crash_and_burn[client][entity] = true;
+		}
+	}
+
+/*
+	Right so this ugly method thing exist due to me not having the knowlage how to properly fix the drone count fucking up when you buy anything on the store/paping it, nor having the willpower to find a better way.
+*/
 }
 
 public void Weapon_lantean_Wand_m1(int client, int weapon, bool crit, int slot)
@@ -233,6 +254,7 @@ static void Weapon_lantean_Wand(int client, int weapon)
 		SDKHook(projectile, SDKHook_Touch, lantean_Wand_Touch);//need collisions all the time!
 
 		lantean_Wand_Drone_Count[client]++;
+		bl_Drone_Crash_and_burn[client][projectile] = false;
 		fl_lantean_Wand_Drone_Life[projectile] = GetGameTime()+time;
 		i_drone_targets_penetrated[projectile] = 0;
 	
@@ -274,7 +296,10 @@ public Action Timer_RemoveEntity_CustomProjectileWand_Lanteen(Handle timer, Data
 	int clientindex = pack.ReadCell();
 	if(IsValidEntity(Projectile) && Projectile>MaxClients)
 	{
-		lantean_Wand_Drone_Count[clientindex]--;
+		if(!bl_Drone_Crash_and_burn[clientindex][Projectile])
+		{
+			lantean_Wand_Drone_Count[clientindex]--;
+		}
 		RemoveEntity(Projectile);
 	}
 	if(IsValidEntity(Particle) && Particle>MaxClients)
@@ -338,18 +363,21 @@ public void lantean_Wand_Touch(int entity, int other)
 				case 5:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_5, entity, SNDCHAN_STATIC, 80, _, 0.9);
 					
 			}
-			if(i_drone_targets_penetrated[entity] >= i_lantean_max_penetration[owner] || !bl_penetrate[owner])
+			if((i_drone_targets_penetrated[entity] >= i_lantean_max_penetration[owner] || !bl_penetrate[owner]) || bl_Drone_Crash_and_burn[owner][entity])
 			{
 				RemoveEntity(entity);
-				lantean_Wand_Drone_Count[owner]--;
+				if(!bl_Drone_Crash_and_burn[owner][entity])
+				{
+					lantean_Wand_Drone_Count[owner]--;
+				}
 			}
 		}
 	}
 	else if(target == 0)
 	{
-		if(fl_lantean_Wand_Drone_Life[entity] < GetGameTime())
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		if(fl_lantean_Wand_Drone_Life[entity] < GetGameTime() || bl_Drone_Crash_and_burn[owner][entity])
 		{
-			int owner = EntRefToEntIndex(i_WandOwner[entity]);
 			int particle = EntRefToEntIndex(i_WandParticle[entity]);
 			if(IsValidEntity(particle))
 			{
@@ -366,7 +394,10 @@ public void lantean_Wand_Touch(int entity, int other)
 				case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
 			}
 			RemoveEntity(entity);
-			lantean_Wand_Drone_Count[owner]--;
+			if(!bl_Drone_Crash_and_burn[owner][entity])
+			{
+				lantean_Wand_Drone_Count[owner]--;
+			}
 		}
 	}
 }
@@ -388,6 +419,10 @@ public Action Lantean_PerfectHomingShot(Handle timer, DataPack pack)
 	if(!IsValidEntity(weapon))
 	{
 		return Plugin_Continue;
+	}
+	if(bl_Drone_Crash_and_burn[Client][Projectile])	//if weapon reset happens, all drones lose homing, and MUST DIE
+	{
+		return Plugin_Handled;
 	}
 	if(fl_lantean_Wand_Drone_Life[Projectile] > GetGameTime())	//if drone is beyond its lifetime, it loses homing and crashes and burns 
 	{
