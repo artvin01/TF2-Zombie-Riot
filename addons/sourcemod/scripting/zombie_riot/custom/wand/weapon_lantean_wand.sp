@@ -380,8 +380,16 @@ public Action Lantean_PerfectHomingShot(Handle timer, DataPack pack)
 	{
 		return Plugin_Handled;
 	}
+	if(!IsValidEntity(Projectile))
+	{
+		return Plugin_Handled;
+	}
 	int weapon = GetEntPropEnt(Client, Prop_Send, "m_hActiveWeapon");
-	if(IsValidEntity(Projectile) && fl_lantean_Wand_Drone_Life[Projectile] > GetGameTime())	//if drone is beyond its lifetime, it loses homing and crashes and burns 
+	if(!IsValidEntity(weapon))
+	{
+		return Plugin_Continue;
+	}
+	if(fl_lantean_Wand_Drone_Life[Projectile] > GetGameTime())	//if drone is beyond its lifetime, it loses homing and crashes and burns 
 	{
 		if(i_CustomWeaponEquipLogic[weapon]==WEAPON_LANTEAN)
 		{

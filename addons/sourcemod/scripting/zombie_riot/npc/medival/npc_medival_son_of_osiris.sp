@@ -75,7 +75,7 @@ static const char g_MeleeAttackSounds[][] = {
 	"items/powerup_pickup_crits.wav",
 };
 
-#define SON_OF_OSIRIS_RANGE 350.0
+#define SON_OF_OSIRIS_RANGE 200.0
 #define LASERBEAM "sprites/laserbeam.vmt"
 
 void MedivalSonOfOsiris_OnMapStart_NPC()
@@ -187,8 +187,8 @@ methodmap MedivalSonOfOsiris < CClotBody
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
 
-		b_CannotBeHeadshot[npc.index] = true;
-		b_CannotBeBackstabbed[npc.index] = true;
+	//	b_CannotBeHeadshot[npc.index] = true;
+	//	b_CannotBeBackstabbed[npc.index] = true;
 		b_CannotBeStunned[npc.index] = true;
 		b_CannotBeKnockedUp[npc.index] = true;
 		b_CannotBeSlowed[npc.index] = true;
@@ -267,7 +267,7 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 						
 					if(distance <= Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 6.5, 2.0)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
 					{
-						SonOfOsiris_Lightning_Strike(npc.index, npc.m_iTarget, 650.0, b_IsAlliedNpc[npc.index]);
+						SonOfOsiris_Lightning_Strike(npc.index, npc.m_iTarget, 450.0, b_IsAlliedNpc[npc.index]);
 					}
 				}
 			}
@@ -437,8 +437,9 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 	float dodamage = damage;
 	if(ShouldNpcDealBonusDamage(target)) //If he attacks a building first, then its going to hurt alot more.
 	{
-		damage *= 2.0;
-		dodamage *= 100.0;
+	//	damage *= 2.0;
+		//actually terrible idea, dont.
+		dodamage *= 50.0;
 	}
 
 	float vecTarget[3];
@@ -467,7 +468,7 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 	int PreviousTarget = target;
 	int TraceFromThis = entity;
 
-	for (int loop = 8; loop > 2; loop--) //Chain upto alot of times
+	for (int loop = 5; loop > 2; loop--) //Chain upto alot of times
 	{
 		int enemy = SonOfOsiris_GetClosestTargetNotAffectedByLightning(TraceFromThis, vecHit, alliednpc);
 		if(IsValidEntity(enemy) && PreviousTarget != enemy)
