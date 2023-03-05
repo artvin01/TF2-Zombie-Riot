@@ -1815,7 +1815,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			npcBase.m_bGib = true;
 		}
-		else if(damage > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 1.5))
+		else if(damage_amp > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 1.5))
 		{
 			npcBase.m_bGib = true;
 		}
