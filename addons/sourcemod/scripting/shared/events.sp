@@ -65,7 +65,7 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 			OnAutoTeam(client, name, 0);
 		}
 	}
-
+#if defined ZR
 	//Ty to Keldra#1114 on discord to pointing this out.
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	if(client)
@@ -85,7 +85,7 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 			}
 		}
 	}
-
+#endif
 
 	
 	if(event.GetBool("silent"))

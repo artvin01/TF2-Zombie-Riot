@@ -327,7 +327,7 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 			if(index != -1)
 			{
 				int Item_Index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-				PlayCustomWeaponSoundFromPlayerCorrectly(target, client, weapon, Item_Index, "tf_weapon_club");	
+				PlayCustomWeaponSoundFromPlayerCorrectly(client, target, Item_Index, weapon);	
 				static MineEnum mine;
 				MineList.GetArray(index, mine);
 

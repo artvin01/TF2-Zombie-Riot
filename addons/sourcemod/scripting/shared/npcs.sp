@@ -2311,9 +2311,9 @@ void NPC_DeadEffects(int entity)
 {
 	if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 	{
-		
+#if defined ZR		
 		float GameTime = GetGameTime();
-#if defined ZR
+
 		if(GlobalAntiSameFrameCheck_NPC_SpawnNext != GameTime)
 		{
 			RequestFrame(NPC_SpawnNextRequestFrame, false);

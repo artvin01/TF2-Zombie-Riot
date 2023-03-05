@@ -369,7 +369,7 @@ void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], fl
 		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * MELEE_RANGE;
 		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * MELEE_RANGE;
 	}
-
+#if defined ZR
 	if(weapon > 0)
 	{
 		switch(i_CustomWeaponEquipLogic[weapon])
@@ -380,7 +380,7 @@ void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], fl
 			}	
 		}	
 	}
-	
+#endif
 	i_EntitiesHitAtOnceMax = enemies_hit_aoe;
 	
 	if(enemies_hit_aoe < 2)
@@ -448,6 +448,7 @@ public int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int 
 				return ZEROSOUND;
 			}
 		}
+#if defined ZR
 		switch(i_CustomWeaponEquipLogic[weapon])
 		{
 			case WEAPON_SPECTER: //yes, if we miss, then we do other stuff.
@@ -456,6 +457,7 @@ public int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int 
 				return ZEROSOUND;
 			}	
 		}
+#endif
 		return MELEE_HIT;
 	}
 	else
@@ -548,7 +550,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 										
 		float vecHit[3];
 		TR_GetEndPosition(vecHit, swingTrace);	
-		
+#if defined ZR		
 		//We want extra rules!, do we have a melee that acts differently when we didnt hit an enemy or ally?
 		if(target < 1)
 		{
@@ -563,6 +565,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 				}	
 			}
 		}
+#endif
 		int Item_Index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 		int soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, target, Item_Index, weapon);	
 		if(soundIndex > 0)
