@@ -837,7 +837,8 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 					BurnDamage[entity] = value;
 				}
 				//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
-				SDKHooks_TakeDamage(entity, client, client, value, DMG_SLASH, weapon, ang, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+				SDKHooks_TakeDamage(entity, client, client, value, DMG_SLASH, weapon, ang, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED & ZR_DAMAGE_IGNORE_DEATH_PENALTY));
+				
 				//Setting burn dmg to slash cus i want it to work with melee!!!
 				//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
 				//In this case ill buff it so its 2x as good as bleed! or more in the future
@@ -1413,7 +1414,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	#endif
 
 	#if defined ZR
-			if(dieingstate[attacker] > 0)
+			if(dieingstate[attacker] > 0 && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_IGNORE_DEATH_PENALTY))
 			{
 				damage *= 0.25;
 			}
