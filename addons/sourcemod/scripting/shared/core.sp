@@ -2741,6 +2741,7 @@ public void OnEntityDestroyed(int entity)
 					PrintToConsoleAll("Somehow Failed to unhook h_NpcCollissionHookType");
 				}
 			}
+			i_NpcInternalId[entity] = -1;
 		}
 	}
 	
