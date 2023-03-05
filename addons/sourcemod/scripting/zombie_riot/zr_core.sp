@@ -640,6 +640,7 @@ public Action Command_AFK(int client, int args)
 {
 	if(client)
 	{
+	//	DestroyDispenser(client);
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		WaitingInQueue[client] = true;
 		ChangeClientTeam(client, 1);
@@ -770,6 +771,7 @@ public Action Command_AFKKnight(int client, int args)
 {
 	if(client)
 	{
+		DestroyDispenser(client);
 		WaitingInQueue[client] = true;
 		ChangeClientTeam(client, 2);
 	}

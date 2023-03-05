@@ -65,6 +65,28 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 			OnAutoTeam(client, name, 0);
 		}
 	}
+
+	//Ty to Keldra#1114 on discord to pointing this out.
+	int client = GetClientOfUserId(event.GetInt("userid"));
+	if(client)
+	{	
+		/*
+		TFTeam_Unassigned = 0,
+		TFTeam_Spectator = 1,
+		TFTeam_Red = 2,
+		TFTeam_Blue = 3
+		*/
+		int team = event.GetInt("team");
+		switch(team)
+		{
+			case 0,1: //either team ? kill dispenser!
+			{
+				DestroyDispenser(client);
+			}
+		}
+	}
+
+
 	
 	if(event.GetBool("silent"))
 		return Plugin_Continue;
