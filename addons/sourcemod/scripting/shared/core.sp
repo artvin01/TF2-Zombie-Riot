@@ -2051,13 +2051,12 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 					flpercenthpfrommax = 1.0; //maths to not allow negative suuuper slow attack speed
 					
 				float Attack_speed = flpercenthpfrommax / Panic_Attack[weapon];
-				/*
+				
 				if(Attack_speed <= Panic_Attack[weapon])
 				{
 					Attack_speed = Panic_Attack[weapon]; //DONT GO ABOVE THIS, WILL BREAK SOME MELEE'S DUE TO THEIR ALREADY INCREACED ATTACK SPEED.
 				}
-				//Edit: doesnt matter anymore!
-				*/
+				
 				
 				if (Attack_speed >= 1.15)
 				{
