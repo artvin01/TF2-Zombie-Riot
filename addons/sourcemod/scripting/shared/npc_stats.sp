@@ -4081,7 +4081,8 @@ public void PluginBot_Approach(int bot_entidx, const float vec[3])
 	npc.Approach(vec);
 	
 	if(!npc.m_bAllowBackWalking)
-		npc.FaceTowards(vec, (250.0 * npc.GetDebuffPercentage()));
+		npc.FaceTowards(vec, (250.0 * npc.GetDebuffPercentage() * f_NpcTurnPenalty[npc.index]));
+		
 }
 
 public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
@@ -7293,6 +7294,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_isWalking[entity] = true;
 	i_StepNoiseType[entity] = 0;
 	i_NpcStepVariation[entity] = 0;
+	f_NpcTurnPenalty[entity] = 0.0;
 	i_BleedType[entity] = 0;
 	i_State[entity] = 0;
 	b_movedelay[entity] = false;
