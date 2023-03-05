@@ -29,15 +29,16 @@ methodmap BarrackMonk < BarrackBody
 public void BarrackMonk_ClotThink(int iNPC)
 {
 	BarrackMonk npc = view_as<BarrackMonk>(iNPC);
-	if(BarrackBody_ThinkStart(npc.index))
+	float GameTime = GetGameTime(npc.index);
+	if(BarrackBody_ThinkStart(npc.index,GameTime))
 	{
-		BarrackBody_ThinkTarget(npc.index, true);
+		BarrackBody_ThinkTarget(npc.index, true,GameTime);
 
-		float gameTime = GetGameTime(npc.index);
+
 		if(npc.m_flAttackHappens)
 		{
 			npc.AddGesture("ACT_MONK_ATTACK", false);
-			if(npc.m_flAttackHappens < gameTime)
+			if(npc.m_flAttackHappens < GameTime)
 			{
 				float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.index);
 				
@@ -46,7 +47,7 @@ public void BarrackMonk_ClotThink(int iNPC)
 				
 				DataPack pack;
 				CreateDataTimer(0.1, MonkHealDamageZone, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-				pack.WriteFloat(GetGameTime() + 3.0);
+				pack.WriteFloat(GameTime + 3.0);
 				pack.WriteFloat(vecTarget[0]);
 				pack.WriteFloat(vecTarget[1]);
 				pack.WriteFloat(vecTarget[2]);
@@ -55,15 +56,15 @@ public void BarrackMonk_ClotThink(int iNPC)
 			}
 		}
 
-		if(gameTime > npc.m_flNextMeleeAttack)
+		if(GameTime > npc.m_flNextMeleeAttack)
 		{
 			npc.PlayMeleeWarCry();
 			npc.AddGesture("ACT_MONK_ATTACK");
 			
-			npc.m_flAttackHappens = gameTime + 1.3;
-			npc.m_flDoingAnimation = gameTime + 1.3;
-			npc.m_flReloadDelay = gameTime + 1.3;
-			npc.m_flNextMeleeAttack = gameTime + 10.3;
+			npc.m_flAttackHappens = GameTime + 1.3;
+			npc.m_flDoingAnimation = GameTime + 1.3;
+			npc.m_flReloadDelay = GameTime + 1.3;
+			npc.m_flNextMeleeAttack = GameTime + 10.3;
 		}
 
 		BarrackBody_ThinkMove(npc.index, 175.0, "ACT_MONK_IDLE", "ACT_MONK_WALK", 90000.0);

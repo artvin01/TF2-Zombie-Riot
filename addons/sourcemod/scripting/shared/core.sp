@@ -267,6 +267,9 @@ int i_SemiAutoWeapon[MAXENTITIES];
 int i_SemiAutoWeapon_AmmoCount[MAXENTITIES]; //idk like 10 slots lol
 bool i_WeaponCannotHeadshot[MAXENTITIES];
 float i_WeaponDamageFalloff[MAXENTITIES];
+float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
+float f_DelayAttackspeedPreivous[MAXENTITIES];
+float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 
 float f_ClientReviveDelay[MAXENTITIES];
 
@@ -1525,6 +1528,8 @@ public void OnClientDisconnect(int client)
 #if defined ZR
 	HudSettings_ClientCookiesDisconnect(client);
 	ZR_ClientDisconnect(client);
+	f_DelayAttackspeedAnimation[client] = 0.0;
+	//Needed to reset attackspeed stuff.
 	
 	if(Scrap[client] > -1)
 	{
@@ -1792,9 +1797,10 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 		}
 	}
-	if(f_ClientReviveDelay[client] < GetGameTime())
+	float GameTime = GetGameTime();
+	if(f_ClientReviveDelay[client] < GameTime)
 	{
-		f_ClientReviveDelay[client] = GetGameTime() + 0.1;
+		f_ClientReviveDelay[client] = GameTime + 0.1;
 		if((holding[client] & IN_RELOAD) && dieingstate[client] <= 0 && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 		{
 			int target = GetClientPointVisibleRevive(client);
@@ -1810,12 +1816,12 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				{
 					SetEntityMoveType(target, MOVETYPE_NONE);
 					was_reviving[client] = true;
-					f_DelayLookingAtHud[client] = GetGameTime() + 0.5;
-					f_DelayLookingAtHud[target] = GetGameTime() + 0.5;
+					f_DelayLookingAtHud[client] = GameTime + 0.5;
+					f_DelayLookingAtHud[target] = GameTime + 0.5;
 					PrintCenterText(client, "%t", "Reviving", dieingstate[target]);
 					PrintCenterText(target, "%t", "You're Being Revived.", dieingstate[target]);
 					was_reviving_this[client] = target;
-					f_DisableDyingTimer[target] = GetGameTime() + 0.15;
+					f_DisableDyingTimer[target] = GameTime + 0.15;
 					if(i_CurrentEquippedPerk[client] == 1)
 					{
 						dieingstate[target] -= 12;
@@ -1832,7 +1838,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 						dieingstate[target] = 0;
 						
 						SetEntPropEnt(target, Prop_Send, "m_hObserverTarget", client);
-						f_WasRecentlyRevivedViaNonWave[target] = GetGameTime() + 1.0;
+						f_WasRecentlyRevivedViaNonWave[target] = GameTime + 1.0;
 						DHook_RespawnPlayer(target);
 						
 						float pos[3], ang[3];
@@ -1890,7 +1896,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				{
 					int ticks;
 					was_reviving[client] = true;
-					f_DelayLookingAtHud[client] = GetGameTime() + 0.5;
+					f_DelayLookingAtHud[client] = GameTime + 0.5;
 					was_reviving_this[client] = target;
 					if(i_CurrentEquippedPerk[client] == 1)
 					{
@@ -2007,18 +2013,32 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 	}
 	
+	float GameTime = GetGameTime();
+	
 	if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
 	{
-		float attack_speed;
-		
-		attack_speed = 1.0 / Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
-		
-		if(attack_speed > 5.0)
+		//If it stoo fast then we dont want to do it eveytime, that can be laggy and it doesnt even change anything.
+		//Also check if its the exact same number again, if it is, dont even set it.
+		//0.25 is a sane number!
+		if(f_DelayAttackspeedAnimation[client] < GameTime)
 		{
-			attack_speed *= 0.5; //Too fast! It makes animations barely play at all
+			f_DelayAttackspeedAnimation[client] = GameTime + 0.25;
+
+			float attack_speed;
+			
+			attack_speed = 1.0 / Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+			
+			if(attack_speed > 5.0)
+			{
+				attack_speed *= 0.5; //Too fast! It makes animations barely play at all
+			}
+			if(f_DelayAttackspeedPreivous[weapon] != attack_speed) //Its not the exact same as before, dont set, no need.
+			{
+				TF2Attrib_SetByDefIndex(client, 201, attack_speed);
+			}
+			f_DelayAttackspeedPreivous[weapon] = attack_speed;
+			
 		}
-		
-		TF2Attrib_SetByDefIndex(client, 201, attack_speed);
 
 		if(!i_IsWandWeapon[weapon] && StrContains(classname, "tf_weapon_wrench"))
 		{
@@ -2031,12 +2051,15 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 					flpercenthpfrommax = 1.0; //maths to not allow negative suuuper slow attack speed
 					
 				float Attack_speed = flpercenthpfrommax / Panic_Attack[weapon];
-				
+				/*
 				if(Attack_speed <= Panic_Attack[weapon])
 				{
 					Attack_speed = Panic_Attack[weapon]; //DONT GO ABOVE THIS, WILL BREAK SOME MELEE'S DUE TO THEIR ALREADY INCREACED ATTACK SPEED.
 				}
-				else if (Attack_speed >= 1.15)
+				//Edit: doesnt matter anymore!
+				*/
+				
+				if (Attack_speed >= 1.15)
 				{
 					Attack_speed = 1.15; //hardcoding this lol
 				}
@@ -2045,7 +2068,19 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 					Attack_speed = 1.0; //If they are last, dont alter attack speed, otherwise breaks melee, again.
 					//would also make them really op
 				*/
-				TF2Attrib_SetByDefIndex(weapon, 396, Attack_speed);
+				if(f_DelayAttackspeedPanicAttack[weapon] != Attack_speed) //Its not the exact same as before, dont set, no need.
+				{
+					TF2Attrib_SetByDefIndex(weapon, 396, Attack_speed);
+				}
+				f_DelayAttackspeedPanicAttack[weapon] = Attack_speed;
+			}
+			else
+			{
+				if(f_DelayAttackspeedPanicAttack[weapon] != 1.0) //Its not the exact same as before, dont set, no need.
+				{
+					TF2Attrib_SetByDefIndex(weapon, 396, 1.0);
+				}
+				f_DelayAttackspeedPanicAttack[weapon] = 1.0;				
 			}
 			if(!StrContains(classname, "tf_weapon_knife"))
 			{
@@ -2111,7 +2146,11 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	}
 	else
 	{
-		TF2Attrib_SetByDefIndex(client, 201, 1.0);
+		if(f_DelayAttackspeedAnimation[client] < GameTime)
+		{
+			f_DelayAttackspeedAnimation[client] = GameTime + 0.25;
+			TF2Attrib_SetByDefIndex(client, 201, 1.0);
+		}
 	}
 	return action;
 }
@@ -2144,6 +2183,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_SentryIsCustom[entity] = false;
 		Building_Mounted[entity] = -1;
 #endif
+		f_DelayAttackspeedPreivous[entity] = -1.0;
+		f_DelayAttackspeedPanicAttack[entity] = -1.0;
 		f_HussarBuff[entity] = 0.0;
 		f_Ocean_Buff_Stronk_Buff[entity] = 0.0;
 		f_Ocean_Buff_Weak_Buff[entity] = 0.0;

@@ -1686,8 +1686,8 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 		if(EscapeMode)
 			HealAmmount *= 2.0;
 #endif
-		
-		if(f_TimeUntillNormalHeal[target] > GetGameTime())
+		float GameTime = GetGameTime();
+		if(f_TimeUntillNormalHeal[target] > GameTime)
 		{
 			HealAmmount /= 4.0; //make sure they dont get the full benifit if hurt recently.
 		}
@@ -1710,10 +1710,10 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			SetGlobalTransTarget(owner);
 			PrintHintText(owner,"%N %t", target, "Is already at full hp");
 			
-			Increaced_Overall_damage_Low[owner] = GetGameTime() + 5.0;
-			Increaced_Overall_damage_Low[target] = GetGameTime() + 15.0;
-			Resistance_Overall_Low[owner] = GetGameTime() + 5.0;
-			Resistance_Overall_Low[target] = GetGameTime() + 15.0;
+			Increaced_Overall_damage_Low[owner] = GameTime + 5.0;
+			Increaced_Overall_damage_Low[target] = GameTime + 15.0;
+			Resistance_Overall_Low[owner] = GameTime + 5.0;
+			Resistance_Overall_Low[target] = GameTime + 15.0;
 		}
 		else
 		{
@@ -1736,10 +1736,10 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			
 			PrintHintText(owner, "%t", "You healed for", target, ammo_amount_left);
 			SetAmmo(owner, 21, new_ammo);
-			Increaced_Overall_damage_Low[owner] = GetGameTime() + 5.0;
-			Increaced_Overall_damage_Low[target] = GetGameTime() + 15.0;
-			Resistance_Overall_Low[owner] = GetGameTime() + 5.0;
-			Resistance_Overall_Low[target] = GetGameTime() + 15.0;
+			Increaced_Overall_damage_Low[owner] = GameTime + 5.0;
+			Increaced_Overall_damage_Low[target] = GameTime + 15.0;
+			Resistance_Overall_Low[owner] = GameTime + 5.0;
+			Resistance_Overall_Low[target] = GameTime + 15.0;
 			for(int i; i<Ammo_MAX; i++)
 			{
 				CurrentAmmo[owner][i] = GetAmmo(owner, i);
