@@ -379,6 +379,7 @@ Handle IgniteTimer[MAXENTITIES];
 int IgniteFor[MAXENTITIES];
 int IgniteId[MAXENTITIES];
 int IgniteRef[MAXENTITIES];
+float BurnDamage[MAXENTITIES];
 
 bool b_StickyIsSticking[MAXENTITIES];
 

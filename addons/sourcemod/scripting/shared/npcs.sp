@@ -764,7 +764,6 @@ public Action Timer_Delayed_BossSpawn(Handle timer, DataPack pack)
 }
 #endif
 
-static float BurnDamage[MAXPLAYERS];
 
 void NPC_Ignite(int entity, int client, float duration, int weapon)
 {
@@ -829,13 +828,13 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				{
 					
 				}
-				else if(value < BurnDamage[client])
+				else if(value < BurnDamage[entity])
 				{
-					value = BurnDamage[client];
+					value = BurnDamage[entity];
 				}
 				else
 				{
-					BurnDamage[client] = value;
+					BurnDamage[entity] = value;
 				}
 				//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
 				SDKHooks_TakeDamage(entity, client, client, value, DMG_SLASH, weapon, ang, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
@@ -847,14 +846,14 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				{
 					IgniteTimer[entity] = null;
 					IgniteFor[entity] = 0;
-					BurnDamage[client] = 0.0;
+					BurnDamage[entity] = 0.0;
 					return Plugin_Stop;
 				}
 				if(f_NpcImmuneToBleed[entity] > GetGameTime())
 				{
 					IgniteTimer[entity] = null;
 					IgniteFor[entity] = 0;
-					BurnDamage[client] = 0.0;
+					BurnDamage[entity] = 0.0;
 					return Plugin_Stop;
 				}
 				return Plugin_Continue;
@@ -863,6 +862,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 			{
 				IgniteTimer[entity] = null;
 				IgniteFor[entity] = 0;
+				BurnDamage[entity] = 0.0;
 				return Plugin_Stop;		
 			}
 		}
@@ -870,6 +870,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 		{
 			IgniteTimer[entity] = null;
 			IgniteFor[entity] = 0;
+			BurnDamage[entity] = 0.0;
 			return Plugin_Stop;		
 		}
 	}

@@ -7371,6 +7371,11 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_PoseMoveY[entity] = -1;
 	b_NpcHasDied[entity] = false;
 	b_PlayHurtAnimation[entity] = false;
+	IgniteTimer[entity] = null;
+	IgniteFor[entity] = 0;
+	BurnDamage[entity] = 0.0;
+	IgniteRef[entity] = -1;
+	f_NpcImmuneToBleed[entity] = 0.0;
 	f_CreditsOnKill[entity] = 0.0;
 	i_CreditsOnKill[entity] = 0;
 	i_PluginBot_ApproachDelay[entity] = 0;
@@ -7397,7 +7402,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ScalesWithWaves[entity] = false;
 	b_PernellBuff[entity] = false;
 	f_HussarBuff[entity] = 0.0;
-	IgniteFor[entity] = 0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	f_StunExtraGametimeDuration[entity] = 0.0;
 	i_TextEntity[entity][0] = -1;
