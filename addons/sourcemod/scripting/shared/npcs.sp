@@ -1745,18 +1745,29 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						}
 					}
 				}
-	#if defined ZR
+#if defined ZR
 				else if(!StrContains(classname, "tf_weapon_compound_bow", false))
 				{
 					if(damagetype & DMG_CRIT)
 					{		
+						if(i_HeadshotAffinity[attacker] == 1)
+						{
+							damage *= 1.35;
+						}
 						if(i_CurrentEquippedPerk[attacker] == 5) //Just give them 25% more damage if they do crits with the huntsman, includes buffbanner i guess
 						{
 							damage *= 1.35;
 						}
 					}
+					else
+					{
+						if(i_HeadshotAffinity[attacker] == 1) //if no crit, penalise
+						{
+							damage *= 0.75;
+						}
+					}
 				}
-	#endif
+#endif
 				
 				/*
 				else
