@@ -347,12 +347,12 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 		{
 			npc.FaceTowards(vecTarget, 700.0);
 			npc.m_flSpeed = 100.0;
-			npc.f_NpcTurnPenalty = 0.3;
+			f_NpcTurnPenalty[npc.index] = 0.3;
 		}
 		else
 		{
 			npc.m_flSpeed = 300.0;
-			npc.f_NpcTurnPenalty = 1.0;
+			f_NpcTurnPenalty[npc.index] = 1.0;
 		}
 		if(flDistanceToTarget > 60000 && flDistanceToTarget < 120000 && !npc.m_bInKame && fl_TimebeforeIOC[npc.index] < GetGameTime(npc.index))
 		{
