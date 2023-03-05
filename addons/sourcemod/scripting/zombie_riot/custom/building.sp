@@ -4708,7 +4708,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	if(Village_Flags[client] & VILLAGE_050)
 	{
 		menu.AddItem("", TranslateItemName(viewer, "Homeland Defense", ""), ITEMDRAW_DISABLED);
-		menu.AddItem("", "Ability now increases attack speed and reloadspeed by 50%", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Ability now increases attack speed and reloadspeed and heal rate by 50%", ITEMDRAW_DISABLED);
 		menu.AddItem("", "for all players and allies for 20 seconds.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_040)
@@ -4717,22 +4717,22 @@ static void VillageUpgradeMenu(int client, int viewer)
 		{
 			menu.AddItem("", TranslateItemName(viewer, "Call To Arms", ""), ITEMDRAW_DISABLED);
 			menu.AddItem("", "Press E to activate an ability that gives nearby", ITEMDRAW_DISABLED);
-			menu.AddItem("", "players and allies +25% attack speed and reloadspeed for a short time.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "players and allies +25% attack speed and reloadspeed and heal rate for a short time.\n ", ITEMDRAW_DISABLED);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s [$15000]", TranslateItemName(viewer, "Homeland Defense", ""));
-			menu.AddItem(VilN(VILLAGE_050), buffer, (!owner || cash < 15000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("", "Ability now increases attack speed and reloadspeed by 50%", ITEMDRAW_DISABLED);
+			FormatEx(buffer, sizeof(buffer), "%s [$10000]", TranslateItemName(viewer, "Homeland Defense", ""));
+			menu.AddItem(VilN(VILLAGE_050), buffer, (!owner || cash < 10000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem("", "Ability now increases attack speed and reloadspeed and heal rate by 50%", ITEMDRAW_DISABLED);
 			menu.AddItem("", "for all players and allies for 20 seconds.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_030)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$8000]%s", TranslateItemName(viewer, "Call To Arms", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_040), buffer, (!owner || cash < 8000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer, sizeof(buffer), "%s [$5000]%s", TranslateItemName(viewer, "Call To Arms", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
+		menu.AddItem(VilN(VILLAGE_040), buffer, (!owner || cash < 5000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Press E to activate an ability that gives nearby", ITEMDRAW_DISABLED);
-		menu.AddItem("", "players and allies +25% attack speed and reloadspeed for a short time.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "players and allies +25% attack speed and reloadspeed and heal rate for a short time.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_020)
 	{
@@ -4919,16 +4919,16 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				case VILLAGE_050:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 5);
-					CashSpent[client] += 15000;
-					CashSpentTotal[client] += 15000;
+					CashSpent[client] += 10000;
+					CashSpentTotal[client] += 10000;
 					f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
 					Village_TierExists[1] = 5;
 				}
 				case VILLAGE_040:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 4);
-					CashSpent[client] += 8000;
-					CashSpentTotal[client] += 8000;
+					CashSpent[client] += 5000;
+					CashSpentTotal[client] += 5000;
 					f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
 					Village_TierExists[1] = 4;
 				}
