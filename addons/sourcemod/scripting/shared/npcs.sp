@@ -1800,7 +1800,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if(!npcBase.m_bDissapearOnDeath) //Make sure that if they just vanish, its always false. so their deathsound plays.
 	{
 		float damage_amp = damage;
-		if(attacker > MaxClients)
+		if(attacker <= MaxClients && attacker > 0)
 		{	
 			if(TF2_IsPlayerInCondition(attacker, TFCond_Buffed))
 			{
