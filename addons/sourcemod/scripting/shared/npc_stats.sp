@@ -7294,7 +7294,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_isWalking[entity] = true;
 	i_StepNoiseType[entity] = 0;
 	i_NpcStepVariation[entity] = 0;
-	f_NpcTurnPenalty[entity] = 0.0;
+	f_NpcTurnPenalty[entity] = 1.0;
 	i_BleedType[entity] = 0;
 	i_State[entity] = 0;
 	b_movedelay[entity] = false;

@@ -333,8 +333,10 @@ public void ApplyExplosionDhook_Rocket(int entity)
 	{
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, DHook_RocketExplodePre);
 	}
-	CreateTimer(0.1, FixVelocityStandStillRocket, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateTimer(2.0, FixVelocityStandStillRocket, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+//Heavily increace thedelay, this rarely ever happens, and if it does, then it should check every 2 seconds at the most!
 }
+
 
 public Action FixVelocityStandStillRocket(Handle Timer, int ref)
 {
@@ -343,7 +345,7 @@ public Action FixVelocityStandStillRocket(Handle Timer, int ref)
 	{
 		float Velocity_Temp[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecVelocity", Velocity_Temp); 
-		if(Velocity_Temp[0] == 0.0 && Velocity_Temp[1] == 0.0 && Velocity_Temp[2] == 0.0)
+		if(Velocity_Temp[0] == 0.0 || Velocity_Temp[1] || 0.0 && Velocity_Temp[2] || 0.0)
 		{
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, Velocity_Rocket[entity]);
 		}
