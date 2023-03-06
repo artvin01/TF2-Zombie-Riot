@@ -48,7 +48,7 @@ static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 
 static char[] GetSawRunnerHealth()
 {
-	int health = 90;
+	int health = 65;
 	
 	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
 	

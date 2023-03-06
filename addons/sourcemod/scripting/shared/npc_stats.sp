@@ -4076,12 +4076,13 @@ static int i_PluginBot_ApproachDelay[MAXENTITIES];
 
 public void PluginBot_Approach(int bot_entidx, const float vec[3])
 {
+	
+	CClotBody npc = view_as<CClotBody>(bot_entidx);
+	npc.Approach(vec);
 	if(i_PluginBot_ApproachDelay[bot_entidx] >= 1)
 	{
 		i_PluginBot_ApproachDelay[bot_entidx] = 0;
 
-		CClotBody npc = view_as<CClotBody>(bot_entidx);
-		npc.Approach(vec);
 		//gets called every frame! bad! delay abit.
 		//Default value is 250.
 		if(!npc.m_bAllowBackWalking)
@@ -4122,54 +4123,15 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 	}
 	
 	//if anything else is team
-	
-	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
-		return false;
-
-	if(b_ThisEntityIgnored[entity])
+	if(b_IsARespawnroomVisualiser[entity])
 	{
 		return false;
 	}	
 
-	return !(entity == iExclude);
-}
-public bool BulletAndMeleeTraceIngoreWalls(int entity, int contentsMask, any iExclude)
-{
-#if defined ZR
-	if(entity > 0 && entity <= MaxClients) 
-	{
-		if(TeutonType[entity])
-		{
-			return false;
-		}
-	}
-#endif
-	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
-	{
-		return false;
-	}
-	else if(!b_NpcHasDied[entity])
-	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
-		{
-			return false;
-		}
-		else if (b_CantCollidie[entity] && b_CantCollidieAlly[entity]) //If both are on, then that means the npc shouldnt be invis and stuff
-		{
-			return false;
-		}
-	}
-	
-	//if anything else is team
-	
 	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
 		return false;
 
 	if(b_ThisEntityIgnored[entity])
-	{
-		return false;
-	}	
-	if(entity == 0)
 	{
 		return false;
 	}	
@@ -4217,7 +4179,11 @@ public bool BulletAndMeleeTraceAlly(int entity, int contentsMask, any iExclude)
 	{
 		return false;
 	}	
-
+	if(b_IsARespawnroomVisualiser[entity])
+	{
+		return false;
+	}	
+	
 	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
 		return !(entity == iExclude);
 
