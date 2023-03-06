@@ -438,7 +438,9 @@ public const char NPC_Names[][] =
 	
 	"Ikunagae",
 	"Mecha Soldier Barrager",
-	"Nearl Radiant Sword"
+	"Nearl Radiant Sword",
+
+	"Spawned Combine"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -648,7 +650,9 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_medival_trebuchet",
 	"npc_alt_ikunagae",
 	"npc_alt_mecha_soldier_barrager",
-	""
+	"",
+
+	"npc_stalker_combine"
 };
 
 void NPC_MapStart()

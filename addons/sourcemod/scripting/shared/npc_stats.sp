@@ -3592,7 +3592,7 @@ bool IsWalkEvent(int event, int special = 0)
 	}
 	else 
 	{
-		if (event == 7001 || event == 59 || event == 58 || event == 66 || event == 65 || event == 6004 || event == 6005 || event == 7005 || event == 7004 || event || 7001)
+		if (event == 7001 || event == 59 || event == 58 || event == 66 || event == 65 || event == 6004 || event == 6005 || event == 7005 || event == 7004)
 			return true;
 	}
 		
@@ -3668,6 +3668,10 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		case MEDIVAL_ACHILLES:
 		{
 			HandleAnimEvent_MedivalAchilles(pThis, event);
+		}
+		case STALKER_COMBINE:
+		{
+			StalkerCombine_HandleAnimEvent(pThis, event);
 		}
 	}
 #endif
