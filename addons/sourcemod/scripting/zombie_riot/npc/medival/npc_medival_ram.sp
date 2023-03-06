@@ -78,7 +78,7 @@ methodmap MedivalRam < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_flMeleeArmor = 2.0;
-		npc.m_flRangedArmor = 0.2;
+		npc.m_flRangedArmor = 0.01;
 		
 		if(Garrison[npc.index])
 		{
