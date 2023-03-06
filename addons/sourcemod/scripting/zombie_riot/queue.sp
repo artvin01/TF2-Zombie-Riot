@@ -124,14 +124,14 @@ void Queue_Menu(int client)
 	menu.AddItem("", "Wait for the next map");
 	menu.AddItem("", "Wait for an open slot");
 	
-	if(CheckCommandAccess(client, "zr_joinanytime", ADMFLAG_RESERVATION, true))
-	{
-		menu.AddItem("1", "Reserve slot join");
-	}
-	else
-	{
-		menu.AddItem("0", " ", ITEMDRAW_SPACER);
-	}
+//	if(CheckCommandAccess(client, "zr_joinanytime", ADMFLAG_RESERVATION, true))
+//	{
+//		menu.AddItem("1", "Reserve slot join");
+//	}
+//	else
+//	{
+	menu.AddItem("0", " ", ITEMDRAW_SPACER);
+//	}
 	
 	menu.AddItem("sm_encyclopedia", "Encyclopedia");
 	menu.AddItem("sm_idlemine", "Idle Miner");

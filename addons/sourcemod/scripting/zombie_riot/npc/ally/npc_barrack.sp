@@ -309,13 +309,13 @@ public Action BarrackBody_Transmit(int entity, int client)
 	return Plugin_Handled;
 }
 
-bool BarrackBody_ThinkStart(int iNPC)
+bool BarrackBody_ThinkStart(int iNPC, float GameTime)
 {
 	BarrackBody npc = view_as<BarrackBody>(iNPC);
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	if(npc.m_flNextDelayTime > GameTime)
 		return false;
 	
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 	
@@ -326,19 +326,19 @@ bool BarrackBody_ThinkStart(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	if(npc.m_flNextThinkTime > GameTime)
 		return false;
 	
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = GameTime + 0.1;
 	return true;
 }
 
-int BarrackBody_ThinkTarget(int iNPC, bool camo)
+int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime)
 {
 	BarrackBody npc = view_as<BarrackBody>(iNPC);
 
 	int client = GetClientOfUserId(npc.OwnerUserId);
-	bool newTarget = npc.m_flGetClosestTargetTime < GetGameTime(npc.index);
+	bool newTarget = npc.m_flGetClosestTargetTime < GameTime;
 
 	if(!newTarget)
 		newTarget = !IsValidEnemy(npc.index, npc.m_iTarget);
@@ -399,7 +399,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo)
 				npc.m_iTargetRally = npc.m_iTarget;
 		}
 
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GameTime + 1.0;
 	}
 	return client;
 }

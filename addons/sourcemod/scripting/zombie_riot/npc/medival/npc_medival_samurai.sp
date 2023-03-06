@@ -96,6 +96,8 @@ void MedivalSamurai_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 }
 
+float f_RangedPainTolerance[MAXENTITIES];
+
 methodmap MedivalSamurai < CClotBody
 {
 	
@@ -195,6 +197,7 @@ methodmap MedivalSamurai < CClotBody
 		
 		npc.m_flMeleeArmor = 1.30; 		//Honorable fighters!
 		npc.m_flRangedArmor = 0.9;		//FUCK YOU RANGED KILL YOURSELF AAAAAAAAAAAAAAA
+		f_RangedPainTolerance[npc.index] = 0.0;
 		
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
@@ -414,8 +417,13 @@ public void MedivalSamurai_ClotDamaged_Post(int victim, int attacker, int inflic
 
 	if(!(damagetype & (DMG_CLUB|DMG_SLASH)))
 	{
-		npc.Anger = true; //	>:(
-		npc.m_flSpeed = 330.0;
+		f_RangedPainTolerance[npc.index] += damage;
+		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2 ) < f_RangedPainTolerance[npc.index]) //npc.Anger after half hp/400 hp
+		{
+			npc.Anger = true; //	>:(
+			npc.m_flSpeed = 330.0;
+		}
+
 	}
 }
 

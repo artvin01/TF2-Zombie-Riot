@@ -49,7 +49,7 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 						{
 							float targPos[3];
 							GetClientAbsOrigin(ally, targPos);
-							if (GetVectorDistance(BannerPos, targPos, true) <= 160000.0) // 650.0
+							if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
 							{
 								TF2_AddCondition(ally, TFCond_Buffed, 0.5, client); //So if they go out of range, they'll keep it abit
 								i_ExtraPlayerPoints[client] += 1;

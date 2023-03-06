@@ -420,12 +420,11 @@ public void Ikunagae_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								float dmg = 75.0;
 								
 								if(!ShouldNpcDealBonusDamage(target))
-									SDKHooks_TakeDamage(target, npc.index, npc.index, dmg, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, dmg*2.5, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_CLUB, -1, _, vecHit);	//Cade Devestation
 								
 								// Hit sound
 								npc.PlayMeleeHitSound();

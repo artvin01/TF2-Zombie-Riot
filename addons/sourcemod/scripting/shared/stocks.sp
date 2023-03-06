@@ -4157,12 +4157,14 @@ void MakePlayerGiveResponseVoice(int client, int status)
 	}
 }
 
+#if defined ZR
 void KillDyingGlowEffect(int client)
 {
 	int entity = EntRefToEntIndex(i_DyingParticleIndication[client]);
 	if(entity > MaxClients)
 		RemoveEntity(entity);
 }
+#endif
 
 enum g_Collision_Group
 {

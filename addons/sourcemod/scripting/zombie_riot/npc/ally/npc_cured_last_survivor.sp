@@ -590,6 +590,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 		{
 			npc.m_iTargetAlly = GetClosestAllyPlayer(npc.index);
 			npc.m_bGetClosestTargetTimeAlly = true; //Yeah he just picks one.
+			npc.m_iChanged_WalkCycle = -1; //Reset
 		}
 		if(IsValidAllyPlayer(npc.index, npc.m_iTargetAlly))
 		{

@@ -1184,11 +1184,9 @@ methodmap CClotBody
 	}
 	public float GetDebuffPercentage()//For the future incase we want to alter it easier
 	{
-		float speed_for_return;
-		
-		speed_for_return = 1.0;
-		
+		float speed_for_return = 1.0;
 		float Gametime = GetGameTime();
+		float GametimeNpc = GetGameTime(this.index);
 		
 		bool Is_Boss = true;
 		if(!this.m_bThisNpcIsABoss)
@@ -1203,12 +1201,12 @@ methodmap CClotBody
 			}
 		}
 		
-		if(f_TankGrabbedStandStill[this.index] > GetGameTime())
+		if(f_TankGrabbedStandStill[this.index] > Gametime)
 		{
 			speed_for_return = 0.0;
 			return speed_for_return;
 		}
-		if(f_TimeFrozenStill[this.index] > GetGameTime(this.index))
+		if(f_TimeFrozenStill[this.index] > GametimeNpc)
 		{
 			speed_for_return = 0.0;
 			return speed_for_return;
@@ -1217,7 +1215,7 @@ methodmap CClotBody
 		{
 			speed_for_return *= 1.15;
 		}
-		if(f_HussarBuff[this.index] > GetGameTime())
+		if(f_HussarBuff[this.index] > Gametime)
 		{
 			speed_for_return *= 1.20;
 		}
@@ -4078,14 +4076,27 @@ public bool PluginBot_IsEntityTraversable(int bot_entidx, int other_entidx, Trav
 	
 	return false;
 }
+static int i_PluginBot_ApproachDelay[MAXENTITIES];
 
 public void PluginBot_Approach(int bot_entidx, const float vec[3])
 {
+	
 	CClotBody npc = view_as<CClotBody>(bot_entidx);
 	npc.Approach(vec);
-	
-	if(!npc.m_bAllowBackWalking)
-		npc.FaceTowards(vec, (250.0 * npc.GetDebuffPercentage()));
+	if(i_PluginBot_ApproachDelay[bot_entidx] >= 1)
+	{
+		i_PluginBot_ApproachDelay[bot_entidx] = 0;
+
+		//gets called every frame! bad! delay abit.
+		//Default value is 250.
+		if(!npc.m_bAllowBackWalking)
+			npc.FaceTowards(vec, (500.0 * npc.GetDebuffPercentage() * f_NpcTurnPenalty[npc.index]));
+	}
+	else
+	{
+		i_PluginBot_ApproachDelay[bot_entidx]++;
+	}
+		
 }
 
 public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
@@ -4116,54 +4127,15 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 	}
 	
 	//if anything else is team
-	
-	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
-		return false;
-
-	if(b_ThisEntityIgnored[entity])
+	if(b_IsARespawnroomVisualiser[entity])
 	{
 		return false;
 	}	
 
-	return !(entity == iExclude);
-}
-public bool BulletAndMeleeTraceIngoreWalls(int entity, int contentsMask, any iExclude)
-{
-#if defined ZR
-	if(entity > 0 && entity <= MaxClients) 
-	{
-		if(TeutonType[entity])
-		{
-			return false;
-		}
-	}
-#endif
-	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
-	{
-		return false;
-	}
-	else if(!b_NpcHasDied[entity])
-	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
-		{
-			return false;
-		}
-		else if (b_CantCollidie[entity] && b_CantCollidieAlly[entity]) //If both are on, then that means the npc shouldnt be invis and stuff
-		{
-			return false;
-		}
-	}
-	
-	//if anything else is team
-	
 	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
 		return false;
 
 	if(b_ThisEntityIgnored[entity])
-	{
-		return false;
-	}	
-	if(entity == 0)
 	{
 		return false;
 	}	
@@ -4211,7 +4183,11 @@ public bool BulletAndMeleeTraceAlly(int entity, int contentsMask, any iExclude)
 	{
 		return false;
 	}	
-
+	if(b_IsARespawnroomVisualiser[entity])
+	{
+		return false;
+	}	
+	
 	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
 		return !(entity == iExclude);
 
@@ -5265,21 +5241,22 @@ public void Check_If_Stuck(int iNPC)
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 	if(!b_IsAlliedNpc[iNPC])
 	{
+		float GameTime = GetGameTime();
 		//If NPCs some how get out of bounds
-		if(f_StuckOutOfBoundsCheck[iNPC] < GetGameTime())
+		if(f_StuckOutOfBoundsCheck[iNPC] < GameTime)
 		{
 			static float flMyPos_Bounds[3];
 			flMyPos_Bounds = flMyPos;
 			flMyPos_Bounds[2] += 25.0;
-			f_StuckOutOfBoundsCheck[iNPC] = GetGameTime() + 10.0;
+			f_StuckOutOfBoundsCheck[iNPC] = GameTime + 10.0;
 			if(TR_PointOutsideWorld(flMyPos))
 			{
 				CreateTimer(1.0, Timer_CheckStuckOutsideMap, EntIndexToEntRef(iNPC), TIMER_FLAG_NO_MAPCHANGE);
 			}
 		}
-		if(f_CheckIfStuckPlayerDelay[iNPC] < GetGameTime())
+		if(f_CheckIfStuckPlayerDelay[iNPC] < GameTime)
 		{
-			f_CheckIfStuckPlayerDelay[iNPC] = GetGameTime() + 0.1;
+			f_CheckIfStuckPlayerDelay[iNPC] = GameTime + 0.1;
 			//This is a tempomary fix. find a better one for players getting stuck.
 			static float hullcheckmaxs_Player[3];
 			static float hullcheckmins_Player[3];
@@ -5337,9 +5314,9 @@ public void Check_If_Stuck(int iNPC)
 						}
 						else
 						{
-							if(f_StuckTextChatNotif[Hit_player] < GetGameTime())
+							if(f_StuckTextChatNotif[Hit_player] < GameTime)
 							{
-								f_StuckTextChatNotif[Hit_player] = GetGameTime() + 1.0;
+								f_StuckTextChatNotif[Hit_player] = GameTime + 1.0;
 								PrintToChat(Hit_player, "You are stuck, yet Unstucking you will stuck you again, you will remain in this position so if you kill the npc, you can get free.");
 							}
 						}
@@ -5372,7 +5349,7 @@ public void Check_If_Stuck(int iNPC)
 							TeleportEntity(iNPC, flMyPos_2, NULL_VECTOR, { 0.0, 0.0, 0.0 }); //Reset their speed
 							npc.SetVelocity({ 0.0, 0.0, 0.0 });
 	#if defined ZR
-							if(f_NpcHasBeenUnstuckAboveThePlayer[iNPC] > GetGameTime())
+							if(f_NpcHasBeenUnstuckAboveThePlayer[iNPC] > GameTime)
 							{
 								bool wasactuallysawrunner = false;
 								if(b_ThisNpcIsSawrunner[npc.index]) //Code works already good, do this.
@@ -5386,14 +5363,14 @@ public void Check_If_Stuck(int iNPC)
 									b_ThisNpcIsSawrunner[npc.index] = false;
 								}
 							}
-							f_NpcHasBeenUnstuckAboveThePlayer[iNPC] = GetGameTime() + 1.0; //Make the npc immortal! This will prevent abuse of stuckspots.
+							f_NpcHasBeenUnstuckAboveThePlayer[iNPC] = GameTime + 1.0; //Make the npc immortal! This will prevent abuse of stuckspots.
 	#endif
 						}
 						else
 						{
-							if(f_StuckTextChatNotif[Hit_player] < GetGameTime())
+							if(f_StuckTextChatNotif[Hit_player] < GameTime)
 							{
-								f_StuckTextChatNotif[Hit_player] = GetGameTime() + 1.0;
+								f_StuckTextChatNotif[Hit_player] = GameTime + 1.0;
 								PrintToChat(Hit_player, "You are stuck, yet Unstucking you will stuck you again, you will remain in this position so if you kill the npc, you can get free.");
 							}
 						}
@@ -5405,9 +5382,10 @@ public void Check_If_Stuck(int iNPC)
 	}
 	else
 	{
-		if(f_StuckOutOfBoundsCheck[iNPC] < GetGameTime())
+		float GameTime = GetGameTime();
+		if(f_StuckOutOfBoundsCheck[iNPC] < GameTime)
 		{
-			f_StuckOutOfBoundsCheck[iNPC] = GetGameTime() + 10.0;
+			f_StuckOutOfBoundsCheck[iNPC] = GameTime + 10.0;
 			//If NPCs some how get out of bounds
 			static float flMyPos_Bounds[3];
 			flMyPos_Bounds = flMyPos;
@@ -7297,6 +7275,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_isWalking[entity] = true;
 	i_StepNoiseType[entity] = 0;
 	i_NpcStepVariation[entity] = 0;
+	f_NpcTurnPenalty[entity] = 1.0;
 	i_BleedType[entity] = 0;
 	i_State[entity] = 0;
 	b_movedelay[entity] = false;
@@ -7362,8 +7341,14 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_PoseMoveY[entity] = -1;
 	b_NpcHasDied[entity] = false;
 	b_PlayHurtAnimation[entity] = false;
+	IgniteTimer[entity] = null;
+	IgniteFor[entity] = 0;
+	BurnDamage[entity] = 0.0;
+	IgniteRef[entity] = -1;
+	f_NpcImmuneToBleed[entity] = 0.0;
 	f_CreditsOnKill[entity] = 0.0;
 	i_CreditsOnKill[entity] = 0;
+	i_PluginBot_ApproachDelay[entity] = 0;
 	b_npcspawnprotection[entity] = false;
 	f_CooldownForHurtParticle[entity] = 0.0;
 	f_LowTeslarDebuff[entity] = 0.0;
@@ -7387,7 +7372,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ScalesWithWaves[entity] = false;
 	b_PernellBuff[entity] = false;
 	f_HussarBuff[entity] = 0.0;
-	IgniteFor[entity] = 0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	f_StunExtraGametimeDuration[entity] = 0.0;
 	i_TextEntity[entity][0] = -1;
@@ -7963,8 +7947,9 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun)
 	{
 		return;
 	}
+	float GameTime = GetGameTime();
 	float TimeSinceLastStunSubtract;
-	TimeSinceLastStunSubtract = f_TimeSinceLastStunHit[npc] - GetGameTime();
+	TimeSinceLastStunSubtract = f_TimeSinceLastStunHit[npc] - GameTime;
 			
 	if(TimeSinceLastStunSubtract < 0.0)
 	{
@@ -7972,17 +7957,18 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun)
 	}
 
 	f_StunExtraGametimeDuration[npc] += (Duration_Stun - TimeSinceLastStunSubtract);
-	fl_NextDelayTime[npc] = GetGameTime() + Duration_Stun - f_StunExtraGametimeDuration[npc];
-	f_TimeFrozenStill[npc] = GetGameTime() + Duration_Stun - f_StunExtraGametimeDuration[npc];
-	f_TimeSinceLastStunHit[npc] = GetGameTime() + Duration_Stun;
+	fl_NextDelayTime[npc] = GameTime + Duration_Stun - f_StunExtraGametimeDuration[npc];
+	f_TimeFrozenStill[npc] = GameTime + Duration_Stun - f_StunExtraGametimeDuration[npc];
+	f_TimeSinceLastStunHit[npc] = GameTime + Duration_Stun;
 }
 
 
 void NpcStats_SilenceEnemy(int enemy, float duration)
 {
-	if(f_Silenced[enemy] < (GetGameTime() + duration))
+	float GameTime = GetGameTime();
+	if(f_Silenced[enemy] < (GameTime + duration))
 	{
-		f_Silenced[enemy] = GetGameTime() + duration; //make sure longer silence buff is prioritised.
+		f_Silenced[enemy] = GameTime + duration; //make sure longer silence buff is prioritised.
 	}
 }
 

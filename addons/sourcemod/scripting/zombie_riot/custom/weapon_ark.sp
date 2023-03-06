@@ -349,7 +349,7 @@ void Ark_Lauch_projectile(int client, int weapon, bool multi, float speed, float
 	else
 	{
 		Format(Particle, sizeof(Particle), "%s", "unusual_robot_radioactive");
-		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 15/*ark*/, weapon, Particle);
+		Wand_Projectile_Spawn(client, speed, time, damage, 15/*ark*/, weapon, Particle);
 		/*
 		CreateTimer(0.1, Ark_Homing_Repeat_Timer, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		RMR_HomingPerSecond[projectile] = 150.0;
