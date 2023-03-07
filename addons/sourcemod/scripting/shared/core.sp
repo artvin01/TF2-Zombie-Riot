@@ -2005,7 +2005,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	if(i_SemiAutoWeapon[weapon])
 	{
 		i_SemiAutoWeapon_AmmoCount[weapon] -= 1;
-		char buffer[32];
+		char buffer[128];
 		for(int i; i < i_SemiAutoWeapon_AmmoCount[weapon]; i++)
 		{
 			buffer[i] = '|';
