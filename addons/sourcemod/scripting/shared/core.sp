@@ -2346,11 +2346,17 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
-			//SDKHook_SpawnPost doesnt work
 		}
-		
+		else if(!StrContains(classname, "tf_projectile_flare"))
+		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+			npc.bCantCollidie = true;
+			npc.bCantCollidieAlly = true;
+			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
+			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+		}
 		else if(!StrContains(classname, "tf_projectile_healing_bolt"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
