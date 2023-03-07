@@ -2850,7 +2850,7 @@ void Citizen_PlayerDeath(int client)
 static bool RunFromNPC(int entity)
 {
 	return (i_NpcInternalId[entity] == SAWRUNNER ||
-		(i_NpcInternalId[entity] == STALKER_COMBINE && b_StaticNPC[entity])
+		(i_NpcInternalId[entity] == STALKER_COMBINE && b_StaticNPC[entity]) ||
 		(i_NpcInternalId[entity] == STALKER_FATHER && b_StaticNPC[entity] && !b_thisNpcHasAnOutline[entity]));
 }
 
