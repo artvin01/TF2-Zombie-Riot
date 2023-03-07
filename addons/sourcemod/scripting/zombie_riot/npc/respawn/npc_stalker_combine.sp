@@ -1,230 +1,240 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] =
-{
-	"npc/metropolice/die1.wav",
-	"npc/metropolice/die2.wav",
-	"npc/metropolice/die3.wav",
-	"npc/metropolice/die4.wav",
-};
-
-static const char g_HurtSounds[][] = {
-	"npc/metropolice/pain1.wav",
-	"npc/metropolice/pain2.wav",
-	"npc/metropolice/pain3.wav",
-	"npc/metropolice/pain4.wav",
-};
-
-static const char g_IdleSounds[][] = {
-	"npc/metropolice/vo/affirmative.wav",
-	"npc/metropolice/vo/affirmative2.wav",
-	"npc/metropolice/vo/canalblock.wav",
-	"npc/metropolice/vo/chuckle.wav",
-	"npc/metropolice/vo/citizen.wav",
-	"npc/metropolice/vo/code7.wav",
-	"npc/metropolice/vo/code100.wav",
-	"npc/metropolice/vo/copy.wav",
-	"npc/metropolice/vo/breakhiscover.wav",
-	"npc/metropolice/vo/help.wav",
-	"npc/metropolice/vo/hesgone148.wav",
-	"npc/metropolice/vo/hesrunning.wav",
-	"npc/metropolice/vo/infection.wav",
-	"npc/metropolice/vo/king.wav",
-	"npc/metropolice/vo/needanyhelpwiththisone.wav",
-
-	"npc/metropolice/vo/pickupthatcan2.wav",
-	"npc/metropolice/vo/sociocide.wav",
-	"npc/metropolice/vo/watchit.wav",
-	"npc/metropolice/vo/xray.wav",
-	"npc/metropolice/vo/youknockeditover.wav",
-};
-
-static const char g_IdleAlertedSounds[][] = {
-	"npc/metropolice/vo/affirmative.wav",
-	"npc/metropolice/vo/affirmative2.wav",
-	"npc/metropolice/vo/canalblock.wav",
-	"npc/metropolice/vo/chuckle.wav",
-	"npc/metropolice/vo/citizen.wav",
-	"npc/metropolice/vo/code7.wav",
-	"npc/metropolice/vo/code100.wav",
-	"npc/metropolice/vo/copy.wav",
-	"npc/metropolice/vo/breakhiscover.wav",
-	"npc/metropolice/vo/help.wav",
-	"npc/metropolice/vo/hesgone148.wav",
-	"npc/metropolice/vo/hesrunning.wav",
-	"npc/metropolice/vo/infection.wav",
-	"npc/metropolice/vo/king.wav",
-	"npc/metropolice/vo/needanyhelpwiththisone.wav",
-	"npc/metropolice/vo/pickupthecan1.wav",
-	"npc/metropolice/vo/pickupthecan2.wav",
-	"npc/metropolice/vo/pickupthecan3.wav",
-	"npc/metropolice/vo/sociocide.wav",
-	"npc/metropolice/vo/watchit.wav",
-	"npc/metropolice/vo/xray.wav",
-	"npc/metropolice/vo/youknockeditover.wav",
-	"npc/metropolice/takedown.wav",
-};
-
-static const char g_MeleeHitSounds[][] = {
-	"weapons/blade_slice_2.wav",
-	"weapons/blade_slice_3.wav",
-	"weapons/blade_slice_4.wav",
-};
-
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/shovel_swing.wav",
-};
-
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
+static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+static int i_PlayMusicSound;
 
 methodmap StalkerCombine < CClotBody
 {
-	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
-	}
-	
-	public void PlayIdleAlertSound() {
+	public void PlayIdleSound()
+	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		static const char RandomSound[][] =
+		{
+			"npc/zombine/zombine_idle1.wav",
+			"npc/zombine/zombine_idle2.wav",
+			"npc/zombine/zombine_idle3.wav",
+			"npc/zombine/zombine_idle4.wav"
+		};
+
+		EmitSoundToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(6.0, 12.0);
 	}
-	
-	public void PlayHurtSound() {
+	public void PlayIdleAlertSound()
+	{
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
+			return;
+		
+		static const char RandomSound[][] =
+		{
+			"npc/zombine/zombine_alert1.wav",
+			"npc/zombine/zombine_alert2.wav",
+			"npc/zombine/zombine_alert3.wav",
+			"npc/zombine/zombine_alert4.wav",
+			"npc/zombine/zombine_alert5.wav",
+			"npc/zombine/zombine_alert6.wav",
+			"npc/zombine/zombine_alert7.wav"
+		};
+		
+		EmitSoundToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(6.0, 12.0);
+	}
+	public void PlayHurtSound()
+	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
+		
+		static const char RandomSound[][] =
+		{
+			"npc/zombine/zombine_pain1.wav",
+			"npc/zombine/zombine_pain2.wav",
+			"npc/zombine/zombine_pain3.wav",
+			"npc/zombine/zombine_pain4.wav"
+		};
+		
+		EmitSoundToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-		
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
 	}
-	
-	public void PlayDeathSound() {
-	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+	public void PlayDeathSound()
+	{
+		EmitSoundToAll("npc/zombine/zombine_die1.wav");
 	}
-	
-	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
-	}
-	
-	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
-	}
+	public void PlayMeleeHitSound()
+	{
+		static const char RandomSound[][] =
+		{
+			"npc/fast_zombie/claw_strike1.wav",
+			"npc/fast_zombie/claw_strike2.wav",
+			"npc/fast_zombie/claw_strike3.wav"
+		};
 
-	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayAlertSound(int client)
+	{
+		static const char RandomSound[][] =
+		{
+			"npc/zombine/zombine_charge1.wav",
+			"npc/zombine/zombine_charge2.wav"
+		};
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		int rand = GetURandomInt() % sizeof(RandomSound);
+		EmitSoundToAll(RandomSound[rand], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+
+		if(client > 0 && client <= MaxClients)
+			EmitSoundToClient(client, RandomSound[rand], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlaySpecialSound()
+	{
+		EmitSoundToAll("npc/zombine/zombine_readygrenade2.wav");
+	}
+	public void PlayMusicSound()
+	{
+		if(i_PlayMusicSound > GetTime())
+			return;
+		
+		EmitSoundToAll("#music/vlvx_song11.mp3", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll("#music/vlvx_song11.mp3", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		i_PlayMusicSound = GetTime() + 76;
 	}
 	
 	public StalkerCombine(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		StalkerCombine npc = view_as<StalkerCombine>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "4500", ally));
+		StalkerCombine npc = view_as<StalkerCombine>(CClotBody(vecPos, vecAng, "models/zombie/zombie_soldier.mdl", "1.2", "6666", ally));
 		
-		i_NpcInternalId[npc.index] = MEDIVAL_BRAWLER;
+		i_NpcInternalId[npc.index] = STALKER_COMBINE;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_BRAWLER_RUN");
+		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		
-		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
+		npc.m_iNpcStepVariation = NOTHING;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, StalkerCombine_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, StalkerCombine_ClotThink);
 
+		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+		npc.m_bStaticNPC = true;
+
+		Zero(fl_AlreadyStrippedMusic);
+
 		npc.m_iState = 0;
-		npc.m_flSpeed = 310.0;
-		npc.m_flNextRangedAttack = 0.0;
-		npc.m_flNextRangedSpecialAttack = 0.0;
+		npc.m_flSpeed = 50.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
-		npc.m_fbRangedSpecialOn = false;
-		
-		npc.m_flMeleeArmor = 0.9;
-		npc.m_flRangedArmor = 1.0;
+		npc.m_bDissapearOnDeath = true;
 
-		npc.StartPathing();
-		
+		i_PlayMusicSound = 0;
+		npc.m_iChaseAnger = 0;
+		npc.m_bChaseAnger = false;
+		npc.m_iWearable1 = -1;
 		return npc;
+	}
+	property int m_iChaseAnger	// Allows being able to quickly hide
+	{
+		public get()		{ return this.m_iAttacksTillMegahit; }
+		public set(int value) 	{ this.m_iAttacksTillMegahit = value; }
+	}
+	property bool m_bChaseAnger	// If currently chasing a target down
+	{
+		public get()		{ return this.Anger; }
+		public set(bool value) 	{ this.Anger = value; }
+	}
+	property bool m_bGreandeAnger	// If currently going suicide bombing
+	{
+		public get()		{ return this.m_iWearable1 != -1; }
 	}
 }
 
-//TODO 
-//Rewrite
 public void StalkerCombine_ClotThink(int iNPC)
 {
 	StalkerCombine npc = view_as<StalkerCombine>(iNPC);
 
-	float gameTime = GetGameTime(iNPC);
+	SetVariantInt(1);
+	AcceptEntityInput(npc.index, "SetBodyGroup");
 
+	float gameTime = GetGameTime(iNPC);
 	if(npc.m_flNextDelayTime > gameTime)
-	{
 		return;
-	}
 	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
-	
 	npc.Update();	
 	
 	if(npc.m_blPlayHurtAnimation)
 	{
-		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
+		//npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
 	
 	if(npc.m_flNextThinkTime > gameTime)
-	{
 		return;
-	}
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
+	if(npc.m_iTarget && (!npc.m_bGreandeAnger || i_NpcInternalId[npc.m_iTarget] != CURED_FATHER_GRIGORI || !IsValidEntity(npc.m_iTarget)) && !IsValidEnemy(npc.index, npc.m_iTarget, true))
+	{
+		npc.m_iTarget = 0;
+		npc.m_flGetClosestTargetTime = 0.0;
+	}
+	
+	bool eventMode = Waves_GetRound() > 14;
+
+	static float LastKnownPos[3];
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = gameTime + 1.0;
+		// Only find targets we can look at, ignore buildings while not pissed
+		npc.m_iTarget = GetClosestTarget(npc.index, npc.Anger, _, true, _, _, _, true, FAR_FUTURE);
+		npc.m_flGetClosestTargetTime = gameTime + (npc.m_iTarget ? 2.5 : 0.5);
+
+		// Hunt Father down on Wave 16
+		if(eventMode || (npc.m_iTarget > 0 && i_NpcInternalId[npc.m_iTarget] == CURED_FATHER_GRIGORI))
+		{
+			for(int i; i < i_MaxcountNpc; i++)
+			{
+				int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+				if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == CURED_FATHER_GRIGORI)
+				{
+					float EntityLocation[3], TargetLocation[3]; 
+					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", EntityLocation); 
+					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", TargetLocation); 
+								
+					float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+					if(distance < 1000000.0) // 1000 range
+					{
+						npc.m_iTarget = entity;
+						npc.m_iChaseAnger = 999;
+						npc.m_bChaseAnger = true;
+						npc.m_flGetClosestTargetTime = FAR_FUTURE;
+
+						npc.m_bisWalking = false;
+						npc.m_iChanged_WalkCycle = 5;
+						npc.SetActivity("ACT_ZOMBINE_GRENADE_PULL");
+						npc.StopPathing();
+						
+						npc.m_flDoingAnimation = gameTime + 1.05;
+
+						if(npc.m_iWearable1 == -1)
+						{
+							npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/w_grenade.mdl");
+							SetVariantString("1.2");
+							AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+
+							b_thisNpcHasAnOutline[npc.index] = true;
+							SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+
+							npc.PlaySpecialSound();
+						}
+					}
+					break;
+				}
+			}
+		}
 	}
 
 	if(npc.m_flAttackHappens)
@@ -232,32 +242,26 @@ public void StalkerCombine_ClotThink(int iNPC)
 		if(npc.m_flAttackHappens < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
-			
-			if(IsValidEnemy(npc.index, npc.m_iTarget))
+
+			if(npc.m_iTarget > 0)
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
-					
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 20.0;
+					if(target > 0)
+					{
+						float vecHit[3];
+						TR_GetEndPosition(vecHit, swingTrace);
 
-					if(Medival_Difficulty_Level > 2.0)
-					{
-						damage = 30.0;
-					}
+						float damage = 180.0;
 
-					if(ShouldNpcDealBonusDamage(target))
-					{
-						damage *= 3.0;
-					}
-					npc.PlayMeleeHitSound();
-					if(target > 0) 
-					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+						if(ShouldNpcDealBonusDamage(npc.m_iTarget))
+							damage *= 2.0;
+						
+						npc.PlayMeleeHitSound();
+						SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 					}
 				}
 				delete swingTrace;
@@ -265,118 +269,238 @@ public void StalkerCombine_ClotThink(int iNPC)
 		}
 	}
 	
-	if(IsValidEnemy(npc.index, npc.m_iTarget))
+	if(npc.m_iTarget > 0 && (eventMode || Can_I_See_Enemy(npc.index, npc.m_iTarget) == npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			
-		//Predict their pos.
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		if(npc.m_iChaseAnger < 54)
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+			if(!npc.m_iChaseAnger)
+				npc.PlayAlertSound(npc.m_iTarget);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			npc.m_iChaseAnger += 9;
+			if(!npc.m_bChaseAnger && npc.m_iChaseAnger > 53)
+			{
+				npc.m_flSpeed = 231.96;	// 193.3 Run Speed * 1.2 Model Size
+				npc.m_bChaseAnger = true;
+			}
+		}
+
+		if(npc.m_bChaseAnger)
+		{
+			float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+			float engineTime = GetEngineTime();
+
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+				{
+					GetClientAbsOrigin(client, LastKnownPos);
+					if(GetVectorDistance(vecMe, LastKnownPos, true) < 1000000.0) // 1000 range
+					{
+						if(fl_AlreadyStrippedMusic[client] < engineTime)
+							Music_Stop_All(client); //This is actually more expensive then i thought.
+						
+						SetMusicTimer(client, GetTime() + 5);
+						fl_AlreadyStrippedMusic[client] = engineTime + 5.0;
+					}
+				}
+			}
+			
+			npc.PlayMusicSound();
+
+			LastKnownPos = WorldSpaceCenter(npc.m_iTarget);
+			float distance = GetVectorDistance(LastKnownPos, vecMe, true);
+
+			if(npc.m_flDoingAnimation > gameTime)
+			{
+				npc.m_iState = -1;
+			}
+			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT) && npc.m_flNextMeleeAttack < gameTime)
+			{
+				npc.m_iState = 1;
+			}
+			else 
+			{
+				npc.m_iState = 0;
+			}
+
+			switch(npc.m_iState)
+			{
+				case -1:
+				{
+					npc.StopPathing();
+					return;
+				}
+				case 0:
+				{
+					npc.m_bisWalking = true;
+					if(npc.m_iChanged_WalkCycle != 4)
+					{
+						npc.m_iChanged_WalkCycle = 4;
+						if(npc.m_bGreandeAnger)
+						{
+							npc.SetActivity("ACT_ZOMBINE_GRENADE_RUN");
+						}
+						else
+						{
+							npc.SetActivity("ACT_RUN");
+						}
+					}
+
+					if(distance < npc.GetLeadRadius()) 
+					{
+						LastKnownPos = PredictSubjectPosition(npc, npc.m_iTarget);
+						PF_SetGoalVector(npc.index, LastKnownPos);
+					}
+					else
+					{
+						PF_SetGoalEntity(npc.index, npc.m_iTarget);
+					}
+				}
+				case 1:
+				{
+					if(npc.m_bGreandeAnger)
+					{
+						// Blow up Father, add the next stalker boss
+						if(i_NpcInternalId[npc.m_iTarget] == CURED_FATHER_GRIGORI)
+						{
+							Enemy enemy;
+							enemy.Index = STALKER_FATHER;
+							enemy.Health = 666666;
+							enemy.Is_Immune_To_Nuke = true;
+							enemy.Is_Static = true;
+							Waves_AddNextEnemy(enemy);
+
+							TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
+
+							SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 999999.9, DMG_DROWN);
+							SDKHooks_TakeDamage(npc.index, npc.index, npc.index, 999999.9, DMG_DROWN);
+						}
+					}
+					else
+					{
+						npc.m_bisWalking = false;
+						npc.m_iChanged_WalkCycle = 5;
+						npc.SetActivity("ACT_ZOMBINE_ATTACK_FAST");
+						npc.StopPathing();
+						
+						npc.m_flAttackHappens = gameTime + 0.25;
+						npc.m_flDoingAnimation = gameTime + 1.0;
+						npc.m_flNextMeleeAttack = gameTime + 1.0;
+					}
+				}
+			}
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			// Stare at the target, confirm their real before chasing after
+			npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 1000.0);
 		}
-		//Get position for just travel here.
 
-		if(npc.m_flDoingAnimation > gameTime) //I am doing an animation or doing something else, default to doing nothing!
+		npc.PlayIdleAlertSound();
+	}
+	else
+	{
+		if(npc.m_iChaseAnger > 0)
+		{
+			npc.m_iChaseAnger--;
+			if(npc.m_bChaseAnger && npc.m_iChaseAnger == 0)
+			{
+				npc.m_flSpeed = 50.0;
+				npc.m_bChaseAnger = false;
+			}
+		}
+
+		float distance = GetVectorDistance(LastKnownPos, WorldSpaceCenter(npc.index), true);
+		if(npc.m_flDoingAnimation > gameTime)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT))
 		{
-			npc.m_iState = 1; //Engage in Close Range Destruction.
+			npc.m_iState = 1;
 		}
 		else 
 		{
-			npc.m_iState = 0; //stand and look if close enough.
+			npc.m_iState = 0;
 		}
-		
+
 		switch(npc.m_iState)
 		{
 			case -1:
 			{
-				return; //Do nothing.
+				npc.StopPathing();
+				return;
 			}
 			case 0:
 			{
-				//Walk to target
-				if(!npc.m_bPathing)
-					npc.StartPathing();
-					
 				npc.m_bisWalking = true;
-				if(npc.m_iChanged_WalkCycle != 4) 	
+				
+				if(npc.m_bChaseAnger)
 				{
-					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_BRAWLER_RUN");
+					if(npc.m_iChanged_WalkCycle != 4)
+					{
+						npc.m_iChanged_WalkCycle = 4;
+						npc.SetActivity("ACT_RUN");
+					}
+				}
+				else if(npc.m_iChanged_WalkCycle != 6)
+				{
+					npc.m_iChanged_WalkCycle = 6;
+					npc.SetActivity("ACT_WALK");
+				}
+
+				PF_SetGoalVector(npc.index, LastKnownPos);
+
+				if(!npc.m_bChaseAnger && !(GetURandomInt() % 999))
+				{
+					NavArea RandomArea = PickRandomArea();
+					if(RandomArea != NavArea_Null) 
+						RandomArea.GetCenter(LastKnownPos);
 				}
 			}
 			case 1:
-			{			
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
-				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+			{
+				npc.m_bisWalking = false;
+				npc.StopPathing();
+
+				if(!npc.m_bChaseAnger && !(GetURandomInt() % 99))
 				{
-					npc.m_iTarget = Enemy_I_See;
-
-					switch(GetRandomInt(0,1))
-					{
-						case 0:
-						{
-							npc.AddGesture("ACT_BRAWLER_ATTACK_LEFT");
-						}
-						case 1:
-						{
-							npc.AddGesture("ACT_BRAWLER_ATTACK_RIGHT");
-						}
-					}
-				
-
-					npc.PlayMeleeSound();
-					
-					npc.m_flAttackHappens = gameTime + 0.35;
-
-					npc.m_flDoingAnimation = gameTime + 0.35;
-					npc.m_flNextMeleeAttack = gameTime + 0.4;
-					npc.m_bisWalking = true;
+					NavArea RandomArea = PickRandomArea();
+					if(RandomArea != NavArea_Null) 
+						RandomArea.GetCenter(LastKnownPos);
 				}
 			}
 		}
+
+		npc.PlayIdleSound();
 	}
-	else
-	{
-		PF_StopPathing(npc.index);
-		npc.m_bPathing = false;
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
-	}
-	npc.PlayIdleSound();
 }
 
 public Action StalkerCombine_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	//Valid attackers only.
-	if(attacker <= 0)
+	if(attacker < 1 || damage > 999999.9)
 		return Plugin_Continue;
-		
+
 	StalkerCombine npc = view_as<StalkerCombine>(victim);
-	
-	
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+	float gameTime = GetGameTime(npc.index);
+
+	if(npc.m_flHeadshotCooldown < gameTime)
 	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
+	// This stalker can't be killed but can be slowed via normal means
+	if(f_SpecterDyingDebuff[victim] < gameTime)
+		f_SpecterDyingDebuff[victim] = gameTime;
 	
-	return Plugin_Changed;
+	f_SpecterDyingDebuff[victim] += damage / 150.0;
+
+	if(!b_StaticNPC[victim])
+		return Plugin_Changed;
+	
+	damage = 0.0;
+	return Plugin_Handled;
 }
 
 void StalkerCombine_HandleAnimEvent(int entity, int event)
@@ -398,22 +522,30 @@ void StalkerCombine_HandleAnimEvent(int entity, int event)
 void StalkerCombine_NPCDeath(int entity)
 {
 	StalkerCombine npc = view_as<StalkerCombine>(entity);
-	if(!npc.m_bGib)
-	{
-		npc.PlayDeathSound();	
-	}
+	npc.PlayDeathSound();
+	
+	float startPosition[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+	startPosition[2] += 32;
+
+	int gib = Place_Gib("models/zombie/zombie_soldier_legs.mdl", startPosition, _, NULL_VECTOR, _, false, false, _, false, true, true);
+	if(gib != -1)
+		b_LimitedGibGiveMoreHealth[gib] = true;
+	
+	startPosition[2] += 34;
+	
+	gib = Place_Gib("models/zombie/zombie_soldier_torso.mdl", startPosition, _, NULL_VECTOR, _, false, false, _, false, true, true);
+	if(gib != -1)
+		b_LimitedGibGiveMoreHealth[gib] = true;
+	
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, StalkerCombine_ClotDamaged);
 	SDKUnhook(npc.index, SDKHook_Think, StalkerCombine_ClotThink);
-		
-	if(IsValidEntity(npc.m_iWearable1))
-		RemoveEntity(npc.m_iWearable1);
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
-	if(IsValidEntity(npc.m_iWearable4))
-		RemoveEntity(npc.m_iWearable4);
-	if(IsValidEntity(npc.m_iWearable5))
-		RemoveEntity(npc.m_iWearable5);
+
+	for(gib = 0; gib < 9; gib++)
+	{
+		StopSound(npc.index, SNDCHAN_AUTO, "#music/vlvx_song11.mp3");
+	}
 }

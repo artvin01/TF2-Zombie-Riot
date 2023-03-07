@@ -223,7 +223,10 @@ enum
 	
 	ALT_IKUNAGAE				= 190,
 	ALT_MECHASOLDIER_BARRAGER	= 191,
-	NEARL_SWORD					= 192
+	NEARL_SWORD					= 192,
+	
+	STALKER_COMBINE		= 193,
+	STALKER_FATHER		= 194
 }
 
 public const char NPC_Names[][] =
@@ -440,7 +443,8 @@ public const char NPC_Names[][] =
 	"Mecha Soldier Barrager",
 	"Nearl Radiant Sword",
 
-	"Spawned Combine"
+	"Spawned Combine",
+	"Spawned Father Grigori"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -652,7 +656,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_alt_mecha_soldier_barrager",
 	"",
 
-	"npc_stalker_combine"
+	"npc_stalker_combine",
+	"npc_stalker_father"
 };
 
 void NPC_MapStart()
@@ -848,6 +853,8 @@ void NPC_MapStart()
 	Ikunagae_OnMapStart_NPC();
 	MechaSoldier_Barrager_OnMapStart_NPC();
 	NearlSwordAbility_OnMapStart_NPC();
+
+	StalkerFather_MapStart();
 }
 
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
@@ -1615,6 +1622,14 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case NEARL_SWORD:
 		{
 			entity = NearlSwordAbility(client, vecPos, vecAng, ally);
+		}
+		case STALKER_COMBINE:
+		{
+			entity = StalkerCombine(client, vecPos, vecAng, ally);
+		}
+		case STALKER_FATHER:
+		{
+			entity = StalkerFather(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -2385,6 +2400,14 @@ public void NPCDeath(int entity)
 		{
 			NearlSwordAbility_NPCDeath(entity);
 		}
+		case STALKER_COMBINE:
+		{
+			StalkerCombine_NPCDeath(entity);
+		}
+		case STALKER_FATHER:
+		{
+			StalkerFather_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2671,3 +2694,6 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/ally/npc_barrack_monk.sp"
 #include "zombie_riot/npc/ally/npc_barrack_hussar.sp"
 #include "zombie_riot/npc/ally/npc_nearl_sword.sp"
+
+#include "zombie_riot/npc/respawn/npc_stalker_combine.sp"
+#include "zombie_riot/npc/respawn/npc_stalker_father.sp"

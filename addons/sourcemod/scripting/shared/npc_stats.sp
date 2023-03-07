@@ -1845,13 +1845,21 @@ methodmap CClotBody
 		}
 		PF_DisableCallback(entity, PFCB_OnActorEmoted);
 		PF_Destroy(entity);
-	}	
+	}
 	public void StartPathing()
 	{
 		if(!CvarDisableThink.BoolValue)
 		{
 			PF_StartPathing(this.index);
 			this.m_bPathing = true;
+		}
+	}
+	public void StopPathing()
+	{
+		if(this.m_bPathing)
+		{
+			PF_StopPathing(this.index);
+			this.m_bPathing = false;
 		}
 	}
 	public void FaceTowards(const float vecGoal[3] , const float turnrate = 250.0)
@@ -5634,7 +5642,7 @@ public void RequestFramesCallback(DataPack pack)
 
 
 
-static int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, bool xeno = false, bool nobleed = false)
+int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, bool xeno = false, bool nobleed = false)
 {
 	int prop = CreateEntityByName("prop_physics_multiplayer");
 	if(!IsValidEntity(prop))
