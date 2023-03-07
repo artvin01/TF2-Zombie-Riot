@@ -142,8 +142,8 @@ methodmap StalkerCombine < CClotBody
 	}
 	property bool m_bChaseAnger	// If currently chasing a target down
 	{
-		public get()		{ return this.Anger; }
-		public set(bool value) 	{ this.Anger = value; }
+		public get()		{ return !b_ThisEntityIgnoredByOtherNpcsAggro[this.index]; }
+		public set(bool value) 	{ b_ThisEntityIgnoredByOtherNpcsAggro[this.index] = !value; }
 	}
 	property bool m_bGreandeAnger	// If currently going suicide bombing
 	{
@@ -182,18 +182,16 @@ public void StalkerCombine_ClotThink(int iNPC)
 		npc.m_iTarget = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 	}
-	
-	bool eventMode = Waves_GetRound() > 14;
 
 	static float LastKnownPos[3];
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		// Only find targets we can look at, ignore buildings while not pissed
-		npc.m_iTarget = GetClosestTarget(npc.index, npc.Anger, _, true, _, _, _, true, FAR_FUTURE);
+		npc.m_iTarget = GetClosestTarget(npc.index, !npc.Anger, _, true, _, _, _, true, FAR_FUTURE);
 		npc.m_flGetClosestTargetTime = gameTime + (npc.m_iTarget ? 2.5 : 0.5);
 
-		// Hunt Father down on Wave 16
-		if(eventMode || (npc.m_iTarget > 0 && i_NpcInternalId[npc.m_iTarget] == CURED_FATHER_GRIGORI))
+		// Hunt down the Father on Wave 16
+		if(Waves_GetRound() > 14 && (npc.m_iTarget < 1 || i_NpcInternalId[npc.m_iTarget] != CURED_FATHER_GRIGORI))
 		{
 			for(int i; i < i_MaxcountNpc; i++)
 			{
@@ -269,7 +267,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 		}
 	}
 	
-	if(npc.m_iTarget > 0 && (eventMode || Can_I_See_Enemy(npc.index, npc.m_iTarget) == npc.m_iTarget))
+	if(npc.m_iTarget > 0 && Can_I_See_Enemy(npc.index, npc.m_iTarget) == npc.m_iTarget)
 	{
 		if(npc.m_iChaseAnger < 54)
 		{

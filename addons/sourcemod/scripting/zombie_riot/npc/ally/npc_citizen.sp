@@ -1712,7 +1712,7 @@ public void Citizen_ClotThink(int iNPC)
 		npc.m_flidle_talk = FAR_FUTURE;
 		vecTarget = WorldSpaceCenter(npc.m_iTarget);
 		distance = GetVectorDistance(vecTarget, vecMe, true);
-		if(i_NpcInternalId[npc.m_iTarget] == SAWRUNNER && view_as<SawRunner>(npc.m_iTarget).m_iTarget == npc.index && distance < 250000.0)
+		if(RunFromNPC(npc.m_iTarget) && view_as<SawRunner>(npc.m_iTarget).m_iTarget == npc.index && distance < 250000.0)
 		{
 			walkStatus = 69;	// Sawrunner spotted us
 		}
@@ -2845,6 +2845,13 @@ void Citizen_PlayerDeath(int client)
 				CreateTimer(2.0, Citizen_DeathTimer, EntIndexToEntRef(talkingTo), TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
+}
+
+static bool RunFromNPC(int entity)
+{
+	return (i_NpcInternalId[entity] == SAWRUNNER ||
+		(i_NpcInternalId[entity] == STALKER_COMBINE && b_StaticNPC[entity])
+		(i_NpcInternalId[entity] == STALKER_FATHER && b_StaticNPC[entity] && !b_thisNpcHasAnOutline[entity]));
 }
 
 public Action Citizen_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

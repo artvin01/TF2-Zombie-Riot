@@ -56,8 +56,8 @@ methodmap StalkerFather < CClotBody
 	}
 	property bool m_bChaseAnger	// If currently chasing a target down
 	{
-		public get()		{ return this.Anger; }
-		public set(bool value) 	{ this.Anger = value; }
+		public get()		{ return !b_ThisEntityIgnoredByOtherNpcsAggro[this.index]; }
+		public set(bool value) 	{ b_ThisEntityIgnoredByOtherNpcsAggro[this.index] = !value; }
 	}
 }
 
@@ -111,7 +111,6 @@ public void StalkerFather_ClotThink(int iNPC)
 	// Vulnerable past Wave 30
 	if(!b_thisNpcHasAnOutline[npc.index] && Waves_GetRound() > 29)
 	{
-		b_StaticNPC[npc.index] = false;
 		b_thisNpcHasAnOutline[npc.index] = true;
 		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
 	}
