@@ -11,14 +11,44 @@ void StalkerGoggles_MapStart()
 
 methodmap StalkerGoggles < CClotBody
 {
-	public void PlayMusicSound()
+	public void PlayMeleeHitSound()
+	{
+		static const char RandomSound[][] =
+		{
+			"weapons/blade_slice_2.wav",
+			"weapons/blade_slice_3.wav",
+			"weapons/blade_slice_4.wav"
+		};
+
+		EmitSoundToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayRangedSound()
+	{
+		static const char RandomSound[][] =
+		{
+			"weapons/sniper_railgun_charged_shot_01.wav",
+			"weapons/sniper_railgun_charged_shot_02.wav"
+		};
+
+		EmitSoundToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_AUTO, SNDLEVEL_ROCKET, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayMusicSound(bool sniper)
 	{
 		if(i_PlayMusicSound > GetTime())
 			return;
 		
-		EmitSoundToAll("#silverandblue.wav", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll("#silverandblue.wav", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-		i_PlayMusicSound = GetTime() + 18;
+		if(sniper)
+		{
+			EmitSoundToAll("#bluerange.wav", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+			EmitSoundToAll("#bluerange.wav", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+			i_PlayMusicSound = GetTime() + 7;
+		}
+		else
+		{
+			EmitSoundToAll("#bluemelee.wav", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+			EmitSoundToAll("#bluemelee.wav", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+			i_PlayMusicSound = GetTime() + 18;
+		}
 	}
 	
 	public StalkerGoggles(int client, const float vecPos[3], const float vecAng[3], bool ally)
@@ -85,10 +115,16 @@ public void StalkerGoggles_ClotThink(int iNPC)
 {
 	StalkerGoggles npc = view_as<StalkerGoggles>(iNPC);
 
-	float gameTime = GetGameTime(iNPC);
+	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
+	if(Waves_InSetup())
+	{
+		FreezeNpcInTime(npc.index, DEFAULT_UPDATE_DELAY_FLOAT);
+		return;
+	}
+
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
@@ -118,11 +154,12 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 	}
 
+	bool sniper = view_as<bool>(Waves_GetRound() % 2);
+
 	static float LastKnownPos[3];
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
-		// Passive small range
-		npc.m_iTarget = GetClosestTarget(npc.index, _, 500.0, true, _, _, _, true, 200.0);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, sniper ? FAR_FUTURE : 500.0, true, _, _, _, true, sniper ? FAR_FUTURE : 200.0);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 
@@ -165,37 +202,13 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			if(!npc.m_iChaseAnger)
 				npc.PlayAlertSound(npc.m_iTarget);
 			
-			npc.m_iChaseAnger += 2;
+			npc.m_iChaseAnger += sniper ? (1 + (GetURandomInt() % 2)) : 2;
 			if(!npc.m_bChaseAnger && npc.m_iChaseAnger > 13)
-			{
-				npc.m_flSpeed = 300.0;
 				npc.m_bChaseAnger = true;
-			}
 		}
 
 		if(npc.m_bChaseAnger)
 		{
-			float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
-			float engineTime = GetEngineTime();
-
-			for(int client = 1; client <= MaxClients; client++)
-			{
-				if(IsClientInGame(client))
-				{
-					GetClientAbsOrigin(client, LastKnownPos);
-					if(GetVectorDistance(vecMe, LastKnownPos, true) < 1000000.0) // 1000 range
-					{
-						if(fl_AlreadyStrippedMusic[client] < engineTime)
-							Music_Stop_All(client); //This is actually more expensive then i thought.
-						
-						SetMusicTimer(client, GetTime() + 5);
-						fl_AlreadyStrippedMusic[client] = engineTime + 5.0;
-					}
-				}
-			}
-			
-			npc.PlayMusicSound();
-
 			LastKnownPos = WorldSpaceCenter(npc.m_iTarget);
 			float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 
@@ -203,7 +216,11 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			{
 				npc.m_iState = -1;
 			}
-			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT) && npc.m_flNextMeleeAttack < gameTime)
+			else if(sniper && npc.m_flNextMeleeAttack < gameTime)
+			{
+				npc.m_iState = 2;
+			}
+			else if(!sniper && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT) && npc.m_flNextMeleeAttack < gameTime)
 			{
 				npc.m_iState = 1;
 			}
@@ -219,62 +236,68 @@ public void StalkerGoggles_ClotThink(int iNPC)
 					npc.StopPathing();
 					return;
 				}
-				case 0:
+				case 0, 1:
 				{
-					npc.m_bisWalking = true;
-					if(npc.m_iChanged_WalkCycle != 4)
+					if(sniper)
 					{
-						npc.m_iChanged_WalkCycle = 4;
-						if(npc.m_bGreandeAnger)
+						npc.m_bisWalking = false;
+						npc.m_flSpeed = 1.0;
+						
+						if(npc.m_iChanged_WalkCycle != 5)
 						{
-							npc.SetActivity("ACT_ZOMBINE_GRENADE_RUN");
+							npc.m_iChanged_WalkCycle = 5;
+							npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
+						}
+					}
+					else
+					{
+						npc.m_bisWalking = true;
+						npc.m_flSpeed = 300.0;
+
+						if(npc.m_iChanged_WalkCycle != 4)
+						{
+							npc.m_iChanged_WalkCycle = 4;
+							npc.SetActivity("ACT_MP_RUN_MELEE");
+						}
+
+						if(distance < npc.GetLeadRadius()) 
+						{
+							LastKnownPos = PredictSubjectPosition(npc, npc.m_iTarget);
+							PF_SetGoalVector(npc.index, LastKnownPos);
 						}
 						else
 						{
-							npc.SetActivity("ACT_RUN");
+							PF_SetGoalEntity(npc.index, npc.m_iTarget);
 						}
-					}
 
-					if(distance < npc.GetLeadRadius()) 
-					{
-						LastKnownPos = PredictSubjectPosition(npc, npc.m_iTarget);
-						PF_SetGoalVector(npc.index, LastKnownPos);
-					}
-					else
-					{
-						PF_SetGoalEntity(npc.index, npc.m_iTarget);
+						if(npc.m_iState == 1)
+						{
+							npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+							npc.m_flAttackHappens = gameTime + 0.35;
+							npc.m_flNextMeleeAttack = gameTime + 0.6;
+						}
 					}
 				}
-				case 1:
+				case 2:
 				{
-					if(npc.m_bGreandeAnger)
+					npc.m_bisWalking = false;
+					npc.m_flSpeed = 1.0;
+					
+					if(npc.m_iChanged_WalkCycle != 5)
 					{
-						// Blow up Father, add the next stalker boss
-						if(i_NpcInternalId[npc.m_iTarget] == CURED_FATHER_GRIGORI)
-						{
-							Enemy enemy;
-							enemy.Index = STALKER_FATHER;
-							enemy.Health = 666666;
-							enemy.Is_Immune_To_Nuke = true;
-							enemy.Is_Static = true;
-							Waves_AddNextEnemy(enemy);
-
-							TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
-
-							SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 999999.9, DMG_DROWN);
-							SDKHooks_TakeDamage(npc.index, npc.index, npc.index, 999999.9, DMG_DROWN);
-						}
-					}
-					else
-					{
-						npc.m_bisWalking = false;
 						npc.m_iChanged_WalkCycle = 5;
-						npc.SetActivity("ACT_ZOMBINE_ATTACK_FAST");
-						npc.StopPathing();
-						
-						npc.m_flAttackHappens = gameTime + 0.35;
-						npc.m_flNextMeleeAttack = gameTime + 0.6;
+						npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
 					}
+
+					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+
+					float vecTarget[3]; vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 3500.0);
+					npc.FaceTowards(vecTarget, 30000.0);
+					
+					npc.PlayRangedSound();
+					npc.FireArrow(vecTarget, 1500.0, 3500.0, _, _, _, GetClientOfUserId(npc.OwnerUserId));
+					
+					npc.m_flNextMeleeAttack = gameTime + 1.8;
 				}
 			}
 		}
@@ -362,6 +385,26 @@ public void StalkerGoggles_ClotThink(int iNPC)
 
 		npc.PlayIdleSound();
 	}
+
+	float engineTime = GetEngineTime();
+
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			GetClientAbsOrigin(client, LastKnownPos);
+			if(GetVectorDistance(vecMe, LastKnownPos, true) < 1000000.0) // 1000 range
+			{
+				if(fl_AlreadyStrippedMusic[client] < engineTime)
+					Music_Stop_All(client); //This is actually more expensive then i thought.
+				
+				SetMusicTimer(client, GetTime() + 5);
+				fl_AlreadyStrippedMusic[client] = engineTime + 5.0;
+			}
+		}
+	}
+	
+	npc.PlayMusicSound(sniper);
 }
 
 public Action StalkerGoggles_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -378,14 +421,14 @@ public Action StalkerGoggles_ClotDamaged(int victim, int &attacker, int &inflict
 	StalkerGoggles npc = view_as<StalkerGoggles>(victim);
 
 	// Angry when injured
-	if(!npc.m_bChaseAnger && npc.m_iTarget)
-	{
-		npc.m_flSpeed = 300.0;
-		npc.m_bChaseAnger = true;
-		npc.m_iChaseAnger = 21;
-	}
+	npc.m_bChaseAnger = true;
+	npc.m_iChaseAnger = 14;
 
-	return Plugin_Changed;
+	if(!Waves_InSetup())
+		return Plugin_Changed;
+	
+	damage = 0.0;
+	return Plugin_Handled;
 }
 
 void StalkerGoggles_NPCDeath(int entity)
@@ -397,7 +440,8 @@ void StalkerGoggles_NPCDeath(int entity)
 
 	for(int i; i < 9; i++)
 	{
-		StopSound(npc.index, SNDCHAN_AUTO, "#music/radio1.mp3");
+		StopSound(npc.index, SNDCHAN_AUTO, "#bluerange.mp3");
+		StopSound(npc.index, SNDCHAN_AUTO, "#bluemelee.mp3");
 	}
 
 	for(int client_Grigori=1; client_Grigori<=MaxClients; client_Grigori++)

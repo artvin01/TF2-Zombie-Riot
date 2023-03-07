@@ -69,6 +69,12 @@ public void StalkerFather_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
+	if(Waves_InSetup())
+	{
+		FreezeNpcInTime(npc.index, DEFAULT_UPDATE_DELAY_FLOAT);
+		return;
+	}
+	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
@@ -270,14 +276,14 @@ public Action StalkerFather_ClotDamaged(int victim, int &attacker, int &inflicto
 	StalkerFather npc = view_as<StalkerFather>(victim);
 
 	// Angry when injured
-	if(!npc.m_bChaseAnger && npc.m_iTarget)
+	if(!npc.m_bChaseAnger)
 	{
 		npc.m_flSpeed = 280.0;
 		npc.m_bChaseAnger = true;
 		npc.m_iChaseAnger = 110;
 	}
 
-	if(!b_StaticNPC[npc.index] && !b_thisNpcHasAnOutline[npc.index])
+	if((!b_StaticNPC[npc.index] || b_thisNpcHasAnOutline[npc.index]) && !Waves_InSetup())
 		return Plugin_Changed;
 	
 	damage = 0.0;

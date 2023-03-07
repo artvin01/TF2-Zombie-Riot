@@ -162,6 +162,12 @@ public void StalkerCombine_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
+	if(Waves_InSetup())
+	{
+		FreezeNpcInTime(npc.index, DEFAULT_UPDATE_DELAY_FLOAT);
+		return;
+	}
+	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();	
 	
