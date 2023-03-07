@@ -145,7 +145,7 @@ void Reload_Me(int client)
 							
 					TF2Attrib_SetByDefIndex(entity, 821, 0.0);
 					
-					char buffer[16];
+					char buffer[32];
 					for(int i; i < i_SemiAutoWeapon_AmmoCount[entity]; i++)
 					{
 						buffer[i] = '|';

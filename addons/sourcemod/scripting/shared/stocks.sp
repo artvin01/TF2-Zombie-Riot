@@ -1036,16 +1036,19 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 
 void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype)
 {
-	BleedAmountCountStack[entity] += 1;
-	DataPack pack;
-	CreateDataTimer(0.5, Timer_Bleeding, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(entity));
-	pack.WriteCell(entity);
-	pack.WriteCell(EntIndexToEntRef(weapon));
-	pack.WriteCell(GetClientUserId(client));
-	pack.WriteCell(damagetype);
-	pack.WriteFloat(damage);
-	pack.WriteCell(amount);
+	if(IsValidEntity(entity) && IsValidEntity(weapon) && IsValidEntity(client))
+	{
+		BleedAmountCountStack[entity] += 1;
+		DataPack pack;
+		CreateDataTimer(0.5, Timer_Bleeding, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(entity));
+		pack.WriteCell(entity);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		pack.WriteCell(GetClientUserId(client));
+		pack.WriteCell(damagetype);
+		pack.WriteFloat(damage);
+		pack.WriteCell(amount);
+	}
 }
 
 public Action Timer_Bleeding(Handle timer, DataPack pack)

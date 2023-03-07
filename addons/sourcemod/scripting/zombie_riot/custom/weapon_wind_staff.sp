@@ -528,7 +528,7 @@ static void Wand_Launch_Tornado(int client, int iRot, float speed, float time, f
 	
 	Projectile_To_Client[iCarrier] = client;
 	Damage_Projectile[iCarrier] = damage;
-	Projectile_To_Weapon[iCarrier] = weapon;
+	Projectile_To_Weapon[iCarrier] = EntIndexToEntRef(weapon);
 	float position[3];
 	
 	GetEntPropVector(iCarrier, Prop_Data, "m_vecAbsOrigin", position);
@@ -668,18 +668,22 @@ static void Wand_Create_Tornado(int client, int iCarrier)
 	
 	TORNADO_Radius[client] = 215.0;
 	
-	float damage = 65.0;
-	Address address = TF2Attrib_GetByDefIndex(Projectile_To_Weapon[iCarrier], 410);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
+	int weapon = EntRefToEntIndex(Projectile_To_Weapon[iCarrier]);
+	if(IsValidEntity(weapon))
+	{
+		float damage = 65.0;
+		Address address = TF2Attrib_GetByDefIndex(weapon, 410);
+		if(address != Address_Null)
+			damage *= TF2Attrib_GetValue(address);
+			
+		Damage_Tornado[iCarrier] = damage;
+		Duration_Tornado[iCarrier] = GetGameTime() + 5.0;
 		
-	Damage_Tornado[iCarrier] = damage;
-	Duration_Tornado[iCarrier] = GetGameTime() + 5.0;
-	
-	TE_SetupBeamRingPoint(flCarrierPos, TORNADO_Radius[client]*2.0, (TORNADO_Radius[client]*2.0)+0.5, Beam_Laser, Beam_Glow, 0, 10, 5.0, 25.0, 0.8, {50, 50, 250, 250}, 10, 0);
-	TE_SendToAll(0.0);
-	
-	CreateTimer(0.5, Timer_Tornado_Think, iCarrier, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+		TE_SetupBeamRingPoint(flCarrierPos, TORNADO_Radius[client]*2.0, (TORNADO_Radius[client]*2.0)+0.5, Beam_Laser, Beam_Glow, 0, 10, 5.0, 25.0, 0.8, {50, 50, 250, 250}, 10, 0);
+		TE_SendToAll(0.0);
+		
+		CreateTimer(0.5, Timer_Tornado_Think, iCarrier, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+	}
 }
 
 public Action Timer_Tornado_Think(Handle timer, int iCarrier)
