@@ -2891,6 +2891,11 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		TF2_RemoveCondition(client, TFCond_Cloaked);
 	}
+	else if(condition == TFCond_SpawnOutline) //this is a hopefully prevention for client crashes, i am unsure why this happens.
+	//Idea got from a client dump.
+	{
+		TF2_RemoveCondition(client, TFCond_SpawnOutline);
+	}
 	else if(condition == TFCond_Zoomed && thirdperson[client] && IsPlayerAlive(client))
 	{
 		SetVariantInt(0);

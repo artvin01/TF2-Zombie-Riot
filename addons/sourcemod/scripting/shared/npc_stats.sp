@@ -4425,6 +4425,13 @@ stock bool IsEntityAlive(int index)
 	{
 		if(index > MaxClients)
 		{
+			if(b_bThisNpcGotDefaultStats_INVERTED[index]) //It is an npc
+			{
+				if(b_NpcHasDied[index]) //It died.
+				{
+					return false;
+				}
+			}
 			if(GetEntProp(index, Prop_Data, "m_iHealth") > 0)
 			{
 				return true;	
