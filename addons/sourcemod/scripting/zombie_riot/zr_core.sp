@@ -1370,6 +1370,7 @@ public Action DeleteEntitiesInHazards(Handle timer)
 			}
 		}
 	}
+	return Plugin_Handled;
 }
 void ReviveAll(bool raidspawned = false)
 {
