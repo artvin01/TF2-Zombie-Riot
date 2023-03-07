@@ -862,7 +862,7 @@ stock int CreateLink(int iClient)
 	int iLink = CreateEntityByName("tf_taunt_prop");
 	DispatchKeyValue(iLink, "targetname", "DispenserLink");
 	DispatchSpawn(iLink); 
-			
+	
 	char strModel[PLATFORM_MAX_PATH];
 	GetEntPropString(iClient, Prop_Data, "m_ModelName", strModel, PLATFORM_MAX_PATH);
 	

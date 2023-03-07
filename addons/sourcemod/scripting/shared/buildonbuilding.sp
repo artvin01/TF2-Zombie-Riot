@@ -184,6 +184,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		DHookSetReturn(hReturn, false);
 		return MRES_ChangedOverride;
 	}
+	float GameTime = GetGameTime();
 
 	float fAng[3], fPos[3];
 	GetClientEyeAngles(client, fAng);
@@ -247,9 +248,9 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 			fPos[2] += 4.0;
 			TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({0, 255, 0, 255}));
 				
-			if(f_DelayBuildNotif[client] < GetGameTime())
+			if(f_DelayBuildNotif[client] < GameTime)
 			{
-				f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+				f_DelayBuildNotif[client] = GameTime + 0.25;
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
@@ -268,9 +269,9 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 			if(IsValidClient(client))
 			{
 				TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({255, 0, 0, 255}));
-				if(f_DelayBuildNotif[client] < GetGameTime())
+				if(f_DelayBuildNotif[client] < GameTime)
 				{
-					f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+					f_DelayBuildNotif[client] = GameTime + 0.25;
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
 					SetDefaultHudPosition(client, 255, 0, 0);
 					SetGlobalTransTarget(client);
@@ -328,9 +329,9 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 			if(IsValidClient(client))
 			{
 				TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({255, 0, 0, 255}));
-				if(f_DelayBuildNotif[client] < GetGameTime())
+				if(f_DelayBuildNotif[client] < GameTime)
 				{
-					f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+					f_DelayBuildNotif[client] = GameTime + 0.25;
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
 					SetDefaultHudPosition(client, 255, 0, 0);
 					SetGlobalTransTarget(client);
@@ -352,9 +353,9 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		if(IsValidClient(client))
 		{
 			TE_DrawBox(client, endPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({0, 255, 0, 255}));
-			if(f_DelayBuildNotif[client] < GetGameTime())
+			if(f_DelayBuildNotif[client] < GameTime)
 			{
-				f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+				f_DelayBuildNotif[client] = GameTime + 0.25;
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
@@ -366,9 +367,9 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 	if(IsValidClient(client))
 	{
 		TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({255, 0, 0, 255}));
-		if(f_DelayBuildNotif[client] < GetGameTime())
+		if(f_DelayBuildNotif[client] < GameTime)
 		{
-			f_DelayBuildNotif[client] = GetGameTime() + 0.25;
+			f_DelayBuildNotif[client] = GameTime + 0.25;
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client, 255, 0, 0);
 			SetGlobalTransTarget(client);

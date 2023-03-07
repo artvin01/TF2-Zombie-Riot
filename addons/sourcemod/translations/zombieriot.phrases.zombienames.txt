@@ -1512,5 +1512,13 @@
 		//"es"		""
 		//"it"		""
 		//"fr"		""
-	}	
+	}
+	"Spawned Combine"
+	{
+		"en"		"Spawned Combine"
+	}
+	"Spawned Father Grigori"
+	{
+		"en"		"Spawned Father Grigori"
+	}
 }

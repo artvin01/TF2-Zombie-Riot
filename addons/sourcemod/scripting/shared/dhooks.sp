@@ -333,8 +333,10 @@ public void ApplyExplosionDhook_Rocket(int entity)
 	{
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, DHook_RocketExplodePre);
 	}
-	CreateTimer(0.1, FixVelocityStandStillRocket, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateTimer(1.0, FixVelocityStandStillRocket, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+//Heavily increace thedelay, this rarely ever happens, and if it does, then it should check every 2 seconds at the most!
 }
+
 
 public Action FixVelocityStandStillRocket(Handle Timer, int ref)
 {
@@ -353,6 +355,7 @@ public Action FixVelocityStandStillRocket(Handle Timer, int ref)
 			Velocity_Rocket[entity][1] = Velocity_Temp[1];
 			Velocity_Rocket[entity][2] = Velocity_Temp[2];
 		}
+		
 		return Plugin_Continue;
 	}
 	else
@@ -1684,8 +1687,8 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 		if(EscapeMode)
 			HealAmmount *= 2.0;
 #endif
-		
-		if(f_TimeUntillNormalHeal[target] > GetGameTime())
+		float GameTime = GetGameTime();
+		if(f_TimeUntillNormalHeal[target] > GameTime)
 		{
 			HealAmmount /= 4.0; //make sure they dont get the full benifit if hurt recently.
 		}
@@ -1708,10 +1711,10 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			SetGlobalTransTarget(owner);
 			PrintHintText(owner,"%N %t", target, "Is already at full hp");
 			
-			Increaced_Overall_damage_Low[owner] = GetGameTime() + 5.0;
-			Increaced_Overall_damage_Low[target] = GetGameTime() + 15.0;
-			Resistance_Overall_Low[owner] = GetGameTime() + 5.0;
-			Resistance_Overall_Low[target] = GetGameTime() + 15.0;
+			Increaced_Overall_damage_Low[owner] = GameTime + 5.0;
+			Increaced_Overall_damage_Low[target] = GameTime + 15.0;
+			Resistance_Overall_Low[owner] = GameTime + 5.0;
+			Resistance_Overall_Low[target] = GameTime + 15.0;
 		}
 		else
 		{
@@ -1734,10 +1737,10 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			
 			PrintHintText(owner, "%t", "You healed for", target, ammo_amount_left);
 			SetAmmo(owner, 21, new_ammo);
-			Increaced_Overall_damage_Low[owner] = GetGameTime() + 5.0;
-			Increaced_Overall_damage_Low[target] = GetGameTime() + 15.0;
-			Resistance_Overall_Low[owner] = GetGameTime() + 5.0;
-			Resistance_Overall_Low[target] = GetGameTime() + 15.0;
+			Increaced_Overall_damage_Low[owner] = GameTime + 5.0;
+			Increaced_Overall_damage_Low[target] = GameTime + 15.0;
+			Resistance_Overall_Low[owner] = GameTime + 5.0;
+			Resistance_Overall_Low[target] = GameTime + 15.0;
 			for(int i; i<Ammo_MAX; i++)
 			{
 				CurrentAmmo[owner][i] = GetAmmo(owner, i);

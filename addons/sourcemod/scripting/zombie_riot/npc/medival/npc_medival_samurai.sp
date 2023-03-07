@@ -418,7 +418,7 @@ public void MedivalSamurai_ClotDamaged_Post(int victim, int attacker, int inflic
 	if(!(damagetype & (DMG_CLUB|DMG_SLASH)))
 	{
 		f_RangedPainTolerance[npc.index] += damage;
-		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2 ) >= f_RangedPainTolerance[npc.index]) //npc.Anger after half hp/400 hp
+		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2 ) < f_RangedPainTolerance[npc.index]) //npc.Anger after half hp/400 hp
 		{
 			npc.Anger = true; //	>:(
 			npc.m_flSpeed = 330.0;

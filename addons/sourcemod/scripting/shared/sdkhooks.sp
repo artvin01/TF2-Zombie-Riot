@@ -163,8 +163,7 @@ public void OnPreThinkPost(int client)
 public void OnPostThink(int client)
 {
 	
-	static float gameTime;
-	gameTime = GetGameTime();
+	float GameTime = GetGameTime();
 	if(b_DisplayDamageHud[client])
 	{
 		b_DisplayDamageHud[client] = false;
@@ -193,9 +192,9 @@ public void OnPostThink(int client)
 	}
 		
 #if defined ZR
-	if(RollAngle_Regen_Delay[client] < gameTime)	
+	if(RollAngle_Regen_Delay[client] < GameTime)	
 	{
-		RollAngle_Regen_Delay[client] = gameTime + 0.5;
+		RollAngle_Regen_Delay[client] = GameTime + 0.5;
 		
 		if(CvarSvRollagle && zr_viewshakeonlowhealth.BoolValue)
 		{
@@ -237,13 +236,13 @@ public void OnPostThink(int client)
 		}
 		else
 		{
-			RollAngle_Regen_Delay[client] = gameTime + 5.0;
+			RollAngle_Regen_Delay[client] = GameTime + 5.0;
 		}
 	}
 #endif	// ZR
-	if(Mana_Regen_Delay[client] < gameTime)	
+	if(Mana_Regen_Delay[client] < GameTime)	
 	{
-		Mana_Regen_Delay[client] = gameTime + 0.4;
+		Mana_Regen_Delay[client] = GameTime + 0.4;
 			
 		has_mage_weapon[client] = false;
 
@@ -313,7 +312,7 @@ public void OnPostThink(int client)
 	}
 
 #if defined ZR
-	if(Armor_regen_delay[client] < gameTime)
+	if(Armor_regen_delay[client] < GameTime)
 	{
 		Armour_Level_Current[client] = 0;
 		int flHealth = GetEntProp(client, Prop_Send, "m_iHealth");
@@ -367,13 +366,13 @@ public void OnPostThink(int client)
 				}				
 			}
 		}
-		Armor_regen_delay[client] = gameTime + 1.0;
+		Armor_regen_delay[client] = GameTime + 1.0;
 	}
 #endif	// ZR
 	
-	if(Mana_Hud_Delay[client] < gameTime)	
+	if(Mana_Hud_Delay[client] < GameTime)	
 	{
-		Mana_Hud_Delay[client] = gameTime + 0.4;
+		Mana_Hud_Delay[client] = GameTime + 0.4;
 		char buffer[255];
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		
@@ -503,7 +502,7 @@ public void OnPostThink(int client)
 			int obj=EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
 			if(IsValidEntity(obj) && obj>MaxClients)
 			{
-				cooldown_time = f_BuildingIsNotReady[client] - gameTime;
+				cooldown_time = f_BuildingIsNotReady[client] - GameTime;
 					
 				if(had_An_ability)
 				{
@@ -611,9 +610,9 @@ public void OnPostThink(int client)
 		//BUFFS!
 #if defined RPG		
 		HudY = 0.85;
-		if(f_HealingPotionDuration[client] > gameTime) //Client has a buff, but which one?
+		if(f_HealingPotionDuration[client] > GameTime) //Client has a buff, but which one?
 		{
-			float time_left = f_HealingPotionDuration[client] - gameTime;
+			float time_left = f_HealingPotionDuration[client] - GameTime;
 			had_An_ability = true;
 			switch(f_HealingPotionEffect[client])
 			{
@@ -680,32 +679,32 @@ public void OnPostThink(int client)
 			Format(bufferbuffs, sizeof(bufferbuffs), "⍤%s", bufferbuffs);
 		}
 #endif
-		if(Increaced_Overall_damage_Low[client] > gameTime)
+		if(Increaced_Overall_damage_Low[client] > GameTime)
 		{
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⌃%s", bufferbuffs);
 		}
-		if(Resistance_Overall_Low[client] > gameTime)
+		if(Resistance_Overall_Low[client] > GameTime)
 		{
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⌅%s", bufferbuffs);
 		}
-		if(f_EmpowerStateOther[client] > gameTime) //Do not show fusion self buff.
+		if(f_EmpowerStateOther[client] > GameTime) //Do not show fusion self buff.
 		{
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⍋%s", bufferbuffs);
 		}
-		if(f_HussarBuff[client] > gameTime) //hussar!
+		if(f_HussarBuff[client] > GameTime) //hussar!
 		{
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "ᐩ%s", bufferbuffs);
 		}
-		if(f_Ocean_Buff_Stronk_Buff[client] > gameTime) //hussar!
+		if(f_Ocean_Buff_Stronk_Buff[client] > GameTime) //hussar!
 		{
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⍟%s", bufferbuffs);
 		}
-		else if(f_Ocean_Buff_Weak_Buff[client] > gameTime) //hussar!
+		else if(f_Ocean_Buff_Weak_Buff[client] > GameTime) //hussar!
 		{
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⌾%s", bufferbuffs);
@@ -723,9 +722,9 @@ public void OnPostThink(int client)
 			ShowSyncHudText(client,  SyncHud_WandMana, "%s", buffer);
 		}
 	}
-	if(delay_hud[client] < gameTime)	
+	if(delay_hud[client] < GameTime)	
 	{
-		delay_hud[client] = gameTime + 0.4;
+		delay_hud[client] = GameTime + 0.4;
 
 #if defined RPG
 		RPG_UpdateHud(client);
@@ -759,7 +758,7 @@ public void OnPostThink(int client)
 		{
 			if(f_ShowHudDelayForServerMessage[client] < GetGameTime())
 			{
-				f_ShowHudDelayForServerMessage[client] = GetGameTime() + 300.0;
+				f_ShowHudDelayForServerMessage[client] = GameTime + 300.0;
 				PrintToChat(client,"If you wish to see the wave counter in a better way, set ''cl_showpluginmessages'' to 1 in the console!");
 			}
 		}
@@ -814,7 +813,7 @@ public void OnPostThink(int client)
 		if(i_CurrentEquippedPerk[client] == 6)
 		{
 			static float slowdown_amount;
-			slowdown_amount = f_WidowsWineDebuffPlayerCooldown[client] - GetGameTime();
+			slowdown_amount = f_WidowsWineDebuffPlayerCooldown[client] - GameTime;
 			
 			if(slowdown_amount < 0.0)
 			{
@@ -905,7 +904,7 @@ public void OnPostThink(int client)
 #endif	// RPG
 	
 #if defined ZR
-	if(f_DelayLookingAtHud[client] < GetGameTime())
+	if(f_DelayLookingAtHud[client] < GameTime)
 	{
 		//Reuse uhh
 		EscapeSentryHat_ApplyBuidingIcon(client);
@@ -917,11 +916,11 @@ public void OnPostThink(int client)
 			static int entity;
 			entity = GetClientPointVisible(client); //allow them to get info if they stare at something for abit long
 			Building_ShowInteractionHud(client, entity);
-			f_DelayLookingAtHud[client] = GetGameTime() + 0.5;	
+			f_DelayLookingAtHud[client] = GameTime + 0.5;	
 		}
 		else
 		{
-			f_DelayLookingAtHud[client] = GetGameTime() + 2.0;
+			f_DelayLookingAtHud[client] = GameTime + 2.0;
 		}
 	}
 	
@@ -966,9 +965,9 @@ public void OnPreThink(int client)
 			
 			if (flSpeed > 0.0)
 			{	
-				flPunchIdle[0] = Sine(gameTime * SF2_PLAYER_VIEWBOB_TIMER) * flSpeed/4 * SF2_PLAYER_VIEWBOB_SCALE_X / 1200.0;
-				flPunchIdle[1] = Sine(2.0 * gameTime * SF2_PLAYER_VIEWBOB_TIMER) * flSpeed/4 * SF2_PLAYER_VIEWBOB_SCALE_Y / 1200.0;
-				flPunchIdle[2] = Sine(1.6 * gameTime * SF2_PLAYER_VIEWBOB_TIMER) * flSpeed/4 * SF2_PLAYER_VIEWBOB_SCALE_Z / 1200.0;
+				flPunchIdle[0] = Sine(GameTime * SF2_PLAYER_VIEWBOB_TIMER) * flSpeed/4 * SF2_PLAYER_VIEWBOB_SCALE_X / 1200.0;
+				flPunchIdle[1] = Sine(2.0 * GameTime * SF2_PLAYER_VIEWBOB_TIMER) * flSpeed/4 * SF2_PLAYER_VIEWBOB_SCALE_Y / 1200.0;
+				flPunchIdle[2] = Sine(1.6 * GameTime * SF2_PLAYER_VIEWBOB_TIMER) * flSpeed/4 * SF2_PLAYER_VIEWBOB_SCALE_Z / 1200.0;
 					
 				AddVectors(flPunchVel, flPunchIdle, flPunchVel);
 				
@@ -1025,9 +1024,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		return Plugin_Handled;
 #endif
 
-	float gameTime = GetGameTime();
+	float GameTime = GetGameTime();
 
-	if(f_ClientInvul[victim] > gameTime) //Treat this as if they were a teuton, complete and utter immunity to everything in existance.
+	if(f_ClientInvul[victim] > GameTime) //Treat this as if they were a teuton, complete and utter immunity to everything in existance.
 	{
 		return Plugin_Handled;
 	}
@@ -1053,7 +1052,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		if(IsInvuln(victim))
 		{
-			f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
+			f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 			return Plugin_Continue;	
 		}
 	}
@@ -1108,16 +1107,16 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		if(!b_ThisNpcIsSawrunner[attacker])
 		{
 			PrintToChat(victim, "Get out of the npc stuck zone. you will recieve this message every 0.5 seconds if you stay in it.");
-			if (gameTime > f_ClientWasTooLongInsideHurtZone[victim])
+			if (GameTime > f_ClientWasTooLongInsideHurtZone[victim])
 			{
-				f_ClientWasTooLongInsideHurtZone[victim] = gameTime + 6.0;	
+				f_ClientWasTooLongInsideHurtZone[victim] = GameTime + 6.0;	
 			}
-			if (gameTime > f_ClientWasTooLongInsideHurtZoneDamage[victim] + 2.0)
+			if (GameTime > f_ClientWasTooLongInsideHurtZoneDamage[victim] + 2.0)
 			{	
-				f_ClientWasTooLongInsideHurtZoneDamage[victim] = gameTime + 4.0;	
+				f_ClientWasTooLongInsideHurtZoneDamage[victim] = GameTime + 4.0;	
 			}
 		}
-		if ((GetEntityFlags(victim) & FL_ONGROUND) != 0 || GetEntProp(victim, Prop_Send, "m_nWaterLevel") >= 1 || b_ThisNpcIsSawrunner[attacker] || f_ClientWasTooLongInsideHurtZoneDamage[victim] < gameTime) 
+		if ((GetEntityFlags(victim) & FL_ONGROUND) != 0 || GetEntProp(victim, Prop_Send, "m_nWaterLevel") >= 1 || b_ThisNpcIsSawrunner[attacker] || f_ClientWasTooLongInsideHurtZoneDamage[victim] < GameTime) 
 #endif
 		{
 		//only damage if actually standing or in water, itll be more forgiving.
@@ -1129,7 +1128,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #if defined RPG
 			damage *= 5.0;
 #endif
-			f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
+			f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 			return Plugin_Changed;	
 		}
 #if defined ZR
@@ -1139,7 +1138,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 #endif
 	}
-	f_TimeUntillNormalHeal[victim] = gameTime + 4.0;
+	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 #if defined ZR
 	if(Medival_Difficulty_Level != 0.0)
 	{
@@ -1166,11 +1165,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			damage = modified_damage;
 			Replicated_Damage = modified_damage;
 		}
-		if(f_HussarBuff[attacker] > GetGameTime()) //hussar!
+		if(f_HussarBuff[attacker] > GameTime) //hussar!
 		{
 			damage *= 1.10;
 		}
-		if(f_HussarBuff[victim] > GetGameTime()) //hussar!
+		if(f_HussarBuff[victim] > GameTime) //hussar!
 		{
 			damage *= 0.90;
 		}
@@ -1211,7 +1210,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 #endif
 #if defined RPG
-		if(f_HealingPotionDuration[victim] > gameTime) //Client has a buff, but which one?
+		if(f_HealingPotionDuration[victim] > GameTime) //Client has a buff, but which one?
 		{
 			switch(f_HealingPotionEffect[victim])
 			{
@@ -1227,7 +1226,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 
 #endif
-		if(f_EmpowerStateOther[victim] > gameTime) //Allow stacking.
+		if(f_EmpowerStateOther[victim] > GameTime) //Allow stacking.
 		{
 			
 #if defined ZR
@@ -1236,7 +1235,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			
 			damage *= 0.93;
 		}
-		if(f_EmpowerStateSelf[victim] > gameTime) //Allow stacking.
+		if(f_EmpowerStateSelf[victim] > GameTime) //Allow stacking.
 		{
 			
 #if defined ZR
@@ -1281,7 +1280,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				
 				damage *= 0.65;
 			}
-			if(f_ImmuneToFalldamage[victim] > GetGameTime())
+			if(f_ImmuneToFalldamage[victim] > GameTime)
 			{
 				damage = 0.0;
 			}
@@ -1298,9 +1297,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				//s	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 				int flMaxHealth = SDKCall_GetMaxHealth(victim);
 			
-				if((damage > float(flMaxHealth / 20) || flHealth < flMaxHealth / 5 || damage > 25.0) && f_WidowsWineDebuffPlayerCooldown[victim] < GetGameTime()) //either too much dmg, or your health is too low.
+				if((damage > float(flMaxHealth / 20) || flHealth < flMaxHealth / 5 || damage > 25.0) && f_WidowsWineDebuffPlayerCooldown[victim] < GameTime) //either too much dmg, or your health is too low.
 				{
-					f_WidowsWineDebuffPlayerCooldown[victim] = GetGameTime() + 20.0;
+					f_WidowsWineDebuffPlayerCooldown[victim] = GameTime + 20.0;
 					
 					float vecVictim[3]; vecVictim = WorldSpaceCenter(victim);
 					
@@ -1325,7 +1324,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 									if(flDistanceToTarget < 90000)
 									{
 										ParticleEffectAt(vecTarget, "peejar_impact_cloud_milk", 0.5);
-										f_WidowsWineDebuff[baseboss_index] = GetGameTime() + FL_WIDOWS_WINE_DURATION;
+										f_WidowsWineDebuff[baseboss_index] = GameTime + FL_WIDOWS_WINE_DURATION;
 									}
 								}
 							}
@@ -1335,7 +1334,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 #endif	// ZR
 			
-			if(Resistance_Overall_Low[victim] > gameTime)
+			if(Resistance_Overall_Low[victim] > GameTime)
 			{
 				
 #if defined ZR
@@ -1431,12 +1430,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
 			return Plugin_Changed;
 		}
-		else if((LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GetGameTime())
+		else if((LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime)
 		{
 			damage = float(flHealth - 1); //survive with 1 hp!
 			GiveCompleteInvul(victim, 2.0);
 			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
-			f_OneShotProtectionTimer[victim] = gameTime + 60.0; // 60 second cooldown
+			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
 			return Plugin_Changed;
 		}
 		else if(!LastMann && !b_IsAloneOnServer)

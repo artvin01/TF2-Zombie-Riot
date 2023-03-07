@@ -30,9 +30,10 @@ methodmap BarrackCrossbow < BarrackBody
 public void BarrackCrossbow_ClotThink(int iNPC)
 {
 	BarrackCrossbow npc = view_as<BarrackCrossbow>(iNPC);
-	if(BarrackBody_ThinkStart(npc.index))
+	float GameTime = GetGameTime(iNPC);
+	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
-		BarrackBody_ThinkTarget(npc.index, true);
+		BarrackBody_ThinkTarget(npc.index, true, GameTime);
 
 		if(npc.m_iTarget > 0)
 		{
@@ -46,7 +47,7 @@ public void BarrackCrossbow_ClotThink(int iNPC)
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					//Can we attack right now?
-					if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
+					if(npc.m_flNextMeleeAttack < GameTime)
 					{
 						npc.m_flSpeed = 0.0;
 						npc.FaceTowards(vecTarget, 30000.0);
@@ -55,8 +56,8 @@ public void BarrackCrossbow_ClotThink(int iNPC)
 						
 			//			npc.PlayMeleeSound();
 			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (2.0 * npc.BonusFireRate);
-						npc.m_flReloadDelay = GetGameTime(npc.index) + (0.7 * npc.BonusFireRate);
+						npc.m_flNextMeleeAttack = GameTime + (2.0 * npc.BonusFireRate);
+						npc.m_flReloadDelay = GameTime + (0.7 * npc.BonusFireRate);
 					}
 				}
 			}
