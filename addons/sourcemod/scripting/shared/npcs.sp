@@ -788,8 +788,10 @@ void NPC_Ignite(int entity, int client, float duration, int weapon)
 	if(value > BurnDamage[client]) //Dont override if damage is lower.
 	{
 		IgniteId[entity] = GetClientUserId(client);
-	
-		IgniteRef[entity] = EntIndexToEntRef(weapon);
+		if(weapon > MaxClients && IsValidEntity(weapon))
+		{
+			IgniteRef[entity] = EntIndexToEntRef(weapon);
+		}
 	}
 }
 
