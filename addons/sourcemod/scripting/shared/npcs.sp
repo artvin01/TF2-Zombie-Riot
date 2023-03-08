@@ -776,8 +776,10 @@ void NPC_Ignite(int entity, int client, float duration, int weapon)
 	
 	
 	float value = 8.0;
+	bool validWeapon = false;
 	if(weapon > MaxClients && IsValidEntity(weapon))
 	{
+		validWeapon = true;
 		value *= Attributes_FindOnWeapon(client, weapon, 2, true, 1.0);	  //For normal weapons
 			
 		value *= Attributes_FindOnWeapon(client, weapon, 410, true, 1.0); //For wand
@@ -788,7 +790,7 @@ void NPC_Ignite(int entity, int client, float duration, int weapon)
 	if(value > BurnDamage[client]) //Dont override if damage is lower.
 	{
 		IgniteId[entity] = GetClientUserId(client);
-		if(weapon > MaxClients && IsValidEntity(weapon))
+		if(validWeapon)
 		{
 			IgniteRef[entity] = EntIndexToEntRef(weapon);
 		}
