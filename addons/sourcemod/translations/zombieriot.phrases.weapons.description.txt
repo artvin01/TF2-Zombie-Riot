@@ -318,9 +318,7 @@
 	
 	"Star Shooter Desc"
 	{
-		"en"	"Sure, Brain, but where are you going to get enough stars for this?"
-		"ru"	"Конечно, Мозг, но где ты достанешь достаточно звёзд для этого?"
-		"chi"   "当然，布莱恩，但你要去哪里弄到足够多的星星呢?"
+		"en"	"Sure, Brain, but where are you going to get enough stars for this?\nYour M1 CD will show you how long untill it will cool off again.\nHigher overheat means less damage."
 	}
 	
 	"Loose Cannon Pap 1"

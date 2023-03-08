@@ -7,6 +7,7 @@ static int Projectile_To_Particle[MAXENTITIES]={0, ...};
 static int SSS_overheat[MAXENTITIES]={0, ...};
 static float starshooter_hud_delay[MAXTF2PLAYERS];
 static int Star_HitTarget[MAXENTITIES][MAXENTITIES];
+static float StarShooterCoolDelay[MAXTF2PLAYERS];
 
 Handle Timer_Starshooter_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 
@@ -19,6 +20,7 @@ void SSS_Map_Precache()
 	PrecacheSound(SOUND_WAND_SHOT_STAR);
 	PrecacheSound(SOUND_ZAP_STAR);
 	PrecacheModel(COLLISION_DETECTION_MODEL);
+	Zero(StarShooterCoolDelay);
 
 }
 
@@ -27,6 +29,7 @@ void Reset_stats_starshooter()
 {
 	Zero(Timer_Starshooter_Management);
 	Zero(starshooter_hud_delay);
+	Zero(StarShooterCoolDelay);
 }
 /*
 The damage getting lower after having a higher overheat amount now works properly but i am not quite sure how to make a proper counter to make it tick down,
@@ -36,8 +39,8 @@ my current plan was to make it decrease by 1 overheat charge every half a second
 public void Super_Star_Shooter_Main(int client, int weapon, bool crit, int slot)
 {
 	Enable_StarShooter(client, weapon);
-	Ability_Apply_Cooldown(client, slot, 3.0);
-	
+	Ability_Apply_Cooldown(client, slot, 2.0);
+	StarShooterCoolDelay[client] = GetGameTime() + 2.0;
 	SSS_overheat[client] += 1;
 
 	float damage = 1000.0;
@@ -306,7 +309,7 @@ public void Starshooter_Cooldown_Logic(int client, int weapon)
 		{	
 			//Do your code here :)
 			
-			if (Ability_Check_Cooldown(client, 1/*slot*/) < 0.0)
+			if (StarShooterCoolDelay[client] < GetGameTime())
 			{
 				SSS_overheat[client] -= 1;
 				
