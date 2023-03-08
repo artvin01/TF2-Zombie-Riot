@@ -301,7 +301,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 					if(GetVectorDistance(vecMe, LastKnownPos, true) < 1000000.0) // 1000 range
 					{
 						if(fl_AlreadyStrippedMusic[client] < engineTime)
-							Music_Stop_All(client); //This is actually more expensive then i thought.
+							Music_Stop_All(client);
 						
 						SetMusicTimer(client, GetTime() + 5);
 						fl_AlreadyStrippedMusic[client] = engineTime + 5.0;

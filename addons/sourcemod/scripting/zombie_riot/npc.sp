@@ -226,7 +226,8 @@ enum
 	NEARL_SWORD					= 192,
 	
 	STALKER_COMBINE		= 193,
-	STALKER_FATHER		= 194
+	STALKER_FATHER		= 194,
+	STALKER_GOGGLES		= 195
 }
 
 public const char NPC_Names[][] =
@@ -444,7 +445,8 @@ public const char NPC_Names[][] =
 	"Nearl Radiant Sword",
 
 	"Spawned Combine",
-	"Spawned Father Grigori"
+	"Spawned Father Grigori",
+	"Spawned Blue Goggles"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -657,7 +659,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",
 
 	"npc_stalker_combine",
-	"npc_stalker_father"
+	"npc_stalker_father",
+	"npc_stalker_goggles"
 };
 
 void NPC_MapStart()
@@ -1625,11 +1628,15 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		}
 		case STALKER_COMBINE:
 		{
-			entity = StalkerCombine(client, vecPos, vecAng, ally);
+			entity = StalkerCombine(client, vecPos, vecAng, false);
 		}
 		case STALKER_FATHER:
 		{
-			entity = StalkerFather(client, vecPos, vecAng, ally);
+			entity = StalkerFather(client, vecPos, vecAng, false);
+		}
+		case STALKER_GOGGLES:
+		{
+			entity = StalkerGoggles(client, vecPos, vecAng, false);
 		}
 		default:
 		{
@@ -2408,6 +2415,10 @@ public void NPCDeath(int entity)
 		{
 			StalkerFather_NPCDeath(entity);
 		}
+		case STALKER_GOGGLES:
+		{
+			StalkerGoggles_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2697,3 +2708,4 @@ public void NPCDeath(int entity)
 
 #include "zombie_riot/npc/respawn/npc_stalker_combine.sp"
 #include "zombie_riot/npc/respawn/npc_stalker_father.sp"
+#include "zombie_riot/npc/respawn/npc_stalker_goggles.sp"

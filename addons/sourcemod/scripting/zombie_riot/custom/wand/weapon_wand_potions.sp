@@ -790,7 +790,7 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 				float scale = GetEntPropFloat(i, Prop_Send, "m_flModelScale");
 				SetEntPropFloat(i, Prop_Send, "m_flModelScale", scale * 0.35);
 
-				if(b_thisNpcIsABoss[i])
+				if(b_thisNpcIsABoss[i] || b_StaticNPC[i])
 				{
 					if(!count)
 					{

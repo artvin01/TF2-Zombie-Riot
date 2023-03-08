@@ -341,6 +341,11 @@ void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], fl
 		vecSwingMaxs[0] = CustomMeleeWide;
 		vecSwingMaxs[1] = CustomMeleeWide;
 		vecSwingMaxs[2] = CustomMeleeWide;
+
+		if(ignore_walls)
+		{
+			
+		}
 	}
 	else
 	{

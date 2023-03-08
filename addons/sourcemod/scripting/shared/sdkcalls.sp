@@ -98,12 +98,12 @@ void SDKCall_Setup()
 	if ((g_hSnapEyeAngles = EndPrepSDKCall()) == null) SetFailState("Failed to create SDKCall for CBasePlayer::SnapEyeAngles!");
 
 
+		/*
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseEntity::SetAbsVelocity");
 	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef);
 	if ((g_hSetAbsVelocity = EndPrepSDKCall()) == null) SetFailState("Failed to create SDKCall for CBaseEntity::SetAbsVelocity");
 
-		/*
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseEntity::SetLocalAngles");
 	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef);
@@ -367,10 +367,10 @@ void SnapEyeAngles(int client, float viewAngles[3])
 	SDKCall(g_hSnapEyeAngles, client, viewAngles);
 }
 
-void SetAbsVelocity(int client, float viewAngles[3])
+/*void SetAbsVelocity(int client, float viewAngles[3])
 {
 	SDKCall(g_hSetAbsVelocity, client, viewAngles);
-}
+}*/
 
 void GetAttachment(int index, const char[] szName, float absOrigin[3], float absAngles[3])
 {

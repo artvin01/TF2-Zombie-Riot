@@ -134,7 +134,7 @@ public void StalkerFather_ClotThink(int iNPC)
 				if(GetVectorDistance(vecMe, LastKnownPos, true) < 1000000.0) // 1000 range
 				{
 					if(fl_AlreadyStrippedMusic[client] < engineTime)
-						Music_Stop_All(client); //This is actually more expensive then i thought.
+						Music_Stop_All(client);
 					
 					SetMusicTimer(client, GetTime() + 5);
 					fl_AlreadyStrippedMusic[client] = engineTime + 5.0;
@@ -313,4 +313,20 @@ void StalkerFather_NPCDeath(int entity)
 		}
 	}
 	Spawn_Cured_Grigori();
+
+	CreateTimer(70.0, StalkerFather_Timer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+}
+
+public Action StalkerFather_Timer(Handle timer)
+{
+	if(Waves_InSetup())
+		return Plugin_Continue;
+	
+	Enemy enemy;
+	enemy.Index = STALKER_GOGGLES;
+	enemy.Health = 66666666;
+	enemy.Is_Immune_To_Nuke = true;
+	enemy.Is_Static = true;
+	Waves_AddNextEnemy(enemy);
+	return Plugin_Stop;
 }
