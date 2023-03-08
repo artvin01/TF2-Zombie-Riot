@@ -4421,7 +4421,7 @@ public void PluginBot_MoveToFailure(int bot_entidx, Address path, MoveToFailureT
 
 stock bool IsEntityAlive(int index)
 {
-	if(IsValidEntity(index) && index > 0)
+	if(IsValidEntity(index))
 	{
 		if(index > MaxClients)
 		{
@@ -4521,7 +4521,6 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false)
 			}
 		}
 	}
-	
 	return false;
 }
 
@@ -4555,69 +4554,72 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 	{
 		GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
 	}
-	for( int i = 1; i <= MaxClients; i++ ) 
+	if(searcher_team != 2)
 	{
-		if (IsValidClient(i) && i != ingore_client)
+		for( int i = 1; i <= MaxClients; i++ ) 
 		{
-			CClotBody npc = view_as<CClotBody>(i);
-			if (TF2_GetClientTeam(i)!=view_as<TFTeam>(searcher_team) && !npc.m_bThisEntityIgnored && IsEntityAlive(i)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+			if (IsValidClient(i) && i != ingore_client)
 			{
-				if(CanSee)
+				CClotBody npc = view_as<CClotBody>(i);
+				if (TF2_GetClientTeam(i)!=view_as<TFTeam>(searcher_team) && !npc.m_bThisEntityIgnored && IsEntityAlive(i)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 				{
-					int Enemy_I_See = Can_I_See_Enemy(entity, i);
-					if(Enemy_I_See != i)
+					if(CanSee)
 					{
-						continue;
+						int Enemy_I_See = Can_I_See_Enemy(entity, i);
+						if(Enemy_I_See != i)
+						{
+							continue;
+						}
 					}
-				}
-				if(camoDetection)
-				{
-					float TargetLocation[3]; 
-					GetClientAbsOrigin( i, TargetLocation ); 
-					
-					
-					float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-					if(distance < fldistancelimit)
+					if(camoDetection)
 					{
-						if( TargetDistance ) 
+						float TargetLocation[3]; 
+						GetClientAbsOrigin( i, TargetLocation ); 
+						
+						
+						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+						if(distance < fldistancelimit)
 						{
-							if( distance < TargetDistance ) 
+							if( TargetDistance ) 
+							{
+								if( distance < TargetDistance ) 
+								{
+									ClosestTarget = i; 
+									TargetDistance = distance;		  
+								}
+							} 
+							else 
 							{
 								ClosestTarget = i; 
-								TargetDistance = distance;		  
-							}
-						} 
-						else 
-						{
-							ClosestTarget = i; 
-							TargetDistance = distance;
+								TargetDistance = distance;
+							}	
 						}	
-					}	
-				}
-				else if (!npc.m_bCamo)
-				{
-					float TargetLocation[3]; 
-					GetClientAbsOrigin( i, TargetLocation ); 
-					
-					
-					float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-					if(distance < fldistancelimit)
+					}
+					else if (!npc.m_bCamo)
 					{
-						if( TargetDistance ) 
+						float TargetLocation[3]; 
+						GetClientAbsOrigin( i, TargetLocation ); 
+						
+						
+						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
+						if(distance < fldistancelimit)
 						{
-							if( distance < TargetDistance ) 
+							if( TargetDistance ) 
+							{
+								if( distance < TargetDistance ) 
+								{
+									ClosestTarget = i; 
+									TargetDistance = distance;		  
+								}
+							} 
+							else 
 							{
 								ClosestTarget = i; 
-								TargetDistance = distance;		  
-							}
-						} 
-						else 
-						{
-							ClosestTarget = i; 
-							TargetDistance = distance;
+								TargetDistance = distance;
+							}	
 						}	
-					}	
-				}			
+					}			
+				}
 			}
 		}
 	}
@@ -4632,15 +4634,16 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 		TFTeam_Blue = 3
 	};
 	*/
-	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
+	if(searcher_team != 3) 
 	{
-		int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-		if(IsValidEntity(entity_close) && entity_close != ingore_client)
+		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
 		{
-			if(searcher_team != 3) 
+			int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+			if(IsValidEntity(entity_close) && entity_close != ingore_client)
 			{
+				
 				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0 && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
+				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close) && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
 					if(CanSee)
 					{
@@ -4702,15 +4705,16 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			}
 		}
 	}
-	for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+	if(searcher_team != 2)
 	{
-		int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
-		if(IsValidEntity(entity_close) && entity_close != ingore_client)
+		for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
 		{
-			if(searcher_team != 2)
+			int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+			if(IsValidEntity(entity_close) && entity_close != ingore_client)
 			{
+				
 				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0 && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
+				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close) && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
 					if(CanSee)
 					{
