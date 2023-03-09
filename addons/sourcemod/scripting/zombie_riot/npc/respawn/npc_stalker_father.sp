@@ -9,15 +9,15 @@ void StalkerFather_MapStart()
 	PrecacheSound("#music/radio1.mp3");
 }
 
-methodmap StalkerFather < CClotBody
+methodmap StalkerFather < StalkerShared
 {
 	public void PlayMusicSound()
 	{
 		if(i_PlayMusicSound > GetTime())
 			return;
 		
-		EmitSoundToAll("#music/radio1.mp3", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll("#music/radio1.mp3", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll("#music/radio1.mp3", this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll("#music/radio1.mp3", this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		i_PlayMusicSound = GetTime() + 39;
 	}
 	
@@ -47,17 +47,8 @@ methodmap StalkerFather < CClotBody
 		i_PlayMusicSound = 0;
 		npc.m_iChaseAnger = 0;
 		npc.m_bChaseAnger = false;
+		npc.m_iChaseVisable = 0;
 		return npc;
-	}
-	property int m_iChaseAnger	// Allows being able to quickly hide
-	{
-		public get()		{ return this.m_iAttacksTillMegahit; }
-		public set(int value) 	{ this.m_iAttacksTillMegahit = value; }
-	}
-	property bool m_bChaseAnger	// If currently chasing a target down
-	{
-		public get()		{ return !b_ThisEntityIgnoredByOtherNpcsAggro[this.index]; }
-		public set(bool value) 	{ b_ThisEntityIgnoredByOtherNpcsAggro[this.index] = !value; }
 	}
 }
 
@@ -69,6 +60,12 @@ public void StalkerFather_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
+	if(Waves_InSetup())
+	{
+		FreezeNpcInTime(npc.index, DEFAULT_UPDATE_DELAY_FLOAT);
+		return;
+	}
+	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
@@ -77,7 +74,7 @@ public void StalkerFather_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget, true))
+	if(npc.m_iTarget > 0 && !IsValidEnemy(npc.index, npc.m_iTarget, true))
 	{
 		npc.m_iTarget = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -87,10 +84,10 @@ public void StalkerFather_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < gameTime && (npc.m_bChaseAnger || npc.m_iChaseAnger < 1))
 	{
 		// Big range while were angery
-		npc.m_iTarget = GetClosestTarget(npc.index, _, npc.Anger ? FAR_FUTURE : 200.0, npc.Anger, _, _, _, true, npc.Anger ? FAR_FUTURE : 200.0);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, npc.m_bChaseAnger ? FAR_FUTURE : 200.0, npc.m_bChaseAnger, _, _, _, true, npc.m_bChaseAnger ? FAR_FUTURE : 200.0);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
-		if(!npc.m_bChaseAnger && npc.m_iTarget)
+		if(!npc.m_bChaseAnger && npc.m_iTarget > 0)
 		{
 			npc.m_flSpeed = 280.0;
 			npc.m_bChaseAnger = true;
@@ -115,9 +112,9 @@ public void StalkerFather_ClotThink(int iNPC)
 		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
 	}
 	
-	if(npc.m_bChaseAnger && npc.m_iTarget > 0 && Can_I_See_Enemy(npc.index, npc.m_iTarget) == npc.m_iTarget)
+	float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+	if(npc.m_bChaseAnger && npc.CanSeeEnemy())
 	{
-		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
 		float engineTime = GetEngineTime();
 
 		for(int client = 1; client <= MaxClients; client++)
@@ -125,10 +122,10 @@ public void StalkerFather_ClotThink(int iNPC)
 			if(IsClientInGame(client))
 			{
 				GetClientAbsOrigin(client, LastKnownPos);
-				if(GetVectorDistance(vecMe, LastKnownPos, true) < 1000000.0) // 1000 range
+				if(GetVectorDistance(vecMe, LastKnownPos, true) < 3000000.0)
 				{
 					if(fl_AlreadyStrippedMusic[client] < engineTime)
-						Music_Stop_All(client); //This is actually more expensive then i thought.
+						Music_Stop_All(client);
 					
 					SetMusicTimer(client, GetTime() + 5);
 					fl_AlreadyStrippedMusic[client] = engineTime + 5.0;
@@ -169,6 +166,7 @@ public void StalkerFather_ClotThink(int iNPC)
 					npc.SetActivity("ACT_RUN_AIM_RIFLE");
 				}
 
+				npc.StartPathing();
 				if(distance < npc.GetLeadRadius()) 
 				{
 					LastKnownPos = PredictSubjectPosition(npc, npc.m_iTarget);
@@ -195,7 +193,7 @@ public void StalkerFather_ClotThink(int iNPC)
 	}
 	else
 	{
-		float distance = GetVectorDistance(LastKnownPos, WorldSpaceCenter(npc.index), true);
+		float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 		if(npc.m_flDoingAnimation > gameTime)
 		{
 			npc.m_iState = -1;
@@ -234,14 +232,11 @@ public void StalkerFather_ClotThink(int iNPC)
 					npc.SetActivity("ACT_WALK_RIFLE");
 				}
 
-				PF_SetGoalVector(npc.index, LastKnownPos);
-
 				if(!npc.m_bChaseAnger && !(GetURandomInt() % 999))
-				{
-					NavArea RandomArea = PickRandomArea();
-					if(RandomArea != NavArea_Null) 
-						RandomArea.GetCenter(LastKnownPos);
-				}
+					npc.PickRandomPos(LastKnownPos);
+
+				npc.StartPathing();
+				PF_SetGoalVector(npc.index, LastKnownPos);
 			}
 			case 1:
 			{
@@ -254,9 +249,7 @@ public void StalkerFather_ClotThink(int iNPC)
 					npc.SetActivity("ACT_GLIDE");
 				}
 
-				NavArea RandomArea = PickRandomArea();
-				if(RandomArea != NavArea_Null) 
-					RandomArea.GetCenter(LastKnownPos);
+				npc.PickRandomPos(LastKnownPos);
 			}
 		}
 	}
@@ -270,14 +263,14 @@ public Action StalkerFather_ClotDamaged(int victim, int &attacker, int &inflicto
 	StalkerFather npc = view_as<StalkerFather>(victim);
 
 	// Angry when injured
-	if(!npc.m_bChaseAnger && npc.m_iTarget)
+	if(!npc.m_bChaseAnger)
 	{
 		npc.m_flSpeed = 280.0;
 		npc.m_bChaseAnger = true;
 		npc.m_iChaseAnger = 110;
 	}
 
-	if(!b_StaticNPC[npc.index] && !b_thisNpcHasAnOutline[npc.index])
+	if((!b_StaticNPC[npc.index] || b_thisNpcHasAnOutline[npc.index]) && !Waves_InSetup())
 		return Plugin_Changed;
 	
 	damage = 0.0;
@@ -293,7 +286,7 @@ void StalkerFather_NPCDeath(int entity)
 
 	for(int i; i < 9; i++)
 	{
-		StopSound(npc.index, SNDCHAN_AUTO, "#music/radio1.mp3");
+		StopSound(npc.index, SNDCHAN_STATIC, "#music/radio1.mp3");
 	}
 
 	for(int client_Grigori=1; client_Grigori<=MaxClients; client_Grigori++)
@@ -307,4 +300,20 @@ void StalkerFather_NPCDeath(int entity)
 		}
 	}
 	Spawn_Cured_Grigori();
+
+	CreateTimer(70.0, StalkerFather_Timer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+}
+
+public Action StalkerFather_Timer(Handle timer)
+{
+	if(Waves_InSetup())
+		return Plugin_Continue;
+	
+	Enemy enemy;
+	enemy.Index = STALKER_GOGGLES;
+	enemy.Health = 66666666;
+	enemy.Is_Immune_To_Nuke = true;
+	enemy.Is_Static = true;
+	Waves_AddNextEnemy(enemy);
+	return Plugin_Stop;
 }

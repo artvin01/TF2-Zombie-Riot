@@ -984,6 +984,8 @@ public Action Timer_DisableMotion(Handle timer, any entid)
 		AcceptEntityInput(entity, "DisableMotion");
 	return Plugin_Stop;
 }
+
+/*
 void StartBleedingTimer_Against_Client(int client, int entity, float damage, int amount)
 {
 	BleedAmountCountStack[client] += 1;
@@ -1032,20 +1034,23 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	pack.WriteCell(bleed_count-1, false);
 	return Plugin_Continue;
 }
-
+*/
 
 void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype)
 {
-	BleedAmountCountStack[entity] += 1;
-	DataPack pack;
-	CreateDataTimer(0.5, Timer_Bleeding, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(entity));
-	pack.WriteCell(entity);
-	pack.WriteCell(EntIndexToEntRef(weapon));
-	pack.WriteCell(GetClientUserId(client));
-	pack.WriteCell(damagetype);
-	pack.WriteFloat(damage);
-	pack.WriteCell(amount);
+	if(IsValidEntity(entity) && IsValidEntity(weapon) && IsValidEntity(client))
+	{
+		BleedAmountCountStack[entity] += 1;
+		DataPack pack;
+		CreateDataTimer(0.5, Timer_Bleeding, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(entity));
+		pack.WriteCell(entity);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		pack.WriteCell(GetClientUserId(client));
+		pack.WriteCell(damagetype);
+		pack.WriteFloat(damage);
+		pack.WriteCell(amount);
+	}
 }
 
 public Action Timer_Bleeding(Handle timer, DataPack pack)
@@ -3648,11 +3653,39 @@ bool IsPointHazard(const float pos1[3])
 	TR_EnumerateEntities(pos1, pos1, PARTITION_TRIGGER_EDICTS, RayType_EndPoint, TraceEntityEnumerator_EnumerateTriggers);
 	return HazardResult;
 }
-
 public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 {
 	char classname[16];
 	if(GetEntityClassname(entity, classname, sizeof(classname)) && !StrContains(classname, "trigger_hurt"))
+	{
+		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
+		{
+			Handle trace = TR_ClipCurrentRayToEntityEx(MASK_PLAYERSOLID, entity);
+			bool didHit = TR_DidHit(trace);
+			delete trace;
+			
+			if (didHit)
+			{
+				HazardResult = true;
+				return false;
+			}
+		}
+	}
+	
+	return true;
+}
+
+bool IsPointNoBuild(const float pos1[3])
+{
+	HazardResult = false;
+	TR_EnumerateEntities(pos1, pos1, PARTITION_TRIGGER_EDICTS, RayType_EndPoint, TraceEntityEnumerator_EnumerateTriggers_noBuilds);
+	return HazardResult;
+}
+
+public bool TraceEntityEnumerator_EnumerateTriggers_noBuilds(int entity, int client)
+{
+	char classname[16];
+	if(GetEntityClassname(entity, classname, sizeof(classname)) && !StrContains(classname, "func_nobuild"))
 	{
 		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
 		{

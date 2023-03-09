@@ -178,7 +178,7 @@ public Action Detect_Spike_Still(Handle timer, int ref)
 				if(IsValidEntity(entity))
 				{
 					DataPack pack;
-					CreateDataTimer(0.25, Did_Enemy_Step_On_Spike, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+					CreateDataTimer(0.25, Did_Enemy_Step_On_Spike, pack, TIMER_REPEAT);
 					pack.WriteCell(EntIndexToEntRef(entity));
 					pack.WriteCell(entity);
 					pack.WriteCell(client);

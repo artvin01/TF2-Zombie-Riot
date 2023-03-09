@@ -2005,7 +2005,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	if(i_SemiAutoWeapon[weapon])
 	{
 		i_SemiAutoWeapon_AmmoCount[weapon] -= 1;
-		char buffer[16];
+		char buffer[128];
 		for(int i; i < i_SemiAutoWeapon_AmmoCount[weapon]; i++)
 		{
 			buffer[i] = '|';
@@ -2247,6 +2247,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_ThisEntityIgnored[entity] = false;
 		b_ThisEntityIgnoredByOtherNpcsAggro[entity] = false;
 		f_NpcImmuneToBleed[entity] = 0.0;
+		i_NpcInternalId[entity] = 0;
 		
 #if defined ZR
 		Wands_Potions_EntityCreated(entity);
@@ -2346,11 +2347,17 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
-			//SDKHook_SpawnPost doesnt work
 		}
-		
+		else if(!StrContains(classname, "tf_projectile_flare"))
+		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+			npc.bCantCollidie = true;
+			npc.bCantCollidieAlly = true;
+			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
+			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+		}
 		else if(!StrContains(classname, "tf_projectile_healing_bolt"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
@@ -2784,7 +2791,6 @@ public void OnEntityDestroyed(int entity)
 					PrintToConsoleAll("Somehow Failed to unhook h_NpcCollissionHookType");
 				}
 			}
-			i_NpcInternalId[entity] = -1;
 		}
 	}
 	

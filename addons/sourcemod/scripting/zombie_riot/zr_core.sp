@@ -1326,11 +1326,59 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 	}
 }
 
-
+public Action DeleteEntitiesInHazards(Handle timer)
+{
+	float BuildingPos[3];
+	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+		if (IsValidEntity(entity) && !i_BeingCarried[entity])
+		{
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", BuildingPos);
+			BuildingPos[2] + 10.0;
+			if(IsPointNoBuild(BuildingPos))
+			{
+				RemoveEntity(entity);
+			}
+		}
+	}
+	for(int entitycount; entitycount<ZR_MAX_TRAPS; entitycount++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsTraps[entitycount]);
+		if (IsValidEntity(entity))
+		{
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", BuildingPos);
+			BuildingPos[2] + 10.0;
+			if(IsPointNoBuild(BuildingPos))
+			{
+				RemoveEntity(entity);
+			}
+		}
+	}
+	for(int entity; entity<MAXENTITIES; entity++)
+	{
+		if (IsValidEntity(entity))
+		{
+			if(IsEntitySpike(entity))
+			{
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", BuildingPos);
+				BuildingPos[2] + 10.0;
+				if(IsPointNoBuild(BuildingPos))
+				{
+					RemoveEntity(entity);
+				}
+			}
+		}
+	}
+	return Plugin_Handled;
+}
 void ReviveAll(bool raidspawned = false)
 {
 	//only set false here
 	ZombieMusicPlayed = false;
+
+	CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
+
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))

@@ -1521,4 +1521,8 @@
 	{
 		"en"		"Spawned Father Grigori"
 	}
+	"Spawned Blue Goggles"
+	{
+		"en"		"Spawned Blue Goggles"
+	}
 }

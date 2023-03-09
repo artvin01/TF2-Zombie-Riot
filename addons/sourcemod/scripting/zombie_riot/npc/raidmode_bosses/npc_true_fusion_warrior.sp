@@ -499,10 +499,9 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			npc.m_flMeleeArmor = 1.0;			
 		}	
 	}
-
+	
 	if(IsValidEnemy(npc.index, closest, true))
 	{
-		
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);

@@ -4,7 +4,67 @@
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 static int i_PlayMusicSound;
 
-methodmap StalkerCombine < CClotBody
+methodmap StalkerShared < CClotBody
+{
+	public bool CanSeeEnemy()
+	{
+		if(this.m_iTarget < 1)
+			return false;
+		
+		if(Can_I_See_Enemy(this.index, this.m_iTarget) == this.m_iTarget)
+		{
+			if(this.m_iChaseVisable < 6)
+				this.m_iChaseVisable++;
+		}
+		else if(this.m_iChaseVisable > 0)
+		{
+			this.m_iChaseVisable--;
+		}
+
+		return this.m_iChaseVisable > 0;
+	}
+	public void PickRandomPos(float pos[3])
+	{
+		static float pos2[3];
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+			{
+				GetClientAbsOrigin(client, pos2);
+				break;
+			}
+		}
+
+		for(int i; i < 6; i++)
+		{
+			NavArea RandomArea = PickRandomArea();
+			if(RandomArea != NavArea_Null)
+			{
+				RandomArea.GetCenter(pos);
+				if(GetVectorDistance(pos, pos2, true) < 2000000.0)
+					break;
+			}
+		}
+	}
+
+	property int m_iChaseAnger	// Allows being able to quickly hide
+	{
+		public get()		{ return this.m_iAttacksTillMegahit; }
+		public set(int value) 	{ this.m_iAttacksTillMegahit = value; }
+	}
+	property bool m_bChaseAnger	// If currently chasing a target down
+	{
+		public get()		{ return !b_ThisEntityIgnoredByOtherNpcsAggro[this.index]; }
+		public set(bool value) 	{ b_ThisEntityIgnoredByOtherNpcsAggro[this.index] = !value; }
+	}
+	property int m_iChaseVisable	// Time before we considered "lost them"
+	{
+		public get()		{ return this.m_iMedkitAnnoyance; }
+		public set(int value) 	{ this.m_iMedkitAnnoyance = value; }
+	}
+}
+
+methodmap StalkerCombine < StalkerShared
 {
 	public void PlayIdleSound()
 	{
@@ -95,8 +155,8 @@ methodmap StalkerCombine < CClotBody
 		if(i_PlayMusicSound > GetTime())
 			return;
 		
-		EmitSoundToAll("#music/vlvx_song11.mp3", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll("#music/vlvx_song11.mp3", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll("#music/vlvx_song11.mp3", this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll("#music/vlvx_song11.mp3", this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		i_PlayMusicSound = GetTime() + 76;
 	}
 	
@@ -132,22 +192,9 @@ methodmap StalkerCombine < CClotBody
 		i_PlayMusicSound = 0;
 		npc.m_iChaseAnger = 0;
 		npc.m_bChaseAnger = false;
+		npc.m_iChaseVisable = 0;
 		npc.m_iWearable1 = -1;
 		return npc;
-	}
-	property int m_iChaseAnger	// Allows being able to quickly hide
-	{
-		public get()		{ return this.m_iAttacksTillMegahit; }
-		public set(int value) 	{ this.m_iAttacksTillMegahit = value; }
-	}
-	property bool m_bChaseAnger	// If currently chasing a target down
-	{
-		public get()		{ return !b_ThisEntityIgnoredByOtherNpcsAggro[this.index]; }
-		public set(bool value) 	{ b_ThisEntityIgnoredByOtherNpcsAggro[this.index] = !value; }
-	}
-	property bool m_bGreandeAnger	// If currently going suicide bombing
-	{
-		public get()		{ return this.m_iWearable1 != -1; }
 	}
 }
 
@@ -161,6 +208,12 @@ public void StalkerCombine_ClotThink(int iNPC)
 	float gameTime = GetGameTime(iNPC);
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
+	
+	if(Waves_InSetup())
+	{
+		FreezeNpcInTime(npc.index, DEFAULT_UPDATE_DELAY_FLOAT);
+		return;
+	}
 	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();	
@@ -177,7 +230,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_iTarget && (!npc.m_bGreandeAnger || i_NpcInternalId[npc.m_iTarget] != CURED_FATHER_GRIGORI || !IsValidEntity(npc.m_iTarget)) && !IsValidEnemy(npc.index, npc.m_iTarget, true))
+	if(npc.m_iTarget > 0 && (!b_thisNpcHasAnOutline[npc.index] || i_NpcInternalId[npc.m_iTarget] != CURED_FATHER_GRIGORI || !IsValidEntity(npc.m_iTarget)) && !IsValidEnemy(npc.index, npc.m_iTarget, true))
 	{
 		npc.m_iTarget = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -187,15 +240,15 @@ public void StalkerCombine_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		// Only find targets we can look at, ignore buildings while not pissed
-		npc.m_iTarget = GetClosestTarget(npc.index, !npc.Anger, _, true, _, _, _, true, FAR_FUTURE);
+		npc.m_iTarget = GetClosestTarget(npc.index, !npc.m_bChaseAnger, _, true, _, _, _, true, FAR_FUTURE);
 		npc.m_flGetClosestTargetTime = gameTime + (npc.m_iTarget ? 2.5 : 0.5);
 
 		// Hunt down the Father on Wave 16
 		if(Waves_GetRound() > 14 && (npc.m_iTarget < 1 || i_NpcInternalId[npc.m_iTarget] != CURED_FATHER_GRIGORI))
 		{
-			for(int i; i < i_MaxcountNpc; i++)
+			for(int i; i < i_MaxcountNpc_Allied; i++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+				int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
 				if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == CURED_FATHER_GRIGORI)
 				{
 					float EntityLocation[3], TargetLocation[3]; 
@@ -267,7 +320,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 		}
 	}
 	
-	if(npc.m_iTarget > 0 && Can_I_See_Enemy(npc.index, npc.m_iTarget) == npc.m_iTarget)
+	if((npc.m_iTarget > 0 && b_thisNpcHasAnOutline[npc.index]) || npc.CanSeeEnemy())
 	{
 		if(npc.m_iChaseAnger < 54)
 		{
@@ -292,10 +345,10 @@ public void StalkerCombine_ClotThink(int iNPC)
 				if(IsClientInGame(client))
 				{
 					GetClientAbsOrigin(client, LastKnownPos);
-					if(GetVectorDistance(vecMe, LastKnownPos, true) < 1000000.0) // 1000 range
+					if(GetVectorDistance(vecMe, LastKnownPos, true) < 3000000.0)
 					{
 						if(fl_AlreadyStrippedMusic[client] < engineTime)
-							Music_Stop_All(client); //This is actually more expensive then i thought.
+							Music_Stop_All(client);
 						
 						SetMusicTimer(client, GetTime() + 5);
 						fl_AlreadyStrippedMusic[client] = engineTime + 5.0;
@@ -334,7 +387,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 					if(npc.m_iChanged_WalkCycle != 4)
 					{
 						npc.m_iChanged_WalkCycle = 4;
-						if(npc.m_bGreandeAnger)
+						if(b_thisNpcHasAnOutline[npc.index])
 						{
 							npc.SetActivity("ACT_ZOMBINE_GRENADE_RUN");
 						}
@@ -344,6 +397,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 						}
 					}
 
+					npc.StartPathing();
 					if(distance < npc.GetLeadRadius()) 
 					{
 						LastKnownPos = PredictSubjectPosition(npc, npc.m_iTarget);
@@ -356,7 +410,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 				}
 				case 1:
 				{
-					if(npc.m_bGreandeAnger)
+					if(b_thisNpcHasAnOutline[npc.index])
 					{
 						// Blow up Father, add the next stalker boss
 						if(i_NpcInternalId[npc.m_iTarget] == CURED_FATHER_GRIGORI)
@@ -370,8 +424,8 @@ public void StalkerCombine_ClotThink(int iNPC)
 
 							TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
 
-							SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 999999.9, DMG_DROWN);
-							SDKHooks_TakeDamage(npc.index, npc.index, npc.index, 999999.9, DMG_DROWN);
+							SDKHooks_TakeDamage(npc.m_iTarget, 0, 0, 99999999.9, DMG_DROWN);
+							SDKHooks_TakeDamage(npc.index, 0, 0, 99999999.9, DMG_DROWN);
 						}
 					}
 					else
@@ -405,10 +459,17 @@ public void StalkerCombine_ClotThink(int iNPC)
 			{
 				npc.m_flSpeed = 50.0;
 				npc.m_bChaseAnger = false;
+				i_PlayMusicSound = 0;
+
+				for(int i; i < 9; i++)
+				{
+					StopSound(npc.index, SNDCHAN_STATIC, "#music/vlvx_song11.mp3");
+				}
 			}
 		}
 
-		float distance = GetVectorDistance(LastKnownPos, WorldSpaceCenter(npc.index), true);
+		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+		float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 		if(npc.m_flDoingAnimation > gameTime)
 		{
 			npc.m_iState = -1;
@@ -447,26 +508,25 @@ public void StalkerCombine_ClotThink(int iNPC)
 					npc.SetActivity("ACT_WALK");
 				}
 
-				PF_SetGoalVector(npc.index, LastKnownPos);
-
 				if(!npc.m_bChaseAnger && !(GetURandomInt() % 999))
-				{
-					NavArea RandomArea = PickRandomArea();
-					if(RandomArea != NavArea_Null) 
-						RandomArea.GetCenter(LastKnownPos);
-				}
+					npc.PickRandomPos(LastKnownPos);
+
+				npc.StartPathing();
+				PF_SetGoalVector(npc.index, LastKnownPos);
 			}
 			case 1:
 			{
 				npc.m_bisWalking = false;
 				npc.StopPathing();
+				
+				if(npc.m_iChanged_WalkCycle != 7)
+				{
+					npc.m_iChanged_WalkCycle = 7;
+					npc.SetActivity("ACT_IDLE");
+				}
 
 				if(!npc.m_bChaseAnger && !(GetURandomInt() % 99))
-				{
-					NavArea RandomArea = PickRandomArea();
-					if(RandomArea != NavArea_Null) 
-						RandomArea.GetCenter(LastKnownPos);
-				}
+					npc.PickRandomPos(LastKnownPos);
 			}
 		}
 
@@ -493,6 +553,8 @@ public Action StalkerCombine_ClotDamaged(int victim, int &attacker, int &inflict
 		f_SpecterDyingDebuff[victim] = gameTime;
 	
 	f_SpecterDyingDebuff[victim] += damage / 150.0;
+	if(f_SpecterDyingDebuff[victim] > (gameTime + 5.0))
+		f_SpecterDyingDebuff[victim] = gameTime + 5.0;
 
 	if(!b_StaticNPC[victim])
 		return Plugin_Changed;
@@ -544,6 +606,6 @@ void StalkerCombine_NPCDeath(int entity)
 
 	for(gib = 0; gib < 9; gib++)
 	{
-		StopSound(npc.index, SNDCHAN_AUTO, "#music/vlvx_song11.mp3");
+		StopSound(npc.index, SNDCHAN_STATIC, "#music/vlvx_song11.mp3");
 	}
 }
