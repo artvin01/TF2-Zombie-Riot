@@ -4,7 +4,7 @@
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 static int i_PlayMusicSound;
 
-methodmap StalkerGoggles < CClotBody
+methodmap StalkerGoggles < StalkerShared
 {
 	public void PlayMeleeHitSound()
 	{
@@ -27,24 +27,6 @@ methodmap StalkerGoggles < CClotBody
 
 		EmitSoundToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_AUTO, SNDLEVEL_ROCKET, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayMusicSound(bool sniper)
-	{
-		if(i_PlayMusicSound > GetTime())
-			return;
-		
-		if(sniper)
-		{
-			EmitSoundToAll("#bluerange.wav", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-			EmitSoundToAll("#bluerange.wav", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-			i_PlayMusicSound = GetTime() + 7;
-		}
-		else
-		{
-			EmitSoundToAll("#bluemelee.wav", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-			EmitSoundToAll("#bluemelee.wav", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-			i_PlayMusicSound = GetTime() + 18;
-		}
-	}
 	
 	public StalkerGoggles(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
@@ -60,7 +42,7 @@ methodmap StalkerGoggles < CClotBody
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
+		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, StalkerGoggles_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, StalkerGoggles_ClotThink);
@@ -70,11 +52,13 @@ methodmap StalkerGoggles < CClotBody
 		npc.m_iState = 0;
 		npc.m_flSpeed = 100.0;
 
-		i_PlayMusicSound = 0;
 		npc.m_iChaseAnger = 0;
 		npc.m_bChaseAnger = false;
+		npc.m_iChaseVisable = 0;
 		npc.m_iSurrender = 0;
-
+		npc.m_bPlayingSniper = false;
+		i_PlayMusicSound = 0;
+		
 		int entity = CreateEntityByName("point_spotlight");
 		if(entity != -1)
 		{
@@ -87,24 +71,19 @@ methodmap StalkerGoggles < CClotBody
 			DispatchSpawn(entity);
 			ActivateEntity(entity);
 			SetVariantString("!activator");
-			AcceptEntityInput(entity, "SetParent", client);
+			AcceptEntityInput(entity, "SetParent", npc.index);
 			AcceptEntityInput(entity, "LightOn");
 		}
 		
-		npc.m_iWearable1 = entity;
+		i_Wearable[npc.index][0] = entity;
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/all_class/pyrovision_goggles_sniper.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_dex_sniperrifle/c_dex_sniperrifle.mdl");
 		return npc;
 	}
-	property int m_iChaseAnger	// Allows being able to quickly hide
+	property bool m_bPlayingSniper	// Since these wave files correctly loop themselves
 	{
-		public get()		{ return this.m_iAttacksTillMegahit; }
-		public set(int value) 	{ this.m_iAttacksTillMegahit = value; }
-	}
-	property bool m_bChaseAnger	// If currently chasing a target down
-	{
-		public get()		{ return !b_ThisEntityIgnoredByOtherNpcsAggro[this.index]; }
-		public set(bool value) 	{ b_ThisEntityIgnoredByOtherNpcsAggro[this.index] = !value; }
+		public get()		{ return this.m_bReloaded; }
+		public set(bool value) 	{ this.m_bReloaded = value; }
 	}
 	property int m_iSurrender	// Totally not Fusion Warrior copy
 	{
@@ -141,16 +120,20 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecMe); 
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vecAng);
 
-	int light = npc.m_iWearable1;
-	if(light != INVALID_ENT_REFERENCE)
+	int light = i_Wearable[npc.index][0];
+	if(IsValidEntity(light))
+	{
+		vecMe[2] += 40.0;
 		TeleportEntity(light, vecMe, vecAng, NULL_VECTOR);
+		vecMe[2] -= 40.0;
+	}
 	
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget, true))
+	if(npc.m_iTarget > 0 && !IsValidEnemy(npc.index, npc.m_iTarget, true))
 	{
 		npc.m_iTarget = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -245,7 +228,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		}
 	}
 	
-	if(npc.m_iTarget > 0 && Can_I_See_Enemy(npc.index, npc.m_iTarget) == npc.m_iTarget)
+	if(npc.CanSeeEnemy())
 	{
 		if(npc.m_iChaseAnger < 14)
 		{
@@ -286,12 +269,12 @@ public void StalkerGoggles_ClotThink(int iNPC)
 				{
 					if(sniper)
 					{
-						npc.m_bisWalking = false;
+						//npc.m_bisWalking = false;
 						npc.StopPathing();
 						
-						if(npc.m_iChanged_WalkCycle != 5)
+						if(npc.m_iChanged_WalkCycle != 7)
 						{
-							npc.m_iChanged_WalkCycle = 5;
+							npc.m_iChanged_WalkCycle = 7;
 							npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
 						}
 
@@ -310,7 +293,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 					}
 					else
 					{
-						npc.m_bisWalking = true;
+						//npc.m_bisWalking = true;
 						npc.m_flSpeed = 300.0;
 
 						if(npc.m_iChanged_WalkCycle != 4)
@@ -319,6 +302,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 							npc.SetActivity("ACT_MP_RUN_MELEE");
 						}
 
+						npc.StartPathing();
 						if(distance < npc.GetLeadRadius()) 
 						{
 							LastKnownPos = PredictSubjectPosition(npc, npc.m_iTarget);
@@ -377,7 +361,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			}
 			case 0:
 			{
-				npc.m_bisWalking = true;
+				//npc.m_bisWalking = true;
 				npc.m_flSpeed = npc.m_bChaseAnger ? 300.0 : 100.0;
 
 				if(npc.m_iChanged_WalkCycle != 4)
@@ -387,17 +371,14 @@ public void StalkerGoggles_ClotThink(int iNPC)
 				}
 
 				if(!npc.m_bChaseAnger && !(GetURandomInt() % 499))
-				{
-					NavArea RandomArea = PickRandomArea();
-					if(RandomArea != NavArea_Null) 
-						RandomArea.GetCenter(LastKnownPos);
-				}
+					npc.PickRandomPos(LastKnownPos);
 
+				npc.StartPathing();
 				PF_SetGoalVector(npc.index, LastKnownPos);
 			}
 			case 1:
 			{
-				npc.m_bisWalking = false;
+				//npc.m_bisWalking = false;
 				npc.StopPathing();
 
 				if(sniper)
@@ -415,11 +396,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 				}
 
 				if(!sniper && !npc.m_bChaseAnger && !(GetURandomInt() % 49))
-				{
-					NavArea RandomArea = PickRandomArea();
-					if(RandomArea != NavArea_Null) 
-						RandomArea.GetCenter(LastKnownPos);
-				}
+					npc.PickRandomPos(LastKnownPos);
 			}
 		}
 	}
@@ -430,8 +407,8 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	{
 		if(IsClientInGame(client))
 		{
-			GetClientAbsOrigin(client, LastKnownPos);
-			if(GetVectorDistance(vecMe, LastKnownPos, true) < 1000000.0) // 1000 range
+			GetClientAbsOrigin(client, vecAng);
+			if(GetVectorDistance(vecMe, vecAng, true) < (sniper ? 3000000.0 : 2000000.0))
 			{
 				if(fl_AlreadyStrippedMusic[client] < engineTime)
 					Music_Stop_All(client);
@@ -441,8 +418,46 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			}
 		}
 	}
-	
-	npc.PlayMusicSound(sniper);
+
+	if(sniper)
+	{
+		if(!npc.m_bPlayingSniper)
+		{
+			for(int i; i < 9; i++)
+			{
+				StopSound(npc.index, SNDCHAN_STATIC, "#bluemelee.wav");
+			}
+
+			npc.m_bPlayingSniper = true;
+			i_PlayMusicSound = 0;
+
+			// This does loop
+			EmitSoundToAll("#bluerange.wav", npc.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+			EmitSoundToAll("#bluerange.wav", npc.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		}
+	}
+	else
+	{
+		if(npc.m_bPlayingSniper)
+		{
+			for(int i; i < 9; i++)
+			{
+				StopSound(npc.index, SNDCHAN_STATIC, "#bluerange.wav");
+			}
+
+			npc.m_bPlayingSniper = false;
+		}
+
+		int time = GetTime();
+		if(i_PlayMusicSound < time)
+		{
+			// This doesn't loop
+			EmitSoundToAll("#bluemelee.wav", npc.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+			EmitSoundToAll("#bluemelee.wav", npc.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+
+			i_PlayMusicSound = GetTime() + 18;
+		}
+	}
 }
 
 public Action StalkerGoggles_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -471,10 +486,12 @@ public Action StalkerGoggles_ClotDamaged(int victim, int &attacker, int &inflict
 		return Plugin_Changed;
 	}
 
-	if(GetEntProp(victim, Prop_Data, "m_iHealth") < 200000 && Waves_GetRound() < 59)
+	if(GetEntProp(victim, Prop_Data, "m_iHealth") < 1100000 && Waves_GetRound() < 59)
 	{
 		npc.m_bChaseAnger = false;
 		npc.m_iSurrender = 1;
+		//npc.m_bisWalking = false;
+		npc.StopPathing();
 
 		npc.AddGesture("ACT_MP_STUN_BEGIN");
 		npc.SetActivity("ACT_MP_STUN_MIDDLE");
@@ -491,8 +508,8 @@ public Action StalkerGoggles_ClotDamaged(int victim, int &attacker, int &inflict
 
 		for(int i; i < 9; i++)
 		{
-			StopSound(npc.index, SNDCHAN_AUTO, "#bluerange.mp3");
-			StopSound(npc.index, SNDCHAN_AUTO, "#bluemelee.mp3");
+			StopSound(npc.index, SNDCHAN_STATIC, "#bluerange.wav");
+			StopSound(npc.index, SNDCHAN_STATIC, "#bluemelee.wav");
 		}
 
 		damage = 0.0;
@@ -519,8 +536,8 @@ void StalkerGoggles_NPCDeath(int entity)
 
 	for(int i; i < 9; i++)
 	{
-		StopSound(npc.index, SNDCHAN_AUTO, "#bluerange.mp3");
-		StopSound(npc.index, SNDCHAN_AUTO, "#bluemelee.mp3");
+		StopSound(npc.index, SNDCHAN_STATIC, "#bluerange.wav");
+		StopSound(npc.index, SNDCHAN_STATIC, "#bluemelee.wav");
 	}
 	
 	if(IsValidEntity(npc.m_iWearable1))
