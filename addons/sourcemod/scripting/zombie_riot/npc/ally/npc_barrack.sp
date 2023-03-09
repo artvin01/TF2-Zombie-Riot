@@ -583,6 +583,21 @@ public Action BarrackBody_ClotDamaged(int victim, int &attacker, int &inflictor,
 	{
 		damage *= 0.5;
 	}
+	else if(damagetype & (DMG_CLUB)) //They take no knockback
+	{
+		if(CurrentPlayers == 1)
+		{
+			damage *= 0.85;
+		}
+		else if(CurrentPlayers <= 4)
+		{
+			damage *= 1.25;
+		}
+		else
+		{
+			damage *= 1.65;
+		}
+	}
 
 	BarrackBody npc = view_as<BarrackBody>(victim);
 	if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))

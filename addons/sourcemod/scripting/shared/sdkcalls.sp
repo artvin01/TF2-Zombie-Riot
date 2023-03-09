@@ -6,9 +6,9 @@ static Handle SDKGetMaxHealth;
 //static Handle g_hGetAttachment;
 //static Handle g_hStudio_FindAttachment;
 
-//static Handle g_hSetLocalAngle;
-//static Handle g_hSetAbsOrigin;
-//static Handle g_hSetAbsAngle;
+static Handle g_hSetLocalAngle;
+static Handle g_hSetAbsOrigin;
+static Handle g_hSetAbsAngle;
 static Handle g_hInvalidateBoneCache;
 
 static Handle g_hCTFCreateArrow;
@@ -98,7 +98,7 @@ void SDKCall_Setup()
 	if ((g_hSnapEyeAngles = EndPrepSDKCall()) == null) SetFailState("Failed to create SDKCall for CBasePlayer::SnapEyeAngles!");
 
 
-		/*
+		
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseEntity::SetAbsVelocity");
 	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef);
@@ -125,7 +125,6 @@ void SDKCall_Setup()
 	g_hSetAbsAngle = EndPrepSDKCall();
 	if(!g_hSetAbsAngle)
 		LogError("[Gamedata] Could not find CBaseEntity::SetAbsAngles");
-		*/
 		
 
 
