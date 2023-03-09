@@ -44,7 +44,7 @@ static bool TELEPORT_STRIKEActive[MAXENTITIES];
 static float animation_timer[MAXENTITIES];
 
 
-static float TELEPORT_STRIKE_Smite_BaseDMG = 300.0; //Base damage of the effect
+static float TELEPORT_STRIKE_Smite_BaseDMG = 1500.0; //Base damage of the effect
 static float TELEPORT_STRIKE_Smite_Radius = 500.0;//Radius of the effect
 static float TELEPORT_STRIKE_Smite_ChargeTime = 1.33;
 static float TELEPORT_STRIKE_Smite_ChargeSpan = 0.66;
@@ -184,9 +184,10 @@ methodmap Schwertkrieg < CClotBody
 		
 		float flPos[3]; // original
 		float flAng[3]; // original
-					
+		
 		npc.GetAttachment("eyeglow_L", flPos, flAng);
-		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "eyeglow_L", {0.0,0.0,15.0});
+		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "eyeglow_L", {0.0,0.0,0.0});
+		npc.GetAttachment("root", flPos, flAng);
 		
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_das_blutliebhaber/hw2013_das_blutliebhaber.mdl");
 		SetVariantString("1.0");

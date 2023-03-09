@@ -260,9 +260,9 @@ methodmap Ikunagae < CClotBody
 		
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
 		
-		fl_Scaramouche_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(45.0, 60.0);
+		fl_Scaramouche_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(15.0, 30.0);
 
-		fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(30.0, 45.0);
+		fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(10.0, 30.0);
 		
 		clearance[npc.index] = false;
 		b_Severity_Spin_To_Win[npc.index] = false;
@@ -372,7 +372,7 @@ public void Ikunagae_ClotThink(int iNPC)
 				if(clearance[npc.index])
 				{
 					fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + 120.0;
-					fl_Spin_To_Win_Global_Ability_Timer=GetGameTime(npc.index) + 45.0;
+					fl_Spin_To_Win_Global_Ability_Timer=GetGameTime(npc.index) + 12.5;
 					
 					Spin_To_Win_Activate(npc.index, i_Severity_Spin_To_Win[npc.index], b_Severity_Spin_To_Win[npc.index], 15.0, 10.0);	//setting severity to 10 or more is just pointless, also lots of lag! same thing when using alt but with over 5
 				}
@@ -383,7 +383,7 @@ public void Ikunagae_ClotThink(int iNPC)
 			if(fl_Scaramouche_Ability_Timer[npc.index] < GetGameTime(npc.index))
 			{
 				fl_Scaramouche_Ability_Timer[npc.index] = GetGameTime(npc.index) + 60.0;
-				fl_Scaramouche_Global_Ability_Timer = GetGameTime(npc.index) + 45.0;
+				fl_Scaramouche_Global_Ability_Timer = GetGameTime(npc.index) + 7.5;
 				Scaramouche_Activate(npc.index);
 			}
 		}
@@ -424,7 +424,7 @@ public void Ikunagae_ClotThink(int iNPC)
 								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 500.0, DMG_CLUB, -1, _, vecHit);	//Cade Devestation
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 750.0, DMG_CLUB, -1, _, vecHit);	//Cade Devestation
 								
 								// Hit sound
 								npc.PlayMeleeHitSound();
