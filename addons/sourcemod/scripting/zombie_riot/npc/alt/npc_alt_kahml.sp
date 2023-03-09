@@ -280,11 +280,11 @@ methodmap Kahmlstein < CClotBody
 		float flAng[3]; // original
 	
 		npc.GetAttachment("effect_hand_r", flPos, flAng);
-		npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
 		npc.GetAttachment("root", flPos, flAng);
 		
 		npc.GetAttachment("effect_hand_l", flPos, flAng);
-		npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
+		npc.m_iWearable3 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
 		npc.GetAttachment("root", flPos, flAng);
 		
 		//IDLE
