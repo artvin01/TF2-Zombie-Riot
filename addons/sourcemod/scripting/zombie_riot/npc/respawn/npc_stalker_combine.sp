@@ -171,7 +171,7 @@ methodmap StalkerCombine < StalkerShared
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = NOTHING;
 		
@@ -183,7 +183,7 @@ methodmap StalkerCombine < StalkerShared
 
 		Zero(fl_AlreadyStrippedMusic);
 
-		npc.m_iState = 0;
+		npc.m_iState = -1;
 		npc.m_flSpeed = 50.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
@@ -211,6 +211,12 @@ public void StalkerCombine_ClotThink(int iNPC)
 	
 	if(Waves_InSetup())
 	{
+		for(int i; i < 9; i++)
+		{
+			StopSound(npc.index, SNDCHAN_STATIC, "#music/vlvx_song11.mp3");
+		}
+		
+		i_PlayMusicSound = 0;
 		FreezeNpcInTime(npc.index, DEFAULT_UPDATE_DELAY_FLOAT);
 		return;
 	}
@@ -361,20 +367,17 @@ public void StalkerCombine_ClotThink(int iNPC)
 			LastKnownPos = WorldSpaceCenter(npc.m_iTarget);
 			float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 
+			int state;
 			if(npc.m_flDoingAnimation > gameTime)
 			{
-				npc.m_iState = -1;
+				state = -1;
 			}
 			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT) && npc.m_flNextMeleeAttack < gameTime)
 			{
-				npc.m_iState = 1;
-			}
-			else 
-			{
-				npc.m_iState = 0;
+				state = 1;
 			}
 
-			switch(npc.m_iState)
+			switch(state)
 			{
 				case -1:
 				{
@@ -431,9 +434,15 @@ public void StalkerCombine_ClotThink(int iNPC)
 					else
 					{
 						npc.m_bisWalking = false;
-						npc.m_iChanged_WalkCycle = 5;
-						npc.SetActivity("ACT_ZOMBINE_ATTACK_FAST");
 						npc.StopPathing();
+
+						if(npc.m_iChanged_WalkCycle != 7)
+						{
+							npc.m_iChanged_WalkCycle = 7;
+							npc.SetActivity("ACT_IDLE");
+						}
+						
+						npc.AddGesture("ACT_ZOMBINE_ATTACK_FAST");
 						
 						npc.m_flAttackHappens = gameTime + 0.25;
 						npc.m_flDoingAnimation = gameTime + 1.0;
@@ -468,22 +477,19 @@ public void StalkerCombine_ClotThink(int iNPC)
 			}
 		}
 
+		int state;
 		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
 		float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 		if(npc.m_flDoingAnimation > gameTime)
 		{
-			npc.m_iState = -1;
+			state = -1;
 		}
 		else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT))
 		{
-			npc.m_iState = 1;
-		}
-		else 
-		{
-			npc.m_iState = 0;
+			state = 1;
 		}
 
-		switch(npc.m_iState)
+		switch(state)
 		{
 			case -1:
 			{

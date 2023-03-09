@@ -858,6 +858,7 @@ void NPC_MapStart()
 	NearlSwordAbility_OnMapStart_NPC();
 
 	StalkerFather_MapStart();
+	StalkerGoggles_OnMapStart();
 }
 
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
