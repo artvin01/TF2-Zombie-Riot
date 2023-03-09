@@ -1873,6 +1873,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 static float f_damageAddedTogether[MAXTF2PLAYERS];
 static float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
 static float f_HudCooldownAntiSpam[MAXTF2PLAYERS];
+static float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
 
 static int i_HudVictimToDisplay[MAXTF2PLAYERS];
 
@@ -1888,20 +1889,43 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	if(!IsValidEntity(victim))
 		return;
 
-	if(f_HudCooldownAntiSpam[attacker] > GetGameTime())
-		return;
-
-	f_HudCooldownAntiSpam[attacker] = GetGameTime() + 0.2;
-		
-	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 #if defined ZR
 	bool raidboss_active = false;
-	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+	int raid_entity = EntRefToEntIndex(RaidBossActive);
+	if(IsValidEntity(raid_entity))
 	{
 		raidboss_active = true;
 	}
 #endif	
+
+
+	if(raidboss_active)
+	{
+		if(raid_entity != victim) //If a raid is alive, but the victim is not the raid! we need extra rules.
+		{
+			if(f_HudCooldownAntiSpam[attacker] > GetGameTime())
+				return;
+
+			f_HudCooldownAntiSpam[attacker] = GetGameTime() + 0.2;
+		}
+		else
+		{ //need a diff timer for raids, otherwise it cant display both huds!!
+			if(f_HudCooldownAntiSpamRaid[attacker] > GetGameTime())
+				return;
+
+			f_HudCooldownAntiSpamRaid[attacker] = GetGameTime() + 0.2;
+		}
+	}
+	else
+	{
+		if(f_HudCooldownAntiSpam[attacker] > GetGameTime())
+			return;
+
+		f_HudCooldownAntiSpam[attacker] = GetGameTime() + 0.2;		
+	}
+		
+	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 	int red = 255;
 	int green = 255;
 	int blue = 0;
@@ -2424,6 +2448,7 @@ void CleanAllNpcArray()
 	Zero(f_CooldownForHurtHud);
 	Zero(f_damageAddedTogetherGametime);
 	Zero(f_HudCooldownAntiSpam);
+	Zero(f_HudCooldownAntiSpamRaid);
 }
 
 #if defined ZR
