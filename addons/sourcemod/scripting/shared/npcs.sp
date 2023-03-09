@@ -1872,6 +1872,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 
 static float f_damageAddedTogether[MAXTF2PLAYERS];
 static float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
+static float f_HudCooldownAntiSpam[MAXTF2PLAYERS];
 
 static int i_HudVictimToDisplay[MAXTF2PLAYERS];
 
@@ -1886,6 +1887,11 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	int victim = i_HudVictimToDisplay[attacker];
 	if(!IsValidEntity(victim))
 		return;
+
+	if(f_HudCooldownAntiSpam[attacker] > GetGameTime())
+		return;
+
+	f_HudCooldownAntiSpam[attacker] = GetGameTime() + 0.2;
 		
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
@@ -2417,6 +2423,7 @@ void CleanAllNpcArray()
 	Zero(played_headshotsound_already);
 	Zero(f_CooldownForHurtHud);
 	Zero(f_damageAddedTogetherGametime);
+	Zero(f_HudCooldownAntiSpam);
 }
 
 #if defined ZR

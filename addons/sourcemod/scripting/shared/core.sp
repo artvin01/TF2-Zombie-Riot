@@ -2247,6 +2247,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_ThisEntityIgnored[entity] = false;
 		b_ThisEntityIgnoredByOtherNpcsAggro[entity] = false;
 		f_NpcImmuneToBleed[entity] = 0.0;
+		i_NpcInternalId[entity] = 0;
 		
 #if defined ZR
 		Wands_Potions_EntityCreated(entity);
@@ -2790,7 +2791,6 @@ public void OnEntityDestroyed(int entity)
 					PrintToConsoleAll("Somehow Failed to unhook h_NpcCollissionHookType");
 				}
 			}
-			i_NpcInternalId[entity] = -1;
 		}
 	}
 	
