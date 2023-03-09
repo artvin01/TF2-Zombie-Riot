@@ -1909,7 +1909,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			f_HudCooldownAntiSpam[attacker] = GetGameTime() + 0.2;
 		}
 		else
-		{ //need a diff timer for raids, otherwise it cant display both huds!!
+		{
+			//need a diff timer for raids, otherwise it cant display both huds!!
 			if(f_HudCooldownAntiSpamRaid[attacker] > GetGameTime())
 				return;
 
