@@ -1266,7 +1266,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 {
 	Citizen npc = view_as<Citizen>(entity);
 	
-	if(npc.m_bDowned)
+	if(npc.m_bDowned || npc.m_iGunType <= Cit_None)
 		return false;
 	
 	if(type > 9)
