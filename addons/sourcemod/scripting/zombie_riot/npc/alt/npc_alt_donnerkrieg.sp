@@ -337,7 +337,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 				{
 					bl_nightmare_stage3[npc.index]=true;
 					fl_nightmare_offset_timer[npc.index]= GetGameTime(npc.index) + 1.0;
-					CPrintToChatAll("{crimson}Donnerkrieg: NIGHTMARE, CANNNON!");
+					CPrintToChatAll("{crimson}Donnerkrieg{default}: {crimson}NIGHTMARE, CANNNON!");
 					//CPrintToChatAll("stage 3");
 					
 					npc.m_flRangedArmor = 0.5;
@@ -438,7 +438,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 				{
 					bl_nightmare_stage1[npc.index]=true;	//it begins
 					fl_nightmare_offset_timer[npc.index]= GetGameTime(npc.index) + 10.0;
-					CPrintToChatAll("{crimson}Donnerkrieg: Thats it {default}i'm going to kill you");
+					CPrintToChatAll("{crimson}Donnerkrieg{default}: {crimson}Thats it {default}i'm going to kill you");
 					//CPrintToChatAll("stage 1");
 					//npc.FaceTowards(vecTarget);
 					fl_nightmare_intial_timer[npc.index]= GetGameTime(npc.index) + 10.0;
