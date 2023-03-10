@@ -165,7 +165,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	{
 		if(!Waves_InSetup())
 		{
-			npc.m_flNextThinkTime = gameTime + 2.75;
+			npc.m_flNextThinkTime = gameTime + 2.5;
 
 			switch(npc.m_iSurrender++)
 			{
@@ -173,36 +173,43 @@ public void StalkerGoggles_ClotThink(int iNPC)
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: What are you waiting for...");
 				}
-				case 3:	// 5.5
+				case 3:	// 5.0
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: ...");
 				}
-				case 5:	// 11.0
+				case 5:	// 10.0
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: This is already the end for me...");
 				}
-				case 6:	// 13.75
+				case 7:	// 15.0
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: The world is dying...");
+					CPrintToChatAll("{darkblue}Blue Goggles{default}: Why are you saving me..?");
 				}
-				case 7:	// 16.5
+				case 9:	// 20.0
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: This is the far future.");
+					CPrintToChatAll("{darkblue}Blue Goggles{default}: Oh I see...");
 				}
-				case 8:	// 19.25
+				case 10:	// 22.5
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: Just promise me one thing.");
 				}
-				case 10:	// 22.0
+				case 11:	// 25.0
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: Take care of {gold}Silvester{default}.");
+					CPrintToChatAll("{blue}Blue Goggles{default}: Take care of {gold}Silvester{default}.");
 				}
-				case 11:	// 24.75
+				case 12:	// 27.5
 				{
 					npc.m_bDissapearOnDeath = true;
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 
-					TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
+					for (int client = 0; client < MaxClients; client++)
+					{
+						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+						{
+							GiveNamedItem(client, "The Blue Goggles");
+							CPrintToChat(client, "{default}You gained his favor, you obtained: {blue}''The Blue Goggles''{default}!");
+						}
+					}
 				}
 			}
 		}
