@@ -214,7 +214,7 @@ public MRESReturn SpeakConceptIfAllowed_Pre(int client, Handle hReturn, Handle h
 }
 public MRESReturn SpeakConceptIfAllowed_Post(int client, Handle hReturn, Handle hParams)
 {
-	if(GetEntProp(client, Prop_Send, "m_iHealth") > 0) //otherwise death sounds dont work.
+	if(GetEntProp(client, Prop_Send, "m_iHealth") > 0 || TeutonType[client] != TEUTON_NONE) //otherwise death sounds dont work.
 	{
 		TF2_SetPlayerClass(client, WeaponClass[client], false, false);
 	}
