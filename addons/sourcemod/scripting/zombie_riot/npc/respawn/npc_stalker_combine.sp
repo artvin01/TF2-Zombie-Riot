@@ -179,6 +179,7 @@ methodmap StalkerCombine < StalkerShared
 		SDKHook(npc.index, SDKHook_Think, StalkerCombine_ClotThink);
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+		Is_a_Medic[npc.index] = true;
 		npc.m_bStaticNPC = true;
 
 		Zero(fl_AlreadyStrippedMusic);
@@ -372,7 +373,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 			{
 				state = -1;
 			}
-			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT) && npc.m_flNextMeleeAttack < gameTime)
+			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT * 0.9) && npc.m_flNextMeleeAttack < gameTime)
 			{
 				state = 1;
 			}

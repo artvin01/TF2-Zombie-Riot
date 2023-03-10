@@ -55,6 +55,7 @@ methodmap StalkerGoggles < StalkerShared
 		SDKHook(npc.index, SDKHook_Think, StalkerGoggles_ClotThink);
 		
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+		Is_a_Medic[npc.index] = true;
 		npc.m_bStaticNPC = true;
 
 		Zero(fl_AlreadyStrippedMusic);
