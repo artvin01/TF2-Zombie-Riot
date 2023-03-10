@@ -576,15 +576,32 @@ public void MedivalVillager_ClotThink(int iNPC)
 
 				if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
 					return;
+
+				
+				AproxRandomSpaceToWalkTo[2] += 18.0;
+				if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
+					return;
+
+				
+				AproxRandomSpaceToWalkTo[2] -= 18.0;
+				AproxRandomSpaceToWalkTo[2] -= 18.0;
+				AproxRandomSpaceToWalkTo[2] -= 18.0;
+
+				if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
+					return;
+
+				
+				AproxRandomSpaceToWalkTo[2] += 18.0;
+				AproxRandomSpaceToWalkTo[2] += 18.0;
 				
 				float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceCenter(npc.index), true);
-
+				
 				if(flDistanceToBuild < (500.0 * 500.0))
 				{
 					return; //The building is too close, we want to retry! it is unfair otherwise.
 				}
 				//Retry.
-	
+
 				//Timeout
 				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
 
