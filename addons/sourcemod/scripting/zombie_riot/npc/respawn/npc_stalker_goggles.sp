@@ -426,7 +426,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		if(IsClientInGame(client))
 		{
 			GetClientAbsOrigin(client, vecAng);
-			if(GetVectorDistance(vecMe, vecAng, true) < (sniper ? 3000000.0 : 2000000.0))
+			if(GetVectorDistance(vecMe, vecAng, true) < (sniper ? 2000000.0 : 1500000.0))
 			{
 				if(fl_AlreadyStrippedMusic[client] < engineTime)
 					Music_Stop_All(client);

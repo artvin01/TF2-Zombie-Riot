@@ -352,7 +352,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 				if(IsClientInGame(client))
 				{
 					GetClientAbsOrigin(client, LastKnownPos);
-					if(GetVectorDistance(vecMe, LastKnownPos, true) < 3000000.0)
+					if(GetVectorDistance(vecMe, LastKnownPos, true) < 2000000.0)
 					{
 						if(fl_AlreadyStrippedMusic[client] < engineTime)
 							Music_Stop_All(client);
