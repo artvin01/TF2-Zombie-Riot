@@ -373,7 +373,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 			{
 				state = -1;
 			}
-			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT * 0.9) && npc.m_flNextMeleeAttack < gameTime)
+			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT * 0.8) && npc.m_flNextMeleeAttack < gameTime)
 			{
 				state = 1;
 			}
@@ -543,7 +543,25 @@ public void StalkerCombine_ClotThink(int iNPC)
 
 public Action StalkerCombine_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(attacker < 1 || damage > 999999.9)
+	if(damage > 999999.9)
+		return Plugin_Continue;
+	
+	if(damagetype & DMG_DROWN)
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && !GetEntProp(client, Prop_Send, "m_bDucked"))
+			{
+				float pos[3];
+				GetClientAbsOrigin(client, pos);
+				TeleportEntity(victim, pos);
+				break;
+			}
+		}
+		return Plugin_Changed;
+	}
+
+	if(attacker < 1)
 		return Plugin_Continue;
 
 	StalkerCombine npc = view_as<StalkerCombine>(victim);

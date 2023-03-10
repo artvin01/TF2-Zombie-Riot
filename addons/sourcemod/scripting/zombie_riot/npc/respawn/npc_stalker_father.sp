@@ -261,7 +261,28 @@ public void StalkerFather_ClotThink(int iNPC)
 
 public Action StalkerFather_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(attacker < 1 || damage > 999999.9)
+	if(attacker > 0 && attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE)
+		return Plugin_Handled;
+	
+	if(damage > 999999.9)
+		return Plugin_Continue;
+	
+	if(damagetype & DMG_DROWN)
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && !GetEntProp(client, Prop_Send, "m_bDucked"))
+			{
+				float pos[3];
+				GetClientAbsOrigin(client, pos);
+				TeleportEntity(victim, pos);
+				break;
+			}
+		}
+		return Plugin_Changed;
+	}
+
+	if(attacker < 1)
 		return Plugin_Continue;
 
 	StalkerFather npc = view_as<StalkerFather>(victim);
@@ -278,6 +299,8 @@ public Action StalkerFather_ClotDamaged(int victim, int &attacker, int &inflicto
 		npc.m_bChaseAnger = true;
 		npc.m_iChaseAnger = 100;
 	}
+
+	damage *= 15.0 / float(PlayersInGame);
 
 	if((!npc.m_bStaticNPC || b_thisNpcHasAnOutline[npc.index]) && !Waves_InSetup())
 		return Plugin_Changed;

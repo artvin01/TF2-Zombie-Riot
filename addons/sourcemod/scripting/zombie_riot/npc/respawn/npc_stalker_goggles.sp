@@ -487,6 +487,9 @@ public void StalkerGoggles_ClotThink(int iNPC)
 
 public Action StalkerGoggles_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	if(attacker > 0 && attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE)
+		return Plugin_Changed;
+	
 	if(damagetype & DMG_DROWN)
 	{
 		damage *= 10000.0;
@@ -540,6 +543,8 @@ public Action StalkerGoggles_ClotDamaged(int victim, int &attacker, int &inflict
 		damage = 0.0;
 		return Plugin_Handled;
 	}
+
+	damage *= 15.0 / float(PlayersInGame);
 
 	// Angry when injured
 	npc.m_bChaseAnger = true;
