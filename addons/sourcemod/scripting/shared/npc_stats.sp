@@ -4466,7 +4466,7 @@ stock bool IsEntityAlive(int index)
 		return false;
 	}
 }
-stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false)
+stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool target_invul = false)
 {
 	if(IsValidEntity(enemy))
 	{
@@ -4476,7 +4476,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false)
 			{
 				return false;
 			}
-			if(b_NpcIsInvulnerable[index])
+			if(b_NpcIsInvulnerable[index] && !target_invul)
 			{
 				return false;
 			}
