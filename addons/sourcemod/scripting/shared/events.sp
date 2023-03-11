@@ -140,7 +140,8 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 
 public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(event.GetInt("userid"));
+	int userid = event.GetInt("userid");
+	int client = GetClientOfUserId(userid);
 	if(client)
 	{
 #if defined RPG
@@ -384,7 +385,6 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		}
 		UpdateLevelAbovePlayerText(client);
 #endif
-
 	}
 }
 

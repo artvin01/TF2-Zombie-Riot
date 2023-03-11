@@ -1625,8 +1625,6 @@ public void OnWeaponSwitchPost(int client, int weapon)
 		Building_WeaponSwitchPost(client, weapon, buffer);
 #endif
 		
-		ViewChange_Switch(client, weapon, buffer);
-		
 		if(i_SemiAutoWeapon[weapon])
 		{
 			char classname[64];
@@ -1641,26 +1639,37 @@ public void OnWeaponSwitchPost(int client, int weapon)
 
 	Store_WeaponSwitch(client, weapon);
 
-#if defined RPG
 	RequestFrame(OnWeaponSwitchFrame, GetClientUserId(client));
+
+#if defined RPG
 	//TF2Attrib_SetByDefIndex(client, 698, 1.0);
 	SetEntProp(client, Prop_Send, "m_bWearingSuit", false);
 #endif
 
 }
 
-#if defined RPG
 public void OnWeaponSwitchFrame(int userid)
 {
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+		if(weapon != -1)
+		{
+			char buffer[36];
+			GetEntityClassname(weapon, buffer, sizeof(buffer));
+			ViewChange_Switch(client, weapon, buffer);
+			// We delay ViewChange_Switch by a frame so it doesn't mess with the regenerate process
+		}
+
+#if defined RPG
 		TextStore_WeaponSwitch(client, weapon);
 		Quests_WeaponSwitch(client, weapon);
+#endif
+
 	}
 }
-#endif
 
 public void OnWeaponSwitchPre(int client, int weapon)
 {

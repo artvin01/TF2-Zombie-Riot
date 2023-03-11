@@ -1896,8 +1896,6 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		raidboss_active = true;
 	}
-#endif	
-
 
 	if(raidboss_active)
 	{
@@ -1918,6 +1916,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		}
 	}
 	else
+#endif
+	
 	{
 		if(f_HudCooldownAntiSpam[attacker] > GetGameTime())
 			return;
@@ -2330,9 +2330,10 @@ public void NPC_CheckDead(int entity)
 		if(!b_NpcHasDied[entity])
 		{
 			b_NpcHasDied[entity] = true;
-			float GameTime = GetGameTime();
 			
 #if defined ZR
+			float GameTime = GetGameTime();
+			
 			if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 			{
 				Zombies_Currently_Still_Ongoing -= 1;
