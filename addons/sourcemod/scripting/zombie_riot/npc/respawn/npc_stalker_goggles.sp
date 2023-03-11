@@ -59,7 +59,7 @@ methodmap StalkerGoggles < StalkerShared
 		npc.m_bStaticNPC = true;
 
 		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
-		SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
+		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
 
 		Zero(fl_AlreadyStrippedMusic);
 
@@ -116,7 +116,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
-	if(!Waves_InSetup())
+	if(!Waves_InSetup() && GetEntProp(iNPC, Prop_Data, "m_iHealth") < 550000)
 	{
 		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 	}
@@ -526,8 +526,9 @@ public Action StalkerGoggles_ClotDamaged(int victim, int &attacker, int &inflict
 		return Plugin_Changed;
 	}
 
-	if(GetEntProp(victim, Prop_Data, "m_iHealth") < 110000 && Waves_GetRound() < 59)
+	if(GetEntProp(victim, Prop_Data, "m_iHealth") < 550000 && Waves_GetRound() < 59)
 	{
+		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		npc.m_bChaseAnger = false;
 		npc.m_iSurrender = 1;
 		npc.m_bisWalking = false;

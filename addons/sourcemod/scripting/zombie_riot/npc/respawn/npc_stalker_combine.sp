@@ -190,7 +190,7 @@ methodmap StalkerCombine < StalkerShared
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_bDissapearOnDeath = true;
 		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
-		SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
+		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 
 		i_PlayMusicSound = 0;

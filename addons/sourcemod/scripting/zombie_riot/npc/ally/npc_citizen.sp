@@ -1712,6 +1712,7 @@ public void Citizen_ClotThink(int iNPC)
 		npc.m_flidle_talk = FAR_FUTURE;
 		vecTarget = WorldSpaceCenter(npc.m_iTarget);
 		distance = GetVectorDistance(vecTarget, vecMe, true);
+		//todo, rewrite npcs so itdoes this code outside of this, i filtered out invinceable enemies.
 		if(RunFromNPC(npc.m_iTarget) && view_as<SawRunner>(npc.m_iTarget).m_iTarget == npc.index && distance < 250000.0)
 		{
 			walkStatus = 69;	// Sawrunner spotted us

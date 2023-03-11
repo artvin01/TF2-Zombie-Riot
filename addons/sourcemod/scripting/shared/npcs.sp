@@ -1153,7 +1153,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	*/
 	//they dont take drown dmg ever.
-
+	if(b_NpcIsInvulnerable[victim])
+	{
+		damage = 0.0;
+		return Plugin_Handled;
+	}
 	CClotBody npcBase = view_as<CClotBody>(victim);
 	if(attacker < 1 ||/* attacker > MaxClients ||*/ victim == attacker)
 	{
@@ -1933,8 +1937,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 	if(b_NpcIsInvulnerable[victim])
 	{
-		red = 0;
-		green = 0;
+		red = 255;
+		green = 255;
 		blue = 255;
 	}
 	else
@@ -2140,13 +2144,27 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		HudOffset += f_HurtHudOffsetX[attacker];
 
 		SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-		if(!raidboss_active)
+		if(!b_NpcIsInvulnerable[victim])
 		{
-			ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s-%0.f", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
+			if(!raidboss_active)
+			{
+				ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s-%0.f", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
+			}
+			else
+			{
+				ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);	
+			}
 		}
 		else
 		{
-			ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder);	
+			if(!raidboss_active)
+			{
+				ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s %t", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, "Invulnerable Npc");
+			}
+			else
+			{
+				ShowSyncHudText(attacker, SyncHud, "%t\n%d / %d\n%s %t", NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, "Invulnerable Npc");	
+			}			
 		}
 	}
 	else
@@ -2158,7 +2176,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			
 		SetGlobalTransTarget(attacker);
 		SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-		if(b_NpcIsInvulnerable[victim])
+		if(!b_NpcIsInvulnerable[victim])
 		{
 			ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s-%0.f","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);	
 		}

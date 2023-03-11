@@ -44,7 +44,7 @@ methodmap StalkerFather < StalkerShared
 		npc.m_bStaticNPC = true;
 
 		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
-		SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
+		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 
 
@@ -73,13 +73,13 @@ public void StalkerFather_ClotThink(int iNPC)
 	{
 		if(b_NpcIsInvulnerable[npc.index])
 		{
-			SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
+			SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
 		}
 		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 	}
 	else if(!b_NpcIsInvulnerable[npc.index])
 	{
-		SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
+		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 	}
 

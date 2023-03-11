@@ -4476,6 +4476,10 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false)
 			{
 				return false;
 			}
+			if(b_NpcIsInvulnerable[index])
+			{
+				return false;
+			}
 			if(camoDetection)
 			{
 				if(b_ThisEntityIgnored[enemy] || b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
@@ -4643,7 +4647,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			{
 				
 				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close) && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
+				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
 					if(CanSee)
 					{
@@ -4714,7 +4718,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			{
 				
 				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close) && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
+				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
 					if(CanSee)
 					{
