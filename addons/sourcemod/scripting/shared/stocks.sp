@@ -3660,7 +3660,7 @@ public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 	{
 		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
 		{
-			Handle trace = TR_ClipCurrentRayToEntityEx(MASK_PLAYERSOLID, entity);
+			Handle trace = TR_ClipCurrentRayToEntityEx(MASK_ALL, entity);
 			bool didHit = TR_DidHit(trace);
 			delete trace;
 			
@@ -3685,11 +3685,11 @@ bool IsPointNoBuild(const float pos1[3])
 public bool TraceEntityEnumerator_EnumerateTriggers_noBuilds(int entity, int client)
 {
 	char classname[16];
-	if(GetEntityClassname(entity, classname, sizeof(classname)) && !StrContains(classname, "func_nobuild"))
+	if(GetEntityClassname(entity, classname, sizeof(classname)) && (!StrContains(classname, "trigger_hurt") ||!StrContains(classname, "func_nobuild")))
 	{
 		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
 		{
-			Handle trace = TR_ClipCurrentRayToEntityEx(MASK_PLAYERSOLID, entity);
+			Handle trace = TR_ClipCurrentRayToEntityEx(MASK_ALL, entity);
 			bool didHit = TR_DidHit(trace);
 			delete trace;
 			
