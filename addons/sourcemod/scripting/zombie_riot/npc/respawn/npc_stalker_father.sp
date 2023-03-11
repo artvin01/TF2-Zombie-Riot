@@ -43,6 +43,11 @@ methodmap StalkerFather < StalkerShared
 		Is_a_Medic[npc.index] = true;
 		npc.m_bStaticNPC = true;
 
+		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
+		SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
+		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
+
+
 		Zero(fl_AlreadyStrippedMusic);
 
 		npc.m_iState = -1;
@@ -64,6 +69,20 @@ public void StalkerFather_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
+	if((!npc.m_bStaticNPC || b_thisNpcHasAnOutline[npc.index]) && !Waves_InSetup() && Waves_GetRound() > 29)
+	{
+		if(b_NpcIsInvulnerable[npc.index])
+		{
+			SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
+		}
+		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
+	}
+	else if(!b_NpcIsInvulnerable[npc.index])
+	{
+		SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
+		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
+	}
+
 	if(Waves_InSetup())
 	{
 		for(int i; i < 9; i++)
@@ -113,13 +132,6 @@ public void StalkerFather_ClotThink(int iNPC)
 			npc.m_flSpeed = 92.0;	// 80 HU x 1.15 Size
 			npc.m_bChaseAnger = false;
 		}
-	}
-
-	// Vulnerable past Wave 30
-	if(!b_thisNpcHasAnOutline[npc.index] && Waves_GetRound() > 29)
-	{
-		b_thisNpcHasAnOutline[npc.index] = true;
-		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
 	}
 	
 	float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
@@ -303,7 +315,14 @@ public Action StalkerFather_ClotDamaged(int victim, int &attacker, int &inflicto
 	damage *= 15.0 / float(PlayersInGame);
 
 	if((!npc.m_bStaticNPC || b_thisNpcHasAnOutline[npc.index]) && !Waves_InSetup())
+	{
+		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 		return Plugin_Changed;
+	}
+	else
+	{
+		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
+	}
 	
 	damage = 0.0;
 	return Plugin_Handled;

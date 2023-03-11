@@ -1931,39 +1931,49 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	int green = 255;
 	int blue = 0;
 
-#if defined RPG
-	if((!b_npcspawnprotection[victim] || i_NpcIsUnderSpawnProtectionInfluence[victim] == 0) && (i_NpcFightOwner[victim] == attacker || Party_IsClientMember(i_NpcFightOwner[victim], attacker)))
-#endif
-#if defined ZR
-	if(!b_npcspawnprotection[victim])
-#endif
-	{
-		red = (Health + 1) * 255  / (MaxHealth + 1);
-		//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-		green = (Health + 1) * 255  / (MaxHealth + 1);
-					
-		red = 255 - red;
-				
-		if(Health <= 0)
-		{
-			red = 255;
-			green = 0;
-			blue = 0;
-		}
-		else if(Health >= MaxHealth)
-		{
-			red = 0;
-			green = 255;
-			blue = 0;				
-		}
-	}
-	else
+	if(b_NpcIsInvulnerable[victim])
 	{
 		red = 0;
 		green = 0;
 		blue = 255;
 	}
+	else
+	{
+#if defined RPG
+		if((!b_npcspawnprotection[victim] || i_NpcIsUnderSpawnProtectionInfluence[victim] == 0) && (i_NpcFightOwner[victim] == attacker || Party_IsClientMember(i_NpcFightOwner[victim], attacker)))
+#endif
+#if defined ZR
+		if(!b_npcspawnprotection[victim])
+#endif
+		{
+			red = (Health + 1) * 255  / (MaxHealth + 1);
+			//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
+			green = (Health + 1) * 255  / (MaxHealth + 1);
+						
+			red = 255 - red;
+					
+			if(Health <= 0)
+			{
+				red = 255;
+				green = 0;
+				blue = 0;
+			}
+			else if(Health >= MaxHealth)
+			{
+				red = 0;
+				green = 255;
+				blue = 0;				
+			}
+		}
+		else
+		{
+			red = 0;
+			green = 0;
+			blue = 255;
+		}
+			
 		
+	}
 	char Debuff_Adder[64];
 		
 	bool Debuff_added = false;
@@ -2148,7 +2158,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			
 		SetGlobalTransTarget(attacker);
 		SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-		ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s-%0.f","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
+		if(b_NpcIsInvulnerable[victim])
+		{
+			ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s-%0.f","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);	
+		}
+		else
+		{
+			ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s %t","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, "Invulnerable Npc");		
+		}
 	}
 #endif	// ZR
 
@@ -2176,34 +2193,37 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 	i_HudVictimToDisplay[attacker] = victim;
 	float GameTime = GetGameTime();
 	bool raidboss_active = false;
+	if(!b_NpcIsInvulnerable[victim])
+	{
 #if defined ZR
-	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
-	{
-		raidboss_active = true;
-	}
-	if(overkill <= 0)
-	{
-		Damage_dealt_in_total[attacker] += damage;
-	}
-	else
-	{
-		Damage_dealt_in_total[attacker] += overkill; //dont award for overkilling.
-	}
-#endif
-	if(GameTime > f_damageAddedTogetherGametime[attacker])
-	{
-		if(!raidboss_active)
+		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 		{
-			f_damageAddedTogether[attacker] = 0.0; //reset to 0 if raid isnt active.
+			raidboss_active = true;
 		}
-	}
-	if(!ignore) //Cannot be a just show function
-	{
-		f_damageAddedTogether[attacker] += damage;
-	}
-	if(damage > 0)
-	{
-		f_damageAddedTogetherGametime[attacker] = GameTime + 0.6;
+		if(overkill <= 0)
+		{
+			Damage_dealt_in_total[attacker] += damage;
+		}
+		else
+		{
+			Damage_dealt_in_total[attacker] += overkill; //dont award for overkilling.
+		}
+#endif
+		if(GameTime > f_damageAddedTogetherGametime[attacker])
+		{
+			if(!raidboss_active)
+			{
+				f_damageAddedTogether[attacker] = 0.0; //reset to 0 if raid isnt active.
+			}
+		}
+		if(!ignore) //Cannot be a just show function
+		{
+			f_damageAddedTogether[attacker] += damage;
+		}
+		if(damage > 0)
+		{
+			f_damageAddedTogetherGametime[attacker] = GameTime + 0.6;
+		}
 	}
 }
 

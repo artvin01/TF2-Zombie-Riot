@@ -58,6 +58,9 @@ methodmap StalkerGoggles < StalkerShared
 		Is_a_Medic[npc.index] = true;
 		npc.m_bStaticNPC = true;
 
+		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
+		SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
+
 		Zero(fl_AlreadyStrippedMusic);
 
 		npc.m_iState = -1;
@@ -113,6 +116,15 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
+	if(!Waves_InSetup())
+	{
+		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
+	}
+	else
+	{
+		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
+	}
+
 	if(Waves_InSetup())
 	{
 		for(int i; i < 9; i++)
@@ -551,7 +563,14 @@ public Action StalkerGoggles_ClotDamaged(int victim, int &attacker, int &inflict
 	npc.m_iChaseAnger = 14;
 
 	if(!Waves_InSetup())
+	{
+		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 		return Plugin_Changed;
+	}
+	else
+	{
+		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
+	}
 	
 	damage = 0.0;
 	return Plugin_Handled;

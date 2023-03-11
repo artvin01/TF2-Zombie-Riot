@@ -2207,4 +2207,18 @@
 		//"it"		""
 		//"fr"		""
 	}
+	"Invulnerable Npc"
+	{
+		"en"		"Invulnerable!"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	
 }

@@ -450,6 +450,7 @@ bool b_FaceStabber[MAXTF2PLAYERS];
 bool b_IsCannibal[MAXTF2PLAYERS];
 
 float f_NpcImmuneToBleed[MAXENTITIES];
+bool b_NpcIsInvulnerable[MAXENTITIES];
 
 Function EntityFuncAttack[MAXENTITIES];
 Function EntityFuncAttackInstant[MAXENTITIES];
@@ -2247,6 +2248,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_ThisEntityIgnored[entity] = false;
 		b_ThisEntityIgnoredByOtherNpcsAggro[entity] = false;
 		f_NpcImmuneToBleed[entity] = 0.0;
+		b_NpcIsInvulnerable[entity] = false;
 		i_NpcInternalId[entity] = 0;
 		
 #if defined ZR
