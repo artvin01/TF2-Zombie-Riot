@@ -116,7 +116,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
-	if(!Waves_InSetup() && GetEntProp(iNPC, Prop_Data, "m_iHealth") < 550000)
+	if(!Waves_InSetup() && GetEntProp(iNPC, Prop_Data, "m_iHealth") < 1100000)
 	{
 		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 	}
@@ -181,35 +181,35 @@ public void StalkerGoggles_ClotThink(int iNPC)
 
 			switch(npc.m_iSurrender++)
 			{
-				case 1:	// 0.0
+				case 2:	// 0.0
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: What are you waiting for...");
 				}
-				case 3:	// 5.0
+				case 4:	// 5.0
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: ...");
 				}
-				case 5:	// 10.0
+				case 6:	// 10.0
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: This is already the end for me...");
 				}
-				case 7:	// 15.0
+				case 8:	// 15.0
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: Why are you saving me..?");
 				}
-				case 9:	// 20.0
+				case 10:	// 20.0
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: Oh I see...");
 				}
-				case 10:	// 22.5
+				case 11:	// 22.5
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: Just promise me one thing.");
 				}
-				case 11:	// 25.0
+				case 12:	// 25.0
 				{
 					CPrintToChatAll("{blue}Blue Goggles{default}: Take care of {gold}Silvester{default}.");
 				}
-				case 12:	// 27.5
+				case 13:	// 27.5
 				{
 					npc.m_bDissapearOnDeath = true;
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
@@ -526,7 +526,7 @@ public Action StalkerGoggles_ClotDamaged(int victim, int &attacker, int &inflict
 		return Plugin_Changed;
 	}
 
-	if(GetEntProp(victim, Prop_Data, "m_iHealth") < 550000 && Waves_GetRound() < 59)
+	if(GetEntProp(victim, Prop_Data, "m_iHealth") < 1100000 && Waves_GetRound() < 59)
 	{
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		npc.m_bChaseAnger = false;

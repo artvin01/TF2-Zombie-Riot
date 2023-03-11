@@ -240,7 +240,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_iTarget > 0 && (!b_thisNpcHasAnOutline[npc.index] || i_NpcInternalId[npc.m_iTarget] != CURED_FATHER_GRIGORI || !IsValidEntity(npc.m_iTarget)) && !IsValidEnemy(npc.index, npc.m_iTarget, true))
+	if(npc.m_iTarget > 0 && (!npc.m_bmovedelay || i_NpcInternalId[npc.m_iTarget] != CURED_FATHER_GRIGORI || !IsValidEntity(npc.m_iTarget)) && !IsValidEnemy(npc.index, npc.m_iTarget, true))
 	{
 		npc.m_iTarget = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -286,7 +286,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 							SetVariantString("1.2");
 							AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-							b_thisNpcHasAnOutline[npc.index] = true;
+							npc.m_bmovedelay = true;
 							SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
 
 							npc.PlaySpecialSound();
@@ -330,7 +330,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 		}
 	}
 	
-	if((npc.m_iTarget > 0 && b_thisNpcHasAnOutline[npc.index]) || npc.CanSeeEnemy())
+	if((npc.m_iTarget > 0 && npc.m_bmovedelay) || npc.CanSeeEnemy())
 	{
 		if(npc.m_iChaseAnger < 54)
 		{
@@ -394,7 +394,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 					if(npc.m_iChanged_WalkCycle != 4)
 					{
 						npc.m_iChanged_WalkCycle = 4;
-						if(b_thisNpcHasAnOutline[npc.index])
+						if(npc.m_bmovedelay)
 						{
 							npc.SetActivity("ACT_ZOMBINE_GRENADE_RUN");
 						}
@@ -417,7 +417,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 				}
 				case 1:
 				{
-					if(b_thisNpcHasAnOutline[npc.index])
+					if(npc.m_bmovedelay)
 					{
 						// Blow up Father, add the next stalker boss
 						if(i_NpcInternalId[npc.m_iTarget] == CURED_FATHER_GRIGORI)
