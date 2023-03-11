@@ -985,7 +985,7 @@ public Action Timer_DisableMotion(Handle timer, any entid)
 	return Plugin_Stop;
 }
 
-/*
+#if defined RPG
 void StartBleedingTimer_Against_Client(int client, int entity, float damage, int amount)
 {
 	BleedAmountCountStack[client] += 1;
@@ -1034,7 +1034,7 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	pack.WriteCell(bleed_count-1, false);
 	return Plugin_Continue;
 }
-*/
+#endif
 
 void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype)
 {

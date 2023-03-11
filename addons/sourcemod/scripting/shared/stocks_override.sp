@@ -402,3 +402,27 @@ void Edited_TF2_RespawnPlayer(int client)
 }
 
 #define TF2_RespawnPlayer Edited_TF2_RespawnPlayer
+/*
+void SetPlayerClass(int client, TFClassType classType, bool weapons = false, bool persistent = true)
+{
+	if(CurrentClass[client] == WeaponClass[client])
+	{
+		LogStackTrace("%f - Set to %d %d", GetEngineTime(), classType, persistent);
+	}
+	else if(classType == CurrentClass[client])
+	{
+		LogStackTrace("%f - Set to CurrentClass %d", GetEngineTime(), persistent);
+	}
+	else if(classType == WeaponClass[client])
+	{
+		LogStackTrace("%f - Set to WeaponClass %d", GetEngineTime(), persistent);
+	}
+	else
+	{
+		LogStackTrace("%f - Set to %d %d", GetEngineTime(), classType, persistent);
+	}
+
+	TF2_SetPlayerClass(client, classType, weapons, persistent);
+}
+
+#define TF2_SetPlayerClass SetPlayerClass*/
