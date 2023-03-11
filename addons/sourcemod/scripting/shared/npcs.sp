@@ -1153,7 +1153,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	*/
 	//they dont take drown dmg ever.
-	if(b_NpcIsInvulnerable[victim])
+	if(b_NpcIsInvulnerable[victim] && damage < 999999.9)// if your damage is higher then a million, we give up and let it through, theres multiple reasons why, mainly slaying.
 	{
 		damage = 0.0;
 		return Plugin_Handled;
