@@ -909,10 +909,10 @@ public void OnPostThink(int client)
 		//Reuse uhh
 		EscapeSentryHat_ApplyBuidingIcon(client);
 		//Doesnt reset often enough, fuck clientside.
-		SetVariantString("ParticleEffectStop");
-		AcceptEntityInput(client, "DispatchEffect"); 
 		if (IsPlayerAlive(client))
 		{
+		//	SetVariantString("ParticleEffectStop");
+		//	AcceptEntityInput(client, "DispatchEffect"); 
 			static int entity;
 			entity = GetClientPointVisible(client); //allow them to get info if they stare at something for abit long
 			Building_ShowInteractionHud(client, entity);
