@@ -730,6 +730,7 @@ void Waves_Progress()
 		}
 		else
 		{
+			CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
 			int extra = Building_GetCashOnWave(round.Cash);
 			CurrentCash += round.Cash;
 			if(round.Cash)

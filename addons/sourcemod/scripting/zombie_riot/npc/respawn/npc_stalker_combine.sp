@@ -171,7 +171,7 @@ methodmap StalkerCombine < StalkerShared
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = NOTHING;
 		
@@ -179,15 +179,19 @@ methodmap StalkerCombine < StalkerShared
 		SDKHook(npc.index, SDKHook_Think, StalkerCombine_ClotThink);
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+		Is_a_Medic[npc.index] = true;
 		npc.m_bStaticNPC = true;
 
 		Zero(fl_AlreadyStrippedMusic);
 
-		npc.m_iState = 0;
+		npc.m_iState = -1;
 		npc.m_flSpeed = 50.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_bDissapearOnDeath = true;
+		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
+		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
+		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 
 		i_PlayMusicSound = 0;
 		npc.m_iChaseAnger = 0;
@@ -211,6 +215,12 @@ public void StalkerCombine_ClotThink(int iNPC)
 	
 	if(Waves_InSetup())
 	{
+		for(int i; i < 9; i++)
+		{
+			StopSound(npc.index, SNDCHAN_STATIC, "#music/vlvx_song11.mp3");
+		}
+		
+		i_PlayMusicSound = 0;
 		FreezeNpcInTime(npc.index, DEFAULT_UPDATE_DELAY_FLOAT);
 		return;
 	}
@@ -230,7 +240,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_iTarget > 0 && (!b_thisNpcHasAnOutline[npc.index] || i_NpcInternalId[npc.m_iTarget] != CURED_FATHER_GRIGORI || !IsValidEntity(npc.m_iTarget)) && !IsValidEnemy(npc.index, npc.m_iTarget, true))
+	if(npc.m_iTarget > 0 && (!npc.m_bmovedelay || i_NpcInternalId[npc.m_iTarget] != CURED_FATHER_GRIGORI || !IsValidEntity(npc.m_iTarget)) && !IsValidEnemy(npc.index, npc.m_iTarget, true))
 	{
 		npc.m_iTarget = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -272,11 +282,13 @@ public void StalkerCombine_ClotThink(int iNPC)
 
 						if(npc.m_iWearable1 == -1)
 						{
+							
+							Change_Npc_Collision(npc.index, 3);
 							npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/w_grenade.mdl");
 							SetVariantString("1.2");
 							AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-							b_thisNpcHasAnOutline[npc.index] = true;
+							npc.m_bmovedelay = true;
 							SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
 
 							npc.PlaySpecialSound();
@@ -320,7 +332,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 		}
 	}
 	
-	if((npc.m_iTarget > 0 && b_thisNpcHasAnOutline[npc.index]) || npc.CanSeeEnemy())
+	if((npc.m_iTarget > 0 && npc.m_bmovedelay) || npc.CanSeeEnemy())
 	{
 		if(npc.m_iChaseAnger < 54)
 		{
@@ -345,7 +357,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 				if(IsClientInGame(client))
 				{
 					GetClientAbsOrigin(client, LastKnownPos);
-					if(GetVectorDistance(vecMe, LastKnownPos, true) < 3000000.0)
+					if(GetVectorDistance(vecMe, LastKnownPos, true) < 2000000.0)
 					{
 						if(fl_AlreadyStrippedMusic[client] < engineTime)
 							Music_Stop_All(client);
@@ -361,20 +373,17 @@ public void StalkerCombine_ClotThink(int iNPC)
 			LastKnownPos = WorldSpaceCenter(npc.m_iTarget);
 			float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 
+			int state;
 			if(npc.m_flDoingAnimation > gameTime)
 			{
-				npc.m_iState = -1;
+				state = -1;
 			}
-			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT) && npc.m_flNextMeleeAttack < gameTime)
+			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT * 0.8) && npc.m_flNextMeleeAttack < gameTime)
 			{
-				npc.m_iState = 1;
-			}
-			else 
-			{
-				npc.m_iState = 0;
+				state = 1;
 			}
 
-			switch(npc.m_iState)
+			switch(state)
 			{
 				case -1:
 				{
@@ -387,7 +396,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 					if(npc.m_iChanged_WalkCycle != 4)
 					{
 						npc.m_iChanged_WalkCycle = 4;
-						if(b_thisNpcHasAnOutline[npc.index])
+						if(npc.m_bmovedelay)
 						{
 							npc.SetActivity("ACT_ZOMBINE_GRENADE_RUN");
 						}
@@ -410,7 +419,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 				}
 				case 1:
 				{
-					if(b_thisNpcHasAnOutline[npc.index])
+					if(npc.m_bmovedelay)
 					{
 						// Blow up Father, add the next stalker boss
 						if(i_NpcInternalId[npc.m_iTarget] == CURED_FATHER_GRIGORI)
@@ -431,9 +440,15 @@ public void StalkerCombine_ClotThink(int iNPC)
 					else
 					{
 						npc.m_bisWalking = false;
-						npc.m_iChanged_WalkCycle = 5;
-						npc.SetActivity("ACT_ZOMBINE_ATTACK_FAST");
 						npc.StopPathing();
+
+						if(npc.m_iChanged_WalkCycle != 7)
+						{
+							npc.m_iChanged_WalkCycle = 7;
+							npc.SetActivity("ACT_IDLE");
+						}
+						
+						npc.AddGesture("ACT_ZOMBINE_ATTACK_FAST");
 						
 						npc.m_flAttackHappens = gameTime + 0.25;
 						npc.m_flDoingAnimation = gameTime + 1.0;
@@ -468,22 +483,19 @@ public void StalkerCombine_ClotThink(int iNPC)
 			}
 		}
 
+		int state;
 		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
 		float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 		if(npc.m_flDoingAnimation > gameTime)
 		{
-			npc.m_iState = -1;
+			state = -1;
 		}
 		else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT))
 		{
-			npc.m_iState = 1;
-		}
-		else 
-		{
-			npc.m_iState = 0;
+			state = 1;
 		}
 
-		switch(npc.m_iState)
+		switch(state)
 		{
 			case -1:
 			{
@@ -536,7 +548,25 @@ public void StalkerCombine_ClotThink(int iNPC)
 
 public Action StalkerCombine_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(attacker < 1 || damage > 999999.9)
+	if(damage > 999999.9)
+		return Plugin_Continue;
+	
+	if(damagetype & DMG_DROWN)
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && !GetEntProp(client, Prop_Send, "m_bDucked"))
+			{
+				float pos[3];
+				GetClientAbsOrigin(client, pos);
+				TeleportEntity(victim, pos);
+				break;
+			}
+		}
+		return Plugin_Changed;
+	}
+
+	if(attacker < 1)
 		return Plugin_Continue;
 
 	StalkerCombine npc = view_as<StalkerCombine>(victim);

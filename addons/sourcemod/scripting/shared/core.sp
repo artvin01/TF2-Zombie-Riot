@@ -47,7 +47,7 @@
 #define MAX_PLAYER_COUNT_STRING_SLOTS		"24"
 #endif
 
-//#pragma dynamic    131072
+#pragma dynamic    131072
 //Allah This plugin has so much we need to do this.
 
 // THESE ARE TO TOGGLE THINGS!
@@ -450,6 +450,7 @@ bool b_FaceStabber[MAXTF2PLAYERS];
 bool b_IsCannibal[MAXTF2PLAYERS];
 
 float f_NpcImmuneToBleed[MAXENTITIES];
+bool b_NpcIsInvulnerable[MAXENTITIES];
 
 Function EntityFuncAttack[MAXENTITIES];
 Function EntityFuncAttackInstant[MAXENTITIES];
@@ -520,10 +521,10 @@ float f_ImmuneToFalldamage[MAXENTITIES];
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
 
 
-#define EXPLOSION_AOE_DAMAGE_FALLOFF 1.7
-#define LASER_AOE_DAMAGE_FALLOFF 1.5
+#define EXPLOSION_AOE_DAMAGE_FALLOFF 1.5
+#define LASER_AOE_DAMAGE_FALLOFF 1.65
 #define EXPLOSION_RADIUS 150.0
-#define EXPLOSION_RANGE_FALLOFF 0.4
+#define EXPLOSION_RANGE_FALLOFF 0.4 //obsolete.
 
 //#define DO_NOT_COMPENSATE_THESE 211, 442, 588, 30665, 264, 939, 880, 1123, 208, 1178, 594, 954, 1127, 327, 1153, 425, 1081, 740, 130, 595, 207, 351, 1083, 58, 528, 1151, 996, 1092, 752, 308, 1007, 1004, 1005, 206, 305
 
@@ -2247,6 +2248,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_ThisEntityIgnored[entity] = false;
 		b_ThisEntityIgnoredByOtherNpcsAggro[entity] = false;
 		f_NpcImmuneToBleed[entity] = 0.0;
+		b_NpcIsInvulnerable[entity] = false;
 		i_NpcInternalId[entity] = 0;
 		
 #if defined ZR

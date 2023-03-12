@@ -92,7 +92,7 @@ void DHook_Setup()
 
 	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
-	DHook_CreateDetour(gamedata, "CTFPlayer::GiveDefaultItems", DHookGiveDefaultItems_Pre, DHookGiveDefaultItems_Post);
+//	DHook_CreateDetour(gamedata, "CTFPlayer::GiveDefaultItems", DHookGiveDefaultItems_Pre, DHookGiveDefaultItems_Post);
 //	DHook_CreateDetour(gamedata, "PathFollower::Avoid", _, PathFollowerAvoid);
 
 	
@@ -214,7 +214,12 @@ public MRESReturn SpeakConceptIfAllowed_Pre(int client, Handle hReturn, Handle h
 }
 public MRESReturn SpeakConceptIfAllowed_Post(int client, Handle hReturn, Handle hParams)
 {
-	if(GetEntProp(client, Prop_Send, "m_iHealth") > 0) //otherwise death sounds dont work.
+#if defined ZR
+	if(GetEntProp(client, Prop_Send, "m_iHealth") > 0 || TeutonType[client] != TEUTON_NONE) //otherwise death sounds dont work.
+#else
+	if(GetEntProp(client, Prop_Send, "m_iHealth") > 0)
+#endif
+
 	{
 		TF2_SetPlayerClass(client, WeaponClass[client], false, false);
 	}
@@ -1920,16 +1925,18 @@ public MRESReturn PathFollowerAvoid(DHookReturn Hreturn, DHookParam param)
 	
 	return MRES_Ignored;
 }
-*/
 
 public MRESReturn DHookGiveDefaultItems_Pre(int client, Handle hParams) 
 {
-	TF2_SetPlayerClass(client, CurrentClass[client]); 
+	PrintToChatAll("%f DHookGiveDefaultItems_Pre::%d", GetEngineTime(), CurrentClass[client]);
+	//TF2_SetPlayerClass(client, CurrentClass[client]);
 	return MRES_Ignored;
 }
 
 public MRESReturn DHookGiveDefaultItems_Post(int client, Handle hParams) 
 {
-	TF2_SetPlayerClass(client, WeaponClass[client], false, false);
+	PrintToChatAll("%f DHookGiveDefaultItems_Post::%d", GetEngineTime(), WeaponClass[client]);
+	//TF2_SetPlayerClass(client, WeaponClass[client], false, false);
 	return MRES_Ignored;
 }
+*/

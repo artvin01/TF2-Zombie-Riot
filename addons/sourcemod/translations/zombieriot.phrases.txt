@@ -2194,4 +2194,31 @@
 		//"it"		""
 		//"fr"		""
 	}
+	"Opened store via command"
+	{
+		"en"		"In the future, use the TAB/Scoreboard button, it will open the shop without any commands!"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Invulnerable Npc"
+	{
+		"en"		"Invulnerable!"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	
 }

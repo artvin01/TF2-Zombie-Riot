@@ -4,6 +4,13 @@
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 static int i_PlayMusicSound;
 
+void StalkerGoggles_OnMapStart()
+{
+	PrecacheModel("models/bots/sniper/bot_sniper.mdl");
+	PrecacheSound("weapons/sniper_railgun_charged_shot_01.wav");
+	PrecacheSound("weapons/sniper_railgun_charged_shot_02.wav");
+}
+
 methodmap StalkerGoggles < StalkerShared
 {
 	public void PlayMeleeHitSound()
@@ -30,7 +37,7 @@ methodmap StalkerGoggles < StalkerShared
 	
 	public StalkerGoggles(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		StalkerGoggles npc = view_as<StalkerGoggles>(CClotBody(vecPos, vecAng, "models/bots/sniper/bot_sniper.mdl", "1.0", "66666666", ally));
+		StalkerGoggles npc = view_as<StalkerGoggles>(CClotBody(vecPos, vecAng, "models/bots/sniper/bot_sniper.mdl", "1.0", "46664666", ally));
 		
 		i_NpcInternalId[npc.index] = STALKER_GOGGLES;
 		
@@ -46,10 +53,17 @@ methodmap StalkerGoggles < StalkerShared
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, StalkerGoggles_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, StalkerGoggles_ClotThink);
+		
+		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+		Is_a_Medic[npc.index] = true;
+		npc.m_bStaticNPC = true;
+
+		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
+		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
 
 		Zero(fl_AlreadyStrippedMusic);
 
-		npc.m_iState = 0;
+		npc.m_iState = -1;
 		npc.m_flSpeed = 100.0;
 
 		npc.m_iChaseAnger = 0;
@@ -59,15 +73,17 @@ methodmap StalkerGoggles < StalkerShared
 		npc.m_bPlayingSniper = false;
 		i_PlayMusicSound = 0;
 		
-		int entity = CreateEntityByName("point_spotlight");
+		int entity = CreateEntityByName("light_dynamic");
 		if(entity != -1)
 		{
 			vecPos[2] += 40.0;
 			TeleportEntity(entity, vecPos, vecAng, NULL_VECTOR);
 			
-			DispatchKeyValue(entity, "spotlightlength", "1024");
-			DispatchKeyValue(entity, "spotlightwidth", "512");
-			DispatchKeyValue(entity, "rendercolor", "255 55 55");
+			DispatchKeyValue(entity, "brightness", "7");
+			DispatchKeyValue(entity, "spotlight_radius", "180");
+			DispatchKeyValue(entity, "distance", "180");
+			DispatchKeyValue(entity, "_light", "255 0 0 255");
+			//DispatchKeyValue(entity, "_cone", "-1");
 			DispatchSpawn(entity);
 			ActivateEntity(entity);
 			SetVariantString("!activator");
@@ -99,9 +115,18 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
-	
+
 	if(Waves_InSetup())
 	{
+		for(int i; i < 9; i++)
+		{
+			StopSound(npc.index, SNDCHAN_STATIC, "#bluerange.wav");
+			StopSound(npc.index, SNDCHAN_STATIC, "#bluemelee.wav");
+		}
+
+		i_PlayMusicSound = 0;
+		npc.m_bPlayingSniper = false;
+		b_NpcIsInvulnerable[npc.index] = true;
 		FreezeNpcInTime(npc.index, DEFAULT_UPDATE_DELAY_FLOAT);
 		return;
 	}
@@ -120,18 +145,21 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecMe); 
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vecAng);
 
-	int light = i_Wearable[npc.index][0];
-	if(IsValidEntity(light))
-	{
-		vecMe[2] += 40.0;
-		TeleportEntity(light, vecMe, vecAng, NULL_VECTOR);
-		vecMe[2] -= 40.0;
-	}
+	// TODO: Test if needed, cause parenting
+	//int light = i_Wearable[npc.index][0];
+	//if(IsValidEntity(light))
+	//{
+	//	vecMe[2] += 40.0;
+	//	TeleportEntity(light, vecMe, vecAng, NULL_VECTOR);
+	//	vecMe[2] -= 40.0;
+	//}
 	
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
+
+	b_NpcIsInvulnerable[npc.index] = false;
 
 	if(npc.m_iTarget > 0 && !IsValidEnemy(npc.index, npc.m_iTarget, true))
 	{
@@ -141,9 +169,9 @@ public void StalkerGoggles_ClotThink(int iNPC)
 
 	if(npc.m_iSurrender)
 	{
-		if(!Waves_InSetup())
+		if(Waves_InSetup())
 		{
-			npc.m_flNextThinkTime = gameTime + 2.75;
+			npc.m_flNextThinkTime = gameTime + 2.5;
 
 			switch(npc.m_iSurrender++)
 			{
@@ -151,36 +179,43 @@ public void StalkerGoggles_ClotThink(int iNPC)
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: What are you waiting for...");
 				}
-				case 3:	// 5.5
+				case 3:	// 5.0
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: ...");
 				}
-				case 5:	// 11.0
+				case 5:	// 10.0
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: This is already the end for me...");
 				}
-				case 6:	// 13.75
+				case 7:	// 15.0
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: The world is dying...");
+					CPrintToChatAll("{darkblue}Blue Goggles{default}: Why are you saving me..?");
 				}
-				case 7:	// 16.5
+				case 9:	// 20.0
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: This is the far future.");
+					CPrintToChatAll("{darkblue}Blue Goggles{default}: Oh I see...");
 				}
-				case 8:	// 19.25
+				case 10:	// 22.5
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: Just promise me one thing.");
 				}
-				case 10:	// 22.0
+				case 11:	// 25.0
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: Take care of {gold}Silvester{default}.");
+					CPrintToChatAll("{blue}Blue Goggles{default}: Take care of {gold}Silvester{default}.");
 				}
-				case 11:	// 24.75
+				case 12:	// 27.5
 				{
 					npc.m_bDissapearOnDeath = true;
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 
-					TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
+					for (int client = 0; client < MaxClients; client++)
+					{
+						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+						{
+							GiveNamedItem(client, "Blue Goggles");
+							CPrintToChat(client, "{default}You gained his favor, you obtained: {blue}''Blue Goggles''{default}!");
+						}
+					}
 				}
 			}
 		}
@@ -242,24 +277,21 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			LastKnownPos = WorldSpaceCenter(npc.m_iTarget);
 			float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 
+			int state;
 			if(npc.m_flDoingAnimation > gameTime)
 			{
-				npc.m_iState = -1;
+				state = -1;
 			}
 			else if(sniper && npc.m_flNextMeleeAttack < gameTime)
 			{
-				npc.m_iState = 2;
+				state = 2;
 			}
 			else if(!sniper && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT) && npc.m_flNextMeleeAttack < gameTime)
 			{
-				npc.m_iState = 1;
-			}
-			else 
-			{
-				npc.m_iState = 0;
+				state = 1;
 			}
 
-			switch(npc.m_iState)
+			switch(state)
 			{
 				case -1:
 				{
@@ -269,16 +301,16 @@ public void StalkerGoggles_ClotThink(int iNPC)
 				{
 					if(sniper)
 					{
-						//npc.m_bisWalking = false;
+						npc.m_bisWalking = false;
 						npc.StopPathing();
 						
 						if(npc.m_iChanged_WalkCycle != 7)
 						{
 							npc.m_iChanged_WalkCycle = 7;
-							npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
+							npc.SetActivity("ACT_MP_DEPLOYED_IDLE");
 						}
 
-						if(npc.m_iState)
+						if(state)
 						{
 							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 
@@ -288,18 +320,19 @@ public void StalkerGoggles_ClotThink(int iNPC)
 							npc.PlayRangedSound();
 							npc.FireArrow(vecTarget, 1500.0, 3500.0);
 							
-							npc.m_flNextMeleeAttack = gameTime + 1.8;
+							npc.m_flNextMeleeAttack = gameTime + 2.2;
 						}
 					}
 					else
 					{
-						//npc.m_bisWalking = true;
+						npc.m_bisWalking = true;
 						npc.m_flSpeed = 300.0;
 
 						if(npc.m_iChanged_WalkCycle != 4)
 						{
 							npc.m_iChanged_WalkCycle = 4;
-							npc.SetActivity("ACT_MP_RUN_MELEE");
+							npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+							// TODO: ACT_MP_RUN_MELEE is special and uses move_scale
 						}
 
 						npc.StartPathing();
@@ -313,7 +346,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 							PF_SetGoalEntity(npc.index, npc.m_iTarget);
 						}
 
-						if(npc.m_iState)
+						if(state)
 						{
 							npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 							npc.m_flAttackHappens = gameTime + 0.35;
@@ -338,21 +371,18 @@ public void StalkerGoggles_ClotThink(int iNPC)
 				npc.m_bChaseAnger = false;
 		}
 
+		int state;
 		float distance = GetVectorDistance(LastKnownPos, WorldSpaceCenter(npc.index), true);
 		if(npc.m_flDoingAnimation > gameTime)
 		{
-			npc.m_iState = -1;
+			state = -1;
 		}
 		else if(sniper || distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT))
 		{
-			npc.m_iState = 1;
-		}
-		else 
-		{
-			npc.m_iState = 0;
+			state = 1;
 		}
 
-		switch(npc.m_iState)
+		switch(state)
 		{
 			case -1:
 			{
@@ -361,13 +391,14 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			}
 			case 0:
 			{
-				//npc.m_bisWalking = true;
+				npc.m_bisWalking = true;
 				npc.m_flSpeed = npc.m_bChaseAnger ? 300.0 : 100.0;
 
 				if(npc.m_iChanged_WalkCycle != 4)
 				{
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_MP_RUN_MELEE");
+					npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+					// TODO: ACT_MP_RUN_MELEE is special and uses move_scale
 				}
 
 				if(!npc.m_bChaseAnger && !(GetURandomInt() % 499))
@@ -378,21 +409,21 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			}
 			case 1:
 			{
-				//npc.m_bisWalking = false;
+				npc.m_bisWalking = false;
 				npc.StopPathing();
 
 				if(sniper)
 				{
-					if(npc.m_iChanged_WalkCycle != 5)
+					if(npc.m_iChanged_WalkCycle != 7)
 					{
-						npc.m_iChanged_WalkCycle = 5;
-						npc.SetActivity("ACT_MP_STAND_MELEE");
+						npc.m_iChanged_WalkCycle = 7;
+						npc.SetActivity("ACT_MP_DEPLOYED_IDLE");
 					}
 				}
 				else if(npc.m_iChanged_WalkCycle != 6)
 				{
 					npc.m_iChanged_WalkCycle = 6;
-					npc.SetActivity("ACT_GLIDE");
+					npc.SetActivity("ACT_MP_STAND_MELEE");
 				}
 
 				if(!sniper && !npc.m_bChaseAnger && !(GetURandomInt() % 49))
@@ -408,7 +439,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		if(IsClientInGame(client))
 		{
 			GetClientAbsOrigin(client, vecAng);
-			if(GetVectorDistance(vecMe, vecAng, true) < (sniper ? 3000000.0 : 2000000.0))
+			if(GetVectorDistance(vecMe, vecAng, true) < (sniper ? 2000000.0 : 1500000.0))
 			{
 				if(fl_AlreadyStrippedMusic[client] < engineTime)
 					Music_Stop_All(client);
@@ -462,9 +493,12 @@ public void StalkerGoggles_ClotThink(int iNPC)
 
 public Action StalkerGoggles_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	if(attacker > 0 && attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE)
+		return Plugin_Changed;
+	
 	if(damagetype & DMG_DROWN)
 	{
-		damage *= 100.0;
+		damage *= 10000.0;
 		return Plugin_Changed;
 	}
 
@@ -490,7 +524,7 @@ public Action StalkerGoggles_ClotDamaged(int victim, int &attacker, int &inflict
 	{
 		npc.m_bChaseAnger = false;
 		npc.m_iSurrender = 1;
-		//npc.m_bisWalking = false;
+		npc.m_bisWalking = false;
 		npc.StopPathing();
 
 		npc.AddGesture("ACT_MP_STUN_BEGIN");
@@ -515,6 +549,8 @@ public Action StalkerGoggles_ClotDamaged(int victim, int &attacker, int &inflict
 		damage = 0.0;
 		return Plugin_Handled;
 	}
+
+	damage *= 15.0 / float(PlayersInGame);
 
 	// Angry when injured
 	npc.m_bChaseAnger = true;

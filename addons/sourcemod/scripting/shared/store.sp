@@ -1829,6 +1829,8 @@ public Action Access_StoreViaCommand(int client, int args)
 			SetClientTutorialStep(client, 2);
 			DoTutorialStep(client, false);	
 		}
+		SetGlobalTransTarget(client);
+		PrintToChat(client,"%t", "Opened store via command");
 		NPCOnly[client] = 0;
 		MenuPage(client, -1);
 	}

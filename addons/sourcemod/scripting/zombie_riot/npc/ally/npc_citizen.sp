@@ -1266,7 +1266,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 {
 	Citizen npc = view_as<Citizen>(entity);
 	
-	if(npc.m_bDowned || npc.m_iGunType <= Cit_None)
+	if(npc.m_bDowned || type <= Cit_None)
 		return false;
 	
 	if(type > 9)
@@ -1712,6 +1712,7 @@ public void Citizen_ClotThink(int iNPC)
 		npc.m_flidle_talk = FAR_FUTURE;
 		vecTarget = WorldSpaceCenter(npc.m_iTarget);
 		distance = GetVectorDistance(vecTarget, vecMe, true);
+		//todo, rewrite npcs so itdoes this code outside of this, i filtered out invinceable enemies.
 		if(RunFromNPC(npc.m_iTarget) && view_as<SawRunner>(npc.m_iTarget).m_iTarget == npc.index && distance < 250000.0)
 		{
 			walkStatus = 69;	// Sawrunner spotted us
@@ -2851,7 +2852,7 @@ static bool RunFromNPC(int entity)
 {
 	return (i_NpcInternalId[entity] == SAWRUNNER ||
 		(i_NpcInternalId[entity] == STALKER_COMBINE && b_StaticNPC[entity]) ||
-		(i_NpcInternalId[entity] == STALKER_FATHER && b_StaticNPC[entity] && !b_thisNpcHasAnOutline[entity]));
+		(i_NpcInternalId[entity] == STALKER_FATHER && b_StaticNPC[entity] && !b_movedelay[entity]));
 }
 
 public Action Citizen_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
