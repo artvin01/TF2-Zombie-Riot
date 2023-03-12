@@ -47,7 +47,7 @@
 #define MAX_PLAYER_COUNT_STRING_SLOTS		"24"
 #endif
 
-//#pragma dynamic    131072
+#pragma dynamic    131072
 //Allah This plugin has so much we need to do this.
 
 // THESE ARE TO TOGGLE THINGS!

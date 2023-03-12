@@ -613,6 +613,7 @@ void Cause_Terroriser_Explosion(int client, int npc, float damage, float EntLoc2
 	{
 		Explode_Logic_Custom(damage, client, client, -1, EntLoc2, Terroriser_Implant_Radius,_,_,false);
 	}
+	
 	if(!b_NpcHasDied[npc]) //Incase it gets called later.
 	{
 		f_CooldownForHurtHud[client] = 0.0; //So it shows the damage delt by by secondary internal combustion too.
