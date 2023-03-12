@@ -116,7 +116,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
-	if(!Waves_InSetup() && GetEntProp(iNPC, Prop_Data, "m_iHealth") < 1100000)
+	if(!Waves_InSetup() && GetEntProp(iNPC, Prop_Data, "m_iHealth") > 1100000 || Waves_GetRound() > 60)
 	{
 		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 	}

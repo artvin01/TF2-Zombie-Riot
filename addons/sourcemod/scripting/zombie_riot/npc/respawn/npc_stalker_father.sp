@@ -69,7 +69,7 @@ public void StalkerFather_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
-	if((!npc.m_bStaticNPC || npc.m_bmovedelay) && !Waves_InSetup() && Waves_GetRound() > 29)
+	if(!Waves_InSetup() && Waves_GetRound() > 29)
 	{
 		if(b_NpcIsInvulnerable[npc.index])
 		{
@@ -315,7 +315,7 @@ public Action StalkerFather_ClotDamaged(int victim, int &attacker, int &inflicto
 
 	damage *= 15.0 / float(PlayersInGame);
 
-	if((!npc.m_bStaticNPC || npc.m_bmovedelay) && !Waves_InSetup())
+	if(!Waves_InSetup() && Waves_GetRound() > 29)
 	{
 		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 		return Plugin_Changed;
