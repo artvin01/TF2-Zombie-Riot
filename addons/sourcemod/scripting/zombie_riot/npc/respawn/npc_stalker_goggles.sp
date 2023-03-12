@@ -207,7 +207,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 				}
 				case 12:	// 25.0
 				{
-					CPrintToChatAll("{blue}Blue Goggles{default}: Take care of {gold}Silvester{default}.");
+					CPrintToChatAll("{darkblue}Blue Goggles{default}: Take care of {gold}Silvester{default}.");
 				}
 				case 13:	// 27.5
 				{
